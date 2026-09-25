@@ -102,7 +102,7 @@ doses (200-600 mg).
 
 set.seed(20230314)
 
-n_per_arm <- 100L  # <= 200 per arm (skill cap); Jiang 2023 used n = 1000
+n_per_arm <- 100L  # <= 200 per arm (cohort cap); Jiang 2023 used n = 1000
 
 # Genotype strata, encoded with the paired binary indicators the model uses.
 # GG (wild type) is the reference: both indicators are 0.
@@ -586,10 +586,9 @@ exponent independently of Table 3.
   kept for provenance and no register entry was created.
 - **Cohort size.** Jiang 2023 simulated n = 1000 per scenario; this
   vignette uses n = 100 per scenario across 45 scenarios (4500 subjects)
-  to stay inside the skill’s 200-per-arm cap and the vignette
-  render-time budget. The only stochastic element is `eta_CL` (a single
-  log-normal with omega = 0.139), so the median trough is very stable at
-  n = 100.
+  to stay inside the 200-per-arm cohort cap and the vignette render-time
+  budget. The only stochastic element is `eta_CL` (a single log-normal
+  with omega = 0.139), so the median trough is very stable at n = 100.
 - **Trough read-out.** Figure 3 box plots use `Cc`, the individual
   prediction (typical value times `exp(eta_CL)`), without the
   proportional residual error. The paper does not state whether its

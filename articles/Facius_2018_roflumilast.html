@@ -3227,10 +3227,9 @@ of treatment.</p>
 <span>  <span class="co"># Observation rows. The model has two algebraic observables (Cc parent,</span></span>
 <span>  <span class="co"># Cc_noxide N-oxide); address them by dvid endpoint id (1 = Cc, 2 = Cc_noxide)</span></span>
 <span>  <span class="co"># rather than by the algebraic-observable name, so rxode2 maps each</span></span>
-<span>  <span class="co"># observation to its endpoint under the default solver (see</span></span>
-<span>  <span class="co"># references/known-vignette-failure-patterns.md §5b; the Wittau 2015</span></span>
-<span>  <span class="co"># meropenem precedent). rxSolve returns Cc and Cc_noxide columns on every</span></span>
-<span>  <span class="co"># observation row regardless of dvid.</span></span>
+<span>  <span class="co"># observation to its endpoint under the default solver (see the Wittau</span></span>
+<span>  <span class="co"># 2015 meropenem precedent). rxSolve returns Cc and Cc_noxide columns on</span></span>
+<span>  <span class="co"># every observation row regardless of dvid.</span></span>
 <span>  <span class="va">obs_rows</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, time <span class="op">=</span> <span class="va">obs_times</span>,</span>
 <span>                                  dvid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -3364,7 +3363,7 @@ below for comparability with the OD arms.</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Defensive insertion of a time-zero row per (id, arm) for PKNCA to</span></span>
-<span><span class="co"># anchor AUC0-* (see references/pknca-recipes.md "Time-zero records").</span></span>
+<span><span class="co"># anchor AUC0-*.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_nca</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_noxide</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">arm</span>, <span class="va">time_in_interval</span>, <span class="va">Cc</span>, <span class="va">Cc_noxide</span><span class="op">)</span></span>
@@ -3664,8 +3663,8 @@ their skewed distributions during the NONMEM fit (Petersson 2009 form).
 The packaged model uses unmodified log-normal etas (lambda = 0
 equivalent). The typical-value (no-IIV) predictions are unaffected;
 stochastic VPC tail percentiles may differ slightly from the source
-figures for the most extreme quantiles. Operators reproducing the
-precise IIV tails should apply
+figures for the most extreme quantiles. Users reproducing the precise
+IIV tails should apply
 <code>etabc = ((1 + eta)^0.704 - 1) / 0.704</code> in a post-processing
 step before computing <code>exp(etabc)</code>.</li>
 <li>

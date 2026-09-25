@@ -436,5 +436,4 @@ in Table S3.
   PK ODE and no dose input, so PKNCA-based Cmax / AUC / half-life
   validation does not apply. Validation follows the endogenous /
   mechanistic-model pattern (steady-state, perturbation-recovery,
-  exposure-response) documented in
-  `references/endogenous-validation.md`.
+  exposure-response).

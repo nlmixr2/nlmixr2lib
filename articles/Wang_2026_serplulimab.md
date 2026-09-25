@@ -710,7 +710,7 @@ make_events <- function(r) {
   stopifnot(
     nrow(ev) > 0,
     all(c("WT", "ALB", "ALP", "TUM_SLD", "SEXF") %in% names(ev)),
-    # A time-zero observation must exist for PKNCA (see pknca-recipes).
+    # A time-zero observation must exist for PKNCA.
     any(ev$TIME == 0 & ev$EVID == 0L),
     # And one at each end of the final dosing interval.
     any(ev$TIME == ss_start & ev$EVID == 0L),

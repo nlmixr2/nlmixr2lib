@@ -80,7 +80,7 @@ collects them in one place for review.
 
 | Parameter / equation | Value | Source location |
 |----|----|----|
-| `ka` (first-order absorption, 1/h) | 2.5 (FIXED, non-paper) | Operator-named (2026-06-07 sidecar response); from Klecker et al. 1988 (J Clin Pharmacol 28(9):837-842) – ka was not estimable in Adams 1998 |
+| `ka` (first-order absorption, 1/h) | 2.5 (FIXED, non-paper) | Maintainer-named; from Klecker et al. 1988 (J Clin Pharmacol 28(9):837-842) – ka was not estimable in Adams 1998 |
 | `CL/F` (apparent clearance, L/h) | 14.8 | Adams 1998 Table 3 / Results p. 412 col 2 (0.19 L/h/kg; 95% CI 0.18-0.21 L/h/kg) |
 | `V/F` (apparent volume, L) | 87.6 | Adams 1998 Table 3 / Results p. 412 col 2 (1.18 L/kg; 95% CI 1.07-1.30 L/kg) |
 | Residual variability (proportional, fraction) | 0.206 | Adams 1998 Table 3 / Results p. 412 col 2 (20.6%) |
@@ -361,10 +361,9 @@ file value (87.6 L) is the paper’s reported number. {.table}
   explicitly states (Results p. 411 col 2; restated Discussion p. 412
   col 1) that the absorption rate constant could not be modeled because
   of the paucity of blood samples collected early in a dosing interval;
-  no ka value appears in the source paper. Per operator guidance
-  (2026-06-07 sidecar response; question q1 option C), `ka` is fixed in
-  this model to **2.5 /h** from Klecker et al. 1988 (Klecker RW Jr,
-  Collins JM, Yarchoan R, Thomas R, McAtee N, Broder S, Myers CE.
+  no ka value appears in the source paper. Per maintainer guidance, `ka`
+  is fixed in this model to **2.5 /h** from Klecker et al. 1988 (Klecker
+  RW Jr, Collins JM, Yarchoan R, Thomas R, McAtee N, Broder S, Myers CE.
   Pharmacokinetics of 2’,3’-dideoxycytidine in patients with AIDS and
   related disorders. J Clin Pharmacol. 1988;28(9):837-842,
   <doi:10.1002/j.1552-4604.1988.tb03225.x>), an early dedicated

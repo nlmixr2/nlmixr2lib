@@ -3389,18 +3389,19 @@ dosing).</caption>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">model_names</span><span class="op">)</span>, <span class="va">solve_one</span>, zero_re <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
+<span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
+<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
+<span><span class="co">#&gt; replaced with 'NA'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
+<span><span class="co">#&gt; replaced with 'NA'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
 <span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
 <span><span class="co">#&gt; replaced with 'NA'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
 <span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
-<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
-<span><span class="co">#&gt; replaced with 'NA'</span></span>
-<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
-<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
-<span><span class="co">#&gt; replaced with 'NA'</span></span>
-<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
 <span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
 <span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
@@ -3408,7 +3409,6 @@ dosing).</caption>
 <span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
 <span><span class="co">#&gt; replaced with 'NA'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
 <span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
 <span><span class="co">#&gt; replaced with 'NA'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
@@ -4097,7 +4097,7 @@ III<a class="anchor" aria-label="anchor" href="#supplementary-figure-s5a-clearan
 <p>The same panel for the dose-dependent maximum effect model.
 <strong>This is the one figure the packaged Model III does not
 reproduce</strong>, and the discrepancy is recorded rather than tuned
-away: on the operator-ratified mg/day reading of <code>DD50</code> the
+away: on the maintainer-ratified mg/day reading of <code>DD50</code> the
 Hill term is nearly saturated across the whole observed dose range, so
 the typical curve is almost flat near 0.307 L/h, whereas the published
 Figure S5A rises from roughly 0.07 to 0.19 L/h. The Errata section sets
@@ -4522,7 +4522,7 @@ values span more than three orders of magnitude (0.0815 to 132 L/h).
 That is what confirms Models I, II and IV are unbound-referenced. A
 total-concentration reading of their <code>CLp/F</code> would put their
 predictions one to three orders of magnitude out, not tens of per cent.
-The same coherence is what the operator’s ratified <code>DD50</code>
+The same coherence is what the maintainers’ ratified <code>DD50</code>
 reading for Model III was chosen to preserve.</p>
 <p>Two rows star at the 20% tolerance (Models II and III), and the
 family as a whole sits above the published 50.40 mg/L rather than
@@ -4663,9 +4663,8 @@ reports <code>DD50</code></strong> – it is absent from Supplementary
 Table S3 (whose <code>CL_DD</code> row is “/” for this model) and from
 the body text. The value used here, <code>DD50 = 37.4</code>, is Ding
 2015’s own value, tabulated in Zhang’s own Table 1, read on the
-<strong>mg/day</strong> scale. This is an operator-ratified decision
-(sidecar <code>oare_PMC10587682</code>, question 2, option C), not a
-value the paper states.</p>
+<strong>mg/day</strong> scale. This is a maintainer-ratified decision,
+not a value the paper states.</p>
 <p>The evidence conflicts, and the conflict is genuine:</p>
 <ul>
 <li>

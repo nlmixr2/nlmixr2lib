@@ -232,7 +232,7 @@ years).
 # rxode2's streams are partitioned PER SOLVER THREAD -- so this cohort is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion downstream is written to hold for ANY cohort the
-# model can produce; see pattern 12 of known-vignette-failure-patterns.md.
+# model can produce.
 set.seed(20260512)
 rxode2::rxSetSeed(20260512)
 
@@ -579,10 +579,9 @@ adult_mono_agnp <- pta |>
 # The valproate effect on PTA is compared POOLED across arms rather than arm by
 # arm. In several arms both PTA values sit against a floor (adolescents at low
 # dose, where essentially nobody reaches 15 ng/mL), and there the ordering of
-# two near-zero proportions is a coin flip that would fail on some cohorts --
-# the exact shape pattern 12 of known-vignette-failure-patterns.md warns
-# against. Pooled over 2250 subjects per valproate status the effect is large
-# and stable.
+# two near-zero proportions is a coin flip that would fail on some cohorts.
+# Pooled over 2250 subjects per valproate status the effect is large and
+# stable.
 pooled_agnp <- troughs |>
   dplyr::group_by(vpalab) |>
   dplyr::summarise(pct = 100 * mean(trough >= 15 & trough <= 40), .groups = "drop")

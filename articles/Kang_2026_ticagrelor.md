@@ -522,7 +522,7 @@ sim_cohort |>
 # Steady-state trough on the standard regimen, at the end of the last complete
 # interval. Assertions are on the MEDIAN and a robust quantile, never on the
 # cohort extremes, which are not reproducible across rxode2 builds or thread
-# counts (see CLAUDE.md).
+# counts.
 trough <- sim_cohort |>
   dplyr::filter(time == 168) |>
   dplyr::group_by(arm) |>

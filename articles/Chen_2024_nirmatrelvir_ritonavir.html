@@ -3210,7 +3210,7 @@ paper’s dosing simulations.</p>
 <span><span class="co"># NOT seed rxode2's simulation RNG, and rxode2's streams are partitioned per</span></span>
 <span><span class="co"># solver thread -- so the eta draws differ between a 16-thread workstation and a</span></span>
 <span><span class="co"># 2-core CI runner. Every assertion below is written to hold for any cohort the</span></span>
-<span><span class="co"># model can produce (see known-vignette-failure-patterns.md pattern 12).</span></span>
+<span><span class="co"># model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240918</span><span class="op">)</span></span>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20240918</span><span class="op">)</span></span>
 <span></span>
@@ -3474,7 +3474,7 @@ and panel B decreasing, matching the signs of <code>e_crcl_cl</code>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">PPTESTCD</span>, values_from <span class="op">=</span> <span class="va">PPORRES</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">trough_ss</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"id"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># The gate has to have rows to test (known-vignette-failure-patterns.md #10).</span></span>
+<span><span class="co"># The gate has to have rows to test.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">nca_wide</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2L</span> <span class="op">*</span> <span class="va">N_ARM</span>,</span>
 <span>  <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA</a></span><span class="op">(</span><span class="va">nca_wide</span><span class="op">$</span><span class="va">auclast</span><span class="op">)</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA</a></span><span class="op">(</span><span class="va">nca_wide</span><span class="op">$</span><span class="va">ctrough_ss</span><span class="op">)</span></span>
@@ -3548,7 +3548,7 @@ on the absorption peak, and a tight bound is the right gate.</p>
 <span></span>
 <span><span class="co"># Trapezoidal AUC on a 0.25 h grid slightly UNDER-estimates the true AUC around</span></span>
 <span><span class="co"># the peak, so pct_diff is small and negative. Assert on the centre and a robust</span></span>
-<span><span class="co"># quantile rather than on the extreme (CLAUDE.md vignette-assertion guidance).</span></span>
+<span><span class="co"># quantile rather than on the extreme.</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># BOTH bounds must cover the THREAD-COUNT SPREAD, not one realised cohort:</span></span>
 <span><span class="co"># rxSetSeed() fixes rxode2's RNG per solver thread rather than across thread</span></span>
@@ -3936,8 +3936,8 @@ the dose was halved.</p>
 </h2>
 <ul>
 <li><p><strong>Equations 1 and 2 are vector images in the source
-PDF.</strong> Neither <code>pdftotext</code> nor the trimmed-markdown
-preprocessor recovers them. They were read from the publisher’s own
+PDF.</strong> Neither <code>pdftotext</code> nor the PDF-to-markdown
+extraction recovers them. They were read from the publisher’s own
 equation images in the EuropePMC supplementary bundle for PMC11416114
 (<code>IDR-17-4055-e0001</code> and <code>IDR-17-4055-e0002</code>) and
 cross-checked against a 300 dpi render of page 4 of the PDF. The

@@ -3285,9 +3285,9 @@ the model.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">regimen</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">regimen</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Time-zero guarantee per the pknca-recipes 'Time-zero records (mandatory)'</span></span>
-<span><span class="co"># note. For an IV bolus, the t = 0 row already comes back with Cc set to the</span></span>
-<span><span class="co"># initial Dose / V1, so the bind_rows() pattern of the template would</span></span>
+<span><span class="co"># Time-zero guarantee (a time = 0 record per subject is mandatory for the</span></span>
+<span><span class="co"># NCA). For an IV bolus, the t = 0 row already comes back with Cc set to the</span></span>
+<span><span class="co"># initial Dose / V1, so the usual bind_rows() zero-row pattern would</span></span>
 <span><span class="co"># overwrite a non-zero initial concentration with 0; instead we just verify</span></span>
 <span><span class="co"># every (id, time = 0) row is already present after deduplication.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_nca</span> <span class="op">|&gt;</span></span>

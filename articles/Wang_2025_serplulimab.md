@@ -369,7 +369,7 @@ events <- dplyr::bind_rows(d_dose, d_obs) |>
 stopifnot(
   nrow(events) > 0,
   all(c("WT", "ALB", "SEXF", "TUMTP_NONLUNG") %in% names(events)),
-  # A time-zero observation must exist for PKNCA (see pknca-recipes).
+  # A time-zero observation must exist for PKNCA.
   any(events$TIME == 0 & events$EVID == 0L)
 )
 ```
@@ -1064,7 +1064,7 @@ tumour burden are. {.table}
   emits one warning: `cl_time_max` “should be log-transformed (named
   `lcl_time_max`)”. It cannot be - `Emax` is negative (-0.364), so its
   logarithm is undefined. `cl_time_max` is the registered canonical name
-  for this role (`references/parameter-names.md`, sigmoidal-in-time
+  for this role (`inst/references/parameter-names.md`, sigmoidal-in-time
   clearance family), and the sibling `Wang_2024_sugemalimab` model
   carries the identical warning.
 

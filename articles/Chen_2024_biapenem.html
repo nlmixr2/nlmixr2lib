@@ -3324,7 +3324,7 @@ and mean and truncated to its published range.</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per</span></span>
 <span><span class="co"># solver thread, so a machine with a different thread count draws a different</span></span>
 <span><span class="co"># cohort. Every assertion below is written to hold for any cohort this model</span></span>
-<span><span class="co"># can produce (see known-vignette-failure-patterns.md pattern 12).</span></span>
+<span><span class="co"># can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240510</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># cap is 200/arm</span></span>
@@ -3366,8 +3366,7 @@ and mean and truncated to its published range.</p>
 <span><span class="co">#</span></span>
 <span><span class="co"># Observation rows point at "central" -- the ODE STATE -- never at the</span></span>
 <span><span class="co"># algebraic observable Cc. Naming an observable as a compartment injects a slot</span></span>
-<span><span class="co"># after the ODE states and renumbers them</span></span>
-<span><span class="co"># (known-vignette-failure-patterns.md pattern 2). rxode2 returns Cc as an output</span></span>
+<span><span class="co"># after the ODE states and renumbers them. rxode2 returns Cc as an output</span></span>
 <span><span class="co"># column regardless of which compartment the observation row points at.</span></span>
 <span><span class="va">build_arm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">r</span>   <span class="op">&lt;-</span> <span class="va">regimens</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span></span>

@@ -3083,8 +3083,7 @@ bolus.</p>
 <span><span class="co"># The model declares two algebraic endpoints (Cc plasma, Ccsf CSF).</span></span>
 <span><span class="co"># Address each endpoint by its `dvid` id (1 = Cc, 2 = Ccsf) on</span></span>
 <span><span class="co"># observation rows so rxode2 maps each to its endpoint under the</span></span>
-<span><span class="co"># default solver -- the multi-output pattern in</span></span>
-<span><span class="co"># `references/known-vignette-failure-patterns.md` Section 5b</span></span>
+<span><span class="co"># default solver -- the multi-output pattern</span></span>
 <span><span class="co"># (Wittau 2015 meropenem precedent). The dose row uses the actual</span></span>
 <span><span class="co"># ODE state name `csf` (intrathecal bolus enters the CSF compartment).</span></span>
 <span><span class="va">make_cohort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt_kg</span>, <span class="va">cohort_label</span>, <span class="va">dose_mg</span> <span class="op">=</span> <span class="fl">12</span>, <span class="va">id_offset</span> <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
@@ -3240,8 +3239,7 @@ therefore focuses on the CSF terminal half-life.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Ccsf</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Ccsf</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Ensure a row at time = 0 with Ccsf = 0 (pre-dose anchor) - see</span></span>
-<span><span class="co"># pknca-recipes.md "Time-zero records (mandatory)".</span></span>
+<span><span class="co"># Ensure a row at time = 0 with Ccsf = 0 (pre-dose anchor).</span></span>
 <span><span class="va">nca_input_csf</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_input_csf</span>,</span>
 <span>  <span class="va">nca_input_csf</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3463,8 +3461,7 @@ Pharmacol landing page and the PubMed corrections feed for PMID 28369979
 (DOI 10.1002/jcph.884) found no published corrections to the source. A
 separate semi-mechanistic popPK model for nusinersen (Biliouris 2018,
 PMID 30043511) exists but is not an erratum to Luu 2017; Biliouris 2018
-was not extracted in this task and may be queued separately if
-desired.</p></li>
+was not extracted here and may be added separately if desired.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

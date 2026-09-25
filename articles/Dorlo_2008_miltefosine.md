@@ -325,8 +325,8 @@ transcription error.
   reported** in the publication, so the model encodes the IIVs as a
   diagonal omega matrix on (`etalka`, `etalcl`, `etalvc`). A downstream
   user who reproduces the original NONMEM run could introduce the
-  off-diagonal element from a recovered control stream; this skill does
-  not invent unreported parameter values.
+  off-diagonal element from a recovered control stream; this package
+  does not invent unreported parameter values.
 - **IIV on Q and Vp.** Table 2 reports `NE` (not estimable) for the IIV
   on Q/F and V3/F, attributed in the Results to insufficient information
   in the data. The model file accordingly omits `etalq` / `etalvp`.

@@ -864,6 +864,6 @@ discrepancy.
 - **Errata.** No erratum or corrigendum to Stocker 2012 was located on
   disk for this extraction. A search for “Stocker 2012 oxypurinol
   erratum” on PubMed and the British Journal of Clinical Pharmacology /
-  Wiley corrections feed returned no hits; operators should reconfirm
-  against the journal’s corrections listing if a re-extraction is
-  undertaken.
+  Wiley corrections feed returned no hits; the maintainers should
+  reconfirm against the journal’s corrections listing if a re-extraction
+  is undertaken.

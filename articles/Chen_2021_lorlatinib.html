@@ -3257,8 +3257,7 @@ exposure”) defines the reference typical individual (70 kg, no PPI, WNCL
 interval. The PKNCA validation below reproduces these steady-state
 exposure metrics from the virtual cohort at 100 mg q.d.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># PKNCA input: use ONLY !is.na(Cc) so the time-zero row is preserved</span></span>
-<span><span class="co"># (pknca-recipes.md "Time-zero records (mandatory)").</span></span>
+<code class="sourceCode R"><span><span class="co"># PKNCA input: use ONLY !is.na(Cc) so the time-zero row is preserved.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>

@@ -3044,8 +3044,9 @@ ref [6]</td>
 </h2>
 <p>The simulation reproduces a small subset of the Wagh 2021
 dose-fractionation panel that compares equal weekly doses delivered at
-different frequencies. Per the skill’s cap, no arm exceeds 200 mice;
-here each arm is 25 mice for the VPC, well under the cap.</p>
+different frequencies. No arm exceeds the package’s 200-subject-per-arm
+cohort cap; here each arm is 25 mice for the VPC, well under the
+cap.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Helper: build one cohort's event table. id_offset shifts subject IDs so</span></span>
 <span><span class="co"># multiple cohorts bind_rows cleanly without rxSolve silently merging</span></span>
@@ -3142,7 +3143,7 @@ here each arm is 25 mice for the VPC, well under the cap.</p>
 <span>            study_wagh_2 <span class="op">=</span> <span class="fl">1</span>, n_mice <span class="op">=</span> <span class="va">n_per</span>, id_offset <span class="op">=</span>  <span class="fl">75L</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Disjoint-ID guard (mandatory for multi-cohort sims, per skill template):</span></span>
+<span><span class="co"># Disjoint-ID guard (mandatory for multi-cohort sims):</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -3267,9 +3268,9 @@ totals).</p>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>Compute Cmax, Tmax, AUC over the last dosing interval (steady-state
-approximation) for each arm using PKNCA. Per the skill template, the
-filter is <code>!is.na(Cc)</code> only – adding <code>time &gt; 0</code>
-or <code>Cc &gt; 0</code> would drop the pre-dose anchor row that PKNCA
+approximation) for each arm using PKNCA. The filter is
+<code>!is.na(Cc)</code> only – adding <code>time &gt; 0</code> or
+<code>Cc &gt; 0</code> would drop the pre-dose anchor row that PKNCA
 needs.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">last_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">times_QD</span>, <span class="va">times_TIW</span>, <span class="va">times_BID</span><span class="op">)</span><span class="op">)</span></span>

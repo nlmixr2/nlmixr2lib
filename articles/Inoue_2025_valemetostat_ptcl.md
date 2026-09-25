@@ -481,7 +481,7 @@ mod
 #>     Cu ~ prop(sdCu)
 #>   })
 #> }
-#> <environment: 0x55fa60bdfae0>
+#> <environment: 0x55ad252fd078>
 ```
 
 ## Population

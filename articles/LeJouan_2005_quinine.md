@@ -435,7 +435,7 @@ cat(sprintf("Simulated cohort C_av range: %.2f - %.2f mg/L (paper reported 5.9 -
   the package model file because T_er is a per-subject derived endpoint
   (one value per child, computed from AUC(0-72) post hoc) rather than a
   time-series observation that fits the rxode2 / nlmixr2
-  continuous-observation framework cleanly. Operators who need the
+  continuous-observation framework cleanly. Users who need the
   exposure-response relationship can compute C_av from the simulated PK
   and apply the inverse-Hill formula offline using the posterior point
   estimates above.

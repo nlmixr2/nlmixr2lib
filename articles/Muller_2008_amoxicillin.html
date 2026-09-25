@@ -3142,11 +3142,10 @@ subjects.</p>
 <p>The PKNCA comparison uses a single-dose typical-value simulation per
 cohort. The dosing column is required as <code>amt</code>; the
 concentration column is the model’s observation symbol <code>Cc</code>.
-Filtering uses only <code>!is.na(Cc)</code> (per
-<code>pknca-recipes.md</code>’s “Time-zero records” note – adding
+Filtering uses only <code>!is.na(Cc)</code> – adding
 <code>time &gt; 0</code> or <code>Cc &gt; 0</code> drops the time-zero
 row PKNCA needs to anchor AUC0-Inf and triggers a per-subject
-warning).</p>
+warning.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

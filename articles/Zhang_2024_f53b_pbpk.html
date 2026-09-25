@@ -3437,7 +3437,7 @@ whichever points the schedule provides.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span>, treatment <span class="op">=</span> <span class="va">arm</span>,</span>
 <span>                   tad <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">GD13_H</span>, Cc <span class="op">=</span> <span class="va">Cc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Guarantee a time-zero record per subject (see pknca-recipes.md). For the</span></span>
+<span><span class="co"># Guarantee a time-zero record per subject. For the</span></span>
 <span><span class="co"># oral arm the pre-dose concentration is 0. For the intravenous arm the</span></span>
 <span><span class="co"># model's own instantaneous post-bolus concentration is used, so that AUC</span></span>
 <span><span class="co"># from time zero is the model's actual exposure rather than a fabricated</span></span>

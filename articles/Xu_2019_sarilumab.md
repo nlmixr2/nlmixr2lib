@@ -61,7 +61,7 @@ albumin/ULN ratio of 0.78 (i.e. 38 g/L over a typical ULN of 48.7 g/L),
 | `e_dp2_ka` (DP2 multiplier on Ka) | `0.663` | Table 3, theta15 / DP2 effect on Ka |
 | `e_ada_cl` (ADA multiplier on CLO/F) | `1.43` | Table 3, theta14 / ADA effect on CLO/F |
 | `e_dp2_cl` (DP2 multiplier on CLO/F) | `1.30` | Table 3, theta16 / DP2 effect on CLO/F |
-| `e_sexf_cl` (SEX multiplier on CLO/F) | `0.846` | Table 3, theta17; SEX=1=female (operator-confirmed) |
+| `e_sexf_cl` (SEX multiplier on CLO/F) | `0.846` | Table 3, theta17; SEX=1=female (maintainer-confirmed) |
 | `var(etalvmax)` | `log(0.324^2 + 1) = 0.0998` | Table 3: Vm IIV 32.4% CV |
 | `var(etalcl)` | `log(0.553^2 + 1) = 0.2669` | Table 3: CLO/F IIV 55.3% CV |
 | `cov(etalvmax, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Table 3: Vm-CLO/F correlation -0.566 |
@@ -92,7 +92,7 @@ albumin/ULN ratio of 0.78 (i.e. 38 g/L over a typical ULN of 48.7 g/L),
 - **SEX encoding.** Xu 2019 codes `SEX=1` for female in the final CLO/F
   equation and reports that male patients have higher CL and lower
   AUC0-14d. This gives a multiplicative effect of 0.846 when `SEXF=1`
-  (female), which was operator-confirmed during model extraction (see
+  (female), which was maintainer-confirmed during model extraction (see
   the `SEXF` entry in `covariateData`). The canonical `SEXF` column in
   nlmixr2lib uses 1 = female, so the effect is applied as
   `e_sexf_cl^SEXF`.
@@ -402,13 +402,13 @@ mean values. All differences within ~10%. {.table style="width:100%;"}
 
 ## Assumptions and deviations
 
-- **SEX encoding (operator-confirmed).** Xu 2019 reports the SEX
+- **SEX encoding (maintainer-confirmed).** Xu 2019 reports the SEX
   covariate multiplier theta17 = 0.846 in the CLO/F equation and
   narrates that male patients had higher apparent clearance (lower
   AUC0-14d). Because `theta17 < 1` reduces clearance, SEX in the
   final-model equation must indicate **female** (SEX=1=female). This
-  interpretation was confirmed by the operator during extraction and is
-  applied via the canonical `SEXF` covariate (1 = female).
+  interpretation was confirmed by the maintainers during extraction and
+  is applied via the canonical `SEXF` covariate (1 = female).
 - **Supplement not reviewed.** The Clinical Pharmacokinetics electronic
   supplementary material (NONMEM control stream and supplementary
   tables) could not be downloaded at extraction time (the journal’s CDN

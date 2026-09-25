@@ -3160,8 +3160,8 @@ so exact tolerances are correct here and are deliberately tight.</p>
 <span></span>
 <span><span class="co"># Deterministic identity: the packaged model must reproduce Equation 1 to</span></span>
 <span><span class="co"># machine precision. This is NOT a cohort statistic, so an exact bound is the</span></span>
-<span><span class="co"># right gate (see known-vignette-failure-patterns.md pattern 12, which applies</span></span>
-<span><span class="co"># to simulated cohorts and explicitly not to closed-form identities).</span></span>
+<span><span class="co"># right gate (the headroom rule applies to simulated cohorts, which vary with</span></span>
+<span><span class="co"># the solver thread count, and explicitly not to closed-form identities).</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">struct_tab</span><span class="op">$</span><span class="va">cl_pct</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-8</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">struct_tab</span><span class="op">$</span><span class="va">vc_pct</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-8</span></span>
@@ -3651,13 +3651,13 @@ above 1 ug/mL</td>
 </table>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co"># Bounds chosen with headroom over what a cohort draw can move (pattern 12 of</span></span>
-<span><span class="co"># known-vignette-failure-patterns.md). The band-spread bound of 1.5 is a</span></span>
-<span><span class="co"># magnitude claim about "comparable", not a race between two noisy statistics;</span></span>
-<span><span class="co"># a mis-transcribed allometric exponent takes the 7.5-15 kg / &gt;40 kg ratio well</span></span>
-<span><span class="co"># past 2. The two percentage bounds sit 5-10 points below the paper's own "&gt;80%"</span></span>
-<span><span class="co"># so a different eta draw cannot flip them, while a wrong genotype fold-factor</span></span>
-<span><span class="co"># (which moves these by tens of points) still fails them.</span></span>
+<span><span class="co"># Bounds chosen with headroom over what a cohort draw can move. The</span></span>
+<span><span class="co"># band-spread bound of 1.5 is a magnitude claim about "comparable", not a race</span></span>
+<span><span class="co"># between two noisy statistics; a mis-transcribed allometric exponent takes the</span></span>
+<span><span class="co"># 7.5-15 kg / &gt;40 kg ratio well past 2. The two percentage bounds sit 5-10</span></span>
+<span><span class="co"># points below the paper's own "&gt;80%" so a different eta draw cannot flip them,</span></span>
+<span><span class="co"># while a wrong genotype fold-factor (which moves these by tens of points)</span></span>
+<span><span class="co"># still fails them.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">band_medians</span><span class="op">$</span><span class="va">band_spread</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1.5</span>,</span>
 <span>  <span class="va">pct_over_4</span> <span class="op">&gt;</span> <span class="fl">70</span>,</span>

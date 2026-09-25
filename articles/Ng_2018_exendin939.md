@@ -623,10 +623,8 @@ from Table 2. {.table}
   variances). The packaged model encodes this as a power-error term
   `Cc ~ pow(powSd, 0.5)` with `powSd = sqrt(3.66) = 1.913`; this gives
   SD(Y\|F) = powSd \* sqrt(F), matching the original W = sqrt(F); Y =
-  F + W \* EPS specification. The new `powSd` canonical parameter name
-  is registered in
-  `.claude/skills/extract-literature-model/references/parameter-names.md`
-  with this model as the founding example.
+  F + W \* EPS specification. `powSd` is a paper-specific parameter
+  name; it is not a registered canonical.
 - **Inter-individual variability on CL only.** Ng 2018 attempted IIV on
   V1, Q, and V2 but reported that those terms failed convergence or
   yielded %CV \> 50% and were dropped from the final model (Results

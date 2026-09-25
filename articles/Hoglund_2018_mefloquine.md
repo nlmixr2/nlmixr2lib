@@ -72,7 +72,7 @@ Per-parameter source locations are recorded inline in
 | Two-compartment disposition (`central`, `peripheral1`) | – | Results, Pharmacokinetic model: “two-compartment disposition model, which was superior to a one-compartment disposition model (p \< 0.05). Adding on one additional disposition model was not significant (p \> 0.05)” |
 | F implicit = 1; no `lfdepot` | – | Results, Pharmacokinetic model: “The addition of relative bioavailability (F) fixed to 100% with an estimated inter-individual variability did not significantly improve the model and was excluded from the final model” |
 | No retained covariates | – | Results, Pharmacokinetic model: allometric WT scaling, sex, parasitaemia, and resistance markers (pfmdr1, pfcrt, atp6, pfk13) all tested and excluded |
-| Additive error on log-transformed conc -\> proportional in nlmixr2 linear space | – | Methods, Pharmacokinetic analysis: “The natural logarithm of quantified mefloquine concentrations was analysed”; convention from `references/parameter-names.md` |
+| Additive error on log-transformed conc -\> proportional in nlmixr2 linear space | – | Methods, Pharmacokinetic analysis: “The natural logarithm of quantified mefloquine concentrations was analysed”; convention from `inst/references/parameter-names.md` |
 
 ## Virtual cohort
 
@@ -453,7 +453,7 @@ cured-cohort medians. {.table}
   mefloquine concentration (Methods, Pharmacokinetic analysis: “The
   natural logarithm of quantified mefloquine concentrations was
   analysed”), which maps to proportional residual error in linear
-  concentration space (see `references/parameter-names.md` section
+  concentration space (see `inst/references/parameter-names.md` section
   ‘Residual error’). The package model encodes this as
   `propSd <- sqrt(0.0902) ~ 0.300`; the SD applies on the log scale and
   equals the proportional CV in linear space to first order.

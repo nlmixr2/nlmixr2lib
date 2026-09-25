@@ -331,7 +331,7 @@ under DL 3, and 3 doses under DL 4.
 
 ``` r
 
-n_per_arm <- 200          # skill cap: never more than 200 participants per arm
+n_per_arm <- 200          # cohort cap: never more than 200 participants per arm
 n_days    <- 36
 win       <- c(720, 864)  # steady-state evaluation window, days 30-35
 

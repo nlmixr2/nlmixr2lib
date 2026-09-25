@@ -3532,7 +3532,7 @@ chunk computes the Cycle 1 Day 8 exposures that both figures plot.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The paper's conclusion, as an assertion. Both sides are simulated cohorts</span></span>
 <span><span class="co"># whose spread is driven by which subjects were drawn, so the gates are on the</span></span>
-<span><span class="co"># CENTRE and on robust quantiles -- never on the extremes (see CLAUDE.md).</span></span>
+<span><span class="co"># CENTRE and on robust quantiles -- never on the extremes.</span></span>
 <span><span class="va">rec</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">peds_exposure</span>, <span class="va">regimen</span> <span class="op">==</span> <span class="st">"Recommended (Table 3)"</span><span class="op">)</span></span>
 <span><span class="va">flat</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">peds_exposure</span>, <span class="va">regimen</span> <span class="op">==</span> <span class="st">"Adapted flat dosing"</span><span class="op">)</span></span>
 <span></span>

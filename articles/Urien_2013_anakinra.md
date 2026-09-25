@@ -572,9 +572,9 @@ kg body-weight range.
   non-trivial change of structure – see the precedent in
   `Sherwin_2012_risperidone.R` for a 3-subpopulation case), (b) a new
   canonical parameter name for the resistance rate constant `kRESI` (not
-  in `references/parameter-names.md`), and (c) handling of the paper’s
-  log10-additive residual error on CRP. The Urien 2013 PD model is
-  therefore deferred to a follow-up extraction; the PK model is
+  in `inst/references/parameter-names.md`), and (c) handling of the
+  paper’s log10-additive residual error on CRP. The Urien 2013 PD model
+  is therefore deferred to a follow-up extraction; the PK model is
   delivered here as the headline contribution of the paper (“This is the
   first pharmacokinetic study of anakinra in children”, Urien 2013
   Discussion).

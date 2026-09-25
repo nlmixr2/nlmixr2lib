@@ -3409,13 +3409,12 @@ and deviations.</caption>
 <h2 id="validation-summary-endogenous-marker-style">Validation summary (endogenous-marker style)<a class="anchor" aria-label="anchor" href="#validation-summary-endogenous-marker-style"></a>
 </h2>
 <p>This is a biomarker / outcome model and there is no plasma drug
-exposure to NCA. Standard validation patterns from
-<code>references/endogenous-validation.md</code> apply: (1) baseline
-steady-state (no drug -&gt; marker stays at TRACP5B_BL and BMD stays at
-BMD_BL), (2) perturbation recovery (after a single dose, marker drops
-and recovers toward baseline; BMD slowly tracks), and (3)
-direction-of-effect at the dose-response level (ZOL drops marker, raises
-BMD; placebo flat).</p>
+exposure to NCA. The standard validation patterns for endogenous models
+apply: (1) baseline steady-state (no drug -&gt; marker stays at
+TRACP5B_BL and BMD stays at BMD_BL), (2) perturbation recovery (after a
+single dose, marker drops and recovers toward baseline; BMD slowly
+tracks), and (3) direction-of-effect at the dose-response level (ZOL
+drops marker, raises BMD; placebo flat).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">landmarks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span>, <span class="fl">28</span>, <span class="fl">84</span>, <span class="fl">180</span>, <span class="fl">365</span>, <span class="fl">730</span><span class="op">)</span></span>
 <span><span class="va">typical_summary</span> <span class="op">&lt;-</span> <span class="va">sim_typical_df</span> <span class="op">|&gt;</span></span>

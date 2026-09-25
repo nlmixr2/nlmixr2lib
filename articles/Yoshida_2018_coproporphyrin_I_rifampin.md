@@ -265,7 +265,7 @@ reproduced.
   Yoshida 2018 used the Simcyp v16r1 default single-dose rifampin model
   file as the forcing function for `CP_RIF_UM`; that PBPK output is not
   on disk and is not reproducible from open sources. **Per the
-  operator’s instruction for this extraction**, the vignette
+  maintainers’ instruction for this extraction**, the vignette
   intentionally does **not** approximate the rifampin PK with an
   analytic surrogate. Users wishing to reproduce the original CPI
   time-course must supply their own portal-vein unbound rifampin profile

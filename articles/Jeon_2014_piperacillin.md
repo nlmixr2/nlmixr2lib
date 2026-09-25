@@ -517,25 +517,24 @@ publication are:
 ## Assumptions and deviations
 
 - **DAY_AFTER_INJURY is a paper-specific covariate, NOT a registered
-  canonical.** Per the operator-resolved sidecar (request-001 /
-  response-001, 2026-06-07) the continuous “days after burn injury”
-  covariate is encoded as `DAY_AFTER_INJURY` inside this single model
-  only, with no entry in `inst/references/covariate-columns.md`. The
-  convention check
+  canonical.** Per a maintainer decision (2026-06-07), the continuous
+  “days after burn injury” covariate is encoded as `DAY_AFTER_INJURY`
+  inside this single model only, with no entry in
+  `inst/references/covariate-columns.md`. The convention check
   (`nlmixr2lib::checkModelConventions("Jeon_2014_piperacillin")`) flags
   `DAY_AFTER_INJURY` as not present in the canonical register, which is
   expected. A future continuous days-since-burn covariate canonical
-  (suggested name `POSTBURN_DAYS` per the Han 2013 fluconazole sibling-
-  task sidecar) may motivate promoting the concept when a second burn-
-  cohort extraction reuses it.
+  (suggested name `POSTBURN_DAYS`, proposed during the Han 2013
+  fluconazole sibling extraction) may motivate promoting the concept
+  when a second burn- cohort extraction reuses it.
 
 - **DIS_SEPSIS at specific scope.** Sepsis status is added to the
-  canonical register as `DIS_SEPSIS` (scope = specific) per the operator
-  response, with `Jeon_2014_piperacillin.R` as the founding example. The
-  Han 2013 fluconazole burn-ICU sibling extraction registered a parallel
-  `DIS_SEPSIS` canonical at scope = general (see the
-  `claude/frompeople-508-han_2013_antimicrobial_agents_and_chemo`
-  branch). The maintainer will reconcile the scope at PR merge time.
+  canonical register as `DIS_SEPSIS` (scope = specific) per the
+  maintainer decision, with `Jeon_2014_piperacillin.R` as the founding
+  example. The Han 2013 fluconazole burn-ICU sibling extraction
+  registered a parallel `DIS_SEPSIS` canonical at scope = general (see
+  `Han_2013_fluconazole.R`). The maintainers were to reconcile the scope
+  when this model was added.
 
 - **CRCL stored under the canonical column despite NOT being
   BSA-normalized.** The canonical `CRCL` column in

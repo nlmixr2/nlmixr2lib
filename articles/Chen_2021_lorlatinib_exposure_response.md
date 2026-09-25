@@ -59,7 +59,7 @@ endpoints <- tibble::tribble(
 
 # Resolve each model function to an rxUi exactly once. readModelDb() returns
 # the model *function*; rxode2::rxode() evaluates it to a ui that works
-# anywhere (see known-vignette-failure-patterns.md pattern 7).
+# anywhere.
 mods <- lapply(stats::setNames(endpoints$model, endpoints$model),
                function(m) rxode2::rxode(readModelDb(m)))
 
@@ -460,7 +460,7 @@ dose over a 21-day cycle 1.
 # rxode2's streams are partitioned PER SOLVER THREAD -- so this cohort is
 # reproducible here and different on a machine with a different thread count.
 # Every assertion below is written to hold for ANY cohort the model can
-# produce (known-vignette-failure-patterns.md pattern 12).
+# produce.
 set.seed(20260904L)
 
 n_subj    <- 200L    # the per-arm cap; one arm only
@@ -495,8 +495,7 @@ doses <- tidyr::crossing(subj, time = dose_times) |>
   dplyr::mutate(evid = 1L, amt = 100, cmt = "depot", rate = -2)
 
 # Observations on the ODE STATE `central`, never on the algebraic observable
-# `Cc` (known-vignette-failure-patterns.md pattern 2). rxode2 returns Cc as a
-# column at these rows regardless.
+# `Cc`. rxode2 returns Cc as a column at these rows regardless.
 #
 # The grid is a per-day peak window rather than a uniform fine grid. Cmax over
 # cycle 1 needs the peak resolved on every day, but a uniform 0.25 h grid over
@@ -1008,8 +1007,8 @@ stopifnot(p_trig_asian > p_trig_nonasian)
   trough canonical existed before this extraction; `CMAX` and `CAV` were
   already registered as the peak and average of the same triple, and
   several register entries explicitly direct a trough model to “register
-  a parallel canonical rather than overload” theirs. Ratified as
-  `CTROUGH` by the maintainers.
+  a parallel canonical rather than overload” theirs. Ratified by the
+  maintainers as `CTROUGH` (2026-09-02).
 - **Four new canonical output states.** `prob_hypercholesterolemia`,
   `prob_hypertriglyceridemia`, `prob_weight_gain` and `prob_icorr` are
   registered in `inst/references/compartment-names.md` as members of the

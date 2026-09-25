@@ -317,7 +317,7 @@ sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("period", "WT", "AGE", "SEXF"),
   # rxode2's ODE -> linCmt auto-conversion breaks the dvid mapping for
-  # multi-output models; see the skill's known-vignette-failure-patterns.
+  # multi-output models.
   useLinCmt = FALSE, returnType = "data.frame"
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'

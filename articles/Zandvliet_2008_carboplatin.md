@@ -356,8 +356,7 @@ ggplot(auc_summary, aes(x = AUC_mg_min_mL)) +
 - **PD layer not extracted.** Zandvliet 2008 is primarily a PK-PD
   combination paper covering carboplatin PK + Friberg-style
   myelosuppression PD for indisulam + carboplatin combination
-  chemotherapy. Per operator decision in sidecar `frompeople-847`
-  request-001 / response-001 (option B), only the carboplatin
+  chemotherapy. Per maintainer decision, only the carboplatin
   2-compartment PK from Table 2 is packaged here. The myelosuppression
   PD model from Table 3 is deferred because it requires the indisulam PK
   structural model from Zandvliet 2006 (J Pharmacokinet Pharmacodyn

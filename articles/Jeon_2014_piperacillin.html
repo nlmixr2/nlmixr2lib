@@ -3575,26 +3575,26 @@ above is the apples-to-apples comparison (both alpha-phase).</li>
 </h2>
 <ul>
 <li><p><strong>DAY_AFTER_INJURY is a paper-specific covariate, NOT a
-registered canonical.</strong> Per the operator-resolved sidecar
-(request-001 / response-001, 2026-06-07) the continuous “days after burn
-injury” covariate is encoded as <code>DAY_AFTER_INJURY</code> inside
-this single model only, with no entry in
-<code>inst/references/covariate-columns.md</code>. The convention check
+registered canonical.</strong> Per a maintainer decision (2026-06-07),
+the continuous “days after burn injury” covariate is encoded as
+<code>DAY_AFTER_INJURY</code> inside this single model only, with no
+entry in <code>inst/references/covariate-columns.md</code>. The
+convention check
 (<code>nlmixr2lib::checkModelConventions("Jeon_2014_piperacillin")</code>)
 flags <code>DAY_AFTER_INJURY</code> as not present in the canonical
 register, which is expected. A future continuous days-since-burn
-covariate canonical (suggested name <code>POSTBURN_DAYS</code> per the
-Han 2013 fluconazole sibling- task sidecar) may motivate promoting the
-concept when a second burn- cohort extraction reuses it.</p></li>
+covariate canonical (suggested name <code>POSTBURN_DAYS</code>, proposed
+during the Han 2013 fluconazole sibling extraction) may motivate
+promoting the concept when a second burn- cohort extraction reuses
+it.</p></li>
 <li><p><strong>DIS_SEPSIS at specific scope.</strong> Sepsis status is
 added to the canonical register as <code>DIS_SEPSIS</code> (scope =
-specific) per the operator response, with
+specific) per the maintainer decision, with
 <code>Jeon_2014_piperacillin.R</code> as the founding example. The Han
 2013 fluconazole burn-ICU sibling extraction registered a parallel
-<code>DIS_SEPSIS</code> canonical at scope = general (see the
-<code>claude/frompeople-508-han_2013_antimicrobial_agents_and_chemo</code>
-branch). The maintainer will reconcile the scope at PR merge
-time.</p></li>
+<code>DIS_SEPSIS</code> canonical at scope = general (see
+<code>Han_2013_fluconazole.R</code>). The maintainers were to reconcile
+the scope when this model was added.</p></li>
 <li><p><strong>CRCL stored under the canonical column despite NOT being
 BSA-normalized.</strong> The canonical <code>CRCL</code> column in
 <code>inst/references/covariate-columns.md</code> accepts either MDRD-

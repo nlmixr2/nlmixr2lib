@@ -305,7 +305,7 @@ sex ratio – see Errata).
 # model can produce.
 set.seed(20260914)
 
-n_arm <- 100L   # per arm; the skill caps arms at 200
+n_arm <- 100L   # per arm; the cohort cap is 200 per arm
 
 pop_spec <- tibble::tribble(
   ~population,     ~age_mean, ~age_sd, ~age_lo, ~age_hi, ~wt_mean, ~wt_sd, ~wt_lo, ~wt_hi,

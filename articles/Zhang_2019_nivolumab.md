@@ -499,7 +499,7 @@ against the broader nivolumab clinical-pharmacology literature:
   figure.
 
 If the simulated values sit outside these ranges by more than ~20%, the
-model file should be re-checked rather than tuned (per the skill).
+model file should be re-checked rather than tuned.
 
 ## Assumptions and deviations
 

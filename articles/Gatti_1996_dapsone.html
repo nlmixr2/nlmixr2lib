@@ -2978,14 +2978,14 @@ no longer significant after covariate inclusion</td>
 <td>
 <code>propSd</code> (FIXED at 0)</td>
 <td>0</td>
-<td>Not reported in paper; FIXED here per operator sidecar; see
+<td>Not reported in paper; FIXED here per maintainer decision; see
 Errata</td>
 </tr>
 <tr class="even">
 <td>
 <code>addSd</code> (FIXED at 0)</td>
 <td>0</td>
-<td>Not reported in paper; FIXED here per operator sidecar; see
+<td>Not reported in paper; FIXED here per maintainer decision; see
 Errata</td>
 </tr>
 <tr class="odd">
@@ -3014,12 +3014,12 @@ theta_4 * R (same theta_4 enforced; dOFV 1.23, P &gt; 0.05)</td>
 <tr class="odd">
 <td><code>ka = exp(lka + etalka) * (  17.1 + e_tbili_ka * TBILI)</code></td>
 <td>n/a</td>
-<td>Form assumed by analogy to the explicit rifampin equation per
-operator sidecar 2026- 85.5-30 (q1=A). Numerical check: Ka(TBILI = 11.97
-mg/dL) = 17.784 * ( 17.1 - 2.0349 * 11.97) = 16.296; paper Discussion
-paragraph 119.7 quotes 16.365 ( 6.84% discrepancy attributable to
-rounding theta_3 from a precise estimate near 17.835 down to 17.784 in
-Table 51.3 display).</td>
+<td>Form assumed by analogy to the explicit rifampin equation
+(maintainer decision). Numerical check: Ka(TBILI = 11.97 mg/dL) = 17.784
+* ( 17.1 - 2.0349 * 11.97) = 16.296; paper Discussion paragraph 119.7
+quotes 16.365 ( 6.84% discrepancy attributable to rounding theta_3 from
+a precise estimate near 17.835 down to 17.784 in Table 51.3
+display).</td>
 </tr>
 <tr class="even">
 <td><code>Cc &lt;- central / vc</code></td>
@@ -3181,8 +3181,7 @@ object.</p>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>Steady-state NCA over the last two dosing intervals (one 72-h, one
-96-h) for each treatment. Recipe 3 from the skill’s PKNCA recipes –
-steady-state AUC0-tau, Cmax, Cmin, Tmax.</p>
+96-h) for each treatment: steady-state AUC0-tau, Cmax, Cmin, Tmax.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pick the last two consecutive dosing intervals: 72-h and 96-h. These are</span></span>
 <span><span class="co"># the final two doses in the schedule; the first of the two starts at</span></span>
@@ -3505,12 +3504,11 @@ assumes the same fractional / multiplicative form: Ka = theta_3 * ( 17.1
 + theta_5 * TBILI). The computed Ka at TBILI = 11.97 mg/dL is 16.296
 17.1/h, 6.84% below the paper’s 16.365, attributable to rounding theta_3
 to 17.784 ( 51.3 sig figs) from a precise estimate near 1.043. The form
-was confirmed by operator sidecar response (request- 17.1 q1 = A, 2026-
-85.5-30). Two alternative forms (linear-additive Ka = theta_3 + theta_5
-* TBILI; exponential Ka = theta_3 * exp(theta_5 * TBILI)) each give an
-exact 16.365 at TBILI = 11.97 mg/dL but diverge meaningfully from the
-multiplicative form at high bilirubin (paper range up to 136.8 mg/dL)
-and were rejected as the primary encoding.</li>
+was confirmed by the maintainers. Two alternative forms (linear-additive
+Ka = theta_3 + theta_5 * TBILI; exponential Ka = theta_3 * exp(theta_5 *
+TBILI)) each give an exact 16.365 at TBILI = 11.97 mg/dL but diverge
+meaningfully from the multiplicative form at high bilirubin (paper range
+up to 136.8 mg/dL) and were rejected as the primary encoding.</li>
 <li>
 <strong>V/F has no inter-individual variability in this
 model.</strong> Paper Results paragraph 4 reports that V/F IIV decreased
@@ -3549,20 +3547,20 @@ paper.</strong> Paper Results paragraph 1 names the form (“residual
 variability was found to be best described by a
 proportional-plus-constant-error model”) but neither Table 3 nor any
 other section of the publication reports numerical magnitudes for the
-proportional or additive components. Per operator sidecar response
-(request-001 q2 = A modified, 2026-05-30), this packaged model encodes
-<code>propSd &lt;- fixed(0)</code> and <code>addSd &lt;- fixed(0)</code>
-so the model compiles and reproduces typical-value predictions exactly,
-but <strong>any stochastic VPC built from this model will show no
-residual variability around the model predictions</strong>. Users
-wishing to run a stochastic VPC must supply their own residual-error
-magnitudes. Defensible lower bounds derived from on-disk assay specs
-(Materials and Methods paragraph 3) are: proportional component &lt;=
-~10% CV (matching the HPLC inter- and intra-day RSD at QC concentrations
-62.5-5000 ng/mL); additive component on the order of the LLOQ (31.2
-ng/mL = 0.031 mg/L). The true population residual would exceed these
-floors because it also absorbs within-subject biological noise and
-model-misspecification noise on top of the assay floor.</li>
+proportional or additive components. Per a maintainer decision, this
+packaged model encodes <code>propSd &lt;- fixed(0)</code> and
+<code>addSd &lt;- fixed(0)</code> so the model compiles and reproduces
+typical-value predictions exactly, but <strong>any stochastic VPC built
+from this model will show no residual variability around the model
+predictions</strong>. Users wishing to run a stochastic VPC must supply
+their own residual-error magnitudes. Defensible lower bounds derived
+from on-disk assay specs (Materials and Methods paragraph 3) are:
+proportional component &lt;= ~10% CV (matching the HPLC inter- and
+intra-day RSD at QC concentrations 62.5-5000 ng/mL); additive component
+on the order of the LLOQ (31.2 ng/mL = 0.031 mg/L). The true population
+residual would exceed these floors because it also absorbs
+within-subject biological noise and model-misspecification noise on top
+of the assay floor.</li>
 <li>
 <strong>theta_3 is reported in Table 51.3 to 51.3 significant
 figures (17.784) but appears to have a precise value near

@@ -3392,18 +3392,18 @@ volume), <code>V2</code> (peripheral volume), <code>K10</code>
 (inter-compartmental rate constants), and <code>C0</code> (drug-free
 baseline). <strong>None of these seven values is reported in the paper
 text, the published tables (Table 1, Table 2, Table 3), figure captions,
-or any supplement on disk.</strong> Per the extraction skill’s
-missing-parameter rule (“never substitute training-data values”), the
-packaged model omits the <code>Y1</code> overlay entirely and ships only
-the fully-parameterised <code>Y2</code> Emax layer. This means the
-model’s absolute predicted RVNA at early times understates the paper’s
+or any supplement on disk.</strong> Per the package’s missing-parameter
+rule (“never substitute training-data values”), the packaged model omits
+the <code>Y1</code> overlay entirely and ships only the
+fully-parameterised <code>Y2</code> Emax layer. This means the model’s
+absolute predicted RVNA at early times understates the paper’s
 combined-model predictions in the Ormutivimab and HRIG arms (the placebo
 arm is unaffected because <code>Y1 = 0</code> for placebo). Downstream
 users who need the full combined-model behaviour should contact the
 corresponding author for the omitted <code>Y1</code> parameter values
 and re-fit the model file to include them.</p></li>
-<li><p><strong>Final-model “popPD” scope versus the task’s “popPK model”
-framing.</strong> The task that produced this extraction described the
+<li><p><strong>Final-model “popPD” scope versus the “popPK model”
+framing.</strong> The metadata this model was built from described the
 source as a “population PK model”; the paper itself describes it as a
 population pharmacodynamic (PPD) analysis whose endpoint is RVNA
 bioassay activity in IU/mL. For monoclonal-antibody drugs the bioassay

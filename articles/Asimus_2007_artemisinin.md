@@ -311,12 +311,11 @@ sim |>
 ## PKNCA validation
 
 Per-treatment Cmax / Tmax / AUC0-12 NCA on the first dose (single-dose,
-dense early sampling), following `references/pknca-recipes.md` Recipe 1
-with the bind-rows / distinct time-zero safety pattern. The 12-hour
-window is the longest interval common across the six pooled studies in
-Asimus 2007 Table 1; the paper itself does not report NCA tables, so the
-simulated values are compared against the published K_m / E_H structural
-targets.
+dense early sampling), with the bind-rows / distinct time-zero safety
+pattern. The 12-hour window is the longest interval common across the
+six pooled studies in Asimus 2007 Table 1; the paper itself does not
+report NCA tables, so the simulated values are compared against the
+published K_m / E_H structural targets.
 
 ``` r
 

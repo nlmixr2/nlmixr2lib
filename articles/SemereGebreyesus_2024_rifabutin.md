@@ -162,8 +162,7 @@ c(
 #>             58.53             58.50
 
 # Deterministic: this is closed-form arithmetic on published constants, so a
-# tight bound is correct here (see pattern 11 of
-# known-vignette-failure-patterns.md -- tighten deterministic gates, loosen
+# tight bound is correct here (tighten deterministic gates, loosen
 # cohort-derived ones).
 stopifnot(abs(cl_inh_70kg - 58.5) < 0.1)
 ```
@@ -278,8 +277,7 @@ cohort.
 # `set.seed()` seeds R's RNG. It does NOT seed rxode2's simulation RNG, and
 # rxode2's streams are partitioned PER SOLVER THREAD, so the drawn cohort
 # differs between a 2-core CI runner and a 16-thread workstation. Every
-# assertion below is written to hold for ANY cohort this model can produce
-# (pattern 12 of references/known-vignette-failure-patterns.md).
+# assertion below is written to hold for ANY cohort this model can produce.
 set.seed(20240722)
 
 n_per_arm <- 150L
@@ -350,8 +348,7 @@ sim <- rxode2::rxSolve(
   events = events,
   keep   = c("arm", "WT", "CONMED_LPV"),
   # This model has two algebraic observables backed by five ODE states, which
-  # is the shape rxode2's automatic ODE->linCmt conversion mis-maps
-  # (pattern 5b of known-vignette-failure-patterns.md).
+  # is the shape rxode2's automatic ODE->linCmt conversion mis-maps.
   useLinCmt = FALSE
 ) |>
   as.data.frame() |>
@@ -831,7 +828,7 @@ stopifnot(all(cmax_medians < 900))
   1 cm reduction”). The two forms agree at the breakpoint and diverge
   with depth: at this cohort’s minimum of `WAZ = -5.15` they give 0.516
   (compounding) versus 0.441 (linear), a 17% relative difference. **This
-  choice is flagged for operator confirmation and does not affect any
+  choice is flagged for maintainer confirmation and does not affect any
   validation above, all of which are run at `WAZ >= -3` where the effect
   is inert.**
 - **Correlated residual error is not encoded.** The paper estimated a
@@ -858,9 +855,9 @@ stopifnot(all(cmax_medians < 900))
   “parsimoniously”: one common BSV shared by the two rifabutin clearance
   pathways, and a separate BSV on des-rifabutin clearance. The `etalcl`
   eta is therefore deliberately added to both `cl` and
-  `cl_form_desacetylrbn`. (In the trimmed text conversion of Table 2 the
-  merged BSV cell is repeated onto every row of each block; the
-  publisher PDF layout shows those cells are genuinely blank.)
+  `cl_form_desacetylrbn`. (In the extracted text of Table 2 the merged
+  BSV cell is repeated onto every row of each block; the publisher PDF
+  layout shows those cells are genuinely blank.)
 - **The B2 initialization device is not part of the packaged model.**
   Fifteen profiles had pre-dose concentrations below one third of the
   corresponding 24 h concentration – attributed to poor adherence or

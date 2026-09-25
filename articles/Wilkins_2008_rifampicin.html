@@ -2927,8 +2927,8 @@ smaller simulated dataset shape (250 subjects, mostly FDC-only).
 values, not the simulated-fit values.</strong> The simulated-fit
 scenario is preserved in the bundle for reference but not encoded as a
 separate model file (the difference is dataset- driven, not mechanistic,
-so per <code>references/ddmore-source.md</code> Section 5 this is
-“extract once, document the scenario range in Errata”).</li>
+so the package’s rule for non-mechanistic DDMORE scenarios applies:
+extract once, document the scenario range in Errata).</li>
 <li>
 <code>Simulated_TB_Rifampicin_PK_Wilkins_2008.csv</code> – the
 simulated event dataset (250 subjects, three dose levels 450 / 480 / 600
@@ -2953,18 +2953,17 @@ bundle; the publication identification comes from the <code>.mod</code>
 <code>$PROBLEM</code> line and the RDF
 <code>model-has-description</code> field (<em>“Population
 pharmacokinetics of rifampin in tuberculosis patients”</em>).
-<strong>The Wilkins 2008 publication itself is not on disk</strong> in
-this worktree
-(<code>/home/bill/github/mab_human_consensus/literature/</code>), so a
+<strong>The Wilkins 2008 publication itself was not on disk</strong> in
+the maintainers’ literature mirror when this model was built, so a
 side-by-side comparison against the paper’s parameter table or PK
 figures is out of scope here. What is in scope:</p>
 <ol style="list-style-type: decimal">
 <li>The packaged model parameter values match the
 <code>Output_real_*</code> DDMORE-curated summary (which carries the
 published Wilkins 2008 final estimates with their published RSEs).</li>
-<li>Validation here is the F.2 self-consistency check from the
-extraction skill, plus mechanistic spot-checks on the FDC formulation
-effect and the structural absorption shape implied by
+<li>Validation here is the F.2 self-consistency check from the package’s
+validation checklist, plus mechanistic spot-checks on the FDC
+formulation effect and the structural absorption shape implied by
 <code>MTT = 0.424 h</code> and <code>NN = 7.13</code> transit
 compartments.</li>
 </ol>
@@ -3543,11 +3542,11 @@ simulated dataset is keyed to the simulated-scenario refit, not to the
 publication. The two scenarios share the same structural ODE /
 <code>$PK</code> / <code>$ERROR</code> blocks; only the parameter values
 differ.</p>
-<p>The <code>references/ddmore-source.md</code> Section 5 multi-scenario
-rule
-(<code>scenarios are non-mechanistic differences ... extract once and document the scenario range in the vignette's Errata</code>)
-covers this case: a single packaged model file using publication values,
-with the simulated-scenario refit values noted here for reference. The
+<p>The package’s multi-scenario rule for DDMORE bundles (when the
+scenarios are non-mechanistic differences, extract once and document the
+scenario range in the vignette’s Errata) covers this case: a single
+packaged model file using publication values, with the
+simulated-scenario refit values noted here for reference. The
 mechanistic spot-checks above (steady-state shape vs dose, FDC
 formulation effect, stochastic VPC) are the substitute validation for
 the absent F.2 overlay.</p>
@@ -3557,8 +3556,8 @@ the absent F.2 overlay.</p>
 </h2>
 <ul>
 <li>
-<strong>The Wilkins 2008 publication is not on disk in this
-worktree.</strong> The package metadata (description, units, citation,
+<strong>The Wilkins 2008 publication was not on disk when this model
+was built.</strong> The package metadata (description, units, citation,
 DOI) reflects the publication, but a side-by-side comparison against the
 published parameter table (Wilkins 2008 Table 2) or PK figures (Figure
 2) is out of scope here. The validation in this vignette is restricted
@@ -3608,9 +3607,8 @@ CSV, converged to non-publication values). The packaged model uses
 is documented above (CL/F drift 19.2 -&gt; 21.9; NN drift 7.13 -&gt;
 1.98; etc.) but not encoded as a separate model file because the
 structural ODE / <code>$PK</code> / <code>$ERROR</code> blocks are
-byte-for-byte identical across the two scenarios. The
-<code>references/ddmore-source.md</code> Section 5 “non-mechanistic
-scenarios” rule covers this case.</li>
+byte-for-byte identical across the two scenarios. The package’s rule for
+non-mechanistic DDMORE scenarios covers this case.</li>
 <li>
 <strong><code>F1 = 0</code> is encoded as
 <code>f(depot) &lt;- 0</code>.</strong> Source <code>.mod</code>

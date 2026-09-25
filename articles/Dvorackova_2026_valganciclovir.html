@@ -3505,7 +3505,7 @@ mg/kg intravenous dose.</li>
 <span><span class="co"># workstation and no seed can make them agree. Every assertion on a</span></span>
 <span><span class="co"># cohort-derived quantity below is written as an absolute band accordingly.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260910</span><span class="op">)</span></span>
-<span><span class="va">n_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>                            <span class="co"># 200 per arm; the skill cap</span></span>
+<span><span class="va">n_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>                            <span class="co"># 200 per arm; the per-arm cohort cap</span></span>
 <span></span>
 <span><span class="va">rtnorm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">mean</span>, <span class="va">sd</span>, <span class="va">lo</span>, <span class="va">hi</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">mean</span>, <span class="va">sd</span><span class="op">)</span></span>

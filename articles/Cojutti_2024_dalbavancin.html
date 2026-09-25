@@ -3050,8 +3050,7 @@ Tables 3-4 explore.</p>
 <span><span class="co"># seed rxode2's simulation RNG, whose streams are partitioned per solver</span></span>
 <span><span class="co"># thread -- so the etas drawn inside rxSolve differ between a 2-core CI runner</span></span>
 <span><span class="co"># and a 16-thread workstation. Every assertion in this vignette is written to</span></span>
-<span><span class="co"># hold for any cohort the model can produce (see</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md pattern 12).</span></span>
+<span><span class="co"># hold for any cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240822</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># cap is 200 participants per arm</span></span>
@@ -3146,7 +3145,7 @@ Tables 3-4 explore.</p>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span>, <span class="st">"egfr_class"</span><span class="op">)</span>,</span>
 <span>  <span class="co"># rxode2's automatic ODE -&gt; linCmt conversion corrupts the dvid -&gt; cmt</span></span>
-<span>  <span class="co"># mapping for multi-output models; see known-vignette-failure-patterns 5b.</span></span>
+<span>  <span class="co"># mapping for multi-output models.</span></span>
 <span>  useLinCmt <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>

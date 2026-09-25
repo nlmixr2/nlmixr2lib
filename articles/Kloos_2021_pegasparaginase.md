@@ -851,9 +851,10 @@ Table 5 is a clinical dose-adjustment nomogram, not a source of model
 parameters, so neither correction changes any value in
 [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). It is
 recorded here, and in the model file’s `reference` field, because the
-erratum is the task’s nominal lead document and because it demonstrates
-that the paper’s tables are not error-free – which is directly relevant
-to the additive-versus-multiplicative slope decision discussed above.
+erratum is this model’s nominal lead document and because it
+demonstrates that the paper’s tables are not error-free – which is
+directly relevant to the additive-versus-multiplicative slope decision
+discussed above.
 
 ## Assumptions and deviations
 
@@ -871,7 +872,7 @@ to the additive-versus-multiplicative slope decision discussed above.
   ~61 days multiplicative). Equivalently, the additive form is the
   supplement’s own equation with `Theta2` expressed relative to `Theta1`
   – i.e. treating the printed equation as missing a `/ Theta1`. This
-  reading was ratified by the operator before drafting.
+  reading was ratified by the maintainers before drafting.
 - **Individual baseline covariates are not published.** The virtual
   cohort’s BSA distribution is a log-normal matched to the published
   median and IQR and clipped to the 0.52-2.3 m^2 range used in the

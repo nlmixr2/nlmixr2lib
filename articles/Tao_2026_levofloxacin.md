@@ -450,7 +450,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x559bdd51c178>
+#> <environment: 0x56451a0e3bf0>
 ```
 
 Dosing is intravenous into `central`; there is no depot. The infusion
@@ -679,7 +679,7 @@ Assumptions and deviations.
 set.seed(20260914)
 rxode2::rxSetSeed(20260914)
 
-n_cohort <- 200  # per arm; the skill caps validation cohorts at 200
+n_cohort <- 200  # per arm; validation cohorts are capped at 200
 
 # Lognormal parameters matched to the Table 1 medians and IQRs:
 #   meanlog = log(median); sdlog = (log(Q3) - log(Q1)) / (2 * qnorm(0.75))

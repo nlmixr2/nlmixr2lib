@@ -3308,7 +3308,7 @@ Equation 6 divided by weight.</p>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
-<span><span class="co"># Read off Figure 3A of Zhang 2024 (operator digitisation of the published</span></span>
+<span><span class="co"># Read off Figure 3A of Zhang 2024 (maintainer digitisation of the published</span></span>
 <span><span class="co"># panel; the two series are the only data the panel shows).</span></span>
 <span><span class="va">fig3_published</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">WT</span>, <span class="op">~</span><span class="va">arm</span>,                    <span class="op">~</span><span class="va">cl_per_kg_published</span>,</span>
@@ -4600,8 +4600,7 @@ panel. The packaged model does not give that.</p>
 <span><span class="co"># quadrature rather than on the 200-subject cohorts: at 40 kg the once-daily</span></span>
 <span><span class="co"># trough sits almost exactly at the geometric centre of the window, so the two</span></span>
 <span><span class="co"># regimens are within a point of each other there and the ORDERING of two</span></span>
-<span><span class="co"># sampled proportions would be a coin flip (see pattern 12 of the</span></span>
-<span><span class="co"># known-vignette-failure-patterns reference). At the heavy end the gap is large</span></span>
+<span><span class="co"># sampled proportions would be a coin flip. At the heavy end the gap is large</span></span>
 <span><span class="co"># and unambiguous.</span></span>
 <span><span class="va">bid_direction</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">100</span>, <span class="fl">120</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -4801,7 +4800,7 @@ kg (Table 1); the 120 kg cells are a modest extrapolation, made here to
 match the published figures.</p></li>
 <li><p><strong>Digitised reference values.</strong> The Figure 3A and
 Figure 5 reference columns were read from the published panels by the
-operator. Where Table 4 prints the extremes of a curve it agrees with
+maintainers. Where Table 4 prints the extremes of a curve it agrees with
 those reads (80.1-86.8%, 80.1-85.9% and 90.7-95.5% for the three
 recommended once-daily cells), which bounds the digitisation error at
 roughly 1 percentage point.</p></li>

@@ -78,8 +78,8 @@ Every parameter’s origin is recorded as an in-file comment next to its
 ## Assumptions and deviations
 
 The published Table 2 of Cella 2012 leaves two encoding decisions
-ambiguous; both were resolved by operator sidecar (request-001) before
-drafting these model files.
+ambiguous; both were resolved by the maintainers before these model
+files were drafted.
 
 - **CL allometric reference weight (Model 1).** The paper’s covariate
   formula `theta_i = theta * (COV / median)^EXP` is stated without
@@ -104,7 +104,7 @@ drafting these model files.
   therefore encode **Vc as a per-kg coefficient** (Vc_i = TVVc_per_kg \*
   WT_i) in both models. Vp is kept as the literal table reading
   (absolute L in Model 1; linear-by-age L in Model 2), which the
-  operator endorsed as consistent with population-typical absolute
+  maintainers endorsed as consistent with population-typical absolute
   volumes.
 
 These choices are also recorded as comments inside both model `.R`

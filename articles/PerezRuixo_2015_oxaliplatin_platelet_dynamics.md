@@ -146,9 +146,9 @@ tibble(time_h = seq(0, 168, by = 0.25)) |>
 
 Original observed data are not publicly available. We construct four
 typical-value cohorts crossing HIO administration with prior
-splenectomy, each with n = 50 subjects (cohort per skill guidance; never
-more than 200 per arm). Observations are daily from surgery (t = 0) to
-day 60.
+splenectomy, each with n = 50 subjects (cohort per the package’s
+guidance; never more than 200 per arm). Observations are daily from
+surgery (t = 0) to day 60.
 
 ``` r
 
@@ -413,16 +413,15 @@ ggplot(sim_stoch_q, aes(day, p50)) +
 - **Cp treated as an exogenous covariate.** The source paper obtains
   `Cp` from empirical-Bayes individual-PK estimates of an upstream popPK
   model (Perez-Ruixo 2013 Cancer Chemother Pharmacol 71:693-704) that is
-  NOT packaged in nlmixr2lib at extraction time. Per the
-  operator-approved resolution of sidecar request-001, this extraction
-  treats `Cp` as an exogenous time-varying covariate column
-  `CP_OXA_MGL`. The vignette approximates it with a simple
-  linear-rise-then-monoexponential-decline placeholder tuned to the
-  typical HIO Cmax (~ 1 mg/L) and plasma half-life (~ 14 h) reported in
-  the source group’s earlier work. Users with a real oxaliplatin popPK
-  profile in hand should substitute a proper simulation (either
-  digitised from Figure 5 of the source paper or run against a full
-  oxaliplatin popPK model).
+  NOT packaged in nlmixr2lib at extraction time. Per the resolution
+  approved by the maintainers, this extraction treats `Cp` as an
+  exogenous time-varying covariate column `CP_OXA_MGL`. The vignette
+  approximates it with a simple linear-rise-then-monoexponential-decline
+  placeholder tuned to the typical HIO Cmax (~ 1 mg/L) and plasma
+  half-life (~ 14 h) reported in the source group’s earlier work. Users
+  with a real oxaliplatin popPK profile in hand should substitute a
+  proper simulation (either digitised from Figure 5 of the source paper
+  or run against a full oxaliplatin popPK model).
 
 - **Transfusion sub-compartment omitted.** The source paper models
   platelet transfusions as a bolus of TRF0 = 255 x 10^9/L
@@ -456,10 +455,9 @@ ggplot(sim_stoch_q, aes(day, p50)) +
 
 - **Residual error encoding.** The source paper reports the residual
   error as “additive on log-scale (natural log)” with CV = 25.5%. Per
-  the extract-literature-model skill’s Phase 4 verification checklist
-  (NONMEM “additive on log-scale” is equivalent to proportional on the
-  linear scale), the packaged model encodes this as `PLT ~ prop(propSd)`
-  with `propSd = 0.255`.
+  the package’s validation checklist (NONMEM “additive on log-scale” is
+  equivalent to proportional on the linear scale), the packaged model
+  encodes this as `PLT ~ prop(propSd)` with `propSd = 0.255`.
 
 - **Power-function drug effect is unbounded.**
   `E_drug = alpha * CP_OXA_MGL^beta` with alpha = 0.881 and beta = 2.63
@@ -481,8 +479,9 @@ ggplot(sim_stoch_q, aes(day, p50)) +
   not modelled in this PD-only extraction.
 
 - **Baseline demographic ranges absent from the on-disk source.** The
-  Perez-Ruixo 2015 trimmed markdown does not tabulate age, weight, sex,
-  or race distributions – cross-cohort demographics are described in
-  prior publications by the same group (Perez-Ruixo 2013 Cancer
-  Chemother Pharmacol; Perez-Ruixo 2013 Clin Pharmacokinet; Valenzuela
-  2011 AAPS J). The model’s `population` metadata records this gap.
+  text extracted from the Perez-Ruixo 2015 PDF does not tabulate age,
+  weight, sex, or race distributions – cross-cohort demographics are
+  described in prior publications by the same group (Perez-Ruixo 2013
+  Cancer Chemother Pharmacol; Perez-Ruixo 2013 Clin Pharmacokinet;
+  Valenzuela 2011 AAPS J). The model’s `population` metadata records
+  this gap.

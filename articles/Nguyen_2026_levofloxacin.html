@@ -3363,7 +3363,7 @@ reporting only; it does not affect any simulated concentration.</p>
 <span><span class="co"># cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260912</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200</span>            <span class="co"># skill cap is 200 per arm</span></span>
+<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200</span>            <span class="co"># cohort cap is 200 per arm</span></span>
 <span><span class="va">tau</span>       <span class="op">&lt;-</span> <span class="fl">24</span>             <span class="co"># dosing interval (h)</span></span>
 <span></span>
 <span><span class="co"># Doses are Nguyen 2026 Results 3.1: "the World Health Organisation (WHO)</span></span>
@@ -4222,8 +4222,9 @@ range Figure 3 plots. The driven form is what the model file
 encodes.</p>
 <p><strong>No printed parameter value was altered</strong> to reach it –
 all six structural estimates are used exactly as published; only the
-unprinted <code>$DES</code> was reconstructed. The same reading is
-already operator-ratified for this group’s companion linezolid model
+unprinted <code>$DES</code> was reconstructed. The same reading was
+already ratified by the maintainers on 2026-09-02 for this group’s
+companion linezolid model
 (<code>modellib("Nguyen_2026_linezolid")</code>), which carries the
 identical Figure 1 language and an identically abridged control
 stream.</p>

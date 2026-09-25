@@ -3329,9 +3329,8 @@ parameters by dose group, so the comparison here is qualitative:
 typical-value Cmax / Tmax and the SC:IV AUC ratio against the paper’s
 prose values (model-estimated SC bioavailability 49.8%; flip-flop PK
 after subcutaneous administration with absorption rate-limited terminal
-phase). The PKNCA setup follows <code>references/pknca-recipes.md</code>
-for the single-dose form and groups by <code>route</code> so the IV and
-SC arms are compared side by side.</p>
+phase). The PKNCA setup uses the single-dose form and groups by
+<code>route</code> so the IV and SC arms are compared side by side.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">!=</span> <span class="fl">1L</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">28</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>

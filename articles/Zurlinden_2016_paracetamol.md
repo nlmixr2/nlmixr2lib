@@ -48,10 +48,10 @@ into rxode2 `d/dt(<state>)` syntax.
 
 - Adult cohort, 70 kg reference body weight (Forward_APAP1.in fixes BW =
   70 kg). Single 1000 mg oral paracetamol dose (Scenario 4).
-- The publication’s underlying dataset (per its Methods, which is not on
-  disk in this worktree) is a pooled Bayesian population fit across
-  multiple published human paracetamol PK studies. Per-subject
-  demographics are not exposed by the bundle.
+- The publication’s underlying dataset (per its Methods; the publication
+  was not on disk when this model was built) is a pooled Bayesian
+  population fit across multiple published human paracetamol PK studies.
+  Per-subject demographics are not exposed by the bundle.
 - The bundle ships a `Real_APAP_data.csv` reference dataset that is a
   digitisation of plasma concentrations from **Jansen et al. (2004)** *J
   Pharm Biomed Anal* 34:585-593 – a single-study reference re-used by
@@ -423,12 +423,12 @@ the verbatim PBPK extraction:
 ## Assumptions and deviations / Errata
 
 1.  **No publication on disk.** The Zurlinden & Reisfeld 2016
-    publication (<doi:10.1007/s13318-015-0253-x>) was not on disk in the
-    worktree at extraction time. Parameter values, structural-model
-    equations, and population demographics could not be cross-checked
-    against the publication; everything is sourced from the DDMORE
-    bundle. A more rigorous validation would compare against the
-    publication’s Table of posterior summaries and Methods section.
+    publication (<doi:10.1007/s13318-015-0253-x>) was not on disk at
+    extraction time. Parameter values, structural-model equations, and
+    population demographics could not be cross-checked against the
+    publication; everything is sourced from the DDMORE bundle. A more
+    rigorous validation would compare against the publication’s Table of
+    posterior summaries and Methods section.
 
 2.  **No IIV / no residual error.** The DDMORE bundle exposes only the
     population posterior-mean parameters (Forward_APAP1.in
@@ -489,8 +489,8 @@ the verbatim PBPK extraction:
     ~9%. The bundle’s Initialize{} block reassigns
     `PM_AG = exp(lnPM_AG) = 0.366` (line 555), so the runtime value is
     0.366. This vignette’s accompanying `.R` file uses 0.336 (the linear
-    declaration) per the operator’s “extract verbatim” decision, on the
-    basis that the Initialize{} block override is an additional
+    declaration) per the maintainers’ “extract verbatim” decision, on
+    the basis that the Initialize{} block override is an additional
     bundle-internal step that the extraction does not need to faithfully
     reproduce. The downstream impact is small (muscle is a flow-limited
     tissue with low impact on plasma AG concentration over the 12 hr

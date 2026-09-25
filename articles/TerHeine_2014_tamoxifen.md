@@ -333,9 +333,9 @@ tamoxifen in adult breast-cancer patients.
   this implementation difference produces materially different estimates
   of `tlag` (2.02 h re-fit vs 0.455 h published) and smaller shifts in
   several other parameters. The `Model_Accommodations.txt` in the bundle
-  calls out the deviation. Per the `extract-literature-model` skill,
-  this model file uses the **publication** values; the DDMORE
-  convertor’s `.lst` re-fit values are not used.
+  calls out the deviation. Per the package’s convention, this model file
+  uses the **publication** values; the DDMORE convertor’s `.lst` re-fit
+  values are not used.
 
 - **Standard NONMEM `lag(depot)` substituted for the DDMORE
   `if`-switch.** The DDMORE-converted `.mdl` implements the absorption

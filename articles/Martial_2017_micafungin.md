@@ -324,8 +324,8 @@ terms (see Assumptions and deviations below) are taken into account.
   / fifth) are noisier than the published values.
 - **No supplements on disk.** Martial 2017 references electronic
   supplementary material at <doi:10.1007/s40262-017-0509-5> (Figs. S1-S3
-  and Supplementary Tables 1-2). The supplement is not on disk in this
-  worktree; the figure references in the manuscript text were sufficient
-  to construct the model without it (the supplement contains GOF plots,
-  the VPC, simulated profile plots, and detailed PTA tables, none of
-  which feed the parameter values).
+  and Supplementary Tables 1-2). The supplement is not on disk; the
+  figure references in the manuscript text were sufficient to construct
+  the model without it (the supplement contains GOF plots, the VPC,
+  simulated profile plots, and detailed PTA tables, none of which feed
+  the parameter values).

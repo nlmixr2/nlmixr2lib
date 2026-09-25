@@ -103,7 +103,7 @@ covariate other than through the Cockcroft-Gault GFR. Serum creatinine
 55-year-old, 65 kg, male CG denominator so the resulting GFR spans
 15-125 mL/min at WT_STD.
 
-**Cohort size: 200 subjects per treatment arm** (the skill’s per-arm
+**Cohort size: 200 subjects per treatment arm** (the per-arm cohort
 cap). The Boak 2014 paper’s Monte Carlo simulations used 1000 subjects,
 but 200 gives qualitatively identical VPCs and PKNCA summaries for a
 validation vignette.
@@ -517,7 +517,7 @@ Base_Pre = Base_PL \* kout / ktr is exact.
 
 - **Cohort size.** Boak 2014’s Monte Carlo simulations used 1000
   subjects at each condition; this vignette uses 200 per arm (the
-  skill’s per-arm cap). The qualitative reproductions (nadir depth,
+  per-arm cohort cap). The qualitative reproductions (nadir depth,
   timing, AUC24 magnitude and CV) are consistent with the paper;
   population probabilities of nadir \< 100 would require the full
   1000-subject cohorts to reproduce with the paper’s precision.

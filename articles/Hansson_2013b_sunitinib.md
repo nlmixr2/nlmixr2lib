@@ -36,8 +36,8 @@ schedules; the largest cohort (study 1004) used 50 mg QD on a 4/2
 schedule with a placebo run-in arm. Median baseline SLD ranged from 108
 mm (study 1047) to 255 mm (study 013). Detailed baseline demographics
 (age, weight, sex, race) were not transcribed into the `population`
-metadata because the trimmed paper text does not break them out at the
-cohort level.
+metadata because the text extracted from the paper does not break them
+out at the cohort level.
 
 The same information is available programmatically via the model’s
 `population` metadata:
@@ -450,5 +450,6 @@ above are the operative validation strategy for this model class.
 
 No published errata or corrigenda were located for Hansson 2013 e84
 (searched PubMed and the publisher’s article landing page on extraction
-date 2026-05-15). The on-disk paper trimmed text and the DDMORE bundle
-were the authoritative sources for parameter values and equations.
+date 2026-05-15). The text extracted from the on-disk paper and the
+DDMORE bundle were the authoritative sources for parameter values and
+equations.

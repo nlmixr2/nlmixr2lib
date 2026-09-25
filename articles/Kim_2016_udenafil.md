@@ -162,7 +162,7 @@ make_cohort <- function(treatment_label, n, mean_inr, sd_inr, id_offset) {
   # as columns in the output regardless of dvid, so a single obs row per
   # timepoint is sufficient. The dvid is required to satisfy the multi-
   # output model's auto-injected dvid->cmt mapping for the algebraic
-  # observables; see known-vignette-failure-patterns #2 and #5b.
+  # observables.
   obs_times <- sort(unique(c(
     seq(0,  4,    by = 0.1),
     seq(4,  12,   by = 0.5),

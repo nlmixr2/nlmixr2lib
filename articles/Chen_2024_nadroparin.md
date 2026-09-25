@@ -170,7 +170,7 @@ published range.
 
 ``` r
 
-n <- 200L                       # 200 per dose arm (the skill cap)
+n <- 200L                       # 200 per dose arm (the per-arm cohort cap)
 q <- (seq_len(n) - 0.5) / n     # evenly spaced quantiles
 
 # sdlog of a log-normal with the given median and mean

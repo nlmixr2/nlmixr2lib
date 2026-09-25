@@ -3063,12 +3063,10 @@ Modeling does not state the final-model residual-error form</td>
 <h3 id="dimensional-analysis">Dimensional analysis<a class="anchor" aria-label="anchor" href="#dimensional-analysis"></a>
 </h3>
 <p>Endogenous / mechanistic models in the package are required to carry
-a worked dimensional analysis (per
-<code>references/endogenous-validation.md</code>). The unit table below
-shows the units of every symbol on the right-hand side of each ODE in
-<code>model()</code>; the left-hand side must equal
-<code>[state units]/[time units]</code> (i.e., the state’s reporting
-unit per hour).</p>
+a worked dimensional analysis. The unit table below shows the units of
+every symbol on the right-hand side of each ODE in <code>model()</code>;
+the left-hand side must equal <code>[state units]/[time units]</code>
+(i.e., the state’s reporting unit per hour).</p>
 <table class="table">
 <colgroup>
 <col width="13%">
@@ -3485,10 +3483,10 @@ with a fully specified equation set (Eqs 1-7) and a complete
 typical-value parameter table (Table 1), but several encoding decisions
 in the package require attention.</p>
 <ul>
-<li><p><strong>Drug field corrected.</strong> The task dispatcher’s
-metadata listed the drug as “Frontiers in Pharmacology” (the journal
-name) – a task-generator bug observed on several sibling tasks. The
-actual drug studied is baicalein
+<li><p><strong>Drug field corrected.</strong> The bibliographic metadata
+this model was built from listed the drug as “Frontiers in Pharmacology”
+(the journal name) – a metadata error also seen for several other
+papers. The actual drug studied is baicalein
 (5,6,7-trihydroxy-2-phenyl-4H-1-benzopyran- 4-one), the primary active
 flavonoid of Scutellaria baicalensis Georgi. Filename and vignette title
 corrected accordingly.</p></li>
@@ -3497,8 +3495,8 @@ in-vitro experiment in the RAW264.7 mouse macrophage cell line, not to
 in-vivo human or animal data. <code>population$species</code> is set to
 “in vitro (RAW264.7 mouse macrophage cell line)” and the
 <code>description</code> field is prefixed with “In vitro (RAW264.7
-mouse macrophage cell line).” per the SKILL Phase 1 step 3 species-
-recording requirement.</p></li>
+mouse macrophage cell line).” per the package’s species-recording
+requirement.</p></li>
 <li>
 <p><strong>f(Bai) at C_Bai = 0.</strong> Xiang 2018 Eq 2 writes the
 inhibition function as f(Bai) = alpha * ln(C_Bai). At C_Bai = 0 (the
@@ -3544,8 +3542,8 @@ reports the initial conditions only as <code>Control(TNF-alpha)</code>,
 <code>(iNOS/GAPDH) / (iNOS0/GAPDH0) = 1</code> – with the numeric values
 read off Figure 4 control curves at t = 0. The packaged defaults (1000
 pg/mL for TNF-alpha, 100 pg/mL for IL-6, 1 for iNOS, 1 uM for NO) are
-operator digitisations of those figure points; users who have their own
-experimental t = 0 control measurements should override the
+maintainer digitisations of those figure points; users who have their
+own experimental t = 0 control measurements should override the
 corresponding <code>lrbase_*</code> parameters when refitting. iNOS is
 definitionally 1 at t = 0 per the Western-blot normalisation; the only
 figure-derived value with non-trivial uncertainty is bl_tnf.</p></li>
@@ -3598,7 +3596,7 @@ concentration is reported in molar units while the cytokine readouts are
 in mass- concentration – and reflects the inherent mixed-dimension
 nature of a small-molecule perturbant driving a protein-readout in-vitro
 PD experiment. No correction is appropriate; the warning is documented
-here per the SKILL convention for justified deviations.</p></li>
+here per the package’s convention for justified deviations.</p></li>
 <li><p><strong>Peak-and-decline gap.</strong> The observed TNF-alpha
 trace in Figure 4A peaks at t = 1 h and then declines through 12 h
 before rising slowly to 24 h, while the model equation (constant kinTNF,

@@ -3962,13 +3962,13 @@ additive residual on the log scale (Methods p.4: model “C_ij = C_pred,ij
 preceding paragraph). Table 2 reports residual variability as %CV (37.5%
 AS, 28.2% DHA), with corresponding log-scale variances 0.141 and 0.080.
 By the standing convention in
-<code>references/parameter-names.md</code>, NONMEM additive-on-log-scale
-residual maps to nlmixr2 proportional residual in linear space, with
-<code>propSd = sqrt(omega^2)</code> (the SD on the log scale equals the
-CV in linear space to first order). The slight bias relative to the more
-accurate <code>propSd = sqrt(exp(omega^2) - 1)</code> mapping is &lt; 2%
-for both species and is smaller than the published Table 2 RSE on
-sigma.</p></li>
+<code>inst/references/parameter-names.md</code>, NONMEM
+additive-on-log-scale residual maps to nlmixr2 proportional residual in
+linear space, with <code>propSd = sqrt(omega^2)</code> (the SD on the
+log scale equals the CV in linear space to first order). The slight bias
+relative to the more accurate
+<code>propSd = sqrt(exp(omega^2) - 1)</code> mapping is &lt; 2% for both
+species and is smaller than the published Table 2 RSE on sigma.</p></li>
 <li><p><strong>No IIV on Q/F or V4/F.</strong> The source paper held the
 IIV variances on the DHA inter-compartmental clearance (Q/F) and the DHA
 peripheral volume (V4/F) to zero, on the grounds that “the available

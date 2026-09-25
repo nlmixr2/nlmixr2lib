@@ -2908,10 +2908,10 @@ syntax.</p>
 <ul>
 <li>Adult cohort, 70 kg reference body weight (Forward_APAP1.in fixes BW
 = 70 kg). Single 1000 mg oral paracetamol dose (Scenario 4).</li>
-<li>The publication’s underlying dataset (per its Methods, which is not
-on disk in this worktree) is a pooled Bayesian population fit across
-multiple published human paracetamol PK studies. Per-subject
-demographics are not exposed by the bundle.</li>
+<li>The publication’s underlying dataset (per its Methods; the
+publication was not on disk when this model was built) is a pooled
+Bayesian population fit across multiple published human paracetamol PK
+studies. Per-subject demographics are not exposed by the bundle.</li>
 <li>The bundle ships a <code>Real_APAP_data.csv</code> reference dataset
 that is a digitisation of plasma concentrations from <strong>Jansen et
 al. (2004)</strong> <em>J Pharm Biomed Anal</em> 34:585-593 – a
@@ -3641,12 +3641,12 @@ mg.</li>
 </h2>
 <ol style="list-style-type: decimal">
 <li><p><strong>No publication on disk.</strong> The Zurlinden &amp;
-Reisfeld 2016 publication (<a href="doi:10.1007/s13318-015-0253-x" class="uri">doi:10.1007/s13318-015-0253-x</a>) was not on disk in the
-worktree at extraction time. Parameter values, structural-model
-equations, and population demographics could not be cross-checked
-against the publication; everything is sourced from the DDMORE bundle. A
-more rigorous validation would compare against the publication’s Table
-of posterior summaries and Methods section.</p></li>
+Reisfeld 2016 publication (<a href="doi:10.1007/s13318-015-0253-x" class="uri">doi:10.1007/s13318-015-0253-x</a>) was not on disk at
+extraction time. Parameter values, structural-model equations, and
+population demographics could not be cross-checked against the
+publication; everything is sourced from the DDMORE bundle. A more
+rigorous validation would compare against the publication’s Table of
+posterior summaries and Methods section.</p></li>
 <li><p><strong>No IIV / no residual error.</strong> The DDMORE bundle
 exposes only the population posterior-mean parameters (Forward_APAP1.in
 <code># Mean parameters</code>). The publication’s Bayesian inference
@@ -3703,7 +3703,7 @@ value (0.336) and the log value’s antilog (0.366) disagree by ~9%. The
 bundle’s Initialize{} block reassigns
 <code>PM_AG = exp(lnPM_AG) = 0.366</code> (line 555), so the runtime
 value is 0.366. This vignette’s accompanying <code>.R</code> file uses
-0.336 (the linear declaration) per the operator’s “extract verbatim”
+0.336 (the linear declaration) per the maintainers’ “extract verbatim”
 decision, on the basis that the Initialize{} block override is an
 additional bundle-internal step that the extraction does not need to
 faithfully reproduce. The downstream impact is small (muscle is a

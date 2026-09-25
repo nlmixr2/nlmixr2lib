@@ -3408,8 +3408,7 @@ reproduces that animal’s published derived quantities.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Observation rows are anchored on the ODE state `central` with dvid = 1L; rxode2</span></span>
-<span><span class="co"># returns Cc and DPP4inh as columns at every output row (see</span></span>
-<span><span class="co"># known-vignette-failure-patterns pattern 2 / 5b).</span></span>
+<span><span class="co"># returns Cc and DPP4inh as columns at every output row.</span></span>
 <span><span class="va">make_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">rat</span>, <span class="va">amt</span>, <span class="va">dose_cmt</span>, <span class="va">tmax</span>, <span class="va">dt</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">rat</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="va">amt</span>, evid <span class="op">=</span> <span class="fl">1L</span>,</span>

@@ -3186,9 +3186,9 @@ having to sample weight and height as if they were independent.</p>
 <span><span class="co"># rxode2's simulation RNG, whose streams are partitioned per solver thread -- so the</span></span>
 <span><span class="co"># IIV draws in the VPC section differ between a 2-core CI runner and a 16-thread</span></span>
 <span><span class="co"># workstation. Every assertion below is written to hold for any cohort the model can</span></span>
-<span><span class="co"># produce; see pattern 12 of the skill's known-vignette-failure-patterns reference.</span></span>
+<span><span class="co"># produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240905</span><span class="op">)</span></span>
-<span><span class="va">n_subj</span> <span class="op">&lt;-</span> <span class="fl">200L</span>  <span class="co"># per model arm; the skill caps cohorts at 200/arm</span></span>
+<span><span class="va">n_subj</span> <span class="op">&lt;-</span> <span class="fl">200L</span>  <span class="co"># per model arm; cohorts are capped at 200/arm</span></span>
 <span></span>
 <span><span class="va">clamp</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">lo</span>, <span class="va">hi</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">lo</span><span class="op">)</span>, <span class="va">hi</span><span class="op">)</span></span>
 <span></span>

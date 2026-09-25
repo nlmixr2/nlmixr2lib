@@ -315,7 +315,7 @@ mod
 #>     totalL858R <- target_l858r + complex_l858r
 #>   })
 #> }
-#> <environment: 0x559be686ddf0>
+#> <environment: 0x56451819a9f0>
 ```
 
 ## What is extracted, and what is not
@@ -390,8 +390,8 @@ Every parameter and equation, with its location in the source.
 
 Source trace for every parameter and equation. {.table}
 
-**Note on equation recovery.** The preprocessed `_trimmed.md` for this
-article dropped all seven display equations as `formula-not-decoded`.
+**Note on equation recovery.** The text extracted from this article’s
+PDF dropped all seven display equations as `formula-not-decoded`.
 Equations 1-7 were recovered from the PDF with `pdftotext -layout`.
 Equations 5-7 as printed are:
 
@@ -729,11 +729,10 @@ here. **No parameter was tuned to improve the match.**
 
 ## Assumptions and deviations
 
-This extraction was performed under operator sidecar decision
-`oare_PMC10946252` `request-001` = **option B**, answered 2026-08-05.
-The alternatives offered and not chosen were: (A) encode Eqs 5-7
-verbatim with no complex elimination, (C) skip the paper, (D) defer
-pending author correspondence.
+This extraction follows the approach set out below, chosen by the
+maintainers on 2026-08-05. The alternatives considered and not chosen
+were to encode Eqs 5-7 verbatim with no complex elimination, to skip the
+paper, or to defer pending author correspondence.
 
 1.  **The whole-body PBPK layer is deliberately not extracted.** See the
     table at the top of this vignette. Liang 2024 publishes

@@ -2876,9 +2876,9 @@ joint model with 1-transit-compartment absorption (Table 2), and</li>
 model with 3-transit-compartment absorption and enzymatic auto-induction
 of artemether clearance (Table 3).</li>
 </ul>
-<p>Per the <code>replicate-author-structure</code> policy each joint fit
-is extracted as its own model file, with this single vignette walking
-the paper as a unit:</p>
+<p>Following the package’s convention of replicating the authors’ model
+structure, each joint fit is extracted as its own model file, with this
+single vignette walking the paper as a unit:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_lf_fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Hoglund_2015_lumefantrine"</span><span class="op">)</span></span>
 <span><span class="va">mod_am_fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Hoglund_2015_artemether"</span><span class="op">)</span></span>
@@ -3683,9 +3683,9 @@ lines).</caption>
 maturation function is computed as a Hill function of model time
 <code>t</code>. In rxode2 this is the simulation time relative to
 dose-time 0; users who want time-since-first-dose semantics must arrange
-their event tables so the first artemether dose lands at t = 0. The
-skill convention is satisfied in this vignette by starting each
-subject’s regimen at t = 0.</li>
+their event tables so the first artemether dose lands at t = 0. This
+vignette satisfies that requirement by starting each subject’s regimen
+at t = 0.</li>
 <li>
 <strong>Mutually exclusive ARV regimens.</strong> Each trial subject
 was on at most one of EFV, NVP, or LPV/r at a time. The encoded

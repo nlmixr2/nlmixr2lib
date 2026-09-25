@@ -618,7 +618,7 @@ Table 4, which is the fit the authors report.
 - **Only Table 4 is encoded.** The paper’s primary model (Table 3,
   fitted to the 32 virtual patients) is not solvable as printed and is
   not packaged in any form. See “What this model is not”, item 1, for
-  the arithmetic. This is an operator-ratified scope decision, not a
+  the arithmetic. This is an maintainer-ratified scope decision, not a
   silent omission.
 - **Encoded as one compartment, against the authors’ stated structure.**
   Table 4 reports Q = 1.30e-7 L/h and V2 = 0 exactly, with RSEs above

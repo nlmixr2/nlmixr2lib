@@ -410,8 +410,7 @@ stopifnot(max(abs(tbl1$`% diff`)) < 5)
 # NOT seed rxode2's simulation RNG, and rxode2's eta streams are partitioned per
 # solver thread -- so the etas drawn in the next chunk differ between a 16-thread
 # workstation and a 2-core CI runner. Every assertion downstream is written to
-# hold for any cohort the model can produce (see pattern 12 of
-# references/known-vignette-failure-patterns.md).
+# hold for any cohort the model can produce.
 set.seed(20260914)
 
 n_arm <- 200L   # per-arm cap; Brandon 2026 Figure 4 used 500 per group

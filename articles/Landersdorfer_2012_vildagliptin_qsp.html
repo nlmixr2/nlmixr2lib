@@ -2923,12 +2923,12 @@ by the GLP-1 arm (<code>S1</code> is reported in g^-1 and multiplies
 <code>Glc_Gut</code>), so <code>V_glc</code> is a free constant that
 sets the magnitude of every glucose excursion and, through the
 glucose-insulin feedback, the insulin profile too.</p>
-<p>By maintainer decision it was <strong>back-solved from the Figure 3
-placebo panel</strong>: the published median curve was digitised and
-<code>V_glc</code> fitted to it, giving <strong>250 dL (25.0
-L)</strong>. Ninety-six combinations of the unreported meal times and
-food-intake durations bracket the estimate at 246-255 dL, so the value
-is set by the glucose <em>level</em> rather than by the timing
+<p>Per maintainer ruling (2026-09-02) it was <strong>back-solved from
+the Figure 3 placebo panel</strong>: the published median curve was
+digitised and <code>V_glc</code> fitted to it, giving <strong>250 dL
+(25.0 L)</strong>. Ninety-six combinations of the unreported meal times
+and food-intake durations bracket the estimate at 246-255 dL, so the
+value is set by the glucose <em>level</em> rather than by the timing
 assumptions.</p>
 <p>Two independent consequences, neither used in the fit, support
 it:</p>
@@ -3188,7 +3188,7 @@ zeroed.</p>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="st">"arm"</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
 <span>  <span class="co"># rxode2's ODE -&gt; linCmt auto-conversion corrupts the endpoint mapping for</span></span>
-<span>  <span class="co"># this multi-output model (known-vignette-failure-patterns.md pattern 5b).</span></span>
+<span>  <span class="co"># this multi-output model.</span></span>
 <span>  useLinCmt <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>trel <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="fl">24</span> <span class="op">*</span> <span class="op">(</span><span class="va">N_DAY</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span></span>
@@ -3958,8 +3958,8 @@ than proportionally with dose.”</p>
 from the Figure 3 placebo median at <strong>250 dL</strong>; sensitivity
 across the unreported meal timings and food-intake durations is 246-255
 dL. The Figure 3 comparison above is therefore partly circular; Figures
-2, 4, 6 and 7 are not. The maintainers chose the back-solve over author
-correspondence.</li>
+2, 4, 6 and 7 are not. A maintainer ruling on 2026-09-02 chose the
+back-solve over author correspondence.</li>
 <li>
 <strong><code>S5</code> is applied as 0.584 mL/mIU, not the printed
 0.584 L/mIU.</strong> Established from Figure 7B’s own axis, which plots

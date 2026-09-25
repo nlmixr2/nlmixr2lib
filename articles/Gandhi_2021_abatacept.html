@@ -3379,7 +3379,7 @@ C<sub>minss</sub> exceeds the 10 µg/mL near-maximal efficacy target.</p>
 intervals. PKNCA computes per-subject C<sub>max</sub>, C<sub>min</sub>,
 C<sub>avg</sub>, and AUC<sub>tau</sub>. Two PKNCA blocks are run (one
 per regimen-cohort grouping) so that each formula carries
-<code>id/treatment</code> per the skill’s PKNCA recipe.</p>
+<code>id/treatment</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_conc_pjia</span> <span class="op">&lt;-</span> <span class="va">sim_pjia_sc</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_start_sc</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_end_sc</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3735,12 +3735,12 @@ of rate constants).</li>
 <li>
 <strong>SJC 28-joint scale assumed.</strong> Gandhi 2021 reports a
 swollen joint count covariate (SJC) with reference value 15 but does not
-explicitly identify the joint-count scale. Per operator decision, the
-canonical <code>SWOL_28JOINT</code> is used because (1) the same author
-group used the 28-joint count in the prior Li 2019 RA-only analysis, (2)
-the reference value 15 is consistent with the 28-joint scale’s 0-28
-range, and (3) pediatric pJIA patients are a minority of the pooled
-cohort (403/2616 ≈ 15 %).</li>
+explicitly identify the joint-count scale. Per a maintainer decision,
+the canonical <code>SWOL_28JOINT</code> is used because (1) the same
+author group used the 28-joint count in the prior Li 2019 RA-only
+analysis, (2) the reference value 15 is consistent with the 28-joint
+scale’s 0-28 range, and (3) pediatric pJIA patients are a minority of
+the pooled cohort (403/2616 ≈ 15 %).</li>
 <li>
 <strong>Sex covariate direction.</strong> Gandhi 2021 Methods state
 “for sex, male was used as the reference”; the model codes
@@ -3803,7 +3803,7 @@ reports the proportional and additive residual errors (0.0615 and
 for each ETA. The IIV column entries are unambiguously variances
 (<code>var(etalka) = 1.11</code> is too large to be a SD), so by
 symmetry the residual-error entries are likely SIGMA (variance) values
-too. Per operator decision, this model treats the residual errors as
+too. Per a maintainer decision, this model treats the residual errors as
 variances and converts to SDs via <code><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt()</a></code>:
 <code>propSd = sqrt(0.0615) ≈ 0.248</code> (24.8 % proportional error)
 and <code>addSd = sqrt(0.00134) ≈ 0.0366 mg/L</code> (≈ 37 ng/mL

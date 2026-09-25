@@ -85,8 +85,7 @@ The model output that the Lu 2014 paper validates against published data
 is **urinary glucose excretion (UGE)** – not a plasma drug concentration
 profile – so the standard PKNCA Cmax / Tmax / AUC recipe is not the
 appropriate validation here. The vignette therefore follows the
-endogenous-validation pattern (skill reference
-`endogenous-validation.md`):
+validation pattern for endogenous and mechanistic models:
 
 1.  **Mechanistic sanity (constant glucose, no inhibitor).** Holding
     plasma glucose at a low value drives tubular states to a

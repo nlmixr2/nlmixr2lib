@@ -2990,8 +2990,7 @@ A + B + C, n = 21).</p>
 <tr class="odd">
 <td>Reference eGFR</td>
 <td>90 mL/min/1.73 m^2</td>
-<td>NOT in source; operator-approved (task 171 sidecar 001 “A”). See
-Assumptions.</td>
+<td>NOT in source; maintainer-approved. See Assumptions.</td>
 </tr>
 <tr class="even">
 <td><code>cl &lt;- exp(lcl + etalcl) * (CRCL / 90)^e_crcl_cl</code></td>
@@ -3478,13 +3477,13 @@ reference eGFR used to normalize the scaling
 eGFR is not reported either (Table 1 lists age, weight, ROSC time, CAHP,
 LOS, and CPC, but not eGFR). The reference was set to 90 mL/min/1.73 m^2
 – the most common adult-MDRD/CKD-EPI convention in the nlmixr2lib
-registry (matches Bajaj 2017 and Li 2019) – after operator approval
-(task 171 sidecar request 001, response value “A”). At CRCL = 90
-mL/min/1.73 m^2 the model returns the published typical CL = 12.10 L/h;
-behaviour at any non-reference eGFR depends linearly (exponent 1.03) on
-this choice. A future erratum or author correspondence may revise this;
-the model file’s <code>covariateData[[CRCL]]$notes</code> field carries
-the same provenance note.</p></li>
+registry (matches Bajaj 2017 and Li 2019) – after maintainer approval.
+At CRCL = 90 mL/min/1.73 m^2 the model returns the published typical CL
+= 12.10 L/h; behaviour at any non-reference eGFR depends linearly
+(exponent 1.03) on this choice. A future erratum or author
+correspondence may revise this; the model file’s
+<code>covariateData[[CRCL]]$notes</code> field carries the same
+provenance note.</p></li>
 <li><p><strong>Population eGFR distribution NOT reported in the
 source.</strong> Admiraal 2023 Table 1 omits the per-cohort
 eGFR-on-admission distribution. For simulation the virtual cohort draws

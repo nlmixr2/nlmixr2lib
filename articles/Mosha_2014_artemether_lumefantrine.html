@@ -3968,8 +3968,8 @@ parameters to match.</p>
 <ul>
 <li><p><strong>Two model files, one vignette.</strong> Mosha 2014 fits
 two structurally independent population PK models (AM/DHA, and LF/DLF)
-on the same cohort with no shared parameters. Per the
-<code>replicate-author-structure</code> policy, the extraction is two
+on the same cohort with no shared parameters. Following the policy of
+building models as their authors built them, the extraction is two
 <code>.R</code> files (<code>Mosha_2014_artemether.R</code>,
 <code>Mosha_2014_lumefantrine.R</code>) tied together by this single
 vignette.</p></li>
@@ -3981,9 +3981,9 @@ clearance CL_met = 2.6 L/h, with proportional residual error (39% CV on
 DLF) and a 68% LF/DLF residual correlation. The DLF arm is dropped here
 for two reasons: (a) the <code>dlf</code> metabolite-suffix token is not
 currently in the canonical compartment-name register and proposing it
-would require a stop-and-ask gate per the skill’s naming-audit policy;
-(b) all three existing lumefantrine popPK extractions in nlmixr2lib
-(<code>Kloprogge_2013_lumefantrine</code>,
+would require a maintainer decision under the package’s naming-audit
+policy; (b) all three existing lumefantrine popPK extractions in
+nlmixr2lib (<code>Kloprogge_2013_lumefantrine</code>,
 <code>Kloprogge_2018_lumefantrine</code>,
 <code>Simpson_2013_lumefantrine</code>) likewise model LF only, so the
 simplification follows established package precedent. The dropped
@@ -3996,12 +3996,12 @@ Mosha 2014 retains a categorical diarrhoea effect of theta_diarrF1 =
 diarrhoea on treatment, so the effect is statistically significant but
 rests on a very small subsample. Adding a <code>DIARR</code> canonical
 covariate to <code>inst/references/covariate-columns.md</code> would
-require a stop-and-ask gate per the skill’s covariate-register policy;
-rather than block the extraction on this minor finding, the DIARR effect
-is dropped and the omission is documented in
-<code>covariatesDataExcluded</code> of the LF model file. A future task
-can register <code>DIARR</code> and re-extract this covariate effect if
-needed.</p></li>
+require a maintainer decision under the package’s covariate-register
+policy; rather than block the extraction on this minor finding, the
+DIARR effect is dropped and the omission is documented in
+<code>covariatesDataExcluded</code> of the LF model file. A future
+revision can register <code>DIARR</code> and re-extract this covariate
+effect if needed.</p></li>
 <li><p><strong>Residual previous-treatment lumefantrine baseline (F0) is
 not encoded.</strong> Mosha 2014 reports 89.5% of enrolled patients with
 detectable baseline lumefantrine concentrations (mean 37.3 ng/mL) from
@@ -4037,10 +4037,10 @@ the DHA formation flux into central_dihydroart
 (<code>d/dt(central_dihydroart) &lt;- ... + k23 * central * (mw_dihydroart / mw_arm) - ...</code>).
 This avoids double-counting AM elimination via CL and K23 paths. The
 NONMEM control stream was not on disk for this extraction; this
-interpretation is the operator’s best reading of the published parameter
-description (Methods: “metabolism rate constant from the drug to the
-metabolite compartment (K23)”) and could be refined if the control
-stream becomes available.</p></li>
+interpretation is the maintainers’ best reading of the published
+parameter description (Methods: “metabolism rate constant from the drug
+to the metabolite compartment (K23)”) and could be refined if the
+control stream becomes available.</p></li>
 <li><p><strong>DHA and AM molecular weights are taken from
 IUPAC.</strong> Mosha 2014 does not state molecular weights explicitly.
 The values used at the AM-to-DHA mass-conversion step are AM = 298.4

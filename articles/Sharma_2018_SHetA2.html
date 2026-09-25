@@ -3242,9 +3242,9 @@ deviations.</p>
 <div class="section level2">
 <h2 id="pknca-validation-against-sharma-2018-table-2">PKNCA validation against Sharma 2018 Table 2<a class="anchor" aria-label="anchor" href="#pknca-validation-against-sharma-2018-table-2"></a>
 </h2>
-<p>Per <code>pknca-recipes.md</code>, the formula carries a treatment
-grouping so the comparison can be made per-dose against the paper’s NCA
-table.</p>
+<p>Following the package’s standard PKNCA recipe, the formula carries a
+treatment grouping so the comparison can be made per-dose against the
+paper’s NCA table.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_sim</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">mouse_sim</span>, <span class="va">rat_sim</span>, <span class="va">dog_sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">treatment</span>, sep <span class="op">=</span> <span class="st">" | "</span><span class="op">)</span><span class="op">)</span></span>
@@ -3796,8 +3796,8 @@ exponents come from Fig. 5 (R^2 = 0.91-0.99 across CL / V1 / V2 /
 CLD).</li>
 <li>
 <strong>Errata.</strong> A search of the PLOS ONE landing page and a
-PubMed search for “Sharma 2018 SHetA2 erratum” on the task-execution
-date returned no errata or corrections.</li>
+PubMed search for “Sharma 2018 SHetA2 erratum” when this model was built
+returned no errata or corrections.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

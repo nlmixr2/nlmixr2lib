@@ -751,13 +751,12 @@ against the percentage changes reported in Thoueille 2023 Results.
   `CL_TFV` of 39.9 L/h base-model values quoted in Results (and the
   derived half-life of 46 h and `Tmax` of 2.4 h) precede covariate
   inclusion and are superseded by the three final models.
-- **New canonical names registered with this extraction**
-  (operator-ratified sidecar 2026-07-29, `oare_PMC10232258`
-  request-001): the metabolite suffix `tfv`, the composite race column
-  `RACE_BLACK_HISPANIC`, the class-level comedication column
-  `CONMED_PGP_INH`, and `CONMED_COBICISTAT`. In the joint model
-  tenofovir alafenamide is the dosed parent and so keeps the canonical
-  `central` / `Cc` names, with tenofovir carrying the `_tfv` suffix; in
-  the two tenofovir-alone models tenofovir itself is `central` / `Cc`.
-  That difference follows the register’s “the parent always wins
-  canonical naming” rule.
+- **New canonical names registered with this extraction** (ratified by
+  the maintainers on 2026-07-29): the metabolite suffix `tfv`, the
+  composite race column `RACE_BLACK_HISPANIC`, the class-level
+  comedication column `CONMED_PGP_INH`, and `CONMED_COBICISTAT`. In the
+  joint model tenofovir alafenamide is the dosed parent and so keeps the
+  canonical `central` / `Cc` names, with tenofovir carrying the `_tfv`
+  suffix; in the two tenofovir-alone models tenofovir itself is
+  `central` / `Cc`. That difference follows the register’s “the parent
+  always wins canonical naming” rule.

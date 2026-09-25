@@ -90,7 +90,7 @@ study enrolled adults only).
 # vignette is written so that it holds for any cohort the model can produce.
 set.seed(20230313)
 
-n_arm  <- 200L   # participants per regimen (skill cap)
+n_arm  <- 200L   # participants per regimen (the 200-subject cohort cap)
 tau    <- 12     # dosing interval (h)
 t_inf  <- 0.5    # IV infusion duration (h); see "Assumptions and deviations"
 n_dose <- 16L    # loading dose + 15 maintenance doses -> last dose at 180 h

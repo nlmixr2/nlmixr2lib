@@ -498,7 +498,7 @@ variability.
   M1..M3) per the same Friberg-family convention.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags `circ` as a single warning; the deviation is intentional and
-  documented here per Phase 5 of the extraction skill.
+  documented here.
 - **Dose units encoded as ug for the model file.** The model uses ug as
   the natural amount unit so that VMEL (ug/h) and KMEL (ug/L) are
   dimensionally consistent without scaling factors. Users supplying

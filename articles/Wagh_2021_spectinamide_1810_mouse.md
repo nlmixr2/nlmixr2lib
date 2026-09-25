@@ -87,8 +87,8 @@ references in one place for review.
 
 The simulation reproduces a small subset of the Wagh 2021
 dose-fractionation panel that compares equal weekly doses delivered at
-different frequencies. Per the skill’s cap, no arm exceeds 200 mice;
-here each arm is 25 mice for the VPC, well under the cap.
+different frequencies. No arm exceeds the package’s 200-subject-per-arm
+cohort cap; here each arm is 25 mice for the VPC, well under the cap.
 
 ``` r
 
@@ -187,7 +187,7 @@ events <- dplyr::bind_rows(
             study_wagh_2 = 1, n_mice = n_per, id_offset =  75L)
 )
 
-# Disjoint-ID guard (mandatory for multi-cohort sims, per skill template):
+# Disjoint-ID guard (mandatory for multi-cohort sims):
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 
@@ -315,9 +315,9 @@ ggplot(pd, aes(arm_factor, log_cfu)) +
 ## PKNCA validation
 
 Compute Cmax, Tmax, AUC over the last dosing interval (steady-state
-approximation) for each arm using PKNCA. Per the skill template, the
-filter is `!is.na(Cc)` only – adding `time > 0` or `Cc > 0` would drop
-the pre-dose anchor row that PKNCA needs.
+approximation) for each arm using PKNCA. The filter is `!is.na(Cc)` only
+– adding `time > 0` or `Cc > 0` would drop the pre-dose anchor row that
+PKNCA needs.
 
 ``` r
 

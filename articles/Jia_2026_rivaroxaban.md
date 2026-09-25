@@ -648,7 +648,7 @@ ss_wide <- as.data.frame(nca_ss$result) |>
 # transfer out of the depot, AUC over a steady-state dosing interval equals
 # Dose / (CL/F) exactly. Both sides use the SAME drawn per-subject CL, so the
 # only difference is trapezoidal/solver error -- no cohort-draw noise -- and a
-# tight bound is correct here (see CLAUDE.md on vignette assertions).
+# tight bound is correct here.
 cl_i <- sim_ss |> filter(!is.na(Cc)) |> group_by(id) |>
   summarise(cl = dplyr::first(cl), .groups = "drop")
 

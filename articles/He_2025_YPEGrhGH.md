@@ -235,8 +235,7 @@ stopifnot(!anyDuplicated(unique(events_pk[, c("id", "time", "evid", "dvid")])))
 mod <- readModelDb("He_2025_YPEGrhGH")
 
 # useLinCmt = FALSE: rxode2's automatic ODE -> linCmt conversion corrupts the
-# dvid -> cmt mapping for multi-endpoint models (see the skill's
-# known-vignette-failure-patterns.md pattern 5b).
+# dvid -> cmt mapping for multi-endpoint models.
 sim_pk <- rxode2::rxSolve(
   mod, events = events_pk, keep = c("cohort", "AGE", "WT"),
   useLinCmt = FALSE

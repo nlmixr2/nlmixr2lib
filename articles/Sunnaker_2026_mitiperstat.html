@@ -3048,7 +3048,7 @@ and volume is apparent (CL/F, Vc/F, Q/F, Vp/F).</p>
 <span><span class="co">#&gt;     Cc ~ lnorm(expSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x559be6217048&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x56451225d770&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3313,8 +3313,7 @@ reproduce typical-value predictions rather than a cohort median.</p>
 <span><span class="va">T_LAST</span> <span class="op">&lt;-</span> <span class="va">TAU</span> <span class="op">*</span> <span class="op">(</span><span class="va">NDOSE</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Observation grid over the final dosing interval. Dense through the absorption</span></span>
-<span><span class="co"># and distribution phases so the trapezoidal AUC resolves Tmax (~1.6 h);</span></span>
-<span><span class="co"># see pattern 11 of the skill's known-vignette-failure-patterns reference.</span></span>
+<span><span class="co"># and distribution phases so the trapezoidal AUC resolves Tmax (~1.6 h).</span></span>
 <span><span class="va">ss_grid</span> <span class="op">&lt;-</span> <span class="va">T_LAST</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">6.25</span>, <span class="va">TAU</span>, by <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ss_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span>, <span class="va">cov</span>, <span class="va">n</span> <span class="op">=</span> <span class="fl">1L</span>, <span class="va">id_offset</span> <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
@@ -3775,7 +3774,7 @@ typical values.</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG; rxSetSeed() seeds rxode2's, per solver thread.</span></span>
 <span><span class="co"># Neither makes the drawn cohort identical across machines with different</span></span>
 <span><span class="co"># thread counts, so nothing downstream asserts on an individual subject.</span></span>
-<span><span class="va">N_ARM</span>  <span class="op">&lt;-</span> <span class="fl">150</span>   <span class="co"># per arm; the skill caps cohorts at 200 per arm</span></span>
+<span><span class="va">N_ARM</span>  <span class="op">&lt;-</span> <span class="fl">150</span>   <span class="co"># per arm; cohorts are capped at 200 per arm</span></span>
 <span><span class="va">SIM_D</span>  <span class="op">&lt;-</span> <span class="fl">90</span></span>
 <span></span>
 <span><span class="va">arms</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span>dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.5</span>, <span class="fl">5</span><span class="op">)</span>, egfr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">72</span>, <span class="fl">90</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

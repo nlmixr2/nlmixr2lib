@@ -2903,11 +2903,12 @@ values themselves (those are embedded as MS Equation 3.0 OLE objects
 that are not text-extractable). Confirms the publication match: Stevens
 et al. 2012, J Pharmacokinet Pharmacodyn, <a href="doi:10.1007/s10928-012-9262-4" class="uri">doi:10.1007/s10928-012-9262-4</a>.</li>
 </ul>
-<p>The Stevens 2012 publication itself is not on disk in this worktree,
-so the standard publication-figure replication and
+<p>The Stevens 2012 publication itself was not on disk when this model
+was built, so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The validation in this
 vignette therefore follows the F.2 self-consistency and F.3
-mechanistic-sanity substitutes from the extraction skill.</p>
+mechanistic-sanity substitutes in the package’s validation
+checklist.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3113,13 +3114,12 @@ are not reproduced in the nlmixr2 implementation.</p>
 <p>This bundle ships a simulated dataset
 (<code>Simulated_PK_rats.csv</code>) and a re-fit listing
 (<code>Output_simulated_PK_rats.lst</code>) but the linked publication
-is not on disk. Following <code>references/ddmore-source.md</code>
-Section “Validation strategy by model type” (decision tree -&gt; no
-PKNCA -&gt; mechanistic / endogenous -&gt; F.2 + F.3 substitutes), this
-vignette validates by:</p>
+is not on disk. Following the package’s validation strategy for DDMORE
+bundles (decision tree -&gt; no PKNCA -&gt; mechanistic / endogenous
+-&gt; F.2 + F.3 substitutes), this vignette validates by:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Steady-state hold (F.1 / endogenous-validation).</strong>
+<strong>Steady-state hold (F.1 / endogenous-model pattern).</strong>
 With no drug administration, the lactotroph and plasma-prolactin states
 must stay at their analytic baselines. The .mod sets
 <code>A_0(6) = BSL * K70 / K67</code> and <code>A_0(7) = BSL</code> so
@@ -3524,13 +3524,13 @@ absolute mg/L values in the literature should multiply by body weight
 (in kg).</li>
 <li>
 <strong>No publication on disk.</strong> The Stevens 2012 paper
-itself is paywalled (J Pharmacokinet Pharmacodyn) and is not in the
-worktree. The DDMORE specification document confirms the publication
-match (title, authors, journal, DOI in the document’s reference block)
-but stores parameter tables as embedded MS Equation 3.0 OLE objects that
-are not text- extractable. The cross-check against published parameter
-tables is therefore not performed; the <code>.lst</code> final estimates
-are the sole source of values.</li>
+itself is paywalled (J Pharmacokinet Pharmacodyn) and was not available
+when this model was built. The DDMORE specification document confirms
+the publication match (title, authors, journal, DOI in the document’s
+reference block) but stores parameter tables as embedded MS Equation 3.0
+OLE objects that are not text- extractable. The cross-check against
+published parameter tables is therefore not performed; the
+<code>.lst</code> final estimates are the sole source of values.</li>
 <li>
 <strong>Solver tolerance.</strong> The .mod uses
 <code>ADVAN9 TOL=3</code>. rxode2’s default LSODA tolerances (atol=1e-8,

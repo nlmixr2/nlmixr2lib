@@ -3154,8 +3154,8 @@ linear-deviation BMI</td>
 <td>Weibull ka(t) form</td>
 <td><code>ka &lt;- kamax * (1 - exp(-(ra * tad)^gam1))</code></td>
 <td>Piotrovskij saturating-ka</td>
-<td>Operator-approved interpretation (sidecar request-001 q3 = A); paper
-text names the three parameters but does not write the equation</td>
+<td>Maintainer-approved interpretation; paper text names the three
+parameters but does not write the equation</td>
 </tr>
 </tbody>
 </table>
@@ -4224,9 +4224,8 @@ in V_c, V_p, and Q.</p>
 <li>
 <strong>Weibull-absorption functional form.</strong> Desai 2016
 Methods names the Weibull absorption model with three parameters (RA,
-KAMAX, GAM1) but does not write the equation. Per the sidecar
-request-001 q3 = A operator decision, the model uses the
-Piotrovskij-style saturating ka:
+KAMAX, GAM1) but does not write the equation. Per a maintainer decision,
+the model uses the Piotrovskij-style saturating ka:
 <code>ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))</code>. This is the
 canonical parameterisation for the named parameter triple in NONMEM-era
 Weibull- absorption control streams and matches the parameter semantics

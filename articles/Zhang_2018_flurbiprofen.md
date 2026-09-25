@@ -314,10 +314,10 @@ this is consistent with the structural model.
 
 ## PKNCA validation
 
-PKNCA is run on the simulated plasma profile across the 0-1 h window
-(single-dose IV recipe of `pknca-recipes.md`). Reported NCA values are
-compared against the literature values cited by Zhang 2018 (Suri 2002,
-Qayyum 2008, Galasko 2003).
+PKNCA is run on the simulated plasma profile across the 0-1 h window (a
+single-dose IV analysis). Reported NCA values are compared against the
+literature values cited by Zhang 2018 (Suri 2002, Qayyum 2008, Galasko
+2003).
 
 ``` r
 

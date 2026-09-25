@@ -304,8 +304,8 @@ a faithful smaller-scale analogue.
   The BAST guiding document Section 2.4.1 (Figure 2-1) confirms
   exponential was selected for Event 1 by AIC. The packaged model
   preserves the .mod’s structure faithfully and uses the
-  operator-approved filename `NA_NA_tte_gompertz.R`; the description and
-  this Errata note state the realised distribution.
+  maintainer-approved filename `NA_NA_tte_gompertz.R`; the description
+  and this Errata note state the realised distribution.
 
 - **Numerical rescalings preserved.** The .mod uses internal /1000,
   /10000, /100 rescalings on lambda, NEUT effect, and AGE effect for

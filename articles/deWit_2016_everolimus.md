@@ -391,7 +391,7 @@ non-carriers proportional to theta_TTT = 0.792.
   set to 50% TTT-carrier vs 50% non-carrier across two equal-sized arms
   for the exposure contrast.** de Wit 2016 reports the haplotype effect
   size but does not give a numeric carrier frequency in the main text or
-  in the on-disk trimmed markdown; supplementary Data S1 / S2 (the
+  in the text extracted from the PDF; supplementary Data S1 / S2 (the
   source for haplotype frequencies) was not on disk for this extraction.
   The 50/50 split is for illustration of the covariate effect; a
   real-population deployment of the model should use an empirically

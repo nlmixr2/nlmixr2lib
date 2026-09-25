@@ -3414,8 +3414,8 @@ t50max.</li>
 <li>
 <strong>Hospitalisation due to PE (<code>HOSPRA</code>)</strong>:
 Time-varying per-visit indicator; the source NMTRAN reads this from a
-per-row column. In the packaged model, the operator supplies HOSPRA at
-every observation row.</li>
+per-row column. In the packaged model, the user supplies HOSPRA at every
+observation row.</li>
 <li>
 <strong>BMI z-score (<code>BMIZ</code>)</strong>: Carried as the
 source paper’s per-visit z-score with reference 0 (population mean for
@@ -3433,7 +3433,7 @@ record the rename.</li>
 the subject’s chronological age in years. The source NMTRAN converts a
 per-row TIME column from hours to years via
 <code>TIME1 = ((TIME/24)/365)</code>; in the nlmixr2 data convention the
-operator carries age directly in the <code>time</code> column.</li>
+user carries age directly in the <code>time</code> column.</li>
 <li>
 <strong>Aspergillus</strong>: The paper’s primary stated aim was to
 test whether positive Aspergillus bronchoalveolar lavage cultures

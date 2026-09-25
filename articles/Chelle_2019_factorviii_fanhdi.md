@@ -318,14 +318,15 @@ draws; larger discrepancies would indicate a coding error.
 
 ## Assumptions and deviations
 
-- **Final model implemented per skill convention.** Chelle 2019 reports
-  intermediate-model “A” (2-compartment with BSV on CL and V1 and
-  proportional RUV, no covariates) and the final-covariate model (FFM on
-  CL / V1 / V2, AGE on CL piecewise, plus BSV-block correlation between
-  CL and V1). Only the final-covariate model (Chelle 2019 Eq. 5 and
-  Table 2, “Estimate” column) is packaged. Sensitivity tests reported in
-  the paper (e.g., comparison with a 0.005 IU/mL fixed-baseline
-  assumption for severe patients, dOFV = -0.7) are not implemented.
+- **Final model implemented per package convention.** Chelle 2019
+  reports intermediate-model “A” (2-compartment with BSV on CL and V1
+  and proportional RUV, no covariates) and the final-covariate model
+  (FFM on CL / V1 / V2, AGE on CL piecewise, plus BSV-block correlation
+  between CL and V1). Only the final-covariate model (Chelle 2019 Eq. 5
+  and Table 2, “Estimate” column) is packaged. Sensitivity tests
+  reported in the paper (e.g., comparison with a 0.005 IU/mL
+  fixed-baseline assumption for severe patients, dOFV = -0.7) are not
+  implemented.
 - **Endogenous and predose FVIII not modelled.** Chelle 2019 Methods –
   “Popolation PK model development” describes a pre-analysis correction
   in which observed FVIII activity is decomposed into the model

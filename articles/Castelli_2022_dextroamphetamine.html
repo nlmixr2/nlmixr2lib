@@ -3221,7 +3221,7 @@ summaries can be compared between the adult and pediatric cohorts.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Guarantee a time = 0 row per (id, treatment); pre-dose extravascular</span></span>
-<span><span class="co"># Cc = 0 is the correct value. (See pknca-recipes.md "Time-zero records".)</span></span>
+<span><span class="co"># Cc = 0 is the correct value.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca</span>,</span>
 <span>  <span class="va">sim_nca</span> <span class="op">|&gt;</span> <span class="fu">distinct</span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -3462,7 +3462,7 @@ out.</li>
 bioavailability (F)” but does not report the IOV magnitudes in Table 1.
 The library encodes only the inter-individual variability reported in
 Table 1 (on CL/F, V/F, Ka, and D1) and drops the IOV terms. Adding back
-IOV would require operator follow-up with the authors or an
+IOV would require maintainer follow-up with the authors or an
 <code>OCC</code> covariate flag and additional eta blocks on
 <code>ld1</code> / <code>lfdepot</code>; neither is in scope for a
 poster-derived library model.</li>

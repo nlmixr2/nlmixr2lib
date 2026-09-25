@@ -121,7 +121,7 @@ mod <- readModelDb("Alsultan_2023_vancomycin")
 # are partitioned PER SOLVER THREAD -- so the etas drawn below are reproducible
 # on this machine and different on a machine with a different thread count.
 # Every assertion downstream is written to hold for any cohort the model can
-# produce; see pattern 12 of the skill's known-vignette-failure-patterns.
+# produce.
 set.seed(20230330)
 rxode2::rxSetSeed(20230330)
 

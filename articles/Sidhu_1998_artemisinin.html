@@ -3239,19 +3239,18 @@ published IIV / IOV variance components produce.</p>
 <div class="section level2">
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
-<p>Single-dose, dense-sampling NCA per
-<code>references/pknca-recipes.md</code>. The published reference values
-are the typical population estimates (Sidhu 1998 Results: median
-half-life 2.6 h in adults, 1.8 h in children; Table 2
-delta_F_Day1-&gt;Day5 = 6.9), so the NCA validation here runs against
-the <em>typical-value</em> simulation (<code>zeroRe()</code>-d model,
-one typical subject per cohort). The full-IIV stochastic NCA is reported
-below it for population-spread context; the high published omega ka =
-576% CV produces a heavy-tailed distribution of individual ka values
-that can occasionally fall below the typical kel and trigger flip-flop
-terminal phases, inflating PKNCA’s individual half-life estimates
-relative to the published typical value (this is documented in
-Assumptions and deviations).</p>
+<p>Single-dose, dense-sampling NCA per the package’s standard PKNCA
+recipe. The published reference values are the typical population
+estimates (Sidhu 1998 Results: median half-life 2.6 h in adults, 1.8 h
+in children; Table 2 delta_F_Day1-&gt;Day5 = 6.9), so the NCA validation
+here runs against the <em>typical-value</em> simulation
+(<code>zeroRe()</code>-d model, one typical subject per cohort). The
+full-IIV stochastic NCA is reported below it for population-spread
+context; the high published omega ka = 576% CV produces a heavy-tailed
+distribution of individual ka values that can occasionally fall below
+the typical kel and trigger flip-flop terminal phases, inflating PKNCA’s
+individual half-life estimates relative to the published typical value
+(this is documented in Assumptions and deviations).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add a t = 0 Cc = 0 placeholder per subject so PKNCA's AUC interval can</span></span>
 <span><span class="co"># start at 0; the oral 1-compartment model has Cc(0) = 0 by construction</span></span>

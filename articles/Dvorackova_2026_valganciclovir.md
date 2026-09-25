@@ -420,7 +420,7 @@ because the paper reports only summary statistics:
 # workstation and no seed can make them agree. Every assertion on a
 # cohort-derived quantity below is written as an absolute band accordingly.
 set.seed(20260910)
-n_arm <- 200L                            # 200 per arm; the skill cap
+n_arm <- 200L                            # 200 per arm; the per-arm cohort cap
 
 rtnorm <- function(n, mean, sd, lo, hi) {
   x <- rnorm(n, mean, sd)

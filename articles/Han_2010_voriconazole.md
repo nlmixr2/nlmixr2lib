@@ -465,9 +465,8 @@ ggplot(wt_grid, aes(WT, Vp_model3)) +
   the published parameter estimates as post-simulation transforms (CF
   and POT on F as a multiplicative F-scaling of the base-model oral
   profile; WT on Vp shown as a typical-value sweep). This decision is
-  consistent with the `extract-literature-model` skill’s “replicate the
-  author’s structure” policy applied to a paper without a reported
-  combined final model.
+  consistent with the package’s policy of replicating the authors’ model
+  structure, applied to a paper without a reported combined final model.
 
 - **Diagonal IIV – the paper estimated correlated IIV but did not
   publish the off-diagonal correlations.** Han 2010 Methods state

@@ -2949,8 +2949,8 @@ Observation | .mod <code>$ERROR</code> line 18
 (<code>IPRED = LOG(A(1)+A(2))</code>; culturable CFU = F+S;
 non-multiplying N excluded) | | | | | Residual error | .mod
 <code>$ERROR</code> line 22 (<code>Y = IPRED + EPS(1)</code>; “additive
-on log-scale” == proportional in linear space per
-<code>naming-conventions.md</code>) | | | |</p>
+on log-scale” == proportional in linear space per package convention) |
+| | |</p>
 <p>The minimization in <code>Output_real_MTP.lst</code> succeeded
 (<code>#TERM: 0MINIMIZATION SUCCESSFUL</code>, line 322; OFV = -92.456,
 line 375). ETA shrinkage on F0 was 40.7 % (line 335), reflecting that
@@ -2992,7 +2992,7 @@ on the linear-space CFU in nlmixr2.</p>
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
 </h2>
-<p>For the F.2 self-consistency check we simulate the bundled
+<p>For the self-consistency check we simulate the bundled
 <code>Simulated_Mtb-H37Rv_In-vitro-NATG.csv</code> event grid (one
 subject, 11 observation times spanning t = 0 to 200 days). The 11 rows
 below are reproduced inline from the DDMODEL00000240 bundle
@@ -3148,7 +3148,7 @@ below are reproduced inline from the DDMODEL00000240 bundle
 <span><span class="co">#&gt; 11   200 0:Observation</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="simulation-f-2-self-consistency">Simulation (F.2 self-consistency)<a class="anchor" aria-label="anchor" href="#simulation-f-2-self-consistency"></a>
+<h2 id="simulation-self-consistency">Simulation (self-consistency)<a class="anchor" aria-label="anchor" href="#simulation-self-consistency"></a>
 </h2>
 <p>Typical-value F+S trajectory reproduction with all etas zeroed (the
 bundle’s <code>Output_simulated_MTP.lst</code> is also a
@@ -3337,13 +3337,13 @@ bundle’s <code>Output_simulated_MTP.lst</code> is also a
 </tr>
 </tbody>
 </table>
-<p>The relative differences between the worktree simulation and the
-DDMORE bundle’s published trajectory are sub-2% across the full 200-day
+<p>The relative differences between the simulation here and the DDMORE
+bundle’s published trajectory are sub-2% across the full 200-day
 horizon. The residual gap is explained by the .lst final estimates being
 rounded to 3 significant figures (TH 1 = 2.06E-01, TH 8 = 4.10E+00, …)
 versus the higher-precision <code>.mod</code> <code>$THETA</code>
 initial values (0.206361, 4.109880, …) actually used to generate
-<code>Simulated_Mtb-H37Rv_In-vitro-NATG.csv</code>. F.2 self-consistency
+<code>Simulated_Mtb-H37Rv_In-vitro-NATG.csv</code>. The self-consistency
 gate (&lt;= 5% per-time-point differences) is met.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3523,13 +3523,13 @@ rifampicin-treated extension must add a drug term explicitly (see Clewe
 forms).</li>
 <li>
 <strong>No on-disk publication cross-check.</strong> The Clewe 2016
-paper (<a href="doi:10.1093/jac/dkv416" class="uri">doi:10.1093/jac/dkv416</a>) was not present under
-<code>/home/bill/github/mab_human_consensus/literature/</code> at
-extraction time. Parameter values therefore rely on the
-<code>Output_real_MTP.lst</code> <code>FINAL PARAMETER ESTIMATE</code>
-block alone; published table values were not independently re-checked.
-F.2 self-consistency (vs. the bundle’s <code>Simulated_*.csv</code>) is
-the only validation reference.</li>
+paper (<a href="doi:10.1093/jac/dkv416" class="uri">doi:10.1093/jac/dkv416</a>) was not present in the
+maintainers’ literature mirror at extraction time. Parameter values
+therefore rely on the <code>Output_real_MTP.lst</code>
+<code>FINAL PARAMETER ESTIMATE</code> block alone; published table
+values were not independently re-checked. Self-consistency (vs. the
+bundle’s <code>Simulated_*.csv</code>) is the only validation
+reference.</li>
 <li>
 <strong>Convention deviations</strong> flagged by
 <code>checkModelConventions("Clewe_2016_rifampicin")</code>:
@@ -3542,8 +3542,7 @@ They are mechanism-specific names retained from the source
 <code>$MODEL COMP=(FBUGS) COMP=(SBUGS) COMP=(NBUGS)</code> declarations
 because no canonical compartment in nlmixr2lib’s register names
 “fast-multiplying / slow-multiplying / non-multiplying bacteria.” This
-follows the <code>naming-conventions.md</code> Section “Endogenous /
-mechanistic parameters” guidance to use paper-specific names for non-PK
+follows the package’s guidance to use paper-specific names for non-PK
 mechanism states. Lower-cased to match the package’s casing
 convention.</li>
 <li>Observation variable <code>cfu</code> rather than <code>Cc</code>.

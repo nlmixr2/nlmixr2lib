@@ -929,17 +929,16 @@ strict exposure equality.
   table” rule – control-stream `$OMEGA` entries are commonly stale
   initial estimates, and this block also carries a leftover editing
   comment (`; IIV/BSV CL, fix to 0 to exclude`) – the published table
-  value is used. Confirmed by the operator (task sidecar
-  `oare_PMC10044023` request-001 q2). The `etalcl` variance is taken
-  from the control stream because it agrees with the paper and carries
-  one more significant digit.
+  value is used. Confirmed by the maintainers. The `etalcl` variance is
+  taken from the control stream because it agrees with the paper and
+  carries one more significant digit.
 - **`CONMED_ABX` is a new canonical covariate column.** Zieck 2023’s
   `COMED` flag is an umbrella “any other antibiotic” indicator; the
   paper never names the co-administered agents, so no per-INN canonical
   (`CONMED_MER`, `CONMED_GEN`, `CONMED_CIP`, …) applies. It was
   registered in `inst/references/covariate-columns.md` as a class-level
-  composite, following the `CONMED_IMMUNOMOD` precedent, with operator
-  approval (sidecar `oare_PMC10044023` request-001 q1).
+  composite, following the `CONMED_IMMUNOMOD` precedent, with maintainer
+  approval.
 - **The concomitant-antibiotic effect is empirical, not mechanistic.**
   Zieck 2023’s Discussion states plainly that the authors “could not
   find a physiological explanation for this association” and that “it

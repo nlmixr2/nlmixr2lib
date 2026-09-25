@@ -179,7 +179,7 @@ imputation.
 
 ``` r
 
-N_PER_ARM <- 200L   # cap per SKILL.md; Gotta 2025 used 500 per arm
+N_PER_ARM <- 200L   # per-arm cohort cap; Gotta 2025 used 500 per arm
 
 lnorm_med_iqr <- function(n, med, q1, q3) {
   stats::rlnorm(n, meanlog = log(med),
@@ -984,8 +984,8 @@ with a hard-coded 8-hour divisor. The three efficacy cells of that row
 are excluded from the numeric agreement assertions; every other cell of
 Table 2 is included.
 
-**Model 3 carries a sign erratum relative to the source this task was
-dispatched on.** Gotta 2025 Supplemental Methods S1 prints the
+**Model 3 carries a sign erratum relative to the source this extraction
+started from.** Gotta 2025 Supplemental Methods S1 prints the
 serum-creatinine term with a positive exponent; Zhao 2020 Table 3
 defines it as a reciprocal, giving -0.218. The packaged model follows
 the primary. The consequence is quantified in the sensitivity analysis C

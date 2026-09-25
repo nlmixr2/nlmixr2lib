@@ -430,7 +430,7 @@ nca_frame <- function(df, tcol, ccol, dose_day, tau_day, label) {
     transmute(id = 1L, time = .data[[tcol]] - dose_day, conc = .data[[ccol]],
               interval_label = label) |>
     filter(!is.na(conc), time >= 0, time <= tau_day)
-  # Defensive time-zero record (pknca-recipes.md): never let the AUC interval
+  # Defensive time-zero record: never let the AUC interval
   # start before the first measurement.
   if (!any(abs(out$time) < 1e-8)) {
     out <- bind_rows(tibble::tibble(id = 1L, time = 0, conc = out$conc[1],

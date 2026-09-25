@@ -3073,7 +3073,7 @@ all.</p>
 <span><span class="co"># One subject's event table: n_dose daily 600 mg oral doses into `depot`, then</span></span>
 <span><span class="co"># observations across the final dosing interval on the `central` ODE state.</span></span>
 <span><span class="co"># `cmt` on the observation rows names an ODE STATE, never the algebraic</span></span>
-<span><span class="co"># observable `Cc` - see known-vignette-failure-patterns.md pattern 2.</span></span>
+<span><span class="co"># observable `Cc`.</span></span>
 <span><span class="va">make_subjects</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">ids</span>, <span class="va">snp</span>, <span class="va">wt</span>, <span class="va">grid</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">snp</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">wt</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">key</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, SNP_CYP2B6_RS3745274_T_COUNT <span class="op">=</span> <span class="va">snp</span>, WT <span class="op">=</span> <span class="va">wt</span><span class="op">)</span></span>
@@ -3204,10 +3204,9 @@ published typical clearance gets its own row.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">arm</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Guarantee a record at the interval start for every subject (see</span></span>
-<span><span class="co"># pknca-recipes.md "Time-zero records"). Here the interval starts at the final</span></span>
-<span><span class="co"># dose, t_last, which the 0.1 h grid already contains; the bind_rows keeps the</span></span>
-<span><span class="co"># guarantee explicit and idempotent.</span></span>
+<span><span class="co"># Guarantee a record at the interval start for every subject. Here the</span></span>
+<span><span class="co"># interval starts at the final dose, t_last, which the 0.1 h grid already</span></span>
+<span><span class="co"># contains; the bind_rows keeps the guarantee explicit and idempotent.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca</span>,</span>
 <span>  <span class="va">sim_nca</span> <span class="op">|&gt;</span> <span class="fu">distinct</span><span class="op">(</span><span class="va">id</span>, <span class="va">arm</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_last</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>

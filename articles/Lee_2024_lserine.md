@@ -784,7 +784,7 @@ therapeutic claim.
     smaller than readings 1 and 2, and 20 to 40-fold larger than the
     bare printed number 0.0022.
 
-**What is encoded, and why.** Following the operator ruling on this
+**What is encoded, and why.** Following a maintainer ruling on this
 extraction, the model encodes the dimensionally-correct reading of the
 printed Table 1 estimate: `lslope <- log(0.0022 * 1000)`, i.e. 2.2 score
 per (ug/mL). The factor of 1000 is ug/L per ug/mL – a pure unit

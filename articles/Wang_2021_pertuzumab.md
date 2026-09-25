@@ -42,8 +42,8 @@ across 106 sites in 19 countries:
 - **Region.** ~20% Asian-region enrollment (100/489).
 - **LBW.** Lean body weight 5th-95th percentiles 38-53 kg; median 45.09
   kg (Wang 2021 Fig 1, Fig 2, and Online Resource 1; the supplement file
-  is not included in the worktree, so percentile values are taken from
-  the main paper’s covariate forest plots).
+  was not available when this model was built, so percentile values are
+  taken from the main paper’s covariate forest plots).
 - **Albumin.** 5th-95th percentiles 38-48 g/L; median 43.25 g/L.
 - **Sampling.** Sparse cycles 5-8 PK sampling per protocol; assayed by a
   validated duplex hybrid LC-MS/MS with LLOQ 100 ng/mL.
@@ -409,11 +409,11 @@ not include.
 
 - **Demographics not reproduced from supplement.** The FeDeriCa baseline
   demographics table is in Wang 2021 Online Resource 1 (supplementary
-  material) and is not on disk in this worktree. The virtual cohort uses
-  Gaussian approximations to the LBW (mean 45.5 kg, SD 4.5 kg) and
-  albumin (mean 43.0 g/L, SD 3.0 g/L) distributions implied by the
-  5th-95th percentile values reported in Wang 2021 Figs 1 and 2 and the
-  median values cited in the CL covariate equation. Asian-region
+  material) and was not on disk when this model was built. The virtual
+  cohort uses Gaussian approximations to the LBW (mean 45.5 kg, SD 4.5
+  kg) and albumin (mean 43.0 g/L, SD 3.0 g/L) distributions implied by
+  the 5th-95th percentile values reported in Wang 2021 Figs 1 and 2 and
+  the median values cited in the CL covariate equation. Asian-region
   prevalence is set to 20% to match the 100/489 patients reported in
   Wang 2021 Discussion. These approximations affect the *width* of the
   predicted exposure distributions but not the typical-value comparison.

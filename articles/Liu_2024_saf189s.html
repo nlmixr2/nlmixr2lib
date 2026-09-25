@@ -3357,7 +3357,7 @@ exactly dose / CL1.</p>
 <span><span class="co">#&gt;                   2494.13                   2500.00                     -0.23</span></span>
 <span></span>
 <span><span class="co"># Same drawn parameters on both sides -&gt; pure numerical error, so a tight</span></span>
-<span><span class="co"># bound is correct here (see CLAUDE.md on cohort-extreme assertions).</span></span>
+<span><span class="co"># bound is correct here.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">auc_trap</span> <span class="op">-</span> <span class="va">auc_closed</span><span class="op">)</span> <span class="op">/</span> <span class="va">auc_closed</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">

@@ -472,12 +472,11 @@ Table 2 reports the mean baseline-corrected Cmax (% of normal), tmax
 incremental recovery (%/IU/kg). The block below builds a single
 side-by-side table via
 [`nlmixr2lib::ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
-at the 20% tolerance the skill’s PKNCA-recipe recommends. Cmax is
-expected to sit slightly above the reported mean because the simulation
-captures the model’s typical-value trajectory (which is monotonically
-decreasing from the end-of-infusion concentration), whereas the paper’s
-observed Cmax reflects individual scatter around end-of-infusion
-sampling.
+at the package’s standard 20% tolerance. Cmax is expected to sit
+slightly above the reported mean because the simulation captures the
+model’s typical-value trajectory (which is monotonically decreasing from
+the end-of-infusion concentration), whereas the paper’s observed Cmax
+reflects individual scatter around end-of-infusion sampling.
 
 ``` r
 

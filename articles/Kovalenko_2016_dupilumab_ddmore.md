@@ -46,7 +46,7 @@ This model was extracted from the DDMORE bundle scraped to
 
 The bundle does **not** ship an `Output_real_*.lst` and there is no
 `Model_Accomodations.text|.txt` file. The validation strategy is
-therefore the F.2 self-consistency check (does the rxode2 implementation
+therefore a self-consistency check (does the rxode2 implementation
 reproduce the bundle’s NM-TRAN trajectory on the same inputs?) plus a
 qualitative comparison of the model’s typical-value profile against the
 publication’s Figure 3 concentration-time plots. Direct replication of
@@ -108,16 +108,19 @@ for the implications.
 
 ## Virtual cohort
 
-For the F.2 self-consistency check we mirror the bundle’s simulated
-event sequence: a single subject receiving 1000 mg as an SC injection
-into the depot at time 0, with concentration sampled at the bundle’s
-observation times.
+For the self-consistency check we mirror the bundle’s simulated event
+sequence: a single subject receiving 1000 mg as an SC injection into the
+depot at time 0, with concentration sampled at the bundle’s observation
+times.
 
 ``` r
 
-bundle_csv <- "/home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/273/Simulated_Dupilumab.CSV"
+# The DDMORE bundle is not shipped with the package. Maintainers who hold a
+# copy point NLMIXR2LIB_LITERATURE_DIR at it; otherwise the check is skipped.
+lit_dir <- Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", "")
+bundle_csv <- file.path(lit_dir, "ddmore_scraping/273/Simulated_Dupilumab.CSV")
 
-if (file.exists(bundle_csv)) {
+if (nzchar(lit_dir) && file.exists(bundle_csv)) {
   bundle <- read.csv(bundle_csv)
   obs_times <- bundle |>
     dplyr::filter(MDV == 0, CMT == 2) |>
@@ -171,7 +174,7 @@ sim_bundle <- rxode2::rxSolve(
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalkel', 'etalvmax', 'etalka'
 ```
 
-## F.2 self-consistency check vs the bundle’s simulated dataset
+## Self-consistency check vs the bundle’s simulated dataset
 
 ``` r
 
@@ -204,9 +207,9 @@ if (!is.null(bundle)) {
   cat(  "Max abs %-diff:               ",
         round(max(abs(joined$pct_diff), na.rm = TRUE), 2), "%\n")
 } else {
-  cat("Bundle CSV not available in this worktree; F.2 check skipped.\n")
+  cat("Bundle CSV not available; self-consistency check skipped.\n")
 }
-#> Bundle CSV not available in this worktree; F.2 check skipped.
+#> Bundle CSV not available; self-consistency check skipped.
 ```
 
 ``` r
@@ -368,9 +371,9 @@ style="width:100%;"}
   `replicate_of` counterpart.
 - **Bundle’s simulated CSV uses `LWT = 1` (not `log(WT) = 0`).** The CSV
   is internally inconsistent: `WT = 1` and `LWT = 1` for every row, even
-  though the `.ctl` treats `LWT` as `log(WT_kg)`. The F.2
-  self-consistency check above sets `WT = exp(1) ~= 2.718` so that the
-  rxode2-computed covariate factor `(WT/75)^0.75` matches the bundle’s
+  though the `.ctl` treats `LWT` as `log(WT_kg)`. The self-consistency
+  check above sets `WT = exp(1) ~= 2.718` so that the rxode2-computed
+  covariate factor `(WT/75)^0.75` matches the bundle’s
   `exp((LWT - log(75)) * 0.75)` with `LWT = 1`. Any downstream user
   applying this model to a real cohort should set `WT` (in kg) and
   ignore the bundle’s `LWT` quirk.

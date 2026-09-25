@@ -31,10 +31,9 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Jonsson_2005_disufenton"))$meta
 This vignette validates the packaged `Jonsson_2005_disufenton` model
 against DDMORE Foundation Model Repository entry **DDMODEL00000245**,
 the source from which it was extracted. The Jonsson 2005 publication PDF
-is not on disk in this worktree, so the validation strategy follows the
-F.2 self-consistency recipe from the `extract-literature-model` skill:
-re-simulate the bundle’s dosing scenario and confirm the trajectory
-matches the structural model encoded in the DDMORE bundle
+is not on disk here, so the validation strategy is a self-consistency
+check: re-simulate the bundle’s dosing scenario and confirm the
+trajectory matches the structural model encoded in the DDMORE bundle
 (`Executable_run111.mod` plus the `Output_real_run111.lst` final
 estimates).
 
@@ -52,10 +51,9 @@ based on baseline creatinine clearance.
 
 Demographic descriptors above are summarised from the DDMODEL00000245
 RDF `model-has-description-long` abstract, which mirrors the Jonsson
-2005 Methods. The Jonsson 2005 PDF is not available on disk under
-`/home/bill/github/mab_human_consensus/literature/`, so weight, sex, and
-race breakdowns from the publication’s Table 1 could not be
-cross-checked.
+2005 Methods. The Jonsson 2005 PDF is not available on disk in the
+maintainers’ literature mirror, so weight, sex, and race breakdowns from
+the publication’s Table 1 could not be cross-checked.
 
 ``` r
 
@@ -198,7 +196,7 @@ sim <- rxode2::rxSolve(
 
 ``` r
 
-# Typical-value trajectory (no IIV, no residual error)  --  the F.2 reference
+# Typical-value trajectory (no IIV, no residual error)  --  the self-consistency reference
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_typical <- rxode2::rxSolve(
@@ -212,7 +210,7 @@ sim_typical <- rxode2::rxSolve(
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
-## F.2 self-consistency check against the DDMORE bundle
+## Self-consistency check against the DDMORE bundle
 
 The check below confirms the typical-value trajectory of the packaged
 `Jonsson_2005_disufenton` model is shape- and magnitude-consistent with
@@ -391,20 +389,21 @@ Simulated post-infusion NCA parameters by CRCL stratum (PKNCA). {.table}
   and are not used; the listing reports
   `NO. OF SIG. DIGITS IN FINAL EST.: 4.0`.
 
-- **Jonsson 2005 publication PDF is not on disk** under
-  `/home/bill/github/mab_human_consensus/literature/`, so weight, sex,
-  and race breakdowns and the publication’s Table 1 / parameter table
-  could not be cross-checked against the bundle. Operator follow-up:
-  pull the publication PDF and confirm the `population` narrative; the
+- **Jonsson 2005 publication PDF is not on disk** in the maintainers’
+  literature mirror, so weight, sex, and race breakdowns and the
+  publication’s Table 1 / parameter table could not be cross-checked
+  against the bundle. When the publication PDF is available, the
+  `population` narrative should be confirmed against it; the
   `Model_Accomodations.text` file the DDMORE flow normally relies on for
   publication mapping is missing from this bundle, so identification of
   the linked publication relied solely on the DDMODEL00000245 RDF
   abstract title
   (`"Population Pharmacokinetic Modelling and Estimation of Dosing Strategy for NXY-059, a Nitrone Being Developed for Stroke"`)
-  and the task brief’s DOI. The published abstract’s “typical clearance
-  4.54 L/h at CRCL 70 mL/min” was confirmed numerically against the
-  packaged parameters – `2.91 * (1 + 0.0187 * 30) = 4.54` – providing
-  independent corroboration of the publication mapping.
+  and the DOI supplied when this model was built. The published
+  abstract’s “typical clearance 4.54 L/h at CRCL 70 mL/min” was
+  confirmed numerically against the packaged parameters –
+  `2.91 * (1 + 0.0187 * 30) = 4.54` – providing independent
+  corroboration of the publication mapping.
 
 - **CRCL covariate semantics deviate from the canonical register
   entry.** The canonical `CRCL` in
@@ -413,10 +412,10 @@ Simulated post-infusion NCA parameters by CRCL stratum (PKNCA). {.table}
   and the slope `0.0187 / mL/min` was estimated under that raw-mL/min
   parameterisation. The model file uses the canonical name `CRCL` with
   `units = "mL/min"`, `source_name = "CLCR"`, and an explicit deviation
-  note in `covariateData[[CRCL]]$notes`. Reviewer follow-up: decide
-  whether to register a separate canonical (e.g., `CRCL_RAW`) or accept
-  the deviation, consistent with the precedent set by
-  `Li_2006_meropenem.R` (also DDMORE- source, also raw mL/min CrCl).
+  note in `covariateData[[CRCL]]$notes`. Follow-up: decide whether to
+  register a separate canonical (e.g., `CRCL_RAW`) or accept the
+  deviation, consistent with the precedent set by `Li_2006_meropenem.R`
+  (also DDMORE- source, also raw mL/min CrCl).
 
 - **Hockey-stick CRCL effect on CL.** The .mod imposes a
   piecewise-linear effect with the lower arm at zero (no CL effect of
@@ -450,8 +449,7 @@ Simulated post-infusion NCA parameters by CRCL stratum (PKNCA). {.table}
   `inst/modeldb/`. The approximate equivalent linear-space coefficient
   of variation is `sqrt(exp(0.165^2) - 1) ~= 16.6%`.
 
-- **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` section “Validation strategy by model
-  type” decision tree, leaf 1: no linked publication on disk). PKNCA
-  values shown above are informational; comparison against Jonsson
-  2005’s published NCA was not possible from the materials on disk.
+- **Validation strategy is self-consistency** (no linked publication on
+  disk). PKNCA values shown above are informational; comparison against
+  Jonsson 2005’s published NCA was not possible from the materials on
+  disk.

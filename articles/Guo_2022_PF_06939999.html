@@ -2915,7 +2915,7 @@ b.i.d.; anemia n = 1 in 8 mg q.d.; neutropenia n = 1 in 6 mg q.d.).</p>
 covariates and were not retained in the final model (drop in objective
 function value &lt; 3.84; Results, page 1621). The full per-cohort
 baseline demographics are summarised in Appendix Table S1 of the source,
-which is not on disk in this worktree.</p>
+which is not on disk.</p>
 <p>The population metadata can be inspected programmatically:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_meta</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">population</span></span>
@@ -3596,10 +3596,10 @@ parameter values can be entered verbatim from Table 1.
 <li>
 <strong>Population demographics (age, weight, sex, race,
 region)</strong> are reported in the source’s Appendix Table S1, which
-is not on disk in this worktree; the <code>population</code> field in
-the model file therefore records dosing, disease state, and DLT counts
-verbatim from the main text (Analysis Plan and Results sections) and
-leaves the demographic numerics as <code>NA_*_</code>.</li>
+is not on disk; the <code>population</code> field in the model file
+therefore records dosing, disease state, and DLT counts verbatim from
+the main text (Analysis Plan and Results sections) and leaves the
+demographic numerics as <code>NA_*_</code>.</li>
 <li>
 <strong>Steady-state SDMA reduction proxy.</strong> Source Figure 3
 reports “steady-state plasma SDMA reduction from baseline (%)” simulated

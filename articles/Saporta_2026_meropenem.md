@@ -1160,7 +1160,7 @@ stopifnot(
   digestion rate “was not significantly different from `kphag`” and
   Table 1 has no `kdig` row, so the model writes `kdig <- kphag` as a
   derived local rather than carrying a parameter the paper never
-  estimated (operator ruling, sidecar `oare_PMC13041408` q2).
+  estimated (maintainer ruling).
 - **Model time zero is 2 h after infection.** That is both the start of
   treatment and the time at which the initial susceptible counts apply.
   Figures 3 and 4 above shift the x-axis by 2 h so it reads as time
@@ -1195,13 +1195,13 @@ stopifnot(
   tabulated anywhere in the paper, so they are not carried in the model
   file – only the Figure 6 R-squared values are checkable.
 - **`IMMUNE_STATE` is a newly registered canonical covariate.** Ratified
-  with this extraction (sidecar `oare_PMC13041408` q3); see
+  by the maintainers with this extraction; see
   `inst/references/covariate-columns.md`.
 - **`kphag` was broadened, and `lv_lung` / `lq_elf_lung` newly
   registered.** The register previously reserved `kphag` for the
   threshold-gated TMDD form; the ungated bacterial-phagocytosis case is
-  now covered by the same canonical (sidecar `oare_PMC13041408` q1).
-  `lv_lung` and `lq_elf_lung` are well-formed members of the existing
+  now covered by the same canonical (maintainer decision). `lv_lung` and
+  `lq_elf_lung` are well-formed members of the existing
   `lv_<compartment>` and `lq_<destination>` families.
 - **Multi-endpoint event tables select the endpoint with `dvid`, not
   `cmt`.** With three endpoints rxode2 requires every observation row to

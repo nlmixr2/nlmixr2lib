@@ -6,8 +6,8 @@ Chen 2025 fitted the two analytes of the fixed-ratio combination product
 ceftazidime-avibactam **separately** – two one-compartment models with
 their own objective function values, their own parameter tables (Tables
 2 and 3) and their own equation pairs (Eq. 1-2 and Eq. 3-4). Following
-the `replicate-author-structure` policy the extraction is therefore two
-model files sharing this one vignette.
+the package’s policy of replicating the authors’ model structure, the
+extraction is therefore two model files sharing this one vignette.
 
 ``` r
 
@@ -327,7 +327,7 @@ subjects, Chen 2025 Table 1).
 set.seed(20250207)
 rxode2::rxSetSeed(20250207)
 
-N_COHORT <- 200L  # per arm; the skill caps this at 200
+N_COHORT <- 200L  # per arm; the per-arm cohort cap is 200
 
 drawCrcl <- function(n) {
   x <- rlnorm(n, meanlog = log(71.3), sdlog = 0.75)
@@ -457,8 +457,8 @@ Chen 2025 Table 1 (continued). {.table}
 
 ## PKNCA validation
 
-Steady-state non-compartmental analysis over the final dosing interval
-(Recipe 3), one block per analyte, grouped by treatment.
+Steady-state non-compartmental analysis over the final dosing interval,
+one block per analyte, grouped by treatment.
 
 ``` r
 

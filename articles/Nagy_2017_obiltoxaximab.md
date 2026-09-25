@@ -571,7 +571,7 @@ bacteremia penalty `exp(0) = 1` regardless of `theta1` and `theta2`.
 
 The same agreement holds across every panel of Supplementary Figure S2.
 The “digitised” columns below were read off the published figure by the
-extractor (they are not tabulated anywhere in the paper):
+maintainers (they are not tabulated anywhere in the paper):
 
 ``` r
 
@@ -587,7 +587,7 @@ figs2 <- tibble::tibble(
 
 figs2 |>
   knitr::kable(
-    caption = "Published Table S2 parameters vs. the extractor's digitisation of Supplementary Figure S2, by PTT-bacteremia quartile."
+    caption = "Published Table S2 parameters vs. the maintainers' digitisation of Supplementary Figure S2, by PTT-bacteremia quartile."
   )
 ```
 
@@ -598,7 +598,7 @@ figs2 |>
 | \[3.96, 4.87\] | 4.42 | 0.017 | 0.020 | 0.452 | 0.470 |
 | (4.87, 8.56\] | 6.18 | 0.000 | 0.002 | 0.005 | 0.100 |
 
-Published Table S2 parameters vs. the extractor’s digitisation of
+Published Table S2 parameters vs. the maintainers’ digitisation of
 Supplementary Figure S2, by PTT-bacteremia quartile. {.table}
 
 ``` r

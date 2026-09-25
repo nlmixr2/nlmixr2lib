@@ -298,9 +298,9 @@ multiplied by the LQ surviving fraction
 
 ## Assumptions and deviations
 
-- **Metadata correction (year and name).** The dispatch metadata named
-  the model `Cardilin_2017_CPT_Pharmacometrics_amp_Sys` (a
-  queue-generation artifact in which the journal name was placed in the
+- **Metadata correction (year and name).** The provisional metadata
+  named the model `Cardilin_2017_CPT_Pharmacometrics_amp_Sys` (an
+  automated-naming artifact in which the journal name was placed in the
   drug slot, and the online-first year 2017 was used). The article’s
   formal citation is *CPT Pharmacometrics Syst Pharmacol*
   **2018**;7(1):51-58 (published online 14 December 2017); 2018 is the

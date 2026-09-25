@@ -3317,12 +3317,11 @@ picomole doses (the internal unit of the depot compartment).</p>
 </h2>
 <p>This is an endogenous/mechanistic QSP model with five outputs and no
 parent- drug observation in this paper. PKNCA-style cmax / AUC
-validation is therefore not applied (see
-<code>references/endogenous-validation.md</code> in the skill). Instead
-the vignette uses the four endogenous-model validation patterns plus a
-replication of Bosch 2024 Figure 4 (cotadutide dose-response on average
-glucose) and a representative MMTT excursion at 200 ug cotadutide (the
-Ph2a top dose).</p>
+validation is therefore not applied. Instead the vignette uses the four
+endogenous-model validation patterns plus a replication of Bosch 2024
+Figure 4 (cotadutide dose-response on average glucose) and a
+representative MMTT excursion at 200 ug cotadutide (the Ph2a top
+dose).</p>
 <p>The model takes one covariate, <code>FPG</code> (per-subject baseline
 glucose in mmol/L). Cotadutide doses go to the <code>depot</code>
 compartment in pmol; MMTT meal doses go to the <code>glucose_gut</code>
@@ -3749,13 +3748,14 @@ supplement code.</li>
 <li>
 <strong>Upstream PK and 4GI sources not on disk.</strong> The
 cotadutide PK structure and individual EBE inputs are fixed from Guan et
-al. 2022 (cited in Bosch 2024 Methods Section 2.3) which is not on disk
-in this worktree; the typical values (KA = 0.343 1/h, CL = 1.04 L/h, V =
-18.7 L) are taken from the on-disk supplement S12 <code>$PK</code> block
-defaults. The 4GI system parameters are fixed from Bosch et al. 2022
-(also cited in Bosch 2024 Methods Section 2.3) which is not on disk in
-this worktree; the numeric values are taken from the on-disk supplement
-Tables S1 and S2 and the supplement S12 <code>$THETA</code> block.</li>
+al. 2022 (cited in Bosch 2024 Methods Section 2.3) which was not on disk
+when this model was built; the typical values (KA = 0.343 1/h, CL = 1.04
+L/h, V = 18.7 L) are taken from the on-disk supplement S12
+<code>$PK</code> block defaults. The 4GI system parameters are fixed
+from Bosch et al. 2022 (also cited in Bosch 2024 Methods Section 2.3)
+which was not on disk when this model was built; the numeric values are
+taken from the on-disk supplement Tables S1 and S2 and the supplement
+S12 <code>$THETA</code> block.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

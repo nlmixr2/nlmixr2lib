@@ -3397,7 +3397,7 @@ grouping.</li>
 <span><span class="co"># rxode2's simulation RNG, whose streams are partitioned per solver thread --</span></span>
 <span><span class="co"># so the etas differ between a 2-thread CI runner and a 16-thread workstation.</span></span>
 <span><span class="co"># Every assertion downstream is written to hold for any cohort the model can</span></span>
-<span><span class="co"># produce; see pattern 12 of known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20250107</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span></span>
@@ -3943,7 +3943,7 @@ scale so the model is directly comparable with
 warning for <code>cl_t50</code>. <code>cl_time_max</code>,
 <code>cl_t50</code> and <code>cl_time_hill</code> are the canonical
 names for this family in
-<code>references/parameter-names.md</code>.</li>
+<code>inst/references/parameter-names.md</code>.</li>
 <li>
 <strong>Covariate distributions are assumed.</strong> Table 2
 publishes only medians and ranges for the continuous covariates.

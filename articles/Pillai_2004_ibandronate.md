@@ -330,8 +330,8 @@ Discussion section (pages 627-628). The table below collates the
 simulated typical-value change-from-baseline at the matching time points
 alongside the paper’s narrative ranges. Differences greater than 20%
 absolute are flagged in the narrative below the table – they are not
-adjusted to match (per the extract-literature-model skill’s “Never tune
-parameter values to match a validation target” rule).
+adjusted to match (per the package’s “Never tune parameter values to
+match a validation target” rule).
 
 ``` r
 
@@ -380,7 +380,7 @@ each range.
 
 ## Assumptions and deviations
 
-- **Single .R file, K-PD final model only.** Per the skill’s “base +
+- **Single .R file, K-PD final model only.** Per the package’s “base +
   final in a model-development paper” policy, only the K-PD final model
   from Table 4 is implemented as a model file. The classical
   4-compartment PK-PD model from Table 3 is documented in the

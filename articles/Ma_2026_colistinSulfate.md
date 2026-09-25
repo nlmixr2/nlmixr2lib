@@ -471,7 +471,7 @@ vpc <- sim |>
     Q95 = quantile(sim, 0.95), .groups = "drop"
   )
 
-# Operator-digitised from Figure 3 of Ma 2026 (peak bin ~1.5 h, trough bin
+# Maintainer-digitised from Figure 3 of Ma 2026 (peak bin ~1.5 h, trough bin
 # ~11.5 h). Approximate to roughly +/- 0.05 mg/L.
 fig3_obs <- tibble::tibble(
   tad = c(1.5, 11.5),
@@ -972,7 +972,7 @@ follow from the packaged model.
   Ma 2026’s own Table 4, cell by cell, with a coefficient of variation
   of 2.2% across cells. It is not needed to use the model – the model
   itself is in mg and mg/L – only to restate the paper’s IU regimens.
-- **Figure 3 percentiles are operator-digitised.** The 5th, 50th and
+- **Figure 3 percentiles are maintainer-digitised.** The 5th, 50th and
   95th observed percentile values at 1.5 h and 11.5 h after dose were
   read off the published Figure 3 panel by on-screen digitisation, to
   roughly +/- 0.05 mg/L. They appear nowhere in the text or tables. The

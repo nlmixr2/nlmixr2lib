@@ -880,7 +880,7 @@ mg/kg cohort. {.table}
   under-predicts EBA at standard doses (simulated EBA0-2 for 10 mg/kg is
   ~0.04 log10 CFU/mL/day vs. Wicha 2018 reported median 0.181). The
   discrepancy stems from the PAE ODE ambiguity; the original paper’s R /
-  NONMEM code is not on disk in this worktree, so the precise
+  NONMEM code was not on disk when this model was built, so the precise
   quantitative reproduction requires either the supplement or author
   correspondence. Downstream users who require quantitative fidelity to
   the paper’s Figure 4a should refit the PAE parameters against the

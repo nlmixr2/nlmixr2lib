@@ -914,7 +914,7 @@ stopifnot(max(mass_balance$rel_diff) < 0.02)
   Supplementary Figure 1A was examined specifically to adjudicate this
   and its x-axis compresses the entire 0.5-8 h intensive-sampling window
   onto one tick, so observed Tmax cannot settle it. The
-  mean-transit-time reading was ratified by the operator. It matters
+  mean-transit-time reading was ratified by the maintainers. It matters
   only for the QTc sub-model, whose output is peak-concentration driven.
 
 - **Slope units in the QTc model.** Supplementary Table 2 labels the row

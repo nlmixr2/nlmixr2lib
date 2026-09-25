@@ -3100,12 +3100,12 @@ exercised. Original observed data are not publicly available.</p>
 <p>Three dosing regimens are simulated for the figure-replication panel:
 10 mg ITV every 4 weeks (q4w), every 6 weeks (q6w), and every 8 weeks
 (q8w), each for 16 weeks of dosing followed by a 4-week tail. Each
-regimen is given its own disjoint <code>id</code> block (per
-<code>vignette-template.md</code>’s multi-cohort guidance) so
-<code>rxSolve</code> does not silently merge subjects across regimens.
-The observation grid is dense in the first week (where vitreous-to-serum
-egress dominates) and coarse afterward to keep the simulation under the
-pkgdown vignette time budget.</p>
+regimen is given its own disjoint <code>id</code> block (per the
+package’s multi-cohort guidance) so <code>rxSolve</code> does not
+silently merge subjects across regimens. The observation grid is dense
+in the first week (where vitreous-to-serum egress dominates) and coarse
+afterward to keep the simulation under the pkgdown vignette time
+budget.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">horizon_days</span> <span class="op">&lt;-</span> <span class="fl">16</span> <span class="op">*</span> <span class="fl">7</span> <span class="op">+</span> <span class="fl">28</span>          <span class="co"># 16 wk dosing + 4 wk tail</span></span>
 <span><span class="va">obs_times</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>

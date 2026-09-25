@@ -478,7 +478,7 @@ ggplot(sim_scan, aes(time, pmax(CAR_perUL, 1e-4),
   fraction), `TUM_CELLS0` (initial tumor cells), `NDIV` (T-cell
   expansion factor), and `FMEM` (fraction of effector T-cells that
   become memory) had no canonical entries when this model was first
-  drafted. All four were ratified by the operator and added to
+  drafted. All four were ratified by the maintainers and added to
   `inst/references/covariate-columns.md` as `scope: specific` canonicals
   in the Oncology section, so
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)

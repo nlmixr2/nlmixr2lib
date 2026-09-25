@@ -3114,7 +3114,7 @@ cohort cap.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="va">dose_mg</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>, dvid <span class="op">=</span> <span class="cn">NA_integer_</span>, <span class="va">WT</span><span class="op">)</span></span>
 <span><span class="co"># Observation rows use dvid to select the multi-output slot (1 = Cc, 2 = platelet)</span></span>
 <span><span class="co"># rather than referencing the algebraic observable by name in `cmt` -- this keeps</span></span>
-<span><span class="co"># ODE-state compartment numbering stable per the CLAUDE.md nlmixr2 conventions.</span></span>
+<span><span class="co"># ODE-state compartment numbering stable per the nlmixr2 conventions.</span></span>
 <span><span class="va">hv_obs_ev</span> <span class="op">&lt;-</span> <span class="va">hv_subj</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">WT</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">hv_times</span><span class="op">)</span> <span class="op">|&gt;</span></span>

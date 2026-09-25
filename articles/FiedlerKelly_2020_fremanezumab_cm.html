@@ -2901,7 +2901,7 @@ acute-medication days,</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext mathvariant="normal">BL</mtext><mi>i</mi></msub><mo>=</mo><msub><mi>θ</mi><mrow><mi>B</mi><mi>L</mi></mrow></msub><mo>+</mo><msub><mi>θ</mi><mi>S</mi></msub><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mspace width="0.167em"></mspace><mtext mathvariant="normal">ACUTE_MED_DAYS</mtext><mo>−</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>η</mi><mrow><mtext mathvariant="normal">BL</mtext><mo>,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\text{BL}_i = \theta_{BL} + \theta_{S}\,\max(0,\,\text{ACUTE\_MED\_DAYS} - 5) + \eta_{\text{BL},i}</annotation></semantics></math></p>
 <p>(breakpoint at 5 d/mo). <code>t</code> is in months (28-day periods).
 The placebo Hill function and power-of-Cav drug effect were
-operator-confirmed from Figure 2B; parameter values come from
+maintainer-confirmed from Figure 2B; parameter values come from
 Supplementary Table S4.</p>
 </div>
 <div class="section level2">
@@ -3027,8 +3027,8 @@ Patients With CM</td>
 <code>CavMedian</code> (centering value used inside
 <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>)</td>
 <td>69 µg/mL</td>
-<td>Visually inferred from Figure 2B (operator); not numerically listed
-in S4. See Assumptions and deviations.</td>
+<td>Visually inferred from Figure 2B by the maintainers; not numerically
+listed in S4. See Assumptions and deviations.</td>
 </tr>
 <tr class="odd">
 <td>IIV <code>bl_cm</code> / <code>slope_AM</code> (shared additive
@@ -3266,7 +3266,7 @@ contribution at typical baseline 10.2 d is 10.2 × 0.157 × (70/69)^0.328
 the EM vignette: there is no concentration profile to integrate (Cav is
 a covariate), and the response is a count of days per month. The
 validation strategy is therefore the narrative-comparison table above,
-mirroring the operator-confirmed Figure 2B interpretation.</p>
+mirroring the maintainer-confirmed Figure 2B interpretation.</p>
 </div>
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
@@ -3276,26 +3276,24 @@ mirroring the operator-confirmed Figure 2B interpretation.</p>
 <strong>Time unit is months (28-day periods).</strong> As in the EM
 vignette.</li>
 <li>
-<strong>Placebo time-course form is operator-confirmed from Figure
+<strong>Placebo time-course form is maintainer-confirmed from Figure
 2B.</strong> Supplementary Table S4 lists
 <code>Maximum response (placebo)</code>, <code>T50 placebo</code>, and
 <code>Hill coefficient for placebo</code>, all FIXED. The Hill-in-time
 form <code>placebo_eff(t) = MaxPLC * t^Hill / (T50^Hill + t^Hill)</code>
-was visually read from Figure 2B by the operator during sidecar request
-3 of this extraction.</li>
+was visually read from Figure 2B by the maintainers.</li>
 <li>
 <strong><code>CavMedian = 69 µg/mL</code> is visually inferred from
 Figure 2B.</strong> The drug-effect intercept
 <code>drugInt = 0.157</code> is described in S4 as the “fractional
 reduction from baseline at median fremanezumab Cav”, but the median Cav
-itself is <em>not</em> listed numerically in S4 nor in the trimmed text.
-The value 69 µg/mL was read from the x-axis position of the per-regimen
-median markers in Figure 2B (operator decision in sidecar request 3,
-answer <code>cm_cavmed = USER</code>) and reproduces the paper’s
-narrative drug-effect ranges (12-16% across Cav 28-70 µg/mL; 18-19% at
-Cav 120 µg/mL). Users who can recover the exact published Cav_median
-from the analysis dataset should override <code>CavMedian</code>
-accordingly when the model is consumed.</li>
+itself is <em>not</em> listed numerically in S4 nor in the extracted
+text. The value 69 µg/mL was read from the x-axis position of the
+per-regimen median markers in Figure 2B (maintainer decision) and
+reproduces the paper’s narrative drug-effect ranges (12-16% across Cav
+28-70 µg/mL; 18-19% at Cav 120 µg/mL). Users who can recover the exact
+published Cav_median from the analysis dataset should override
+<code>CavMedian</code> accordingly when the model is consumed.</li>
 <li>
 <strong>Cav as a per-period covariate, not a model output.</strong>
 The CAV column must be supplied per row by the user, derived externally

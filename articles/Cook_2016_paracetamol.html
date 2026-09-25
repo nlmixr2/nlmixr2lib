@@ -2877,11 +2877,10 @@ Model Repository entry DDMODEL00000271.</li>
 <p>This vignette validates the packaged
 <code>Cook_2016_paracetamol</code> model against the DDMORE Foundation
 Model Repository entry <strong>DDMODEL00000271</strong>, the source from
-which it was extracted. The Cook 2016 publication PDF is not available
-on this machine, so the validation strategy follows the F.2
-self-consistency recipe from the <code>extract-literature-model</code>
-skill: re-simulate the bundle’s structural model with the published
-final estimates and confirm the trajectory is shape- and
+which it was extracted. The Cook 2016 publication PDF was not available
+when this model was built, so the validation strategy is a
+self-consistency check: re-simulate the bundle’s structural model with
+the published final estimates and confirm the trajectory is shape- and
 magnitude-consistent with the source ODE.</p>
 </div>
 <div class="section level2">
@@ -3396,19 +3395,18 @@ prematurity).</p>
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
 <ul>
-<li><p><strong>Validation strategy is F.2 self-consistency</strong> (per
-<code>references/ddmore-source.md</code> Section “Validation strategy by
-model type” decision tree, leaf 1: no linked publication on disk). PKNCA
-values shown above are informational; comparison against Cook 2016’s
-published NCA / figures was not possible because the publication PDF is
-not on disk under
-<code>/home/bill/github/mab_human_consensus/literature/</code>.</p></li>
+<li><p><strong>Validation strategy is self-consistency</strong> (the
+package’s strategy for a DDMORE-sourced model with no linked publication
+on disk). PKNCA values shown above are informational; comparison against
+Cook 2016’s published NCA / figures was not possible because the
+publication PDF is not on disk in the maintainers’ literature
+mirror.</p></li>
 <li><p><strong>Cook 2016 publication PDF is not on disk</strong>, so
 demographic ranges (age range, weight range, sex balance, race /
 ethnicity, region, indication) and any published parameter table or
 figure could not be cross-checked. Where these fields appear in the
 model’s <code>population</code> metadata they are recorded as “Not
-extractable from DDMORE bundle”. Operator follow-up: pull the
+extractable from DDMORE bundle”. Maintainer follow-up: pull the
 publication PDF and confirm the population narrative; cross-check the
 <code>.lst</code> FINAL estimates against any published parameter table
 (and re-verify the unit reading of the <code>THETA(2..4)/1000</code>

@@ -3512,10 +3512,9 @@ dose and reports time relative to that first dose.</p>
 <h2 id="validation-1---untreated-steady-state-holds">Validation 1 - untreated steady state holds<a class="anchor" aria-label="anchor" href="#validation-1---untreated-steady-state-holds"></a>
 </h2>
 <p>An untreated cTTP patient has no drug input, so every state must
-settle and stay settled. This is the steady-state check of
-<code>references/endogenous-validation.md</code>: it catches a sign
-error in any production/loss term, a mistyped rate constant, or a
-missing reaction.</p>
+settle and stay settled. This is the steady-state check for endogenous
+models: it catches a sign error in any production/loss term, a mistyped
+rate constant, or a missing reaction.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_ss</span> <span class="op">&lt;-</span> <span class="fu">no_event</span><span class="op">(</span><span class="fu">subject_params</span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">77.35455633</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ev_ss</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">6000</span>, by <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

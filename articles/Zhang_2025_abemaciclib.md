@@ -647,7 +647,7 @@ mod
 #>     totalCdk6Csf    <- free_cdk6_csf + complex_cdk6_abe_csf + complex_cdk6_m2_csf + complex_cdk6_m18_csf + complex_cdk6_m20_csf
 #>   })
 #> }
-#> <environment: 0x55bbcc632b60>
+#> <environment: 0x55d4173d9a00>
 ```
 
 Abemaciclib (ABE) is a CDK4/6 inhibitor used in
@@ -1543,8 +1543,7 @@ discriminator – it inherits the CSF under-prediction described next. The
 identification rests on the paper’s own occupancy statements, not on
 this reconstruction’s numbers.
 
-This choice was ratified by the operator (task `oare_PMC11904693`,
-sidecar request-001, answer D, 2026-08-20). To explore an alternative,
+This choice was ratified by the maintainers. To explore an alternative,
 change the single `co <- occCdk6Csf / 100` line in the model file.
 
 ### Deviation: CSF CDK6 occupancy falls short at 200 mg BID
@@ -1669,7 +1668,6 @@ one and hide the gap.
   main-text Table 1, and S1-S3 are validation and sensitivity *output*.
   Had S1 been available it would have supplied measured metabolite
   exposure ratios in place of the 13% / 5% / 26% mass split used above.
-  Logged for operator acquisition.
 - **No erratum.** A search of the ACS landing page and PubMed found no
   correction notice for this article.
 - **What the paper concludes about these biomarkers.** The Discussion

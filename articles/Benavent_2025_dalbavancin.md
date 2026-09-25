@@ -33,7 +33,7 @@ model.
 ``` r
 
 # rxode2::rxode() resolves the model function to an rxUi without depending on
-# ini()/model() being attached (see known-vignette-failure-patterns 6 and 7).
+# ini()/model() being attached.
 mod <- rxode2::rxode(readModelDb("Benavent_2025_dalbavancin"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 mod

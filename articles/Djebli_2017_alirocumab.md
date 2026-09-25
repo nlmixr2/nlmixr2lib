@@ -241,7 +241,7 @@ Single-dose NCA for total alirocumab over the first dosing interval (day
 0 to day 14) using PKNCA. PKNCA’s AUC machinery needs a non-NA time-zero
 concentration; the simulation already contains time = 0 (pre-dose, Cc =
 0), so a defensive bind_rows is unnecessary here but the `!is.na(Cc)`
-filter follows the canonical recipe.
+filter is kept as standard PKNCA practice.
 
 ``` r
 
@@ -385,6 +385,5 @@ outputs in Supplementary Table 3.
   1.56). This effect was attributed to collinearity with statin
   coadministration in the smaller cohort and replaced by STATIN-on-CLL
   in the expanded n = 2870 model (paper Sect. 4 Discussion). Per the
-  policy of packaging only the final model
-  (`references/replicate-author-structure.md`), the initial n = 527
-  model is not included as a separate `.R` file.
+  package’s policy of packaging only the final model, the initial n =
+  527 model is not included as a separate `.R` file.

@@ -3215,7 +3215,7 @@ effect on clearance is drawn by rxode2.</p>
 <span><span class="co"># seed rxode2's simulation RNG, whose streams are partitioned per solver thread,</span></span>
 <span><span class="co"># so the eta draws differ between a 2-core CI runner and a 16-thread</span></span>
 <span><span class="co"># workstation. Every assertion downstream is written to hold for any cohort the</span></span>
-<span><span class="co"># model can produce; see pattern 12 of known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20250717</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_total</span> <span class="op">&lt;-</span> <span class="fl">250L</span>   <span class="co"># splits into ~184 q24h and ~66 q36h; both arms stay under the 200/arm cap</span></span>

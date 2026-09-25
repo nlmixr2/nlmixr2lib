@@ -2888,17 +2888,15 @@ CL/F, V1/F, V2/F, Q/F): <code>theta_i = tvtheta * exp(eta_i)</code>.
 However, the paper does NOT report any per-parameter omega magnitudes -
 Table 4 lists only the fixed-effect THETAs and the single 42.4% residual
 variability number - and no supplement exists (Europe PMC:
-<code>hasSuppl = N</code> for PMC11592880). Per operator decision
-(extraction-task sidecar
-<code>frompeople-1552-azechi_2024_tamibarotene_pediatric</code>
-request-001, q1 = A, 2026-06-21), the packaged model encodes all five
-eta terms as <code>fixed(0)</code> so the published structural IIV
-declaration is preserved while remaining faithful to the absence of
-reported variance values. The model is therefore a deterministic
-typical-value forward predictor; between-subject variability seen in the
-simulations below arises only from the cohort’s BSA distribution, not
-from random eta draws. See the <a href="#assumptions-and-deviations">Assumptions and deviations</a>
-section.</p>
+<code>hasSuppl = N</code> for PMC11592880). Per the maintainers’
+decision, the packaged model encodes all five eta terms as
+<code>fixed(0)</code> so the published structural IIV declaration is
+preserved while remaining faithful to the absence of reported variance
+values. The model is therefore a deterministic typical-value forward
+predictor; between-subject variability seen in the simulations below
+arises only from the cohort’s BSA distribution, not from random eta
+draws. See the <a href="#assumptions-and-deviations">Assumptions and
+deviations</a> section.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3021,8 +3019,8 @@ Discussion</td>
 <td>NOT REPORTED -&gt; <code>fixed(0)</code>
 </td>
 <td>Azechi 2024 Methods Section 2.6 describes exponential IIV on all
-five PK parameters but no omega magnitudes are tabulated; operator
-sidecar request-001 q1 = A</td>
+five PK parameters but no omega magnitudes are tabulated; maintainer
+decision</td>
 </tr>
 <tr class="odd">
 <td>2-compartment oral ODE structure</td>
@@ -3557,9 +3555,7 @@ parameters (ka, CL/F, V1/F, V2/F, Q/F) as
 NOT tabulate any per-parameter omega magnitudes - Table 4 lists only the
 fixed-effect THETAs and the single 42.4% residual variability number -
 and no supplement exists (Europe PMC: <code>hasSuppl = N</code> for
-PMC11592880). Per operator decision (extraction-task sidecar
-<code>frompeople-1552-azechi_2024_tamibarotene_pediatric</code>
-request-001, q1 = A, 2026-06-21), the packaged model encodes
+PMC11592880). Per the maintainers’ decision, the packaged model encodes
 <code>etalka ~ fixed(0)</code>, <code>etalcl ~ fixed(0)</code>,
 <code>etalvc ~ fixed(0)</code>, <code>etalvp ~ fixed(0)</code>, and
 <code>etalq ~ fixed(0)</code> so the published structural IIV

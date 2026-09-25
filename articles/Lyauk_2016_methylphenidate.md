@@ -302,10 +302,9 @@ Because AUC(0-inf) for this model is exactly `Dose * F / CL`, the
 **median** of each arm is the ratio of typical CL values and carries no
 Monte-Carlo noise. The arms are therefore reproduced deterministically
 (`zeroRe()`), which makes the gate exact and identical on any machine –
-unlike a cohort median, which depends on the solver thread count (see
-pattern 12 of the skill’s known-failure list). The prediction
-*intervals*, which are genuinely cohort quantities, are checked
-separately below.
+unlike a cohort median, which depends on the solver thread count. The
+prediction *intervals*, which are genuinely cohort quantities, are
+checked separately below.
 
 ``` r
 
@@ -402,7 +401,7 @@ published <- tibble::tribble(
 )
 
 # Guard the join: a label typo would otherwise silently drop rows and leave a
-# gate that passes because it had nothing to test (known-failure pattern 10).
+# gate that passes because it had nothing to test.
 stopifnot(all(published$arm %in% nca_arm_wide$arm))
 
 cmp <- published |>

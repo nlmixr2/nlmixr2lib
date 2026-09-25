@@ -271,9 +271,9 @@ solve_qsp <- function(params, events, keep = character()) {
 ## Validation 1 - untreated steady state holds
 
 An untreated cTTP patient has no drug input, so every state must settle
-and stay settled. This is the steady-state check of
-`references/endogenous-validation.md`: it catches a sign error in any
-production/loss term, a mistyped rate constant, or a missing reaction.
+and stay settled. This is the steady-state check for endogenous models:
+it catches a sign error in any production/loss term, a mistyped rate
+constant, or a missing reaction.
 
 ``` r
 

@@ -667,7 +667,7 @@ directly:
 
 ``` r
 
-# Operator-digitised from Figure 3, panel (b), 12 kg. Precision roughly
+# Maintainer-digitised from Figure 3, panel (b), 12 kg. Precision roughly
 # +/- 3 PTA points; used only for this scale-invariant slope check.
 pub_pta <- c(44, 77, 92, 98, 99.5) / 100
 pub_dose <- c(30, 40, 50, 60, 70)

@@ -37,8 +37,7 @@ invitro_models <- c(
 invivo_model <- "Almond_2016_rifampicin_invivo"
 
 # Resolve each model to an rxUi exactly once. readModelDb() returns the model
-# FUNCTION, so it must be passed through rxode2::rxode() before any `$` access
-# (pattern 7 of known-vignette-failure-patterns.md).
+# FUNCTION, so it must be passed through rxode2::rxode() before any `$` access.
 uis <- lapply(c(invitro_models, invivo = invivo_model),
               function(nm) rxode2::rxode(readModelDb(nm)))
 
@@ -520,12 +519,11 @@ donors <- bind_rows(lapply(names(invitro_models), donor_sim))
 # set, the realised-to-published arithmetic-CV ratio reached 3.6, and a band as
 # wide as [0.6, 1.6] still failed about 1% of the time. Because rxode2 draws a
 # different cohort per solver-thread count, an assertion that fails 1% of the
-# time locally fails intermittently in CI (pattern 12 of
-# known-vignette-failure-patterns.md). The log-scale SD has relative standard
-# error 1/sqrt(2n) = 5% REGARDLESS of omega and is not tail-dominated, so it
-# supports a TIGHTER band (25%, i.e. 5 standard errors) than the arithmetic CV
-# supports at any width. The arithmetic CV is still reported below for
-# comparison against the published S.D.; it is simply not asserted on.
+# time locally fails intermittently in CI. The log-scale SD has relative
+# standard error 1/sqrt(2n) = 5% REGARDLESS of omega and is not tail-dominated,
+# so it supports a TIGHTER band (25%, i.e. 5 standard errors) than the
+# arithmetic CV supports at any width. The arithmetic CV is still reported below
+# for comparison against the published S.D.; it is simply not asserted on.
 realised <- donors |>
   group_by(inducer) |>
   summarise(across(c(emax_activity, ec50_activity, emax_mrna, ec50_mrna),
@@ -628,11 +626,11 @@ the paper never reports.
 
 ``` r
 
-# This model has NO etas, so it needs neither zeroRe() nor `omega = NA`
-# (pattern 9 of known-vignette-failure-patterns.md). Passing `omega = NA` to an
-# eta-free model is an error on the released rxode2 (5.1.6 -- "invalid 'times'
-# argument"); it is tolerated only on the unreleased 5.1.7. The in vitro solves
-# above DO keep `omega = NA` because those models carry etas.
+# This model has NO etas, so it needs neither zeroRe() nor `omega = NA`.
+# Passing `omega = NA` to an eta-free model is an error on the released rxode2
+# (5.1.6 -- "invalid 'times' argument"); it is tolerated only on the
+# unreleased 5.1.7. The in vitro solves above DO keep `omega = NA` because
+# those models carry etas.
 ev_iv <- data.frame(id = 1L, time = 0:3, evid = 0,
                     CP_RIF_UM = c(0, 0.32, 5, 1e6))
 iv <- rxode2::rxSolve(uis[["invivo"]], ev_iv,

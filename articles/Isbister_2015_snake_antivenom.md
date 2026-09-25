@@ -187,8 +187,7 @@ kg (Table 1).
 # set.seed() seeds R's RNG, not rxode2's. rxode2's streams are partitioned per
 # solver thread, so this cohort is reproducible on this machine and different
 # on a machine with a different thread count. Every assertion below is written
-# to hold for any cohort the model can produce (see
-# references/known-vignette-failure-patterns.md pattern 12).
+# to hold for any cohort the model can produce.
 set.seed(20150702)
 rxode2::rxSetSeed(20150702)
 
@@ -592,7 +591,7 @@ stopifnot(
   !anyNA(mb$pct_diff),
   # Pure numerical error: both sides use the SAME drawn parameters, so this is
   # trapezoidal + terminal-extrapolation error only and a tight all() bound is
-  # correct here (see CLAUDE.md on vignette assertions).
+  # correct here.
   max(abs(mb$pct_diff)) < 3
 )
 

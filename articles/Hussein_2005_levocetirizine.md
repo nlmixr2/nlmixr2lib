@@ -471,6 +471,5 @@ adjustment, both of which broaden the published range).
 - Hussein 2005 was received 5 February 2004 and accepted 30 July 2004;
   the paper was published in volume 59 of the British Journal of
   Clinical Pharmacology in 2005 (DOI 10.1111/j.1365-2125.2005.02242.x).
-  The task metadata supplied at dispatch listed year 2004 with the
-  journal name in the drug field; both fields were corrected per Phase 1
-  step 2 of the extract-literature-model skill.
+  The metadata supplied when this model was built listed year 2004 with
+  the journal name in the drug field; both fields were corrected.

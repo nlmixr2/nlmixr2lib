@@ -3027,7 +3027,7 @@ duration directly.</p>
 <span></span>
 <span><span class="co"># Helper: build one cohort as a self-contained event table.</span></span>
 <span><span class="co"># id_offset shifts subject IDs so multiple cohorts can be bind_rows()-ed</span></span>
-<span><span class="co"># without colliding subject keys (see vignette-template Notes).</span></span>
+<span><span class="co"># without colliding subject keys.</span></span>
 <span><span class="va">make_cohort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">dose_ug</span>, <span class="va">dose_times</span>, <span class="va">obs_times</span>, <span class="va">wt_median</span>, <span class="va">dis_healthy</span>,</span>
 <span>                        <span class="va">occ_at_time</span>, <span class="va">cohort_label</span>, <span class="va">id_offset</span> <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
@@ -3433,9 +3433,9 @@ and bilirubin were screened as univariate covariates but not retained
 <code>WT</code>, <code>DIS_HEALTHY</code>, and <code>OCC</code>.</li>
 <li>
 <strong>DOI.</strong> The DOI in the <code>reference</code> field
-(<code>10.1111/j.1365-2125.2003.02064.x</code>) was supplied by the
-dispatcher’s task metadata. The DOI string is not visible inside the
-on-disk PDF trimmed-markdown excerpt (the PMC-XML / PDF preprocessor
+(<code>10.1111/j.1365-2125.2003.02064.x</code>) was supplied with the
+metadata used to build this model. The DOI string is not visible inside
+the text extracted from the on-disk PDF (the PMC-XML / PDF preprocessor
 strips the copyright header where Wiley typically prints DOI). It is
 presented here unverified against the publisher’s landing page; users
 who need a citable identifier should cross-check against the journal’s

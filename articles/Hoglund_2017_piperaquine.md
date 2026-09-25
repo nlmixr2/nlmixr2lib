@@ -543,8 +543,8 @@ with Hoglund 2017 Table 3 median 28.1 ng/mL. {.table}
 - **Dose-occasion F effect is encoded as additive linear in `OCC - 1`.**
   Hoglund 2017 Methods page 5 and Results page 7 describe the
   per-occasion bioavailability effect as a 23.7% increase between
-  consecutive doses but do not write out the algebraic form in the
-  trimmed-markdown source. The package model encodes the increment
+  consecutive doses but do not write out the algebraic form in the text
+  extracted from the PDF. The package model encodes the increment
   additively: `F_OCC = 1 + 0.237 * (OCC - 1)`, so dose 1 has F = 1.000,
   dose 2 has F = 1.237, and dose 3 has F = 1.474. The principal
   alternative reading is multiplicative compounding
@@ -608,10 +608,9 @@ with Hoglund 2017 Table 3 median 28.1 ng/mL. {.table}
 - **Single residual error term.** The paper used an additive residual
   error model on the natural logarithm of the observed concentration,
   which maps to proportional residual error in the linear concentration
-  space (see `references/parameter-names.md` section ‘Residual error’).
-  The package model encodes this as `propSd <- sqrt(0.115) ~= 0.339`;
-  the SD applies on the log scale and equals the proportional CV in
-  linear space to first order.
+  space. The package model encodes this as
+  `propSd <- sqrt(0.115) ~= 0.339`; the SD applies on the log scale and
+  equals the proportional CV in linear space to first order.
 
 - **Bioavailability anchor.** Relative bioavailability F is structurally
   fixed at 1 in the source paper (Methods page 5: ‘The bioavailability

@@ -3229,8 +3229,7 @@ Table 1 (mean age 60.9 years; mean total body weight 65.6 kg; mean CrCl
 <span>  <span class="fu">make_events</span><span class="op">(</span><span class="va">covs_all</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Cheap regression guard for the disjoint-id property; see</span></span>
-<span><span class="co"># references/vignette-template.md Notes "Multi-cohort simulations".</span></span>
+<span><span class="co"># Cheap regression guard for the disjoint-id property.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -3360,7 +3359,7 @@ sub-groups.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="va">t_tad</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Defensive time-zero ensure (pknca-recipes.md "Time-zero records").</span></span>
+<span><span class="co"># Defensive time-zero ensure (PKNCA's AUC interval starts at time zero).</span></span>
 <span><span class="va">sim_for_nca</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_for_nca</span>,</span>
 <span>  <span class="va">sim_for_nca</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3530,7 +3529,7 @@ validation target is the PT05 patient cohort.</li>
 <li>
 <strong>IBW formula in the virtual cohort.</strong> The source paper
 references a Devine-family IBW formula [12] but does not transcribe the
-formula in the trimmed methods text. The cohort builder uses the
+formula in the extracted methods text. The cohort builder uses the
 metric-units Devine variant (men 50 + 0.91 * (HT_cm - 152.4); women 45.5
 + 0.91 * (HT_cm - 152.4)) to derive IBW from a simulated HT_cm.
 Per-paper IBW is recommended when a user has access to the source

@@ -3102,7 +3102,7 @@ post-operative doses.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260724L</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span>  <span class="co"># per the extract-literature-model skill's &lt;=200/arm cap</span></span>
+<span><span class="va">n_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span>  <span class="co"># within the 200-subject per-arm cohort cap</span></span>
 <span></span>
 <span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_arm</span><span class="op">)</span></span>
 <span><span class="va">wts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_arm</span>, mean <span class="op">=</span> <span class="fl">53.6</span>, sd <span class="op">=</span> <span class="fl">8.0</span><span class="op">)</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fl">90</span><span class="op">)</span></span>
@@ -3286,8 +3286,7 @@ CL. For a 70 kg subject on 3.5 mg R-methadone (0.05 mg/kg per enantiomer
 i.e. 160 ug<em>h/L (or 160 ng</em>h/mL).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_nca</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sim</span>, <span class="va">enant</span>, <span class="va">tau_start</span> <span class="op">=</span> <span class="fl">72</span>, <span class="va">tau_end</span> <span class="op">=</span> <span class="fl">84</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># Ensure a time = tau_start row exists per id for the AUC start (see the</span></span>
-<span>  <span class="co"># extract-literature-model skill's pknca-recipes for the time-zero rule).</span></span>
+<span>  <span class="co"># Ensure a time = tau_start row exists per id for the AUC start.</span></span>
 <span>  <span class="va">conc_df</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, Cc <span class="op">=</span> <span class="fl">1000</span> <span class="op">*</span> <span class="va">Cc</span>,           <span class="co"># ng/mL</span></span>

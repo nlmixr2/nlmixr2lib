@@ -3173,8 +3173,7 @@ tight bounds are appropriate.</p>
 <span><span class="va">nM_to_ugmL</span> <span class="op">&lt;-</span> <span class="va">MW_MG1113</span> <span class="op">*</span> <span class="fl">1e-9</span> <span class="op">*</span> <span class="fl">1e3</span>     <span class="co"># 1 nM = 0.14536 ug/mL</span></span>
 <span></span>
 <span><span class="co"># A time grid dense enough to resolve the steep early distribution phase (an</span></span>
-<span><span class="co"># under-resolved grid understates AUC by several percent; see pattern 11 of</span></span>
-<span><span class="co"># the known-vignette-failure-patterns reference).</span></span>
+<span><span class="co"># under-resolved grid understates AUC by several percent).</span></span>
 <span><span class="va">obs_grid</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">tmax</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.002</span><span class="op">)</span>,</span>

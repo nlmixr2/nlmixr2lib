@@ -184,7 +184,7 @@ deviations*.
 # set.seed() seeds R's RNG, not rxode2's; rxode2 partitions its streams per
 # solver thread, so a 2-core CI runner draws a different cohort than a
 # 16-thread workstation. Every assertion below is written to hold for any
-# cohort the model can produce (see known-vignette-failure-patterns.md #12).
+# cohort the model can produce.
 set.seed(20260912)
 rxode2::rxSetSeed(20260912)
 

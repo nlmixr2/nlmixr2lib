@@ -3721,9 +3721,9 @@ distribution.</caption>
 </table>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Only the claims the paper states as absolutes are gated, and as proportions</span></span>
-<span><span class="co"># with headroom rather than as exact 0 / 100 (see pattern 12 of</span></span>
-<span><span class="co"># known-vignette-failure-patterns.md). The two treatment-target percentages are</span></span>
-<span><span class="co"># NOT gated: they depend on a covariate distribution the paper does not report.</span></span>
+<span><span class="co"># with headroom rather than as exact 0 / 100. The two treatment-target</span></span>
+<span><span class="co"># percentages are NOT gated: they depend on a covariate distribution the paper</span></span>
+<span><span class="co"># does not report.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">day14</span><span class="op">$</span><span class="va">ITZ</span> <span class="op">&gt;</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.95</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">day14</span><span class="op">$</span><span class="va">SUM</span> <span class="op">&gt;</span> <span class="fl">1.0</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.95</span>,</span>

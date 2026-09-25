@@ -558,13 +558,13 @@ ggplot(wk6, aes(x = RCFB6_SLD)) +
 ![](Bruno_2012_capecitabine_docetaxel_mbc_files/figure-html/figureS2-1.png)
 
 The panels of Supplementary Figure S2 carry the observed quartiles as
-vertical reference lines. Reading them off the figure (operator
+vertical reference lines. Reading them off the figure (maintainer
 digitisation, not a tabulated value, so treat the numbers as
 approximate) gives the comparison below.
 
 ``` r
 
-# Operator digitisation of the vertical observed-value lines in Bruno 2012
+# Maintainer digitisation of the vertical observed-value lines in Bruno 2012
 # Supplementary Figure S2. Panel A = docetaxel alone, panel B = docetaxel +
 # capecitabine 825 mg/m^2, panel C = docetaxel + capecitabine 1,250 mg/m^2.
 # Approximate to about +/- 0.02; not a tabulated source value.
@@ -821,7 +821,7 @@ source paper’s own published worked examples (Check 1).
   baseline tumor size.
 - **Supplementary Figure S2 observed values.** The three observed
   quartiles per panel are drawn as vertical lines with no accompanying
-  table, so the values in the comparison table above are an operator
+  table, so the values in the comparison table above are a maintainer
   digitisation of the figure (approximately +/- 0.02), not a
   source-tabulated number. They are used for orientation only; no
   assertion in this vignette depends on them.

@@ -323,7 +323,7 @@ fig3 <- rxode2::rxSolve(
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
 
-# Read off Figure 3A of Zhang 2024 (operator digitisation of the published
+# Read off Figure 3A of Zhang 2024 (maintainer digitisation of the published
 # panel; the two series are the only data the panel shows).
 fig3_published <- tibble::tribble(
   ~WT, ~arm,                    ~cl_per_kg_published,
@@ -961,8 +961,7 @@ bid_cmp <- dplyr::inner_join(bid, qd, by = c("WT", "dose_mgkgday"))
 # quadrature rather than on the 200-subject cohorts: at 40 kg the once-daily
 # trough sits almost exactly at the geometric centre of the window, so the two
 # regimens are within a point of each other there and the ORDERING of two
-# sampled proportions would be a coin flip (see pattern 12 of the
-# known-vignette-failure-patterns reference). At the heavy end the gap is large
+# sampled proportions would be a coin flip. At the heavy end the gap is large
 # and unambiguous.
 bid_direction <- tibble::tibble(WT = c(80, 100, 120)) |>
   dplyr::mutate(
@@ -1081,7 +1080,7 @@ the same total daily dose. Zhang 2024 Figure 5C reports 96.3-99.2% for
   figures.
 
 - **Digitised reference values.** The Figure 3A and Figure 5 reference
-  columns were read from the published panels by the operator. Where
+  columns were read from the published panels by the maintainers. Where
   Table 4 prints the extremes of a curve it agrees with those reads
   (80.1-86.8%, 80.1-85.9% and 90.7-95.5% for the three recommended
   once-daily cells), which bounds the digitisation error at roughly 1

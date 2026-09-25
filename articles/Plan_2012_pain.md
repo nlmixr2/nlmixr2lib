@@ -231,13 +231,13 @@ Effect of CONMED_PARA = 1 on the typical pain score lambda. {.table}
 ## Assumptions and deviations
 
 - **Plan 2012 publication not on disk for cross-check.** The linked
-  paper (<doi:10.1038/clpt.2011.301>) was not present anywhere under
-  `/home/bill/github/mab_human_consensus/literature/` at extraction
-  time. Final-estimate values come solely from the DDMORE bundle’s
+  paper (<doi:10.1038/clpt.2011.301>) was not present anywhere in the
+  maintainers’ literature mirror at extraction time. Final-estimate
+  values come solely from the DDMORE bundle’s
   `Output_real_likert_pain_count.lst` MAXEVAL=0 echo of
   `Executable_likert_pain_count.mod`. The published Plan 2012 tables
   could not be inspected to confirm parameter signs and magnitudes; if
-  the operator subsequently obtains the PDF, a follow-up audit pass is
+  the maintainers subsequently obtain the PDF, a follow-up audit pass is
   recommended.
 - **Simplified observation likelihood.** The publication’s full
   observation model is a truncated (0-10) Poisson with underdispersion

@@ -3062,10 +3062,9 @@ into central</td>
 Markov model on HFS grades 0/1/2; there are no plasma concentrations and
 no NCA-amenable endpoints. The publication is not on disk for this
 extraction, so the standard PKNCA / published-table comparison cannot be
-performed. Validation follows the <code>extract-literature-model</code>
-skill’s <em>F.3 mechanistic-sanity</em> recipe (count / Markov / IRT /
-dropout / TTE) combined with the <em>F.2 self-consistency</em> check
-against the bundled simulated dataset:</p>
+performed. Validation follows the <em>F.3 mechanistic-sanity</em> check
+(count / Markov / IRT / dropout / TTE) combined with the <em>F.2
+self-consistency</em> check against the bundled simulated dataset:</p>
 <ol style="list-style-type: decimal">
 <li>The model parses and <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> runs to
 completion on a typical subject (single-subject typical-value,
@@ -3415,13 +3414,12 @@ minimization is reported and none was performed. Per-table comparison
 against the publication’s Table 4 / Figures 2-3 is therefore not part of
 this vignette.</li>
 <li>
-<strong>Validation strategy.</strong> F.3 mechanistic-sanity recipe
+<strong>Validation strategy.</strong> F.3 mechanistic-sanity check
 (count / Markov / IRT / dropout / TTE) combined with the F.2
-self-consistency check against the bundle’s simulated dataset, per the
-<code>extract-literature-model</code> skill’s guidance for DDMORE-source
-models with no linked publication on disk. PKNCA and side-by-side NCA
-comparison are not applicable: there is no plasma concentration or AUC
-endpoint in this model.</li>
+self-consistency check against the bundle’s simulated dataset, the
+package’s approach for DDMORE-source models with no linked publication
+on disk. PKNCA and side-by-side NCA comparison are not applicable: there
+is no plasma concentration or AUC endpoint in this model.</li>
 <li>
 <strong>Markov state as exposed conditional probabilities.</strong>
 The NONMEM source treats the previous HFS grade as a state variable
@@ -3440,11 +3438,11 @@ log-odds and probability formulas are identical to the source
 effect.</strong> The NONMEM source adds <code>ETA(2)</code> to the
 cumulative log-odds intercept regardless of which Markov state is
 active, so the same draw shifts <code>b00</code>, <code>b10</code>, and
-<code>b20</code>. The <code>extract-literature-model</code> skill’s
-naming convention requires <code>eta</code> + a transformed-parameter
-name; we associate the eta with <code>b00</code> (the first Markov-state
-intercept) and document the shared-shift semantics in the model file’s
-comments and in the IIV section above.</li>
+<code>b20</code>. The package’s naming convention requires
+<code>eta</code> + a transformed-parameter name; we associate the eta
+with <code>b00</code> (the first Markov-state intercept) and document
+the shared-shift semantics in the model file’s comments and in the IIV
+section above.</li>
 <li>
 <strong>CRCL is Cockcroft-Gault, not BSA-normalized.</strong> The
 canonical <code>CRCL</code> covariate in

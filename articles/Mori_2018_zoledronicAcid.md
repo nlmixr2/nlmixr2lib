@@ -394,12 +394,12 @@ deviations. {.table}
 ## Validation summary (endogenous-marker style)
 
 This is a biomarker / outcome model and there is no plasma drug exposure
-to NCA. Standard validation patterns from
-`references/endogenous-validation.md` apply: (1) baseline steady-state
-(no drug -\> marker stays at TRACP5B_BL and BMD stays at BMD_BL), (2)
-perturbation recovery (after a single dose, marker drops and recovers
-toward baseline; BMD slowly tracks), and (3) direction-of-effect at the
-dose-response level (ZOL drops marker, raises BMD; placebo flat).
+to NCA. The standard validation patterns for endogenous models apply:
+(1) baseline steady-state (no drug -\> marker stays at TRACP5B_BL and
+BMD stays at BMD_BL), (2) perturbation recovery (after a single dose,
+marker drops and recovers toward baseline; BMD slowly tracks), and (3)
+direction-of-effect at the dose-response level (ZOL drops marker, raises
+BMD; placebo flat).
 
 ``` r
 

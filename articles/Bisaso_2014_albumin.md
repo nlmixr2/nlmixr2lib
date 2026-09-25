@@ -457,8 +457,7 @@ than wild-type within each TB stratum.
   disease-progression model with no drug input; PKNCA-style Cmax / AUC /
   half-life parameters are not the appropriate validation target. The
   vignette instead exercises the steady-state, baseline-reproduction,
-  and stratified-VPC checks recommended for endogenous models
-  (`references/endogenous-validation.md`).
+  and stratified-VPC checks recommended for endogenous models.
 - **Erratum search:** A web search for “Bisaso 2014 In Silico
   Pharmacology erratum / corrigendum” against the journal landing page
   and PubMed (DOI 10.1186/s40203-014-0003-9) returned no corrections as

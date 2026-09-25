@@ -3416,21 +3416,21 @@ inspection:</p>
 <strong>Print-year vs online-year discrepancy on the file
 name.</strong> The source PDF masthead is Accepted 26 September 2011 /
 Accepted Article Online 12 October 2011, and the article appears in
-print as <em>Br J Clin Pharmacol.</em> 2012;73(4):641-648. The task
-metadata names the model file using the 2012 print year, which matches
-the journal volume citation rather than the online publication year
-(2011). Per Phase 1 step 2 of the extraction skill, the file is named
-<code>Zhao_2012_abacavir.R</code> to align with the BJCP 2012 volume
-citation used as the canonical reference.</li>
+print as <em>Br J Clin Pharmacol.</em> 2012;73(4):641-648. The metadata
+this model was built from names the model file using the 2012 print
+year, which matches the journal volume citation rather than the online
+publication year (2011). Following the package’s file-naming convention,
+the file is named <code>Zhao_2012_abacavir.R</code> to align with the
+BJCP 2012 volume citation used as the canonical reference.</li>
 <li>
-<strong>Task-metadata drug field repaired silently.</strong> The
-runner’s generated <code>drug</code> field was the journal name
-truncation “British Journal of Clinical Ph” rather than the drug. The
-paper title unambiguously identifies the drug as
+<strong>Metadata drug field repaired.</strong> The <code>drug</code>
+field in the bibliographic metadata this model was built from was the
+journal name truncation “British Journal of Clinical Ph” rather than the
+drug. The paper title unambiguously identifies the drug as
 <strong>abacavir</strong> and the registry already contains three
 abacavir popPK models (Jullien 2005, Archary 2019, Tikiso 2021), so the
-recoverable parser error is corrected to <code>Zhao_2012_abacavir</code>
-without an operator sidecar.</li>
+recoverable parser error is corrected to
+<code>Zhao_2012_abacavir</code>.</li>
 <li>
 <strong>Inter-occasion variability encoded with an explicit
 <code>OCC</code> multiplexer.</strong> Zhao 2012 Methods state that

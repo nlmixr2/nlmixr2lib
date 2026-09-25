@@ -272,8 +272,7 @@ exposure metrics from the virtual cohort at 100 mg q.d.
 
 ``` r
 
-# PKNCA input: use ONLY !is.na(Cc) so the time-zero row is preserved
-# (pknca-recipes.md "Time-zero records (mandatory)").
+# PKNCA input: use ONLY !is.na(Cc) so the time-zero row is preserved.
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)

@@ -342,10 +342,8 @@ with tmax = 0 for an IV bolus. {.table}
   popPK model. The typical values `CL = 0.693` and `Vd = 1` are
   scale-fixed teaching constants (Beal 2001 section 2.2); they are not
   estimates of any real molecule and should not be reinterpreted as one.
-  This deviation from the usual `specificDrugs/` convention was
-  operator-approved in the task’s sidecar
-  (`zotero-077-beal_2001_unknown` request-001 question q1, response
-  option B, dated 2026-06-21).
+  This deviation from the usual `specificDrugs/` convention was approved
+  by the maintainers.
 - **Which omega set**. The paper studies two geometric-SD sets on CL:
   `omega_CL = 0.2` (first set) and `omega_CL = 0.4` (second set); Vd
   always uses `omega_Vd = 0.2`. The encoded model uses the first set

@@ -612,7 +612,8 @@ returns to within 2% of control by day 90.
 ### 5. What drives NIS inhibition: the `CBthy` ambiguity
 
 This is the single most consequential interpretation decision in the
-extraction, and it is flagged as the primary review point for this PR.
+extraction, and it was flagged as the primary review point when this
+model was added.
 
 The inhibition functions are driven by a quantity the paper calls
 `CBthy`, described in prose as “the concentration of chemical in the
@@ -930,8 +931,8 @@ inside that domain, as the assertion above verifies.
     basolateral-NIS mechanism the paper itself describes, correspondence
     with the in-vitro exposure metric, and reproduction of both species’
     published points of departure. It changes the predicted
-    dose-response by a factor of `pc_thyroid` = 8.5. **This is the
-    primary review point for this PR.**
+    dose-response by a factor of `pc_thyroid` = 8.5. **This was the
+    primary review point when this model was added.**
 2.  **`kin_TSH` carries a `VD_TSH` factor relative to the printed
     expression**, because these files hold the TSH state as an amount
     (mg) rather than the concentration that Table 5’s

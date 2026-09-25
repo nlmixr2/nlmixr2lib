@@ -771,7 +771,7 @@ transit constants $`\alpha_{AC}`$ scales.
 Reconstructing that layer would mean inventing ODE structure, which is
 exactly what the PBPK sourcing rules forbid. The charcoal sub-model is
 therefore excluded rather than guessed, and this is recorded as an open
-item for the operator.
+item for the maintainers.
 
 ### Other deviations
 

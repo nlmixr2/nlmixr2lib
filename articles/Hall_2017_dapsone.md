@@ -241,10 +241,10 @@ AUCinf ~= 49 mg.h/L).
 
 ## Assumptions and deviations
 
-- **Drug-name correction**: the source task block reported
-  `drug: "CPT: Pharmacometrics & Sys"`, which is the journal name. The
-  paper’s title and Abstract identify dapsone as the modeled drug; the
-  file is named `Hall_2017_dapsone.R` accordingly.
+- **Drug-name correction**: the metadata this model was built from
+  reported `drug: "CPT: Pharmacometrics & Sys"`, which is the journal
+  name. The paper’s title and Abstract identify dapsone as the modeled
+  drug; the file is named `Hall_2017_dapsone.R` accordingly.
 - **MARS-style covariate model**: Hall 2017 fit individual posthoc PK
   estimates with MLEM in ADAPT 5 and then applied a MARS regression to
   express Ka, CL, and Vc as additive linear combinations of hinge basis
@@ -275,8 +275,8 @@ AUCinf ~= 49 mg.h/L).
   observed mean 1.63 mg/L and SD 1.03 mg/L give a residual SD of
   approximately `sqrt(1 - r^2) * SD(obs) / mean(obs) ~= 19%`. This is a
   paper-derived approximation, not a directly reported value; documented
-  here per the extract-literature-model skill’s non-paper-provenance
-  rule.
+  here per the package’s rule for values not reported directly by the
+  paper.
 - **Bioavailability**: F is held at the structural anchor of 1 (not
   encoded explicitly as `lfdepot`). Hall 2017 does not estimate or
   constrain F, and the published parameter values are apparent (CL/F,

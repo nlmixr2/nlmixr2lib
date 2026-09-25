@@ -3494,8 +3494,7 @@ different age draw.</p>
 <span><span class="co"># RNG (the etas), but rxode2 partitions its streams PER SOLVER THREAD, so the</span></span>
 <span><span class="co"># eta draw is reproducible on this machine and different on a machine with a</span></span>
 <span><span class="co"># different thread count. Every assertion below is written to hold for any</span></span>
-<span><span class="co"># cohort the model can produce; see pattern 12 of</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20250909</span><span class="op">)</span></span>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20250909</span><span class="op">)</span></span>
 <span></span>

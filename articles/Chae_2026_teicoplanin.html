@@ -3859,7 +3859,7 @@ residual can drive individual simulated observations below zero.</p>
 <span><span class="co"># solver thread, so this cohort is reproducible here and different on a machine</span></span>
 <span><span class="co"># with a different thread count. Every assertion below is written to hold for</span></span>
 <span><span class="co"># ANY cohort the model can produce -- centre and robust quantiles only, never</span></span>
-<span><span class="co"># extremes (see references/known-vignette-failure-patterns.md pattern 12).</span></span>
+<span><span class="co"># extremes.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260912</span><span class="op">)</span></span>
 <span><span class="va">N_SUBJ</span> <span class="op">&lt;-</span> <span class="fl">200L</span></span>
 <span><span class="va">LLOQ</span>   <span class="op">&lt;-</span> <span class="fl">0.72</span>   <span class="co"># mg/L, Chae 2026 Methods (validated below the 3.9-52.9 calibration range)</span></span>

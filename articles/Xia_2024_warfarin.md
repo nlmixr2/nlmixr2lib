@@ -281,7 +281,7 @@ knitr::kable(scenarios, digits = 3,
 Simulated vs Xia 2024 supplement Section 1.6 targets. {.table}
 
 The agreement is within ~10% across the 21 scenarios, well inside the
-~20% threshold the verification checklist recommends as the
+~20% threshold the package’s validation checklist recommends as the
 investigate-but-do-not-tune cutoff. A small consistent overshoot (the
 typical-subject prediction is 2.13 instead of 2.0 at 2.5 mg/d) is likely
 a combination of rounding in the supplement’s reported doses and the
@@ -607,7 +607,7 @@ than younger subjects at the same target INR.
 
 Because the source paper does not report PK / NCA observations, the
 standard PKNCA gate is replaced with the steady-state and perturbation
-checks described in `references/endogenous-validation.md`.
+checks below.
 
 ### Steady-state check (no drug)
 

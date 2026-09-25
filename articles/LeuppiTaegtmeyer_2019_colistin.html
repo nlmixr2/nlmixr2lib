@@ -2876,9 +2876,9 @@ parameter values and equations come from the DDMORE bundle’s
 <code>Model_Accommodations.txt</code> field “There are no model
 differences with the publication referenced” indicates that the bundle
 reproduces the published final-model structure verbatim. The vignette’s
-validation strategy is therefore F.2 self-consistency (re-simulate
-against the bundle’s <code>Simulated_*.csv</code>) rather than a
-publication side-by-side comparison.</p>
+validation strategy is therefore self-consistency (re-simulate against
+the bundle’s <code>Simulated_*.csv</code>) rather than a publication
+side-by-side comparison.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3231,12 +3231,12 @@ loading infusion; approximately 2-5 mg/L colistin at steady state).</p>
 <p><img src="LeuppiTaegtmeyer_2019_colistin_files/figure-html/figure-col-trajectory-1.png" class="r-plt" alt="" width="624"></p>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-re-simulate-the-ddmore-bundle-scenario">F.2 self-consistency: re-simulate the DDMORE-bundle scenario<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-re-simulate-the-ddmore-bundle-scenario"></a>
+<h2 id="self-consistency-re-simulate-the-ddmore-bundle-scenario">Self-consistency: re-simulate the DDMORE-bundle scenario<a class="anchor" aria-label="anchor" href="#self-consistency-re-simulate-the-ddmore-bundle-scenario"></a>
 </h2>
-<p>Per <code>references/verification-checklist.md</code> Section F.2,
-the substitute for the publication-comparison check is to reproduce the
-typical-value trajectory at the bundle’s reported regimen and confirm
-the shape of the trajectory.</p>
+<p>When the publication is not available, the substitute for the
+publication-comparison check is to reproduce the typical-value
+trajectory at the bundle’s reported regimen and confirm the shape of the
+trajectory.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typical_summary</span> <span class="op">&lt;-</span> <span class="va">sim_typical</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3346,11 +3346,10 @@ regimen.</p>
 <ul>
 <li>
 <strong>Source publication not on disk.</strong> The
-Leuppi-Taegtmeyer 2019 AAC publication was not present in the operator’s
-literature directory at extraction time. All parameter values and
-equations were taken from the DDMORE bundle’s
-<code>Output_real_*.lst</code> (final estimates) and
-<code>Executable_*.mod</code>. The bundle’s
+Leuppi-Taegtmeyer 2019 AAC publication was not available to the
+maintainers at extraction time. All parameter values and equations were
+taken from the DDMORE bundle’s <code>Output_real_*.lst</code> (final
+estimates) and <code>Executable_*.mod</code>. The bundle’s
 <code>Model_Accommodations.txt</code> states “There are no model
 differences with the publication referenced”, so the published final
 model is faithfully reproduced.</li>
@@ -3406,7 +3405,7 @@ names and produce <code>compartments</code> warnings; they correspond to
 the CRRT filter / cartridge / effluent reservoir physical compartments
 specific to this model class. The metabolite suffix <code>_col</code>
 for colistin is added to
-<code>R/conventions.R::registeredMetabolites</code> in the same PR so
+<code>R/conventions.R::registeredMetabolites</code> with this model so
 that <code>central_col</code>, <code>Cc_col</code>,
 <code>propSd_col</code>, and <code>addSd_col</code> are canonical.</li>
 <li>

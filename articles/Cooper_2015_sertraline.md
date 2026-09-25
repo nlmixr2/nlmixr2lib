@@ -235,7 +235,7 @@ sim_nca <- sim |>
   select(id, time, Cc, cohort)
 
 # Guarantee a time = 0 row per (id, cohort); pre-dose Cc = 0 is correct for
-# extravascular absorption (see pknca-recipes.md "Time-zero records").
+# extravascular absorption.
 sim_nca <- bind_rows(
   sim_nca,
   sim_nca |> distinct(id, cohort) |> mutate(time = 0, Cc = 0)

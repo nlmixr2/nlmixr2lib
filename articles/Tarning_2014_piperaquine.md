@@ -81,7 +81,7 @@ Per-parameter source locations are recorded inline in
 | Allometric WT scaling, exponents 0.75 / 1.00 fixed, reference 70 kg | – | Methods page 2053 (exponents); reference weight inferred from the published per-kg post-hoc estimates in Table 3 (see Assumptions and deviations) |
 | Age linear effect on Vp1, centred at AGE = 33 y | – | Results page 2054 (effect size); reference age inferred from cohort-pooled median (see Assumptions and deviations) |
 | Linear dose-occasion effect on F: `F_OCC = 1 + 0.253 * (OCC - 1)` | – | Results page 2054: ‘25.3% increase in bioavailability per dose’; matches the bootstrap categorical estimates 21.9% at dose 2 and 50.9% at dose 3 |
-| Additive error on log-transformed concentration -\> proportional in nlmixr2 linear space | – | Methods page 2053: ‘The random residual variability was assumed to be additive, since data were modeled as natural logarithms’; convention rule from `references/parameter-names.md` |
+| Additive error on log-transformed concentration -\> proportional in nlmixr2 linear space | – | Methods page 2053: ‘The random residual variability was assumed to be additive, since data were modeled as natural logarithms’; convention rule from `inst/references/parameter-names.md` |
 
 ## Virtual cohort
 
@@ -674,9 +674,9 @@ Compare with Tarning 2014 Table 3 AUC_inf median 26.8 h x ug/mL (Fasting
 - **Single residual error term.** The paper used an additive residual
   error model on the natural log of the observed concentration, which
   maps to proportional residual error in the linear concentration space
-  (see `references/parameter-names.md` section ‘Residual error’). The
-  package model encodes this as `propSd <- 0.307`; the SD applies on the
-  log scale and equals the proportional CV in linear space to first
+  (see `inst/references/parameter-names.md` section ‘Residual error’).
+  The package model encodes this as `propSd <- 0.307`; the SD applies on
+  the log scale and equals the proportional CV in linear space to first
   order.
 
 - **Bioavailability anchor.** Relative bioavailability F is structurally

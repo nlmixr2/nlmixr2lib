@@ -22,11 +22,10 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Li_2006_meropenem"))$meta
 
 This vignette validates the packaged `Li_2006_meropenem` model against
 the DDMORE Foundation Model Repository entry **DDMODEL00000213**, the
-source from which it was extracted. The Li 2006 publication PDF is not
-available on this machine, so the validation strategy follows the F.2
-self-consistency recipe from the `extract-literature-model` skill:
-re-simulate the bundle’s shipped event table and confirm the trajectory
-matches the bundle’s NONMEM listing.
+source from which it was extracted. The Li 2006 publication PDF was not
+available when this model was built, so the validation strategy is a
+self-consistency check: re-simulate the bundle’s shipped event table and
+confirm the trajectory matches the bundle’s NONMEM listing.
 
 ## Population
 
@@ -169,7 +168,7 @@ sim <- rxode2::rxSolve(
 
 ``` r
 
-# Typical-value trajectory (no IIV, no residual error) — the F.2 reference
+# Typical-value trajectory (no IIV, no residual error) — the self-consistency reference
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_typical <- rxode2::rxSolve(
@@ -183,7 +182,7 @@ sim_typical <- rxode2::rxSolve(
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
-## F.2 self-consistency check against the DDMORE bundle
+## Self-consistency check against the DDMORE bundle
 
 The DDMORE bundle ships its `Output_simulated_Meropenem.lst` showing a
 NONMEM re-fit of the model on its own simulated dataset; the
@@ -344,15 +343,14 @@ style="width:100%;"}
   `FINAL PARAMETER ESTIMATE` block is a re-fit on simulated data and is
   NOT used.
 
-- **Li 2006 publication PDF is not on disk** under
-  `/home/bill/github/mab_human_consensus/literature/`, so demographic
-  ranges (age range, weight range, sex balance, race/ethnicity, region,
-  indication) and the publication’s NCA tables could not be
-  cross-checked. Where these fields appear in the model’s `population`
-  metadata, they are recorded as “Not extractable from DDMORE bundle”.
-  Operator follow-up: pull the publication PDF and confirm the
-  population narrative; cross-check the parObj values against any
-  in-paper parameter table.
+- **Li 2006 publication PDF is not on disk** in the maintainers’
+  literature mirror, so demographic ranges (age range, weight range, sex
+  balance, race/ethnicity, region, indication) and the publication’s NCA
+  tables could not be cross-checked. Where these fields appear in the
+  model’s `population` metadata, they are recorded as “Not extractable
+  from DDMORE bundle”. When the publication PDF is available, the
+  population narrative should be confirmed against it and the parObj
+  values cross-checked against any in-paper parameter table.
 
 - **CRCL covariate semantics deviate from the canonical register
   entry.** The canonical `CRCL` in
@@ -361,9 +359,8 @@ style="width:100%;"}
   exponent (0.62, FIXED) was estimated under that raw parameterization.
   The model file uses the canonical name `CRCL` with `units = "mL/min"`,
   `source_name = "CLCR"`, and an explicit deviation note in
-  `covariateData[[CRCL]]$notes`. Reviewer follow-up: decide whether to
-  register a separate canonical (e.g., `CRCL_RAW`) or accept the
-  deviation.
+  `covariateData[[CRCL]]$notes`. Follow-up: decide whether to register a
+  separate canonical (e.g., `CRCL_RAW`) or accept the deviation.
 
 - **`COV_CL_CLCR` is FIXED at 0.62.** The DDMORE bundle’s
   Model_Accommodations.txt explains: “Covariate effect of creatinine
@@ -389,8 +386,6 @@ style="width:100%;"}
   and is what this nlmixr2lib model reproduces (`addSd = 0.47`,
   `propSd = 0.19`).
 
-- **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` § “Validation strategy by model type”
-  decision tree, leaf 1: no linked publication on disk). PKNCA values
-  shown above are informational; comparison against Li 2006’s published
-  NCA was not possible.
+- **Validation strategy is self-consistency** (no linked publication on
+  disk). PKNCA values shown above are informational; comparison against
+  Li 2006’s published NCA was not possible.

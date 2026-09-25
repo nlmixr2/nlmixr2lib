@@ -419,8 +419,8 @@ ggplot(ar_run, aes(time)) +
   model, not a popPK model; `population$species` records the *E. coli*
   ATCC 25922 isolate. No PKNCA validation is performed (there is no drug
   NCA to compute); the mechanistic checks above replace it.
-- **File naming.** The dispatch metadata listed the drug as
-  “Antimicrobial Agents and Chemo”, which is the journal name
+- **File naming.** The input metadata for this extraction listed the
+  drug as “Antimicrobial Agents and Chemo”, which is the journal name
   (Antimicrobial Agents and Chemotherapy), not a drug. The paper
   unambiguously models gentamicin, so the model file and this vignette
   use `Mohamed_2012_gentamicin`.

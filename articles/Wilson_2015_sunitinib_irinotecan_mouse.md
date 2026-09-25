@@ -385,8 +385,8 @@ as such in Wilson 2015 page 724.
   median-data NLS; Wilson 2015 does not publish per-subject random
   effects for this fit. The Supplementary Table S2 sunitinib-monotherapy
   fit (SAEM with IIV; epsilon shrinkage 7.6%) is the base model under
-  the skill’s “extract only the final” rule and is therefore not
-  separately implemented.
+  the package’s convention of extracting only the final model and is
+  therefore not separately implemented.
 - **K-PD normalised dose.** Wilson 2015 page 723 explicitly states “Due
   to the lack of pharmacokinetic data, we consider each dose as having a
   normalized magnitude of 1.” Each event in the cohort sets `amt = 1`

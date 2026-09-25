@@ -3150,7 +3150,7 @@ subjects and 200 duodenal-ulcer patients, with covariates drawn to match
 the Table 2 marginal distributions. It is used for the
 concentration-time prediction intervals.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">N_PER_ARM</span> <span class="op">&lt;-</span> <span class="fl">200</span>   <span class="co"># skill cap: never more than 200 participants per arm</span></span>
+<code class="sourceCode R"><span><span class="va">N_PER_ARM</span> <span class="op">&lt;-</span> <span class="fl">200</span>   <span class="co"># cohort cap: never more than 200 participants per arm</span></span>
 <span></span>
 <span><span class="va">make_pop</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">label</span>, <span class="va">dis_duod_ulcer</span>, <span class="va">n</span>, <span class="va">id_offset</span>, <span class="va">female_pct</span>, <span class="va">wt_median</span>, <span class="va">wt_sd</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">covs</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>

@@ -343,7 +343,7 @@ the published demographics:
 # rxode2's simulation RNG, whose streams are partitioned per solver thread --
 # so the etas differ between a 2-thread CI runner and a 16-thread workstation.
 # Every assertion downstream is written to hold for any cohort the model can
-# produce; see pattern 12 of known-vignette-failure-patterns.md.
+# produce.
 set.seed(20250107)
 
 n_arm <- 200L
@@ -790,7 +790,7 @@ stopifnot(accumulation > 1.5, accumulation < 4)
   on the linear scale so the model is directly comparable with
   `Hwang_2022_tremelimumab.R`, which carries the identical warning for
   `cl_t50`. `cl_time_max`, `cl_t50` and `cl_time_hill` are the canonical
-  names for this family in `references/parameter-names.md`.
+  names for this family in `inst/references/parameter-names.md`.
 - **Covariate distributions are assumed.** Table 2 publishes only
   medians and ranges for the continuous covariates. Body-weight
   dispersion (CV 24%) and albumin dispersion (SD 4.8 g/L) are pooled

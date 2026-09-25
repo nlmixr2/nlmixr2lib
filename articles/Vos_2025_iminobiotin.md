@@ -100,9 +100,9 @@ The table below collects them in one place for review.
 | `lq` | fixed(log(15.0)) | Vos 2025 Supp. Table S8, “Q (L/hr) 15.0 fixed” |
 | `lvp` | fixed(log(10.4)) | Vos 2025 Supp. Table S8, “Vperipheral (L) 10.4 fixed” |
 | `e_crcl_cl` (eGFR allometric exponent on CL) | 0.817 | Vos 2025 Supp. Table S8, “COVeGFR0 CL” 0.817 (RSE 17.2%) |
-| eGFR reference value (denominator) | 90 mL/min/1.73 m^2 | sidecar Q4 = A (canonical adult reference; the paper does not state it) |
-| `etalcl` (omega^2 of IIV on CL) | 0.046 | Vos 2025 Supp. Table S8, “ETA1 CL” 0.046 (RSE 37.5%); sidecar Q1 = A |
-| `propSd` (proportional residual SD) | 0.123 | Vos 2025 Supp. Table S8, “Residual error” 0.123 (RSE 24.5%); sidecar Q2 = B (SD scale, 12.3% CV) |
+| eGFR reference value (denominator) | 90 mL/min/1.73 m^2 | maintainer decision (canonical adult reference; the paper does not state it) |
+| `etalcl` (omega^2 of IIV on CL) | 0.046 | Vos 2025 Supp. Table S8, “ETA1 CL” 0.046 (RSE 37.5%); maintainer decision |
+| `propSd` (proportional residual SD) | 0.123 | Vos 2025 Supp. Table S8, “Residual error” 0.123 (RSE 24.5%); maintainer decision (SD scale, 12.3% CV) |
 | ODE: d/dt(central) | n/a | Vos 2025 Methods + Supp. Table S8 (two-compartment IV; structure inherited from upstream TIBOHCA model, reference 11) |
 | Observation: Cc = 1000 \* central / vc | n/a | Unit conversion mg/L -\> ng/mL to match paper concentration units |
 
@@ -475,18 +475,18 @@ median 10.6 L/h (range 3.5-23.6); Supp. Table S9: IVT median 11.8
   supplement reports both a bolded “Random effect parameters \| 0.225
   (0.09)” section-header row AND a labelled “ETA1 CL \| 0.046 (37.5)”
   row. We interpret the labelled `ETA1 CL = 0.046` as omega^2 of IIV on
-  CL per NONMEM convention (sidecar Q1 = A); the 0.225 row is most
+  CL per NONMEM convention (maintainer decision); the 0.225 row is most
   likely a redundant CV / SD or eta-shrinkage summary statistic that was
   set in the same row template. omega^2 = 0.046 corresponds to ~21.7% CV
   IIV on CL.
 - **Residual error scale** – the supplement reports “Residual error
   0.123 (24.5)” without stating whether 0.123 is the variance or the
   standard deviation. We encode `propSd <- 0.123` directly as the
-  proportional SD (12.3% CV) per sidecar Q2 = B.
+  proportional SD (12.3% CV) per maintainer decision.
 - **eGFR reference value** – the paper reports the “COVeGFR0 CL”
   exponent (0.817) without stating the eGFR reference value in the
   denominator of the allometric form. We use the canonical adult
-  reference 90 mL/min/1.73 m^2 (sidecar Q4 = A; aligned with `CRCL`
+  reference 90 mL/min/1.73 m^2 (maintainer decision; aligned with `CRCL`
   register precedents).
 - **Body weight not used** – Vos 2025 does not include weight as a model
   covariate, and Supplemental Table 1 / S4 does not report cohort

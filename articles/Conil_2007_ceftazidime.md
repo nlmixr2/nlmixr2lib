@@ -93,7 +93,7 @@ model” subsection of Results.
 | `lq` (Q) | log(6.881) | Conil 2007 Results p. 31 final-model eqn `Q = 6.881 L/h`; Table 3 reports 6.9 in all four strata |
 | `etalcl ~ 0.02528` | log(0.16^2 + 1) | Conil 2007 Results p. 31: “Interindividual variability in the clearance was decreased to 16%” |
 | `etalvc ~ 0.01676` | log(0.13^2 + 1) | Conil 2007 Results p. 31: “and that of the central volume of distribution to 13%” |
-| `etalq ~ 2.6520` | log(3.63^2 + 1) | Conil 2007 Table 2 basic-model row “Inter-compartmental clearance” CV 363% (final model silent; carried forward per operator standing instruction) |
+| `etalq ~ 2.6520` | log(3.63^2 + 1) | Conil 2007 Table 2 basic-model row “Inter-compartmental clearance” CV 363% (final model silent; carried forward per standing maintainer instruction) |
 | `etalvp ~ 1.5280` | log(1.90^2 + 1) | Conil 2007 Table 2 basic-model row “Distribution volume of the peripheral compartment” CV 190% (final model silent; carried forward) |
 | `propSd <- 0.38` | 0.38 | Conil 2007 Results p. 30 basic-model proportional CV 38% (final model silent; carried forward) |
 | `d/dt(central)` / `d/dt(peripheral1)` | n/a | Conil 2007 Results p. 30 (“A two-compartment model… ADVAN3 TRANS4”); standard 2-cmt linear ODE form |
@@ -501,16 +501,15 @@ style="width:100%;"}
   basic model.** Conil 2007 Results p. 31 explicitly reports only the
   final-model IIV on CL (16%) and V1 (13%); the section is silent on IIV
   for Q and V2 in the final model and on the final-model residual error.
-  Per the operator’s standing instruction (sidecar response,
-  2026-06-17), silence is interpreted as “unchanged from the basic
-  model” rather than “dropped to zero.” The packaged model therefore
-  carries the basic-model values forward: Q IIV 363% (Table 2 row
-  “Inter-compartmental clearance”), V2 IIV 190% (Table 2 row
-  “Distribution volume of the peripheral compartment”), and proportional
-  residual CV 38% (Results p. 30, “The residual variability… was 38%”).
-  The 363% Q IIV is unusually large but matches the reported basic-model
-  value verbatim; downstream users who simulate VPCs will see a wide
-  spread on Q-driven distribution.
+  Per the maintainers’ standing instruction (2026-06-17), silence is
+  interpreted as “unchanged from the basic model” rather than “dropped
+  to zero.” The packaged model therefore carries the basic-model values
+  forward: Q IIV 363% (Table 2 row “Inter-compartmental clearance”), V2
+  IIV 190% (Table 2 row “Distribution volume of the peripheral
+  compartment”), and proportional residual CV 38% (Results p. 30, “The
+  residual variability… was 38%”). The 363% Q IIV is unusually large but
+  matches the reported basic-model value verbatim; downstream users who
+  simulate VPCs will see a wide spread on Q-driven distribution.
 
 - **MECH_VENT canonical newly ratified.** Conil 2007 uses a binary
   indicator `VENT` (0 = not ventilated, 1 = mechanically ventilated) on

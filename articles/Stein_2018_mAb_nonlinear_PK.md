@@ -334,13 +334,13 @@ in day. {.table}
 
 ## Assumptions and deviations
 
-- **Three model files share one vignette.** Following the
-  replicate-author-structure default, mavrilimumab, efalizumab, and
-  romosozumab are packaged as three independent `Stein_2018_<drug>`
-  files because they share a structural model but have different Table 1
-  parameter values. The vignette covers all three because they were fit
-  together as illustrations of one analytical result (Stein and Peletier
-  2018 Eq. 14).
+- **Three model files share one vignette.** Following the package’s
+  default of replicating the authors’ model structure, mavrilimumab,
+  efalizumab, and romosozumab are packaged as three independent
+  `Stein_2018_<drug>` files because they share a structural model but
+  have different Table 1 parameter values. The vignette covers all three
+  because they were fit together as illustrations of one analytical
+  result (Stein and Peletier 2018 Eq. 14).
 - **No IIV, no residual error.** Stein and Peletier 2018 do not report
   between-subject variability or residual-error magnitudes for the Table
   1 fits. The packaged models are typical-value only;

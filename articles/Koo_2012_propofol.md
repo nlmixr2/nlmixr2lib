@@ -420,8 +420,8 @@ probability of NOT recovering consciousness is ~ 0.95. {.table}
   fit by NONMEM VII `$EST LIKELIHOOD LAPLACE METHOD=conditional`
   (Methods, paragraph after the `L = P^R * (1-P)^(1-R)` equation).
   rxode2 / nlmixr2 do not natively express a Bernoulli observation for a
-  probability output within the `ini()` / `model()` syntax in this
-  batch, so the packaged model declares the observation as
+  probability output within the `ini()` / `model()` syntax used here, so
+  the packaged model declares the observation as
   `prob_roc ~ add(addSd_prob_roc)` with a small placeholder additive
   residual (0.05). This preserves the typical-value sigmoid Emax mapping
   that drives Figure 3, but the residual variance structure of the
@@ -496,11 +496,11 @@ probability of NOT recovering consciousness is ~ 0.95. {.table}
   reference-value cross-check, and the Discussion `Ce5` anchor at AGE =
   25 are the primary validation anchors.
 - **No supplements; no errata identified.** The Koo 2012 paper has no
-  separate supplement on disk in the ingestion mirror, and no errata or
-  corrigenda were located by a 2026-06-27 search of the Acta
-  Pharmacologica Sinica article landing page and PubMed (PMID 22796761).
-  The sigmoid Emax formula itself is rendered in the source PDF as a
-  non-decoded image (the trimmed-markdown extraction shows
+  separate supplement on disk in the maintainers’ literature mirror, and
+  no errata or corrigenda were located by a 2026-06-27 search of the
+  Acta Pharmacologica Sinica article landing page and PubMed (PMID
+  22796761). The sigmoid Emax formula itself is rendered in the source
+  PDF as a non-decoded image (the text extracted from the PDF shows
   `<!-- formula-not-decoded -->` in place of the equation); the
   consistent textbook interpretation P(ROC) = Ce50^lambda /
   (Ce50^lambda + Ce^lambda) is adopted here and is verified to reproduce

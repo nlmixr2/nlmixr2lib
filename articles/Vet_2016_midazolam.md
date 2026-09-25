@@ -33,7 +33,7 @@ This vignette validates the packaged `Vet_2016_midazolam` model against
 the DDMORE Foundation Model Repository entry **DDMODEL00000249**, the
 source from which it was extracted. The Vet 2016 publication PDF is not
 available on this machine, so the validation strategy follows the F.2
-self-consistency recipe from the `extract-literature-model` skill:
+self-consistency recipe from the package’s validation checklist:
 re-simulate the bundle’s shipped event table with the typical-value
 model and confirm the trajectories match the bundle’s NONMEM listing.
 Final parameter values come from the bundle’s
@@ -50,10 +50,10 @@ ascertained per-day on a 0..\>=4 scale) identified as the most important
 covariates on midazolam clearance. Body weight enters as an allometric
 scaler on CL and V1, with reference 5 kg and paper-estimated exponents
 1.02 and 1.34 respectively. The publication itself (DOI
-10.1164/rccm.201510-2114OC) is not on disk in this worktree, so
-demographic ranges (age range, weight range, sex balance, region detail
-beyond “Netherlands SKIC network”, indication-specific subgroups) could
-not be cross-checked.
+10.1164/rccm.201510-2114OC) was not on disk when this model was built,
+so demographic ranges (age range, weight range, sex balance, region
+detail beyond “Netherlands SKIC network”, indication-specific subgroups)
+could not be cross-checked.
 
 ``` r
 
@@ -362,18 +362,17 @@ Simulated NCA parameters by ORG_FAIL_COUNT stratum (PKNCA). {.table}
 
 ## Assumptions and deviations
 
-- **Vet 2016 publication PDF is not on disk** under
-  `/home/bill/github/mab_human_consensus/literature/`, so demographic
-  ranges (age range, weight range, sex balance, race / ethnicity,
-  regional enrollment beyond “Netherlands SKIC network”, inclusion
-  criteria) and any per-stratum NCA values the publication may report
-  could not be cross-checked against the model’s `population` metadata
-  or the F.2 numeric Css table. Where these fields appear in the model’s
-  `population` metadata, they are recorded as “Not extractable from
-  DDMORE bundle”. Operator follow-up: pull the publication PDF (DOI
-  10.1164/rccm.201510-2114OC) and confirm the population narrative;
-  cross-check the .lst final estimates against any in-paper parameter
-  table.
+- **Vet 2016 publication PDF is not on disk** in the maintainers’
+  literature mirror, so demographic ranges (age range, weight range, sex
+  balance, race / ethnicity, regional enrollment beyond “Netherlands
+  SKIC network”, inclusion criteria) and any per-stratum NCA values the
+  publication may report could not be cross-checked against the model’s
+  `population` metadata or the F.2 numeric Css table. Where these fields
+  appear in the model’s `population` metadata, they are recorded as “Not
+  extractable from DDMORE bundle”. Maintainer follow-up: pull the
+  publication PDF (DOI 10.1164/rccm.201510-2114OC) and confirm the
+  population narrative; cross-check the .lst final estimates against any
+  in-paper parameter table.
 
 - **Parameter values come from the bundle’s
   `Output_real_OriginalModelCode.lst` FINAL PARAMETER ESTIMATE block**
@@ -428,13 +427,12 @@ Simulated NCA parameters by ORG_FAIL_COUNT stratum (PKNCA). {.table}
   fixes the remaining five at the same value (`fix(0.197)`) so the
   effective per-occasion variance matches the source.
 
-- **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` Section “Validation strategy by model
-  type” decision tree, leaf 1: no linked publication on disk). The
-  simulated NCA table above is informational; comparison against any Vet
-  2016 per-stratum NCA was not possible.
+- **Validation strategy is F.2 self-consistency** (per the package’s
+  validation strategy for DDMORE bundles whose linked publication is not
+  on disk). The simulated NCA table above is informational; comparison
+  against any Vet 2016 per-stratum NCA was not possible.
 
-- **Operator-confirmed organ-failure ascertainment criteria.** Vet
+- **Maintainer-confirmed organ-failure ascertainment criteria.** Vet
   2016’s organ-failure ascertainment follows the Wilkinson 1987
   paediatric multiple organ system failure (MOSF) criteria (per the Vet
   2016 paper abstract and standard PICU reporting); the per-paper exact

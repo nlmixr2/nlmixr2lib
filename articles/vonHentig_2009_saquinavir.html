@@ -3036,7 +3036,7 @@ log(1 + 0.548^2)</td>
 <td><code>addSd</code></td>
 <td>fixed(0)</td>
 <td>Results paragraph 4: “an additive-error model” – the additive SD
-value is NOT reported in the paper; placeholder per the operator’s
+value is NOT reported in the paper; placeholder per the maintainers’
 general missing-RUV rule (see Errata)</td>
 </tr>
 <tr class="even">
@@ -3313,8 +3313,8 @@ without atazanavir and <code>1000 / (60.4 * 0.703) = 23.55</code>
 mg</em>h/L with atazanavir at the cohort median ritonavir AUC.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Concentration frame: per-id observations across the Day-14 dosing interval.</span></span>
-<span><span class="co"># Use only !is.na(Cc) in the filter (avoid time &gt; 0 / Cc &gt; 0; see</span></span>
-<span><span class="co"># pknca-recipes.md: "Time-zero records (mandatory)").</span></span>
+<span><span class="co"># Use only !is.na(Cc) in the filter (avoid time &gt; 0 / Cc &gt; 0; time-zero</span></span>
+<span><span class="co"># records are mandatory).</span></span>
 <span><span class="va">nca_concs</span> <span class="op">&lt;-</span> <span class="va">sim_pop_df</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">13</span> <span class="op">*</span> <span class="fl">24</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">13</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">+</span> <span class="va">ii</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>t_in_interval <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="fl">13</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3529,8 +3529,8 @@ AUC.</p>
 <div class="section level3">
 <h3 id="errata-additive-residual-sd-not-reported-in-the-source">Errata – additive residual SD not reported in the source<a class="anchor" aria-label="anchor" href="#errata-additive-residual-sd-not-reported-in-the-source"></a>
 </h3>
-<p><strong>Per the operator’s general missing-RUV rule (sidecar response
-2026-06-17), the additive residual SD is encoded as
+<p><strong>Per the maintainers’ general missing-RUV rule, the additive
+residual SD is encoded as
 <code>addSd &lt;- fixed(0)</code>.</strong></p>
 <p>The Methods / Results paragraph 4 of von Hentig 2009 states only that
 “an additive-error model were found to provide best fits using the

@@ -14,8 +14,8 @@ The structural model (4-compartment mPBPK: plasma + tight-tissue
 interstitial fluid + leaky-tissue interstitial fluid + lymph) is shared
 by all 12 mAbs in the paper; each mAb has its own values of `sigma1`,
 `sigma2`, and `CLp` (Model A) or `CLi` (Model B). This file uses **Model
-A** (clearance from plasma) per the operator’s choice for the canonical
-entries.
+A** (clearance from plasma) per the maintainers’ choice for the
+canonical entries.
 
 ## Population
 

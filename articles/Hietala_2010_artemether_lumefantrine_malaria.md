@@ -22,8 +22,9 @@ pediatric trial in Tanzania:
 - a five-stage semi-mechanistic parasite-dynamics PD model driven by the
   ARM/DHA exposures (Table 3).
 
-Per the `replicate-author-structure` policy each fit is extracted as its
-own model file, with this single vignette walking the paper as a unit:
+Following the package’s convention of replicating the authors’ model
+structure, each fit is extracted as its own model file, with this single
+vignette walking the paper as a unit:
 
 ``` r
 

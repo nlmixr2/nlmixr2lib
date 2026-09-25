@@ -1106,8 +1106,8 @@ threshold (Laffont 2025 citing Lund 2024).
   nalmefene/naloxone Kon and Koff ratios reported in Cassel et
   al. 2005). n was assumed equal to naloxone (0.86). These values are
   encoded as fixed parameters in `Mann_2022_mu_receptor_binding.R` ini()
-  with the Laffont 2024 Supp Table S3 source-trace and were committed in
-  the same task as this vignette.
+  with the Laffont 2024 Supp Table S3 source-trace and were added to the
+  package together with this vignette.
 
 - **Antagonist effect-site equilibration ke0 = 1.774e-3 1/s.** The Mann
   2022 ke0 for naloxone was assumed by Laffont 2024 (Supp Table S3) to

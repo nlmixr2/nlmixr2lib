@@ -738,7 +738,7 @@ published_cv <- published |>
   dplyr::mutate(`Published AUC CV%` = 100 * sd / PPORRES) |>
   dplyr::select(Analyte, grp, `Published AUC CV%`)
 # inner_join drops silently if a key is mistyped; a gate that cannot go red is
-# worse than none (known-vignette-failure-patterns.md pattern 10).
+# worse than none.
 stopifnot(nrow(published_cv) == nrow(published_auc_sd))
 
 cv_tab <- dplyr::left_join(cv_sim, published_cv, by = c("Analyte", "grp"))

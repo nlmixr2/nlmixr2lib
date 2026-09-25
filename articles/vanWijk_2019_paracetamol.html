@@ -2874,16 +2874,15 @@ window.</li>
 <li>DDMORE Foundation Model Repository entry:
 <code>DDMODEL00000294</code>
 </li>
-<li>Article (per task metadata): <a href="https://doi.org/10.1038/s41598-019-38530-w" class="external-link uri">https://doi.org/10.1038/s41598-019-38530-w</a>
+<li>Article (per the metadata this model was built from): <a href="https://doi.org/10.1038/s41598-019-38530-w" class="external-link uri">https://doi.org/10.1038/s41598-019-38530-w</a>
 </li>
 </ul>
 <p>This is a PRECLINICAL (zebrafish) DDMORE entry. nlmixr2lib is
-primarily a library of human population-PK models; the operator
-confirmed the extract-verbatim disposition for this entry via the runner
-sidecar (response-001, 2026-05-07). The model file’s
-<code>description</code> and <code>population</code> metadata flag the
-preclinical species, and this vignette uses mechanistic-sanity and
-self-consistency checks rather than a clinical PKNCA comparison (see
+primarily a library of human population-PK models; the maintainers
+confirmed the extract-verbatim disposition for this entry. The model
+file’s <code>description</code> and <code>population</code> metadata
+flag the preclinical species, and this vignette uses mechanistic-sanity
+and self-consistency checks rather than a clinical PKNCA comparison (see
 Validation strategy below for rationale).</p>
 <p>The van Wijk 2019 publication PDF was not on disk under the
 literature tree, so external cross-checks against published tables and
@@ -3027,8 +3026,7 @@ listing.</p>
 <div class="section level2">
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
-<p>Per the skill’s <code>references/ddmore-source.md</code> decision
-tree:</p>
+<p>Per the package’s decision tree for DDMORE-sourced models:</p>
 <ol style="list-style-type: decimal">
 <li>The linked publication is <strong>not on disk</strong>, so a
 comparison against published NCA / figure values is not possible.</li>
@@ -3378,9 +3376,8 @@ trajectory predicted by the covariate equations.</p>
 <li>
 <strong>Preclinical (zebrafish) species.</strong> This is a
 non-mammalian model of paracetamol PK in Danio rerio larvae 3-5 dpf, not
-a human-PK model. The operator confirmed extract-verbatim disposition
-for this entry via the runner sidecar (response-001, 2026-05-07). The
-model file’s <code>description</code> and
+a human-PK model. The maintainers confirmed extract-verbatim disposition
+for this entry. The model file’s <code>description</code> and
 <code>population$species</code> fields flag the species explicitly, and
 the <code>AGE_DPF</code> covariate is registered with scope
 <code>specific</code> to keep the human-PK <code>AGE</code> (years)
@@ -3408,10 +3405,9 @@ rather than canonical <code>lcl</code> / <code>lvc</code> /
 micro-constants (K25 = 1/min first-order elimination rate, K12 =
 pmol/min zero-order absorption rate from a constant-amount depot) rather
 than in CL / V / ka, the canonical <code>(lka, lcl, lvc)</code>
-parameter set does not map cleanly. The skill’s
-<code>naming-conventions.md</code> log-prefix rule is preserved
-(<code>lk25</code>, <code>lk12</code>), and the source-trace comments
-tie each name to its <code>THETA(*)</code> slot.
+parameter set does not map cleanly. The package’s log-prefix naming rule
+is preserved (<code>lk25</code>, <code>lk12</code>), and the
+source-trace comments tie each name to its <code>THETA(*)</code> slot.
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> reported zero issues for this
 model.</li>
 <li>

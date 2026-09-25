@@ -4065,18 +4065,18 @@ and the associated PD parameters S_max, SC_50, and k_deg_mRNA. The 22 PK
 ODEs are retained in full.</li>
 <li>
 <strong>Compartment naming partially deviates from
-<code>naming-conventions.md</code>.</strong> Canonical names
-<code>depot</code>, <code>central</code>, <code>central_asn1</code>
-(parent + metabolite plasma), <code>target</code>, <code>complex</code>,
-<code>complex_asn1</code> (free ASGPR + parent / metabolite-target
-complexes, TMDD-style) are used where they apply. Mechanistic
-compartments with no canonical mapping use paper-aligned snake-case
-names (<code>liv</code>, <code>liv_asn1</code>, <code>liv_endo</code>,
-<code>liv_endo_asn1</code>, <code>liv_deep</code>,
-<code>liv_deep_asn1</code>, <code>cyto</code>, <code>cyto_asn1</code>,
-<code>risc</code>, <code>kid_vas</code>, <code>kid_vas_asn1</code>,
-<code>kid</code>, <code>kid_asn1</code>, <code>kid_deep</code>,
-<code>kid_deep_asn1</code>).
+<code>inst/references/compartment-names.md</code>.</strong> Canonical
+names <code>depot</code>, <code>central</code>,
+<code>central_asn1</code> (parent + metabolite plasma),
+<code>target</code>, <code>complex</code>, <code>complex_asn1</code>
+(free ASGPR + parent / metabolite-target complexes, TMDD-style) are used
+where they apply. Mechanistic compartments with no canonical mapping use
+paper-aligned snake-case names (<code>liv</code>, <code>liv_asn1</code>,
+<code>liv_endo</code>, <code>liv_endo_asn1</code>,
+<code>liv_deep</code>, <code>liv_deep_asn1</code>, <code>cyto</code>,
+<code>cyto_asn1</code>, <code>risc</code>, <code>kid_vas</code>,
+<code>kid_vas_asn1</code>, <code>kid</code>, <code>kid_asn1</code>,
+<code>kid_deep</code>, <code>kid_deep_asn1</code>).
 <code>checkModelConventions("Ayyar_2024_givosiran")</code> flags the
 non-canonical names; the deviation is intentional, mirrors the precedent
 set by <code>Shah_2012_mAb_PBPK</code>, and is documented here rather

@@ -2967,7 +2967,7 @@ significant effect on CL.</p>
 <code>ATI</code> (antibodies to infliximab)</td>
 <td>
 <code>ADA_POS</code> (per
-<code>.claude/skills/extract-literature-model/references/covariate-columns.md</code>)</td>
+<code>inst/references/covariate-columns.md</code>)</td>
 </tr>
 <tr class="even">
 <td>
@@ -3098,7 +3098,7 @@ maintenance every 8 weeks through week 46 (8 doses total). Infusion over
 </h3>
 <p>Run PKNCA on the maintenance dosing interval (after the 5th dose,
 weeks 22–30). Stratify by ADA status so each treatment group has its own
-NCA summary, as required by the skill’s PKNCA recipe.</p>
+NCA summary.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_conc</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">154</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">210</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>

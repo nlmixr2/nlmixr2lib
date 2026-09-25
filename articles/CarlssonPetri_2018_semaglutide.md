@@ -100,7 +100,7 @@ body weight is the only clinically meaningful covariate on exposure.
 ``` r
 
 set.seed(2018L)
-n_per_arm <- 100L                       # 200 total; cap <= 200 per arm per skill guidance
+n_per_arm <- 100L                       # 200 total; within the 200-per-arm cohort cap
 
 make_cohort_arm <- function(n, dose_mg, id_offset) {
   tibble(

@@ -3453,7 +3453,7 @@ the fundamental identity <code>AUC(0-inf) = dose / CL</code>.</p>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">sd_sim</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="va">sd_sim</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
 <span></span>
 <span><span class="co"># Concentrations must stay non-negative; a negative far tail would make</span></span>
-<span><span class="co"># PKNCA's log-down trapezoid produce NaN (see pknca-recipes.md).</span></span>
+<span><span class="co"># PKNCA's log-down trapezoid produce NaN.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">sd_sim</span><span class="op">$</span><span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sd_sim</span> <span class="op">|&gt;</span></span>

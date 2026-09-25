@@ -69,10 +69,9 @@ Henin 2009 reports a categorical-likelihood (proportional-odds) Markov
 model on HFS grades 0/1/2; there are no plasma concentrations and no
 NCA-amenable endpoints. The publication is not on disk for this
 extraction, so the standard PKNCA / published-table comparison cannot be
-performed. Validation follows the `extract-literature-model` skill’s
-*F.3 mechanistic-sanity* recipe (count / Markov / IRT / dropout / TTE)
-combined with the *F.2 self-consistency* check against the bundled
-simulated dataset:
+performed. Validation follows the *F.3 mechanistic-sanity* check (count
+/ Markov / IRT / dropout / TTE) combined with the *F.2 self-consistency*
+check against the bundled simulated dataset:
 
 1.  The model parses and
     [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
@@ -334,13 +333,12 @@ structure encodes.
   minimization is reported and none was performed. Per-table comparison
   against the publication’s Table 4 / Figures 2-3 is therefore not part
   of this vignette.
-- **Validation strategy.** F.3 mechanistic-sanity recipe (count / Markov
+- **Validation strategy.** F.3 mechanistic-sanity check (count / Markov
   / IRT / dropout / TTE) combined with the F.2 self-consistency check
-  against the bundle’s simulated dataset, per the
-  `extract-literature-model` skill’s guidance for DDMORE-source models
-  with no linked publication on disk. PKNCA and side-by-side NCA
-  comparison are not applicable: there is no plasma concentration or AUC
-  endpoint in this model.
+  against the bundle’s simulated dataset, the package’s approach for
+  DDMORE-source models with no linked publication on disk. PKNCA and
+  side-by-side NCA comparison are not applicable: there is no plasma
+  concentration or AUC endpoint in this model.
 - **Markov state as exposed conditional probabilities.** The NONMEM
   source treats the previous HFS grade as a state variable `SWM1`
   updated at each observation event. nlmixr2 / rxode2 ODE models do not
@@ -355,11 +353,10 @@ structure encodes.
 - **`etab00` naming for the shared-intercept random effect.** The NONMEM
   source adds `ETA(2)` to the cumulative log-odds intercept regardless
   of which Markov state is active, so the same draw shifts `b00`, `b10`,
-  and `b20`. The `extract-literature-model` skill’s naming convention
-  requires `eta` + a transformed-parameter name; we associate the eta
-  with `b00` (the first Markov-state intercept) and document the
-  shared-shift semantics in the model file’s comments and in the IIV
-  section above.
+  and `b20`. The package’s naming convention requires `eta` + a
+  transformed-parameter name; we associate the eta with `b00` (the first
+  Markov-state intercept) and document the shared-shift semantics in the
+  model file’s comments and in the IIV section above.
 - **CRCL is Cockcroft-Gault, not BSA-normalized.** The canonical `CRCL`
   covariate in `inst/references/covariate-columns.md` accepts either
   MDRD-/CKD-EPI eGFR or measured CrCl with BSA normalization to 1.73 m².

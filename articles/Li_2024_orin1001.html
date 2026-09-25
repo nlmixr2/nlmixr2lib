@@ -3069,7 +3069,7 @@ relative to one another so that they are not perfectly rank-correlated;
 the paper screened out covariate pairs with Pearson correlation above
 0.5 (Methods 2.4.2), so weak correlation is the right target.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n_per</span> <span class="op">&lt;-</span> <span class="fl">100L</span> <span class="co"># participants per dose arm; the skill cap is 200</span></span>
+<code class="sourceCode R"><span><span class="va">n_per</span> <span class="op">&lt;-</span> <span class="fl">100L</span> <span class="co"># participants per dose arm; the cohort cap is 200</span></span>
 <span><span class="va">doses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">300</span>, <span class="fl">400</span>, <span class="fl">500</span>, <span class="fl">650</span>, <span class="fl">900</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Lognormal quantile matched to a published median + IQR, clamped to the</span></span>
@@ -4386,7 +4386,7 @@ targets available for this model.</p>
 <span>  <span class="st">"TBIL 5.22 (5th pctile)"</span>, <span class="fl">5.22</span>, <span class="fl">45.13</span>, <span class="op">-</span><span class="fl">37.4</span>,</span>
 <span>  <span class="st">"TBIL 22.24 (95th pctile)"</span>, <span class="fl">22.24</span>, <span class="fl">45.13</span>, <span class="fl">58.6</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">n_scen</span> <span class="op">&lt;-</span> <span class="fl">200L</span> <span class="co"># skill cap; Li 2024 used 500 per scenario</span></span>
+<span><span class="va">n_scen</span> <span class="op">&lt;-</span> <span class="fl">200L</span> <span class="co"># cohort cap; Li 2024 used 500 per scenario</span></span>
 <span></span>
 <span><span class="va">events_scen</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">scenarios</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>

@@ -475,19 +475,18 @@ duration and are the primary structural checks. {.table}
   `CL = theta1 * (1 + theta2 * (BCOV - 63) + theta3 * DCOV)` with theta3
   = 0.0174 per mL/min. The packaged model encodes only
   `CL = theta1 * (1 + theta2 * (CRCL - 63))`, omitting the theta3 DCOV
-  term. This was an operator-resolved decision (sidecar request-001 /
-  response-001, Option C) to avoid introducing a new canonical covariate
-  column for per-subject baseline CRCL. For subjects with stable CRCL
-  the two equations are identical (DCOV = 0); for subjects with changing
-  CRCL the packaged model treats every observation as if it were the
-  baseline, so the within-subject trajectory of CL follows the current
-  CRCL directly. A future revision could add a `CRCL_BASE` canonical and
-  a third covariate effect parameter to reinstate the full Wahlby split.
-  The headline finding of the paper (a parameter describing individual
-  changes in CL_Cr with time improves population PK modelling of
-  gentamicin) is therefore PARTIALLY reproduced in this package: the
-  linear CRCL effect is faithful, but the time-varying baseline
-  vs. change separation is not.
+  term. This was a maintainer decision to avoid introducing a new
+  canonical covariate column for per-subject baseline CRCL. For subjects
+  with stable CRCL the two equations are identical (DCOV = 0); for
+  subjects with changing CRCL the packaged model treats every
+  observation as if it were the baseline, so the within-subject
+  trajectory of CL follows the current CRCL directly. A future revision
+  could add a `CRCL_BASE` canonical and a third covariate effect
+  parameter to reinstate the full Wahlby split. The headline finding of
+  the paper (a parameter describing individual changes in CL_Cr with
+  time improves population PK modelling of gentamicin) is therefore
+  PARTIALLY reproduced in this package: the linear CRCL effect is
+  faithful, but the time-varying baseline vs. change separation is not.
 
 - **Vancomycin model is reproduced faithfully.** The vancomycin final
   model in the paper is the simpler
@@ -535,11 +534,11 @@ duration and are the primary structural checks. {.table}
   low-Cr subjects would receive falsely high CRCL estimates and falsely
   high CL.
 
-- **Errata not searched.** The skill’s pre-flight checklist asks for an
-  errata search on the publisher landing page; the deep web search is
-  not available in this extraction environment and the operator was not
-  asked to verify. If a subsequent erratum revises any Table 4 estimate
-  the packaged values should be refreshed accordingly.
+- **Errata not searched.** The extraction checklist asks for an errata
+  search on the publisher landing page; the deep web search was not
+  available when this model was built and no maintainer was asked to
+  verify. If a subsequent erratum revises any Table 4 estimate the
+  packaged values should be refreshed accordingly.
 
 - **Multi-cohort vignette safety.** The gentamicin and vancomycin
   simulations use disjoint ID ranges (`id_offset = 0L` and
@@ -547,4 +546,4 @@ duration and are the primary structural checks. {.table}
   formula `Cc ~ time | drug + id` groups subjects correctly. The
   `keep = c("drug", "WT", "CRCL")` argument to `rxSolve()` carries the
   labelling columns through, avoiding the post-hoc `left_join` fan-out
-  failure mode described in vignette-template.md.
+  failure mode.

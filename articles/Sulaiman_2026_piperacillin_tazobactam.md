@@ -465,7 +465,7 @@ sim <- rxode2::rxSolve(
   mod, events = events,
   keep      = "regimen",
   # rxode2's automatic ODE -> linCmt conversion corrupts the dvid mapping for
-  # multi-endpoint models; see known-vignette-failure-patterns.md pattern 5b.
+  # multi-endpoint models.
   useLinCmt = FALSE,
   returnType = "data.frame"
 ) |>

@@ -314,7 +314,7 @@ mod
 #>     totalCdk6Csf <- free_cdk6 + complex_cdk6_csf
 #>   })
 #> }
-#> <environment: 0x55bbccb92a20>
+#> <environment: 0x55d419907780>
 ```
 
 Ribociclib (RIB) is a CDK4/6 inhibitor approved for
@@ -395,7 +395,7 @@ tibble::tribble(
   "Ki (equilibrium Kd) for CDK6",  "kd6",          "39 nmol/L",   "Table 1, CDK4/6 occupancy block, 'K i (nM) 10/39', second of pair (ref 24)",
   "Dissociation rate constant",    "koff",         "3.78 /h",     "Table 1, koff row: 0.063 /min, x 60 min/h (ref 25)",
   "Starting CDK4/6 expression",    "cdk0",         "100 nmol/L",  "Methods prose beneath Eq 1: 'set to a value of 0.1 uM'",
-  "Target-engagement ODE",         "d/dt(complex)","Eq 1",        "Methods, Eq 1 (recovered from the PDF; the trimmed markdown renders it as 'formula-not-decoded')"
+  "Target-engagement ODE",         "d/dt(complex)","Eq 1",        "Methods, Eq 1 (recovered from the PDF; the text extracted from the PDF renders it as 'formula-not-decoded')"
 ) |>
   knitr::kable()
 ```
@@ -409,7 +409,7 @@ tibble::tribble(
 | Ki (equilibrium Kd) for CDK6 | kd6 | 39 nmol/L | Table 1, CDK4/6 occupancy block, ‘K i (nM) 10/39’, second of pair (ref 24) |
 | Dissociation rate constant | koff | 3.78 /h | Table 1, koff row: 0.063 /min, x 60 min/h (ref 25) |
 | Starting CDK4/6 expression | cdk0 | 100 nmol/L | Methods prose beneath Eq 1: ‘set to a value of 0.1 uM’ |
-| Target-engagement ODE | d/dt(complex) | Eq 1 | Methods, Eq 1 (recovered from the PDF; the trimmed markdown renders it as ‘formula-not-decoded’) |
+| Target-engagement ODE | d/dt(complex) | Eq 1 | Methods, Eq 1 (recovered from the PDF; the text extracted from the PDF renders it as ‘formula-not-decoded’) |
 
 ### Units table (dimensional analysis)
 
@@ -1056,5 +1056,5 @@ No erratum or corrigendum exists for this article as of the extraction
 date. The single supplementary file (MOESM1) was retrieved and contains
 one figure (S1, simulated intracranial CDK4/6 occupancy by regimen,
 presented as means with 10th-90th percentiles); it contains no parameter
-table and no equations. Eq 1 was recovered from the PDF because the
-trimmed markdown companion renders it as a `formula-not-decoded` marker.
+table and no equations. Eq 1 was recovered from the PDF itself because
+the extracted text renders it as a `formula-not-decoded` marker.

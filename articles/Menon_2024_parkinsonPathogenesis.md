@@ -23,7 +23,7 @@
 ## Paper classification and extraction scope
 
 The source is labelled `## PERSPECTIVE` on page 1. Under the standing
-operator policy (2026-07-11), QSP / systems-pharmacology models with
+maintainer policy (2026-07-11), QSP / systems-pharmacology models with
 tabulated ODEs and parameter values are extracted regardless of
 publication type. Menon 2024’s Supplementary Material 2 (Section 1.4,
 Equations 1-5) gives the combined ROS + proteasome-sequestration ODE
@@ -352,9 +352,9 @@ approximately 10-fold rise consistent with the paper’s Fig 2(I)
 description of “increased proteasome availability”.
 
 The upstream Sneppen et al. 2009 proteasome-dynamics paper cited by
-Menon 2024 as reference \[6\] is not on disk in the source directory; if
-the operator wishes to resolve this from the primary source, the DOI is
-10.1088/1478-3975/6/3/036005.
+Menon 2024 as reference \[6\] is not on disk in the source directory;
+anyone wishing to resolve this from the primary source will find it at
+DOI 10.1088/1478-3975/6/3/036005.
 
 ### Unbounded vesicular DA in the DA variant (healthy regime)
 

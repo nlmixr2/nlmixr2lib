@@ -23,8 +23,8 @@ transcription source.
 
 **Everything in these twelve files is a transcription of a secondary
 source.** Each model should be re-verified against its primary
-publication before being relied on. The per-study re-verification notes
-live in `refharvest/vanderZeeuw_2026_PMC13272613_cited_primaries.jsonl`.
+publication before being relied on. Per-study re-verification notes are
+kept in the maintainers’ records.
 
 ``` r
 
@@ -857,8 +857,7 @@ in full before any of these twelve models is used for a decision.
 1.  **Secondary-source transcription.** Every parameter comes from the
     review’s Table 4 or prose, not from the primary publications. Each
     file’s `reference` field names both. Re-verification notes per study
-    are in
-    `refharvest/vanderZeeuw_2026_PMC13272613_cited_primaries.jsonl`.
+    are kept in the maintainers’ records.
 
 2.  **IIV convention.** Read as apparent CV% and converted with
     `omega^2 = log(1 + CV^2)`. This follows the review’s own stated
@@ -954,6 +953,6 @@ in full before any of these twelve models is used for a decision.
     section 3.2.2.3 prose (Vc 2.65, Vp 2.87).
 16. **Lee 2024 is not yet extracted.** Its six-level disease-type
     covariate on Vp requires minting new `DIS_<disease>` canonical
-    columns, which is not an auto-approved covariate family. All of its
-    parameters are tabulated, so it is ready to ship once those names
-    are ratified.
+    columns, which is not a covariate family whose new members are
+    accepted automatically. All of its parameters are tabulated, so it
+    is ready to ship once those names are ratified.

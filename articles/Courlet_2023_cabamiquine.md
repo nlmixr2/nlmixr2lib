@@ -755,23 +755,21 @@ than blood, SpzCh more potent than IBSM – is reproduced exactly.
 packaged models use 70 kg. All simulations here use WT = 70 kg, so the
 choice does not affect any result shown.
 
-**Reference dose of the dose-on-V2/F term (operator decision).** The
+**Reference dose of the dose-on-V2/F term (maintainer decision).** The
 empirical power effect `V2/F = 2363 * (WT/70)^1 * DOSE^e_dose_vc` has no
 reported centering dose. The packaged model uses the **uncentred** dose
 in mg, i.e. an implicit reference dose of 1 mg, giving V2/F = 167 L at
 200 mg. The alternative – centring on a typical study dose, leaving V2/F
 = 2363 L – implies a steady-state volume of about 7,000 L, which exceeds
 the Vz implied by the paper’s own reported terminal half-life (CL x t1/2
-/ ln2, at most about 5,000 L). Ratified by operator sidecar
-`oare_PMC10720512` request 001, question 1.
+/ ln2, at most about 5,000 L). Ratified by the maintainers.
 
 **Dose-on-V2/F exponent: main text and supplement disagree
 (erratum-level).** The Results text states “a power coefficient of
 -0.530”, while Supplementary Material 1 – the parameter table of record,
 and the artefact the text points the reader to – reports -0.50 with RSE
 5.18%. These are genuinely different numbers, not a rounding artefact.
-The packaged models use **-0.50**. Ratified by operator sidecar
-`oare_PMC10720512` request 001, question 2.
+The packaged models use **-0.50**. Ratified by the maintainers.
 
 **Doses are free base (assumption, validated).** Study 1 dosed
 cabamiquine succinate salt, study 2 free base, and the paper states 1 mg

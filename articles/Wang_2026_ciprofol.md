@@ -106,8 +106,8 @@ Original observed data are not publicly available. The cohort below
 reproduces the three enrolment strata of Table 1, drawing weight, BUN
 and age per stratum from normal distributions centred on the published
 stratum mean with a standard deviation of (max - min) / 4 and truncated
-to the published range. 100 subjects per stratum (the skill cap is 200
-per arm) is ample for the checks below.
+to the published range. 100 subjects per stratum (the package’s cohort
+cap is 200 per arm) is ample for the checks below.
 
 Each subject receives the study regimen: 0.6 mg/kg as a 30 s infusion
 into `central`, with observations on the ODE state `central` at the

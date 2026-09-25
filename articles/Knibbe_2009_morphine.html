@@ -2878,11 +2878,10 @@ days</li>
 packaged model by re-simulating the typical-value trajectories on the
 event table that ships with the DDMORE bundle
 (<code>Simulated_PaediatricMorphinePK.csv</code>) and visually comparing
-them to the bundle’s stochastic-simulation dependent variable. This is
-the F.2 self-consistency check from the extraction skill’s verification
-checklist (the source publication PDF was not on disk during extraction,
-so a direct figure-replication check against the publication is not
-possible).</p>
+them to the bundle’s stochastic-simulation dependent variable. This is a
+self-consistency check (the source publication PDF was not on disk
+during extraction, so a direct figure-replication check against the
+publication is not possible).</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3099,8 +3098,8 @@ to nlmixr2 proportional</td>
 </table>
 </div>
 <div class="section level2">
-<h2 id="validation-f-2-self-consistency-against-the-ddmore-simulated-dataset">Validation: F.2 self-consistency against the DDMORE simulated
-dataset<a class="anchor" aria-label="anchor" href="#validation-f-2-self-consistency-against-the-ddmore-simulated-dataset"></a>
+<h2 id="validation-self-consistency-against-the-ddmore-simulated-dataset">Validation: self-consistency against the DDMORE simulated
+dataset<a class="anchor" aria-label="anchor" href="#validation-self-consistency-against-the-ddmore-simulated-dataset"></a>
 </h2>
 <p>The DDMORE bundle ships
 <code>Simulated_PaediatricMorphinePK.csv</code>, an event dataset for 5
@@ -3374,9 +3373,9 @@ here.</li>
 <li>
 <strong><code>$ERROR</code> block residual mapping.</strong> The
 source <code>.mod</code> reports log-additive errors on log-IPRED
-(<code>Y = LOG(F) + ERR(i)</code>). Per
-<code>naming-conventions.md</code> <code>$ERROR block patterns</code>,
-this maps to <code>Cc ~ prop(propSd)</code> in nlmixr2 with
+(<code>Y = LOG(F) + ERR(i)</code>). Per the package’s convention for
+translating NONMEM <code>$ERROR</code> blocks, this maps to
+<code>Cc ~ prop(propSd)</code> in nlmixr2 with
 <code>propSd = sqrt(SIGMA)</code>.</li>
 <li>
 <strong>NKOD-conditional 24-hour additive error term

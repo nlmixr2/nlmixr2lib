@@ -93,7 +93,7 @@ records (Stringer 2015 Methods: “no pharmacokinetic data were
 collected”). PKNCA-based NCA is not the right validation target for such
 a model; the established alternatives (Steady-state hold,
 perturbation-recovery, mass-balance / flux check, dimensional analysis)
-apply here (see `references/endogenous-validation.md`). Below we run:
+apply here. Below we run:
 
 1.  A steady-state hold with the drug effect and both
     disease-progression terms turned off.

@@ -2373,8 +2373,8 @@ deterministic asymptote.
   Paper Methods para 1: concentrations were log-transformed and an
   additive residual error model was used. This is equivalent to a
   proportional error model on the linear concentration scale with
-  `propSd ~= sqrt(sigma^2)` (verification-checklist.md A). The packaged
-  model declares `Cc ~ prop(propSd)`, `Cc_m3g ~ prop(propSd_m3g)`, and
+  `propSd ~= sqrt(sigma^2)`. The packaged model declares
+  `Cc ~ prop(propSd)`, `Cc_m3g ~ prop(propSd_m3g)`, and
   `Cc_m6g ~ prop(propSd_m6g)`.
 - **Effect-compartment ODE form for the “intermediate” compartment.**
   Paper Eq. 1 reads `dCint/dt = Kint * (C - Cint)`, identical to the

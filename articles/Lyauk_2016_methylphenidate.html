@@ -3290,9 +3290,9 @@ interval.</p>
 the ratio of typical CL values and carries no Monte-Carlo noise. The
 arms are therefore reproduced deterministically (<code>zeroRe()</code>),
 which makes the gate exact and identical on any machine – unlike a
-cohort median, which depends on the solver thread count (see pattern 12
-of the skill’s known-failure list). The prediction <em>intervals</em>,
-which are genuinely cohort quantities, are checked separately below.</p>
+cohort median, which depends on the solver thread count. The prediction
+<em>intervals</em>, which are genuinely cohort quantities, are checked
+separately below.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># One deterministic subject per Figure 4 / Figure 5 arm.</span></span>
 <span><span class="va">arm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>, <span class="va">label</span>, <span class="va">wt</span> <span class="op">=</span> <span class="fl">70</span>, <span class="va">sexf</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">rs71</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">rs115</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">het</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">hom</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
@@ -3381,7 +3381,7 @@ which are genuinely cohort quantities, are checked separately below.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Guard the join: a label typo would otherwise silently drop rows and leave a</span></span>
-<span><span class="co"># gate that passes because it had nothing to test (known-failure pattern 10).</span></span>
+<span><span class="co"># gate that passes because it had nothing to test.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">published</span><span class="op">$</span><span class="va">arm</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">nca_arm_wide</span><span class="op">$</span><span class="va">arm</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="va">published</span> <span class="op">|&gt;</span></span>

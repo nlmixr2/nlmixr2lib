@@ -3119,8 +3119,7 @@ an oliguric patient.</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG, not rxode2's; rxode2 partitions its streams per</span></span>
 <span><span class="co"># solver thread, so this cohort differs between a 16-thread workstation and a</span></span>
 <span><span class="co"># 2-core CI runner and no seed can make them agree. Every assertion below is</span></span>
-<span><span class="co"># written to hold for any cohort the model can produce (see pattern 12 of</span></span>
-<span><span class="co"># known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># written to hold for any cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20230502</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">150L</span></span>
@@ -3604,10 +3603,10 @@ concentration. * differs by &gt; 20%.</caption>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">gate</span><span class="op">)</span> <span class="op">==</span> <span class="fl">8L</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cmp</span><span class="op">)</span> <span class="op">==</span> <span class="fl">8L</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA</a></span><span class="op">(</span><span class="va">gate</span><span class="op">$</span><span class="va">pct</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Realised 0.1-7.4% across these eight comparisons. 20 is the tolerance the</span></span>
-<span><span class="co"># skill sets; it sits far enough above that spread to survive a different cohort</span></span>
-<span><span class="co"># draw, while a mis-transcribed clearance, volume, dose or dwell schedule moves</span></span>
-<span><span class="co"># these by tens of percent and still breaks the gate.</span></span>
+<span><span class="co"># Realised 0.1-7.4% across these eight comparisons. 20 is the package's</span></span>
+<span><span class="co"># standard tolerance; it sits far enough above that spread to survive a</span></span>
+<span><span class="co"># different cohort draw, while a mis-transcribed clearance, volume, dose or</span></span>
+<span><span class="co"># dwell schedule moves these by tens of percent and still breaks the gate.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">gate</span><span class="op">$</span><span class="va">pct</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>

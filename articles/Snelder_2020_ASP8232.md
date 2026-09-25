@@ -437,9 +437,8 @@ male (eGFR = 44). \* marks any row that differs from the reference by
 
 Several structural choices had to be made because the source paper is
 silent on specific implementation details. The supplementary NONMEM
-control stream would resolve some of these but is not on disk; the
-supplement is tracked separately (see the extraction task’s
-`needs_acquisition.jsonl`).
+control stream would resolve some of these, but the supplement was not
+available when this model was built.
 
 - **F1 covariate centring**: the paper reports the exponent `-0.257` for
   the eGFR-on-F1 power effect but does not state the centring value.
@@ -497,6 +496,5 @@ supplement is tracked separately (see the extraction task’s
   not on disk in the extraction. All parameter values in Table 4 are
   self-contained, so the extraction proceeded from the main text alone;
   the supplement would additionally confirm the transit- compartment
-  implementation and the exact sigmoid-Emax parameterisation. The
-  supplement is tracked in `needs_acquisition.jsonl`.
+  implementation and the exact sigmoid-Emax parameterisation.
 - No published errata are known for Snelder 2020 as of 2026-07-09.

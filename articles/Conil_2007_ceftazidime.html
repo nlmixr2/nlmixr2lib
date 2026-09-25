@@ -3012,7 +3012,7 @@ distribution to 13%”</td>
 <td><code>etalq  ~ 2.6520</code></td>
 <td>log(3.63^2 + 1)</td>
 <td>Conil 2007 Table 2 basic-model row “Inter-compartmental clearance”
-CV 363% (final model silent; carried forward per operator standing
+CV 363% (final model silent; carried forward per standing maintainer
 instruction)</td>
 </tr>
 <tr class="even">
@@ -3596,16 +3596,16 @@ L).</caption>
 forward from the basic model.</strong> Conil 2007 Results p. 31
 explicitly reports only the final-model IIV on CL (16%) and V1 (13%);
 the section is silent on IIV for Q and V2 in the final model and on the
-final-model residual error. Per the operator’s standing instruction
-(sidecar response, 2026-06-17), silence is interpreted as “unchanged
-from the basic model” rather than “dropped to zero.” The packaged model
-therefore carries the basic-model values forward: Q IIV 363% (Table 2
-row “Inter-compartmental clearance”), V2 IIV 190% (Table 2 row
-“Distribution volume of the peripheral compartment”), and proportional
-residual CV 38% (Results p. 30, “The residual variability… was 38%”).
-The 363% Q IIV is unusually large but matches the reported basic-model
-value verbatim; downstream users who simulate VPCs will see a wide
-spread on Q-driven distribution.</p></li>
+final-model residual error. Per the maintainers’ standing instruction
+(2026-06-17), silence is interpreted as “unchanged from the basic model”
+rather than “dropped to zero.” The packaged model therefore carries the
+basic-model values forward: Q IIV 363% (Table 2 row “Inter-compartmental
+clearance”), V2 IIV 190% (Table 2 row “Distribution volume of the
+peripheral compartment”), and proportional residual CV 38% (Results
+p. 30, “The residual variability… was 38%”). The 363% Q IIV is unusually
+large but matches the reported basic-model value verbatim; downstream
+users who simulate VPCs will see a wide spread on Q-driven
+distribution.</p></li>
 <li><p><strong>MECH_VENT canonical newly ratified.</strong> Conil 2007
 uses a binary indicator <code>VENT</code> (0 = not ventilated, 1 =
 mechanically ventilated) on the peripheral volume V2. No existing entry

@@ -71,7 +71,7 @@ Per-parameter source locations are recorded inline in
 | 3 transit compartments fixed; `ktr = 4 / MTT` | – | Methods + Results: ‘transit-compartment (n=3) absorption model’ and ‘ka and ktr were set equal’; Savic 2007 convention |
 | Three-compartment disposition (`central`, `peripheral1`, `peripheral2`) | – | Results: ‘A three-compartmental disposition model resulted in a significantly better model fit’; Figure 1 schematic |
 | Allometric WT scaling, exponents 0.75 / 1.00 fixed, reference 56 kg | – | Methods page 4 (exponents); reference weight inferred from the pooled-cohort approximate median (see Assumptions and deviations) |
-| Additive error on log-transformed concentration -\> proportional in nlmixr2 linear space | – | Methods page 4: ‘additive residual error model was assumed since data were transformed into their natural logarithms’; convention rule from `references/parameter-names.md` |
+| Additive error on log-transformed concentration -\> proportional in nlmixr2 linear space | – | Methods page 4: ‘additive residual error model was assumed since data were transformed into their natural logarithms’; convention rule from `inst/references/parameter-names.md` |
 
 ## Virtual cohort
 
@@ -454,10 +454,10 @@ landmarks (ng/mL). Compare with Hoglund 2012 Table 3 medians. {.table}
 - **Single residual error term.** The paper used an additive residual
   error model on the natural log of the observed concentration, which
   maps to proportional residual error in the linear concentration space
-  (see `references/parameter-names.md` section ‘Residual error’). The
-  package model encodes this as `propSd <- sqrt(0.0973) ~= 0.312`; the
-  SD applies on the log scale and equals the proportional CV in linear
-  space to first order.
+  (see `inst/references/parameter-names.md` section ‘Residual error’).
+  The package model encodes this as `propSd <- sqrt(0.0973) ~= 0.312`;
+  the SD applies on the log scale and equals the proportional CV in
+  linear space to first order.
 
 - **Bioavailability anchor.** Relative bioavailability F is structurally
   fixed at 1 in the source paper (Methods page 4: ‘the population value

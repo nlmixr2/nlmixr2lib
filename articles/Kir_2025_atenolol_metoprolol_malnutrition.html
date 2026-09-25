@@ -3887,10 +3887,9 @@ not log-transformed.</strong> The convention linter suggests
 parameters, so a log transform would buy nothing: there is no estimation
 step to keep positive, and it would obscure the direct correspondence
 with the value printed in the paper. The <code>kp_&lt;organ&gt;</code>
-family is not (yet) written up in
-<code>.claude/skills/extract-literature-model/references/parameter-names.md</code>,
-but the encoding follows established practice in the registry – nine
-existing PBPK models declare bare
+family was not yet written up in the maintainers’ parameter-naming guide
+when this model was built, but the encoding follows established practice
+in the registry – nine existing PBPK models declare bare
 <code>kp_&lt;organ&gt; &lt;- fixed(...)</code> parameters, including
 <code>Pei_2023_tacrolimus_pbpk.R</code>,
 <code>Levitt_2005_propofol_pbpk.R</code> and

@@ -558,7 +558,7 @@ are documented so reviewers can reconcile the model with the source.
     with `e_sexf_cl = log(1.39)`. The effect direction (boys \> girls)
     and the magnitude (39%) are unchanged.
 6.  **CONMED_NVP newly registered.** The `CONMED_NVP` indicator column
-    is added in this PR to the canonical-covariate register as the
+    was added with this model to the canonical-covariate register as the
     nevirapine analog of the existing `CONMED_EFV` indicator. Both flag
     CYP3A induction by a non-nucleoside reverse-transcriptase inhibitor
     on a coadministered antiretroviral drug.

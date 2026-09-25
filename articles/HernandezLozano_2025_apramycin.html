@@ -3395,7 +3395,7 @@ FIXED</td>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># rxSolve() drops IIV only when the model has etas to drop; zeroRe() warns on a</span></span>
-<span><span class="co"># model with none (see known-vignette-failure-patterns.md pattern 9).</span></span>
+<span><span class="co"># model with none.</span></span>
 <span><span class="va">solve_typical</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mod</span>, <span class="va">ev</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">ui</span><span class="op">$</span><span class="va">iniDf</span><span class="op">$</span><span class="va">neta1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -4629,9 +4629,8 @@ equation could not be obtained.</strong> Aranzana-Climent 2022
 at the <code>kada</code> sentence itself) are both Elsevier titles
 outside the PMC open-access subset, and every automated route returned
 an IP block rather than a document. Neither is on disk, so neither was
-read, and nothing in this vignette rests on their contents. They are
-logged in the ingestion project’s <code>needs_acquisition.jsonl</code>
-at <strong>corroborative</strong> severity: obtaining them would confirm
+read, and nothing in this vignette rests on their contents. They are of
+<strong>corroborative</strong> value only: obtaining them would confirm
 the <code>kada</code> equation form recorded above, not supply any
 missing number. Every numeric value packaged in the three model files
 comes from Hernandez-Lozano 2025 itself or from the two upstream PK

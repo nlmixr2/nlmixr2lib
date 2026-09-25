@@ -70,8 +70,8 @@ below collects them in one place for review.
 | IIV ka (CV 148%) | 1.16025 | Table 3 ka IIV 148%; Discussion ‘k_a values between subjects were allowed to vary because of interindividual variability’. |
 | Diagonal omega | n/a | Methods ‘A diagonal covariance matrix was used; … covariances between the structural model parameters … negligible’. |
 | Proportional residual error | 0.096 | Table 3 epsilon_1 (9.6%, RSE 23%); Results ‘A proportional model was used for the residual error’. |
-| Covariate Eq. 1 (V/F) | n/a | Areberg 2006 Results: ‘V/F = 8.0*10^2 + 12* (WT - WT_mean)’ (decoded from in the trim). |
-| Covariate Eq. 2 (CL/F) | n/a | Areberg 2006 Results: ‘CL/F = 19 - 17 \* (CYP2C19 - CYP2C19_mean)’ (decoded from in the trim). |
+| Covariate Eq. 1 (V/F) | n/a | Areberg 2006 Results: ‘V/F = 8.0*10^2 + 12* (WT - WT_mean)’ (decoded from in the extracted text). |
+| Covariate Eq. 2 (CL/F) | n/a | Areberg 2006 Results: ‘CL/F = 19 - 17 \* (CYP2C19 - CYP2C19_mean)’ (decoded from in the extracted text). |
 
 ## Virtual cohort
 
@@ -356,16 +356,16 @@ ranges rather than from the unreported per-subject covariate sheet.
   means ((76.3 + 83.9 + 78.0) / 3 = 79.4 kg, rounded). The CYP2C19
   centering value of 0.769 is the pooled-cohort mean S/R-mephenytoin
   ratio reported in the Areberg 2006 underlying analysis but not
-  reproduced in the article text or trimmed-markdown excerpt available
-  during extraction; it was supplied via the operator-approved sidecar
-  context. Cohort-bounded validity: subjects outside the cohort’s WT
-  (63-101 kg) or CYP2C19 (~0.1-1.2) ranges may receive unphysical
-  apparent volumes or clearances under the linear-additive form (e.g.,
-  CL/F = 19 - 17\*(2 - 0.769) = -1.9 L/h is mathematically valid in the
-  equation but not biologically meaningful).
+  reproduced in the article text or the extracted-text excerpt available
+  during extraction; it was supplied as a maintainer-approved value.
+  Cohort-bounded validity: subjects outside the cohort’s WT (63-101 kg)
+  or CYP2C19 (~0.1-1.2) ranges may receive unphysical apparent volumes
+  or clearances under the linear-additive form (e.g., CL/F = 19 -
+  17\*(2 - 0.769) = -1.9 L/h is mathematically valid in the equation but
+  not biologically meaningful).
 - **Sign of the CYP2C19 coefficient on CL/F.** Areberg 2006 Table 3
   reports theta_8 as a magnitude (17 L/h, RSE 23%) without an explicit
-  sign in the trimmed-markdown excerpt of the encoded equation. The sign
+  sign in the extracted-text excerpt of the encoded equation. The sign
   is inferred biologically: a higher urinary S/R-mephenytoin ratio
   indicates LOWER CYP2C19 activity (because high CYP2C19 activity
   selectively metabolizes S-mephenytoin and lowers the residual S

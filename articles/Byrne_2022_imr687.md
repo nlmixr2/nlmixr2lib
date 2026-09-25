@@ -449,4 +449,4 @@ internal-consistency check on the packaged 1-compartment PK structure.
   from study IMR-SCD-102) on the model predictions. The underlying Phase
   2a data are not publicly available, so this vignette plots only the
   model predictions; the qualitative agreement against the poster
-  figures is the operator’s responsibility to confirm visually.
+  figures is the maintainers’ responsibility to confirm visually.

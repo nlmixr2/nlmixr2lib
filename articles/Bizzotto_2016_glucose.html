@@ -3229,11 +3229,11 @@ also from <code>MODEL_PREDICTION</code> (the “# constants” block).</p>
 <div class="section level2">
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
-<p>The Bizzotto 2016 publication is <strong>not on disk in this
-worktree</strong>, so the standard publication-figure replication and
+<p>The Bizzotto 2016 publication was <strong>not on disk when this model
+was built</strong>, so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The validation in this
-vignette therefore follows the F.2 / F.3 substitutes from the extraction
-skill:</p>
+vignette therefore uses mechanistic-sanity and self-consistency
+substitutes:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Mechanistic sanity (constant inputs).</strong> Holding
@@ -3667,13 +3667,13 @@ are supplied at every observation row.</li>
 <li><p><strong>Bizzotto 2016 publication is not on disk.</strong> The
 packaged model’s <code>reference</code> field carries the citation and
 DOI, and the parameter values in the <code>.mdl</code> are annotated as
-the publication’s final estimates; however, no PDF of Bizzotto et al. is
-available in this worktree, so the in-vignette validation is restricted
-to mechanistic sanity (Sections 1-3) and a textual description of the
-F.2 self-consistency path (Section 4) rather than a side-by-side
-comparison against the published parameter table or Figure 3
-trajectories. Demographic detail is recorded as <code>NA</code> in
-<code>population</code> for the same reason.</p></li>
+the publication’s final estimates; however, no PDF of Bizzotto et
+al. was available when this model was built, so the in-vignette
+validation is restricted to mechanistic sanity (Sections 1-3) and a
+textual description of the self-consistency path (Section 4) rather than
+a side-by-side comparison against the published parameter table or
+Figure 3 trajectories. Demographic detail is recorded as <code>NA</code>
+in <code>population</code> for the same reason.</p></li>
 <li><p><strong><code>Output_real_glucoseKinetics.txt</code> per-test
 residual SDs were collapsed into a single <code>addSd = 0.014</code>
 mmol/L.</strong> The Monolix re-fit listing reports per-test additive

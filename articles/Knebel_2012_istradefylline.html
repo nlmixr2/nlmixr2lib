@@ -2858,8 +2858,9 @@
 on the same pooled database of six phase 2/3 istradefylline trials: one
 for the primary efficacy endpoint (percentage of awake time spent in the
 OFF state) and one for each of three treatment-emergent adverse events.
-Following the <code>replicate-author-structure</code> policy, each is a
-separate model file and all four share this vignette.</p>
+Following the package’s convention of replicating the authors’
+structure, each is a separate model file and all four share this
+vignette.</p>
 <table class="table">
 <colgroup>
 <col width="25%">
@@ -2941,8 +2942,8 @@ concentration-time profile to integrate, so the usual PKNCA validation
 section does not apply. It is replaced by exact structural gates on the
 published anchors, a cross-endpoint consistency check, and reproduction
 of the paper’s published figures on the exposure axis – the analogue of
-the <code>references/endogenous-validation.md</code> strategy for models
-where NCA is the wrong instrument.</li>
+the endogenous-model validation strategy for models where NCA is the
+wrong instrument.</li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># readModelDb() returns the raw model FUNCTION, not a parsed model, so it is</span></span>
@@ -3532,11 +3533,11 @@ the exact gate above.</p>
 percentage OFF time due to istradefylline exposure would be 5.79% … with
 one-half of the maximum effect reached at an exposure of 1690 ng x
 hr/mL” – are <strong>base-model</strong> values (Table II, “Base Model”
-column), not final-model values. Per the
-<code>replicate-author-structure</code> policy the packaged file carries
-the final model, but the base model is one <code>ini()</code> override
-away, and reproducing the abstract is a useful independent check that
-the structure is right.</p>
+column), not final-model values. Per the package’s policy for
+base-plus-final papers, the packaged file carries the final model, but
+the base model is one <code>ini()</code> override away, and reproducing
+the abstract is a useful independent check that the structure is
+right.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_off_base</span> <span class="op">&lt;-</span> <span class="va">mod_off</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini</a></span><span class="op">(</span>e0 <span class="op">=</span> <span class="fl">37.9</span>, emax_dppr <span class="op">=</span> <span class="op">-</span><span class="fl">0.152</span>, let50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">19.3</span><span class="op">)</span>,</span>
@@ -4612,15 +4613,15 @@ it.</li>
 <li>
 <strong>The percentage OFF time file carries the final full
 covariate model, not the base model.</strong> Both are printed in Table
-II; per the <code>replicate-author-structure</code> policy a
-base-plus-final model-development paper contributes the final model. The
-abstract’s headline values (EmaxI 5.79%, EC50 1690 ng x hr/mL) are
-base-model values – Gate 1b reproduces them via an <code>ini()</code>
-override rather than by shipping a second file. The base-model variance
-terms, for anyone wanting a complete base-model override, are Table II:
-omega^2 E0 107 (SD 10.3), E0-EmaxP correlation r = 0.11, omega^2 EmaxP
-0.117 (SD 0.341), omega^2 EmaxI 17.5 (SD 4.18), sigma^2 additive 51.8
-(SD 7.20), sigma^2 exponential 0.0212 (CV% 14.5).</li>
+II; per the package’s policy, a base-plus-final model-development paper
+contributes the final model. The abstract’s headline values (EmaxI
+5.79%, EC50 1690 ng x hr/mL) are base-model values – Gate 1b reproduces
+them via an <code>ini()</code> override rather than by shipping a second
+file. The base-model variance terms, for anyone wanting a complete
+base-model override, are Table II: omega^2 E0 107 (SD 10.3), E0-EmaxP
+correlation r = 0.11, omega^2 EmaxP 0.117 (SD 0.341), omega^2 EmaxI 17.5
+(SD 4.18), sigma^2 additive 51.8 (SD 7.20), sigma^2 exponential 0.0212
+(CV% 14.5).</li>
 <li>
 <strong>Between-subject variability is additive on the linear
 scale</strong>, not exponential, and the structural parameters carrying

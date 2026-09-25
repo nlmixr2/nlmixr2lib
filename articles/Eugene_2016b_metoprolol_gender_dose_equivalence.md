@@ -431,8 +431,8 @@ Side-by-side values entering the assertions below. {.table}
 # These two sides do NOT differ by a physical per-subject mechanism: both are
 # deterministic typical-value solves of the same parameter set, so the only
 # difference is numerical quadrature plus the paper's own rounding. Tight
-# absolute bounds are therefore correct here (see the package CLAUDE.md note on
-# vignette assertions -- the loose-quantile rule applies to random cohorts).
+# absolute bounds are therefore correct here (the loose-quantile rule applies
+# to random cohorts).
 #
 # Tolerances are half of the last printed digit, widened by the observation
 # grid spacing where that is coarser (Tmax can only be resolved to 0.01 h).
@@ -731,7 +731,7 @@ ggplot(vpc, aes(time, Q50, colour = treatment, fill = treatment)) +
 
 ``` r
 
-# Cohort-level assertions. Per the package CLAUDE.md guidance these are stated
+# Cohort-level assertions. These are stated
 # on the CENTRE and on robust quantiles -- never on the per-subject extreme,
 # which is not reproducible across rxode2 builds.
 exposure <- sim_cts |>

@@ -4155,9 +4155,8 @@ alternative <code>exp(0.524)</code> (1.689-fold) matches the raw
 post-hoc geometric-mean ratio (1.59-1.74) somewhat better but departs
 further from the Table 3 ratio, and those post-hoc means come from the
 <em>initial</em> PPK model, which contained no healthy factor and rested
-on only 10 adult patients with SMA. Ratified by the operator (sidecar
-<code>request-002</code> q2, option A). No parameter was tuned to any
-target.</li>
+on only 10 adult patients with SMA. Ratified by the maintainers. No
+parameter was tuned to any target.</li>
 <li>
 <strong>Three transit compartments means four sequential
 transfers.</strong> Sect. 2.1 describes “a three-transit compartment for
@@ -4175,11 +4174,10 @@ errors for venous (23.4% CV) and capillary (34.2% CV) samples, with
 capillary samples 3% of the dataset. No register entry covered blood
 sampling site, so <code>SAMPLE_CAPILLARY</code> was added to
 <code>inst/references/covariate-columns.md</code> in the same pull
-request (operator ratification, sidecar <code>request-002</code> q1,
-option A). Both matrices used the same validated LC-MS/MS assay, so the
-contrast is the collection site rather than the assay. In this vignette
-roughly 3% of observation records are flagged capillary, concentrated in
-the youngest arm.</li>
+request (maintainer ratification). Both matrices used the same validated
+LC-MS/MS assay, so the contrast is the collection site rather than the
+assay. In this vignette roughly 3% of observation records are flagged
+capillary, concentrated in the youngest arm.</li>
 <li>
 <strong>Virtual-cohort covariate distributions are constructed, not
 published.</strong> Individual demographics are not available. Ages were
@@ -4209,10 +4207,10 @@ statements plus two exact linear-model identities.</li>
 <strong>The Mech-PPK model of Table 3 is deferred, not
 dropped.</strong> It requires the closed-access Upreti &amp; Wahlstrom
 (2016) CYP3A ontogeny coefficients and an unpublished blood-to-plasma
-ratio; both are queued for acquisition. The ontogeny functions and the
-ESM Eq. S1-S11 physiology chain have been decoded and verified here so
-the follow-up extraction can proceed directly once the upstream paper is
-available.</li>
+ratio; neither was available when this model was built. The ontogeny
+functions and the ESM Eq. S1-S11 physiology chain have been decoded and
+verified here so the follow-up extraction can proceed directly once the
+upstream paper is available.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -3588,8 +3588,8 @@ cohorts as a descriptive supplement.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort_label</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Defensive time-zero record (per pknca-recipes.md): guarantee a Cc = 0</span></span>
-<span><span class="co"># row at t = 0 per (id, cohort_label) so PKNCA can anchor AUC.</span></span>
+<span><span class="co"># Defensive time-zero record: guarantee a Cc = 0 row at t = 0 per</span></span>
+<span><span class="co"># (id, cohort_label) so PKNCA can anchor AUC.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca</span>,</span>
 <span>  <span class="va">sim_nca</span> <span class="op">|&gt;</span></span>
@@ -3745,18 +3745,16 @@ originally limited to creatinine-based renal function (MDRD / CKD-EPI
 eGFR or measured CrCl BSA-normalised) and was extended in
 <code>inst/references/covariate-columns.md</code> to cover both
 creatinine-based and tracer-measured GFR (iohexol, inulin, 99mTc-DTPA,
-51Cr-EDTA), per the standing decision recorded in this task’s sidecar
-response 001 (2026-06-17). The packaged covariateData entry records
-<code>source_name = 'CLiohexol'</code> and flags the iohexol-tracer
-assay in <code>notes</code>.</p></li>
+51Cr-EDTA), per a standing maintainer decision. The packaged
+covariateData entry records <code>source_name = 'CLiohexol'</code> and
+flags the iohexol-tracer assay in <code>notes</code>.</p></li>
 <li><p><strong>FU registered as a new canonical covariate
 column.</strong> Per-subject fraction unbound of the parent drug in
 plasma (measured by ultrafiltration) was not in the covariate register
 before this extraction. The <code>FU</code> canonical was added to
 <code>inst/references/covariate-columns.md</code> (in the
 protein-binding cluster after <code>TPRO</code>) with Hamren 2008 as the
-founding example, per the operator decision in sidecar response
-001.</p></li>
+founding example, per a maintainer decision.</p></li>
 <li><p><strong><code>kbm</code> and <code>kicv</code> registered as new
 canonical paper-mechanistic parameters.</strong> Hamren 2008’s
 biliary-excretion rate constant <code>kbm</code> and interconversion
@@ -3765,7 +3763,7 @@ rate constant (renamed <code>kicv</code> to avoid the TMDD
 <code>inst/references/parameter-names.md</code> before this extraction.
 Both were registered as new canonical paper-named parameters (under the
 <code>kint</code> cluster) with Hamren 2008 as the founding example, per
-the operator decision in sidecar response 001.</p></li>
+a maintainer decision.</p></li>
 <li><p><strong>Per-subject FU and SEXF replaced with cohort-typical
 values in the virtual cohort.</strong> The source paper records
 subject-level FU measurements (range 0.06-0.2%; cohort median 0.1%
@@ -3801,7 +3799,7 @@ with a different tesaglitazar MW reference can rescale
 corrections-feed scan returned no corrections as of the extraction date
 (2026-06-20).</p></li>
 <li><p><strong>No NONMEM control stream on disk.</strong> The source PDF
-+ its trimmed markdown companion are the only artefacts available; no
++ the text extracted from it are the only artefacts available; no
 <code>.mod</code> / <code>.ctl</code> / <code>.lst</code> is supplied.
 All parameter values are sourced from Table 2 of the main publication.
 The ADVAN6 (general nonlinear kinetics) subroutine was used in the

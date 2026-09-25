@@ -3072,7 +3072,7 @@ MRT_SVEGFR3 = 401, EC50_SVEGFR3 = 1.0, CLI = 32.819).</p>
 <h2 id="mechanistic-sanity-simulation-f-3">Mechanistic-sanity simulation (F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-simulation-f-3"></a>
 </h2>
 <p>The HFS model is a Markov + proportional-odds modality without a
-published NCA table; the F.3 mechanistic-sanity recipe applies.
+published NCA table; the F.3 mechanistic-sanity check applies.
 Typical-value simulation should reproduce sVEGFR-3 depletion under drug,
 <code>bm</code> (the effect-compartment-smoothed relative-change signal)
 moving negative, and each per-state P(grade &gt;= 1) rising.</p>
@@ -3187,7 +3187,7 @@ observation with a placeholder additive residual error
 <strong>not</strong> from the source; users fitting the actual
 likelihood need to extend the model with a per-record <code>PDV</code>
 column and a conditional <code>~ ll(...)</code> form outside the scope
-of this skill.</p></li>
+of this extraction.</p></li>
 <li><p><strong>PX3+ IIV fixed at tiny non-zero.</strong> Table 3 HFS
 reports <code>omega x|&gt;=3 = NE</code> (Not Estimated). The strict
 source-faithful encoding is a zero-variance random effect, but rxode2

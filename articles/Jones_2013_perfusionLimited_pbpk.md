@@ -71,8 +71,9 @@ here would be invented, not extracted).
 
 The testes compartment is what marks the reference individual as male,
 and it is the one organ in this model that had no canonical name in
-`nlmixr2lib` before this extraction; it is registered by this PR as a
-bare-organ compartment alongside `heart`, `skin` and `pancreas`.
+`nlmixr2lib` before this extraction; it was registered when this model
+was added, as a bare-organ compartment alongside `heart`, `skin` and
+`pancreas`.
 
 ## Source trace
 
@@ -409,7 +410,7 @@ knitr::kable(cmp)
 | AUC0-∞ (obs) (mg\*h/L) | Oral 100 mg | 2.52      | 2.52      | -0.0%  |
 | AUC0-∞ (obs) (mg\*h/L) | IV 100 mg   | 3.71      | 3.71      | +0.0%  |
 
-The comparison table uses the skill’s standard 20% flag, but the
+The comparison table uses the standard 20% deviation flag, but the
 agreement here is far tighter than that, and the assertions below are
 set accordingly. Both sides of each comparison come from the same fixed
 parameter vector – there is no cohort and no sampled variability – so

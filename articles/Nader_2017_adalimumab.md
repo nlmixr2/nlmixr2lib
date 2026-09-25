@@ -94,7 +94,7 @@ period:
   every other week starting at week 1 through week 16 (Nader 2017 Fig.
   1).
 
-Each cohort is 150 subjects (below the 200-per-arm skill cap). The
+Each cohort is 150 subjects (below the 200-per-arm cohort cap). The
 population covariate mixture is set to the pooled Table 1 medians and
 marginals.
 

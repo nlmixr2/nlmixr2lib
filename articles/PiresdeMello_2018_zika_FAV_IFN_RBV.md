@@ -24,11 +24,9 @@ cytotoxicity.
 
 Because the model is in vitro and uses static covariates instead of
 dosing events, the validation strategy below mirrors the **endogenous /
-mechanistic-model pattern**
-(`.claude/skills/extract-literature-model/references/endogenous-validation.md`)
-rather than the PKNCA-NCA recipe used for popPK extractions: figure
-replication under the paper’s tested static drug concentrations, plus a
-steady-state / mass-balance sanity check.
+mechanistic-model pattern** rather than the PKNCA-NCA recipe used for
+popPK extractions: figure replication under the paper’s tested static
+drug concentrations, plus a steady-state / mass-balance sanity check.
 
 ## Population
 
@@ -289,8 +287,8 @@ ggplot(combo_panel, aes(time / 24, log10_pfu, colour = regimen, group = regimen)
 
 In vitro models are not amenable to PKNCA-style NCA because there is no
 dose-response AUC to integrate. Instead, the validations below mirror
-the patterns documented in
-`.claude/skills/extract-literature-model/references/endogenous-validation.md`.
+the endogenous / mechanistic-model pattern described in the
+introduction.
 
 ### Control growth
 
@@ -427,7 +425,7 @@ cat(sprintf("  vextra = %.2g PFU/mL (log10 = %.2f)\n",
   autoinhibition adapted from Madelain 2017 <doi:10.1128/AAC.01305-16>;
   IFN linear one-compartment from Gutterman 1982 IM data) in the
   supplemental file `https://doi.org/10.1128/AAC.01983-17`. That
-  supplemental PDF is not on disk in this worktree, and the PK
+  supplemental PDF was not on disk when this model was built, and the PK
   structures are adapted from prior publications rather than original to
   this paper. This registry entry therefore covers only the PD MBM.
   Users who need human plasma-PK input functions for the FAV + IFN

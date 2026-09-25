@@ -471,7 +471,7 @@ Cumulative AUC over the 4-day NCA_PI_D1 schedule (mg.h/L). {.table}
 
 - **FFM derivation.** The source paper used Al-Sallami 2015
   (Reference 29) for fat-free mass; the vignette computes FFM the same
-  way via a small helper. Operators using the model on real data should
+  way via a small helper. Anyone using the model on real data should
   pre-compute FFM with the same formula and supply it as a baseline
   covariate.
 - **Postmenstrual age (PAGE).** The source dataset assumed term birth

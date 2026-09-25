@@ -253,8 +253,7 @@ for Cmin, 1.29 for Cmax). {.table}
 
 PKNCA is used to compute NCA parameters (Cmax, Tmax, AUC over one dose
 interval, half-life) from the last dose interval of the Q2W simulation
-grouped by tumour type. See `references/pknca-recipes.md` in the skill
-for the multi-dose steady-state recipe.
+grouped by tumour type.
 
 ``` r
 

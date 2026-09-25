@@ -588,7 +588,7 @@ pred_cmax <- solve_static(mod_cmax, "CMAX_APTM", exposure$CMAX_APTM, exposure$do
 #> Warning: multi-subject simulation without without 'omega'
 
 # Join predictions onto the observed table BY DOSE, and fail loudly if any
-# dose group failed to match (see known-vignette-failure-patterns.md #10).
+# dose group failed to match.
 cmp <- observed |>
   rename(observed = change) |>
   left_join(pred_auc  |> rename(pred_auc  = change), by = "dose") |>

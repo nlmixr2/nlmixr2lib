@@ -3140,9 +3140,9 @@ log-transformed the data, which yields additive noise”).</td>
 <div class="section level2">
 <h2 id="simulation-cohort">Simulation cohort<a class="anchor" aria-label="anchor" href="#simulation-cohort"></a>
 </h2>
-<p>The validation cohort uses 200 cells per arm (the per-arm cap from
-the skill) – a stochastic simulation that exercises both the structural
-model and its IIV.</p>
+<p>The validation cohort uses 200 cells per arm (the package’s per-arm
+cap for validation cohorts) – a stochastic simulation that exercises
+both the structural model and its IIV.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span></span>
 <span></span>
@@ -3417,8 +3417,8 @@ six population means plus the entire IIV variance structure live in
 figure-only kernel-density plots. The Zenodo deposit contains
 <code>results_ribo.mat</code>, the 200-multistart MEMOIR optimisation
 output; the best multistart’s parameter vector is the one carried in
-<code>ini()</code>. This pathway was sidecar-approved by the operator
-before extraction (sidecar request-001 Q1 option A).</li>
+<code>ini()</code>. This pathway was maintainer-approved before
+extraction.</li>
 <li>
 <strong>MEMOIR -&gt; nlmixr2 unit conversion.</strong> MEMOIR uses
 log10(parameter) internally and stores <code>Var[log10(p)]</code> as the

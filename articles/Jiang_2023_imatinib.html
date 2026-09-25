@@ -3074,7 +3074,7 @@ crossed with three red-blood-cell-count levels (2.9, 3.9 and 4.9 x
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20230314</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span>  <span class="co"># &lt;= 200 per arm (skill cap); Jiang 2023 used n = 1000</span></span>
+<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span>  <span class="co"># &lt;= 200 per arm (cohort cap); Jiang 2023 used n = 1000</span></span>
 <span></span>
 <span><span class="co"># Genotype strata, encoded with the paired binary indicators the model uses.</span></span>
 <span><span class="co"># GG (wild type) is the reference: both indicators are 0.</span></span>
@@ -3688,7 +3688,7 @@ provenance and no register entry was created.</li>
 <li>
 <strong>Cohort size.</strong> Jiang 2023 simulated n = 1000 per
 scenario; this vignette uses n = 100 per scenario across 45 scenarios
-(4500 subjects) to stay inside the skill’s 200-per-arm cap and the
+(4500 subjects) to stay inside the 200-per-arm cohort cap and the
 vignette render-time budget. The only stochastic element is
 <code>eta_CL</code> (a single log-normal with omega = 0.139), so the
 median trough is very stable at n = 100.</li>

@@ -3297,7 +3297,7 @@ and 90% of subjects respectively received).</p>
 <span><span class="co"># are partitioned per solver thread -- so this cohort is reproducible on this</span></span>
 <span><span class="co"># machine and different on a machine with a different thread count. Every</span></span>
 <span><span class="co"># assertion below is therefore written to hold for ANY cohort the model can</span></span>
-<span><span class="co"># produce (see pattern 12 of known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20250829</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_sub</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># &lt;= 200 per arm (vignette cap)</span></span>
@@ -3404,7 +3404,7 @@ summaries overlaid as reference lines.</p>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>Steady-state NCA over the last full day of dosing, 3-dose interval
-window [72, 96] h (PKNCA recipe 3).</p>
+window [72, 96] h.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">72</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">96</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

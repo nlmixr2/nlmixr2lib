@@ -391,6 +391,6 @@ h, CXM from 1.70 h to 1.64 h once degradation is added. {.table}
   paper’s measured time-kill curves at low concentrations.
 - **No PKNCA / NCA validation.** Standard PKNCA validation is not
   applicable to an in vitro PD-model output of bacterial count, so the
-  `endogenous-validation.md` mechanistic-validation pattern is used
-  instead (growth-control check, static / dynamic kill behaviour,
-  dimensional analysis).
+  mechanistic-validation pattern for endogenous models is used instead
+  (growth-control check, static / dynamic kill behaviour, dimensional
+  analysis).

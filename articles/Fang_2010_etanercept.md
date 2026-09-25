@@ -498,7 +498,7 @@ reproduced exactly by the packaged model.
 | Source on disk | Used for |
 |----|----|
 | `Fang_2010_Population_pharmacokinetics_of_rhTNFR_Fc_3104b3.pdf` | Main paper Methods, Results, Tables 1-3, Figures 1-4, Discussion narrative on Chinese-vs-American CL/F comparison. |
-| `Fang_2010_Population_pharmacokinetics_of_rhTNFR_Fc_3104b3_trimmed.md` | Same content, trimmed-markdown form used during extraction for searchability. |
+| Text extracted from the PDF | Same content, used during extraction for searchability. |
 
 No supplements, NONMEM control streams, regulatory reviews, or errata
 were available on disk for this extraction; all parameter values used by

@@ -770,9 +770,8 @@ estimates.
 The disease-progression model contains an exponential term that drives
 the eGFR decline to zero as eGFR approaches a stabilisation point, so
 that the model cannot predict negative eGFR. The paper reports that
-point as 16.2 mL/min/1.73 m^2 (Sect. 3.3). This is a steady-state check
-in the sense of `references/endogenous-validation.md`: released at the
-stabilisation point with no drug, the state should hold.
+point as 16.2 mL/min/1.73 m^2 (Sect. 3.3). This is a steady-state check:
+released at the stabilisation point with no drug, the state should hold.
 
 ``` r
 

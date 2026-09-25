@@ -336,7 +336,7 @@ ggplot(cavg_ss, aes(x = cohort, y = Cavg_ss, fill = cohort)) +
 
 PKNCA is used to compute the steady-state average concentration over the
 final dosing interval (`Cavg,ss = AUC0-tau / tau`). The treatment
-grouping variable is `cohort` per the skill template.
+grouping variable is `cohort`.
 
 ``` r
 

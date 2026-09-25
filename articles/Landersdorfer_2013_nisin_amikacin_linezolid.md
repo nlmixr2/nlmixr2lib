@@ -450,12 +450,13 @@ cat(sprintf("Nisin + linezolid: end-of-run CFUall = %.3g, log10 = %.3f (target l
   the MRSA USA300 isolate. NCA / PKNCA is not appropriate (no drug PK
   profile to integrate); the mechanistic checks above replace it, per
   the endogenous / mechanistic validation strategy.
-- **File naming.** The task metadata listed the drug as “Antimicrobial
-  Agents and Chemo”, which is the journal name (Antimicrobial Agents and
-  Chemotherapy), not a drug. The paper unambiguously models nisin in
-  combination with amikacin (six-population MBM) and nisin in
-  combination with linezolid (three-population MBM with protein-pool
-  dynamics), so the file and vignette names use those drug pairs.
+- **File naming.** The metadata this model was built from listed the
+  drug as “Antimicrobial Agents and Chemo”, which is the journal name
+  (Antimicrobial Agents and Chemotherapy), not a drug. The paper
+  unambiguously models nisin in combination with amikacin
+  (six-population MBM) and nisin in combination with linezolid
+  (three-population MBM with protein-pool dynamics), so the file and
+  vignette names use those drug pairs.
 - **Two files, one vignette.** Per the standing nlmixr2lib policy for
   multi-model papers (replicate the author’s structure as N R files, one
   vignette per paper), the two combinations are packaged as two

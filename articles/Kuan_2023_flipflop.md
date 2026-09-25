@@ -614,5 +614,5 @@ stopifnot(
 - **Article type.** This is a three-page *Perspective*. It is extracted
   because Appendix S1 Table S1 fully specifies a numeric model, matching
   the precedent set by `Beal_2001_iv1cmt_bql` (a methodology paper’s
-  simulation-only toy model, filed under `pharmacokinetics/` by operator
-  decision).
+  simulation-only toy model, filed under `pharmacokinetics/` by
+  maintainer decision).

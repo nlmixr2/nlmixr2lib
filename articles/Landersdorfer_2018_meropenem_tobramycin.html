@@ -3861,11 +3861,11 @@ strains. No PKNCA validation is performed (there is no drug NCA to
 compute); the mechanistic checks above replace it, per the endogenous /
 mechanistic validation strategy.</li>
 <li>
-<strong>File naming.</strong> The dispatch metadata listed the drug
-as “Antimicrobial Agents and Chemo”, which is the journal name
-(Antimicrobial Agents and Chemotherapy), not a drug. The paper
-unambiguously models meropenem plus tobramycin against two strains, so
-the model files and this vignette use
+<strong>File naming.</strong> The metadata this model was built from
+listed the drug as “Antimicrobial Agents and Chemo”, which is the
+journal name (Antimicrobial Agents and Chemotherapy), not a drug. The
+paper unambiguously models meropenem plus tobramycin against two
+strains, so the model files and this vignette use
 <code>Landersdorfer_2018_meropenem_tobramycin_PAO1</code> and
 <code>Landersdorfer_2018_meropenem_tobramycin_PAOmutS</code>.</li>
 <li>
@@ -3891,8 +3891,8 @@ the OM_effect form with a HillOM exponent on tobramycin:
 <code>1 - Imax * Ctob^HillOM / (Ctob^HillOM + IC50_OM^HillOM)</code>.
 Table S3 reports no estimate for HillOM, and the sibling Rees 2018 MBM
 (same group) uses the plain Emax form (HillOM = 1). We follow the Rees
-2018 convention and use Emax (HillOM = 1). If a future operator obtains
-a HillOM value from the authors, swap the <code>om_effect</code> line in
+2018 convention and use Emax (HillOM = 1). If a HillOM value is later
+obtained from the authors, swap the <code>om_effect</code> line in
 <code>model()</code> for the Hill form and add the parameter to
 <code>ini()</code>.</li>
 <li>

@@ -248,7 +248,7 @@ hct_pct    <- 33  # Methods: standard sheep value (reference 25)
 # cohort below differs between machines with different thread counts. Every
 # gated assertion in this vignette is therefore either computed from the
 # DETERMINISTIC typical-value solve, which has no RNG at all, or is a bound the
-# paper itself states. See known-vignette-failure-patterns.md pattern 12.
+# paper itself states.
 set.seed(20231020)
 
 # These are multi-endpoint models (Cc and Cpostfilter), so an observation row

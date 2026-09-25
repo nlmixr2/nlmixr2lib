@@ -3080,7 +3080,7 @@ kg)</td>
 <td>Lacy 2018 Table 3 FM column and footnote c</td>
 </tr>
 <tr class="even">
-<td>IIV variances (sidecar Q1-A: diagonal) <code>etalka</code>,
+<td>IIV variances (diagonal; maintainer decision) <code>etalka</code>,
 <code>etalcl</code>, <code>etalvc</code>, <code>etalogitf1</code>
 </td>
 <td>2.063, 0.202, 0.233, 0.466</td>
@@ -3570,8 +3570,8 @@ exactly because they are computed directly from the in-file
 <ul>
 <li>
 <strong><code>omega^2_CL/F:Vc/F</code> off-diagonal IIV covariance
-dropped (sidecar Q1-A).</strong> Lacy 2018 Table 3 footnote d reports
-the published variance-covariance off-diagonal as
+dropped (maintainer decision).</strong> Lacy 2018 Table 3 footnote d
+reports the published variance-covariance off-diagonal as
 <code>omega^2_CL/F:Vc/F = 2.475 (90% CI 1.923, 3.028)</code>. This value
 violates Cauchy-Schwarz given the marginal variances
 (<code>omega^2_CL/F = 0.202</code>, <code>omega^2_Vc/F = 0.233</code>,
@@ -3585,12 +3585,11 @@ uninterpretable kind: the off-diagonal is dropped and the IIV is encoded
 as a diagonal Omega with the marginal variances. The packaged model
 therefore simulates <code>etalcl</code> and <code>etalvc</code> as
 independent etas, which is a published deviation but does not change
-typical-value predictions. The operator-approved choice was sidecar Q1-A
-(“Use diagonal Omega + Errata note”); see the queue sidecar log for
-<code>155-lacy_2018_cancer_chemotherapy_and_pharma</code>.</li>
+typical-value predictions. The maintainer-approved choice was a diagonal
+Omega, with the dropped covariance documented here.</li>
 <li>
 <strong>Reference dose for the dose-dependent Ka power model set to
-60 mg (sidecar Q2-A).</strong> Lacy 2018 states “The first-order
+60 mg (maintainer decision).</strong> Lacy 2018 states “The first-order
 absorption process including a lag time and a dose-dependent effect on
 the absorption rate constant (Ka) was described using a power model” but
 does not state the reference dose <code>DOSE_REF</code> used to
@@ -3600,7 +3599,8 @@ dose for non-MTC indications and the reference dose used in the
 companion Lacy 2018 exposure-response paper. Other plausible choices
 (DOSE_REF = 100 mg or 140 mg) would re-scale the typical-value Ka by
 <code>(60 / X)^0.677</code>, changing the population Cmax / Tmax but not
-AUC. The operator-approved choice was sidecar Q2-A.</li>
+AUC. The maintainer-approved choice was
+<code>DOSE_REF = 60 mg</code>.</li>
 <li>
 <strong>Reference age and weight for the continuous-covariate power
 model set to 64 y and 81 kg.</strong> Lacy 2018 Methods states the

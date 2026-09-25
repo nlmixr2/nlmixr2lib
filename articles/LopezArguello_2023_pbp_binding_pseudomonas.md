@@ -158,7 +158,7 @@ tibble::tribble(
   "Residual variance V_i = (SDin_i + SDsl_i x Y_i)^2 -> combined1()", "Fig. S8 lines 111-116",
   "rate_influx_scaled (per drug)", "Table 1, column 'Rate_Influx/access,scaled (SE%)'",
   "CONC_<CODE>_MGL covariate (per drug)", "Table 1, column 'Studied extracellular drug conc. in PBP binding assays'",
-  "CELLS_INTACT covariate", "Fig. S8 line 66 `IF (INTACT.EQ.1)`; canonical name ratified by operator sidecar (request-001 q1, answer A)",
+  "CELLS_INTACT covariate", "Fig. S8 line 66 `IF (INTACT.EQ.1)`; canonical name ratified by the maintainers",
   "k2_1a ... k2_5 (per drug); `fixed()` where footnote a applies", "Table S1 (footnote a = fixed after sensitivity analysis; footnote b = relebactam PBP2 shared with avibactam)",
   "km_pbp = 1000 drug molecules (fixed)", "Main text, Materials and Methods: \"The Km was fixed to 1,000 drug molecules\"",
   "n_pbp1a_0 = 153, 1b = 118, 2 = 50, 3 = 79, 4 = 99, 5/6 = 1232", "Main text, Materials and Methods, Mass balance equations (1,731 total PBP molecules per cell borrowed from E. coli; split by P. aeruginosa relative band intensity, Table S3)",
@@ -182,7 +182,7 @@ tibble::tribble(
 | Residual variance V_i = (SDin_i + SDsl_i x Y_i)^2 -\> combined1() | Fig. S8 lines 111-116 |
 | rate_influx_scaled (per drug) | Table 1, column ‘Rate_Influx/access,scaled (SE%)’ |
 | CONC\_`_MGL covariate (per drug)` | Table 1, column ‘Studied extracellular drug conc. in PBP binding assays’ |
-| CELLS_INTACT covariate | Fig. S8 line 66 `IF (INTACT.EQ.1)`; canonical name ratified by operator sidecar (request-001 q1, answer A) |
+| CELLS_INTACT covariate | Fig. S8 line 66 `IF (INTACT.EQ.1)`; canonical name ratified by the maintainers |
 | k2_1a … k2_5 (per drug); `fixed()` where footnote a applies | Table S1 (footnote a = fixed after sensitivity analysis; footnote b = relebactam PBP2 shared with avibactam) |
 | km_pbp = 1000 drug molecules (fixed) | Main text, Materials and Methods: “The Km was fixed to 1,000 drug molecules” |
 | n_pbp1a_0 = 153, 1b = 118, 2 = 50, 3 = 79, 4 = 99, 5/6 = 1232 | Main text, Materials and Methods, Mass balance equations (1,731 total PBP molecules per cell borrowed from E. coli; split by P. aeruginosa relative band intensity, Table S3) |
@@ -1012,25 +1012,25 @@ intact cells. {.table}
   ambiguous case**: it appears in all five datasets and Table S1 reports
   a single set of imipenem acylation rate constants without attributing
   them to a dataset. `LopezArguello_2023_imipenem_qsp` uses dataset 1
-  (the carbapenem dataset), as directed by the operator (sidecar
-  `request-001` q2, answer A). Only the background-noise,
-  initial-condition and residual-error parameters are affected; the
-  drug-specific acylation constants and net-influx rate are unambiguous.
+  (the carbapenem dataset), as directed by the maintainers. Only the
+  background-noise, initial-condition and residual-error parameters are
+  affected; the drug-specific acylation constants and net-influx rate
+  are unambiguous.
 - **`CELLS_INTACT` and `CONC_<CODE>_MGL` as covariates.** The assay arm
   and the studied extracellular concentration are experimental design
   variables, not estimated quantities, and are supplied on the event
   table rather than as
   [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
   entries. `CELLS_INTACT` is a new canonical covariate ratified by the
-  operator for this extraction (sidecar `request-001` q1, answer A); it
-  is general-scope because the intact-versus-lysed contrast is a
-  standard target-site-penetration design rather than something specific
-  to this paper. It is structural rather than a coefficient multiplier:
-  it gates both the influx term and the periplasmic initial condition,
-  so it has no `e_<cov>_<param>` coefficient. The concentration
-  covariates are well-formed members of the existing `CONC_<DRUG>_MGL`
-  family (`CONC_IPM_MGL` was already registered for Landersdorfer 2018);
-  the other fourteen were added alongside this extraction.
+  maintainers for this extraction; it is general-scope because the
+  intact-versus-lysed contrast is a standard target-site-penetration
+  design rather than something specific to this paper. It is structural
+  rather than a coefficient multiplier: it gates both the influx term
+  and the periplasmic initial condition, so it has no `e_<cov>_<param>`
+  coefficient. The concentration covariates are well-formed members of
+  the existing `CONC_<DRUG>_MGL` family (`CONC_IPM_MGL` was already
+  registered for Landersdorfer 2018); the other fourteen were added
+  alongside this extraction.
 - **Shared parameters for relebactam.** Table 1 footnote c and Table S1
   footnote b state that relebactam’s rate of net influx and its PBP2
   acylation constant were estimated as shared parameters with avibactam

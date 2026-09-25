@@ -159,8 +159,7 @@ See *Assumptions and deviations*.
 # set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per
 # solver thread, so a CI runner with a different thread count draws a different
 # cohort. Every assertion below is either RNG-free (zeroRe / closed form) or
-# gated on a robust cohort summary, never on a tail value. See pattern 12 of
-# the skill's known-vignette-failure-patterns.
+# gated on a robust cohort summary, never on a tail value.
 set.seed(20240604)
 
 n_cohort <- 200L  # cap is 200 per arm

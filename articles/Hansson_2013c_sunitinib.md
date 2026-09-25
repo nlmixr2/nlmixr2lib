@@ -34,10 +34,9 @@ PO QD on a 4-weeks-on / 2-weeks-off schedule with a placebo-controlled
 run-in. The DDMORE bundle does not expose detailed baseline demographics
 (age, weight, sex, race, prior-imatinib duration); the linked
 publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e85) was not on
-disk in the extraction environment, so the `population` metadata records
-that gap and carries `n_subjects = 303` over from the upstream Hansson
-2013a model. The fatigue analysis-set count is not derivable from the
-bundle.
+disk, so the `population` metadata records that gap and carries
+`n_subjects = 303` over from the upstream Hansson 2013a model. The
+fatigue analysis-set count is not derivable from the bundle.
 
 The same information is available programmatically via the model’s
 `population` metadata
@@ -190,11 +189,11 @@ head(events, 10)
 ## Mechanistic-sanity simulation (F.3)
 
 The fatigue model is a count / Markov / proportional-odds modality
-without a published NCA table; the verification-checklist’s F.3 recipe
-applies. Typical-value (no IIV, no residual error) simulation should
-reproduce the qualitative dynamics implied by the source parameters:
-sVEGFR-3 depletion under drug, `bm` going negative, each per-state
-baseline logit being shifted toward higher fatigue probability.
+without a published NCA table; the F.3 mechanistic-sanity check applies.
+Typical-value (no IIV, no residual error) simulation should reproduce
+the qualitative dynamics implied by the source parameters: sVEGFR-3
+depletion under drug, `bm` going negative, each per-state baseline logit
+being shifted toward higher fatigue probability.
 
 ``` r
 
@@ -388,8 +387,7 @@ listing.
 
 - **Publication PDF not on disk.** The Hansson 2013c paper text (CPT
   Pharmacometrics Syst Pharmacol 2013;2:e85, <doi:10.1038/psp.2013.62>)
-  was not available in
-  `/home/bill/github/mab_human_consensus/literature/` at extraction
+  was not available in the maintainers’ literature mirror at extraction
   time. All parameter values and equations were taken from the DDMORE
   bundle (`Output_real_Fatigue_GIST.lst_Fatigue_PSP_2014` and
   `Executable_Fatigue_GIST.mod`). Side-by-side comparison against any
@@ -432,9 +430,9 @@ listing.
   source). Users who want to fit the actual published likelihood need to
   extend the model file with a custom likelihood mechanism (e.g.,
   per-record `PDV` data column plus a conditional `~ ll(...)` form)
-  outside the scope of this skill’s typical workflow. This deviation is
-  the same shape as the `Plan_2012_pain` deviation and is documented in
-  the same way.
+  outside the scope of the package’s typical extraction workflow. This
+  deviation is the same shape as the `Plan_2012_pain` deviation and is
+  documented in the same way.
 
 - **Per-state shared eta on cumulative logits.** The .mod adds `ETA(i)`
   only to the B1 (grade\>=1) logit per state. In the cumulative-logit
@@ -471,8 +469,8 @@ listing.
   ordinal fatigue grade (0-3+), not a drug concentration.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags this as an `observation` warning; the deviation matches the
-  “non-PK multi-output paper-named variable” exemption documented in
-  `naming-conventions.md` section “Observation variable”.
+  package’s naming-convention exemption for non-PK, multi-output,
+  paper-named observation variables.
 
 - **Concentration units field.** `units$concentration` is set to
   `"(NCI-CTC fatigue grade 0-3+, ordinal)"` rather than a `mass/volume`

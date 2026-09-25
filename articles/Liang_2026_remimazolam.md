@@ -141,7 +141,7 @@ intervals compared below are stable well below that.
 # streams are partitioned per solver thread -- so this cohort is reproducible
 # on this machine and different on a machine with a different thread count.
 # Every assertion downstream is written to hold for any cohort the model can
-# produce (pattern 12 of known-vignette-failure-patterns.md).
+# produce.
 set.seed(20260301)
 
 # Dense near the induction peak (Cmax lands at t = 1 min), exactly on t = 120
@@ -479,7 +479,7 @@ sim_typ <- rxode2::rxSolve(mod_typ, events = ev_typ, keep = "WT") |>
   filter(!is.na(Cc))
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalvp2', 'etalq2'
 # rxSolve omits `id` entirely for a single-subject event table; PKNCA's
-# grouping formula needs it (pattern 8 of known-vignette-failure-patterns.md).
+# grouping formula needs it.
 if (is.null(sim_typ$id)) sim_typ$id <- 1L
 
 cl_typ    <- 1.03 * (wt_typ / 62)^0.75          # L/min, Table 4 + Equation 3

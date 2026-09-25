@@ -3473,11 +3473,11 @@ covariate-effect names <code>etalfdepot</code> /
 <code>e_snakefamily_elapid_fdepot</code>) as the log of <code>F1</code>,
 with
 <code>f(central) &lt;- exp(lfdepot + e_snakefamily_elapid_fdepot * SNAKEFAMILY_ELAPID + etalfdepot)</code>.
-This stretch was approved at the pre-flight sidecar stage to avoid
-introducing a new canonical parameter for a borderline case; the source
-paper’s <code>F1</code> is the bioavailability of the single input
-compartment regardless of whether that compartment is named
-<code>depot</code> or <code>central</code>.</li>
+This stretch was approved by the maintainers to avoid introducing a new
+canonical parameter for a borderline case; the source paper’s
+<code>F1</code> is the bioavailability of the single input compartment
+regardless of whether that compartment is named <code>depot</code> or
+<code>central</code>.</li>
 <li>
 <strong>Residual-error interpretation.</strong> Table A1 reports
 <code>Proportional error 0.047 (25 %)</code>. The label does not carry
@@ -3486,8 +3486,8 @@ an explicit <code>CV %</code> suffix, and the surrounding
 <code>(CV %)</code> formatting. We interpret 0.047 as the NONMEM
 <code>$SIGMA</code> variance and encode the proportional residual SD as
 <code>propSd = sqrt(0.047) = 0.2168</code> (~21.7 % CV). The 25 % RSE
-applies to the variance estimate. This interpretation was confirmed at
-the pre-flight sidecar stage.</li>
+applies to the variance estimate. This interpretation was confirmed by
+the maintainers.</li>
 <li>
 <strong>Unknown per-bite venom mass.</strong> The actual venom mass
 injected by each bite is not measured in the source dataset; the model
@@ -3502,9 +3502,9 @@ substitute a species-typical venom yield.</li>
 Tables 3 to 5 of Sanhajariya 2018 are a pure systematic review of 12
 animal popPK studies from other authors; no original animal popPK model
 is fit. The extraction here covers only the original human meta-analysis
-popPK model (Section 2.2 and Appendix Table A1). The 12 cited primary
-animal studies were not queued for separate extraction at the operator’s
-direction in the pre-flight sidecar.</li>
+popPK model (Section 2.2 and Appendix Table A1). At the maintainers’
+direction, the 12 cited primary animal studies were not queued for
+separate extraction.</li>
 <li>
 <strong>No errata identified.</strong> A search of the journal’s
 article landing page and PubMed for

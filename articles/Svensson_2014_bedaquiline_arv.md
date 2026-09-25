@@ -472,11 +472,11 @@ co-administration. Paper reports a BDQ AUC0-336h ratio of approximately
   time-varying onset / offset of co-administration should supply the
   CONMED\_ column at each observation row with the appropriate 0/1 time
   course.
-- **Why two model files but one vignette.** Per the
-  `references/replicate-author-structure.md` policy, the C110 and C117
-  models are extracted as two separate `.R` files because they were fit
-  separately on independent data and have entirely distinct structural
-  parameter values; per `references/vignette-template.md`, the paper
+- **Why two model files but one vignette.** Per the package’s policy of
+  replicating the authors’ model structure, the C110 and C117 models are
+  extracted as two separate `.R` files because they were fit separately
+  on independent data and have entirely distinct structural parameter
+  values; per the package’s one-vignette-per-paper convention, the paper
   still gets a single shared vignette because the modelled population,
   validation strategy, and Table 3 / Figure 1 comparisons are
   paper-level facts that span both studies.

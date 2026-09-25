@@ -3124,7 +3124,7 @@ in Table 1 (mean well above median), so each is represented by a
 log-normal matched to its published median and mean and then truncated
 to the published range.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">200L</span>                       <span class="co"># 200 per dose arm (the skill cap)</span></span>
+<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">200L</span>                       <span class="co"># 200 per dose arm (the per-arm cohort cap)</span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">/</span> <span class="va">n</span>     <span class="co"># evenly spaced quantiles</span></span>
 <span></span>
 <span><span class="co"># sdlog of a log-normal with the given median and mean</span></span>

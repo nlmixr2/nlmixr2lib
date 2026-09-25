@@ -4819,7 +4819,7 @@ residual difference).</p>
 <li><p><strong>Supplement could not be downloaded during
 extraction.</strong> The PMC-hosted supplementary file (Word document
 <code>clpt201326x1.doc</code>) sits behind a JavaScript proof-of-work
-challenge that the extraction environment could not solve, and the
+challenge that could not be solved when this model was built, and the
 Europe PMC mirror returned HTTP/2 stream errors for the same file. The
 main paper Table 2 (Population estimate column), Methods (p.447), and
 Results (p.444-445) contain the full parameter list, model-structure
@@ -4845,12 +4845,11 @@ correlation interpretation.</p></li>
 and DHA plasma concentrations as natural logarithms of molar
 concentration with additive residual on the log scale; the reported
 <code>sigma_ARS = 0.0942</code> and <code>sigma_DHA = 0.211</code> are
-variances on that log scale. By the standing convention in
-<code>references/naming-conventions.md</code>, NONMEM
-additive-on-log-scale residual maps to nlmixr2 proportional residual in
-linear space, with <code>propSd = sqrt(omega^2)</code> (the SD on the
-log scale equals the CV in linear space to first order). The slight bias
-relative to the more accurate
+variances on that log scale. By the package’s standing convention,
+NONMEM additive-on-log-scale residual maps to nlmixr2 proportional
+residual in linear space, with <code>propSd = sqrt(omega^2)</code> (the
+SD on the log scale equals the CV in linear space to first order). The
+slight bias relative to the more accurate
 <code>propSd = sqrt(exp(omega^2) - 1)</code> mapping is &lt; 1.5% for
 both species and is smaller than the published Table 2 RSE on
 sigma.</p></li>

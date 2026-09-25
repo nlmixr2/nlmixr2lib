@@ -1197,14 +1197,13 @@ Enterobacterales breakpoint – is what the gates above pin down.
 ## Assumptions and deviations
 
 - **Source is the peer-reviewed paper, not the conference abstract.**
-  This extraction was dispatched against IDWeek 2024 abstract P-1222
-  (*Open Forum Infect Dis* 2025;12(Suppl 1):S781,
-  <doi:10.1093/ofid/ofae631.1404>, PMC11777916), which describes the
-  same study but reports **no parameter values at all**. The
-  peer-reviewed publication (*J Pediatric Infect Dis Soc*
-  2025;14(10):piaf088, PMC12551457) was located and used instead. The
-  two differ materially, and every value here is the final published
-  one:
+  This extraction started from IDWeek 2024 abstract P-1222 (*Open Forum
+  Infect Dis* 2025;12(Suppl 1):S781, <doi:10.1093/ofid/ofae631.1404>,
+  PMC11777916), which describes the same study but reports **no
+  parameter values at all**. The peer-reviewed publication (*J Pediatric
+  Infect Dis Soc* 2025;14(10):piaf088, PMC12551457) was located and used
+  instead. The two differ materially, and every value here is the final
+  published one:
 
   |                           | Abstract (2024)     | Paper (2025, used here)     |
   |---------------------------|---------------------|-----------------------------|

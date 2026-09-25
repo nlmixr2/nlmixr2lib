@@ -114,7 +114,7 @@ below collects the whole model in one place.
 
 **Equation 1 is an embedded image in the published PDF** and is dropped
 by every text converter (it appears as `formula-not-decoded` in the
-trimmed markdown and is absent from `pdftotext`). It was recovered from
+extracted text and is absent from `pdftotext`). It was recovered from
 the publisher’s equation graphic (`40262_2016_422_Article_Equ1.gif`,
 retrieved from the EuropePMC `supplementaryFiles` endpoint for
 PMC5107207) and confirmed by rendering page 8 of the PDF at 400 dpi. As
@@ -287,7 +287,7 @@ cmp <- ref |>
   dplyr::mutate(abs_diff = abs(.data$simulated - .data$published))
 
 # The join must not silently drop rows -- a lost row would make the
-# gate below pass vacuously (see known-vignette-failure-patterns #10).
+# gate below pass vacuously.
 stopifnot(
   nrow(cmp) == nrow(ref),
   nrow(cmp) == 416L,

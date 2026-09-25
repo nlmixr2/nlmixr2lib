@@ -497,13 +497,12 @@ used here can shift the median.
 
 ## Assumptions and deviations
 
-- **Drug field correction.** The task generator’s metadata included
-  “drug: Antimicrobial Agents and Chemo”, which is the journal name
-  rather than the drug under study. The on-disk PDF unambiguously
-  describes a zidovudine + G-ZDV pediatric popPK model; the model file
-  and vignette use `zidovudine` as the drug token. No sidecar was raised
-  because the source paper was matched by author / year / journal / DOI
-  exactly.
+- **Drug field correction.** The metadata supplied when this model was
+  built included “drug: Antimicrobial Agents and Chemo”, which is the
+  journal name rather than the drug under study. The on-disk PDF
+  unambiguously describes a zidovudine + G-ZDV pediatric popPK model;
+  the model file and vignette use `zidovudine` as the drug token. The
+  source paper was matched by author / year / journal / DOI exactly.
 
 - **Molar-to-mass framing.** Fauchet 2013 estimated the model on the
   molar scale (Methods “Population pharmacokinetic analysis” paragraph
@@ -555,9 +554,9 @@ used here can shift the median.
 
 - **No errata search performed.** The publication is paywalled by ASM
   (Antimicrobial Agents and Chemotherapy) and an automated search for
-  corrigenda or errata was not run from this worktree. If any subsequent
-  correction adjusted the Table 3 parameter values, the packaged model
-  may need a follow-up update.
+  corrigenda or errata was not run. If any subsequent correction
+  adjusted the Table 3 parameter values, the packaged model may need a
+  follow-up update.
 
 - **ka fixed at the Panhard 2007 value.** ka was not estimable in this
   pediatric cohort because TDM samples were too sparse during the

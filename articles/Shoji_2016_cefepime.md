@@ -377,21 +377,20 @@ age-dependent change in Css min that the paper highlights (low in the
   cohort was GA 22.10 weeks (Table 1) so the published fit is always
   positive in the observed range, but simulations should not extrapolate
   below ~10 weeks PMA.
-- **Residual-error encoding (operator-resolved sidecar request-001).**
-  Shoji 2016 Table 3 reports a single “Residual variability (%) = 66.3”
-  row, and Table 5 lists theta_5 = 0.705 with the footnote label
-  “fraction of additive and proportional error”. The paper text does not
-  disclose the NONMEM `$ERROR` functional form or the units of theta_5,
-  and no supplement / control stream is publicly available. Per sidecar
-  request-001 / response-001, the operator chose **Option B** (encode as
-  proportional CV + additive SD in mg/L; the same convention used in
-  this library for Shi 2018 ceftazidime and Delattre 2010 amikacin when
-  antibiotic popPK papers report two residual-error numbers without
-  explicit units). The model therefore uses `propSd = 0.663` (66.3%
-  proportional CV) and `addSd = 0.705 mg/L` (treating cefepime
-  concentration units ug/mL as equivalent to mg/L). The alternative
-  reading (Karlsson BAYO weighting with theta_5 as the proportional
-  fraction of one sigma) would give `propSd ~ 0.467` and
+- **Residual-error encoding (maintainer decision).** Shoji 2016 Table 3
+  reports a single “Residual variability (%) = 66.3” row, and Table 5
+  lists theta_5 = 0.705 with the footnote label “fraction of additive
+  and proportional error”. The paper text does not disclose the NONMEM
+  `$ERROR` functional form or the units of theta_5, and no supplement /
+  control stream is publicly available. The maintainers chose to encode
+  the two values as **proportional CV + additive SD in mg/L** (the same
+  convention used in this library for Shi 2018 ceftazidime and Delattre
+  2010 amikacin when antibiotic popPK papers report two residual-error
+  numbers without explicit units). The model therefore uses
+  `propSd = 0.663` (66.3% proportional CV) and `addSd = 0.705 mg/L`
+  (treating cefepime concentration units ug/mL as equivalent to mg/L).
+  The alternative reading (Karlsson BAYO weighting with theta_5 as the
+  proportional fraction of one sigma) would give `propSd ~ 0.467` and
   `addSd ~ 0.196 mg/L`; the comparison NCA in the table above is mildly
   sensitive to this choice in the Cmin direction but not in the Cmax /
   half-life direction.

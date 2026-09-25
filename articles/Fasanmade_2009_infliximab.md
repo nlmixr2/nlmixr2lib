@@ -56,7 +56,7 @@ CL.
 
 | Source column | Canonical column used here |
 |----|----|
-| `ATI` (antibodies to infliximab) | `ADA_POS` (per `.claude/skills/extract-literature-model/references/covariate-columns.md`) |
+| `ATI` (antibodies to infliximab) | `ADA_POS` (per `inst/references/covariate-columns.md`) |
 | `SEX` (1 = female, 0 = male) | `SEXF` (same 0/1 encoding, canonical name) |
 
 ### Virtual population
@@ -185,7 +185,7 @@ ggplot(sim_ada, aes(x = time / 7, y = median, color = ADA_label)) +
 
 Run PKNCA on the maintenance dosing interval (after the 5th dose, weeks
 22–30). Stratify by ADA status so each treatment group has its own NCA
-summary, as required by the skill’s PKNCA recipe.
+summary.
 
 ``` r
 

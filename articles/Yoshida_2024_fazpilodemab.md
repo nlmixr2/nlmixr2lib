@@ -40,10 +40,10 @@ diabetes mellitus (T2DM) and non-alcoholic fatty liver disease (NAFLD).
 total). Fazpilodemab was administered subcutaneously in the abdomen or
 thigh at 10-250 mg with q1w, q2w, or q4w intervals. Detailed
 demographics (age / weight / sex / race) are not reported in the main
-text or in the supplements bundled with this article; the available
-trimmed-markdown copies of Supplements 1 (figures) and 2 (model code)
-contain neither a Table 1 baseline-demographics summary nor an
-extended-text demographics paragraph.
+text or in the supplements bundled with this article; the text extracted
+from Supplements 1 (figures) and 2 (model code) contains neither a Table
+1 baseline-demographics summary nor an extended-text demographics
+paragraph.
 
 The population PK model was characterised as “unpublished data” in the
 main text (Methods page 545), but the typical-value parameter set with
@@ -488,13 +488,13 @@ days 56 and 84 after first dose. {.table}
   2.  a static logistic regression model for persistent GIAE (Methods
       page 545; no point estimates reported in the paper, only AIC
       comparison text). Neither sub-model can be encoded as a usable
-      nlmixr2 model without the missing parameters. Per the operator’s
-      policy (sidecar response 2026-06-28 on this task: “the Emax (E0 /
-      EC50) and simple-logistic GIAE params are unreported anywhere – do
-      NOT invent; defer those sub-models as a future task”), they are
-      intentionally omitted. The longitudinal DTMM AE model encoded here
-      is a richer characterisation of the same dose-response and
-      supersedes the static logistic for downstream simulation use.
+      nlmixr2 model without the missing parameters. Per the maintainers’
+      policy, unreported parameters are not invented: the Emax `E0` /
+      `EC50` and the simple-logistic GIAE parameters are reported
+      nowhere, so both sub-models are intentionally omitted and deferred
+      to future work. The longitudinal DTMM AE model encoded here is a
+      richer characterisation of the same dose-response and supersedes
+      the static logistic for downstream simulation use.
 - **Between-occasion variability (IOV = 0.0341 on F1) is NOT implemented
   in this model file.** nlmixr2’s native IOV support requires an OCC
   column in the dataset; users who want to mirror the source paper’s IOV
@@ -518,12 +518,12 @@ days 56 and 84 after first dose. {.table}
   variable `Cc` is set to `cfree`; total drug is available as `ctot` for
   downstream use.
 - **Population demographics (age / weight / sex / race) are not
-  extracted.** The trimmed-markdown copies of the supplements bundled
-  with this article do not contain a Table 1 baseline-demographics
-  summary; the main text describes the study population (T2DM and NAFLD
-  patients; n = 153) but not the demographic stratification.
-  `population$age_range` and `population$weight_range` are populated
-  with `NA`-class placeholders reflecting this gap.
+  extracted.** The text extracted from the supplements bundled with this
+  article does not contain a Table 1 baseline-demographics summary; the
+  main text describes the study population (T2DM and NAFLD patients; n
+  = 153) but not the demographic stratification. `population$age_range`
+  and `population$weight_range` are populated with `NA`-class
+  placeholders reflecting this gap.
 - **Discontinuation gating.** The discontinuation logistic emits an
   unconditional probability `p_dc` for every observation row. The source
   paper’s mrgsolve simulation gates evaluation to (a) day 14 of each

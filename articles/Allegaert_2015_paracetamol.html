@@ -2906,13 +2906,12 @@ range of body weights and urine flow rates.</li>
 <code>DDMODEL00000267.rdf</code> – model classification metadata
 (<code>pkpd-ontology#pkpd_0006013</code> purpose).</li>
 </ul>
-<p>The Allegaert 2015 BMC Anesthesiol publication itself is not on disk
-in this worktree, so the validation strategy below follows
-verification-checklist Section F.2 (DDMORE-source self-consistency) and
-the linked publication’s tables are not used as a parameter cross-check.
-Per-parameter source comments in
-<code>inst/modeldb/ddmore/Allegaert_2015_paracetamol.R</code> cite the
-<code>Output_real_*.lst</code> line numbers; the bundle’s
+<p>The Allegaert 2015 BMC Anesthesiol publication itself was not on disk
+when this model was built, so the validation strategy below is a
+DDMORE-source self-consistency check and the linked publication’s tables
+are not used as a parameter cross-check. Per-parameter source comments
+in <code>inst/modeldb/ddmore/Allegaert_2015_paracetamol.R</code> cite
+the <code>Output_real_*.lst</code> line numbers; the bundle’s
 <code>Executable_*.mod</code> $THETA / $OMEGA / $SIGMA lines carry
 essentially the same values because the .mod was reset to the final
 estimates at deposit time (typical DDMORE-repository convention), but
@@ -3462,12 +3461,12 @@ baselines.</caption>
 <div class="section level3">
 <h3 id="comparison-against-published-nca">Comparison against published NCA<a class="anchor" aria-label="anchor" href="#comparison-against-published-nca"></a>
 </h3>
-<p>The Allegaert 2015 BMC Anesthesiol publication is not on disk in this
-worktree, so a side-by-side comparison against published NCA parameters
-cannot be produced. The .lst-based self-consistency check above
-(typical-value simulation reproducing sensible plasma / urinary
-trajectories with the expected OCC-stratum ordering) is the substitute
-per <code>verification-checklist.md</code> Section F.2.</p>
+<p>The Allegaert 2015 BMC Anesthesiol publication was not on disk when
+this model was built, so a side-by-side comparison against published NCA
+parameters cannot be produced. The .lst-based self-consistency check
+above (typical-value simulation reproducing sensible plasma / urinary
+trajectories with the expected OCC-stratum ordering) is the
+substitute.</p>
 <p>The DDMORE bundle’s
 <code>Output_simulated_OriginalModelCode.lst</code> records the
 predicted plasma / urinary trajectories on the shipped 6-subject
@@ -3485,9 +3484,8 @@ model and covariate-effect implementation are coherent.</p>
 <li>
 <strong>Publication PDF not on disk.</strong> The Allegaert 2015
 paper (BMC Anesthesiol 15:151; <a href="https://doi.org/10.1186/s12871-015-0144-3" class="external-link">doi:10.1186/s12871-015-0144-3</a>)
-is not available under
-<code>/home/bill/github/mab_human_consensus/literature/</code>.
-Parameter point values are taken verbatim from
+was not available in the maintainers’ literature mirror. Parameter point
+values are taken verbatim from
 <code>Output_real_OriginalModelCode.lst</code> after
 <code>MINIMIZATION SUCCESSFUL</code> (OBJV = 5286.743). The absence of a
 paper cross-check is the main residual risk in the parameter trace.</li>
@@ -3528,10 +3526,10 @@ OCC. The conditional error is implemented inside <code>model()</code> by
 selecting between the OCC != 5 (<code>CcpropSd</code>) and OCC = 5
 (<code>Cc_oc5_propSd</code>, <code>Cc_oc5_addSd</code>) SD pairs based
 on an <code>oc5</code> indicator; there is no canonical
-<code>&lt;output&gt;_&lt;segment&gt;_propSd</code> name in
-<code>naming-conventions.md</code>, so the OCC = 5 sub-arm parameters
-use paper-specific names that may trigger a
-<code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> warning.</li>
+<code>&lt;output&gt;_&lt;segment&gt;_propSd</code> name in the package’s
+naming conventions, so the OCC = 5 sub-arm parameters use paper-specific
+names that may trigger a <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code>
+warning.</li>
 <li>
 <strong>Compartment-naming warnings.</strong> The three
 <code>urine_*</code> cumulative-elimination compartments
@@ -3584,15 +3582,14 @@ a pre-publication validation.</li>
 The first version of this extraction (commit <code>ced840f2</code>, then
 merged into <code>main</code>) registered the source-data columns
 <code>BC</code> and <code>UF</code> under the canonical names
-<code>BC_USE</code> and <code>UF</code>. Operator review (sidecar
-response 047-001) preferred the full-word forms
-<code>CONMED_BIRTHCONTROL</code> and <code>URINE_FLOW</code> for clarity
-in source traces; the canonicals were renamed in
-<code>inst/references/covariate-columns.md</code> and propagated through
-this model file and vignette. The source-data column names in the DDMORE
-bundle (<code>BC</code>, <code>UF</code>) are unchanged and remain the
-documented source aliases. Datasets passed to <code>rxSolve</code> for
-this model must rename <code>BC</code> -&gt;
+<code>BC_USE</code> and <code>UF</code>. Maintainer review preferred the
+full-word forms <code>CONMED_BIRTHCONTROL</code> and
+<code>URINE_FLOW</code> for clarity in source traces; the canonicals
+were renamed in <code>inst/references/covariate-columns.md</code> and
+propagated through this model file and vignette. The source-data column
+names in the DDMORE bundle (<code>BC</code>, <code>UF</code>) are
+unchanged and remain the documented source aliases. Datasets passed to
+<code>rxSolve</code> for this model must rename <code>BC</code> -&gt;
 <code>CONMED_BIRTHCONTROL</code> and <code>UF</code> -&gt;
 <code>URINE_FLOW</code> before the call.</li>
 </ul>

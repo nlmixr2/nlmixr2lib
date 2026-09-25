@@ -380,7 +380,7 @@ ranges (Csajka 2005 Results):
   `central_caf` accordingly.
 - **OCR-derived unit ambiguity in Vmax/V_NE.** Csajka 2005 Table 3
   reports `Vmax/V_NE = 1.96e-4` with a unit heading rendered ambiguously
-  in the source PDF / trimmed-markdown (the character that should be “mu
+  in the source PDF / extracted text (the character that should be “mu
   g” is rendered as “m g”); the same OCR rendering applies to plasma
   concentrations (e.g. “8470 m g L^-1” for caffeine, which can only mean
   “ug / L”). The numerical interpretation that reproduces the paper’s

@@ -3385,9 +3385,8 @@ as plasma falls (lagged by ~ 1/Ke0 in time).</p>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>PKNCA is run on the simulated plasma profile across the last 6 h
-dosing interval at steady state (steady-state recipe of
-<code>pknca-recipes.md</code>). Reported NCA values are compared against
-Belldina 2003 Results.</p>
+dosing interval at steady state. Reported NCA values are compared
+against Belldina 2003 Results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_start</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_end</span><span class="op">)</span> <span class="op">|&gt;</span></span>

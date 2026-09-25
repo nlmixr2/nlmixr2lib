@@ -530,7 +530,7 @@ Non-compartmental analysis of the first dose interval in the pediatric
 HM (recommended 15 + 12 mg/kg) and adult HM 8/8 (10 mg/kg) cohorts.
 PKNCA computes per-subject C_(max1), C_(min1), and AUC₁. Two PKNCA
 blocks are run (one per regimen-cohort grouping) so that each formula
-carries `id/treatment` per the skill’s PKNCA recipe.
+carries `id/treatment` per the package’s standard PKNCA setup.
 
 ``` r
 

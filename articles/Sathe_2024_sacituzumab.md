@@ -1202,7 +1202,7 @@ ggplot(data.frame(time_days = t_grid / 24, cl_factor = cl_factor),
 - **Compartment names.** Multi-output ADC simulation requires named
   compartments (`central_sn38`, `peripheral1_sn38`, `central_tab`,
   `peripheral1_tab`) outside the canonical `central`/`peripheral1` set
-  defined in `naming-conventions.md`.
+  defined in `inst/references/compartment-names.md`.
   [`nlmixr2lib::checkModelConventions`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags these compartments as warnings; this is by design for
   multi-analyte models (see also

@@ -491,6 +491,6 @@ ggplot(sweep_long, aes(t_intervention - peak_time_nat, log10_ratio, colour = met
   the Dodds 2021 Section 2.1 numerical listing, which the paper
   attributes to the upstream Goncalves et al. (2020) CPT PSP consensus
   averaging (Dodds 2021 reference 16, <doi:10.1002/psp4.12543>). The
-  upstream Goncalves 2020 paper is not on disk in this task’s source
-  directory; the packaged parameters therefore trace to Dodds 2021’s
+  upstream Goncalves 2020 paper was not available when this model was
+  built; the packaged parameters therefore trace to Dodds 2021’s
   transcription of them.

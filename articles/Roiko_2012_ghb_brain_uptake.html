@@ -3603,17 +3603,16 @@ than 60% and break this check.</p>
 <div class="section level2">
 <h2 id="why-there-is-no-pknca-section">Why there is no PKNCA section<a class="anchor" aria-label="anchor" href="#why-there-is-no-pknca-section"></a>
 </h2>
-<p><code>references/endogenous-validation.md</code> applies here.
-Neither model has a dose, an absorption-distribution-elimination
-profile, or a concentration-time curve to integrate —
-<code>ghb_buffer</code> is static by construction and
-<code>ghb_cell</code> rises linearly over a 15 s initial-rate window.
-The paper’s own noncompartmental analysis was run on the <strong>in
-vivo</strong> microdialysis arm, which these models do not describe. NCA
-of the in vitro states would compute a number with no published
-counterpart, which pattern 10 of
-<code>known-vignette-failure-patterns.md</code> warns against. The
-structural-identity, figure-replication, species-comparison and in
+<p>The package’s validation pattern for endogenous and mechanistic
+models applies here. Neither model has a dose, an
+absorption-distribution-elimination profile, or a concentration-time
+curve to integrate — <code>ghb_buffer</code> is static by construction
+and <code>ghb_cell</code> rises linearly over a 15 s initial-rate
+window. The paper’s own noncompartmental analysis was run on the
+<strong>in vivo</strong> microdialysis arm, which these models do not
+describe. NCA of the in vitro states would compute a number with no
+published counterpart — a check that cannot fail and so tests nothing.
+The structural-identity, figure-replication, species-comparison and in
 vivo-consistency checks above are the validations this model class
 supports.</p>
 </div>

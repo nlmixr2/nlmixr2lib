@@ -145,9 +145,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 The model has three algebraic observables (Cc plasma, Csc subcutaneous,
 Cpf peritoneal fluid) backed by the two-compartment ODE state;
 observation rows are addressed by `dvid` endpoint id (1 = Cc, 2 = Csc, 3
-= Cpf) so rxode2 maps each to its endpoint under the default solver (the
-multi-output pattern in `references/known-vignette-failure-patterns.md`
-Section 5b).
+= Cpf) so rxode2 maps each to its endpoint under the default solver.
 
 ``` r
 

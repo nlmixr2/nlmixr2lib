@@ -3102,7 +3102,7 @@ clinical protocol cited in the paper.</p>
 <span><span class="co"># Build cohorts: one per dose level evaluated in Llanos-Paez 2018 Table II.</span></span>
 <span><span class="co"># rxEt covariate-column assignment via `$&lt;-` is silently dropped by rxode2, so</span></span>
 <span><span class="co"># materialise as a data.frame before adding covariate columns (see</span></span>
-<span><span class="co"># vignette-template.md "Multi-cohort simulations -- disjoint IDs are</span></span>
+<span><span class="co"># The package's multi-cohort guidance: "Multi-cohort simulations -- disjoint IDs are</span></span>
 <span><span class="co"># mandatory" for the analogous footgun).</span></span>
 <span><span class="va">make_cohort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose_per_kg</span>, <span class="va">n_days</span>, <span class="va">id_offset</span> <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">dose_mg</span> <span class="op">&lt;-</span> <span class="va">dose_per_kg</span> <span class="op">*</span> <span class="va">WT_TYPICAL</span></span>

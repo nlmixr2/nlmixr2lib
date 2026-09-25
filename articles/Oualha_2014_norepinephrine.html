@@ -3186,7 +3186,7 @@ pharmacokinetics”.</p>
 <span><span class="co"># Guarantee a time = 0 row per (id, treatment) -- the Cc at t=0 is the</span></span>
 <span><span class="co"># endogenous-only baseline q0/cl produced by the model's central(0)</span></span>
 <span><span class="co"># initial condition, which the simulation already includes; the</span></span>
-<span><span class="co"># bind_rows pattern below is the defensive idiom from pknca-recipes.md.</span></span>
+<span><span class="co"># bind_rows pattern below is a defensive idiom.</span></span>
 <span><span class="va">sim_pk</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_pk</span>,</span>
 <span>  <span class="va">sim_pk</span> <span class="op">|&gt;</span></span>

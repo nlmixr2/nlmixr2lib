@@ -99,9 +99,9 @@ throughout.
 
 ## Simulation cohort
 
-The validation cohort uses 200 cells per arm (the per-arm cap from the
-skill) – a stochastic simulation that exercises both the structural
-model and its IIV.
+The validation cohort uses 200 cells per arm (the package’s per-arm cap
+for validation cohorts) – a stochastic simulation that exercises both
+the structural model and its IIV.
 
 ``` r
 
@@ -400,8 +400,7 @@ Zenodo `results_ribo.mat` parameter estimates).
   figure-only kernel-density plots. The Zenodo deposit contains
   `results_ribo.mat`, the 200-multistart MEMOIR optimisation output; the
   best multistart’s parameter vector is the one carried in `ini()`. This
-  pathway was sidecar-approved by the operator before extraction
-  (sidecar request-001 Q1 option A).
+  pathway was maintainer-approved before extraction.
 - **MEMOIR -\> nlmixr2 unit conversion.** MEMOIR uses log10(parameter)
   internally and stores `Var[log10(p)]` as the diagonal of D. nlmixr2
   uses natural log. The conversion

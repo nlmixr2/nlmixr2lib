@@ -858,7 +858,7 @@ stopifnot(auc[["300 mg Q2W"]] / auc[["200 mg Q2W"]] > 1.5)
   reconstruction, both reproduce the published ~0.10 L. Read the
   typical-value row of the Figure 3A check table, not the mean row, when
   comparing against the abstract.
-- **Cohort size and pairing.** 200 subjects per regimen (the skill’s
+- **Cohort size and pairing.** 200 subjects per regimen (the package’s
   cap), with the same subjects and the same random-effect draws reused
   across regimens, as the paper did when it resampled one virtual ITT
   population for each arm. Comparisons between arms are therefore

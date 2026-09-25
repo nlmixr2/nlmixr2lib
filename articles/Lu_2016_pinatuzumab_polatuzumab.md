@@ -45,8 +45,8 @@ fitted **jointly in one run**: pinatuzumab vedotin (anti-CD22) and
 polatuzumab vedotin (anti-CD79b). A molecule indicator selects
 drug-specific values of CL, Vc, `kdec` and the acMMAE assay
 cross-calibration slope; Q, Vp, all five IIV variances and both residual
-errors are common to the two drugs. Following the
-`replicate-author-structure` policy, one jointly fitted model is
+errors are common to the two drugs. Following the policy of building
+models as their authors built them, one jointly fitted model is
 extracted as one model file, with the molecule indicator carried as the
 mutually exclusive covariate pair `TRT_PINATUZUMAB_VEDOTIN` /
 `TRT_POLATUZUMAB_VEDOTIN`.
@@ -1035,11 +1035,11 @@ adjusted to close the gap.
   dataset and is the one the Results section presents as the final
   integrated model; Models 2, 3 and 4 refit it to progressively reduced
   phase II Tab sampling and exist to demonstrate the sampling-reduction
-  claim, so under the `replicate-author-structure` policy they are the
-  paper’s robustness analysis rather than separate final models. The
-  Model 2 estimates are exercised in the comparison section above via
-  `ini()` overrides, and all four columns are transcribed in the
-  source-trace table for reference.
+  claim, so under the policy of building models as their authors built
+  them they are the paper’s robustness analysis rather than separate
+  final models. The Model 2 estimates are exercised in the comparison
+  section above via `ini()` overrides, and all four columns are
+  transcribed in the source-trace table for reference.
 - **Body weight is assumed, not paper-derived.** Lu 2016 tabulates no
   baseline demographics. The 75 kg used to convert 2.4 mg/kg into a
   molar dose is taken from the weight-normalisation reference of

@@ -118,9 +118,8 @@ The per-parameter origin is recorded as an in-file comment next to each
 `ini()` entry in `inst/modeldb/specificDrugs/Ide_2020_elotuzumab.R`. The
 table below collects them in one place. Source-paper values are from Ide
 2020 Table 2 unless noted; covariate-equation reference values are from
-Ide 2020 supplement S2 (`PMID_32656777_supplement_6_trimmed.md`); ODE
-structure is from Ide 2020 supplement 7 NONMEM control stream
-(`PMID_32656777_supplement_7_trimmed.md`).
+Ide 2020 supplement S2; ODE structure is from Ide 2020 supplement 7
+NONMEM control stream.
 
 | Component | Value | Source location |
 |----|----|----|

@@ -215,7 +215,7 @@ report the distributional shape; see Assumptions).
 # rxode2's simulation RNG for the etas, and rxode2's streams are partitioned
 # per solver thread -- so the eta draws differ on a machine with a different
 # thread count. Every assertion below is written to hold for any cohort the
-# model can produce (see pattern 12 of known-vignette-failure-patterns.md).
+# model can produce.
 set.seed(20260902)
 
 n_sub <- 200
@@ -307,10 +307,10 @@ cat(sprintf("simulated median Cc over the interval: %.1f mg/L (observed mean 16.
 
 ## PKNCA validation
 
-Steady-state NCA over the final dosing interval (PKNCA recipe 3). The
-source paper reports no NCA parameter table, so the reference for
-comparison is the model-implied identity that must hold exactly for
-linear PK at steady state:
+Steady-state NCA over the final dosing interval. The source paper
+reports no NCA parameter table, so the reference for comparison is the
+model-implied identity that must hold exactly for linear PK at steady
+state:
 
 AUC(0-tau) = Dose / CL
 

@@ -176,7 +176,7 @@ stopifnot(
   abs(round(stats::cov2cor(blk)[1, 3] * 100) - -78) <= 1,
   abs(round(stats::cov2cor(blk)[2, 3] * 100) - -48) <= 1,
   # Positive definite, so rxode2's Cholesky sampler can draw from it as-is
-  # (no off-diagonal nudge needed; see known-vignette-failure-patterns.md #1).
+  # (no off-diagonal nudge needed).
   all(eigen(blk, symmetric = TRUE, only.values = TRUE)$values > 0)
 )
 ```
@@ -405,7 +405,7 @@ mod
 #>     ldl       ~ add(addSd_ldl) + prop(propSd_ldl)
 #>   })
 #> }
-#> <environment: 0x55fa631ed440>
+#> <environment: 0x55ad2734ff10>
 ```
 
 Equation 5 is the positive root of the one-to-one QSS binding quadratic.
@@ -452,7 +452,7 @@ mod_typ <- rxode2::zeroRe(mod)
 # observable name such as "Cc", which would inject an extra compartment slot
 # and renumber the states -- and every model variable is returned as its own
 # column regardless of which endpoint `dvid` names. `useLinCmt = FALSE` is
-# required for the same reason (see known-vignette-failure-patterns.md #2, #5b).
+# required for the same reason.
 make_events <- function(amt, ii, addl, until, dis_healthy = 0,
                         by = 0.05, id = 1L) {
   obs <- data.frame(id = id, time = seq(0, until, by = by), amt = NA_real_,

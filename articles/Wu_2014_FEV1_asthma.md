@@ -14011,9 +14011,9 @@ parameter values exactly.
   longitudinal model. They are not encoded in `covariateData` because
   they do not modify any structural parameter in the published fit.
 - **Supplementary Tables E1 to E4 not on disk.** Supplements were not
-  available during extraction (Phase 1 step 7 sidecar review). The cited
-  supplementary tables (E1: AIC model comparison; E2: alternative theta3
-  definition; E3: DGKH tissue expression; E4: NHGRI-catalog
+  available during extraction (a gap reviewed by the maintainers). The
+  cited supplementary tables (E1: AIC model comparison; E2: alternative
+  theta3 definition; E3: DGKH tissue expression; E4: NHGRI-catalog
   lung-function SNPs) describe model-selection rationale and downstream
   GWAS material rather than parameter values used in the final model;
   every final-model estimate this file consumes is in the main paper

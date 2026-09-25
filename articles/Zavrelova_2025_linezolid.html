@@ -3952,7 +3952,7 @@ CI arm).</caption>
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cmp</span><span class="op">)</span> <span class="op">==</span> <span class="fl">3L</span><span class="op">)</span></span>
 <span><span class="co"># Median-of-cohort vs typical-value: lognormal IIV on CL puts the cohort median</span></span>
-<span><span class="co"># close to, but not exactly at, the typical value. 20% is the skill's flag</span></span>
+<span><span class="co"># close to, but not exactly at, the typical value. 20% is the package's flag</span></span>
 <span><span class="co"># threshold and is comfortably met.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cmp</span><span class="op">$</span><span class="va">`difference (%)`</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The source reports no NCA table for the study data, so no

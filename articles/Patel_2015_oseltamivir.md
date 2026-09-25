@@ -196,8 +196,7 @@ stratum_model <- function(stratum) {
 # are partitioned per solver thread -- so this cohort differs between a 2-core
 # CI runner and a 16-thread workstation and no seed can make them agree. Every
 # assertion below is therefore written on a centre or a robust bound, never on
-# an extreme, a sign, or an exact value. See pattern 12 of
-# .claude/skills/extract-literature-model/references/known-vignette-failure-patterns.md
+# an extreme, a sign, or an exact value.
 set.seed(20150401)
 
 # 150 subjects per arm. The paper simulated 1000; 150 keeps the Monte Carlo
@@ -242,7 +241,7 @@ make_arm <- function(n, dose_ug, dose_times, stratum, regimen,
 
 # `useLinCmt = FALSE` is required: rxSolve.rxUi's default ODE -> linCmt
 # auto-conversion corrupts the dvid -> cmt mapping for multi-output models of
-# this shape (pattern 5b of known-vignette-failure-patterns.md).
+# this shape.
 solve_arm <- function(events, stratum) {
   rxode2::rxSolve(
     stratum_model(stratum), events = events,
@@ -847,8 +846,8 @@ canonical `logitfm` encoding, with the reported 16.9% read as the omega
 on the logit scale. Two independent readings corroborate that choice:
 reading the 16.9% on the complementary `(1 - F_met)` scale gives `F_met`
 spanning 0.957-0.970 at +/- 1 SD, against 0.958-0.969 for the logit
-encoding – numerically indistinguishable. Resolved via operator sidecar
-`oare_PMC4386947` question q5.
+encoding – numerically indistinguishable. Resolved by a maintainer
+decision.
 
 **The two dialysate arms are carried as independent etas.** Table 2
 reports the same 7.70% BSV for `CL_OCCCPD` and `CL_OCCAPD`, which most

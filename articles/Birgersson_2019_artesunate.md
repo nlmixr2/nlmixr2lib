@@ -77,7 +77,7 @@ final estimates carried verbatim (the listing’s
 | Complete in-vivo conversion of artesunate to DHA (`d/dt(central_dihydroart) = (cl/vc) * central - (cl_dihydroart/vc_dihydroart) * central_dihydroart`) | – | `Executable_run1.mod` `$PK` block (`K23 = CLP/V2; K30 = CLM/V3`) |
 | Pregnancy effect on DHA clearance applied as `(1 + e_preg_cl_dihydroart * (1 - PREG))` | – | `Executable_run1.mod` `$PK` block (`IF (PREG.EQ.1) CLMPREG = 1; IF (PREG.EQ.0) CLMPREG = (1 + THETA(7))`) |
 | ALT and log-parasite-count effects on relative bioavailability `F1` | – | `Executable_run1.mod` `$PK` block (`F1ALT = 1 + THETA(8)*(ALT - 20.75); F1LNPC = 1 + THETA(9)*(LNPC - 5.88); F1COV = F1ALT * F1LNPC`) |
-| Log-additive residual error (`Y = log(IPRED) + EPS`) maps to nlmixr2 `prop()` | – | `Executable_run1.mod` `$ERROR` block; convention rule from `references/naming-conventions.md` |
+| Log-additive residual error (`Y = log(IPRED) + EPS`) maps to nlmixr2 `prop()` | – | `Executable_run1.mod` `$ERROR` block; package convention for log-scale additive error |
 
 ## Virtual cohort
 
@@ -160,7 +160,7 @@ sim <- rxode2::rxSolve(
 We also run a typical-value (no-IIV, no-residual-error) replication that
 takes the cohort medians per arm as a single representative subject.
 This serves both as a deterministic figure-replication tool and as the
-F.2 self-consistency anchor against the bundle’s
+self-consistency anchor against the bundle’s
 `Output_simulated_run1.lst`.
 
 ``` r
@@ -189,11 +189,11 @@ sim_typical <- rxode2::rxSolve(
 
 ## Replicate published figures
 
-The Birgersson 2019 publication PDF is not on disk in this worktree; the
-figure replication here therefore demonstrates the typical-value
-parent-and-metabolite trajectories and stratifies them by pregnancy
-status – the principal covariate finding of the paper. Adding a
-side-by-side comparison against the published Figure 4 is left for a
+The Birgersson 2019 publication PDF was not on disk when this model was
+built; the figure replication here therefore demonstrates the
+typical-value parent-and-metabolite trajectories and stratifies them by
+pregnancy status – the principal covariate finding of the paper. Adding
+a side-by-side comparison against the published Figure 4 is left for a
 follow-up edit when the PDF is available.
 
 ``` r
@@ -250,8 +250,7 @@ sim |>
 
 ## PKNCA validation
 
-Single-dose, dense-sampling NCA per the recipe in
-`references/pknca-recipes.md`. The treatment grouping variable carries
+Single-dose, dense-sampling NCA. The treatment grouping variable carries
 the pregnancy strata so the per-arm Cmax / Tmax / AUC can be summarized
 side-by-side. Non-compartmental analysis is run separately for
 artesunate (`Cc`) and dihydroartemisinin (`Cc_dihydroart`).
@@ -821,7 +820,7 @@ When the publication PDF becomes available, the relevant page references
 in this section can be replaced by a numeric comparison table; the model
 parameters themselves should not be revisited.
 
-## F.2 self-consistency check
+## Self-consistency check
 
 The DDMORE bundle ships `Simulated_run1.csv`, an event table with a
 single 51.5 kg pregnant subject (PREG = 1, ALT = 20.3, LNPC = 6.697)
@@ -915,13 +914,12 @@ structural ODE chain implements the published algebraic relationship
 - **Log-additive residual error mapped to nlmixr2 `prop()`.** The source
   `.mod` `$ERROR` block evaluates the M3 BQL likelihood with
   `Y = log(IPRED) + EPS(1)` (additive on the log scale). Per the
-  convention in `references/naming-conventions.md`, NONMEM
-  additive-on-log-scale residual error maps to proportional residual
-  error in nlmixr2’s linear space. The `propSd` value is the SD on log
-  scale, `sqrt(variance)`. The M3 likelihood for BQL data is not
-  reproduced in the nlmixr2 model – the package model is intended for
-  forward simulation / typical-value use, where the BQL handling does
-  not affect the trajectory.
+  package’s convention, NONMEM additive-on-log-scale residual error maps
+  to proportional residual error in nlmixr2’s linear space. The `propSd`
+  value is the SD on log scale, `sqrt(variance)`. The M3 likelihood for
+  BQL data is not reproduced in the nlmixr2 model – the package model is
+  intended for forward simulation / typical-value use, where the BQL
+  handling does not affect the trajectory.
 - **No IIV on artesunate or DHA volume of distribution.** The source
   `.mod` declares `$OMEGA(2,2) 0 FIX` and `$OMEGA(4,4) 0 FIX` (IIV on V2
   and V3 fixed at zero). Those etas are dropped in the nlmixr2 model
@@ -929,9 +927,10 @@ structural ODE chain implements the published algebraic relationship
   are carried.
 - **PREG and LNPC are newly registered covariate canonicals.** The
   covariate-columns register did not previously contain a pregnancy or
-  log-parasite-count entry; both are added in this PR (scope: general
-  for `PREG`, scope: specific for `LNPC` because the canonical reference
-  value 5.88 is the Birgersson 2019 cohort median).
+  log-parasite-count entry; both were registered when this model was
+  added (scope: general for `PREG`, scope: specific for `LNPC` because
+  the canonical reference value 5.88 is the Birgersson 2019 cohort
+  median).
 - **Simulated dataset cohort-median demographics are nominal.** The
   DDMORE-shipped `Simulated_run1.csv` is a single-subject regression
   dataset, not a representative cohort; the virtual cohort built in this

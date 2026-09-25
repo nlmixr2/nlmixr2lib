@@ -643,7 +643,7 @@ style="width:100%;"}
   group 1.
 
 - **Hepatic-artery flow and the tabulated “Liver” row
-  (operator-ratified).** The tabulated “Liver” blood flow is the
+  (maintainer-ratified).** The tabulated “Liver” blood flow is the
   *portal-vein pool*, not total hepatic flow: in rat (12.546 = 9.139 +
   1.080 + 0.831 + 1.496 mL/min) and in monkey (123.4 = 90.4 + 11 +
   14.9 + 7.1 mL/min) the row equals the splanchnic sum exactly. The
@@ -665,10 +665,10 @@ style="width:100%;"}
   rat and monkey – keeps the twice-tabulated rest-of-body 0.730 L/min
   and yields portal 0.817, hepatic artery 0.379 and total hepatic 1.196
   L/min. That is the reading used here and it was ratified by the
-  operator. (The lead paper’s Table S6 prints the same reference man to
-  two decimals and gives the human liver flow as 1.11, which duplicates
-  its kidney entry; at three decimals the two are distinct – kidney
-  1.109 versus liver 1.489 – so the lead table’s value is a
+  maintainers. (The lead paper’s Table S6 prints the same reference man
+  to two decimals and gives the human liver flow as 1.11, which
+  duplicates its kidney entry; at three decimals the two are distinct –
+  kidney 1.109 versus liver 1.489 – so the lead table’s value is a
   rounding-level transcription artefact and the companion table was used
   for rat and human.)
 
@@ -754,9 +754,9 @@ style="width:100%;"}
   compartment, both registered by the companion paper’s extraction,
   which is now on `main` as
   `Yau_2023_diazepam_pbpk_{lumped,kpu,scalar}_{rat,human}`. Per the
-  operator’s decision (sidecar request-002 q1) this branch adds no
-  register entry of its own, so that one canonical serves both papers
-  and the two pull requests do not conflict in `inst/references/`.
+  maintainers’ decision this branch adds no register entry of its own,
+  so that one canonical serves both papers and the two pull requests do
+  not conflict in `inst/references/`.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   now reports no issues for any of the five models here.
 

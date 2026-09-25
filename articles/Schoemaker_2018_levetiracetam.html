@@ -2870,9 +2870,8 @@ scaffold to extrapolate the pediatric brivaracetam (BRV) dose-response.
 The fitted compound is <strong>LEV</strong>, not BRV; the publication’s
 headline drug (BRV) appears only at the simulation step that consumes
 this LEV-fit model. The file is named
-<code>Schoemaker_2018_levetiracetam.R</code> per operator decision
-(sidecar response-001 Q3) so the filename matches the fitted
-compound.</p>
+<code>Schoemaker_2018_levetiracetam.R</code> per a maintainer decision
+so the filename matches the fitted compound.</p>
 <p>The model has no PK ODE; LEV exposure enters as the data column
 <code>CAV</code> (LEV plasma concentration in mg/L per count interval).
 Adults contribute monthly aggregated counts (NDAYS approximately 28, PDV
@@ -2896,10 +2895,10 @@ bundle’s simulated rows, 6,107 are adult monthly-count records (PED = 0,
 NDAYS approximately 28) and 32,958 are pediatric daily-count records
 (PED = 1, NDAYS = 1).</li>
 <li>The Schoemaker 2018 publication PDF was <strong>not on disk</strong>
-under <code>/home/bill/github/mab_human_consensus/literature/</code> at
-extraction time, so subject counts, study counts, and demographic
-distributions are not populated in <code>population</code>. Update the
-metadata when the PDF becomes available.</li>
+in the maintainers’ literature mirror at extraction time, so subject
+counts, study counts, and demographic distributions are not populated in
+<code>population</code>. Update the metadata when the PDF becomes
+available.</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Schoemaker_2018_levetiracetam"</span><span class="op">)</span></span>
@@ -3682,34 +3681,25 @@ self-consistency simulation.</caption>
 <ul>
 <li>
 <strong>Filename uses <code>levetiracetam</code>, not
-<code>brivaracetam</code>.</strong> Operator decision (sidecar
-response-001 Q3, free-text “rename to
-<code>Schoemaker_2018_levetiracetam.R</code>”): the fitted compound is
-LEV; BRV is the publication’s headline drug but appears only at the
-simulation step that consumes this LEV-fit model. The queue task
-<code>034-schoemaker_2018_brivaracetam</code> is unchanged so the
-sidecar correlation remains stable; the rename is reflected in
-<code>inst/modeldb/ddmore/</code>, this vignette, and the model file’s
-<code>vignette</code> field. Queue artifacts
-(<code>queue/todo/034-...yaml</code> and
-<code>queue/prompts/034-...prompt.txt</code>) are also updated so
-subsequent dispatches find the renamed file.</li>
+<code>brivaracetam</code>.</strong> Maintainer decision: the fitted
+compound is LEV; BRV is the publication’s headline drug but appears only
+at the simulation step that consumes this LEV-fit model. The rename is
+reflected in <code>inst/modeldb/ddmore/</code>, this vignette, and the
+model file’s <code>vignette</code> field.</li>
 <li>
 <strong>Two-output simulation model (responder + non-responder
-branches), no mixture estimator.</strong> Operator decision (sidecar
-response-001 Q1 = <code>two_output_sim</code>): nlmixr2’s mixture-model
-support is more limited than the source’s NONMEM <code>$MIX</code> form,
-so the mixture is exposed as the parameter <code>p_responder</code> and
-the model emits two independent output branches
-<code>count_responder</code> and <code>count_nonresponder</code>. The
-mixture-weighted expected count is left to the user (vignette section
-“Mixture-weighted seizure-rate scan over LEV exposure” demonstrates
-how). The published 33.5% responder fraction is preserved verbatim as
-<code>p_responder = 0.335</code>.</li>
+branches), no mixture estimator.</strong> Maintainer decision: nlmixr2’s
+mixture-model support is more limited than the source’s NONMEM
+<code>$MIX</code> form, so the mixture is exposed as the parameter
+<code>p_responder</code> and the model emits two independent output
+branches <code>count_responder</code> and
+<code>count_nonresponder</code>. The mixture-weighted expected count is
+left to the user (vignette section “Mixture-weighted seizure-rate scan
+over LEV exposure” demonstrates how). The published 33.5% responder
+fraction is preserved verbatim as <code>p_responder = 0.335</code>.</li>
 <li>
-<strong>PDV exposed as a per-record covariate.</strong> Operator
-decision (sidecar response-001 Q2, free-text “Include PDV as a
-covariate”): the source’s Markov dependence on the previous-day count is
+<strong>PDV exposed as a per-record covariate.</strong> Maintainer
+decision: the source’s Markov dependence on the previous-day count is
 preserved by carrying PDV as a per-record input column rather than as a
 model state. rxode2 cannot natively express observation-to-state Markov
 feedback. The user supplies PDV when constructing the simulation events
@@ -3788,16 +3778,16 @@ free them by editing one line.</li>
 <li>
 <strong>Schoemaker 2018 publication PDF not on disk for
 cross-check.</strong> The publication (<a href="doi:10.1007/s40262-017-0597-2" class="uri">doi:10.1007/s40262-017-0597-2</a>) was not present anywhere
-under <code>/home/bill/github/mab_human_consensus/literature/</code> at
-extraction time. Final-estimate values come solely from the bundle’s
-<code>Output_real_P241.res</code> <code>MINIMIZATION SUCCESSFUL</code>
-block (line 303) and <code>FINAL PARAMETER ESTIMATE</code> block (lines
-372-407). The publication abstract is reproduced verbatim in
+in the maintainers’ literature mirror at extraction time. Final-estimate
+values come solely from the bundle’s <code>Output_real_P241.res</code>
+<code>MINIMIZATION SUCCESSFUL</code> block (line 303) and
+<code>FINAL PARAMETER ESTIMATE</code> block (lines 372-407). The
+publication abstract is reproduced verbatim in
 <code>DDMODEL00000239.rdf</code>’s <code>model-has-description</code>
 block and confirms the model structure (NB seizure count with mixture,
 Box-Cox on baseline-rate eta, Markovian dependence on PDV, Emax on LEV
 concentration, 33.5% responders) but does not list per-parameter values.
-If the operator subsequently obtains the PDF, a follow-up audit of TH
+If the maintainers subsequently obtain the PDF, a follow-up audit of TH
 1..14 against the publication’s tables is recommended.</li>
 <li>
 <strong><code>count_responder</code> /

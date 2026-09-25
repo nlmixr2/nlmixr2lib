@@ -446,11 +446,11 @@ Recovery-time-point comparison (15 min post-infusion). {.table}
 
 ## Assumptions and deviations
 
-- **Drug-name correction from task metadata.** The task generator listed
-  the drug as “Journal of Pharmacokinetics an” (extracted from the
-  journal name); the paper itself describes propofol PK/PD. The
-  filename, function name, and metadata fields use `propofol` per the
-  paper.
+- **Drug-name correction from the source metadata.** The metadata this
+  model was built from listed the drug as “Journal of Pharmacokinetics
+  an” (extracted from the journal name); the paper itself describes
+  propofol PK/PD. The filename, function name, and metadata fields use
+  `propofol` per the paper.
 - **Filename ASCII compliance.** The first author is Krzysztof
   Przybylowski (Polish spelling Przybylowski with a barred l). The
   filename strips the diacritic to keep the file ASCII for

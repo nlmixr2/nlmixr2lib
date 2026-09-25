@@ -1221,11 +1221,11 @@ stopifnot(
   states the corresponding curves are predicted identically to the
   reference.
 - **New canonical names registered with this extraction.**
-  `SCORE_SESCD`, `DISLOC_ILEUM` and `DISLOC_COLON` were ratified as
-  general-scope covariate canonicals (sidecar request 001, operator
-  answer A to both questions), and `prob_clinrem`, `prob_endoimp` and
-  `prob_endorem` were registered as output-state canonicals in the
-  established, explicitly extensible `prob_<endpoint>` family.
+  `SCORE_SESCD`, `DISLOC_ILEUM` and `DISLOC_COLON` were ratified by the
+  maintainers as general-scope covariate canonicals, and `prob_clinrem`,
+  `prob_endoimp` and `prob_endorem` were registered as output-state
+  canonicals in the established, explicitly extensible `prob_<endpoint>`
+  family.
 
 ## Reference
 

@@ -3712,8 +3712,8 @@ verbatim).</caption>
 <span><span class="co"># These two sides do NOT differ by a physical per-subject mechanism: both are</span></span>
 <span><span class="co"># deterministic typical-value solves of the same parameter set, so the only</span></span>
 <span><span class="co"># difference is numerical quadrature plus the paper's own rounding. Tight</span></span>
-<span><span class="co"># absolute bounds are therefore correct here (see the package CLAUDE.md note on</span></span>
-<span><span class="co"># vignette assertions -- the loose-quantile rule applies to random cohorts).</span></span>
+<span><span class="co"># absolute bounds are therefore correct here (the loose-quantile rule applies</span></span>
+<span><span class="co"># to random cohorts).</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># Tolerances are half of the last printed digit, widened by the observation</span></span>
 <span><span class="co"># grid spacing where that is coarser (Tmax can only be resolved to 0.01 h).</span></span>
@@ -4086,7 +4086,7 @@ women, 100 mg, at the 17 sample times listed in Methods 2.4.</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="Eugene_2016b_metoprolol_gender_dose_equivalence_files/figure-html/cts-vpc-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Cohort-level assertions. Per the package CLAUDE.md guidance these are stated</span></span>
+<code class="sourceCode R"><span><span class="co"># Cohort-level assertions. These are stated</span></span>
 <span><span class="co"># on the CENTRE and on robust quantiles -- never on the per-subject extreme,</span></span>
 <span><span class="co"># which is not reproducible across rxode2 builds.</span></span>
 <span><span class="va">exposure</span> <span class="op">&lt;-</span> <span class="va">sim_cts</span> <span class="op">|&gt;</span></span>

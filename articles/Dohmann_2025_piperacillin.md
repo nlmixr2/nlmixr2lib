@@ -1282,10 +1282,10 @@ five independent statements elsewhere in the same paper:
 
 Encoding 1.66 m^2 would ship a model that cannot reproduce the paper’s
 own published results. The deviation was escalated to and approved by
-the package maintainer (sidecar request-001 / response-001, question q1,
-answer A) on the standing principle that where a printed constant cannot
-reproduce a paper’s own results and a back-solved value does, the
-back-solved value is encoded and the discrepancy is recorded here.
+the package maintainer on the standing principle that where a printed
+constant cannot reproduce a paper’s own results and a back-solved value
+does, the back-solved value is encoded and the discrepancy is recorded
+here.
 
 ### The aggressive-target table is over-predicted (a reimplementation gap)
 

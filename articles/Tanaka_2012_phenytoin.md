@@ -270,8 +270,8 @@ sprintf("t_{1/2,conv} = ln(2) / %.2f h^-1 = %.2f min", k12_per_h, half_life_min)
 
 ## PKNCA validation
 
-Single-dose NCA over the 24-h post-infusion window per Recipe 1 in
-`references/pknca-recipes.md`, stratified by treatment arm.
+Single-dose NCA over the 24-h post-infusion window per the package’s
+standard single-dose PKNCA recipe, stratified by treatment arm.
 
 ``` r
 

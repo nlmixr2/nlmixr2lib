@@ -434,7 +434,7 @@ dose_df <- scenarios |>
 dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | scenario + id,
                              doseu = "mg")
 
-# Steady state over one dosing interval (PKNCA recipe 3).
+# Steady state over one dosing interval.
 intervals <- data.frame(
   start     = 0,
   end       = 24,
@@ -600,7 +600,7 @@ and residual-error parameters as well as the structural model.
 # rxode2's streams are partitioned per solver thread -- so this cohort is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion below is written to hold for ANY cohort the
-# model can produce (see pattern 12 of the skill's known-failure catalogue).
+# model can produce.
 set.seed(20231124)
 rxode2::rxSetSeed(20231124)
 

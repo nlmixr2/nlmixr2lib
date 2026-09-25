@@ -3161,8 +3161,7 @@ clearance, the EDP clearance factor, the occasion rule that sets F1 to
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Pure numerical-integration error: the two sides use the SAME parameters, so a</span></span>
-<span><span class="co"># tight bound is correct here (see CLAUDE.md on vignette assertions). Realised</span></span>
-<span><span class="co"># max |pct_diff| = 0.022%.</span></span>
+<span><span class="co"># tight bound is correct here. Realised max |pct_diff| = 0.022%.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">mass_balance</span><span class="op">$</span><span class="va">pct_diff</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mass_balance</span> <span class="op">|&gt;</span></span>
@@ -3544,7 +3543,7 @@ claim.</p>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20250908</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20250908</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span> <span class="co"># skill cap: never more than 200 participants per arm</span></span>
+<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span> <span class="co"># cohort cap: never more than 200 participants per arm</span></span>
 <span></span>
 <span><span class="va">make_arm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">label</span>, <span class="va">mgkg</span>, <span class="va">fixed_mg</span>, <span class="va">id_offset</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_per_arm</span>, meanlog <span class="op">=</span> <span class="fl">4.19</span>, sdlog <span class="op">=</span> <span class="fl">0.19</span><span class="op">)</span></span>
@@ -3807,7 +3806,7 @@ Monte Carlo medians. * differs from reference by more than
 <span><span class="va">pct</span> <span class="op">&lt;-</span> <span class="va">pct</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pct</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">pct</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span><span class="co"># Cohort-derived, so gate the centre and a robust quantile rather than the</span></span>
-<span><span class="co"># extreme (see CLAUDE.md). Realised on this build: individual rows spanned</span></span>
+<span><span class="co"># extreme. Realised on this build: individual rows spanned</span></span>
 <span><span class="co"># -2.7% to +2.4%, median |% diff| about 1.5%. The dominant residual is the</span></span>
 <span><span class="co"># trapezoidal AUC on a 24 h grid over a profile with a 21 h absorption</span></span>
 <span><span class="co"># half-life. A mis-transcribed clearance, volume, bioavailability or dose unit</span></span>

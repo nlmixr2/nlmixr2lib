@@ -383,18 +383,18 @@ cat(sprintf("Analytical AUCinf at CL/F = 418 L/h: %.1f ng*h/mL\n",
   the reference CrCL value, and the supplement’s NONMEM code (page 74)
   only contains the M5 control stream without the covariate. The
   cohort’s CrCL distribution is also not tabulated (Table 1 lists only
-  age, sex, weight, height). Per the skill’s “Covariate encoding
-  ambiguous” stop-and-ask trigger and the operator’s directive, M5 is
-  the faithfully-reproducible structure from on-disk sources; downstream
-  simulation for healthy adults with normal renal function (the
-  published cohort) is essentially unaffected by the M5 -\> M6
+  age, sex, weight, height). Because the covariate encoding is
+  ambiguous, and per the maintainers’ directive, M5 is the
+  faithfully-reproducible structure from the available sources;
+  downstream simulation for healthy adults with normal renal function
+  (the published cohort) is essentially unaffected by the M5 -\> M6
   simplification. Users wishing to add the M6 effect can wrap the
   typical `fr` in their preferred functional form, e.g.
   `fr_i = exp(lfr + etalfr) * (CRCL / CRCL_ref)^(-0.985)`, and document
   the assumed reference. **Erratum/clarification candidate:** the
-  operator confirmed via sidecar that the M6 covariate form is
-  unrecoverable from on-disk sources; this is documented for any future
-  erratum or author correspondence that resolves the form.
+  maintainers confirmed that the M6 covariate form is unrecoverable from
+  the available sources; this is documented for any future erratum or
+  author correspondence that resolves the form.
 
 - **Analytical Savic transit input via lgamma rather than Stirling.**
   The supplement’s NONMEM code (page 74) evaluates the gamma kernel

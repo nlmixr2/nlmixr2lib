@@ -3128,13 +3128,13 @@ Model” and “PFS Model”</td>
 <h3 id="sign-recovery-for-the-negative-coefficients">Sign recovery for the negative coefficients<a class="anchor" aria-label="anchor" href="#sign-recovery-for-the-negative-coefficients"></a>
 </h3>
 <p>Three of the eight estimates are negative. Their minus signs are
-typeset as U+2212 and are <strong>dropped by both</strong> the
-trimmed-markdown conversion of the PDF and by
-<code>pdftotext -layout</code>, so they cannot be taken from a text
-extraction. They were recovered from the tables’ own Wald statistics –
-<code>z</code> equals estimate divided by SE on every row, so the sign
-of <code>z</code> supplies the sign of the estimate – and then confirmed
-by reading the rendered page image.</p>
+typeset as U+2212 and are <strong>dropped by both</strong> the markdown
+text extraction of the PDF and by <code>pdftotext -layout</code>, so
+they cannot be taken from a text extraction. They were recovered from
+the tables’ own Wald statistics – <code>z</code> equals estimate divided
+by SE on every row, so the sign of <code>z</code> supplies the sign of
+the estimate – and then confirmed by reading the rendered page
+image.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sign_check</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">Model</span>, <span class="op">~</span><span class="va">Parameter</span>,           <span class="op">~</span><span class="va">Estimate</span>, <span class="op">~</span><span class="va">SE</span>,     <span class="op">~</span><span class="va">z_published</span>,</span>
@@ -3900,7 +3900,7 @@ median hazard ratio rather than the interval bounds.</p></li>
 <li><p><strong>Sign recovery for three coefficients.</strong> The minus
 signs on the OS albumin coefficient, the OS <code>Log (scale)</code> and
 the PFS <code>Log (scale)</code> are not recoverable from a text
-extraction of the PDF (both the trimmed markdown and
+extraction of the PDF (both the markdown text extraction and
 <code>pdftotext -layout</code> drop the U+2212 glyph). They were
 recovered from the published Wald statistics, verified against the
 rendered page image, and the check is reproduced in the “Sign recovery”

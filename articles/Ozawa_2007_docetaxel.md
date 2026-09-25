@@ -470,7 +470,7 @@ and bootstrap parameter consistency (Table 4).
   Friberg-family convention.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags `input` and `circ` as deviations; both deviations are
-  intentional and documented here per Phase 5 of the extraction skill.
+  intentional and documented here.
 - **PK and PD parameter coupling.** Ozawa 2007 fitted the PK and PD
   layers in two sequential NONMEM runs (the Appendix I control stream is
   the PD-only run, with per-subject Bayesian posthoc PK estimates

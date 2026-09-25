@@ -49,7 +49,7 @@ bundle for `DDMODEL00000250` (scraped to
   metadata.
 - `250.json`, `Command.txt` – scraper / run metadata.
 
-The original publication is **not on disk** in this worktree;
+The original publication was **not on disk** when this model was built;
 publication-level demographics, NCA tables, and figures are taken from
 the PubMed abstract (PMID 28785981) only. Numerical values used by the
 packaged model are the `Output_real_FinalModelCode.lst` final estimates
@@ -447,9 +447,9 @@ the publication’s typical CL by treatment group. {.table}
   slightly from the published typical values: CL adults 0.540 vs 0.44
   L/min (+22 %), CL adolescents 0.793 vs 0.71 L/min (+12 %), F1 0.684 vs
   0.562 (+22 %). The .mod’s `$THETA` initial values match the
-  publication exactly, but per the `extract-literature-model` skill the
-  packaged model uses the `.lst` final estimates as the canonical
-  numbers; the publication values are documented here for reference.
+  publication exactly, but per the package’s convention the packaged
+  model uses the `.lst` final estimates as the canonical numbers; the
+  publication values are documented here for reference.
 - **`OMEGA(1,1)` (IIV on CL) sits at the lower boundary in the re-fit.**
   The .lst reports 4.33e-06 with a 98.97 % ETA shrinkage and the warning
   `PARAMETER ESTIMATE IS NEAR ITS BOUNDARY. THIS MUST BE ADDRESSED BEFORE THE COVARIANCE STEP CAN BE IMPLEMENTED`
@@ -467,8 +467,8 @@ the publication’s typical CL by treatment group. {.table}
   (`Executable model = Executable_FinalModelCode.mod`) and is omitted
   from `inst/modeldb/ddmore/`. If the access-weight parameterisation is
   needed for downstream analysis, extract it as a separate
-  `vanRongen_2018a_midazolam.R` per the year-letter collision rule in
-  `naming-conventions.md`.
+  `vanRongen_2018a_midazolam.R` per the package’s year-letter collision
+  rule.
 - **Source dataset uses ID-coded sub-population, not a labelled
   ADOLESCENT column.** The .mod uses `IF (ID.LE.30) ... IF (ID.GT.30)`
   branches to select between the adult and adolescent CL / V3 forms. The
@@ -482,10 +482,10 @@ the publication’s typical CL by treatment group. {.table}
   different summary statistic (mean vs median or rounding) used at
   fitting time. The packaged model uses the .mod’s values to remain
   mass-balance consistent with the published parameter estimates.
-- **Original publication PDF is not on disk in this worktree.** The
-  model’s `description`, `reference`, and `population` fields are
-  populated from the PubMed abstract (PMID 28785981) plus the DDMORE
-  bundle metadata. A side-by-side comparison against the full
+- **Original publication PDF was not on disk when this model was
+  built.** The model’s `description`, `reference`, and `population`
+  fields are populated from the PubMed abstract (PMID 28785981) plus the
+  DDMORE bundle metadata. A side-by-side comparison against the full
   publication’s parameter table or a published NCA summary is not part
   of this vignette’s scope; the validation here is the F.2
   bundle-self-consistency check plus a comparison against the abstract’s

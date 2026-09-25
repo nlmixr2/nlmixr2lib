@@ -1299,7 +1299,7 @@ stopifnot(abs(cl100 - 277) < 2)
 
 ## Assumptions and deviations
 
-### Weight allometry (operator ruling, sidecar request-001 q2)
+### Weight allometry (maintainer ruling)
 
 Weight was **not** a covariate of the estimated model: “Weight was not
 tested as a covariate because of the limited range in the analysis data
@@ -1422,8 +1422,7 @@ stopifnot(
     allometric exponent on a volume predicts a *larger* central volume
     in a smaller subject, which is physiologically backwards and
     contradicts the paper’s own paediatric simulations. The sign is
-    treated as a typesetting error, per operator ruling (sidecar
-    `oare_PMC10339692` request-001 q2 = A).
+    treated as a typesetting error, per maintainer ruling.
 
 3.  **`e_wt_q = 0.75` and `e_wt_vp = 1` are not printed anywhere in the
     paper.** The paper refers to “weight-based allometric scaling
@@ -1431,7 +1430,7 @@ stopifnot(
     The standard allometric exponents are assumed so that the paediatric
     distribution kinetics behind Figure 5 can be simulated at all.
 
-    The operator ruling attached a condition: keep these two exponents
+    The maintainer ruling attached a condition: keep these two exponents
     only if the encoded model reproduces the paper’s own answer keys.
     **It does** – all eleven Table S3 bands reproduce within 7.5%
     (median -3.1%), the Table S2 adult references within 5.4%, the

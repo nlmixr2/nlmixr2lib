@@ -460,8 +460,8 @@ sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cohort_label)
 
-# Defensive time-zero record (per pknca-recipes.md): guarantee a Cc = 0
-# row at t = 0 per (id, cohort_label) so PKNCA can anchor AUC.
+# Defensive time-zero record: guarantee a Cc = 0 row at t = 0 per
+# (id, cohort_label) so PKNCA can anchor AUC.
 sim_nca <- dplyr::bind_rows(
   sim_nca,
   sim_nca |>
@@ -588,18 +588,17 @@ the source paper attributes to the interconversion mechanism.
   BSA-normalised) and was extended in
   `inst/references/covariate-columns.md` to cover both creatinine-based
   and tracer-measured GFR (iohexol, inulin, 99mTc-DTPA, 51Cr-EDTA), per
-  the standing decision recorded in this task’s sidecar response 001
-  (2026-06-17). The packaged covariateData entry records
-  `source_name = 'CLiohexol'` and flags the iohexol-tracer assay in
-  `notes`.
+  a standing maintainer decision. The packaged covariateData entry
+  records `source_name = 'CLiohexol'` and flags the iohexol-tracer assay
+  in `notes`.
 
 - **FU registered as a new canonical covariate column.** Per-subject
   fraction unbound of the parent drug in plasma (measured by
   ultrafiltration) was not in the covariate register before this
   extraction. The `FU` canonical was added to
   `inst/references/covariate-columns.md` (in the protein-binding cluster
-  after `TPRO`) with Hamren 2008 as the founding example, per the
-  operator decision in sidecar response 001.
+  after `TPRO`) with Hamren 2008 as the founding example, per a
+  maintainer decision.
 
 - **`kbm` and `kicv` registered as new canonical paper-mechanistic
   parameters.** Hamren 2008’s biliary-excretion rate constant `kbm` and
@@ -607,7 +606,7 @@ the source paper attributes to the interconversion mechanism.
   clash) were not in `inst/references/parameter-names.md` before this
   extraction. Both were registered as new canonical paper-named
   parameters (under the `kint` cluster) with Hamren 2008 as the founding
-  example, per the operator decision in sidecar response 001.
+  example, per a maintainer decision.
 
 - **Per-subject FU and SEXF replaced with cohort-typical values in the
   virtual cohort.** The source paper records subject-level FU
@@ -645,9 +644,9 @@ the source paper attributes to the interconversion mechanism.
   `Hamren 2008 tesaglitazar erratum` and a BJCP corrections-feed scan
   returned no corrections as of the extraction date (2026-06-20).
 
-- **No NONMEM control stream on disk.** The source PDF + its trimmed
-  markdown companion are the only artefacts available; no `.mod` /
-  `.ctl` / `.lst` is supplied. All parameter values are sourced from
-  Table 2 of the main publication. The ADVAN6 (general nonlinear
-  kinetics) subroutine was used in the original NONMEM VI fit (Methods
-  ‘Data analysis’).
+- **No NONMEM control stream on disk.** The source PDF + the text
+  extracted from it are the only artefacts available; no `.mod` / `.ctl`
+  / `.lst` is supplied. All parameter values are sourced from Table 2 of
+  the main publication. The ADVAN6 (general nonlinear kinetics)
+  subroutine was used in the original NONMEM VI fit (Methods ‘Data
+  analysis’).

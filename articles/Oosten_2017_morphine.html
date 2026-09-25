@@ -3176,8 +3176,7 @@ is the cheapest check that the partition is transcribed correctly.</p>
 <span>  <span class="va">args</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    object <span class="op">=</span> <span class="va">mod</span>, events <span class="op">=</span> <span class="va">d</span>, omega <span class="op">=</span> <span class="cn">NA</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
 <span>    <span class="co"># rxode2's automatic ODE -&gt; linCmt conversion can corrupt the dvid mapping</span></span>
-<span>    <span class="co"># for multi-output models; disable it (see known-vignette-failure-patterns</span></span>
-<span>    <span class="co"># pattern 5b).</span></span>
+<span>    <span class="co"># for multi-output models; disable it.</span></span>
 <span>    useLinCmt <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span><span class="op">)</span> <span class="va">args</span><span class="op">$</span><span class="va">params</span> <span class="op">&lt;-</span> <span class="va">params</span></span>
@@ -3457,12 +3456,12 @@ ratio is invariant to the absorption rate constant.</caption>
 <span><span class="co">#&gt; 2 Oral extended release   0.0547  0.155   1.64e- 1</span></span>
 <span><span class="co">#&gt; 3 Oral immediate release  0.0594  0.160   1.64e- 1</span></span>
 <span></span>
-<span><span class="co"># Deterministic typical-value quantities, so a tight bound is correct here (see</span></span>
-<span><span class="co"># known-vignette-failure-patterns pattern 11 vs 12). Realised maximum is 0.21%,</span></span>
-<span><span class="co"># from rounding the published ratios to three significant figures. The bound</span></span>
-<span><span class="co"># can still go red: encoding the Table 3 metabolic fractions 0.573 / 0.104</span></span>
-<span><span class="co"># instead of the Results-text 0.57 / 0.10 moves the subcutaneous M6G:morphine</span></span>
-<span><span class="co"># ratio from 1.95 to 2.03, a 4.1% deviation (see Errata).</span></span>
+<span><span class="co"># Deterministic typical-value quantities, so a tight bound is correct here.</span></span>
+<span><span class="co"># Realised maximum is 0.21%, from rounding the published ratios to three</span></span>
+<span><span class="co"># significant figures. The bound can still go red: encoding the Table 3</span></span>
+<span><span class="co"># metabolic fractions 0.573 / 0.104 instead of the Results-text 0.57 / 0.10</span></span>
+<span><span class="co"># moves the subcutaneous M6G:morphine ratio from 1.95 to 2.03, a 4.1%</span></span>
+<span><span class="co"># deviation (see Errata).</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dev</span><span class="op">$</span><span class="va">d_m3g_m</span>, <span class="va">dev</span><span class="op">$</span><span class="va">d_m6g_m</span>, <span class="va">dev</span><span class="op">$</span><span class="va">d_m3g_m6g</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="mass-balance-gates">Mass-balance gates<a class="anchor" aria-label="anchor" href="#mass-balance-gates"></a>
@@ -3648,8 +3647,7 @@ truncated by the authors).</p>
 <span>  <span class="co"># 48 h is 15-23 morphine half-lives and ~13 metabolite half-lives for a</span></span>
 <span>  <span class="co"># typical subject, so auclast is within a rounding error of aucinf while the</span></span>
 <span>  <span class="co"># tail stays well clear of the solver noise floor that a 96 h window reaches</span></span>
-<span>  <span class="co"># for the fastest-clearing subjects (pattern 11 of</span></span>
-<span>  <span class="co"># known-vignette-failure-patterns).</span></span>
+<span>  <span class="co"># for the fastest-clearing subjects.</span></span>
 <span>  <span class="va">times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">12.5</span>, <span class="fl">24</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">48</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">doses</span> <span class="op">&lt;-</span> <span class="va">subj</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="va">amt</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="va">cmt_dose</span><span class="op">)</span></span>

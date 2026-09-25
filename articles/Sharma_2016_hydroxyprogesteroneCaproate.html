@@ -3260,7 +3260,7 @@ physiologically plausible Cmax / Cmin / AUC0-7 values.</p>
 <span></span>
 <span><span class="co"># Guarantee a time = last_dose_time row per (id, cohort); rxode2 emits</span></span>
 <span><span class="co"># observation rows at every requested time, but a defensive bind_rows()</span></span>
-<span><span class="co"># is the standard PKNCA recipe (see references/pknca-recipes.md).</span></span>
+<span><span class="co"># is the standard PKNCA recipe.</span></span>
 <span><span class="va">nca_input</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_input</span>,</span>
 <span>  <span class="va">nca_input</span> <span class="op">|&gt;</span></span>

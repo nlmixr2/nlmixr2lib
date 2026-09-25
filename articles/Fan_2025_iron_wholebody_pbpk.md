@@ -848,22 +848,22 @@ well as here.
     three columns and the paper never says which was used. The
     **iron-adequate** column is used here, as the reference
     physiological state conventionally used for cross-species scaling
-    (operator ruling, sidecar q1 = B). This choice propagates into
-    *both* the rat and the human file: `QE(human)` would be 1.04e-2 L/h
-    from the iron-deficient column instead of the 6.00e-3 L/h used here,
-    a 1.7-fold difference, and `kp_liver` for the unmeasured-tissue
+    (maintainer ruling). This choice propagates into *both* the rat and
+    the human file: `QE(human)` would be 1.04e-2 L/h from the
+    iron-deficient column instead of the 6.00e-3 L/h used here, a
+    1.7-fold difference, and `kp_liver` for the unmeasured-tissue
     inheritance would be 9.38 rather than 18.11. Rat and human
     predictions would therefore shift if the iron-deficient column was
     in fact the authors’ basis - which is arguable, since both
     validation cohorts had iron-deficiency anaemia.
 2.  **The rat’s `mtt_rbc` and `q_bone_rbc`.** Neither is reported for
     the rat anywhere on disk, yet both are load-bearing for the bone and
-    spleen profiles of Figure 5. Per the operator ruling (sidecar q2
-    = B) they were obtained by applying the paper’s **own** Eq. (9)
-    allometry rather than by copying the printed mouse values. The rat
-    red-cell lifespan is derived from the paper’s two lifespan anchors -
-    mouse iron-adequate `TRBC` = 34.44 h at 0.025 kg and human `TRBC` =
-    120 days at 73 kg - which fix an exponent
+    spleen profiles of Figure 5. Per a maintainer ruling they were
+    obtained by applying the paper’s **own** Eq. (9) allometry rather
+    than by copying the printed mouse values. The rat red-cell lifespan
+    is derived from the paper’s two lifespan anchors - mouse
+    iron-adequate `TRBC` = 34.44 h at 0.025 kg and human `TRBC` = 120
+    days at 73 kg - which fix an exponent
     `b_T = log(2880 / 34.44) / log(73 / 0.025)` = 0.5547, evaluated at
     the paper’s rat weight of 0.345 kg to give 147.7 h; `q_bone_rbc`
     then follows from Eq. (9) with b = 0.75, giving 6.47e-4 L/h. The
@@ -873,13 +873,13 @@ well as here.
     paper describes the limb only in prose - “the FCM absorption rate KA
     was incorporated as the spleen blood flow rate” - and the control
     stream in the supplement is the mouse, pure-iron run, so it contains
-    no such limb. Per the operator ruling (sidecar q3 = A) the released
-    iron is routed into the **spleen** compartment, on the physiological
-    grounds that iron-carbohydrate colloids are cleared by
-    reticuloendothelial macrophages, of which the spleen is the
-    principal accessible site in this structure. Routing it straight to
-    plasma instead would bypass the macrophage step the limb exists to
-    represent. The paper does not state which is intended.
+    no such limb. Per a maintainer ruling the released iron is routed
+    into the **spleen** compartment, on the physiological grounds that
+    iron-carbohydrate colloids are cleared by reticuloendothelial
+    macrophages, of which the spleen is the principal accessible site in
+    this structure. Routing it straight to plasma instead would bypass
+    the macrophage step the limb exists to represent. The paper does not
+    state which is intended.
 
 Beyond those three, one finding about the paper matters more than any of
 them for a user deciding what these files are good for.

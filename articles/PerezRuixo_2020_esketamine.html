@@ -3880,8 +3880,7 @@ row-for-row with Table 4.</p>
 <span></span>
 <span><span class="co"># Headers are bound to columns BY NAME via dplyr::rename() so the labels are</span></span>
 <span><span class="co"># correct regardless of pivot_wider's column order (PKNCA emits auclast before</span></span>
-<span><span class="co"># cmax). See the extract-literature-model skill, vignette-template.md</span></span>
-<span><span class="co"># § "Table column headers".</span></span>
+<span><span class="co"># cmax).</span></span>
 <span><span class="va">pknca_combined</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">analyte</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
@@ -4184,10 +4183,10 @@ is modulated by the race and age covariates.</p>
 <p>Independent reproduction attempts: Alan Maloney encountered exactly
 the same noresketamine AUC0-24 reproduction failure (and parent +
 metabolite Cmax success) while implementing the same model from Table 3
-alone – this finding was the principal reason for the operator note in
-this extraction task. Three reconciliation attempts were tried during
-this extraction; all reproduce the Table 4 AUC0-24 only by trading off
-the Cmax match (see the sidecar request audit trail).</p>
+alone – this finding was the principal reason the maintainers flagged
+this discrepancy when the model was built. Three reconciliation attempts
+were tried during this extraction; all reproduce the Table 4 AUC0-24
+only by trading off the Cmax match.</p>
 <p><strong>Downstream usage advice.</strong> Users who want to
 approximate the published noresketamine AUC0-24 can multiply
 <code>Cc_snk</code> by the baseline

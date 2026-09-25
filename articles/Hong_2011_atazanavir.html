@@ -3122,7 +3122,7 @@ sizes sufficient for vignette-time replication.</p>
 <span>                  <span class="va">treatment</span>, <span class="va">dose_atv_mg</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Observations: one row per observation time per subject (cmt = "central"</span></span>
-<span>  <span class="co"># references the ODE state name per known-vignette-failure-patterns.md #2).</span></span>
+<span>  <span class="co"># references the ODE state name).</span></span>
 <span>  <span class="va">obs_rows</span> <span class="op">&lt;-</span> <span class="va">subj</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">obs_times</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -3148,7 +3148,7 @@ sizes sufficient for vignette-time replication.</p>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="st">"Adult"</span>,      <span class="fl">50</span>, <span class="fl">90</span>, <span class="fl">22</span>, <span class="fl">64</span>, <span class="fl">300</span>, id_offset <span class="op">=</span> <span class="fl">1500L</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Disjoint-ID assertion (regression guard per template guidance)</span></span>
+<span><span class="co"># Disjoint-ID assertion (regression guard)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">

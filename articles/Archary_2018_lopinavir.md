@@ -386,8 +386,7 @@ documented here so reviewers can reconcile the model with the source.
 3.  **Logit-transformed F replaced with log-normal CL.** Because
     IIV-on-F maps to IIV-on-CL/F when F is the dominant source of
     variability (paper’s interpretation), the simpler log-normal form on
-    `lcl` is used. CV-to-omega conversion: `omega^2 = log(1 + CV^2)`
-    (skill `naming-conventions.md`).
+    `lcl` is used. CV-to-omega conversion: `omega^2 = log(1 + CV^2)`.
 4.  **Single proportional RUV in place of piecewise.** The paper reports
     two proportional RUV terms split at 5 h post-dose (37.7% \< 5 h,
     27.2% \>= 5 h) plus a 15.5% BSV on the RUV magnitude (Results page

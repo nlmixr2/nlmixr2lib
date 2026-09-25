@@ -3214,7 +3214,7 @@ covariates enter either model, so no covariate columns are needed.</p>
 <code class="sourceCode R"><span><span class="co"># Solve `$simulationModel` rather than the rxUi object. The piperacillin model</span></span>
 <span><span class="co"># has two endpoints reading from different ODE states; on the rxUi solve path</span></span>
 <span><span class="co"># the second endpoint's state is misclassified as an input parameter and</span></span>
-<span><span class="co"># rxSolve aborts. See references/known-vignette-failure-patterns.md pattern 5b.</span></span>
+<span><span class="co"># rxSolve aborts.</span></span>
 <span><span class="va">sim_pip</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">pip</span><span class="op">$</span><span class="va">simulationModel</span>, <span class="va">ev_pip</span>,</span>
 <span>                           keep <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sim_taz</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">taz</span><span class="op">$</span><span class="va">simulationModel</span>, <span class="va">ev_taz</span>,</span>

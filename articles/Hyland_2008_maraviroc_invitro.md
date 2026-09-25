@@ -698,7 +698,8 @@ reported, so no perpetrator model is extracted.
   whole-body physiology and the partition coefficients that would turn a
   `CLint` into a systemic clearance are not printed anywhere in the
   paper.
-- **Task metadata correction.** The dispatching task block recorded the
-  publication year as `2026-06-22`; the article is Br J Clin Pharmacol
-  2008; 66(4):498-507, received 8 February 2008, accepted 1 April 2008
-  and published OnlineEarly 22 July 2008. The extraction uses 2008.
+- **Metadata correction.** The metadata this model was built from
+  recorded the publication year as `2026-06-22`; the article is Br J
+  Clin Pharmacol 2008; 66(4):498-507, received 8 February 2008, accepted
+  1 April 2008 and published OnlineEarly 22 July 2008. The extraction
+  uses 2008.

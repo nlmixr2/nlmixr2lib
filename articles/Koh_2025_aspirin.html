@@ -3175,7 +3175,7 @@ by drawing the random effects explicitly and computing each subject’s
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20250822</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">MW</span>   <span class="op">&lt;-</span> <span class="fl">180.157</span>      <span class="co"># g/mol, acetylsalicylic acid</span></span>
-<span><span class="va">NARM</span> <span class="op">&lt;-</span> <span class="fl">200</span>          <span class="co"># subjects per arm (skill cap)</span></span>
+<span><span class="va">NARM</span> <span class="op">&lt;-</span> <span class="fl">200</span>          <span class="co"># subjects per arm (cohort cap)</span></span>
 <span></span>
 <span><span class="va">sim_ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model</a></span><span class="op">(</span><span class="va">ui</span>, <span class="op">-</span><span class="fu">dur</span><span class="op">(</span><span class="va">presystemic</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">om</span>     <span class="op">&lt;-</span> <span class="va">ui</span><span class="op">$</span><span class="va">omega</span></span>
@@ -3721,8 +3721,7 @@ the same simulation.</p>
 </h2>
 <p>The paper does not publish an NCA table, but this model has two exact
 mass-balance identities that make far stricter tests than a median
-comparison (see <code>references/pknca-recipes.md</code> for the general
-recipes):</p>
+comparison:</p>
 <ul>
 <li>
 <strong>ASA.</strong> Systemic ASA is eliminated only by conversion

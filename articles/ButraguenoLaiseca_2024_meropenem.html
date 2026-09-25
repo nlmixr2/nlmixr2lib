@@ -3742,8 +3742,7 @@ rather than merely being consistent with them.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Algebraic identities: exact to solver precision, so a tight bound is correct</span></span>
-<span><span class="co"># here (both sides use the same drawn parameters -- see the note in CLAUDE.md</span></span>
-<span><span class="co"># on when a tight all() bound is and is not appropriate).</span></span>
+<span><span class="co"># here (both sides use the same drawn parameters).</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">ratio_check</span><span class="op">$</span><span class="va">`Cpost / Cpre`</span> <span class="op">-</span> <span class="va">ratio_check</span><span class="op">$</span><span class="va">expected_post</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-8</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">ratio_check</span><span class="op">$</span><span class="va">`Ceffl / Cpre`</span> <span class="op">-</span> <span class="va">ratio_check</span><span class="op">$</span><span class="va">expected_effl</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-8</span></span>
@@ -4292,8 +4291,8 @@ CL.</caption>
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Both sides of this comparison use the same drawn parameters, so the residual</span></span>
 <span><span class="co"># difference is pure numerical (trapezoidal + extrapolation) error and a tight</span></span>
-<span><span class="co"># bound over ALL subjects is the correct assertion here -- see the CLAUDE.md</span></span>
-<span><span class="co"># note distinguishing this case from a cohort-extreme assertion.</span></span>
+<span><span class="co"># bound over ALL subjects is the correct assertion here, unlike a</span></span>
+<span><span class="co"># cohort-extreme assertion.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">nca_wide</span><span class="op">$</span><span class="va">pct_diff</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_wide</span> <span class="op">|&gt;</span></span>

@@ -997,7 +997,7 @@ It is not a published quantity.
 reserved for drug concentrations, and these models have no PK layer and
 no ODE – the output is a probability. This matches the existing
 `Chen_2021_lorlatinib_*` family in nlmixr2lib. `prob_<endpoint>` is
-itself a canonical observation form (a maintainer-ratified convention,
+itself a canonical observation form (maintainer ruling 2026-09-11,
 validated by `probOutputRegex`), so this is a convention the models
 follow rather than a deviation they take, and
 [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)

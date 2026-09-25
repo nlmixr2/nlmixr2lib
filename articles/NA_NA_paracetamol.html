@@ -3439,9 +3439,9 @@ regressor).</p>
 <span><span class="co">#&gt; mechanistic-sanity checks above are sufficient for the</span></span>
 <span><span class="co">#&gt; convention checks the lint requires.</span></span></code></pre></div>
 <p>The bundle’s full simulated dataset is not redistributed with the
-nlmixr2lib package (size and license considerations); operators with
-access to the DDMORE Foundation Model Repository can download
-DDMODEL00000228 to reproduce the F.2 overlay directly.</p>
+nlmixr2lib package (size and license considerations); users with access
+to the DDMORE Foundation Model Repository can download DDMODEL00000228
+to reproduce the F.2 overlay directly.</p>
 </div>
 </div>
 <div class="section level2">
@@ -3470,12 +3470,12 @@ fifteen compartments use mechanism-specific names
 <code>jejunum_glu</code>, <code>ileum_glu</code>,
 <code>cumloss_apap</code>, <code>glp1</code>, <code>gip</code>) that are
 not in the canonical compartment-name register
-(<code>.claude/skills/extract-literature-model/references/compartment-names.md</code>).
-The model’s mechanism (a paracetamol probe co-administered with a
-glucose load and resulting incretin response) is genuinely
-multi-substance and does not fit the single-substance canonical scheme;
-renaming the glucose-arm compartments to <code>central</code> / etc.
-would collide with the paracetamol-arm canonical <code>central</code> /
+(<code>inst/references/compartment-names.md</code>). The model’s
+mechanism (a paracetamol probe co-administered with a glucose load and
+resulting incretin response) is genuinely multi-substance and does not
+fit the single-substance canonical scheme; renaming the glucose-arm
+compartments to <code>central</code> / etc. would collide with the
+paracetamol-arm canonical <code>central</code> /
 <code>peripheral1</code>. <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> warns on
 each of these but the warnings are accepted as inherent to the
 mechanism.</li>
@@ -3519,8 +3519,8 @@ numerically negligible relative to the APAPBL &gt; 6 uM baseline.</li>
 Self- consistency against the bundle’s simulated dataset is the only
 available numeric anchor; the linked publication that the bundle states
 “the uploaded model conforms to” is not identified in the bundle’s RDF
-or accommodations text. Operators with access to the DDMORE Foundation
-Model Repository can recover the linked publication via the DDMORE web
+or accommodations text. Users with access to the DDMORE Foundation Model
+Repository can recover the linked publication via the DDMORE web
 interface, but the bundle on disk does not provide that pointer.</li>
 </ul>
 </div>

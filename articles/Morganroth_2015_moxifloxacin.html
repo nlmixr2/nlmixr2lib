@@ -2898,7 +2898,7 @@ develop a population PK model; moxifloxacin PK is reported only as Table
 model together with a typical-value 1-compartment oral PK driver derived
 from those NCA summary statistics, exclusively as a simulation aid – see
 the Assumptions and deviations section for the limitations and the
-operator sidecar decision on the missing random-effects variance
+maintainers’ decision on the missing random-effects variance
 components.</p>
 </div>
 <div class="section level2">
@@ -3017,7 +3017,7 @@ is NCA-derived (Table 1).</td>
 <td><code>DDQTcF = intercept + slope * Cc</code></td>
 <td>–</td>
 <td>Morganroth 2015 Equation 1 (fixed-effect part; random-effect terms
-omitted per sidecar-001 option C)</td>
+omitted per maintainer decision)</td>
 </tr>
 </tbody>
 </table>
@@ -3350,12 +3350,12 @@ parameters from this file.</li>
 </ol>
 </li>
 <li>
-<strong>Missing IIV / residual-error variances (sidecar-001, option
-C).</strong> Morganroth 2015 Methods “Statistical plan” Equation 1
-defines the linear model with subject random effects s_ij, d_ij as
+<strong>Missing IIV / residual-error variances (maintainer
+decision).</strong> Morganroth 2015 Methods “Statistical plan” Equation
+1 defines the linear model with subject random effects s_ij, d_ij as
 BVN(0, Sigma) and additive residual e_ij ~ N(0, sigma^2), but the paper
-does not numerically report Sigma or sigma. Per operator sidecar-001
-option C, the packaged model omits IIV entirely (no <code>eta*</code>
+does not numerically report Sigma or sigma. Per the maintainers’
+decision, the packaged model omits IIV entirely (no <code>eta*</code>
 parameters on intercept or slope) and encodes a small placeholder
 additive residual SD of 1 ms so that rxode2’s residual-error machinery
 has a value to plug in. <strong>The paper’s own historical bootstrap

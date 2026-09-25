@@ -444,9 +444,9 @@ kg_trace_df |>
   Discussion paragraph-3 values exactly (to two decimal places), so the
   model is faithful to Table 3 and to the paper’s narrative claims; the
   discrepancy with the Table 4 absolute numbers cannot be reconciled
-  from on-disk sources alone (the trimmed PDF does not decode Figure 3,
-  and Additional files 3-4 are not present). This is documented here
-  rather than tuned away.
+  from on-disk sources alone (the text extracted from the PDF does not
+  decode Figure 3, and Additional files 3-4 are not present). This is
+  documented here rather than tuned away.
 - **Population n_observations is unreported.** Back 2018 does not state
   the per-subject sample count beyond the protocol-defined predose + 12
   post-dose samples per occasion. The `population$n_observations` field

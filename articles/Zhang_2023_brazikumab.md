@@ -723,8 +723,8 @@ bind_rows(
   the covariate `IL22` (baseline serum interleukin-22, pg/mL, general
   scope; sibling of `IL6` but a biologically distinct cytokine) and the
   parameter `iplac` (constant fractional placebo inhibition of an
-  indirect-response production rate). Both were ratified by the operator
-  before the model files were written.
+  indirect-response production rate). Both were ratified by the
+  maintainers before the model files were written.
 - **Screened-but-unretained covariates.** Baseline faecal calprotectin,
   IL-17, lipocalin-2, and MIP-3-alpha were screened as candidate
   biomarkers, and body weight, BMI, age, and race were screened in the

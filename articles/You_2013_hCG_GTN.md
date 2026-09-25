@@ -39,9 +39,9 @@ attributable to MTX-insensitive tumour cells). Recast as an
 indirect-response / turnover model, the rate constants identify as
 `kout = K`, `kin = K * hCGres`, `rbase = hCGres`, justifying the
 canonical `lkout` / `lrbase` parameter names. Validation therefore
-follows the endogenous-validation pattern (steady-state,
-perturbation-recovery, analytical identity) rather than the standard
-PKNCA recipe.
+follows the package’s validation pattern for endogenous models
+(steady-state, perturbation-recovery, analytical identity) rather than
+the standard PKNCA recipe.
 
 ## Population
 

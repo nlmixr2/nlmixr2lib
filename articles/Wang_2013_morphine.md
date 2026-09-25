@@ -40,8 +40,8 @@ subject with a `POP` value that codes the age stratum:
   `ADOLESCENT = 0`, the implicit baseline).
 
 Body weights in the bundle’s simulated dataset span 0.6 kg (term
-neonate) to 85 kg (adult). The original Wang 2013 PDF was not on disk
-under `mab_human_consensus/literature/` at extraction time, so per-study
+neonate) to 85 kg (adult). The original Wang 2013 PDF was not on disk in
+the maintainers’ literature mirror at extraction time, so per-study
 counts, sex / race breakdowns, and indication-specific information could
 not be cross-checked against the publication; everything in this section
 comes from the abstract (PMID 23754691) and the `.mod` \$INPUT comments.
@@ -353,12 +353,11 @@ confirm the trajectories track the recorded `CONC` values.
 
 ``` r
 
-bundle_csv <- system.file("modeldb", package = "nlmixr2lib") # not used; explicit path below
-sim_csv <- file.path(
-  "/home/bill/github/mab_human_consensus/literature/from_people/ddmore",
-  "ddmore_scraping/269/Simulated_DataModel1_Morphine.csv"
-)
-self_consistency_available <- file.exists(sim_csv)
+# The DDMORE bundle is not shipped with the package. Maintainers who hold a
+# copy point NLMIXR2LIB_LITERATURE_DIR at it; otherwise the check is skipped.
+lit_dir <- Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", "")
+sim_csv <- file.path(lit_dir, "ddmore_scraping/269/Simulated_DataModel1_Morphine.csv")
+self_consistency_available <- nzchar(lit_dir) && file.exists(sim_csv)
 ```
 
 ``` r
@@ -486,23 +485,22 @@ rather than a miscoded equation.
 - **Model I only.** The DDMORE bundle ships two executables for this
   publication: Model I (morphine alone, packaged here) and Model II
   (joint morphine + M3G metabolite PK with separate clearance pathways).
-  The task assigned a singular target filename `Wang_2013_morphine.R`;
-  an operator follow-up confirmed Model I is in scope. Anyone needing
-  the parent + M3G joint model should look at
-  `ddmore_scraping/269/Executable_ModelII_MM3G.mod` directly – it is
-  structurally a 3-compartment model (morphine 2-comp + M3G 1-comp) with
+  The extraction targeted a single file, `Wang_2013_morphine.R`, and a
+  maintainer follow-up confirmed Model I is in scope. Anyone needing the
+  parent + M3G joint model should look at the DDMODEL00000269 bundle’s
+  `Executable_ModelII_MM3G.mod` directly – it is structurally a
+  3-compartment model (morphine 2-comp + M3G 1-comp) with
   metabolic-pathway clearances and would warrant a separate
   `Wang_2013b_morphine.R` extraction.
 - **Adult oral-bioavailability arm.** The `.mod` `$PK` block applies
   `F1 = 0.88` only when `POP = 3` (adults). The publication abstract
   does not describe the route of administration in detail, and the
-  original Wang 2013 PDF was not on disk under
-  `mab_human_consensus/literature/` at extraction time, so the rationale
-  for the 0.88 reduction in adults could not be cross-checked against
-  the paper text. The model here preserves the `.mod`’s F1 logic
-  verbatim (`f(central) = 0.88` whenever `CHILD = 0` AND
-  `ADOLESCENT = 0`) and exposes the value as `e_age_adult_f` so it is
-  overridable.
+  original Wang 2013 PDF was not on disk in the maintainers’ literature
+  mirror at extraction time, so the rationale for the 0.88 reduction in
+  adults could not be cross-checked against the paper text. The model
+  here preserves the `.mod`’s F1 logic verbatim (`f(central) = 0.88`
+  whenever `CHILD = 0` AND `ADOLESCENT = 0`) and exposes the value as
+  `e_age_adult_f` so it is overridable.
 - **POP encoding.** The source data column `POP` (1 = 0-3 yr, 2 = 6-15
   yr, 3 = 18-36 yr) is decomposed into the canonical binary indicators
   `CHILD` (POP = 1) and `ADOLESCENT` (POP = 2). Adults are the implicit
@@ -514,9 +512,7 @@ rather than a miscoded equation.
   `$ERROR` block sets `Y = LOG(F) + ERR(1) * W` with
   `$SIGMA EPS1 FIXED = 1` and `W = THETA(9) = 0.432`. NONMEM “additive
   on log-scale with SIGMA fixed at 1” maps to proportional residual
-  error in nlmixr2’s linear space with `propSd = 0.432` (see
-  `naming-conventions.md` Section “NONMEM -\> nlmixr2 syntax
-  translation”).
+  error in nlmixr2’s linear space with `propSd = 0.432`.
 - **Real vs simulated executable.** The `Output_real_*.lst` reports an
   additional `EPS(2)` term gated by
   `IF (TIME.GT.1900.AND.FLAG.EQ.{1,2})` to handle a study-specific assay
@@ -534,10 +530,9 @@ rather than a miscoded equation.
   representative population. The “Virtual cohort” section above builds a
   larger cohort spanning the publication’s reported BW range for the VPC
   and PKNCA panels.
-- **External cross-check.** No publication PDF is on disk under
-  `mab_human_consensus/literature/` at extraction time, so per-subject
+- **External cross-check.** No publication PDF was on disk in the
+  maintainers’ literature mirror at extraction time, so per-subject
   parameter estimates and tabulated NCA values from the publication
   could not be compared against the simulation. The F.2 self-consistency
-  check above is the substitute mandated by
-  `references/ddmore-source.md` Section “Validation strategy by model
-  type” for DDMORE-source models without an on-disk publication.
+  check above is the standard substitute validation for DDMORE-source
+  models without an on-disk publication.

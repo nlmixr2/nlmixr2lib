@@ -836,7 +836,7 @@ auc24 <- pop_sim |>
 
 stopifnot(
   # Assert on the CENTRE and on ROBUST QUANTILES, never on the extremes of a
-  # random cohort (see CLAUDE.md). The typical-value AUC0-24 must sit close to
+  # random cohort. The typical-value AUC0-24 must sit close to
   # the cohort median, because all eight sampled parameters are lognormal with
   # the Table 2 value as the median.
   abs(median(auc24$auc) / cum_auc(s_mc$time, s_mc$Cpif, 24) - 1) < 0.10,

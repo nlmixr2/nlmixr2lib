@@ -371,8 +371,7 @@ which shows heavier subjects (\>100 kg) exposed to ~25% lower AUC.
   author (Suleiman AA) and same authorship group (Khatri, Minocha,
   Othman), same drug, and the 2018 phase I-II cohort is a strict subset
   of the 2019 integrated phase I-III cohort used to fit the 2019 model.
-  This substitution was authorised via sidecar requests 001/002 (option
-  C).
+  This substitution was authorised by the maintainers.
 
 - **CL-Vc covariance (0.07182, correlation 39%) is non-paper
   provenance.** Suleiman 2018 Sect. 3.2 states “introducing a

@@ -2982,7 +2982,7 @@ Table 2 (page 3723).</p>
 <td>
 <code>e_wt_cl</code> (exponent of WT/1.195 on CL)</td>
 <td>fixed(1.0)</td>
-<td>Imputed (operator sidecar-001 Q2=B); see Errata</td>
+<td>Imputed (maintainer decision); see Errata</td>
 </tr>
 <tr class="even">
 <td>
@@ -3443,27 +3443,26 @@ only reports the population terminal half-life.</caption>
 </h2>
 <ul>
 <li><p><strong>Body-weight effect on CL – imputed linear scaling at the
-cohort-mean reference (operator sidecar-001 Q2=B).</strong> Muller 2007
+cohort-mean reference (maintainer decision).</strong> Muller 2007
 Results page 3724 and Figure 3 state that body weight was retained on CL
 in the final model (P &lt; 0.01, improved fit), but neither the
 functional form (linear / power / allometric) nor the coefficient is
-printed in the paper. Per the operator’s response to the dispatch-time
-sidecar question 2 (option B), the packaged model encodes CL = CL_ref *
-(WT / 1.195 kg)^1, with the reference weight set to the cohort mean
-(Muller 2007 Table 1) and the exponent fixed at 1. CL at the reference
-subject is 0.103 L/h (Table 2). This is a defensible imputation that
-matches the paper’s qualitative claim “CL increased significantly with
-increasing body weight” and reproduces the reference-subject CL exactly,
-but the exponent itself is not from the paper.</p></li>
+printed in the paper. Per the maintainers’ decision, the packaged model
+encodes CL = CL_ref * (WT / 1.195 kg)^1, with the reference weight set
+to the cohort mean (Muller 2007 Table 1) and the exponent fixed at 1. CL
+at the reference subject is 0.103 L/h (Table 2). This is a defensible
+imputation that matches the paper’s qualitative claim “CL increased
+significantly with increasing body weight” and reproduces the
+reference-subject CL exactly, but the exponent itself is not from the
+paper.</p></li>
 <li><p><strong>IIV second-volume term assigned to V1 (central) – Table 2
-vs body text discrepancy (operator sidecar-001 Q1=A).</strong> Muller
-2007 has an internal inconsistency: Table 2 (page 3723) explicitly
-labels the row “Interindividual variability in V1” with V1 subscripted,
-and the Table 2 footnote defines V1 = central. The Results narrative
-(page 3723, right column) and the Discussion (page 3724, left column)
-each say IIV was on V2 (the peripheral compartment) – two separate
-places. Per the operator’s response to the dispatch-time sidecar
-question 1 (option A), the packaged model encodes IIV on V1 (the central
+vs body text discrepancy (maintainer decision).</strong> Muller 2007 has
+an internal inconsistency: Table 2 (page 3723) explicitly labels the row
+“Interindividual variability in V1” with V1 subscripted, and the Table 2
+footnote defines V1 = central. The Results narrative (page 3723, right
+column) and the Discussion (page 3724, left column) each say IIV was on
+V2 (the peripheral compartment) – two separate places. Per the
+maintainers’ decision, the packaged model encodes IIV on V1 (the central
 volume) as <code>etalvc ~ 0.39</code>. This matches the parameter
 estimates table; reviewers comparing against the paper’s narrative text
 should expect the table-vs-text discrepancy. A future erratum or

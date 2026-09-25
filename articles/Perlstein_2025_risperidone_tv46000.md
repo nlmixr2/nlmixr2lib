@@ -801,9 +801,8 @@ highest strengths above it shortly after dosing.
   is `V/FRMET` with FRMET fixed to 1, so `CLMO` and `VMO` are apparent
   values fitted to the measured 9-OH-risperidone concentrations and
   already absorb any mass conversion inside the disposition model. This
-  definition is in the Introduction, which the preprocessed
-  `_trimmed.md` companion of the source PDF strips; it was recovered
-  from the raw PDF.
+  definition is in the Introduction, which the text extracted from the
+  source PDF omits; it was recovered from the raw PDF.
 - **Injection volume is derived from the milligram dose.**
   `DOSE_TV46000_ML` is computed as `dose_mg / 360`, using the suspension
   strength implied by the four dose/volume pairs the paper prints. A

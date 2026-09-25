@@ -689,9 +689,9 @@ in the kidney. {.table}
   volume, in contrast to the neighbouring `K1p1c = Q1/Vp`. This is
   transcribed verbatim because it is what generated the published
   figures.
-- **`_trimmed.md` lost every equation.** The preprocessed markdown
-  companion of this paper contains 14 `formula-not-decoded` markers and
-  no equations at all. All 18 equations were recovered from the
+- **The extracted text lost every equation.** The markdown text
+  extracted from this paper contains 14 `formula-not-decoded` markers
+  and no equations at all. All 18 equations were recovered from the
   publisher’s rendered equation images in the EuropePMC
   `supplementaryFiles` payload and cross-checked against the deposited
   NONMEM control stream.

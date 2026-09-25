@@ -3609,7 +3609,7 @@ listed in the Errata.</p>
 <span><span class="co"># are partitioned per solver thread. The cohort below therefore differs between</span></span>
 <span><span class="co"># a 16-thread workstation and a 2-core CI runner, and no seed can make them</span></span>
 <span><span class="co"># agree. Every assertion downstream is written to hold for any cohort the model</span></span>
-<span><span class="co"># can produce -- see pattern 12 of known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260112</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">N_ARM</span>     <span class="op">&lt;-</span> <span class="fl">200L</span></span>

@@ -193,7 +193,7 @@ matched exactly.
 # solver thread, so a 2-core CI runner and a 16-thread workstation draw
 # different cohorts from identical source. Every assertion below is written to
 # hold for any cohort this model can produce (bounds checked at 2, 4 and 16
-# threads); see pattern 12 of the skill's known-vignette-failure-patterns.
+# threads).
 set.seed(20240811)
 
 n_arm     <- 200   # cap is 200 per arm
@@ -566,7 +566,7 @@ hl_med <- median(nca_tbl$PPORRES[nca_tbl$PPTESTCD == "half.life"], na.rm = TRUE)
 c(simulated_median_h = hl_med, published_median_h = 11.9,
   published_iqr = "8.8-18.4")
 #> simulated_median_h published_median_h      published_iqr 
-#> "13.8902379648417"             "11.9"         "8.8-18.4"
+#> "13.8902379648416"             "11.9"         "8.8-18.4"
 
 # Assert against the IQR the paper itself prints, not against a bound taken
 # from one run. Realised 14.05-14.96 h at 2/4/16 threads.

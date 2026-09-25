@@ -111,7 +111,7 @@ recent dose.
 # streams are partitioned per solver thread -- so this cohort is reproducible
 # on this machine and different on a machine with a different thread count.
 # Every assertion below is written to hold for any cohort the model can
-# produce; see pattern 12 of the known-vignette-failure-patterns reference.
+# produce.
 set.seed(20161207)
 
 DOSE_MG <- 150 # Table 2: every study gave 150 mg

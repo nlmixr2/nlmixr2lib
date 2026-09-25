@@ -28,7 +28,7 @@ study. The paper does not report a Hill coefficient, between-subject
 variability, or a residual-error structure. The Hill coefficient is
 fabricated at 1 (no cooperativity), and the residual SD is a
 placeholder; see “Assumptions and deviations” at the end of this
-vignette for the full list of operator-authorised deviations.
+vignette for the full list of maintainer-authorised deviations.
 
 ## Population
 
@@ -314,11 +314,11 @@ I vs simulated. {.table}
 ## Assumptions and deviations
 
 The Grzesk 2016 paper is an ex-vivo CRC study, not a popPK / popPD
-modelling study. The operator-authorised extraction (sidecar response
-001 to task `frompeople-731`) requested a Hill / Emax CRC submodel with
-paper-specific naming and explicit documentation of the ex-vivo /
-non-popPK scope. The following deviations and fabrications are required
-to fit the paper’s CRC content into the nlmixr2lib model-file schema:
+modelling study. The maintainers authorised this extraction and
+requested a Hill / Emax CRC submodel with paper-specific naming and
+explicit documentation of the ex-vivo / non-popPK scope. The following
+deviations and fabrications are required to fit the paper’s CRC content
+into the nlmixr2lib model-file schema:
 
 - **Hill coefficient fabricated at 1 (no cooperativity), fixed.** Grzesk
   2016 Methods describe the “classical pharmacometric van Rossum method”

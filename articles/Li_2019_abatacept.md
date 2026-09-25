@@ -640,9 +640,9 @@ re-reading the source alongside this model should be aware of:
   Covariates of the Full PPK Model”* — i.e. Table 1A is final but Table
   1B is explicitly the *full* model. Table 1B’s 11th row (CL_(MTX) =
   -0.0405, 95% CI crossing zero) is not present in the published
-  final-model covariate equation on p. 249. The operator decision for
-  this extraction was to treat Table 1B’s 10 non-MTX estimates as the
-  published final-model covariate values (matching the final-model
+  final-model covariate equation on p. 249. The maintainers’ decision
+  for this extraction was to treat Table 1B’s 10 non-MTX estimates as
+  the published final-model covariate values (matching the final-model
   equation exactly) and to drop CL_(MTX); the paper does not separately
   tabulate post-backward-elimination covariate estimates. If
   Bristol-Myers Squibb ever publishes a separate table of final-model

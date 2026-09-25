@@ -366,10 +366,10 @@ observer. {.table}
   inconsistency without surprise.
 - **No PKNCA validation.** This is a PD-only IRT model; NCA quantities
   (Cmax / Tmax / AUC / half-life) are not applicable. F.2 (Count /
-  Markov / IRT / dropout / TTE) substitutes from
-  `references/verification-checklist.md` apply, anchored on the
-  published numerical statements above (latent baselines, “\< 0.5 VAS
-  drop per 20 ng/mL”, “~1 VAS rise per 7 days”).
+  Markov / IRT / dropout / TTE) substitutes from the package’s
+  validation checklist apply, anchored on the published numerical
+  statements above (latent baselines, “\< 0.5 VAS drop per 20 ng/mL”,
+  “~1 VAS rise per 7 days”).
 - **Simplified formal observation.** The source NONMEM model is a mixed
   continuous + categorical likelihood: VAS (ITEM = 12) is a continuous
   additive-error observation, and all 8 other items (ITEM in 1, 2, 3, 5,
@@ -426,5 +426,5 @@ observer. {.table}
   on the morphine / time slopes). This nlmixr2lib model therefore
   exposes them all as `fixed()` in `ini()`.
 - **Sex split not reported.** Valitalo 2017 does not tabulate sex
-  distribution in the available trimmed source;
+  distribution in the available extracted text;
   `population$sex_female_pct = NA_real_`.

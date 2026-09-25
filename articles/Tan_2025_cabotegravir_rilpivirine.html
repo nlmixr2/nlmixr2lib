@@ -3663,7 +3663,7 @@ visit to visit.</p>
 <span><span class="co"># seed rxode2's simulation RNG, and rxode2's streams are partitioned per solver</span></span>
 <span><span class="co"># thread, so the etas differ between a 2-core CI runner and a 16-thread</span></span>
 <span><span class="co"># workstation. Every assertion downstream is written to hold for any cohort the</span></span>
-<span><span class="co"># model can produce (see known-vignette-failure-patterns.md pattern 12).</span></span>
+<span><span class="co"># model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20251030</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">N_MALE</span> <span class="op">&lt;-</span> <span class="fl">200L</span></span>

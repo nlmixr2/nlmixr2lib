@@ -96,7 +96,7 @@ below collects them in one place for review.
 | IIV CL/F (CV) | 53.1% | Table 2 full (final) model column (95% CI 44.8-61.1); omega^2 = log(1 + 0.531^2) |
 | IIV V/F (CV) | 54.8% | Table 2 full (final) model column (95% CI 41.2-65.9); omega^2 = log(1 + 0.548^2) |
 | IIV ka | n/a (none) | Results paragraph 4: tested and rejected (delta-2LL only -0.61 vs +6.63 entry threshold) |
-| `addSd` | fixed(0) | Results paragraph 4: “an additive-error model” – the additive SD value is NOT reported in the paper; placeholder per the operator’s general missing-RUV rule (see Errata) |
+| `addSd` | fixed(0) | Results paragraph 4: “an additive-error model” – the additive SD value is NOT reported in the paper; placeholder per the maintainers’ general missing-RUV rule (see Errata) |
 | CL/F covariate equation | n/a | Table 2 full-model ODE column: CL = exp(lcl) \* theta1_ATV^atazanavir \* (AUC_ritonavir / 6703.55 ng/ml\*h)^theta2_RTV |
 | ODE system | n/a | Table 2 full-model ODE column: dA(0)/dt = F*dose - ka*A(0); dA(1)/dt = ka*A(0) - CL*A(1)/V |
 
@@ -378,8 +378,8 @@ median ritonavir AUC.
 ``` r
 
 # Concentration frame: per-id observations across the Day-14 dosing interval.
-# Use only !is.na(Cc) in the filter (avoid time > 0 / Cc > 0; see
-# pknca-recipes.md: "Time-zero records (mandatory)").
+# Use only !is.na(Cc) in the filter (avoid time > 0 / Cc > 0; time-zero
+# records are mandatory).
 nca_concs <- sim_pop_df |>
   dplyr::filter(time >= 13 * 24, time <= 13 * 24 + ii) |>
   dplyr::mutate(t_in_interval = time - 13 * 24) |>
@@ -485,9 +485,8 @@ appropriate spread. The two-fold AUC0-12 cohort range emerges from the
 
 ### Errata – additive residual SD not reported in the source
 
-**Per the operator’s general missing-RUV rule (sidecar response
-2026-06-17), the additive residual SD is encoded as
-`addSd <- fixed(0)`.**
+**Per the maintainers’ general missing-RUV rule, the additive residual
+SD is encoded as `addSd <- fixed(0)`.**
 
 The Methods / Results paragraph 4 of von Hentig 2009 states only that
 “an additive-error model were found to provide best fits using the

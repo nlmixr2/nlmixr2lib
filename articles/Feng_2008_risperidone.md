@@ -700,9 +700,10 @@ structural-model values come directly from Table 3.
   as apparent (oral) quantities. The fraction absorbed F is folded into
   both CL and Vd; the model cannot resolve F from the data.
 
-- **Drug-field correction in task metadata.** The task block initially
-  listed `drug: British Journal of Clinical Ph` (a parsing artifact –
-  the journal name was placed in the drug field by the upstream task
-  generator). The on-disk PDF is unambiguously the Feng 2008 risperidone
-  popPK paper; filenames, function name, vignette basename, and branch
-  follow the corrected drug `risperidone`.
+- **Drug-field correction in the supplied metadata.** The metadata this
+  model was built from initially listed
+  `drug: British Journal of Clinical Ph` (a parsing artifact – the
+  journal name was placed in the drug field when the metadata was
+  generated). The on-disk PDF is unambiguously the Feng 2008 risperidone
+  popPK paper; filenames, function name, and vignette basename follow
+  the corrected drug `risperidone`.

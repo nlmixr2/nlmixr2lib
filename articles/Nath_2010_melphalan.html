@@ -3271,7 +3271,7 @@ per-subject medians against Nath 2010 Table 7.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">matrix</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Guarantee a time = 0 row per (id, matrix); IV-infusion plasma is zero</span></span>
-<span><span class="co"># at the start of the infusion. See PKNCA recipe time-zero guard.</span></span>
+<span><span class="co"># at the start of the infusion.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca</span>,</span>
 <span>  <span class="va">sim_nca</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">matrix</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -3471,8 +3471,8 @@ multiplying the typical total CL
 canonical precedent in <code>Capparelli_2005_cefepime</code> (cefepime
 additive renal-plus-non-renal CL).</li>
 <li>
-<strong>One vignette per paper.</strong> Per the
-<code>replicate-author-structure</code> policy, the paper’s two parallel
+<strong>One vignette per paper.</strong> Following the policy of
+building models as their authors built them, the paper’s two parallel
 models are extracted as two registered model files
 (<code>Nath_2010_melphalan_total</code> and
 <code>Nath_2010_melphalan_unbound</code>) but documented under a single

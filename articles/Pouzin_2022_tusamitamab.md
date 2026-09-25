@@ -338,7 +338,7 @@ concentrations were converted to ADC molar equivalent (normalization by
 SAR408701 molecular mass)”*: the AUC values were generated in µg·day/mL
 of ADC-mass-equivalent units, and the column header `(lM.day)` (=
 µM·day) in the published table is a typesetting error. No corresponding
-erratum has been published as of 2026-04-28; the operator/PR reviewer
+erratum has been published as of 2026-04-28; maintainers and reviewers
 should treat this discrepancy as an in-paper unit-label mistake and use
 the µg·day/mL interpretation when comparing future implementations
 against Table 7.

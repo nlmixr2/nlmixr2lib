@@ -145,12 +145,11 @@ Table 2 accordingly repeats `V1`, `CL`, `beta Cl_W`, `Q`, `V2`,
 `beta V2_BL`, `omega CL`, `omega V2` and the parent proportional error
 in the parent-metabolite block with `-` in both uncertainty columns. The
 final parent-metabolite model therefore *contains* the parent model
-exactly, so this is one model file (per
-`references/replicate-author-structure.md`, a base-plus-final
-development sequence extracts as the final model only). Simulating this
-model and reading only `Cc` reproduces the parent model; the
-carried-over parameters are wrapped in `fixed()` to record that they
-were not re-estimated in the joint fit.
+exactly, so this is one model file (a base-plus-final development
+sequence extracts as the final model only). Simulating this model and
+reading only `Cc` reproduces the parent model; the carried-over
+parameters are wrapped in `fixed()` to record that they were not
+re-estimated in the joint fit.
 
 ## Typical-value structural checks
 
@@ -509,8 +508,7 @@ interquartile ranges, and gestational age drawn from the published 2 / 9
 # NOT seed rxode2's simulation RNG, and rxode2's streams are partitioned per
 # solver thread, so the eta draws differ between a 2-core CI runner and a
 # many-threaded workstation. Every assertion downstream is therefore written
-# to hold for any cohort the model can produce (see pattern 12 of
-# references/known-vignette-failure-patterns.md).
+# to hold for any cohort the model can produce.
 set.seed(20241122)
 
 n_per_arm <- 100L

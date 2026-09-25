@@ -390,7 +390,7 @@ dosing interval.
 - **IIV translated from CL to Vmax.** Hashimoto 1994 Eq. 4 puts the
   interindividual random effect on the steady-state effective clearance
   CL = (Vmax - D/tau)/Km via the additive form CL_i = CL_typical \* (1 +
-  eta_CL). For a time-resolved Michaelis-Menten ODE, this skill places
+  eta_CL). For a time-resolved Michaelis-Menten ODE, this model places
   the IIV on log(Vmax) using the (CV/100)^2 = 0.0882 numerical variance
   reported by the paper. Because the paper has no IIV on Km, the
   effective CL at any concentration C = Vmax / (Km + C) is strictly

@@ -3069,7 +3069,7 @@ other covariate 90% CIs lie inside the 0.80-1.25 acceptance interval –
 body weight is the only clinically meaningful covariate on exposure.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2018L</span><span class="op">)</span></span>
-<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span>                       <span class="co"># 200 total; cap &lt;= 200 per arm per skill guidance</span></span>
+<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span>                       <span class="co"># 200 total; within the 200-per-arm cohort cap</span></span>
 <span></span>
 <span><span class="va">make_cohort_arm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">dose_mg</span>, <span class="va">id_offset</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">tibble</span><span class="op">(</span></span>

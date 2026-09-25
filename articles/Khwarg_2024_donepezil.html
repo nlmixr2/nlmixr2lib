@@ -3114,10 +3114,10 @@ Aricept (ref [14])</td>
 </table>
 <p>Two transcription notes:</p>
 <ul>
-<li>The <code>_trimmed.md</code> preprocessing of the source PDF dropped
-the <code>KA5</code> row of Table 2 entirely. The value used here
-(0.0134 1/h, RSE 17.2%) was read from the raw PDF, where the row sits
-between <code>KA4</code> and the IM <code>CL</code> row.</li>
+<li>The text extraction from the source PDF dropped the <code>KA5</code>
+row of Table 2 entirely. The value used here (0.0134 1/h, RSE 17.2%) was
+read from the raw PDF, where the row sits between <code>KA4</code> and
+the IM <code>CL</code> row.</li>
 <li>Table 2 reports IIV as the log-scale <strong>variance</strong>; the
 parenthesised percentage is the derived CV via footnote b,
 <code>CV = sqrt(exp(omega^2) - 1) * 100</code>. Each value was checked
@@ -4007,9 +4007,9 @@ would additionally require switching the residual-error model by
 formulation, which nlmixr2 cannot express within one endpoint.</li>
 <li>
 <strong><code>KA5</code> was recovered from the raw PDF.</strong>
-The preprocessed <code>_trimmed.md</code> companion of the source PDF
-silently dropped the <code>KA5</code> row of Table 2. The value used
-(0.0134 1/h) is from the published table itself, not inferred.</li>
+The text extracted from the source PDF silently dropped the
+<code>KA5</code> row of Table 2. The value used (0.0134 1/h) is from the
+published table itself, not inferred.</li>
 <li>
 <strong>Residual errors are treated as standard deviations, not
 variances.</strong> Table 2 reports the additive term with linear

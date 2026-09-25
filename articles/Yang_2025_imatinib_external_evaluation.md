@@ -871,8 +871,8 @@ systematic rather than incidental.
 4.  **Demetri 2009 repeats its CL/F covariate exponents on Vc/F.** Yang
     2025 Table 1 prints `(ALB/38.3)^1.66 x (WBC/7)^-0.418` on both
     parameters. This was checked against the original PDF with
-    `pdftotext -layout` rather than the trimmed markdown, so it is
-    genuinely what the secondary source prints and not a
+    `pdftotext -layout` rather than the markdown text extracted from it,
+    so it is genuinely what the secondary source prints and not a
     table-flattening artifact. It remains unusual and is the
     highest-priority item to confirm against the primary.
 
@@ -960,8 +960,8 @@ systematic rather than incidental.
 - `inst/references/covariate-columns.md`: `T_FIRSTDOSE` (time elapsed
   since the first dose of a treatment course, hours) and
   `SNP_SLC22A1_RS683369` (SLC22A1 / OCT1 c.480C\>G L160F variant carrier
-  indicator), both well-formed members of existing auto-approved
-  canonical families.
+  indicator), both well-formed members of existing accepted canonical
+  families.
 
 ## Session information
 

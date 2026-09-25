@@ -2900,9 +2900,7 @@ involvement on SAP intercompartmental clearance, whole-body amyloid load
 grade on SAP peripheral volume, and creatinine clearance on CPHPC
 clearance.</p>
 <p>The model was extracted from the DDMORE Foundation Model Repository
-bundle for <code>DDMODEL00000262</code> (scraped to
-<code>from_people/ddmore/ddmore_scraping/262/</code>). The bundle
-contains:</p>
+bundle for <code>DDMODEL00000262</code>. The bundle contains:</p>
 <ul>
 <li>
 <code>Executable_simulated_CPHPC_dataset.ctl</code> – the NONMEM
@@ -2932,12 +2930,11 @@ the two contributing studies CPH113776 and CPH114527).</li>
 <code>262.json</code>, <code>Command.txt</code> – scraper metadata
 and NONMEM run command.</li>
 </ul>
-<p>The linked Sahota 2015 paper is on disk at
-<code>from_people/literature_2018_search/Sahota_2015_Target_mediated_drug_disposition_model_o_073a18.pdf</code>
-and provides the external cross-check for every parameter value (Sahota
-2015 Table 2 vs Output_real_CPHPC.lst FINAL PARAMETER ESTIMATE block;
-agreement to within the paper’s rounding precision is documented in the
-source-trace table below).</p>
+<p>The linked Sahota 2015 paper is on disk in the maintainers’
+literature mirror and provides the external cross-check for every
+parameter value (Sahota 2015 Table 2 vs Output_real_CPHPC.lst FINAL
+PARAMETER ESTIMATE block; agreement to within the paper’s rounding
+precision is documented in the source-trace table below).</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3478,15 +3475,14 @@ this ~30% reduction is consistent with Nelson et al. (1992).</li>
 <div class="section level2">
 <h2 id="self-consistency-check-f-2">Self-consistency check (F.2)<a class="anchor" aria-label="anchor" href="#self-consistency-check-f-2"></a>
 </h2>
-<p>Per the <code>extract-literature-model</code> skill’s F.2 validation
-strategy (self-consistency for source bundles whose primary check is
-internal coherence with the source <code>.ctl</code>), the acceptance
-criteria are (a) the model parses, (b) <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code>
-runs to completion on representative regimens, (c) qualitative
-behaviours match the source <code>.ctl</code>’s known dynamics, (d)
-typical-value values stay in physiologically plausible ranges, and (e)
-the covariate decomposition yields the expected scaling per Sahota 2015
-Eq. 2.</p>
+<p>Per the package’s F.2 validation strategy (self-consistency for
+source bundles whose primary check is internal coherence with the source
+<code>.ctl</code>), the acceptance criteria are (a) the model parses,
+(b) <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> runs to completion on representative
+regimens, (c) qualitative behaviours match the source
+<code>.ctl</code>’s known dynamics, (d) typical-value values stay in
+physiologically plausible ranges, and (e) the covariate decomposition
+yields the expected scaling per Sahota 2015 Eq. 2.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_unique</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">scenario</span>, <span class="va">time</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

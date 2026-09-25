@@ -228,10 +228,9 @@ sim |>
 
 ## PKNCA validation
 
-Single-dose, dense-sampling NCA per `references/pknca-recipes.md`. The
-treatment column carries the per-arm grouping so the per-treatment Cmax
-/ Tmax / AUC / half-life can be compared against the published values in
-Table 3.
+Single-dose, dense-sampling NCA. The treatment column carries the
+per-arm grouping so the per-treatment Cmax / Tmax / AUC / half-life can
+be compared against the published values in Table 3.
 
 ``` r
 
@@ -429,11 +428,11 @@ within the corrected band.
   residual error on an arithmetic scale” and reports sigma = 51.6% CV in
   Table 2. The reported value is treated as the SD on the log scale
   (consistent with the convention used by the sibling Birgersson 2019
-  artesunate model and the verification-checklist rule “NONMEM
-  additive-on-log-scale = proportional in nlmixr2’s linear space”); the
-  alternative interpretation as a back-transformed linear-scale CV would
-  give propSd = 0.486 instead of 0.516, a ~6% difference that is well
-  within the published RSE band.
+  artesunate model and the package’s rule “NONMEM additive-on-log-scale
+  = proportional in nlmixr2’s linear space”); the alternative
+  interpretation as a back-transformed linear-scale CV would give propSd
+  = 0.486 instead of 0.516, a ~6% difference that is well within the
+  published RSE band.
 - **Virtual cohort size n = 60 per arm.** The published study had n = 15
   in a four-way crossover (60 subject-occasion observations); the
   virtual cohort uses 60 independent subjects per arm to give tighter

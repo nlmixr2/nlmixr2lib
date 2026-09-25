@@ -728,7 +728,7 @@ same truncation mechanism, one generation earlier.
   the logarithmic domain without stating whether the figure is the
   NONMEM `$SIGMA` variance or a standard deviation. It is read here as a
   **variance**, so `expSd = sqrt(0.0420) = 0.2049` (a 20.7% residual
-  CV). Operator-ratified reading. Supporting evidence: the NONMEM
+  CV). Maintainer-ratified reading. Supporting evidence: the NONMEM
   `$SIGMA` convention; this being the only variability row left in raw
   NONMEM units while every other was converted to CV%; the reported 2.4%
   RSE matching the `sqrt(2/1920) = 3.2%` expected of a variance

@@ -316,8 +316,7 @@ checks below):
 # are partitioned per solver thread. The cohort below therefore differs between
 # a 16-thread workstation and a 2-core CI runner and no seed can make them
 # agree. Every assertion downstream is written to hold for any cohort this
-# model can produce (see pattern 12 of the skill's known-vignette-failure
-# -patterns reference).
+# model can produce.
 set.seed(20260906)
 rxode2::rxSetSeed(20260906)
 
@@ -705,8 +704,7 @@ stopifnot(
 
 Thoueille 2024 states several proportions in the Results and Abstract.
 They are checked here as magnitudes with tolerances wide enough to
-absorb cohort draw, which is what the failure-pattern guidance requires
-for a simulated proportion.
+absorb cohort draw, as any assertion on a simulated proportion must be.
 
 ``` r
 

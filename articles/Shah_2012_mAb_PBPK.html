@@ -3532,22 +3532,22 @@ values (CV%=3.48 on <code>clup</code>, 15.7 on <code>kdeg</code>, 11.1
 on <code>fcrn</code>, &gt; 50 on <code>clnlf</code>).</li>
 <li>
 <strong>Compartment naming deviation from
-<code>naming-conventions.md</code>.</strong> The PBPK structure has 93
-compartments (15 anatomical tissues x {vascular plasma, vascular blood
-cells, endosomal unbound mAb, endosomal FcRn-bound mAb, endosomal free
-FcRn, interstitial} plus central plasma, central blood cells, lymph
-node). These do not map onto the standard <code>central</code> /
-<code>peripheral1</code> / <code>depot</code> / <code>effect</code>
-vocabulary; <code>checkModelConventions("Shah_2012_mAb_PBPK")</code>
-flags every PBPK compartment as a non-canonical name. The naming used in
-this file (<code>vp_&lt;tissue&gt;</code>,
-<code>bc_&lt;tissue&gt;</code>, <code>eu_&lt;tissue&gt;</code>,
-<code>eb_&lt;tissue&gt;</code>, <code>fr_&lt;tissue&gt;</code>,
-<code>is_&lt;tissue&gt;</code>, plus <code>plasma</code>,
-<code>bcc</code>, <code>lnode</code>) follows the paper’s symbolic
-conventions (C^V, C^BC, C^E_unbound, etc.) and is the most readable
-mapping available. No convention change in the rest of nlmixr2lib is
-implied.</li>
+<code>inst/references/compartment-names.md</code>.</strong> The PBPK
+structure has 93 compartments (15 anatomical tissues x {vascular plasma,
+vascular blood cells, endosomal unbound mAb, endosomal FcRn-bound mAb,
+endosomal free FcRn, interstitial} plus central plasma, central blood
+cells, lymph node). These do not map onto the standard
+<code>central</code> / <code>peripheral1</code> / <code>depot</code> /
+<code>effect</code> vocabulary;
+<code>checkModelConventions("Shah_2012_mAb_PBPK")</code> flags every
+PBPK compartment as a non-canonical name. The naming used in this file
+(<code>vp_&lt;tissue&gt;</code>, <code>bc_&lt;tissue&gt;</code>,
+<code>eu_&lt;tissue&gt;</code>, <code>eb_&lt;tissue&gt;</code>,
+<code>fr_&lt;tissue&gt;</code>, <code>is_&lt;tissue&gt;</code>, plus
+<code>plasma</code>, <code>bcc</code>, <code>lnode</code>) follows the
+paper’s symbolic conventions (C^V, C^BC, C^E_unbound, etc.) and is the
+most readable mapping available. No convention change in the rest of
+nlmixr2lib is implied.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

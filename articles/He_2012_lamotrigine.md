@@ -894,8 +894,8 @@ Maintenance dose to target Css = 6 mg/L by AED cohort. {.table}
 - **Errata.** No erratum or corrigendum to He 2012 was located on disk
   for this extraction. A search of PubMed and the Nature (Acta
   Pharmacologica Sinica is now published by Nature Springer) corrections
-  feed for `"He" + "lamotrigine" + 2012 + erratum` returned no hits;
-  operators should reconfirm against the journal’s corrections listing
+  feed for `"He" + "lamotrigine" + 2012 + erratum` returned no hits; the
+  maintainers should reconfirm against the journal’s corrections listing
   if a re-extraction is undertaken.
 - **Race / ethnicity.** The study cohort was 100% Chinese paediatric
   patients with epilepsy, recruited from a single Beijing centre. Race

@@ -180,12 +180,10 @@ doses (the internal unit of the depot compartment).
 
 This is an endogenous/mechanistic QSP model with five outputs and no
 parent- drug observation in this paper. PKNCA-style cmax / AUC
-validation is therefore not applied (see
-`references/endogenous-validation.md` in the skill). Instead the
-vignette uses the four endogenous-model validation patterns plus a
-replication of Bosch 2024 Figure 4 (cotadutide dose-response on average
-glucose) and a representative MMTT excursion at 200 ug cotadutide (the
-Ph2a top dose).
+validation is therefore not applied. Instead the vignette uses the four
+endogenous-model validation patterns plus a replication of Bosch 2024
+Figure 4 (cotadutide dose-response on average glucose) and a
+representative MMTT excursion at 200 ug cotadutide (the Ph2a top dose).
 
 The model takes one covariate, `FPG` (per-subject baseline glucose in
 mmol/L). Cotadutide doses go to the `depot` compartment in pmol; MMTT
@@ -560,10 +558,11 @@ deviations section.
   converts internally, matching the supplement code.
 - **Upstream PK and 4GI sources not on disk.** The cotadutide PK
   structure and individual EBE inputs are fixed from Guan et al. 2022
-  (cited in Bosch 2024 Methods Section 2.3) which is not on disk in this
-  worktree; the typical values (KA = 0.343 1/h, CL = 1.04 L/h, V =
-  18.7 L) are taken from the on-disk supplement S12 `$PK` block
+  (cited in Bosch 2024 Methods Section 2.3) which was not on disk when
+  this model was built; the typical values (KA = 0.343 1/h, CL = 1.04
+  L/h, V = 18.7 L) are taken from the on-disk supplement S12 `$PK` block
   defaults. The 4GI system parameters are fixed from Bosch et al. 2022
-  (also cited in Bosch 2024 Methods Section 2.3) which is not on disk in
-  this worktree; the numeric values are taken from the on-disk
-  supplement Tables S1 and S2 and the supplement S12 `$THETA` block.
+  (also cited in Bosch 2024 Methods Section 2.3) which was not on disk
+  when this model was built; the numeric values are taken from the
+  on-disk supplement Tables S1 and S2 and the supplement S12 `$THETA`
+  block.

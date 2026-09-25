@@ -2897,7 +2897,7 @@ specification” (paper Results).</li>
 <li>Detailed baseline demographics (age distribution, ECOG, Gleason
 score, prior therapy) are documented in the paper but were not
 transcribed into this extraction’s <code>population</code> block – the
-paper PDF was not on disk in the operator’s literature mirror at
+paper PDF was not on disk in the maintainers’ literature mirror at
 extraction time, so demographic values come from the publicly accessible
 PMC full text via the extraction-time E-utilities lookup.</li>
 </ul>
@@ -3930,18 +3930,17 @@ overlay is the validation anchor.</p>
 <ul>
 <li>
 <strong>Wilbaux 2015 PDF not on disk for this extraction.</strong>
-The paper PDF was not present anywhere under
-<code>/home/bill/github/mab_human_consensus/literature/</code> at
-extraction time. Methods quotes, parameter cross-checks, and the
-model-equation transcription used in this vignette come from the
+The paper PDF was not present anywhere in the maintainers’ literature
+mirror at extraction time. Methods quotes, parameter cross-checks, and
+the model-equation transcription used in this vignette come from the
 publicly accessible PMC4452933 full text via PubMed E-utilities (PMID
 26225253; DOI 10.1002/psp4.34). All 14 thetas and the BLOCK(9) /
 BLOCK(2) OMEGAs in the model file match paper Table 1 to three
 significant figures. Demographic detail (age distribution, ECOG, Gleason
 score, prior therapy) was not transcribed because the paper’s Table 1 /
 baseline-demographics narrative was not exhaustively quoted in the PMC
-extract obtained at extraction time; if the operator subsequently
-obtains the PDF, a follow-up audit pass to populate
+extract obtained at extraction time; if the maintainers subsequently
+obtain the PDF, a follow-up audit pass to populate
 <code>population$age_range</code>, <code>population$weight_range</code>,
 etc. is recommended.</li>
 <li>
@@ -4034,11 +4033,10 @@ not consume any data column.</li>
 <code>latent_tumor_d</code>, <code>psa</code> are the paper’s
 mechanism-faithful names, not in the
 <code>depot/central/peripheral1/peripheral2/effect/...</code> canonical
-list. Per <code>naming-conventions.md</code>, “Therapeutic-area or
-mechanism-specific compartments: open a GitHub issue before adding new
-names.” For now the conventions checker emits eight compartment-name
-warnings; the names are accepted deviations for this paper-faithful K-PD
-model.</li>
+list. The package’s naming convention is to open a GitHub issue before
+adding new therapeutic-area or mechanism-specific compartment names. For
+now the conventions checker emits eight compartment-name warnings; the
+names are accepted deviations for this paper-faithful K-PD model.</li>
 <li>
 <strong><code>units$dosing</code> (AU) vs
 <code>units$concentration</code> (ng/mL) dimensionally
@@ -4056,13 +4054,13 @@ identified in the final model specification”). The model file’s
 <li>
 <strong>Bundle’s simulated dataset is intentionally
 minimal.</strong> <code>Simulated_KPD_CTC.count_PSA.csv</code> contains
-only two subjects with very sparse observation schedules. Per
-<code>ddmore-source.md</code>, this is a regression smoke-test artifact
-and <strong>not</strong> representative of the publication’s clinical
-study population. The vignette’s virtual-cohort sections build their own
-typical-subject events; the F.2 self-consistency overlay against the
-bundle’s subject 1 records is for direction-of-trajectory confirmation
-only, not per-record agreement.</li>
+only two subjects with very sparse observation schedules. This is a
+regression smoke-test artifact and <strong>not</strong> representative
+of the publication’s clinical study population. The vignette’s
+virtual-cohort sections build their own typical-subject events; the F.2
+self-consistency overlay against the bundle’s subject 1 records is for
+direction-of-trajectory confirmation only, not per-record
+agreement.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

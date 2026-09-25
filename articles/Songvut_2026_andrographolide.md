@@ -74,11 +74,11 @@ fitted model:
 Because there is no PK layer, this vignette has no PKNCA section: there
 is no concentration-time profile to integrate and no simulated NCA
 parameter to compare against Table 2. The validation instead follows the
-pattern used for mechanistic and algebraic models in
-`references/endogenous-validation.md` – closed-form agreement, anchor
-reproduction, monotonicity and boundedness, and a goodness-of-fit round
-trip against the paper’s own reported `r2`. The published NCA table is
-transcribed below for context, clearly marked as reference-only.
+package’s pattern for mechanistic and algebraic models – closed-form
+agreement, anchor reproduction, monotonicity and boundedness, and a
+goodness-of-fit round trip against the paper’s own reported `r2`. The
+published NCA table is transcribed below for context, clearly marked as
+reference-only.
 
 The paper is emphatic, and this vignette repeats it, that the
 exposure-response analysis is **exploratory and hypothesis-generating,
@@ -198,11 +198,11 @@ The packaged model therefore encodes the four-parameter form
     reduction = e0 + emax * AUC^hill / (auc50^hill + AUC^hill)
 
 with `e0` = 1.81 recovered from Figure 5. This resolution was ratified
-by the operator (see Assumptions and deviations). The `e0` term is not a
-fudge factor: in an uncontrolled single-arm study it is exactly the
-quantity the design cannot separate from drug effect – spontaneous viral
-clearance – which is why the paper’s own Discussion stresses that the
-decline cannot be attributed to the extract.
+by the maintainers (see Assumptions and deviations). The `e0` term is
+not a fudge factor: in an uncontrolled single-arm study it is exactly
+the quantity the design cannot separate from drug effect – spontaneous
+viral clearance – which is why the paper’s own Discussion stresses that
+the decline cannot be attributed to the extract.
 
 ## Digitised Figure 5 data
 
@@ -664,11 +664,10 @@ this package, which contains no PK model. {.table}
   baseline term `e0`.** The paper’s Section 2.4 prints a three-parameter
   sigmoid with no baseline. The packaged model is the four-parameter
   form `e0 + emax * AUC^hill / (auc50^hill + AUC^hill)`. This was
-  escalated to the operator rather than decided silently, because
+  escalated to the maintainers rather than decided silently, because
   recovering a value from a figure to *fill a reporting gap* is routine
   while using one to *override a printed structural claim* is not, and
-  this act does both. It was ratified on 2026-08-31 (task
-  `oare_PMC13022710`, sidecar request-001, option B) on the evidence set
+  this act does both. It was ratified on 2026-08-31 on the evidence set
   out in “The printed equation versus Figure 5” above: the printed form
   cannot reproduce the paper’s own reported `r2`, and the four-parameter
   form additionally reproduces two further independent Figure 5 features
@@ -731,7 +730,7 @@ this package, which contains no PK model. {.table}
   as other change-from-baseline single-output models already in the
   library (`Morganroth_2015_moxifloxacin.R` with `DDQTcF`,
   `Gong_2023_pemigatinib_creatinine.R` with `creatPctChange`). Promoting
-  a `viral_loadReduction` canonical is left to the operator.
+  a `viral_loadReduction` canonical is left to the maintainers.
 - **No PK layer, and therefore no PKNCA validation.** See “What this
   paper contributes, and what it does not”. Downstream users must supply
   `AUC_ANDRO` from observed concentrations or from an external

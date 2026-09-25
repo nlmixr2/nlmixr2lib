@@ -871,7 +871,7 @@ them is appropriate.
   of freedom (409, 440, 470 against 44 patients) are consistent with a
   per-subject random intercept. But no variance estimate, random-effect
   standard deviation or shrinkage value is reported for any of the three
-  models. Per the standing operator policy on unreported IIV, the
+  models. Per the maintainers’ standing policy on unreported IIV, the
   packaged models omit the eta declarations and ship typical-value-only
   encodings. The only surviving traces of the variance components are
   Table 4’s threshold-exceedance probability columns and the Figure 4B /
@@ -880,7 +880,7 @@ them is appropriate.
   externally.
 
 - **Residual error is not reported numerically.** `addSd <- fixed(0)` in
-  all three files, per the standing operator policy, so each model
+  all three files, per the maintainers’ standing policy, so each model
   returns its deterministic typical-value prediction. This follows the
   same encoding as `Darpo_2014_racSotalol_QTcI.R` / `_QTcF.R`.
 
@@ -916,17 +916,18 @@ them is appropriate.
 
 - **The RR endpoint is named `d_rr`, the two QTc endpoints are not
   `d`-prefixed.** This asymmetry within the file set is deliberate and
-  was a maintainer ruling. The register had no RR entry of either form.
-  `d_rr` was ratified as a canonical sibling of the existing `d_hr`
-  change-from-baseline heart-rate endpoint, on the scale-incomparability
-  grounds that entry already states – an absolute RR interval is roughly
-  850 msec whereas this `Delta`RR spans -25 to +18 msec – and because
-  the competing bare-name precedent (`QTc`, `QTcF`, `QTcI`) is for
-  absolute interval names. The two QTc siblings keep their bare
-  corrected-interval names in line with the existing registry usage in
-  `Darpo_2014_racSotalol_QTcF.R`, `Mukker_2026_tuvusertib_QTcF.R` and
-  `Zhou_2025_fruquintinib_*`; the per-model `units` field documents the
-  change-from-baseline semantic in each case.
+  was a maintainer ruling of 2026-09-02. The register had no RR entry of
+  either form. `d_rr` was ratified as a canonical sibling of the
+  existing `d_hr` change-from-baseline heart-rate endpoint, on the
+  scale-incomparability grounds that entry already states – an absolute
+  RR interval is roughly 850 msec whereas this `Delta`RR spans -25 to
+  +18 msec – and because the competing bare-name precedent (`QTc`,
+  `QTcF`, `QTcI`) is for absolute interval names. The two QTc siblings
+  keep their bare corrected-interval names in line with the existing
+  registry usage in `Darpo_2014_racSotalol_QTcF.R`,
+  `Mukker_2026_tuvusertib_QTcF.R` and `Zhou_2025_fruquintinib_*`; the
+  per-model `units` field documents the change-from-baseline semantic in
+  each case.
 
 - **Reported race percentages do not sum to 100.** Table 1 lists White
   68%, Black 20% and not reported 11%, summing to 99% from independent

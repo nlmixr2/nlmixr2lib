@@ -348,7 +348,7 @@ Analytical expectations for the typical 70 kg Caucasian subject:
 
 The simulated median AUClast (capped at the 91-day inter-dose interval)
 is within ~5% of these analytical values for both dose levels, well
-below the 20% deviation threshold flagged by the skill.
+below the 20% deviation threshold used to flag discrepancies.
 
 ## Assumptions and deviations
 
@@ -370,10 +370,11 @@ below the 20% deviation threshold flagged by the skill.
       the difference is intentional and reflects the source paper’s
       reference category.
 - **Race distribution in the virtual cohort.** Hu 2014 reports Study 301
-  was 93.6% Caucasian; Study 302’s race breakdown is not in the trimmed
-  text. The vignette uses 93% Caucasian as a single-cohort proxy.
+  was 93.6% Caucasian; Study 302’s race breakdown is not in the
+  extracted text. The vignette uses 93% Caucasian as a single-cohort
+  proxy.
 - **Sex breakdown.** Study 301 was 69.3% male per Methods. Study 302’s
-  sex split is not in the trimmed text. Sex is not retained in the
+  sex split is not in the extracted text. Sex is not retained in the
   reduced model (it was correlated with weight at r = 0.57 and was
   excluded from the primary analysis per the prespecified ranking), so
   this is purely a population-metadata observation rather than a model

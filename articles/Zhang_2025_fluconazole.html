@@ -4457,14 +4457,13 @@ failure on clearance and body weight on volume. They are recorded in the
 model file’s <code>covariatesDataExcluded</code> for provenance and no
 point estimates are reported for them. No canonical register entry
 exists for dialyser membrane area or type; none was minted, because the
-covariates were rejected. A future model that retains one should file a
-naming sidecar.</li>
+covariates were rejected. A future model that retains one should propose
+a canonical name to the maintainers.</li>
 <li>
 <strong><code>crrt</code> is a paper-specific compartment, not a
 canonical one.</strong> The state is declared via
-<code>paper_specific_compartments &lt;- "crrt"</code> per operator
-ruling (sidecar request-001 question 1, answered 2026-08-20). Its
-<code>compartmentData</code> entry records
+<code>paper_specific_compartments &lt;- "crrt"</code> per maintainer
+ruling. Its <code>compartmentData</code> entry records
 <code>specimen = "not applicable"</code>: the source defines the state
 as a kinetic compartment for CRRT elimination and never assigns it a
 biological matrix, and <code>Vcrrt</code> of 23.5 L is body-scale, so it
@@ -4472,13 +4471,12 @@ is not the extracorporeal circuit volume.</li>
 <li>
 <strong><code>DIS_ARF</code> is a new canonical covariate</strong>,
 registered in <code>inst/references/covariate-columns.md</code> in this
-same change per operator ruling (sidecar request-001 question 2). It is
-deliberately not encoded as <code>RENALIMP_SEV</code>: the
-<code>RENALIMP_*</code> bands are chronic-impairment classes defined on
-creatinine clearance, whereas this cohort’s stratum is acute renal
-failure ascertained from urine output, in patients who are largely
-anuric or oliguric and for whom creatinine clearance is neither
-measurable nor gradable.</li>
+same change per maintainer ruling. It is deliberately not encoded as
+<code>RENALIMP_SEV</code>: the <code>RENALIMP_*</code> bands are
+chronic-impairment classes defined on creatinine clearance, whereas this
+cohort’s stratum is acute renal failure ascertained from urine output,
+in patients who are largely anuric or oliguric and for whom creatinine
+clearance is neither measurable nor gradable.</li>
 <li>
 <strong>Residual error read as a standard deviation.</strong> Table
 2’s additive-error row is annotated “(mg/L)”; a variance would be

@@ -30,7 +30,7 @@ critically ill children randomized to receive intravenous omeprazole at
 > **Abstract-only extraction.** The full-text Therapeutic Drug
 > Monitoring article was not available on disk for this extraction; all
 > structural and parameter information was taken from the PubMed
-> abstract (PMID 24365987). The operator confirmed that the abstract
+> abstract (PMID 24365987). The maintainers confirmed that the abstract
 > contains the full set of values required to construct the structural
 > model (typical CL, Q, Vc, Vp at the 70 kg reference; IIV magnitude on
 > CL; proportional residual magnitude; fixed Anderson-Holford allometric
@@ -367,7 +367,7 @@ the structural model does not encode. {.table}
 - **Abstract-only source.** The full-text Therapeutic Drug Monitoring
   article (DOI 10.1097/FTD.0000000000000033) was not available on disk
   for this extraction. All structural and parameter information was
-  transcribed from the PubMed abstract (PMID 24365987). The operator
+  transcribed from the PubMed abstract (PMID 24365987). The maintainers
   confirmed that the abstract contains the modelling-required
   information and instructed extraction to proceed; downstream users who
   obtain the full text are encouraged to cross-check the per-parameter
@@ -442,6 +442,6 @@ the structural model does not encode. {.table}
   disk for this extraction. A search of PubMed and the Wolters Kluwer /
   Therapeutic Drug Monitoring corrections feed for \`“Solana” +
   “omeprazole”
-  - 2014 + erratum\` returned no hits; operators should reconfirm
+  - 2014 + erratum\` returned no hits; the maintainers should reconfirm
     against the journal’s corrections listing if a re-extraction is
     undertaken with the full text in hand.

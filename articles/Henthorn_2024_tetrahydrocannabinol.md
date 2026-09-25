@@ -723,7 +723,7 @@ nothing to do with the model.
 - **Central volume: Table 3, not the Abstract.** `VC` is printed as 17.9
   +/- 1.20 L in Table 3 and as 19.9 +/- 1.2 L in the Abstract – an 11%
   discrepancy on a parameter that sets the peak concentration directly.
-  The model uses the Table 3 value (operator ruling, 2026-08-05). The
+  The model uses the Table 3 value (maintainer ruling, 2026-08-05). The
   evidence: Table 3 is the dedicated final-model parameter table that
   the Results and Discussion cross-reference; its standard error (1.20)
   matches the Abstract’s (1.2); and every other value in the same
@@ -739,8 +739,8 @@ nothing to do with the model.
   0.82 +/- 0.23 in the Results. The point estimates agree everywhere and
   only point estimates are encoded, so neither affects the model.
 - **Exponential, not proportional, covariate form.** Equation (3) is
-  `theta_i = theta_TV * e^(theta_cov) * e^(eta_i)`. The trimmed markdown
-  companion to the source PDF dropped all four display equations
+  `theta_i = theta_TV * e^(theta_cov) * e^(eta_i)`. The text extracted
+  from the source PDF dropped all four display equations
   (“formula-not-decoded”); they were recovered from the PDF text layer
   directly. The exponential reading is confirmed arithmetically against
   the published 10.78 mg typical daily dose. The paper’s prose

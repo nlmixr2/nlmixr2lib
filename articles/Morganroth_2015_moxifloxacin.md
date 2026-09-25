@@ -44,8 +44,8 @@ population PK model; moxifloxacin PK is reported only as Table 1 NCA
 summary statistics. This file packages the published linear PD model
 together with a typical-value 1-compartment oral PK driver derived from
 those NCA summary statistics, exclusively as a simulation aid – see the
-Assumptions and deviations section for the limitations and the operator
-sidecar decision on the missing random-effects variance components.
+Assumptions and deviations section for the limitations and the
+maintainers’ decision on the missing random-effects variance components.
 
 ## Population
 
@@ -88,7 +88,7 @@ collects them for review.
 | `e_race_white_slope_ddqtcf` – Caucasian slope shift | `fixed(-0.24)` ms per ug/mL | Morganroth 2015 Table 4 “Concentration-by-country interaction” row: -0.24 (SE 0.89); Caucasian slope = 2.58 - 0.24 = 2.34 |
 | `addSd` – residual SD | `fixed(1)` ms | Placeholder; Morganroth 2015 does not numerically report sigma (see Assumptions and deviations) |
 | `d/dt(depot)` / `d/dt(central)` – 1-cmt oral PK | – | Approximation; Morganroth 2015 does not fit a popPK model. PK driver is NCA-derived (Table 1). |
-| `DDQTcF = intercept + slope * Cc` | – | Morganroth 2015 Equation 1 (fixed-effect part; random-effect terms omitted per sidecar-001 option C) |
+| `DDQTcF = intercept + slope * Cc` | – | Morganroth 2015 Equation 1 (fixed-effect part; random-effect terms omitted per maintainer decision) |
 
 ## Virtual cohort
 
@@ -365,22 +365,22 @@ lower moxifloxacin concentration)” (Methods “Sample size”).
       (for example one of the packaged 2-compartment popPK models
       `Hong_2015_moxifloxacin` or `Landersdorfer_2009_moxifloxacin`) and
       reference the PD parameters from this file.
-- **Missing IIV / residual-error variances (sidecar-001, option C).**
+- **Missing IIV / residual-error variances (maintainer decision).**
   Morganroth 2015 Methods “Statistical plan” Equation 1 defines the
   linear model with subject random effects s_ij, d_ij as BVN(0, Sigma)
   and additive residual e_ij ~ N(0, sigma^2), but the paper does not
-  numerically report Sigma or sigma. Per operator sidecar-001 option C,
-  the packaged model omits IIV entirely (no `eta*` parameters on
-  intercept or slope) and encodes a small placeholder additive residual
-  SD of 1 ms so that rxode2’s residual-error machinery has a value to
-  plug in. **The paper’s own historical bootstrap study (Methods “Sample
-  size”) quotes 10.5 ms as the total DDQTcF SD used for the power
-  calculation; users who want to attach a realistic residual for
-  VPC-style simulation may substitute that value or a smaller
-  cohort-specific SD.** The 5.4 ms (Japanese) / 6.5 ms (Caucasian)
-  baseline QTcF intersubject variability reported in Results “ECG
-  results” is a plausible ballpark for the intercept random-effect SD
-  but is not the exact value fitted by the paper.
+  numerically report Sigma or sigma. Per the maintainers’ decision, the
+  packaged model omits IIV entirely (no `eta*` parameters on intercept
+  or slope) and encodes a small placeholder additive residual SD of 1 ms
+  so that rxode2’s residual-error machinery has a value to plug in.
+  **The paper’s own historical bootstrap study (Methods “Sample size”)
+  quotes 10.5 ms as the total DDQTcF SD used for the power calculation;
+  users who want to attach a realistic residual for VPC-style simulation
+  may substitute that value or a smaller cohort-specific SD.** The 5.4
+  ms (Japanese) / 6.5 ms (Caucasian) baseline QTcF intersubject
+  variability reported in Results “ECG results” is a plausible ballpark
+  for the intercept random-effect SD but is not the exact value fitted
+  by the paper.
 - **Country and ethnicity are perfectly confounded in this cohort.**
   Morganroth 2015 enrolled Japanese subjects only at the Japan site
   (Kitasato University East Hospital) and Caucasian subjects only at the

@@ -425,19 +425,19 @@ Simulated abacavir steady-state NCA per crossover phase (WT = 12 kg, n =
 - **Print-year vs online-year discrepancy on the file name.** The source
   PDF masthead is Accepted 26 September 2011 / Accepted Article Online
   12 October 2011, and the article appears in print as *Br J Clin
-  Pharmacol.* 2012;73(4):641-648. The task metadata names the model file
-  using the 2012 print year, which matches the journal volume citation
-  rather than the online publication year (2011). Per Phase 1 step 2 of
-  the extraction skill, the file is named `Zhao_2012_abacavir.R` to
-  align with the BJCP 2012 volume citation used as the canonical
-  reference.
-- **Task-metadata drug field repaired silently.** The runner’s generated
-  `drug` field was the journal name truncation “British Journal of
-  Clinical Ph” rather than the drug. The paper title unambiguously
-  identifies the drug as **abacavir** and the registry already contains
-  three abacavir popPK models (Jullien 2005, Archary 2019, Tikiso 2021),
-  so the recoverable parser error is corrected to `Zhao_2012_abacavir`
-  without an operator sidecar.
+  Pharmacol.* 2012;73(4):641-648. The metadata this model was built from
+  names the model file using the 2012 print year, which matches the
+  journal volume citation rather than the online publication year
+  (2011). Following the package’s file-naming convention, the file is
+  named `Zhao_2012_abacavir.R` to align with the BJCP 2012 volume
+  citation used as the canonical reference.
+- **Metadata drug field repaired.** The `drug` field in the
+  bibliographic metadata this model was built from was the journal name
+  truncation “British Journal of Clinical Ph” rather than the drug. The
+  paper title unambiguously identifies the drug as **abacavir** and the
+  registry already contains three abacavir popPK models (Jullien 2005,
+  Archary 2019, Tikiso 2021), so the recoverable parser error is
+  corrected to `Zhao_2012_abacavir`.
 - **Inter-occasion variability encoded with an explicit `OCC`
   multiplexer.** Zhao 2012 Methods state that “interoccasion variability
   on CL/F was coupled to interindividual variability by an additive

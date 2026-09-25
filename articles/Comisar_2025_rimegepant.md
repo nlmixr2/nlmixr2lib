@@ -259,7 +259,7 @@ published in Comisar 2025 Section 3.3. {.table}
 
 ``` r
 
-# Per-arm cohort sizes (skill cap: never exceed 200). The larger size is used
+# Per-arm cohort sizes (cohort cap: never exceed 200). The larger size is used
 # for the arms whose medians are scored against published ratios; the smaller
 # one for the illustrative / near-deterministic arms (a covariate that simply
 # multiplies CL moves the median almost exactly, so extra subjects buy nothing).

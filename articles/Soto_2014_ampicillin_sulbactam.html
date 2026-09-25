@@ -3204,7 +3204,7 @@ reports in Table 4.</p>
 <h3 id="time-zero-records">Time-zero records<a class="anchor" aria-label="anchor" href="#time-zero-records"></a>
 </h3>
 <p>Pre-dose Cc = 0 rows are added so PKNCA can anchor AUC0-* at t = 0;
-this matches the <code>pknca-recipes.md</code> time-zero guidance.</p>
+this matches the package’s standard PKNCA time-zero handling.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">add_time_zero</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>, <span class="va">conc_col</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">zero_rows</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span></span>

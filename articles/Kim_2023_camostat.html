@@ -3106,7 +3106,7 @@ observation row must say which endpoint it belongs to;
 <span>  <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep <span class="op">=</span> <span class="st">"treatment"</span>,</span>
 <span>  <span class="co"># rxode2's automatic ODE -&gt; linCmt conversion corrupts the dvid mapping for</span></span>
-<span>  <span class="co"># multi-output models; see known-vignette-failure-patterns pattern 5b.</span></span>
+<span>  <span class="co"># multi-output models.</span></span>
 <span>  useLinCmt <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -4071,7 +4071,7 @@ roughly 1.5 L/h implied by the printed <code>Vmax / Km</code>.</li>
 <code>CL1</code>, <code>Vmax</code> and <code>Km</code>. Every other row
 carries its unit. The blank cells were confirmed against a 400 dpi
 render of the table, so no exponent was lost in text extraction.</p>
-<p>The maintainers ruled that <code>Vmax</code> should be
+<p>The maintainers ruled on 2026-09-05 that <code>Vmax</code> should be
 <strong>derived from the authors’ own published output and flagged as
 non-paper provenance</strong>, as a narrow exception to the standing
 printed-values-have-authority rule: an unlabelled number that no unit

@@ -2876,11 +2876,10 @@ transit chain, egress to the extracellular pool, host-cell infection
 dynamics, and RBV cytotoxicity.</p>
 <p>Because the model is in vitro and uses static covariates instead of
 dosing events, the validation strategy below mirrors the
-<strong>endogenous / mechanistic-model pattern</strong>
-(<code>.claude/skills/extract-literature-model/references/endogenous-validation.md</code>)
-rather than the PKNCA-NCA recipe used for popPK extractions: figure
-replication under the paper’s tested static drug concentrations, plus a
-steady-state / mass-balance sanity check.</p>
+<strong>endogenous / mechanistic-model pattern</strong> rather than the
+PKNCA-NCA recipe used for popPK extractions: figure replication under
+the paper’s tested static drug concentrations, plus a steady-state /
+mass-balance sanity check.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3308,8 +3307,8 @@ RBV 100 ug/mL (antagonism factor active).</p>
 </h2>
 <p>In vitro models are not amenable to PKNCA-style NCA because there is
 no dose-response AUC to integrate. Instead, the validations below mirror
-the patterns documented in
-<code>.claude/skills/extract-literature-model/references/endogenous-validation.md</code>.</p>
+the endogenous / mechanistic-model pattern described in the
+introduction.</p>
 <div class="section level3">
 <h3 id="control-growth">Control growth<a class="anchor" aria-label="anchor" href="#control-growth"></a>
 </h3>
@@ -3439,13 +3438,13 @@ single-drug PK models (FAV one-disposition compartment with
 concentration-dependent autoinhibition adapted from Madelain 2017 <a href="doi:10.1128/AAC.01305-16" class="uri">doi:10.1128/AAC.01305-16</a>; IFN linear one-compartment
 from Gutterman 1982 IM data) in the supplemental file
 <code>https://doi.org/10.1128/AAC.01983-17</code>. That supplemental PDF
-is not on disk in this worktree, and the PK structures are adapted from
-prior publications rather than original to this paper. This registry
-entry therefore covers only the PD MBM. Users who need human plasma-PK
-input functions for the FAV + IFN combination simulations (paper Figure
-5) should drive <code>CONC_FAV_UM</code> and <code>CONC_IFN_IUML</code>
-from external PK profiles (e.g. Madelain 2017 FAV; Gutterman 1982 IFN)
-via a time-varying covariate column.</p></li>
+was not on disk when this model was built, and the PK structures are
+adapted from prior publications rather than original to this paper. This
+registry entry therefore covers only the PD MBM. Users who need human
+plasma-PK input functions for the FAV + IFN combination simulations
+(paper Figure 5) should drive <code>CONC_FAV_UM</code> and
+<code>CONC_IFN_IUML</code> from external PK profiles (e.g. Madelain 2017
+FAV; Gutterman 1982 IFN) via a time-varying covariate column.</p></li>
 <li><p><strong>RBV inhibition does not have a separate Eq 11 expression
 here.</strong> Eq 10 (INH_FAV mono), Eq 11 (INH_RBV mono), and Eq 13
 (combined antagonism) all collapse into a single expression by

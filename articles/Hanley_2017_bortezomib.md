@@ -641,7 +641,7 @@ rows by tens of percent.
 # is insensitive to the eta partitioning). Worst observed magnitude 6.5%, and
 # the systematic part of that is the ~5% normalisation offset discussed below.
 # Do NOT tighten below ~12%: the bound must survive a different cohort. 20% is
-# the skill's standard tolerance and still goes red on a mis-transcribed value
+# the package's standard tolerance and still goes red on a mis-transcribed value
 # (a volume or dose error moves a row by tens of percent; reading the BSA
 # reference as 1.8 m2 moves the gamma half-life by +40%).
 stopifnot(

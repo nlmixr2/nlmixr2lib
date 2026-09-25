@@ -120,8 +120,8 @@ mg/m^2/day x 4 days, 1 h IV infusion) into the central compartment.
 Total-course exposure (AUC0-inf) is compared against the paper’s Section
 3.3 medians of 21 mg*h/L (pediatric) and 26 mg*h/L (adult) at this dose.
 
-**Cohort size** is capped at 200 per arm per the extraction-skill limit
-(vignette-template.md); a larger cohort would not tighten the median-AUC
+**Cohort size** is capped at 200 per arm, the package’s limit for
+vignette cohorts; a larger cohort would not tighten the median-AUC
 comparison meaningfully and would inflate render time.
 
 ``` r

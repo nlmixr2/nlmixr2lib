@@ -354,10 +354,9 @@ ggplot(ari, aes(time, log_cfu, color = scenario)) +
   not from IIV; the full covariance matrix is not published, so this
   vignette plots typical-value trajectories rather than reproducing the
   Figure 2 uncertainty bands directly.
-- **Modified Bliss-Independence parsing.** The trimmed text extracted
-  from the PDF rendered Eq. 8 with several “formula-not-decoded”
-  placeholders. The literal PDF rendering of Eq. 8 has the success-
-  fraction
+- **Modified Bliss-Independence parsing.** The text extracted from the
+  PDF rendered Eq. 8 with several “formula-not-decoded” placeholders.
+  The literal PDF rendering of Eq. 8 has the success- fraction
   `[1 - E_MER * (1 - Emax_MER,Eagle * E_MER,Eagle) * (1 - E_VAN)] * (1 - Emax_VAN * E_VAN)`,
   where the inner `(1 - E_VAN)` gates the MER contribution and the outer
   `(1 - Emax_VAN * E_VAN)` enforces the 74.3% Emax cap on VAN’s effect.

@@ -528,7 +528,7 @@ round(pct, 1)
 ## Assumptions and deviations
 
 **The packaged model does not reproduce the paper’s own tepotinib
-figure, and ships anyway.** This is a deliberate, operator-ratified
+figure, and ships anyway.** This is a deliberate, maintainer-ratified
 decision for this extraction, and it is the single most important thing
 to know before using the model. The choice was between transcribing what
 Supplementary Table S1 prints (which fails against Supplementary Figure

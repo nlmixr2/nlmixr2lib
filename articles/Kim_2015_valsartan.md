@@ -307,7 +307,7 @@ Simulated single-dose NCA across the virtual cohort (160 mg oral).
 - **Allometric exponents fixed.** Kim 2015 Eq. 1 reports the exponents
   on CL/Q as the literal value 0.75 and on V1/V2 as 1.0 (linear `WT/70`)
   with no uncertainty. These are encoded as `fixed(0.75)` and `fixed(1)`
-  per the skill’s “fixed parameters” guidance.
+  per the package’s guidance on fixed parameters.
 
 - **Power-experiment alternative THETA(6) values not encoded.** Kim 2015
   reports three values of `THETA(6)` (0.793, 1.12, 1.19) corresponding

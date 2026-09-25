@@ -325,7 +325,7 @@ pkn_in <- sim_with_strata |>
   dplyr::filter(!is.na(Cc), time <= 24) |>
   dplyr::select(id, time, Cc, treatment = age_strat)
 
-# Defensive time-zero anchor (mandatory per pknca-recipes.md).
+# Defensive time-zero anchor (mandatory for the NCA).
 pkn_in <- dplyr::bind_rows(
   pkn_in,
   pkn_in |> dplyr::distinct(id, treatment) |>

@@ -34,14 +34,12 @@ values packaged in `modellib("Chi_2018_propofol")`.
 
 The paper does NOT report any OMEGA (IIV) or SIGMA (residual error)
 values, no goodness-of-fit / VPC plots, and no individual parameter
-estimates. Per operator decision (extraction-task sidecar
-320-chi_2018_medical_science_monitor request-002, q1 = C) the packaged
-model fixes every eta to zero and includes no residual-error term; it is
-a deterministic typical-value forward predictor. See the [Assumptions
-and deviations](#assumptions-and-deviations) section for the full
-provenance discussion and pointers to companion-paper extractions that
-DO report a full OMEGA / SIGMA structure for propofol in a Chinese
-cohort.
+estimates. Per maintainer decision, the packaged model fixes every eta
+to zero and includes no residual-error term; it is a deterministic
+typical-value forward predictor. See the [Assumptions and
+deviations](#assumptions-and-deviations) section for the full provenance
+discussion and pointers to companion-paper extractions that DO report a
+full OMEGA / SIGMA structure for propofol in a Chinese cohort.
 
 ## Population
 
@@ -368,14 +366,13 @@ CTP class. {.table}
   values DO exist in the original NONMEM output – they were simply not
   transcribed into the paper. The packaged model is therefore a
   deterministic typical-value predictor; VPC-style validation is not
-  possible from the packaged model alone. Operator decision
-  (extraction-task sidecar 320-chi_2018_medical_science_monitor
-  request-002, q1 = C) is to fix every eta to zero rather than borrow
-  from a companion paper or insert placeholders.
-- **No `propSd` placeholder.** Operator-specific direction in the
-  sidecar response: “do NOT add a propSd placeholder. If the residual
-  error is not reported in Chi 2018, leave it out – do not invent a
-  value.” The packaged model therefore declares the observation as
+  possible from the packaged model alone. The maintainers’ decision is
+  to fix every eta to zero rather than borrow from a companion paper or
+  insert placeholders.
+- **No `propSd` placeholder.** The maintainers specifically directed:
+  “do NOT add a propSd placeholder. If the residual error is not
+  reported in Chi 2018, leave it out – do not invent a value.” The
+  packaged model therefore declares the observation as
   `Cc <- central / vc` with no `Cc ~ prop(...)` line; nlmixr2 / rxode2
   simulation treats `Cc` as a deterministic algebraic output. The Oniki
   2018 NAFLD-risk and Zou 2012 MI-219 entries follow the same
@@ -415,11 +412,10 @@ CTP class. {.table}
   = 32, hepatic-insufficiency subgroup of the same Sun Yat-sen
   hospital). Because the two papers describe structurally distinct final
   models, OMEGA / SIGMA values are not directly transferable between
-  them; the operator (sidecar request-002, q2 = A) queued Ye 2012 for
-  its own standalone extraction rather than treating it as a depends_on
-  of this task. Users wanting between-subject variability for propofol
-  in a Chinese cohort should consult `modellib("Ye_2012_propofol")` when
-  it becomes available.
+  them; the maintainers queued Ye 2012 for its own standalone extraction
+  rather than making this entry depend on it. Users wanting
+  between-subject variability for propofol in a Chinese cohort should
+  consult `modellib("Ye_2012_propofol")` when it becomes available.
 - **TCI controller not encoded.** Chi 2018’s TCI-performance analysis
   (Figures 2 / 3 / 4 and the published MDPE / MDAPE / wobble /
   divergence summary) compares the Marsh-parameter Diprifusor TCI

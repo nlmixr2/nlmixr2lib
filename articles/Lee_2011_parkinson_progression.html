@@ -3596,16 +3596,14 @@ signed linear-scale fixed effects rather than log-transformed positive
 parameters. The model file therefore declares
 <code>paper_specific_etas &lt;- c("etaslope", "etasymeff")</code> so
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> accepts the names. The convention
-check passes (<code>lint-conventions.R</code> exit 0); see the SKILL.md
-“Paper-specific etas” reference for the broader pattern.</p></li>
+check passes.</p></li>
 <li><p><strong>No PKNCA validation.</strong> Standard popPK validation
 against PKNCA Cmax / AUC / half-life does not apply to a
 disease-progression model with no exposure compartment. The validation
 here is instead by direct algebraic reproduction of the paper’s
 published 3.62 placebo prediction at week 26, plus stochastic-VPC-style
-envelopes for the typical-value population. This follows the
-disease-progression / endogenous-model validation pattern documented in
-the SKILL.md <code>endogenous-validation.md</code> reference.</p></li>
+envelopes for the typical-value population. This follows the package’s
+validation pattern for disease-progression / endogenous models.</p></li>
 <li><p><strong>Trial-design extensions documented in the paper but not
 encoded in this model.</strong> Lee 2011 also describes a dropout
 sub-model (MAR mechanism with

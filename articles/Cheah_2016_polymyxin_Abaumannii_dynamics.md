@@ -357,7 +357,7 @@ x regimen. {.table}
 ## Assumptions and deviations
 
 The packaged models reproduce Cheah 2016 Table 1 verbatim per strain
-except for the following operator-approved inheritances and
+except for the following maintainer-approved inheritances and
 approximations (also recorded in each model file’s `ini()` comments).
 
 - **SC50 fixed at 36.5 mg/L** in Eq 8 inherited from Bulitta et al. 2015
@@ -366,14 +366,13 @@ approximations (also recorded in each model file’s `ini()` comments).
   The Stim half-saturation polymyxin concentration is not reported in
   Cheah 2016 or any on-disk supplement. The Bulitta 2015 framework is
   the closest published source for the same turnover-style adaptation
-  model used by Cheah 2016 (operator-approved fixed-from-class proxy;
-  sidecar request 001 answer A).
+  model used by Cheah 2016 (maintainer-approved fixed-from-class proxy).
 - **Kd_cations = 200 umol/L** and **Kd_polymyxin = 0.3 umol/L** in Eq 4
   inherited from Bulitta et al. 2010 (Antimicrob Agents Chemother
   54:2051-2062, Table 1 footnote g), the same lipid-A LPS
   receptor-occupancy model that Cheah 2016 references as ref 30 for its
   binding submodel. Cheah 2016 does not report these constants
-  explicitly (operator-approved sidecar 001 answer A).
+  explicitly (maintainer-approved).
 - **MW_polymyxin = 1163 g/mol** inherited from Bulitta 2010 (colistin
   reference); polymyxin B (~1203 g/mol) and colistin (~1163 g/mol) are
   within 3% and Cheah 2016 uses identical structural binding parameters

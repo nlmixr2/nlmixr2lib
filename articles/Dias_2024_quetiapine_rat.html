@@ -3960,7 +3960,7 @@ those factors are precisely the four published <code>Keo</code> values
 (0.450, 0.500, 0.568, 1.01). Under printed Eq (3) the ratio would
 approach 1 in every panel, which section 4 above demonstrates
 numerically. The control-stream form is implemented; this deviation was
-raised with the operator and confirmed on 2026-08-05. A consequence
+raised with the maintainers and confirmed on 2026-08-05. A consequence
 worth noting for anyone re-fitting the model is that <code>EQTP</code>
 and <code>Keo</code> enter the drug effect only as the product
 <code>EQTP * Keo</code>, which is consistent with their unusually high
@@ -3968,9 +3968,8 @@ RSEs (66% and 50%).</p>
 <p><strong>No PK layer is included.</strong> The unbound brain
 quetiapine driver must be supplied by the user as
 <code>CU_QTP_BRAIN</code>. The upstream popPK model (Carreno 2020, <a href="doi:10.1124/jpet.120.000109" class="uri">doi:10.1124/jpet.120.000109</a>) is not implemented in
-nlmixr2lib; its only open-access route was blocked at the time of
-extraction, and it has been logged for later acquisition. The Dias 2024
-PD system is fully specified without it.</p>
+nlmixr2lib; its only open-access route was blocked when this model was
+built. The Dias 2024 PD system is fully specified without it.</p>
 <p><strong>The driver profiles used here are digitised from Figure
 4a</strong>, at roughly +/- 0.01 ng/mL. They are illustrative only: no
 <code>ini()</code> value depends on them. Users with the Carreno 2020
@@ -4051,7 +4050,7 @@ family), <code>SCORE_PPI</code> (prepulse inhibition; the
 <code>SCORE_</code> prefix is required because the bare letters PPI
 already denote proton-pump inhibitors in the register, as
 <code>CONMED_PPI</code>), and <code>FORM_QTP_QLNC</code> (a member of
-the auto-approved <code>FORM_&lt;drug&gt;_&lt;formulation&gt;</code>
+the accepted <code>FORM_&lt;drug&gt;_&lt;formulation&gt;</code> naming
 family). The compartment register also gains <code>dopamine</code> as a
 canonical extracellular-neurotransmitter output, the neurotransmitter
 sibling of the existing <code>prolactin</code> entry.</p>

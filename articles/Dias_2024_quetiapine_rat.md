@@ -761,18 +761,17 @@ and 1.0 times `Cu,brain` in the four panels, and those factors are
 precisely the four published `Keo` values (0.450, 0.500, 0.568, 1.01).
 Under printed Eq (3) the ratio would approach 1 in every panel, which
 section 4 above demonstrates numerically. The control-stream form is
-implemented; this deviation was raised with the operator and confirmed
-on 2026-08-05. A consequence worth noting for anyone re-fitting the
-model is that `EQTP` and `Keo` enter the drug effect only as the product
-`EQTP * Keo`, which is consistent with their unusually high RSEs (66%
-and 50%).
+implemented; this deviation was raised with the maintainers and
+confirmed on 2026-08-05. A consequence worth noting for anyone
+re-fitting the model is that `EQTP` and `Keo` enter the drug effect only
+as the product `EQTP * Keo`, which is consistent with their unusually
+high RSEs (66% and 50%).
 
 **No PK layer is included.** The unbound brain quetiapine driver must be
 supplied by the user as `CU_QTP_BRAIN`. The upstream popPK model
 (Carreno 2020, <doi:10.1124/jpet.120.000109>) is not implemented in
-nlmixr2lib; its only open-access route was blocked at the time of
-extraction, and it has been logged for later acquisition. The Dias 2024
-PD system is fully specified without it.
+nlmixr2lib; its only open-access route was blocked when this model was
+built. The Dias 2024 PD system is fully specified without it.
 
 **The driver profiles used here are digitised from Figure 4a**, at
 roughly +/- 0.01 ng/mL. They are illustrative only: no `ini()` value
@@ -855,7 +854,7 @@ in `covariatesDataExcluded` rather than `covariateData`.
 in the `CU_<DRUG>` family), `SCORE_PPI` (prepulse inhibition; the
 `SCORE_` prefix is required because the bare letters PPI already denote
 proton-pump inhibitors in the register, as `CONMED_PPI`), and
-`FORM_QTP_QLNC` (a member of the auto-approved
-`FORM_<drug>_<formulation>` family). The compartment register also gains
-`dopamine` as a canonical extracellular-neurotransmitter output, the
-neurotransmitter sibling of the existing `prolactin` entry.
+`FORM_QTP_QLNC` (a member of the accepted `FORM_<drug>_<formulation>`
+naming family). The compartment register also gains `dopamine` as a
+canonical extracellular-neurotransmitter output, the neurotransmitter
+sibling of the existing `prolactin` entry.

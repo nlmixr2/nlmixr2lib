@@ -3595,7 +3595,7 @@ possible.</li>
 <strong>Unit ambiguity.</strong> The bundle’s <code>.ctl</code> does
 not declare time, dose, or concentration units.
 <code>units$time = "h"</code>, <code>units$dosing = "mg"</code>, and
-<code>units$concentration = "mg/L"</code> are operator-default
+<code>units$concentration = "mg/L"</code> are maintainer-default
 placeholders chosen so the values flow through
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> consistently. The numeric values in
 <code>ini()</code> are unchanged from the <code>.res</code> listing
@@ -3604,7 +3604,7 @@ later identified, the units may need to be revised; the parameter values
 stay correct.</li>
 <li>
 <strong>Time-unit physiological plausibility.</strong> Under the
-operator-default <code>units$time = "h"</code>, total lidocaine
+maintainer-default <code>units$time = "h"</code>, total lidocaine
 elimination = <code>k_megx_form + k_xyl_form = 0.037 1/h</code> with
 apparent t1/2 = <code>ln(2)/0.037 ~ 18.7 h</code>, slower than the
 textbook lidocaine IV t1/2 (~1.5-2 h after a single bolus, longer with
@@ -3618,7 +3618,7 @@ source population is one with unusually slow lidocaine elimination
 Without the linked publication the choice between these interpretations
 cannot be settled. The model file faithfully reproduces the rate
 constants from the <code>.res</code> listing; the unit declaration is
-operator-default.</li>
+maintainer-default.</li>
 <li>
 <strong>DLVL and S1A2 semantics.</strong> The bundle’s simulated
 dataset shows DLVL values ranging continuously from 0 to 10 (not

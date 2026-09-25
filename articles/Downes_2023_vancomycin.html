@@ -3342,10 +3342,10 @@ given.</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG only. rxode2's own streams are partitioned per solver</span></span>
 <span><span class="co"># thread, so a machine with a different thread count draws a different cohort.</span></span>
 <span><span class="co"># Every assertion below is written to hold for any cohort this model can</span></span>
-<span><span class="co"># produce; see references/known-vignette-failure-patterns.md pattern 12.</span></span>
+<span><span class="co"># produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20230425</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">200L</span>  <span class="co"># per arm; the skill caps validation cohorts at 200</span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">200L</span>  <span class="co"># per arm; validation cohorts are capped at 200</span></span>
 <span><span class="va">lnq</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">med</span>, <span class="va">q1</span>, <span class="va">q3</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n</span>, meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">med</span><span class="op">)</span>, sdlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">q3</span> <span class="op">/</span> <span class="va">q1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">0.75</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>

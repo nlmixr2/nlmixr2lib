@@ -3778,12 +3778,13 @@ ferritin was confirmed in this analysis.” <code>Kin</code>,
 <code>Kout</code>, <code>SCL_ref</code>, and <code>SHP_ref</code> are
 all reported as FIXed point values in Bellanti 2015 Table III; the
 underlying analysis that produced them is unpublished. The packaged
-model reproduces the values inline (the Phase 1 step 6 “unidentifiable
-upstream” decision rule) with <code>fixed()</code> wrappers documenting
-their non-estimated status; users who want to refit these parameters
-need a separate iron-overload dataset and a primary disease-model fit.
-This vignette and the model file’s <code>description</code> make the
-unpublished-upstream provenance explicit.</li>
+model reproduces the values inline as reported, because the upstream
+analysis cannot be located, with <code>fixed()</code> wrappers
+documenting their non-estimated status; users who want to refit these
+parameters need a separate iron-overload dataset and a primary
+disease-model fit. This vignette and the model file’s
+<code>description</code> make the unpublished-upstream provenance
+explicit.</li>
 <li>
 <strong><code>Kin</code> and <code>SHP</code> unit labels in
 Bellanti 2015 Table III are publication typos.</strong> Table III lists
@@ -3872,8 +3873,8 @@ endogenous-biomarker disease-progression model with no PK observations
 parameters are not the appropriate validation target. The vignette
 instead exercises the dimensional-analysis, drug-free-baseline,
 drug-effect, time-to-threshold (Fig 5), compliance-scenario (Fig 6),
-VPC, and perturbation-recovery checks recommended for endogenous models
-(<code>references/endogenous-validation.md</code>).</li>
+VPC, and perturbation-recovery checks recommended for endogenous
+models.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

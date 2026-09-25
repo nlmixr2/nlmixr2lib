@@ -3586,8 +3586,7 @@ from the reference by more than 20%.</caption>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pct</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">cmp</span><span class="op">$</span><span class="va">treatment</span>, <span class="va">cmp</span><span class="op">$</span><span class="va">Day</span>, <span class="va">cmp</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Cohort-derived quantities, so assert on the CENTRE and a robust envelope</span></span>
-<span><span class="co"># rather than on any single arm's extreme (see the repo CLAUDE.md note on</span></span>
-<span><span class="co"># cohort assertions). A mis-transcribed clearance, volume, dose or unit moves</span></span>
+<span><span class="co"># rather than on any single arm's extreme. A mis-transcribed clearance, volume, dose or unit moves</span></span>
 <span><span class="co"># the whole distribution by tens of percent and breaks both bounds.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">pct</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">10</span>,</span>

@@ -3345,10 +3345,10 @@ protocols share the same structural PK and differ only in DBSA.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">protocol</span>, time <span class="op">=</span> <span class="va">time_in_tau</span>, <span class="va">Cc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Defensive time-zero row guarantee per the pknca-recipes.md guidance: the</span></span>
-<span><span class="co"># extravascular pre-dose concentration is 0. The dense observation grid</span></span>
-<span><span class="co"># already includes time = 0 in the steady-state window, but the defensive</span></span>
-<span><span class="co"># bind_rows / distinct pattern protects against future grid changes.</span></span>
+<span><span class="co"># Defensive time-zero row guarantee: the extravascular pre-dose</span></span>
+<span><span class="co"># concentration is 0. The dense observation grid already includes time = 0</span></span>
+<span><span class="co"># in the steady-state window, but the defensive bind_rows / distinct pattern</span></span>
+<span><span class="co"># protects against future grid changes.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca</span>,</span>
 <span>  <span class="va">sim_nca</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">protocol</span><span class="op">)</span> <span class="op">%&gt;%</span></span>

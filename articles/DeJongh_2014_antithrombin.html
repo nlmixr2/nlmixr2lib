@@ -3442,12 +3442,12 @@ with a pre-dose row per (id, cohort) so AUC0-inf is defined from t =
 <p>Table 2 reports the mean baseline-corrected Cmax (% of normal), tmax
 (h), t1/2 (h), and AUC0-inf (% * h) per dose group, plus the incremental
 recovery (%/IU/kg). The block below builds a single side-by-side table
-via <code><a href="../reference/ncaComparisonTable.html">nlmixr2lib::ncaComparisonTable()</a></code> at the 20% tolerance
-the skill’s PKNCA-recipe recommends. Cmax is expected to sit slightly
-above the reported mean because the simulation captures the model’s
-typical-value trajectory (which is monotonically decreasing from the
-end-of-infusion concentration), whereas the paper’s observed Cmax
-reflects individual scatter around end-of-infusion sampling.</p>
+via <code><a href="../reference/ncaComparisonTable.html">nlmixr2lib::ncaComparisonTable()</a></code> at the package’s
+standard 20% tolerance. Cmax is expected to sit slightly above the
+reported mean because the simulation captures the model’s typical-value
+trajectory (which is monotonically decreasing from the end-of-infusion
+concentration), whereas the paper’s observed Cmax reflects individual
+scatter around end-of-infusion sampling.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">published_nca</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">cohort</span>,                   <span class="op">~</span><span class="va">cmax</span>,  <span class="op">~</span><span class="va">tmax</span>,  <span class="op">~</span><span class="va">half.life</span>, <span class="op">~</span><span class="va">aucinf.obs</span>,</span>

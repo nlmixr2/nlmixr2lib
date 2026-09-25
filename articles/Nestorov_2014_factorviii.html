@@ -3038,11 +3038,10 @@ while extracting the model and are documented here for transparency:</p>
 layout-corrupted operators: stretched minus signs render as
 <code>/C0</code> and centered dots as <code>/C1</code>. The intended
 math is unambiguous when read alongside the surrounding sentences and
-Table 1, but the literal-text PDF/markdown trim shows the corrupted
-glyphs (e.g., <code>VWF/C0 0.343</code>, <code>STUD /C1 Q5</code>). The
-model uses the standard interpretation (negative exponent of VWF on CL
-and multiplicative covariate-by-typical-parameter form,
-respectively).</li>
+Table 1, but the text extracted from the PDF shows the corrupted glyphs
+(e.g., <code>VWF/C0 0.343</code>, <code>STUD /C1 Q5</code>). The model
+uses the standard interpretation (negative exponent of VWF on CL and
+multiplicative covariate-by-typical-parameter form, respectively).</li>
 <li>The reported correlation between IIV on CL and V1 (0.548) is
 consistent with the reported variances (0.0590 and 0.0180) and reported
 covariance (0.0179) only under the NONMEM
@@ -3345,17 +3344,17 @@ IIV draws; larger discrepancies would indicate a coding error.</p>
 </h2>
 <ul>
 <li>
-<strong>Final model selected per skill convention.</strong> Nestorov
-2014 reports both a base model (allometric WT on V1 only) and a final
-covariate model (VWF on CL plus WT and HCT on V1) for rFVIIIFc, with a
-separate base model for the comparator rFVIII (Advate) product. The
-packaged model implements the rFVIIIFc final covariate model, “Without
-BLQ values” column of Table 1. The rFVIII (Advate) population PK results
-are summarised in Table S2 of the supplement; that comparator model is a
-different molecule and is not packaged here. Note that the paper itself
-uses the rFVIIIFc <em>base</em> model (without VWF and HCT) for the
-prospective steady-state simulations of Table 2 and Figure 2, on the
-grounds that VWF is a time-varying covariate whose within-subject
+<strong>Final model selected per package convention.</strong>
+Nestorov 2014 reports both a base model (allometric WT on V1 only) and a
+final covariate model (VWF on CL plus WT and HCT on V1) for rFVIIIFc,
+with a separate base model for the comparator rFVIII (Advate) product.
+The packaged model implements the rFVIIIFc final covariate model,
+“Without BLQ values” column of Table 1. The rFVIII (Advate) population
+PK results are summarised in Table S2 of the supplement; that comparator
+model is a different molecule and is not packaged here. Note that the
+paper itself uses the rFVIIIFc <em>base</em> model (without VWF and HCT)
+for the prospective steady-state simulations of Table 2 and Figure 2, on
+the grounds that VWF is a time-varying covariate whose within-subject
 dynamics were not characterised in this analysis; users wishing to
 reproduce Table 2 / Figure 2 can set VWF = 118 and HCT = 45 in the input
 dataset to neutralise the covariate adjustments.</li>

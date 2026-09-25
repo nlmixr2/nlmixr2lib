@@ -361,7 +361,7 @@ cat("Barnett 2018 reported Cmax fold-increase: ~13.2x\n")
 
 The typical-value simulation underestimates the published mean Cmax
 fold-increase (paper reports ~13.2x; typical-value sim gives ~10x). The
-discrepancy is within the ~20% range that the skill’s verification
+discrepancy is within the ~20% range that the package’s validation
 checklist flags for narrative discussion rather than parameter tuning.
 Likely contributors: (1) the typical-value simulation reproduces the
 population-typical trajectory, whereas the published 13.2x is the cohort

@@ -178,10 +178,11 @@ Two consequences are worth flagging because they are easy to get wrong:
 ## Validation strategy
 
 This is a mechanistic model with an endogenous steady state, so the
-primary gates follow `endogenous-validation.md`: a steady-state hold, a
-perturbation-recovery check, and a mass-balance audit. The lanadelumab
-arm does have a genuine PK profile, so a PKNCA block is included and
-checked against closed-form single-dose expectations.
+primary gates follow the package’s validation pattern for endogenous
+models: a steady-state hold, a perturbation-recovery check, and a
+mass-balance audit. The lanadelumab arm does have a genuine PK profile,
+so a PKNCA block is included and checked against closed-form single-dose
+expectations.
 
 Throughout, simulations begin with a 1000 h equilibration period,
 matching `basal_equilibrium_duration` in `SimInput_HAE.r` (line 21).

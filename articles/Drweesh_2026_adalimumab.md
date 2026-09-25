@@ -526,9 +526,8 @@ cat(sprintf("Observed mean trough (Table 1) = 7.8 mg/L\n"))
   Marquez-Megias 2023 IBD adalimumab popPK model (Table 3, Final Model),
   which Drweesh 2026 explicitly cites as a structural-form precedent.
   Each inherited value has an in-file source-trace comment. This
-  dependency was approved by the operator in a prior sidecar:
-  re-extraction is conditional on Marquez-Megias 2023 being available in
-  the package.
+  dependency was approved by the maintainers: re-extraction is
+  conditional on Marquez-Megias 2023 being available in the package.
 
 - **`ka` differs from Marquez-Megias 2023.** Drweesh 2026 fixes ka =
   0.01 1/h (citing Marquez-Megias 2021 and Kang 2020), while the

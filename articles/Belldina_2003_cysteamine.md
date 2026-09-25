@@ -351,8 +351,8 @@ sim |>
 ## PKNCA validation
 
 PKNCA is run on the simulated plasma profile across the last 6 h dosing
-interval at steady state (steady-state recipe of `pknca-recipes.md`).
-Reported NCA values are compared against Belldina 2003 Results.
+interval at steady state. Reported NCA values are compared against
+Belldina 2003 Results.
 
 ``` r
 

@@ -358,9 +358,9 @@ if (nzchar(bundle_path) && file.exists(bundle_path)) {
 ```
 
 The bundle’s full simulated dataset is not redistributed with the
-nlmixr2lib package (size and license considerations); operators with
-access to the DDMORE Foundation Model Repository can download
-DDMODEL00000228 to reproduce the F.2 overlay directly.
+nlmixr2lib package (size and license considerations); users with access
+to the DDMORE Foundation Model Repository can download DDMODEL00000228
+to reproduce the F.2 overlay directly.
 
 ## Assumptions and deviations
 
@@ -380,13 +380,12 @@ DDMODEL00000228 to reproduce the F.2 overlay directly.
   `peripheral1_glu`, `effect_glu_prod`, `effect_ins`, `jejunum_glu`,
   `ileum_glu`, `cumloss_apap`, `glp1`, `gip`) that are not in the
   canonical compartment-name register
-  (`.claude/skills/extract-literature-model/references/compartment-names.md`).
-  The model’s mechanism (a paracetamol probe co-administered with a
-  glucose load and resulting incretin response) is genuinely
-  multi-substance and does not fit the single-substance canonical
-  scheme; renaming the glucose-arm compartments to `central` / etc.
-  would collide with the paracetamol-arm canonical `central` /
-  `peripheral1`.
+  (`inst/references/compartment-names.md`). The model’s mechanism (a
+  paracetamol probe co-administered with a glucose load and resulting
+  incretin response) is genuinely multi-substance and does not fit the
+  single-substance canonical scheme; renaming the glucose-arm
+  compartments to `central` / etc. would collide with the
+  paracetamol-arm canonical `central` / `peripheral1`.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warns on each of these but the warnings are accepted as inherent to
   the mechanism.
@@ -424,7 +423,7 @@ DDMODEL00000228 to reproduce the F.2 overlay directly.
   consistency against the bundle’s simulated dataset is the only
   available numeric anchor; the linked publication that the bundle
   states “the uploaded model conforms to” is not identified in the
-  bundle’s RDF or accommodations text. Operators with access to the
-  DDMORE Foundation Model Repository can recover the linked publication
-  via the DDMORE web interface, but the bundle on disk does not provide
-  that pointer.
+  bundle’s RDF or accommodations text. Users with access to the DDMORE
+  Foundation Model Repository can recover the linked publication via the
+  DDMORE web interface, but the bundle on disk does not provide that
+  pointer.

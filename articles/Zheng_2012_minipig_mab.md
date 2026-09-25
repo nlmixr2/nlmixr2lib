@@ -469,13 +469,12 @@ by the packaged models.
 - **No IIV encoded.** Paper Methods (page 252) state “Inter-individual
   differences of parameters were modeled by log-normal distribution”,
   but the paper does not tabulate the variance magnitudes for any of the
-  log-normal IIV terms in any of the nine mAbs. Per the standing “never
-  invent variances” policy (`references/pre-flight-checklist.md`), the
-  packaged models omit the `eta*` blocks entirely. Downstream users can
-  add typical mAb IIV values from other publications if they need a
-  stochastic VPC. Silence on IIV in the paper is treated as
-  “unquantified” rather than “zero” – the ini() encoding is a
-  typical-value fit only.
+  log-normal IIV terms in any of the nine mAbs. Per the package’s
+  standing “never invent variances” policy, the packaged models omit the
+  `eta*` blocks entirely. Downstream users can add typical mAb IIV
+  values from other publications if they need a stochastic VPC. Silence
+  on IIV in the paper is treated as “unquantified” rather than “zero” –
+  the ini() encoding is a typical-value fit only.
 - **No residual error encoded.** Same reasoning: paper Methods say
   “Proportional and additive error models were used”, but no magnitudes
   are reported. Downstream users can attach a residual error structure

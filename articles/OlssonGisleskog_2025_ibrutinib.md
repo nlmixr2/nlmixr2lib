@@ -1003,8 +1003,8 @@ assertion is placed on it.
     `AUCtau,ss = 560 mg x 0.666 x (71/65)^0.699 / 1123 L/h = 353 ng.h/mL`
     against the Table 3 median of 349, a 1.2% difference. The main
     alternative, centering at the Table 1 median of 71 y, gives 332
-    ng.h/mL – 4.8% low. The operator ratified the 65-year reading; it is
-    recorded here so a reader can substitute 71 y (or a value from
+    ng.h/mL – 4.8% low. The maintainers ratified the 65-year reading; it
+    is recorded here so a reader can substitute 71 y (or a value from
     Marostica 2015, should it become available) by editing the single
     `AGE / 65` term in `model()`. Note that both readings affect only
     the absolute exposure level, not the shape of the distribution or

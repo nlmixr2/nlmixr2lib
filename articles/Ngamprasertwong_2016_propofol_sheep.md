@@ -366,7 +366,5 @@ Simulated NCA on fetal Cfetus (50 typical-subject ewes, HR = 135).
   above makes the divergence visible: simulated Cfetus tracks Cc,
   whereas the paper’s Cfetus stays well below Cc throughout the
   observation window. This vignette reports the discrepancy without
-  speculating about its source; the operator-followups register
-  (`from_people/operator_followups/single_paper_followups.md`) carries
-  an entry directing manual verification of the fetal-vs-maternal
-  figures after the branch lands on `origin/main`.
+  speculating about its source; the maintainers have flagged the
+  fetal-vs-maternal figures for manual verification.

@@ -37,7 +37,7 @@
   Chatelut E, Karlsson MO. *Population pharmacokinetic-pharmacodynamic
   model for neutropenia with patient subgroup identification: comparison
   across anticancer drugs.* (cited by name in the bundle’s `.mod`; full
-  citation not on disk in this worktree).
+  citation not on disk).
 
 This is a **PD-only Friberg-style myelosuppression model** for
 docetaxel-induced neutropenia. Docetaxel pharmacokinetics enter as a
@@ -75,8 +75,8 @@ The bundle does **not** ship an `Output_real_*.lst` (i.e., a refit on
 the original Kloft 2006 cohort data is not part of this DDMORE entry).
 Parameter values in the model file therefore inherit directly from the
 publication-fixed `$THETA` block. Neither Netterberg 2017 nor Kloft 2006
-PDF is on disk in this worktree, so a side-by-side parameter-table
-comparison against the published values was not performed; see *Errata*.
+PDF is on disk, so a side-by-side parameter-table comparison against the
+published values was not performed; see *Errata*.
 
 ## Population
 
@@ -91,11 +91,11 @@ time-to-different-neutropenic-grade).
 
 Detailed population demographic information (n_subjects, age, weight,
 sex, race) is not reproduced in the DDMORE bundle and the Netterberg
-2017 / Kloft 2006 publication PDFs are not on disk in this worktree. The
-bundle’s `Simulated_myelosuppression_dailyANC.csv` represents a single
-virtual subject and is a regression-style smoke test, not a
-representative cohort. The same machine-readable metadata is available
-as `readModelDb("Netterberg_2017_docetaxel")$population`.
+2017 / Kloft 2006 publication PDFs are not on disk. The bundle’s
+`Simulated_myelosuppression_dailyANC.csv` represents a single virtual
+subject and is a regression-style smoke test, not a representative
+cohort. The same machine-readable metadata is available as
+`readModelDb("Netterberg_2017_docetaxel")$population`.
 
 ## Source trace
 
@@ -136,12 +136,12 @@ mod <- readModelDb("Netterberg_2017_docetaxel")
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
-# Bundle path on this worktree's host. The bundle is in the
-# mab_human_consensus literature directory; the file is not redistributed
-# inside the package, so the chunk is rendered conditionally on the file
-# being present.
-bundle_path <- "/home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/224/Simulated_myelosuppression_dailyANC.csv"
-bundle_present <- file.exists(bundle_path)
+# The DDMORE bundle is not redistributed inside the package. Maintainers who
+# hold a copy point NLMIXR2LIB_LITERATURE_DIR at it; otherwise the chunks that
+# need the file are skipped.
+bundle_path <- file.path(Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", ""),
+                         "ddmore_scraping/224/Simulated_myelosuppression_dailyANC.csv")
+bundle_present <- nzchar(Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", "")) && file.exists(bundle_path)
 ```
 
 ``` r
@@ -442,9 +442,9 @@ forward-looking note rather than a validation gap.
   uses `$ESTIMATION ... MAXEVALS=0` (no re-fit). The accompanying
   `Output_simulated_*.lst` reaches the same point values trivially
   because `MAXEVALS=0` runs an evaluation step only. Neither Netterberg
-  2017 nor Kloft 2006 publication PDF is on disk in this worktree, so a
-  side-by-side parameter-table comparison against the original published
-  values was not performed.
+  2017 nor Kloft 2006 publication PDF is on disk, so a side-by-side
+  parameter-table comparison against the original published values was
+  not performed.
 
 - **Bundle deviation from publication: gamma (PO) IIV fixed to zero.**
   Per `Model_Accommodations.txt`: “the OMEGA related to the gamma

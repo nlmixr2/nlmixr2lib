@@ -3616,7 +3616,7 @@ L/min flow used in the paper’s own scenarios, one after weaning.</p>
 <code class="sourceCode R"><span><span class="co"># Steady-state trough on the standard regimen, at the end of the last complete</span></span>
 <span><span class="co"># interval. Assertions are on the MEDIAN and a robust quantile, never on the</span></span>
 <span><span class="co"># cohort extremes, which are not reproducible across rxode2 builds or thread</span></span>
-<span><span class="co"># counts (see CLAUDE.md).</span></span>
+<span><span class="co"># counts.</span></span>
 <span><span class="va">trough</span> <span class="op">&lt;-</span> <span class="va">sim_cohort</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">168</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">arm</span><span class="op">)</span> <span class="op">|&gt;</span></span>

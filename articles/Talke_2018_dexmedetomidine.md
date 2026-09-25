@@ -290,8 +290,7 @@ sim_cc |>
 ## PKNCA validation
 
 PKNCA is run on the simulated plasma profiles. Single-dose recipe with a
-treatment grouping for the per-cohort summary (recipe 1 of
-`pknca-recipes.md`).
+treatment grouping for the per-cohort summary.
 
 ``` r
 

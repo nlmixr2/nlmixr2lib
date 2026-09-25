@@ -689,9 +689,9 @@ cap-vs-mg/kg dosing yields broadly similar exposures across subgroups.
   written directly into `central` and there is no `depot` compartment.
 - **Population metadata.** Median age, median weight, sex distribution,
   and per-region patient counts are not enumerated in the
-  publicly-available trimmed text used during extraction; the
-  `population` block reports the pooled-cohort summary directly cited (n
-  = 729, 3 studies, 9036 + 9012 observations) and notes the omissions in
+  publicly-available text extracted from the PDF; the `population` block
+  reports the pooled-cohort summary directly cited (n = 729, 3 studies,
+  9036 + 9012 observations) and notes the omissions in
   `population$notes`. The virtual-cohort weight distribution is anchored
   to the reference 66 kg with log-normal sigma 0.20 to span ~37 - 156
   kg.

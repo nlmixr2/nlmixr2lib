@@ -380,13 +380,13 @@ the synthetic cohort.
   block (correlated) IIV structure for V1, CL, and V2 in the final
   NONMEM run (“\$OMEGA BLOCK”), but Table 1 tabulates only the diagonal
   CV% values for each parameter. Off-diagonal covariances are not
-  reported, and no supplementary control stream is on disk for this
-  extraction (the task metadata lists `Supplements: (none)`). The
-  packaged model implements diagonal-only IIV; correlation between
-  simulated eta_CL, eta_V1, and eta_V2 is therefore zero, whereas the
-  source paper’s simulation would have non-zero correlations. This is a
-  stochastic-VPC deviation only; typical-value predictions (zero-RE
-  simulation, used for the dotted-line typical-patient curves and for
+  reported, and no supplementary control stream was available (the
+  source metadata lists `Supplements: (none)`). The packaged model
+  implements diagonal-only IIV; correlation between simulated eta_CL,
+  eta_V1, and eta_V2 is therefore zero, whereas the source paper’s
+  simulation would have non-zero correlations. This is a stochastic-VPC
+  deviation only; typical-value predictions (zero-RE simulation, used
+  for the dotted-line typical-patient curves and for
   [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)-based
   replication of the Table 2 Cmaxss and AUC0-24ss columns) are
   unaffected.
@@ -437,7 +437,7 @@ the synthetic cohort.
   The paper does not detail the clinical criteria that classified a
   patient as severe. This is registered as the new canonical
   `DIS_INFECT_CSSSI_SEV` (see `inst/references/covariate-columns.md`)
-  and is operator-decoded from any source data assembler’s
+  and is decoded by the data assembler from the source study’s
   protocol-specific severity column.
 
 - **Synthetic cohort demographics.** Lodise 2018 Table 3 does not

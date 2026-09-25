@@ -661,8 +661,7 @@ All anchors agree to the precision the paper publishes.
     `CONMED_STEROID` covers per-record acute pulses or per-subject
     baseline / chronic use; `PRICORT` covers strictly pre-study
     history). The new canonical `CONMED_STEROID_FU` was registered
-    alongside this extraction (operator-approved sidecar 2026-06-19,
-    request-001 / response-001).
+    alongside this extraction (maintainer-approved 2026-06-19).
 
 6.  **No PKNCA validation.** Standard popPK validation against PKNCA
     Cmax / AUC / half-life does not apply to a disease-progression model
@@ -671,9 +670,8 @@ All anchors agree to the precision the paper publishes.
     anchors (Table 2 / Equation 8 worked examples) plus stochastic
     VPC-style envelopes that compare the simulated 60-week 90% CI of
     DAS28 against the paper’s published \[1.8, 4.2\] around PRED = 2.8
-    (Figure 5). This follows the disease-progression / endogenous-model
-    validation pattern documented in the SKILL.md
-    `endogenous-validation.md` reference.
+    (Figure 5). This follows the package’s standard validation pattern
+    for disease-progression / endogenous models.
 
 7.  **Several covariates were screened but not retained in the final
     model** (paper Methods “Covariate analyses”). Body weight, height,

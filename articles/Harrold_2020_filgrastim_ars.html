@@ -3186,8 +3186,8 @@ dynamics).</p>
 <span>  <span class="co"># observation rows so rxode2's dvid mapping resolves. The observables</span></span>
 <span>  <span class="co"># come AFTER all ODE states in this model, so referencing them as cmt =</span></span>
 <span>  <span class="co"># does not renumber any state-referencing slot (the slot-renumbering</span></span>
-<span>  <span class="co"># bug described in known-vignette-failure-patterns.md section 2 only fires</span></span>
-<span>  <span class="co"># when downstream ODE-state references would be displaced).</span></span>
+<span>  <span class="co"># bug only fires when downstream ODE-state references would be</span></span>
+<span>  <span class="co"># displaced).</span></span>
 <span>  <span class="va">obs_cc</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span></span>
 <span>    <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, WT <span class="op">=</span> <span class="va">WT</span><span class="op">)</span>,</span>
 <span>    <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">obs_grid_h</span><span class="op">)</span></span>
@@ -3554,10 +3554,10 @@ published values. Filgrastim is a simulation paper, not a re-fitting
 paper, so this is the intended use of <code>fixed()</code> on every
 estimate.</p></li>
 <li><p><strong>Cohort size: 200 per arm</strong>, not the 1000 per arm
-of the original paper. 200 is the per-arm cap for this skill’s vignette
-budget and is ample to visualise the survival benefit. Monte Carlo error
-on the day-60 survival fraction is roughly +/-0.04 at this sample size;
-the published RSB of 1.51 is reproduced within Monte Carlo
+of the original paper. 200 is the package’s per-arm cap for validation
+vignettes and is ample to visualise the survival benefit. Monte Carlo
+error on the day-60 survival fraction is roughly +/-0.04 at this sample
+size; the published RSB of 1.51 is reproduced within Monte Carlo
 noise.</p></li>
 <li><p><strong>Pediatric simulation NOT included in this
 vignette.</strong> Harrold 2020 Table S1 and Figure 4b report pediatric
@@ -3612,9 +3612,9 @@ without modifying the model file.</p></li>
 <li><p><strong>PKNCA validation is structural sanity-checking, not a
 per-table cross-check.</strong> Harrold 2020 does not report classical
 NCA descriptors; the inherited Melhem 2018 PK has its own validation in
-the <code>Melhem_2018_*</code> extraction (queued separately). The PKNCA
-block above confirms the simulated filgrastim PK lies in the published 5
-ug/kg s.c. exposure range; it is not a primary validation target of this
+the separate <code>Melhem_2018_*</code> extraction. The PKNCA block
+above confirms the simulated filgrastim PK lies in the published 5 ug/kg
+s.c. exposure range; it is not a primary validation target of this
 vignette.</p></li>
 </ul>
 </div>

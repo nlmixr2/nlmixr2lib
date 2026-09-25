@@ -410,13 +410,15 @@ Simulated log10 viable counts at sampling time-points used by Yadav 2017
   aeruginosa* isolate. No PKNCA validation is performed (there is no
   drug NCA to compute); the mechanistic checks above replace it, per the
   endogenous/mechanistic validation strategy.
-- **File naming.** The dispatch metadata listed the drug as
-  “Antimicrobial Agents and Chemo”, which is the journal name
-  (Antimicrobial Agents and Chemotherapy), not a drug. The paper
-  unambiguously models imipenem combined with tobramycin or amikacin, so
-  the five model files use the corresponding drug + isolate suffix.
-- **Five files, one paper.** Per the replicate-author-structure policy,
-  one vignette walks the paper as a whole and loads each of the five
+- **File naming.** The bibliographic metadata these models were built
+  from listed the drug as “Antimicrobial Agents and Chemo”, which is the
+  journal name (Antimicrobial Agents and Chemotherapy), not a drug. The
+  paper unambiguously models imipenem combined with tobramycin or
+  amikacin, so the five model files use the corresponding drug + isolate
+  suffix.
+- **Five files, one paper.** Following the package’s convention of
+  replicating the authors’ model structure, one vignette walks the paper
+  as a whole and loads each of the five
   [`modellib()`](https://nlmixr2.github.io/nlmixr2lib/reference/modellib.md)
   entries at the appropriate point. The authors did a single per-strain
   joint fit covering all IPM, AGS, and IPM + AGS data within that

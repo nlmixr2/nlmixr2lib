@@ -3143,12 +3143,11 @@ against the percentile envelope in Figure 3.</p>
 <div class="section level2">
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
-<p>Steady-state NCA over the final 72-h dosing interval (recipe 3 of
-<code>pknca-recipes.md</code>). The treatment grouping variable goes
-before <code>id</code> in the formula per project convention. PKNCA
-reports <code>cmax</code>, <code>tmax</code>, <code>cmin</code>,
-<code>cav</code> and <code>auclast</code> over the interval; the
-interval is the entire 72-h patch wear period.</p>
+<p>Steady-state NCA over the final 72-h dosing interval. The treatment
+grouping variable goes before <code>id</code> in the formula per project
+convention. PKNCA reports <code>cmax</code>, <code>tmax</code>,
+<code>cmin</code>, <code>cav</code> and <code>auclast</code> over the
+interval; the interval is the entire 72-h patch wear period.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">final_patch_start</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">final_patch_end</span><span class="op">)</span> <span class="op">|&gt;</span></span>

@@ -30,8 +30,9 @@ extraction.** Suksai 2026 specifies two mutually incompatible
 pharmacokinetic structures, and the one printed as Equations 1-4 cannot
 be executed. The model packaged here is the rate-constant structure that
 actually generated the paper’s published results. That choice was
-ratified by the operator; the evidence is reproduced quantitatively in
-this vignette so a reviewer can check it rather than take it on trust.
+ratified by the maintainers; the evidence is reproduced quantitatively
+in this vignette so a reviewer can check it rather than take it on
+trust.
 
 ### What the paper prints (Equations 1-4) – not implementable
 
@@ -788,7 +789,7 @@ a deliberate departure from the usual “text vs. printed-equation
 conflict -\> trust the equation” rule, taken because the printed
 equations reference a parameter (`CLint`) that the paper never reports
 and do not conserve mass, so they cannot be executed at all. The choice
-was ratified by the operator rather than made unilaterally.
+was ratified by the maintainers rather than made unilaterally.
 
 ### Assumptions
 

@@ -3155,7 +3155,7 @@ report the distributional shape; see Assumptions).</p>
 <span><span class="co"># rxode2's simulation RNG for the etas, and rxode2's streams are partitioned</span></span>
 <span><span class="co"># per solver thread -- so the eta draws differ on a machine with a different</span></span>
 <span><span class="co"># thread count. Every assertion below is written to hold for any cohort the</span></span>
-<span><span class="co"># model can produce (see pattern 12 of known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260902</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_sub</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
@@ -3240,10 +3240,10 @@ with the observed concentration range from Table 1 overlaid.</p>
 <div class="section level2">
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
-<p>Steady-state NCA over the final dosing interval (PKNCA recipe 3). The
-source paper reports no NCA parameter table, so the reference for
-comparison is the model-implied identity that must hold exactly for
-linear PK at steady state:</p>
+<p>Steady-state NCA over the final dosing interval. The source paper
+reports no NCA parameter table, so the reference for comparison is the
+model-implied identity that must hold exactly for linear PK at steady
+state:</p>
 <p>AUC(0-tau) = Dose / CL</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>

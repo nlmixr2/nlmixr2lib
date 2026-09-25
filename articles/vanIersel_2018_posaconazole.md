@@ -300,11 +300,9 @@ ggplot(day28, aes(time_in_dosing_interval, Q50, fill = cohort, color = cohort)) 
 ## PKNCA validation
 
 The model output is fed to PKNCA for steady-state NCA on the day-28
-dosing interval (per Recipe 3 in `references/pknca-recipes.md`). The
-PKNCA input filter uses only `!is.na(Cc)` and a defensive `time = 0` row
-per subject is added because the simulation grid starts at the first
-dose, not at a separate pre-dose record (per the time-zero guarantee in
-`pknca-recipes.md`).
+dosing interval. The PKNCA input filter uses only `!is.na(Cc)` and a
+defensive `time = 0` row per subject is added because the simulation
+grid starts at the first dose, not at a separate pre-dose record.
 
 ``` r
 
@@ -446,8 +444,8 @@ miscalibrated. Do not tune parameters to match.
   log-transformed concentration (SD 0.42 in phase 1, SD 0.322 in phase
   3). This is encoded as `Cc ~ lnorm(expSd)` with `expSd` switched
   between `expSd_p1` and `expSd_p3` via the `STUDY_POSA_PHASE3`
-  indicator (per the verification-checklist rule ‘NONMEM additive on
-  log-scale = lnorm in nlmixr2 with the same SD’).
+  indicator (per the package’s rule ‘NONMEM additive on log-scale =
+  lnorm in nlmixr2 with the same SD’).
 - **Healthy / HSCT pooling in the AML/MDS effect.** The final model
   retained AML/MDS as a single indicator; the reference category
   therefore pools healthy volunteers and HSCT recipients. The vignette’s

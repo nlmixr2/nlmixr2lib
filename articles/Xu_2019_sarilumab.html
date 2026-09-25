@@ -3009,7 +3009,7 @@ mg/L.</p>
 <td>
 <code>e_sexf_cl</code> (SEX multiplier on CLO/F)</td>
 <td><code>0.846</code></td>
-<td>Table 3, theta17; SEX=1=female (operator-confirmed)</td>
+<td>Table 3, theta17; SEX=1=female (maintainer-confirmed)</td>
 </tr>
 <tr class="odd">
 <td><code>var(etalvmax)</code></td>
@@ -3081,7 +3081,7 @@ scale this maps to a proportional residual error with
 <strong>SEX encoding.</strong> Xu 2019 codes <code>SEX=1</code> for
 female in the final CLO/F equation and reports that male patients have
 higher CL and lower AUC0-14d. This gives a multiplicative effect of
-0.846 when <code>SEXF=1</code> (female), which was operator-confirmed
+0.846 when <code>SEXF=1</code> (female), which was maintainer-confirmed
 during model extraction (see the <code>SEXF</code> entry in
 <code>covariateData</code>). The canonical <code>SEXF</code> column in
 nlmixr2lib uses 1 = female, so the effect is applied as
@@ -3432,14 +3432,14 @@ Table 4 mean values. All differences within ~10%.</caption>
 </h2>
 <ul>
 <li>
-<strong>SEX encoding (operator-confirmed).</strong> Xu 2019 reports
-the SEX covariate multiplier theta17 = 0.846 in the CLO/F equation and
-narrates that male patients had higher apparent clearance (lower
-AUC0-14d). Because <code>theta17 &lt; 1</code> reduces clearance, SEX in
-the final-model equation must indicate <strong>female</strong>
-(SEX=1=female). This interpretation was confirmed by the operator during
-extraction and is applied via the canonical <code>SEXF</code> covariate
-(1 = female).</li>
+<strong>SEX encoding (maintainer-confirmed).</strong> Xu 2019
+reports the SEX covariate multiplier theta17 = 0.846 in the CLO/F
+equation and narrates that male patients had higher apparent clearance
+(lower AUC0-14d). Because <code>theta17 &lt; 1</code> reduces clearance,
+SEX in the final-model equation must indicate <strong>female</strong>
+(SEX=1=female). This interpretation was confirmed by the maintainers
+during extraction and is applied via the canonical <code>SEXF</code>
+covariate (1 = female).</li>
 <li>
 <strong>Supplement not reviewed.</strong> The Clinical
 Pharmacokinetics electronic supplementary material (NONMEM control

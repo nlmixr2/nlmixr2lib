@@ -3150,8 +3150,7 @@ correctly.</p>
 <span><span class="co">#&gt;             58.53             58.50</span></span>
 <span></span>
 <span><span class="co"># Deterministic: this is closed-form arithmetic on published constants, so a</span></span>
-<span><span class="co"># tight bound is correct here (see pattern 11 of</span></span>
-<span><span class="co"># known-vignette-failure-patterns.md -- tighten deterministic gates, loosen</span></span>
+<span><span class="co"># tight bound is correct here (tighten deterministic gates, loosen</span></span>
 <span><span class="co"># cohort-derived ones).</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cl_inh_70kg</span> <span class="op">-</span> <span class="fl">58.5</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -3317,8 +3316,7 @@ unusually malnourished cohort.</p>
 <code class="sourceCode R"><span><span class="co"># `set.seed()` seeds R's RNG. It does NOT seed rxode2's simulation RNG, and</span></span>
 <span><span class="co"># rxode2's streams are partitioned PER SOLVER THREAD, so the drawn cohort</span></span>
 <span><span class="co"># differs between a 2-core CI runner and a 16-thread workstation. Every</span></span>
-<span><span class="co"># assertion below is written to hold for ANY cohort this model can produce</span></span>
-<span><span class="co"># (pattern 12 of references/known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># assertion below is written to hold for ANY cohort this model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240722</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">150L</span></span>
@@ -3388,8 +3386,7 @@ unusually malnourished cohort.</p>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span>, <span class="st">"WT"</span>, <span class="st">"CONMED_LPV"</span><span class="op">)</span>,</span>
 <span>  <span class="co"># This model has two algebraic observables backed by five ODE states, which</span></span>
-<span>  <span class="co"># is the shape rxode2's automatic ODE-&gt;linCmt conversion mis-maps</span></span>
-<span>  <span class="co"># (pattern 5b of known-vignette-failure-patterns.md).</span></span>
+<span>  <span class="co"># is the shape rxode2's automatic ODE-&gt;linCmt conversion mis-maps.</span></span>
 <span>  useLinCmt <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -4019,8 +4016,8 @@ per-unit nutritional-anthropometry effect on bioavailability in
 25.4% per 1 cm reduction”). The two forms agree at the breakpoint and
 diverge with depth: at this cohort’s minimum of <code>WAZ = -5.15</code>
 they give 0.516 (compounding) versus 0.441 (linear), a 17% relative
-difference. <strong>This choice is flagged for operator confirmation and
-does not affect any validation above, all of which are run at
+difference. <strong>This choice is flagged for maintainer confirmation
+and does not affect any validation above, all of which are run at
 <code>WAZ &gt;= -3</code> where the effect is inert.</strong>
 </li>
 <li>
@@ -4051,10 +4048,10 @@ blank on those rows and the Results are explicit that variability was
 included “parsimoniously”: one common BSV shared by the two rifabutin
 clearance pathways, and a separate BSV on des-rifabutin clearance. The
 <code>etalcl</code> eta is therefore deliberately added to both
-<code>cl</code> and <code>cl_form_desacetylrbn</code>. (In the trimmed
-text conversion of Table 2 the merged BSV cell is repeated onto every
-row of each block; the publisher PDF layout shows those cells are
-genuinely blank.)</li>
+<code>cl</code> and <code>cl_form_desacetylrbn</code>. (In the extracted
+text of Table 2 the merged BSV cell is repeated onto every row of each
+block; the publisher PDF layout shows those cells are genuinely
+blank.)</li>
 <li>
 <strong>The B2 initialization device is not part of the packaged
 model.</strong> Fifteen profiles had pre-dose concentrations below one

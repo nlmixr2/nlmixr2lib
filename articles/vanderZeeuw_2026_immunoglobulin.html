@@ -2876,9 +2876,8 @@ each model file citing <strong>both</strong> the primary publication and
 the review as the transcription source.</p>
 <p><strong>Everything in these twelve files is a transcription of a
 secondary source.</strong> Each model should be re-verified against its
-primary publication before being relied on. The per-study
-re-verification notes live in
-<code>refharvest/vanderZeeuw_2026_PMC13272613_cited_primaries.jsonl</code>.</p>
+primary publication before being relied on. Per-study re-verification
+notes are kept in the maintainers’ records.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ig_models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Primary / secondary immunodeficiency</span></span>
@@ -4172,8 +4171,8 @@ decision.</p>
 <li><p><strong>Secondary-source transcription.</strong> Every parameter
 comes from the review’s Table 4 or prose, not from the primary
 publications. Each file’s <code>reference</code> field names both.
-Re-verification notes per study are in
-<code>refharvest/vanderZeeuw_2026_PMC13272613_cited_primaries.jsonl</code>.</p></li>
+Re-verification notes per study are kept in the maintainers’
+records.</p></li>
 <li><p><strong>IIV convention.</strong> Read as apparent CV% and
 converted with <code>omega^2 = log(1 + CV^2)</code>. This follows the
 review’s own stated harmonisation (section 2.3) rather than being
@@ -4339,9 +4338,10 @@ section 3.2.2.3 prose (Vc 2.65, Vp 2.87).</li>
 <li>
 <strong>Lee 2024 is not yet extracted.</strong> Its six-level
 disease-type covariate on Vp requires minting new
-<code>DIS_&lt;disease&gt;</code> canonical columns, which is not an
-auto-approved covariate family. All of its parameters are tabulated, so
-it is ready to ship once those names are ratified.</li>
+<code>DIS_&lt;disease&gt;</code> canonical columns, which is not a
+covariate family whose new members are accepted automatically. All of
+its parameters are tabulated, so it is ready to ship once those names
+are ratified.</li>
 </ol>
 </div>
 </div>

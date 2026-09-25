@@ -3159,8 +3159,7 @@ See <em>Assumptions and deviations</em>.</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per</span></span>
 <span><span class="co"># solver thread, so a CI runner with a different thread count draws a different</span></span>
 <span><span class="co"># cohort. Every assertion below is either RNG-free (zeroRe / closed form) or</span></span>
-<span><span class="co"># gated on a robust cohort summary, never on a tail value. See pattern 12 of</span></span>
-<span><span class="co"># the skill's known-vignette-failure-patterns.</span></span>
+<span><span class="co"># gated on a robust cohort summary, never on a tail value.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240604</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_cohort</span> <span class="op">&lt;-</span> <span class="fl">200L</span>  <span class="co"># cap is 200 per arm</span></span>

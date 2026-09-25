@@ -3164,7 +3164,7 @@ half-life 64 h per Table 3).</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, regimen <span class="op">=</span> <span class="st">"R 5 mg single dose"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Guarantee a time = 0 anchor for AUC0-Inf integration (see pknca-recipes.md).</span></span>
+<span><span class="co"># Guarantee a time = 0 anchor for AUC0-Inf integration.</span></span>
 <span><span class="va">zero_anchor</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>    <span class="va">d</span>,</span>

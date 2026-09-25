@@ -3002,7 +3002,7 @@ Table 2 final-model column.</p>
 <td><code>cl &lt;- (exp(lcl) + e_crcl_cl * (CRCL / 55.5)) * exp(etalcl)</code></td>
 <td>n/a</td>
 <td>Methods Eq. [5] linear covariate model with median-normalized CRCL
-(operator-resolved interpretation; see Assumptions)</td>
+(maintainer-resolved interpretation; see Assumptions)</td>
 </tr>
 <tr class="odd">
 <td><code>d/dt(central) ... d/dt(peripheral1)</code></td>
@@ -3402,10 +3402,9 @@ sensible across the entire observed CRCL range.</p></li>
 Ruled out by structural-model consistency.</p></li>
 </ul>
 <p>The model file uses interpretation (B). The interpretation was
-confirmed by the operator via the <code>extract-literature-model</code>
-skill’s stop-and-ask protocol (sidecar request 001) before drafting. The
-“mL/min” unit label in Table 2 refers to the source covariate’s unit;
-both <code>theta_1 = 0.77</code> (CL intercept) and
+confirmed by the maintainers before the model was drafted. The “mL/min”
+unit label in Table 2 refers to the source covariate’s unit; both
+<code>theta_1 = 0.77</code> (CL intercept) and
 <code>theta_CL-CLCR = 1.42</code> (CL slope per unit
 <code>CRCL / 55.5</code>) carry units of L/h. No NONMEM control stream
 is available on disk, so this resolution depended on the only physically

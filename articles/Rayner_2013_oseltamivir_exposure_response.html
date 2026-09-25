@@ -3323,10 +3323,11 @@ paper.</p>
 </h2>
 <p>The three models are algebraic and deterministic – no ODE state, no
 drug input, no between-subject variability and no residual error – so
-PKNCA is not the right validation instrument for them (following
-<code>references/endogenous-validation.md</code>, which replaces the NCA
-section for model classes where there is no concentration-time profile
-to integrate). Instead this vignette runs four checks:</p>
+PKNCA is not the right validation instrument for them (following the
+package’s validation pattern for endogenous and mechanistic models,
+which replaces the NCA section for model classes where there is no
+concentration-time profile to integrate). Instead this vignette runs
+four checks:</p>
 <p><strong>A.</strong> the models reproduce Rayner 2013 Table 6 exactly;
 <strong>B.</strong> the group-boundary convention matches the table’s
 <code>&lt;=</code> / <code>&gt;</code> notation; <strong>C.</strong> the

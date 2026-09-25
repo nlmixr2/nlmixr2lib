@@ -3997,8 +3997,8 @@ so they are compared loosely.</p>
 <p>The assertions below are the ones that would catch a mis-transcribed
 parameter, unit or covariate equation. They are stated as magnitudes and
 robust quantiles, never as the sign of a near-zero effect or a bound
-taken from a single draw, because the cohort differs between machines
-(pattern 12 of <code>known-vignette-failure-patterns.md</code>).</p>
+taken from a single draw, because the cohort differs between
+machines.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gate</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">Claim</span>, <span class="op">~</span><span class="va">Published</span>, <span class="op">~</span><span class="va">Simulated</span>, <span class="op">~</span><span class="va">Tolerance</span>, <span class="op">~</span><span class="va">Deviation</span>,</span>

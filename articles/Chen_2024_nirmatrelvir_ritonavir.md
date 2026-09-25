@@ -219,7 +219,7 @@ paper’s dosing simulations.
 # NOT seed rxode2's simulation RNG, and rxode2's streams are partitioned per
 # solver thread -- so the eta draws differ between a 16-thread workstation and a
 # 2-core CI runner. Every assertion below is written to hold for any cohort the
-# model can produce (see known-vignette-failure-patterns.md pattern 12).
+# model can produce.
 set.seed(20240918)
 rxode2::rxSetSeed(20240918)
 
@@ -501,7 +501,7 @@ nca_wide <- as.data.frame(nca_res) |>
   tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
   dplyr::left_join(trough_ss, by = c("treatment", "id"))
 
-# The gate has to have rows to test (known-vignette-failure-patterns.md #10).
+# The gate has to have rows to test.
 stopifnot(
   nrow(nca_wide) == 2L * N_ARM,
   !anyNA(nca_wide$auclast), !anyNA(nca_wide$ctrough_ss)
@@ -548,7 +548,7 @@ identity_chk <- nca_wide |>
 
 # Trapezoidal AUC on a 0.25 h grid slightly UNDER-estimates the true AUC around
 # the peak, so pct_diff is small and negative. Assert on the centre and a robust
-# quantile rather than on the extreme (CLAUDE.md vignette-assertion guidance).
+# quantile rather than on the extreme.
 #
 # BOTH bounds must cover the THREAD-COUNT SPREAD, not one realised cohort:
 # rxSetSeed() fixes rxode2's RNG per solver thread rather than across thread
@@ -841,7 +841,7 @@ halved.
 ## Assumptions and deviations
 
 - **Equations 1 and 2 are vector images in the source PDF.** Neither
-  `pdftotext` nor the trimmed-markdown preprocessor recovers them. They
+  `pdftotext` nor the PDF-to-markdown extraction recovers them. They
   were read from the publisher’s own equation images in the EuropePMC
   supplementary bundle for PMC11416114 (`IDR-17-4055-e0001` and
   `IDR-17-4055-e0002`) and cross-checked against a 300 dpi render of

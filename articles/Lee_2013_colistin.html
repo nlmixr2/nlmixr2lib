@@ -3269,12 +3269,11 @@ parameters:</p>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>PKNCA computes steady-state Cmax, Cmin, AUC0-tau, and Cavg on the
-last dosing interval (Recipe 3 in
-<code>references/pknca-recipes.md</code>). The cohort is stratified by
-the same CRCL bands used in the published Figure 5 (low / mid / high
-CRCL terciles within the simulated cohort), so the per-band NCA can be
-compared against Lee 2013 Figure 4 (mean steady-state AUC0-24 from 1000
-virtual burn patients = 29.2 +/- 13.5 ug/mL*h).</p>
+last dosing interval. The cohort is stratified by the same CRCL bands
+used in the published Figure 5 (low / mid / high CRCL terciles within
+the simulated cohort), so the per-band NCA can be compared against Lee
+2013 Figure 4 (mean steady-state AUC0-24 from 1000 virtual burn patients
+= 29.2 +/- 13.5 ug/mL*h).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tau</span>          <span class="op">&lt;-</span> <span class="fl">12</span></span>
 <span><span class="va">start_ss</span>     <span class="op">&lt;-</span> <span class="va">last_dose_start</span></span>
@@ -3550,14 +3549,14 @@ mL/min (cohort median) is paper- derived; do NOT compare it against the
 BSA-normalized reference values (80, 90, or 100 mL/min/1.73 m^2) listed
 in the canonical entry.</p></li>
 <li><p><strong><code>DIS_EDEMA</code> introduced as a new canonical
-covariate in this PR.</strong> The
+covariate with this model.</strong> The
 <code>inst/references/covariate-columns.md</code> entry was added
-alongside the Lee 2013 extraction (operator-resolved sidecar request-001
-/ response-001 on the canonical name <code>DIS_EDEMA</code>, scope
-<code>specific</code>). The paper defines edema as a clinical diagnosis
-– puffy face and pitting edema in the legs – assessed once on Day 1 of
-CMS administration (Table 1 footnote d), so the covariate is time-fixed
-per subject in this model.</p></li>
+alongside the Lee 2013 extraction (maintainer decision on the canonical
+name <code>DIS_EDEMA</code>, scope <code>specific</code>). The paper
+defines edema as a clinical diagnosis – puffy face and pitting edema in
+the legs – assessed once on Day 1 of CMS administration (Table 1
+footnote d), so the covariate is time-fixed per subject in this
+model.</p></li>
 <li><p><strong>Apparent CL and Vc are scaled inversely by RFM.</strong>
 The paper expresses the structural CL and Vc as <code>CL/fm*</code> and
 <code>Vc/fm*</code>, where <code>fm*</code> is the theoretical fraction

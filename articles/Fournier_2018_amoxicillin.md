@@ -455,9 +455,9 @@ paper’s PTA simulations make clear are not what was used.
   higher at CRCL = 200). Both forms agree exactly at CRCL = 110
   (`exp(lcl) = 13.6 L/h`). This follows the precedent set for Delattre
   2010 amikacin (`inst/modeldb/specificDrugs/Delattre_2010_amikacin.R`)
-  where the same absurd-as-printed centered-linear equation was
-  operator-resolved to the divisively-centered form. The standing policy
-  (“covariate equation absurd as printed -\> sensible
+  where the same absurd-as-printed centered-linear equation was resolved
+  by the maintainers to the divisively-centered form. The standing
+  policy (“covariate equation absurd as printed -\> sensible
   centered/median-normalized interpretation”) was applied. No NONMEM
   control stream is available on disk to disambiguate the literal vs.
   median-normalized parameterization, so the resolution depends on the

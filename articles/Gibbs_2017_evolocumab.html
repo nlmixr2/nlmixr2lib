@@ -3173,7 +3173,7 @@ and that it is positive definite:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov2cor</a></span><span class="op">(</span><span class="va">blk</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">]</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="op">-</span> <span class="op">-</span><span class="fl">78</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">1</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov2cor</a></span><span class="op">(</span><span class="va">blk</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">]</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="op">-</span> <span class="op">-</span><span class="fl">48</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">1</span>,</span>
 <span>  <span class="co"># Positive definite, so rxode2's Cholesky sampler can draw from it as-is</span></span>
-<span>  <span class="co"># (no off-diagonal nudge needed; see known-vignette-failure-patterns.md #1).</span></span>
+<span>  <span class="co"># (no off-diagonal nudge needed).</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="va">blk</span>, symmetric <span class="op">=</span> <span class="cn">TRUE</span>, only.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">values</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -3402,7 +3402,7 @@ and that it is positive definite:</p>
 <span><span class="co">#&gt;     ldl       ~ add(addSd_ldl) + prop(propSd_ldl)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55fa631ed440&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55ad2734ff10&gt;</span></span></code></pre></div>
 <p>Equation 5 is the positive root of the one-to-one QSS binding
 quadratic. With <code>RC</code> the complex concentration, QSS binding
 gives <code>RC = FDC * FLC / kss</code>, and mass balance gives
@@ -3441,7 +3441,7 @@ afterwards.</p>
 <span><span class="co"># observable name such as "Cc", which would inject an extra compartment slot</span></span>
 <span><span class="co"># and renumber the states -- and every model variable is returned as its own</span></span>
 <span><span class="co"># column regardless of which endpoint `dvid` names. `useLinCmt = FALSE` is</span></span>
-<span><span class="co"># required for the same reason (see known-vignette-failure-patterns.md #2, #5b).</span></span>
+<span><span class="co"># required for the same reason.</span></span>
 <span><span class="va">make_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">amt</span>, <span class="va">ii</span>, <span class="va">addl</span>, <span class="va">until</span>, <span class="va">dis_healthy</span> <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>                        <span class="va">by</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="va">id</span> <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">id</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">until</span>, by <span class="op">=</span> <span class="va">by</span><span class="op">)</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span>,</span>

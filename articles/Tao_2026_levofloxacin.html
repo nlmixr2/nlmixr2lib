@@ -3426,7 +3426,7 @@ and are <em>not</em> model inputs:</p>
 <span><span class="co">#&gt;     Cc ~ prop(propSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x559bdd51c178&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x56451a0e3bf0&gt;</span></span></code></pre></div>
 <p>Dosing is intravenous into <code>central</code>; there is no depot.
 The infusion duration is set to 1 h throughout this vignette, the
 midpoint of the 0.5 to 2 h range in Methods. For a linear model the
@@ -3670,7 +3670,7 @@ discussed under Assumptions and deviations.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260914</span><span class="op">)</span></span>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20260914</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_cohort</span> <span class="op">&lt;-</span> <span class="fl">200</span>  <span class="co"># per arm; the skill caps validation cohorts at 200</span></span>
+<span><span class="va">n_cohort</span> <span class="op">&lt;-</span> <span class="fl">200</span>  <span class="co"># per arm; validation cohorts are capped at 200</span></span>
 <span></span>
 <span><span class="co"># Lognormal parameters matched to the Table 1 medians and IQRs:</span></span>
 <span><span class="co">#   meanlog = log(median); sdlog = (log(Q3) - log(Q1)) / (2 * qnorm(0.75))</span></span>

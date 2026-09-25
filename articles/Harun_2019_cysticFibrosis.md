@@ -438,7 +438,7 @@ implements the published equation correctly.
   not to dmax or t50max.
 - **Hospitalisation due to PE (`HOSPRA`)**: Time-varying per-visit
   indicator; the source NMTRAN reads this from a per-row column. In the
-  packaged model, the operator supplies HOSPRA at every observation row.
+  packaged model, the user supplies HOSPRA at every observation row.
 - **BMI z-score (`BMIZ`)**: Carried as the source paper’s per-visit
   z-score with reference 0 (population mean for the subject’s age and
   sex). The source paper does not state which growth reference standard
@@ -452,7 +452,7 @@ implements the published equation correctly.
 - **Time variable**: The model treats `t` as the subject’s chronological
   age in years. The source NMTRAN converts a per-row TIME column from
   hours to years via `TIME1 = ((TIME/24)/365)`; in the nlmixr2 data
-  convention the operator carries age directly in the `time` column.
+  convention the user carries age directly in the `time` column.
 - **Aspergillus**: The paper’s primary stated aim was to test whether
   positive Aspergillus bronchoalveolar lavage cultures predict FEV1%
   trajectory; after adjustment for BMI z-score and hospitalisation,

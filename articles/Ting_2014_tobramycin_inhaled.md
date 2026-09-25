@@ -490,10 +490,10 @@ dosing interval, removing IOV narrows the upper tail of the distribution
 substantially while leaving the median nearly unchanged. Cmax is less
 sensitive because the peak occurs in the first hour after dose and is
 governed primarily by Vd/F. The model’s structural parameters are
-reproduced faithfully from the source; per the extraction skill’s
-policy, parameters are not tuned to chase a validation metric. Users who
-need to replicate the paper’s per-occasion 95% predictive interval
-should multiplex `etalcl` by an explicit occasion column (cf.
+reproduced faithfully from the source; per the package’s policy,
+parameters are not tuned to chase a validation metric. Users who need to
+replicate the paper’s per-occasion 95% predictive interval should
+multiplex `etalcl` by an explicit occasion column (cf.
 `Wilkins_2008_rifampicin`).
 
 Both the simulated and published quantities remain well below the

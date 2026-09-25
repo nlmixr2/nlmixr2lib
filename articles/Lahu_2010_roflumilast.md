@@ -523,7 +523,7 @@ transcription error).
   source and are the typical residual magnitudes for the
   analytical-method noise; the increase in the parent COPD residual is
   plausibly driven by sparse-sampling design in the phase II / III
-  studies rather than a different intrinsic noise mechanism. Operators
+  studies rather than a different intrinsic noise mechanism. Users
   reproducing a COPD-only simulation may prefer to substitute the
   COPD-extension residuals.
 

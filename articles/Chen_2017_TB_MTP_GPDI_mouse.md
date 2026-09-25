@@ -296,8 +296,7 @@ ggplot(sim_pk, aes(day, Cplasma, colour = drug)) +
 
 This is a mechanistic, deterministic, typical-value model – there is no
 patient-level IIV and no PKNCA-style NCA validation. The validation
-strategy follows the endogenous-model pattern
-(`endogenous-validation.md` in the extraction skill).
+strategy follows the endogenous-model pattern.
 
 #### 1. Natural-growth check
 
@@ -471,10 +470,9 @@ synergy on N-state bacteria. {.table}
   the Chen 2017 CPT-PSP article via the journal landing page or a PubMed
   “erratum” search as of 2026-05-17.
 - Chen 2017 Supplementary Material S3 (the final NONMEM model code) is
-  referenced in the paper but is not on disk in
-  `from_people/literature_2018_search`. The model file extracts every
-  parameter VALUE verbatim from Table 1 (popPK) and Table 2 (MTP-GPDI);
-  only the precise GPDI reduction algebra is reconstructed from the
-  canonical Wicha 2017 formulation per the “GPDI functional form” note
-  above. A future operator with access to S3 should cross-check the GPDI
-  multiplier shape.
+  referenced in the paper but is not on disk in the maintainers’
+  literature mirror. The model file extracts every parameter VALUE
+  verbatim from Table 1 (popPK) and Table 2 (MTP-GPDI); only the precise
+  GPDI reduction algebra is reconstructed from the canonical Wicha 2017
+  formulation per the “GPDI functional form” note above. A maintainer
+  with access to S3 should cross-check the GPDI multiplier shape.

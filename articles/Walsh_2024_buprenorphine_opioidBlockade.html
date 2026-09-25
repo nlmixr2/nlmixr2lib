@@ -2927,8 +2927,8 @@ record.</p>
 a dose regimen must supply concentrations from an external PK source.
 Because there is no PK model and no dosing, a PKNCA non-compartmental
 analysis is not meaningful here; this vignette validates the models
-against the paper’s own reported exposure-response quantities instead
-(the strategy described in <code>endogenous-validation.md</code>).</p>
+against the paper’s own reported exposure-response quantities
+instead.</p>
 </div>
 </div>
 <div class="section level2">
@@ -3731,9 +3731,8 @@ below.</p>
 <span><span class="co">#</span></span>
 <span><span class="co"># Confirmed present on rxode2 5.1.7 (origin/main @ 7d74e29e4), not only on the</span></span>
 <span><span class="co"># 5.1.3 release, so this workaround is still required. It appears at &gt;= 8</span></span>
-<span><span class="co"># subjects and is independent of core count -- `cores = 1` fails too. Reprex:</span></span>
-<span><span class="co"># _scripts/rxode2_params_nondeterminism_reprex.R in the ingestion queue, whose</span></span>
-<span><span class="co"># header records when this can be reverted.</span></span>
+<span><span class="co"># subjects and is independent of core count -- `cores = 1` fails too. The</span></span>
+<span><span class="co"># maintainers keep a reprex that records when this can be reverted.</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># Doing the arithmetic here is safe because the drug liking model is algebraic</span></span>
 <span><span class="co"># in Cp with Imax and gamma both fixed to 1, and the closed form was checked to</span></span>

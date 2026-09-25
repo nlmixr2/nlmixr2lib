@@ -95,10 +95,9 @@ topology comes from Figure 2.
 
 Two transcription notes:
 
-- The `_trimmed.md` preprocessing of the source PDF dropped the `KA5`
-  row of Table 2 entirely. The value used here (0.0134 1/h, RSE 17.2%)
-  was read from the raw PDF, where the row sits between `KA4` and the IM
-  `CL` row.
+- The text extraction from the source PDF dropped the `KA5` row of Table
+  2 entirely. The value used here (0.0134 1/h, RSE 17.2%) was read from
+  the raw PDF, where the row sits between `KA4` and the IM `CL` row.
 - Table 2 reports IIV as the log-scale **variance**; the parenthesised
   percentage is the derived CV via footnote b,
   `CV = sqrt(exp(omega^2) - 1) * 100`. Each value was checked against
@@ -702,10 +701,9 @@ be_tbl |>
   library’s replicate-the-author’s-structure policy. A single file would
   additionally require switching the residual-error model by
   formulation, which nlmixr2 cannot express within one endpoint.
-- **`KA5` was recovered from the raw PDF.** The preprocessed
-  `_trimmed.md` companion of the source PDF silently dropped the `KA5`
-  row of Table 2. The value used (0.0134 1/h) is from the published
-  table itself, not inferred.
+- **`KA5` was recovered from the raw PDF.** The text extracted from the
+  source PDF silently dropped the `KA5` row of Table 2. The value used
+  (0.0134 1/h) is from the published table itself, not inferred.
 - **Residual errors are treated as standard deviations, not variances.**
   Table 2 reports the additive term with linear concentration units (138
   and 23.5 pg/mL, not squared units), so both terms are read as SDs. The

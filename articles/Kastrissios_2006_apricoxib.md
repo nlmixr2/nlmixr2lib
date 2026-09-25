@@ -1536,8 +1536,7 @@ ratio, which matches the analytic 1.5249 exactly.
   male; the canonical column is 1 for female. The published `+0.325` is
   therefore applied to `(1 - SEXF)`, which keeps the coefficient
   verbatim and makes Table IV’s 34.1 L/h the female typical value.
-  Confirmed with the operator before committing (sidecar request-001
-  q4).
+  Confirmed by the maintainers.
 - **Two new canonical covariate columns were registered for this
   paper.** `CYP2D6_PM_IM` (pooled poor-or-intermediate CYP2D6, mirroring
   the existing `CYP2C9_PM_IM`) and `CYP2C9_RH` (reduced-hydroxylator

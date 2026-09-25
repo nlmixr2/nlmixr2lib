@@ -375,12 +375,13 @@ than the longer-lived monkey and rat data).
   could be added to `lclup`, `lkdeg`, etc. guided by the Table 6 CV%
   values (CV%=3.48 on `clup`, 15.7 on `kdeg`, 11.1 on `fcrn`, \> 50 on
   `clnlf`).
-- **Compartment naming deviation from `naming-conventions.md`.** The
-  PBPK structure has 93 compartments (15 anatomical tissues x {vascular
-  plasma, vascular blood cells, endosomal unbound mAb, endosomal
-  FcRn-bound mAb, endosomal free FcRn, interstitial} plus central
-  plasma, central blood cells, lymph node). These do not map onto the
-  standard `central` / `peripheral1` / `depot` / `effect` vocabulary;
+- **Compartment naming deviation from
+  `inst/references/compartment-names.md`.** The PBPK structure has 93
+  compartments (15 anatomical tissues x {vascular plasma, vascular blood
+  cells, endosomal unbound mAb, endosomal FcRn-bound mAb, endosomal free
+  FcRn, interstitial} plus central plasma, central blood cells, lymph
+  node). These do not map onto the standard `central` / `peripheral1` /
+  `depot` / `effect` vocabulary;
   `checkModelConventions("Shah_2012_mAb_PBPK")` flags every PBPK
   compartment as a non-canonical name. The naming used in this file
   (`vp_<tissue>`, `bc_<tissue>`, `eu_<tissue>`, `eb_<tissue>`,

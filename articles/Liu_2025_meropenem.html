@@ -2883,8 +2883,7 @@ Supplementary Table S3 gives the drug-specific inputs (molecular weight
 umol/L and optimised Vmax 21.92 umol/L/min, DPEP1 first-order clearance
 0.037 L/min, biliary clearance 6.5e-04 L/h/kg) but not the whole-body
 ODEs, so the PBPK model cannot be reproduced from on-disk sources and is
-not encoded. See <code>references/pbpk-qsp-mbma.md</code> in the
-extraction skill for the policy this follows.</p>
+not encoded.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3382,9 +3381,8 @@ over 60 min (median of 100 virtual subjects per stratum).</caption>
 <span><span class="co"># The two sides are separated by a physical mechanism that varies per subject:</span></span>
 <span><span class="co"># how close that subject is to steady state after 61 doses, which depends on</span></span>
 <span><span class="co"># their own terminal half-life and so on their drawn eGFR. Low-eGFR subjects</span></span>
-<span><span class="co"># are furthest from steady state and sit in the tail. Per the repo CLAUDE.md</span></span>
-<span><span class="co"># rule, the gate is therefore on the CENTRE and a ROBUST QUANTILE, never on</span></span>
-<span><span class="co"># the extreme.</span></span>
+<span><span class="co"># are furthest from steady state and sit in the tail. The gate is therefore on</span></span>
+<span><span class="co"># the CENTRE and a ROBUST QUANTILE, never on the extreme.</span></span>
 <span><span class="va">closed_form</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">distinct</span><span class="op">(</span><span class="va">id</span>, <span class="va">stratum</span>, <span class="va">dose_mg</span>, <span class="va">cl</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">nca_ind</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">auclast</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span> <span class="op">|&gt;</span></span>

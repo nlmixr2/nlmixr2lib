@@ -2913,10 +2913,10 @@ modelling- question metadata.</li>
 <code>250.json</code>, <code>Command.txt</code> – scraper / run
 metadata.</li>
 </ul>
-<p>The original publication is <strong>not on disk</strong> in this
-worktree; publication-level demographics, NCA tables, and figures are
-taken from the PubMed abstract (PMID 28785981) only. Numerical values
-used by the packaged model are the
+<p>The original publication was <strong>not on disk</strong> when this
+model was built; publication-level demographics, NCA tables, and figures
+are taken from the PubMed abstract (PMID 28785981) only. Numerical
+values used by the packaged model are the
 <code>Output_real_FinalModelCode.lst</code> final estimates (i.e., from
 the bundle’s re-fit on the simulated dataset), not directly the
 publication’s typical values. See <strong>Assumptions and
@@ -3507,9 +3507,9 @@ records). The final estimates therefore differ slightly from the
 published typical values: CL adults 0.540 vs 0.44 L/min (+22 %), CL
 adolescents 0.793 vs 0.71 L/min (+12 %), F1 0.684 vs 0.562 (+22 %). The
 .mod’s <code>$THETA</code> initial values match the publication exactly,
-but per the <code>extract-literature-model</code> skill the packaged
-model uses the <code>.lst</code> final estimates as the canonical
-numbers; the publication values are documented here for reference.</li>
+but per the package’s convention the packaged model uses the
+<code>.lst</code> final estimates as the canonical numbers; the
+publication values are documented here for reference.</li>
 <li>
 <strong><code>OMEGA(1,1)</code> (IIV on CL) sits at the lower
 boundary in the re-fit.</strong> The .lst reports 4.33e-06 with a 98.97
@@ -3531,8 +3531,8 @@ sensitivity model is not the canonical run per <code>Command.txt</code>
 (<code>Executable model = Executable_FinalModelCode.mod</code>) and is
 omitted from <code>inst/modeldb/ddmore/</code>. If the access-weight
 parameterisation is needed for downstream analysis, extract it as a
-separate <code>vanRongen_2018a_midazolam.R</code> per the year-letter
-collision rule in <code>naming-conventions.md</code>.</li>
+separate <code>vanRongen_2018a_midazolam.R</code> per the package’s
+year-letter collision rule.</li>
 <li>
 <strong>Source dataset uses ID-coded sub-population, not a labelled
 ADOLESCENT column.</strong> The .mod uses
@@ -3550,8 +3550,8 @@ different summary statistic (mean vs median or rounding) used at fitting
 time. The packaged model uses the .mod’s values to remain mass-balance
 consistent with the published parameter estimates.</li>
 <li>
-<strong>Original publication PDF is not on disk in this
-worktree.</strong> The model’s <code>description</code>,
+<strong>Original publication PDF was not on disk when this model was
+built.</strong> The model’s <code>description</code>,
 <code>reference</code>, and <code>population</code> fields are populated
 from the PubMed abstract (PMID 28785981) plus the DDMORE bundle
 metadata. A side-by-side comparison against the full publication’s

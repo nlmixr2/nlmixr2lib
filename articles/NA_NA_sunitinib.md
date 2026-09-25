@@ -38,17 +38,15 @@ labels) or 37.5 mg PO QD continuously (later label expansion); the MDL
 itself is dose-input-agnostic.
 
 The same information is available programmatically via the model’s
-`population` metadata (`readModelDb("NA_NA_sunitinib")$population` after
-`devtools::load_all()` against the worktree).
+`population` metadata (`readModelDb("NA_NA_sunitinib")$population`).
 
 ## Source trace
 
 All parameter values come from `Sunitinib_MPD6_model.mdl`’s `parObj`
-`STRUCTURAL{}` and `VARIABILITY{}` blocks. Per the operator decision
-recorded in the queue sidecar (`response-001.json`, value
-`extract_mdl`), these are treated as the deposited final estimates. The
-`.mod`/`.lst` cross-check that the DDMORE-source extraction skill
-normally requires is unavailable for this bundle; see Errata.
+`STRUCTURAL{}` and `VARIABILITY{}` blocks. Per a maintainer decision,
+these are treated as the deposited final estimates. The `.mod`/`.lst`
+cross-check that the DDMORE-source extraction protocol normally requires
+is unavailable for this bundle; see Errata.
 
 | Equation / parameter | Value | Source location (DDMODEL00000231) |
 |----|----|----|
@@ -281,17 +279,16 @@ data.frame(
   self-consistency at typical-value parameters) is run.
 - **No `.lst` cross-check on parameter values.** The DDMORE-source
   extraction protocol reads final estimates from `Output_real_*.lst`.
-  This bundle ships no listing. Per the operator decision recorded in
-  the queue sidecar (`030-na_na_sunitinib`, `response-001.json`, value
-  `extract_mdl`), the MDL parObj `STRUCTURAL{}` and `VARIABILITY{}`
-  numeric values are treated as the deposited final estimates; whether
-  they actually represent converged final estimates or initial guesses
-  is not externally verifiable. Some IIV variances look unphysically
-  large (notably `omega_d1 = 4.94 sd` -\> variance 24, and
-  `omega_pdm = 1.74 sd`, `omega_lam = 2.11 sd`, `omega_V1 = 1.3 sd`,
-  `omega_Vm1 = 0.908 sd`), but they are reproduced verbatim. Users
-  running stochastic VPCs from this model should review and reduce the
-  IIVs as needed; the typical- value typical-cohort plots above use
+  This bundle ships no listing. Per a maintainer decision, the MDL
+  parObj `STRUCTURAL{}` and `VARIABILITY{}` numeric values are treated
+  as the deposited final estimates; whether they actually represent
+  converged final estimates or initial guesses is not externally
+  verifiable. Some IIV variances look unphysically large (notably
+  `omega_d1 = 4.94 sd` -\> variance 24, and `omega_pdm = 1.74 sd`,
+  `omega_lam = 2.11 sd`, `omega_V1 = 1.3 sd`, `omega_Vm1 = 0.908 sd`),
+  but they are reproduced verbatim. Users running stochastic VPCs from
+  this model should review and reduce the IIVs as needed; the typical-
+  value typical-cohort plots above use
   [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
   so the large IIVs do not affect the trajectory.
 - **Hard-coded structural placeholders preserved verbatim from the
@@ -344,7 +341,7 @@ data.frame(
     metabolite list (`R/conventions.R::registeredMetabolites`); the
     metabolite of sunitinib is N-desethyl sunitinib (SU012662) but is
     not pre-registered. Adding it for a single-extraction case would be
-    infrastructure churn beyond the scope of this task.
+    infrastructure churn beyond the scope of this model.
     `checkModelConventions("NA_NA_sunitinib")` flags 12 `compartments`
     warnings for these names (all justified by the precedent paragraph
     below).

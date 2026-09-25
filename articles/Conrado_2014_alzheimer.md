@@ -38,10 +38,10 @@ The DDMORE bundle ships the model as a NONMEM control stream
 (`Executable_simulated_CPathAD.mod`) plus a real-data fit listing
 (`Output_real_CPathAD.lst`) and a simulated-dataset companion
 (`Output_simulated_CPathAD.lst` and `Simulated_data_CPathAD.csv`). The
-linked publication PDF was not on disk in
-`/home/bill/github/mab_human_consensus/literature/` at extraction time,
-so an external cross-check against the published parameter table was not
-performed; see the Errata section for the full deviation list.
+linked publication PDF was not on disk in the maintainers’ literature
+mirror at extraction time, so an external cross-check against the
+published parameter table was not performed; see the Errata section for
+the full deviation list.
 
 ## Population
 
@@ -174,7 +174,7 @@ BLOCK with variance / covariance / variance entries (0.156, 0.0224,
 
 ## Virtual cohort
 
-For the typical-value F.3 mechanistic-sanity check we simulate a single
+For the typical-value mechanistic-sanity check we simulate a single
 typical-value subject (female, 75 years, mean APOE-epsilon4 count, on
 concomitant AD medication) over the 5-year disease-progression follow-up
 window at quarterly observation times.
@@ -257,7 +257,7 @@ approaches 1) is the central qualitative feature of the Richards
 parameterisation and is what motivates the publication’s choice over a
 linear-progression form.
 
-## Mechanistic-sanity check (F.3): covariate-effect directions
+## Mechanistic-sanity check: covariate-effect directions
 
 ``` r
 
@@ -346,7 +346,7 @@ knitr::kable(end, caption = "ADAS-Cog at 5 years under each covariate scenario."
 
 ADAS-Cog at 5 years under each covariate scenario. {.table}
 
-## Self-consistency check (F.2): bundle simulated dataset
+## Self-consistency check: bundle simulated dataset
 
 The DDMORE bundle ships `Simulated_data_CPathAD.csv` – a simulated event
 dataset (4,493 subjects, ~58k rows) generated from the source `.mod`
@@ -359,18 +359,12 @@ per-subject ADAS-Cog/70 distribution at each scheduled visit.
 
 ``` r
 
-bundle_csv <- system.file(
-  "ddmore_bundles", "DDMODEL00000290",
-  "Simulated_data_CPathAD.csv",
-  package = "nlmixr2lib", mustWork = FALSE)
+# The DDMORE bundle is not shipped with the package. Maintainers who hold a
+# copy point NLMIXR2LIB_LITERATURE_DIR at it; otherwise the overlay is skipped.
+lit_dir <- Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", "")
+bundle_csv <- file.path(lit_dir, "ddmore_scraping/290/Simulated_data_CPathAD.csv")
 
-# When the bundle is not installed alongside the package, fall back to the
-# external scraping mirror under /home/bill/github/mab_human_consensus.
-if (!nzchar(bundle_csv) || !file.exists(bundle_csv)) {
-  bundle_csv <- "/home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/290/Simulated_data_CPathAD.csv"
-}
-
-if (file.exists(bundle_csv)) {
+if (nzchar(lit_dir) && file.exists(bundle_csv)) {
   bundle <- utils::read.csv(bundle_csv, stringsAsFactors = FALSE,
                             na.strings = ".")
   # Keep only the few columns we need; drop dropout-flag rows where no
@@ -500,9 +494,9 @@ deviations listed below to fit nlmixr2’s modelling frame.
 - **No PKNCA validation.** This is a disease-progression model, not a PK
   or PK/PD model – there is no drug input, no concentration-time
   profile, and no NCA-amenable summary parameter. The validation
-  strategy uses the F.3 mechanistic-sanity recipes (typical-value
-  Richards trajectory, covariate-effect directions) plus the F.2
-  self-consistency check against the bundle’s simulated dataset.
+  strategy uses mechanistic-sanity checks (typical-value Richards
+  trajectory, covariate-effect directions) plus the self-consistency
+  check against the bundle’s simulated dataset.
 
 - **Study-level random effects dropped.** The source paper’s headline
   methodological contribution is the addition of a third-level random
@@ -560,9 +554,9 @@ deviations listed below to fit nlmixr2’s modelling frame.
   the 0-70 scale.
 
 - **Linked publication PDF not on disk.** The Conrado 2014 publication
-  (<doi:10.1007/s10928-014-9375-z>) was not on disk in
-  `/home/bill/github/mab_human_consensus/literature/` at extraction
-  time. Final-estimate values were taken directly from the bundle’s
+  (<doi:10.1007/s10928-014-9375-z>) was not on disk in the maintainers’
+  literature mirror at extraction time. Final-estimate values were taken
+  directly from the bundle’s
   `Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE` block (after
   `MINIMIZATION SUCCESSFUL`); the bundle’s `.mod` `$THETA` initial
   values are within ~3% of the .lst final values, consistent with a

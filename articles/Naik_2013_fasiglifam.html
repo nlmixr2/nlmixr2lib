@@ -3105,8 +3105,8 @@ simulations below use a virtual cohort whose covariate distributions
 match the Naik 2013 Table 1 summary. Three arms are simulated matching
 the doses that Naik 2013 selected for phase 3 (25 mg and 50 mg once
 daily) and a placebo arm (dose 0 mg to exercise the placebo factor
-<code>LIFE(t)</code>), 200 subjects per arm (the cap recommended by the
-extraction skill).</p>
+<code>LIFE(t)</code>), 200 subjects per arm (the package’s cohort
+cap).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260725</span><span class="op">)</span></span>
 <span></span>
@@ -3997,8 +3997,8 @@ T_DIAG_DIAB) are generated from Table-1 mean +/- SD summaries via
 truncated normal / gamma distributions; the joint distribution of
 correlated covariates is not preserved. SEXF is Bernoulli(0.535) per
 Table 1. The published cohort size (346 PK-efficacy patients) is not
-reproduced; 200 subjects per arm was chosen because it is the cap
-recommended by the extraction skill and is ample for a VPC.</li>
+reproduced; 200 subjects per arm was chosen because it is the package’s
+cohort cap and is ample for a VPC.</li>
 <li>
 <strong>Simulation horizon.</strong> The simulations run 12 weeks
 (2016 h) to match the phase-2 trial duration; Naik 2013 also projected

@@ -101,8 +101,7 @@ profiles are compared at the same accumulation state.
 # rxode2's streams are partitioned PER SOLVER THREAD, so the cohort below is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion downstream is written to hold for ANY cohort
-# the model can produce; see pattern 12 of the skill's
-# known-vignette-failure-patterns reference.
+# the model can produce.
 set.seed(20240129)
 rxode2::rxSetSeed(20240129)
 

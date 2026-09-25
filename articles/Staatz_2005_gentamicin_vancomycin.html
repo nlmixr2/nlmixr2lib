@@ -3474,13 +3474,12 @@ parameterisation
 <code>CL = theta1 * (1 + theta2 * (BCOV - 63) + theta3 * DCOV)</code>
 with theta3 = 0.0174 per mL/min. The packaged model encodes only
 <code>CL = theta1 * (1 + theta2 * (CRCL - 63))</code>, omitting the
-theta3 DCOV term. This was an operator-resolved decision (sidecar
-request-001 / response-001, Option C) to avoid introducing a new
-canonical covariate column for per-subject baseline CRCL. For subjects
-with stable CRCL the two equations are identical (DCOV = 0); for
-subjects with changing CRCL the packaged model treats every observation
-as if it were the baseline, so the within-subject trajectory of CL
-follows the current CRCL directly. A future revision could add a
+theta3 DCOV term. This was a maintainer decision to avoid introducing a
+new canonical covariate column for per-subject baseline CRCL. For
+subjects with stable CRCL the two equations are identical (DCOV = 0);
+for subjects with changing CRCL the packaged model treats every
+observation as if it were the baseline, so the within-subject trajectory
+of CL follows the current CRCL directly. A future revision could add a
 <code>CRCL_BASE</code> canonical and a third covariate effect parameter
 to reinstate the full Wahlby split. The headline finding of the paper (a
 parameter describing individual changes in CL_Cr with time improves
@@ -3529,12 +3528,11 @@ creatinine below 60 umol/L (the lower reference-range limit) to 60
 umol/L before computing CRCL. Users preparing input data must apply the
 same floor; otherwise low-Cr subjects would receive falsely high CRCL
 estimates and falsely high CL.</p></li>
-<li><p><strong>Errata not searched.</strong> The skill’s pre-flight
-checklist asks for an errata search on the publisher landing page; the
-deep web search is not available in this extraction environment and the
-operator was not asked to verify. If a subsequent erratum revises any
-Table 4 estimate the packaged values should be refreshed
-accordingly.</p></li>
+<li><p><strong>Errata not searched.</strong> The extraction checklist
+asks for an errata search on the publisher landing page; the deep web
+search was not available when this model was built and no maintainer was
+asked to verify. If a subsequent erratum revises any Table 4 estimate
+the packaged values should be refreshed accordingly.</p></li>
 <li><p><strong>Multi-cohort vignette safety.</strong> The gentamicin and
 vancomycin simulations use disjoint ID ranges
 (<code>id_offset = 0L</code> and <code>id_offset = n_subjects</code> in
@@ -3542,8 +3540,7 @@ vancomycin simulations use disjoint ID ranges
 <code>Cc ~ time | drug + id</code> groups subjects correctly. The
 <code>keep = c("drug", "WT", "CRCL")</code> argument to
 <code>rxSolve()</code> carries the labelling columns through, avoiding
-the post-hoc <code>left_join</code> fan-out failure mode described in
-vignette-template.md.</p></li>
+the post-hoc <code>left_join</code> fan-out failure mode.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

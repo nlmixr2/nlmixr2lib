@@ -3852,7 +3852,7 @@ Figure 8 reports ~90% of adults attaining.</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG, not rxode2's; rxode2 partitions its streams per</span></span>
 <span><span class="co"># solver thread, so this cohort differs between a 2-core CI runner and a</span></span>
 <span><span class="co"># 16-thread workstation. Every assertion below is written to hold for any</span></span>
-<span><span class="co"># cohort the model can produce (see known-vignette-failure-patterns.md #12).</span></span>
+<span><span class="co"># cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20231009</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_sub</span> <span class="op">&lt;-</span> <span class="fl">200L</span></span>

@@ -2886,9 +2886,10 @@ intravenously to ZDF/Gmi fa/fa diabetic rats and ZDF/Gmi fa/?
 non-diabetic controls. Plasma concentrations of methionine and
 homocysteine were measured by LC-ESI/MS/MS at 0, 10, 30, 60, 120, 210,
 300, and 420 minutes after administration (Han 2018 Methods, Study
-design). The published trimmed text does not give per-cohort subject
-counts; the goodness-of-fit and visual predictive check plots (Han 2018
-Figs 2a-d) imply at least ~5-10 subjects per cohort.</p>
+design). The text extracted from the publication does not give
+per-cohort subject counts; the goodness-of-fit and visual predictive
+check plots (Han 2018 Figs 2a-d) imply at least ~5-10 subjects per
+cohort.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata
 (<code>readModelDb("Han_2018_methionineMetabolismCycle")$population</code>).</p>
@@ -3223,9 +3224,8 @@ against published NCA</em> below).</p>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>Standard NCA – Cmax, Tmax, AUC – is computed on the simulated
-single-dose methionine profile using PKNCA. Per the skill’s PKNCA
-recipe, the formula includes a cohort grouping variable so per-cohort
-summaries are produced.</p>
+single-dose methionine profile using PKNCA. The formula includes a
+cohort grouping variable so per-cohort summaries are produced.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_singledose</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cmet</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3434,11 +3434,11 @@ retained for mass-balance documentation.</p></li>
 2018 publishes four covariate equations (Eqs 8-11) for the DIS_DIAB
 (ZDF) effect on individual rate constants. Eq 8 (K_HM with IIV) and Eq 9
 (K_HP with IIV) are unambiguous; the printed subscript of Eq 11 in the
-source PDF was illegible to the OCR pipeline. Han 2018 Table 1 reports
-separate control / ZDF point estimates for five rate constants (K_SH,
-K_HM, K_HC, K_HP, K_PH), so Eqs 10-11 cover the three rate constants
-that lack IIV. The packaged model derives each DIS_DIAB log-scale
-coefficient from the Table 1 control / ZDF point-estimate ratio
+source PDF was illegible to OCR. Han 2018 Table 1 reports separate
+control / ZDF point estimates for five rate constants (K_SH, K_HM, K_HC,
+K_HP, K_PH), so Eqs 10-11 cover the three rate constants that lack IIV.
+The packaged model derives each DIS_DIAB log-scale coefficient from the
+Table 1 control / ZDF point-estimate ratio
 (<code>theta_T2DM_X = log(K_X_ZDF / K_X_control)</code>); this matches
 whichever subscript Eq 11 carries in the source typesetting because the
 underlying numerical values are the same.</p></li>

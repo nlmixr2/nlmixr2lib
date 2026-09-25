@@ -2898,12 +2898,12 @@ here as <code>ADOLESCENT = 1</code>).</li>
 baseline).</li>
 </ul>
 <p>Body weights in the bundle’s simulated dataset span 0.6 kg (term
-neonate) to 85 kg (adult). The original Wang 2013 PDF was not on disk
-under <code>mab_human_consensus/literature/</code> at extraction time,
-so per-study counts, sex / race breakdowns, and indication-specific
-information could not be cross-checked against the publication;
-everything in this section comes from the abstract (PMID 23754691) and
-the <code>.mod</code> $INPUT comments.</p>
+neonate) to 85 kg (adult). The original Wang 2013 PDF was not on disk in
+the maintainers’ literature mirror at extraction time, so per-study
+counts, sex / race breakdowns, and indication-specific information could
+not be cross-checked against the publication; everything in this section
+comes from the abstract (PMID 23754691) and the <code>.mod</code> $INPUT
+comments.</p>
 <p>The same information is available programmatically via
 <code>readModelDb("Wang_2013_morphine")$population</code>.</p>
 </div>
@@ -3395,12 +3395,11 @@ the final estimates. Re-simulate the same event records with the
 typical-value model and confirm the trajectories track the recorded
 <code>CONC</code> values.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bundle_csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"modeldb"</span>, package <span class="op">=</span> <span class="st">"nlmixr2lib"</span><span class="op">)</span> <span class="co"># not used; explicit path below</span></span>
-<span><span class="va">sim_csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="st">"/home/bill/github/mab_human_consensus/literature/from_people/ddmore"</span>,</span>
-<span>  <span class="st">"ddmore_scraping/269/Simulated_DataModel1_Morphine.csv"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">self_consistency_available</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">sim_csv</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># The DDMORE bundle is not shipped with the package. Maintainers who hold a</span></span>
+<span><span class="co"># copy point NLMIXR2LIB_LITERATURE_DIR at it; otherwise the check is skipped.</span></span>
+<span><span class="va">lit_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NLMIXR2LIB_LITERATURE_DIR"</span>, <span class="st">""</span><span class="op">)</span></span>
+<span><span class="va">sim_csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">lit_dir</span>, <span class="st">"ddmore_scraping/269/Simulated_DataModel1_Morphine.csv"</span><span class="op">)</span></span>
+<span><span class="va">self_consistency_available</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">lit_dir</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">sim_csv</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># `.` is the missingness sentinel in the bundle's CSV; coerce numeric columns</span></span>
 <span><span class="co"># explicitly so we don't pick up character types via read.csv's heuristic.</span></span>
@@ -3523,25 +3522,26 @@ expected variability rather than a miscoded equation.</p>
 <strong>Model I only.</strong> The DDMORE bundle ships two
 executables for this publication: Model I (morphine alone, packaged
 here) and Model II (joint morphine + M3G metabolite PK with separate
-clearance pathways). The task assigned a singular target filename
-<code>Wang_2013_morphine.R</code>; an operator follow-up confirmed Model
-I is in scope. Anyone needing the parent + M3G joint model should look
-at <code>ddmore_scraping/269/Executable_ModelII_MM3G.mod</code> directly
-– it is structurally a 3-compartment model (morphine 2-comp + M3G
-1-comp) with metabolic-pathway clearances and would warrant a separate
+clearance pathways). The extraction targeted a single file,
+<code>Wang_2013_morphine.R</code>, and a maintainer follow-up confirmed
+Model I is in scope. Anyone needing the parent + M3G joint model should
+look at the DDMODEL00000269 bundle’s
+<code>Executable_ModelII_MM3G.mod</code> directly – it is structurally a
+3-compartment model (morphine 2-comp + M3G 1-comp) with
+metabolic-pathway clearances and would warrant a separate
 <code>Wang_2013b_morphine.R</code> extraction.</li>
 <li>
 <strong>Adult oral-bioavailability arm.</strong> The
 <code>.mod</code> <code>$PK</code> block applies <code>F1 = 0.88</code>
 only when <code>POP = 3</code> (adults). The publication abstract does
 not describe the route of administration in detail, and the original
-Wang 2013 PDF was not on disk under
-<code>mab_human_consensus/literature/</code> at extraction time, so the
-rationale for the 0.88 reduction in adults could not be cross-checked
-against the paper text. The model here preserves the <code>.mod</code>’s
-F1 logic verbatim (<code>f(central) = 0.88</code> whenever
-<code>CHILD = 0</code> AND <code>ADOLESCENT = 0</code>) and exposes the
-value as <code>e_age_adult_f</code> so it is overridable.</li>
+Wang 2013 PDF was not on disk in the maintainers’ literature mirror at
+extraction time, so the rationale for the 0.88 reduction in adults could
+not be cross-checked against the paper text. The model here preserves
+the <code>.mod</code>’s F1 logic verbatim
+(<code>f(central) = 0.88</code> whenever <code>CHILD = 0</code> AND
+<code>ADOLESCENT = 0</code>) and exposes the value as
+<code>e_age_adult_f</code> so it is overridable.</li>
 <li>
 <strong>POP encoding.</strong> The source data column
 <code>POP</code> (1 = 0-3 yr, 2 = 6-15 yr, 3 = 18-36 yr) is decomposed
@@ -3559,9 +3559,7 @@ decomposition is defined in the model file’s
 <code>$SIGMA EPS1 FIXED = 1</code> and
 <code>W = THETA(9) = 0.432</code>. NONMEM “additive on log-scale with
 SIGMA fixed at 1” maps to proportional residual error in nlmixr2’s
-linear space with <code>propSd = 0.432</code> (see
-<code>naming-conventions.md</code> Section “NONMEM -&gt; nlmixr2 syntax
-translation”).</li>
+linear space with <code>propSd = 0.432</code>.</li>
 <li>
 <strong>Real vs simulated executable.</strong> The
 <code>Output_real_*.lst</code> reports an additional <code>EPS(2)</code>
@@ -3585,14 +3583,12 @@ smoke test, not a representative population. The “Virtual cohort”
 section above builds a larger cohort spanning the publication’s reported
 BW range for the VPC and PKNCA panels.</li>
 <li>
-<strong>External cross-check.</strong> No publication PDF is on disk
-under <code>mab_human_consensus/literature/</code> at extraction time,
-so per-subject parameter estimates and tabulated NCA values from the
+<strong>External cross-check.</strong> No publication PDF was on
+disk in the maintainers’ literature mirror at extraction time, so
+per-subject parameter estimates and tabulated NCA values from the
 publication could not be compared against the simulation. The F.2
-self-consistency check above is the substitute mandated by
-<code>references/ddmore-source.md</code> Section “Validation strategy by
-model type” for DDMORE-source models without an on-disk
-publication.</li>
+self-consistency check above is the standard substitute validation for
+DDMORE-source models without an on-disk publication.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

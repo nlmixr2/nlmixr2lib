@@ -402,7 +402,7 @@ the partial AUC accrued so far.
 # set.seed() seeds R's RNG, not rxode2's; rxode2 partitions its streams per
 # solver thread, so the cohort differs between a 16-thread workstation and a
 # 2-thread CI runner. Every assertion below is written to hold for any cohort
-# the model can produce (see known-vignette-failure-patterns.md pattern 12).
+# the model can produce.
 set.seed(20190501)
 n_per_arm <- 60L
 

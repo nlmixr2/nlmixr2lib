@@ -3037,7 +3037,7 @@ y</td>
 </table>
 <p><strong>Equation 1 is an embedded image in the published PDF</strong>
 and is dropped by every text converter (it appears as
-<code>formula-not-decoded</code> in the trimmed markdown and is absent
+<code>formula-not-decoded</code> in the extracted text and is absent
 from <code>pdftotext</code>). It was recovered from the publisher’s
 equation graphic (<code>40262_2016_422_Article_Equ1.gif</code>,
 retrieved from the EuropePMC <code>supplementaryFiles</code> endpoint
@@ -3322,7 +3322,7 @@ article PDF.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>abs_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">simulated</span> <span class="op">-</span> <span class="va">.data</span><span class="op">$</span><span class="va">published</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The join must not silently drop rows -- a lost row would make the</span></span>
-<span><span class="co"># gate below pass vacuously (see known-vignette-failure-patterns #10).</span></span>
+<span><span class="co"># gate below pass vacuously.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cmp</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ref</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">cmp</span><span class="op">)</span> <span class="op">==</span> <span class="fl">416L</span>,</span>

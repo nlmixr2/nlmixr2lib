@@ -508,7 +508,6 @@ covariate equation; `Expected AUC` is dose / Expected CL/F. {.table}
   to the January 2010 print issue (volume 69, issue 1, pages 27-37), but
   the DOI year prefix (`j.1365-2125.2009.03558.x`) and the online
   publication date (4 December 2009) place it as a 2009 paper. The model
-  file uses 2009 to match the task metadata, the DOI year, and the
-  dispatch branch name; the full print citation including the 2010 issue
-  is preserved in the `reference` field for unambiguous bibliographic
-  lookup.
+  file uses 2009 to match the DOI year; the full print citation
+  including the 2010 issue is preserved in the `reference` field for
+  unambiguous bibliographic lookup.

@@ -173,8 +173,7 @@ make_cohort <- function(cohort_df, t_obs, id_offset = 0L) {
   # with cmt set to the ODE state name backing that output (central for Cc,
   # central_dxd for Cc_dxd). rxode2 returns BOTH Cc and Cc_dxd columns regardless
   # of which observation row triggered, but the cmt+dvid pair must be consistent
-  # with the model's auto-generated DVID mapping (see
-  # known-vignette-failure-patterns.md pattern #5b).
+  # with the model's auto-generated DVID mapping.
   obs <- tidyr::expand_grid(
     cohort_df |> dplyr::select(id, WT, ALB, CRCL, TUMSZ, SEXF,
                                 RACE_ASIAN, ECOG_GE1, TUMTP_BREAST, HEPIMP),

@@ -3167,7 +3167,7 @@ table.</li>
 <span><span class="co">#&gt;     totalCdk6Csf &lt;- free_cdk6 + complex_cdk6_csf</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55bbccb92a20&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55d419907780&gt;</span></span></code></pre></div>
 <p>Ribociclib (RIB) is a CDK4/6 inhibitor approved for
 hormone-receptor-positive, HER2-negative advanced breast cancer at 600
 mg once daily (OD). Zhang 2026 asks whether that regimen delivers enough
@@ -3347,15 +3347,15 @@ rather than a measurement.</td>
 <span>  <span class="st">"Ki (equilibrium Kd) for CDK6"</span>,  <span class="st">"kd6"</span>,          <span class="st">"39 nmol/L"</span>,   <span class="st">"Table 1, CDK4/6 occupancy block, 'K i (nM) 10/39', second of pair (ref 24)"</span>,</span>
 <span>  <span class="st">"Dissociation rate constant"</span>,    <span class="st">"koff"</span>,         <span class="st">"3.78 /h"</span>,     <span class="st">"Table 1, koff row: 0.063 /min, x 60 min/h (ref 25)"</span>,</span>
 <span>  <span class="st">"Starting CDK4/6 expression"</span>,    <span class="st">"cdk0"</span>,         <span class="st">"100 nmol/L"</span>,  <span class="st">"Methods prose beneath Eq 1: 'set to a value of 0.1 uM'"</span>,</span>
-<span>  <span class="st">"Target-engagement ODE"</span>,         <span class="st">"d/dt(complex)"</span>,<span class="st">"Eq 1"</span>,        <span class="st">"Methods, Eq 1 (recovered from the PDF; the trimmed markdown renders it as 'formula-not-decoded')"</span></span>
+<span>  <span class="st">"Target-engagement ODE"</span>,         <span class="st">"d/dt(complex)"</span>,<span class="st">"Eq 1"</span>,        <span class="st">"Methods, Eq 1 (recovered from the PDF; the text extracted from the PDF renders it as 'formula-not-decoded')"</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="18%">
+<col width="17%">
 <col width="8%">
 <col width="7%">
-<col width="65%">
+<col width="66%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Quantity</th>
@@ -3414,8 +3414,8 @@ uM’</td>
 <td align="left">Target-engagement ODE</td>
 <td align="left">d/dt(complex)</td>
 <td align="left">Eq 1</td>
-<td align="left">Methods, Eq 1 (recovered from the PDF; the trimmed
-markdown renders it as ‘formula-not-decoded’)</td>
+<td align="left">Methods, Eq 1 (recovered from the PDF; the text
+extracted from the PDF renders it as ‘formula-not-decoded’)</td>
 </tr>
 </tbody>
 </table>
@@ -4385,8 +4385,8 @@ which is negligible here (free ribociclib in CSF is 1-5x
 extraction date. The single supplementary file (MOESM1) was retrieved
 and contains one figure (S1, simulated intracranial CDK4/6 occupancy by
 regimen, presented as means with 10th-90th percentiles); it contains no
-parameter table and no equations. Eq 1 was recovered from the PDF
-because the trimmed markdown companion renders it as a
+parameter table and no equations. Eq 1 was recovered from the PDF itself
+because the extracted text renders it as a
 <code>formula-not-decoded</code> marker.</p>
 </div>
 </div>

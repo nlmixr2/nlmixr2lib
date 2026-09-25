@@ -37,7 +37,7 @@ observations are recorded on the natural-log scale with an additive
 - Detailed baseline demographics (age distribution, ECOG, Gleason score,
   prior therapy) are documented in the paper but were not transcribed
   into this extraction’s `population` block – the paper PDF was not on
-  disk in the operator’s literature mirror at extraction time, so
+  disk in the maintainers’ literature mirror at extraction time, so
   demographic values come from the publicly accessible PMC full text via
   the extraction-time E-utilities lookup.
 
@@ -590,18 +590,17 @@ overlay is the validation anchor.
 ## Assumptions and deviations
 
 - **Wilbaux 2015 PDF not on disk for this extraction.** The paper PDF
-  was not present anywhere under
-  `/home/bill/github/mab_human_consensus/literature/` at extraction
-  time. Methods quotes, parameter cross-checks, and the model-equation
-  transcription used in this vignette come from the publicly accessible
-  PMC4452933 full text via PubMed E-utilities (PMID 26225253; DOI
-  10.1002/psp4.34). All 14 thetas and the BLOCK(9) / BLOCK(2) OMEGAs in
-  the model file match paper Table 1 to three significant figures.
-  Demographic detail (age distribution, ECOG, Gleason score, prior
-  therapy) was not transcribed because the paper’s Table 1 /
-  baseline-demographics narrative was not exhaustively quoted in the PMC
-  extract obtained at extraction time; if the operator subsequently
-  obtains the PDF, a follow-up audit pass to populate
+  was not present anywhere in the maintainers’ literature mirror at
+  extraction time. Methods quotes, parameter cross-checks, and the
+  model-equation transcription used in this vignette come from the
+  publicly accessible PMC4452933 full text via PubMed E-utilities (PMID
+  26225253; DOI 10.1002/psp4.34). All 14 thetas and the BLOCK(9) /
+  BLOCK(2) OMEGAs in the model file match paper Table 1 to three
+  significant figures. Demographic detail (age distribution, ECOG,
+  Gleason score, prior therapy) was not transcribed because the paper’s
+  Table 1 / baseline-demographics narrative was not exhaustively quoted
+  in the PMC extract obtained at extraction time; if the maintainers
+  subsequently obtain the PDF, a follow-up audit pass to populate
   `population$age_range`, `population$weight_range`, etc. is
   recommended.
 - **No `MINIMIZATION SUCCESSFUL` marker in the .lst.**
@@ -672,11 +671,11 @@ overlay is the validation anchor.
   The compartments `chemo`, `hormo`, `latent_tumor`, `ctc`, `chemo_d`,
   `hormo_d`, `latent_tumor_d`, `psa` are the paper’s mechanism-faithful
   names, not in the `depot/central/peripheral1/peripheral2/effect/...`
-  canonical list. Per `naming-conventions.md`, “Therapeutic-area or
-  mechanism-specific compartments: open a GitHub issue before adding new
-  names.” For now the conventions checker emits eight compartment-name
-  warnings; the names are accepted deviations for this paper-faithful
-  K-PD model.
+  canonical list. The package’s naming convention is to open a GitHub
+  issue before adding new therapeutic-area or mechanism-specific
+  compartment names. For now the conventions checker emits eight
+  compartment-name warnings; the names are accepted deviations for this
+  paper-faithful K-PD model.
 - **`units$dosing` (AU) vs `units$concentration` (ng/mL) dimensionally
   incompatible.**
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
@@ -690,9 +689,9 @@ overlay is the validation anchor.
   specification”). The model file’s `covariateData` is empty.
 - **Bundle’s simulated dataset is intentionally minimal.**
   `Simulated_KPD_CTC.count_PSA.csv` contains only two subjects with very
-  sparse observation schedules. Per `ddmore-source.md`, this is a
-  regression smoke-test artifact and **not** representative of the
-  publication’s clinical study population. The vignette’s virtual-cohort
-  sections build their own typical-subject events; the F.2
-  self-consistency overlay against the bundle’s subject 1 records is for
-  direction-of-trajectory confirmation only, not per-record agreement.
+  sparse observation schedules. This is a regression smoke-test artifact
+  and **not** representative of the publication’s clinical study
+  population. The vignette’s virtual-cohort sections build their own
+  typical-subject events; the F.2 self-consistency overlay against the
+  bundle’s subject 1 records is for direction-of-trajectory confirmation
+  only, not per-record agreement.

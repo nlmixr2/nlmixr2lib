@@ -58,8 +58,8 @@ acute-medication days,
 ```
 
 (breakpoint at 5 d/mo). `t` is in months (28-day periods). The placebo
-Hill function and power-of-Cav drug effect were operator-confirmed from
-Figure 2B; parameter values come from Supplementary Table S4.
+Hill function and power-of-Cav drug effect were maintainer-confirmed
+from Figure 2B; parameter values come from Supplementary Table S4.
 
 ## Population
 
@@ -119,7 +119,7 @@ review.
 | `lhill_PLC` (Hill, FIXED, log-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.486 (unitless) | Table S4 |
 | `drugInt` typical (logit-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.157 (fractional reduction at median Cav) | Table S4 |
 | `ldrugExp` (Cav exponent, log-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.328 (unitless) | Table S4 |
-| `CavMedian` (centering value used inside [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)) | 69 µg/mL | Visually inferred from Figure 2B (operator); not numerically listed in S4. See Assumptions and deviations. |
+| `CavMedian` (centering value used inside [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)) | 69 µg/mL | Visually inferred from Figure 2B by the maintainers; not numerically listed in S4. See Assumptions and deviations. |
 | IIV `bl_cm` / `slope_AM` (shared additive eta) | SD 4.69 (variance 21.99) | Table S4 |
 | IIV `maxPLC_cm` (additive eta) | SD 6.66 (variance 44.36) | Table S4 |
 | IIV `lhill_PLC` (log-normal eta) | omega² = 1.69 (130 %CV per footnote a) | Table S4 |
@@ -329,29 +329,27 @@ PKNCA is the wrong validation target here for the same reasons as in the
 EM vignette: there is no concentration profile to integrate (Cav is a
 covariate), and the response is a count of days per month. The
 validation strategy is therefore the narrative-comparison table above,
-mirroring the operator-confirmed Figure 2B interpretation.
+mirroring the maintainer-confirmed Figure 2B interpretation.
 
 ## Assumptions and deviations
 
 - **Time unit is months (28-day periods).** As in the EM vignette.
-- **Placebo time-course form is operator-confirmed from Figure 2B.**
+- **Placebo time-course form is maintainer-confirmed from Figure 2B.**
   Supplementary Table S4 lists `Maximum response (placebo)`,
   `T50 placebo`, and `Hill coefficient for placebo`, all FIXED. The
   Hill-in-time form
   `placebo_eff(t) = MaxPLC * t^Hill / (T50^Hill + t^Hill)` was visually
-  read from Figure 2B by the operator during sidecar request 3 of this
-  extraction.
+  read from Figure 2B by the maintainers.
 - **`CavMedian = 69 µg/mL` is visually inferred from Figure 2B.** The
   drug-effect intercept `drugInt = 0.157` is described in S4 as the
   “fractional reduction from baseline at median fremanezumab Cav”, but
   the median Cav itself is *not* listed numerically in S4 nor in the
-  trimmed text. The value 69 µg/mL was read from the x-axis position of
-  the per-regimen median markers in Figure 2B (operator decision in
-  sidecar request 3, answer `cm_cavmed = USER`) and reproduces the
-  paper’s narrative drug-effect ranges (12-16% across Cav 28-70 µg/mL;
-  18-19% at Cav 120 µg/mL). Users who can recover the exact published
-  Cav_median from the analysis dataset should override `CavMedian`
-  accordingly when the model is consumed.
+  extracted text. The value 69 µg/mL was read from the x-axis position
+  of the per-regimen median markers in Figure 2B (maintainer decision)
+  and reproduces the paper’s narrative drug-effect ranges (12-16% across
+  Cav 28-70 µg/mL; 18-19% at Cav 120 µg/mL). Users who can recover the
+  exact published Cav_median from the analysis dataset should override
+  `CavMedian` accordingly when the model is consumed.
 - **Cav as a per-period covariate, not a model output.** The CAV column
   must be supplied per row by the user, derived externally from the
   Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab`).

@@ -3245,13 +3245,12 @@ covariate’s range.</p>
 <span><span class="co"># rxode2's streams are partitioned PER SOLVER THREAD, so this cohort is</span></span>
 <span><span class="co"># reproducible on this machine and different on a machine with a different</span></span>
 <span><span class="co"># thread count. Every assertion below is written to hold for ANY cohort the</span></span>
-<span><span class="co"># model can produce; see pattern 12 of the known-vignette-failure-patterns</span></span>
-<span><span class="co"># reference.</span></span>
+<span><span class="co"># model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20231001</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 50 per arm across 15 arms (750 subjects). Sized against the render budget:</span></span>
 <span><span class="co"># the vignette must stay well inside the 5-minute ceiling because the</span></span>
-<span><span class="co"># consolidation merge re-renders every vignette in parallel, where CPU</span></span>
+<span><span class="co"># pre-merge check re-renders every vignette in parallel, where CPU</span></span>
 <span><span class="co"># contention multiplies wall-clock time. Measured single-threaded here at</span></span>
 <span><span class="co"># 40 / 75 / 100 per arm: 54 / 168 / 203 s (the PKNCA step scales worse than</span></span>
 <span><span class="co"># linearly), so this sits at roughly 80 s with ample headroom. The only gates</span></span>
@@ -4267,9 +4266,9 @@ peripheral volume.</p>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etaltlag', 'etalka', 'etalq', 'etalvp', 'etaiov_cl_1', 'etaiov_cl_2'</span></span>
 <span></span>
-<span><span class="co"># Terminal slope fitted well after the washout transient, per pattern 11 of the</span></span>
-<span><span class="co"># known-vignette-failure-patterns reference: a time-to-50% measured from the</span></span>
-<span><span class="co"># moment of withdrawal includes the distribution phase and reads long.</span></span>
+<span><span class="co"># Terminal slope fitted well after the washout transient: a time-to-50%</span></span>
+<span><span class="co"># measured from the moment of withdrawal includes the distribution phase and</span></span>
+<span><span class="co"># reads long.</span></span>
 <span><span class="va">term</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">48</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">240</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">hl_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">term</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"time"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>

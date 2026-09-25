@@ -110,8 +110,7 @@ Tables 3-4 explore.
 # seed rxode2's simulation RNG, whose streams are partitioned per solver
 # thread -- so the etas drawn inside rxSolve differ between a 2-core CI runner
 # and a 16-thread workstation. Every assertion in this vignette is written to
-# hold for any cohort the model can produce (see
-# references/known-vignette-failure-patterns.md pattern 12).
+# hold for any cohort the model can produce.
 set.seed(20240822)
 
 n_per_arm <- 200L   # cap is 200 participants per arm
@@ -207,7 +206,7 @@ sim <- rxode2::rxSolve(
   events = events,
   keep   = c("regimen", "egfr_class"),
   # rxode2's automatic ODE -> linCmt conversion corrupts the dvid -> cmt
-  # mapping for multi-output models; see known-vignette-failure-patterns 5b.
+  # mapping for multi-output models.
   useLinCmt = FALSE
 ) |>
   as.data.frame() |>

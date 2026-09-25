@@ -112,7 +112,7 @@ nmol/L (matching the paper’s reported units).
 ``` r
 
 set.seed(20160519) # publication date reference
-n_subj <- 200L # per-arm cap per skill guidance
+n_subj <- 200L # the 200-per-arm cohort cap
 
 lira_mw <- 3751.2 # g/mol
 dose_mg <- 3.0

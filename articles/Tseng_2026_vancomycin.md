@@ -305,7 +305,7 @@ peak and the end-of-infusion concentration depend on it.
 # set.seed() seeds R's RNG, not rxode2's. rxode2's streams are partitioned per
 # solver thread, so this cohort differs between a 2-core CI runner and a
 # 16-thread workstation. Every assertion downstream is written to hold for any
-# cohort the model can produce (see known-vignette-failure-patterns.md #12).
+# cohort the model can produce.
 set.seed(20260912)
 
 tau        <- 12    # q12h dosing interval, hours

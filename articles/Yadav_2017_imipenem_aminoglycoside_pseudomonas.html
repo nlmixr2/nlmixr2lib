@@ -3775,22 +3775,23 @@ isolate. No PKNCA validation is performed (there is no drug NCA to
 compute); the mechanistic checks above replace it, per the
 endogenous/mechanistic validation strategy.</li>
 <li>
-<strong>File naming.</strong> The dispatch metadata listed the drug
-as “Antimicrobial Agents and Chemo”, which is the journal name
-(Antimicrobial Agents and Chemotherapy), not a drug. The paper
-unambiguously models imipenem combined with tobramycin or amikacin, so
-the five model files use the corresponding drug + isolate suffix.</li>
+<strong>File naming.</strong> The bibliographic metadata these
+models were built from listed the drug as “Antimicrobial Agents and
+Chemo”, which is the journal name (Antimicrobial Agents and
+Chemotherapy), not a drug. The paper unambiguously models imipenem
+combined with tobramycin or amikacin, so the five model files use the
+corresponding drug + isolate suffix.</li>
 <li>
-<strong>Five files, one paper.</strong> Per the
-replicate-author-structure policy, one vignette walks the paper as a
-whole and loads each of the five <code><a href="../reference/modellib.html">modellib()</a></code> entries at the
-appropriate point. The authors did a single per-strain joint fit
-covering all IPM, AGS, and IPM + AGS data within that strain; we expose
-five fully-specified files because most parameters that differ between
-TOB and AMK within a strain (KC50,AGS, IC50,OM,AGS, Log MUT,AGS, Log
-CFU0) are drug-specific while the structural shared subset is
-duplicated. The parameter snapshot table makes the shared /
-drug-specific split explicit.</li>
+<strong>Five files, one paper.</strong> Following the package’s
+convention of replicating the authors’ model structure, one vignette
+walks the paper as a whole and loads each of the five
+<code><a href="../reference/modellib.html">modellib()</a></code> entries at the appropriate point. The authors
+did a single per-strain joint fit covering all IPM, AGS, and IPM + AGS
+data within that strain; we expose five fully-specified files because
+most parameters that differ between TOB and AMK within a strain
+(KC50,AGS, IC50,OM,AGS, Log MUT,AGS, Log CFU0) are drug-specific while
+the structural shared subset is duplicated. The parameter snapshot table
+makes the shared / drug-specific split explicit.</li>
 <li>
 <strong>Signal-molecule ODE form.</strong> Methods Eq 2 defines the
 inhibition term

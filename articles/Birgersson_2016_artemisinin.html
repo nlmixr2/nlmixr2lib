@@ -3157,10 +3157,9 @@ IIV / IOV variance terms produce.</p>
 <div class="section level2">
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
-<p>Single-dose, dense-sampling NCA per
-<code>references/pknca-recipes.md</code>. The treatment column carries
-the per-arm grouping so the per-treatment Cmax / Tmax / AUC / half-life
-can be compared against the published values in Table 3.</p>
+<p>Single-dose, dense-sampling NCA. The treatment column carries the
+per-arm grouping so the per-treatment Cmax / Tmax / AUC / half-life can
+be compared against the published values in Table 3.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3704,11 +3703,11 @@ on the log-transformed drug concentrations, being essentially equivalent
 to an exponential residual error on an arithmetic scale” and reports
 sigma = 51.6% CV in Table 2. The reported value is treated as the SD on
 the log scale (consistent with the convention used by the sibling
-Birgersson 2019 artesunate model and the verification-checklist rule
-“NONMEM additive-on-log-scale = proportional in nlmixr2’s linear
-space”); the alternative interpretation as a back-transformed
-linear-scale CV would give propSd = 0.486 instead of 0.516, a ~6%
-difference that is well within the published RSE band.</li>
+Birgersson 2019 artesunate model and the package’s rule “NONMEM
+additive-on-log-scale = proportional in nlmixr2’s linear space”); the
+alternative interpretation as a back-transformed linear-scale CV would
+give propSd = 0.486 instead of 0.516, a ~6% difference that is well
+within the published RSE band.</li>
 <li>
 <strong>Virtual cohort size n = 60 per arm.</strong> The published
 study had n = 15 in a four-way crossover (60 subject-occasion

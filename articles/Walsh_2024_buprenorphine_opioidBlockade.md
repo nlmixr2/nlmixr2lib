@@ -51,8 +51,7 @@ wants to drive these models from a dose regimen must supply
 concentrations from an external PK source. Because there is no PK model
 and no dosing, a PKNCA non-compartmental analysis is not meaningful
 here; this vignette validates the models against the paper’s own
-reported exposure-response quantities instead (the strategy described in
-`endogenous-validation.md`).
+reported exposure-response quantities instead.
 
 ## Population
 
@@ -516,9 +515,8 @@ ic50_draw <- exp(est("lic50") + rnorm(n_draw, 0, sd_log(0.304)))
 #
 # Confirmed present on rxode2 5.1.7 (origin/main @ 7d74e29e4), not only on the
 # 5.1.3 release, so this workaround is still required. It appears at >= 8
-# subjects and is independent of core count -- `cores = 1` fails too. Reprex:
-# _scripts/rxode2_params_nondeterminism_reprex.R in the ingestion queue, whose
-# header records when this can be reverted.
+# subjects and is independent of core count -- `cores = 1` fails too. The
+# maintainers keep a reprex that records when this can be reverted.
 #
 # Doing the arithmetic here is safe because the drug liking model is algebraic
 # in Cp with Imax and gamma both fixed to 1, and the closed form was checked to

@@ -57,7 +57,7 @@ Table 2), 11 patients on setrobuvir 200 mg BID, 8 on 400 mg BID, and 8
 on 800 mg BID, all for 3 days. Median baseline viral load ranged 5.71 to
 6.89 log10 IU/mL across dose arms, and the genotype-1 subtype was split
 44 percent GT1a / 56 percent GT1b. Baseline demographics beyond genotype
-and viral load were not tabulated in the trimmed main text of Canini
+and viral load were not tabulated in the extracted main text of Canini
 2018.
 
 The same information is available programmatically via the model’s
@@ -201,8 +201,7 @@ stopifnot(!anyDuplicated(unique(events_stoch  [, c("id", "time", "evid")])))
 
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-# useLinCmt = FALSE required for multi-output models with dvid mapping;
-# see .claude/skills/extract-literature-model/references/known-vignette-failure-patterns.md section 5b.
+# useLinCmt = FALSE required for multi-output models with dvid mapping.
 sim_typ <- rxode2::rxSolve(
   mod_typ, events = events_typical,
   keep = c("dose", "genotype", "treatment", "HCV_GT1B"),
@@ -225,7 +224,7 @@ sim_typ_obs <- sim_typ |>
 
 Restrict the stochastic simulation to the first 3 days (matching the
 in-patient PK sampling window of Canini 2018 study D) to keep the render
-inside the Phase 6 time budget.
+inside its time budget.
 
 ``` r
 

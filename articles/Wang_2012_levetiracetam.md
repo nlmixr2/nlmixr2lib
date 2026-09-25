@@ -875,6 +875,6 @@ mg/kg trough, consistent with linear kinetics. {.table}
   for this extraction. A search of PubMed and the Acta Pharmacologica
   Sinica corrections feed for
   `"Wang 2012" + levetiracetam + Chinese pediatric + erratum` returned
-  no hits as of the extraction date (2026-06-03); operators should
+  no hits as of the extraction date (2026-06-03); the maintainers should
   reconfirm against the journal’s corrections listing if a re-extraction
   is undertaken.

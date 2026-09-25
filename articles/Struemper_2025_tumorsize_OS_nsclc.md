@@ -755,10 +755,10 @@ flowing through the TS-OS link. {.table}
 - **No PKNCA validation.** PKNCA is not appropriate for a joint TS-OS
   framework: there is no PK structure (no `Cc`, no AUC) and the TS
   observable is a tumor diameter, not a drug concentration. The
-  validation strategy follows the `endogenous-validation.md` pattern:
-  dimensional check, typical- subject trajectory replication (Figure 4),
-  and Kaplan-Meier-style curves (Figure 1) and 1-year landmark OS
-  (Figure 2).
+  validation strategy follows the package’s pattern for endogenous and
+  mechanistic models: dimensional check, typical-subject trajectory
+  replication (Figure 4), and Kaplan-Meier-style curves (Figure 1) and
+  1-year landmark OS (Figure 2).
 - **Sample size.** This vignette uses n = 80 subjects per arm for five
   representative arms (400 simulated subjects total). The source paper
   analysed n = 786 across 12 arms; the smaller vignette cohort is a

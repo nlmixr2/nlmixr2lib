@@ -338,8 +338,7 @@ rlnorm_mean_cv <- function(n, mean, cv) {
 
 # Observation rows sit on an ODE STATE (never on an algebraic observable) and
 # carry dvid = 1L; this model declares three endpoints, so without dvid rxode2
-# cannot map the observation to a prediction. See
-# known-vignette-failure-patterns.md patterns 2 and 5b.
+# cannot map the observation to a prediction.
 make_arm <- function(row, id_offset) {
   ids <- id_offset + seq_len(N_PER_ARM)
   cov <- tibble::tibble(
@@ -637,7 +636,7 @@ nca_for <- function(conc_col, concu) {
     dplyr::filter(!is.na(.data[[conc_col]])) |>
     dplyr::transmute(id, time, Cc = .data[[conc_col]], regimen)
 
-  # Defensive time-zero row (see pknca-recipes.md); existing rows win.
+  # Defensive time-zero row; existing rows win.
   sim_nca <- dplyr::bind_rows(
     sim_nca,
     sim_nca |> dplyr::distinct(id, regimen) |> dplyr::mutate(time = 0, Cc = 0)

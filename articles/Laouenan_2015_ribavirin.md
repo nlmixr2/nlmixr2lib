@@ -67,8 +67,8 @@ The bundle does **not** ship a `Model_Accomodations.text|.txt` file.
 Authorship and journal mapping (Laouenan C et al. 2015, CPT
 Pharmacometrics Syst Pharmacol 4(1):e00008, <doi:10.1002/psp4.8>, PMID
 26225222) was confirmed via a PubMed E-utilities lookup against the
-publication metadata in the task header. The publication PDF / PMC full
-text was not accessible from the worktree environment, so
+publication metadata this model was built from. The publication PDF /
+PMC full text was not accessible when this model was built, so
 publication-figure replication is out of scope (see “Validation
 strategy” below).
 
@@ -111,7 +111,7 @@ below refers to `Output_real_Laouenant_2015_CPTPSP_hb_RBV` in the
 **Errata note.** The bundle’s `Output_real_*` final estimate for `EC50`
 is **8,280 ng/mL**, while the Laouenan 2015 publication’s Results
 section reports `IC50RBV = 7,090 ng/mL`. Both refer to the same model
-parameter. Per the extraction skill’s DDMORE-source guidance the `.lst`
+parameter. Per the package’s rule for DDMORE-sourced models the `.lst`
 final estimate is used verbatim in the model file, and the discrepancy
 is documented here. The publication does not report typical kout,Hb or
 Hb0 numerical values for direct comparison; the bundle’s listing is the
@@ -119,11 +119,11 @@ authoritative source for those.
 
 ## Validation strategy
 
-The Laouenan 2015 publication PDF / PMC full text is not on disk in this
-worktree, so the standard publication-figure replication and
+The Laouenan 2015 publication PDF / PMC full text is not on disk here,
+so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The validation in this
-vignette therefore follows the F.2 (self-consistency) and F.1
-(endogenous mechanistic sanity) substitutes from the extraction skill:
+vignette therefore uses two substitutes, bundle self-consistency and
+endogenous mechanistic sanity:
 
 1.  **Steady-state hold (drug-free).** With the ribavirin regressors
     forced to zero (`CSS_RBV = 0`), hemoglobin must stay at `hb0` across
@@ -139,9 +139,8 @@ vignette therefore follows the F.2 (self-consistency) and F.1
     `hb0 * (1 - CSS_RBV / (CSS_RBV + EC50)) = 14.3 * (1 - 3000/11280) ~= 10.50 g/dL`,
     which is consistent with the publication’s reported median predicted
     Hbss of 10.0 g/dL (range 7.8-11.8).
-4.  **Bundle self-consistency (F.2).** Re-simulate the bundle’s
-    15-subject `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt` event table
-    through
+4.  **Bundle self-consistency.** Re-simulate the bundle’s 15-subject
+    `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt` event table through
     [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
     using each subject’s bundle CSS_RBV / K_RBV regressors, with the
     typical-value parameters from `Output_real_*`. The resulting
@@ -354,7 +353,7 @@ ggplot(sim_mid, aes(time, hb)) +
 
 ![](Laouenan_2015_ribavirin_files/figure-html/mid-range-1.png)
 
-## 4. Bundle self-consistency (F.2)
+## 4. Bundle self-consistency
 
 Re-simulate the 15-subject `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt`
 event table through the typical-value model using each subject’s bundle
@@ -582,17 +581,16 @@ stopifnot(
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   function flags two warnings on this model: “Compartment ‘hb’ is not a
   canonical name” and “Single-output observation variable ‘hb’ should be
-  named ‘Cc’”. The
-  [naming-conventions.md](https://github.com/nlmixr2/nlmixr2lib/blob/main/.claude/skills/extract-literature-model/references/naming-conventions.md#observation-variable)
-  reference under “Observation variable” explicitly exempts paper-named
-  non-PK outputs (e.g. `tumorSize`, `freeIgE`, `totalIgE`,
-  `Cbrain_cerebellum`, `Ccsf`) from the `Cc` / `Cc_<metab>` naming rule,
-  and the existing endogenous model `igg_kim_2006.R` triggers the same
-  compartment warning for the same reason. The warnings are intentional
-  and reflect the endogenous-model nature of the extraction; they are
-  kept rather than coerced into the canonical `central` / `Cc` names
-  because doing so would mislead readers into thinking `hb` is a drug
-  concentration in a kinetic compartment.
+  named ‘Cc’”. The package’s naming conventions for observation
+  variables explicitly exempt paper-named non-PK outputs (e.g.
+  `tumorSize`, `freeIgE`, `totalIgE`, `Cbrain_cerebellum`, `Ccsf`) from
+  the `Cc` / `Cc_<metab>` naming rule, and the existing endogenous model
+  `igg_kim_2006.R` triggers the same compartment warning for the same
+  reason. The warnings are intentional and reflect the endogenous-model
+  nature of the extraction; they are kept rather than coerced into the
+  canonical `central` / `Cc` names because doing so would mislead
+  readers into thinking `hb` is a drug concentration in a kinetic
+  compartment.
 - **`units$dosing` set to `"mg"` despite the PD model not consuming dose
   events.** The Laouenan 2015 hemoglobin model has no NONMEM-style
   `EVID = 1` dosing events; the ribavirin exposure enters analytically
@@ -605,9 +603,9 @@ stopifnot(
   consumed by the PD model itself.
 - **Discrepancy between `EC50` in the bundle’s `Output_real_*` listing
   (8,280 ng/mL) and the publication-reported `IC50RBV` (7,090 ng/mL).**
-  The `.lst` final estimate is used per the extraction skill’s
-  DDMORE-source guidance (“Parameter VALUES come from
-  `Output_real_*.lst` (final estimates)”). The publication’s value is
+  The `.lst` final estimate is used per the package’s rule for
+  DDMORE-sourced models (parameter values come from the
+  `Output_real_*.lst` final estimates). The publication’s value is
   approximately 14% lower; the difference is small relative to the
   reported between-subject variability (`omega_EC50 = 0.301`, i.e. CV ~=
   31% on the log scale) and does not change the model’s qualitative
@@ -641,16 +639,16 @@ stopifnot(
   the simulation output for display purposes only.
 - **Population demographics absent.** The DDMORE bundle does not
   reproduce the publication’s Table 1 demographics, and the publication
-  PDF was not available in the worktree environment for this extraction.
+  PDF was not available when this model was built.
   `population$age_range`, `population$weight_range`,
   `population$sex_female_pct`, and the race breakdown are recorded as
   `NA`; readers needing those details should consult Laouenan 2015
   directly.
-- **Validation strategy is F.2 self-consistency, not publication-figure
+- **Validation strategy is self-consistency, not publication-figure
   replication.** Because the publication PDF is not on disk, this
   vignette does not reproduce a figure from Laouenan 2015 and does not
   run a PKNCA NCA comparison (PKNCA is inappropriate for an
   indirect-response hemoglobin model anyway). The mechanistic-sanity
   simulations (sections 1-
-  3.  and the bundle self-consistency simulation (section 4) satisfy the
-      F.1 / F.2 substitutes documented in `verification-checklist.md`.
+  3.  and the bundle self-consistency simulation (section 4) are the
+      substitute checks used when the publication is not available.

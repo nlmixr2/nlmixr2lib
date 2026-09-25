@@ -3343,9 +3343,9 @@ Conclusion).</p>
 </h2>
 <ul>
 <li>
-<strong>Dose unit conversion is operator-supplied.</strong> The
-model uses umol (amount) and umol/L (concentration); MTX in mg and CPG2
-in U have to be converted at the event-table boundary. The vignette’s
+<strong>Dose unit conversion is user-supplied.</strong> The model
+uses umol (amount) and umol/L (concentration); MTX in mg and CPG2 in U
+have to be converted at the event-table boundary. The vignette’s
 conversion factors use methotrexate MW = 454.44 g/mol (standard
 chemistry), glucarpidase MW = 83 kDa (Kimura 2023 page 1919,
 Introduction), and recombinant glucarpidase specific activity = 1000
@@ -3395,10 +3395,10 @@ those in Kimura 2023 Figure 4 / page 1921 – at 50 U/kg, 70 h, the paper
 reports 89.6% below 0.1 umol/L; this vignette gives ~67% (independent of
 N). The monotonic dose-response relationship, the plateau above 50 U/kg,
 and the rebound behaviour at 120 h are all reproduced; the absolute
-percentages are not. Per the skill’s no-tuning rule, no parameter values
-were adjusted to close the gap. Plausible contributors to the residual
-difference – none of them load-bearing on the published clinical
-recommendation – are
+percentages are not. Per the package’s no-tuning rule, no parameter
+values were adjusted to close the gap. Plausible contributors to the
+residual difference – none of them load-bearing on the published
+clinical recommendation – are
 <ol style="list-style-type: lower-alpha">
 <li>a different sampling implementation in the original deSolve runs
 (paper-Methods does not specify the truncation rule), (b) an

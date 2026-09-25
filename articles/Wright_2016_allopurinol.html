@@ -3104,7 +3104,7 @@ use virtual populations whose covariate distributions approximate the
 published trial demographics: a male-majority adult-gout cohort with
 median total body weight 94 kg and median CRCL standardised to 70 kg ~=
 4.08 L/h (= 68 mL/min in the raw Cockcroft-Gault expression).</p>
-<p>Cohort size is kept at 200 subjects per arm per the skill convention
+<p>Cohort size is kept at the package’s cap of 200 subjects per arm
 (adequate for VPC; larger cohorts increase render time without
 validation benefit).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -3179,7 +3179,7 @@ validation benefit).</p>
 <code class="sourceCode R"><span><span class="co"># Six dose levels at fixed adult-typical covariates; reproduces the</span></span>
 <span><span class="co"># Wright 2016 Figure 3 stratification (100 / 200 / 300 / 400 / 600 mg</span></span>
 <span><span class="co"># daily for ~3 months). Wright 2016 uses 1000 subjects per dose for</span></span>
-<span><span class="co"># its Figure 3 simulation; we use 200/arm per skill convention.</span></span>
+<span><span class="co"># its Figure 3 simulation; we use the package's 200/arm cohort cap.</span></span>
 <span><span class="va">N_PER_ARM</span> <span class="op">&lt;-</span> <span class="fl">200L</span></span>
 <span><span class="va">doses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">300</span>, <span class="fl">400</span>, <span class="fl">600</span><span class="op">)</span></span>
 <span></span>
@@ -3193,7 +3193,7 @@ validation benefit).</p>
 <span></span>
 <span><span class="va">events_dose</span> <span class="op">&lt;-</span> <span class="fu">build_events</span><span class="op">(</span><span class="va">cohorts</span>, dose_days <span class="op">=</span> <span class="fl">90</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Assertion: ids disjoint and (id, time, evid) unique per skill convention.</span></span>
+<span><span class="co"># Assertion: ids disjoint and (id, time, evid) unique.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events_dose</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -3498,16 +3498,13 @@ oxypurinol concentration of ~70 umol/L at 226 mg/day (Discussion); the
 </h2>
 <ul>
 <li>
-<strong>Year on the citation.</strong> The task metadata named the
-paper “Wright 2015” because the publisher posted the accepted-article
-PDF online on 9 October
-<ol start="2015" style="list-style-type: decimal">
-<li>The final, citeable BJCP volume issue (81:2, 277-289) is dated
-February 2016 with the same DOI (10.1111/bcp.12799); we use the 2016
-year throughout the model file, vignette, and filename for the canonical
-citation, matching how the paper is indexed in PubMed.</li>
-</ol>
-</li>
+<strong>Year on the citation.</strong> The metadata this model was
+built from named the paper “Wright 2015” because the publisher posted
+the accepted-article PDF online on 9 October 2015. The final, citeable
+BJCP volume issue (81:2, 277-289) is dated February 2016 with the same
+DOI (10.1111/bcp.12799); we use the 2016 year throughout the model file,
+vignette, and filename for the canonical citation, matching how the
+paper is indexed in PubMed.</li>
 <li>
 <strong>Per-study urate residual error.</strong> Wright 2016 reports
 five different urate additive residual SDs across the five pooled

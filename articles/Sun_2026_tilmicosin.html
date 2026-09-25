@@ -4096,7 +4096,7 @@ percentiles.
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Assert on the CENTRE and on ROBUST QUANTILES, never on the extremes of a</span></span>
-<span>  <span class="co"># random cohort (see CLAUDE.md). The typical-value AUC0-24 must sit close to</span></span>
+<span>  <span class="co"># random cohort. The typical-value AUC0-24 must sit close to</span></span>
 <span>  <span class="co"># the cohort median, because all eight sampled parameters are lognormal with</span></span>
 <span>  <span class="co"># the Table 2 value as the median.</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">auc24</span><span class="op">$</span><span class="va">auc</span><span class="op">)</span> <span class="op">/</span> <span class="fu">cum_auc</span><span class="op">(</span><span class="va">s_mc</span><span class="op">$</span><span class="va">time</span>, <span class="va">s_mc</span><span class="op">$</span><span class="va">Cpif</span>, <span class="fl">24</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.10</span>,</span>

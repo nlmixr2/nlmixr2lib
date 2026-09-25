@@ -3749,7 +3749,7 @@ concentration. Hard-coded MW values: MW_LF = 528.94, MW_DLF =
 <li><p><strong>Estimated gestational age covariate (<code>EGA</code>
 -&gt; <code>GA</code>).</strong> The paper’s source column is “EGA”
 (estimated gestational age at study admission, weeks; range 13.1-39.0).
-Per the operator sidecar (2026-06-07), the existing <code>GA</code>
+Per a maintainer decision (2026-06-07), the existing <code>GA</code>
 canonical (originally defined as gestational age at birth in pediatric
 popPK use cases) is reused with the at-admission semantic captured in
 <code>covariateData[[GA]]$notes</code>. Downstream users running this

@@ -145,11 +145,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 mod <- readModelDb("Zandvliet_2016_corifollitropin_alfa")
 
-# Stochastic VPC for the time-course plot. `` keeps
-# rxode2 from auto-converting the ODE system to its linear-compartment
-# fast path, which silently breaks the multi-output dvid->cmt mapping
-# for models with two algebraic observables on different ODE-state
-# subsets (see known-vignette-failure-patterns.md pattern 5b).
+# Stochastic VPC for the time-course plot.
 sim_vpc <- rxode2::rxSolve(
   mod,
   events = events,
@@ -239,8 +235,7 @@ sim_nca <- sim_typical |>
   dplyr::select(id, time, Cc, cohort)
 
 # Guarantee a time = 0 row per (id, cohort); pre-dose extravascular
-# Cc = 0 is the correct value. (See pknca-recipes.md "Time-zero
-# guarantee".)
+# Cc = 0 is the correct value.
 sim_nca <- bind_rows(
   sim_nca,
   sim_nca |> distinct(id, cohort) |> mutate(time = 0, Cc = 0)
@@ -407,7 +402,7 @@ ug. The 50 kg / 90 kg AUC ratio is 2.02, i.e., 102% higher exposure at
   CV (`omega^2 = log(0.29^2 + 1) = 0.08074`) on the KeFSH eta. The IIV
   on KeFSH affects only the endogenous-FSH submodel decay rate and does
   not appear in the typical-value Cmax / AUC / half-life comparison
-  above. If a future operator recovers the original NONMEM `.lst` file
+  above. If a future maintainer recovers the original NONMEM `.lst` file
   or an author correction, update the model file accordingly.
 - The scaling factor SCALE = 6.11 IU/L per ng/mL is a fixed assay-
   conversion factor inherited from an upstream analysis cited in

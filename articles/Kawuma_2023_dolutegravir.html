@@ -3340,8 +3340,7 @@ between-occasion draws for bioavailability, lag time and absorption rate
 <span><span class="co"># rxode2's simulation RNG, and rxode2's streams are partitioned per solver</span></span>
 <span><span class="co"># thread -- so the etas drawn below are reproducible on this machine and</span></span>
 <span><span class="co"># different on a machine with a different thread count. Every assertion in this</span></span>
-<span><span class="co"># vignette is written to hold for any cohort the model can produce; see</span></span>
-<span><span class="co"># pattern 12 of the extraction skill's known-vignette-failure-patterns.</span></span>
+<span><span class="co"># vignette is written to hold for any cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260905</span><span class="op">)</span></span>
 <span><span class="va">sex_draw</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.32</span><span class="op">)</span></span>
 <span></span>

@@ -323,7 +323,7 @@ Treg reduction / recovery checkpoints. {.table style="width:100%;"}
 ## Errata
 
 Several non-substantive PDF text-extraction artifacts (operators
-rendered as `/C0`, etc.) appear in the trimmed source; they are not
+rendered as `/C0`, etc.) appear in the extracted text; they are not
 paper errata. Two model-relevant ambiguities are documented:
 
 - **Hill coefficient point estimate without precision indicator.** Diao

@@ -5,9 +5,9 @@
 This vignette validates two one-compartment intravenous population PK
 models, one per drug, that were developed jointly in the Leroux 2018
 TINN randomized trial of fluconazole vs micafungin in neonates with
-suspected or proven systemic candidiasis. Per the
-`replicate-author-structure` policy the two drugs are extracted as two
-separate `.R` files but share this single vignette.
+suspected or proven systemic candidiasis. Following the package’s
+convention of replicating the authors’ model structure, the two drugs
+are extracted as two separate `.R` files but share this single vignette.
 
 - Citation: Leroux S, Jacqz-Aigrain E, Elie V, Legrand F, Barin-Le
   Guellec C, Aurich B, Biran V, Dusang B, Goudjil S, Coopman S, Garcia
@@ -392,9 +392,9 @@ on weight or dose.
   magnitudes. The Results note that individual CL ranged 0.008-0.042
   L/h/kg for fluconazole and 0.010-0.024 L/h/kg for micafungin
   (“Fluconazole and micafungin clearances were highly variable in the
-  study population”), but no parametric omega is given. Per the skill
-  policy for unreported IIV with structural values present, encode IIV
-  as `fixed(0)` and document here.
+  study population”), but no parametric omega is given. Per the
+  package’s policy for unreported IIV with structural values present,
+  encode IIV as `fixed(0)` and document here.
 
 - **Residual error is fixed at zero on both `propSd` and `addSd` for
   both drugs.** The supplement shows DV vs PRED, DV vs IPRED, WRES vs

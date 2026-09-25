@@ -398,7 +398,7 @@ sim_fig5 <- rxode2::rxSolve(mod_intr, events = ev_all,
                             params = params_fig5,
                             keep = c("cohort", "dose_mg"),
                             returnType = "data.frame")
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:09
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:08
 
 # Pick the day-90 (steady state) serum_k per subject per cohort.
 ss_per_subj <- sim_fig5 |>
@@ -614,7 +614,7 @@ serum potassium level \> 4.8 mmol/L”).
     stochastic-simulation use case rather than part of this validation
     vignette.
 
-8.  **UACR canonical added in this PR.** `UACR` (urine
+8.  **UACR canonical added alongside this model.** `UACR` (urine
     albumin-to-creatinine ratio) is a renal-damage biomarker (KDIGO CKD
     staging) and is registered as a new canonical entry in
     `inst/references/covariate-columns.md` alongside this model. It is
@@ -634,7 +634,6 @@ serum potassium level \> 4.8 mmol/L”).
     here is by exact algebraic reproduction of the paper’s published
     3.86% and 5.56% Section 3.2 anchors at 10 mg and 20 mg, the
     steady-state hold at baseline K = 4.50, and visual reproduction of
-    the Figure 5(a) intrinsic dose-response. The endogenous-model
-    validation pattern (steady-state hold, Figure replication,
-    dimensional analysis) follows the SKILL.md
-    `endogenous-validation.md` reference.
+    the Figure 5(a) intrinsic dose-response. This follows the package’s
+    validation pattern for endogenous-substance models (steady-state
+    hold, Figure replication, dimensional analysis).

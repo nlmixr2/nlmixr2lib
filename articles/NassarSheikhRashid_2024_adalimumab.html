@@ -3255,7 +3255,7 @@ i.e. 0.5^0.75)</td>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># These are algebraic identities, not simulated statistics, so a tight bound is</span></span>
-<span><span class="co"># the correct gate here (see known-vignette-failure-patterns.md pattern 11).</span></span>
+<span><span class="co"># the correct gate here.</span></span>
 <span><span class="co"># The tolerance is set by the paper's own rounding: 0.269 and 1.59 are printed</span></span>
 <span><span class="co"># to 3 significant figures, and 0.5946 is 0.5^0.75 rounded to 4.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">claims</span><span class="op">$</span><span class="va">`% diff`</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
@@ -3566,8 +3566,7 @@ approximate magnitude of the published claim.</p>
 <span><span class="co"># detectable ADA, without uveitis during adalimumab treatment and with CRP</span></span>
 <span><span class="co"># levels below 1 mg/L". Each of the four contrasts below is driven by a</span></span>
 <span><span class="co"># covariate coefficient of at least 28% on clearance, so the ORDERING is a real</span></span>
-<span><span class="co"># structural claim rather than a near-zero effect whose sign could flip</span></span>
-<span><span class="co"># (contrast pattern 12 of known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># structural claim rather than a near-zero effect whose sign could flip.</span></span>
 <span><span class="va">panel_dir</span> <span class="op">&lt;-</span> <span class="va">strata</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">panel</span>, <span class="va">level</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>med <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop_last"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3631,7 +3630,7 @@ interval starts after 11 doses.</p>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">arm</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>arm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">arm</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># Time-zero guarantee (pknca-recipes.md); pre-dose Cc = 0 is correct for a</span></span>
+<span>  <span class="co"># Time-zero guarantee; pre-dose Cc = 0 is correct for a</span></span>
 <span>  <span class="co"># subcutaneous model. Any existing time-zero row wins.</span></span>
 <span>  <span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>    <span class="va">sim_nca</span>,</span>

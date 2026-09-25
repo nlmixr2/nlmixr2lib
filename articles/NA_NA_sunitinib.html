@@ -2892,21 +2892,18 @@ labels) or 37.5 mg PO QD continuously (later label expansion); the MDL
 itself is dose-input-agnostic.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata
-(<code>readModelDb("NA_NA_sunitinib")$population</code> after
-<code>devtools::load_all()</code> against the worktree).</p>
+(<code>readModelDb("NA_NA_sunitinib")$population</code>).</p>
 </div>
 <div class="section level2">
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>All parameter values come from
 <code>Sunitinib_MPD6_model.mdl</code>’s <code>parObj</code>
-<code>STRUCTURAL{}</code> and <code>VARIABILITY{}</code> blocks. Per the
-operator decision recorded in the queue sidecar
-(<code>response-001.json</code>, value <code>extract_mdl</code>), these
-are treated as the deposited final estimates. The
-<code>.mod</code>/<code>.lst</code> cross-check that the DDMORE-source
-extraction skill normally requires is unavailable for this bundle; see
-Errata.</p>
+<code>STRUCTURAL{}</code> and <code>VARIABILITY{}</code> blocks. Per a
+maintainer decision, these are treated as the deposited final estimates.
+The <code>.mod</code>/<code>.lst</code> cross-check that the
+DDMORE-source extraction protocol normally requires is unavailable for
+this bundle; see Errata.</p>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -3339,13 +3336,11 @@ self-consistency at typical-value parameters) is run.</li>
 <strong>No <code>.lst</code> cross-check on parameter
 values.</strong> The DDMORE-source extraction protocol reads final
 estimates from <code>Output_real_*.lst</code>. This bundle ships no
-listing. Per the operator decision recorded in the queue sidecar
-(<code>030-na_na_sunitinib</code>, <code>response-001.json</code>, value
-<code>extract_mdl</code>), the MDL parObj <code>STRUCTURAL{}</code> and
-<code>VARIABILITY{}</code> numeric values are treated as the deposited
-final estimates; whether they actually represent converged final
-estimates or initial guesses is not externally verifiable. Some IIV
-variances look unphysically large (notably
+listing. Per a maintainer decision, the MDL parObj
+<code>STRUCTURAL{}</code> and <code>VARIABILITY{}</code> numeric values
+are treated as the deposited final estimates; whether they actually
+represent converged final estimates or initial guesses is not externally
+verifiable. Some IIV variances look unphysically large (notably
 <code>omega_d1 = 4.94 sd</code> -&gt; variance 24, and
 <code>omega_pdm = 1.74 sd</code>, <code>omega_lam = 2.11 sd</code>,
 <code>omega_V1 = 1.3 sd</code>, <code>omega_Vm1 = 0.908 sd</code>), but
@@ -3430,7 +3425,7 @@ canonical <code>depot</code> / <code>central</code> /
 (<code>R/conventions.R::registeredMetabolites</code>); the metabolite of
 sunitinib is N-desethyl sunitinib (SU012662) but is not pre-registered.
 Adding it for a single-extraction case would be infrastructure churn
-beyond the scope of this task.
+beyond the scope of this model.
 <code>checkModelConventions("NA_NA_sunitinib")</code> flags 12
 <code>compartments</code> warnings for these names (all justified by the
 precedent paragraph below).</li>

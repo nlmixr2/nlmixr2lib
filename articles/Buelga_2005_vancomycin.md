@@ -372,11 +372,11 @@ Typical-value PK quantities at TBW = 65 kg, CRCL = 90 mL/min vs Buelga
   V = 1.06 \* TBW. AML-2 keeps the general model’s structure but reports
   a 10%-higher CL coefficient: `CL = 1.17 * CLCR; V = 0.97 * TBW`. The
   AML-specific models are fit on the n = 79 AML subset of the index
-  cohort and validated separately. Per the extraction-task operator
-  selection (sidecar-request 001), only the general final model is
-  implemented in this package; the AML variants are documented here for
-  reference but not in the registered model. Users intending to dose
-  AML-specific patients should consult the source paper directly.
+  cohort and validated separately. Per the maintainers’ selection, only
+  the general final model is implemented in this package; the AML
+  variants are documented here for reference but not in the registered
+  model. Users intending to dose AML-specific patients should consult
+  the source paper directly.
 
 - **CLCR-correlation interpretation.** Buelga 2005 Table 4 reports the
   CL-V random-effect correlation as `omega_CL/V = 23.12%`. The packaged
@@ -387,11 +387,10 @@ Typical-value PK quantities at TBW = 65 kg, CRCL = 90 mL/min vs Buelga
   would give `cov = 0.05347` and `rho ~ 0.54`, a substantially stronger
   linkage between CL and V random effects. The paper does not explicitly
   state which convention it uses. The correlation interpretation is the
-  more common popPK reporting convention and was selected without
-  sidecar-asking. Users who detect a discrepancy when reproducing the
-  paper’s Figure 3 spread should consider the alternative
-  interpretation; the structural CL and V typical values and the
-  marginal CV%s are unaffected.
+  more common popPK reporting convention and was selected on that basis.
+  Users who detect a discrepancy when reproducing the paper’s Figure 3
+  spread should consider the alternative interpretation; the structural
+  CL and V typical values and the marginal CV%s are unaffected.
 
 - **CLCR units conversion (mL/min -\> L/h).** The packaged model stores
   the covariate under the canonical `CRCL` column with

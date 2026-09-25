@@ -143,7 +143,7 @@ sim |>
 
 ![](NA_NA_tte_loglogistic_files/figure-html/km-style-1.png)
 
-## Mechanistic sanity checks (verification-checklist Section F.3)
+## Mechanistic sanity checks (F.3)
 
 ### F.3.1 – Hazard has the characteristic log-logistic shape (rises then falls when alpha \> 1)
 
@@ -237,7 +237,7 @@ dataset is outside this package and not redistributed.
   (`Output_simulated_runCOMPEV2_005.res`) is consistent with the
   log-logistic `.mod`. We follow the executable that produced the
   shipped final estimates (the `.lst` is the source of truth for
-  parameter VALUES per the skill’s verification checklist). The packaged
+  parameter VALUES per the package’s validation checklist). The packaged
   nlmixr2lib model is therefore log-logistic, matching the bundle’s
   executable rather than the guiding-document narrative. A log-normal
   alternative is already provided in `NA_NA_tte_lognormal.R` (Competing

@@ -3844,7 +3844,7 @@ eigenvalue.</caption>
 </h3>
 <p>Bamgboye 2026 reports no NCA table, so the only published numeric
 answer key for exposure is Figure 4. The reference values below were
-read off that figure by the extractor and are therefore approximate;
+read off that figure by the maintainers and are therefore approximate;
 they are used as a cross-check on the packaged model, never as a source
 of parameter values. Their internal consistency is itself informative –
 the four read-off 24 h concentrations are in the same 6:3:2:1 ratio as
@@ -3860,7 +3860,7 @@ somewhere on the descending limb rather than at the true Cmax – reading
 it as a Cmax reference understates the peak by roughly 30-40% and would
 say more about the authors’ plotting grid than about the model.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Operator-digitised from Figure 4 of Bamgboye 2026 (24-hour concentration,</span></span>
+<code class="sourceCode R"><span><span class="co"># Maintainer-digitised from Figure 4 of Bamgboye 2026 (24-hour concentration,</span></span>
 <span><span class="co"># read against the log-scale gridlines at the right-hand edge of each panel).</span></span>
 <span><span class="va">published_fig4</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">treatment</span>,               <span class="op">~</span><span class="va">clast.obs</span>,</span>

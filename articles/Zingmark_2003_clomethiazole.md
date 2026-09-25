@@ -557,9 +557,9 @@ Compare median against the paper’s stated 10 umol/L target. {.table}
   rxode2 / nlmixr2 model syntax), and (b) the NIH stroke-scale covariate
   that drives one of the two piecewise-nonlinear PT effects is not in
   the canonical `inst/references/covariate-columns.md` register and
-  registering a new canonical requires operator sign-off. Both decisions
-  could be revisited in a follow-up extraction that introduces a new
-  canonical for `NIHSS` and a mixture-encoding precedent.
+  registering a new canonical requires maintainer sign-off. Both
+  decisions could be revisited in a follow-up extraction that introduces
+  a new canonical for `NIHSS` and a mixture-encoding precedent.
 
 - **Shared eta encoded as a block-diagonal omega matrix.** The paper
   parameterises subject-level random effects as

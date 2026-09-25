@@ -702,8 +702,8 @@ trajectories are monotonic and well-behaved.
   confirmed in this analysis.” `Kin`, `Kout`, `SCL_ref`, and `SHP_ref`
   are all reported as FIXed point values in Bellanti 2015 Table III; the
   underlying analysis that produced them is unpublished. The packaged
-  model reproduces the values inline (the Phase 1 step 6 “unidentifiable
-  upstream” decision rule) with `fixed()` wrappers documenting their
+  model reproduces the values inline as reported, because the upstream
+  analysis cannot be located, with `fixed()` wrappers documenting their
   non-estimated status; users who want to refit these parameters need a
   separate iron-overload dataset and a primary disease-model fit. This
   vignette and the model file’s `description` make the
@@ -783,5 +783,4 @@ trajectories are monotonic and well-behaved.
   the appropriate validation target. The vignette instead exercises the
   dimensional-analysis, drug-free-baseline, drug-effect,
   time-to-threshold (Fig 5), compliance-scenario (Fig 6), VPC, and
-  perturbation-recovery checks recommended for endogenous models
-  (`references/endogenous-validation.md`).
+  perturbation-recovery checks recommended for endogenous models.

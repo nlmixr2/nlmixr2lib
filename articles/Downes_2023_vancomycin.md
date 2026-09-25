@@ -332,10 +332,10 @@ then clipped to the reported observed range where one is given.
 # set.seed() seeds R's RNG only. rxode2's own streams are partitioned per solver
 # thread, so a machine with a different thread count draws a different cohort.
 # Every assertion below is written to hold for any cohort this model can
-# produce; see references/known-vignette-failure-patterns.md pattern 12.
+# produce.
 set.seed(20230425)
 
-N <- 200L  # per arm; the skill caps validation cohorts at 200
+N <- 200L  # per arm; validation cohorts are capped at 200
 lnq <- function(n, med, q1, q3) {
   stats::rlnorm(n, meanlog = log(med), sdlog = log(q3 / q1) / (2 * stats::qnorm(0.75)))
 }

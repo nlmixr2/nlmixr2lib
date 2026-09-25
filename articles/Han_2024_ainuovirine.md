@@ -19,7 +19,7 @@ han_models <- c(
 
 # readModelDb() returns the model FUNCTION; rxode2::rxode() resolves it to the
 # ui exactly once so every downstream accessor ($population, $reference, ...)
-# works. See pattern 7 of the skill's known-vignette-failure-patterns.
+# works.
 uis <- lapply(han_models, function(n) rxode2::rxode(readModelDb(n)))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 names(uis) <- han_models
@@ -732,8 +732,7 @@ Typical-value steady-state exposure at 150 mg once daily. {.table}
 
 # One subject per exposure value: several observations at the same time for
 # one id would not be a valid event table. rxSolve OMITS the id column when
-# the table holds a single subject (pattern 8 of the skill's
-# known-vignette-failure-patterns), so handle that case explicitly rather than
+# the table holds a single subject, so handle that case explicitly rather than
 # indexing into a NULL.
 er_at <- function(model, covariate, value) {
   ev <- data.frame(id = seq_along(value), time = 0)

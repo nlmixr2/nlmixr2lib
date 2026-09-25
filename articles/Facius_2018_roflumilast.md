@@ -209,10 +209,9 @@ build_arm <- function(arm_label, dose1_amt, dose1_int_h, dose1_n,
   # Observation rows. The model has two algebraic observables (Cc parent,
   # Cc_noxide N-oxide); address them by dvid endpoint id (1 = Cc, 2 = Cc_noxide)
   # rather than by the algebraic-observable name, so rxode2 maps each
-  # observation to its endpoint under the default solver (see
-  # references/known-vignette-failure-patterns.md §5b; the Wittau 2015
-  # meropenem precedent). rxSolve returns Cc and Cc_noxide columns on every
-  # observation row regardless of dvid.
+  # observation to its endpoint under the default solver (see the Wittau
+  # 2015 meropenem precedent). rxSolve returns Cc and Cc_noxide columns on
+  # every observation row regardless of dvid.
   obs_rows <- tidyr::expand_grid(id = ids, time = obs_times,
                                   dvid = c(1L, 2L)) |>
     dplyr::mutate(evid = 0L, amt = 0)
@@ -356,7 +355,7 @@ sim_nca <- purrr::map_dfr(names(ss_starts), function(arm_label) {
 })
 
 # Defensive insertion of a time-zero row per (id, arm) for PKNCA to
-# anchor AUC0-* (see references/pknca-recipes.md "Time-zero records").
+# anchor AUC0-*.
 sim_nca <- sim_nca |>
   dplyr::filter(!is.na(Cc), !is.na(Cc_noxide)) |>
   dplyr::select(id, arm, time_in_interval, Cc, Cc_noxide)
@@ -560,9 +559,9 @@ roflumilast.”).
   packaged model uses unmodified log-normal etas (lambda = 0
   equivalent). The typical-value (no-IIV) predictions are unaffected;
   stochastic VPC tail percentiles may differ slightly from the source
-  figures for the most extreme quantiles. Operators reproducing the
-  precise IIV tails should apply `etabc = ((1 + eta)^0.704 - 1) / 0.704`
-  in a post-processing step before computing `exp(etabc)`.
+  figures for the most extreme quantiles. Users reproducing the precise
+  IIV tails should apply `etabc = ((1 + eta)^0.704 - 1) / 0.704` in a
+  post-processing step before computing `exp(etabc)`.
 - **Phase II-III dichotomous effects encoded via the canonical DIS_COPD
   covariate.** The OPTIMIZE and REACT cohorts comprise only severe-COPD
   patients, so the model’s most useful operating point is

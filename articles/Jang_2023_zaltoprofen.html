@@ -2884,7 +2884,7 @@ these parameters give 0.076 ug/mL. The discrepancy is roughly 6-7 fold
 in exposure and roughly 5 fold in Tmax.</p>
 <p>The values are shipped verbatim anyway, under the standing rule that
 printed values have authority and that figure-fitting never overrides
-print (a standing maintainer rule). Refitting to the figure would
+print (maintainer ruling, 2026-09-02). Refitting to the figure would
 produce an original model rather than this paper’s model.</p>
 <p>Consequently <strong>this vignette validates self-consistency, not
 agreement with the paper’s figures</strong>: it checks that the packaged
@@ -3471,7 +3471,7 @@ S6).</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG, not rxode2's; rxode2's streams are partitioned per</span></span>
 <span><span class="co"># solver thread, so this cohort differs between a 2-core CI runner and a</span></span>
 <span><span class="co"># 16-thread workstation. Every assertion below is written to hold for any</span></span>
-<span><span class="co"># cohort the model can produce (pattern 12 of known-vignette-failure-patterns).</span></span>
+<span><span class="co"># cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20230161</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span>   <span class="co"># well under the 200-per-arm cap</span></span>
@@ -4135,12 +4135,12 @@ identity.</p>
 <strong>The packaged parameter set does not reproduce the source
 paper’s own figures or its quoted steady-state concentrations.</strong>
 Values are shipped verbatim from supplementary Table S3 per the standing
-rule that printed values have authority over figures (a standing
-maintainer rule, applied in preference to deferring for author
-correspondence). The full quantitative demonstration is in the Errata
-section above. This vignette gates on self-consistency and on the
-paper’s published covariate ratios; it deliberately does
-<strong>not</strong> gate on reproducing Figures 1-2.</li>
+rule that printed values have authority over figures (maintainer ruling,
+2026-09-02, in preference to deferring for author correspondence). The
+full quantitative demonstration is in the Errata section above. This
+vignette gates on self-consistency and on the paper’s published
+covariate ratios; it deliberately does <strong>not</strong> gate on
+reproducing Figures 1-2.</li>
 <li>
 <strong>Between-subject variances</strong> are back-calculated from
 Table S3’s four-significant-figure <code>IIV (%)</code> column rather
@@ -4194,7 +4194,7 @@ paper’s Figure 1 external validation drew those doses from different
 published studies (Table S6).</li>
 <li>
 <strong>The Figure 1A digitised values</strong> in the Errata
-section are non-paper-derived (operator digitisation from a 400 dpi
+section are non-paper-derived (maintainer digitisation from a 400 dpi
 render) and are presented as supporting context only; no assertion
 depends on them.</li>
 </ul>

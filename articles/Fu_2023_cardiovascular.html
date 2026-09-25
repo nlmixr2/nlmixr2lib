@@ -3428,20 +3428,18 @@ starting values.</li>
 <li>
 <strong>Rat physiologic backbone; species not on-disk.</strong> The
 Snelder 2013, 2014 papers that supply the rat baseline values are not on
-disk in the ingestion source directory; the parameters here are taken
-from the Fu 2023 supplemental NONMEM control stream verbatim (which
-transcribes them from Snelder for the SSE reference set). If a
-downstream user needs the original Snelder derivation, those primary
-papers should be acquired separately.</li>
+disk; the parameters here are taken from the Fu 2023 supplemental NONMEM
+control stream verbatim (which transcribes them from Snelder for the SSE
+reference set). If a downstream user needs the original Snelder
+derivation, those primary papers should be acquired separately.</li>
 <li>
 <strong>No PKNCA validation.</strong> This is an endogenous /
 mechanistic QSP model with no exogenous concentration to characterise
 via NCA; the drug is a hypothetical Emax perturbation of the
 HR-production rate, not a therapeutic with dosing history observations.
 Validation instead relies on the steady-state hold + drug-response
-magnitude reproduction shown above, matching Section 8 of the
-endogenous-model validation reference
-(<code>references/endogenous-validation.md</code>).</li>
+magnitude reproduction shown above, matching the package’s validation
+pattern for endogenous-substance models.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -13,7 +13,7 @@
   fluid) sampling (Themans 2019), as packaged in DDMORE Foundation Model
   Repository entry DDMODEL00000301.
 - DDMORE Foundation Model Repository entry: `DDMODEL00000301`
-- Article (per task metadata):
+- Article (per the metadata this model was built from):
   <https://doi.org/10.1007/s40268-019-0268-x>
 
 The DDMORE Model_Accomodations file describes the same body of work
@@ -399,9 +399,10 @@ qualitative biological plausibility of the simulated trajectories.
   (post `MINIMIZATION SUCCESSFUL`).
 - **Journal mismatch with `Model_Accomodations.text`.** The bundle’s
   `Model_Accomodations.text` describes a British Journal of Pharmacology
-  submission (“submitted - July 2019, scenario = 4”); the task metadata
-  names a Drugs in R&D 2019 publication. These are treated as the same
-  body of work at different stages of journal review.
+  submission (“submitted - July 2019, scenario = 4”); the metadata this
+  model was built from names a Drugs in R&D 2019 publication. These are
+  treated as the same body of work at different stages of journal
+  review.
 - **`OMEGA BLOCK(4)` reduced to four independent etas.** The .mod
   declares `$OMEGA BLOCK(4)` but every off-diagonal is held at 0 in both
   the .mod and the .lst’s FINAL OMEGA matrix, so the nlmixr2 translation

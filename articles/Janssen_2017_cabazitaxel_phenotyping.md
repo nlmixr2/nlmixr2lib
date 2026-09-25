@@ -13,9 +13,9 @@ prostate cancer:
   clearance entering as a linear covariate on cabazitaxel clearance per
   Equation (1) of the paper.
 
-Per the `extract-literature-model` skill’s replicate-author-structure
-default, the two independent fits are extracted as **two separate model
-files** sharing this single vignette:
+Following the package’s convention of replicating the authors’ model
+structure, the two independent fits are extracted as **two separate
+model files** sharing this single vignette:
 
 - `modellib("Janssen_2017_midazolam")` — 1-cmt IV midazolam popPK (Table
   2A).
@@ -817,8 +817,8 @@ the population reference); at CLmdz = 70 L/h the model predicts CL =
 
 - **Base cabazitaxel model not extracted.** Table 2B also reports a
   “Base model” column (cabazitaxel without the midazolam covariate, IIV
-  CL_CBZ = 24.8% CV, CLbase = 129 L/h). Per the standing default policy
-  in `references/replicate-author-structure.md`, base-vs-final model
+  CL_CBZ = 24.8% CV, CLbase = 129 L/h). Per the package’s standing
+  default policy for replicating author structure, base-vs-final model
   pairs collapse to the final model only. The final / metabolic
   phenotype model is what `modellib("Janssen_2017_cabazitaxel")`
   returns.

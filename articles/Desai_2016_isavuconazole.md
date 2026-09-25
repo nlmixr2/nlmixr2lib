@@ -92,7 +92,7 @@ nlmixr2lib units convention (time = h, concentration = mg/L).
 | omega^2 (Q) | `etalq` | 36.46% CV -\> 0.12480 | Table 4 Variability section |
 | sigma (residual) | `propSd` | 17.88% CV / 0.1788 | Table 4 ‘Residual error sigma^2 = 17.88’ |
 | Best covariate model | `cl`, `q` log-additive shifts, `vp` linear-deviation BMI | (see equation) | Best-covariate model equation on p. 3028 |
-| Weibull ka(t) form | `ka <- kamax * (1 - exp(-(ra * tad)^gam1))` | Piotrovskij saturating-ka | Operator-approved interpretation (sidecar request-001 q3 = A); paper text names the three parameters but does not write the equation |
+| Weibull ka(t) form | `ka <- kamax * (1 - exp(-(ra * tad)^gam1))` | Piotrovskij saturating-ka | Maintainer-approved interpretation; paper text names the three parameters but does not write the equation |
 
 ## Virtual cohort
 
@@ -1047,8 +1047,8 @@ corresponding shifts in V_c, V_p, and Q.
 
 - **Weibull-absorption functional form.** Desai 2016 Methods names the
   Weibull absorption model with three parameters (RA, KAMAX, GAM1) but
-  does not write the equation. Per the sidecar request-001 q3 = A
-  operator decision, the model uses the Piotrovskij-style saturating ka:
+  does not write the equation. Per a maintainer decision, the model uses
+  the Piotrovskij-style saturating ka:
   `ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))`. This is the canonical
   parameterisation for the named parameter triple in NONMEM-era Weibull-
   absorption control streams and matches the parameter semantics (KAMAX

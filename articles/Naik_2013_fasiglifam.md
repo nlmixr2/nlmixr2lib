@@ -117,8 +117,7 @@ simulations below use a virtual cohort whose covariate distributions
 match the Naik 2013 Table 1 summary. Three arms are simulated matching
 the doses that Naik 2013 selected for phase 3 (25 mg and 50 mg once
 daily) and a placebo arm (dose 0 mg to exercise the placebo factor
-`LIFE(t)`), 200 subjects per arm (the cap recommended by the extraction
-skill).
+`LIFE(t)`), 200 subjects per arm (the package’s cohort cap).
 
 ``` r
 
@@ -938,8 +937,8 @@ pct males with 41 pct higher CL / F. {.table}
   gamma distributions; the joint distribution of correlated covariates
   is not preserved. SEXF is Bernoulli(0.535) per Table 1. The published
   cohort size (346 PK-efficacy patients) is not reproduced; 200 subjects
-  per arm was chosen because it is the cap recommended by the extraction
-  skill and is ample for a VPC.
+  per arm was chosen because it is the package’s cohort cap and is ample
+  for a VPC.
 - **Simulation horizon.** The simulations run 12 weeks (2016 h) to match
   the phase-2 trial duration; Naik 2013 also projected 24-week
   trajectories but explicitly noted that “the projection beyond 12 weeks

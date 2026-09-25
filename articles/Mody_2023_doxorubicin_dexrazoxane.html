@@ -3101,8 +3101,8 @@ place.</p>
 </table>
 <p>The residual error parameters (<code>addSd</code>,
 <code>addSd_dex</code>, <code>addSd_viability</code>) are
-operator-chosen placeholders – Mody 2023 does not tabulate a residual SD
-– and are flagged with <code>fixed()</code> so they do not contribute
+maintainer-chosen placeholders – Mody 2023 does not tabulate a residual
+SD – and are flagged with <code>fixed()</code> so they do not contribute
 false precision.</p>
 </div>
 <div class="section level2">
@@ -3678,12 +3678,12 @@ IV infusion (BSA 1.8 m^2 typical subject).</caption>
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
-<p>The following are paper-vs-model gaps that the operator preserved
+<p>The following are paper-vs-model gaps that the maintainers preserved
 deliberately rather than tuning parameters to close.</p>
 <ul>
 <li><p><strong>DEX inhibition equation form is subtractive on
 Kmax.</strong> The PDF’s formal equations for the combination model
-(Mody 2023 Eqs 6a-6f) came through the trimmed markdown source as
+(Mody 2023 Eqs 6a-6f) came through the text extracted from the PDF as
 <code>&lt;!-- formula-not-decoded --&gt;</code> placeholders. Table 1
 gives Imax,DEXi units of 1/h (matching Kmax,DOX), and the text describes
 the DEX effect as “a capacity limited Hill function K_DEX … on DOX cell-
@@ -3750,7 +3750,7 @@ initial dose at t = 0 gives 9 Q1W doses over the 63-day window.</p></li>
 <h2 id="errata">Errata<a class="anchor" aria-label="anchor" href="#errata"></a>
 </h2>
 <ul>
-<li><p>The trimmed-markdown source of Mody 2023 rendered the model
+<li><p>The text extracted from the Mody 2023 PDF rendered the model
 equations (Eqs 1, 2, 3, 4a-e, 5, 6a-f) as
 <code>&lt;!-- formula-not-decoded --&gt;</code> placeholders in the OCR
 pass. The equation forms used in the packaged model were reconstructed

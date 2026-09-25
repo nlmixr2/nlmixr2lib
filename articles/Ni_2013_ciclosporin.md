@@ -80,7 +80,7 @@ set.seed(20260607)
 
 # Helper: build one cohort as a self-contained event table.
 # id_offset shifts subject IDs so multiple cohorts can be bind_rows()-ed
-# without colliding (see vignette-template.md "Notes").
+# without colliding.
 make_cohort <- function(n, wt, creat, stanozolol,
                         dose_mg_per_kg = 5.0, n_days = 14,
                         regimen = "5 mg/kg/day q12h",

@@ -3656,7 +3656,7 @@ normal distribution.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260910</span><span class="op">)</span></span>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20260910</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">N_PER_ARM</span> <span class="op">&lt;-</span> <span class="fl">200</span>   <span class="co"># skill cap: never more than 200 participants per arm</span></span>
+<span><span class="va">N_PER_ARM</span> <span class="op">&lt;-</span> <span class="fl">200</span>   <span class="co"># cohort cap: never more than 200 participants per arm</span></span>
 <span></span>
 <span><span class="va">make_cohort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span>, <span class="va">id_offset</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">N_PER_ARM</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span></span>

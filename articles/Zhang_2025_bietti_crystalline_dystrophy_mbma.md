@@ -409,7 +409,7 @@ is a very large between-eye variability (coefficient of variation about
 # `set.seed()` seeds R's RNG, not rxode2's; rxode2 partitions its streams per
 # solver thread, so a machine with a different thread count draws a different
 # cohort. Every assertion below is written to hold for ANY cohort this model can
-# produce (see references/known-vignette-failure-patterns.md pattern 12).
+# produce.
 set.seed(20250423)
 
 n_eyes  <- 200L   # 200 per arm is the cap; this vignette has a single arm

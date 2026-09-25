@@ -486,8 +486,8 @@ baseline by day 20.
 - **Residual error not reported.** Le 2015 describes the residual-error
   model qualitatively (“proportional error model”) but does not report
   numeric variance for any of the seven observation streams. Per the
-  skill policy for unreported RUV with structural values present, each
-  proportional residual SD is encoded as `fixed(0)`. Deterministic
+  package’s policy for unreported RUV with structural values present,
+  each proportional residual SD is encoded as `fixed(0)`. Deterministic
   simulation therefore reproduces the paper’s typical-value trajectories
   exactly; downstream users who need a residual-noise structure for a
   stochastic VPC should override these SDs with an assumed value (a

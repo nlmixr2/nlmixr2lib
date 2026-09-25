@@ -3260,11 +3260,10 @@ mg.</p>
 <span><span class="co"># and rxode2's streams are partitioned PER SOLVER THREAD -- so the etas drawn</span></span>
 <span><span class="co"># below differ between a 2-core CI runner and a 16-thread workstation and no seed</span></span>
 <span><span class="co"># can make them agree. Every assertion downstream is written to hold for any</span></span>
-<span><span class="co"># cohort the model can produce; see pattern 12 of</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260902</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200</span>            <span class="co"># skill cap is 200 per arm</span></span>
+<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200</span>            <span class="co"># cohort cap is 200 per arm</span></span>
 <span><span class="va">tau</span>       <span class="op">&lt;-</span> <span class="fl">24</span>             <span class="co"># dosing interval (h)</span></span>
 <span><span class="va">n_dose</span>    <span class="op">&lt;-</span> <span class="fl">21</span>             <span class="co"># 21 daily doses; see the steady-state note below</span></span>
 <span><span class="va">t_last</span>    <span class="op">&lt;-</span> <span class="va">tau</span> <span class="op">*</span> <span class="op">(</span><span class="va">n_dose</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -3330,7 +3329,7 @@ assumed:</p>
 <span>  <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Nguyen_2026_linezolid"</span><span class="op">)</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">ss_events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"WT"</span><span class="op">)</span>,</span>
 <span>  useLinCmt <span class="op">=</span> <span class="cn">FALSE</span>      <span class="co"># rxode2's ODE-&gt;linCmt auto-conversion breaks the</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span>                     <span class="co"># dvid mapping for multi-output models (pattern 5b)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span>                     <span class="co"># dvid mapping for multi-output models</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">t_last</span> <span class="op">-</span> <span class="va">tau</span>, <span class="va">t_last</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -4097,7 +4096,8 @@ contradicted by Figure 3, which plots both matrices on one shared 0-40
 mg/L axis with the saliva median only slightly above plasma. Dividing by
 <code>vc</code> gives 1.2418, matching the paper’s own independently
 reported 1.27 (95% CI 1.09-1.44) to 2%. The model encodes
-<code>Csaliva &lt;- saliva / vc</code>. Maintainer-ratified.</p>
+<code>Csaliva &lt;- saliva / vc</code>. Ratified by the maintainers on
+2026-09-02.</p>
 </div>
 <div class="section level3">
 <h3 id="other-assumptions">Other assumptions<a class="anchor" aria-label="anchor" href="#other-assumptions"></a>

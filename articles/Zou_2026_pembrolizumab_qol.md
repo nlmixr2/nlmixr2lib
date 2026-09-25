@@ -607,8 +607,8 @@ stopifnot(
 - **No PKNCA section.** NCA is not meaningful for this model: there is
   no drug concentration, no dose and no ODE state. The closed-form,
   weighting, bounded-score and treatment-effect gates above take its
-  place, following `references/endogenous-validation.md` for models
-  where PKNCA is not the right check.
+  place, following the package’s validation pattern for models where
+  PKNCA is not the right check.
 
 - **`n_subjects` is derived, not published.** The paper reports 410
   observations (228 pembrolizumab, 182 control) but no participant

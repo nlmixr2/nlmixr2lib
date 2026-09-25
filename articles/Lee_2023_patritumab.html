@@ -3228,8 +3228,7 @@ cohort matching the pooled population’s covariate distributions (Lee
 <span>  <span class="co"># with cmt set to the ODE state name backing that output (central for Cc,</span></span>
 <span>  <span class="co"># central_dxd for Cc_dxd). rxode2 returns BOTH Cc and Cc_dxd columns regardless</span></span>
 <span>  <span class="co"># of which observation row triggered, but the cmt+dvid pair must be consistent</span></span>
-<span>  <span class="co"># with the model's auto-generated DVID mapping (see</span></span>
-<span>  <span class="co"># known-vignette-failure-patterns.md pattern #5b).</span></span>
+<span>  <span class="co"># with the model's auto-generated DVID mapping.</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span></span>
 <span>    <span class="va">cohort_df</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">WT</span>, <span class="va">ALB</span>, <span class="va">CRCL</span>, <span class="va">TUMSZ</span>, <span class="va">SEXF</span>,</span>
 <span>                                <span class="va">RACE_ASIAN</span>, <span class="va">ECOG_GE1</span>, <span class="va">TUMTP_BREAST</span>, <span class="va">HEPIMP</span><span class="op">)</span>,</span>

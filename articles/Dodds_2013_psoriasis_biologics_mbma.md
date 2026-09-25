@@ -720,11 +720,10 @@ stopifnot(
   `nopomab`) whose parameters were *hand-chosen* to stress-test the
   trial designs, not estimated from data. Shipping fictional drug names
   in a model library would be misleading, so they are excluded; this was
-  an explicit operator decision (task `frompeople-1103`, sidecar
-  request-001, answer B). Their parameters are fully recoverable from
-  the same two identities used above if anyone needs them:
-  `emax = log(1 - d/0.905)` for a maximal difference `d`, with the ED50
-  read from Table 1.
+  an explicit maintainer decision. Their parameters are fully
+  recoverable from the same two identities used above if anyone needs
+  them: `emax = log(1 - d/0.905)` for a maximal difference `d`, with the
+  ED50 read from Table 1.
 - **The trial designs themselves are not modelled.** The source’s
   contribution is a comparison of concentrated (placebo vs 700 mg only)
   and distributed (placebo plus 21 / 70 / 210 / 700 mg) first-in-patient

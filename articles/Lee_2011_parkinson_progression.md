@@ -561,18 +561,15 @@ non-informative-prior fits as expected.
     parameters. The model file therefore declares
     `paper_specific_etas <- c("etaslope", "etasymeff")` so
     [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
-    accepts the names. The convention check passes (`lint-conventions.R`
-    exit 0); see the SKILL.md “Paper-specific etas” reference for the
-    broader pattern.
+    accepts the names. The convention check passes.
 
 7.  **No PKNCA validation.** Standard popPK validation against PKNCA
     Cmax / AUC / half-life does not apply to a disease-progression model
     with no exposure compartment. The validation here is instead by
     direct algebraic reproduction of the paper’s published 3.62 placebo
     prediction at week 26, plus stochastic-VPC-style envelopes for the
-    typical-value population. This follows the disease-progression /
-    endogenous-model validation pattern documented in the SKILL.md
-    `endogenous-validation.md` reference.
+    typical-value population. This follows the package’s validation
+    pattern for disease-progression / endogenous models.
 
 8.  **Trial-design extensions documented in the paper but not encoded in
     this model.** Lee 2011 also describes a dropout sub-model (MAR

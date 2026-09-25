@@ -3171,7 +3171,7 @@ location in the source.</p>
 <span>  <span class="st">"Residual variance V_i = (SDin_i + SDsl_i x Y_i)^2 -&gt; combined1()"</span>, <span class="st">"Fig. S8 lines 111-116"</span>,</span>
 <span>  <span class="st">"rate_influx_scaled (per drug)"</span>, <span class="st">"Table 1, column 'Rate_Influx/access,scaled (SE%)'"</span>,</span>
 <span>  <span class="st">"CONC_&lt;CODE&gt;_MGL covariate (per drug)"</span>, <span class="st">"Table 1, column 'Studied extracellular drug conc. in PBP binding assays'"</span>,</span>
-<span>  <span class="st">"CELLS_INTACT covariate"</span>, <span class="st">"Fig. S8 line 66 `IF (INTACT.EQ.1)`; canonical name ratified by operator sidecar (request-001 q1, answer A)"</span>,</span>
+<span>  <span class="st">"CELLS_INTACT covariate"</span>, <span class="st">"Fig. S8 line 66 `IF (INTACT.EQ.1)`; canonical name ratified by the maintainers"</span>,</span>
 <span>  <span class="st">"k2_1a ... k2_5 (per drug); `fixed()` where footnote a applies"</span>, <span class="st">"Table S1 (footnote a = fixed after sensitivity analysis; footnote b = relebactam PBP2 shared with avibactam)"</span>,</span>
 <span>  <span class="st">"km_pbp = 1000 drug molecules (fixed)"</span>, <span class="st">"Main text, Materials and Methods: \"The Km was fixed to 1,000 drug molecules\""</span>,</span>
 <span>  <span class="st">"n_pbp1a_0 = 153, 1b = 118, 2 = 50, 3 = 79, 4 = 99, 5/6 = 1232"</span>, <span class="st">"Main text, Materials and Methods, Mass balance equations (1,731 total PBP molecules per cell borrowed from E. coli; split by P. aeruginosa relative band intensity, Table S3)"</span>,</span>
@@ -3255,8 +3255,7 @@ PBP binding assays’</td>
 <tr class="even">
 <td align="left">CELLS_INTACT covariate</td>
 <td align="left">Fig. S8 line 66 <code>IF (INTACT.EQ.1)</code>;
-canonical name ratified by operator sidecar (request-001 q1, answer
-A)</td>
+canonical name ratified by the maintainers</td>
 </tr>
 <tr class="odd">
 <td align="left">k2_1a … k2_5 (per drug); <code>fixed()</code> where
@@ -5922,10 +5921,9 @@ the one ambiguous case</strong>: it appears in all five datasets and
 Table S1 reports a single set of imipenem acylation rate constants
 without attributing them to a dataset.
 <code>LopezArguello_2023_imipenem_qsp</code> uses dataset 1 (the
-carbapenem dataset), as directed by the operator (sidecar
-<code>request-001</code> q2, answer A). Only the background-noise,
-initial-condition and residual-error parameters are affected; the
-drug-specific acylation constants and net-influx rate are
+carbapenem dataset), as directed by the maintainers. Only the
+background-noise, initial-condition and residual-error parameters are
+affected; the drug-specific acylation constants and net-influx rate are
 unambiguous.</li>
 <li>
 <strong><code>CELLS_INTACT</code> and
@@ -5933,17 +5931,16 @@ unambiguous.</li>
 and the studied extracellular concentration are experimental design
 variables, not estimated quantities, and are supplied on the event table
 rather than as <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entries. <code>CELLS_INTACT</code> is
-a new canonical covariate ratified by the operator for this extraction
-(sidecar <code>request-001</code> q1, answer A); it is general-scope
-because the intact-versus-lysed contrast is a standard
-target-site-penetration design rather than something specific to this
-paper. It is structural rather than a coefficient multiplier: it gates
-both the influx term and the periplasmic initial condition, so it has no
-<code>e_&lt;cov&gt;_&lt;param&gt;</code> coefficient. The concentration
-covariates are well-formed members of the existing
-<code>CONC_&lt;DRUG&gt;_MGL</code> family (<code>CONC_IPM_MGL</code> was
-already registered for Landersdorfer 2018); the other fourteen were
-added alongside this extraction.</li>
+a new canonical covariate ratified by the maintainers for this
+extraction; it is general-scope because the intact-versus-lysed contrast
+is a standard target-site-penetration design rather than something
+specific to this paper. It is structural rather than a coefficient
+multiplier: it gates both the influx term and the periplasmic initial
+condition, so it has no <code>e_&lt;cov&gt;_&lt;param&gt;</code>
+coefficient. The concentration covariates are well-formed members of the
+existing <code>CONC_&lt;DRUG&gt;_MGL</code> family
+(<code>CONC_IPM_MGL</code> was already registered for Landersdorfer
+2018); the other fourteen were added alongside this extraction.</li>
 <li>
 <strong>Shared parameters for relebactam.</strong> Table 1 footnote
 c and Table S1 footnote b state that relebactam’s rate of net influx and

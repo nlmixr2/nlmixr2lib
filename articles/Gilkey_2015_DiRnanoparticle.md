@@ -507,10 +507,11 @@ V_P per paper convention; time units are minutes). {.table}
   specify; users adapting the model to a different species or to a
   different nanoparticle formulation should consider whether the ‘other’
   compartment is physically meaningful in their context.
-- **Compartment-naming deviation from `naming-conventions.md`.** The
-  PBPK structure uses paper-style compartment names (`plasma`, `liver`,
-  `spleen`, `kidney`, `other`) that do not map onto the canonical
-  `central` / `peripheral1` / `depot` / `effect` vocabulary;
+- **Compartment-naming deviation from
+  `inst/references/compartment-names.md`.** The PBPK structure uses
+  paper-style compartment names (`plasma`, `liver`, `spleen`, `kidney`,
+  `other`) that do not map onto the canonical `central` / `peripheral1`
+  / `depot` / `effect` vocabulary;
   `checkModelConventions("Gilkey_2015_DiRnanoparticle")` flags every
   PBPK compartment as a non-canonical name. The naming used in this file
   follows the paper’s symbolic conventions and matches the pattern used

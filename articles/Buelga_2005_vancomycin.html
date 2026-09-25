@@ -3372,11 +3372,10 @@ reports V = 1.06 * TBW. AML-2 keeps the general model’s structure but
 reports a 10%-higher CL coefficient:
 <code>CL = 1.17 * CLCR; V = 0.97 * TBW</code>. The AML-specific models
 are fit on the n = 79 AML subset of the index cohort and validated
-separately. Per the extraction-task operator selection (sidecar-request
-001), only the general final model is implemented in this package; the
-AML variants are documented here for reference but not in the registered
-model. Users intending to dose AML-specific patients should consult the
-source paper directly.</p></li>
+separately. Per the maintainers’ selection, only the general final model
+is implemented in this package; the AML variants are documented here for
+reference but not in the registered model. Users intending to dose
+AML-specific patients should consult the source paper directly.</p></li>
 <li><p><strong>CLCR-correlation interpretation.</strong> Buelga 2005
 Table 4 reports the CL-V random-effect correlation as
 <code>omega_CL/V = 23.12%</code>. The packaged model interprets this as
@@ -3388,10 +3387,10 @@ would give <code>cov = 0.05347</code> and <code>rho ~ 0.54</code>, a
 substantially stronger linkage between CL and V random effects. The
 paper does not explicitly state which convention it uses. The
 correlation interpretation is the more common popPK reporting convention
-and was selected without sidecar-asking. Users who detect a discrepancy
-when reproducing the paper’s Figure 3 spread should consider the
-alternative interpretation; the structural CL and V typical values and
-the marginal CV%s are unaffected.</p></li>
+and was selected on that basis. Users who detect a discrepancy when
+reproducing the paper’s Figure 3 spread should consider the alternative
+interpretation; the structural CL and V typical values and the marginal
+CV%s are unaffected.</p></li>
 <li><p><strong>CLCR units conversion (mL/min -&gt; L/h).</strong> The
 packaged model stores the covariate under the canonical
 <code>CRCL</code> column with <code>units = "mL/min"</code>, matching

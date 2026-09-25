@@ -128,7 +128,7 @@ t_last <- (n_dose - 1) * tau   # time of the final dose (h)
 # One subject's event table: n_dose daily 600 mg oral doses into `depot`, then
 # observations across the final dosing interval on the `central` ODE state.
 # `cmt` on the observation rows names an ODE STATE, never the algebraic
-# observable `Cc` - see known-vignette-failure-patterns.md pattern 2.
+# observable `Cc`.
 make_subjects <- function(ids, snp, wt, grid) {
   stopifnot(length(ids) == length(snp), length(ids) == length(wt))
   key <- tibble(id = ids, SNP_CYP2B6_RS3745274_T_COUNT = snp, WT = wt)
@@ -269,10 +269,9 @@ sim_nca <- sim_typ |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, arm)
 
-# Guarantee a record at the interval start for every subject (see
-# pknca-recipes.md "Time-zero records"). Here the interval starts at the final
-# dose, t_last, which the 0.1 h grid already contains; the bind_rows keeps the
-# guarantee explicit and idempotent.
+# Guarantee a record at the interval start for every subject. Here the
+# interval starts at the final dose, t_last, which the 0.1 h grid already
+# contains; the bind_rows keeps the guarantee explicit and idempotent.
 sim_nca <- bind_rows(
   sim_nca,
   sim_nca |> distinct(id, arm) |> mutate(time = t_last, Cc = 0)

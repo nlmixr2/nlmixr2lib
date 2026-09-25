@@ -3775,7 +3775,7 @@ each of four once-daily doses.</p>
 <span><span class="co"># transfer out of the depot, AUC over a steady-state dosing interval equals</span></span>
 <span><span class="co"># Dose / (CL/F) exactly. Both sides use the SAME drawn per-subject CL, so the</span></span>
 <span><span class="co"># only difference is trapezoidal/solver error -- no cohort-draw noise -- and a</span></span>
-<span><span class="co"># tight bound is correct here (see CLAUDE.md on vignette assertions).</span></span>
+<span><span class="co"># tight bound is correct here.</span></span>
 <span><span class="va">cl_i</span> <span class="op">&lt;-</span> <span class="va">sim_ss</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span>cl <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
 <span></span>

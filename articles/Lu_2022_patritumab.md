@@ -1546,12 +1546,12 @@ unconjugated-DXd ODE can be integrated.
     supplement. The released-payload ODE
     `dA_DXd/dt = R_release - CLDXd * A_DXd / V_DXd` requires `V_DXd` to
     resolve mass balance, so the model fixes `V_DXd = 1 L`
-    (concentration-space normalisation). Operator-level guidance: this
-    is documented as a deviation in the Assumptions and deviations
-    section above; if a corrected value of `V_DXd` is published in a
-    future erratum or related-ADC paper (e.g., the cited Hong 2025
-    datopotamab deruxtecan model), update `vdxd <- 1.0` in the model
-    file accordingly.
+    (concentration-space normalisation). Maintainer guidance: this is
+    documented as a deviation in the Assumptions and deviations section
+    above; if a corrected value of `V_DXd` is published in a future
+    erratum or related-ADC paper (e.g., the cited Hong 2025 datopotamab
+    deruxtecan model), update `vdxd <- 1.0` in the model file
+    accordingly.
 2.  **Mixed time units between Tables 2 and 3.** Lu 2022 Table 2 reports
     the antibody parameters in per-day units (CLlin in L/d, Vmax in
     ug/d) while Table 3 reports the unconjugated-DXd parameters in

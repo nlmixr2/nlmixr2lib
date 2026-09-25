@@ -439,7 +439,7 @@ sits on the three elimination rate constants only (paper Table 1).
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   accepts them. The structural parameter names follow the lowercase
   snake-case convention recommended for endogenous / mechanistic models
-  in `references/parameter-names.md`.
+  in `inst/references/parameter-names.md`.
 - **Dose unit is mg/kg, not mg.** Because every model parameter is
   weight-normalised, the dosing event `amt` must be in mg/kg (the body
   mass of the animal cancels through the system and never appears
@@ -461,10 +461,9 @@ sits on the three elimination rate constants only (paper Table 1).
   and assay-indistinguishable), the dosed-drug signal cannot be cleanly
   extracted from any of the three outputs without a baseline-subtraction
   assumption the paper does not specify. The paper itself reports no NCA
-  parameters. We follow the endogenous-validation pattern (steady-state
-  hold, perturbation recovery, mass-balance, dimensional analysis,
-  Figure 6 replication) instead. See
-  `references/endogenous-validation.md`.
+  parameters. We follow the validation pattern for endogenous-substance
+  models (steady-state hold, perturbation recovery, mass-balance,
+  dimensional analysis, Figure 6 replication) instead.
 - **Between-study differences not modelled.** The paper notes that A2B2
   elimination appears faster in the multiple-dose study than in the
   single-dose study but did not introduce a study-level random effect

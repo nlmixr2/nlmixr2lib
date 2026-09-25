@@ -3384,7 +3384,7 @@ AUC identity, where resolving the steep early phase matters.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">.data</span><span class="op">[[</span><span class="va">conc_col</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">transmute</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">treatment</span>, Cc <span class="op">=</span> <span class="va">.data</span><span class="op">[[</span><span class="va">conc_col</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># Guarantee a time-zero anchor row per subject (see pknca-recipes.md).</span></span>
+<span>  <span class="co"># Guarantee a time-zero anchor row per subject.</span></span>
 <span>  <span class="va">conc</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>    <span class="va">conc</span>,</span>
 <span>    <span class="va">conc</span> <span class="op">|&gt;</span> <span class="fu">distinct</span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>

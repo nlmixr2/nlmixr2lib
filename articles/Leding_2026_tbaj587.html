@@ -4127,7 +4127,7 @@ estimated for the metabolites.</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG, NOT rxode2's -- and rxode2's streams are</span></span>
 <span><span class="co"># partitioned per solver thread, so this cohort differs between a 16-thread</span></span>
 <span><span class="co"># workstation and a 2-core CI runner. No assertion below depends on the</span></span>
-<span><span class="co"># particular draw; see pattern 12 of known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># particular draw.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260912</span><span class="op">)</span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span>      <span class="co"># well under the 200/arm cap</span></span>
 <span></span>

@@ -3217,7 +3217,7 @@ Supplementary Figure 3b), the typical-value trajectory is:</p>
 (day 0 to day 14) using PKNCA. PKNCA’s AUC machinery needs a non-NA
 time-zero concentration; the simulation already contains time = 0
 (pre-dose, Cc = 0), so a defensive bind_rows is unnecessary here but the
-<code>!is.na(Cc)</code> filter follows the canonical recipe.</p>
+<code>!is.na(Cc)</code> filter is kept as standard PKNCA practice.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The simulation grid carries TWO rows per (id, time) - one for the Cc endpoint</span></span>
 <span><span class="co"># (cmt = "central") and one for the Ct endpoint (cmt = "total_target"). Both rows</span></span>
@@ -3395,9 +3395,8 @@ n = 527 that retained a disease-state effect on Vc (DISST = 0 healthy /
 1 patient; COV1 = 1.56). This effect was attributed to collinearity with
 statin coadministration in the smaller cohort and replaced by
 STATIN-on-CLL in the expanded n = 2870 model (paper Sect. 4 Discussion).
-Per the policy of packaging only the final model
-(<code>references/replicate-author-structure.md</code>), the initial n =
-527 model is not included as a separate <code>.R</code> file.</li>
+Per the package’s policy of packaging only the final model, the initial
+n = 527 model is not included as a separate <code>.R</code> file.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

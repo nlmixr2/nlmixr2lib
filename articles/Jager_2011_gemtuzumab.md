@@ -25,7 +25,7 @@ as the Monolix-fitted final estimates obtained by re-fitting the Jager
 peripheral PK compartment and simultaneous (rather than step-wise)
 estimation of all parameters. The DDMORE bundle does **not** ship a
 `.lst` listing or a simulated dataset, and the original Jager 2011 PLoS
-One paper is not on disk under this worktree’s literature tree, so the
+One paper is not on disk in the maintainers’ literature mirror, so the
 implementation is faithful to the MDL but has no external numeric
 cross-check; see **Assumptions and deviations** below.
 
@@ -256,18 +256,18 @@ the MDL DSL source (`GO_PK_model.mdl`), its PharmML XML rendering
 (`GO_PK_model.xml`), the `Model_Accommodations.txt` reference note, and
 RDF / scraper metadata – there is **no** `Output_real_*.lst`,
 `Output_simulated_*.lst`, or simulated event dataset. The Jager 2011
-publication itself is not on disk in this worktree’s literature tree.
+publication itself is not on disk in the maintainers’ literature mirror.
 The following assumptions and deviations apply.
 
 - **Parameter values come from the MDL `parObj` block, not a `.lst`
   listing.** The bundle has no NONMEM listing file with a
   `MINIMIZATION SUCCESSFUL` block whose final estimates can be read off,
-  and the DDMORE-source skill’s default rule (read final estimates from
-  `Output_real_*.lst`) cannot apply. The MDL `parObj$STRUCTURAL` and
-  `parObj$VARIABILITY` values are treated as the bundle’s authoritative
-  final estimates per `Model_Accommodations.txt`, which describes the
-  parObj as the Monolix re-fit of the Jager 2011 model on the
-  publication’s data.
+  and the usual rule for DDMORE-sourced models (read final estimates
+  from `Output_real_*.lst`) cannot apply. The MDL `parObj$STRUCTURAL`
+  and `parObj$VARIABILITY` values are treated as the bundle’s
+  authoritative final estimates per `Model_Accommodations.txt`, which
+  describes the parObj as the Monolix re-fit of the Jager 2011 model on
+  the publication’s data.
 - **Bundle is a Monolix re-fit, not a literal reproduction of Jager
   2011.** `Model_Accommodations.txt` documents two material differences
   from the publication:

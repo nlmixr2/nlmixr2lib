@@ -59,7 +59,7 @@ the *Assumptions, deviations, and Errata* section below.
 
 The DDMORE bundle ships a `Simulated_SLD.csv` event dataset (336
 subjects, ~16 records per subject, structured as cycle-start exposure
-events plus per-cycle SLD observations). Per the skill’s DDMORE-source
+events plus per-cycle SLD observations). Per the package’s DDMORE-source
 guidance, that file is “intentionally minimal” and not directly
 representative of the publication’s clinical study; this vignette
 therefore builds a small virtual cohort that mimics the trial regimen at
@@ -306,10 +306,9 @@ trajectory). {.table}
 ## Validation strategy
 
 The validation strategy for this DDMORE-source extraction is
-**mechanistic_sanity** (per the per-task validation flag
-`validation:mechanistic_sanity`). Per `references/ddmore-source.md`
-Section *Validation strategy by model type*, the relevant checklist is
-`verification-checklist.md` Section F.3 (count / hazard /
+**mechanistic_sanity** (per the validation flag in the metadata this
+model was built from). For this model type, the relevant checks from the
+package’s validation checklist are F.3 (count / hazard /
 typical-trajectory) plus the F.2 self-consistency substitute, since the
 linked Zecchin 2016 publication was not directly on disk for this
 extraction:
@@ -371,9 +370,9 @@ was not on disk for this extraction.
   metadata was confirmed via PubMed E-utilities (PMID 27136318).
 - **No in-bundle `Model_Accomodations.text`.** The DDMORE bundle for
   `DDMODEL00000217` does not ship a `Model_Accomodations` reference file
-  (one of the optional bundle artefacts described in
-  `references/ddmore-source.md`). The publication mapping used here was
-  reconstructed from the PubMed citation match for the task metadata.
+  (one of the optional bundle artefacts). The publication mapping used
+  here was reconstructed from the PubMed citation match for the metadata
+  this model was built from.
 - **M3 censored-likelihood handling omitted.** The source `$ERROR` block
   uses the M3 method to handle below-LLOQ SLD observations
   (`LLOQ = 5 mm`, `BQL` indicator column, `F_FLAG = 1` censoring branch
@@ -415,5 +414,5 @@ was not on disk for this extraction.
   time-varying drug-AUC inputs (no allometric weight scaling, no sex, no
   ECOG, no liver-metastasis indicator). The Zecchin 2016 paper title
   mentions liver-metastasis effects but those operate on the survival /
-  new-lesion sub-models (DDMODEL00000218, the companion task), not on
-  the SLD model captured here.
+  new-lesion sub-models (DDMODEL00000218, the companion extraction), not
+  on the SLD model captured here.

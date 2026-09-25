@@ -773,15 +773,15 @@ term, it superposes correctly across repeated injections.
 
 ### Parameter naming: reciprocal encoding of the release times
 
-Following the operator ruling on this extraction’s naming sidecar, the
-release processes reuse the register’s existing Weibull stems `ra` /
-`gam1` (founded by `Desai_2016_isavuconazole`) plus new second-process
-partners `ra2` / `gam2`, rather than founding a parallel time-scale
-family. `ra` is a *rate* scaler and the paper reports *times*, so the
-two are reciprocals: the printed `TD = 117 h` is encoded as
-`lra <- log(1/117)` and `TD1_0 = 323 h` as `lra2 <- log(1/323)`. No
-`ini()` value on those two lines is a number printed in Table 1; each
-in-file comment spells the reciprocal out.
+Following a maintainer ruling on the parameter naming, the release
+processes reuse the register’s existing Weibull stems `ra` / `gam1`
+(founded by `Desai_2016_isavuconazole`) plus new second-process partners
+`ra2` / `gam2`, rather than founding a parallel time-scale family. `ra`
+is a *rate* scaler and the paper reports *times*, so the two are
+reciprocals: the printed `TD = 117 h` is encoded as `lra <- log(1/117)`
+and `TD1_0 = 323 h` as `lra2 <- log(1/323)`. No `ini()` value on those
+two lines is a number printed in Table 1; each in-file comment spells
+the reciprocal out.
 
 The dose effect keeps the paper’s own units.
 `TD1 = TD1_0 + TD1_1 * DOSE` is additive on the release *time*, so it is

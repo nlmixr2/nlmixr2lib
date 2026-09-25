@@ -34,15 +34,14 @@ CL/F, V1/F, V2/F, Q/F): `theta_i = tvtheta * exp(eta_i)`. However, the
 paper does NOT report any per-parameter omega magnitudes - Table 4 lists
 only the fixed-effect THETAs and the single 42.4% residual variability
 number - and no supplement exists (Europe PMC: `hasSuppl = N` for
-PMC11592880). Per operator decision (extraction-task sidecar
-`frompeople-1552-azechi_2024_tamibarotene_pediatric` request-001, q1 =
-A, 2026-06-21), the packaged model encodes all five eta terms as
-`fixed(0)` so the published structural IIV declaration is preserved
-while remaining faithful to the absence of reported variance values. The
-model is therefore a deterministic typical-value forward predictor;
-between-subject variability seen in the simulations below arises only
-from the cohort’s BSA distribution, not from random eta draws. See the
-[Assumptions and deviations](#assumptions-and-deviations) section.
+PMC11592880). Per the maintainers’ decision, the packaged model encodes
+all five eta terms as `fixed(0)` so the published structural IIV
+declaration is preserved while remaining faithful to the absence of
+reported variance values. The model is therefore a deterministic
+typical-value forward predictor; between-subject variability seen in the
+simulations below arises only from the cohort’s BSA distribution, not
+from random eta draws. See the [Assumptions and
+deviations](#assumptions-and-deviations) section.
 
 ## Population
 
@@ -89,7 +88,7 @@ table below collects them in one place for review.
 | `e_bsa_vp` (BSA exponent on V2/F) | fixed(1) | Azechi 2024 Table 4 Final Model column: `V2/F = tvV2/F * BSA/mean` |
 | Reference BSA centering value | 0.995 m^2 | Azechi 2024 Table 1 cohort mean |
 | `propSd` (residual variability) | 0.424 | Azechi 2024 Table 4 final Residual variability 42.4% |
-| IIV ka / CL/F / V1/F / V2/F / Q/F | NOT REPORTED -\> `fixed(0)` | Azechi 2024 Methods Section 2.6 describes exponential IIV on all five PK parameters but no omega magnitudes are tabulated; operator sidecar request-001 q1 = A |
+| IIV ka / CL/F / V1/F / V2/F / Q/F | NOT REPORTED -\> `fixed(0)` | Azechi 2024 Methods Section 2.6 describes exponential IIV on all five PK parameters but no omega magnitudes are tabulated; maintainer decision |
 | 2-compartment oral ODE structure | d/dt(depot), d/dt(central), d/dt(peripheral1); alag(depot) \<- tlag | Azechi 2024 Section 2.6 + Figure 1 schematic |
 | Cohort demographics (Table 1) | n = 22; age 4-23 yr; BSA mean 0.995 m^2 | Azechi 2024 Table 1 (page 7159) |
 | NCA averages (Table 2) | Cmax 121, AUC0-10 463 ng\*h/mL, etc. | Azechi 2024 Table 2 Average row (n = 21) |
@@ -389,19 +388,17 @@ above. {.table}
   however, does NOT tabulate any per-parameter omega magnitudes - Table
   4 lists only the fixed-effect THETAs and the single 42.4% residual
   variability number - and no supplement exists (Europe PMC:
-  `hasSuppl = N` for PMC11592880). Per operator decision
-  (extraction-task sidecar
-  `frompeople-1552-azechi_2024_tamibarotene_pediatric` request-001, q1 =
-  A, 2026-06-21), the packaged model encodes `etalka ~ fixed(0)`,
-  `etalcl ~ fixed(0)`, `etalvc ~ fixed(0)`, `etalvp ~ fixed(0)`, and
-  `etalq ~ fixed(0)` so the published structural IIV declaration is
-  preserved while remaining faithful to the absence of reported variance
-  values. Any stochastic VPC built from this model will show no
-  between-subject variability around the typical-value predictions;
-  users wishing to run a stochastic VPC must supply their own omega
-  magnitudes for the five PK parameters. Precedent for the `~ fixed(0)`
-  pattern: `inst/modeldb/specificDrugs/Chi_2018_propofol.R` (paper
-  reports only final-model THETAs without OMEGAs) and
+  `hasSuppl = N` for PMC11592880). Per the maintainers’ decision, the
+  packaged model encodes `etalka ~ fixed(0)`, `etalcl ~ fixed(0)`,
+  `etalvc ~ fixed(0)`, `etalvp ~ fixed(0)`, and `etalq ~ fixed(0)` so
+  the published structural IIV declaration is preserved while remaining
+  faithful to the absence of reported variance values. Any stochastic
+  VPC built from this model will show no between-subject variability
+  around the typical-value predictions; users wishing to run a
+  stochastic VPC must supply their own omega magnitudes for the five PK
+  parameters. Precedent for the `~ fixed(0)` pattern:
+  `inst/modeldb/specificDrugs/Chi_2018_propofol.R` (paper reports only
+  final-model THETAs without OMEGAs) and
   `inst/modeldb/specificDrugs/Taylor_2020_methotrexate.R` (paper reports
   `IIV(V1) 0 FIX` and `IIV(Q2) 0 FIX` explicitly).
 - **Tlag held fixed at 0.95 h per source.** Azechi 2024 Table 4 lists

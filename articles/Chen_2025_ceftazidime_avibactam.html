@@ -2858,9 +2858,9 @@
 product ceftazidime-avibactam <strong>separately</strong> – two
 one-compartment models with their own objective function values, their
 own parameter tables (Tables 2 and 3) and their own equation pairs (Eq.
-1-2 and Eq. 3-4). Following the <code>replicate-author-structure</code>
-policy the extraction is therefore two model files sharing this one
-vignette.</p>
+1-2 and Eq. 3-4). Following the package’s policy of replicating the
+authors’ model structure, the extraction is therefore two model files
+sharing this one vignette.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uiCaz</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Chen_2025_ceftazidime"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
@@ -3363,7 +3363,7 @@ of 45 subjects, Chen 2025 Table 1).</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20250207</span><span class="op">)</span></span>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20250207</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">N_COHORT</span> <span class="op">&lt;-</span> <span class="fl">200L</span>  <span class="co"># per arm; the skill caps this at 200</span></span>
+<span><span class="va">N_COHORT</span> <span class="op">&lt;-</span> <span class="fl">200L</span>  <span class="co"># per arm; the per-arm cohort cap is 200</span></span>
 <span></span>
 <span><span class="va">drawCrcl</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n</span>, meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">71.3</span><span class="op">)</span>, sdlog <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span>
@@ -3532,7 +3532,7 @@ ranges of Chen 2025 Table 1 (continued).</caption>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>Steady-state non-compartmental analysis over the final dosing
-interval (Recipe 3), one block per analyte, grouped by treatment.</p>
+interval, one block per analyte, grouped by treatment.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simNca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

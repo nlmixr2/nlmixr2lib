@@ -310,11 +310,11 @@ consistent with the values mentioned in the paper’s Discussion section
 
 ## Assumptions and deviations
 
-- **Drug-name correction.** The dispatched task metadata listed the drug
-  as “Antimicrobial Agents and Chemo” (the journal title); the on-disk
-  paper is unambiguously a population PK analysis of **lamivudine** in
-  HIV-1-infected adults. The model file and vignette are named
-  `Moore_1999_lamivudine.R` / `.Rmd` accordingly.
+- **Drug-name correction.** The input metadata for this extraction
+  listed the drug as “Antimicrobial Agents and Chemo” (the journal
+  title); the on-disk paper is unambiguously a population PK analysis of
+  **lamivudine** in HIV-1-infected adults. The model file and vignette
+  are named `Moore_1999_lamivudine.R` / `.Rmd` accordingly.
 - **Renal-function index encoding.** Table 2 footnote d defines the CL/F
   covariate as the parenthesised quantity
   `(140 - age / serum creatinine * 100)`, where the printed expression

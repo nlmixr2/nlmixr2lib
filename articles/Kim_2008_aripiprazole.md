@@ -619,7 +619,7 @@ suggests bootstrapping might improve precision). {.table}
   Discussion notes that the final-model value of V(m)/fm “might be too
   variable to represent the entire population” and suggests
   bootstrapping. The packaged model uses the final-model V(m)/fm because
-  the skill standardises on final-model values; a downstream user
+  the package standardises on final-model values; a downstream user
   simulating typical dehydroaripiprazole trajectories may substitute the
   base-model V(m)/fm = 950 L to recover the paper’s reported 83.4 h
   half-life (the corresponding aripiprazole half-life shifts from

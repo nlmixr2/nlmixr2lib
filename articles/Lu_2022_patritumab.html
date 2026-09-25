@@ -4669,12 +4669,12 @@ labels the unconjugated-DXd compartment with an apparent volume
 Table S7 (base), the main text, or the supplement. The released-payload
 ODE <code>dA_DXd/dt = R_release - CLDXd * A_DXd / V_DXd</code> requires
 <code>V_DXd</code> to resolve mass balance, so the model fixes
-<code>V_DXd = 1 L</code> (concentration-space normalisation).
-Operator-level guidance: this is documented as a deviation in the
-Assumptions and deviations section above; if a corrected value of
-<code>V_DXd</code> is published in a future erratum or related-ADC paper
-(e.g., the cited Hong 2025 datopotamab deruxtecan model), update
-<code>vdxd &lt;- 1.0</code> in the model file accordingly.</li>
+<code>V_DXd = 1 L</code> (concentration-space normalisation). Maintainer
+guidance: this is documented as a deviation in the Assumptions and
+deviations section above; if a corrected value of <code>V_DXd</code> is
+published in a future erratum or related-ADC paper (e.g., the cited Hong
+2025 datopotamab deruxtecan model), update <code>vdxd &lt;- 1.0</code>
+in the model file accordingly.</li>
 <li>
 <strong>Mixed time units between Tables 2 and 3.</strong> Lu 2022
 Table 2 reports the antibody parameters in per-day units (CLlin in L/d,

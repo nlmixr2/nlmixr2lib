@@ -3511,13 +3511,13 @@ Base) and <code>eta_R</code> (exponential on R) are between-study/arm
 random effects capturing the correlation between repeated timepoints
 within a study arm. They are encoded as <code>eta_study_e0</code> and
 <code>eta_study_emax</code> to flag them as MBMA study-level variability
-rather than individual between-subject variability, per SKILL Phase-1
-Step-3a MBMA guidance. <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> warns that
-these etas have no matching structural fixed-effect parameter of the
-same suffix; this is expected for the MBMA between-study naming
-convention and is not a defect. The <code>ini()</code> value is the
-variance (<code>omega^2</code>); Table 3 reports <code>omega</code> (the
-SD): omega_Base = 0.313, omega_RPla = 0.065.</p></li>
+rather than individual between-subject variability, per the package’s
+MBMA guidance. <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> warns that these
+etas have no matching structural fixed-effect parameter of the same
+suffix; this is expected for the MBMA between-study naming convention
+and is not a defect. The <code>ini()</code> value is the variance
+(<code>omega^2</code>); Table 3 reports <code>omega</code> (the SD):
+omega_Base = 0.313, omega_RPla = 0.065.</p></li>
 <li><p><strong>Common onset rate k across treatments.</strong> The
 Methods paragraph 2 (page 35) parameterizes drug-specific onset rates as
 <code>k_drug = k_pbo - k_D_drug</code> but Table 3 reports a single

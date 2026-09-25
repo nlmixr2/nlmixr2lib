@@ -4062,12 +4062,11 @@ absolute change from baseline in serum chemistry analytes: not drug
 concentrations, and not backed by ODE states, so no existing canonical
 compartment name fits. Both models declare the name in
 <code>paper_specific_compartments</code>, which suppresses the
-compartment warning but not the observation warning. The operator’s
-decision (sidecar request 001 q2) is to keep the paper-named forms and
-accept the warning rather than found a PD-output canonical family on two
-examples; the names may change if a canonical family is ratified later.
-The population PK model <code>Gong_2023_pemigatinib</code> lints
-clean.</li>
+compartment warning but not the observation warning. The maintainers’
+decision is to keep the paper-named forms and accept the warning rather
+than found a PD-output canonical family on two examples; the names may
+change if a canonical family is ratified later. The population PK model
+<code>Gong_2023_pemigatinib</code> lints clean.</li>
 <li>
 <strong><code>AUC_PEMI</code> is a static covariate, not an
 integrated state.</strong> This mirrors the authors’ own workflow: AUCss

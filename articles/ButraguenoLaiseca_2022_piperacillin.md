@@ -926,8 +926,8 @@ stopifnot(
   clearance and urine flow are constant over the recovery interval,
   which a single measured `UVol` per interval already assumes. The
   `urine` state still integrates eq. 3 verbatim and is what the
-  mass-balance check above uses. This encoding is an operator ruling
-  rather than an inference (sidecar request-001 of the extraction task).
+  mass-balance check above uses. This encoding is a maintainer ruling
+  rather than an inference.
 - **Infusion duration.** The Methods do not state the infusion duration
   used in the study. Supplementary Table 4 labels the study’s own
   schedule as “100 mg/Kg // 0.5 h inf // 8h”, so 30 minutes is used

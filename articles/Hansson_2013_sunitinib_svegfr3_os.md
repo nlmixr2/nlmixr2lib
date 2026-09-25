@@ -48,8 +48,8 @@ baseline sum of longest diameters (SLD) ranged from 108 mm (study 1047)
 to 255 mm (study 013); Figure 4 caption quotes a pooled median baseline
 SLD of 195 mm and a pooled median steady-state decrease in sVEGFR-3_REL
 of -0.32. Detailed baseline demographics (age, weight, sex, race) at the
-per-study or pooled level were not transcribed because the trimmed paper
-text does not provide them.
+per-study or pooled level were not transcribed because the text
+extracted from the paper does not provide them.
 
 The same information is available programmatically via the model’s
 `population` metadata:
@@ -519,7 +519,7 @@ stopifnot(strat_bm_late$median_sur[grepl("weaker drop",
   regression of time, observed SLD, and a \>20% PD indicator; it is a
   non-ODE statistical regression for prospective tumor-simulation
   censoring rather than a structural PD sub-model, and falls under the
-  skill’s non-ODE skip policy.
+  package’s policy of not extracting non-ODE statistical models.
 - **Dropout-of-cohort and informative censoring are not modelled in the
   vignette simulations.** The cohort simulations sweep `sur_os` as a
   forward-deterministic survival function; converting it into a

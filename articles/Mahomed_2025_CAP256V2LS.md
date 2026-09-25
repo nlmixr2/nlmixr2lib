@@ -215,8 +215,7 @@ mass_balance <- metrics |>
   )
 
 # Pure numerical-integration error: the two sides use the SAME parameters, so a
-# tight bound is correct here (see CLAUDE.md on vignette assertions). Realised
-# max |pct_diff| = 0.022%.
+# tight bound is correct here. Realised max |pct_diff| = 0.022%.
 stopifnot(max(abs(mass_balance$pct_diff)) < 0.5)
 
 mass_balance |>
@@ -428,7 +427,7 @@ carries the PK random effects only. That is the paper’s central claim.
 rxode2::rxSetSeed(20250908)
 set.seed(20250908)
 
-n_per_arm <- 200L # skill cap: never more than 200 participants per arm
+n_per_arm <- 200L # cohort cap: never more than 200 participants per arm
 
 make_arm <- function(label, mgkg, fixed_mg, id_offset) {
   wt <- rlnorm(n_per_arm, meanlog = 4.19, sdlog = 0.19)
@@ -631,7 +630,7 @@ pct <- suppressWarnings(as.numeric(gsub("[^0-9.-]", "", cmp$`% diff`)))
 pct <- pct[!is.na(pct)]
 stopifnot(length(pct) >= 8)
 # Cohort-derived, so gate the centre and a robust quantile rather than the
-# extreme (see CLAUDE.md). Realised on this build: individual rows spanned
+# extreme. Realised on this build: individual rows spanned
 # -2.7% to +2.4%, median |% diff| about 1.5%. The dominant residual is the
 # trapezoidal AUC on a 24 h grid over a profile with a 21 h absorption
 # half-life. A mis-transcribed clearance, volume, bioavailability or dose unit

@@ -265,7 +265,7 @@ the trial’s factorial design: three dose levels x two regimens x
 # rxode2's streams are partitioned PER SOLVER THREAD, so this cohort is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion below is written to hold for any cohort the
-# model can produce (pattern 12 of the skill's known-failure catalogue).
+# model can produce.
 set.seed(20130102)
 rxode2::rxSetSeed(20130102)
 

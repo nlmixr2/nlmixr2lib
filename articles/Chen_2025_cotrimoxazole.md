@@ -59,8 +59,8 @@ sulfamethoxazole. The sulfamethoxazole model of the same paper is a
 separate file; see modellib(‘Chen_2025_sulfamethoxazole’).
 
 The publisher PDF renders the four model equations as images, so the
-trimmed markdown produced by the ingestion preprocessor shows them only
-as `formula-not-decoded`. They were recovered with `pdftotext -layout`:
+text extracted from the PDF shows them only as `formula-not-decoded`.
+They were recovered with `pdftotext -layout`:
 
     (1)  V  = tvV * exp(etaV)                                                    [SMX]
     (2)  CL = tvCL * (CrCL/75.7)^dCLdCrCL * exp[dCLdCRRT * (CRRT == 1)] * exp(etaCL)
@@ -270,11 +270,11 @@ placed over the final dosing interval.
 # set.seed() seeds R's RNG only. rxode2's simulation streams are partitioned per
 # solver thread, so this cohort is NOT reproducible across machines with
 # different thread counts; every assertion below is written to hold for any
-# cohort the model can produce (known-vignette-failure-patterns.md pattern 12).
+# cohort the model can produce.
 set.seed(20250903)
 
 horizon    <- 15 * 24
-n_per_arm  <- 100          # <= 200 per arm, per the skill's cohort cap
+n_per_arm  <- 100          # within the 200-per-arm cohort cap
 
 # One arm's event table. `id_offset` keeps IDs disjoint across arms; duplicate
 # IDs are silently merged by rxSolve into a single over-dosed subject.

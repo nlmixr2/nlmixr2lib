@@ -294,8 +294,8 @@ in total. This is the vignette’s primary quantitative gate.
 
 **Cohort V (stochastic).** A 200-subject-per-arm cohort with sampled
 weight and sex, used for the concentration-time figure and for the
-minimal-accumulation check. 200 per arm is the skill’s cap and is ample
-here.
+minimal-accumulation check. 200 per arm is the package’s cohort cap and
+is ample here.
 
 ``` r
 
@@ -591,9 +591,8 @@ stopifnot(
 ## PKNCA validation
 
 Steady-state NCA over the final dosing interval of the typical-value
-grid (recipe 3 of `pknca-recipes.md`). The grouping variable is the
-sex-by-weight-by-dose-by-site arm, which is exactly the stratification
-of Table VII.
+grid. The grouping variable is the sex-by-weight-by-dose-by-site arm,
+which is exactly the stratification of Table VII.
 
 ``` r
 

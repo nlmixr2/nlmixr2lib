@@ -550,9 +550,9 @@ protein 1.2 g/L). {.table style="width:100%;"}
   a different functional form (a steeper power scaling, a
   log-transformed CSF_TPRO entering the logit, or a substantially larger
   coefficient) not deducible from the on-disk source text and parameter
-  table. Per the skill workflow (“never tune parameters to make a
-  validation output match a target”), the packaged model uses the Table
-  2 reported coefficient and the deviation is recorded here rather than
+  table. Per the package’s rule never to tune parameters to make a
+  validation output match a target, the packaged model uses the Table 2
+  reported coefficient and the deviation is recorded here rather than
   reconciled by re-parameterising the CSF compartment.
 
 - **CSF compartment kinetics chosen to preserve steady-state Ccsf / Cc

@@ -3546,7 +3546,7 @@ to the observed 24 to 42 g/L range.</p>
 <span><span class="co"># rxode2's simulation RNG, and rxode2's streams are partitioned per solver</span></span>
 <span><span class="co"># thread, so the etas differ between a 16-thread workstation and a 2-core CI</span></span>
 <span><span class="co"># runner. Every assertion downstream is written to hold for any cohort the</span></span>
-<span><span class="co"># model can produce; see pattern 12 of known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># model can produce.</span></span>
 <span><span class="co"># The RNG kind is pinned explicitly so the covariate draws -- which the gated</span></span>
 <span><span class="co"># typical-value comparison depends on -- stay identical across R versions.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240817</span>, kind <span class="op">=</span> <span class="st">"Mersenne-Twister"</span>, normal.kind <span class="op">=</span> <span class="st">"Inversion"</span><span class="op">)</span></span>

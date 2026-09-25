@@ -312,10 +312,10 @@ typical value (7.5 mg/kg x 70 kg / Vc_70 = 28 mg/L) sitting near the
 centre of the 24-38 mg/L band, almost any draw from the BSV distribution
 lands in target – which is what the simulation shows. The model
 parameters and structure are reproduced faithfully from the source; per
-the extraction skill’s policy, parameters are not tuned to chase a
-validation metric. Users who need to match the paper’s Cmax-distribution
-results closely should re-derive Cmax according to the paper’s exact
-sampling convention before comparing.
+the package’s policy, parameters are not tuned to chase a validation
+metric. Users who need to match the paper’s Cmax-distribution results
+closely should re-derive Cmax according to the paper’s exact sampling
+convention before comparing.
 
 ## Assumptions and deviations
 

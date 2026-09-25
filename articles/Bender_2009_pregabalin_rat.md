@@ -610,10 +610,9 @@ driven inhibition is independent of the pregabalin dose).
   continuous-metabolite covariate form as “two final covariate models
   incorporating the presence of sildenafil.” The two model files are
   numerically distinct (CL = 0.052 vs 0.051; the IIVs and BOVs differ;
-  theta_SLD = 0.302 \[fraction\] vs 1350 \[ng/mL\]); per operator
-  decision they are both committed with a shared vignette rather than
-  one collapsed file. See the request-001.json / response-001.json in
-  the task’s sidecar directory for the operator’s decision rationale.
+  theta_SLD = 0.302 \[fraction\] vs 1350 \[ng/mL\]); per the
+  maintainers’ decision they are both committed with a shared vignette
+  rather than one collapsed file.
 - **Body weight not in the model.** Bender 2009 reports absolute
   parameters (L and L/h) at the cohort body-weight scale (~225 g). The
   virtual cohort uses a single body weight of 225 g for all rats;
@@ -659,7 +658,7 @@ driven inhibition is independent of the pregabalin dose).
 - **Errata search.** A targeted PubMed query
   (`19672669[UID] AND erratum`) returned no results as of the extraction
   date; no published correction is on file.
-- **Drug field corrected from the task metadata.** The task block named
-  the drug as “Pharmaceutical Research” – that is the journal name. The
-  actual drug studied is pregabalin (with sildenafil as the DDI
-  perpetrator). The model file names reflect this correction.
+- **Drug field corrected.** The drug was initially recorded as
+  “Pharmaceutical Research” – that is the journal name. The actual drug
+  studied is pregabalin (with sildenafil as the DDI perpetrator). The
+  model file names reflect this correction.

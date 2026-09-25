@@ -414,9 +414,8 @@ The AUC0-24 column above should approximately satisfy:
   confidence intervals – the IIV omega^2 / CV% magnitudes are not
   published anywhere in the paper, and no supplement / NONMEM control
   stream / .lst file was provided on disk for this extraction. Per the
-  sidecar-approved encoding (operator response to task frompeople-633
-  request-002, option B), the model is registered as typical-value only:
-  `ini()` carries no `eta*` parameters and
+  maintainer-approved encoding, the model is registered as typical-value
+  only: `ini()` carries no `eta*` parameters and
   [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
   returns a single deterministic trajectory per (dose group). Downstream
   users wanting stochastic VPCs can add multiplicative log-normal IIV on
@@ -457,17 +456,16 @@ The AUC0-24 column above should approximately satisfy:
   paw-withdrawal- latency output is exposed as
   `latency <- baseline + emax * Cc / (ec50 + Cc)`, with residual error
   `latency ~ add(addSd_latency)`. The `latency` output name and the
-  `addSd_latency` residual follow the paper-named multi-output
-  convention (`references/parameter-names.md` Section “Residual error”:
-  “For multi-output models, the per-output form is
-  `<errorname>_<output>`”).
+  `addSd_latency` residual follow the package’s paper-named multi-output
+  convention, under which a per-output residual-error parameter is named
+  `<errorname>_<output>`.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   may flag `latency` as outside the canonical PK-observation set (`Cc`,
   `Cc_<metab>`); this is expected and the deviation is intentional.
 
-- **Species suffix `_rat` per Phase 1 step 3.** AZD6088 has no human
-  extraction in nlmixr2lib to collide with, so the `_rat` suffix is not
-  strictly required to disambiguate; it is retained here per the
+- **Species suffix `_rat`.** AZD6088 has no human extraction in
+  nlmixr2lib to collide with, so the `_rat` suffix is not strictly
+  required to disambiguate; it is retained here per the
   preclinical-model naming convention to make the species visible in
   [`modellib()`](https://nlmixr2.github.io/nlmixr2lib/reference/modellib.md)
   listings without inspecting `population`.

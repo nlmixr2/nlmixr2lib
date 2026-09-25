@@ -659,7 +659,7 @@ Table 5.
   modeled as additive in nature”. An additive residual on the
   natural-log scale is exactly a log-normal residual in linear space, so
   `W` = 44.94% is carried as `expSd = 0.4494` via `Cc ~ lnorm(expSd)`.
-  The skill’s default mapping of “NONMEM additive-on-log-scale to
+  The package’s default mapping of “NONMEM additive-on-log-scale to
   nlmixr2 proportional” is a first-order approximation that is fine at
   small sigma; at 45% it is not, and a proportional residual of that
   magnitude generates negative simulated concentrations, which would in

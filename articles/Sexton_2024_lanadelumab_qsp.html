@@ -3313,10 +3313,10 @@ ODE.</li>
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
 <p>This is a mechanistic model with an endogenous steady state, so the
-primary gates follow <code>endogenous-validation.md</code>: a
-steady-state hold, a perturbation-recovery check, and a mass-balance
-audit. The lanadelumab arm does have a genuine PK profile, so a PKNCA
-block is included and checked against closed-form single-dose
+primary gates follow the package’s validation pattern for endogenous
+models: a steady-state hold, a perturbation-recovery check, and a
+mass-balance audit. The lanadelumab arm does have a genuine PK profile,
+so a PKNCA block is included and checked against closed-form single-dose
 expectations.</p>
 <p>Throughout, simulations begin with a 1000 h equilibration period,
 matching <code>basal_equilibrium_duration</code> in

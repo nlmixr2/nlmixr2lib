@@ -429,8 +429,8 @@ directly comparable to the IV Vz reported in the paper.
 - **B-cell transit compartment structure.** Section 3.4 reports “five
   equations” with four transit compartments TR1..TR4 followed by
   circulating B cells B and the rate constants K_PROL = K_TR = K_CIRC =
-  4/MTT, but the five equations themselves are not decoded in the
-  trimmed PDF text (Figure text only). We encode the standard
+  4/MTT, but the five equations themselves are not decoded in the text
+  extracted from the PDF (Figure text only). We encode the standard
   Friberg-style constant-source chain
   `d/dt(precursor1) = K_TR * (BL - precursor1)`,
   `d/dt(precursor_{n+1}) = K_TR * (precursor_n - precursor_{n+1})`,
@@ -492,7 +492,7 @@ directly comparable to the IV Vz reported in the paper.
   formulas to the loaded model rather than rely on refitted human
   parameters.
 - **Errata.** No published erratum was located for this paper via the
-  trimmed source; if one exists, please open an issue at
+  text extracted from the PDF; if one exists, please open an issue at
   <https://github.com/nlmixr2/nlmixr2lib>.
 
 ## References

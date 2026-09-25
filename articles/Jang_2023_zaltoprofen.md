@@ -26,7 +26,7 @@ roughly 5 fold in Tmax.
 
 The values are shipped verbatim anyway, under the standing rule that
 printed values have authority and that figure-fitting never overrides
-print (a standing maintainer rule). Refitting to the figure would
+print (maintainer ruling, 2026-09-02). Refitting to the figure would
 produce an original model rather than this paper’s model.
 
 Consequently **this vignette validates self-consistency, not agreement
@@ -426,7 +426,7 @@ S6).
 # set.seed() seeds R's RNG, not rxode2's; rxode2's streams are partitioned per
 # solver thread, so this cohort differs between a 2-core CI runner and a
 # 16-thread workstation. Every assertion below is written to hold for any
-# cohort the model can produce (pattern 12 of known-vignette-failure-patterns).
+# cohort the model can produce.
 set.seed(20230161)
 
 n_per_arm <- 100L   # well under the 200-per-arm cap
@@ -864,10 +864,10 @@ ug/mL and on the `AUC = Dose/CL` identity.
 - **The packaged parameter set does not reproduce the source paper’s own
   figures or its quoted steady-state concentrations.** Values are
   shipped verbatim from supplementary Table S3 per the standing rule
-  that printed values have authority over figures (a standing maintainer
-  rule, applied in preference to deferring for author correspondence).
-  The full quantitative demonstration is in the Errata section above.
-  This vignette gates on self-consistency and on the paper’s published
+  that printed values have authority over figures (maintainer ruling,
+  2026-09-02, in preference to deferring for author correspondence). The
+  full quantitative demonstration is in the Errata section above. This
+  vignette gates on self-consistency and on the paper’s published
   covariate ratios; it deliberately does **not** gate on reproducing
   Figures 1-2.
 - **Between-subject variances** are back-calculated from Table S3’s
@@ -911,6 +911,6 @@ ug/mL and on the `AUC = Dose/CL` identity.
   Figure 1 external validation drew those doses from different published
   studies (Table S6).
 - **The Figure 1A digitised values** in the Errata section are
-  non-paper-derived (operator digitisation from a 400 dpi render) and
+  non-paper-derived (maintainer digitisation from a 400 dpi render) and
   are presented as supporting context only; no assertion depends on
   them.

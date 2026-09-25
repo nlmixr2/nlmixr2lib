@@ -371,10 +371,10 @@ cat(sprintf(
 
 ## Steady-state and continuity checks
 
-This model is not an ODE-based turnover model, so the
-`endogenous-validation.md` steady-state-hold and perturbation-recovery
-checks do not directly apply (there is no state to hold or perturb). The
-analogous checks for a periodic-baseline algebraic model are:
+This model is not an ODE-based turnover model, so the usual
+endogenous-model steady-state-hold and perturbation-recovery checks do
+not directly apply (there is no state to hold or perturb). The analogous
+checks for a periodic-baseline algebraic model are:
 
 ``` r
 

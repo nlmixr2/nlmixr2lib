@@ -609,7 +609,7 @@ SC Q8W). \* differs from the reference by more than 20%. {.table}
 
 # `arm` is a grouping variable of the PKNCA formula, so it is already a column
 # of the result table -- no join back to the cohort is needed (and a join on
-# `id` would risk the type mismatch and fan-out that pknca-recipes.md warns of).
+# `id` would risk a type mismatch and fan-out).
 tv_val <- as.data.frame(nca_typ$result) |>
   filter(PPTESTCD %in% c("cmax", "cav", "cmin")) |>
   select(arm, PPTESTCD, PPORRES)

@@ -3258,14 +3258,12 @@ after a single 200 mg oral dose.</p>
 <div class="section level2">
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
-<p>Single-dose, 72-hour NCA per the recipe in
-<code>references/pknca-recipes.md</code>, with the formulation arm
-carried as the treatment grouping variable so the per-arm Cmax / Tmax /
-AUC can be summarised side-by-side. NCA is run separately for
-itraconazole (<code>Cc</code>) and hydroxy-itraconazole
-(<code>Cc_ohi</code>). The PKNCA dose object only carries the parent
-dose; the metabolite NCA therefore does not report a dose-normalised
-AUC.</p>
+<p>Single-dose, 72-hour NCA, with the formulation arm carried as the
+treatment grouping variable so the per-arm Cmax / Tmax / AUC can be
+summarised side-by-side. NCA is run separately for itraconazole
+(<code>Cc</code>) and hydroxy-itraconazole (<code>Cc_ohi</code>). The
+PKNCA dose object only carries the parent dose; the metabolite NCA
+therefore does not report a dose-normalised AUC.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca_itz</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

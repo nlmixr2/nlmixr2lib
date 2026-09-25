@@ -1430,5 +1430,5 @@ weight increases MHD exposure allometrically) are reproduced.
 - **Errata.** No erratum / corrigendum to Rodrigues 2017 was located on
   disk for this extraction. A search of PubMed and the BJCP corrections
   feed for `"Rodrigues" + "oxcarbazepine" + 2017 + erratum` returned no
-  hits; the operator should reconfirm against the BJCP / Wiley
+  hits; the maintainers should reconfirm against the BJCP / Wiley
   corrections listing if any concerns arise.

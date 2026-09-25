@@ -295,7 +295,7 @@ sim_typical <- rxode2::rxSolve(
   events = events_typical,
   keep   = c("treatment", "wt_kg"),
   # rxode2's ODE->linCmt auto-conversion corrupts the dvid->cmt mapping for
-  # multi-output models (known-vignette-failure-patterns.md pattern 5b).
+  # multi-output models.
   useLinCmt = FALSE
 ) |>
   as.data.frame()

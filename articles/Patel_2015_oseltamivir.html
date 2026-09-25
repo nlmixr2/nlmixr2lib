@@ -3157,8 +3157,7 @@ are encoded below as functions of clock time within each 24 h cycle.</p>
 <span><span class="co"># are partitioned per solver thread -- so this cohort differs between a 2-core</span></span>
 <span><span class="co"># CI runner and a 16-thread workstation and no seed can make them agree. Every</span></span>
 <span><span class="co"># assertion below is therefore written on a centre or a robust bound, never on</span></span>
-<span><span class="co"># an extreme, a sign, or an exact value. See pattern 12 of</span></span>
-<span><span class="co"># .claude/skills/extract-literature-model/references/known-vignette-failure-patterns.md</span></span>
+<span><span class="co"># an extreme, a sign, or an exact value.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20150401</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 150 subjects per arm. The paper simulated 1000; 150 keeps the Monte Carlo</span></span>
@@ -3203,7 +3202,7 @@ are encoded below as functions of clock time within each 24 h cycle.</p>
 <span></span>
 <span><span class="co"># `useLinCmt = FALSE` is required: rxSolve.rxUi's default ODE -&gt; linCmt</span></span>
 <span><span class="co"># auto-conversion corrupts the dvid -&gt; cmt mapping for multi-output models of</span></span>
-<span><span class="co"># this shape (pattern 5b of known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># this shape.</span></span>
 <span><span class="va">solve_arm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">events</span>, <span class="va">stratum</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>    <span class="fu">stratum_model</span><span class="op">(</span><span class="va">stratum</span><span class="op">)</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
@@ -3979,8 +3978,7 @@ the reported 16.9% read as the omega on the logit scale. Two independent
 readings corroborate that choice: reading the 16.9% on the complementary
 <code>(1 - F_met)</code> scale gives <code>F_met</code> spanning
 0.957-0.970 at +/- 1 SD, against 0.958-0.969 for the logit encoding –
-numerically indistinguishable. Resolved via operator sidecar
-<code>oare_PMC4386947</code> question q5.</p>
+numerically indistinguishable. Resolved by a maintainer decision.</p>
 <p><strong>The two dialysate arms are carried as independent
 etas.</strong> Table 2 reports the same 7.70% BSV for
 <code>CL_OCCCPD</code> and <code>CL_OCCAPD</code>, which most likely

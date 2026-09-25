@@ -4019,8 +4019,8 @@ sub-hour lag from. Per the standing rule that an unreported value is
 never replaced by a class-typical or extractor-chosen number,
 <code>tlag</code> is kept in <code>ini()</code> as <code>fixed(0)</code>
 so that the published structure stays visible and a user can perturb it
-(operator ruling 2026-08-26). The consequence is that simulated Tmax is
-earlier than the true published model’s by the unreported lag; the
+(maintainer ruling 2026-08-26). The consequence is that simulated Tmax
+is earlier than the true published model’s by the unreported lag; the
 earliest post-dose sampling time across the source studies is 0.25 h
 (PROT103, PROT104), which bounds the lag from above. The Cav, AUC and
 CL/F validations above are unaffected, since they depend on CL/F
@@ -4039,7 +4039,7 @@ significant figures. Sweeping the full three-significant-figure rounding
 envelope of the printed half-lives admits only Vc/F 1167-1306 L, Vp/F
 735-874 L and Q/F 70.2-91.6 L/h, so the solve is tightly bounded (about
 +/-6% on Vc/F and +/-13% on Q/F). This is a reporting-gap fill, not an
-override of any printed value (operator ruling 2026-08-26).</li>
+override of any printed value (maintainer ruling 2026-08-26).</li>
 <li>
 <strong>Weight and race are applied to <code>Vss/F</code>, i.e. to
 <code>Vc/F</code> and <code>Vp/F</code> together.</strong> The

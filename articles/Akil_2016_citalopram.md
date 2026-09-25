@@ -127,8 +127,7 @@ analytes <- tibble::tribble(
 # The ODE states, in declaration order. Observation rows in every event table
 # below point at an ODE STATE (never at an algebraic observable such as
 # `Cc_r_enant`), and carry an explicit `dvid` because the model declares four
-# residual-error endpoints. See the compartment / dvid discussion in
-# references/known-vignette-failure-patterns.md.
+# residual-error endpoints.
 ui$state
 #> [1] "depot"                "central_r_enant"      "central_s_enant"     
 #> [4] "central_dcit_r_enant" "central_dcit_s_enant"
@@ -833,11 +832,10 @@ covariates.
 ``` r
 
 # Terminal slope must be read from a window well after the washout transient,
-# otherwise the fit absorbs the fast component and reads long -- pattern 11 of
-# references/known-vignette-failure-patterns.md. The window is defined
-# relatively, as concentrations between 0.1% and 5% of the value at the start
-# of the washout, which is roughly 4 to 10 half-lives after the last dose for
-# any analyte and stays far above solver noise.
+# otherwise the fit absorbs the fast component and reads long. The window is
+# defined relatively, as concentrations between 0.1% and 5% of the value at
+# the start of the washout, which is roughly 4 to 10 half-lives after the last
+# dose for any analyte and stays far above solver noise.
 terminal_slope <- function(time, Cc) {
   keep <- Cc > 0
   time <- time[keep]; Cc <- Cc[keep]
@@ -1098,8 +1096,8 @@ mg target simulated here – see Errata. {.table}
   `CYP2C19_NON_EM`’s registered reference category is the homozygous
   `*1/*1` extensive metabolizer, whereas Akil 2016 pools rapid
   metabolizers in with extensive metabolizers as the reference.
-  `CYP2C19_MISSING` is registered in this PR as a new member of the
-  established `<COV>_MISSING` family.
+  `CYP2C19_MISSING` was registered as a new member of the established
+  `<COV>_MISSING` family when this model was added.
 
 - **Sex and genotype as ratios.** Akil 2016 estimated one typical value
   per categorical level rather than a reference plus a shift. The model

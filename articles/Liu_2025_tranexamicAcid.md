@@ -84,8 +84,7 @@ draw falls outside a physiologically sensible adult range.
 # seed rxode2's simulation RNG, and rxode2's streams are partitioned per solver
 # thread -- so the etas drawn below differ between a 2-core CI runner and a
 # 16-thread workstation. Every assertion in this vignette is written to hold for
-# any cohort the model can produce (see pattern 12 of
-# known-vignette-failure-patterns.md).
+# any cohort the model can produce.
 set.seed(20250829)
 rxode2::rxSetSeed(20250829)
 

@@ -3095,9 +3095,9 @@ ug*h/mL (paper’s ARTEMIS reference, “data on file”).</li>
 0.52-1.20 g/L, 800/100 mg QD. Paper geometric mean AUCtau = 77.8
 ug*h/mL.</li>
 </ul>
-<p>Each cohort is 100 subjects (200/arm cap in the skill; smaller size
-chosen so that the combined 3-cohort simulation renders comfortably in
-under a minute).</p>
+<p>Each cohort is 100 subjects (under the 200-per-arm cohort cap;
+smaller size chosen so that the combined 3-cohort simulation renders
+comfortably in under a minute).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2015</span><span class="op">)</span></span>
 <span></span>
@@ -3217,7 +3217,7 @@ per-cohort geometric means can be compared against the paper’s reported
 values.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Concentrations for the 24-h tau on day 15. Filter is `!is.na(Cc)` only; do NOT add</span></span>
-<span><span class="co"># `time &gt; 0` or `Cc &gt; 0` (drops the AUC anchor row, per known-vignette-failure-patterns).</span></span>
+<span><span class="co"># `time &gt; 0` or `Cc &gt; 0` (drops the AUC anchor row).</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_typical</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">14</span> <span class="op">*</span> <span class="fl">24</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">15</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

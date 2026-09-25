@@ -457,17 +457,16 @@ translation error and should be investigated before tuning parameters.
 - **LDH covariate form.** The paper’s narrative writes “the value for
   LDH was log-transformed due to its right-skewed distribution” and does
   not display the equation in a machine-readable form (the Table 2
-  formula image was not OCR-decoded in the trimmed-markdown source). The
-  packaged model uses the literal log-power form
-  `(log(LDH)/log(206))^CL_LDH` because (a) it is mathematically what
-  “log-transformed LDH in a power covariate model” denotes, (b) the same
-  Bristol-Myers Squibb modelling group wrote the equation explicitly in
-  this form in the later Sanghavi 2020 ipilimumab popPK
-  (`modellib("Sanghavi_2020_ipilimumab")`), and (c) the alternative
-  conventional `(LDH/206)^1.13` form would predict CL ratios of ~0.4 at
-  LDH = 100 and ~6 at LDH = 1000 – inconsistent with the paper’s
-  narrative that LDH explained ~24% of the base-model IIV in CL with
-  per-percentile effects well below 100%.
+  formula image was not OCR-decoded in the extracted text). The packaged
+  model uses the literal log-power form `(log(LDH)/log(206))^CL_LDH`
+  because (a) it is mathematically what “log-transformed LDH in a power
+  covariate model” denotes, (b) the same Bristol-Myers Squibb modelling
+  group wrote the equation explicitly in this form in the later Sanghavi
+  2020 ipilimumab popPK (`modellib("Sanghavi_2020_ipilimumab")`),
+  and (c) the alternative conventional `(LDH/206)^1.13` form would
+  predict CL ratios of ~0.4 at LDH = 100 and ~6 at LDH = 1000 –
+  inconsistent with the paper’s narrative that LDH explained ~24% of the
+  base-model IIV in CL with per-percentile effects well below 100%.
 - **Time units.** Feng 2014 reports CL and Q in L/h; the packaged model
   carries time in days (CL x 24 to L/day) for consistency with
   `units$time = "day"` and with the later anti-CTLA-4 / anti-PD-1

@@ -232,13 +232,12 @@ covariate’s range.
 # rxode2's streams are partitioned PER SOLVER THREAD, so this cohort is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion below is written to hold for ANY cohort the
-# model can produce; see pattern 12 of the known-vignette-failure-patterns
-# reference.
+# model can produce.
 set.seed(20231001)
 
 # 50 per arm across 15 arms (750 subjects). Sized against the render budget:
 # the vignette must stay well inside the 5-minute ceiling because the
-# consolidation merge re-renders every vignette in parallel, where CPU
+# pre-merge check re-renders every vignette in parallel, where CPU
 # contention multiplies wall-clock time. Measured single-threaded here at
 # 40 / 75 / 100 per arm: 54 / 168 / 203 s (the PKNCA step scales worse than
 # linearly), so this sits at roughly 80 s with ample headroom. The only gates
@@ -840,9 +839,9 @@ sim_typ <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = typ_events) |>
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etaltlag', 'etalka', 'etalq', 'etalvp', 'etaiov_cl_1', 'etaiov_cl_2'
 
-# Terminal slope fitted well after the washout transient, per pattern 11 of the
-# known-vignette-failure-patterns reference: a time-to-50% measured from the
-# moment of withdrawal includes the distribution phase and reads long.
+# Terminal slope fitted well after the washout transient: a time-to-50%
+# measured from the moment of withdrawal includes the distribution phase and
+# reads long.
 term <- sim_typ |> dplyr::filter(time >= 48, time <= 240, Cc > 0)
 hl_fit <- log(2) / -coef(lm(log(Cc) ~ time, data = term))[["time"]]
 

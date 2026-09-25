@@ -609,9 +609,8 @@ constant (`alpha = 0.43 /h`) is only about 2.4-fold faster than
 `beta = 0.18 /h`, so an earlier window still carries distribution-phase
 curvature and `lambda_z` reads steep: PKNCA’s automatic selection began
 at 13.2 h and returned a half-life of 3.65 h against a closed-form 3.76
-h – a 3.0% bias in the *instrument*, not in the model (see pattern 11 of
-the skill’s known-failure catalogue). `r.squared` does not warn about
-it; it was 0.9999 on the biased fit.
+h – a 3.0% bias in the *instrument*, not in the model. `r.squared` does
+not warn about it; it was 0.9999 on the biased fit.
 
 The window is set with `PKNCAconc(include_half.life = )`, which takes
 the name of a **logical column of the concentration data**. Note that

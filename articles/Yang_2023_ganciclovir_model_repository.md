@@ -1129,9 +1129,9 @@ five are **not** re-extracted here.
 **Three new covariate canonicals.** `Nguyen_2021` and `Yuen_1995` needed
 covariate columns that did not exist in
 `inst/references/covariate-columns.md` and were not members of an
-auto-approved canonical family, so they were ratified by the operator
-before extraction (sidecar request 001, all three approved as proposed)
-and are registered in this same change:
+accepted canonical family, so they were ratified by the maintainers
+before extraction (all three approved as proposed) and were registered
+when this model was added:
 
 - **`DIS_CRITILL`** – binary critical-illness / ICU indicator (1 =
   critically ill), needed by `Nguyen_2021`’s `0.806^critically_ill`

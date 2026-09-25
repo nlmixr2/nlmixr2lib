@@ -2857,10 +2857,10 @@
 <p>This vignette validates two one-compartment intravenous population PK
 models, one per drug, that were developed jointly in the Leroux 2018
 TINN randomized trial of fluconazole vs micafungin in neonates with
-suspected or proven systemic candidiasis. Per the
-<code>replicate-author-structure</code> policy the two drugs are
-extracted as two separate <code>.R</code> files but share this single
-vignette.</p>
+suspected or proven systemic candidiasis. Following the package’s
+convention of replicating the authors’ model structure, the two drugs
+are extracted as two separate <code>.R</code> files but share this
+single vignette.</p>
 <ul>
 <li>Citation: Leroux S, Jacqz-Aigrain E, Elie V, Legrand F, Barin-Le
 Guellec C, Aurich B, Biran V, Dusang B, Goudjil S, Coopman S, Garcia
@@ -3359,7 +3359,7 @@ only; downloaded from PMC at <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6
 reports omega magnitudes. The Results note that individual CL ranged
 0.008-0.042 L/h/kg for fluconazole and 0.010-0.024 L/h/kg for micafungin
 (“Fluconazole and micafungin clearances were highly variable in the
-study population”), but no parametric omega is given. Per the skill
+study population”), but no parametric omega is given. Per the package’s
 policy for unreported IIV with structural values present, encode IIV as
 <code>fixed(0)</code> and document here.</p></li>
 <li><p><strong>Residual error is fixed at zero on both

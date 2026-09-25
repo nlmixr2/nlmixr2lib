@@ -139,8 +139,8 @@ so that any differences between dose arms are driven by the
 autoinduction mechanism alone, matching the paper’s Fig 6 simulation
 setup (“the typical subject in the dataset (fasting, weighing 65 kg and
 the ALP level at 77.2 U/L)”). The cohort is 100 subjects per dose arm
-(well under the 200-per-arm skill cap); IIV is sampled from the omega
-block reported in Table 2. All doses are in the fasted state; the
+(well under the package’s 200-per-arm cap); IIV is sampled from the
+omega block reported in Table 2. All doses are in the fasted state; the
 food-effect layer is exercised separately in the food-effect section
 below.
 

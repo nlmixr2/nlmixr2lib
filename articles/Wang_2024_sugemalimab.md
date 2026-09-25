@@ -447,7 +447,7 @@ overall-population row of Wang 2024 Table S1 (the row labelled
 
 If the simulated cycle-8 metrics differ from Wang 2024 Table S1 by more
 than ~20 %, the model file should be re-checked against Wang 2024 Table
-3 rather than tuned (per the skill).
+3 rather than tuned.
 
 A side-by-side numerical comparison is computed below.
 

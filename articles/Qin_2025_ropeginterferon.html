@@ -5135,18 +5135,18 @@ deferred on first extraction and is now packaged as
 decision, not a reporting gap: the model is fully reported, but its
 covariate – <strong>baseline <em>JAK2</em> V617F allele burden, in per
 cent</strong> – had no canonical entry in
-<code>inst/references/covariate-columns.md</code>, and minting one is an
-operator decision rather than an extractor’s.</p>
+<code>inst/references/covariate-columns.md</code>, and minting one
+requires a maintainer decision.</p>
 <p>It is registered here as
-<strong><code>TUM_JAK2_V617F_VAF</code></strong> (operator-ratified), a
-continuous somatic variant allele frequency on a 0-100 per cent scale.
+<strong><code>TUM_JAK2_V617F_VAF</code></strong> (maintainer-ratified),
+a continuous somatic variant allele frequency on a 0-100 per cent scale.
 The three near neighbours it is deliberately <em>not</em> filed
 under:</p>
 <ul>
 <li>
 <strong><code>SNP_JAK2_RS77375493</code>.</strong> <em>JAK2</em>
 V617F does have an rsid, so this would be mechanically well formed under
-the auto-approve <code>SNP_&lt;GENE&gt;_RS&lt;rsid&gt;</code> family.
+the accepted <code>SNP_&lt;GENE&gt;_RS&lt;rsid&gt;</code> naming family.
 But every registered <code>SNP_*</code> column carries a germline
 <strong>genotype</strong> – an allele count or a carrier indicator –
 whereas this is a somatic <strong>clone fraction</strong> that moves

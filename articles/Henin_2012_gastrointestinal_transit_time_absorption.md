@@ -89,8 +89,8 @@ The per-subject inflection-point covariates (`IP_FA`, `IP_APSI`,
 `IP_PSI_DSI`, `IP_DSI_C`) are sampled from the paper’s Table II
 log-normal distributions before simulation. The `sample_ips()` helper
 below packages the sampling and can be reused across both drug
-scenarios; per SKILL.md discipline it stays inside the vignette (not
-exported).
+scenarios; per the package’s convention it stays inside the vignette
+(not exported).
 
 ``` r
 
@@ -715,7 +715,7 @@ linearly with FA and the dose.
   demonstrates the sampling in this vignette via the `sample_ips()`
   helper. This differs from a typical nlmixr2 formulation that would
   encode the fixed distributions as `ini()` etas; the covariate form was
-  requested via the initial task sidecar (see task record).
+  requested by the maintainers.
 - **Felodipine molecular weight and units.** The paper reports
   felodipine plasma concentration in the paper as a 23% proportional
   residual on the observation scale, with LOQ values given implicitly in

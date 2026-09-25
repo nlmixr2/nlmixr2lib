@@ -2992,22 +2992,22 @@ no-IVT 9.29</td>
 <tr class="odd">
 <td>eGFR reference value (denominator)</td>
 <td>90 mL/min/1.73 m^2</td>
-<td>sidecar Q4 = A (canonical adult reference; the paper does not state
-it)</td>
+<td>maintainer decision (canonical adult reference; the paper does not
+state it)</td>
 </tr>
 <tr class="even">
 <td>
 <code>etalcl</code> (omega^2 of IIV on CL)</td>
 <td>0.046</td>
-<td>Vos 2025 Supp. Table S8, “ETA1 CL” 0.046 (RSE 37.5%); sidecar Q1 =
-A</td>
+<td>Vos 2025 Supp. Table S8, “ETA1 CL” 0.046 (RSE 37.5%); maintainer
+decision</td>
 </tr>
 <tr class="odd">
 <td>
 <code>propSd</code> (proportional residual SD)</td>
 <td>0.123</td>
-<td>Vos 2025 Supp. Table S8, “Residual error” 0.123 (RSE 24.5%); sidecar
-Q2 = B (SD scale, 12.3% CV)</td>
+<td>Vos 2025 Supp. Table S8, “Residual error” 0.123 (RSE 24.5%);
+maintainer decision (SD scale, 12.3% CV)</td>
 </tr>
 <tr class="even">
 <td>ODE: d/dt(central)</td>
@@ -3530,20 +3530,21 @@ S8</strong> – the supplement reports both a bolded “Random effect
 parameters | 0.225 (0.09)” section-header row AND a labelled “ETA1 CL |
 0.046 (37.5)” row. We interpret the labelled
 <code>ETA1 CL = 0.046</code> as omega^2 of IIV on CL per NONMEM
-convention (sidecar Q1 = A); the 0.225 row is most likely a redundant CV
-/ SD or eta-shrinkage summary statistic that was set in the same row
-template. omega^2 = 0.046 corresponds to ~21.7% CV IIV on CL.</li>
+convention (maintainer decision); the 0.225 row is most likely a
+redundant CV / SD or eta-shrinkage summary statistic that was set in the
+same row template. omega^2 = 0.046 corresponds to ~21.7% CV IIV on
+CL.</li>
 <li>
 <strong>Residual error scale</strong> – the supplement reports
 “Residual error 0.123 (24.5)” without stating whether 0.123 is the
 variance or the standard deviation. We encode
 <code>propSd &lt;- 0.123</code> directly as the proportional SD (12.3%
-CV) per sidecar Q2 = B.</li>
+CV) per maintainer decision.</li>
 <li>
 <strong>eGFR reference value</strong> – the paper reports the
 “COVeGFR0 CL” exponent (0.817) without stating the eGFR reference value
 in the denominator of the allometric form. We use the canonical adult
-reference 90 mL/min/1.73 m^2 (sidecar Q4 = A; aligned with
+reference 90 mL/min/1.73 m^2 (maintainer decision; aligned with
 <code>CRCL</code> register precedents).</li>
 <li>
 <strong>Body weight not used</strong> – Vos 2025 does not include

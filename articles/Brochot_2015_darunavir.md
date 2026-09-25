@@ -103,9 +103,9 @@ Three cohorts reproduce the paper’s key comparators:
 - **DIONE** – adolescents 12-17 y, weight 40-62 kg, AAG 0.52-1.20 g/L,
   800/100 mg QD. Paper geometric mean AUCtau = 77.8 ug\*h/mL.
 
-Each cohort is 100 subjects (200/arm cap in the skill; smaller size
-chosen so that the combined 3-cohort simulation renders comfortably in
-under a minute).
+Each cohort is 100 subjects (under the 200-per-arm cohort cap; smaller
+size chosen so that the combined 3-cohort simulation renders comfortably
+in under a minute).
 
 ``` r
 
@@ -234,7 +234,7 @@ compared against the paper’s reported values.
 ``` r
 
 # Concentrations for the 24-h tau on day 15. Filter is `!is.na(Cc)` only; do NOT add
-# `time > 0` or `Cc > 0` (drops the AUC anchor row, per known-vignette-failure-patterns).
+# `time > 0` or `Cc > 0` (drops the AUC anchor row).
 sim_nca <- sim_typical |>
   dplyr::filter(time >= 14 * 24, time <= 15 * 24) |>
   dplyr::filter(!is.na(Cc)) |>

@@ -3059,7 +3059,7 @@ model – Kohl 2010 Table 2).</p>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">evid</span>, <span class="va">cmt</span>, <span class="va">AGE</span>, <span class="va">DIARRHEA</span>, <span class="va">WT</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Defensive ID-uniqueness check (per skill template)</span></span>
+<span><span class="co"># Defensive ID-uniqueness check</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -3139,8 +3139,7 @@ simulated trough quantiles by diarrhea status.</p>
 days (elimination half-life t1/2 = ln(2) * V/CL ~= 23 h for a typical
 no-diarrhea subject; about 5 half-lives gives steady state at ~5 days,
 well within the 14-day simulation window). Steady-state NCA is computed
-over the final dosing interval (Recipe 3 in
-<code>pknca-recipes.md</code>).</p>
+over the final dosing interval.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build a PKNCA-friendly long table, anchoring a time = start_ss row at the</span></span>
 <span><span class="co"># beginning of the SS dosing interval (concentration just before the final</span></span>

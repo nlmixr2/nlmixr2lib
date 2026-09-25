@@ -92,7 +92,7 @@ collects the same provenance for review.
 | `e_tumtp_oth_cl`, `e_tumtp_oth_vc` | +0.178, -0.186 | Lacy 2018 Table 3 FM column |
 | `e_age_cl`, `e_age_vc` (power exponents, ref 64 y) | -0.162, -0.012 | Lacy 2018 Table 3 FM column and footnote c |
 | `e_wt_cl`, `e_wt_vc` (power exponents, ref 81 kg) | -0.028, +1.019 | Lacy 2018 Table 3 FM column and footnote c |
-| IIV variances (sidecar Q1-A: diagonal) `etalka`, `etalcl`, `etalvc`, `etalogitf1` | 2.063, 0.202, 0.233, 0.466 | Lacy 2018 Table 3 footnote d |
+| IIV variances (diagonal; maintainer decision) `etalka`, `etalcl`, `etalvc`, `etalogitf1` | 2.063, 0.202, 0.233, 0.466 | Lacy 2018 Table 3 footnote d |
 | Residual error (LTBS additive) | sqrt(0.118) = 0.3435 | Lacy 2018 Table 3 footnote d (sigma^2 = 0.118) |
 | ODE structure (2-cmt + parallel first-order depot1 with lag + zero-order infusion into central) | n/a | Lacy 2018 Results, “FM” model description |
 | Reference covariate set | tablet, 60 mg dose, HV, male, White, 64 y, 81 kg | Lacy 2018 Methods (median value for continuous covariates) and Table 2 (overall pooled-cohort medians) |
@@ -524,8 +524,8 @@ coefficients.
 
 ## Assumptions and deviations
 
-- **`omega^2_CL/F:Vc/F` off-diagonal IIV covariance dropped (sidecar
-  Q1-A).** Lacy 2018 Table 3 footnote d reports the published
+- **`omega^2_CL/F:Vc/F` off-diagonal IIV covariance dropped (maintainer
+  decision).** Lacy 2018 Table 3 footnote d reports the published
   variance-covariance off-diagonal as
   `omega^2_CL/F:Vc/F = 2.475 (90% CI 1.923, 3.028)`. This value violates
   Cauchy-Schwarz given the marginal variances (`omega^2_CL/F = 0.202`,
@@ -539,21 +539,20 @@ coefficients.
   Omega with the marginal variances. The packaged model therefore
   simulates `etalcl` and `etalvc` as independent etas, which is a
   published deviation but does not change typical-value predictions. The
-  operator-approved choice was sidecar Q1-A (“Use diagonal Omega +
-  Errata note”); see the queue sidecar log for
-  `155-lacy_2018_cancer_chemotherapy_and_pharma`.
+  maintainer-approved choice was a diagonal Omega, with the dropped
+  covariance documented here.
 - **Reference dose for the dose-dependent Ka power model set to 60 mg
-  (sidecar Q2-A).** Lacy 2018 states “The first-order absorption process
-  including a lag time and a dose-dependent effect on the absorption
-  rate constant (Ka) was described using a power model” but does not
-  state the reference dose `DOSE_REF` used to normalise the dose
-  covariate. The packaged model uses `DOSE_REF = 60 mg`, the standard
-  cabozantinib tablet daily dose for non-MTC indications and the
-  reference dose used in the companion Lacy 2018 exposure-response
+  (maintainer decision).** Lacy 2018 states “The first-order absorption
+  process including a lag time and a dose-dependent effect on the
+  absorption rate constant (Ka) was described using a power model” but
+  does not state the reference dose `DOSE_REF` used to normalise the
+  dose covariate. The packaged model uses `DOSE_REF = 60 mg`, the
+  standard cabozantinib tablet daily dose for non-MTC indications and
+  the reference dose used in the companion Lacy 2018 exposure-response
   paper. Other plausible choices (DOSE_REF = 100 mg or 140 mg) would
   re-scale the typical-value Ka by `(60 / X)^0.677`, changing the
-  population Cmax / Tmax but not AUC. The operator-approved choice was
-  sidecar Q2-A.
+  population Cmax / Tmax but not AUC. The maintainer-approved choice was
+  `DOSE_REF = 60 mg`.
 - **Reference age and weight for the continuous-covariate power model
   set to 64 y and 81 kg.** Lacy 2018 Methods states the “approximate
   median value was used for xREF” without listing the exact

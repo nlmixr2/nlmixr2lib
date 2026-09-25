@@ -2902,8 +2902,8 @@ acute-medication days,</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext mathvariant="normal">BL</mtext><mi>i</mi></msub><mo>=</mo><msub><mi>θ</mi><mrow><mi>B</mi><mi>L</mi></mrow></msub><mo>+</mo><msub><mi>θ</mi><mi>S</mi></msub><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mspace width="0.167em"></mspace><mtext mathvariant="normal">ACUTE_MED_DAYS</mtext><mo>−</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>η</mi><mrow><mtext mathvariant="normal">BL</mtext><mo>,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\text{BL}_i = \theta_{BL} + \theta_{S}\,\max(0,\,\text{ACUTE\_MED\_DAYS} - 5) + \eta_{\text{BL},i}</annotation></semantics></math></p>
 <p>(breakpoint at 5 d/mo per the medication-overuse-headache
 convention). <code>t</code> is in months (28-day periods). The placebo
-time-course follows the operator-confirmed Figure 2A form (exp-decay of
-reduction); the drug-effect uses the Emax/EC50 of Cav reported in
+time-course follows the maintainer-confirmed Figure 2A form (exp-decay
+of reduction); the drug-effect uses the Emax/EC50 of Cav reported in
 Supplementary Table S3.</p>
 </div>
 <div class="section level2">
@@ -3252,7 +3252,7 @@ concentration profile to integrate (Cav is supplied as a covariate, not
 derived from a PK ODE), and the response variable is a count of migraine
 days per month rather than a sampled concentration. The validation
 strategy adopted here is therefore the <em>narrative-comparison</em>
-table immediately above, mirroring the operator-confirmed Figure 2A
+table immediately above, mirroring the maintainer-confirmed Figure 2A
 interpretation and matching the per-regimen reduction ranges reported in
 the Results section.</p>
 </div>
@@ -3267,13 +3267,13 @@ drug-effect parameters with implicit “month” as the time unit. The
 model’s <code>units$time = "month"</code> documents this; users
 supplying time in days will need to divide by 28.</li>
 <li>
-<strong>Placebo time-course form is operator-confirmed from Figure
+<strong>Placebo time-course form is maintainer-confirmed from Figure
 2A.</strong> Supplementary Table S3 lists only an
 <code>Exponent for placebo time-course</code>. The functional form
 <code>BL - exp(exponent * t)</code> was visually read from Figure 2A by
-the operator during sidecar request 3 of this extraction. With the
-typical exponent 0.360 the model gives a 2.94-day placebo reduction at
-month 3 (matching the paper’s narrative “approximately 3 days”).</li>
+the maintainers. With the typical exponent 0.360 the model gives a
+2.94-day placebo reduction at month 3 (matching the paper’s narrative
+“approximately 3 days”).</li>
 <li>
 <strong>Cav as a per-period covariate, not a model output.</strong>
 This is a PD-only file. The CAV column must be supplied per row by the

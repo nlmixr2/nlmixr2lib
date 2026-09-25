@@ -1674,8 +1674,8 @@ residual difference).
 
 - **Supplement could not be downloaded during extraction.** The
   PMC-hosted supplementary file (Word document `clpt201326x1.doc`) sits
-  behind a JavaScript proof-of-work challenge that the extraction
-  environment could not solve, and the Europe PMC mirror returned HTTP/2
+  behind a JavaScript proof-of-work challenge that could not be solved
+  when this model was built, and the Europe PMC mirror returned HTTP/2
   stream errors for the same file. The main paper Table 2 (Population
   estimate column), Methods (p.447), and Results (p.444-445) contain the
   full parameter list, model-structure narrative, and covariate
@@ -1702,13 +1702,12 @@ residual difference).
   concentrations as natural logarithms of molar concentration with
   additive residual on the log scale; the reported `sigma_ARS = 0.0942`
   and `sigma_DHA = 0.211` are variances on that log scale. By the
-  standing convention in `references/naming-conventions.md`, NONMEM
-  additive-on-log-scale residual maps to nlmixr2 proportional residual
-  in linear space, with `propSd = sqrt(omega^2)` (the SD on the log
-  scale equals the CV in linear space to first order). The slight bias
-  relative to the more accurate `propSd = sqrt(exp(omega^2) - 1)`
-  mapping is \< 1.5% for both species and is smaller than the published
-  Table 2 RSE on sigma.
+  package’s standing convention, NONMEM additive-on-log-scale residual
+  maps to nlmixr2 proportional residual in linear space, with
+  `propSd = sqrt(omega^2)` (the SD on the log scale equals the CV in
+  linear space to first order). The slight bias relative to the more
+  accurate `propSd = sqrt(exp(omega^2) - 1)` mapping is \< 1.5% for both
+  species and is smaller than the published Table 2 RSE on sigma.
 
 - **Unit choice.** The packaged model carries dose in mg, volume in L,
   and concentration in mg/L (numerically equal to ug/mL). The paper

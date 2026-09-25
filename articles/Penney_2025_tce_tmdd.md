@@ -564,4 +564,4 @@ stopifnot(
   the existing free-target family beside `target_bonemarrow` rather than
   as a bare `cd3_central`, so that the free receptor pool stays distinct
   from the drug-bound `drug_cd3_central` dimer it binds to (maintainer
-  decision).
+  decision, 2026-09-11).

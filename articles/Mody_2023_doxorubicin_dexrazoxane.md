@@ -102,7 +102,7 @@ place.
 | 3-transit-compartment delay chain | – | Mody 2023 text (“three transit compartments … 1/tau_DOX”) |
 
 The residual error parameters (`addSd`, `addSd_dex`, `addSd_viability`)
-are operator-chosen placeholders – Mody 2023 does not tabulate a
+are maintainer-chosen placeholders – Mody 2023 does not tabulate a
 residual SD – and are flagged with `fixed()` so they do not contribute
 false precision.
 
@@ -654,17 +654,17 @@ infusion (BSA 1.8 m^2 typical subject). {.table}
 
 ## Assumptions and deviations
 
-The following are paper-vs-model gaps that the operator preserved
+The following are paper-vs-model gaps that the maintainers preserved
 deliberately rather than tuning parameters to close.
 
 - **DEX inhibition equation form is subtractive on Kmax.** The PDF’s
   formal equations for the combination model (Mody 2023 Eqs 6a-6f) came
-  through the trimmed markdown source as `<!-- formula-not-decoded -->`
-  placeholders. Table 1 gives Imax,DEXi units of 1/h (matching
-  Kmax,DOX), and the text describes the DEX effect as “a capacity
-  limited Hill function K_DEX … on DOX cell- death stimulation.” The
-  packaged model implements the DEX inhibition as a subtraction on the
-  maximum DOX kill rate constant,
+  through the text extracted from the PDF as
+  `<!-- formula-not-decoded -->` placeholders. Table 1 gives Imax,DEXi
+  units of 1/h (matching Kmax,DOX), and the text describes the DEX
+  effect as “a capacity limited Hill function K_DEX … on DOX cell- death
+  stimulation.” The packaged model implements the DEX inhibition as a
+  subtraction on the maximum DOX kill rate constant,
   `K_source = (Kmax - Imax_DEXi * CDEX / (IC50_DEXi + CDEX)) * CDOX / (KC50 + CDOX)`,
   so that at saturating DEX (CDEX \>\> IC50) the effective maximum kill
   rate is `Kmax - Imax_DEXi = 0.0072 /h` (about 90% reduction from
@@ -725,7 +725,7 @@ deliberately rather than tuning parameters to close.
 
 ## Errata
 
-- The trimmed-markdown source of Mody 2023 rendered the model equations
+- The text extracted from the Mody 2023 PDF rendered the model equations
   (Eqs 1, 2, 3, 4a-e, 5, 6a-f) as `<!-- formula-not-decoded -->`
   placeholders in the OCR pass. The equation forms used in the packaged
   model were reconstructed from the surrounding prose, the parameter

@@ -3381,9 +3381,8 @@ only the fixed-effect typical- value point estimates with 95% bootstrap
 confidence intervals – the IIV omega^2 / CV% magnitudes are not
 published anywhere in the paper, and no supplement / NONMEM control
 stream / .lst file was provided on disk for this extraction. Per the
-sidecar-approved encoding (operator response to task frompeople-633
-request-002, option B), the model is registered as typical-value only:
-<code>ini()</code> carries no <code>eta*</code> parameters and
+maintainer-approved encoding, the model is registered as typical-value
+only: <code>ini()</code> carries no <code>eta*</code> parameters and
 <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> returns a single deterministic trajectory
 per (dose group). Downstream users wanting stochastic VPCs can add
 multiplicative log-normal IIV on <code>cl</code> and <code>vc</code> at
@@ -3425,20 +3424,19 @@ The paw-withdrawal- latency output is exposed as
 <code>latency &lt;- baseline + emax * Cc / (ec50 + Cc)</code>, with
 residual error <code>latency ~ add(addSd_latency)</code>. The
 <code>latency</code> output name and the <code>addSd_latency</code>
-residual follow the paper-named multi-output convention
-(<code>references/parameter-names.md</code> Section “Residual error”:
-“For multi-output models, the per-output form is
-<code>&lt;errorname&gt;_&lt;output&gt;</code>”).
+residual follow the package’s paper-named multi-output convention, under
+which a per-output residual-error parameter is named
+<code>&lt;errorname&gt;_&lt;output&gt;</code>.
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> may flag <code>latency</code> as
 outside the canonical PK-observation set (<code>Cc</code>,
 <code>Cc_&lt;metab&gt;</code>); this is expected and the deviation is
 intentional.</p></li>
-<li><p><strong>Species suffix <code>_rat</code> per Phase 1 step
-3.</strong> AZD6088 has no human extraction in nlmixr2lib to collide
-with, so the <code>_rat</code> suffix is not strictly required to
-disambiguate; it is retained here per the preclinical-model naming
-convention to make the species visible in <code><a href="../reference/modellib.html">modellib()</a></code>
-listings without inspecting <code>population</code>.</p></li>
+<li><p><strong>Species suffix <code>_rat</code>.</strong> AZD6088 has no
+human extraction in nlmixr2lib to collide with, so the <code>_rat</code>
+suffix is not strictly required to disambiguate; it is retained here per
+the preclinical-model naming convention to make the species visible in
+<code><a href="../reference/modellib.html">modellib()</a></code> listings without inspecting
+<code>population</code>.</p></li>
 <li><p><strong>Native paper units preserved.</strong> Doses are entered
 per kg body weight in umol/kg and concentrations are reported in umol/L,
 matching the paper’s native reporting. The MW = 406.57 g/mol conversion

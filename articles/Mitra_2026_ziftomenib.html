@@ -3251,8 +3251,7 @@ of all three analytes.</p>
 <span><span class="va">day28_anchor</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">n_days</span> <span class="op">-</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">*</span> <span class="fl">24</span>                                     <span class="co"># last full SS dose at t = 648 h</span></span>
 <span><span class="va">day28_obs</span>    <span class="op">&lt;-</span> <span class="va">day28_anchor</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1</span>, <span class="fl">1.5</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">8</span>, <span class="fl">12</span>, <span class="fl">16</span>, <span class="fl">20</span>, <span class="fl">24</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Time-zero anchor row (mandatory for PKNCA AUC0-* below; a defensive</span></span>
-<span><span class="co"># addition per the extract-literature-model pknca-recipes reference).</span></span>
+<span><span class="co"># Time-zero anchor row (a defensive addition; mandatory for PKNCA AUC0-* below).</span></span>
 <span><span class="va">zero_obs</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span></span>
 <span><span class="va">make_subject_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">subj_row</span><span class="op">)</span> <span class="op">{</span></span>

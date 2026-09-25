@@ -174,7 +174,7 @@ subjects, within the 200-per-arm cap.
 # rxode2's streams are partitioned PER SOLVER THREAD -- so this cohort is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion below is written to hold for ANY cohort the
-# model can produce (see known-vignette-failure-patterns.md pattern 12).
+# model can produce.
 set.seed(20250216)
 rxode2::rxSetSeed(20250216)
 

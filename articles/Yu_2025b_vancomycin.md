@@ -320,8 +320,7 @@ merge into one subject receiving the summed dose.
 # NOT seed rxode2's simulation RNG, and rxode2's streams are partitioned per
 # solver thread, so the eta draws differ between a 2-core CI runner and a
 # 16-thread workstation. Every assertion downstream is written to hold for any
-# cohort this model can produce (see pattern 12 of
-# references/known-vignette-failure-patterns.md).
+# cohort this model can produce.
 set.seed(20250618)   # Yu 2025 acceptance date
 
 n_per_arm <- 150L    # inside the 200-per-arm cap
@@ -812,7 +811,7 @@ dose_df <- events |>
   dplyr::select(id, time, amt, arm)
 dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
 
-# Steady state: the final dosing interval (Recipe 3 of pknca-recipes.md).
+# Steady state: the final dosing interval.
 start_ss <- (n_doses - 1L) * tau
 intervals <- data.frame(
   start   = start_ss,
@@ -982,9 +981,9 @@ stopifnot(abs(auc15 - 200) / 200 < 0.35)
   carries no `commentCorrectionList` entry as of 2026-09-08.
 
 - **The printed equations were recovered with `pdftotext -layout`.** The
-  preprocessed `_trimmed.md` collapses both display equations of Results
-  3.2 to a `<!-- formula-not-decoded -->` marker; the layout-preserving
-  text extraction recovers them in full.
+  markdown text extracted from the PDF collapses both display equations
+  of Results 3.2 to a `<!-- formula-not-decoded -->` marker; the
+  layout-preserving text extraction recovers them in full.
 
 ### Simulation assumptions
 

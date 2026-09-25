@@ -563,12 +563,13 @@ simulation, IV cohorts). {.table}
   warnings (22 compartments + 1 units, all expected).** The 22
   compartment names (`a_p`, `stfpi_p`, `mtfpi_e1`, etc.) deviate from
   the canonical `central` / `peripheral1` set; this is permitted under
-  the QSP / mechanistic-model exemption in `naming-conventions.md` and
-  is necessary to represent a 23-state systems model where the canonical
-  names cannot describe distinct free-antibody-vs-complex-vs-target
-  species across plasma / two endosomes / two tissues / lymph. The molar
-  concentration unit `nM` (rather than `mg/L`) is paper-natural for a
-  mass-action TMDD model where binding constants are reported in
-  `1/(M*s)`; mg/L would require redundant molecular-weight conversions
-  throughout the binding ODEs and would not match the published
-  parameter values without per-line correction.
+  the QSP / mechanistic-model exemption in
+  `inst/references/compartment-names.md` and is necessary to represent a
+  23-state systems model where the canonical names cannot describe
+  distinct free-antibody-vs-complex-vs-target species across plasma /
+  two endosomes / two tissues / lymph. The molar concentration unit `nM`
+  (rather than `mg/L`) is paper-natural for a mass-action TMDD model
+  where binding constants are reported in `1/(M*s)`; mg/L would require
+  redundant molecular-weight conversions throughout the binding ODEs and
+  would not match the published parameter values without per-line
+  correction.

@@ -524,11 +524,10 @@ population value.
   covariate-effect names `etalfdepot` / `e_snakefamily_elapid_fdepot`)
   as the log of `F1`, with
   `f(central) <- exp(lfdepot + e_snakefamily_elapid_fdepot * SNAKEFAMILY_ELAPID + etalfdepot)`.
-  This stretch was approved at the pre-flight sidecar stage to avoid
-  introducing a new canonical parameter for a borderline case; the
-  source paper’s `F1` is the bioavailability of the single input
-  compartment regardless of whether that compartment is named `depot` or
-  `central`.
+  This stretch was approved by the maintainers to avoid introducing a
+  new canonical parameter for a borderline case; the source paper’s `F1`
+  is the bioavailability of the single input compartment regardless of
+  whether that compartment is named `depot` or `central`.
 - **Residual-error interpretation.** Table A1 reports
   `Proportional error 0.047 (25 %)`. The label does not carry an
   explicit `CV %` suffix, and the surrounding
@@ -536,7 +535,7 @@ population value.
   formatting. We interpret 0.047 as the NONMEM `$SIGMA` variance and
   encode the proportional residual SD as `propSd = sqrt(0.047) = 0.2168`
   (~21.7 % CV). The 25 % RSE applies to the variance estimate. This
-  interpretation was confirmed at the pre-flight sidecar stage.
+  interpretation was confirmed by the maintainers.
 - **Unknown per-bite venom mass.** The actual venom mass injected by
   each bite is not measured in the source dataset; the model assigns
   each subject a nominal unit dose and absorbs the per-bite mass
@@ -549,9 +548,9 @@ population value.
   of Sanhajariya 2018 are a pure systematic review of 12 animal popPK
   studies from other authors; no original animal popPK model is fit. The
   extraction here covers only the original human meta-analysis popPK
-  model (Section 2.2 and Appendix Table A1). The 12 cited primary animal
-  studies were not queued for separate extraction at the operator’s
-  direction in the pre-flight sidecar.
+  model (Section 2.2 and Appendix Table A1). At the maintainers’
+  direction, the 12 cited primary animal studies were not queued for
+  separate extraction.
 - **No errata identified.** A search of the journal’s article landing
   page and PubMed for `Sanhajariya 2018 snake venom erratum` returned no
   corrigendum.

@@ -380,11 +380,11 @@ CD25 saturation / desaturation checkpoints. {.table}
 
 ## Errata
 
-The trimmed PDF and full PDF show several non-substantive transcription
-oddities arising from PDF text extraction (mathematical operators
-rendered as `/C0`, `/C18`, `/C1`; subscripts collapsed to baseline).
-They are not paper errata. Two model-relevant ambiguities are documented
-here so a future user can audit:
+The PDF and the text extracted from it show several non-substantive
+transcription oddities arising from PDF text extraction (mathematical
+operators rendered as `/C0`, `/C18`, `/C1`; subscripts collapsed to
+baseline). They are not paper errata. Two model-relevant ambiguities are
+documented here so a future user can audit:
 
 - **Two parameter sets for a single published Hill equation.** Diao 2016
   Table 3 reports two `IC50` / Hill coefficient pairs (saturation 0.0135

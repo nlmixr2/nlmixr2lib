@@ -322,7 +322,7 @@ steady state – and shows the variability that is the paper’s subject.
 rxode2::rxSetSeed(20260213)
 set.seed(20260213)
 
-n_dogs <- 200L          # skill cap is 200 per arm
+n_dogs <- 200L          # cohort cap is 200 per arm
 tau    <- 8             # dosing interval, h (Yata 2026 Methods 2.3)
 # 25 doses -> last dose at 192 h. That is far longer than the study's minimum of
 # 3 days on therapy, and deliberately so: with Ka CV 94% the lower tail of the

@@ -3064,8 +3064,8 @@ below</td>
 <code>IP_APSI</code>, <code>IP_PSI_DSI</code>, <code>IP_DSI_C</code>)
 are sampled from the paper’s Table II log-normal distributions before
 simulation. The <code>sample_ips()</code> helper below packages the
-sampling and can be reused across both drug scenarios; per SKILL.md
-discipline it stays inside the vignette (not exported).</p>
+sampling and can be reused across both drug scenarios; per the package’s
+convention it stays inside the vignette (not exported).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sample_ips</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">fed</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">seed</span> <span class="op">=</span> <span class="fl">20120728</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span></span>
@@ -3780,8 +3780,8 @@ extraction exposes each per-subject IP as a covariate
 <code>IP_DSI_C</code>) and demonstrates the sampling in this vignette
 via the <code>sample_ips()</code> helper. This differs from a typical
 nlmixr2 formulation that would encode the fixed distributions as
-<code>ini()</code> etas; the covariate form was requested via the
-initial task sidecar (see task record).</li>
+<code>ini()</code> etas; the covariate form was requested by the
+maintainers.</li>
 <li>
 <strong>Felodipine molecular weight and units.</strong> The paper
 reports felodipine plasma concentration in the paper as a 23%

@@ -506,6 +506,5 @@ Nitrite-plasma flux components at t = 0. Net imbalance (relative):
 - **PKNCA validation is intentionally omitted.** Vega-Villa 2013 does
   not report NCA parameters (Cmax / Tmax / AUC), and the model is a
   multi-species turnover system rather than an ADME PK model. The
-  endogenous-validation recipe (steady-state check, flux balance, figure
-  replication) is used instead, per
-  `references/endogenous-validation.md`.
+  package’s recipe for endogenous models (steady-state check, flux
+  balance, figure replication) is used instead.

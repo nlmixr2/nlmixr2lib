@@ -422,10 +422,10 @@ not on the Weibull hazard.
 
 - **Linked publication is conference-abstract-only and not on disk.**
   The PAGE 21 (2012) abstract 2458 by Girard et al. is hosted only at
-  \<www.page-meeting.org/?abstract=2458\> and was not present anywhere
-  under `/home/bill/github/mab_human_consensus/literature/` at
-  extraction time. Final-estimate values come solely from the DDMORE
-  bundle’s `Output_real_Pimasertib_AeDropout.lst` `MAXEVALS=0`
+  \<www.page-meeting.org/?abstract=2458\> and was not present in the
+  maintainers’ literature mirror at extraction time. Final-estimate
+  values come solely from the DDMORE bundle’s
+  `Output_real_Pimasertib_AeDropout.lst` `MAXEVALS=0`
   Laplacian-evaluation echo of `Executable_Pimasertib_AeDropout.mod`.
   The published abstract’s parameter table could not be inspected to
   confirm signs and magnitudes; the `.lst` `FINAL PARAMETER ESTIMATE`

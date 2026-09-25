@@ -2872,7 +2872,7 @@ change from baseline, RCFB1MAX.</li>
 <li>Article: <a href="https://doi.org/10.1002/psp4.12057" class="external-link uri">https://doi.org/10.1002/psp4.12057</a>
 </li>
 <li>DDMORE Foundation Model Repository entry:
-<code>DDMODEL00000221</code> – bundle directory in the operator’s
+<code>DDMODEL00000221</code> – bundle directory in the maintainers’
 <code>ddmore_scraping</code> mirror at <code>221/</code>, containing
 <code>Executable_SLD_SUV_OS_GIST.mod</code>,
 <code>Output_real_SLD_SUV_OS_GIST.lst</code>,
@@ -2880,9 +2880,9 @@ change from baseline, RCFB1MAX.</li>
 <code>Simulated_SLD_SUV_OS_GIST.csv</code>,
 <code>DDMODEL00000221.rdf</code>, <code>Command.txt</code>, and
 <code>221.json</code>. The linked publication itself (Schindler 2016,
-CPT:PSP) is not on disk in the worktree; parameter values, structural
-equations, and stop-and-ask decisions in this vignette and the model
-file are sourced from the bundle’s <code>.mod</code> (structural
+CPT:PSP) was not on disk when this model was built; parameter values,
+structural equations, and maintainer decisions in this vignette and the
+model file are sourced from the bundle’s <code>.mod</code> (structural
 equations + initial values) and <code>.lst</code> (final
 estimates).</li>
 </ul>
@@ -2899,10 +2899,10 @@ target-lesion sum-of-longest-diameters (SLD) measurements, and overall
 survival follow-up to event or right-censoring. Detailed baseline
 demographics (age, weight, sex, race / ethnicity distribution,
 prior-line distribution) live in Table 1 of the linked publication,
-which is not on disk in this worktree; those fields are recorded as
-<code>NA</code> in the model’s <code>population</code> metadata to make
-the gap explicit, with a notes string pointing to Schindler 2016 Table 1
-as the source.</p>
+which was not on disk when this model was built; those fields are
+recorded as <code>NA</code> in the model’s <code>population</code>
+metadata to make the gap explicit, with a notes string pointing to
+Schindler 2016 Table 1 as the source.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata
 (<code>rxode2::rxode2(readModelDb("Schindler_2016_sunitinib"))$population</code>
@@ -2918,8 +2918,7 @@ below collects them in one place for review. All values are final
 estimates from the <code>Output_real_SLD_SUV_OS_GIST.lst</code>
 <code>FINAL PARAMETER ESTIMATE</code> block (lines 868-1000); the
 <code>.mod</code> <code>$THETA / $OMEGA / $SIGMA</code> blocks are
-initial values and are not used as the parameter source per
-<code>extract-literature-model</code> Phase 1 step 9.</p>
+initial values and are not used as the parameter source.</p>
 <table class="table">
 <colgroup>
 <col width="40%">
@@ -3163,11 +3162,10 @@ lesions; <code>Y = IPRED + W1*EPS(6)</code> for SLD</td>
 <p>The MINIMIZATION line in <code>Output_real_*.lst</code> (line 795)
 reads <code>MINIMIZATION SUCCESSFUL</code> followed by
 <code>HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY, AND ACCEPT THEM ONLY AFTER CHECKING THAT THE COVARIANCE STEP PRODUCES REASONABLE OUTPUT.</code>
-Per the <code>extract-literature-model</code> skill’s
-<code>ddmore-source.md</code> Section “Reading final estimates from
-<code>.lst</code>”, <code>MINIMIZATION SUCCESSFUL</code> (with caveat)
-is acceptable; only <code>MINIMIZATION TERMINATED</code> triggers a
-sidecar. The caveat is recorded in the Errata below.</p>
+Under the package’s convention for reading final estimates from a DDMORE
+<code>.lst</code>, <code>MINIMIZATION SUCCESSFUL</code> (with caveat) is
+acceptable; only <code>MINIMIZATION TERMINATED</code> requires a
+maintainer decision. The caveat is recorded in the Errata below.</p>
 </div>
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
@@ -3599,16 +3597,15 @@ popPK structure inline.</li>
 caveat.</strong> <code>Output_real_*.lst</code> line 795 reports
 <code>MINIMIZATION SUCCESSFUL</code> immediately followed by
 <code>HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY ...</code>.
-Per the <code>extract-literature-model</code>
-<code>ddmore-source.md</code> Section “Reading final estimates from
-<code>.lst</code>”, <code>MINIMIZATION SUCCESSFUL</code> (with caveat)
-is acceptable but flagged here.</li>
+Under the package’s convention for reading final estimates from a DDMORE
+<code>.lst</code>, <code>MINIMIZATION SUCCESSFUL</code> (with caveat) is
+acceptable but flagged here.</li>
 <li>
 <strong>Linked publication not on disk.</strong> The Schindler 2016
-publication is not on disk under
-<code>mab_human_consensus/literature/</code>; an external check of
-parameter values against the publication’s tables was not performed.
-Final estimates were taken from the <code>.lst</code> only.</li>
+publication is not on disk in the maintainers’ literature mirror; an
+external check of parameter values against the publication’s tables was
+not performed. Final estimates were taken from the <code>.lst</code>
+only.</li>
 <li>
 <strong>Iteration-log precision used for estimated THETAs.</strong>
 THETA(12), THETA(14), and THETA(16) (the only THETAs that moved during

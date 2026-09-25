@@ -218,7 +218,7 @@ and deviations”.
 set.seed(20130301)
 rxode2::rxSetSeed(20130301)
 
-N_HUMAN <- 200L  # per arm; the skill's cap
+N_HUMAN <- 200L  # per arm; the cohort cap
 N_CYNO  <- 100L  # per arm; 5 monkey arms are needed for the dose bridge
 
 TAU  <- 24                            # once-daily

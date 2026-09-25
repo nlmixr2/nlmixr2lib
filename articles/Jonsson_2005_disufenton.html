@@ -2881,10 +2881,9 @@ log-transform-both-sides residual error model.</li>
 <code>Jonsson_2005_disufenton</code> model against DDMORE Foundation
 Model Repository entry <strong>DDMODEL00000245</strong>, the source from
 which it was extracted. The Jonsson 2005 publication PDF is not on disk
-in this worktree, so the validation strategy follows the F.2
-self-consistency recipe from the <code>extract-literature-model</code>
-skill: re-simulate the bundle’s dosing scenario and confirm the
-trajectory matches the structural model encoded in the DDMORE bundle
+here, so the validation strategy is a self-consistency check:
+re-simulate the bundle’s dosing scenario and confirm the trajectory
+matches the structural model encoded in the DDMORE bundle
 (<code>Executable_run111.mod</code> plus the
 <code>Output_real_run111.lst</code> final estimates).</p>
 </div>
@@ -2902,10 +2901,9 @@ followed by a 71-hour maintenance infusion whose rate was individualised
 based on baseline creatinine clearance.</p>
 <p>Demographic descriptors above are summarised from the DDMODEL00000245
 RDF <code>model-has-description-long</code> abstract, which mirrors the
-Jonsson 2005 Methods. The Jonsson 2005 PDF is not available on disk
-under <code>/home/bill/github/mab_human_consensus/literature/</code>, so
-weight, sex, and race breakdowns from the publication’s Table 1 could
-not be cross-checked.</p>
+Jonsson 2005 Methods. The Jonsson 2005 PDF is not available on disk in
+the maintainers’ literature mirror, so weight, sex, and race breakdowns
+from the publication’s Table 1 could not be cross-checked.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod_meta</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 12</span></span>
@@ -3126,7 +3124,7 @@ trial’s observed range.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Typical-value trajectory (no IIV, no residual error)  --  the F.2 reference</span></span>
+<code class="sourceCode R"><span><span class="co"># Typical-value trajectory (no IIV, no residual error)  --  the self-consistency reference</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
@@ -3140,7 +3138,7 @@ trial’s observed range.</p>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-check-against-the-ddmore-bundle">F.2 self-consistency check against the DDMORE bundle<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-check-against-the-ddmore-bundle"></a>
+<h2 id="self-consistency-check-against-the-ddmore-bundle">Self-consistency check against the DDMORE bundle<a class="anchor" aria-label="anchor" href="#self-consistency-check-against-the-ddmore-bundle"></a>
 </h2>
 <p>The check below confirms the typical-value trajectory of the packaged
 <code>Jonsson_2005_disufenton</code> model is shape- and
@@ -3412,21 +3410,21 @@ reported here as a sanity check on the simulation pipeline.</p>
 <code>$THETA</code> / <code>$OMEGA</code> blocks are initial values and
 are not used; the listing reports
 <code>NO. OF SIG. DIGITS IN FINAL EST.: 4.0</code>.</p></li>
-<li><p><strong>Jonsson 2005 publication PDF is not on disk</strong>
-under <code>/home/bill/github/mab_human_consensus/literature/</code>, so
-weight, sex, and race breakdowns and the publication’s Table 1 /
-parameter table could not be cross-checked against the bundle. Operator
-follow-up: pull the publication PDF and confirm the
-<code>population</code> narrative; the
-<code>Model_Accomodations.text</code> file the DDMORE flow normally
+<li><p><strong>Jonsson 2005 publication PDF is not on disk</strong> in
+the maintainers’ literature mirror, so weight, sex, and race breakdowns
+and the publication’s Table 1 / parameter table could not be
+cross-checked against the bundle. When the publication PDF is available,
+the <code>population</code> narrative should be confirmed against it;
+the <code>Model_Accomodations.text</code> file the DDMORE flow normally
 relies on for publication mapping is missing from this bundle, so
 identification of the linked publication relied solely on the
 DDMODEL00000245 RDF abstract title
 (<code>"Population Pharmacokinetic Modelling and Estimation of Dosing Strategy for NXY-059, a Nitrone Being Developed for Stroke"</code>)
-and the task brief’s DOI. The published abstract’s “typical clearance
-4.54 L/h at CRCL 70 mL/min” was confirmed numerically against the
-packaged parameters – <code>2.91 * (1 + 0.0187 * 30) = 4.54</code> –
-providing independent corroboration of the publication mapping.</p></li>
+and the DOI supplied when this model was built. The published abstract’s
+“typical clearance 4.54 L/h at CRCL 70 mL/min” was confirmed numerically
+against the packaged parameters –
+<code>2.91 * (1 + 0.0187 * 30) = 4.54</code> – providing independent
+corroboration of the publication mapping.</p></li>
 <li><p><strong>CRCL covariate semantics deviate from the canonical
 register entry.</strong> The canonical <code>CRCL</code> in
 <code>inst/references/covariate-columns.md</code> is BSA-normalised
@@ -3435,9 +3433,9 @@ in mL/min, and the slope <code>0.0187 / mL/min</code> was estimated
 under that raw-mL/min parameterisation. The model file uses the
 canonical name <code>CRCL</code> with <code>units = "mL/min"</code>,
 <code>source_name = "CLCR"</code>, and an explicit deviation note in
-<code>covariateData[[CRCL]]$notes</code>. Reviewer follow-up: decide
-whether to register a separate canonical (e.g., <code>CRCL_RAW</code>)
-or accept the deviation, consistent with the precedent set by
+<code>covariateData[[CRCL]]$notes</code>. Follow-up: decide whether to
+register a separate canonical (e.g., <code>CRCL_RAW</code>) or accept
+the deviation, consistent with the precedent set by
 <code>Li_2006_meropenem.R</code> (also DDMORE- source, also raw mL/min
 CrCl).</p></li>
 <li><p><strong>Hockey-stick CRCL effect on CL.</strong> The .mod imposes
@@ -3472,11 +3470,10 @@ the packaged model encodes as <code>Cc ~ lnorm(propSd)</code> with
 and Wu_2024_inotuzumab precedents in <code>inst/modeldb/</code>. The
 approximate equivalent linear-space coefficient of variation is
 <code>sqrt(exp(0.165^2) - 1) ~= 16.6%</code>.</p></li>
-<li><p><strong>Validation strategy is F.2 self-consistency</strong> (per
-<code>references/ddmore-source.md</code> section “Validation strategy by
-model type” decision tree, leaf 1: no linked publication on disk). PKNCA
-values shown above are informational; comparison against Jonsson 2005’s
-published NCA was not possible from the materials on disk.</p></li>
+<li><p><strong>Validation strategy is self-consistency</strong> (no
+linked publication on disk). PKNCA values shown above are informational;
+comparison against Jonsson 2005’s published NCA was not possible from
+the materials on disk.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

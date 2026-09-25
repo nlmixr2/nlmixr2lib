@@ -10,7 +10,7 @@ prolactin via KOR-mediated inhibition of tuberoinfundibular dopaminergic
 antagonism at the KOR.
 
 The paper contributes two coupled PK-PD models, extracted here as two
-separate model files (Phase 1 replicate-author-structure policy):
+separate model files, replicating the authors’ model structure:
 
 - `modellib("Chang_2011_PF04455242_rat")` – Sprague-Dawley rat
   preclinical model: one-compartment first-order absorption PK for both

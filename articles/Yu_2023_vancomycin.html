@@ -3105,7 +3105,7 @@ within 0.03%), so the counterfactual is a one-liner:</p>
 <span><span class="co"># Deterministic stratified representation of the log-normal CL distribution:</span></span>
 <span><span class="co"># the i-th of n equally spaced probability points. No RNG is involved anywhere</span></span>
 <span><span class="co"># in this vignette, so every number below is reproducible on any machine and any</span></span>
-<span><span class="co"># thread count (see known-vignette-failure-patterns.md pattern 12).</span></span>
+<span><span class="co"># thread count.</span></span>
 <span><span class="va">etas</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_cohort</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">/</span> <span class="va">n_cohort</span>, mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="va">omega</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pta_closed</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cl_fun</span>, <span class="va">daily_dose</span>, <span class="va">uv</span>, <span class="va">lo</span> <span class="op">=</span> <span class="fl">400</span>, <span class="va">hi</span> <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span> <span class="op">{</span></span>
@@ -3262,10 +3262,10 @@ regressing the published <code>qnorm(PTA)</code> on
 <code>ln(1000 / (400 * CL_typ))</code> recovers <code>1 / omega</code>
 as the slope.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Digitised by the operator from Yu 2023 Figure 3A, 500 mg q12h series (filled</span></span>
-<span><span class="co"># circles). Read against the 20-unit gridlines; roughly +/-3 percentage points.</span></span>
-<span><span class="co"># Used ONLY as a comparison reference and for this slope check -- no parameter</span></span>
-<span><span class="co"># value in the model file comes from a figure.</span></span>
+<code class="sourceCode R"><span><span class="co"># Digitised by the maintainers from Yu 2023 Figure 3A, 500 mg q12h series</span></span>
+<span><span class="co"># (filled circles). Read against the 20-unit gridlines; roughly +/-3 percentage</span></span>
+<span><span class="co"># points. Used ONLY as a comparison reference and for this slope check -- no</span></span>
+<span><span class="co"># parameter value in the model file comes from a figure.</span></span>
 <span><span class="va">fig3a_500q12h</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  uv  <span class="op">=</span> <span class="va">uv_grid</span>,</span>
 <span>  pta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">88</span>, <span class="fl">64</span>, <span class="fl">41</span>, <span class="fl">29</span>, <span class="fl">21.5</span>, <span class="fl">22</span><span class="op">)</span></span>
@@ -3835,7 +3835,7 @@ residual diuresis.</caption>
 <h3 id="comparison-against-the-published-figure-3a">Comparison against the published Figure 3A<a class="anchor" aria-label="anchor" href="#comparison-against-the-published-figure-3a"></a>
 </h3>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Digitised by the operator from Yu 2023 Figure 3A against the 20-unit</span></span>
+<code class="sourceCode R"><span><span class="co"># Digitised by the maintainers from Yu 2023 Figure 3A against the 20-unit</span></span>
 <span><span class="co"># gridlines; roughly +/-3 percentage points, and the curves that sit on the</span></span>
 <span><span class="co"># 100% ceiling are recorded as 100.</span></span>
 <span><span class="va">fig3a_published</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
@@ -4308,7 +4308,7 @@ varies only in <code>etalcl</code> and in the fixed urine-volume
 scenario – exactly as in Yu 2023 Figure 3.</p></li>
 <li><p><strong>Figure-derived values.</strong> The
 <code>fig3a_published</code> and <code>fig3a_500q12h</code> tables were
-digitised by the operator from Yu 2023 Figure 3A (roughly +/-3
+digitised by the maintainers from Yu 2023 Figure 3A (roughly +/-3
 percentage points). They are used only as comparison references and for
 the <code>omega</code> slope check; no parameter value in
 <code>inst/modeldb/specificDrugs/Yu_2023_vancomycin.R</code> comes from

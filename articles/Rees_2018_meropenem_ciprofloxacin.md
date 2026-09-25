@@ -346,11 +346,11 @@ subpopulation; combinations drive the total below the limit of counting.
   aeruginosa* CW44 isolate. No PKNCA validation is performed (there is
   no drug NCA to compute); the mechanistic checks above replace it, per
   the endogenous/mechanistic validation strategy.
-- **File naming.** The dispatch metadata listed the drug as
-  “Antimicrobial Agents and Chemo”, which is the journal name
-  (Antimicrobial Agents and Chemotherapy), not a drug. The paper
-  unambiguously models meropenem plus ciprofloxacin, so the model file
-  and this vignette use `Rees_2018_meropenem_ciprofloxacin`.
+- **File naming.** When this model was built, the paper’s metadata
+  listed the drug as “Antimicrobial Agents and Chemo”, which is the
+  journal name (Antimicrobial Agents and Chemotherapy), not a drug. The
+  paper unambiguously models meropenem plus ciprofloxacin, so the model
+  file and this vignette use `Rees_2018_meropenem_ciprofloxacin`.
 - **HFIM final model.** Parameters are the HFIM estimates (Rees 2018
   Table 2). The static-concentration time-kill (SCTK) MBM (supplement
   Table S1) shares the same structure but different estimates and was

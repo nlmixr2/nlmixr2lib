@@ -132,7 +132,7 @@ events <- bind_rows(d_dose, d_obs) |>
   arrange(id, time, desc(evid)) |>
   select(id, time, amt, evid, cmt, AGE, DIARRHEA, WT, treatment)
 
-# Defensive ID-uniqueness check (per skill template)
+# Defensive ID-uniqueness check
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 
@@ -224,7 +224,7 @@ Posaconazole at 200 mg t.i.d. reaches steady state within several days
 (elimination half-life t1/2 = ln(2) \* V/CL ~= 23 h for a typical
 no-diarrhea subject; about 5 half-lives gives steady state at ~5 days,
 well within the 14-day simulation window). Steady-state NCA is computed
-over the final dosing interval (Recipe 3 in `pknca-recipes.md`).
+over the final dosing interval.
 
 ``` r
 

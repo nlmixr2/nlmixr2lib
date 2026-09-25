@@ -417,9 +417,8 @@ sim_nca_input <- sim_typ |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
 
-# Guarantee a time = 0 row (see pknca-recipes.md, "Time-zero records
-# (mandatory)"). For LNG-IUS the depot is inserted at t = 0 with no
-# preloaded plasma exposure, so Cc(0) = 0.
+# Guarantee a time = 0 row (mandatory for the NCA). For LNG-IUS the depot
+# is inserted at t = 0 with no preloaded plasma exposure, so Cc(0) = 0.
 sim_nca_input <- dplyr::bind_rows(
   sim_nca_input,
   data.frame(id = 1L, time = 0, Cc = 0, treatment = "typical")

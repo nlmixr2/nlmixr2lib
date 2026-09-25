@@ -293,7 +293,7 @@ be reproduced.
   an unpublished Y. Chen et al. PBPK model for GDC-0810 (cited as
   personal communication in the paper Methods) as the forcing function
   for `CP_GDC_UM`; that PBPK output is not on disk and no GDC-0810 PK
-  model is currently registered in nlmixr2lib. **Per the operator’s
+  model is currently registered in nlmixr2lib. **Per the maintainers’
   instruction for this extraction**, the vignette intentionally does
   **not** approximate the GDC-0810 PK with an analytic surrogate. Users
   wishing to reproduce the original CPI time-course must supply their

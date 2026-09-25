@@ -142,7 +142,7 @@ search, Crossref relations, OpenAlex retraction status; query as of
 2026-04-27). One minor narrative-vs-table discrepancy is noted below
 under Assumptions and deviations: the paper’s prose on page 1609 cites
 `Tmax = 0.157` for the monotherapy regimen, while Table 3 reports
-`0.151 ± 0.00405`. The Table 3 value is used here per the skill’s
+`0.151 ± 0.00405`. The Table 3 value is used here per the package’s
 preference for results-table point estimates over narrative summaries.
 
 ## Virtual cohort
@@ -494,10 +494,10 @@ cat(sprintf("Typical-subject terminal half-life = %.1f days\n", t_half))
 - **Tmax (monotherapy) value.** Hwang 2022 page 1609 narrative reports
   `Tmax = 0.157` for monotherapy, while Table 3 reports
   `0.151 ± 0.00405`. The Table 3 point estimate is used here per the
-  skill’s preference for results-table values over narrative summaries.
-  At a typical reference subject, the resulting one-year typical-value
-  CL increase is `exp(0.151) - 1 = 16.3%`, consistent with Hwang 2022’s
-  reported “approximately 16%” (page 1609).
+  package’s preference for results-table values over narrative
+  summaries. At a typical reference subject, the resulting one-year
+  typical-value CL increase is `exp(0.151) - 1 = 16.3%`, consistent with
+  Hwang 2022’s reported “approximately 16%” (page 1609).
 - **Convention deviation: `etacl_time_max` IIV.** The shared additive
   eta on the regimen-active Tmax does not pair with a single
   fixed-effect parameter named `cl_tmax` in `ini()`; instead, two

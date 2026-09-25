@@ -43,11 +43,11 @@ bundle for `DDMODEL00000268` (scraped to
   al. 2012, J Pharmacokinet Pharmacodyn,
   <doi:10.1007/s10928-012-9262-4>.
 
-The Stevens 2012 publication itself is not on disk in this worktree, so
-the standard publication-figure replication and PKNCA-vs-published-NCA
-checks are out of scope. The validation in this vignette therefore
-follows the F.2 self-consistency and F.3 mechanistic-sanity substitutes
-from the extraction skill.
+The Stevens 2012 publication itself was not on disk when this model was
+built, so the standard publication-figure replication and
+PKNCA-vs-published-NCA checks are out of scope. The validation in this
+vignette therefore follows the F.2 self-consistency and F.3
+mechanistic-sanity substitutes in the package’s validation checklist.
 
 ## Population
 
@@ -113,12 +113,11 @@ never fire; they are not reproduced in the nlmixr2 implementation.
 
 This bundle ships a simulated dataset (`Simulated_PK_rats.csv`) and a
 re-fit listing (`Output_simulated_PK_rats.lst`) but the linked
-publication is not on disk. Following `references/ddmore-source.md`
-Section “Validation strategy by model type” (decision tree -\> no PKNCA
--\> mechanistic / endogenous -\> F.2 + F.3 substitutes), this vignette
-validates by:
+publication is not on disk. Following the package’s validation strategy
+for DDMORE bundles (decision tree -\> no PKNCA -\> mechanistic /
+endogenous -\> F.2 + F.3 substitutes), this vignette validates by:
 
-1.  **Steady-state hold (F.1 / endogenous-validation).** With no drug
+1.  **Steady-state hold (F.1 / endogenous-model pattern).** With no drug
     administration, the lactotroph and plasma-prolactin states must stay
     at their analytic baselines. The .mod sets
     `A_0(6) = BSL * K70 / K67` and `A_0(7) = BSL` so the system is at
@@ -456,13 +455,13 @@ noise model.
   the model. Users comparing brain-ECF concentrations against absolute
   mg/L values in the literature should multiply by body weight (in kg).
 - **No publication on disk.** The Stevens 2012 paper itself is paywalled
-  (J Pharmacokinet Pharmacodyn) and is not in the worktree. The DDMORE
-  specification document confirms the publication match (title, authors,
-  journal, DOI in the document’s reference block) but stores parameter
-  tables as embedded MS Equation 3.0 OLE objects that are not text-
-  extractable. The cross-check against published parameter tables is
-  therefore not performed; the `.lst` final estimates are the sole
-  source of values.
+  (J Pharmacokinet Pharmacodyn) and was not available when this model
+  was built. The DDMORE specification document confirms the publication
+  match (title, authors, journal, DOI in the document’s reference block)
+  but stores parameter tables as embedded MS Equation 3.0 OLE objects
+  that are not text- extractable. The cross-check against published
+  parameter tables is therefore not performed; the `.lst` final
+  estimates are the sole source of values.
 - **Solver tolerance.** The .mod uses `ADVAN9 TOL=3`. rxode2’s default
   LSODA tolerances (atol=1e-8, rtol=1e-6) are tighter, so trajectory
   differences at the third significant figure between the rxode2

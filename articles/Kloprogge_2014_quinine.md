@@ -71,7 +71,7 @@ Per-parameter source locations are also recorded inline in
 | `propSd = sqrt(0.0158)` ~= 0.126 | sigma = 0.0158 (variance, log-scale) | Table 2 ‘Additive residual error 0.0158’ (RSE 41.6%; 95% CI 0.0129-0.156) + footnote ‘additive error variance will essentially be exponential on normal scale data’ |
 | First-order absorption (no lag, no transit) | – | Results para 1: ‘A first-order absorption model … accurately described the quinine data’ |
 | Two-compartment disposition (`central`, `peripheral1`) | – | Results para 1: ‘first-order absorption model followed by a two-compartment disposition model’ |
-| Additive error on log-transformed concentration -\> proportional in nlmixr2 linear space | – | Methods ‘modelled in their natural logarithms’; convention rule from `references/parameter-names.md` |
+| Additive error on log-transformed concentration -\> proportional in nlmixr2 linear space | – | Methods ‘modelled in their natural logarithms’; convention rule from `inst/references/parameter-names.md` |
 
 ## Virtual cohort
 

@@ -32,9 +32,10 @@ intravenously to ZDF/Gmi fa/fa diabetic rats and ZDF/Gmi fa/?
 non-diabetic controls. Plasma concentrations of methionine and
 homocysteine were measured by LC-ESI/MS/MS at 0, 10, 30, 60, 120, 210,
 300, and 420 minutes after administration (Han 2018 Methods, Study
-design). The published trimmed text does not give per-cohort subject
-counts; the goodness-of-fit and visual predictive check plots (Han 2018
-Figs 2a-d) imply at least ~5-10 subjects per cohort.
+design). The text extracted from the publication does not give
+per-cohort subject counts; the goodness-of-fit and visual predictive
+check plots (Han 2018 Figs 2a-d) imply at least ~5-10 subjects per
+cohort.
 
 The same information is available programmatically via the model’s
 `population` metadata
@@ -265,9 +266,8 @@ ggplot(sim_multidose, aes(time, Chcy * 1000, colour = cohort)) +
 ## PKNCA validation
 
 Standard NCA – Cmax, Tmax, AUC – is computed on the simulated
-single-dose methionine profile using PKNCA. Per the skill’s PKNCA
-recipe, the formula includes a cohort grouping variable so per-cohort
-summaries are produced.
+single-dose methionine profile using PKNCA. The formula includes a
+cohort grouping variable so per-cohort summaries are produced.
 
 ``` r
 
@@ -410,11 +410,11 @@ sprintf("Simulated ZDF / control AUC8h ratio: %.2f; paper-reported ratio: ~3.08"
   covariate equations (Eqs 8-11) for the DIS_DIAB (ZDF) effect on
   individual rate constants. Eq 8 (K_HM with IIV) and Eq 9 (K_HP with
   IIV) are unambiguous; the printed subscript of Eq 11 in the source PDF
-  was illegible to the OCR pipeline. Han 2018 Table 1 reports separate
-  control / ZDF point estimates for five rate constants (K_SH, K_HM,
-  K_HC, K_HP, K_PH), so Eqs 10-11 cover the three rate constants that
-  lack IIV. The packaged model derives each DIS_DIAB log-scale
-  coefficient from the Table 1 control / ZDF point-estimate ratio
+  was illegible to OCR. Han 2018 Table 1 reports separate control / ZDF
+  point estimates for five rate constants (K_SH, K_HM, K_HC, K_HP,
+  K_PH), so Eqs 10-11 cover the three rate constants that lack IIV. The
+  packaged model derives each DIS_DIAB log-scale coefficient from the
+  Table 1 control / ZDF point-estimate ratio
   (`theta_T2DM_X = log(K_X_ZDF / K_X_control)`); this matches whichever
   subscript Eq 11 carries in the source typesetting because the
   underlying numerical values are the same.

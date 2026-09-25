@@ -327,8 +327,8 @@ sim_csf |>
 ## PKNCA validation
 
 PKNCA is run on the simulated plasma profile across the last 12 h dosing
-interval at steady state (steady-state recipe of `pknca-recipes.md`).
-Reported NCA values are compared against Park 2001 Table 2.
+interval at steady state. Reported NCA values are compared against Park
+2001 Table 2.
 
 ``` r
 

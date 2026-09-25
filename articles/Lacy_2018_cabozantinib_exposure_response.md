@@ -471,8 +471,8 @@ average from time 0 to event). Predicted hazard ratios at the predicted
   hazards. The paper does not report `h0(t)` in a form that can be
   simulated forward in rxode2 (e.g. a Weibull / Gompertz
   parameterisation), so the Cox PH models cannot be encoded as
-  standalone simulation models without operator-chosen fabricated
+  standalone simulation models without maintainer-chosen fabricated
   baselines. The beta coefficients are tabulated above for reference; a
   future “Cox PH parametric-baseline” extension could encode them as
-  parametric hazard models if and when an operator decides which
+  parametric hazard models if and when the maintainers decide which
   baseline form to assume.

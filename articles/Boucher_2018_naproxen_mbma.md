@@ -396,9 +396,9 @@ between-study structural variability only.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warns that these etas have no matching structural fixed-effect
   parameter named `_study_e0` / `_study_emax`; this is expected for the
-  MBMA between-study naming convention (SKILL Phase-1 Step-3a) and is
-  not a defect. The `ini()` value is the variance (`tau^2`); Table 2
-  reports `tau` (the SD): s1 = 0.62, s2 = 0.74.
+  MBMA between-study naming convention and is not a defect. The `ini()`
+  value is the variance (`tau^2`); Table 2 reports `tau` (the SD): s1 =
+  0.62, s2 = 0.74.
 
 - **Parameter source: the NONMEM column of Table 2.** The paper fit the
   same Emax model in NONMEM, BUGS, and R(NLME) with closely agreeing

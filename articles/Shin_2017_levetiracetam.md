@@ -611,9 +611,9 @@ Simulated half-life vs Shin 2017 Table 5 reported value. Discrepancies
   for this extraction. A search of PubMed and the Korean Journal of
   Pediatrics corrections feed for
   `"Shin 2017" + "levetiracetam" + neonatal + erratum` returned no hits
-  as of the extraction date (2026-05-21); operators should reconfirm
-  against the journal’s corrections listing if a re-extraction is
-  undertaken.
+  as of the extraction date (2026-05-21); the maintainers should
+  reconfirm against the journal’s corrections listing if a re-extraction
+  is undertaken.
 - **Race / ethnicity.** All 18 subjects were Korean (Yonsei University
   College of Medicine, Seoul); race was not tested as a popPK covariate.
   `population$race_ethnicity` is recorded as 100% Asian (Korean) to

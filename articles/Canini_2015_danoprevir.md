@@ -67,8 +67,9 @@ Genotype distribution across the 40 patients was 30 percent GT1a, 55
 percent GT1b, and 15 percent GT1 with undetermined subtype (Canini 2015
 Methods, Patients paragraph). HCV genotype was screened as a covariate
 but not retained in the final PK/VK model. Age, weight, and sex are not
-reported in the trimmed source; the Canini 2015 paper cites the
-underlying Phase 1 design (reference \[9\]) for baseline demographics.
+reported in the text extracted from the PDF; the Canini 2015 paper cites
+the underlying Phase 1 design (reference \[9\]) for baseline
+demographics.
 
 The same information is available programmatically via the model’s
 `population` metadata
@@ -181,8 +182,7 @@ make_cohort <- function(cohort_id, dose_mg, interval_h, n_subj, id_offset,
   # dosing interval to capture Cmax; sparser on the VK observable log10_viral_load
   # across the 14-day treatment window. rxode2 requires cmt = <observable
   # name> for multi-output models (Cc from the `central` state, log10_viral_load from
-  # the `virus` state); this is the pattern that the pattern-2 warning in
-  # known-vignette-failure-patterns.md permits when the algebraic
+  # the `virus` state); this is acceptable when the algebraic
   # observables are declared AFTER all ODE states in the model body (as
   # they are here  -  the auto-injected cmt(Cc), cmt(log10_viral_load) slots sit at
   # positions 5, 6 with no downstream ODE state to renumber).
@@ -263,8 +263,7 @@ sim <- rxode2::rxSolve(
   keep   = c("cohort", "patient_type", "dose_mg_per_dose", "interval_h"),
   # useLinCmt = FALSE guards against the multi-output ODE->linCmt auto-
   # conversion that can corrupt dvid mapping for models with multiple
-  # algebraic observables backed by different ODE states (see
-  # known-vignette-failure-patterns.md pattern 5b).
+  # algebraic observables backed by different ODE states.
   useLinCmt = FALSE
 ) |> as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -666,7 +665,7 @@ Assumptions). {.table}
   `beta_t` by their preferred p (e.g. from Neumann 1998).
 
 - **Age / weight / sex not encoded.** Baseline demographics beyond the
-  cohort structure are not reported in the trimmed source (cited to the
+  cohort structure are not reported in the extracted text (cited to the
   original Phase 1 report, reference \[9\]); no demographic covariates
   are used in the final PK/VK model per Canini 2015 Table 2.
 

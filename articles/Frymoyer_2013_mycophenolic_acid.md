@@ -153,7 +153,7 @@ events <- dplyr::bind_rows(
               id_offset = 1L * n_per)
 )
 
-# Cohort-ID safety guard (per skill template; cf. Clegg 2024 nirsevimab).
+# Cohort-ID safety guard (cf. Clegg 2024 nirsevimab).
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 

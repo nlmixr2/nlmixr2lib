@@ -3454,7 +3454,7 @@ deterministic given the drawn parameters:</p>
 <span></span>
 <span><span class="co"># Both sides use the same drawn CL, so the only difference is trapezoidal</span></span>
 <span><span class="co"># error on a 0.25 h grid -- a pure numerical quantity, not a cohort statistic,</span></span>
-<span><span class="co"># so a tight bound is correct here (see CLAUDE.md).</span></span>
+<span><span class="co"># so a tight bound is correct here.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">ident</span><span class="op">$</span><span class="va">pct_diff</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.5</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">ident</span><span class="op">$</span><span class="va">pct_diff</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1.5</span></span>

@@ -90,7 +90,7 @@ A + B + C, n = 21).
 | `etalcl ~ 0.225` | 0.225 | Supplementary Table S3 row “Inter-individual variability” = 0.225 |
 | `etalvc ~ 0.27` | 0.27 | Supplementary Table S3 row “IIV Vcentral” = 0.27 |
 | `propSd <- sqrt(0.06)` | 0.245 | Supplementary Table S3 row “Residual Error” variance = 0.06 |
-| Reference eGFR | 90 mL/min/1.73 m^2 | NOT in source; operator-approved (task 171 sidecar 001 “A”). See Assumptions. |
+| Reference eGFR | 90 mL/min/1.73 m^2 | NOT in source; maintainer-approved. See Assumptions. |
 | `cl <- exp(lcl + etalcl) * (CRCL / 90)^e_crcl_cl` | n/a | Main text “Pharmacokinetics population model” + Table S3 covariate row |
 | `d/dt(central) ... d/dt(peripheral1)` | n/a | Main text Results “Cohort A”: “A two-compartment structural PK model was superior to a one-compartment model” |
 | `Cc <- (central / vc) * 1000` | n/a | Unit-consistency rule: dose mg, Vc L -\> mg/L; multiply by 1000 to express as ng/mL (paper’s concentration unit) |
@@ -482,12 +482,12 @@ warrant tuning:
   weight, ROSC time, CAHP, LOS, and CPC, but not eGFR). The reference
   was set to 90 mL/min/1.73 m^2 – the most common adult-MDRD/CKD-EPI
   convention in the nlmixr2lib registry (matches Bajaj 2017 and Li 2019)
-  – after operator approval (task 171 sidecar request 001, response
-  value “A”). At CRCL = 90 mL/min/1.73 m^2 the model returns the
-  published typical CL = 12.10 L/h; behaviour at any non-reference eGFR
-  depends linearly (exponent 1.03) on this choice. A future erratum or
-  author correspondence may revise this; the model file’s
-  `covariateData[[CRCL]]$notes` field carries the same provenance note.
+  – after maintainer approval. At CRCL = 90 mL/min/1.73 m^2 the model
+  returns the published typical CL = 12.10 L/h; behaviour at any
+  non-reference eGFR depends linearly (exponent 1.03) on this choice. A
+  future erratum or author correspondence may revise this; the model
+  file’s `covariateData[[CRCL]]$notes` field carries the same provenance
+  note.
 
 - **Population eGFR distribution NOT reported in the source.** Admiraal
   2023 Table 1 omits the per-cohort eGFR-on-admission distribution. For

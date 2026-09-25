@@ -3080,7 +3080,7 @@ half-life, and AUC0-inf, then compares against the derived exposure
 metrics implied by the paper.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Slice to day-1 for single-dose NCA. Keep only !is.na(Cc) so the time=0 pre-dose</span></span>
-<span><span class="co"># record is preserved for PKNCA's AUC start (see pknca-recipes.md).</span></span>
+<span><span class="co"># record is preserved for PKNCA's AUC start.</span></span>
 <span><span class="va">sim_day1</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>regimen <span class="op">=</span> <span class="st">"100 mg oral"</span><span class="op">)</span> <span class="op">|&gt;</span></span>

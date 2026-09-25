@@ -3712,11 +3712,12 @@ patient.</caption>
 <strong>Mechanism-specific compartment names.</strong> The biomarker
 states <code>csf1</code>, <code>ncmc</code>, <code>ast</code>,
 <code>cpk</code> deliberately deviate from the canonical
-compartment-name list in <code>naming-conventions.md</code>
-(<code>depot</code>, <code>central</code>, <code>peripheral1</code>,
-etc.). They were chosen to match the variable names in Yang 2024 Eqs. 5,
-8, 10, 11 and the supplemental MLXTRAN code; using the canonical names
-would obscure the one-to-one mapping with the published equations.
+compartment-name list in
+<code>inst/references/compartment-names.md</code> (<code>depot</code>,
+<code>central</code>, <code>peripheral1</code>, etc.). They were chosen
+to match the variable names in Yang 2024 Eqs. 5, 8, 10, 11 and the
+supplemental MLXTRAN code; using the canonical names would obscure the
+one-to-one mapping with the published equations.
 <code><a href="../reference/checkModelConventions.html">nlmixr2lib::checkModelConventions()</a></code> flags these as warnings
 (not errors).</li>
 <li>

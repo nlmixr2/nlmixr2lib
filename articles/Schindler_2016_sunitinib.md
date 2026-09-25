@@ -19,16 +19,16 @@
   SUVmax change from baseline, RCFB1MAX.
 - Article: <https://doi.org/10.1002/psp4.12057>
 - DDMORE Foundation Model Repository entry: `DDMODEL00000221` – bundle
-  directory in the operator’s `ddmore_scraping` mirror at `221/`,
+  directory in the maintainers’ `ddmore_scraping` mirror at `221/`,
   containing `Executable_SLD_SUV_OS_GIST.mod`,
   `Output_real_SLD_SUV_OS_GIST.lst`,
   `Output_simulated_SLD_SUV_OS_GIST.lst`,
   `Simulated_SLD_SUV_OS_GIST.csv`, `DDMODEL00000221.rdf`, `Command.txt`,
   and `221.json`. The linked publication itself (Schindler 2016,
-  CPT:PSP) is not on disk in the worktree; parameter values, structural
-  equations, and stop-and-ask decisions in this vignette and the model
-  file are sourced from the bundle’s `.mod` (structural equations +
-  initial values) and `.lst` (final estimates).
+  CPT:PSP) was not on disk when this model was built; parameter values,
+  structural equations, and maintainer decisions in this vignette and
+  the model file are sourced from the bundle’s `.mod` (structural
+  equations + initial values) and `.lst` (final estimates).
 
 ## Population
 
@@ -41,9 +41,10 @@ target-lesion sum-of-longest-diameters (SLD) measurements, and overall
 survival follow-up to event or right-censoring. Detailed baseline
 demographics (age, weight, sex, race / ethnicity distribution,
 prior-line distribution) live in Table 1 of the linked publication,
-which is not on disk in this worktree; those fields are recorded as `NA`
-in the model’s `population` metadata to make the gap explicit, with a
-notes string pointing to Schindler 2016 Table 1 as the source.
+which was not on disk when this model was built; those fields are
+recorded as `NA` in the model’s `population` metadata to make the gap
+explicit, with a notes string pointing to Schindler 2016 Table 1 as the
+source.
 
 The same information is available programmatically via the model’s
 `population` metadata
@@ -58,7 +59,7 @@ table below collects them in one place for review. All values are final
 estimates from the `Output_real_SLD_SUV_OS_GIST.lst`
 `FINAL PARAMETER ESTIMATE` block (lines 868-1000); the `.mod`
 `$THETA / $OMEGA / $SIGMA` blocks are initial values and are not used as
-the parameter source per `extract-literature-model` Phase 1 step 9.
+the parameter source.
 
 | Parameter (.lst label) | Final value | Role | Source location |
 |----|----|----|----|
@@ -91,10 +92,10 @@ the parameter source per `extract-literature-model` Phase 1 step 9.
 The MINIMIZATION line in `Output_real_*.lst` (line 795) reads
 `MINIMIZATION SUCCESSFUL` followed by
 `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY, AND ACCEPT THEM ONLY AFTER CHECKING THAT THE COVARIANCE STEP PRODUCES REASONABLE OUTPUT.`
-Per the `extract-literature-model` skill’s `ddmore-source.md` Section
-“Reading final estimates from `.lst`”, `MINIMIZATION SUCCESSFUL` (with
-caveat) is acceptable; only `MINIMIZATION TERMINATED` triggers a
-sidecar. The caveat is recorded in the Errata below.
+Under the package’s convention for reading final estimates from a DDMORE
+`.lst`, `MINIMIZATION SUCCESSFUL` (with caveat) is acceptable; only
+`MINIMIZATION TERMINATED` requires a maintainer decision. The caveat is
+recorded in the Errata below.
 
 ## Virtual cohort
 
@@ -473,11 +474,11 @@ F.2 self-consistency: typical-value baselines vs. .mod THETA values.
   `Output_real_*.lst` line 795 reports `MINIMIZATION SUCCESSFUL`
   immediately followed by
   `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY ...`.
-  Per the `extract-literature-model` `ddmore-source.md` Section “Reading
-  final estimates from `.lst`”, `MINIMIZATION SUCCESSFUL` (with caveat)
-  is acceptable but flagged here.
+  Under the package’s convention for reading final estimates from a
+  DDMORE `.lst`, `MINIMIZATION SUCCESSFUL` (with caveat) is acceptable
+  but flagged here.
 - **Linked publication not on disk.** The Schindler 2016 publication is
-  not on disk under `mab_human_consensus/literature/`; an external check
+  not on disk in the maintainers’ literature mirror; an external check
   of parameter values against the publication’s tables was not
   performed. Final estimates were taken from the `.lst` only.
 - **Iteration-log precision used for estimated THETAs.** THETA(12),

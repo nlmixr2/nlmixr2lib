@@ -410,7 +410,7 @@ apparent steady-state exposure).
   `fetus` and `cord` interchangeably in several places, so a small
   chance remains that the M8 mapping could be swapped (`M8 FETUS` = cord
   plasma and `M8 CORD` = amniotic fluid). This convention was approved
-  via sidecar before the model was drafted (request-001, response-001).
+  by the maintainers before the model was drafted.
 - **Within-individual residual correlation.** Hirt 2007 reports a
   within-individual correlation of `0.50 +/- 31 %` between the
   nelfinavir and M8 residual errors. nlmixr2’s standard residual-error

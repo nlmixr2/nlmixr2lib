@@ -2920,19 +2920,19 @@ for the F.2 self-consistency overlay below.</li>
 <code>Command.txt</code>, <code>244.json</code> – provenance.</li>
 </ul>
 <p>There is no <code>Model_Accomodations.text</code> shipped in this
-bundle. The publication identification comes from the task metadata
-(Svensson et al., Clin Pharmacol Ther 2018, <a href="doi:10.1002/cpt.778" class="uri">doi:10.1002/cpt.778</a>) and is
+bundle. The publication identification comes from the metadata this
+model was built from (Svensson et al., Clin Pharmacol Ther 2018, <a href="doi:10.1002/cpt.778" class="uri">doi:10.1002/cpt.778</a>) and is
 corroborated by the <code>.mod</code> header
 (<code>HIGHRIF1 PK MODEL</code>,
 <code>Based on final model by Smythe run 106</code>, NONMEM license
 registered to Uppsala University) and the RDF abstract describing
 exactly the auto-induction / MM-CL / dose-dependent-F structure of the
 Svensson 2018 paper.</p>
-<p>The Svensson 2018 publication itself is <strong>not</strong> on disk
-in this worktree, so a side-by-side comparison against the paper’s
-parameter table or PK figures (Figures 2-4) is out of scope here. The
-validation in this vignette is the F.2 self-consistency check from the
-extraction skill: re-simulate the bundle’s
+<p>The Svensson 2018 publication itself was <strong>not</strong> on disk
+when this model was built, so a side-by-side comparison against the
+paper’s parameter table or PK figures (Figures 2-4) is out of scope
+here. The validation in this vignette is the F.2 self-consistency check
+from the validation checklist: re-simulate the bundle’s
 <code>DDMODEL00000244_Simulated_Rif_PK_data.csv</code> through this
 <code>rxode2</code>-translated model and verify that the typical-value
 trajectory tracks the bundle’s own observed-DV (<code>NDV</code> column)
@@ -3138,8 +3138,8 @@ per occasion.</td>
 <td>0.2356</td>
 <td>
 <code>.lst</code> SIGMA(1,1) = 0.0555 = 0.2356^2; NONMEM
-<code>Y = LOG(F) + EPS(1)</code> == proportional in linear space
-(naming-conventions.md Section Residual error).</td>
+<code>Y = LOG(F) + EPS(1)</code> == proportional in linear space (the
+package’s residual-error convention).</td>
 </tr>
 <tr class="even">
 <td><code>transit(nn, mtt, bio)</code></td>
@@ -3306,7 +3306,7 @@ the random effects so the prediction is deterministic:</p>
 <h2 id="self-consistency-vs-the-bundles-simulated-dataset">Self-consistency vs the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-vs-the-bundles-simulated-dataset"></a>
 </h2>
 <p>Because the original publication is not on disk, the validation here
-is the F.2 self-consistency check from the extraction skill: the
+is the F.2 self-consistency check from the validation checklist: the
 typical-value trajectory of this <code>rxode2</code>-translated model
 should match the shape of the per-record <code>NDV</code>
 (back-transformed observed concentration in mg/L; the <code>DV</code>
@@ -3590,7 +3590,7 @@ window the HIGHRIF1 trial sampled.</p>
 <p>The HIGHRIF1 600 mg arm in Svensson 2018 reports day-7 (OCC = 1)
 geometric-mean Cmax ~= 8-10 mg/L and AUC_0-_2_4 ~= 40-50 mg*h/L for the
 ~60 kg adult cohort (see the publication’s Figure 2 / Table 2 – not on
-disk in this worktree; the substitution here is the bundle’s
+disk when this model was built; the substitution here is the bundle’s
 single-subject simulated-data row sequence, which has Cmax ~= 9 mg/L at
 TADO = 3 h and matches this magnitude). The simulated median should land
 in the same range; see the table above.</p>
@@ -3674,19 +3674,20 @@ curve.</p>
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
 <ul>
-<li><p><strong>The Svensson 2018 publication is not on disk in this
-worktree.</strong> The package metadata (description, units, citation,
-DOI) reflects the publication as listed in the task metadata (<a href="doi:10.1002/cpt.778" class="uri">doi:10.1002/cpt.778</a>), but a
-side-by-side comparison against the paper’s parameter table or PK
-figures (Figures 2-4) is out of scope here. The validation is restricted
-to the F.2 self-consistency check against the bundle’s own
-<code>Simulated_Rif_PK_data.csv</code>, plus mechanistic spot-checks on
-the auto-induction time-course and the dose-dependent bioavailability.
-Population descriptors are reproduced from the
-<code>DDMODEL00000244.rdf</code> <code>model-has-description-long</code>
-field, which describes only the structural model (compartment count,
-absorption form, elimination form, FFM scaling, IIV / IOV) and does not
-enumerate per-subject demographics.</p></li>
+<li><p><strong>The Svensson 2018 publication was not on disk when this
+model was built.</strong> The package metadata (description, units,
+citation, DOI) reflects the publication as listed in the metadata this
+model was built from (<a href="doi:10.1002/cpt.778" class="uri">doi:10.1002/cpt.778</a>), but a side-by-side comparison
+against the paper’s parameter table or PK figures (Figures 2-4) is out
+of scope here. The validation is restricted to the F.2 self-consistency
+check against the bundle’s own <code>Simulated_Rif_PK_data.csv</code>,
+plus mechanistic spot-checks on the auto-induction time-course and the
+dose-dependent bioavailability. Population descriptors are reproduced
+from the <code>DDMODEL00000244.rdf</code>
+<code>model-has-description-long</code> field, which describes only the
+structural model (compartment count, absorption form, elimination form,
+FFM scaling, IIV / IOV) and does not enumerate per-subject
+demographics.</p></li>
 <li><p><strong><code>MINIMIZATION TERMINATED DUE TO ROUNDING ERRORS (ERROR=134)</code>,
 not <code>MINIMIZATION SUCCESSFUL</code>.</strong>
 <code>Output_real_Rif_PK.lst</code> line 551 reports the rounding-error
@@ -3703,10 +3704,8 @@ with
 <code>model-implementation-source-discrepancies-freetext: "No difference"</code>.
 The packaged values are those reported
 <code>FINAL PARAMETER ESTIMATE</code> numbers; treat the parameter
-standard errors with the usual caution. The operator was sidecar-asked
-(sequence 1 q1, 2026-05-06) and approved extraction with this caveat
-documented; see the queue’s
-<code>037-svensson_2018_rifampicin/response-001.json</code>.</p></li>
+standard errors with the usual caution. The maintainers approved
+extraction on 2026-05-06 with this caveat documented.</p></li>
 <li>
 <p><strong>Closed-form <code>transit()</code> replaces the .mod’s
 verbatim FORTRAN.</strong> The .mod writes the Erlang
@@ -3753,8 +3752,8 @@ treatment at fit time.</p></li>
 NONMEM <code>Y = LOG(F) + EPS(1)</code> with
 <code>SIGMA(1,1) = 0.0555</code> is the linearized form of a
 proportional residual error in nlmixr2’s linear space (CV ~= 24% on Cc);
-the back-transformation rule (<code>naming-conventions.md</code> Section
-Residual error) gives <code>propSd = sqrt(SIGMA(1,1))</code>.</p></li>
+the package’s residual-error back-transformation rule gives
+<code>propSd = sqrt(SIGMA(1,1))</code>.</p></li>
 <li><p><strong>2-occasion IOV <code>$OMEGA BLOCK(1) SAME</code> was
 unrolled into pairs of independent etas with <code>fix(.)</code> after
 the first.</strong> nlmixr2 has no <code>SAME</code> shortcut, so each

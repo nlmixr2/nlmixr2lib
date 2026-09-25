@@ -3109,7 +3109,7 @@ matched exactly.</p>
 <span><span class="co"># solver thread, so a 2-core CI runner and a 16-thread workstation draw</span></span>
 <span><span class="co"># different cohorts from identical source. Every assertion below is written to</span></span>
 <span><span class="co"># hold for any cohort this model can produce (bounds checked at 2, 4 and 16</span></span>
-<span><span class="co"># threads); see pattern 12 of the skill's known-vignette-failure-patterns.</span></span>
+<span><span class="co"># threads).</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240811</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_arm</span>     <span class="op">&lt;-</span> <span class="fl">200</span>   <span class="co"># cap is 200 per arm</span></span>
@@ -3523,7 +3523,7 @@ individual terminal half-life: median 11.9 h, IQR 8.8-18.4 h.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>simulated_median_h <span class="op">=</span> <span class="va">hl_med</span>, published_median_h <span class="op">=</span> <span class="fl">11.9</span>,</span>
 <span>  published_iqr <span class="op">=</span> <span class="st">"8.8-18.4"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; simulated_median_h published_median_h      published_iqr </span></span>
-<span><span class="co">#&gt; "13.8902379648417"             "11.9"         "8.8-18.4"</span></span>
+<span><span class="co">#&gt; "13.8902379648416"             "11.9"         "8.8-18.4"</span></span>
 <span></span>
 <span><span class="co"># Assert against the IQR the paper itself prints, not against a bound taken</span></span>
 <span><span class="co"># from one run. Realised 14.05-14.96 h at 2/4/16 threads.</span></span>

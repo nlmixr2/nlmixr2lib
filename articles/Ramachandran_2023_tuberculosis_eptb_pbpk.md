@@ -859,7 +859,7 @@ stopifnot(abs(ratio - 600 / 450) < 1e-6)
   flow are per-kg quantities. Simulating a different body size requires
   rescaling the constants inside `model()`; `WT` is recorded in
   `covariatesDataExcluded` to preserve that provenance.
-- **Figure 2 reference values are operator-digitised.** The peak
+- **Figure 2 reference values are maintainer-digitised.** The peak
   concentrations and times in `published_fig2` above were read off the
   printed Figure 2 panels of the article PDF, because the paper reports
   no NCA table. Reading precision is roughly +/- 3% on concentration and

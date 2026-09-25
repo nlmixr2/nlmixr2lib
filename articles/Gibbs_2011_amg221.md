@@ -494,11 +494,11 @@ Any starred rows should be interpreted with two paper-specific caveats:
   visible to
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md).
 - **Effect-compartment volume Ve.** The paper’s equation for Ve was not
-  decoded in the on-disk trimmed text (“” markers in the trimmed
-  markdown). The packaged model uses the equivalent-Vc parameterisation
-  A(effect) / Vc for the effect-site plasma-equivalent concentration and
-  applies the density correction `kpp` (1.36 mL/g) at the
-  tissue-concentration observation step. This is mathematically
+  decoded in the text extracted from the PDF (“” markers in the
+  extracted text). The packaged model uses the equivalent-Vc
+  parameterisation A(effect) / Vc for the effect-site plasma-equivalent
+  concentration and applies the density correction `kpp` (1.36 mL/g) at
+  the tissue-concentration observation step. This is mathematically
   identical to the Ve = Vc / kpp formulation the paper describes
   elsewhere (kpp inverse approximates the density of fat, 0.735 g/mL,
   per Gibbs 2011 Discussion).

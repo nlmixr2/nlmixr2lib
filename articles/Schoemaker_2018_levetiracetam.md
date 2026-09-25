@@ -15,9 +15,8 @@ LEV adult and pediatric focal-seizure data and then used as a scaffold
 to extrapolate the pediatric brivaracetam (BRV) dose-response. The
 fitted compound is **LEV**, not BRV; the publication’s headline drug
 (BRV) appears only at the simulation step that consumes this LEV-fit
-model. The file is named `Schoemaker_2018_levetiracetam.R` per operator
-decision (sidecar response-001 Q3) so the filename matches the fitted
-compound.
+model. The file is named `Schoemaker_2018_levetiracetam.R` per a
+maintainer decision so the filename matches the fitted compound.
 
 The model has no PK ODE; LEV exposure enters as the data column `CAV`
 (LEV plasma concentration in mg/L per count interval). Adults contribute
@@ -37,11 +36,10 @@ PDV = previous-day observed count).
   a baseline-demographics table. Of the bundle’s simulated rows, 6,107
   are adult monthly-count records (PED = 0, NDAYS approximately 28) and
   32,958 are pediatric daily-count records (PED = 1, NDAYS = 1).
-- The Schoemaker 2018 publication PDF was **not on disk** under
-  `/home/bill/github/mab_human_consensus/literature/` at extraction
-  time, so subject counts, study counts, and demographic distributions
-  are not populated in `population`. Update the metadata when the PDF
-  becomes available.
+- The Schoemaker 2018 publication PDF was **not on disk** in the
+  maintainers’ literature mirror at extraction time, so subject counts,
+  study counts, and demographic distributions are not populated in
+  `population`. Update the metadata when the PDF becomes available.
 
 ``` r
 
@@ -467,37 +465,29 @@ simulation. {.table}
 
 ## Assumptions and deviations
 
-- **Filename uses `levetiracetam`, not `brivaracetam`.** Operator
-  decision (sidecar response-001 Q3, free-text “rename to
-  `Schoemaker_2018_levetiracetam.R`”): the fitted compound is LEV; BRV
-  is the publication’s headline drug but appears only at the simulation
-  step that consumes this LEV-fit model. The queue task
-  `034-schoemaker_2018_brivaracetam` is unchanged so the sidecar
-  correlation remains stable; the rename is reflected in
-  `inst/modeldb/ddmore/`, this vignette, and the model file’s `vignette`
-  field. Queue artifacts (`queue/todo/034-...yaml` and
-  `queue/prompts/034-...prompt.txt`) are also updated so subsequent
-  dispatches find the renamed file.
+- **Filename uses `levetiracetam`, not `brivaracetam`.** Maintainer
+  decision: the fitted compound is LEV; BRV is the publication’s
+  headline drug but appears only at the simulation step that consumes
+  this LEV-fit model. The rename is reflected in `inst/modeldb/ddmore/`,
+  this vignette, and the model file’s `vignette` field.
 - **Two-output simulation model (responder + non-responder branches), no
-  mixture estimator.** Operator decision (sidecar response-001 Q1 =
-  `two_output_sim`): nlmixr2’s mixture-model support is more limited
-  than the source’s NONMEM `$MIX` form, so the mixture is exposed as the
-  parameter `p_responder` and the model emits two independent output
-  branches `count_responder` and `count_nonresponder`. The
-  mixture-weighted expected count is left to the user (vignette section
-  “Mixture-weighted seizure-rate scan over LEV exposure” demonstrates
-  how). The published 33.5% responder fraction is preserved verbatim as
-  `p_responder = 0.335`.
-- **PDV exposed as a per-record covariate.** Operator decision (sidecar
-  response-001 Q2, free-text “Include PDV as a covariate”): the source’s
-  Markov dependence on the previous-day count is preserved by carrying
-  PDV as a per-record input column rather than as a model state. rxode2
-  cannot natively express observation-to-state Markov feedback. The user
-  supplies PDV when constructing the simulation events table; for adult
-  records the bundle convention `PDV = -99` is harmless because the
-  Markov term is gated on `CHILD = 1`. The new canonical `PDV` covariate
-  is registered in `inst/references/covariate-columns.md` alongside this
-  model.
+  mixture estimator.** Maintainer decision: nlmixr2’s mixture-model
+  support is more limited than the source’s NONMEM `$MIX` form, so the
+  mixture is exposed as the parameter `p_responder` and the model emits
+  two independent output branches `count_responder` and
+  `count_nonresponder`. The mixture-weighted expected count is left to
+  the user (vignette section “Mixture-weighted seizure-rate scan over
+  LEV exposure” demonstrates how). The published 33.5% responder
+  fraction is preserved verbatim as `p_responder = 0.335`.
+- **PDV exposed as a per-record covariate.** Maintainer decision: the
+  source’s Markov dependence on the previous-day count is preserved by
+  carrying PDV as a per-record input column rather than as a model
+  state. rxode2 cannot natively express observation-to-state Markov
+  feedback. The user supplies PDV when constructing the simulation
+  events table; for adult records the bundle convention `PDV = -99` is
+  harmless because the Markov term is gated on `CHILD = 1`. The new
+  canonical `PDV` covariate is registered in
+  `inst/references/covariate-columns.md` alongside this model.
 - **`TRT_PHASE` covariate (renamed from source `Q2`).** The source
   column name `Q2` collides with the canonical PK parameter `q2`
   (inter-compartmental clearance to peripheral2), so the canonical
@@ -550,16 +540,16 @@ simulation. {.table}
   one line.
 - **Schoemaker 2018 publication PDF not on disk for cross-check.** The
   publication (<doi:10.1007/s40262-017-0597-2>) was not present anywhere
-  under `/home/bill/github/mab_human_consensus/literature/` at
-  extraction time. Final-estimate values come solely from the bundle’s
+  in the maintainers’ literature mirror at extraction time.
+  Final-estimate values come solely from the bundle’s
   `Output_real_P241.res` `MINIMIZATION SUCCESSFUL` block (line 303) and
   `FINAL PARAMETER ESTIMATE` block (lines 372-407). The publication
   abstract is reproduced verbatim in `DDMODEL00000239.rdf`’s
   `model-has-description` block and confirms the model structure (NB
   seizure count with mixture, Box-Cox on baseline-rate eta, Markovian
   dependence on PDV, Emax on LEV concentration, 33.5% responders) but
-  does not list per-parameter values. If the operator subsequently
-  obtains the PDF, a follow-up audit of TH 1..14 against the
+  does not list per-parameter values. If the maintainers subsequently
+  obtain the PDF, a follow-up audit of TH 1..14 against the
   publication’s tables is recommended.
 - **`count_responder` / `count_nonresponder` observation names (vs. `Cc`
   convention).** The naming-conventions register reserves `Cc` for

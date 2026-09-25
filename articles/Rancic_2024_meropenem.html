@@ -3250,8 +3250,7 @@ standard deviation, and that reproduction is asserted in the chunk.</li>
 <span><span class="co"># partitioned per solver thread), so the cohort's covariates are reproducible</span></span>
 <span><span class="co"># but its etas are not. Every assertion downstream is either a per-subject</span></span>
 <span><span class="co"># algebraic identity or a typical-value replication, so none of them depends on</span></span>
-<span><span class="co"># which etas were drawn. See pattern 12 of</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># which etas were drawn.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240701</span><span class="op">)</span></span>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20240701</span><span class="op">)</span></span>
 <span></span>

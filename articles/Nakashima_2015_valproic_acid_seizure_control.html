@@ -3263,9 +3263,8 @@ printed</td>
 </tbody>
 </table>
 <p>Equations 1-8 are typeset as page images in the PLOS PDF and are not
-recoverable from the trimmed-text extraction; every equation above was
-read from the rendered page and cross-checked against the PDF text
-layer.</p>
+recoverable from the extracted text; every equation above was read from
+the rendered page and cross-checked against the PDF text layer.</p>
 </div>
 </div>
 <div class="section level2">
@@ -3279,8 +3278,7 @@ follow Nakashima 2015 Table 1.</p>
 <code class="sourceCode R"><span><span class="co"># set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per</span></span>
 <span><span class="co"># solver thread, so a cohort drawn here is NOT reproducible across machines</span></span>
 <span><span class="co"># with different thread counts. Every assertion below is written to hold for</span></span>
-<span><span class="co"># any cohort the model can produce (see pattern 12 of</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># any cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20150141</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_cohort</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># per-arm cap; 200 is ample for this validation</span></span>
@@ -3428,7 +3426,7 @@ transcription against itself and could pass a dropped term.</p>
 <span>  <span class="fu">mutate</span><span class="op">(</span>pct_diff <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">model_ugml</span> <span class="op">-</span> <span class="va">printed_ugml</span><span class="op">)</span> <span class="op">/</span> <span class="va">printed_ugml</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">case</span>, <span class="va">AGE</span>, <span class="va">geno</span>, <span class="va">printed_ugml</span>, <span class="va">model_ugml</span>, <span class="va">pct_diff</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># The gate must have had rows to test (see pattern 10).</span></span>
+<span><span class="co"># The gate must have had rows to test.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">optimal</span><span class="op">)</span> <span class="op">==</span> <span class="fl">6L</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA</a></span><span class="op">(</span><span class="va">optimal</span><span class="op">$</span><span class="va">model_ugml</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">optimal</span> <span class="op">|&gt;</span></span>
@@ -3653,7 +3651,7 @@ frequencies.</caption>
 </table>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># COHORT statistic -&gt; assert on the CENTRE with headroom, never on the extremes,</span></span>
-<span><span class="co"># which are one draw of a random cohort (pattern 12).</span></span>
+<span><span class="co"># which are one draw of a random cohort.</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># Choosing the bound. The published mean is 69.3 ug/mL. Large-sample values for</span></span>
 <span><span class="co"># this model over these covariate distributions are -15.8% (q24h), -8.2% (q12h)</span></span>
@@ -4046,7 +4044,7 @@ is better” target.</p>
 <p><img src="Nakashima_2015_valproic_acid_seizure_control_files/figure-html/figure-1-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># TREND, not step-by-step monotonicity, and no assertion on the sign of a</span></span>
-<span><span class="co"># near-zero quantity (pattern 12). The cohort-average slope is genuinely</span></span>
+<span><span class="co"># near-zero quantity. The cohort-average slope is genuinely</span></span>
 <span><span class="co"># negative and not near zero: with SCN1A G/A and A/A carrying large POSITIVE</span></span>
 <span><span class="co"># slope offsets (+10.1, +9.48) against a -13.5 base, the cohort-mean slope is</span></span>
 <span><span class="co"># roughly -3 per 100 ug/mL, so the fall across the observed trough range is</span></span>
@@ -4286,11 +4284,11 @@ gives 110-130 L at this cohort’s doses, about 2.8-3.3 L/kg for a cohort
 whose mean age is 15 years, which is impossible for valproic acid – a
 highly protein-bound drug with an apparent volume of roughly 0.1-0.4
 L/kg. Ogusu 2014’s 21.4 L is about 0.6 L/kg.</p>
-<p><strong>Resolution (operator ruling, sidecar
-<code>oare_PMC9833507</code> q2):</strong> encode the upstream Ogusu
-2014 values, since the cited source has authority over a restatement of
-it, and document the discrepancy here. Gate 2 above confirms the choice
-reproduces Nakashima 2015’s own published trough distribution.</p>
+<p><strong>Resolution (maintainer ruling):</strong> encode the upstream
+Ogusu 2014 values, since the cited source has authority over a
+restatement of it, and document the discrepancy here. Gate 2 above
+confirms the choice reproduces Nakashima 2015’s own published trough
+distribution.</p>
 </div>
 <div class="section level3">
 <h3 id="eq-6s-age-term-prints-a-spurious-10">2. Eq 6’s age term prints a spurious <code>/10</code><a class="anchor" aria-label="anchor" href="#eq-6s-age-term-prints-a-spurious-10"></a>
@@ -4342,12 +4340,11 @@ Table 4’s six simulated patients are aged 5 and 10, so they exercise Eq
 8 has no parameter table. Eq 8 also prints no base slope of its own,
 which is itself a consequence of the missing grouping.</li>
 </ol>
-<p><strong>Resolution (operator ruling, sidecar
-<code>oare_PMC9833507</code> q4):</strong> encode Eq 8 exactly as
-printed and document the ambiguity. A user who prefers the alternative
-reading – all three genotype terms inside a slope group – must supply
-the base slope themselves, as it is not recoverable from any source on
-disk.</p>
+<p><strong>Resolution (maintainer ruling):</strong> encode Eq 8 exactly
+as printed and document the ambiguity. A user who prefers the
+alternative reading – all three genotype terms inside a slope group –
+must supply the base slope themselves, as it is not recoverable from any
+source on disk.</p>
 </div>
 <div class="section level3">
 <h3 id="other-notes-on-the-source">Other notes on the source<a class="anchor" aria-label="anchor" href="#other-notes-on-the-source"></a>

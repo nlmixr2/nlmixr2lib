@@ -410,7 +410,7 @@ extraction time. The following choices were made:
     classification row in Table 2 – this corresponds to the MCI-cohort
     slow fraction (the typical patient at median SCORE_CDR_SOB = 1,
     SCORE_FAQ = 1, SCORE_RHPNM = 1 is approximately an MCI patient).
-    Alternative defaults the operator might prefer:
+    Alternative defaults the maintainers might prefer:
 
     - Overall slow fraction across MCI + AD cohorts: about 0.31
       (computed as `(0.44 * 380 + 0.03 * 180) / 560`).

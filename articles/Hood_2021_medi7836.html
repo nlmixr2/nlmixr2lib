@@ -3715,14 +3715,14 @@ matrix; an unpublished correlation structure cannot be
 reconstructed.</p></li>
 <li><p><strong><code>complex_peripheral</code> is a non-canonical
 compartment name.</strong> The canonical compartment register
-(<code>naming-conventions.md</code>) covers <code>target</code>,
-<code>complex</code>, and <code>total_target</code> for explicit binding
-models but does not currently list a peripheral-complex name. We use
-<code>complex_peripheral</code> for the second complex compartment
-because semantic clarity matters more than reusing
-<code>peripheral2</code> (which would imply a 3-compartment drug model).
-<code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> flags this as a single warning; the
-equation lives unambiguously in the ODE block.</p></li>
+(<code>inst/references/compartment-names.md</code>) covers
+<code>target</code>, <code>complex</code>, and <code>total_target</code>
+for explicit binding models but does not currently list a
+peripheral-complex name. We use <code>complex_peripheral</code> for the
+second complex compartment because semantic clarity matters more than
+reusing <code>peripheral2</code> (which would imply a 3-compartment drug
+model). <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> flags this as a single
+warning; the equation lives unambiguously in the ODE block.</p></li>
 <li><p><strong>ADA-positive flag is time-fixed.</strong> The trial
 captured ADA status at multiple visits, but Hood 2021 carried
 “post-baseline ADA-positive at any visit” as a single subject-level

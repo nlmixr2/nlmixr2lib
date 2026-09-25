@@ -698,7 +698,7 @@ threshold, and a 24-hour AUC in the 400-600 mg\*h/L window that Yoon
 # set.seed() seeds R's RNG, not rxode2's; rxode2 partitions its streams per
 # solver thread, so this cohort differs between a 2-core CI runner and a
 # 16-thread workstation. Every assertion below is written to hold for any
-# cohort the model can produce (see known-vignette-failure-patterns.md #12).
+# cohort the model can produce.
 set.seed(20231009)
 
 n_sub <- 200L

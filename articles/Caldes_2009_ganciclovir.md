@@ -388,7 +388,7 @@ much longer.
 - **Drug naming.** The modeled species is ganciclovir (IV ganciclovir is
   administered directly; oral valganciclovir is the prodrug). The model
   file is named `Caldes_2009_ganciclovir.R` per the modeled species; the
-  task metadata listed valganciclovir, which is one of the two routes
+  source metadata listed valganciclovir, which is one of the two routes
   but not the modeled species.
 - **Dosing convention for oral valganciclovir.** The depot dose must be
   supplied as the ganciclovir-equivalent amount (multiply the

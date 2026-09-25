@@ -433,10 +433,9 @@ from reference by \>20%; see Assumptions and deviations for context.
   `RACE_ASIAN_NORTHEAST` indicator pools these subgroups, matching the
   source classification.
 
-- **New canonical covariate columns ratified in this PR.** Two canonical
-  entries were added to `inst/references/covariate-columns.md` to
-  support this model: `RACE_ASIAN_SOUTHCENTRAL` (binary indicator
+- **New canonical covariate columns ratified with this model.** Two
+  canonical entries were added to `inst/references/covariate-columns.md`
+  to support this model: `RACE_ASIAN_SOUTHCENTRAL` (binary indicator
   analogous to `RACE_ASIAN_NORTHEAST`) and `HEPIMP_CP_SCORE` (continuous
   integer Child-Pugh score, complementing the existing binary `HEPIMP_*`
-  family). Naming was ratified by operator response to a Phase 3
-  sidecar.
+  family). Naming was ratified by the maintainers.

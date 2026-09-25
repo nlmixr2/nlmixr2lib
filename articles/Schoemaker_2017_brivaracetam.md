@@ -845,8 +845,8 @@ Monte-Carlo sampling noise.
 - **Errata.** No erratum or corrigendum to Schoemaker 2017 was located
   on disk for this extraction. A search of PubMed and the Springer
   corrections feed for `"Schoemaker" + "brivaracetam" + 2017 + erratum`
-  returned no hits; operators should reconfirm against the journal’s
-  corrections listing if a re-extraction is undertaken.
+  returned no hits; the maintainers should reconfirm against the
+  journal’s corrections listing if a re-extraction is undertaken.
 - **Population race / ethnicity.** Race and ethnicity were tested as
   covariates and found not to be significant (no effect retained).
   Schoemaker 2017 does not publish the race / ethnicity distribution of

@@ -3512,8 +3512,7 @@ from Table 1 medians.</caption>
 <span><span class="co"># NOT seed rxode2's simulation RNG, and rxode2's eta streams are partitioned per</span></span>
 <span><span class="co"># solver thread -- so the etas drawn in the next chunk differ between a 16-thread</span></span>
 <span><span class="co"># workstation and a 2-core CI runner. Every assertion downstream is written to</span></span>
-<span><span class="co"># hold for any cohort the model can produce (see pattern 12 of</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># hold for any cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260914</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># per-arm cap; Brandon 2026 Figure 4 used 500 per group</span></span>

@@ -592,7 +592,7 @@ mod
 #>     Cc_enm ~ add(addSd_enm) + prop(propSd_enm)
 #>   })
 #> }
-#> <environment: 0x55bbcbd077e8>
+#> <environment: 0x55d4197f4658>
 ```
 
 ## Population
@@ -1234,7 +1234,7 @@ full inter-individual variability and run through PKNCA.
 
 ``` r
 
-n_sub <- 200   # one arm; the skill caps cohorts at 200 participants per arm
+n_sub <- 200   # one arm; cohorts are capped at 200 participants per arm
 
 # AT-301 demographics (FDA Table 100): weight mean 76.11 kg (45-135), age mean
 # 55.04 y (17-94), de-indexed eGFR mean 85.37 mL/min (21.36-193.45), 54% female.

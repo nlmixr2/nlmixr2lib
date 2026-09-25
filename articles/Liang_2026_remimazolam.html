@@ -3127,7 +3127,7 @@ intervals compared below are stable well below that.</p>
 <span><span class="co"># streams are partitioned per solver thread -- so this cohort is reproducible</span></span>
 <span><span class="co"># on this machine and different on a machine with a different thread count.</span></span>
 <span><span class="co"># Every assertion downstream is written to hold for any cohort the model can</span></span>
-<span><span class="co"># produce (pattern 12 of known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260301</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Dense near the induction peak (Cmax lands at t = 1 min), exactly on t = 120</span></span>
@@ -3627,7 +3627,7 @@ source).</caption>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalvp2', 'etalq2'</span></span>
 <span><span class="co"># rxSolve omits `id` entirely for a single-subject event table; PKNCA's</span></span>
-<span><span class="co"># grouping formula needs it (pattern 8 of known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># grouping formula needs it.</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">sim_typ</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="va">sim_typ</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
 <span></span>
 <span><span class="va">cl_typ</span>    <span class="op">&lt;-</span> <span class="fl">1.03</span> <span class="op">*</span> <span class="op">(</span><span class="va">wt_typ</span> <span class="op">/</span> <span class="fl">62</span><span class="op">)</span><span class="op">^</span><span class="fl">0.75</span>          <span class="co"># L/min, Table 4 + Equation 3</span></span>

@@ -3191,13 +3191,13 @@ ip-depot first-pass elimination (<code>k_ipelim</code>).</p>
 <div class="section level2">
 <h2 id="f-2-self-consistency-check-pknca">F.2 self-consistency check (PKNCA)<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-check-pknca"></a>
 </h2>
-<p>The Elishmereni 2011 publication is not on disk in this worktree, so
-a side-by-side comparison against published Cmax / AUC / half-life is
-not performed. Instead, this section runs PKNCA on the simulated cohort
-and records the typical-value NCA summaries by route as a
-self-consistency record. Re-running the vignette in the future under any
-code change in nlmixr2lib / rxode2 / nlmixr2 should reproduce these
-numbers within numerical tolerance.</p>
+<p>The Elishmereni 2011 publication is not on disk, so a side-by-side
+comparison against published Cmax / AUC / half-life is not performed.
+Instead, this section runs PKNCA on the simulated cohort and records the
+typical-value NCA summaries by route as a self-consistency record.
+Re-running the vignette in the future under any code change in
+nlmixr2lib / rxode2 / nlmixr2 should reproduce these numbers within
+numerical tolerance.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_dose</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3311,16 +3311,14 @@ so that divergence is the deposit’s intent rather than a transcription
 error.</li>
 <li>
 <strong>Publication PDF not on disk.</strong> The Elishmereni 2011
-PDF was not available in
-<code>/home/bill/gitlab/nlmixr2lib_ingestion/</code> during the
-extraction. No external cross-check against the published parameter
-tables (Table 1 / supplementary material) was performed; an external
-comparison would only test conformance to the Monolix re-fit values
-reported in the DDMORE bundle, since those are what the bundle actually
-carries. Any future re-extraction with the publication on disk should
-record the original-publication values in the model file’s
-<code>notes</code> and document any irreconcilable differences
-here.</li>
+PDF was not available during the extraction. No external cross-check
+against the published parameter tables (Table 1 / supplementary
+material) was performed; an external comparison would only test
+conformance to the Monolix re-fit values reported in the DDMORE bundle,
+since those are what the bundle actually carries. Any future
+re-extraction with the publication on disk should record the
+original-publication values in the model file’s <code>notes</code> and
+document any irreconcilable differences here.</li>
 <li>
 <strong>No <code>Output_real_*.lst</code> shipped.</strong> The
 DDMORE bundle for DDMODEL00000230 contains only the .mdl, the rendered
@@ -3360,13 +3358,16 @@ but this assumption is not verified against the publication.</li>
 <strong>Covariates.</strong> None. The .mdl explicitly states
 “Covariate model: no covariate model” in its header comment.</li>
 <li>
-<strong>Validation strategy.</strong> Per
-<code>references/verification-checklist.md</code> section F.2, the
-F-section PKNCA / publication-figure replication is replaced here by (a)
-a typical-value concentration-time figure, (b) a stochastic VPC by
-route, (c) a per-compartment trace audit, and (d) a PKNCA
-self-consistency table. There is no published Cmax / AUC / half-life
-table to compare against without the publication on disk.</li>
+<strong>Validation strategy.</strong> Per the package’s validation
+checklist, the usual PKNCA / publication-figure replication is replaced
+here by (a) a typical-value concentration-time figure, (b) a stochastic
+VPC by route,
+<ol start="3" style="list-style-type: lower-alpha">
+<li>a per-compartment trace audit, and (d) a PKNCA self-consistency
+table. There is no published Cmax / AUC / half-life table to compare
+against without the publication on disk.</li>
+</ol>
+</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

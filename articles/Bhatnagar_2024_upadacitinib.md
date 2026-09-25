@@ -5,8 +5,8 @@
 Bhatnagar 2024 reports a population pharmacokinetic model and four
 exposure-response models built on the SELECT-AXIS 1 and SELECT-AXIS 2
 trials of upadacitinib in axial spondyloarthritis (axSpA). Following the
-`replicate-author-structure` policy, each is a separate model file and
-all five share this vignette.
+package’s policy of replicating the authors’ model structure, each is a
+separate model file and all five share this vignette.
 
 | Model | Endpoint | Structure | Source |
 |----|----|----|----|

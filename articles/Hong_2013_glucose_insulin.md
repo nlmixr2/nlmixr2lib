@@ -39,8 +39,9 @@ The paper produces two distinct dynamical systems (HGC and MTT) that
 share the glucose-disposition and effect-compartment structure but
 differ in the glucose input arm (IV clamp vs. transit-absorbed meal) and
 the insulin secretion equation (biphasic Gaussian + linear vs. power +
-incretin Emax). Per the replicate-author-structure policy, this paper
-contributes two model files (`Hong_2013_glucose_insulin_HGC.R` and
+incretin Emax). Following the package’s convention of replicating the
+authors’ model structure, this paper contributes two model files
+(`Hong_2013_glucose_insulin_HGC.R` and
 `Hong_2013_glucose_insulin_MTT.R`) and one shared vignette (this
 article).
 

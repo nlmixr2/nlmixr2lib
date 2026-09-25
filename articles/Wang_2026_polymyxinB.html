@@ -3924,7 +3924,7 @@ PTA &gt;= 80% claim.</caption>
 <code class="sourceCode R"><span><span class="co"># Table 3 asserts PTA &gt;= 80% for every listed regimen. This is the paper's own</span></span>
 <span><span class="co"># quantitative claim, so it is checked on the centre and on a robust quantile</span></span>
 <span><span class="co"># rather than on the single worst cell -- the extreme of a 200-subject draw is</span></span>
-<span><span class="co"># not reproducible across rxode2 builds (see CLAUDE.md).</span></span>
+<span><span class="co"># not reproducible across rxode2 builds.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">pta</span><span class="op">$</span><span class="va">pta</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">80</span>,</span>
 <span>  <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">pta</span><span class="op">$</span><span class="va">pta</span>, <span class="fl">0.1</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">70</span></span>

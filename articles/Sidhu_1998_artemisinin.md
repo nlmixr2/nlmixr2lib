@@ -284,18 +284,18 @@ sim |>
 
 ## PKNCA validation
 
-Single-dose, dense-sampling NCA per `references/pknca-recipes.md`. The
-published reference values are the typical population estimates (Sidhu
-1998 Results: median half-life 2.6 h in adults, 1.8 h in children; Table
-2 delta_F_Day1-\>Day5 = 6.9), so the NCA validation here runs against
-the *typical-value* simulation (`zeroRe()`-d model, one typical subject
-per cohort). The full-IIV stochastic NCA is reported below it for
-population-spread context; the high published omega ka = 576% CV
-produces a heavy-tailed distribution of individual ka values that can
-occasionally fall below the typical kel and trigger flip-flop terminal
-phases, inflating PKNCA’s individual half-life estimates relative to the
-published typical value (this is documented in Assumptions and
-deviations).
+Single-dose, dense-sampling NCA per the package’s standard PKNCA recipe.
+The published reference values are the typical population estimates
+(Sidhu 1998 Results: median half-life 2.6 h in adults, 1.8 h in
+children; Table 2 delta_F_Day1-\>Day5 = 6.9), so the NCA validation here
+runs against the *typical-value* simulation (`zeroRe()`-d model, one
+typical subject per cohort). The full-IIV stochastic NCA is reported
+below it for population-spread context; the high published omega ka =
+576% CV produces a heavy-tailed distribution of individual ka values
+that can occasionally fall below the typical kel and trigger flip-flop
+terminal phases, inflating PKNCA’s individual half-life estimates
+relative to the published typical value (this is documented in
+Assumptions and deviations).
 
 ``` r
 

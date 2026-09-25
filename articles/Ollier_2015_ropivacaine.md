@@ -368,8 +368,7 @@ major-resection cohort running higher (lower clearance -\> higher Cmax).
   5.8 g/L). Rather than invent an unreported reference (which would
   silently anchor the covariate effect), this packaged model uses the
   population-typical `kin_pop` directly with no covariate adjustment.
-  Operator sidecar `request-001.json` (queue frompeople-955) records the
-  decision.
+  This was a maintainer decision.
 - **`kb` reduced from `1e12` to `100` uM^-1 h^-1 for numerical
   stability.** The paper reports `kb = 1e12 uM^-1 h^-1` (Methods “Base
   model”) but explicitly states the model is insensitive to the value

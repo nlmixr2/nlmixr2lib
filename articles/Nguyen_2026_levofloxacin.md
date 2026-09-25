@@ -293,7 +293,7 @@ reporting only; it does not affect any simulated concentration.
 # cohort the model can produce.
 set.seed(20260912)
 
-n_per_arm <- 200            # skill cap is 200 per arm
+n_per_arm <- 200            # cohort cap is 200 per arm
 tau       <- 24             # dosing interval (h)
 
 # Doses are Nguyen 2026 Results 3.1: "the World Health Organisation (WHO)
@@ -1015,8 +1015,8 @@ range Figure 3 plots. The driven form is what the model file encodes.
 
 **No printed parameter value was altered** to reach it – all six
 structural estimates are used exactly as published; only the unprinted
-`$DES` was reconstructed. The same reading is already operator-ratified
-for this group’s companion linezolid model
+`$DES` was reconstructed. The same reading was already ratified by the
+maintainers on 2026-09-02 for this group’s companion linezolid model
 (`modellib("Nguyen_2026_linezolid")`), which carries the identical
 Figure 1 language and an identically abridged control stream.
 

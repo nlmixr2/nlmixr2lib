@@ -3974,7 +3974,7 @@ combination. The 3C scalars are not packaged; they are diazepam rat 3.33
 folded into group 1.</p></li>
 <li>
 <p><strong>Hepatic-artery flow and the tabulated “Liver” row
-(operator-ratified).</strong> The tabulated “Liver” blood flow is the
+(maintainer-ratified).</strong> The tabulated “Liver” blood flow is the
 <em>portal-vein pool</em>, not total hepatic flow: in rat (12.546 =
 9.139 + 1.080 + 0.831 + 1.496 mL/min) and in monkey (123.4 = 90.4 + 11 +
 14.9 + 7.1 mL/min) the row equals the splanchnic sum exactly. The models
@@ -3994,12 +3994,12 @@ other tabulated flows overshoot the 5.839 L/min cardiac output by about
 Reading “Liver” as the portal pool – the convention proven on rat and
 monkey – keeps the twice-tabulated rest-of-body 0.730 L/min and yields
 portal 0.817, hepatic artery 0.379 and total hepatic 1.196 L/min. That
-is the reading used here and it was ratified by the operator. (The lead
-paper’s Table S6 prints the same reference man to two decimals and gives
-the human liver flow as 1.11, which duplicates its kidney entry; at
-three decimals the two are distinct – kidney 1.109 versus liver 1.489 –
-so the lead table’s value is a rounding-level transcription artefact and
-the companion table was used for rat and human.)</p>
+is the reading used here and it was ratified by the maintainers. (The
+lead paper’s Table S6 prints the same reference man to two decimals and
+gives the human liver flow as 1.11, which duplicates its kidney entry;
+at three decimals the two are distinct – kidney 1.109 versus liver 1.489
+– so the lead table’s value is a rounding-level transcription artefact
+and the companion table was used for rat and human.)</p>
 </li>
 <li><p><strong><code>v_conv</code> includes the lung Kpu.</strong> The
 companion paper’s example NONMEM code writes the central-compartment
@@ -4083,9 +4083,9 @@ extraction.</strong> The Kpu cluster scalars use the
 bare <code>pancreas</code> compartment, both registered by the companion
 paper’s extraction, which is now on <code>main</code> as
 <code>Yau_2023_diazepam_pbpk_{lumped,kpu,scalar}_{rat,human}</code>. Per
-the operator’s decision (sidecar request-002 q1) this branch adds no
-register entry of its own, so that one canonical serves both papers and
-the two pull requests do not conflict in <code>inst/references/</code>.
+the maintainers’ decision this branch adds no register entry of its own,
+so that one canonical serves both papers and the two pull requests do
+not conflict in <code>inst/references/</code>.
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> now reports no issues for any of
 the five models here.</p></li>
 <li><p><strong>No covariates.</strong> The physiology is fixed at the

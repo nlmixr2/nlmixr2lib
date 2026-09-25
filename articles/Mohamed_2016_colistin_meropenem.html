@@ -3143,12 +3143,9 @@ cascade leaves <code>KE2 = 0</code>.</p>
 </h2>
 <p>The bundle ships an in vitro experimental dataset that is not a
 re-extractable population PK study, and the linked publication is not on
-local disk (searched
-<code>/home/bill/github/mab_human_consensus/literature/</code>). The
-validation strategy is therefore <strong>F.2 self-consistency</strong>
-per <code>extract-literature-model</code>
-<code>references/verification-checklist.md</code>: re-simulate the
-bundle’s <code>Simulated_ColistinMeropenem_Interaction.csv</code>
+local disk (searched the maintainers’ literature mirror). The validation
+strategy is therefore <strong>F.2 self-consistency</strong>: re-simulate
+the bundle’s <code>Simulated_ColistinMeropenem_Interaction.csv</code>
 through <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> with typical-value parameters (no
 IIV, no residual error) and compare the trajectory against the simulated
 observations in the bundle. PKNCA does not apply (this is
@@ -3442,8 +3439,7 @@ with floating-point equality tests on <code>Ccol</code>. Any
 Downstream users repurposing the model with arbitrary colistin
 concentrations will need to set their own <code>KE2</code> (e.g., by
 editing the <code>model()</code> block or supplying <code>KE2</code> as
-a covariate). The verbatim decision was made by the operator
-(<code>queue/.claude_task_runner/sidecar/006-mohamed_2016_colistin_meropenem/response-001.json</code>).</li>
+a covariate). The verbatim decision was made by the maintainers.</li>
 <li>
 <strong><code>ETA(1)</code> dropped.</strong> The .mod declares
 <code>ETA(1)</code> shared between <code>KGA</code> and <code>KGP</code>

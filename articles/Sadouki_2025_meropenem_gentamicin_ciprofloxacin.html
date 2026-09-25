@@ -4054,9 +4054,8 @@ intentionally <strong>not</strong> used in this vignette; see
 <p>This model deviates from several <code>nlmixr2lib</code> conventions
 because the underlying paper is an <strong>in-vitro bacterial
 pharmacodynamic</strong> study, not a human / animal population PK / PD
-study. The deviations were sanctioned by the operator at sidecar time
-(task <code>032-husain_135</code>, request 001 response: option B,
-“extract anyway with clear in-vitro metadata, file under
+study. The deviations were sanctioned by the maintainers (“extract
+anyway with clear in-vitro metadata, file under
 <code>inst/modeldb/pharmacodynamics/</code>”).</p>
 <ul>
 <li>
@@ -4103,9 +4102,9 @@ exposure profile to integrate. The vignette instead reproduces Sadouki
 MIC multiples) and Figure 2 (Hill concentration – effect curves and
 loss-of-susceptibility curves).</li>
 <li>
-<strong>Parameter-naming exceptions to
-<code>naming-conventions.md</code>.</strong> Drug-specific parameters
-use a <code>&lt;param&gt;_&lt;drug&gt;</code> suffix pattern (e.g.,
+<strong>Parameter-naming exceptions to the package’s naming
+conventions.</strong> Drug-specific parameters use a
+<code>&lt;param&gt;_&lt;drug&gt;</code> suffix pattern (e.g.,
 <code>lemax_mer</code>, <code>ic50_cip_eff</code>) rather than the
 canonical <code>lcl</code> / <code>lvc</code> PK-parameter names.
 Parameter <code>etabeta_mer</code> is on the linear scale (matching the
@@ -4116,7 +4115,7 @@ faithful reproduction.</li>
 <strong>Meropenem chemical degradation rate
 <code>kdeg_Mer = 0.01317 1/h</code> is derived, not directly
 tabulated.</strong> The paper’s Discussion (page 7) and Suppl. Fig. 3
-report “10% drop in 8 h”; this skill computes
+report “10% drop in 8 h”; this extraction computes
 <code>kdeg = -log(0.9) / 8 = 0.01317 1/h</code> and fixes the value.
 Recorded as a derived value with provenance in the model file’s in-line
 comment.</li>

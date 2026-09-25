@@ -3177,19 +3177,18 @@ realisation.</p>
 <p><img src="Lestini_2015_tgfbinhibitor_files/figure-html/vpc-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-check-vs-the-bundles-simulated-dataset">F.2 self-consistency check (vs the bundle’s simulated dataset)<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-check-vs-the-bundles-simulated-dataset"></a>
+<h2 id="self-consistency-check-vs-the-bundles-simulated-dataset">Self-consistency check (vs the bundle’s simulated dataset)<a class="anchor" aria-label="anchor" href="#self-consistency-check-vs-the-bundles-simulated-dataset"></a>
 </h2>
 <p>Because the source publication is paywalled and the bundle does not
-ship a real-data fit, the F.2 substitute from the
-<code>extract-literature-model</code> skill applies: re-simulate using
-the model’s typical-value parameters and confirm the trajectory falls
-inside the distribution of the bundle’s <code>Simulated_PKPD.txt</code>
-observations. Differences &gt; 5% on a per-time-point basis are
-investigated, not tuned.</p>
+ship a real-data fit, a self-consistency check is used instead:
+re-simulate using the model’s typical-value parameters and confirm the
+trajectory falls inside the distribution of the bundle’s
+<code>Simulated_PKPD.txt</code> observations. Differences &gt; 5% on a
+per-time-point basis are investigated, not tuned.</p>
 <p>The bundle’s raw simulated dataset is <strong>not</strong>
 redistributed inside the package (the DDMORE Foundation distributes
 those files under their own license). This vignette therefore uses a
-snapshot of the per-time-point summary statistics that the operator
+snapshot of the per-time-point summary statistics that the maintainers
 computed once at extraction time from
 <code>dpastoor/ddmore_scraping/192/Simulated_PKPD.txt</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -3370,7 +3369,8 @@ subjects).</caption>
 1.5 h, biomarker rise toward a plateau near 6-12 h). Both are
 single-realisation draws from the same model with strong IIV on every
 parameter, so per-time-point medians are not expected to coincide
-exactly. The qualitative agreement is the F.2 acceptance criterion.</p>
+exactly. The qualitative agreement is the acceptance criterion for this
+check.</p>
 </div>
 <div class="section level2">
 <h2 id="pknca-validation-cc-only">PKNCA validation (Cc only)<a class="anchor" aria-label="anchor" href="#pknca-validation-cc-only"></a>
@@ -3536,9 +3536,9 @@ qualitative shape of the trajectories is invariant.</li>
 <li>
 <strong>Bundle simulated dataset is not redistributed.</strong> The
 DDMORE Foundation ships <code>Simulated_PKPD.txt</code> under its own
-license; this package does not redistribute the raw file. The F.2
+license; this package does not redistribute the raw file. The
 self-consistency overlay uses a per-time-point summary snapshot computed
-by the operator at extraction time from
+by the maintainers at extraction time from
 <code>dpastoor/ddmore_scraping/192/Simulated_PKPD.txt</code>.</li>
 <li>
 <strong>No erratum search performed beyond PubMed.</strong> The

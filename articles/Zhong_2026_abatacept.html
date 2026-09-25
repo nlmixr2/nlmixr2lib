@@ -3564,7 +3564,7 @@ pediatric HM (recommended 15 + 12 mg/kg) and adult HM 8/8 (10 mg/kg)
 cohorts. PKNCA computes per-subject C<sub>max1</sub>, C<sub>min1</sub>,
 and AUC<sub>1</sub>. Two PKNCA blocks are run (one per regimen-cohort
 grouping) so that each formula carries <code>id/treatment</code> per the
-skill’s PKNCA recipe.</p>
+package’s standard PKNCA setup.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_conc_ped</span> <span class="op">&lt;-</span> <span class="va">sim_ped_recom</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">6</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

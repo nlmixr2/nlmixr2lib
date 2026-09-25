@@ -71,7 +71,7 @@ Per-parameter source locations are also recorded inline in
 | 1-compartment disposition for both ARM and DHA | – | Results ‘A simultaneous one-compartment drug-metabolite model best described the disposition’ |
 | Complete in-vivo 1:1 molar ARM -\> DHA conversion (mass factor MW_DHA / MW_ARM = 284.3 / 298.4) | – | Methods ‘Complete conversion of artemether into dihydroartemisinin was assumed’ |
 | No statistically significant covariates retained | – | Results ‘There were no statistically significant covariates in this study’; full-covariate EGA model 95% CI -7.0% to +5.5% per week |
-| Additive error on log-transformed concentration -\> proportional in nlmixr2 linear space | – | Methods ‘modeled as the natural logarithm of the molar plasma concentrations’; convention rule from `references/parameter-names.md` |
+| Additive error on log-transformed concentration -\> proportional in nlmixr2 linear space | – | Methods ‘modeled as the natural logarithm of the molar plasma concentrations’; convention rule from `inst/references/parameter-names.md` |
 
 ## Virtual cohort
 

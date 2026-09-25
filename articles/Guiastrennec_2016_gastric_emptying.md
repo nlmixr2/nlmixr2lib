@@ -361,11 +361,11 @@ prediction-interval envelopes for the three test drinks shown.
   chain stomach -\> duodenum -\> upper jejunum with the GE feedback
   reading the lumped duodenum + upper jejunum content - cannot be ruled
   out without the Supplementary Material S1 (NONMEM control code), which
-  is not on disk in this worktree and not retrievable from open-access
-  mirrors. Operators who can access S1 are encouraged to confirm the
-  topology choice and (if warranted) refit the model into a single-chain
-  form; the parameter estimates from Table 3 carry over directly under
-  either topology.
+  was not available when this model was built and is not retrievable
+  from open-access mirrors. Users who can access S1 are encouraged to
+  confirm the topology choice and (if warranted) refit the model into a
+  single-chain form; the parameter estimates from Table 3 carry over
+  directly under either topology.
 - **Covariate-effect reference values.** The WT-BASEBILE (+1.19%/kg) and
   AGE-S50_BILE (+2.15%/yr) effects are linear-deviation forms that
   require a reference value (WT_ref, AGE_ref) for the deviation to be

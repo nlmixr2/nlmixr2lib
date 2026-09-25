@@ -871,9 +871,9 @@ governed by the trough rather than by the bulk of the interval.
   state whether the printed percentage is `CV%` or `omega x 100`; for
   the smaller values (14-22%) the two readings differ by under 2%
   relative, but for the 85% IIV on piperacillin volume they differ
-  materially (`omega` 0.738 vs 0.850). The CV% reading is the convention
-  the skill’s translation rules specify, and it is the reading under
-  which the piperacillin PTA reproduces Table 1.
+  materially (`omega` 0.738 vs 0.850). The CV% reading is the package’s
+  standard convention for translating reported IIV percentages, and it
+  is the reading under which the piperacillin PTA reproduces Table 1.
 
 - **The meropenem BMI 45-50 non-renal clearance is deliberately not
   encoded.** Supplemental Table 6B reports `CL_NR for BMI 45-50` = 0.16

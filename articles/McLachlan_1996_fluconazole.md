@@ -357,17 +357,15 @@ rather than parameter tuning.
   for positive-constrained parameters. The paper’s Equation 1 instead
   uses a multiplicative-on-linear form `p_j = p_pop * (1 + g_pj)`. For
   the 41% CV reported on CL the two forms diverge moderately at the
-  tails; the log-normal form was chosen via the operator-resolved
-  sidecar (request-001, option A) because it guarantees
-  strictly-positive CL without clipping.
+  tails; the log-normal form was chosen by the maintainers because it
+  guarantees strictly-positive CL without clipping.
 - **Residual CL IIV after covariate adjustment is not reported by the
   paper.** The covariate analysis in the abstract reports
   `CL = 0.25 (33%) + 0.0057 (32%) * CLcr + 0.00068 (10%) * CD4 (cells/mm^3)`
   with brackets labelled “intersubject variability”; those values are
   not interpretable as a single residual CL IIV after the additive-slope
   adjustment. The base (no-covariate) NONMEM CL IIV of 41% from Table 2
-  is carried as a conservative upper bound, per the operator-resolved
-  sidecar.
+  is carried as a conservative upper bound, per a maintainer decision.
 - **CL intercept wrapped in log()**: `lcl <- log(0.25)` is used so that
   the structural intercept of the CL covariate model is
   positive-by-construction inside `model()`, even though the source

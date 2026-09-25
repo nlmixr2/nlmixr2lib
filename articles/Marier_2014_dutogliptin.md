@@ -889,7 +889,7 @@ stopifnot(all(claims$Holds))
   from. Per the standing rule that an unreported value is never replaced
   by a class-typical or extractor-chosen number, `tlag` is kept in
   `ini()` as `fixed(0)` so that the published structure stays visible
-  and a user can perturb it (operator ruling 2026-08-26). The
+  and a user can perturb it (maintainer ruling 2026-08-26). The
   consequence is that simulated Tmax is earlier than the true published
   model’s by the unreported lag; the earliest post-dose sampling time
   across the source studies is 0.25 h (PROT103, PROT104), which bounds
@@ -907,7 +907,7 @@ stopifnot(all(claims$Holds))
   admits only Vc/F 1167-1306 L, Vp/F 735-874 L and Q/F 70.2-91.6 L/h, so
   the solve is tightly bounded (about +/-6% on Vc/F and +/-13% on Q/F).
   This is a reporting-gap fill, not an override of any printed value
-  (operator ruling 2026-08-26).
+  (maintainer ruling 2026-08-26).
 - **Weight and race are applied to `Vss/F`, i.e. to `Vc/F` and `Vp/F`
   together.** The covariate-selection narrative says weight and race
   explained variability in `Vc/F` (Results, “Covariates Analysis”), but

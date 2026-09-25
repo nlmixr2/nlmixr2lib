@@ -495,7 +495,7 @@ infusion.
   constraint that a percentage cannot exceed 100%. Under form (a), the
   asymptote would be 106.04% \> 100%, which is impossible for a
   percentage. Users who suspect the original NONMEM control stream used
-  form (a) should sidecar-ask the corresponding author to confirm the
+  form (a) should ask the corresponding author to confirm the
   parameterisation; with form (a) the Emax estimate would need to be
   interpreted as `Emax_effect = Emax - E0 = 93.96%` rather than the
   reported 100%.

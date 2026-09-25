@@ -3310,8 +3310,8 @@ trough.</p>
 <p>Steady-state PKNCA on the last full dosing interval (day 5, hour
 96-108). Day-1 effects and prednisolone-induced reduction are at steady
 state in this window (POSTTX_DAY1 = 0 throughout). PKNCA computes
-Cmax,ss, Cmin,ss, Cavg,ss, and AUC0-tau per the convention in
-<code>references/pknca-recipes.md</code> (Recipe 3).</p>
+Cmax,ss, Cmin,ss, Cavg,ss, and AUC0-tau per the package’s standard
+steady-state PKNCA recipe.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tau</span>      <span class="op">&lt;-</span> <span class="fl">12</span></span>
 <span><span class="va">start_ss</span> <span class="op">&lt;-</span> <span class="fl">96</span></span>
@@ -3521,13 +3521,13 @@ ethnicity.</strong> The CYP3A5 <em>3/</em>3 frequency of 84.7% is
 consistent with a predominantly Caucasian cohort; the cohort is not
 stratified by ancestry in the source paper.</li>
 <li>
-<strong>Year mismatch with the task identifier.</strong> The task ID
-is <code>025-storset_2013</code> (so the worktree branch is
-<code>claude/025-storset_2013</code>), but the source publication
-appeared in Br J Clin Pharmacol 78(3) (2014; accepted 16 February 2014,
-published online 20 February 2014, in print September 2014). The model
-file and vignette use <code>Storset_2014_tacrolimus</code> as the
-canonical name to match the published year.</li>
+<strong>Year mismatch with the source metadata.</strong> The
+metadata this model was built from named the paper Storset 2013, but the
+source publication appeared in Br J Clin Pharmacol 78(3) (2014; accepted
+16 February 2014, published online 20 February 2014, in print September
+2014). The model file and vignette use
+<code>Storset_2014_tacrolimus</code> as the canonical name to match the
+published year.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

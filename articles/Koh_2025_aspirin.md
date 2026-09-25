@@ -168,7 +168,7 @@ packaged model file keeps the faithful `dur()` / `alag()` encoding.
 set.seed(20250822)
 
 MW   <- 180.157      # g/mol, acetylsalicylic acid
-NARM <- 200          # subjects per arm (skill cap)
+NARM <- 200          # subjects per arm (cohort cap)
 
 sim_ui <- suppressMessages(rxode2::model(ui, -dur(presystemic)))
 om     <- ui$omega
@@ -569,7 +569,7 @@ sim |>
 
 The paper does not publish an NCA table, but this model has two exact
 mass-balance identities that make far stricter tests than a median
-comparison (see `references/pknca-recipes.md` for the general recipes):
+comparison:
 
 - **ASA.** Systemic ASA is eliminated only by conversion to SA, and only
   the fraction `k23 / (k23 + k24)` of the dose reaches the ASA central

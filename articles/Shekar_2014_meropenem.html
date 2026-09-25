@@ -3005,8 +3005,8 @@ Table 2 final covariate-model column (the “Model Mean” column).</p>
 <tr class="odd">
 <td><code>tvcl &lt;- exp(lcl)*RRT_CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-RRT_CRRT_STATUS)</code></td>
 <td>n/a</td>
-<td>Methods page 5 covariate equation (operator-resolved interpretation;
-see Assumptions)</td>
+<td>Methods page 5 covariate equation (maintainer-resolved
+interpretation; see Assumptions)</td>
 </tr>
 <tr class="even">
 <td><code>d/dt(central) ... d/dt(peripheral1)</code></td>
@@ -3773,7 +3773,7 @@ g q8h) had been used to set the parameter values.</p>
 documented in the paper text (a different parameterization, a
 modality-blended CL combining the RRT and non-RRT branches, or a
 different model entirely) that produce the much weaker CrCL effect
-visible in the table. Per the skill workflow (“never tune parameters to
+visible in the table. Per the package’s rule (“never tune parameters to
 match a validation target”), the packaged model is left at the Table 2
 reported values; the Table 3 divergence is recorded here as a deviation
 rather than reconciled by re-parameterizing CL.</p>

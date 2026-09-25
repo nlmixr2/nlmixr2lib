@@ -2927,8 +2927,7 @@ day 5, fitted by unweighted nonlinear regression in GraphPad Prism 9.3.0
 <p>Because there is no PK layer, this vignette has no PKNCA section:
 there is no concentration-time profile to integrate and no simulated NCA
 parameter to compare against Table 2. The validation instead follows the
-pattern used for mechanistic and algebraic models in
-<code>references/endogenous-validation.md</code> – closed-form
+package’s pattern for mechanistic and algebraic models – closed-form
 agreement, anchor reproduction, monotonicity and boundedness, and a
 goodness-of-fit round trip against the paper’s own reported
 <code>r2</code>. The published NCA table is transcribed below for
@@ -3121,7 +3120,7 @@ the absolute plateau, and the displayed equation dropped the
 <p>The packaged model therefore encodes the four-parameter form</p>
 <pre><code><span><span class="va">reduction</span> <span class="op">=</span> <span class="va">e0</span> <span class="op">+</span> <span class="va">emax</span> <span class="op">*</span> <span class="va">AUC</span><span class="op">^</span><span class="va">hill</span> <span class="op">/</span> <span class="op">(</span><span class="va">auc50</span><span class="op">^</span><span class="va">hill</span> <span class="op">+</span> <span class="va">AUC</span><span class="op">^</span><span class="va">hill</span><span class="op">)</span></span></code></pre>
 <p>with <code>e0</code> = 1.81 recovered from Figure 5. This resolution
-was ratified by the operator (see Assumptions and deviations). The
+was ratified by the maintainers (see Assumptions and deviations). The
 <code>e0</code> term is not a fudge factor: in an uncontrolled
 single-arm study it is exactly the quantity the design cannot separate
 from drug effect – spontaneous viral clearance – which is why the
@@ -3700,11 +3699,10 @@ adding a baseline term <code>e0</code>.</strong> The paper’s Section 2.4
 prints a three-parameter sigmoid with no baseline. The packaged model is
 the four-parameter form
 <code>e0 + emax * AUC^hill / (auc50^hill + AUC^hill)</code>. This was
-escalated to the operator rather than decided silently, because
+escalated to the maintainers rather than decided silently, because
 recovering a value from a figure to <em>fill a reporting gap</em> is
 routine while using one to <em>override a printed structural claim</em>
-is not, and this act does both. It was ratified on 2026-08-31 (task
-<code>oare_PMC13022710</code>, sidecar request-001, option B) on the
+is not, and this act does both. It was ratified on 2026-08-31 on the
 evidence set out in “The printed equation versus Figure 5” above: the
 printed form cannot reproduce the paper’s own reported <code>r2</code>,
 and the four-parameter form additionally reproduces two further
@@ -3778,7 +3776,8 @@ single-output models already in the library
 (<code>Morganroth_2015_moxifloxacin.R</code> with <code>DDQTcF</code>,
 <code>Gong_2023_pemigatinib_creatinine.R</code> with
 <code>creatPctChange</code>). Promoting a
-<code>viral_loadReduction</code> canonical is left to the operator.</li>
+<code>viral_loadReduction</code> canonical is left to the
+maintainers.</li>
 <li>
 <strong>No PK layer, and therefore no PKNCA validation.</strong> See
 “What this paper contributes, and what it does not”. Downstream users

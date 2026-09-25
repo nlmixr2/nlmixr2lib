@@ -3164,8 +3164,7 @@ previously constructed parent model”, and Table 2 accordingly repeats
 <code>omega CL</code>, <code>omega V2</code> and the parent proportional
 error in the parent-metabolite block with <code>-</code> in both
 uncertainty columns. The final parent-metabolite model therefore
-<em>contains</em> the parent model exactly, so this is one model file
-(per <code>references/replicate-author-structure.md</code>, a
+<em>contains</em> the parent model exactly, so this is one model file (a
 base-plus-final development sequence extracts as the final model only).
 Simulating this model and reading only <code>Cc</code> reproduces the
 parent model; the carried-over parameters are wrapped in
@@ -3666,8 +3665,7 @@ from the published 2 / 9 / 7 / 12 counts at 23 / 24 / 25 / 26 weeks.</p>
 <span><span class="co"># NOT seed rxode2's simulation RNG, and rxode2's streams are partitioned per</span></span>
 <span><span class="co"># solver thread, so the eta draws differ between a 2-core CI runner and a</span></span>
 <span><span class="co"># many-threaded workstation. Every assertion downstream is therefore written</span></span>
-<span><span class="co"># to hold for any cohort the model can produce (see pattern 12 of</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md).</span></span>
+<span><span class="co"># to hold for any cohort the model can produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20241122</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">100L</span></span>

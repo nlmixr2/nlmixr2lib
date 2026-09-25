@@ -56,18 +56,17 @@ There is no `Model_Accomodations.text` shipped in this bundle; the
 publication identification comes from the `;` header at the top of
 `Executable_run32150.mod` (lines 1-3, citing Jonsson et al., AAC 2011,
 <doi:10.1128/AAC.00274-11>). The Jonsson 2011 publication itself is not
-on disk in this worktree, so a side-by-side comparison against the
-paper’s parameter table (Table 1) and PK figures (Figure 2) is out of
-scope here. What is in scope:
+on disk, so a side-by-side comparison against the paper’s parameter
+table (Table 1) and PK figures (Figure 2) is out of scope here. What is
+in scope:
 
 1.  The packaged model parameter values are byte-for-byte the
     `Output_real_run32150.lst` `FINAL PARAMETER ESTIMATE` block – i.e.,
     the very re-fit numbers the DDMORE submission pinned as the model’s
     canonical published values.
-2.  The validation here is the F.2 self-consistency check from the
-    extraction skill: re-simulate the bundle’s `Simulated_data.csv`
-    through this `rxode2`-translated model and overlay the result on the
-    bundle’s own `ODV` cloud.
+2.  The validation here is a self-consistency check: re-simulate the
+    bundle’s `Simulated_data.csv` through this `rxode2`-translated model
+    and overlay the result on the bundle’s own `ODV` cloud.
 
 ## Population
 
@@ -125,13 +124,13 @@ Per-parameter origin (also recorded as in-file comments next to each
 
 ## Virtual cohort
 
-The cohort used for the F.2 self-consistency overlay below mirrors the
-shape of the bundle’s `Simulated_data.csv` so the overlay is
-apples-to-apples: 189 subjects, all with WT = 47 kg (the bundle’s
-single-weight smoke-test design) and HIV = 0, dosed at 1000 mg every 24
-h to near-steady-state and sampled in the dose interval. The
-HIV-positive arm and the four-occasion IOV multiplexing are exercised in
-the dedicated subsections that follow.
+The cohort used for the self-consistency overlay below mirrors the shape
+of the bundle’s `Simulated_data.csv` so the overlay is apples-to-apples:
+189 subjects, all with WT = 47 kg (the bundle’s single-weight smoke-test
+design) and HIV = 0, dosed at 1000 mg every 24 h to near-steady-state
+and sampled in the dose interval. The HIV-positive arm and the
+four-occasion IOV multiplexing are exercised in the dedicated
+subsections that follow.
 
 ``` r
 
@@ -210,12 +209,12 @@ sim_typical <- rxode2::rxSolve(
 ## Self-consistency vs the bundle’s simulated dataset
 
 Because the original publication is not on disk, the validation here is
-the F.2 self-consistency check from the extraction skill: the
-typical-value trajectory of this `rxode2`-translated model should match
-the shape of the per-subject `ODV` cloud shipped in the bundle’s
-`Simulated_data.csv`. Per-subject exact matches are not expected – each
-NONMEM simulation subject draws its own ETAs and the combined EPS, which
-differ from the seeds drawn here.
+a self-consistency check: the typical-value trajectory of this
+`rxode2`-translated model should match the shape of the per-subject
+`ODV` cloud shipped in the bundle’s `Simulated_data.csv`. Per-subject
+exact matches are not expected – each NONMEM simulation subject draws
+its own ETAs and the combined EPS, which differ from the seeds drawn
+here.
 
 ``` r
 
@@ -453,19 +452,18 @@ ggplot(iov_summary, aes(tad, Q50, colour = factor(OCC))) +
 
 ## Assumptions and deviations
 
-- **The Jonsson 2011 publication is not on disk in this worktree.** The
-  package metadata (description, units, citation, DOI) reflects the
-  publication, but a side-by-side comparison against the published
-  parameter table (Jonsson 2011 Table 1) or PK figures (Figure 2) is out
-  of scope here. The validation in this vignette is restricted to the
-  F.2 self-consistency check against the bundle’s own
-  `Simulated_data.csv` plus mechanistic spot-checks on the HIV and IOV
-  covariate effects. Population demographics (`n_subjects = 189`,
-  `weight_range = 29-86 kg`, `age_range = 16-72 years`,
-  `sex_female_pct = 46%`, 12% HIV-positive, creatinine clearance 79
-  mL/min mean) are reproduced from the `DDMODEL00000220.rdf`
-  `model-has-description-long` field, which mirrors the paper’s
-  abstract.
+- **The Jonsson 2011 publication is not on disk.** The package metadata
+  (description, units, citation, DOI) reflects the publication, but a
+  side-by-side comparison against the published parameter table (Jonsson
+  2011 Table 1) or PK figures (Figure 2) is out of scope here. The
+  validation in this vignette is restricted to the self-consistency
+  check against the bundle’s own `Simulated_data.csv` plus mechanistic
+  spot-checks on the HIV and IOV covariate effects. Population
+  demographics (`n_subjects = 189`, `weight_range = 29-86 kg`,
+  `age_range = 16-72 years`, `sex_female_pct = 46%`, 12% HIV-positive,
+  creatinine clearance 79 mL/min mean) are reproduced from the
+  `DDMODEL00000220.rdf` `model-has-description-long` field, which
+  mirrors the paper’s abstract.
 - **`MINIMIZATION SUCCESSFUL` was qualified by NONMEM’s “HOWEVER,
   PROBLEMS OCCURRED WITH THE MINIMIZATION” advisory.**
   `Output_real_run32150.lst` reports `MINIMIZATION SUCCESSFUL` (line

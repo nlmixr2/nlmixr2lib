@@ -137,8 +137,7 @@ are both `nM`.
 
 # Deterministic solve. Both models declare `etalbmax ~ fixed(0)`, so an omega
 # exists but is a zero matrix; `omega = NA` suppresses IIV sampling cleanly
-# (see pattern 9 of known-vignette-failure-patterns.md -- omega = NA is only
-# valid because these models DO declare an eta).
+# (omega = NA is only valid because these models DO declare an eta).
 solve_det <- function(mod, ev, keep = character(0)) {
   rxode2::rxSolve(mod, ev, omega = NA, keep = keep, returnType = "data.frame")
 }

@@ -872,8 +872,8 @@ narrative checks exactly.
   immediately preceding paragraph). Table 2 reports residual variability
   as %CV (37.5% AS, 28.2% DHA), with corresponding log-scale variances
   0.141 and 0.080. By the standing convention in
-  `references/parameter-names.md`, NONMEM additive-on-log-scale residual
-  maps to nlmixr2 proportional residual in linear space, with
+  `inst/references/parameter-names.md`, NONMEM additive-on-log-scale
+  residual maps to nlmixr2 proportional residual in linear space, with
   `propSd = sqrt(omega^2)` (the SD on the log scale equals the CV in
   linear space to first order). The slight bias relative to the more
   accurate `propSd = sqrt(exp(omega^2) - 1)` mapping is \< 2% for both

@@ -174,8 +174,8 @@ make_cohort <- function(n, arm_label, dose_ug_per_kg, dur_days, start_day,
   # observation rows so rxode2's dvid mapping resolves. The observables
   # come AFTER all ODE states in this model, so referencing them as cmt =
   # does not renumber any state-referencing slot (the slot-renumbering
-  # bug described in known-vignette-failure-patterns.md section 2 only fires
-  # when downstream ODE-state references would be displaced).
+  # bug only fires when downstream ODE-state references would be
+  # displaced).
   obs_cc <- tidyr::expand_grid(
     tibble::tibble(id = ids, WT = WT),
     tibble::tibble(time = obs_grid_h)
@@ -475,8 +475,8 @@ check.
   use of `fixed()` on every estimate.
 
 - **Cohort size: 200 per arm**, not the 1000 per arm of the original
-  paper. 200 is the per-arm cap for this skill’s vignette budget and is
-  ample to visualise the survival benefit. Monte Carlo error on the
+  paper. 200 is the package’s per-arm cap for validation vignettes and
+  is ample to visualise the survival benefit. Monte Carlo error on the
   day-60 survival fraction is roughly +/-0.04 at this sample size; the
   published RSB of 1.51 is reproduced within Monte Carlo noise.
 
@@ -530,8 +530,7 @@ check.
 
 - **PKNCA validation is structural sanity-checking, not a per-table
   cross-check.** Harrold 2020 does not report classical NCA descriptors;
-  the inherited Melhem 2018 PK has its own validation in the
-  `Melhem_2018_*` extraction (queued separately). The PKNCA block above
-  confirms the simulated filgrastim PK lies in the published 5 ug/kg
-  s.c. exposure range; it is not a primary validation target of this
-  vignette.
+  the inherited Melhem 2018 PK has its own validation in the separate
+  `Melhem_2018_*` extraction. The PKNCA block above confirms the
+  simulated filgrastim PK lies in the published 5 ug/kg s.c. exposure
+  range; it is not a primary validation target of this vignette.

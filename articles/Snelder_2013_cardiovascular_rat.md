@@ -904,10 +904,10 @@ and no concentration-time profile of its own**: the six plasma
 concentrations are inputs, taken by the authors from six separate
 literature PK models whose parameter values the paper never publishes.
 There is nothing to integrate an AUC over. Validation therefore follows
-`references/endogenous-validation.md`: steady-state hold, the two
-published closed-form identities (Equations 3 and 5), flux balance,
-perturbation-recovery, and reproduction of the paper’s own Figure 6
-simulation.
+the package’s validation pattern for endogenous models: steady-state
+hold, the two published closed-form identities (Equations 3 and 5), flux
+balance, perturbation-recovery, and reproduction of the paper’s own
+Figure 6 simulation.
 
 ## Assumptions and deviations
 

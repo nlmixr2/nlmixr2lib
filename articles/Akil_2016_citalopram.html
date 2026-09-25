@@ -3127,8 +3127,7 @@ out.</p>
 <span><span class="co"># The ODE states, in declaration order. Observation rows in every event table</span></span>
 <span><span class="co"># below point at an ODE STATE (never at an algebraic observable such as</span></span>
 <span><span class="co"># `Cc_r_enant`), and carry an explicit `dvid` because the model declares four</span></span>
-<span><span class="co"># residual-error endpoints. See the compartment / dvid discussion in</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md.</span></span>
+<span><span class="co"># residual-error endpoints.</span></span>
 <span><span class="va">ui</span><span class="op">$</span><span class="va">state</span></span>
 <span><span class="co">#&gt; [1] "depot"                "central_r_enant"      "central_s_enant"     </span></span>
 <span><span class="co">#&gt; [4] "central_dcit_r_enant" "central_dcit_s_enant"</span></span></code></pre></div>
@@ -3979,11 +3978,10 @@ typical-value washout after the last dose, at the model’s centring
 covariates.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Terminal slope must be read from a window well after the washout transient,</span></span>
-<span><span class="co"># otherwise the fit absorbs the fast component and reads long -- pattern 11 of</span></span>
-<span><span class="co"># references/known-vignette-failure-patterns.md. The window is defined</span></span>
-<span><span class="co"># relatively, as concentrations between 0.1% and 5% of the value at the start</span></span>
-<span><span class="co"># of the washout, which is roughly 4 to 10 half-lives after the last dose for</span></span>
-<span><span class="co"># any analyte and stays far above solver noise.</span></span>
+<span><span class="co"># otherwise the fit absorbs the fast component and reads long. The window is</span></span>
+<span><span class="co"># defined relatively, as concentrations between 0.1% and 5% of the value at</span></span>
+<span><span class="co"># the start of the washout, which is roughly 4 to 10 half-lives after the last</span></span>
+<span><span class="co"># dose for any analyte and stays far above solver noise.</span></span>
 <span><span class="va">terminal_slope</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">keep</span> <span class="op">&lt;-</span> <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span></span>
 <span>  <span class="va">time</span> <span class="op">&lt;-</span> <span class="va">time</span><span class="op">[</span><span class="va">keep</span><span class="op">]</span>; <span class="va">Cc</span> <span class="op">&lt;-</span> <span class="va">Cc</span><span class="op">[</span><span class="va">keep</span><span class="op">]</span></span>
@@ -4338,9 +4336,9 @@ distinction available in the data, and partly because
 <code>CYP2C19_NON_EM</code>’s registered reference category is the
 homozygous <code>*1/*1</code> extensive metabolizer, whereas Akil 2016
 pools rapid metabolizers in with extensive metabolizers as the
-reference. <code>CYP2C19_MISSING</code> is registered in this PR as a
-new member of the established <code>&lt;COV&gt;_MISSING</code>
-family.</p></li>
+reference. <code>CYP2C19_MISSING</code> was registered as a new member
+of the established <code>&lt;COV&gt;_MISSING</code> family when this
+model was added.</p></li>
 <li><p><strong>Sex and genotype as ratios.</strong> Akil 2016 estimated
 one typical value per categorical level rather than a reference plus a
 shift. The model file re-expresses those as a reference level times the

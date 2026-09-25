@@ -2985,10 +2985,10 @@ and KD1 per <code>$PK</code> block</td>
 <p>The DDMORE bundle ships a <code>Simulated_SLD.csv</code> event
 dataset (336 subjects, ~16 records per subject, structured as
 cycle-start exposure events plus per-cycle SLD observations). Per the
-skill’s DDMORE-source guidance, that file is “intentionally minimal” and
-not directly representative of the publication’s clinical study; this
-vignette therefore builds a small virtual cohort that mimics the trial
-regimen at the structural level and lets the model generate the
+package’s DDMORE-source guidance, that file is “intentionally minimal”
+and not directly representative of the publication’s clinical study;
+this vignette therefore builds a small virtual cohort that mimics the
+trial regimen at the structural level and lets the model generate the
 trajectories.</p>
 <ul>
 <li>6 chemotherapy cycles, 21 days apart (<code>Q3W</code> carboplatin
@@ -3250,11 +3250,9 @@ pure-growth trajectory).</caption>
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
 <p>The validation strategy for this DDMORE-source extraction is
-<strong>mechanistic_sanity</strong> (per the per-task validation flag
-<code>validation:mechanistic_sanity</code>). Per
-<code>references/ddmore-source.md</code> Section <em>Validation strategy
-by model type</em>, the relevant checklist is
-<code>verification-checklist.md</code> Section F.3 (count / hazard /
+<strong>mechanistic_sanity</strong> (per the validation flag in the
+metadata this model was built from). For this model type, the relevant
+checks from the package’s validation checklist are F.3 (count / hazard /
 typical-trajectory) plus the F.2 self-consistency substitute, since the
 linked Zecchin 2016 publication was not directly on disk for this
 extraction:</p>
@@ -3328,9 +3326,9 @@ confirmed via PubMed E-utilities (PMID 27136318).</li>
 <strong>No in-bundle <code>Model_Accomodations.text</code>.</strong>
 The DDMORE bundle for <code>DDMODEL00000217</code> does not ship a
 <code>Model_Accomodations</code> reference file (one of the optional
-bundle artefacts described in <code>references/ddmore-source.md</code>).
-The publication mapping used here was reconstructed from the PubMed
-citation match for the task metadata.</li>
+bundle artefacts). The publication mapping used here was reconstructed
+from the PubMed citation match for the metadata this model was built
+from.</li>
 <li>
 <strong>M3 censored-likelihood handling omitted.</strong> The source
 <code>$ERROR</code> block uses the M3 method to handle below-LLOQ SLD
@@ -3387,7 +3385,7 @@ covariates beyond the time-varying drug-AUC inputs (no allometric weight
 scaling, no sex, no ECOG, no liver-metastasis indicator). The Zecchin
 2016 paper title mentions liver-metastasis effects but those operate on
 the survival / new-lesion sub-models (DDMODEL00000218, the companion
-task), not on the SLD model captured here.</li>
+extraction), not on the SLD model captured here.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

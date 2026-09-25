@@ -3405,7 +3405,7 @@ between-animal variability block as well as the structural model.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20151013</span><span class="op">)</span></span>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20151013</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># skill cap: never more than 200 participants per arm</span></span>
+<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># cohort cap: never more than 200 participants per arm</span></span>
 <span></span>
 <span><span class="va">make_arm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">op_mg_per_kg</span>, <span class="va">label</span>, <span class="va">id_offset</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>

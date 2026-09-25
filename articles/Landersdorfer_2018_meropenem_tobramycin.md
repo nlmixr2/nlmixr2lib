@@ -550,8 +550,8 @@ HFIM findings (Figure 4, Table 1). {.table}
   aeruginosa* strains. No PKNCA validation is performed (there is no
   drug NCA to compute); the mechanistic checks above replace it, per the
   endogenous / mechanistic validation strategy.
-- **File naming.** The dispatch metadata listed the drug as
-  “Antimicrobial Agents and Chemo”, which is the journal name
+- **File naming.** The metadata this model was built from listed the
+  drug as “Antimicrobial Agents and Chemo”, which is the journal name
   (Antimicrobial Agents and Chemotherapy), not a drug. The paper
   unambiguously models meropenem plus tobramycin against two strains, so
   the model files and this vignette use
@@ -575,9 +575,9 @@ HFIM findings (Figure 4, Table 1). {.table}
   `1 - Imax * Ctob^HillOM / (Ctob^HillOM + IC50_OM^HillOM)`. Table S3
   reports no estimate for HillOM, and the sibling Rees 2018 MBM (same
   group) uses the plain Emax form (HillOM = 1). We follow the Rees 2018
-  convention and use Emax (HillOM = 1). If a future operator obtains a
-  HillOM value from the authors, swap the `om_effect` line in `model()`
-  for the Hill form and add the parameter to `ini()`.
+  convention and use Emax (HillOM = 1). If a HillOM value is later
+  obtained from the authors, swap the `om_effect` line in `model()` for
+  the Hill form and add the parameter to `ini()`.
 - **k21 (replication rate constant) value.** The supplement states “k21
   was assumed to be fast” but does not report a numeric value. We fix
   k21 at 50/h, matching the Bulitta-group precedent (Rees 2018, AAC).

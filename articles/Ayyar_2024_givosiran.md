@@ -508,14 +508,14 @@ four dose arms.
   associated PD parameters S_max, SC_50, and k_deg_mRNA. The 22 PK ODEs
   are retained in full.
 - **Compartment naming partially deviates from
-  `naming-conventions.md`.** Canonical names `depot`, `central`,
-  `central_asn1` (parent + metabolite plasma), `target`, `complex`,
-  `complex_asn1` (free ASGPR + parent / metabolite-target complexes,
-  TMDD-style) are used where they apply. Mechanistic compartments with
-  no canonical mapping use paper-aligned snake-case names (`liv`,
-  `liv_asn1`, `liv_endo`, `liv_endo_asn1`, `liv_deep`, `liv_deep_asn1`,
-  `cyto`, `cyto_asn1`, `risc`, `kid_vas`, `kid_vas_asn1`, `kid`,
-  `kid_asn1`, `kid_deep`, `kid_deep_asn1`).
+  `inst/references/compartment-names.md`.** Canonical names `depot`,
+  `central`, `central_asn1` (parent + metabolite plasma), `target`,
+  `complex`, `complex_asn1` (free ASGPR + parent / metabolite-target
+  complexes, TMDD-style) are used where they apply. Mechanistic
+  compartments with no canonical mapping use paper-aligned snake-case
+  names (`liv`, `liv_asn1`, `liv_endo`, `liv_endo_asn1`, `liv_deep`,
+  `liv_deep_asn1`, `cyto`, `cyto_asn1`, `risc`, `kid_vas`,
+  `kid_vas_asn1`, `kid`, `kid_asn1`, `kid_deep`, `kid_deep_asn1`).
   `checkModelConventions("Ayyar_2024_givosiran")` flags the
   non-canonical names; the deviation is intentional, mirrors the
   precedent set by `Shah_2012_mAb_PBPK`, and is documented here rather

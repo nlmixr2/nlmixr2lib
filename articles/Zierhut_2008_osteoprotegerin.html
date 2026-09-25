@@ -2890,9 +2890,9 @@ subcutaneous Fc-OPG doses in healthy postmenopausal women, paired with a
 nine-week Fc-OPG-induced suppression of the urinary N-telopeptide (uNTX)
 bone-resorption biomarker. Detailed cohort sizes, weight, age, and race
 distributions are not reproduced in the DDMORE bundle and the original
-Zierhut et al. (2008) full-text article was not on disk in this worktree
-at the time of extraction; cohort-level demographics are therefore not
-populated in the model’s <code>population</code> metadata. The bundle’s
+Zierhut et al. (2008) full-text article was not on disk at the time of
+extraction; cohort-level demographics are therefore not populated in the
+model’s <code>population</code> metadata. The bundle’s
 <code>Vignette_opg.R</code> (the worked-example script used to generate
 the shipped <code>Simulated_opg.txt</code> regression dataset) simulates
 a single 3 mg/kg SC dose in 50 typical 70 kg subjects, which is the
@@ -3284,12 +3284,14 @@ SC scenario simulated above. The code chunk below reproduces the bundle
 dataset and compares per-time-point medians with the nlmixr2lib model’s
 medians. The bundle dataset is shipped under the DDMORE Foundation Model
 Repository directory and is not redistributed inside the package; the
-chunk is therefore guarded with <code>eval = file.exists(...)</code> so
-the vignette renders cleanly when the bundle is not present on disk.</p>
+chunk is therefore not evaluated by default (<code>eval = FALSE</code>,
+with a file-existence check inside) so the vignette renders cleanly when
+the bundle is not present on disk.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bundle_path</span> <span class="op">&lt;-</span> <span class="st">"/home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/233/Simulated_opg.txt"</span></span>
+<code class="sourceCode R"><span><span class="va">bundle_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NLMIXR2LIB_LITERATURE_DIR"</span>, <span class="st">""</span><span class="op">)</span>,</span>
+<span>                         <span class="st">"ddmore_scraping/233/Simulated_opg.txt"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">bundle_path</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NLMIXR2LIB_LITERATURE_DIR"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">bundle_path</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">bundle</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">bundle_path</span><span class="op">)</span></span>
 <span>  <span class="va">bundle_med</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">NTX</span>, <span class="va">PKDV</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">bundle</span>, FUN <span class="op">=</span> <span class="va">median</span><span class="op">)</span></span>
 <span>  <span class="va">ours_med</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">NTX</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">sim</span>,    FUN <span class="op">=</span> <span class="va">median</span><span class="op">)</span></span>
@@ -3438,11 +3440,11 @@ table above).</p>
 <li>
 <strong>Original publication not on disk.</strong> Zierhut et
 al. (2008, J. Pharmacokinet. Pharmacodyn. 35(4):379-99, <a href="https://doi.org/10.1007/s10928-008-9093-5" class="external-link">doi:10.1007/s10928-008-9093-5</a>)
-was not available on disk in this worktree at extraction time, so a
-side-by-side comparison of the simulated PK and PD trajectories against
-the published Figure 4 / Figure 5 (or any published table of parameter
-estimates) was not performed. The validation strategy is therefore the
-F.2 self-consistency check against the bundle’s
+was not available on disk at extraction time, so a side-by-side
+comparison of the simulated PK and PD trajectories against the published
+Figure 4 / Figure 5 (or any published table of parameter estimates) was
+not performed. The validation strategy is therefore the F.2
+self-consistency check against the bundle’s
 <code>Simulated_opg.txt</code> plus the F.3 mechanistic-sanity checks
 above. The bundle’s <code>Model_Accommodations.txt</code> asserts “There
 are no model differences” relative to the publication, and the

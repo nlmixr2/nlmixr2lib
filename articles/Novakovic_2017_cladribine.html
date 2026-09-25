@@ -2901,12 +2901,11 @@ both listings.</li>
 <code>DDMODEL00000223.rdf</code>, <code>Command.txt</code>,
 <code>223.json</code> – provenance and scraper metadata.</li>
 </ul>
-<p>The Novakovic 2017 publication is not on disk in this worktree, so
-the validation here cannot replicate the published figures or NCA-style
-endpoints directly; instead it walks through mechanistic-sanity checks
-on the typical-value trajectory and the per-item baseline category
-probabilities (the <a href="../../.claude/skills/extract-literature-model/SKILL.html"><code>extract-literature-model</code>
-skill</a> F.3 IRT validation path).</p>
+<p>The Novakovic 2017 publication is not on disk, so the validation here
+cannot replicate the published figures or NCA-style endpoints directly;
+instead it walks through mechanistic-sanity checks on the typical-value
+trajectory and the per-item baseline category probabilities (the F.3 IRT
+validation path).</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3571,10 +3570,10 @@ EDSS subscores. Median (line) plus 5-95th percentile band (ribbon).
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
-<p>The DDMORE-source extraction skill renders this section under an
-“Assumptions and deviations” heading rather than the more pejorative
-“Errata” – the items below are informational caveats about the bundle
-and the translation choices, not errors in the bundle itself.</p>
+<p>For DDMORE-source models this section is headed “Assumptions and
+deviations” rather than the more pejorative “Errata” – the items below
+are informational caveats about the bundle and the translation choices,
+not errors in the bundle itself.</p>
 <ul>
 <li><p><strong>MINIMIZATION TERMINATED status.</strong> The bundle’s
 <code>Output_real_*.lst</code> reports
@@ -3584,17 +3583,16 @@ high-dimensional shallow optimum. The .lst FINAL PARAMETER ESTIMATE
 values match the .mod $THETA initial values to 3 sig figs, consistent
 with the bundle being deposited with the published final estimates as
 initial values and the .lst run being a re-fit from those values that
-converged but flagged the shallow optimum. The operator decision
-(sidecar response 001) was to use these values as the final estimates
-and document the convergence status here as informational rather than
-skip the task.</p></li>
+converged but flagged the shallow optimum. The maintainers decided to
+use these values as the final estimates and document the convergence
+status here as informational rather than drop the model.</p></li>
 <li><p><strong>No on-disk publication.</strong> The Novakovic 2017
-publication is not on disk in this worktree, so the side-by-side
-comparison against the published figures (e.g., per-item probability
-curves, latent disability trajectories by treatment arm) is not done
-here. The validation is the F.3 mechanistic-sanity path: typical-value
-trajectory closed-form check, treatment vs placebo monotonicity,
-per-item probability validity, FREM mean recovery.</p></li>
+publication is not on disk, so the side-by-side comparison against the
+published figures (e.g., per-item probability curves, latent disability
+trajectories by treatment arm) is not done here. The validation is the
+F.3 mechanistic-sanity path: typical-value trajectory closed-form check,
+treatment vs placebo monotonicity, per-item probability validity, FREM
+mean recovery.</p></li>
 <li><p><strong>FREM observations as outputs rather than fit-time
 tricks.</strong> The source <code>.mod</code> treats Age, MSD, and EXNB
 as RTYPE=1/2/3 rows in the estimation dataset with
@@ -3606,8 +3604,8 @@ translation here, those equations are exposed as three model outputs
 with <code>addSd = sqrt(1e-5)</code> fixed additive error. This
 preserves the ability to simulate the FREM outputs alongside the IRT
 trajectory without forcing the user to fabricate Age / MSD / EXNB
-“observations” in the event dataset. The operator chose this scope over
-the IRT-only variant in the sidecar response.</p></li>
+“observations” in the event dataset. The maintainers chose this scope
+over the IRT-only variant.</p></li>
 <li><p><strong>Cholesky decomposition rendered as a covariance
 BLOCK.</strong> The .mod <code>$PRED</code> block computes the 5x5
 latent covariance via an explicit Cholesky decomposition (lines 35-65)
@@ -3653,13 +3651,10 @@ subjects.</p></li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="branch-commit-info">Branch / commit info<a class="anchor" aria-label="anchor" href="#branch-commit-info"></a>
+<h2 id="related-models">Related models<a class="anchor" aria-label="anchor" href="#related-models"></a>
 </h2>
-<p>This vignette was added in commit on branch
-<code>claude/023-novakovic_2017_cladribine</code>. See the
-<code>inst/modeldb/ddmore/</code> directory for the sibling
-DDMORE-source extractions and the <a href="../../.claude/skills/extract-literature-model/SKILL.html"><code>extract-literature-model</code>
-skill</a> for the workflow this task followed.</p>
+<p>See the <code>inst/modeldb/ddmore/</code> directory for the sibling
+DDMORE-source extractions.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

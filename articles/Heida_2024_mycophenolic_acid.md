@@ -418,7 +418,7 @@ Development of an improved starting dose) and truncated to the observed
 # rxode2's simulation RNG, and rxode2's streams are partitioned per solver
 # thread, so the etas differ between a 16-thread workstation and a 2-core CI
 # runner. Every assertion downstream is written to hold for any cohort the
-# model can produce; see pattern 12 of known-vignette-failure-patterns.md.
+# model can produce.
 # The RNG kind is pinned explicitly so the covariate draws -- which the gated
 # typical-value comparison depends on -- stay identical across R versions.
 set.seed(20240817, kind = "Mersenne-Twister", normal.kind = "Inversion")

@@ -150,9 +150,9 @@ admissible range `0 < ku < 1`, `gr > 0`, `EN > 0`):
 
 ## Validation strategy
 
-The Terranova 2018 publication was paywalled and **not on disk in this
-worktree** (Elsevier J Theor Biol full-text access at extraction time
-was redirect-only via `linkinghub.elsevier.com`, and no PDF or PMC
+The Terranova 2018 publication was paywalled and **not on disk when this
+model was built** (Elsevier J Theor Biol full-text access at extraction
+time was redirect-only via `linkinghub.elsevier.com`, and no PDF or PMC
 mirror was available locally), so the standard publication-figure
 replication and PKNCA-vs-published-NCA checks are out of scope. The
 model itself is preclinical, mouse-specific, and DEB-mechanistic, so
@@ -160,8 +160,7 @@ PKNCA on paclitaxel central concentration is not the natural validation
 either.
 
 The validation in this vignette therefore follows the F.2 / F.3
-substitutes from the extraction skill (
-`.claude/skills/extract-literature-model/references/verification-checklist.md`):
+substitutes in the package’s validation checklist:
 
 1.  **Mechanistic sanity (constant-state hold).** With paclitaxel
     exposure suppressed (no doses), the structural-body component
@@ -524,9 +523,9 @@ sim_treated |>
   rule in the verification checklist is moot for this bundle.
 
 - **Linked publication is paywalled.** The Terranova 2018 paper (J Theor
-  Biol 450:1-14, <doi:10.1016/j.jtbi.2018.04.012>) was not on disk in
-  this worktree at extraction time. Elsevier’s full-text URL redirects
-  via `linkinghub.elsevier.com` and was not accessible without a
+  Biol 450:1-14, <doi:10.1016/j.jtbi.2018.04.012>) was not on disk at
+  extraction time. Elsevier’s full-text URL redirects via
+  `linkinghub.elsevier.com` and was not accessible without a
   subscription, and no PMC mirror exists for this journal. The `.ctl`
   parameter values were therefore not cross-checked against published
   tables. The packaged `population` metadata records only what the

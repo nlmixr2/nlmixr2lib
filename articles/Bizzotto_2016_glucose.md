@@ -128,10 +128,11 @@ The constants `VHL = 700` mL/m^2, `deltaHL = 15` /min, and `delta = 10`
 
 ## Validation strategy
 
-The Bizzotto 2016 publication is **not on disk in this worktree**, so
-the standard publication-figure replication and PKNCA-vs-published-NCA
-checks are out of scope. The validation in this vignette therefore
-follows the F.2 / F.3 substitutes from the extraction skill:
+The Bizzotto 2016 publication was **not on disk when this model was
+built**, so the standard publication-figure replication and
+PKNCA-vs-published-NCA checks are out of scope. The validation in this
+vignette therefore uses mechanistic-sanity and self-consistency
+substitutes:
 
 1.  **Mechanistic sanity (constant inputs).** Holding plasma insulin and
     glucose constant at typical fasting values must drive the
@@ -450,9 +451,9 @@ columns, and pass the result to
 - **Bizzotto 2016 publication is not on disk.** The packaged model’s
   `reference` field carries the citation and DOI, and the parameter
   values in the `.mdl` are annotated as the publication’s final
-  estimates; however, no PDF of Bizzotto et al. is available in this
-  worktree, so the in-vignette validation is restricted to mechanistic
-  sanity (Sections 1-3) and a textual description of the F.2
+  estimates; however, no PDF of Bizzotto et al. was available when this
+  model was built, so the in-vignette validation is restricted to
+  mechanistic sanity (Sections 1-3) and a textual description of the
   self-consistency path (Section 4) rather than a side-by-side
   comparison against the published parameter table or Figure 3
   trajectories. Demographic detail is recorded as `NA` in `population`

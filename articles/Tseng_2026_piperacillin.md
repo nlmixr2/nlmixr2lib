@@ -187,7 +187,7 @@ points.
 
 ``` r
 
-n_per_arm <- 200  # skill cap: never more than 200 participants per arm
+n_per_arm <- 200  # cohort cap: never more than 200 participants per arm
 eta_grid <- qnorm((seq_len(n_per_arm) - 0.5) / n_per_arm, sd = 0.35)
 c(n = length(eta_grid), mean = mean(eta_grid), sd = sd(eta_grid))
 #>            n         mean           sd 
@@ -997,7 +997,7 @@ standard regimen of 4500 mg every 6 hours as a 1-hour infusion.
 rxode2::rxSetSeed(20260901)
 set.seed(20260901)
 
-n_nca <- 200  # skill cap: 200 per arm
+n_nca <- 200  # cohort cap: 200 per arm
 # Lognormal eGFR with median 109.5 and an interquartile range of 36
 # (Q1 ~ 91.5, Q3 ~ 127.5), per Table 1.
 sd_log_egfr <- log(127.5 / 91.5) / (2 * qnorm(0.75))

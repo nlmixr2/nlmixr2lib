@@ -52,11 +52,11 @@ point values used to drive the simulation; there is no
 `Output_real_*.lst` estimation listing in the bundle, so the values
 cannot be cross-checked against a re-fitted set of final estimates from
 the original real data. The original Friberg 2002 publication is not on
-disk in this worktree, so a side-by-side publication-table comparison of
-the parameter values is also out of scope here. The validation in this
-vignette is therefore the F.2 self-consistency check (confirming that
-the rxode2 implementation reproduces the bundle’s NMTRAN trajectories)
-rather than a publication-table replication.
+disk, so a side-by-side publication-table comparison of the parameter
+values is also out of scope here. The validation in this vignette is
+therefore the F.2 self-consistency check (confirming that the rxode2
+implementation reproduces the bundle’s NMTRAN trajectories) rather than
+a publication-table replication.
 
 ## Population
 
@@ -176,13 +176,11 @@ sim_typical <- rxode2::rxSolve(
 
 ## Mechanistic sanity check
 
-Per the F.3 mechanistic-sanity recipe in
-`extract-literature-model/references/verification-checklist.md` and the
-DDMORE-source decision tree in `references/ddmore-source.md` (no
-PKNCA-amenable PK output, no on-disk publication for a published-NCA
-comparison), validation here is restricted to confirming that the
-typical-value trajectory matches the canonical Friberg myelosuppression
-shape:
+Per the F.3 mechanistic-sanity check in the package’s validation
+checklist and its approach for DDMORE-sourced models (no PKNCA-amenable
+PK output, no on-disk publication for a published-NCA comparison),
+validation here is restricted to confirming that the typical-value
+trajectory matches the canonical Friberg myelosuppression shape:
 
 1.  baseline circulating leukocytes hold at `CIRC0` before drug
     administration;
@@ -325,12 +323,12 @@ sim_bundle <- rxode2::rxSolve(
   reaches `MINIMIZATION SUCCESSFUL` and recovers these values to three
   significant figures, consistent with a well-specified self-consistency
   check, but it is not an independent numerical confirmation.
-- **The Friberg 2002 publication is not on disk in this worktree.** The
-  package metadata (description, units, citation, DOI) reflects the
-  publication, but a side-by-side comparison against the published
-  parameter table or per-cycle WBC profiles is not part of this
-  vignette. The validation here is restricted to the F.2 / F.3
-  self-consistency and mechanistic-sanity checks against the bundle.
+- **The Friberg 2002 publication is not on disk.** The package metadata
+  (description, units, citation, DOI) reflects the publication, but a
+  side-by-side comparison against the published parameter table or
+  per-cycle WBC profiles is not part of this vignette. The validation
+  here is restricted to the F.2 / F.3 self-consistency and
+  mechanistic-sanity checks against the bundle.
 - **Bundle implements only the paclitaxel + leukocyte sub-fit.** Per
   `Model_Accommodations.txt`, the publication develops the model on six
   drugs (docetaxel, paclitaxel, etoposide, DMDC, CPT-11, vinflunine) for

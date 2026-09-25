@@ -239,8 +239,9 @@ ggplot(dog_sim, aes(time, Cc, colour = treatment)) +
 
 ## PKNCA validation against Sharma 2018 Table 2
 
-Per `pknca-recipes.md`, the formula carries a treatment grouping so the
-comparison can be made per-dose against the paper’s NCA table.
+Following the package’s standard PKNCA recipe, the formula carries a
+treatment grouping so the comparison can be made per-dose against the
+paper’s NCA table.
 
 ``` r
 
@@ -511,5 +512,5 @@ ggplot(human_iv, aes(time, Cc)) +
   exponents come from Fig. 5 (R^2 = 0.91-0.99 across CL / V1 / V2 /
   CLD).
 - **Errata.** A search of the PLOS ONE landing page and a PubMed search
-  for “Sharma 2018 SHetA2 erratum” on the task-execution date returned
-  no errata or corrections.
+  for “Sharma 2018 SHetA2 erratum” when this model was built returned no
+  errata or corrections.

@@ -286,8 +286,7 @@ sim_nca <- sim_fig3 |>
   select(id, time, Cc, scenario)
 
 # Defensive time-zero row per (id, scenario) -- extravascular pre-dose
-# concentration is 0. (Required by PKNCA AUC0-* anchoring; see
-# pknca-recipes.md "Time-zero records (mandatory)".)
+# concentration is 0. (Required by PKNCA AUC0-* anchoring.)
 sim_nca <- bind_rows(
   sim_nca,
   sim_nca |> distinct(id, scenario) |> mutate(time = 0, Cc = 0)

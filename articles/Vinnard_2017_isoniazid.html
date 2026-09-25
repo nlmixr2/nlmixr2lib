@@ -3988,7 +3988,7 @@ point.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>auc_pct <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">aucinf.obs</span> <span class="op">-</span> <span class="va">aucinf.obs_ref</span><span class="op">)</span> <span class="op">/</span> <span class="va">aucinf.obs_ref</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Cohort-derived, so assert on the CENTRE rather than on any subject's extreme</span></span>
-<span><span class="co"># (see the repo CLAUDE.md note on thread-fragile assertions). Realised</span></span>
+<span><span class="co"># Realised</span></span>
 <span><span class="co"># |auc_pct| was at most 3.9% across all three arms at 2 threads and 3.7% at 16;</span></span>
 <span><span class="co"># the residual is trapezoidal error on a peak that Tmax reaches in under an</span></span>
 <span><span class="co"># hour, not cohort noise. A bound of 12 leaves room for a different cohort draw</span></span>

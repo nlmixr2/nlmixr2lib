@@ -3140,11 +3140,7 @@ plot.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Zandvliet_2016_corifollitropin_alfa"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Stochastic VPC for the time-course plot. `` keeps</span></span>
-<span><span class="co"># rxode2 from auto-converting the ODE system to its linear-compartment</span></span>
-<span><span class="co"># fast path, which silently breaks the multi-output dvid-&gt;cmt mapping</span></span>
-<span><span class="co"># for models with two algebraic observables on different ODE-state</span></span>
-<span><span class="co"># subsets (see known-vignette-failure-patterns.md pattern 5b).</span></span>
+<span><span class="co"># Stochastic VPC for the time-course plot.</span></span>
 <span><span class="va">sim_vpc</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
@@ -3223,8 +3219,7 @@ effects.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Guarantee a time = 0 row per (id, cohort); pre-dose extravascular</span></span>
-<span><span class="co"># Cc = 0 is the correct value. (See pknca-recipes.md "Time-zero</span></span>
-<span><span class="co"># guarantee".)</span></span>
+<span><span class="co"># Cc = 0 is the correct value.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca</span>,</span>
 <span>  <span class="va">sim_nca</span> <span class="op">|&gt;</span> <span class="fu">distinct</span><span class="op">(</span><span class="va">id</span>, <span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -3445,7 +3440,7 @@ with the printed CI. The model file uses the face-value 29% CV
 (<code>omega^2 = log(0.29^2 + 1) = 0.08074</code>) on the KeFSH eta. The
 IIV on KeFSH affects only the endogenous-FSH submodel decay rate and
 does not appear in the typical-value Cmax / AUC / half-life comparison
-above. If a future operator recovers the original NONMEM
+above. If a future maintainer recovers the original NONMEM
 <code>.lst</code> file or an author correction, update the model file
 accordingly.</li>
 <li>The scaling factor SCALE = 6.11 IU/L per ng/mL is a fixed assay-

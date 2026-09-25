@@ -688,5 +688,5 @@ successful healthy-lung extrapolation to rats and dogs.
 
 **Caseum compartment naming.** `caseum1` to `caseum6` are declared
 through `paper_specific_compartments` rather than as canonical
-compartments, pending operator ratification of a `caseum<n>` canonical
+compartments, pending maintainer ratification of a `caseum<n>` canonical
 chain prefix in `inst/references/compartment-names.md`.

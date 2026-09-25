@@ -2899,11 +2899,9 @@ headline methodological contribution.</li>
 listing (<code>Output_real_CPathAD.lst</code>) and a simulated-dataset
 companion (<code>Output_simulated_CPathAD.lst</code> and
 <code>Simulated_data_CPathAD.csv</code>). The linked publication PDF was
-not on disk in
-<code>/home/bill/github/mab_human_consensus/literature/</code> at
-extraction time, so an external cross-check against the published
-parameter table was not performed; see the Errata section for the full
-deviation list.</p>
+not on disk in the maintainers’ literature mirror at extraction time, so
+an external cross-check against the published parameter table was not
+performed; see the Errata section for the full deviation list.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3059,10 +3057,10 @@ natural-slope) scales.</p>
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
 </h2>
-<p>For the typical-value F.3 mechanistic-sanity check we simulate a
-single typical-value subject (female, 75 years, mean APOE-epsilon4
-count, on concomitant AD medication) over the 5-year disease-progression
-follow-up window at quarterly observation times.</p>
+<p>For the typical-value mechanistic-sanity check we simulate a single
+typical-value subject (female, 75 years, mean APOE-epsilon4 count, on
+concomitant AD medication) over the 5-year disease-progression follow-up
+window at quarterly observation times.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span> <span class="op">*</span> <span class="fl">365.25</span>, by <span class="op">=</span> <span class="fl">91</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">events</span><span class="op">$</span><span class="va">AGE</span>         <span class="op">&lt;-</span> <span class="fl">75</span></span>
@@ -3272,7 +3270,7 @@ parameterisation and is what motivates the publication’s choice over a
 linear-progression form.</p>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-check-f-3-covariate-effect-directions">Mechanistic-sanity check (F.3): covariate-effect directions<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-check-f-3-covariate-effect-directions"></a>
+<h2 id="mechanistic-sanity-check-covariate-effect-directions">Mechanistic-sanity check: covariate-effect directions<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-check-covariate-effect-directions"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_typical</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">age</span>, <span class="va">sexf</span>, <span class="va">apoe4</span>, <span class="va">conmed_ad</span>, <span class="va">label</span><span class="op">)</span> <span class="op">{</span></span>
@@ -3381,7 +3379,7 @@ medication itself.</li>
 </table>
 </div>
 <div class="section level2">
-<h2 id="self-consistency-check-f-2-bundle-simulated-dataset">Self-consistency check (F.2): bundle simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-check-f-2-bundle-simulated-dataset"></a>
+<h2 id="self-consistency-check-bundle-simulated-dataset">Self-consistency check: bundle simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-check-bundle-simulated-dataset"></a>
 </h2>
 <p>The DDMORE bundle ships <code>Simulated_data_CPathAD.csv</code> – a
 simulated event dataset (4,493 subjects, ~58k rows) generated from the
@@ -3393,18 +3391,12 @@ representative slice of subjects through the nlmixr2lib model and verify
 the typical-value trajectory aligns with the bundle’s per-subject
 ADAS-Cog/70 distribution at each scheduled visit.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bundle_csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"ddmore_bundles"</span>, <span class="st">"DDMODEL00000290"</span>,</span>
-<span>  <span class="st">"Simulated_data_CPathAD.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"nlmixr2lib"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># The DDMORE bundle is not shipped with the package. Maintainers who hold a</span></span>
+<span><span class="co"># copy point NLMIXR2LIB_LITERATURE_DIR at it; otherwise the overlay is skipped.</span></span>
+<span><span class="va">lit_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NLMIXR2LIB_LITERATURE_DIR"</span>, <span class="st">""</span><span class="op">)</span></span>
+<span><span class="va">bundle_csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">lit_dir</span>, <span class="st">"ddmore_scraping/290/Simulated_data_CPathAD.csv"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># When the bundle is not installed alongside the package, fall back to the</span></span>
-<span><span class="co"># external scraping mirror under /home/bill/github/mab_human_consensus.</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">bundle_csv</span><span class="op">)</span> <span class="op">||</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">bundle_csv</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">bundle_csv</span> <span class="op">&lt;-</span> <span class="st">"/home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/290/Simulated_data_CPathAD.csv"</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">bundle_csv</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">lit_dir</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">bundle_csv</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">bundle</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">bundle_csv</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                            na.strings <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span>
 <span>  <span class="co"># Keep only the few columns we need; drop dropout-flag rows where no</span></span>
@@ -3530,9 +3522,9 @@ frame.</p>
 <li><p><strong>No PKNCA validation.</strong> This is a
 disease-progression model, not a PK or PK/PD model – there is no drug
 input, no concentration-time profile, and no NCA-amenable summary
-parameter. The validation strategy uses the F.3 mechanistic-sanity
-recipes (typical-value Richards trajectory, covariate-effect directions)
-plus the F.2 self-consistency check against the bundle’s simulated
+parameter. The validation strategy uses mechanistic-sanity checks
+(typical-value Richards trajectory, covariate-effect directions) plus
+the self-consistency check against the bundle’s simulated
 dataset.</p></li>
 <li><p><strong>Study-level random effects dropped.</strong> The source
 paper’s headline methodological contribution is the addition of a
@@ -3594,11 +3586,11 @@ bounded outcome’s scale and range; users loading the model should
 interpret <code>mur</code> x 70 as the model’s prediction of the
 ADAS-Cog total score on the 0-70 scale.</p></li>
 <li><p><strong>Linked publication PDF not on disk.</strong> The Conrado
-2014 publication (<a href="doi:10.1007/s10928-014-9375-z" class="uri">doi:10.1007/s10928-014-9375-z</a>) was not on disk in
-<code>/home/bill/github/mab_human_consensus/literature/</code> at
-extraction time. Final-estimate values were taken directly from the
-bundle’s <code>Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE</code>
-block (after <code>MINIMIZATION SUCCESSFUL</code>); the bundle’s
+2014 publication (<a href="doi:10.1007/s10928-014-9375-z" class="uri">doi:10.1007/s10928-014-9375-z</a>) was not on disk in the
+maintainers’ literature mirror at extraction time. Final-estimate values
+were taken directly from the bundle’s
+<code>Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE</code> block
+(after <code>MINIMIZATION SUCCESSFUL</code>); the bundle’s
 <code>.mod</code> <code>$THETA</code> initial values are within ~3% of
 the .lst final values, consistent with a converged minimisation. An
 external cross-check of these final estimates against the publication’s

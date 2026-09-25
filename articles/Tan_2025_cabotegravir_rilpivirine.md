@@ -515,7 +515,7 @@ visit.
 # seed rxode2's simulation RNG, and rxode2's streams are partitioned per solver
 # thread, so the etas differ between a 2-core CI runner and a 16-thread
 # workstation. Every assertion downstream is written to hold for any cohort the
-# model can produce (see known-vignette-failure-patterns.md pattern 12).
+# model can produce.
 set.seed(20251030)
 
 N_MALE <- 200L

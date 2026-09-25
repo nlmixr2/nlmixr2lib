@@ -256,8 +256,7 @@ c(max_relative_error = max(rel_err))
 #>       1.483299e-06
 
 # Pure numerical error between two exact representations of the same system,
-# so a tight bound is correct here (both sides use the same drawn parameters;
-# see CLAUDE.md on when tight all() bounds apply).
+# so a tight bound is correct here (both sides use the same drawn parameters).
 stopifnot(max(rel_err) < 1e-4)
 ```
 
@@ -504,7 +503,7 @@ boundaries. See Errata.
 
 ``` r
 
-n_per_arm <- 200L   # cap per the skill's 200-per-arm limit
+n_per_arm <- 200L   # the 200-subject per-arm cohort cap
 
 set.seed(20240101L)
 sigma2 <- log(1 + (60.95 / 104.59)^2)

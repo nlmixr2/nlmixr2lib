@@ -3314,8 +3314,8 @@ zeroed: one subject per published cell, 24 cells in total. This is the
 vignette’s primary quantitative gate.</p>
 <p><strong>Cohort V (stochastic).</strong> A 200-subject-per-arm cohort
 with sampled weight and sex, used for the concentration-time figure and
-for the minimal-accumulation check. 200 per arm is the skill’s cap and
-is ample here.</p>
+for the minimal-accumulation check. 200 per arm is the package’s cohort
+cap and is ample here.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tau</span>     <span class="op">&lt;-</span> <span class="fl">24</span>    <span class="co"># daily subcutaneous dosing</span></span>
 <span><span class="va">n_doses</span> <span class="op">&lt;-</span> <span class="fl">10L</span>   <span class="co"># ample for a drug whose longest typical t1/2 is ~5.4 h</span></span>
@@ -3618,9 +3618,8 @@ tight gate.</p>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>Steady-state NCA over the final dosing interval of the typical-value
-grid (recipe 3 of <code>pknca-recipes.md</code>). The grouping variable
-is the sex-by-weight-by-dose-by-site arm, which is exactly the
-stratification of Table VII.</p>
+grid. The grouping variable is the sex-by-weight-by-dose-by-site arm,
+which is exactly the stratification of Table VII.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_t</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

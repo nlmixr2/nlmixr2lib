@@ -569,13 +569,12 @@ is no Monte-Carlo noise in this block).
   single-subgroup indicator together with a derived `race_asian_nonind`
   flag computed in `model()` as `RACE_ASIAN * (1 - RACE_INDIAN)`. The
   two new race canonicals (`RACE_IND_CHI_TWN`, `RACE_KOREAN`) were
-  ratified by the operator on sidecar 2026-06-21 (request-002, option
-  B); `RACE_INDIAN` was added in the same extraction as a natural
-  analogue of `RACE_KOREAN` for the BIBF 1202 Indian-alone effect (the
-  BIBF 1202 covariate was not part of the original Q1 prompt because the
-  supplement containing Table S5 was not yet on disk when sidecar-002
-  was filed; the supplement was acquired during the current extraction
-  run from
+  ratified by the maintainers on 2026-06-21; `RACE_INDIAN` was added in
+  the same extraction as a natural analogue of `RACE_KOREAN` for the
+  BIBF 1202 Indian-alone effect (the BIBF 1202 covariate was not part of
+  the original ratification request because the supplement containing
+  Table S5 was not yet available when that request was made; the
+  supplement was acquired during this extraction from
   <https://static-content.springer.com/esm/art%3A10.1007%2Fs00280-017-3452-0/MediaObjects/280_2017_3452_MOESM1_ESM.docx>).
 - **ECOG performance status for IPF patients is encoded as
   `ECOG_GE1 = 0`.** Schmid 2017 Table 2 reports ECOG as “Missing (due to
@@ -617,9 +616,9 @@ is no Monte-Carlo noise in this block).
   Table S4, citing Dallinger et al. 2016 J Clin Pharmacol
   56(11):1387-1394 \[<doi:10.1002/jcph.752>\]).** The current paper used
   this value as a fixed input to the BIBF 1202 model and did not
-  re-estimate it. Per the skill’s non-paper-provenance rule, the in-file
-  `ini()` comment for `lffm` explicitly cites Online Resource Table S4
-  as the source.
+  re-estimate it. Following the package’s convention of recording a
+  carried-over value’s provenance inline, the in-file `ini()` comment
+  for `lffm` explicitly cites Online Resource Table S4 as the source.
 - **`V3/V2 = 0.0185` is fixed from rat IV data (Schmid 2017 ref
   \[14\]).** The paper notes “the ratio of V3/F-V2/F was fixed based on
   information observed in rats” without restating the rat-study citation
@@ -640,9 +639,9 @@ is no Monte-Carlo noise in this block).
   the paper itself has a 2017 acceptance date and CC-BY 2017 copyright
   (“Received: 20 June 2017 / Accepted: 10 October 2017 / Published
   online: 8 November 2017 The Author(s) 2017”). The packaged model file
-  is named `Schmid_2017_nintedanib.R` per the skill convention
-  (acceptance year) and per the operator’s sidecar-001 decision
-  (response-001 option A, 2026-05-30).
+  is named `Schmid_2017_nintedanib.R` per the package’s naming
+  convention (acceptance year) and per a maintainer decision of
+  2026-05-30.
 - The “Indian / Chinese / Taiwanese” ethnic-origin composite on
   nintedanib F1 (Schmid 2017 Table 3) and the “Indian alone” composite
   on BIBF 1202 F2 (Online Resource Table S5) are paper-specific

@@ -3475,14 +3475,13 @@ does not simulate.</p>
 </h2>
 <ul>
 <li>
-<strong>Drug field correction.</strong> The dispatcher metadata
-field <code>drug = "The AAPS Journal"</code> was a parser artefact (the
-journal name was mis-extracted as the drug name). The paper is
-unambiguously about 1,4-butanediol (BD) with the metabolite GHB and the
-interactant ethanol; the model filename, function name, vignette
-basename, and description were silently corrected to use
-<code>butanediol</code> per the skill’s Phase 1 step 2
-(paper-not-ambiguous arm).</li>
+<strong>Drug field correction.</strong> The metadata field
+<code>drug = "The AAPS Journal"</code> supplied when this model was
+built was a parser artefact (the journal name was mis-extracted as the
+drug name). The paper is unambiguously about 1,4-butanediol (BD) with
+the metabolite GHB and the interactant ethanol; the model filename,
+function name, vignette basename, and description were silently
+corrected to use <code>butanediol</code>.</li>
 <li>
 <strong>Dose-dependent fractional pre-systemic conversion.</strong>
 The fraction of the absorbed oral BD dose entering systemic circulation

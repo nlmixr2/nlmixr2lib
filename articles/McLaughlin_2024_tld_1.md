@@ -533,7 +533,7 @@ elimination through CL2. {.table}
   outside this file.
 - **Erratum search.** A web search for “Mc Laughlin 2024 TLD-1 erratum”
   on the Springer journal page (Cancer Chemother Pharmacol 94:349-360)
-  was not performed in the air-gapped extraction environment; the model
-  file should be re-verified against any errata published after June
-  2024 before reliance on the encoded parameter values for
-  individualised dosing or clinical-trial simulation.
+  was not performed when this model was built (no web access was
+  available); the model file should be re-verified against any errata
+  published after June 2024 before reliance on the encoded parameter
+  values for individualised dosing or clinical-trial simulation.

@@ -449,14 +449,14 @@ covariate set.
   not possible.
 - **Unit ambiguity.** The bundle’s `.ctl` does not declare time, dose,
   or concentration units. `units$time = "h"`, `units$dosing = "mg"`, and
-  `units$concentration = "mg/L"` are operator-default placeholders
+  `units$concentration = "mg/L"` are maintainer-default placeholders
   chosen so the values flow through
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   consistently. The numeric values in `ini()` are unchanged from the
   `.res` listing regardless of the unit interpretation. If the linked
   publication is later identified, the units may need to be revised; the
   parameter values stay correct.
-- **Time-unit physiological plausibility.** Under the operator-default
+- **Time-unit physiological plausibility.** Under the maintainer-default
   `units$time = "h"`, total lidocaine elimination =
   `k_megx_form + k_xyl_form = 0.037 1/h` with apparent t1/2 =
   `ln(2)/0.037 ~ 18.7 h`, slower than the textbook lidocaine IV t1/2
@@ -470,7 +470,7 @@ covariate set.
   hepatic impairment, prolonged infusion accumulation, etc.). Without
   the linked publication the choice between these interpretations cannot
   be settled. The model file faithfully reproduces the rate constants
-  from the `.res` listing; the unit declaration is operator-default.
+  from the `.res` listing; the unit declaration is maintainer-default.
 - **DLVL and S1A2 semantics.** The bundle’s simulated dataset shows DLVL
   values ranging continuously from 0 to 10 (not strictly integer 1-4 as
   one might expect for a dose-level indicator); the model uses

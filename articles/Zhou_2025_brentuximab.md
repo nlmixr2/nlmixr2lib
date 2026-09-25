@@ -856,8 +856,9 @@ quirks in the source documentation that needed re-derivation.
   compartments use the canonical metabolite-suffix convention
   (`central_mmae`, `peripheral1_mmae`). The same precedent applies to
   `Li_2017_brentuximab` and `Lu_2014_trastuzumabemtansine`. The
-  canonical `target` compartment from `naming-conventions.md` is reused
-  here for the irreversibly depletable Target binding pool.
+  canonical `target` compartment from
+  `inst/references/compartment-names.md` is reused here for the
+  irreversibly depletable Target binding pool.
 - **Tumor-size convention.** The Zhou 2025 NONMEM dataset uses LDIAM
   (“lymphoma linear diameter”, mm; reference 41 mm). The canonical
   `TUMSZ` register entry pools the linear-diameter, RECIST sum-of-

@@ -22,9 +22,8 @@ values and equations come from the DDMORE bundle’s `Output_real_*.lst`
 `Model_Accommodations.txt` field “There are no model differences with
 the publication referenced” indicates that the bundle reproduces the
 published final-model structure verbatim. The vignette’s validation
-strategy is therefore F.2 self-consistency (re-simulate against the
-bundle’s `Simulated_*.csv`) rather than a publication side-by-side
-comparison.
+strategy is therefore self-consistency (re-simulate against the bundle’s
+`Simulated_*.csv`) rather than a publication side-by-side comparison.
 
 ## Population
 
@@ -231,10 +230,10 @@ sim |>
 
 ![](LeuppiTaegtmeyer_2019_colistin_files/figure-html/figure-col-trajectory-1.png)
 
-## F.2 self-consistency: re-simulate the DDMORE-bundle scenario
+## Self-consistency: re-simulate the DDMORE-bundle scenario
 
-Per `references/verification-checklist.md` Section F.2, the substitute
-for the publication-comparison check is to reproduce the typical-value
+When the publication is not available, the substitute for the
+publication-comparison check is to reproduce the typical-value
 trajectory at the bundle’s reported regimen and confirm the shape of the
 trajectory.
 
@@ -326,12 +325,12 @@ interval) provides the reusable steady-state exposure summary.
 ## Assumptions and deviations
 
 - **Source publication not on disk.** The Leuppi-Taegtmeyer 2019 AAC
-  publication was not present in the operator’s literature directory at
-  extraction time. All parameter values and equations were taken from
-  the DDMORE bundle’s `Output_real_*.lst` (final estimates) and
-  `Executable_*.mod`. The bundle’s `Model_Accommodations.txt` states
-  “There are no model differences with the publication referenced”, so
-  the published final model is faithfully reproduced.
+  publication was not available to the maintainers at extraction time.
+  All parameter values and equations were taken from the DDMORE bundle’s
+  `Output_real_*.lst` (final estimates) and `Executable_*.mod`. The
+  bundle’s `Model_Accommodations.txt` states “There are no model
+  differences with the publication referenced”, so the published final
+  model is faithfully reproduced.
 - **Hematocrit fallback.** The `.mod` treats `HT == 0` as a
   missing-value sentinel and substitutes the population-typical
   hematocrit fraction 0.25. The model file reproduces this behaviour
@@ -373,7 +372,7 @@ interval) provides the reusable steady-state exposure summary.
   they correspond to the CRRT filter / cartridge / effluent reservoir
   physical compartments specific to this model class. The metabolite
   suffix `_col` for colistin is added to
-  `R/conventions.R::registeredMetabolites` in the same PR so that
+  `R/conventions.R::registeredMetabolites` with this model so that
   `central_col`, `Cc_col`, `propSd_col`, and `addSd_col` are canonical.
 - **Hematocrit covariate units.** The canonical `HCT` register entry
   documents units in % (0-100). The `.mod` here uses HCT as a fraction

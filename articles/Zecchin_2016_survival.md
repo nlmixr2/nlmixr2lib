@@ -236,11 +236,10 @@ sim |>
 ## Mechanistic sanity checks (F.3)
 
 The model is a TTE (time-to-event) survival model, not a PK / PD
-concentration model — PKNCA is not the right validation tool.
-`references/verification-checklist.md` § F.3 calls for typical-value
-hazard / survival trajectories to reproduce qualitative behaviour
-reported in the source. The four checks below exercise each covariate
-arm of the OS hazard.
+concentration model — PKNCA is not the right validation tool. The
+package’s validation checklist calls for typical-value hazard / survival
+trajectories to reproduce qualitative behaviour reported in the source.
+The four checks below exercise each covariate arm of the OS hazard.
 
 ### F.3.1 — Hazard increases monotonically with time (Weibull α ≈ 2)
 

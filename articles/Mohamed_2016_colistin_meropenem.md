@@ -108,12 +108,9 @@ value not in the cascade leaves `KE2 = 0`.
 
 The bundle ships an in vitro experimental dataset that is not a
 re-extractable population PK study, and the linked publication is not on
-local disk (searched
-`/home/bill/github/mab_human_consensus/literature/`). The validation
-strategy is therefore **F.2 self-consistency** per
-`extract-literature-model` `references/verification-checklist.md`:
-re-simulate the bundle’s `Simulated_ColistinMeropenem_Interaction.csv`
-through
+local disk (searched the maintainers’ literature mirror). The validation
+strategy is therefore **F.2 self-consistency**: re-simulate the bundle’s
+`Simulated_ColistinMeropenem_Interaction.csv` through
 [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
 with typical-value parameters (no IIV, no residual error) and compare
 the trajectory against the simulated observations in the bundle. PKNCA
@@ -352,8 +349,7 @@ review.
   Downstream users repurposing the model with arbitrary colistin
   concentrations will need to set their own `KE2` (e.g., by editing the
   `model()` block or supplying `KE2` as a covariate). The verbatim
-  decision was made by the operator
-  (`queue/.claude_task_runner/sidecar/006-mohamed_2016_colistin_meropenem/response-001.json`).
+  decision was made by the maintainers.
 - **`ETA(1)` dropped.** The .mod declares `ETA(1)` shared between `KGA`
   and `KGP` with `OMEGA = 0 FIX`, contributing nothing to the
   predictions. The IIV term is dropped from the nlmixr2 translation; the

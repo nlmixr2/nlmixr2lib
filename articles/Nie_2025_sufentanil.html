@@ -3335,9 +3335,9 @@ the real dataset.</p>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates Figure 2 of Nie 2025 (left: maternal; right: umbilical cord)."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Nie_2025_sufentanil_files/figure-html/figure-2-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Ranges read off the log axis of Nie 2025 Figure 2 by the operator (graphical</span></span>
-<span><span class="co"># digitisation, not a printed table). Used only as a validation envelope -- no</span></span>
-<span><span class="co"># model parameter is derived from them.</span></span>
+<code class="sourceCode R"><span><span class="co"># Ranges read off the log axis of Nie 2025 Figure 2 by the maintainers</span></span>
+<span><span class="co"># (graphical digitisation, not a printed table). Used only as a validation</span></span>
+<span><span class="co"># envelope -- no model parameter is derived from them.</span></span>
 <span><span class="va">observed_envelope</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">endpoint</span>,          <span class="op">~</span><span class="va">obs_low</span>, <span class="op">~</span><span class="va">obs_high</span>,</span>
 <span>  <span class="st">"Maternal plasma"</span>,  <span class="fl">3</span>,        <span class="fl">30</span>,</span>
@@ -3794,9 +3794,9 @@ Individual labour durations are not tabulated. Delivery times are drawn
 uniformly over 2.5-10.5 h, the span of observed sampling times in Figure
 2; the typical-value figure uses a fixed 8 h infusion.</li>
 <li>
-<strong>Figure 2 envelope is operator-digitised.</strong> The
+<strong>Figure 2 envelope is maintainer-digitised.</strong> The
 observed ranges (maternal ~3-30 pg/mL, cord ~0.6-10 pg/mL) were read off
-the log axis of Figure 2 by the operator. They are used only as a
+the log axis of Figure 2 by the maintainers. They are used only as a
 validation envelope; <strong>no model parameter is derived from
 them.</strong> All <code>ini()</code> values come from Table 1.</li>
 <li>

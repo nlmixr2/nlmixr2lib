@@ -103,7 +103,7 @@ n_per_cohort <- 50L
 
 # Helper: build one cohort as a self-contained event table.
 # id_offset shifts subject IDs so multiple cohorts can be bind_rows()-ed
-# without colliding subject keys (see vignette-template Notes).
+# without colliding subject keys.
 make_cohort <- function(n, dose_ug, dose_times, obs_times, wt_median, dis_healthy,
                         occ_at_time, cohort_label, id_offset = 0L) {
   ids <- id_offset + seq_len(n)
@@ -432,13 +432,13 @@ secondary-parameter values: a closed-form check gives
   3, Table 3). The packaged model exposes only `WT`, `DIS_HEALTHY`, and
   `OCC`.
 - **DOI.** The DOI in the `reference` field
-  (`10.1111/j.1365-2125.2003.02064.x`) was supplied by the dispatcher’s
-  task metadata. The DOI string is not visible inside the on-disk PDF
-  trimmed-markdown excerpt (the PMC-XML / PDF preprocessor strips the
-  copyright header where Wiley typically prints DOI). It is presented
-  here unverified against the publisher’s landing page; users who need a
-  citable identifier should cross-check against the journal’s table of
-  contents for Br J Clin Pharmacol 57(4) (April 2004).
+  (`10.1111/j.1365-2125.2003.02064.x`) was supplied with the metadata
+  used to build this model. The DOI string is not visible inside the
+  text extracted from the on-disk PDF (the PMC-XML / PDF preprocessor
+  strips the copyright header where Wiley typically prints DOI). It is
+  presented here unverified against the publisher’s landing page; users
+  who need a citable identifier should cross-check against the journal’s
+  table of contents for Br J Clin Pharmacol 57(4) (April 2004).
 - **Validation scope.** The paper does not publish observed Cmax / AUC
   NCA values, so the validation here is restricted to the secondary
   terminal half-life parameter (the only NCA-style value reported in the

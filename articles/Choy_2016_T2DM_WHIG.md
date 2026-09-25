@@ -502,8 +502,8 @@ ggplot(data.frame(dwgt = dwgt_grid, IS_rel = is_rel),
 
 - **No NCA / PKNCA validation.** The WHIG model has no PK exposure, no
   dosing, and no concentration-time profile to integrate. The validation
-  strategy follows `references/endogenous-validation.md`: steady-state
-  check, mass-balance / flux check, and dimensional analysis.
+  strategy follows the endogenous-model pattern: steady-state check,
+  mass-balance / flux check, and dimensional analysis.
 
 - **Supplementary Appendix S2 not on disk; diagonal OMEGA.** The
   variance-covariance correlation matrix (Choy 2016, p. 15 footnote a;

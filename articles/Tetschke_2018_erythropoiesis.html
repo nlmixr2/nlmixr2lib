@@ -2869,7 +2869,7 @@ Processes)</li>
 has no drug, no PK/PD output, and the perturbation of interest is a
 <strong>phlebotomy</strong> (whole-blood or single-unit
 erythrocyte-concentrate donation). Validation therefore follows the
-<code>endogenous-validation.md</code> recipe (steady-state,
+package’s recipe for endogenous models (steady-state,
 perturbation-recovery, mass-balance, dimensional analysis) rather than
 the standard PKNCA recipe.</p>
 </div>
@@ -3039,10 +3039,10 @@ the <code>alpha*x3</code> term carries grams per day. The model
 reproduces the paper exactly; the apparent inconsistency is an implicit
 unit-conversion convention in the source (the <code>x2 -&gt; x3</code>
 transition silently rescales count to mass via the unstated
-mean-corpuscular-hemoglobin factor). See
-<code>references/endogenous-validation.md</code> for the comparable
-Charbonneau 2021 phenylalanine case where dimensional mixing in the
-published equations is preserved verbatim by design.</p>
+mean-corpuscular-hemoglobin factor). The packaged Charbonneau 2021
+phenylalanine model (<code>phenylalanine_charbonneau_2021</code>) is a
+comparable case where dimensional mixing in the published equations is
+preserved verbatim by design.</p>
 <table class="table">
 <colgroup>
 <col width="22%">
@@ -3446,8 +3446,7 @@ has units <code>[g]/day</code>. The packaged model reproduces the
 paper’s equations verbatim; the implicit count -&gt; mass rescaling at
 the precursor2 -&gt; thb interface is part of the paper’s convention.
 See the units table above and the comparable Charbonneau 2021
-phenylalanine case documented in
-<code>references/endogenous-validation.md</code>.</li>
+phenylalanine model (<code>phenylalanine_charbonneau_2021</code>).</li>
 <li>
 <strong>Phlebotomy is encoded as a negative bolus on
 <code>thb</code>.</strong> The control variable <code>u(t)</code> and

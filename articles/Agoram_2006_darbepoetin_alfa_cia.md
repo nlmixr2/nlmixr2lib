@@ -480,7 +480,7 @@ rather than the individual prediction.
 # set.seed() seeds R's RNG, not rxode2's. rxode2 partitions its streams per
 # solver thread, so this cohort is NOT reproducible across machines with
 # different thread counts. Every assertion below is written to hold for any
-# cohort the model can produce (see known-vignette-failure-patterns.md #12).
+# cohort the model can produce.
 set.seed(20060901)
 rxode2::rxSetSeed(20060901)
 
@@ -609,7 +609,7 @@ Figure 4 band, published vs simulated. {.table}
 #
 # Realised at 1 / 2 / 4 / 8 solver threads (rxode2 partitions its RNG
 # streams per thread, so a 2-core CI runner draws a different cohort than a
-# workstation -- see known-vignette-failure-patterns.md #12):
+# workstation):
 #   med week 0  9.868 - 10.005
 #   rise        1.187 -  1.250
 #   med week 16 11.074 - 11.193

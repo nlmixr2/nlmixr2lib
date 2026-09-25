@@ -2869,7 +2869,7 @@ separately against two exposure metrics).</p>
 <span></span>
 <span><span class="co"># readModelDb() returns the model FUNCTION; rxode2::rxode() resolves it to the</span></span>
 <span><span class="co"># ui exactly once so every downstream accessor ($population, $reference, ...)</span></span>
-<span><span class="co"># works. See pattern 7 of the skill's known-vignette-failure-patterns.</span></span>
+<span><span class="co"># works.</span></span>
 <span><span class="va">uis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">han_models</span>, <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">uis</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">han_models</span></span>
@@ -3928,8 +3928,7 @@ daily.</caption>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># One subject per exposure value: several observations at the same time for</span></span>
 <span><span class="co"># one id would not be a valid event table. rxSolve OMITS the id column when</span></span>
-<span><span class="co"># the table holds a single subject (pattern 8 of the skill's</span></span>
-<span><span class="co"># known-vignette-failure-patterns), so handle that case explicitly rather than</span></span>
+<span><span class="co"># the table holds a single subject, so handle that case explicitly rather than</span></span>
 <span><span class="co"># indexing into a NULL.</span></span>
 <span><span class="va">er_at</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">covariate</span>, <span class="va">value</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>

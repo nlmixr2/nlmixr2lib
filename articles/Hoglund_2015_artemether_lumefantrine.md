@@ -22,9 +22,9 @@ parallel n = 31, study 2 crossover n = 58) receiving standard Coartem
   model with 3-transit-compartment absorption and enzymatic
   auto-induction of artemether clearance (Table 3).
 
-Per the `replicate-author-structure` policy each joint fit is extracted
-as its own model file, with this single vignette walking the paper as a
-unit:
+Following the package’s convention of replicating the authors’ model
+structure, each joint fit is extracted as its own model file, with this
+single vignette walking the paper as a unit:
 
 ``` r
 
@@ -585,9 +585,8 @@ values 175 and 280 ng/mL (Hoglund 2015 Figure 4 G-I dotted lines).
   is computed as a Hill function of model time `t`. In rxode2 this is
   the simulation time relative to dose-time 0; users who want
   time-since-first-dose semantics must arrange their event tables so the
-  first artemether dose lands at t = 0. The skill convention is
-  satisfied in this vignette by starting each subject’s regimen at t =
-  0.
+  first artemether dose lands at t = 0. This vignette satisfies that
+  requirement by starting each subject’s regimen at t = 0.
 - **Mutually exclusive ARV regimens.** Each trial subject was on at most
   one of EFV, NVP, or LPV/r at a time. The encoded multiplicative form
   `CL = TVCL * (1 + e_efv_cl * CONMED_EFV) * (1 + e_lpv_cl * CONMED_LPV)`

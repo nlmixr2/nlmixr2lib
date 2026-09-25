@@ -324,9 +324,9 @@ subject on 1.0 mg weekly the model-predicted steady-state exposure is
 consistent with the 1.0 mg observed-data steady-state mean (Figure 3).
 The simulated Cav,ss above (typical-cohort median ~30 nmol/L) is within
 ~10% of the analytical AUC/CL estimate (31.4 nmol/L) – well inside the
-20% tolerance the skill flags. The paper itself does not publish a
-tabulated NCA, so the comparison here is structural (analytical vs
-simulated) rather than against an external NCA value.
+20% tolerance of the package’s validation checklist. The paper itself
+does not publish a tabulated NCA, so the comparison here is structural
+(analytical vs simulated) rather than against an external NCA value.
 
 ## Assumptions and deviations
 
@@ -373,6 +373,4 @@ simulated) rather than against an external NCA value.
 - **Residual-error form mapping.** Overgaard 2019 reports an additive
   residual error on log-transformed concentrations. In nlmixr2 linear
   space this maps to a proportional model (`Cc ~ prop(propSd)`) with
-  `propSd = 0.103`; the equivalence is documented in
-  `references/naming-conventions.md`. No additive (linear-scale)
-  component is reported.
+  `propSd = 0.103`. No additive (linear-scale) component is reported.

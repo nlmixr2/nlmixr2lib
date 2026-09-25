@@ -924,9 +924,10 @@ to match.
 
 - **Two model files, one vignette.** Mosha 2014 fits two structurally
   independent population PK models (AM/DHA, and LF/DLF) on the same
-  cohort with no shared parameters. Per the `replicate-author-structure`
-  policy, the extraction is two `.R` files (`Mosha_2014_artemether.R`,
-  `Mosha_2014_lumefantrine.R`) tied together by this single vignette.
+  cohort with no shared parameters. Following the policy of building
+  models as their authors built them, the extraction is two `.R` files
+  (`Mosha_2014_artemether.R`, `Mosha_2014_lumefantrine.R`) tied together
+  by this single vignette.
 
 - **DLF metabolite arm of the LF model is not encoded.** The published
   joint LF/DLF model adds a desbutyl-lumefantrine compartment fed by an
@@ -935,8 +936,8 @@ to match.
   residual error (39% CV on DLF) and a 68% LF/DLF residual correlation.
   The DLF arm is dropped here for two reasons: (a) the `dlf`
   metabolite-suffix token is not currently in the canonical
-  compartment-name register and proposing it would require a
-  stop-and-ask gate per the skill’s naming-audit policy; (b) all three
+  compartment-name register and proposing it would require a maintainer
+  decision under the package’s naming-audit policy; (b) all three
   existing lumefantrine popPK extractions in nlmixr2lib
   (`Kloprogge_2013_lumefantrine`, `Kloprogge_2018_lumefantrine`,
   `Simpson_2013_lumefantrine`) likewise model LF only, so the
@@ -950,12 +951,12 @@ to match.
   lumefantrine F1 (Table 3). Only 2 of 55 women in the cohort had
   diarrhoea on treatment, so the effect is statistically significant but
   rests on a very small subsample. Adding a `DIARR` canonical covariate
-  to `inst/references/covariate-columns.md` would require a stop-and-ask
-  gate per the skill’s covariate-register policy; rather than block the
-  extraction on this minor finding, the DIARR effect is dropped and the
-  omission is documented in `covariatesDataExcluded` of the LF model
-  file. A future task can register `DIARR` and re-extract this covariate
-  effect if needed.
+  to `inst/references/covariate-columns.md` would require a maintainer
+  decision under the package’s covariate-register policy; rather than
+  block the extraction on this minor finding, the DIARR effect is
+  dropped and the omission is documented in `covariatesDataExcluded` of
+  the LF model file. A future revision can register `DIARR` and
+  re-extract this covariate effect if needed.
 
 - **Residual previous-treatment lumefantrine baseline (F0) is not
   encoded.** Mosha 2014 reports 89.5% of enrolled patients with
@@ -994,7 +995,7 @@ to match.
   (`d/dt(central_dihydroart) <- ... + k23 * central * (mw_dihydroart / mw_arm) - ...`).
   This avoids double-counting AM elimination via CL and K23 paths. The
   NONMEM control stream was not on disk for this extraction; this
-  interpretation is the operator’s best reading of the published
+  interpretation is the maintainers’ best reading of the published
   parameter description (Methods: “metabolism rate constant from the
   drug to the metabolite compartment (K23)”) and could be refined if the
   control stream becomes available.

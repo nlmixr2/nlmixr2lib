@@ -852,15 +852,13 @@ formation kinetics on either species’ tail).
   priori from the Thailand-Cambodia popPK/PD analysis (Lohy Das 2017
   *AAPS Journal* 19:1842-54, reference \[36\] of the current paper).
   That upstream paper is not on disk in the source directory used by
-  this extraction. Per the skill’s missing-parameter pathway, the
-  operator decision recorded in the task’s sidecar (request-001 /
-  response-001, 2026-05-30) was to drop Eqs. 3 and 4 and extract a
-  self-contained PK model rather than fabricate `Log(PARA_min)`. The
-  structural disposition parameters (CL, V, MTT for both species, F,
-  allometric scaling) are fully reproducible from Lohy Das 2018 Table 2
-  alone; the omitted covariate effects can be added in a follow-up
-  extraction once the upstream paper is on disk and the reference value
-  is confirmed.
+  this extraction. The maintainers therefore decided (2026-05-30) to
+  drop Eqs. 3 and 4 and extract a self-contained PK model rather than
+  fabricate `Log(PARA_min)`. The structural disposition parameters (CL,
+  V, MTT for both species, F, allometric scaling) are fully reproducible
+  from Lohy Das 2018 Table 2 alone; the omitted covariate effects can be
+  added in a follow-up extraction once the upstream paper is on disk and
+  the reference value is confirmed.
 
 - **PD layer is not encoded.** Lohy Das 2018 reports a parasite-biomass
   PD compartment with first-order growth (`KGROWTH = 10` per 48 h
@@ -873,8 +871,8 @@ formation kinetics on either species’ tail).
   mixture-driven PD layer requires (a) the upstream paper’s frequentist-
   prior parameters as inputs and (b) a `MIX_RESISTANT` Bernoulli
   covariate that has no precedent in the registry. Both items were
-  deferred to a follow-up extraction by the same operator decision. The
-  current packaged model is therefore a **PK-only** representation.
+  deferred to a follow-up extraction by the same maintainer decision.
+  The current packaged model is therefore a **PK-only** representation.
 
 - **Single-dose validity only.** The original paper’s PK analysis used
   plasma concentration data from the first administered dose only
@@ -893,8 +891,8 @@ formation kinetics on either species’ tail).
   additive error models for log-transformed ARS and DHA concentrations
   (i.e. equal to exponential error models on an arithmetic scale).”
   Table 2 reports RUV as a CV% (73.2% for ARS, 58.5% for DHA). By the
-  standing nlmixr2lib convention (`references/parameter-names.md` and
-  the sibling Tan_2009_artesunate / Birgersson_2019_artesunate /
+  standing nlmixr2lib convention (`inst/references/parameter-names.md`
+  and the sibling Tan_2009_artesunate / Birgersson_2019_artesunate /
   Hendriksen_2013\_ artesunate models), NONMEM additive-on-log-scale
   residual maps to nlmixr2 proportional residual in linear space, with
   `propSd = SD on the log scale ~= CV in linear space` to first order.
@@ -934,9 +932,9 @@ erratum” returned no matches). The Table 2 “covariate effects” row for
 brackets the 1.51 estimate, but the adjacent
 `PARA MTT (Log10 parasitaemia)` row reports an estimate of 0.115 with a
 95% CI of 0.121-0.156, where the lower CI bound is above the point
-estimate. This inconsistency was noted during the extraction sidecar;
-because Eqs. 3 and 4 are omitted from the packaged model (see
-Assumptions and deviations), it does not affect the structural
-disposition parameters carried here. A future reviewer should confirm
-the `PARA_MTT` reading against the Lohy Das 2017 *AAPS J* upstream paper
-before adding the covariate effect.
+estimate. This inconsistency was noted during the extraction; because
+Eqs. 3 and 4 are omitted from the packaged model (see Assumptions and
+deviations), it does not affect the structural disposition parameters
+carried here. A future reviewer should confirm the `PARA_MTT` reading
+against the Lohy Das 2017 *AAPS J* upstream paper before adding the
+covariate effect.

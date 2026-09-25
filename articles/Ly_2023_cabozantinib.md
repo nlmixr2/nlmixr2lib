@@ -334,7 +334,7 @@ studies <- tibble::tribble(
   "XL184-311 (DTC)",       71.00,   16.95,   41.0,   117.0,   56/101,   0,        101L,
   "CheckMate 9ER (RCC)",   81.61,   17.95,   36.0,   160.4,   71/308,   0,        308L
 )
-N_PER_ARM <- 200L   # skill cap; see the rationale above
+N_PER_ARM <- 200L   # 200-subject cohort cap; see the rationale above
 stopifnot(N_PER_ARM <= 200L, all(studies$f_prop >= 0), all(studies$f_prop <= 1))
 ```
 
@@ -553,7 +553,7 @@ dev_arms <- c("XL184-020 (healthy)", "XL184-306 (CRPC)")
 pdiff  <- cmp[[grep("diff", names(cmp), ignore.case = TRUE)[1]]]
 pdiff  <- suppressWarnings(as.numeric(gsub("[^0-9.+-]", "", as.character(pdiff))))
 is_dev <- cmp$treatment %in% dev_arms
-# Guard against a silently empty mask (pattern 10: a gate that cannot go red).
+# Guard against a silently empty mask (a gate that cannot go red).
 stopifnot(sum(is_dev) == 2 * 3, sum(!is_dev) == 5 * 3, !anyNA(pdiff))
 
 # Bound rationale: each arm's mean is a Monte Carlo estimate over 200 subjects

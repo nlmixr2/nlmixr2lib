@@ -513,9 +513,9 @@ t1/2 (d). {.table}
   bootstrap-median IIV intervals that differ substantially from the
   final point estimates (CL: final 29.3% vs bootstrap 9.4%; D1: final
   10.0% vs bootstrap 84.8%). The model file uses the published final
-  estimates per the extraction skill’s “final, not initial” rule;
-  vignette VPCs may therefore be narrower than what the bootstrap
-  suggests.
+  estimates, per the package’s rule of encoding final (not initial)
+  estimates; vignette VPCs may therefore be narrower than what the
+  bootstrap suggests.
 - **Adult-vs-infant covariate encoding** – the paper expresses the age
   effect as a multiplier on the infant baseline (CL/F = 158.4 x WT^0.85
   x 1.69 if adult). The model file preserves the published structural

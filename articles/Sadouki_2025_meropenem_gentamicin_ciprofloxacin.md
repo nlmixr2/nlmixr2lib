@@ -500,8 +500,7 @@ deviations” below.
 This model deviates from several `nlmixr2lib` conventions because the
 underlying paper is an **in-vitro bacterial pharmacodynamic** study, not
 a human / animal population PK / PD study. The deviations were
-sanctioned by the operator at sidecar time (task `032-husain_135`,
-request 001 response: option B, “extract anyway with clear in-vitro
+sanctioned by the maintainers (“extract anyway with clear in-vitro
 metadata, file under `inst/modeldb/pharmacodynamics/`”).
 
 - **Compartments are not the canonical `depot` / `central` / `effect` /
@@ -536,7 +535,7 @@ metadata, file under `inst/modeldb/pharmacodynamics/`”).
   h across all seven regimens and eight MIC multiples) and Figure 2
   (Hill concentration – effect curves and loss-of-susceptibility
   curves).
-- **Parameter-naming exceptions to `naming-conventions.md`.**
+- **Parameter-naming exceptions to the package’s naming conventions.**
   Drug-specific parameters use a `<param>_<drug>` suffix pattern (e.g.,
   `lemax_mer`, `ic50_cip_eff`) rather than the canonical `lcl` / `lvc`
   PK-parameter names. Parameter `etabeta_mer` is on the linear scale
@@ -545,7 +544,7 @@ metadata, file under `inst/modeldb/pharmacodynamics/`”).
   mandatory for a faithful reproduction.
 - **Meropenem chemical degradation rate `kdeg_Mer = 0.01317 1/h` is
   derived, not directly tabulated.** The paper’s Discussion (page 7) and
-  Suppl. Fig. 3 report “10% drop in 8 h”; this skill computes
+  Suppl. Fig. 3 report “10% drop in 8 h”; this extraction computes
   `kdeg = -log(0.9) / 8 = 0.01317 1/h` and fixes the value. Recorded as
   a derived value with provenance in the model file’s in-line comment.
 - **The supplement (Suppl. Fig. 1 – 3, Suppl. Tables) was not on disk**

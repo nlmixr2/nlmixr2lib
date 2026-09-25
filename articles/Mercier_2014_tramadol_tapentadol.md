@@ -515,7 +515,7 @@ between-study random effects active, residual disabled).
   between repeated timepoints within a study arm. They are encoded as
   `eta_study_e0` and `eta_study_emax` to flag them as MBMA study-level
   variability rather than individual between-subject variability, per
-  SKILL Phase-1 Step-3a MBMA guidance.
+  the package’s MBMA guidance.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warns that these etas have no matching structural fixed-effect
   parameter of the same suffix; this is expected for the MBMA

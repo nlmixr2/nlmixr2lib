@@ -45,7 +45,7 @@ all**. Its drug effect is a binary treatment-arm switch. Encoding it as
 a PK-coupled model would misrepresent what the authors fitted, so the
 two models are separate files and this vignette validates each on its
 own terms. The standing policy is to build the models as the authors
-built them (`references/replicate-author-structure.md`).
+built them.
 
 ## Population
 
@@ -926,7 +926,7 @@ of the different safinamide doses”.
 - **The Vd/F allometric exponent is never printed as a number.** The
   Results give the CL/F scaling factor as `(WGT/70)^0.75` but write the
   Vd/F factor as `(WGT/70)` with no exponent shown; the PDF text layer
-  and the trimmed markdown both lose it identically. The Discussion
+  and the extracted text both lose it identically. The Discussion
   resolves it in words (“linearly for Vd/F”), and the arithmetic
   confirms it: `120 * 33/70 = 56.6` and `120 * 105/70 = 180` reproduce
   the published 57 L and 180 L exactly, which an exponent of 0.75 would

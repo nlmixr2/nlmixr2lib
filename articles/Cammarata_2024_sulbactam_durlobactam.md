@@ -982,16 +982,15 @@ the unbound fraction implied by protein binding of 10% (durlobactam) and
   the ELF concentrations as algebraic observables. Setting
   `RRT_HEMODIAL_ACTIVE = 0` reproduces the plasma model exactly, and the
   ELF observables are simple ratios that do not perturb the plasma
-  predictions. This integration was ratified by the operator (sidecar
-  `agcand_13067668` request-001 q2, answered A on 2026-07-27).
+  predictions. This integration was ratified by the maintainers.
 
 - **`RRT_HEMODIAL_ACTIVE` rather than `RRT_HEMODIAL_STATUS`.** The
-  ratified sidecar option described “a time-varying HD flag” but named
-  the subject-level canonical `RRT_HEMODIAL_STATUS`. The canonical
-  register reserves `RRT_HEMODIAL_STATUS` for the subject-level
-  treatment-status indicator and `RRT_HEMODIAL_ACTIVE` for exactly this
-  per-session gate, so the packaged model uses `RRT_HEMODIAL_ACTIVE` to
-  match the ratified semantics.
+  ratified decision described “a time-varying HD flag” but named the
+  subject-level canonical `RRT_HEMODIAL_STATUS`. The canonical register
+  reserves `RRT_HEMODIAL_STATUS` for the subject-level treatment-status
+  indicator and `RRT_HEMODIAL_ACTIVE` for exactly this per-session gate,
+  so the packaged model uses `RRT_HEMODIAL_ACTIVE` to match the ratified
+  semantics.
 
 - **The hemodialysis effect multiplies TOTAL clearance, not renal
   clearance.** The paper is explicit: “an HD effect (HDEFFECT) term with

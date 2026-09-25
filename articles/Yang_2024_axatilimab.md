@@ -542,11 +542,11 @@ Simulated single-dose 0.3 mg/kg axatilimab NCA, typical cGVHD patient.
 
 - **Mechanism-specific compartment names.** The biomarker states `csf1`,
   `ncmc`, `ast`, `cpk` deliberately deviate from the canonical
-  compartment-name list in `naming-conventions.md` (`depot`, `central`,
-  `peripheral1`, etc.). They were chosen to match the variable names in
-  Yang 2024 Eqs. 5, 8, 10, 11 and the supplemental MLXTRAN code; using
-  the canonical names would obscure the one-to-one mapping with the
-  published equations.
+  compartment-name list in `inst/references/compartment-names.md`
+  (`depot`, `central`, `peripheral1`, etc.). They were chosen to match
+  the variable names in Yang 2024 Eqs. 5, 8, 10, 11 and the supplemental
+  MLXTRAN code; using the canonical names would obscure the one-to-one
+  mapping with the published equations.
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags these as warnings (not errors).
 - **Initial conditions.** All four biomarker states (`csf1`, `ncmc`,

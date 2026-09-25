@@ -121,7 +121,7 @@ post-operative doses.
 
 set.seed(20260724L)
 
-n_arm <- 100L  # per the extract-literature-model skill's <=200/arm cap
+n_arm <- 100L  # within the 200-subject per-arm cohort cap
 
 ids <- seq_len(n_arm)
 wts <- pmin(pmax(rnorm(n_arm, mean = 53.6, sd = 8.0), 35), 90)
@@ -313,8 +313,7 @@ i.e. 160 ug*h/L (or 160 ng*h/mL).
 ``` r
 
 run_nca <- function(sim, enant, tau_start = 72, tau_end = 84) {
-  # Ensure a time = tau_start row exists per id for the AUC start (see the
-  # extract-literature-model skill's pknca-recipes for the time-zero rule).
+  # Ensure a time = tau_start row exists per id for the AUC start.
   conc_df <- sim |>
     dplyr::filter(!is.na(Cc)) |>
     dplyr::transmute(id, time, Cc = 1000 * Cc,           # ng/mL

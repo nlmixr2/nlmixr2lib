@@ -455,12 +455,13 @@ separately.
   typical-value mechanistic simulator. For estimation use, IIV blocks
   could be added to the structural parameters guided by the Table 1-3
   RSE values.
-- **Compartment naming deviation from `naming-conventions.md`.** The
-  PBPK structure has 24 compartments (`blood`, `bldeg`, `vp_<tissue>`,
-  `int_<tissue>`, `mrna_<tissue>`, `luc_<tissue>`) that do not map onto
-  the canonical `central` / `peripheral1` / `depot` / `effect`
-  vocabulary; `checkModelConventions("Parhiz_2024_mRNALNP")` flags every
-  PBPK compartment as a non-canonical name. The naming used in this file
+- **Compartment naming deviation from
+  `inst/references/compartment-names.md`.** The PBPK structure has 24
+  compartments (`blood`, `bldeg`, `vp_<tissue>`, `int_<tissue>`,
+  `mrna_<tissue>`, `luc_<tissue>`) that do not map onto the canonical
+  `central` / `peripheral1` / `depot` / `effect` vocabulary;
+  `checkModelConventions("Parhiz_2024_mRNALNP")` flags every PBPK
+  compartment as a non-canonical name. The naming used in this file
   follows the paper’s symbolic conventions (subscripts indicate organ)
   and is the most readable mapping available. No convention change in
   the rest of nlmixr2lib is implied. The same deviation applies to

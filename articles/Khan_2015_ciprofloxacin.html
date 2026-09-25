@@ -2925,25 +2925,24 @@ and scraper metadata.</li>
 <p>The packaged model uses the <strong><code>.mod</code>
 <code>$THETA</code> initial values</strong> as its parameter values, not
 the simulated-refit lst final estimates. That choice was confirmed by
-the operator (sidecar 025 q1 = <code>mod_initials</code>) on these
-grounds: the <code>.mod</code> initials appear to be the
-publication-derived point values that seeded the bundle’s simulated
-dataset – <code>output_simulated.lst</code> round-trip-recovers them
-within ~3 % for every theta – so the <code>.mod</code> initials are the
-closest available proxy for Khan 2015 Table 2 / Table 3, while no
-<code>Output_real_*.lst</code> is available. The
-<code>output_simulated.lst</code> final estimates differ materially only
-for <code>SIGMA(1)</code> (2.42 -&gt; 1.78); the <code>.mod</code>
+the maintainers on these grounds: the <code>.mod</code> initials appear
+to be the publication-derived point values that seeded the bundle’s
+simulated dataset – <code>output_simulated.lst</code>
+round-trip-recovers them within ~3 % for every theta – so the
+<code>.mod</code> initials are the closest available proxy for Khan 2015
+Table 2 / Table 3, while no <code>Output_real_*.lst</code> is available.
+The <code>output_simulated.lst</code> final estimates differ materially
+only for <code>SIGMA(1)</code> (2.42 -&gt; 1.78); the <code>.mod</code>
 initial 2.41597 is what the model file uses for <code>addSd</code>.</p>
 <p>The Khan et al. 2015 publication itself (J Antimicrob Chemother
-70(11):3051-3060) is paywalled and is not on disk in this worktree; PMID
-26349518 has no PMC full-text mirror. A side-by-side comparison against
-the publication’s per-strain MIC table or per-tube time-kill figure is
-therefore out of scope here. Validation in this vignette is the F.3
-mechanistic-sanity check from the extraction skill: the typical-value
-bacterial-count trajectory is qualitatively consistent with a 24-hour
-ciprofloxacin time-kill experiment on <code>Escherichia coli</code>
-LM202 wild-type at concentrations spanning 0-8 x MIC.</p>
+70(11):3051-3060) is paywalled and is not on disk; PMID 26349518 has no
+PMC full-text mirror. A side-by-side comparison against the
+publication’s per-strain MIC table or per-tube time-kill figure is
+therefore out of scope here. Validation in this vignette is a
+mechanistic-sanity check: the typical-value bacterial-count trajectory
+is qualitatively consistent with a 24-hour ciprofloxacin time-kill
+experiment on <code>Escherichia coli</code> LM202 wild-type at
+concentrations spanning 0-8 x MIC.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3343,7 +3342,7 @@ comparison.</p>
 <div class="section level2">
 <h2 id="mechanistic-sanity-checks">Mechanistic sanity checks<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks"></a>
 </h2>
-<p>Three F.3 mechanistic-sanity checks for this PD model.</p>
+<p>Three mechanistic-sanity checks for this PD model.</p>
 <div class="section level3">
 <h3 id="no-drug-control-reproduces-sigmoidal-growth">1 – No-drug control reproduces sigmoidal growth<a class="anchor" aria-label="anchor" href="#no-drug-control-reproduces-sigmoidal-growth"></a>
 </h3>
@@ -3452,11 +3451,8 @@ log-bacterial count (CFU/mL), and the “dose” is a static drug
 concentration <code>CAB</code> (mg/L) held constant for the lifetime of
 each tube. There is no plasma-concentration time-course to take an NCA
 over and no clinical dose / clearance / volume to compare Cmax / AUC /
-half-life against. The validation strategy chosen by the operator
-(sidecar 025 q2 = <code>verbatim</code>) and the extraction skill’s
-<code>references/ddmore-source.md</code> Section “Validation strategy by
-model type” decision tree is the F.3 mechanistic-sanity recipe used
-above instead.</p>
+half-life against. The validation strategy chosen by the maintainers for
+this model type is the mechanistic-sanity check used above instead.</p>
 </div>
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
@@ -3466,11 +3462,10 @@ above instead.</p>
 initials, not lst final estimates.</strong> The DDMORE bundle does not
 ship an <code>Output_real_*.lst</code> from the published real-data fit;
 only <code>output_simulated.lst</code> (a refit on the bundled simulated
-dataset) is available. Per operator decision (sidecar 025 q1 =
-<code>mod_initials</code>), the model file uses the <code>.mod</code>
-<code>$THETA</code> initial values as the closest available proxy for
-the publication’s Table 2 / Table 3 final estimates. The
-<code>output_simulated.lst</code> values round-trip-recover the
+dataset) is available. Per maintainer decision, the model file uses the
+<code>.mod</code> <code>$THETA</code> initial values as the closest
+available proxy for the publication’s Table 2 / Table 3 final estimates.
+The <code>output_simulated.lst</code> values round-trip-recover the
 <code>.mod</code> initials within ~3 % for every theta but report
 <code>SIGMA(1) = 1.78</code> instead of the <code>.mod</code>’s initial
 <code>2.41597</code>; the model file uses
@@ -3491,8 +3486,7 @@ only.</strong> The <code>.mod</code> <code>$ERROR</code> block writes
 with <code>SIGMA(1) = 2.41597</code> (across-tube random effect) plus
 four <code>BLOCK(1) SAME</code> <code>SIGMA(2..5)</code> slots gated on
 <code>FLG2</code> (sample position 1..4) reflecting between-replicate
-variability. Per operator decision (sidecar 025 q3 =
-<code>across_tube_only</code>), only the across-tube
+variability. Per maintainer decision, only the across-tube
 <code>SIGMA(1)</code> is encoded as <code>addSd = sqrt(SIGMA(1))</code>;
 the four per-position residual slots are documented here but not
 reproduced. For typical-value time-kill trajectories this simplification
@@ -3514,11 +3508,11 @@ the initial conditions.</p></li>
 <code>MTIME(2) = THETA(19)</code> and
 <code>FLAG = MPAST(1) - MPAST(2)</code> to switch off the active -&gt;
 non-colony-forming transition once experimental time exceeds
-<code>tmtime</code> hours. Per operator decision (sidecar 025 q4 =
-<code>if_t_in_model</code>), the nlmixr2 translation is the literal
-<code>flag &lt;- 1.0 * (t &lt; tmtime)</code> step on the rxode2 model
-time variable. A smooth (logistic) replacement was rejected as a
-deviation from the publication’s intended discrete switch.</p></li>
+<code>tmtime</code> hours. Per maintainer decision, the nlmixr2
+translation is the literal <code>flag &lt;- 1.0 * (t &lt; tmtime)</code>
+step on the rxode2 model time variable. A smooth (logistic) replacement
+was rejected as a deviation from the publication’s intended discrete
+switch.</p></li>
 <li><p><strong><code>M3</code> BLQ method dropped.</strong> The
 <code>.mod</code> <code>$ERROR</code> lines 156-164 use NONMEM’s M3
 method (<code>F_FLAG = 1; Y = PHI((LLOQ - IPRED)/SIG)</code> for
@@ -3587,7 +3581,7 @@ warning.</strong> The bundle’s simulated-refit lst reports
 <code>NSIG = 5</code> reached. That warning is recorded here for
 completeness; it does not affect the packaged model because the packaged
 model uses <code>.mod</code> initials, not lst final estimates, per the
-q1 decision above.</p></li>
+maintainer decision above.</p></li>
 <li><p><strong>“M3, B2, MTIME and L2 not included in mdl file.”</strong>
 The bundle’s <code>Model_Accommodations.txt</code> records that the
 <strong>MDL</strong> rendition (<code>executeable_cipro.xml</code>)

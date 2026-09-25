@@ -315,9 +315,8 @@ NCA was computed on individual post-hoc model predictions that include
 subject-level eta, while the simulated NCA here marginalizes over the
 IIV distributions, and (b) the large IIV on V_P (428% CV) and ka (232%
 CV) shifts simulated distribution medians away from typical-value
-behaviour. Per the SKILL guidance, the model parameters reflect the
-source paper’s Table 2 estimates verbatim; discrepancies are not tuned
-away.
+behaviour. The model parameters reflect the source paper’s Table 2
+estimates verbatim; discrepancies are not tuned away.
 
 ## Assumptions and deviations
 

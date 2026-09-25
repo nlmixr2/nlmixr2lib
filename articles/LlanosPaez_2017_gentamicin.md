@@ -99,7 +99,7 @@ T_INF         <- 0.5   # hour 30-min infusion
 # Build cohorts: one per dose level evaluated in Llanos-Paez 2018 Table II.
 # rxEt covariate-column assignment via `$<-` is silently dropped by rxode2, so
 # materialise as a data.frame before adding covariate columns (see
-# vignette-template.md "Multi-cohort simulations -- disjoint IDs are
+# The package's multi-cohort guidance: "Multi-cohort simulations -- disjoint IDs are
 # mandatory" for the analogous footgun).
 make_cohort <- function(dose_per_kg, n_days, id_offset = 0L) {
   dose_mg <- dose_per_kg * WT_TYPICAL

@@ -3416,13 +3416,13 @@ and Vc_REF to the paper.</li>
 <strong>LDH covariate form.</strong> The paper’s narrative writes
 “the value for LDH was log-transformed due to its right-skewed
 distribution” and does not display the equation in a machine-readable
-form (the Table 2 formula image was not OCR-decoded in the
-trimmed-markdown source). The packaged model uses the literal log-power
-form <code>(log(LDH)/log(206))^CL_LDH</code> because (a) it is
-mathematically what “log-transformed LDH in a power covariate model”
-denotes, (b) the same Bristol-Myers Squibb modelling group wrote the
-equation explicitly in this form in the later Sanghavi 2020 ipilimumab
-popPK (<code>modellib("Sanghavi_2020_ipilimumab")</code>), and (c) the
+form (the Table 2 formula image was not OCR-decoded in the extracted
+text). The packaged model uses the literal log-power form
+<code>(log(LDH)/log(206))^CL_LDH</code> because (a) it is mathematically
+what “log-transformed LDH in a power covariate model” denotes, (b) the
+same Bristol-Myers Squibb modelling group wrote the equation explicitly
+in this form in the later Sanghavi 2020 ipilimumab popPK
+(<code>modellib("Sanghavi_2020_ipilimumab")</code>), and (c) the
 alternative conventional <code>(LDH/206)^1.13</code> form would predict
 CL ratios of ~0.4 at LDH = 100 and ~6 at LDH = 1000 – inconsistent with
 the paper’s narrative that LDH explained ~24% of the base-model IIV in

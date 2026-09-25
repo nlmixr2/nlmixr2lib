@@ -3252,16 +3252,15 @@ catabolic-loss cap.</li>
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
 <p>The Terranova 2018 publication was paywalled and <strong>not on disk
-in this worktree</strong> (Elsevier J Theor Biol full-text access at
-extraction time was redirect-only via
+when this model was built</strong> (Elsevier J Theor Biol full-text
+access at extraction time was redirect-only via
 <code>linkinghub.elsevier.com</code>, and no PDF or PMC mirror was
 available locally), so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The model itself is
 preclinical, mouse-specific, and DEB-mechanistic, so PKNCA on paclitaxel
 central concentration is not the natural validation either.</p>
 <p>The validation in this vignette therefore follows the F.2 / F.3
-substitutes from the extraction skill (
-<code>.claude/skills/extract-literature-model/references/verification-checklist.md</code>):</p>
+substitutes in the package’s validation checklist:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Mechanistic sanity (constant-state hold).</strong> With
@@ -4008,8 +4007,8 @@ refitted estimates. The “verify final estimates from the
 <code>.lst</code>” rule in the verification checklist is moot for this
 bundle.</p></li>
 <li><p><strong>Linked publication is paywalled.</strong> The Terranova
-2018 paper (J Theor Biol 450:1-14, <a href="doi:10.1016/j.jtbi.2018.04.012" class="uri">doi:10.1016/j.jtbi.2018.04.012</a>) was not on disk in this
-worktree at extraction time. Elsevier’s full-text URL redirects via
+2018 paper (J Theor Biol 450:1-14, <a href="doi:10.1016/j.jtbi.2018.04.012" class="uri">doi:10.1016/j.jtbi.2018.04.012</a>) was not on disk at
+extraction time. Elsevier’s full-text URL redirects via
 <code>linkinghub.elsevier.com</code> and was not accessible without a
 subscription, and no PMC mirror exists for this journal. The
 <code>.ctl</code> parameter values were therefore not cross-checked

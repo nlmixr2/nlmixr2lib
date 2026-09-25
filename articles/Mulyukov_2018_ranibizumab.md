@@ -477,8 +477,8 @@ letters. {.table}
 The borrowed PK model is a single-compartment first-order decay with a
 reference t½ of 9 days; PKNCA confirms the implementation produces the
 expected half-life and AUC for a single 0.5 mg intravitreal injection.
-Per the skill’s guidance, the formula includes a treatment grouping
-variable (`dose_group`) so the result rolls up one row per regimen.
+The formula includes a treatment grouping variable (`dose_group`) so the
+result rolls up one row per regimen.
 
 ``` r
 

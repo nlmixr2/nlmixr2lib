@@ -2910,7 +2910,7 @@ kept one.</p>
 <span></span>
 <span><span class="co"># Resolve each model function to an rxUi exactly once. readModelDb() returns</span></span>
 <span><span class="co"># the model *function*; rxode2::rxode() evaluates it to a ui that works</span></span>
-<span><span class="co"># anywhere (see known-vignette-failure-patterns.md pattern 7).</span></span>
+<span><span class="co"># anywhere.</span></span>
 <span><span class="va">mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">endpoints</span><span class="op">$</span><span class="va">model</span>, <span class="va">endpoints</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>,</span>
 <span>               <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -3631,7 +3631,7 @@ once-daily dose over a 21-day cycle 1.</p>
 <span><span class="co"># rxode2's streams are partitioned PER SOLVER THREAD -- so this cohort is</span></span>
 <span><span class="co"># reproducible here and different on a machine with a different thread count.</span></span>
 <span><span class="co"># Every assertion below is written to hold for ANY cohort the model can</span></span>
-<span><span class="co"># produce (known-vignette-failure-patterns.md pattern 12).</span></span>
+<span><span class="co"># produce.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260904L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n_subj</span>    <span class="op">&lt;-</span> <span class="fl">200L</span>    <span class="co"># the per-arm cap; one arm only</span></span>
@@ -3666,8 +3666,7 @@ once-daily dose over a 21-day cycle 1.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="fl">100</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>, rate <span class="op">=</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Observations on the ODE STATE `central`, never on the algebraic observable</span></span>
-<span><span class="co"># `Cc` (known-vignette-failure-patterns.md pattern 2). rxode2 returns Cc as a</span></span>
-<span><span class="co"># column at these rows regardless.</span></span>
+<span><span class="co"># `Cc`. rxode2 returns Cc as a column at these rows regardless.</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># The grid is a per-day peak window rather than a uniform fine grid. Cmax over</span></span>
 <span><span class="co"># cycle 1 needs the peak resolved on every day, but a uniform 0.25 h grid over</span></span>
@@ -4266,8 +4265,8 @@ covariate column.</strong> No trough canonical existed before this
 extraction; <code>CMAX</code> and <code>CAV</code> were already
 registered as the peak and average of the same triple, and several
 register entries explicitly direct a trough model to “register a
-parallel canonical rather than overload” theirs. Ratified as
-<code>CTROUGH</code> by the maintainers.</li>
+parallel canonical rather than overload” theirs. Ratified by the
+maintainers as <code>CTROUGH</code> (2026-09-02).</li>
 <li>
 <strong>Four new canonical output states.</strong>
 <code>prob_hypercholesterolemia</code>,

@@ -777,7 +777,6 @@ verify each one.
 - No errata for Bizzotto 2011 were located via PubMed search
   (`"Bizzotto" 2011 sleep markov` and `"Bizzotto" 2011 erratum`) at the
   time of extraction (2026-06-09).
-- The earlier sidecar request for this task documented why this model is
-  outside the standard `nlmixr2lib` scope; the operator approved a
-  non-standard, vignette-only extraction with strict validation and
-  documented AI provenance.
+- This model is outside the standard `nlmixr2lib` scope; the maintainers
+  approved a non-standard, vignette-only extraction with strict
+  validation and documented AI provenance.

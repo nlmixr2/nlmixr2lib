@@ -439,15 +439,15 @@ and matches the expected ultra-short-acting opioid profile.
   used in the literature (Porchet 1988, Ekblom 1993, Gabrielsson 2007
   traditions). They could be added to
   `inst/references/parameter-names.md` as canonical paper-named-params
-  alongside `lec50` and `lke0` in a future operator-ratified pass.
+  alongside `lec50` and `lke0` in a future maintainer-ratified pass.
 - **Other paper-reported PD models not extracted.** Choi 2011 also
   reports feedback and sigmoid-Emax PD models for the same TLMC dataset
-  (Choi 2011 Table 3, Table 4 columns 2-3). Per the
-  `replicate-author-structure.md` ‘base + final’ rule, only the selected
-  best model (the combined effect-and-tolerance model, lowest AIC and
-  highest PPV of rebound) is extracted; the feedback and sigmoid-Emax
-  model parameters remain documented in Choi 2011 Table 4 for reference
-  but are not packaged.
+  (Choi 2011 Table 3, Table 4 columns 2-3). As for base and final models
+  in a model-development paper, only the selected best model (the
+  combined effect-and-tolerance model, lowest AIC and highest PPV of
+  rebound) is extracted; the feedback and sigmoid-Emax model parameters
+  remain documented in Choi 2011 Table 4 for reference but are not
+  packaged.
 - **BSA computation.** Choi 2011 Table 1 reports cohort weight and
   height but not BSA; users supply BSA as a covariate. The vignette uses
   the Du Bois formula `BSA = 0.20247 * HT_m^0.725 * WT_kg^0.425`; Kang

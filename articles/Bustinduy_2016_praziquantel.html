@@ -3391,7 +3391,7 @@ parameter.</p>
 <span><span class="co"># count. Every assertion downstream is written to hold for ANY cohort.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20160809</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># the skill cap; ample for this comparison</span></span>
+<span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># the per-arm cohort cap; ample for this comparison</span></span>
 <span></span>
 <span><span class="va">rtnorm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">mean</span>, <span class="va">sd</span>, <span class="va">lo</span>, <span class="va">hi</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="fl">20</span>, <span class="va">mean</span>, <span class="va">sd</span><span class="op">)</span></span>

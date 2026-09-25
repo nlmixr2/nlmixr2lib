@@ -1019,7 +1019,7 @@ gated on direction only.
   `DIS_GERD`), and the two existing prothrombin-time-derived canonicals
   carry different quantities – `PTR` is the ratio to a subject’s own
   baseline, and `INR_BASE` is the unitless international normalized
-  ratio, which can never be 15. The name was ratified by operator
+  ratio, which can never be 15. The name was ratified by maintainer
   decision.
 
 ### Errata and reporting gaps in the source

@@ -547,11 +547,12 @@ if (nrow(hl_row) >= 1) {
   should be set to 0 for IV subjects (device is undefined for IV;
   route-specific effects are carried by `ROUTE_IV`).
 - **Non-canonical compartment names.** `bcell` and `bcell_periph` are
-  not in the canonical compartment list (`naming-conventions.md`). They
-  are retained because they describe a mechanism-specific B-cell pool
-  that does not map onto the standard PK-only compartment nomenclature;
-  the standard set (`depot`, `central`, `peripheral1`, `target`,
-  `total_target`) is used for the drug and target-receptor side.
+  not in the canonical compartment list
+  (`inst/references/compartment-names.md`). They are retained because
+  they describe a mechanism-specific B-cell pool that does not map onto
+  the standard PK-only compartment nomenclature; the standard set
+  (`depot`, `central`, `peripheral1`, `target`, `total_target`) is used
+  for the drug and target-receptor side.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   raises these as warnings (not errors).
 - **Race / ethnicity.** Race was tested in the covariate analysis and

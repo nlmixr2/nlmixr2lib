@@ -743,9 +743,9 @@ reported. {.table}
 - **Six files, one paper.** The authors applied a consistent structural
   growth model across the six isolates but estimated every parameter
   separately per isolate, and let the supported subpopulation phenotypes
-  and synergy terms vary by isolate. Per the replicate-author-structure
-  policy these are six independent fits, hence six files sharing this
-  one vignette.
+  and synergy terms vary by isolate. Following the policy of building
+  models as their authors built them, these are six independent fits,
+  hence six files sharing this one vignette.
 - **Filename isolate tokens.** `KP0016-1` and `KP0052-1` carry hyphens,
   which are not valid in R function names; the file stems drop them
   (`KP00161`, `KP00521`), following the precedent of
@@ -843,7 +843,7 @@ reported. {.table}
   setting is used by the sibling Yadav and Landersdorfer vignettes).
 - **Erratum check.** No erratum, corrigendum or author correction is
   referenced in the lead PDF or its supplement. Web search was not
-  available in this offline build; any later correction on the AAC
+  available when this model was built; any later correction on the AAC
   journal page should be checked before using these models in a
   regulatory context.
 - **Convention check.**

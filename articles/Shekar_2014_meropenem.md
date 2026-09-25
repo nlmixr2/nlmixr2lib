@@ -97,7 +97,7 @@ Table 2 final covariate-model column (the “Model Mean” column).
 | `etalvp ~ 0.07916` | log(0.287^2 + 1) | Table 2 row “Vp (L) BSV (% CV)” = 28.7 |
 | `propSd <- 0.137` | 0.137 | Table 2 row “RUV (% CV)” = 13.7 |
 | `addSd <- 2.3` | 2.3 mg/L | Table 2 row “RUV (SD, mg/L)” = 2.3 |
-| `tvcl <- exp(lcl)*RRT_CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-RRT_CRRT_STATUS)` | n/a | Methods page 5 covariate equation (operator-resolved interpretation; see Assumptions) |
+| `tvcl <- exp(lcl)*RRT_CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-RRT_CRRT_STATUS)` | n/a | Methods page 5 covariate equation (maintainer-resolved interpretation; see Assumptions) |
 | `d/dt(central) ... d/dt(peripheral1)` | n/a | Methods “Two-compartment linear model with combined residual error and BSV on Vc, Vp and CL. Zero order input of drug into the central compartment.” |
 | `Cc ~ add(addSd) + prop(propSd)` | n/a | Methods “Residual unexplained variability (RUV) was modeled using a combined exponential and additive random error model.” |
 
@@ -640,7 +640,7 @@ observed Cmin of 4.9 mg/L.
   documented in the paper text (a different parameterization, a
   modality-blended CL combining the RRT and non-RRT branches, or a
   different model entirely) that produce the much weaker CrCL effect
-  visible in the table. Per the skill workflow (“never tune parameters
+  visible in the table. Per the package’s rule (“never tune parameters
   to match a validation target”), the packaged model is left at the
   Table 2 reported values; the Table 3 divergence is recorded here as a
   deviation rather than reconciled by re-parameterizing CL.

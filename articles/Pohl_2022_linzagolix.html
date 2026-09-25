@@ -3819,7 +3819,7 @@ paper states that doses of 75-150 mg – and only those – fall inside the
 <code class="sourceCode R"><span><span class="co"># The paper's claim, asserted exactly: 75-150 mg inside, 50 and 200 mg outside.</span></span>
 <span><span class="co"># This is a typical-value solve with no random effects, so the result is</span></span>
 <span><span class="co"># deterministic across machines and rxode2 versions and a hard assertion is</span></span>
-<span><span class="co"># correct here (contrast the cohort-extreme trap described in CLAUDE.md).</span></span>
+<span><span class="co"># correct here (contrast a cohort-extreme assertion).</span></span>
 <span><span class="va">inside</span>  <span class="op">&lt;-</span> <span class="va">wk24</span><span class="op">$</span><span class="va">dose</span><span class="op">[</span><span class="va">wk24</span><span class="op">$</span><span class="va">in_window</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">inside</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>, <span class="fl">100</span>, <span class="fl">125</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span>,</span>

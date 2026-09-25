@@ -3397,24 +3397,24 @@ model-development cohort was GA 22.10 weeks (Table 1) so the published
 fit is always positive in the observed range, but simulations should not
 extrapolate below ~10 weeks PMA.</li>
 <li>
-<strong>Residual-error encoding (operator-resolved sidecar
-request-001).</strong> Shoji 2016 Table 3 reports a single “Residual
-variability (%) = 66.3” row, and Table 5 lists theta_5 = 0.705 with the
-footnote label “fraction of additive and proportional error”. The paper
-text does not disclose the NONMEM <code>$ERROR</code> functional form or
-the units of theta_5, and no supplement / control stream is publicly
-available. Per sidecar request-001 / response-001, the operator chose
-<strong>Option B</strong> (encode as proportional CV + additive SD in
-mg/L; the same convention used in this library for Shi 2018 ceftazidime
-and Delattre 2010 amikacin when antibiotic popPK papers report two
-residual-error numbers without explicit units). The model therefore uses
-<code>propSd = 0.663</code> (66.3% proportional CV) and
-<code>addSd = 0.705 mg/L</code> (treating cefepime concentration units
-ug/mL as equivalent to mg/L). The alternative reading (Karlsson BAYO
-weighting with theta_5 as the proportional fraction of one sigma) would
-give <code>propSd ~ 0.467</code> and <code>addSd ~ 0.196 mg/L</code>;
-the comparison NCA in the table above is mildly sensitive to this choice
-in the Cmin direction but not in the Cmax / half-life direction.</li>
+<strong>Residual-error encoding (maintainer decision).</strong>
+Shoji 2016 Table 3 reports a single “Residual variability (%) = 66.3”
+row, and Table 5 lists theta_5 = 0.705 with the footnote label “fraction
+of additive and proportional error”. The paper text does not disclose
+the NONMEM <code>$ERROR</code> functional form or the units of theta_5,
+and no supplement / control stream is publicly available. The
+maintainers chose to encode the two values as <strong>proportional CV +
+additive SD in mg/L</strong> (the same convention used in this library
+for Shi 2018 ceftazidime and Delattre 2010 amikacin when antibiotic
+popPK papers report two residual-error numbers without explicit units).
+The model therefore uses <code>propSd = 0.663</code> (66.3% proportional
+CV) and <code>addSd = 0.705 mg/L</code> (treating cefepime concentration
+units ug/mL as equivalent to mg/L). The alternative reading (Karlsson
+BAYO weighting with theta_5 as the proportional fraction of one sigma)
+would give <code>propSd ~ 0.467</code> and
+<code>addSd ~ 0.196 mg/L</code>; the comparison NCA in the table above
+is mildly sensitive to this choice in the Cmin direction but not in the
+Cmax / half-life direction.</li>
 <li>
 <strong>Pooled-cohort study design.</strong> The model was fit to
 two pooled prior studies (Shoji 2016 refs 22 and 23). The published

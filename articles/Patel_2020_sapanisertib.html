@@ -4042,17 +4042,17 @@ change from time-matched baseline in RR, QTcI, and QTcF”, and the
 residual degrees of freedom (409, 440, 470 against 44 patients) are
 consistent with a per-subject random intercept. But no variance
 estimate, random-effect standard deviation or shrinkage value is
-reported for any of the three models. Per the standing operator policy
-on unreported IIV, the packaged models omit the eta declarations and
-ship typical-value-only encodings. The only surviving traces of the
+reported for any of the three models. Per the maintainers’ standing
+policy on unreported IIV, the packaged models omit the eta declarations
+and ship typical-value-only encodings. The only surviving traces of the
 variance components are Table 4’s threshold-exceedance probability
 columns and the Figure 4B / 4D 90% prediction intervals; neither inverts
 to a unique variance, so no value is guessed. Users who need an IIV
 envelope must impose one externally.</p></li>
 <li><p><strong>Residual error is not reported numerically.</strong>
-<code>addSd &lt;- fixed(0)</code> in all three files, per the standing
-operator policy, so each model returns its deterministic typical-value
-prediction. This follows the same encoding as
+<code>addSd &lt;- fixed(0)</code> in all three files, per the
+maintainers’ standing policy, so each model returns its deterministic
+typical-value prediction. This follows the same encoding as
 <code>Darpo_2014_racSotalol_QTcI.R</code> /
 <code>_QTcF.R</code>.</p></li>
 <li><p><strong>Table 4’s exceedance probabilities are deliberately not
@@ -4084,16 +4084,16 @@ that maps to three <code>.R</code> files and, because they come from one
 paper, this single vignette.</p></li>
 <li><p><strong>The RR endpoint is named <code>d_rr</code>, the two QTc
 endpoints are not <code>d</code>-prefixed.</strong> This asymmetry
-within the file set is deliberate and was a maintainer ruling. The
-register had no RR entry of either form. <code>d_rr</code> was ratified
-as a canonical sibling of the existing <code>d_hr</code>
-change-from-baseline heart-rate endpoint, on the scale-incomparability
-grounds that entry already states – an absolute RR interval is roughly
-850 msec whereas this <code>Delta</code>RR spans -25 to +18 msec – and
-because the competing bare-name precedent (<code>QTc</code>,
-<code>QTcF</code>, <code>QTcI</code>) is for absolute interval names.
-The two QTc siblings keep their bare corrected-interval names in line
-with the existing registry usage in
+within the file set is deliberate and was a maintainer ruling of
+2026-09-02. The register had no RR entry of either form.
+<code>d_rr</code> was ratified as a canonical sibling of the existing
+<code>d_hr</code> change-from-baseline heart-rate endpoint, on the
+scale-incomparability grounds that entry already states – an absolute RR
+interval is roughly 850 msec whereas this <code>Delta</code>RR spans -25
+to +18 msec – and because the competing bare-name precedent
+(<code>QTc</code>, <code>QTcF</code>, <code>QTcI</code>) is for absolute
+interval names. The two QTc siblings keep their bare corrected-interval
+names in line with the existing registry usage in
 <code>Darpo_2014_racSotalol_QTcF.R</code>,
 <code>Mukker_2026_tuvusertib_QTcF.R</code> and
 <code>Zhou_2025_fruquintinib_*</code>; the per-model <code>units</code>

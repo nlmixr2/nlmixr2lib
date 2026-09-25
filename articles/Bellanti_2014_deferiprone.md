@@ -326,8 +326,8 @@ Assumptions and deviations so a reader can audit it.
   encoded the weighting factor differently (e.g. as a power weight on
   `F`), the predictive intervals would shift; the typical-value
   trajectory (which is the published Cmax and AUC) is unaffected.
-- **`Y_ij = F_ij + epsilon * W` formula not decoded in the trimmed
-  markdown.** The trimmed-markdown extractor stored the equation as a
+- **`Y_ij = F_ij + epsilon * W` formula not decoded in the extracted
+  text.** The PDF text extraction stored the equation as a
   `<!-- formula-not-decoded -->` placeholder. The equation was read
   directly from the layout-preserving PDF text dump
   (`pdftotext -layout`) to disambiguate; the form above is verbatim from

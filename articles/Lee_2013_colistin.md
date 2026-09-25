@@ -342,11 +342,11 @@ cat(sprintf("t1/2         = %.2f h (paper: 6.6 h)\n", t12_typical))
 ## PKNCA validation
 
 PKNCA computes steady-state Cmax, Cmin, AUC0-tau, and Cavg on the last
-dosing interval (Recipe 3 in `references/pknca-recipes.md`). The cohort
-is stratified by the same CRCL bands used in the published Figure 5 (low
-/ mid / high CRCL terciles within the simulated cohort), so the per-band
-NCA can be compared against Lee 2013 Figure 4 (mean steady-state AUC0-24
-from 1000 virtual burn patients = 29.2 +/- 13.5 ug/mL\*h).
+dosing interval. The cohort is stratified by the same CRCL bands used in
+the published Figure 5 (low / mid / high CRCL terciles within the
+simulated cohort), so the per-band NCA can be compared against Lee 2013
+Figure 4 (mean steady-state AUC0-24 from 1000 virtual burn patients =
+29.2 +/- 13.5 ug/mL\*h).
 
 ``` r
 
@@ -536,14 +536,13 @@ drawn from the published demographics.
   derived; do NOT compare it against the BSA-normalized reference values
   (80, 90, or 100 mL/min/1.73 m^2) listed in the canonical entry.
 
-- **`DIS_EDEMA` introduced as a new canonical covariate in this PR.**
-  The `inst/references/covariate-columns.md` entry was added alongside
-  the Lee 2013 extraction (operator-resolved sidecar request-001 /
-  response-001 on the canonical name `DIS_EDEMA`, scope `specific`). The
-  paper defines edema as a clinical diagnosis – puffy face and pitting
-  edema in the legs – assessed once on Day 1 of CMS administration
-  (Table 1 footnote d), so the covariate is time-fixed per subject in
-  this model.
+- **`DIS_EDEMA` introduced as a new canonical covariate with this
+  model.** The `inst/references/covariate-columns.md` entry was added
+  alongside the Lee 2013 extraction (maintainer decision on the
+  canonical name `DIS_EDEMA`, scope `specific`). The paper defines edema
+  as a clinical diagnosis – puffy face and pitting edema in the legs –
+  assessed once on Day 1 of CMS administration (Table 1 footnote d), so
+  the covariate is time-fixed per subject in this model.
 
 - **Apparent CL and Vc are scaled inversely by RFM.** The paper
   expresses the structural CL and Vc as `CL/fm*` and `Vc/fm*`, where

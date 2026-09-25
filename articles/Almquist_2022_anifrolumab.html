@@ -3724,21 +3724,20 @@ be reconstructed without inventing two binding rate constants, so the
 packaged model implements the QSS form exactly as published, augmented
 with the dynamic-receptor-pool ODE that the supplement appendix
 specifies (<code>d/dt(total_target) = kdeg · (R0 · Vc - R_total)</code>
-under <code>kint = kdeg</code>). An earlier extraction attempt (task
-119, never merged into <code>main</code>) had only the main paper
-available — the JCPH supplement was subscription-blocked at that time.
-With the supplement on disk, this implementation can carry the explicit
-receptor pool rather than holding <code>R_total = R0</code>
-constant.</p></li>
+under <code>kint = kdeg</code>). An earlier extraction attempt (never
+merged into <code>main</code>) had only the main paper available — the
+JCPH supplement was subscription-blocked at that time. With the
+supplement on disk, this implementation can carry the explicit receptor
+pool rather than holding <code>R_total = R0</code> constant.</p></li>
 <li><p><strong><code>kdeg</code> and <code>kint</code>
 provenance.</strong> The receptor degradation rate
 <code>kdeg = 77.4 day⁻¹</code> and the constraint
 <code>kint = kdeg</code> are recorded only in the supplement appendix
-(line 140 of the supplement trim used here) and ultimately reference
-Wang et al. 2013 (Clin Pharmacol Ther 93:483-492) — confocal imaging
-studies of IFNAR1 internalization. The main paper Table 1 lists the
-parameter as <code>k_int</code> only, not as <code>kdeg</code>, with the
-value 77.4 day⁻¹ marked “(fixed)”. The packaged model uses the
+(line 140 of the text extracted from the supplement) and ultimately
+reference Wang et al. 2013 (Clin Pharmacol Ther 93:483-492) — confocal
+imaging studies of IFNAR1 internalization. The main paper Table 1 lists
+the parameter as <code>k_int</code> only, not as <code>kdeg</code>, with
+the value 77.4 day⁻¹ marked “(fixed)”. The packaged model uses the
 supplement’s mechanistic interpretation (a receptor-turnover parameter
 that also drives complex internalisation) and the
 <code>kdeg &lt;- fixed(77.4)</code> declaration carries an inline
@@ -3792,14 +3791,14 @@ only.</p></li>
 <tbody>
 <tr class="odd">
 <td>
-<code>PMID_35383948_pmc.xml</code> (and
-<code>_pmc_trimmed.md</code>)</td>
+<code>PMID_35383948_pmc.xml</code> (and the text extracted from
+it)</td>
 <td>Main paper Methods, Results, Table 1, demographics tables.</td>
 </tr>
 <tr class="even">
 <td>
-<code>PMID_35383948_supplement_1.docx</code> (and
-<code>_supplement_1_trimmed.md</code>)</td>
+<code>PMID_35383948_supplement_1.docx</code> (and the text extracted
+from it)</td>
 <td>Appendix NONMEM <code>$PK</code> / <code>$DES</code> blocks,
 dynamic-receptor ODE, <code>kdeg = kint = 77.4 day⁻¹</code> constraint,
 study-design Tables S1-S5.</td>

@@ -6,8 +6,9 @@ Knebel 2012 reports four independent exposure-response models built on
 the same pooled database of six phase 2/3 istradefylline trials: one for
 the primary efficacy endpoint (percentage of awake time spent in the OFF
 state) and one for each of three treatment-emergent adverse events.
-Following the `replicate-author-structure` policy, each is a separate
-model file and all four share this vignette.
+Following the package’s convention of replicating the authors’
+structure, each is a separate model file and all four share this
+vignette.
 
 | Model | Endpoint | Structure | Source table |
 |----|----|----|----|
@@ -52,8 +53,8 @@ That has two consequences for this vignette:
     It is replaced by exact structural gates on the published anchors, a
     cross-endpoint consistency check, and reproduction of the paper’s
     published figures on the exposure axis – the analogue of the
-    `references/endogenous-validation.md` strategy for models where NCA
-    is the wrong instrument.
+    endogenous-model validation strategy for models where NCA is the
+    wrong instrument.
 
 ``` r
 
@@ -320,10 +321,10 @@ The abstract’s headline numbers – “the typical maximum decrease in
 percentage OFF time due to istradefylline exposure would be 5.79% … with
 one-half of the maximum effect reached at an exposure of 1690 ng x
 hr/mL” – are **base-model** values (Table II, “Base Model” column), not
-final-model values. Per the `replicate-author-structure` policy the
-packaged file carries the final model, but the base model is one `ini()`
-override away, and reproducing the abstract is a useful independent
-check that the structure is right.
+final-model values. Per the package’s policy for base-plus-final papers,
+the packaged file carries the final model, but the base model is one
+`ini()` override away, and reproducing the abstract is a useful
+independent check that the structure is right.
 
 ``` r
 
@@ -1152,16 +1153,15 @@ structure and the omega block are transcribed correctly.
   endpoint) and the dyskinesia asymptote. Should the supplement become
   available, the forms should be re-verified against it.
 - **The percentage OFF time file carries the final full covariate model,
-  not the base model.** Both are printed in Table II; per the
-  `replicate-author-structure` policy a base-plus-final
-  model-development paper contributes the final model. The abstract’s
-  headline values (EmaxI 5.79%, EC50 1690 ng x hr/mL) are base-model
-  values – Gate 1b reproduces them via an `ini()` override rather than
-  by shipping a second file. The base-model variance terms, for anyone
-  wanting a complete base-model override, are Table II: omega^2 E0 107
-  (SD 10.3), E0-EmaxP correlation r = 0.11, omega^2 EmaxP 0.117 (SD
-  0.341), omega^2 EmaxI 17.5 (SD 4.18), sigma^2 additive 51.8 (SD 7.20),
-  sigma^2 exponential 0.0212 (CV% 14.5).
+  not the base model.** Both are printed in Table II; per the package’s
+  policy, a base-plus-final model-development paper contributes the
+  final model. The abstract’s headline values (EmaxI 5.79%, EC50 1690 ng
+  x hr/mL) are base-model values – Gate 1b reproduces them via an
+  `ini()` override rather than by shipping a second file. The base-model
+  variance terms, for anyone wanting a complete base-model override, are
+  Table II: omega^2 E0 107 (SD 10.3), E0-EmaxP correlation r = 0.11,
+  omega^2 EmaxP 0.117 (SD 0.341), omega^2 EmaxI 17.5 (SD 4.18), sigma^2
+  additive 51.8 (SD 7.20), sigma^2 exponential 0.0212 (CV% 14.5).
 - **Between-subject variability is additive on the linear scale**, not
   exponential, and the structural parameters carrying it (`e0`,
   `emax_dppr`, `emax_drug`) are therefore left untransformed. The

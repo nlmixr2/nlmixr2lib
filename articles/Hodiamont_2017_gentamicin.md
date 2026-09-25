@@ -351,8 +351,8 @@ paper.
   `dur(central)`, so users specify infusion duration per dose via the
   `rate` (or `dur`) column on the event-table dose rows; the vignette
   uses `rate = amt / 0.5` to deliver each dose over 30 minutes.
-- **Errata not searched.** The skill’s pre-flight checklist asks for an
-  errata search on the publisher landing page; for this 2017 article the
-  search was not performed during extraction. If a subsequent erratum
-  revises a Table 2 estimate, the packaged values should be refreshed
-  accordingly.
+- **Errata not searched.** The package’s validation checklist asks for
+  an errata search on the publisher landing page; for this 2017 article
+  the search was not performed during extraction. If a subsequent
+  erratum revises a Table 2 estimate, the packaged values should be
+  refreshed accordingly.

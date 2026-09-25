@@ -821,7 +821,7 @@ the metabolites.
 # set.seed() seeds R's RNG, NOT rxode2's -- and rxode2's streams are
 # partitioned per solver thread, so this cohort differs between a 16-thread
 # workstation and a 2-core CI runner. No assertion below depends on the
-# particular draw; see pattern 12 of known-vignette-failure-patterns.md.
+# particular draw.
 set.seed(20260912)
 n_per_arm <- 100L      # well under the 200/arm cap
 

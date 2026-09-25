@@ -1933,6 +1933,6 @@ tuning parameters.
   final-model covariate equations, so the vignette does not stratify on
   race or disease.
 - **Errata.** No erratum / corrigendum to Hennig 2006 was located on
-  disk for this extraction; the operator should reconfirm against the
-  Adis / Springer corrections feed for Clin Pharmacokinet 45(11) before
-  relying on the model in production.
+  disk for this extraction; users should reconfirm against the Adis /
+  Springer corrections feed for Clin Pharmacokinet 45(11) before relying
+  on the model in production.

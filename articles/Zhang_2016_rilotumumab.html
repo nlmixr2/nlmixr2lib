@@ -2881,8 +2881,8 @@ but does not reproduce the covariate equations or the residual error
 model</strong> – those live in Zhu 2014. The Zhang 2016 model file
 therefore encodes only the structural two-compartment skeleton and the
 four IIV terms; the upstream <code>Zhu_2014_rilotumumab</code>
-extraction (ingestion task 127) will carry the full covariate model and
-residual error specification.</p>
+extraction will carry the full covariate model and residual error
+specification.</p>
 <p>Structure: linear two-compartment IV model with first-order
 elimination from the central compartment, parameterised by
 <code>CL</code>, <code>Vc</code>, <code>Q</code>, and <code>Vp</code>
@@ -3211,7 +3211,7 @@ or the exponent estimates. The model file therefore produces CL and Vc
 predictions identical to the typical Zhu 2014 reference subject; the
 body weight column in the virtual cohort is used only to compute the
 per-subject mg/kg dose. The full covariate model lives in the upstream
-Zhu 2014 extraction (ingestion task 127).</li>
+Zhu 2014 extraction.</li>
 <li>
 <strong>Age covariate effect is not encoded.</strong> Same rationale
 as for weight.</li>
@@ -3283,9 +3283,8 @@ comparable to Zhang 2016 Figure 5.</li>
 <li>Covariate-stratified predictions by body weight or age (covariate
 equations not encoded; use the Zhu 2014 extraction when available).</li>
 </ul>
-<p>The Zhu_2014_rilotumumab extraction (ingestion task 127) is the
-canonical source for the full popPK model including covariates and
-residual error.</p>
+<p>The Zhu_2014_rilotumumab extraction is the canonical source for the
+full popPK model including covariates and residual error.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

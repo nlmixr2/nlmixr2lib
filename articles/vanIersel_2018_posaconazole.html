@@ -3282,12 +3282,10 @@ Cavg &gt;= 0.5 mg/L.</caption>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>The model output is fed to PKNCA for steady-state NCA on the day-28
-dosing interval (per Recipe 3 in
-<code>references/pknca-recipes.md</code>). The PKNCA input filter uses
-only <code>!is.na(Cc)</code> and a defensive <code>time = 0</code> row
-per subject is added because the simulation grid starts at the first
-dose, not at a separate pre-dose record (per the time-zero guarantee in
-<code>pknca-recipes.md</code>).</p>
+dosing interval. The PKNCA input filter uses only
+<code>!is.na(Cc)</code> and a defensive <code>time = 0</code> row per
+subject is added because the simulation grid starts at the first dose,
+not at a separate pre-dose record.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3487,8 +3485,8 @@ log-transformed concentration (SD 0.42 in phase 1, SD 0.322 in phase 3).
 This is encoded as <code>Cc ~ lnorm(expSd)</code> with
 <code>expSd</code> switched between <code>expSd_p1</code> and
 <code>expSd_p3</code> via the <code>STUDY_POSA_PHASE3</code> indicator
-(per the verification-checklist rule ‘NONMEM additive on log-scale =
-lnorm in nlmixr2 with the same SD’).</li>
+(per the package’s rule ‘NONMEM additive on log-scale = lnorm in nlmixr2
+with the same SD’).</li>
 <li>
 <strong>Healthy / HSCT pooling in the AML/MDS effect.</strong> The
 final model retained AML/MDS as a single indicator; the reference

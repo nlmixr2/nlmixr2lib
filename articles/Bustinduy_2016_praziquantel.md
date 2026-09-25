@@ -286,7 +286,7 @@ parameter.
 # count. Every assertion downstream is written to hold for ANY cohort.
 set.seed(20160809)
 
-n_per_arm <- 200L   # the skill cap; ample for this comparison
+n_per_arm <- 200L   # the per-arm cohort cap; ample for this comparison
 
 rtnorm <- function(n, mean, sd, lo, hi) {
   x <- stats::rnorm(n * 20, mean, sd)

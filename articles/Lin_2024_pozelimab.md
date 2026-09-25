@@ -169,7 +169,7 @@ kDa C5 MW reproduces the paper’s own footnote conversions ksyn = 0.04922
 | Source column | Canonical column used here |
 |----|----|
 | `WT` (baseline body weight, kg) | `WT` (canonical, per `inst/references/covariate-columns.md`) |
-| `PNH` (disease state, PNH versus healthy volunteer) | `DIS_PNH` (1 = PNH patient, 0 = non-PNH; new entry registered in this PR) |
+| `PNH` (disease state, PNH versus healthy volunteer) | `DIS_PNH` (1 = PNH patient, 0 = non-PNH; new entry registered when this model was added) |
 
 ## Virtual cohort
 

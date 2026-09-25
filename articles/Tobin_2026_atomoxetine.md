@@ -343,7 +343,7 @@ mg/kg.
 # set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per
 # solver thread, so this cohort differs on a machine with a different thread
 # count. Every assertion below is written to hold for any cohort the model
-# can produce (pattern 12 of known-vignette-failure-patterns.md).
+# can produce.
 set.seed(20260912L)
 n_per_arm <- 120L
 

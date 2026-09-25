@@ -261,7 +261,7 @@ sim_pk <- sim_typ |>
 # Guarantee a time = 0 row per (id, treatment) -- the Cc at t=0 is the
 # endogenous-only baseline q0/cl produced by the model's central(0)
 # initial condition, which the simulation already includes; the
-# bind_rows pattern below is the defensive idiom from pknca-recipes.md.
+# bind_rows pattern below is a defensive idiom.
 sim_pk <- dplyr::bind_rows(
   sim_pk,
   sim_pk |>

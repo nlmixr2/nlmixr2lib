@@ -3506,7 +3506,7 @@ classical popPK models. Compartments are declared via
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> accepts them. The structural
 parameter names follow the lowercase snake-case convention recommended
 for endogenous / mechanistic models in
-<code>references/parameter-names.md</code>.</li>
+<code>inst/references/parameter-names.md</code>.</li>
 <li>
 <strong>Dose unit is mg/kg, not mg.</strong> Because every model
 parameter is weight-normalised, the dosing event <code>amt</code> must
@@ -3535,10 +3535,9 @@ separate recombinant rA2 from endogenous cA2 (they are functionally
 identical and assay-indistinguishable), the dosed-drug signal cannot be
 cleanly extracted from any of the three outputs without a
 baseline-subtraction assumption the paper does not specify. The paper
-itself reports no NCA parameters. We follow the endogenous-validation
-pattern (steady-state hold, perturbation recovery, mass-balance,
-dimensional analysis, Figure 6 replication) instead. See
-<code>references/endogenous-validation.md</code>.</li>
+itself reports no NCA parameters. We follow the validation pattern for
+endogenous-substance models (steady-state hold, perturbation recovery,
+mass-balance, dimensional analysis, Figure 6 replication) instead.</li>
 <li>
 <strong>Between-study differences not modelled.</strong> The paper
 notes that A2B2 elimination appears faster in the multiple-dose study

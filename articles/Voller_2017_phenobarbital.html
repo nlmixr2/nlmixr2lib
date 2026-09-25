@@ -2877,11 +2877,11 @@ DDMODEL00000256.</li>
 Foundation Model Repository entry <strong>DDMODEL00000256</strong>, the
 source from which it was extracted. The Voller 2017 publication PDF is
 not available on this machine, so the validation strategy follows the
-F.2 self-consistency recipe from the
-<code>extract-literature-model</code> skill: re-simulate the bundle’s
-shipped event table with typical-value parameters and confirm the
-trajectory is in the expected clinical range for phenobarbital in
-newborns receiving a loading dose followed by oral maintenance.</p>
+F.2 self-consistency recipe from the package’s validation checklist:
+re-simulate the bundle’s shipped event table with typical-value
+parameters and confirm the trajectory is in the expected clinical range
+for phenobarbital in newborns receiving a loading dose followed by oral
+maintenance.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3493,13 +3493,11 @@ on once-daily oral maintenance dosing, terminal half-life ~100 h).</p>
 <div class="section level3">
 <h3 id="comparison-against-published-nca">Comparison against published NCA<a class="anchor" aria-label="anchor" href="#comparison-against-published-nca"></a>
 </h3>
-<p>The Voller 2017 publication PDF is not on disk under
-<code>/home/bill/github/mab_human_consensus/literature/</code>, so the
-in-paper NCA tables (Cmax, AUC, trough by birth-weight or postnatal-age
-stratum) cannot be reproduced here. This is the F.2 substitute path
-described in the <code>extract-literature-model</code> skill
-(<code>references/ddmore-source.md</code> Section “Validation strategy
-by model type”). Operator follow-up: pull the publication PDF and
+<p>The Voller 2017 publication PDF is not on disk in the maintainers’
+literature mirror, so the in-paper NCA tables (Cmax, AUC, trough by
+birth-weight or postnatal-age stratum) cannot be reproduced here. This
+is the F.2 substitute path of the package’s validation strategy for
+DDMORE bundles. Maintainer follow-up: pull the publication PDF and
 compare the PKNCA outputs above against any in-paper loading-dose Cmax /
 AUC / trough values reported by Voller et al.</p>
 </div>
@@ -3536,8 +3534,7 @@ because it is already used across five existing models (Gandhi 2021, Li
 body weight (<code>WT</code>), so reusing <code>BWT</code> for birth
 weight would silently break those mappings. The naming choice
 (<code>WT_BIRTH</code> vs <code>BIRTH_WT</code> vs
-<code>BWTBIRTH</code>) was confirmed by the operator via the runner
-sidecar protocol.</p></li>
+<code>BWTBIRTH</code>) was confirmed by the maintainers.</p></li>
 <li><p><strong>Bioavailability <code>lfdepot</code> is not bounded in
 <code>ini()</code>.</strong> The source <code>$THETA</code> declared
 <code>(0, 0.594, 1)</code> for F1, an explicit (0, 1) bound. The
@@ -3554,20 +3551,18 @@ covariance between ETA1 (CL) and ETA2 (V). The packaged nlmixr2 model
 preserves the diagonal structure
 (<code>etalcl ~ 0.0898; etalvc ~ 0.0504</code>).</p></li>
 <li><p><strong>Validation strategy is F.2 self-consistency</strong> (per
-<code>references/ddmore-source.md</code> Section “Validation strategy by
-model type” decision tree, leaf 1: linked publication exists but is not
-on disk). PKNCA values shown above are informational; comparison against
-the Voller 2017 published NCA / population-prediction figures could not
-be performed.</p></li>
+the package’s validation strategy for DDMORE bundles whose linked
+publication exists but is not on disk). PKNCA values shown above are
+informational; comparison against the Voller 2017 published NCA /
+population-prediction figures could not be performed.</p></li>
 <li><p><strong>No external publication cross-check.</strong> The Voller
-2017 publication PDF is not on disk under
-<code>/home/bill/github/mab_human_consensus/literature/</code>;
-parameter values were not cross-checked against published tables in the
-paper. The skill’s runner sidecar pre-resolved this case (the task YAML
-states “If not, proceed using the .lst only and note the absence of an
-external check in the vignette Errata”). Operator follow-up: pull the
-publication PDF and verify the <code>.lst</code> final estimates against
-the paper’s parameter table.</p></li>
+2017 publication PDF is not on disk in the maintainers’ literature
+mirror; parameter values were not cross-checked against published tables
+in the paper. The maintainers resolved this case in advance: proceed
+using the .lst only and note the absence of an external check in the
+vignette Errata. Maintainer follow-up: pull the publication PDF and
+verify the <code>.lst</code> final estimates against the paper’s
+parameter table.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

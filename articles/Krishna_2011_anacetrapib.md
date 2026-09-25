@@ -174,7 +174,7 @@ location. The table below collects them.
 
 ### Two readings that had to be recovered rather than transcribed
 
-The trimmed markdown of this paper renders all nine display equations as
+The extracted text of this paper renders all nine display equations as
 `formula-not-decoded`, and the PDF’s symbol font maps multiplication
 signs, minus signs and Greek letters onto control bytes that `pdftotext`
 drops. Every equation was therefore reconstructed and then checked
@@ -1408,13 +1408,13 @@ failed: the EuropePMC `supplementaryFiles` endpoint returned HTTP 504
 for both this PMCID and a control PMCID (so an outage, not a missing
 deposit), and the Springer static-content route returned HTTP 403.
 
-**The trimmed markdown of this paper is unusable for the equations.**
-All nine display equations render as `formula-not-decoded`, and the
-PDF’s symbol font encodes multiplication signs, minus signs and Greek
-letters as C0 control bytes that `pdftotext` silently drops. The
-equations in this vignette were recovered with `pdftotext -layout` plus
-`cat -A` and then confirmed numerically against the fifteen published
-predictions checked above, rather than trusted as printed.
+**The extracted text of this paper is unusable for the equations.** All
+nine display equations render as `formula-not-decoded`, and the PDF’s
+symbol font encodes multiplication signs, minus signs and Greek letters
+as C0 control bytes that `pdftotext` silently drops. The equations in
+this vignette were recovered with `pdftotext -layout` plus `cat -A` and
+then confirmed numerically against the fifteen published predictions
+checked above, rather than trusted as printed.
 
 **Upstream dependency.** Krishna 2011’s higher-atorvastatin-dose
 extrapolations lean on the Mandema 2005 statin dose-response

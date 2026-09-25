@@ -393,16 +393,15 @@ magnitudes that the SSE-derived identifiability conclusions rest on.
   2014b) would need to remove the `fixed()` wrappers and supply the
   species-appropriate starting values.
 - **Rat physiologic backbone; species not on-disk.** The Snelder 2013,
-  2014 papers that supply the rat baseline values are not on disk in the
-  ingestion source directory; the parameters here are taken from the Fu
-  2023 supplemental NONMEM control stream verbatim (which transcribes
-  them from Snelder for the SSE reference set). If a downstream user
-  needs the original Snelder derivation, those primary papers should be
-  acquired separately.
+  2014 papers that supply the rat baseline values are not on disk; the
+  parameters here are taken from the Fu 2023 supplemental NONMEM control
+  stream verbatim (which transcribes them from Snelder for the SSE
+  reference set). If a downstream user needs the original Snelder
+  derivation, those primary papers should be acquired separately.
 - **No PKNCA validation.** This is an endogenous / mechanistic QSP model
   with no exogenous concentration to characterise via NCA; the drug is a
   hypothetical Emax perturbation of the HR-production rate, not a
   therapeutic with dosing history observations. Validation instead
   relies on the steady-state hold + drug-response magnitude reproduction
-  shown above, matching Section 8 of the endogenous-model validation
-  reference (`references/endogenous-validation.md`).
+  shown above, matching the package’s validation pattern for
+  endogenous-substance models.

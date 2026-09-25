@@ -295,8 +295,8 @@ Two rows are starred above:
   comes only from the WT / PMA covariate distribution and cannot
   reproduce the per-subject scatter that drives the wide Cmin SD.
 
-Per the skill conventions: do not tune parameters to match Cmin or Tmax.
-The half-life is the load-bearing comparison and it agrees.
+Per the package’s conventions: do not tune parameters to match Cmin or
+Tmax. The half-life is the load-bearing comparison and it agrees.
 
 ## Assumptions and deviations
 

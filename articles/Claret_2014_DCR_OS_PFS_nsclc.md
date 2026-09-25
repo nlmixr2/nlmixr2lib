@@ -147,7 +147,7 @@ Every `ini()` value is carried with an in-file comment in
 ### Sign recovery for the negative coefficients
 
 Three of the eight estimates are negative. Their minus signs are typeset
-as U+2212 and are **dropped by both** the trimmed-markdown conversion of
+as U+2212 and are **dropped by both** the markdown text extraction of
 the PDF and by `pdftotext -layout`, so they cannot be taken from a text
 extraction. They were recovered from the tables’ own Wald statistics –
 `z` equals estimate divided by SE on every row, so the sign of `z`
@@ -746,10 +746,10 @@ transcription error – see below.
 - **Sign recovery for three coefficients.** The minus signs on the OS
   albumin coefficient, the OS `Log (scale)` and the PFS `Log (scale)`
   are not recoverable from a text extraction of the PDF (both the
-  trimmed markdown and `pdftotext -layout` drop the U+2212 glyph). They
-  were recovered from the published Wald statistics, verified against
-  the rendered page image, and the check is reproduced in the “Sign
-  recovery” section above. All eight parameters satisfy
+  markdown text extraction and `pdftotext -layout` drop the U+2212
+  glyph). They were recovered from the published Wald statistics,
+  verified against the rendered page image, and the check is reproduced
+  in the “Sign recovery” section above. All eight parameters satisfy
   `z = estimate / SE`.
 
 - **No IIV and no residual error.** Neither table reports variance

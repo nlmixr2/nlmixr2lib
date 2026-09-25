@@ -282,7 +282,7 @@ nca_input <- sim |>
 
 # Guarantee a time = last_dose_time row per (id, cohort); rxode2 emits
 # observation rows at every requested time, but a defensive bind_rows()
-# is the standard PKNCA recipe (see references/pknca-recipes.md).
+# is the standard PKNCA recipe.
 nca_input <- dplyr::bind_rows(
   nca_input,
   nca_input |>

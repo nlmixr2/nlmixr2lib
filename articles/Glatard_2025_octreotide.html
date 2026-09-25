@@ -3380,15 +3380,15 @@ bioavailability is unchanged (Sect. 3.3).</p>
 <div class="section level2">
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
-<p>Steady-state NCA over the final dosing interval (recipe 3). Time is
-re-based so that the last dose sits at <code>time = 0</code>, which
-makes the interval <code>[0, tau]</code>. Because the observation grid
-starts exactly at the last dose, a genuine <code>time = 0</code> record
-already exists and anchors the AUC – and at steady state its
-concentration is the trough carried over from the previous interval,
-<strong>not</strong> zero, so the usual “add a pre-dose
-<code>Cc = 0</code> row” guard would be actively wrong here. The
-assertion below checks the real row is present instead.</p>
+<p>Steady-state NCA over the final dosing interval. Time is re-based so
+that the last dose sits at <code>time = 0</code>, which makes the
+interval <code>[0, tau]</code>. Because the observation grid starts
+exactly at the last dose, a genuine <code>time = 0</code> record already
+exists and anchors the AUC – and at steady state its concentration is
+the trough carried over from the previous interval, <strong>not</strong>
+zero, so the usual “add a pre-dose <code>Cc = 0</code> row” guard would
+be actively wrong here. The assertion below checks the real row is
+present instead.</p>
 <p>CAM2029 (tau = 672 h) and octreotide IR (tau = 8 h) have different
 dosing intervals, so they need separate <code>intervals</code>
 specifications; the two result sets are combined afterwards into a
@@ -3711,8 +3711,8 @@ Table 4). * differs from reference by &gt;20%.</caption>
 <code class="sourceCode R"><span><span class="va">worst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"[^0-9.eE+-]"</span>, <span class="st">""</span>, <span class="va">cmp</span><span class="op">[[</span><span class="st">"% diff"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Largest absolute discrepancy vs Table 4: %.1f%%\n"</span>, <span class="va">worst</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Largest absolute discrepancy vs Table 4: 5.6%</span></span>
-<span><span class="co"># Tightened to the accuracy actually achieved (the skill's 20% gate is looser</span></span>
-<span><span class="co"># than this model warrants), so a future regression is caught.</span></span>
+<span><span class="co"># Tightened to the accuracy actually achieved (the package's standard 20%</span></span>
+<span><span class="co"># gate is looser than this model warrants), so a future regression is caught.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">worst</span> <span class="op">&lt;</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p>Table 4 also publishes a geometric CV% for every cell, which is an
 independent check on the variability structure – the five IIV terms –

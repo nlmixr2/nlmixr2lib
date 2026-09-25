@@ -723,7 +723,7 @@ would require the individual NONMEM EBEs.
   factor and is interpretable as the SCT-to-plasma AUC ratio. The
   convention treats `logitfu_sct` as a trivial application of the
   `logit` + fraction-name pattern (not a new structural canonical
-  concept requiring a sidecar).
+  concept requiring maintainer approval).
 
 - **`CRCL` stored under the canonical name despite NOT being
   BSA-normalized.** The canonical `CRCL` entry in

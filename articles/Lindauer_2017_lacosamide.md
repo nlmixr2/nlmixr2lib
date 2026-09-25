@@ -522,7 +522,7 @@ check shown above.
 - **NSP3M categorisation.** The source paper’s NSP3M variable is a raw
   seizure-count covariate that the authors split into four categories
   (\<2, 2-6, 7-50, \>50) with 2-6 as reference. Per the standing
-  operator policy (“count covariate -\> decomposed binary indicators”)
+  maintainer policy (“count covariate -\> decomposed binary indicators”)
   the extraction encodes three binary indicators `NSP3M_LT2`,
   `NSP3M_7_50`, `NSP3M_GT50` (all zero selects the reference). Data
   assemblers must enforce mutual exclusivity: at most one of the three

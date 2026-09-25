@@ -905,7 +905,7 @@ c(
   18.10 and 16.49 mg\*h/L) by 23.1%, 21.9% and 20.0% respectively,
   whereas 3.45 lands within -2.1% to +1.9% across all five simulated
   regimens (typical-value table above). Encoding the back-solved value
-  rather than the printed one is an explicit operator ruling that
+  rather than the printed one is an explicit maintainer ruling that
   overrides the usual “values from the paper” rule; it is annotated
   inline at the `ini()` entry as well as here. A reader who prefers the
   printed value can recover it with

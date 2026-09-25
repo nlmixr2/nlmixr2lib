@@ -101,10 +101,10 @@ while extracting the model and are documented here for transparency:
 - Nestorov 2014 Eq. 1 and Eq. 2 are typeset with the publisher’s
   layout-corrupted operators: stretched minus signs render as `/C0` and
   centered dots as `/C1`. The intended math is unambiguous when read
-  alongside the surrounding sentences and Table 1, but the literal-text
-  PDF/markdown trim shows the corrupted glyphs (e.g., `VWF/C0 0.343`,
-  `STUD /C1 Q5`). The model uses the standard interpretation (negative
-  exponent of VWF on CL and multiplicative
+  alongside the surrounding sentences and Table 1, but the text
+  extracted from the PDF shows the corrupted glyphs (e.g.,
+  `VWF/C0 0.343`, `STUD /C1 Q5`). The model uses the standard
+  interpretation (negative exponent of VWF on CL and multiplicative
   covariate-by-typical-parameter form, respectively).
 - The reported correlation between IIV on CL and V1 (0.548) is
   consistent with the reported variances (0.0590 and 0.0180) and
@@ -333,7 +333,7 @@ draws; larger discrepancies would indicate a coding error.
 
 ## Assumptions and deviations
 
-- **Final model selected per skill convention.** Nestorov 2014 reports
+- **Final model selected per package convention.** Nestorov 2014 reports
   both a base model (allometric WT on V1 only) and a final covariate
   model (VWF on CL plus WT and HCT on V1) for rFVIIIFc, with a separate
   base model for the comparator rFVIII (Advate) product. The packaged

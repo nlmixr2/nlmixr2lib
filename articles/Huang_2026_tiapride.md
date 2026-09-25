@@ -670,7 +670,8 @@ printed quantity is used to recover it:
 
 Choosing any of these would fix the sub-model’s primary output to within
 a factor that the source does not license, so the saliva layer is
-deliberately absent rather than guessed. It is queued for the operator.
+deliberately absent rather than guessed. It is left as open work for the
+maintainers.
 
 Two structural facts about that sub-model were nevertheless settled and
 are recorded here for whoever completes it: the transport is **not**

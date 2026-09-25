@@ -3212,8 +3212,7 @@ correctly.</p>
 <span><span class="co">#&gt;       1.483299e-06</span></span>
 <span></span>
 <span><span class="co"># Pure numerical error between two exact representations of the same system,</span></span>
-<span><span class="co"># so a tight bound is correct here (both sides use the same drawn parameters;</span></span>
-<span><span class="co"># see CLAUDE.md on when tight all() bounds apply).</span></span>
+<span><span class="co"># so a tight bound is correct here (both sides use the same drawn parameters).</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">rel_err</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Bai_2024_imipenem_files/figure-html/closed_form_plot-1.png" class="r-plt" alt="" width="672"></p>
 </div>
@@ -3521,7 +3520,7 @@ marginal moments (mean 104.59, SD 60.95 mL/min), truncated to the
 observed 17.80-256.22 range and then split at the paper’s stratum
 boundaries. See Errata.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># cap per the skill's 200-per-arm limit</span></span>
+<code class="sourceCode R"><span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># the 200-subject per-arm cohort cap</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20240101L</span><span class="op">)</span></span>
 <span><span class="va">sigma2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="op">(</span><span class="fl">60.95</span> <span class="op">/</span> <span class="fl">104.59</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>

@@ -171,8 +171,7 @@ typical_solve <- function(cmt_dose, amt, wt = 70, egfr = 81,
   args <- list(
     object = mod, events = d, omega = NA, returnType = "data.frame",
     # rxode2's automatic ODE -> linCmt conversion can corrupt the dvid mapping
-    # for multi-output models; disable it (see known-vignette-failure-patterns
-    # pattern 5b).
+    # for multi-output models; disable it.
     useLinCmt = FALSE
   )
   if (!is.null(params)) args$params <- params
@@ -373,12 +372,12 @@ print(dev[, c("Route", "d_m3g_m", "d_m6g_m", "d_m3g_m6g")])
 #> 2 Oral extended release   0.0547  0.155   1.64e- 1
 #> 3 Oral immediate release  0.0594  0.160   1.64e- 1
 
-# Deterministic typical-value quantities, so a tight bound is correct here (see
-# known-vignette-failure-patterns pattern 11 vs 12). Realised maximum is 0.21%,
-# from rounding the published ratios to three significant figures. The bound
-# can still go red: encoding the Table 3 metabolic fractions 0.573 / 0.104
-# instead of the Results-text 0.57 / 0.10 moves the subcutaneous M6G:morphine
-# ratio from 1.95 to 2.03, a 4.1% deviation (see Errata).
+# Deterministic typical-value quantities, so a tight bound is correct here.
+# Realised maximum is 0.21%, from rounding the published ratios to three
+# significant figures. The bound can still go red: encoding the Table 3
+# metabolic fractions 0.573 / 0.104 instead of the Results-text 0.57 / 0.10
+# moves the subcutaneous M6G:morphine ratio from 1.95 to 2.03, a 4.1%
+# deviation (see Errata).
 stopifnot(max(dev$d_m3g_m, dev$d_m6g_m, dev$d_m3g_m6g) < 1)
 ```
 
@@ -510,8 +509,7 @@ make_cohort <- function(n, admin_arm, cmt_dose, amt, id_offset = 0L) {
   # 48 h is 15-23 morphine half-lives and ~13 metabolite half-lives for a
   # typical subject, so auclast is within a rounding error of aucinf while the
   # tail stays well clear of the solver noise floor that a 96 h window reaches
-  # for the fastest-clearing subjects (pattern 11 of
-  # known-vignette-failure-patterns).
+  # for the fastest-clearing subjects.
   times <- c(seq(0, 12, by = 0.1), seq(12.5, 24, by = 0.5), seq(25, 48, by = 1))
   doses <- subj |>
     dplyr::mutate(time = 0, amt = amt, evid = 1L, cmt = cmt_dose)

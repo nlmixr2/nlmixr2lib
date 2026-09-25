@@ -3241,8 +3241,7 @@ four typical-value reference subjects from Figure 3.</p>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">scenario</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Defensive time-zero row per (id, scenario) -- extravascular pre-dose</span></span>
-<span><span class="co"># concentration is 0. (Required by PKNCA AUC0-* anchoring; see</span></span>
-<span><span class="co"># pknca-recipes.md "Time-zero records (mandatory)".)</span></span>
+<span><span class="co"># concentration is 0. (Required by PKNCA AUC0-* anchoring.)</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="va">sim_nca</span>,</span>
 <span>  <span class="va">sim_nca</span> <span class="op">|&gt;</span> <span class="fu">distinct</span><span class="op">(</span><span class="va">id</span>, <span class="va">scenario</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, Cc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>

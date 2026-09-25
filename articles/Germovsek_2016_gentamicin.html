@@ -2878,10 +2878,9 @@ Model Repository entry DDMODEL00000238.</li>
 <code>Germovsek_2016_gentamicin</code> model against the DDMORE
 Foundation Model Repository entry <strong>DDMODEL00000238</strong>, the
 source from which it was extracted. The Germovsek 2016 publication PDF
-is not available on this machine, so the validation strategy follows the
-F.2 self-consistency recipe from the
-<code>extract-literature-model</code> skill: re-simulate the bundle’s
-shipped event table and confirm the typical-value trajectory matches the
+was not available when this model was built, so the validation strategy
+is the F.2 self-consistency check: re-simulate the bundle’s shipped
+event table and confirm the typical-value trajectory matches the
 bundle’s NONMEM listing and shipped concentrations.</p>
 </div>
 <div class="section level2">
@@ -3455,15 +3454,11 @@ neonatal dosing).</p>
 <div class="section level3">
 <h3 id="comparison-against-published-nca">Comparison against published NCA<a class="anchor" aria-label="anchor" href="#comparison-against-published-nca"></a>
 </h3>
-<p>The Germovsek 2016 publication PDF is not on disk under
-<code>/home/bill/github/mab_human_consensus/literature/</code>, so the
-in-paper NCA tables (Cmax, AUC, trough by PMA / PNA stratum) cannot be
-reproduced here. This is the F.2 substitute path described in the
-<code>extract-literature-model</code> skill
-(<code>references/ddmore-source.md</code> Section “Validation strategy
-by model type”). Operator follow-up: pull the publication PDF and
-compare PKNCA outputs above against any in-paper Cmax / AUC / Cmin
-values reported by Germovsek et al.</p>
+<p>The Germovsek 2016 publication PDF was not available when this model
+was built, so the in-paper NCA tables (Cmax, AUC, trough by PMA / PNA
+stratum) cannot be reproduced here. When it is, the PKNCA outputs above
+should be compared against any in-paper Cmax / AUC / Cmin values
+reported by Germovsek et al.</p>
 </div>
 </div>
 <div class="section level2">
@@ -3539,12 +3534,10 @@ perturb them.</p></li>
 (<code>OCC</code>) are present in the source <code>$INPUT</code> but not
 used in <code>$PK</code> / <code>$DES</code>.</strong> They are not
 declared as covariates in the packaged model.</p></li>
-<li><p><strong>Validation strategy is F.2 self-consistency</strong> (per
-<code>references/ddmore-source.md</code> Section “Validation strategy by
-model type” decision tree, leaf 1: linked publication exists but is not
-on disk). PKNCA values shown above are informational; comparison against
-the Germovsek 2016 published NCA / population-prediction figures could
-not be performed.</p></li>
+<li><p><strong>Validation strategy is F.2 self-consistency</strong> (the
+linked publication exists but is not on disk). PKNCA values shown above
+are informational; comparison against the Germovsek 2016 published NCA /
+population-prediction figures could not be performed.</p></li>
 <li><p><strong>Missing-CREAT imputation.</strong> The source
 <code>.mod</code> substitutes the typical PMA-dependent SCr
 (<code>TCREA = -2.8488 * PMA_weeks + 166.48</code>) when the observed

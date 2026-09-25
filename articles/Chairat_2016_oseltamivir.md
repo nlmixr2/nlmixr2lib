@@ -145,10 +145,7 @@ mod <- readModelDb("Chairat_2016_oseltamivir")
 
 # Stochastic simulation over the virtual cohort. Carry the treatment and
 # CRCL columns through via keep so they land aligned per row in the
-# rxSolve output.  works around rxode2's automatic
-# ODE -> linCmt conversion, which corrupts the dvid -> cmt mapping for
-# multi-output models like this parent + metabolite system (see the
-# known-vignette-failure-patterns.md pattern #5b reference).
+# rxSolve output.
 sim <- rxode2::rxSolve(mod, events = events,
                        keep = c("treatment", "CRCL")
                        ) |>
@@ -262,7 +259,7 @@ records but different concentration columns.
 
 # Parent (OS) concentration frame: keep the column named Cc until the
 # rename inside the PKNCA call. Add a time = 0 row defensively
-# (extravascular pre-dose Cc = 0); see pknca-recipes.md.
+# (extravascular pre-dose Cc = 0).
 sim_nca_parent <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)

@@ -14,9 +14,9 @@
 This is an endogenous mechanistic model for human erythropoiesis – it
 has no drug, no PK/PD output, and the perturbation of interest is a
 **phlebotomy** (whole-blood or single-unit erythrocyte-concentrate
-donation). Validation therefore follows the `endogenous-validation.md`
-recipe (steady-state, perturbation-recovery, mass-balance, dimensional
-analysis) rather than the standard PKNCA recipe.
+donation). Validation therefore follows the package’s recipe for
+endogenous models (steady-state, perturbation-recovery, mass-balance,
+dimensional analysis) rather than the standard PKNCA recipe.
 
 ## Population
 
@@ -100,10 +100,10 @@ term carries dimensionless count per day while the `alpha*x3` term
 carries grams per day. The model reproduces the paper exactly; the
 apparent inconsistency is an implicit unit-conversion convention in the
 source (the `x2 -> x3` transition silently rescales count to mass via
-the unstated mean-corpuscular-hemoglobin factor). See
-`references/endogenous-validation.md` for the comparable Charbonneau
-2021 phenylalanine case where dimensional mixing in the published
-equations is preserved verbatim by design.
+the unstated mean-corpuscular-hemoglobin factor). The packaged
+Charbonneau 2021 phenylalanine model (`phenylalanine_charbonneau_2021`)
+is a comparable case where dimensional mixing in the published equations
+is preserved verbatim by design.
 
 | ODE term | Units (paper’s bookkeeping) | Notes |
 |----|----|----|
@@ -470,8 +470,7 @@ Tetschke 2018 Table 1 exactly.
   reproduces the paper’s equations verbatim; the implicit count -\> mass
   rescaling at the precursor2 -\> thb interface is part of the paper’s
   convention. See the units table above and the comparable Charbonneau
-  2021 phenylalanine case documented in
-  `references/endogenous-validation.md`.
+  2021 phenylalanine model (`phenylalanine_charbonneau_2021`).
 - **Phlebotomy is encoded as a negative bolus on `thb`.** The control
   variable `u(t)` and rate function `P(beta, dt, dx3)` in Tetschke 2018
   Eq. 5 and Appendix A.1 are an internal convenience for the paper’s

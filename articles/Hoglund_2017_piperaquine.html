@@ -3811,7 +3811,7 @@ band 36-74 kg with Hoglund 2017 Table 3 median 28.1 ng/mL.</caption>
 <code>OCC - 1</code>.</strong> Hoglund 2017 Methods page 5 and Results
 page 7 describe the per-occasion bioavailability effect as a 23.7%
 increase between consecutive doses but do not write out the algebraic
-form in the trimmed-markdown source. The package model encodes the
+form in the text extracted from the PDF. The package model encodes the
 increment additively: <code>F_OCC = 1 + 0.237 * (OCC - 1)</code>, so
 dose 1 has F = 1.000, dose 2 has F = 1.237, and dose 3 has F = 1.474.
 The principal alternative reading is multiplicative compounding
@@ -3872,8 +3872,7 @@ from the trial demographics rather than the band midpoint.</p></li>
 <li><p><strong>Single residual error term.</strong> The paper used an
 additive residual error model on the natural logarithm of the observed
 concentration, which maps to proportional residual error in the linear
-concentration space (see <code>references/parameter-names.md</code>
-section ‘Residual error’). The package model encodes this as
+concentration space. The package model encodes this as
 <code>propSd &lt;- sqrt(0.115) ~= 0.339</code>; the SD applies on the
 log scale and equals the proportional CV in linear space to first
 order.</p></li>

@@ -600,8 +600,7 @@ ratio_check <- sim_filt |>
   )
 
 # Algebraic identities: exact to solver precision, so a tight bound is correct
-# here (both sides use the same drawn parameters -- see the note in CLAUDE.md
-# on when a tight all() bound is and is not appropriate).
+# here (both sides use the same drawn parameters).
 stopifnot(
   max(abs(ratio_check$`Cpost / Cpre` - ratio_check$expected_post)) < 1e-8,
   max(abs(ratio_check$`Ceffl / Cpre` - ratio_check$expected_effl)) < 1e-8
@@ -1053,8 +1052,8 @@ Per-subject agreement between the PKNCA AUC(0-inf) and dose / CL.
 
 # Both sides of this comparison use the same drawn parameters, so the residual
 # difference is pure numerical (trapezoidal + extrapolation) error and a tight
-# bound over ALL subjects is the correct assertion here -- see the CLAUDE.md
-# note distinguishing this case from a cohort-extreme assertion.
+# bound over ALL subjects is the correct assertion here, unlike a
+# cohort-extreme assertion.
 stopifnot(max(abs(nca_wide$pct_diff)) < 2)
 ```
 

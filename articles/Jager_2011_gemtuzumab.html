@@ -2878,7 +2878,7 @@ original publication data with an additional peripheral PK compartment
 and simultaneous (rather than step-wise) estimation of all parameters.
 The DDMORE bundle does <strong>not</strong> ship a <code>.lst</code>
 listing or a simulated dataset, and the original Jager 2011 PLoS One
-paper is not on disk under this worktree’s literature tree, so the
+paper is not on disk in the maintainers’ literature mirror, so the
 implementation is faithful to the MDL but has no external numeric
 cross-check; see <strong>Assumptions and deviations</strong> below.</p>
 </div>
@@ -3213,20 +3213,20 @@ rendering (<code>GO_PK_model.xml</code>), the
 <code>Model_Accommodations.txt</code> reference note, and RDF / scraper
 metadata – there is <strong>no</strong> <code>Output_real_*.lst</code>,
 <code>Output_simulated_*.lst</code>, or simulated event dataset. The
-Jager 2011 publication itself is not on disk in this worktree’s
-literature tree. The following assumptions and deviations apply.</p>
+Jager 2011 publication itself is not on disk in the maintainers’
+literature mirror. The following assumptions and deviations apply.</p>
 <ul>
 <li>
 <strong>Parameter values come from the MDL <code>parObj</code>
 block, not a <code>.lst</code> listing.</strong> The bundle has no
 NONMEM listing file with a <code>MINIMIZATION SUCCESSFUL</code> block
-whose final estimates can be read off, and the DDMORE-source skill’s
-default rule (read final estimates from <code>Output_real_*.lst</code>)
-cannot apply. The MDL <code>parObj$STRUCTURAL</code> and
-<code>parObj$VARIABILITY</code> values are treated as the bundle’s
-authoritative final estimates per <code>Model_Accommodations.txt</code>,
-which describes the parObj as the Monolix re-fit of the Jager 2011 model
-on the publication’s data.</li>
+whose final estimates can be read off, and the usual rule for
+DDMORE-sourced models (read final estimates from
+<code>Output_real_*.lst</code>) cannot apply. The MDL
+<code>parObj$STRUCTURAL</code> and <code>parObj$VARIABILITY</code>
+values are treated as the bundle’s authoritative final estimates per
+<code>Model_Accommodations.txt</code>, which describes the parObj as the
+Monolix re-fit of the Jager 2011 model on the publication’s data.</li>
 <li>
 <strong>Bundle is a Monolix re-fit, not a literal reproduction of
 Jager 2011.</strong> <code>Model_Accommodations.txt</code> documents two

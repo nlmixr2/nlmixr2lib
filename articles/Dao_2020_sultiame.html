@@ -2906,19 +2906,18 @@ cumulative urine).</li>
 <code>Command.txt</code> – provenance, model-classification metadata,
 and scenario notes.</li>
 </ul>
-<p>The Dao 2020 publication itself was not on disk in this worktree at
-the time of extraction (the DDMORE bundle was uploaded while the paper
-was “under submission”, per <code>Model_Accomodations.txt</code>). A
-side-by-side comparison against published NCA tables or VPC figures is
-therefore out of scope for this vignette. The validation strategy
-follows the DDMORE-source decision tree in
-<code>extract-literature-model/references/ddmore-source.md</code>: an
-F.2 / F.3 self-consistency and mechanistic-sanity check against the
-bundle’s own simulated trajectories, plus a PKNCA pass on the simulated
-plasma profile to confirm the <strong>dose-disproportional</strong> Cmax
-/ AUClast pattern that the saturable RBC-binding mechanism produces, and
-a plausible Tmax. The terminal half-life of the model is dominated by
-slow drug release from the deep saturable RBC sink rather than by plasma
+<p>The Dao 2020 publication itself was not on disk at the time of
+extraction (the DDMORE bundle was uploaded while the paper was “under
+submission”, per <code>Model_Accomodations.txt</code>). A side-by-side
+comparison against published NCA tables or VPC figures is therefore out
+of scope for this vignette. The validation strategy follows the
+package’s approach for DDMORE-sourced models: an F.2 / F.3
+self-consistency and mechanistic-sanity check against the bundle’s own
+simulated trajectories, plus a PKNCA pass on the simulated plasma
+profile to confirm the <strong>dose-disproportional</strong> Cmax /
+AUClast pattern that the saturable RBC-binding mechanism produces, and a
+plausible Tmax. The terminal half-life of the model is dominated by slow
+drug release from the deep saturable RBC sink rather than by plasma
 clearance and is therefore not used as an external validation
 target.</p>
 </div>
@@ -3534,7 +3533,7 @@ non-renal routes.</li>
 <li>
 <strong>Source publication not on disk.</strong> The Dao 2020 paper
 (Pharmacology Research &amp; Perspectives 8(2):e00558, <a href="doi:10.1002/prp2.558" class="uri">doi:10.1002/prp2.558</a>) was
-not part of the worktree at extraction time; the DDMORE bundle’s
+not available at extraction time; the DDMORE bundle’s
 <code>Model_Accomodations.txt</code> describes the paper as “under
 submission” relative to the bundle’s 2018-2019 vintage. A side-by-side
 comparison of simulated NCA against published NCA tables, or of

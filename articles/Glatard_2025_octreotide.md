@@ -378,12 +378,12 @@ sim |>
 
 ## PKNCA validation
 
-Steady-state NCA over the final dosing interval (recipe 3). Time is
-re-based so that the last dose sits at `time = 0`, which makes the
-interval `[0, tau]`. Because the observation grid starts exactly at the
-last dose, a genuine `time = 0` record already exists and anchors the
-AUC – and at steady state its concentration is the trough carried over
-from the previous interval, **not** zero, so the usual “add a pre-dose
+Steady-state NCA over the final dosing interval. Time is re-based so
+that the last dose sits at `time = 0`, which makes the interval
+`[0, tau]`. Because the observation grid starts exactly at the last
+dose, a genuine `time = 0` record already exists and anchors the AUC –
+and at steady state its concentration is the trough carried over from
+the previous interval, **not** zero, so the usual “add a pre-dose
 `Cc = 0` row” guard would be actively wrong here. The assertion below
 checks the real row is present instead.
 
@@ -537,8 +537,8 @@ differs from reference by \>20%. {.table}
 worst <- max(abs(as.numeric(gsub("[^0-9.eE+-]", "", cmp[["% diff"]]))), na.rm = TRUE)
 cat(sprintf("Largest absolute discrepancy vs Table 4: %.1f%%\n", worst))
 #> Largest absolute discrepancy vs Table 4: 5.6%
-# Tightened to the accuracy actually achieved (the skill's 20% gate is looser
-# than this model warrants), so a future regression is caught.
+# Tightened to the accuracy actually achieved (the package's standard 20%
+# gate is looser than this model warrants), so a future regression is caught.
 stopifnot(worst < 10)
 ```
 

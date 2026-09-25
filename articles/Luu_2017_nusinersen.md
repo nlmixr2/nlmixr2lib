@@ -126,8 +126,7 @@ obs_times_h   <- sort(unique(c(
 # The model declares two algebraic endpoints (Cc plasma, Ccsf CSF).
 # Address each endpoint by its `dvid` id (1 = Cc, 2 = Ccsf) on
 # observation rows so rxode2 maps each to its endpoint under the
-# default solver -- the multi-output pattern in
-# `references/known-vignette-failure-patterns.md` Section 5b
+# default solver -- the multi-output pattern
 # (Wittau 2015 meropenem precedent). The dose row uses the actual
 # ODE state name `csf` (intrathecal bolus enters the CSF compartment).
 make_cohort <- function(wt_kg, cohort_label, dose_mg = 12, id_offset = 0L) {
@@ -290,8 +289,7 @@ nca_input_csf <- sim_typical |>
   dplyr::filter(!is.na(Ccsf)) |>
   dplyr::select(id, time, Ccsf, cohort)
 
-# Ensure a row at time = 0 with Ccsf = 0 (pre-dose anchor) - see
-# pknca-recipes.md "Time-zero records (mandatory)".
+# Ensure a row at time = 0 with Ccsf = 0 (pre-dose anchor).
 nca_input_csf <- dplyr::bind_rows(
   nca_input_csf,
   nca_input_csf |> dplyr::distinct(id, cohort) |>
@@ -472,5 +470,4 @@ cat(sprintf("Typical V_CSF  at BWT = MBWT: %.3f L     (Table 2 final: 0.433)\n",
   10.1002/jcph.884) found no published corrections to the source. A
   separate semi-mechanistic popPK model for nusinersen (Biliouris 2018,
   PMID 30043511) exists but is not an erratum to Luu 2017; Biliouris
-  2018 was not extracted in this task and may be queued separately if
-  desired.
+  2018 was not extracted here and may be added separately if desired.

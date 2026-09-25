@@ -110,13 +110,12 @@ The DDMORE bundle ships a simulated event dataset
 is the NONMEM-generated stochastic prediction (`IPRED + EPS(1)`) for the
 scenario-4 model on a representative grid of single-, two-, and
 three-drug exposures. The associated publication
-([doi:10.1093/jac/dkx380](https://doi.org/10.1093/jac/dkx380)) is not on
-disk in this worktree, so PKNCA-style comparison against published Cmax
-/ AUC tables is not applicable (this is bacterial-count PD on log scale,
-not concentration-time PK). The validation strategy is therefore the
-**F.2 self-consistency** path of `extract-literature-model`
-`references/verification-checklist.md` augmented with the **F.3
-mechanistic-sanity** path:
+([doi:10.1093/jac/dkx380](https://doi.org/10.1093/jac/dkx380)) was not
+on disk when this model was built, so PKNCA-style comparison against
+published Cmax / AUC tables is not applicable (this is bacterial-count
+PD on log scale, not concentration-time PK). The validation strategy is
+therefore the **self-consistency** path augmented with the
+**mechanistic-sanity** path:
 
 1.  Re-simulate selected representative experiments (control,
     single-drug monotherapy at three RIF / INH / EMB concentrations, and
@@ -274,7 +273,7 @@ cat("Simulation rows:", nrow(sim),
 #> Simulation rows: 150  unique IDs: 6
 ```
 
-## Self-consistency check (F.2)
+## Self-consistency check
 
 The DDMORE bundle’s `DV` column is a NONMEM-simulated stochastic
 observation (`IPRED + EPS(1)`, EPS variance 0.937 on the natural-log
@@ -344,7 +343,7 @@ scenario.](Clewe_2018_rifampicin_files/figure-html/consistency-figure-1.png)
 Typical-value rxode2 trajectory (line) vs DDMORE-bundle simulated DV
 (points), one panel per scenario.
 
-## Mechanistic-sanity check (F.3)
+## Mechanistic-sanity check
 
 Below we plot all three bacterial subpopulations (Fbugs, Sbugs, Nbugs)
 to confirm the model exhibits the published mechanistic behavior:
@@ -430,13 +429,13 @@ review.
   re-prints these in its `FINAL PARAMETER ESTIMATE` block under
   `MAXEVAL = 0` evaluation, confirming the cross-walk).
 - **Linked publication not on disk.** The associated paper
-  ([doi:10.1093/jac/dkx380](https://doi.org/10.1093/jac/dkx380)) is not
-  available locally in this worktree
-  (`/home/bill/github/mab_human_consensus/literature/`). PKNCA-style
-  comparison against published tables / figures from the publication is
-  therefore not possible. Validation reduces to the F.2 self-consistency
-  check against the bundle-shipped `DV` and the F.3 mechanistic-sanity
-  check on bacterial-subpopulation trajectories above.
+  ([doi:10.1093/jac/dkx380](https://doi.org/10.1093/jac/dkx380)) was not
+  available in the maintainers’ literature mirror when this model was
+  built. PKNCA-style comparison against published tables / figures from
+  the publication is therefore not possible. Validation reduces to the
+  self-consistency check against the bundle-shipped `DV` and the
+  mechanistic-sanity check on bacterial-subpopulation trajectories
+  above.
 - **`koff = 0` (irreversible adaptive resistance).** The source fixes
   `KOFF = 0`, so the ARON / AROFF system is monotone (ARON increases
   with INH exposure; never returns to AROFF). Reproduced verbatim.

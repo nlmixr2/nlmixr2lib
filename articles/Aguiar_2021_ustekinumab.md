@@ -558,9 +558,10 @@ or a model-parameter transcription bug; do not tune parameters to match.
   footnote e: 17.3); that value is squared directly without log
   transformation.
 - **Non-canonical compartment names.** `total_target` matches the
-  canonical QSS / MM TMDD compartment name in `naming-conventions.md`.
-  The companion `target_peripheral` (free peripheral target) and `fc`
-  (fecal calprotectin) compartments are not in the canonical list;
+  canonical QSS / MM TMDD compartment name in
+  `inst/references/compartment-names.md`. The companion
+  `target_peripheral` (free peripheral target) and `fc` (fecal
+  calprotectin) compartments are not in the canonical list;
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   emits two warnings for them. Because Aguiar 2021 distributes the
   unbound target into a peripheral compartment (a non-standard QE-TMDD

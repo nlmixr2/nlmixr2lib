@@ -224,7 +224,7 @@ reports in Table 4.
 ### Time-zero records
 
 Pre-dose Cc = 0 rows are added so PKNCA can anchor AUC0-\* at t = 0;
-this matches the `pknca-recipes.md` time-zero guidance.
+this matches the package’s standard PKNCA time-zero handling.
 
 ``` r
 

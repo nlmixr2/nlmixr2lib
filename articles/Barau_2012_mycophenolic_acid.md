@@ -249,7 +249,7 @@ PKNCA computes Cmax, Tmax, AUC(0,12h), and Ctrough at the day-5
 steady-state dosing interval, stratified by post-transplant period. The
 dosing interval is the 12-h window between the 9th dose (t = 96 h) and
 the 10th dose (t = 108 h). A time-zero record per (id, cohort) is added
-defensively so PKNCA can anchor AUC0-tau (see `pknca-recipes.md` notes).
+defensively so PKNCA can anchor AUC0-tau.
 
 ``` r
 

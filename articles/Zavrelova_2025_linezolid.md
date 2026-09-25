@@ -852,7 +852,7 @@ arm). {.table}
 
 stopifnot(nrow(cmp) == 3L)
 # Median-of-cohort vs typical-value: lognormal IIV on CL puts the cohort median
-# close to, but not exactly at, the typical value. 20% is the skill's flag
+# close to, but not exactly at, the typical value. 20% is the package's flag
 # threshold and is comfortably met.
 stopifnot(all(abs(cmp$`difference (%)`) < 20))
 ```

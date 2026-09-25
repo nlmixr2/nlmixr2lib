@@ -3700,8 +3700,8 @@ did not have a canonical home in
 <code>CONMED_STEROID</code> covers per-record acute pulses or
 per-subject baseline / chronic use; <code>PRICORT</code> covers strictly
 pre-study history). The new canonical <code>CONMED_STEROID_FU</code> was
-registered alongside this extraction (operator-approved sidecar
-2026-06-19, request-001 / response-001).</p></li>
+registered alongside this extraction (maintainer-approved
+2026-06-19).</p></li>
 <li><p><strong>No PKNCA validation.</strong> Standard popPK validation
 against PKNCA Cmax / AUC / half-life does not apply to a
 disease-progression model with no exposure compartment. The validation
@@ -3709,9 +3709,8 @@ here is by direct algebraic reproduction of the paper’s published
 structural-model anchors (Table 2 / Equation 8 worked examples) plus
 stochastic VPC-style envelopes that compare the simulated 60-week 90% CI
 of DAS28 against the paper’s published [1.8, 4.2] around PRED = 2.8
-(Figure 5). This follows the disease-progression / endogenous-model
-validation pattern documented in the SKILL.md
-<code>endogenous-validation.md</code> reference.</p></li>
+(Figure 5). This follows the package’s standard validation pattern for
+disease-progression / endogenous models.</p></li>
 <li><p><strong>Several covariates were screened but not retained in the
 final model</strong> (paper Methods “Covariate analyses”). Body weight,
 height, sex, rheumatoid factor positivity, anti-CCP antibody positivity,

@@ -3167,7 +3167,7 @@ Table 1 = Supplementary Tables S1-S3): <a href="https://www.frontiersin.org/arti
 <span><span class="co">#&gt;     totalL858R &lt;- target_l858r + complex_l858r</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x559be686ddf0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x56451819a9f0&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="what-is-extracted-and-what-is-not">What is extracted, and what is not<a class="anchor" aria-label="anchor" href="#what-is-extracted-and-what-is-not"></a>
@@ -3350,11 +3350,11 @@ comparison)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note on equation recovery.</strong> The preprocessed
-<code>_trimmed.md</code> for this article dropped all seven display
-equations as <code>formula-not-decoded</code>. Equations 1-7 were
-recovered from the PDF with <code>pdftotext -layout</code>. Equations
-5-7 as printed are:</p>
+<p><strong>Note on equation recovery.</strong> The text extracted from
+this article’s PDF dropped all seven display equations as
+<code>formula-not-decoded</code>. Equations 1-7 were recovered from the
+PDF with <code>pdftotext -layout</code>. Equations 5-7 as printed
+are:</p>
 <pre><code>(5)  dOEm/dt      = kon * Clung * Emfree - koff * OEm
 (6)  dEmfree/dt   = (Em0 - Emfree) * kturnover - kon * Clung * Emfree + koff * OEm
 (7)  Inhibition(%) = OEm / (Emfree + OEm) * 100</code></pre>
@@ -3875,11 +3875,10 @@ parameter was tuned to improve the match.</strong></p>
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
-<p>This extraction was performed under operator sidecar decision
-<code>oare_PMC10946252</code> <code>request-001</code> = <strong>option
-B</strong>, answered 2026-08-05. The alternatives offered and not chosen
-were: (A) encode Eqs 5-7 verbatim with no complex elimination, (C) skip
-the paper, (D) defer pending author correspondence.</p>
+<p>This extraction follows the approach set out below, chosen by the
+maintainers on 2026-08-05. The alternatives considered and not chosen
+were to encode Eqs 5-7 verbatim with no complex elimination, to skip the
+paper, or to defer pending author correspondence.</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>The whole-body PBPK layer is deliberately not
 extracted.</strong> See the table at the top of this vignette. Liang

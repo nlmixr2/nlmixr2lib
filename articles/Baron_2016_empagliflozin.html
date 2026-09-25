@@ -3077,8 +3077,7 @@ block.</p>
 simulations below use a virtual cohort whose covariate distributions
 match the published population (Baron 2016 Tables 2 and S2). Two dose
 arms are simulated: 10 mg and 25 mg empagliflozin PO once daily for 24
-weeks, 200 subjects per arm (the cap recommended by the extraction
-skill).</p>
+weeks, 200 subjects per arm (the per-arm cohort cap).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260624</span><span class="op">)</span></span>
 <span></span>
@@ -3130,8 +3129,8 @@ skill).</p>
 <span>  <span class="co"># cmt = "central" (the ODE state) with dvid = 1L. rxSolve returns Cc,</span></span>
 <span>  <span class="co"># glucose, and hba1c as columns at every output row, so a single anchor</span></span>
 <span>  <span class="co"># cmt covers all three endpoints. dvid = 1L resolves the multi-endpoint</span></span>
-<span>  <span class="co"># PK / PD model's dvid -&gt; cmt mapping (see known-vignette-failure-patterns</span></span>
-<span>  <span class="co"># pattern 5b and the Germovsek_2018_meropenem.Rmd precedent).</span></span>
+<span>  <span class="co"># PK / PD model's dvid -&gt; cmt mapping (see the Germovsek_2018_meropenem.Rmd</span></span>
+<span>  <span class="co"># precedent).</span></span>
 <span>  <span class="va">obs_times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">24</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,                    <span class="co"># day 1 dense PK</span></span>
 <span>    <span class="fl">24</span> <span class="op">*</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">12</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">12</span>, <span class="fl">24</span><span class="op">)</span>,    <span class="co"># week 12 PK day</span></span>

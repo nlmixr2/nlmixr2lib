@@ -60,7 +60,7 @@ acute-medication days,
 
 (breakpoint at 5 d/mo per the medication-overuse-headache convention).
 `t` is in months (28-day periods). The placebo time-course follows the
-operator-confirmed Figure 2A form (exp-decay of reduction); the
+maintainer-confirmed Figure 2A form (exp-decay of reduction); the
 drug-effect uses the Emax/EC50 of Cav reported in Supplementary Table
 S3.
 
@@ -344,7 +344,7 @@ concentration profile to integrate (Cav is supplied as a covariate, not
 derived from a PK ODE), and the response variable is a count of migraine
 days per month rather than a sampled concentration. The validation
 strategy adopted here is therefore the *narrative-comparison* table
-immediately above, mirroring the operator-confirmed Figure 2A
+immediately above, mirroring the maintainer-confirmed Figure 2A
 interpretation and matching the per-regimen reduction ranges reported in
 the Results section.
 
@@ -355,13 +355,13 @@ the Results section.
   parameters with implicit “month” as the time unit. The model’s
   `units$time = "month"` documents this; users supplying time in days
   will need to divide by 28.
-- **Placebo time-course form is operator-confirmed from Figure 2A.**
+- **Placebo time-course form is maintainer-confirmed from Figure 2A.**
   Supplementary Table S3 lists only an
   `Exponent for placebo time-course`. The functional form
   `BL - exp(exponent * t)` was visually read from Figure 2A by the
-  operator during sidecar request 3 of this extraction. With the typical
-  exponent 0.360 the model gives a 2.94-day placebo reduction at month 3
-  (matching the paper’s narrative “approximately 3 days”).
+  maintainers. With the typical exponent 0.360 the model gives a
+  2.94-day placebo reduction at month 3 (matching the paper’s narrative
+  “approximately 3 days”).
 - **Cav as a per-period covariate, not a model output.** This is a
   PD-only file. The CAV column must be supplied per row by the user,
   derived externally from the Fiedler-Kelly 2019 popPK model

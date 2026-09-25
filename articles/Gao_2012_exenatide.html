@@ -3418,7 +3418,7 @@ the lowest-dose value, so the subcutaneous arms below override
 <code>ini()</code> comment instructs.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Helper: one deterministic arm. `dose_cmt` is an ODE state name, never an</span></span>
-<span><span class="co"># algebraic observable such as `Cc` (see the skill's failure-pattern 2).</span></span>
+<span><span class="co"># algebraic observable such as `Cc`.</span></span>
 <span><span class="va">make_arm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>, <span class="va">dose</span>, <span class="va">dose_cmt</span>, <span class="va">times</span>, <span class="va">label</span>,</span>
 <span>                     <span class="va">rate</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">extra</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">dosing</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>

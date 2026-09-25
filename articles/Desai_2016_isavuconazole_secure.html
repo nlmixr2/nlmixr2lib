@@ -3758,7 +3758,7 @@ of both the output equation in the model and the data were used” and
 residual on the natural-log scale is exactly a log-normal residual in
 linear space, so <code>W</code> = 44.94% is carried as
 <code>expSd = 0.4494</code> via <code>Cc ~ lnorm(expSd)</code>. The
-skill’s default mapping of “NONMEM additive-on-log-scale to nlmixr2
+package’s default mapping of “NONMEM additive-on-log-scale to nlmixr2
 proportional” is a first-order approximation that is fine at small
 sigma; at 45% it is not, and a proportional residual of that magnitude
 generates negative simulated concentrations, which would in turn poison

@@ -831,8 +831,7 @@ Figure 3. {.table}
 The assertions below are the ones that would catch a mis-transcribed
 parameter, unit or covariate equation. They are stated as magnitudes and
 robust quantiles, never as the sign of a near-zero effect or a bound
-taken from a single draw, because the cohort differs between machines
-(pattern 12 of `known-vignette-failure-patterns.md`).
+taken from a single draw, because the cohort differs between machines.
 
 ``` r
 

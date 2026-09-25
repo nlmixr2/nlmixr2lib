@@ -3668,7 +3668,7 @@ in Part 3 pins both.</p>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="co"># Join predictions onto the observed table BY DOSE, and fail loudly if any</span></span>
-<span><span class="co"># dose group failed to match (see known-vignette-failure-patterns.md #10).</span></span>
+<span><span class="co"># dose group failed to match.</span></span>
 <span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="va">observed</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rename</span><span class="op">(</span>observed <span class="op">=</span> <span class="va">change</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">pred_auc</span>  <span class="op">|&gt;</span> <span class="fu">rename</span><span class="op">(</span>pred_auc  <span class="op">=</span> <span class="va">change</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"dose"</span><span class="op">)</span> <span class="op">|&gt;</span></span>

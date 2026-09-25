@@ -208,7 +208,7 @@ stochastic.
 
 ``` r
 
-n_sub <- 200L   # skill cap is 200 per arm; one arm here
+n_sub <- 200L   # cohort cap is 200 per arm; one arm here
 
 # Truncated-distribution quantile helper.
 qtrunc_norm <- function(p, mean, sd, lo, hi) {

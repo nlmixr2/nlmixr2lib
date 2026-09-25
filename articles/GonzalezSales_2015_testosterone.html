@@ -3398,11 +3398,10 @@ verify against the typical-value simulation:</p>
 <div class="section level2">
 <h2 id="steady-state-and-continuity-checks">Steady-state and continuity checks<a class="anchor" aria-label="anchor" href="#steady-state-and-continuity-checks"></a>
 </h2>
-<p>This model is not an ODE-based turnover model, so the
-<code>endogenous-validation.md</code> steady-state-hold and
-perturbation-recovery checks do not directly apply (there is no state to
-hold or perturb). The analogous checks for a periodic-baseline algebraic
-model are:</p>
+<p>This model is not an ODE-based turnover model, so the usual
+endogenous-model steady-state-hold and perturbation-recovery checks do
+not directly apply (there is no state to hold or perturb). The analogous
+checks for a periodic-baseline algebraic model are:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># (a) Periodicity: the rhythm should repeat exactly every 24 h.</span></span>
 <span><span class="va">ev_per</span> <span class="op">&lt;-</span> <span class="fu">et</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">72</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>

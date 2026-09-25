@@ -415,9 +415,8 @@ Median simulated oseltamivir carboxylate AUC0-12 (nmol*h/L) vs Standing
   not reproduce the TM50 / Hill values in its text. The values used here
   (TM50 = 47.7 weeks, Hill = 3.4) are the canonical published Rhodin
   2009 estimates for renal function (Rhodin et al., Eur J Clin Pharmacol
-  2009 <doi:10.1007/s00228-008-0577-4>). This is the “non-paper
-  provenance” case documented in the `extract-literature-model` skill’s
-  `model-file-template.md`; the in-file comments in `ini()` and the
+  2009 <doi:10.1007/s00228-008-0577-4>). Because these values come from
+  outside the paper, the in-file comments in `ini()` and the
   source-trace table above point readers to the Rhodin paper.
 
 - **Bioavailability anchored at F = 1.** Standing 2012 did not estimate

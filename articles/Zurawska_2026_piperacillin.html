@@ -3059,7 +3059,7 @@ y-axis labels. CRRT effluent flow is prescribed weight-normalised at 25
 and 35 mL/kg/h and converted to the canonical absolute mL/h at the
 paper’s assumed 70 kg.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># skill cap; the paper used 1,000 per regimen</span></span>
+<code class="sourceCode R"><span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200L</span>   <span class="co"># cohort cap; the paper used 1,000 per regimen</span></span>
 <span><span class="va">wt_crrt</span> <span class="op">&lt;-</span> <span class="fl">70</span>       <span class="co"># kg, "assuming a measured total body weight of 70 kg"</span></span>
 <span></span>
 <span><span class="va">regimens</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>

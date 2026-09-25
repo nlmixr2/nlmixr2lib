@@ -104,7 +104,7 @@ Scholar (search dates 2026-04-25).
 | K_(in) (mediator zero-order synthesis) | Methods §2.3 (initial conditions) | k_(in) = k_(out) × A₃(0) = k_(out) |
 | S_(max) (maximal stimulation of non-specific CL) | Table 2, S_(max) row (final model) | 3.18 |
 | S₅₀ (free C achieving half-S_(max)) | Table 2, S₅₀ row (final model) | 8.57 mg/L |
-| γ (Hill coefficient on sigmoid; **fixed at 1**) | Eq. (3) of Methods §2.3 (operator decision) | 1 (see Assumptions) |
+| γ (Hill coefficient on sigmoid; **fixed at 1**) | Eq. (3) of Methods §2.3 (maintainer decision) | 1 (see Assumptions) |
 | IIV on R_(totp) | Table 2, IIV row (final model; η-shrink. 14%) | 135% CV |
 | IIV on K_(out) | Table 2, IIV row (final model; η-shrink. 21%) | 197% CV |
 | Residual error (additive on log scale = proportional) | Table 2, residual row (final model; ε-shrink. 4%) | 48% |
@@ -503,15 +503,13 @@ to argue that 100 mg is the maximum effective single dose.
 - **Hill coefficient γ on the mediator sigmoid: fixed at 1.**
   Equation (3) of Methods §2.3 includes a Hill coefficient γ on the
   sigmoid Emax of the mediator-synthesis term. γ is *not* listed in
-  Table 2 (Final parameter estimates). The skill operator confirmed γ
+  Table 2 (Final parameter estimates). The maintainers confirmed γ
   should be fixed at 1 because the parameter would have been listed if
   estimated, and the equation collapses to a hyperbolic Emax
   `Smax · C / (S50 + C)` when γ = 1. The packaged model writes the
   sigmoid in this hyperbolic form. **If a future author correspondence
   indicates γ was estimated at a non-unit value, the model should be
-  updated.** Operator follow-up F8 in the upstream tracking notes
-  records that the corresponding author has been emailed for
-  confirmation.
+  updated.** The corresponding author has been emailed for confirmation.
 - **No covariate effects.** The covariate-search procedure (forward p \<
   0.05, backward p \< 0.01) tested body weight, height, age, body
   surface area, creatinine clearance, serum creatinine, total kidney
@@ -567,9 +565,8 @@ to argue that 100 mg is the maximum effective single dose.
   the MDPI landing page, or Google Scholar (search dates 2026-04-25).
   The corresponding author Víctor Mangas-Sanjuán (Universitat de
   València, `victor.mangas@uv.es`) has been contacted for confirmation
-  of direction (operator follow-up F8 in the upstream tracking notes);
-  if the author reply differs from the Figure-4A-based interpretation,
-  this entry and the model file will be updated.
+  of direction; if the author reply differs from the Figure-4A-based
+  interpretation, this entry and the model file will be updated.
 
 ### Reference
 

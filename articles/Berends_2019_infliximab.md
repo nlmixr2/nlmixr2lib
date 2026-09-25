@@ -320,7 +320,7 @@ self-consistency NCA on a simulated single 5 mg/kg IV dose in a typical
 ADA-negative subject (no major TMDD-induced terminal-slope deviation
 since `Bmax` = 19.8 pg/mL is far below `Kss` = 13.6 nM = 2.0 ug/mL, so
 target is saturated for the duration of measurable IFX). Dosing formula
-is grouped by `treatment` per the skill’s PKNCA recipe.
+is grouped by `treatment`.
 
 ``` r
 

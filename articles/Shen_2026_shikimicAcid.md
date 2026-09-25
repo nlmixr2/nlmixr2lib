@@ -524,7 +524,7 @@ and 4 are Phoenix WinNonlin non-compartmental analysis, not the
 compartmental fit. There is no `ka`, no `V/F`, no `CL/F` and no lag time
 in the paper, and the supplement contains only the analytical stability
 tables S1 and S2. The plasma layer was therefore reconstructed here,
-under an operator decision, from the paper’s own published results:
+under a maintainer decision, from the paper’s own published results:
 
 | Parameter | Value | Provenance |
 |----|----|----|

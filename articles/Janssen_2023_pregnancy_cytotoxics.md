@@ -727,7 +727,7 @@ every gestational age.
     `-0.0021`, not the printed `-0.0098`.** The printed equation was
     confirmed character-for-character from the PDF text layer and by
     rendering the page at 600 dpi, so this is not a transcription error
-    on our side. It is encoded as `-0.0021` on operator ruling
+    on our side. It is encoded as `-0.0021` on maintainer ruling
     because: (a) the printed value gives a term haematocrit of 21.3%,
     incompatible with a normal pregnancy; (b) encoded as printed, the
     model misses the paper’s *own* Table 3 clearances by up to 17.7

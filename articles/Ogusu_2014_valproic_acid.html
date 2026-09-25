@@ -3216,8 +3216,7 @@ AUC. The model computes it algebraically as
 Because there is no residual error and no IIV in this solve, the
 trapezoidal AUC over one steady-state dosing day must reproduce it to
 numerical precision – this is an exact internal identity, so it is gated
-tightly (per <code>known-vignette-failure-patterns.md</code> pattern 11,
-a deterministic quantity is asserted at the accuracy actually
+tightly (a deterministic quantity is asserted at the accuracy actually
 achieved).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">auc_trap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">ss</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ss</span><span class="op">$</span><span class="va">Cc</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">ss</span><span class="op">$</span><span class="va">Cc</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -3860,9 +3859,9 @@ parameters.</caption>
 <span><span class="co">#&gt; Monte-Carlo SE of the paper's own simulation: 0.95 pp at p=0.10, 1.58 pp at p=0.50</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># This gate is fully DETERMINISTIC -- a fixed quadrature against 36 fixed</span></span>
-<span><span class="co"># printed numbers, with no cohort draw, no seed and no RNG anywhere. Pattern</span></span>
-<span><span class="co"># 12 (assertions that vary with the simulated cohort) does not apply, so the</span></span>
-<span><span class="co"># bounds are set tightly at the accuracy actually achieved, per pattern 11.</span></span>
+<span><span class="co"># printed numbers, with no cohort draw, no seed and no RNG anywhere. Nothing</span></span>
+<span><span class="co"># here varies with the simulated cohort, so the bounds are set tightly at the</span></span>
+<span><span class="co"># accuracy actually achieved.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Below the Monte-Carlo noise floor of the paper's own 1000-subject</span></span>
 <span>  <span class="co"># simulation. Every rejected reading of the paper (see below) exceeds</span></span>
@@ -4085,7 +4084,7 @@ younger).</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The cohort mean probability per arm must sit near the Table 4 value at the</span></span>
 <span><span class="co"># cohort's mean dose. This is a DISTRIBUTIONAL quantity computed from a random</span></span>
-<span><span class="co"># draw, so per pattern 12 it is asserted on the centre and with a wide band,</span></span>
+<span><span class="co"># draw, so it is asserted on the centre and with a wide band,</span></span>
 <span><span class="co"># not on any extreme.</span></span>
 <span><span class="va">arm_summary</span> <span class="op">&lt;-</span> <span class="va">sim_cohort</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

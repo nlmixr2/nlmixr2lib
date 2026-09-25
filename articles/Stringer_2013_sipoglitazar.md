@@ -215,8 +215,8 @@ simTypical <- rxode2::rxSolve(
 ### Supplementary Figure S2a – single 64 mg dose in healthy volunteers
 
 The observed medians below were digitised from Supplementary Figure S2a
-by the operator (see *Assumptions and deviations*); the panels are on a
-log scale spanning three decades, so treat the digitised numbers as
+by the maintainers (see *Assumptions and deviations*); the panels are on
+a log scale spanning three decades, so treat the digitised numbers as
 accurate to roughly +/-15%.
 
 ``` r
@@ -843,11 +843,11 @@ Published claims checked by this vignette. {.table}
        only.
 - **Digitised reference values.** The observed median concentrations in
   the Supplementary Figure S2a comparison were read off the figure by
-  the operator at 400 dpi. The panels are log-scaled over three decades,
-  so individual readings are accurate to roughly +/-15%; that is why the
-  NCA comparison uses a 25% tolerance and the assertions are on the
-  median and the 90th percentile of the absolute differences rather than
-  on any single point.
+  the maintainers at 400 dpi. The panels are log-scaled over three
+  decades, so individual readings are accurate to roughly +/-15%; that
+  is why the NCA comparison uses a 25% tolerance and the assertions are
+  on the median and the 90th percentile of the absolute differences
+  rather than on any single point.
 - **Pharmacodynamics.** The paper’s HbA1c analysis (Figures 3a and 3b)
   is an analysis of variance on the 12-week change from baseline
   stratified by dose and genotype, not a PK/PD model, so there is no PD

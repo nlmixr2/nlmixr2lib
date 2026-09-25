@@ -121,7 +121,7 @@ assumed 70 kg.
 
 ``` r
 
-n_per_arm <- 200L   # skill cap; the paper used 1,000 per regimen
+n_per_arm <- 200L   # cohort cap; the paper used 1,000 per regimen
 wt_crrt <- 70       # kg, "assuming a measured total body weight of 70 kg"
 
 regimens <- tibble::tribble(

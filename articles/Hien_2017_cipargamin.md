@@ -252,8 +252,7 @@ sim_nca <- sim |>
   dplyr::select(id, time, Cc, cohort)
 
 # Guarantee a time = 0 row per (id, cohort); pre-dose plasma cipargamin
-# is 0 for an extravascular single-dose regimen. (See pknca-recipes.md
-# on 'Time-zero records (mandatory)'.)
+# is 0 for an extravascular single-dose regimen.
 sim_nca <- dplyr::bind_rows(
   sim_nca,
   sim_nca |> dplyr::distinct(id, cohort) |>

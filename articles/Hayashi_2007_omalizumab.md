@@ -383,7 +383,7 @@ ggplot(sim_nodose, aes(time, freeIgE)) +
   serum, free + complex) maps to the canonical `central` compartment;
   X_TE (total IgE amount, free + complex) maps to `total_target`. This
   follows the canonical TMDD compartment names registered in
-  `references/naming-conventions.md` for QSS-style total-amount
+  `inst/references/compartment-names.md` for QSS-style total-amount
   parameterizations (Gibiansky 2008). The `complex` species is
   algebraically derived from the equilibrium relation rather than
   carried as a separate ODE state.

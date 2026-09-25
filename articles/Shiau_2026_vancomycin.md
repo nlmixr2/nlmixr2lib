@@ -286,7 +286,7 @@ identical covariate draws so the arms differ only by dose:
 # thread -- so the etas drawn during rxSolve differ between a 16-thread
 # workstation and a 2-core CI runner and no seed makes them agree. Every
 # assertion downstream is written to hold for any cohort this model can
-# produce (see pattern 12 of the skill's known-vignette-failure-patterns).
+# produce.
 set.seed(20260910)
 
 n_per_arm <- 200L

@@ -3202,14 +3202,12 @@ the operating final estimates for this scenario.</p>
 <code>DV</code> column is the NONMEM-generated stochastic prediction
 (<code>IPRED + EPS(1)</code>) for the scenario-4 model on a
 representative grid of single-, two-, and three-drug exposures. The
-associated publication (<a href="https://doi.org/10.1093/jac/dkx380" class="external-link">doi:10.1093/jac/dkx380</a>) is
-not on disk in this worktree, so PKNCA-style comparison against
-published Cmax / AUC tables is not applicable (this is bacterial-count
-PD on log scale, not concentration-time PK). The validation strategy is
-therefore the <strong>F.2 self-consistency</strong> path of
-<code>extract-literature-model</code>
-<code>references/verification-checklist.md</code> augmented with the
-<strong>F.3 mechanistic-sanity</strong> path:</p>
+associated publication (<a href="https://doi.org/10.1093/jac/dkx380" class="external-link">doi:10.1093/jac/dkx380</a>)
+was not on disk when this model was built, so PKNCA-style comparison
+against published Cmax / AUC tables is not applicable (this is
+bacterial-count PD on log scale, not concentration-time PK). The
+validation strategy is therefore the <strong>self-consistency</strong>
+path augmented with the <strong>mechanistic-sanity</strong> path:</p>
 <ol style="list-style-type: decimal">
 <li>Re-simulate selected representative experiments (control,
 single-drug monotherapy at three RIF / INH / EMB concentrations, and a
@@ -3429,7 +3427,7 @@ DDMODEL00000259’s Simulated_*.csv).</caption>
 <span><span class="co">#&gt; Simulation rows: 150  unique IDs: 6</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="self-consistency-check-f-2">Self-consistency check (F.2)<a class="anchor" aria-label="anchor" href="#self-consistency-check-f-2"></a>
+<h2 id="self-consistency-check">Self-consistency check<a class="anchor" aria-label="anchor" href="#self-consistency-check"></a>
 </h2>
 <p>The DDMORE bundle’s <code>DV</code> column is a NONMEM-simulated
 stochastic observation (<code>IPRED + EPS(1)</code>, EPS variance 0.937
@@ -3551,7 +3549,7 @@ Typical-value rxode2 trajectory (line) vs DDMORE-bundle simulated DV
 </div>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-check-f-3">Mechanistic-sanity check (F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-check-f-3"></a>
+<h2 id="mechanistic-sanity-check">Mechanistic-sanity check<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-check"></a>
 </h2>
 <p>Below we plot all three bacterial subpopulations (Fbugs, Sbugs,
 Nbugs) to confirm the model exhibits the published mechanistic
@@ -3654,13 +3652,12 @@ values; the <code>Output_simulated_*.lst</code> re-prints these in its
 <code>MAXEVAL = 0</code> evaluation, confirming the cross-walk).</li>
 <li>
 <strong>Linked publication not on disk.</strong> The associated
-paper (<a href="https://doi.org/10.1093/jac/dkx380" class="external-link">doi:10.1093/jac/dkx380</a>) is
-not available locally in this worktree
-(<code>/home/bill/github/mab_human_consensus/literature/</code>).
-PKNCA-style comparison against published tables / figures from the
-publication is therefore not possible. Validation reduces to the F.2
-self-consistency check against the bundle-shipped <code>DV</code> and
-the F.3 mechanistic-sanity check on bacterial-subpopulation trajectories
+paper (<a href="https://doi.org/10.1093/jac/dkx380" class="external-link">doi:10.1093/jac/dkx380</a>)
+was not available in the maintainers’ literature mirror when this model
+was built. PKNCA-style comparison against published tables / figures
+from the publication is therefore not possible. Validation reduces to
+the self-consistency check against the bundle-shipped <code>DV</code>
+and the mechanistic-sanity check on bacterial-subpopulation trajectories
 above.</li>
 <li>
 <strong><code>koff = 0</code> (irreversible adaptive

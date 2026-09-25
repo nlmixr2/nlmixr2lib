@@ -2866,10 +2866,9 @@ as a CYP3A phenotyping probe.</li>
 with each patient’s individual midazolam clearance entering as a linear
 covariate on cabazitaxel clearance per Equation (1) of the paper.</li>
 </ul>
-<p>Per the <code>extract-literature-model</code> skill’s
-replicate-author-structure default, the two independent fits are
-extracted as <strong>two separate model files</strong> sharing this
-single vignette:</p>
+<p>Following the package’s convention of replicating the authors’ model
+structure, the two independent fits are extracted as <strong>two
+separate model files</strong> sharing this single vignette:</p>
 <ul>
 <li><p><code>modellib("Janssen_2017_midazolam")</code> — 1-cmt IV
 midazolam popPK (Table 2A).</p></li>
@@ -3818,10 +3817,10 @@ shrinkage, as Janssen 2017 reports. We retain it as published rather
 than dropping it.</p></li>
 <li><p><strong>Base cabazitaxel model not extracted.</strong> Table 2B
 also reports a “Base model” column (cabazitaxel without the midazolam
-covariate, IIV CL_CBZ = 24.8% CV, CLbase = 129 L/h). Per the standing
-default policy in <code>references/replicate-author-structure.md</code>,
-base-vs-final model pairs collapse to the final model only. The final /
-metabolic phenotype model is what
+covariate, IIV CL_CBZ = 24.8% CV, CLbase = 129 L/h). Per the package’s
+standing default policy for replicating author structure, base-vs-final
+model pairs collapse to the final model only. The final / metabolic
+phenotype model is what
 <code>modellib("Janssen_2017_cabazitaxel")</code> returns.</p></li>
 <li><p><strong>The cabazitaxel covariate equation can produce negative
 typical CL at very low midazolam clearance.</strong> Equation (1)

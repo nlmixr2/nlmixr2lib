@@ -300,10 +300,10 @@ CD56 bright NK expansion / recovery checkpoints. {.table}
 
 ## Errata
 
-The trimmed PDF and DOCX appendices show several non-substantive
-extraction artifacts (operators rendered as `/C0`, scientific notation
-collapsed; etc.) that are not paper errata. Two model-relevant
-ambiguities are documented:
+The DOCX appendices and the text extracted from the PDF show several
+non-substantive extraction artifacts (operators rendered as `/C0`,
+scientific notation collapsed; etc.) that are not paper errata. Two
+model-relevant ambiguities are documented:
 
 - **Baseline value used to derive `Kout` is not labelled in Table 4.**
   Diao 2016 Methods states “`Kout` was expressed as a function of `Kin`

@@ -3241,9 +3241,8 @@ consistent with the half-life proposed by Boucher et al.”). With K12 =
 <div class="section level2">
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
-<p>Single-dose NCA over the 24-h post-infusion window per Recipe 1 in
-<code>references/pknca-recipes.md</code>, stratified by treatment
-arm.</p>
+<p>Single-dose NCA over the 24-h post-infusion window per the package’s
+standard single-dose PKNCA recipe, stratified by treatment arm.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

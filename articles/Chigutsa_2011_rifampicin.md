@@ -478,10 +478,10 @@ SLCO1B1 rs4149032 polymorphism status. {.table style="width:100%;"}
   above. The Results body text on page 4124 explicitly states “women had
   a 30% LONGER mean transit time, showing that women have a longer
   absorption delay than men.” The two sources disagree on the direction
-  of the effect; per operator directive (sidecar request-001, response
-  received 2026-06-17, option A), the body text is the source of truth:
-  +30% (women have a longer absorption delay than men). The Table 2 row
-  appears to be a typesetting row-duplication artifact of the V/F row.
+  of the effect; per maintainer directive (2026-06-17), the body text is
+  the source of truth: +30% (women have a longer absorption delay than
+  men). The Table 2 row appears to be a typesetting row-duplication
+  artifact of the V/F row.
 - **Dose-on-MTT CI sign correction.** Chigutsa 2011 Table 2 prints
   “Effect of dose on MTT (%) = -27 (22, 36)” with the CI bounds missing
   their minus signs (PDF rendering artifact). The body text on page 4124

@@ -85,7 +85,7 @@ Time-varying F-\>S \| .mod `$DES` line 12 (`KFS = KFSLIN * T`) \| \| \|
 `$ERROR` line 18 (`IPRED = LOG(A(1)+A(2))`; culturable CFU = F+S;
 non-multiplying N excluded) \| \| \| \| \| Residual error \| .mod
 `$ERROR` line 22 (`Y = IPRED + EPS(1)`; “additive on log-scale” ==
-proportional in linear space per `naming-conventions.md`) \| \| \| \|
+proportional in linear space per package convention) \| \| \| \|
 
 The minimization in `Output_real_MTP.lst` succeeded
 (`#TERM: 0MINIMIZATION SUCCESSFUL`, line 322; OFV = -92.456, line 375).
@@ -132,7 +132,7 @@ linear-space CFU in nlmixr2.
 
 ## Virtual cohort
 
-For the F.2 self-consistency check we simulate the bundled
+For the self-consistency check we simulate the bundled
 `Simulated_Mtb-H37Rv_In-vitro-NATG.csv` event grid (one subject, 11
 observation times spanning t = 0 to 200 days). The 11 rows below are
 reproduced inline from the DDMODEL00000240 bundle (`TIME`, `NDV` =
@@ -195,7 +195,7 @@ events
 #> 11   200 0:Observation
 ```
 
-## Simulation (F.2 self-consistency)
+## Simulation (self-consistency)
 
 Typical-value F+S trajectory reproduction with all etas zeroed (the
 bundle’s `Output_simulated_MTP.lst` is also a `MAXEVAL=0` evaluation at
@@ -243,13 +243,13 @@ knitr::kable(cmp, digits = c(0, 2, 2, 2, 2, 0, 2, 2, 4, 4),
 Typical-value F+S trajectory vs. bundled `Simulated_*.csv` (NDV = F+S
 linear, DV = ln(F+S)). {.table style="width:100%;"}
 
-The relative differences between the worktree simulation and the DDMORE
+The relative differences between the simulation here and the DDMORE
 bundle’s published trajectory are sub-2% across the full 200-day
 horizon. The residual gap is explained by the .lst final estimates being
 rounded to 3 significant figures (TH 1 = 2.06E-01, TH 8 = 4.10E+00, …)
 versus the higher-precision `.mod` `$THETA` initial values (0.206361,
 4.109880, …) actually used to generate
-`Simulated_Mtb-H37Rv_In-vitro-NATG.csv`. F.2 self-consistency gate (\<=
+`Simulated_Mtb-H37Rv_In-vitro-NATG.csv`. The self-consistency gate (\<=
 5% per-time-point differences) is met.
 
 ``` r
@@ -368,12 +368,12 @@ dominant non-multiplying pool). {.table}
   drug term explicitly (see Clewe 2016 Section “Drug-effect models” for
   the published functional forms).
 - **No on-disk publication cross-check.** The Clewe 2016 paper
-  (<doi:10.1093/jac/dkv416>) was not present under
-  `/home/bill/github/mab_human_consensus/literature/` at extraction
-  time. Parameter values therefore rely on the `Output_real_MTP.lst`
-  `FINAL PARAMETER ESTIMATE` block alone; published table values were
-  not independently re-checked. F.2 self-consistency (vs. the bundle’s
-  `Simulated_*.csv`) is the only validation reference.
+  (<doi:10.1093/jac/dkv416>) was not present in the maintainers’
+  literature mirror at extraction time. Parameter values therefore rely
+  on the `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block alone;
+  published table values were not independently re-checked.
+  Self-consistency (vs. the bundle’s `Simulated_*.csv`) is the only
+  validation reference.
 - **Convention deviations** flagged by
   `checkModelConventions("Clewe_2016_rifampicin")`:
   - Compartment names `fbugs`, `sbugs`, `nbugs` are not in the canonical
@@ -382,8 +382,7 @@ dominant non-multiplying pool). {.table}
     `$MODEL COMP=(FBUGS) COMP=(SBUGS) COMP=(NBUGS)` declarations because
     no canonical compartment in nlmixr2lib’s register names
     “fast-multiplying / slow-multiplying / non-multiplying bacteria.”
-    This follows the `naming-conventions.md` Section “Endogenous /
-    mechanistic parameters” guidance to use paper-specific names for
+    This follows the package’s guidance to use paper-specific names for
     non-PK mechanism states. Lower-cased to match the package’s casing
     convention.
   - Observation variable `cfu` rather than `Cc`. `Cc` connotes a drug

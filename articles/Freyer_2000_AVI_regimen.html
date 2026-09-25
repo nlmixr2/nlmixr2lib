@@ -2873,7 +2873,7 @@ serum creatinine effect on CL.</li>
 <li>
 <a href="../reference/modellib.html"><code>modellib("Freyer_2000_ifosfamide")</code></a>
 – one-compartment reduction of the paper’s 2-cmt model, with the day-1
-and day-2 clearances collapsed to their mean per operator
+and day-2 clearances collapsed to their mean per maintainer
 instruction.</li>
 </ul>
 <p>Article: <a href="https://doi.org/10.1046/j.1365-2125.2000.00269.x" class="external-link">Br J Clin
@@ -2889,9 +2889,8 @@ reported IIV / residual error, but does NOT reproduce the early-time
 distribution phases visible in the paper’s Figure 2 or the terminal
 half-lives quoted in the Discussion. Ifosfamide’s day-1 to day-2
 autoinduction of clearance (5.6 -&gt; 7.95 L/h, +42%) is likewise not
-represented in this extraction; the operator directed a single mean
-clearance <code>(5.6 + 7.95)/2 = 6.775 L/h</code> (sidecar 001 response
-2026-06-21, q2 = BB).</p>
+represented in this extraction; the maintainers directed a single mean
+clearance <code>(5.6 + 7.95)/2 = 6.775 L/h</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3064,8 +3063,8 @@ text 18.7% CV</td>
 <td>
 <code>lcl</code> (typical CL, mean of day-1/day-2)</td>
 <td>6.775 L/h</td>
-<td>(5.6 + 7.95)/2 per operator q2 = BB (sidecar 001 response
-2026-06-21); source values Table 2 “Ifosfamide” row</td>
+<td>(5.6 + 7.95)/2 per maintainer instruction; source values Table 2
+“Ifosfamide” row</td>
 </tr>
 <tr class="odd">
 <td>Ifo</td>
@@ -3196,8 +3195,7 @@ so each virtual subject receives the reference-dose milligram amounts
 <span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Doxorubicin event table – one 15-min infusion on day 1 only.
 Observation rows use the ODE state name <code>central</code> (never the
-observable name <code>Cc</code>; see
-<code>references/known-vignette-failure-patterns.md</code>).</p>
+observable name <code>Cc</code>).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">events_dox</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="co"># Dose row (day 1 only).</span></span>
@@ -3350,8 +3348,7 @@ against the paper’s Table 3 mean per-course AUC values.
 Non-compartmental time-zero rows are guaranteed by construction (each
 drug’s observation grid starts at <code>time = 0</code>); the PKNCA
 input filter is therefore <code>!is.na(Cc)</code> only, without adding a
-<code>time &gt; 0</code> clause that would drop the anchor row (see the
-PKNCA recipe warnings).</p>
+<code>time &gt; 0</code> clause that would drop the anchor row.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_dox_nca</span> <span class="op">&lt;-</span> <span class="va">sim_dox</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -4835,7 +4832,7 @@ not affect AUC (governed only by CL).</li>
 <li>
 <strong>Ifosfamide</strong>: the simulated AUC 0-24 undershoots the
 paper’s Table 3 mean by roughly 12-15%. This directly reflects the
-operator-directed averaging of day-1 (5.6 L/h) and day-2 (7.95 L/h) CL
+maintainer-directed averaging of day-1 (5.6 L/h) and day-2 (7.95 L/h) CL
 to a single mean 6.775 L/h: using <code>CL_day1 = 5.6 L/h</code> alone
 would give an AUC estimate of <code>3580 / 5.6</code> = 639 mg*h/L,
 which is much closer to the paper’s day-1 mean 603.63. The averaged CL
@@ -4864,18 +4861,18 @@ transfer rate constants” is followed by no tabulation of the rate
 constants). The 1-cmt reduction preserves <code>dose / CL</code> and
 therefore AUC, but does NOT reproduce the early-time distribution phases
 visible in Figure 2 or the terminal half-lives quoted in the Discussion
-for the paper’s fitted 3- and 2-cmt models. Operator decision recorded
-in the task’s sidecar 002 (2026-06-27, response 2026-06-28).</li>
+for the paper’s fitted 3- and 2-cmt models. The 1-cmt reduction was a
+maintainer decision.</li>
 <li>
 <strong>Ifosfamide day-1 to day-2 autoinduction of CL is not
 represented.</strong> Freyer 2000 fitted two separate CL parameters
 (CL_day1 = 5.6 L/h, CL_day2 = 7.95 L/h; +42% autoinduction) with no
 structural induction mechanism – each day’s samples were fit under its
-own CL. Per operator instruction (sidecar 001 response 2026-06-21, q2 =
-BB), this extraction collapses the two values to their arithmetic mean
-6.775 L/h. The consequence is a ~12-15% bias in day-1 AUC (see PKNCA
-comparison above). Users who need the day-conditional CL can substitute
-a piecewise CL in <code>model()</code> –
+own CL. Per maintainer instruction, this extraction collapses the two
+values to their arithmetic mean 6.775 L/h. The consequence is a ~12-15%
+bias in day-1 AUC (see PKNCA comparison above). Users who need the
+day-conditional CL can substitute a piecewise CL in <code>model()</code>
+–
 e.g. <code>cl &lt;- exp(lcl_day1 + etalcl) * (t &lt; 24) + exp(lcl_day2 + etalcl) * (t &gt;= 24)</code>
 – using the paper’s original 5.6 and 7.95 L/h values.</li>
 <li>
@@ -4930,13 +4927,11 @@ interpreted as reported by the paper. The extraction does not attempt to
 re-fit or FOCE-correct.</li>
 <li>
 <strong>Correspondence-author track was attempted then
-closed.</strong> Sidecar 001 (2026-06-04) offered author correspondence
-as one option for filling the peripheral-parameter gap; operator
-selected “C” (author correspondence) on 2026-06-21 but no reply was
-received before the task’s re-dispatch, and sidecar 002 (2026-06-27)
-resolved via option “A” (1-cmt fallback with the q2 = BB averaging for
-ifosfamide). Both sidecar records live in
-<code>/home/bill/gitlab/nlmixr2lib_ingestion/.claude_task_runner/sidecar/frompeople-782-freyer_2000_british_journal_of_clinical_ph/</code>.</li>
+closed.</strong> Author correspondence was offered as one option for
+filling the peripheral-parameter gap, and the maintainers selected it on
+2026-06-21, but no reply was received before this model was built; the
+maintainers then chose the 1-cmt fallback (with the day-1 / day-2 CL
+averaging for ifosfamide).</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

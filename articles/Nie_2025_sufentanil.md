@@ -389,9 +389,9 @@ ggplot(sim_obs, aes(time, sim)) +
 
 ``` r
 
-# Ranges read off the log axis of Nie 2025 Figure 2 by the operator (graphical
-# digitisation, not a printed table). Used only as a validation envelope -- no
-# model parameter is derived from them.
+# Ranges read off the log axis of Nie 2025 Figure 2 by the maintainers
+# (graphical digitisation, not a printed table). Used only as a validation
+# envelope -- no model parameter is derived from them.
 observed_envelope <- tibble::tribble(
   ~endpoint,          ~obs_low, ~obs_high,
   "Maternal plasma",  3,        30,
@@ -697,9 +697,9 @@ mass-balance test above.
   durations are not tabulated. Delivery times are drawn uniformly over
   2.5-10.5 h, the span of observed sampling times in Figure 2; the
   typical-value figure uses a fixed 8 h infusion.
-- **Figure 2 envelope is operator-digitised.** The observed ranges
+- **Figure 2 envelope is maintainer-digitised.** The observed ranges
   (maternal ~3-30 pg/mL, cord ~0.6-10 pg/mL) were read off the log axis
-  of Figure 2 by the operator. They are used only as a validation
+  of Figure 2 by the maintainers. They are used only as a validation
   envelope; **no model parameter is derived from them.** All `ini()`
   values come from Table 1.
 - **No covariate model.** Nie 2025 reports none, so `covariateData` is

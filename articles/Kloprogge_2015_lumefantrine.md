@@ -558,7 +558,7 @@ Typical-value simulation medians vs paper Table 3 reported medians.
 
 6.  **Estimated gestational age covariate (`EGA` -\> `GA`).** The
     paper’s source column is “EGA” (estimated gestational age at study
-    admission, weeks; range 13.1-39.0). Per the operator sidecar
+    admission, weeks; range 13.1-39.0). Per a maintainer decision
     (2026-06-07), the existing `GA` canonical (originally defined as
     gestational age at birth in pediatric popPK use cases) is reused
     with the at-admission semantic captured in

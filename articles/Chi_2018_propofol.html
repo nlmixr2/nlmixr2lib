@@ -2889,10 +2889,9 @@ and <code>theta_CTP = -0.848</code>. These are the values packaged in
 <code>modellib("Chi_2018_propofol")</code>.</p>
 <p>The paper does NOT report any OMEGA (IIV) or SIGMA (residual error)
 values, no goodness-of-fit / VPC plots, and no individual parameter
-estimates. Per operator decision (extraction-task sidecar
-320-chi_2018_medical_science_monitor request-002, q1 = C) the packaged
-model fixes every eta to zero and includes no residual-error term; it is
-a deterministic typical-value forward predictor. See the <a href="#assumptions-and-deviations">Assumptions and deviations</a>
+estimates. Per maintainer decision, the packaged model fixes every eta
+to zero and includes no residual-error term; it is a deterministic
+typical-value forward predictor. See the <a href="#assumptions-and-deviations">Assumptions and deviations</a>
 section for the full provenance discussion and pointers to
 companion-paper extractions that DO report a full OMEGA / SIGMA
 structure for propofol in a Chinese cohort.</p>
@@ -3652,20 +3651,19 @@ bootstrap validation in the 32-patient cohort, so the OMEGA and SIGMA
 values DO exist in the original NONMEM output – they were simply not
 transcribed into the paper. The packaged model is therefore a
 deterministic typical-value predictor; VPC-style validation is not
-possible from the packaged model alone. Operator decision
-(extraction-task sidecar 320-chi_2018_medical_science_monitor
-request-002, q1 = C) is to fix every eta to zero rather than borrow from
-a companion paper or insert placeholders.</li>
+possible from the packaged model alone. The maintainers’ decision is to
+fix every eta to zero rather than borrow from a companion paper or
+insert placeholders.</li>
 <li>
-<strong>No <code>propSd</code> placeholder.</strong>
-Operator-specific direction in the sidecar response: “do NOT add a
-propSd placeholder. If the residual error is not reported in Chi 2018,
-leave it out – do not invent a value.” The packaged model therefore
-declares the observation as <code>Cc &lt;- central / vc</code> with no
-<code>Cc ~ prop(...)</code> line; nlmixr2 / rxode2 simulation treats
-<code>Cc</code> as a deterministic algebraic output. The Oniki 2018
-NAFLD-risk and Zou 2012 MI-219 entries follow the same no-residual-error
-pattern for typical-value-only forward predictors.</li>
+<strong>No <code>propSd</code> placeholder.</strong> The maintainers
+specifically directed: “do NOT add a propSd placeholder. If the residual
+error is not reported in Chi 2018, leave it out – do not invent a
+value.” The packaged model therefore declares the observation as
+<code>Cc &lt;- central / vc</code> with no <code>Cc ~ prop(...)</code>
+line; nlmixr2 / rxode2 simulation treats <code>Cc</code> as a
+deterministic algebraic output. The Oniki 2018 NAFLD-risk and Zou 2012
+MI-219 entries follow the same no-residual-error pattern for
+typical-value-only forward predictors.</li>
 <li>
 <strong>No GOF or VPC available.</strong> Without an OMEGA / SIGMA
 structure, neither the packaged model nor the source paper supports a
@@ -3708,11 +3706,11 @@ from Chi 2018’s 2-compartment model with body weight on CL and CTP on V2
 (n = 32, hepatic-insufficiency subgroup of the same Sun Yat-sen
 hospital). Because the two papers describe structurally distinct final
 models, OMEGA / SIGMA values are not directly transferable between them;
-the operator (sidecar request-002, q2 = A) queued Ye 2012 for its own
-standalone extraction rather than treating it as a depends_on of this
-task. Users wanting between-subject variability for propofol in a
-Chinese cohort should consult <code>modellib("Ye_2012_propofol")</code>
-when it becomes available.</li>
+the maintainers queued Ye 2012 for its own standalone extraction rather
+than making this entry depend on it. Users wanting between-subject
+variability for propofol in a Chinese cohort should consult
+<code>modellib("Ye_2012_propofol")</code> when it becomes
+available.</li>
 <li>
 <strong>TCI controller not encoded.</strong> Chi 2018’s
 TCI-performance analysis (Figures 2 / 3 / 4 and the published MDPE /

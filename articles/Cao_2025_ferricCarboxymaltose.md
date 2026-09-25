@@ -628,7 +628,7 @@ Information: Table S2 is explicitly the rat fit (per-kg units, rat data
 sources), and Figure S11 shows the human fit without annotating
 parameters. Fitting them from the figure would be re-estimation, not
 extraction, so the human companion model is deliberately not packaged.
-This gap has been referred to the operator.
+This gap has been referred to the maintainers.
 
 **Residual errors are read as standard deviations, not variances.**
 Table 1 labels these `sigma`, not `sigma^2`, and gives no units. NONMEM
@@ -697,8 +697,8 @@ residual-error terms are carried for completeness and for re-fitting.
 are canonical names from the nlmixr2lib register. The erythroid-lineage
 states (`bfue`, `cfue`, `nor`, `ret`, `rbc`) and the two ten-compartment
 aging chains (`mk1`-`mk10`, `plt1`-`plt10`) are declared through the
-`paper_specific_compartments` mechanism pending operator ratification as
-a canonical hematopoiesis family.
+`paper_specific_compartments` mechanism pending maintainer ratification
+as a canonical hematopoiesis family.
 
 **Event tables use `cmt` on the observable.** This model declares three
 endpoints, so observation rows carry `cmt = "RBC"` rather than an

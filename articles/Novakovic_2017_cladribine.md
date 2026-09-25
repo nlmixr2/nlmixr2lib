@@ -40,13 +40,11 @@ bundle for `DDMODEL00000223` (scraped to
 - `DDMODEL00000223.rdf`, `Command.txt`, `223.json` – provenance and
   scraper metadata.
 
-The Novakovic 2017 publication is not on disk in this worktree, so the
-validation here cannot replicate the published figures or NCA-style
-endpoints directly; instead it walks through mechanistic-sanity checks
-on the typical-value trajectory and the per-item baseline category
-probabilities (the [`extract-literature-model`
-skill](https://nlmixr2.github.io/.claude/skills/extract-literature-model/SKILL.md)
-F.3 IRT validation path).
+The Novakovic 2017 publication is not on disk, so the validation here
+cannot replicate the published figures or NCA-style endpoints directly;
+instead it walks through mechanistic-sanity checks on the typical-value
+trajectory and the per-item baseline category probabilities (the F.3 IRT
+validation path).
 
 ## Population
 
@@ -457,10 +455,10 @@ EDSS subscores. Median (line) plus 5-95th percentile band (ribbon).
 
 ## Assumptions and deviations
 
-The DDMORE-source extraction skill renders this section under an
-“Assumptions and deviations” heading rather than the more pejorative
-“Errata” – the items below are informational caveats about the bundle
-and the translation choices, not errors in the bundle itself.
+For DDMORE-source models this section is headed “Assumptions and
+deviations” rather than the more pejorative “Errata” – the items below
+are informational caveats about the bundle and the translation choices,
+not errors in the bundle itself.
 
 - **MINIMIZATION TERMINATED status.** The bundle’s `Output_real_*.lst`
   reports `MINIMIZATION TERMINATED DUE TO ROUNDING ERRORS (ERROR=134)`
@@ -469,18 +467,17 @@ and the translation choices, not errors in the bundle itself.
   .mod \$THETA initial values to 3 sig figs, consistent with the bundle
   being deposited with the published final estimates as initial values
   and the .lst run being a re-fit from those values that converged but
-  flagged the shallow optimum. The operator decision (sidecar
-  response 001) was to use these values as the final estimates and
-  document the convergence status here as informational rather than skip
-  the task.
+  flagged the shallow optimum. The maintainers decided to use these
+  values as the final estimates and document the convergence status here
+  as informational rather than drop the model.
 
 - **No on-disk publication.** The Novakovic 2017 publication is not on
-  disk in this worktree, so the side-by-side comparison against the
-  published figures (e.g., per-item probability curves, latent
-  disability trajectories by treatment arm) is not done here. The
-  validation is the F.3 mechanistic-sanity path: typical-value
-  trajectory closed-form check, treatment vs placebo monotonicity,
-  per-item probability validity, FREM mean recovery.
+  disk, so the side-by-side comparison against the published figures
+  (e.g., per-item probability curves, latent disability trajectories by
+  treatment arm) is not done here. The validation is the F.3
+  mechanistic-sanity path: typical-value trajectory closed-form check,
+  treatment vs placebo monotonicity, per-item probability validity, FREM
+  mean recovery.
 
 - **FREM observations as outputs rather than fit-time tricks.** The
   source `.mod` treats Age, MSD, and EXNB as RTYPE=1/2/3 rows in the
@@ -492,8 +489,8 @@ and the translation choices, not errors in the bundle itself.
   `addSd = sqrt(1e-5)` fixed additive error. This preserves the ability
   to simulate the FREM outputs alongside the IRT trajectory without
   forcing the user to fabricate Age / MSD / EXNB “observations” in the
-  event dataset. The operator chose this scope over the IRT-only variant
-  in the sidecar response.
+  event dataset. The maintainers chose this scope over the IRT-only
+  variant.
 
 - **Cholesky decomposition rendered as a covariance BLOCK.** The .mod
   `$PRED` block computes the 5x5 latent covariance via an explicit
@@ -537,11 +534,7 @@ and the translation choices, not errors in the bundle itself.
   placebo) and by `t > 0` so baseline-visit (t = 0) records have zero
   drug effect even on treated subjects.
 
-## Branch / commit info
+## Related models
 
-This vignette was added in commit on branch
-`claude/023-novakovic_2017_cladribine`. See the `inst/modeldb/ddmore/`
-directory for the sibling DDMORE-source extractions and the
-[`extract-literature-model`
-skill](https://nlmixr2.github.io/.claude/skills/extract-literature-model/SKILL.md)
-for the workflow this task followed.
+See the `inst/modeldb/ddmore/` directory for the sibling DDMORE-source
+extractions.

@@ -65,13 +65,13 @@ table below collects them in one place for review.
 | `etalcl` variance | log(1 + 0.35^2) | Table 3 row “CV CL/F (%) = 35” (Results paragraph 1: “constant coefficient of variation”) |
 | `etalka` variance | log(1 + 0.85^2) | Table 3 row “CV Ka (%) = 85” (Results paragraph 1: “constant coefficient of variation”) |
 | `etalvc` | n/a (no IIV) | Results paragraph 4: V/F IIV decreased to a very small value and was no longer significant after covariate inclusion |
-| `propSd` (FIXED at 0) | 0 | Not reported in paper; FIXED here per operator sidecar; see Errata |
-| `addSd` (FIXED at 0) | 0 | Not reported in paper; FIXED here per operator sidecar; see Errata |
+| `propSd` (FIXED at 0) | 0 | Not reported in paper; FIXED here per maintainer decision; see Errata |
+| `addSd` (FIXED at 0) | 0 | Not reported in paper; FIXED here per maintainer decision; see Errata |
 | `d/dt(depot)` | `-ka * depot` | Results paragraph 1: one-compartment open model with first-order absorption (ADVAN2 TRANS2) |
 | `d/dt(central)` | `ka * depot - kel * central` | Same |
 | `cl = exp(lcl + etalcl) * (1 + e_rif_cl_vc * CONMED_RIF)` | n/a | Results paragraph 3 covariate equation: CL/F = theta_1 + theta_1 \* theta_4 \* R |
 | `vc = exp(lvc) * (1 + e_rif_cl_vc * CONMED_RIF)` | n/a | Results paragraph 3 covariate equation: V/F = theta_2 + theta_2 \* theta_4 \* R (same theta_4 enforced; dOFV 1.23, P \> 0.05) |
-| `ka = exp(lka + etalka) * ( 17.1 + e_tbili_ka * TBILI)` | n/a | Form assumed by analogy to the explicit rifampin equation per operator sidecar 2026- 85.5-30 (q1=A). Numerical check: Ka(TBILI = 11.97 mg/dL) = 17.784 \* ( 17.1 - 2.0349 \* 11.97) = 16.296; paper Discussion paragraph 119.7 quotes 16.365 ( 6.84% discrepancy attributable to rounding theta_3 from a precise estimate near 17.835 down to 17.784 in Table 51.3 display). |
+| `ka = exp(lka + etalka) * ( 17.1 + e_tbili_ka * TBILI)` | n/a | Form assumed by analogy to the explicit rifampin equation (maintainer decision). Numerical check: Ka(TBILI = 11.97 mg/dL) = 17.784 \* ( 17.1 - 2.0349 \* 11.97) = 16.296; paper Discussion paragraph 119.7 quotes 16.365 ( 6.84% discrepancy attributable to rounding theta_3 from a precise estimate near 17.835 down to 17.784 in Table 51.3 display). |
 | `Cc <- central / vc` | mg/L | Dose mg / volume L; matches paper concentration units |
 
 ## Virtual cohort
@@ -211,8 +211,7 @@ parameters’ `fixed()` wrappers and re-fitting or by setting `propSd` /
 ## PKNCA validation
 
 Steady-state NCA over the last two dosing intervals (one 72-h, one 96-h)
-for each treatment. Recipe 3 from the skill’s PKNCA recipes –
-steady-state AUC0-tau, Cmax, Cmin, Tmax.
+for each treatment: steady-state AUC0-tau, Cmax, Cmin, Tmax.
 
 ``` r
 
@@ -385,12 +384,12 @@ model parameter difference.
   theta_5 \* TBILI). The computed Ka at TBILI = 11.97 mg/dL is 16.296
   17.1/h, 6.84% below the paper’s 16.365, attributable to rounding
   theta_3 to 17.784 ( 51.3 sig figs) from a precise estimate near 1.043.
-  The form was confirmed by operator sidecar response (request- 17.1 q1
-  = A, 2026- 85.5-30). Two alternative forms (linear-additive Ka =
-  theta_3 + theta_5 \* TBILI; exponential Ka = theta_3 \* exp(theta_5 \*
-  TBILI)) each give an exact 16.365 at TBILI = 11.97 mg/dL but diverge
-  meaningfully from the multiplicative form at high bilirubin (paper
-  range up to 136.8 mg/dL) and were rejected as the primary encoding.
+  The form was confirmed by the maintainers. Two alternative forms
+  (linear-additive Ka = theta_3 + theta_5 \* TBILI; exponential Ka =
+  theta_3 \* exp(theta_5 \* TBILI)) each give an exact 16.365 at TBILI =
+  11.97 mg/dL but diverge meaningfully from the multiplicative form at
+  high bilirubin (paper range up to 136.8 mg/dL) and were rejected as
+  the primary encoding.
 - **V/F has no inter-individual variability in this model.** Paper
   Results paragraph 4 reports that V/F IIV decreased to a very small
   value and was no longer significant after the covariate model was
@@ -420,14 +419,13 @@ model parameter difference.
   be best described by a proportional-plus-constant-error model”) but
   neither Table 3 nor any other section of the publication reports
   numerical magnitudes for the proportional or additive components. Per
-  operator sidecar response (request-001 q2 = A modified, 2026-05-30),
-  this packaged model encodes `propSd <- fixed(0)` and
-  `addSd <- fixed(0)` so the model compiles and reproduces typical-value
-  predictions exactly, but **any stochastic VPC built from this model
-  will show no residual variability around the model predictions**.
-  Users wishing to run a stochastic VPC must supply their own
-  residual-error magnitudes. Defensible lower bounds derived from
-  on-disk assay specs (Materials and Methods paragraph 3) are:
+  a maintainer decision, this packaged model encodes
+  `propSd <- fixed(0)` and `addSd <- fixed(0)` so the model compiles and
+  reproduces typical-value predictions exactly, but **any stochastic VPC
+  built from this model will show no residual variability around the
+  model predictions**. Users wishing to run a stochastic VPC must supply
+  their own residual-error magnitudes. Defensible lower bounds derived
+  from on-disk assay specs (Materials and Methods paragraph 3) are:
   proportional component \<= ~10% CV (matching the HPLC inter- and
   intra-day RSD at QC concentrations 62.5-5000 ng/mL); additive
   component on the order of the LLOQ (31.2 ng/mL = 0.031 mg/L). The true

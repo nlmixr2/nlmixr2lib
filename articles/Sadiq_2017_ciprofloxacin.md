@@ -645,4 +645,4 @@ growing, resting and non-plateable (filamentous), each with a
 pre-existing-resistant counterpart – for which the library has no
 canonical compartment names, and its “resting” state collides with the
 register’s existing `R`, which means *resistant*. That naming decision
-is deliberately left to the operator rather than guessed.
+is deliberately left to the maintainers rather than guessed.

@@ -269,11 +269,11 @@ stopifnot(all(trace$amount >= -1e-9))
 
 ## F.2 self-consistency check (PKNCA)
 
-The Elishmereni 2011 publication is not on disk in this worktree, so a
-side-by-side comparison against published Cmax / AUC / half-life is not
-performed. Instead, this section runs PKNCA on the simulated cohort and
-records the typical-value NCA summaries by route as a self-consistency
-record. Re-running the vignette in the future under any code change in
+The Elishmereni 2011 publication is not on disk, so a side-by-side
+comparison against published Cmax / AUC / half-life is not performed.
+Instead, this section runs PKNCA on the simulated cohort and records the
+typical-value NCA summaries by route as a self-consistency record.
+Re-running the vignette in the future under any code change in
 nlmixr2lib / rxode2 / nlmixr2 should reproduce these numbers within
 numerical tolerance.
 
@@ -334,14 +334,14 @@ self-consistency). {.table style="width:100%;"}
   `model-origin-of-code-in-literature-controlled = "No"`, so that
   divergence is the deposit’s intent rather than a transcription error.
 - **Publication PDF not on disk.** The Elishmereni 2011 PDF was not
-  available in `/home/bill/gitlab/nlmixr2lib_ingestion/` during the
-  extraction. No external cross-check against the published parameter
-  tables (Table 1 / supplementary material) was performed; an external
-  comparison would only test conformance to the Monolix re-fit values
-  reported in the DDMORE bundle, since those are what the bundle
-  actually carries. Any future re-extraction with the publication on
-  disk should record the original-publication values in the model file’s
-  `notes` and document any irreconcilable differences here.
+  available during the extraction. No external cross-check against the
+  published parameter tables (Table 1 / supplementary material) was
+  performed; an external comparison would only test conformance to the
+  Monolix re-fit values reported in the DDMORE bundle, since those are
+  what the bundle actually carries. Any future re-extraction with the
+  publication on disk should record the original-publication values in
+  the model file’s `notes` and document any irreconcilable differences
+  here.
 - **No `Output_real_*.lst` shipped.** The DDMORE bundle for
   DDMODEL00000230 contains only the .mdl, the rendered PharmML .xml, the
   RDF metadata, and `Model_Accommodations.txt`; no NONMEM listing, no
@@ -372,9 +372,10 @@ self-consistency). {.table style="width:100%;"}
   the publication.
 - **Covariates.** None. The .mdl explicitly states “Covariate model: no
   covariate model” in its header comment.
-- **Validation strategy.** Per `references/verification-checklist.md`
-  section F.2, the F-section PKNCA / publication-figure replication is
-  replaced here by (a) a typical-value concentration-time figure, (b) a
-  stochastic VPC by route, (c) a per-compartment trace audit, and (d) a
-  PKNCA self-consistency table. There is no published Cmax / AUC /
-  half-life table to compare against without the publication on disk.
+- **Validation strategy.** Per the package’s validation checklist, the
+  usual PKNCA / publication-figure replication is replaced here by (a) a
+  typical-value concentration-time figure, (b) a stochastic VPC by
+  route,
+  3.  a per-compartment trace audit, and (d) a PKNCA self-consistency
+      table. There is no published Cmax / AUC / half-life table to
+      compare against without the publication on disk.

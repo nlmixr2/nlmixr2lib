@@ -4117,7 +4117,7 @@ Supplementary Material 1 fixes the allometric exponents at 0.75 on the
 apparent clearances and 1 on the apparent volumes but never states the
 reference weight. The packaged models use 70 kg. All simulations here
 use WT = 70 kg, so the choice does not affect any result shown.</p>
-<p><strong>Reference dose of the dose-on-V2/F term (operator
+<p><strong>Reference dose of the dose-on-V2/F term (maintainer
 decision).</strong> The empirical power effect
 <code>V2/F = 2363 * (WT/70)^1 * DOSE^e_dose_vc</code> has no reported
 centering dose. The packaged model uses the <strong>uncentred</strong>
@@ -4125,16 +4125,15 @@ dose in mg, i.e. an implicit reference dose of 1 mg, giving V2/F = 167 L
 at 200 mg. The alternative – centring on a typical study dose, leaving
 V2/F = 2363 L – implies a steady-state volume of about 7,000 L, which
 exceeds the Vz implied by the paper’s own reported terminal half-life
-(CL x t1/2 / ln2, at most about 5,000 L). Ratified by operator sidecar
-<code>oare_PMC10720512</code> request 001, question 1.</p>
+(CL x t1/2 / ln2, at most about 5,000 L). Ratified by the
+maintainers.</p>
 <p><strong>Dose-on-V2/F exponent: main text and supplement disagree
 (erratum-level).</strong> The Results text states “a power coefficient
 of -0.530”, while Supplementary Material 1 – the parameter table of
 record, and the artefact the text points the reader to – reports -0.50
 with RSE 5.18%. These are genuinely different numbers, not a rounding
 artefact. The packaged models use <strong>-0.50</strong>. Ratified by
-operator sidecar <code>oare_PMC10720512</code> request 001, question
-2.</p>
+the maintainers.</p>
 <p><strong>Doses are free base (assumption, validated).</strong> Study 1
 dosed cabamiquine succinate salt, study 2 free base, and the paper
 states 1 mg salt = 0.797 mg free base. The paper does not say explicitly

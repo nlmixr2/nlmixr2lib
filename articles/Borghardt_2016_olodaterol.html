@@ -3350,8 +3350,7 @@ terminal plasma half-life are the directly published quantities in
 Borghardt 2016 Table 3.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Concentration frame for PKNCA: typical-value IV and typical-value</span></span>
-<span><span class="co"># inhaled non-smoker, with the time-zero row defensively added per</span></span>
-<span><span class="co"># pknca-recipes.md.</span></span>
+<span><span class="co"># inhaled non-smoker, with the time-zero row defensively added.</span></span>
 <span><span class="va">sim_typ_both</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_iv_typ</span>     <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span>,</span>
 <span>  <span class="va">sim_inh_typ_ns</span> <span class="op">|&gt;</span></span>
@@ -3370,7 +3369,7 @@ Borghardt 2016 Table 3.</p>
 <span><span class="co"># Defensive time = 0 row per (id, treatment). Cc = 0 at t = 0 is correct</span></span>
 <span><span class="co"># for the extravascular inhaled arm; for the IV arm the back-extrapolation</span></span>
 <span><span class="co"># during lambda.z fitting will be used for Cmax. PKNCA's input filter is</span></span>
-<span><span class="co"># only !is.na(Cc) per the recipe.</span></span>
+<span><span class="co"># only !is.na(Cc).</span></span>
 <span><span class="va">sim_typ_both</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">sim_typ_both</span>,</span>
 <span>  <span class="va">sim_typ_both</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3640,9 +3639,9 @@ the unbalanced sex ratio (15 females out of 148 volunteers) is the
 proximate reason this covariate failed the stricter backward-elimination
 significance gate.</li>
 <li>
-<strong>Erratum search.</strong> The trimmed-markdown companion for
-the lead PDF does not flag an erratum or corrigendum for Borghardt 2016.
-No published correction has been incorporated; users are encouraged to
+<strong>Erratum search.</strong> The text extracted from the lead
+PDF does not flag an erratum or corrigendum for Borghardt 2016. No
+published correction has been incorporated; users are encouraged to
 check the journal’s landing page for any post-publication notices before
 relying on the typical-value estimates for new analyses.</li>
 </ul>

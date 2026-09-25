@@ -99,8 +99,8 @@ The same information is available programmatically via each model’s
 
 Per-parameter origins are recorded as in-file comments beside each
 `ini()` entry. Collected here for review. Equation numbers are those
-printed in the article; note that the trimmed-text companion of this PDF
-drops every display equation, so equations 1-8 below were read from the
+printed in the article; note that the text extracted from this PDF drops
+every display equation, so equations 1-8 below were read from the
 rendered PDF pages.
 
 | Equation / parameter | Value | Source location |

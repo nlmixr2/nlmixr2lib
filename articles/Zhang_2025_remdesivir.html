@@ -3644,9 +3644,8 @@ digitised published curves.</caption>
 </table>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Everything asserted here is DETERMINISTIC: neither model carries IIV, so</span></span>
-<span><span class="co"># there is no cohort draw and no thread-count sensitivity (pattern 12 of</span></span>
-<span><span class="co"># known-vignette-failure-patterns.md does not apply). The tolerances below are</span></span>
-<span><span class="co"># therefore sized for DIGITISATION error in reading the published panels</span></span>
+<span><span class="co"># there is no cohort draw and no thread-count sensitivity. The tolerances below</span></span>
+<span><span class="co"># are therefore sized for DIGITISATION error in reading the published panels</span></span>
 <span><span class="co"># (roughly +/- 15% on a peak time), not for simulation noise.</span></span>
 <span></span>
 <span><span class="co"># 1. Structural: every metabolite peak time reproduces its published panel.</span></span>

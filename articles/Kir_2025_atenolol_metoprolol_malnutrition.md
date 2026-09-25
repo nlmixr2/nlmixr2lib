@@ -762,13 +762,12 @@ arms; see the Errata below.
   `fixed()` GastroPlus predictions rather than estimated parameters, so
   a log transform would buy nothing: there is no estimation step to keep
   positive, and it would obscure the direct correspondence with the
-  value printed in the paper. The `kp_<organ>` family is not (yet)
-  written up in
-  `.claude/skills/extract-literature-model/references/parameter-names.md`,
-  but the encoding follows established practice in the registry – nine
-  existing PBPK models declare bare `kp_<organ> <- fixed(...)`
-  parameters, including `Pei_2023_tacrolimus_pbpk.R`,
-  `Levitt_2005_propofol_pbpk.R` and
+  value printed in the paper. The `kp_<organ>` family was not yet
+  written up in the maintainers’ parameter-naming guide when this model
+  was built, but the encoding follows established practice in the
+  registry – nine existing PBPK models declare bare
+  `kp_<organ> <- fixed(...)` parameters, including
+  `Pei_2023_tacrolimus_pbpk.R`, `Levitt_2005_propofol_pbpk.R` and
   `Gaohua_2012_pregnancy_pbpk_midazolam.R`. Left bare deliberately.
 - **`MAL_NOURISH` gates absorption, not disposition.** This is unusual
   for the covariate (its other registered uses shift clearance or a

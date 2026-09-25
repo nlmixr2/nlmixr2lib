@@ -381,10 +381,10 @@ the paper.
   `theta_DIUR` as “multiplicative factor for the influence of residual
   diuresis on CL”, but the equation in the text (Results p. 5523) is
   explicitly additive: `CL = 3.68 + 0.22 * (residual diuresis / 100)`.
-  Per the standing operator policy (text-vs-equation conflict -\> trust
-  the equation), the model encodes the additive form printed in the
-  equation; the footnote wording is treated as a residual transcription
-  error from an earlier draft.
+  Per the maintainers’ standing policy (text-vs-equation conflict -\>
+  trust the equation), the model encodes the additive form printed in
+  the equation; the footnote wording is treated as a residual
+  transcription error from an earlier draft.
 - **Reference weight (73 kg).** The Results p. 5523 equation uses 73 kg
   as the WT centering value with the phrase “weight is normalized to the
   median weight of our patient population”. Table 1 reports the median

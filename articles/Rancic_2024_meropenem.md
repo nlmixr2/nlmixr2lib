@@ -216,8 +216,7 @@ them:
 # partitioned per solver thread), so the cohort's covariates are reproducible
 # but its etas are not. Every assertion downstream is either a per-subject
 # algebraic identity or a typical-value replication, so none of them depends on
-# which etas were drawn. See pattern 12 of
-# references/known-vignette-failure-patterns.md.
+# which etas were drawn.
 set.seed(20240701)
 rxode2::rxSetSeed(20240701)
 

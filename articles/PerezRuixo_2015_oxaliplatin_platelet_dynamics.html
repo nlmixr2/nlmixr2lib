@@ -3130,9 +3130,9 @@ simulation.</p>
 </h2>
 <p>Original observed data are not publicly available. We construct four
 typical-value cohorts crossing HIO administration with prior
-splenectomy, each with n = 50 subjects (cohort per skill guidance; never
-more than 200 per arm). Observations are daily from surgery (t = 0) to
-day 60.</p>
+splenectomy, each with n = 50 subjects (cohort per the package’s
+guidance; never more than 200 per arm). Observations are daily from
+surgery (t = 0) to day 60.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260710L</span><span class="op">)</span></span>
 <span></span>
@@ -3426,10 +3426,10 @@ the paper’s reported CV% (nadir CV 58.9%, peak CV 53.2%).</p>
 paper obtains <code>Cp</code> from empirical-Bayes individual-PK
 estimates of an upstream popPK model (Perez-Ruixo 2013 Cancer Chemother
 Pharmacol 71:693-704) that is NOT packaged in nlmixr2lib at extraction
-time. Per the operator-approved resolution of sidecar request-001, this
-extraction treats <code>Cp</code> as an exogenous time-varying covariate
-column <code>CP_OXA_MGL</code>. The vignette approximates it with a
-simple linear-rise-then-monoexponential-decline placeholder tuned to the
+time. Per the resolution approved by the maintainers, this extraction
+treats <code>Cp</code> as an exogenous time-varying covariate column
+<code>CP_OXA_MGL</code>. The vignette approximates it with a simple
+linear-rise-then-monoexponential-decline placeholder tuned to the
 typical HIO Cmax (~ 1 mg/L) and plasma half-life (~ 14 h) reported in
 the source group’s earlier work. Users with a real oxaliplatin popPK
 profile in hand should substitute a proper simulation (either digitised
@@ -3466,10 +3466,9 @@ Pre-surgery simulations are not supported by this model file; the
 initial condition represents the pre-CRS equilibrium.</p></li>
 <li><p><strong>Residual error encoding.</strong> The source paper
 reports the residual error as “additive on log-scale (natural log)” with
-CV = 25.5%. Per the extract-literature-model skill’s Phase 4
-verification checklist (NONMEM “additive on log-scale” is equivalent to
-proportional on the linear scale), the packaged model encodes this as
-<code>PLT ~ prop(propSd)</code> with
+CV = 25.5%. Per the package’s validation checklist (NONMEM “additive on
+log-scale” is equivalent to proportional on the linear scale), the
+packaged model encodes this as <code>PLT ~ prop(propSd)</code> with
 <code>propSd = 0.255</code>.</p></li>
 <li><p><strong>Power-function drug effect is unbounded.</strong>
 <code>E_drug = alpha * CP_OXA_MGL^beta</code> with alpha = 0.881 and
@@ -3489,12 +3488,12 @@ effect is captured entirely upstream in the oxaliplatin PK layer
 (icodextrin reduces peritoneum-to-plasma absorption relative to
 dextrose), and is not modelled in this PD-only extraction.</p></li>
 <li><p><strong>Baseline demographic ranges absent from the on-disk
-source.</strong> The Perez-Ruixo 2015 trimmed markdown does not tabulate
-age, weight, sex, or race distributions – cross-cohort demographics are
-described in prior publications by the same group (Perez-Ruixo 2013
-Cancer Chemother Pharmacol; Perez-Ruixo 2013 Clin Pharmacokinet;
-Valenzuela 2011 AAPS J). The model’s <code>population</code> metadata
-records this gap.</p></li>
+source.</strong> The text extracted from the Perez-Ruixo 2015 PDF does
+not tabulate age, weight, sex, or race distributions – cross-cohort
+demographics are described in prior publications by the same group
+(Perez-Ruixo 2013 Cancer Chemother Pharmacol; Perez-Ruixo 2013 Clin
+Pharmacokinet; Valenzuela 2011 AAPS J). The model’s
+<code>population</code> metadata records this gap.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

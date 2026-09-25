@@ -348,8 +348,7 @@ Borghardt 2016 Table 3.
 ``` r
 
 # Concentration frame for PKNCA: typical-value IV and typical-value
-# inhaled non-smoker, with the time-zero row defensively added per
-# pknca-recipes.md.
+# inhaled non-smoker, with the time-zero row defensively added.
 sim_typ_both <- dplyr::bind_rows(
   sim_iv_typ     |> dplyr::select(id, time, Cc, treatment),
   sim_inh_typ_ns |>
@@ -368,7 +367,7 @@ sim_typ_both <- sim_typ_both |>
 # Defensive time = 0 row per (id, treatment). Cc = 0 at t = 0 is correct
 # for the extravascular inhaled arm; for the IV arm the back-extrapolation
 # during lambda.z fitting will be used for Cmax. PKNCA's input filter is
-# only !is.na(Cc) per the recipe.
+# only !is.na(Cc).
 sim_typ_both <- dplyr::bind_rows(
   sim_typ_both,
   sim_typ_both |> dplyr::distinct(id, treatment) |>
@@ -571,8 +570,8 @@ finite observation window of this validation cohort.
   and does not include a sex effect on PBIO; the unbalanced sex ratio
   (15 females out of 148 volunteers) is the proximate reason this
   covariate failed the stricter backward-elimination significance gate.
-- **Erratum search.** The trimmed-markdown companion for the lead PDF
-  does not flag an erratum or corrigendum for Borghardt 2016. No
-  published correction has been incorporated; users are encouraged to
-  check the journal’s landing page for any post-publication notices
-  before relying on the typical-value estimates for new analyses.
+- **Erratum search.** The text extracted from the lead PDF does not flag
+  an erratum or corrigendum for Borghardt 2016. No published correction
+  has been incorporated; users are encouraged to check the journal’s
+  landing page for any post-publication notices before relying on the
+  typical-value estimates for new analyses.

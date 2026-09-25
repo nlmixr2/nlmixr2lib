@@ -179,7 +179,7 @@ intervals.
 
 ``` r
 
-N_PER_ARM <- 200   # skill cap: never more than 200 participants per arm
+N_PER_ARM <- 200   # cohort cap: never more than 200 participants per arm
 
 make_pop <- function(label, dis_duod_ulcer, n, id_offset, female_pct, wt_median, wt_sd) {
   covs <- tibble::tibble(

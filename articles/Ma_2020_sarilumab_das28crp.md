@@ -527,8 +527,8 @@ Typical-patient placebo-arm week-24 DAS28-CRP reduction. {.table}
   the leading “2” of the CI lower bound is missing a decimal. The
   correct bootstrap median Kout is `2.11` day^-1 (consistent with the
   paper’s narrative half-life and with the bootstrap CI). The companion
-  ANC model `Ma_2020_sarilumab_anc` (task 005) corrects this. The
-  DAS28-CRP model here is unaffected.
+  ANC model `Ma_2020_sarilumab_anc` corrects this. The DAS28-CRP model
+  here is unaffected.
 - **Virtual-cohort covariate distributions.** Weight drawn from
   `N(74.6, 18.8)` kg truncated to \[40, 170\]; CRP from a log-normal
   with median 15.7 mg/L and GSD `exp(1.0) ~ 2.7x`; BLPHYVAS from

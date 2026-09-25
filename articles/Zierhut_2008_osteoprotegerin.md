@@ -36,13 +36,13 @@ subcutaneous Fc-OPG doses in healthy postmenopausal women, paired with a
 nine-week Fc-OPG-induced suppression of the urinary N-telopeptide (uNTX)
 bone-resorption biomarker. Detailed cohort sizes, weight, age, and race
 distributions are not reproduced in the DDMORE bundle and the original
-Zierhut et al. (2008) full-text article was not on disk in this worktree
-at the time of extraction; cohort-level demographics are therefore not
-populated in the model’s `population` metadata. The bundle’s
-`Vignette_opg.R` (the worked-example script used to generate the shipped
-`Simulated_opg.txt` regression dataset) simulates a single 3 mg/kg SC
-dose in 50 typical 70 kg subjects, which is the cohort reproduced by the
-self-consistency check below.
+Zierhut et al. (2008) full-text article was not on disk at the time of
+extraction; cohort-level demographics are therefore not populated in the
+model’s `population` metadata. The bundle’s `Vignette_opg.R` (the
+worked-example script used to generate the shipped `Simulated_opg.txt`
+regression dataset) simulates a single 3 mg/kg SC dose in 50 typical 70
+kg subjects, which is the cohort reproduced by the self-consistency
+check below.
 
 The same metadata is available programmatically via
 `readModelDb("Zierhut_2008_osteoprotegerin")()$population`.
@@ -185,15 +185,16 @@ the same 50-subject 3 mg/kg SC scenario simulated above. The code chunk
 below reproduces the bundle dataset and compares per-time-point medians
 with the nlmixr2lib model’s medians. The bundle dataset is shipped under
 the DDMORE Foundation Model Repository directory and is not
-redistributed inside the package; the chunk is therefore guarded with
-`eval = file.exists(...)` so the vignette renders cleanly when the
-bundle is not present on disk.
+redistributed inside the package; the chunk is therefore not evaluated
+by default (`eval = FALSE`, with a file-existence check inside) so the
+vignette renders cleanly when the bundle is not present on disk.
 
 ``` r
 
-bundle_path <- "/home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/233/Simulated_opg.txt"
+bundle_path <- file.path(Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", ""),
+                         "ddmore_scraping/233/Simulated_opg.txt")
 
-if (file.exists(bundle_path)) {
+if (nzchar(Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", "")) && file.exists(bundle_path)) {
   bundle <- read.csv(bundle_path)
   bundle_med <- aggregate(cbind(NTX, PKDV) ~ time, data = bundle, FUN = median)
   ours_med   <- aggregate(cbind(Cc, NTX) ~ time, data = sim,    FUN = median)
@@ -308,18 +309,18 @@ table above).
 - **Original publication not on disk.** Zierhut et al. (2008, J.
   Pharmacokinet. Pharmacodyn. 35(4):379-99,
   [doi:10.1007/s10928-008-9093-5](https://doi.org/10.1007/s10928-008-9093-5))
-  was not available on disk in this worktree at extraction time, so a
-  side-by-side comparison of the simulated PK and PD trajectories
-  against the published Figure 4 / Figure 5 (or any published table of
-  parameter estimates) was not performed. The validation strategy is
-  therefore the F.2 self-consistency check against the bundle’s
-  `Simulated_opg.txt` plus the F.3 mechanistic-sanity checks above. The
-  bundle’s `Model_Accommodations.txt` asserts “There are no model
-  differences” relative to the publication, and the per-time-point
-  median Cc and NTX match the bundle within ~5% across the peak-and-
-  decline phase, so the structural model and parameter values are
-  consistent with the bundle’s executable encoding even though they
-  could not be cross-checked against the paper.
+  was not available on disk at extraction time, so a side-by-side
+  comparison of the simulated PK and PD trajectories against the
+  published Figure 4 / Figure 5 (or any published table of parameter
+  estimates) was not performed. The validation strategy is therefore the
+  F.2 self-consistency check against the bundle’s `Simulated_opg.txt`
+  plus the F.3 mechanistic-sanity checks above. The bundle’s
+  `Model_Accommodations.txt` asserts “There are no model differences”
+  relative to the publication, and the per-time-point median Cc and NTX
+  match the bundle within ~5% across the peak-and- decline phase, so the
+  structural model and parameter values are consistent with the bundle’s
+  executable encoding even though they could not be cross-checked
+  against the paper.
 - **MDL `sd = ...` vs. mrgsolve `[OMEGA]` variance encoding for `EKA`,
   `EFSC`.** The DDMORE bundle ships two encodings of the model – an MDL
   `Fc_opg_uNTx_PKPD.mdl` (Mike K Smith) and an mrgsolve `opg.cpp` (Kyle

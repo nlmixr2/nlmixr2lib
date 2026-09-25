@@ -189,7 +189,7 @@ at which the simulations are run.
 set.seed(20230622)
 rxode2::rxSetSeed(20230622)
 
-n_per_arm <- 100L  # 100 per regimen arm; the skill cap is 200
+n_per_arm <- 100L  # 100 per regimen arm; the per-arm cohort cap is 200
 
 # Weight-based daily doses (mg/kg/day). See "Assumptions and deviations".
 dose_lev_mgkgd     <- 20  # levetiracetam, both regimens

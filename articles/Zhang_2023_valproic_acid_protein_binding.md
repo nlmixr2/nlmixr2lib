@@ -283,18 +283,19 @@ solve_one <- function(label, zero_re) {
 sim <- bind_rows(lapply(names(model_names), solve_one, zero_re = FALSE))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> Warning: some ID(s) could not solve the ODEs correctly; These values are
-#> replaced with 'NA'
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> Warning: some ID(s) could not solve the ODEs correctly; These values are
-#> replaced with 'NA'
-#> ℹ parameter labels from comments will be replaced by 'label()'
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
@@ -302,7 +303,6 @@ sim <- bind_rows(lapply(names(model_names), solve_one, zero_re = FALSE))
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -748,11 +748,12 @@ ggplot(ebe, aes(DOSE_VPA_MGD, cl)) +
 
 The same panel for the dose-dependent maximum effect model. **This is
 the one figure the packaged Model III does not reproduce**, and the
-discrepancy is recorded rather than tuned away: on the operator-ratified
-mg/day reading of `DD50` the Hill term is nearly saturated across the
-whole observed dose range, so the typical curve is almost flat near
-0.307 L/h, whereas the published Figure S5A rises from roughly 0.07 to
-0.19 L/h. The Errata section sets out the conflicting evidence in full.
+discrepancy is recorded rather than tuned away: on the
+maintainer-ratified mg/day reading of `DD50` the Hill term is nearly
+saturated across the whole observed dose range, so the typical curve is
+almost flat near 0.307 L/h, whereas the published Figure S5A rises from
+roughly 0.07 to 0.19 L/h. The Errata section sets out the conflicting
+evidence in full.
 
 ``` r
 
@@ -966,7 +967,7 @@ more than three orders of magnitude (0.0815 to 132 L/h). That is what
 confirms Models I, II and IV are unbound-referenced. A
 total-concentration reading of their `CLp/F` would put their predictions
 one to three orders of magnitude out, not tens of per cent. The same
-coherence is what the operator’s ratified `DD50` reading for Model III
+coherence is what the maintainers’ ratified `DD50` reading for Model III
 was chosen to preserve.
 
 Two rows star at the 20% tolerance (Models II and III), and the family
@@ -1083,8 +1084,7 @@ Equation 5 needs `Emax`, a Hill coefficient and `DD50`. The paper fixes
 Table S3 (whose `CL_DD` row is “/” for this model) and from the body
 text. The value used here, `DD50 = 37.4`, is Ding 2015’s own value,
 tabulated in Zhang’s own Table 1, read on the **mg/day** scale. This is
-an operator-ratified decision (sidecar `oare_PMC10587682`, question 2,
-option C), not a value the paper states.
+a maintainer-ratified decision, not a value the paper states.
 
 The evidence conflicts, and the conflict is genuine:
 

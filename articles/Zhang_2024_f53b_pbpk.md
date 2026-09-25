@@ -442,7 +442,7 @@ nca_conc <- mouse_sim |>
   dplyr::transmute(id = as.integer(id), treatment = arm,
                    tad = time - GD13_H, Cc = Cc)
 
-# Guarantee a time-zero record per subject (see pknca-recipes.md). For the
+# Guarantee a time-zero record per subject. For the
 # oral arm the pre-dose concentration is 0. For the intravenous arm the
 # model's own instantaneous post-bolus concentration is used, so that AUC
 # from time zero is the model's actual exposure rather than a fabricated

@@ -19,8 +19,8 @@ trastuzumab-DM1 (T-DM1, Kadcyla) and trastuzumab-deruxtecan (T-DXd,
 Enhertu). The platform is presented at three nested scales - in vitro
 cellular disposition, in vivo mouse xenograft PK+TGI, and human clinical
 PK+TGI+PFS - which the extraction packages as three separate model files
-sharing this vignette (per operator direction and the
-`replicate-author-structure` policy):
+sharing this vignette (per maintainer direction and the package’s policy
+of replicating the authors’ model structure):
 
 - `Scheuher_2023_ADC_invitro_qsp`: 13-state cellular ADC processing
   model (Tables S1a, S2a, S3a-b).
@@ -326,8 +326,8 @@ preserved. Full per-stage tracking is possible but requires writing 40
 near-identical ODE bodies with careful bookkeeping; it is left for a
 follow-up extraction if a downstream user needs per-stage interrogation.
 
-**Best-effort resolution of paper notation ambiguities (per operator
-sidecar q2=A):**
+**Best-effort resolution of paper notation ambiguities (per maintainer
+decision):**
 
 1.  *Table S3c v_31r rate law.* Printed as
     `v_31r = k_on,PL K_D,PL HER2:Ab_ext,N{s},tumor` but the analogous

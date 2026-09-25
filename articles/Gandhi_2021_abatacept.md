@@ -370,7 +370,7 @@ ggplot(vpc_ra, aes(time, Q50, colour = regimen, fill = regimen)) +
 Non-compartmental analysis of the steady-state SC and IV dosing
 intervals. PKNCA computes per-subject C_(max), C_(min), C_(avg), and
 AUC_(tau). Two PKNCA blocks are run (one per regimen-cohort grouping) so
-that each formula carries `id/treatment` per the skill’s PKNCA recipe.
+that each formula carries `id/treatment`.
 
 ``` r
 
@@ -700,9 +700,9 @@ mg/L on 125 mg SC QW (Gandhi 2021: comparable to IV ~10 mg/kg Q4W).
   rate constants).
 - **SJC 28-joint scale assumed.** Gandhi 2021 reports a swollen joint
   count covariate (SJC) with reference value 15 but does not explicitly
-  identify the joint-count scale. Per operator decision, the canonical
-  `SWOL_28JOINT` is used because (1) the same author group used the
-  28-joint count in the prior Li 2019 RA-only analysis, (2) the
+  identify the joint-count scale. Per a maintainer decision, the
+  canonical `SWOL_28JOINT` is used because (1) the same author group
+  used the 28-joint count in the prior Li 2019 RA-only analysis, (2) the
   reference value 15 is consistent with the 28-joint scale’s 0-28 range,
   and (3) pediatric pJIA patients are a minority of the pooled cohort
   (403/2616 ≈ 15 %).
@@ -756,9 +756,9 @@ re-reading the source alongside this model should be aware of:
   same “Estimate” column that carries the IIV variances for each ETA.
   The IIV column entries are unambiguously variances
   (`var(etalka) = 1.11` is too large to be a SD), so by symmetry the
-  residual-error entries are likely SIGMA (variance) values too. Per
-  operator decision, this model treats the residual errors as variances
-  and converts to SDs via
+  residual-error entries are likely SIGMA (variance) values too. Per a
+  maintainer decision, this model treats the residual errors as
+  variances and converts to SDs via
   [`sqrt()`](https://rdrr.io/r/base/MathFun.html):
   `propSd = sqrt(0.0615) ≈ 0.248` (24.8 % proportional error) and
   `addSd = sqrt(0.00134) ≈ 0.0366 mg/L` (≈ 37 ng/mL additive). The

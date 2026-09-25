@@ -1875,11 +1875,11 @@ slope.
   each. The `population$sex_female_pct` field is `NA_real_` rather than
   guessed.
 - **Two parallel models from a single paper.** Following the nlmixr2lib
-  `replicate-author-structure` policy, the paper’s two independent
-  NONMEM fits (one on plasma, one on whole blood) are packaged as two
-  model files that share this vignette. Both fits share the same
-  body-weight covariate but otherwise have independent point estimates
-  and IIV (Table 5).
+  policy of replicating the authors’ model structure, the paper’s two
+  independent NONMEM fits (one on plasma, one on whole blood) are
+  packaged as two model files that share this vignette. Both fits share
+  the same body-weight covariate but otherwise have independent point
+  estimates and IIV (Table 5).
 - **Time-fixed weight.** This was a single-occasion 60-min IV infusion
   study; weight is supplied once per subject and is not time-varying.
 - **Screened covariates that were not retained.** Age, body-surface

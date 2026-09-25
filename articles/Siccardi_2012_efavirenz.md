@@ -195,7 +195,7 @@ matching the paper’s simulation design.
 
 ``` r
 
-NSUB  <- 200L                # per arm; the skill cap
+NSUB  <- 200L                # per arm; the cohort cap
 NDAY  <- 90L                 # days of once-daily dosing before the readout
 TSS   <- 24 * (NDAY - 1)     # time of the final dose, i.e. the steady-state interval
 SEED  <- 20120701L
