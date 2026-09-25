@@ -524,8 +524,7 @@ concentration unit error.
   disposition estimates close to Case 1's). Against it: the paper does not say
   so, and three patches over 2496 h is about 35 days per patch, which does not
   match the weekly patch of ref [3]. The parameter values and the structure do
-  not depend on the identification. Adopted per operator sidecar
-  `oare_PMC9867137` request-001 q2.
+  not depend on the identification. Adopted by maintainer decision.
 - **The drug in Case 3 is not disclosed at all**, so the model file is named
   `Jung_2023_im_depot` rather than `author_year_drug`. The data are described
   only as in-house.

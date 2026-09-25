@@ -261,7 +261,7 @@ a faithful smaller-scale analogue.
   hazard is constant in time, i.e., exponential. The BAST guiding
   document Section  2.4.1 (Figure 2-1) confirms exponential was selected for
   Event 1 by AIC. The packaged model preserves the .mod's structure
-  faithfully and uses the operator-approved filename
+  faithfully and uses the maintainer-approved filename
   `NA_NA_tte_gompertz.R`; the description and this Errata note state
   the realised distribution.
 

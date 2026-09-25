@@ -25,8 +25,8 @@ library(ggplot2)
   patients with myelodysplastic syndrome: CALGB 10105 (Alliance).
   *Br J Clin Pharmacol.* 2014;78(5):1005-1013.
 * Article: <https://doi.org/10.1111/bcp.12427>
-* Source files on disk:
-  `from_people/literature_2018_search/Wang_2014_Vatalanib_population_pharmacokinetics_in_87914e.pdf`.
+* Source files on disk: the article PDF, in the maintainers' literature
+  mirror.
 
 The packaged model `Wang_2014_vatalanib` is a one-compartment open model
 with lagged first-order absorption and a first-order auto-induction term

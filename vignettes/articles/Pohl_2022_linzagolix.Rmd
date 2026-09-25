@@ -544,7 +544,7 @@ wk24 |>
 # The paper's claim, asserted exactly: 75-150 mg inside, 50 and 200 mg outside.
 # This is a typical-value solve with no random effects, so the result is
 # deterministic across machines and rxode2 versions and a hard assertion is
-# correct here (contrast the cohort-extreme trap described in CLAUDE.md).
+# correct here (contrast a cohort-extreme assertion).
 inside  <- wk24$dose[wk24$in_window]
 stopifnot(
   identical(sort(inside), c(75, 100, 125, 150)),

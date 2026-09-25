@@ -462,7 +462,7 @@ knitr::kable(
   syntax), and (b) the NIH stroke-scale covariate that drives one of the
   two piecewise-nonlinear PT effects is not in the canonical
   `inst/references/covariate-columns.md` register and registering a new
-  canonical requires operator sign-off. Both decisions could be revisited
+  canonical requires maintainer sign-off. Both decisions could be revisited
   in a follow-up extraction that introduces a new canonical for
   `NIHSS` and a mixture-encoding precedent.
 

@@ -303,7 +303,7 @@ between-animal variability block as well as the structural model.
 set.seed(20151013)
 rxode2::rxSetSeed(20151013)
 
-n_per_arm <- 200L   # skill cap: never more than 200 participants per arm
+n_per_arm <- 200L   # cohort cap: never more than 200 participants per arm
 
 make_arm <- function(n, op_mg_per_kg, label, id_offset) {
   ids <- id_offset + seq_len(n)

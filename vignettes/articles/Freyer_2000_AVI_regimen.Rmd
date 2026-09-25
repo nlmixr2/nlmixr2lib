@@ -34,7 +34,7 @@ model files pointing to the shared vignette:
   creatinine effect on CL.
 * [`modellib("Freyer_2000_ifosfamide")`](../reference/modellib.html) --
   one-compartment reduction of the paper's 2-cmt model, with the day-1 and
-  day-2 clearances collapsed to their mean per operator instruction.
+  day-2 clearances collapsed to their mean per maintainer instruction.
 
 Article: [Br J Clin Pharmacol 2000;50(4):315-324](https://doi.org/10.1046/j.1365-2125.2000.00269.x).
 
@@ -48,8 +48,8 @@ governed only by CL) and the reported IIV / residual error, but does NOT
 reproduce the early-time distribution phases visible in the paper's Figure 2
 or the terminal half-lives quoted in the Discussion. Ifosfamide's day-1 to
 day-2 autoinduction of clearance (5.6 -> 7.95 L/h, +42%) is likewise not
-represented in this extraction; the operator directed a single mean clearance
-`(5.6 + 7.95)/2 = 6.775 L/h` (sidecar 001 response 2026-06-21, q2 = BB).
+represented in this extraction; the maintainers directed a single mean
+clearance `(5.6 + 7.95)/2 = 6.775 L/h`.
 
 # Population
 
@@ -115,7 +115,7 @@ tabulated variance exactly (see the "IIV variance derivation" section below).
 | Eto | `etalcl` (BSV variance) | 0.0243          | Table 2, "Etoposide" row, "omega_CL" column (s.d. 0.0107); matches text 15.6% CV |
 | Eto | `etalvc` (BSV variance) | 0.0350          | Table 2, "Etoposide" row, "omega_Vd" column (s.d. 0.0128); matches text 18.7% CV |
 | Eto | `propSd` (prop. residual)| 0.2400         | Table 2, "Etoposide" row, "sigma" column: variance 0.0576 (s.d. 0.0213) -> SD sqrt(0.0576) |
-| Ifo | `lcl` (typical CL, mean of day-1/day-2) | 6.775 L/h | (5.6 + 7.95)/2 per operator q2 = BB (sidecar 001 response 2026-06-21); source values Table 2 "Ifosfamide" row |
+| Ifo | `lcl` (typical CL, mean of day-1/day-2) | 6.775 L/h | (5.6 + 7.95)/2 per maintainer instruction; source values Table 2 "Ifosfamide" row |
 | Ifo | `lvc`  (typical V)      | 26.0 L          | Table 2, "Ifosfamide" row, "V_d (l)" column (s.d. 4.49) |
 | Ifo | `etalcl` (BSV variance) | 0.0100          | Table 2, "Ifosfamide" row, "omega_CL" column (s.d. 0.0044); matches text 10.1% CV |
 | Ifo | `etalvc` (BSV variance) | 0.0296          | Table 2, "Ifosfamide" row, "omega_Vd" column (s.d. 0.0084); matches text 17.1% CV |
@@ -206,8 +206,7 @@ obs_grid <- sort(unique(c(
 ```
 
 Doxorubicin event table -- one 15-min infusion on day 1 only. Observation
-rows use the ODE state name `central` (never the observable name `Cc`; see
-`references/known-vignette-failure-patterns.md`).
+rows use the ODE state name `central` (never the observable name `Cc`).
 
 ```{r cohort-dox}
 events_dox <- bind_rows(
@@ -360,8 +359,7 @@ each drug is administered) is computed with PKNCA and compared against the
 paper's Table 3 mean per-course AUC values. Non-compartmental time-zero rows
 are guaranteed by construction (each drug's observation grid starts at
 `time = 0`); the PKNCA input filter is therefore `!is.na(Cc)` only, without
-adding a `time > 0` clause that would drop the anchor row (see the PKNCA
-recipe warnings).
+adding a `time > 0` clause that would drop the anchor row.
 
 ```{r pknca-dox}
 sim_dox_nca <- sim_dox |>
@@ -509,7 +507,7 @@ cmp |>
   distribution phase, which is not captured in the 1-cmt reduction, does
   not affect AUC (governed only by CL).
 * **Ifosfamide**: the simulated AUC 0-24 undershoots the paper's Table 3
-  mean by roughly 12-15%. This directly reflects the operator-directed
+  mean by roughly 12-15%. This directly reflects the maintainer-directed
   averaging of day-1 (5.6 L/h) and day-2 (7.95 L/h) CL to a single mean
   6.775 L/h: using `CL_day1 = 5.6 L/h` alone would give an AUC estimate of
   `3580 / 5.6` = 639 mg*h/L, which is much closer to the paper's day-1 mean
@@ -533,13 +531,13 @@ tune any parameter to close these gaps.
   rate constants). The 1-cmt reduction preserves `dose / CL` and therefore
   AUC, but does NOT reproduce the early-time distribution phases visible in
   Figure 2 or the terminal half-lives quoted in the Discussion for the
-  paper's fitted 3- and 2-cmt models. Operator decision recorded in the
-  task's sidecar 002 (2026-06-27, response 2026-06-28).
+  paper's fitted 3- and 2-cmt models. The 1-cmt reduction was a
+  maintainer decision.
 * **Ifosfamide day-1 to day-2 autoinduction of CL is not represented.**
   Freyer 2000 fitted two separate CL parameters (CL_day1 = 5.6 L/h,
   CL_day2 = 7.95 L/h; +42% autoinduction) with no structural induction
-  mechanism -- each day's samples were fit under its own CL. Per operator
-  instruction (sidecar 001 response 2026-06-21, q2 = BB), this extraction
+  mechanism -- each day's samples were fit under its own CL. Per maintainer
+  instruction, this extraction
   collapses the two values to their arithmetic mean 6.775 L/h. The
   consequence is a ~12-15% bias in day-1 AUC (see PKNCA comparison above).
   Users who need the day-conditional CL can substitute a piecewise CL in
@@ -585,10 +583,9 @@ tune any parameter to close these gaps.
   known to be biased for nonlinear-in-random-effects models; the parameter
   estimates should be interpreted as reported by the paper. The extraction
   does not attempt to re-fit or FOCE-correct.
-* **Correspondence-author track was attempted then closed.** Sidecar 001
-  (2026-06-04) offered author correspondence as one option for filling the
-  peripheral-parameter gap; operator selected "C" (author correspondence)
-  on 2026-06-21 but no reply was received before the task's re-dispatch, and
-  sidecar 002 (2026-06-27) resolved via option "A" (1-cmt fallback with the
-  q2 = BB averaging for ifosfamide). Both sidecar records live in
-  `/home/bill/gitlab/nlmixr2lib_ingestion/.claude_task_runner/sidecar/frompeople-782-freyer_2000_british_journal_of_clinical_ph/`.
+* **Correspondence-author track was attempted then closed.** Author
+  correspondence was offered as one option for filling the
+  peripheral-parameter gap, and the maintainers selected it on 2026-06-21,
+  but no reply was received before this model was built; the maintainers
+  then chose the 1-cmt fallback (with the day-1 / day-2 CL averaging for
+  ifosfamide).

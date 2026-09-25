@@ -122,9 +122,8 @@ knitr::kable(src)
 
 The model has two PD outputs that are not classical PK observations (integrin
 expression and tumor diameter), plus a plasma-concentration ODE. The
-validation therefore mixes endogenous-style checks
-(see `references/endogenous-validation.md`) with replication of the paper's
-published figures:
+validation therefore mixes endogenous-style checks with replication of the
+paper's published figures:
 
 - **Steady-state hold** for the integrin pool: with no drug, the integrin
   state stays at `I_base` indefinitely.

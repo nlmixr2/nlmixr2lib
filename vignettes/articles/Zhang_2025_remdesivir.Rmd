@@ -446,9 +446,8 @@ ratio_cmp |>
 
 ```{r assertions}
 # Everything asserted here is DETERMINISTIC: neither model carries IIV, so
-# there is no cohort draw and no thread-count sensitivity (pattern 12 of
-# known-vignette-failure-patterns.md does not apply). The tolerances below are
-# therefore sized for DIGITISATION error in reading the published panels
+# there is no cohort draw and no thread-count sensitivity. The tolerances below
+# are therefore sized for DIGITISATION error in reading the published panels
 # (roughly +/- 15% on a peak time), not for simulation noise.
 
 # 1. Structural: every metabolite peak time reproduces its published panel.

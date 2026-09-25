@@ -443,7 +443,7 @@ by day 20.
 
 * **Residual error not reported.** Le 2015 describes the residual-error
   model qualitatively ("proportional error model") but does not report
-  numeric variance for any of the seven observation streams. Per the skill
+  numeric variance for any of the seven observation streams. Per the package's
   policy for unreported RUV with structural values present, each
   proportional residual SD is encoded as `fixed(0)`. Deterministic
   simulation therefore reproduces the paper's typical-value trajectories

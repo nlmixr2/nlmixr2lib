@@ -203,7 +203,7 @@ simTypical <- rxode2::rxSolve(
 ## Supplementary Figure S2a -- single 64 mg dose in healthy volunteers
 
 The observed medians below were digitised from Supplementary Figure S2a by the
-operator (see *Assumptions and deviations*); the panels are on a log scale
+maintainers (see *Assumptions and deviations*); the panels are on a log scale
 spanning three decades, so treat the digitised numbers as accurate to roughly
 +/-15%.
 
@@ -728,7 +728,7 @@ tibble::tribble(
   nothing in either model depends on it, so the paper's number is quoted as
   printed and the discrepancy is recorded here only.
 * **Digitised reference values.** The observed median concentrations in the
-  Supplementary Figure S2a comparison were read off the figure by the operator
+  Supplementary Figure S2a comparison were read off the figure by the maintainers
   at 400 dpi. The panels are log-scaled over three decades, so individual
   readings are accurate to roughly +/-15%; that is why the NCA comparison uses a
   25% tolerance and the assertions are on the median and the 90th percentile of

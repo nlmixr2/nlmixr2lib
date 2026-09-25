@@ -143,8 +143,7 @@ here because the natural way to write this model is silently wrong.
 
 The paper's total clearance is additive, `CLtot = CL + CLdial`, with the dialysis
 arm contributing only while a session runs. When rxode2's ODE-to-`linCmt()`
-conversion is enabled (`useLinCmt = TRUE`; the default until rxode2 made it
-opt-in in September 2026, issue 1389) it recognises the joint presence of `cl`
+conversion is enabled (`useLinCmt = TRUE`) it recognises the joint presence of `cl`
 and `vc` and solves the one-compartment system analytically from that pair,
 **discarding the explicit `d/dt()`**. A model that assigns only the
 interdialytic arm to `cl` and then eliminates via a separate `cl_total / vc`

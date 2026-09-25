@@ -365,7 +365,7 @@ stopifnot(nrow(ident) == n_clin, !anyNA(ident$pct_diff))
 
 # Both sides use the same drawn CL, so the only difference is trapezoidal
 # error on a 0.25 h grid -- a pure numerical quantity, not a cohort statistic,
-# so a tight bound is correct here (see CLAUDE.md).
+# so a tight bound is correct here.
 stopifnot(
   abs(stats::median(ident$pct_diff)) < 0.5,
   max(abs(ident$pct_diff)) < 1.5

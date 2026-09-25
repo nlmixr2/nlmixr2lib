@@ -78,7 +78,7 @@ The table below collects them in one place for review.
 ## Dimensional analysis
 
 Endogenous / mechanistic models in the package are required to carry a
-worked dimensional analysis (per `references/endogenous-validation.md`).
+worked dimensional analysis.
 The unit table below shows the units of every symbol on the right-hand
 side of each ODE in `model()`; the left-hand side must equal
 `[state units]/[time units]` (i.e., the state's reporting unit per hour).
@@ -286,9 +286,9 @@ a fully specified equation set (Eqs 1-7) and a complete typical-value
 parameter table (Table 1), but several encoding decisions in the
 package require attention.
 
-* **Drug field corrected.** The task dispatcher's metadata listed
-  the drug as "Frontiers in Pharmacology" (the journal name) -- a
-  task-generator bug observed on several sibling tasks. The actual
+* **Drug field corrected.** The bibliographic metadata this model was
+  built from listed the drug as "Frontiers in Pharmacology" (the journal
+  name) -- a metadata error also seen for several other papers. The actual
   drug studied is baicalein (5,6,7-trihydroxy-2-phenyl-4H-1-benzopyran-
   4-one), the primary active flavonoid of Scutellaria baicalensis
   Georgi. Filename and vignette title corrected accordingly.
@@ -298,8 +298,8 @@ package require attention.
   in-vivo human or animal data. `population$species` is set to
   "in vitro (RAW264.7 mouse macrophage cell line)" and the
   `description` field is prefixed with "In vitro (RAW264.7 mouse
-  macrophage cell line)." per the SKILL Phase 1 step 3 species-
-  recording requirement.
+  macrophage cell line)." per the package's species-recording
+  requirement.
 
 * **f(Bai) at C_Bai = 0.** Xiang 2018 Eq 2 writes the inhibition
   function as f(Bai) = alpha * ln(C_Bai). At C_Bai = 0 (the control
@@ -346,7 +346,7 @@ package require attention.
   and `(iNOS/GAPDH) / (iNOS0/GAPDH0) = 1` -- with the numeric values
   read off Figure 4 control curves at t = 0. The packaged defaults
   (1000 pg/mL for TNF-alpha, 100 pg/mL for IL-6, 1 for iNOS, 1 uM
-  for NO) are operator digitisations of those figure points; users
+  for NO) are maintainer digitisations of those figure points; users
   who have their own experimental t = 0 control measurements should
   override the corresponding `lrbase_*` parameters when refitting.
   iNOS is definitionally 1 at t = 0 per the Western-blot
@@ -400,7 +400,7 @@ package require attention.
   concentration -- and reflects the inherent mixed-dimension nature
   of a small-molecule perturbant driving a protein-readout in-vitro
   PD experiment. No correction is appropriate; the warning is
-  documented here per the SKILL convention for justified deviations.
+  documented here per the package's convention for justified deviations.
 
 * **Peak-and-decline gap.** The observed TNF-alpha trace in Figure 4A
   peaks at t = 1 h and then declines through 12 h before rising

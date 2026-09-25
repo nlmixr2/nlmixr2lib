@@ -597,7 +597,7 @@ knitr::kable(site_check, digits = 2,
   `K1p2p = CLnrcmsi/Vc`, using the central rather than the peripheral volume, in
   contrast to the neighbouring `K1p1c = Q1/Vp`. This is transcribed verbatim
   because it is what generated the published figures.
-* **`_trimmed.md` lost every equation.** The preprocessed markdown companion of
+* **The extracted text lost every equation.** The markdown text extracted from
   this paper contains 14 `formula-not-decoded` markers and no equations at all.
   All 18 equations were recovered from the publisher's rendered equation images
   in the EuropePMC `supplementaryFiles` payload and cross-checked against the

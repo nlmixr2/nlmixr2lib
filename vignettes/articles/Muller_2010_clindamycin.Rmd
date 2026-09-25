@@ -604,10 +604,10 @@ knitr::kable(
   ADVAN11 subroutine and FOCE-I estimation. The packaged model is a
   structural / parameter transcription only; no re-estimation has been
   performed.
-- **Errata not searched externally.** The skill's pre-flight checklist
+- **Errata not searched externally.** The package's validation checklist
   prescribes an erratum search on the publisher landing page; for this 2010
-  article the external search was not performed during extraction (the
-  in-task WebSearch permission was not granted at extraction time). The
+  article the external search was not performed during extraction (web
+  search was not available at extraction time). The
   PMC-XML / PDF on disk shows no notice of corrections. If a subsequent
   erratum revises a Table 3 estimate, the packaged values should be
   refreshed accordingly.

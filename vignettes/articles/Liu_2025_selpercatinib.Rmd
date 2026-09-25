@@ -441,7 +441,7 @@ peds_exposure |>
 ```{r figure-4-gate}
 # The paper's conclusion, as an assertion. Both sides are simulated cohorts
 # whose spread is driven by which subjects were drawn, so the gates are on the
-# CENTRE and on robust quantiles -- never on the extremes (see CLAUDE.md).
+# CENTRE and on robust quantiles -- never on the extremes.
 rec <- dplyr::filter(peds_exposure, regimen == "Recommended (Table 3)")
 flat <- dplyr::filter(peds_exposure, regimen == "Adapted flat dosing")
 

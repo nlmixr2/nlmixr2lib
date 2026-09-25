@@ -310,19 +310,20 @@ fig2 |>
   No PKNCA validation is performed (there is no drug NCA to compute); the
   mechanistic checks above replace it, per the endogenous/mechanistic
   validation strategy.
-* **File naming.** The dispatch metadata listed the drug as "Antimicrobial
-  Agents and Chemo", which is the journal name (Antimicrobial Agents and
-  Chemotherapy), not a drug. The paper unambiguously models imipenem combined
-  with tobramycin or amikacin, so the five model files use the corresponding
-  drug + isolate suffix.
-* **Five files, one paper.** Per the replicate-author-structure policy, one
-  vignette walks the paper as a whole and loads each of the five `modellib()`
-  entries at the appropriate point. The authors did a single per-strain joint
-  fit covering all IPM, AGS, and IPM + AGS data within that strain; we expose
-  five fully-specified files because most parameters that differ between TOB
-  and AMK within a strain (KC50,AGS, IC50,OM,AGS, Log MUT,AGS, Log CFU0) are
-  drug-specific while the structural shared subset is duplicated. The
-  parameter snapshot table makes the shared / drug-specific split explicit.
+* **File naming.** The bibliographic metadata these models were built from
+  listed the drug as "Antimicrobial Agents and Chemo", which is the journal
+  name (Antimicrobial Agents and Chemotherapy), not a drug. The paper
+  unambiguously models imipenem combined with tobramycin or amikacin, so the
+  five model files use the corresponding drug + isolate suffix.
+* **Five files, one paper.** Following the package's convention of
+  replicating the authors' model structure, one vignette walks the paper as a
+  whole and loads each of the five `modellib()` entries at the appropriate
+  point. The authors did a single per-strain joint fit covering all IPM, AGS,
+  and IPM + AGS data within that strain; we expose five fully-specified files
+  because most parameters that differ between TOB and AMK within a strain
+  (KC50,AGS, IC50,OM,AGS, Log MUT,AGS, Log CFU0) are drug-specific while the
+  structural shared subset is duplicated. The parameter snapshot table makes
+  the shared / drug-specific split explicit.
 * **Signal-molecule ODE form.** Methods Eq 2 defines the inhibition term
   `Inh_k12 = Imax,sig12 * Csig / (Csig + IC50,sig)` but the main paper does
   **not** give the `Csig` ODE; it cites Bulitta 2010 (ref 61), which is not

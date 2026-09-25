@@ -288,8 +288,8 @@ Cmax up to ~ 3500 ng/mL in Figure 1).
 
 # Assumptions and deviations
 
-- **Drug-name correction.** The dispatched task metadata listed the
-  drug as "Antimicrobial Agents and Chemo" (the journal title); the
+- **Drug-name correction.** The input metadata for this extraction listed
+  the drug as "Antimicrobial Agents and Chemo" (the journal title); the
   on-disk paper is unambiguously a population PK analysis of
   **lamivudine** in HIV-1-infected adults. The model file and vignette
   are named `Moore_1999_lamivudine.R` / `.Rmd` accordingly.

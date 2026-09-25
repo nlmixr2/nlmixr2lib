@@ -382,7 +382,7 @@ published 1271 nmol*h/L within rounding.
 * **Missing-race encoding.** Brown 2017 Table 1 reports a Missing race
   category for 11.2 percent of subjects. The packaged model treats
   these subjects as the Caucasian reference (every `RACE_*` indicator
-  set to 0). Operators reproducing the original NONMEM analysis with
+  set to 0). Analysts reproducing the original NONMEM analysis with
   the upstream dataset may need to handle missing race differently
   (e.g., imputation against the country distribution).
 * **Reference body weight and albumin.** Brown 2017 Methods does not

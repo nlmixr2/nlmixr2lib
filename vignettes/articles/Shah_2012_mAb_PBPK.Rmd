@@ -324,7 +324,7 @@ than the longer-lived monkey and rat data).
   estimation use, IIV blocks could be added to `lclup`, `lkdeg`, etc.
   guided by the Table 6 CV% values (CV%=3.48 on `clup`, 15.7 on
   `kdeg`, 11.1 on `fcrn`, > 50 on `clnlf`).
-* **Compartment naming deviation from `naming-conventions.md`.** The
+* **Compartment naming deviation from `inst/references/compartment-names.md`.** The
   PBPK structure has 93 compartments (15 anatomical tissues x
   {vascular plasma, vascular blood cells, endosomal unbound mAb,
   endosomal FcRn-bound mAb, endosomal free FcRn, interstitial} plus

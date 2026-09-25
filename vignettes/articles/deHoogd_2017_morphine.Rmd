@@ -398,7 +398,7 @@ are "approximately 5x" and "approximately 3x" respectively (paper Section 3.3).
 - **Bootstrap parameter values for V5M exponent (`L`).** The Final-model
   column of Table 2 reports `L = 0.483` with RSE 48%; the bootstrap point
   estimate is `L = 0.453`. The model file uses the Final-model value
-  (`e_wt_vp2 <- 0.483`) per the skill's "values are final estimates, not
+  (`e_wt_vp2 <- 0.483`) per the package's "values are final estimates, not
   initial estimates" rule.
 - **M (Ktr exponent) bootstrap CI.** The Final-model column of Table 2 reports
   `M = -0.701` (RSE 30%); the bootstrap row in the source PDF prints

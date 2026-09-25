@@ -228,7 +228,7 @@ Two rows are starred above:
 - **Group 1 Tmax (-28.6 percent).** Simulated Tmax is 0.5 h vs the paper's 0.7 h. This is a single 15-min observation-grid offset (our sampling at 0.25 h vs the paper's reported mean of 0.7 h), not a kinetic disagreement; the SD of 0.4 h in Padari 2012 Table 2 spans both values.
 - **Group 2 Cmin (+43 percent).** The paper's Cmin SD of 6.1 mg/L (mean 7.2) is similar in magnitude to the mean, so the simulated typical-individual Cmin of 10.3 mg/L falls within one SD of the reported group mean. Because IIV is fixed at 0 in the packaged model (Padari 2012 does not publish OMEGA), the simulated cohort spread comes only from the WT / PMA covariate distribution and cannot reproduce the per-subject scatter that drives the wide Cmin SD.
 
-Per the skill conventions: do not tune parameters to match Cmin or Tmax. The half-life is the load-bearing comparison and it agrees.
+Per the package's conventions: do not tune parameters to match Cmin or Tmax. The half-life is the load-bearing comparison and it agrees.
 
 # Assumptions and deviations
 

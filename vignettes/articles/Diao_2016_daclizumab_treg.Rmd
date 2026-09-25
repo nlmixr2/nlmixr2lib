@@ -280,7 +280,7 @@ knitr::kable(cmp, caption = "Treg reduction / recovery checkpoints.")
 # Errata
 
 Several non-substantive PDF text-extraction artifacts (operators
-rendered as `/C0`, etc.) appear in the trimmed source; they are not
+rendered as `/C0`, etc.) appear in the extracted text; they are not
 paper errata. Two model-relevant ambiguities are documented:
 
 - **Hill coefficient point estimate without precision indicator.**

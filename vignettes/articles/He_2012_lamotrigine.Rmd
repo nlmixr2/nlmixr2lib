@@ -451,7 +451,7 @@ knitr::kable(
   disk for this extraction. A search of PubMed and the Nature
   (Acta Pharmacologica Sinica is now published by Nature Springer)
   corrections feed for `"He" + "lamotrigine" + 2012 + erratum`
-  returned no hits; operators should reconfirm against the journal's
+  returned no hits; the maintainers should reconfirm against the journal's
   corrections listing if a re-extraction is undertaken.
 - **Race / ethnicity.** The study cohort was 100% Chinese paediatric
   patients with epilepsy, recruited from a single Beijing centre.

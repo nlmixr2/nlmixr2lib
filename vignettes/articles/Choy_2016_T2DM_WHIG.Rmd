@@ -374,7 +374,7 @@ ggplot(data.frame(dwgt = dwgt_grid, IS_rel = is_rel),
 
 # Assumptions and deviations
 
-* **No NCA / PKNCA validation.** The WHIG model has no PK exposure, no dosing, and no concentration-time profile to integrate. The validation strategy follows `references/endogenous-validation.md`: steady-state check, mass-balance / flux check, and dimensional analysis.
+* **No NCA / PKNCA validation.** The WHIG model has no PK exposure, no dosing, and no concentration-time profile to integrate. The validation strategy follows the endogenous-model pattern: steady-state check, mass-balance / flux check, and dimensional analysis.
 
 * **Supplementary Appendix S2 not on disk; diagonal OMEGA.** The variance-covariance correlation matrix (Choy 2016, p. 15 footnote a; described in Supplementary Appendix S2) is not available in the source directory. The two on-disk supplement PDFs (`16_Choy_2016_supp_S1.pdf`, `16_Choy_2016_supp_S2.pdf`) are duplicate copies of the main paper (both 9 pages, both report the title page text). The packaged model therefore uses a diagonal OMEGA structure. Simulation reproduces typical-value predictions exactly but cannot exactly reproduce the published 95% prediction-interval widths in Choy 2016 Figures 3 and 4 (which depend on the missing correlations -- the paper explicitly notes that the expanded variance-covariance matrix narrows the prediction-interval ribbons; see Discussion paragraph after Figure 6).
 

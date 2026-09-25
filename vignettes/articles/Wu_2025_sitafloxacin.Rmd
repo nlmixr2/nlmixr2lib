@@ -313,7 +313,7 @@ stopifnot(max_conc_before_lag == 0, min_conc_after_lag > 0)
 
 ## Falsifier: the peripheral compartment is actually solved
 
-`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the conversion opt-in in September 2026 (issue 1389), which rewrites a recognisably linear
+`rxSolve()` with `useLinCmt = TRUE` rewrites a recognisably linear
 system into closed form. On some two-compartment models written with
 micro-constants that rewrite silently drops the peripheral compartment and
 solves a one-compartment model instead. Total AUC is unaffected by that failure
