@@ -2189,6 +2189,27 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none.
 - **Example models:** `Shin_2014_sevoflurane.R`.
 
+### prob_acr20 (**canonical longitudinal ACR20 responder probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a rheumatoid arthritis patient meets the American College of Rheumatology 20% improvement criteria (ACR20) at a given visit, in a longitudinal (time-dependent) logistic exposure-response model. Unlike the landmark `prob_<endpoint>` outputs it varies with study day and, in Markov form, with the previous visit's response.
+- **Source aliases:** none (Chan 2020 Model S2 selects the threshold with `TYPE` = 10 / 14 / 18 and outputs `P`).
+- **Example models:** `Chan_2020_fenebrutinib_acr.R` (fenebrutinib; ACR20, ACR50 and ACR70 fitted jointly with a shared placebo Emax time course, a shared AUC-driven Emax drug effect and a Markov term on the previous response).
+- **Notes:** A probability, not a measured score; carries a placeholder additive residual because the source likelihood is Bernoulli. Distinct from the cumulative-probit ACR outputs of `Williams_2016_rituximab_acr.R` and from arm-level MBMA responder percentages.
+
+### prob_acr50 (**canonical longitudinal ACR50 responder probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a rheumatoid arthritis patient meets the American College of Rheumatology 50% improvement criteria (ACR50) at a given visit, in a longitudinal (time-dependent) logistic exposure-response model. Unlike the landmark `prob_<endpoint>` outputs it varies with study day and, in Markov form, with the previous visit's response.
+- **Source aliases:** none (Chan 2020 Model S2 selects the threshold with `TYPE` = 10 / 14 / 18 and outputs `P`).
+- **Example models:** `Chan_2020_fenebrutinib_acr.R` (fenebrutinib; ACR20, ACR50 and ACR70 fitted jointly with a shared placebo Emax time course, a shared AUC-driven Emax drug effect and a Markov term on the previous response).
+- **Notes:** A probability, not a measured score; carries a placeholder additive residual because the source likelihood is Bernoulli. Distinct from the cumulative-probit ACR outputs of `Williams_2016_rituximab_acr.R` and from arm-level MBMA responder percentages.
+
+### prob_acr70 (**canonical longitudinal ACR70 responder probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a rheumatoid arthritis patient meets the American College of Rheumatology 70% improvement criteria (ACR70) at a given visit, in a longitudinal (time-dependent) logistic exposure-response model. Unlike the landmark `prob_<endpoint>` outputs it varies with study day and, in Markov form, with the previous visit's response.
+- **Source aliases:** none (Chan 2020 Model S2 selects the threshold with `TYPE` = 10 / 14 / 18 and outputs `P`).
+- **Example models:** `Chan_2020_fenebrutinib_acr.R` (fenebrutinib; ACR20, ACR50 and ACR70 fitted jointly with a shared placebo Emax time course, a shared AUC-driven Emax drug effect and a Markov term on the previous response).
+- **Notes:** A probability, not a measured score; carries a placeholder additive residual because the source likelihood is Bernoulli. Distinct from the cumulative-probit ACR outputs of `Williams_2016_rituximab_acr.R` and from arm-level MBMA responder percentages.
+
 ### prob_orr_central (**canonical central-assessment overall-response probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an overall response (complete response, including uncertified CR, or partial response) as adjudicated by **independent central review**, in a static landmark exposure-response logistic model. The central-vs-investigator distinction is load-bearing and is why this is a separate canonical from `prob_orr_investigator`: the two adjudications are separate endpoints fit as separate models on different analysis sets, and central review is the regulatory-grade assessment.
