@@ -5244,6 +5244,8 @@ navbar:
         href: articles/Shen_2024_vancomycin.html
       - text: "Vancomycin (Shiau 2026)"
         href: articles/Shiau_2026_vancomycin.html
+      - text: "Vancomycin (Smit 2020)"
+        href: articles/Smit_2020_vancomycin.html
       - text: "Vancomycin (Staatz 2005)"
         href: articles/Staatz_2005_gentamicin_vancomycin.html
       - text: "Vancomycin (Stockmann 2015)"
@@ -7215,6 +7217,7 @@ articles:
   - articles/Singu_2024_gentamicin
   - articles/Sinha_2026_oxcarbazepine
   - articles/Sloan_2017_rifampicin
+  - articles/Smit_2020_vancomycin
   - articles/Smith_2017_clindamycin
   - articles/Smuszkiewicz_2017_dexmedetomidine
   - articles/Smythe_2012_rifampicin
