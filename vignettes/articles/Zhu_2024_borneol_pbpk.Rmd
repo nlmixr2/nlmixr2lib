@@ -354,7 +354,11 @@ stopifnot(max(abs(ps_cmp$`% diff`)) < 15)
 ```{r pknca}
 nca_input <- sims |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::mutate(id = arm)
+  dplyr::mutate(id = arm) |>
+  # Per arm, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 dose_input <- arms |>
   dplyr::mutate(id = paste(species, dose_label), time = 0) |>
@@ -405,7 +409,8 @@ half_life_windowed <- sims |>
   dplyr::group_by(species, dose_label) |>
   dplyr::group_modify(function(d, k) {
     sp <- k$species
-    w <- d[d$time >= hl_start[[sp]] & d$time <= hl_end[[sp]] & d$Cc > 0, ]
+    # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+    w <- d[d$time >= hl_start[[sp]] & d$time <= hl_end[[sp]] & d$Cc >= 1e-6 * max(d$Cc, na.rm = TRUE), ]
     data.frame(PPTESTCD = "half.life",
                PPORRES  = unname(log(2) / -coef(lm(log(w$Cc) ~ w$time))[2]))
   }) |>

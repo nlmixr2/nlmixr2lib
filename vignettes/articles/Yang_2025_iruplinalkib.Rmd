@@ -203,7 +203,9 @@ lam <- local({
 thalf_closed <- log(2) / lam
 
 sd_prof <- sim_typ |>
-  dplyr::filter(treatment == "180 mg single dose", time >= 168, time <= 336, Cc > 0)
+  dplyr::filter(treatment == "180 mg single dose") |>
+  # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  dplyr::filter(time >= 168, time <= 336, Cc >= 1e-6 * max(Cc))
 thalf_sim <- log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = sd_prof))[["time"]]
 
 c(closed_form = thalf_closed, simulated = thalf_sim)
@@ -507,7 +509,13 @@ single_arms <- c("180 mg single dose", "120 mg single dose, fasted",
                  "120 mg single dose, fed")
 
 conc_sd <- PKNCA::PKNCAconc(
-  dplyr::filter(sim_nca, treatment %in% single_arms), Cc ~ time | treatment + id
+  dplyr::filter(sim_nca, treatment %in% single_arms) |>
+    # Per subject, drop the tail after the last Cc >= 1e-6 * Cmax (time zero and the fed arm's
+    # pre-lag zeros stay): below that the ODE integrator has no relative accuracy left.
+    dplyr::group_by(id, treatment) |>
+    dplyr::filter(time <= max(time[Cc >= 1e-6 * max(Cc)])) |>
+    dplyr::ungroup(),
+  Cc ~ time | treatment + id
 )
 dose_sd <- PKNCA::PKNCAdose(
   events_typ |>

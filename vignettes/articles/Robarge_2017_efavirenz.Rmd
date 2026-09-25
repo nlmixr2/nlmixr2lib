@@ -296,7 +296,11 @@ comparability with Robarge 2017 Figure 2.
 ```{r pknca}
 sim_nca <- sim |>
   filter(!is.na(Cc_nmolL)) |>
-  transmute(id, time, Cc = Cc_nmolL, treatment = cyp2b6)
+  transmute(id, time, Cc = Cc_nmolL, treatment = cyp2b6) |>
+  # Per subject, past the peak keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  group_by(treatment, id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup()
 
 # One dose record per subject (the depot / central pair represents the same
 # administered dose split across two absorption routes; PKNCA needs the

@@ -216,10 +216,10 @@ sim_pq_typ <- rxode2::rxSolve(
 # observation grid runs to 150 days so that piperaquine's ~17-day terminal
 # phase is captured, but amodiaquine (t1/2 ~26 h) has decayed to numerical
 # noise long before then. Regressing over the full tail would fit that noise
-# and return a badly inflated half-life. The relative floor drops points that
-# have underflowed toward zero for the same reason.
+# and return a badly inflated half-life. The relative floor drops points below
+# 1e-6 of the peak, where the integrator has no relative accuracy left.
 terminal_summary <- function(time, conc, tail_from, tail_to = Inf) {
-  keep <- time >= tail_from & time <= tail_to & conc > max(conc) * 1e-8
+  keep <- time >= tail_from & time <= tail_to & conc >= 1e-6 * max(conc)
   stopifnot(sum(keep) >= 5)
   lz <- -stats::coef(stats::lm(log(conc[keep]) ~ time[keep]))[[2]]
   auc_obs <- sum(diff(time) * (utils::head(conc, -1) + utils::tail(conc, -1)) / 2)
@@ -496,8 +496,9 @@ sim_pq <- rxode2::rxSolve(mod_pq, ev_pq, keep = c("WT", "PARA")) |>
 
 ```{r pknca-build}
 # One long concentration frame, with the analyte as the treatment grouping
-# variable so PKNCA rolls its summaries up per analyte. The filter is
-# !is.na(Cc) only, so the time-zero record is retained.
+# variable so PKNCA rolls its summaries up per analyte. The filters drop only
+# missing values and the integrator noise floor, so the time-zero record is
+# retained.
 #
 # Amodiaquine gets its own 240 h window. The shared grid runs to 150 days so
 # that piperaquine's ~17-day terminal phase is characterised, but amodiaquine
@@ -517,7 +518,11 @@ conc_all <- dplyr::bind_rows(
   sim_aq |> dplyr::transmute(id, time, Cc = Cc_deaq, treatment = "Desethylamodiaquine"),
   sim_pq |> dplyr::transmute(id, time, Cc = Cc,      treatment = "Piperaquine")
 ) |>
-  dplyr::filter(!is.na(Cc))
+  dplyr::filter(!is.na(Cc)) |>
+  # Per subject and analyte, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 stopifnot(sum(conc_all$time == 0) == 3 * n_sub)   # time-zero record present
 

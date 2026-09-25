@@ -226,9 +226,10 @@ ctrough_solved <- function(BW, SEXF, mgkgd, sr) {
   d <- add_cov(ev, WT = BW, SEXF = SEXF, FORM_VPA_SR = as.numeric(sr))
   # Tight integrator and ss = 1 steady-state tolerances: this solve is compared
   # to its closed form below, so the ODE error must sit well under the bound.
+  # steady-state searches for long-half-life subjects exceed the default step budget
   r <- rxode2::rxSolve(mod, d, returnType = "data.frame", omega = NA,
                        rtol = 1e-10, atol = 1e-12,
-                       ssRtol = 1e-10, ssAtol = 1e-12)
+                       ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6)
   r$Cc[!is.na(r$Cc)][1]
 }
 
@@ -358,7 +359,8 @@ sim_cell <- function(BW, SEXF, mgkgd, sr) {
   d$WT <- BW
   d$SEXF <- SEXF
   d$FORM_VPA_SR <- as.numeric(sr)
-  r <- rxode2::rxSolve(mod, d, returnType = "data.frame")
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  r <- rxode2::rxSolve(mod, d, returnType = "data.frame", maxsteps = 1e6)
   # `sim` carries the residual error; `Cc` is the individual prediction only.
   # A TDM trough is an observed concentration, so PTA uses `sim`.
   r$sim[!is.na(r$Cc)]
@@ -528,7 +530,9 @@ profile <- function(mgkgd, sr, label) {
   ev <- rxode2::et(amt = 30 * mgkgd / 2, ii = tau, ss = 1, cmt = "depot") |>
     rxode2::et(seq(0, tau, by = 0.25), cmt = "central")
   d <- add_cov(ev, WT = 30, SEXF = 0, FORM_VPA_SR = as.numeric(sr))
-  rxode2::rxSolve(mod, d, returnType = "data.frame", omega = NA) |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  rxode2::rxSolve(mod, d, returnType = "data.frame", omega = NA,
+                  maxsteps = 1e6) |>
     filter(!is.na(Cc)) |>
     transmute(time, Cc, Regimen = label)
 }
@@ -608,8 +612,9 @@ events <- as.data.frame(ev_ss) |>
   mutate(amt = ifelse(evid == 1, WT * mgkgd / 2, amt)) |>
   arrange(id, time, desc(evid))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim <- rxode2::rxSolve(mod, events, returnType = "data.frame",
-                       keep = c("arm"))
+                       keep = c("arm"), maxsteps = 1e6)
 
 obs <- sim |>
   filter(!is.na(Cc)) |>

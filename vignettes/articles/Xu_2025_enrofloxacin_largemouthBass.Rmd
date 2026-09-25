@@ -332,7 +332,11 @@ nca_input <- dplyr::bind_rows(
                   returnType = "data.frame") |>
     dplyr::transmute(id = 2L, arm = "IV 10 mg/kg", time, Cc)
 ) |>
-  dplyr::filter(!is.na(Cc))
+  dplyr::filter(!is.na(Cc)) |>
+  # Per profile, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id, arm) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Guarantee a time = 0 record per (id, arm). The oral solve already carries
 # Cc = 0 at t = 0 and the IV solve carries the bolus C0, so this is defensive

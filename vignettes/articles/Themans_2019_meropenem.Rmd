@@ -155,7 +155,9 @@ mod <- rxode2::rxode2(readModelDb("Themans_2019_meropenem"))
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("WT", "CRCL")
+  keep   = c("WT", "CRCL"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
@@ -167,7 +169,9 @@ random effects:
 
 ```{r simulate-typical}
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = c("WT", "CRCL")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = c("WT", "CRCL"),
+                           maxsteps = 1e6) |>
   as.data.frame()
 ```
 
@@ -196,7 +200,9 @@ ref_events <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(id, time, evid)
 
-ref_sim <- rxode2::rxSolve(mod_typ, events = ref_events) |> as.data.frame()
+# steady-state searches for long-half-life subjects exceed the default step budget
+ref_sim <- rxode2::rxSolve(mod_typ, events = ref_events, maxsteps = 1e6) |>
+  as.data.frame()
 
 ref_long <- ref_sim |>
   dplyr::select(time, Cc, Celf) |>
@@ -257,10 +263,12 @@ selfcheck_events <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(id, time, evid)
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 selfcheck_sim <- rxode2::rxSolve(mod_typ,
                                   events = selfcheck_events |>
                                     dplyr::select(-DV_observed),
-                                  keep = c("WT", "CRCL")) |>
+                                  keep = c("WT", "CRCL"),
+                                  maxsteps = 1e6) |>
   as.data.frame()
 
 # Pair each observed DV with the typical-value Celf at the same id/time.

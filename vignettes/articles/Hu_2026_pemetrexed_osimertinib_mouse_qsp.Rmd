@@ -358,6 +358,10 @@ pk_osi <- as.data.frame(rxode2::rxSolve(
 
 sim_nca <- bind_rows(pk_pem, pk_osi) |>
   filter(!is.na(conc)) |>
+  # Per subject, keep conc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  group_by(treatment, id) |>
+  filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>
+  ungroup() |>
   select(id, time, conc, treatment)
 
 # Guarantee a time-zero row per (id, treatment); pre-dose concentration is 0
