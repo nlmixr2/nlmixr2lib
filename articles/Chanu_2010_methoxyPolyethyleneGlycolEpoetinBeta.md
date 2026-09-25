@@ -245,7 +245,7 @@ iv <- solve_typ(make_events(1, dose = 100, route = "iv", tau = 1e6, n_dose = 1,
                             obs = t_grid, covs = typical_covs()))
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
 #> 
-#> ] 0:00:02
+#> ] 0:00:01
 iv_closed <- 100 / theta[["vc"]] * exp(-kel * t_grid)
 
 # SC: C(t) = F * D * ka / (V * (ka - kel)) * (exp(-kel t) - exp(-ka t))

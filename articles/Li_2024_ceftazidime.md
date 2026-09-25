@@ -615,7 +615,7 @@ stopifnot(!anyDuplicated(unique(pta_events[, c("id", "time", "evid")])))
 pta_sim <- rxode2::rxSolve(mod, events = pta_events, keep = c("cell")) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:03
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
 ```
 
 `fT>MIC` is computed two ways. The closed form uses each simulated

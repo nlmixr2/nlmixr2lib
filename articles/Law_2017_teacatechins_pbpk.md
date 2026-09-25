@@ -131,12 +131,12 @@ knitr::kable(
 
 | Model | Back-transformed ini() values |
 |:---|:---|
-| egcg_rat | lka=0.003; lfdepot=0.038; ltlag=10; lrt_bile=3; lkreab=0.67; lkfec=0.13; lcl_nonren=0.00913; lcl_renal=0.00036; bpr=0.91; lkp_adipose=0.2; lkp_bone=1.62; lkp_brain=3.15; lkp_gut=2.04; lkp_heart=1.27; lkp_kidney=1.43; lkp_liver=1.5; lkp_lung=1.7; lkp_muscle=1.02; lkp_skin=1.79; lkp_spleen=0.98; lkp_other=1; propSd=0.349 |
-| ecg_rat | lka=0.002; lfdepot=0.06; ltlag=10; lrt_bile=0.3; lkreab=0.41; lkfec=0.13; lcl_nonren=0.0126; lcl_renal=0.0003; bpr=0.99; lkp_adipose=0.75; lkp_bone=4; lkp_brain=7.84; lkp_gut=4.82; lkp_heart=2.65; lkp_kidney=3.1; lkp_liver=3.37; lkp_lung=3.83; lkp_muscle=1.97; lkp_skin=4.23; lkp_spleen=1.85; lkp_other=1; propSd=0.339 |
-| ec_rat | lka=0.002; lfdepot=0.13; ltlag=5; lrt_bile=2; lkreab=13.4; lkfec=0.13; lcl_nonren=0.0087; lcl_renal=0.0045; bpr=0.88; lkp_adipose=0.08; lkp_bone=0.39; lkp_brain=0.73; lkp_gut=0.63; lkp_heart=0.62; lkp_kidney=0.63; lkp_liver=0.59; lkp_lung=0.65; lkp_muscle=0.59; lkp_skin=0.55; lkp_spleen=0.63; lkp_other=1; propSd=0.339 |
-| egcg_human | lka=0.85; lfdepot=0.12; ltlag=0.5; lrt_bile=0.03; lkreab=0.18; lkfec=25.6; lcl_nonren=2.7; lcl_renal=0.0023; bpr=0.91; lkp_adipose=0.15; lkp_bone=3.22; lkp_brain=3.12; lkp_gut=2.49; lkp_heart=1; lkp_kidney=1.38; lkp_liver=2.05; lkp_lung=0.57; lkp_muscle=1.38; lkp_skin=1.6; lkp_spleen=1.4; lkp_other=1; propSd=0.132 |
-| egc_human | lka=2.19; lfdepot=0.013; ltlag=0.4; lrt_bile=0.03; lkreab=0.18; lkfec=25.6; lcl_nonren=0.97; lcl_renal=0.34; bpr=0.88; lkp_adipose=0.01; lkp_bone=0.48; lkp_brain=0.69; lkp_gut=0.53; lkp_heart=0.51; lkp_kidney=0.56; lkp_liver=0.59; lkp_lung=0.51; lkp_muscle=0.54; lkp_skin=0.53; lkp_spleen=0.56; lkp_other=1; propSd=0.296 |
-| ec_human | lka=1.86; lfdepot=0.01; ltlag=0.4; lrt_bile=0.03; lkreab=0.18; lkfec=25.6; lcl_nonren=1.03; lcl_renal=0.56; bpr=0.88; lkp_adipose=0.01; lkp_bone=0.41; lkp_brain=0.62; lkp_gut=0.55; lkp_heart=0.5; lkp_kidney=0.53; lkp_liver=0.55; lkp_lung=0.51; lkp_muscle=0.52; lkp_skin=0.5; lkp_spleen=0.54; lkp_other=1; propSd=0.296 |
+| egcg_rat | lka=0.003; lfdepot=0.038; ltlag=10; lmtt_bile=3; lkreab=0.67; lkfec=0.13; lcl_nonren=0.00913; lcl_renal=0.00036; bpr=0.91; lkp_adipose=0.2; lkp_bone=1.62; lkp_brain=3.15; lkp_gut=2.04; lkp_heart=1.27; lkp_kidney=1.43; lkp_liver=1.5; lkp_lung=1.7; lkp_muscle=1.02; lkp_skin=1.79; lkp_spleen=0.98; lkp_other=1; propSd=0.349 |
+| ecg_rat | lka=0.002; lfdepot=0.06; ltlag=10; lmtt_bile=0.3; lkreab=0.41; lkfec=0.13; lcl_nonren=0.0126; lcl_renal=0.0003; bpr=0.99; lkp_adipose=0.75; lkp_bone=4; lkp_brain=7.84; lkp_gut=4.82; lkp_heart=2.65; lkp_kidney=3.1; lkp_liver=3.37; lkp_lung=3.83; lkp_muscle=1.97; lkp_skin=4.23; lkp_spleen=1.85; lkp_other=1; propSd=0.339 |
+| ec_rat | lka=0.002; lfdepot=0.13; ltlag=5; lmtt_bile=2; lkreab=13.4; lkfec=0.13; lcl_nonren=0.0087; lcl_renal=0.0045; bpr=0.88; lkp_adipose=0.08; lkp_bone=0.39; lkp_brain=0.73; lkp_gut=0.63; lkp_heart=0.62; lkp_kidney=0.63; lkp_liver=0.59; lkp_lung=0.65; lkp_muscle=0.59; lkp_skin=0.55; lkp_spleen=0.63; lkp_other=1; propSd=0.339 |
+| egcg_human | lka=0.85; lfdepot=0.12; ltlag=0.5; lmtt_bile=0.03; lkreab=0.18; lkfec=25.6; lcl_nonren=2.7; lcl_renal=0.0023; bpr=0.91; lkp_adipose=0.15; lkp_bone=3.22; lkp_brain=3.12; lkp_gut=2.49; lkp_heart=1; lkp_kidney=1.38; lkp_liver=2.05; lkp_lung=0.57; lkp_muscle=1.38; lkp_skin=1.6; lkp_spleen=1.4; lkp_other=1; propSd=0.132 |
+| egc_human | lka=2.19; lfdepot=0.013; ltlag=0.4; lmtt_bile=0.03; lkreab=0.18; lkfec=25.6; lcl_nonren=0.97; lcl_renal=0.34; bpr=0.88; lkp_adipose=0.01; lkp_bone=0.48; lkp_brain=0.69; lkp_gut=0.53; lkp_heart=0.51; lkp_kidney=0.56; lkp_liver=0.59; lkp_lung=0.51; lkp_muscle=0.54; lkp_skin=0.53; lkp_spleen=0.56; lkp_other=1; propSd=0.296 |
+| ec_human | lka=1.86; lfdepot=0.01; ltlag=0.4; lmtt_bile=0.03; lkreab=0.18; lkfec=25.6; lcl_nonren=1.03; lcl_renal=0.56; bpr=0.88; lkp_adipose=0.01; lkp_bone=0.41; lkp_brain=0.62; lkp_gut=0.55; lkp_heart=0.5; lkp_kidney=0.53; lkp_liver=0.55; lkp_lung=0.51; lkp_muscle=0.52; lkp_skin=0.5; lkp_spleen=0.54; lkp_other=1; propSd=0.296 |
 
 Every ini() entry of every packaged model, back-transformed off the log
 scale. {.table}
@@ -947,9 +947,14 @@ ug/mL, times in minutes. {.table}
   equivalent *amount* states `bile_transit_j = Rt * R_j`, which turns eq
   A5 into an ordinary three-compartment transit chain with mean
   residence time `Rt` per sub-compartment. The flux into the gut lumen
-  is `bile_transit3 / rt_bile`. These three states are declared
-  `paper_specific_compartments` because no canonical nlmixr2lib
-  compartment family covers a biliary transit chain.
+  is `bile_transit3 / mtt_bile`, and the total bile-duct delay is
+  `3 * mtt_bile`. `bile_transit<n>` is a canonical nlmixr2lib chain
+  family, ratified with these models by maintainer ruling 2026-09-21;
+  the paired parameter `lmtt_bile` was ratified in the same ruling under
+  the existing `lmtt_<context>` family, with the caveat recorded in
+  `inst/references/parameter-names.md` that it is a
+  **per-sub-compartment** residence time rather than the chain’s total
+  mean transit time.
 - **Observation.** `Cc` is the mixed-venous *plasma* concentration of
   the free (unconjugated) catechin, `C_venous / BLPLR` (eq A10). It is
   not a total (free plus conjugate) concentration; Law et al. discuss at

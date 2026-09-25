@@ -207,7 +207,7 @@ mod_expo
 #>     d/dt(tumor_vol) <- tumor_vol * (p - drugEffect)
 #>   })
 #> }
-#> <environment: 0x56451abb1af8>
+#> <environment: 0x55e2c1864b50>
 ```
 
 Helper to simulate a single arm. Observation records are placed on the

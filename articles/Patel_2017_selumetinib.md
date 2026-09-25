@@ -9,6 +9,9 @@
   gliomas. CPT Pharmacometrics Syst Pharmacol. 2017;6(5):305-314.
   <doi:10.1002/psp4.12175>
 - Article: <https://doi.org/10.1002/psp4.12175>
+- Corrigendum: CPT Pharmacometrics Syst Pharmacol. 2017;6(10):719.
+  <doi:10.1002/psp4.12254> (<https://doi.org/10.1002/psp4.12254>).
+  Applied to this extraction – see Assumptions and deviations.
 
 The packaged model is `Patel_2017_selumetinib`, a sequential
 two-compartment population PK model for selumetinib (AZD6244 /
@@ -467,6 +470,23 @@ steady state), and with using approximate pooled-cohort median
 covariates for the reference simulation.
 
 ## Assumptions and deviations
+
+- **Published corrigendum applied (<doi:10.1002/psp4.12254>).** The 2017
+  corrigendum to Patel 2017 makes two corrections, neither of which
+  changes a numeric value used here. (1) Patel 2017 Table 2 as printed
+  labels theta1 (duration of zero-order drug input in the gut, D1) and
+  theta9 (linear coefficient for that duration under fed condition) with
+  the unit `nmol/hr`; the corrigendum corrects both to `hr`. This model
+  file encodes `ld1 = log(0.622)` and `e_fed_d1 = 4.09` as **hours**,
+  which the corrigendum confirms. (2) On page 307, in the paragraph
+  following the residual-error equation, the proportional and additive
+  residual terms are printed as Roman `E` and should be read as the
+  Greek `epsilon` used in the equation itself; this is typographic and
+  does not alter the combined proportional-plus-additive error structure
+  encoded as `Cc ~ prop(propSd) + add(addSd)`. Note that the open-access
+  archived copy of the parent article is the **uncorrected** version, so
+  a reader working from the PDF alone will still see `nmol/hr` in Table
+  2.
 
 - **Pooled-cohort normalization constants** are approximated from Patel
   2017 Table 1 study-level medians: BSA = 1.66 m^2, AGE = 53 years, ALT

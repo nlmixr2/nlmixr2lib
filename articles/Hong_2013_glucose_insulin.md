@@ -133,8 +133,16 @@ mod_hgc <- readModelDb("Hong_2013_glucose_insulin_HGC")
 mod_mtt <- readModelDb("Hong_2013_glucose_insulin_MTT")
 mod_hgc_typ <- rxode2::zeroRe(mod_hgc)
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_clg_1, etaiov_clg_2, etaiov_vg_1, etaiov_vg_2
+#> as a work-around try putting the mu-referenced expression on a simple line
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_clg_1, etaiov_clg_2, etaiov_vg_1, etaiov_vg_2
+#> as a work-around try putting the mu-referenced expression on a simple line
 mod_mtt_typ <- rxode2::zeroRe(mod_mtt)
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_clg_1, etaiov_clg_2, etaiov_clg_3, etaiov_clg_4, etaiov_vg_1, etaiov_vg_2, etaiov_vg_3, etaiov_vg_4
+#> as a work-around try putting the mu-referenced expression on a simple line
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_clg_1, etaiov_clg_2, etaiov_clg_3, etaiov_clg_4, etaiov_vg_1, etaiov_vg_2, etaiov_vg_3, etaiov_vg_4
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ## Approach-to-baseline check (drug-free, no perturbation)
@@ -162,8 +170,9 @@ challenge – and is documented in Assumptions and deviations below.
 ss_events <- rxode2::et(seq(0, 1000, by = 10), cmt = "Gc")
 ss_events$FPG    <- 1300
 ss_events$INS_BL <- 13
+ss_events$OCC    <- 1        # occasion index for the IOV terms; see Assumptions
 ss_hgc <- rxode2::rxSolve(mod_hgc_typ, events = ss_events, returnType = "tibble")
-#> ℹ omega/sigma items treated as zero: 'etalclg', 'etalvg', 'etalamplitude', 'etalcli', 'etalvi', 'etalkie'
+#> ℹ omega/sigma items treated as zero: 'etalclg', 'etalvg', 'etalamplitude', 'etalcli', 'etalvi', 'etalkie', 'etaiov_clg_1', 'etaiov_clg_2', 'etaiov_vg_1', 'etaiov_vg_2'
 cat("HGC Gc range:", round(range(ss_hgc$Gc), 3), "mg/L\n")
 #> HGC Gc range: 1298.194 1300 mg/L
 cat("HGC Ic range:", round(range(ss_hgc$Ic), 3), "mU/L\n")
@@ -179,7 +188,7 @@ stopifnot(abs(tail(ss_hgc$Ic, 1) - 13)   < 0.01)
 ``` r
 
 ss_mtt <- rxode2::rxSolve(mod_mtt_typ, events = ss_events, returnType = "tibble")
-#> ℹ omega/sigma items treated as zero: 'etalmtt', 'etalbio', 'etalclgi_mtt', 'etalemax', 'etaliprg'
+#> ℹ omega/sigma items treated as zero: 'etalmtt', 'etalbio', 'etalclgi_mtt', 'etalemax', 'etaliprg', 'etaiov_clg_1', 'etaiov_clg_2', 'etaiov_clg_3', 'etaiov_clg_4', 'etaiov_vg_1', 'etaiov_vg_2', 'etaiov_vg_3', 'etaiov_vg_4'
 cat("MTT Gc range:", round(range(ss_mtt$Gc), 6), "mg/L\n")
 #> MTT Gc range: 1300 1300 mg/L
 cat("MTT Ic range:", round(range(ss_mtt$Ic), 6), "mU/L\n")
@@ -224,9 +233,10 @@ hgc_events <- rxode2::et() |>
   rxode2::et(seq(0, 240, by = 2), cmt = "Gc")
 hgc_events$FPG    <- gcss
 hgc_events$INS_BL <- icss
+hgc_events$OCC    <- 1
 
 hgc_sim <- rxode2::rxSolve(mod_hgc_typ, events = hgc_events, returnType = "tibble")
-#> ℹ omega/sigma items treated as zero: 'etalclg', 'etalvg', 'etalamplitude', 'etalcli', 'etalvi', 'etalkie'
+#> ℹ omega/sigma items treated as zero: 'etalclg', 'etalvg', 'etalamplitude', 'etalcli', 'etalvi', 'etalkie', 'etaiov_clg_1', 'etaiov_clg_2', 'etaiov_vg_1', 'etaiov_vg_2'
 
 ggplot(hgc_sim, aes(time)) +
   geom_line(aes(y = Gc, colour = "Glucose (mg/L)"), linewidth = 1) +
@@ -279,9 +289,10 @@ mtt_events <- rxode2::et() |>
   rxode2::et(seq(0, 240, by = 2), cmt = "Gc")
 mtt_events$FPG    <- gcss
 mtt_events$INS_BL <- icss
+mtt_events$OCC    <- 1
 
 mtt_sim <- rxode2::rxSolve(mod_mtt_typ, events = mtt_events, returnType = "tibble")
-#> ℹ omega/sigma items treated as zero: 'etalmtt', 'etalbio', 'etalclgi_mtt', 'etalemax', 'etaliprg'
+#> ℹ omega/sigma items treated as zero: 'etalmtt', 'etalbio', 'etalclgi_mtt', 'etalemax', 'etaliprg', 'etaiov_clg_1', 'etaiov_clg_2', 'etaiov_clg_3', 'etaiov_clg_4', 'etaiov_vg_1', 'etaiov_vg_2', 'etaiov_vg_3', 'etaiov_vg_4'
 
 ggplot(mtt_sim, aes(time)) +
   geom_line(aes(y = Gc, colour = "Glucose (mg/L)"), linewidth = 1) +
@@ -333,7 +344,8 @@ n_sub <- 100L
 cohort_baseline <- tibble::tibble(
   id     = seq_len(n_sub),
   FPG    = runif(n_sub, min = 1100, max = 1800),   # mg/L  (= 110-180 mg/dL)
-  INS_BL = runif(n_sub, min = 6,    max = 25)      # mU/L
+  INS_BL = runif(n_sub, min = 6,    max = 25),     # mU/L
+  OCC    = 1L                                      # single occasion; see Assumptions
 )
 
 # Population-size simulation: replicate the single-subject event table
@@ -349,6 +361,8 @@ hgc_pop_events <- tidyr::crossing(cohort_baseline, hgc_one) |>
 hgc_pop_sim <- rxode2::rxSolve(mod_hgc, events = hgc_pop_events,
                                returnType = "tibble")
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_clg_1, etaiov_clg_2, etaiov_vg_1, etaiov_vg_2
+#> as a work-around try putting the mu-referenced expression on a simple line
 
 hgc_pop_summary <- hgc_pop_sim |>
   as.data.frame() |>
@@ -400,6 +414,8 @@ mtt_pop_events <- tidyr::crossing(cohort_baseline, mtt_one) |>
 mtt_pop_sim <- rxode2::rxSolve(mod_mtt, events = mtt_pop_events,
                                returnType = "tibble")
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_clg_1, etaiov_clg_2, etaiov_clg_3, etaiov_clg_4, etaiov_vg_1, etaiov_vg_2, etaiov_vg_3, etaiov_vg_4
+#> as a work-around try putting the mu-referenced expression on a simple line
 
 mtt_pop_summary <- mtt_pop_sim |>
   as.data.frame() |>
@@ -515,15 +531,20 @@ ggplot(mtt_pop_summary, aes(time)) +
   qualitative shape and the 10th / 50th / 90th percentile bands are
   preserved; downstream users seeking publication-quality VPCs should
   re-run with n = 1000.
-- **Inter-occasion variability (IOV) is reported but not encoded.** Hong
-  2013 Tables I and II report IOV on CLG (31.8% CV HGC, 65.7% CV MTT)
-  and VG (9.22% HGC, 19.5% MTT). These are not encoded structurally in
-  the model files because the rxode2 mu-reference parser does not accept
-  `theta + eta_iiv + eta_iov` on a single line, and the model-library
-  use case has no operational occasion column. This follows the Andrews
-  2017 tacrolimus and Brooks 2021 tacrolimus precedent. Downstream users
-  who want to simulate IOV can add an OCC indicator and a per-occasion
-  eta in their own rxode2 model.
+- **Inter-occasion variability (IOV) is encoded via occasion
+  indicators.** Hong 2013 Tables I and II report IOV on CLG (31.8% CV
+  HGC, 65.7% CV MTT) and VG (9.22% HGC, 19.5% MTT), and both model files
+  now encode it. The form is the occasion-indicator expansion used
+  throughout this library: one eta slot per occasion
+  (`etaiov_clg_<occ>`, `etaiov_vg_<occ>`) selected inside `model()` by
+  mutually exclusive `oc<n>` indicators built from the required `OCC`
+  column – two occasions for HGC (one per treatment period of the
+  crossover), four for MTT (two crossover periods x palosuran /
+  placebo). Occasions after the first have their variance `fixed()` to
+  the first, which is what NONMEM writes as `$OMEGA BLOCK(1) SAME`. The
+  simulations in this vignette set `OCC = 1` throughout, so they show
+  the between-subject component only; supply a varying `OCC` to exercise
+  the between-occasion component as well.
 
 ## Session info
 

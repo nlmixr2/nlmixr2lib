@@ -382,9 +382,21 @@ at 500 mg b.i.d. {.table}
   deviation in geometric CV).
 - **Logit transform on FCLp.** FCLp must lie in \[0, 1\] per the paper
   (Results, paragraph 2). The model encodes it with a logit transform
-  (`logitfclp <- log(0.10 / 0.90)`) so that any downstream estimation
-  that allowed FCLp to vary cannot drift outside the feasible range. The
-  point estimate equivalent is exactly the published 0.10.
+  (`logitfcl_noinh <- log(0.10 / 0.90)`) so that any downstream
+  estimation that allowed FCLp to vary cannot drift outside the feasible
+  range. The point estimate equivalent is exactly the published 0.10.
+- **Canonical name for FCLp.** The paper’s `FCLp` is carried under the
+  register canonical `fcl_noinh` (“fraction of clearance not subject to
+  inhibition”), with the logit-scale `ini()` parameter `logitfcl_noinh`.
+  The canonical was ratified in 2026-09 when a second paper reached the
+  same concept (Kim 2019 voriconazole, which calls it `RCLF` and holds
+  it on the log scale); this model previously used the unregistered
+  spelling `fclp` / `logitfclp`. The trailing `p` of the paper’s symbol
+  denotes the parent drug in this parent + metabolite model and is
+  dropped in the canonical, which carries no analyte token. The
+  logit-versus-log difference between the two models is a per-paper
+  encoding difference, not a convention drift – Abduljalil 2009 bounds
+  the fraction, Kim 2019 reports a log-normal %CV on it.
 - **Metabolite formation fraction.** Abduljalil 2009 Discussion
   (paragraph 4) explicitly assumes 100 % of parent clearance produces
   14-(R)-hydroxy-clarithromycin (“the final model assumption was that
