@@ -2356,6 +2356,8 @@ navbar:
         href: articles/Chatelut_1999_interferon_alfa_2b.html
       - text: "InterferonAlfa2a (Jeon 2013)"
         href: articles/Jeon_2013_interferonAlfa2a.html
+      - text: "Iohexol (Asberg 2020)"
+        href: articles/Asberg_2020_iohexol.html
       - text: "Iohexol creatinine (Chen 2025)"
         href: articles/Chen_2025_iohexol_creatinine.html
       - text: "IonisFxirx (Willmann 2021)"
@@ -5686,6 +5688,7 @@ articles:
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
   - articles/Aruldhas_2021_methadone
+  - articles/Asberg_2020_iohexol
   - articles/Ashraf_2024_codeine
   - articles/Asiimwe_2025_trastuzumab_ADCs_mbma
   - articles/Asimus_2007_artemisinin
