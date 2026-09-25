@@ -5422,6 +5422,8 @@ navbar:
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Zaltoprofen (Jang 2023)"
         href: articles/Jang_2023_zaltoprofen.html
+      - text: "Zanamivir (Zuo 2020)"
+        href: articles/Zuo_2020_zanamivir.html
       - text: "Zanubrutinib acalabrutinib ibrutinib qsp (Demin 2025)"
         href: articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.html
       - text: "Zastaprazan (Yang 2024)"
@@ -7733,6 +7735,7 @@ articles:
   - articles/Zou_2026_pembrolizumab_qol
   - articles/Zufferey_2018_fondaparinux
   - articles/Zuo_2016_UDCA
+  - articles/Zuo_2020_zanamivir
   - articles/Zuo_2024_apatinib
   - articles/Zurawska_2026_piperacillin
   - articles/Zurlinden_2016_paracetamol
