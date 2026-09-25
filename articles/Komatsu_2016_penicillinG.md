@@ -297,7 +297,7 @@ sim <- as.data.frame(rxode2::rxSolve(
   mod_pk, events, keep = c("regimen"), returnType = "data.frame"
 ))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:08
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:05
 
 exposure <- sim |>
   filter(!is.na(Cc)) |>
