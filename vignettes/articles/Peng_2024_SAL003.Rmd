@@ -137,7 +137,7 @@ n_subj <- 200
 
 cohort <- tibble::tibble(
   id = seq_len(n_subj),
-  WT = pmin(pmax(rnorm(n_subj, mean = 65, sd = 10), 45, 90))
+  WT = pmin(pmax(rnorm(n_subj, mean = 65, sd = 10), 45), 90)
 )
 ```
 
@@ -281,6 +281,9 @@ Peng 2024 supplement Table S1 NCA values.
 ```{r pknca-sad, message = FALSE, warning = FALSE}
 sad_conc <- sim |>
   dplyr::filter(grepl("^SAD_", treatment), !is.na(Cc), time <= 112) |>
+  # Fully eliminated tails carry solver noise of ~1e-11 mg/L on either side of
+  # zero; floor at zero so PKNCA's log-down trapezoid stays defined.
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
   dplyr::select(id, time, Cc, treatment)
 
 sad_dose <- events |>
@@ -345,12 +348,43 @@ summary(nca_q4w)
 Peng 2024 supplement Table S1 reports SAD NCA (means) of Cmax = 5.22 mg/L
 (70 mg, n = 3), 16.26 mg/L (140 mg, n = 6), and 45.31 mg/L (420 mg, n = 6),
 and AUC0-t = 1091.85, 5564.50, and 30556.84 mg*h/L respectively (sampled
-out to 2688 h = 112 days). The simulated typical-value AUClast at the same
-112-day cut-off and the population-median Cmax can be read off the PKNCA
-summary table above. The simulated population median falls within ~30% of
-the published SAD means for all three single-dose cohorts, which is within
-the noise expected from a 3-6-subject NCA average compared against a
-typical-value popPK prediction. Differences > 20% are documented below.
+out to 2688 h = 112 days). The PKNCA summary above reports geometric means;
+the block below extracts the population-median Cmax and AUClast per cohort
+at the same 112-day cut-off (AUClast converted from mg*day/L to mg*h/L) for
+a like-for-like comparison against the published means.
+
+```{r sad-pop-median}
+sad_pop <- tibble::tibble(
+  treatment = c("SAD_70mg", "SAD_140mg", "SAD_420mg"),
+  Cmax_pub  = c(5.22, 16.26, 45.31),
+  AUC_pub   = c(1091.85, 5564.50, 30556.84)
+) |>
+  dplyr::left_join(
+    as.data.frame(nca_sad) |>
+      dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+      dplyr::group_by(treatment, PPTESTCD) |>
+      dplyr::summarise(median = stats::median(PPORRES), .groups = "drop") |>
+      tidyr::pivot_wider(names_from = PPTESTCD, values_from = median),
+    by = "treatment"
+  ) |>
+  dplyr::mutate(
+    AUC_med       = auclast * 24,
+    Cmax_pct_diff = 100 * (cmax    - Cmax_pub) / Cmax_pub,
+    AUC_pct_diff  = 100 * (AUC_med - AUC_pub)  / AUC_pub
+  ) |>
+  dplyr::select(treatment, Cmax_pub, Cmax_med = cmax, Cmax_pct_diff,
+                AUC_pub, AUC_med, AUC_pct_diff)
+
+knitr::kable(sad_pop, digits = 1,
+  caption = paste0("Population-median (N = ", n_subj, " per cohort) SAD Cmax (mg/L) and AUClast (mg*h/L) vs Peng 2024 supplement Table S1 means (n = 3-6 per dose group)."))
+```
+
+Across the three single-dose cohorts the simulated population-median Cmax
+lies within `r round(max(abs(sad_pop$Cmax_pct_diff)))`% of the published SAD
+means, which is within the noise expected from a 3-6-subject NCA average
+compared against a popPK prediction; the population-median AUClast deviates
+by up to `r round(max(abs(sad_pop$AUC_pct_diff)))`%. Differences > 20% are
+documented below.
 
 ```{r typical-side-by-side, message = FALSE, warning = FALSE}
 # Typical-value (IIV zeroed) Cmax / Tmax / AUC at the population-median 65 kg.

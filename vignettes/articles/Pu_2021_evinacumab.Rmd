@@ -163,11 +163,11 @@ n_subj <- 50  # downsampled from 200 for vignette build budget; VPC band shape p
 
 cohort <- tibble::tibble(
   id          = seq_len(n_subj),
-  WT          = pmin(pmax(rnorm(n_subj, mean = 71, sd = 18),  42, 152)),
+  WT          = pmin(pmax(rnorm(n_subj, mean = 71, sd = 18),  42), 152),
   ANGPTL3     = pmin(pmax(rlnorm(n_subj, meanlog = log(0.08), sdlog = 0.5),
-                          0.0204, 0.287)),
+                          0.0204), 0.287),
   DIS_HOFH    = 1L,                             # PD analysis is HoFH-only
-  LDLC        = pmin(pmax(rnorm(n_subj, mean = 211, sd = 90), 70, 600)),
+  LDLC        = pmin(pmax(rnorm(n_subj, mean = 211, sd = 90), 70), 600),
   RACE_WHITE  = rbinom(n_subj, size = 1, prob = 0.85)
 )
 ```
@@ -512,7 +512,7 @@ knitr::kable(target_summary, digits = 1,
   HoFH-only). The model file therefore does not declare a
   `DIS_HOFH`-on-PD parameter -- covariate coverage matches the source.
 - **Virtual-cohort covariate distributions.** Body weight is drawn from
-  `N(71, 18)` kg truncated to [42.4, 152]; baseline ANGPTL3 from
+  `N(71, 18)` kg truncated to [42, 152]; baseline ANGPTL3 from
   `lognormal(meanlog = log(0.08), sdlog = 0.5)` truncated to [0.0204,
   0.287]; baseline LDL-C from `N(211, 90)` truncated to [70, 600];
   RACE_WHITE = Bernoulli(0.85) (Pu 2021 does not publish per-subject

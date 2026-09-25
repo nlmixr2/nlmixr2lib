@@ -164,10 +164,10 @@ set.seed(20260429)
 n_ra <- 200
 ra <- tibble::tibble(
   id              = seq_len(n_ra),
-  AGE             = pmin(pmax(rnorm(n_ra, mean = 53, sd = 12), 20, 85)),
-  WT              = pmin(pmax(rnorm(n_ra, mean = 78, sd = 20), 40, 187)),
-  AST             = pmin(pmax(rnorm(n_ra, mean = 21, sd = 9),   7,  85)),
-  CRCL            = pmin(pmax(rnorm(n_ra, mean = 90, sd = 28), 37, 250)),
+  AGE             = pmin(pmax(rnorm(n_ra, mean = 53, sd = 12), 20), 85),
+  WT              = pmin(pmax(rnorm(n_ra, mean = 78, sd = 20), 40), 187),
+  AST             = pmin(pmax(rnorm(n_ra, mean = 21, sd = 9),   7),  85),
+  CRCL            = pmin(pmax(rnorm(n_ra, mean = 90, sd = 28), 37), 250),
   SEXF            = rbinom(n_ra, 1, 0.71),       # RA cohorts ~70-77 % female
   DIS_PJIA        = 0L,
   HSCT_URD_7OF8   = 0L,
@@ -181,8 +181,8 @@ pjia <- tibble::tibble(
   id              = seq.int(from = n_ra + 1, length.out = n_pjia),
   AGE             = runif(n_pjia, 2, 17),
   WT              = pmax(pmin(8 + (AGE - 2) * 4 + rnorm(n_pjia, 0, 6), 100), 8),
-  AST             = pmin(pmax(rnorm(n_pjia, mean = 23, sd = 12),  9, 180)),
-  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 160, sd = 50), 65, 580)),
+  AST             = pmin(pmax(rnorm(n_pjia, mean = 23, sd = 12),  9), 180),
+  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 160, sd = 50), 65), 580),
   SEXF            = rbinom(n_pjia, 1, 0.74),     # pJIA cohorts skew female
   DIS_PJIA        = 1L,
   HSCT_URD_7OF8   = 0L,
@@ -202,10 +202,10 @@ pjia <- tibble::tibble(
 n_hm8 <- 100
 hm8 <- tibble::tibble(
   id              = seq.int(from = n_ra + n_pjia + 1, length.out = n_hm8),
-  AGE             = pmin(pmax(rnorm(n_hm8, mean = 39, sd = 21), 6, 76)),
-  WT              = pmin(pmax(rnorm(n_hm8, mean = 73, sd = 25), 22, 143)),
-  AST             = pmin(pmax(rnorm(n_hm8, mean = 28, sd = 15), 8, 85)),
-  CRCL            = pmin(pmax(rnorm(n_hm8, mean = 125, sd = 49), 51, 315)),
+  AGE             = pmin(pmax(rnorm(n_hm8, mean = 39, sd = 21), 6), 76),
+  WT              = pmin(pmax(rnorm(n_hm8, mean = 73, sd = 25), 22), 143),
+  AST             = pmin(pmax(rnorm(n_hm8, mean = 28, sd = 15), 8), 85),
+  CRCL            = pmin(pmax(rnorm(n_hm8, mean = 125, sd = 49), 51), 315),
   SEXF            = rbinom(n_hm8, 1, 0.42),
   DIS_PJIA        = 0L,
   HSCT_URD_7OF8   = 0L,
@@ -217,10 +217,10 @@ hm8 <- tibble::tibble(
 n_hm7 <- 60
 hm7 <- tibble::tibble(
   id              = seq.int(from = n_ra + n_pjia + n_hm8 + 1, length.out = n_hm7),
-  AGE             = pmin(pmax(rnorm(n_hm7, mean = 39, sd = 21), 6, 76)),
-  WT              = pmin(pmax(rnorm(n_hm7, mean = 73, sd = 25), 22, 143)),
-  AST             = pmin(pmax(rnorm(n_hm7, mean = 28, sd = 15), 8, 85)),
-  CRCL            = pmin(pmax(rnorm(n_hm7, mean = 125, sd = 49), 51, 315)),
+  AGE             = pmin(pmax(rnorm(n_hm7, mean = 39, sd = 21), 6), 76),
+  WT              = pmin(pmax(rnorm(n_hm7, mean = 73, sd = 25), 22), 143),
+  AST             = pmin(pmax(rnorm(n_hm7, mean = 28, sd = 15), 8), 85),
+  CRCL            = pmin(pmax(rnorm(n_hm7, mean = 125, sd = 49), 51), 315),
   SEXF            = rbinom(n_hm7, 1, 0.42),
   DIS_PJIA        = 0L,
   HSCT_URD_7OF8   = 1L,

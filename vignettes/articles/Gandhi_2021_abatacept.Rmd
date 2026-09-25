@@ -133,11 +133,11 @@ set.seed(20260425)
 n_ra <- 100  # downsampled from 300 for vignette build budget; VPC band shape preserved
 ra <- tibble::tibble(
   id              = seq_len(n_ra),
-  WT              = pmin(pmax(rnorm(n_ra, mean = 70, sd = 18),  40, 160)),
-  AGE             = pmin(pmax(rnorm(n_ra, mean = 49, sd = 13),  18,  90)),
-  ALB             = pmin(pmax(rnorm(n_ra, mean = 41, sd =    3.5), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_ra, mean = 99,  sd = 25), 30, 180)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_ra, mean = 15, sd = 6)), 0, 28)),
+  WT              = pmin(pmax(rnorm(n_ra, mean = 70, sd = 18),  40), 160),
+  AGE             = pmin(pmax(rnorm(n_ra, mean = 49, sd = 13),  18),  90),
+  ALB             = pmin(pmax(rnorm(n_ra, mean = 41, sd =    3.5), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_ra, mean = 99,  sd = 25), 30), 180),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_ra, mean = 15, sd = 6)), 0), 28),
   SEXF            = rbinom(n_ra, 1, 0.78),       # RA cohorts ~75-80% female
   CONMED_NSAID    = rbinom(n_ra, 1, 0.55),
   DIS_PJIA        = 0L,
@@ -150,9 +150,9 @@ pjia <- tibble::tibble(
   id              = seq.int(from = n_ra + 1, length.out = n_pjia),
   AGE             = runif(n_pjia, 2, 17),
   WT              = pmax(pmin(8 + (AGE - 2) * 4 + rnorm(n_pjia, 0, 6), 100), 8),
-  ALB             = pmin(pmax(rnorm(n_pjia, mean = 41, sd = 4), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 110, sd = 25), 60, 200)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_pjia, mean = 6, sd = 4)), 0, 28)),
+  ALB             = pmin(pmax(rnorm(n_pjia, mean = 41, sd = 4), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 110, sd = 25), 60), 200),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_pjia, mean = 6, sd = 4)), 0), 28),
   SEXF            = rbinom(n_pjia, 1, 0.70),     # pJIA cohorts skew female
   CONMED_NSAID    = rbinom(n_pjia, 1, 0.40),
   DIS_PJIA        = 1L,
@@ -350,7 +350,7 @@ ggplot(vpc_ra, aes(time, Q50, colour = regimen, fill = regimen)) +
     x = "Time (days)",
     y = "Abatacept Cc (mg/L)",
     title = "Simulated 5-50-95 percentile profiles in adult RA: SC vs IV",
-    caption = "Virtual RA cohort (N = 300); first 12 weeks."
+    caption = sprintf("Virtual RA cohort (N = %d); first 12 weeks.", n_ra)
   ) +
   theme_minimal()
 ```

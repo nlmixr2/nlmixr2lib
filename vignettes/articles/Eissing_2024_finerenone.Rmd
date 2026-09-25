@@ -121,8 +121,8 @@ make_cohort <- function(n, dose_mg, id_offset = 0L) {
   wt_kg   <- pmin(pmax(rnorm(n, mean = 87,   sd = 18),    45),  150)
   egfr    <- pmin(pmax(rnorm(n, mean = 60.6, sd = 22),    20),  110)
   alp_UL  <- pmin(pmax(rnorm(n, mean = 73,   sd = 20),    35),  150)
-  bsa_m2  <- pmin(pmax(rnorm(n, mean = 1.97, sd = 0.22),  1.40, 2.55))
-  tpro_gL <- pmin(pmax(rnorm(n, mean = 71,   sd = 4.5),   55,   85))
+  bsa_m2  <- pmin(pmax(rnorm(n, mean = 1.97, sd = 0.22),  1.40), 2.55)
+  tpro_gL <- pmin(pmax(rnorm(n, mean = 71,   sd = 4.5),   55),  85)
 
   # Dosing schedule: 8 days of once-daily dosing -> steady state within 1-2 days
   # (half-life 2-3 h), final dosing interval sampled densely for NCA.

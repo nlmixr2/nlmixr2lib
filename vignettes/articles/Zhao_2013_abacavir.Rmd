@@ -106,8 +106,8 @@ draw_wt_mix <- function(n) {
   # Children subgroup is a mixture of ARROW (n = 37) and PENTA 13 (n = 14)
   # demographics; 37 / (37 + 14) = 72.5 % ARROW, 27.5 % PENTA 13.
   is_penta13 <- stats::runif(n) < (14 / (14 + 37))
-  arrow      <- pmin(pmax(stats::rnorm(n, 20.3,  4.0), 14, 29.8))
-  penta13    <- pmin(pmax(stats::rnorm(n, 23.9, 13.2), 14, 60.9))
+  arrow      <- pmin(pmax(stats::rnorm(n, 20.3,  4.0), 14), 29.8)
+  penta13    <- pmin(pmax(stats::rnorm(n, 23.9, 13.2), 14), 60.9)
   ifelse(is_penta13, penta13, arrow)
 }
 
@@ -144,7 +144,7 @@ make_cohort <- function(n, wt_draw, cohort_label, id_offset) {
 events <- dplyr::bind_rows(
   make_cohort(
     n_per_group,
-    wt_draw = function(n) pmin(pmax(stats::rnorm(n, 11.5, 2.3), 7.6, 15.8)),
+    wt_draw = function(n) pmin(pmax(stats::rnorm(n, 11.5, 2.3), 7.6), 15.8),
     cohort_label = "Infants and toddlers",
     id_offset = 0L
   ),

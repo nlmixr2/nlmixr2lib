@@ -134,10 +134,10 @@ n_subj <- 100  # downsampled from 300 for vignette build budget; VPC bands stay 
 
 cohort <- tibble::tibble(
   id     = seq_len(n_subj),
-  WT     = pmin(pmax(rnorm(n_subj, mean = 82.9, sd = 18),  45, 150)),
-  AGE    = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 12),  18,  90)),
+  WT     = pmin(pmax(rnorm(n_subj, mean = 82.9, sd = 18),  45), 150),
+  AGE    = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 12),  18),  90),
   CONMED_STATIN = rbinom(n_subj, size = 1, prob = 0.80),
-  FPCSK9 = pmin(pmax(rnorm(n_subj, mean = 72.9, sd = 120), 0,  400))
+  FPCSK9 = pmin(pmax(rnorm(n_subj, mean = 72.9, sd = 120), 0),  400)
 )
 ```
 
@@ -230,7 +230,7 @@ ggplot(vpc, aes(time, Q50, colour = treatment, fill = treatment)) +
     x = "Time (days)",
     y = "Alirocumab Cc (mg/L)",
     title = "Simulated 2.5-50-97.5 percentile profiles: 75 vs 150 mg SC Q2W",
-    caption = "Virtual hypercholesterolemic cohort (N = 300 per arm); first 8 Q2W cycles."
+    caption = paste0("Virtual hypercholesterolemic cohort (N = ", n_subj, " per arm); first 8 Q2W cycles.")
   ) +
   theme_minimal()
 ```

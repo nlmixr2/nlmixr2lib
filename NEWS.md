@@ -4,6 +4,8 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
+- Corrected an inverted covariate clamp in the virtual cohorts of 18 articles (Chelle 2019, Eissing 2024, Frey 2013, Gandhi 2021, Kuchimanchi 2024, Li 2019, Ma 2020, Martinez 2019, Melhem 2022, Peng 2024, Pu 2021, Takeuchi 2023, Timmermann 2019, Wang 2020, Xu 2019, Zhang 2021, Zhao 2013, Zhong 2026): `pmin(pmax(x, lo, hi))` pinned every subject at the upper bound instead of truncating the draw to [lo, hi], so the documented covariate distributions were never sampled. The cohorts now follow them; every coded gate still holds, and captions or prose that quoted results from the pinned cohorts now compute their numbers from the simulation.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.

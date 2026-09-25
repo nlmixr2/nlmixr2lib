@@ -154,8 +154,8 @@ n_subj <- 100
 cohort <- tibble(
   id  = seq_len(n_subj),
   AGE = pmin(pmax(rnorm(n_subj, mean = 26.1, sd = 18.3),  1),  72),
-  FFM = pmin(pmax(rnorm(n_subj, mean = 45.3, sd = 18.0),  7.5, 73.0)),
-  WT  = pmin(pmax(rnorm(n_subj, mean = 59.9, sd = 25.9),  9.7, 119))
+  FFM = pmin(pmax(rnorm(n_subj, mean = 45.3, sd = 18.0),  7.5), 73.0),
+  WT  = pmin(pmax(rnorm(n_subj, mean = 59.9, sd = 25.9),  9.7), 119)
 )
 ```
 

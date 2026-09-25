@@ -140,11 +140,11 @@ n_subj <- 150         # downsampled from 400 for vignette build budget; VPC band
 
 cohort <- tibble::tibble(
   id              = seq_len(n_subj),
-  WT              = pmin(pmax(rnorm(n_subj, mean = 70, sd = 18),   40, 160)),
-  AGE             = pmin(pmax(rnorm(n_subj, mean = 50, sd = 13),   18,  90)),
-  ALB             = pmin(pmax(rnorm(n_subj, mean = 40, sd =    3.5), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_subj, mean = 90, sd = 25),   30, 180)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_subj, mean = 16, sd = 6)),   0,  28)),
+  WT              = pmin(pmax(rnorm(n_subj, mean = 70, sd = 18),   40), 160),
+  AGE             = pmin(pmax(rnorm(n_subj, mean = 50, sd = 13),   18),  90),
+  ALB             = pmin(pmax(rnorm(n_subj, mean = 40, sd =    3.5), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_subj, mean = 90, sd = 25),   30), 180),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_subj, mean = 16, sd = 6)),   0),  28),
   SEXF            = rbinom(n_subj, 1, 0.78),         # RA populations are ~75-80% female
   CONMED_NSAID    = rbinom(n_subj, 1, 0.55),         # Li 2019 Methods: NSAID use common in RA cohort
   FORM_ABA_PHASE2 = 0L                               # Phase-3 commercial SC formulation for labelled regimen

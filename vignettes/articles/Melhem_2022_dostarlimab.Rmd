@@ -129,7 +129,7 @@ cohort <- tibble(
   ID   = seq_len(n_subj),
   WT   = pmin(pmax(rlnorm(n_subj, log(71.4), 0.27), 34),  182),  # Table 2: median 71.4 kg, range 34-182
   AGE  = pmin(pmax(rnorm(n_subj,  62.5, 11.0),       24),  86),  # Table 2: mean 62.5, range 24-86
-  ALB  = pmin(pmax(rnorm(n_subj,  38.2, 5.1),        19,        51)),  # Table 2: mean 38.2 g/L, range 19-51
+  ALB  = pmin(pmax(rnorm(n_subj,  38.2, 5.1),        19),  51),  # Table 2: mean 38.2 g/L, range 19-51
   ALT  = pmin(pmax(rlnorm(n_subj, log(17), 0.5),     2.9),      120),  # Table 2: median 17, range 2.9-120
   SEXF = rbinom(n_subj, 1, 0.773)                                       # Table 2: 77.3% female
 )
@@ -301,9 +301,23 @@ Note the published AUC is reported in **mg*h/L** but is computed over the
 21-day cycle 1 interval; the simulated `auclast` from PKNCA in the table
 above is in **mg*day/L** because the simulation time variable is in days.
 Multiplying simulated `auclast` by 24 converts to mg*h/L for comparison.
-Simulated cycle-1 Cmax in the 150-200 mg/L range (single 500 mg dose into
-~3 L Vc, with a small fraction redistributed peripherally by day 1) is
-consistent with the published Table 4 mean of 177 mg/L.
+
+```{r cycle1-cmax}
+cmax_c1 <- sim |>
+  dplyr::filter(!is.na(Cc), time <= 21) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cmax = max(Cc), .groups = "drop")
+```
+
+The simulated cycle-1 Cmax across the cohort is
+`r round(mean(cmax_c1$cmax))` mg/L on average (range
+`r round(min(cmax_c1$cmax))`-`r round(max(cmax_c1$cmax))` mg/L). It is
+sampled on the daily observation grid, one day after the 30-minute
+infusion, by which time part of the 500 mg dose has redistributed from the
+~3 L central volume into the peripheral compartment, so it sits below the
+published Table 4 mean of 177 mg/L, which is a model-predicted cycle-1
+peak from individual post-hoc parameters (500 mg into ~3 L gives about
+170 mg/L at the end of the infusion).
 
 # Assumptions and deviations
 
