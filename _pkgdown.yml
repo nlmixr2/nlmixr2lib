@@ -864,6 +864,8 @@ navbar:
         href: articles/Lin_2024_casirivimab.html
       - text: "Caspofungin (AbdulAziz 2025)"
         href: articles/AbdulAziz_2025_caspofungin.html
+      - text: "Caspofungin (Niu 2020)"
+        href: articles/Niu_2020_caspofungin.html
       - text: "Caspofungin (Wurthwein 2013)"
         href: articles/Wurthwein_2013_caspofungin.html
       - text: "Caspofungin (Xu 2026)"
@@ -7429,6 +7431,7 @@ articles:
   - articles/Niloy_2026_MTMSATrp_mouse
   - articles/Nishiyama_2019_metformin_cimetidine
   - articles/Niu_2017_veliparib
+  - articles/Niu_2020_caspofungin
   - articles/Noe_1996_factor_viii
   - articles/Novakovic_2017_cladribine
   - articles/Nyangwa_2026_pretomanid

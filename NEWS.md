@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Niu 2020 caspofungin ([doi:10.3389/fphar.2020.00184](https://doi.org/10.3389/fphar.2020.00184)) -- children undergoing allogeneic hematopoietic stem cell transplantation.
+
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
