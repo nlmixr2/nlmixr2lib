@@ -134,7 +134,7 @@ Liu_2024_saf189s <- function() {
       description = "Body weight at baseline.",
       units = "kg",
       type = "continuous",
-      notes = "Prespecified and screened in the stepwise covariate model (Liu 2024 Methods, Covariate analysis) but NOT retained: 'None of the other intrinsic factors (i.e., healthy vs cancer patient, bodyweight, sex, preexisting mild hepatic impairment, and preexisting mild or moderate renal impairment) or extrinsic factors (i.e., concomitant medications) had clinically meaningful effects on SAF-189s systemic exposure.' No point estimate is reported anywhere on disk. Pooled cohort median 63.2 kg, range 37.3-92.5 (Supplementary Table 1)."
+      notes = "Prespecified and screened in the stepwise covariate model (Liu 2024 Methods, Covariate analysis) but NOT retained: 'None of the other intrinsic factors (i.e., healthy vs cancer patient, bodyweight, sex, preexisting mild hepatic impairment, and preexisting mild or moderate renal impairment) or extrinsic factors (i.e., concomitant medications) had clinically meaningful effects on SAF-189s systemic exposure.' No point estimate is reported anywhere in the available sources. Pooled cohort median 63.2 kg, range 37.3-92.5 (Supplementary Table 1)."
     ),
     SEXF = list(
       description = "Sex indicator; 1 = female, 0 = male.",

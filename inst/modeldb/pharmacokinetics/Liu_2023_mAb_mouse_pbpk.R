@@ -161,7 +161,7 @@ Liu_2023_mAb_mouse_pbpk <- function() {
     # except that the CLup value is set to 0.24 L/h/L").
     lclup  <- fixed(log(0.24));    label("Pinocytosis rate per unit endosomal volume (L/h/L)")   # Liu 2023 Materials and methods, base PBPK model
 
-    # Remaining system parameters inherited from the on-disk upstream platform paper
+    # Remaining system parameters inherited from the upstream platform paper
     # (Shah DK, Betts AM. J Pharmacokinet Pharmacodyn. 2012;39(1):67-86, Table 6 and text p.73),
     # which Liu 2023 cites as reference 36 and adopts unchanged.
     lfcrn  <- fixed(log(4.98e-5)); label("Endosomal FcRn concentration (mol/L)")                 # inherited from Shah & Betts 2012 Table 6 (CV% 11.1)

@@ -152,8 +152,8 @@ AbouAuda_2024_gentamicin <- function() {
     # allometric values (0.75 on clearance, 1 on volume), so they are
     # encoded as fixed. The Vd equation is printed as `7.3 * (weight/20)`
     # with NO superscript on the closing parenthesis, i.e. an exponent of
-    # exactly 1. Both equations are display mathematics that the markdown
-    # preprocessor drops entirely (`<!-- formula-not-decoded -->`); they are
+    # exactly 1. Both equations are display mathematics that plain-text
+    # extraction of the PDF drops entirely; they are
     # recovered with `pdftotext -layout`, which typesets the superscripts
     # onto the line above:
     #

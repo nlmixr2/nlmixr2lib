@@ -80,8 +80,8 @@ Conil_2007_ceftazidime <- function() {
     # Results p. 31 ("Interindividual variability in the clearance was
     # decreased to 16% and that of the central volume of distribution to
     # 13%"). The paper is silent on Q and V2 IIV for the final model and on
-    # the final-model residual error; per the standing instruction (see
-    # operator sidecar response 2026-06-17), the basic-model values for Q
+    # the final-model residual error; per the maintainers' standing rule
+    # (decision of 2026-06-17), the basic-model values for Q
     # IIV, V2 IIV, and the proportional residual are carried forward
     # unchanged. omega^2 = log(CV^2 + 1) for log-normal etas.
     etalcl ~ 0.02528 # log(0.16^2 + 1); 16% CV on CL (Conil 2007 Results p. 31, final-model value)

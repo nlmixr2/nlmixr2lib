@@ -33,7 +33,7 @@ Chien_2022_imatinib <- function() {
     dose_range = "Oral imatinib 400 mg single dose",
     administration = "Oral (single 400 mg dose; pooled from two randomised crossover bioequivalence studies)",
     regions = "Spain (Hospital Universitario de La Paz, Madrid; Hospital General de Alicante)",
-    notes = "Demographics summarised in Chien 2022 page 4 paragraph 1 (median 23.0 y, 69.5 kg, 22.5 kg/m^2, 1.86 m^2 BSA) and Supplement Table S1 (not on disk). Sex distribution 8 female / 18 male = 30.8 % female. Genotype distribution for CYP3A4, CYP3A5, CYP2C9, CYP2C19, CYP2C8, CYP2B6, CYP2D6 and ABCB1 reported in Methods 'Sampling and analysis' but not retained as covariates in the final model. Sampling: 16-19 plasma samples per volunteer between 0.5 and 72 h post-dose."
+    notes = "Demographics summarised in Chien 2022 page 4 paragraph 1 (median 23.0 y, 69.5 kg, 22.5 kg/m^2, 1.86 m^2 BSA) and Supplement Table S1 (not available when this model was built). Sex distribution 8 female / 18 male = 30.8 % female. Genotype distribution for CYP3A4, CYP3A5, CYP2C9, CYP2C19, CYP2C8, CYP2B6, CYP2D6 and ABCB1 reported in Methods 'Sampling and analysis' but not retained as covariates in the final model. Sampling: 16-19 plasma samples per volunteer between 0.5 and 72 h post-dose."
   )
 
   ini({

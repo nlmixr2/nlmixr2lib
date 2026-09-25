@@ -497,11 +497,11 @@ all Gram-negative pathogens and organism-specific targets of 73.3%
 (*S. maltophilia*).
 
 The unbound fraction of cefiderocol is not reported anywhere in the paper or its
-supplement, so the free-drug index cannot be computed from on-disk sources. The
-table below therefore reports `%T>MIC` on **total** plasma concentration for the
-typical participant at steady state. It is an upper bound on `%fT>MIC`, not a
-reproduction of the published target attainment; see *Assumptions and
-deviations*.
+supplement, so the free-drug index cannot be computed from the published
+sources. The table below therefore reports `%T>MIC` on **total** plasma
+concentration for the typical participant at steady state. It is an upper bound
+on `%fT>MIC`, not a reproduction of the published target attainment; see
+*Assumptions and deviations*.
 
 ```{r time-above-mic}
 ss_profile <- sim |>

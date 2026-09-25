@@ -112,13 +112,13 @@ Biliouris_2018_nusinersen <- function() {
     administration_routes = "Intrathecal bolus into CSF",
     regions = "Preclinical / translational (cynomolgus-monkey fit extrapolated to paediatric SMA patients)",
     notes = paste(
-      "The on-disk source is the paper's simulation NONMEM control stream",
+      "The source for this model is the paper's simulation NONMEM control stream",
       "(`$PROBLEM SMA MONKEY`, `$SIMULATION (12345678) ONLYSIM",
       "SUBPROBLEM=1000`) with all $THETA / $OMEGA / $SIGMA values held",
       "FIXED. Compartment layout (paper: `$MODEL COMP=(CSF) COMP=(PLASMA)",
       "COMP=(CSPCORD) COMP=(BRAIN) COMP=(PERIPH1) COMP=(LSPCORD)",
       "COMP=(DTBRAIN) COMP=(TSPCORD) COMP=(PONS)`). Full baseline",
-      "demographics for the fitted monkey cohort are not on disk with the",
+      "demographics for the fitted monkey cohort are not given in the",
       "supplementary control stream; refer to Biliouris 2018 main text",
       "Methods and Table 1 for n_subjects and age ranges."
     )

@@ -181,11 +181,10 @@ Patel_2020_sapanisertib_RR <- function() {
     # summary table (columns: Parameter | Estimate | SE | df | t-value
     # | P-value | 95% Bootstrap CI). That in-panel table is a PRINTED
     # parameter table with full printed-value authority -- it is not a
-    # digitised or curve-fitted value. It is invisible to every
-    # text-extraction path (the trimmed markdown of the .docx renders
-    # the figure as `<!-- image -->`); it was read by unzipping
-    # cpdd808-sup-0001-suppmat.docx and rendering word/media/image4.png
-    # at 2x.
+    # digitised or curve-fitted value. It is embedded in the .docx as an
+    # image rather than as text, so it is invisible to text extraction; it
+    # was read by unzipping cpdd808-sup-0001-suppmat.docx and rendering
+    # word/media/image4.png at 2x.
     #
     #   Parameter | Estimate |    SE | df  | t-value | P-value | 95% boot CI
     #   Intercept |  -25.504 | 9.453 | 470 |  -2.698 |   0.007 | (-44.154, -7.851)
@@ -245,14 +244,14 @@ Patel_2020_sapanisertib_RR <- function() {
     # residual df of 470 against 44 patients is consistent with a
     # per-subject random intercept. However the paper does NOT report
     # any variance estimate for any of the three concentration-effect
-    # models. Per the standing operator policy on unreported IIV, this
+    # models. Per the maintainers' standing policy on unreported IIV, this
     # file omits the eta declarations and ships a typical-value-only
     # model. The vignette Errata documents the gap.
     # ==================================================================
 
     # ==================================================================
     # Residual error: not reported numerically in Patel 2020. Encoded
-    # as fixed(0) per the standing operator policy on unreported
+    # as fixed(0) per the maintainers' standing policy on unreported
     # residual error (the model returns the deterministic typical-
     # value prediction). The vignette Errata documents the gap.
     # ==================================================================
@@ -270,7 +269,7 @@ Patel_2020_sapanisertib_RR <- function() {
     #
     # The observation variable is named `d_rr`, the canonical
     # change-from-baseline RR interval registered in
-    # inst/references/compartment-names.md alongside this extraction
+    # inst/references/compartment-names.md alongside this model
     # (founding example). The register had no RR entry of either form,
     # and the two nearest families gave opposite guidance: the bare
     # interval names `QTcI` / `QTcF` / `QTcP` are used directly as the
@@ -278,8 +277,7 @@ Patel_2020_sapanisertib_RR <- function() {
     # models (Darpo_2014_racSotalol_*.R,
     # Fostvedt_2021_glasdegib_QTcF.R, Mukker_2026_tuvusertib_QTcF.R,
     # Zhou_2025_fruquintinib_*.R), whereas `d_hr` exists precisely for a
-    # change-from-baseline heart-rate-domain endpoint. Operator ruling
-    #
+    # change-from-baseline heart-rate-domain endpoint. The maintainers
     # adopted `d_rr`: the bare-name precedent is for ABSOLUTE interval
     # names, and a delta is what `d_hr` already encodes, so the
     # heart-rate-domain pair (d_hr, d_rr) is kept mutually consistent.

@@ -117,8 +117,8 @@ Hajjar_2018_miglustat <- function() {
       "100 mg t.i.d.). At the 130 / 260 mg single-dose levels used in",
       "ATB200-02 it is co-administered as a pharmacological chaperone",
       "to stabilise the recombinant GAA (cipaglucosidase alfa). The",
-      "2018 ACCP poster source carries no peer-reviewed DOI; the on-disk",
-      "metadata DOI 10.1038/mt.2009.53 is a vendor-index defect and is",
+      "2018 ACCP poster source carries no peer-reviewed DOI; the DOI",
+      "10.1038/mt.2009.53 attached to it by a vendor index is a defect and is",
       "not used as the canonical reference."
     )
   )

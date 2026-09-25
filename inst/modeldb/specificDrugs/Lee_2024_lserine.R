@@ -186,8 +186,8 @@ Lee_2024_lserine <- function() {
     #         the bands (4.79x, versus a 2.15x rise in Ce), so NO constant
     #         Deff in ANY unit reproduces Table 2.
     #
-    # RESOLUTION (operator ruling on sidecar oare_PMC11682956 request-002,
-    # 2026-08-20): encode the dimensionally-correct reading of the printed
+    # RESOLUTION (by the maintainers' decision): encode the
+    # dimensionally-correct reading of the printed
     # Table 1 value -- 0.0022 L/ug against Ce in ug/L, equivalently 2.2
     # score per (ug/mL) -- because that is the only reading the paper
     # states twice consistently, and it obeys the no-tuning rule. The

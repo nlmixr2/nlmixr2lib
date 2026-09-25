@@ -248,7 +248,7 @@ Kong_2025_sudapyridine <- function() {
 
     # Residual error. Kong 2025 Methods 2.3 eqs. 2 specifies a PROPORTIONAL
     # error model for both analytes, but Table 2 does not report the sigma
-    # estimates and no supplement, control stream or figure in the on-disk
+    # estimates and no supplement, control stream or figure in the available
     # sources carries them (the RSE sentence in Results 3.4 covers only "the
     # fixed and random effects"). Rather than invent a residual magnitude the
     # proportional error is encoded with a magnitude of zero, so simulations

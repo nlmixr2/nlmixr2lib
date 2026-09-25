@@ -86,15 +86,15 @@ Hansson_2013_sunitinib_hfs <- function() {
     species = "human",
     n_subjects = 303L,
     n_studies = 4L,
-    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section)",
-    weight_range = "not reported in the on-disk trimmed paper text",
+    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the paper)",
+    weight_range = "not reported in the paper",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
     disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006, George 2009, Shirao 2010, Maki 2005).",
     dose_range = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 or continuous schedule (Table 1).",
     regions = "multinational (study 1004) and Japanese (study 1045).",
     biomarkers = "HFS grade per NCI-CTC v3 (ordinal: 0 = none, 1, 2, 3+ = grouped with grade 4 due to rare grade 4 events per paper Methods). Observed grade distribution per study: study 1004 (0: 83%, 1: 5.0%, 2: 6.9%, 3: 5.4%); study 1047 (0: 100%); study 1045 (0: 14%, 1: 20%, 2: 34%, 3: 31%); study 013 (NA). The upstream sVEGFR-3 biomarker dynamics are consumed as data covariates (BAS_SVEGFR3 + MRT_SVEGFR3 + EC50_SVEGFR3) rather than re-fitted.",
-    notes = "n_subjects = 303 reported in Hansson 2013 e85 Methods. Per-cohort baseline demographics are not transcribed in the trimmed paper text. HFS grade 4 was reported in 0% of patients (Methods) so was grouped with grade 3 into a single category."
+    notes = "n_subjects = 303 reported in Hansson 2013 e85 Methods. Per-cohort baseline demographics are not transcribed in the paper. HFS grade 4 was reported in 0% of patients (Methods) so was grouped with grade 3 into a single category."
   )
 
   ini({

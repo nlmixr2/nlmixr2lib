@@ -18,7 +18,7 @@ Admiraal_2023_iminobiotin <- function() {
       units = "mL/min/1.73 m^2",
       type = "continuous",
       reference_category = NULL,
-      notes = "Power-model effect on clearance with reference 90 mL/min/1.73 m^2. The reference value is NOT reported in Admiraal 2023 or its supplement; 90 mL/min/1.73 m^2 was set per the nlmixr2lib registry's most common adult-MDRD/CKD-EPI convention (Bajaj 2017, Li 2019), with operator approval (task 171 sidecar 001, response value 'A'). At eGFR = 90 the model returns the published typical CL = 12.10 L/h; behaviour at any non-reference eGFR depends on this REF choice (raised to the 1.03 power exponent). Source column 'eGFR' (MDRD-based) maps to the canonical CRCL.",
+      notes = "Power-model effect on clearance with reference 90 mL/min/1.73 m^2. The reference value is NOT reported in Admiraal 2023 or its supplement; 90 mL/min/1.73 m^2 was set per the nlmixr2lib registry's most common adult-MDRD/CKD-EPI convention (Bajaj 2017, Li 2019), with the maintainers' approval. At eGFR = 90 the model returns the published typical CL = 12.10 L/h; behaviour at any non-reference eGFR depends on this REF choice (raised to the 1.03 power exponent). Source column 'eGFR' (MDRD-based) maps to the canonical CRCL.",
       source_name = "eGFR"
     )
   )

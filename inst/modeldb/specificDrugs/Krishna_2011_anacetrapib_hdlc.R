@@ -70,7 +70,7 @@ Krishna_2011_anacetrapib_hdlc <- function() {
     co_medication = "Both statin-treated and statin-free participants contributed. No effect of statin administration on baseline HDL-C or on Emax was identified, so atorvastatin does not appear in this model (contrast the LDL-C arm, where it does).",
     notes = paste0(
       "Per-study designs are in Table IB of the Electronic Supplementary ",
-      "Material, which is not on disk (see the vignette Errata). Krishna ",
+      "Material, which was not available when this model was built (see the vignette Errata). Krishna ",
       "2011 publishes no age, weight, sex or race distribution for the ",
       "exposure-response analysis set in the main text, and no demographic ",
       "covariate is in the model."

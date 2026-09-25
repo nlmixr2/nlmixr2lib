@@ -472,7 +472,7 @@ Tsuchitani_2024_telmisartan_pbpk <- function() {
       "(J Clin Pharmacol. 2000;40:1312-1322 and",
       "J Int Med Res. 2000;28:149-167); subject counts, ages, weights and",
       "sex distribution are not reported by Tsuchitani 2024 and those two",
-      "source papers are not open access and are not on disk. All",
+      "source papers are not open access and were not available when this model was built. All",
       "physiological parameters in Tables S3-S7 are scaled to a single",
       "typical 78 kg adult."
     )

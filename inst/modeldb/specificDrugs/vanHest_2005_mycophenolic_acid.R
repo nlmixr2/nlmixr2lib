@@ -1,5 +1,5 @@
 vanHest_2005_mycophenolic_acid <- function() {
-  description <- "Two-compartment population PK model with time-lagged first-order absorption for mycophenolic acid (MPA, the active moiety of mycophenolate mofetil MMF) in adult renal transplant recipients co-treated with ciclosporin (van Hest 2005). Apparent clearance CL/F carries four covariates (creatinine clearance, serum albumin, ciclosporin daily dose, and sex) and apparent central volume V1/F carries two (creatinine clearance and serum albumin), all as centered power terms except sex, which is a multiplicative power-of-indicator factor of 1.11 for women. Log-normal inter-individual variability on Ka, CL/F, V1/F and V2/F, plus inter-occasion variability on Ka, CL/F and V1/F. Transcribed from the executable mrgsolve source distributed as S1 File of Maizaud 2025, which re-implements the van Hest 2005 model; the van Hest 2005 primary publication was not available at extraction time (see vignette Errata)."
+  description <- "Two-compartment population PK model with time-lagged first-order absorption for mycophenolic acid (MPA, the active moiety of mycophenolate mofetil MMF) in adult renal transplant recipients co-treated with ciclosporin (van Hest 2005). Apparent clearance CL/F carries four covariates (creatinine clearance, serum albumin, ciclosporin daily dose, and sex) and apparent central volume V1/F carries two (creatinine clearance and serum albumin), all as centered power terms except sex, which is a multiplicative power-of-indicator factor of 1.11 for women. Log-normal inter-individual variability on Ka, CL/F, V1/F and V2/F, plus inter-occasion variability on Ka, CL/F and V1/F. Transcribed from the executable mrgsolve source distributed as S1 File of Maizaud 2025, which re-implements the van Hest 2005 model; the van Hest 2005 primary publication was not available when this model was built (see vignette Errata)."
   reference <- paste(
     "van Hest RM, van Gelder T, Vulto AG, Mathot RAA. Population pharmacokinetics",
     "of mycophenolic acid in renal transplant recipients.",
@@ -53,7 +53,7 @@ vanHest_2005_mycophenolic_acid <- function() {
         "direction for MPA, whose accumulating MPAG metabolite displaces MPA from",
         "albumin in renal impairment and so increases the free fraction. The mrgsolve",
         "'@covariates' simulation default is 60 mL/min. The estimating equation used",
-        "in van Hest 2005 is not stated in any on-disk source; the 48 mL/min centering",
+        "in van Hest 2005 is not stated in the Maizaud 2025 paper or its S1 File; the 48 mL/min centering",
         "constant is presumably the cohort median."
       ),
       source_name = "CLCR"
@@ -122,7 +122,7 @@ vanHest_2005_mycophenolic_acid <- function() {
       notes = paste(
         "van Hest 2005 reports inter-occasion variability (the paper's kappa terms,",
         "printed as the 'x' rows of Maizaud 2025 Table 1) on Ka, V1/F and CL/F. The",
-        "NUMBER of occasions in the original analysis is not stated in any on-disk",
+        "NUMBER of occasions in the original analysis is not stated in any available",
         "source, so this model declares the minimal two-occasion expansion following",
         "the Chen_2023_nemonoxacin.R / Jonsson_2011_ethambutol.R precedent, with the",
         "occasion-2 variances fix()ed equal to occasion 1 per the NONMEM",
@@ -154,7 +154,7 @@ vanHest_2005_mycophenolic_acid <- function() {
       "Maizaud 2025 S1 File virtual cohort (rbinom(1000, 1, 0.50)), not a reported",
       "cohort characteristic. Detailed baseline demographics (age, weight, race,",
       "time post-transplant) are in the van Hest 2005 primary publication, which was",
-      "not available at extraction time."
+      "not available when this model was built."
     )
   )
 
@@ -192,7 +192,7 @@ vanHest_2005_mycophenolic_acid <- function() {
     # cross-check: 0.93^2 = 0.865 vs 0.86, 0.62^2 = 0.384 vs 0.384,
     # 0.29^2 = 0.084 vs 0.084. Occasion 2 is fix()ed equal to occasion 1 per the
     # NONMEM '$OMEGA BLOCK(1) SAME' convention; the number of occasions in the
-    # original analysis is not on disk (see the OCC covariateData notes).
+    # original analysis is not stated in any available source (see the OCC covariateData notes).
     etaiov_ka_1 ~ 0.86      # S1 'ETA_KA : 0.86 : IPV on Ka'; Table 1 'x Ka=0.93'
     etaiov_ka_2 ~ fix(0.86) # SAME-equivalent: equal to the occasion-1 IOV variance
     etaiov_vc_1 ~ 0.384      # S1 'ETA_VC : 0.384 : IPV on VC'; Table 1 'x V1/F=0.62'

@@ -10,7 +10,7 @@ Chi_2018_propofol <- function() {
     "etas are fixed at zero and no residual error term is included. See",
     "vignette Assumptions and deviations for the resulting limitations on",
     "VPC-style validation and the recommendation to consult the",
-    "modellib('Ye_2012_propofol') companion (when extracted) for a",
+    "modellib('Ye_2012_propofol') companion (once it is available in the library) for a",
     "fully-reported 3-compartment propofol popPK fit in a larger",
     "Chinese-multicenter cohort that shares the Chi 2018 first author."
   )
@@ -162,8 +162,8 @@ Chi_2018_propofol <- function() {
     # Inter-individual variability. Chi 2018 ran NONMEM final-model
     # estimation with Wings for NONMEM bootstrap validation in a 32-patient
     # cohort but does not report any OMEGA values in the published text;
-    # operator decision is to fix every eta to zero rather than borrow from
-    # Ye 2012 or insert placeholders. The etas are declared structurally so
+    # the maintainers' decision is to fix every eta to zero rather than borrow
+    # from Ye 2012 or insert placeholders. The etas are declared structurally so
     # the typical-value-only intent is encoded in the ini() block (Oniki
     # 2018 nafld_risk precedent for the `~ fixed(0)` pattern).
     etalcl ~ fixed(0)
@@ -217,7 +217,7 @@ Chi_2018_propofol <- function() {
     # Plasma propofol concentration. Dose units mg, vc units L; central /
     # vc has units mg/L = ug/mL, matching the Chi 2018 propofol plasma
     # concentration units (3 ug/mL TCI target; Methods, Anesthesia).
-    # No residual-error declaration (Cc ~ ...) is included by operator
+    # No residual-error declaration (Cc ~ ...) is included, by the maintainers'
     # decision; the model is a deterministic typical-value predictor.
     Cc <- central / vc
   })

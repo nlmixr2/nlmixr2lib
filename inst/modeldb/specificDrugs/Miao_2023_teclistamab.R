@@ -154,7 +154,7 @@ Miao_2023_teclistamab <- function() {
     # ("Parameter estimates of teclistamab for the final population PK
     # model"); the covariate equations are Table 2 footnotes a-d, read from
     # the MathML in the EuropePMC JATS full text of PMC10518021 (the
-    # pdftotext / docling renderings of footnote c drop the division bar
+    # plain-text renderings of footnote c, pdftotext included, drop the division bar
     # and print "V1 = 4.13 x (BWT)^0.358 / 74" on two lines).
     #
     # Total clearance decomposition (Table 2 footnote b):

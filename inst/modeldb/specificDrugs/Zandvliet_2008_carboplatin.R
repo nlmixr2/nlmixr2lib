@@ -64,7 +64,7 @@ Zandvliet_2008_carboplatin <- function() {
     disease_state = "Adults with solid tumours refractory to standard chemotherapy enrolled in a Phase I dose-escalation study of indisulam + carboplatin combination chemotherapy.",
     dose_range = "Carboplatin doses were calculated with the Calvert formula to target an AUC of 5-6 mg.min/mL; administered as a 30 min IV infusion on day 2 of each 3- or 4-weekly cycle, the day after a 1 h indisulam infusion (350-600 mg/m^2).",
     regions = "Netherlands (Antoni van Leeuwenhoek Hospital / Slotervaart Hospital, Amsterdam) and Austria (KFJ-Spital, Vienna).",
-    notes = "Carboplatin PK was fit independently of indisulam exposure as the first step of the sequential PK / PK-PD analysis (Methods 'Pharmacokinetic model of carboplatin'). The PD myelosuppression layer of this paper is NOT extracted here; per operator sidecar (frompeople-847 request-001 / response-001 selecting option B), it is deferred because the indisulam PK structural model the combination PD relies on lives in upstream refs [20] / [21] (Zandvliet 2006 J Pharmacokinet Pharmacodyn 33:543-570; Zandvliet 2007 Clin Cancer Res 13:2970-2976) which are not on disk."
+    notes = "Carboplatin PK was fit independently of indisulam exposure as the first step of the sequential PK / PK-PD analysis (Methods 'Pharmacokinetic model of carboplatin'). The PD myelosuppression layer of this paper is NOT extracted here; the maintainers deferred it because the indisulam PK structural model the combination PD relies on lives in upstream refs [20] / [21] (Zandvliet 2006 J Pharmacokinet Pharmacodyn 33:543-570; Zandvliet 2007 Clin Cancer Res 13:2970-2976), which were not available when this model was built."
   )
 
   ini({

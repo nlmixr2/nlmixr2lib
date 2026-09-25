@@ -123,8 +123,8 @@ Crommentuyn_2005_lopinavir <- function() {
   # Documented-but-not-retained covariates (Crommentuyn 2005 covariate analysis,
   # Results page 7 / Discussion): screened in the stepwise build, did NOT meet
   # the dOFV/clinical-relevance retention criteria, and are NOT referenced in
-  # model(). Recorded here for provenance per the extract-literature-model
-  # skill's covariatesDataExcluded convention so they do not trigger the
+  # model(). Recorded here for provenance under the library's
+  # covariatesDataExcluded convention so they do not trigger the
   # "declared but unused" convention warning.
   covariatesDataExcluded <- list(
     WT = list(

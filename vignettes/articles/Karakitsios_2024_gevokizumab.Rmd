@@ -627,7 +627,7 @@ stopifnot(max(abs(total - 7)) < 1e-3)
   arm (n = 5) as too small for reliable means and SDs (Section 2.4), so it is
   not represented in either model or in this vignette.
 - **All parameter values come from the paper or its own supplement.** No value
-  was taken from training-data defaults or from another publication: the
+  was taken from a generic default or from another publication: the
   structural equations and physiologic constants are read from this paper's
   Supplementary Material equations (S1)-(S8), and every estimate from Table 3
   or Table 4.

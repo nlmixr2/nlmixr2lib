@@ -67,7 +67,7 @@ stopifnot(
 ```
 
 Both the main article and the supplementary information (Tables S1-S3 and
-Figures S1-S12) were on disk for this extraction. The three parameter tables
+Figures S1-S12) were available when this model was built. The three parameter tables
 in the main article (Tables 2, 3 and 4) are complete; the supplement
 contributed the two dosing schedules (Tables S1 and S2), the dense-PK cohort
 demographics (Table S3) and the structural-model diagrams (Figures S1, S5

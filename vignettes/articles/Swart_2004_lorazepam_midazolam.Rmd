@@ -538,7 +538,7 @@ hl_variability |>
   identifies it as a significant CL covariate for both drugs, but Table
   1 does not print the number of alcohol-abuse subjects per arm. The
   virtual cohort assumes ~15 % of each arm to illustrate both strata;
-  the actual proportion in the learning group is not on disk.
+  the actual proportion in the learning group is not available.
 * **Half-life reference value.** The paper reports mean elimination
   half-lives of 30.0 h (lorazepam) and 22.7 h (midazolam) in the
   Discussion, without per-subject 5th / 95th percentiles or CIs; these

@@ -644,7 +644,7 @@ tibble::tribble(
 * **The third common covariate configuration is not extracted.** The paper
   identifies "weight and sex on CL and Vc" (19 models) as the third most common
   combination but neither simulates it nor reports the median coefficients for
-  that subset, so it cannot be parameterised from on-disk sources.
+  that subset, so it cannot be parameterised from the available sources.
 * **Screened but unused covariates.** Median effects for body weight, albumin,
   sex and ADA status across the 160 models are recorded in the generic model's
   `covariatesDataExcluded` metadata (allometric exponents 0.62 on CL and 0.56 on

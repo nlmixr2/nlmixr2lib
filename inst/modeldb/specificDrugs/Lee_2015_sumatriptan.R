@@ -44,9 +44,9 @@ Lee_2015_sumatriptan <- function() {
   #   plus a creatinine-clearance covariate on the transit-fraction f) as
   #   the final published model. The supplement's NONMEM code only covers
   #   M5; the M6 covariate functional form and reference CrCL are not
-  #   stated anywhere on disk. Per the skill's "Covariate encoding
-  #   ambiguous" stop-and-ask trigger and the operator's directive, this
-  #   extraction encodes M5 (no covariate) and documents the M6 covariate
+  #   stated anywhere in the available sources. Because the covariate
+  #   encoding is ambiguous, the maintainers decided that this model
+  #   encodes M5 (no covariate) and documents the M6 covariate
   #   in the vignette's Assumptions and deviations / Errata section.
   # * Savic analytical input rate: the NONMEM code uses Stirling's
   #   approximation log(N!) = log(sqrt(2*pi)) + (N+0.5)*log(N) - N to

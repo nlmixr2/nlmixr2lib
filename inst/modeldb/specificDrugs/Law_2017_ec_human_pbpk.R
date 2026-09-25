@@ -30,8 +30,8 @@ Law_2017_ec_human_pbpk <- function() {
   # Gibaldi 1977). Each state holds the amount in transit; dividing by the
   # per-sub-compartment residence time mtt_bile gives the transfer rate R_j of
   # the paper, so the total bile-duct delay is 3 * mtt_bile. bile_transit<n> is
-  # a canonical chain family (operator ruling 2026-09-21, sidecar
-  # oasweep_PMC5464336 q1); see inst/references/compartment-names.md.
+  # a canonical chain family (by the maintainers' decision); see
+  # inst/references/compartment-names.md.
 
   compartmentData <- list(
     depot = list(analyte = "EC", units = "mg", specimen = "administration site", verified = TRUE),

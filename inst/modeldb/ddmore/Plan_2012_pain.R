@@ -30,12 +30,12 @@ Plan_2012_pain <- function() {
   population <- list(
     n_subjects = 231,
     n_studies = 3,
-    age_range = "(not extracted; Plan 2012 publication not on disk for cross-check)",
+    age_range = "(not extracted; Plan 2012 publication not available for cross-check when this model was built)",
     weight_range = "(not extracted)",
     sex_female_pct = "(not extracted)",
     disease_state = "Neuropathic pain (placebo arm)",
     dose_range = "(placebo arm only; no drug exposure)",
-    notes = "Pooled placebo arm of three Phase III neuropathic-pain trials. Daily 11-point Likert pain measurements over 18 weeks; 22,492 measurements total. Demographic detail (age, weight, sex split) not derivable from the DDMORE bundle; the linked Plan 2012 publication (doi:10.1038/clpt.2011.301) was not on disk in /home/bill/github/mab_human_consensus/literature for cross-check at extraction time. n_subjects (231) is taken from the DDMORE RDF model-has-description-long field."
+    notes = "Pooled placebo arm of three Phase III neuropathic-pain trials. Daily 11-point Likert pain measurements over 18 weeks; 22,492 measurements total. Demographic detail (age, weight, sex split) not derivable from the DDMORE bundle; the linked Plan 2012 publication (doi:10.1038/clpt.2011.301) was not available for cross-check when this model was built. n_subjects (231) is taken from the DDMORE RDF model-has-description-long field."
   )
 
   ini({
@@ -44,7 +44,7 @@ Plan_2012_pain <- function() {
     # the .mod was run with $ESTIMATION MAXEVAL=0 — i.e. NONMEM evaluates the
     # objective at the supplied THETA/OMEGA without estimating. The .mod
     # therefore carries the publication's final estimates as its initials.
-    # See ddmore-source.md for the convention.
+    # This is the DDMORE-source convention for MAXEVAL=0 runs.
 
     logitbas <- log(0.620667 / (1 - 0.620667))
     label("Logit of typical baseline pain score / 10 (PHI in source; back-transforms via 10*expit() to typical baseline 6.21 on 0-10 scale)")
@@ -163,7 +163,7 @@ Plan_2012_pain <- function() {
     dis  <- expit(logitdis + etalogitdis)
 
     # Observation: typical-value mean pain score (0-10), modelled as Poisson(lam)
-    # for nlmixr2 fitting compatibility. F.3 mechanistic-sanity validation in
+    # for nlmixr2 fitting compatibility. The mechanistic-sanity validation in
     # the vignette compares the typical-value `score` trajectory against the
     # placebo-decay analytic form Plan 2012 reports.
     score <- lam

@@ -940,7 +940,7 @@ stopifnot(
 * **No IIV on clearance is carried in the 1-month EC402 model.** Supplement 1
   states that "IIV was identified on RBIO, Ka3_SLP, CL and Fr", but Table S1.1
   reports no `omega^2 CL` row, so the value is not recoverable from any
-  on-disk source. The eta is omitted rather than invented; do not read its
+  available source. The eta is omitted rather than invented; do not read its
   absence as evidence that the published model had none.
 
 * **The RBIO-Ka3_SLP covariance in the 1-month model is taken as zero.** Table
@@ -953,7 +953,7 @@ stopifnot(
   the EC402 release arrows `Ka3_SLP*TIME`. Both are encoded as
   `max(0, tafd())`, so the ramp continues across doses in the repeated-dose
   EC402 models. The alternative reading (time since the most recent dose) is
-  not supported by any on-disk code.
+  not supported by any of the available code.
 
 * **The Fr random effect is on the natural scale in the 1-month model only.**
   Table S1.1's footnote restates 0.441 as a fraction, and its confidence

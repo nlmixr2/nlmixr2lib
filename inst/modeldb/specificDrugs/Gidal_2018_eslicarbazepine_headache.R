@@ -114,7 +114,7 @@ Gidal_2018_eslicarbazepine_headache <- function() {
         "slope and the weight slope -- and Eq. E-4 contains no lamotrigine",
         "term. The main text's description of the final model likewise",
         "lists only 'a linear function of the eslicarbazepine AUC0-24, and",
-        "weight'. No point estimate exists anywhere on disk, so the term",
+        "weight'. No point estimate exists in any available source, so the term",
         "cannot be encoded; the printed final model is taken as",
         "authoritative over the narrative sentence. See the vignette",
         "Errata. 14.0% of the pooled population took lamotrigine."

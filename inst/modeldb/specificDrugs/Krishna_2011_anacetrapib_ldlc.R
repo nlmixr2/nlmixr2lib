@@ -110,7 +110,7 @@ Krishna_2011_anacetrapib_ldlc <- function() {
     co_medication = "Atorvastatin 20 mg once daily was the only statin regimen studied, in the phase IIb trial.",
     notes = paste0(
       "Per-study designs are in Table IB of the Electronic Supplementary ",
-      "Material, which is not on disk (see the vignette Errata). Krishna ",
+      "Material, which was not available when this model was built (see the vignette Errata). Krishna ",
       "2011 publishes no age, weight, sex or race distribution for the ",
       "exposure-response analysis set in the main text, and no demographic ",
       "covariate is in the model. The paper also fitted an additive Emax ",

@@ -85,7 +85,7 @@ Almond_2016_nifedipine_invitro <- function() {
       "Indmax is NOT baseline-corrected: the paper states it 'is equal to Emax + 1'. This is the reason the file carries emax = Indmax - 1.",
       "WIDEST BETWEEN-DONOR SPREAD IN THE STUDY. The activity Indmax is 15.6 with an S.D. of 11.3 and the mRNA Indmax is 30.0 with an S.D. of 22.0 -- donor-level CVs of about 76 percent on emax for both endpoints. Simulated nifedipine induction curves are correspondingly dispersed, and a four-donor mean with that spread should be treated as a weakly determined central estimate.",
       "SCOPE CAVEAT. Nifedipine is both a victim and a perpetrator in this paper, but only its VICTIM role reaches the clinical simulations: Table 3 (rifampicin, oral and i.v. nifedipine) and Table 4 (phenobarbital + nifedipine) treat it as a CYP3A4 substrate, and Supplemental Table 1 carries its victim-side compound file. It never appears as a perpetrator in Table 4, Fig. 5 or Table 6, so these induction parameters have no in vivo verification within this study.",
-      "The calibration equations (Eqs. 5 and 6) can nonetheless be applied to these values, since calibration only requires the test compound's in vitro parameters and rifampicin's in vitro and in vivo parameters -- all of which are on disk. The vignette demonstrates that calculation for nifedipine alongside the three inducers the paper itself calibrated."
+      "The calibration equations (Eqs. 5 and 6) can nonetheless be applied to these values, since calibration only requires the test compound's in vitro parameters and rifampicin's in vitro and in vivo parameters -- all of which are available. The vignette demonstrates that calculation for nifedipine alongside the three inducers the paper itself calibrated."
     )
   )
 

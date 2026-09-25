@@ -24,7 +24,7 @@ Muller_2007_penicillin_G <- function() {
       units = "kg",
       type = "continuous",
       reference_category = NULL,
-      notes = "Linearly scaled on CL with reference 1.195 kg (cohort mean per Muller 2007 Table 1). The paper retained body weight on CL in the final model (P < 0.01, Results page 3724 and Fig. 3) but did not report the functional form or coefficient; per operator sidecar-001 response Q2=B, a linear-with-weight scaling (exponent 1) at the cohort-mean reference is imputed. CL at reference subject = 0.103 L/h.",
+      notes = "Linearly scaled on CL with reference 1.195 kg (cohort mean per Muller 2007 Table 1). The paper retained body weight on CL in the final model (P < 0.01, Results page 3724 and Fig. 3) but did not report the functional form or coefficient; the maintainers therefore imputed a linear-with-weight scaling (exponent 1) at the cohort-mean reference. CL at reference subject = 0.103 L/h.",
       source_name = "WT"
     )
   )
@@ -61,7 +61,7 @@ Muller_2007_penicillin_G <- function() {
     # Muller 2007 retains body
     # weight on CL in the final model (P < 0.01, Results page 3724;
     # Fig. 3) but does not report the functional form or coefficient.
-    e_wt_cl <- fixed(1.0); label("Exponent of (WT / 1.195 kg) on CL (unitless; imputed linear scaling)")  # Muller 2007 Results p. 3724 + Fig. 3 (form not reported; linear exponent imputed per operator sidecar-001 Q2=B)
+    e_wt_cl <- fixed(1.0); label("Exponent of (WT / 1.195 kg) on CL (unitless; imputed linear scaling)")  # Muller 2007 Results p. 3724 + Fig. 3 (form not reported; linear exponent imputed by the maintainers)
 
     # Inter-individual variability (Muller 2007 Table 2 'Variance model
     # parameters'; reported as omega^2 of the log-normal eta).

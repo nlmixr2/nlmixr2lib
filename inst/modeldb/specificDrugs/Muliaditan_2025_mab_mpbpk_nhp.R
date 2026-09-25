@@ -572,7 +572,7 @@ Muliaditan_2025_mab_mpbpk_nhp <- function() {
     #     ventricular-CSF contribution A(12)*(VCSFLV+VCSFTFV) divided
     #     by (VBtotal + VCSFLV + VCSFTFV); those Bloomingdale
     #     ventricular-CSF volume parameters (VCSFLV, VCSFTFV, VBtotal)
-    #     are not reported on disk in the source materials, so the
+    #     are not reported in the source materials, so the
     #     brain homogenate here is the simplified volume-weighted
     #     average over the (BBB endosomal + brain ISF + BCSFB
     #     endosomal) compartments. The simplification is documented

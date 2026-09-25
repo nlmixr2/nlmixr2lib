@@ -27,7 +27,7 @@ Liu_2025_meropenem <- function() {
     "partitioning, 'PK-Sim Standard' cellular permeabilities, organ volumes and",
     "blood flows, and the OAT3 / tubular-secretion ontogeny functions) lives in",
     "the platform database rather than in the paper or its supplement, so the",
-    "PBPK ODEs cannot be reproduced from on-disk sources."
+    "PBPK ODEs cannot be reproduced from the available sources."
   )
   reference <- paste(
     "Liu Y, He H, Zhang SS, Zhou J, Zhu JW, Xu J, Miao HJ, Chen JH, Hao K.",

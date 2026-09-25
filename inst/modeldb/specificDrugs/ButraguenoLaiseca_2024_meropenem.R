@@ -147,7 +147,7 @@ ButraguenoLaiseca_2024_meropenem <- function() {
       reference_category = NULL,
       notes = paste(
         "Used ONLY as a binary preserved-diuresis gate on the CKRT renal arm, following the",
-        "encoding ratified by Huppe_2023_fosfomycin.R. Butragueno-Laiseca 2024 reports the",
+        "encoding established by Huppe_2023_fosfomycin.R. Butragueno-Laiseca 2024 reports the",
         "theta_CLR_CKRT = 0.96 L/h estimate specifically 'For the three patients under CKRT with",
         "diuresis' (Results, Selection of covariates), restated in the Discussion as 'for those",
         "patients that show diuresis, the estimate of renal clearance was five to sixfold lower",
@@ -187,8 +187,8 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "so that a zero value cannot produce a non-finite prediction. The paper reports urine",
         "output in patients without CKRT ranging from 14 to 125 mL/h, and 10-123 mL over the",
         "whole PK curve in the three CKRT patients with diuresis (Results, Brief description of",
-        "the data), which brackets the plausible per-interval volumes. New canonical ratified by",
-        "operator sidecar request-001 / response-001 question q2 option A."
+        "the data), which brackets the plausible per-interval volumes. New canonical approved by",
+        "the maintainers."
       ),
       source_name = "UVol"
     ),
@@ -208,7 +208,7 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "their registered meaning of 'this filter is the medium / large one', with 0/0 denoting",
         "the small (low) filter -- and model() derives the low-filter indicator as",
         "1 - FILT_SA_MED - FILT_SA_LARGE so the published thetas can be carried verbatim",
-        "(operator sidecar request-001 / response-001 question q3 option A). The multiplier",
+        "(as approved by the maintainers). The multiplier",
         "attached to FILT_SA_MED is therefore the reference 1 and does not appear as an ini()",
         "parameter; the covariate is still referenced in model() through the derived low-filter",
         "indicator. The absolute sizes match the sibling paper exactly: HF20 0.2 m^2 in children",
@@ -299,8 +299,8 @@ ButraguenoLaiseca_2024_meropenem <- function() {
         "'neither body weight nor Qeff was included as significant covariates of CL' -- the",
         "authors attributing that to its high correlation with body weight. Meaningful only when",
         "RRT_CRRT_ACTIVE = 1; the division is floored in model() so a zero value cannot produce",
-        "a non-finite prediction. New canonical ratified by operator sidecar request-001 /",
-        "response-001 question q1."
+        "a non-finite prediction. New canonical approved by",
+        "the maintainers."
       ),
       source_name = "phi_Effl / Qeff"
     )
@@ -421,7 +421,7 @@ ButraguenoLaiseca_2024_meropenem <- function() {
     # hemofilter, which is this paper's reference filter level. Note that the
     # sibling ButraguenoLaiseca_2025_teicoplanin.R references the SMALL filter
     # instead; the reference flip is why this model needs the derived
-    # low-filter indicator below (operator sidecar q3 option A).
+    # low-filter indicator below (as approved by the maintainers).
     #
     # `_hemodialysis` rather than `_dialysis` is used for the extracorporeal
     # arm to match the sibling teicoplanin model from the same group and PICU;

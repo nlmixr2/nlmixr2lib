@@ -67,7 +67,7 @@ Jonsson_2005_disufenton <- function() {
     dose_range = "Continuous intravenous infusion of NXY-059 over 72 hours, comprising a 1-hour loading infusion followed by a 71-hour maintenance infusion. Maintenance infusion rate was individualised to the subject's baseline creatinine clearance.",
     crcl_range = "20-143 mL/min (raw, measured)",
     regions = NA_character_,
-    notes = "Demographics summarised from the DDMODEL00000245 RDF model-has-description-long abstract, which mirrors Jonsson 2005's Methods. Pooled across the SA-NXY-0003 and SA-NXY-0004 stroke trials; .lst reports 177 individuals contributing observations after EVID filtering of the bundle's 179-subject simulated dataset. The Jonsson 2005 paper itself is not on disk in this worktree, so weight, sex, and race breakdowns could not be cross-checked against the publication's Table 1; see the validation vignette's Errata for the full caveat list."
+    notes = "Demographics summarised from the DDMODEL00000245 RDF model-has-description-long abstract, which mirrors Jonsson 2005's Methods. Pooled across the SA-NXY-0003 and SA-NXY-0004 stroke trials; .lst reports 177 individuals contributing observations after EVID filtering of the bundle's 179-subject simulated dataset. The Jonsson 2005 paper itself was not available when this model was built, so weight, sex, and race breakdowns could not be cross-checked against the publication's Table 1; see the validation vignette's Errata for the full caveat list."
   )
 
   ini({
@@ -97,8 +97,8 @@ Jonsson_2005_disufenton <- function() {
     # Residual error - $ERROR block uses log-transform-both-sides
     # (Y = LOG(F) + EPS(1) * THETA(1) with $SIGMA 1 FIX), so the SD on the
     # log-concentration scale equals THETA(1). NONMEM "additive on log scale"
-    # is equivalent to nlmixr2's lnorm() residual; see naming-conventions.md
-    # section  "$ERROR block patterns" and the existing Netterberg_2017_docetaxel /
+    # is equivalent to nlmixr2's lnorm() residual; see the package's
+    # NONMEM-to-nlmixr2 translation convention and the existing Netterberg_2017_docetaxel /
     # Wu_2024_inotuzumab models for the same translation.
     propSd <- 0.165 ; label("Log-normal residual error SD on log-concentration (unitless; ~16.5% CV on linear scale)")  # THETA(1) FINAL = 1.65E-01
   })

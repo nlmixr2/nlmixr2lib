@@ -322,7 +322,7 @@ PKNCA values are computed from sparse-grid simulated concentrations.
   non-zero additive component was either dropped during model
   selection or estimated as negligible and not reported. Downstream
   users requiring a separate additive component should consult the
-  original NONMEM control stream (not on disk for this extraction).
+  original NONMEM control stream (not available when this model was built).
 * **NONMEM compartment numbering.** The paper's `k_23`, `k_32`, `k_20`
   labels follow NONMEM ADVAN4 numbering (depot=1, central=2,
   peripheral=3). The canonical nlmixr2 micro-constant names map as:

@@ -7,7 +7,7 @@ Ouerdani_2015_pazopanib_mouse <- function() {
     "CPT Pharmacometrics Syst Pharmacol. 2015;4(11):660-668.",
     "doi:10.1002/psp4.12001.",
     "Erratum/revised version published online 2015-11-12 (Table 1 was replaced;",
-    "the on-disk PDF is the corrected version).",
+    "the values used here are from the corrected version).",
     sep = " "
   )
   vignette <- "Ouerdani_2015_pazopanib_mouse"
@@ -66,7 +66,7 @@ Ouerdani_2015_pazopanib_mouse <- function() {
 
   ini({
     # Structural parameters -- preclinical column of Ouerdani 2015 Table 1.
-    # Note that the on-disk PDF is the November 2015 corrected version of
+    # Note that the values are from the November 2015 corrected version of
     # Table 1 (the paper's first-page footnote records that the original
     # Table 1 was replaced on 2015-11-12).
     lk_tumor  <- log(0.166);   label("Tumour growth rate k (1/day)")                              # Ouerdani 2015 Table 1 preclinical k = 0.166 (RSE 24%)

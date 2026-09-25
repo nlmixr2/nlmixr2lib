@@ -627,7 +627,7 @@ deposition fraction.
 
 * **Body-weight distribution.** The paper sampled 1,000 subjects per arm from
   NHANES 2017-18 (adults at least 18 years and at least 40 kg). Those microdata
-  are not on disk, so weight here is lognormal with median 80 kg and `sdlog`
+  were not available, so weight here is lognormal with median 80 kg and `sdlog`
   0.24, floored at 40 kg, as an approximation of that frame. This is the
   dominant source of any residual difference against Table 2: because every
   volume scales with `WT^1`, the model's ELF Cmax is exactly
@@ -691,6 +691,6 @@ deposition fraction.
 * **Errata.** A search of the journal landing page, PubMed Central, and the
   publisher's correction feed on 2026-08-14 found no erratum, corrigendum, or
   correction notice for this article.
-* **No data on disk.** Individual observed concentrations are not public; every
-  figure and table here is a simulation from the packaged model compared against
-  the published summary values.
+* **No observed data available.** Individual observed concentrations are not
+  public; every figure and table here is a simulation from the packaged model
+  compared against the published summary values.

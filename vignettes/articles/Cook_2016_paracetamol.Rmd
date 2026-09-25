@@ -48,8 +48,8 @@ analysis of paracetamol (APAP) in term and preterm newborns. The
 DDMORE bundle's `.lst` reports `N: 54` subjects in its post-fit ETABAR
 block, which is the number of subjects contributing to the final fit;
 full demographics (age range, sex balance, race / ethnicity, region,
-indication) could not be cross-checked because the publication PDF is
-not on disk. The bundle's `Simulated_ParacetamolPKnewborns.csv` is a
+indication) could not be cross-checked because the publication PDF was not
+available when this model was built. The bundle's `Simulated_ParacetamolPKnewborns.csv` is a
 10-subject smoke-test cohort with body weights spanning 0.5-4 kg plus
 one outlier at 6.5 kg; it is not representative of the publication's
 demographics, so this vignette builds a virtual cohort directly from
@@ -88,7 +88,7 @@ collects them in one place.
 | `V2 = V3 = 0.18*V1`, `K24 = K36 = TH5*K15`               | n/a | `.mod` `$PK` block constants                                                                   |
 | `Cc ~ add(addSd) + prop(propSd)`, urine outputs `~ prop(...)` | n/a | `.mod` `$ERROR` block (Y1 combined; Y4/Y5/Y6 proportional, per the deposited correct form) |
 
-The Cook 2016 publication PDF is not available on disk, so the table cites
+The Cook 2016 publication PDF was not available when this model was built, so the table cites
 the DDMORE bundle's `.lst` FINAL block as the primary source. The
 `Model_Accommodations.txt` in the bundle records one model-vs-publication
 discrepancy: the publication describes the urinary residual errors as
@@ -273,7 +273,7 @@ sim |>
 # PKNCA on plasma paracetamol
 
 PKNCA is run on the plasma APAP output (`Cc`) of the stochastic
-simulation. Because the Cook 2016 publication PDF is not on disk, the
+simulation. Because the Cook 2016 publication PDF was not available, the
 simulated NCA values cannot be compared side-by-side against published
 Cmax / AUC tables; they are reported as a sanity check on the simulation
 pipeline (typical newborn paracetamol half-life is on the order of
@@ -321,12 +321,12 @@ knitr::kable(
 # Assumptions and deviations
 
 - **Validation strategy is self-consistency** (the package's strategy for a
-  DDMORE-sourced model with no linked publication on disk). PKNCA values
+  DDMORE-sourced model whose linked publication was not available). PKNCA values
   shown above are informational; comparison against Cook 2016's
   published NCA / figures was not possible because the publication PDF
-  is not on disk in the maintainers' literature mirror.
+  was not available when this model was built.
 
-- **Cook 2016 publication PDF is not on disk**, so demographic ranges
+- **Cook 2016 publication PDF was not available when this model was built**, so demographic ranges
   (age range, weight range, sex balance, race / ethnicity, region,
   indication) and any published parameter table or figure could not be
   cross-checked. Where these fields appear in the model's `population`

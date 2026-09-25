@@ -88,7 +88,7 @@ Jin_2025_benralizumab_fev1 <- function() {
   )
 
   # Covariates the source model retains but whose functional form is NOT
-  # recoverable from any document on disk, plus covariates that were screened
+  # recoverable from any available document, plus covariates that were screened
   # and dropped. Deliberately absent from model(); see the vignette Errata.
   covariatesDataExcluded <- list(
     HT = list(
@@ -128,7 +128,7 @@ Jin_2025_benralizumab_fev1 <- function() {
         "> 65 years', and its Figure S2 stratifies the LOESS trends into four age bands",
         "(12-<18, 18-<50, 50-<65, >=65-75 years). Whether the published coefficients are linear",
         "slopes in years, band contrasts, or transformed percentages cannot be determined from any",
-        "document on disk, so the age effects are omitted rather than invented."
+        "available document, so the age effects are omitted rather than invented."
       )
     ),
     FEV1_BL = list(
