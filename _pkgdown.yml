@@ -1824,6 +1824,8 @@ navbar:
         href: articles/Sano_2023_fesoterodine.html
       - text: "Fexofenadine (Gaspar 2025)"
         href: articles/Gaspar_2025_fexofenadine.html
+      - text: "Fibrinogen (Bellon 2020)"
+        href: articles/Bellon_2020_fibrinogen.html
       - text: "Filgrastim (Harrold 2020)"
         href: articles/Harrold_2020_filgrastim_ars.html
       - text: "Filgrastim (Jiang 2025)"
@@ -5732,6 +5734,7 @@ articles:
   - articles/Bellanti_2015_deferoxamine
   - articles/Bellanti_2017_deferiprone
   - articles/Belldina_2003_cysteamine
+  - articles/Bellon_2020_fibrinogen
   - articles/Benavent_2025_dalbavancin
   - articles/Bender_2009_pregabalin_rat
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
