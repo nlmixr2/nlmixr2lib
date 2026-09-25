@@ -847,18 +847,17 @@ stopifnot(all(tab$Pass[!tab$Deviation]))
   equation – nor in Tables S1-S5, nor inside any figure panel (the
   publisher’s native-resolution figure files were checked).
 
-  Per operator decision (2026-09-11), the model carries
-  `Imax_pacl = 1.15` across from the 2024 parent
-  (`FernandezTeruel_2024_capivasertib.R`, Fernandez-Teruel 2024 Table 3:
-  RSE 12.5%, bootstrap 95% CI 1-6.91), held constant via `fixed()`.
-  **This is a cross-fit borrow, not a 2025 estimate.** Every other
-  parameter shared by the two fits was re-estimated – `Imax` moved from
-  -1.54 to -1.87 and `Imax_dose` from -0.00183 to -0.00213 – so the true
-  2025 value is unknown and is not necessarily 1.15. Any simulation with
-  `CONMED_PACLITAXEL = 1` is an approximation whose paclitaxel effect
-  carries 2024 provenance; the 89.4% of the cohort and 100% of the
-  CAPItello-291 population that are paclitaxel-free are unaffected,
-  because `(1 + 0 * 1.15) = 1`.
+  By maintainer decision, the model carries `Imax_pacl = 1.15` across
+  from the 2024 parent (`FernandezTeruel_2024_capivasertib.R`,
+  Fernandez-Teruel 2024 Table 3: RSE 12.5%, bootstrap 95% CI 1-6.91),
+  held constant via `fixed()`. **This is a cross-fit borrow, not a 2025
+  estimate.** Every other parameter shared by the two fits was
+  re-estimated – `Imax` moved from -1.54 to -1.87 and `Imax_dose` from
+  -0.00183 to -0.00213 – so the true 2025 value is unknown and is not
+  necessarily 1.15. Any simulation with `CONMED_PACLITAXEL = 1` is an
+  approximation whose paclitaxel effect carries 2024 provenance; the
+  89.4% of the cohort and 100% of the CAPItello-291 population that are
+  paclitaxel-free are unaffected, because `(1 + 0 * 1.15) = 1`.
 
   What the borrow can be checked against is the 2024 paper’s own printed
   covariate result, which validates the *encoding* even though it cannot

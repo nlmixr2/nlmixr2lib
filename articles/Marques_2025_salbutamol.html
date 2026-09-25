@@ -3162,8 +3162,8 @@ the twin a faithful stand-in for the packaged model.</p>
 described the twin as a <em>workaround</em> for <code>transit()</code>
 “silently evaluating to zero under <code>rxUi</code>”. That diagnosis
 was wrong. The zeroing came from <code>rxSolve()</code>’s automatic
-ODE-to-<code>linCmt()</code> conversion (rxode2 issue 1370), which
-discarded the <code>transit()</code> input term while keeping
+ODE-to-<code>linCmt()</code> conversion, which discarded the
+<code>transit()</code> input term while keeping
 <code>f(depot) &lt;- 0</code>, so the converted model received no dose
 at all. It only ever affected the <code>rxUi</code> path because the
 plain-model path does not attempt the conversion; <code>transit()</code>
@@ -3229,7 +3229,7 @@ stand-in for the packaged model.</caption>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Standing gate. A non-zero Cmax on the rxUi path catches any future</span></span>
-<span><span class="co"># reintroduction of the silent no-dose failure (rxode2 issue 1370); the</span></span>
+<span><span class="co"># reintroduction of the silent no-dose failure; the</span></span>
 <span><span class="co"># agreement check catches the twin drifting away from the packaged model.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="va">cmax_ui</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>

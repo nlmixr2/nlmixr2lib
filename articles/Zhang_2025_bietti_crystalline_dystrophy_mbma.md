@@ -763,15 +763,14 @@ LogMAR). {.table}
   when this model was written – the `cfb` suffix and a `d_<instrument>`
   prefix (`d_updrs`, `d_hr`, `d_rr`, `d_viral_load`) – and the first
   draft of this model used the prefix form (`d_bcva`) on the strength of
-  the `Lee_2011_parkinson_progression` analogy. The operator ratified
-  the **suffix** as the library-wide convention (sidecar
-  `oasweep_PMC11997835` request-001 q1, answered 2026-09-11), so
-  `d_bcva` was renamed to `bcvacfb` and the surviving `d_`-prefixed
-  names are scheduled for conversion in a separate follow-up. Note that
-  this model is algebraic with no absolute-acuity state of its own;
-  `bcvacfb` is a change score throughout, and the covariate register’s
-  `SCORE_BCVA` is on the ETDRS-letter scale (higher = better) rather
-  than LogMAR, so the two are not interchangeable without conversion.
+  the `Lee_2011_parkinson_progression` analogy. The maintainers ratified
+  the **suffix** as the library-wide convention, so `d_bcva` was renamed
+  to `bcvacfb` and the surviving `d_`-prefixed names are scheduled for
+  conversion in a separate follow-up. Note that this model is algebraic
+  with no absolute-acuity state of its own; `bcvacfb` is a change score
+  throughout, and the covariate register’s `SCORE_BCVA` is on the
+  ETDRS-letter scale (higher = better) rather than LogMAR, so the two
+  are not interchangeable without conversion.
 - **Nothing is fixed.** All three reported parameters (`K`, `omega`,
   `sigma`) were estimated, with RSEs and bootstrap confidence intervals
   given in supplement appendix 7, so no `fixed()` wrapper is used.

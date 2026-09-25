@@ -3107,13 +3107,11 @@ constant or covariate form.</p>
 <div class="section level3">
 <h3 id="the-peripheral-compartment-is-actually-solved">The peripheral compartment is actually solved<a class="anchor" aria-label="anchor" href="#the-peripheral-compartment-is-actually-solved"></a>
 </h3>
-<p><code>rxSolve()</code> defaulted to <code>useLinCmt = TRUE</code>
-until rxode2 made the conversion opt-in in September 2026 (issue 1389)
-and can silently collapse a two-compartment system into a
-one-compartment closed form when the peripheral transfer is written
-straight from stored micro-constants. Both model files route through
-<code>q</code> and <code>vp</code> to prevent that; this assertion is
-the guard.</p>
+<p><code>rxSolve()</code> with <code>useLinCmt = TRUE</code> can
+silently collapse a two-compartment system into a one-compartment closed
+form when the peripheral transfer is written straight from stored
+micro-constants. Both model files route through <code>q</code> and
+<code>vp</code> to prevent that; this assertion is the guard.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">typ_amp</span><span class="op">$</span><span class="va">peripheral1</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">typ_sul</span><span class="op">$</span><span class="va">peripheral1</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 </div>

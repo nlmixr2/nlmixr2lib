@@ -555,6 +555,6 @@ Typical-patient placebo-arm week-24 DAS28-CRP reduction. {.table}
   internal segfault in `rxSolveSEXP`. The cohort simulation therefore
   loops subject-by-subject and binds rows. A single-subject simulation
   with IIV zeroed out is used for the paper-validation block, which is
-  unaffected. Once the underlying rxode2 issue is fixed upstream, a
-  single-call `rxSolve(mod, events = cohort_events)` will reproduce the
-  same results at a fraction of the cost.
+  unaffected. Once that rxode2 defect is fixed upstream, a single-call
+  `rxSolve(mod, events = cohort_events)` will reproduce the same results
+  at a fraction of the cost.

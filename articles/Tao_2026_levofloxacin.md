@@ -450,7 +450,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5578c2c83638>
+#> <environment: 0x559bdd51c178>
 ```
 
 Dosing is intravenous into `central`; there is no depot. The infusion

@@ -916,8 +916,7 @@ them is appropriate.
 
 - **The RR endpoint is named `d_rr`, the two QTc endpoints are not
   `d`-prefixed.** This asymmetry within the file set is deliberate and
-  was an operator ruling (sidecar `oare_PMC7586797` request-001 q1,
-  answered 2026-09-02). The register had no RR entry of either form.
+  was a maintainer ruling. The register had no RR entry of either form.
   `d_rr` was ratified as a canonical sibling of the existing `d_hr`
   change-from-baseline heart-rate endpoint, on the scale-incomparability
   grounds that entry already states – an absolute RR interval is roughly

@@ -367,9 +367,8 @@ cf_check
 
 # Pure numerical-integration error between two evaluations of the SAME
 # parameters -- not a cohort-derived quantity, so a tight bound is correct.
-# Observed max 3.2e-13 across the six scenarios when rxode2 solved these
-# analytically (its ODE-to-linCmt() conversion was on by default until
-# September 2026, rxode2 issue 1389) and 4.0e-9 with the ODE integrated at
+# Observed max 3.2e-13 across the six scenarios when rxode2 solves these
+# analytically (useLinCmt = TRUE) and 4.0e-9 with the ODE integrated at
 # atol 1e-12 / rtol 1e-10; the bound sits above the numerical floor.
 stopifnot(all(cf_check$max_rel_err < 1e-8))
 ```

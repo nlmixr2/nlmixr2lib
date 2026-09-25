@@ -170,17 +170,16 @@ wrong.
 
 The paper’s total clearance is additive, `CLtot = CL + CLdial`, with the
 dialysis arm contributing only while a session runs. When rxode2’s
-ODE-to-`linCmt()` conversion is enabled (`useLinCmt = TRUE`; the default
-until rxode2 made it opt-in in September 2026, issue 1389) it recognises
-the joint presence of `cl` and `vc` and solves the one-compartment
-system analytically from that pair, **discarding the explicit
-`d/dt()`**. A model that assigns only the interdialytic arm to `cl` and
-then eliminates via a separate `cl_total / vc` therefore reports a
-correct-looking `cl_total` and `kel` while the simulated concentrations
-decay at the interdialytic rate in both states – the dialysis arm is
-inert and the model silently loses its entire reason for existing. The
-packaged model avoids this by assigning the gated sum to `cl` itself,
-which is correct under either solve path.
+ODE-to-`linCmt()` conversion is enabled (`useLinCmt = TRUE`) it
+recognises the joint presence of `cl` and `vc` and solves the
+one-compartment system analytically from that pair, **discarding the
+explicit `d/dt()`**. A model that assigns only the interdialytic arm to
+`cl` and then eliminates via a separate `cl_total / vc` therefore
+reports a correct-looking `cl_total` and `kel` while the simulated
+concentrations decay at the interdialytic rate in both states – the
+dialysis arm is inert and the model silently loses its entire reason for
+existing. The packaged model avoids this by assigning the gated sum to
+`cl` itself, which is correct under either solve path.
 
 The check below is a genuine two-state comparison of the simulated
 *amounts*, not of the reported clearance columns, so it fails if the

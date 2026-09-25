@@ -355,13 +355,12 @@ conventions, and the Carreno k12 / k21 to Q / Vp derivation.
 ## Check 1b: the closed-form and ODE solvers agree
 
 [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-defaulted to `useLinCmt = TRUE` until rxode2 made the conversion opt-in
-in September 2026 (issue 1389), which rewrites a recognisably linear
-two-compartment system into a closed form. When such a model is written
-straight from stored micro-constants, that rewrite can silently drop
-`peripheral1` and solve a *one-compartment* model instead – with total
-AUC unchanged, so an exposure check will not catch it. The readout that
-moves is the terminal half-life.
+with `useLinCmt = TRUE` rewrites a recognisably linear two-compartment
+system into a closed form. When such a model is written straight from
+stored micro-constants, that rewrite can silently drop `peripheral1` and
+solve a *one-compartment* model instead – with total AUC unchanged, so
+an exposure check will not catch it. The readout that moves is the
+terminal half-life.
 
 All four models are therefore written so the peripheral transfer is
 expressed as `q` and `vp`, and the equivalence is asserted mechanically
@@ -1190,12 +1189,11 @@ fixed effects, matching `$THETA(3)` and `$THETA(4)`, but computes
 is an exact algebraic re-routing, not a change of model, and it is
 necessary: written the literal way,
 [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)’s
-former default `useLinCmt = TRUE` rewrite (opt-in since September 2026)
-drops `peripheral1` and silently solves a one-compartment model
-(terminal half-life 5.22 h against a true 13.82 h, Cmax 52.8 against
-27.1 mg/L). Because total AUC is unaffected by that collapse, an
-exposure check would not reveal it, so Check 1b asserts the half-life
-against the analytic beta root instead.
+`useLinCmt = TRUE` rewrite drops `peripheral1` and silently solves a
+one-compartment model (terminal half-life 5.22 h against a true 13.82 h,
+Cmax 52.8 against 27.1 mg/L). Because total AUC is unaffected by that
+collapse, an exposure check would not reveal it, so Check 1b asserts the
+half-life against the analytic beta root instead.
 
 **The AUC accumulator compartment is omitted.** Three of the four
 streams declare a third state, `DADT(3) = A(1)/V`, which integrates

@@ -182,13 +182,13 @@ twin a faithful stand-in for the packaged model.
 > **Historical note.** Earlier revisions of this vignette described the
 > twin as a *workaround* for `transit()` “silently evaluating to zero
 > under `rxUi`”. That diagnosis was wrong. The zeroing came from
-> `rxSolve()`’s automatic ODE-to-`linCmt()` conversion (rxode2 issue
-> 1370), which discarded the `transit()` input term while keeping
-> `f(depot) <- 0`, so the converted model received no dose at all. It
-> only ever affected the `rxUi` path because the plain-model path does
-> not attempt the conversion; `transit()` itself was never at fault.
-> rxode2 now refuses the conversion for models it cannot represent
-> faithfully, and the two handles agree.
+> `rxSolve()`’s automatic ODE-to-`linCmt()` conversion, which discarded
+> the `transit()` input term while keeping `f(depot) <- 0`, so the
+> converted model received no dose at all. It only ever affected the
+> `rxUi` path because the plain-model path does not attempt the
+> conversion; `transit()` itself was never at fault. rxode2 now refuses
+> the conversion for models it cannot represent faithfully, and the two
+> handles agree.
 
 ``` r
 
@@ -243,7 +243,7 @@ the packaged model. {.table}
 
 
 # Standing gate. A non-zero Cmax on the rxUi path catches any future
-# reintroduction of the silent no-dose failure (rxode2 issue 1370); the
+# reintroduction of the silent no-dose failure; the
 # agreement check catches the twin drifting away from the packaged model.
 stopifnot(
   cmax_ui > 0,

@@ -3212,14 +3212,13 @@ which is near 1 here because <code>Q</code> (38.8 L/h) greatly exceeds
 has characteristic polynomial
 <code>x^2 - (kel + k12 + k21 + k20) x + (kel*(k21 + k20) + k12*k20)</code>,
 whose smaller root <code>beta</code> sets the terminal slope. This one
-is load-bearing as a regression guard: <code>rxSolve()</code> defaulted
-to <code>useLinCmt = TRUE</code> until rxode2 made the conversion opt-in
-in September 2026 (issue 1389), and a two-compartment system written
-with micro-constants can be silently rewritten into a one-compartment
-closed form – which would leave AUC untouched but make the terminal
-half-life collapse onto <code>log(2)/kel</code>. Asserting the half-life
-against <code>beta</code> <strong>and</strong> against its distance from
-<code>log(2)/kel</code> catches that.</p>
+is load-bearing as a regression guard: under <code>rxSolve()</code>’s
+<code>useLinCmt = TRUE</code> conversion a two-compartment system
+written with micro-constants can be silently rewritten into a
+one-compartment closed form – which would leave AUC untouched but make
+the terminal half-life collapse onto <code>log(2)/kel</code>. Asserting
+the half-life against <code>beta</code> <strong>and</strong> against its
+distance from <code>log(2)/kel</code> catches that.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">DOSE_REF</span> <span class="op">&lt;-</span> <span class="fl">400</span></span>
 <span></span>

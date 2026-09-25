@@ -338,7 +338,7 @@ c(
   closed_form = knet_closed
 )
 #>  max_residual  solved_slope   closed_form 
-#>  2.312021e-07 -2.308889e-01 -2.308889e-01
+#>  2.312022e-07 -2.308889e-01 -2.308889e-01
 ```
 
 ## The isoniazid killing sigmoid

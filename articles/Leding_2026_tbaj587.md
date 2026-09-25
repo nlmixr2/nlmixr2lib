@@ -177,11 +177,10 @@ parameters is their dose and food covariate effects, plus IIV on
 The tempting “repair” – subtracting the formation fluxes from the parent
 to balance mass – would silently rescale every apparent metabolite
 parameter in Table 1 and is wrong. The parameters are named `fm_m2` /
-`fm_m3` (rather than the `clrat_<metab>` canonical (spelled
-`f_clform_<metab>` until 2026-09-11) used when a formation arm genuinely
-sits *alongside* the elimination arm) precisely because the denominator
-each one divides is the parent’s whole clearance; see the `fm_<pathway>`
-entry in `inst/references/parameter-names.md`.
+`fm_m3` (rather than the `clrat_<metab>` canonical used when a formation
+arm genuinely sits *alongside* the elimination arm) precisely because
+the denominator each one divides is the parent’s whole clearance; see
+the `fm_<pathway>` entry in `inst/references/parameter-names.md`.
 
 ## Units: a molar model validated against a mass-unit table
 

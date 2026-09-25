@@ -3447,8 +3447,8 @@ was not perturbed by a residual term).</p>
 </h3>
 <p>Every number in the table above depends on <code>cl_dialysis</code>
 actually being added to systemic clearance while the CRRT circuit runs.
-Until 2026-09-12 it was not: the model assigned the gated total to a
-separate <code>cl_total</code> while defining both <code>cl</code> and
+In an earlier revision it was not: the model assigned the gated total to
+a separate <code>cl_total</code> while defining both <code>cl</code> and
 <code>vc</code>, so rxode2 solved the two-compartment system with its
 analytic linear kernel from that pair and discarded the explicit
 <code>d/dt()</code>. The <code>cl_total</code> and <code>kel</code>
@@ -3481,7 +3481,7 @@ what the model silently computed before that date.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Structural, and the assertion this vignette previously lacked: switching</span></span>
-<span>  <span class="co"># the circuit off must change the solution. Before 2026-09-12 this ratio was</span></span>
+<span>  <span class="co"># the circuit off must change the solution. In that earlier revision this ratio was</span></span>
 <span>  <span class="co"># exactly 1 for every regimen, for any value of CLdial.</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">gate_compare</span><span class="op">$</span><span class="va">ratio</span> <span class="op">&gt;</span> <span class="fl">1.4</span><span class="op">)</span>,</span>
 <span>  <span class="co"># Attainment reproduces the published Table 3 column to within rounding.</span></span>
@@ -3502,14 +3502,15 @@ what the model silently computed before that date.</p>
 <span>                <span class="st">"Ratio"</span> <span class="op">=</span> <span class="va">ratio</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>    digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>    caption <span class="op">=</span> <span class="st">"Median unbound ertapenem at 24 h with the CRRT circuit running and with it switched off. The right-hand column is the behaviour the packaged model silently had before 2026-09-12; ignoring the dialytic arm inflates the 24-h unbound concentration by roughly two-fold."</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Median unbound ertapenem at 24 h with the CRRT circuit running and with it switched off. The right-hand column is the behaviour an earlier revision of the packaged model silently had; ignoring the dialytic arm inflates the 24-h unbound concentration by roughly two-fold."</span>,</span>
 <span>    align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Median unbound ertapenem at 24 h with the CRRT circuit running
-and with it switched off. The right-hand column is the behaviour the
-packaged model silently had before 2026-09-12; ignoring the dialytic arm
-inflates the 24-h unbound concentration by roughly two-fold.</caption>
+and with it switched off. The right-hand column is the behaviour an
+earlier revision of the packaged model silently had; ignoring the
+dialytic arm inflates the 24-h unbound concentration by roughly
+two-fold.</caption>
 <colgroup>
 <col width="13%">
 <col width="39%">

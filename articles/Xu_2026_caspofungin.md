@@ -1015,7 +1015,7 @@ stopifnot(
   # NOT on the thresholded PTA percentages: at these MIC90 values both arms sit
   # at 93-100% attainment, so the two percentages differ by only 1-4 subjects
   # out of 200 and their ORDER flips with the rxode2 thread count. Measured
-  # 2026-09-13, ECMO / Non-ECMO PTA at C. parapsilosis: 95.5/97.5 at 1 thread,
+  # ECMO / Non-ECMO PTA at C. parapsilosis: 95.5/97.5 at 1 thread,
   # 97.0/96.0 at 2, 93.5/96.0 at 4, 97.5/96.0 at 8, 96.0/97.5 at 28 -- and at 4
   # threads the C. albicans and C. glabrata rows invert too (100/99.5). The
   # median ratio over that same sweep is stable at 0.83-0.96, always below 1.

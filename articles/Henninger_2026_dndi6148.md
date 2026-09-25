@@ -691,7 +691,7 @@ Simulated vs published human AUCss,0-24h (Henninger 2026 Results 3.2.6).
 # The simulated median sits a few percent below the published AUC: the trapezoidal
 # rule on a discrete grid cannot recover the absorption peak exactly, and the
 # closed-form check above already pins Dose/CL. The observation grid is hourly
-# (it was 6-hourly until 2026-09-18, which missed the peak badly enough to bias
+# (a 6-hourly grid missed the peak badly enough to bias
 # the 4 mg/kg arm by -10.0% and trip this gate; the mouse arm above uses 0.5 h).
 # Hourly is converged -- halving the step again to 0.5 h moves the
 # worst arm by 0.1 percentage points, from -5.51% to -5.41%.

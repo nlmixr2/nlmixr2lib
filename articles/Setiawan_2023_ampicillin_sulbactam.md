@@ -170,12 +170,11 @@ typ_sul <- solve_typical("Setiawan_2023_sulbactam", 500, 1.4)
 
 ### The peripheral compartment is actually solved
 
-`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the
-conversion opt-in in September 2026 (issue 1389) and can silently
-collapse a two-compartment system into a one-compartment closed form
-when the peripheral transfer is written straight from stored
-micro-constants. Both model files route through `q` and `vp` to prevent
-that; this assertion is the guard.
+`rxSolve()` with `useLinCmt = TRUE` can silently collapse a
+two-compartment system into a one-compartment closed form when the
+peripheral transfer is written straight from stored micro-constants.
+Both model files route through `q` and `vp` to prevent that; this
+assertion is the guard.
 
 ``` r
 

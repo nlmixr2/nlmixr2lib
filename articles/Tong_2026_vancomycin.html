@@ -3554,14 +3554,13 @@ conventions, and the Carreno k12 / k21 to Q / Vp derivation.</p>
 <div class="section level2">
 <h2 id="check-1b-the-closed-form-and-ode-solvers-agree">Check 1b: the closed-form and ODE solvers agree<a class="anchor" aria-label="anchor" href="#check-1b-the-closed-form-and-ode-solvers-agree"></a>
 </h2>
-<p><code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code> defaulted to <code>useLinCmt = TRUE</code>
-until rxode2 made the conversion opt-in in September 2026 (issue 1389),
-which rewrites a recognisably linear two-compartment system into a
-closed form. When such a model is written straight from stored
-micro-constants, that rewrite can silently drop <code>peripheral1</code>
-and solve a <em>one-compartment</em> model instead – with total AUC
-unchanged, so an exposure check will not catch it. The readout that
-moves is the terminal half-life.</p>
+<p><code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code> with <code>useLinCmt = TRUE</code> rewrites a
+recognisably linear two-compartment system into a closed form. When such
+a model is written straight from stored micro-constants, that rewrite
+can silently drop <code>peripheral1</code> and solve a
+<em>one-compartment</em> model instead – with total AUC unchanged, so an
+exposure check will not catch it. The readout that moves is the terminal
+half-life.</p>
 <p>All four models are therefore written so the peripheral transfer is
 expressed as <code>q</code> and <code>vp</code>, and the equivalence is
 asserted mechanically rather than assumed. This is a regression gate: an
@@ -4552,13 +4551,13 @@ stored fixed effects, matching <code>$THETA(3)</code> and
 <code>$THETA(4)</code>, but computes <code>q = k12 * vc</code> and
 <code>vp = q / k21</code> and drives the ODEs from those. This is an
 exact algebraic re-routing, not a change of model, and it is necessary:
-written the literal way, <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code>’s former default
-<code>useLinCmt = TRUE</code> rewrite (opt-in since September 2026)
-drops <code>peripheral1</code> and silently solves a one-compartment
-model (terminal half-life 5.22 h against a true 13.82 h, Cmax 52.8
-against 27.1 mg/L). Because total AUC is unaffected by that collapse, an
-exposure check would not reveal it, so Check 1b asserts the half-life
-against the analytic beta root instead.</p>
+written the literal way, <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code>’s
+<code>useLinCmt = TRUE</code> rewrite drops <code>peripheral1</code> and
+silently solves a one-compartment model (terminal half-life 5.22 h
+against a true 13.82 h, Cmax 52.8 against 27.1 mg/L). Because total AUC
+is unaffected by that collapse, an exposure check would not reveal it,
+so Check 1b asserts the half-life against the analytic beta root
+instead.</p>
 <p><strong>The AUC accumulator compartment is omitted.</strong> Three of
 the four streams declare a third state, <code>DADT(3) = A(1)/V</code>,
 which integrates concentration to give AUC for MIPD reporting. It is a

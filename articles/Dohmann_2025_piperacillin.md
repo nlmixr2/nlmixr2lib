@@ -762,7 +762,7 @@ solve_hd <- function(co, dose, tinf, tau, days = 4, supp_dose = 0,
   # switched on at the first session and never switched back off, leaving the
   # subject dialysing continuously through the run-in. That produced a
   # spuriously depleted concentration at the start of the evaluated interval.
-  # The bug was invisible until 2026-09-12 because the dialysis arm itself was
+  # The bug was invisible in earlier revisions because the dialysis arm itself was
   # inert (see the errata section). The gate is piecewise constant, so records
   # at the transitions are sufficient -- no dense run-in grid is needed.
   ev <- rxode2::et(ev, sort(unique(c(hd_start, hd_start + hd_dur))),
@@ -809,7 +809,7 @@ hd_rows <- hd_row_for(TRUE)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 hd_rows$published <- c(99.8, 100.0, 99.7, 99.9)
 # The same four regimens with the dialysis arm switched off. This is exactly
-# the behaviour the packaged model silently had before 2026-09-12, and it is
+# the behaviour an earlier revision of the packaged model silently had, and it is
 # what this row is supposed to be testing.
 hd_rows$gate_off <- hd_row_for(FALSE)$simulated
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
@@ -822,7 +822,7 @@ knitr::kable(
                 "Simulated (%)" = simulated, "Published (%)" = published,
                 "Gate forced off (%)" = gate_off),
   digits = 1,
-  caption = "Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The final column is the same simulation with the CL_HD arm switched off, which is what the model silently computed before 2026-09-12."
+  caption = "Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The final column is the same simulation with the CL_HD arm switched off, which is what an earlier revision of the model silently computed."
 )
 ```
 
@@ -835,7 +835,7 @@ knitr::kable(
 
 Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The final
 column is the same simulation with the CL_HD arm switched off, which is
-what the model silently computed before 2026-09-12. {.table}
+what an earlier revision of the model silently computed. {.table}
 
 ``` r
 
@@ -844,8 +844,8 @@ hd_err <- hd_rows$simulated - hd_rows$published
 
 stopifnot(
   # STRUCTURAL, and the assertion this row was always meant to carry: the
-  # dialysis arm has to actually change attainment somewhere. Before
-  # 2026-09-12 the gate was inert, so this row agreed with the paper for the
+  # dialysis arm has to actually change attainment somewhere. In earlier
+  # revisions the gate was inert, so this row agreed with the paper for the
   # wrong reason and could not have gone red for any value of CL_HD.
   max(abs(hd_rows$simulated - hd_rows$gate_off)) > 1,
   # Three of the four cells reproduce to well under a percentage point. The
@@ -871,10 +871,10 @@ infusion – nothing fixes which of the three daily q8-h intervals the
 session falls in, and this vignette deliberately evaluates the most
 stringent one. No parameter was adjusted to close the gap.
 
-The final column is the load-bearing part. Until 2026-09-12 this model
-assigned the gated total to a separate `cl_total` while defining both
-`cl` and `vc`, so rxode2 solved the system analytically from that pair
-and discarded the explicit `d/dt()`: the `CL_HD` arm contributed
+The final column is the load-bearing part. An earlier revision of this
+model assigned the gated total to a separate `cl_total` while defining
+both `cl` and `vc`, so rxode2 solved the system analytically from that
+pair and discarded the explicit `d/dt()`: the `CL_HD` arm contributed
 nothing, and this row reported ~100% in every cell no matter what
 `CL_HD` was set to. It agreed with the paper for the wrong reason. The
 gate-off column now makes the arm’s contribution visible, and
@@ -1195,9 +1195,9 @@ The vertical dashed line is the 16 mg/L P. aeruginosa breakpoint.
 
 ## Assumptions, deviations and errata
 
-### Two defects corrected on 2026-09-12 (affects every number above)
+### Two defects corrected in an earlier revision (affects every number above)
 
-Every simulated value in this vignette changed on 2026-09-12. Two
+Every simulated value in this vignette changed with that correction. Two
 independent defects, one in the model file and one in this vignette’s
 event construction, had between them made the haemodialysis arm of this
 analysis inoperative. Neither was visible in any output; both are now

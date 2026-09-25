@@ -265,16 +265,14 @@ stopifnot(dplyr::n_distinct(sim$id) == n_arm)
 
 ### Two-compartment disposition is preserved
 
-`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the
-conversion opt-in in September 2026 (issue 1389), which rewrites a
-recognisably-linear compartment system into a closed form. A
-two-compartment body written with `k12` / `k21` micro-constants is
-silently reduced to one compartment, and because total AUC still equals
-`Dose / CL` the usual sanity check does not notice. The model file
-therefore writes the transfer terms in macro form (`q / vc`, `q / vp`).
-The assertion below is the regression guard: the simulated terminal
-slope must equal the analytic beta root of the two-compartment system,
-not `log(2) / kel`.
+`rxSolve()` with `useLinCmt = TRUE` rewrites a recognisably-linear
+compartment system into a closed form. A two-compartment body written
+with `k12` / `k21` micro-constants is silently reduced to one
+compartment, and because total AUC still equals `Dose / CL` the usual
+sanity check does not notice. The model file therefore writes the
+transfer terms in macro form (`q / vc`, `q / vp`). The assertion below
+is the regression guard: the simulated terminal slope must equal the
+analytic beta root of the two-compartment system, not `log(2) / kel`.
 
 ``` r
 

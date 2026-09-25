@@ -936,7 +936,7 @@ by Figure 3, which plots both matrices on one shared 0-40 mg/L axis with
 the saliva median only slightly above plasma. Dividing by `vc` gives
 1.2418, matching the paper’s own independently reported 1.27 (95% CI
 1.09-1.44) to 2%. The model encodes `Csaliva <- saliva / vc`.
-Operator-ratified (sidecar `request-001` q2, 2026-09-02).
+Maintainer-ratified.
 
 ### Other assumptions
 

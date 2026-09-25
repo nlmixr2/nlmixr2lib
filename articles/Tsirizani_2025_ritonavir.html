@@ -3275,7 +3275,7 @@ rather than atazanavir raising it.</p>
 <span><span class="co">#&gt;     Cc ~ add(addSd) + prop(propSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55d5e56c0990&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x5602f4a10c10&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3800,8 +3800,8 @@ morning dose is <code>OCC = 2</code>.</p>
 <span><span class="co">#&gt; [1] 73950</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20250926</span><span class="op">)</span></span>
-<span><span class="co"># Solved on rxode2's analytic linCmt() path on purpose. Since September 2026 the</span></span>
-<span><span class="co"># default is numeric integration, and for this event table the numeric path is</span></span>
+<span><span class="co"># Solved on rxode2's analytic linCmt() path on purpose. rxode2 integrates ODE</span></span>
+<span><span class="co"># models numerically by default, and for this event table the numeric path is</span></span>
 <span><span class="co"># defective: the occasion-switched ka changes at the OCC record times while the</span></span>
 <span><span class="co"># lag-shifted doses land between them, so liblsoda meets the parameter jump</span></span>
 <span><span class="co"># inside a step ("corrector convergence failed"), returns NA for 72 of the 170</span></span>
@@ -3809,7 +3809,7 @@ morning dose is <code>OCC = 2</code>.</p>
 <span><span class="co"># steady-state AUC identity. The analytic solution is exact for this structure</span></span>
 <span><span class="co"># (lag, zero- then first-order input, two compartments) and agrees with the ODE</span></span>
 <span><span class="co"># on the once-daily arms, where the ODE does integrate, to a median 6e-8 and a</span></span>
-<span><span class="co"># maximum 3e-6 relative (checked 2026-09-24).</span></span>
+<span><span class="co"># maximum 3e-6 relative.</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">events</span>, addDosing <span class="op">=</span> <span class="cn">FALSE</span>, useLinCmt <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -5012,14 +5012,14 @@ singular; Table 3 lists no such rows either.</li>
 <li>
 <strong>Solver path.</strong> Both simulations request rxode2’s
 analytic <code>linCmt()</code> solution explicitly. rxode2 integrates
-ODE models numerically by default since September 2026, and for this
-event table the numeric path fails: the occasion-switched
-<code>ka</code> changes at the <code>OCC</code> record times while the
-lag-shifted doses fall between them, so the integrator meets the jump
-inside a step and returns <code>NA</code> for 72 of the 170 twice-daily
-children. The analytic solution is exact for this model structure and
-agrees with the numeric solution on the once-daily arms to better than
-3e-6 (see the comment in the <code>simulate</code> chunk).</li>
+ODE models numerically by default, and for this event table the numeric
+path fails: the occasion-switched <code>ka</code> changes at the
+<code>OCC</code> record times while the lag-shifted doses fall between
+them, so the integrator meets the jump inside a step and returns
+<code>NA</code> for 72 of the 170 twice-daily children. The analytic
+solution is exact for this model structure and agrees with the numeric
+solution on the once-daily arms to better than 3e-6 (see the comment in
+the <code>simulate</code> chunk).</li>
 <li>
 <strong>Occasion assignment during the simulated run-in.</strong>
 <code>OCC</code> both selects the BOV eta and identifies the evening

@@ -3353,12 +3353,12 @@ the start of infusion are the second clinical anchor:</p>
 <h3 id="the-dialysis-gate-is-load-bearing">The dialysis gate is load-bearing<a class="anchor" aria-label="anchor" href="#the-dialysis-gate-is-load-bearing"></a>
 </h3>
 <p>Everything above depends on the dialysis-clearance arm actually being
-applied while a session runs. Until 2026-09-12 it was not: the model
-carried the gated sum in a separate <code>cl_total</code> and rxode2
-solved the system analytically from <code>cl</code> and <code>vc</code>,
-discarding the explicit <code>d/dt()</code>, so the reported
-<code>cl_total</code> and <code>kel</code> columns switched with the
-gate while the simulated amounts did not. The check below is
+applied while a session runs. In an earlier revision it was not: the
+model carried the gated sum in a separate <code>cl_total</code> and
+rxode2 solved the system analytically from <code>cl</code> and
+<code>vc</code>, discarding the explicit <code>d/dt()</code>, so the
+reported <code>cl_total</code> and <code>kel</code> columns switched
+with the gate while the simulated amounts did not. The check below is
 deterministic – it solves the typical subject with the random effects
 zeroed, so both sides use the same parameters and the comparison is pure
 structure, not a draw that can shift between rxode2 builds.</p>
@@ -3390,7 +3390,7 @@ structure, not a draw that can shift between rxode2 builds.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Structural: the dialysis arm must move the solution at all. This is the</span></span>
-<span>  <span class="co"># assertion the pre-2026-09-12 model failed, silently.</span></span>
+<span>  <span class="co"># assertion that earlier revision failed, silently.</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">gate_check</span><span class="op">$</span><span class="va">Gate_live</span> <span class="op">-</span> <span class="va">gate_check</span><span class="op">$</span><span class="va">Gate_inert</span><span class="op">)</span> <span class="op">/</span></span>
 <span>        <span class="va">gate_check</span><span class="op">$</span><span class="va">Gate_inert</span> <span class="op">&gt;</span> <span class="fl">0.25</span><span class="op">)</span>,</span>
 <span>  <span class="co"># The typical-value solve reproduces the published cohort means. Tight</span></span>
@@ -3403,13 +3403,13 @@ structure, not a draw that can shift between rxode2 builds.</p>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">gate_check</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Typical-subject exposure with the dialysis gate live, with it forced off (the behaviour the model silently had before 2026-09-12), and the Veinstein 2013 published values. Ignoring the dialysis arm over-predicts AUC0-24 roughly 2.5-fold and the 24-h trough roughly 3-fold."</span>,</span>
+<span>  caption <span class="op">=</span> <span class="st">"Typical-subject exposure with the dialysis gate live, with it forced off (the behaviour an earlier revision of the model silently had), and the Veinstein 2013 published values. Ignoring the dialysis arm over-predicts AUC0-24 roughly 2.5-fold and the 24-h trough roughly 3-fold."</span>,</span>
 <span>  align <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Typical-subject exposure with the dialysis gate live, with it
-forced off (the behaviour the model silently had before 2026-09-12), and
-the Veinstein 2013 published values. Ignoring the dialysis arm
+forced off (the behaviour an earlier revision of the model silently
+had), and the Veinstein 2013 published values. Ignoring the dialysis arm
 over-predicts AUC0-24 roughly 2.5-fold and the 24-h trough roughly
 3-fold.</caption>
 <thead><tr class="header">
@@ -3462,10 +3462,10 @@ arm.</strong> The packaged model writes the gated total directly into
 <code>cl &lt;- exp(lcl + etalcl) * WT + RRT_HEMODIAL_ACTIVE * cl_hemodialysis</code>,
 where <code>cl_hemodialysis</code> is a primary estimated typical-value
 clearance (Table 4 CL_HD = 0.955 mL/min/kg). The single assignment is
-load-bearing and not a stylistic choice: until 2026-09-12 this model
-carried the gated sum in a separate <code>cl_total</code> variable and
-eliminated via <code>cl_total / vc</code>, which left the dialysis arm
-<strong>silently inert</strong> – rxode2 solved the one-compartment
+load-bearing and not a stylistic choice: an earlier revision of this
+model carried the gated sum in a separate <code>cl_total</code> variable
+and eliminated via <code>cl_total / vc</code>, which left the dialysis
+arm <strong>silently inert</strong> – rxode2 solved the one-compartment
 system analytically from <code>cl</code> and <code>vc</code> and
 discarded the explicit <code>d/dt()</code>, so the reported
 <code>cl_total</code> and <code>kel</code> columns switched with the

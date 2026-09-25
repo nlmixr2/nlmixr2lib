@@ -26,7 +26,7 @@ roughly 5 fold in Tmax.
 
 The values are shipped verbatim anyway, under the standing rule that
 printed values have authority and that figure-fitting never overrides
-print (operator ruling, 2026-09-02). Refitting to the figure would
+print (a standing maintainer rule). Refitting to the figure would
 produce an original model rather than this paper’s model.
 
 Consequently **this vignette validates self-consistency, not agreement
@@ -864,10 +864,10 @@ ug/mL and on the `AUC = Dose/CL` identity.
 - **The packaged parameter set does not reproduce the source paper’s own
   figures or its quoted steady-state concentrations.** Values are
   shipped verbatim from supplementary Table S3 per the standing rule
-  that printed values have authority over figures (operator ruling,
-  2026-09-02, in preference to deferring for author correspondence). The
-  full quantitative demonstration is in the Errata section above. This
-  vignette gates on self-consistency and on the paper’s published
+  that printed values have authority over figures (a standing maintainer
+  rule, applied in preference to deferring for author correspondence).
+  The full quantitative demonstration is in the Errata section above.
+  This vignette gates on self-consistency and on the paper’s published
   covariate ratios; it deliberately does **not** gate on reproducing
   Figures 1-2.
 - **Between-subject variances** are back-calculated from Table S3’s

@@ -3104,11 +3104,11 @@ dataset (Table 2).</p>
 </h2>
 <p>Build one event table per subject (dose every 14 days for 24 weeks,
 with Cc and ANC sampled weekly) and solve each subject independently,
-then concatenate. This per-subject loop sidesteps a pre-existing rxode2
-issue in which multi-endpoint models with more than two subjects in a
-single <code>rxSolve</code> call abort in the C solver. Each call
-samples a fresh set of IIV etas from the model’s omega specification, so
-the pooled result is equivalent to the typical “sample N subjects”
+then concatenate. This per-subject loop sidesteps an rxode2 defect in
+which multi-endpoint models with more than two subjects in a single
+<code>rxSolve</code> call abort in the C solver. Each call samples a
+fresh set of IIV etas from the model’s omega specification, so the
+pooled result is equivalent to the typical “sample N subjects”
 workflow.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Ma_2020_sarilumab_anc"</span><span class="op">)</span></span>

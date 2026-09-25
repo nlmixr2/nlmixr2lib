@@ -1345,10 +1345,10 @@ transcribed NCA table.
   Rewriting the ODE did not help: an explicit rate variable and a
   clearance-form denominator were both tested and were converted
   identically, so the flag was the only mitigation. rxode2 now 5.1.7
-  refuses the conversion when it would change the model (rxode2
-  issue 1370) and the flag is no longer required; this vignette keeps it
-  so that it stays correct on older installations. This was always a
-  property of the solver’s default, not of the published model.
+  refuses the conversion when it would change the model and the flag is
+  no longer required; this vignette keeps it so that it stays correct on
+  older installations. This was always a property of the solver’s
+  default, not of the published model.
 - **Equation (2), not Equation (3).** The packaged model integrates the
   instantaneous rate constant `k*(t)` of Equation (2). Equation (3)‘s
   `k'(t)` is a running time-average that exists only to give `saemix` a

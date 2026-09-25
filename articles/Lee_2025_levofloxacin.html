@@ -3248,17 +3248,16 @@ roughly three-fold beyond the observed 74.8 to 113 mL/min.</p>
 <div class="section level3">
 <h3 id="two-compartment-disposition-is-preserved">Two-compartment disposition is preserved<a class="anchor" aria-label="anchor" href="#two-compartment-disposition-is-preserved"></a>
 </h3>
-<p><code>rxSolve()</code> defaulted to <code>useLinCmt = TRUE</code>
-until rxode2 made the conversion opt-in in September 2026 (issue 1389),
-which rewrites a recognisably-linear compartment system into a closed
-form. A two-compartment body written with <code>k12</code> /
-<code>k21</code> micro-constants is silently reduced to one compartment,
-and because total AUC still equals <code>Dose / CL</code> the usual
-sanity check does not notice. The model file therefore writes the
-transfer terms in macro form (<code>q / vc</code>, <code>q / vp</code>).
-The assertion below is the regression guard: the simulated terminal
-slope must equal the analytic beta root of the two-compartment system,
-not <code>log(2) / kel</code>.</p>
+<p><code>rxSolve()</code> with <code>useLinCmt = TRUE</code> rewrites a
+recognisably-linear compartment system into a closed form. A
+two-compartment body written with <code>k12</code> / <code>k21</code>
+micro-constants is silently reduced to one compartment, and because
+total AUC still equals <code>Dose / CL</code> the usual sanity check
+does not notice. The model file therefore writes the transfer terms in
+macro form (<code>q / vc</code>, <code>q / vp</code>). The assertion
+below is the regression guard: the simulated terminal slope must equal
+the analytic beta root of the two-compartment system, not
+<code>log(2) / kel</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kel</span> <span class="op">&lt;-</span> <span class="va">pub</span><span class="op">$</span><span class="va">cl_ref</span> <span class="op">/</span> <span class="va">pub</span><span class="op">$</span><span class="va">v1</span></span>
 <span><span class="va">k12</span> <span class="op">&lt;-</span> <span class="va">pub</span><span class="op">$</span><span class="va">q</span>      <span class="op">/</span> <span class="va">pub</span><span class="op">$</span><span class="va">v1</span></span>

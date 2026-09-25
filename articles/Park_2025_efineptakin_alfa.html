@@ -3472,10 +3472,9 @@ is the published one.</p>
 <div class="section level3">
 <h3 id="the-default-solver-path-agrees-with-the-explicit-ode-path">5. The default solver path agrees with the explicit-ODE path<a class="anchor" aria-label="anchor" href="#the-default-solver-path-agrees-with-the-explicit-ode-path"></a>
 </h3>
-<p><code>rxSolve()</code> defaulted to <code>useLinCmt = TRUE</code>
-until rxode2 made the conversion opt-in in September 2026 (issue 1389),
-which rewrites a recognisably linear system into a closed form. On a
-plain two-compartment model whose peripheral transfer is written as the
+<p><code>rxSolve()</code> with <code>useLinCmt = TRUE</code> rewrites a
+recognisably linear system into a closed form. On a plain
+two-compartment model whose peripheral transfer is written as the
 micro-constants <code>k12</code> / <code>k21</code>, that rewrite is
 known to drop <code>peripheral1</code> and silently solve a
 <em>one</em>-compartment model – and total AUC is unaffected, so the
@@ -4336,18 +4335,18 @@ above.</li>
 <li>
 <strong><code>useLinCmt = FALSE</code></strong> is passed to every
 <code>rxSolve()</code> call for explicitness, not because the default is
-wrong here. <code>rxSolve()</code>’s former default
-<code>useLinCmt = TRUE</code> (opt-in since September 2026) is known to
-silently drop the peripheral compartment of a two-compartment model
-written with <code>k12</code> / <code>k21</code> micro-constants, and
-this model does write those names inside <code>model()</code>. It is
-<strong>not</strong> affected: the structural checks above assert that
-the default path and the explicit-ODE path agree to better than 1e-10 on
-both endpoints and that <code>peripheral1</code> survives, so a
-downstream user calling plain <code>rxSolve(readModelDb(...), ev)</code>
-gets the same answer this vignette reports. <code>ini()</code> stores
-<code>lq</code> / <code>lvp</code> rather than <code>lk12</code> /
-<code>lk21</code> for the same reason.</li>
+wrong here. <code>rxSolve()</code>’s <code>useLinCmt = TRUE</code>
+conversion is known to silently drop the peripheral compartment of a
+two-compartment model written with <code>k12</code> / <code>k21</code>
+micro-constants, and this model does write those names inside
+<code>model()</code>. It is <strong>not</strong> affected: the
+structural checks above assert that the default path and the
+explicit-ODE path agree to better than 1e-10 on both endpoints and that
+<code>peripheral1</code> survives, so a downstream user calling plain
+<code>rxSolve(readModelDb(...), ev)</code> gets the same answer this
+vignette reports. <code>ini()</code> stores <code>lq</code> /
+<code>lvp</code> rather than <code>lk12</code> / <code>lk21</code> for
+the same reason.</li>
 </ul>
 </div>
 </div>

@@ -3095,7 +3095,7 @@ implementation rather than the simulation setup.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Gate 2 -- terminal half-life must equal the analytic beta root of the</span></span>
 <span><span class="co">## two-compartment system. This is the mechanical guard against rxSolve's</span></span>
-<span><span class="co">## former default useLinCmt = TRUE (opt-in since September 2026) silently collapsing a k12/k21-parameterised</span></span>
+<span><span class="co">## useLinCmt = TRUE conversion silently collapsing a k12/k21-parameterised</span></span>
 <span><span class="co">## two-compartment model to one compartment: under a collapse the simulated</span></span>
 <span><span class="co">## terminal half-life comes back equal to log(2)/kel instead.</span></span>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fl">0.248</span>; <span class="va">vc</span> <span class="op">&lt;-</span> <span class="fl">1.87</span>; <span class="va">vp</span> <span class="op">&lt;-</span> <span class="fl">1.96</span>; <span class="va">q</span> <span class="op">&lt;-</span> <span class="fl">0.599</span></span>

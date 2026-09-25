@@ -3192,8 +3192,7 @@ wrong.</p>
 <p>The paper’s total clearance is additive,
 <code>CLtot = CL + CLdial</code>, with the dialysis arm contributing
 only while a session runs. When rxode2’s ODE-to-<code>linCmt()</code>
-conversion is enabled (<code>useLinCmt = TRUE</code>; the default until
-rxode2 made it opt-in in September 2026, issue 1389) it recognises the
+conversion is enabled (<code>useLinCmt = TRUE</code>) it recognises the
 joint presence of <code>cl</code> and <code>vc</code> and solves the
 one-compartment system analytically from that pair, <strong>discarding
 the explicit <code>d/dt()</code></strong>. A model that assigns only the

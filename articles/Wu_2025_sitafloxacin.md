@@ -321,7 +321,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x561523088770>
+#> <environment: 0x55fa610771d0>
 ```
 
 ## Population
@@ -667,15 +667,14 @@ stopifnot(max_conc_before_lag == 0, min_conc_after_lag > 0)
 
 ### Falsifier: the peripheral compartment is actually solved
 
-`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the
-conversion opt-in in September 2026 (issue 1389), which rewrites a
-recognisably linear system into closed form. On some two-compartment
-models written with micro-constants that rewrite silently drops the
-peripheral compartment and solves a one-compartment model instead. Total
-AUC is unaffected by that failure (it is still exactly dose / CL), so
-the `AUC24h = daily dose / CL` identity above cannot detect it – the
-only readout that moves decisively is the terminal half-life, which
-comes back equal to `log(2) / kel`.
+`rxSolve()` with `useLinCmt = TRUE` rewrites a recognisably linear
+system into closed form. On some two-compartment models written with
+micro-constants that rewrite silently drops the peripheral compartment
+and solves a one-compartment model instead. Total AUC is unaffected by
+that failure (it is still exactly dose / CL), so the
+`AUC24h = daily dose / CL` identity above cannot detect it – the only
+readout that moves decisively is the terminal half-life, which comes
+back equal to `log(2) / kel`.
 
 The check below compares the simulated terminal slope against the
 analytic beta root of `x^2 - (kel + k12 + k21) x + kel * k21 = 0`

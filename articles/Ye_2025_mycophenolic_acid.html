@@ -3308,11 +3308,10 @@ body weight enters Vp/F only.</caption>
 <p>The model writes an explicit three-state ODE system, but its
 <code>cl</code>/<code>vc</code>/<code>q</code>/<code>vp</code>
 parameterisation also matches rxode2’s linear-compartment solver, which
-<code>rxSolve()</code> may substitute automatically (with
-<code>useLinCmt = TRUE</code>, the default until rxode2 made the
-conversion opt-in). The substitution is only safe if the hand-written
-ODE rates really are the standard two-compartment rates, so that is
-checked rather than assumed.</p>
+<code>rxSolve()</code> may substitute (with
+<code>useLinCmt = TRUE</code>). The substitution is only safe if the
+hand-written ODE rates really are the standard two-compartment rates, so
+that is checked rather than assumed.</p>
 <p>The check runs on an explicit q12h schedule rather than on the
 <code>ss = 1</code> records used above, because the two solvers reach
 steady state by different routes: the analytic solver computes it in

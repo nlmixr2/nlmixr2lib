@@ -805,11 +805,11 @@ and `Km`. Every other row carries its unit. The blank cells were
 confirmed against a 400 dpi render of the table, so no exponent was lost
 in text extraction.
 
-The operator ruled on 2026-09-05 that `Vmax` should be **derived from
-the authors’ own published output and flagged as non-paper provenance**,
-as a narrow exception to the standing printed-values-have-authority
-rule: an unlabelled number that no unit assignment can reconcile is not
-a value that can be encoded at all.
+The maintainers ruled that `Vmax` should be **derived from the authors’
+own published output and flagged as non-paper provenance**, as a narrow
+exception to the standing printed-values-have-authority rule: an
+unlabelled number that no unit assignment can reconcile is not a value
+that can be encoded at all.
 
 **Derivation.** With every other parameter held at its printed value,
 `Vmax` was chosen to minimise the sum of squared log-ratios between this

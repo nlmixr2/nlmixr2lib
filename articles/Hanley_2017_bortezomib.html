@@ -3682,7 +3682,7 @@ whereas a mis-transcribed volume, dose or unit would move individual
 rows by tens of percent.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assertions on cohort geometric means, so the bound must admit the eta draw.</span></span>
-<span><span class="co"># Measured 2026-09-16 at 1, 2 and 16 solver threads: -6.5 / -1.0 / -4.5 / +0.2 /</span></span>
+<span><span class="co"># Measured at 1, 2 and 16 solver threads: -6.5 / -1.0 / -4.5 / +0.2 /</span></span>
 <span><span class="co"># +5.7 percent on the five rows, IDENTICAL at all three thread counts (the BSA</span></span>
 <span><span class="co"># draw is R's RNG, which is thread-independent, and a 104-subject geometric mean</span></span>
 <span><span class="co"># is insensitive to the eta partitioning). Worst observed magnitude 6.5%, and</span></span>

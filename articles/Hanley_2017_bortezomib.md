@@ -635,7 +635,7 @@ rows by tens of percent.
 ``` r
 
 # Assertions on cohort geometric means, so the bound must admit the eta draw.
-# Measured 2026-09-16 at 1, 2 and 16 solver threads: -6.5 / -1.0 / -4.5 / +0.2 /
+# Measured at 1, 2 and 16 solver threads: -6.5 / -1.0 / -4.5 / +0.2 /
 # +5.7 percent on the five rows, IDENTICAL at all three thread counts (the BSA
 # draw is R's RNG, which is thread-independent, and a 104-subject geometric mean
 # is insensitive to the eta partitioning). Worst observed magnitude 6.5%, and

@@ -1017,9 +1017,8 @@ range Figure 3 plots. The driven form is what the model file encodes.
 structural estimates are used exactly as published; only the unprinted
 `$DES` was reconstructed. The same reading is already operator-ratified
 for this group’s companion linezolid model
-(`modellib("Nguyen_2026_linezolid")`, sidecar `request-001` q2,
-2026-09-02), which carries the identical Figure 1 language and an
-identically abridged control stream.
+(`modellib("Nguyen_2026_linezolid")`), which carries the identical
+Figure 1 language and an identically abridged control stream.
 
 ### Saliva concentration scaling
 

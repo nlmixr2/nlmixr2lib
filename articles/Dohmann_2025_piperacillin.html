@@ -3929,7 +3929,7 @@ after the session ends.</p>
 <span>  <span class="co"># switched on at the first session and never switched back off, leaving the</span></span>
 <span>  <span class="co"># subject dialysing continuously through the run-in. That produced a</span></span>
 <span>  <span class="co"># spuriously depleted concentration at the start of the evaluated interval.</span></span>
-<span>  <span class="co"># The bug was invisible until 2026-09-12 because the dialysis arm itself was</span></span>
+<span>  <span class="co"># The bug was invisible in earlier revisions because the dialysis arm itself was</span></span>
 <span>  <span class="co"># inert (see the errata section). The gate is piecewise constant, so records</span></span>
 <span>  <span class="co"># at the transitions are sufficient -- no dense run-in grid is needed.</span></span>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="va">ev</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">hd_start</span>, <span class="va">hd_start</span> <span class="op">+</span> <span class="va">hd_dur</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -3976,7 +3976,7 @@ after the session ends.</p>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'</span></span>
 <span><span class="va">hd_rows</span><span class="op">$</span><span class="va">published</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">99.8</span>, <span class="fl">100.0</span>, <span class="fl">99.7</span>, <span class="fl">99.9</span><span class="op">)</span></span>
 <span><span class="co"># The same four regimens with the dialysis arm switched off. This is exactly</span></span>
-<span><span class="co"># the behaviour the packaged model silently had before 2026-09-12, and it is</span></span>
+<span><span class="co"># the behaviour an earlier revision of the packaged model silently had, and it is</span></span>
 <span><span class="co"># what this row is supposed to be testing.</span></span>
 <span><span class="va">hd_rows</span><span class="op">$</span><span class="va">gate_off</span> <span class="op">&lt;-</span> <span class="fu">hd_row_for</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">simulated</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'</span></span>
@@ -3989,12 +3989,13 @@ after the session ends.</p>
 <span>                <span class="st">"Simulated (%)"</span> <span class="op">=</span> <span class="va">simulated</span>, <span class="st">"Published (%)"</span> <span class="op">=</span> <span class="va">published</span>,</span>
 <span>                <span class="st">"Gate forced off (%)"</span> <span class="op">=</span> <span class="va">gate_off</span><span class="op">)</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The final column is the same simulation with the CL_HD arm switched off, which is what the model silently computed before 2026-09-12."</span></span>
+<span>  caption <span class="op">=</span> <span class="st">"Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The final column is the same simulation with the CL_HD arm switched off, which is what an earlier revision of the model silently computed."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The
 final column is the same simulation with the CL_HD arm switched off,
-which is what the model silently computed before 2026-09-12.</caption>
+which is what an earlier revision of the model silently
+computed.</caption>
 <colgroup>
 <col width="33%">
 <col width="19%">
@@ -4040,8 +4041,8 @@ which is what the model silently computed before 2026-09-12.</caption>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="co"># STRUCTURAL, and the assertion this row was always meant to carry: the</span></span>
-<span>  <span class="co"># dialysis arm has to actually change attainment somewhere. Before</span></span>
-<span>  <span class="co"># 2026-09-12 the gate was inert, so this row agreed with the paper for the</span></span>
+<span>  <span class="co"># dialysis arm has to actually change attainment somewhere. In earlier</span></span>
+<span>  <span class="co"># revisions the gate was inert, so this row agreed with the paper for the</span></span>
 <span>  <span class="co"># wrong reason and could not have gone red for any value of CL_HD.</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">hd_rows</span><span class="op">$</span><span class="va">simulated</span> <span class="op">-</span> <span class="va">hd_rows</span><span class="op">$</span><span class="va">gate_off</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span>,</span>
 <span>  <span class="co"># Three of the four cells reproduce to well under a percentage point. The</span></span>
@@ -4064,10 +4065,10 @@ session once daily beginning directly after the end of the piperacillin
 infusion – nothing fixes which of the three daily q8-h intervals the
 session falls in, and this vignette deliberately evaluates the most
 stringent one. No parameter was adjusted to close the gap.</p>
-<p>The final column is the load-bearing part. Until 2026-09-12 this
-model assigned the gated total to a separate <code>cl_total</code> while
-defining both <code>cl</code> and <code>vc</code>, so rxode2 solved the
-system analytically from that pair and discarded the explicit
+<p>The final column is the load-bearing part. An earlier revision of
+this model assigned the gated total to a separate <code>cl_total</code>
+while defining both <code>cl</code> and <code>vc</code>, so rxode2
+solved the system analytically from that pair and discarded the explicit
 <code>d/dt()</code>: the <code>CL_HD</code> arm contributed nothing, and
 this row reported ~100% in every cell no matter what <code>CL_HD</code>
 was set to. It agreed with the paper for the wrong reason. The gate-off
@@ -4560,14 +4561,14 @@ The vertical dashed line is the 16 mg/L P. aeruginosa breakpoint.
 <h2 id="assumptions-deviations-and-errata">Assumptions, deviations and errata<a class="anchor" aria-label="anchor" href="#assumptions-deviations-and-errata"></a>
 </h2>
 <div class="section level3">
-<h3 id="two-defects-corrected-on-2026-09-12-affects-every-number-above">Two defects corrected on 2026-09-12 (affects every number
-above)<a class="anchor" aria-label="anchor" href="#two-defects-corrected-on-2026-09-12-affects-every-number-above"></a>
+<h3 id="two-defects-corrected-in-an-earlier-revision-affects-every-number-above">Two defects corrected in an earlier revision (affects every number
+above)<a class="anchor" aria-label="anchor" href="#two-defects-corrected-in-an-earlier-revision-affects-every-number-above"></a>
 </h3>
-<p>Every simulated value in this vignette changed on 2026-09-12. Two
-independent defects, one in the model file and one in this vignette’s
-event construction, had between them made the haemodialysis arm of this
-analysis inoperative. Neither was visible in any output; both are now
-regression-tested.</p>
+<p>Every simulated value in this vignette changed with that correction.
+Two independent defects, one in the model file and one in this
+vignette’s event construction, had between them made the haemodialysis
+arm of this analysis inoperative. Neither was visible in any output;
+both are now regression-tested.</p>
 <p><strong>1. The <code>CL_HD</code> arm was inert in the model
 file.</strong> The model assigned the gated total clearance to a
 separate <code>cl_total</code> while defining both <code>cl</code> and

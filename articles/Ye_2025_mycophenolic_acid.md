@@ -318,11 +318,10 @@ stopifnot(max(probe_summary$vp) / min(probe_summary$vp) > 4)
 
 The model writes an explicit three-state ODE system, but its
 `cl`/`vc`/`q`/`vp` parameterisation also matches rxode2’s
-linear-compartment solver, which `rxSolve()` may substitute
-automatically (with `useLinCmt = TRUE`, the default until rxode2 made
-the conversion opt-in). The substitution is only safe if the
-hand-written ODE rates really are the standard two-compartment rates, so
-that is checked rather than assumed.
+linear-compartment solver, which `rxSolve()` may substitute (with
+`useLinCmt = TRUE`). The substitution is only safe if the hand-written
+ODE rates really are the standard two-compartment rates, so that is
+checked rather than assumed.
 
 The check runs on an explicit q12h schedule rather than on the `ss = 1`
 records used above, because the two solvers reach steady state by

@@ -328,14 +328,12 @@ stopifnot(abs(ec90 - 0.594) < 5e-4)
 
 ### 5. The default solver path agrees with the explicit-ODE path
 
-`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the
-conversion opt-in in September 2026 (issue 1389), which rewrites a
-recognisably linear system into a closed form. On a plain
-two-compartment model whose peripheral transfer is written as the
-micro-constants `k12` / `k21`, that rewrite is known to drop
-`peripheral1` and silently solve a *one*-compartment model – and total
-AUC is unaffected, so the obvious `AUC == Dose/CL` check does not catch
-it.
+`rxSolve()` with `useLinCmt = TRUE` rewrites a recognisably linear
+system into a closed form. On a plain two-compartment model whose
+peripheral transfer is written as the micro-constants `k12` / `k21`,
+that rewrite is known to drop `peripheral1` and silently solve a
+*one*-compartment model – and total AUC is unaffected, so the obvious
+`AUC == Dose/CL` check does not catch it.
 
 This model writes `k12` / `k21` inside `model()`, so the risk has to be
 excluded rather than assumed. It stores `lq` / `lvp` in `ini()` (never
@@ -983,13 +981,12 @@ range(above$alc_avg)
   steady-state intervals analysed above.
 - **`useLinCmt = FALSE`** is passed to every `rxSolve()` call for
   explicitness, not because the default is wrong here. `rxSolve()`’s
-  former default `useLinCmt = TRUE` (opt-in since September 2026) is
-  known to silently drop the peripheral compartment of a two-compartment
-  model written with `k12` / `k21` micro-constants, and this model does
-  write those names inside `model()`. It is **not** affected: the
-  structural checks above assert that the default path and the
-  explicit-ODE path agree to better than 1e-10 on both endpoints and
-  that `peripheral1` survives, so a downstream user calling plain
-  `rxSolve(readModelDb(...), ev)` gets the same answer this vignette
-  reports. `ini()` stores `lq` / `lvp` rather than `lk12` / `lk21` for
-  the same reason.
+  `useLinCmt = TRUE` conversion is known to silently drop the peripheral
+  compartment of a two-compartment model written with `k12` / `k21`
+  micro-constants, and this model does write those names inside
+  `model()`. It is **not** affected: the structural checks above assert
+  that the default path and the explicit-ODE path agree to better than
+  1e-10 on both endpoints and that `peripheral1` survives, so a
+  downstream user calling plain `rxSolve(readModelDb(...), ev)` gets the
+  same answer this vignette reports. `ini()` stores `lq` / `lvp` rather
+  than `lk12` / `lk21` for the same reason.

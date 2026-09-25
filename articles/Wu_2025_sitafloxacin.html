@@ -3172,7 +3172,7 @@ pathogens.</p>
 <span><span class="co">#&gt;     Cc ~ add(addSd) + prop(propSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x561523088770&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55fa610771d0&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3636,16 +3636,14 @@ positive afterwards.</p>
 <div class="section level3">
 <h3 id="falsifier-the-peripheral-compartment-is-actually-solved">Falsifier: the peripheral compartment is actually solved<a class="anchor" aria-label="anchor" href="#falsifier-the-peripheral-compartment-is-actually-solved"></a>
 </h3>
-<p><code>rxSolve()</code> defaulted to <code>useLinCmt = TRUE</code>
-until rxode2 made the conversion opt-in in September 2026 (issue 1389),
-which rewrites a recognisably linear system into closed form. On some
-two-compartment models written with micro-constants that rewrite
-silently drops the peripheral compartment and solves a one-compartment
-model instead. Total AUC is unaffected by that failure (it is still
-exactly dose / CL), so the <code>AUC24h = daily dose / CL</code>
-identity above cannot detect it – the only readout that moves decisively
-is the terminal half-life, which comes back equal to
-<code>log(2) / kel</code>.</p>
+<p><code>rxSolve()</code> with <code>useLinCmt = TRUE</code> rewrites a
+recognisably linear system into closed form. On some two-compartment
+models written with micro-constants that rewrite silently drops the
+peripheral compartment and solves a one-compartment model instead. Total
+AUC is unaffected by that failure (it is still exactly dose / CL), so
+the <code>AUC24h = daily dose / CL</code> identity above cannot detect
+it – the only readout that moves decisively is the terminal half-life,
+which comes back equal to <code>log(2) / kel</code>.</p>
 <p>The check below compares the simulated terminal slope against the
 analytic beta root of
 <code>x^2 - (kel + k12 + k21) x + kel * k21 = 0</code> computed from the

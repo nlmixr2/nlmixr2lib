@@ -424,7 +424,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55d5e56c0990>
+#> <environment: 0x5602f4a10c10>
 ```
 
 ## Population
@@ -749,8 +749,8 @@ nrow(events)
 ``` r
 
 rxode2::rxSetSeed(20250926)
-# Solved on rxode2's analytic linCmt() path on purpose. Since September 2026 the
-# default is numeric integration, and for this event table the numeric path is
+# Solved on rxode2's analytic linCmt() path on purpose. rxode2 integrates ODE
+# models numerically by default, and for this event table the numeric path is
 # defective: the occasion-switched ka changes at the OCC record times while the
 # lag-shifted doses land between them, so liblsoda meets the parameter jump
 # inside a step ("corrector convergence failed"), returns NA for 72 of the 170
@@ -758,7 +758,7 @@ rxode2::rxSetSeed(20250926)
 # steady-state AUC identity. The analytic solution is exact for this structure
 # (lag, zero- then first-order input, two compartments) and agrees with the ODE
 # on the once-daily arms, where the ODE does integrate, to a median 6e-8 and a
-# maximum 3e-6 relative (checked 2026-09-24).
+# maximum 3e-6 relative.
 sim <-
   rxode2::rxSolve(mod, events, addDosing = FALSE, useLinCmt = TRUE) |>
   as.data.frame() |>
@@ -1508,13 +1508,13 @@ of the predictive model, and is deliberately not encoded.
   rows either.
 - **Solver path.** Both simulations request rxode2’s analytic `linCmt()`
   solution explicitly. rxode2 integrates ODE models numerically by
-  default since September 2026, and for this event table the numeric
-  path fails: the occasion-switched `ka` changes at the `OCC` record
-  times while the lag-shifted doses fall between them, so the integrator
-  meets the jump inside a step and returns `NA` for 72 of the 170
-  twice-daily children. The analytic solution is exact for this model
-  structure and agrees with the numeric solution on the once-daily arms
-  to better than 3e-6 (see the comment in the `simulate` chunk).
+  default, and for this event table the numeric path fails: the
+  occasion-switched `ka` changes at the `OCC` record times while the
+  lag-shifted doses fall between them, so the integrator meets the jump
+  inside a step and returns `NA` for 72 of the 170 twice-daily children.
+  The analytic solution is exact for this model structure and agrees
+  with the numeric solution on the once-daily arms to better than 3e-6
+  (see the comment in the `simulate` chunk).
 - **Occasion assignment during the simulated run-in.** `OCC` both
   selects the BOV eta and identifies the evening dose. Run-in doses are
   labelled by time of day so each gets its correct absorption lag; the

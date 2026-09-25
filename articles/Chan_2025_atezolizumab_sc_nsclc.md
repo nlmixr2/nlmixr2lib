@@ -1046,8 +1046,8 @@ the package.
     concentration, and naming it `Cc` would be actively misleading. This
     is the established repository pattern for Bernoulli-likelihood
     exposure-response models (compare `Liu_2024_saf189s_proteinuria.R`).
-    `prob_<endpoint>` is a canonical observation form (operator ruling
-    2026-09-11, validated by `probOutputRegex`), so
+    `prob_<endpoint>` is a canonical observation form (a
+    maintainer-ratified convention, validated by `probOutputRegex`), so
     [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
     reports no warning for it; this item is retained to explain the
     naming, not to record a deviation.

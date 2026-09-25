@@ -4424,10 +4424,11 @@ and naming it <code>Cc</code> would be actively misleading. This is the
 established repository pattern for Bernoulli-likelihood
 exposure-response models (compare
 <code>Liu_2024_saf189s_proteinuria.R</code>).
-<code>prob_&lt;endpoint&gt;</code> is a canonical observation form
-(operator ruling 2026-09-11, validated by <code>probOutputRegex</code>),
-so <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> reports no warning for it; this
-item is retained to explain the naming, not to record a deviation.</li>
+<code>prob_&lt;endpoint&gt;</code> is a canonical observation form (a
+maintainer-ratified convention, validated by
+<code>probOutputRegex</code>), so <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code>
+reports no warning for it; this item is retained to explain the naming,
+not to record a deviation.</li>
 <li>
 <strong>Placeholder residual error in the logistic models.</strong>
 Each carries <code>addSd_prob_* &lt;- fixed(0.001)</code>. The source
