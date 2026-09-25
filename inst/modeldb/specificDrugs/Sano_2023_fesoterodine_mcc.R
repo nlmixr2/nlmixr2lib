@@ -78,10 +78,7 @@ Sano_2023_fesoterodine_mcc <- function() {
     # Block order is the NONMEM lower-triangular row order:
     #   var(BASE), cov(BASE,Emax), var(Emax).
     #
-    # Element-by-element source trace (all from Sano 2023 Table 3). The
-    # comments are kept OUTSIDE the c(...) call below: a trailing `#`
-    # comment inside an omega block's c(...) parses under source() but
-    # breaks readModelDb()'s comment-to-label rewriter.
+    # Element-by-element source trace (all from Sano 2023 Table 3):
     #   0.238144 = 0.488^2  omega^2 BASE   (48.8 %CV, RSE 7.89%, shrinkage 10.4%)
     #   0.122               cov(BASE,Emax) (RSE 28.3%)
     #   0.221841 = 0.471^2  omega^2 Emax   (47.1 %CV, RSE 14.3%, shrinkage 22.7%)

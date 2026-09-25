@@ -190,8 +190,7 @@ Mao_2024_sirolimus <- function() {
     #   0.0665 / (0.324 * 0.427) = 0.481,
     # a well-behaved value, and the resulting 2x2 block is positive
     # definite (determinant 0.0147).
-    # A "#" comment placed INSIDE this c(...) breaks readModelDb(), so the
-    # per-element provenance is recorded here instead:
+    # Per-element provenance:
     #   0.104976 = 0.324^2   Table 2, omega CL/F = 32.4 percent
     #   0.0665               Table 2, omega cov CL/F,V/F (covariance scale)
     #   0.182329 = 0.427^2   Table 2, omega V/F = 42.7 percent

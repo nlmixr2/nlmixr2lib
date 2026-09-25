@@ -12,8 +12,15 @@ Huang_2026_tiapride <- function() {
     "three structural parameters, and residual variability is combined proportional plus additive.",
     "Monte Carlo simulation from this model supports 75 mg three times daily as the regimen keeping",
     "steady-state peak concentration inside the 560-2000 ng/mL therapeutic window.",
-    "The companion plasma-saliva joint model of the same paper is NOT implemented here; see the",
-    "vignette Errata for the unreported saliva-compartment scale that blocks it.",
+    "The paper's companion plasma-saliva joint model is included: a saliva compartment is driven",
+    "from central by saturable Michaelis-Menten transport (Vmax = 34.7 mg/h, Km = 762 ng/mL fixed)",
+    "and cleared first-order (K30 = 6.24 1/h, fat-free mass exponent 0.38), giving a salivary",
+    "concentration that exceeds plasma and whose saliva:plasma ratio falls as concentration rises.",
+    "That layer was fitted sequentially with the plasma parameters held fixed, and the saliva state",
+    "is driven rather than mass-balance-coupled, so it does not deplete central. The apparent saliva",
+    "volume converting the saliva amount to the reported ng/mL is NOT given anywhere in the paper;",
+    "it is recovered from the Figure 4 visual predictive check and is the one assumed value in this",
+    "file -- see the vignette Errata before using the saliva output quantitatively.",
     sep = " "
   )
   reference <- paste(
@@ -41,6 +48,17 @@ Huang_2026_tiapride <- function() {
       analyte = "tiapride",
       units = "mg",
       specimen = "plasma",
+      verified = TRUE
+    ),
+    # Secreted saliva, the matrix a Salivette collects (Methods 'Sample
+    # collection'). Figure 2 draws the central-to-saliva transport arrow
+    # DASHED where every other arrow in the diagram is solid, and the joint
+    # model was fitted with the plasma parameters held fixed, so this state is
+    # driven by -- not drawn out of -- central. See the model() note.
+    saliva = list(
+      analyte = "tiapride",
+      units = "mg",
+      specimen = "saliva",
       verified = TRUE
     )
   )
@@ -159,6 +177,11 @@ Huang_2026_tiapride <- function() {
       "why a two-compartment model was unstable and a one-compartment model was selected despite",
       "the biphasic disposition reported for tiapride in adults. Of 215 plasma samples collected,",
       "one was below the 2 ng/mL LLOQ and was discarded (Beal M1), leaving 214 in the analysis.",
+      "Saliva was collected with Salivette cotton-swab devices; 205 saliva samples were taken",
+      "(fewer than plasma because of insufficient volume and contamination) and one below the LLOQ",
+      "was likewise dropped by M1, leaving 204. The LC-MS/MS calibrated range was 2-1000 ng/mL in",
+      "plasma and 4-2000 ng/mL in saliva, so a substantial part of the observed saliva data in",
+      "Figure 4B sits above the highest saliva calibrator.",
       "Tiapride is supplied as 100 mg tablets divisible into halves, thirds and quarters, so",
       "clinical doses are rounded to 50, 66.6 or 75 mg per administration."
     )
@@ -207,6 +230,51 @@ Huang_2026_tiapride <- function() {
     # ------------------------------------------------------------------
     propSd <- 0.156; label("Proportional residual SD for plasma Cc (fraction)") # Table 2 epsilon_prop = 15.6% (RSE 25%, shrinkage 43%; bootstrap 15.2%, 95% CI 9.1-21.3)
     addSd <- 0.0879; label("Additive residual SD for plasma Cc (mg/L)")         # Table 2 epsilon_add = 87.9 ng/mL = 0.0879 mg/L (RSE 57%, shrinkage 43%; bootstrap 81.4, 95% CI 15.3-294.9)
+
+    # ==================================================================
+    # SALIVA LAYER. Huang 2026 Table 3, written out as Equations 8-10.
+    #
+    # Fitted SEQUENTIALLY (Methods 'PopPK modeling'): the plasma model was
+    # established first, its parameters were then held fixed, and the saliva
+    # compartment was added with the NONMEM ADVAN6 subroutine. Every value
+    # below therefore belongs to the second estimation step; nothing above
+    # this divider moves when the saliva layer is present.
+    # ==================================================================
+    lvmax_saliva <- log(34.7); label("Maximum rate of saturable central-to-saliva transport, Vmax (mg/h)")      # Table 3 theta_Vmax = 34.7 (RSE 13%; bootstrap median 35, 95% CI 27.3-46.9); Equation 8
+    lkm_saliva <- fixed(log(0.762)); label("Michaelis constant of central-to-saliva transport, Km (mg/L)")      # Table 3 theta_Km = 762 ng/mL = 0.762 mg/L, held constant because its RSE was unacceptably high (Results 'PopPK Model Based on Saliva Concentration'); Equation 9
+    lkel_saliva <- log(6.24); label("First-order elimination rate constant from saliva, K30 (1/h)")             # Table 3 theta_K30 = 6.24 (RSE 4%; bootstrap median 6.22, 95% CI 5.72-6.8); Equation 10
+    e_ffm_kel_saliva <- 0.38; label("Power exponent for fat-free mass on K30 (unitless)")                       # Table 3 theta_FFM-K30 = 0.38 (RSE 37%; bootstrap median 0.367, 95% CI 0.158-0.627)
+
+    # ------------------------------------------------------------------
+    # APPARENT SALIVA VOLUME -- THE ONE ASSUMED VALUE IN THIS FILE.
+    #
+    # Table 3 lists exactly six parameters and no volume, and Equations 8-10
+    # (all rendered from the PDF's vector graphics and read) introduce none,
+    # so the scale converting the saliva compartment AMOUNT to the observed
+    # ng/mL saliva CONCENTRATION is not reported anywhere in the paper. There
+    # is no supplement to consult: the EuropePMC supplementaryFiles endpoint
+    # returns HTTP 404 for PMC13111164 and the core record reports
+    # hasSuppl 'N', so this is a reporting gap, not an acquisition gap.
+    #
+    # PROVENANCE: recovered by digitising Figure 4 (visual predictive check)
+    # at 500 dpi, via the saliva quasi-steady state. K30 = 6.24 1/h is a
+    # 6.7-minute half-life, so the saliva state tracks plasma essentially
+    # instantaneously and
+    #     A_saliva = Vmax * Cc / ((Km + Cc) * K30).
+    # At the ~2 h peak the model's median plasma prediction is ~790 ng/mL and
+    # its median saliva prediction ~2100 ng/mL, giving
+    #     A_saliva = 34.7 * 0.790 / ((0.762 + 0.790) * 6.24) = 2.83 mg
+    #     vsaliva  = 1000 * 2.83 / 2100 = 1.35 L.
+    # Operator-ratified 2026-09-21 (sidecar request-001 / response-001 q1,
+    # option B) under the standing figure-digitisation policy. Rejected
+    # readings, and the roughly twofold uncertainty this value carries, are
+    # recorded in the vignette Errata.
+    # ------------------------------------------------------------------
+    lvsaliva <- fixed(log(1.35)); label("Apparent saliva volume scaling saliva amount to concentration (L)")    # NOT REPORTED by Huang 2026; recovered from the Figure 4 VPC medians -- see the note above
+
+    etalkel_saliva ~ 0.09   # Table 3 eta_K30 = 30% -> 0.30^2 (RSE 12%, shrinkage 15%; bootstrap 29.6%, 95% CI 22.9-35.6)
+
+    propSd_Csaliva <- 0.284; label("Proportional residual SD for saliva Csaliva (fraction)")                    # Table 3 epsilon_prop = 28.4% (RSE 15%, shrinkage 18%; bootstrap 28.3%, 95% CI 24.5-32.6); saliva residual is proportional only
   })
 
   model({
@@ -222,16 +290,51 @@ Huang_2026_tiapride <- function() {
     # 3. Micro-constant.
     kel <- cl / vc
 
-    # 4. ODE system. One-compartment with first-order absorption; NONMEM
-    #    ADVAN2 equivalent. Note kel = 15.3/5.77 = 2.65 1/h is an order of
-    #    magnitude larger than ka = 0.219 1/h, so the model is flip-flop and
-    #    the observed terminal slope reports absorption, not elimination.
-    d/dt(depot) <- -ka * depot
-    d/dt(central) <- ka * depot - kel * central
+    # 4. Saliva-layer parameters (Equations 8-10). Only K30 carries IIV and a
+    #    covariate; Vmax has neither (the data could not support IIV on Vmax
+    #    or Km) and Km is held constant.
+    vmax_saliva <- exp(lvmax_saliva)
+    km_saliva <- exp(lkm_saliva)
+    kel_saliva <- exp(lkel_saliva + etalkel_saliva) * (FFM / ffm_ref)^e_ffm_kel_saliva
+    vsaliva <- exp(lvsaliva)
 
-    # 5. Observation. Cc is in mg/L; multiply by 1000 for the paper's ng/mL.
+    # 5. Plasma concentration. Defined before the ODE block because the
+    #    saliva transport term reads it. Cc is in mg/L; multiply by 1000 for
+    #    the paper's ng/mL.
     Cc <- central / vc
 
+    # 6. ODE system. Plasma is one-compartment with first-order absorption;
+    #    NONMEM ADVAN2 equivalent. Note kel = 15.3/5.77 = 2.65 1/h is an
+    #    order of magnitude larger than ka = 0.219 1/h, so the model is
+    #    flip-flop and the observed terminal slope reports absorption, not
+    #    elimination.
+    #
+    #    SALIVA IS DRIVEN, NOT MASS-BALANCE-COUPLED. The central equation
+    #    carries no -vmax_saliva*Cc/(km_saliva+Cc) loss term, so saliva does
+    #    not deplete plasma. Three independent facts fix this reading:
+    #      (a) Figure 2 draws this one arrow DASHED and every other arrow
+    #          solid, the same notation Nguyen 2026 uses for its explicitly
+    #          hypothetical saliva bio-compartment;
+    #      (b) the layer was fitted with the plasma parameters held FIXED, so
+    #          a term that removed mass from central would have invalidated
+    #          them, yet Figure 3A's plasma goodness of fit is unchanged;
+    #      (c) the printed constants are not mass-conserving. Vmax = 34.7
+    #          mg/h exceeds the cohort's entire average absorption rate
+    #          (~9 mg/h at the median 215 mg/day dose), and at a plasma
+    #          concentration of 780 ng/mL the transport term would be
+    #          34.7*0.78/(0.762+0.78) = 17.6 mg/h against a true elimination
+    #          of cl*Cc = 15.3*0.78 = 11.9 mg/h -- salivary loss would
+    #          outrun systemic clearance, which the data exclude.
+    d/dt(depot) <- -ka * depot
+    d/dt(central) <- ka * depot - kel * central
+    d/dt(saliva) <- vmax_saliva * Cc / (km_saliva + Cc) - kel_saliva * saliva
+
+    # 7. Saliva concentration. The saliva amount is rescaled by the apparent
+    #    saliva volume, which the paper does not report -- see the extended
+    #    note on lvsaliva in ini() and the vignette Errata.
+    Csaliva <- saliva / vsaliva
+
     Cc ~ prop(propSd) + add(addSd)
+    Csaliva ~ prop(propSd_Csaliva)
   })
 }
