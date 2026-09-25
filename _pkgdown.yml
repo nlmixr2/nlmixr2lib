@@ -3122,6 +3122,8 @@ navbar:
         href: articles/Vorontsova_2022_misoprostol.html
       - text: "Mitiperstat (Sunnaker 2026)"
         href: articles/Sunnaker_2026_mitiperstat.html
+      - text: "Mitotane (Cazaubon 2019)"
+        href: articles/Cazaubon_2019_mitotane.html
       - text: "Mitoxantrone (Brandon 2026)"
         href: articles/Brandon_2026_mitoxantrone.html
       - text: "Mitoxantrone human pbpk (An 2012)"
@@ -5868,6 +5870,7 @@ articles:
   - articles/Carmichael_2003_hydroxychloroquine
   - articles/Castelli_2022_dextroamphetamine
   - articles/CatalanLatorre_2018_taurine_rat
+  - articles/Cazaubon_2019_mitotane
   - articles/Cella_2012_midazolam_paediatric_scaling
   - articles/Cendros_2025_enflicoxib
   - articles/Centanni_2025_sunitinib_thrombocytopenia
