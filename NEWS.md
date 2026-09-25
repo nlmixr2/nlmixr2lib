@@ -12,6 +12,8 @@
 
 - Henninger 2026 DNDI-6148 ([doi:10.1111/cts.70535](https://doi.org/10.1111/cts.70535)) -- the article's human simulation now observes hourly rather than 6-hourly. The 6-hourly grid was too coarse to resolve the absorption peak, so the trapezoidal AUCss,0-24h came out biased low and the article's own 8% agreement gate against the published exposures failed (4 mg/kg was -10.0% off). The simulated values change accordingly: 4 mg/kg 73.5 -> 77.1 and 6 mg/kg 115.6 -> 121.1 h*ug/mL, against published 81.6 and 122.0. The grid is converged -- halving the step again moves the worst arm by 0.1 percentage points. The mouse arm, which already used a 0.5 h grid, is unchanged.
 
+- Add Chen 2019 risperidone ([doi:10.3389/fphar.2019.01692](https://doi.org/10.3389/fphar.2019.01692)) -- healthy beagle dogs (intravenous disposition).
+
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.

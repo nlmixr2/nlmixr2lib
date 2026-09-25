@@ -4194,6 +4194,8 @@ navbar:
         href: articles/Sherwin_2012_risperidone.html
       - text: "Risperidone consta (Wang 2024)"
         href: articles/Wang_2024_risperidone_lai_switching.html
+      - text: "Risperidone dog (Chen 2019)"
+        href: articles/Chen_2019_risperidone_dog.html
       - text: "Risperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Risperidone rykindo (Wang 2024)"
@@ -5902,6 +5904,7 @@ articles:
   - articles/Chen_2016_tenofovir_emtricitabine
   - articles/Chen_2017_TB_MTP_GPDI_mouse
   - articles/Chen_2017_tacrolimus
+  - articles/Chen_2019_risperidone_dog
   - articles/Chen_2020_luspatercept
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2021_lorlatinib
