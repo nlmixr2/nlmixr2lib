@@ -1760,6 +1760,8 @@ navbar:
         href: articles/Foster_2023_enrofloxacin_cat.html
       - text: "Ensitrelvir (Ishibashi 2024)"
         href: articles/Ishibashi_2024_ensitrelvir.html
+      - text: "Entinostat nivolumab ipilimumab qsp (Wang 2020)"
+        href: articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp.html
       - text: "Ephedrine caffeine (Csajka 2005)"
         href: articles/Csajka_2005_ephedrine_caffeine.html
       - text: "Epinastine (Sarashina 2005)"
@@ -8005,6 +8007,7 @@ articles:
   - articles/Wang_2019_missing_dosing_history
   - articles/Wang_2019a_tacrolimus
   - articles/Wang_2019b_tacrolimus
+  - articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
