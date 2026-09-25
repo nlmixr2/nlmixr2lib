@@ -18124,6 +18124,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Choi_2025_denosumab.R` (multiplicative effect on CL/F of 0.9982, i.e. a 0.18% lower apparent clearance on SB16 than on reference denosumab).
 - **Notes:** Specific scope (a per-product arm indicator). Member of the `TRT_<product>` family; named for the development code rather than the INN because both arms receive denosumab and the INN alone cannot distinguish them -- the same reasoning that gives the anti-HBV siRNA arms their development-code names. **This indicator carries a deliberately non-significant effect.** Choi 2025 found treatment group was not a statistically significant covariate on any PK or PD parameter and excluded it from the covariate-selected model, then re-introduced it on CL/F specifically to drive the comparative biosimilarity simulation (Methods 2.3, Results 3.3). Consumers reproducing the covariate-selected final model should leave `TRT_SB16` at its reference level 0; consumers reproducing the paper's Table 5 biosimilarity comparison should vary it. Future biosimilar-vs-reference extractions should ratify a sibling `TRT_<code>` canonical rather than overloading this one, since the effect size is product- and analysis-specific.
 
+### TRT_PF06439535 (**canonical for PF-06439535 bevacizumab-biosimilar treatment-arm indicator**)
+- **Description:** Binary treatment-arm indicator: 1 = the subject received PF-06439535 (Pfizer's bevacizumab biosimilar, approved as Zirabev / bevacizumab-bvzr), 0 = the subject received reference bevacizumab sourced from the European Union (Avastin). A patient-level randomised-treatment indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (bevacizumab-EU, the reference product).
+- **Source aliases:**
+  - `DP (PF-06439535=1, Bevacizumab-EU=2)` -- Li 2020 Figure 2 axis label; the final-model equations apply the effect '(1.02 in PF-06439535)' on CL and '(1.07 in PF-06439535)' on V1.
+- **Example models:** `Li_2020_bevacizumab.R` (multiplicative theta^COV effect, Li 2020 Eq. 5: 1.02 on CL and 1.07 on V1).
+- **Notes:** Specific scope; sibling of `TRT_SB16` in the `TRT_<product>` family, named for the development code because both arms receive bevacizumab. **This indicator carries a deliberately non-significant effect**: Li 2020 retained drug product in the final model to quantify similarity even though the stepwise covariate search did not select it (Table 2 footnote b); both 95% bootstrap CIs include unity. Consumers reproducing the typical bevacizumab-EU patient should leave it at 0.
+
 ### IGA_MOD_PCT (**canonical for moderate-IGA-severity cohort prevalence percentage**)
 - **Description:** Study-arm-level percentage (0-100) of the enrolled cohort whose baseline Investigator's Global Assessment (IGA) was 3 (moderate) rather than 4 (severe). Continuous covariate scaled in percent (not fraction). An arm enriched for severe disease (a LOW value here) leaves more room for improvement, so this column typically carries a negative coefficient on a drug-effect maximum.
 - **Units:** %

@@ -4,6 +4,8 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
+- Add Li 2020 bevacizumab, PF-06439535 biosimilar and Avastin ([doi:10.1007/s00280-019-03946-8](https://doi.org/10.1007/s00280-019-03946-8)) -- adults with advanced non-squamous non-small cell lung cancer.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
