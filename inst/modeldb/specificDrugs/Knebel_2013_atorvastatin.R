@@ -273,8 +273,7 @@ Knebel_2013_atorvastatin <- function() {
     # of (0.125, 0.293), whereas 0.463^2 = 0.214 reproduces the CV exactly
     # and sits inside the CI. See vignette Errata.
     #
-    # A trailing comment inside a multi-line c(...) breaks the rxode2
-    # parser, so the per-entry traces are given here rather than inline.
+    # Per-entry source trace for the block below:
     #   entry 1 = Omega_1.1 CL/F     = 0.463^2 = 0.214369
     #   entry 2 = Omega_1.2 COV      = 0.185 (Table 2; bootstrap CI (-0.139, 0.35)); implied correlation 0.185 / (0.463 * 1.058) = 0.378
     #   entry 3 = Omega_2.2 Vc/F     = 1.058^2 = 1.119364 (Table 2 prints 1.12)

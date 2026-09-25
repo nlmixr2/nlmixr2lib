@@ -228,13 +228,12 @@ Yin_2023_soticlestat <- function() {
     #     independently as 0.763 (median over the eleven Table S3 weight/dose rows).
     #   - Vc/F is printed as '(Weight/70)^-1'; the sign is a typesetting error
     #     (a negative exponent on a volume predicts a LARGER central volume in a
-    #     smaller subject) and is shipped as +1. Operator ruling, sidecar
-    #     request-001 q2 = A.
+    #     smaller subject) and is shipped as +1.
     #   - Q/F and Vp/F exponents are NOT printed anywhere in the paper; the
     #     standard allometric values are assumed so that the paediatric
-    #     distribution kinetics behind Figure 5 can be reproduced. Operator
-    #     ruling, sidecar request-001 q2 = A, conditional on reproducing the
-    #     paper's own answer keys -- see the vignette Errata.
+    #     distribution kinetics behind Figure 5 can be reproduced; this is
+    #     conditional on reproducing the paper's own answer keys -- see the
+    #     vignette Errata.
     e_wt_cl <- fixed(0.75) ; label("Allometric exponent on (WT/70) for CL/F (unitless)")  # Paper 'PopPK model', CL/F equation
     e_wt_vc <- fixed(1)    ; label("Allometric exponent on (WT/70) for Vc/F (unitless)")  # Paper 'PopPK model', Vc/F equation (printed -1; sign corrected)
     e_wt_q  <- fixed(0.75) ; label("Allometric exponent on (WT/70) for Q/F (unitless)")   # Not printed; standard allometric exponent assumed

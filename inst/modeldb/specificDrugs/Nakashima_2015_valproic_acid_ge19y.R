@@ -301,9 +301,8 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     # Identical to the all-age companion; see
     # Nakashima_2015_valproic_acid.R for the full nine-constant table
     # documenting why the upstream Ogusu 2014 values are used in
-    # preference to Nakashima 2015's own restatement in its Eqs 1-2
-    # (operator ruling, sidecar oare_PMC9833507 q2 = A), and for the
-    # physiological falsifier on the restated Vd/F.
+    # preference to Nakashima 2015's own restatement in its Eqs 1-2, and
+    # for the physiological falsifier on the restated Vd/F.
     # ==================================================================
 
     lka   <- fixed(log(0.109))  ; label("Absorption rate constant, from Ogusu 2014 (1/h)")                                # Ogusu 2014 Eq 5 and Table 2 (Ka 0.109 1/h)
@@ -340,8 +339,7 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     # term multiplies the concentration and the G/G and G/A groups get a
     # concentration-INDEPENDENT probability.
     #
-    # Why the literal reading is encoded (operator ruling, sidecar
-    # oare_PMC9833507 q4 = A -- full fidelity plus errata):
+    # Why the literal reading is encoded (full fidelity plus errata):
     #
     #  1. The literal reading and the "restore a dropped opening paren"
     #     reading COINCIDE. An opening parenthesis before 9.88 would

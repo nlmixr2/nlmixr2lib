@@ -125,10 +125,7 @@ Sano_2023_fesoterodine <- function() {
     # same order Table 2 lists and the same order rxode2 expects:
     #   var(CL), cov(CL,Vd), var(Vd), cov(CL,ka), cov(Vd,ka), var(ka).
     #
-    # Element-by-element source trace (all from Sano 2023 Table 2). The
-    # comments are kept OUTSIDE the c(...) call below: a trailing `#`
-    # comment inside an omega block's c(...) parses under source() but
-    # breaks readModelDb()'s comment-to-label rewriter.
+    # Element-by-element source trace (all from Sano 2023 Table 2):
     #   0.214369 = 0.463^2  omega^2 CL/F   (46.3 %CV, RSE 7.98%, shrinkage 14.8%)
     #   0.298               cov(CL/F,Vd/F) (RSE 38.8%)
     #   1.2996   = 1.14^2   omega^2 Vd/F   (114 %CV, RSE 19.2%, shrinkage 42.1%)
