@@ -1,0 +1,620 @@
+---
+title: "Brilaroxazine / RP5063 (Cantillon 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Brilaroxazine / RP5063 (Cantillon 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  error = FALSE
+)
+```
+
+```{r libraries, message = FALSE, warning = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+```
+
+This vignette validates `Cantillon_2018_brilaroxazine`, the joint population
+PK / PANSS PD model for RP5063 (brilaroxazine) reported in
+
+> Cantillon M, Ings R, Prakash A, Bhat L (2018). A population pharmacokinetic
+> and pharmacodynamic analysis of RP5063 phase 2 study data in patients with
+> schizophrenia or schizoaffective disorder. *European Journal of Drug
+> Metabolism and Pharmacokinetics* 43(5):573-585.
+> [doi:10.1007/s13318-018-0472-z](https://doi.org/10.1007/s13318-018-0472-z)
+
+```{r load-model}
+mod <- modellib("Cantillon_2018_brilaroxazine")
+# Typical-value (inter-individual variability zeroed) version, used for the
+# closed-form and structural checks below.
+mod_typ <- rxode2::zeroRe(mod)
+mod
+```
+
+# Population
+
+The analysis dataset is the RP5063 arm of the phase 2 REFRESH trial
+(NCT01490086), an in-patient, international, randomised, double-blind,
+placebo-controlled study. Of 234 randomised patients, **175** received RP5063
+at 15, 30 or 50 mg orally once daily for 28 days, dosed after an overnight
+fast and 1 h before breakfast; only those 175 entered the population analysis.
+
+Baseline characteristics are from Cantillon 2018 Table 1.
+
+```{r population}
+pop <- readModelDb("Cantillon_2018_brilaroxazine") |> attr("population")
+tibble::tibble(Field = names(pop), Value = vapply(pop, function(x) {
+  paste(if (is.null(names(x))) x else paste0(names(x), " ", x, "%"), collapse = "; ")
+}, character(1))) |>
+  knitr::kable(caption = "Population metadata (Cantillon 2018 Table 1 and Sect. 2.1, 3.1).")
+```
+
+Five plasma samples per patient were drawn (pre-dose at baseline and on days 1,
+8, 22 and 28, allocated across four time-blocks) out to 220 h after the last
+dose, deliberately spanning both non-steady-state and steady-state conditions
+so that `Vc/F` and `Cl/F` could be separated. Total PANSS was collected
+pre-dose on day 1 and at least 2 h post-dose on days 4, 8, 15, 22 and 28.
+
+Note a small internal inconsistency in the source: Sect. 3.1 states the cohort
+was 80% male / 20% female, but the Table 1 counts give 133 male and 42 female,
+i.e. 24% female. The Table 1 counts are used in the model metadata.
+
+# Source trace
+
+Every structural equation and every `ini()` value, with its location in the
+source.
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity, ~Value, ~`Source location`,
+  "One-compartment, first-order absorption, lag time", "structure", "Eq. 1; Sect. 3.2",
+  "Cl/F", "5.11 L/h (SE 0.11)", "Table 2",
+  "Vc/F (at BMI 23.01)", "328 L (SE 31.4)", "Table 2",
+  "ka", "0.42 1/h (SE 0.17)", "Table 2",
+  "t lag", "0.41 h (SE 0.02)", "Table 2",
+  "BMI power on Vc (c1)", "0.90 (SE 0.36)", "Table 2 row 'c'; Eq. 18",
+  "BMI centring constant", "23.01 kg/m2", "Eq. 18 (cohort mean; Eq. 3 divides by mean(cov))",
+  "Var(eta Cl), Cov, Var(eta Vc)", "0.16, 0.04, 0.28", "Table 2",
+  "Var(eta ka)", "2.09 (SE 6.63)", "Table 2",
+  "Proportional residual (sigma_1^2)", "0.07 -> SD 0.2646", "Table 2 row 'r 1 2'; Sect. 3.2 calls it a CV",
+  "PD driver = cumulative AUC", "predictor selection", "Eq. 11; Sect. 3.4",
+  "Emax form E0 + Emax x/(x + x50)", "structure", "Eq. 12",
+  "E0", "87.3 pu (SE 0.711)", "Table 3",
+  "Emax", "-31.6 pu (SE 4.05)", "Table 3",
+  "AUC50", "89.6 ug*h/mL (SE 30.1)", "Table 3",
+  "Moldova-site effect on Emax (c1)", "-1.93 (SE 0.535)", "Table 3 row 'c'; Sect. 3.4",
+  "Var(eta E0) additive", "164", "Table 3; Eq. 14",
+  "Var(eta Emax) additive", "464", "Table 3; Eq. 15",
+  "Var(eta AUC50) log-normal", "0.476", "Table 3; Eq. 16",
+  "Additive PANSS residual (sigma^2)", "47.1 -> SD 6.863", "Table 3 row 'r 2'",
+  "Placebo term omitted", "rejected", "Sect. 3.4, 4 (objective function increased)"
+) |>
+  knitr::kable(caption = "Source trace for Cantillon_2018_brilaroxazine.")
+```
+
+# Closed-form checks
+
+These are exact consequences of the Table 2 / Table 3 point estimates and do
+not depend on any simulated cohort, so they are asserted tightly.
+
+```{r closed-form}
+cl <- 5.11
+vc <- 328
+thalf <- log(2) * vc / cl
+emax_moldova <- -31.6 * (1 + (-1.93) * 1)
+
+tibble::tribble(
+  ~Check, ~Paper, ~Model,
+  "Terminal half-life (h)", 44.5, round(thalf, 2),
+  "Typical Emax at Moldova sites (pu)", 29.4, round(emax_moldova, 2),
+  "Effect at cumulative AUC = AUC50 (pu)", -15.8, round(-31.6 * 89.6 / (89.6 + 89.6), 2)
+) |>
+  knitr::kable(caption = "Closed-form quantities the paper states explicitly.")
+
+stopifnot(
+  # Sect. 3.3 / Key Points: "a calculated half-life of 44.5 h", derived from
+  # Vc/F and Cl/F. Pure arithmetic on Table 2, so a tight bound is correct.
+  abs(thalf - 44.5) < 0.05,
+  # Sect. 3.4: c1 = -1.93 "corresponds to an average positive Emax of 29.4 (pu)".
+  abs(emax_moldova - 29.4) < 0.05
+)
+```
+
+# Virtual cohort
+
+Three arms of 100 subjects each (well under the 200-per-arm cap), matching the
+15 / 30 / 50 mg arms of REFRESH. BMI is drawn to reproduce the Table 1 arm
+means and SDs (23.2 / 22.3 / 23.4 kg/m^2, SD 4.2 / 4.6 / 3.3) and truncated to
+a physiologically plausible adult range. The Moldova-site indicator is set to 0
+for the main cohort so the base dose-response relationship is reproduced; the
+site effect is examined separately below.
+
+```{r cohort}
+rxode2::rxSetSeed(20260919)
+set.seed(20260919)
+
+n_arm <- 100L
+arms <- tibble::tibble(
+  treatment = c("15 mg", "30 mg", "50 mg"),
+  dose_mg = c(15, 30, 50),
+  bmi_mean = c(23.2, 22.3, 23.4),
+  bmi_sd = c(4.2, 4.6, 3.3)
+)
+
+cohort <- arms |>
+  rowwise() |>
+  do({
+    a <- .
+    tibble::tibble(
+      treatment = a$treatment,
+      dose_mg = a$dose_mg,
+      BMI = pmin(pmax(rnorm(n_arm, a$bmi_mean, a$bmi_sd), 15), 45),
+      REGION_MOLDOVA = 0
+    )
+  }) |>
+  ungroup() |>
+  mutate(id = row_number())
+
+summary_bmi <- cohort |>
+  group_by(treatment) |>
+  summarise(n = n(), BMI_mean = round(mean(BMI), 2), BMI_sd = round(sd(BMI), 2),
+            .groups = "drop")
+knitr::kable(summary_bmi, caption = "Simulated cohort BMI vs. Cantillon 2018 Table 1.")
+```
+
+```{r event-builder}
+# Build event tables as plain data frames. Both endpoints (Cc and PANSS) are
+# declared in the model, so observation rows must name an observable; PANSS and
+# auc_central are still returned as columns at those rows.
+make_events <- function(cohort, times, n_doses, ii = 24) {
+  doses <- cohort |>
+    tidyr::expand_grid(dose_idx = seq_len(n_doses)) |>
+    transmute(id, treatment, BMI, REGION_MOLDOVA,
+              time = (dose_idx - 1) * ii, amt = dose_mg,
+              evid = 1L, cmt = "depot")
+  obs <- cohort |>
+    tidyr::expand_grid(time = times) |>
+    transmute(id, treatment, BMI, REGION_MOLDOVA,
+              time, amt = NA_real_, evid = 0L, cmt = "Cc")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+```
+
+# Pharmacokinetics: 28-day once-daily regimen
+
+```{r sim-md, message = FALSE, warning = FALSE}
+rxode2::rxSetSeed(20260919)
+
+times_md <- sort(unique(c(seq(0, 672, by = 6), seq(0, 24, by = 2))))
+ev_md <- make_events(cohort, times_md, n_doses = 28)
+
+sim_md <- rxode2::rxSolve(mod, ev_md, keep = c("treatment", "BMI")) |>
+  as.data.frame()
+```
+
+Cantillon 2018 Figure 3 shows the population bootstrap prediction with 95%
+point-wise bands for each dose. The corresponding simulated prediction
+intervals are below.
+
+```{r fig-pk, fig.cap = "Simulated RP5063 plasma concentration over the 28-day regimen (median and 90% prediction interval). Replicates the shape of Figure 3 of Cantillon 2018."}
+pk_bands <- sim_md |>
+  group_by(treatment, time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+            .groups = "drop")
+
+ggplot(pk_bands, aes(time / 24, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi, fill = treatment), alpha = 0.2) +
+  geom_line(aes(colour = treatment), linewidth = 0.7) +
+  labs(x = "Time (days)", y = "RP5063 plasma concentration (ng/mL)",
+       colour = "Dose", fill = "Dose") +
+  theme_bw()
+```
+
+Steady state is approached over roughly the first 5 days, consistent with the
+phase 1 multiple-dose observation quoted in Sect. 1 ("steady state was
+approached after 120 h of daily dosing").
+
+## Dose linearity
+
+Sect. 3.3 reports pairwise *t*-tests that failed to reject equality of `Cl/F`
+across the three dose arms, i.e. linear PK over 15-50 mg. The model has no
+non-linear term, so exposure must be exactly dose-proportional.
+
+Proportionality is a property of each individual, so it is asserted on the
+typical-value solve, where the three arms share one parameter vector. (Medians
+across three *independently drawn* arms are not exactly proportional, because
+each arm draws its own BMI and random effects.)
+
+```{r linearity}
+lin_typ <- tibble::tibble(treatment = c("15 mg", "30 mg", "50 mg"),
+                          dose_mg = c(15, 30, 50), BMI = 23.01,
+                          REGION_MOLDOVA = 0) |>
+  mutate(id = row_number())
+
+sim_lin <- rxode2::rxSolve(mod_typ, make_events(lin_typ, c(0, 672), n_doses = 28),
+                           keep = "treatment") |>
+  as.data.frame() |>
+  filter(time == 672) |>
+  left_join(lin_typ |> select(id, dose_mg), by = "id") |>
+  transmute(treatment, `Dose (mg)` = dose_mg,
+            `Cumulative AUC (ug*h/mL)` = auc_central,
+            `AUC per mg` = auc_central / dose_mg)
+
+knitr::kable(sim_lin, digits = 4,
+             caption = "Typical-value cumulative AUC at day 28 scales exactly with dose.")
+
+stopifnot(
+  # Deterministic consequence of a linear model: solver noise only.
+  diff(range(sim_lin$`AUC per mg`)) / mean(sim_lin$`AUC per mg`) < 1e-6
+)
+```
+
+In the stochastic cohort the per-arm medians are close but not identical,
+reflecting the independent covariate and random-effect draws in each arm:
+
+```{r linearity-cohort}
+sim_md |>
+  filter(time == max(time)) |>
+  group_by(treatment) |>
+  summarise(`Median cumulative AUC (ug*h/mL)` = median(auc_central),
+            .groups = "drop") |>
+  mutate(`Dose (mg)` = c(15, 30, 50),
+         `AUC per mg` = `Median cumulative AUC (ug*h/mL)` / `Dose (mg)`) |>
+  knitr::kable(digits = 3,
+               caption = "Stochastic cohort medians (descriptive).")
+```
+
+## Body mass index affects volume but not average steady-state exposure
+
+Sect. 4 makes an explicit, directly testable claim:
+
+> Since BMI only affected volume of distribution, this covariate should not
+> affect the average steady-state plasma levels of RP5063, since clearance did
+> not change.
+
+```{r bmi-check}
+bmi_grid <- tibble::tibble(BMI = c(18, 23.01, 30, 35)) |>
+  mutate(id = row_number(), treatment = "30 mg", dose_mg = 30, REGION_MOLDOVA = 0)
+
+ev_bmi <- make_events(bmi_grid, seq(0, 672, by = 1), n_doses = 28)
+sim_bmi <- rxode2::rxSolve(mod_typ, ev_bmi, keep = c("BMI")) |> as.data.frame()
+
+bmi_tab <- sim_bmi |>
+  filter(time >= 648) |>
+  group_by(BMI) |>
+  summarise(`Cavg day 28 (ng/mL)` = mean(Cc),
+            `Cmax day 28 (ng/mL)` = max(Cc), .groups = "drop") |>
+  mutate(`Vc/F (L)` = 328 * (BMI / 23.01)^0.90,
+         `t1/2 (h)` = log(2) * `Vc/F (L)` / 5.11) |>
+  select(BMI, `Vc/F (L)`, `t1/2 (h)`, `Cavg day 28 (ng/mL)`, `Cmax day 28 (ng/mL)`)
+
+knitr::kable(bmi_tab, digits = 2,
+             caption = "BMI moves Vc/F and half-life substantially, but leaves average steady-state concentration unchanged (Cantillon 2018 Sect. 4).")
+
+stopifnot(
+  # Volume nearly doubles across the BMI range examined...
+  max(bmi_tab$`Vc/F (L)`) / min(bmi_tab$`Vc/F (L)`) > 1.7,
+  # ...while average steady-state concentration moves by well under 1%.
+  diff(range(bmi_tab$`Cavg day 28 (ng/mL)`)) /
+    mean(bmi_tab$`Cavg day 28 (ng/mL)`) < 0.01
+)
+```
+
+# PKNCA validation
+
+The paper reports one NCA-comparable quantity, the calculated terminal
+half-life of 44.5 h. The typical-value (inter-individual variability zeroed)
+single-dose profile is used for the gate, because the model's IIV on `ka`
+(variance 2.09, i.e. a 266% CV) puts a meaningful fraction of simulated
+subjects into flip-flop kinetics, where a terminal-slope half-life reflects
+absorption rather than elimination. The stochastic cohort is reported
+descriptively alongside.
+
+```{r nca-typical, message = FALSE, warning = FALSE}
+typ <- tibble::tibble(
+  treatment = c("15 mg", "30 mg", "50 mg"), dose_mg = c(15, 30, 50),
+  BMI = 23.01, REGION_MOLDOVA = 0
+) |> mutate(id = row_number())
+
+times_sd <- c(0, 0.5, 1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 30, 36, 48, 60, 72,
+              96, 120, 168, 216, 264, 336, 408, 504)
+ev_sd <- make_events(typ, times_sd, n_doses = 1)
+
+sim_sd <- rxode2::rxSolve(mod_typ, ev_sd, keep = c("treatment")) |>
+  as.data.frame()
+
+conc_sd <- sim_sd |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+conc_sd <- bind_rows(
+  conc_sd,
+  conc_sd |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+dose_sd <- ev_sd |> filter(evid == 1) |> select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_sd, Cc ~ time | treatment + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_sd, amt ~ time | treatment + id, doseu = "mg")
+
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE, lambda.z = TRUE)
+
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+```
+
+The reference column below carries the paper's calculated half-life of 44.5 h
+(Sect. 3.3 and Key Points) and the AUC0-inf implied by the paper's own `Cl/F`
+of 5.11 L/h (Table 2), i.e. dose / (Cl/F), converted to ng*h/mL. The latter is
+derived from Table 2 rather than tabulated as an NCA result in the paper.
+
+```{r nca-compare}
+published <- tibble::tibble(
+  treatment = c("15 mg", "30 mg", "50 mg"),
+  aucinf.obs = c(15, 30, 50) / 5.11 * 1000,
+  half.life = 44.5
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_typ,
+  reference = published,
+  by = "treatment",
+  units = c(aucinf.obs = "ng*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, caption = paste(
+  "Simulated (typical-value) vs. published NCA.",
+  "* marks rows differing from the reference by more than 20%."
+))
+```
+
+```{r nca-assert}
+nca_wide <- as.data.frame(nca_typ$result) |>
+  filter(PPTESTCD %in% c("half.life", "aucinf.obs")) |>
+  tidyr::pivot_wider(id_cols = treatment, names_from = PPTESTCD,
+                     values_from = PPORRES)
+
+stopifnot(
+  # Deterministic typical-value profile against the paper's closed-form
+  # half-life, so a tight bound is appropriate here.
+  all(abs(nca_wide$half.life - 44.5) < 0.5),
+  # AUC0-inf must recover dose / (Cl/F) to within trapezoidal error.
+  all(abs(nca_wide$aucinf.obs / (c(15, 30, 50) / 5.11 * 1000) - 1) < 0.02)
+)
+```
+
+```{r nca-cohort, message = FALSE, warning = FALSE}
+rxode2::rxSetSeed(20260919)
+
+ev_sd_pop <- make_events(cohort, times_sd, n_doses = 1)
+sim_sd_pop <- rxode2::rxSolve(mod, ev_sd_pop, keep = c("treatment")) |>
+  as.data.frame()
+
+conc_pop <- sim_sd_pop |> filter(!is.na(Cc)) |> select(id, time, Cc, treatment)
+conc_pop <- bind_rows(
+  conc_pop,
+  conc_pop |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+nca_pop <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_pop, Cc ~ time | treatment + id,
+                   concu = "ng/mL", timeu = "h"),
+  PKNCA::PKNCAdose(ev_sd_pop |> filter(evid == 1) |>
+                     select(id, time, amt, treatment),
+                   amt ~ time | treatment + id, doseu = "mg"),
+  intervals = intervals
+))
+
+as.data.frame(nca_pop$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "half.life", "aucinf.obs")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(Median = median(PPORRES, na.rm = TRUE),
+            `P10` = quantile(PPORRES, 0.10, na.rm = TRUE),
+            `P90` = quantile(PPORRES, 0.90, na.rm = TRUE), .groups = "drop") |>
+  mutate(Parameter = nlmixr2lib::ncaParamLabel(PPTESTCD)) |>
+  select(Parameter, treatment, Median, P10, P90) |>
+  knitr::kable(digits = 2, caption = paste(
+    "Stochastic cohort NCA (descriptive). The wide half-life spread is driven",
+    "by the 266% CV on ka, which pushes slowly-absorbing subjects into",
+    "flip-flop kinetics."
+  ))
+```
+
+# Pharmacodynamics: PANSS versus cumulative exposure
+
+Model selection (Sect. 3.4) found cumulative AUC to be the best of the four
+candidate predictors (instantaneous concentration, effect-compartment
+concentration, daily average concentration, cumulative AUC), and a placebo
+term made the fit worse and was dropped.
+
+```{r fig-panss-auc, fig.cap = "Predicted total PANSS as a function of cumulative RP5063 AUC. Replicates the model fit line of Figure 4 of Cantillon 2018."}
+auc_grid <- tibble::tibble(auc = seq(0, 400, length.out = 200)) |>
+  mutate(PANSS = 87.3 + (-31.6) * auc / (auc + 89.6))
+
+ggplot(auc_grid, aes(auc, PANSS)) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = 89.6, linetype = "dotted") +
+  annotate("text", x = 89.6, y = 86, label = "AUC50 = 89.6", hjust = -0.05,
+           size = 3) +
+  labs(x = "Cumulative AUC (ug*h/mL)", y = "Total PANSS") +
+  theme_bw()
+```
+
+## Dose-response relationship (Figure 6)
+
+Figure 6 of the paper plots predicted total PANSS against daily dose, with a
+solid line for the base model and a dashed line for the model carrying the
+geographic-site effect on Emax. Both are reproduced by solving the typical-value
+model for 28 days over a dose grid.
+
+```{r fig-dose-response, message = FALSE, warning = FALSE, fig.cap = "Predicted total PANSS at day 28 versus daily dose, with and without the Moldova study-site effect on Emax. Replicates Figure 6 of Cantillon 2018."}
+dose_grid <- tidyr::expand_grid(
+  dose_mg = seq(2.5, 60, by = 2.5),
+  REGION_MOLDOVA = c(0, 1)
+) |>
+  mutate(id = row_number(), BMI = 23.01,
+         treatment = ifelse(REGION_MOLDOVA == 1, "With Moldova site effect",
+                            "Base model"))
+
+ev_dr <- make_events(dose_grid, c(0, 672), n_doses = 28)
+sim_dr <- rxode2::rxSolve(mod_typ, ev_dr,
+                          keep = c("treatment", "REGION_MOLDOVA")) |>
+  as.data.frame() |>
+  filter(time == 672) |>
+  left_join(dose_grid |> select(id, dose_mg), by = "id")
+
+ggplot(sim_dr, aes(dose_mg, PANSS, linetype = treatment)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 87.3, colour = "grey60", linetype = "dotted") +
+  annotate("rect", xmin = 5, xmax = 30, ymin = -Inf, ymax = Inf, alpha = 0.08,
+           fill = "steelblue") +
+  labs(x = "Daily dose (mg)", y = "Predicted total PANSS at day 28",
+       linetype = NULL,
+       caption = "Shaded band: the 5-30 mg range the paper identifies as clinically relevant.") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The paper concludes (Sect. 3.4, Sect. 5) that "daily doses between 5 and 30 mg
+should adequately describe a clinically relevant dose/efficacy relationship".
+The simulated curve reproduces that: most of the attainable PANSS improvement
+is realised by 30 mg, and the curve flattens above it.
+
+```{r dose-response-check}
+base_dr <- sim_dr |> filter(REGION_MOLDOVA == 0) |> arrange(dose_mg)
+get_change <- function(d) {
+  base_dr$PANSS[which.min(abs(base_dr$dose_mg - d))] - 87.3
+}
+
+dr_tab <- tibble::tibble(
+  `Daily dose (mg)` = c(5, 15, 30, 50),
+  `PANSS change at day 28 (pu)` = round(vapply(c(5, 15, 30, 50), get_change, 0), 2)
+)
+knitr::kable(dr_tab, caption = "Predicted PANSS change from baseline at day 28.")
+
+stopifnot(
+  # Monotonically increasing improvement with dose.
+  all(diff(base_dr$PANSS) < 0),
+  # The 5-30 mg window captures most of the change realised by 50 mg. The
+  # changes are negative (PANSS improves by falling), so compare magnitudes.
+  abs(get_change(30) - get_change(5)) >
+    2 * abs(get_change(50) - get_change(30)),
+  # ...and the Moldova arm moves PANSS in the opposite direction.
+  all(sim_dr$PANSS[sim_dr$REGION_MOLDOVA == 1 & sim_dr$dose_mg > 5] > 87.3)
+)
+```
+
+## Comparison with the observed trial arm means
+
+The REFRESH primary-endpoint analysis (quoted in Sect. 1) reported mean (SE)
+PANSS changes of -20.23 (2.65), -15.42 (2.04) and -19.21 (2.39) for the 15, 30
+and 50 mg arms.
+
+```{r arm-means}
+sim_panss <- sim_md |>
+  filter(time == 672) |>
+  group_by(treatment) |>
+  summarise(`Model median change (pu)` = round(median(PANSS) - 87.3, 2),
+            .groups = "drop") |>
+  mutate(`Observed change (pu)` = c(-20.23, -15.42, -19.21),
+         `Observed SE` = c(2.65, 2.04, 2.39))
+
+knitr::kable(sim_panss, caption = paste(
+  "Model-predicted vs. observed PANSS change at day 28. The Emax model is",
+  "monotone in dose by construction and does not reproduce the non-monotone",
+  "ordering of the observed arm means."
+))
+```
+
+The model is monotone in dose, whereas the observed arm means are not
+(the 30 mg arm improved least). This is a property of the published model, not
+of the encoding: Cantillon 2018 fitted a single Emax curve through all
+subject-level PANSS-versus-exposure pairs rather than to the arm means, and
+Figures 4 and 5 show the corresponding scatter. No parameter has been adjusted
+to improve this comparison.
+
+# Assumptions and deviations
+
+* **Variance versus standard deviation in Tables 2 and 3.** The tables label
+  their random-effect rows "Var(g1)", "Cov(g1, g2)" and "sigma_1^2" / "sigma^2"
+  (i.e. sigma^2), so the tabulated numbers are read as **variances**. Three
+  independent checks agree:
+  (a) the covariance row implies a correlation of
+  `0.04 / sqrt(0.16 * 0.28) = 0.19` under the variance reading, against 0.89
+  under a standard-deviation reading;
+  (b) `Var(eta E0) = 164` gives an E0 standard deviation of 12.8 PANSS units,
+  matching the observed per-arm baseline PANSS SDs of 13.3 / 13.4 / 14.9 in
+  Table 1, whereas a standard-deviation reading would place 164 PANSS units of
+  spread on a scale bounded at 30-210;
+  (c) the empirical-Bayes `Cl/F` of Sect. 3.3, 5.17 +/- 0.24 L/h over 58
+  subjects, is a mean +/- standard error, implying an EBE standard deviation of
+  1.83 L/h and a CV of 35% - consistent with the 42% CV of `Var = 0.16` after
+  shrinkage, but impossible under the 16% CV of a standard-deviation reading,
+  since empirical-Bayes spread cannot exceed the true IIV.
+* **Errata: the base-model variability percentages in Sect. 3.2 are
+  inconsistent with Table 2.** Sect. 3.2 reports base-model inter-subject CVs
+  of "14.90 and 21.40% for Cl/F and Vc/F" and an intra-subject CV of
+  "approximately 8.0%". Under the variance reading adopted here the final-model
+  values are 42%, 57% and 26%. The Sect. 3.2 figures are also internally
+  suspicious: 14.90 is the same number as the Vc/F standard error quoted in the
+  immediately preceding sentence. Because a covariate addition cannot inflate
+  an IIV variance sevenfold, and because check (c) above rules the small values
+  out directly, Table 2 is used. A reader who preferred the Sect. 3.2 reading
+  would set `etalcl ~ 0.0222`, `etalvc ~ 0.0459` and `propSd <- 0.08`.
+* **Supplementary appendices are not on disk.** Appendices A-D (sampling-time
+  blocks, bioanalytical method, PD covariate stepwise table, concomitant
+  medication list) were not available. None contains a parameter used by the
+  model; the covariate-screen results they support are documented in
+  `covariatesDataExcluded`.
+* **`ka` is poorly identified.** Table 2 gives `Var(g3) = 2.09` with a standard
+  error of 6.63, i.e. a relative standard error above 300%, and the point
+  estimate of `ka` itself has an RSE of 40%. Sect. 4 attributes this to the
+  absence of early post-dose sampling. Simulated single-subject absorption
+  profiles are correspondingly variable and a small fraction show flip-flop
+  kinetics; this is faithful to the published model, not an encoding artefact.
+* **Cumulative, not steady-state, AUC.** The `auc_central` state integrates
+  concentration from the first dose and therefore keeps rising for the whole
+  28-day course. This is the paper's Eq. 11 predictor. It is not a
+  dosing-interval AUC, and `AUC50 = 89.6 ug*h/mL` is not comparable to a
+  steady-state AUC0-24 for this drug (which is about 3-10 ug*h/mL).
+* **The Moldova site effect is a measurement artefact, per the authors.**
+  Sect. 3.4 and Sect. 4 report that the site influenced only the PANSS
+  endpoint, not the PK, and describe the data as an outlier. It is encoded
+  because it is in the final model, but `REGION_MOLDOVA = 0` reproduces the
+  paper's base dose-response relationship.
+* **No placebo term.** Eq. 13's `alpha * t` placebo component was tested and
+  rejected (the objective function increased); no `alpha` estimate is reported,
+  so none is encoded.
+* **No bioavailability parameter.** `Cl/F` and `Vc/F` are apparent oral values
+  throughout; the paper reports no `F` and no intravenous reference arm, so
+  absolute volume and clearance are not identifiable.
+* **Drug naming.** The paper calls the compound RP5063 throughout; the model
+  file uses the INN, brilaroxazine, per the library's generic-name convention.
+* **Two-compartment structure not carried.** Sect. 3.2 reports that a
+  two-compartment fit produced parameter correlations above 0.95 and no
+  computable standard errors, so the authors selected the one-compartment
+  model; Sect. 4 notes the distribution phase carries under 10% of total AUC.
+  Only the published one-compartment model is encoded.
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

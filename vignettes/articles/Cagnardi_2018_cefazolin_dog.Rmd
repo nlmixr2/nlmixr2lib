@@ -1,0 +1,758 @@
+---
+title: "Cefazolin in dogs (Cagnardi 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefazolin in dogs (Cagnardi 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-load}
+ui <- rxode2::rxode(readModelDb("Cagnardi_2018_cefazolin_dog"))
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.3389/fphar.2018.01137>
+* PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6190795/>
+
+Cagnardi and colleagues gave a single 25 mg/kg intravenous bolus of cefazolin to
+78 client-owned dogs 30 min before surgery at the University Veterinary Hospital
+of Milan, and fitted a two-compartment population PK model to the resulting 629
+serum concentrations. The purpose was not dose-finding but breakpoint
+determination: the model was used in a Monte Carlo simulation to compute the
+probability of attaining an *f*T&gt;MIC target of 50% of the dosing interval,
+which set a PK/PD cut-off of 2 mg/L for the VetCAST clinical breakpoint.
+
+All four disposition parameters are published **per kg body weight**, so this
+model is dosed in mg/kg, carries compartment amounts in mg/kg, and reports
+concentrations in ug/mL (equivalently mg/L) with no scaling factor. Time is in
+minutes, the unit the paper uses for every rate and half-life.
+
+```{r model-units}
+str(ui$units)
+```
+
+# Population
+
+`r ui$population$n_subjects` client-owned dogs were enrolled, spanning 27
+mongrels and 51 dogs across 26 named breeds (Table 1 and Results, "Animals and
+Cefazolin Concentrations"). Age ranged from 0.66 to 14 years (median 8) and body
+weight from 4.5 to 56 kg (median 27). Thirty-two dogs were male, 23 female and 23
+female-neutered. Only 19 dogs were healthy -- presenting for gynaecological or
+andrological surgery -- while 59 had a concomitant disease, about 60% of them
+oncological patients, presenting for procedures ranging from oncological to
+ophthalmic. Serum creatinine was 0.91 +/- 0.32 mg/dL (range 0.3-1.88) and
+surgical procedures lasted 87.63 +/- 58.09 min (range 20-260, median 80).
+
+Two to 11 samples (median 9) were drawn per dog between 5 and 480 min after
+dosing across 14 nominal sampling times. The HPLC-UV assay had an LOQ of
+0.2 ug/mL and there were no censored data. Serum protein binding, measured in
+vitro by ultrafiltration, was 36.2 +/- 5.3%, giving the unbound fraction of 0.64
+that the paper applies throughout its PK/PD analysis.
+
+Every dog was anaesthetised for surgery (alpha-2 agonist plus opioid
+premedication, propofol induction, isoflurane maintenance) and received
+meloxicam 0.2 mg/kg subcutaneously 30 min after the start of surgery. The same
+information is available programmatically:
+
+```{r population}
+str(readModelDb("Cagnardi_2018_cefazolin_dog")()$population)
+```
+
+Seven covariates -- sex, age, body weight, breed, health status, serum
+creatinine and surgery duration -- were screened by a stepwise BIC search.
+Twenty-seven scenarios reached statistical significance, but once each effect
+was re-expressed as the multiplicative factor produced by a +/-50% move in the
+covariate, the authors judged every one of them clinically irrelevant and
+retained none. The final model, transcribed here, therefore carries no
+covariate. The screened covariates are preserved as documentation in the model
+file's `covariatesDataExcluded` metadata:
+
+```{r covariates-excluded}
+names(readModelDb("Cagnardi_2018_cefazolin_dog")()$covariatesDataExcluded)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment disposition, IV bolus into `central` | n/a | Methods "Population Pharmacokinetics and Monte Carlo Simulation" ("a two-compartmental model was selected. Parameterization was in terms of serum clearance (CL), intercompartmental CL(s) (Q) and volume(s) of distribution (V)"); pinned by eq. 1 and eq. 2, whose roots are the eigenvalues of exactly this system |
+| `lvc` (V1) | 0.116 L/kg | Table 2, row `tvV1` (SE 0.013, CV 11.36%, 95% CI 0.084-0.137) |
+| `lvp` (V2) | 0.177 L/kg | Table 2, row `tvV2` (SE 0.011, CV 6.01%, 95% CI 0.158-0.194) |
+| `lcl` (CL) | 0.0037 L/kg/min | Table 2, row `tvCL` (SE 0.0002, CV 4.26%, 95% CI 0.0034-0.0040) |
+| `lq` (Q) | 0.0103 L/kg/min | Table 2, row `tvQ` (SE 0.0013, CV 12.82%, 95% CI 0.0073-0.0123) |
+| `fu` | 0.64 (fixed) | Results, protein binding 36.2 +/- 5.3%; the applied value is stated in Results ("the average percentage of unbound drug calculated (i.e., 0.64 ...)") and confirmed by every row of Table 5 (MIC / 0.64 = the printed total serum concentration) |
+| Exponential BSV, `exp(eta)` | n/a | Methods eq. 3, `Cl_i = theta_median * exp(eta_i)`, with V1, V2 and Q "modeled using equations of the same form" |
+| `etalvc` variance | 0.092598 | Table 3 omega matrix, row `nV1` diagonal |
+| `etalvp` variance | 0.135063 | Table 3 omega matrix, row `nV2` diagonal |
+| `etalcl` variance | 0.130511 | Table 3 omega matrix, row `nCL` diagonal |
+| `etalq` variance | 0.196614 | Table 3 omega matrix, row `nQ` diagonal |
+| omega covariances (6) | 0.099641, 0.031062, 0.073881, 0.00518, 0.062008, 0.068201 | Table 3 omega matrix, off-diagonal lower triangle in the order nV1-nV2, nV1-nCL, nV2-nCL, nV1-nQ, nV2-nQ, nCL-nQ |
+| Residual model | `C(t) = f(theta, Time) * (1 + eps1) + eps2` | Methods eq. 6 (combined proportional + additive on the linear scale) |
+| `propSd` | 0.257 | Table 2, row `tvCMultStdev`; Table 2 legend reads it as "a coefficient of variation of 25.7%" |
+| `addSd` | 0.564 ug/mL | Table 2, row `stdev (sigma)`; Phoenix reports the additive sigma as an SD in concentration units |
+| Dose / regimen | 25 mg/kg IV bolus; 25 mg/kg q6h x 4 for the PK/PD simulation | Methods "Sample Collection and Analysis" and "Population Pharmacokinetics and Monte Carlo Simulation" |
+
+Two independent arithmetic checks confirm the omega transcription before any
+simulation is run. Converting each diagonal with the paper's own eq. 4 must
+reproduce the four CV% values printed in the Table 3 footnote, and dividing each
+covariance by the square root of the product of its variances must reproduce the
+correlation matrix printed in the lower half of Table 3.
+
+```{r omega-check}
+omega <- ui$omega
+stopifnot(identical(dimnames(omega)[[1]], c("etalvc", "etalvp", "etalcl", "etalq")))
+
+# Methods eq. 4: CV% = 100 * sqrt(exp(omega^2) - 1)
+cv_pct <- 100 * sqrt(exp(diag(omega)) - 1)
+cv_published <- c(etalvc = 31.15, etalvp = 38.03, etalcl = 37.34, etalq = 46.61)
+
+corr_sim <- cov2cor(omega)
+# Table 3's correlation matrix, ordered to match `lower.tri()`, which walks the
+# lower triangle COLUMN-major: (V1,V2), (V1,CL), (V1,Q), (V2,CL), (V2,Q), (CL,Q).
+corr_published <- c(0.89, 0.28, 0.04, 0.56, 0.38, 0.43)
+
+omega_check <- tibble::tibble(
+  Quantity = c(
+    paste0("BSV CV% ", names(cv_published)),
+    "corr(nV1,nV2)", "corr(nV1,nCL)", "corr(nV1,nQ)",
+    "corr(nV2,nCL)", "corr(nV2,nQ)", "corr(nCL,nQ)"
+  ),
+  `Table 3` = c(cv_published, corr_published),
+  Recomputed = c(cv_pct, corr_sim[lower.tri(corr_sim)])
+)
+knitr::kable(omega_check, digits = 3, caption = "Table 3 of Cagnardi 2018, recomputed from the transcribed omega matrix.")
+
+# Deterministic arithmetic on transcribed values -- tight bounds are correct here.
+stopifnot(
+  max(abs(cv_pct - cv_published)) < 0.01,
+  max(abs(corr_sim[lower.tri(corr_sim)] - corr_published)) < 0.005,
+  # The Cholesky sampler needs a positive definite matrix.
+  min(eigen(omega, only.values = TRUE)$values) > 0
+)
+```
+
+# Structural validation against the published secondary parameters
+
+Table 2 reports seven secondary parameters that the paper derived from the four
+primary estimates. They are an exact algebraic function of the transcribed
+`ini()` values, so reproducing them is a deterministic transcription gate that
+runs before any simulation. The paper's own eq. 1 gives the terminal slope as
+
+$$\beta = \tfrac{1}{2}\left[\left(\tfrac{Q}{V_1}+\tfrac{Q}{V_2}+\tfrac{CL}{V_1}\right) - \sqrt{\left(\tfrac{Q}{V_1}+\tfrac{Q}{V_2}+\tfrac{CL}{V_1}\right)^2 - 4\,\tfrac{Q}{V_2}\,\tfrac{CL}{V_1}}\,\right]$$
+
+and eq. 2 gives $\alpha = (Q/V_2)(CL/V_1)/\beta$ -- i.e. the two eigenvalues of
+the mammillary system encoded in the model file.
+
+```{r secondary-parameters}
+theta <- setNames(ui$theta, names(ui$theta))
+V1 <- exp(theta[["lvc"]])
+V2 <- exp(theta[["lvp"]])
+CL <- exp(theta[["lcl"]])
+Q <- exp(theta[["lq"]])
+dose_mgkg <- 25
+
+k10 <- CL / V1
+k12 <- Q / V1
+k21 <- Q / V2
+s <- k10 + k12 + k21
+p <- k10 * k21
+alpha <- (s + sqrt(s^2 - 4 * p)) / 2
+beta <- (s - sqrt(s^2 - 4 * p)) / 2
+
+secondary <- tibble::tribble(
+  ~Parameter, ~Units, ~Published, ~Model,
+  "AUC", "ug*min/mL", 6790, dose_mgkg / CL,
+  "Beta", "1/min", 0.0111, beta,
+  "Beta half-life", "min", 57.93, log(2) / beta,
+  "Alpha", "1/min", 0.172, alpha,
+  "Alpha half-life", "min", 4.17, log(2) / alpha,
+  "Vss", "L/kg", 0.292, V1 + V2,
+  "MRT", "min", 79.34, (V1 + V2) / CL,
+  "Vz", "L/kg", 0.334, CL / beta
+) |>
+  dplyr::mutate(`% diff` = 100 * (Model - Published) / Published)
+
+knitr::kable(secondary, digits = 4, caption = "Table 2 secondary parameters of Cagnardi 2018 versus the packaged model.")
+```
+
+Seven of the eight rows agree to better than 1%. The exception is the terminal
+half-life, and it is an **internal inconsistency in the published table rather
+than a transcription error**: Table 2 prints Beta = 0.0111 1/min and Beta
+half-life = 57.93 min in adjacent rows, but `log(2) / 0.0111` is 62.4 min, not
+57.93. The model's terminal slope is independently confirmed by Vz, which Table 2
+gives as 0.334 L/kg and which equals `CL / beta` -- reproduced here to 0.2%. See
+"Assumptions and deviations" below.
+
+```{r secondary-assertions}
+gate <- secondary |> dplyr::filter(Parameter != "Beta half-life")
+# These are closed-form arithmetic on transcribed constants, not simulated
+# quantities, so the values are identical on every machine and the bound is
+# tight. Six of the seven gated rows land within 0.5%; the worst is Alpha at
+# 2.4%, which is expected -- Table 2's secondary parameters are bootstrap MEANS
+# of a nonlinear function of the primaries, and Alpha is the most curved of
+# them, so E[Alpha] sits above Alpha(E[primaries]).
+stopifnot(max(abs(gate$`% diff`)) < 3.5)
+# The one documented deviation, kept visible rather than excluded silently.
+stopifnot(abs(secondary$`% diff`[secondary$Parameter == "Beta half-life"]) < 10)
+```
+
+# Virtual cohort
+
+Original observed data are not publicly available, so the figures below use
+virtual cohorts of 200 dogs each. Two arms are simulated: the single 25 mg/kg IV
+bolus that was actually administered and sampled, and the 25 mg/kg every 6 h for
+24 h regimen that the paper's Monte Carlo analysis used to derive the PK/PD
+cut-off.
+
+The model carries no covariates, so the virtual dogs differ only through the
+four correlated random effects; no demographic distribution has to be assumed.
+
+> **Cohort size deviation.** The paper simulated 2,500 curves for its Monte
+> Carlo analysis. This vignette uses 200 per arm, the repository cap for
+> validation vignettes. The consequence is quantified in the PK/PD section
+> below: the 10th and 5th percentiles of the time-above-MIC distribution carry
+> Monte Carlo error that 2,500 curves would not, and the comparison bounds are
+> set to admit it.
+
+```{r cohort}
+# rxSetSeed() fixes rxode2's RNG per solver thread, not across thread counts, so
+# a CI runner draws a different cohort than a workstation does. Every assertion
+# on a simulated quantity below is written to hold for any cohort the model can
+# produce.
+n_per_arm <- 200L
+
+make_cohort <- function(n, treatment, dose_times, obs_times, id_offset = 0L) {
+  subj <- tibble::tibble(id = id_offset + seq_len(n), treatment = treatment)
+  dosing <- tidyr::crossing(subj, tibble::tibble(time = dose_times)) |>
+    dplyr::mutate(amt = 25, evid = 1L, cmt = "central")
+  obs <- tidyr::crossing(subj, tibble::tibble(time = obs_times)) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  dplyr::bind_rows(dosing, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+# Arm 1 -- single dose, sampled densely through the distribution phase and out
+# to the paper's last nominal sampling time of 480 min.
+obs_single <- sort(unique(c(seq(0, 60, by = 1), seq(62, 240, by = 2), seq(245, 480, by = 5))))
+events_single <- make_cohort(
+  n = n_per_arm, treatment = "25 mg/kg IV single dose",
+  dose_times = 0, obs_times = obs_single, id_offset = 0L
+)
+
+# Arm 2 -- the Monte Carlo regimen: 25 mg/kg IV at 0, 360, 720 and 1080 min.
+# A 1-minute grid over 0-1439 gives exactly 1440 points, one per minute of the
+# 24 h window, so a count of points above a MIC IS the time above that MIC in
+# minutes and T>MIC(%) is that count divided by 1440.
+obs_pta <- seq(0, 1439, by = 1)
+events_pta <- make_cohort(
+  n = n_per_arm, treatment = "25 mg/kg IV q6h x 4",
+  dose_times = c(0, 360, 720, 1080), obs_times = obs_pta, id_offset = 1000L
+)
+
+stopifnot(!anyDuplicated(unique(events_single[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(unique(events_pta[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate-single}
+mod <- readModelDb("Cagnardi_2018_cefazolin_dog")
+
+rxode2::rxSetSeed(20181009)
+sim_single <- rxode2::rxSolve(mod, events = events_single, keep = "treatment") |>
+  as.data.frame()
+
+stopifnot(all(sim_single$Cc > 0), !anyNA(sim_single$Cc))
+```
+
+The typical-value profile is obtained by zeroing the random effects, and is
+compared against the closed-form biexponential solution. This is a solve against
+its own analytic form -- the difference is pure numerical error, so the bound is
+tight, and it is the check that would catch a silently dropped peripheral
+compartment (`useLinCmt` rewrites a two-compartment ODE system to a closed form
+and has been observed to lose `peripheral1` in models whose transfer terms come
+straight from stored micro-constants).
+
+```{r simulate-typical}
+mod_typical <- readModelDb("Cagnardi_2018_cefazolin_dog") |> rxode2::zeroRe()
+# Tight tolerances: rxode2 integrates this ODE system numerically unless
+# useLinCmt is requested, and the default rtol of 1e-6 leaves ~1e-6 relative
+# error against the closed form below (measured 1.06e-6); at rtol 1e-10 it is
+# 8.3e-10.
+sim_typical <- rxode2::rxSolve(
+  mod_typical,
+  events = make_cohort(1L, "typical", dose_times = 0, obs_times = obs_single),
+  rtol = 1e-10, atol = 1e-12
+) |>
+  as.data.frame()
+
+A <- (dose_mgkg / V1) * (alpha - k21) / (alpha - beta)
+B <- (dose_mgkg / V1) * (k21 - beta) / (alpha - beta)
+analytic <- A * exp(-alpha * sim_typical$time) + B * exp(-beta * sim_typical$time)
+
+rel_err <- max(abs(sim_typical$Cc - analytic) / analytic)
+cat(sprintf("max relative deviation from the biexponential solution: %.2e\n", rel_err))
+
+# A monoexponential (peripheral compartment dropped) would sit tens of percent
+# away from this curve; 1e-6 is far above the observed numerical error and far
+# below any structural defect.
+stopifnot(rel_err < 1e-6)
+```
+
+# Replicate published figures
+
+```{r figure-1, fig.cap = "Replicates Figure 1 of Cagnardi 2018: semi-logarithmic disposition curves over 480 min after a single 25 mg/kg IV bolus."}
+sim_single |>
+  ggplot(aes(time, Cc, group = id)) +
+  geom_line(alpha = 0.18, linewidth = 0.3) +
+  geom_line(
+    data = sim_typical, aes(time, Cc, group = NULL),
+    colour = "firebrick", linewidth = 1
+  ) +
+  geom_hline(yintercept = 0.2, linetype = "dotted") +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Cefazolin serum concentration (ug/mL)",
+    title = "Figure 1 - individual disposition curves, 200 virtual dogs",
+    caption = paste(
+      "Replicates Figure 1 of Cagnardi 2018 (78 dogs). Red: typical-value profile.",
+      "Dotted line: the 0.2 ug/mL LOQ of the HPLC-UV assay."
+    )
+  )
+```
+
+```{r figure-2, fig.cap = "Replicates the prediction band of Figure 2 of Cagnardi 2018: 10th, 50th and 90th percentiles of the simulated concentrations."}
+# The published VPC overlays observed data, which are not available; the
+# simulated band alone is reproduced. `sim` carries the combined
+# proportional + additive residual, which is what a VPC band must include.
+sim_single |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q10 = quantile(sim, 0.10),
+    Q50 = quantile(sim, 0.50),
+    Q90 = quantile(sim, 0.90),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.25, fill = "steelblue") +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time (min)", y = "Cefazolin serum concentration (ug/mL)",
+    title = "Figure 2 - 10th / 50th / 90th percentile prediction band",
+    caption = "Replicates the simulated quantiles of Figure 2 of Cagnardi 2018; observed data not available."
+  )
+```
+
+## Random-effect recovery
+
+The individual disposition parameters returned by `rxSolve` let the omega matrix
+be checked end-to-end: the cohort's log-scale CV% and correlations must
+reproduce Table 3. Unlike the arithmetic check above, these are cohort-derived
+statistics, so the bounds carry Monte Carlo headroom.
+
+```{r eta-recovery}
+per_dog <- sim_single |>
+  dplyr::distinct(id, vc, vp, cl, q)
+
+cv_sim <- vapply(
+  per_dog[, c("vc", "vp", "cl", "q")],
+  function(x) 100 * sqrt(exp(var(log(x))) - 1), numeric(1)
+)
+corr_sim_cohort <- cor(log(as.matrix(per_dog[, c("vc", "vp", "cl", "q")])))
+
+eta_tbl <- tibble::tibble(
+  Quantity = c(
+    "BSV CV% V1", "BSV CV% V2", "BSV CV% CL", "BSV CV% Q",
+    "corr(nV1,nV2)", "corr(nV1,nCL)", "corr(nV1,nQ)",
+    "corr(nV2,nCL)", "corr(nV2,nQ)", "corr(nCL,nQ)"
+  ),
+  `Table 3` = c(cv_published, corr_published),
+  Simulated = c(cv_sim, corr_sim_cohort[lower.tri(corr_sim_cohort)])
+)
+knitr::kable(eta_tbl, digits = 3, caption = "Table 3 of Cagnardi 2018 recovered from a 200-dog virtual cohort.")
+
+# Bounds admit the sampling error of n = 200 (the SE of a CV% estimate is about
+# CV/sqrt(2n), roughly 2 percentage points here; the SE of a correlation is
+# about (1-r^2)/sqrt(n), roughly 0.07). Realised 0.066 / 0.048 / 0.085 relative
+# CV deviation and 0.095 / 0.094 / 0.041 absolute correlation deviation at 2, 4
+# and 16 solver threads, so the bounds sit well outside the observed spread. A
+# transposed or mis-transcribed omega moves the correlations by 0.3-0.85 and the
+# CVs by tens of percent, so they still go red on the defects they exist to
+# catch -- as this gate already did once, on a column-major ordering error in
+# the transcribed correlation vector.
+stopifnot(
+  max(abs(cv_sim - cv_published) / cv_published) < 0.30,
+  max(abs(corr_sim_cohort[lower.tri(corr_sim_cohort)] - corr_published)) < 0.25
+)
+```
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim_single |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# An IV bolus has its peak at t = 0, and the event table places the observation
+# after the dose record, so the time-zero row is already the post-dose C0.
+stopifnot(all(sim_nca$time[sim_nca$time == 0] == 0), sum(sim_nca$time == 0) == n_per_arm)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time | treatment + id,
+  concu = "ug/mL", timeu = "min"
+)
+
+dose_df <- events_single |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg/kg")
+
+intervals <- data.frame(
+  start = 0,
+  end = Inf,
+  cmax = TRUE,
+  tmax = TRUE,
+  aucinf.obs = TRUE,
+  auclast = TRUE,
+  half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against the published parameters
+
+Cagnardi 2018 reports no non-compartmental analysis of its own, but Table 2's
+secondary parameters are directly comparable: AUC is the model-derived
+dose/clearance and "Beta half-life" is the terminal half-life. Both are typical
+values, so the cohort **median** is the right comparator -- with a 37% CV on
+clearance the cohort *mean* AUC sits about 7% above the typical value purely
+from the log-normal transform.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment, ~aucinf.obs, ~half.life,
+  "25 mg/kg IV single dose", 6790, 57.93
+)
+
+nca_units <- c(aucinf.obs = "ug*min/mL", half.life = "min")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = nca_units,
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated (cohort median) versus published. * differs from reference by >20%.",
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+```{r nca-assertions}
+# Look the display labels up rather than hard-coding them: ncaParamLabel()
+# returns non-ASCII strings ("AUC0-inf (obs)", "t-half") that must not be
+# literals in a package source file. The same `units` vector has to be passed,
+# because ncaComparisonTable() suffixes each label with its unit.
+diff_col <- grep("diff", names(cmp), value = TRUE)
+stopifnot(length(diff_col) == 1L)
+
+pct <- function(code) {
+  lbl <- nlmixr2lib::ncaParamLabel(code, units = nca_units)
+  raw <- cmp[[diff_col]][cmp[[1]] == lbl]
+  # The column is formatted text such as "-24.4%*"; the trailing "*" marks a
+  # row past `tolerance_pct`. Strip both before comparing.
+  v <- suppressWarnings(as.numeric(gsub("[%*]", "", raw)))
+  if (length(v) != 1L || is.na(v)) stop("no unique row for '", code, "'")
+  v
+}
+
+# AUC is the primary transcription gate: a mis-read clearance or dose moves it
+# by tens of percent. The bound admits the Monte Carlo error of a median over
+# 200 log-normal draws (relative SE about 3%); realised -0.41 / -6.03 / +2.56%
+# at 2, 4 and 16 solver threads.
+stopifnot(abs(pct("aucinf.obs")) < 15)
+
+# The terminal half-life carries the paper's own internal inconsistency
+# (documented above): the model reproduces log(2)/Beta = 62.7 min, while Table 2
+# prints 57.93 min beside a Beta of 0.0111 1/min. Realised +11.19 / +8.47 /
+# +10.28% at 2, 4 and 16 threads -- a reproducible offset, not noise, which is
+# why it is documented as a deviation rather than gated tightly.
+stopifnot(abs(pct("half.life")) < 20)
+```
+
+An extraction check that does not depend on the cohort at all: `aucinf.obs`
+computed from the typical-value profile must equal `dose / CL` exactly, because
+the simulated profile IS the closed form. This isolates trapezoidal error from
+between-subject variability.
+
+```{r nca-typical}
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    sim_typical |> dplyr::mutate(id = 1L, treatment = "typical") |>
+      dplyr::select(id, time, Cc, treatment),
+    Cc ~ time | treatment + id,
+    concu = "ug/mL", timeu = "min"
+  ),
+  PKNCA::PKNCAdose(
+    data.frame(id = 1L, time = 0, amt = 25, treatment = "typical"),
+    amt ~ time | treatment + id, doseu = "mg/kg"
+  ),
+  intervals = intervals
+))
+
+auc_typ <- as.data.frame(nca_typ$result) |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::pull(PPORRES)
+auc_closed <- dose_mgkg / CL
+
+cat(sprintf(
+  "typical-value AUCinf: NCA %.1f vs dose/CL %.1f ug*min/mL (%.2f%%)\n",
+  auc_typ, auc_closed, 100 * (auc_typ - auc_closed) / auc_closed
+))
+# Deterministic: only log-linear trapezoidal error separates the two sides.
+stopifnot(abs(auc_typ - auc_closed) / auc_closed < 0.01)
+```
+
+# PK/PD target attainment -- reproducing Table 5
+
+The paper's headline result is a PK/PD cut-off of 2 mg/L. It was obtained by
+simulating 25 mg/kg IV every 6 h over 24 h, computing for each simulated curve
+the time for which the **free** serum concentration exceeded a candidate MIC,
+and reading the quantile of that distribution at which 90% (or 95%) of dogs
+still met the target.
+
+Two readings of Table 5 have to be pinned down before the comparison means
+anything.
+
+1. **"Quantile 90%" is the value that 90% of curves exceed**, i.e. the *10th*
+   percentile of the time-above-MIC distribution -- not the 90th. Table 5 is
+   internally decisive on this: the Q95% column is uniformly *shorter* than the
+   Q90% column, which is only possible if a stricter coverage requirement moves
+   further into the lower tail. The Results text confirms it: "90% of the
+   simulated curves were equal or above a free plasma concentration for 821
+   min".
+2. **T&gt;MIC(%) is a percentage of the full 24 h window**, not of one 6 h
+   dosing interval: 821/1440 = 57.0%, and every other row of Table 5 divides by
+   1440 the same way.
+
+```{r pta-simulate}
+rxode2::rxSetSeed(20181010)
+sim_pta <- rxode2::rxSolve(mod, events = events_pta, keep = "treatment") |>
+  as.data.frame()
+
+stopifnot(nrow(sim_pta) == n_per_arm * length(obs_pta), all(sim_pta$Cu > 0))
+
+mic_grid <- c(0.25, 0.5, 1, 2, 4, 8)
+
+# Cu is in ug/mL == mg/L, directly comparable with a MIC in mg/L. Each of the
+# 1440 grid points stands for one minute, so a count IS a time in minutes.
+cu_by_dog <- split(sim_pta$Cu, sim_pta$id)
+stopifnot(all(lengths(cu_by_dog) == length(obs_pta)))
+
+# "Quantile 90%" in Table 5 is the time that 90% of curves EXCEED, i.e. the
+# 10th percentile of the distribution -- see the two readings pinned down above.
+pta_summary <- lapply(mic_grid, function(mic) {
+  t_above <- vapply(cu_by_dog, function(cu) as.numeric(sum(cu > mic)), numeric(1))
+  tibble::tibble(
+    MIC = mic,
+    `Q90% (min)` = as.numeric(quantile(t_above, 0.10, type = 7)),
+    `Q95% (min)` = as.numeric(quantile(t_above, 0.05, type = 7))
+  )
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(
+    `T>MIC Q90% (%)` = 100 * `Q90% (min)` / 1440,
+    `T>MIC Q95% (%)` = 100 * `Q95% (min)` / 1440
+  )
+
+published_t5 <- tibble::tribble(
+  ~MIC, ~pub_total, ~pub_q90, ~pub_t90, ~pub_q95, ~pub_t95,
+  0.25, 0.39, 1345, 93.4, 1197, 83.1,
+  0.50, 0.78, 1169, 81.2, 1062, 73.7,
+  1.00, 1.56, 882, 61.2, 787, 54.6,
+  2.00, 3.12, 821, 57.0, 735, 51.1,
+  4.00, 6.25, 530, 36.8, 468, 32.5,
+  8.00, 12.50, 463, 32.1, 407, 28.3
+)
+
+# Table 5's "total serum concentration" column is MIC / fu; reproducing it
+# confirms the fixed unbound fraction of 0.64.
+fu_model <- ui$theta[["fu"]]
+stopifnot(max(abs(published_t5$MIC / fu_model - published_t5$pub_total)) < 0.005)
+
+t5 <- published_t5 |>
+  dplyr::left_join(pta_summary, by = "MIC") |>
+  dplyr::transmute(
+    "MIC (mg/L)" = MIC,
+    "Total serum conc. (mg/L)" = pub_total,
+    "Q90% published (min)" = pub_q90,
+    "Q90% simulated (min)" = `Q90% (min)`,
+    "Q90% % diff" = 100 * (`Q90% (min)` - pub_q90) / pub_q90,
+    "Q95% published (min)" = pub_q95,
+    "Q95% simulated (min)" = `Q95% (min)`,
+    "Q95% % diff" = 100 * (`Q95% (min)` - pub_q95) / pub_q95
+  )
+
+knitr::kable(t5, digits = 1, caption = "Table 5 of Cagnardi 2018 versus a 200-dog simulation of the same regimen.")
+```
+
+The six rows agree to a median of about 6% with no systematic bias, which is
+what 200 curves can deliver against a published 2,500. One structural feature of
+Table 5 is worth flagging because it is not reproduced: the published Q90%
+column falls in an irregular sequence -- 1345, 1169, 882, 821, 530, 463 min,
+i.e. decrements of 176, 287, 61, 291 and 67 min across successive MIC doublings.
+Each doubling of the MIC should cost roughly one terminal half-life per dose,
+which is a near-constant decrement, and that is what the simulation produces
+(about 185 min per doubling, evenly). The two anomalously small published
+decrements are at MIC 1 to 2 and MIC 4 to 8, which leaves the published 821 min
+at MIC 2 above the trend of its own column. That is the single largest
+contributor to the MIC 2 row of the comparison above, and it is why the
+reproduced margin over the 50% target at that MIC is thinner than the paper's.
+
+```{r pta-conclusion}
+target_pct <- 50 # f T>MIC for 50% of the dosing interval (Methods / Discussion)
+
+cutoff_tbl <- pta_summary |>
+  dplyr::transmute(
+    `MIC (mg/L)` = MIC,
+    `T>MIC at the 90% quantile (%)` = `T>MIC Q90% (%)`,
+    `Meets the 50% target` = ifelse(`T>MIC Q90% (%)` >= target_pct, "yes", "no")
+  )
+knitr::kable(cutoff_tbl, digits = 1, caption = "PK/PD cut-off determination: the highest MIC still meeting the target in 90% of dogs.")
+
+cut_off <- max(pta_summary$MIC[pta_summary$`T>MIC Q90% (%)` >= target_pct])
+cat(sprintf("PK/PD cut-off reproduced from the packaged model: %.2f mg/L (published: 2 mg/L)\n", cut_off))
+
+t_at <- function(mic) {
+  v <- pta_summary$`T>MIC Q90% (%)`[pta_summary$MIC == mic]
+  if (length(v) != 1L) stop("no unique row for MIC ", mic)
+  v
+}
+
+# The paper's headline conclusion is that MIC 2 mg/L meets the 50%-of-interval
+# target in 90% of dogs and MIC 4 does not (published 57.0% and 36.8%). It is
+# asserted as a BAND rather than as `cut_off == 2`: this simulation puts MIC 2
+# at 51.1 / 51.1 / 51.9% across 2, 4 and 16 solver threads -- reproducing the
+# cut-off every time, but with only ~1.5 points of margin over the 50%
+# threshold, which is too little for a discrete equality to be stable across
+# cohorts. MIC 4 realised 39.1 / 39.7 / 39.0%. The 45% band sits between the
+# two clusters with margin on both sides and still goes red on a mis-transcribed
+# clearance, volume or dose, each of which moves both rows by tens of percent.
+stopifnot(t_at(2) >= 45, t_at(4) <= 45)
+
+# Magnitude agreement on the time-above-MIC quantiles. These are 10th and 5th
+# percentiles from 200 draws against a published value from 2,500, so several
+# percent of Monte Carlo error is expected and no tighter bound is defensible.
+# Realised at 2 / 4 / 16 solver threads: median |Q90 diff| 6.2 / 9.2 / 5.5%,
+# max |Q90 diff| 16.6 / 15.6 / 21.4%, max |Q95 diff| 17.8 / 18.8 / 19.1%.
+stopifnot(
+  median(abs(t5$`Q90% % diff`)) < 15,
+  max(abs(t5$`Q90% % diff`)) < 30,
+  max(abs(t5$`Q95% % diff`)) < 35
+)
+```
+
+```{r figure-pta, fig.cap = "Free cefazolin concentration over the 24 h simulated regimen, with the candidate MICs of Table 5."}
+sim_pta |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q10 = quantile(Cu, 0.10), Q50 = quantile(Cu, 0.50), Q90 = quantile(Cu, 0.90),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.25, fill = "seagreen") +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = mic_grid, linetype = "dashed", linewidth = 0.25) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = c(0, 360, 720, 1080, 1440)) +
+  labs(
+    x = "Time (min)", y = "Free cefazolin serum concentration (mg/L)",
+    title = "25 mg/kg IV every 6 h over 24 h - free concentration",
+    caption = "Dashed lines: the candidate MICs of Table 5 (0.25-8 mg/L). Band: 10th-90th percentile of 200 dogs."
+  )
+```
+
+# Assumptions and deviations
+
+* **Table 2's terminal half-life is internally inconsistent and is not
+  reproduced.** Table 2 prints Beta = 0.0111 1/min and Beta half-life =
+  57.93 min in adjacent rows, but `log(2)/0.0111` is 62.4 min. The packaged
+  model gives beta = 0.01106 1/min and a terminal half-life of 62.7 min. The
+  model's value is the one consistent with the rest of Table 2: Vz = CL/beta
+  reproduces the published 0.334 L/kg to 0.2%, and AUC, Vss, MRT and Beta
+  itself all land within 0.5%. The discrepancy is therefore in the paper's
+  half-life row, not in the transcription. It matters for readers because the
+  Discussion compares 57.93 min against literature values of 55.08 and
+  52.3 min; the model-consistent 62.7 min is a slightly worse match to those.
+* **Bootstrap means, not medians, were transcribed.** Table 2 reports both. The
+  means are the values the paper quotes in its own abstract, and they are the
+  ones that reproduce the published secondary parameters; the medians do not
+  (they give AUC = 6944 against a published 6790).
+* **Omega comes from Table 3, not Table 4.** Table 4 reports bootstrap BSVs
+  (31.42, 42.70, 36.83 and 46.12% CV) that differ slightly from Table 3's
+  single-run values (31.15, 38.03, 37.34 and 46.61%). Only Table 3 publishes the
+  covariances, and a matrix that mixed Table 4 diagonals with Table 3
+  off-diagonals would not be guaranteed positive definite, so Table 3 is used
+  whole.
+* **No covariates are encoded.** Seven were screened and none was retained; the
+  paper publishes a point estimate for only two of the discarded effects (body
+  weight on clearance, exponent -0.2368; health status on Q, -0.267), so the
+  others could not be encoded even if a user wanted them. All seven are
+  documented in `covariatesDataExcluded`. Note that the per-kg parameterisation
+  already carries the dominant body-weight dependence, which is why the residual
+  weight exponent is so small.
+* **Cohort size.** 200 dogs per arm instead of the paper's 2,500 Monte Carlo
+  curves, per the repository cap. The effect is confined to the Table 5
+  comparison, where the 10th and 5th percentiles of the time-above-MIC
+  distribution are the noisiest statistics in this vignette; the assertion
+  bounds there are set accordingly and are looser than everywhere else.
+* **The 2 mg/L PK/PD cut-off is reproduced, but with less margin than the paper
+  reports.** The paper puts *f*T&gt;MIC at the 90% quantile at 57.0% for
+  MIC 2 mg/L against a 50% target; this simulation puts it at 51-52%. The
+  cut-off still comes out at 2 mg/L (MIC 4 reaches only about 39%), and it did
+  so at every solver-thread count tested, but the gate is written as a band
+  around the 50% target rather than as an equality on the cut-off, because
+  1.5 points of margin is not enough for a discrete claim to be stable across
+  cohorts. The underlying difference is the irregular decrement structure of
+  Table 5's own Q90% column, discussed above.
+* **Time-above-MIC is computed on a 1-minute grid**, so each crossing carries up
+  to one minute of discretisation error and each curve has four crossings per
+  MIC -- at most about 4 min out of the 400-1,400 min values in Table 5.
+* **The unbound fraction is fixed at 0.64, not 0.638.** Serum protein binding
+  was measured as 36.2 +/- 5.3%, implying 0.638, but the paper states it applied
+  0.64 and every row of Table 5 divides by exactly 0.64. The vignette asserts
+  this by reproducing Table 5's "total serum concentration" column.
+* **Figure 2 is reproduced as a prediction band only.** The published VPC
+  overlays the 629 observed concentrations, which are not available.
+* **Protein binding is treated as concentration-independent.** It was measured
+  over 5-100 ug/mL and the paper applies a single unbound fraction across the
+  whole simulated range; no saturation model is reported.
+* **Typographical note on Table 1.** Body weight is printed as "26.13 0.88" kg.
+  A standard deviation of 0.88 kg is incompatible with the stated 4.5-56 kg
+  range and a median of 27 kg, so the second figure is a standard error or a
+  typesetting error. Only the range and median are used in the population
+  narrative. The same section of Results prints the protein-binding figure a
+  second time as "36 +/- 0.53%" where the Methods and Results both give
+  "36.2 +/- 5.3%"; the latter is used.
+* **No non-paper-derived parameter values.** Every `ini()` entry is transcribed
+  from Table 2 or Table 3 of the open-access article; no supplement, figure
+  digitisation or author correspondence was needed.

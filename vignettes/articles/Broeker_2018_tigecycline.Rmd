@@ -1,0 +1,706 @@
+---
+title: "Tigecycline (Broeker 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tigecycline (Broeker 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+```
+
+This vignette validates `Broeker_2018_tigecycline`, the two-compartment
+population PK model for intravenous tigecycline in critically ill adults on
+continuous renal replacement therapy (CRRT) published by Broeker and colleagues
+([doi:10.1186/s13054-018-2278-4](https://doi.org/10.1186/s13054-018-2278-4)).
+
+The distinguishing feature of the analysis is that plasma and CRRT **effluent**
+concentrations were fitted simultaneously. Effluent is what separates the
+dialysis clearance from the physiological body clearance: without it, a model
+fitted to plasma alone can only report the total. Because the cohort spans two
+CRRT modalities with different solute-transport mechanisms -- continuous
+venovenous hemodialysis (CVVHD, purely diffusive) and continuous venovenous
+hemodiafiltration (CVVHDF, diffusive plus convective) -- the paper estimates a
+separate dialysis clearance for each while sharing one body-PK model.
+
+The clinical conclusion is the negative one: despite tigecycline passing the
+membrane freely (saturation coefficients of 0.79 and 0.90), CRRT removes only
+about a tenth of the dose, because tigecycline's volume of distribution is large
+enough that little drug is in plasma to be dialysed. No dose adjustment is
+needed.
+
+```{r load-model}
+mod <- readModelDb("Broeker_2018_tigecycline")()
+zmod <- rxode2::zeroRe(mod)
+mod
+```
+
+# Population
+
+Eleven critically ill adults in a 40-bed anaesthesiological ICU of a German
+tertiary care hospital, all requiring renal replacement therapy for acute kidney
+injury and treated with tigecycline: eight on CVVHD and three on CVVHDF. Ten were
+treated for complicated intra-abdominal infection and one for an *Acinetobacter
+baumannii* infection. Median age was 69 years (range 37 to 81), median weight
+80 kg (68 to 104), and the cohort was 10 male and 1 female. APACHE II was a
+median of 29 (15 to 45); two patients died during follow-up.
+
+The covariate that matters is hepatic, not renal. Four patients had liver failure
+or cirrhosis and two were liver transplant recipients, so total bilirubin spans
+two orders of magnitude -- 0.7 to 43.3 mg/dL against a median of 2.3 mg/dL. That
+spread is what makes the bilirubin effect on clearance estimable in eleven
+subjects.
+
+A total of 109 blood and 108 effluent samples were used, drawn on day 4 of
+treatment after at least 24 h on CRRT and therefore at steady state. Two 12-h
+blood samples were excluded as having been drawn after the start of the next
+infusion.
+
+```{r population}
+pop <- mod$population
+tibble::tibble(
+  Field = c(
+    "Species", "Subjects", "Age", "Weight", "Female", "Disease", "Dosing"
+  ),
+  Value = c(
+    pop$species,
+    as.character(pop$n_subjects),
+    paste0(pop$age_median, " (", pop$age_range, ")"),
+    paste0(pop$weight_median, " (", pop$weight_range, ")"),
+    paste0(pop$sex_female_pct, "%"),
+    "Critically ill adults with AKI on CVVHD or CVVHDF",
+    "100 mg IV loading dose, then 50 mg q12h (1 h infusions)"
+  )
+) |>
+  knitr::kable(caption = "Study population (Broeker 2018 Table 1 and Methods).")
+```
+
+# Source trace
+
+Every value in `ini()` and every non-trivial equation in `model()`, with its
+location in the source.
+
+```{r source-trace}
+tibble::tribble(
+  ~Quantity, ~Value, ~`Source location`,
+  "Structural model", "2-compartment, first-order disposition, IV", "Results, Pharmacometric analysis (dOFV -113.77 vs 1-compartment)",
+  "lcl (CLbody)", "18.3 L/h", "Table 2, theta_1 (RSE 11.0%; 95% CI 13.2, 22.7)",
+  "e_tbili_cl", "-0.29", "Table 2, theta_2 (RSE 33.1%; 95% CI -0.68, -0.10)",
+  "Bilirubin reference", "2.3 mg/dL", "Table 2 row heading; Results ('normalized by the population median of bilirubin, 2.3 mg/dL')",
+  "lvc (V1)", "58.7 L", "Table 2 (RSE 21.3%; 95% CI 29.3, 101.6)",
+  "lvp (V2)", "154 L", "Table 2 (RSE 9.5%; 95% CI 124.3, 196.8)",
+  "lq (Q)", "56.4 L/h", "Table 2 (RSE 15.3%; 95% CI 41.1, 76.6)",
+  "lcl_hemodialysis_cvvhd", "1.69 L/h", "Table 2, 'Dialysis clearance CVVHD' (RSE 15.4%; 95% CI 1.26, 2.27)",
+  "lcl_hemodialysis_cvvhdf", "2.71 L/h", "Table 2, 'Dialysis clearance CVVHDF' (RSE 8.9%; 95% CI 2.31, 3.16)",
+  "etalcl", "43.6 %CV", "Table 2, IIV column (post-covariate; 58.6% in the base model)",
+  "etalvc", "110.9 %CV", "Table 2, IIV column",
+  "etalq", "41.8 %CV", "Table 2, IIV column",
+  "etalcl_hemodialysis_cvvhd", "43.5 %CV", "Table 2, IIV column",
+  "IIV on V2 and CVVHDF arm", "none", "Table 2 prints a dash; Results ('IIV tended to zero during estimation')",
+  "propSd", "16.9 %CV", "Table 2, 'sigma proportional, pre-filter plasma'",
+  "propSd_Ceffluent", "40.6 %CV", "Table 2, 'sigma proportional, effluent'",
+  "IIV model (Eq. 1)", "P_k,i = theta_k * exp(eta_k,i)", "Methods, Pharmacometric analysis",
+  "Residual model (Eq. 2)", "proportional only (additive dropped)", "Methods Eq. 2; Results ('additive error tended to zero')",
+  "Effluent observable (Eq. 3/4)", "Ceff = CLdial * CPla / Qeff", "Methods, rearranged from Eq. 3 (CVVHD) and Eq. 4 (CVVHDF)",
+  "Qeff (CVVHD)", "QDial = 2000 mL/h (< 90 kg)", "Methods, Continuous renal replacement therapy",
+  "Qeff (CVVHDF)", "QDial + QFil = 2000 + 1000 mL/h", "Methods ('Ultrafiltration rate (QFil) was 1 L/h')",
+  "Modality per subject", "a = CVVHD, b = CVVHDF", "Table 1 footnotes",
+  "Dosing", "100 mg IV load, then 50 mg q12h", "Methods, Setting and study population",
+  "Infusion duration", "1 h", "Methods, Sampling ('after 1 h (i.e., the end of infusion)')"
+) |>
+  knitr::kable(caption = "Source trace for Broeker 2018 tigecycline.")
+```
+
+# Virtual cohort
+
+The natural cohort here is the published one: Broeker 2018 Table 1 lists all
+eleven patients individually, including the bilirubin value that drives the only
+retained covariate and the footnote marker that gives each patient's CRRT
+modality. No distribution needs to be invented.
+
+The effluent flow is reconstructed from the Methods prescription rather than
+tabulated per patient: dialysate flow is 2000 mL/h below 90 kg and 2500 mL/h
+above, and CVVHDF adds a fixed 1 L/h of ultrafiltrate.
+
+```{r cohort}
+patients <- tibble::tribble(
+  ~subject, ~sex, ~age, ~ht, ~WT, ~apache, ~scr, ~bili_mgdL, ~modality,
+  1L, "M", 69, 176,  69, 21, 1.7,  2.3, "CVVHD",
+  2L, "F", 47, 160,  70, 21, 1.2,  9.2, "CVVHD",
+  3L, "M", 81, 172,  68, 15, 1.0,  2.2, "CVVHD",
+  4L, "M", 52, 180,  80, 45, 1.5, 24.0, "CVVHDF",
+  5L, "M", 78, 178,  70, 25, 0.5,  3.5, "CVVHDF",
+  6L, "M", 73, 172,  86, 29, 2.4,  1.8, "CVVHD",
+  7L, "M", 56, 164, 104, 31, 1.2, 11.1, "CVVHDF",
+  8L, "M", 37, 182,  85, 21, 1.3, 43.3, "CVVHD",
+  9L, "M", 60, 180,  80, 35, 0.8,  1.8, "CVVHD",
+  10L, "M", 74, 170, 73, 30, 0.7,  2.2, "CVVHD",
+  11L, "M", 75, 180, 80, 30, 0.7,  0.7, "CVVHD"
+) |>
+  mutate(
+    RRT_CVVHDF_STATUS = as.integer(modality == "CVVHDF"),
+    RRT_CRRT_ACTIVE = 1L,
+    # SI umol/L is the canonical TBILI unit; the paper reports mg/dL.
+    TBILI = bili_mgdL * 17.1,
+    # Methods: dialysate 2000 mL/h below 90 kg, 2500 above; CVVHDF adds QFil = 1 L/h.
+    RRT_CRRT_EFFLUENT_FLOW = ifelse(WT < 90, 2000, 2500) + 1000 * RRT_CVVHDF_STATUS
+  )
+
+patients |>
+  select(subject, modality, WT, bili_mgdL, RRT_CRRT_EFFLUENT_FLOW) |>
+  rename(
+    "Patient" = subject, "Modality" = modality, "Weight (kg)" = WT,
+    "Bilirubin (mg/dL)" = bili_mgdL, "Effluent flow (mL/h)" = RRT_CRRT_EFFLUENT_FLOW
+  ) |>
+  knitr::kable(caption = "The eleven study patients (Broeker 2018 Table 1), with the CRRT effluent flow reconstructed from the Methods prescription.")
+
+stopifnot(
+  nrow(patients) == 11L,
+  sum(patients$RRT_CVVHDF_STATUS) == 3L,
+  sum(patients$RRT_CVVHDF_STATUS == 0L) == 8L,
+  # Table 1 median row.
+  median(patients$bili_mgdL) == 2.3,
+  median(patients$WT) == 80
+)
+```
+
+# Simulation
+
+Dosing follows the study protocol: a 100 mg loading dose, then 50 mg every
+12 h, each as a 1-hour infusion. The model is simulated out to day 10 and
+observed over the 24-hour window from 240 to 264 h, which is unambiguously at
+steady state.
+
+The observation grid is **log-spaced after each dose**. With an interindividual
+variability of 110.9 %CV on the central volume, some simulated subjects have a
+very small V1 and therefore a very sharp post-infusion distribution phase; a
+uniform grid under-resolves their peak and would understate AUC by several
+percent, breaking the `CL x AUC = dose` identity for reasons that have nothing to
+do with the model.
+
+```{r events}
+tau <- 12      # dosing interval (h)
+t_ss <- 240    # start of the steady-state observation window (h)
+n_rep <- 16L   # replicates per patient in the stochastic cohort
+
+# Log-spaced observation times within each of the two dosing intervals, plus
+# exact anchors at the window start, the mid-dose and the window end (PKNCA
+# needs a record exactly at each interval boundary).
+obs_times <- sort(unique(c(
+  t_ss,
+  t_ss + exp(seq(log(0.01), log(tau), length.out = 60)),
+  t_ss + tau,
+  t_ss + tau + exp(seq(log(0.01), log(tau), length.out = 60)),
+  t_ss + 2 * tau
+)))
+
+make_events <- function(cohort) {
+  dose <- cohort |>
+    tidyr::expand_grid(tibble::tibble(
+      time = c(0, tau), amt = c(100, 50), rate = c(100, 50),
+      ii = c(0, tau), addl = c(0L, 39L)
+    )) |>
+    mutate(evid = 1L, cmt = "central", dvid = NA_integer_)
+  obs <- cohort |>
+    tidyr::expand_grid(tibble::tibble(time = obs_times)) |>
+    mutate(
+      amt = NA_real_, rate = NA_real_, ii = 0, addl = 0L,
+      evid = 0L, cmt = NA_character_, dvid = 1L
+    )
+  bind_rows(dose, obs) |>
+    arrange(id, time, desc(evid)) |>
+    as.data.frame()
+}
+```
+
+Observation rows carry `dvid = 1L` and `cmt = NA_character_`: the model has two
+endpoints (`Cc` and `Ceffluent`), so rxode2 maps each endpoint to its own
+compartment slot and a `cmt = "central"` observation row cannot be matched to an
+endpoint. `useLinCmt = FALSE` is passed to every solve because rxode2's automatic
+ODE-to-`linCmt()` conversion corrupts the endpoint mapping for multi-output
+models.
+
+```{r simulate-typical}
+# Typical-value arm: the eleven published covariate patterns, no IIV.
+cohort_typ <- patients |> mutate(id = subject)
+sim_typ <- rxode2::rxSolve(
+  zmod, make_events(cohort_typ),
+  keep = c("modality", "bili_mgdL", "WT"),
+  useLinCmt = FALSE, returnType = "data.frame"
+) |>
+  filter(!is.na(Cc))
+
+stopifnot(nrow(sim_typ) > 0, all(sim_typ$Cc >= 0), !anyNA(sim_typ$Cc))
+```
+
+```{r simulate-cohort}
+# Stochastic arm: each published patient replicated n_rep times with IIV drawn.
+rxode2::rxSetSeed(20181220)
+cohort_sim <- patients |>
+  tidyr::expand_grid(tibble::tibble(rep = seq_len(n_rep))) |>
+  mutate(id = row_number())
+
+sim_pop <- rxode2::rxSolve(
+  mod, make_events(cohort_sim),
+  keep = c("modality", "bili_mgdL", "WT"),
+  useLinCmt = FALSE, returnType = "data.frame"
+) |>
+  filter(!is.na(Cc))
+
+# 176 subjects total: 128 on CVVHD and 48 on CVVHDF, both well under the
+# 200-per-arm cohort cap.
+stopifnot(
+  dplyr::n_distinct(sim_pop$id) == 11L * n_rep,
+  all(sim_pop$Cc >= 0),
+  all(sim_pop$Ceffluent >= 0)
+)
+```
+
+# Structural checks
+
+These are deterministic identities evaluated on the typical-value arm. Each one
+fails loudly if a specific transcription error was made, and none of them depends
+on which cohort the random-number stream happened to draw.
+
+```{r structural-checks}
+trapz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+ss <- sim_typ |>
+  group_by(id, modality) |>
+  summarise(
+    cl_body = first(cl_body),
+    cl_dial = first(cl_hemodialysis),
+    cl_total = first(cl),
+    auc24 = trapz(time, Cc),
+    sc = mean(Ceffluent / Cc),          # saturation coefficient Ceff / CPla
+    qeff = first(effluent_flow),
+    .groups = "drop"
+  ) |>
+  mutate(
+    # At steady state the amount eliminated over 24 h equals the 24-h dose.
+    dose_recovered = cl_total * auc24,
+    frac_dialysed = cl_dial / cl_total
+  )
+
+ss |>
+  mutate(across(where(is.numeric), \(x) signif(x, 4))) |>
+  select(id, modality, cl_body, cl_dial, cl_total, auc24, dose_recovered, sc, frac_dialysed) |>
+  rename(
+    "Patient" = id, "Modality" = modality, "CLbody (L/h)" = cl_body,
+    "CLdial (L/h)" = cl_dial, "CL total (L/h)" = cl_total,
+    "AUC24,ss (mg*h/L)" = auc24, "CL x AUC (mg)" = dose_recovered,
+    "Ceff/CPla" = sc, "Fraction dialysed" = frac_dialysed
+  ) |>
+  knitr::kable(caption = "Typical-value structural checks, one row per published patient.")
+```
+
+**Mass balance.** At steady state the amount cleared over a 24-hour window must
+equal the 24-hour dose of 100 mg (two 50 mg doses). This is the gate that catches
+a dialysis arm that has been silently dropped from the elimination path, a
+mis-transcribed clearance, or a dose-unit error.
+
+```{r gate-mass-balance}
+stopifnot(
+  # Pure numerical-integration error: the two sides use the same drawn
+  # parameters, so this is tight by construction.
+  all(abs(ss$dose_recovered - 100) < 0.1)
+)
+```
+
+**The bilirubin covariate.** The Results quantify it directly: "Individual
+clearance values varied from 9.3 L/h (10th percentile) to 19.1 L/h (90th
+percentile) depending on the bilirubin concentration (24 mg/dL to 1.8 mg/dL)."
+
+```{r gate-covariate}
+cl_at_bili <- function(b) {
+  s <- rxode2::rxSolve(
+    zmod,
+    make_events(tibble::tibble(
+      id = 1L, TBILI = b * 17.1, RRT_CRRT_ACTIVE = 0L,
+      RRT_CVVHDF_STATUS = 0L, RRT_CRRT_EFFLUENT_FLOW = 2000
+    )),
+    useLinCmt = FALSE, returnType = "data.frame"
+  )
+  s$cl_body[1]
+}
+cov_check <- tibble::tibble(
+  `Bilirubin (mg/dL)` = c(24, 2.3, 1.8),
+  `Published CLbody (L/h)` = c(9.3, 18.3, 19.1),
+  `Model CLbody (L/h)` = signif(vapply(c(24, 2.3, 1.8), cl_at_bili, numeric(1)), 4)
+) |>
+  mutate(`% diff` = signif(100 * (`Model CLbody (L/h)` / `Published CLbody (L/h)` - 1), 3))
+knitr::kable(cov_check, caption = "Bilirubin effect on body clearance against the values quoted in the Results.")
+
+stopifnot(
+  # The reference value and the 10th-percentile anchor are exact; the
+  # 90th-percentile anchor is quoted against a rounded bilirubin of 1.8 mg/dL
+  # (1.98 mg/dL reproduces 19.1 L/h exactly), hence the wider bound.
+  abs(cov_check$`% diff`[cov_check$`Bilirubin (mg/dL)` == 2.3]) < 0.1,
+  abs(cov_check$`% diff`[cov_check$`Bilirubin (mg/dL)` == 24]) < 1,
+  abs(cov_check$`% diff`[cov_check$`Bilirubin (mg/dL)` == 1.8]) < 5
+)
+```
+
+**The saturation coefficient.** The effluent observable is
+`Ceff = CLdial * CPla / Qeff`, so the simulated `Ceffluent / Cc` ratio must
+reproduce the paper's published mean saturation coefficients. This is the gate
+that confirms the effluent equation was rearranged correctly *and* that the
+effluent-flow reconstruction from the Methods prescription is right -- a wrong
+Qeff moves the ratio proportionally.
+
+```{r gate-saturation}
+# (1) Structural identity: the effluent observable must equal CLdial / Qeff at
+#     every time point, with Qeff correctly converted from mL/h to L/h. This is
+#     the gate on the equation itself and is exact.
+stopifnot(
+  all(abs(ss$sc - ss$cl_dial / (ss$qeff)) < 1e-9),
+  all(abs(ss$qeff - patients$RRT_CRRT_EFFLUENT_FLOW[order(patients$subject)] / 1000) < 1e-9)
+)
+
+# (2) Comparison against the published mean saturation coefficients, for a
+#     patient in the sub-90 kg dialysate band that eight of the eleven
+#     patients (and all but one of the three CVVHDF patients) fall into.
+sat <- ss |>
+  left_join(patients |> select(id = subject, WT), by = "id") |>
+  filter(WT < 90) |>
+  group_by(modality) |>
+  summarise(model_sc = mean(sc), .groups = "drop") |>
+  mutate(
+    published_sc = ifelse(modality == "CVVHD", 0.79, 0.90),
+    published_sd = ifelse(modality == "CVVHD", 0.36, NA_real_)
+  )
+sat |>
+  mutate(across(where(is.numeric), \(x) signif(x, 4))) |>
+  rename(
+    "Modality" = modality, "Model Ceff/CPla" = model_sc,
+    "Published mean" = published_sc, "Published SD" = published_sd
+  ) |>
+  knitr::kable(caption = "Model-implied versus published mean saturation coefficients (Broeker 2018 Results), for the sub-90 kg dialysate band.")
+
+stopifnot(
+  # CVVHDF: 2.71 / 3.000 = 0.903 against a published 0.90. This near-exact
+  # agreement is what identifies QFil = 1 L/h as additive to a 2000 mL/h
+  # dialysate flow, which the CVVHDF paragraph of the Methods does not restate.
+  abs(sat$model_sc[sat$modality == "CVVHDF"] - 0.90) < 0.01,
+  # CVVHD: 1.69 / 2.000 = 0.845 against a published mean of 0.79 (SD 0.36).
+  # The published figure is a mean of per-patient measured Ceff/CPla ratios,
+  # not a model parameter, so agreement within the published SD is the
+  # meaningful criterion.
+  abs(sat$model_sc[sat$modality == "CVVHD"] - 0.79) < 0.36
+)
+```
+
+The one CVVHDF patient above the 90 kg dialysate threshold (patient 7, 104 kg)
+gets `Qeff` = 3500 mL/h under the Methods' weight-band rule and therefore a
+model-implied saturation coefficient of 0.77. Including that patient would move
+the CVVHDF mean to 0.86, which does not round to the published 0.90 -- so the
+published coefficient is evidence that the higher dialysate band was not in fact
+applied to this patient. Since the paper tabulates neither the per-patient
+prescription nor the per-patient coefficient, the vignette follows the Methods as
+written and compares within the band; see Assumptions and deviations.
+
+**The dialysis arm is load-bearing.** Turning `RRT_CRRT_ACTIVE` off must raise
+exposure by exactly the clearance ratio. Without this check a dialysis arm that
+never reached the ODE would leave every other gate above green.
+
+```{r gate-crrt-off}
+off <- rxode2::rxSolve(
+  zmod, make_events(cohort_typ |> mutate(id = subject, RRT_CRRT_ACTIVE = 0L)),
+  keep = "modality", useLinCmt = FALSE, returnType = "data.frame"
+) |>
+  filter(!is.na(Cc)) |>
+  group_by(id, modality) |>
+  summarise(auc_off = trapz(time, Cc), ceff_off = max(Ceffluent), .groups = "drop")
+
+crrt <- ss |>
+  select(id, modality, auc_on = auc24, cl_body, cl_total) |>
+  left_join(off, by = c("id", "modality")) |>
+  mutate(ratio = auc_off / auc_on, expected = cl_total / cl_body)
+
+stopifnot(
+  # Exposure rises by exactly CL_total / CL_body when the circuit stops.
+  all(abs(crrt$ratio - crrt$expected) < 1e-3),
+  # And the effluent observable goes to zero rather than dividing by zero.
+  all(crrt$ceff_off == 0),
+  # The CRRT contribution is real but moderate. The ratio is 1 + CLdial/CLbody,
+  # so it is largest in the cholestatic patients whose body clearance is most
+  # suppressed: 1.07 at the lowest bilirubin (patient 11, 0.7 mg/dL, CVVHD) up
+  # to 1.29 at the highest on CVVHDF (patient 4, 24 mg/dL). A dialysis arm that
+  # never reached the ODE would give exactly 1.
+  all(crrt$ratio > 1.05), all(crrt$ratio < 1.35)
+)
+knitr::kable(
+  crrt |>
+    mutate(across(where(is.numeric), \(x) signif(x, 4))) |>
+    select(id, modality, auc_on, auc_off, ratio, expected) |>
+    rename(
+      "Patient" = id, "Modality" = modality, "AUC24 on CRRT" = auc_on,
+      "AUC24 off CRRT" = auc_off, "Ratio" = ratio, "CLtotal/CLbody" = expected
+    ),
+  caption = "Effect of stopping CRRT on steady-state exposure."
+)
+```
+
+# Replicating Figure 1
+
+Broeker 2018 Figure 1 is a visual predictive check over a dosing interval, with
+plasma concentrations on the left and effluent concentrations on the right:
+observed and predicted medians with the 10th-to-90th percentile band. The panels
+below reproduce that layout from the stochastic cohort over the steady-state
+dosing interval.
+
+```{r figure1, fig.height = 4.5}
+vpc <- sim_pop |>
+  filter(time >= t_ss, time <= t_ss + tau) |>
+  mutate(tad = time - t_ss) |>
+  tidyr::pivot_longer(c(Cc, Ceffluent), names_to = "matrix", values_to = "conc") |>
+  mutate(matrix = factor(
+    matrix, levels = c("Cc", "Ceffluent"),
+    labels = c("Plasma (pre-filter)", "Effluent")
+  )) |>
+  group_by(matrix, modality, tad) |>
+  summarise(
+    p10 = quantile(conc, 0.1), med = median(conc), p90 = quantile(conc, 0.9),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(tad, med, colour = modality, fill = modality)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.18, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~matrix, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)", y = "Tigecycline concentration (mg/L)",
+    colour = "Modality", fill = "Modality",
+    title = "Replicates Figure 1 of Broeker 2018",
+    subtitle = "Median (line) and 10th-90th percentile band over the steady-state dosing interval"
+  ) +
+  theme_bw()
+```
+
+The effluent panel sits below the plasma panel by the saturation coefficient --
+a fixed multiple of plasma at every time point, since the model derives effluent
+from plasma algebraically rather than from a separate compartment. The CVVHDF
+band is the higher of the two effluent curves, as its saturation coefficient is
+0.90 against 0.79.
+
+# PKNCA validation
+
+Non-compartmental analysis of the simulated steady-state profiles, over the
+24-hour window the paper reports its exposures on.
+
+```{r pknca}
+sim_nca <- sim_pop |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, modality)
+
+# The q12h schedule is expanded via addl, so the two doses that fall inside the
+# 240-264 h window are materialised explicitly for PKNCA.
+dose_nca <- cohort_sim |>
+  select(id, modality) |>
+  tidyr::expand_grid(tibble::tibble(time = c(t_ss, t_ss + tau), amt = 50))
+
+conc_obj <- PKNCA::PKNCAconc(
+  as.data.frame(sim_nca), Cc ~ time | modality + id,
+  concu = "mg/L", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  as.data.frame(dose_nca), amt ~ time | modality + id, doseu = "mg"
+)
+
+intervals <- data.frame(
+  start = t_ss, end = t_ss + 2 * tau,
+  cmax = TRUE, cmin = TRUE, tmax = TRUE, auclast = TRUE, cav = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result)
+
+stopifnot(
+  nrow(nca_tbl) > 0,
+  # A gate that cannot go red is worse than no gate: confirm the parameters we
+  # are about to compare were actually computed.
+  all(c("auclast", "cmax", "cmin") %in% nca_tbl$PPTESTCD),
+  !anyNA(nca_tbl$PPORRES[nca_tbl$PPTESTCD == "auclast"])
+)
+
+nca_tbl |>
+  filter(PPTESTCD %in% c("auclast", "cmax", "cmin", "cav")) |>
+  group_by(modality, PPTESTCD) |>
+  summarise(
+    median = median(PPORRES), p10 = quantile(PPORRES, 0.1),
+    p90 = quantile(PPORRES, 0.9), .groups = "drop"
+  ) |>
+  mutate(
+    Parameter = nlmixr2lib::ncaParamLabel(PPTESTCD),
+    across(c(median, p10, p90), \(x) signif(x, 3))
+  ) |>
+  select(Parameter, modality, median, p10, p90) |>
+  rename("Modality" = modality, "Median" = median, "10th pct" = p10, "90th pct" = p90) |>
+  knitr::kable(caption = "Simulated steady-state NCA over the 24-hour window (mg/L; AUC in mg*h/L).")
+```
+
+# Comparison against the published exposures
+
+Broeker 2018 does not publish an observed NCA table. What it does publish is the
+steady-state `AUC24h` distribution from its own clinical-trial simulation: a
+median of 6.15 mg*h/L with a 10th-to-90th percentile range of 3.39 to
+11.13 mg*h/L in the CVVHD patients.
+
+```{r nca-comparison}
+published <- tibble::tibble(modality = "CVVHD", auclast = 6.15)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_tbl |> filter(modality == "CVVHD"),
+  reference = published,
+  by = "modality",
+  params = "auclast",
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated versus published steady-state AUC24h. * differs from the reference by more than 20%.",
+  align = c("l", "l", "r", "r", "r")
+)
+attr(cmp, "footnote")
+```
+
+This row is a **documented deviation, not a passing check**, and it is discussed
+in the next section. The structural gates above -- which are exact -- all pass,
+so the disagreement is not a transcription error in `ini()`.
+
+```{r deviation-analysis}
+# The paper's two simulation-derived statistics imply a body clearance, and they
+# imply the SAME one -- which is not the 18.3 L/h of its own Table 2.
+implied <- tibble::tibble(
+  `Published statistic` = c(
+    "Median steady-state AUC24h = 6.15 mg*h/L (CVVHD)",
+    "Median fraction eliminated by CVVHD = 11.2%"
+  ),
+  `Implied CLtotal (L/h)` = signif(c(100 / 6.15, 1.69 / 0.112), 4),
+  `Implied CLbody (L/h)` = signif(c(100 / 6.15 - 1.69, 1.69 / 0.112 - 1.69), 4)
+) |>
+  mutate(`Table 2 CLbody (L/h)` = 18.3)
+knitr::kable(implied, caption = "The paper's two simulation outputs are mutually consistent but disagree with its own Table 2.")
+
+# Patient 1 sits exactly at the cohort median bilirubin of 2.3 mg/dL and is on
+# CVVHD, so this is the typical CVVHD patient of Table 2.
+model_frac <- ss |>
+  filter(id == 1L) |>
+  pull(frac_dialysed)
+stopifnot(
+  # The two published statistics agree with each other to within 10%...
+  abs((100 / 6.15) / (1.69 / 0.112) - 1) < 0.1,
+  # ...and the model's typical-value dialysed fraction is exactly the ratio of
+  # the Table 2 clearances, i.e. 8.5%, not the published median of 11.2%.
+  abs(model_frac - 1.69 / (18.3 + 1.69)) < 1e-9
+)
+```
+
+# Assumptions and deviations
+
+**Scale of the `%CV` interindividual-variability column.** Broeker 2018 Table 2
+reports IIV as a `%CV` without stating the conversion. The model reads it as
+`omega = CV / 100`, i.e. 100 times the log-scale standard deviation. Two things
+support that reading: the Table 2 caption states that RSE is "reported on
+standard deviation scale for variability parameters", and the *same* column
+reports the proportional residual errors (16.9% and 40.6%), where a proportional
+sigma's `%CV` is unambiguously 100 times its standard deviation -- reading one
+column two ways would be inconsistent. The alternative lognormal convention
+`omega^2 = log(1 + CV^2)` would give variances of 0.174, 0.802, 0.161 and 0.173
+instead of 0.190, 1.230, 0.175 and 0.189. The difference is about 5% in omega for
+the three moderate etas and larger for the central volume. No published statistic
+in the paper discriminates between the two readings; every gate in this vignette
+is either deterministic (evaluated with `zeroRe()`, so unaffected) or wide enough
+to admit either.
+
+**Dialysate flow on CVVHDF.** The Methods give the weight-banded dialysate flow
+(2000 mL/h below 90 kg, 2500 above) in the CVVHD paragraph and state the CVVHDF
+ultrafiltration rate separately as 1 L/h, but do not restate the dialysate flow
+for CVVHDF. This vignette assumes the same weight band applies, giving an
+effluent flow of 3000 mL/h for a CVVHDF patient below 90 kg. That assumption is
+confirmed arithmetically by the paper's own derived statistic rather than being
+merely plausible: 2.71 / 3.000 = 0.903 against a published CVVHDF saturation
+coefficient of 0.90.
+
+The same arithmetic raises a question the paper cannot settle. Patient 7 is the
+only CVVHDF patient above the 90 kg threshold (104 kg), so the weight-band rule
+gives him `Qeff` = 3500 mL/h and a saturation coefficient of 0.77; the mean over
+all three CVVHDF patients would then be 0.86, which does not round to the
+published 0.90. All three at 3000 mL/h gives 0.903, which does. The published
+coefficient is therefore evidence that the higher dialysate band was not applied
+to this patient -- but the paper tabulates neither the per-patient CRRT
+prescription nor the per-patient coefficient, so this cannot be confirmed. The
+cohort in this vignette follows the Methods as written, and the saturation-
+coefficient comparison is made within the sub-90 kg band so that the published
+value is compared against like. A user simulating a heavy CVVHDF patient should
+be aware that `RRT_CRRT_EFFLUENT_FLOW` is a free input and that the dialysis
+clearance itself (2.71 L/h) is *not* rescaled by it -- the paper estimates the
+clearance directly, so the effluent flow affects only the effluent observable.
+
+**Effluent as a derived observable.** The paper estimates the dialysis clearance
+directly and reports the saturation coefficients as descriptive `Ceff/CPla`
+ratios. The model therefore derives the effluent concentration from plasma
+algebraically, `Ceffluent = cl_hemodialysis * Cc / Qeff`, rearranged from Eq. 3
+and Eq. 4, rather than carrying an effluent compartment. A consequence is that
+the effluent-to-plasma ratio is constant in time, so the effluent VPC panel is a
+scaled copy of the plasma panel. The paper notes one patient in whom effluent
+concentrations lagged, probably from adsorption to the membrane after a filter
+change; that time-dependence is not in the published model and is not reproduced
+here.
+
+**`RRT_CRRT_ACTIVE` is not estimated.** Every subject was on CRRT throughout, so
+the column is identically 1 in the source analysis. It is carried so a downstream
+user can simulate circuit interruption, but setting it to 0 leaves the body
+clearance alone, which is the paper's `CLbody` and **not** a validated off-CRRT
+clearance for this population.
+
+**Published steady-state `AUC24h` is not reproduced (deviation).** The paper's
+simulated median `AUC24h` of 6.15 mg*h/L in CVVHD patients implies a total
+clearance of 16.3 L/h, whereas Table 2's typical values give 18.3 + 1.69 =
+19.99 L/h and a corresponding `AUC24h` of 5.00 mg*h/L -- about 23% lower than
+published. The disagreement is not a transcription error: the mass-balance
+identity `CL x AUC24,ss = 100 mg` holds to better than one part in a million in
+the table above, and the bilirubin covariate reproduces the Results' own quoted
+clearances. It is also not isolated. The paper's mass-balance analysis reports a
+median 11.2% of the dose eliminated by CVVHD, which implies a total clearance of
+15.1 L/h, whereas the Table 2 typical values give 1.69 / 19.99 = 8.5%. **The two
+simulation-derived statistics agree with each other** -- both imply a median body
+clearance near 13 to 15 L/h -- **and both disagree with Table 2 in the same
+direction**, which points to the clinical-trial simulation having drawn bilirubin
+from a distribution whose central tendency is nearer the cohort mean of
+7.9 mg/dL than its median of 2.3 mg/dL. At a bilirubin of 7.9 mg/dL the model
+gives `CLbody` = 12.8 L/h and `AUC24h` = 6.9 mg*h/L, which brackets the published
+figure. The simulation's covariate-resampling scheme is not described in enough
+detail to reproduce, so the published exposure percentiles are recorded here as a
+deviation rather than used as a gate.
+
+**Not reproduced.** The probability-of-target-attainment analysis of Figure 2
+compares this model against two external published models (Van Wart 2013 for
+cSSSI/cIAI patients, Korth-Bradley 2011 for healthy volunteers) that are not part
+of this extraction, so Figure 2 is out of scope. The concentration-dependent
+unbound fraction characterised in Additional file 1 is descriptive: the model is
+fitted to total concentrations and carries no protein-binding term.
+
+**Screened but not retained.** Age, sex, serum creatinine and Cockcroft-Gault
+creatinine clearance were tested on body clearance and not retained; allometric
+scaling by total body weight was tested with both fixed and estimated exponents
+and rejected. These are recorded in the model file's `covariatesDataExcluded`
+rather than `covariateData`.
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

@@ -189,8 +189,7 @@ Tong_2026_vancomycin_goti <- function() {
     # sqrt(variance) reproduces the Table S1 %CV row exactly.
     # NOTE: these source traces are on their own lines rather than trailing the
     # eta declarations. rxode2 rewrites a trailing comment on an `eta ~ ...` line
-    # into a label() call, and a comment containing double quotes then fails to
-    # parse.
+    # into a label() call, and a source trace does not belong in a label.
     # $OMEGA(1,1) 0.1584 FIX; sqrt = 0.398 -> Table S1 "IIV on CL (%CV) 39.8"
     etalcl ~ fixed(0.1584)
     # $OMEGA(2,2) 0.6659 FIX; sqrt = 0.816 -> Table S1 "IIV on V (%CV) 81.6"
