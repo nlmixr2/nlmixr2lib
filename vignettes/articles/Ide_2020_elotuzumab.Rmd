@@ -174,7 +174,7 @@ ref_pt <- list(
   RACE_ASIAN  = 0,    # non-Asian
   CRCL        = 100,  # mL/min/1.73 m^2
   LDH         = 200,  # U/L
-  ALB         = 35,  # g/dL
+  ALB         = 35,   # g/L
   B2M         = 1.0,  # < 2.0 mg/L (reference; paper uses thresholded indicators)
   HEPIMP      = 0,    # normal liver function
   ECOG_GE1    = 0,    # ECOG = 0

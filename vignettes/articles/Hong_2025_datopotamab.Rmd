@@ -155,13 +155,13 @@ sexf  <- rbinom(n_subj, 1, 0.50)
 age   <- pmax(20, pmin(85, rnorm(n_subj, mean = 62, sd = 11)))
 alb   <- pmax(20, pmin(50, rnorm(n_subj, mean = 38, sd = 4)))
 ast   <- pmax(8,  pmin(80, rnorm(n_subj, mean = 22, sd = 6)))
-tbili <- pmax(0.1, pmin(2, rlnorm(n_subj, log(0.4), 0.4)))
+tbili <- pmax(1.71, pmin(34.2, rlnorm(n_subj, log(6.84), 0.4)))  # umol/L (median 0.4 mg/dL, 0.1-2 mg/dL)
 tumsz <- pmax(10, pmin(200, rlnorm(n_subj, log(66), 0.5)))
 region <- sample(c("US", "JP", "EU", "RoW"), n_subj, replace = TRUE,
                  prob = c(0.45, 0.20, 0.20, 0.15))
 
 make_subject <- function(id, wt_kg, sexf_ind, age_y, alb_g_L, ast_U_L,
-                         tbili_mg_dL, tumsz_mm, reg) {
+                         tbili_umol_L, tumsz_mm, reg) {
   dose_mg <- min(6 * wt_kg, 540)   # 6 mg/kg Q3W with 540 mg flat-dose cap
 
   doses <- rxode2::et() |>
@@ -176,7 +176,7 @@ make_subject <- function(id, wt_kg, sexf_ind, age_y, alb_g_L, ast_U_L,
   ev$SEXF         <- sexf_ind
   ev$ALB          <- alb_g_L
   ev$AST          <- ast_U_L
-  ev$TBILI        <- tbili_mg_dL
+  ev$TBILI        <- tbili_umol_L
   ev$TUMSZ        <- tumsz_mm
   ev$REGION_JAPAN  <- as.integer(reg == "JP")
   ev$REGION_EUROPE <- as.integer(reg == "EU")
@@ -213,7 +213,7 @@ typ_events$AGE           <- 62
 typ_events$SEXF          <- 0
 typ_events$ALB           <- 38
 typ_events$AST           <- 22
-typ_events$TBILI         <-   6.84
+typ_events$TBILI         <- 6.84
 typ_events$TUMSZ         <- 66
 typ_events$REGION_JAPAN  <- 0
 typ_events$REGION_EUROPE <- 0
@@ -432,7 +432,7 @@ simulate_typ_wt <- function(wt_kg) {
   ev$SEXF          <- 0
   ev$ALB           <- 38
   ev$AST           <- 22
-  ev$TBILI         <-   6.84
+  ev$TBILI         <- 6.84
   ev$TUMSZ         <- 66
   ev$REGION_JAPAN  <- 0
   ev$REGION_EUROPE <- 0

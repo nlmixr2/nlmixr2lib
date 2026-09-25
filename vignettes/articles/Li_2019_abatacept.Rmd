@@ -423,7 +423,7 @@ knitr::kable(pct_above, digits = 1,
   demographics) is referenced in the paper but is not embedded in the
   PMC full text, so the virtual-cohort distributions are approximate:
   WT ~ N(70, 18) truncated to [40, 160]; AGE ~ N(50, 13) truncated to
-  [18, 90]; ALB ~ N(4.0, 0.35) truncated to [2.5, 5.0] g/dL;
+  [18, 90]; ALB ~ N(40, 3.5) truncated to [25, 50] g/L;
   CRCL ~ N(90, 25) truncated to [30, 180]; SWOL_28JOINT ~ rounded
   N(16, 6) truncated to [0, 28]; SEXF = 78% female; CONMED_NSAID = 55%.
   The reference values match the Li 2019 Methods narrative; the
@@ -449,8 +449,10 @@ the source alongside this model should be aware of:
   factor of 1000 too low and is physiologically impossible. This is
   treated as a publication unit typo: the model codes the ALB reference
   as **4.0 g/dL**, which is clinically sensible and matches other
-  abatacept PK reports (e.g. the Orencia label). This unit is recorded
-  in `covariateData[[ALB]]$units` as `g/dL` with an explicit note.
+  abatacept PK reports (e.g. the Orencia label). The model takes `ALB`
+  in g/L (`covariateData[[ALB]]$units` is `g/L`) and converts it to g/dL
+  inline before applying this reference; the typo is recorded in
+  `covariateData[[ALB]]$notes`.
 - **Table 1B caption vs final-model equation (Table 1 caption and
   Results p. 249).** Table 1 is captioned *"Parameter Estimates for (A)
   the Structural Part of Final PPK Model for Abatacept and (B) the

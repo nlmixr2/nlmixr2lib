@@ -122,7 +122,7 @@ n_subj <- 400
 pop <- tibble(
   ID  = seq_len(n_subj),
   WT  = rlnorm(n_subj, log(81.3), 0.22),               # median 81.3, SD ~20
-  ALB = pmax(28, pmin(rnorm(n_subj, 43, 4), 55))  # mean 43, SD 4 g/dL
+  ALB = pmax(28, pmin(rnorm(n_subj, 43, 4), 55))  # mean 43, SD 4 g/L
 )
 
 # Disease-state assignment matching Hua 2015 Table 2 proportions.
@@ -373,12 +373,14 @@ are supposed to reproduce.
 - **Subject-level covariates:** Hua 2015 does not publish per-subject
   WT, ALB, or disease-state values. WT is sampled log-normal around the
   reported Table 2 mean 82.6 kg / SD 18.7 kg; ALB sampled normal around
-  mean 4.3 g/dL (the Table 3 reference value), clipped to a clinical
-  range [2.8, 5.5] g/dL.
+  mean 43 g/L (the Table 3 reference value 4.3 g/dL), clipped to a
+  clinical range [28, 55] g/L.
 - **Albumin units:** the paper does not state units explicitly in
   Table 3; the value 4.3 and the Figure 1 x-axis range (3.0-5.0) are
   consistent with g/dL (US convention). This is recorded in
-  `covariateData[[ALB]]$units` and the per-parameter comment.
+  `covariateData[[ALB]]$notes` and the per-parameter comment. The model
+  takes `ALB` in g/L (`covariateData[[ALB]]$units`) and converts it to
+  g/dL inline before applying the published `(ALB/4.3)^(-1.07)` term.
 - **Full-dose regimen for UC:** we simulate the 200 mg arm
   (day 0, weeks 2, 4, 8, 12) that Hua 2015 Figure 5 plots. The paper's
   study-5 protocol also tested 400 mg and 600 mg doses; the

@@ -65,7 +65,7 @@ n_subj <- 500
 pop <- data.frame(
   ID      = seq_len(n_subj),
   WT      = rlnorm(n_subj, log(77), 0.22),   # Median 77 kg, range ~40-177
-  ALB     = rnorm(n_subj, 41, 4),         # Mean 41, SD 4 g/dL
+  ALB     = rnorm(n_subj, 41, 4),            # Mean 41, SD 4 g/L (4.1, 0.4 g/dL)
   SEXF    = rbinom(n_subj, 1, 0.392),        # 39.2% female
   ADA_POS = rbinom(n_subj, 1, 0.068)         # 6.8% ADA-positive
 )
@@ -222,8 +222,8 @@ distributions rather than reproducing them:
 
 - **Weight:** sampled log-normal around a 77 kg median with SD 0.22 on
   the log scale (≈ 40–177 kg), matching the reported range.
-- **Albumin:** sampled normal around mean 4.1 g/dL, SD 0.4 g/dL,
-  clipped to [2.0, 5.5] g/dL.
+- **Albumin:** sampled normal around mean 41 g/L (4.1 g/dL), SD 4 g/L
+  (0.4 g/dL), clipped to [20, 55] g/L ([2.0, 5.5] g/dL).
 - **Sex and ADA status:** sampled independently at 39.2% female and
   6.8% ADA-positive, respectively. In the pooled ACT 1 / ACT 2 data
   these are not fully independent, but the joint distribution is not
