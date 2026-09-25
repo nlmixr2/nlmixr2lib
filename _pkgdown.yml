@@ -82,6 +82,8 @@ navbar:
         href: articles/Zhang_2025_abemaciclib.html
       - text: "Acetaminophen (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "Acetaminophen (Hammer 2020)"
+        href: articles/Hammer_2020_acetaminophen.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen diclofenac mbma (Sethi 2024)"
@@ -6242,6 +6244,7 @@ articles:
   - articles/Hajjar_2018_pompe_disease
   - articles/Hall_2017_dapsone
   - articles/Hamberg_2007_warfarin_pkpd_pgx
+  - articles/Hammer_2020_acetaminophen
   - articles/Hamren_2008_tesaglitazar
   - articles/Hamuro_2017_DMD_6MWT
   - articles/Han_2010_voriconazole

@@ -16384,7 +16384,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** general
 - **Reference category:** 0 (active-treatment arm)
 - **Source aliases:** none.
-- **Example models:** `Hansson_2013_sunitinib_dbp.R` (switches the typical baseline diastolic blood pressure `dbp0` from 71.8 mmHg in the active arm to 77.6 mmHg in the placebo run-in arm via `exp(ldbp0 + e_placebo_dbp0 * PLACEBO)`; the sunitinib AUC drug effect on `kin` is modelled separately and exposure-driven).
+- **Example models:** `Hansson_2013_sunitinib_dbp.R` (switches the typical baseline diastolic blood pressure `dbp0` from 71.8 mmHg in the active arm to 77.6 mmHg in the placebo run-in arm via `exp(ldbp0 + e_placebo_dbp0 * PLACEBO)`; the sunitinib AUC drug effect on `kin` is modelled separately and exposure-driven), `Hammer_2020_acetaminophen.R` (0.524-fold multiplier on acetaminophen clearance in the saline-placebo arm, whose subjects had residual acetaminophen concentrations, via `e_placebo_cl^PLACEBO`).
 - **Notes:** Distinct from `ON_TREATMENT` (the generic pooled active-vs-placebo on/off switch used when the active arm REPLACES exposure in the structural model, reference 0 = placebo): `PLACEBO` has the opposite polarity (1 = placebo) and is used alongside, not instead of, an exposure-driven drug effect, marking the placebo subpopulation for an arm-specific structural parameter. If a model needs the pooled on/off drug switch, use `ON_TREATMENT` (= `1 - PLACEBO`) instead.
 
 ### SEMESTER (**canonical for paired-season indicator (winter or spring vs summer or fall)**)
