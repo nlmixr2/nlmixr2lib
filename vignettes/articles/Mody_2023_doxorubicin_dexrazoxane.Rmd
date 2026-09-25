@@ -89,7 +89,7 @@ The table below collects the parameter and equation provenance in one place.
 | 3-transit-compartment delay chain                           | --          | Mody 2023 text ("three transit compartments ... 1/tau_DOX") |
 
 The residual error parameters (`addSd`, `addSd_dex`, `addSd_viability`) are
-operator-chosen placeholders -- Mody 2023 does not tabulate a residual SD --
+maintainer-chosen placeholders -- Mody 2023 does not tabulate a residual SD --
 and are flagged with `fixed()` so they do not contribute false precision.
 
 # Simulation setup
@@ -541,12 +541,12 @@ knitr::kable(nca_dox_df, digits = 3,
 
 # Assumptions and deviations
 
-The following are paper-vs-model gaps that the operator preserved
+The following are paper-vs-model gaps that the maintainers preserved
 deliberately rather than tuning parameters to close.
 
 * **DEX inhibition equation form is subtractive on Kmax.** The PDF's
   formal equations for the combination model (Mody 2023 Eqs 6a-6f) came
-  through the trimmed markdown source as
+  through the text extracted from the PDF as
   `<!-- formula-not-decoded -->` placeholders. Table 1 gives Imax,DEXi
   units of 1/h (matching Kmax,DOX), and the text describes the DEX
   effect as "a capacity limited Hill function K_DEX ... on DOX cell-
@@ -614,7 +614,7 @@ deliberately rather than tuning parameters to close.
 
 # Errata
 
-* The trimmed-markdown source of Mody 2023 rendered the model
+* The text extracted from the Mody 2023 PDF rendered the model
   equations (Eqs 1, 2, 3, 4a-e, 5, 6a-f) as
   `<!-- formula-not-decoded -->` placeholders in the OCR pass. The
   equation forms used in the packaged model were reconstructed from

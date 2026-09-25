@@ -513,7 +513,7 @@ transcription error).
   magnitudes for the analytical-method noise; the increase in the
   parent COPD residual is plausibly driven by sparse-sampling design
   in the phase II / III studies rather than a different intrinsic
-  noise mechanism. Operators reproducing a COPD-only simulation may
+  noise mechanism. Users reproducing a COPD-only simulation may
   prefer to substitute the COPD-extension residuals.
 * **Food on parent tlag sign convention.** Lahu 2010 reports
   theta_9 = -0.308 (the coefficient on FED in the parent tlag equation),

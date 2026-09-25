@@ -169,7 +169,7 @@ duodenal-ulcer patients, with covariates drawn to match the Table 2 marginal
 distributions. It is used for the concentration-time prediction intervals.
 
 ```{r cohort-stochastic}
-N_PER_ARM <- 200   # skill cap: never more than 200 participants per arm
+N_PER_ARM <- 200   # cohort cap: never more than 200 participants per arm
 
 make_pop <- function(label, dis_duod_ulcer, n, id_offset, female_pct, wt_median, wt_sd) {
   covs <- tibble::tibble(

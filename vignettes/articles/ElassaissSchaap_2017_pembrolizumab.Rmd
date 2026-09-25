@@ -142,7 +142,7 @@ cohort <- tibble(ID = seq_len(n_subj), WT = 70)
 
 # Simulation
 
-The model is loaded from the worktree. Two reference dosing regimens
+The model is loaded from the package. Two reference dosing regimens
 are simulated: the **selected dose 2 mg/kg Q3W** that the paper's
 target-engagement simulations supported, and the highest-tested
 **10 mg/kg Q3W** regimen.

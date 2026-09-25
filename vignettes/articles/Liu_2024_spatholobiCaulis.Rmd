@@ -232,7 +232,7 @@ stopifnot(
   "peripheral1" %in% names(sim), max(sim$peripheral1) > 0
 )
 
-# Guard: `rxSolve()` defaulted to useLinCmt = TRUE until September 2026 (now opt-in), which rewrites a recognisably
+# Guard: `rxSolve()` with useLinCmt = TRUE rewrites a recognisably
 # linear system into a closed form. That is safe for the q / vp parameterisation
 # these models use, but it silently collapses a k12 / k21 one to a SINGLE
 # compartment. Assert that the simulated terminal slope really is the beta root
@@ -529,7 +529,7 @@ GastroPlus PBPK outputs and inherit the same gaps.
   clearances L/h/kg.
 * **The peripheral transfer is stored as `q` / `vp`, not as the published
   `K12` / `K21`.** This is a deliberate safety choice, not a preference.
-  `rxode2::rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the conversion opt-in in September 2026 (issue 1389), which rewrites a
+  `rxode2::rxSolve()` with `useLinCmt = TRUE` rewrites a
   recognisably linear system into a closed form; with a `k12` / `k21`
   parameterisation it matches only `cl` and `vc`, converts the model to a
   **one-compartment** solution and silently discards `peripheral1`. The profile

@@ -299,9 +299,9 @@ sim_nca <- sim |>
   dplyr::select(id, time, Cc, regimen) |>
   dplyr::distinct(id, time, regimen, .keep_all = TRUE)
 
-# Time-zero guarantee per the pknca-recipes 'Time-zero records (mandatory)'
-# note. For an IV bolus, the t = 0 row already comes back with Cc set to the
-# initial Dose / V1, so the bind_rows() pattern of the template would
+# Time-zero guarantee (a time = 0 record per subject is mandatory for the
+# NCA). For an IV bolus, the t = 0 row already comes back with Cc set to the
+# initial Dose / V1, so the usual bind_rows() zero-row pattern would
 # overwrite a non-zero initial concentration with 0; instead we just verify
 # every (id, time = 0) row is already present after deduplication.
 sim_nca <- sim_nca |>

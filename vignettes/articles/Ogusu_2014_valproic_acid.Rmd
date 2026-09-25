@@ -199,8 +199,8 @@ model computes it algebraically as `auc_ss = DOSE_VPA_MGD / cl`, which at
 steady state is exact. Because there is no residual error and no IIV in this
 solve, the trapezoidal AUC over one steady-state dosing day must reproduce it
 to numerical precision -- this is an exact internal identity, so it is gated
-tightly (per `known-vignette-failure-patterns.md` pattern 11, a deterministic
-quantity is asserted at the accuracy actually achieved).
+tightly (a deterministic quantity is asserted at the accuracy actually
+achieved).
 
 ```{r pk-auc-identity}
 auc_trap <- sum(diff(ss$time) * (head(ss$Cc, -1) + tail(ss$Cc, -1)) / 2)
@@ -505,9 +505,9 @@ cat(sprintf("Monte-Carlo SE of the paper's own simulation: %.2f pp at p=0.10, %.
 
 ```{r table4-assert}
 # This gate is fully DETERMINISTIC -- a fixed quadrature against 36 fixed
-# printed numbers, with no cohort draw, no seed and no RNG anywhere. Pattern
-# 12 (assertions that vary with the simulated cohort) does not apply, so the
-# bounds are set tightly at the accuracy actually achieved, per pattern 11.
+# printed numbers, with no cohort draw, no seed and no RNG anywhere. Nothing
+# here varies with the simulated cohort, so the bounds are set tightly at the
+# accuracy actually achieved.
 stopifnot(
   # Below the Monte-Carlo noise floor of the paper's own 1000-subject
   # simulation. Every rejected reading of the paper (see below) exceeds
@@ -695,7 +695,7 @@ sim_cohort |>
 ```{r cohort-check}
 # The cohort mean probability per arm must sit near the Table 4 value at the
 # cohort's mean dose. This is a DISTRIBUTIONAL quantity computed from a random
-# draw, so per pattern 12 it is asserted on the centre and with a wide band,
+# draw, so it is asserted on the centre and with a wide band,
 # not on any extreme.
 arm_summary <- sim_cohort |>
   dplyr::filter(time == max(time)) |>

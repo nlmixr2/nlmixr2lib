@@ -172,8 +172,7 @@ cfSubject <- makeSubject(1L, WT = 1.06, pma_wk = 28.9, CREAT = 56,
                          cohort = "closed form", nDoses = 4L, ii = 12,
                          grid_by = 0.25)
 # Tight solver tolerances: this identity is asserted to the numerical floor.
-# rxode2's ODE-to-linCmt() conversion met it analytically until the
-# conversion became opt-in (September 2026, rxode2 issue 1389); the ODE as
+# rxode2's ODE-to-linCmt() conversion would meet it analytically; the ODE as
 # written must meet it too, so the tolerances are set where it is asserted.
 cf_sim <- rxode2::rxSolve(mod, events = cfSubject, rtol = 1e-10, atol = 1e-12) |> as.data.frame()
 
@@ -663,9 +662,9 @@ the virtual validation cohort.
 * **The upstream paper is not on disk.** Chung E, Seto W, *Pharmacotherapy*
   2023;43:1262-1276 (doi:10.1002/phar.2865) is the model-development
   publication. Unpaywall reports it as open access but the Wiley PDF endpoint
-  returns HTTP 403 to automated retrieval, so it could not be acquired. It has
-  been recorded for operator acquisition; when it arrives, the IIV and residual
-  error should be added to this model file.
+  returns HTTP 403 to automated retrieval, so it was not available when this
+  model was built; when it is, the IIV and residual error should be added to
+  this model file.
 * **The Chung 2026 supplement is not on disk.** Supplementary Table S2
   ("Equations of population pharmacokinetic models of vancomycin in neonates")
   is behind the MDPI supplement endpoint, which returns HTTP 403. It tabulates

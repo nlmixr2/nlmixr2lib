@@ -457,8 +457,8 @@ All three rows now reproduce the paper: the largest gap is at the degenerate
 `exp(0) = 1` regardless of `theta1` and `theta2`.
 
 The same agreement holds across every panel of Supplementary Figure S2. The
-"digitised" columns below were read off the published figure by the extractor
-(they are not tabulated anywhere in the paper):
+"digitised" columns below were read off the published figure by the
+maintainers (they are not tabulated anywhere in the paper):
 
 ```{r figs2-check}
 ptt_mid <- c(2.06, 3.49, 4.42, 6.18)
@@ -473,7 +473,7 @@ figs2 <- tibble::tibble(
 
 figs2 |>
   knitr::kable(
-    caption = "Published Table S2 parameters vs. the extractor's digitisation of Supplementary Figure S2, by PTT-bacteremia quartile."
+    caption = "Published Table S2 parameters vs. the maintainers' digitisation of Supplementary Figure S2, by PTT-bacteremia quartile."
   )
 
 # The pre-fix equation was off by 0.46 and 0.75 in the two highest quartiles at

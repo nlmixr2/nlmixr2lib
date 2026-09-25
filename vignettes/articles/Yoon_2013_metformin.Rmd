@@ -66,7 +66,7 @@ collects them in one place for review.
 | `etaltlag` variance         | 0.281      | Yoon 2013 Table III w^2 lag  (RSE 24.6%)         |
 | `propSd` = sqrt(0.0291)     | 0.1706     | Yoon 2013 Table III sigma^2_pro (RSE 8.25%)      |
 | CL/F multiplicative form    | n/a        | Yoon 2013 Results paragraph following "Model 7"  |
-| V/F linear-in-deviation form| n/a        | Yoon 2013 Results (paragraph on Table S2 covariate screen); reference weight 70 kg per skill convention (see Assumptions) |
+| V/F linear-in-deviation form| n/a        | Yoon 2013 Results (paragraph on Table S2 covariate screen); reference weight 70 kg per package convention (see Assumptions) |
 
 # Virtual cohort
 
@@ -295,7 +295,7 @@ defect -- do not tune parameters to close the gap.
   Results paragraph following Table III is rendered as an image
   ("formula-not-decoded" in the extracted markdown) and does not print the
   reference weight explicitly. This vignette (and the packaged model) uses a
-  reference weight of 70 kg per the skill's "sensible standard when
+  reference weight of 70 kg per the package's "sensible standard when
   unspecified" convention. Alternative reasonable choices are the cohort
   mean 67.74 kg or the cohort median (not reported separately); switching to
   67.74 kg shifts the typical V/F point estimate by (67.74 - 70) * 0.0183 *

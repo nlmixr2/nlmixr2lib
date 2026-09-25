@@ -937,7 +937,7 @@ exposure-response model is deliberately absent from the package.
    would be actively misleading. This is the established repository pattern for
    Bernoulli-likelihood exposure-response models (compare
    `Liu_2024_saf189s_proteinuria.R`). `prob_<endpoint>` is a canonical
-   observation form (operator ruling 2026-09-11, validated by
+   observation form (maintainer ruling 2026-09-11, validated by
    `probOutputRegex`), so `checkModelConventions()` reports no warning for it;
    this item is retained to explain the naming, not to record a deviation.
 7. **Placeholder residual error in the logistic models.** Each carries

@@ -501,7 +501,7 @@ nca_sd <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 ## Steady-state troughs vs Figure 3
 
 Zhang 2024 reports no numeric NCA table, so the reference values below were
-digitised by the operator from the box-plot medians of Figure 3 (the reading
+digitised by the maintainers from the box-plot medians of Figure 3 (the reading
 uncertainty is roughly 10-15%, and it grows at the lowest doses where the boxes
 are small). Only doses of 100 mg/d and above are compared, because that is where
 the published boxes are large enough to read reliably. The comparison is
@@ -657,9 +657,10 @@ knitr::kable(claim_tbl, caption = "Checks against claims stated in the source te
   consistent with the prose ("clearance decreased progressively with aging") and
   with Figure 3, where adolescents sit below adults.
 * **Digitised reference values.** The Figure 3 reference medians in the
-  comparison table were read off the published figure by the operator; there is
-  no numeric NCA table in the paper. Reading uncertainty is roughly 10-15%, and
-  the comparison is restricted to doses of 100 mg/d and above for that reason.
+  comparison table were read off the published figure by the maintainers;
+  there is no numeric NCA table in the paper. Reading uncertainty is roughly
+  10-15%, and the comparison is restricted to doses of 100 mg/d and above for
+  that reason.
 * **Simulation age representatives.** Ages of 15 and 45 years are used because
   Results 3.4 names them as the adolescent and adult representatives. The paper
   does not state whether its simulations carried covariate distributions or

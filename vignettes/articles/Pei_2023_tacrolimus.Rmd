@@ -678,7 +678,7 @@ patients with high hematocrit than those with low hematocrit".
   than 350: the companion popPK model's Vd/F of 656.8 L at Fg = 0.2 implies a
   true volume of distribution near 131 L, requiring a of roughly 29; and a grid
   search over a (not adopted, because tuning to a validation target is not
-  permitted) optimises near 20. Operator-ratified 2026-08-05.
+  permitted) optimises near 20. Ratified by the maintainers on 2026-08-05.
   **Consequence:** at a = 9.15 the model's distribution volume is roughly half
   what the paper's exposures imply, so the simulated peak-to-trough fluctuation
   over a 12 h interval is larger than the paper's, and the steady-state Ctrough
@@ -704,9 +704,9 @@ patients with high hematocrit than those with low hematocrit".
   AUC-to-infinity values (about 119 versus 196 ng*h/mL by superposition), and
   its steady-state PM/EM Cmax ratio of 1.70 would require a hepatic extraction
   ratio near 0.56 whereas the printed constants give E = 0.065. Per the
-  operator ruling of 2026-08-05, Table 3 is encoded **verbatim** and no constant
-  was back-solved; validation is against what is reproducible (Table S5 and the
-  Table 4 observed values).
+  maintainers' ruling of 2026-08-05, Table 3 is encoded **verbatim** and no
+  constant was back-solved; validation is against what is reproducible (Table S5
+  and the Table 4 observed values).
 
 - **The Discussion's "20.8 %" decrease in Bmax does not match Table 3.**
   Bmax falls from 204.8 (healthy adults) to 145.9 (heart transplant), a 28.8 %

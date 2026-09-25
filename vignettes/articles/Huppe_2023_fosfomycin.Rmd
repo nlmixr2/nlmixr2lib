@@ -574,7 +574,7 @@ nca_arm <- function(gate, first_dose_at, id_offset) {
     dplyr::filter(time >= first_dose_at, time <= first_dose_at + 6.001) |>
     dplyr::mutate(tad = time - first_dose_at) |>
     dplyr::select(id, tad, Cc)
-  # Guarantee a time-zero row per subject so AUC is anchored (pknca-recipes.md).
+  # Guarantee a time-zero row per subject so AUC is anchored.
   cc <- dplyr::bind_rows(
     cc, cc |> dplyr::distinct(id) |> dplyr::mutate(tad = 0, Cc = 0)
   ) |>

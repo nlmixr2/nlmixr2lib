@@ -455,4 +455,4 @@ shape. See Assumptions and deviations for details.
 - **Erratum supersedes original Table 14.** The Cmax,ss / AUCss percent-
   change values in the published-vs-simulated comparison above are taken
   from the 2018 erratum's revised Table 14, not the original 2018 article
-  Table 14, per the Phase 1 step 8 errata-handling convention.
+  Table 14, per the package's errata-handling convention.

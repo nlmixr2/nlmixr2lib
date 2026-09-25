@@ -433,8 +433,8 @@ knitr::kable(nca_summary, digits = 3,
 * **Convention deviations (compartments).** Three compartment names
   (`mab_isf`, `monomer_isf`, `complex_monomer_isf`) are not in the
   pre-existing `nlmixr2lib::compartments` register; they were added
-  to `R/conventions.R` in this PR with rationale notes. The mAb-
-  monomer complex and the free monomer in the ISF do not fit the
+  to `R/conventions.R` with rationale notes when this model was added.
+  The mAb-monomer complex and the free monomer in the ISF do not fit the
   pre-existing `target_<loc>` / `complex_<loc>` pattern because this
   model carries the target in two distinct oligomeric forms
   (active tetramer + inactive monomer) each with its own bound-

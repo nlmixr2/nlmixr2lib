@@ -122,7 +122,7 @@ The model has no covariates, so the arms differ only in which drugs are dosed.
 # hold for ANY cohort the model can produce.
 set.seed(20250908)
 
-n_arm      <- 200L                          # per-arm cap; 200 is the skill's maximum
+n_arm      <- 200L                          # the 200-subject per-arm cohort cap
 dose_times <- seq(0, 144, by = 24)          # 7 once-daily doses; day-7 dose at 144 h
 pk_times   <- 144 + c(seq(0, 8, by = 0.25), seq(8.5, 12, by = 0.5),
                       seq(13, 24, by = 1), 30, 36, 48, 60, 72)

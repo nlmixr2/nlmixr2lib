@@ -170,7 +170,7 @@ restatement of it (see Errata).
 | Linear-in-trough logit | n/a | Nakashima 2015 Eq 4 |
 
 Equations 1-8 are typeset as page images in the PLOS PDF and are not recoverable
-from the trimmed-text extraction; every equation above was read from the
+from the extracted text; every equation above was read from the
 rendered page and cross-checked against the PDF text layer.
 
 # Virtual cohort
@@ -183,8 +183,7 @@ virtual population whose covariate distributions follow Nakashima 2015 Table 1.
 # set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per
 # solver thread, so a cohort drawn here is NOT reproducible across machines
 # with different thread counts. Every assertion below is written to hold for
-# any cohort the model can produce (see pattern 12 of
-# references/known-vignette-failure-patterns.md).
+# any cohort the model can produce.
 set.seed(20150141)
 
 n_cohort <- 200L   # per-arm cap; 200 is ample for this validation
@@ -328,7 +327,7 @@ optimal <- probe_sim |>
   mutate(pct_diff = 100 * (model_ugml - printed_ugml) / printed_ugml) |>
   select(case, AGE, geno, printed_ugml, model_ugml, pct_diff)
 
-# The gate must have had rows to test (see pattern 10).
+# The gate must have had rows to test.
 stopifnot(nrow(optimal) == 6L, !anyNA(optimal$model_ugml))
 
 optimal |>
@@ -439,7 +438,7 @@ knitr::kable(
 
 ```{r gate2-assert}
 # COHORT statistic -> assert on the CENTRE with headroom, never on the extremes,
-# which are one draw of a random cohort (pattern 12).
+# which are one draw of a random cohort.
 #
 # Choosing the bound. The published mean is 69.3 ug/mL. Large-sample values for
 # this model over these covariate distributions are -15.8% (q24h), -8.2% (q12h)
@@ -759,7 +758,7 @@ ggplot(binned, aes(median_trough, mean_prob)) +
 
 ```{r figure-1-assert}
 # TREND, not step-by-step monotonicity, and no assertion on the sign of a
-# near-zero quantity (pattern 12). The cohort-average slope is genuinely
+# near-zero quantity. The cohort-average slope is genuinely
 # negative and not near zero: with SCN1A G/A and A/A carrying large POSITIVE
 # slope offsets (+10.1, +9.48) against a -13.5 base, the cohort-mean slope is
 # roughly -3 per 100 ug/mL, so the fall across the observed trough range is
@@ -928,10 +927,10 @@ matches neither. The decisive discriminator is physiological: the restated
 valproic acid -- a highly protein-bound drug with an apparent volume of roughly
 0.1-0.4 L/kg. Ogusu 2014's 21.4 L is about 0.6 L/kg.
 
-**Resolution (operator ruling, sidecar `oare_PMC9833507` q2):** encode the
-upstream Ogusu 2014 values, since the cited source has authority over a
-restatement of it, and document the discrepancy here. Gate 2 above confirms the
-choice reproduces Nakashima 2015's own published trough distribution.
+**Resolution (maintainer ruling):** encode the upstream Ogusu 2014 values, since
+the cited source has authority over a restatement of it, and document the
+discrepancy here. Gate 2 above confirms the choice reproduces Nakashima 2015's
+own published trough distribution.
 
 ## 2. Eq 6's age term prints a spurious `/10`
 
@@ -979,11 +978,10 @@ make this the encoded reading:
    also prints no base slope of its own, which is itself a consequence of the
    missing grouping.
 
-**Resolution (operator ruling, sidecar `oare_PMC9833507` q4):** encode Eq 8
-exactly as printed and document the ambiguity. A user who prefers the
-alternative reading -- all three genotype terms inside a slope group -- must
-supply the base slope themselves, as it is not recoverable from any source on
-disk.
+**Resolution (maintainer ruling):** encode Eq 8 exactly as printed and document
+the ambiguity. A user who prefers the alternative reading -- all three genotype
+terms inside a slope group -- must supply the base slope themselves, as it is
+not recoverable from any source on disk.
 
 ## Other notes on the source
 

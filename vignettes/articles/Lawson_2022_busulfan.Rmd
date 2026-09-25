@@ -414,7 +414,7 @@ knitr::kable(cum_auc_summary,
 
 - **FFM derivation.** The source paper used Al-Sallami 2015 (Reference 29) for
   fat-free mass; the vignette computes FFM the same way via a small helper.
-  Operators using the model on real data should pre-compute FFM with the same
+  Anyone using the model on real data should pre-compute FFM with the same
   formula and supply it as a baseline covariate.
 - **Postmenstrual age (PAGE).** The source dataset assumed term birth (PMA =
   postnatal age + 40 weeks; Lawson 2022 Methods after Equation 3); the vignette

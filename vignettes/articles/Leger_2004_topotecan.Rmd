@@ -424,5 +424,5 @@ oral.
   alone, CL = theta1 + theta2 * CrCl alone, CL = theta1 * (1 - theta3 *
   PS) alone, V1 = theta4 alone) with their objective-function deltas;
   these are model-development byproducts shown for comparison, not the
-  final reported model, and are not encoded per the
-  replicate-author-structure policy.
+  final reported model, and are not encoded, following the package's
+  convention of replicating the authors' final model.

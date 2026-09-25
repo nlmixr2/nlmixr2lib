@@ -182,9 +182,8 @@ ggplot(v2_typical, aes(stage, V2)) +
 The PKNCA comparison uses a single-dose typical-value simulation per
 cohort. The dosing column is required as `amt`; the concentration column
 is the model's observation symbol `Cc`. Filtering uses only
-`!is.na(Cc)` (per `pknca-recipes.md`'s "Time-zero records" note --
-adding `time > 0` or `Cc > 0` drops the time-zero row PKNCA needs to
-anchor AUC0-Inf and triggers a per-subject warning).
+`!is.na(Cc)` -- adding `time > 0` or `Cc > 0` drops the time-zero row
+PKNCA needs to anchor AUC0-Inf and triggers a per-subject warning.
 
 ```{r pknca}
 sim_nca <- sim |>

@@ -245,7 +245,7 @@ paed_anaes <- (function() {
 
 events <- bind_rows(young_vol, elderly_vol, aged_vol, paed_chemo, paed_anaes)
 
-# Disjoint-ID guard (per replicate-author-structure conventions).
+# Disjoint-ID guard.
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 

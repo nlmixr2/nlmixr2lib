@@ -183,8 +183,7 @@ the proliferation term to (or past) total suppression, which is
 irreconcilable with the roughly 3% per-cycle thrombocytopenia incidence
 the paper itself reports.
 
-Encoded per the operator ruling on task sidecar `oare_PMC11724784`
-request-001 (2026-08-14).
+Encoded per the maintainers' ruling (2026-08-14).
 
 # Source trace
 
@@ -821,9 +820,9 @@ Reading the table:
   0.0923 (printed 92.3), and `EC50` as 10.3 mg*h/L (printed 10300
   ng*h/L, read as 10300 ng*h/mL). See the Errata section for the full
   evidence and the executed falsification table. Encoded per the
-  operator ruling on sidecar `oare_PMC11724784` request-001. This is the
-  only deviation from the printed values, and every corrected parameter
-  carries an inline comment in the model file's `ini()` block.
+  maintainers' ruling. This is the only deviation from the printed
+  values, and every corrected parameter carries an inline comment in
+  the model file's `ini()` block.
 
 * **Model structure is inferred from a one-sentence reference.** Online
   Resource 1 prints no equation for this model, describing it only as

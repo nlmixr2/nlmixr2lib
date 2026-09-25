@@ -35,12 +35,11 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Cook_2016_paracetamol"))$meta
 
 This vignette validates the packaged `Cook_2016_paracetamol` model against
 the DDMORE Foundation Model Repository entry **DDMODEL00000271**, the
-source from which it was extracted. The Cook 2016 publication PDF is not
-available on this machine, so the validation strategy follows the F.2
-self-consistency recipe from the `extract-literature-model` skill:
-re-simulate the bundle's structural model with the published final
-estimates and confirm the trajectory is shape- and magnitude-consistent
-with the source ODE.
+source from which it was extracted. The Cook 2016 publication PDF was not
+available when this model was built, so the validation strategy is a
+self-consistency check: re-simulate the bundle's structural model with the
+published final estimates and confirm the trajectory is shape- and
+magnitude-consistent with the source ODE.
 
 # Population
 
@@ -321,20 +320,18 @@ knitr::kable(
 
 # Assumptions and deviations
 
-- **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` Section  "Validation strategy by model type"
-  decision tree, leaf 1: no linked publication on disk). PKNCA values
+- **Validation strategy is self-consistency** (the package's strategy for a
+  DDMORE-sourced model with no linked publication on disk). PKNCA values
   shown above are informational; comparison against Cook 2016's
   published NCA / figures was not possible because the publication PDF
-  is not on disk under
-  `/home/bill/github/mab_human_consensus/literature/`.
+  is not on disk in the maintainers' literature mirror.
 
 - **Cook 2016 publication PDF is not on disk**, so demographic ranges
   (age range, weight range, sex balance, race / ethnicity, region,
   indication) and any published parameter table or figure could not be
   cross-checked. Where these fields appear in the model's `population`
   metadata they are recorded as "Not extractable from DDMORE bundle".
-  Operator follow-up: pull the publication PDF and confirm the
+  Maintainer follow-up: pull the publication PDF and confirm the
   population narrative; cross-check the `.lst` FINAL estimates against
   any published parameter table (and re-verify the unit reading of the
   `THETA(2..4)/1000` scale factor against the publication's reported

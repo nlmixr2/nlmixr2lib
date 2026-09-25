@@ -103,7 +103,7 @@ than on the simulated proportions.
 # rxode2's simulation RNG is partitioned per solver thread, so the drawn
 # cohort is not reproducible across machines with different thread counts.
 # Every assertion below is written to hold for any cohort the model can
-# produce; see references/known-vignette-failure-patterns.md pattern 12.
+# produce.
 rxode2::rxSetSeed(20250217)
 
 N_PER_ARM <- 200L

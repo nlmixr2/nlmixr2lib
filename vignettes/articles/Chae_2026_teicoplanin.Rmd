@@ -546,7 +546,7 @@ simulated observations below zero.
 # solver thread, so this cohort is reproducible here and different on a machine
 # with a different thread count. Every assertion below is written to hold for
 # ANY cohort the model can produce -- centre and robust quantiles only, never
-# extremes (see references/known-vignette-failure-patterns.md pattern 12).
+# extremes.
 set.seed(20260912)
 N_SUBJ <- 200L
 LLOQ   <- 0.72   # mg/L, Chae 2026 Methods (validated below the 3.9-52.9 calibration range)

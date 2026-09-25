@@ -45,10 +45,10 @@ bundle for `DDMODEL00000267` (scraped to
 - `DDMODEL00000267.rdf` -- model classification metadata
   (`pkpd-ontology#pkpd_0006013` purpose).
 
-The Allegaert 2015 BMC Anesthesiol publication itself is not on
-disk in this worktree, so the validation strategy below follows
-verification-checklist Section  F.2 (DDMORE-source self-consistency) and
-the linked publication's tables are not used as a parameter
+The Allegaert 2015 BMC Anesthesiol publication itself was not on
+disk when this model was built, so the validation strategy below
+is a DDMORE-source self-consistency check and the linked
+publication's tables are not used as a parameter
 cross-check. Per-parameter source comments in
 `inst/modeldb/ddmore/Allegaert_2015_paracetamol.R` cite the
 `Output_real_*.lst` line numbers; the bundle's `Executable_*.mod`
@@ -322,12 +322,12 @@ knitr::kable(
 
 ## Comparison against published NCA
 
-The Allegaert 2015 BMC Anesthesiol publication is not on disk in
-this worktree, so a side-by-side comparison against published NCA
+The Allegaert 2015 BMC Anesthesiol publication was not on disk when
+this model was built, so a side-by-side comparison against published NCA
 parameters cannot be produced. The .lst-based self-consistency
 check above (typical-value simulation reproducing sensible plasma /
 urinary trajectories with the expected OCC-stratum ordering) is
-the substitute per `verification-checklist.md` Section  F.2.
+the substitute.
 
 The DDMORE bundle's `Output_simulated_OriginalModelCode.lst`
 records the predicted plasma / urinary trajectories on the shipped
@@ -342,8 +342,7 @@ structural model and covariate-effect implementation are coherent.
 - **Publication PDF not on disk.** The Allegaert 2015 paper
   (BMC Anesthesiol 15:151;
   [doi:10.1186/s12871-015-0144-3](https://doi.org/10.1186/s12871-015-0144-3))
-  is not available under
-  `/home/bill/github/mab_human_consensus/literature/`. Parameter
+  was not available in the maintainers' literature mirror. Parameter
   point values are taken verbatim from
   `Output_real_OriginalModelCode.lst` after `MINIMIZATION SUCCESSFUL`
   (OBJV = 5286.743). The absence of a paper cross-check is the main
@@ -378,8 +377,8 @@ structural model and covariate-effect implementation are coherent.
   conditional error is implemented inside `model()` by selecting
   between the OCC != 5 (`CcpropSd`) and OCC = 5 (`Cc_oc5_propSd`,
   `Cc_oc5_addSd`) SD pairs based on an `oc5` indicator; there is
-  no canonical `<output>_<segment>_propSd` name in
-  `naming-conventions.md`, so the OCC = 5 sub-arm parameters use
+  no canonical `<output>_<segment>_propSd` name in the package's
+  naming conventions, so the OCC = 5 sub-arm parameters use
   paper-specific names that may trigger a `checkModelConventions()`
   warning.
 - **Compartment-naming warnings.** The three `urine_*`
@@ -422,8 +421,8 @@ structural model and covariate-effect implementation are coherent.
 - **Canonical covariate-column names `CONMED_BIRTHCONTROL` and `URINE_FLOW`.**
   The first version of this extraction (commit `ced840f2`, then merged
   into `main`) registered the source-data columns `BC` and `UF` under
-  the canonical names `BC_USE` and `UF`. Operator review (sidecar
-  response 047-001) preferred the full-word forms `CONMED_BIRTHCONTROL` and
+  the canonical names `BC_USE` and `UF`. Maintainer review
+  preferred the full-word forms `CONMED_BIRTHCONTROL` and
   `URINE_FLOW` for clarity in source traces; the canonicals were
   renamed in `inst/references/covariate-columns.md` and propagated
   through this model file and vignette. The source-data column names

@@ -315,4 +315,4 @@ knitr::kable(data.frame(
 
 * **`VNO2_P` and `VNO3_P` reported as equal in Table 1.** Both are 12.418 L with separate row entries (IIV only on `VNO2_P`); the supplement estimates `V1` and `V3` as distinct THETAs whose final estimates coincidentally land at the same value. The library model carries them as independent log-transformed parameters.
 
-* **PKNCA validation is intentionally omitted.** Vega-Villa 2013 does not report NCA parameters (Cmax / Tmax / AUC), and the model is a multi-species turnover system rather than an ADME PK model. The endogenous-validation recipe (steady-state check, flux balance, figure replication) is used instead, per `references/endogenous-validation.md`.
+* **PKNCA validation is intentionally omitted.** Vega-Villa 2013 does not report NCA parameters (Cmax / Tmax / AUC), and the model is a multi-species turnover system rather than an ADME PK model. The package's recipe for endogenous models (steady-state check, flux balance, figure replication) is used instead.

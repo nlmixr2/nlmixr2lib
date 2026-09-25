@@ -198,7 +198,7 @@ respectively received).
 # are partitioned per solver thread -- so this cohort is reproducible on this
 # machine and different on a machine with a different thread count. Every
 # assertion below is therefore written to hold for ANY cohort the model can
-# produce (see pattern 12 of known-vignette-failure-patterns.md).
+# produce.
 set.seed(20250829)
 
 n_sub <- 200L   # <= 200 per arm (vignette cap)
@@ -303,7 +303,7 @@ sim |>
 # PKNCA validation
 
 Steady-state NCA over the last full day of dosing, `r 24 / 8`-dose interval
-window [72, 96] h (PKNCA recipe 3).
+window [72, 96] h.
 
 ```{r pknca}
 sim_nca <- sim |>

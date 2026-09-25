@@ -659,7 +659,7 @@ stopifnot(
 
 Bamgboye 2026 reports no NCA table, so the only published numeric answer key
 for exposure is Figure 4. The reference values below were read off that figure
-by the extractor and are therefore approximate; they are used as a
+by the maintainers and are therefore approximate; they are used as a
 cross-check on the packaged model, never as a source of parameter values. Their
 internal consistency is itself informative -- the four read-off 24 h
 concentrations are in the same 6:3:2:1 ratio as the four doses, which is what a
@@ -676,7 +676,7 @@ as a Cmax reference understates the peak by roughly 30-40% and would say more
 about the authors' plotting grid than about the model.
 
 ```{r nca_compare}
-# Operator-digitised from Figure 4 of Bamgboye 2026 (24-hour concentration,
+# Maintainer-digitised from Figure 4 of Bamgboye 2026 (24-hour concentration,
 # read against the log-scale gridlines at the right-hand edge of each panel).
 published_fig4 <- tibble::tribble(
   ~treatment,               ~clast.obs,

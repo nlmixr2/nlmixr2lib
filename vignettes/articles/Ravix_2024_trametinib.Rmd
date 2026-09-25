@@ -264,7 +264,7 @@ under Assumptions and deviations.
 # can produce.
 set.seed(20240611)
 
-N_PER_ARM <- 200L   # skill cap: never more than 200 participants per arm
+N_PER_ARM <- 200L   # cohort cap: never more than 200 participants per arm
 
 # Height, BMI and age are drawn uniformly across the Table 1 ranges; body
 # weight follows from height and BMI, and draws whose weight falls outside the

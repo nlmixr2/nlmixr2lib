@@ -41,8 +41,7 @@ Km 850 umol/L and optimised Vmax 82.48 umol/L/min, a hypothetical renal efflux
 transporter with Km 1500 umol/L and optimised Vmax 21.92 umol/L/min, DPEP1
 first-order clearance 0.037 L/min, biliary clearance 6.5e-04 L/h/kg) but not the
 whole-body ODEs, so the PBPK model cannot be reproduced from on-disk sources and
-is not encoded. See `references/pbpk-qsp-mbma.md` in the extraction skill for the
-policy this follows.
+is not encoded.
 
 # Population
 
@@ -350,9 +349,8 @@ knitr::kable(nca_summary, digits = 1,
 # The two sides are separated by a physical mechanism that varies per subject:
 # how close that subject is to steady state after 61 doses, which depends on
 # their own terminal half-life and so on their drawn eGFR. Low-eGFR subjects
-# are furthest from steady state and sit in the tail. Per the repo CLAUDE.md
-# rule, the gate is therefore on the CENTRE and a ROBUST QUANTILE, never on
-# the extreme.
+# are furthest from steady state and sit in the tail. The gate is therefore on
+# the CENTRE and a ROBUST QUANTILE, never on the extreme.
 closed_form <- sim |>
   distinct(id, stratum, dose_mg, cl) |>
   left_join(nca_ind |> select(id, auclast), by = "id") |>
