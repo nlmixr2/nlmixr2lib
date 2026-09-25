@@ -246,7 +246,7 @@ stopifnot(
   "peripheral1" %in% names(sim), max(sim$peripheral1) > 0
 )
 
-# Guard: `rxSolve()` defaults to useLinCmt = TRUE, which rewrites a recognisably
+# Guard: `rxSolve()` defaulted to useLinCmt = TRUE until September 2026 (now opt-in), which rewrites a recognisably
 # linear system into a closed form. That is safe for the q / vp parameterisation
 # these models use, but it silently collapses a k12 / k21 one to a SINGLE
 # compartment. Assert that the simulated terminal slope really is the beta root
@@ -605,11 +605,12 @@ GastroPlus PBPK outputs and inherit the same gaps.
   published `K12` / `K21`.** This is a deliberate safety choice, not a
   preference.
   [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-  defaults to `useLinCmt = TRUE`, which rewrites a recognisably linear
-  system into a closed form; with a `k12` / `k21` parameterisation it
-  matches only `cl` and `vc`, converts the model to a
-  **one-compartment** solution and silently discards `peripheral1`. The
-  profile then decays with `kel` instead of beta – 1.47 h instead of
+  defaulted to `useLinCmt = TRUE` until rxode2 made the conversion
+  opt-in in September 2026 (issue 1389), which rewrites a recognisably
+  linear system into a closed form; with a `k12` / `k21`
+  parameterisation it matches only `cl` and `vc`, converts the model to
+  a **one-compartment** solution and silently discards `peripheral1`.
+  The profile then decays with `kel` instead of beta – 1.47 h instead of
   7.90 h for 3’-methoxydaidzein – while total AUC stays exactly
   `dose/(CL/F)`, so an exposure check does not reveal it. With `q` /
   `vp` the conversion is correct and the default call is safe.

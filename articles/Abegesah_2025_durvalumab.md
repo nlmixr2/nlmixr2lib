@@ -573,13 +573,13 @@ nca_summary |>
 
 | Regimen                       | NCA parameter |  Median | 25th pct | 75th pct |
 |:------------------------------|:--------------|--------:|---------:|---------:|
-| Monotherapy 10 mg/kg Q2W      | auclast       | 1713.87 |  1517.64 |  1997.90 |
-| Monotherapy 10 mg/kg Q2W      | cmax          |  208.25 |   178.52 |   251.74 |
-| Monotherapy 10 mg/kg Q2W      | ctrough       |   44.88 |    35.71 |    53.61 |
+| Monotherapy 10 mg/kg Q2W      | auclast       | 1709.87 |  1452.04 |  1994.51 |
+| Monotherapy 10 mg/kg Q2W      | cmax          |  210.87 |   178.56 |   246.69 |
+| Monotherapy 10 mg/kg Q2W      | ctrough       |   42.94 |    34.43 |    52.13 |
 | Monotherapy 10 mg/kg Q2W      | tmax          |    0.04 |     0.04 |     0.04 |
-| TOPAZ-1 1500 mg Q3W + gem/cis | auclast       | 3967.11 |  3358.41 |  4624.81 |
-| TOPAZ-1 1500 mg Q3W + gem/cis | cmax          |  510.44 |   411.93 |   593.11 |
-| TOPAZ-1 1500 mg Q3W + gem/cis | ctrough       |  101.48 |    79.56 |   124.57 |
+| TOPAZ-1 1500 mg Q3W + gem/cis | auclast       | 3960.20 |  3486.69 |  4573.38 |
+| TOPAZ-1 1500 mg Q3W + gem/cis | cmax          |  517.49 |   411.47 |   601.70 |
+| TOPAZ-1 1500 mg Q3W + gem/cis | ctrough       |   97.77 |    82.32 |   122.90 |
 | TOPAZ-1 1500 mg Q3W + gem/cis | tmax          |    0.04 |     0.04 |     0.04 |
 
 Simulated cycle-1 NCA after a single durvalumab dose (n = 200 per arm).
@@ -635,9 +635,9 @@ knitr::kable(
 
 | Quantile | Published (ug/mL) | Simulated (ug/mL) | Difference (%) |
 |:---------|------------------:|------------------:|---------------:|
-| P25      |              79.0 |              79.6 |            0.6 |
-| Median   |              94.6 |             101.5 |            7.3 |
-| P75      |             113.0 |             124.6 |           10.2 |
+| P25      |              79.0 |              82.3 |            4.1 |
+| Median   |              94.6 |              97.8 |            3.4 |
+| P75      |             113.0 |             122.9 |            8.8 |
 
 Dose-1 trough (day 21) in the TOPAZ-1 arm: simulated cohort versus the
 quartile boundaries of Supplementary Table S1. {.table}
@@ -671,7 +671,7 @@ knitr::kable(
 
 | NCA parameter   | regimen                       | Reference | Simulated | % diff |
 |:----------------|:------------------------------|----------:|----------:|-------:|
-| Ctrough (ug/mL) | TOPAZ-1 1500 mg Q3W + gem/cis |      94.6 |       101 |  +7.3% |
+| Ctrough (ug/mL) | TOPAZ-1 1500 mg Q3W + gem/cis |      94.6 |      97.8 |  +3.4% |
 
 Simulated vs. published dose-1 trough. \* differs from reference by
 \>20%. {.table}
@@ -742,7 +742,7 @@ trough_late   <- topaz_sim |> filter(time == 126) |> pull(Cc)
 
 accumulation <- stats::median(trough_late) / stats::median(trough_cycle1)
 accumulation
-#> [1] 2.408034
+#> [1] 2.412758
 
 # Q3W dosing with a ~14 day terminal half-life accumulates roughly 2-fold even
 # without the time-varying term; the falling clearance pushes it higher. The

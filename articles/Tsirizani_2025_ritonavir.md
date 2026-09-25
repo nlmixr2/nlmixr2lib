@@ -112,11 +112,11 @@ mod
 #> 
 #>   covariateData <- list(
 #>     FFM = list(
-#>       description        = "Fat-free mass, the body-size descriptor for allometric scaling of clearance and volume",
-#>       units              = "kg",
-#>       type               = "continuous",
+#>       description = "Fat-free mass, the body-size descriptor for allometric scaling of clearance and volume",
+#>       units = "kg",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Reference value 21.0 kg, taken from the supplemental NONMEM control",
 #>         "stream (Data S1, $PK block 'TVFFM = 21.0 ;MEDIAN'). Table 3 footnote",
 #>         "b states the typical values 'refer to a child weighing 26 kg', so",
@@ -135,14 +135,14 @@ mod
 #>         "Exponents are fixed at 0.75 on CL and Q and 1 on Vc and Vp.",
 #>         sep = " "
 #>       ),
-#>       source_name        = "FFM"
+#>       source_name = "FFM"
 #>     ),
 #>     CONMED_ATAZANAVIR = list(
-#>       description        = "Concomitant atazanavir, i.e. the child is in the once-daily atazanavir/ritonavir arm",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Concomitant atazanavir, i.e. the child is in the once-daily atazanavir/ritonavir arm",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (darunavir/ritonavir reference arm)",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "1 = atazanavir/ritonavir arm (N = 60), 0 = not on atazanavir. Time-fixed:",
 #>         "the companion protease inhibitor was randomised at trial entry and stable",
 #>         "through the week-6 intensive PK day. Carries TWO effects: +137% on relative",
@@ -156,14 +156,14 @@ mod
 #>         "2021 all use the indicator on a different victim drug.",
 #>         sep = " "
 #>       ),
-#>       source_name        = "PI_BCK_BONE == 2"
+#>       source_name = "PI_BCK_BONE == 2"
 #>     ),
 #>     CONMED_LOPINAVIR = list(
-#>       description        = "Concomitant lopinavir, i.e. the child is in the twice-daily lopinavir/ritonavir arm",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Concomitant lopinavir, i.e. the child is in the twice-daily lopinavir/ritonavir arm",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (darunavir/ritonavir reference arm)",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "1 = lopinavir/ritonavir arm (N = 51), 0 = not on lopinavir. Time-fixed.",
 #>         "Carries -23.4% on relative bioavailability (Table 3). This is also the",
 #>         "only arm dosed twice daily, so it is the only arm in which the evening",
@@ -172,14 +172,14 @@ mod
 #>         "product CONMED_LOPINAVIR * (OCC == 1).",
 #>         sep = " "
 #>       ),
-#>       source_name        = "PI_BCK_BONE == 3"
+#>       source_name = "PI_BCK_BONE == 3"
 #>     ),
 #>     OCC = list(
-#>       description        = "Dosing-occasion indicator distinguishing the unwitnessed dose preceding the sampling window from the witnessed dose",
-#>       units              = "(count)",
-#>       type               = "categorical",
+#>       description = "Dosing-occasion indicator distinguishing the unwitnessed dose preceding the sampling window from the witnessed dose",
+#>       units = "(count)",
+#>       type = "categorical",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Two occasions, per the supplemental control stream's OCC-gated ETA",
 #>         "assignments. OCC = 1 is the last dose taken before the intensive PK",
 #>         "sampling window, which was NOT taken under direct observation; in the",
@@ -196,33 +196,33 @@ mod
 #>         "condition, pass OCC = 2.",
 #>         sep = " "
 #>       ),
-#>       source_name        = "OCC"
+#>       source_name = "OCC"
 #>     )
 #>   )
 #> 
 #>   compartmentData <- list(
-#>     depot       = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = TRUE),
-#>     central     = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = TRUE),
+#>     depot = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = TRUE),
+#>     central = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = TRUE),
 #>     peripheral1 = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = TRUE)
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human",
-#>     n_subjects     = 170,
-#>     n_studies      = 1,
-#>     age_range      = "3.16-15.6 years",
-#>     age_median     = "10.5 years",
-#>     weight_range   = "14.2-64.2 kg",
-#>     weight_median  = "26.0 kg",
-#>     height_range   = "97.0-169 cm",
-#>     height_median  = "131 cm",
+#>     species = "human",
+#>     n_subjects = 170,
+#>     n_studies = 1,
+#>     age_range = "3.16-15.6 years",
+#>     age_median = "10.5 years",
+#>     weight_range = "14.2-64.2 kg",
+#>     weight_median = "26.0 kg",
+#>     height_range = "97.0-169 cm",
+#>     height_median = "131 cm",
 #>     sex_female_pct = 51.2,
 #>     race_ethnicity = "not reported by category; all participants enrolled in Zambia, Uganda and Zimbabwe",
-#>     disease_state  = "HIV-1 infection failing first-line antiretroviral therapy by WHO virological, CD4 or clinical criteria, starting second-line ritonavir-boosted protease-inhibitor ART",
-#>     dose_range     = "ritonavir 50-200 mg total daily dose (median 100 mg; 1.56-6.90 mg/kg/day) by WHO weight band, as 200/50 mg lopinavir/ritonavir twice daily, 25 mg or 100 mg ritonavir or co-formulated 300/100 mg atazanavir/ritonavir once daily, or 100 mg ritonavir once daily with darunavir",
-#>     regions        = "Zambia, Uganda, Zimbabwe",
-#>     co_medication  = "two NRTIs: tenofovir alafenamide/emtricitabine (54.7%), abacavir/lamivudine (25.3%) or zidovudine/lamivudine (20.0%); no NRTI effect on ritonavir PK was found",
-#>     notes          = paste(
+#>     disease_state = "HIV-1 infection failing first-line antiretroviral therapy by WHO virological, CD4 or clinical criteria, starting second-line ritonavir-boosted protease-inhibitor ART",
+#>     dose_range = "ritonavir 50-200 mg total daily dose (median 100 mg; 1.56-6.90 mg/kg/day) by WHO weight band, as 200/50 mg lopinavir/ritonavir twice daily, 25 mg or 100 mg ritonavir or co-formulated 300/100 mg atazanavir/ritonavir once daily, or 100 mg ritonavir once daily with darunavir",
+#>     regions = "Zambia, Uganda, Zimbabwe",
+#>     co_medication = "two NRTIs: tenofovir alafenamide/emtricitabine (54.7%), abacavir/lamivudine (25.3%) or zidovudine/lamivudine (20.0%); no NRTI effect on ritonavir PK was found",
+#>     notes = paste(
 #>       "Baseline characteristics in Table 1, stratified by boosted protease",
 #>       "inhibitor arm (lopinavir N = 51, atazanavir N = 60, darunavir N = 59).",
 #>       "Nested PK sub-study of the CHAPAS-4 trial; intensive sampling after week",
@@ -424,7 +424,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x560623fc15e8>
+#> <environment: 0x55d5e56c0990>
 ```
 
 ## Population
@@ -749,8 +749,18 @@ nrow(events)
 ``` r
 
 rxode2::rxSetSeed(20250926)
+# Solved on rxode2's analytic linCmt() path on purpose. Since September 2026 the
+# default is numeric integration, and for this event table the numeric path is
+# defective: the occasion-switched ka changes at the OCC record times while the
+# lag-shifted doses land between them, so liblsoda meets the parameter jump
+# inside a step ("corrector convergence failed"), returns NA for 72 of the 170
+# twice-daily children and mis-integrates the rest by a median 5.6 % against the
+# steady-state AUC identity. The analytic solution is exact for this structure
+# (lag, zero- then first-order input, two compartments) and agrees with the ODE
+# on the once-daily arms, where the ODE does integrate, to a median 6e-8 and a
+# maximum 3e-6 relative (checked 2026-09-24).
 sim <-
-  rxode2::rxSolve(mod, events, addDosing = FALSE) |>
+  rxode2::rxSolve(mod, events, addDosing = FALSE, useLinCmt = TRUE) |>
   as.data.frame() |>
   dplyr::mutate(tnca = time - T0) |>
   dplyr::left_join(dplyr::select(cohort, id, arm, band, WT, daily_mg), by = "id")
@@ -767,10 +777,10 @@ dplyr::glimpse(dplyr::select(sim, id, arm, band, tnca, Cc, cl, vc, fdepot))
 #> $ arm    <chr> "Atazanavir", "Atazanavir", "Atazanavir", "Atazanavir", "Atazan…
 #> $ band   <chr> "14-19.9 kg", "14-19.9 kg", "14-19.9 kg", "14-19.9 kg", "14-19.…
 #> $ tnca   <dbl> 0.00, 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25, 2.5…
-#> $ Cc     <dbl> 0.04351688, 0.04316551, 0.04283682, 0.04403983, 0.17232516, 0.4…
-#> $ cl     <dbl> 12.01012, 12.01012, 12.01012, 12.01012, 12.01012, 12.01012, 12.…
+#> $ Cc     <dbl> 0.05464228, 0.05394034, 0.05327893, 0.07587957, 0.16936685, 0.3…
+#> $ cl     <dbl> 8.931002, 8.931002, 8.931002, 8.931002, 8.931002, 8.931002, 8.9…
 #> $ vc     <dbl> 35.26751, 35.26751, 35.26751, 35.26751, 35.26751, 35.26751, 35.…
-#> $ fdepot <dbl> 2.422778, 2.422778, 2.422778, 2.422778, 2.422778, 2.422778, 2.4…
+#> $ fdepot <dbl> 1.521493, 1.521493, 1.521493, 1.521493, 1.521493, 1.521493, 1.5…
 ```
 
 ## Replicating the published figures
@@ -888,7 +898,8 @@ f2_events <-
   as.data.frame()
 
 f2_sim <-
-  rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE) |>
+  # Analytic path for the same reason as the `simulate` chunk.
+  rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE, useLinCmt = TRUE) |>
   as.data.frame() |>
   dplyr::mutate(tnca = time - T0)
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2, etaiov_tlag_1, etaiov_tlag_2, etaiov_d1_1, etaiov_d1_2, etaiov_ka_1, etaiov_ka_2
@@ -1151,9 +1162,9 @@ sim_dense |>
 
 | arm | median_auclast | median_cav | median_cmax | median_cmin | median_tmax | q25_auclast | q25_cav | q25_cmax | q25_cmin | q25_tmax | q75_auclast | q75_cav | q75_cmax | q75_cmin | q75_tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Atazanavir | 16.131 | 0.672 | 2.192 | 0.087 | 4.75 | 11.697 | 0.487 | 1.473 | 0.056 | 3.562 | 22.249 | 0.927 | 3.012 | 0.136 | 6.00 |
-| Darunavir | 9.528 | 0.397 | 1.161 | 0.060 | 4.75 | 7.011 | 0.292 | 0.786 | 0.043 | 4.000 | 12.955 | 0.540 | 1.584 | 0.090 | 6.00 |
-| Lopinavir | 9.908 | 0.413 | 0.764 | 0.131 | 4.50 | 7.582 | 0.316 | 0.566 | 0.090 | 3.500 | 13.194 | 0.550 | 1.068 | 0.206 | 6.25 |
+| Atazanavir | 16.627 | 0.693 | 2.213 | 0.082 | 4.875 | 11.542 | 0.481 | 1.309 | 0.056 | 3.75 | 23.023 | 0.959 | 3.124 | 0.138 | 6.438 |
+| Darunavir | 9.598 | 0.400 | 1.113 | 0.066 | 4.750 | 6.731 | 0.280 | 0.725 | 0.040 | 3.75 | 13.253 | 0.552 | 1.598 | 0.099 | 6.250 |
+| Lopinavir | 9.537 | 0.397 | 0.725 | 0.136 | 4.625 | 7.051 | 0.294 | 0.533 | 0.091 | 3.75 | 13.055 | 0.544 | 1.024 | 0.199 | 6.188 |
 
 Dense-grid NCA summary by arm. {.table}
 
@@ -1187,15 +1198,15 @@ grid_effect |>
 
 | arm        | Dense grid | Paper grid | Sparse/dense |
 |:-----------|-----------:|-----------:|-------------:|
-| Atazanavir |     16.131 |     16.054 |        0.995 |
-| Darunavir  |      9.528 |      9.602 |        1.008 |
-| Lopinavir  |      9.908 |      9.747 |        0.984 |
+| Atazanavir |     16.627 |     16.658 |        1.002 |
+| Darunavir  |      9.598 |      9.471 |        0.987 |
+| Lopinavir  |      9.537 |      8.675 |        0.910 |
 
 Median AUC(0-24 h) on the dense 0.25 h grid versus the paper’s nine
 sampling times, by arm. {.table}
 
 The sparse grid turns out to matter little, and not in one direction:
-the sparse/dense ratio spans 0.984-1.008. Two errors of opposite sign
+the sparse/dense ratio spans 0.910-1.002. Two errors of opposite sign
 roughly cancel – linear interpolation across the 12-24 h gap over-reads
 a convex declining curve, while the 0-4 h absorption phase is
 under-sampled – and the lopinavir arm, whose second dose lands at 12 h,
@@ -1256,12 +1267,12 @@ cmp |>
 
 | NCA parameter     | Boosted PI | Reference | Simulated | % diff |
 |:------------------|:-----------|:----------|:----------|:-------|
-| Cmax (mg/L)       | Lopinavir  | 0.66      | 0.744     | +12.7% |
-| Cmax (mg/L)       | Atazanavir | 2.38      | 2.09      | -12.1% |
-| Cmax (mg/L)       | Darunavir  | 1.12      | 1.11      | -1.1%  |
-| AUClast (mg\*h/L) | Lopinavir  | 9.83      | 9.75      | -0.8%  |
-| AUClast (mg\*h/L) | Atazanavir | 17.6      | 16.1      | -8.8%  |
-| AUClast (mg\*h/L) | Darunavir  | 8.31      | 9.6       | +15.6% |
+| Cmax (mg/L)       | Lopinavir  | 0.66      | 0.709     | +7.4%  |
+| Cmax (mg/L)       | Atazanavir | 2.38      | 2.1       | -11.6% |
+| Cmax (mg/L)       | Darunavir  | 1.12      | 1.06      | -5.5%  |
+| AUClast (mg\*h/L) | Lopinavir  | 9.83      | 8.68      | -11.7% |
+| AUClast (mg\*h/L) | Atazanavir | 17.6      | 16.7      | -5.4%  |
+| AUClast (mg\*h/L) | Darunavir  | 8.31      | 9.47      | +14.0% |
 
 Simulated steady-state NCA on the paper’s sampling grid versus Tsirizani
 2025 Table 4 medians (AUC model-based, Cmax observed). \* differs from
@@ -1311,12 +1322,12 @@ mcse |>
 
 | Boosted PI | NCA parameter | Simulated median | MC-SE (% of median) |
 |:-----------|:--------------|-----------------:|--------------------:|
-| Atazanavir | AUClast       |            16.05 |                3.52 |
-| Atazanavir | Cmax          |             2.09 |                4.30 |
-| Darunavir  | AUClast       |             9.60 |                5.03 |
-| Darunavir  | Cmax          |             1.11 |                4.90 |
-| Lopinavir  | AUClast       |             9.75 |                4.47 |
-| Lopinavir  | Cmax          |             0.74 |                3.64 |
+| Atazanavir | AUClast       |            16.66 |                4.91 |
+| Atazanavir | Cmax          |             2.10 |                6.02 |
+| Darunavir  | AUClast       |             9.47 |                5.06 |
+| Darunavir  | Cmax          |             1.06 |                3.84 |
+| Lopinavir  | AUClast       |             8.68 |                5.45 |
+| Lopinavir  | Cmax          |             0.71 |                4.55 |
 
 Bootstrap Monte-Carlo standard error of each simulated median (170
 children per arm). Cmax is roughly twice as noisy as AUC, because the
@@ -1353,38 +1364,38 @@ stopifnot(
 
 | Boosted PI | Weight band | Parameter | Published | Simulated |  % diff |
 |:-----------|:------------|:----------|----------:|----------:|--------:|
-| Lopinavir  | 14-19.9 kg  | AUClast   |      8.57 |    10.506 |  22.588 |
-| Lopinavir  | 14-19.9 kg  | Cmax      |      0.54 |     0.737 |  36.444 |
-| Lopinavir  | 20-24.9 kg  | AUClast   |     10.30 |     7.163 | -30.453 |
-| Lopinavir  | 20-24.9 kg  | Cmax      |      0.52 |     0.576 |  10.717 |
-| Lopinavir  | 25-34.9 kg  | AUClast   |     11.30 |    10.194 |  -9.788 |
-| Lopinavir  | 25-34.9 kg  | Cmax      |      1.04 |     0.927 | -10.873 |
-| Lopinavir  | 35+ kg      | AUClast   |      9.83 |    10.693 |   8.775 |
-| Lopinavir  | 35+ kg      | Cmax      |      0.80 |     0.743 |  -7.092 |
-| Atazanavir | 14-19.9 kg  | AUClast   |     19.80 |    20.841 |   5.256 |
-| Atazanavir | 14-19.9 kg  | Cmax      |      2.68 |     2.582 |  -3.645 |
-| Atazanavir | 20-24.9 kg  | AUClast   |     14.70 |    15.434 |   4.990 |
-| Atazanavir | 20-24.9 kg  | Cmax      |      2.30 |     2.168 |  -5.728 |
-| Atazanavir | 25-34.9 kg  | AUClast   |     20.30 |    15.920 | -21.575 |
-| Atazanavir | 25-34.9 kg  | Cmax      |      2.76 |     1.829 | -33.738 |
-| Atazanavir | 35+ kg      | AUClast   |     14.20 |    15.078 |   6.180 |
-| Atazanavir | 35+ kg      | Cmax      |      1.76 |     1.945 |  10.507 |
-| Darunavir  | 14-19.9 kg  | AUClast   |     11.80 |    13.908 |  17.863 |
-| Darunavir  | 14-19.9 kg  | Cmax      |      1.63 |     1.561 |  -4.223 |
-| Darunavir  | 20-24.9 kg  | AUClast   |      9.68 |    11.547 |  19.285 |
-| Darunavir  | 20-24.9 kg  | Cmax      |      1.27 |     1.378 |   8.537 |
-| Darunavir  | 25-34.9 kg  | AUClast   |      7.86 |     9.071 |  15.408 |
-| Darunavir  | 25-34.9 kg  | Cmax      |      1.14 |     0.936 | -17.874 |
-| Darunavir  | 35+ kg      | AUClast   |      6.95 |     6.327 |  -8.968 |
-| Darunavir  | 35+ kg      | Cmax      |      0.81 |     0.666 | -17.791 |
+| Lopinavir  | 14-19.9 kg  | AUClast   |      8.57 |     8.562 |  -0.088 |
+| Lopinavir  | 14-19.9 kg  | Cmax      |      0.54 |     0.784 |  45.205 |
+| Lopinavir  | 20-24.9 kg  | AUClast   |     10.30 |     6.926 | -32.758 |
+| Lopinavir  | 20-24.9 kg  | Cmax      |      0.52 |     0.523 |   0.634 |
+| Lopinavir  | 25-34.9 kg  | AUClast   |     11.30 |    10.180 |  -9.913 |
+| Lopinavir  | 25-34.9 kg  | Cmax      |      1.04 |     0.944 |  -9.188 |
+| Lopinavir  | 35+ kg      | AUClast   |      9.83 |     9.608 |  -2.262 |
+| Lopinavir  | 35+ kg      | Cmax      |      0.80 |     0.699 | -12.626 |
+| Atazanavir | 14-19.9 kg  | AUClast   |     19.80 |    20.723 |   4.661 |
+| Atazanavir | 14-19.9 kg  | Cmax      |      2.68 |     2.709 |   1.066 |
+| Atazanavir | 20-24.9 kg  | AUClast   |     14.70 |    16.656 |  13.305 |
+| Atazanavir | 20-24.9 kg  | Cmax      |      2.30 |     2.219 |  -3.525 |
+| Atazanavir | 25-34.9 kg  | AUClast   |     20.30 |    16.590 | -18.275 |
+| Atazanavir | 25-34.9 kg  | Cmax      |      2.76 |     2.207 | -20.053 |
+| Atazanavir | 35+ kg      | AUClast   |     14.20 |    13.670 |  -3.731 |
+| Atazanavir | 35+ kg      | Cmax      |      1.76 |     1.519 | -13.672 |
+| Darunavir  | 14-19.9 kg  | AUClast   |     11.80 |    13.666 |  15.813 |
+| Darunavir  | 14-19.9 kg  | Cmax      |      1.63 |     1.648 |   1.082 |
+| Darunavir  | 20-24.9 kg  | AUClast   |      9.68 |     9.798 |   1.218 |
+| Darunavir  | 20-24.9 kg  | Cmax      |      1.27 |     1.091 | -14.125 |
+| Darunavir  | 25-34.9 kg  | AUClast   |      7.86 |     8.090 |   2.929 |
+| Darunavir  | 25-34.9 kg  | Cmax      |      1.14 |     0.969 | -15.019 |
+| Darunavir  | 35+ kg      | AUClast   |      6.95 |     6.578 |  -5.347 |
+| Darunavir  | 35+ kg      | Cmax      |      0.81 |     0.662 | -18.300 |
 
 Descriptive band-level comparison against Tsirizani 2025 Table 4. Band
 medians in the paper rest on 11-18 children each, so scatter of this
 size in both directions is expected and no assertion is made on
 individual rows. {.table}
 
-The pooled per-arm agreement is within 16% on the model-based AUC in all
-three arms and within 16% on the observed Cmax, and it reproduces the
+The pooled per-arm agreement is within 14% on the model-based AUC in all
+three arms and within 14% on the observed Cmax, and it reproduces the
 paper’s central finding quantitatively: atazanavir roughly doubles
 ritonavir exposure relative to darunavir, and lopinavir sits slightly
 below it.
@@ -1403,9 +1414,9 @@ instead of 75 mg in the two lightest bands.
 
 | arm        | Median Cmin (mg/L) | Fraction below LLOQ 0.045 mg/L |
 |:-----------|-------------------:|-------------------------------:|
-| Atazanavir |              0.089 |                          0.129 |
-| Darunavir  |              0.061 |                          0.265 |
-| Lopinavir  |              0.213 |                          0.006 |
+| Atazanavir |              0.083 |                          0.141 |
+| Darunavir  |              0.066 |                          0.312 |
+| Lopinavir  |              0.199 |                          0.006 |
 
 Simulated end-of-interval concentrations. Tsirizani 2025 reports that
 6.9% of the 1,254 measured concentrations were below the 0.045 mg/L LLOQ
@@ -1495,6 +1506,15 @@ of the predictive model, and is deliberately not encoded.
   Vp and Q, and between-occasion variability on CL, to zero. Writing
   them as `~ fixed(0)` would make OMEGA singular; Table 3 lists no such
   rows either.
+- **Solver path.** Both simulations request rxode2’s analytic `linCmt()`
+  solution explicitly. rxode2 integrates ODE models numerically by
+  default since September 2026, and for this event table the numeric
+  path fails: the occasion-switched `ka` changes at the `OCC` record
+  times while the lag-shifted doses fall between them, so the integrator
+  meets the jump inside a step and returns `NA` for 72 of the 170
+  twice-daily children. The analytic solution is exact for this model
+  structure and agrees with the numeric solution on the once-daily arms
+  to better than 3e-6 (see the comment in the `simulate` chunk).
 - **Occasion assignment during the simulated run-in.** `OCC` both
   selects the BOV eta and identifies the evening dose. Run-in doses are
   labelled by time of day so each gets its correct absorption lag; the

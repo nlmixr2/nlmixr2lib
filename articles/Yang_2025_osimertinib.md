@@ -70,59 +70,64 @@ mod
 #>   # steady-state AUC to within 1%, whereas a molar 1:1 transfer is low by
 #>   # about 3%.
 #>   compartmentData <- list(
-#>     depot          = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
-#>     central        = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE),
-#>     central_az5104 = list(analyte = "AZ5104", units = "mg (parent-mass equivalent)", specimen = "plasma", verified = TRUE)
+#>     depot = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
+#>     central = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE),
+#>     central_az5104 = list(
+#>       analyte = "AZ5104",
+#>       units = "mg (parent-mass equivalent)",
+#>       specimen = "plasma",
+#>       verified = TRUE
+#>     )
 #>   )
 #> 
 #>   covariateData <- list(
 #>     WT = list(
-#>       description        = "Total body weight at baseline.",
-#>       units              = "kg",
-#>       type               = "continuous",
-#>       reference_value    = "62 kg (Yang 2025 Table 1 overall median; the reference used in Eqs 2-4 and in the Figure 3 forest-plot reference patient).",
-#>       notes              = "Power (allometric-form) effect on parent CL/F (exponent 0.36), parent V/F (0.64) and AZ5104 CL/F (0.74). The source control stream maps a missing weight (coded -999) onto a covariate factor of 1, i.e. the typical value; this implementation has no missingness code and expects an observed weight.",
-#>       source_name        = "WT (Yang 2025 supplementary NONMEM control stream $INPUT)"
+#>       description = "Total body weight at baseline.",
+#>       units = "kg",
+#>       type = "continuous",
+#>       reference_value = "62 kg (Yang 2025 Table 1 overall median; the reference used in Eqs 2-4 and in the Figure 3 forest-plot reference patient).",
+#>       notes = "Power (allometric-form) effect on parent CL/F (exponent 0.36), parent V/F (0.64) and AZ5104 CL/F (0.74). The source control stream maps a missing weight (coded -999) onto a covariate factor of 1, i.e. the typical value; this implementation has no missingness code and expects an observed weight.",
+#>       source_name = "WT (Yang 2025 supplementary NONMEM control stream $INPUT)"
 #>     ),
 #>     ALB = list(
-#>       description        = "Serum albumin at baseline.",
-#>       units              = "g/L",
-#>       type               = "continuous",
-#>       reference_value    = "40 g/L (Yang 2025 Table 1 overall median; the reference used in Eqs 2-5).",
-#>       notes              = "Power effect on parent CL/F (exponent 0.67), parent V/F (1.57), AZ5104 CL/F (0.72) and AZ5104 V/F (-0.65). The AZ5104 V/F exponent is NEGATIVE: Table 2 prints its magnitude (0.65) only, but Eq 5 and $THETA(13) = -0.652465 both carry the sign. Reported in g/L (SI); US-convention g/dL values must be multiplied by 10.",
-#>       source_name        = "BALB (Yang 2025 supplementary NONMEM control stream $INPUT)"
+#>       description = "Serum albumin at baseline.",
+#>       units = "g/L",
+#>       type = "continuous",
+#>       reference_value = "40 g/L (Yang 2025 Table 1 overall median; the reference used in Eqs 2-5).",
+#>       notes = "Power effect on parent CL/F (exponent 0.67), parent V/F (1.57), AZ5104 CL/F (0.72) and AZ5104 V/F (-0.65). The AZ5104 V/F exponent is NEGATIVE: Table 2 prints its magnitude (0.65) only, but Eq 5 and $THETA(13) = -0.652465 both carry the sign. Reported in g/L (SI); US-convention g/dL values must be multiplied by 10.",
+#>       source_name = "BALB (Yang 2025 supplementary NONMEM control stream $INPUT)"
 #>     ),
 #>     RACE_ASIAN_OTH = list(
-#>       description        = "Asian-other race indicator (1 = Asian heritage other than Chinese or Japanese, 0 = otherwise).",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Asian-other race indicator (1 = Asian heritage other than Chinese or Japanese, 0 = otherwise).",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (the paper-defined race reference category is White).",
-#>       notes              = "Linear additive effect (1 + 0.161274 * RACE_ASIAN_OTH) on AZ5104 CL/F, i.e. 16.1% higher metabolite clearance than a White patient. Corresponds to ETHL = 1 in the source control stream. Yang 2025 carries White (reference), Asian-other, Chinese, Japanese and Other as five mutually exclusive levels; the dominant reference cohort is White, not Chinese.",
-#>       source_name        = "ETHL = 1 (Yang 2025 supplementary NONMEM control stream); 'Asian (excluding Chinese and Japanese)' (Table 1); 'Asian (NonCHN or nonJPN) on CLm/F' (Table 2)"
+#>       notes = "Linear additive effect (1 + 0.161274 * RACE_ASIAN_OTH) on AZ5104 CL/F, i.e. 16.1% higher metabolite clearance than a White patient. Corresponds to ETHL = 1 in the source control stream. Yang 2025 carries White (reference), Asian-other, Chinese, Japanese and Other as five mutually exclusive levels; the dominant reference cohort is White, not Chinese.",
+#>       source_name = "ETHL = 1 (Yang 2025 supplementary NONMEM control stream); 'Asian (excluding Chinese and Japanese)' (Table 1); 'Asian (NonCHN or nonJPN) on CLm/F' (Table 2)"
 #>     ),
 #>     RACE_JAPANESE = list(
-#>       description        = "Japanese-heritage race indicator (1 = Japanese, 0 = otherwise).",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Japanese-heritage race indicator (1 = Japanese, 0 = otherwise).",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (the paper-defined race reference category is White).",
-#>       notes              = "Linear additive effect (1 + 0.181966 * RACE_JAPANESE) on AZ5104 CL/F, i.e. 18.2% higher metabolite clearance than a White patient. Corresponds to ETHL = 3 in the source control stream.",
-#>       source_name        = "ETHL = 3 (Yang 2025 supplementary NONMEM control stream); 'JPN on CLm/F' (Table 2)"
+#>       notes = "Linear additive effect (1 + 0.181966 * RACE_JAPANESE) on AZ5104 CL/F, i.e. 18.2% higher metabolite clearance than a White patient. Corresponds to ETHL = 3 in the source control stream.",
+#>       source_name = "ETHL = 3 (Yang 2025 supplementary NONMEM control stream); 'JPN on CLm/F' (Table 2)"
 #>     ),
 #>     RACE_CHINESE = list(
-#>       description        = "Chinese-heritage race indicator (1 = Chinese, 0 = otherwise).",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Chinese-heritage race indicator (1 = Chinese, 0 = otherwise).",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (the paper-defined race reference category is White).",
-#>       notes              = "Carried in the final model structure but with its coefficient FIXED TO ZERO, so it has no effect on AZ5104 CL/F. Backward elimination (Table S2) found that removing Chinese from CLm/F was 'Not significant', and the source control stream accordingly holds $THETA(15) at '0 FIX' for ETHL = 2. Retained here so the covariate screen is auditable rather than silently dropped.",
-#>       source_name        = "ETHL = 2 (Yang 2025 supplementary NONMEM control stream $THETA(15), 0 FIX)"
+#>       notes = "Carried in the final model structure but with its coefficient FIXED TO ZERO, so it has no effect on AZ5104 CL/F. Backward elimination (Table S2) found that removing Chinese from CLm/F was 'Not significant', and the source control stream accordingly holds $THETA(15) at '0 FIX' for ETHL = 2. Retained here so the covariate screen is auditable rather than silently dropped.",
+#>       source_name = "ETHL = 2 (Yang 2025 supplementary NONMEM control stream $THETA(15), 0 FIX)"
 #>     ),
 #>     RACE_OTHER = list(
-#>       description        = "Race-category 'Other' indicator (1 = Hispanic/Latino, Native American, Native Alaskan/Inuit, Native Hawaiian/Pacific Islander, African, African-American, African-Caribbean, or missing; 0 = otherwise).",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Race-category 'Other' indicator (1 = Hispanic/Latino, Native American, Native Alaskan/Inuit, Native Hawaiian/Pacific Islander, African, African-American, African-Caribbean, or missing; 0 = otherwise).",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (the paper-defined race reference category is White).",
-#>       notes              = "Carried in the final model structure but with its coefficient FIXED TO ZERO, so it has no effect on AZ5104 CL/F. Backward elimination (Table S2) found that removing other ethnicity from CLm/F was 'Not significant', and the source control stream accordingly holds $THETA(17) at '0 FIX' for ETHL = 99. The composite membership is defined in the Yang 2025 Table 1 footnote a.",
-#>       source_name        = "ETHL = 99 (Yang 2025 supplementary NONMEM control stream $THETA(17), 0 FIX)"
+#>       notes = "Carried in the final model structure but with its coefficient FIXED TO ZERO, so it has no effect on AZ5104 CL/F. Backward elimination (Table S2) found that removing other ethnicity from CLm/F was 'Not significant', and the source control stream accordingly holds $THETA(17) at '0 FIX' for ETHL = 99. The composite membership is defined in the Yang 2025 Table 1 footnote a.",
+#>       source_name = "ETHL = 99 (Yang 2025 supplementary NONMEM control stream $THETA(17), 0 FIX)"
 #>     )
 #>   )
 #> 
@@ -130,51 +135,61 @@ mod
 #>   # covariate screen stays auditable; none is referenced in model().
 #>   covariatesDataExcluded <- list(
 #>     AGE = list(
-#>       description = "Age at baseline.", units = "years", type = "continuous",
+#>       description = "Age at baseline.",
+#>       units = "years",
+#>       type = "continuous",
 #>       notes = "Median 62.0 (range 25.0-91.0) overall (Table 1). Not retained in the final PopPK model."
 #>     ),
 #>     CRCL = list(
-#>       description = "Creatinine clearance at baseline.", units = "mL/min", type = "continuous",
+#>       description = "Creatinine clearance at baseline.",
+#>       units = "mL/min",
+#>       type = "continuous",
 #>       notes = "Forward inclusion on parent CL/F was 'Not significant' (Table S2)."
 #>     ),
 #>     RENAL_IMPAIRMENT = list(
-#>       description = "Grouped renal impairment status (normal / mild / moderate-severe).", units = "(category)", type = "categorical",
+#>       description = "Grouped renal impairment status (normal / mild / moderate-severe).",
+#>       units = "(category)",
+#>       type = "categorical",
 #>       notes = "Forward inclusion on parent CL/F and AZ5104 CL/F was 'Not significant' (Table S2); the paper concludes no renal dose adjustment is needed."
 #>     ),
 #>     HEPATIC_IMPAIRMENT = list(
-#>       description = "Grouped hepatic impairment status (normal / at least mild).", units = "(category)", type = "categorical",
+#>       description = "Grouped hepatic impairment status (normal / at least mild).",
+#>       units = "(category)",
+#>       type = "categorical",
 #>       notes = "Forward inclusion on parent CL/F and AZ5104 CL/F was 'Not significant' (Table S2); the paper concludes no hepatic dose adjustment is needed."
 #>     ),
 #>     CHEMO_COMBINATION = list(
-#>       description = "Co-administration of pemetrexed plus platinum chemotherapy.", units = "(binary)", type = "binary",
+#>       description = "Co-administration of pemetrexed plus platinum chemotherapy.",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       notes = "The pre-specified covariate of interest for this analysis. Forward inclusion on both parent CL/F and AZ5104 CL/F was 'Not significant' (Table S2), i.e. no osimertinib-chemotherapy drug interaction; this is the paper's central PK finding."
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human",
-#>     n_subjects     = 2196,
-#>     n_studies      = 6,
-#>     n_samples      = 52338,
-#>     studies        = "AURA (including its extension phase), AURA2, AURA3, FLAURA, ADAURA, FLAURA2 (NCT04035486)",
-#>     disease_state  = "EGFR-mutated locally advanced or metastatic non-small cell lung cancer (NSCLC)",
-#>     age_range      = "25.0-91.0 years (overall median 62.0; mean 61.5, SD 10.7)",
-#>     weight_range   = "29.0-128 kg (overall median 62.0; mean 63.5, SD 14.1)",
-#>     albumin_range  = "17.0-53.3 g/L (overall median 40.0; mean 39.7, SD 4.92)",
-#>     crcl_range     = "20.5-196 mL/min (overall median 82.1; mean 85.1, SD 26.8)",
-#>     bmi_range      = "12.9-42.6 kg/m2 (overall median 23.4)",
+#>     species = "human",
+#>     n_subjects = 2196,
+#>     n_studies = 6,
+#>     n_samples = 52338,
+#>     studies = "AURA (including its extension phase), AURA2, AURA3, FLAURA, ADAURA, FLAURA2 (NCT04035486)",
+#>     disease_state = "EGFR-mutated locally advanced or metastatic non-small cell lung cancer (NSCLC)",
+#>     age_range = "25.0-91.0 years (overall median 62.0; mean 61.5, SD 10.7)",
+#>     weight_range = "29.0-128 kg (overall median 62.0; mean 63.5, SD 14.1)",
+#>     albumin_range = "17.0-53.3 g/L (overall median 40.0; mean 39.7, SD 4.92)",
+#>     crcl_range = "20.5-196 mL/min (overall median 82.1; mean 85.1, SD 26.8)",
+#>     bmi_range = "12.9-42.6 kg/m2 (overall median 23.4)",
 #>     sex_female_pct = 64.5,
 #>     race_ethnicity = list(
-#>       White                                  = 26.6,
+#>       White = 26.6,
 #>       `Asian (excluding Chinese and Japanese)` = 22.9,
-#>       Chinese                                = 22.8,
-#>       Japanese                               = 17.5,
-#>       Other                                  = 10.2
+#>       Chinese = 22.8,
+#>       Japanese = 17.5,
+#>       Other = 10.2
 #>     ),
 #>     line_of_therapy = list(`First-line` = 38.5, `Second-line` = 21.3, `Third-line and later` = 25.4, Adjuvant = 14.8),
-#>     who_ps          = list(`0` = 40.8, `1` = 59.2),
-#>     dose_range      = "Osimertinib 80 mg once daily (reduction to 40 mg once daily permitted for toxicity). In the FLAURA2 combination arm, given with pemetrexed 500 mg/m2 plus either cisplatin 75 mg/m2 or carboplatin AUC 5 mg/mL/min on Day 1 of 21-day cycles for 4 cycles, then pemetrexed 500 mg/m2 maintenance every 3 weeks.",
-#>     notes           = "Demographics reproduced from Yang 2025 Table 1 (Overall, N = 2,196). Of 52,338 plasma samples, 3,636 (7.0%) were removed and 3,250 (6.2%) below-quantification-limit samples were handled by the M1 method. Race percentages are of the overall pooled population; the reference (typical) patient used for the Figure 3 forest plot is a White patient of 62 kg with albumin 40 g/L."
+#>     who_ps = list(`0` = 40.8, `1` = 59.2),
+#>     dose_range = "Osimertinib 80 mg once daily (reduction to 40 mg once daily permitted for toxicity). In the FLAURA2 combination arm, given with pemetrexed 500 mg/m2 plus either cisplatin 75 mg/m2 or carboplatin AUC 5 mg/mL/min on Day 1 of 21-day cycles for 4 cycles, then pemetrexed 500 mg/m2 maintenance every 3 weeks.",
+#>     notes = "Demographics reproduced from Yang 2025 Table 1 (Overall, N = 2,196). Of 52,338 plasma samples, 3,636 (7.0%) were removed and 3,250 (6.2%) below-quantification-limit samples were handled by the M1 method. Race percentages are of the overall pooled population; the reference (typical) patient used for the Figure 3 forest plot is a White patient of 62 kg with albumin 40 g/L."
 #>   )
 #> 
 #>   ini({
@@ -303,7 +318,7 @@ mod
 #>     Cc_az5104 ~ prop(propSd_az5104) + add(addSd_az5104)
 #>   })
 #> }
-#> <environment: 0x56269adc2e08>
+#> <environment: 0x561522252b80>
 ```
 
 ## Population
@@ -830,12 +845,12 @@ knitr::kable(cmp, caption = paste(
 
 | NCA parameter       | analyte     | Reference | Simulated | % diff |
 |:--------------------|:------------|:----------|:----------|:-------|
-| Cmax (nmol/L)       | Osimertinib | 588       | 503       | -14.4% |
-| Cmax (nmol/L)       | AZ5104      | 59.1      | 51.3      | -13.1% |
-| Cmin (nmol/L)       | Osimertinib | 392       | 410       | +4.5%  |
-| Cmin (nmol/L)       | AZ5104      | 45.5      | 44.5      | -2.2%  |
-| AUClast (nmol\*h/L) | Osimertinib | 11800     | 11100     | -6.1%  |
-| AUClast (nmol\*h/L) | AZ5104      | 1280      | 1160      | -9.3%  |
+| Cmax (nmol/L)       | Osimertinib | 588       | 488       | -17.0% |
+| Cmax (nmol/L)       | AZ5104      | 59.1      | 47.7      | -19.2% |
+| Cmin (nmol/L)       | Osimertinib | 392       | 391       | -0.4%  |
+| Cmin (nmol/L)       | AZ5104      | 45.5      | 42.1      | -7.4%  |
+| AUClast (nmol\*h/L) | Osimertinib | 11800     | 10800     | -8.9%  |
+| AUClast (nmol\*h/L) | AZ5104      | 1280      | 1080      | -15.5% |
 
 Simulated steady-state NCA vs Yang 2025 Table S5 observed geometric
 means (FLAURA2 osimertinib plus chemotherapy arm, N = 244). \* marks a
@@ -867,7 +882,7 @@ tibble::tibble(
 #> # A tibble: 1 × 3
 #>   Metric                         Simulated `Yang 2025 Table S5`
 #>   <chr>                              <dbl>                <dbl>
-#> 1 MRAUCss (AZ5104 / osimertinib)     0.104                0.108
+#> 1 MRAUCss (AZ5104 / osimertinib)     0.100                0.108
 stopifnot(abs(mr_auc / 0.1078 - 1) < 0.30)
 ```
 

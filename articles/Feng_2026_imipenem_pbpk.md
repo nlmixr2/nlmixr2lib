@@ -670,7 +670,7 @@ score |>
 | Gibson mild 0.25 g | 23.130 | 23.404 | 1.012 | 23.03 | 16.684 | 0.724 |
 | Gibson moderate 0.25 g | 37.690 | 39.209 | 1.040 | 25.67 | 19.231 | 0.749 |
 | Gibson severe 0.25 g | 66.650 | 71.715 | 1.076 | 25.87 | 20.959 | 0.810 |
-| Preschool 3 y, normal | 31.358 | 31.357 | 1.000 | NA | 48.179 | NA |
+| Preschool 3 y, normal | 31.358 | 31.358 | 1.000 | NA | 48.179 | NA |
 | Preschool 3 y, mild RI | 32.581 | 32.581 | 1.000 | NA | 49.206 | NA |
 | Preschool 3 y, moderate RI | 38.928 | 38.927 | 1.000 | NA | 53.876 | NA |
 | Preschool 3 y, severe RI | 63.158 | 63.157 | 1.000 | NA | 65.190 | NA |

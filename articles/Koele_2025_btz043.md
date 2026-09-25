@@ -711,18 +711,18 @@ knitr::kable(nca_summary, digits = 2)
 
 | Prandial state       | NCA parameter |  Median |      P5 |     P95 |
 |:---------------------|:--------------|--------:|--------:|--------:|
-| fasted               | auclast       | 1521.44 |  811.42 | 2575.60 |
-| fasted               | cmax          |  438.87 |  228.04 | 1031.99 |
-| fasted               | half.life     |    4.33 |    4.04 |    4.99 |
-| fasted               | tmax          |    1.25 |    0.50 |    2.75 |
-| high-fat             | auclast       | 4427.54 | 2696.38 | 9016.42 |
-| high-fat             | cmax          | 1032.81 |  457.69 | 2073.63 |
-| high-fat             | half.life     |    4.33 |    3.81 |    4.89 |
-| high-fat             | tmax          |    2.50 |    2.25 |    3.25 |
-| standard, dose after | auclast       | 3435.66 | 1925.15 | 7487.71 |
-| standard, dose after | cmax          |  800.20 |  360.39 | 1992.69 |
-| standard, dose after | half.life     |    4.40 |    3.96 |    5.13 |
-| standard, dose after | tmax          |    2.50 |    2.24 |    3.75 |
+| fasted               | auclast       | 1629.47 |  764.78 | 3552.93 |
+| fasted               | cmax          |  400.91 |  136.17 |  953.49 |
+| fasted               | half.life     |    4.40 |    3.95 |    5.32 |
+| fasted               | tmax          |    1.38 |    0.75 |    2.77 |
+| high-fat             | auclast       | 5002.92 | 2410.91 | 9371.09 |
+| high-fat             | cmax          | 1066.14 |  544.25 | 2565.13 |
+| high-fat             | half.life     |    4.35 |    3.88 |    5.37 |
+| high-fat             | tmax          |    2.50 |    2.00 |    3.76 |
+| standard, dose after | auclast       | 3236.76 | 1764.72 | 5431.16 |
+| standard, dose after | cmax          |  773.48 |  367.03 | 1535.52 |
+| standard, dose after | half.life     |    4.39 |    4.03 |    5.24 |
+| standard, dose after | tmax          |    2.50 |    2.25 |    3.25 |
 
 The cohort medians order as the model requires, with the high-fat arm
 above the standard-breakfast reference and the fasted arm below it.
@@ -739,7 +739,7 @@ ratio_hf <- unname(med_auc["high-fat"] / med_auc["standard, dose after"])
 ratio_fa <- unname(med_auc["fasted"] / med_auc["standard, dose after"])
 c(high_fat = ratio_hf, fasted = ratio_fa)
 #>  high_fat    fasted 
-#> 1.2887025 0.4428388
+#> 1.5456551 0.5034259
 
 stopifnot(
   # These are COHORT medians, not the deterministic ratios checked earlier,
@@ -1073,7 +1073,7 @@ stopifnot(nrow(bl) == n_pd, nrow(end) == n_pd)
 cv <- function(x) sd(x) / mean(x)
 c(cv_cfu = cv(bl$log_cfu), cv_ttp = cv(bl$log_ttp))
 #>     cv_cfu     cv_ttp 
-#> 0.15318889 0.05416901
+#> 0.13552789 0.05271038
 stopifnot(
   cv(bl$log_cfu) > 0.08, cv(bl$log_cfu) < 0.25,
   cv(bl$log_ttp) > 0.02, cv(bl$log_ttp) < 0.10,
@@ -1263,23 +1263,23 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tibble_3.3.1          tidyr_1.3.2          
-#> [4] dplyr_1.2.1           rxode2_5.1.7          PKNCA_0.12.1         
+#> [4] dplyr_1.2.1           rxode2_5.1.8          PKNCA_0.12.1         
 #> [7] nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      symengine_0.2.13   
-#> [10] pkgconfig_2.0.3     data.table_1.18.6.1 checkmate_2.3.4    
-#> [13] RColorBrewer_1.1-3  S7_0.2.2            desc_1.4.3         
-#> [16] RcppParallel_6.2.1  lifecycle_1.0.5     compiler_4.6.1     
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
+#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
+#> [16] desc_1.4.3          lifecycle_1.0.5     compiler_4.6.1     
 #> [19] farver_2.1.2        textshaping_1.0.5   fontawesome_0.5.3  
 #> [22] htmltools_0.5.9     sys_3.4.3           sass_0.4.10        
 #> [25] yaml_2.3.12         pillar_1.11.1       pkgdown_2.2.1      
 #> [28] crayon_1.5.3        jquerylib_0.1.4     whisker_0.4.1      
 #> [31] openssl_2.4.2       cachem_1.1.0        nlme_3.1-169       
 #> [34] tidyselect_1.2.1    digest_0.6.39       lotri_1.0.5        
-#> [37] purrr_1.2.2         labeling_0.4.3      rxode2ll_2.0.17    
+#> [37] purrr_1.2.2         labeling_0.4.3      rxode2ll_2.0.18    
 #> [40] fastmap_1.2.0       grid_4.6.1          cli_3.6.6          
 #> [43] dparser_1.3.1-13    magrittr_2.0.5      withr_3.0.3        
 #> [46] scales_1.4.0        backports_1.5.1     rmarkdown_2.32     

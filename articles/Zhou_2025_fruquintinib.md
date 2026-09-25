@@ -862,11 +862,11 @@ bsv_chk |>
 
 | Scenario | Concentration (ng/mL) | Closed-form SD (ms) | Simulated SD (ms), n = 200 | Relative error |
 |:---|---:|---:|---:|---:|
-| QTcP/M11, C = 0 | 0 | 11.4288 | 10.4530 | -0.0854 |
-| QTcP/M11, C = 77 | 77 | 13.5818 | 15.1340 | 0.1143 |
-| QTcF/M11, C = 77 | 77 | 14.1758 | 14.5277 | 0.0248 |
-| QTcP/parent, C = 0 | 0 | 11.7739 | 11.4170 | -0.0303 |
-| QTcP/parent, C = 290 | 290 | 14.3245 | 14.0250 | -0.0209 |
+| QTcP/M11, C = 0 | 0 | 11.4288 | 11.0681 | -0.0316 |
+| QTcP/M11, C = 77 | 77 | 13.5818 | 13.6279 | 0.0034 |
+| QTcF/M11, C = 77 | 77 | 14.1758 | 15.8988 | 0.1215 |
+| QTcP/parent, C = 0 | 0 | 11.7739 | 11.6650 | -0.0092 |
+| QTcP/parent, C = 290 | 290 | 14.3245 | 15.0776 | 0.0526 |
 
 Between-subject variability gate. Simulated cohort dispersion recovers
 the closed-form observation SD implied by each model’s omega and

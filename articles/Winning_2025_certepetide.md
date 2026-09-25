@@ -341,7 +341,10 @@ lin_mat <- vapply(DOSE_LEVELS, function(mg_per_kg) {
   ev <- as.data.frame(ev)
   ev$WT <- REF_WT
   ev$CRCL <- REF_CRCL
-  o <- rxode2::rxSolve(mod_typ, ev, returnType = "data.frame")
+  # Tight integrator tolerances: the superposition bound below is 1e-8, so the
+  # ODE error must sit well under it at every dose level.
+  o <- rxode2::rxSolve(mod_typ, ev, returnType = "data.frame",
+                       rtol = 1e-10, atol = 1e-12)
   o$Cc / (mg_per_kg * REF_WT)
 }, numeric(length(lin_times)))
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl', 'etalvp'
@@ -355,7 +358,7 @@ stopifnot(max(lin_rel) < 1e-8)
 sprintf("Dose-normalized profiles superimpose exactly over %.1f-%.1f mg/kg (%.0f-fold; max relative spread %.2e)",
         min(DOSE_LEVELS), max(DOSE_LEVELS),
         max(DOSE_LEVELS) / min(DOSE_LEVELS), max(lin_rel))
-#> [1] "Dose-normalized profiles superimpose exactly over 0.2-3.2 mg/kg (16-fold; max relative spread 0.00e+00)"
+#> [1] "Dose-normalized profiles superimpose exactly over 0.2-3.2 mg/kg (16-fold; max relative spread 9.66e-11)"
 ```
 
 ### Figure 3 – visual predictive check by dose level

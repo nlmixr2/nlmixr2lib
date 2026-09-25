@@ -187,9 +187,9 @@ cf <- sim_cf |>
   )
 
 cat(sprintf("max relative error vs closed form: %.3g\n", max(cf$rel_err)))
-#> max relative error vs closed form: 1.51e-07
+#> max relative error vs closed form: 2.4e-06
 cat(sprintf("median relative error            : %.3g\n", median(cf$rel_err)))
-#> median relative error            : 4.44e-16
+#> median relative error            : 1.44e-06
 
 # Numerical error only (identical parameters on both sides), plus a negligible
 # approach-to-steady-state residual after 30 dosing intervals. Realised max
@@ -302,7 +302,7 @@ stopifnot(
 )
 cat(sprintf("simulated median Cc over the interval: %.1f mg/L (observed mean 16.183)\n",
             median(sim$Cc)))
-#> simulated median Cc over the interval: 17.5 mg/L (observed mean 16.183)
+#> simulated median Cc over the interval: 17.0 mg/L (observed mean 16.183)
 ```
 
 ## PKNCA validation
@@ -390,10 +390,10 @@ knitr::kable(
 |:---------------------------------|--------:|
 | Median % difference              |  -0.003 |
 | 90th percentile \|% difference\| |   0.008 |
-| Median AUC(0-tau) (mg\*h/L)      | 165.921 |
-| Median Dose/CL (mg\*h/L)         | 165.929 |
-| Median Cmax,ss (mg/L)            |  36.306 |
-| Median Cmin,ss (mg/L)            |   7.693 |
+| Median AUC(0-tau) (mg\*h/L)      | 152.807 |
+| Median Dose/CL (mg\*h/L)         | 152.811 |
+| Median Cmax,ss (mg/L)            |  34.799 |
+| Median Cmin,ss (mg/L)            |   7.367 |
 
 PKNCA steady-state exposure vs the model identity AUC(0-tau) = Dose/CL.
 {.table}
@@ -530,9 +530,9 @@ knitr::kable(
 
 | Table 3 cell type | Cells | Regimen classifications | Agreeing | Agreement |
 |:---|---:|---:|---:|---:|
-| “All” cells (every regimen \>= 90%) | 15 | 270 | 270 | 1.0000 |
-| “None” cells (no regimen \>= 90%) | 9 | 162 | 160 | 0.9877 |
-| Overall | 24 | 432 | 430 | 0.9954 |
+| “All” cells (every regimen \>= 90%) | 15 | 270 | 270 | 1 |
+| “None” cells (no regimen \>= 90%) | 9 | 162 | 162 | 1 |
+| Overall | 24 | 432 | 432 | 1 |
 
 Reproduction of the exhaustive cells of Zou 2026 Table 3. {.table}
 
@@ -651,9 +651,9 @@ knitr::kable(
 
 | Stratum group | Named regimens | Reaching PTA \>= 90% | Median PTA | Minimum PTA |
 |:---|---:|---:|---:|---:|
-| Evaluable (10-25, 26-50, 51-90, 91-140 mL/min) | 55 | 55 | 0.970 | 0.91 |
-| Exploratory (\<10 mL/min; no observed data) | 12 | 12 | 0.945 | 0.92 |
-| All | 67 | 67 | 0.970 | 0.91 |
+| Evaluable (10-25, 26-50, 51-90, 91-140 mL/min) | 55 | 50 | 0.940 | 0.895 |
+| Exploratory (\<10 mL/min; no observed data) | 12 | 11 | 0.925 | 0.885 |
+| All | 67 | 61 | 0.940 | 0.885 |
 
 Every regimen named in Zou 2026 Table 3, evaluated against the packaged
 model. {.table}

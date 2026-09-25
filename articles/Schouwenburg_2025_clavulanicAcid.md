@@ -610,11 +610,11 @@ knitr::kable(pna_probe, digits = 1,
 
 | PNA (days) | PTA 100% fT\>CT at 2 mg/L |
 |-----------:|--------------------------:|
-|        0.5 |                      54.0 |
-|        1.0 |                      41.5 |
-|        2.0 |                      24.5 |
-|        5.0 |                       7.5 |
-|       10.0 |                       6.0 |
+|        0.5 |                      62.5 |
+|        1.0 |                      41.0 |
+|        2.0 |                      24.0 |
+|        5.0 |                      10.5 |
+|       10.0 |                       8.5 |
 
 Sensitivity of the paper’s ‘PNA 0 days’ 4:1 scenario (3.6 kg, 22.5
 mg/kg/day q8h) to the postnatal age used. PNA = 1 day reproduces the

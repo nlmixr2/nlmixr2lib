@@ -372,10 +372,10 @@ thresholds |>
 | Arm                         | % time \> 2.5 mg/L | % time \> 7.61 mg/L (IC90) |
 |:----------------------------|-------------------:|---------------------------:|
 | 150 mg BID, 8 wk            |                100 |                         89 |
-| 150 mg BID, 4 wk            |                100 |                         71 |
-| 150 mg BID, 2 wk            |                100 |                         89 |
+| 150 mg BID, 4 wk            |                100 |                         78 |
+| 150 mg BID, 2 wk            |                100 |                         72 |
 | 150 mg QD, 4 wk             |                 98 |                          0 |
-| 150 mg QD, 4 wk + E1224     |                 82 |                          0 |
+| 150 mg QD, 4 wk + E1224     |                 86 |                          0 |
 | 300 mg weekly, 8 wk + E1224 |                 21 |                          0 |
 
 Median-profile time above target while on treatment. Assmus 2025: only
@@ -532,8 +532,8 @@ knitr::kable(sex_tab,
 
 | Metric | Men vs women (%) |
 |:-------|-----------------:|
-| AUCinf |            -16.2 |
-| CMAX   |             -9.2 |
+| AUCinf |            -14.4 |
+| CMAX   |            -13.2 |
 
 Simulated sex difference (published: lower in men, magnitude \< 20%).
 {.table}
@@ -707,30 +707,30 @@ knitr::kable(
 
 | NCA parameter | arm | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
-| Cmax (mg/L) | 150 mg BID, 8 wk | 11.7 | 11.3 | -3.8% |
-| Cmax (mg/L) | 150 mg BID, 4 wk | 11.8 | 10.7 | -9.5% |
-| Cmax (mg/L) | 150 mg BID, 2 wk | 11.9 | 11.5 | -3.0% |
-| Cmax (mg/L) | 150 mg QD, 4 wk | 6.45 | 6.99 | +8.4% |
-| Cmax (mg/L) | 150 mg QD, 4 wk + E1224 | 6.17 | 6.01 | -2.5% |
-| Cmax (mg/L) | 300 mg weekly, 8 wk + E1224 | 6.92 | 6.5 | -6.1% |
-| Tmax (h) | 150 mg BID, 8 wk | 1.8 | 1.7 | -5.6% |
-| Tmax (h) | 150 mg BID, 4 wk | 1.77 | 1.7 | -4.0% |
-| Tmax (h) | 150 mg BID, 2 wk | 1.74 | 1.85 | +6.3% |
-| Tmax (h) | 150 mg QD, 4 wk | 1.99 | 2.1 | +5.5% |
-| Tmax (h) | 150 mg QD, 4 wk + E1224 | 1.97 | 2.02 | +2.8% |
-| Tmax (h) | 300 mg weekly, 8 wk + E1224 | 1.91 | 2.12 | +11.3% |
-| AUC0-∞ (obs) (mg\*h/L) | 150 mg BID, 8 wk | 11300 | 12800 | +12.5% |
-| AUC0-∞ (obs) (mg\*h/L) | 150 mg BID, 4 wk | 6280 | 5860 | -6.6% |
-| AUC0-∞ (obs) (mg\*h/L) | 150 mg BID, 2 wk | 3060 | 3330 | +8.9% |
-| AUC0-∞ (obs) (mg\*h/L) | 150 mg QD, 4 wk | 2840 | 3250 | +14.4% |
-| AUC0-∞ (obs) (mg\*h/L) | 150 mg QD, 4 wk + E1224 | 2600 | 2610 | +0.5% |
-| AUC0-∞ (obs) (mg\*h/L) | 300 mg weekly, 8 wk + E1224 | 1430 | 1510 | +5.5% |
-| t½ (h) | 150 mg BID, 8 wk | 18 | 17.3 | -3.9% |
-| t½ (h) | 150 mg BID, 4 wk | 17.1 | 17.3 | +0.9% |
-| t½ (h) | 150 mg BID, 2 wk | 16.2 | 16.1 | -0.8% |
-| t½ (h) | 150 mg QD, 4 wk | 16.4 | 16.9 | +3.0% |
-| t½ (h) | 150 mg QD, 4 wk + E1224 | 14.2 | 14.3 | +0.9% |
-| t½ (h) | 300 mg weekly, 8 wk + E1224 | 13.8 | 14.6 | +6.1% |
+| Cmax (mg/L) | 150 mg BID, 8 wk | 11.7 | 11.1 | -5.0% |
+| Cmax (mg/L) | 150 mg BID, 4 wk | 11.8 | 10.7 | -9.3% |
+| Cmax (mg/L) | 150 mg BID, 2 wk | 11.9 | 10.8 | -9.6% |
+| Cmax (mg/L) | 150 mg QD, 4 wk | 6.45 | 7.03 | +8.9% |
+| Cmax (mg/L) | 150 mg QD, 4 wk + E1224 | 6.17 | 6.12 | -0.9% |
+| Cmax (mg/L) | 300 mg weekly, 8 wk + E1224 | 6.92 | 6.42 | -7.2% |
+| Tmax (h) | 150 mg BID, 8 wk | 1.8 | 1.85 | +2.8% |
+| Tmax (h) | 150 mg BID, 4 wk | 1.77 | 1.85 | +4.5% |
+| Tmax (h) | 150 mg BID, 2 wk | 1.74 | 1.95 | +12.1% |
+| Tmax (h) | 150 mg QD, 4 wk | 1.99 | 2.02 | +1.8% |
+| Tmax (h) | 150 mg QD, 4 wk + E1224 | 1.97 | 2.23 | +12.9% |
+| Tmax (h) | 300 mg weekly, 8 wk + E1224 | 1.91 | 2.1 | +9.9% |
+| AUC0-∞ (obs) (mg\*h/L) | 150 mg BID, 8 wk | 11300 | 12400 | +9.5% |
+| AUC0-∞ (obs) (mg\*h/L) | 150 mg BID, 4 wk | 6280 | 6020 | -4.0% |
+| AUC0-∞ (obs) (mg\*h/L) | 150 mg BID, 2 wk | 3060 | 3050 | -0.3% |
+| AUC0-∞ (obs) (mg\*h/L) | 150 mg QD, 4 wk | 2840 | 3240 | +14.3% |
+| AUC0-∞ (obs) (mg\*h/L) | 150 mg QD, 4 wk + E1224 | 2600 | 2670 | +2.7% |
+| AUC0-∞ (obs) (mg\*h/L) | 300 mg weekly, 8 wk + E1224 | 1430 | 1490 | +4.6% |
+| t½ (h) | 150 mg BID, 8 wk | 18 | 17.8 | -1.4% |
+| t½ (h) | 150 mg BID, 4 wk | 17.1 | 17.6 | +2.8% |
+| t½ (h) | 150 mg BID, 2 wk | 16.2 | 16.9 | +4.3% |
+| t½ (h) | 150 mg QD, 4 wk | 16.4 | 16.9 | +3.3% |
+| t½ (h) | 150 mg QD, 4 wk + E1224 | 14.2 | 14.6 | +2.9% |
+| t½ (h) | 300 mg weekly, 8 wk + E1224 | 13.8 | 14.3 | +3.4% |
 
 Simulated vs Assmus 2025 S1 Table (pooled column), by arm. \* differs by
 \>20%. {.table}
@@ -751,7 +751,7 @@ chk <- sim_long |>
 stopifnot(nrow(chk) == 24, !anyNA(chk$pct))
 cat(sprintf("max |%% difference| across %d arm x parameter comparisons = %.1f %%\n",
             nrow(chk), max(abs(chk$pct))))
-#> max |% difference| across 24 arm x parameter comparisons = 14.4 %
+#> max |% difference| across 24 arm x parameter comparisons = 14.3 %
 stopifnot(max(abs(chk$pct)) < 20)
 ```
 
@@ -813,12 +813,12 @@ by_id |>
 
 | Arm | Median AUCinf (mg\*h/L) | Median P(qPCR+ per visit) |
 |:---|---:|---:|
-| 150 mg BID, 8 wk | 12750 | 0.001 |
-| 150 mg BID, 4 wk | 5864 | 0.036 |
-| 150 mg BID, 2 wk | 3329 | 0.116 |
-| 150 mg QD, 4 wk | 3246 | 0.119 |
-| 150 mg QD, 4 wk + E1224 | 2614 | 0.159 |
-| 300 mg weekly, 8 wk + E1224 | 1506 | 0.254 |
+| 150 mg BID, 8 wk | 12410 | 0.001 |
+| 150 mg BID, 4 wk | 6022 | 0.033 |
+| 150 mg BID, 2 wk | 3050 | 0.133 |
+| 150 mg QD, 4 wk | 3242 | 0.123 |
+| 150 mg QD, 4 wk + E1224 | 2670 | 0.161 |
+| 300 mg weekly, 8 wk + E1224 | 1494 | 0.253 |
 
 Simulated exposure and predicted single-visit qPCR positivity by arm.
 {.table}
@@ -853,12 +853,12 @@ by_id |>
 
 | Arm                         | N = 1 | N = 3 | N = 5 | N = 7 |
 |:----------------------------|------:|------:|------:|------:|
-| 150 mg BID, 8 wk            | 0.001 | 0.004 | 0.006 | 0.008 |
-| 150 mg BID, 4 wk            | 0.036 | 0.105 | 0.168 | 0.227 |
-| 150 mg BID, 2 wk            | 0.116 | 0.309 | 0.460 | 0.578 |
-| 150 mg QD, 4 wk             | 0.119 | 0.315 | 0.468 | 0.587 |
-| 150 mg QD, 4 wk + E1224     | 0.159 | 0.405 | 0.579 | 0.702 |
-| 300 mg weekly, 8 wk + E1224 | 0.254 | 0.585 | 0.769 | 0.871 |
+| 150 mg BID, 8 wk            | 0.001 | 0.004 | 0.006 | 0.009 |
+| 150 mg BID, 4 wk            | 0.033 | 0.096 | 0.155 | 0.210 |
+| 150 mg BID, 2 wk            | 0.133 | 0.348 | 0.510 | 0.632 |
+| 150 mg QD, 4 wk             | 0.123 | 0.325 | 0.481 | 0.600 |
+| 150 mg QD, 4 wk + E1224     | 0.161 | 0.409 | 0.583 | 0.706 |
+| 300 mg weekly, 8 wk + E1224 | 0.253 | 0.584 | 0.768 | 0.871 |
 
 P(at least one qPCR-positive follow-up) by number of visits (Assmus 2025
 Equation 3). {.table}

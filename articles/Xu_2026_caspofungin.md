@@ -382,8 +382,14 @@ ss_interval <- function(mod, covs, amt, ndose = 60L, step = 0.002) {
                    amt = 0, evid = 0L, rate = 0, cmt = "central")
   )
   for (nm in names(covs)) ev[[nm]] <- covs[[nm]]
+  # maxsteps: rxode2 derives its automatic `hmax` from the spacing of the
+  # sampling times, so the 0.002 h observation grid caps the integrator's step
+  # size over the whole 1,440 h run-in (about 720,000 steps) and the default
+  # 70,000-step budget is exhausted ("could not solve the system"). Only the
+  # budget is raised; the tolerances are unchanged.
   s <- rxode2::rxSolve(mod, dplyr::arrange(ev, id, time, dplyr::desc(evid)),
-                       returnType = "data.frame", atol = 1e-12, rtol = 1e-12)
+                       returnType = "data.frame", atol = 1e-12, rtol = 1e-12,
+                       maxsteps = 1e6)
   s <- s[!is.na(s$Cc) & s$time >= lo, ]
   list(auc = trapz(s$time, s$Cc), cmin = s$Cc[nrow(s)], cmax = max(s$Cc), cl = s$cl[1])
 }
@@ -687,8 +693,8 @@ sim_df |>
 
 | arm      | median_Cc |   p05 |    p95 |
 |:---------|----------:|------:|-------:|
-| ECMO     |     4.055 | 1.313 | 12.668 |
-| Non-ECMO |     7.885 | 2.196 | 21.753 |
+| ECMO     |     3.700 | 1.081 | 11.457 |
+| Non-ECMO |     7.492 | 2.361 | 19.837 |
 
 Simulated steady-interval concentrations by arm (mg/L). Published:
 median 7.475, range 0.155-58.300. {.table}
@@ -798,8 +804,8 @@ nca_wide |>
 
 | arm      | AUC0-24 median | AUC0-24 p05 | AUC0-24 p95 | Cmax median | Ctrough median |
 |:---------|---------------:|------------:|------------:|------------:|---------------:|
-| ECMO     |          97.18 |       32.17 |      310.15 |        4.29 |           3.90 |
-| Non-ECMO |         193.86 |       73.49 |      464.62 |       19.47 |           4.29 |
+| ECMO     |          88.63 |       27.90 |      271.85 |        3.95 |           3.52 |
+| Non-ECMO |         191.25 |       83.18 |      415.29 |       17.24 |           4.05 |
 
 Simulated sixth-dose-interval NCA by arm (AUC in h\*mg/L, concentrations
 in mg/L). Ctrough is the concentration at the end of the interval.
@@ -831,10 +837,10 @@ cmp |>
   knitr::kable(caption = "Simulated vs published Bayesian AUC(ss,24h). * differs from reference by >20%.")
 ```
 
-| NCA parameter     | arm      | Reference | Simulated | % diff |
-|:------------------|:---------|:----------|:----------|:-------|
-| AUClast (h\*mg/L) | Non-ECMO | 194       | 194       | +0.1%  |
-| AUClast (h\*mg/L) | ECMO     | 117       | 97.2      | -17.0% |
+| NCA parameter     | arm      | Reference | Simulated | % diff   |
+|:------------------|:---------|:----------|:----------|:---------|
+| AUClast (h\*mg/L) | Non-ECMO | 194       | 191       | -1.2%    |
+| AUClast (h\*mg/L) | ECMO     | 117       | 88.6      | -24.3%\* |
 
 Simulated vs published Bayesian AUC(ss,24h). \* differs from reference
 by \>20%. {.table}
@@ -858,8 +864,8 @@ tibble::tibble(
 
 | arm      | simulated_median | published_median | pct_diff | published_range |
 |:---------|-----------------:|-----------------:|---------:|:----------------|
-| Non-ECMO |           193.86 |           193.63 |     0.12 | 53.18-380.95    |
-| ECMO     |            97.18 |           117.08 |   -17.00 | 17.20-176.04    |
+| Non-ECMO |           191.25 |           193.63 |    -1.23 | 53.18-380.95    |
+| ECMO     |            88.63 |           117.08 |   -24.30 | 17.20-176.04    |
 
 Cohort medians against the published Bayesian post-hoc medians. {.table}
 
@@ -970,11 +976,11 @@ pta_at_mic90 |>
   knitr::kable(caption = "Percent of subjects with C(min) above each fixed MIC90 after the sixth dose. Note mic90 is shown at its published precision, not rounded.")
 ```
 
-| species         | mic90 | ECMO | Non-ECMO |
-|:----------------|------:|-----:|---------:|
-| C. albicans     |  0.06 |  100 |      100 |
-| C. glabrata     |  0.06 |  100 |      100 |
-| C. parapsilosis |  1.00 |   97 |       96 |
+| species         | mic90 |  ECMO | Non-ECMO |
+|:----------------|------:|------:|---------:|
+| C. albicans     |  0.06 | 100.0 |    100.0 |
+| C. glabrata     |  0.06 | 100.0 |    100.0 |
+| C. parapsilosis |  1.00 |  95.5 |     97.5 |
 
 Percent of subjects with C(min) above each fixed MIC90 after the sixth
 dose. Note mic90 is shown at its published precision, not rounded.
@@ -991,7 +997,7 @@ breakpoint |>
 | arm      | mic_at_90pct_pta |
 |:---------|-----------------:|
 | ECMO     |             1.51 |
-| Non-ECMO |             1.51 |
+| Non-ECMO |             1.69 |
 
 Highest MIC still attaining 90% PTA on the trough target. {.table}
 

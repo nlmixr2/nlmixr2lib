@@ -629,16 +629,16 @@ knitr::kable(
 
 | NCA parameter           | Position | Reference | Simulated | % diff   |
 |:------------------------|:---------|:----------|:----------|:---------|
-| Cmax (ug/mL)            | 1G       | 40.1      | 25.3      | -37.0%\* |
-| Cmax (ug/mL)            | uG       | 38.8      | 29.5      | -23.9%\* |
-| Tmax (h)                | 1G       | 1.37      | 1.8       | +31.8%\* |
-| Tmax (h)                | uG       | 1.14      | 1.12      | -2.1%    |
-| AUC0-∞ (obs) (ug\*h/mL) | 1G       | 129       | 133       | +2.8%    |
-| AUC0-∞ (obs) (ug\*h/mL) | uG       | 121       | 122       | +1.2%    |
-| AUClast (ug\*h/mL)      | 1G       | 121       | 117       | -2.9%    |
-| AUClast (ug\*h/mL)      | uG       | 113       | 111       | -1.6%    |
-| t½ (h)                  | 1G       | 1.82      | 2.09      | +14.6%   |
-| t½ (h)                  | uG       | 1.96      | 2.06      | +5.1%    |
+| Cmax (ug/mL)            | 1G       | 40.1      | 25.6      | -36.1%\* |
+| Cmax (ug/mL)            | uG       | 38.8      | 30.5      | -21.4%\* |
+| Tmax (h)                | 1G       | 1.37      | 1.73      | +26.5%\* |
+| Tmax (h)                | uG       | 1.14      | 1.07      | -6.4%    |
+| AUC0-∞ (obs) (ug\*h/mL) | 1G       | 129       | 130       | +1.1%    |
+| AUC0-∞ (obs) (ug\*h/mL) | uG       | 121       | 126       | +3.9%    |
+| AUClast (ug\*h/mL)      | 1G       | 121       | 117       | -3.5%    |
+| AUClast (ug\*h/mL)      | uG       | 113       | 114       | +1.1%    |
+| t½ (h)                  | 1G       | 1.82      | 2.01      | +10.2%   |
+| t½ (h)                  | uG       | 1.96      | 2.07      | +5.5%    |
 
 Simulated (n = 200 per arm, arithmetic mean) vs published Idkaidek 2011
 Table II. \* differs from reference by more than ±20%. {.table}
@@ -742,8 +742,8 @@ claims |>
 
 | Position | Median Tmax (h) | Median AUC0-inf (ug\*h/mL) | Median t1/2 (h) |
 |:---------|----------------:|---------------------------:|----------------:|
-| 1G       |            1.66 |                     129.64 |            1.98 |
-| uG       |            1.00 |                     118.92 |            1.98 |
+| 1G       |            1.66 |                     127.90 |            1.95 |
+| uG       |            1.00 |                     125.18 |            2.03 |
 
 Simulated medians by body position. {.table}
 

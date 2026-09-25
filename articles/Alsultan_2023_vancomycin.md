@@ -399,7 +399,7 @@ auc_long <- sim_long |>
 ss_pct <- 100 * (auc_ss$auc / auc_long$auc[match(auc_ss$id, auc_long$id)] - 1)
 cat(sprintf("ss = 1 vs 21-day run-in, AUC over one interval: max |%% diff| = %.4f%% over %d covariate corners\n",
             max(abs(ss_pct)), length(ss_pct)))
-#> ss = 1 vs 21-day run-in, AUC over one interval: max |% diff| = 0.0029% over 27 covariate corners
+#> ss = 1 vs 21-day run-in, AUC over one interval: max |% diff| = 0.0026% over 27 covariate corners
 
 # Deterministic comparison of two solves of the SAME system (no random effects),
 # so a tight bound is correct here (pattern 11): the only difference is the
@@ -2134,7 +2134,7 @@ stopifnot(nrow(closed) == nrow(subj))
 
 cat(sprintf("PKNCA AUC0-24 vs dose/CL: max |%% diff| = %.4f%% over %d subject-arms\n",
             max(abs(closed$pct)), nrow(closed)))
-#> PKNCA AUC0-24 vs dose/CL: max |% diff| = 0.0424% over 2400 subject-arms
+#> PKNCA AUC0-24 vs dose/CL: max |% diff| = 0.0397% over 2400 subject-arms
 
 # Deterministic: both sides describe the SAME solved system, so the residual is
 # pure trapezoidal error on the 0.25 h grid plus the ss = 1 asymptote. A tight
@@ -2183,38 +2183,38 @@ knitr::kable(
 
 | NCA parameter | regimen | Reference | Simulated | % diff |
 |:---|:---|---:|---:|---:|
-| AUClast (ug\*h/mL) | PMA \<=29, Scr \<0.6 \| 15 mg/kg q12h | 440 | 591 | +34.3%\* |
-| AUClast (ug\*h/mL) | PMA \<=29, Scr \<0.6 \| 17.5 mg/kg q12h | 513 | 645 | +25.8%\* |
-| AUClast (ug\*h/mL) | PMA \<=29, Scr \<0.6 \| 20 mg/kg q12h | 586 | 733 | +25.1%\* |
-| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.6-0.9 \| 17.5 mg/kg q18h | 451 | 578 | +28.1%\* |
-| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.6-0.9 \| 20 mg/kg q18h | 515 | 650 | +26.3%\* |
-| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.6-0.9 \| 15 mg/kg q12h | 523 | 714 | +36.6%\* |
-| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.9-1.2 \| 15 mg/kg q18h | 450 | 552 | +22.7%\* |
-| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.9-1.2 \| 17.5 mg/kg q18h | 525 | 634 | +20.7%\* |
-| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.9-1.2 \| 20 mg/kg q24h | 480 | 542 | +12.9% |
-| AUClast (ug\*h/mL) | PMA \>29, Scr \<0.6 \| 12.5 mg/kg q8h | 452 | 500 | +10.6% |
-| AUClast (ug\*h/mL) | PMA \>29, Scr \<0.6 \| 20 mg/kg q12h | 494 | 547 | +10.8% |
-| AUClast (ug\*h/mL) | PMA \>29, Scr 0.6-0.9 \| 15 mg/kg q12h | 453 | 537 | +18.6% |
-| AUClast (ug\*h/mL) | PMA \>29, Scr 0.6-0.9 \| 17.5 mg/kg q12h | 528 | 603 | +14.3% |
-| AUClast (ug\*h/mL) | PMA \>29, Scr 0.9-1.2 \| 17.5 mg/kg q12h | 440 | 713 | +61.9%\* |
-| AUClast (ug\*h/mL) | PMA \>29, Scr 0.9-1.2 \| 20 mg/kg q18h | 503 | 541 | +7.6% |
-| AUClast (ug\*h/mL) | PMA \>29, Scr 0.9-1.2 \| 15 mg/kg q12h | 513 | 572 | +11.5% |
-| Ctrough (ug/mL) | PMA \<=29, Scr \<0.6 \| 15 mg/kg q12h | 10.5 | 17.5 | +66.3%\* |
-| Ctrough (ug/mL) | PMA \<=29, Scr \<0.6 \| 17.5 mg/kg q12h | 12.2 | 18.7 | +53.6%\* |
-| Ctrough (ug/mL) | PMA \<=29, Scr \<0.6 \| 20 mg/kg q12h | 14 | 21.1 | +50.9%\* |
-| Ctrough (ug/mL) | PMA \<=29, Scr 0.6-0.9 \| 17.5 mg/kg q18h | 10.2 | 15.7 | +53.9%\* |
-| Ctrough (ug/mL) | PMA \<=29, Scr 0.6-0.9 \| 20 mg/kg q18h | 11.6 | 17.5 | +50.9%\* |
-| Ctrough (ug/mL) | PMA \<=29, Scr 0.6-0.9 \| 15 mg/kg q12h | 13.3 | 22.2 | +66.6%\* |
-| Ctrough (ug/mL) | PMA \<=29, Scr 0.9-1.2 \| 15 mg/kg q18h | 10.8 | 15.8 | +46.0%\* |
-| Ctrough (ug/mL) | PMA \<=29, Scr 0.9-1.2 \| 17.5 mg/kg q18h | 12.5 | 18 | +44.0%\* |
-| Ctrough (ug/mL) | PMA \<=29, Scr 0.9-1.2 \| 20 mg/kg q24h | 10.3 | 13.4 | +30.1%\* |
-| Ctrough (ug/mL) | PMA \>29, Scr \<0.6 \| 12.5 mg/kg q8h | 12.5 | 15 | +19.8% |
-| Ctrough (ug/mL) | PMA \>29, Scr \<0.6 \| 20 mg/kg q12h | 11 | 13.8 | +25.8%\* |
-| Ctrough (ug/mL) | PMA \>29, Scr 0.6-0.9 \| 15 mg/kg q12h | 11 | 15.6 | +41.7%\* |
-| Ctrough (ug/mL) | PMA \>29, Scr 0.6-0.9 \| 17.5 mg/kg q12h | 12.8 | 17 | +32.6%\* |
-| Ctrough (ug/mL) | PMA \>29, Scr 0.9-1.2 \| 17.5 mg/kg q12h | 9.8 | 21.5 | +119.5%\* |
-| Ctrough (ug/mL) | PMA \>29, Scr 0.9-1.2 \| 20 mg/kg q18h | 11.2 | 13.5 | +20.4%\* |
-| Ctrough (ug/mL) | PMA \>29, Scr 0.9-1.2 \| 15 mg/kg q12h | 12.9 | 16.7 | +29.6%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr \<0.6 \| 15 mg/kg q12h | 440 | 566 | +28.5%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr \<0.6 \| 17.5 mg/kg q12h | 513 | 651 | +26.9%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr \<0.6 \| 20 mg/kg q12h | 586 | 784 | +33.7%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.6-0.9 \| 17.5 mg/kg q18h | 451 | 559 | +24.0%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.6-0.9 \| 20 mg/kg q18h | 515 | 626 | +21.6%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.6-0.9 \| 15 mg/kg q12h | 523 | 728 | +39.1%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.9-1.2 \| 15 mg/kg q18h | 450 | 555 | +23.3%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.9-1.2 \| 17.5 mg/kg q18h | 525 | 642 | +22.3%\* |
+| AUClast (ug\*h/mL) | PMA \<=29, Scr 0.9-1.2 \| 20 mg/kg q24h | 480 | 549 | +14.3% |
+| AUClast (ug\*h/mL) | PMA \>29, Scr \<0.6 \| 12.5 mg/kg q8h | 452 | 533 | +18.0% |
+| AUClast (ug\*h/mL) | PMA \>29, Scr \<0.6 \| 20 mg/kg q12h | 494 | 568 | +15.1% |
+| AUClast (ug\*h/mL) | PMA \>29, Scr 0.6-0.9 \| 15 mg/kg q12h | 453 | 511 | +12.8% |
+| AUClast (ug\*h/mL) | PMA \>29, Scr 0.6-0.9 \| 17.5 mg/kg q12h | 528 | 608 | +15.2% |
+| AUClast (ug\*h/mL) | PMA \>29, Scr 0.9-1.2 \| 17.5 mg/kg q12h | 440 | 710 | +61.3%\* |
+| AUClast (ug\*h/mL) | PMA \>29, Scr 0.9-1.2 \| 20 mg/kg q18h | 503 | 551 | +9.5% |
+| AUClast (ug\*h/mL) | PMA \>29, Scr 0.9-1.2 \| 15 mg/kg q12h | 513 | 592 | +15.4% |
+| Ctrough (ug/mL) | PMA \<=29, Scr \<0.6 \| 15 mg/kg q12h | 10.5 | 16.7 | +58.8%\* |
+| Ctrough (ug/mL) | PMA \<=29, Scr \<0.6 \| 17.5 mg/kg q12h | 12.2 | 18.8 | +54.5%\* |
+| Ctrough (ug/mL) | PMA \<=29, Scr \<0.6 \| 20 mg/kg q12h | 14 | 22.9 | +63.3%\* |
+| Ctrough (ug/mL) | PMA \<=29, Scr 0.6-0.9 \| 17.5 mg/kg q18h | 10.2 | 14.9 | +46.4%\* |
+| Ctrough (ug/mL) | PMA \<=29, Scr 0.6-0.9 \| 20 mg/kg q18h | 11.6 | 16.6 | +43.4%\* |
+| Ctrough (ug/mL) | PMA \<=29, Scr 0.6-0.9 \| 15 mg/kg q12h | 13.3 | 23 | +72.8%\* |
+| Ctrough (ug/mL) | PMA \<=29, Scr 0.9-1.2 \| 15 mg/kg q18h | 10.8 | 15.9 | +47.1%\* |
+| Ctrough (ug/mL) | PMA \<=29, Scr 0.9-1.2 \| 17.5 mg/kg q18h | 12.5 | 18.4 | +47.1%\* |
+| Ctrough (ug/mL) | PMA \<=29, Scr 0.9-1.2 \| 20 mg/kg q24h | 10.3 | 13.2 | +28.5%\* |
+| Ctrough (ug/mL) | PMA \>29, Scr \<0.6 \| 12.5 mg/kg q8h | 12.5 | 16.4 | +31.0%\* |
+| Ctrough (ug/mL) | PMA \>29, Scr \<0.6 \| 20 mg/kg q12h | 11 | 14.7 | +33.7%\* |
+| Ctrough (ug/mL) | PMA \>29, Scr 0.6-0.9 \| 15 mg/kg q12h | 11 | 14.2 | +28.7%\* |
+| Ctrough (ug/mL) | PMA \>29, Scr 0.6-0.9 \| 17.5 mg/kg q12h | 12.8 | 17 | +33.0%\* |
+| Ctrough (ug/mL) | PMA \>29, Scr 0.9-1.2 \| 17.5 mg/kg q12h | 9.8 | 21.3 | +117.8%\* |
+| Ctrough (ug/mL) | PMA \>29, Scr 0.9-1.2 \| 20 mg/kg q18h | 11.2 | 13.6 | +21.8%\* |
+| Ctrough (ug/mL) | PMA \>29, Scr 0.9-1.2 \| 15 mg/kg q12h | 12.9 | 17.6 | +36.4%\* |
 
 Simulated vs Alsultan 2023 Table 4 (means over 150 neonates per arm).
 auclast is AUC0-24 at steady state; ctrough is the concentration at the
@@ -2255,22 +2255,22 @@ gate |>
 
 | Regimen | Published AUC0-24 | Simulated AUC0-24 | AUC % diff | Published trough | Simulated trough | Trough % diff | Excluded from gate |
 |:---|---:|---:|---:|---:|---:|---:|:---|
-| PMA \<=29, Scr 0.6-0.9 \| 15 mg/kg q12h | 523 | 714 | 36.6 | 13.3 | 22.15 | 66.6 |  |
-| PMA \<=29, Scr 0.6-0.9 \| 17.5 mg/kg q18h | 451 | 578 | 28.1 | 10.2 | 15.70 | 53.9 |  |
-| PMA \<=29, Scr 0.6-0.9 \| 20 mg/kg q18h | 515 | 650 | 26.3 | 11.6 | 17.51 | 50.9 |  |
-| PMA \<=29, Scr 0.9-1.2 \| 15 mg/kg q18h | 450 | 552 | 22.7 | 10.8 | 15.77 | 46.0 |  |
-| PMA \<=29, Scr 0.9-1.2 \| 17.5 mg/kg q18h | 525 | 634 | 20.7 | 12.5 | 18.00 | 44.0 |  |
-| PMA \<=29, Scr 0.9-1.2 \| 20 mg/kg q24h | 480 | 542 | 12.9 | 10.3 | 13.40 | 30.1 |  |
-| PMA \<=29, Scr \<0.6 \| 15 mg/kg q12h | 440 | 591 | 34.3 | 10.5 | 17.46 | 66.3 |  |
-| PMA \<=29, Scr \<0.6 \| 17.5 mg/kg q12h | 513 | 645 | 25.8 | 12.2 | 18.74 | 53.6 |  |
-| PMA \<=29, Scr \<0.6 \| 20 mg/kg q12h | 586 | 733 | 25.1 | 14.0 | 21.13 | 50.9 |  |
-| PMA \>29, Scr 0.6-0.9 \| 15 mg/kg q12h | 453 | 537 | 18.6 | 11.0 | 15.59 | 41.7 |  |
-| PMA \>29, Scr 0.6-0.9 \| 17.5 mg/kg q12h | 528 | 603 | 14.3 | 12.8 | 16.97 | 32.6 |  |
-| PMA \>29, Scr 0.9-1.2 \| 15 mg/kg q12h | 513 | 572 | 11.5 | 12.9 | 16.72 | 29.6 |  |
-| PMA \>29, Scr 0.9-1.2 \| 17.5 mg/kg q12h | 440 | 713 | 61.9 | 9.8 | 21.51 | 119.5 | yes |
-| PMA \>29, Scr 0.9-1.2 \| 20 mg/kg q18h | 503 | 541 | 7.6 | 11.2 | 13.48 | 20.4 |  |
-| PMA \>29, Scr \<0.6 \| 12.5 mg/kg q8h | 452 | 500 | 10.6 | 12.5 | 14.98 | 19.8 |  |
-| PMA \>29, Scr \<0.6 \| 20 mg/kg q12h | 494 | 547 | 10.8 | 11.0 | 13.84 | 25.8 |  |
+| PMA \<=29, Scr 0.6-0.9 \| 15 mg/kg q12h | 523 | 728 | 39.1 | 13.3 | 22.99 | 72.8 |  |
+| PMA \<=29, Scr 0.6-0.9 \| 17.5 mg/kg q18h | 451 | 559 | 24.0 | 10.2 | 14.94 | 46.4 |  |
+| PMA \<=29, Scr 0.6-0.9 \| 20 mg/kg q18h | 515 | 626 | 21.6 | 11.6 | 16.64 | 43.4 |  |
+| PMA \<=29, Scr 0.9-1.2 \| 15 mg/kg q18h | 450 | 555 | 23.3 | 10.8 | 15.89 | 47.1 |  |
+| PMA \<=29, Scr 0.9-1.2 \| 17.5 mg/kg q18h | 525 | 642 | 22.3 | 12.5 | 18.38 | 47.1 |  |
+| PMA \<=29, Scr 0.9-1.2 \| 20 mg/kg q24h | 480 | 549 | 14.3 | 10.3 | 13.24 | 28.5 |  |
+| PMA \<=29, Scr \<0.6 \| 15 mg/kg q12h | 440 | 566 | 28.5 | 10.5 | 16.68 | 58.8 |  |
+| PMA \<=29, Scr \<0.6 \| 17.5 mg/kg q12h | 513 | 651 | 26.9 | 12.2 | 18.85 | 54.5 |  |
+| PMA \<=29, Scr \<0.6 \| 20 mg/kg q12h | 586 | 784 | 33.7 | 14.0 | 22.86 | 63.3 |  |
+| PMA \>29, Scr 0.6-0.9 \| 15 mg/kg q12h | 453 | 511 | 12.8 | 11.0 | 14.15 | 28.7 |  |
+| PMA \>29, Scr 0.6-0.9 \| 17.5 mg/kg q12h | 528 | 608 | 15.2 | 12.8 | 17.03 | 33.0 |  |
+| PMA \>29, Scr 0.9-1.2 \| 15 mg/kg q12h | 513 | 592 | 15.4 | 12.9 | 17.59 | 36.4 |  |
+| PMA \>29, Scr 0.9-1.2 \| 17.5 mg/kg q12h | 440 | 710 | 61.3 | 9.8 | 21.35 | 117.8 | yes |
+| PMA \>29, Scr 0.9-1.2 \| 20 mg/kg q18h | 503 | 551 | 9.5 | 11.2 | 13.65 | 21.8 |  |
+| PMA \>29, Scr \<0.6 \| 12.5 mg/kg q8h | 452 | 533 | 18.0 | 12.5 | 16.37 | 31.0 |  |
+| PMA \>29, Scr \<0.6 \| 20 mg/kg q12h | 494 | 568 | 15.1 | 11.0 | 14.71 | 33.7 |  |
 
 Per-regimen agreement with Alsultan 2023 Table 4. {.table
 style="width:100%;"}
@@ -2281,11 +2281,11 @@ style="width:100%;"}
 cat(sprintf(
   "AUC0-24:  median %% diff = %+.1f%%, 90th pctile |%% diff| = %.1f%% (n = %d)\n",
   median(gate$auc_pct[keep]), quantile(abs(gate$auc_pct[keep]), 0.9), sum(keep)))
-#> AUC0-24:  median % diff = +20.7%, 90th pctile |% diff| = 31.8% (n = 15)
+#> AUC0-24:  median % diff = +21.6%, 90th pctile |% diff| = 31.7% (n = 15)
 cat(sprintf(
   "Trough:   median %% diff = %+.1f%%, 90th pctile |%% diff| = %.1f%% (n = %d)\n",
   median(gate$trough_pct[keep]), quantile(abs(gate$trough_pct[keep]), 0.9), sum(keep)))
-#> Trough:   median % diff = +44.0%, 90th pctile |% diff| = 61.3% (n = 15)
+#> Trough:   median % diff = +43.4%, 90th pctile |% diff| = 61.5% (n = 15)
 
 # The simulation runs about 20% high on AUC0-24 and about 42% high on the
 # trough. That offset is REAL and reproducible, not noise, and it is documented
@@ -2343,11 +2343,11 @@ ratios |>
 
 | Stratum                | Simulated ratio | Published ratio | % diff |
 |:-----------------------|----------------:|----------------:|-------:|
-| PMA \<=29, Scr 0.6-0.9 |           1.800 |           1.532 |   17.5 |
-| PMA \<=29, Scr 0.9-1.2 |           2.020 |           1.885 |    7.2 |
-| PMA \<=29, Scr \<0.6   |           1.393 |           1.201 |   16.0 |
-| PMA \>29, Scr 0.6-0.9  |           1.301 |           1.237 |    5.2 |
-| PMA \>29, Scr 0.9-1.2  |           1.457 |           1.474 |   -1.1 |
+| PMA \<=29, Scr 0.6-0.9 |           1.681 |           1.532 |    9.7 |
+| PMA \<=29, Scr 0.9-1.2 |           1.939 |           1.885 |    2.9 |
+| PMA \<=29, Scr \<0.6   |           1.337 |           1.201 |   11.3 |
+| PMA \>29, Scr 0.6-0.9  |           1.210 |           1.237 |   -2.2 |
+| PMA \>29, Scr 0.9-1.2  |           1.421 |           1.474 |   -3.6 |
 | PMA \>29, Scr \<0.6    |           1.000 |           1.000 |    0.0 |
 
 Dose-normalized AUC0-24 relative to the PMA \>29, Scr \<0.6 cell.
@@ -2359,7 +2359,7 @@ Level-free, so independent of the cohort’s overall covariate level.
 
 cat(sprintf("Between-stratum ratios: max |%% diff| = %.1f%%\n",
             max(abs(ratios$`% diff`))))
-#> Between-stratum ratios: max |% diff| = 17.5%
+#> Between-stratum ratios: max |% diff| = 11.3%
 
 # Realised 13.6 / 17.5 / 11.7 / 17.1% at 1 / 2 / 8 / 16 solver threads; the residual is the
 # eta draw plus the assumption that PMA and creatinine are independent (they are
@@ -2401,12 +2401,12 @@ knitr::kable(dose_norm, digits = 1,
 
 | stratum                | Simulated spread (%) | Published spread (%) |
 |:-----------------------|---------------------:|---------------------:|
-| PMA \<=29, Scr 0.6-0.9 |                  4.0 |                 10.9 |
-| PMA \<=29, Scr 0.9-1.2 |                  1.9 |                  6.7 |
-| PMA \<=29, Scr \<0.6   |                  7.4 |                  0.1 |
-| PMA \>29, Scr 0.6-0.9  |                  3.9 |                  0.1 |
-| PMA \>29, Scr 0.9-1.2  |                  6.7 |                 50.0 |
-| PMA \>29, Scr \<0.6    |                  2.7 |                  2.5 |
+| PMA \<=29, Scr 0.6-0.9 |                  3.3 |                 10.9 |
+| PMA \<=29, Scr 0.9-1.2 |                  1.1 |                  6.7 |
+| PMA \<=29, Scr \<0.6   |                  5.3 |                  0.1 |
+| PMA \>29, Scr 0.6-0.9  |                  2.0 |                  0.1 |
+| PMA \>29, Scr 0.9-1.2  |                  4.7 |                 50.0 |
+| PMA \>29, Scr \<0.6    |                  0.1 |                  2.5 |
 
 Within-stratum spread of dose-normalized AUC0-24 (ug.h/mL per
 mg/kg/day). A linear model gives 0% up to cohort noise. The published

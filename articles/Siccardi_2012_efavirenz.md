@@ -563,7 +563,7 @@ Two gates on the cohort itself, before any comparison against the paper.
 ss_rel <- with(cohort, abs(trough_next - trough_this) / trough_this)
 cat(sprintf("trough-to-trough relative change: median %.2e, q90 %.2e, q99 %.2e\n",
             median(ss_rel), quantile(ss_rel, 0.90), quantile(ss_rel, 0.99)))
-#> trough-to-trough relative change: median 1.50e-10, q90 2.42e-07, q99 8.03e-05
+#> trough-to-trough relative change: median 1.73e-10, q90 8.01e-08, q99 6.67e-05
 stopifnot(median(ss_rel) < 1e-4, quantile(ss_rel, 0.90) < 1e-3,
           quantile(ss_rel, 0.99) < 1e-2)
 
@@ -577,7 +577,7 @@ lin <- cohort |>
   dplyr::mutate(r400 = d400 / d600 - 2 / 3, r200 = d200 / d600 - 1 / 3)
 cat(sprintf("dose-linearity max deviation: 400/600 %.2e, 200/600 %.2e\n",
             max(abs(lin$r400)), max(abs(lin$r200))))
-#> dose-linearity max deviation: 400/600 1.55e-04, 200/600 8.03e-05
+#> dose-linearity max deviation: 400/600 1.35e-04, 200/600 6.01e-05
 stopifnot(max(abs(lin$r400)) < 1e-3, max(abs(lin$r200)) < 1e-3,
           max(abs(cohort$window_h - 8)) < 1e-2)
 ```
@@ -637,15 +637,15 @@ t3 |>
 
 | Genotype | Dose (mg) | P(suppression), model | P(suppression), Table 3 | Difference | P(CNS), model | P(CNS), Table 3 | Difference |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| 516GG | 600 | 0.847 | 0.770 | 0.077 | 0.254 | 0.253 | 0.001 |
-| 516GG | 400 | 0.770 | 0.692 | 0.078 | 0.203 | 0.207 | -0.004 |
-| 516GG | 200 | 0.589 | 0.538 | 0.051 | 0.135 | 0.131 | 0.004 |
-| 516GT | 600 | 0.892 | 0.816 | 0.076 | 0.297 | 0.302 | -0.005 |
-| 516GT | 400 | 0.832 | 0.751 | 0.081 | 0.241 | 0.241 | 0.000 |
-| 516GT | 200 | 0.676 | 0.622 | 0.054 | 0.162 | 0.176 | -0.014 |
-| 516TT | 600 | 0.978 | 0.888 | 0.090 | 0.510 | 0.361 | 0.149 |
-| 516TT | 400 | 0.963 | 0.817 | 0.146 | 0.439 | 0.291 | 0.148 |
-| 516TT | 200 | 0.913 | 0.716 | 0.197 | 0.325 | 0.202 | 0.123 |
+| 516GG | 600 | 0.852 | 0.770 | 0.082 | 0.256 | 0.253 | 0.003 |
+| 516GG | 400 | 0.776 | 0.692 | 0.084 | 0.205 | 0.207 | -0.002 |
+| 516GG | 200 | 0.597 | 0.538 | 0.059 | 0.136 | 0.131 | 0.005 |
+| 516GT | 600 | 0.896 | 0.816 | 0.080 | 0.300 | 0.302 | -0.002 |
+| 516GT | 400 | 0.837 | 0.751 | 0.086 | 0.243 | 0.241 | 0.002 |
+| 516GT | 200 | 0.684 | 0.622 | 0.062 | 0.164 | 0.176 | -0.012 |
+| 516TT | 600 | 0.979 | 0.888 | 0.091 | 0.514 | 0.361 | 0.153 |
+| 516TT | 400 | 0.965 | 0.817 | 0.148 | 0.443 | 0.291 | 0.152 |
+| 516TT | 200 | 0.916 | 0.716 | 0.200 | 0.328 | 0.202 | 0.126 |
 
 Cohort mean probabilities vs Table 3 of Siccardi 2012 (Table 3 was
 generated from the IVIVE arm). {.table}
@@ -664,7 +664,7 @@ value.
 cns_ggt <- t3 |> dplyr::filter(genotype != "516TT")
 cat(sprintf("CNS, 516GG + 516GT: mean |diff| %.4f, max |diff| %.4f\n",
             mean(abs(cns_ggt$d_cns)), max(abs(cns_ggt$d_cns))))
-#> CNS, 516GG + 516GT: mean |diff| 0.0044, max |diff| 0.0136
+#> CNS, 516GG + 516GT: mean |diff| 0.0044, max |diff| 0.0123
 # Tolerance from the Monte-Carlo standard error: the per-arm SD of pcns is
 # about 0.07 over 200 subjects, so the SE of each arm mean is about 0.005.
 # Gate on the mean absolute difference (stable across seeds) with a max
@@ -683,7 +683,7 @@ endpoints; the CNS endpoint is on target.
 supp_ggt <- t3 |> dplyr::filter(genotype != "516TT")
 cat(sprintf("Suppression, 516GG + 516GT: differences %s\n",
             paste(sprintf("%+.3f", supp_ggt$d_supp), collapse = " ")))
-#> Suppression, 516GG + 516GT: differences +0.077 +0.078 +0.051 +0.076 +0.081 +0.054
+#> Suppression, 516GG + 516GT: differences +0.082 +0.084 +0.059 +0.080 +0.086 +0.062
 stopifnot(all(supp_ggt$d_supp > 0))   # systematic, one-directional
 
 # What intercept would reproduce Table 3? Refit A on the nine arms holding
@@ -699,7 +699,7 @@ obj <- function(a) {
 a_fit <- optimize(obj, c(-14, -5))$minimum
 cat(sprintf("printed intercept %.2f; intercept implied by Table 3 %.2f\n",
             th[["logite0_supp"]], a_fit))
-#> printed intercept -8.38; intercept implied by Table 3 -8.90
+#> printed intercept -8.38; intercept implied by Table 3 -8.93
 ```
 
 The implied intercept is about half a logit below the printed one, and
@@ -749,9 +749,9 @@ tt_fix |>
 
 | Dose (mg) | P(CNS) at IVIVE CL/F | P(CNS), Table 3 | Difference | P(suppression) at IVIVE CL/F | P(suppression), Table 3 | Difference |
 |---:|---:|---:|---:|---:|---:|---:|
-| 200 | 0.190 | 0.202 | -0.012 | 0.742 | 0.716 | 0.026 |
-| 400 | 0.277 | 0.291 | -0.014 | 0.873 | 0.817 | 0.056 |
-| 600 | 0.337 | 0.361 | -0.024 | 0.921 | 0.888 | 0.033 |
+| 200 | 0.191 | 0.202 | -0.011 | 0.749 | 0.716 | 0.033 |
+| 400 | 0.279 | 0.291 | -0.012 | 0.878 | 0.817 | 0.061 |
+| 600 | 0.340 | 0.361 | -0.021 | 0.924 | 0.888 | 0.036 |
 
 516TT arm re-evaluated at the IVIVE clearance of 7.2 L/h instead of the
 population-PK 2.6 L/h. {.table style="width:100%;"}
@@ -1001,33 +1001,33 @@ knitr::kable(cmp, digits = 1, caption = paste(
 
 | NCA parameter      | treatment    | Reference | Simulated | % diff    |
 |:-------------------|:-------------|:----------|:----------|:----------|
-| Cmax (ng/mL)       | 516GG 600 mg | 3020      | 2710      | -10.5%    |
-| Cmax (ng/mL)       | 516GG 400 mg | 2010      | 1800      | -10.4%    |
-| Cmax (ng/mL)       | 516GG 200 mg | 1020      | 902       | -11.3%    |
-| Cmax (ng/mL)       | 516GT 600 mg | 3920      | 3510      | -10.6%    |
-| Cmax (ng/mL)       | 516GT 400 mg | 2610      | 2340      | -10.6%    |
-| Cmax (ng/mL)       | 516GT 200 mg | 1330      | 1170      | -11.9%    |
-| Cmax (ng/mL)       | 516TT 600 mg | 5160      | 11600     | +124.9%\* |
-| Cmax (ng/mL)       | 516TT 400 mg | 3440      | 7740      | +124.9%\* |
-| Cmax (ng/mL)       | 516TT 200 mg | 1870      | 3870      | +106.8%\* |
+| Cmax (ng/mL)       | 516GG 600 mg | 3020      | 2710      | -10.4%    |
+| Cmax (ng/mL)       | 516GG 400 mg | 2010      | 1810      | -10.4%    |
+| Cmax (ng/mL)       | 516GG 200 mg | 1020      | 903       | -11.2%    |
+| Cmax (ng/mL)       | 516GT 600 mg | 3920      | 3510      | -10.5%    |
+| Cmax (ng/mL)       | 516GT 400 mg | 2610      | 2340      | -10.5%    |
+| Cmax (ng/mL)       | 516GT 200 mg | 1330      | 1170      | -11.8%    |
+| Cmax (ng/mL)       | 516TT 600 mg | 5160      | 11600     | +125.4%\* |
+| Cmax (ng/mL)       | 516TT 400 mg | 3440      | 7760      | +125.4%\* |
+| Cmax (ng/mL)       | 516TT 200 mg | 1870      | 3880      | +107.4%\* |
 | Cmin (ng/mL)       | 516GG 600 mg | 1870      | 1520      | -18.9%    |
 | Cmin (ng/mL)       | 516GG 400 mg | 1100      | 1010      | -7.9%     |
 | Cmin (ng/mL)       | 516GG 200 mg | 630       | 506       | -19.6%    |
 | Cmin (ng/mL)       | 516GT 600 mg | 2750      | 2300      | -16.5%    |
 | Cmin (ng/mL)       | 516GT 400 mg | 1820      | 1530      | -15.7%    |
-| Cmin (ng/mL)       | 516GT 200 mg | 923       | 766       | -17.1%    |
-| Cmin (ng/mL)       | 516TT 600 mg | 3920      | 10400     | +164.4%\* |
-| Cmin (ng/mL)       | 516TT 400 mg | 2610      | 6900      | +164.3%\* |
-| Cmin (ng/mL)       | 516TT 200 mg | 1500      | 3450      | +130.9%\* |
-| AUClast (ng\*h/mL) | 516GG 600 mg | 59800     | 52200     | -12.7%    |
-| AUClast (ng\*h/mL) | 516GG 400 mg | 39900     | 34800     | -12.7%    |
-| AUClast (ng\*h/mL) | 516GG 200 mg | 20200     | 17400     | -13.9%    |
-| AUClast (ng\*h/mL) | 516GT 600 mg | 82500     | 71500     | -13.3%    |
-| AUClast (ng\*h/mL) | 516GT 400 mg | 55000     | 47700     | -13.3%    |
-| AUClast (ng\*h/mL) | 516GT 200 mg | 28100     | 23800     | -15.0%    |
-| AUClast (ng\*h/mL) | 516TT 600 mg | 114000    | 266000    | +133.4%\* |
-| AUClast (ng\*h/mL) | 516TT 400 mg | 76100     | 178000    | +133.4%\* |
-| AUClast (ng\*h/mL) | 516TT 200 mg | 42200     | 88800     | +110.5%\* |
+| Cmin (ng/mL)       | 516GT 200 mg | 923       | 766       | -17.0%    |
+| Cmin (ng/mL)       | 516TT 600 mg | 3920      | 10400     | +165.2%\* |
+| Cmin (ng/mL)       | 516TT 400 mg | 2610      | 6920      | +165.1%\* |
+| Cmin (ng/mL)       | 516TT 200 mg | 1500      | 3460      | +131.6%\* |
+| AUClast (ng\*h/mL) | 516GG 600 mg | 59800     | 52200     | -12.6%    |
+| AUClast (ng\*h/mL) | 516GG 400 mg | 39900     | 34800     | -12.6%    |
+| AUClast (ng\*h/mL) | 516GG 200 mg | 20200     | 17400     | -13.8%    |
+| AUClast (ng\*h/mL) | 516GT 600 mg | 82500     | 71600     | -13.2%    |
+| AUClast (ng\*h/mL) | 516GT 400 mg | 55000     | 47800     | -13.2%    |
+| AUClast (ng\*h/mL) | 516GT 200 mg | 28100     | 23900     | -14.9%    |
+| AUClast (ng\*h/mL) | 516TT 600 mg | 114000    | 267000    | +134.0%\* |
+| AUClast (ng\*h/mL) | 516TT 400 mg | 76100     | 178000    | +134.0%\* |
+| AUClast (ng\*h/mL) | 516TT 200 mg | 42200     | 89000     | +111.1%\* |
 
 Steady-state NCA of the population PK arm vs the Table 1 IVIVE summary.
 \* differs from the reference by more than 20%. {.table}
@@ -1063,8 +1063,8 @@ nca_wide |>
 | Genotype | Worst fold difference vs Table 1 |
 |:---------|---------------------------------:|
 | 516GG    |                             1.24 |
-| 516GT    |                             1.21 |
-| 516TT    |                             2.64 |
+| 516GT    |                             1.20 |
+| 516TT    |                             2.65 |
 
 Fold difference between the population PK arm and the Table 1 IVIVE
 summary. {.table}

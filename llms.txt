@@ -44,18 +44,25 @@ this way.
 
 - [`Mann2022Equilibrate()`](https://nlmixr2.github.io/nlmixr2lib/reference/Mann2022Equilibrate.md)
   : Pre-equilibrate the Mann 2022 respiratory-physiology states
+
 - [`Poels_2025_elranatamab_qsp_cauc_multiplier()`](https://nlmixr2.github.io/nlmixr2lib/reference/Poels_2025_elranatamab_qsp_cauc_multiplier.md)
   : Eq 37 cumulative-cytokine-exposure multiplier
+
 - [`Poels_2025_elranatamab_qsp_events()`](https://nlmixr2.github.io/nlmixr2lib/reference/Poels_2025_elranatamab_qsp_events.md)
   : Build an event table for the Poels 2025 elranatamab QSP model
+
 - [`addBaseline1exp()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaseline1exp.md)
   : Add baseline that decays exponential with time
+
 - [`addBaselineConst()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineConst.md)
   : Add an estimated baseline constant
+
 - [`addBaselineExp()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineExp.md)
   : Add baseline that decays exponential with time
+
 - [`addBaselineLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineLin.md)
   : Add an estimated baseline linear constant
+
 - [`addCmtProp()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
   [`addBioavailability()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
   [`addLag()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
@@ -63,98 +70,156 @@ this way.
   [`addRate()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
   [`addIni()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
   : Add a property to a compartment
+
 - [`addDepot()`](https://nlmixr2.github.io/nlmixr2lib/reference/addDepot.md)
   : To convert from infusion/intravenous administration to first-order
   oral absorption
+
 - [`addDirToModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/addDirToModelDb.md)
   [`addFileToModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/addDirToModelDb.md)
   : Add a directory to the modeldb
+
 - [`addDirectLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/addDirectLin.md)
   : Add direct linear effect with baseline=0
+
 - [`addEffectCmtLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/addEffectCmtLin.md)
   : Add effect compartment
+
 - [`addEta()`](https://nlmixr2.github.io/nlmixr2lib/reference/addEta.md)
   : Add random effects to a model
+
 - [`addIndirect()`](https://nlmixr2.github.io/nlmixr2lib/reference/addIndirect.md)
   : Add an indirect response model to a PK model
+
 - [`addIndirectLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/addIndirectLin.md)
   : Add linear indirect response model
+
 - [`addLogEstimates()`](https://nlmixr2.github.io/nlmixr2lib/reference/addLogEstimates.md)
   : Add log estimates to a model
+
 - [`addResErr()`](https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.md)
   : Add residual error to a model
+
+- [`addSecondAbsorption()`](https://nlmixr2.github.io/nlmixr2lib/reference/addSecondAbsorption.md)
+  : Add a second absorption path for double-absorption models
+
 - [`addTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/addTransit.md)
   : To add transit compartments to the model
+
 - [`addWeibullAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/addWeibullAbs.md)
   : Converts first order absorption model to Weibull absorption model
+
+- [`addZeroOrderAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/addZeroOrderAbs.md)
+  :
+
+  Convert a model to zero-order absorption (Monolix `Tk0`)
+
 - [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   : Check a model against nlmixr2lib conventions
+
 - [`checkNamingRegisters()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkNamingRegisters.md)
   : Check the naming registers for structural defects
+
 - [`combinePaste2()`](https://nlmixr2.github.io/nlmixr2lib/reference/combinePaste2.md)
   : Combine two strings using a naming convention
+
+- [`convertAbsForceLongerDelay()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertAbsForceLongerDelay.md)
+  : Force the second absorption delay longer than the first
+
+- [`convertAbsSequential()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertAbsSequential.md)
+  : Convert double absorption to sequential delays
+
 - [`convertEmax()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertEmax.md)
   : Convert linear effect to Emax effect
+
 - [`convertEmaxHill()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertEmaxHill.md)
   : Convert linear effect to Emax-Hill effect
+
 - [`convertKinR0()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertKinR0.md)
   : Convert a kin/kout indirect response model to R0 and kout
+
 - [`convertLogLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertLogLin.md)
   : Converts a linear effect to a log-linear effect
+
 - [`convertMM()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertMM.md)
   : Convert models from linear elimination to Michaelis-Menten
   elimination
+
 - [`convertQuad()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertQuad.md)
   : Convert linear elimination to quadratic elimination
+
 - [`createMarkovModel()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModel.md)
   : Create a Markov model for \`nlmixr2\`
+
 - [`createMarkovModelDataset()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModelDataset.md)
   : Create a Markov model dataset for use in estimating Markov models
+
 - [`createMarkovModelFromSingleState()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModelFromSingleState.md)
   : Create the parts of a Markov model for transitioning from a single
   state
+
 - [`createMarkovTransitionMatrix()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovTransitionMatrix.md)
   : Create a Markov transition matrix with probabilities of
   transitioning between every state
+
 - [`cvToBsv()`](https://nlmixr2.github.io/nlmixr2lib/reference/cvToBsv.md)
   [`bsvToCv()`](https://nlmixr2.github.io/nlmixr2lib/reference/cvToBsv.md)
   : Convert coefficient of variation (percent) to between-subject
   variance
+
 - [`defaultCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`snakeCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`camelCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`dotCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`blankCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   : Default combine strings
+
 - [`fakeCc()`](https://nlmixr2.github.io/nlmixr2lib/reference/fakeCc.md)
   : Fake blank Cc for creating PD only models
+
 - [`modeldb`](https://nlmixr2.github.io/nlmixr2lib/reference/modeldb.md)
   : Model library for nlmixr2
+
 - [`modellib()`](https://nlmixr2.github.io/nlmixr2lib/reference/modellib.md)
   : Get the model from the model library
+
 - [`ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
   : Build a side-by-side NCA comparison table (simulated vs. reference)
+
 - [`ncaParamLabel()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaParamLabel.md)
   : Map PKNCA parameter codes to friendly human-readable labels
+
 - [`pkTrans()`](https://nlmixr2.github.io/nlmixr2lib/reference/pkTrans.md)
   : Change the transformation type for PK models
+
 - [`readModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.md)
   : Read a model from the nlmixr2 model database
+
 - [`removeDepot()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeDepot.md)
   : To convert from first order oral absorption to IV/Intravenous
+
 - [`removeLinesAndInis()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeLinesAndInis.md)
   : Removes lines and inis from a model
+
 - [`removeTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.md)
   : To remove transit compartments from the model
+
+- [`removeZeroOrderAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeZeroOrderAbs.md)
+  : Remove zero-order absorption from a model
+
 - [`searchReplace()`](https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.md)
   [`searchReplaceHelper()`](https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.md)
   : Search within a model to replace part of the model
+
 - [`setCombineType()`](https://nlmixr2.github.io/nlmixr2lib/reference/setCombineType.md)
   : Change the default combine type for the package
+
 - [`simMarkov()`](https://nlmixr2.github.io/nlmixr2lib/reference/simMarkov.md)
   : Convert nlmixr2 simulations to Markov states
+
 - [`simMarkovId()`](https://nlmixr2.github.io/nlmixr2lib/reference/simMarkovId.md)
   : Simulate a Markov model broken down by ID
+
 - [`updateOncologyXenograftSimeoni2004()`](https://nlmixr2.github.io/nlmixr2lib/reference/updateOncologyXenograftSimeoni2004.md)
   : Update an oncology xenograft model based on Simeoni 2004
 

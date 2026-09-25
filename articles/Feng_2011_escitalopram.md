@@ -320,8 +320,8 @@ tibble::tibble(
 
 | Check | Max \|% difference\| | Median % difference |
 |:---|---:|---:|
-| PKNCA AUC0-Inf vs Dose/CL | 0.068 | -0.006 |
-| PKNCA t1/2 vs analytic log(2)/beta | 0.974 | -0.454 |
+| PKNCA AUC0-Inf vs Dose/CL | 0.059 | -0.008 |
+| PKNCA t1/2 vs analytic log(2)/beta | 0.742 | -0.442 |
 
 Numerical agreement between PKNCA and closed form. {.table}
 
@@ -376,10 +376,10 @@ nlmixr2lib::ncaComparisonTable(
 
 | NCA parameter           | Reference | Simulated | % diff |
 |:------------------------|:----------|:----------|:-------|
-| Cmax (ng/mL)            | 9.37      | 9.37      | +0.0%  |
-| Tmax (h)                | 7.5       | 7.5       | +0.0%  |
-| AUC0-∞ (obs) (ng\*h/mL) | 431       | 431       | -0.0%  |
-| t½ (h)                  | 38.2      | 38.1      | -0.4%  |
+| Cmax (ng/mL)            | 9.76      | 9.76      | +0.0%  |
+| Tmax (h)                | 7         | 7         | +0.0%  |
+| AUC0-∞ (obs) (ng\*h/mL) | 393       | 393       | -0.0%  |
+| t½ (h)                  | 34.5      | 34.4      | -0.4%  |
 
 Simulated NCA vs closed-form reference (cohort medians). Cmax and Tmax
 have no closed form and are self-referential; AUC0-Inf and t1/2 are the
@@ -502,11 +502,11 @@ knitr::kable(med, digits = 3,
 
 | group                      | Median Cipred/Cobs | Median log ratio |
 |:---------------------------|-------------------:|-----------------:|
-| Group 1: \>100% (8 doses)  |              0.945 |           -0.056 |
+| Group 1: \>100% (8 doses)  |              0.946 |           -0.055 |
 | Group 2: 85-100% (7 doses) |              1.030 |            0.030 |
-| Group 3: 30-85% (4 doses)  |              4.955 |            1.600 |
-| Group 4: 0-30% (1 dose)    |             19.322 |            2.961 |
-| Group 5: 0% (0 doses)      |             31.006 |            3.434 |
+| Group 3: 30-85% (4 doses)  |              5.968 |            1.786 |
+| Group 4: 0-30% (1 dose)    |             24.343 |            3.192 |
+| Group 5: 0% (0 doses)      |             37.335 |            3.620 |
 
 Median ratio by 7-day adherence group. {.table}
 
@@ -570,11 +570,11 @@ knitr::kable(sep, digits = 3,
 
 | group                      |    q25 |    q50 |     q75 | IQR width | Gap to next group |
 |:---------------------------|-------:|-------:|--------:|----------:|------------------:|
-| Group 1: \>100% (8 doses)  |  0.765 |  0.945 |   1.229 |     0.464 |             0.085 |
-| Group 2: 85-100% (7 doses) |  0.841 |  1.030 |   1.311 |     0.471 |             3.925 |
-| Group 3: 30-85% (4 doses)  |  3.229 |  4.955 |   9.183 |     5.954 |            14.367 |
-| Group 4: 0-30% (1 dose)    | 10.397 | 19.322 |  65.204 |    54.806 |            11.684 |
-| Group 5: 0% (0 doses)      | 14.908 | 31.006 | 120.775 |   105.867 |                NA |
+| Group 1: \>100% (8 doses)  |  0.768 |  0.946 |   1.191 |     0.423 |             0.084 |
+| Group 2: 85-100% (7 doses) |  0.841 |  1.030 |   1.311 |     0.471 |             4.938 |
+| Group 3: 30-85% (4 doses)  |  3.031 |  5.968 |   9.661 |     6.630 |            18.375 |
+| Group 4: 0-30% (1 dose)    |  8.244 | 24.343 |  75.398 |    67.155 |            12.991 |
+| Group 5: 0% (0 doses)      | 12.383 | 37.335 | 147.203 |   134.820 |                NA |
 
 Within-group spread vs between-group separation. Adjacent intermediate
 groups overlap heavily; Group 5 stands well clear. {.table
@@ -707,11 +707,11 @@ knitr::kable(classified, digits = 1,
 
 | group                      | Median predicted (%) | 5th pct | 95th pct |
 |:---------------------------|---------------------:|--------:|---------:|
-| Group 1: \>100% (8 doses)  |                108.0 |    55.5 |    198.4 |
+| Group 1: \>100% (8 doses)  |                107.9 |    52.0 |    198.1 |
 | Group 2: 85-100% (7 doses) |                 96.6 |    49.4 |    176.7 |
-| Group 3: 30-85% (4 doses)  |                  9.5 |     0.0 |     45.0 |
-| Group 4: 0-30% (1 dose)    |                  0.0 |     0.0 |     16.3 |
-| Group 5: 0% (0 doses)      |                  0.0 |     0.0 |     10.1 |
+| Group 3: 30-85% (4 doses)  |                  5.7 |     0.0 |     44.9 |
+| Group 4: 0-30% (1 dose)    |                  0.0 |     0.0 |     18.7 |
+| Group 5: 0% (0 doses)      |                  0.0 |     0.0 |     10.7 |
 
 Adherence predicted by the published 7-day equation, applied to the Part
 2 ratios. The wide intervals in the intermediate groups are the paper’s

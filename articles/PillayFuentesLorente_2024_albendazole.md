@@ -414,8 +414,8 @@ auc48_long |>
 
 | Analyte | Median AUC, Cote d’Ivoire (ng\*h/mL) | Median AUC, Tanzania (ng\*h/mL) | Median within-subject ratio (TZA/CIV) |
 |:---|---:|---:|---:|
-| Albendazole sulfone | 2061 | 2290 | 1.110 |
-| Albendazole sulfoxide | 22272 | 20593 | 0.926 |
+| Albendazole sulfone | 2173 | 2405 | 1.105 |
+| Albendazole sulfoxide | 23650 | 21654 | 0.921 |
 
 Simulated AUC(0-48 h) by country, from 200 virtual participants solved
 under both country settings with common random numbers. {.table}

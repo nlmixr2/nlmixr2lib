@@ -316,7 +316,7 @@ stopifnot(
   all(100 * plogis(closed$sim) > 0), all(100 * plogis(closed$sim) < 100)
 )
 range(closed$qol_ghs)
-#> [1] 24.53322 99.00000
+#> [1] 20.24851 99.00000
 ```
 
 ### Treatment-effect gate (Zou 2026 Section 3.3)
@@ -520,7 +520,7 @@ stopifnot(
 )
 c(`baseline gap` = base_gap, `week-104 gap` = wk104_gap)
 #> baseline gap week-104 gap 
-#>    0.1384581    6.3119053
+#>   -0.4271421    5.7336574
 ```
 
 ## Assumptions and deviations
@@ -550,7 +550,7 @@ n_would_be_nan <- sum(closed$qFrac <= 0 | closed$qFrac >= 1)
 c(rows = nrow(closed), clamped = n_clamped, would_be_NaN = n_would_be_nan,
   max_qFrac = round(max(closed$qFrac), 3))
 #>         rows      clamped would_be_NaN    max_qFrac 
-#>    10800.000      183.000      163.000        1.518
+#>    10800.000      221.000      197.000        3.397
 
 stopifnot(
   # The problem is real, not hypothetical: some arms do leave (0, 1).

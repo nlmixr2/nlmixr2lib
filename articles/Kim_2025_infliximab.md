@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -293,8 +293,6 @@ typical <- bind_rows(lapply(model_names, function(nm) {
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalcl_ada_neg, etalcl_ada_pos, etalvc_female, etalvc_male
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalcl_ada_neg, etalcl_ada_pos, etalvc_female, etalvc_male
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl_ada_neg', 'etalcl_ada_pos', 'etalvc_female', 'etalvc_male', 'etalvc_wt', 'etalvp', 'etalq'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalcl_ada_neg, etalcl_ada_pos, etalvc_female, etalvc_male
 #> as a work-around try putting the mu-referenced expression on a simple line
@@ -307,14 +305,10 @@ typical <- bind_rows(lapply(model_names, function(nm) {
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etaiov_cl_1'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etaiov_cl_1'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etaiov_cl_1'

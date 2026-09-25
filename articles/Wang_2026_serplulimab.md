@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -830,9 +830,9 @@ c(`max |Q2W ratio - 66.67/WT|` = max(abs(ratios$q2w_ratio - ratios$expected)),
   `max |Q3W ratio - 66.67/WT|` = max(abs(ratios$q3w_ratio - ratios$expected)),
   `max |Q2W ratio - Q3W ratio|` = max(abs(ratios$q2w_ratio - ratios$q3w_ratio)))
 #>  max |Q2W ratio - 66.67/WT|  max |Q3W ratio - 66.67/WT| 
-#>                1.776357e-15                1.776357e-15 
+#>                1.814406e-10                4.243708e-10 
 #> max |Q2W ratio - Q3W ratio| 
-#>                2.664535e-15
+#>                3.866498e-10
 
 # Realised ~2e-15 (machine epsilon on a ratio of order 1). 1e-6 keeps nine
 # orders of headroom for a different solver tolerance while still going red
@@ -1013,10 +1013,10 @@ knitr::kable(nca_summary, digits = 1,
 
 | regimen       | cavg |  cmax |
 |:--------------|-----:|------:|
-| 200 mg Q2W    | 78.1 | 114.9 |
-| 3 mg/kg Q2W   | 71.6 | 105.3 |
-| 300 mg Q3W    | 78.0 | 136.9 |
-| 4.5 mg/kg Q3W | 71.5 | 125.4 |
+| 200 mg Q2W    | 79.0 | 116.6 |
+| 3 mg/kg Q2W   | 72.4 | 106.8 |
+| 300 mg Q3W    | 78.9 | 139.2 |
+| 4.5 mg/kg Q3W | 72.3 | 127.6 |
 
 Geometric-mean steady-state exposure by regimen (PKNCA over the final
 dosing interval). {.table}
@@ -1064,7 +1064,7 @@ data.frame(
 | Figure 1B, population geometric mean sqrt(p5 x p95)     |           144.9 |
 | Section 3.3, population geometric mean                  |           166.5 |
 | This model, typical subject                             |           143.4 |
-| This model, cohort geometric mean                       |           136.9 |
+| This model, cohort geometric mean                       |           139.2 |
 
 Steady-state Cmax at 300 mg Q3W: four published or simulated statements
 of one quantity. {.table}
@@ -1118,8 +1118,8 @@ knitr::kable(cmp_tbl,
 
 | NCA parameter | regimen    | Reference | Simulated | % diff |
 |:--------------|:-----------|:----------|:----------|:-------|
-| Cmax (ug/mL)  | 200 mg Q2W | 138       | 115       | -17.0% |
-| Cmax (ug/mL)  | 300 mg Q3W | 166       | 137       | -17.8% |
+| Cmax (ug/mL)  | 200 mg Q2W | 138       | 117       | -15.8% |
+| Cmax (ug/mL)  | 300 mg Q3W | 166       | 139       | -16.4% |
 
 Simulated vs published geometric-mean steady-state Cmax (Wang 2026
 Section 3.3). {.table}
@@ -1145,9 +1145,9 @@ c(`published Cmax,ss ratio (300 Q3W / 200 Q2W)` = round(pub_ratio, 4),
 #> published Cmax,ss ratio (300 Q3W / 200 Q2W) 
 #>                                      1.2025 
 #>                             simulated ratio 
-#>                                      1.1912 
+#>                                      1.1943 
 #>                              difference (%) 
-#>                                     -0.9400
+#>                                     -0.6800
 
 # Cohort-derived but a ratio of two arms sharing one set of etas, so most of
 # the draw noise cancels. 8% leaves room for the covariate draw while still

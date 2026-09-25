@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -212,8 +212,6 @@ two doses 14 days apart, then Q4W).
 
 events_vpc <- make_cohort(n = 200)
 sim_vpc <- rxode2::rxSolve(mod, events = events_vpc) |> as.data.frame()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
-#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ### Concentration-time VPC over the phase 3 dosing schedule
@@ -428,8 +426,6 @@ events_single <- make_cohort(
 sim_single <- rxode2::rxSolve(mod_typical, events = events_single) |>
   as.data.frame() |>
   mutate(id = 1L, treatment = "single_300mg")
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_cl_7'
 
 sim_nca_single <- sim_single |>
@@ -477,20 +473,20 @@ as.data.frame(nca_single$result) |>
 
 | Group        | Subject | start | end | PPTESTCD            |        Value | exclude |
 |:-------------|--------:|------:|----:|:--------------------|-------------:|:--------|
-| single_300mg |       1 |     0 | Inf | cmax                |  121.8038708 | NA      |
+| single_300mg |       1 |     0 | Inf | cmax                |  121.8039095 | NA      |
 | single_300mg |       1 |     0 | Inf | tmax                |   14.1000000 | NA      |
 | single_300mg |       1 |     0 | Inf | tlast               |  238.0000000 | NA      |
-| single_300mg |       1 |     0 | Inf | clast.obs           |    0.8648773 | NA      |
+| single_300mg |       1 |     0 | Inf | clast.obs           |    0.8648742 | NA      |
 | single_300mg |       1 |     0 | Inf | lambda.z            |    0.0190734 | NA      |
 | single_300mg |       1 |     0 | Inf | r.squared           |    0.9999913 | NA      |
 | single_300mg |       1 |     0 | Inf | adj.r.squared       |    0.9999905 | NA      |
 | single_300mg |       1 |     0 | Inf | lambda.z.time.first |   28.0000000 | NA      |
 | single_300mg |       1 |     0 | Inf | lambda.z.time.last  |  238.0000000 | NA      |
 | single_300mg |       1 |     0 | Inf | lambda.z.n.points   |   13.0000000 | NA      |
-| single_300mg |       1 |     0 | Inf | clast.pred          |    0.8633671 | NA      |
-| single_300mg |       1 |     0 | Inf | half.life           |   36.3410653 | NA      |
-| single_300mg |       1 |     0 | Inf | span.ratio          |    5.7785868 | NA      |
-| single_300mg |       1 |     0 | Inf | aucinf.obs          | 4071.8654589 | NA      |
+| single_300mg |       1 |     0 | Inf | clast.pred          |    0.8633641 | NA      |
+| single_300mg |       1 |     0 | Inf | half.life           |   36.3410273 | NA      |
+| single_300mg |       1 |     0 | Inf | span.ratio          |    5.7785928 | NA      |
+| single_300mg |       1 |     0 | Inf | aucinf.obs          | 4071.8651409 | NA      |
 
 Single-dose NCA on the typical reference-patient profile. {.table}
 
@@ -574,20 +570,20 @@ as.data.frame(nca_ss$result) |>
 
 | Group               | Subject | start | end | PPTESTCD            |        Value | exclude |
 |:--------------------|--------:|------:|----:|:--------------------|-------------:|:--------|
-| ss_300mg_final_dose |       1 |     0 | Inf | cmax                |  142.2758331 | NA      |
+| ss_300mg_final_dose |       1 |     0 | Inf | cmax                |  142.2759824 | NA      |
 | ss_300mg_final_dose |       1 |     0 | Inf | tmax                |    0.1000000 | NA      |
 | ss_300mg_final_dose |       1 |     0 | Inf | tlast               |  224.0000000 | NA      |
-| ss_300mg_final_dose |       1 |     0 | Inf | clast.obs           |    1.1625820 | NA      |
+| ss_300mg_final_dose |       1 |     0 | Inf | clast.obs           |    1.1625811 | NA      |
 | ss_300mg_final_dose |       1 |     0 | Inf | lambda.z            |    0.0190676 | NA      |
 | ss_300mg_final_dose |       1 |     0 | Inf | r.squared           |    0.9999935 | NA      |
 | ss_300mg_final_dose |       1 |     0 | Inf | adj.r.squared       |    0.9999927 | NA      |
 | ss_300mg_final_dose |       1 |     0 | Inf | lambda.z.time.first |   14.0000000 | NA      |
 | ss_300mg_final_dose |       1 |     0 | Inf | lambda.z.time.last  |  224.0000000 | NA      |
 | ss_300mg_final_dose |       1 |     0 | Inf | lambda.z.n.points   |   10.0000000 | NA      |
-| ss_300mg_final_dose |       1 |     0 | Inf | clast.pred          |    1.1608861 | NA      |
-| ss_300mg_final_dose |       1 |     0 | Inf | half.life           |   36.3521741 | NA      |
-| ss_300mg_final_dose |       1 |     0 | Inf | span.ratio          |    5.7768209 | NA      |
-| ss_300mg_final_dose |       1 |     0 | Inf | aucinf.obs          | 4555.1457009 | NA      |
+| ss_300mg_final_dose |       1 |     0 | Inf | clast.pred          |    1.1608857 | NA      |
+| ss_300mg_final_dose |       1 |     0 | Inf | half.life           |   36.3521684 | NA      |
+| ss_300mg_final_dose |       1 |     0 | Inf | span.ratio          |    5.7768218 | NA      |
+| ss_300mg_final_dose |       1 |     0 | Inf | aucinf.obs          | 4555.1477661 | NA      |
 
 Steady-state NCA on the 7th (final) dosing interval. {.table}
 

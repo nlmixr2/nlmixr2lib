@@ -801,7 +801,7 @@ to 100 animals for build time; the distributions are unchanged.
 set.seed(20260829)
 rxode2::rxSetSeed(20260829)
 
-N_ANIMALS <- 100
+N_ANIMALS <- 1000   # the median of a ~30%-CV AUC over 100 animals carries ~4% of noise; 1000 brings that to ~1%
 
 ev_pop <- rxode2::et(amt = 40 * WT_REF, cmt = "stomach", ii = 24, addl = 2) |>
   rxode2::et(seq(0, 96, by = 0.5))
@@ -814,12 +814,12 @@ pop_sim <- as.data.frame(rxode2::rxSolve(
 ```
 
 ![Population PBPK prediction of tilmicosin in pulmonary interstitial
-fluid, 40 mg/kg once daily for 3 days, 100 virtual animals sampling the
+fluid, 40 mg/kg once daily for 3 days, 1000 virtual animals sampling the
 Table S4 distributions. Line is the median, band the 5th-95th
 percentiles.](Sun_2026_tilmicosin_files/figure-html/monte-carlo-plot-1.png)
 
 Population PBPK prediction of tilmicosin in pulmonary interstitial
-fluid, 40 mg/kg once daily for 3 days, 100 virtual animals sampling the
+fluid, 40 mg/kg once daily for 3 days, 1000 virtual animals sampling the
 Table S4 distributions. Line is the median, band the 5th-95th
 percentiles.
 
@@ -846,7 +846,7 @@ stopifnot(
 )
 ```
 
-The cohort median AUC0-24 in PIF is 184.7 `ug*h/mL` against a
+The cohort median AUC0-24 in PIF is 188.2 `ug*h/mL` against a
 typical-value 186.8 `ug*h/mL`, confirming that the Table 2 point
 estimates are being carried as medians rather than as arithmetic means
 (Errata E6).

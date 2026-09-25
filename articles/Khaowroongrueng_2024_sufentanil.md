@@ -229,7 +229,7 @@ dplyr::glimpse(sim[, c("id", "time", "arm", "cl", "vc", "central", "Cc")])
 #> $ cl      <dbl> 48.00381, 48.00381, 48.00381, 48.00381, 48.00381, 48.00381, 48…
 #> $ vc      <dbl> 72.5, 72.5, 72.5, 72.5, 72.5, 72.5, 72.5, 72.5, 72.5, 72.5, 72…
 #> $ central <dbl> 30.00000, 29.87338, 29.76318, 29.66817, 29.58725, 29.51936, 29…
-#> $ Cc      <dbl> 0.4137931, 0.4120466, 0.4105266, 0.4092162, 0.4081000, 0.40716…
+#> $ Cc      <dbl> 0.4137931, 0.4120466, 0.4105266, 0.4092162, 0.4080999, 0.40716…
 ```
 
 A deterministic typical-value solve is used for the exact structural
@@ -345,9 +345,9 @@ knitr::kable(jump, digits = 4, caption = paste(
 
 | Quantity | Just before rewarming | At start of rewarming | Ratio (after / before) |
 |:---|---:|---:|---:|
-| central (ug) | 57.3494 | 57.3483 | 1.0000 |
-| V1 (L) | 198.6500 | 72.5000 | 0.3650 |
-| Cc (ng/mL) | 0.2887 | 0.7910 | 2.7399 |
+| central (ug) | 57.3494 | 57.3493 | 1.000 |
+| V1 (L) | 198.6500 | 72.5000 | 0.365 |
+| Cc (ng/mL) | 0.2887 | 0.7910 | 2.740 |
 
 Amount is continuous across the CPB-to-rewarming boundary while V1
 reverts, so Cc rises by exactly the published 2.74-fold V1 ratio.

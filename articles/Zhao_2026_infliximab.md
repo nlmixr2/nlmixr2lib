@@ -471,24 +471,24 @@ table6 |>
 
 | Patient | Dose (mg/kg) | Interval (weeks) | Published (%) | Simulated (%) | Absolute difference (pp) |
 |:---|---:|---:|---:|---:|---:|
-| 5 years old (18 kg) | 5.0 | 4 | 27 | 19.7 | 7.3 |
-| 5 years old (18 kg) | 5.0 | 6 | 42 | 43.1 | 1.1 |
-| 5 years old (18 kg) | 5.0 | 8 | 53 | 58.0 | 5.0 |
-| 5 years old (18 kg) | 7.5 | 4 | 9 | 11.0 | 2.0 |
-| 5 years old (18 kg) | 7.5 | 6 | 33 | 29.8 | 3.2 |
-| 5 years old (18 kg) | 7.5 | 8 | 46 | 46.1 | 0.1 |
-| 5 years old (18 kg) | 10.0 | 4 | 0 | 6.6 | 6.6 |
-| 5 years old (18 kg) | 10.0 | 6 | 25 | 22.2 | 2.8 |
-| 5 years old (18 kg) | 10.0 | 8 | 40 | 38.1 | 1.9 |
-| 8 years old (35 kg) | 5.0 | 4 | 27 | 12.8 | 14.2 |
-| 8 years old (35 kg) | 5.0 | 6 | 33 | 33.3 | 0.3 |
-| 8 years old (35 kg) | 5.0 | 8 | 47 | 49.9 | 2.9 |
-| 8 years old (35 kg) | 7.5 | 4 | 0 | 5.8 | 5.8 |
-| 8 years old (35 kg) | 7.5 | 6 | 25 | 20.8 | 4.2 |
-| 8 years old (35 kg) | 7.5 | 8 | 47 | 36.9 | 10.1 |
-| 8 years old (35 kg) | 10.0 | 4 | 0 | 3.1 | 3.1 |
-| 8 years old (35 kg) | 10.0 | 6 | 25 | 14.6 | 10.4 |
-| 8 years old (35 kg) | 10.0 | 8 | 40 | 28.7 | 11.3 |
+| 5 years old (18 kg) | 5.0 | 4 | 27 | 17.9 | 9.1 |
+| 5 years old (18 kg) | 5.0 | 6 | 42 | 40.8 | 1.2 |
+| 5 years old (18 kg) | 5.0 | 8 | 53 | 56.6 | 3.6 |
+| 5 years old (18 kg) | 7.5 | 4 | 9 | 9.4 | 0.4 |
+| 5 years old (18 kg) | 7.5 | 6 | 33 | 27.6 | 5.4 |
+| 5 years old (18 kg) | 7.5 | 8 | 46 | 44.1 | 1.9 |
+| 5 years old (18 kg) | 10.0 | 4 | 0 | 5.8 | 5.8 |
+| 5 years old (18 kg) | 10.0 | 6 | 25 | 20.2 | 4.8 |
+| 5 years old (18 kg) | 10.0 | 8 | 40 | 35.8 | 4.2 |
+| 8 years old (35 kg) | 5.0 | 4 | 27 | 11.0 | 16.0 |
+| 8 years old (35 kg) | 5.0 | 6 | 33 | 30.9 | 2.1 |
+| 8 years old (35 kg) | 5.0 | 8 | 47 | 48.0 | 1.0 |
+| 8 years old (35 kg) | 7.5 | 4 | 0 | 5.1 | 5.1 |
+| 8 years old (35 kg) | 7.5 | 6 | 25 | 19.0 | 6.0 |
+| 8 years old (35 kg) | 7.5 | 8 | 47 | 34.5 | 12.5 |
+| 8 years old (35 kg) | 10.0 | 4 | 0 | 2.6 | 2.6 |
+| 8 years old (35 kg) | 10.0 | 6 | 25 | 12.9 | 12.1 |
+| 8 years old (35 kg) | 10.0 | 8 | 40 | 26.6 | 13.4 |
 
 Percentage of the maintenance dosing interval spent below 5 mg/L.
 Published values are Zhao 2026 Table 6. {.table style="width:100%;"}
@@ -499,7 +499,7 @@ Published values are Zhao 2026 Table 6. {.table style="width:100%;"}
 cat(sprintf("median |diff| = %.1f pp; 90th percentile = %.1f pp; max = %.1f pp\n",
             median(table6$abs_diff), quantile(table6$abs_diff, 0.9),
             max(table6$abs_diff)))
-#> median |diff| = 3.7 pp; 90th percentile = 10.7 pp; max = 14.2 pp
+#> median |diff| = 4.9 pp; 90th percentile = 12.8 pp; max = 16.0 pp
 ```
 
 The centre of the comparison is what matters here: the simulated cohort
@@ -715,12 +715,12 @@ knitr::kable(induction_troughs, digits = 2,
 
 | dose      | time | median |
 |:----------|-----:|-------:|
-| 10 mg/kg  |   14 |  53.72 |
-| 10 mg/kg  |   42 |  48.33 |
-| 5 mg/kg   |   14 |  26.86 |
-| 5 mg/kg   |   42 |  24.16 |
-| 7.5 mg/kg |   14 |  40.29 |
-| 7.5 mg/kg |   42 |  36.25 |
+| 10 mg/kg  |   14 |  54.26 |
+| 10 mg/kg  |   42 |  49.03 |
+| 5 mg/kg   |   14 |  27.13 |
+| 5 mg/kg   |   42 |  24.51 |
+| 7.5 mg/kg |   14 |  40.69 |
+| 7.5 mg/kg |   42 |  36.77 |
 
 Median induction trough concentrations (weeks 2 and 6). {.table}
 
@@ -757,9 +757,9 @@ maint_below |>
 
 | Dose | Published (%) | Simulated, prediction (%) | Difference (pp) | Simulated, observation (%) | Difference (pp) |
 |:---|---:|---:|---:|---:|---:|
-| 10 mg/kg | 38 | 33.2 | -4.8 | 44.3 | 6.3 |
-| 5 mg/kg | 63 | 53.7 | -9.3 | 60.4 | -2.6 |
-| 7.5 mg/kg | 50 | 41.2 | -8.8 | 50.7 | 0.7 |
+| 10 mg/kg | 38 | 30.9 | -7.1 | 42.8 | 4.8 |
+| 5 mg/kg | 63 | 51.8 | -11.2 | 58.8 | -4.2 |
+| 7.5 mg/kg | 50 | 38.8 | -11.2 | 48.8 | -1.2 |
 
 Percentage of the 8-week maintenance interval below 5 mg/L. Published
 values are Zhao 2026 Results 3.7. {.table}
@@ -835,12 +835,12 @@ knitr::kable(assay_tbl,
 
 | Code | Assay | Table 2 variance | Residual SD in model | Median individual prediction (mg/L) | Observed-scale CV (%) |
 |---:|:---|---:|---:|---:|---:|
-| 1 | Sanquin | 0.951 | 0.975 | 3.984 | 96.0 |
-| 2 | Immundiagnostik | 0.781 | 0.884 | 3.984 | 87.0 |
-| 3 | Caltag | 0.617 | 0.785 | 3.984 | 77.3 |
-| 4 | Matrix Biotek | 0.591 | 0.769 | 3.984 | 75.7 |
-| 5 | Ben-Horin (in-house) | 0.889 | 0.943 | 3.984 | 92.8 |
-| 6 | Promonitor | 0.914 | 0.956 | 3.984 | 94.1 |
+| 1 | Sanquin | 0.951 | 0.975 | 4.164 | 97.1 |
+| 2 | Immundiagnostik | 0.781 | 0.884 | 4.164 | 88.0 |
+| 3 | Caltag | 0.617 | 0.785 | 4.164 | 78.1 |
+| 4 | Matrix Biotek | 0.591 | 0.769 | 4.164 | 76.5 |
+| 5 | Ben-Horin (in-house) | 0.889 | 0.943 | 4.164 | 93.9 |
+| 6 | Promonitor | 0.914 | 0.956 | 4.164 | 95.2 |
 
 Per-assay residual error. The individual predictions are identical
 across assays because the assay enters only the error model. {.table
@@ -871,7 +871,7 @@ ggplot(assay_sim, aes(factor(round(time)), sim / ipredSim)) +
   theme_bw()
 #> Warning in transformation$transform(x): NaNs produced
 #> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
-#> Warning: Removed 4425 rows containing non-finite outside the scale range
+#> Warning: Removed 4410 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
 ```
 

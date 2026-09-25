@@ -447,12 +447,12 @@ exact_t2 |>
 
 | Body weight group |   n | Mean WT (kg) | Analyte      | Exact model | Published | % diff |
 |:------------------|----:|-------------:|:-------------|------------:|----------:|-------:|
-| \>=25 to \<50 kg  | 218 |        35.64 | Selexipag    |        8.36 |      8.03 |   4.16 |
-| \>=25 to \<50 kg  | 218 |        35.64 | JNJ-68006861 |       21.59 |     19.50 |  10.72 |
-| \>=50 kg          |  91 |        60.78 | Selexipag    |        6.87 |      9.44 | -27.25 |
-| \>=50 kg          |  91 |        60.78 | JNJ-68006861 |       21.54 |     22.20 |  -2.98 |
-| \>=9 to \<25 kg   | 291 |        18.22 | Selexipag    |        9.49 |      8.42 |  12.75 |
-| \>=9 to \<25 kg   | 291 |        18.22 | JNJ-68006861 |       19.60 |     17.80 |  10.12 |
+| \>=25 to \<50 kg  | 218 |        35.64 | Selexipag    |        8.49 |      8.03 |   5.78 |
+| \>=25 to \<50 kg  | 218 |        35.64 | JNJ-68006861 |       22.39 |     19.50 |  14.82 |
+| \>=50 kg          |  91 |        60.78 | Selexipag    |        6.82 |      9.44 | -27.81 |
+| \>=50 kg          |  91 |        60.78 | JNJ-68006861 |       19.94 |     22.20 | -10.18 |
+| \>=9 to \<25 kg   | 291 |        18.22 | Selexipag    |        9.03 |      8.42 |   7.19 |
+| \>=9 to \<25 kg   | 291 |        18.22 | JNJ-68006861 |       17.66 |     17.80 |  -0.76 |
 
 Exact closed-form AUCtau,ss (ng\*h/mL) by body-weight group vs. Axelsen
 2024 Table 2. {.table}
@@ -476,7 +476,7 @@ Exact closed-form AUCtau,ss (ng\*h/mL) by body-weight group vs. Axelsen
 gate_m <- exact_t2$`% diff`[exact_t2$Analyte == "JNJ-68006861"]
 cat(sprintf("JNJ-68006861 vs Table 2: mean %+.1f%%, max |diff| %.1f%%\n",
             mean(gate_m), max(abs(gate_m))))
-#> JNJ-68006861 vs Table 2: mean +6.0%, max |diff| 10.7%
+#> JNJ-68006861 vs Table 2: mean +1.3%, max |diff| 14.8%
 stopifnot(abs(mean(gate_m)) < 15, max(abs(gate_m)) < 30)
 ```
 
@@ -612,24 +612,24 @@ knitr::kable(
 
 | NCA parameter | Analyte | Body weight group | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|:---|
-| Cmax (ng/mL) | Selexipag | \>=50 kg | 4.06 | 2.41 | -40.6%\* |
-| Cmax (ng/mL) | Selexipag | \>=25 to \<50 kg | 2.97 | 2.97 | -0.0% |
-| Cmax (ng/mL) | Selexipag | \>=9 to \<25 kg | 2.75 | 3.37 | +22.5%\* |
-| Cmax (ng/mL) | JNJ-68006861 | \>=50 kg | 3.87 | 3.27 | -15.4% |
-| Cmax (ng/mL) | JNJ-68006861 | \>=25 to \<50 kg | 3.32 | 3.34 | +0.6% |
-| Cmax (ng/mL) | JNJ-68006861 | \>=9 to \<25 kg | 3.05 | 3.06 | +0.4% |
+| Cmax (ng/mL) | Selexipag | \>=50 kg | 4.06 | 2.31 | -43.1%\* |
+| Cmax (ng/mL) | Selexipag | \>=25 to \<50 kg | 2.97 | 2.88 | -3.0% |
+| Cmax (ng/mL) | Selexipag | \>=9 to \<25 kg | 2.75 | 3.16 | +15.0% |
+| Cmax (ng/mL) | JNJ-68006861 | \>=50 kg | 3.87 | 3.04 | -21.4%\* |
+| Cmax (ng/mL) | JNJ-68006861 | \>=25 to \<50 kg | 3.32 | 3.47 | +4.5% |
+| Cmax (ng/mL) | JNJ-68006861 | \>=9 to \<25 kg | 3.05 | 2.81 | -7.8% |
 | Tmax (h) | Selexipag | \>=50 kg | 1 | 2 | +100.0%\* |
 | Tmax (h) | Selexipag | \>=25 to \<50 kg | 1.05 | 2 | +90.5%\* |
 | Tmax (h) | Selexipag | \>=9 to \<25 kg | 2 | 2 | +0.0% |
 | Tmax (h) | JNJ-68006861 | \>=50 kg | 3.01 | 2 | -33.6%\* |
 | Tmax (h) | JNJ-68006861 | \>=25 to \<50 kg | 2.02 | 2 | -1.0% |
 | Tmax (h) | JNJ-68006861 | \>=9 to \<25 kg | 3.04 | 2 | -34.2%\* |
-| AUClast (ng\*h/mL) | Selexipag | \>=50 kg | 9.44 | 6.42 | -32.0%\* |
-| AUClast (ng\*h/mL) | Selexipag | \>=25 to \<50 kg | 8.03 | 7.88 | -1.8% |
-| AUClast (ng\*h/mL) | Selexipag | \>=9 to \<25 kg | 8.42 | 9.08 | +7.8% |
-| AUClast (ng\*h/mL) | JNJ-68006861 | \>=50 kg | 22.2 | 21.2 | -4.5% |
-| AUClast (ng\*h/mL) | JNJ-68006861 | \>=25 to \<50 kg | 19.5 | 21.2 | +8.6% |
-| AUClast (ng\*h/mL) | JNJ-68006861 | \>=9 to \<25 kg | 17.8 | 19.2 | +8.1% |
+| AUClast (ng\*h/mL) | Selexipag | \>=50 kg | 9.44 | 6.41 | -32.1%\* |
+| AUClast (ng\*h/mL) | Selexipag | \>=25 to \<50 kg | 8.03 | 8.03 | -0.1% |
+| AUClast (ng\*h/mL) | Selexipag | \>=9 to \<25 kg | 8.42 | 8.44 | +0.3% |
+| AUClast (ng\*h/mL) | JNJ-68006861 | \>=50 kg | 22.2 | 19.6 | -11.6% |
+| AUClast (ng\*h/mL) | JNJ-68006861 | \>=25 to \<50 kg | 19.5 | 22 | +13.0% |
+| AUClast (ng\*h/mL) | JNJ-68006861 | \>=9 to \<25 kg | 17.8 | 17.3 | -2.7% |
 
 Simulated vs. Axelsen 2024 Table 2 (dose-normalised steady-state NCA by
 body-weight group). {.table}
@@ -663,7 +663,7 @@ cat(sprintf("Cmax/AUC vs Table 2: median %+.1f%%, 90th pct |diff| %.1f%%, max |d
             stats::median(chk_t2_exposure$pct),
             stats::quantile(abs(chk_t2_exposure$pct), 0.9),
             max(abs(chk_t2_exposure$pct))))
-#> Cmax/AUC vs Table 2: median +0.2%, 90th pct |diff| 31.1%, max |diff| 40.6%
+#> Cmax/AUC vs Table 2: median -2.9%, 90th pct |diff| 31.0%, max |diff| 43.1%
 stopifnot(
   abs(stats::median(chk_t2_exposure$pct)) < 20,
   stats::quantile(abs(chk_t2_exposure$pct), 0.9) < 50
@@ -746,13 +746,13 @@ t3 |>
 
 | Stratifier | Group | Published geo-mean | Simulated geo-mean | Published GMR vs adults | Simulated GMR vs adults | % diff |
 |:---|:---|---:|---:|---:|---:|---:|
-| Population | Pediatrics | 19.6 | 20.313 | 1.030 | 1.069 | 3.640 |
-| Pediatric starting dose group | 100 ug | 18.4 | 19.370 | 0.966 | 1.019 | 5.273 |
-| Pediatric starting dose group | 150 ug | 19.9 | 21.272 | 1.050 | 1.120 | 6.894 |
-| Pediatric starting dose group | 200 ug | 22.3 | 21.176 | 1.170 | 1.115 | -5.040 |
-| Cohort | 12-17 years | 20.8 | 20.965 | 1.090 | 1.103 | 0.795 |
-| Cohort | 2-5 years | 18.0 | 18.770 | 0.949 | 0.988 | 4.276 |
-| Cohort | 6-11 years | 19.8 | 21.301 | 1.040 | 1.121 | 7.579 |
+| Population | Pediatrics | 19.6 | 19.350 | 1.030 | 1.018 | -1.276 |
+| Pediatric starting dose group | 100 ug | 18.4 | 17.469 | 0.966 | 0.919 | -5.061 |
+| Pediatric starting dose group | 150 ug | 19.9 | 22.051 | 1.050 | 1.161 | 10.811 |
+| Pediatric starting dose group | 200 ug | 22.3 | 19.622 | 1.170 | 1.033 | -12.007 |
+| Cohort | 12-17 years | 20.8 | 20.400 | 1.090 | 1.074 | -1.921 |
+| Cohort | 2-5 years | 18.0 | 16.656 | 0.949 | 0.877 | -7.466 |
+| Cohort | 6-11 years | 19.8 | 21.322 | 1.040 | 1.122 | 7.687 |
 
 Model-based AUCtau,ss,combined (ng\*h/mL) vs. Axelsen 2024 Table 3.
 {.table}

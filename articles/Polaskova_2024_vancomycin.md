@@ -725,7 +725,7 @@ nca_wide
 #> # A tibble: 1 × 16
 #>    cmax  tmax tlast clast.obs lambda.z r.squared adj.r.squared
 #>   <dbl> <dbl> <dbl>     <dbl>    <dbl>     <dbl>         <dbl>
-#> 1  12.2     2    96   0.00187   0.0934         1             1
+#> 1  12.2     2    96   0.00187   0.0934      1.00          1.00
 #> # ℹ 9 more variables: lambda.z.time.first <dbl>, lambda.z.time.last <dbl>,
 #> #   lambda.z.n.points <dbl>, clast.pred <dbl>, half.life <dbl>,
 #> #   span.ratio <dbl>, aucinf.obs <dbl>, cl.obs <dbl>, vz.obs <dbl>

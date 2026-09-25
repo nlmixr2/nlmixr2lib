@@ -495,13 +495,13 @@ nca_wide <- as.data.frame(nca_res) %>%
 
 stopifnot(nrow(nca_wide) == nrow(cohort), !anyNA(nca_wide$cmax), !anyNA(nca_wide$auclast))
 summary(nca_wide[, c("cmax", "tmax", "auclast")])
-#>       cmax               tmax           auclast       
-#>  Min.   :   66.45   Min.   : 0.500   Min.   :  442.5  
-#>  1st Qu.:  457.08   1st Qu.: 4.000   1st Qu.: 1476.2  
-#>  Median :  921.50   Median : 5.500   Median : 2591.8  
-#>  Mean   : 1450.08   Mean   : 5.525   Mean   : 4387.7  
-#>  3rd Qu.: 1972.44   3rd Qu.: 7.000   3rd Qu.: 5534.1  
-#>  Max.   :13254.86   Max.   :14.000   Max.   :34485.2
+#>       cmax               tmax         auclast       
+#>  Min.   :   80.88   Min.   : 0.5   Min.   :  432.7  
+#>  1st Qu.:  463.72   1st Qu.: 4.0   1st Qu.: 1557.6  
+#>  Median :  871.69   Median : 5.0   Median : 2858.8  
+#>  Mean   : 1515.97   Mean   : 5.5   Mean   : 4524.5  
+#>  3rd Qu.: 1797.03   3rd Qu.: 7.0   3rd Qu.: 6316.0  
+#>  Max.   :20235.84   Max.   :14.0   Max.   :24048.8
 ```
 
 ``` r
@@ -523,8 +523,8 @@ knitr::kable(linearity, caption = "Dose proportionality: simulated vs Hu 2025 Su
 
 | Parameter | Power coefficient (sim) | Standard error (sim) | Power coefficient (Hu 2025 Table S3) | Standard error (Hu 2025) | 95% CI (Hu 2025) |
 |:---|---:|---:|---:|---:|:---|
-| Cmax | 0.863 | 0.073 | 1.09 | 0.150 | 0.80, 1.39 |
-| AUC0-24h | 0.922 | 0.050 | 1.04 | 0.097 | 0.85, 1.23 |
+| Cmax | 0.919 | 0.074 | 1.09 | 0.150 | 0.80, 1.39 |
+| AUC0-24h | 0.986 | 0.051 | 1.04 | 0.097 | 0.85, 1.23 |
 
 Dose proportionality: simulated vs Hu 2025 Supplementary Table S3.
 {.table}

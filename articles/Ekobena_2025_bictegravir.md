@@ -183,7 +183,7 @@ stopifnot(
 )
 sprintf("Max |%% difference| vs closed form over the dosing interval: %.4f%%",
         max(abs(chk$pct_diff)))
-#> [1] "Max |% difference| vs closed form over the dosing interval: 0.0000%"
+#> [1] "Max |% difference| vs closed form over the dosing interval: 0.0001%"
 ```
 
 ### Covariate-effect regression test

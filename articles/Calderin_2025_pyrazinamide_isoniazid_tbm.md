@@ -642,28 +642,28 @@ cmp <- nlmixr2lib::ncaComparisonTable(
 knitr::kable(cmp)
 ```
 
-| NCA parameter | group                               | Reference | Simulated | % diff |
-|:--------------|:------------------------------------|:----------|:----------|:-------|
-| Cmax          | Pyrazinamide \| Plasma \| Day 3     | 36.3      | 34.4      | -5.3%  |
-| Cmax          | Pyrazinamide \| Plasma \| Day 28    | 30.7      | 31.4      | +2.2%  |
-| Cmax          | Pyrazinamide \| CSF \| Day 3        | 34        | 32.6      | -4.1%  |
-| Cmax          | Pyrazinamide \| CSF \| Day 28       | 28.5      | 28.8      | +1.1%  |
-| Cmax          | Isoniazid \| Plasma \| Slow         | 3.7       | 3.66      | -1.0%  |
-| Cmax          | Isoniazid \| Plasma \| Intermediate | 2.75      | 2.55      | -7.4%  |
-| Cmax          | Isoniazid \| Plasma \| Rapid        | 2.25      | 1.86      | -17.4% |
-| Cmax          | Isoniazid \| CSF \| Slow            | 1.65      | 1.6       | -2.9%  |
-| Cmax          | Isoniazid \| CSF \| Intermediate    | 0.9       | 0.824     | -8.4%  |
-| Cmax          | Isoniazid \| CSF \| Rapid           | 0.65      | 0.512     | -21.3% |
-| AUClast       | Pyrazinamide \| Plasma \| Day 3     | 385       | 388       | +0.9%  |
-| AUClast       | Pyrazinamide \| Plasma \| Day 28    | 288       | 287       | -0.3%  |
-| AUClast       | Pyrazinamide \| CSF \| Day 3        | 405       | 408       | +0.7%  |
-| AUClast       | Pyrazinamide \| CSF \| Day 28       | 300       | 301       | +0.5%  |
-| AUClast       | Isoniazid \| Plasma \| Slow         | 20.4      | 20.7      | +1.7%  |
-| AUClast       | Isoniazid \| Plasma \| Intermediate | 8         | 8.7       | +8.7%  |
-| AUClast       | Isoniazid \| Plasma \| Rapid        | 5.2       | 4.86      | -6.5%  |
-| AUClast       | Isoniazid \| CSF \| Slow            | 21.7      | 21.6      | -0.6%  |
-| AUClast       | Isoniazid \| CSF \| Intermediate    | 8         | 9.06      | +13.3% |
-| AUClast       | Isoniazid \| CSF \| Rapid           | 5.2       | 5.07      | -2.5%  |
+| NCA parameter | group | Reference | Simulated | % diff |
+|:---|:---|:---|:---|:---|
+| Cmax | Pyrazinamide \| Plasma \| Day 3 | 36.3 | 34.7 | -4.4% |
+| Cmax | Pyrazinamide \| Plasma \| Day 28 | 30.7 | 30.7 | +0.0% |
+| Cmax | Pyrazinamide \| CSF \| Day 3 | 34 | 33.3 | -2.2% |
+| Cmax | Pyrazinamide \| CSF \| Day 28 | 28.5 | 28.3 | -0.9% |
+| Cmax | Isoniazid \| Plasma \| Slow | 3.7 | 3.76 | +1.7% |
+| Cmax | Isoniazid \| Plasma \| Intermediate | 2.75 | 2.95 | +7.3% |
+| Cmax | Isoniazid \| Plasma \| Rapid | 2.25 | 1.81 | -19.6% |
+| Cmax | Isoniazid \| CSF \| Slow | 1.65 | 1.65 | +0.3% |
+| Cmax | Isoniazid \| CSF \| Intermediate | 0.9 | 0.975 | +8.3% |
+| Cmax | Isoniazid \| CSF \| Rapid | 0.65 | 0.524 | -19.3% |
+| AUClast | Pyrazinamide \| Plasma \| Day 3 | 385 | 408 | +6.0% |
+| AUClast | Pyrazinamide \| Plasma \| Day 28 | 288 | 285 | -1.1% |
+| AUClast | Pyrazinamide \| CSF \| Day 3 | 405 | 428 | +5.8% |
+| AUClast | Pyrazinamide \| CSF \| Day 28 | 300 | 299 | -0.3% |
+| AUClast | Isoniazid \| Plasma \| Slow | 20.4 | 22.6 | +10.9% |
+| AUClast | Isoniazid \| Plasma \| Intermediate | 8 | 10.4 | +30.1%\* |
+| AUClast | Isoniazid \| Plasma \| Rapid | 5.2 | 4.96 | -4.6% |
+| AUClast | Isoniazid \| CSF \| Slow | 21.7 | 23.5 | +8.4% |
+| AUClast | Isoniazid \| CSF \| Intermediate | 8 | 10.8 | +35.4%\* |
+| AUClast | Isoniazid \| CSF \| Rapid | 5.2 | 5.16 | -0.7% |
 
 The pyrazinamide comparisons agree to within 4% on every row in both
 matrices and at both visits, which is the strongest available check on
@@ -710,16 +710,16 @@ nca_all |>
 
 | Drug | Matrix | Group | Median AUC0-24 (mg\*h/L) | 10th percentile | 90th percentile |
 |:---|:---|:---|---:|---:|---:|
-| Isoniazid | CSF | Intermediate | 9.1 | 5.6 | 15.0 |
-| Isoniazid | CSF | Rapid | 5.1 | 3.0 | 8.8 |
-| Isoniazid | CSF | Slow | 21.6 | 11.7 | 36.5 |
-| Isoniazid | Plasma | Intermediate | 8.7 | 5.4 | 14.4 |
-| Isoniazid | Plasma | Rapid | 4.9 | 2.9 | 8.5 |
-| Isoniazid | Plasma | Slow | 20.7 | 11.3 | 35.1 |
-| Pyrazinamide | CSF | Day 28 | 301.5 | 228.5 | 430.6 |
-| Pyrazinamide | CSF | Day 3 | 407.9 | 289.8 | 579.1 |
-| Pyrazinamide | Plasma | Day 28 | 287.2 | 217.6 | 410.1 |
-| Pyrazinamide | Plasma | Day 3 | 388.5 | 276.1 | 551.4 |
+| Isoniazid | CSF | Intermediate | 10.8 | 6.7 | 18.8 |
+| Isoniazid | CSF | Rapid | 5.2 | 3.0 | 8.5 |
+| Isoniazid | CSF | Slow | 23.5 | 13.3 | 36.9 |
+| Isoniazid | Plasma | Intermediate | 10.4 | 6.4 | 18.0 |
+| Isoniazid | Plasma | Rapid | 5.0 | 2.8 | 8.2 |
+| Isoniazid | Plasma | Slow | 22.6 | 12.8 | 35.5 |
+| Pyrazinamide | CSF | Day 28 | 299.0 | 234.7 | 418.4 |
+| Pyrazinamide | CSF | Day 3 | 428.4 | 284.4 | 596.0 |
+| Pyrazinamide | Plasma | Day 28 | 284.8 | 223.6 | 398.5 |
+| Pyrazinamide | Plasma | Day 3 | 408.0 | 270.9 | 567.6 |
 
 The headline finding of the paper - that both drugs reach CSF exposures
 matching plasma - is recovered as a cohort-level statement. The

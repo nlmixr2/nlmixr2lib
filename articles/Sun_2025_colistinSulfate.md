@@ -998,8 +998,8 @@ tibble::tibble(
 
 | Check | Median % difference | Max abs % difference |
 |:---|---:|---:|
-| GATED: CL \* AUC(0,300 h) vs dose in - amount remaining | -0.0003 | 0.0014 |
-| Diagnostic: AUC0-tau vs Dose / CL (steady state assumed) | -9.7617 | 67.1366 |
+| GATED: CL \* AUC(0,300 h) vs dose in - amount remaining | -0.0002 | 0.0013 |
+| Diagnostic: AUC0-tau vs Dose / CL (steady state assumed) | -9.7616 | 67.1366 |
 | Consistency: Cav,ss vs AUC0-tau / tau | 0.0000 | 0.0000 |
 
 The mass-balance identity holds at any time and is exact to trapezoidal

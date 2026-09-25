@@ -731,26 +731,26 @@ tbl |>
   )
 ```
 
-| NCA parameter     | Group              | Reference | Simulated | % diff   |
-|:------------------|:-------------------|:----------|:----------|:---------|
-| Cmax (mg/L)       | Canada 10 mg/kg    | 14.7      | 13        | -11.2%   |
-| Cmax (mg/L)       | Canada 20 mg/kg    | 29        | 28.6      | -1.5%    |
-| Cmax (mg/L)       | Canada 30 mg/kg    | 35.7      | 44.7      | +25.2%\* |
-| Cmax (mg/L)       | Indonesia 10 mg/kg | 17.8      | 17.5      | -1.8%    |
-| Cmax (mg/L)       | Indonesia 20 mg/kg | 40        | 35.6      | -11.0%   |
-| Cmax (mg/L)       | Indonesia 30 mg/kg | 55.7      | 51.8      | -7.1%    |
-| Cmax (mg/L)       | Vietnam 10 mg/kg   | 15.5      | 14.2      | -8.6%    |
-| Cmax (mg/L)       | Vietnam 20 mg/kg   | 32.4      | 30.6      | -5.5%    |
-| Cmax (mg/L)       | Vietnam 30 mg/kg   | 51.7      | 41.3      | -20.0%\* |
-| AUClast (mg\*h/L) | Canada 10 mg/kg    | 58.5      | 50.4      | -13.8%   |
-| AUClast (mg\*h/L) | Canada 20 mg/kg    | 136       | 129       | -5.1%    |
-| AUClast (mg\*h/L) | Canada 30 mg/kg    | 164       | 251       | +52.8%\* |
-| AUClast (mg\*h/L) | Indonesia 10 mg/kg | 69.5      | 71.5      | +2.8%    |
-| AUClast (mg\*h/L) | Indonesia 20 mg/kg | 176       | 150       | -14.8%   |
-| AUClast (mg\*h/L) | Indonesia 30 mg/kg | 272       | 253       | -7.0%    |
-| AUClast (mg\*h/L) | Vietnam 10 mg/kg   | 58.1      | 57        | -1.9%    |
-| AUClast (mg\*h/L) | Vietnam 20 mg/kg   | 141       | 129       | -8.3%    |
-| AUClast (mg\*h/L) | Vietnam 30 mg/kg   | 234       | 271       | +16.0%   |
+| NCA parameter     | Group              | Reference | Simulated | % diff |
+|:------------------|:-------------------|:----------|:----------|:-------|
+| Cmax (mg/L)       | Canada 10 mg/kg    | 14.7      | 11.8      | -19.5% |
+| Cmax (mg/L)       | Canada 20 mg/kg    | 29        | 27        | -7.0%  |
+| Cmax (mg/L)       | Canada 30 mg/kg    | 35.7      | 41.6      | +16.6% |
+| Cmax (mg/L)       | Indonesia 10 mg/kg | 17.8      | 17.7      | -0.6%  |
+| Cmax (mg/L)       | Indonesia 20 mg/kg | 40        | 35.9      | -10.3% |
+| Cmax (mg/L)       | Indonesia 30 mg/kg | 55.7      | 59.3      | +6.5%  |
+| Cmax (mg/L)       | Vietnam 10 mg/kg   | 15.5      | 15.8      | +2.1%  |
+| Cmax (mg/L)       | Vietnam 20 mg/kg   | 32.4      | 29.3      | -9.7%  |
+| Cmax (mg/L)       | Vietnam 30 mg/kg   | 51.7      | 47.5      | -8.0%  |
+| AUClast (mg\*h/L) | Canada 10 mg/kg    | 58.5      | 57.8      | -1.2%  |
+| AUClast (mg\*h/L) | Canada 20 mg/kg    | 136       | 135       | -0.1%  |
+| AUClast (mg\*h/L) | Canada 30 mg/kg    | 164       | 193       | +17.9% |
+| AUClast (mg\*h/L) | Indonesia 10 mg/kg | 69.5      | 76.4      | +9.9%  |
+| AUClast (mg\*h/L) | Indonesia 20 mg/kg | 176       | 197       | +11.6% |
+| AUClast (mg\*h/L) | Indonesia 30 mg/kg | 272       | 287       | +5.3%  |
+| AUClast (mg\*h/L) | Vietnam 10 mg/kg   | 58.1      | 61.9      | +6.6%  |
+| AUClast (mg\*h/L) | Vietnam 20 mg/kg   | 141       | 125       | -11.5% |
+| AUClast (mg\*h/L) | Vietnam 30 mg/kg   | 234       | 223       | -4.6%  |
 
 PKNCA steady-state (0-24 h) exposure from the simulated cohort against
 the Gafar 2026 Table 3 medians. Rows differing by more than 20% are
@@ -760,7 +760,7 @@ range (source Table 3 footnote a), not a cohort median. {.table}
 ``` r
 
 attr(tbl, "footnote")
-#> [1] "* differs from reference by more than ±20%."
+#> NULL
 ```
 
 ``` r

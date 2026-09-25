@@ -360,8 +360,8 @@ lz_n <- as.data.frame(nca_res$result) |>
   dplyr::filter(PPTESTCD == "lambda.z.n.points")
 print(table(`Points in the terminal fit` = lz_n$PPORRES))
 #> Points in the terminal fit
-#>   3   4   5   7 
-#>  70 108  20   2
+#>   3   4   5 
+#>  81 101  18
 
 # PKNCA's automatic window occasionally reaches back to the 1.5 h sample and
 # takes a fifth point, which the paper's manual fit did not; that is a handful
@@ -423,17 +423,17 @@ knitr::kable(
 
 | NCA parameter | treatment | Reference | Simulated | % diff |
 |:---|:---|---:|---:|---:|
-| Cmax (mg/L) | 200 mg IV, 30-min infusion | 30.9 | 30.8 | -0.3% |
-| Clast (mg/L) | 200 mg IV, 30-min infusion | 0.422 | 0.393 | -6.9% |
-| AUC0-∞ (obs) (mg/L\*h) | 200 mg IV, 30-min infusion | 305 | 308 | +1.0% |
-| AUClast (mg/L\*h) | 200 mg IV, 30-min infusion | 270 | 278 | +3.0% |
-| t½ (h) | 200 mg IV, 30-min infusion | 55 | 51.6 | -6.2% |
-| CL/F (L/h/kg) | 200 mg IV, 30-min infusion | 0.0103 | 0.00993 | -3.6% |
-| Vss/F (L/kg) | 200 mg IV, 30-min infusion | 0.734 | 0.751 | +2.4% |
-| MRT (h) | 200 mg IV, 30-min infusion | 76.7 | 70.8 | -7.8% |
-| Vz/F (L/kg) | 200 mg IV, 30-min infusion | 0.761 | 0.787 | +3.4% |
-| AUMC0-∞ (obs) (mg/L\*h^2) | 200 mg IV, 30-min infusion | 22300 | 22000 | -1.2% |
-| AUMC0-t (mg/L\*h^2) | 200 mg IV, 30-min infusion | 13800 | 13900 | +1.0% |
+| Cmax (mg/L) | 200 mg IV, 30-min infusion | 30.9 | 30.7 | -0.6% |
+| Clast (mg/L) | 200 mg IV, 30-min infusion | 0.422 | 0.407 | -3.5% |
+| AUC0-∞ (obs) (mg/L\*h) | 200 mg IV, 30-min infusion | 305 | 313 | +2.6% |
+| AUClast (mg/L\*h) | 200 mg IV, 30-min infusion | 270 | 277 | +2.5% |
+| t½ (h) | 200 mg IV, 30-min infusion | 55 | 53.3 | -3.1% |
+| CL/F (L/h/kg) | 200 mg IV, 30-min infusion | 0.0103 | 0.00987 | -4.2% |
+| Vss/F (L/kg) | 200 mg IV, 30-min infusion | 0.734 | 0.76 | +3.5% |
+| MRT (h) | 200 mg IV, 30-min infusion | 76.7 | 73.4 | -4.3% |
+| Vz/F (L/kg) | 200 mg IV, 30-min infusion | 0.761 | 0.813 | +6.8% |
+| AUMC0-∞ (obs) (mg/L\*h^2) | 200 mg IV, 30-min infusion | 22300 | 22400 | +0.5% |
+| AUMC0-t (mg/L\*h^2) | 200 mg IV, 30-min infusion | 13800 | 14200 | +2.9% |
 
 Simulated (median of 200 virtual subjects, paper’s sampling grid)
 vs. Kim 2024 Table 3 medians. \* differs from reference by \>20%.
@@ -492,9 +492,9 @@ knitr::kable(discrepancy, digits = 4,
 
 | Quantity | NCA (sparse grid) | Population PK | Published NCA | Published popPK |
 |:---|---:|---:|---:|---:|
-| Vss (L/kg) | 0.7514 | 1.1937 | 0.7340 | 1.2400 |
-| Terminal half-life (h) | 51.5745 | 106.4298 | 55.0000 | 97.9000 |
-| CL (L/h/kg) | 0.0099 | 0.0104 | 0.0103 | 0.0104 |
+| Vss (L/kg) | 0.7596 | 1.1841 | 0.7340 | 1.2400 |
+| Terminal half-life (h) | 53.2843 | 106.4298 | 55.0000 | 97.9000 |
+| CL (L/h/kg) | 0.0099 | 0.0106 | 0.0103 | 0.0104 |
 
 Kim 2024 Table 3: NCA and population-PK views of the same subjects.
 Published columns are the Table 3 medians. {.table style="width:100%;"}
@@ -530,10 +530,10 @@ knitr::kable(poppk, digits = c(0, 5, 4, 1),
 
 | Quantity      |     Model | Published | % diff |
 |:--------------|----------:|----------:|-------:|
-| CL (L/h/kg)   |   0.01038 |    0.0104 |   -0.2 |
-| Vc (L/kg)     |   0.06339 |    0.0649 |   -2.3 |
-| Vss (L/kg)    |   1.19367 |    1.2400 |   -3.7 |
-| AUC (mg/L\*h) | 296.41861 |  300.0000 |   -1.2 |
+| CL (L/h/kg)   |   0.01064 |    0.0104 |    2.3 |
+| Vc (L/kg)     |   0.06149 |    0.0649 |   -5.3 |
+| Vss (L/kg)    |   1.18408 |    1.2400 |   -4.5 |
+| AUC (mg/L\*h) | 301.79669 |  300.0000 |    0.6 |
 
 Individual population-PK parameters: simulated medians vs. Kim 2024
 Table 3 ‘Population PK results’ medians. {.table}
@@ -603,21 +603,21 @@ knitr::kable(pta, digits = c(0, 0, 1, 1, 1, 1, 1),
 
 | regimen | Day | Median Ctrough (mg/L) | PTA \>10 mg/L (%) | PTA \>15 mg/L (%) | PTA \>20 mg/L (%) | Ctrough \>60 mg/L (%) |
 |:---|---:|---:|---:|---:|---:|---:|
-| LD 10 / MD 12 mg/kg | 3 | 19.7 | 100.0 | 97.0 | 46.5 | 0 |
-| LD 10 / MD 12 mg/kg | 4 | 21.7 | 100.0 | 99.5 | 71.0 | 0 |
-| LD 10 / MD 12 mg/kg | 5 | 23.5 | 100.0 | 99.5 | 82.0 | 0 |
-| LD 10 / MD 12 mg/kg | 6 | 25.3 | 100.0 | 99.5 | 87.5 | 0 |
-| LD 10 / MD 12 mg/kg | 7 | 26.6 | 100.0 | 99.5 | 92.5 | 0 |
-| LD 14 / MD 16 mg/kg | 3 | 27.2 | 100.0 | 100.0 | 99.0 | 0 |
-| LD 14 / MD 16 mg/kg | 4 | 29.8 | 100.0 | 100.0 | 100.0 | 0 |
-| LD 14 / MD 16 mg/kg | 5 | 32.1 | 100.0 | 100.0 | 100.0 | 0 |
-| LD 14 / MD 16 mg/kg | 6 | 34.0 | 100.0 | 100.0 | 100.0 | 0 |
-| LD 14 / MD 16 mg/kg | 7 | 35.5 | 100.0 | 100.0 | 100.0 | 0 |
-| LD 6 / MD 10 mg/kg | 3 | 13.2 | 94.5 | 18.0 | 0.0 | 0 |
-| LD 6 / MD 10 mg/kg | 4 | 15.3 | 99.5 | 58.0 | 2.5 | 0 |
-| LD 6 / MD 10 mg/kg | 5 | 17.4 | 100.0 | 78.0 | 16.5 | 0 |
-| LD 6 / MD 10 mg/kg | 6 | 18.9 | 100.0 | 89.5 | 38.0 | 0 |
-| LD 6 / MD 10 mg/kg | 7 | 20.4 | 100.0 | 94.0 | 52.5 | 0 |
+| LD 10 / MD 12 mg/kg | 3 | 19.9 | 100.0 | 95.0 | 48.0 | 0 |
+| LD 10 / MD 12 mg/kg | 4 | 22.2 | 100.0 | 98.5 | 71.0 | 0 |
+| LD 10 / MD 12 mg/kg | 5 | 24.1 | 100.0 | 98.5 | 82.5 | 0 |
+| LD 10 / MD 12 mg/kg | 6 | 25.6 | 100.0 | 98.5 | 88.0 | 0 |
+| LD 10 / MD 12 mg/kg | 7 | 27.1 | 100.0 | 99.0 | 92.0 | 0 |
+| LD 14 / MD 16 mg/kg | 3 | 26.7 | 100.0 | 100.0 | 97.5 | 0 |
+| LD 14 / MD 16 mg/kg | 4 | 29.2 | 100.0 | 100.0 | 98.5 | 0 |
+| LD 14 / MD 16 mg/kg | 5 | 31.6 | 100.0 | 100.0 | 99.5 | 0 |
+| LD 14 / MD 16 mg/kg | 6 | 33.7 | 100.0 | 100.0 | 99.5 | 0 |
+| LD 14 / MD 16 mg/kg | 7 | 35.7 | 100.0 | 100.0 | 100.0 | 0 |
+| LD 6 / MD 10 mg/kg | 3 | 13.4 | 97.5 | 15.5 | 0.0 | 0 |
+| LD 6 / MD 10 mg/kg | 4 | 15.6 | 99.5 | 62.0 | 2.5 | 0 |
+| LD 6 / MD 10 mg/kg | 5 | 17.6 | 100.0 | 83.5 | 15.5 | 0 |
+| LD 6 / MD 10 mg/kg | 6 | 19.2 | 100.0 | 93.0 | 39.5 | 0 |
+| LD 6 / MD 10 mg/kg | 7 | 20.6 | 100.0 | 94.5 | 55.5 | 0 |
 
 Trough concentrations and probability of target attainment on days 3-7,
 200 virtual subjects per regimen. Replicates Figure 2 of Kim 2024.
@@ -685,11 +685,11 @@ knitr::kable(claims, digits = 1,
 
 | Claim | Achieved | Gate | Pass |
 |:---|---:|:---|:---|
-| LD 6 / MD 10 mg/kg q24h: Ctrough \>10 mg/L in \>=90%, days 3-7 (Section 3.4, Figure 2) | 94.5 | TRUE | TRUE |
-| LD 14 / MD 16 mg/kg q24h: Ctrough \>20 mg/L in \>=90%, days 3-7 (Section 3.4, Figure 2) | 99.0 | TRUE | TRUE |
-| LD 10 / MD 12 mg/kg q24h: Ctrough \>15 mg/L in \>90%, days 4-7 (Section 4) | 99.5 | TRUE | TRUE |
-| LD 10 / MD 12 mg/kg q24h: Ctrough \>15 mg/L in \>90% on day 3 (Section 4) | 97.0 | FALSE | TRUE |
-| LD 10 / MD 12 mg/kg q24h does NOT reach 90% for Ctrough \>20 mg/L on day 3 (‘LDs and MDs had to be over 14 mg/kg’, Section 3.4) | 46.5 | TRUE | TRUE |
+| LD 6 / MD 10 mg/kg q24h: Ctrough \>10 mg/L in \>=90%, days 3-7 (Section 3.4, Figure 2) | 97.5 | TRUE | TRUE |
+| LD 14 / MD 16 mg/kg q24h: Ctrough \>20 mg/L in \>=90%, days 3-7 (Section 3.4, Figure 2) | 97.5 | TRUE | TRUE |
+| LD 10 / MD 12 mg/kg q24h: Ctrough \>15 mg/L in \>90%, days 4-7 (Section 4) | 98.5 | TRUE | TRUE |
+| LD 10 / MD 12 mg/kg q24h: Ctrough \>15 mg/L in \>90% on day 3 (Section 4) | 95.0 | FALSE | TRUE |
+| LD 10 / MD 12 mg/kg q24h does NOT reach 90% for Ctrough \>20 mg/L on day 3 (‘LDs and MDs had to be over 14 mg/kg’, Section 3.4) | 48.0 | TRUE | TRUE |
 
 Published dosing claims vs. the packaged model. `Gate = FALSE` rows are
 reported but not asserted (see below). {.table}

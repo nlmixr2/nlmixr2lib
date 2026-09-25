@@ -437,7 +437,7 @@ max_analytic_pct <- max(abs(analytic_chk$pct))
 # executable Table 4 comparison in the next section.
 stopifnot(max_analytic_pct < 0.01)
 signif(max_analytic_pct, 3)
-#> [1] 1.2e-09
+#> [1] 8.4e-07
 ```
 
 ### 2. Mass balance – `AUC[0,T] * CL == dose in - amount remaining`
@@ -511,8 +511,8 @@ half_life_chk |>
 
 | Estimation | t1/2 from simulated tail (h) | t1/2 closed form (h) | Difference (%) |
 |:-----------|-----------------------------:|---------------------:|---------------:|
-| NLLS       |                       190.32 |               190.32 |              0 |
-| NLME       |                       664.15 |               664.15 |              0 |
+| NLLS       |                       190.32 |               190.32 |          1e-07 |
+| NLME       |                       664.15 |               664.15 |          0e+00 |
 
 Terminal half-life: simulated tail slope vs log(2)/beta. {.table
 style="width:100%;"}
@@ -611,7 +611,7 @@ knitr::kable(
 |:-----------------------|-------------:|----------:|----------:|-------:|
 | Cmax (mg/L)            |  NLME 350 mg |      55.2 |      55.2 |  +0.0% |
 | Cmax (mg/L)            |  NLME 500 mg |      78.9 |      78.9 |  +0.0% |
-| Cmax (mg/L)            | NLME 1000 mg |       158 |       158 |  +0.0% |
+| Cmax (mg/L)            | NLME 1000 mg |       158 |       158 |  -0.0% |
 | Cmax (mg/L)            | NLME 1500 mg |       237 |       237 |  +0.0% |
 | Cmax (mg/L)            |  NLLS 350 mg |      64.6 |      64.6 |  -0.0% |
 | Cmax (mg/L)            |  NLLS 500 mg |      92.3 |      92.3 |  -0.0% |
@@ -676,7 +676,7 @@ c(auc = signif(max(abs(auc_pct)), 3),
   cmax = signif(max(abs(cmax_pct)), 3),
   half_life = signif(max(abs(thalf_pct)), 3))
 #>       auc      cmax half_life 
-#>  1.01e-03  1.09e-11  6.14e-01
+#>  1.01e-03  9.24e-13  6.14e-01
 ```
 
 `AUC(0-inf)` also has to be exactly proportional to dose, since neither
@@ -696,8 +696,8 @@ lin
 #> # A tibble: 2 × 2
 #>   model spread_pct
 #>   <chr>      <dbl>
-#> 1 NLLS    1.53e-13
-#> 2 NLME    2.48e-13
+#> 1 NLLS    5.06e-10
+#> 2 NLME    1.43e-12
 ```
 
 ## Reproducing the paper’s central quantitative claims

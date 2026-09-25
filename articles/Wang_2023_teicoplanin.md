@@ -177,8 +177,8 @@ knitr::kable(det_tab, digits = c(0, 4, 4, 5))
 
 | Identity | Expected | Observed | % diff |
 |:---|---:|---:|---:|
-| AUC(0-inf) after a single 400 mg dose = Dose / CL | 477.3270 | 477.2962 | -0.00644 |
-| PKNCA CL(obs) = model CL | 0.8380 | 0.8381 | 0.00644 |
+| AUC(0-inf) after a single 400 mg dose = Dose / CL | 477.3270 | 477.2963 | -0.00642 |
+| PKNCA CL(obs) = model CL | 0.8380 | 0.8381 | 0.00642 |
 | PKNCA terminal half-life = analytic beta half-life | 64.0443 | 63.8623 | -0.28418 |
 
 ``` r
@@ -347,8 +347,8 @@ knitr::kable(design_tab, digits = 1)
 
 | scheme | n cells | median \|% diff\| | 90th pctile \|% diff\| | median % diff |
 |:---|---:|---:|---:|---:|
-| stratum midpoint (17.4 / 45 / 75 / 110) | 64 | 16.2 | 23.8 | 16.2 |
-| stratum upper bound (30 / 60 / 90 / 130) | 64 | 4.6 | 9.3 | 4.4 |
+| stratum midpoint (17.4 / 45 / 75 / 110) | 64 | 17.3 | 23.3 | 17.3 |
+| stratum upper bound (30 / 60 / 90 / 130) | 64 | 4.7 | 9.7 | 4.6 |
 
 Simulating each stratum at its **upper bound** reproduces all 64
 published trough medians with a median absolute deviation of a few
@@ -410,8 +410,8 @@ knitr::kable(ruv_tab, digits = 2)
 | Quantity | Median IQR width ratio (q75/q25) |
 |:---|---:|
 | Published (Tables S2-1, S2-2) | 2.15 |
-| Simulated, individual prediction only | 1.82 |
-| Simulated, with proportional residual error | 2.16 |
+| Simulated, individual prediction only | 1.83 |
+| Simulated, with proportional residual error | 2.13 |
 
 ``` r
 
@@ -454,8 +454,8 @@ stopifnot(nrow(replication) == 64L)
 
 | Comparison | n cells | Median | 90th pctile | Maximum |
 |:---|---:|---:|---:|---:|
-| Median trough concentration (% difference) | 64 | 4.0 | 9.0 | 10.4 |
-| Probability of target attainment (percentage points) | 64 | 2.1 | 4.9 | 7.3 |
+| Median trough concentration (% difference) | 64 | 3.6 | 7.8 | 12.7 |
+| Probability of target attainment (percentage points) | 64 | 2.5 | 5.8 | 8.4 |
 
 ``` r
 
@@ -483,38 +483,38 @@ The full 72 h comparison, one row per regimen and stratum:
 
 | Stratum | Regimen | Published Cmin (mg/L) | Simulated Cmin (mg/L) | % diff | Published PTA (%) | Simulated PTA (%) | pp diff |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| eGFR 30-60 | 400 mg q12hx3, 400 mg qd | 8.9 | 8.5 | -4.8 | 39.4 | 38.5 | -0.9 |
-| eGFR 30-60 | 400 mg q12hx5, 400 mg qd | 11.0 | 11.6 | 5.3 | 56.9 | 62.0 | 5.1 |
-| eGFR 30-60 | 600 mg q12hx3, 600 mg qd | 13.4 | 13.1 | -2.2 | 68.8 | 70.0 | 1.2 |
-| eGFR 30-60 | 600 mg q12hx5, 600 mg qd | 16.6 | 17.7 | 6.5 | 80.3 | 79.5 | -0.8 |
-| eGFR 30-60 | 800 mg q12hx3, 400 mg qd | 13.6 | 14.4 | 6.2 | 43.5 | 46.5 | 3.0 |
-| eGFR 30-60 | 800 mg q12hx3, 600 mg qd | 15.4 | 16.4 | 6.3 | 52.2 | 56.5 | 4.3 |
-| eGFR 30-60 | 800 mg q12hx3, 800 mg qd | 17.0 | 17.9 | 5.2 | 59.2 | 62.0 | 2.8 |
-| eGFR 30-60 | 800 mg q12hx5, 800 mg qd | 22.8 | 21.2 | -7.0 | 76.2 | 77.0 | 0.8 |
-| eGFR 60-90 | 400 mg q12hx3, 400 mg qd | 7.1 | 7.7 | 8.3 | 26.0 | 30.5 | 4.5 |
-| eGFR 60-90 | 400 mg q12hx5, 400 mg qd | 9.2 | 8.9 | -3.1 | 43.6 | 42.0 | -1.6 |
-| eGFR 60-90 | 600 mg q12hx3, 600 mg qd | 10.9 | 9.8 | -10.1 | 55.7 | 49.0 | -6.7 |
-| eGFR 60-90 | 600 mg q12hx5, 600 mg qd | 13.5 | 13.9 | 3.0 | 70.2 | 74.5 | 4.3 |
-| eGFR 60-90 | 800 mg q12hx3, 400 mg qd | 11.4 | 11.9 | 4.4 | 31.7 | 36.0 | 4.3 |
-| eGFR 60-90 | 800 mg q12hx3, 600 mg qd | 13.4 | 13.4 | 0.2 | 40.2 | 39.5 | -0.7 |
-| eGFR 60-90 | 800 mg q12hx3, 800 mg qd | 14.0 | 13.7 | -2.2 | 44.2 | 43.5 | -0.7 |
-| eGFR 60-90 | 800 mg q12hx5, 800 mg qd | 18.8 | 18.5 | -1.7 | 64.9 | 65.5 | 0.6 |
-| eGFR 90-130 | 400 mg q12hx3, 400 mg qd | 5.5 | 5.5 | 0.8 | 13.8 | 12.0 | -1.8 |
-| eGFR 90-130 | 400 mg q12hx5, 400 mg qd | 7.5 | 7.2 | -4.3 | 31.1 | 31.0 | -0.1 |
-| eGFR 90-130 | 600 mg q12hx3, 600 mg qd | 8.7 | 8.7 | -0.2 | 40.4 | 36.5 | -3.9 |
-| eGFR 90-130 | 600 mg q12hx5, 600 mg qd | 11.2 | 11.9 | 6.4 | 57.7 | 60.5 | 2.8 |
-| eGFR 90-130 | 800 mg q12hx3, 400 mg qd | 8.9 | 9.0 | 1.7 | 18.7 | 18.0 | -0.7 |
-| eGFR 90-130 | 800 mg q12hx3, 600 mg qd | 10.3 | 10.1 | -2.2 | 24.6 | 24.0 | -0.6 |
-| eGFR 90-130 | 800 mg q12hx3, 800 mg qd | 10.9 | 11.1 | 1.6 | 30.4 | 27.5 | -2.9 |
-| eGFR 90-130 | 800 mg q12hx5, 800 mg qd | 14.0 | 15.3 | 9.5 | 47.8 | 51.5 | 3.7 |
-| eGFR \<= 30 | 400 mg q12hx3, 400 mg qd | 10.5 | 9.9 | -5.5 | 52.8 | 49.5 | -3.3 |
-| eGFR \<= 30 | 400 mg q12hx5, 400 mg qd | 13.7 | 13.3 | -2.8 | 71.2 | 70.5 | -0.7 |
-| eGFR \<= 30 | 600 mg q12hx3, 600 mg qd | 15.7 | 16.3 | 3.5 | 77.9 | 81.0 | 3.1 |
-| eGFR \<= 30 | 600 mg q12hx5, 600 mg qd | 20.7 | 19.5 | -6.0 | 87.0 | 87.5 | 0.5 |
-| eGFR \<= 30 | 800 mg q12hx3, 400 mg qd | 16.9 | 18.5 | 9.5 | 59.2 | 60.0 | 0.8 |
-| eGFR \<= 30 | 800 mg q12hx3, 600 mg qd | 18.7 | 19.9 | 6.5 | 66.8 | 70.5 | 3.7 |
-| eGFR \<= 30 | 800 mg q12hx3, 800 mg qd | 21.2 | 21.5 | 1.3 | 74.3 | 75.5 | 1.2 |
-| eGFR \<= 30 | 800 mg q12hx5, 800 mg qd | 27.1 | 29.5 | 9.0 | 85.4 | 86.0 | 0.6 |
+| eGFR 30-60 | 400 mg q12hx3, 400 mg qd | 8.9 | 8.2 | -8.2 | 39.4 | 34.0 | -5.4 |
+| eGFR 30-60 | 400 mg q12hx5, 400 mg qd | 11.0 | 11.9 | 7.9 | 56.9 | 63.0 | 6.1 |
+| eGFR 30-60 | 600 mg q12hx3, 600 mg qd | 13.4 | 12.8 | -4.3 | 68.8 | 65.5 | -3.3 |
+| eGFR 30-60 | 600 mg q12hx5, 600 mg qd | 16.6 | 16.6 | 0.0 | 80.3 | 85.0 | 4.7 |
+| eGFR 30-60 | 800 mg q12hx3, 400 mg qd | 13.6 | 13.7 | 0.7 | 43.5 | 45.0 | 1.5 |
+| eGFR 30-60 | 800 mg q12hx3, 600 mg qd | 15.4 | 14.3 | -7.2 | 52.2 | 48.5 | -3.7 |
+| eGFR 30-60 | 800 mg q12hx3, 800 mg qd | 17.0 | 18.1 | 6.7 | 59.2 | 60.0 | 0.8 |
+| eGFR 30-60 | 800 mg q12hx5, 800 mg qd | 22.8 | 21.3 | -6.4 | 76.2 | 69.0 | -7.2 |
+| eGFR 60-90 | 400 mg q12hx3, 400 mg qd | 7.1 | 7.1 | 0.6 | 26.0 | 30.5 | 4.5 |
+| eGFR 60-90 | 400 mg q12hx5, 400 mg qd | 9.2 | 9.6 | 4.8 | 43.6 | 48.0 | 4.4 |
+| eGFR 60-90 | 600 mg q12hx3, 600 mg qd | 10.9 | 11.2 | 2.3 | 55.7 | 59.0 | 3.3 |
+| eGFR 60-90 | 600 mg q12hx5, 600 mg qd | 13.5 | 13.2 | -2.1 | 70.2 | 69.0 | -1.2 |
+| eGFR 60-90 | 800 mg q12hx3, 400 mg qd | 11.4 | 11.0 | -3.8 | 31.7 | 33.0 | 1.3 |
+| eGFR 60-90 | 800 mg q12hx3, 600 mg qd | 13.4 | 13.0 | -3.2 | 40.2 | 39.0 | -1.2 |
+| eGFR 60-90 | 800 mg q12hx3, 800 mg qd | 14.0 | 14.6 | 4.0 | 44.2 | 46.5 | 2.3 |
+| eGFR 60-90 | 800 mg q12hx5, 800 mg qd | 18.8 | 17.5 | -6.8 | 64.9 | 62.5 | -2.4 |
+| eGFR 90-130 | 400 mg q12hx3, 400 mg qd | 5.5 | 5.9 | 7.3 | 13.8 | 14.0 | 0.2 |
+| eGFR 90-130 | 400 mg q12hx5, 400 mg qd | 7.5 | 7.7 | 2.2 | 31.1 | 28.0 | -3.1 |
+| eGFR 90-130 | 600 mg q12hx3, 600 mg qd | 8.7 | 8.2 | -5.9 | 40.4 | 39.5 | -0.9 |
+| eGFR 90-130 | 600 mg q12hx5, 600 mg qd | 11.2 | 10.1 | -9.6 | 57.7 | 51.5 | -6.2 |
+| eGFR 90-130 | 800 mg q12hx3, 400 mg qd | 8.9 | 10.0 | 12.7 | 18.7 | 23.0 | 4.3 |
+| eGFR 90-130 | 800 mg q12hx3, 600 mg qd | 10.3 | 9.7 | -6.2 | 24.6 | 25.0 | 0.4 |
+| eGFR 90-130 | 800 mg q12hx3, 800 mg qd | 10.9 | 10.4 | -4.3 | 30.4 | 22.0 | -8.4 |
+| eGFR 90-130 | 800 mg q12hx5, 800 mg qd | 14.0 | 14.2 | 1.4 | 47.8 | 46.5 | -1.3 |
+| eGFR \<= 30 | 400 mg q12hx3, 400 mg qd | 10.5 | 9.4 | -10.5 | 52.8 | 47.0 | -5.8 |
+| eGFR \<= 30 | 400 mg q12hx5, 400 mg qd | 13.7 | 13.4 | -2.3 | 71.2 | 70.0 | -1.2 |
+| eGFR \<= 30 | 600 mg q12hx3, 600 mg qd | 15.7 | 16.6 | 5.5 | 77.9 | 80.5 | 2.6 |
+| eGFR \<= 30 | 600 mg q12hx5, 600 mg qd | 20.7 | 20.7 | -0.1 | 87.0 | 88.5 | 1.5 |
+| eGFR \<= 30 | 800 mg q12hx3, 400 mg qd | 16.9 | 17.5 | 3.3 | 59.2 | 59.0 | -0.2 |
+| eGFR \<= 30 | 800 mg q12hx3, 600 mg qd | 18.7 | 19.0 | 1.5 | 66.8 | 68.0 | 1.2 |
+| eGFR \<= 30 | 800 mg q12hx3, 800 mg qd | 21.2 | 19.5 | -7.8 | 74.3 | 68.5 | -5.8 |
+| eGFR \<= 30 | 800 mg q12hx5, 800 mg qd | 27.1 | 27.4 | 1.2 | 85.4 | 82.5 | -2.9 |
 
 Replicates Wang 2023 Supplementary Tables S2-1 and S2-2, Cmin 72 h rows.
 {.table style="width:100%;"}
@@ -523,38 +523,38 @@ And at 168 h:
 
 | Stratum | Regimen | Published Css (mg/L) | Simulated Css (mg/L) | % diff | Published PTA (%) | Simulated PTA (%) | pp diff |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| eGFR 30-60 | 400 mg q12hx3, 400 mg qd | 10.8 | 10.7 | -1.3 | 55.9 | 53.5 | -2.4 |
-| eGFR 30-60 | 400 mg q12hx5, 400 mg qd | 11.5 | 11.4 | -0.8 | 60.7 | 55.0 | -5.7 |
-| eGFR 30-60 | 600 mg q12hx3, 600 mg qd | 16.2 | 16.7 | 2.8 | 80.5 | 81.0 | 0.5 |
-| eGFR 30-60 | 600 mg q12hx5, 600 mg qd | 17.2 | 17.6 | 2.0 | 83.2 | 85.5 | 2.3 |
-| eGFR 30-60 | 800 mg q12hx3, 400 mg qd | 12.2 | 12.7 | 4.1 | 36.2 | 36.5 | 0.3 |
-| eGFR 30-60 | 800 mg q12hx3, 600 mg qd | 17.3 | 17.4 | 0.6 | 60.4 | 59.0 | -1.4 |
-| eGFR 30-60 | 800 mg q12hx3, 800 mg qd | 21.6 | 22.4 | 3.8 | 73.5 | 75.5 | 2.0 |
-| eGFR 30-60 | 800 mg q12hx5, 800 mg qd | 23.6 | 24.2 | 2.7 | 76.6 | 75.0 | -1.6 |
-| eGFR 60-90 | 400 mg q12hx3, 400 mg qd | 8.3 | 8.8 | 6.3 | 37.7 | 41.0 | 3.3 |
-| eGFR 60-90 | 400 mg q12hx5, 400 mg qd | 9.3 | 9.2 | -1.1 | 45.4 | 43.0 | -2.4 |
-| eGFR 60-90 | 600 mg q12hx3, 600 mg qd | 13.0 | 12.6 | -3.0 | 66.4 | 67.0 | 0.6 |
-| eGFR 60-90 | 600 mg q12hx5, 600 mg qd | 13.9 | 13.7 | -1.2 | 69.6 | 66.5 | -3.1 |
-| eGFR 60-90 | 800 mg q12hx3, 400 mg qd | 9.8 | 8.8 | -10.4 | 23.2 | 19.0 | -4.2 |
-| eGFR 60-90 | 800 mg q12hx3, 600 mg qd | 13.5 | 12.8 | -5.0 | 43.6 | 41.5 | -2.1 |
-| eGFR 60-90 | 800 mg q12hx3, 800 mg qd | 16.4 | 17.2 | 4.8 | 56.3 | 58.0 | 1.7 |
-| eGFR 60-90 | 800 mg q12hx5, 800 mg qd | 18.6 | 18.5 | -0.3 | 65.8 | 64.5 | -1.3 |
-| eGFR 90-130 | 400 mg q12hx3, 400 mg qd | 6.5 | 6.0 | -8.4 | 23.4 | 21.0 | -2.4 |
-| eGFR 90-130 | 400 mg q12hx5, 400 mg qd | 6.9 | 6.6 | -5.0 | 27.2 | 26.5 | -0.7 |
-| eGFR 90-130 | 600 mg q12hx3, 600 mg qd | 9.9 | 9.2 | -7.0 | 48.4 | 45.0 | -3.4 |
-| eGFR 90-130 | 600 mg q12hx5, 600 mg qd | 10.5 | 9.7 | -7.9 | 53.4 | 47.0 | -6.4 |
-| eGFR 90-130 | 800 mg q12hx3, 400 mg qd | 7.2 | 7.0 | -2.7 | 9.9 | 11.5 | 1.6 |
-| eGFR 90-130 | 800 mg q12hx3, 600 mg qd | 10.0 | 9.6 | -3.8 | 24.5 | 19.0 | -5.5 |
-| eGFR 90-130 | 800 mg q12hx3, 800 mg qd | 12.9 | 12.3 | -4.7 | 40.9 | 36.5 | -4.4 |
-| eGFR 90-130 | 800 mg q12hx5, 800 mg qd | 13.8 | 13.6 | -1.2 | 44.8 | 44.5 | -0.3 |
-| eGFR \<= 30 | 400 mg q12hx3, 400 mg qd | 13.9 | 13.5 | -3.2 | 74.9 | 71.5 | -3.4 |
-| eGFR \<= 30 | 400 mg q12hx5, 400 mg qd | 15.0 | 16.5 | 10.2 | 75.2 | 82.5 | 7.3 |
-| eGFR \<= 30 | 600 mg q12hx3, 600 mg qd | 20.6 | 21.2 | 2.7 | 90.0 | 89.5 | -0.5 |
-| eGFR \<= 30 | 600 mg q12hx5, 600 mg qd | 22.8 | 21.5 | -5.8 | 91.9 | 92.0 | 0.1 |
-| eGFR \<= 30 | 800 mg q12hx3, 400 mg qd | 16.5 | 18.1 | 9.6 | 57.9 | 65.0 | 7.1 |
-| eGFR \<= 30 | 800 mg q12hx3, 600 mg qd | 21.5 | 22.1 | 2.7 | 76.3 | 74.5 | -1.8 |
-| eGFR \<= 30 | 800 mg q12hx3, 800 mg qd | 28.3 | 30.8 | 8.9 | 86.8 | 87.5 | 0.7 |
-| eGFR \<= 30 | 800 mg q12hx5, 800 mg qd | 30.4 | 30.1 | -1.0 | 88.0 | 91.0 | 3.0 |
+| eGFR 30-60 | 400 mg q12hx3, 400 mg qd | 10.8 | 10.7 | -0.8 | 55.9 | 52.0 | -3.9 |
+| eGFR 30-60 | 400 mg q12hx5, 400 mg qd | 11.5 | 11.9 | 3.1 | 60.7 | 62.5 | 1.8 |
+| eGFR 30-60 | 600 mg q12hx3, 600 mg qd | 16.2 | 16.9 | 4.1 | 80.5 | 75.0 | -5.5 |
+| eGFR 30-60 | 600 mg q12hx5, 600 mg qd | 17.2 | 17.7 | 2.9 | 83.2 | 85.5 | 2.3 |
+| eGFR 30-60 | 800 mg q12hx3, 400 mg qd | 12.2 | 12.3 | 0.6 | 36.2 | 32.0 | -4.2 |
+| eGFR 30-60 | 800 mg q12hx3, 600 mg qd | 17.3 | 17.6 | 1.6 | 60.4 | 61.5 | 1.1 |
+| eGFR 30-60 | 800 mg q12hx3, 800 mg qd | 21.6 | 21.3 | -1.2 | 73.5 | 73.0 | -0.5 |
+| eGFR 30-60 | 800 mg q12hx5, 800 mg qd | 23.6 | 21.8 | -7.6 | 76.6 | 76.0 | -0.6 |
+| eGFR 60-90 | 400 mg q12hx3, 400 mg qd | 8.3 | 8.5 | 2.4 | 37.7 | 38.5 | 0.8 |
+| eGFR 60-90 | 400 mg q12hx5, 400 mg qd | 9.3 | 9.7 | 4.0 | 45.4 | 46.5 | 1.1 |
+| eGFR 60-90 | 600 mg q12hx3, 600 mg qd | 13.0 | 14.3 | 9.9 | 66.4 | 70.0 | 3.6 |
+| eGFR 60-90 | 600 mg q12hx5, 600 mg qd | 13.9 | 13.3 | -4.0 | 69.6 | 66.5 | -3.1 |
+| eGFR 60-90 | 800 mg q12hx3, 400 mg qd | 9.8 | 9.5 | -3.4 | 23.2 | 23.5 | 0.3 |
+| eGFR 60-90 | 800 mg q12hx3, 600 mg qd | 13.5 | 12.8 | -5.2 | 43.6 | 39.5 | -4.1 |
+| eGFR 60-90 | 800 mg q12hx3, 800 mg qd | 16.4 | 17.1 | 4.4 | 56.3 | 60.5 | 4.2 |
+| eGFR 60-90 | 800 mg q12hx5, 800 mg qd | 18.6 | 18.4 | -1.0 | 65.8 | 59.0 | -6.8 |
+| eGFR 90-130 | 400 mg q12hx3, 400 mg qd | 6.5 | 6.8 | 5.4 | 23.4 | 28.5 | 5.1 |
+| eGFR 90-130 | 400 mg q12hx5, 400 mg qd | 6.9 | 6.8 | -1.6 | 27.2 | 23.5 | -3.7 |
+| eGFR 90-130 | 600 mg q12hx3, 600 mg qd | 9.9 | 10.3 | 3.7 | 48.4 | 52.0 | 3.6 |
+| eGFR 90-130 | 600 mg q12hx5, 600 mg qd | 10.5 | 10.1 | -4.0 | 53.4 | 50.5 | -2.9 |
+| eGFR 90-130 | 800 mg q12hx3, 400 mg qd | 7.2 | 7.4 | 3.3 | 9.9 | 12.0 | 2.1 |
+| eGFR 90-130 | 800 mg q12hx3, 600 mg qd | 10.0 | 10.4 | 3.8 | 24.5 | 24.5 | 0.0 |
+| eGFR 90-130 | 800 mg q12hx3, 800 mg qd | 12.9 | 13.0 | 0.7 | 40.9 | 35.5 | -5.4 |
+| eGFR 90-130 | 800 mg q12hx5, 800 mg qd | 13.8 | 13.6 | -1.5 | 44.8 | 43.5 | -1.3 |
+| eGFR \<= 30 | 400 mg q12hx3, 400 mg qd | 13.9 | 13.9 | 0.0 | 74.9 | 68.5 | -6.4 |
+| eGFR \<= 30 | 400 mg q12hx5, 400 mg qd | 15.0 | 16.1 | 7.1 | 75.2 | 76.0 | 0.8 |
+| eGFR \<= 30 | 600 mg q12hx3, 600 mg qd | 20.6 | 21.2 | 3.0 | 90.0 | 92.5 | 2.5 |
+| eGFR \<= 30 | 600 mg q12hx5, 600 mg qd | 22.8 | 21.5 | -5.6 | 91.9 | 91.5 | -0.4 |
+| eGFR \<= 30 | 800 mg q12hx3, 400 mg qd | 16.5 | 16.5 | 0.2 | 57.9 | 55.5 | -2.4 |
+| eGFR \<= 30 | 800 mg q12hx3, 600 mg qd | 21.5 | 21.8 | 1.4 | 76.3 | 72.5 | -3.8 |
+| eGFR \<= 30 | 800 mg q12hx3, 800 mg qd | 28.3 | 27.4 | -3.3 | 86.8 | 87.5 | 0.7 |
+| eGFR \<= 30 | 800 mg q12hx5, 800 mg qd | 30.4 | 30.5 | 0.3 | 88.0 | 87.0 | -1.0 |
 
 Replicates Wang 2023 Supplementary Tables S2-1 and S2-2, Css 168 h rows.
 {.table}
@@ -606,22 +606,22 @@ rec_tab |>
 
 | Stratum | Infection type | Regimen | Endpoint (h) | Published PTA (%) | Simulated PTA (%) | pp diff |
 |:---|:---|:---|---:|---:|---:|---:|
-| eGFR 30-60 | Deep-seated | 800 mg q12hx3, 600 mg qd | 72 | 52.2 | 56.5 | 4.3 |
-| eGFR 30-60 | Deep-seated | 800 mg q12hx3, 600 mg qd | 168 | 60.4 | 59.0 | -1.4 |
-| eGFR 60-90 | Deep-seated | 800 mg q12hx3, 800 mg qd | 72 | 44.2 | 43.5 | -0.7 |
-| eGFR 60-90 | Deep-seated | 800 mg q12hx3, 800 mg qd | 168 | 56.3 | 58.0 | 1.7 |
-| eGFR 90-130 | Deep-seated | 800 mg q12hx5, 800 mg qd | 72 | 47.8 | 51.5 | 3.7 |
-| eGFR 90-130 | Deep-seated | 800 mg q12hx5, 800 mg qd | 168 | 44.8 | 44.5 | -0.3 |
-| eGFR \<= 30 | Deep-seated | 800 mg q12hx3, 400 mg qd | 72 | 59.2 | 60.0 | 0.8 |
-| eGFR \<= 30 | Deep-seated | 800 mg q12hx3, 400 mg qd | 168 | 57.9 | 65.0 | 7.1 |
-| eGFR 30-60 | Gram-positive | 400 mg q12hx5, 400 mg qd | 72 | 56.9 | 62.0 | 5.1 |
-| eGFR 30-60 | Gram-positive | 400 mg q12hx5, 400 mg qd | 168 | 60.7 | 55.0 | -5.7 |
-| eGFR 60-90 | Gram-positive | 600 mg q12hx3, 600 mg qd | 72 | 55.7 | 49.0 | -6.7 |
-| eGFR 60-90 | Gram-positive | 600 mg q12hx3, 600 mg qd | 168 | 66.4 | 67.0 | 0.6 |
-| eGFR 90-130 | Gram-positive | 600 mg q12hx5, 600 mg qd | 72 | 57.7 | 60.5 | 2.8 |
-| eGFR 90-130 | Gram-positive | 600 mg q12hx5, 600 mg qd | 168 | 53.4 | 47.0 | -6.4 |
-| eGFR \<= 30 | Gram-positive | 400 mg q12hx3, 400 mg qd | 72 | 52.8 | 49.5 | -3.3 |
-| eGFR \<= 30 | Gram-positive | 400 mg q12hx3, 400 mg qd | 168 | 74.9 | 71.5 | -3.4 |
+| eGFR 30-60 | Deep-seated | 800 mg q12hx3, 600 mg qd | 72 | 52.2 | 48.5 | -3.7 |
+| eGFR 30-60 | Deep-seated | 800 mg q12hx3, 600 mg qd | 168 | 60.4 | 61.5 | 1.1 |
+| eGFR 60-90 | Deep-seated | 800 mg q12hx3, 800 mg qd | 72 | 44.2 | 46.5 | 2.3 |
+| eGFR 60-90 | Deep-seated | 800 mg q12hx3, 800 mg qd | 168 | 56.3 | 60.5 | 4.2 |
+| eGFR 90-130 | Deep-seated | 800 mg q12hx5, 800 mg qd | 72 | 47.8 | 46.5 | -1.3 |
+| eGFR 90-130 | Deep-seated | 800 mg q12hx5, 800 mg qd | 168 | 44.8 | 43.5 | -1.3 |
+| eGFR \<= 30 | Deep-seated | 800 mg q12hx3, 400 mg qd | 72 | 59.2 | 59.0 | -0.2 |
+| eGFR \<= 30 | Deep-seated | 800 mg q12hx3, 400 mg qd | 168 | 57.9 | 55.5 | -2.4 |
+| eGFR 30-60 | Gram-positive | 400 mg q12hx5, 400 mg qd | 72 | 56.9 | 63.0 | 6.1 |
+| eGFR 30-60 | Gram-positive | 400 mg q12hx5, 400 mg qd | 168 | 60.7 | 62.5 | 1.8 |
+| eGFR 60-90 | Gram-positive | 600 mg q12hx3, 600 mg qd | 72 | 55.7 | 59.0 | 3.3 |
+| eGFR 60-90 | Gram-positive | 600 mg q12hx3, 600 mg qd | 168 | 66.4 | 70.0 | 3.6 |
+| eGFR 90-130 | Gram-positive | 600 mg q12hx5, 600 mg qd | 72 | 57.7 | 51.5 | -6.2 |
+| eGFR 90-130 | Gram-positive | 600 mg q12hx5, 600 mg qd | 168 | 53.4 | 50.5 | -2.9 |
+| eGFR \<= 30 | Gram-positive | 400 mg q12hx3, 400 mg qd | 72 | 52.8 | 47.0 | -5.8 |
+| eGFR \<= 30 | Gram-positive | 400 mg q12hx3, 400 mg qd | 168 | 74.9 | 68.5 | -6.4 |
 
 Replicates Wang 2023 Table 3. {.table}
 
@@ -705,6 +705,27 @@ nca_cohort <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 #> Warning in assert_conc(conc = conc): Negative concentrations found
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
 nca_res <- as.data.frame(nca_cohort$result)
 stopifnot(nrow(nca_res) > 0L)
 ```
@@ -727,8 +748,8 @@ knitr::kable(cmp, digits = 1)
 
 | NCA parameter | Reference | Simulated | % diff   |
 |:--------------|:----------|:----------|:---------|
-| Cmax (mg/L)   | 39.9      | 43.8      | +9.9%    |
-| Cmin (mg/L)   | 10.5      | 6.63      | -36.9%\* |
+| Cmax (mg/L)   | 39.9      | 43.8      | +9.7%    |
+| Cmin (mg/L)   | 10.5      | 6.35      | -39.5%\* |
 
 ``` r
 

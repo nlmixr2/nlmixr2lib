@@ -654,12 +654,12 @@ ss_summary |>
 
 | Analyte | Arm | AUCtau (ng\*h/mL) | Cmax,ss (ng/mL) | Cmin,ss (ng/mL) | tmax (h) |
 |:---|:---|---:|---:|---:|---:|
-| Fruquintinib | Healthy volunteer | 6017.5 | 296.0 | 208.8 | 2 |
-| Fruquintinib | Patient, no PPI | 6182.4 | 302.1 | 218.1 | 2 |
-| Fruquintinib | Patient, with PPI | 6181.8 | 293.8 | 216.4 | 4 |
-| M11 | Healthy volunteer | 2138.7 | 89.9 | 87.4 | 14 |
-| M11 | Patient, no PPI | 2226.9 | 93.5 | 91.3 | 12 |
-| M11 | Patient, with PPI | 2262.7 | 95.1 | 92.8 | 14 |
+| Fruquintinib | Healthy volunteer | 5956.0 | 293.3 | 204.0 | 2 |
+| Fruquintinib | Patient, no PPI | 6241.4 | 302.6 | 220.1 | 2 |
+| Fruquintinib | Patient, with PPI | 6175.8 | 285.2 | 219.7 | 4 |
+| M11 | Healthy volunteer | 1977.1 | 82.9 | 81.4 | 12 |
+| M11 | Patient, no PPI | 2243.0 | 94.1 | 92.4 | 12 |
+| M11 | Patient, with PPI | 2204.8 | 92.3 | 90.8 | 14 |
 
 Simulated steady-state exposures over the day 20-21 dosing interval,
 median of 200 subjects per arm. {.table}
@@ -696,8 +696,8 @@ chk |>
 
 | Metric                   | Simulated | Published |
 |:-------------------------|----------:|----------:|
-| Median Cmin,ss (ng/mL)   |   218.131 |    228.00 |
-| Fraction above 176 ng/mL |     0.770 |      0.66 |
+| Median Cmin,ss (ng/mL)   |   220.111 |    228.00 |
+| Fraction above 176 ng/mL |     0.730 |      0.66 |
 
 Steady-state trough against Zhou 2025. {.table}
 
@@ -819,7 +819,7 @@ stopifnot(auc_cv > 0.20, auc_cv < 0.40)
 stopifnot(abs(stats::median(auc_patients) / auctau_p - 1) < 0.15)
 ```
 
-Simulated coefficient of variation in steady-state AUCtau is 26.8%,
+Simulated coefficient of variation in steady-state AUCtau is 26.2%,
 consistent with the published BSV on CL/F of 26.2% plus the body-weight
 contribution – and clearly inconsistent with the 51.2% a variance-scale
 misreading of Table 2 would produce.

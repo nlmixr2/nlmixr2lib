@@ -454,17 +454,17 @@ blood_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 ))
 summary(blood_res)
 #>  Interval Start Interval End                arm  N AUClast (min*ng/mL)
-#>               0          Inf    4 mg/kg vehicle 30        56700 [33.0]
-#>               0          Inf 4 mg/kg + GF120918 30        60400 [34.1]
-#>               0          Inf   40 mg/kg vehicle 30       606000 [36.9]
+#>               0          Inf    4 mg/kg vehicle 30        55700 [42.3]
+#>               0          Inf 4 mg/kg + GF120918 30        63400 [39.0]
+#>               0          Inf   40 mg/kg vehicle 30       625000 [34.0]
 #>  Cmax (ng/mL)        Tmax (min) Half-life (min) AUCinf,obs (min*ng/mL)
-#>   2780 [15.6] 10.0 [10.0, 10.0]     54.9 [16.7]           57200 [33.6]
-#>   2870 [15.0] 10.0 [10.0, 10.0]     62.9 [20.7]           61300 [35.4]
-#>  28400 [15.9] 10.0 [10.0, 10.0]     63.2 [25.1]          616000 [38.4]
+#>   2710 [17.3] 10.0 [10.0, 10.0]     59.6 [22.3]           56400 [43.8]
+#>   2910 [16.4] 10.0 [10.0, 10.0]     70.4 [25.6]           64700 [40.2]
+#>  28800 [13.9] 10.0 [10.0, 10.0]     69.2 [26.9]          638000 [36.1]
 #>  CL (based on AUCinf,obs) (ng/(min*ng/mL))
-#>                                20.6 [36.4]
-#>                                19.4 [38.0]
-#>                                19.1 [41.7]
+#>                                20.9 [50.9]
+#>                                18.4 [44.2]
+#>                                18.4 [39.7]
 #> 
 #> Caption: AUClast, Cmax, AUCinf,obs, CL (based on AUCinf,obs): geometric mean and geometric coefficient of variation; Tmax: median and range; Half-life: arithmetic mean and standard deviation; N: number of subjects
 ```
@@ -487,13 +487,13 @@ ecf_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 ))
 summary(ecf_res)
 #>  Interval Start Interval End                arm  N AUClast (min*ng/mL)
-#>               0          165    4 mg/kg vehicle 30         6690 [29.3]
-#>               0          165 4 mg/kg + GF120918 30         9740 [21.4]
-#>               0          165   40 mg/kg vehicle 30        38800 [40.2]
+#>               0          165    4 mg/kg vehicle 30         6850 [33.7]
+#>               0          165 4 mg/kg + GF120918 30        10500 [33.9]
+#>               0          165   40 mg/kg vehicle 30        37400 [44.2]
 #>  Cmax (ng/mL)        Tmax (min)
-#>   53.8 [35.1]  35.0 [15.0, 165]
-#>   68.3 [21.1]  90.0 [25.0, 165]
-#>    398 [44.5] 20.0 [12.0, 50.0]
+#>   54.4 [39.6]  30.0 [15.0, 150]
+#>   75.9 [37.7]  75.0 [25.0, 165]
+#>    365 [48.4] 25.0 [15.0, 40.0]
 #> 
 #> Caption: AUClast, Cmax: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```
@@ -535,9 +535,9 @@ tibble(
 #> # A tibble: 3 × 2
 #>   statistic          value
 #>   <chr>              <dbl>
-#> 1 median % diff     -0.400
-#> 2 90th pct |% diff|  0.463
-#> 3 max |% diff|       0.518
+#> 1 median % diff     -0.386
+#> 2 90th pct |% diff|  0.470
+#> 3 max |% diff|       0.512
 
 stopifnot(
   # Algebraic identity between PKNCA's Dose/AUCinf.obs and the solver's own
@@ -579,14 +579,14 @@ knitr::kable(nca_tbl)
 
 | NCA parameter | arm | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
-| AUClast (ng\*min/mL, dose-normalised to 4 mg/kg) | 4 mg/kg vehicle | 6810 | 6720 | -1.4% |
-| AUClast (ng\*min/mL, dose-normalised to 4 mg/kg) | 4 mg/kg + GF120918 | 8460 | 9640 | +13.9% |
-| AUClast (ng\*min/mL, dose-normalised to 4 mg/kg) | 40 mg/kg vehicle | 3990 | 4150 | +3.9% |
+| AUClast (ng\*min/mL, dose-normalised to 4 mg/kg) | 4 mg/kg vehicle | 6810 | 6620 | -2.7% |
+| AUClast (ng\*min/mL, dose-normalised to 4 mg/kg) | 4 mg/kg + GF120918 | 8460 | 10300 | +22.1%\* |
+| AUClast (ng\*min/mL, dose-normalised to 4 mg/kg) | 40 mg/kg vehicle | 3990 | 3850 | -3.5% |
 
 ``` r
 
 attr(nca_tbl, "footnote")
-#> NULL
+#> [1] "* differs from reference by more than ±20%."
 ```
 
 ``` r
@@ -881,15 +881,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -897,7 +897,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] utf8_1.2.6          withr_3.0.3         scales_1.4.0       
 #> [49] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         

@@ -626,7 +626,7 @@ cv_kdeg <- sd(kdeg_i$kdeg) / mean(kdeg_i$kdeg)
 stopifnot(cv_kdeg > 0.05, cv_kdeg < 0.18)
 c(target_cv = 0.10, realised_cv = cv_kdeg)
 #>   target_cv realised_cv 
-#>  0.10000000  0.09915155
+#>  0.10000000  0.09821983
 ```
 
 ``` r
@@ -870,9 +870,9 @@ stopifnot(cv_base > 0.06, cv_base < 0.18,
 c(target_cv_baseline = 0.108, realised_cv_baseline = cv_base,
   target_cv_yss = 0.22, realised_cv_yss = cv_yss)
 #>   target_cv_baseline realised_cv_baseline        target_cv_yss 
-#>            0.1080000            0.1070351            0.2200000 
+#>            0.1080000            0.1060864            0.2200000 
 #>      realised_cv_yss 
-#>            0.2215072
+#>            0.2222860
 ```
 
 ``` r

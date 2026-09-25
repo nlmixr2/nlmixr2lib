@@ -216,7 +216,9 @@ sim <- rxode2::rxSolve(
 sim_typical <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = as.data.frame(events),
-  keep   = c("treatment", "CRCL")
+  keep   = c("treatment", "CRCL"),
+  # Tight solver tolerances: Gate 2 holds this solve to the closed form at 1e-8.
+  rtol   = 1e-10, atol = 1e-12
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -322,10 +324,10 @@ stopifnot(
   nrow(cf_rel) >= nrow(arms) *
     length(seq(last_dose_time, last_dose_time + tau, by = 0.25))
 )
-# Realised max relative error 4.6e-15 -- machine precision, because both sides
-# evaluate the same linear solution. 1e-8 leaves seven orders of headroom over
-# any plausible solver-tolerance change while still going red on a structural
-# or unit error, which moves these by whole percent.
+# Realised max relative error 4.4e-10 with the ODE integrator at rtol 1e-10 /
+# atol 1e-12 (4.6e-15 under the analytic linCmt path). 1e-8 leaves about 20x
+# headroom over that floor while still going red on a structural or unit
+# error, which moves these by whole percent.
 stopifnot(max(cf_rel$rel) < 1e-8)
 
 cf_check |>
@@ -343,10 +345,10 @@ cf_check |>
 
 | Regimen                        | Max \|simulated - closed form\| (mg/L) |
 |:-------------------------------|---------------------------------------:|
-| 500 mg q12h, CRCL 65.24 mL/min |                                      0 |
-| 750 mg q12h, CRCL 100 mL/min   |                                      0 |
-| 750 mg q12h, CRCL 30 mL/min    |                                      0 |
-| 750 mg q12h, CRCL 65.24 mL/min |                                      0 |
+| 500 mg q12h, CRCL 65.24 mL/min |                                  0e+00 |
+| 750 mg q12h, CRCL 100 mL/min   |                                  1e-08 |
+| 750 mg q12h, CRCL 30 mL/min    |                                  2e-08 |
+| 750 mg q12h, CRCL 65.24 mL/min |                                  0e+00 |
 
 Largest absolute discrepancy between the rxode2 solve and the
 closed-form superposition solution for repeated zero-order infusions

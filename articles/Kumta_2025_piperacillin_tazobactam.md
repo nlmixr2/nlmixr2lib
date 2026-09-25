@@ -446,17 +446,17 @@ nca_summary |>
 
 | Analyte \| matrix   | NCA parameter |  Median | 5th pct | 95th pct |
 |:--------------------|:--------------|--------:|--------:|---------:|
-| Piperacillin CSF    | auclast       |  19.653 |   6.139 |   80.240 |
-| Piperacillin CSF    | cmax          |   3.381 |   1.052 |   13.693 |
-| Piperacillin CSF    | cmin          |   2.968 |   0.922 |   12.162 |
-| Piperacillin CSF    | tmax          |   6.000 |   3.738 |    6.000 |
-| Piperacillin plasma | auclast       | 305.554 | 208.631 |  489.255 |
-| Piperacillin plasma | cmax          | 213.939 | 162.311 |  298.942 |
-| Piperacillin plasma | cmin          |   5.542 |   1.019 |   24.211 |
+| Piperacillin CSF    | auclast       |  20.112 |   5.668 |   74.046 |
+| Piperacillin CSF    | cmax          |   3.440 |   0.966 |   12.576 |
+| Piperacillin CSF    | cmin          |   3.021 |   0.847 |   11.094 |
+| Piperacillin CSF    | tmax          |   6.000 |   4.238 |    6.000 |
+| Piperacillin plasma | auclast       | 320.683 | 186.448 |  514.008 |
+| Piperacillin plasma | cmax          | 223.494 | 160.664 |  308.092 |
+| Piperacillin plasma | cmin          |   5.537 |   0.531 |   24.606 |
 | Piperacillin plasma | tmax          |   0.500 |   0.500 |    0.500 |
-| Tazobactam plasma   | auclast       |  43.474 |  25.511 |   71.984 |
-| Tazobactam plasma   | cmax          |  27.157 |  21.421 |   34.102 |
-| Tazobactam plasma   | cmin          |   1.089 |   0.140 |    3.942 |
+| Tazobactam plasma   | auclast       |  42.563 |  25.374 |   73.113 |
+| Tazobactam plasma   | cmax          |  27.219 |  20.957 |   33.459 |
+| Tazobactam plasma   | cmin          |   0.959 |   0.148 |    4.235 |
 | Tazobactam plasma   | tmax          |   0.500 |   0.500 |    0.500 |
 
 Simulated steady-state NCA over 42-48 h (n = 200). AUC in mg\*h/L,
@@ -525,9 +525,9 @@ comparison |>
 |:---|---:|---:|---:|:---|
 | Piperacillin plasma AUCtau (mg\*h/L), typical | 314.961 | 314.955 | 0.0 | Closed form Dose / CL from Table 3 |
 | Tazobactam plasma AUCtau (mg\*h/L), typical | 42.735 | 42.735 | 0.0 | Closed form Dose / CL from Table 3 |
-| CSF / plasma AUC ratio (%), median | 3.730 | 4.200 | 12.6 | Results, ‘Penetration into cerebrospinal fluid’ |
-| CSF piperacillin (mg/L), median | 2.460 | 2.131 | -13.4 | Results, ‘Penetration into cerebrospinal fluid’ |
-| Plasma piperacillin trough (mg/L), median | 6.670 | 5.542 | -16.9 | Results, ‘Penetration into cerebrospinal fluid’ |
+| CSF / plasma AUC ratio (%), median | 3.730 | 3.692 | -1.0 | Results, ‘Penetration into cerebrospinal fluid’ |
+| CSF piperacillin (mg/L), median | 2.460 | 2.178 | -11.5 | Results, ‘Penetration into cerebrospinal fluid’ |
+| Plasma piperacillin trough (mg/L), median | 6.670 | 5.537 | -17.0 | Results, ‘Penetration into cerebrospinal fluid’ |
 
 Simulated vs. published model-derived quantities. {.table}
 

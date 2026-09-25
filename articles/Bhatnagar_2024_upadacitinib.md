@@ -370,16 +370,16 @@ nca_med |>
 
 | Indication | Parameter | Median | 5th pctile | 95th pctile |
 |:-----------|:----------|-------:|-----------:|------------:|
-| AS         | auclast   | 370.00 |     201.00 |       687.0 |
-| AS         | cav       |  15.40 |       8.39 |        28.6 |
-| AS         | cmax      |  40.00 |      24.90 |        72.2 |
-| AS         | ctrough   |   4.63 |       1.36 |        20.8 |
-| AS         | tmax      |   3.50 |       3.25 |         3.5 |
-| nr-axSpA   | auclast   | 353.00 |     197.00 |       623.0 |
-| nr-axSpA   | cav       |  14.70 |       8.21 |        26.0 |
-| nr-axSpA   | cmax      |  40.70 |      24.10 |        63.5 |
-| nr-axSpA   | ctrough   |   4.12 |       1.19 |        16.4 |
-| nr-axSpA   | tmax      |   3.50 |       3.25 |         3.5 |
+| AS         | auclast   | 345.00 |    206.000 |       613.0 |
+| AS         | cav       |  14.40 |      8.590 |        25.5 |
+| AS         | cmax      |  41.60 |     22.500 |        67.9 |
+| AS         | ctrough   |   3.96 |      0.983 |        17.9 |
+| AS         | tmax      |   3.50 |      3.250 |         3.5 |
+| nr-axSpA   | auclast   | 365.00 |    212.000 |       662.0 |
+| nr-axSpA   | cav       |  15.20 |      8.850 |        27.6 |
+| nr-axSpA   | cmax      |  41.40 |     25.100 |        63.9 |
+| nr-axSpA   | ctrough   |   4.85 |      0.998 |        17.6 |
+| nr-axSpA   | tmax      |   3.50 |      3.250 |         3.5 |
 
 Simulated steady-state NCA by indication. {.table}
 
@@ -412,16 +412,16 @@ knitr::kable(
 )
 ```
 
-| NCA parameter      | indication | Reference | Simulated |   % diff |
-|:-------------------|:-----------|----------:|----------:|---------:|
-| Cmax (ng/mL)       | AS         |      38.8 |        40 |    +3.0% |
-| Cmax (ng/mL)       | nr-axSpA   |      37.3 |      40.7 |    +9.2% |
-| AUClast (ng\*h/mL) | AS         |       348 |       370 |    +6.4% |
-| AUClast (ng\*h/mL) | nr-axSpA   |       355 |       353 |    -0.6% |
-| Cavg (ng/mL)       | AS         |      14.5 |      15.4 |    +6.4% |
-| Cavg (ng/mL)       | nr-axSpA   |      14.8 |      14.7 |    -0.7% |
-| Ctrough (ng/mL)    | AS         |      3.71 |      4.63 | +24.9%\* |
-| Ctrough (ng/mL)    | nr-axSpA   |      4.58 |      4.12 |   -10.1% |
+| NCA parameter      | indication | Reference | Simulated | % diff |
+|:-------------------|:-----------|----------:|----------:|-------:|
+| Cmax (ng/mL)       | AS         |      38.8 |      41.6 |  +7.1% |
+| Cmax (ng/mL)       | nr-axSpA   |      37.3 |      41.4 | +11.0% |
+| AUClast (ng\*h/mL) | AS         |       348 |       345 |  -0.9% |
+| AUClast (ng\*h/mL) | nr-axSpA   |       355 |       365 |  +2.9% |
+| Cavg (ng/mL)       | AS         |      14.5 |      14.4 |  -0.9% |
+| Cavg (ng/mL)       | nr-axSpA   |      14.8 |      15.2 |  +2.8% |
+| Ctrough (ng/mL)    | AS         |      3.71 |      3.96 |  +6.6% |
+| Ctrough (ng/mL)    | nr-axSpA   |      4.58 |      4.85 |  +5.8% |
 
 Simulated vs. Bhatnagar 2024 Table 1. \* differs from reference by
 \>20%. {.table}
@@ -467,8 +467,8 @@ gate |>
 
 | indication | pct_cav | pct_auc | pct_cmax | pct_ctrough |
 |:-----------|--------:|--------:|---------:|------------:|
-| AS         |     6.4 |     6.4 |      3.0 |        24.9 |
-| nr-axSpA   |    -0.7 |    -0.6 |      9.2 |       -10.1 |
+| AS         |    -0.9 |    -0.9 |      7.1 |         6.6 |
+| nr-axSpA   |     2.8 |     2.9 |     11.0 |         5.8 |
 
 Percent difference of the simulated median from Table 1. {.table}
 
@@ -570,7 +570,7 @@ stopifnot(
 )
 signif(quantile(abs(cav_sim$pct), c(0.5, 0.9, 0.95, 0.99)), 3)
 #>     50%     90%     95%     99% 
-#> 0.00223 0.02450 0.04410 0.09380
+#> 0.00218 0.03280 0.06150 0.16200
 ```
 
 ``` r

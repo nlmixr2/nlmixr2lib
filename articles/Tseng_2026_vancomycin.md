@@ -740,8 +740,8 @@ knitr::kable(auc_by_arm, digits = 4,
 | arm                        | median_auc | daily_mg | auc_per_mg |
 |:---------------------------|-----------:|---------:|-----------:|
 | 1000 mg/day (500 mg q12h)  |   243.1990 |     1000 |     0.2432 |
-| 2000 mg/day (1000 mg q12h) |   460.9543 |     2000 |     0.2305 |
-| 3000 mg/day (1500 mg q12h) |   707.6031 |     3000 |     0.2359 |
+| 2000 mg/day (1000 mg q12h) |   460.9544 |     2000 |     0.2305 |
+| 3000 mg/day (1500 mg q12h) |   707.6032 |     3000 |     0.2359 |
 
 Dose-normalised steady-state AUC0-24 by arm. {.table}
 
@@ -835,8 +835,8 @@ knitr::kable(cmp, caption = paste(
 
 | NCA parameter      | arm           | Reference | Simulated | % diff |
 |:-------------------|:--------------|----------:|----------:|-------:|
-| Cmin (ug/mL)       | study replica |      10.8 |      11.3 |  +4.9% |
-| AUClast (ug\*h/mL) | study replica |       478 |       492 |  +2.9% |
+| Cmin (ug/mL)       | study replica |      10.8 |      10.9 |  +1.2% |
+| AUClast (ug\*h/mL) | study replica |       478 |       490 |  +2.5% |
 
 Simulated study-replica cohort versus the published Table 3 medians. \*
 marks a difference above 20%. {.table}
@@ -848,7 +848,7 @@ cmp_num <- as.numeric(gsub("[^0-9.eE+-]", "", cmp$`% diff`))
 names(cmp_num) <- cmp[[1]]
 round(cmp_num, 1)
 #>      Cmin (ug/mL) AUClast (ug*h/mL) 
-#>               4.9               2.9
+#>               1.2               2.5
 
 # Cohort-derived and comparing against a nine-patient observed median, so the
 # bound is an envelope on the CENTRE. The paper's own patients had individual

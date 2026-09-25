@@ -1085,13 +1085,13 @@ per_subj <- sim_int |>
 
 cat(sprintf("AUC over the interval vs Dose/CL: median %.4f%%, max |diff| %.4f%%\n",
             stats::median(per_subj$auc_pct), max(abs(per_subj$auc_pct))))
-#> AUC over the interval vs Dose/CL: median -0.0074%, max |diff| 0.0190%
+#> AUC over the interval vs Dose/CL: median -0.0075%, max |diff| 0.0151%
 cat(sprintf("NCA half-life vs log(2)*V/CL:     median %.4f%%, max |diff| %.4f%%\n",
             stats::median(per_subj$thalf_pct), max(abs(per_subj$thalf_pct))))
 #> NCA half-life vs log(2)*V/CL:     median 0.0000%, max |diff| 0.0000%
 cat(sprintf("Steady-state accumulation factor: max %.8f (1.0 = no accumulation)\n",
             max(per_subj$accum)))
-#> Steady-state accumulation factor: max 1.00001773 (1.0 = no accumulation)
+#> Steady-state accumulation factor: max 1.00006457 (1.0 = no accumulation)
 
 stopifnot(
   # Trapezoidal / log-down error on a dense grid over a mono-exponential decay.
@@ -1130,10 +1130,10 @@ per_subj |>
 
 | regimen | n | Cmax (mg/L) | Tmax (h) | AUCtau (mg\*h/L) | Ctrough (mg/L) | t1/2 (h) | CL (L/h) |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| 1000 mg q12h | 15 | 306.9 | 0.5 | 241.2 | 0.00e+00 | 0.343 | 4.15 |
-| 1000 mg q8h | 76 | 318.2 | 0.5 | 263.5 | 2.97e-04 | 0.374 | 3.79 |
-| 2000 mg q12h | 7 | 657.8 | 0.5 | 575.3 | 2.20e-06 | 0.409 | 3.48 |
-| 2000 mg q8h | 3 | 667.3 | 0.5 | 598.8 | 3.30e-03 | 0.425 | 3.34 |
+| 1000 mg q12h | 15 | 315.7 | 0.5 | 258.5 | 1.00e-07 | 0.367 | 3.87 |
+| 1000 mg q8h | 76 | 317.0 | 0.5 | 261.0 | 2.60e-04 | 0.371 | 3.83 |
+| 2000 mg q12h | 7 | 645.6 | 0.5 | 547.0 | 8.00e-07 | 0.389 | 3.66 |
+| 2000 mg q8h | 3 | 665.3 | 0.5 | 593.7 | 2.95e-03 | 0.422 | 3.37 |
 
 Simulated steady-state NCA by regimen (median across the cohort).
 {.table style="width:100%;"}
@@ -1175,10 +1175,10 @@ knitr::kable(
 
 | NCA parameter | regimen      | Reference | Simulated | % diff     |
 |:--------------|:-------------|:----------|:----------|:-----------|
-| Cmax (mg/L)   | 1000 mg q12h | 40.7      | 307       | +654.3%\*  |
-| Cmax (mg/L)   | 1000 mg q8h  | 40.7      | 318       | +681.9%\*  |
-| Cmax (mg/L)   | 2000 mg q12h | 40.7      | 658       | +1516.6%\* |
-| Cmax (mg/L)   | 2000 mg q8h  | 40.7      | 667       | +1540.1%\* |
+| Cmax (mg/L)   | 1000 mg q12h | 40.7      | 316       | +676.0%\*  |
+| Cmax (mg/L)   | 1000 mg q8h  | 40.7      | 317       | +679.0%\*  |
+| Cmax (mg/L)   | 2000 mg q12h | 40.7      | 646       | +1486.6%\* |
+| Cmax (mg/L)   | 2000 mg q8h  | 40.7      | 665       | +1535.0%\* |
 
 Simulated steady-state Cmax against the mean concentration Rancic 2024
 observed 5 - 30 min after the end of the infusion (Table 1). \* marks a
@@ -1235,7 +1235,7 @@ cat(sprintf("Half-life implied by the observed decay     : %.2f - %.2f h\n",
 #> Half-life implied by the observed decay     : 1.47 - 2.31 h
 cat(sprintf("Simulated median Cmax, 1000 mg q8h          : %.1f mg/L\n",
             stats::median(per_subj$cmax[per_subj$regimen == "1000 mg q8h"])))
-#> Simulated median Cmax, 1000 mg q8h          : 318.2 mg/L
+#> Simulated median Cmax, 1000 mg q8h          : 317.0 mg/L
 
 # Deterministic: every number above comes from the paper's own printed values,
 # none from the simulated cohort. Both independent routes put the volume at
@@ -1395,15 +1395,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1411,7 +1411,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

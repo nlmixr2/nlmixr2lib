@@ -600,7 +600,7 @@ knitr::kable(spread_tbl, digits = 3, caption = paste(
 | Reading of Table 3 “omega^2 CL = 0.282” | omega on CL | sd(log Cc), closed form | sd(log Cc), simulated | Trough 95th/5th of the observed simulation |
 |:---|---:|---:|---:|---:|
 | 0.282 is the SD (packaged) | 0.282 | 0.623 | 0.642 | 16.248 |
-| 0.282 is the variance (rejected) | 0.531 | 1.174 | 1.207 | 67.709 |
+| 0.282 is the variance (rejected) | 0.531 | 1.174 | 1.301 | 100.720 |
 
 Trough spread under the two readings, against a digitised Figure 3
 95th/5th ratio of 8.7. The variance reading roughly doubles sd(log Cc)

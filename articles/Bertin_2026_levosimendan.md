@@ -616,12 +616,6 @@ nca <- list(
 #> Warning in assert_conc(conc = conc): Negative concentrations found
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 
 # Convert Cmax back to ng/mL; tmax and auclast are left in native units.
 mw_by_analyte <- c(levosimendan = MW_LEVO, or1855 = MW_M1, or1896 = MW_M2)
@@ -645,18 +639,18 @@ nca_long |>
 
 | Scenario   | Analyte      | Cmax (ng/mL) | Tmax (h) |
 |:-----------|:-------------|-------------:|---------:|
-| Scenario 1 | levosimendan |       30.486 |    24.00 |
-| Scenario 1 | or1855       |        0.760 |    53.75 |
-| Scenario 1 | or1896       |        2.447 |   115.75 |
-| Scenario 2 | levosimendan |       59.004 |    24.00 |
-| Scenario 2 | or1855       |        1.638 |    56.75 |
-| Scenario 2 | or1896       |        3.908 |   118.50 |
-| Scenario 3 | levosimendan |       14.255 |    48.00 |
-| Scenario 3 | or1855       |        0.654 |    67.00 |
-| Scenario 3 | or1896       |        0.544 |   114.50 |
-| Scenario 4 | levosimendan |       29.548 |    48.00 |
-| Scenario 4 | or1855       |        1.394 |    68.00 |
-| Scenario 4 | or1896       |        0.998 |   116.00 |
+| Scenario 1 | levosimendan |       30.031 |    24.00 |
+| Scenario 1 | or1855       |        0.735 |    55.25 |
+| Scenario 1 | or1896       |        2.389 |   118.50 |
+| Scenario 2 | levosimendan |       59.098 |    24.00 |
+| Scenario 2 | or1855       |        1.607 |    54.75 |
+| Scenario 2 | or1896       |        4.104 |   117.50 |
+| Scenario 3 | levosimendan |       14.303 |    48.00 |
+| Scenario 3 | or1855       |        0.695 |    67.00 |
+| Scenario 3 | or1896       |        0.529 |   113.00 |
+| Scenario 4 | levosimendan |       29.174 |    48.00 |
+| Scenario 4 | or1855       |        1.319 |    67.50 |
+| Scenario 4 | or1896       |        1.004 |   113.50 |
 
 Median simulated NCA results by scenario and analyte. {.table}
 
@@ -700,24 +694,24 @@ cmp |>
   )
 ```
 
-| NCA parameter | Scenario   | Analyte      | Reference | Simulated | % diff   |
-|:--------------|:-----------|:-------------|:----------|:----------|:---------|
-| Cmax (ng/mL)  | Scenario 1 | levosimendan | 30.4      | 30.5      | +0.3%    |
-| Cmax (ng/mL)  | Scenario 1 | or1855       | 0.77      | 0.76      | -1.3%    |
-| Cmax (ng/mL)  | Scenario 1 | or1896       | 2.37      | 2.45      | +3.3%    |
-| Cmax (ng/mL)  | Scenario 2 | levosimendan | 59.2      | 59        | -0.3%    |
-| Cmax (ng/mL)  | Scenario 2 | or1855       | 1.34      | 1.64      | +22.2%\* |
-| Cmax (ng/mL)  | Scenario 2 | or1896       | 4.01      | 3.91      | -2.5%    |
-| Cmax (ng/mL)  | Scenario 3 | levosimendan | 14.4      | 14.3      | -1.0%    |
-| Cmax (ng/mL)  | Scenario 3 | or1855       | 0.64      | 0.654     | +2.2%    |
-| Cmax (ng/mL)  | Scenario 3 | or1896       | 0.52      | 0.544     | +4.6%    |
-| Cmax (ng/mL)  | Scenario 4 | levosimendan | 28.8      | 29.5      | +2.6%    |
-| Cmax (ng/mL)  | Scenario 4 | or1855       | 1.3       | 1.39      | +7.2%    |
-| Cmax (ng/mL)  | Scenario 4 | or1896       | 1.04      | 0.998     | -4.0%    |
+| NCA parameter | Scenario   | Analyte      | Reference | Simulated | % diff |
+|:--------------|:-----------|:-------------|:----------|:----------|:-------|
+| Cmax (ng/mL)  | Scenario 1 | levosimendan | 30.4      | 30        | -1.2%  |
+| Cmax (ng/mL)  | Scenario 1 | or1855       | 0.77      | 0.735     | -4.5%  |
+| Cmax (ng/mL)  | Scenario 1 | or1896       | 2.37      | 2.39      | +0.8%  |
+| Cmax (ng/mL)  | Scenario 2 | levosimendan | 59.2      | 59.1      | -0.2%  |
+| Cmax (ng/mL)  | Scenario 2 | or1855       | 1.34      | 1.61      | +19.9% |
+| Cmax (ng/mL)  | Scenario 2 | or1896       | 4.01      | 4.1       | +2.3%  |
+| Cmax (ng/mL)  | Scenario 3 | levosimendan | 14.4      | 14.3      | -0.7%  |
+| Cmax (ng/mL)  | Scenario 3 | or1855       | 0.64      | 0.695     | +8.5%  |
+| Cmax (ng/mL)  | Scenario 3 | or1896       | 0.52      | 0.529     | +1.7%  |
+| Cmax (ng/mL)  | Scenario 4 | levosimendan | 28.8      | 29.2      | +1.3%  |
+| Cmax (ng/mL)  | Scenario 4 | or1855       | 1.3       | 1.32      | +1.4%  |
+| Cmax (ng/mL)  | Scenario 4 | or1896       | 1.04      | 1         | -3.4%  |
 
 Simulated median Cmax versus Bertin 2026 Table 3 (scenarios 1-2 also
 reported to three figures in Sect. 4). \* differs by more than 20%.
-{.table style="width:100%;"}
+{.table}
 
 The published 95% prediction intervals are reproduced as well:
 
@@ -758,18 +752,18 @@ pi_sim |>
 
 | Scenario   | Analyte      | Simulated 95% PI | Published 95% PI |
 |:-----------|:-------------|:-----------------|:-----------------|
-| Scenario 1 | levosimendan | 15.60 - 56.66    | 16.00 - 54.40    |
-| Scenario 1 | or1855       | 0.14 - 3.92      | 0.10 - 3.50      |
-| Scenario 1 | or1896       | 0.56 - 8.41      | 0.60 - 7.80      |
-| Scenario 2 | levosimendan | 30.06 - 111.87   | 33.10 - 110.40   |
-| Scenario 2 | or1855       | 0.30 - 6.70      | 0.20 - 6.30      |
-| Scenario 2 | or1896       | 1.35 - 17.13     | 1.10 - 12.40     |
-| Scenario 3 | levosimendan | 7.61 - 26.00     | 7.80 - 25.70     |
-| Scenario 3 | or1855       | 0.18 - 2.65      | 0.20 - 2.20      |
-| Scenario 3 | or1896       | 0.09 - 3.25      | 0.10 - 2.50      |
-| Scenario 4 | levosimendan | 16.27 - 54.53    | 15.60 - 51.40    |
-| Scenario 4 | or1855       | 0.32 - 5.97      | 0.30 - 4.40      |
-| Scenario 4 | or1896       | 0.18 - 4.61      | 0.20 - 5.00      |
+| Scenario 1 | levosimendan | 16.95 - 55.53    | 16.00 - 54.40    |
+| Scenario 1 | or1855       | 0.11 - 3.26      | 0.10 - 3.50      |
+| Scenario 1 | or1896       | 0.70 - 7.05      | 0.60 - 7.80      |
+| Scenario 2 | levosimendan | 33.94 - 104.86   | 33.10 - 110.40   |
+| Scenario 2 | or1855       | 0.22 - 6.46      | 0.20 - 6.30      |
+| Scenario 2 | or1896       | 1.11 - 15.78     | 1.10 - 12.40     |
+| Scenario 3 | levosimendan | 7.83 - 24.93     | 7.80 - 25.70     |
+| Scenario 3 | or1855       | 0.18 - 2.01      | 0.20 - 2.20      |
+| Scenario 3 | or1896       | 0.09 - 2.13      | 0.10 - 2.50      |
+| Scenario 4 | levosimendan | 14.35 - 48.60    | 15.60 - 51.40    |
+| Scenario 4 | or1855       | 0.32 - 4.23      | 0.30 - 4.40      |
+| Scenario 4 | or1896       | 0.16 - 5.23      | 0.20 - 5.00      |
 
 Simulated versus published 95% prediction intervals for Cmax (ng/mL).
 {.table}
@@ -847,10 +841,10 @@ tmax_cmp |>
 
 | Scenario   | Analyte | Simulated Tmax (h) | Published Tmax (h) | Diff (%) |
 |:-----------|:--------|-------------------:|-------------------:|---------:|
-| Scenario 1 | or1855  |               53.8 |                 62 |    -13.3 |
-| Scenario 1 | or1896  |              115.8 |                120 |     -3.5 |
+| Scenario 1 | or1855  |               55.2 |                 62 |    -10.9 |
+| Scenario 1 | or1896  |              118.5 |                120 |     -1.2 |
 | Scenario 3 | or1855  |               67.0 |                 70 |     -4.3 |
-| Scenario 3 | or1896  |              114.5 |                120 |     -4.6 |
+| Scenario 3 | or1896  |              113.0 |                120 |     -5.8 |
 
 Median simulated time to peak versus Bertin 2026 Sect. 3.2.1. {.table}
 
@@ -890,9 +884,9 @@ knitr::kable(finding, caption = "Doubling the neonatal dose recovers parent expo
 
 | Analyte      | Adult 0.1 (S1) | Neonate 0.1 (S3) | Neonate 0.2 (S4) | S4 / S1 ratio |
 |:-------------|---------------:|-----------------:|-----------------:|--------------:|
-| levosimendan |         30.486 |           14.255 |           29.548 |         0.969 |
-| or1855       |          0.760 |            0.654 |            1.394 |         1.835 |
-| or1896       |          2.447 |            0.544 |            0.998 |         0.408 |
+| levosimendan |         30.031 |           14.303 |           29.174 |         0.971 |
+| or1855       |          0.735 |            0.695 |            1.319 |         1.794 |
+| or1896       |          2.389 |            0.529 |            1.004 |         0.420 |
 
 Doubling the neonatal dose recovers parent exposure but not OR-1896.
 {.table}

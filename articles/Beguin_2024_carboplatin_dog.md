@@ -377,9 +377,9 @@ knitr::kable(
 
 | Status   | Median Cl (L/h/kg) |
 |:---------|-------------------:|
-| Intact   |               4.11 |
-| Neutered |               3.39 |
-| All      |               3.64 |
+| Intact   |               4.24 |
+| Neutered |               3.29 |
+| All      |               3.76 |
 
 Simulated median clearance. Beguin 2024 reports 3.62 overall, 4.26
 intact, 3.25 sterilized. {.table}
@@ -467,8 +467,8 @@ knitr::kable(tox_cmp, digits = c(0, 3, 3),
 
 | Quantity                                   | Simulated | Published |
 |:-------------------------------------------|----------:|----------:|
-| Median predicted AUC0-inf (ug\*h/L)        |  2992.197 |   3342.00 |
-| Median thrombocyte reduction, exposure arm |     0.586 |      0.66 |
+| Median predicted AUC0-inf (ug\*h/L)        |  2900.237 |   3342.00 |
+| Median thrombocyte reduction, exposure arm |     0.560 |      0.66 |
 | Median thrombocyte reduction, dose arm     |     0.730 |      0.66 |
 
 Toxicity cohort vs Beguin 2024 (AUC median 3342 \[3121-4017\]; observed
@@ -551,7 +551,7 @@ ident <- pk_ind |>
 stopifnot(nrow(ident) == n_pk, !anyNA(ident$pct_diff))
 summary(ident$pct_diff)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -0.028284 -0.018308 -0.014673 -0.015461 -0.012207 -0.008218
+#> -0.025178 -0.017234 -0.015086 -0.015014 -0.012049 -0.008093
 # Realised max |difference| 0.025% on the grid above. The bound is 1%, which
 # is 40x that and still goes red on quadrature error alone: the same check on
 # a uniform 0.2 h grid gives 3.05%.
@@ -609,7 +609,7 @@ knitr::kable(cmp, caption = "Simulated vs published NCA in the toxicity cohort. 
 
 | NCA parameter          | treatment    | Reference | Simulated | % diff |
 |:-----------------------|:-------------|:----------|:----------|:-------|
-| AUC0-∞ (obs) (ug\*h/L) | 306 mg/m2 IV | 3340      | 2990      | -10.5% |
+| AUC0-∞ (obs) (ug\*h/L) | 306 mg/m2 IV | 3340      | 2900      | -13.2% |
 
 Simulated vs published NCA in the toxicity cohort. \* differs from
 reference by more than 20%. {.table}

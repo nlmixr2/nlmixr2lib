@@ -444,7 +444,7 @@ typical_pct   <- 100 * ref_eot$p_hbsag_loss[1]
 stopifnot(abs(mc_median_pct - typical_pct) < 1.5)
 ```
 
-The median of 200 sampled study-arms is 8.45% against a typical value of
+The median of 200 sampled study-arms is 8.33% against a typical value of
 8.55%.
 
 ## Check 4 – Table 3, the paper’s 100,000-replicate simulation answer key

@@ -612,9 +612,9 @@ ncaSum <- as.data.frame(ncaRes)
 
 | Parameter | gene-model | nongene-model |
 |:---|:---|:---|
-| AUC(0-168 h) (umol\*h/L) | 1.64e+03 \[1.06e+03, 2.51e+03\] | 1.66e+03 \[1.07e+03, 2.7e+03\] |
-| Cmax (umol/L) | 268 \[207, 353\] | 272 \[209, 349\] |
-| t1/2 (h) | 234 \[57.3, 798\] | 228 \[33.5, 763\] |
+| AUC(0-168 h) (umol\*h/L) | 1.63e+03 \[1.06e+03, 2.49e+03\] | 1.68e+03 \[1.06e+03, 2.7e+03\] |
+| Cmax (umol/L) | 265 \[195, 355\] | 276 \[210, 344\] |
+| t1/2 (h) | 206 \[48.5, 676\] | 207 \[54.9, 621\] |
 | Tmax (h) | 3 \[3, 3.25\] | 3 \[3, 3.25\] |
 
 Simulated NCA, median \[10th, 90th percentile\] over 200 subjects per
@@ -647,7 +647,7 @@ cmaxRatio <- medCmax / typicalCmax
 c(analytic_bolus_cmax = typicalCmax, simulated_median_cmax = medCmax,
   ratio = cmaxRatio)
 #>   analytic_bolus_cmax simulated_median_cmax                 ratio 
-#>           398.0500858           272.4729049             0.6845191
+#>           398.0500858           275.6021313             0.6923805
 
 stopifnot(cmaxRatio > 0.3, cmaxRatio < 1.1)
 
@@ -691,8 +691,8 @@ kable(
 
 | Composite carrier | Median AUC(0-168 h) | Subjects |
 |:------------------|--------------------:|---------:|
-| FALSE             |            1614.745 |      100 |
-| TRUE              |            1679.367 |      100 |
+| FALSE             |            1603.944 |      100 |
+| TRUE              |            1714.041 |      100 |
 
 AUC by composite ABCC4-ABCG2-ADORA2A genotype status. {.table}
 
@@ -712,7 +712,7 @@ carrierRatio <-
 # moves with the draw. Assert the magnitude is within a band that a sign flip
 # or an order-of-magnitude transcription error would break, not the exact value.
 carrierRatio
-#> [1] 1.04002
+#> [1] 1.068641
 stopifnot(carrierRatio > 0.85, carrierRatio < 1.45)
 ```
 
@@ -753,14 +753,14 @@ kable(
 
 | Model         | Threshold              | % exceeding |
 |:--------------|:-----------------------|------------:|
-| gene-model    | \> 50 umol/L at 24 h   |         1.0 |
-| gene-model    | \> 5 umol/L at 48 h    |         1.5 |
-| gene-model    | \> 0.2 umol/L at 72 h  |         9.5 |
-| gene-model    | \> 0.05 umol/L at 96 h |        20.5 |
+| gene-model    | \> 50 umol/L at 24 h   |         0.0 |
+| gene-model    | \> 5 umol/L at 48 h    |         1.0 |
+| gene-model    | \> 0.2 umol/L at 72 h  |        12.0 |
+| gene-model    | \> 0.05 umol/L at 96 h |        26.0 |
 | nongene-model | \> 50 umol/L at 24 h   |         0.5 |
-| nongene-model | \> 5 umol/L at 48 h    |         1.0 |
-| nongene-model | \> 0.2 umol/L at 72 h  |        11.5 |
-| nongene-model | \> 0.05 umol/L at 96 h |        28.0 |
+| nongene-model | \> 5 umol/L at 48 h    |         0.5 |
+| nongene-model | \> 0.2 umol/L at 72 h  |        12.5 |
+| nongene-model | \> 0.05 umol/L at 96 h |        30.0 |
 
 Simulated proportion exceeding each label threshold. {.table}
 
@@ -775,8 +775,8 @@ kable(
 
 | Model         | % meeting any criterion |
 |:--------------|------------------------:|
-| gene-model    |                    21.5 |
-| nongene-model |                    28.5 |
+| gene-model    |                      26 |
+| nongene-model |                      30 |
 
 Simulated proportion meeting at least one delayed-elimination criterion.
 {.table}

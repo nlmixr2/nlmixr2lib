@@ -470,9 +470,9 @@ te_tab |>
 | Statistic                    | James 2025 | This simulation | Difference |
 |:-----------------------------|-----------:|----------------:|-----------:|
 | Median target engagement (%) |       92.0 |            91.5 |       -0.5 |
-| 5th percentile (%)           |       86.0 |            85.1 |       -0.9 |
-| 95th percentile (%)          |       96.2 |            96.2 |        0.0 |
-| Subjects above 90% (%)       |       68.5 |            64.0 |       -4.5 |
+| 5th percentile (%)           |       86.0 |            85.0 |       -1.0 |
+| 95th percentile (%)          |       96.2 |            95.8 |       -0.4 |
+| Subjects above 90% (%)       |       68.5 |            63.3 |       -5.2 |
 
 Week-8 target engagement: simulated cohort vs James 2025 Sect. 3.4.
 {.table}
@@ -549,15 +549,15 @@ as.data.frame(nca_res) |>
 
 | Indication | Statistic | AUC1008-1344h (mg\*h/L) | Cav (mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) |
 |:---|:---|---:|---:|---:|---:|---:|
-| CLBP | median | 42395.0 | 126.2 | 215.8 | 84.5 | 12 |
-| CLBP | p05 | 29610.6 | 88.1 | 164.2 | 55.7 | 12 |
-| CLBP | p95 | 65853.4 | 196.0 | 301.6 | 133.7 | 12 |
-| DPNP | median | 44694.9 | 133.0 | 237.9 | 83.5 | 12 |
-| DPNP | p05 | 29388.1 | 87.5 | 165.6 | 54.1 | 12 |
-| DPNP | p95 | 92955.3 | 276.7 | 412.6 | 172.1 | 12 |
-| OA | median | 45254.6 | 134.7 | 213.5 | 86.7 | 12 |
-| OA | p05 | 29313.4 | 87.2 | 166.6 | 57.0 | 12 |
-| OA | p95 | 81248.3 | 241.8 | 386.9 | 167.2 | 12 |
+| CLBP | median | 43521.5 | 129.5 | 215.5 | 84.5 | 12 |
+| CLBP | p05 | 24751.6 | 73.7 | 144.0 | 45.0 | 12 |
+| CLBP | p95 | 80617.8 | 239.9 | 362.1 | 148.9 | 12 |
+| DPNP | median | 47284.0 | 140.7 | 243.2 | 87.5 | 12 |
+| DPNP | p05 | 25478.6 | 75.8 | 169.4 | 44.8 | 12 |
+| DPNP | p95 | 84079.1 | 250.2 | 432.8 | 156.2 | 12 |
+| OA | median | 45062.3 | 134.1 | 213.8 | 90.8 | 12 |
+| OA | p05 | 29043.1 | 86.4 | 149.5 | 54.4 | 12 |
+| OA | p95 | 77636.9 | 231.1 | 360.6 | 145.7 | 12 |
 
 Simulated NCA over the final dosing interval, by pain indication.
 {.table}

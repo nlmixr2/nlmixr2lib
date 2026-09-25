@@ -293,8 +293,6 @@ cyno_sim <- rxode2::rxSolve(
   cyno_ui, cyno_events,
   keep = c("treatment", "WT", "DOSE_TECOVIRIMAT_MGKG")
 ) |> as.data.frame()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_ka_1, etaiov_ka_2, etaiov_cl_1, etaiov_cl_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 # Solver-noise guard: a concentration that has decayed below zero would make
 # PKNCA's log-linear steps return NaN.
@@ -365,7 +363,7 @@ stopifnot(
 )
 round(peak, 3)
 #> Human 400 mg Human 600 mg NHP 10 mg/kg  NHP 3 mg/kg 
-#>        1.111        1.708        0.984        0.360
+#>        1.106        1.647        0.934        0.392
 ```
 
 ## PKNCA validation
@@ -460,8 +458,8 @@ identity_chk |>
 
 | Arm | Median AUC0-tau,ss (mg\*h/L) | Median Dose/(CL/F) (mg\*h/L) | Median % difference | 90th pct \|% difference\| |
 |:---|---:|---:|---:|---:|
-| Human 400 mg | 9.96 | 9.96 | -0.02 | 0.14 |
-| Human 600 mg | 14.71 | 14.76 | -0.01 | 0.12 |
+| Human 400 mg | 9.78 | 9.81 | -0.01 | 0.15 |
+| Human 600 mg | 13.82 | 13.82 | -0.02 | 0.14 |
 
 Steady-state AUC identity check in the simulated human cohort. {.table}
 
@@ -523,8 +521,6 @@ typ_sim <- dplyr::bind_rows(
 )
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etaltlag', 'etalcl', 'etalvc', 'etalq', 'etalvp'
 #> Warning: multi-subject simulation without without 'omega'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_ka_1, etaiov_ka_2, etaiov_cl_1, etaiov_cl_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etaiov_ka_1', 'etaiov_ka_2', 'etaiov_cl_1', 'etaiov_cl_2'
 #> Warning: multi-subject simulation without without 'omega'
 if (is.null(typ_sim$id)) typ_sim$id <- 1L
@@ -664,13 +660,13 @@ bridge |>
 
 | Arm          | AUC0-tau,ss (mg\*h/L) | Cmax,ss (mg/L) | Cmin,ss (mg/L) |
 |:-------------|----------------------:|---------------:|---------------:|
-| Human 400 mg |                 9.959 |          1.114 |          0.150 |
-| Human 600 mg |                14.712 |          1.754 |          0.219 |
-| NHP 10 mg/kg |                11.245 |          0.963 |          0.183 |
-| NHP 12 mg/kg |                12.257 |          1.036 |          0.187 |
-| NHP 14 mg/kg |                14.415 |          1.193 |          0.224 |
-| NHP 3 mg/kg  |                 3.517 |          0.369 |          0.042 |
-| NHP 8 mg/kg  |                 9.001 |          0.816 |          0.122 |
+| Human 400 mg |                 9.776 |          1.103 |          0.140 |
+| Human 600 mg |                13.823 |          1.693 |          0.198 |
+| NHP 10 mg/kg |                10.444 |          0.936 |          0.145 |
+| NHP 12 mg/kg |                13.124 |          1.083 |          0.213 |
+| NHP 14 mg/kg |                15.502 |          1.235 |          0.268 |
+| NHP 3 mg/kg  |                 3.995 |          0.379 |          0.049 |
+| NHP 8 mg/kg  |                 9.456 |          0.851 |          0.142 |
 
 Median steady-state exposure by arm. {.table}
 

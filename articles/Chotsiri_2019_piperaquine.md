@@ -592,9 +592,9 @@ knitr::kable(d7_tbl, digits = 1, caption = paste(
 
 | Course | WHO 2010: Median day-7 (ng/mL) | WHO 2015: Median day-7 (ng/mL) | WHO 2010: Below 30 ng/mL (%) | WHO 2015: Below 30 ng/mL (%) |
 |:---|---:|---:|---:|---:|
-| Course 1 | 15.2 | 21.7 | 93.8 | 72.9 |
-| Course 2 | 19.3 | 28.3 | 80.2 | 55.2 |
-| Course 3 | 20.9 | 30.6 | 70.8 | 46.9 |
+| Course 1 | 16.1 | 21.9 | 91.7 | 67.7 |
+| Course 2 | 21.2 | 29.3 | 79.2 | 52.1 |
+| Course 3 | 23.5 | 32.4 | 72.9 | 42.7 |
 
 Simulated day-7 venous piperaquine by monthly course. Chotsiri 2019
 Results report 75% (WHO 2010) and 50% (WHO 2015) of simulated day-7
@@ -620,8 +620,8 @@ knitr::kable(peak_tbl, digits = 1, caption = paste(
 
 | Regimen  | Median peak (ng/mL) | 2.5th percentile | 97.5th percentile |
 |:---------|--------------------:|-----------------:|------------------:|
-| WHO 2010 |               154.0 |             42.3 |             479.1 |
-| WHO 2015 |               197.9 |             74.4 |             557.5 |
+| WHO 2010 |               172.9 |             57.2 |             623.4 |
+| WHO 2015 |               221.0 |             82.4 |             690.3 |
 
 Simulated peak venous piperaquine over three monthly courses. Chotsiri
 2019 reports 314 ng/mL (95% CI 97.8-1120) under the increased WHO 2015
@@ -655,9 +655,9 @@ stopifnot(
 ```
 
 The published 75% / 50% pair matches the **third** course, not the
-first: after a single course the model leaves 94% and 73% of children
+first: after a single course the model leaves 92% and 68% of children
 below the threshold, and the proportion falls course by course as
-piperaquine accumulates, reaching 71% and 47% by the third. Read that
+piperaquine accumulates, reaching 73% and 43% by the third. Read that
 way the paper’s day-7 statistic reproduces to within a few percentage
 points; read as a single-course statistic it does not. Nothing in the
 figure caption says which course it summarises.
@@ -719,10 +719,10 @@ knitr::kable(tbl3, digits = 1, caption = paste(
 
 | Scenario | Simulated WHO 2010 (%) | Published WHO 2010 (%) | Simulated WHO 2015 (%) | Published WHO 2015 (%) | Simulated reduction (%) | Published reduction (%) |
 |:---|---:|---:|---:|---:|---:|---:|
-| Day 60, a single treatment | 27.8 | 33 | 20.2 | 22.5 | 27.5 | 31.8 |
-| Day 90, three months of SMC | 13.8 | 12 | 8.9 | 5.0 | 35.2 | 58.3 |
-| Day 120, three months of SMC | 27.8 | 27 | 19.8 | 16.5 | 28.8 | 38.9 |
-| Day 120, four months of SMC | 15.1 | 13 | 8.9 | 5.5 | 41.0 | 57.7 |
+| Day 60, a single treatment | 27.9 | 33 | 21.3 | 22.5 | 23.8 | 31.8 |
+| Day 90, three months of SMC | 13.2 | 12 | 7.9 | 5.0 | 40.2 | 58.3 |
+| Day 120, three months of SMC | 26.7 | 27 | 17.8 | 16.5 | 33.2 | 38.9 |
+| Day 120, four months of SMC | 15.2 | 13 | 9.5 | 5.5 | 37.6 | 57.7 |
 
 Predicted cumulative malaria incidence: Chotsiri 2019 Table 3 vs this
 model. Published values are medians of 100 replicates of 200 children
@@ -930,8 +930,8 @@ stopifnot(
   the third-course reading is inferred, not published.
 - **The simulated peak concentration runs below the published median.**
   Chotsiri 2019 reports a peak of 314 ng/mL (95% CI 97.8-1120) under the
-  increased regimen; this cohort gives about 200 ng/mL with a 95%
-  interval of roughly 74-560. The lower bound agrees closely and the
+  increased regimen; this cohort gives about 220 ng/mL with a 95%
+  interval of roughly 82-690. The lower bound agrees closely and the
   spread is of the same order, but the median and upper tail are roughly
   30% low. Two candidate mechanisms, neither resolvable from the
   published material: the paper simulated 1,000 children at each of 17

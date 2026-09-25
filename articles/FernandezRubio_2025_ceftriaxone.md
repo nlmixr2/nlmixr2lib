@@ -351,20 +351,20 @@ bind_rows(
 | Source | Dose regimen | 5 mg/L, 50% | 5 mg/L, 75% | 5 mg/L, 100% | 10 mg/L, 50% | 10 mg/L, 75% | 10 mg/L, 100% |
 |:---|:---|---:|---:|---:|---:|---:|---:|
 | Published (Table 3) | 2 g/12 h (1 h infusion) | 90.6 | 75.8 | 54.3 | 57.3 | 36.8 | 18.2 |
-| Simulated | 2 g/12 h (1 h infusion) | 87.5 | 67.5 | 54.5 | 57.0 | 41.0 | 28.0 |
+| Simulated | 2 g/12 h (1 h infusion) | 87.0 | 75.5 | 59.0 | 60.0 | 42.0 | 31.0 |
 | Published (Table 3) | 2 g/24 h (24 h infusion) | 73.5 | 72.0 | 69.1 | 23.7 | 21.9 | 20.0 |
-| Simulated | 2 g/24 h (24 h infusion) | 77.5 | 77.5 | 77.5 | 31.0 | 31.0 | 30.0 |
+| Simulated | 2 g/24 h (24 h infusion) | 76.0 | 75.5 | 75.5 | 29.0 | 29.0 | 29.0 |
 | Published (Table 3) | 4 g/24 h (1 h infusion) | 79.1 | 48.2 | 22.1 | 43.1 | 19.3 | 4.7 |
-| Simulated | 4 g/24 h (1 h infusion) | 73.0 | 53.0 | 38.0 | 52.0 | 34.0 | 20.5 |
+| Simulated | 4 g/24 h (1 h infusion) | 76.0 | 50.5 | 33.5 | 50.0 | 29.5 | 17.5 |
 | Published (Table 3) | 4 g/24 h (24 h infusion) | 98.0 | 97.8 | 97.5 | 73.5 | 72.0 | 69.1 |
-| Simulated | 4 g/24 h (24 h infusion) | 96.5 | 96.5 | 96.5 | 76.0 | 76.0 | 75.5 |
+| Simulated | 4 g/24 h (24 h infusion) | 96.5 | 96.5 | 96.5 | 76.0 | 76.0 | 76.0 |
 | Published (Table 3) | 6 g/24 h (1 h infusion) | 88.6 | 65.2 | 38.0 | 65.8 | 35.7 | 13.3 |
-| Simulated | 6 g/24 h (1 h infusion) | 84.5 | 62.5 | 50.0 | 65.0 | 45.5 | 26.0 |
+| Simulated | 6 g/24 h (1 h infusion) | 87.5 | 60.0 | 42.0 | 61.5 | 37.5 | 19.5 |
 | Published (Table 3) | 6 g/24 h (24 h infusion) | 99.6 | 99.6 | 99.6 | 92.0 | 91.7 | 90.8 |
-| Simulated | 6 g/24 h (24 h infusion) | 100.0 | 100.0 | 100.0 | 94.5 | 94.5 | 94.5 |
+| Simulated | 6 g/24 h (24 h infusion) | 100.0 | 100.0 | 100.0 | 94.0 | 94.0 | 94.0 |
 
 Probability of target attainment (%), simulated vs Table 3 of Fernandez
-Rubio 2025. Root-mean-square error over all 36 cells: 7.31 percentage
+Rubio 2025. Root-mean-square error over all 36 cells: 5.56 percentage
 points. {.table}
 
 ``` r
@@ -432,8 +432,8 @@ tibble(
 
 | Hypothesis | RMSE over 36 cells (pct pts) | 6 g/24 h CI at 10 mg/L, 100% (published 90.8) | 4 g/24 h CI at 5 mg/L, 100% (published 97.5) |
 |:---|---:|---:|---:|
-| omega = SD of eta (Monolix convention; as encoded) | 7.31 | 94.5 | 96.5 |
-| omega = variance of eta | 8.62 | 87.0 | 92.0 |
+| omega = SD of eta (Monolix convention; as encoded) | 5.56 | 94.0 | 96.5 |
+| omega = variance of eta | 9.23 | 86.5 | 92.0 |
 
 Which reading of the Table 2 omega column reproduces Table 3? {.table}
 
@@ -527,12 +527,12 @@ nca_sum |>
 
 | Dose regimen             | AUC0-24 (mg\*h/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) |
 |:-------------------------|------------------:|------------:|------------:|---------:|
-| 2 g/12 h (1 h infusion)  |             357.1 |      41.370 |       5.718 |       13 |
-| 4 g/24 h (1 h infusion)  |             384.3 |      79.850 |       3.068 |        1 |
-| 6 g/24 h (1 h infusion)  |             537.2 |     105.600 |       4.896 |        1 |
-| 2 g/24 h (24 h infusion) |             188.1 |       7.839 |       7.831 |       24 |
-| 4 g/24 h (24 h infusion) |             357.8 |      14.910 |      14.910 |       24 |
-| 6 g/24 h (24 h infusion) |             519.9 |      21.660 |      21.660 |       24 |
+| 2 g/12 h (1 h infusion)  |             352.1 |      40.930 |       6.024 |       13 |
+| 4 g/24 h (1 h infusion)  |             365.4 |      69.160 |       2.720 |        1 |
+| 6 g/24 h (1 h infusion)  |             530.7 |     104.400 |       3.739 |        1 |
+| 2 g/24 h (24 h infusion) |             180.6 |       7.527 |       7.484 |       24 |
+| 4 g/24 h (24 h infusion) |             368.0 |      15.330 |      15.330 |       24 |
+| 6 g/24 h (24 h infusion) |             591.9 |      24.700 |      24.600 |       24 |
 
 PKNCA summary of the simulated steady-state 24 h window, median across
 200 subjects per arm. Free ceftriaxone. {.table}
@@ -609,12 +609,12 @@ auc_check |>
 
 | Dose regimen | AUC0-24 simulated (mg\*h/L) | Daily dose / CL (mg\*h/L) | Css simulated (mg/L) | Rate / CL (mg/L) | % difference |
 |:---|---:|---:|---:|---:|---:|
-| 2 g/12 h (1 h infusion) | 345.71 | 345.72 | NA | NA | -0.0027003 |
-| 4 g/24 h (1 h infusion) | 345.72 | 345.72 | NA | NA | -0.0010516 |
-| 6 g/24 h (1 h infusion) | 518.58 | 518.58 | NA | NA | -0.0010516 |
-| 2 g/24 h (24 h infusion) | 172.85 | 172.86 | 7.2025 | 7.2025 | -0.0056185 |
-| 4 g/24 h (24 h infusion) | 345.70 | 345.72 | 14.4050 | 14.4050 | -0.0056185 |
-| 6 g/24 h (24 h infusion) | 518.55 | 518.58 | 21.6070 | 21.6080 | -0.0056185 |
+| 2 g/12 h (1 h infusion) | 345.71 | 345.72 | NA | NA | -0.0026891 |
+| 4 g/24 h (1 h infusion) | 345.72 | 345.72 | NA | NA | -0.0010504 |
+| 6 g/24 h (1 h infusion) | 518.58 | 518.58 | NA | NA | -0.0010504 |
+| 2 g/24 h (24 h infusion) | 172.85 | 172.86 | 7.2025 | 7.2025 | -0.0056186 |
+| 4 g/24 h (24 h infusion) | 345.70 | 345.72 | 14.4050 | 14.4050 | -0.0056186 |
+| 6 g/24 h (24 h infusion) | 518.55 | 518.58 | 21.6070 | 21.6080 | -0.0056186 |
 
 Typical-value steady-state AUC over 24 h against the closed form daily
 dose / CL, and continuous-infusion Css against rate / CL. {.table}
@@ -711,9 +711,9 @@ obs_cmp |>
 
 | Sampling time | Simulated mean (mg/L) | Simulated SD (mg/L) | Published mean (mg/L) | Published SD (mg/L) | % difference in mean |
 |:---|---:|---:|---:|---:|---:|
-| Cmin (pre-dose) | 7.63 | 7.39 | 7.8 | 6.5 | -2.15 |
-| C2 (+2 h) | 31.30 | 18.20 | 34.0 | 26.5 | -7.92 |
-| C4 (+4 h) | 21.20 | 13.50 | 22.7 | 19.7 | -6.41 |
+| Cmin (pre-dose) | 8.29 | 8.78 | 7.8 | 6.5 | 6.27 |
+| C2 (+2 h) | 32.60 | 19.50 | 34.0 | 26.5 | -4.19 |
+| C4 (+4 h) | 22.40 | 14.60 | 22.7 | 19.7 | -1.45 |
 
 Simulated vs published (Results Sect. 2.1) observed mean free
 ceftriaxone concentrations, pooled over the Table 1 regimen mix.

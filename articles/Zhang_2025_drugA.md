@@ -378,9 +378,9 @@ knitr::kable(feat, digits = 1,
 
 | treatment        | Peak reduction (%) | Day of peak | Week 12 (%) | Week 16 (%) |
 |:-----------------|-------------------:|------------:|------------:|------------:|
-| 210 mg, Region X |               56.4 |          70 |        55.8 |        32.5 |
-| 210 mg, typical  |               73.9 |          56 |        72.5 |        47.5 |
-| placebo          |               17.8 |          21 |         3.7 |         1.4 |
+| 210 mg, Region X |               55.3 |          56 |        49.3 |        31.2 |
+| 210 mg, typical  |               64.7 |          56 |        62.8 |        42.8 |
+| placebo          |               17.6 |          21 |         3.8 |         1.5 |
 
 Figure 1B features. Zhang 2025 shows the typical curve peaking near 69%
 around week 8 and recovering to about 48% by week 16; Region X reaching
@@ -478,10 +478,10 @@ tab1 |>
 
 | R_regionX | Published median reduction (%) | Simulated typical value (%) | Typical - published (pp) | Simulated population median (%) | Population - published (pp) |
 |---:|---:|---:|---:|---:|---:|
-| 1.0 | 68.4 | 73.5 | 5.1 | 72.5 | 4.1 |
+| 1.0 | 68.4 | 73.5 | 5.1 | 62.8 | -5.6 |
 | 1.8 | NA | 61.1 | NA | NA | NA |
-| 2.6 | 50.0 | 52.4 | 2.4 | 55.8 | 5.8 |
-| 5.4 | 35.8 | 35.6 | -0.2 | 32.9 | -2.9 |
+| 2.6 | 50.0 | 52.4 | 2.4 | 49.3 | -0.7 |
+| 5.4 | 35.8 | 35.6 | -0.2 | 34.5 | -1.3 |
 
 Simulated vs published week-12 median PASI reduction on 210 mg (Zhang
 2025 Table 1). R = 1.8 is the value Zhang 2025 Results names as the
@@ -694,10 +694,10 @@ nca_tab |>
 
 | Regimen | Dose (mg) | Cmax (ug/mL) | Tmax (day) | AUClast (ug\*day/mL) | Dose-normalised AUClast (day/L) |
 |:---|---:|---:|---:|---:|---:|
-| 70 mg | 70 | 0.331 | 1 | 0.547 | 0.0078 |
-| 140 mg | 140 | 3.313 | 2 | 15.215 | 0.1087 |
-| 210 mg | 210 | 6.535 | 3 | 47.976 | 0.2285 |
-| 280 mg Q4W | 280 | 11.497 | 4 | 105.209 | 0.3757 |
+| 70 mg | 70 | 0.391 | 1 | 0.609 | 0.0087 |
+| 140 mg | 140 | 2.688 | 2 | 13.185 | 0.0942 |
+| 210 mg | 210 | 6.009 | 3 | 41.595 | 0.1981 |
+| 280 mg Q4W | 280 | 10.502 | 4 | 102.642 | 0.3666 |
 
 Single-dose NCA of the packaged model, median over 100 subjects per arm.
 No published NCA exists for this paper; the table characterises the

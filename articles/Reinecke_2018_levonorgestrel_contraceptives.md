@@ -916,17 +916,17 @@ vpc_summary |>
 
 |  day | Geometric mean (ng/L) | Geometric CV (%) | Published geometric CV (%) |
 |-----:|----------------------:|-----------------:|---------------------------:|
-|   25 |                 161.3 |             45.5 |                       39.5 |
-|   30 |                 159.6 |             45.3 |                       39.2 |
-|   60 |                 152.3 |             45.0 |                       39.0 |
-|   90 |                 146.9 |             45.2 |                       39.1 |
-|  180 |                 134.3 |             45.6 |                       39.5 |
-|  270 |                 125.3 |             45.9 |                       39.8 |
-|  365 |                 118.3 |             46.1 |                       39.9 |
-|  730 |                 103.0 |             46.6 |                       40.1 |
-| 1095 |                  95.5 |             46.8 |                       40.3 |
-| 1460 |                  91.1 |             47.0 |                       40.9 |
-| 1825 |                  88.3 |             47.1 |                       39.9 |
+|   25 |                 157.1 |             46.3 |                       39.5 |
+|   30 |                 155.4 |             46.0 |                       39.2 |
+|   60 |                 148.4 |             45.8 |                       39.0 |
+|   90 |                 143.1 |             45.9 |                       39.1 |
+|  180 |                 130.8 |             46.3 |                       39.5 |
+|  270 |                 122.0 |             46.6 |                       39.8 |
+|  365 |                 115.2 |             46.8 |                       39.9 |
+|  730 |                 100.2 |             47.3 |                       40.1 |
+| 1095 |                  92.9 |             47.6 |                       40.3 |
+| 1460 |                  88.7 |             47.7 |                       40.9 |
+| 1825 |                  85.9 |             47.8 |                       39.9 |
 
 LNG-IUS 12 cohort of 200 women vs the Table 2 geometric CVs. {.table}
 
@@ -1128,15 +1128,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1144,7 +1144,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

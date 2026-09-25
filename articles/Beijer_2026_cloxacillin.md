@@ -579,9 +579,9 @@ ta_summary |>
 
 | Regimen | Below 2 mg/L (%) | Below 1 mg/L (%) | Median Cmin over 0.5-2 h (mg/L) | Published below 2 mg/L (%) | Published below 1 mg/L (%) |
 |:---|---:|---:|---:|---:|---:|
-| 1 g/20 min + 1 g/h CI | 0 | 0.0 | 9.2 | 0 | 0 |
-| 2 g/20 min q2h | 21 | 3.5 | 3.3 | 26 | 6 |
-| 2 g/30 min q2h | 14 | 3.0 | 3.5 | 24 | 5 |
+| 1 g/20 min + 1 g/h CI | 0 | 0 | 9.6 | 0 | 0 |
+| 2 g/20 min q2h | 21 | 5 | 3.4 | 26 | 6 |
+| 2 g/30 min q2h | 18 | 5 | 3.6 | 24 | 5 |
 
 Model-predicted target attainment against the 1000-simulated-patient
 results in the Beijer 2026 Results section (‘Model-predicted target
@@ -625,7 +625,7 @@ cat(sprintf(
   "Paired 30-min-minus-20-min gain in the 2 h unbound concentration: median %.3f mg/L (all %d subjects positive)\n",
   stats::median(paired[["2 g/30 min q2h"]] - paired[["2 g/20 min q2h"]]), n_per_arm
 ))
-#> Paired 30-min-minus-20-min gain in the 2 h unbound concentration: median 0.176 mg/L (all 200 subjects positive)
+#> Paired 30-min-minus-20-min gain in the 2 h unbound concentration: median 0.170 mg/L (all 200 subjects positive)
 
 # The paper's central claim about the proposed regimen: a 1 g/h continuous
 # infusion after a 1 g loading dose holds MORE than 99% of patients above both
@@ -642,7 +642,7 @@ stopifnot(ci_above_both >= 97)
 ci_med_2h <- stats::median(ta$c_at_2h[ta$regimen == "1 g/20 min + 1 g/h CI"])
 cat(sprintf("Continuous-infusion arm median unbound at 2 h: %.1f mg/L   [paper: 10.5 (3.3-38.6)]\n",
             ci_med_2h))
-#> Continuous-infusion arm median unbound at 2 h: 10.2 mg/L   [paper: 10.5 (3.3-38.6)]
+#> Continuous-infusion arm median unbound at 2 h: 10.6 mg/L   [paper: 10.5 (3.3-38.6)]
 # Cohort median, so a 35% band; the paper's own range spans an order of
 # magnitude and the typical-value gate above pins this to 10.6 exactly.
 stopifnot(abs(ci_med_2h - 10.5) / 10.5 < 0.35)

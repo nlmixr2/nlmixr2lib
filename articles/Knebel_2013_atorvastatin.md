@@ -592,10 +592,10 @@ auc_check |>
 
 | Analyte | Arm | N | Median difference (%) | Max absolute difference (%) |
 |:---|:---|---:|---:|---:|
-| Atorvastatin | Tanner Stage 1, 5 mg | 150 | -0.016 | 0.258 |
-| Atorvastatin | Tanner Stage \>= 2, 10 mg | 150 | -0.015 | 0.167 |
-| o-hydroxyatorvastatin | Tanner Stage 1, 5 mg | 150 | 0.000 | 0.173 |
-| o-hydroxyatorvastatin | Tanner Stage \>= 2, 10 mg | 150 | 0.000 | 0.347 |
+| Atorvastatin | Tanner Stage 1, 5 mg | 150 | -0.015 | 0.199 |
+| Atorvastatin | Tanner Stage \>= 2, 10 mg | 150 | -0.015 | 0.131 |
+| o-hydroxyatorvastatin | Tanner Stage 1, 5 mg | 150 | 0.000 | 0.400 |
+| o-hydroxyatorvastatin | Tanner Stage \>= 2, 10 mg | 150 | 0.001 | 0.156 |
 
 PKNCA AUC(0-inf) vs. the exact Dose\*F1/CL identity. {.table}
 
@@ -740,8 +740,8 @@ hl |>
 
 | Arm | N | Median difference (%) | 90th pctile absolute diff (%) | Max absolute difference (%) |
 |:---|---:|---:|---:|---:|
-| Tanner Stage 1, 5 mg | 150 | -1.435 | 1.732 | 2.448 |
-| Tanner Stage \>= 2, 10 mg | 150 | -1.405 | 1.728 | 2.110 |
+| Tanner Stage 1, 5 mg | 150 | -1.392 | 1.748 | 2.600 |
+| Tanner Stage \>= 2, 10 mg | 150 | -1.357 | 1.653 | 3.189 |
 
 PKNCA atorvastatin terminal half-life vs. log(2)/L2, per subject.
 {.table}
@@ -833,10 +833,10 @@ bind_rows(
 
 | Analyte | Arm | AUC0-inf (nM\*h) | Cmax (nM) | t1/2 (h) | Tmax (h) |
 |:---|:---|---:|---:|---:|---:|
-| Atorvastatin | Tanner Stage 1, 5 mg | 14.752 | 1.574 | 6.989 | 1.90 |
-| Atorvastatin | Tanner Stage \>= 2, 10 mg | 30.252 | 3.191 | 7.520 | 2.00 |
-| o-hydroxyatorvastatin | Tanner Stage 1, 5 mg | 16.664 | 1.237 | 7.361 | 2.75 |
-| o-hydroxyatorvastatin | Tanner Stage \>= 2, 10 mg | 35.767 | 2.495 | 7.846 | 2.90 |
+| Atorvastatin | Tanner Stage 1, 5 mg | 16.376 | 1.742 | 7.113 | 2.00 |
+| Atorvastatin | Tanner Stage \>= 2, 10 mg | 34.041 | 3.338 | 7.785 | 2.15 |
+| o-hydroxyatorvastatin | Tanner Stage 1, 5 mg | 16.457 | 1.213 | 7.483 | 2.90 |
+| o-hydroxyatorvastatin | Tanner Stage \>= 2, 10 mg | 37.222 | 2.446 | 8.097 | 3.05 |
 
 Median simulated single-dose NCA parameters by arm. No published
 comparator exists (see text). {.table}

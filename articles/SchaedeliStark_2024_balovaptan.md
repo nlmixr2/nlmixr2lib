@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -1141,16 +1141,16 @@ as.data.frame(cohortRes) %>%
 | NCA parameter       |   Median | 5th percentile | 95th percentile |
 |:--------------------|---------:|---------------:|----------------:|
 | adj.r.squared       | 1.00e+00 |       1.00e+00 |        1.00e+00 |
-| AUClast             | 3.91e+03 |       2.55e+03 |        6.04e+03 |
-| clast.pred          | 6.85e+01 |       1.73e+01 |        1.42e+02 |
-| Cmax                | 3.51e+02 |       2.17e+02 |        5.57e+02 |
-| t½                  | 1.08e+01 |       7.12e+00 |        2.34e+01 |
-| λz                  | 6.44e-02 |       2.97e-02 |        9.74e-02 |
-| λz n points         | 1.10e+01 |       5.00e+00 |        4.60e+01 |
-| lambda.z.time.first | 1.90e+01 |       1.50e+00 |        2.20e+01 |
+| AUClast             | 3.99e+03 |       2.53e+03 |        6.49e+03 |
+| clast.pred          | 7.00e+01 |       2.25e+01 |        1.45e+02 |
+| Cmax                | 3.37e+02 |       2.05e+02 |        5.54e+02 |
+| t½                  | 1.15e+01 |       7.58e+00 |        2.23e+01 |
+| λz                  | 6.02e-02 |       3.11e-02 |        9.14e-02 |
+| λz n points         | 1.30e+01 |       6.00e+00 |        4.60e+01 |
+| lambda.z.time.first | 1.80e+01 |       1.50e+00 |        2.15e+01 |
 | lambda.z.time.last  | 2.40e+01 |       2.40e+01 |        2.40e+01 |
 | r.squared           | 1.00e+00 |       1.00e+00 |        1.00e+00 |
-| span.ratio          | 4.82e-01 |       2.93e-01 |        9.70e-01 |
+| span.ratio          | 5.14e-01 |       3.11e-01 |        9.93e-01 |
 | Tlast               | 2.40e+01 |       2.40e+01 |        2.40e+01 |
 | Tmax                | 1.00e+00 |       1.00e+00 |        1.00e+00 |
 
@@ -1202,15 +1202,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1218,7 +1218,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

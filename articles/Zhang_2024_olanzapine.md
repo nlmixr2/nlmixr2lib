@@ -692,10 +692,10 @@ pta_summary |>
 
 | Condition | Simulated attainment (%) | Zhang 2024 Table 4 (%) | Gap (percentage points) |
 |:---|:---|:---|---:|
-| Once daily, no aripiprazole | 80.7-88.7 | 86.7-91.8 | 0.0 |
-| Once daily, with aripiprazole | 82.7-93.3 | 93.5-97.3 | 0.2 |
-| Twice daily, no aripiprazole | 88.0-94.0 | 97.4-99.2 | 3.4 |
-| Twice daily, with aripiprazole | 68.0-85.3 | 99.5-99.9 | 14.2 |
+| Once daily, no aripiprazole | 84.0-90.7 | 86.7-91.8 | 0.0 |
+| Once daily, with aripiprazole | 87.3-96.7 | 93.5-97.3 | 0.0 |
+| Twice daily, no aripiprazole | 86.7-94.7 | 97.4-99.2 | 2.7 |
+| Twice daily, with aripiprazole | 68.0-88.7 | 99.5-99.9 | 10.8 |
 
 Steady-state trough attainment of the 20-80 ng/mL range at the Table 4
 recommended doses, vs the probabilities Zhang 2024 reports. {.table}

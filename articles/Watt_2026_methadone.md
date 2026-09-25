@@ -421,9 +421,15 @@ sim_md <- rxode2::rxSolve(
   mutate(Cc_ng = Cc * NG_PER_MG)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
+# The ss = 1 search integrates one 8 h interval after another until the state
+# converges, and every step counts against the integrator's step budget. With
+# this model's wide IIV, subjects at the slow tail (half-life above ~230 h,
+# about 30 intervals per half-life) exhaust the default 70,000 steps and come
+# back as NA, so give the budget the headroom the cohort can need.
 sim_ss <- rxode2::rxSolve(
   mod, events = events_ss,
-  keep = c("regimen", "route", "mgkg", "WT")
+  keep = c("regimen", "route", "mgkg", "WT"),
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   mutate(Cc_ng = Cc * NG_PER_MG)
@@ -695,12 +701,12 @@ nca_wide |>
 
 | Regimen | AUC0-tau (ng\*h/mL) | Cav (ng/mL) | Cmax,ss (ng/mL) | Cmin,ss (ng/mL) | Tmax (h) |
 |:---|---:|---:|---:|---:|---:|
-| IV 0.1 mg/kg q8h | 697.2 | 87.1 | 97.3 | 77.9 | 0.0 |
-| IV 0.2 mg/kg q8h | 1340.1 | 167.5 | 188.9 | 151.9 | 0.0 |
-| IV 0.3 mg/kg q8h | 1727.9 | 216.0 | 255.8 | 186.3 | 0.0 |
-| enteral 0.1 mg/kg q8h | 478.1 | 59.8 | 64.4 | 49.3 | 1.1 |
-| enteral 0.2 mg/kg q8h | 771.4 | 96.4 | 103.5 | 82.6 | 1.1 |
-| enteral 0.3 mg/kg q8h | 999.9 | 125.0 | 136.9 | 112.2 | 1.1 |
+| IV 0.1 mg/kg q8h | 764.1 | 95.5 | 109.5 | 86.8 | 0.0 |
+| IV 0.2 mg/kg q8h | 1328.9 | 166.1 | 198.6 | 149.7 | 0.0 |
+| IV 0.3 mg/kg q8h | 1502.1 | 187.8 | 216.1 | 169.7 | 0.0 |
+| enteral 0.1 mg/kg q8h | 439.7 | 55.0 | 59.6 | 48.7 | 1.1 |
+| enteral 0.2 mg/kg q8h | 887.7 | 111.0 | 118.6 | 102.5 | 1.1 |
+| enteral 0.3 mg/kg q8h | 1147.1 | 143.4 | 162.3 | 125.7 | 1.1 |
 
 Median steady-state NCA parameters by regimen (PKNCA). {.table}
 
@@ -733,8 +739,8 @@ knitr::kable(
 
 | NCA parameter      | regimen               | Reference | Simulated | % diff |
 |:-------------------|:----------------------|:----------|:----------|:-------|
-| AUClast (ng\*h/mL) | IV 0.1 mg/kg q8h      | 765       | 697       | -8.9%  |
-| AUClast (ng\*h/mL) | enteral 0.2 mg/kg q8h | 893       | 771       | -13.6% |
+| AUClast (ng\*h/mL) | IV 0.1 mg/kg q8h      | 765       | 764       | -0.1%  |
+| AUClast (ng\*h/mL) | enteral 0.2 mg/kg q8h | 893       | 888       | -0.6%  |
 
 Simulated vs. published median steady-state AUC0-tau. \* differs from
 reference by more than 20%. {.table style="width:100%;"}
@@ -773,7 +779,7 @@ auc_ident <- nca_tbl |>
 
 c(max_abs_rel_err = max(abs(auc_ident$rel_err)))
 #> max_abs_rel_err 
-#>    0.0003282663
+#>    0.0001562221
 
 # AUC0-tau,ss == F*Dose/CL is an exact identity for a linear one-compartment
 # model, so this is trapezoidal error on a 0.05 h grid only.
@@ -842,7 +848,7 @@ omega_cmp |>
 | Reading | Variance on CL | Variance on V | Correlation | Mean \|error\| vs Table S2 (pp) |
 |:---|---:|---:|---:|---:|
 | omega_SD = CV%/100 (packaged) | 0.776 | 0.548 | 0.454 | 1.074 |
-| omega^2 = log(1 + CV^2) (alternative) | 0.574 | 0.437 | 0.591 | 1.806 |
+| omega^2 = log(1 + CV^2) (alternative) | 0.574 | 0.437 | 0.591 | 1.213 |
 
 Reproduction of Watt 2026 Table S2 under the two readings of the Table 2
 ‘CV%’ random-effect column. {.table}

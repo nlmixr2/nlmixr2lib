@@ -231,14 +231,12 @@ d_bolus <- as.data.frame(ev_bolus)
 d_bolus$BSA <- 1.97; d_bolus$CREAT <- 68.08; d_bolus$SEXF <- 0; d_bolus$OCC <- 1L
 
 numeric_sol <- rxode2::rxSolve(uiz, d_bolus, returnType = "data.frame")
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalq2', 'etalvp2', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4'
 numeric_sol <- numeric_sol$Cc[match(round(tgrid, 4), round(numeric_sol$time, 4))]
 
 max_rel <- max(abs(numeric_sol - analytic) / analytic)
 cat(sprintf("max |relative difference| = %.3e\n", max_rel))
-#> max |relative difference| = 2.638e-14
+#> max |relative difference| = 6.944e-09
 
 # Both sides use the same parameters, so this is pure integration error.
 stopifnot(max_rel < 1e-6)
@@ -428,8 +426,6 @@ mod <- readModelDb("Blackman_2026_methotrexate")
 sim <- rxode2::rxSolve(mod, events = events, keep = c("arm", "dose_mg")) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
 #> as a work-around try putting the mu-referenced expression on a simple line
 

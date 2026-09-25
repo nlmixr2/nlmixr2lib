@@ -1283,12 +1283,12 @@ arm_summary |>
 
 | Arm | Endpoint | Median | 10th percentile | 90th percentile |
 |:---|:---|---:|---:|---:|
-| 100 mg, fasted | HDL-C (mg/dL) | 78.2 | 55.6 | 117.9 |
-| 100 mg, fasted | LDL-C (mg/dL) | 114.3 | 80.1 | 140.1 |
-| 100 mg, patient-selected | HDL-C (mg/dL) | 104.5 | 67.8 | 147.2 |
-| 100 mg, patient-selected | LDL-C (mg/dL) | 80.4 | 57.4 | 111.0 |
-| 300 mg, patient-selected | HDL-C (mg/dL) | 115.0 | 76.6 | 160.0 |
-| 300 mg, patient-selected | LDL-C (mg/dL) | 73.2 | 47.9 | 95.3 |
+| 100 mg, fasted | HDL-C (mg/dL) | 77.7 | 54.6 | 112.1 |
+| 100 mg, fasted | LDL-C (mg/dL) | 110.2 | 82.9 | 134.6 |
+| 100 mg, patient-selected | HDL-C (mg/dL) | 108.3 | 75.5 | 150.4 |
+| 100 mg, patient-selected | LDL-C (mg/dL) | 80.9 | 54.9 | 111.6 |
+| 300 mg, patient-selected | HDL-C (mg/dL) | 115.4 | 75.2 | 159.3 |
+| 300 mg, patient-selected | LDL-C (mg/dL) | 72.8 | 51.7 | 97.9 |
 
 Cohort medians and 10th-90th percentile ranges. Compare against the
 typical-value predictions above; the medians sit close to them, while
@@ -1311,7 +1311,7 @@ med_hdl <- arm_summary$median[arm_summary$arm == "100 mg, patient-selected" &
                                 arm_summary$endpoint == "HDL-C (mg/dL)"]
 cat(sprintf("100 mg patient-selected HDL-C: typical value %.1f mg/dL, cohort median %.1f mg/dL\n",
             typical_100pb_hdl, med_hdl))
-#> 100 mg patient-selected HDL-C: typical value 110.9 mg/dL, cohort median 104.5 mg/dL
+#> 100 mg patient-selected HDL-C: typical value 110.9 mg/dL, cohort median 108.3 mg/dL
 # The baseline random effect is additive and symmetric, so the median tracks
 # the typical value closely; 8 mg/dL is well outside the run-to-run spread
 # (under a mg/dL on the median) while still far tighter than the 23% baseline

@@ -701,8 +701,8 @@ cohort_summary |>
 
 | Prandial state | N | Median Cmax (ng/mL) | Median Tmax (h) | Median AUC0-48 (`ng*h/mL`) |
 |:---|---:|---:|---:|---:|
-| Fasted/unknown | 150 | 491.3 | 3.5 | 10630.4 |
-| Fed | 150 | 494.9 | 6.5 | 12782.7 |
+| Fasted/unknown | 150 | 478.5 | 3.2 | 10550.6 |
+| Fed | 150 | 467.1 | 6.8 | 11647.5 |
 
 Simulated single-dose NCA by prandial state (150 subjects per arm).
 Gaffney 2026 reports no NCA table, so these are descriptive; the

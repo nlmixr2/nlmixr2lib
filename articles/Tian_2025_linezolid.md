@@ -273,7 +273,7 @@ off, so the two sides differ only by trapezoidal-integration error.
 # noise. A tight bound is correct here and must be kept tight: it is what
 # catches a mis-transcribed exponent, centering constant or dose.
 max(abs(chk_grid$pct_diff))
-#> [1] 1.791048e-05
+#> [1] 0.0001743562
 stopifnot(max(abs(chk_grid$pct_diff)) < 0.01)
 ```
 
@@ -520,7 +520,9 @@ sim <- rxode2::rxSolve(
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
-stopifnot(nrow(sim) > 0, all(sim$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance;
+# a genuinely negative concentration would be comparable to the peak.
+stopifnot(nrow(sim) > 0, all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE)))
 
 sim <- sim |>
   dplyr::mutate(id = as.integer(as.character(id)), t_rel = time)
@@ -572,7 +574,7 @@ conc_chk <- sim |>
   )
 conc_chk
 #>        med      q95
-#> 1 7.102291 33.79794
+#> 1 6.613109 34.49971
 stopifnot(conc_chk$med > 0.25, conc_chk$med < 34, conc_chk$q95 < 50)
 ```
 
@@ -580,8 +582,14 @@ stopifnot(conc_chk$med > 0.25, conc_chk$med < 34, conc_chk$q95 < 50)
 
 ``` r
 
+# The ODE integrator's undershoot below zero (about its absolute tolerance,
+# gated above) occurs only where a short-half-life subject's concentration has
+# decayed to ~1e-20 of its peak, i.e. where it is numerically zero. PKNCA's
+# log-down trapezoid cannot take a negative value (log(Cc) is NaN and the AUC
+# comes back NA), so those values are clamped to zero here.
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
   dplyr::select(id, time, Cc, arm)
 
 dose_df <- events |>
@@ -608,8 +616,13 @@ intervals <- data.frame(
   cav     = TRUE
 )
 
+# The clamped zeros are model-predicted zeros, not assay BLQs, so they stay in
+# place: PKNCA's default drops zeros from the middle of a profile, which would
+# re-open the spurious pre-dose segment that the `interior - 1e-6` observation
+# points exist to close (see `obs_times()` above).
 res <- PKNCA::pk.nca(
-  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals,
+                   options = list(conc.blq = "keep"))
 )
 
 nca <- as.data.frame(res) |>
@@ -641,8 +654,8 @@ knitr::kable(
 
 | Arm | AUC0-24,ss (mg\*h/L) | Cmax,ss (ug/mL) | Cmin,ss (ug/mL) | Cav,ss (ug/mL) |
 |:---|:---|:---|:---|:---|
-| 12 y and above: 600 mg q12h | 269 (156-453) | 56.0 | 0.59 | 11.2 |
-| Under 12 y: 10 mg/kg q8h | 203 (104-363) | 17.6 | 3.45 | 8.4 |
+| 12 y and above: 600 mg q12h | 263 (148-493) | 63.2 | 0.23 | 10.9 |
+| Under 12 y: 10 mg/kg q8h | 199 (110-338) | 16.5 | 3.78 | 8.3 |
 
 Simulated steady-state NCA summary, median (5th-95th percentile).
 {.table}
@@ -666,8 +679,8 @@ chk_auc <- nca |>
 
 stopifnot(nrow(chk_auc) == 2L * n_arm)
 summary(chk_auc$pct_diff)
-#>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> 6.699e-07 4.086e-06 7.737e-06 1.234e-05 1.571e-05 1.242e-04
+#>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#> -1.319e-04  6.935e-05  1.410e-04  1.113e-04  1.661e-04  2.422e-04
 
 # Both sides use the SAME individual clearance and the integration is exact for
 # this model, so the residual is floating-point noise (realised max ~1e-4 %).
@@ -727,7 +740,7 @@ knitr::kable(
 
 | NCA parameter     | Reference | Simulated | % diff |
 |:------------------|:----------|:----------|:-------|
-| AUClast (mg\*h/L) | 209       | 203       | -3.2%  |
+| AUClast (mg\*h/L) | 209       | 199       | -5.0%  |
 | t½ (h)            | 3.5       | 3.81      | +8.9%  |
 
 Simulated steady-state exposure in the under-12 arm against the values
@@ -788,14 +801,14 @@ knitr::kable(
 
 | Arm | MIC | PTA simulated (%) | PTA Tian 2025 (%) | P(Cmin \> 7) sim (%) | P(Cmin \> 7) Tian (%) |
 |:---|---:|---:|---:|---:|---:|
-| 12 y and above: 600 mg q12h | 0.5 | 100.0 | 100.0 | 5.5 | 0.0 |
-| 12 y and above: 600 mg q12h | 1.0 | 100.0 | 100.0 | 5.5 | 0.0 |
-| 12 y and above: 600 mg q12h | 2.0 | 94.5 | 83.3 | 5.5 | 0.0 |
-| 12 y and above: 600 mg q12h | 4.0 | 33.5 | 0.0 | 5.5 | 0.0 |
-| Under 12 y: 10 mg/kg q8h | 0.5 | 100.0 | 100.0 | 15.5 | 1.4 |
-| Under 12 y: 10 mg/kg q8h | 1.0 | 98.0 | 100.0 | 15.5 | 1.4 |
-| Under 12 y: 10 mg/kg q8h | 2.0 | 74.5 | 91.9 | 15.5 | 1.4 |
-| Under 12 y: 10 mg/kg q8h | 4.0 | 11.5 | NA | 15.5 | NA |
+| 12 y and above: 600 mg q12h | 0.5 | 100.0 | 100.0 | 4 | 0.0 |
+| 12 y and above: 600 mg q12h | 1.0 | 100.0 | 100.0 | 4 | 0.0 |
+| 12 y and above: 600 mg q12h | 2.0 | 91.5 | 83.3 | 4 | 0.0 |
+| 12 y and above: 600 mg q12h | 4.0 | 27.0 | 0.0 | 4 | 0.0 |
+| Under 12 y: 10 mg/kg q8h | 0.5 | 100.0 | 100.0 | 16 | 1.4 |
+| Under 12 y: 10 mg/kg q8h | 1.0 | 99.5 | 100.0 | 16 | 1.4 |
+| Under 12 y: 10 mg/kg q8h | 2.0 | 69.5 | 91.9 | 16 | 1.4 |
+| Under 12 y: 10 mg/kg q8h | 4.0 | 7.0 | NA | 16 | NA |
 
 Probability of attaining AUC0-24/MIC \>= 80 and of exceeding the Cmin =
 7 ug/mL safety threshold, simulated from the packaged model versus the
@@ -841,7 +854,7 @@ stopifnot(
 # deviations" -- the model's own Table 3 parameters put this near the 76.1%
 # the paper measured in its real 67-child cohort, not near 91.9%.
 pta_at("Under 12 y: 10 mg/kg q8h", 2)
-#> [1] 74.5
+#> [1] 69.5
 
 # The measured real-world figure IS reproduced. Tian 2025 Results, "Efficacy
 # and safety study": PTA 76.1% (51/67) at MIC 2 and P(Cmin > 7) = 14.9%
@@ -898,8 +911,8 @@ knitr::kable(
 
 | Renal function    |   n | CL median (L/h) | V median (L) |
 |:------------------|----:|----------------:|-------------:|
-| ARC (eGFR \> 130) | 171 |            2.07 |         10.2 |
-| Normal (90-130)   |  28 |            1.52 |          8.0 |
+| ARC (eGFR \> 130) | 171 |            1.99 |         10.9 |
+| Normal (90-130)   |  28 |            1.66 |          9.8 |
 
 Individual clearance and volume by renal-function stratum in the
 under-12 arm, to be read against Tian 2025 Figure 6A and 6B. {.table}
@@ -932,7 +945,7 @@ stopifnot(is.finite(cl_arc), is.finite(cl_norm))
 # a dropped or sign-flipped eGFR term lands outside it.
 ratio_arc <- cl_arc / cl_norm
 ratio_arc
-#> [1] 1.361607
+#> [1] 1.200879
 stopifnot(ratio_arc > 1.02, ratio_arc < 1.6)
 
 # The model gives volume NO eGFR covariate, so V cannot reproduce the paper's

@@ -378,7 +378,7 @@ explicit <- ssTrough(
 maxRelDiff <- 100 * max(abs(analytic - explicit) / explicit)
 cat(sprintf("ss = 1 vs a 60-dose explicit run: max relative difference in trough = %.2f%%\n",
             maxRelDiff))
-#> ss = 1 vs a 60-dose explicit run: max relative difference in trough = 0.19%
+#> ss = 1 vs a 60-dose explicit run: max relative difference in trough = 0.62%
 stopifnot(maxRelDiff < 5)
 ```
 
@@ -433,15 +433,15 @@ ptaGrid |>
 | Covariate scenario | Regimen | Published PTA (%) | Simulated PTA (%) | Difference (pp) |
 |:---|:---|---:|---:|---:|
 | eGFR 100, albumin 40 | 1 g q8h | 14 | 15.5 | 1.5 |
-| eGFR 100, albumin 40 | 2 g q8h | 34 | 36.0 | 2.0 |
-| eGFR 100, albumin 40 | 1 g q6h | 25 | 29.5 | 4.5 |
-| eGFR 100, albumin 40 | 2 g q6h | 54 | 58.0 | 4.0 |
-| eGFR 100, albumin 40 | 1 g q4h | 54 | 56.5 | 2.5 |
-| eGFR 50, albumin 30 | 1 g q8h | 48 | 49.5 | 1.5 |
-| eGFR 50, albumin 30 | 2 g q8h | 77 | 73.5 | -3.5 |
-| eGFR 50, albumin 30 | 1 g q6h | 70 | 70.0 | 0.0 |
-| eGFR 50, albumin 30 | 2 g q6h | 90 | 88.0 | -2.0 |
-| eGFR 50, albumin 30 | 1 g q4h | 86 | 87.0 | 1.0 |
+| eGFR 100, albumin 40 | 2 g q8h | 34 | 37.0 | 3.0 |
+| eGFR 100, albumin 40 | 1 g q6h | 25 | 31.5 | 6.5 |
+| eGFR 100, albumin 40 | 2 g q6h | 54 | 58.5 | 4.5 |
+| eGFR 100, albumin 40 | 1 g q4h | 54 | 57.5 | 3.5 |
+| eGFR 50, albumin 30 | 1 g q8h | 48 | 52.5 | 4.5 |
+| eGFR 50, albumin 30 | 2 g q8h | 77 | 68.5 | -8.5 |
+| eGFR 50, albumin 30 | 1 g q6h | 70 | 66.0 | -4.0 |
+| eGFR 50, albumin 30 | 2 g q6h | 90 | 82.5 | -7.5 |
+| eGFR 50, albumin 30 | 1 g q4h | 86 | 84.0 | -2.0 |
 
 Replicates the ten S. aureus PTA percentages of Roelofsen 2023 Sect. 3.4
 (MIC(ECOFF) 4 mg/L, 100% fT\>MIC). {.table style="width:100%;"}
@@ -451,11 +451,11 @@ Replicates the ten S. aureus PTA percentages of Roelofsen 2023 Sect. 3.4
 absDiff <- abs(ptaGrid$difference)
 agreement <- cor(ptaGrid$simulated, ptaGrid$published)
 cat(sprintf("median |difference| = %.1f pp\n", median(absDiff)))
-#> median |difference| = 2.0 pp
+#> median |difference| = 4.2 pp
 cat(sprintf("90th percentile |difference| = %.1f pp\n", quantile(absDiff, 0.9)))
-#> 90th percentile |difference| = 4.0 pp
+#> 90th percentile |difference| = 7.6 pp
 cat(sprintf("correlation with the published grid = %.4f\n", agreement))
-#> correlation with the published grid = 0.9970
+#> correlation with the published grid = 0.9874
 
 stopifnot(
   # Centre: a mis-transcribed clearance, exponent or reference value shifts the
@@ -489,7 +489,7 @@ and albumin concentration”*.
 enteroPta <- ptaIntermittent(1000, 8, 100, 40, MIC_ENTERO)
 cat(sprintf("1 g q8h, eGFR 100 / albumin 40, MIC 0.25 mg/L: %.1f%% (paper: 95%%)\n",
             enteroPta))
-#> 1 g q8h, eGFR 100 / albumin 40, MIC 0.25 mg/L: 95.0% (paper: 95%)
+#> 1 g q8h, eGFR 100 / albumin 40, MIC 0.25 mg/L: 91.5% (paper: 95%)
 stopifnot(enteroPta > 85)
 ```
 
@@ -525,17 +525,17 @@ ciGrid |>
 | 30 | 20 | 100 | 100 | 100.0 |
 | 50 | 20 | 100 | 100 | 100.0 |
 | 80 | 20 | 100 | 100 | 100.0 |
-| 100 | 20 | 100 | 100 | 100.0 |
+| 100 | 20 | 100 | 100 | 99.0 |
 | 10 | 30 | 100 | 100 | 100.0 |
 | 30 | 30 | 100 | 100 | 100.0 |
 | 50 | 30 | 100 | 100 | 100.0 |
-| 80 | 30 | 100 | 100 | 100.0 |
-| 100 | 30 | 100 | 100 | 99.0 |
+| 80 | 30 | 100 | 100 | 98.5 |
+| 100 | 30 | 100 | 100 | 97.0 |
 | 10 | 40 | 100 | 100 | 100.0 |
 | 30 | 40 | 100 | 100 | 100.0 |
-| 50 | 40 | 100 | 100 | 100.0 |
-| 80 | 40 | 100 | 100 | 99.0 |
-| 100 | 40 | 100 | 100 | 96.5 |
+| 50 | 40 | 100 | 100 | 99.0 |
+| 80 | 40 | 100 | 100 | 96.0 |
+| 100 | 40 | 99 | 100 | 95.5 |
 
 Continuous-infusion PTA over the Roelofsen 2023 Sect. 2.7 covariate
 grid. {.table}
@@ -551,10 +551,10 @@ cat(sprintf("CI 4 g/d, Enterobacterales, minimum over grid: %.1f%% (paper: adequ
 #> CI 4 g/d, Enterobacterales, minimum over grid: 100.0% (paper: adequate at all combinations)
 cat(sprintf("CI 6 g/d, S. aureus, minimum over grid:        %.1f%% (paper: 'a minimum of 99%% PTA')\n",
             ci6SaureusMin))
-#> CI 6 g/d, S. aureus, minimum over grid:        100.0% (paper: 'a minimum of 99% PTA')
+#> CI 6 g/d, S. aureus, minimum over grid:        99.0% (paper: 'a minimum of 99% PTA')
 cat(sprintf("CI 4 g/d, S. aureus, eGFR 80 / albumin 40:     %.1f%% (paper: 'would also suffice', i.e. >= 95%%)\n",
             ci4Saureus_80_40))
-#> CI 4 g/d, S. aureus, eGFR 80 / albumin 40:     99.0% (paper: 'would also suffice', i.e. >= 95%)
+#> CI 4 g/d, S. aureus, eGFR 80 / albumin 40:     96.0% (paper: 'would also suffice', i.e. >= 95%)
 
 stopifnot(
   # Abstract + Sect. 3.4: 4 g/d covers Enterobacterales everywhere.
@@ -569,7 +569,7 @@ stopifnot(
 
 The conclusion’s boundary case is reproduced too: at eGFR 100 / albumin
 40 - above the eGFR 80 / albumin 40 threshold the paper names - 4 g/d
-continuous infusion falls to 96.5%, right at the 95% adequacy line,
+continuous infusion falls to 95.5%, right at the 95% adequacy line,
 which is why the paper prefers 6 g/d there. No assertion is placed on
 that cell: it sits within Monte Carlo noise of the threshold, so a gate
 on it could go red for reasons unrelated to transcription.
@@ -698,12 +698,12 @@ data.frame(
 
 | NCA parameter        | Median (5th - 95th percentile) |
 |:---------------------|:-------------------------------|
-| Cmax (mg/L)          | 68.76 (39.77 - 107.14)         |
-| Cmin / trough (mg/L) | 9.94 (2.02 - 32.02)            |
+| Cmax (mg/L)          | 68.85 (45.93 - 99.05)          |
+| Cmin / trough (mg/L) | 10.18 (1.25 - 34.07)           |
 | Tmax (h)             | 0.25 (0.25 - 0.25)             |
-| t-half (h)           | 4.86 (2.76 - 8.05)             |
-| AUC(0-6 h) (mg\*h/L) | 141.96 (63.68 - 291.72)        |
-| CL (L/h)             | 7.04 (3.43 - 15.70)            |
+| t-half (h)           | 4.91 (2.50 - 9.49)             |
+| AUC(0-6 h) (mg\*h/L) | 141.71 (60.56 - 292.56)        |
+| CL (L/h)             | 7.06 (3.42 - 16.51)            |
 
 Steady-state NCA, 1 g q6h at the cohort median covariates (eGFR 57,
 albumin 26), n = 200. {.table}
@@ -718,7 +718,7 @@ mL/min/1.73 m^2 of healthy volunteers.
 massBalPct <- 100 * (ncaWide$auclast * ncaWide$cl - 1000) / 1000
 cat(sprintf("AUC(tau) x CL vs Dose: median %.4f%%, max |deviation| %.4f%%\n",
             median(massBalPct), max(abs(massBalPct))))
-#> AUC(tau) x CL vs Dose: median -0.0013%, max |deviation| 0.0268%
+#> AUC(tau) x CL vs Dose: median -0.0011%, max |deviation| 0.0306%
 # Both sides use the same drawn parameters, so the only difference is
 # trapezoidal integration error on a 241-point grid - a tight bound is correct
 # here and would catch a dose-unit or volume-scaling error immediately.

@@ -458,9 +458,9 @@ knitr::kable(acc_summary, digits = 2,
 
 | Quantity                                | Simulated | Published | Difference (%) |
 |:----------------------------------------|----------:|----------:|---------------:|
-| Cmax accumulation (dose 13 / dose 1)    |      3.91 |       4.2 |          -6.98 |
+| Cmax accumulation (dose 13 / dose 1)    |      3.91 |       4.2 |          -6.99 |
 | Ctrough accumulation (dose 13 / dose 1) |      3.86 |       4.1 |          -5.89 |
-| AUCtau accumulation (dose 13 / dose 1)  |      4.90 |       5.3 |          -7.56 |
+| AUCtau accumulation (dose 13 / dose 1)  |      4.90 |       5.3 |          -7.58 |
 
 Mean accumulation ratios vs Miao 2023 Results 3.5. {.table}
 
@@ -547,7 +547,7 @@ knitr::kable(ss_summary, digits = 1,
 
 | Quantity | Median | P05 | P95 | Published |
 |:---|---:|---:|---:|---:|
-| AUCtau at treatment dose 12 as % of steady-state AUCtau | 90.9 | 59.8 | 97.9 | 90 |
+| AUCtau at treatment dose 12 as % of steady-state AUCtau | 90.9 | 59.6 | 97.9 | 90 |
 
 Approach to steady state vs the 90%-after-12-doses claim. {.table
 style="width:100%;"}
@@ -749,11 +749,11 @@ knitr::kable(cov_summary, digits = 1,
 
 | Comparison | % lower, first treatment dose | % lower, 13th treatment dose | Published % lower |
 |:---|---:|---:|---:|
-| IgG vs non-IgG (within ISS I) | 22.7 | 33.4 | 32 |
-| ISS II vs ISS I (IgG) | 7.2 | 21.4 | 17 |
-| ISS III vs ISS I (IgG) | 14.5 | 37.1 | 29 |
-| ISS II vs ISS I (non-IgG) | 5.9 | 21.8 | 17 |
-| ISS III vs ISS I (non-IgG) | 12.1 | 37.8 | 29 |
+| IgG vs non-IgG (within ISS I) | 22.7 | 33.5 | 32 |
+| ISS II vs ISS I (IgG) | 7.2 | 21.2 | 17 |
+| ISS III vs ISS I (IgG) | 14.5 | 36.9 | 29 |
+| ISS II vs ISS I (non-IgG) | 5.9 | 21.7 | 17 |
+| ISS III vs ISS I (non-IgG) | 12.1 | 37.7 | 29 |
 
 Reduction in Cave by covariate stratum (typical value, 74 kg), over the
 first and the 13th treatment-dose interval, vs the Miao 2023 Results 3.5
@@ -820,8 +820,8 @@ knitr::kable(exposure_summary, digits = 2,
 
 | Metric | Simulated median | Simulated Q1 | Simulated Q3 | Figure 3 median (digitised) | Figure 3 Q1-Q3 (digitised) |
 |:---|---:|---:|---:|---:|:---|
-| Cave,1stdose (ug/mL) | 4.95 | 3.48 | 7.02 | 5.4 | 3.7-7.1 |
-| Ctrough,4doses (ug/mL) | 13.23 | 8.28 | 19.72 | 15.8 | 10.7-20.3 |
+| Cave,1stdose (ug/mL) | 4.94 | 3.47 | 7.01 | 5.4 | 3.7-7.1 |
+| Ctrough,4doses (ug/mL) | 13.21 | 8.26 | 19.70 | 15.8 | 10.7-20.3 |
 
 Simulated RP2D exposure metrics vs values digitised from Miao 2023
 Figure 3. {.table}
@@ -868,7 +868,7 @@ knitr::kable(gate, digits = 2,
 | Time-dependent share of CL at t = 0 (%) | 43.00 | 38.30 | 8.0 | FALSE | -4.70 | TRUE |
 | Median days to 50% of Cmax after stopping | 15.00 | 14.17 | 6.0 | FALSE | -0.83 | TRUE |
 | Median days to 97% of Cmax after stopping | 69.00 | 64.08 | 20.0 | FALSE | -4.92 | TRUE |
-| AUCtau at dose 12 as % of steady state | 90.00 | 90.93 | 8.0 | FALSE | 0.93 | TRUE |
+| AUCtau at dose 12 as % of steady state | 90.00 | 90.87 | 8.0 | FALSE | 0.87 | TRUE |
 
 Validation gate. Tolerances are absolute, in the units of each row.
 {.table}

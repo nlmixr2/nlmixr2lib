@@ -797,18 +797,18 @@ ta |>
 
 | Arm               | Regimen                        | MIC 4 | MIC 8 | MIC 16 | MIC 32 |
 |:------------------|:-------------------------------|------:|------:|-------:|-------:|
-| CKRT, 10-30 kg    | Current (100 mg/kg q8h, 0.5 h) |  94.7 |  89.2 |   79.0 |   61.4 |
-| CKRT, 3-10 kg     | Current (100 mg/kg q8h, 0.5 h) |  90.7 |  85.1 |   75.9 |   60.9 |
-| CKRT, 30-60 kg    | Current (100 mg/kg q8h, 0.5 h) |  93.9 |  88.3 |   81.5 |   69.3 |
-| No CKRT, 10-30 kg | Current (100 mg/kg q8h, 0.5 h) |  94.3 |  89.3 |   80.5 |   68.6 |
-| No CKRT, 3-10 kg  | Current (100 mg/kg q8h, 0.5 h) |  96.1 |  91.3 |   83.3 |   70.6 |
-| No CKRT, 30-60 kg | Current (100 mg/kg q8h, 0.5 h) |  95.0 |  90.0 |   83.5 |   73.1 |
-| CKRT, 10-30 kg    | Continuous infusion q24h       | 100.0 | 100.0 |   98.0 |   86.0 |
-| CKRT, 3-10 kg     | Continuous infusion q24h       | 100.0 | 100.0 |   97.0 |   86.0 |
-| CKRT, 30-60 kg    | Continuous infusion q24h       | 100.0 | 100.0 |   98.0 |   94.0 |
-| No CKRT, 10-30 kg | Continuous infusion q24h       | 100.0 | 100.0 |  100.0 |   93.0 |
-| No CKRT, 3-10 kg  | Continuous infusion q24h       | 100.0 | 100.0 |   98.0 |   91.0 |
-| No CKRT, 30-60 kg | Continuous infusion q24h       | 100.0 | 100.0 |  100.0 |   97.0 |
+| CKRT, 10-30 kg    | Current (100 mg/kg q8h, 0.5 h) |  91.5 |  86.4 |   76.0 |   59.7 |
+| CKRT, 3-10 kg     | Current (100 mg/kg q8h, 0.5 h) |  90.7 |  84.2 |   74.7 |   58.4 |
+| CKRT, 30-60 kg    | Current (100 mg/kg q8h, 0.5 h) |  90.3 |  85.9 |   78.8 |   69.6 |
+| No CKRT, 10-30 kg | Current (100 mg/kg q8h, 0.5 h) |  95.2 |  91.8 |   83.9 |   72.7 |
+| No CKRT, 3-10 kg  | Current (100 mg/kg q8h, 0.5 h) |  96.6 |  90.9 |   80.7 |   65.3 |
+| No CKRT, 30-60 kg | Current (100 mg/kg q8h, 0.5 h) |  91.3 |  87.7 |   80.7 |   70.4 |
+| CKRT, 10-30 kg    | Continuous infusion q24h       | 100.0 |  99.0 |   97.0 |   93.0 |
+| CKRT, 3-10 kg     | Continuous infusion q24h       | 100.0 | 100.0 |   97.0 |   87.0 |
+| CKRT, 30-60 kg    | Continuous infusion q24h       | 100.0 | 100.0 |   99.0 |   93.0 |
+| No CKRT, 10-30 kg | Continuous infusion q24h       | 100.0 | 100.0 |  100.0 |   92.0 |
+| No CKRT, 3-10 kg  | Continuous infusion q24h       | 100.0 | 100.0 |  100.0 |   91.0 |
+| No CKRT, 30-60 kg | Continuous infusion q24h       | 100.0 | 100.0 |   99.0 |   95.0 |
 
 ``` r
 
@@ -1001,23 +1001,23 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         dplyr_1.2.1           PKNCA_0.12.1         
-#> [4] rxode2_5.1.7          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
-#> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
-#> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       tidyr_1.3.2         openssl_2.4.2      
+#> [25] sass_0.4.10         yaml_2.3.12         tidyr_1.3.2        
+#> [28] pillar_1.11.1       pkgdown_2.2.1       crayon_1.5.3       
+#> [31] jquerylib_0.1.4     whisker_0.4.1       openssl_2.4.2      
 #> [34] cachem_1.1.0        nlme_3.1-169        tidyselect_1.2.1   
 #> [37] digest_0.6.39       lotri_1.0.5         purrr_1.2.2        
-#> [40] labeling_0.4.3      rxode2ll_2.0.17     fastmap_1.2.0      
+#> [40] labeling_0.4.3      rxode2ll_2.0.18     fastmap_1.2.0      
 #> [43] grid_4.6.1          cli_3.6.6           dparser_1.3.1-13   
 #> [46] magrittr_2.0.5      withr_3.0.3         scales_1.4.0       
 #> [49] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         

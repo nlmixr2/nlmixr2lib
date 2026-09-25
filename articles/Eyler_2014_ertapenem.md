@@ -416,10 +416,10 @@ comparison |>
 
 | Regimen | % subjects geq 40% T\>MIC (simulated) | % subjects geq 40% T\>MIC (published) | Median % T \> 2 mg/L (simulated) | Median % T \> 2 mg/L (published) |
 |:---|---:|---:|---:|---:|
-| 500 mg q12h | 100.0 | 100.0 | 100.0 | 99.2 |
-| 500 mg q24h | 96.0 | 96.2 | 64.6 | 58.3 |
-| 750 mg q24h | 99.5 | 99.9 | 82.3 | 75.0 |
-| 1000 mg q24h | 100.0 | 99.9 | 100.0 | 91.7 |
+| 500 mg q12h | 100 | 100.0 | 100.0 | 99.2 |
+| 500 mg q24h | 96 | 96.2 | 64.6 | 58.3 |
+| 750 mg q24h | 100 | 99.9 | 85.4 | 75.0 |
+| 1000 mg q24h | 100 | 99.9 | 100.0 | 91.7 |
 
 Replicates Table 3 of Eyler 2014 – probability of achieving unbound \> 2
 mg/L for \>= 40% of the first dosing interval, plus median percent time
@@ -500,10 +500,10 @@ gate_compare |>
 
 | Regimen | Median Cu at 24 h, circuit on (mg/L) | Median Cu at 24 h, circuit off (mg/L) | Ratio |
 |:---|---:|---:|---:|
-| 1000 mg q24h | 1.99 | 4.96 | 2.49 |
-| 500 mg q12h | 3.41 | 6.86 | 2.01 |
-| 500 mg q24h | 0.91 | 2.40 | 2.64 |
-| 750 mg q24h | 1.39 | 3.65 | 2.63 |
+| 1000 mg q24h | 1.96 | 4.85 | 2.47 |
+| 500 mg q12h | 3.65 | 7.02 | 1.93 |
+| 500 mg q24h | 0.98 | 2.40 | 2.46 |
+| 750 mg q24h | 1.49 | 3.75 | 2.51 |
 
 Median unbound ertapenem at 24 h with the CRRT circuit running and with
 it switched off. The right-hand column is the behaviour the packaged

@@ -172,11 +172,11 @@ dplyr::glimpse(vis1[, c("sim.id", "time", "Cc", "cavg", "p00", "p01", "p02")])
 #> Columns: 7
 #> $ sim.id <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, …
 #> $ time   <dbl> 168, 336, 504, 672, 840, 1008, 1176, 1344, 1512, 1680, 1848, 20…
-#> $ Cc     <dbl> 101.266942, 101.313893, 101.313914, 101.313914, 101.313914, 101…
-#> $ cavg   <dbl> 168.44979, 175.04270, 177.24238, 178.34221, 179.00212, 179.4420…
-#> $ p00    <dbl> 0.9001888, 0.8997098, 0.8995572, 0.8994823, 0.8994377, 0.899408…
-#> $ p01    <dbl> 0.07758969, 0.07795280, 0.07806843, 0.07812526, 0.07815905, 0.0…
-#> $ p02    <dbl> 0.02222152, 0.02233740, 0.02237433, 0.02239248, 0.02240328, 0.0…
+#> $ Cc     <dbl> 15.70757, 15.70757, 15.70757, 15.70757, 15.70757, 15.70757, 15.…
+#> $ cavg   <dbl> 94.00806, 94.38568, 94.51155, 94.57449, 94.61225, 94.63742, 94.…
+#> $ p00    <dbl> 0.8634115, 0.8632721, 0.8632259, 0.8632028, 0.8631890, 0.863179…
+#> $ p01    <dbl> 0.11075442, 0.11086404, 0.11090042, 0.11091858, 0.11092947, 0.1…
+#> $ p02    <dbl> 0.02583407, 0.02586381, 0.02587368, 0.02587861, 0.02588157, 0.0…
 ```
 
 ### Structural check: the proportional-odds constraint
@@ -204,7 +204,7 @@ stopifnot(
 )
 c(min_prob = min(probs), max_rowsum_error = max(abs(rowsums - 1)))
 #>         min_prob max_rowsum_error 
-#>     4.660405e-04     2.220446e-16
+#>     5.475139e-04     2.220446e-16
 ```
 
 ## Replicating Figure 1B: the pharmacokinetic profile
@@ -354,11 +354,11 @@ knitr::kable(s1, caption = "Replicates Supplementary Table S1 of Lin 2024 (N = 2
 | Drug effect (Emax fold) | Simulated incidence (%) | Published incidence (%) | Difference (pp) |
 |---:|---:|---:|---:|
 | 0.25 | 7.1 | 8.5 | -1.4 |
-| 0.50 | 21.3 | 21.0 | 0.3 |
-| 0.75 | 48.5 | 49.5 | -1.0 |
-| 1.00 | 80.6 | 84.5 | -3.9 |
-| 1.25 | 95.4 | 96.5 | -1.1 |
-| 1.50 | 99.2 | 99.5 | -0.3 |
+| 0.50 | 21.4 | 21.0 | 0.4 |
+| 0.75 | 48.4 | 49.5 | -1.1 |
+| 1.00 | 80.2 | 84.5 | -4.3 |
+| 1.25 | 95.7 | 96.5 | -0.8 |
+| 1.50 | 99.6 | 99.5 | 0.1 |
 
 Replicates Supplementary Table S1 of Lin 2024 (N = 200 column). {.table}
 
@@ -374,7 +374,7 @@ stopifnot(
   !is.unsorted(incidence)
 )
 mae
-#> [1] 1.329167
+#> [1] 1.345833
 ```
 
 Mean absolute error is 1.3 percentage points across the six drug-effect
@@ -436,19 +436,19 @@ knitr::kable(
 
 | CavTE derivation | Median simulated p-value | Published p-value (Table 2) |
 |:-----------------|-------------------------:|----------------------------:|
-| EoT              |                   0.4190 |                    0.309000 |
-| EoT + 7 days     |                   0.5360 |                    0.119000 |
-| EoT + 14 days    |                   0.3400 |                    0.028500 |
-| EoT + 21 days    |                   0.1050 |                    0.005590 |
-| EoT + 28 days    |                   0.0249 |                    0.000944 |
+| EoT              |                  0.41400 |                    0.309000 |
+| EoT + 7 days     |                  0.22800 |                    0.119000 |
+| EoT + 14 days    |                  0.06070 |                    0.028500 |
+| EoT + 21 days    |                  0.01270 |                    0.005590 |
+| EoT + 28 days    |                  0.00233 |                    0.000944 |
 
 Replicates Table 2 of Lin 2024, row ‘Sample Size = 200 / drug effect
 0.5’. {.table}
 
 The **trend** reproduces: the p-value falls monotonically across the
-five derivations and crosses 0.05 between EoT + 21 days and EoT + 28
+five derivations and crosses 0.05 between EoT + 14 days and EoT + 21
 days, which is the paper’s headline claim. The absolute p-values run
-larger than the published ones (0.42 vs 0.309 at EoT; 0.025 vs 0.000944
+larger than the published ones (0.41 vs 0.309 at EoT; 0.0023 vs 0.000944
 at EoT + 28 d), and that is expected rather than a discrepancy: a
 logistic-regression p-value is a function of the one realised event
 pattern, so it is far more variable across simulation replicates than
@@ -545,7 +545,7 @@ med_shift <- tapply(shift$cavte, shift$imputed, stats::median)
 stopifnot(!is.unsorted(rev(med_shift)))   # strictly decreasing with imputed time
 round(med_shift, 1)
 #>     0     7    14    21    28 
-#> 148.8 140.1 132.3 125.3 119.0
+#> 144.6 136.1 128.5 121.7 115.7
 ```
 
 ## Validation 3: PKNCA on the steady-state dosing interval
@@ -620,7 +620,7 @@ knitr::kable(
 
 | Median AUC0-tau (ng/mL\*h) | Median Dose/CL (ng/mL\*h) | Median % difference | Max abs % difference |
 |---:|---:|---:|---:|
-| 3548 | 3548 | 0.01 | 0.3 |
+| 3231 | 3230 | 0.01 | 0.2 |
 
 Steady-state mass-balance identity AUC(0-tau) = Dose / CL, per subject.
 {.table}
@@ -651,7 +651,7 @@ knitr::kable(
 
 | Cmax (ng/mL) | Tmax (h) | Cmin (ng/mL) | AUC0-tau (ng/mL\*h) |
 |-------------:|---------:|-------------:|--------------------:|
-|        318.1 |      1.1 |         47.5 |                3548 |
+|          294 |        1 |         45.3 |                3231 |
 
 Median simulated steady-state NCA parameters (200 subjects, 60 mg QD).
 {.table}

@@ -284,8 +284,8 @@ knitr::kable(metric_tbl)
 
 | Metric | Simulated median | Simulated 2.5-97.5% | Published, motesanib arm | Published, placebo arm |
 |:---|---:|:---|:---|:---|
-| TTG (days) | 93.80 | -14 to 648 | 125 (28 to 399) | 93 (-6 to 312) |
-| TSratio (week 8 / baseline) | 0.79 | 0.29 to 1.19 | 0.69 (0.24 to 0.99) | 0.77 (0.27 to 1.25) |
+| TTG (days) | 107.40 | 1 to 571 | 125 (28 to 399) | 93 (-6 to 312) |
+| TSratio (week 8 / baseline) | 0.77 | 0.29 to 1.19 | 0.69 (0.24 to 0.99) | 0.77 (0.27 to 1.25) |
 
 The tightest available check is on the **typical value** – all etas zero
 – because the TS model is a single pooled fit with no treatment-arm

@@ -471,7 +471,7 @@ knitr::kable(
 | Diuretic multiplier on CL                | 0.81873 |   0.81873 |
 | Typical CL at reference covariates (L/h) | 0.14000 |   0.14000 |
 | Typical V at reference weight (L)        | 1.04000 |   1.04000 |
-| Interindividual SD of log CL             | 0.04773 |   0.04967 |
+| Interindividual SD of log CL             | 0.04741 |   0.04967 |
 | 24 h trough ratio when CL is doubled     | 0.04237 |        NA |
 
 Structural checks against the Zhao 2025 published values. {.table}
@@ -547,8 +547,8 @@ knitr::kable(
 
 | Interval Start | Interval End | arm | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 96 | 120 | No diuretic | 100 | 457 \[12.5\] | 35.8 \[7.23\] | 8.17 \[22.7\] | 13.0 \[13.0, 13.0\] | 19.0 \[12.5\] |
-| 96 | 120 | Concomitant diuretic | 100 | 565 \[12.8\] | 40.0 \[8.00\] | 12.0 \[21.0\] | 13.0 \[13.0, 13.0\] | 23.5 \[12.8\] |
+| 96 | 120 | No diuretic | 100 | 461 \[13.1\] | 36.0 \[7.44\] | 8.31 \[23.8\] | 13.0 \[13.0, 13.0\] | 19.2 \[13.1\] |
+| 96 | 120 | Concomitant diuretic | 100 | 565 \[11.9\] | 40.0 \[7.60\] | 12.0 \[19.4\] | 13.0 \[13.0, 13.0\] | 23.5 \[11.9\] |
 
 Simulated steady-state NCA parameters by arm (15 mg/kg Q12H as a 1 h IV
 infusion; 24-hour window 96-120 h). {.table}
@@ -594,8 +594,8 @@ knitr::kable(
 
 | arm | AUC0-24,ss NCA (mg\*h/L), median | AUC0-24,ss = Dose/CL (mg\*h/L), median | Max \|% difference\| across subjects |
 |:---|---:|---:|---:|
-| No diuretic | 458.217 | 458.255 | 0.014 |
-| Concomitant diuretic | 568.736 | 568.770 | 0.017 |
+| No diuretic | 457.984 | 458.021 | 0.015 |
+| Concomitant diuretic | 575.578 | 575.613 | 0.010 |
 
 Steady-state AUC from PKNCA versus the closed-form Dose/CL identity.
 {.table}

@@ -461,7 +461,7 @@ tibble::tibble(
 
 | Quantity                              |    Value |
 |:--------------------------------------|---------:|
-| AUC0-240h, intravenous (mg\*h/L)      | 238.5908 |
+| AUC0-240h, intravenous (mg\*h/L)      | 238.5907 |
 | AUC0-240h, oral (mg\*h/L)             | 208.2878 |
 | Oral / intravenous AUC ratio          |   0.8730 |
 | Published bioavailability F (Table 2) |   0.8730 |

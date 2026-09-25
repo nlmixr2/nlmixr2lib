@@ -714,15 +714,15 @@ knitr::kable(
 
 | NCA parameter      | treatment | Reference | Simulated | % diff |
 |:-------------------|:----------|----------:|----------:|-------:|
-| Cmax (ng/mL)       | 2 mg BID  |        14 |      14.1 |  +1.0% |
-| Cmax (ng/mL)       | 5 mg BID  |      36.7 |      36.7 |  -0.1% |
-| Cmax (ng/mL)       | 10 mg BID |      73.9 |      71.9 |  -2.7% |
-| AUClast (ng\*h/mL) | 2 mg BID  |      72.2 |        74 |  +2.5% |
-| AUClast (ng\*h/mL) | 5 mg BID  |       191 |       188 |  -1.4% |
-| AUClast (ng\*h/mL) | 10 mg BID |       372 |       372 |  +0.0% |
-| t½ (h)             | 2 mg BID  |      3.22 |       3.3 |  +2.6% |
-| t½ (h)             | 5 mg BID  |      3.22 |      3.21 |  -0.4% |
-| t½ (h)             | 10 mg BID |      3.22 |      3.25 |  +0.8% |
+| Cmax (ng/mL)       | 2 mg BID  |        14 |      14.6 |  +4.5% |
+| Cmax (ng/mL)       | 5 mg BID  |      36.7 |      36.7 |  +0.0% |
+| Cmax (ng/mL)       | 10 mg BID |      73.9 |      72.2 |  -2.3% |
+| AUClast (ng\*h/mL) | 2 mg BID  |      72.2 |      75.7 |  +4.8% |
+| AUClast (ng\*h/mL) | 5 mg BID  |       191 |       190 |  -0.7% |
+| AUClast (ng\*h/mL) | 10 mg BID |       372 |       373 |  +0.4% |
+| t½ (h)             | 2 mg BID  |      3.22 |      3.24 |  +0.6% |
+| t½ (h)             | 5 mg BID  |      3.22 |      3.24 |  +0.6% |
+| t½ (h)             | 10 mg BID |      3.22 |      3.25 |  +1.0% |
 
 Simulated (geometric mean over the virtual cohort) vs published
 steady-state exposures. AUC0-tau and Cmax are the geometric means of
@@ -797,8 +797,8 @@ knitr::kable(
 
 | Stratum     |   n | Model residual CV (%) | Published residual CV (%) |
 |:------------|----:|----------------------:|--------------------------:|
-| TAD \< 9 h  | 200 |                    61 |                      60.2 |
-| TAD \>= 9 h | 200 |                    66 |                      69.6 |
+| TAD \< 9 h  | 200 |                  65.4 |                      60.2 |
+| TAD \>= 9 h | 200 |                  75.2 |                      69.6 |
 
 Proportional residual-error CV recovered from the simulated
 observations, by time-after-dose stratum. {.table}

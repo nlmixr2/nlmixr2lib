@@ -454,24 +454,24 @@ comparison_t3 |>
 
 | Threshold | Regimen | Simulated median (90% PI), weeks | Chen 2024 Table 3, weeks | Difference in medians |
 |:---|:---|---:|---:|---:|
-| Below 10 x10^6/L | 100 mg/m2, 1 infusion | 4.1 (0.0-12.2) | 4.0 (0-13.0) | +3.6% |
-| Below 10 x10^6/L | 375 mg/m2, 1 infusion | 8.4 (0.0-19.2) | 8.2 (0-20.6) | +2.8% |
-| Below 10 x10^6/L | 375 mg/m2, 2 infusions | 11.5 (0.0-23.5) | 10.8 (0-22.2) | +6.5% |
-| Below 10 x10^6/L | 375 mg/m2, 4 infusions | 15.0 (0.0-28.9) | 14.1 (0-27.4) | +6.4% |
-| Below 10 x10^6/L | 750 mg/m2, 1 infusion | 10.9 (0.0-22.9) | 10.2 (0-23.8) | +7.1% |
-| Below 10 x10^6/L | 750 mg/m2, 2 infusions | 14.5 (0.0-28.3) | 12.9 (0-27.4) | +12.4% |
-| Below 100 x10^6/L | 100 mg/m2, 1 infusion | 15.9 (8.7-34.2) | 15.7 (7.1-36.1) | +1.5% |
-| Below 100 x10^6/L | 375 mg/m2, 1 infusion | 20.9 (12.1-42.7) | 20.7 (9.8-43.1) | +0.8% |
-| Below 100 x10^6/L | 375 mg/m2, 2 infusions | 23.9 (14.6-47.3) | 23.2 (12.7-44.3) | +3.1% |
-| Below 100 x10^6/L | 375 mg/m2, 4 infusions | 27.4 (17.5-52.5) | 26.4 (15.6-49.3) | +3.6% |
-| Below 100 x10^6/L | 750 mg/m2, 1 infusion | 23.4 (14.0-46.8) | 23.2 (12.2-46.2) | +1.0% |
-| Below 100 x10^6/L | 750 mg/m2, 2 infusions | 26.8 (17.0-51.9) | 25.9 (14.3-52.5) | +3.4% |
-| Below 200 x10^6/L | 100 mg/m2, 1 infusion | 21.6 (11.7-Inf) | 22.0 (9.7-Inf) | -1.9% |
-| Below 200 x10^6/L | 375 mg/m2, 1 infusion | 26.4 (15.0-Inf) | 27.1 (12.9-Inf) | -2.5% |
-| Below 200 x10^6/L | 375 mg/m2, 2 infusions | 29.5 (17.4-Inf) | 28.9 (15.0-Inf) | +2.1% |
-| Below 200 x10^6/L | 375 mg/m2, 4 infusions | 33.2 (20.4-Inf) | 32.1 (18.4-Inf) | +3.5% |
-| Below 200 x10^6/L | 750 mg/m2, 1 infusion | 29.0 (16.9-Inf) | 29.4 (14.7-Inf) | -1.4% |
-| Below 200 x10^6/L | 750 mg/m2, 2 infusions | 32.6 (19.9-Inf) | 32.1 (17.4-Inf) | +1.7% |
+| Below 10 x10^6/L | 100 mg/m2, 1 infusion | 4.1 (0.0-13.4) | 4.0 (0-13.0) | +1.8% |
+| Below 10 x10^6/L | 375 mg/m2, 1 infusion | 9.0 (0.0-20.0) | 8.2 (0-20.6) | +9.8% |
+| Below 10 x10^6/L | 375 mg/m2, 2 infusions | 12.1 (1.4-24.6) | 10.8 (0-22.2) | +12.4% |
+| Below 10 x10^6/L | 375 mg/m2, 4 infusions | 16.0 (1.4-30.4) | 14.1 (0-27.4) | +13.5% |
+| Below 10 x10^6/L | 750 mg/m2, 1 infusion | 11.6 (0.0-24.0) | 10.2 (0-23.8) | +13.4% |
+| Below 10 x10^6/L | 750 mg/m2, 2 infusions | 15.4 (0.7-29.9) | 12.9 (0-27.4) | +19.6% |
+| Below 100 x10^6/L | 100 mg/m2, 1 infusion | 17.6 (8.1-34.6) | 15.7 (7.1-36.1) | +12.4% |
+| Below 100 x10^6/L | 375 mg/m2, 1 infusion | 22.4 (11.6-43.3) | 20.7 (9.8-43.1) | +8.0% |
+| Below 100 x10^6/L | 375 mg/m2, 2 infusions | 25.6 (14.0-48.1) | 23.2 (12.7-44.3) | +10.2% |
+| Below 100 x10^6/L | 375 mg/m2, 4 infusions | 29.4 (16.7-53.4) | 26.4 (15.6-49.3) | +11.5% |
+| Below 100 x10^6/L | 750 mg/m2, 1 infusion | 25.0 (13.4-47.5) | 23.2 (12.2-46.2) | +7.8% |
+| Below 100 x10^6/L | 750 mg/m2, 2 infusions | 28.9 (16.1-52.8) | 25.9 (14.3-52.5) | +11.4% |
+| Below 200 x10^6/L | 100 mg/m2, 1 infusion | 23.7 (11.1-Inf) | 22.0 (9.7-Inf) | +7.8% |
+| Below 200 x10^6/L | 375 mg/m2, 1 infusion | 29.4 (14.7-Inf) | 27.1 (12.9-Inf) | +8.3% |
+| Below 200 x10^6/L | 375 mg/m2, 2 infusions | 32.4 (16.9-Inf) | 28.9 (15.0-Inf) | +12.2% |
+| Below 200 x10^6/L | 375 mg/m2, 4 infusions | 36.1 (19.9-Inf) | 32.1 (18.4-Inf) | +12.6% |
+| Below 200 x10^6/L | 750 mg/m2, 1 infusion | 31.9 (16.3-Inf) | 29.4 (14.7-Inf) | +8.4% |
+| Below 200 x10^6/L | 750 mg/m2, 2 infusions | 35.6 (19.3-Inf) | 32.1 (17.4-Inf) | +11.0% |
 
 Duration of CD19+ suppression: simulation from the packaged model vs
 Chen 2024 Table 3. \* marks a median differing from the published value
@@ -486,7 +486,7 @@ n_starred <- sum(grepl("\\*", comparison_t3$difference))
 c(rows = nrow(comparison_t3), starred = n_starred,
   max_abs_pct_diff = round(max(worst$pct), 1))
 #>             rows          starred max_abs_pct_diff 
-#>             18.0              0.0             12.4
+#>             18.0              0.0             19.6
 ```
 
 All 18 simulated medians agree with the published values to within 20%
@@ -626,9 +626,9 @@ as.data.frame(nca_res) |>
 
 | Regimen | AUCinf,obs (ug\*day/mL) | AUClast (ug\*day/mL) | Cmax (ug/mL) | t1/2 (day) | Tmax (day) |
 |:---|---:|---:|---:|---:|---:|
-| 100 mg/m2, 1 infusion | 416 | 416 | 48.2 | 16.5 | 0.198 |
-| 375 mg/m2, 1 infusion | 1560 | 1560 | 181.0 | 16.5 | 0.198 |
-| 750 mg/m2, 1 infusion | 3120 | 3120 | 362.0 | 16.5 | 0.198 |
+| 100 mg/m2, 1 infusion | 451 | 450 | 47.7 | 17.6 | 0.198 |
+| 375 mg/m2, 1 infusion | 1690 | 1690 | 179.0 | 17.6 | 0.198 |
+| 750 mg/m2, 1 infusion | 3380 | 3380 | 358.0 | 17.6 | 0.198 |
 
 Simulated non-compartmental exposure after a single rituximab infusion
 (median over 200 virtual subjects). {.table}
@@ -673,9 +673,9 @@ as.data.frame(nca_res) |>
 
 | Regimen | Median AUCinf,obs (ug\*day/mL) | Dose (mg/m^2) | AUC per mg/m^2 |
 |:---|---:|---:|---:|
-| 100 mg/m2, 1 infusion | 416.4 | 100 | 4.164 |
-| 375 mg/m2, 1 infusion | 1562.0 | 375 | 4.164 |
-| 750 mg/m2, 1 infusion | 3123.0 | 750 | 4.164 |
+| 100 mg/m2, 1 infusion | 450.7 | 100 | 4.507 |
+| 375 mg/m2, 1 infusion | 1690.0 | 375 | 4.507 |
+| 750 mg/m2, 1 infusion | 3380.0 | 750 | 4.507 |
 
 Dose proportionality of the linear PK layer. {.table}
 

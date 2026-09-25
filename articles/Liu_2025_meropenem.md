@@ -191,7 +191,13 @@ ev_ss <- rxode2::et(amt = 150, cmt = "central", dur = 1, ii = 8, addl = n_add) |
   as.data.frame() |>
   mutate(WT = 7.5, CRCL = 123.4)
 
-ss <- rxode2::rxSolve(mod_typ, ev_ss, returnType = "data.frame") |>
+# maxsteps: 201 doses with no observation record until t = 1600 h. The ODE
+# integrator (liblsoda) counts its internal steps against `maxsteps` (default
+# 70000) and only re-zeroes that count at an observation record, so a
+# dose-only stretch this long exhausts the budget and the solve aborts with
+# "could not solve the system". Raising the budget changes nothing else.
+ss <- rxode2::rxSolve(mod_typ, ev_ss, returnType = "data.frame",
+                      maxsteps = 1e6) |>
   filter(!is.na(Cc), time >= t_last)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 

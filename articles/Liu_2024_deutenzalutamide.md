@@ -320,10 +320,10 @@ knitr::kable(prop_tbl, digits = c(0, 0, 1, 3),
 
 | treatment | dose | Median AUC0-tau (ug\*h/mL) | AUC / dose (h/L) |
 |:----------|-----:|---------------------------:|-----------------:|
-| 40 mg     |   40 |                      243.4 |            6.085 |
-| 80 mg     |   80 |                      477.5 |            5.968 |
-| 160 mg    |  160 |                      921.0 |            5.757 |
-| 200 mg    |  200 |                     1131.4 |            5.657 |
+| 40 mg     |   40 |                      237.7 |            5.941 |
+| 80 mg     |   80 |                      470.3 |            5.879 |
+| 160 mg    |  160 |                      923.7 |            5.773 |
+| 200 mg    |  200 |                     1223.5 |            6.117 |
 
 Dose-normalised steady-state exposure across dose arms. Each arm draws
 its own random body weights and etas, so the medians carry sampling
@@ -480,14 +480,14 @@ nca_summary |>
 
 | Period | Dose | AUC0-tau (ug\*h/mL) | Cmax (ug/mL) | Ctrough (ug/mL) | Tmax (h) |
 |:---|:---|---:|---:|---:|---:|
-| Day 84 (steady state) | 40 mg | 243.40 | 10.89 | NA | 1.00 |
-| Day 84 (steady state) | 80 mg | 477.45 | 21.34 | NA | 1.00 |
-| Day 84 (steady state) | 160 mg | 921.04 | 41.58 | NA | 1.12 |
-| Day 84 (steady state) | 200 mg | 1131.42 | 51.18 | NA | 1.12 |
-| First dose | 40 mg | 14.26 | 1.15 | 0.53 | 1.00 |
-| First dose | 80 mg | 27.88 | 2.29 | 1.03 | 1.00 |
-| First dose | 160 mg | 54.76 | 4.52 | 2.06 | 1.12 |
-| First dose | 200 mg | 67.80 | 5.64 | 2.49 | 1.25 |
+| Day 84 (steady state) | 40 mg | 237.66 | 10.73 | NA | 1.00 |
+| Day 84 (steady state) | 80 mg | 470.29 | 21.39 | NA | 1.00 |
+| Day 84 (steady state) | 160 mg | 923.70 | 41.87 | NA | 1.00 |
+| Day 84 (steady state) | 200 mg | 1223.49 | 55.14 | NA | 1.25 |
+| First dose | 40 mg | 13.56 | 1.15 | 0.49 | 1.00 |
+| First dose | 80 mg | 27.87 | 2.28 | 1.03 | 1.25 |
+| First dose | 160 mg | 55.60 | 4.61 | 2.02 | 1.00 |
+| First dose | 200 mg | 68.49 | 5.61 | 2.51 | 1.25 |
 
 Median simulated NCA by dose group, first dose and Day 84. {.table
 style="width:100%;"}
@@ -531,10 +531,10 @@ acc |>
 
 | Dose   | Median accumulation ratio (AUC) |
 |:-------|--------------------------------:|
-| 40 mg  |                            17.9 |
-| 80 mg  |                            17.3 |
-| 160 mg |                            16.7 |
-| 200 mg |                            17.1 |
+| 40 mg  |                            16.7 |
+| 80 mg  |                            17.2 |
+| 160 mg |                            16.9 |
+| 200 mg |                            18.2 |
 
 Accumulation ratio vs. Liu 2024’s reported 16.5-fold. {.table}
 
@@ -688,7 +688,12 @@ ss_events <- tibble::tibble(id = 1L, WT = 64) |>
   ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-ss_sim <- rxode2::rxSolve(mod_typ, events = ss_events) |>
+# maxsteps: 300 daily doses with no observation record until the last one.
+# The ODE integrator (liblsoda) counts its internal steps against `maxsteps`
+# (default 70000) and only re-zeroes that count at an observation record, so
+# a dose-only stretch of 7176 h exhausts the budget and the solve aborts with
+# "could not solve the system". Raising the budget changes nothing else.
+ss_sim <- rxode2::rxSolve(mod_typ, events = ss_events, maxsteps = 1e6) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(tad = time - tau * 299)

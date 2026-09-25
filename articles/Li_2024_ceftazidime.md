@@ -616,7 +616,7 @@ stopifnot(!anyDuplicated(unique(pta_events[, c("id", "time", "evid")])))
 pta_sim <- rxode2::rxSolve(mod, events = pta_events, keep = c("cell")) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:03
 ```
 
 `fT>MIC` is computed two ways. The closed form uses each simulated
@@ -720,22 +720,22 @@ pta_wide |>
 
 | Weight | eGFR (mL/min/1.73 m^2) | MIC 2 mg/L | MIC 4 mg/L | MIC 8 mg/L | MIC 16 mg/L |
 |:---|:---|:---|:---|:---|:---|
-| 10-30 kg | 120-200 (augmented) | 12.5 mg/kg q8h (88%) | 25.0 mg/kg q8h (88%) | 22.5 mg/kg q6h (82%) | NA |
-| 10-30 kg | 30-60 (moderate) | 12.5 mg/kg q12h (87%) | 22.5 mg/kg q12h (86%) | 50.0 mg/kg q12h (93%) | 32.5 mg/kg q8h (86%) |
-| 10-30 kg | 60-90 (mild) | 20.0 mg/kg q12h (88%) | 40.0 mg/kg q12h (89%) | 25.0 mg/kg q8h (90%) | 27.5 mg/kg q6h (87%) |
-| 10-30 kg | 90-120 (normal) | 30.0 mg/kg q12h (85%) | 17.5 mg/kg q8h (89%) | 32.5 mg/kg q8h (82%) | 32.5 mg/kg q6h (84%) |
-| 30-50 kg | 120-200 (augmented) | 42.5 mg/kg q12h (84%) | 20.0 mg/kg q8h (85%) | 20.0 mg/kg q6h (81%) | 40.0 mg/kg q6h (84%) |
-| 30-50 kg | 30-60 (moderate) | 10.0 mg/kg q12h (92%) | 20.0 mg/kg q12h (91%) | 40.0 mg/kg q12h (90%) | 30.0 mg/kg q8h (89%) |
-| 30-50 kg | 60-90 (mild) | 17.5 mg/kg q12h (90%) | 35.0 mg/kg q12h (88%) | 22.5 mg/kg q8h (91%) | 25.0 mg/kg q6h (89%) |
-| 30-50 kg | 90-120 (normal) | 25.0 mg/kg q12h (90%) | 47.5 mg/kg q12h (88%) | 30.0 mg/kg q8h (88%) | 30.0 mg/kg q6h (89%) |
-| 50-70 kg | 120-200 (augmented) | 40.0 mg/kg q12h (87%) | 20.0 mg/kg q8h (86%) | 20.0 mg/kg q6h (88%) | 37.5 mg/kg q6h (82%) |
-| 50-70 kg | 30-60 (moderate) | 10.0 mg/kg q12h (93%) | 17.5 mg/kg q12h (90%) | 35.0 mg/kg q12h (86%) | 27.5 mg/kg q8h (86%) |
-| 50-70 kg | 60-90 (mild) | 15.0 mg/kg q12h (91%) | 30.0 mg/kg q12h (92%) | 20.0 mg/kg q8h (90%) | 22.5 mg/kg q6h (88%) |
-| 50-70 kg | 90-120 (normal) | 22.5 mg/kg q12h (92%) | 45.0 mg/kg q12h (87%) | 25.0 mg/kg q8h (84%) | 27.5 mg/kg q6h (82%) |
-| \<10 kg | 120-200 (augmented) | 20.0 mg/kg q8h (92%) | 16.0 mg/kg q6h (89%) | 30.0 mg/kg q6h (80%) | NA |
-| \<10 kg | 30-60 (moderate) | 17.5 mg/kg q12h (92%) | 35.0 mg/kg q12h (92%) | 22.5 mg/kg q8h (90%) | 25.0 mg/kg q6h (84%) |
-| \<10 kg | 60-90 (mild) | 32.5 mg/kg q12h (92%) | 17.5 mg/kg q8h (88%) | 32.5 mg/kg q8h (88%) | 35.0 mg/kg q6h (85%) |
-| \<10 kg | 90-120 (normal) | 50.0 mg/kg q12h (88%) | 25.0 mg/kg q8h (89%) | 22.5 mg/kg q6h (84%) | NA |
+| 10-30 kg | 120-200 (augmented) | 12.5 mg/kg q8h (86%) | 25.0 mg/kg q8h (84%) | 22.5 mg/kg q6h (85%) | NA |
+| 10-30 kg | 30-60 (moderate) | 12.5 mg/kg q12h (87%) | 22.5 mg/kg q12h (90%) | 50.0 mg/kg q12h (88%) | 32.5 mg/kg q8h (85%) |
+| 10-30 kg | 60-90 (mild) | 20.0 mg/kg q12h (90%) | 40.0 mg/kg q12h (89%) | 25.0 mg/kg q8h (86%) | 27.5 mg/kg q6h (82%) |
+| 10-30 kg | 90-120 (normal) | 30.0 mg/kg q12h (84%) | 17.5 mg/kg q8h (88%) | 32.5 mg/kg q8h (82%) | 32.5 mg/kg q6h (80%) |
+| 30-50 kg | 120-200 (augmented) | 42.5 mg/kg q12h (90%) | 20.0 mg/kg q8h (84%) | 20.0 mg/kg q6h (88%) | 40.0 mg/kg q6h (84%) |
+| 30-50 kg | 30-60 (moderate) | 10.0 mg/kg q12h (88%) | 20.0 mg/kg q12h (92%) | 40.0 mg/kg q12h (86%) | 30.0 mg/kg q8h (88%) |
+| 30-50 kg | 60-90 (mild) | 17.5 mg/kg q12h (88%) | 35.0 mg/kg q12h (94%) | 22.5 mg/kg q8h (82%) | 25.0 mg/kg q6h (85%) |
+| 30-50 kg | 90-120 (normal) | 25.0 mg/kg q12h (88%) | 47.5 mg/kg q12h (88%) | 30.0 mg/kg q8h (90%) | 30.0 mg/kg q6h (86%) |
+| 50-70 kg | 120-200 (augmented) | 40.0 mg/kg q12h (91%) | 20.0 mg/kg q8h (88%) | 20.0 mg/kg q6h (88%) | 37.5 mg/kg q6h (86%) |
+| 50-70 kg | 30-60 (moderate) | 10.0 mg/kg q12h (90%) | 17.5 mg/kg q12h (91%) | 35.0 mg/kg q12h (90%) | 27.5 mg/kg q8h (88%) |
+| 50-70 kg | 60-90 (mild) | 15.0 mg/kg q12h (91%) | 30.0 mg/kg q12h (90%) | 20.0 mg/kg q8h (86%) | 22.5 mg/kg q6h (85%) |
+| 50-70 kg | 90-120 (normal) | 22.5 mg/kg q12h (90%) | 45.0 mg/kg q12h (88%) | 25.0 mg/kg q8h (84%) | 27.5 mg/kg q6h (84%) |
+| \<10 kg | 120-200 (augmented) | 20.0 mg/kg q8h (88%) | 16.0 mg/kg q6h (82%) | 30.0 mg/kg q6h (86%) | NA |
+| \<10 kg | 30-60 (moderate) | 17.5 mg/kg q12h (88%) | 35.0 mg/kg q12h (88%) | 22.5 mg/kg q8h (87%) | 25.0 mg/kg q6h (88%) |
+| \<10 kg | 60-90 (mild) | 32.5 mg/kg q12h (91%) | 17.5 mg/kg q8h (88%) | 32.5 mg/kg q8h (88%) | 35.0 mg/kg q6h (88%) |
+| \<10 kg | 90-120 (normal) | 50.0 mg/kg q12h (88%) | 25.0 mg/kg q8h (86%) | 22.5 mg/kg q6h (88%) | NA |
 
 Li 2024 Table 4 recommended regimens, each followed by the PTA this
 model reproduces for 70% fT\>MIC (free = 90% of total). The paper’s
@@ -759,11 +759,11 @@ data.frame(
 | statistic                      |  value |
 |:-------------------------------|-------:|
 | cells checked                  | 61.000 |
-| minimum PTA (%)                | 80.500 |
-| median PTA (%)                 | 88.000 |
-| maximum PTA (%)                | 93.000 |
-| cells with PTA \>= 90%         | 17.000 |
-| lowest per-cell median fT\>MIC |  0.913 |
+| minimum PTA (%)                | 79.500 |
+| median PTA (%)                 | 87.500 |
+| maximum PTA (%)                | 93.500 |
+| cells with PTA \>= 90%         | 12.000 |
+| lowest per-cell median fT\>MIC |  0.908 |
 
 Summary of the Table 4 target-attainment reproduction. {.table}
 

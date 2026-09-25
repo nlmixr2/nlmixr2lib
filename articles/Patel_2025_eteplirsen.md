@@ -216,7 +216,12 @@ mod <- readModelDb("Patel_2025_eteplirsen")
 
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("agegrp", "WT", "AGE", "CRCL", "mgkg")
+  keep = c("agegrp", "WT", "AGE", "CRCL", "mgkg"),
+  # The 168 h tail of a weekly interval sits at 1e-7 to 1e-14 of Cmax. At the
+  # default tolerances the ODE integrator undershoots zero there (observed:
+  # -1.5e-8 ug/mL in 9 of 800 subjects); tight tolerances shrink that to the
+  # 1e-12 level. The NCA below additionally drops the numerically-zero tail.
+  rtol = 1e-10, atol = 1e-12
 ) |>
   as.data.frame()
 
@@ -563,6 +568,17 @@ sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, agegrp)
 
+# Drop the numerically-zero tail before NCA. Beyond ~1e-6 of Cmax the ODE
+# integrator's absolute error is comparable to the true concentration, and a
+# single undershoot below zero there turns PKNCA's log-down trapezoid into a
+# NaN AUC (observed for 9 of 800 subjects at the default tolerances). Keep each
+# subject's profile up to the last point at or above 1e-6 of its peak; the
+# discarded tail holds < 1e-6 of the AUC.
+sim_nca <- sim_nca |>
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= max(time[Cc >= 1e-6 * max(Cc)])) |>
+  dplyr::ungroup()
+
 # Guarantee a time-zero record per subject (pre-infusion Cc is 0 for an IV
 # infusion). Without it PKNCA warns "Requesting an AUC range starting (0)
 # before the first measurement" once per subject.
@@ -626,21 +642,21 @@ as.data.frame(nca_res) |>
 
 | Age group    | Parameter | Median | 2.5th pctl | 97.5th pctl |
 |:-------------|:----------|-------:|-----------:|------------:|
-| 0.5 to \<2 y | auclast   | 156.29 |     103.14 |      247.85 |
+| 0.5 to \<2 y | auclast   | 156.28 |     103.14 |      247.85 |
 | 0.5 to \<2 y | cmax      | 108.64 |      72.12 |      160.66 |
-| 0.5 to \<2 y | half.life |   3.62 |       1.77 |        6.87 |
+| 0.5 to \<2 y | half.life |   3.61 |       1.76 |        6.87 |
 | 0.5 to \<2 y | tmax      |   1.00 |       1.00 |        1.00 |
 | 2 to \<4 y   | auclast   | 175.65 |     111.73 |      279.04 |
 | 2 to \<4 y   | cmax      | 116.14 |      76.46 |      167.78 |
-| 2 to \<4 y   | half.life |   4.17 |       2.06 |        8.81 |
+| 2 to \<4 y   | half.life |   4.16 |       2.04 |        8.80 |
 | 2 to \<4 y   | tmax      |   1.00 |       1.00 |        1.00 |
 | 4 to \<7 y   | auclast   | 137.37 |      87.22 |      206.93 |
 | 4 to \<7 y   | cmax      |  99.84 |      64.58 |      146.29 |
-| 4 to \<7 y   | half.life |   4.20 |       2.26 |        8.47 |
+| 4 to \<7 y   | half.life |   4.19 |       2.24 |        8.46 |
 | 4 to \<7 y   | tmax      |   1.00 |       1.00 |        1.00 |
 | 7 to \<=16 y | auclast   | 155.07 |     101.36 |      245.11 |
 | 7 to \<=16 y | cmax      | 112.22 |      70.82 |      166.83 |
-| 7 to \<=16 y | half.life |   4.40 |       2.31 |       10.96 |
+| 7 to \<=16 y | half.life |   4.39 |       2.29 |       10.95 |
 | 7 to \<=16 y | tmax      |   1.00 |       1.00 |        1.00 |
 
 Simulated steady-state NCA by age group (n = 200 per group). {.table}

@@ -587,18 +587,18 @@ knitr::kable(
 
 | Arm | Analyte | AUC0-8 (umol\*h/L) | Cmax (umol/L) | Tmax (h) |
 |:---|:---|---:|---:|---:|
-| CF, enzymes +30 min | Heptadecanoic acid | 451.5 | 109.2 | 5.8 |
-| CF, enzymes +30 min | Pentadecanoic acid | 1593.0 | 287.9 | 3.6 |
-| CF, enzymes +60 min | Heptadecanoic acid | 424.8 | 102.8 | 5.8 |
-| CF, enzymes +60 min | Pentadecanoic acid | 1593.0 | 287.9 | 3.6 |
-| CF, enzymes -30 min | Heptadecanoic acid | 496.1 | 120.1 | 5.8 |
-| CF, enzymes -30 min | Pentadecanoic acid | 1593.0 | 287.9 | 3.6 |
-| CF, enzymes with MBT | Heptadecanoic acid | 544.6 | 131.8 | 5.8 |
-| CF, enzymes with MBT | Pentadecanoic acid | 1593.0 | 287.9 | 3.6 |
-| CF, no enzymes | Heptadecanoic acid | 24.2 | 6.1 | 5.8 |
-| CF, no enzymes | Pentadecanoic acid | 1776.3 | 334.6 | 3.6 |
-| Healthy | Heptadecanoic acid | 592.0 | 145.7 | 5.8 |
-| Healthy | Pentadecanoic acid | 1175.2 | 212.9 | 3.8 |
+| CF, enzymes +30 min | Heptadecanoic acid | 435.0 | 108.0 | 5.8 |
+| CF, enzymes +30 min | Pentadecanoic acid | 1591.7 | 286.5 | 4.0 |
+| CF, enzymes +60 min | Heptadecanoic acid | 409.3 | 101.6 | 5.8 |
+| CF, enzymes +60 min | Pentadecanoic acid | 1591.7 | 286.5 | 4.0 |
+| CF, enzymes -30 min | Heptadecanoic acid | 478.0 | 118.7 | 5.8 |
+| CF, enzymes -30 min | Pentadecanoic acid | 1591.7 | 286.5 | 4.0 |
+| CF, enzymes with MBT | Heptadecanoic acid | 524.7 | 130.3 | 5.8 |
+| CF, enzymes with MBT | Pentadecanoic acid | 1591.7 | 286.5 | 4.0 |
+| CF, no enzymes | Heptadecanoic acid | 28.2 | 6.8 | 5.8 |
+| CF, no enzymes | Pentadecanoic acid | 1960.4 | 352.1 | 4.0 |
+| Healthy | Heptadecanoic acid | 677.1 | 162.9 | 5.8 |
+| Healthy | Pentadecanoic acid | 1262.3 | 231.7 | 4.0 |
 
 Non-compartmental summary of the simulated cohort, baseline-subtracted,
 by arm and analyte. {.table}
@@ -678,9 +678,9 @@ knitr::kable(
 
 | Enzyme timing | Published factor (HA) | Paired ratio, min (HA) | Paired ratio, max (HA) | Paired ratio, max (PA) |
 |:---|---:|---:|---:|---:|
-| -30 min | 0.911 | 0.910999 | 0.911001 | 1.000002 |
-| +30 min | 0.829 | 0.828999 | 0.829001 | 1.000002 |
-| +60 min | 0.780 | 0.779999 | 0.780001 | 1.000002 |
+| -30 min | 0.911 | 0.910999 | 0.911001 | 1.000001 |
+| +30 min | 0.829 | 0.828999 | 0.829001 | 1.000001 |
+| +60 min | 0.780 | 0.779999 | 0.780001 | 1.000001 |
 
 Per-subject AUC ratios under common random numbers. The
 heptadecanoic-acid ratios reproduce the published timing factors for
@@ -773,24 +773,24 @@ knitr::kable(
 
 | Analyte | Time (h) | Simulated median | Read from Figure 2 | Difference (%) |
 |:---|---:|---:|---:|---:|
-| Heptadecanoic acid | 0 | 27.3 | 28 | -2.6 |
-| Heptadecanoic acid | 1 | 28.6 | 25 | 14.3 |
-| Heptadecanoic acid | 2 | 38.9 | 42 | -7.5 |
-| Heptadecanoic acid | 3 | 78.4 | 78 | 0.5 |
-| Heptadecanoic acid | 4 | 124.3 | 125 | -0.6 |
-| Heptadecanoic acid | 5 | 151.0 | 150 | 0.7 |
-| Heptadecanoic acid | 6 | 159.3 | 160 | -0.5 |
-| Heptadecanoic acid | 7 | 150.7 | 150 | 0.5 |
-| Heptadecanoic acid | 8 | 135.3 | 130 | 4.1 |
-| Pentadecanoic acid | 0 | 24.8 | 25 | -0.8 |
-| Pentadecanoic acid | 1 | 69.0 | 65 | 6.1 |
-| Pentadecanoic acid | 2 | 176.1 | 150 | 17.4 |
-| Pentadecanoic acid | 3 | 220.2 | 215 | 2.4 |
-| Pentadecanoic acid | 4 | 228.1 | 235 | -2.9 |
-| Pentadecanoic acid | 5 | 217.3 | 232 | -6.3 |
-| Pentadecanoic acid | 6 | 201.5 | 215 | -6.3 |
-| Pentadecanoic acid | 7 | 176.9 | 185 | -4.4 |
-| Pentadecanoic acid | 8 | 149.8 | 165 | -9.2 |
+| Heptadecanoic acid | 0 | 28.7 | 28 | 2.5 |
+| Heptadecanoic acid | 1 | 29.2 | 25 | 16.8 |
+| Heptadecanoic acid | 2 | 39.0 | 42 | -7.2 |
+| Heptadecanoic acid | 3 | 79.1 | 78 | 1.4 |
+| Heptadecanoic acid | 4 | 137.6 | 125 | 10.1 |
+| Heptadecanoic acid | 5 | 172.8 | 150 | 15.2 |
+| Heptadecanoic acid | 6 | 171.7 | 160 | 7.3 |
+| Heptadecanoic acid | 7 | 161.3 | 150 | 7.5 |
+| Heptadecanoic acid | 8 | 139.0 | 130 | 7.0 |
+| Pentadecanoic acid | 0 | 26.1 | 25 | 4.4 |
+| Pentadecanoic acid | 1 | 64.0 | 65 | -1.5 |
+| Pentadecanoic acid | 2 | 175.8 | 150 | 17.2 |
+| Pentadecanoic acid | 3 | 234.9 | 215 | 9.3 |
+| Pentadecanoic acid | 4 | 246.8 | 235 | 5.0 |
+| Pentadecanoic acid | 5 | 234.7 | 232 | 1.2 |
+| Pentadecanoic acid | 6 | 210.5 | 215 | -2.1 |
+| Pentadecanoic acid | 7 | 186.4 | 185 | 0.7 |
+| Pentadecanoic acid | 8 | 165.9 | 165 | 0.6 |
 
 Simulated versus published Figure 2 medians (healthy subjects). {.table}
 
@@ -839,7 +839,7 @@ stopifnot(abs(peak("Pentadecanoic acid") - 290) / 290 < 0.15,
           abs(peak("Heptadecanoic acid") - 150) / 150 < 0.15)
 c(PA_peak = peak("Pentadecanoic acid"), HA_peak = peak("Heptadecanoic acid"))
 #>  PA_peak  HA_peak 
-#> 303.1289 142.6593
+#> 294.8472 143.1934
 ```
 
 ### Figure 4 – CF subjects, varying enzyme timing
@@ -885,10 +885,10 @@ knitr::kable(peaks %>% dplyr::rename("Arm" = arm), digits = 1,
 
 | Arm                  | Heptadecanoic acid | Pentadecanoic acid |
 |:---------------------|-------------------:|-------------------:|
-| CF, enzymes +30 min  |              122.8 |              303.1 |
-| CF, enzymes +60 min  |              117.2 |              303.1 |
-| CF, enzymes -30 min  |              132.2 |              303.1 |
-| CF, enzymes with MBT |              142.7 |              303.1 |
+| CF, enzymes +30 min  |              123.0 |              294.8 |
+| CF, enzymes +60 min  |              117.1 |              294.8 |
+| CF, enzymes -30 min  |              132.8 |              294.8 |
+| CF, enzymes with MBT |              143.2 |              294.8 |
 
 Peak median concentration by enzyme-timing arm. {.table}
 

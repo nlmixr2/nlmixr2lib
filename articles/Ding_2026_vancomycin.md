@@ -179,8 +179,6 @@ sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame
 #> Warning: No sigma parameters in the model
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_vc_1', 'etaiov_vc_2', 'etaiov_vc_3', 'etaiov_vc_4'
 
 typ <- c(ffm = unique(sim_typ$ffm), cl = unique(sim_typ$cl), vc = unique(sim_typ$vc))
@@ -269,8 +267,6 @@ stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 
 sim <- rxode2::rxSolve(mod, events = events) |>
   as.data.frame()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
 #> as a work-around try putting the mu-referenced expression on a simple line
 
@@ -404,7 +400,7 @@ chk <- per_subject |>
 
 round(summary(chk$auc_pct_diff), 4)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> -0.0028 -0.0004 -0.0001 -0.0003 -0.0001  0.0000
+#> -0.0027 -0.0003 -0.0002 -0.0003 -0.0001  0.0000
 round(summary(chk$thalf_pct_diff), 4)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #>       0       0       0       0       0       0
@@ -661,7 +657,7 @@ knitr::kable(
 | Comparison | Median absolute difference (pp) | 90th percentile (pp) | Maximum (pp) | Mean signed bias (pp) |
 |:---|---:|---:|---:|---:|
 | Closed form vs Table S2 | 0.36 | 1.81 | 5.11 | 0.17 |
-| Simulated cohort vs Table S2 | 0.90 | 4.44 | 6.80 | 0.16 |
+| Simulated cohort vs Table S2 | 1.00 | 4.60 | 9.10 | 0.28 |
 
 Agreement with Ding 2026 Table S2 across all 144 cells (12 regimens x 12
 clinical scenarios). Differences are in percentage points. {.table}

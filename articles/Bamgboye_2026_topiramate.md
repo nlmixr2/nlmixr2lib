@@ -396,12 +396,12 @@ tibble(
 
 | Arm               | Time (h) | Median Cc (ng/mL) | Mean Cc (ng/mL) |
 |:------------------|---------:|------------------:|----------------:|
-| No enzyme inducer |     0.25 |             464.3 |           490.8 |
-| No enzyme inducer |    24.00 |             200.6 |           208.1 |
-| No enzyme inducer |    96.00 |              46.0 |            50.6 |
-| Enzyme inducer    |     0.25 |             469.1 |           489.6 |
-| Enzyme inducer    |    24.00 |             142.2 |           147.1 |
-| Enzyme inducer    |    96.00 |              14.8 |            18.2 |
+| No enzyme inducer |     0.25 |             451.6 |           482.2 |
+| No enzyme inducer |    24.00 |             194.1 |           209.4 |
+| No enzyme inducer |    96.00 |              47.8 |            54.4 |
+| Enzyme inducer    |     0.25 |             467.7 |           488.4 |
+| Enzyme inducer    |    24.00 |             134.7 |           141.2 |
+| Enzyme inducer    |    96.00 |              12.3 |            16.8 |
 
 Simulated concentrations at three landmark times. Figure 1 of the source
 plots means; Figure 3’s pcVPC plots the median. {.table}
@@ -653,8 +653,8 @@ nca_wide |>
 
 | Arm               | Cmax (ng/mL) | Tmax (h) | AUC0-inf (ng\*h/mL) | t1/2 (h) |
 |:------------------|-------------:|---------:|--------------------:|---------:|
-| Enzyme inducer    |        815.1 |    0.167 |               10739 |     23.0 |
-| No enzyme inducer |        826.0 |    0.167 |               17229 |     35.3 |
+| Enzyme inducer    |        831.4 |    0.167 |                9969 |     22.1 |
+| No enzyme inducer |        806.4 |    0.167 |               16630 |     36.1 |
 
 Median simulated NCA parameters after 25 mg IV topiramate. {.table}
 
@@ -678,7 +678,7 @@ auc_check <- nca_wide |>
 
 summary(auc_check$pct_diff)
 #>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -0.0431432 -0.0005528  0.0004227 -0.0008156  0.0010160  0.0027126
+#> -0.0419282 -0.0010246  0.0004223 -0.0012807  0.0010033  0.0026853
 
 stopifnot(
   nrow(auc_check) == 2L * n_per_arm,
@@ -706,13 +706,13 @@ cl_by_arm
 #> # A tibble: 2 × 3
 #>   arm               gm_cl_at_70kg     n
 #>   <chr>                     <dbl> <int>
-#> 1 Enzyme inducer             2.11   200
-#> 2 No enzyme inducer          1.28   200
+#> 1 Enzyme inducer             2.18   200
+#> 2 No enzyme inducer          1.27   200
 
 observed_ratio <- cl_by_arm$gm_cl_at_70kg[cl_by_arm$arm == "Enzyme inducer"] /
   cl_by_arm$gm_cl_at_70kg[cl_by_arm$arm == "No enzyme inducer"]
 observed_ratio
-#> [1] 1.647169
+#> [1] 1.722619
 
 stopifnot(
   # Monte-Carlo noise on 200 log-normal draws per arm with omega = 0.326:
@@ -763,8 +763,8 @@ t_half_cmp |>
 
 | Arm | NCA median t1/2 (h) | Analytic t1/2 at 70 kg (h) | Difference (%) |
 |:---|---:|---:|---:|
-| Enzyme inducer | 22.98 | 21.61 | 6.36 |
-| No enzyme inducer | 35.29 | 32.95 | 7.10 |
+| Enzyme inducer | 22.09 | 21.61 | 2.20 |
+| No enzyme inducer | 36.10 | 32.95 | 9.56 |
 
 Terminal half-life: PKNCA versus the disposition-matrix eigenvalue.
 {.table}

@@ -566,20 +566,20 @@ tab3 |>
 
 | Transmissibility | Arm | Model R0 | Published (Table 3) | Typical-value | Monte Carlo median | Monte Carlo IQR | % diff (typical) |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| Moderate | No treatment | 1.26 | 37 068 | 37 404 | 37 767 | 142 - 64 491 | +1 |
-| High | No treatment | 2.46 | 67 512 | 88 727 | 89 534 | 77 367 - 95 082 | +31 |
-| Moderate | 75 mg BID, 25% uptake | 0.94 | 7 846 | 16 | 16 | 5 - 1 138 | -100 |
-| High | 75 mg BID, 25% uptake | 1.83 | 60 397 | 74 346 | 73 932 | 59 045 - 83 648 | +23 |
-| Moderate | 150 mg BID, 25% uptake | 0.85 | 5 311 | 7 | 6 | 3 - 18 | -100 |
-| High | 150 mg BID, 25% uptake | 1.66 | 53 032 | 67 355 | 66 266 | 48 967 - 75 045 | +27 |
+| Moderate | No treatment | 1.26 | 37 068 | 37 404 | 39 202 | 26 - 64 007 | +1 |
+| High | No treatment | 2.46 | 67 512 | 88 727 | 90 366 | 74 889 - 95 961 | +31 |
+| Moderate | 75 mg BID, 25% uptake | 0.94 | 7 846 | 16 | 10 | 4 - 402 | -100 |
+| High | 75 mg BID, 25% uptake | 1.83 | 60 397 | 74 346 | 74 076 | 59 768 - 82 463 | +23 |
+| Moderate | 150 mg BID, 25% uptake | 0.85 | 5 311 | 7 | 7 | 4 - 60 | -100 |
+| High | 150 mg BID, 25% uptake | 1.66 | 53 032 | 67 355 | 65 182 | 50 435 - 76 797 | +27 |
 | Moderate | 75 mg BID, 50% uptake | 0.75 | 2 252 | 4 | 4 | 3 - 5 | -100 |
-| High | 75 mg BID, 50% uptake | 1.46 | 41 331 | 55 349 | 50 531 | 40 279 - 63 742 | +34 |
-| Moderate | 150 mg BID, 50% uptake | 0.64 | 1 357 | 3 | 3 | 2 - 4 | -100 |
-| High | 150 mg BID, 50% uptake | 1.25 | 31 700 | 37 676 | 34 286 | 7 485 - 52 225 | +19 |
+| High | 75 mg BID, 50% uptake | 1.46 | 41 331 | 55 349 | 49 832 | 38 281 - 61 994 | +34 |
+| Moderate | 150 mg BID, 50% uptake | 0.64 | 1 357 | 3 | 3 | 2 - 3 | -100 |
+| High | 150 mg BID, 50% uptake | 1.25 | 31 700 | 37 676 | 41 181 | 21 890 - 56 987 | +19 |
 | Moderate | 75 mg BID, 80% uptake | 0.60 | 1 349 | 2 | 2 | 2 - 3 | -100 |
-| High | 75 mg BID, 80% uptake | 1.17 | 20 941 | 27 604 | 26 222 | 7 355 - 39 422 | +32 |
+| High | 75 mg BID, 80% uptake | 1.17 | 20 941 | 27 604 | 27 061 | 473 - 36 793 | +32 |
 | Moderate | 150 mg BID, 80% uptake | 0.50 | 741 | 2 | 2 | 2 - 2 | -100 |
-| High | 150 mg BID, 80% uptake | 0.97 | 12 881 | 32 | 28 | 6 - 18 676 | -100 |
+| High | 150 mg BID, 80% uptake | 0.97 | 12 881 | 32 | 46 | 6 - 18 353 | -100 |
 
 Number of infected individuals per 100 000 at day 365. Published values
 are Kamal 2017 Table 3. {.table style="width:100%;"}

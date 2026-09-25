@@ -568,10 +568,10 @@ nca_res$result |>
 
 | Arm | AUCtau (ng\*h/mL) | Cavg (ng/mL) | Cmax (ng/mL) | Cmin (ng/mL) | Tmax (h) |
 |:---|---:|---:|---:|---:|---:|
-| 2.5 mg BID | 1631.7 | 136.0 | 153.0 | 111.4 | 2.8 |
-| 2.5 mg BID+amio | 2670.3 | 222.5 | 237.1 | 196.3 | 2.8 |
-| 5 mg BID | 3443.7 | 287.0 | 323.6 | 230.0 | 2.8 |
-| 5 mg BID+amio | 5026.6 | 418.9 | 441.5 | 369.7 | 2.8 |
+| 2.5 mg BID | 1636.0 | 136.3 | 153.7 | 112.9 | 2.8 |
+| 2.5 mg BID+amio | 2438.8 | 203.2 | 219.5 | 180.9 | 2.8 |
+| 5 mg BID | 3478.0 | 289.8 | 330.6 | 245.8 | 2.8 |
+| 5 mg BID+amio | 4623.6 | 385.3 | 423.5 | 325.1 | 2.8 |
 
 Cohort medians from PKNCA over one steady-state interval. {.table}
 
@@ -851,18 +851,18 @@ knitr::kable(cmp3, align = c("l", "l", "r", "r", "r"),
 
 | NCA parameter      | grp             | Reference | Simulated |   % diff |
 |:-------------------|:----------------|----------:|----------:|---------:|
-| Cmax (ng/mL)       | 2.5 mg BID      |       152 |       153 |    +0.7% |
-| Cmax (ng/mL)       | 2.5 mg BID+amio |       231 |       237 |    +2.7% |
-| Cmax (ng/mL)       | 5 mg BID        |       266 |       324 | +21.7%\* |
-| Cmax (ng/mL)       | 5 mg BID+amio   |       310 |       441 | +42.4%\* |
-| Cmin (ng/mL)       | 2.5 mg BID      |       123 |       111 |    -9.5% |
-| Cmin (ng/mL)       | 2.5 mg BID+amio |       189 |       196 |    +3.9% |
-| Cmin (ng/mL)       | 5 mg BID        |       194 |       230 |   +18.6% |
-| Cmin (ng/mL)       | 5 mg BID+amio   |       235 |       370 | +57.3%\* |
-| AUClast (ng\*h/mL) | 2.5 mg BID      |      1820 |      1630 |   -10.5% |
-| AUClast (ng\*h/mL) | 2.5 mg BID+amio |      2800 |      2670 |    -4.8% |
-| AUClast (ng\*h/mL) | 5 mg BID        |      2620 |      3440 | +31.3%\* |
-| AUClast (ng\*h/mL) | 5 mg BID+amio   |      3630 |      5030 | +38.6%\* |
+| Cmax (ng/mL)       | 2.5 mg BID      |       152 |       154 |    +1.1% |
+| Cmax (ng/mL)       | 2.5 mg BID+amio |       231 |       220 |    -5.0% |
+| Cmax (ng/mL)       | 5 mg BID        |       266 |       331 | +24.3%\* |
+| Cmax (ng/mL)       | 5 mg BID+amio   |       310 |       424 | +36.6%\* |
+| Cmin (ng/mL)       | 2.5 mg BID      |       123 |       113 |    -8.2% |
+| Cmin (ng/mL)       | 2.5 mg BID+amio |       189 |       181 |    -4.3% |
+| Cmin (ng/mL)       | 5 mg BID        |       194 |       246 | +26.7%\* |
+| Cmin (ng/mL)       | 5 mg BID+amio   |       235 |       325 | +38.3%\* |
+| AUClast (ng\*h/mL) | 2.5 mg BID      |      1820 |      1640 |   -10.3% |
+| AUClast (ng\*h/mL) | 2.5 mg BID+amio |      2800 |      2440 |   -13.1% |
+| AUClast (ng\*h/mL) | 5 mg BID        |      2620 |      3480 | +32.6%\* |
+| AUClast (ng\*h/mL) | 5 mg BID+amio   |      3630 |      4620 | +27.5%\* |
 
 Cohort medians (n = 200 per arm, age from Table 1) vs Kolowrat 2025
 Table 3. \* differs from reference by more than 20%. {.table}

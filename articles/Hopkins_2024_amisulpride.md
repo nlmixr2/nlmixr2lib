@@ -856,9 +856,9 @@ knitr::kable(nca_res, digits = c(0, 1, 2, 0, 2),
 
 | treatment | adj.r.squared | auclast | clast.pred | cmax | half.life | lambda.z | lambda.z.n.points | lambda.z.time.first | lambda.z.time.last | r.squared | span.ratio | tlast | tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Solution | 1 | 3187.34 | 20 | 524.70 | 14 | 0.1 | 34.98 | 17 | 24 | 1 | 0.2 | 24 | 2 |
-| IR tablet | 1 | 2900.95 | 25 | 355.39 | 10 | 0.1 | 25.75 | 19 | 24 | 1 | 0.3 | 24 | 4 |
-| CR tablet (20%) | 1 | 2442.01 | 22 | 313.82 | 9 | 0.1 | 26.30 | 19 | 24 | 1 | 0.3 | 24 | 4 |
+| Solution | 1 | 3476.74 | 24 | 540.19 | 15 | 0.0 | 35.18 | 16 | 24 | 1 | 0.2 | 24 | 2 |
+| IR tablet | 1 | 3205.29 | 31 | 376.98 | 10 | 0.1 | 25.06 | 18 | 24 | 1 | 0.2 | 24 | 4 |
+| CR tablet (20%) | 1 | 2704.18 | 27 | 332.29 | 10 | 0.1 | 24.97 | 19 | 24 | 1 | 0.2 | 24 | 4 |
 
 Simulated NCA: geometric mean (median for tmax) per arm. {.table}
 
@@ -899,12 +899,12 @@ knitr::kable(cmp,
 
 | NCA parameter      | treatment       | Reference | Simulated |   % diff |
 |:-------------------|:----------------|----------:|----------:|---------:|
-| Cmax (ng/mL)       | Solution        |         — |       525 |        — |
-| Cmax (ng/mL)       | IR tablet       |       599 |       355 | -40.7%\* |
-| Cmax (ng/mL)       | CR tablet (20%) |       314 |       314 |    -0.1% |
-| AUClast (ng\*h/mL) | Solution        |      3000 |      3190 |    +6.2% |
-| AUClast (ng\*h/mL) | IR tablet       |         — |      2900 |        — |
-| AUClast (ng\*h/mL) | CR tablet (20%) |         — |      2440 |        — |
+| Cmax (ng/mL)       | Solution        |         — |       540 |        — |
+| Cmax (ng/mL)       | IR tablet       |       599 |       377 | -37.1%\* |
+| Cmax (ng/mL)       | CR tablet (20%) |       314 |       332 |    +5.8% |
+| AUClast (ng\*h/mL) | Solution        |      3000 |      3480 |   +15.9% |
+| AUClast (ng\*h/mL) | IR tablet       |         — |      3210 |        — |
+| AUClast (ng\*h/mL) | CR tablet (20%) |         — |      2700 |        — |
 
 Simulated vs published. \* marks a difference above 20%. {.table}
 
@@ -917,7 +917,7 @@ cr_cmax <- gm("CR tablet (20%)", "cmax")
 c(solution_auc0_24 = sol_auc, ir_cmax = ir_cmax, cr_cmax = cr_cmax,
   cr_over_ir = cr_cmax / ir_cmax)
 #> solution_auc0_24          ir_cmax          cr_cmax       cr_over_ir 
-#>      3187.337125       355.393957       313.824960         0.883034
+#>     3476.7388313      376.9848632      332.2934088        0.8814503
 
 stopifnot(
   # Exposure is the parameter the model reproduces well: the 200 mg liquid arm
@@ -958,7 +958,7 @@ cr_vs_ir <- paired |>
 
 quantile(cr_vs_ir$ratio, c(0.1, 0.5, 0.9))
 #>       10%       50%       90% 
-#> 0.7919407 0.8884166 0.9902275
+#> 0.7533208 0.8922889 0.9981017
 
 stopifnot(
   # Centre, not extreme: the controlled-release tablet lowers the peak

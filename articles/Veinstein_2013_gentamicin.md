@@ -372,7 +372,7 @@ dplyr::bind_rows(simulated_view, published) |>
 
 | Treatment | Source | Cmax (mg/L) | AUC0-24 (mg.h/L) |
 |:---|:---|---:|---:|
-| 6 mg/kg pre-HD | Simulated (this vignette, 200-subject VPC mean) | 31.0 | 182 |
+| 6 mg/kg pre-HD | Simulated (this vignette, 200-subject VPC mean) | 31.0 | 192 |
 | 6 mg/kg pre-HD | Table 3 (observed) | 31.8 +/- 16.8 | 209 +/- 103 |
 | 6 mg/kg pre-HD | Table 5 (MCS) | 31.0 +/- 10.9 | 190.8 +/- 65.0 |
 
@@ -478,7 +478,7 @@ knitr::kable(
 
 | Quantity         | Gate_live | Gate_inert | Published |
 |:-----------------|----------:|-----------:|----------:|
-| AUC0-24 (mg.h/L) |    188.97 |     476.68 |     190.8 |
+| AUC0-24 (mg.h/L) |    198.39 |     476.68 |     190.8 |
 | C24 (mg/L)       |      4.06 |      12.70 |       4.1 |
 | C48 (mg/L)       |      1.71 |       5.36 |       1.8 |
 

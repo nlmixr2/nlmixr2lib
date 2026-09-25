@@ -273,9 +273,17 @@ grid_events <- rxode2::et(amt = 1, cmt = "depot", ii = 24, ss = 1, id = publishe
 # unique by construction.
 stopifnot(!anyDuplicated(unique(grid_events[, c("id", "time", "evid")])))
 
+# maxsteps: when the model is integrated as ODEs, the ss = 1 steady-state
+# search integrates one 24 h interval after another until the state stops
+# changing. Half-lives here reach ~1100 h (age 4 years, 50 kg, valproate), so
+# the search runs hundreds of intervals and can exhaust the default budget of
+# 70000 solver steps; rxSolve() then returns NA for that scenario (3 of 336
+# here). 1e5 already suffices; 1e6 leaves a 10x margin. The analytic linCmt()
+# path ignores maxsteps.
 grid_sim <- rxode2::rxSolve(
   mod_typical, events = grid_events,
-  keep = c("age", "dose", "arm", "wt", "published_ngml")
+  keep = c("age", "dose", "arm", "wt", "published_ngml"),
+  maxsteps = 1e6
 ) |>
   drop_duplicate_columns()
 #> ℹ omega/sigma items treated as zero: 'etalcl'
@@ -392,9 +400,9 @@ comparison |>
 | Comedication arm | mean % diff (interval average) | mean % diff (end-of-interval trough) |
 |:---|---:|---:|
 | CBZ | -0.19 | -3.45 |
-| OXC | -0.19 | -2.82 |
-| VPA | -0.15 | -1.46 |
-| none | -0.17 | -1.92 |
+| OXC | -0.20 | -2.82 |
+| VPA | -0.16 | -1.46 |
+| none | -0.18 | -1.92 |
 
 Table 3 is reproduced by the interval average, not the trough. The
 trough bias scales with clearance (CBZ 1.88x, OXC 1.51x, none 1x, VPA
@@ -485,7 +493,10 @@ cohort_events <- rxode2::et(amt = cohort_dose, cmt = "depot", ii = 24, ss = 1, i
 
 stopifnot(!anyDuplicated(unique(cohort_events[, c("id", "time", "evid")])))
 
-cohort_sim <- rxode2::rxSolve(mod, events = cohort_events, omega = NA) |>
+# maxsteps: same ss = 1 step budget as the Table 3 grid above; the six
+# lowest-clearance subjects (half-lives 1190-1590 h) return NA at the default.
+cohort_sim <- rxode2::rxSolve(mod, events = cohort_events, omega = NA,
+                              maxsteps = 1e6) |>
   drop_duplicate_columns()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: multi-subject simulation without without 'omega'
@@ -549,11 +560,11 @@ cohort_wide |>
 
 | NCA parameter         | Median | 5th percentile | 95th percentile |
 |:----------------------|-------:|---------------:|----------------:|
-| Cav,ss (ng/mL)        |  343.5 |          133.3 |          1063.1 |
-| Cmax,ss (ng/mL)       |  348.9 |          137.5 |          1070.5 |
+| Cav,ss (ng/mL)        |  343.5 |          133.3 |          1063.0 |
+| Cmax,ss (ng/mL)       |  348.9 |          137.5 |          1070.4 |
 | Ctrough,ss (ng/mL)    |  337.6 |          128.8 |          1055.0 |
 | Tmax (h)              |    1.5 |            1.5 |             1.5 |
-| AUC0-24,ss (ng\*h/mL) | 8244.2 |         3199.3 |         25514.1 |
+| AUC0-24,ss (ng\*h/mL) | 8244.0 |         3199.2 |         25512.5 |
 
 Steady-state NCA over the 24 h dosing interval for the 200-subject
 deterministic cohort at 4 mg once daily. {.table}
@@ -628,9 +639,9 @@ checks |> knitr::kable(caption = "Closed-form cross-checks on the virtual cohort
 
 | Check | Simulated | Expected |
 |:---|:---|:---|
-| Cav,ss from PKNCA vs closed form dose/(CL\*tau) | 0.008% max abs diff | \< 0.5% |
+| Cav,ss from PKNCA vs closed form dose/(CL\*tau) | 0.010% max abs diff | \< 0.5% |
 | Cohort median Cav,ss vs the typical-value prediction | 343.5 ng/mL | 343.5 ng/mL |
-| Random effect recovered from Cav,ss vs the supplied eta grid | 8.26e-05 max abs diff | \< 1e-3 (exact algebra) |
+| Random effect recovered from Cav,ss vs the supplied eta grid | 1.02e-04 max abs diff | \< 1e-3 (exact algebra) |
 | Geometric CV of the recovered random effect vs sqrt(exp(omega^2) - 1) | 31.77% | 31.79% |
 
 Closed-form cross-checks on the virtual cohort. {.table}

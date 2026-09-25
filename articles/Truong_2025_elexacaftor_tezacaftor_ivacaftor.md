@@ -487,15 +487,15 @@ knitr::kable(
 
 | NCA parameter     | drug        | Reference | Simulated | % diff |
 |:------------------|:------------|:----------|:----------|:-------|
-| Cmax (mg/L)       | Elexacaftor | 9.29      | 9.38      | +0.9%  |
-| Cmax (mg/L)       | Tezacaftor  | 6.83      | 7.17      | +5.0%  |
-| Cmax (mg/L)       | Ivacaftor   | 1.48      | 1.64      | +11.1% |
-| AUClast (mg\*h/L) | Elexacaftor | 173       | 165       | -4.3%  |
-| AUClast (mg\*h/L) | Tezacaftor  | 101       | 107       | +6.5%  |
-| AUClast (mg\*h/L) | Ivacaftor   | 14.1      | 16.3      | +15.7% |
-| Ctrough (mg/L)    | Elexacaftor | 5.05      | 4.96      | -1.9%  |
-| Ctrough (mg/L)    | Tezacaftor  | 2         | 2.29      | +14.4% |
-| Ctrough (mg/L)    | Ivacaftor   | 0.84      | 0.994     | +18.3% |
+| Cmax (mg/L)       | Elexacaftor | 9.29      | 10.2      | +9.8%  |
+| Cmax (mg/L)       | Tezacaftor  | 6.83      | 6.84      | +0.2%  |
+| Cmax (mg/L)       | Ivacaftor   | 1.48      | 1.59      | +7.4%  |
+| AUClast (mg\*h/L) | Elexacaftor | 173       | 192       | +10.9% |
+| AUClast (mg\*h/L) | Tezacaftor  | 101       | 107       | +6.0%  |
+| AUClast (mg\*h/L) | Ivacaftor   | 14.1      | 16        | +13.4% |
+| Ctrough (mg/L)    | Elexacaftor | 5.05      | 5.85      | +15.8% |
+| Ctrough (mg/L)    | Tezacaftor  | 2         | 2.01      | +0.3%  |
+| Ctrough (mg/L)    | Ivacaftor   | 0.84      | 0.941     | +12.1% |
 
 Simulated (PKNCA, steady-state interval, n = 96 virtual children) versus
 Truong 2025 Table 3 medians. \* marks a difference greater than 20%.
@@ -618,9 +618,9 @@ knitr::kable(step, digits = 2,
 
 | drug        | 25-30 -\> 30-35 | 30-35 vs 50-60 |
 |:------------|----------------:|---------------:|
-| Elexacaftor |            1.79 |           1.54 |
-| Tezacaftor  |            1.85 |           1.52 |
-| Ivacaftor   |            1.89 |           1.39 |
+| Elexacaftor |            1.75 |           1.50 |
+| Tezacaftor  |            1.91 |           1.57 |
+| Ivacaftor   |            1.75 |           1.48 |
 
 Median AUC ratios across the 30 kg dose switch and within the adult-dose
 region. {.table}
@@ -671,9 +671,9 @@ knitr::kable(gsd, digits = 3,
 
 | drug        | sd_log | published | pct_diff |
 |:------------|-------:|----------:|---------:|
-| Elexacaftor |  0.324 |      0.31 |    4.382 |
-| Tezacaftor  |  0.265 |      0.26 |    1.844 |
-| Ivacaftor   |  0.374 |      0.37 |    0.986 |
+| Elexacaftor |  0.320 |      0.31 |    3.272 |
+| Tezacaftor  |  0.264 |      0.26 |    1.395 |
+| Ivacaftor   |  0.387 |      0.37 |    4.569 |
 
 Within-band SD of log(AUC) recovers the published omega on CL/F.
 {.table}

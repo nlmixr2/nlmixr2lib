@@ -169,7 +169,7 @@ typical_single_dose <- function(dose = 50, wt = 60, tbili_mgdl = 0.38) {
   d$TBILI <- tbili_mgdl * MGDL_TO_UMOLL
   d$OCC <- 1
   rxode2::rxSolve(mod_typical, d, returnType = "data.frame",
-                  atol = 1e-10, rtol = 1e-8, addDosing = FALSE)
+                  atol = 1e-12, rtol = 1e-10, addDosing = FALSE)
 }
 
 trap_auc <- function(df) {
@@ -184,8 +184,6 @@ cl_from_solve <- function(dose = 50, wt = 60, tbili_mgdl = 0.38) {
 }
 
 ref <- typical_single_dose()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2, etaiov_ka_1, etaiov_ka_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etaiov_fdepot_1', 'etaiov_fdepot_2', 'etaiov_ka_1', 'etaiov_ka_2'
 
 deterministic <- tibble::tibble(
@@ -212,8 +210,13 @@ deterministic <- tibble::tibble(
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etaiov_fdepot_1', 'etaiov_fdepot_2', 'etaiov_ka_1', 'etaiov_ka_2'
 
 # Terminal-slope volume: kel = CL/V, so V = CL / kel, with kel read off the
-# log-linear tail of the typical-value curve (far past the absorption phase).
-tail_dat <- ref |> dplyr::filter(time >= 120, time <= 480, Cc > 0)
+# log-linear tail of the typical-value curve, far past the absorption phase
+# (by 24 h the absorption term is exp(-(ka - kel) * 24) ~ 1e-13 of the
+# elimination term). The fit stops where the curve falls below 1e-6 x Cmax
+# (about 100 h): below that the ODE integrator's absolute error dominates the
+# concentration and a log-linear fit follows the noise (measured: 3% error in
+# V/F when fitted over 120-480 h, where Cc runs from 1e-7 down to 1e-29 mg/L).
+tail_dat <- ref |> dplyr::filter(time >= 24, Cc >= 1e-6 * max(Cc))
 kel_hat <- -stats::coef(stats::lm(log(Cc) ~ time, data = tail_dat))[["time"]]
 deterministic$Simulated[5] <- cl_from_solve() / kel_hat
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etaiov_fdepot_1', 'etaiov_fdepot_2', 'etaiov_ka_1', 'etaiov_ka_2'
@@ -371,8 +374,6 @@ sim <- rxode2::rxSolve(
   keep = c("regimen", "wtgrp", "grade"),
   returnType = "data.frame", addDosing = FALSE
 )
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2, etaiov_ka_1, etaiov_ka_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 troughs <- sim |>
   dplyr::filter(time == t_end) |>
@@ -510,36 +511,36 @@ tab3 |>
 
 | Weight | Regimen | Bilirubin | Sim \> IC90 (%) | Pub \> IC90 (%) | Diff (IC90) | Sim \> EC90 (%) | Pub \> EC90 (%) | Diff (EC90) |
 |:---|:---|:---|---:|---:|---:|---:|---:|---:|
-| 41-60 kg | 100 mg OD | Grade 1 | 99.5 | 98.9 | 0.6 | 80.0 | 78.3 | 1.7 |
-| 41-60 kg | 100 mg OD | Grade 2 | 100.0 | 99.8 | 0.2 | 94.0 | 93.8 | 0.2 |
+| 41-60 kg | 100 mg OD | Grade 1 | 99.5 | 98.9 | 0.6 | 77.5 | 78.3 | -0.8 |
+| 41-60 kg | 100 mg OD | Grade 2 | 100.0 | 99.8 | 0.2 | 95.5 | 93.8 | 1.7 |
 | 41-60 kg | 100 mg OD | Grade 3 | 100.0 | 100.0 | 0.0 | 100.0 | 99.7 | 0.3 |
 | 41-60 kg | 100 mg OD | Grade 4 | 100.0 | 100.0 | 0.0 | 100.0 | 100.0 | 0.0 |
-| 41-60 kg | 100 mg OD | Normal | 92.5 | 92.6 | -0.1 | 53.0 | 49.7 | 3.3 |
-| 41-60 kg | 50 mg OD | Grade 1 | 97.0 | 96.3 | 0.7 | 48.0 | 58.2 | -10.2 |
-| 41-60 kg | 50 mg OD | Grade 2 | 99.0 | 99.4 | -0.4 | 80.5 | 84.1 | -3.6 |
-| 41-60 kg | 50 mg OD | Grade 3 | 100.0 | 100.0 | 0.0 | 98.0 | 98.8 | -0.8 |
+| 41-60 kg | 100 mg OD | Normal | 93.5 | 92.6 | 0.9 | 52.0 | 49.7 | 2.3 |
+| 41-60 kg | 50 mg OD | Grade 1 | 96.5 | 96.3 | 0.2 | 54.0 | 58.2 | -4.2 |
+| 41-60 kg | 50 mg OD | Grade 2 | 100.0 | 99.4 | 0.6 | 86.5 | 84.1 | 2.4 |
+| 41-60 kg | 50 mg OD | Grade 3 | 100.0 | 100.0 | 0.0 | 98.5 | 98.8 | -0.3 |
 | 41-60 kg | 50 mg OD | Grade 4 | 100.0 | 100.0 | 0.0 | 100.0 | 100.0 | 0.0 |
-| 41-60 kg | 50 mg OD | Normal | 80.5 | 79.2 | 1.3 | 21.5 | 20.9 | 0.6 |
-| 41-60 kg | 50 mg b.i.d. | Grade 1 | 100.0 | 100.0 | 0.0 | 99.5 | 99.2 | 0.3 |
+| 41-60 kg | 50 mg OD | Normal | 76.0 | 79.2 | -3.2 | 19.0 | 20.9 | -1.9 |
+| 41-60 kg | 50 mg b.i.d. | Grade 1 | 100.0 | 100.0 | 0.0 | 99.0 | 99.2 | -0.2 |
 | 41-60 kg | 50 mg b.i.d. | Grade 2 | 100.0 | 100.0 | 0.0 | 100.0 | 99.9 | 0.1 |
 | 41-60 kg | 50 mg b.i.d. | Grade 3 | 100.0 | 100.0 | 0.0 | 100.0 | 100.0 | 0.0 |
 | 41-60 kg | 50 mg b.i.d. | Grade 4 | 100.0 | 100.0 | 0.0 | 100.0 | 100.0 | 0.0 |
-| 41-60 kg | 50 mg b.i.d. | Normal | 100.0 | 99.9 | 0.1 | 94.5 | 95.5 | -1.0 |
-| 60.1-86 kg | 100 mg OD | Grade 1 | 98.0 | 98.9 | -0.9 | 76.0 | 74.4 | 1.6 |
-| 60.1-86 kg | 100 mg OD | Grade 2 | 99.5 | 99.8 | -0.3 | 87.5 | 92.1 | -4.6 |
-| 60.1-86 kg | 100 mg OD | Grade 3 | 100.0 | 100.0 | 0.0 | 99.0 | 99.6 | -0.6 |
+| 41-60 kg | 50 mg b.i.d. | Normal | 100.0 | 99.9 | 0.1 | 90.5 | 95.5 | -5.0 |
+| 60.1-86 kg | 100 mg OD | Grade 1 | 99.5 | 98.9 | 0.6 | 80.5 | 74.4 | 6.1 |
+| 60.1-86 kg | 100 mg OD | Grade 2 | 100.0 | 99.8 | 0.2 | 93.5 | 92.1 | 1.4 |
+| 60.1-86 kg | 100 mg OD | Grade 3 | 100.0 | 100.0 | 0.0 | 100.0 | 99.6 | 0.4 |
 | 60.1-86 kg | 100 mg OD | Grade 4 | 100.0 | 100.0 | 0.0 | 100.0 | 100.0 | 0.0 |
-| 60.1-86 kg | 100 mg OD | Normal | 95.0 | 92.9 | 2.1 | 43.0 | 45.7 | -2.7 |
-| 60.1-86 kg | 50 mg OD | Grade 1 | 95.0 | 96.3 | -1.3 | 48.0 | 53.4 | -5.4 |
-| 60.1-86 kg | 50 mg OD | Grade 2 | 99.5 | 99.4 | 0.1 | 78.5 | 80.7 | -2.2 |
-| 60.1-86 kg | 50 mg OD | Grade 3 | 100.0 | 100.0 | 0.0 | 99.0 | 98.3 | 0.7 |
-| 60.1-86 kg | 50 mg OD | Grade 4 | 100.0 | 100.0 | 0.0 | 100.0 | 100.0 | 0.0 |
-| 60.1-86 kg | 50 mg OD | Normal | 78.5 | 78.4 | 0.1 | 21.0 | 16.2 | 4.8 |
-| 60.1-86 kg | 50 mg b.i.d. | Grade 1 | 100.0 | 99.9 | 0.1 | 99.0 | 94.8 | 4.2 |
-| 60.1-86 kg | 50 mg b.i.d. | Grade 2 | 100.0 | 100.0 | 0.0 | 99.5 | 99.7 | -0.2 |
+| 60.1-86 kg | 100 mg OD | Normal | 94.0 | 92.9 | 1.1 | 46.5 | 45.7 | 0.8 |
+| 60.1-86 kg | 50 mg OD | Grade 1 | 95.5 | 96.3 | -0.8 | 52.5 | 53.4 | -0.9 |
+| 60.1-86 kg | 50 mg OD | Grade 2 | 99.5 | 99.4 | 0.1 | 73.0 | 80.7 | -7.7 |
+| 60.1-86 kg | 50 mg OD | Grade 3 | 100.0 | 100.0 | 0.0 | 98.5 | 98.3 | 0.2 |
+| 60.1-86 kg | 50 mg OD | Grade 4 | 100.0 | 100.0 | 0.0 | 99.5 | 100.0 | -0.5 |
+| 60.1-86 kg | 50 mg OD | Normal | 72.0 | 78.4 | -6.4 | 15.5 | 16.2 | -0.7 |
+| 60.1-86 kg | 50 mg b.i.d. | Grade 1 | 100.0 | 99.9 | 0.1 | 98.5 | 94.8 | 3.7 |
+| 60.1-86 kg | 50 mg b.i.d. | Grade 2 | 100.0 | 100.0 | 0.0 | 100.0 | 99.7 | 0.3 |
 | 60.1-86 kg | 50 mg b.i.d. | Grade 3 | 100.0 | 100.0 | 0.0 | 100.0 | 99.9 | 0.1 |
 | 60.1-86 kg | 50 mg b.i.d. | Grade 4 | 100.0 | 100.0 | 0.0 | 100.0 | 100.0 | 0.0 |
-| 60.1-86 kg | 50 mg b.i.d. | Normal | 100.0 | 99.9 | 0.1 | 93.5 | 92.7 | 0.8 |
+| 60.1-86 kg | 50 mg b.i.d. | Normal | 99.5 | 99.9 | -0.4 | 91.0 | 92.7 | -1.7 |
 
 Replicates Table 3 of Punyawudho 2025. ‘Pub’ columns are transcribed
 from the paper (10,000 simulated individuals per cell); ‘Sim’ columns
@@ -653,8 +654,8 @@ knitr::kable(
 
 | Convention | omega^2 for IOV-F1 | Mean \|diff\|, IC90 column | Mean \|diff\|, EC90 column |
 |:---|---:|---:|---:|
-| CV = sqrt(exp(omega^2) - 1) (retained) | 0.599 | 0.28 | 1.667 |
-| CV = sqrt(omega^2) | 0.821 | 0.45 | 1.910 |
+| CV = sqrt(exp(omega^2) - 1) (retained) | 0.599 | 0.517 | 1.457 |
+| CV = sqrt(omega^2) | 0.821 | 0.773 | 1.813 |
 
 Mean absolute deviation from Table 3 of Punyawudho 2025 over all 30
 cells, under the two readings of the paper’s %CV column. Common random
@@ -1016,8 +1017,8 @@ cohort_wide |>
 
 | Arm | Median Cmax (mg/L) | Median Tmax (h) | Median Ctrough (mg/L) | Median AUCtau (mg\*h/L) |
 |:---|---:|---:|---:|---:|
-| 50 mg once daily, fed | 2.061 | 2.30 | 0.070 | 18.694 |
-| 50 mg twice daily, fasted | 2.506 | 2.15 | 0.509 | 18.707 |
+| 50 mg once daily, fed | 2.025 | 2.3 | 0.072 | 18.504 |
+| 50 mg twice daily, fasted | 2.469 | 2.2 | 0.491 | 17.967 |
 
 PKNCA over the simulated week-4 cohort of each randomised arm.
 Descriptive only; Punyawudho 2025 reports no non-compartmental analysis.

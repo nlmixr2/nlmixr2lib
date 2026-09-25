@@ -292,7 +292,7 @@ forest |>
 | BW 84.27 kg | 1.083 | 1.08 | 1.119 | 1.12 | 1.100 | 1.10 |
 | BW 47.1 kg | 0.915 | 0.91 | 0.882 | 0.89 | 0.897 | 0.90 |
 | NEUT 7.781e9/L | 0.905 | 0.91 | 0.947 | 0.95 | 0.867 | 0.87 |
-| NEUT 2.381e9/L | 1.093 | 1.09 | 1.052 | 1.05 | 1.131 | 1.13 |
+| NEUT 2.381e9/L | 1.092 | 1.09 | 1.052 | 1.05 | 1.131 | 1.13 |
 | SLD 176.75 mm | 0.933 | 0.93 | 0.963 | 0.96 | 0.906 | 0.91 |
 | SLD 28.03 mm | 1.128 | 1.13 | 1.072 | 1.07 | 1.181 | 1.18 |
 
@@ -600,8 +600,8 @@ knitr::kable(nca_summary,
 
 | Regimen | AUC0-21day geomean (geoCV%) | Cmax geomean (geoCV%) | Ctrough geomean (geoCV%) | Tmax median (day) |
 |:---|:---|:---|:---|:---|
-| 1200 mg q3w | 3187 (25.8) | 375 (20.9) | 80.2 (33.3) | 0.042 |
-| 20 mg/kg q3w | 3384 (19.7) | 398 (19.9) | 85.2 (28.1) | 0.042 |
+| 1200 mg q3w | 3185 (25.8) | 375 (20.9) | 80.1 (33.3) | 0.042 |
+| 20 mg/kg q3w | 3383 (19.7) | 398 (19.9) | 85.0 (28.1) | 0.042 |
 
 PKNCA results over the first dosing interval. {.table}
 
@@ -663,18 +663,18 @@ cmp |>
 
 | Metric | Interval | Regimen | Model geomean | Published geomean | Model geoCV% | Published geoCV% | Difference (%) | Source |
 |:---|:---|:---|---:|---:|---:|---:|---:|:---|
-| AUC (ug\*day/mL) | First dose | 20 mg/kg q3w | 3392.0 | 3280.0 | 19.7 | 20.0 | 3.4 | Table S2 |
-| AUC (ug\*day/mL) | First dose | 1200 mg q3w | 3194.0 | 3110.0 | 25.8 | 23.2 | 2.7 | Table S2 |
-| AUC (ug\*day/mL) | Steady state (cycle 20) | 20 mg/kg q3w | 7168.1 | 7080.0 | 35.3 | 37.1 | 1.2 | Table S2 |
-| AUC (ug\*day/mL) | Steady state (cycle 20) | 1200 mg q3w | 6749.8 | 6710.0 | 38.0 | 37.7 | 0.6 | Table S2 |
+| AUC (ug\*day/mL) | First dose | 20 mg/kg q3w | 3390.3 | 3280.0 | 19.7 | 20.0 | 3.4 | Table S2 |
+| AUC (ug\*day/mL) | First dose | 1200 mg q3w | 3192.4 | 3110.0 | 25.8 | 23.2 | 2.6 | Table S2 |
+| AUC (ug\*day/mL) | Steady state (cycle 20) | 20 mg/kg q3w | 7163.7 | 7080.0 | 35.3 | 37.1 | 1.2 | Table S2 |
+| AUC (ug\*day/mL) | Steady state (cycle 20) | 1200 mg q3w | 6745.6 | 6710.0 | 38.0 | 37.7 | 0.5 | Table S2 |
 | Cmax (ug/mL) | First dose | 20 mg/kg q3w | 398.1 | 387.0 | 19.9 | 24.8 | 2.9 | Table S3 |
 | Cmax (ug/mL) | First dose | 1200 mg q3w | 374.9 | 367.0 | 20.9 | 25.2 | 2.1 | Table S3 |
-| Cmax (ug/mL) | Steady state (cycle 20) | 20 mg/kg q3w | 590.9 | 618.0 | 23.8 | 28.5 | -4.4 | Table S3 |
-| Cmax (ug/mL) | Steady state (cycle 20) | 1200 mg q3w | 556.4 | 586.0 | 25.6 | 28.8 | -5.1 | Table S3 |
-| Ctrough (ug/mL) | First dose | 20 mg/kg q3w | 85.2 | 80.2 | 28.1 | 36.8 | 6.3 | Table S4 |
-| Ctrough (ug/mL) | First dose | 1200 mg q3w | 80.2 | 76.0 | 33.3 | 38.4 | 5.6 | Table S4 |
-| Ctrough (ug/mL) | Steady state (cycle 20) | 20 mg/kg q3w | 229.8 | 212.0 | 50.1 | 57.7 | 8.4 | Table S4 |
-| Ctrough (ug/mL) | Steady state (cycle 20) | 1200 mg q3w | 216.4 | 201.0 | 51.8 | 57.2 | 7.7 | Table S4 |
+| Cmax (ug/mL) | Steady state (cycle 20) | 20 mg/kg q3w | 590.6 | 618.0 | 23.8 | 28.5 | -4.4 | Table S3 |
+| Cmax (ug/mL) | Steady state (cycle 20) | 1200 mg q3w | 556.1 | 586.0 | 25.6 | 28.8 | -5.1 | Table S3 |
+| Ctrough (ug/mL) | First dose | 20 mg/kg q3w | 85.0 | 80.2 | 28.1 | 36.8 | 6.0 | Table S4 |
+| Ctrough (ug/mL) | First dose | 1200 mg q3w | 80.1 | 76.0 | 33.3 | 38.4 | 5.3 | Table S4 |
+| Ctrough (ug/mL) | Steady state (cycle 20) | 20 mg/kg q3w | 229.7 | 212.0 | 50.1 | 57.7 | 8.3 | Table S4 |
+| Ctrough (ug/mL) | Steady state (cycle 20) | 1200 mg q3w | 216.2 | 201.0 | 51.7 | 57.2 | 7.6 | Table S4 |
 
 Simulated versus published exposure metrics (Chen 2024 Tables S2-S4).
 {.table}

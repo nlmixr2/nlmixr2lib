@@ -241,7 +241,7 @@ rel_err <- abs(sim_typ$Cc - cf) / pmax(cf, 1e-8)
 rel_err <- rel_err[sim_typ$time > 0]
 stopifnot(max(rel_err) < 1e-4)
 sprintf("Max relative difference vs closed form: %.2e", max(rel_err))
-#> [1] "Max relative difference vs closed form: 3.18e-13"
+#> [1] "Max relative difference vs closed form: 2.21e-06"
 ```
 
 ### Mass balance: CL x AUC(0-inf) must equal the dose
@@ -586,18 +586,18 @@ cmp |>
 
 | Risk group | eGFR (mL/min/1.73 m2) | Loading dose (%) | Yu 2025 Table 3 (%) | Simulated (%) | Difference (pp) |
 |:---|---:|---:|---:|---:|---:|
-| I/HR | 160 | 0 | 50.1 | 49.5 | -0.6 |
-| I/HR | 100 | 0 | 86.5 | 90.0 | 3.5 |
-| I/HR | 80 | 0 | 99.5 | 92.0 | -7.5 |
-| LR | 160 | 0 | 25.4 | 28.5 | 3.1 |
-| LR | 100 | 0 | 67.0 | 71.0 | 4.0 |
-| LR | 80 | 0 | 84.3 | 84.0 | -0.3 |
-| I/HR | 160 | 20 | 44.2 | 49.5 | 5.3 |
-| I/HR | 100 | 20 | 84.6 | 86.0 | 1.4 |
-| I/HR | 80 | 20 | 99.5 | 91.0 | -8.5 |
-| LR | 160 | 20 | 21.5 | 25.0 | 3.5 |
-| LR | 100 | 20 | 62.1 | 64.0 | 1.9 |
-| LR | 80 | 20 | 79.9 | 82.5 | 2.6 |
+| I/HR | 160 | 0 | 50.1 | 59.5 | 9.4 |
+| I/HR | 100 | 0 | 86.5 | 84.0 | -2.5 |
+| I/HR | 80 | 0 | 99.5 | 96.5 | -3.0 |
+| LR | 160 | 0 | 25.4 | 25.0 | -0.4 |
+| LR | 100 | 0 | 67.0 | 67.0 | 0.0 |
+| LR | 80 | 0 | 84.3 | 82.5 | -1.8 |
+| I/HR | 160 | 20 | 44.2 | 50.5 | 6.3 |
+| I/HR | 100 | 20 | 84.6 | 88.5 | 3.9 |
+| I/HR | 80 | 20 | 99.5 | 93.5 | -6.0 |
+| LR | 160 | 20 | 21.5 | 23.5 | 2.0 |
+| LR | 100 | 20 | 62.1 | 61.5 | -0.6 |
+| LR | 80 | 20 | 79.9 | 80.5 | 0.6 |
 
 Incidence of delayed excretion (44-hour concentration above 1 umol/L)
 against Yu 2025 Table 3, 0.5-hour loading infusion. {.table}
@@ -642,7 +642,7 @@ stopifnot(
 worst <- cmp$simulated[cmp$risk == "I/HR" & cmp$egfr == 80 & cmp$load_pct == 20]
 stopifnot(worst > 90)
 sprintf("I/HR, eGFR 80, 20%% loading: %.1f%% delayed excretion (paper: 99.5%%)", worst)
-#> [1] "I/HR, eGFR 80, 20% loading: 91.0% delayed excretion (paper: 99.5%)"
+#> [1] "I/HR, eGFR 80, 20% loading: 93.5% delayed excretion (paper: 99.5%)"
 ```
 
 ``` r
@@ -808,12 +808,12 @@ nca_summary |>
 
 | Arm | Cmax (umol/L) | Tmax (h) | AUClast (umol\*h/L) | Terminal t1/2 (h) | CL (L/h) |
 |:---|---:|---:|---:|---:|---:|
-| I/HR / eGFR 100 / load 10% | 95.9 | 24 | 2560 | 33.3 | 3.27 |
-| I/HR / eGFR 160 / load 10% | 73.3 | 24 | 1950 | 33.1 | 4.33 |
-| I/HR / eGFR 80 / load 10% | 104.0 | 24 | 2800 | 35.5 | 3.00 |
-| LR / eGFR 100 / load 10% | 54.8 | 24 | 1460 | 36.4 | 3.46 |
-| LR / eGFR 160 / load 10% | 44.4 | 24 | 1180 | 36.5 | 4.28 |
-| LR / eGFR 80 / load 10% | 62.4 | 24 | 1670 | 35.5 | 3.02 |
+| I/HR / eGFR 100 / load 10% | 93.4 | 24 | 2500 | 35.9 | 3.35 |
+| I/HR / eGFR 160 / load 10% | 72.5 | 24 | 1920 | 34.0 | 4.37 |
+| I/HR / eGFR 80 / load 10% | 106.0 | 24 | 2860 | 34.8 | 2.92 |
+| LR / eGFR 100 / load 10% | 55.5 | 24 | 1480 | 35.9 | 3.40 |
+| LR / eGFR 160 / load 10% | 42.8 | 24 | 1140 | 34.6 | 4.45 |
+| LR / eGFR 80 / load 10% | 62.1 | 24 | 1660 | 35.0 | 3.02 |
 
 Median simulated NCA parameters, clinical 10% / 0.5 h regimen. {.table}
 
@@ -868,7 +868,7 @@ auc_ratio <- nca |>
 stopifnot(max(abs(auc_ratio$ratio / (5 / 3) - 1)) < 0.10)
 sprintf("Cohort AUC ratio I/HR : LR = %s (exact linear expectation 1.667)",
         paste(round(auc_ratio$ratio, 3), collapse = ", "))
-#> [1] "Cohort AUC ratio I/HR : LR = 1.759, 1.654, 1.677 (exact linear expectation 1.667)"
+#> [1] "Cohort AUC ratio I/HR : LR = 1.69, 1.687, 1.721 (exact linear expectation 1.667)"
 ```
 
 ## Assumptions and deviations

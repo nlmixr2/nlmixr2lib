@@ -604,12 +604,12 @@ nca_summary |>
   knitr::kable(caption = "PKNCA results over the 252-264 h dosing interval, 150 simulated patients.")
 ```
 
-| NCA parameter |  Median | 5th pct | 95th pct |
-|:--------------|--------:|--------:|---------:|
-| auclast       | 7730.00 | 3950.00 | 20300.00 |
-| cmax          | 1300.00 |  693.00 |  2850.00 |
-| cmin          |  246.00 |   93.30 |  1070.00 |
-| tmax          |    1.75 |    0.75 |     3.25 |
+| NCA parameter | Median | 5th pct | 95th pct |
+|:--------------|-------:|--------:|---------:|
+| auclast       | 8000.0 | 4450.00 | 20500.00 |
+| cmax          | 1330.0 |  681.00 |  3240.00 |
+| cmin          |  249.0 |   88.70 |  1130.00 |
+| tmax          |    1.5 |    0.75 |     3.25 |
 
 PKNCA results over the 252-264 h dosing interval, 150 simulated
 patients. {.table}
@@ -633,8 +633,8 @@ knitr::kable(comparison, caption = "Simulated cohort medians against the publish
 
 | NCA parameter     | Published median | Simulated median | % difference |
 |:------------------|-----------------:|-----------------:|-------------:|
-| AUC0-12 (ug\*h/L) |             7650 |             7734 |          1.1 |
-| Cmax (ug/L)       |             1460 |             1297 |        -11.2 |
+| AUC0-12 (ug\*h/L) |             7650 |             8003 |          4.6 |
+| Cmax (ug/L)       |             1460 |             1334 |         -8.6 |
 
 Simulated cohort medians against the published reference values.
 {.table}

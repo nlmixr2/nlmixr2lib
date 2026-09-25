@@ -367,7 +367,7 @@ stopifnot(
 c(max_auc_relerr = max(auc_chk$auc_relerr),
   max_halflife_relerr = max(auc_chk$thalf_relerr))
 #>      max_auc_relerr max_halflife_relerr 
-#>        1.220174e-05        8.477226e-14
+#>        2.172711e-05        5.028297e-08
 ```
 
 ## Check 3 – reproducing the paper’s own AUC24 equation (equation 6)
@@ -445,8 +445,8 @@ stopifnot(
 )
 
 summary(auc24$pct_diff_ideal)
-#>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -0.121985 -0.013592 -0.004244 -0.010353 -0.001554 -0.000167
+#>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#> -0.1219818 -0.0134861 -0.0041777 -0.0103249 -0.0015492 -0.0006877
 ```
 
 With the sampling times the paper actually used, equation 6 covers only

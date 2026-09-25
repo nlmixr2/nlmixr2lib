@@ -303,8 +303,8 @@ iv_nca_tab |>
 
 | Arm | auclast | tmax | tlast | clast.obs | lambda.z | r.squared | adj.r.squared | lambda.z.time.first | lambda.z.time.last | lambda.z.n.points | clast.pred | half.life | span.ratio | aucinf.obs | aumcinf.obs | cl.obs | mrt.obs | vz.obs | vss.obs |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| EXT | 4557.342 | 0 | 24 | 0 | 1.8125 | 0.9999 | 0.9999 | 0.05 | 24 | 956 | 0 | 0.3824 | 62.6281 | 4557.342 | 1920.606 | 0.3248 | 0.4214 | 0.1792 | 0.1369 |
-| RUT | 4006.568 | 0 | 24 | 0 | 0.8553 | 0.9999 | 0.9999 | 0.12 | 24 | 949 | 0 | 0.8105 | 29.4648 | 4006.568 | 4103.495 | 0.0923 | 1.0242 | 0.1080 | 0.0946 |
+| EXT | 4557.341 | 0 | 24 | 0 | 1.8038 | 0.9999 | 0.9999 | 0.09 | 24 | 952 | 0 | 0.3843 | 62.2213 | 4557.341 | 1920.606 | 0.3248 | 0.4214 | 0.180 | 0.1369 |
+| RUT | 4006.568 | 0 | 24 | 0 | 0.8553 | 0.9999 | 0.9999 | 0.12 | 24 | 949 | 0 | 0.8105 | 29.4648 | 4006.568 | 4103.495 | 0.0923 | 1.0242 | 0.108 | 0.0946 |
 
 PKNCA on the typical intravenous profiles. {.table style="width:100%;"}
 
@@ -341,7 +341,7 @@ nlmixr2lib::ncaComparisonTable(
 | AUC0-∞ (obs) (ng\*h/mL) | RUT       | 4740      | 4010      | -15.5%   |
 | AUC0-∞ (obs) (ng\*h/mL) | EXT       | 5110      | 4560      | -10.8%   |
 | t½ (h)                  | RUT       | 0.79      | 0.81      | +2.6%    |
-| t½ (h)                  | EXT       | 0.4       | 0.382     | -4.4%    |
+| t½ (h)                  | EXT       | 0.4       | 0.384     | -3.9%    |
 | CL/F (L/h/kg)           | RUT       | 0.079     | 0.0923    | +16.9%   |
 | CL/F (L/h/kg)           | EXT       | 0.3       | 0.325     | +8.3%    |
 | Vss/F (L/kg)            | RUT       | 0.29      | 0.0946    | -67.4%\* |
@@ -349,7 +349,7 @@ nlmixr2lib::ncaComparisonTable(
 | MRT (h)                 | RUT       | 3.63      | 1.02      | -71.8%\* |
 | MRT (h)                 | EXT       | 2.94      | 0.421     | -85.7%\* |
 | Vz/F (L/kg)             | RUT       | 0.084     | 0.108     | +28.5%\* |
-| Vz/F (L/kg)             | EXT       | 0.18      | 0.179     | -0.5%    |
+| Vz/F (L/kg)             | EXT       | 0.18      | 0.18      | +0.0%    |
 
 Simulated vs published NCA, intravenous arms. \* differs by \>20%.
 {.table}
@@ -412,7 +412,7 @@ chk |>
 
 | Arm | CL closed form | CL PKNCA | AUC closed form | AUC PKNCA | t1/2 closed form | t1/2 PKNCA |
 |:---|---:|---:|---:|---:|---:|---:|
-| EXT | 0.3248 | 0.3248 | 4557.141 | 4557.342 | 0.3833 | 0.3824 |
+| EXT | 0.3248 | 0.3248 | 4557.141 | 4557.341 | 0.3833 | 0.3843 |
 | RUT | 0.0924 | 0.0923 | 4006.410 | 4006.568 | 0.8120 | 0.8105 |
 
 Closed-form vs PKNCA on the same solve (internal consistency). {.table}
@@ -463,7 +463,7 @@ med_ratio |> knitr::kable(digits = 2,
 
 |      EXT |     RUT | ratio |
 |---------:|--------:|------:|
-| 10485.15 | 5141.46 |  2.04 |
+| 10641.65 | 5118.96 |  2.08 |
 
 Median simulated concentration at 0.083 h; the observed ratio is
 9940/4960 = 2.0. {.table}
@@ -757,15 +757,15 @@ knitr::kable(auc_norm, digits = 6,
 
 | arm | median_auc_norm |
 |:----|----------------:|
-| EXT |       819.11346 |
-| RUT |        92.63104 |
+| EXT |        859.8503 |
+| RUT |         89.6493 |
 
 Median dose-normalised AUC(0-48 h) per arm. {.table}
 
 ``` r
 
 cat(sprintf("Simulated Frel = %.2f (Table 2 reports 12.0)\n", frel_sim))
-#> Simulated Frel = 8.84 (Table 2 reports 12.0)
+#> Simulated Frel = 9.59 (Table 2 reports 12.0)
 
 # The band is deliberately wide: this is a ratio of medians over a random
 # 100-animal cohort, and the model's Frel is a consequence of the same beta_V

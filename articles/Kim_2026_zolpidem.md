@@ -414,7 +414,7 @@ stopifnot(
 
 sprintf("AUC0-inf vs Dose*F/CL: median %.3f%%, 90th pctile |diff| %.3f%%",
         median(auc_chk$pct_diff), quantile(abs(auc_chk$pct_diff), 0.9))
-#> [1] "AUC0-inf vs Dose*F/CL: median -0.001%, 90th pctile |diff| 0.133%"
+#> [1] "AUC0-inf vs Dose*F/CL: median -0.000%, 90th pctile |diff| 0.087%"
 ```
 
 #### Comparison against the published non-compartmental analysis
@@ -459,8 +459,8 @@ nlmixr2lib::ncaComparisonTable(
 
 | NCA parameter | Reference | Simulated | % diff |
 |:--------------|:----------|:----------|:-------|
-| Tmax (h)      | 0.625     | 0.525     | -16.0% |
-| t½ (h)        | 3         | 2.61      | -12.9% |
+| Tmax (h)      | 0.625     | 0.7       | +12.0% |
+| t½ (h)        | 3         | 2.83      | -5.8%  |
 
 Simulated median NCA parameters against the published values. Tmax
 reference is the midpoint of the reported 0.5-0.75 h median range;
@@ -472,8 +472,8 @@ of which the paper reports:
 
 | Parameter          | Simulated |
 |:-------------------|----------:|
-| AUC0-inf (ug\*h/L) |     574.5 |
-| Cmax (ug/L)        |     132.1 |
+| AUC0-inf (ug\*h/L) |     609.3 |
+| Cmax (ug/L)        |     131.0 |
 
 Simulated median exposure metrics not reported by Kim 2026. {.table}
 

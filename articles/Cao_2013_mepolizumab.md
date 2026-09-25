@@ -83,6 +83,9 @@ mod <- readModelDb("Cao_2013_mepolizumab")
 sim <- rxode2::rxSolve(rxode2::rxode2(mod), events = events,
                        keep = "dose_mg_per_kg") |>
   as.data.frame()
+#> rxode2 already building model, waiting for lock file removal
+#> lock file: "/tmp/Rtmp2lGWHd/rxode2/rx_980b3f4c8efc0037cf76327e2cb98097__.rxd/rx_980b3f4c8efc0037cf76327e2cb98097_.c.lock"
+#> ..
 ```
 
 ## Replicate Figure 5 (mepolizumab panel)

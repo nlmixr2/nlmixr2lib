@@ -491,12 +491,12 @@ knitr::kable(delta, digits = 1,
 
 | compliance | mean_rise |   lo |    hi |
 |-----------:|----------:|-----:|------:|
-|        0.5 |      27.7 |  7.9 |  57.8 |
-|        0.6 |      33.9 | 10.8 |  67.2 |
-|        0.7 |      41.6 | 14.9 |  92.4 |
-|        0.8 |      46.6 | 13.2 | 110.7 |
-|        0.9 |      49.6 | 13.4 | 110.6 |
-|        1.0 |      57.9 | 14.0 | 157.9 |
+|        0.5 |      28.8 |  9.6 |  67.3 |
+|        0.6 |      33.7 |  9.9 |  71.4 |
+|        0.7 |      44.4 | 12.6 | 107.3 |
+|        0.8 |      48.6 | 14.9 | 105.3 |
+|        0.9 |      51.3 | 12.8 | 127.9 |
+|        1.0 |      55.9 | 21.0 | 123.1 |
 
 Simulated mean 3-year rise in serum 25(OH)D by compliance. Observed:
 32.2 nmol/L (fitted cohort), 25.8 nmol/L (test cohort). {.table}
@@ -508,7 +508,7 @@ obs_fit <- 32.2
 bracket_lo <- min(delta$mean_rise); bracket_hi <- max(delta$mean_rise)
 cat(sprintf("Simulated mean rise spans %.1f to %.1f nmol/L over compliance %.0f-%.0f%%; observed %.1f nmol/L.\n",
             bracket_lo, bracket_hi, 100 * min(comp_levels), 100 * max(comp_levels), obs_fit))
-#> Simulated mean rise spans 27.7 to 57.9 nmol/L over compliance 50-100%; observed 32.2 nmol/L.
+#> Simulated mean rise spans 28.8 to 55.9 nmol/L over compliance 50-100%; observed 32.2 nmol/L.
 
 stopifnot(
   # The observed rise must fall inside the compliance range the trial plausibly
@@ -634,8 +634,8 @@ knitr::kable(week_cross, digits = 1,
 
 | agegrp           | week_2p5_crosses_50 | median_at_1y | pct_above_50_at_1y |
 |:-----------------|--------------------:|-------------:|-------------------:|
-| 11 years (35 kg) |                  35 |         86.9 |                100 |
-| 6 years (20 kg)  |                  20 |        103.7 |                100 |
+| 11 years (35 kg) |                  35 |         86.2 |                100 |
+| 6 years (20 kg)  |                  20 |        105.3 |                100 |
 
 Week at which the 2.5th percentile crosses 50 nmol/L. Muhamad 2025
 Section 3.4 reports about 21 weeks at 6 years and about 39 weeks at 11
@@ -712,8 +712,8 @@ knitr::kable(mong_res, digits = 1,
 
 | scenario                             | mean_rise |   lo |    hi |
 |:-------------------------------------|----------:|-----:|------:|
-| Cape Town model (CLmax = 0.0119 1/h) |     101.7 | 34.2 | 197.8 |
-| 4x CLmax (0.048 1/h)                 |      44.7 | 16.1 |  75.3 |
+| Cape Town model (CLmax = 0.0119 1/h) |     101.7 | 36.0 | 200.8 |
+| 4x CLmax (0.048 1/h)                 |      43.3 | 16.8 |  74.9 |
 | Observed (Muhamad 2025 Figure S13B)  |      40.6 | -2.9 |  88.9 |
 
 Mean 3-year rise in serum 25(OH)D, Mongolian children on 350 ug weekly.
@@ -726,7 +726,7 @@ sim_base <- mong_res$mean_rise[mong_res$scenario == "Cape Town model (CLmax = 0.
 sim_4x   <- mong_res$mean_rise[mong_res$scenario == "4x CLmax (0.048 1/h)"]
 cat(sprintf("Overprediction: %+.1f nmol/L at the fitted CLmax, %+.1f nmol/L at 4x CLmax (observed %.1f).\n",
             sim_base - 40.6, sim_4x - 40.6, 40.6))
-#> Overprediction: +61.1 nmol/L at the fitted CLmax, +4.1 nmol/L at 4x CLmax (observed 40.6).
+#> Overprediction: +61.1 nmol/L at the fitted CLmax, +2.7 nmol/L at 4x CLmax (observed 40.6).
 stopifnot(
   sim_base > 40.6,          # the model overpredicts, as the paper reports
   sim_4x < sim_base,        # 4x CLmax reduces the overprediction

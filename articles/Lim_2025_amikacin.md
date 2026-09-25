@@ -352,7 +352,9 @@ of the same parameters, so it is asserted tightly.
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_typ <- rxode2::rxSolve(mod_typ, events = events,
-                           keep = c("treatment", "tau")) |>
+                           keep = c("treatment", "tau"),
+                           # tight tolerances for the 1e-6 closed-form gate
+                           rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
@@ -380,7 +382,7 @@ chk <- sim_typ |>
 
 stopifnot(max(chk$rel) < 1e-6)
 sprintf("max relative difference, ODE solve vs closed form: %.2e", max(chk$rel))
-#> [1] "max relative difference, ODE solve vs closed form: 2.50e-14"
+#> [1] "max relative difference, ODE solve vs closed form: 2.54e-10"
 ```
 
 ## Replicate published figures

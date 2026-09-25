@@ -684,10 +684,10 @@ knitr::kable(mr_summary, digits = 4)
 
 | Statistic                       |  Value |
 |:--------------------------------|-------:|
-| Median                          | 0.0534 |
-| 5th percentile                  | 0.0119 |
-| 95th percentile                 | 0.2250 |
-| Geometric SD of MR              | 2.3805 |
+| Median                          | 0.0484 |
+| 5th percentile                  | 0.0129 |
+| 95th percentile                 | 0.2130 |
+| Geometric SD of MR              | 2.3796 |
 | Typical value (CL_M1 / CL_MET1) | 0.0533 |
 
 ``` r

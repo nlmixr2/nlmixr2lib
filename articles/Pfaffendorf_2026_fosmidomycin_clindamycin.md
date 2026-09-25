@@ -200,8 +200,6 @@ evCli <- rxode2::et(amt = 10 * WTREF, cmt = "depot") |>
 sCli <- rxode2::rxSolve(rxode2::zeroRe(cliUi), evCli, returnType = "data.frame")
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etaltlag', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6'
 
 hlFos <- PKNCA::pk.calc.half.life(conc = sFos$Cc, time = sFos$time)$half.life
@@ -404,8 +402,6 @@ rxode2::rxSetSeed(RXSEED)
 simCli <- rxode2::rxSolve(cliUi, evCliPop,
                           keep = c("agegrp", "WT")) |>
   as.data.frame()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 # Large residual error can drive simulated concentrations negative; the models
 # are only defined on the quantifiable range, so censor at LLOQ/2 as the paper's
@@ -559,8 +555,8 @@ tibble::tibble(
 
 | Drug | Median AUCtau, 3-6 y | Median AUCtau, 18-65 y | Ratio | WT^0.25 expectation |
 |:---|---:|---:|---:|---:|
-| Fosmidomycin | 12.62 | 20.06 | 1.59 | 1.44 |
-| Clindamycin | 30.09 | 44.50 | 1.48 | 1.44 |
+| Fosmidomycin | 12.98 | 19.34 | 1.49 | 1.44 |
+| Clindamycin | 29.80 | 43.38 | 1.46 | 1.44 |
 
 Age-group exposure gradient (Figure 2 of Pfaffendorf 2026). {.table}
 
@@ -643,10 +639,10 @@ tibble::tibble(
 
 | Age group   | Current 10 mg/kg | Proposed scheme | Ratio |
 |:------------|-----------------:|----------------:|------:|
-| 3-6 years   |            30.09 |           36.10 |   1.2 |
-| 7-12 years  |            37.12 |           44.55 |   1.2 |
-| 13-17 years |            41.53 |           41.53 |   1.0 |
-| 18-65 years |            44.50 |           44.50 |   1.0 |
+| 3-6 years   |            29.80 |           35.76 |   1.2 |
+| 7-12 years  |            36.12 |           43.34 |   1.2 |
+| 13-17 years |            38.80 |           38.80 |   1.0 |
+| 18-65 years |            43.38 |           43.38 |   1.0 |
 
 Median clindamycin AUCtau under the current and proposed dosing.
 {.table}
@@ -752,14 +748,14 @@ ncaTab |>
 
 | Drug | Age group | AUCtau (mg\*h/L) | Cmax (mg/L) | t1/2 (h) | Tmax (h, clock time) |
 |:---|:---|---:|---:|---:|---:|
-| Fosmidomycin | 3-6 years | 12.623 | 2.190 | 2.698 | 0.575 |
-| Fosmidomycin | 7-12 years | 11.953 | 1.979 | 3.023 | 0.550 |
-| Fosmidomycin | 13-17 years | 17.494 | 2.550 | 3.289 | 0.550 |
-| Fosmidomycin | 18-65 years | 20.060 | 2.703 | 3.767 | 0.675 |
-| Clindamycin | 3-6 years | 30.087 | 7.706 | 2.049 | 0.300 |
-| Clindamycin | 7-12 years | 37.121 | 8.137 | 2.590 | 0.250 |
-| Clindamycin | 13-17 years | 41.525 | 8.459 | 2.760 | 0.300 |
-| Clindamycin | 18-65 years | 44.500 | 8.261 | 3.145 | 0.350 |
+| Fosmidomycin | 3-6 years | 12.982 | 1.908 | 2.768 | 0.575 |
+| Fosmidomycin | 7-12 years | 14.960 | 2.260 | 3.153 | 0.275 |
+| Fosmidomycin | 13-17 years | 14.698 | 2.040 | 3.345 | 0.550 |
+| Fosmidomycin | 18-65 years | 19.343 | 2.487 | 3.836 | 0.600 |
+| Clindamycin | 3-6 years | 29.796 | 7.067 | 1.976 | 0.250 |
+| Clindamycin | 7-12 years | 36.119 | 7.726 | 2.359 | 0.150 |
+| Clindamycin | 13-17 years | 38.795 | 7.976 | 2.681 | 0.250 |
+| Clindamycin | 18-65 years | 43.385 | 8.378 | 2.910 | 0.325 |
 
 Simulated steady-state NCA by drug and age group (medians). {.table}
 
@@ -802,7 +798,7 @@ knitr::kable(cmp, caption = "Simulated vs. published. * differs by >20%.",
 
 | NCA parameter     | drug         | Reference | Simulated | % diff |
 |:------------------|:-------------|----------:|----------:|-------:|
-| AUClast (mg\*h/L) | Clindamycin  |        35 |      37.8 |  +7.9% |
+| AUClast (mg\*h/L) | Clindamycin  |        35 |      37.3 |  +6.6% |
 | t½ (h)            | Fosmidomycin |       2.9 |      2.96 |  +2.1% |
 | t½ (h)            | Clindamycin  |       2.5 |      2.46 |  -1.8% |
 
@@ -828,7 +824,7 @@ stopifnot(
 )
 ```
 
-The simulated clindamycin AUCtau median of 37.8 mg*h/L sits inside the
+The simulated clindamycin AUCtau median of 37.3 mg*h/L sits inside the
 30-40 mg*h/L the Discussion reports, and equals `Dose/CL` at the
 reference subject (36.2 mg\*h/L) to within the cohort’s weight spread,
 as it must for a linear model with F fixed at 1.

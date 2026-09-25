@@ -434,10 +434,10 @@ knitr::kable(nca_summary,
 
 | PPTESTCD |  median |     q05 |     q95 |
 |:---------|--------:|--------:|--------:|
-| auclast  | 3791.93 | 1735.23 | 7254.05 |
-| cav      |  126.40 |   57.84 |  241.80 |
-| cmax     |  180.81 |   97.80 |  323.67 |
-| cmin     |   85.12 |   29.33 |  189.18 |
+| auclast  | 3790.93 | 1736.38 | 7254.48 |
+| cav      |  126.36 |   57.88 |  241.82 |
+| cmax     |  180.72 |   97.80 |  323.79 |
+| cmin     |   85.06 |   29.36 |  189.17 |
 | tmax     |    4.00 |    4.00 |    4.00 |
 
 Steady-state NCA (final dosing interval) of the 5-monthly 15 mg/kg IM

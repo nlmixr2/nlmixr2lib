@@ -407,7 +407,7 @@ stopifnot(length(ratio_200_50) == 1L, length(ratio_100_50) == 1L)
 
 c(`200 mg / 50 mg` = ratio_200_50, `100 mg / 50 mg` = ratio_100_50)
 #> 200 mg / 50 mg 100 mg / 50 mg 
-#>       3.951710       1.935662
+#>       3.951709       1.935661
 
 stopifnot(
   abs(ratio_200_50 - 4) < 0.4,

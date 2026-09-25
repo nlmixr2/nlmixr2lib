@@ -534,7 +534,7 @@ tibble(
 
 | Check                                | Subjects | Max \|ratio - 1\| |
 |:-------------------------------------|---------:|------------------:|
-| Steady-state AUC over tau vs Dose/CL |       20 |          9.83e-06 |
+| Steady-state AUC over tau vs Dose/CL |       20 |          9.24e-06 |
 
 Mass balance at steady state. Trapezoidal AUC over the 40th dosing
 interval against the analytic Dose/CL. {.table}

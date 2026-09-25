@@ -132,18 +132,18 @@ mod
 #>   # biological matrix. Derived mechanically; verified = FALSE means it has
 #>   # NOT been checked against the source paper.
 #>   compartmentData <- list(
-#>     depot       = list(analyte = "gefapixant", units = "mg", specimen = "administration site", verified = FALSE),
-#>     central     = list(analyte = "gefapixant", units = "mg", specimen = "plasma", verified = FALSE),
+#>     depot = list(analyte = "gefapixant", units = "mg", specimen = "administration site", verified = FALSE),
+#>     central = list(analyte = "gefapixant", units = "mg", specimen = "plasma", verified = FALSE),
 #>     peripheral1 = list(analyte = "gefapixant", units = "mg", specimen = "plasma", verified = FALSE)
 #>   )
 #> 
 #>   covariateData <- list(
 #>     CRCL = list(
-#>       description        = "Baseline estimated glomerular filtration rate (eGFR)",
-#>       units              = "mL/min/1.73 m^2",
-#>       type               = "continuous",
+#>       description = "Baseline estimated glomerular filtration rate (eGFR)",
+#>       units = "mL/min/1.73 m^2",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Creatinine-based estimated GFR, BSA-normalized. Power effect on CL/F centered on the",
 #>         "data median of 87.2 mL/min/1.73 m^2 (Chawla 2023 Table 1 footnote b). Added to CL/F as",
 #>         "part of base-model development (not via the stepwise covariate method) because gefapixant",
@@ -154,41 +154,41 @@ mod
 #>         "on hemodialysis were excluded, so the eGFR-CL/F relationship is not validated below the",
 #>         "severe-RI range."
 #>       ),
-#>       source_name        = "eGFR"
+#>       source_name = "eGFR"
 #>     ),
 #>     WT = list(
-#>       description        = "Baseline body weight",
-#>       units              = "kg",
-#>       type               = "continuous",
+#>       description = "Baseline body weight",
+#>       units = "kg",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Power effects on both CL/F and Vc/F centered on the data median of 74 kg",
 #>         "(Chawla 2023 Table 1 footnote b). Cohort median 74 kg (range 35-159) per Table S3.",
 #>         "Body mass index was deliberately not evaluated because of its high correlation with",
 #>         "body weight. Fixed allometric scaling on CL/F and the volume parameters was tested as a",
 #>         "sensitivity analysis and gave no improvement over these estimated exponents."
 #>       ),
-#>       source_name        = "BW"
+#>       source_name = "BW"
 #>     ),
 #>     AGE = list(
-#>       description        = "Baseline age",
-#>       units              = "years",
-#>       type               = "continuous",
+#>       description = "Baseline age",
+#>       units = "years",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Power effects on both CL/F and Vc/F centered on the data median of 59 years",
 #>         "(Chawla 2023 Table 1 footnote b). Cohort median 59 years (range 18-89) per Table S3.",
 #>         "The age effect on Vc/F was the least precisely estimated fixed effect in the final",
 #>         "model (RSE 37.1%)."
 #>       ),
-#>       source_name        = "AGE"
+#>       source_name = "AGE"
 #>     ),
 #>     SEXF = list(
-#>       description        = "Biological sex indicator (1 = female, 0 = male)",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Biological sex indicator (1 = female, 0 = male)",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "1 (female) -- inverted relative to the canonical SEXF reference",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Chawla 2023 uses a MALE indicator with FEMALE as the reference category (Table 1",
 #>         "footnote b: 'Categorical covariate references: sex = female'), which is the inverse of",
 #>         "the canonical SEXF orientation (1 = female, reference 0 = male). To store the column",
@@ -198,14 +198,14 @@ mod
 #>         "of exactly 1 and SEXF = 0 gives the paper's male-vs-female fractional change. Same",
 #>         "pattern as Bajaj_2017_nivolumab.R. Cohort 71.3% female per Table S3."
 #>       ),
-#>       source_name        = "SEX (male indicator)"
+#>       source_name = "SEX (male indicator)"
 #>     ),
 #>     FED = list(
-#>       description        = "Fed-vs-fasted state at the time of dosing (1 = fed, 0 = fasted)",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Fed-vs-fasted state at the time of dosing (1 = fed, 0 = fasted)",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (fasted)",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "General fed-vs-fasted dose-record flag, not a high-fat-meal challenge, so FED applies",
 #>         "rather than FED_HIGHFAT. Fractional-change effect on Ka, and applied ONLY to records",
 #>         "carrying the F02 formulation (see FORM_GEF_F02): dedicated phase I relative-bioavailability",
@@ -214,14 +214,14 @@ mod
 #>         "bioavailability were also tested during base-model development but were not retained",
 #>         "(nonsignificant objective-function drop or poor precision)."
 #>       ),
-#>       source_name        = "FED"
+#>       source_name = "FED"
 #>     ),
 #>     FORM_GEF_F02 = list(
-#>       description        = "Gefapixant F02 (wet-granulation, citric-acid-containing, film-coated immediate-release tablet) formulation indicator",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Gefapixant F02 (wet-granulation, citric-acid-containing, film-coated immediate-release tablet) formulation indicator",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (F04 / F04A gefapixant-citrate formulations)",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "1 = F02, the earlier wet-granulation immediate-release tablet containing citric acid as",
 #>         "an acidulant (7.5, 20, and 50 mg strengths), used in several phase I studies and the",
 #>         "phase IIb chronic-cough study. 0 = F04 (20A film coating, two phase I studies) or F04A",
@@ -232,16 +232,16 @@ mod
 #>         "is tabulated in Chawla 2023 Table S2. The marketed F04B formulation (F04A without citric",
 #>         "acid) is bioequivalent to F04A, so F04B records take FORM_GEF_F02 = 0."
 #>       ),
-#>       source_name        = "FORM"
+#>       source_name = "FORM"
 #>     )
 #>   )
 #> 
 #>   covariatesDataExcluded <- list(
 #>     CONMED_PPI = list(
 #>       description = "Concomitant proton-pump inhibitor (omeprazole) use",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = paste(
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = paste(
 #>         "Tested during base-model development on absorption rate constant, absorption lag time,",
 #>         "and relative bioavailability for the F02 formulation only (dedicated phase I studies had",
 #>         "shown no PPI effect on F04). No PPI relationship reached the retention criteria, so PPI",
@@ -250,9 +250,9 @@ mod
 #>     ),
 #>     RACE_WHITE = list(
 #>       description = "White race indicator",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = paste(
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = paste(
 #>         "Race was screened on CL/F and Vc/F in the stepwise covariate method and was statistically",
 #>         "significant on CL/F in the integrated phase I-III analysis, but the signal was driven",
 #>         "entirely by the 'multiple' race category (effect size 0.19 vs ~0.05 for every other",
@@ -263,30 +263,30 @@ mod
 #>     ),
 #>     RACE_ASIAN = list(
 #>       description = "Asian race indicator",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = "Screened with the other race indicators; race removed from the final model. See RACE_WHITE note."
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = "Screened with the other race indicators; race removed from the final model. See RACE_WHITE note."
 #>     ),
 #>     RACE_BLACK = list(
 #>       description = "Black / African American race indicator",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = "Screened with the other race indicators; race removed from the final model. See RACE_WHITE note."
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = "Screened with the other race indicators; race removed from the final model. See RACE_WHITE note."
 #>     ),
 #>     RACE_OTHER = list(
 #>       description = "Race-category 'Other' indicator (includes American Indian or Alaskan Native, multiple or other, and Native Hawaiian or Pacific Islander)",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = paste(
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = paste(
 #>         "Screened with the other race indicators; the 'multiple' category was merged into 'other'",
 #>         "before race was dropped from the final model. See RACE_WHITE note."
 #>       )
 #>     ),
 #>     RACE_HISPANIC = list(
 #>       description = "Hispanic / Latino ethnicity indicator",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = paste(
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = paste(
 #>         "Ethnicity was screened on CL/F and Vc/F in the stepwise covariate method and was not",
 #>         "retained in the final model. Cohort 17.0% Hispanic per Chawla 2023 Table S3."
 #>       )
@@ -294,18 +294,18 @@ mod
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human",
-#>     n_subjects     = 1618,
-#>     n_studies      = 9,
-#>     age_range      = "18-89 years",
-#>     age_median     = "59 years",
-#>     weight_range   = "35-159 kg",
-#>     weight_median  = "74 kg",
+#>     species = "human",
+#>     n_subjects = 1618,
+#>     n_studies = 9,
+#>     age_range = "18-89 years",
+#>     age_median = "59 years",
+#>     weight_range = "35-159 kg",
+#>     weight_median = "74 kg",
 #>     sex_female_pct = 71.3,
 #>     race_ethnicity = c(White = 78.5, Asian = 8.3, Black = 3.6, Other = 9.5),
-#>     disease_state  = "Healthy volunteers (n = 121) and adults with refractory or unexplained chronic cough (n = 1497)",
-#>     dose_range     = "7.5-150 mg oral b.i.d. (phase I, single and multiple dose); up to 50 mg b.i.d. (phase IIb); 15 and 45 mg b.i.d. (phase III COUGH-1 and COUGH-2)",
-#>     regions        = "Global; United Kingdom and United States (phase IIb), Japan (one phase I study), multinational (phase III)",
+#>     disease_state = "Healthy volunteers (n = 121) and adults with refractory or unexplained chronic cough (n = 1497)",
+#>     dose_range = "7.5-150 mg oral b.i.d. (phase I, single and multiple dose); up to 50 mg b.i.d. (phase IIb); 15 and 45 mg b.i.d. (phase III COUGH-1 and COUGH-2)",
+#>     regions = "Global; United Kingdom and United States (phase IIb), Japan (one phase I study), multinational (phase III)",
 #>     renal_function = paste(
 #>       "eGFR median 86.9 mL/min/1.73 m^2 (range 13-243). Among the 1555 chronic-cough participants,",
 #>       "664 had normal renal function, 817 mild renal impairment, and 74 moderate renal impairment;",
@@ -313,8 +313,8 @@ mod
 #>       "dedicated phase I renal-impairment study. Individuals with end-stage renal disease and",
 #>       "individuals on hemodialysis were excluded."
 #>     ),
-#>     formulations   = "F02, F04, and F04A; the earlier F01 formulation was excluded",
-#>     notes          = paste(
+#>     formulations = "F02, F04, and F04A; the earlier F01 formulation was excluded",
+#>     notes = paste(
 #>       "Baseline demographics from Chawla 2023 Table S3; per-study participant counts and",
 #>       "formulation / food / PPI assignments from Table S2; study designs from Table S1.",
 #>       "1677 participants were included in the data set and 1618 had evaluable PK data",
@@ -412,7 +412,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x56062a20f230>
+#> <environment: 0x56151fa3c528>
 ```
 
 ## Virtual cohort

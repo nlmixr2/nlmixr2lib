@@ -1140,12 +1140,12 @@ ncaSummary |>
 
 | Dose | Cmax (ng/mL) | Tmax (h) | AUClast (ng\*h/mL) | AUCinf,obs (ng\*h/mL) | t-half (h) |
 |:---|---:|---:|---:|---:|---:|
-| 15 mg | 27.49 | 0.20 | 29.85 | 30.99 | 9.30 |
-| 50 mg | 123.31 | 0.25 | 134.59 | 134.97 | 7.72 |
-| 200 mg | 707.44 | 0.30 | 870.04 | 877.23 | 6.98 |
-| 600 mg | 2681.53 | 0.40 | 3696.42 | 3696.42 | 5.05 |
-| 900 mg | 4065.98 | 0.45 | 6156.64 | 6185.16 | 5.28 |
-| 1350 mg | 6550.45 | 0.45 | 9419.20 | 9487.19 | 5.30 |
+| 15 mg | 28.30 | 0.20 | 31.82 | 33.87 | 13.31 |
+| 50 mg | 130.10 | 0.25 | 152.59 | 156.17 | 9.36 |
+| 200 mg | 695.06 | 0.30 | 854.12 | 857.06 | 7.22 |
+| 600 mg | 2656.33 | 0.40 | 3465.65 | 3482.04 | 5.02 |
+| 900 mg | 4336.65 | 0.40 | 6026.58 | 6052.11 | 5.83 |
+| 1350 mg | 6628.73 | 0.45 | 10465.41 | 10469.19 | 4.26 |
 
 PKNCA summary (median across 100 simulated subjects per arm) after a
 single oral-solution dose. {.table}
@@ -1194,12 +1194,12 @@ perSub |>
 
 | Dose    | Subjects | AUCinf not estimable | Median % diff | Max \|% diff\| |
 |:--------|---------:|---------------------:|--------------:|---------------:|
-| 15 mg   |      100 |                    0 |        -0.298 |          1.306 |
-| 50 mg   |      100 |                    0 |        -0.233 |          1.131 |
-| 200 mg  |      100 |                    0 |        -0.161 |          0.688 |
-| 600 mg  |      100 |                    0 |        -0.113 |          0.760 |
-| 900 mg  |      100 |                    0 |        -0.117 |          0.638 |
-| 1350 mg |      100 |                    0 |        -0.130 |          1.090 |
+| 15 mg   |      100 |                    0 |        -0.278 |          1.243 |
+| 50 mg   |      100 |                    0 |        -0.203 |          1.072 |
+| 200 mg  |      100 |                    0 |        -0.151 |          0.665 |
+| 600 mg  |      100 |                    0 |        -0.131 |          0.761 |
+| 900 mg  |      100 |                    0 |        -0.135 |          0.522 |
+| 1350 mg |      100 |                    0 |        -0.122 |          0.409 |
 
 Per-subject PKNCA AUCinf against that subject’s own Dose/CL. Both sides
 use the same drawn parameters, so the residual is pure NCA
@@ -1255,12 +1255,12 @@ ncaCheck |>
 
 | Dose | Median AUCinf,obs (ng\*h/mL) | Dose-normalised AUC | Model CL/F (L/h) | Median t-half (h) |
 |:---|---:|---:|---:|---:|
-| 15 mg | 30.99 | 2.07 | 469.16 | 9.30 |
-| 50 mg | 134.97 | 2.70 | 335.70 | 7.72 |
-| 200 mg | 877.23 | 4.39 | 228.34 | 6.98 |
-| 600 mg | 3696.42 | 6.16 | 168.25 | 5.05 |
-| 900 mg | 6185.16 | 6.87 | 150.31 | 5.28 |
-| 1350 mg | 9487.19 | 7.03 | 134.29 | 5.30 |
+| 15 mg | 33.87 | 2.26 | 469.16 | 13.31 |
+| 50 mg | 156.17 | 3.12 | 335.70 | 9.36 |
+| 200 mg | 857.06 | 4.29 | 228.34 | 7.22 |
+| 600 mg | 3482.04 | 5.80 | 168.25 | 5.02 |
+| 900 mg | 6052.11 | 6.72 | 150.31 | 5.83 |
+| 1350 mg | 10469.19 | 7.75 | 134.29 | 4.26 |
 
 Dose-normalised exposure rises with dose, reproducing the paper’s
 central nonlinearity finding. {.table}
@@ -1270,7 +1270,7 @@ central nonlinearity finding. {.table}
 
 cat(sprintf("log-log slope of dose-normalised AUC: %.4f (expected %.4f)\n",
             slope, 0.278))
-#> log-log slope of dose-normalised AUC: 0.2825 (expected 0.2780)
+#> log-log slope of dose-normalised AUC: 0.2719 (expected 0.2780)
 
 stopifnot(
   nrow(ncaCheck) == length(srdDoses),

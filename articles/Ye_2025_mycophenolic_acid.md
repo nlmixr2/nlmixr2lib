@@ -181,8 +181,18 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # residual error) alongside `Cc` (the individual prediction, noise-free).
 # The data frame is deliberately NOT called `sim`, so the column and the
 # frame cannot shadow each other.
+#
+# maxsteps: when the model is integrated as ODEs, the ss = 1 steady-state
+# search integrates one 12 h interval after another until the state stops
+# changing. Every subject with a terminal half-life above ~60 h (62-1900 h
+# here, driven by high Vp/F draws) needs hundreds to thousands of intervals
+# and exhausts the default budget of 70000 solver steps; rxSolve() then
+# returns NA for that subject (79 of 146 here; 4 still at 1e6). At 1e7 every subject -- and, in testing, even a
+# +4 SD Vp/F draw -- reaches steady state or rxode2's maxSS = 10000 interval
+# cap before the step budget. The analytic linCmt() path ignores maxsteps.
 simdf <- rxode2::rxSolve(
-  mod, events = events, keep = c("WT", "treatment"), addDosing = FALSE
+  mod, events = events, keep = c("WT", "treatment"), addDosing = FALSE,
+  maxsteps = 1e7
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -199,14 +209,15 @@ auc_by_subject <- simdf |>
 
 summary(auc_by_subject$pct_diff)
 #>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -0.0058015 -0.0007008 -0.0003115 -0.0004055  0.0001073  0.0012363
+#> -0.0147946 -0.0020436 -0.0009955 -0.0018200 -0.0002751  0.0009602
 
 # Deterministic identity, not a cohort statistic: the only error is the
-# trapezoidal quadrature on the grid above. Realised worst-subject |pct| was
-# 0.0095 on the refined grid (against 0.51 on a uniform 0.05 h grid), so 0.25
-# carries ~25x headroom for an unluckier low-Vc draw while still failing
-# instantly on a mis-transcribed CL, dose or unit -- those move it by tens of
-# percent.
+# trapezoidal quadrature on the grid above (plus, when integrated as ODEs,
+# the ss = 1 convergence tolerance). Realised worst-subject |pct| was
+# 0.0095 on the refined grid (against 0.51 on a uniform 0.05 h grid), and
+# 0.0148 integrated as ODEs, so 0.25 carries ~17-25x headroom for an
+# unluckier low-Vc draw while still failing instantly on a mis-transcribed
+# CL, dose or unit -- those move it by tens of percent.
 stopifnot(max(abs(auc_by_subject$pct_diff)) < 0.25)
 ```
 
@@ -236,8 +247,11 @@ probe_events <- tibble::tibble(id = seq_along(wt_probe), WT = wt_probe) |>
   ))() |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
+# maxsteps: same ss = 1 step budget as the cohort solve above (WT 41.13,
+# 55 and 70 kg fail at the default).
 probe <- rxode2::rxSolve(
-  rxode2::zeroRe(mod), probe_events, keep = "WT", addDosing = FALSE
+  rxode2::zeroRe(mod), probe_events, keep = "WT", addDosing = FALSE,
+  maxsteps = 1e7
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -279,10 +293,10 @@ probe_summary |>
 | Body weight (kg) | Vp/F (L) | Vp/F expected (L) | AUC0-12,ss (mg\*h/L) | Cmax,ss (mg/L) | Cmin,ss (mg/L) |
 |---:|---:|---:|---:|---:|---:|
 | 20.00 | 293.6 | 293.6 | 24.288 | 8.164 | 1.190 |
-| 30.00 | 674.1 | 674.1 | 24.288 | 8.272 | 1.327 |
-| 41.13 | 1287.1 | 1287.1 | 24.288 | 8.315 | 1.381 |
-| 55.00 | 2335.3 | 2335.3 | 24.288 | 8.336 | 1.408 |
-| 70.00 | 3828.6 | 3828.6 | 24.288 | 8.347 | 1.421 |
+| 30.00 | 674.1 | 674.1 | 24.287 | 8.272 | 1.327 |
+| 41.13 | 1287.1 | 1287.1 | 24.287 | 8.315 | 1.381 |
+| 55.00 | 2335.3 | 2335.3 | 24.287 | 8.336 | 1.408 |
+| 70.00 | 3828.6 | 3828.6 | 24.287 | 8.347 | 1.421 |
 
 Typical-value steady-state profile across the cohort weight range. Vp/F
 spans a 4.4-fold range while AUC0-12 is unchanged, because body weight
@@ -305,17 +319,22 @@ stopifnot(max(probe_summary$vp) / min(probe_summary$vp) > 4)
 The model writes an explicit three-state ODE system, but its
 `cl`/`vc`/`q`/`vp` parameterisation also matches rxode2’s
 linear-compartment solver, which `rxSolve()` may substitute
-automatically (`useLinCmt = TRUE` is the default). The substitution is
-only safe if the hand-written ODE rates really are the standard
-two-compartment rates, so that is checked rather than assumed.
+automatically (with `useLinCmt = TRUE`, the default until rxode2 made
+the conversion opt-in). The substitution is only safe if the
+hand-written ODE rates really are the standard two-compartment rates, so
+that is checked rather than assumed.
 
 The check runs on an explicit q12h schedule rather than on the `ss = 1`
-records used above, because `ss = 1` on this model *requires* the
-analytic solver: with a terminal half-life near 80 h against a 12 h
-dosing interval, the ODE path’s steady-state iteration does not converge
-and `rxSolve()` fails with “could not solve the system”. Establishing
-the equivalence on explicit dosing is what licenses the `ss = 1` results
-in the rest of this vignette.
+records used above, because the two solvers reach steady state by
+different routes: the analytic solver computes it in closed form, while
+the ODE path iterates one dosing interval after another. With a terminal
+half-life near 80 h against a 12 h dosing interval (far longer for
+high-Vp/F subjects) that iteration runs for hundreds to thousands of
+intervals, and under rxode2’s default step budget it fails with “could
+not solve the ODEs correctly” – hence `maxsteps = 1e7` on the `ss = 1`
+solves above. Establishing the equivalence on explicit dosing keeps the
+steady-state search out of the comparison, and is what licenses the
+`ss = 1` results in the rest of this vignette.
 
 ``` r
 
@@ -362,7 +381,7 @@ stopifnot(nrow(ss_sim) == nrow(lin))
 
 max_rel_ss <- max(abs(lin$Cc - ss_sim$Cc) / ss_sim$Cc)
 max_rel_ss
-#> [1] 0.002365582
+#> [1] 0.002357143
 
 # 30 days of q12h dosing is ~8.7 terminal half-lives of this model, so the
 # explicit schedule should sit just under exact steady state -- a small,
@@ -682,7 +701,7 @@ auc_per_gram_model <- 1000 / CL_F
 c(simulated = auc_per_gram_sim, model = auc_per_gram_model,
   `Ye 2025 Table 2` = 80.19)
 #>       simulated           model Ye 2025 Table 2 
-#>        61.73701        65.65988        80.19000
+#>        61.73613        65.65988        80.19000
 
 # Band allows for the sparse eight-point trapezoid under-reading the peak
 # and for the LLOQ substitution (realised about -6%); a 25% error in CL/F --
@@ -718,7 +737,7 @@ auc_ratio_predicted <- cl_from_auc_dose / cl_from_model
 auc_ratio_observed  <- mean_of("auclast") / 31.05
 c(predicted = auc_ratio_predicted, observed = auc_ratio_observed)
 #> predicted  observed 
-#> 0.8188039 0.7354757
+#> 0.8188039 0.7354652
 
 stopifnot(abs(auc_ratio_observed / auc_ratio_predicted - 1) < 0.35)
 ```

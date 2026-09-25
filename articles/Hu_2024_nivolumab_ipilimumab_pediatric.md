@@ -702,9 +702,9 @@ nivo_nca_tab |>
 
 | Arm | AUCtau,ss (ug\*day/mL) | Cavg,ss (ug/mL) | Cmax,ss (ug/mL) | Ctrough,ss (ug/mL) |
 |:---|---:|---:|---:|---:|
-| Adolescent ST, 240 mg q2w | 1800 | 128.0 | 187 | NA |
-| Adolescent ST, 3 mg/kg q2w (cap 240 mg) | 1220 | 87.0 | 126 | NA |
-| Adult MEL, 240 mg q2w | 1120 | 79.8 | 113 | NA |
+| Adolescent ST, 240 mg q2w | 1780 | 127.0 | 185 | NA |
+| Adolescent ST, 3 mg/kg q2w (cap 240 mg) | 1210 | 86.4 | 125 | NA |
+| Adult MEL, 240 mg q2w | 1110 | 79.3 | 112 | NA |
 
 Geometric-mean steady-state nivolumab exposure over the twelfth q2w
 dosing interval (n = 150 per arm). {.table}
@@ -752,7 +752,7 @@ tibble::tibble(
 
 | Claim | Hu 2024 source | Cavg,ss vs adult (%) |
 |:---|:---|---:|
-| Adolescent ST on adult flat 240 mg q2w exceeds adult MEL exposure | Figure S9 | 160.7 |
+| Adolescent ST on adult flat 240 mg q2w exceeds adult MEL exposure | Figure S9 | 160.8 |
 | Adolescent ST on 3 mg/kg q2w (cap 240 mg) is similar to adult MEL | Figure S10 | 109.0 |
 
 Nivolumab dosing claims reproduced from the packaged model. {.table}
@@ -988,11 +988,11 @@ ipi_nca_tab |>
 
 | Arm | AUCtau (ug\*day/mL) | Cavg (ug/mL) | Cmax (ug/mL) | Ctrough (ug/mL) |
 |:---|---:|---:|---:|---:|
-| Adolescent MEL, 3 mg/kg q3w | 760 | 36.2 | 75.4 | NA |
-| Adult MEL, 3 mg/kg q3w | 704 | 33.5 | 72.9 | NA |
+| Adolescent MEL, 3 mg/kg q3w | 746 | 35.5 | 74.4 | NA |
+| Adult MEL, 3 mg/kg q3w | 667 | 31.7 | 69.5 | NA |
 
 Geometric-mean ipilimumab exposure over the fourth q3w dosing interval
-(n = 150 per arm). Adolescent exposure is 108% of adult, reproducing Hu
+(n = 150 per arm). Adolescent exposure is 112% of adult, reproducing Hu
 2024 Figure S13. {.table}
 
 ## Assumptions and deviations

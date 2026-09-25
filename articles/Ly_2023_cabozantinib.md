@@ -514,27 +514,27 @@ knitr::kable(cmp, digits = 1, align = c("l", "l", "r", "r", "r"),
 
 | NCA parameter      | treatment           | Reference | Simulated |   % diff |
 |:-------------------|:--------------------|----------:|----------:|---------:|
-| Cmax (ng/mL)       | XL184-020 (healthy) |      1490 |      1740 |   +17.0% |
-| Cmax (ng/mL)       | XL184-306 (CRPC)    |      1230 |      1530 | +24.2%\* |
-| Cmax (ng/mL)       | XL184-307 (CRPC)    |      1440 |      1530 |    +6.7% |
-| Cmax (ng/mL)       | XL184-308 (RCC)     |      1500 |      1590 |    +5.8% |
-| Cmax (ng/mL)       | XL184-309 (HCC)     |      1640 |      1710 |    +4.4% |
-| Cmax (ng/mL)       | XL184-311 (DTC)     |      1770 |      1860 |    +4.8% |
-| Cmax (ng/mL)       | CheckMate 9ER (RCC) |      1560 |      1640 |    +5.0% |
-| AUClast (ng\*h/mL) | XL184-020 (healthy) |     30400 |     35900 |   +18.1% |
-| AUClast (ng\*h/mL) | XL184-306 (CRPC)    |     25300 |     32000 | +26.4%\* |
-| AUClast (ng\*h/mL) | XL184-307 (CRPC)    |     30000 |     31400 |    +4.7% |
-| AUClast (ng\*h/mL) | XL184-308 (RCC)     |     31400 |     33600 |    +7.2% |
-| AUClast (ng\*h/mL) | XL184-309 (HCC)     |     33000 |     33300 |    +1.0% |
-| AUClast (ng\*h/mL) | XL184-311 (DTC)     |     35900 |     37500 |    +4.4% |
-| AUClast (ng\*h/mL) | CheckMate 9ER (RCC) |     32500 |     32900 |    +1.2% |
-| Ctrough (ng/mL)    | XL184-020 (healthy) |      1210 |      1420 |   +18.0% |
-| Ctrough (ng/mL)    | XL184-306 (CRPC)    |       997 |      1270 | +27.4%\* |
-| Ctrough (ng/mL)    | XL184-307 (CRPC)    |      1190 |      1240 |    +4.4% |
-| Ctrough (ng/mL)    | XL184-308 (RCC)     |      1240 |      1340 |    +7.5% |
-| Ctrough (ng/mL)    | XL184-309 (HCC)     |      1300 |      1300 |    +0.0% |
-| Ctrough (ng/mL)    | XL184-311 (DTC)     |      1420 |      1480 |    +4.0% |
-| Ctrough (ng/mL)    | CheckMate 9ER (RCC) |      1290 |      1290 |    +0.3% |
+| Cmax (ng/mL)       | XL184-020 (healthy) |      1490 |      1660 |   +11.5% |
+| Cmax (ng/mL)       | XL184-306 (CRPC)    |      1230 |      1450 |   +17.7% |
+| Cmax (ng/mL)       | XL184-307 (CRPC)    |      1440 |      1510 |    +5.3% |
+| Cmax (ng/mL)       | XL184-308 (RCC)     |      1500 |      1520 |    +0.9% |
+| Cmax (ng/mL)       | XL184-309 (HCC)     |      1640 |      1700 |    +3.9% |
+| Cmax (ng/mL)       | XL184-311 (DTC)     |      1770 |      1800 |    +1.4% |
+| Cmax (ng/mL)       | CheckMate 9ER (RCC) |      1560 |      1550 |    -0.3% |
+| AUClast (ng\*h/mL) | XL184-020 (healthy) |     30400 |     34200 |   +12.2% |
+| AUClast (ng\*h/mL) | XL184-306 (CRPC)    |     25300 |     30600 | +21.0%\* |
+| AUClast (ng\*h/mL) | XL184-307 (CRPC)    |     30000 |     31100 |    +3.5% |
+| AUClast (ng\*h/mL) | XL184-308 (RCC)     |     31400 |     31500 |    +0.4% |
+| AUClast (ng\*h/mL) | XL184-309 (HCC)     |     33000 |     33800 |    +2.6% |
+| AUClast (ng\*h/mL) | XL184-311 (DTC)     |     35900 |     36500 |    +1.6% |
+| AUClast (ng\*h/mL) | CheckMate 9ER (RCC) |     32500 |     31400 |    -3.5% |
+| Ctrough (ng/mL)    | XL184-020 (healthy) |      1210 |      1350 |   +11.9% |
+| Ctrough (ng/mL)    | XL184-306 (CRPC)    |       997 |      1220 | +22.2%\* |
+| Ctrough (ng/mL)    | XL184-307 (CRPC)    |      1190 |      1230 |    +3.2% |
+| Ctrough (ng/mL)    | XL184-308 (RCC)     |      1240 |      1250 |    +0.4% |
+| Ctrough (ng/mL)    | XL184-309 (HCC)     |      1300 |      1330 |    +1.9% |
+| Ctrough (ng/mL)    | XL184-311 (DTC)     |      1420 |      1440 |    +1.3% |
+| Ctrough (ng/mL)    | CheckMate 9ER (RCC) |      1290 |      1230 |    -4.3% |
 
 Simulated vs Ly 2023 Supplementary Table S3 predicted steady-state
 exposure, 60 mg once daily. \* differs from the reference by more than
@@ -655,8 +655,8 @@ claim("Adolescents >= 40 kg on 60 mg/day exceed adult exposure but by less than 
 | Females 29% higher Cmin,ss | +29.0% | pass |
 | Single-dose peak concentration around 3 h | 2.70 h | pass |
 | Exposure at 24 h exceeds exposure at 14 h (delayed absorption phase) | 195 vs 138 ng/mL (ratio 1.41) | pass |
-| Table S3 predicted exposure reproduced across the five concordant arms | worst \|diff\| 7.5% over 15 study x parameter comparisons | pass |
-| Table S3 predicted exposure reproduced for XL184-020 (healthy) and XL184-306 (CRPC) | worst \|diff\| 27.4% over 6 comparisons | known deviation |
+| Table S3 predicted exposure reproduced across the five concordant arms | worst \|diff\| 5.3% over 15 study x parameter comparisons | pass |
+| Table S3 predicted exposure reproduced for XL184-020 (healthy) and XL184-306 (CRPC) | worst \|diff\| 22.2% over 6 comparisons | known deviation |
 | Adolescents \< 40 kg on 60 mg/day: approximately 1.7-fold adult exposure | 1.65-fold at 36 kg | pass |
 | Adolescents \< 40 kg on 40 mg/day: within 10% of adult 60 mg/day | +9.8% at 36 kg | pass |
 | Adolescents \>= 40 kg on 60 mg/day exceed adult exposure but by less than the \< 40 kg group | 1.52-fold at 40 kg vs 1.65-fold at 36 kg | pass |

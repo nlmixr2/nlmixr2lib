@@ -370,11 +370,19 @@ buildEvents <- function(subj, doseTimes, obsTimes, tau = NA_real_) {
 
 # `po` is a route flag consumed by buildEvents(), not a model covariate, and
 # rxode2 must not be handed any character column. Both are dropped here.
+#
+# `maxsteps` is raised above the 70,000 default. With `ss = 1` the ODE
+# integrator marches each subject through 12 h intervals until the
+# steady-state search converges, and the cohort's most extreme subject (Vp at
+# the top quantile, low clearance; terminal half-life about 450 h with CRRT
+# off) needs several hundred intervals, which exhausts the default step budget
+# and returns NA for that subject.
 solveEvents <- function(mod, ev) {
   ev$po <- NULL
   ev <- ev[, !vapply(ev, is.character, logical(1)) | names(ev) == "cmt",
            drop = FALSE]
-  rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame")
+  rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame",
+                  maxsteps = 1e6)
 }
 ```
 
@@ -466,7 +474,7 @@ expectedRefAuc <- 2 * 200 / pubCl
 c(simulated = refAuc, closed_form = expectedRefAuc,
   pct_diff = 100 * (refAuc / expectedRefAuc - 1))
 #>     simulated   closed_form      pct_diff 
-#> 112.674739575 112.676056338  -0.001168628
+#> 112.674477024 112.676056338  -0.001401641
 
 # The bound is an allowance for the NCA quadrature, not for model error: the
 # underlying solve reproduces the identity to machine precision, and what is
@@ -504,12 +512,12 @@ gates |>
 
 | Scenario | AUC0-24,ss (mg\*h/L) | Simulated ratio | Published ratio | % diff |
 |:---|---:|---:|---:|---:|
-| CLCR doubled | 96.8725 | 0.8598 | 0.8598 | -0.0004 |
-| CRRT running | 77.1736 | 0.6849 | 0.6849 | -0.0011 |
-| Platelets doubled | 100.4279 | 0.8913 | 0.8913 | -0.0003 |
-| PT doubled | 206.6480 | 1.8340 | 1.8340 | 0.0008 |
-| qCRP doubled | 124.3293 | 1.1034 | 1.1034 | 0.0002 |
-| Reference (oral) | 94.0744 | 0.8349 | 0.8350 | -0.0096 |
+| CLCR doubled | 96.8723 | 0.8598 | 0.8598 | -0.0003 |
+| CRRT running | 77.1736 | 0.6849 | 0.6849 | -0.0010 |
+| Platelets doubled | 100.4277 | 0.8913 | 0.8913 | -0.0002 |
+| PT doubled | 206.6470 | 1.8340 | 1.8340 | 0.0005 |
+| qCRP doubled | 124.3290 | 1.1034 | 1.1034 | 0.0002 |
+| Reference (oral) | 94.0742 | 0.8349 | 0.8350 | -0.0096 |
 
 ``` r
 
@@ -808,8 +816,8 @@ cohortNca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 summary(cohortNca)
 #>  Interval Start Interval End                           treatment   N
 #>               0           24 Reconstructed Wang 2024 regimen mix 200
-#>  AUClast (h*mg/L) Cmax (mg/L) Cmin (mg/L)           Tmax (h)  Cav (mg/L)
-#>       94.2 [62.9] 5.88 [48.0] 3.17 [81.5] 13.0 [0.300, 13.8] 3.93 [62.9]
+#>  AUClast (h*mg/L) Cmax (mg/L) Cmin (mg/L)          Tmax (h)  Cav (mg/L)
+#>       94.2 [62.9] 5.88 [48.0] 3.17 [81.5] 13.0 [1.00, 13.8] 3.93 [62.9]
 #> 
 #> Caption: AUClast, Cmax, Cmin, Cav: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```
@@ -956,7 +964,7 @@ pairedRatio <- as.data.frame(pairedNca$result) |>
 c(min = min(pairedRatio$ratio), max = max(pairedRatio$ratio),
   published = 1 / pubCrrtRatio)
 #>       min       max published 
-#> 0.6846767 0.6849314 0.6849315
+#> 0.6846770 0.6849419 0.6849315
 
 stopifnot(
   nrow(pairedRatio) == nSubj,

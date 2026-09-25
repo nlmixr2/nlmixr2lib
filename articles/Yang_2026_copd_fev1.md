@@ -973,10 +973,10 @@ knitr::kable(f4_tab, digits = 4)
 
 | Treatment    | Sex    | Mean FEV1 (L) | SD across arms (L) |
 |:-------------|:-------|--------------:|-------------------:|
-| VI 25        | Female |        0.9455 |             0.0852 |
-| VI 25        | Male   |        1.3037 |             0.1346 |
-| VI/FF 25/200 | Female |        0.9972 |             0.1095 |
-| VI/FF 25/200 | Male   |        1.3308 |             0.1146 |
+| VI 25        | Female |        0.9692 |             0.1175 |
+| VI 25        | Male   |        1.2888 |             0.1348 |
+| VI/FF 25/200 | Female |        1.0279 |             0.1108 |
+| VI/FF 25/200 | Male   |        1.3084 |             0.1223 |
 
 ``` r
 
@@ -984,7 +984,7 @@ knitr::kable(f4_tab, digits = 4)
 male_minus_female <- mean(sim_f4$FEV1[sim_f4$sex == "Male"]) -
   mean(sim_f4$FEV1[sim_f4$sex == "Female"])
 cat(sprintf("Mean male - female difference: %.4f L\n", male_minus_female))
-#> Mean male - female difference: 0.3459 L
+#> Mean male - female difference: 0.3001 L
 
 # The sex effect is a large, structural, typical-value difference (the
 # coefficient implies a female/male baseline ratio of 0.75, i.e. roughly a
@@ -999,7 +999,7 @@ stopifnot(male_minus_female > 0.15, male_minus_female < 0.40)
 trt_gain <- mean(sim_f4$FEV1[sim_f4$trt == "VI/FF 25/200"]) -
   mean(sim_f4$FEV1[sim_f4$trt == "VI 25"])
 cat(sprintf("Mean VI/FF - VI difference: %.4f L\n", trt_gain))
-#> Mean VI/FF - VI difference: 0.0394 L
+#> Mean VI/FF - VI difference: 0.0391 L
 stopifnot(trt_gain > 0, trt_gain < 0.10)
 ```
 

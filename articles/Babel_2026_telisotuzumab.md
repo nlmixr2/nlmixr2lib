@@ -516,17 +516,17 @@ nca <- as.data.frame(res)
 | NCA parameter       | Median |    P25 |     P75 |
 |:--------------------|-------:|-------:|--------:|
 | adj.r.squared       |  1.000 |  1.000 |   1.000 |
-| auclast             | 90.085 | 74.239 | 111.751 |
-| cav                 |  6.435 |  5.303 |   7.982 |
-| clast.pred          |  0.892 |  0.481 |   1.778 |
-| cmax                | 39.378 | 34.401 |  45.559 |
-| half.life           |  3.563 |  3.085 |   4.368 |
-| lambda.z            |  0.195 |  0.159 |   0.225 |
+| auclast             | 91.686 | 75.237 | 112.673 |
+| cav                 |  6.549 |  5.374 |   8.048 |
+| clast.pred          |  0.983 |  0.507 |   1.604 |
+| cmax                | 39.856 | 35.044 |  45.870 |
+| half.life           |  3.636 |  3.103 |   4.204 |
+| lambda.z            |  0.191 |  0.165 |   0.223 |
 | lambda.z.n.points   | 38.000 | 37.000 |  40.000 |
 | lambda.z.time.first |  4.750 |  4.250 |   5.000 |
 | lambda.z.time.last  | 14.000 | 14.000 |  14.000 |
 | r.squared           |  1.000 |  1.000 |   1.000 |
-| span.ratio          |  2.549 |  2.122 |   3.077 |
+| span.ratio          |  2.545 |  2.215 |   3.076 |
 | tlast               | 14.000 | 14.000 |  14.000 |
 | tmax                |  0.025 |  0.025 |   0.025 |
 
@@ -561,9 +561,9 @@ knitr::kable(cav_cmp, digits = 3,
 
 | Quantile              | Simulated | Published | Ratio |
 |:----------------------|----------:|----------:|------:|
-| 25th (Q1/Q2 boundary) |     5.303 |      4.71 | 1.126 |
-| 50th (Q2/Q3 boundary) |     6.435 |      6.17 | 1.043 |
-| 75th (Q3/Q4 boundary) |     7.982 |      7.29 | 1.095 |
+| 25th (Q1/Q2 boundary) |     5.374 |      4.71 | 1.141 |
+| 50th (Q2/Q3 boundary) |     6.549 |      6.17 | 1.061 |
+| 75th (Q3/Q4 boundary) |     8.048 |      7.29 | 1.104 |
 
 Simulated cycle-1 Cavg quartile boundaries against the Figure 3 legend.
 {.table}
@@ -589,7 +589,7 @@ dosed at 1.6 mg/kg.
 
 | NCA parameter | Reference | Simulated | % diff |
 |:--------------|:----------|:----------|:-------|
-| Cavg          | 6.17      | 6.43      | +4.3%  |
+| Cavg          | 6.17      | 6.55      | +6.1%  |
 
 Median simulated cycle-1 Cavg against the Figure 3 published median
 (Q2/Q3 boundary). {.table}
@@ -918,8 +918,8 @@ practical accuracy of a figure-derived intercept.
 
 | Dose (mg/kg Q2W) | Median steady-state Cavg (ug/mL) |  P25 |  P75 |
 |-----------------:|---------------------------------:|-----:|-----:|
-|              1.6 |                             5.72 | 4.58 | 7.46 |
-|              1.9 |                             6.78 | 5.44 | 8.86 |
+|              1.6 |                             5.84 | 4.66 | 7.41 |
+|              1.9 |                             6.94 | 5.53 | 8.67 |
 
 Steady-state conjugate Cavg of the simulated cohort, at nominal dosing.
 {.table}

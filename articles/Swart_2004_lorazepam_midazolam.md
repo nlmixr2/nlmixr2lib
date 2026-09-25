@@ -252,13 +252,13 @@ sim_mid <- rxode2::rxSolve(
 head(sim_lor[, c("id", "time", "Cc", "ALCOHOL_ABUSE")], 3)
 #>   id time         Cc ALCOHOL_ABUSE
 #> 1  1 0.00 0.00000000             0
-#> 2  1 0.25 0.02574944             0
+#> 2  1 0.25 0.02574943             0
 #> 3  1 0.50 0.02632849             0
 head(sim_mid[, c("id", "time", "Cc", "ALCOHOL_ABUSE")], 3)
-#>   id time          Cc ALCOHOL_ABUSE
-#> 1 31 0.00 0.000000000             0
-#> 2 31 0.25 0.009221403             0
-#> 3 31 0.50 0.017891557             0
+#>   id time         Cc ALCOHOL_ABUSE
+#> 1 31 0.00 0.00000000             0
+#> 2 31 0.25 0.08789869             0
+#> 3 31 0.50 0.09171729             0
 ```
 
 Typical-value replications (all etas zeroed) illustrate the pure
@@ -444,6 +444,53 @@ sim_mid_long <- rxode2::rxSolve(
 
 nca_lor <- make_nca(sim_lor_long, events_lor_long, "cohort")
 nca_mid <- make_nca(sim_mid_long, events_mid_long, "cohort")
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
 ```
 
 ### Comparison against the paper’s reported half-lives
@@ -502,8 +549,8 @@ comparison |>
 
 | Cohort | Simulated median t1/2 (h) | Published mean t1/2 (h) | Percent difference | Flag (\>20 %) |
 |:---|---:|---:|---:|:---|
-| Lorazepam typical | 37.9 | 30.0 | 26.3 | \* |
-| Midazolam typical | 54.4 | 22.7 | 139.4 | \* |
+| Lorazepam typical | 41.7 | 30.0 | 39.1 | \* |
+| Midazolam typical | 71.3 | 22.7 | 213.9 | \* |
 
 Simulated median elimination half-life vs Swart 2004 Discussion
 reference. \* = differs from paper by \>20 %. {.table
@@ -546,8 +593,8 @@ hl_variability |>
 
 | Cohort | N subjects with lambda_z | Mean t1/2 (h) | SD t1/2 (h) | CV(t1/2) (%) |
 |:---|---:|---:|---:|---:|
-| Lorazepam typical | 30 | 109.2 | 259.1 | 237 |
-| Midazolam typical | 30 | 155.3 | 241.1 | 155 |
+| Lorazepam typical | 30 | 162.8 | 408.2 | 251 |
+| Midazolam typical | 30 | 174.0 | 376.6 | 216 |
 
 Simulated between-subject variability in elimination half-life. Paper
 reports CV(t1/2) 61 % (lorazepam) and 149 % (midazolam). {.table}

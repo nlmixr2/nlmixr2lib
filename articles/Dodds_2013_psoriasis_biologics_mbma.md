@@ -531,7 +531,8 @@ Eq. 2.
 
 ``` r
 
-n_per_arm <- 200L   # per the skill's cap; SE of an SD at n = 200 is about 5%
+n_per_arm <- 5000L  # one algebraic observation per subject, so this is cheap; see the
+                    # figure3-check chunk for why the percent-scale SD needs this many
 
 resid_arms <- dplyr::bind_rows(lapply(sim_doses, function(d) {
   r <- make_rows("resid", "ustekinumab", rep(d, n_per_arm))
@@ -572,11 +573,11 @@ resid_check |>
 
 | Dose (mg) |   LPASI | Simulated SD | Eq. 2-3 SD |  Ratio |
 |----------:|--------:|-------------:|-----------:|-------:|
-|         0 | -0.0998 |       0.3382 |     0.3319 | 1.0189 |
-|        21 | -1.5447 |       0.8203 |     0.7943 | 1.0328 |
-|        70 | -2.1032 |       0.8986 |     0.9730 | 0.9235 |
-|       210 | -2.3520 |       1.0671 |     1.0526 | 1.0137 |
-|       700 | -2.4543 |       1.0969 |     1.0854 | 1.0106 |
+|         0 | -0.0998 |       0.3309 |     0.3319 | 0.9968 |
+|        21 | -1.5447 |       0.7831 |     0.7943 | 0.9859 |
+|        70 | -2.1032 |       0.9701 |     0.9730 | 0.9970 |
+|       210 | -2.3520 |       1.0547 |     1.0526 | 1.0020 |
+|       700 | -2.4543 |       1.1044 |     1.0854 | 1.0175 |
 
 Empirical subject-level SD of the simulated log PASI response versus
 Eqs. 2-3. {.table}
@@ -584,17 +585,13 @@ Eqs. 2-3. {.table}
 ``` r
 
 
-# Cohort-derived: the bound must admit sampling noise, not one machine's draw.
-# With n = 200 per dose the relative standard error of an SD is about 5%, and
-# rxode2's RNG stream is partitioned per solver thread, so a CI runner draws a
-# different cohort. A 25% band is about five standard errors -- wide enough to
-# hold for any thread count, and still narrow enough to go red if the slope or
-# intercept of the variance model were mis-transcribed (dropping sERR entirely
-# would put the ratio at 0.28 at 700 mg; dropping iERR would put it at 1.4 at
-# placebo).
-# Realised max|Ratio - 1| of 0.077 / 0.080 / 0.075 at 2 / 8 / 16 solver threads,
-# so 0.25 sits about three times outside the observed spread. Do not tighten it
-# back to any single run's value.
+# Cohort-derived: the bound must admit sampling noise, not one draw. With
+# n = 5000 per dose the relative standard error of a log-scale SD is about 1%,
+# so a 25% band is far outside sampling noise and still narrow enough to go red
+# if the slope or intercept of the variance model were mis-transcribed
+# (dropping sERR entirely would put the ratio at 0.28 at 700 mg; dropping iERR
+# would put it at 1.4 at placebo). Do not tighten it back to any single run's
+# value.
 stopifnot(max(abs(resid_check$Ratio - 1)) < 0.25)
 ```
 
@@ -652,9 +649,9 @@ fig3_summary |>
 
 | Ustekinumab dose (mg) | Typical (%) | Mean (%) | SD (%) |
 |----------------------:|------------:|---------:|-------:|
-|                     0 |        9.50 |     3.79 |  33.49 |
-|                    45 |       85.55 |    73.77 |  32.46 |
-|                    90 |       88.69 |    81.94 |  21.60 |
+|                     0 |        9.50 |     3.62 |  32.88 |
+|                    45 |       85.55 |    78.21 |  23.25 |
+|                    90 |       88.69 |    81.58 |  22.53 |
 
 Simulated percent PASI improvement, mean and SD (the red series of
 Figure 3). {.table}
@@ -691,14 +688,23 @@ produce.
 
 ``` r
 
-# Trend, not step-by-step monotonicity or an exact value: this is a cohort
-# statistic (pattern 12 of the known-failure catalogue). The realised placebo-
-# minus-90 mg SD gap was 11.9 / 7.7 / 12.8 percentage points at 2 / 8 / 16
-# solver threads, so a 3-point floor holds for any thread count while still
-# going red if the variance model lost its dependence on the prediction.
+# Cohort statistics (pattern 12 of the known-failure catalogue), and the
+# percent scale has a heavy left tail: a subject whose log reduction is drawn
+# near or below zero maps to a large negative percent improvement, so at
+# n = 200 the 90 mg SD ranged from 16 to 39 points across seeds and the trend
+# check below failed one realisation in seven. At n = 5000 it is stable to
+# within a few points. Two checks: the trend the source calls out (placebo is
+# the widest band), and a known-answer check of every arm's SD against what
+# Eqs. 2-3 imply, computed here from a million normal quantiles.
+implied_sd <- vapply(seq_len(nrow(fig3_summary)), function(i) {
+  drop <- -log(1 - fig3_summary$`Typical (%)`[i] / 100)
+  z <- stats::qnorm(seq(0.5, 1e6 - 0.5) / 1e6)
+  stats::sd(100 * (1 - exp(-(drop + (0.30 + 0.32 * drop) * z))))
+}, numeric(1))
 stopifnot(
   fig3_summary$`SD (%)`[fig3_summary$`Ustekinumab dose (mg)` == 90] <
     fig3_summary$`SD (%)`[fig3_summary$`Ustekinumab dose (mg)` == 0] - 3,
+  all(abs(fig3_summary$`SD (%)` / implied_sd - 1) < 0.2),
   # The 45 and 90 mg typical values are deterministic and must bracket the
   # licensed-dose response the source simulated.
   all(fig3_summary$`Typical (%)`[fig3_summary$`Ustekinumab dose (mg)` > 0] > 80)

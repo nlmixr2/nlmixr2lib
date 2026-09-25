@@ -190,7 +190,7 @@ tibble::tibble(
 | Typical CL/F (L/h)                                 |  3.600000 |
 | Typical V/F (L)                                    | 36.500000 |
 | Typical ka (1/h)                                   |  0.420000 |
-| Steady-state Cmax (mg/L)                           |  8.476520 |
+| Steady-state Cmax (mg/L)                           |  8.476518 |
 | Steady-state Ctrough (mg/L)                        |  4.670378 |
 | Steady-state Ctrough / total EC90                  | 15.994444 |
 | Max \|solved / closed-form - 1\| over the interval |  0.000024 |
@@ -281,7 +281,7 @@ stopifnot(nrow(rit_cl) == N_ARM, all(is.finite(rit_cl$CONMED_RTV_AUC_12H)))
 auc_q <- quantile(rit_cl$CONMED_RTV_AUC_12H, c(0.10, 0.50, 0.90))
 auc_q
 #>       10%       50%       90% 
-#>  3.728001  8.475159 20.052442
+#>  3.125780  8.625507 21.930313
 ```
 
 The paper swept “AUCRIT from 10%th to 90%th” in its Monte Carlo
@@ -527,8 +527,8 @@ nca_wide |>
 
 | Treatment | Cmax,ss (mg/L) | Tmax (h) | AUC0-tau (mg\*h/L) | Cav,ss (mg/L) | Ctrough,ss (mg/L) |
 |:---|---:|---:|---:|---:|---:|
-| Nirmatrelvir 300 mg q12h | 7.734 | 3.25 | 65.474 | 5.456 | 3.199 |
-| Ritonavir 100 mg q12h | 1.026 | 2.75 | 8.393 | 0.699 | 0.342 |
+| Nirmatrelvir 300 mg q12h | 7.693 | 3.25 | 66.724 | 5.560 | 3.242 |
+| Ritonavir 100 mg q12h | 1.025 | 2.75 | 8.558 | 0.713 | 0.329 |
 
 Median steady-state NCA over the 108-120 h interval, 200 virtual
 subjects per drug. {.table style="width:100%;"}
@@ -573,7 +573,7 @@ stopifnot(
 
 summary(identity_chk$pct_diff)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -40.86042  -0.18325  -0.05595  -1.14448  -0.03222  -0.02377
+#> -30.30201  -0.14374  -0.05924  -0.82058  -0.03149  -0.02377
 ```
 
 ### Comparison against the paper’s reported values
@@ -613,8 +613,8 @@ knitr::kable(comparison, digits = 2,
 
 | Quantity | Chen 2024 | Simulated | Source | Ratio (sim / paper) |
 |:---|---:|---:|:---|---:|
-| Mean AUC0-tau, 300 mg (mg\*h/L) | 107.1 | 81.11 | Discussion para. 2 (Bayesian feedback, n=31) | 0.76 |
-| Median Ctrough,ss / total EC90 (fold) | 5.7 | 10.96 | Discussion final para. (Monte Carlo, recommended regimens) | 1.92 |
+| Mean AUC0-tau, 300 mg (mg\*h/L) | 107.1 | 78.82 | Discussion para. 2 (Bayesian feedback, n=31) | 0.74 |
+| Median Ctrough,ss / total EC90 (fold) | 5.7 | 11.10 | Discussion final para. (Monte Carlo, recommended regimens) | 1.95 |
 | Typical steady-state Cmax (mg/L) | NA | 8.48 | no published counterpart; NOAEL ceiling is 79.7 mg/L | NA |
 
 Simulated cohort versus the values Chen 2024 reports in prose. {.table}
@@ -636,7 +636,7 @@ stopifnot(abs(mean_auc / 107.1 - 1) < 0.40)
 # NOT GATED (recorded deviation): the "median Ctrough > 5.7 x total EC90"
 # claim. See the Assumptions and deviations section.
 fold_ec90
-#> [1] 10.9562
+#> [1] 11.10152
 ```
 
 ## Replicating the Table 4 dosing logic
@@ -791,9 +791,9 @@ knitr::kable(pta, digits = 1,
 | arm | phase | PTA (% above total EC90) | Median Ctrough (mg/L) |
 |:---|:---|---:|---:|
 | 150 mg q12h, CrCL 15-45 | First dose | 100.0 | 1.8 |
-| 150 mg q12h, CrCL 15-45 | Steady state | 100.0 | 3.9 |
+| 150 mg q12h, CrCL 15-45 | Steady state | 100.0 | 4.0 |
 | 300 mg q12h, CrCL \>45 | First dose | 97.5 | 2.1 |
-| 300 mg q12h, CrCL \>45 | Steady state | 97.5 | 3.4 |
+| 300 mg q12h, CrCL \>45 | Steady state | 97.5 | 3.1 |
 
 Probability of target attainment against the total EC90 of 0.292 mg/L,
 for the Table 4 initial-treatment doses. {.table}

@@ -304,7 +304,8 @@ ss_events <- do.call(dplyr::bind_rows, lapply(seq_len(nrow(regimens)), function(
   )
 }))
 
-ss <- rxode2::rxSolve(mod_typ, events = ss_events, keep = "regimen") |>
+ss <- rxode2::rxSolve(mod_typ, events = ss_events, keep = "regimen",
+                      rtol = 1e-10, atol = 1e-12) |>
   as.data.frame() |>
   dplyr::filter(time == 480) |>
   dplyr::transmute(regimen, cl, Cc,
@@ -348,8 +349,10 @@ Steady-state identity: the solved concentration equals rate / CL.
 
 # Both sides use the same drawn parameters, so this is pure numerical error and
 # a tight all() bound is the correct assertion here. Observed max deviation is
-# ~2e-12 %; the bound is set six orders above that so it tolerates solver and
-# rxode2-version differences while still failing instantly on a real regression.
+# ~2e-10 % with the ODE integrated at rtol 1e-10 (~2e-12 % with the analytic
+# linCmt() solution); the bound is set about four orders above that so it
+# tolerates solver and rxode2-version differences while still failing instantly
+# on a real regression.
 stopifnot(max(abs(ss$pct_diff)) < 1e-6)
 ```
 
@@ -477,18 +480,18 @@ knitr::kable(
 
 | Regimen | Sim P(\>160 mg/L) % | Table S2 % | Diff (pp) | Sim P(\>96 mg/L) % | Figure 3 % | Diff (pp) | Figure 3 value source |
 |:---|---:|---:|---:|---:|---:|---:|:---|
-| 3g/24hr CI; CrCl 25 mL/min | 0.0 | 1.3 | -1.3 | 19.5 | 24.3 | -4.8 | Results text (low-dose maximum) |
-| 4g/24hr CI; CrCl 50 mL/min | 0.0 | 0.7 | -0.7 | 10.5 | 14.0 | -3.5 | Figure 3 (digitised) |
-| 6g/24hr CI; CrCl 75 mL/min | 2.0 | 2.0 | 0.0 | 14.0 | 16.0 | -2.0 | Figure 3 (digitised) |
-| 9g/24hr CI; CrCl 150 mL/min | 1.0 | 2.3 | -1.3 | 12.5 | 13.0 | -0.5 | Figure 3 (digitised) |
+| 3g/24hr CI; CrCl 25 mL/min | 0.0 | 1.3 | -1.3 | 18.0 | 24.3 | -6.3 | Results text (low-dose maximum) |
+| 4g/24hr CI; CrCl 50 mL/min | 0.5 | 0.7 | -0.2 | 7.5 | 14.0 | -6.5 | Figure 3 (digitised) |
+| 6g/24hr CI; CrCl 75 mL/min | 1.5 | 2.0 | -0.5 | 19.5 | 16.0 | 3.5 | Figure 3 (digitised) |
+| 9g/24hr CI; CrCl 150 mL/min | 0.0 | 2.3 | -2.3 | 3.5 | 13.0 | -9.5 | Figure 3 (digitised) |
 | 3g/24hr CI; CRRT 25 mL/kg/hr | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | Figure 3 (100% acceptable) |
 | 4g/24hr CI; CRRT 35 mL/kg/hr | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | Figure 3 (100% acceptable) |
-| 6g/24hr CI; CrCl 25 mL/min | 37.0 | 31.9 | 5.1 | 76.0 | 73.3 | 2.7 | Results text (high-dose maximum) |
-| 8g/24hr CI; CrCl 50 mL/min | 19.0 | 20.4 | -1.4 | 60.0 | 54.0 | 6.0 | Figure 3 (digitised) |
-| 9g/24hr CI; CrCl 75 mL/min | 13.0 | 10.1 | 2.9 | 41.0 | 38.5 | 2.5 | Figure 3 (digitised) |
-| 12g/24hr CI; CrCl 150 mL/min | 5.5 | 5.9 | -0.4 | 19.0 | 21.3 | -2.3 | Results text (high-dose minimum) |
-| 6g/24hr CI; CRRT 25 mL/kg/hr | 0.0 | 0.0 | 0.0 | 31.0 | 23.5 | 7.5 | Figure 3 (digitised) |
-| 9g/24hr CI; CRRT 35 mL/kg/hr | 1.5 | 0.0 | 1.5 | 44.0 | 32.0 | 12.0 | Figure 3 (digitised) |
+| 6g/24hr CI; CrCl 25 mL/min | 31.0 | 31.9 | -0.9 | 77.5 | 73.3 | 4.2 | Results text (high-dose maximum) |
+| 8g/24hr CI; CrCl 50 mL/min | 17.5 | 20.4 | -2.9 | 56.5 | 54.0 | 2.5 | Figure 3 (digitised) |
+| 9g/24hr CI; CrCl 75 mL/min | 15.0 | 10.1 | 4.9 | 42.5 | 38.5 | 4.0 | Figure 3 (digitised) |
+| 12g/24hr CI; CrCl 150 mL/min | 7.0 | 5.9 | 1.1 | 26.5 | 21.3 | 5.2 | Results text (high-dose minimum) |
+| 6g/24hr CI; CRRT 25 mL/kg/hr | 0.5 | 0.0 | 0.5 | 30.5 | 23.5 | 7.0 | Figure 3 (digitised) |
+| 9g/24hr CI; CRRT 35 mL/kg/hr | 1.5 | 0.0 | 1.5 | 41.5 | 32.0 | 9.5 | Figure 3 (digitised) |
 
 Simulated vs. published target attainment at 48 h. pp = percentage
 points. {.table}
@@ -573,7 +576,8 @@ nca_events <- tibble::tibble(
   ))() |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment") |>
+nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment",
+                          rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 
 stopifnot(all(nca_sim$Cc > 0))
@@ -581,8 +585,15 @@ stopifnot(all(nca_sim$Cc > 0))
 
 ``` r
 
+# The fastest-clearing subjects fall below 1e-16 mg/L by 24 h, where the ODE
+# integrator's absolute tolerance dwarfs the terminal slope and PKNCA's
+# log-linear half-life fit would follow the noise. Keep each profile down to
+# 1e-6 of its own peak, which here still leaves 30 or more points per subject.
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
@@ -661,10 +672,12 @@ numerical error. {.table}
 # Per-subject, same-parameters comparisons: numerical error only, so bound them
 # tightly rather than on a quantile. lin-up/log-down trapezoidal AUC is exact
 # for a mono-exponential decay, which is what a one-compartment IV bolus is --
-# and the observed deviations are ~2e-13 %, i.e. floating-point noise, not
-# approximation error. The bounds below sit several orders above what was
-# actually achieved so they survive a solver or PKNCA version change, while
-# still being tight enough that any structural regression fails immediately.
+# so the observed deviations are ODE integration error, ~1.6e-8 % for AUC and
+# half-life at rtol 1e-10 (~2e-13 % with the analytic linCmt() solution), not
+# approximation error. Cmax is read off the time-zero record, so it is exact.
+# The bounds below sit well above what was actually achieved so they survive a
+# solver or PKNCA version change, while still being tight enough that any
+# structural regression fails immediately.
 stopifnot(
   max(abs(ident$auc_pct_diff))   < 1e-6,
   max(abs(ident$cmax_pct_diff))  < 1e-9,

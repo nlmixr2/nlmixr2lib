@@ -532,7 +532,7 @@ failed <- sim |>
 
 cat(sprintf("Subjects failing to integrate in at least one arm: %d of %d (%.2f%%)\n",
             length(failed), n_per_arm, 100 * length(failed) / n_per_arm))
-#> Subjects failing to integrate in at least one arm: 1 of 150 (0.67%)
+#> Subjects failing to integrate in at least one arm: 2 of 150 (1.33%)
 
 # A large failure rate would mean the ODE system or the omega matrix has been
 # mis-transcribed rather than that a few draws are extreme.
@@ -640,8 +640,8 @@ omega_cmp |>
 
 | Omega reading | Cmax 5th | Cmax 50th | Cmax 95th | SD of log Cmax |
 |:---|---:|---:|---:|---:|
-| A: omega = sqrt(log(CV^2 + 1)) \[used by this model\] | 25.936 | 39.882 | 85.050 | 0.393 |
-| B: omega = CV / 100 | 27.345 | 41.504 | 167.855 | 0.564 |
+| A: omega = sqrt(log(CV^2 + 1)) \[used by this model\] | 26.799 | 41.136 | 64.736 | 0.290 |
+| B: omega = CV / 100 | 23.648 | 43.577 | 119.119 | 0.469 |
 | Choi 2025 Table 5, DEN arm | 26.040 | 40.290 | 80.450 | 0.343 |
 
 Reading A reproduces the published dispersion; reading B inflates it by
@@ -728,16 +728,16 @@ knitr::kable(head(as.data.frame(nca_res), 10),
 
 | arm                 |  id | start |  end | PPTESTCD |      PPORRES | exclude | PPORRESU  |
 |:--------------------|----:|------:|-----:|:---------|-------------:|:--------|:----------|
-| Reference denosumab |   1 |     0 | 4380 | auclast  | 8.222458e+04 | NA      | h\*nmol/L |
-| Reference denosumab |   1 |     0 | 4380 | cmax     | 4.805158e+01 | NA      | nmol/L    |
-| Reference denosumab |   1 |     0 | 4380 | cmin     | 1.532383e+00 | NA      | nmol/L    |
-| Reference denosumab |   1 |     0 | 4380 | tmax     | 5.040000e+02 | NA      | h         |
-| Reference denosumab |   1 |     0 | 4380 | cav      | 1.877274e+01 | NA      | nmol/L    |
-| Reference denosumab |   2 |     0 | 4380 | auclast  | 5.976811e+04 | NA      | h\*nmol/L |
-| Reference denosumab |   2 |     0 | 4380 | cmax     | 3.428313e+01 | NA      | nmol/L    |
-| Reference denosumab |   2 |     0 | 4380 | cmin     | 6.819595e-01 | NA      | nmol/L    |
-| Reference denosumab |   2 |     0 | 4380 | tmax     | 3.600000e+02 | NA      | h         |
-| Reference denosumab |   2 |     0 | 4380 | cav      | 1.364569e+01 | NA      | nmol/L    |
+| Reference denosumab |   1 |     0 | 4380 | auclast  | 3.897056e+04 | NA      | h\*nmol/L |
+| Reference denosumab |   1 |     0 | 4380 | cmax     | 2.858009e+01 | NA      | nmol/L    |
+| Reference denosumab |   1 |     0 | 4380 | cmin     | 3.000000e-07 | NA      | nmol/L    |
+| Reference denosumab |   1 |     0 | 4380 | tmax     | 4.080000e+02 | NA      | h         |
+| Reference denosumab |   1 |     0 | 4380 | cav      | 8.897389e+00 | NA      | nmol/L    |
+| Reference denosumab |   2 |     0 | 4380 | auclast  | 4.676068e+04 | NA      | h\*nmol/L |
+| Reference denosumab |   2 |     0 | 4380 | cmax     | 3.796748e+01 | NA      | nmol/L    |
+| Reference denosumab |   2 |     0 | 4380 | cmin     | 1.766050e-02 | NA      | nmol/L    |
+| Reference denosumab |   2 |     0 | 4380 | tmax     | 1.920000e+02 | NA      | h         |
+| Reference denosumab |   2 |     0 | 4380 | cav      | 1.067596e+01 | NA      | nmol/L    |
 
 First rows of the per-subject PKNCA output. {.table}
 
@@ -773,12 +773,12 @@ knitr::kable(
 
 | NCA parameter       |                 arm | Reference | Simulated | % diff |
 |:--------------------|--------------------:|----------:|----------:|-------:|
-| Cmax (nmol/L)       |                SB16 |      40.7 |      39.7 |  -2.4% |
-| Cmax (nmol/L)       | Reference denosumab |      40.3 |      39.7 |  -1.5% |
-| Tmax (h)            |                SB16 |       259 |       288 | +11.2% |
-| Tmax (h)            | Reference denosumab |       267 |       288 |  +7.9% |
-| AUClast (nmol/L\*h) |                SB16 |     55000 |     57000 |  +3.5% |
-| AUClast (nmol/L\*h) | Reference denosumab |     53700 |     56900 |  +5.9% |
+| Cmax (nmol/L)       |                SB16 |      40.7 |      40.3 |  -0.8% |
+| Cmax (nmol/L)       | Reference denosumab |      40.3 |      40.3 |  +0.1% |
+| Tmax (h)            |                SB16 |       259 |       264 |  +1.9% |
+| Tmax (h)            | Reference denosumab |       267 |       264 |  -1.1% |
+| AUClast (nmol/L\*h) |                SB16 |     55000 |     57200 |  +4.0% |
+| AUClast (nmol/L\*h) | Reference denosumab |     53700 |     57100 |  +6.3% |
 
 Simulated vs published steady-state NCA (Choi 2025 Table 5). \* differs
 from reference by more than 20%. {.table}
@@ -826,10 +826,10 @@ bio |>
 
 | Metric | Treatment | Median | 5th percentile | 95th percentile |
 |:---|:---|---:|---:|---:|
-| AUCtau,ss (nmol/L\*h) | Reference denosumab | 56915.02 | 35783.82 | 88684.97 |
-| AUCtau,ss (nmol/L\*h) | SB16 | 57013.62 | 35841.03 | 88839.51 |
-| BMD change from baseline (%) | Reference denosumab | 6.76 | 4.80 | 7.43 |
-| BMD change from baseline (%) | SB16 | 6.76 | 4.80 | 7.43 |
+| AUCtau,ss (nmol/L\*h) | Reference denosumab | 57153.40 | 29023.39 | 85886.98 |
+| AUCtau,ss (nmol/L\*h) | SB16 | 57245.92 | 29059.90 | 86033.70 |
+| BMD change from baseline (%) | Reference denosumab | 6.61 | 4.30 | 7.43 |
+| BMD change from baseline (%) | SB16 | 6.61 | 4.31 | 7.43 |
 
 SB16 vs reference denosumab (Choi 2025 Table 5 analogue). {.table}
 
@@ -843,7 +843,7 @@ bmd_diff <- pick("BMD change from baseline (%)", "SB16") -
 
 cat(sprintf("SB16 : reference AUC ratio = %.5f (expected %.5f); BMD response difference = %.4f pp\n",
             auc_ratio, 1 / 0.9982, bmd_diff))
-#> SB16 : reference AUC ratio = 1.00173 (expected 1.00180); BMD response difference = 0.0057 pp
+#> SB16 : reference AUC ratio = 1.00162 (expected 1.00180); BMD response difference = 0.0052 pp
 
 # The arms share subject IDs and seed, so each subject appears in both arms
 # with identical etas and the comparison is paired: the only difference is the

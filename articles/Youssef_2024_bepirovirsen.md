@@ -476,7 +476,7 @@ mb <- sim |>
 
 summary(mb$pct_diff)
 #>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-#> -3.00379 -0.12871  0.10327 -0.01212  0.23844  0.46031
+#> -3.25763 -0.13309  0.08909 -0.02188  0.22617  0.46265
 
 # By week 24 the deep compartment (Q4/F = 0.0428 L/h into V4/F = 63.7 L) is very
 # close to, but not exactly at, steady state, and how close depends on the
@@ -497,7 +497,7 @@ stopifnot(
 median_ratio_pct <- 100 * (median(mb$auc) / median(mb$auc_typical) - 1)
 cat(sprintf("Cohort-median AUCtau vs the printed equation: %+.2f%%\n",
             median_ratio_pct))
-#> Cohort-median AUCtau vs the printed equation: +0.44%
+#> Cohort-median AUCtau vs the printed equation: -0.56%
 stopifnot(abs(median_ratio_pct) < 12)
 ```
 
@@ -576,12 +576,12 @@ reduction_pct <- 100 * (1 - median(washout[[paste0("t", 36 * WEEK)]]) /
                           median(washout[[paste0("t", 24 * WEEK)]]))
 cat(sprintf("Median week-24 concentration: %.4f ug/mL\n",
             median(washout[[paste0("t", 24 * WEEK)]])))
-#> Median week-24 concentration: 0.0198 ug/mL
+#> Median week-24 concentration: 0.0193 ug/mL
 cat(sprintf("Median week-36 concentration: %.4f ug/mL\n",
             median(washout[[paste0("t", 36 * WEEK)]])))
-#> Median week-36 concentration: 0.0008 ug/mL
+#> Median week-36 concentration: 0.0009 ug/mL
 cat(sprintf("Reduction: %.1f%% (Youssef 2024 reports 93%%)\n", reduction_pct))
-#> Reduction: 95.8% (Youssef 2024 reports 93%)
+#> Reduction: 95.5% (Youssef 2024 reports 93%)
 
 # The washout depends on the deep compartment, whose IIV is the largest in the
 # model, so the realised reduction moves with the cohort draw (94.9% here).
@@ -668,21 +668,21 @@ knitr::kable(
 
 | NCA parameter | group | Reference | Simulated | % diff |
 |:---|:---|---:|---:|---:|
-| Cmax (ug/mL) | 450 mg weekly x 24 wk, Week 24 | 12.6 | 12.6 | +0.3% |
-| Cmax (ug/mL) | 300 mg weekly x 24 wk, Week 24 | 8.4 | 8.42 | +0.3% |
-| Cmax (ug/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 12 | 8.4 | 8.42 | +0.2% |
-| Cmax (ug/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 24 | 4.2 | 4.21 | +0.3% |
-| Cmax (ug/mL) | 300 mg weekly x 24 wk (healthy), Week 24 | 8.4 | 8.41 | +0.2% |
-| Cmin (ug/mL) | 450 mg weekly x 24 wk, Week 24 | 0.0336 | 0.0297 | -11.6% |
-| Cmin (ug/mL) | 300 mg weekly x 24 wk, Week 24 | 0.0224 | 0.0198 | -11.6% |
-| Cmin (ug/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 12 | 0.0205 | 0.0184 | -10.2% |
-| Cmin (ug/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 24 | 0.012 | 0.0106 | -11.8% |
-| Cmin (ug/mL) | 300 mg weekly x 24 wk (healthy), Week 24 | 0.0243 | 0.0222 | -8.8% |
-| AUClast (ug\*h/mL) | 450 mg weekly x 24 wk, Week 24 | 147 | 148 | +0.7% |
-| AUClast (ug\*h/mL) | 300 mg weekly x 24 wk, Week 24 | 98.2 | 98.7 | +0.5% |
-| AUClast (ug\*h/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 12 | 97.9 | 98.3 | +0.4% |
-| AUClast (ug\*h/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 24 | 49.2 | 49.6 | +0.8% |
-| AUClast (ug\*h/mL) | 300 mg weekly x 24 wk (healthy), Week 24 | 98.3 | 98.7 | +0.4% |
+| Cmax (ug/mL) | 450 mg weekly x 24 wk, Week 24 | 12.6 | 12.8 | +1.9% |
+| Cmax (ug/mL) | 300 mg weekly x 24 wk, Week 24 | 8.4 | 8.56 | +1.9% |
+| Cmax (ug/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 12 | 8.4 | 8.56 | +1.9% |
+| Cmax (ug/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 24 | 4.2 | 4.28 | +1.9% |
+| Cmax (ug/mL) | 300 mg weekly x 24 wk (healthy), Week 24 | 8.4 | 8.56 | +1.9% |
+| Cmin (ug/mL) | 450 mg weekly x 24 wk, Week 24 | 0.0336 | 0.0289 | -14.0% |
+| Cmin (ug/mL) | 300 mg weekly x 24 wk, Week 24 | 0.0224 | 0.0193 | -14.0% |
+| Cmin (ug/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 12 | 0.0205 | 0.0179 | -12.5% |
+| Cmin (ug/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 24 | 0.012 | 0.0102 | -15.0% |
+| Cmin (ug/mL) | 300 mg weekly x 24 wk (healthy), Week 24 | 0.0243 | 0.0215 | -11.7% |
+| AUClast (ug\*h/mL) | 450 mg weekly x 24 wk, Week 24 | 147 | 146 | -0.4% |
+| AUClast (ug\*h/mL) | 300 mg weekly x 24 wk, Week 24 | 98.2 | 97.6 | -0.6% |
+| AUClast (ug\*h/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 12 | 97.9 | 97.4 | -0.5% |
+| AUClast (ug\*h/mL) | 300 mg x 12 wk, then 150 mg x 12 wk, Week 24 | 49.2 | 48.9 | -0.6% |
+| AUClast (ug\*h/mL) | 300 mg weekly x 24 wk (healthy), Week 24 | 98.3 | 97.7 | -0.7% |
 
 Simulated vs. published steady-state exposures (Youssef 2024 Tables 3
 and 4). \* differs from reference by \>20%. {.table}

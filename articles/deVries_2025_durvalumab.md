@@ -110,7 +110,7 @@ creatinine-clearance formula in ESM 3. A truncated normal with mean
 
 ``` r
 
-n_subj <- 200L                       # 200 per arm; all four arms share these subjects
+n_subj <- 1000L                      # the paper's virtual cohort (ESM 4 Table S1); all four arms share these subjects
 set.seed(20250714)
 
 rtnorm_trunc <- function(n, mean, sd, lower, upper) {
@@ -142,21 +142,21 @@ covariate harness and the interpretation of `$OMEGA` entries 1-4 as
 
 | Covariate                             | Simulated | ESM 4 Table S1 |
 |:--------------------------------------|----------:|---------------:|
-| Body weight (kg), median              |     62.90 |          64.00 |
-| Body weight (kg), mean                |     63.02 |          63.75 |
-| Female (%)                            |     47.00 |          50.50 |
-| ECOG PS \>= 1 (%)                     |     22.50 |          25.00 |
-| Albumin (g/L), median                 |     39.72 |          39.27 |
-| Creatinine clearance (mL/min), median |     84.43 |          86.43 |
-| Tumor size (mm), median               |     49.02 |          50.09 |
-| Soluble PD-L1 (pg/mL), median         |    137.97 |         138.34 |
+| Body weight (kg), median              |     63.98 |          64.00 |
+| Body weight (kg), mean                |     63.80 |          63.75 |
+| Female (%)                            |     53.10 |          50.50 |
+| ECOG PS \>= 1 (%)                     |     25.80 |          25.00 |
+| Albumin (g/L), median                 |     39.49 |          39.27 |
+| Creatinine clearance (mL/min), median |     85.57 |          86.43 |
+| Tumor size (mm), median               |     53.82 |          50.09 |
+| Soluble PD-L1 (pg/mL), median         |    138.08 |         138.34 |
 
 Simulated virtual cohort vs. the published virtual cohort (ESM 4 Table
 S1). {.table}
 
 ## Simulation machinery
 
-All four strategies are solved with the **same** 200 individuals.
+All four strategies are solved with the **same** 1000 individuals.
 `rxode2` draws the between-subject etas deterministically from the seed
 and the subject count, so re-seeding identically before every solve
 gives common random numbers across arms and across the adaptive TDM
@@ -321,9 +321,9 @@ tdm_int  <- run_tdm("TDM-based interval")
 
 | Decision | With residual error | Without residual error | Paper (Section 3.1) |
 |:---|---:|---:|---:|
-| Dose increase (\< 40) | 3.5 | 2.5 | 5.6 |
-| No change (40-90) | 52.0 | 47.5 | 52.1 |
-| Reduction / extension (\> 90) | 44.5 | 50.0 | 42.3 |
+| Dose increase (\< 40) | 5.1 | 2.7 | 5.6 |
+| No change (40-90) | 50.4 | 52.6 | 52.1 |
+| Reduction / extension (\> 90) | 44.5 | 44.7 | 42.3 |
 
 First-TDM decision split. The assayed (residual-error) trough reproduces
 the published split; the noise-free individual prediction does not.
@@ -523,14 +523,14 @@ knitr::kable(
 
 | NCA parameter | strategy                    | Reference | Simulated | % diff |
 |:--------------|:----------------------------|----------:|----------:|-------:|
-| Cmin (ug/mL)  | Weight-based (10 mg/kg Q2W) |       170 |       180 |  +6.1% |
-| Cmin (ug/mL)  | Fixed-dose (1500 mg Q4W)    |       161 |       174 |  +7.9% |
-| Cmin (ug/mL)  | TDM-based dose              |       103 |       107 |  +4.2% |
-| Cmin (ug/mL)  | TDM-based interval          |        96 |      98.7 |  +2.8% |
-| Cavg (ug/mL)  | Weight-based (10 mg/kg Q2W) |       217 |       247 | +13.6% |
-| Cavg (ug/mL)  | Fixed-dose (1500 mg Q4W)    |       263 |       297 | +13.0% |
-| Cavg (ug/mL)  | TDM-based dose              |       202 |       185 |  -8.6% |
-| Cavg (ug/mL)  | TDM-based interval          |       199 |       190 |  -4.3% |
+| Cmin (ug/mL)  | Weight-based (10 mg/kg Q2W) |       170 |       174 |  +2.4% |
+| Cmin (ug/mL)  | Fixed-dose (1500 mg Q4W)    |       161 |       163 |  +1.4% |
+| Cmin (ug/mL)  | TDM-based dose              |       103 |       103 |  +0.3% |
+| Cmin (ug/mL)  | TDM-based interval          |        96 |      94.2 |  -1.9% |
+| Cavg (ug/mL)  | Weight-based (10 mg/kg Q2W) |       217 |       241 | +11.1% |
+| Cavg (ug/mL)  | Fixed-dose (1500 mg Q4W)    |       263 |       287 |  +9.0% |
+| Cavg (ug/mL)  | TDM-based dose              |       202 |       182 |  -9.7% |
+| Cavg (ug/mL)  | TDM-based interval          |       199 |       188 |  -5.4% |
 
 Simulated vs. de Vries 2025 Table 2 (geometric means). \* differs from
 the paper by \>20%. {.table}
@@ -603,13 +603,23 @@ burden |>
 
 | Strategy | Per-cycle dose, simulated (mg) | % above 53.3 ug/mL, simulated | Per-cycle dose, paper (mg) | % above 53.3 ug/mL, paper |
 |:---|---:|---:|---:|---:|
-| Fixed-dose (1500 mg Q4W) | 1500 | 97.5 | 1500 | 97.8 |
-| TDM-based dose | 1148 | 97.0 | 1167 | 99.0 |
-| TDM-based interval | 1143 | 96.0 | 1115 | 98.1 |
-| Weight-based (10 mg/kg Q2W) | 1260 | 99.0 | 1275 | 99.2 |
+| Fixed-dose (1500 mg Q4W) | 1500 | 97.6 | 1500 | 97.8 |
+| TDM-based dose | 1167 | 97.8 | 1167 | 99.0 |
+| TDM-based interval | 1160 | 96.0 | 1115 | 98.1 |
+| Weight-based (10 mg/kg Q2W) | 1276 | 99.6 | 1275 | 99.2 |
 
 Dose burden and target attainment vs. de Vries 2025 Table 2 and Section
 3.1. {.table}
+
+The two approved regimens reproduce the paper’s attainment to within
+half a point. The two TDM arms sit 1-2 points below the paper (96-98%
+against 98-99%). The interval arm’s misses are spread across its 4-, 6-
+and 8-week subgroups, and most of them are subjects whose second TDM
+sample fell inside the 53.3-90 ug/mL no-change band – an assayed value,
+so a true trough near the target can pass unadjusted and drift below it
+by month 12. ESM 3 does not state the paper’s simulation horizon or how
+its steady-state trough was defined, so this gap is recorded as an open
+item rather than tuned away.
 
 ### Structural identity check
 
@@ -647,10 +657,10 @@ knitr::kable(summary_identity,
 
 | Strategy | Median % difference | P90 \|% difference\| | Max \|% difference\| |
 |:---|---:|---:|---:|
-| Fixed-dose (1500 mg Q4W) | -1.67 | 3.01 | 6.22 |
-| TDM-based dose | -2.16 | 4.08 | 12.08 |
-| TDM-based interval | -1.78 | 4.27 | 10.41 |
-| Weight-based (10 mg/kg Q2W) | -1.98 | 3.54 | 8.22 |
+| Fixed-dose (1500 mg Q4W) | -1.67 | 3.24 | 10.76 |
+| TDM-based dose | -2.22 | 4.89 | 17.34 |
+| TDM-based interval | -1.82 | 4.28 | 15.19 |
+| Weight-based (10 mg/kg Q2W) | -1.96 | 3.97 | 14.62 |
 
 PKNCA Cavg over the final interval vs. the linear identity dose / (CL \*
 tau). {.table}
@@ -753,10 +763,11 @@ stopifnot(
   days, whose end time ESM 3 does not state and whose bounds do not
   align with the dosing intervals of interval-adjusted subjects. No
   parameter was adjusted to close the gap.
-- **Cohort size.** 200 subjects per arm rather than the paper’s 1000,
-  per the nlmixr2lib vignette cohort cap. Attainment percentages
-  therefore resolve to 0.5% and small differences from the published
-  percentages are Monte-Carlo noise rather than model disagreement.
+- **Cohort size.** 1000 subjects per arm, matching the paper’s virtual
+  cohort (ESM 4 Table S1), so attainment percentages resolve to 0.1%.
+  The 1-2 point shortfall of the two TDM arms against Section 3.1 is
+  discussed under “Dose burden and target attainment” and is not
+  Monte-Carlo noise at this size.
 - **Pharmacoeconomics not reproduced.** The cost model (ESM 2 Method S1,
   ESM 4 Tables S2/S3) is a Dutch-tariff accounting layer with no
   pharmacokinetic content and is out of scope for a model library.

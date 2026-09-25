@@ -491,14 +491,18 @@ closed_form <- function(D, CL, V, Tinf, tau) {
     (1 - exp(-k * tau))
 }
 
-cf_chk <- rxode2::rxSolve(mod, as_cohort(ev_ss, 0), returnType = "data.frame") |>
+# Tight integrator and ss = 1 steady-state tolerances: the bound below is
+# 1e-6 percent, so the ODE error must sit well under 1e-8 relative.
+cf_chk <- rxode2::rxSolve(mod, as_cohort(ev_ss, 0), returnType = "data.frame",
+                          rtol = 1e-10, atol = 1e-12,
+                          ssRtol = 1e-10, ssAtol = 1e-12) |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(analytic = closed_form(4 * WT, cl, vc, 4 / 3, 12),
                 pct_diff = 100 * (Cc - analytic) / analytic)
 
 cat(sprintf("Solve vs closed form over %d subjects: max |%%diff| = %.3g%%\n",
             nrow(cf_chk), max(abs(cf_chk$pct_diff))))
-#> Solve vs closed form over 200 subjects: max |%diff| = 4.66e-14%
+#> Solve vs closed form over 200 subjects: max |%diff| = 3.24e-08%
 
 stopifnot(max(abs(cf_chk$pct_diff)) < 1e-6)
 ```
@@ -567,7 +571,7 @@ nca_wide |>
 | Subjects                        | 200.0000 |
 | Cmax (mg/L), median             |   7.8997 |
 | Ctrough (mg/L), median          |   6.1494 |
-| AUCtau (mg\*h/L), median        |  83.9116 |
+| AUCtau (mg\*h/L), median        |  83.9117 |
 | t1/2 (h), median                |  29.5189 |
 | max \|%diff\| Dose/AUCtau vs CL |   0.0011 |
 | max \|%diff\| t1/2 vs ln2\*V/CL |   0.0000 |

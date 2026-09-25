@@ -68,18 +68,18 @@ mod
 #>   # Issue #482: what each ODE state holds, in what amount units, in what
 #>   # biological matrix.
 #>   compartmentData <- list(
-#>     depot       = list(analyte = "sitafloxacin", units = "mg", specimen = "administration site", verified = TRUE),
-#>     central     = list(analyte = "sitafloxacin", units = "mg", specimen = "plasma", verified = TRUE),
+#>     depot = list(analyte = "sitafloxacin", units = "mg", specimen = "administration site", verified = TRUE),
+#>     central = list(analyte = "sitafloxacin", units = "mg", specimen = "plasma", verified = TRUE),
 #>     peripheral1 = list(analyte = "sitafloxacin", units = "mg", specimen = "plasma", verified = TRUE)
 #>   )
 #> 
 #>   covariateData <- list(
 #>     CRCL = list(
-#>       description        = "Creatinine clearance (raw, NOT BSA-normalized)",
-#>       units              = "mL/min",
-#>       type               = "continuous",
+#>       description = "Creatinine clearance (raw, NOT BSA-normalized)",
+#>       units = "mL/min",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste0(
+#>       notes = paste0(
 #>         "Enters apparent clearance as the power term (CRCL / 106.88)^0.460, exactly as printed in ",
 #>         "the Wu 2025 Section 2.2 display equation 'CL = 14.7 x (CRCL/106.88)^0.46 x exp(eta1)'. ",
 #>         "The normalizing value 106.88 mL/min is the reference the authors printed inside the ",
@@ -89,42 +89,42 @@ mod
 #>         "paper. The PK/PD simulations in Wu 2025 Section 4.2 were restricted to normal renal ",
 #>         "function and mild renal impairment (CRCL >= 50 mL/min)."
 #>       ),
-#>       source_name        = "CRCL"
+#>       source_name = "CRCL"
 #>     ),
 #>     WT = list(
-#>       description        = "Total body weight",
-#>       units              = "kg",
-#>       type               = "continuous",
+#>       description = "Total body weight",
+#>       units = "kg",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste0(
+#>       notes = paste0(
 #>         "Enters the apparent central volume as the power term (WT / 58.55)^0.966, per the Wu 2025 ",
 #>         "Section 2.2 display equation 'V2 = 89.8 x (WT/58.55)^0.966 x (AGE/31)^0.286 x exp(eta2)'. ",
 #>         "The exponent is estimated (0.966, RSE 13.5%), not fixed at an allometric 1. The ",
 #>         "normalizing value 58.55 kg is printed inside the equation and is close to the Table 1 ",
 #>         "cohort mean of 58.2 +/- 10.2 kg. Weight does NOT scale clearance in this model."
 #>       ),
-#>       source_name        = "WT"
+#>       source_name = "WT"
 #>     ),
 #>     AGE = list(
-#>       description        = "Age",
-#>       units              = "years",
-#>       type               = "continuous",
+#>       description = "Age",
+#>       units = "years",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste0(
+#>       notes = paste0(
 #>         "Enters the apparent central volume as the power term (AGE / 31)^0.286, per the Wu 2025 ",
 #>         "Section 2.2 display equation for V2. The normalizing value 31 years is printed inside the ",
 #>         "equation and is well below the Table 1 cohort mean of 43.0 +/- 21.7 years, consistent ",
 #>         "with a median dominated by the 183 healthy volunteers. The positive exponent means older ",
 #>         "subjects have a larger apparent central volume."
 #>       ),
-#>       source_name        = "AGE"
+#>       source_name = "AGE"
 #>     ),
 #>     FED = list(
-#>       description        = "Fed state at the time of dosing",
-#>       units              = "(binary)",
-#>       type               = "categorical",
+#>       description = "Fed state at the time of dosing",
+#>       units = "(binary)",
+#>       type = "categorical",
 #>       reference_category = "0 (fasting)",
-#>       notes              = paste0(
+#>       notes = paste0(
 #>         "1 = dose taken in the fed state, 0 = fasting. Wu 2025 calls the column FOOD and applies ",
 #>         "it to the zero-order absorption duration in the unusual multiplicative POWER-OF-(1+FOOD) ",
 #>         "form printed in the Section 2.2 display equation: 'D1 = 0.281 x (1 + FOOD)^1.59 x ",
@@ -137,24 +137,24 @@ mod
 #>         "composition or caloric content, so the generic FED indicator is used rather than the ",
 #>         "FED_HIGHFAT / FED_LOWFAT refinements."
 #>       ),
-#>       source_name        = "FOOD"
+#>       source_name = "FOOD"
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human",
-#>     n_subjects     = 342L,
+#>     species = "human",
+#>     n_subjects = 342L,
 #>     n_observations = 3294L,
-#>     n_studies      = 12L,
-#>     age_range      = "Mean (SD) 43.0 (21.7) years (Wu 2025 Table 1). Individual minimum and maximum are not reported; the studies included a dedicated elderly-volunteer arm.",
-#>     weight_range   = "Mean (SD) 58.2 (10.2) kg (Wu 2025 Table 1). Mean (SD) height 164.7 (9.6) cm and BMI 21.4 (3.0) kg/m^2.",
+#>     n_studies = 12L,
+#>     age_range = "Mean (SD) 43.0 (21.7) years (Wu 2025 Table 1). Individual minimum and maximum are not reported; the studies included a dedicated elderly-volunteer arm.",
+#>     weight_range = "Mean (SD) 58.2 (10.2) kg (Wu 2025 Table 1). Mean (SD) height 164.7 (9.6) cm and BMI 21.4 (3.0) kg/m^2.",
 #>     sex_female_pct = 28.1,
 #>     race_ethnicity = "Not reported as such. 294 subjects were enrolled in Japan (147 patients with respiratory-system infection, 12 subjects with renal insufficiency, 135 healthy subjects) and 48 healthy subjects were enrolled in China (Wu 2025 Section 2.1).",
-#>     disease_state  = "Pooled: 147 patients with respiratory-system infection, 12 subjects with renal insufficiency, and 183 healthy subjects (Wu 2025 Section 2.1). The paper separately notes 24 subjects with moderate renal impairment and 4 with severe renal impairment in the dataset (Wu 2025 Discussion).",
-#>     dose_range     = "Single doses of 3-200 mg or multiple doses of 50 or 100 mg q12h or 100 mg q8h for 7-14 days, all oral (Wu 2025 Section 4.1). The three regimens carried forward into the PK/PD simulations were 50 mg q12h, 100 mg q24h and 100 mg q12h.",
-#>     regions        = "Japan (11 studies) and China (1 study).",
+#>     disease_state = "Pooled: 147 patients with respiratory-system infection, 12 subjects with renal insufficiency, and 183 healthy subjects (Wu 2025 Section 2.1). The paper separately notes 24 subjects with moderate renal impairment and 4 with severe renal impairment in the dataset (Wu 2025 Discussion).",
+#>     dose_range = "Single doses of 3-200 mg or multiple doses of 50 or 100 mg q12h or 100 mg q8h for 7-14 days, all oral (Wu 2025 Section 4.1). The three regimens carried forward into the PK/PD simulations were 50 mg q12h, 100 mg q24h and 100 mg q12h.",
+#>     regions = "Japan (11 studies) and China (1 study).",
 #>     renal_function = "Mean (SD) creatinine clearance 115.1 (53.5) mL/min (Wu 2025 Table 1). The dataset spans normal renal function through severe impairment, but the published PK/PD cut-offs apply only to CRCL >= 50 mL/min.",
-#>     notes          = "Fitted in NONMEM 7.4 with FOCE-I (Wu 2025 Section 4.1). 1.02% of concentration records were missing or excluded. Model qualification: 1,000-replicate bootstrap (945 successful, 94.5% convergence) and a 1,000-replicate visual predictive check."
+#>     notes = "Fitted in NONMEM 7.4 with FOCE-I (Wu 2025 Section 4.1). 1.02% of concentration records were missing or excluded. Model qualification: 1,000-replicate bootstrap (945 successful, 94.5% convergence) and a 1,000-replicate visual predictive check."
 #>   )
 #> 
 #>   ini({
@@ -321,7 +321,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x56269b9f6d98>
+#> <environment: 0x561523088770>
 ```
 
 ## Population
@@ -667,7 +667,8 @@ stopifnot(max_conc_before_lag == 0, min_conc_after_lag > 0)
 
 ### Falsifier: the peripheral compartment is actually solved
 
-`rxSolve()` defaults to `useLinCmt = TRUE`, which rewrites a
+`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the
+conversion opt-in in September 2026 (issue 1389), which rewrites a
 recognisably linear system into closed form. On some two-compartment
 models written with micro-constants that rewrite silently drops the
 peripheral compartment and solves a one-compartment model instead. Total

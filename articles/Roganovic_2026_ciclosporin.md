@@ -525,20 +525,20 @@ knitr::kable(
 )
 ```
 
-| NCA parameter      | scenario                  | Reference | Simulated |   % diff |
-|:-------------------|:--------------------------|----------:|----------:|---------:|
-| Cmax (ng/mL)       | Low HGB (73 g/L) OCC1     |      1850 |      1910 |    +3.0% |
-| Cmax (ng/mL)       | Normal HGB (120 g/L) OCC1 |      2260 |      2110 |    -6.8% |
-| Cmax (ng/mL)       | Low HGB (73 g/L) OCC2     |      1920 |      1960 |    +2.0% |
-| Cmax (ng/mL)       | Normal HGB (120 g/L) OCC2 |      2040 |      2100 |    +3.3% |
-| Cmin (ng/mL)       | Low HGB (73 g/L) OCC1     |       215 |       170 | -20.8%\* |
-| Cmin (ng/mL)       | Normal HGB (120 g/L) OCC1 |       331 |       263 | -20.5%\* |
-| Cmin (ng/mL)       | Low HGB (73 g/L) OCC2     |       221 |       175 | -20.8%\* |
-| Cmin (ng/mL)       | Normal HGB (120 g/L) OCC2 |       318 |       251 | -21.0%\* |
-| AUClast (ng\*h/mL) | Low HGB (73 g/L) OCC1     |      6340 |     11600 | +82.4%\* |
-| AUClast (ng\*h/mL) | Normal HGB (120 g/L) OCC1 |      7860 |     13100 | +66.8%\* |
-| AUClast (ng\*h/mL) | Low HGB (73 g/L) OCC2     |      6690 |     12200 | +82.9%\* |
-| AUClast (ng\*h/mL) | Normal HGB (120 g/L) OCC2 |      7210 |     13300 | +85.1%\* |
+| NCA parameter      | scenario                  | Reference | Simulated |    % diff |
+|:-------------------|:--------------------------|----------:|----------:|----------:|
+| Cmax (ng/mL)       | Low HGB (73 g/L) OCC1     |      1850 |      2180 |    +17.8% |
+| Cmax (ng/mL)       | Normal HGB (120 g/L) OCC1 |      2260 |      2070 |     -8.4% |
+| Cmax (ng/mL)       | Low HGB (73 g/L) OCC2     |      1920 |      2130 |    +11.2% |
+| Cmax (ng/mL)       | Normal HGB (120 g/L) OCC2 |      2040 |      2120 |     +4.3% |
+| Cmin (ng/mL)       | Low HGB (73 g/L) OCC1     |       215 |       207 |     -3.6% |
+| Cmin (ng/mL)       | Normal HGB (120 g/L) OCC1 |       331 |       215 |  -35.2%\* |
+| Cmin (ng/mL)       | Low HGB (73 g/L) OCC2     |       221 |       206 |     -6.9% |
+| Cmin (ng/mL)       | Normal HGB (120 g/L) OCC2 |       318 |       215 |  -32.3%\* |
+| AUClast (ng\*h/mL) | Low HGB (73 g/L) OCC1     |      6340 |     13400 | +111.8%\* |
+| AUClast (ng\*h/mL) | Normal HGB (120 g/L) OCC1 |      7860 |     13100 |  +66.6%\* |
+| AUClast (ng\*h/mL) | Low HGB (73 g/L) OCC2     |      6690 |     12400 |  +84.7%\* |
+| AUClast (ng\*h/mL) | Normal HGB (120 g/L) OCC2 |      7210 |     13100 |  +82.2%\* |
 
 Simulated vs Roganovic 2026 Table 4. \* differs from reference by \>20%.
 {.table}

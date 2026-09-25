@@ -396,7 +396,7 @@ ss <- rxode2::rxSolve(
 ss_rel <- abs(ss[[paste0("t", t_last + tau)]] / ss[[paste0("t", t_last)]] - 1)
 summary(ss_rel)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> 0.000e+00 1.000e-13 5.000e-13 2.459e-08 3.800e-12 4.196e-06
+#> 0.000e+00 1.000e-13 7.000e-13 4.889e-08 7.100e-12 9.700e-06
 
 # Accumulation is complete to well under 1% for every subject, including the
 # slowest the model can draw. 2% leaves headroom over the solver tolerance while
@@ -623,7 +623,7 @@ cohort_ratio <- sim |>
   summarise(ratio = trap(tad, Csaliva) / trap(tad, Cc), .groups = "drop")
 
 range(cohort_ratio$ratio)
-#> [1] 0.9620822 0.9694950
+#> [1] 0.9613789 0.9694997
 # On the coarse hourly grid the trapezoid biases the two AUCs slightly
 # differently, and the bias varies a little with clearance, so this is a spread
 # bound rather than an equality.
@@ -851,8 +851,8 @@ knitr::kable(
 
 | NCA parameter     | treatment   | Reference | Simulated | % diff |
 |:------------------|:------------|----------:|----------:|-------:|
-| AUClast (mg\*h/L) | 750 mg q24h |      72.7 |      70.9 |  -2.6% |
-| t½ (h)            | 750 mg q24h |      18.7 |      18.2 |  -3.1% |
+| AUClast (mg\*h/L) | 750 mg q24h |      72.7 |      70.7 |  -2.8% |
+| t½ (h)            | 750 mg q24h |      18.7 |      17.3 |  -7.7% |
 
 Simulated 750 mg once-daily steady-state NCA against the closed-form
 values implied by Nguyen 2026 Table 2 (CL/F = 10.311 L/h, V/F = 278.88
@@ -897,7 +897,7 @@ thalf_pct <- 100 * (get_median("half.life") /
                       (log(2) * pub_vc / pub_cl) - 1)
 c(auc_pct_diff = auc_pct, half_life_pct_diff = thalf_pct)
 #>       auc_pct_diff half_life_pct_diff 
-#>          -2.573710          -3.090399
+#>          -2.762911          -7.684930
 
 # Bounds on a cohort MEDIAN, not on an extreme. The sample median of a 41%-CV
 # log-normal over 200 subjects carries roughly a 3.6% standard error, so 12% is
@@ -907,13 +907,36 @@ c(auc_pct_diff = auc_pct, half_life_pct_diff = thalf_pct)
 stopifnot(abs(auc_pct) < 12)
 stopifnot(abs(thalf_pct) < 12)
 
-# Dose proportionality is exact in this linear model and is a cheap check that
-# the 1000 mg arm was simulated as intended.
-auc_1000 <- as.data.frame(nca_res$result) |>
-  filter(treatment == "1000 mg q24h", PPTESTCD == "auclast") |>
-  pull(PPORRES) |>
-  median()
-stopifnot(abs(auc_1000 / get_median("auclast") / (1000 / 750) - 1) < 0.05)
+# Dose proportionality is exact in this linear model. The two arms above are
+# independent cohorts, so a ratio of their medians carries about 5% of sampling
+# noise (two 41%-CV medians over 200 subjects) and cannot be held tightly.
+# Instead the 750 mg cohort is solved at both doses with the same subjects and
+# the same eta draw -- rxSetSeed() immediately before each solve gives common
+# random numbers -- so every subject's AUC ratio must be 1000/750 to solver
+# tolerance (the trapezoid scales with dose and cancels).
+solve_paired <- function(dose_mg) {
+  ev <- events |>
+    filter(treatment == "750 mg q24h") |>
+    mutate(amt = ifelse(evid == 1L, dose_mg, amt))
+  rxode2::rxSetSeed(10750)
+  rxode2::rxSolve(mod, events = ev, keep = c("treatment", "WT"), useLinCmt = FALSE) |>
+    as.data.frame() |>
+    mutate(tad = time - t_last) |>
+    filter(tad >= 0, tad <= tau)
+}
+paired <- list(lo = solve_paired(750), hi = solve_paired(1000))
+# Common random numbers actually held: identical individual clearances.
+stopifnot(isTRUE(all.equal(distinct(paired$lo, id, cl)$cl, distinct(paired$hi, id, cl)$cl)))
+auc_tau <- function(d) {
+  d |>
+    filter(!is.na(Cc)) |>
+    group_by(id) |>
+    arrange(tad, .by_group = TRUE) |>
+    summarise(auc = sum(diff(tad) * (head(Cc, -1) + tail(Cc, -1)) / 2), .groups = "drop")
+}
+prop_chk <- inner_join(auc_tau(paired$lo), auc_tau(paired$hi), by = "id", suffix = c("_750", "_1000")) |>
+  mutate(ratio = auc_1000 / auc_750)
+stopifnot(nrow(prop_chk) == n_per_arm, max(abs(prop_chk$ratio / (1000 / 750) - 1)) < 1e-4)
 ```
 
 The saliva NCA has no published comparator at all – the paper reports
@@ -947,15 +970,15 @@ as.data.frame(nca_sal$result) |>
 
 | Arm          | NCA parameter | Median | 5th pctile | 95th pctile |
 |:-------------|:--------------|-------:|-----------:|------------:|
-| 1000 mg q24h | auclast       |  93.38 |      48.00 |      177.41 |
-| 1000 mg q24h | cav           |   3.89 |       2.00 |        7.39 |
-| 1000 mg q24h | cmax          |   5.84 |       3.19 |       12.94 |
-| 1000 mg q24h | cmin          |   2.37 |       0.46 |        6.39 |
+| 1000 mg q24h | auclast       |  98.93 |      51.26 |      162.21 |
+| 1000 mg q24h | cav           |   4.12 |       2.14 |        6.76 |
+| 1000 mg q24h | cmax          |   6.12 |       3.73 |       13.24 |
+| 1000 mg q24h | cmin          |   2.57 |       0.27 |        5.62 |
 | 1000 mg q24h | tmax          |   2.00 |       2.00 |        3.00 |
-| 750 mg q24h  | auclast       |  68.69 |      37.81 |      124.42 |
-| 750 mg q24h  | cav           |   2.86 |       1.58 |        5.18 |
-| 750 mg q24h  | cmax          |   4.51 |       2.64 |        8.43 |
-| 750 mg q24h  | cmin          |   1.83 |       0.36 |        4.06 |
+| 750 mg q24h  | auclast       |  68.55 |      34.90 |      163.08 |
+| 750 mg q24h  | cav           |   2.86 |       1.45 |        6.80 |
+| 750 mg q24h  | cmax          |   4.45 |       2.62 |        8.76 |
+| 750 mg q24h  | cmin          |   1.80 |       0.22 |        5.30 |
 | 750 mg q24h  | tmax          |   2.00 |       2.00 |        3.00 |
 
 Simulated saliva NCA over the steady-state dosing interval. {.table}

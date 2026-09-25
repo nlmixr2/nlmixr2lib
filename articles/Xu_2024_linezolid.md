@@ -216,7 +216,11 @@ mod_typical <- rxode2::zeroRe(readModelDb("Xu_2024_linezolid"))
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events |> dplyr::filter(id %in% (arms$id_offset + 1L)),
-  keep = c("arm", "sweep", "dose_mg", "AGE", "CRCL")
+  keep = c("arm", "sweep", "dose_mg", "AGE", "CRCL"),
+  # The closed-form trough gate under "Quantifying the Table 4 discrepancy"
+  # holds this ss = 1 solve to 1e-8 mg/L, which needs tighter integration and
+  # steady-state-search tolerances than the defaults.
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
 ) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl'
@@ -418,12 +422,12 @@ nca_res <- PKNCA::pk.nca(
 nca_tbl <- as.data.frame(nca_res$result)
 head(nca_tbl)
 #>                                        arm   id start end PPTESTCD   PPORRES
-#> 1 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12  auclast 86.572940
-#> 2 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12     cmax  8.925339
-#> 3 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12     cmin  5.719393
+#> 1 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12  auclast 86.572776
+#> 2 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12     cmax  8.925328
+#> 3 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12     cmin  5.719381
 #> 4 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12     tmax  1.000000
-#> 5 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12      cav  7.214412
-#> 6 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12  ctrough  5.719393
+#> 5 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12      cav  7.214398
+#> 6 200 mg q12h | age 100 y | CrCL 40 mL/min 3201     0  12  ctrough  5.719381
 #>   exclude PPORRESU
 #> 1    <NA>   h*mg/L
 #> 2    <NA>     mg/L
@@ -494,7 +498,7 @@ cav_gate |>
 |---------------:|-----------:|--------------------------------:|---------------:|
 |            200 |       2000 |                          -0.005 |          0.118 |
 |            300 |       2000 |                          -0.005 |          0.093 |
-|            400 |       2000 |                          -0.005 |          0.067 |
+|            400 |       2000 |                          -0.005 |          0.066 |
 |            600 |       2000 |                          -0.005 |          0.118 |
 
 Closed-form gate: PKNCA’s steady-state average concentration versus the

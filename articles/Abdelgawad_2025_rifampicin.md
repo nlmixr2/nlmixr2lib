@@ -1309,22 +1309,22 @@ cmp |>
 
 | NCA parameter     | Matrix | Regimen          | Reference | Simulated | % diff    |
 |:------------------|:-------|:-----------------|:----------|:----------|:----------|
-| AUClast (mg\*h/L) | Plasma | 35 mg/kg, day 3  | 239       | 276       | +15.6%    |
-| AUClast (mg\*h/L) | Plasma | 35 mg/kg, day 28 | 160       | 165       | +2.8%     |
-| AUClast (mg\*h/L) | Plasma | 10 mg/kg, day 3  | 40.5      | 40.2      | -0.7%     |
-| AUClast (mg\*h/L) | Plasma | 10 mg/kg, day 28 | 35.1      | 31.2      | -11.0%    |
-| AUClast (mg\*h/L) | CSF    | 35 mg/kg, day 3  | 15.4      | 16.4      | +6.4%     |
-| AUClast (mg\*h/L) | CSF    | 35 mg/kg, day 28 | 8.5       | 9.76      | +14.8%    |
-| AUClast (mg\*h/L) | CSF    | 10 mg/kg, day 3  | 2.33      | 2.39      | +2.4%     |
-| AUClast (mg\*h/L) | CSF    | 10 mg/kg, day 28 | 2.32      | 1.85      | -20.2%    |
-| Ctrough (mg/L)    | Plasma | 35 mg/kg, day 3  | 0.551     | 1.21      | +119.0%\* |
-| Ctrough (mg/L)    | Plasma | 35 mg/kg, day 28 | 0.12      | 0.188     | +56.8%\*  |
-| Ctrough (mg/L)    | Plasma | 10 mg/kg, day 3  | 0.0473    | 0.0936    | +97.9%\*  |
-| Ctrough (mg/L)    | Plasma | 10 mg/kg, day 28 | 0.0374    | 0.044     | +17.6%    |
-| Ctrough (mg/L)    | CSF    | 35 mg/kg, day 3  | 0.173     | 0.267     | +54.2%\*  |
-| Ctrough (mg/L)    | CSF    | 35 mg/kg, day 28 | 0.0556    | 0.0773    | +39.0%\*  |
-| Ctrough (mg/L)    | CSF    | 10 mg/kg, day 3  | 0.0144    | 0.0235    | +63.2%\*  |
-| Ctrough (mg/L)    | CSF    | 10 mg/kg, day 28 | 0.0175    | 0.0148    | -15.7%    |
+| AUClast (mg\*h/L) | Plasma | 35 mg/kg, day 3  | 239       | 297       | +24.3%    |
+| AUClast (mg\*h/L) | Plasma | 35 mg/kg, day 28 | 160       | 167       | +4.6%     |
+| AUClast (mg\*h/L) | Plasma | 10 mg/kg, day 3  | 40.5      | 42.3      | +4.5%     |
+| AUClast (mg\*h/L) | Plasma | 10 mg/kg, day 28 | 35.1      | 32        | -8.8%     |
+| AUClast (mg\*h/L) | CSF    | 35 mg/kg, day 3  | 15.4      | 17.6      | +14.4%    |
+| AUClast (mg\*h/L) | CSF    | 35 mg/kg, day 28 | 8.5       | 9.92      | +16.8%    |
+| AUClast (mg\*h/L) | CSF    | 10 mg/kg, day 3  | 2.33      | 2.51      | +7.7%     |
+| AUClast (mg\*h/L) | CSF    | 10 mg/kg, day 28 | 2.32      | 1.9       | -18.2%    |
+| Ctrough (mg/L)    | Plasma | 35 mg/kg, day 3  | 0.551     | 1.34      | +142.4%\* |
+| Ctrough (mg/L)    | Plasma | 35 mg/kg, day 28 | 0.12      | 0.245     | +104.5%\* |
+| Ctrough (mg/L)    | Plasma | 10 mg/kg, day 3  | 0.0473    | 0.0906    | +91.5%\*  |
+| Ctrough (mg/L)    | Plasma | 10 mg/kg, day 28 | 0.0374    | 0.0472    | +26.1%    |
+| Ctrough (mg/L)    | CSF    | 35 mg/kg, day 3  | 0.173     | 0.272     | +57.2%\*  |
+| Ctrough (mg/L)    | CSF    | 35 mg/kg, day 28 | 0.0556    | 0.0929    | +67.1%\*  |
+| Ctrough (mg/L)    | CSF    | 10 mg/kg, day 3  | 0.0144    | 0.023     | +59.8%\*  |
+| Ctrough (mg/L)    | CSF    | 10 mg/kg, day 28 | 0.0175    | 0.0155    | -11.6%    |
 
 Simulated steady-state NCA versus Abdelgawad 2025 Table 3 medians. \*
 differs from the published median by more than 30%. {.table}
@@ -1476,14 +1476,14 @@ in_range |>
 
 | Matrix | Regimen          |   lower |  upper | Simulated median | Inside |
 |:-------|:-----------------|--------:|-------:|-----------------:|:-------|
-| Plasma | 35 mg/kg, day 3  | 120.000 | 668.00 |          276.325 | TRUE   |
-| Plasma | 35 mg/kg, day 28 |  58.400 | 477.00 |          164.525 | TRUE   |
-| Plasma | 10 mg/kg, day 3  |  16.400 | 122.00 |           40.227 | TRUE   |
-| Plasma | 10 mg/kg, day 28 |  13.400 |  59.80 |           31.238 | TRUE   |
-| CSF    | 35 mg/kg, day 3  |   7.130 |  38.10 |           16.384 | TRUE   |
-| CSF    | 35 mg/kg, day 28 |   3.610 |  14.80 |            9.756 | TRUE   |
-| CSF    | 10 mg/kg, day 3  |   1.050 |   4.93 |            2.385 | TRUE   |
-| CSF    | 10 mg/kg, day 28 |   0.754 |   3.41 |            1.852 | TRUE   |
+| Plasma | 35 mg/kg, day 3  | 120.000 | 668.00 |          297.104 | TRUE   |
+| Plasma | 35 mg/kg, day 28 |  58.400 | 477.00 |          167.371 | TRUE   |
+| Plasma | 10 mg/kg, day 3  |  16.400 | 122.00 |           42.318 | TRUE   |
+| Plasma | 10 mg/kg, day 28 |  13.400 |  59.80 |           32.015 | TRUE   |
+| CSF    | 35 mg/kg, day 3  |   7.130 |  38.10 |           17.613 | TRUE   |
+| CSF    | 35 mg/kg, day 28 |   3.610 |  14.80 |            9.924 | TRUE   |
+| CSF    | 10 mg/kg, day 3  |   1.050 |   4.93 |            2.509 | TRUE   |
+| CSF    | 10 mg/kg, day 28 |   0.754 |   3.41 |            1.898 | TRUE   |
 
 Simulated median steady-state AUC0-24 against the published per-cell
 range. {.table}

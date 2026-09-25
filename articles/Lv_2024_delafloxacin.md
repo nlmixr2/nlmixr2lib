@@ -295,8 +295,8 @@ tibble(
 
 | Parameter | Simulated slope | Lv 2024 Table S2 slope \[90% CI\] |
 |:----------|----------------:|:----------------------------------|
-| Cmax      |           1.069 | 1.07 \[0.99, 1.16\]               |
-| AUC0-48   |           1.210 | 1.13 \[1.04, 1.23\]               |
+| Cmax      |           1.064 | 1.07 \[0.99, 1.16\]               |
+| AUC0-48   |           1.192 | 1.13 \[1.04, 1.23\]               |
 
 Log-log dose-proportionality slopes across the three single-dose arms.
 {.table}
@@ -426,9 +426,9 @@ tibble(
 
 | Quantity | Simulated | Lv 2024 Table S2 |
 |:---|---:|:---|
-| AUC0-tau (first dose, ug\*h/mL) | 32.52 | not reported |
-| AUC0-tau,ss (ug\*h/mL) | 35.66 | 35.44 (SD 5.23) |
-| Cmax,ss (ug/mL) | 13.91 | 14.29 (SD 2.00) |
+| AUC0-tau (first dose, ug\*h/mL) | 32.99 | not reported |
+| AUC0-tau,ss (ug\*h/mL) | 36.21 | 35.44 (SD 5.23) |
+| Cmax,ss (ug/mL) | 13.97 | 14.29 (SD 2.00) |
 | AUC accumulation ratio AUC0-tau,ss / AUC0-tau,1 | 1.09 | R = 1.48 (SD 0.73) – a different quantity, see below |
 
 Multiple-dose exposure and accumulation, 300 mg q12h. {.table}
@@ -487,21 +487,21 @@ knitr::kable(
 
 | NCA parameter      | arm           | Reference | Simulated |    % diff |
 |:-------------------|:--------------|----------:|----------:|----------:|
-| Cmax (ug/mL)       | 150 mg single |      6.43 |      6.29 |     -2.2% |
-| Cmax (ug/mL)       | 300 mg single |      13.6 |      13.5 |     -0.7% |
-| Cmax (ug/mL)       | 600 mg single |      28.1 |      27.8 |     -1.3% |
+| Cmax (ug/mL)       | 150 mg single |      6.43 |       6.4 |     -0.4% |
+| Cmax (ug/mL)       | 300 mg single |      13.6 |      13.3 |     -2.2% |
+| Cmax (ug/mL)       | 600 mg single |      28.1 |      27.8 |     -1.2% |
 | Tmax (h)           | 150 mg single |      0.96 |         1 |     +4.2% |
 | Tmax (h)           | 300 mg single |      0.96 |         1 |     +4.2% |
 | Tmax (h)           | 600 mg single |      0.96 |         1 |     +4.2% |
-| AUClast (ug\*h/mL) | 150 mg single |      15.7 |      14.4 |     -8.4% |
-| AUClast (ug\*h/mL) | 300 mg single |      33.7 |      33.6 |     -0.2% |
-| AUClast (ug\*h/mL) | 600 mg single |      75.2 |      76.3 |     +1.4% |
-| t½ (h)             | 150 mg single |      2.35 |      13.8 | +486.3%\* |
-| t½ (h)             | 300 mg single |      3.41 |      14.1 | +314.9%\* |
-| t½ (h)             | 600 mg single |      5.21 |      13.5 | +158.4%\* |
-| CL/F (L/h)         | 150 mg single |      9.68 |      10.4 |     +7.1% |
-| CL/F (L/h)         | 300 mg single |      9.21 |      8.86 |     -3.8% |
-| CL/F (L/h)         | 600 mg single |      8.03 |       7.8 |     -2.9% |
+| AUClast (ug\*h/mL) | 150 mg single |      15.7 |        15 |     -4.8% |
+| AUClast (ug\*h/mL) | 300 mg single |      33.7 |      33.3 |     -1.1% |
+| AUClast (ug\*h/mL) | 600 mg single |      75.2 |      77.2 |     +2.6% |
+| t½ (h)             | 150 mg single |      2.35 |      14.3 | +507.7%\* |
+| t½ (h)             | 300 mg single |      3.41 |        14 | +309.5%\* |
+| t½ (h)             | 600 mg single |      5.21 |      13.6 | +161.9%\* |
+| CL/F (L/h)         | 150 mg single |      9.68 |      9.96 |     +2.9% |
+| CL/F (L/h)         | 300 mg single |      9.21 |      8.93 |     -3.0% |
+| CL/F (L/h)         | 600 mg single |      8.03 |      7.72 |     -3.8% |
 
 Simulated vs. Lv 2024 Table S2 NCA, single-dose arms. \* differs from
 reference by \>20%. {.table}
@@ -634,9 +634,9 @@ pta_mrsa |>
 
 | Dose (q12h) | MIC (ug/mL) | PTA vs S. aureus (%) | PTA vs MRSA (%) |
 |:------------|------------:|---------------------:|----------------:|
-| 150 mg      |        0.25 |                   96 |             0.0 |
-| 200 mg      |        0.25 |                  100 |            50.7 |
-| 300 mg      |        0.25 |                  100 |           100.0 |
+| 150 mg      |        0.25 |                   94 |             0.0 |
+| 200 mg      |        0.25 |                  100 |            67.3 |
+| 300 mg      |        0.25 |                  100 |            99.3 |
 | 450 mg      |        0.25 |                  100 |           100.0 |
 | 600 mg      |        0.25 |                  100 |           100.0 |
 
@@ -833,14 +833,14 @@ band_pta |>
 
 | Dose (q12h) | Weight band | Median AUCss,24h (ug\*h/mL) | PTA vs MRSA at MIC 0.25 (%) |
 |:---|:---|---:|---:|
-| 200 mg | 40-50 kg | 51.5 | 98.7 |
-| 200 mg | 50-60 kg | 46.3 | 92.0 |
-| 200 mg | 60-70 kg | 42.5 | 73.3 |
-| 200 mg | 70-80 kg | 37.1 | 40.0 |
-| 300 mg | 40-50 kg | 88.0 | 100.0 |
-| 300 mg | 50-60 kg | 77.5 | 100.0 |
-| 300 mg | 60-70 kg | 66.9 | 99.3 |
-| 300 mg | 70-80 kg | 62.8 | 98.7 |
+| 200 mg | 40-50 kg | 52.4 | 98.0 |
+| 200 mg | 50-60 kg | 46.7 | 90.0 |
+| 200 mg | 60-70 kg | 42.7 | 76.7 |
+| 200 mg | 70-80 kg | 37.8 | 44.7 |
+| 300 mg | 40-50 kg | 89.2 | 100.0 |
+| 300 mg | 50-60 kg | 75.3 | 100.0 |
+| 300 mg | 60-70 kg | 68.2 | 100.0 |
+| 300 mg | 70-80 kg | 61.5 | 99.3 |
 
 PTA against MRSA by weight band (Lv 2024 Figure 5C and Figure 6).
 {.table}

@@ -681,7 +681,7 @@ ftmic_summary |>
 |:---------|-----------------------:|----------------:|----------------:|
 | Cord     |                  99.35 |           99.30 |           99.35 |
 | Maternal |                  99.95 |           99.95 |           99.95 |
-| Neonatal |                  96.75 |           96.60 |           96.85 |
+| Neonatal |                  96.75 |           96.65 |           96.85 |
 
 All three matrices exceed the breakpoint for more than 90% of the 4-h
 dosing interval, reproducing the paper’s conclusion that “in a first

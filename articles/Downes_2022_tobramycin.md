@@ -446,15 +446,15 @@ knitr::kable(side_by_side, digits = 1, caption =
 | Target | Source | 10 mg/kg | 11 mg/kg | 12 mg/kg | 13 mg/kg | 14 mg/kg | 15 mg/kg |
 |:---|:---|---:|---:|---:|---:|---:|---:|
 | Cmax \> 25 | Published (Table 3) | 65.6 | 79.1 | 88.2 | 93.9 | 96.8 | 98.4 |
-| Cmax \> 25 | Simulated | 72.0 | 84.7 | 93.3 | 96.0 | 97.3 | 99.3 |
+| Cmax \> 25 | Simulated | 67.3 | 80.7 | 90.0 | 93.3 | 96.7 | 98.7 |
 | Cmin \< 0.6 | Published (Table 3) | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
 | Cmin \< 0.6 | Simulated | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
 | DFI \< 11 h | Published (Table 3) | 31.2 | 38.1 | 44.9 | 51.5 | 56.8 | 62.4 |
-| DFI \< 11 h | Simulated | 30.0 | 39.3 | 44.7 | 50.7 | 55.3 | 62.0 |
+| DFI \< 11 h | Simulated | 31.3 | 36.0 | 44.7 | 50.7 | 56.7 | 59.3 |
 | AUC24 80-120 | Published (Table 3) | 40.3 | 56.9 | 67.9 | 70.4 | 66.1 | 55.7 |
-| AUC24 80-120 | Simulated | 39.3 | 62.7 | 79.3 | 74.0 | 70.0 | 60.0 |
+| AUC24 80-120 | Simulated | 42.7 | 57.3 | 65.3 | 63.3 | 62.7 | 52.0 |
 | AUC24 \< 120 | Published (Table 3) | 98.8 | 96.4 | 91.4 | 83.0 | 72.3 | 68.5 |
-| AUC24 \< 120 | Simulated | 99.3 | 99.3 | 94.7 | 82.7 | 71.3 | 60.0 |
+| AUC24 \< 120 | Simulated | 99.3 | 96.0 | 91.3 | 82.0 | 71.3 | 56.7 |
 
 Percentage of patients meeting each therapeutic target on day 2,
 published (Downes 2022 Table 3, Simulation Output) against this model.
@@ -466,10 +466,10 @@ delta <- as.matrix(attain[, targets]) - as.matrix(published[, targets])
 
 cat(sprintf("Mean absolute deviation across the 30 cells: %.2f percentage points\n",
             mean(abs(delta))))
-#> Mean absolute deviation across the 30 cells: 2.42 percentage points
+#> Mean absolute deviation across the 30 cells: 1.56 percentage points
 cat(sprintf("Largest single-cell deviation: %.1f percentage points\n",
             max(abs(delta))))
-#> Largest single-cell deviation: 11.4 percentage points
+#> Largest single-cell deviation: 11.8 percentage points
 
 # Bounds chosen from renders at 2, 4 and 16 solver threads, which realised mean
 # absolute deviations of 2.42 / 2.84 / 2.29 pp and largest single-cell
@@ -492,7 +492,7 @@ avg_attain <- rowMeans(attain[, targets])
 best_dose <- dose_levels[which.max(avg_attain)]
 cat(sprintf("Average attainment across five targets: %s\n",
             paste(sprintf("%d mg/kg %.1f%%", dose_levels, avg_attain), collapse = ", ")))
-#> Average attainment across five targets: 10 mg/kg 68.1%, 11 mg/kg 77.2%, 12 mg/kg 82.4%, 13 mg/kg 80.7%, 14 mg/kg 78.8%, 15 mg/kg 76.3%
+#> Average attainment across five targets: 10 mg/kg 68.1%, 11 mg/kg 74.0%, 12 mg/kg 78.3%, 13 mg/kg 77.9%, 14 mg/kg 77.5%, 15 mg/kg 73.3%
 cat(sprintf("Highest average attainment at %d mg/kg (Downes 2022: 13 mg/kg)\n",
             best_dose))
 #> Highest average attainment at 12 mg/kg (Downes 2022: 13 mg/kg)
@@ -526,12 +526,12 @@ knitr::kable(mono, digits = 1, caption =
 
 | Dose     | Published % below 80 | Simulated % below 80 |
 |:---------|---------------------:|---------------------:|
-| 10 mg/kg |                 58.5 |                 60.0 |
-| 11 mg/kg |                 39.5 |                 36.7 |
-| 12 mg/kg |                 23.5 |                 15.3 |
-| 13 mg/kg |                 12.6 |                  8.7 |
-| 14 mg/kg |                  6.2 |                  1.3 |
-| 15 mg/kg |                 12.8 |                  0.0 |
+| 10 mg/kg |                 58.5 |                 56.7 |
+| 11 mg/kg |                 39.5 |                 38.7 |
+| 12 mg/kg |                 23.5 |                 26.0 |
+| 13 mg/kg |                 12.6 |                 18.7 |
+| 14 mg/kg |                  6.2 |                  8.7 |
+| 15 mg/kg |                 12.8 |                  4.7 |
 
 Percentage of patients with AUC24 below the 80 mg\*h/L target, implied
 by the two published AUC rows and reproduced by this model. {.table}
@@ -657,12 +657,12 @@ nca_summary |>
 
 | Regimen | AUC24-48 (mg\*h/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Terminal t-half (h) |
 |:---|---:|---:|---:|---:|---:|
-| 10 mg/kg | 76.48 | 27.79 | 0.02 | 0.5 | 2.31 |
-| 11 mg/kg | 84.13 | 30.57 | 0.02 | 0.5 | 2.31 |
-| 12 mg/kg | 91.78 | 33.34 | 0.02 | 0.5 | 2.31 |
-| 13 mg/kg | 99.43 | 36.12 | 0.02 | 0.5 | 2.31 |
-| 14 mg/kg | 107.08 | 38.90 | 0.02 | 0.5 | 2.31 |
-| 15 mg/kg | 114.72 | 41.68 | 0.03 | 0.5 | 2.31 |
+| 10 mg/kg | 77.08 | 27.24 | 0.02 | 0.5 | 2.3 |
+| 11 mg/kg | 84.79 | 29.97 | 0.02 | 0.5 | 2.3 |
+| 12 mg/kg | 92.50 | 32.69 | 0.02 | 0.5 | 2.3 |
+| 13 mg/kg | 100.21 | 35.42 | 0.02 | 0.5 | 2.3 |
+| 14 mg/kg | 107.92 | 38.14 | 0.02 | 0.5 | 2.3 |
+| 15 mg/kg | 115.63 | 40.86 | 0.03 | 0.5 | 2.3 |
 
 Median non-compartmental parameters over the second dosing interval
 (24-48 h) by once-daily dose level. {.table}
@@ -687,7 +687,7 @@ cf <- nca_wide |>
 
 cat(sprintf("AUC(24-48 h) integrated vs daily dose / CL: median %.4f%%, max abs %.4f%%\n",
             median(cf$pct_diff), max(abs(cf$pct_diff))))
-#> AUC(24-48 h) integrated vs daily dose / CL: median -0.0103%, max abs 0.0262%
+#> AUC(24-48 h) integrated vs daily dose / CL: median -0.0100%, max abs 0.0236%
 stopifnot(max(abs(cf$pct_diff)) < 0.1)
 ```
 
@@ -817,8 +817,8 @@ knitr::kable(tdm, digits = 2, caption =
 
 | Sample                     | Median (mg/L) | % below 0.6 mg/L LOQ |
 |:---------------------------|--------------:|---------------------:|
-| Peak, 0.5 h after 3rd dose |          9.91 |                 0.00 |
-| Trough, 8 h after 3rd dose |          0.76 |                27.33 |
+| Peak, 0.5 h after 3rd dose |          9.63 |                 0.00 |
+| Trough, 8 h after 3rd dose |          0.75 |                31.33 |
 
 Simulated routine TDM samples on the observed 3.3 mg/kg q8h regimen.
 {.table}
@@ -829,7 +829,7 @@ Simulated routine TDM samples on the observed 3.3 mg/kg q8h regimen.
 pct_bql_all <- 100 * mean(c(peak3$Cc, trough3$Cc) < 0.6)
 cat(sprintf("Pooled peak + trough samples below the LOQ: %.1f%% (Downes 2022 reports 23.7%% of all TDM samples)\n",
             pct_bql_all))
-#> Pooled peak + trough samples below the LOQ: 13.7% (Downes 2022 reports 23.7% of all TDM samples)
+#> Pooled peak + trough samples below the LOQ: 15.7% (Downes 2022 reports 23.7% of all TDM samples)
 
 # The paper's qualifier is directional, not quantitative: BQL samples are
 # concentrated in the troughs. Assert that ordering, which is a large gap rather
@@ -841,7 +841,7 @@ peak_headroom <- min(peak3$Cc) / 0.6
 cat(sprintf("Trough BQL %.1f%% vs peak BQL %.1f%%; lowest peak sits %.1fx above the LOQ\n",
             100 * mean(trough3$Cc < 0.6), 100 * mean(peak3$Cc < 0.6),
             peak_headroom))
-#> Trough BQL 27.3% vs peak BQL 0.0%; lowest peak sits 10.2x above the LOQ
+#> Trough BQL 31.3% vs peak BQL 0.0%; lowest peak sits 9.7x above the LOQ
 stopifnot(
   mean(trough3$Cc < 0.6) - mean(peak3$Cc < 0.6) > 0.05,
   peak_headroom > 3

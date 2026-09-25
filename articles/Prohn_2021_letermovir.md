@@ -358,10 +358,10 @@ knitr::kable(
 
 | Regimen             | Median |   5th |   95th | Prohn median (90% PI) |
 |:--------------------|-------:|------:|-------:|:----------------------|
-| i.v. 240 mg + CsA   |  70495 | 47472 | 117012 | 70300 (46200-106000)  |
-| i.v. 480 mg, no CsA | 101248 | 69472 | 149554 | 100000 (65300-148000) |
-| oral 240 mg + CsA   |  60718 | 35349 | 132378 | 60800 (28700-122000)  |
-| oral 480 mg, no CsA |  34292 | 18476 |  71805 | 34400 (16900-73700)   |
+| i.v. 240 mg + CsA   |  69673 | 47093 | 108638 | 70300 (46200-106000)  |
+| i.v. 480 mg, no CsA |  97824 | 67050 | 143462 | 100000 (65300-148000) |
+| oral 240 mg + CsA   |  60844 | 30316 | 135601 | 60800 (28700-122000)  |
+| oral 480 mg, no CsA |  34256 | 15484 |  73912 | 34400 (16900-73700)   |
 
 Simulated steady-state AUC (ng\*h/mL), 150 subjects per arm, against
 Prohn 2021. {.table}
@@ -439,12 +439,12 @@ knitr::kable(
 )
 ```
 
-| Regimen             |   auclast |     cmax | ctrough | tmax |
-|:--------------------|----------:|---------:|--------:|-----:|
-| i.v. 240 mg + CsA   |  70484.80 | 11547.95 |  807.52 | 1.00 |
-| i.v. 480 mg, no CsA | 101220.25 | 21617.22 |  804.41 | 1.00 |
-| oral 240 mg + CsA   |  60715.61 |  3963.48 | 1257.72 | 5.38 |
-| oral 480 mg, no CsA |  34291.51 |  2548.25 |  579.55 | 4.75 |
+| Regimen             |  auclast |     cmax | ctrough | tmax |
+|:--------------------|---------:|---------:|--------:|-----:|
+| i.v. 240 mg + CsA   | 69661.69 | 11513.12 |  782.64 |  1.0 |
+| i.v. 480 mg, no CsA | 97794.53 | 21521.20 |  758.91 |  1.0 |
+| oral 240 mg + CsA   | 60839.04 |  3910.19 | 1264.57 |  5.5 |
+| oral 480 mg, no CsA | 34254.77 |  2484.97 |  549.93 |  5.0 |
 
 Median steady-state NCA parameters from the simulated cohort (PKNCA).
 {.table}
@@ -476,10 +476,10 @@ knitr::kable(cmp, caption = "PKNCA AUC against Prohn 2021 published AUCss.")
 
 | NCA parameter      | regimen             | Reference | Simulated | % diff |
 |:-------------------|:--------------------|:----------|:----------|:-------|
-| AUClast (ng\*h/mL) | oral 480 mg, no CsA | 34400     | 34300     | -0.3%  |
-| AUClast (ng\*h/mL) | oral 240 mg + CsA   | 60800     | 60700     | -0.1%  |
-| AUClast (ng\*h/mL) | i.v. 480 mg, no CsA | 100000    | 101000    | +1.2%  |
-| AUClast (ng\*h/mL) | i.v. 240 mg + CsA   | 70300     | 70500     | +0.3%  |
+| AUClast (ng\*h/mL) | oral 480 mg, no CsA | 34400     | 34300     | -0.4%  |
+| AUClast (ng\*h/mL) | oral 240 mg + CsA   | 60800     | 60800     | +0.1%  |
+| AUClast (ng\*h/mL) | i.v. 480 mg, no CsA | 100000    | 97800     | -2.2%  |
+| AUClast (ng\*h/mL) | i.v. 240 mg + CsA   | 70300     | 69700     | -0.9%  |
 
 PKNCA AUC against Prohn 2021 published AUCss. {.table}
 
@@ -720,11 +720,11 @@ knitr::kable(
 )
 ```
 
-| NCA parameter |   Median |      5th |     95th |
-|:--------------|---------:|---------:|---------:|
-| auclast       | 78124.99 | 43746.50 | 145549.2 |
-| cmax          | 11925.77 |  7785.72 |  18577.3 |
-| tmax          |     2.50 |     1.50 |      3.5 |
+| NCA parameter |   Median |      5th |      95th |
+|:--------------|---------:|---------:|----------:|
+| auclast       | 81320.91 | 42515.74 | 162477.84 |
+| cmax          | 12264.94 |  7307.97 |  19735.38 |
+| tmax          |     2.50 |     1.50 |      3.50 |
 
 Single oral 480 mg dose in 100 healthy participants (45-99 kg), PKNCA.
 {.table}
@@ -878,15 +878,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         dplyr_1.2.1           PKNCA_0.12.1         
-#> [4] rxode2_5.1.7          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         tidyr_1.3.2        
@@ -894,7 +894,7 @@ sessionInfo()
 #> [31] jquerylib_0.1.4     whisker_0.4.1       openssl_2.4.2      
 #> [34] cachem_1.1.0        nlme_3.1-169        tidyselect_1.2.1   
 #> [37] digest_0.6.39       lotri_1.0.5         purrr_1.2.2        
-#> [40] labeling_0.4.3      rxode2ll_2.0.17     fastmap_1.2.0      
+#> [40] labeling_0.4.3      rxode2ll_2.0.18     fastmap_1.2.0      
 #> [43] grid_4.6.1          cli_3.6.6           dparser_1.3.1-13   
 #> [46] magrittr_2.0.5      withr_3.0.3         scales_1.4.0       
 #> [49] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         

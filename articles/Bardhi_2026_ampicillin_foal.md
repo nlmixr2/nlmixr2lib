@@ -225,7 +225,7 @@ obs_typ <- sim_typ[sim_typ$time > 0 & sim_typ$time <= 24, ]
 cf <- two_cmt_bolus(obs_typ$time, dose_40, 17.43, 18.83, 16.79, 22.12)
 rel_err <- max(abs(obs_typ$Cc - cf) / cf)
 cat(sprintf("max relative deviation from the closed form: %.3g\n", rel_err))
-#> max relative deviation from the closed form: 4.62e-13
+#> max relative deviation from the closed form: 7.3e-11
 stopifnot(rel_err < 1e-8)
 ```
 
@@ -849,21 +849,21 @@ knitr::kable(
 
 | Claim | PTA (%) | Direction | Pass | Deviation |
 |:---|---:|:---|:---|:---|
-| 50% target, 20 mg/kg q6h at MIC 0.5 | 97.5 | \>= 90% | TRUE | FALSE |
-| 50% target, 20 mg/kg q6h at MIC 1 (above the stated ceiling) | 91.0 | \< 90% | TRUE | FALSE |
-| 50% target, worst of all 12 regimens at MIC 0.125 | 98.5 | \>= 90% | TRUE | FALSE |
-| 50% target, worst q4h or q6h regimen at MIC 0.25 | 99.5 | \>= 90% | TRUE | FALSE |
-| 50% target, 40 mg/kg q4h at MIC 2 | 98.5 | \>= 90% | TRUE | FALSE |
-| 50% target, best of the other 11 regimens at MIC 2 | 95.0 | \< 90% | TRUE | TRUE |
-| 100% target, 20 mg/kg q6h at MIC 0.06 | 96.5 | \>= 90% | TRUE | FALSE |
-| 100% target, 20 mg/kg q6h at MIC 0.25 (above the stated ceiling) | 86.5 | \< 90% | TRUE | FALSE |
-| 100% target, worst q4h regimen at MIC 0.125 | 98.5 | \>= 90% | TRUE | FALSE |
-| 100% target, best q8h regimen at MIC 0.125 | 90.0 | \< 90% | TRUE | TRUE |
-| 100% target, best of all 12 regimens at MIC 0.5 | 96.5 | \< 90% | FALSE | TRUE |
+| 50% target, 20 mg/kg q6h at MIC 0.5 | 94.0 | \>= 90% | TRUE | FALSE |
+| 50% target, 20 mg/kg q6h at MIC 1 (above the stated ceiling) | 85.0 | \< 90% | TRUE | FALSE |
+| 50% target, worst of all 12 regimens at MIC 0.125 | 96.5 | \>= 90% | TRUE | FALSE |
+| 50% target, worst q4h or q6h regimen at MIC 0.25 | 98.0 | \>= 90% | TRUE | FALSE |
+| 50% target, 40 mg/kg q4h at MIC 2 | 94.0 | \>= 90% | TRUE | FALSE |
+| 50% target, best of the other 11 regimens at MIC 2 | 90.0 | \< 90% | TRUE | TRUE |
+| 100% target, 20 mg/kg q6h at MIC 0.06 | 96.0 | \>= 90% | TRUE | FALSE |
+| 100% target, 20 mg/kg q6h at MIC 0.25 (above the stated ceiling) | 84.0 | \< 90% | TRUE | FALSE |
+| 100% target, worst q4h regimen at MIC 0.125 | 95.0 | \>= 90% | TRUE | FALSE |
+| 100% target, best q8h regimen at MIC 0.125 | 91.5 | \< 90% | TRUE | TRUE |
+| 100% target, best of all 12 regimens at MIC 0.5 | 92.0 | \< 90% | TRUE | TRUE |
 
 Bardhi 2026 Figure 3 claims against the packaged model. Pass allows a 5
 percentage-point band around the 90% threshold. 3 claim(s) marked
-Deviation are recorded, not asserted. {.table}
+Deviation are recorded, not asserted. {.table style="width:100%;"}
 
 ``` r
 
@@ -954,11 +954,11 @@ knitr::kable(
 
 | Claim | PTA (%) | Direction | Pass | Deviation |
 |:---|---:|:---|:---|:---|
-| Young cohort, 50% target, worst of all 12 regimens at MIC 0.5 | 95.0 | \>= 90% | TRUE | FALSE |
-| Old cohort, 50% target, worst of all 12 regimens at MIC 0.25 | 94.5 | \>= 90% | TRUE | FALSE |
-| Young cohort, 50% target, worst q4h regimen at MIC 4 | 94.5 | \>= 90% | TRUE | FALSE |
-| Old cohort, 50% target, 40 mg/kg q4h at MIC 2 | 94.0 | \>= 90% | TRUE | FALSE |
-| Old cohort, 50% target, best of the other 11 regimens at MIC 2 | 91.0 | \< 90% | TRUE | FALSE |
+| Young cohort, 50% target, worst of all 12 regimens at MIC 0.5 | 93 | \>= 90% | TRUE | FALSE |
+| Old cohort, 50% target, worst of all 12 regimens at MIC 0.25 | 89 | \>= 90% | TRUE | FALSE |
+| Young cohort, 50% target, worst q4h regimen at MIC 4 | 92 | \>= 90% | TRUE | FALSE |
+| Old cohort, 50% target, 40 mg/kg q4h at MIC 2 | 88 | \>= 90% | TRUE | FALSE |
+| Old cohort, 50% target, best of the other 11 regimens at MIC 2 | 86 | \< 90% | TRUE | FALSE |
 
 Bardhi 2026 Figure 4 claims against the packaged model. Pass allows a 5
 percentage-point band around the 90% threshold. {.table}
@@ -998,7 +998,7 @@ cat(sprintf(
   "PTA in the 10-h cohort is >= the 120-h cohort in all %d regimen x MIC cells; largest gap %.1f points.\n",
   nrow(age_dir), max(age_dir$young - age_dir$old)
 ))
-#> PTA in the 10-h cohort is >= the 120-h cohort in all 108 regimen x MIC cells; largest gap 57.0 points.
+#> PTA in the 10-h cohort is >= the 120-h cohort in all 108 regimen x MIC cells; largest gap 59.5 points.
 ```
 
 ### The regimen actually administered, against the measured MICs
@@ -1033,10 +1033,10 @@ knitr::kable(
 
 | Pathogen                                |   n |  MIC | PTA (%) |
 |:----------------------------------------|----:|-----:|--------:|
-| Streptococcus equi subsp. zooepidemicus |   4 | 0.06 |   100.0 |
-| Clostridium perfringens                 |   1 | 0.06 |   100.0 |
-| Bacillus licheniformis                  |   1 | 0.25 |    99.5 |
-| Enterococcus faecalis                   |   1 | 0.50 |    97.5 |
+| Streptococcus equi subsp. zooepidemicus |   4 | 0.06 |    99.5 |
+| Clostridium perfringens                 |   1 | 0.06 |    99.5 |
+| Bacillus licheniformis                  |   1 | 0.25 |    98.0 |
+| Enterococcus faecalis                   |   1 | 0.50 |    94.0 |
 
 PTA of the administered 20 mg/kg q6h regimen at the MICs measured in the
 7 pathogen-positive foals (50% fT \> 1xMIC target). {.table}

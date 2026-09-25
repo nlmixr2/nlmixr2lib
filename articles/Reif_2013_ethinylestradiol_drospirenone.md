@@ -234,14 +234,14 @@ table3 <- dplyr::bind_rows(
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalfdepot', 'etaiov_fdepot_1', 'etaiov_fdepot_2'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalfdepot', 'etaiov_fdepot_1', 'etaiov_fdepot_2'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalfdepot', 'etaiov_fdepot_1', 'etaiov_fdepot_2'
-#> Warning: There were 4 warnings in `dplyr::mutate()`.
+#> Warning: There were 3 warnings in `dplyr::mutate()`.
 #> The first warning was:
 #> ℹ In argument: `Simulated = if (...) NULL`.
 #> ℹ In row 6.
 #> Caused by warning:
 #> ! some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> ℹ Run `dplyr::last_dplyr_warnings()` to see the 3 remaining warnings.
+#> ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.
 
 table3 |>
   dplyr::mutate(
@@ -507,8 +507,6 @@ sim_ee <- rxode2::rxSolve(ee, events = events_ee, keep = c("arm", "WT", "AGE")) 
   as.data.frame()
 sim_drsp <- rxode2::rxSolve(drsp, events = events_drsp, keep = c("arm", "WT", "AGE")) |>
   as.data.frame()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 stopifnot(
   all(sim_ee$Cc[!is.na(sim_ee$Cc)] >= 0),
@@ -647,12 +645,12 @@ knitr::kable(summ, digits = 1, caption = "Simulated counterpart of Table 4 of Re
 
 | Analyte | Regimen | 5th pct | Median | 95th pct | Geometric mean | Geometric CV (%) |
 |:---|:---|---:|---:|---:|---:|---:|
-| DRSP (ng\*h/mL) | Conventional | 517.5 | 860.3 | 1353.6 | 857.8 | 30.3 |
-| DRSP (ng\*h/mL) | Fixed extended | 529.4 | 861.5 | 1391.1 | 864.6 | 30.6 |
-| DRSP (ng\*h/mL) | Flexible MIB | 527.5 | 855.7 | 1393.6 | 851.8 | 30.1 |
-| EE (pg\*h/mL) | Conventional | 463.6 | 810.1 | 1360.7 | 798.1 | 34.1 |
-| EE (pg\*h/mL) | Fixed extended | 477.7 | 822.3 | 1330.1 | 815.6 | 33.6 |
-| EE (pg\*h/mL) | Flexible MIB | 463.6 | 821.6 | 1360.5 | 811.9 | 33.7 |
+| DRSP (ng\*h/mL) | Conventional | 535.1 | 862.1 | 1412.2 | 865.9 | 29.2 |
+| DRSP (ng\*h/mL) | Fixed extended | 539.4 | 884.7 | 1420.7 | 873.7 | 28.6 |
+| DRSP (ng\*h/mL) | Flexible MIB | 551.5 | 863.8 | 1454.6 | 878.1 | 30.6 |
+| EE (pg\*h/mL) | Conventional | 471.2 | 805.3 | 1380.8 | 801.5 | 33.9 |
+| EE (pg\*h/mL) | Fixed extended | 481.2 | 819.6 | 1387.8 | 810.7 | 34.1 |
+| EE (pg\*h/mL) | Flexible MIB | 464.3 | 810.2 | 1412.7 | 807.2 | 35.4 |
 
 Simulated counterpart of Table 4 of Reif 2013: distribution of
 individual AUC0-24h,ss by regimen. {.table}
@@ -679,9 +677,9 @@ knitr::kable(cmp_ee, caption = "EE: simulated vs published median AUC0-24h,ss. *
 
 | NCA parameter      | Regimen        | Reference | Simulated | % diff |
 |:-------------------|:---------------|:----------|:----------|:-------|
-| AUClast (pg\*h/mL) | Flexible MIB   | 811       | 822       | +1.3%  |
-| AUClast (pg\*h/mL) | Conventional   | 818       | 810       | -1.0%  |
-| AUClast (pg\*h/mL) | Fixed extended | 782       | 822       | +5.1%  |
+| AUClast (pg\*h/mL) | Flexible MIB   | 811       | 810       | -0.1%  |
+| AUClast (pg\*h/mL) | Conventional   | 818       | 805       | -1.6%  |
+| AUClast (pg\*h/mL) | Fixed extended | 782       | 820       | +4.8%  |
 
 EE: simulated vs published median AUC0-24h,ss. \* differs from reference
 by \>20%. {.table}
@@ -723,9 +721,9 @@ knitr::kable(cmp_drsp, caption = "DRSP: simulated vs published median AUC0-24h,s
 | Tmax (h)           | Flexible MIB   | 1.4       | 1.33      | -4.8%  |
 | Tmax (h)           | Conventional   | 1.4       | 1.33      | -4.8%  |
 | Tmax (h)           | Fixed extended | 1.4       | 1.33      | -4.8%  |
-| AUClast (ng\*h/mL) | Flexible MIB   | 879       | 856       | -2.7%  |
-| AUClast (ng\*h/mL) | Conventional   | 876       | 860       | -1.8%  |
-| AUClast (ng\*h/mL) | Fixed extended | 862       | 862       | -0.1%  |
+| AUClast (ng\*h/mL) | Flexible MIB   | 879       | 864       | -1.7%  |
+| AUClast (ng\*h/mL) | Conventional   | 876       | 862       | -1.6%  |
+| AUClast (ng\*h/mL) | Fixed extended | 862       | 885       | +2.6%  |
 
 DRSP: simulated vs published median AUC0-24h,ss and assumed Tmax. \*
 differs from reference by \>20%. {.table}

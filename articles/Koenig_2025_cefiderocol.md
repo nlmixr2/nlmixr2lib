@@ -661,8 +661,8 @@ knitr::kable(cohort_summary,
 
 | regimen |   n | median CL | mean CL | median Vc |
 |:--------|----:|----------:|--------:|----------:|
-| 2 g q6h | 100 |      5.93 |    6.02 |      5.21 |
-| 2 g q8h | 100 |      5.93 |    6.02 |      5.21 |
+| 2 g q6h | 100 |      5.62 |    5.67 |      5.44 |
+| 2 g q8h | 100 |      5.62 |    5.67 |      5.44 |
 
 Simulated cohort, 100 participants per arm. {.table}
 

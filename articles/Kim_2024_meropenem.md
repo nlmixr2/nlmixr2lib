@@ -411,14 +411,14 @@ knitr::kable(
 
 | NCA parameter          | treatment                  | Reference | Simulated | % diff |
 |:-----------------------|:---------------------------|----------:|----------:|-------:|
-| Cmax (mg/L)            | 500 mg, 30-min IV infusion |      40.2 |      37.1 |  -7.8% |
+| Cmax (mg/L)            | 500 mg, 30-min IV infusion |      40.2 |      37.9 |  -5.7% |
 | Tmax (h)               | 500 mg, 30-min IV infusion |       0.5 |       0.5 |  +0.0% |
-| AUC0-∞ (obs) (mg\*h/L) | 500 mg, 30-min IV infusion |      40.4 |      38.6 |  -4.4% |
-| AUClast (mg\*h/L)      | 500 mg, 30-min IV infusion |      39.8 |      38.1 |  -4.3% |
-| t½ (h)                 | 500 mg, 30-min IV infusion |     0.967 |     0.969 |  +0.2% |
-| CL/F (L/h)             | 500 mg, 30-min IV infusion |      14.1 |      12.9 |  -8.0% |
-| MRT (IV) (h)           | 500 mg, 30-min IV infusion |      1.09 |       1.1 |  +0.8% |
-| Vss (IV) (L)           | 500 mg, 30-min IV infusion |      15.4 |      13.9 |  -9.8% |
+| AUC0-∞ (obs) (mg\*h/L) | 500 mg, 30-min IV infusion |      40.4 |      39.4 |  -2.6% |
+| AUClast (mg\*h/L)      | 500 mg, 30-min IV infusion |      39.8 |      39.1 |  -1.8% |
+| t½ (h)                 | 500 mg, 30-min IV infusion |     0.967 |     0.961 |  -0.6% |
+| CL/F (L/h)             | 500 mg, 30-min IV infusion |      14.1 |      12.7 |  -9.7% |
+| MRT (IV) (h)           | 500 mg, 30-min IV infusion |      1.09 |       1.1 |  +1.0% |
+| Vss (IV) (L)           | 500 mg, 30-min IV infusion |      15.4 |      13.8 | -10.4% |
 
 Simulated vs. Kim 2024 Table 3 (NCA means; CL and Vss on the 70 kg basis
 given in the Discussion). \* differs from reference by \>20%. {.table
@@ -580,10 +580,10 @@ knitr::kable(claims_fig2, caption = "Kim 2024 Results 2.4, first simulation (Fig
 
 | Claim | Simulated evidence | Reproduced |
 |:---|:---|:---|
-| 90% PTA for 40% fT\>MIC when MIC \< 2 mg/L | PTA at MIC 1 = 100.0%; at MIC 2 = 99.0% | TRUE |
-| fails 90% PTA for 40% fT\>4MIC when MIC \> 1 mg/L | PTA at MIC 1 = 55.5%; at MIC 2 = 3.0% | TRUE |
-| never reaches 90% PTA for 100% fT\>MIC at any MIC | max PTA over all MICs = 88.0% (at MIC 0.060) | TRUE |
-| never reaches 90% PTA for 100% fT\>4MIC at any MIC | max PTA over all MICs = 26.5% | TRUE |
+| 90% PTA for 40% fT\>MIC when MIC \< 2 mg/L | PTA at MIC 1 = 100.0%; at MIC 2 = 98.0% | TRUE |
+| fails 90% PTA for 40% fT\>4MIC when MIC \> 1 mg/L | PTA at MIC 1 = 59.5%; at MIC 2 = 3.5% | TRUE |
+| never reaches 90% PTA for 100% fT\>MIC at any MIC | max PTA over all MICs = 85.5% (at MIC 0.060) | TRUE |
+| never reaches 90% PTA for 100% fT\>4MIC at any MIC | max PTA over all MICs = 27.0% | TRUE |
 
 Kim 2024 Results 2.4, first simulation (Figure 2). {.table}
 
@@ -679,12 +679,12 @@ knitr::kable(claims_fig3, caption = "Kim 2024 Results 2.4, second simulation (Fi
 |:---|:---|:---|
 | 1 g q12h 0.5-h: 40% fT\>MIC PTA \> 90% at MIC \<= 0.5 | 98.5 | TRUE |
 | 1 g q12h 3-h: 40% fT\>MIC PTA \> 90% at MIC 2 | 97.0 | TRUE |
-| 1 g q12h 3-h: 40% fT\>MIC PTA \> 80% at MIC 4 | 35.0 | FALSE |
-| 1.5 g q8h 0.5-h: 40% fT\>4MIC PTA \> 90% at MIC \<= 1 | 92.0 | TRUE |
+| 1 g q12h 3-h: 40% fT\>MIC PTA \> 80% at MIC 4 | 39.5 | FALSE |
+| 1.5 g q8h 0.5-h: 40% fT\>4MIC PTA \> 90% at MIC \<= 1 | 88.0 | FALSE |
 | 1.5 g q8h 3-h: 40% fT\>4MIC PTA \> 90% at MIC 2 | 100.0 | TRUE |
-| 2 g q6h 0.5-h: 100% fT\>MIC PTA \> 90% at MIC \<= 0.5 | 94.5 | TRUE |
-| 2 g q6h 3-h: 100% fT\>MIC PTA \> 90% at MIC 2 | 91.0 | TRUE |
-| 2 g q6h 3-h: 100% fT\>4MIC PTA \< 90% above MIC 0.5 | 35.0 | TRUE |
+| 2 g q6h 0.5-h: 100% fT\>MIC PTA \> 90% at MIC \<= 0.5 | 93.0 | TRUE |
+| 2 g q6h 3-h: 100% fT\>MIC PTA \> 90% at MIC 2 | 91.5 | TRUE |
+| 2 g q6h 3-h: 100% fT\>4MIC PTA \< 90% above MIC 0.5 | 37.5 | TRUE |
 
 Kim 2024 Results 2.4, second simulation (Figure 3). {.table}
 
@@ -768,7 +768,7 @@ tibble::tibble(
 | Clearance at which 40% fT\>MIC is exactly met (L/h)     | 11.88 |
 | Serum creatinine giving that clearance (mg/dL)          | 0.96  |
 | Fraction of the virtual cohort below that clearance (%) | 45.0  |
-| Simulated PTA from the full ODE simulation (%)          | 35.0  |
+| Simulated PTA from the full ODE simulation (%)          | 39.5  |
 
 Why the MIC = 4 claim is knife-edge for 1 g q12h as a 3-h infusion.
 {.table}

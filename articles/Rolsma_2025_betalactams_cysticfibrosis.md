@@ -350,8 +350,6 @@ typ_profiles <- bind_rows(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_vc_1, etaiov_vc_2, etaiov_vc_3
 #> as a work-around try putting the mu-referenced expression on a simple line
@@ -359,8 +357,6 @@ typ_profiles <- bind_rows(
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_vc_1, etaiov_vc_2, etaiov_vc_3
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_vc_1, etaiov_vc_2, etaiov_vc_3
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_vc_1, etaiov_vc_2, etaiov_vc_3
 #> as a work-around try putting the mu-referenced expression on a simple line
 
@@ -445,9 +441,9 @@ knitr::kable(cmp, caption = "PKNCA metrics from the simulated typical-value prof
 | AUC0-∞ (obs) (mg\*h/L) | meropenem 2 g, 3-h    | 191       | 191       | -0.0%  |
 | AUC0-∞ (obs) (mg\*h/L) | piperacillin 4 g, 4-h | 454       | 454       | -0.0%  |
 | AUC0-∞ (obs) (mg\*h/L) | tazobactam 0.5 g, 4-h | 65.2      | 65.2      | -0.0%  |
-| t½ (h)                 | cefepime 2 g, 0.5-h   | 1.83      | 1.83      | +0.0%  |
+| t½ (h)                 | cefepime 2 g, 0.5-h   | 1.83      | 1.83      | -0.0%  |
 | t½ (h)                 | meropenem 2 g, 3-h    | 1.16      | 1.16      | +0.0%  |
-| t½ (h)                 | piperacillin 4 g, 4-h | 0.96      | 0.96      | -0.0%  |
+| t½ (h)                 | piperacillin 4 g, 4-h | 0.96      | 0.96      | +0.0%  |
 | t½ (h)                 | tazobactam 0.5 g, 4-h | 1.17      | 1.17      | +0.0%  |
 
 PKNCA metrics from the simulated typical-value profiles vs the
@@ -613,9 +609,9 @@ therefore move a dilution between runs:
 | MIC (mg/L) | PTA (%) |
 |:-----------|:--------|
 | 0.125      | 91.5    |
-| 0.25       | 89.0    |
-| 0.5        | 82.0    |
-| 1          | 73.5    |
+| 0.25       | 88.5    |
+| 0.5        | 85.0    |
+| 1          | 76.0    |
 
 Piperacillin 4 g q8h 4-h infusion at 100% fT\>MIC: the PTA crosses 90%
 just above MIC 0.125, so the derived breakpoint is sensitive to Monte

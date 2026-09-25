@@ -308,6 +308,9 @@ sim <- rxode2::rxSolve(
   events = events,
   keep   = c("subject", "treatment", "renal", "WT", "CRCL"),
   omega  = NA,
+  # Gate 3 below holds the ss = 1 trough to 1e-8 relative, which needs tighter
+  # integration and steady-state-search tolerances than the defaults.
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
   returnType = "data.frame"
 )
 #> Warning: multi-subject simulation without without 'omega'
@@ -460,7 +463,7 @@ gate1 <- auc24 |>
 stopifnot(nrow(gate1) == 6L * n_per_arm, !anyNA(gate1$rel_err))
 max_rel_err <- max(abs(gate1$rel_err))
 max_rel_err
-#> [1] 3.037443e-05
+#> [1] 3.037444e-05
 stopifnot(max_rel_err < 1e-3)
 ```
 
@@ -490,7 +493,7 @@ gate2 <- auc24 |>
 stopifnot(nrow(gate2) == 3L * n_per_arm, !anyNA(gate2$rel_diff))
 max_auc_diff <- max(abs(gate2$rel_diff))
 max_auc_diff
-#> [1] 8.176894e-07
+#> [1] 8.176809e-07
 stopifnot(max_auc_diff < 1e-3)
 ```
 
@@ -516,7 +519,7 @@ gate3 <- nca |>
 stopifnot(nrow(gate3) == 6L * n_per_arm, !anyNA(gate3$rel_err))
 max_cmin_err <- max(abs(gate3$rel_err))
 max_cmin_err
-#> [1] 1.84297e-14
+#> [1] 2.421839e-10
 stopifnot(max_cmin_err < 1e-8)
 ```
 
@@ -559,7 +562,7 @@ gate4 <- trough_ss |>
 stopifnot(nrow(gate4) == 6L, !anyNA(gate4$rel_diff))
 max_median_diff <- max(abs(gate4$rel_diff))
 max_median_diff
-#> [1] 0.09303452
+#> [1] 0.09303314
 # The tolerance is set by Monte Carlo noise, not by model error: the standard
 # error of a log-normal median with omega = 0.565 and n = 200 is about 4.5%, so
 # the worst of six arms is expected around 2 SE. The seed is fixed, so the

@@ -505,21 +505,21 @@ published_attainment |>
 
 | Analyte | Regimen / scenario | Category | Leegwater 2025 (%) | Simulated (%) | Difference (pp) |
 |:---|:---|:---|---:|---:|---:|
-| Trimethoprim | b.i.d. 2,400 mg \| eGFR 70 | On target | 89.0 | 93.5 | 4.5 |
-| Trimethoprim | b.i.d. 2,400 mg \| eGFR 70 | Below target | 3.0 | 2.0 | -1.0 |
-| Trimethoprim | b.i.d. 2,400 mg \| eGFR 70 | Above target | 8.0 | 4.5 | -3.5 |
-| Trimethoprim | TID 1,920 mg \| eGFR 70 | On target | 90.9 | 88.5 | -2.4 |
-| Trimethoprim | TID 1,920 mg \| eGFR 70 | Below target | 1.8 | 2.0 | 0.2 |
-| Trimethoprim | TID 1,920 mg \| eGFR 70 | Above target | 7.3 | 9.5 | 2.2 |
-| Trimethoprim | TID 1,920 mg \| CRRT | On target | 94.0 | 92.5 | -1.5 |
-| Trimethoprim | TID 1,920 mg \| CRRT | Below target | 4.3 | 2.0 | -2.3 |
-| Trimethoprim | TID 1,920 mg \| CRRT | Above target | 1.7 | 5.5 | 3.8 |
-| Sulfamethoxazole / N-acetyl sulfamethoxazole | b.i.d. 2,400 mg \| eGFR 70 | On target | 68.7 | 70.5 | 1.8 |
-| Sulfamethoxazole / N-acetyl sulfamethoxazole | b.i.d. 2,400 mg \| eGFR 70 | Below target | 10.9 | 12.0 | 1.1 |
-| Sulfamethoxazole / N-acetyl sulfamethoxazole | b.i.d. 2,400 mg \| eGFR 70 | Above target | 20.4 | 17.5 | -2.9 |
-| Sulfamethoxazole / N-acetyl sulfamethoxazole | TID 1,920 mg \| eGFR 70 | On target | 63.0 | 59.5 | -3.5 |
-| Sulfamethoxazole / N-acetyl sulfamethoxazole | TID 1,920 mg \| eGFR 70 | Below target | 6.2 | 8.0 | 1.8 |
-| Sulfamethoxazole / N-acetyl sulfamethoxazole | TID 1,920 mg \| eGFR 70 | Above target | 30.8 | 32.5 | 1.7 |
+| Trimethoprim | b.i.d. 2,400 mg \| eGFR 70 | On target | 89.0 | 92.5 | 3.5 |
+| Trimethoprim | b.i.d. 2,400 mg \| eGFR 70 | Below target | 3.0 | 1.5 | -1.5 |
+| Trimethoprim | b.i.d. 2,400 mg \| eGFR 70 | Above target | 8.0 | 6.0 | -2.0 |
+| Trimethoprim | TID 1,920 mg \| eGFR 70 | On target | 90.9 | 85.5 | -5.4 |
+| Trimethoprim | TID 1,920 mg \| eGFR 70 | Below target | 1.8 | 1.5 | -0.3 |
+| Trimethoprim | TID 1,920 mg \| eGFR 70 | Above target | 7.3 | 13.0 | 5.7 |
+| Trimethoprim | TID 1,920 mg \| CRRT | On target | 94.0 | 97.5 | 3.5 |
+| Trimethoprim | TID 1,920 mg \| CRRT | Below target | 4.3 | 0.0 | -4.3 |
+| Trimethoprim | TID 1,920 mg \| CRRT | Above target | 1.7 | 2.5 | 0.8 |
+| Sulfamethoxazole / N-acetyl sulfamethoxazole | b.i.d. 2,400 mg \| eGFR 70 | On target | 68.7 | 68.0 | -0.7 |
+| Sulfamethoxazole / N-acetyl sulfamethoxazole | b.i.d. 2,400 mg \| eGFR 70 | Below target | 10.9 | 13.5 | 2.6 |
+| Sulfamethoxazole / N-acetyl sulfamethoxazole | b.i.d. 2,400 mg \| eGFR 70 | Above target | 20.4 | 18.5 | -1.9 |
+| Sulfamethoxazole / N-acetyl sulfamethoxazole | TID 1,920 mg \| eGFR 70 | On target | 63.0 | 57.5 | -5.5 |
+| Sulfamethoxazole / N-acetyl sulfamethoxazole | TID 1,920 mg \| eGFR 70 | Below target | 6.2 | 6.0 | -0.2 |
+| Sulfamethoxazole / N-acetyl sulfamethoxazole | TID 1,920 mg \| eGFR 70 | Above target | 30.8 | 36.5 | 5.7 |
 
 Target attainment reported in the Results versus this model, 200
 simulated subjects per arm. Differences are in percentage points.
@@ -577,11 +577,11 @@ ratio |>
 
 | Regimen / scenario | Median SMX Cmax (mg/L) | Median NASMX Cmax (mg/L) | Median NASMX:SMX ratio |
 |:---|---:|---:|---:|
-| TID 1,920 mg \| CRRT | 92.58 | 63.74 | 0.66 |
-| TID 1,920 mg \| eGFR 10 | 247.20 | 171.61 | 0.69 |
-| TID 1,920 mg \| eGFR 30 | 205.03 | 76.41 | 0.39 |
-| TID 1,920 mg \| eGFR 50 | 174.50 | 53.06 | 0.30 |
-| TID 1,920 mg \| eGFR 70 | 165.62 | 41.29 | 0.27 |
+| TID 1,920 mg \| CRRT | 93.00 | 63.47 | 0.70 |
+| TID 1,920 mg \| eGFR 10 | 246.93 | 171.73 | 0.66 |
+| TID 1,920 mg \| eGFR 30 | 216.11 | 78.78 | 0.36 |
+| TID 1,920 mg \| eGFR 50 | 178.02 | 54.92 | 0.32 |
+| TID 1,920 mg \| eGFR 70 | 165.29 | 41.08 | 0.26 |
 
 Day-5 peak concentrations under TID 1,920 mg. The metabolite-to-parent
 ratio rises steeply as renal function falls and falls on CRRT, matching
@@ -726,9 +726,9 @@ nca_summary |>
 
 | Analyte | AUCtau (mg\*h/L) | Cmax (mg/L) | Tmax (h) | Trough at 8 h (mg/L) |
 |:---|---:|---:|---:|---:|
-| N-acetyl sulfamethoxazole | 328.71 | 42.91 | 3.25 | 37.78 |
-| Sulfamethoxazole | 1082.81 | 162.35 | 0.00 | 113.61 |
-| Trimethoprim | 73.91 | 10.45 | 0.00 | 8.25 |
+| N-acetyl sulfamethoxazole | 300.03 | 39.61 | 3.25 | 34.44 |
+| Sulfamethoxazole | 1081.20 | 162.09 | 0.00 | 111.96 |
+| Trimethoprim | 68.44 | 9.94 | 0.00 | 7.43 |
 
 Median steady-state non-compartmental parameters over one 8 h dosing
 interval on day 5 (TID 1,920 mg, eGFR 70), 200 subjects. Tmax is 0 for

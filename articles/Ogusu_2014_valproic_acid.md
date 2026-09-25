@@ -266,7 +266,7 @@ cat(sprintf("Algebraic auc_ss = Dose/CL          : %.2f ug*h/mL\n", auc_alg))
 #> Algebraic auc_ss = Dose/CL          : 1740.46 ug*h/mL
 cat(sprintf("Relative difference                 : %+.4f%%\n",
             100 * (auc_trap - auc_alg) / auc_alg))
-#> Relative difference                 : -0.0169%
+#> Relative difference                 : -0.0168%
 
 stopifnot(abs(auc_trap - auc_alg) / auc_alg < 0.002)
 ```

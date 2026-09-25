@@ -237,7 +237,8 @@ exceeds `CL_CRRT`.
 characteristic polynomial
 `x^2 - (kel + k12 + k21 + k20) x + (kel*(k21 + k20) + k12*k20)`, whose
 smaller root `beta` sets the terminal slope. This one is load-bearing as
-a regression guard: `rxSolve()` defaults to `useLinCmt = TRUE`, and a
+a regression guard: `rxSolve()` defaulted to `useLinCmt = TRUE` until
+rxode2 made the conversion opt-in in September 2026 (issue 1389), and a
 two-compartment system written with micro-constants can be silently
 rewritten into a one-compartment closed form – which would leave AUC
 untouched but make the terminal half-life collapse onto `log(2)/kel`.
@@ -806,10 +807,10 @@ md2 |>
 
 | CRRT dose (mL/kg/h) | 45 kg dose | 70 kg dose | 95 kg dose | 120 kg dose | 45 kg published | 70 kg published | 95 kg published | 120 kg published | 45 kg ratio | 70 kg ratio | 95 kg ratio | 120 kg ratio |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0 | 152 | 163 | 172 | 157 | 200 | 200 | 200 | 200 | 0.76 | 0.81 | 0.86 | 0.78 |
-| 20 | 294 | 367 | 432 | 518 | 360 | 400 | 570 | 600 | 0.82 | 0.92 | 0.76 | 0.86 |
-| 35 | 388 | 518 | 648 | 758 | 400 | 560 | 760 | 800 | 0.97 | 0.93 | 0.85 | 0.95 |
-| 50 | 486 | 692 | 821 | 1002 | 540 | 700 | 950 | 1000 | 0.90 | 0.99 | 0.86 | 1.00 |
+| 0 | 162 | 166 | 170 | 157 | 200 | 200 | 200 | 200 | 0.81 | 0.83 | 0.85 | 0.79 |
+| 20 | 286 | 385 | 434 | 523 | 360 | 400 | 570 | 600 | 0.79 | 0.96 | 0.76 | 0.87 |
+| 35 | 397 | 509 | 635 | 769 | 400 | 560 | 760 | 800 | 0.99 | 0.91 | 0.83 | 0.96 |
+| 50 | 499 | 654 | 842 | 998 | 540 | 700 | 950 | 1000 | 0.92 | 0.93 | 0.89 | 1.00 |
 
 Table 3 maintenance doses (MIC 2 mg/L): simulated minimum dose for 90%
 PTA versus published. `dose` = simulated, `published` = Zhang 2025 Table
@@ -817,10 +818,10 @@ PTA versus published. `dose` = simulated, `published` = Zhang 2025 Table
 
 At 0 mL/kg/h the published entries are all exactly 200 mg – the lowest
 fixed dose the paper tested – so that row is floored rather than a true
-minimum, and the simulated values (152-172 mg) correctly fall below it.
+minimum, and the simulated values (157-170 mg) correctly fall below it.
 Table 4 corroborates that reading. Because exposure is exactly
 dose-proportional, the MIC 4 minimum must be exactly twice the MIC 2
-minimum, so doubling the simulated 0 mL/kg/h values gives 304-343 mg –
+minimum, so doubling the simulated 0 mL/kg/h values gives 315-341 mg –
 and Table 4 reports 360-400 mg for that row rather than the 400 mg that
 doubling a genuine 200 mg minimum would imply. The published MIC 2 row
 is therefore a floor, and the MIC 4 row agrees with the simulation to
@@ -850,10 +851,10 @@ md4 |>
 
 | CRRT dose (mL/kg/h) | 45 kg dose | 70 kg dose | 95 kg dose | 120 kg dose | 45 kg published | 70 kg published | 95 kg published | 120 kg published | 45 kg ratio | 70 kg ratio | 95 kg ratio | 120 kg ratio |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0 | 304 | 325 | 343 | 314 | 360 | 400 | 400 | 400 | 0.84 | 0.81 | 0.86 | 0.78 |
-| 20 | 588 | 735 | 864 | 1037 | 600 | 800 | 950 | 1200 | 0.98 | 0.92 | 0.91 | 0.86 |
-| 35 | 777 | 1037 | 1297 | 1517 | 800 | 1200 | NA | NA | 0.97 | 0.86 | NA | NA |
-| 50 | 972 | 1383 | 1642 | 2004 | 1000 | NA | NA | NA | 0.97 | NA | NA | NA |
+| 0 | 324 | 333 | 341 | 315 | 360 | 400 | 400 | 400 | 0.90 | 0.83 | 0.85 | 0.79 |
+| 20 | 572 | 769 | 869 | 1047 | 600 | 800 | 950 | 1200 | 0.95 | 0.96 | 0.91 | 0.87 |
+| 35 | 794 | 1018 | 1269 | 1537 | 800 | 1200 | NA | NA | 0.99 | 0.85 | NA | NA |
+| 50 | 998 | 1308 | 1683 | 1995 | 1000 | NA | NA | NA | 1.00 | NA | NA | NA |
 
 Table 4 maintenance doses (MIC 4 mg/L). NA published entries are cells
 Zhang 2025 marks ‘-’ (not attainable within the tested dose range).
@@ -935,10 +936,10 @@ ld2 |>
 
 | CRRT dose (mL/kg/h) | 45 kg dose | 70 kg dose | 95 kg dose | 120 kg dose | 45 kg published | 70 kg published | 95 kg published | 120 kg published | 45 kg ratio | 70 kg ratio | 95 kg ratio | 120 kg ratio |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0 | 682 | 857 | 1034 | 1188 | 800 | 840 | 1000 | 1200 | 0.85 | 1.02 | 1.03 | 0.99 |
-| 20 | 802 | 934 | 1167 | 1310 | 800 | 1000 | 1140 | 1440 | 1.00 | 0.93 | 1.02 | 0.91 |
-| 35 | 823 | 1068 | 1223 | 1467 | 1000 | 1200 | NA | NA | 0.82 | 0.89 | NA | NA |
-| 50 | 860 | 1089 | 1368 | 1593 | 1000 | 1200 | NA | NA | 0.86 | 0.91 | NA | NA |
+| 0 | 682 | 864 | 974 | 1076 | 800 | 840 | 1000 | 1200 | 0.85 | 1.03 | 0.97 | 0.90 |
+| 20 | 744 | 959 | 1114 | 1252 | 800 | 1000 | 1140 | 1440 | 0.93 | 0.96 | 0.98 | 0.87 |
+| 35 | 801 | 1004 | 1252 | 1506 | 1000 | 1200 | NA | NA | 0.80 | 0.84 | NA | NA |
+| 50 | 873 | 1110 | 1353 | 1583 | 1000 | 1200 | NA | NA | 0.87 | 0.92 | NA | NA |
 
 Table 3 loading doses (MIC 2 mg/L), day 1 AUC0-24. NA published entries
 are cells Zhang 2025 marks ‘-’. {.table}
@@ -971,9 +972,9 @@ repro |>
 
 | Published quantity | Cells compared | Median sim/pub |   Min |   Max |
 |:-------------------|---------------:|---------------:|------:|------:|
-| Table 3 LD (MIC 2) |             12 |          0.922 | 0.823 | 1.034 |
-| Table 3 MD (MIC 2) |             12 |          0.909 | 0.758 | 1.002 |
-| Table 4 MD (MIC 4) |             11 |          0.864 | 0.784 | 0.980 |
+| Table 3 LD (MIC 2) |             12 |          0.911 | 0.801 | 1.028 |
+| Table 3 MD (MIC 2) |             12 |          0.916 | 0.762 | 0.998 |
+| Table 4 MD (MIC 4) |             11 |          0.900 | 0.787 | 0.998 |
 
 Agreement with the published dose recommendations, excluding cells
 floored at the 200 mg minimum tested regimen. {.table}
@@ -1031,11 +1032,11 @@ stopifnot(nrow(flat) == 4L)
 spread <- function(x) max(x) / min(x)
 cat("MD at 0 mL/kg/h, spread across 45-120 kg: ",
     format(spread(flat$dose), digits = 3), "x (structurally flat)\n", sep = "")
-#> MD at 0 mL/kg/h, spread across 45-120 kg: 1.13x (structurally flat)
+#> MD at 0 mL/kg/h, spread across 45-120 kg: 1.08x (structurally flat)
 cat("LD at 0 mL/kg/h, spread across 45-120 kg: ",
     format(spread(ld2$dose[ld2$crrt_tier == 0]), digits = 3),
     "x (scales with Vc)\n", sep = "")
-#> LD at 0 mL/kg/h, spread across 45-120 kg: 1.74x (scales with Vc)
+#> LD at 0 mL/kg/h, spread across 45-120 kg: 1.58x (scales with Vc)
 stopifnot(spread(flat$dose) < 1.2)
 stopifnot(spread(ld2$dose[ld2$crrt_tier == 0]) > 1.3)
 ```

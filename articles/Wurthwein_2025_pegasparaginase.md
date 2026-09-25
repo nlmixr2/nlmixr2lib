@@ -1012,7 +1012,7 @@ med7  <- median(pop$Cc[abs(pop$time - 7) < 1e-6])
 med14 <- median(pop$Cc[abs(pop$time - 13.75) < 1e-6])
 c(day7 = med7, day14 = med14)
 #>     day7    day14 
-#> 918.1534 522.9600
+#> 908.0603 541.4214
 
 stopifnot(
   abs(med7 - 895) / 895 < 0.20,

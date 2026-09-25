@@ -684,7 +684,7 @@ sprintf(
   quantile(cohort_peak$cmax_overall, 0.95),
   pct_over
 )
-#> [1] "median peak 1511 ng/mL, 95th percentile 2793 ng/mL, 0.0% of subjects above 5400 ng/mL"
+#> [1] "median peak 1525 ng/mL, 95th percentile 2726 ng/mL, 0.0% of subjects above 5400 ng/mL"
 ```
 
 ## Structural identities
@@ -734,7 +734,7 @@ c(
   correlation = cor(log(implied_cl_ratio), log(implied_vc_ratio))
 )
 #> omega_cl_sd omega_vc_sd correlation 
-#>   0.3404846   0.3985524   0.6069469
+#>   0.3470567   0.4242700   0.5938860
 ```
 
 ## PKNCA validation

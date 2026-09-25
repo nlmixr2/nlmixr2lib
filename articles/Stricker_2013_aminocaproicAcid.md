@@ -248,7 +248,7 @@ sim_typical |>
   )
 #> Warning in scale_y_log10(limits = c(1, 1000)): log-10 transformation introduced
 #> infinite values.
-#> Warning: Removed 761 rows containing missing values or values outside the scale range
+#> Warning: Removed 760 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```
 
@@ -440,9 +440,9 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort_label | N | AUClast (min\*mg/L) | Cmax (mg/L) | Tmax (min) | Half-life (min) | AUCinf,obs (min\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | Cohort 1 | 6 | NC | 166 \[0.457\] | 10.0 \[10.0, 10.0\] | 114 \[1.68\] | NC |
-| 0 | Inf | Cohort 2 | 6 | NC | 330 \[1.28\] | 10.0 \[10.0, 10.0\] | 111 \[6.19\] | NC |
-| 0 | Inf | Cohort 3 | 6 | NC | 665 \[0.770\] | 10.0 \[10.0, 10.0\] | 115 \[3.08\] | NC |
+| 0 | Inf | Cohort 1 | 6 | NC | 166 \[0.457\] | 10.0 \[10.0, 10.0\] | 114 \[1.69\] | NC |
+| 0 | Inf | Cohort 2 | 6 | NC | 330 \[1.28\] | 10.0 \[10.0, 10.0\] | 111 \[6.21\] | NC |
+| 0 | Inf | Cohort 3 | 6 | NC | 665 \[0.770\] | 10.0 \[10.0, 10.0\] | 115 \[3.07\] | NC |
 
 PKNCA summary of the typical-value simulation by dose cohort. {.table}
 

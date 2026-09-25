@@ -352,11 +352,11 @@ knitr::kable(
 
 | eGFR band | CL (L/h) | Integrated AUC (mg\*h/L) | 2 x dose / CL (mg\*h/L) | % difference |
 |:---|---:|---:|---:|---:|
-| eGFR \< 15 | 0.8983 | 111.3167 | 111.3167 | 0 |
-| 15 - 30 | 1.2731 | 78.5456 | 78.5456 | 0 |
-| 30 - 60 | 1.7152 | 58.3014 | 58.3014 | 0 |
-| 60 - 90 | 2.1366 | 46.8041 | 46.8041 | 0 |
-| 90 - 130 | 2.5191 | 39.6973 | 39.6973 | 0 |
+| eGFR \< 15 | 0.8983 | 111.3167 | 111.3167 | 0e+00 |
+| 15 - 30 | 1.2731 | 78.5456 | 78.5456 | 0e+00 |
+| 30 - 60 | 1.7152 | 58.3014 | 58.3014 | 0e+00 |
+| 60 - 90 | 2.1366 | 46.8041 | 46.8041 | 1e-04 |
+| 90 - 130 | 2.5191 | 39.6974 | 39.6973 | 1e-04 |
 
 Typical-value steady-state AUC(0-24) against 2 x dose / CL. {.table}
 
@@ -409,10 +409,10 @@ knitr::kable(
 
 | Statistic                        |   Value |
 |:---------------------------------|--------:|
-| Median % difference              | -0.0016 |
-| 75th percentile \|% difference\| |  0.0054 |
-| 90th percentile \|% difference\| |  0.0176 |
-| Max \|% difference\|             |  0.5217 |
+| Median % difference              | -0.0015 |
+| 75th percentile \|% difference\| |  0.0040 |
+| 90th percentile \|% difference\| |  0.0096 |
+| Max \|% difference\|             |  0.2396 |
 
 PKNCA AUC(0-24) at steady state against dose/CL, over 200 virtual
 subjects. {.table}
@@ -464,10 +464,10 @@ knitr::kable(
 
 | NCA parameter | Units   | Simulated median |
 |:--------------|:--------|-----------------:|
-| Cmax          | mg/L    |            4.607 |
-| Ctrough       | mg/L    |            1.875 |
-| Cav           | mg/L    |            2.451 |
-| AUC0-24       | mg\*h/L |           58.830 |
+| Cmax          | mg/L    |            4.578 |
+| Ctrough       | mg/L    |            1.820 |
+| Cav           | mg/L    |            2.501 |
+| AUC0-24       | mg\*h/L |           60.022 |
 
 Simulated steady-state NCA, 50 mg q12h at the cohort median eGFR (42.88
 mL/min/1.73 m2), 200 virtual subjects. {.table}
@@ -502,9 +502,9 @@ knitr::kable(
 
 | Quantity                                      |  mg/L |
 |:----------------------------------------------|------:|
-| Simulated Cav, 50 mg q12h                     | 2.451 |
+| Simulated Cav, 50 mg q12h                     | 2.501 |
 | Wang 2026 Table 1 mean observed concentration | 3.077 |
-| Simulated Cav, 100 mg q12h                    | 4.903 |
+| Simulated Cav, 100 mg q12h                    | 5.002 |
 
 Scale check against the pooled mean observed concentration. {.table}
 
@@ -659,34 +659,34 @@ knitr::kable(
 |:---|---:|:---|---:|:---|
 | eGFR \< 15 | 0.1 | 50 mg q12h | 100.0 |  |
 | eGFR \< 15 | 0.2 | 50 mg q12h | 100.0 |  |
-| eGFR \< 15 | 0.5 | 50 mg q12h | 99.5 |  |
-| eGFR \< 15 | 1.0 | 75 mg q12h | 94.5 |  |
-| eGFR \< 15 | 1.5 | 100 mg q12h | 92.5 |  |
-| eGFR \< 15 | 2.0 | 150 mg q12h | 94.0 |  |
+| eGFR \< 15 | 0.5 | 50 mg q12h | 98.0 |  |
+| eGFR \< 15 | 1.0 | 75 mg q12h | 95.5 |  |
+| eGFR \< 15 | 1.5 | 100 mg q12h | 94.0 |  |
+| eGFR \< 15 | 2.0 | 150 mg q12h | 94.5 |  |
 | 15 - 30 | 0.1 | 50 mg q12h | 100.0 |  |
 | 15 - 30 | 0.2 | 50 mg q12h | 99.5 |  |
-| 15 - 30 | 0.5 | 50 mg q12h | 93.0 |  |
+| 15 - 30 | 0.5 | 50 mg q12h | 95.0 |  |
 | 15 - 30 | 1.0 | 75 mg q12h | 87.0 |  |
-| 15 - 30 | 1.5 | 150 mg q12h | 97.5 |  |
-| 15 - 30 | 2.0 | 150 mg q12h | 86.0 |  |
-| 30 - 60 | 0.1 | 50 mg q12h | 99.5 |  |
-| 30 - 60 | 0.2 | 50 mg q12h | 98.5 |  |
-| 30 - 60 | 0.5 | 50 mg q12h | 89.5 |  |
-| 30 - 60 | 1.0 | 100 mg q12h | 89.5 |  |
-| 30 - 60 | 1.5 | 150 mg q12h | 86.0 |  |
-| 30 - 60 | 2.0 | 200 mg q12h | 86.5 |  |
-| 60 - 90 | 0.1 | 50 mg q12h | 99.5 |  |
-| 60 - 90 | 0.2 | 50 mg q12h | 98.0 |  |
-| 60 - 90 | 0.5 | 75 mg q12h | 93.5 |  |
-| 60 - 90 | 1.0 | 150 mg q12h | 93.5 |  |
-| 60 - 90 | 1.5 | 175 mg q12h | 88.0 |  |
-| 60 - 90 | 2.0 | 150 mg q8h | 85.5 |  |
-| 90 - 130 | 0.1 | 50 mg q12h | 99.5 |  |
-| 90 - 130 | 0.2 | 50 mg q12h | 96.5 |  |
-| 90 - 130 | 0.5 | 75 mg q12h | 91.5 |  |
-| 90 - 130 | 1.0 | 150 mg q12h | 90.5 |  |
-| 90 - 130 | 1.5 | 200 mg q12h | 83.0 |  |
-| 90 - 130 | 2.0 | 175 mg q8h | 87.5 |  |
+| 15 - 30 | 1.5 | 150 mg q12h | 95.0 |  |
+| 15 - 30 | 2.0 | 150 mg q12h | 90.0 |  |
+| 30 - 60 | 0.1 | 50 mg q12h | 100.0 |  |
+| 30 - 60 | 0.2 | 50 mg q12h | 98.0 |  |
+| 30 - 60 | 0.5 | 50 mg q12h | 89.0 |  |
+| 30 - 60 | 1.0 | 100 mg q12h | 90.5 |  |
+| 30 - 60 | 1.5 | 150 mg q12h | 87.0 |  |
+| 30 - 60 | 2.0 | 200 mg q12h | 87.0 |  |
+| 60 - 90 | 0.1 | 50 mg q12h | 100.0 |  |
+| 60 - 90 | 0.2 | 50 mg q12h | 97.5 |  |
+| 60 - 90 | 0.5 | 75 mg q12h | 94.5 |  |
+| 60 - 90 | 1.0 | 150 mg q12h | 92.0 |  |
+| 60 - 90 | 1.5 | 175 mg q12h | 85.0 |  |
+| 60 - 90 | 2.0 | 150 mg q8h | 86.0 |  |
+| 90 - 130 | 0.1 | 50 mg q12h | 99.0 |  |
+| 90 - 130 | 0.2 | 50 mg q12h | 95.0 |  |
+| 90 - 130 | 0.5 | 75 mg q12h | 90.0 |  |
+| 90 - 130 | 1.0 | 150 mg q12h | 86.5 |  |
+| 90 - 130 | 1.5 | 200 mg q12h | 84.0 |  |
+| 90 - 130 | 2.0 | 175 mg q8h | 84.5 |  |
 
 Simulated day-3 PTA for AUC24/MIC \>= 50 under the Wang 2026 Table 3
 recommendations. \* marks a regimen falling short of the paper’s PTA \>=

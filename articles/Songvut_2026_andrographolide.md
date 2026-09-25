@@ -459,7 +459,7 @@ rep_sim <- solve_er(ui, rep_events)
 sd_sim <- sd(rep_sim$sim - rep_sim$viral_loadReduction)
 c(addSd_encoded = addSd_encoded, sd_of_simulated_residuals = sd_sim)
 #>             addSd_encoded sd_of_simulated_residuals 
-#>                  1.245000                  1.208808
+#>                  1.245000                  1.291494
 
 stopifnot(
   nrow(rep_sim) == 600L,

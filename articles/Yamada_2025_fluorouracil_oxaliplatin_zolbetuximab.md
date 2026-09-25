@@ -379,6 +379,8 @@ fu_dose <- tidyr::expand_grid(
 
 fu_conc_obj <- PKNCA::PKNCAconc(fu_conc, Cc ~ time | treatment + id,
                                 concu = "ng/mL", timeu = "h")
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
 fu_dose_obj <- PKNCA::PKNCAdose(fu_dose, amt ~ time | treatment + id, doseu = "mg")
 
 fu_intervals <- data.frame(

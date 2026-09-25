@@ -509,11 +509,11 @@ knitr::kable(shape, digits = 2,
 
 | regimen    | tmax_median_profile |
 |:-----------|--------------------:|
-| 300 mg BID |                3.00 |
-| 300 mg QD  |                3.25 |
-| 400 mg QD  |                3.25 |
-| 500 mg QD  |                3.25 |
-| 600 mg QD  |                3.25 |
+| 300 mg BID |                 3.5 |
+| 300 mg QD  |                 3.5 |
+| 400 mg QD  |                 3.5 |
+| 500 mg QD  |                 3.5 |
+| 600 mg QD  |                 3.5 |
 
 Time of the peak of the median profile within the steady-state day
 (paper: approximately 3 h). {.table}
@@ -621,25 +621,25 @@ ss_res |>
 
 | Regimen    | Parameter |  Median |      Q1 |      Q3 |
 |:-----------|:----------|--------:|--------:|--------:|
-| 300 mg BID | AUClast   | 26682.5 | 21095.3 | 33378.4 |
-| 300 mg BID | Clast     |  1036.7 |   811.3 |  1338.5 |
-| 300 mg BID | Cmax      |  1392.8 |  1106.6 |  1693.0 |
-| 300 mg BID | Tmax      |     3.2 |     2.8 |     3.8 |
-| 300 mg QD  | AUClast   | 11874.4 |  9109.3 | 15593.9 |
-| 300 mg QD  | Clast     |   384.7 |   283.9 |   541.6 |
-| 300 mg QD  | Cmax      |   815.8 |   669.3 |   996.2 |
+| 300 mg BID | AUClast   | 28413.0 | 20325.6 | 34725.7 |
+| 300 mg BID | Clast     |  1128.4 |   789.8 |  1393.0 |
+| 300 mg BID | Cmax      |  1480.0 |  1165.4 |  1751.3 |
+| 300 mg BID | Tmax      |     3.2 |     3.0 |     3.8 |
+| 300 mg QD  | AUClast   | 12789.5 |  9072.3 | 16065.8 |
+| 300 mg QD  | Clast     |   386.8 |   253.8 |   567.0 |
+| 300 mg QD  | Cmax      |   868.2 |   689.2 |  1013.5 |
 | 300 mg QD  | Tmax      |     3.5 |     3.0 |     4.0 |
-| 400 mg QD  | AUClast   | 15832.6 | 12145.7 | 20791.9 |
-| 400 mg QD  | Clast     |   512.9 |   378.5 |   722.1 |
-| 400 mg QD  | Cmax      |  1087.7 |   892.4 |  1328.2 |
+| 400 mg QD  | AUClast   | 17052.7 | 12096.4 | 21421.0 |
+| 400 mg QD  | Clast     |   515.8 |   338.3 |   756.1 |
+| 400 mg QD  | Cmax      |  1157.6 |   919.0 |  1351.3 |
 | 400 mg QD  | Tmax      |     3.5 |     3.0 |     4.0 |
-| 500 mg QD  | AUClast   | 19790.8 | 15182.2 | 25989.9 |
-| 500 mg QD  | Clast     |   641.2 |   473.1 |   902.7 |
-| 500 mg QD  | Cmax      |  1359.7 |  1115.5 |  1660.3 |
+| 500 mg QD  | AUClast   | 21315.9 | 15120.4 | 26776.3 |
+| 500 mg QD  | Clast     |   644.7 |   422.9 |   945.1 |
+| 500 mg QD  | Cmax      |  1447.0 |  1148.7 |  1689.1 |
 | 500 mg QD  | Tmax      |     3.5 |     3.0 |     4.0 |
-| 600 mg QD  | AUClast   | 23748.9 | 18218.6 | 31187.9 |
-| 600 mg QD  | Clast     |   769.4 |   567.8 |  1083.2 |
-| 600 mg QD  | Cmax      |  1631.6 |  1338.6 |  1992.4 |
+| 600 mg QD  | AUClast   | 25579.1 | 18144.5 | 32131.5 |
+| 600 mg QD  | Clast     |   773.7 |   507.5 |  1134.1 |
+| 600 mg QD  | Cmax      |  1736.3 |  1378.5 |  2026.9 |
 | 600 mg QD  | Tmax      |     3.5 |     3.0 |     4.0 |
 
 Simulated steady-state NCA, median (interquartile range) over 150
@@ -673,26 +673,26 @@ knitr::kable(cmp, digits = 1,
 
 | NCA parameter      | regimen    | Reference | Simulated | % diff |
 |:-------------------|:-----------|:----------|:----------|:-------|
-| Cmax (ng/mL)       | 300 mg BID | 1550      | 1390      | -10.2% |
-| Cmax (ng/mL)       | 300 mg QD  | 955       | 816       | -14.6% |
-| Cmax (ng/mL)       | 400 mg QD  | 1270      | 1090      | -14.6% |
-| Cmax (ng/mL)       | 500 mg QD  | 1590      | 1360      | -14.6% |
-| Cmax (ng/mL)       | 600 mg QD  | 1910      | 1630      | -14.6% |
+| Cmax (ng/mL)       | 300 mg BID | 1550      | 1480      | -4.6%  |
+| Cmax (ng/mL)       | 300 mg QD  | 955       | 868       | -9.1%  |
+| Cmax (ng/mL)       | 400 mg QD  | 1270      | 1160      | -9.1%  |
+| Cmax (ng/mL)       | 500 mg QD  | 1590      | 1450      | -9.1%  |
+| Cmax (ng/mL)       | 600 mg QD  | 1910      | 1740      | -9.1%  |
 | Tmax (h)           | 300 mg BID | 3         | 3.25      | +8.3%  |
 | Tmax (h)           | 300 mg QD  | 3         | 3.5       | +16.7% |
 | Tmax (h)           | 400 mg QD  | 3         | 3.5       | +16.7% |
 | Tmax (h)           | 500 mg QD  | 3         | 3.5       | +16.7% |
 | Tmax (h)           | 600 mg QD  | 3         | 3.5       | +16.7% |
-| Clast (ng/mL)      | 300 mg BID | 960       | 1040      | +8.0%  |
-| Clast (ng/mL)      | 300 mg QD  | 443       | 385       | -13.2% |
-| Clast (ng/mL)      | 400 mg QD  | 591       | 513       | -13.2% |
-| Clast (ng/mL)      | 500 mg QD  | 739       | 641       | -13.2% |
-| Clast (ng/mL)      | 600 mg QD  | 887       | 769       | -13.3% |
-| AUClast (ng\*h/mL) | 300 mg BID | 29700     | 26700     | -10.1% |
-| AUClast (ng\*h/mL) | 300 mg QD  | 14300     | 11900     | -16.8% |
-| AUClast (ng\*h/mL) | 400 mg QD  | 19000     | 15800     | -16.8% |
-| AUClast (ng\*h/mL) | 500 mg QD  | 23800     | 19800     | -16.8% |
-| AUClast (ng\*h/mL) | 600 mg QD  | 28600     | 23700     | -16.8% |
+| Clast (ng/mL)      | 300 mg BID | 960       | 1130      | +17.5% |
+| Clast (ng/mL)      | 300 mg QD  | 443       | 387       | -12.7% |
+| Clast (ng/mL)      | 400 mg QD  | 591       | 516       | -12.7% |
+| Clast (ng/mL)      | 500 mg QD  | 739       | 645       | -12.8% |
+| Clast (ng/mL)      | 600 mg QD  | 887       | 774       | -12.8% |
+| AUClast (ng\*h/mL) | 300 mg BID | 29700     | 28400     | -4.2%  |
+| AUClast (ng\*h/mL) | 300 mg QD  | 14300     | 12800     | -10.4% |
+| AUClast (ng\*h/mL) | 400 mg QD  | 19000     | 17100     | -10.4% |
+| AUClast (ng\*h/mL) | 500 mg QD  | 23800     | 21300     | -10.4% |
+| AUClast (ng\*h/mL) | 600 mg QD  | 28600     | 25600     | -10.4% |
 
 Simulated versus Kang 2025 Table 3 (median of 2400 virtual patients). \*
 differs by more than 20%. {.table}
@@ -729,7 +729,7 @@ of 960 between them.
 pct <- suppressWarnings(as.numeric(gsub("[^0-9.+-]", "", cmp[["% diff"]])))
 worst <- max(abs(pct), na.rm = TRUE)
 worst
-#> [1] 16.8
+#> [1] 17.5
 
 # The Table 3 gap is a documented deviation (see below): a uniform ~12% on AUC
 # with the tmax grid artifact the largest single row. Realised worst-case
@@ -910,9 +910,9 @@ knitr::kable(rel, digits = 1,
 
 | Quantity | Paper: 400 mg QD vs 300 mg BID (%) | Model (%) |
 |:---------|-----------------------------------:|----------:|
-| AUC0-24h |                                -36 |     -40.7 |
-| Cmax     |                                -18 |     -21.9 |
-| Ctrough  |                                -38 |     -50.5 |
+| AUC0-24h |                                -36 |     -40.0 |
+| Cmax     |                                -18 |     -21.8 |
+| Ctrough  |                                -38 |     -54.3 |
 
 Kang 2025 Results section 2.4 / Discussion: 400 mg once daily versus the
 approved 300 mg twice daily. {.table}
@@ -966,9 +966,9 @@ knitr::kable(hv_tab, digits = 1,
 
 | Parameter | Median |     Q1 |     Q3 |
 |:----------|-------:|-------:|-------:|
-| AUClast   | 6715.4 | 5336.4 | 9215.6 |
-| Cmax      |  540.0 |  377.6 |  722.6 |
-| t½        |   17.4 |   10.1 |   28.8 |
+| AUClast   | 7703.0 | 5539.8 | 9704.8 |
+| Cmax      |  547.3 |  425.8 |  700.5 |
+| t½        |   16.5 |   10.2 |   25.9 |
 | Tmax      |    3.5 |    3.0 |    4.0 |
 
 Single 400 mg oral dose in 150 virtual healthy volunteers, 0-48 h.

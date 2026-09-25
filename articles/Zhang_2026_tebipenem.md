@@ -445,10 +445,10 @@ pd_summary |>
 
 | PK/PD target | Regimen | Simulated (%) | Zhang 2026 median (%) | Zhang 2026 95% CI (%) | Within published CI |
 |:---|:---|---:|---:|:---|:---|
-| 40% fT \> MIC | 3 mg/kg QID | 92.5 | 92.4 | 86.4 - 98.5 | TRUE |
-| 40% fT \> MIC | 4 mg/kg TID | 83.0 | 86.4 | 77.3 - 93.9 | TRUE |
-| fAUC0-24/MIC/tau \> 34.58 | 3 mg/kg QID | 77.5 | 77.3 | 63.6 - 86.4 | TRUE |
-| fAUC0-24/MIC/tau \> 34.58 | 4 mg/kg TID | 53.5 | 54.5 | 43.9 - 65.2 | TRUE |
+| 40% fT \> MIC | 3 mg/kg QID | 93.0 | 92.4 | 86.4 - 98.5 | TRUE |
+| 40% fT \> MIC | 4 mg/kg TID | 86.0 | 86.4 | 77.3 - 93.9 | TRUE |
+| fAUC0-24/MIC/tau \> 34.58 | 3 mg/kg QID | 75.5 | 77.3 | 63.6 - 86.4 | TRUE |
+| fAUC0-24/MIC/tau \> 34.58 | 4 mg/kg TID | 51.5 | 54.5 | 43.9 - 65.2 | TRUE |
 
 Proportion of virtual participants achieving each PK/PD target, against
 the median and 95% confidence interval reported across Zhang 2026’s 500
@@ -565,6 +565,16 @@ sim_nca <- dplyr::bind_rows(
   sim_sato |> dplyr::select(id, time, Cc, treatment)
 ) |>
   dplyr::filter(!is.na(Cc))
+
+# The ODE integrator can undershoot zero by about its absolute tolerance where
+# a trough reaches numerically zero: the shortest half-life drawn here is
+# 0.12 h, so a 6 h QID trough is ~50 half-lives down and lands at -2.7e-12
+# ug/mL. PKNCA's log-down trapezoid returns NaN across that sign change, so
+# the undershoot is set to zero -- after checking it is numerical, since a
+# genuinely negative concentration would be comparable to the peak. Dropping
+# those rows instead would bridge each trough with a linear trapezoid.
+stopifnot(all(sim_nca$Cc >= -1e-6 * max(sim_nca$Cc)))
+sim_nca$Cc <- pmax(sim_nca$Cc, 0)
 
 # Guarantee a time = 0 row per (treatment, id); pre-dose Cc = 0 is correct for
 # an extravascular model.
@@ -697,8 +707,8 @@ identity_chk |>
 
 | Regimen     | Median AUC0-72 / (Dose/CL) | Minimum | Maximum |
 |:------------|---------------------------:|--------:|--------:|
-| 3 mg/kg QID |                     0.9955 |  0.8214 |  1.0329 |
-| 4 mg/kg TID |                     0.9972 |  0.7829 |  1.0329 |
+| 3 mg/kg QID |                     0.9964 |  0.7517 |  1.0186 |
+| 4 mg/kg TID |                     0.9979 |  0.7796 |  1.0211 |
 
 Per-participant mass-balance identity for AUC0-72. {.table}
 
@@ -730,9 +740,9 @@ tibble::tibble(
 
 | Quantity              | CV (%) |
 |:----------------------|-------:|
-| CL                    |   32.5 |
-| total dose / CL (TID) |   23.6 |
-| AUC0-72 (TID, PKNCA)  |   23.7 |
+| CL                    |   32.3 |
+| total dose / CL (TID) |   26.1 |
+| AUC0-72 (TID, PKNCA)  |   26.2 |
 
 Coefficients of variation. Zhang 2026 Table S2 reports an AUC0-72h mean
 of 52.98 and SD of 19.37 ug\*h/mL, i.e. a CV of 36.6%, which the
@@ -821,10 +831,10 @@ knitr::kable(
 
 | NCA parameter      | treatment                  | Reference | Simulated | % diff |
 |:-------------------|:---------------------------|----------:|----------:|-------:|
-| Cmax (ug/mL)       | 4 mg/kg TID                |       2.8 |      2.91 |  +3.9% |
+| Cmax (ug/mL)       | 4 mg/kg TID                |       2.8 |         3 |  +7.2% |
 | Cmax (ug/mL)       | Sato 4 mg/kg BID (typical) |      3.48 |      3.04 | -12.8% |
 | Tmax (h)           | Sato 4 mg/kg BID (typical) |      0.74 |      0.64 | -13.5% |
-| AUClast (ug\*h/mL) | 4 mg/kg TID                |      50.4 |      49.5 |  -1.9% |
+| AUClast (ug\*h/mL) | 4 mg/kg TID                |      50.4 |      49.5 |  -1.8% |
 | AUClast (ug\*h/mL) | Sato 4 mg/kg BID (typical) |        11 |      10.7 |  -3.2% |
 | t½ (h)             | Sato 4 mg/kg BID (typical) |      1.05 |     0.897 | -14.5% |
 

@@ -406,10 +406,10 @@ tibble::tibble(
 
 | NCA parameter      | Simulated median | Model-implied reference |
 |:-------------------|-----------------:|------------------------:|
-| Cmax (mg/L)        |            11.11 |                      NA |
-| Tmax (h)           |             4.25 |                      NA |
-| AUC0-inf (mg\*h/L) |           752.35 |                  764.54 |
-| t1/2 (h)           |            42.99 |                   42.41 |
+| Cmax (mg/L)        |            11.89 |                      NA |
+| Tmax (h)           |             4.50 |                      NA |
+| AUC0-inf (mg\*h/L) |           777.37 |                  764.54 |
+| t1/2 (h)           |            43.30 |                   42.41 |
 
 Simulated NCA vs the values the packaged PK parameters imply. {.table}
 
@@ -417,7 +417,7 @@ Simulated NCA vs the values the packaged PK parameters imply. {.table}
 
 auc_pct <- 100 * (nca_summary$aucinf.obs - auc_expected) / auc_expected
 auc_pct
-#> [1] -1.593756
+#> [1] 1.678233
 
 # Cohort-derived, so bound the magnitude with headroom rather than pinning a
 # value from one draw. The median of a log-normal AUC is Dose/CL exactly, so
@@ -518,7 +518,7 @@ gates <- c(
 )
 gates
 #> proposed vs Eq 21    2-cmt vs Eq 22 proposed vs 2-cmt 
-#>      4.655206e-07      6.595467e-07      6.384738e-07
+#>      4.655206e-07      6.603114e-07      6.392386e-07
 
 # These are deterministic solves of published constants against a published
 # closed form -- no cohort, no RNG -- so a tight bound is correct and is what
@@ -615,7 +615,7 @@ multidose <- c(
 )
 multidose
 #>  q24h (dose after distribution phase) q2h  (dose within distribution phase) 
-#>                          1.857452e-05                          2.700860e-01
+#>                          1.857176e-05                          2.700842e-01
 
 # Deterministic. The q24h agreement is the paper's stated validity condition;
 # the q2h disagreement is the Figure S1 misspecification, and asserting that it

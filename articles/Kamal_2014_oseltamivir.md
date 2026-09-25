@@ -475,9 +475,9 @@ tibble::tibble(
 
 | Quantity                                 | Published | Recovered |
 |:-----------------------------------------|----------:|----------:|
-| Intercept: CLM/F at 24 weeks, 8 kg (L/h) |    4.7500 |    5.1800 |
-| Slope: CLM/F per unit (AGE/24 - 1) (L/h) |    1.5675 |    1.6852 |
-| Implied CLM,AGE coefficient              |    0.3300 |    0.3253 |
+| Intercept: CLM/F at 24 weeks, 8 kg (L/h) |    4.7500 |    5.1705 |
+| Slope: CLM/F per unit (AGE/24 - 1) (L/h) |    1.5675 |    1.5722 |
+| Implied CLM,AGE coefficient              |    0.3300 |    0.3041 |
 
 Least-squares recovery of the Kamal 2014 age effect from the simulated
 cohort. {.table}
@@ -599,11 +599,11 @@ exposure_by_group |>
 
 | Age subgroup | N | Median AUC(0-12) (h\*ng/mL) | Q1 AUC | Q3 AUC | Median Cmin (ng/mL) | Median Cmax (ng/mL) |
 |:---|---:|---:|---:|---:|---:|---:|
-| 0-1 mo | 20 | 4679 | 3998 | 6196 | 230 | 521 |
-| 1-3 mo | 49 | 5383 | 3734 | 7249 | 293 | 566 |
-| 3-6 mo | 37 | 4739 | 3874 | 6679 | 309 | 483 |
-| 6-9 mo | 53 | 4527 | 3572 | 6382 | 273 | 470 |
-| 9-12 mo | 41 | 3430 | 2769 | 5109 | 215 | 366 |
+| 0-1 mo | 20 | 5123 | 4092 | 6396 | 234 | 620 |
+| 1-3 mo | 49 | 5093 | 4025 | 6295 | 279 | 547 |
+| 3-6 mo | 37 | 4815 | 4354 | 6153 | 302 | 517 |
+| 6-9 mo | 53 | 4393 | 3779 | 5574 | 261 | 461 |
+| 9-12 mo | 41 | 3825 | 3063 | 5174 | 223 | 411 |
 
 Simulated steady-state OC exposure by age subgroup at 3 mg/kg twice
 daily. {.table style="width:100%;"}
@@ -636,11 +636,11 @@ tibble::tibble(
 
 | Age subgroup | Typical-value median AUC (h\*ng/mL) | Cohort median AUC (h\*ng/mL) |
 |:---|---:|---:|
-| 0-1 mo | 5816 | 4679 |
-| 1-3 mo | 5474 | 5383 |
-| 3-6 mo | 4990 | 4739 |
-| 6-9 mo | 4499 | 4527 |
-| 9-12 mo | 4064 | 3430 |
+| 0-1 mo | 5816 | 5123 |
+| 1-3 mo | 5474 | 5093 |
+| 3-6 mo | 4990 | 4815 |
+| 6-9 mo | 4499 | 4393 |
+| 9-12 mo | 4064 | 3825 |
 
 Median steady-state OC AUC(0-12) by age subgroup, typical-value versus
 stochastic cohort. {.table}
@@ -796,16 +796,16 @@ dplyr::bind_rows(summarise_nca(nca_oc, "Oseltamivir carboxylate"),
 
 | Analyte | Age subgroup | AUClast 0-12 (mg\*h/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) |
 |:---|:---|---:|---:|---:|---:|
-| Oseltamivir carboxylate | 0-1 mo | 4.679 | 0.521 | 0.230 | 3.875 |
-| Oseltamivir carboxylate | 1-3 mo | 5.383 | 0.566 | 0.293 | 3.750 |
-| Oseltamivir carboxylate | 3-6 mo | 4.739 | 0.483 | 0.309 | 4.000 |
-| Oseltamivir carboxylate | 6-9 mo | 4.527 | 0.470 | 0.273 | 3.750 |
-| Oseltamivir carboxylate | 9-12 mo | 3.430 | 0.366 | 0.215 | 4.250 |
-| Oseltamivir | 0-1 mo | 0.220 | 0.059 | 0.003 | 1.250 |
-| Oseltamivir | 1-3 mo | 0.287 | 0.063 | 0.005 | 1.250 |
-| Oseltamivir | 3-6 mo | 0.259 | 0.055 | 0.004 | 1.250 |
-| Oseltamivir | 6-9 mo | 0.278 | 0.062 | 0.006 | 1.250 |
-| Oseltamivir | 9-12 mo | 0.288 | 0.063 | 0.005 | 1.500 |
+| Oseltamivir carboxylate | 0-1 mo | 5.123 | 0.620 | 0.234 | 3.375 |
+| Oseltamivir carboxylate | 1-3 mo | 5.093 | 0.547 | 0.279 | 4.000 |
+| Oseltamivir carboxylate | 3-6 mo | 4.815 | 0.517 | 0.302 | 4.000 |
+| Oseltamivir carboxylate | 6-9 mo | 4.393 | 0.461 | 0.261 | 4.250 |
+| Oseltamivir carboxylate | 9-12 mo | 3.825 | 0.411 | 0.223 | 4.000 |
+| Oseltamivir | 0-1 mo | 0.228 | 0.063 | 0.003 | 1.125 |
+| Oseltamivir | 1-3 mo | 0.238 | 0.059 | 0.004 | 1.250 |
+| Oseltamivir | 3-6 mo | 0.271 | 0.066 | 0.005 | 1.250 |
+| Oseltamivir | 6-9 mo | 0.281 | 0.058 | 0.005 | 1.250 |
+| Oseltamivir | 9-12 mo | 0.289 | 0.066 | 0.005 | 1.250 |
 
 Median PKNCA parameters over the steady-state 12-hour interval, 3 mg/kg
 twice daily. {.table}
@@ -845,7 +845,7 @@ tibble::tibble(
 | Comparison                            | Median ratio | Max \|deviation\| |
 |:--------------------------------------|-------------:|------------------:|
 | PKNCA auclast vs trapezoidal AUC      |      1.00000 |           0.00000 |
-| PKNCA auclast vs per-subject Dose/CLM |      0.99855 |           0.01208 |
+| PKNCA auclast vs per-subject Dose/CLM |      0.99871 |           0.03022 |
 
 PKNCA cross-checks against the trapezoidal integral and the closed-form
 steady-state identity. {.table}
@@ -895,9 +895,9 @@ knitr::kable(bridging, digits = 0,
 
 | Criterion | Threshold | Required percentile | Simulated | Criterion met |
 |:---|---:|:---|---:|:---|
-| AUC(0-12) \> 3,905 h\*ng/mL in 50% of subjects | 3905 | 50th (median) | 4671 | yes |
-| AUC(0-12) \> 2,618 h\*ng/mL in 84% of subjects | 2618 | 16th | 3151 | yes |
-| AUC(0-12) \> 1,807 h\*ng/mL in 95% of subjects | 1807 | 5th | 2604 | yes |
+| AUC(0-12) \> 3,905 h\*ng/mL in 50% of subjects | 3905 | 50th (median) | 4683 | yes |
+| AUC(0-12) \> 2,618 h\*ng/mL in 84% of subjects | 2618 | 16th | 3354 | yes |
+| AUC(0-12) \> 1,807 h\*ng/mL in 95% of subjects | 1807 | 5th | 2667 | yes |
 
 Kamal 2014 pharmacokinetic bridging criteria versus the simulated 3
 mg/kg twice-daily cohort. {.table}
@@ -945,10 +945,10 @@ knitr::kable(lower_doses, digits = c(1, 0, 0, 0),
 
 | Dose (mg/kg BID) | Median AUC(0-12) (h\*ng/mL) | Margin over 3,905 criterion | Exceeds 3,905 criterion |
 |---:|---:|:---|:---|
-| 2.0 | 3114 | -20% | no |
-| 2.5 | 3892 | -0% | no |
-| 3.0 | 4671 | +20% | yes |
-| 3.5 | 5449 | +40% | yes |
+| 2.0 | 3122 | -20% | no |
+| 2.5 | 3902 | -0% | no |
+| 3.0 | 4683 | +20% | yes |
+| 3.5 | 5463 | +40% | yes |
 
 Cohort median steady-state OC AUC(0-12) across the simulated dose levels
 (exact dose-proportional scaling). {.table}
@@ -1001,7 +1001,7 @@ knitr::kable(cmp, digits = 3,
 
 | NCA parameter | cohort | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
-| AUClast (mg\*h/L) | OC, infants, 3 mg/kg BID, steady state | 3.9 | 4.67 | +19.6% |
+| AUClast (mg\*h/L) | OC, infants, 3 mg/kg BID, steady state | 3.9 | 4.68 | +19.9% |
 
 Simulated cohort median OC AUC(0-12) at steady state versus the Kamal
 2014 bridging comparator (mean AUCinf of 3,905 h*ng/mL in children aged
@@ -1019,7 +1019,7 @@ For orientation against the other exposures the paper cites: twice-daily
 3,000-6,000 h*ng/mL; 2 mg/kg twice daily gave a mean steady-state OC AUC
 of 2,969 h*ng/mL in children aged 1-12 years and 4,534 h*ng/mL in
 adolescents aged 13-18 years. The simulated infant cohort median of
-4,671 h*ng/mL sits inside the adult 75-150 mg twice-daily band, which is
+4,683 h*ng/mL sits inside the adult 75-150 mg twice-daily band, which is
 the bridging conclusion the paper draws.
 
 ## Assumptions and deviations

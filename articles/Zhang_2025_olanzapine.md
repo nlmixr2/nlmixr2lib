@@ -881,34 +881,34 @@ selection |>
 
 | Condition | Weight | Table 4 dose (mg/kg/day) | Attainment there (%) | Best simulated (mg/kg/day) | Attainment at best (%) | Lost by using Table 4 (pts) |
 |:---|:---|---:|---:|---:|---:|---:|
-| Once daily, no paroxetine | 40 kg | NA | NA | 0.8 | 46.0 | NA |
-| Once daily, no paroxetine | 50 kg | NA | NA | 0.8 | 43.5 | NA |
-| Once daily, no paroxetine | 60 kg | NA | NA | 0.8 | 50.5 | NA |
-| Once daily, no paroxetine | 70 kg | NA | NA | 1.0 | 47.5 | NA |
-| Once daily, no paroxetine | 80 kg | NA | NA | 0.6 | 50.0 | NA |
-| Once daily, no paroxetine | 90 kg | NA | NA | 0.7 | 56.5 | NA |
-| Once daily, no paroxetine | 100 kg | NA | NA | 0.8 | 50.0 | NA |
-| Once daily, with paroxetine | 40 kg | 0.5 | 54.5 | 0.4 | 55.0 | 0.5 |
-| Once daily, with paroxetine | 50 kg | 0.5 | 47.5 | 0.8 | 51.0 | 3.5 |
-| Once daily, with paroxetine | 60 kg | 0.4 | 55.0 | 0.5 | 57.0 | 2.0 |
-| Once daily, with paroxetine | 70 kg | 0.4 | 64.0 | 0.4 | 64.0 | 0.0 |
-| Once daily, with paroxetine | 80 kg | 0.4 | 59.5 | 0.4 | 59.5 | 0.0 |
-| Once daily, with paroxetine | 90 kg | 0.4 | 56.0 | 0.3 | 56.5 | 0.5 |
-| Once daily, with paroxetine | 100 kg | 0.4 | 57.0 | 0.4 | 57.0 | 0.0 |
-| Twice daily, no paroxetine | 40 kg | 0.5 | 62.5 | 0.6 | 67.5 | 5.0 |
-| Twice daily, no paroxetine | 50 kg | 0.5 | 63.0 | 0.5 | 63.0 | 0.0 |
-| Twice daily, no paroxetine | 60 kg | 0.4 | 64.5 | 0.4 | 64.5 | 0.0 |
-| Twice daily, no paroxetine | 70 kg | 0.4 | 60.0 | 0.5 | 61.0 | 1.0 |
-| Twice daily, no paroxetine | 80 kg | 0.4 | 66.5 | 0.4 | 66.5 | 0.0 |
-| Twice daily, no paroxetine | 90 kg | 0.4 | 68.0 | 0.4 | 68.0 | 0.0 |
-| Twice daily, no paroxetine | 100 kg | 0.4 | 71.5 | 0.4 | 71.5 | 0.0 |
-| Twice daily, with paroxetine | 40 kg | 0.3 | 69.5 | 0.3 | 69.5 | 0.0 |
-| Twice daily, with paroxetine | 50 kg | 0.3 | 67.0 | 0.3 | 67.0 | 0.0 |
-| Twice daily, with paroxetine | 60 kg | 0.3 | 70.5 | 0.3 | 70.5 | 0.0 |
-| Twice daily, with paroxetine | 70 kg | 0.3 | 68.0 | 0.2 | 69.0 | 1.0 |
-| Twice daily, with paroxetine | 80 kg | 0.3 | 70.0 | 0.3 | 70.0 | 0.0 |
-| Twice daily, with paroxetine | 90 kg | 0.2 | 66.5 | 0.3 | 76.5 | 10.0 |
-| Twice daily, with paroxetine | 100 kg | 0.2 | 72.0 | 0.2 | 72.0 | 0.0 |
+| Once daily, no paroxetine | 40 kg | NA | NA | 1.0 | 45.5 | NA |
+| Once daily, no paroxetine | 50 kg | NA | NA | 1.0 | 48.0 | NA |
+| Once daily, no paroxetine | 60 kg | NA | NA | 0.6 | 47.0 | NA |
+| Once daily, no paroxetine | 70 kg | NA | NA | 0.9 | 55.5 | NA |
+| Once daily, no paroxetine | 80 kg | NA | NA | 0.7 | 56.0 | NA |
+| Once daily, no paroxetine | 90 kg | NA | NA | 0.5 | 57.5 | NA |
+| Once daily, no paroxetine | 100 kg | NA | NA | 0.6 | 52.0 | NA |
+| Once daily, with paroxetine | 40 kg | 0.5 | 47.5 | 0.4 | 48.0 | 0.5 |
+| Once daily, with paroxetine | 50 kg | 0.5 | 55.5 | 0.5 | 55.5 | 0.0 |
+| Once daily, with paroxetine | 60 kg | 0.4 | 58.5 | 0.5 | 59.0 | 0.5 |
+| Once daily, with paroxetine | 70 kg | 0.4 | 58.5 | 0.4 | 58.5 | 0.0 |
+| Once daily, with paroxetine | 80 kg | 0.4 | 60.5 | 0.4 | 60.5 | 0.0 |
+| Once daily, with paroxetine | 90 kg | 0.4 | 62.5 | 0.4 | 62.5 | 0.0 |
+| Once daily, with paroxetine | 100 kg | 0.4 | 57.5 | 0.4 | 57.5 | 0.0 |
+| Twice daily, no paroxetine | 40 kg | 0.5 | 65.0 | 0.6 | 65.5 | 0.5 |
+| Twice daily, no paroxetine | 50 kg | 0.5 | 63.0 | 0.4 | 64.0 | 1.0 |
+| Twice daily, no paroxetine | 60 kg | 0.4 | 66.5 | 0.5 | 71.0 | 4.5 |
+| Twice daily, no paroxetine | 70 kg | 0.4 | 66.5 | 0.4 | 66.5 | 0.0 |
+| Twice daily, no paroxetine | 80 kg | 0.4 | 66.5 | 0.5 | 69.0 | 2.5 |
+| Twice daily, no paroxetine | 90 kg | 0.4 | 64.0 | 0.3 | 70.5 | 6.5 |
+| Twice daily, no paroxetine | 100 kg | 0.4 | 72.5 | 0.4 | 72.5 | 0.0 |
+| Twice daily, with paroxetine | 40 kg | 0.3 | 68.5 | 0.3 | 68.5 | 0.0 |
+| Twice daily, with paroxetine | 50 kg | 0.3 | 75.5 | 0.3 | 75.5 | 0.0 |
+| Twice daily, with paroxetine | 60 kg | 0.3 | 69.0 | 0.3 | 69.0 | 0.0 |
+| Twice daily, with paroxetine | 70 kg | 0.3 | 71.5 | 0.3 | 71.5 | 0.0 |
+| Twice daily, with paroxetine | 80 kg | 0.3 | 76.0 | 0.3 | 76.0 | 0.0 |
+| Twice daily, with paroxetine | 90 kg | 0.2 | 70.5 | 0.2 | 70.5 | 0.0 |
+| Twice daily, with paroxetine | 100 kg | 0.2 | 71.0 | 0.3 | 72.5 | 1.5 |
 
 Attainment at the Table 4 dose against the best dose in the sweep, per
 condition and weight. A blank Table 4 column marks the once-daily,
@@ -981,12 +981,12 @@ at_table4 |>
 
 | Condition | Table 4 dose (mg/kg/day) | Weights covered | Simulated attainment (%) | Simulated median (%) | Zhang 2025 Table 4 (%) | Median - published midpoint |
 |:---|---:|---:|:---|---:|:---|---:|
-| Once daily, with paroxetine | 0.4 | 5 | 55.0-64.0 | 57.0 | 58.8-62.1 | -3.5 |
-| Once daily, with paroxetine | 0.5 | 2 | 47.5-54.5 | 51.0 | 57.0-59.0 | -7.0 |
-| Twice daily, no paroxetine | 0.4 | 5 | 60.0-71.5 | 66.5 | 68.5-72.6 | -4.0 |
-| Twice daily, no paroxetine | 0.5 | 2 | 62.5-63.0 | 62.8 | 68.5-68.9 | -6.0 |
-| Twice daily, with paroxetine | 0.2 | 2 | 66.5-72.0 | 69.2 | 75.1-76.9 | -6.8 |
-| Twice daily, with paroxetine | 0.3 | 5 | 67.0-70.5 | 69.5 | 74.4-76.7 | -6.1 |
+| Once daily, with paroxetine | 0.4 | 5 | 57.5-62.5 | 58.5 | 58.8-62.1 | -2.0 |
+| Once daily, with paroxetine | 0.5 | 2 | 47.5-55.5 | 51.5 | 57.0-59.0 | -6.5 |
+| Twice daily, no paroxetine | 0.4 | 5 | 64.0-72.5 | 66.5 | 68.5-72.6 | -4.0 |
+| Twice daily, no paroxetine | 0.5 | 2 | 63.0-65.0 | 64.0 | 68.5-68.9 | -4.7 |
+| Twice daily, with paroxetine | 0.2 | 2 | 70.5-71.0 | 70.8 | 75.1-76.9 | -5.2 |
+| Twice daily, with paroxetine | 0.3 | 5 | 68.5-76.0 | 71.5 | 74.4-76.7 | -4.1 |
 
 Attainment at the Table 4 doses vs the probabilities Zhang 2025 reports.
 {.table style="width:100%;"}

@@ -172,7 +172,7 @@ sim_typ <- rxode2::rxSolve(mod_typ, make_events(720, ref_cov, times_fine))
 
 err <- max(abs(sim_typ$Cc - published_closed_form(sim_typ$time, 720)))
 cat(sprintf("max |packaged - published closed form| = %.3e mg/L\n", err))
-#> max |packaged - published closed form| = 6.679e-13 mg/L
+#> max |packaged - published closed form| = 6.963e-13 mg/L
 stopifnot(err < 1e-8)
 ```
 

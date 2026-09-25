@@ -145,7 +145,10 @@ ev_typ <- as.data.frame(
     rxode2::et(seq(0, 72, by = 0.25))
 )
 ev_typ$WT <- 70
-s_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame")
+# Tight solver tolerances: this solve is compared with the analytic solution
+# to 1e-8 below, and the default rtol of 1e-6 leaves ~5e-7 relative error.
+s_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame",
+                         rtol = 1e-10, atol = 1e-12)
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 
 # Analytic two-compartment IV-bolus solution.
@@ -157,7 +160,7 @@ rel_err <- max(abs(s_typ$Cc - analytic) / analytic)
 c(max_relative_error = rel_err,
   terminal_half_life_h_at_70kg = log(2) / lam2)
 #>           max_relative_error terminal_half_life_h_at_70kg 
-#>                 9.040383e-14                 1.511884e+01
+#>                 8.304007e-11                 1.511884e+01
 
 # Same parameters on both sides: this is pure integration error, so it is
 # correct to bound it tightly.
@@ -210,7 +213,7 @@ knitr::kable(css_check, digits = 5,
 |    WT | simulated | closed_form | rel_diff |
 |------:|----------:|------------:|---------:|
 |  9.18 |   8.08529 |     8.08531 |  0.00000 |
-| 16.20 |   9.31877 |     9.31890 |  0.00001 |
+| 16.20 |   9.31876 |     9.31890 |  0.00001 |
 | 30.30 |  10.89727 |    10.89799 |  0.00007 |
 | 53.00 |  12.53011 |    12.53299 |  0.00023 |
 
@@ -687,22 +690,22 @@ css_cmp |>
 
 | Indication | Regimen | Age group | Simulated Css (mg/L) | Published Css (mg/L) | Difference (%) |
 |:---|:---|:---|---:|---:|---:|
-| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 1 to \<2 years | 5.64 | 6.55 | -13.93 |
-| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 2 to \<6 years | 6.26 | 7.39 | -15.30 |
-| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 6 to \<12 years | 9.08 | 8.04 | 12.91 |
-| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 12 to \<18 years | 9.21 | 9.51 | -3.18 |
-| Deep sedation | 1 mg/kg + 1 mg/kg/h | 1 to \<2 years | 7.83 | 8.46 | -7.42 |
-| Deep sedation | 1 mg/kg + 1 mg/kg/h | 2 to \<6 years | 9.52 | 9.56 | -0.41 |
-| Deep sedation | 1 mg/kg + 1 mg/kg/h | 6 to \<12 years | 11.50 | 11.19 | 2.73 |
-| Deep sedation | 1 mg/kg + 1 mg/kg/h | 12 to \<18 years | 12.09 | 12.67 | -4.54 |
-| Seizure | 5 mg/kg + 1 mg/kg/h | 1 to \<2 years | 7.87 | 8.78 | -10.31 |
-| Seizure | 5 mg/kg + 1 mg/kg/h | 2 to \<6 years | 8.29 | 9.81 | -15.46 |
-| Seizure | 5 mg/kg + 1 mg/kg/h | 6 to \<12 years | 11.01 | 11.05 | -0.39 |
-| Seizure | 5 mg/kg + 1 mg/kg/h | 12 to \<18 years | 12.74 | 13.00 | -2.02 |
-| Seizure | 5 mg/kg + 1.5 mg/kg/h | 1 to \<2 years | 11.39 | 13.65 | -16.56 |
-| Seizure | 5 mg/kg + 1.5 mg/kg/h | 2 to \<6 years | 15.05 | 13.95 | 7.87 |
-| Seizure | 5 mg/kg + 1.5 mg/kg/h | 6 to \<12 years | 17.28 | 16.87 | 2.41 |
-| Seizure | 5 mg/kg + 1.5 mg/kg/h | 12 to \<18 years | 18.18 | 19.37 | -6.15 |
+| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 1 to \<2 years | 5.11 | 6.55 | -21.95 |
+| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 2 to \<6 years | 6.59 | 7.39 | -10.80 |
+| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 6 to \<12 years | 7.35 | 8.04 | -8.64 |
+| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 12 to \<18 years | 9.91 | 9.51 | 4.19 |
+| Deep sedation | 1 mg/kg + 1 mg/kg/h | 1 to \<2 years | 7.45 | 8.46 | -11.90 |
+| Deep sedation | 1 mg/kg + 1 mg/kg/h | 2 to \<6 years | 8.85 | 9.56 | -7.39 |
+| Deep sedation | 1 mg/kg + 1 mg/kg/h | 6 to \<12 years | 10.64 | 11.19 | -4.89 |
+| Deep sedation | 1 mg/kg + 1 mg/kg/h | 12 to \<18 years | 13.65 | 12.67 | 7.70 |
+| Seizure | 5 mg/kg + 1 mg/kg/h | 1 to \<2 years | 9.60 | 8.78 | 9.33 |
+| Seizure | 5 mg/kg + 1 mg/kg/h | 2 to \<6 years | 9.06 | 9.81 | -7.62 |
+| Seizure | 5 mg/kg + 1 mg/kg/h | 6 to \<12 years | 10.31 | 11.05 | -6.69 |
+| Seizure | 5 mg/kg + 1 mg/kg/h | 12 to \<18 years | 12.96 | 13.00 | -0.34 |
+| Seizure | 5 mg/kg + 1.5 mg/kg/h | 1 to \<2 years | 12.12 | 13.65 | -11.24 |
+| Seizure | 5 mg/kg + 1.5 mg/kg/h | 2 to \<6 years | 13.81 | 13.95 | -1.01 |
+| Seizure | 5 mg/kg + 1.5 mg/kg/h | 6 to \<12 years | 16.84 | 16.87 | -0.19 |
+| Seizure | 5 mg/kg + 1.5 mg/kg/h | 12 to \<18 years | 18.48 | 19.37 | -4.59 |
 
 Median simulated steady-state concentration versus Helfer 2026 Table 4.
 The residual reflects the different weight distributions (see
@@ -747,14 +750,14 @@ knitr::kable(ta, digits = 1, caption = paste(
 
 | indication | regimen | age_group | pct_in_target | pct_toxic |
 |:---|:---|:---|---:|---:|
-| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 1 to \<2 years | 53 | 0 |
-| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 2 to \<6 years | 57 | 0 |
-| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 6 to \<12 years | 72 | 0 |
-| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 12 to \<18 years | 60 | 0 |
-| Deep sedation | 1 mg/kg + 1 mg/kg/h | 1 to \<2 years | 66 | 0 |
-| Deep sedation | 1 mg/kg + 1 mg/kg/h | 2 to \<6 years | 59 | 0 |
-| Deep sedation | 1 mg/kg + 1 mg/kg/h | 6 to \<12 years | 61 | 0 |
-| Deep sedation | 1 mg/kg + 1 mg/kg/h | 12 to \<18 years | 66 | 2 |
+| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 1 to \<2 years | 46 | 0 |
+| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 2 to \<6 years | 65 | 0 |
+| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 6 to \<12 years | 56 | 0 |
+| Deep sedation | 1 mg/kg + 0.75 mg/kg/h | 12 to \<18 years | 72 | 0 |
+| Deep sedation | 1 mg/kg + 1 mg/kg/h | 1 to \<2 years | 54 | 0 |
+| Deep sedation | 1 mg/kg + 1 mg/kg/h | 2 to \<6 years | 73 | 1 |
+| Deep sedation | 1 mg/kg + 1 mg/kg/h | 6 to \<12 years | 67 | 1 |
+| Deep sedation | 1 mg/kg + 1 mg/kg/h | 12 to \<18 years | 49 | 2 |
 | Preoperative sedation | 1 mg/kg bolus | 1 to \<2 years | 77 | 0 |
 | Preoperative sedation | 1 mg/kg bolus | 2 to \<6 years | 76 | 0 |
 | Preoperative sedation | 1 mg/kg bolus | 6 to \<12 years | 73 | 0 |
@@ -767,14 +770,14 @@ knitr::kable(ta, digits = 1, caption = paste(
 | Preoperative sedation | 1.5 mg/kg bolus | 2 to \<6 years | 83 | 0 |
 | Preoperative sedation | 1.5 mg/kg bolus | 6 to \<12 years | 73 | 0 |
 | Preoperative sedation | 1.5 mg/kg bolus | 12 to \<18 years | 78 | 0 |
-| Seizure | 5 mg/kg + 1 mg/kg/h | 1 to \<2 years | 83 | 0 |
-| Seizure | 5 mg/kg + 1 mg/kg/h | 2 to \<6 years | 82 | 0 |
-| Seizure | 5 mg/kg + 1 mg/kg/h | 6 to \<12 years | 85 | 1 |
-| Seizure | 5 mg/kg + 1 mg/kg/h | 12 to \<18 years | 82 | 1 |
-| Seizure | 5 mg/kg + 1.5 mg/kg/h | 1 to \<2 years | 78 | 0 |
-| Seizure | 5 mg/kg + 1.5 mg/kg/h | 2 to \<6 years | 73 | 1 |
-| Seizure | 5 mg/kg + 1.5 mg/kg/h | 6 to \<12 years | 61 | 7 |
-| Seizure | 5 mg/kg + 1.5 mg/kg/h | 12 to \<18 years | 57 | 10 |
+| Seizure | 5 mg/kg + 1 mg/kg/h | 1 to \<2 years | 82 | 0 |
+| Seizure | 5 mg/kg + 1 mg/kg/h | 2 to \<6 years | 88 | 1 |
+| Seizure | 5 mg/kg + 1 mg/kg/h | 6 to \<12 years | 80 | 0 |
+| Seizure | 5 mg/kg + 1 mg/kg/h | 12 to \<18 years | 70 | 2 |
+| Seizure | 5 mg/kg + 1.5 mg/kg/h | 1 to \<2 years | 87 | 0 |
+| Seizure | 5 mg/kg + 1.5 mg/kg/h | 2 to \<6 years | 78 | 0 |
+| Seizure | 5 mg/kg + 1.5 mg/kg/h | 6 to \<12 years | 64 | 0 |
+| Seizure | 5 mg/kg + 1.5 mg/kg/h | 12 to \<18 years | 54 | 3 |
 
 Percentage of simulated children within the indication target range and
 above the 45 mg/L toxicity threshold. {.table}

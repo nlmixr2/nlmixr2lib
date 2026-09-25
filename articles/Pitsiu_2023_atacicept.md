@@ -812,17 +812,17 @@ list(spread = spread, median_trough = prop)
 #> # A tibble: 3 × 2
 #>   arm    ratio
 #>   <chr>  <dbl>
-#> 1 150 mg  2.99
-#> 2 25 mg   2.81
-#> 3 75 mg   3.21
+#> 1 150 mg  3.23
+#> 2 25 mg   3.00
+#> 3 75 mg   2.94
 #> 
 #> $median_trough
 #> # A tibble: 3 × 2
 #>   dose_mg   med
 #>     <dbl> <dbl>
-#> 1      25 2468.
-#> 2      75 3696.
-#> 3     150 4904.
+#> 1      25 2353.
+#> 2      75 3820.
+#> 3     150 4995.
 ```
 
 ## Assumptions and deviations

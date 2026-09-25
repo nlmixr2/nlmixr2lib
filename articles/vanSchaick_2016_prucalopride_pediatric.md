@@ -526,7 +526,7 @@ auc_chk <- per_subject |>
 
 summary(auc_chk$pct_diff)
 #>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -10.434680  -0.234501  -0.055956  -0.293416   0.001676   0.032857
+#> -1.344e+01 -2.706e-01 -5.487e-02 -3.385e-01 -4.244e-04  4.420e-02
 
 stopifnot(
   abs(stats::median(auc_chk$pct_diff)) < 1,
@@ -583,8 +583,8 @@ posthoc_cmp |>
 
 | Cohort | CL simulated (L/h) | V2 simulated (L) | CL published (L/h) | V2 published (L) | CL % diff | V2 % diff |
 |:---|---:|---:|---:|---:|---:|---:|
-| PRU-USA-12 (0.03 mg/kg) | 11.9 | 185.4 | 12.1 | 192 | -1.8 | -3.5 |
-| SPD555-303 (0.04 mg/kg) | 12.2 | 221.3 | 11.7 | 207 | 4.2 | 6.9 |
+| PRU-USA-12 (0.03 mg/kg) | 11.8 | 181.6 | 12.1 | 192 | -2.1 | -5.4 |
+| SPD555-303 (0.04 mg/kg) | 11.8 | 221.1 | 11.7 | 207 | 1.0 | 6.8 |
 
 Mean post hoc CL and V2: simulated virtual cohort vs. van Schaick 2016
 Table 4. {.table style="width:100%;"}
@@ -843,8 +843,8 @@ knitr::kable(
 
 | NCA parameter           | treatment               | Reference | Simulated | % diff |
 |:------------------------|:------------------------|:----------|:----------|:-------|
-| AUC0-∞ (obs) (ng\*h/mL) | PRU-USA-12 (0.03 mg/kg) | 62.3      | 62        | -0.5%  |
-| AUC0-∞ (obs) (ng\*h/mL) | SPD555-303 (0.04 mg/kg) | 100       | 93.9      | -6.4%  |
+| AUC0-∞ (obs) (ng\*h/mL) | PRU-USA-12 (0.03 mg/kg) | 62.3      | 62.1      | -0.3%  |
+| AUC0-∞ (obs) (ng\*h/mL) | SPD555-303 (0.04 mg/kg) | 100       | 96.8      | -3.5%  |
 
 Simulated vs. published AUC (van Schaick 2016 Table 4). \* differs from
 reference by \>20%. {.table style="width:100%;"}
@@ -875,8 +875,8 @@ simulated_mean |>
 
 | Cohort                  | Cmax (ng/mL) | Tmax (h) | t1/2 (h) |
 |:------------------------|-------------:|---------:|---------:|
-| PRU-USA-12 (0.03 mg/kg) |         3.61 |     1.49 |    20.83 |
-| SPD555-303 (0.04 mg/kg) |         4.50 |     1.58 |    25.17 |
+| PRU-USA-12 (0.03 mg/kg) |         3.70 |     1.54 |    21.45 |
+| SPD555-303 (0.04 mg/kg) |         4.52 |     1.60 |    25.50 |
 
 Simulated NCA parameters with no published counterpart in van Schaick
 2016. {.table}

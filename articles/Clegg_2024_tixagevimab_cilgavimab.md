@@ -334,9 +334,9 @@ half_life_tbl |>
 
 | Analyte | Published | Simulated | % diff (median) | Published P05 | Simulated P05 | Published P95 | Simulated P95 |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| AZD7442 | 78.6 | 72.9 | -7.3 | 45.6 | 39.9 | 101.0 | 147.4 |
-| Tixagevimab | 81.3 | 75.8 | -6.8 | 49.3 | 45.3 | 106.0 | 148.6 |
-| Cilgavimab | 78.0 | 72.8 | -6.6 | 49.2 | 45.4 | 97.4 | 133.2 |
+| AZD7442 | 78.6 | 72.4 | -7.9 | 45.6 | 39.2 | 101.0 | 137.0 |
+| Tixagevimab | 81.3 | 75.5 | -7.1 | 49.3 | 43.6 | 106.0 | 135.8 |
+| Cilgavimab | 78.0 | 72.0 | -7.7 | 49.2 | 43.5 | 97.4 | 114.5 |
 
 Terminal elimination half-life (days) versus Clegg 2024 Table 2.
 Percentiles are across the 200-participant virtual cohort. {.table
@@ -500,7 +500,7 @@ fig4 |>
 
 | Scenario | Cmax published | Cmax simulated | AUC published | AUC simulated |
 |:---|---:|---:|---:|---:|
-| Body weight 55.6 kg (P5) | 44 | 43.0 | 35 | 32.1 |
+| Body weight 55.6 kg (P5) | 44 | 42.3 | 35 | 32.1 |
 | Body weight 122 kg (P95) | -32 | -32.4 | -25 | -26.7 |
 | Thigh injection | 51 | 51.6 | 53 | 51.6 |
 
@@ -628,12 +628,12 @@ duration |>
 
 | Dose      | Variant | Months above target | Median peak (ug/mL) |
 |:----------|:--------|--------------------:|--------------------:|
-| 300 mg IM | Alpha   |                  NA |                24.5 |
-| 300 mg IM | BA.2    |                 9.7 |                24.5 |
-| 300 mg IM | BA.4/5  |                 2.8 |                24.5 |
-| 600 mg IM | Alpha   |                  NA |                48.9 |
-| 600 mg IM | BA.2    |                12.0 |                48.9 |
-| 600 mg IM | BA.4/5  |                 5.2 |                48.9 |
+| 300 mg IM | Alpha   |                  NA |                25.9 |
+| 300 mg IM | BA.2    |                 9.4 |                25.9 |
+| 300 mg IM | BA.4/5  |                 2.8 |                25.9 |
+| 600 mg IM | Alpha   |                  NA |                51.8 |
+| 600 mg IM | BA.2    |                11.8 |                51.8 |
+| 600 mg IM | BA.4/5  |                 5.1 |                51.8 |
 
 Time for the median simulated serum concentration to fall below each
 variant’s target, after a single IM dose. Clegg 2024 Figure 5B plots the
@@ -761,8 +761,8 @@ knitr::kable(fig5a, digits = c(0, 1, 1, 1, 1, 2), caption = paste(
 
 | Metric | Adults | Adolescents | Figure 5A adults | Figure 5A adolescents | Ratio |
 |:---|---:|---:|---:|---:|---:|
-| AUC0-180d (ug\*day/mL) | 2706.3 | 3176.8 | 2700.0 | 3400.0 | 1.17 |
-| Concentration at 6 months (ug/mL) | 6.4 | 7.3 | 6.2 | 7.4 | 1.15 |
+| AUC0-180d (ug\*day/mL) | 2750.9 | 3164.9 | 2700.0 | 3400.0 | 1.15 |
+| Concentration at 6 months (ug/mL) | 5.9 | 6.8 | 6.2 | 7.4 | 1.15 |
 
 Median exposure after a single 300 mg IM dose in the adult analysis
 population versus adolescents weighing 40-95 kg. The Figure 5A columns
@@ -851,9 +851,9 @@ nca_summary |>
 
 | Treatment | AUC0-inf (ug\*day/mL) | AUClast (ug\*day/mL) | CL/F (L/day) | Cmax (ug/mL) | t1/2 (day) | Tmax (day) |
 |:---|---:|---:|---:|---:|---:|---:|
-| 300 mg IM | 3468.08 | 3334.44 | 0.09 | 25.87 | 72.93 | 19 |
-| 300 mg IV | 5168.18 | 4982.18 | 0.06 | 78.45 | 72.67 | 0 |
-| 600 mg IM | 6936.15 | 6668.88 | 0.09 | 51.73 | 72.93 | 19 |
+| 300 mg IM | 3493.32 | 3371.35 | 0.09 | 27.77 | 72.51 | 19 |
+| 300 mg IV | 5207.72 | 5058.16 | 0.06 | 84.84 | 72.24 | 0 |
+| 600 mg IM | 6986.64 | 6742.70 | 0.09 | 55.54 | 72.51 | 19 |
 
 Median PKNCA results across the 200-participant virtual cohort, by arm.
 {.table}
@@ -907,12 +907,12 @@ cmp |>
 
 | NCA parameter             | Arm       | Reference | Simulated | % diff |
 |:--------------------------|:----------|:----------|:----------|:-------|
-| AUC0-∞ (obs) (ug\*day/mL) | 300 mg IM | 3570      | 3470      | -3.0%  |
-| AUC0-∞ (obs) (ug\*day/mL) | 600 mg IM | 7150      | 6940      | -3.0%  |
-| AUC0-∞ (obs) (ug\*day/mL) | 300 mg IV | 5330      | 5170      | -3.0%  |
-| t½ (day)                  | 300 mg IM | 78.6      | 72.9      | -7.2%  |
-| t½ (day)                  | 600 mg IM | 78.6      | 72.9      | -7.2%  |
-| t½ (day)                  | 300 mg IV | 78.6      | 72.7      | -7.5%  |
+| AUC0-∞ (obs) (ug\*day/mL) | 300 mg IM | 3570      | 3490      | -2.3%  |
+| AUC0-∞ (obs) (ug\*day/mL) | 600 mg IM | 7150      | 6990      | -2.3%  |
+| AUC0-∞ (obs) (ug\*day/mL) | 300 mg IV | 5330      | 5210      | -2.2%  |
+| t½ (day)                  | 300 mg IM | 78.6      | 72.5      | -7.8%  |
+| t½ (day)                  | 600 mg IM | 78.6      | 72.5      | -7.8%  |
+| t½ (day)                  | 300 mg IV | 78.6      | 72.2      | -8.1%  |
 
 Simulated NCA versus closed-form AUC0-inf from the Clegg 2024 Table 1
 estimates and the Table 2 median terminal half-life. \* differs from the

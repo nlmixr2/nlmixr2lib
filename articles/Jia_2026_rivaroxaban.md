@@ -433,14 +433,14 @@ coverage |>
 
 | Dose | Nominal time (h) | n observed | Observed median (ug/L) | Simulated P5 (ug/L) | Simulated P95 (ug/L) | Median inside band |
 |:---|---:|---:|---:|---:|---:|:---|
-| 5 mg | 2 | 30 | 26.1 | 2.2 | 85.0 | TRUE |
-| 5 mg | 4 | 28 | 65.8 | 26.1 | 150.2 | TRUE |
-| 5 mg | 8 | 18 | 42.0 | 16.0 | 121.3 | TRUE |
-| 5 mg | 24 | 26 | 5.2 | 1.7 | 17.5 | TRUE |
-| 10 mg | 2 | 8 | 80.9 | 7.9 | 196.5 | TRUE |
-| 10 mg | 4 | 8 | 119.7 | 46.1 | 350.2 | TRUE |
-| 10 mg | 8 | 4 | 61.1 | 31.6 | 258.5 | TRUE |
-| 10 mg | 24 | 8 | 7.4 | 3.4 | 38.7 | TRUE |
+| 5 mg | 2 | 30 | 26.1 | 2.7 | 87.5 | TRUE |
+| 5 mg | 4 | 28 | 65.8 | 24.2 | 144.6 | TRUE |
+| 5 mg | 8 | 18 | 42.0 | 15.0 | 107.3 | TRUE |
+| 5 mg | 24 | 26 | 5.2 | 1.6 | 18.3 | TRUE |
+| 10 mg | 2 | 8 | 80.9 | 7.8 | 170.1 | TRUE |
+| 10 mg | 4 | 8 | 119.7 | 46.6 | 307.3 | TRUE |
+| 10 mg | 8 | 4 | 61.1 | 27.8 | 225.5 | TRUE |
+| 10 mg | 24 | 8 | 7.4 | 3.0 | 38.9 | TRUE |
 
 Every observed median falls inside the simulated 5th-95th percentile
 band. {.table style="width:100%;"}
@@ -510,14 +510,14 @@ nca_sd_tbl |>
 
 | Parameter | Dose  |  Median |     P5 |     P95 |
 |:----------|:------|--------:|-------:|--------:|
-| AUClast   | 10 mg | 1347.29 | 472.25 | 3698.49 |
-| Cmax      | 10 mg |  137.16 |  53.95 |  394.79 |
+| AUClast   | 10 mg | 1330.41 | 460.47 | 3342.78 |
+| Cmax      | 10 mg |  139.78 |  54.76 |  322.81 |
 | t½        | 10 mg |    4.97 |   4.95 |    5.23 |
-| Tmax      | 10 mg |    3.75 |   2.30 |    6.92 |
-| AUClast   | 5 mg  |  689.40 | 267.12 | 1774.69 |
-| Cmax      | 5 mg  |   74.84 |  32.05 |  164.45 |
-| t½        | 5 mg  |    4.97 |   4.95 |    5.08 |
-| Tmax      | 5 mg  |    3.60 |   2.20 |    6.50 |
+| Tmax      | 10 mg |    3.60 |   2.10 |    7.02 |
+| AUClast   | 5 mg  |  661.64 | 229.24 | 1660.43 |
+| Cmax      | 5 mg  |   67.61 |  28.53 |  160.70 |
+| t½        | 5 mg  |    4.97 |   4.95 |    5.16 |
+| Tmax      | 5 mg  |    3.60 |   2.10 |    6.80 |
 
 Simulated single-dose NCA by dose group (200 virtual patients per arm).
 {.table}
@@ -660,7 +660,7 @@ ident <- ss_wide |>
 stopifnot(nrow(ident) == length(DOSES) * N_PER_ARM, !anyNA(ident$pct))
 cat(sprintf("AUCss,24 vs Dose/(CL/F): median %+.5f%%, max |diff| %.4f%% over %d subjects\n",
             median(ident$pct), max(abs(ident$pct)), nrow(ident)))
-#> AUCss,24 vs Dose/(CL/F): median -0.00029%, max |diff| 0.1543% over 800 subjects
+#> AUCss,24 vs Dose/(CL/F): median -0.00030%, max |diff| 0.0101% over 800 subjects
 
 # Realised max |diff| 0.47% over 800 subjects with this 0.05 h grid (the
 # per-subject trapezoidal error depends on the individual curve shape, so the
@@ -739,10 +739,10 @@ pass |>
 
 | Regimen | Median AUCss,24 (mg\*h/L) | Median Cmax,ss (ug/L) | % meeting AUC limit | % meeting Cmax limit | % meeting both (simulated) | % meeting both (Jia 2026) | Difference (pp) |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| 5 mg QD | 0.7 | 72.0 | 95.5 | 88.0 | 87.5 | 84 | 3.5 |
-| 7.5 mg QD | 1.0 | 115.2 | 81.5 | 63.5 | 63.0 | 66 | -3.0 |
-| 10 mg QD | 1.4 | 153.7 | 65.0 | 42.5 | 42.0 | 55 | -13.0 |
-| 15 mg QD | 1.9 | 211.6 | 45.5 | 22.0 | 21.5 | 28 | -6.5 |
+| 5 mg QD | 0.6 | 68.3 | 94.5 | 87 | 86.5 | 84 | 2.5 |
+| 7.5 mg QD | 0.9 | 104.9 | 84.0 | 71 | 70.5 | 66 | 4.5 |
+| 10 mg QD | 1.4 | 152.6 | 67.5 | 44 | 43.5 | 55 | -11.5 |
+| 15 mg QD | 2.1 | 226.1 | 39.0 | 21 | 21.0 | 28 | -7.0 |
 
 Fraction of virtual patients within both exposure limits, against the
 values Jia 2026 reports for 1000 virtual patients (Results, ‘Exposure

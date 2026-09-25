@@ -300,7 +300,15 @@ make_arm <- function(dose_mg, extra_times, extra_amts, win_start, win_end, covs,
 # relative-difference comparisons against Table 2 meaningful.
 solve_arm <- function(mod, ev, keep_cols) {
   set.seed(SIM_SEED)
-  rxode2::rxSolve(mod, ev, keep = keep_cols, returnType = "data.frame")
+  # maxsteps: the `ss = 1` dose is reached in ODE mode by integrating 12 h
+  # intervals until the trough converges. Rong's V2/F carries an IIV variance
+  # of 1.16, so a draw of vp ~ 10,000 L (terminal half-life > 500 h) needs
+  # several hundred intervals, and the integrator (liblsoda) counts every
+  # step of that pre-solve against `maxsteps` (default 70000) without an
+  # observation record to re-zero it. Exhausting the budget returns NA for
+  # that subject. Raising the budget changes nothing else.
+  rxode2::rxSolve(mod, ev, keep = keep_cols, returnType = "data.frame",
+                  maxsteps = 1e6)
 }
 ```
 
@@ -387,15 +395,13 @@ sim <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) sim_one(arms[i, 
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_ka_1, etaiov_ka_2, etaiov_vc_1, etaiov_vc_2, etaiov_cl_1, etaiov_cl_2
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_ka_1, etaiov_ka_2, etaiov_vc_1, etaiov_vc_2, etaiov_cl_1, etaiov_cl_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 dplyr::glimpse(sim)
 #> Rows: 689,700
 #> Columns: 4
 #> $ arm  <chr> "Rong | 500 | Steady state", "Rong | 500 | Steady state", "Rong |…
 #> $ id   <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
 #> $ time <dbl> 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, …
-#> $ Cc   <dbl> 1.541585, 1.535985, 8.902702, 11.605779, 11.919452, 11.201982, 10…
+#> $ Cc   <dbl> 1.541583, 1.535983, 8.902690, 11.605770, 11.919447, 11.201979, 10…
 ```
 
 ## Replicate published figures

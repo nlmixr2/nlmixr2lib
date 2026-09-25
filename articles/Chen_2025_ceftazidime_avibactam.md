@@ -240,7 +240,7 @@ cf |>
 
 | Scenarios | Max \|Cmax,ss error\| (%) | Max \|Ctrough,ss error\| (%) |
 |----------:|--------------------------:|-----------------------------:|
-|        36 |                         0 |                            0 |
+|        36 |                   7.4e-05 |                     0.000172 |
 
 Packaged model vs. one-compartment infusion steady-state closed form.
 {.table}
@@ -447,10 +447,10 @@ envelope |>
 
 | Analyte | Sampling time (h) | Observed n | Observed range (mg/L) | Simulated median (mg/L) | Simulated 5th-95th (mg/L) |
 |:---|---:|---:|:---|---:|:---|
-| Avibactam | 0 | 33 | 0.8 - 62.2 | 11.7 | 0.6 - 59.9 |
-| Avibactam | 2 | 31 | 3.8 - 104.5 | 34.7 | 14.5 - 77.0 |
-| Ceftazidime | 0 | 33 | 8.0 - 246.5 | 49.3 | 2.9 - 179.4 |
-| Ceftazidime | 2 | 31 | 18.2 - 305.8 | 134.3 | 67.6 - 270.0 |
+| Avibactam | 0 | 33 | 0.8 - 62.2 | 11.2 | 0.4 - 59.2 |
+| Avibactam | 2 | 31 | 3.8 - 104.5 | 33.2 | 16.7 - 81.9 |
+| Ceftazidime | 0 | 33 | 8.0 - 246.5 | 44.4 | 4.6 - 173.1 |
+| Ceftazidime | 2 | 31 | 18.2 - 305.8 | 131.1 | 68.3 - 276.8 |
 
 Simulated 2.5 g q8h steady state against the pooled observed ranges of
 Chen 2025 Table 1 (continued). {.table}
@@ -503,17 +503,17 @@ ncaSummary |>
 
 | Analyte     | Parameter | Median | 5th pct | 95th pct |
 |:------------|:----------|-------:|--------:|---------:|
-| Avibactam   | AUClast   | 171.93 |   44.57 |   553.69 |
-| Avibactam   | Cavg      |  21.49 |    5.57 |    69.21 |
-| Avibactam   | Cmax      |  34.69 |   14.54 |    77.02 |
+| Avibactam   | AUClast   | 162.98 |   54.07 |   535.63 |
+| Avibactam   | Cavg      |  20.37 |    6.76 |    66.95 |
+| Avibactam   | Cmax      |  33.21 |   16.68 |    81.94 |
 | Avibactam   | Ctrough   |     NA |      NA |       NA |
-| Avibactam   | t½        |   4.37 |    1.02 |    18.14 |
+| Avibactam   | t½        |   4.28 |    1.00 |    18.49 |
 | Avibactam   | Tmax      |   2.00 |    2.00 |     2.00 |
-| Ceftazidime | AUClast   | 688.72 |  253.90 |  1663.40 |
-| Ceftazidime | Cavg      |  86.09 |   31.74 |   207.93 |
-| Ceftazidime | Cmax      | 134.30 |   67.64 |   270.02 |
+| Ceftazidime | AUClast   | 617.77 |  263.09 |  1698.35 |
+| Ceftazidime | Cavg      |  77.22 |   32.89 |   212.29 |
+| Ceftazidime | Cmax      | 131.10 |   68.29 |   276.79 |
 | Ceftazidime | Ctrough   |     NA |      NA |       NA |
-| Ceftazidime | t½        |   4.40 |    1.17 |    12.99 |
+| Ceftazidime | t½        |   4.05 |    1.30 |    14.73 |
 | Ceftazidime | Tmax      |   2.00 |    2.00 |     2.00 |
 
 Steady-state NCA over the 8-hour dosing interval, 2.5 g q8h (2-hour
@@ -587,7 +587,7 @@ detNca |>
 
 | Analyte | AUC0-tau, NCA (mg\*h/L) | AUC0-tau, Dose/CL | t1/2, NCA (h) | t1/2, log(2)\*V/CL (h) |
 |:---|---:|---:|---:|---:|
-| Ceftazidime | 675.673 | 675.676 | 4.1589 | 4.1589 |
+| Ceftazidime | 675.674 | 675.676 | 4.1589 | 4.1589 |
 | Avibactam | 161.812 | 161.812 | 4.0938 | 4.0938 |
 
 Typical-value NCA against the closed-form identities it must satisfy.
@@ -791,37 +791,37 @@ pta |>
 
 | Severity | Column | CrCL (mL/min) | Regimen | Published PTA (%) | Simulated PTA (%) | Difference (pp) | Known deviation |
 |:---|:---|:---|:---|---:|---:|---:|:---|
-| Critically ill | Instructions | \<=5 | 0.94 g q48h (2 h infusion) | 5.0 | 3.5 | -1.5 | yes |
-| Critically ill | Instructions | 6-15 | 0.94 g q24h (2 h infusion) | 9.7 | 4.5 | -5.2 | yes |
-| Critically ill | Instructions | 16-30 | 0.94 g q12h (2 h infusion) | 25.2 | 14.5 | -10.7 | yes |
-| Critically ill | Instructions | 31-50 | 1.25 g q8h (2 h infusion) | 48.7 | 30.5 | -18.2 | yes |
-| Critically ill | Instructions | 51-90 | 2.50 g q8h (2 h infusion) | 63.3 | 45.0 | -18.3 | yes |
-| Critically ill | Instructions | 91-130 | 2.50 g q8h (2 h infusion) | 47.6 | 31.0 | -16.6 | yes |
-| Critically ill | Instructions | 131-150 | 2.50 g q8h (2 h infusion) | 40.8 | 25.0 | -15.8 | yes |
-| Critically ill | Instructions | 151-180 | 2.50 g q8h (2 h infusion) | 36.8 | 18.0 | -18.8 | yes |
-| Critically ill | Recommended | \<=5 | 1.25 g q8h (2 h infusion) | 95.4 | 96.5 | 1.1 | yes |
-| Critically ill | Recommended | 6-15 | 1.25 g q6h (2 h infusion) | 91.8 | 92.0 | 0.2 | yes |
-| Critically ill | Recommended | 16-30 | 2.50 g q8h (2 h infusion) | 90.5 | 79.0 | -11.5 | yes |
-| Critically ill | Recommended | 31-50 | 2.50 g q8h (8 h infusion) | 94.0 | 97.0 | 3.0 |  |
-| Critically ill | Recommended | 51-90 | 2.50 g q8h (8 h infusion) | 90.4 | 92.5 | 2.1 |  |
-| Critically ill | Recommended | 91-130 | 2.50 g q6h (6 h infusion) | 91.9 | 98.0 | 6.1 |  |
-| Critically ill | Recommended | 131-150 | 2.50 g q6h (6 h infusion) | 90.5 | 91.0 | 0.5 |  |
-| Critically ill | Recommended | 151-180 | 3.75 g q8h (8 h infusion) | 96.1 | 96.5 | 0.4 |  |
-| Non-critically ill | Instructions | \<=5 | 0.94 g q48h (2 h infusion) | 78.3 | 64.0 | -14.3 |  |
-| Non-critically ill | Instructions | 6-15 | 0.94 g q24h (2 h infusion) | 84.8 | 74.0 | -10.8 |  |
-| Non-critically ill | Instructions | 16-30 | 0.94 g q12h (2 h infusion) | 95.1 | 95.0 | -0.1 |  |
+| Critically ill | Instructions | \<=5 | 0.94 g q48h (2 h infusion) | 5.0 | 2.5 | -2.5 | yes |
+| Critically ill | Instructions | 6-15 | 0.94 g q24h (2 h infusion) | 9.7 | 3.0 | -6.7 | yes |
+| Critically ill | Instructions | 16-30 | 0.94 g q12h (2 h infusion) | 25.2 | 13.5 | -11.7 | yes |
+| Critically ill | Instructions | 31-50 | 1.25 g q8h (2 h infusion) | 48.7 | 26.5 | -22.2 | yes |
+| Critically ill | Instructions | 51-90 | 2.50 g q8h (2 h infusion) | 63.3 | 41.0 | -22.3 | yes |
+| Critically ill | Instructions | 91-130 | 2.50 g q8h (2 h infusion) | 47.6 | 32.5 | -15.1 | yes |
+| Critically ill | Instructions | 131-150 | 2.50 g q8h (2 h infusion) | 40.8 | 26.0 | -14.8 | yes |
+| Critically ill | Instructions | 151-180 | 2.50 g q8h (2 h infusion) | 36.8 | 24.0 | -12.8 | yes |
+| Critically ill | Recommended | \<=5 | 1.25 g q8h (2 h infusion) | 95.4 | 96.0 | 0.6 | yes |
+| Critically ill | Recommended | 6-15 | 1.25 g q6h (2 h infusion) | 91.8 | 88.5 | -3.3 | yes |
+| Critically ill | Recommended | 16-30 | 2.50 g q8h (2 h infusion) | 90.5 | 73.5 | -17.0 | yes |
+| Critically ill | Recommended | 31-50 | 2.50 g q8h (8 h infusion) | 94.0 | 99.0 | 5.0 |  |
+| Critically ill | Recommended | 51-90 | 2.50 g q8h (8 h infusion) | 90.4 | 93.5 | 3.1 |  |
+| Critically ill | Recommended | 91-130 | 2.50 g q6h (6 h infusion) | 91.9 | 94.0 | 2.1 |  |
+| Critically ill | Recommended | 131-150 | 2.50 g q6h (6 h infusion) | 90.5 | 92.5 | 2.0 |  |
+| Critically ill | Recommended | 151-180 | 3.75 g q8h (8 h infusion) | 96.1 | 94.5 | -1.6 |  |
+| Non-critically ill | Instructions | \<=5 | 0.94 g q48h (2 h infusion) | 78.3 | 67.0 | -11.3 |  |
+| Non-critically ill | Instructions | 6-15 | 0.94 g q24h (2 h infusion) | 84.8 | 79.5 | -5.3 |  |
+| Non-critically ill | Instructions | 16-30 | 0.94 g q12h (2 h infusion) | 95.1 | 93.5 | -1.6 |  |
 | Non-critically ill | Instructions | 31-50 | 1.25 g q8h (2 h infusion) | 99.1 | 99.0 | -0.1 |  |
-| Non-critically ill | Instructions | 51-90 | 2.50 g q8h (2 h infusion) | 99.6 | 99.5 | -0.1 |  |
-| Non-critically ill | Instructions | 91-130 | 2.50 g q8h (2 h infusion) | 99.0 | 97.0 | -2.0 |  |
-| Non-critically ill | Instructions | 131-150 | 2.50 g q8h (2 h infusion) | 98.4 | 97.0 | -1.4 |  |
-| Non-critically ill | Instructions | 151-180 | 2.50 g q8h (2 h infusion) | 97.6 | 95.5 | -2.1 |  |
-| Non-critically ill | Recommended | \<=5 | 0.94 g q24h (2 h infusion) | 97.2 | 93.0 | -4.2 |  |
+| Non-critically ill | Instructions | 51-90 | 2.50 g q8h (2 h infusion) | 99.6 | 97.5 | -2.1 |  |
+| Non-critically ill | Instructions | 91-130 | 2.50 g q8h (2 h infusion) | 99.0 | 99.5 | 0.5 |  |
+| Non-critically ill | Instructions | 131-150 | 2.50 g q8h (2 h infusion) | 98.4 | 98.0 | -0.4 |  |
+| Non-critically ill | Instructions | 151-180 | 2.50 g q8h (2 h infusion) | 97.6 | 97.0 | -0.6 |  |
+| Non-critically ill | Recommended | \<=5 | 0.94 g q24h (2 h infusion) | 97.2 | 94.0 | -3.2 |  |
 | Non-critically ill | Recommended | 6-15 | 0.94 g q12h (2 h infusion) | 99.0 | 97.5 | -1.5 |  |
-| Non-critically ill | Recommended | 16-30 | 0.94 g q12h (2 h infusion) | 95.1 | 94.5 | -0.6 |  |
-| Non-critically ill | Recommended | 31-50 | 1.25 g q12h (2 h infusion) | 94.0 | 93.0 | -1.0 |  |
-| Non-critically ill | Recommended | 51-90 | 1.25 g q8h (2 h infusion) | 95.1 | 99.5 | 4.4 |  |
-| Non-critically ill | Recommended | 91-130 | 2.50 g q8h (2 h infusion) | 99.0 | 97.0 | -2.0 |  |
-| Non-critically ill | Recommended | 131-150 | 2.50 g q8h (2 h infusion) | 98.4 | 97.5 | -0.9 |  |
+| Non-critically ill | Recommended | 16-30 | 0.94 g q12h (2 h infusion) | 95.1 | 93.5 | -1.6 |  |
+| Non-critically ill | Recommended | 31-50 | 1.25 g q12h (2 h infusion) | 94.0 | 89.5 | -4.5 |  |
+| Non-critically ill | Recommended | 51-90 | 1.25 g q8h (2 h infusion) | 95.1 | 94.5 | -0.6 |  |
+| Non-critically ill | Recommended | 91-130 | 2.50 g q8h (2 h infusion) | 99.0 | 96.5 | -2.5 |  |
+| Non-critically ill | Recommended | 131-150 | 2.50 g q8h (2 h infusion) | 98.4 | 94.0 | -4.4 |  |
 | Non-critically ill | Recommended | 151-180 | 2.50 g q8h (2 h infusion) | 97.6 | 93.5 | -4.1 |  |
 
 Chen 2025 Table 4 replicated from the packaged models. Rows marked as a
@@ -846,8 +846,8 @@ pta |>
 
 | Row set | Rows | Median difference (pp) | Median \|difference\| (pp) | Max \|difference\| (pp) |
 |:---|---:|---:|---:|---:|
-| Critically ill, intermittent infusion (deviation) | 11 | -11.5 | 11.5 | 18.8 |
-| Gated rows | 21 | -0.9 | 2.0 | 14.3 |
+| Critically ill, intermittent infusion (deviation) | 11 | -12.8 | 12.8 | 22.3 |
+| Gated rows | 21 | -1.6 | 2.1 | 11.3 |
 
 Agreement with Table 4, split by row set. {.table}
 
@@ -887,13 +887,13 @@ trend |>
 
 | CrCL (mL/min) | Published PTA (%) | Simulated PTA (%) |
 |:--------------|------------------:|------------------:|
-| 51-90         |              63.3 |                45 |
-| 91-130        |              47.6 |                31 |
-| 131-150       |              40.8 |                25 |
-| 151-180       |              36.8 |                18 |
+| 51-90         |              63.3 |              41.0 |
+| 91-130        |              47.6 |              32.5 |
+| 131-150       |              40.8 |              26.0 |
+| 151-180       |              36.8 |              24.0 |
 
 PTA falls with renal function at a fixed 2.5 g q8h regimen (published
-decline 26.5 pp, simulated 27.0 pp). {.table}
+decline 26.5 pp, simulated 17.0 pp). {.table}
 
 ## Assumptions and deviations
 

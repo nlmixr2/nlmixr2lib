@@ -180,9 +180,15 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 mod <- readModelDb("Su_2024_tigecycline")
 
+# The steady-state trough identity below is gated at 1e-6 %, so both the ODE
+# solve and the `ss = 1` steady-state search run at tight tolerances: at the
+# defaults the steady-state search alone leaves ~2e-4 % of residual between
+# C(0) and C(12). Measured with these tolerances: max 1.0e-7 % for this
+# cohort, 1.6e-7 % worst of five seeds.
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("stratum", "WT", "CRCL", "ALB", "GGT", "TBILI", "t_ref")
+  keep = c("stratum", "WT", "CRCL", "ALB", "GGT", "TBILI", "t_ref"),
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
 ) |>
   as.data.frame() |>
   dplyr::mutate(tad = time - t_ref,
@@ -321,11 +327,11 @@ fig3 |>
 
 | TAD (h) | Paper median (ug/L) | Model median (ug/L) | Median ratio (model / paper) | Spread sd(log C), paper | Spread sd(log C), model |
 |---:|---:|---:|---:|---:|---:|
-| 0.5 | 1600 | 1425 | 0.89 | 0.480 | 0.388 |
-| 2.0 | 570 | 656 | 1.15 | 0.518 | 0.337 |
-| 4.0 | 440 | 562 | 1.28 | 0.525 | 0.372 |
-| 6.0 | 420 | 506 | 1.21 | 0.531 | 0.400 |
-| 12.0 | 320 | 407 | 1.27 | 0.612 | 0.479 |
+| 0.5 | 1600 | 1547 | 0.97 | 0.480 | 0.390 |
+| 2.0 | 570 | 701 | 1.23 | 0.518 | 0.377 |
+| 4.0 | 440 | 593 | 1.35 | 0.525 | 0.426 |
+| 6.0 | 420 | 541 | 1.29 | 0.531 | 0.458 |
+| 12.0 | 320 | 445 | 1.39 | 0.612 | 0.575 |
 
 Digitised Figure 3 percentiles vs the simulated cohort. Published values
 were read off the rendered figure (+/-10%). {.table}
@@ -425,9 +431,9 @@ knitr::kable(med_auc, digits = 2,
 
 | stratum        | median_auc24 |
 |:---------------|-------------:|
-| CCr 130 mL/min |        11.68 |
-| CCr 30 mL/min  |        22.24 |
-| CCr 80 mL/min  |        15.28 |
+| CCr 130 mL/min |        11.99 |
+| CCr 30 mL/min  |        24.06 |
+| CCr 80 mL/min  |        14.78 |
 
 Median steady-state AUC0-24 (mg\*h/L) at 50 mg q12h by CCr stratum.
 {.table}
@@ -495,10 +501,10 @@ nca_summary |>
 
 | Stratum | AUC0-12,ss (mg\*h/L) | Cmax,ss (mg/L) | Tmax (h) | Cmin,ss (mg/L) |
 |:---|---:|---:|---:|---:|
-| CCr 130 mL/min | 5.838 | 1.392 | 0.5 | 0.317 |
-| CCr 30 mL/min | 11.117 | 1.921 | 0.5 | 0.754 |
-| CCr 80 mL/min | 7.634 | 1.561 | 0.5 | 0.456 |
-| Full covariate distribution | 7.742 | 1.643 | 0.5 | 0.448 |
+| CCr 130 mL/min | 5.985 | 1.399 | 0.5 | 0.323 |
+| CCr 30 mL/min | 12.024 | 1.962 | 0.5 | 0.810 |
+| CCr 80 mL/min | 7.382 | 1.544 | 0.5 | 0.451 |
+| Full covariate distribution | 7.498 | 1.600 | 0.5 | 0.452 |
 
 Median steady-state NCA parameters at 50 mg q12h, by CCr stratum.
 {.table}
@@ -533,9 +539,9 @@ knitr::kable(
 
 | Stratum        | Median % difference | Min % difference | Max % difference |
 |:---------------|--------------------:|-----------------:|-----------------:|
-| CCr 130 mL/min |               0.235 |           -0.014 |            0.525 |
-| CCr 30 mL/min  |               0.140 |           -0.087 |            0.411 |
-| CCr 80 mL/min  |               0.191 |           -0.031 |            0.511 |
+| CCr 130 mL/min |               0.225 |           -0.135 |            0.498 |
+| CCr 30 mL/min  |               0.146 |           -0.004 |            0.490 |
+| CCr 80 mL/min  |               0.189 |           -0.037 |            0.457 |
 
 PKNCA AUC0-12,ss against the closed-form dose / CL. Pure trapezoidal
 error. {.table}
@@ -608,10 +614,10 @@ claims |>
 | Claim | Source | Achieved (model) | Pass | Known deviation |
 |:---|:---|:---|:---|:---|
 | 50 mg q12h attains the cIAI target (6.96) with PTA \>= 90% at MIC 1 | Results, ‘sufficient to achieve an AUC/MIC ratio of 6.96 at MICs \<= 1 mg/L’ | 100.0% PTA | TRUE | FALSE |
-| 50 mg q12h does NOT attain the cIAI target at MIC 2 | Results, same sentence (attainment limited to MIC \<= 1 mg/L) | 66.0% PTA | TRUE | FALSE |
-| 50 mg q12h does NOT attain the CAP target (12.8) at MIC 1 | Results, ‘may attain the suboptimal target at MICs \> 0.5’ for AUC/MIC 12.8 | 76.0% PTA | TRUE | FALSE |
+| 50 mg q12h does NOT attain the cIAI target at MIC 2 | Results, same sentence (attainment limited to MIC \<= 1 mg/L) | 63.5% PTA | TRUE | FALSE |
+| 50 mg q12h does NOT attain the CAP target (12.8) at MIC 1 | Results, ‘may attain the suboptimal target at MICs \> 0.5’ for AUC/MIC 12.8 | 75.5% PTA | TRUE | FALSE |
 | 100 mg q12h restores the CAP target at MIC 1 (PTA \>= 90%) | Conclusion, ‘100 mg every 12 h was needed for community-acquired pneumonia’ | 100.0% PTA | TRUE | FALSE |
-| 50 mg q12h does NOT attain the cSSSI target (17.9) at MIC 0.5 | Results, ‘may attain the suboptimal target at … 0.25 mg/L’ for AUC/MIC 17.9 | 98.5% PTA | FALSE | TRUE |
+| 50 mg q12h does NOT attain the cSSSI target (17.9) at MIC 0.5 | Results, ‘may attain the suboptimal target at … 0.25 mg/L’ for AUC/MIC 17.9 | 98.0% PTA | FALSE | TRUE |
 
 Published dosing conclusions checked against the packaged model.
 {.table}

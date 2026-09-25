@@ -153,8 +153,12 @@ solve_typical <- function(model_name, dose_mg, creat) {
     )
   )
   ev$CREAT <- creat
+  # Tight tolerances: the closed-form gate below asserts 1e-8 mg/L absolute
+  # agreement, and the default rtol = 1e-6 leaves about 5e-6 mg/L when the
+  # model is integrated numerically.
   rxode2::rxSolve(
-    rxode2::zeroRe(readModelDb(model_name)), ev, returnType = "data.frame"
+    rxode2::zeroRe(readModelDb(model_name)), ev, returnType = "data.frame",
+    rtol = 1e-10, atol = 1e-12
   )
 }
 
@@ -166,11 +170,12 @@ typ_sul <- solve_typical("Setiawan_2023_sulbactam", 500, 1.4)
 
 ### The peripheral compartment is actually solved
 
-`rxSolve()` defaults to `useLinCmt = TRUE` and can silently collapse a
-two-compartment system into a one-compartment closed form when the
-peripheral transfer is written straight from stored micro-constants.
-Both model files route through `q` and `vp` to prevent that; this
-assertion is the guard.
+`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the
+conversion opt-in in September 2026 (issue 1389) and can silently
+collapse a two-compartment system into a one-compartment closed form
+when the peripheral transfer is written straight from stored
+micro-constants. Both model files route through `q` and `vp` to prevent
+that; this assertion is the guard.
 
 ``` r
 
@@ -201,11 +206,13 @@ max_abs_err <- c(
 )
 print(max_abs_err)
 #>   ampicillin    sulbactam 
-#> 6.625811e-13 5.915268e-13
+#> 1.817131e-09 1.723741e-10
 
 # Pure numerical error between two solutions of the SAME parameters: a tight
 # bound is correct here (both sides use identical drawn parameters, so there is
-# no cohort draw to be robust to). Realised 6.6e-13 and 5.9e-13.
+# no cohort draw to be robust to). Realised 6.6e-13 and 5.9e-13 with the
+# analytic linCmt() solve; 1.8e-9 and 1.7e-10 when integrated numerically at
+# rtol 1e-10.
 stopifnot(max_abs_err < 1e-8)
 ```
 
@@ -753,7 +760,7 @@ bp_cmp |>
 | Ampicillin | SeCr 0.7 mg/dL, Bolus | Fifth dose | 0.500 | 0.50 | 0 |
 | Ampicillin | SeCr 0.7 mg/dL, 4-h infusion | First dose | 2.000 | 2.00 | 0 |
 | Ampicillin | SeCr 0.7 mg/dL, 4-h infusion | Fifth dose | 2.000 | 2.00 | 0 |
-| Sulbactam | SeCr 1.5 mg/dL, Bolus | First dose | 1.000 | 1.00 | 0 |
+| Sulbactam | SeCr 1.5 mg/dL, Bolus | First dose | 1.000 | 2.00 | 1 |
 | Sulbactam | SeCr 1.5 mg/dL, Bolus | Fifth dose | 1.000 | 2.00 | 1 |
 | Sulbactam | SeCr 1.5 mg/dL, 4-h infusion | First dose | 2.000 | 2.00 | 0 |
 | Sulbactam | SeCr 1.5 mg/dL, 4-h infusion | Fifth dose | 4.000 | 4.00 | 0 |
@@ -797,8 +804,8 @@ tibble::tibble(
 
 | Statistic                    |   Value |
 |:-----------------------------|--------:|
-| Cells reproduced exactly (%) |  79.167 |
-| Mean dilutions apart         |   0.042 |
+| Cells reproduced exactly (%) |  75.000 |
+| Mean dilutions apart         |   0.083 |
 | Within 1 dilution (%)        | 100.000 |
 | Max absolute dilutions apart |   1.000 |
 
@@ -902,15 +909,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -918,7 +925,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

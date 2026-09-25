@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -327,8 +327,8 @@ knitr::kable(nca_tbl,
 | PPTESTCD | median |
 |:---------|-------:|
 | auclast  |     NA |
-| cmax     | 26.640 |
-| cmin     | 10.764 |
+| cmax     | 27.530 |
+| cmin     | 10.987 |
 | tmax     |  7.000 |
 
 Simulated NCA on the first dosing interval of 240 mg LD + 120 mg QM (N =
@@ -393,8 +393,8 @@ knitr::kable(cmin_table,
 
 | metric | published_ngmL | simulated_ugmL | simulated_ngmL | ratio_sim_pub |
 |:---|---:|---:|---:|---:|
-| Cmin after 240 mg LD (end of month 1) | 15900 | 17.04 | 17036.11 | 1.07 |
-| Cmin,ss during 120 mg QM (end of month 11) | 15400 | 16.77 | 16769.66 | 1.09 |
+| Cmin after 240 mg LD (end of month 1) | 15900 | 16.64 | 16643.29 | 1.05 |
+| Cmin,ss during 120 mg QM (end of month 11) | 15400 | 16.89 | 16890.95 | 1.10 |
 
 Cmin comparison: simulated medians vs. Kielbasa 2020 reported values.
 {.table}

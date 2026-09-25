@@ -567,7 +567,9 @@ ss_trough <- lapply(seq_len(nrow(arms)), function(i) {
 
 # The solve must have produced one trough per simulated subject per arm.
 stopifnot(nrow(ss_trough) == nrow(arms) * nrow(cohort) * n_rep)
-stopifnot(all(ss_trough$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance;
+# a genuinely negative concentration would be comparable to the peak.
+stopifnot(all(ss_trough$Cc >= -1e-6 * max(ss_trough$Cc, na.rm = TRUE)))
 
 # Confirm the interindividual variability was actually applied. rxode2 can
 # carry an `omega` setting over from an earlier solve -- the typical-value
@@ -581,12 +583,12 @@ iiv_chk <- ss_trough |>
   summarise(sd_log_cl = sd(log(cl)), sd_log_vc = sd(log(vc)), .groups = "drop")
 print(as.data.frame(iiv_chk))
 #>       arm sd_log_cl sd_log_vc
-#> 1   IM iv 0.2303604  2.511655
-#> 2 IM oral 0.2309319  2.102667
-#> 3   NM iv 0.2512432  2.374991
-#> 4 NM oral 0.2482019  2.487096
-#> 5   PM iv 0.2316863  2.279504
-#> 6 PM oral 0.2525773  2.503633
+#> 1   IM iv 0.2513060  2.391760
+#> 2 IM oral 0.2542163  2.379549
+#> 3   NM iv 0.2512112  2.436510
+#> 4 NM oral 0.2272701  2.164383
+#> 5   PM iv 0.2326413  2.261847
+#> 6 PM oral 0.2249321  2.479669
 
 # Encoded omegas are 0.247 (CL) and 2.332 (Vc). With 182 subjects per arm the
 # sampling SE of these SDs is roughly 0.013 and 0.12 respectively, so the
@@ -623,7 +625,7 @@ stopifnot(max(abs(c7 - 7 * c1) / (7 * c1)) < 1e-8)
 cat("Dose linearity verified over", length(c1),
     "subjects: max relative deviation =",
     format(max(abs(c7 - 7 * c1) / (7 * c1)), digits = 3), "\n")
-#> Dose linearity verified over 182 subjects: max relative deviation = 6.91e-16
+#> Dose linearity verified over 182 subjects: max relative deviation = 1.7e-11
 ```
 
 ``` r
@@ -705,42 +707,42 @@ stopifnot(nrow(cmp) == 36L)
 
 | Phenotype | Route | Dose (mg/kg BID) | Mean, simulated | Mean, Hu 2023 | Mean diff (%) | Median, simulated | Median, Hu 2023 | Median diff (%) | PTA, simulated (%) | PTA, Hu 2023 (%) | PTA diff (pp) |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| NM | iv | 5 | 1.20 | 1.22 | -1.6 | 0.96 | 0.95 | 0.8 | 46.7 | 47.7 | -1.0 |
-| NM | iv | 6 | 1.44 | 1.45 | -0.7 | 1.15 | 1.13 | 1.7 | 53.8 | 53.5 | 0.3 |
-| NM | iv | 7 | 1.68 | 1.70 | -1.2 | 1.34 | 1.32 | 1.5 | 57.1 | 57.9 | -0.8 |
-| NM | iv | 8 | 1.92 | 1.96 | -2.0 | 1.53 | 1.53 | 0.1 | 60.4 | 60.9 | -0.5 |
-| NM | iv | 9 | 2.16 | 2.21 | -2.2 | 1.72 | 1.72 | 0.2 | 64.3 | 62.5 | 1.8 |
-| NM | iv | 10 | 2.40 | 2.44 | -1.6 | 1.91 | 1.92 | -0.3 | 62.6 | 62.2 | 0.4 |
-| NM | oral | 5 | 0.58 | 0.64 | -8.7 | 0.44 | 0.50 | -11.5 | 20.3 | 21.9 | -1.6 |
-| NM | oral | 6 | 0.70 | 0.77 | -9.0 | 0.53 | 0.60 | -11.5 | 25.8 | 29.1 | -3.3 |
-| NM | oral | 7 | 0.82 | 0.90 | -9.1 | 0.62 | 0.71 | -12.8 | 31.9 | 35.4 | -3.5 |
-| NM | oral | 8 | 0.93 | 1.04 | -10.1 | 0.71 | 0.81 | -12.6 | 35.7 | 41.5 | -5.8 |
-| NM | oral | 9 | 1.05 | 1.15 | -8.6 | 0.80 | 0.88 | -9.5 | 39.6 | 44.9 | -5.3 |
-| NM | oral | 10 | 1.17 | 1.29 | -9.4 | 0.88 | 1.01 | -12.4 | 45.1 | 49.9 | -4.8 |
-| IM | iv | 5 | 2.01 | 2.17 | -7.4 | 1.48 | 1.81 | -18.0 | 57.7 | 66.1 | -8.4 |
-| IM | iv | 6 | 2.41 | 2.60 | -7.3 | 1.78 | 2.16 | -17.6 | 59.3 | 65.3 | -6.0 |
-| IM | iv | 7 | 2.81 | 3.04 | -7.5 | 2.08 | 2.54 | -18.2 | 58.8 | 62.8 | -4.0 |
-| IM | iv | 8 | 3.21 | 3.46 | -7.1 | 2.37 | 2.89 | -17.9 | 54.9 | 59.4 | -4.5 |
-| IM | iv | 9 | 3.62 | 3.86 | -6.3 | 2.67 | 3.20 | -16.5 | 54.4 | 56.4 | -2.0 |
-| IM | iv | 10 | 4.02 | 4.30 | -6.6 | 2.97 | 3.58 | -17.1 | 53.8 | 52.8 | 1.0 |
-| IM | oral | 5 | 1.27 | 1.15 | 10.3 | 1.03 | 0.96 | 6.9 | 51.1 | 48.0 | 3.1 |
-| IM | oral | 6 | 1.52 | 1.37 | 11.1 | 1.23 | 1.14 | 8.0 | 56.6 | 55.2 | 1.4 |
-| IM | oral | 7 | 1.78 | 1.60 | 11.0 | 1.44 | 1.35 | 6.4 | 58.8 | 60.8 | -2.0 |
-| IM | oral | 8 | 2.03 | 1.82 | 11.5 | 1.64 | 1.52 | 8.0 | 64.3 | 64.1 | 0.2 |
-| IM | oral | 9 | 2.28 | 2.05 | 11.4 | 1.85 | 1.71 | 8.0 | 66.5 | 65.7 | 0.8 |
-| IM | oral | 10 | 2.54 | 2.27 | 11.7 | 2.05 | 1.89 | 8.6 | 66.5 | 66.6 | -0.1 |
-| PM | iv | 5 | 3.30 | 3.48 | -5.0 | 2.76 | 2.61 | 5.6 | 61.0 | 56.5 | 4.5 |
-| PM | iv | 6 | 3.97 | 4.21 | -5.8 | 3.31 | 3.16 | 4.7 | 59.9 | 51.9 | 8.0 |
-| PM | iv | 7 | 4.63 | 4.89 | -5.4 | 3.86 | 3.63 | 6.3 | 53.3 | 49.6 | 3.7 |
-| PM | iv | 8 | 5.29 | 5.55 | -4.7 | 4.41 | 4.18 | 5.5 | 46.7 | 45.8 | 0.9 |
-| PM | iv | 9 | 5.95 | 6.19 | -3.9 | 4.96 | 4.65 | 6.7 | 40.7 | 43.5 | -2.8 |
-| PM | iv | 10 | 6.61 | 6.94 | -4.8 | 5.51 | 5.12 | 7.7 | 36.8 | 41.8 | -5.0 |
-| PM | oral | 5 | 1.66 | 1.85 | -10.4 | 1.25 | 1.38 | -9.5 | 56.6 | 60.9 | -4.3 |
-| PM | oral | 6 | 1.99 | 2.18 | -8.8 | 1.50 | 1.62 | -7.5 | 61.5 | 64.3 | -2.8 |
-| PM | oral | 7 | 2.32 | 2.55 | -9.0 | 1.75 | 1.88 | -7.0 | 61.0 | 63.4 | -2.4 |
-| PM | oral | 8 | 2.65 | 2.96 | -10.4 | 2.00 | 2.19 | -8.8 | 57.7 | 61.2 | -3.5 |
-| PM | oral | 9 | 2.98 | 3.32 | -10.2 | 2.25 | 2.48 | -9.4 | 53.8 | 57.7 | -3.9 |
-| PM | oral | 10 | 3.31 | 3.67 | -9.7 | 2.50 | 2.72 | -8.2 | 54.4 | 55.0 | -0.6 |
+| NM | iv | 5 | 1.14 | 1.22 | -6.4 | 0.87 | 0.95 | -8.2 | 45.1 | 47.7 | -2.6 |
+| NM | iv | 6 | 1.37 | 1.45 | -5.5 | 1.05 | 1.13 | -7.4 | 50.0 | 53.5 | -3.5 |
+| NM | iv | 7 | 1.60 | 1.70 | -5.9 | 1.22 | 1.32 | -7.5 | 53.3 | 57.9 | -4.6 |
+| NM | iv | 8 | 1.83 | 1.96 | -6.8 | 1.40 | 1.53 | -8.8 | 56.0 | 60.9 | -4.9 |
+| NM | iv | 9 | 2.06 | 2.21 | -7.0 | 1.57 | 1.72 | -8.7 | 58.2 | 62.5 | -4.3 |
+| NM | iv | 10 | 2.28 | 2.44 | -6.4 | 1.74 | 1.92 | -9.2 | 58.2 | 62.2 | -4.0 |
+| NM | oral | 5 | 0.68 | 0.64 | 6.4 | 0.53 | 0.50 | 5.5 | 27.5 | 21.9 | 5.6 |
+| NM | oral | 6 | 0.82 | 0.77 | 6.1 | 0.63 | 0.60 | 5.5 | 33.5 | 29.1 | 4.4 |
+| NM | oral | 7 | 0.95 | 0.90 | 5.9 | 0.74 | 0.71 | 4.0 | 39.0 | 35.4 | 3.6 |
+| NM | oral | 8 | 1.09 | 1.04 | 4.8 | 0.84 | 0.81 | 4.2 | 45.6 | 41.5 | 4.1 |
+| NM | oral | 9 | 1.23 | 1.15 | 6.6 | 0.95 | 0.88 | 7.9 | 48.4 | 44.9 | 3.5 |
+| NM | oral | 10 | 1.36 | 1.29 | 5.6 | 1.05 | 1.01 | 4.4 | 51.1 | 49.9 | 1.2 |
+| IM | iv | 5 | 2.06 | 2.17 | -5.2 | 1.78 | 1.81 | -1.6 | 65.4 | 66.1 | -0.7 |
+| IM | iv | 6 | 2.47 | 2.60 | -5.0 | 2.14 | 2.16 | -1.0 | 65.4 | 65.3 | 0.1 |
+| IM | iv | 7 | 2.88 | 3.04 | -5.2 | 2.49 | 2.54 | -1.8 | 64.3 | 62.8 | 1.5 |
+| IM | iv | 8 | 3.29 | 3.46 | -4.8 | 2.85 | 2.89 | -1.4 | 56.6 | 59.4 | -2.8 |
+| IM | iv | 9 | 3.70 | 3.86 | -4.0 | 3.21 | 3.20 | 0.2 | 54.4 | 56.4 | -2.0 |
+| IM | iv | 10 | 4.12 | 4.30 | -4.3 | 3.56 | 3.58 | -0.5 | 50.0 | 52.8 | -2.8 |
+| IM | oral | 5 | 1.14 | 1.15 | -0.6 | 1.01 | 0.96 | 5.1 | 50.0 | 48.0 | 2.0 |
+| IM | oral | 6 | 1.37 | 1.37 | 0.1 | 1.21 | 1.14 | 6.2 | 54.4 | 55.2 | -0.8 |
+| IM | oral | 7 | 1.60 | 1.60 | 0.0 | 1.41 | 1.35 | 4.7 | 58.2 | 60.8 | -2.6 |
+| IM | oral | 8 | 1.83 | 1.82 | 0.5 | 1.61 | 1.52 | 6.2 | 61.0 | 64.1 | -3.1 |
+| IM | oral | 9 | 2.06 | 2.05 | 0.3 | 1.82 | 1.71 | 6.2 | 64.8 | 65.7 | -0.9 |
+| IM | oral | 10 | 2.29 | 2.27 | 0.7 | 2.02 | 1.89 | 6.8 | 63.7 | 66.6 | -2.9 |
+| PM | iv | 5 | 3.22 | 3.48 | -7.5 | 2.82 | 2.61 | 8.0 | 61.5 | 56.5 | 5.0 |
+| PM | iv | 6 | 3.86 | 4.21 | -8.2 | 3.38 | 3.16 | 7.0 | 57.1 | 51.9 | 5.2 |
+| PM | iv | 7 | 4.51 | 4.89 | -7.8 | 3.95 | 3.63 | 8.7 | 46.2 | 49.6 | -3.4 |
+| PM | iv | 8 | 5.15 | 5.55 | -7.2 | 4.51 | 4.18 | 7.9 | 42.9 | 45.8 | -2.9 |
+| PM | iv | 9 | 5.79 | 6.19 | -6.4 | 5.07 | 4.65 | 9.1 | 39.0 | 43.5 | -4.5 |
+| PM | iv | 10 | 6.44 | 6.94 | -7.2 | 5.64 | 5.12 | 10.1 | 37.4 | 41.8 | -4.4 |
+| PM | oral | 5 | 1.66 | 1.85 | -10.5 | 1.30 | 1.38 | -5.6 | 54.4 | 60.9 | -6.5 |
+| PM | oral | 6 | 1.99 | 2.18 | -8.9 | 1.56 | 1.62 | -3.5 | 58.8 | 64.3 | -5.5 |
+| PM | oral | 7 | 2.32 | 2.55 | -9.1 | 1.82 | 1.88 | -3.0 | 58.8 | 63.4 | -4.6 |
+| PM | oral | 8 | 2.65 | 2.96 | -10.5 | 2.08 | 2.19 | -4.8 | 58.2 | 61.2 | -3.0 |
+| PM | oral | 9 | 2.98 | 3.32 | -10.3 | 2.35 | 2.48 | -5.4 | 54.9 | 57.7 | -2.8 |
+| PM | oral | 10 | 3.31 | 3.67 | -9.8 | 2.61 | 2.72 | -4.2 | 52.2 | 55.0 | -2.8 |
 
 Reproduction of all 36 cells of Hu 2023 Table 3. Concentrations in mg/L;
 PTA is the probability of a trough inside the 1.0-5.5 mg/L target range.
@@ -758,9 +760,9 @@ realised <- c(
 )
 print(round(realised, 2))
 #> mean_median_abs_pct    mean_max_abs_pct  med_median_abs_pct     med_max_abs_pct 
-#>                8.02               11.75                8.01               18.22 
+#>                6.26               10.54                5.54               10.07 
 #>   pta_median_abs_pp      pta_max_abs_pp 
-#>                2.80                8.41
+#>                3.28                6.50
 
 # These are cohort-derived Monte Carlo statistics, not deterministic
 # identities, so the bounds are set well outside the run-to-run spread rather
@@ -851,12 +853,12 @@ reco_cmp |>
 
 | Phenotype | Route | Recommended dose (mg/kg BID) | PTA quoted in text (%) | PTA in Table 3 (%) | PTA, this reproduction (%) |
 |:---|:---|---:|---:|---:|---:|
-| NM | oral | 9 | 44.9 | 44.9 | 39.6 |
-| NM | iv | 8 | 60.9 | 60.9 | 60.4 |
-| IM | oral | 9 | 65.7 | 65.7 | 66.5 |
-| IM | iv | 5 | 66.1 | 66.1 | 57.7 |
-| PM | oral | 6 | 64.3 | 64.3 | 61.5 |
-| PM | iv | 5 | 56.5 | 56.5 | 61.0 |
+| NM | oral | 9 | 44.9 | 44.9 | 48.4 |
+| NM | iv | 8 | 60.9 | 60.9 | 56.0 |
+| IM | oral | 9 | 65.7 | 65.7 | 64.8 |
+| IM | iv | 5 | 66.1 | 66.1 | 65.4 |
+| PM | oral | 6 | 64.3 | 64.3 | 58.8 |
+| PM | iv | 5 | 56.5 | 56.5 | 61.5 |
 
 The maintenance doses Hu 2023 recommends per phenotype and route
 (Abstract and Results, ‘Dosing simulations’), with the target-attainment
@@ -891,7 +893,7 @@ stopifnot(
 )
 cat("Best oral PTA for normal metabolizers:", round(nm_oral_best, 1),
     "% at", nm_oral_best_dose, "mg/kg (Hu 2023: 49.9% at 10 mg/kg).\n")
-#> Best oral PTA for normal metabolizers: 45.1 % at 10 mg/kg (Hu 2023: 49.9% at 10 mg/kg).
+#> Best oral PTA for normal metabolizers: 51.1 % at 10 mg/kg (Hu 2023: 49.9% at 10 mg/kg).
 cat("Optimal oral dose falls from", nm_oral_best_dose, "mg/kg (NM) to",
     pm_oral_best_dose, "mg/kg (PM).\n")
 #> Optimal oral dose falls from 10 mg/kg (NM) to 6 mg/kg (PM).

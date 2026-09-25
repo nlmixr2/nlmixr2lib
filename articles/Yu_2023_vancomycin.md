@@ -491,7 +491,7 @@ stopifnot(
 c(`subjects checked` = nrow(auc_subject),
   `worst |AUC0-24 vs dose/CL| (%)` = round(worst_pct, 4))
 #>               subjects checked worst |AUC0-24 vs dose/CL| (%) 
-#>                       6.00e+03                       2.23e-02
+#>                       6.00e+03                       2.22e-02
 ```
 
 ### Steady-state exposure by arm

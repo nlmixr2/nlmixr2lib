@@ -721,13 +721,13 @@ knitr::kable(
 
 | Arm | Parameter |  Median | 5th percentile | 95th percentile |
 |:----|:----------|--------:|---------------:|----------------:|
-| TAF | auclast   |  255.68 |         174.36 |          365.89 |
-| TAF | cmax      |   14.60 |          10.67 |           19.26 |
-| TAF | cmin      |    8.66 |           5.67 |           12.74 |
+| TAF | auclast   |  255.81 |         171.67 |          414.90 |
+| TAF | cmax      |   14.64 |          10.40 |           21.65 |
+| TAF | cmin      |    8.61 |           5.60 |           14.55 |
 | TAF | tmax      |    1.25 |           1.25 |            1.25 |
-| TDF | auclast   | 2837.53 |        1934.61 |         4062.79 |
-| TDF | cmax      |  294.66 |         219.89 |          383.48 |
-| TDF | cmin      |   52.83 |          27.17 |           90.93 |
+| TDF | auclast   | 2837.13 |        1903.79 |         4606.10 |
+| TDF | cmax      |  290.24 |         210.34 |          391.55 |
+| TDF | cmin      |   52.51 |          28.03 |          102.34 |
 | TDF | tmax      |    0.75 |           0.75 |            0.75 |
 
 Simulated steady-state NCA parameters by arm (AUC0-24 and concentrations
@@ -742,7 +742,7 @@ med_auc <- cohort_summary |>
 
 tdf_taf_ratio <- med_auc$TDF / med_auc$TAF
 tdf_taf_ratio
-#> [1] 11.098
+#> [1] 11.09088
 
 stopifnot(
   # Kawuma 2023 Figure 1 legend: "when given as TDF, tenofovir in the plasma

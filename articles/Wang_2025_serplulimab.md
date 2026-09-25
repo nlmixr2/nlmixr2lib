@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -626,7 +626,7 @@ knitr::kable(typ_cmp, digits = 2,
 
 | Metric        | Published | Typical subject | % diff |
 |:--------------|----------:|----------------:|-------:|
-| Cavg1 (ug/mL) |      36.6 |           35.63 |  -2.64 |
+| Cavg1 (ug/mL) |      36.6 |           35.63 |  -2.65 |
 | Cmin1 (ug/mL) |      21.3 |           20.56 |  -3.47 |
 
 Deterministic check: typical ES-SCLC subject (67.0 kg, ALB 41.1 g/L,
@@ -663,8 +663,8 @@ knitr::kable(cycle1_cmp, digits = 2,
 
 | Metric | Published | Simulated | Cohort ALB median (g/L) | Source | % diff |
 |:---|---:|---:|---:|:---|---:|
-| Cavg1 median (ug/mL) | 36.6 | 35.79 | 39.9 | Table S5 (Q2/Q3 boundary of the exposure quartiles) | -2.22 |
-| Cmin1 median (ug/mL) | 21.3 | 19.16 | 39.9 | Table S5 (Q2/Q3 boundary of the exposure quartiles) | -10.06 |
+| Cavg1 median (ug/mL) | 36.6 | 34.23 | 39.9 | Table S5 (Q2/Q3 boundary of the exposure quartiles) | -6.47 |
+| Cmin1 median (ug/mL) | 21.3 | 19.08 | 39.9 | Table S5 (Q2/Q3 boundary of the exposure quartiles) | -10.40 |
 
 First-dose exposure metrics, ES-SCLC cohort at 4.5 mg/kg Q3W, vs. Wang
 2025 Table S5. {.table}
@@ -757,8 +757,8 @@ knitr::kable(
 
 | arm | AUCss (ug\*day/mL) | Cavgss (ug/mL) | Cmaxss (ug/mL) | Cminss (ug/mL) |
 |:---|---:|---:|---:|---:|
-| ES-SCLC | 1511.0 | 72.0 | 124.8 | 47.5 |
-| PK population | 1627.1 | 77.5 | 131.9 | 52.8 |
+| ES-SCLC | 1500.6 | 71.5 | 121.8 | 47.6 |
+| PK population | 1587.1 | 75.6 | 125.3 | 51.6 |
 
 Median cycle-8 (steady-state) exposure metrics at 4.5 mg/kg Q3W.
 {.table}
@@ -803,9 +803,9 @@ knitr::kable(
 
 | NCA parameter        | Reference | Simulated | % diff |
 |:---------------------|:----------|:----------|:-------|
-| AUClast (ug\*day/mL) | 769       | 752       | -2.2%  |
-| Ctrough (ug/mL)      | 21.3      | 19.2      | -10.1% |
-| cavg (ug/mL)         | 36.6      | 35.8      | -2.2%  |
+| AUClast (ug\*day/mL) | 769       | 719       | -6.5%  |
+| Ctrough (ug/mL)      | 21.3      | 19.1      | -10.4% |
+| cavg (ug/mL)         | 36.6      | 34.2      | -6.5%  |
 
 Simulated ES-SCLC first-dose NCA vs. Wang 2025 Table S5 (4.5 mg/kg Q3W).
 {.table}
@@ -923,20 +923,20 @@ knitr::kable(forest_cmp, digits = 3,
              caption = "Simulated vs. published (Wang 2025 Figure 1) geometric-mean Cavgss ratios.")
 ```
 
-| Covariate        | Subgroup        |   N | Published | Simulated | % diff |
-|:-----------------|:----------------|----:|----------:|----------:|-------:|
-| Weight quartile  | \[33,56\]       |  44 |     0.880 |     0.851 | -3.241 |
-| Weight quartile  | (56,64.5\]      |  39 |     0.959 |     0.960 |  0.094 |
-| Weight quartile  | (64.5,73\]      |  56 |     1.050 |     1.047 | -0.252 |
-| Weight quartile  | (73,131\]       |  61 |     1.140 |     1.105 | -3.088 |
-| Albumin quartile | \[23.9,38\]     |  44 |     0.857 |     0.865 |  0.947 |
-| Albumin quartile | (38,41.3\]      |  48 |     0.979 |     0.977 | -0.166 |
-| Albumin quartile | (41.3,44.1\]    |  43 |     1.060 |     1.029 | -2.941 |
-| Albumin quartile | (44.1,67.9\]    |  65 |     1.130 |     1.101 | -2.570 |
-| Sex              | Male            | 156 |     0.995 |     1.000 |  0.501 |
-| Sex              | Female          |  44 |     1.020 |     1.000 | -1.955 |
-| Tumour type      | Lung cancer     | 149 |     1.010 |     1.039 |  2.899 |
-| Tumour type      | non-Lung cancer |  51 |     0.973 |     0.894 | -8.166 |
+| Covariate        | Subgroup        |   N | Published | Simulated |  % diff |
+|:-----------------|:----------------|----:|----------:|----------:|--------:|
+| Weight quartile  | \[33,56\]       |  44 |     0.880 |     0.916 |   4.058 |
+| Weight quartile  | (56,64.5\]      |  39 |     0.959 |     1.031 |   7.514 |
+| Weight quartile  | (64.5,73\]      |  56 |     1.050 |     0.965 |  -8.114 |
+| Weight quartile  | (73,131\]       |  61 |     1.140 |     1.080 |  -5.273 |
+| Albumin quartile | \[23.9,38\]     |  44 |     0.857 |     0.892 |   4.031 |
+| Albumin quartile | (38,41.3\]      |  48 |     0.979 |     0.969 |  -0.985 |
+| Albumin quartile | (41.3,44.1\]    |  43 |     1.060 |     1.167 |  10.065 |
+| Albumin quartile | (44.1,67.9\]    |  65 |     1.130 |     0.999 | -11.619 |
+| Sex              | Male            | 156 |     0.995 |     0.975 |  -1.983 |
+| Sex              | Female          |  44 |     1.020 |     1.093 |   7.140 |
+| Tumour type      | Lung cancer     | 149 |     1.010 |     0.981 |  -2.873 |
+| Tumour type      | non-Lung cancer |  51 |     0.973 |     1.058 |   8.706 |
 
 Simulated vs. published (Wang 2025 Figure 1) geometric-mean Cavgss
 ratios. {.table}

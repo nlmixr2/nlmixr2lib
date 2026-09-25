@@ -309,7 +309,7 @@ sim <- sim |>
   dplyr::mutate(tad = time - T_LAST)
 stopifnot(!anyNA(sim$Cc), all(sim$Cc >= 0))
 range(sim$Cc)
-#> [1]   1.189156 269.521794
+#> [1]    2.082231 1075.884893
 ```
 
 ``` r
@@ -385,12 +385,12 @@ head(nca_wide)
 #> # A tibble: 6 × 7
 #>      id band  auclast  cmax  tmax clast.obs   cav
 #>   <int> <chr>   <dbl> <dbl> <dbl>     <dbl> <dbl>
-#> 1     1 1        660. 104.  1.30      24.2   55.0
-#> 2     2 1        300.  46.0 2.5        8.62  25.0
-#> 3     3 1        235.  42.4 0.900      7.36  19.6
-#> 4     4 1        139.  18.3 1.30       6.84  11.6
-#> 5     5 1       1387. 270.  1         36.9  116. 
-#> 6     6 1        521.  71.7 1.70      22.6   43.4
+#> 1     1 1        291.  39.3  2.85     10.6   24.3
+#> 2     2 1       1287. 166.   1.20     65.0  107. 
+#> 3     3 1        175.  26.0  1.10      7.30  14.6
+#> 4     4 1        200.  17.6  5.5      15.3   16.7
+#> 5     5 1       1012. 148.   1.65     39.6   84.3
+#> 6     6 1        281.  39.3  1.90     11.5   23.5
 ```
 
 #### Gate 1 – mass balance against the closed form
@@ -589,22 +589,22 @@ cmp <- nlmixr2lib::ncaComparisonTable(
 )
 cmp
 #>     NCA parameter band Reference Simulated  % diff
-#> 1       Cmax (nM)    1        33      36.5  +10.7%
-#> 2       Cmax (nM)    2        33      44.4 +34.6%*
-#> 3       Cmax (nM)    3        33      33.1   +0.4%
-#> 4       Cmax (nM)    4        33      44.1 +33.6%*
-#> 5      Clast (nM)    1        20      11.7 -41.3%*
-#> 6      Clast (nM)    2        20      15.6 -22.1%*
-#> 7      Clast (nM)    3        20        13 -35.0%*
-#> 8      Clast (nM)    4        20      20.1   +0.5%
-#> 9  AUClast (nM*h)    1       316       273  -13.7%
-#> 10 AUClast (nM*h)    2       316       342   +8.2%
-#> 11 AUClast (nM*h)    3       316       265  -16.1%
-#> 12 AUClast (nM*h)    4       316       375  +18.8%
-#> 13      Cavg (nM)    1        26      22.7  -12.5%
-#> 14      Cavg (nM)    2        26      28.5   +9.5%
-#> 15      Cavg (nM)    3        26      22.1  -15.0%
-#> 16      Cavg (nM)    4        26      31.3 +20.3%*
+#> 1       Cmax (nM)    1        33      41.4 +25.4%*
+#> 2       Cmax (nM)    2        33      43.4 +31.6%*
+#> 3       Cmax (nM)    3        33        39  +18.1%
+#> 4       Cmax (nM)    4        33        42 +27.4%*
+#> 5      Clast (nM)    1        20      12.6 -37.0%*
+#> 6      Clast (nM)    2        20      15.7 -21.7%*
+#> 7      Clast (nM)    3        20      15.4 -22.8%*
+#> 8      Clast (nM)    4        20        18   -9.8%
+#> 9  AUClast (nM*h)    1       316       301   -4.6%
+#> 10 AUClast (nM*h)    2       316       338   +6.8%
+#> 11 AUClast (nM*h)    3       316       315   -0.4%
+#> 12 AUClast (nM*h)    4       316       348  +10.3%
+#> 13      Cavg (nM)    1        26      25.1   -3.4%
+#> 14      Cavg (nM)    2        26      28.1   +8.2%
+#> 15      Cavg (nM)    3        26      26.2   +0.9%
+#> 16      Cavg (nM)    4        26        29  +11.7%
 ```
 
 `cav` and `auclast` – the clearance-driven metrics – land inside the 20%
@@ -1260,7 +1260,7 @@ sprintf("Individual annual slopes: median %.2f, 10th-90th percentile %.2f to %.2
         median(indiv_slope$slope),
         quantile(indiv_slope$slope, 0.10), quantile(indiv_slope$slope, 0.90),
         100 * mean(indiv_slope$slope > 0))
-#> [1] "Individual annual slopes: median 0.02, 10th-90th percentile -6.79 to 6.91 %predicted/year; 50% positive"
+#> [1] "Individual annual slopes: median 0.61, 10th-90th percentile -6.67 to 6.58 %predicted/year; 53% positive"
 
 sim_pp |>
   dplyr::filter(id <= 60) |>
@@ -1423,15 +1423,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1439,7 +1439,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] utf8_1.2.6          withr_3.0.3         scales_1.4.0       
 #> [49] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         

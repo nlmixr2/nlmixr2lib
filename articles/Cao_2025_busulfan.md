@@ -1016,7 +1016,7 @@ cauc_var <- sim_var |>
 cauc_q <- quantile(cauc_var$cauc, c(0.025, 0.5, 0.975))
 round(cauc_q, 1)
 #>  2.5%   50% 97.5% 
-#>  72.9 115.3 167.6
+#>  70.6 107.9 178.1
 
 stopifnot(
   # The published median and 95% interval for this subject under weight-based

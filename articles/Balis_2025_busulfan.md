@@ -482,8 +482,8 @@ check_identity <- function(tbl) {
 
 auc_check <- check_identity(nca_tbl)
 summary(auc_check$pct_err)
-#>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-#> -0.12404 -0.05037 -0.03469 -0.03930 -0.02535 -0.00721
+#>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+#> -0.123953 -0.050297 -0.034612 -0.039217 -0.025244 -0.007222
 stopifnot(max(abs(auc_check$pct_err)) < 1)
 ```
 

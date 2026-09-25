@@ -456,7 +456,7 @@ d <- c(
 )
 round(d, 3)
 #>       cmax    ctrough weekly_auc 
-#>     -0.047     -2.081      0.418
+#>     -0.047     -2.086      0.417
 stopifnot(abs(d[["cmax"]]) < 1, abs(d[["weekly_auc"]]) < 1.5,
           abs(d[["ctrough"]]) < 3)
 ```
@@ -494,8 +494,8 @@ tibble::tibble(
 
 | Metric               | Statistic       | Value | Published | % diff |
 |:---------------------|:----------------|------:|----------:|-------:|
-| Ctrough at day 14    | geometric mean  | 70.89 |      72.4 |  -2.08 |
-| Ctrough at day 14    | arithmetic mean | 72.05 |      72.4 |  -0.49 |
+| Ctrough at day 14    | geometric mean  | 70.89 |      72.4 |  -2.09 |
+| Ctrough at day 14    | arithmetic mean | 72.04 |      72.4 |  -0.49 |
 | Weekly AUC to day 13 | geometric mean  |    NA |     818.8 |     NA |
 
 The arithmetic mean of the day-14 trough sits within half a percent of
@@ -559,7 +559,7 @@ c(f_midpoint = f_t, cl_inf = cl_inf, auc_theory = auc_tau_theory,
   auc_simulated = auc_tau_sim,
   pct_diff = 100 * (auc_tau_sim - auc_tau_theory) / auc_tau_theory)
 #>    f_midpoint        cl_inf    auc_theory auc_simulated      pct_diff 
-#>  9.971993e-01  1.897334e-01  4.427265e+03  4.427136e+03 -2.920012e-03
+#>    0.99719929    0.18973338 4427.26515426 4426.96250732   -0.00683598
 stopifnot(abs(100 * (auc_tau_sim - auc_tau_theory) / auc_tau_theory) < 2)
 ```
 
@@ -624,7 +624,7 @@ cmax_inf <- c(
 c(cmax_inf, pct_drop_60min = 100 * (cmax_inf[["60 min"]] - cmax_inf[["bolus"]]) /
     cmax_inf[["bolus"]])
 #>          bolus         30 min         60 min pct_drop_60min 
-#>    258.3953063    256.5140265    255.8894468     -0.9697775
+#>    258.3953063    256.5140258    255.8894460     -0.9697778
 ```
 
 ## Stochastic simulation of all four regimens
@@ -697,10 +697,10 @@ knitr::kable(mec_tbl, digits = 1, caption = "Cycle 7 minima; MEC is 6 ug/mL.")
 
 | regimen                       | 5th pctile trough | median trough |
 |:------------------------------|------------------:|--------------:|
-| 1200 mg q3w                   |              70.5 |         184.3 |
-| 1200 mg q3w x2, 840 mg q6w x5 |              13.8 |          47.7 |
-| 1680 mg q4w x2, 840 mg q6w x5 |              15.0 |          45.6 |
-| 840 mg q2w x2, 840 mg q6w x5  |              12.5 |          43.2 |
+| 1200 mg q3w                   |              70.4 |         182.6 |
+| 1200 mg q3w x2, 840 mg q6w x5 |              14.6 |          47.0 |
+| 1680 mg q4w x2, 840 mg q6w x5 |              12.3 |          48.7 |
+| 840 mg q2w x2, 840 mg q6w x5  |              12.6 |          43.9 |
 
 Cycle 7 minima; MEC is 6 ug/mL. {.table}
 
@@ -761,29 +761,29 @@ knitr::kable(tbl_pub, digits = 1, row.names = FALSE,
 | NCA parameter | arm | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
 | Cmax (ug/mL) | 1200 mg q3w cycle 1 | 386 | 390 | +1.0% |
-| Cmax (ug/mL) | 1200 mg q3w cycle 7 | 577 | 581 | +0.8% |
-| Cmax (ug/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 1 | 270 | 265 | -1.7% |
-| Cmax (ug/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 7 | 328 | 324 | -1.1% |
-| Cmax (ug/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 1 | 386 | 383 | -0.8% |
-| Cmax (ug/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 7 | 329 | 325 | -1.2% |
-| Cmax (ug/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 1 | 540 | 536 | -0.7% |
-| Cmax (ug/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 7 | 330 | 333 | +1.0% |
+| Cmax (ug/mL) | 1200 mg q3w cycle 7 | 577 | 578 | +0.1% |
+| Cmax (ug/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 1 | 270 | 266 | -1.5% |
+| Cmax (ug/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 7 | 328 | 322 | -2.0% |
+| Cmax (ug/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 1 | 386 | 377 | -2.3% |
+| Cmax (ug/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 7 | 329 | 319 | -3.0% |
+| Cmax (ug/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 1 | 540 | 540 | -0.1% |
+| Cmax (ug/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 7 | 330 | 328 | -0.7% |
 | AUClast (ug\*day/mL) | 1200 mg q3w cycle 1 | 967 | 972 | +0.5% |
-| AUClast (ug\*day/mL) | 1200 mg q3w cycle 7 | 2040 | 2000 | -2.1% |
-| AUClast (ug\*day/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 1 | 808 | 820 | +1.5% |
-| AUClast (ug\*day/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 7 | 771 | 765 | -0.7% |
-| AUClast (ug\*day/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 1 | 967 | 982 | +1.6% |
-| AUClast (ug\*day/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 7 | 774 | 755 | -2.4% |
-| AUClast (ug\*day/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 1 | 1170 | 1190 | +1.2% |
-| AUClast (ug\*day/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 7 | 745 | 795 | +6.7% |
+| AUClast (ug\*day/mL) | 1200 mg q3w cycle 7 | 2040 | 1980 | -3.0% |
+| AUClast (ug\*day/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 1 | 808 | 806 | -0.3% |
+| AUClast (ug\*day/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 7 | 771 | 738 | -4.3% |
+| AUClast (ug\*day/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 1 | 967 | 972 | +0.5% |
+| AUClast (ug\*day/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 7 | 774 | 755 | -2.5% |
+| AUClast (ug\*day/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 1 | 1170 | 1160 | -0.6% |
+| AUClast (ug\*day/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 7 | 745 | 749 | +0.5% |
 | Ctrough (ug/mL) | 1200 mg q3w cycle 1 | 71.6 | 71.4 | -0.3% |
-| Ctrough (ug/mL) | 1200 mg q3w cycle 7 | 187 | 178 | -4.8% |
-| Ctrough (ug/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 1 | 67.7 | 70 | +3.4% |
-| Ctrough (ug/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 7 | 47.5 | 45.3 | -4.5% |
-| Ctrough (ug/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 1 | 71.6 | 74.7 | +4.3% |
-| Ctrough (ug/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 7 | 47.7 | 45.9 | -3.7% |
-| Ctrough (ug/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 1 | 74.9 | 77.5 | +3.5% |
-| Ctrough (ug/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 7 | 48 | 49 | +2.1% |
+| Ctrough (ug/mL) | 1200 mg q3w cycle 7 | 187 | 176 | -5.7% |
+| Ctrough (ug/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 1 | 67.7 | 67.7 | -0.0% |
+| Ctrough (ug/mL) | 840 mg q2w x2, 840 mg q6w x5 cycle 7 | 47.5 | 43.1 | -9.2% |
+| Ctrough (ug/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 1 | 71.6 | 73.1 | +2.1% |
+| Ctrough (ug/mL) | 1200 mg q3w x2, 840 mg q6w x5 cycle 7 | 47.7 | 46.2 | -3.2% |
+| Ctrough (ug/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 1 | 74.9 | 75.1 | +0.3% |
+| Ctrough (ug/mL) | 1680 mg q4w x2, 840 mg q6w x5 cycle 7 | 48 | 44.8 | -6.6% |
 
 Simulated (n = 200, IIV on) vs Zeng 2026 Table 2 RxODE column (n =
 1000). auclast rows are weekly AUC. {.table}
@@ -821,9 +821,9 @@ knitr::kable(noise, digits = 2,
 
 | PPTESTCD | 1200 mg q3w cycle 1 | 1200 mg q3w x2, 840 mg q6w x5 cycle 1 | noise (%) |
 |:---|---:|---:|---:|
-| auclast | 971.93 | 982.33 | 1.07 |
-| cmax | 389.92 | 383.04 | -1.77 |
-| ctrough | 71.41 | 74.66 | 4.55 |
+| auclast | 971.90 | 971.66 | -0.02 |
+| cmax | 389.92 | 377.22 | -3.26 |
+| ctrough | 71.39 | 73.08 | 2.37 |
 
 Two identical designs simulated independently; the true difference is
 zero. {.table}
@@ -864,9 +864,9 @@ bind_rows(
 
 | PPTESTCD | Reproduced (n = 200) | Zeng 2026 Table 2 (n = 1000) |
 |:---------|---------------------:|-----------------------------:|
-| auclast  |                 5.32 |                         3.89 |
-| cmax     |                 2.76 |                         0.61 |
-| ctrough  |                 8.09 |                         1.05 |
+| auclast  |                 2.21 |                         3.89 |
+| cmax     |                 2.63 |                         0.61 |
+| ctrough  |                 7.12 |                         1.05 |
 
 Three arms that share the same steady-state maintenance dosing; the
 spread within each source is that source’s own simulation noise.
@@ -899,9 +899,9 @@ nca_all |>
 
 | PPTESTCD | median between-subject CV (%) | SE of geometric mean at n=200 (%) | SE at the paper’s n=1000 (%) |
 |:---|---:|---:|---:|
-| auclast | 28.75 | 2.03 | 0.91 |
-| cmax | 23.27 | 1.65 | 0.74 |
-| ctrough | 46.78 | 3.31 | 1.48 |
+| auclast | 28.80 | 2.04 | 0.91 |
+| cmax | 23.33 | 1.65 | 0.74 |
+| ctrough | 46.97 | 3.32 | 1.49 |
 
 ### Internal consistency of the published table
 

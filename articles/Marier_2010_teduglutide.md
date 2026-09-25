@@ -568,9 +568,9 @@ tibble(
 
 | Quantity | Simulated | Published |
 |:---|:---|:---|
-| Measurable steady-state troughs (\> 1.00 ng/mL) | 55.8% | 32.8% (60 of 183 samples) |
-| Median peak accumulation ratio (dose 10 / dose 1) | 1.012 | ‘very minor accumulation’ |
-| 90th percentile peak accumulation ratio | 1.085 | – |
+| Measurable steady-state troughs (\> 1.00 ng/mL) | 56.5% | 32.8% (60 of 183 samples) |
+| Median peak accumulation ratio (dose 10 / dose 1) | 1.011 | ‘very minor accumulation’ |
+| 90th percentile peak accumulation ratio | 1.092 | – |
 
 Accumulation on daily SC dosing (Marier 2010 Results, ‘Structural Model
 Buildup’). {.table}

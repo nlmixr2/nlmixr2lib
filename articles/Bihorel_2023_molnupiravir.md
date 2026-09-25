@@ -439,10 +439,10 @@ summary_tbl |>
 
 | Quantity                         | Value |
 |:---------------------------------|------:|
-| Median AUC(0-12) (nmol\*h/L)     | 33655 |
-| 5th percentile AUC(0-12)         | 17071 |
-| 95th percentile AUC(0-12)        | 67398 |
-| Median CL/F implied by AUC (L/h) |    72 |
+| Median AUC(0-12) (nmol\*h/L)     | 33022 |
+| 5th percentile AUC(0-12)         | 17689 |
+| 95th percentile AUC(0-12)        | 70666 |
+| Median CL/F implied by AUC (L/h) |    74 |
 
 Simulated steady-state exposure, 800 mg q12h, 200 virtual participants.
 {.table}

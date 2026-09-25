@@ -803,10 +803,10 @@ knitr::kable(
 
 | Pediatric arm | Bodyweight band | Median AUC0-inf (ng\*h/mL) | Fraction inside the adult band |
 |:---|:---|---:|---:|
-| Pediatric Asian, miniSTONE-2 dose | \<20 kg | 10392 | 0.81 |
-| Pediatric Asian, miniSTONE-2 dose | \>=20 kg | 9842 | 0.90 |
-| Pediatric non-Asian, miniSTONE-2 dose | \<20 kg | 5154 | 0.94 |
-| Pediatric non-Asian, miniSTONE-2 dose | \>=20 kg | 4881 | 0.91 |
+| Pediatric Asian, miniSTONE-2 dose | \<20 kg | 11791 | 0.83 |
+| Pediatric Asian, miniSTONE-2 dose | \>=20 kg | 11678 | 0.90 |
+| Pediatric non-Asian, miniSTONE-2 dose | \<20 kg | 5848 | 0.99 |
+| Pediatric non-Asian, miniSTONE-2 dose | \>=20 kg | 5792 | 0.98 |
 
 Pediatric exposure by bodyweight band versus the adult target band.
 {.table}
@@ -901,8 +901,8 @@ knitr::kable(
 
 | Regimen          | Median C240 (ng/mL) |
 |:-----------------|--------------------:|
-| BLOCKSTONE dose  |                2.59 |
-| miniSTONE-2 dose |                5.54 |
+| BLOCKSTONE dose  |                2.97 |
+| miniSTONE-2 dose |                6.47 |
 
 Predicted C240 in Asian pediatric patients by regimen. {.table}
 
@@ -978,10 +978,10 @@ knitr::kable(
 
 | Dose | Race | N | Simulated AUC0-inf | Published AUC0-inf | Ratio (AUC) | Simulated C24 | Published C24 | Ratio (C24) | Simulated C240 | Published C240 | Ratio (C240) |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 2 mg/kg | Asian | 72 | 12100 | 9260 | 1.31 | 143.1 | 116.0 | 1.23 | 5.89 | 4.24 | 1.39 |
-| 2 mg/kg | non-Asian | 72 | 6001 | 4050 | 1.48 | 81.0 | 55.7 | 1.45 | 1.83 | 0.99 | 1.85 |
-| 40 mg | Asian | 128 | 11003 | 10000 | 1.10 | 115.2 | 104.0 | 1.11 | 6.41 | 5.93 | 1.08 |
-| 40 mg | non-Asian | 128 | 5457 | 4390 | 1.24 | 67.3 | 53.2 | 1.27 | 2.23 | 1.85 | 1.21 |
+| 2 mg/kg | Asian | 72 | 12653 | 9260 | 1.37 | 143.5 | 116.0 | 1.24 | 7.17 | 4.24 | 1.69 |
+| 2 mg/kg | non-Asian | 72 | 6276 | 4050 | 1.55 | 82.0 | 55.7 | 1.47 | 2.26 | 0.99 | 2.29 |
+| 40 mg | Asian | 128 | 11888 | 10000 | 1.19 | 119.6 | 104.0 | 1.15 | 7.46 | 5.93 | 1.26 |
+| 40 mg | non-Asian | 128 | 5897 | 4390 | 1.34 | 70.5 | 53.2 | 1.32 | 2.71 | 1.85 | 1.47 |
 
 Cohort mean exposure metrics under the miniSTONE-2 regimen versus Retout
 2026 Table 2. AUC0-inf in ng\*h/mL, C24 and C240 in ng/mL. {.table}
@@ -1035,11 +1035,11 @@ list(exposure_ratios = round(ratios, 2),
                                          paste(band_consistency$race,
                                                band_consistency$source)), 3))
 #> $exposure_ratios
-#>  [1] 1.31 1.48 1.10 1.24 1.23 1.45 1.11 1.27 1.39 1.85 1.08 1.21
+#>  [1] 1.37 1.55 1.19 1.34 1.24 1.47 1.15 1.32 1.69 2.29 1.26 1.47
 #> 
 #> $band_ratios
 #>     Asian mean_auc      Asian pub_auc non-Asian mean_auc  non-Asian pub_auc 
-#>              0.909              1.080              0.909              1.084
+#>              0.940              1.080              0.940              1.084
 ```
 
 The paper reports the same fold-difference from its own numbers as

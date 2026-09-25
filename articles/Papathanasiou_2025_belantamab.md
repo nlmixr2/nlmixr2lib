@@ -371,7 +371,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | cav |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | 2.5 mg/kg q3w combo | 200 | 154 \[26.9\] | 36.2 \[20.6\] | NC | 0.500 \[0.500, 0.500\] | 7.32 \[26.9\] |
+| 0 | 21 | 2.5 mg/kg q3w combo | 200 | 149 \[26.7\] | 35.6 \[20.6\] | NC | 0.500 \[0.500, 0.500\] | 7.11 \[26.7\] |
 | 0 | 21 | 2.5 mg/kg q3w mono | 200 | 154 \[25.9\] | 35.9 \[19.7\] | NC | 0.500 \[0.500, 0.500\] | 7.33 \[25.9\] |
 
 Simulated cycle-1 NCA parameters at 2.5 mg/kg q3w (monotherapy vs

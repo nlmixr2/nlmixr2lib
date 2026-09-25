@@ -477,7 +477,7 @@ mb <- sim_pk |>
 stopifnot(nrow(mb) == 2 * n_per_arm)
 summary(mb$pct_diff)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -0.106989 -0.020470 -0.012478 -0.016408 -0.008207 -0.002770
+#> -0.094822 -0.021170 -0.012541 -0.017350 -0.008310 -0.003394
 
 # Pure numerical (trapezoidal) error on a 1-day grid; not a cohort-noise
 # quantity, so the bound can be tight.
@@ -651,12 +651,12 @@ knitr::kable(
 
 | Arm | Metric | Published (ng/mL) | Typical value (ng/mL) | Cohort median (ng/mL) | % diff (typical) | % diff (cohort) |
 |:---|:---|---:|---:|---:|---:|---:|
-| Chinese adults | cmax | 2214.0 | 2144.6 | 2307.4 | -3.1 | 4.2 |
-| Chinese adults | cav | 1067.0 | 1051.6 | 1082.9 | -1.4 | 1.5 |
-| Chinese adults | cmin | 276.7 | 241.3 | 282.1 | -12.8 | 1.9 |
-| Non-Asian adults | cmax | 1951.0 | 1902.2 | 1989.7 | -2.5 | 2.0 |
-| Non-Asian adults | cav | 1006.0 | 954.2 | 1019.9 | -5.1 | 1.4 |
-| Non-Asian adults | cmin | 279.8 | 243.5 | 308.9 | -13.0 | 10.4 |
+| Chinese adults | cmax | 2214.0 | 2144.6 | 2142.1 | -3.1 | -3.2 |
+| Chinese adults | cav | 1067.0 | 1051.6 | 1089.1 | -1.4 | 2.1 |
+| Chinese adults | cmin | 276.7 | 241.3 | 292.5 | -12.8 | 5.7 |
+| Non-Asian adults | cmax | 1951.0 | 1902.2 | 1943.5 | -2.5 | -0.4 |
+| Non-Asian adults | cav | 1006.0 | 954.2 | 930.8 | -5.1 | -7.5 |
+| Non-Asian adults | cmin | 279.8 | 243.5 | 263.2 | -13.0 | -5.9 |
 
 Published medians against both the deterministic typical value and the
 150-per-arm cohort median. {.table}
@@ -1250,15 +1250,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         dplyr_1.2.1           PKNCA_0.12.1         
-#> [4] rxode2_5.1.7          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1266,7 +1266,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       tidyr_1.3.2         openssl_2.4.2      
 #> [34] cachem_1.1.0        nlme_3.1-169        tidyselect_1.2.1   
 #> [37] digest_0.6.39       lotri_1.0.5         purrr_1.2.2        
-#> [40] labeling_0.4.3      rxode2ll_2.0.17     fastmap_1.2.0      
+#> [40] labeling_0.4.3      rxode2ll_2.0.18     fastmap_1.2.0      
 #> [43] grid_4.6.1          cli_3.6.6           dparser_1.3.1-13   
 #> [46] magrittr_2.0.5      withr_3.0.3         scales_1.4.0       
 #> [49] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         

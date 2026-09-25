@@ -589,9 +589,9 @@ nca_tab |>
 
 | Dose cohort | Cmax (ug/mL) | Tmax (day) | AUC0-14 (ug\*day/mL) | AUC0-14 / dose (ug\*day/mL/mg) | Cmax / dose (ug/mL/mg) |
 |:---|---:|---:|---:|---:|---:|
-| 1 mg/kg IV | 6.04 | 0 | 1.5 | 0.0203 | 0.08050 |
-| 4 mg/kg IV | 88.93 | 0 | 97.1 | 0.3238 | 0.29645 |
-| 7 mg/kg IV | 169.61 | 0 | 248.8 | 0.4740 | 0.32307 |
+| 1 mg/kg IV | 6.38 | 0 | 1.4 | 0.0191 | 0.08508 |
+| 4 mg/kg IV | 87.68 | 0 | 95.5 | 0.3184 | 0.29228 |
+| 7 mg/kg IV | 173.06 | 0 | 255.6 | 0.4868 | 0.32964 |
 
 Median NCA of simulated FREE rozanolixizumab, final model, 100 subjects
 per arm. {.table}

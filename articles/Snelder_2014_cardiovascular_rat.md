@@ -1301,12 +1301,12 @@ knitr::kable(iiv, digits = 3,
 
 | Strain | Readout | Simulated mean | Simulated CV % | Table 5 CV % | Table 5 typical value |
 |:---|:---|---:|---:|---:|---:|
-| SHR | BSL_HR | 310.155 | 5.709 | 6.1 | 310 |
-| SHR | BSL_MAP | 155.353 | 3.398 | 3.7 | 155 |
-| SHR | BSL_CO | 69.707 | 24.409 | 22.7 | 69 |
-| WKY | BSL_HR | 324.079 | 5.752 | 6.1 | 323 |
-| WKY | BSL_MAP | 101.579 | 3.711 | 3.7 | 102 |
-| WKY | BSL_CO | 133.310 | 23.382 | 22.7 | 129 |
+| SHR | BSL_HR | 309.475 | 6.226 | 6.1 | 310 |
+| SHR | BSL_MAP | 155.960 | 3.415 | 3.7 | 155 |
+| SHR | BSL_CO | 69.616 | 23.539 | 22.7 | 69 |
+| WKY | BSL_HR | 320.194 | 5.876 | 6.1 | 323 |
+| WKY | BSL_MAP | 102.010 | 3.881 | 3.7 | 102 |
+| WKY | BSL_CO | 134.046 | 22.363 | 22.7 | 129 |
 
 Simulated baseline distribution (200 rats per strain) against Snelder
 2014 Table 5. {.table}

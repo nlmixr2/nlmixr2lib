@@ -382,7 +382,7 @@ from the first dose, against the EUCAST/CLSI breakpoints and ECOFF of
 
 An anuric patient with CVVHD off has total clearance of **exactly** zero
 in this model. Concentrations still plateau rather than diverge, because
-`V_C` grows with time since first dose. Under rxode2 5.1.7 a model with
+`V_C` grows with time since first dose. Under rxode2 5.1.8 a model with
 a residual endpoint and exactly-zero elimination returns `NaN` states
 when dosed by infusion, so the CVVHD-off arm uses a negligible non-zero
 gate as a numerical stand-in for the `CL -> 0` limit. Its inertness is
@@ -564,7 +564,7 @@ claims |>
 | Published claim | Regimen | CL_CR (mL/min) | Paper | Model day-5 trough | Model | Agrees |
 |:---|:---|---:|:---|---:|:---|:---|
 | 3 x 4 g = 12 g/day insufficient at CL_CR 50 | 3x 4 g | 50 | below 128 | 119 | below 128 | TRUE |
-| 3 x 5 g = 15 g/day sufficient at CL_CR 50 | 3x 5 g | 50 | above 128 | 149 | above 128 | TRUE |
+| 3 x 5 g = 15 g/day sufficient at CL_CR 50 | 3x 5 g | 50 | above 128 | 148 | above 128 | TRUE |
 | 3 x 5 g = 15 g/day insufficient at CL_CR 90 | 3x 5 g | 90 | below 128 | 122 | below 128 | TRUE |
 | 4 x 4 g = 16 g/day sufficient at CL_CR 90 | 4x 4 g | 90 | above 128 | 135 | above 128 | TRUE |
 
@@ -581,7 +581,7 @@ stopifnot(min(day5$trough[day5$cvvhd == "with CVVHD"]) > 64)
 
 All four conclusions reproduce, and they are tight rather than lucky:
 the insufficient/sufficient pairs straddle the 128 ug/mL target from 119
-to 149 ug/mL at CL_CR 50, and from 122 to 135 ug/mL at CL_CR 90.
+to 148 ug/mL at CL_CR 50, and from 122 to 135 ug/mL at CL_CR 90.
 
 ## Structural checks
 
@@ -769,18 +769,18 @@ knitr::kable(sens_wide,
 | Parameter           | TSFD 0 | TSFD 8 | TSFD 24 | TSFD 48 | Published |
 |:--------------------|-------:|-------:|--------:|--------:|----------:|
 | adj.r.squared       |   -0.9 |   -0.7 |    -0.4 |    -0.2 |        NA |
-| AUClast             |   17.8 |   27.5 |    38.9 |    48.3 |      28.7 |
-| clast.pred          |   31.3 |   36.7 |    44.4 |    51.6 |        NA |
-| Cmax                |    9.1 |   21.0 |    35.2 |    46.2 |      17.3 |
-| t½                  |   33.8 |   42.9 |    51.2 |    56.2 |      51.0 |
-| λz                  |  -51.9 |  -76.7 |  -107.8 |  -131.9 |        NA |
+| AUClast             |   18.0 |   28.0 |    39.6 |    49.0 |      28.7 |
+| clast.pred          |   31.6 |   37.2 |    45.1 |    52.2 |        NA |
+| Cmax                |    9.1 |   21.4 |    35.9 |    46.9 |      17.3 |
+| t½                  |   33.9 |   43.3 |    51.8 |    56.8 |      51.0 |
+| λz                  |  -52.0 |  -78.0 |  -110.1 |  -134.6 |        NA |
 | λz n points         |    0.0 |    0.0 |     0.0 |     0.0 |        NA |
 | lambda.z.time.first |    0.0 |    0.0 |     0.0 |     0.0 |        NA |
 | lambda.z.time.last  |    0.0 |    0.0 |     0.0 |     0.0 |        NA |
 | r.squared           |   -0.4 |   -0.3 |    -0.2 |    -0.1 |        NA |
-| span.ratio          |  -51.9 |  -76.7 |  -107.8 |  -131.9 |        NA |
+| span.ratio          |  -52.0 |  -78.0 |  -110.1 |  -134.6 |        NA |
 | Tlast               |    0.0 |    0.0 |     0.0 |     0.0 |        NA |
-| Tmax                |   19.3 |   27.2 |    26.3 |    16.2 |        NA |
+| Tmax                |   18.9 |   26.4 |    24.1 |    14.6 |        NA |
 
 Percentage reduction with CVVHD, by the dosing interval observed (h
 after first dose), vs. the published reduction. {.table}
@@ -800,9 +800,9 @@ bracket <- sens |>
   dplyr::filter(!is.na(published))
 print(as.data.frame(bracket))
 #>    PPTESTCD        lo       hi published brackets
-#> 1   auclast 17.825250 48.34161      28.7     TRUE
-#> 2      cmax  9.145899 46.23134      17.3     TRUE
-#> 3 half.life 33.796770 56.23734      51.0     TRUE
+#> 1   auclast 17.971453 48.97115      28.7     TRUE
+#> 2      cmax  9.137115 46.86622      17.3     TRUE
+#> 3 half.life 33.921090 56.81270      51.0     TRUE
 # Guard that the filter did not empty the check out: all three published
 # reductions must be present AND inside the modelled range.
 stopifnot(nrow(bracket) == length(published_reduction), all(bracket$brackets))
@@ -848,12 +848,12 @@ knitr::kable(cmp, digits = 1,
 
 | NCA parameter      | treatment     | Reference | Simulated | % diff    |
 |:-------------------|:--------------|:----------|:----------|:----------|
-| Cmax (ug/mL)       | with CVVHD    | 118       | 215       | +82.3%\*  |
-| Cmax (ug/mL)       | without CVVHD | 144       | 332       | +130.6%\* |
-| AUClast (ug\*h/mL) | with CVVHD    | 398       | 1140      | +185.6%\* |
-| AUClast (ug\*h/mL) | without CVVHD | 576       | 1860      | +223.1%\* |
-| t½ (h)             | with CVVHD    | 2.7       | 10.7      | +297.3%\* |
-| t½ (h)             | without CVVHD | 9.02      | 22        | +143.8%\* |
+| Cmax (ug/mL)       | with CVVHD    | 118       | 211       | +79.0%\*  |
+| Cmax (ug/mL)       | without CVVHD | 144       | 330       | +128.9%\* |
+| AUClast (ug\*h/mL) | with CVVHD    | 398       | 1110      | +180.0%\* |
+| AUClast (ug\*h/mL) | without CVVHD | 576       | 1840      | +220.2%\* |
+| t½ (h)             | with CVVHD    | 2.7       | 10.7      | +296.4%\* |
+| t½ (h)             | without CVVHD | 9.02      | 22.2      | +146.1%\* |
 
 Simulated vs. published NCA (observed data). \* differs from reference
 by \>20%. {.table}
@@ -946,7 +946,7 @@ Parameters were not tuned to close this gap.
   referenced in `model()`.
 - **Zero-clearance limit is a solver workaround, not a parameter
   change.** An anuric patient with CVVHD off has exactly zero total
-  clearance. Under rxode2 5.1.7 such a model returns `NaN` states when
+  clearance. Under rxode2 5.1.8 such a model returns `NaN` states when
   dosed by infusion (a bolus solves correctly, as does the equivalent
   endpoint-free plain rxode2 model), so this vignette sets
   `RRT_CRRT_ACTIVE = 1e-9` in the CVVHD-off arm. That corresponds to a

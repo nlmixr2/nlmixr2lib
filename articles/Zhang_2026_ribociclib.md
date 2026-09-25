@@ -85,8 +85,8 @@ mod
 #>   vignette <- "Zhang_2026_ribociclib"
 #> 
 #>   units <- list(
-#>     time          = "h",
-#>     dosing        = "(not applicable; the ribociclib concentration is supplied as the time-varying covariate CP_RIB_NGML)",
+#>     time = "h",
+#>     dosing = "(not applicable; the ribociclib concentration is supplied as the time-varying covariate CP_RIB_NGML)",
 #>     concentration = "nmol/L"
 #>   )
 #> 
@@ -109,11 +109,11 @@ mod
 #> 
 #>   covariateData <- list(
 #>     CP_RIB_NGML = list(
-#>       description        = "Time-varying TOTAL ribociclib plasma concentration driving CDK4/6 engagement in CSF",
-#>       units              = "ng/mL",
-#>       type               = "continuous",
+#>       description = "Time-varying TOTAL ribociclib plasma concentration driving CDK4/6 engagement in CSF",
+#>       units = "ng/mL",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "TOTAL (not free) plasma concentration. The free CSF concentration that",
 #>         "actually drives binding is computed inside model() as",
 #>         "CP_RIB_NGML * fup * kpuu, because Zhang 2026 defines Kp,uu as the",
@@ -134,20 +134,20 @@ mod
 #>         "400 mg BID arms of its Figure 3 cannot be driven from published",
 #>         "numbers alone."
 #>       ),
-#>       source_name        = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
+#>       source_name = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human (in silico; PK-Sim virtual populations matched to published clinical cohorts)",
-#>     n_subjects     = NA_integer_,
-#>     n_studies      = 4L,
-#>     age_range      = "median 49 to 65 years across the contributing cohorts (Curigliano 57 and 65; Infante 60; Tien 49; Johnson 53)",
+#>     species = "human (in silico; PK-Sim virtual populations matched to published clinical cohorts)",
+#>     n_subjects = NA_integer_,
+#>     n_studies = 4L,
+#>     age_range = "median 49 to 65 years across the contributing cohorts (Curigliano 57 and 65; Infante 60; Tien 49; Johnson 53)",
 #>     sex_female_pct = NA_real_,
-#>     disease_state  = "breast cancer with brain metastasis (BCBM) for the simulation population; the validation cohorts were HR-positive / HER2-negative breast cancer, Rb-positive breast cancer plus liposarcoma and colon cancer, recurrent glioblastoma, and glioblastoma",
-#>     dose_range     = "ribociclib 200 to 1200 mg once daily or twice daily; plasma validation at 400, 600, 750, 900 and 1200 mg OD; CSF validation at 400, 600 and 900 mg OD; 600 mg OD is the standard approved regimen and 300 mg BID is the paper's recommended optimum for BCBM",
-#>     regions        = NA_character_,
-#>     notes          = paste(
+#>     disease_state = "breast cancer with brain metastasis (BCBM) for the simulation population; the validation cohorts were HR-positive / HER2-negative breast cancer, Rb-positive breast cancer plus liposarcoma and colon cancer, recurrent glioblastoma, and glioblastoma",
+#>     dose_range = "ribociclib 200 to 1200 mg once daily or twice daily; plasma validation at 400, 600, 750, 900 and 1200 mg OD; CSF validation at 400, 600 and 900 mg OD; 600 mg OD is the standard approved regimen and 300 mg BID is the paper's recommended optimum for BCBM",
+#>     regions = NA_character_,
+#>     notes = paste(
 #>       "Virtual-population demographics (sample size, age distribution, female",
 #>       "proportion) were taken per scenario from the four clinical studies",
 #>       "tabulated in Zhang 2026 Table 2 (Curigliano, Infante, Tien, Johnson),",
@@ -314,7 +314,7 @@ mod
 #>     totalCdk6Csf <- free_cdk6 + complex_cdk6_csf
 #>   })
 #> }
-#> <environment: 0x560627331ba0>
+#> <environment: 0x5615a71891d0>
 ```
 
 Ribociclib (RIB) is a CDK4/6 inhibitor approved for

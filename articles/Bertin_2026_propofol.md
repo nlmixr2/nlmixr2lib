@@ -222,7 +222,7 @@ cat(sprintf(
   "Closed-form gate: %d points, max |difference| = %.4f%% (bound 0.1%%)\n",
   nrow(cf), max(abs(cf$pct_diff))
 ))
-#> Closed-form gate: 480 points, max |difference| = 0.0000% (bound 0.1%)
+#> Closed-form gate: 480 points, max |difference| = 0.0002% (bound 0.1%)
 ```
 
 The closed-form agreement also rules out the silent failure mode in

@@ -189,8 +189,6 @@ sim_typ <- rxode2::rxSolve(mod_typical, ev_typ, omega = NA, sigma = NA,
                            returnType = "data.frame") |>
   dplyr::filter(time >= 240) |>
   dplyr::mutate(tad = time - 240)
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_ns_1, etaiov_ns_2, etaiov_ns_3, etaiov_ns_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 # Trough = end of the interval; mid-dose = 50% of the interval (4 h).
 pick <- function(d, tad_want) d[which.min(abs(d$tad - tad_want)), ]
@@ -576,8 +574,6 @@ pta <- Map(pta_for, pta_grid$gfr, pta_grid$regimen) |>
                                          "Continuous (6 g/d)"))
   )
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_ns_1, etaiov_ns_2, etaiov_ns_3, etaiov_ns_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_ns_1, etaiov_ns_2, etaiov_ns_3, etaiov_ns_4
 #> as a work-around try putting the mu-referenced expression on a simple line
 ```

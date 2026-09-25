@@ -64,8 +64,13 @@ model
 ## See also
 
 Other absorption:
+[`addSecondAbsorption()`](https://nlmixr2.github.io/nlmixr2lib/reference/addSecondAbsorption.md),
 [`addTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/addTransit.md),
-[`removeTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.md)
+[`addZeroOrderAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/addZeroOrderAbs.md),
+[`convertAbsForceLongerDelay()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertAbsForceLongerDelay.md),
+[`convertAbsSequential()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertAbsSequential.md),
+[`removeTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.md),
+[`removeZeroOrderAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeZeroOrderAbs.md)
 
 ## Author
 

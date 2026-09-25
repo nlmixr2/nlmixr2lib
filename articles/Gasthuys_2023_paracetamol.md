@@ -524,15 +524,15 @@ knitr::kable(
 
 | NCA parameter           | treatment      | Reference | Simulated | % diff    |
 |:------------------------|:---------------|:----------|:----------|:----------|
-| Cmax (ug/mL)            | Fasted         | 7.85      | 20.6      | +162.0%\* |
-| Cmax (ug/mL)            | Reference meal | 6.96      | 20.6      | +195.5%\* |
-| Cmax (ug/mL)            | Infant formula | 7.24      | 20.6      | +184.1%\* |
+| Cmax (ug/mL)            | Fasted         | 7.85      | 20.7      | +163.8%\* |
+| Cmax (ug/mL)            | Reference meal | 6.96      | 20.7      | +197.5%\* |
+| Cmax (ug/mL)            | Infant formula | 7.24      | 20.7      | +186.0%\* |
 | Tmax (h)                | Fasted         | 1.5       | 1.98      | +31.7%\*  |
 | Tmax (h)                | Reference meal | 2.5       | 1.98      | -21.0%\*  |
 | Tmax (h)                | Infant formula | 4         | 1.98      | -50.6%\*  |
-| AUC0-∞ (obs) (ug\*h/mL) | Fasted         | 39.3      | 105       | +166.7%\* |
-| AUC0-∞ (obs) (ug\*h/mL) | Reference meal | 40.2      | 105       | +160.8%\* |
-| AUC0-∞ (obs) (ug\*h/mL) | Infant formula | 39.2      | 105       | +167.4%\* |
+| AUC0-∞ (obs) (ug\*h/mL) | Fasted         | 39.3      | 109       | +176.4%\* |
+| AUC0-∞ (obs) (ug\*h/mL) | Reference meal | 40.2      | 109       | +170.2%\* |
+| AUC0-∞ (obs) (ug\*h/mL) | Infant formula | 39.2      | 109       | +177.1%\* |
 
 Human adults, 1000 mg oral. Simulated column is one food-covariate-free
 prediction repeated against each published condition (Gasthuys 2023

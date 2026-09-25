@@ -392,11 +392,11 @@ auc_by_id |>
 
 | Arm | AUC0-24 PKNCA, median (mg\*h/L) | AUC0-24 dose/CL, median (mg\*h/L) | max abs % diff |
 |:---|---:|---:|---:|
-| 200 mg/day + CBZ | 74.53 | 74.54 | 0.016 |
-| 200 mg/day, no CBZ | 110.31 | 110.32 | 0.091 |
-| 280 mg/day + CBZ (+40%) | 104.34 | 104.35 | 0.016 |
-| 296 mg/day + CBZ (+48%) | 110.31 | 110.32 | 0.016 |
-| 320 mg/day + CBZ (+60%) | 119.25 | 119.26 | 0.016 |
+| 200 mg/day + CBZ | 72.60 | 72.61 | 0.018 |
+| 200 mg/day, no CBZ | 107.45 | 107.46 | 0.107 |
+| 280 mg/day + CBZ (+40%) | 101.64 | 101.65 | 0.018 |
+| 296 mg/day + CBZ (+48%) | 107.45 | 107.46 | 0.018 |
+| 320 mg/day + CBZ (+60%) | 116.16 | 116.17 | 0.018 |
 
 Gate 2a. PKNCA AUC0-24 at steady state against the paper’s
 dose/clearance identity, per arm. {.table}
@@ -456,11 +456,11 @@ paired |>
 
 | Arm                     | AUC0-24 median (mg\*h/L) | % of reference exposure |
 |:------------------------|-------------------------:|------------------------:|
-| 200 mg/day + CBZ        |                    74.53 |                    67.6 |
-| 200 mg/day, no CBZ      |                   110.31 |                   100.0 |
-| 280 mg/day + CBZ (+40%) |                   104.34 |                    94.6 |
-| 296 mg/day + CBZ (+48%) |                   110.31 |                   100.0 |
-| 320 mg/day + CBZ (+60%) |                   119.25 |                   108.1 |
+| 200 mg/day + CBZ        |                    72.60 |                    67.6 |
+| 200 mg/day, no CBZ      |                   107.45 |                   100.0 |
+| 280 mg/day + CBZ (+40%) |                   101.64 |                    94.6 |
+| 296 mg/day + CBZ (+48%) |                   107.45 |                   100.0 |
+| 320 mg/day + CBZ (+60%) |                   116.16 |                   108.1 |
 
 Gate 2b. Steady-state exposure relative to the 200 mg/day
 no-carbamazepine reference. The +48% arm restores reference exposure,
@@ -698,9 +698,9 @@ tibble::tibble(
 
 | Check | Median difference | Worst subject |
 |:---|:---|:---|
-| AUCinf vs dose / (CL/F) | -0.006% | 0.015% |
+| AUCinf vs dose / (CL/F) | -0.006% | 0.016% |
 | Terminal half-life vs log(2) \* V/F / (CL/F) | 0.006% | 0.007% |
-| Tmax vs log(ka/kel) / (ka - kel) | 0.0018 h | 0.0255 h |
+| Tmax vs log(ka/kel) / (ka - kel) | -0.0016 h | 0.0253 h |
 
 Gate 3. PKNCA output against closed-form identities, evaluated per
 subject with that subject’s own drawn clearance. {.table}
@@ -742,11 +742,11 @@ knitr::kable(
 
 | NCA parameter     | treatment               | Reference | Simulated | % diff |
 |:------------------|:------------------------|----------:|----------:|-------:|
-| AUClast (mg\*h/L) | 200 mg/day, no CBZ      |       109 |       110 |  +1.5% |
-| AUClast (mg\*h/L) | 200 mg/day + CBZ        |      73.4 |      74.5 |  +1.5% |
-| AUClast (mg\*h/L) | 280 mg/day + CBZ (+40%) |       103 |       104 |  +1.5% |
-| AUClast (mg\*h/L) | 296 mg/day + CBZ (+48%) |       109 |       110 |  +1.5% |
-| AUClast (mg\*h/L) | 320 mg/day + CBZ (+60%) |       117 |       119 |  +1.5% |
+| AUClast (mg\*h/L) | 200 mg/day, no CBZ      |       109 |       107 |  -1.1% |
+| AUClast (mg\*h/L) | 200 mg/day + CBZ        |      73.4 |      72.6 |  -1.1% |
+| AUClast (mg\*h/L) | 280 mg/day + CBZ (+40%) |       103 |       102 |  -1.1% |
+| AUClast (mg\*h/L) | 296 mg/day + CBZ (+48%) |       109 |       107 |  -1.1% |
+| AUClast (mg\*h/L) | 320 mg/day + CBZ (+60%) |       117 |       116 |  -1.1% |
 
 Simulated PKNCA AUC0-24 at steady state against the paper’s
 dose/clearance definition, evaluated with the published typical CL/F. \*
@@ -788,8 +788,8 @@ sim_demo |>
 
 | Time after a single 100 mg dose (h) | 5th pct | Median | 95th pct |
 |------------------------------------:|--------:|-------:|---------:|
-|                                  12 |    1.04 |   1.46 |     1.90 |
-|                                  24 |    0.49 |   0.85 |     1.22 |
+|                                  12 |    1.03 |   1.44 |     1.95 |
+|                                  24 |    0.45 |   0.85 |     1.21 |
 
 Simulated lacosamide concentration (mg/L) in the demographic cohort.
 {.table}

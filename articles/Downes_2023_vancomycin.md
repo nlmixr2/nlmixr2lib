@@ -182,7 +182,9 @@ solve_typical <- function(nm, ev) {
   # zeroRe() is only meaningful when the model actually declares etas; the two
   # reduced models declare none (Table S4 reports no CV%).
   if (any(!is.na(rxode2::rxode(m)$iniDf$neta1))) m <- rxode2::zeroRe(m)
-  as.data.frame(rxode2::rxSolve(m, events = ev, returnType = "data.frame"))
+  # Tight tolerances: the closed-form gate below is held to 1e-6; the ODE at
+  # default tolerances lands at 1-2e-6, at rtol 1e-10 far below.
+  as.data.frame(rxode2::rxSolve(m, events = ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12))
 }
 
 one_subject_ss <- function(dose, covs, times) {
@@ -236,12 +238,12 @@ gate |>
 
 | Point               | Model    | CL (L/h) | Max relative error |
 |:--------------------|:---------|---------:|:-------------------|
-| reference subject   | Full     |    3.310 | 2.3e-14            |
-| reference subject   | Hoek     |    2.610 | 7.1e-14            |
-| reference subject   | Schwartz |    2.820 | 6.4e-14            |
-| median test subject | Full     |    3.317 | 5.9e-14            |
-| median test subject | Hoek     |    3.246 | 4.0e-14            |
-| median test subject | Schwartz |    3.615 | 9.9e-15            |
+| reference subject   | Full     |    3.310 | 8.7e-10            |
+| reference subject   | Hoek     |    2.610 | 1.2e-07            |
+| reference subject   | Schwartz |    2.820 | 4.0e-08            |
+| median test subject | Full     |    3.317 | 1.5e-07            |
+| median test subject | Hoek     |    3.246 | 1.9e-07            |
+| median test subject | Schwartz |    3.615 | 1.5e-07            |
 
 Packaged model vs. an independent closed form built from the printed
 constants. {.table}

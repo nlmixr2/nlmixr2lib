@@ -319,7 +319,7 @@ tibble::tibble(
 | Column read as | Miltefosine driver | kdrug = lambda_MF \* driver (1/h) | Implied by Table 4 (1/h) |
 |:---|---:|---:|---:|
 | ug/mL (encoded) | 5.1803 | 0.0052 | 0.0075 |
-| ug/L (as Table 2 prints) | 5180.2794 | 5.1803 | 0.0075 |
+| ug/L (as Table 2 prints) | 5180.2773 | 5.1803 | 0.0075 |
 
 A `kdrug` of about 5 /h has a parasite half-life of eight minutes and
 would put every miltefosine patient on the 1 parasite/mL floor within

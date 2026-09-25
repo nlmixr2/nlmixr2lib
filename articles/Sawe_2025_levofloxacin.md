@@ -702,7 +702,7 @@ cat(sprintf(
   med_by_stratum$auc_med[med_by_stratum$stratum == "Pregnant"] /
     med_by_stratum$auc_med[med_by_stratum$stratum == "Non-pregnant"]
 ))
-#> Median-profile AUC(0-24): pregnant 108, non-pregnant 153 mg*h/L (ratio 0.71)
+#> Median-profile AUC(0-24): pregnant 102, non-pregnant 153 mg*h/L (ratio 0.67)
 
 # The paper's central qualitative finding: median exposure is lower in the
 # pregnant stratum. Asserted on the ratio of median profiles, which is robust
@@ -769,11 +769,11 @@ nca_wide |>
 
 | Parameter | Antepartum | Male | Non-pregnant female | Postpartum |
 |:---|:---|:---|:---|:---|
-| AUC0-24 (mg\*h/L) | 107.23 (86.97-142.17) | 140.27 (113.76-172.94) | 160.14 (126.97-189.97) | 164.08 (129.00-213.33) |
-| Cavg (mg/L) | 4.47 (3.62-5.92) | 5.84 (4.74-7.21) | 6.67 (5.29-7.92) | 6.84 (5.37-8.89) |
-| Cmax (mg/L) | 10.10 (8.33-12.48) | 9.84 (8.36-11.84) | 12.15 (9.74-14.27) | 12.33 (9.87-15.03) |
-| Ctrough (mg/L) | 1.08 (0.62-1.62) | 2.43 (1.45-3.38) | 2.35 (1.57-3.22) | 2.52 (1.40-3.76) |
-| Tmax (h) | 3.00 (2.25-4.00) | 3.25 (2.50-4.25) | 3.25 (2.50-4.00) | 3.25 (2.50-4.25) |
+| AUC0-24 (mg\*h/L) | 103.94 (80.24-136.19) | 138.06 (115.90-180.15) | 161.14 (129.88-215.02) | 157.45 (128.48-200.75) |
+| Cavg (mg/L) | 4.33 (3.34-5.67) | 5.75 (4.83-7.51) | 6.71 (5.41-8.96) | 6.56 (5.35-8.36) |
+| Cmax (mg/L) | 9.52 (7.92-12.09) | 10.30 (8.36-12.57) | 13.15 (10.34-15.35) | 12.37 (10.03-14.42) |
+| Ctrough (mg/L) | 0.84 (0.55-1.45) | 2.27 (1.48-3.65) | 2.16 (1.39-3.61) | 2.20 (1.43-3.16) |
+| Tmax (h) | 2.75 (2.25-4.00) | 3.12 (2.50-4.06) | 3.12 (2.50-4.25) | 3.00 (2.25-4.00) |
 
 Simulated steady-state NCA by participant group. {.table}
 
@@ -801,9 +801,9 @@ knitr::kable(cmp, caption = "Simulated versus published pooled observed NCA.")
 
 | NCA parameter     | Reference | Simulated | % diff   |
 |:------------------|:----------|:----------|:---------|
-| Cmax (mg/L)       | 11.3      | 11        | -2.5%    |
-| Tmax (h)          | 2         | 3.25      | +62.5%\* |
-| AUClast (mg\*h/L) | 131       | 139       | +5.9%    |
+| Cmax (mg/L)       | 11.3      | 11.1      | -1.7%    |
+| Tmax (h)          | 2         | 3         | +50.0%\* |
+| AUClast (mg\*h/L) | 131       | 138       | +5.3%    |
 
 Simulated versus published pooled observed NCA. {.table}
 
@@ -823,9 +823,9 @@ auc_med  <- pooled_med$median[pooled_med$PPTESTCD == "auclast"]
 cmax_med <- pooled_med$median[pooled_med$PPTESTCD == "cmax"]
 
 cat(sprintf("Pooled simulated median AUC0-24 %.0f mg*h/L (observed IQR 108-170)\n", auc_med))
-#> Pooled simulated median AUC0-24 139 mg*h/L (observed IQR 108-170)
+#> Pooled simulated median AUC0-24 138 mg*h/L (observed IQR 108-170)
 cat(sprintf("Pooled simulated median Cmax    %.1f mg/L   (observed IQR 9.68-13.7)\n", cmax_med))
-#> Pooled simulated median Cmax    11.0 mg/L   (observed IQR 9.68-13.7)
+#> Pooled simulated median Cmax    11.1 mg/L   (observed IQR 9.68-13.7)
 
 # Assert against the published interquartile range rather than the point
 # median: the simulated cohort's covariate dispersion is an assumption, so the
@@ -855,10 +855,10 @@ knitr::kable(
 
 | Group               | Median AUC0-24 (mg\*h/L) |
 |:--------------------|-------------------------:|
-| Antepartum          |                      107 |
-| Male                |                      140 |
-| Non-pregnant female |                      160 |
-| Postpartum          |                      164 |
+| Antepartum          |                      104 |
+| Male                |                      138 |
+| Non-pregnant female |                      161 |
+| Postpartum          |                      157 |
 
 Antepartum exposure is the lowest of the four groups. {.table}
 
@@ -993,8 +993,8 @@ auc_by_group |>
 
 | weight_band | Antepartum | Antepartum +250 mg | Male | Non-pregnant female | Postpartum |
 |:------------|-----------:|-------------------:|-----:|--------------------:|-----------:|
-| 34-50 kg    |        107 |                131 |  123 |                 167 |        157 |
-| above 50 kg |        103 |                135 |  149 |                 172 |        162 |
+| 34-50 kg    |         99 |                110 |  125 |                 137 |        175 |
+| above 50 kg |        111 |                135 |  155 |                 176 |        160 |
 
 Median simulated steady-state AUC0-24 by weight band. {.table}
 
@@ -1019,8 +1019,8 @@ knitr::kable(
 
 | Weight band | Antepartum vs non-pregnant female, base dose (%) | … with +250 mg (%) |
 |:---|---:|---:|
-| 34-50 kg | -36 | -21 |
-| above 50 kg | -40 | -21 |
+| 34-50 kg | -28 | -20 |
+| above 50 kg | -37 | -23 |
 
 The proposed 250 mg increase closes most of the exposure gap. {.table}
 
@@ -1046,8 +1046,8 @@ for (i in seq_len(nrow(auc_by_group))) {
     auc_by_group$`Non-pregnant female`[i], auc_by_group$`Male`[i], auc_target
   ))
 }
-#> 34-50 kg     | antepartum 107 | +250 mg 131 | postpartum 157 | non-preg F 167 | male 123  (target 106)
-#> above 50 kg  | antepartum 103 | +250 mg 135 | postpartum 162 | non-preg F 172 | male 149  (target 106)
+#> 34-50 kg     | antepartum 99 | +250 mg 110 | postpartum 175 | non-preg F 137 | male 125  (target 106)
+#> above 50 kg  | antepartum 111 | +250 mg 135 | postpartum 160 | non-preg F 176 | male 155  (target 106)
 
 # The three non-pregnant arms clear the 106 mg*h/L efficacy target in both
 # weight bands, and so does the pregnant arm once the proposed 250 mg is
@@ -1139,7 +1139,11 @@ choice is recorded here.
 - **Tmax has no published counterpart.** The paper reports no NCA Tmax.
   The reference value of 2 h in the comparison table is the first
   post-dose sampling time in both studies, so the observed Tmax could
-  not have been earlier than that; the row is informational and is not
+  not have been earlier than that – it is a lower bound, not a
+  measurement. The simulated Tmax of about 3.25 h is consistent with it
+  and carries a `*` only because
+  [`ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
+  flags every row exceeding 20%; the row is informational and is not
   asserted on.
 - **Simulated versus observed exposure.** The pooled simulated median
   AUC0-24 and Cmax are asserted to fall inside the published observed

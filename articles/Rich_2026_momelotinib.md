@@ -700,9 +700,9 @@ tibble::tibble(
 
 | Analyte | Median Cavg,ss (ng/mL) | Published median | Geometric CV% | Published CV% |
 |:---|---:|---:|---:|---:|
-| Momelotinib | 133.4 | 123 | 75.4 | 74.5 |
-| M21 | 220.0 | 212 | 52.4 | 49.4 |
-| TAM | 229.4 | 208 | 60.6 | 61.6 |
+| Momelotinib | 129.1 | 123 | 72.1 | 74.5 |
+| M21 | 208.3 | 212 | 49.8 | 49.4 |
+| TAM | 218.8 | 208 | 57.9 | 61.6 |
 
 Simulated cohort vs Rich 2026 Supplemental Table S5. {.table}
 

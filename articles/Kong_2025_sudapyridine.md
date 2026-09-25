@@ -571,10 +571,10 @@ sim |>
 
 | Regimen  | Cavg,ss median (ug/L) | Cavg,ss 5th-95th | M3 Cmax median |
 |:---------|----------------------:|:-----------------|---------------:|
-| A        |                  1685 | 883 - 3235       |            268 |
-| B        |                  1667 | 881 - 3165       |            239 |
-| C        |                  1663 | 881 - 3149       |            232 |
-| Phase II |                  1702 | 886 - 3291       |            291 |
+| A        |                  1478 | 812 - 3056       |            290 |
+| B        |                  1466 | 809 - 2992       |            258 |
+| C        |                  1463 | 808 - 2978       |            251 |
+| Phase II |                  1488 | 815 - 3108       |            316 |
 
 Stochastic cohort (100 virtual subjects per regimen, common random
 numbers). {.table}

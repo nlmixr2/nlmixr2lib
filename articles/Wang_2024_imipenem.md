@@ -535,10 +535,10 @@ knitr::kable(
 
 | CLCR band | Unbound fraction | PTA, model (%) | PTA, Wang 2024 (%) | Difference (points) |
 |:---|---:|---:|---:|---:|
-| CLCR 60-90 | 0.8 | 49 | 75.44 | -26.44 |
-| CLCR 90-120 | 0.8 | 34 | 59.92 | -25.92 |
-| CLCR 60-90 | 1.0 | 68 | 75.44 | -7.44 |
-| CLCR 90-120 | 1.0 | 48 | 59.92 | -11.92 |
+| CLCR 60-90 | 0.8 | 46 | 75.44 | -29.44 |
+| CLCR 90-120 | 0.8 | 36 | 59.92 | -23.92 |
+| CLCR 60-90 | 1.0 | 65 | 75.44 | -10.44 |
+| CLCR 90-120 | 1.0 | 53 | 59.92 | -6.92 |
 
 0.25 g q6h at MIC 2 mg/L, 40% fT\>MIC, against the two PTA values
 printed in the paper’s Results. {.table}
@@ -596,8 +596,8 @@ knitr::kable(
 
 | Paper claim (40% fT\>MIC) | Scenarios | Min PTA (%) | Max PTA (%) |
 |:---|---:|---:|---:|
-| MIC 16 mg/L: no regimen reaches the 90% benchmark | 24 | 0 | 52 |
-| MIC \<= 1 mg/L: every regimen attains | 96 | 96 | 100 |
+| MIC 16 mg/L: no regimen reaches the 90% benchmark | 24 | 0 | 57 |
+| MIC \<= 1 mg/L: every regimen attains | 96 | 94 | 100 |
 
 Achieved PTA across the scenarios covered by each plateau claim.
 {.table}

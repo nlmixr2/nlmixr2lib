@@ -431,7 +431,7 @@ gate1 <- auc24 |>
 
 max_rel_err <- max(abs(gate1$rel_err))
 max_rel_err
-#> [1] 0.0007839027
+#> [1] 0.0007841205
 stopifnot(max_rel_err < 0.005)
 ```
 
@@ -462,7 +462,7 @@ gate2 <- max(abs(
   sim_median / sim_median[[1]] - daily_dose / daily_dose[[1]]
 ))
 gate2
-#> [1] 5.379163e-06
+#> [1] 5.415118e-06
 stopifnot(gate2 < 1e-4)
 ```
 

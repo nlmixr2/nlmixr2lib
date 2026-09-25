@@ -611,10 +611,10 @@ nlmixr2lib::ncaComparisonTable(
   label_first_column = "NCA parameter"
 )
 #>   NCA parameter          treatment Reference Simulated % diff
-#> 1          Cmax rADAMTS13 40 IU/kg      1.09      1.08  -1.3%
-#> 2          Cmax       PBT 10 IU/kg      0.16     0.166  +3.6%
-#> 3          Cavg rADAMTS13 40 IU/kg     0.203       0.2  -1.5%
-#> 4          Cavg       PBT 10 IU/kg    0.0308    0.0307  -0.5%
+#> 1          Cmax rADAMTS13 40 IU/kg      1.09      1.11  +1.6%
+#> 2          Cmax       PBT 10 IU/kg      0.16     0.164  +2.8%
+#> 3          Cavg rADAMTS13 40 IU/kg     0.203     0.203  -0.1%
+#> 4          Cavg       PBT 10 IU/kg    0.0308    0.0302  -1.9%
 ```
 
 ``` r
@@ -977,8 +977,8 @@ knitr::kable(frac_above, digits = c(0, 1, 4))
 
 | treatment          | pct_above_0.13 | median_cav |
 |:-------------------|---------------:|-----------:|
-| PBT 10 IU/kg       |              0 |     0.0302 |
-| rADAMTS13 40 IU/kg |             87 |     0.2064 |
+| PBT 10 IU/kg       |              0 |     0.0295 |
+| rADAMTS13 40 IU/kg |             86 |     0.2016 |
 
 ``` r
 
@@ -1006,8 +1006,8 @@ knitr::kable(protection |> dplyr::select(treatment, median_cav, pct_protection),
 
 | treatment          | median_cav | pct_protection |
 |:-------------------|-----------:|---------------:|
-| PBT 10 IU/kg       |     0.0302 |           79.1 |
-| rADAMTS13 40 IU/kg |     0.2064 |           91.7 |
+| PBT 10 IU/kg       |     0.0295 |           78.4 |
+| rADAMTS13 40 IU/kg |     0.2016 |           91.7 |
 
 ``` r
 

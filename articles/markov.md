@@ -194,7 +194,7 @@ fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(
 #> → finding duplicate expressions in EBE model...
 #> → compiling EBE model...
 #> ✔ done
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> calculating covariance matrix
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
@@ -209,10 +209,10 @@ fit
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>            setup    optimize  covariance preprocess postprocess table compress
-#> elapsed 2.442528 0.008784222 0.004672177      0.074       0.013 0.048    0.002
+#>            setup   optimize  covariance preprocess postprocess table compress
+#> elapsed 1.762745 0.09495384 0.002906846      0.047       0.013 0.041    0.001
 #>             other
-#> elapsed 0.7570157
+#> elapsed 0.4013943
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
@@ -232,6 +232,7 @@ fit
 #> logmoderatetomild     0.326 0.884   271     0.326 (-1.41, 2.06)
 #>  
 #>   Covariance Type (fit$covMethod): r
+#>   Fixed parameter correlations in fit$cor
 #>   Information about run found (fit$runInfo):
 #>    • gradient problems with covariance; see $scaleInfo 
 #>   Censoring (fit$censInformation): No censoring

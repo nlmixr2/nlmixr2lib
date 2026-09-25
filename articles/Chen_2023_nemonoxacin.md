@@ -186,8 +186,6 @@ sim <- rxode2::rxSolve(mod, events = events, keep = c("treatment")) |>
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ## Replicate published figures
@@ -372,7 +370,7 @@ as.data.frame(nca_res) |>
 | 750 mg q24h | auclast       | 63.444 | 41.248 | 105.038 |
 | 750 mg q24h | cmax          |  7.523 |  4.853 |  12.264 |
 | 750 mg q24h | cmin          |  0.558 |  0.261 |   1.065 |
-| 750 mg q24h | half.life     |  8.143 |  7.268 |   9.193 |
+| 750 mg q24h | half.life     |  8.138 |  7.268 |   9.193 |
 | 750 mg q24h | tmax          |  1.500 |  0.750 |   3.250 |
 
 Simulated steady-state NCA distribution over the final dosing interval.

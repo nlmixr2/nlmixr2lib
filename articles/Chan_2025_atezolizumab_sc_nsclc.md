@@ -569,10 +569,10 @@ stopifnot(!any(is.na(ncaWide$value)))
 
 | Treatment | Cycle | AUC (ug\*day/mL) | Cmax (ug/mL) | Tmax (day) | Ctrough (ug/mL) |
 |:---|:---|---:|---:|---:|---:|
-| IV 1200 mg | Cycle 1 | 3203.4 | 423.5 | 0.0 | 87.0 |
-| IV 1200 mg | Steady state | 6651.1 | 642.2 | 0.0 | 206.8 |
-| SC 1875 mg | Cycle 1 | 2862.1 | 188.2 | 4.5 | 95.6 |
-| SC 1875 mg | Steady state | 6337.0 | 384.3 | 3.8 | 215.2 |
+| IV 1200 mg | Cycle 1 | 3176.7 | 417.2 | 0.0 | 86.7 |
+| IV 1200 mg | Steady state | 6747.8 | 643.9 | 0.0 | 210.6 |
+| SC 1875 mg | Cycle 1 | 2779.3 | 182.9 | 4.5 | 91.3 |
+| SC 1875 mg | Steady state | 6000.2 | 366.5 | 4.0 | 199.1 |
 
 Simulated NCA. Geometric means except Tmax (median), matching Chan 2025
 Table S5B. {.table}
@@ -615,19 +615,19 @@ cmp |>
 
 | NCA parameter        | Treatment  | Cycle        | Reference | Simulated | % diff |
 |:---------------------|:-----------|:-------------|:----------|:----------|:-------|
-| Cmax (ug/mL)         | SC 1875 mg | Cycle 1      | 189       | 188       | -0.4%  |
-| Cmax (ug/mL)         | SC 1875 mg | Steady state | 376       | 384       | +2.2%  |
-| Cmax (ug/mL)         | IV 1200 mg | Cycle 1      | 438       | 424       | -3.3%  |
-| Cmax (ug/mL)         | IV 1200 mg | Steady state | 626       | 642       | +2.6%  |
+| Cmax (ug/mL)         | SC 1875 mg | Cycle 1      | 189       | 183       | -3.2%  |
+| Cmax (ug/mL)         | SC 1875 mg | Steady state | 376       | 366       | -2.5%  |
+| Cmax (ug/mL)         | IV 1200 mg | Cycle 1      | 438       | 417       | -4.7%  |
+| Cmax (ug/mL)         | IV 1200 mg | Steady state | 626       | 644       | +2.9%  |
 | Tmax (day)           | SC 1875 mg | Cycle 1      | 4.5       | 4.5       | +0.0%  |
-| AUClast (ug\*day/mL) | SC 1875 mg | Cycle 1      | 2910      | 2860      | -1.5%  |
-| AUClast (ug\*day/mL) | SC 1875 mg | Steady state | 6160      | 6340      | +2.8%  |
-| AUClast (ug\*day/mL) | IV 1200 mg | Cycle 1      | 3330      | 3200      | -3.7%  |
-| AUClast (ug\*day/mL) | IV 1200 mg | Steady state | 6110      | 6650      | +8.9%  |
-| Ctrough (ug/mL)      | SC 1875 mg | Cycle 1      | 97.2      | 95.6      | -1.6%  |
-| Ctrough (ug/mL)      | SC 1875 mg | Steady state | 205       | 215       | +5.0%  |
-| Ctrough (ug/mL)      | IV 1200 mg | Cycle 1      | 88.7      | 87        | -1.9%  |
-| Ctrough (ug/mL)      | IV 1200 mg | Steady state | 179       | 207       | +15.6% |
+| AUClast (ug\*day/mL) | SC 1875 mg | Cycle 1      | 2910      | 2780      | -4.4%  |
+| AUClast (ug\*day/mL) | SC 1875 mg | Steady state | 6160      | 6000      | -2.6%  |
+| AUClast (ug\*day/mL) | IV 1200 mg | Cycle 1      | 3330      | 3180      | -4.5%  |
+| AUClast (ug\*day/mL) | IV 1200 mg | Steady state | 6110      | 6750      | +10.5% |
+| Ctrough (ug/mL)      | SC 1875 mg | Cycle 1      | 97.2      | 91.3      | -6.1%  |
+| Ctrough (ug/mL)      | SC 1875 mg | Steady state | 205       | 199       | -2.9%  |
+| Ctrough (ug/mL)      | IV 1200 mg | Cycle 1      | 88.7      | 86.7      | -2.2%  |
+| Ctrough (ug/mL)      | IV 1200 mg | Steady state | 179       | 211       | +17.7% |
 
 Simulated NCA versus Chan 2025 Table S5B geometric means. \* differs
 from the published value by more than 20%. {.table}
@@ -1131,15 +1131,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1147,7 +1147,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

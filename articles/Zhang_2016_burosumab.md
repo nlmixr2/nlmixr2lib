@@ -593,9 +593,9 @@ tibble::tibble(
 
 | Statistic                           |  Value |
 |:------------------------------------|-------:|
-| Median % difference                 |  0.428 |
-| 90th percentile of \|% difference\| |  0.680 |
-| Median analytic half-life (day)     | 18.146 |
+| Median % difference                 |  0.444 |
+| 90th percentile of \|% difference\| |  0.702 |
+| Median analytic half-life (day)     | 17.541 |
 
 ``` r
 
@@ -633,10 +633,10 @@ knitr::kable(auc_by_arm, digits = c(0, 0, 2))
 
 | treatment | Median AUCinf (ng day/mL) | Median dose-normalised AUC (ng day/mL per mg) |
 |:---|---:|---:|
-| 0.1 mg/kg | 23831 | 3113.28 |
-| 0.3 mg/kg | 85191 | 3621.74 |
-| 0.6 mg/kg | 149872 | 3282.97 |
-| 1 mg/kg | 254747 | 3512.27 |
+| 0.1 mg/kg | 27142 | 3630.09 |
+| 0.3 mg/kg | 79126 | 3351.71 |
+| 0.6 mg/kg | 149120 | 3273.18 |
+| 1 mg/kg | 246369 | 3413.72 |
 
 ``` r
 
@@ -688,14 +688,14 @@ knitr::kable(
 
 | NCA parameter | treatment | Reference | Simulated | % diff   |
 |:--------------|:----------|:----------|:----------|:---------|
-| Tmax (day)    | 0.1 mg/kg | 9.5       | 7.5       | -21.1%\* |
+| Tmax (day)    | 0.1 mg/kg | 9.5       | 8         | -15.8%   |
 | Tmax (day)    | 0.3 mg/kg | 9.5       | 7         | -26.3%\* |
-| Tmax (day)    | 0.6 mg/kg | 9.5       | 6.75      | -28.9%\* |
-| Tmax (day)    | 1 mg/kg   | 9.5       | 6.5       | -31.6%\* |
-| t½ (day)      | 0.1 mg/kg | 17.8      | 17        | -4.6%    |
-| t½ (day)      | 0.3 mg/kg | 17.8      | 20        | +12.5%   |
-| t½ (day)      | 0.6 mg/kg | 17.8      | 17.5      | -1.5%    |
-| t½ (day)      | 1 mg/kg   | 17.8      | 17.7      | -0.3%    |
+| Tmax (day)    | 0.6 mg/kg | 9.5       | 7.5       | -21.1%\* |
+| Tmax (day)    | 1 mg/kg   | 9.5       | 7         | -26.3%\* |
+| t½ (day)      | 0.1 mg/kg | 17.8      | 20.8      | +16.9%   |
+| t½ (day)      | 0.3 mg/kg | 17.8      | 15.9      | -10.8%   |
+| t½ (day)      | 0.6 mg/kg | 17.8      | 16.6      | -6.7%    |
+| t½ (day)      | 1 mg/kg   | 17.8      | 17.6      | -1.2%    |
 
 Simulated vs published noncompartmental values. \* marks a difference
 from the reference above 20%. {.table}
@@ -817,13 +817,13 @@ knitr::kable(pd_windows, digits = 3)
 
 | Window                              | Median dPi (mg/dL) |
 |:------------------------------------|-------------------:|
-| 0.05 mg/kg (days 0-28)              |              0.168 |
-| 0.1 mg/kg (days 28-56)              |              0.361 |
-| 0.3 mg/kg (days 56-84)              |              0.700 |
-| 0.6 mg/kg (days 84-112)             |              0.939 |
-| Plateau, first half (days 168-224)  |              0.871 |
-| Plateau, second half (days 224-280) |              0.803 |
-| Late treatment (days 400-448)       |              0.704 |
+| 0.05 mg/kg (days 0-28)              |              0.179 |
+| 0.1 mg/kg (days 28-56)              |              0.377 |
+| 0.3 mg/kg (days 56-84)              |              0.724 |
+| 0.6 mg/kg (days 84-112)             |              0.963 |
+| Plateau, first half (days 168-224)  |              0.926 |
+| Plateau, second half (days 224-280) |              0.862 |
+| Late treatment (days 400-448)       |              0.768 |
 
 ``` r
 

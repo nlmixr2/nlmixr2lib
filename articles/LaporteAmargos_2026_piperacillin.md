@@ -123,8 +123,6 @@ typ_ev <- tidyr::expand_grid(
 typ <- rxode2::rxSolve(mod_typ, typ_ev, keep = c("CRCL")) |>
   as.data.frame() |>
   dplyr::distinct(id, CRCL, cl, vc, kel)
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3'
 #> Warning: multi-subject simulation without without 'omega'
 
@@ -291,9 +289,9 @@ knitr::kable(
 
 | NCA parameter     | crcl_label      | Reference | Simulated | % diff |
 |:------------------|:----------------|:----------|:----------|:-------|
-| Cmax (mg/L)       | CrCL 60 mL/min  | 151       | 151       | -0.0%  |
-| Cmax (mg/L)       | CrCL 90 mL/min  | 136       | 136       | -0.0%  |
-| Cmax (mg/L)       | CrCL 120 mL/min | 128       | 128       | -0.0%  |
+| Cmax (mg/L)       | CrCL 60 mL/min  | 151       | 151       | +0.0%  |
+| Cmax (mg/L)       | CrCL 90 mL/min  | 136       | 136       | +0.0%  |
+| Cmax (mg/L)       | CrCL 120 mL/min | 128       | 128       | +0.0%  |
 | Cmax (mg/L)       | CrCL 150 mL/min | 123       | 123       | +0.0%  |
 | Tmax (h)          | CrCL 60 mL/min  | 0.5       | 0.5       | +0.0%  |
 | Tmax (h)          | CrCL 90 mL/min  | 0.5       | 0.5       | +0.0%  |
@@ -303,7 +301,7 @@ knitr::kable(
 | AUClast (mg\*h/L) | CrCL 90 mL/min  | 355       | 355       | -0.0%  |
 | AUClast (mg\*h/L) | CrCL 120 mL/min | 295       | 295       | -0.0%  |
 | AUClast (mg\*h/L) | CrCL 150 mL/min | 256       | 256       | -0.0%  |
-| t½ (h)            | CrCL 60 mL/min  | 2.38      | 2.38      | +0.0%  |
+| t½ (h)            | CrCL 60 mL/min  | 2.38      | 2.38      | -0.0%  |
 | t½ (h)            | CrCL 90 mL/min  | 1.83      | 1.83      | -0.0%  |
 | t½ (h)            | CrCL 120 mL/min | 1.52      | 1.52      | -0.0%  |
 | t½ (h)            | CrCL 150 mL/min | 1.32      | 1.32      | -0.0%  |
@@ -460,8 +458,6 @@ pta_sim <- rxode2::rxSolve(
   keep = c("regimen", "crcl_label")
 ) |>
   as.data.frame()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3
 #> as a work-around try putting the mu-referenced expression on a simple line
 

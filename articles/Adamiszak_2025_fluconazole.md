@@ -116,7 +116,7 @@ mod <- readModelDb("Adamiszak_2025_fluconazole")
 mod
 #> function() {
 #>   description <- "One-compartment intravenous population PK model for fluconazole in hemato-oncologic pediatric patients receiving once-daily 0.5-1 h infusions for Candida spp. prophylaxis, with body-weight allometric scaling referenced to 70 kg (exponent fixed at 0.75 on CL and at 1.0 on V), log-normal between-subject variability on CL and V, and a proportional residual error. Developed in nlmixr2/FOCEI from 35 plasma concentrations in nine children aged 7 months to 18 years, and used to run probability-of-target-attainment simulations against an fAUC/MIC target."
-#>   reference   <- paste(
+#>   reference <- paste(
 #>     "Adamiszak A, Derwich K, Bartkowska-Sniatkowska A, Pietrzkiewicz K,",
 #>     "Niewiadomska-Wojnalowicz I, Czyrski A, Jusko WJ, Bienert A (2025).",
 #>     "Fluconazole dosing for the prevention of Candida spp. infections in",
@@ -126,7 +126,7 @@ mod
 #>     "doi:10.3390/pharmaceutics17040488."
 #>   )
 #>   vignette <- "Adamiszak_2025_fluconazole"
-#>   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+#>   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 #> 
 #>   compartmentData <- list(
 #>     central = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = TRUE)
@@ -134,26 +134,26 @@ mod
 #> 
 #>   covariateData <- list(
 #>     WT = list(
-#>       description        = "Body weight; the only covariate retained in the final model, entering as allometric scaling on both CL and V.",
-#>       units              = "kg",
-#>       type               = "continuous",
+#>       description = "Body weight; the only covariate retained in the final model, entering as allometric scaling on both CL and V.",
+#>       units = "kg",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Reference weight 70 kg (Adamiszak 2025 Equations (1) and (2): CL = CL_T * (WT/70)^0.75,",
 #>         "V = V_T * (WT/70)^1, where CL_T and V_T are typical values for a 70 kg adult).",
 #>         "Observed range in the analysis population 6.0-58.5 kg, median 28.5 kg (Table 1).",
 #>         "The supplementary nlmixr2 code names this data column 'Weight'."
 #>       ),
-#>       source_name        = "Weight"
+#>       source_name = "Weight"
 #>     )
 #>   )
 #> 
 #>   covariatesDataExcluded <- list(
 #>     AGE = list(
 #>       description = "Age in years.",
-#>       units       = "years",
-#>       type        = "continuous",
-#>       notes       = paste(
+#>       units = "years",
+#>       type = "continuous",
+#>       notes = paste(
 #>         "Screened by stepwise covariate modeling and by the mlcov package but not retained in the",
 #>         "final model. Reported only as a post hoc regression of body-weight-normalized CL against",
 #>         "age (Adamiszak 2025 Section 3.2 and Figure 3): median CL 0.68 mL/min/kg below the median",
@@ -163,9 +163,9 @@ mod
 #>     ),
 #>     CRCL = list(
 #>       description = "BSA-normalized renal function as estimated glomerular filtration rate, computed with both the Bedside Schwartz (2009) and the Schwartz 2012 equations.",
-#>       units       = "mL/min/1.73 m^2",
-#>       type        = "continuous",
-#>       notes       = paste(
+#>       units = "mL/min/1.73 m^2",
+#>       type = "continuous",
+#>       notes = paste(
 #>         "Screened but explicitly not significant: 'The effect of eGFR on fluconazole CL was not",
 #>         "significant' (Adamiszak 2025 Section 3.2). Reported only as a median split at",
 #>         "117.9 mL/min/1.73m2 (CL/BW 0.32 vs 0.56 mL/min/kg, Figure 3). No coefficient is published."
@@ -173,15 +173,15 @@ mod
 #>     ),
 #>     SEXF = list(
 #>       description = "Female-sex indicator (1 = female, 0 = male).",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = "Collected as a baseline characteristic (Adamiszak 2025 Table 1, 6 of 9 female) and screened, but not retained in the final model."
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = "Collected as a baseline characteristic (Adamiszak 2025 Table 1, 6 of 9 female) and screened, but not retained in the final model."
 #>     ),
 #>     CREAT = list(
 #>       description = "Serum creatinine.",
-#>       units       = "mg/dL",
-#>       type        = "continuous",
-#>       notes       = paste(
+#>       units = "mg/dL",
+#>       type = "continuous",
+#>       notes = paste(
 #>         "Collected as a baseline characteristic (Adamiszak 2025 Table 1, median 0.31 mg/dL) and",
 #>         "screened. Not retained in the final model, although the Discussion notes that earlier",
 #>         "fluconazole popPK analyses identified serum creatinine as a covariate on CL."
@@ -190,20 +190,20 @@ mod
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human",
-#>     n_subjects     = 9L,
-#>     n_studies      = 1L,
-#>     age_range      = "0.50-18.00 years (7 months to 18 years)",
-#>     age_median     = "9.75 years",
-#>     weight_range   = "6.00-58.50 kg",
-#>     weight_median  = "28.50 kg",
+#>     species = "human",
+#>     n_subjects = 9L,
+#>     n_studies = 1L,
+#>     age_range = "0.50-18.00 years (7 months to 18 years)",
+#>     age_median = "9.75 years",
+#>     weight_range = "6.00-58.50 kg",
+#>     weight_median = "28.50 kg",
 #>     sex_female_pct = 66.7,
 #>     race_ethnicity = NULL,
-#>     disease_state  = "Hemato-oncologic pediatric inpatients receiving intravenous fluconazole for prophylaxis of Candida spp. infections.",
-#>     dose_range     = "3-11 mg/kg intravenous fluconazole once daily as a 0.5 or 1 h infusion (registered SmPC prophylaxis doses).",
-#>     regions        = "Poland (single centre: Karol Jonscher Teaching Hospital, Poznan University of Medical Sciences).",
+#>     disease_state = "Hemato-oncologic pediatric inpatients receiving intravenous fluconazole for prophylaxis of Candida spp. infections.",
+#>     dose_range = "3-11 mg/kg intravenous fluconazole once daily as a 0.5 or 1 h infusion (registered SmPC prophylaxis doses).",
+#>     regions = "Poland (single centre: Karol Jonscher Teaching Hospital, Poznan University of Medical Sciences).",
 #>     renal_function = "Bedside Schwartz eGFR median 151.0 mL/min/1.73m2 (range 115.5-240.3); Schwartz 2012 eGFR median 117.77 mL/min/1.73m2 (range 95.31-170.03) (Table 1).",
-#>     notes          = paste(
+#>     notes = paste(
 #>       "Adamiszak 2025 Section 3.1 and Table 1. Prospective opportunistic-sampling study",
 #>       "(ClinicalTrials.gov NCT05426499), patients recruited December 2022 to October 2024.",
 #>       "35 plasma concentrations from 9 patients (median 4 samples per patient, range 2-5);",
@@ -272,7 +272,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55bd1aabcb58>
+#> <environment: 0x5578c07ab9d8>
 ```
 
 ## Structural checks against the paper’s own derived numbers

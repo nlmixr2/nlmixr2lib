@@ -441,7 +441,9 @@ sim_arm <- function(dose, lbl) {
     dplyr::arrange(id, time, dplyr::desc(evid))
   stopifnot(!anyDuplicated(unique(ev[, c("id", "time", "evid")])))
   set.seed(4)
-  rxode2::rxSolve(mod, events = ev) |>
+  # Tight tolerances: dose proportionality is asserted per subject to 1e-6,
+  # and the ODE at default tolerances lands at 1.6e-6.
+  rxode2::rxSolve(mod, events = ev, rtol = 1e-10, atol = 1e-12) |>
     as.data.frame() |>
     dplyr::mutate(treatment = lbl, amt_mg = dose)
 }
@@ -449,6 +451,21 @@ sim_arm <- function(dose, lbl) {
 sim_nca_raw <- dplyr::bind_rows(
   lapply(names(arms), function(l) sim_arm(unname(arms[[l]]), l))
 )
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
 
 nca_subj <- sim_nca_raw |> dplyr::distinct(treatment, id, amt_mg)
 
@@ -482,6 +499,18 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#> Warning: treatment=1000 mg q8h; id=22: No concentration data
+#> Warning: treatment=1000 mg q8h; id=52: No concentration data
+#> Warning: treatment=1000 mg q8h; id=58: No concentration data
+#> Warning: treatment=1000 mg q8h; id=70: No concentration data
+#> Warning: treatment=250 mg q8h; id=22: No concentration data
+#> Warning: treatment=250 mg q8h; id=52: No concentration data
+#> Warning: treatment=250 mg q8h; id=58: No concentration data
+#> Warning: treatment=250 mg q8h; id=70: No concentration data
+#> Warning: treatment=500 mg q8h; id=22: No concentration data
+#> Warning: treatment=500 mg q8h; id=52: No concentration data
+#> Warning: treatment=500 mg q8h; id=58: No concentration data
+#> Warning: treatment=500 mg q8h; id=70: No concentration data
 ```
 
 ``` r
@@ -519,9 +548,9 @@ ident |>
 
 | Regimen | AUCtau, PKNCA (mg\*h/L) | AUCtau, Dose/CL (mg\*h/L) | Max abs. % error | Cmax (mg/L) | Cmin (mg/L) |
 |:---|---:|---:|---:|---:|---:|
-| 1000 mg q8h | 227.2 | 227.2 | 0.0071 | 42.10 | 18.51 |
-| 250 mg q8h | 56.8 | 56.8 | 0.0071 | 10.52 | 4.63 |
-| 500 mg q8h | 113.6 | 113.6 | 0.0071 | 21.05 | 9.25 |
+| 1000 mg q8h | 227.2 | 227.2 | 0.0074 | 42.10 | 18.35 |
+| 250 mg q8h | 56.8 | 56.8 | 0.0074 | 10.52 | 4.59 |
+| 500 mg q8h | 113.6 | 113.6 | 0.0074 | 21.05 | 9.18 |
 
 Steady-state NCA vs. the exact linear identity AUCtau = Dose / CL.
 {.table}
@@ -562,7 +591,11 @@ renal classes; the simulation below follows the paper and evaluates at
 ``` r
 
 set.seed(72)
-n_pta <- 200
+# 5000 virtual subjects per arm: the binomial standard error of a PTA is then at
+# most 0.7 percentage points, so every claim asserted below (each >= 1.8 points
+# clear of the 90% threshold) sits more than 3 standard errors from it. With the
+# original 200 the 81-130 class (true PTA ~92%) failed for some eta streams.
+n_pta <- 5000
 free_fraction <- 0.84   # Methods 2.4: 16% protein binding
 
 # Methods 2.4 regimens. Representative eGFR per class = the class midpoint
@@ -681,11 +714,11 @@ claims |>
 
 | eGFR class | Paper MIC cutoff (mg/L) | PTA at MIC 0.5 (%) | PTA at MIC 1 (%) | PTA at MIC 2 (%) | Simulated MIC cutoff | Agrees |
 |:---|---:|---:|---:|---:|---:|:---|
-| \<30 | 0.5 | 100 | 81.0 | 28.0 | 0.5 | TRUE |
-| 30-50 | 1.0 | 100 | 100.0 | 81.0 | 1.0 | TRUE |
-| 51-80 | 1.0 | 100 | 100.0 | 86.0 | 1.0 | TRUE |
-| 81-130 | 1.0 | 100 | 94.0 | 57.5 | 1.0 | TRUE |
-| \>130 | 0.5 | 99 | 78.5 | 16.5 | 0.5 | TRUE |
+| \<30 | 0.5 | 99.3 | 81.3 | 28.9 | 0.5 | TRUE |
+| 30-50 | 1.0 | 100.0 | 98.5 | 71.4 | 1.0 | TRUE |
+| 51-80 | 1.0 | 100.0 | 99.8 | 84.8 | 1.0 | TRUE |
+| 81-130 | 1.0 | 100.0 | 96.7 | 56.7 | 1.0 | TRUE |
+| \>130 | 0.5 | 99.1 | 77.9 | 20.8 | 0.5 | TRUE |
 
 Licensed continuous infusion, optimal target (fCss/MIC \>= 4).
 Replicates the Results 3.3 statement on highest MIC attaining PTA \>=
@@ -729,11 +762,11 @@ ei_claims |>
 
 | eGFR class | Paper: EI attains \>=90% | Simulated EI PTA (%) | Simulated CI PTA (%) | Simulated: EI attains | Agrees |
 |:---|:---|---:|---:|:---|:---|
-| \<30 | FALSE | 87.0 | 100 | FALSE | TRUE |
-| 30-50 | TRUE | 94.5 | 100 | TRUE | TRUE |
-| 51-80 | TRUE | 99.0 | 100 | TRUE | TRUE |
-| 81-130 | TRUE | 93.5 | 100 | TRUE | TRUE |
-| \>130 | FALSE | 55.5 | 99 | FALSE | TRUE |
+| \<30 | FALSE | 87.9 | 99.3 | FALSE | TRUE |
+| 30-50 | TRUE | 96.0 | 100.0 | TRUE | TRUE |
+| 51-80 | TRUE | 99.0 | 100.0 | TRUE | TRUE |
+| 81-130 | TRUE | 92.1 | 100.0 | TRUE | TRUE |
+| \>130 | FALSE | 59.3 | 99.1 | FALSE | TRUE |
 
 Licensed regimens at MIC 2 mg/L, quasi-optimal target (fC/MIC \>= 1).
 Replicates the Results 3.3 statement. {.table style="width:100%;"}
@@ -807,10 +840,10 @@ continuous infusion is required.
   paper cites (its reference 20) but does not print. PTA by MIC, which
   is the model-dependent quantity, is reproduced instead.
 - **Cohort size.** The paper ran 1000 Monte Carlo simulations per
-  scenario; the vignette uses 200 per arm to stay within the
-  repository’s render budget, so PTA values carry a Monte Carlo standard
-  error of roughly 2 percentage points. The asserted claims are those
-  where the simulated PTA is comfortably clear of the 90% threshold.
+  scenario; the vignette uses 5000 per arm so that PTA values carry a
+  Monte Carlo standard error of at most 0.7 percentage points. The
+  asserted claims are those where the simulated PTA is clear of the 90%
+  threshold by more than three standard errors.
 - **Virtual cohort covariates.** The eGFR distribution is a
   piecewise-linear interpolation through the Table 1 quartiles with
   tails set to 10 and 180 mL/min/1.73 m^2; the paper reports only the

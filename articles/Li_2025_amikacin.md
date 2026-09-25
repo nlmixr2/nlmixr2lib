@@ -397,7 +397,9 @@ sim <- do.call(bind_rows, lapply(arms$arm, solve_arm)) |>
   filter(!is.na(Cc)) |>
   mutate(tad = time - tlast)
 
-stopifnot(all(sim$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance;
+# a genuinely negative concentration would be comparable to the peak.
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE)))
 
 # Confirm the common random numbers actually landed: subject j must have the
 # same individual V in every arm (V depends only on WT and etalvc, both common).
@@ -523,7 +525,17 @@ arm.
 
 ``` r
 
+# The ODE integrator leaves a numerically-zero tail once a fast-clearing
+# subject is eight or more half-lives past the dose (|Cc| ~ 1e-9 ug/mL, some
+# of it slightly negative), and PKNCA's log-down trapezoid cannot take the
+# log of a negative value. Rows below 1e-6 of the subject's own peak are
+# dropped before NCA, except the interval's time-zero anchor, which PKNCA
+# needs and which is set to zero when it sits in that band.
 sim_nca <- sim |>
+  group_by(id) |>
+  filter(Cc >= 1e-6 * max(Cc) | tad == 0) |>
+  mutate(Cc = ifelse(Cc < 1e-6 * max(Cc), 0, Cc)) |>
+  ungroup() |>
   select(id, arm, time = tad, Cc) |>
   arrange(arm, id, time) |>
   as.data.frame()
@@ -570,23 +582,23 @@ knitr::kable(nca_tab, digits = 2,
 
 | Arm                        | AUC0-tau (ug\*h/mL) | Cmax (ug/mL) | Tmax (h) |
 |:---------------------------|--------------------:|-------------:|---------:|
-| Scr 15-22 \| 10 mg/kg q24h |               73.97 |        20.49 |      0.5 |
-| Scr 15-22 \| 11 mg/kg q24h |               81.37 |        22.54 |      0.5 |
-| Scr 15-22 \| 12 mg/kg q24h |               88.77 |        24.58 |      0.5 |
-| Scr 15-22 \| 12 mg/kg q36h |               88.77 |        24.31 |      0.5 |
-| Scr 15-22 \| 12 mg/kg q48h |               88.77 |        24.30 |      0.5 |
-| Scr 15-22 \| 13 mg/kg q24h |               96.16 |        26.63 |      0.5 |
-| Scr 23-36 \| 10 mg/kg q24h |              117.70 |        21.83 |      0.5 |
-| Scr 23-36 \| 11 mg/kg q24h |              129.47 |        24.01 |      0.5 |
-| Scr 23-36 \| 12 mg/kg q24h |              141.24 |        26.20 |      0.5 |
-| Scr 23-36 \| 12 mg/kg q36h |              141.24 |        25.37 |      0.5 |
-| Scr 23-36 \| 12 mg/kg q48h |              141.24 |        25.09 |      0.5 |
-| Scr 23-36 \| 13 mg/kg q24h |              153.01 |        28.38 |      0.5 |
-| Scr 37-60 \| 10 mg/kg q24h |              194.03 |        23.86 |      0.5 |
-| Scr 37-60 \| 11 mg/kg q24h |              213.43 |        26.24 |      0.5 |
-| Scr 37-60 \| 12 mg/kg q24h |              232.83 |        28.63 |      0.5 |
-| Scr 37-60 \| 12 mg/kg q36h |              232.83 |        26.96 |      0.5 |
-| Scr 37-60 \| 12 mg/kg q48h |              232.83 |        26.14 |      0.5 |
+| Scr 15-22 \| 10 mg/kg q24h |               79.22 |        19.55 |      0.5 |
+| Scr 15-22 \| 11 mg/kg q24h |               87.15 |        21.51 |      0.5 |
+| Scr 15-22 \| 12 mg/kg q24h |               95.07 |        23.46 |      0.5 |
+| Scr 15-22 \| 12 mg/kg q36h |               95.07 |        23.25 |      0.5 |
+| Scr 15-22 \| 12 mg/kg q48h |               95.07 |        23.22 |      0.5 |
+| Scr 15-22 \| 13 mg/kg q24h |              102.99 |        25.42 |      0.5 |
+| Scr 23-36 \| 10 mg/kg q24h |              124.43 |        20.35 |      0.5 |
+| Scr 23-36 \| 11 mg/kg q24h |              136.87 |        22.38 |      0.5 |
+| Scr 23-36 \| 12 mg/kg q24h |              149.32 |        24.42 |      0.5 |
+| Scr 23-36 \| 12 mg/kg q36h |              149.32 |        24.05 |      0.5 |
+| Scr 23-36 \| 12 mg/kg q48h |              149.32 |        23.84 |      0.5 |
+| Scr 23-36 \| 13 mg/kg q24h |              161.76 |        26.45 |      0.5 |
+| Scr 37-60 \| 10 mg/kg q24h |              202.75 |        22.77 |      0.5 |
+| Scr 37-60 \| 11 mg/kg q24h |              223.03 |        25.05 |      0.5 |
+| Scr 37-60 \| 12 mg/kg q24h |              243.30 |        27.33 |      0.5 |
+| Scr 37-60 \| 12 mg/kg q36h |              243.30 |        24.98 |      0.5 |
+| Scr 37-60 \| 12 mg/kg q48h |              243.30 |        24.59 |      0.5 |
 
 Median steady-state NCA per simulation arm. {.table}
 
@@ -620,7 +632,7 @@ knitr::kable(
 
 |    n | median rel. error | max \|rel. error\| |
 |-----:|------------------:|-------------------:|
-| 2040 |            -3e-05 |            0.00513 |
+| 2040 |            -3e-05 |            0.00982 |
 
 AUC0-tau vs Dose/CL, over every simulated subject. {.table}
 
@@ -686,23 +698,23 @@ cmp5 |>
 
 | Scr (umol/L) | Regimen | Trough \<5, paper (%) | Trough \<5, sim (%) | Peak 20-35, paper (%) | Peak 20-35, sim (%) | Peak \>35, paper (%) | Peak \>35, sim (%) |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| 15-22 | 10 mg/kg q24h | 99.5 | 100.0 | 58.8 | 46.7 | 2.6 | 7.5 |
-| 15-22 | 11 mg/kg q24h | 99.5 | 100.0 | 66.1 | 58.3 | 5.9 | 9.2 |
-| 15-22 | 12 mg/kg q24h | 99.4 | 100.0 | 72.0 | 61.7 | 8.4 | 15.8 |
-| 15-22 | 12 mg/kg q36h | 99.9 | 100.0 | 70.3 | 61.7 | 8.0 | 15.0 |
-| 15-22 | 12 mg/kg q48h | 100.0 | 100.0 | 69.9 | 61.7 | 8.0 | 15.0 |
-| 15-22 | 13 mg/kg q24h | 99.5 | 100.0 | 73.9 | 65.8 | 11.1 | 19.2 |
-| 23-36 | 10 mg/kg q24h | 92.5 | 98.3 | 67.6 | 54.2 | 5.8 | 9.2 |
-| 23-36 | 11 mg/kg q24h | 90.7 | 98.3 | 71.5 | 59.2 | 9.2 | 14.2 |
-| 23-36 | 12 mg/kg q24h | 88.1 | 98.3 | 73.0 | 66.7 | 13.9 | 18.3 |
-| 23-36 | 12 mg/kg q36h | 98.7 | 99.2 | 72.2 | 62.5 | 10.9 | 18.3 |
-| 23-36 | 12 mg/kg q48h | 99.7 | 100.0 | 71.9 | 61.7 | 10.3 | 18.3 |
-| 23-36 | 13 mg/kg q24h | 86.2 | 96.7 | 71.9 | 65.8 | 19.4 | 22.5 |
-| 37-60 | 10 mg/kg q24h | 53.5 | 86.7 | 72.9 | 59.2 | 12.5 | 14.2 |
-| 37-60 | 11 mg/kg q24h | 48.4 | 84.2 | 71.2 | 66.7 | 19.1 | 17.5 |
-| 37-60 | 12 mg/kg q24h | 44.2 | 82.5 | 67.7 | 69.2 | 26.0 | 22.5 |
-| 37-60 | 12 mg/kg q36h | 82.9 | 96.7 | 71.9 | 64.2 | 17.0 | 21.7 |
-| 37-60 | 12 mg/kg q48h | 96.2 | 99.2 | 71.5 | 61.7 | 14.3 | 21.7 |
+| 15-22 | 10 mg/kg q24h | 99.5 | 99.2 | 58.8 | 42.5 | 2.6 | 5.0 |
+| 15-22 | 11 mg/kg q24h | 99.5 | 99.2 | 66.1 | 51.7 | 5.9 | 10.0 |
+| 15-22 | 12 mg/kg q24h | 99.4 | 99.2 | 72.0 | 59.2 | 8.4 | 11.7 |
+| 15-22 | 12 mg/kg q36h | 99.9 | 100.0 | 70.3 | 58.3 | 8.0 | 11.7 |
+| 15-22 | 12 mg/kg q48h | 100.0 | 100.0 | 69.9 | 58.3 | 8.0 | 11.7 |
+| 15-22 | 13 mg/kg q24h | 99.5 | 99.2 | 73.9 | 60.0 | 11.1 | 17.5 |
+| 23-36 | 10 mg/kg q24h | 92.5 | 98.3 | 67.6 | 44.2 | 5.8 | 7.5 |
+| 23-36 | 11 mg/kg q24h | 90.7 | 98.3 | 71.5 | 57.5 | 9.2 | 10.8 |
+| 23-36 | 12 mg/kg q24h | 88.1 | 97.5 | 73.0 | 59.2 | 13.9 | 16.7 |
+| 23-36 | 12 mg/kg q36h | 98.7 | 99.2 | 72.2 | 59.2 | 10.9 | 15.8 |
+| 23-36 | 12 mg/kg q48h | 99.7 | 100.0 | 71.9 | 58.3 | 10.3 | 15.0 |
+| 23-36 | 13 mg/kg q24h | 86.2 | 96.7 | 71.9 | 57.5 | 19.4 | 25.8 |
+| 37-60 | 10 mg/kg q24h | 53.5 | 85.8 | 72.9 | 55.8 | 12.5 | 12.5 |
+| 37-60 | 11 mg/kg q24h | 48.4 | 82.5 | 71.2 | 65.0 | 19.1 | 15.0 |
+| 37-60 | 12 mg/kg q24h | 44.2 | 80.0 | 67.7 | 65.8 | 26.0 | 23.3 |
+| 37-60 | 12 mg/kg q36h | 82.9 | 95.0 | 71.9 | 59.2 | 17.0 | 18.3 |
+| 37-60 | 12 mg/kg q48h | 96.2 | 98.3 | 71.5 | 60.8 | 14.3 | 16.7 |
 
 Li 2025 Table 5 (PMA 31 wk, WT 1.2 kg) vs the packaged model. No
 parameter was adjusted. {.table}
@@ -761,16 +773,16 @@ knitr::kable(
 
 | Claim | Level | Simulated (%) |
 |:---|:---|---:|
-| 1: trough attainment falls as Scr rises (12 mg/kg q24h) | Scr 15-22 | 100.0 |
-| 1: trough attainment falls as Scr rises (12 mg/kg q24h) | Scr 23-36 | 98.3 |
-| 1: trough attainment falls as Scr rises (12 mg/kg q24h) | Scr 37-60 | 82.5 |
-| 2: lengthening tau restores trough attainment (Scr 37-60) | q24h | 82.5 |
-| 2: lengthening tau restores trough attainment (Scr 37-60) | q36h | 96.7 |
-| 2: lengthening tau restores trough attainment (Scr 37-60) | q48h | 99.2 |
-| 3: peak overshoot rises with mg/kg (Scr 23-36, q24h) | 10 mg/kg | 9.2 |
-| 3: peak overshoot rises with mg/kg (Scr 23-36, q24h) | 11 mg/kg | 14.2 |
-| 3: peak overshoot rises with mg/kg (Scr 23-36, q24h) | 12 mg/kg | 18.3 |
-| 3: peak overshoot rises with mg/kg (Scr 23-36, q24h) | 13 mg/kg | 22.5 |
+| 1: trough attainment falls as Scr rises (12 mg/kg q24h) | Scr 15-22 | 99.2 |
+| 1: trough attainment falls as Scr rises (12 mg/kg q24h) | Scr 23-36 | 97.5 |
+| 1: trough attainment falls as Scr rises (12 mg/kg q24h) | Scr 37-60 | 80.0 |
+| 2: lengthening tau restores trough attainment (Scr 37-60) | q24h | 80.0 |
+| 2: lengthening tau restores trough attainment (Scr 37-60) | q36h | 95.0 |
+| 2: lengthening tau restores trough attainment (Scr 37-60) | q48h | 98.3 |
+| 3: peak overshoot rises with mg/kg (Scr 23-36, q24h) | 10 mg/kg | 7.5 |
+| 3: peak overshoot rises with mg/kg (Scr 23-36, q24h) | 11 mg/kg | 10.8 |
+| 3: peak overshoot rises with mg/kg (Scr 23-36, q24h) | 12 mg/kg | 16.7 |
+| 3: peak overshoot rises with mg/kg (Scr 23-36, q24h) | 13 mg/kg | 25.8 |
 
 Assertions on the paper’s own mechanistic claims. {.table}
 
@@ -819,8 +831,8 @@ cmp5 |>
 | Scr (umol/L) | Simulated best regimen | Li 2025 recommendation |
 |:-------------|:-----------------------|:-----------------------|
 | 15-22        | 13 mg/kg q24h          | 13 mg/kg q24h          |
-| 23-36        | 12 mg/kg q24h          | 12 mg/kg q36h          |
-| 37-60        | 12 mg/kg q36h          | 12 mg/kg q48h          |
+| 23-36        | 12 mg/kg q36h          | 12 mg/kg q36h          |
+| 37-60        | 12 mg/kg q48h          | 12 mg/kg q48h          |
 
 Best regimen per creatinine band. {.table}
 

@@ -270,7 +270,7 @@ tibble(
 | Quantity                        |      Value |
 |:--------------------------------|-----------:|
 | AUCtau at 0.3 mg/kg (mg\*day/L) |  78.186000 |
-| AUCtau at 0.7 mg/kg (mg\*day/L) | 182.435000 |
+| AUCtau at 0.7 mg/kg (mg\*day/L) | 182.434000 |
 | Ratio (0.7 / 0.3)               |   2.333333 |
 | Expected dose ratio             |   2.333333 |
 | F1 \* Dose / CL at 0.7 mg/kg    | 182.435000 |

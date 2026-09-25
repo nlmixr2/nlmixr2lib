@@ -440,13 +440,9 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
-#> points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
 #> points)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
 #> points)
 ```
 
@@ -488,27 +484,27 @@ knitr::kable(
 
 | NCA parameter          | treatment | Reference | Simulated | % diff   |
 |:-----------------------|:----------|:----------|:----------|:---------|
-| Cmax (ug/L)            | IM 70 mg  | 5.28      | 7.48      | +41.6%\* |
-| Cmax (ug/L)            | IM 140 mg | 13.7      | 13.7      | +0.1%    |
-| Cmax (ug/L)            | IM 280 mg | 29.1      | 30.2      | +3.7%    |
+| Cmax (ug/L)            | IM 70 mg  | 5.28      | 7.4       | +40.1%\* |
+| Cmax (ug/L)            | IM 140 mg | 13.7      | 14.7      | +7.5%    |
+| Cmax (ug/L)            | IM 280 mg | 29.1      | 28.6      | -1.8%    |
 | Tmax (h)               | IM 70 mg  | 1180      | 600       | -49.0%\* |
 | Tmax (h)               | IM 140 mg | 817       | 648       | -20.7%\* |
-| Tmax (h)               | IM 280 mg | 619       | 600       | -3.1%    |
-| AUC0-∞ (obs) (h\*ug/L) | IM 70 mg  | 6330      | 7830      | +23.7%\* |
-| AUC0-∞ (obs) (h\*ug/L) | IM 140 mg | 16800     | 14700     | -12.6%   |
-| AUC0-∞ (obs) (h\*ug/L) | IM 280 mg | 29700     | 29300     | -1.4%    |
-| AUClast (h\*ug/L)      | IM 70 mg  | 6120      | 7420      | +21.2%\* |
-| AUClast (h\*ug/L)      | IM 140 mg | 15500     | 13600     | -12.6%   |
-| AUClast (h\*ug/L)      | IM 280 mg | 29000     | 28200     | -2.8%    |
-| t½ (h)                 | IM 70 mg  | 314       | 318       | +1.2%    |
-| t½ (h)                 | IM 140 mg | 287       | 327       | +14.0%   |
-| t½ (h)                 | IM 280 mg | 289       | 299       | +3.4%    |
-| CL/F (L/h)             | IM 70 mg  | 11.1      | 8.94      | -19.1%   |
-| CL/F (L/h)             | IM 140 mg | 8.33      | 9.53      | +14.4%   |
-| CL/F (L/h)             | IM 280 mg | 9.43      | 9.57      | +1.4%    |
-| Vz/F (L)               | IM 70 mg  | 5020      | 4100      | -18.3%   |
-| Vz/F (L)               | IM 140 mg | 3450      | 4580      | +32.9%\* |
-| Vz/F (L)               | IM 280 mg | 3940      | 4340      | +10.3%   |
+| Tmax (h)               | IM 280 mg | 619       | 624       | +0.8%    |
+| AUC0-∞ (obs) (h\*ug/L) | IM 70 mg  | 6330      | 7270      | +14.9%   |
+| AUC0-∞ (obs) (h\*ug/L) | IM 140 mg | 16800     | 13900     | -17.3%   |
+| AUC0-∞ (obs) (h\*ug/L) | IM 280 mg | 29700     | 27200     | -8.4%    |
+| AUClast (h\*ug/L)      | IM 70 mg  | 6120      | 6990      | +14.2%   |
+| AUClast (h\*ug/L)      | IM 140 mg | 15500     | 13500     | -12.8%   |
+| AUClast (h\*ug/L)      | IM 280 mg | 29000     | 26300     | -9.3%    |
+| t½ (h)                 | IM 70 mg  | 314       | 303       | -3.6%    |
+| t½ (h)                 | IM 140 mg | 287       | 305       | +6.2%    |
+| t½ (h)                 | IM 280 mg | 289       | 296       | +2.3%    |
+| CL/F (L/h)             | IM 70 mg  | 11.1      | 9.63      | -12.9%   |
+| CL/F (L/h)             | IM 140 mg | 8.33      | 10.1      | +21.0%\* |
+| CL/F (L/h)             | IM 280 mg | 9.43      | 10.3      | +9.2%    |
+| Vz/F (L)               | IM 70 mg  | 5020      | 4330      | -13.7%   |
+| Vz/F (L)               | IM 140 mg | 3450      | 4270      | +23.9%\* |
+| Vz/F (L)               | IM 280 mg | 3940      | 4400      | +11.8%   |
 
 Simulated vs published NCA (Park 2025 Table 2, GB-5001A IM arms). \*
 differs from reference by \>20%. {.table}
@@ -564,9 +560,9 @@ knitr::kable(sim_cmax, digits = 4,
 
 | treatment | cmax_geomean | dose | dn_cmax |
 |:----------|-------------:|-----:|--------:|
-| IM 140 mg |      13.5676 |  140 |  0.0969 |
-| IM 280 mg |      29.5583 |  280 |  0.1056 |
-| IM 70 mg  |       7.1913 |   70 |  0.1027 |
+| IM 140 mg |      14.2314 |  140 |  0.1017 |
+| IM 280 mg |      27.5894 |  280 |  0.0985 |
+| IM 70 mg  |       6.8977 |   70 |  0.0985 |
 
 Dose-normalised simulated Cmax: flat, as a linear model requires.
 {.table}
@@ -651,11 +647,11 @@ knitr::kable(ss, digits = c(0, 0, 2, 1, 2, 1, 1, 1, 2, 1),
 
 | Source | Dose (mg) | Cmax,ss | Cmax,ss CV% | Cmin,ss | Cmin,ss CV% | AUCtau | AUCtau CV% | Cav,ss | Cav,ss CV% |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Alternative (IIV V1 = 6.97% CV) | 140 | 27.03 | 30.3 | 17.18 | 43.4 | 14850.0 | 35.7 | 22.10 | 35.7 |
-| Packaged model (IIV V1 = variance) | 140 | 26.82 | 24.3 | 17.72 | 32.4 | 14966.2 | 27.7 | 22.27 | 27.7 |
+| Alternative (IIV V1 = 6.97% CV) | 140 | 27.47 | 24.1 | 17.55 | 33.7 | 15138.4 | 28.4 | 22.53 | 28.4 |
+| Packaged model (IIV V1 = variance) | 140 | 25.78 | 31.2 | 17.09 | 38.2 | 14404.5 | 34.0 | 21.44 | 34.0 |
 | Published (Section 3.8) | 140 | 26.20 | 28.0 | 18.30 | 35.9 | 15111.5 | 31.5 | 22.50 | 31.5 |
-| Alternative (IIV V1 = 6.97% CV) | 280 | 52.96 | 24.8 | 33.33 | 35.3 | 28994.9 | 29.4 | 43.15 | 29.4 |
-| Packaged model (IIV V1 = variance) | 280 | 52.85 | 25.4 | 34.82 | 34.0 | 29420.2 | 28.9 | 43.78 | 28.9 |
+| Alternative (IIV V1 = 6.97% CV) | 280 | 54.78 | 26.4 | 34.96 | 37.3 | 30169.7 | 31.1 | 44.90 | 31.1 |
+| Packaged model (IIV V1 = variance) | 280 | 52.56 | 23.8 | 33.82 | 31.3 | 29036.5 | 26.9 | 43.21 | 26.9 |
 | Published (Section 3.8) | 280 | 52.40 | 28.0 | 36.80 | 36.1 | 30259.2 | 31.6 | 45.00 | 31.6 |
 
 Steady-state summary after four q28d IM doses vs Park 2025 Section 3.8.
@@ -769,10 +765,10 @@ knitr::kable(acc, digits = 3,
 
 | cycle |    cav | Ratio to cycle 4 |
 |------:|-------:|-----------------:|
-|     1 | 11.669 |            0.288 |
-|     2 | 28.181 |            0.695 |
-|     3 | 37.721 |            0.931 |
-|     4 | 40.527 |            1.000 |
+|     1 | 12.250 |            0.287 |
+|     2 | 30.003 |            0.703 |
+|     3 | 40.282 |            0.944 |
+|     4 | 42.668 |            1.000 |
 
 Approach to steady state across the four q28d cycles (280 mg). {.table}
 

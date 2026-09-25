@@ -292,8 +292,8 @@ centring |>
 
 | Reading | Q1 (mg/L) | Median (mg/L) | Q3 (mg/L) | Bias vs observed median (%) |
 |:---|---:|---:|---:|---:|
-| Centred (packaged model) | 0.307 | 0.460 | 0.604 | 3.6 |
-| Uncentred (eqs. 1-2 read literally) | 0.419 | 0.694 | 0.935 | 56.3 |
+| Centred (packaged model) | 0.299 | 0.453 | 0.613 | 2.1 |
+| Uncentred (eqs. 1-2 read literally) | 0.420 | 0.691 | 0.938 | 55.7 |
 
 Simulated steady-state concentrations on 50 mg q12h under the study’s
 own sampling design, against the observed median of 444.0 ng/mL (IQR
@@ -421,7 +421,7 @@ typ |>
 | Regimen | AUC0-24, typical-value solve (mg\*h/L) | AUC0-24, Luo 2023 Table 4 (mg\*h/L) | Difference (%) |
 |:---|---:|---:|---:|
 | 100/50 mg q12h | 8.8496 | 8.85 | -0.005 |
-| 100/75 mg q12h | 13.2743 | 13.27 | 0.033 |
+| 100/75 mg q12h | 13.2744 | 13.27 | 0.033 |
 | 200/100 mg q12h | 17.6991 | 17.70 | -0.005 |
 
 Typical-value steady-state AUC0-24 vs Luo 2023 Table 4. {.table}

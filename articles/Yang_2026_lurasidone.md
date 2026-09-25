@@ -385,21 +385,21 @@ knitr::kable(
 
 | Age group  | Dose (mg) | Monotherapy | With valproate |
 |:-----------|----------:|------------:|---------------:|
-| Adolescent |        20 |        1.51 |           0.99 |
-| Adolescent |        40 |        3.29 |           1.92 |
-| Adolescent |        60 |        4.89 |           2.17 |
-| Adolescent |        80 |        6.10 |           3.69 |
-| Adolescent |       120 |        9.30 |           5.58 |
-| Adult      |        20 |        2.54 |           1.17 |
-| Adult      |        40 |        3.92 |           3.19 |
-| Adult      |        60 |        6.13 |           3.84 |
-| Adult      |        80 |        8.40 |           5.36 |
-| Adult      |       120 |       15.04 |           8.15 |
-| Elderly    |        20 |        4.85 |           2.87 |
-| Elderly    |        40 |        7.39 |           6.32 |
-| Elderly    |        60 |       13.36 |           9.01 |
-| Elderly    |        80 |       16.96 |          11.66 |
-| Elderly    |       120 |       27.79 |          19.09 |
+| Adolescent |        20 |        1.56 |           0.82 |
+| Adolescent |        40 |        3.14 |           1.58 |
+| Adolescent |        60 |        4.47 |           2.33 |
+| Adolescent |        80 |        6.96 |           3.03 |
+| Adolescent |       120 |        7.36 |           5.23 |
+| Adult      |        20 |        2.28 |           1.53 |
+| Adult      |        40 |        4.24 |           2.92 |
+| Adult      |        60 |        6.27 |           4.56 |
+| Adult      |        80 |        9.53 |           5.31 |
+| Adult      |       120 |       11.87 |           7.38 |
+| Elderly    |        20 |        4.87 |           2.57 |
+| Elderly    |        40 |        8.33 |           5.44 |
+| Elderly    |        60 |       12.64 |          10.02 |
+| Elderly    |        80 |       15.80 |          10.83 |
+| Elderly    |       120 |       23.25 |          19.32 |
 
 Median simulated steady-state trough (ng/mL) by age group, dose and
 valproate status. {.table}
@@ -513,21 +513,21 @@ knitr::kable(
 
 | Age group | Valproate | Dose (mg) | Window (ng/mL) | Simulated PTA (%) | Published PTA (%) | Difference (pp) | Known deviation |
 |:---|:---|---:|:---|---:|---:|---:|:---|
-| Adult | Monotherapy | 40 | AGNP 15-40 | 4.7 | 11 | -6.3 |  |
-| Adult | Monotherapy | 80 | AGNP 15-40 | 28.0 | 18 | 10.0 |  |
-| Adult | Monotherapy | 120 | AGNP 15-40 | 38.7 | 37 | 1.7 |  |
-| Adult | With valproate | 40 | AGNP 15-40 | 0.7 | 2 | -1.3 |  |
-| Adult | With valproate | 80 | AGNP 15-40 | 17.3 | 7 | 10.3 |  |
-| Adult | With valproate | 120 | AGNP 15-40 | 18.7 | 19 | -0.3 |  |
-| Elderly | Monotherapy | 40 | AGNP 15-40 | 16.0 | 28 | -12.0 |  |
+| Adult | Monotherapy | 40 | AGNP 15-40 | 8.7 | 11 | -2.3 |  |
+| Adult | Monotherapy | 80 | AGNP 15-40 | 30.0 | 18 | 12.0 |  |
+| Adult | Monotherapy | 120 | AGNP 15-40 | 29.3 | 37 | -7.7 |  |
+| Adult | With valproate | 40 | AGNP 15-40 | 2.0 | 2 | 0.0 |  |
+| Adult | With valproate | 80 | AGNP 15-40 | 11.3 | 7 | 4.3 |  |
+| Adult | With valproate | 120 | AGNP 15-40 | 23.3 | 19 | 4.3 |  |
+| Elderly | Monotherapy | 40 | AGNP 15-40 | 21.3 | 28 | -6.7 |  |
 | Elderly | Monotherapy | 120 | AGNP 15-40 | 48.7 | 50 | -1.3 |  |
-| Adult | Monotherapy | 20 | Exploratory 3-11 | 40.0 | 28 | 12.0 | yes |
-| Adult | Monotherapy | 40 | Exploratory 3-11 | 47.3 | 55 | -7.7 | yes |
-| Adult | Monotherapy | 80 | Exploratory 3-11 | 40.7 | 55 | -14.3 | yes |
-| Adult | Monotherapy | 120 | Exploratory 3-11 | 23.3 | 33 | -9.7 | yes |
-| Adult | With valproate | 40 | Exploratory 3-11 | 48.7 | 16 | 32.7 | yes |
-| Adult | With valproate | 80 | Exploratory 3-11 | 44.7 | 39 | 5.7 | yes |
-| Elderly | Monotherapy | 40 | Exploratory 3-11 | 58.0 | 62 | -4.0 | yes |
+| Adult | Monotherapy | 20 | Exploratory 3-11 | 35.3 | 28 | 7.3 | yes |
+| Adult | Monotherapy | 40 | Exploratory 3-11 | 55.3 | 55 | 0.3 | yes |
+| Adult | Monotherapy | 80 | Exploratory 3-11 | 38.7 | 55 | -16.3 | yes |
+| Adult | Monotherapy | 120 | Exploratory 3-11 | 38.0 | 33 | 5.0 | yes |
+| Adult | With valproate | 40 | Exploratory 3-11 | 43.3 | 16 | 27.3 | yes |
+| Adult | With valproate | 80 | Exploratory 3-11 | 39.3 | 39 | 0.3 | yes |
+| Elderly | Monotherapy | 40 | Exploratory 3-11 | 42.7 | 62 | -19.3 | yes |
 | Elderly | Monotherapy | 120 | Exploratory 3-11 | 12.0 | 17 | -5.0 | yes |
 
 Simulated vs published probability of target attainment (Yang 2026
@@ -611,7 +611,7 @@ stopifnot(
 cat(sprintf("Pooled AGNP-window PTA: %.1f%% on monotherapy vs %.1f%% with valproate\n",
             pooled_agnp$pct[pooled_agnp$vpalab == "Monotherapy"],
             pooled_agnp$pct[pooled_agnp$vpalab == "With valproate"]))
-#> Pooled AGNP-window PTA: 19.3% on monotherapy vs 11.7% with valproate
+#> Pooled AGNP-window PTA: 19.2% on monotherapy vs 11.5% with valproate
 ```
 
 ## PKNCA validation

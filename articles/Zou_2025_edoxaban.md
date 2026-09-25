@@ -524,11 +524,11 @@ fig1 |>
 
 | Age stratum | Median, simulated (ng\*h/mL) | Median, Zou 2025 Figure 1 (ng\*h/mL) | % difference | Cohort Q1 (ng\*h/mL) | Cohort Q3 (ng\*h/mL) |
 |:---|---:|---:|---:|---:|---:|
-| 0 to \<6 months | 1529 | 1398 | 9.4 | 1201 | 1951 |
-| 6 months to \<2 years | 1689 | 1379 | 22.5 | 1193 | 2122 |
-| 2 to \<6 years | 1521 | 1322 | 15.1 | 1296 | 1865 |
-| 6 to \<12 years | 1415 | 1284 | 10.2 | 1209 | 1854 |
-| 12 to \<18 years | 1381 | 1174 | 17.7 | 1065 | 1672 |
+| 0 to \<6 months | 1529 | 1398 | 9.4 | 1201 | 1941 |
+| 6 months to \<2 years | 1689 | 1379 | 22.5 | 1330 | 2170 |
+| 2 to \<6 years | 1521 | 1322 | 15.1 | 1282 | 1898 |
+| 6 to \<12 years | 1415 | 1284 | 10.2 | 1129 | 1846 |
+| 12 to \<18 years | 1381 | 1174 | 17.7 | 1011 | 1705 |
 
 Simulated vs published median steady-state AUC per age stratum. The
 median column is the typical-value solve; the quartiles show the

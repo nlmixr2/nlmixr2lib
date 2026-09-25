@@ -323,8 +323,15 @@ sim_fwd <- rxode2::rxSolve(mod, events = events_fwd,
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
+# `ss = 1` on an ODE model is reached by integrating repeated 12 h dosing
+# cycles until the state converges, and rxode2's `maxsteps` (default 70000)
+# caps the integrator steps over that whole search. Subjects who draw a large
+# V2 (terminal half-life 600-800 h, a 2-3 SD draw on etalvp) need 700 or more
+# cycles and exceed the default cap, which under the default strict steady
+# state returns NA for the whole subject. Raising the cap lets them converge.
 sim_ss <- rxode2::rxSolve(mod, events = events_ss,
-                          keep = c("AGE", "CREAT", "regimen")) |>
+                          keep = c("AGE", "CREAT", "regimen"),
+                          maxsteps = 1e6) |>
   as.data.frame()
 
 stopifnot(all(sim_fwd$Cc >= 0), all(sim_ss$Cc >= 0))
@@ -464,7 +471,7 @@ stopifnot(
 )
 c(median_pct = median(abs(mb$pct_diff)), max_pct = max(abs(mb$pct_diff)))
 #> median_pct    max_pct 
-#> 0.01807915 0.08561547
+#> 0.01801709 0.08555624
 ```
 
 **Steady-state exposure equals daily dose over clearance.** This is the
@@ -497,8 +504,8 @@ stopifnot(
 )
 c(median_pct = median(abs(ss_check$pct_diff)),
   max_pct    = max(abs(ss_check$pct_diff)))
-#> median_pct    max_pct 
-#> 0.00907314 0.09962795
+#>  median_pct     max_pct 
+#> 0.008669592 0.056460989
 ```
 
 ### Comparison against published exposures
@@ -551,7 +558,7 @@ knitr::kable(
 | NCA parameter    | window    | Reference | Simulated | % diff |
 |:-----------------|:----------|----------:|----------:|-------:|
 | AUClast (mg.h/L) | AUC24-48h |       342 |       323 |  -5.4% |
-| AUClast (mg.h/L) | AUCss,24h |       506 |       505 |  -0.2% |
+| AUClast (mg.h/L) | AUCss,24h |       506 |       526 |  +4.1% |
 
 Simulated vs. published norvancomycin exposure at 800 mg q12h. \*
 differs from reference by \>20%. {.table}
@@ -577,10 +584,10 @@ stopifnot(nrow(sim_med) == 2L)
 stopifnot(max(abs(sim_med$pct)) < 20)
 sim_med
 #> # A tibble: 2 × 4
-#>   window      med auclast    pct
-#>   <chr>     <dbl>   <dbl>  <dbl>
-#> 1 AUC24-48h  323.    342. -5.38 
-#> 2 AUCss,24h  505.    506. -0.150
+#>   window      med auclast   pct
+#>   <chr>     <dbl>   <dbl> <dbl>
+#> 1 AUC24-48h  323.    342. -5.38
+#> 2 AUCss,24h  526.    506.  4.10
 ```
 
 ### Accumulation across the first three days
@@ -626,7 +633,7 @@ knitr::kable(acc, digits = 1,
 | AUC0-24h | 253.1 | 267.6 | NA |
 | AUC24-48h | 323.5 | 344.7 | 341.9 |
 | AUC48-72h | 370.1 | 390.0 | NA |
-| AUCss,24h | 504.9 | 525.6 | 505.6 |
+| AUCss,24h | 526.4 | 545.7 | 505.6 |
 
 AUC accumulation under 800 mg q12h. Li 2024 prints numeric values only
 for the second day and for steady state. {.table}
@@ -653,7 +660,7 @@ stopifnot(
 )
 c(simulated = ratio_sim, published = ratio_paper)
 #> simulated published 
-#> 0.6557530 0.6761268
+#> 0.6316060 0.6761268
 ```
 
 Comparing like with like, the simulated cohort **mean** `AUC24-48h` of
@@ -686,8 +693,8 @@ knitr::kable(pta, digits = 1,
 
 | Target                | Li 2024 (n = 34) | Simulated |
 |:----------------------|-----------------:|----------:|
-| AUC24-48h/MIC \>= 361 |             29.4 |        38 |
-| AUCss,24h/MIC \>= 361 |             76.5 |        84 |
+| AUC24-48h/MIC \>= 361 |             29.4 |      38.0 |
+| AUCss,24h/MIC \>= 361 |             76.5 |      83.5 |
 
 Probability of target attainment at MIC 1 mg/L under 800 mg q12h.
 {.table}
@@ -765,8 +772,8 @@ tibble::tibble(
 
 | Quantity | Days 1-3 mean (mg/L) | Steady-state mean (mg/L) | Li 2024 Table 1 |
 |:---|---:|---:|:---|
-| Peak (2 h post-dose) | 28.11 | 36.75 | 36.87 – from the row LABELLED Cmin |
-| Trough (0.5 h pre-dose) | 5.54 | 13.30 | 10.70 – from the row LABELLED Cmax |
+| Peak (2 h post-dose) | 28.11 | 37.19 | 36.87 – from the row LABELLED Cmin |
+| Trough (0.5 h pre-dose) | 5.54 | 14.15 | 10.70 – from the row LABELLED Cmax |
 
 Table 1 of Li 2024 has its Cmax and Cmin labels transposed. The
 published means fall between the not-yet-accumulated and steady-state
@@ -798,7 +805,7 @@ stopifnot(
 c(peak_fwd = peak_fwd, peak_ss = peak_ss,
   trough_fwd = trough_fwd, trough_ss = trough_ss)
 #>   peak_fwd    peak_ss trough_fwd  trough_ss 
-#>  28.110941  36.754784   5.536006  13.303386
+#>  28.110978  37.188748   5.536006  14.145923
 ```
 
 The arithmetic settles it independently of any simulation. Average

@@ -542,7 +542,7 @@ sim |>
 med_conc <- median(sim$Cc)
 cat(sprintf("Median simulated steady-state concentration: %.2f mg/L (observed range 0.1-19.2)\n",
             med_conc))
-#> Median simulated steady-state concentration: 4.03 mg/L (observed range 0.1-19.2)
+#> Median simulated steady-state concentration: 3.98 mg/L (observed range 0.1-19.2)
 stopifnot(med_conc > 0.1, med_conc < 19.2)
 ```
 
@@ -622,16 +622,16 @@ knitr::kable(cmp, digits = 3, align = c("l", "l", "r", "r", "r"),
 
 | NCA parameter     | treatment                     | Reference | Simulated | % diff |
 |:------------------|:------------------------------|----------:|----------:|-------:|
-| AUClast (mg\*h/L) | GCV IV 5 mg/kg q12h           |       108 |       103 |  -4.1% |
-| AUClast (mg\*h/L) | VGCV 450 mg q12h (eGFR 15-30) |       112 |       109 |  -2.8% |
-| AUClast (mg\*h/L) | VGCV 900 mg q12h              |       104 |      93.8 |  -9.7% |
-| AUClast (mg\*h/L) | VGCV 900 mg q12h (eGFR \> 90) |      88.2 |      83.3 |  -5.6% |
-| AUClast (mg\*h/L) | VGCV 900+450 mg (eGFR 30-60)  |       120 |       110 |  -8.6% |
-| Cavg (mg/L)       | GCV IV 5 mg/kg q12h           |      4.49 |      4.31 |  -4.1% |
-| Cavg (mg/L)       | VGCV 450 mg q12h (eGFR 15-30) |      4.67 |      4.53 |  -2.8% |
-| Cavg (mg/L)       | VGCV 900 mg q12h              |      4.33 |      3.91 |  -9.7% |
-| Cavg (mg/L)       | VGCV 900 mg q12h (eGFR \> 90) |      3.68 |      3.47 |  -5.6% |
-| Cavg (mg/L)       | VGCV 900+450 mg (eGFR 30-60)  |      4.99 |      4.56 |  -8.6% |
+| AUClast (mg\*h/L) | GCV IV 5 mg/kg q12h           |       108 |       111 |  +3.0% |
+| AUClast (mg\*h/L) | VGCV 450 mg q12h (eGFR 15-30) |       112 |       109 |  -2.4% |
+| AUClast (mg\*h/L) | VGCV 900 mg q12h              |       104 |      89.9 | -13.5% |
+| AUClast (mg\*h/L) | VGCV 900 mg q12h (eGFR \> 90) |      88.2 |      84.5 |  -4.3% |
+| AUClast (mg\*h/L) | VGCV 900+450 mg (eGFR 30-60)  |       120 |       102 | -14.8% |
+| Cavg (mg/L)       | GCV IV 5 mg/kg q12h           |      4.49 |      4.63 |  +3.0% |
+| Cavg (mg/L)       | VGCV 450 mg q12h (eGFR 15-30) |      4.67 |      4.55 |  -2.4% |
+| Cavg (mg/L)       | VGCV 900 mg q12h              |      4.33 |      3.75 | -13.5% |
+| Cavg (mg/L)       | VGCV 900 mg q12h (eGFR \> 90) |      3.68 |      3.52 |  -4.3% |
+| Cavg (mg/L)       | VGCV 900+450 mg (eGFR 30-60)  |      4.99 |      4.25 | -14.8% |
 
 Simulated (PKNCA, median over 200 subjects) vs the closed-form
 typical-value reference. \* differs from reference by \>20%. {.table}
@@ -691,11 +691,11 @@ knitr::kable(pta, digits = 1,
 
 | treatment | n | Median AUC24 (mg\*h/L) | CV of AUC24 (%) | PTA \> 50 (%) | PTA 80-120 (%) |
 |:---|---:|---:|---:|---:|---:|
-| GCV IV 5 mg/kg q12h | 200 | 103.5 | 60.9 | 94.0 | 27.0 |
-| VGCV 450 mg q12h (eGFR 15-30) | 200 | 108.8 | 66.3 | 80.5 | 21.0 |
-| VGCV 900 mg q12h | 200 | 93.8 | 74.8 | 72.5 | 19.0 |
-| VGCV 900 mg q12h (eGFR \> 90) | 200 | 83.3 | 73.9 | 72.0 | 24.0 |
-| VGCV 900+450 mg (eGFR 30-60) | 200 | 109.5 | 67.3 | 80.5 | 21.5 |
+| GCV IV 5 mg/kg q12h | 200 | 111.1 | 50.5 | 94.5 | 30.0 |
+| VGCV 450 mg q12h (eGFR 15-30) | 200 | 109.3 | 66.8 | 81.5 | 22.5 |
+| VGCV 900 mg q12h | 200 | 89.9 | 81.4 | 73.5 | 19.0 |
+| VGCV 900 mg q12h (eGFR \> 90) | 200 | 84.5 | 67.0 | 74.0 | 26.0 |
+| VGCV 900+450 mg (eGFR 30-60) | 200 | 102.1 | 66.4 | 85.0 | 26.0 |
 
 Simulated PTA for the paper’s prophylaxis and therapy targets. {.table}
 
@@ -748,8 +748,8 @@ knitr::kable(conv, digits = 1,
 
 | Reading               | Median AUC24 | CV (%) | PTA 80-120 (%) |
 |:----------------------|-------------:|-------:|---------------:|
-| variance (as printed) |         85.6 |   71.4 |             22 |
-| SD (alternative)      |         97.3 |   67.6 |             17 |
+| variance (as printed) |         82.6 |   71.6 |           20.5 |
+| SD (alternative)      |         87.2 |   69.8 |           17.5 |
 
 Therapy PTA under the two possible readings of the Table 3 omegas
 (paper: approx. 21-35%). {.table}

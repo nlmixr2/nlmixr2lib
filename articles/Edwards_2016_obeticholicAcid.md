@@ -55,11 +55,25 @@ mod
 #>   # liver -> bile duct arrow in the OCA column (there is no "t20"), i.e. only
 #>   # the conjugates are secreted into bile.
 #>   paper_specific_compartments <- c(
-#>     "systemic_oca", "portal_oca", "sinusoidal_oca", "liver_oca", "gut_oca",
-#>     "systemic_goca", "portal_goca", "sinusoidal_goca", "liver_goca",
-#>     "bileduct_goca", "gallbladder_goca", "gut_goca",
-#>     "systemic_toca", "portal_toca", "sinusoidal_toca", "liver_toca",
-#>     "bileduct_toca", "gallbladder_toca", "gut_toca"
+#>     "systemic_oca",
+#>     "portal_oca",
+#>     "sinusoidal_oca",
+#>     "liver_oca",
+#>     "gut_oca",
+#>     "systemic_goca",
+#>     "portal_goca",
+#>     "sinusoidal_goca",
+#>     "liver_goca",
+#>     "bileduct_goca",
+#>     "gallbladder_goca",
+#>     "gut_goca",
+#>     "systemic_toca",
+#>     "portal_toca",
+#>     "sinusoidal_toca",
+#>     "liver_toca",
+#>     "bileduct_toca",
+#>     "gallbladder_toca",
+#>     "gut_toca"
 #>   )
 #> 
 #>   units <- list(time = "h", dosing = "nmol", concentration = "nM")
@@ -72,74 +86,74 @@ mod
 #>   # Distribution (% Nanomoles Total OCA)" block, which is itemised by exactly
 #>   # these spaces.
 #>   compartmentData <- list(
-#>     depot            = list(analyte = "OCA", units = "nmol", specimen = "administration site", verified = TRUE),
-#>     systemic_oca     = list(analyte = "OCA", units = "nmol", specimen = "plasma", verified = TRUE),
-#>     portal_oca       = list(analyte = "OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
-#>     sinusoidal_oca   = list(analyte = "OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
-#>     liver_oca        = list(analyte = "OCA", units = "nmol", specimen = "tissue", verified = TRUE),
-#>     gut_oca          = list(analyte = "OCA", units = "nmol", specimen = "administration site", verified = TRUE),
-#>     systemic_goca    = list(analyte = "glyco-OCA", units = "nmol", specimen = "plasma", verified = TRUE),
-#>     portal_goca      = list(analyte = "glyco-OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
-#>     sinusoidal_goca  = list(analyte = "glyco-OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
-#>     liver_goca       = list(analyte = "glyco-OCA", units = "nmol", specimen = "tissue", verified = TRUE),
-#>     bileduct_goca    = list(analyte = "glyco-OCA", units = "nmol", specimen = "bile", verified = TRUE),
+#>     depot = list(analyte = "OCA", units = "nmol", specimen = "administration site", verified = TRUE),
+#>     systemic_oca = list(analyte = "OCA", units = "nmol", specimen = "plasma", verified = TRUE),
+#>     portal_oca = list(analyte = "OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
+#>     sinusoidal_oca = list(analyte = "OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
+#>     liver_oca = list(analyte = "OCA", units = "nmol", specimen = "tissue", verified = TRUE),
+#>     gut_oca = list(analyte = "OCA", units = "nmol", specimen = "administration site", verified = TRUE),
+#>     systemic_goca = list(analyte = "glyco-OCA", units = "nmol", specimen = "plasma", verified = TRUE),
+#>     portal_goca = list(analyte = "glyco-OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
+#>     sinusoidal_goca = list(analyte = "glyco-OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
+#>     liver_goca = list(analyte = "glyco-OCA", units = "nmol", specimen = "tissue", verified = TRUE),
+#>     bileduct_goca = list(analyte = "glyco-OCA", units = "nmol", specimen = "bile", verified = TRUE),
 #>     gallbladder_goca = list(analyte = "glyco-OCA", units = "nmol", specimen = "bile", verified = TRUE),
-#>     gut_goca         = list(analyte = "glyco-OCA", units = "nmol", specimen = "administration site", verified = TRUE),
-#>     systemic_toca    = list(analyte = "tauro-OCA", units = "nmol", specimen = "plasma", verified = TRUE),
-#>     portal_toca      = list(analyte = "tauro-OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
-#>     sinusoidal_toca  = list(analyte = "tauro-OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
-#>     liver_toca       = list(analyte = "tauro-OCA", units = "nmol", specimen = "tissue", verified = TRUE),
-#>     bileduct_toca    = list(analyte = "tauro-OCA", units = "nmol", specimen = "bile", verified = TRUE),
+#>     gut_goca = list(analyte = "glyco-OCA", units = "nmol", specimen = "administration site", verified = TRUE),
+#>     systemic_toca = list(analyte = "tauro-OCA", units = "nmol", specimen = "plasma", verified = TRUE),
+#>     portal_toca = list(analyte = "tauro-OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
+#>     sinusoidal_toca = list(analyte = "tauro-OCA", units = "nmol", specimen = "whole blood", verified = TRUE),
+#>     liver_toca = list(analyte = "tauro-OCA", units = "nmol", specimen = "tissue", verified = TRUE),
+#>     bileduct_toca = list(analyte = "tauro-OCA", units = "nmol", specimen = "bile", verified = TRUE),
 #>     gallbladder_toca = list(analyte = "tauro-OCA", units = "nmol", specimen = "bile", verified = TRUE),
-#>     gut_toca         = list(analyte = "tauro-OCA", units = "nmol", specimen = "administration site", verified = TRUE)
+#>     gut_toca = list(analyte = "tauro-OCA", units = "nmol", specimen = "administration site", verified = TRUE)
 #>   )
 #> 
 #>   covariateData <- list(
 #>     HEPIMP_MILD = list(
-#>       description       = "Mild hepatic impairment (Child-Pugh Class A, score 5-6).",
-#>       units             = "(binary)",
-#>       type              = "binary",
+#>       description = "Mild hepatic impairment (Child-Pugh Class A, score 5-6).",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (normal hepatic function, or a non-mild impairment category)",
-#>       notes             = "Child-Pugh classification, not NCI ODWG (Edwards 2016 Results, 'Hepatic impairment model development': 'Child-Pugh Score: Class A/Mild 5-6 points, Class B/Moderate 7-9 points, Class C/Severe 10-15 points'). Mutually exclusive with HEPIMP_MOD and HEPIMP_SEV; all three 0 selects the healthy-volunteer physiology. Selects the mild column of all four hepatic-impairment mechanisms in Supplementary Table S2.",
-#>       source_name       = "Child-Pugh Class A"
+#>       notes = "Child-Pugh classification, not NCI ODWG (Edwards 2016 Results, 'Hepatic impairment model development': 'Child-Pugh Score: Class A/Mild 5-6 points, Class B/Moderate 7-9 points, Class C/Severe 10-15 points'). Mutually exclusive with HEPIMP_MOD and HEPIMP_SEV; all three 0 selects the healthy-volunteer physiology. Selects the mild column of all four hepatic-impairment mechanisms in Supplementary Table S2.",
+#>       source_name = "Child-Pugh Class A"
 #>     ),
 #>     HEPIMP_MOD = list(
-#>       description       = "Moderate hepatic impairment (Child-Pugh Class B, score 7-9).",
-#>       units             = "(binary)",
-#>       type              = "binary",
+#>       description = "Moderate hepatic impairment (Child-Pugh Class B, score 7-9).",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (normal hepatic function, or a non-moderate impairment category)",
-#>       notes             = "Child-Pugh classification, not NCI ODWG. Mutually exclusive with HEPIMP_MILD and HEPIMP_SEV. Selects the moderate column of Supplementary Table S2.",
-#>       source_name       = "Child-Pugh Class B"
+#>       notes = "Child-Pugh classification, not NCI ODWG. Mutually exclusive with HEPIMP_MILD and HEPIMP_SEV. Selects the moderate column of Supplementary Table S2.",
+#>       source_name = "Child-Pugh Class B"
 #>     ),
 #>     HEPIMP_SEV = list(
-#>       description       = "Severe hepatic impairment (Child-Pugh Class C, score 10-15).",
-#>       units             = "(binary)",
-#>       type              = "binary",
+#>       description = "Severe hepatic impairment (Child-Pugh Class C, score 10-15).",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (normal hepatic function, or a non-severe impairment category)",
-#>       notes             = "Child-Pugh classification, not NCI ODWG. Mutually exclusive with HEPIMP_MILD and HEPIMP_MOD. Selects the severe column of Supplementary Table S2.",
-#>       source_name       = "Child-Pugh Class C"
+#>       notes = "Child-Pugh classification, not NCI ODWG. Mutually exclusive with HEPIMP_MILD and HEPIMP_MOD. Selects the severe column of Supplementary Table S2.",
+#>       source_name = "Child-Pugh Class C"
 #>     ),
 #>     MEAL_FLAG = list(
-#>       description       = "Indicator that the current time falls within a post-prandial gallbladder-contraction window.",
-#>       units             = "(binary)",
-#>       type              = "binary",
+#>       description = "Indicator that the current time falls within a post-prandial gallbladder-contraction window.",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (no gallbladder contraction active)",
-#>       notes             = "Time-varying covariate; must be supplied on every observation row. Set to 1 over [t_meal, t_meal + 1.5 h] for each standardized meal and 0 otherwise, per Edwards 2016 'Source data': 'Gallbladder contraction was assumed to last 90 min after the start of a meal.' Gates the gallbladder -> gut output rate f23; outside the window the gallbladder only fills (via f22) and does not empty.",
-#>       source_name       = "meal consumption information"
+#>       notes = "Time-varying covariate; must be supplied on every observation row. Set to 1 over [t_meal, t_meal + 1.5 h] for each standardized meal and 0 otherwise, per Edwards 2016 'Source data': 'Gallbladder contraction was assumed to last 90 min after the start of a meal.' Gates the gallbladder -> gut output rate f23; outside the window the gallbladder only fills (via f22) and does not empty.",
+#>       source_name = "meal consumption information"
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species         = "human",
-#>     n_subjects      = 399L,
-#>     n_studies       = 5L,
-#>     age_range       = "adults >= 18 years; healthy-volunteer pool mean (SD) age 37.0 (9.8) years, hepatic-impairment cohort 55.0 (5.6) years",
-#>     weight_range    = "healthy-volunteer pool mean (SD) 76.4 (11.8) kg; hepatic-impairment cohort 81.7 (16.9) kg",
-#>     sex_female_pct  = 41,
-#>     race_ethnicity  = "Healthy-volunteer pool (Study 1): 65.6% white, 32.5% black, 0.6% Asian, 1.3% other. Hepatic-impairment cohort (Study 2): 90.6% white, 3.1% black, 3.1% Asian, 3.1% other.",
-#>     disease_state   = "Model development: healthy volunteers with normal hepatic function (Study 1, n = 160; 8,248 plasma samples) then subjects with Child-Pugh A/B/C cirrhosis plus normal-function controls (Study 2, n = 32; 928 samples). External validation: healthy volunteers (Studies 3 and 4, n = 24 and n = 160) and cirrhotic subjects with portal hypertension (Study 5 / PESTO, n = 23).",
-#>     dose_range      = "5, 10 and 25 mg oral OCA; single dose and once-daily multiple dosing to steady state",
-#>     notes           = "Sex percentage is derived from the two model-development cohorts, which were 59% and 72% male. The 22 structural parameters were estimated on the healthy-volunteer data and then held fixed while only the hepatic-impairment parameters were estimated. Population fit in Phoenix NLME v1.3 with Lindstrom-Bates FOCE. BLQ samples (38.2% / 9.4% / 24.4% for OCA / glyco-OCA / tauro-OCA in Study 1) were imputed to LLOQ/2."
+#>     species = "human",
+#>     n_subjects = 399L,
+#>     n_studies = 5L,
+#>     age_range = "adults >= 18 years; healthy-volunteer pool mean (SD) age 37.0 (9.8) years, hepatic-impairment cohort 55.0 (5.6) years",
+#>     weight_range = "healthy-volunteer pool mean (SD) 76.4 (11.8) kg; hepatic-impairment cohort 81.7 (16.9) kg",
+#>     sex_female_pct = 41,
+#>     race_ethnicity = "Healthy-volunteer pool (Study 1): 65.6% white, 32.5% black, 0.6% Asian, 1.3% other. Hepatic-impairment cohort (Study 2): 90.6% white, 3.1% black, 3.1% Asian, 3.1% other.",
+#>     disease_state = "Model development: healthy volunteers with normal hepatic function (Study 1, n = 160; 8,248 plasma samples) then subjects with Child-Pugh A/B/C cirrhosis plus normal-function controls (Study 2, n = 32; 928 samples). External validation: healthy volunteers (Studies 3 and 4, n = 24 and n = 160) and cirrhotic subjects with portal hypertension (Study 5 / PESTO, n = 23).",
+#>     dose_range = "5, 10 and 25 mg oral OCA; single dose and once-daily multiple dosing to steady state",
+#>     notes = "Sex percentage is derived from the two model-development cohorts, which were 59% and 72% male. The 22 structural parameters were estimated on the healthy-volunteer data and then held fixed while only the hepatic-impairment parameters were estimated. Population fit in Phoenix NLME v1.3 with Lindstrom-Bates FOCE. BLQ samples (38.2% / 9.4% / 24.4% for OCA / glyco-OCA / tauro-OCA in Study 1) were imputed to LLOQ/2."
 #>   )
 #> 
 #>   ini({
@@ -372,7 +386,7 @@ mod
 #>     Cc_toca ~ add(addSd_Cc_toca) + prop(propSd_Cc_toca)
 #>   })
 #> }
-#> <environment: 0x5606233c63a8>
+#> <environment: 0x5615a4b2f0c8>
 ```
 
 ## Population
@@ -864,10 +878,10 @@ nca_summary %>%
 
 | Arm      | AUClast (nM\*h) | Cmax (nM) | t1/2 (h) | Tmax (h) |
 |:---------|----------------:|----------:|---------:|---------:|
-| Normal   |          237.29 |     80.83 |     6.44 |      0.5 |
-| Mild     |          314.82 |    111.78 |     7.10 |      0.5 |
-| Moderate |         1440.17 |    506.96 |     6.73 |      0.5 |
-| Severe   |         2054.84 |    693.19 |     6.77 |      1.0 |
+| Normal   |          237.70 |     81.42 |     6.23 |      0.5 |
+| Mild     |          311.42 |    103.13 |     6.48 |      0.5 |
+| Moderate |         1435.93 |    499.95 |     6.44 |      0.5 |
+| Severe   |         2055.59 |    693.10 |     6.45 |      1.0 |
 
 PKNCA summary for unconjugated OCA, by hepatic-impairment arm (median
 across subjects). {.table}
@@ -1074,15 +1088,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] PKNCA_0.12.1          rxode2_5.1.7          nlmixr2lib_0.3.2.9000
+#> [4] PKNCA_0.12.1          rxode2_5.1.8          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1090,7 +1104,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

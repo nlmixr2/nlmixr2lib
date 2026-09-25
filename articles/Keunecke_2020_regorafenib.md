@@ -746,23 +746,23 @@ nca_tbl |>
 
 | Analyte     | Parameter | Median | 5th pct | 95th pct |
 |:------------|:----------|-------:|--------:|---------:|
-| Regorafenib | AUClast   | 58.672 |  27.406 |  117.786 |
-| Regorafenib | Cavg      |  2.445 |   1.142 |    4.908 |
-| Regorafenib | Cmax      |  5.424 |   2.607 |   11.738 |
-| Regorafenib | Cmin      |  1.674 |   0.660 |    3.737 |
-| Regorafenib | Ctrough   |  2.729 |   0.949 |    6.418 |
+| Regorafenib | AUClast   | 54.853 |  28.012 |  119.573 |
+| Regorafenib | Cavg      |  2.286 |   1.167 |    4.982 |
+| Regorafenib | Cmax      |  4.937 |   2.742 |   11.589 |
+| Regorafenib | Cmin      |  1.531 |   0.629 |    3.743 |
+| Regorafenib | Ctrough   |  2.442 |   0.980 |    6.404 |
 | Regorafenib | Tmax      | 23.050 |   3.050 |   23.050 |
-| M-2         | AUClast   | 38.084 |  14.317 |  119.957 |
-| M-2         | Cavg      |  1.587 |   0.597 |    4.998 |
-| M-2         | Cmax      |  3.704 |   1.501 |   12.343 |
-| M-2         | Cmin      |  1.142 |   0.314 |    3.984 |
-| M-2         | Ctrough   |  1.902 |   0.491 |    6.871 |
-| M-2         | Tmax      | 23.050 |   3.050 |   23.050 |
-| M-5         | AUClast   | 24.528 |   1.740 |  224.067 |
-| M-5         | Cavg      |  1.022 |   0.072 |    9.336 |
-| M-5         | Cmax      |  2.512 |   0.181 |   23.199 |
-| M-5         | Cmin      |  0.809 |   0.053 |    7.758 |
-| M-5         | Ctrough   |  1.430 |   0.092 |   13.614 |
+| M-2         | AUClast   | 34.959 |  13.463 |  116.325 |
+| M-2         | Cavg      |  1.457 |   0.561 |    4.847 |
+| M-2         | Cmax      |  3.284 |   1.353 |   11.707 |
+| M-2         | Cmin      |  0.979 |   0.310 |    3.756 |
+| M-2         | Ctrough   |  1.546 |   0.485 |    6.422 |
+| M-2         | Tmax      | 23.050 |   9.050 |   23.050 |
+| M-5         | AUClast   | 21.220 |   1.516 |  244.204 |
+| M-5         | Cavg      |  0.884 |   0.063 |   10.175 |
+| M-5         | Cmax      |  2.128 |   0.145 |   25.277 |
+| M-5         | Cmin      |  0.695 |   0.044 |    8.470 |
+| M-5         | Ctrough   |  1.205 |   0.075 |   14.878 |
 | M-5         | Tmax      | 23.050 |   9.050 |   23.050 |
 
 Steady-state NCA over the 24 h dosing interval, 200 simulated phase 3
@@ -800,9 +800,9 @@ knitr::kable(cmp, digits = 2,
 
 | Analyte | Simulated cohort median (mg\*h/L) | Typical-value AUC0-24,ss (mg\*h/L) | % diff |
 |:---|---:|---:|---:|
-| Regorafenib | 58.67 | 52.46 | 11.84 |
-| M-2 | 38.08 | 33.14 | 14.92 |
-| M-5 | 24.53 | 16.67 | 47.17 |
+| Regorafenib | 54.85 | 52.46 | 4.56 |
+| M-2 | 34.96 | 33.14 | 5.49 |
+| M-5 | 21.22 | 16.67 | 27.33 |
 
 Cohort median steady-state AUC against the typical-value (male,
 reference BMI) prediction. {.table}
@@ -865,9 +865,9 @@ knitr::kable(ps_summary, digits = 2,
 
 | analyte | median % diff | median \|% diff\| | 90th pct \|% diff\| | worst \|% diff\| |
 |:---|---:|---:|---:|---:|
-| Regorafenib | -0.19 | 0.19 | 0.20 | 4.19 |
-| M-2 | -0.19 | 0.19 | 0.29 | 8.63 |
-| M-5 | -0.20 | 0.20 | 18.85 | 91.95 |
+| Regorafenib | -0.19 | 0.19 | 0.20 | 4.02 |
+| M-2 | -0.19 | 0.19 | 0.22 | 11.42 |
+| M-5 | -0.19 | 0.19 | 17.06 | 93.63 |
 
 Per-subject steady-state AUC(0-24) against each subject’s own closed
 form. {.table}

@@ -449,9 +449,9 @@ knitr::kable(identity_tbl, digits = 4,
 
 | Check | Median % difference | Max abs % difference |
 |:---|---:|---:|
-| AUC(0-inf) vs Dose / CL | -7e-04 | 0.0095 |
-| Terminal half-life vs log(2) \* V / CL | 0e+00 | 0.0000 |
-| PKNCA CL(obs) vs individual CL | 7e-04 | 0.0095 |
+| AUC(0-inf) vs Dose / CL | -8e-04 | 0.009 |
+| Terminal half-life vs log(2) \* V / CL | 0e+00 | 0.000 |
+| PKNCA CL(obs) vs individual CL | 8e-04 | 0.009 |
 
 Closed-form identity checks. Both sides use the same drawn parameters,
 so any difference is numerical error in the NCA, not model error.
@@ -514,11 +514,11 @@ as.data.frame(nca_ss$result) |>
 
 | Regimen | AUC(tau) (mg\*h/L) | Cavg,ss (mg/L) | Cmax,ss (mg/L) | Cmin,ss (mg/L) |
 |:---|---:|---:|---:|---:|
-| 25 mg/kg q12h | 125.13 | 10.43 | 25.46 | 2.65 |
-| 25 mg/kg q6h | 123.83 | 20.64 | 33.98 | 11.46 |
-| 25 mg/kg q8h | 124.29 | 15.54 | 30.33 | 6.78 |
-| 50 mg/kg q12h | 265.95 | 22.16 | 55.54 | 5.32 |
-| 75 mg/kg q12h | 395.44 | 32.95 | 74.49 | 9.10 |
+| 25 mg/kg q12h | 126.92 | 10.58 | 25.67 | 2.93 |
+| 25 mg/kg q6h | 124.37 | 20.73 | 34.76 | 11.43 |
+| 25 mg/kg q8h | 127.82 | 15.98 | 30.11 | 6.79 |
+| 50 mg/kg q12h | 253.51 | 21.13 | 51.96 | 5.34 |
+| 75 mg/kg q12h | 378.55 | 31.55 | 81.76 | 8.01 |
 
 Median steady-state whole-blood NCA over the final dosing interval, by
 regimen. {.table}
@@ -597,11 +597,11 @@ pta_max |>
 
 | Regimen | PTA at kappa = 0.72 | Simulated: attains \>= 90%? | Yin 2026 Figure 4 | Agrees |
 |:---|:---|:---|:---|:---|
-| 25 mg/kg q12h | 48.5% | no | no | yes |
+| 25 mg/kg q12h | 56.5% | no | no | yes |
 | 25 mg/kg q6h | 98.0% | yes | yes | yes |
-| 25 mg/kg q8h | 88.5% | no | yes | no |
-| 50 mg/kg q12h | 80.0% | no | no | yes |
-| 75 mg/kg q12h | 91.5% | yes | yes | yes |
+| 25 mg/kg q8h | 88.0% | no | yes | no |
+| 50 mg/kg q12h | 84.0% | no | no | yes |
+| 75 mg/kg q12h | 87.0% | no | yes | no |
 
 Target attainment for 70% fT \> MIC at MIC = 4 mg/L, evaluated at the
 largest admissible unbound scaling (kappa = BP = 0.72, i.e. f_u = 1).
@@ -646,7 +646,7 @@ stopifnot(
 ```
 
 At the most favourable admissible scaling the model reproduces the
-paper’s classification for 4 of the 5 regimens. The disagreements, where
+paper’s classification for 3 of the 5 regimens. The disagreements, where
 present, are the two regimens the paper places just above the 90% line:
 see *Assumptions and deviations*.
 

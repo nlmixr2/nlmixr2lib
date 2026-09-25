@@ -564,11 +564,11 @@ fig7 |>
 
 | Dose (mg) | P(PR \>= 1) | P(PR \>= 2) | P(PR \>= 3) | P(PR \>= 4) | P(MPR) | P(REMD) |
 |----------:|------------:|------------:|------------:|------------:|-------:|--------:|
-|         0 |       0.249 |       0.091 |       0.029 |       0.001 |  0.182 |   0.974 |
-|        10 |       0.505 |       0.258 |       0.116 |       0.021 |  0.494 |   0.931 |
-|        50 |       0.835 |       0.638 |       0.459 |       0.181 |  0.715 |   0.772 |
-|       100 |       0.933 |       0.775 |       0.597 |       0.245 |  0.755 |   0.739 |
-|       200 |       0.954 |       0.845 |       0.707 |       0.366 |  0.787 |   0.683 |
+|         0 |       0.242 |       0.093 |       0.036 |       0.002 |  0.187 |   0.967 |
+|        10 |       0.474 |       0.226 |       0.100 |       0.016 |  0.489 |   0.941 |
+|        50 |       0.806 |       0.597 |       0.392 |       0.122 |  0.698 |   0.822 |
+|       100 |       0.929 |       0.810 |       0.655 |       0.326 |  0.775 |   0.672 |
+|       200 |       0.958 |       0.869 |       0.738 |       0.399 |  0.798 |   0.644 |
 
 Dose-response summary underlying Figure 7. {.table style="width:100%;"}
 
@@ -766,10 +766,10 @@ nca_by_arm |>
 
 | Treatment | Cmax (ng/mL) | Tmax (h) | AUC0-24 (ng\*h/mL) |
 |:----------|-------------:|---------:|-------------------:|
-| 10 mg     |         19.7 |        2 |                188 |
-| 50 mg     |         81.6 |        2 |                724 |
-| 100 mg    |        135.3 |        2 |               1231 |
-| 200 mg    |        206.3 |        2 |               1869 |
+| 10 mg     |         19.5 |     2.00 |                179 |
+| 50 mg     |         79.1 |     2.00 |                730 |
+| 100 mg    |        137.5 |     2.25 |               1264 |
+| 200 mg    |        215.8 |     2.00 |               1934 |
 
 Simulated median NCA by apricoxib arm. Rohatagi 2008 publishes NCA
 values only for the 50 mg arm (see the comparison table below); the
@@ -811,7 +811,7 @@ knitr::kable(
 
 | NCA parameter | treatment | Reference | Simulated |   % diff |
 |:--------------|:----------|----------:|----------:|---------:|
-| Cmax (ng/mL)  | 50 mg     |        87 |      81.6 |    -6.2% |
+| Cmax (ng/mL)  | 50 mg     |        87 |      79.1 |    -9.0% |
 | Tmax (h)      | 50 mg     |       1.5 |         2 | +33.3%\* |
 
 Simulated vs. published NCA for the 50 mg apricoxib arm. \* differs from
@@ -1050,10 +1050,10 @@ claims |>
 | Relative bioavailability at a 221 mg dose | Methods (PK layer) | 50% reduction | 50.0% | yes |  |
 | Absorption lag time | Methods (PK layer) | 14 min | 14.2 min | yes |  |
 | Vc/F increase per 10% weight increase | Methods (PK layer) | about 8% | 8.2% | yes |  |
-| Simulated median Cmax, 50 mg arm | Discussion (EC50 interpretation) | 87 ng/mL | 81.6 ng/mL | yes |  |
+| Simulated median Cmax, 50 mg arm | Discussion (EC50 interpretation) | 87 ng/mL | 79.1 ng/mL | yes |  |
 | Peak time of the mean concentration profile | Results (Figure 7 text) | about 1.5 h | 2.00 h | yes |  |
 | Mean TMPR on placebo, no rescue medication | Equation 15 with sigma_LT = 0.69 | n/a (analytic) | 1.99 h | yes |  |
-| Patients requiring rescue medication by 24 h, pooled | Figure 5 event counts (lower bound) | at least 36% | 82% | NO | known deviation, not gated |
+| Patients requiring rescue medication by 24 h, pooled | Figure 5 event counts (lower bound) | at least 36% | 81% | NO | known deviation, not gated |
 
 Published claims reproduced by the packaged model. {.table}
 
@@ -1156,32 +1156,52 @@ make_pop <- function(demo, tag, id_base) {
     dplyr::mutate(population = tag)
 }
 
-bridge_events <- dplyr::bind_rows(
-  make_pop(japan, "Japanese", 0L),
-  make_pop(west,  "Western",  as.integer(nrow(arms)) * n_bridge)
-)
-stopifnot(!anyDuplicated(unique(bridge_events[, c("id", "time", "evid")])))
+# Common random numbers across the two populations. The paper's question is
+# whether the PK differences it models (body weight, metaboliser-phenotype
+# frequencies) change the onset time, so every other source of variation is
+# shared: both populations use subject ids 1..300, the same eta draw
+# (rxSetSeed() immediately before each solve), the same demographic draw order
+# (set.seed() before each build, so a subject's uniform draws are compared
+# against each population's own frequencies) and the same rescue-mixture
+# uniforms, indexed by id. With two independent 60-subject arms the
+# Japanese-Western gap in an arm mean carried about 0.5 h of pure sampling
+# noise against a 0.75 h bound.
+bridge_pop <- function(demo, tag) {
+  set.seed(20080601)
+  ev <- make_pop(demo, tag, 0L)
+  stopifnot(!anyDuplicated(unique(ev[, c("id", "time", "evid")])))
+  rxode2::rxSetSeed(20080601)
+  rxode2::rxSolve(mod, events = ev, keep = c("treatment", "dose_mg", "population")) |>
+    as.data.frame() |>
+    dplyr::filter(abs(time - 24) < 1e-8)
+}
 
-bridge <- rxode2::rxSolve(
-  mod,
-  events = bridge_events,
-  keep   = c("treatment", "dose_mg", "population")
-) |>
-  as.data.frame() |>
-  dplyr::filter(abs(time - 24) < 1e-8)
+bridge <- dplyr::bind_rows(bridge_pop(japan, "Japanese"), bridge_pop(west, "Western")) |>
+  dplyr::mutate(id = as.integer(as.character(id)))
+# The eta draw really is shared: every random-effect column agrees by id.
+eta_cols <- grep("^eta", names(bridge), value = TRUE)
+if (length(eta_cols)) {
+  jp <- bridge[bridge$population == "Japanese", c("id", eta_cols)]
+  we <- bridge[bridge$population == "Western", c("id", eta_cols)]
+  stopifnot(isTRUE(all.equal(jp[order(jp$id), ], we[order(we$id), ], check.attributes = FALSE)))
+}
 
 # Equation 3: the onset time is a mixture over whether rescue medication was
 # required. In the no-rescue branch TMPR is the model's absolute time; in the
 # rescue branch it is the modelled fraction of that subject's own rescue time,
-# which is drawn from the fitted hazard and right-censored at 24 h.
+# which is drawn from the fitted hazard and right-censored at 24 h. The two
+# uniforms are drawn once per subject id and shared by both populations.
+set.seed(20080602)
+u_rescue <- stats::runif(nrow(arms) * n_bridge)
+u_mix    <- stats::runif(nrow(arms) * n_bridge)
 bridge <- bridge |>
   dplyr::mutate(
     # Individual rescue time implied by the subject's own cumulative hazard,
     # inverted at a uniform draw and censored at the 24 h study end.
-    t_rescue = pmin(24, -log(1 - runif(dplyr::n()) * premd_remd) /
+    t_rescue = pmin(24, -log(1 - u_rescue[id] * premd_remd) /
                       pmax(cumhaz / 24, 1e-8)),
     tmpr_mix = ifelse(
-      runif(dplyr::n()) < premd_remd,
+      u_mix[id] < premd_remd,
       ratio_mpr * t_rescue,
       tmpr_mpr
     )
@@ -1226,11 +1246,11 @@ dplyr::left_join(bridge_tab, published_t6, by = "treatment") |>
 
 | Dose | Japanese, simulated (h) | Western, simulated (h) | Japanese, published (h) | Western, published (h) |
 |:---|---:|---:|---:|---:|
-| Placebo | 1.66 | 1.34 | 2.46 | 2.56 |
-| 10 mg | 0.81 | 0.77 | 2.37 | 2.28 |
-| 50 mg | 0.98 | 1.18 | 2.45 | 2.40 |
-| 100 mg | 1.03 | 1.30 | 2.06 | 2.21 |
-| 200 mg | 1.25 | 1.19 | 1.90 | 1.70 |
+| Placebo | 1.32 | 1.32 | 2.46 | 2.56 |
+| 10 mg | 0.90 | 0.92 | 2.37 | 2.28 |
+| 50 mg | 1.25 | 1.30 | 2.45 | 2.40 |
+| 100 mg | 1.27 | 1.20 | 2.06 | 2.21 |
+| 200 mg | 0.97 | 1.01 | 1.90 | 1.70 |
 
 Mean onset time of meaningful pain relief by dose and population.
 Published values are Rohatagi 2008 Table 6. {.table style="width:100%;"}

@@ -482,18 +482,18 @@ knitr::kable(
 
 | NCA parameter      | treatment    | Day   | Reference | Simulated | % diff |
 |:-------------------|:-------------|:------|----------:|----------:|-------:|
-| Cmax (ug/mL)       | 125 mg group | Day 1 |      22.9 |      20.3 | -11.3% |
-| Cmax (ug/mL)       | 125 mg group | Day 5 |      26.2 |      24.7 |  -5.8% |
-| Cmax (ug/mL)       | 250 mg group | Day 1 |      47.7 |      41.5 | -13.0% |
-| Cmax (ug/mL)       | 250 mg group | Day 5 |      55.1 |      51.1 |  -7.3% |
-| AUClast (ug\*h/mL) | 125 mg group | Day 1 |       432 |       416 |  -3.6% |
-| AUClast (ug\*h/mL) | 125 mg group | Day 5 |       568 |       537 |  -5.4% |
-| AUClast (ug\*h/mL) | 250 mg group | Day 1 |       887 |       852 |  -4.0% |
-| AUClast (ug\*h/mL) | 250 mg group | Day 5 |      1200 |      1110 |  -7.9% |
-| Ctrough (ug/mL)    | 125 mg group | Day 1 |      16.5 |      16.3 |  -1.2% |
-| Ctrough (ug/mL)    | 125 mg group | Day 5 |      19.2 |      19.7 |  +2.6% |
-| Ctrough (ug/mL)    | 250 mg group | Day 1 |      34.2 |      33.9 |  -1.0% |
-| Ctrough (ug/mL)    | 250 mg group | Day 5 |      40.8 |      40.4 |  -0.9% |
+| Cmax (ug/mL)       | 125 mg group | Day 1 |      22.9 |      20.5 | -10.3% |
+| Cmax (ug/mL)       | 125 mg group | Day 5 |      26.2 |      24.9 |  -4.8% |
+| Cmax (ug/mL)       | 250 mg group | Day 1 |      47.7 |      40.7 | -14.7% |
+| Cmax (ug/mL)       | 250 mg group | Day 5 |      55.1 |      49.6 | -10.0% |
+| AUClast (ug\*h/mL) | 125 mg group | Day 1 |       432 |       423 |  -2.1% |
+| AUClast (ug\*h/mL) | 125 mg group | Day 5 |       568 |       552 |  -2.9% |
+| AUClast (ug\*h/mL) | 250 mg group | Day 1 |       887 |       834 |  -6.0% |
+| AUClast (ug\*h/mL) | 250 mg group | Day 5 |      1200 |      1080 | -10.2% |
+| Ctrough (ug/mL)    | 125 mg group | Day 1 |      16.5 |      16.2 |  -1.8% |
+| Ctrough (ug/mL)    | 125 mg group | Day 5 |      19.2 |      20.3 |  +5.5% |
+| Ctrough (ug/mL)    | 250 mg group | Day 1 |      34.2 |      32.7 |  -4.3% |
+| Ctrough (ug/mL)    | 250 mg group | Day 5 |      40.8 |      39.7 |  -2.8% |
 
 Simulated median vs Ishibashi 2024 Table 4 medians. \* differs from the
 reference by more than 20%. {.table}

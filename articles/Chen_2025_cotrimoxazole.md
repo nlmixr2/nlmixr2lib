@@ -692,11 +692,11 @@ ta |>
 | SMX | CrCL 50-79 | 83.2 | 77 | 6 | 17 |
 | SMX | CrCL 80-120 | 84.9 | 73 | 13 | 14 |
 | SMX | CrCL \<15 | 82.6 | 73 | 15 | 12 |
-| TMP | CrCL 15-29 | 82.2 | 47 | 41 | 12 |
-| TMP | CrCL 30-49 | 86.5 | 51 | 43 | 6 |
-| TMP | CrCL 50-79 | 82.4 | 52 | 43 | 5 |
-| TMP | CrCL 80-120 | 82.6 | 41 | 52 | 7 |
-| TMP | CrCL \<15 | 81.3 | 58 | 23 | 19 |
+| TMP | CrCL 15-29 | 82.2 | 58 | 31 | 11 |
+| TMP | CrCL 30-49 | 86.5 | 43 | 52 | 5 |
+| TMP | CrCL 50-79 | 82.4 | 51 | 41 | 8 |
+| TMP | CrCL 80-120 | 82.6 | 54 | 45 | 1 |
+| TMP | CrCL \<15 | 81.3 | 60 | 30 | 10 |
 
 Target attainment against Table 7 of Chen 2025. {.table}
 
@@ -799,31 +799,31 @@ knitr::kable(cmp_smx, align = c("l", "l", "r", "r", "r"),
 | Cmax (mg/L)       | CrCL 15-29       |       140 |       140 |  -0.0% |
 | Cmax (mg/L)       | CrCL 30-49       |       142 |       142 |  -0.0% |
 | Cmax (mg/L)       | CrCL 50-79       |       142 |       142 |  -0.0% |
-| Cmax (mg/L)       | CrCL 80-120      |       144 |       144 |  -0.0% |
+| Cmax (mg/L)       | CrCL 80-120      |       144 |       144 |  +0.0% |
 | Cmax (mg/L)       | CRRT             |       124 |       124 |  +0.0% |
 | Cmax (mg/L)       | 90 mg/kg/day QID |       174 |       174 |  -0.0% |
-| Cmax (mg/L)       | 90 mg/kg/day TID |       185 |       185 |  -0.0% |
-| Cmax (mg/L)       | 90 mg/kg/day BID |       208 |       208 |  -0.0% |
+| Cmax (mg/L)       | 90 mg/kg/day TID |       185 |       185 |  +0.0% |
+| Cmax (mg/L)       | 90 mg/kg/day BID |       208 |       208 |  +0.0% |
 | Cmin (mg/L)       | CrCL \<15        |       104 |       104 |  -0.0% |
 | Cmin (mg/L)       | CrCL 15-29       |        98 |        98 |  -0.0% |
-| Cmin (mg/L)       | CrCL 30-49       |      76.7 |      76.7 |  -0.0% |
-| Cmin (mg/L)       | CrCL 50-79       |      92.7 |      92.7 |  -0.0% |
-| Cmin (mg/L)       | CrCL 80-120      |      91.1 |      91.1 |  -0.0% |
+| Cmin (mg/L)       | CrCL 30-49       |      76.7 |      76.7 |  +0.0% |
+| Cmin (mg/L)       | CrCL 50-79       |      92.7 |      92.7 |  +0.0% |
+| Cmin (mg/L)       | CrCL 80-120      |      91.1 |      91.1 |  +0.0% |
 | Cmin (mg/L)       | CRRT             |      56.5 |      56.5 |  +0.0% |
-| Cmin (mg/L)       | 90 mg/kg/day QID |       126 |       126 |  -0.0% |
-| Cmin (mg/L)       | 90 mg/kg/day TID |       117 |       117 |  -0.0% |
-| Cmin (mg/L)       | 90 mg/kg/day BID |       101 |       101 |  -0.0% |
+| Cmin (mg/L)       | 90 mg/kg/day QID |       126 |       126 |  +0.0% |
+| Cmin (mg/L)       | 90 mg/kg/day TID |       117 |       117 |  +0.0% |
+| Cmin (mg/L)       | 90 mg/kg/day BID |       101 |       101 |  +0.0% |
 | AUClast (mg\*h/L) | CrCL \<15        |       980 |       980 |  -0.0% |
 | AUClast (mg\*h/L) | CrCL 15-29       |       942 |       942 |  -0.0% |
-| AUClast (mg\*h/L) | CrCL 30-49       |      1280 |      1280 |  -0.0% |
+| AUClast (mg\*h/L) | CrCL 30-49       |      1280 |      1280 |  +0.0% |
 | AUClast (mg\*h/L) | CrCL 50-79       |       926 |       926 |  -0.0% |
-| AUClast (mg\*h/L) | CrCL 80-120      |       927 |       927 |  -0.0% |
+| AUClast (mg\*h/L) | CrCL 80-120      |       927 |       927 |  +0.0% |
 | AUClast (mg\*h/L) | CRRT             |       693 |       693 |  -0.0% |
-| AUClast (mg\*h/L) | 90 mg/kg/day QID |       894 |       894 |  -0.0% |
-| AUClast (mg\*h/L) | 90 mg/kg/day TID |      1190 |      1190 |  -0.0% |
-| AUClast (mg\*h/L) | 90 mg/kg/day BID |      1790 |      1790 |  -0.0% |
+| AUClast (mg\*h/L) | 90 mg/kg/day QID |       894 |       894 |  +0.0% |
+| AUClast (mg\*h/L) | 90 mg/kg/day TID |      1190 |      1190 |  +0.0% |
+| AUClast (mg\*h/L) | 90 mg/kg/day BID |      1790 |      1790 |  +0.0% |
 | t½ (h)            | CrCL \<15        |      15.6 |      15.6 |  +0.0% |
-| t½ (h)            | CrCL 15-29       |      13.7 |      13.7 |  -0.0% |
+| t½ (h)            | CrCL 15-29       |      13.7 |      13.7 |  +0.0% |
 | t½ (h)            | CrCL 30-49       |      12.4 |      12.4 |  +0.0% |
 | t½ (h)            | CrCL 50-79       |      11.4 |      11.4 |  +0.0% |
 | t½ (h)            | CrCL 80-120      |      10.6 |      10.6 |  +0.0% |
@@ -833,13 +833,13 @@ knitr::kable(cmp_smx, align = c("l", "l", "r", "r", "r"),
 | t½ (h)            | 90 mg/kg/day BID |      10.6 |      10.6 |  +0.0% |
 | Cavg (mg/L)       | CrCL \<15        |       122 |       122 |  -0.0% |
 | Cavg (mg/L)       | CrCL 15-29       |       118 |       118 |  -0.0% |
-| Cavg (mg/L)       | CrCL 30-49       |       106 |       106 |  -0.0% |
+| Cavg (mg/L)       | CrCL 30-49       |       106 |       106 |  +0.0% |
 | Cavg (mg/L)       | CrCL 50-79       |       116 |       116 |  -0.0% |
-| Cavg (mg/L)       | CrCL 80-120      |       116 |       116 |  -0.0% |
+| Cavg (mg/L)       | CrCL 80-120      |       116 |       116 |  +0.0% |
 | Cavg (mg/L)       | CRRT             |      86.6 |      86.6 |  -0.0% |
-| Cavg (mg/L)       | 90 mg/kg/day QID |       149 |       149 |  -0.0% |
-| Cavg (mg/L)       | 90 mg/kg/day TID |       149 |       149 |  -0.0% |
-| Cavg (mg/L)       | 90 mg/kg/day BID |       149 |       149 |  -0.0% |
+| Cavg (mg/L)       | 90 mg/kg/day QID |       149 |       149 |  +0.0% |
+| Cavg (mg/L)       | 90 mg/kg/day TID |       149 |       149 |  +0.0% |
+| Cavg (mg/L)       | 90 mg/kg/day BID |       149 |       149 |  +0.0% |
 
 Sulfamethoxazole: PKNCA on the simulated profile vs the closed form from
 Chen 2025’s published parameters. \* differs by \>5%. {.table}
@@ -873,7 +873,7 @@ knitr::kable(cmp_tmp, align = c("l", "l", "r", "r", "r"),
 | Cmin (mg/L)       | CrCL 80-120      |      3.35 |      3.35 |  -0.0% |
 | Cmin (mg/L)       | 90 mg/kg/day QID |      4.56 |      4.56 |  -0.0% |
 | Cmin (mg/L)       | 90 mg/kg/day TID |      4.31 |      4.31 |  -0.0% |
-| Cmin (mg/L)       | 90 mg/kg/day BID |      3.83 |      3.83 |  -0.0% |
+| Cmin (mg/L)       | 90 mg/kg/day BID |      3.83 |      3.83 |  +0.0% |
 | AUClast (mg\*h/L) | CrCL \<15        |      45.4 |      45.4 |  -0.0% |
 | AUClast (mg\*h/L) | CrCL 15-29       |      39.7 |      39.7 |  -0.0% |
 | AUClast (mg\*h/L) | CrCL 30-49       |      50.1 |      50.1 |  -0.0% |
@@ -881,10 +881,10 @@ knitr::kable(cmp_tmp, align = c("l", "l", "r", "r", "r"),
 | AUClast (mg\*h/L) | CrCL 80-120      |      32.6 |      32.6 |  -0.0% |
 | AUClast (mg\*h/L) | 90 mg/kg/day QID |      31.4 |      31.4 |  -0.0% |
 | AUClast (mg\*h/L) | 90 mg/kg/day TID |      41.9 |      41.9 |  -0.0% |
-| AUClast (mg\*h/L) | 90 mg/kg/day BID |      62.9 |      62.9 |  -0.0% |
+| AUClast (mg\*h/L) | 90 mg/kg/day BID |      62.9 |      62.9 |  +0.0% |
 | t½ (h)            | CrCL \<15        |      25.2 |      25.2 |  -0.0% |
 | t½ (h)            | CrCL 15-29       |        20 |        20 |  -0.0% |
-| t½ (h)            | CrCL 30-49       |      16.8 |      16.8 |  -0.0% |
+| t½ (h)            | CrCL 30-49       |      16.8 |      16.8 |  +0.0% |
 | t½ (h)            | CrCL 50-79       |      14.6 |      14.6 |  +0.0% |
 | t½ (h)            | CrCL 80-120      |      12.9 |      12.9 |  +0.0% |
 | t½ (h)            | 90 mg/kg/day QID |      12.9 |      12.9 |  +0.0% |
@@ -897,7 +897,7 @@ knitr::kable(cmp_tmp, align = c("l", "l", "r", "r", "r"),
 | Cavg (mg/L)       | CrCL 80-120      |      4.08 |      4.08 |  -0.0% |
 | Cavg (mg/L)       | 90 mg/kg/day QID |      5.24 |      5.24 |  -0.0% |
 | Cavg (mg/L)       | 90 mg/kg/day TID |      5.24 |      5.24 |  -0.0% |
-| Cavg (mg/L)       | 90 mg/kg/day BID |      5.24 |      5.24 |  -0.0% |
+| Cavg (mg/L)       | 90 mg/kg/day BID |      5.24 |      5.24 |  +0.0% |
 
 Trimethoprim: PKNCA on the simulated profile vs the closed form from
 Chen 2025’s published parameters. \* differs by \>5%. {.table}

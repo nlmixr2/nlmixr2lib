@@ -177,7 +177,11 @@ mod <- readModelDb("Peng_2025_meropenem")
 
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("regimen", "crcl_lb")
+  keep = c("regimen", "crcl_lb"),
+  # Tight ODE and steady-state tolerances: the closed-form trough gate below
+  # asserts 1e-6 relative agreement, and the defaults (rtol 1e-6, ssRtol 1e-6)
+  # leave about 2e-6 when the model is integrated numerically.
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
 ) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc)) |>
@@ -216,7 +220,7 @@ trough_chk <- sim |>
   )
 
 max(trough_chk$rel_err)
-#> [1] 5.450803e-15
+#> [1] 1.211771e-10
 
 # Solver-versus-analytic agreement on identical parameters: a tight bound is
 # correct here. It also proves that QEFF actually reaches the ODE -- dropping
@@ -327,8 +331,8 @@ cmp_sim <- pta_sim |>
   )
 
 summary(cmp_sim$diff)
-#>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -2.8386945  0.0000318  0.0497665  0.3720829  0.6812596  3.6613055
+#>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+#> -2.096657 -0.274068  0.000436  0.046190  0.205469  4.184579
 stopifnot(max(abs(cmp_sim$diff)) < 12)
 ```
 
@@ -590,11 +594,11 @@ tibble::tibble(
 
 | NCA parameter | PKNCA on simulation | Closed-form reference | Difference (%) |
 |:---|---:|---:|---:|
-| AUC0-8,ss (mg\*h/L) | 214.9467 | 214.9501 | -0.0016 |
-| Cmax,ss (mg/L) | 39.1072 | 39.1072 | 0.0000 |
+| AUC0-8,ss (mg\*h/L) | 208.4136 | 208.4171 | -0.0017 |
+| Cmax,ss (mg/L) | 38.2817 | 38.2817 | 0.0000 |
 | Tmax,ss (h) | 3.0000 | 3.0000 | 0.0000 |
-| Ctrough,ss (mg/L) | 15.9849 | 15.9849 | 0.0000 |
-| t1/2 (h) | 3.8738 | 3.8738 | 0.0000 |
+| Ctrough,ss (mg/L) | 15.2148 | 15.2148 | 0.0000 |
+| t1/2 (h) | 3.7561 | 3.7561 | 0.0000 |
 
 Steady-state NCA of the 1 g q8h, 3 h infusion arm at CLCR = 25 mL/min,
 against the model’s closed-form solution. {.table}
@@ -611,7 +615,7 @@ c(max_auc_pct  = max(abs(chk$auc_pct)),
   max_hl_pct   = max(abs(chk$hl_pct)),
   max_cmax_pct = max(abs(chk$cmax_pct)))
 #>  max_auc_pct   max_hl_pct max_cmax_pct 
-#> 7.323255e-03 4.193023e-13 3.046421e-13
+#> 8.059394e-03 6.731316e-10 4.223613e-09
 
 stopifnot(
   all(nca_wide$tmax == INF_DUR),

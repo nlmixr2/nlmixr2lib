@@ -176,10 +176,10 @@ timeAboveChk |>
 
 | Regimen                | Simulated (%) | Published (%) | Difference (pp) |
 |:-----------------------|--------------:|--------------:|----------------:|
-| 100 mg QD              |          73.4 |          74.0 |            -0.6 |
+| 100 mg QD              |          72.9 |          74.0 |            -1.1 |
 | 130 mg QD              |         100.0 |         100.0 |             0.0 |
 | 180 mg QD              |         100.0 |         100.0 |             0.0 |
-| 180 mg QD 2w on/1w off |          71.1 |          70.8 |             0.3 |
+| 180 mg QD 2w on/1w off |          70.6 |          70.8 |            -0.2 |
 
 Median fraction of a steady-state 21-day cycle above the pCHK1 IC90 (7.9
 ng/mL). Published values are from the Results section of Mukker 2026.
@@ -293,9 +293,9 @@ ncaWide |>
 
 | Regimen | Cmax,ss (ng/mL) | Tmax (h) | Cmin,ss (ng/mL) | AUC0-tau,ss (ng\*h/mL) | Cavg,ss (ng/mL) |
 |:---|---:|---:|---:|---:|---:|
-| 100 mg QD | 547.2 | 1.5 | 5.659 | 2444 | 101.8 |
-| 130 mg QD | 698.7 | 1.8 | 9.062 | 3541 | 147.5 |
-| 180 mg QD | 1130.0 | 1.9 | 15.480 | 6077 | 253.2 |
+| 100 mg QD | 531.0 | 1.60 | 6.116 | 2559 | 106.6 |
+| 130 mg QD | 687.3 | 1.75 | 9.055 | 3580 | 149.2 |
+| 180 mg QD | 1070.0 | 2.00 | 16.870 | 6175 | 257.3 |
 
 Median steady-state NCA parameters over the final dosing interval, 200
 simulated subjects per arm. {.table}
@@ -589,15 +589,15 @@ aeChk |>
 
 | Regimen             | CTCAE grade | Simulated (%) | Published (%) | Difference (pp) |
 |:--------------------|:------------|--------------:|--------------:|----------------:|
-| 130 mg QD           | Grade \>=3  |          29.5 |          25.8 |             3.7 |
-| 130 mg QD           | Grade \>=2  |          67.0 |          59.2 |             7.8 |
-| 130 mg QD           | Grade \>=1  |          88.5 |          86.6 |             1.9 |
-| 180 mg QD           | Grade \>=3  |          33.0 |          34.5 |            -1.5 |
-| 180 mg QD           | Grade \>=2  |          72.0 |          66.1 |             5.9 |
-| 180 mg QD           | Grade \>=1  |          93.0 |          89.0 |             4.0 |
-| 180 mg 2w on/1w off | Grade \>=3  |          18.5 |          17.2 |             1.3 |
-| 180 mg 2w on/1w off | Grade \>=2  |          53.5 |          50.3 |             3.2 |
-| 180 mg 2w on/1w off | Grade \>=1  |          85.5 |          81.1 |             4.4 |
+| 130 mg QD           | Grade \>=3  |          27.5 |          25.8 |             1.7 |
+| 130 mg QD           | Grade \>=2  |          64.5 |          59.2 |             5.3 |
+| 130 mg QD           | Grade \>=1  |          92.0 |          86.6 |             5.4 |
+| 180 mg QD           | Grade \>=3  |          38.0 |          34.5 |             3.5 |
+| 180 mg QD           | Grade \>=2  |          71.0 |          66.1 |             4.9 |
+| 180 mg QD           | Grade \>=1  |          91.5 |          89.0 |             2.5 |
+| 180 mg 2w on/1w off | Grade \>=3  |          21.0 |          17.2 |             3.8 |
+| 180 mg 2w on/1w off | Grade \>=2  |          52.5 |          50.3 |             2.2 |
+| 180 mg 2w on/1w off | Grade \>=1  |          80.0 |          81.1 |            -1.1 |
 
 Simulated proportion of patients below each CTCAE hemoglobin cut-off at
 the end of Week 4, against Mukker 2026 Table S2. {.table}

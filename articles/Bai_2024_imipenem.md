@@ -253,7 +253,7 @@ typ$closed_form <- conc_multiple_infusion(
 rel_err <- with(typ, abs(Cc - closed_form) / closed_form)
 c(max_relative_error = max(rel_err))
 #> max_relative_error 
-#>       2.496937e-14
+#>       1.483299e-06
 
 # Pure numerical error between two exact representations of the same system,
 # so a tight bound is correct here (both sides use the same drawn parameters;
@@ -350,8 +350,8 @@ knitr::kable(
 
 | NCA parameter     | treatment | Reference | Simulated | % diff |
 |:------------------|:----------|----------:|----------:|-------:|
-| Cmax (mg/L)       | 1 g q8h   |      39.2 |      39.2 |  -0.0% |
-| Cmin (mg/L)       | 1 g q8h   |      1.98 |      1.98 |  -0.0% |
+| Cmax (mg/L)       | 1 g q8h   |      39.2 |      39.2 |  +0.0% |
+| Cmin (mg/L)       | 1 g q8h   |      1.98 |      1.98 |  +0.0% |
 | Tmax (h)          | 1 g q8h   |         1 |         1 |  +0.0% |
 | AUClast (mg\*h/L) | 1 g q8h   |      88.1 |        88 |  -0.0% |
 | t½ (h)            | 1 g q8h   |      2.21 |      2.17 |  -1.6% |
@@ -611,30 +611,30 @@ pta |>
 
 | Stratum      | Regimen    | MIC 0.5 | MIC 1 | MIC 2 | MIC 4 |
 |:-------------|:-----------|--------:|------:|------:|------:|
-| CrCl 17.8-30 | 0.5 g q6h  |    99.0 |  98.5 |  95.5 |  80.5 |
-| CrCl 17.8-30 | 0.5 g q8h  |    98.0 |  94.5 |  83.0 |  53.5 |
-| CrCl 17.8-30 | 0.5 g q12h |    88.5 |  73.0 |  43.5 |  20.5 |
-| CrCl 17.8-30 | 1 g q6h    |   100.0 |  99.0 |  98.5 |  95.5 |
-| CrCl 17.8-30 | 1 g q8h    |    99.0 |  98.0 |  94.5 |  83.0 |
-| CrCl 17.8-30 | 1 g q12h   |    95.5 |  88.5 |  73.0 |  43.5 |
-| CrCl 30-60   | 0.5 g q6h  |    98.0 |  94.5 |  83.5 |  52.5 |
-| CrCl 30-60   | 0.5 g q8h  |    92.5 |  83.5 |  57.0 |  28.0 |
-| CrCl 30-60   | 0.5 g q12h |    68.0 |  44.5 |  24.0 |   7.0 |
-| CrCl 30-60   | 1 g q6h    |    99.5 |  98.0 |  94.5 |  83.5 |
-| CrCl 30-60   | 1 g q8h    |    98.0 |  92.5 |  83.5 |  57.0 |
-| CrCl 30-60   | 1 g q12h   |    84.0 |  68.0 |  44.5 |  24.0 |
-| CrCl 60-90   | 0.5 g q6h  |    96.5 |  87.5 |  65.0 |  37.0 |
-| CrCl 60-90   | 0.5 g q8h  |    86.0 |  62.5 |  38.0 |  15.5 |
-| CrCl 60-90   | 0.5 g q12h |    45.0 |  29.5 |  12.5 |   1.5 |
-| CrCl 60-90   | 1 g q6h    |    98.5 |  96.5 |  87.5 |  65.0 |
-| CrCl 60-90   | 1 g q8h    |    95.5 |  86.0 |  62.5 |  38.0 |
-| CrCl 60-90   | 1 g q12h   |    64.0 |  45.0 |  29.5 |  12.5 |
-| CrCl 90-256  | 0.5 g q6h  |    85.5 |  65.5 |  38.0 |  14.0 |
-| CrCl 90-256  | 0.5 g q8h  |    62.0 |  37.5 |  17.5 |   5.5 |
-| CrCl 90-256  | 0.5 g q12h |    25.5 |  11.5 |   4.0 |   0.0 |
-| CrCl 90-256  | 1 g q6h    |    94.5 |  85.5 |  65.5 |  38.0 |
-| CrCl 90-256  | 1 g q8h    |    80.0 |  62.0 |  37.5 |  17.5 |
-| CrCl 90-256  | 1 g q12h   |    41.0 |  25.5 |  11.5 |   4.0 |
+| CrCl 17.8-30 | 0.5 g q6h  |   100.0 | 100.0 |  93.0 |  80.0 |
+| CrCl 17.8-30 | 0.5 g q8h  |    99.0 |  92.5 |  83.0 |  50.0 |
+| CrCl 17.8-30 | 0.5 g q12h |    86.0 |  71.5 |  45.0 |  21.5 |
+| CrCl 17.8-30 | 1 g q6h    |   100.0 | 100.0 | 100.0 |  93.0 |
+| CrCl 17.8-30 | 1 g q8h    |   100.0 |  99.0 |  92.5 |  83.0 |
+| CrCl 17.8-30 | 1 g q12h   |    92.5 |  86.0 |  71.5 |  45.0 |
+| CrCl 30-60   | 0.5 g q6h  |    99.0 |  95.0 |  83.0 |  52.5 |
+| CrCl 30-60   | 0.5 g q8h  |    94.0 |  82.5 |  55.0 |  26.5 |
+| CrCl 30-60   | 0.5 g q12h |    65.0 |  46.0 |  20.5 |   9.0 |
+| CrCl 30-60   | 1 g q6h    |   100.0 |  99.0 |  95.0 |  83.0 |
+| CrCl 30-60   | 1 g q8h    |    98.5 |  94.0 |  82.5 |  55.0 |
+| CrCl 30-60   | 1 g q12h   |    83.5 |  65.0 |  46.0 |  20.5 |
+| CrCl 60-90   | 0.5 g q6h  |    95.5 |  87.0 |  64.5 |  34.5 |
+| CrCl 60-90   | 0.5 g q8h  |    85.0 |  64.0 |  38.0 |  14.0 |
+| CrCl 60-90   | 0.5 g q12h |    49.0 |  28.0 |  12.0 |   1.5 |
+| CrCl 60-90   | 1 g q6h    |   100.0 |  95.5 |  87.0 |  64.5 |
+| CrCl 60-90   | 1 g q8h    |    92.5 |  85.0 |  64.0 |  38.0 |
+| CrCl 60-90   | 1 g q12h   |    67.5 |  49.0 |  28.0 |  12.0 |
+| CrCl 90-256  | 0.5 g q6h  |    84.0 |  67.0 |  38.0 |  14.5 |
+| CrCl 90-256  | 0.5 g q8h  |    63.0 |  38.5 |  16.0 |   4.0 |
+| CrCl 90-256  | 0.5 g q12h |    24.0 |  13.0 |   2.5 |   0.5 |
+| CrCl 90-256  | 1 g q6h    |    95.0 |  84.0 |  67.0 |  38.0 |
+| CrCl 90-256  | 1 g q8h    |    80.5 |  63.0 |  38.5 |  16.0 |
+| CrCl 90-256  | 1 g q12h   |    41.5 |  24.0 |  13.0 |   2.5 |
 
 PTA (%) for 100% fT\>MIC at the four clinically relevant MICs. {.table}
 
@@ -663,7 +663,7 @@ at_mic1 <- pta |> dplyr::filter(mic == 1)
 gap <- median(at_mic1$pta[at_mic1$stratum == "CrCl 17.8-30"]) -
   median(at_mic1$pta[at_mic1$stratum == "CrCl 90-256"])
 gap
-#> [1] 46.5
+#> [1] 45
 stopifnot(gap > 20)
 
 # 2. Dose linearity. The model is linear in dose and IIV sits on disposition

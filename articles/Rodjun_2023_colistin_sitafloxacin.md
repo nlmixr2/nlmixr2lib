@@ -352,9 +352,9 @@ knitr::kable(
 
 | Drug | Quantity | Regimen | ODE | Closed form | Ratio |
 |:---|:---|:---|---:|---:|---:|
-| Sitafloxacin | AUC_tau (mg\*h/L) | CrCL 10: 325 mg q48h | 209.93082 | 209.94832 | 0.99992 |
-| Sitafloxacin | AUC_tau (mg\*h/L) | CrCL 30: 500 mg q24h | 107.65907 | 107.66581 | 0.99994 |
-| Sitafloxacin | AUC_tau (mg\*h/L) | CrCL 50: 425 mg q12h | 54.90813 | 54.90956 | 0.99997 |
+| Sitafloxacin | AUC_tau (mg\*h/L) | CrCL 10: 325 mg q48h | 209.93073 | 209.94832 | 0.99992 |
+| Sitafloxacin | AUC_tau (mg\*h/L) | CrCL 30: 500 mg q24h | 107.65906 | 107.66581 | 0.99994 |
+| Sitafloxacin | AUC_tau (mg\*h/L) | CrCL 50: 425 mg q12h | 54.90812 | 54.90956 | 0.99997 |
 | Sitafloxacin | AUC_tau (mg\*h/L) | CrCL 90: 750 mg q12h | 53.83037 | 53.83290 | 0.99995 |
 | Colistin | Css,avg (mg/L) | CrCL 10: 160 mg q24h | 1.83946 | 1.83946 | 1.00000 |
 | Colistin | Css,avg (mg/L) | CrCL 30: 97.5 mg q12h | 1.72130 | 1.72130 | 1.00000 |
@@ -369,7 +369,7 @@ identity. {.table style="width:100%;"}
 
 cat(sprintf("Sitafloxacin max |ratio - 1| = %.3g\nColistin     max |ratio - 1| = %.3g\n",
             max(abs(sita_id$ratio - 1)), max(abs(col_id$ratio - 1))))
-#> Sitafloxacin max |ratio - 1| = 8.33e-05
+#> Sitafloxacin max |ratio - 1| = 8.38e-05
 #> Colistin     max |ratio - 1| = 2.01e-07
 
 # The only error source is the trapezoidal quadrature on the observation grid;
@@ -960,15 +960,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -976,7 +976,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

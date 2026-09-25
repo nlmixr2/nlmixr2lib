@@ -629,8 +629,8 @@ knitr::kable(ss_tbl, digits = 1, caption = paste(
 
 | Approach | Median AUC0-24,ss (mg\*h/L) | 5th percentile | 95th percentile | % in 400-600 target |
 |:---|---:|---:|---:|---:|
-| Nonparametric (Pmetrics) | 338.9 | 147.1 | 691.7 | 25.5 |
-| Parametric (nlmixr2) | 425.4 | 196.0 | 922.6 | 32.5 |
+| Nonparametric (Pmetrics) | 336.5 | 171.2 | 672.5 | 27.5 |
+| Parametric (nlmixr2) | 455.1 | 234.1 | 940.7 | 34.5 |
 
 Steady-state daily exposure on the protocol regimen, by modeling
 approach. The 400-600 mg\*h/L window is the AUC target stated in

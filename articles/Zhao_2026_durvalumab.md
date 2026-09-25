@@ -285,8 +285,8 @@ dosed <- 4 * 1500
 
 c(dosed = dosed, in_body = in_body, eliminated = eliminated_integral,
   balance_pct = 100 * (eliminated_integral + in_body) / dosed - 100)
-#>        dosed      in_body   eliminated  balance_pct 
-#> 6.000000e+03 1.271321e+03 4.728689e+03 1.621614e-04
+#>         dosed       in_body    eliminated   balance_pct 
+#>  6.000000e+03  1.271314e+03  4.728661e+03 -4.318354e-04
 
 # Pure numerical (trapezoid) error -- both sides use the same drawn parameters,
 # so a tight bound is correct here.
@@ -366,18 +366,18 @@ knitr::kable(
 
 | Weight quartile | Metric | All male | Published (Table S3) | All female | Implied female fraction |
 |---:|:---|---:|---:|---:|---:|
-| 1 | auclast | 7478 | 8530 | 8795 | 0.811 |
-| 1 | cmax | 700 | 777 | 825 | 0.635 |
-| 1 | cmin | 225 | 267 | 274 | 0.868 |
-| 2 | auclast | 6926 | 7490 | 8158 | 0.478 |
+| 1 | auclast | 7476 | 8530 | 8793 | 0.813 |
+| 1 | cmax | 700 | 777 | 825 | 0.636 |
+| 1 | cmin | 225 | 267 | 274 | 0.870 |
+| 2 | auclast | 6925 | 7490 | 8156 | 0.479 |
 | 2 | cmax | 634 | 673 | 748 | 0.361 |
-| 2 | cmin | 208 | 230 | 253 | 0.520 |
-| 3 | auclast | 6612 | 6910 | 7793 | 0.268 |
-| 3 | cmax | 598 | 613 | 705 | 0.155 |
-| 3 | cmin | 198 | 210 | 241 | 0.304 |
-| 4 | auclast | 6107 | 6070 | 7207 | -0.037 |
-| 4 | cmax | 540 | 539 | 638 | -0.015 |
-| 4 | cmin | 182 | 180 | 222 | -0.064 |
+| 2 | cmin | 208 | 230 | 253 | 0.521 |
+| 3 | auclast | 6610 | 6910 | 7791 | 0.270 |
+| 3 | cmax | 597 | 613 | 705 | 0.155 |
+| 3 | cmin | 198 | 210 | 241 | 0.305 |
+| 4 | auclast | 6106 | 6070 | 7205 | -0.035 |
+| 4 | cmax | 540 | 539 | 638 | -0.014 |
+| 4 | cmin | 182 | 180 | 222 | -0.063 |
 
 Published Table S3 quartile exposures against the all-male / all-female
 typical-subject envelope. AUC in ug\*day/mL, Cmax and Cmin in ug/mL.
@@ -399,10 +399,10 @@ implied <- envelope |>
   arrange(wt_q)
 round(as.data.frame(implied), 3)
 #>   wt_q auclast   cmax   cmin
-#> 1    1   0.811  0.635  0.868
-#> 2    2   0.478  0.361  0.520
-#> 3    3   0.268  0.155  0.304
-#> 4    4  -0.037 -0.015 -0.064
+#> 1    1   0.813  0.636  0.870
+#> 2    2   0.479  0.361  0.521
+#> 3    3   0.270  0.155  0.305
+#> 4    4  -0.035 -0.014 -0.063
 
 stopifnot(all(diff(implied$auclast) < 0))
 stopifnot(all(diff(implied$cmax) < 0))
@@ -413,7 +413,7 @@ stopifnot(all(diff(implied$cmin) < 0))
 #    e_wt_vc, e_sexf_cl or e_sexf_vc breaks this.
 mean_implied_female <- mean(envelope$implied_female_frac)
 mean_implied_female
-#> [1] 0.357012
+#> [1] 0.3581999
 
 stopifnot(abs(mean_implied_female - 0.351) < 0.08)
 ```
@@ -625,8 +625,8 @@ knitr::kable(
 
 | NCA parameter | Median | 25th pct | 75th pct |
 |:--------------|-------:|---------:|---------:|
-| auclast       | 7480.3 |   6153.3 |   9088.0 |
-| cmax          |  700.4 |    567.8 |    832.2 |
+| auclast       | 7198.9 |   5844.3 |   8513.8 |
+| cmax          |  665.6 |    553.6 |    780.3 |
 | tmax          |    0.0 |      0.0 |      0.0 |
 
 Simulated steady-state NCA over the fourth Q3W interval (days 63-84), n
@@ -675,9 +675,9 @@ knitr::kable(
 
 | NCA parameter | regimen | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
-| Cmax (ug/mL) | AEGEAN neoadjuvant 1500 mg Q3W x4 | 645 | 687 | +6.5% |
-| Cmin (ug/mL) | AEGEAN neoadjuvant 1500 mg Q3W x4 | 219 | 227 | +3.8% |
-| AUClast (ug\*day/mL) | AEGEAN neoadjuvant 1500 mg Q3W x4 | 7190 | 7470 | +3.9% |
+| Cmax (ug/mL) | AEGEAN neoadjuvant 1500 mg Q3W x4 | 645 | 661 | +2.4% |
+| Cmin (ug/mL) | AEGEAN neoadjuvant 1500 mg Q3W x4 | 219 | 213 | -2.6% |
+| AUClast (ug\*day/mL) | AEGEAN neoadjuvant 1500 mg Q3W x4 | 7190 | 7130 | -0.9% |
 
 Simulated vs. published (Table S4, non-Chinese column) steady-state
 exposure over the fourth Q3W interval. \* differs from reference by
@@ -693,7 +693,7 @@ pct_diff_s4 <- 100 * (
 )
 round(pct_diff_s4, 1)
 #> auclast    cmax    cmin 
-#>     3.9     6.5     3.8
+#>    -0.9     2.4    -2.6
 
 # Centre: a mis-transcribed clearance, volume, dose, exponent or unit moves the
 # whole distribution by tens of percent. Raising CL from 0.285 to 0.385 L/day,
@@ -726,10 +726,10 @@ knitr::kable(
 
 | Weight quartile | WT geometric mean (kg) | AUC (ug\*day/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
 |---:|---:|---:|---:|---:|
-| 1 | 51.0 | 8738.3 | 836.3 | 269.6 |
-| 2 | 63.6 | 7666.8 | 724.4 | 229.9 |
-| 3 | 73.1 | 7244.1 | 647.7 | 221.9 |
-| 4 | 89.3 | 6428.0 | 566.4 | 194.3 |
+| 1 | 51.0 | 8438.8 | 807.8 | 257.8 |
+| 2 | 63.6 | 7195.8 | 653.5 | 218.0 |
+| 3 | 73.1 | 6752.0 | 619.0 | 200.5 |
+| 4 | 89.3 | 6297.1 | 583.2 | 183.4 |
 
 Simulated steady-state exposure by weight quartile. Compare against
 Table S3 (53.2/65.8/74.8/93.0 kg; AUC 8530/7490/6910/6070), noting that

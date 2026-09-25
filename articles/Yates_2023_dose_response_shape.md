@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -132,7 +132,7 @@ mod_expo
 #>   )
 #> 
 #>   compartmentData <- list(
-#>     central   = list(analyte = "Drug (generic)", units = "arbitrary dose unit", specimen = "plasma", verified = FALSE),
+#>     central = list(analyte = "Drug (generic)", units = "arbitrary dose unit", specimen = "plasma", verified = FALSE),
 #>     tumor_vol = list(analyte = "tumour_size", units = "L", specimen = "tumor", verified = FALSE)
 #>   )
 #> 
@@ -207,7 +207,7 @@ mod_expo
 #>     d/dt(tumor_vol) <- tumor_vol * (p - drugEffect)
 #>   })
 #> }
-#> <environment: 0x56269cb958d0>
+#> <environment: 0x5578c5a5f308>
 ```
 
 Helper to simulate a single arm. Observation records are placed on the

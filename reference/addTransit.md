@@ -70,8 +70,13 @@ This is simply for convenience
 ## See also
 
 Other absorption:
+[`addSecondAbsorption()`](https://nlmixr2.github.io/nlmixr2lib/reference/addSecondAbsorption.md),
 [`addWeibullAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/addWeibullAbs.md),
-[`removeTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.md)
+[`addZeroOrderAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/addZeroOrderAbs.md),
+[`convertAbsForceLongerDelay()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertAbsForceLongerDelay.md),
+[`convertAbsSequential()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertAbsSequential.md),
+[`removeTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.md),
+[`removeZeroOrderAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeZeroOrderAbs.md)
 
 ## Examples
 

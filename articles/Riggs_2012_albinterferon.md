@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(PKNCA)
 #> 
@@ -533,7 +533,7 @@ ratio_dev <- max(abs(wide$`cav_1200 ug q2wk` / wide$`cav_900 ug q2wk` - 1200 / 9
 cat(sprintf("max |CL(1200)/CL(900) - 1|      = %.3g\n", cl_dev))
 #> max |CL(1200)/CL(900) - 1|      = 0
 cat(sprintf("max |Cavg ratio - 1200/900|     = %.3g\n", ratio_dev))
-#> max |Cavg ratio - 1200/900|     = 1.78e-15
+#> max |Cavg ratio - 1200/900|     = 8.13e-12
 
 stopifnot(nrow(wide) == n_sub, cl_dev < 1e-12, ratio_dev < 1e-10)
 ```
@@ -634,10 +634,10 @@ knitr::kable(cmp, caption = "Simulated versus published albIFN exposure. * diffe
 
 | NCA parameter | treatment    | Reference | Simulated | % diff |
 |:--------------|:-------------|:----------|:----------|:-------|
-| Cmax (ng/mL)  | 900 ug q2wk  | 56.6      | 53        | -6.3%  |
-| Cmax (ng/mL)  | 1200 ug q2wk | 76.2      | 70.7      | -7.2%  |
-| Cavg (ng/mL)  | 900 ug q2wk  | 66.2      | 68        | +2.8%  |
-| Cavg (ng/mL)  | 1200 ug q2wk | 86.4      | 90.7      | +5.0%  |
+| Cmax (ng/mL)  | 900 ug q2wk  | 56.6      | 55.8      | -1.5%  |
+| Cmax (ng/mL)  | 1200 ug q2wk | 76.2      | 74.4      | -2.4%  |
+| Cavg (ng/mL)  | 900 ug q2wk  | 66.2      | 66.8      | +1.0%  |
+| Cavg (ng/mL)  | 1200 ug q2wk | 86.4      | 89.1      | +3.2%  |
 
 Simulated versus published albIFN exposure. \* differs from the
 reference by more than 20%. {.table}
@@ -696,8 +696,8 @@ knitr::kable(obs_max, caption = "Effect of the published residual-error model on
 
 | treatment    | Mean predicted max | Mean observed max | Inflation |
 |:-------------|-------------------:|------------------:|:----------|
-| 1200 ug q2wk |               72.4 |              82.9 | +15%      |
-| 900 ug q2wk  |               54.3 |              60.1 | +11%      |
+| 1200 ug q2wk |               75.7 |              85.3 | +13%      |
+| 900 ug q2wk  |               56.8 |              63.0 | +11%      |
 
 Effect of the published residual-error model on an observed-maximum
 Cmax, on a weekly-plus sampling schedule over the first dosing interval.
@@ -761,8 +761,8 @@ tibble::tribble(
 
 | Statement | Published | Model |
 |:---|:---|:---|
-| Cavg in patients \< 75 kg versus \>= 75 kg (cohort) | 25% to 30% greater | +28% |
-| Cavg in women versus men (cohort) | approximately 25% greater | +8% |
+| Cavg in patients \< 75 kg versus \>= 75 kg (cohort) | 25% to 30% greater | +31% |
+| Cavg in women versus men (cohort) | approximately 25% greater | +1% |
 | Direct model effect of male sex on CL/F | 1.05 (Table I) | +5.0% |
 
 Cohort-level exposure contrasts, and the model’s own direct sex effect

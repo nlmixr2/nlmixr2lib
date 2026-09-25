@@ -534,10 +534,10 @@ wk6 |>
 
 | Arm                   |    Q25 | Median |    Q75 |
 |:----------------------|-------:|-------:|-------:|
-| Cape 1000 + docetaxel | -0.513 | -0.344 | -0.163 |
-| Cape 1250 + docetaxel | -0.623 | -0.369 | -0.201 |
-| Cape 825 + docetaxel  | -0.470 | -0.275 | -0.146 |
-| Docetaxel alone       | -0.202 | -0.068 | -0.003 |
+| Cape 1000 + docetaxel | -0.489 | -0.301 | -0.165 |
+| Cape 1250 + docetaxel | -0.531 | -0.346 | -0.189 |
+| Cape 825 + docetaxel  | -0.499 | -0.310 | -0.154 |
+| Docetaxel alone       | -0.158 | -0.046 | -0.006 |
 
 Simulated quartiles of the week-6 relative change from baseline in tumor
 size (200 subjects per arm). Compare with the three panels of Bruno 2012
@@ -592,9 +592,9 @@ wk6 |>
 
 | Arm | Observed Q25 | Simulated Q25 | Observed median | Simulated median | Observed Q75 | Simulated Q75 |
 |:---|---:|---:|---:|---:|---:|---:|
-| Cape 1250 + docetaxel | -0.40 | -0.623 | -0.22 | -0.369 | -0.05 | -0.201 |
-| Cape 825 + docetaxel | -0.33 | -0.470 | -0.16 | -0.275 | 0.00 | -0.146 |
-| Docetaxel alone | -0.33 | -0.202 | -0.13 | -0.068 | 0.00 | -0.003 |
+| Cape 1250 + docetaxel | -0.40 | -0.531 | -0.22 | -0.346 | -0.05 | -0.189 |
+| Cape 825 + docetaxel | -0.33 | -0.499 | -0.16 | -0.310 | 0.00 | -0.154 |
+| Docetaxel alone | -0.33 | -0.158 | -0.13 | -0.046 | 0.00 | -0.006 |
 
 Simulated versus observed week-6 tumor-size change quartiles. Observed
 values digitised from Bruno 2012 Supplementary Figure S2; see Errata.
@@ -699,10 +699,10 @@ med_tbl |>
 
 | Arm                   | Overall survival | Progression-free survival |
 |:----------------------|-----------------:|--------------------------:|
-| Cape 1000 + docetaxel |            17.40 |                      7.41 |
-| Cape 1250 + docetaxel |            18.22 |                      7.91 |
-| Cape 825 + docetaxel  |            16.98 |                      7.15 |
-| Docetaxel alone       |            14.16 |                      5.47 |
+| Cape 1000 + docetaxel |            17.29 |                      7.33 |
+| Cape 1250 + docetaxel |            17.75 |                      7.61 |
+| Cape 825 + docetaxel  |            17.31 |                      7.34 |
+| Docetaxel alone       |            14.16 |                      5.46 |
 
 Cohort median OS and PFS (months) by capecitabine starting dose. Bruno
 2012 reports observed pooled medians of 14.8 months (OS) and 5.8 months

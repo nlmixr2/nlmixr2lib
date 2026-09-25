@@ -449,7 +449,7 @@ aucChk |>
 | ge80          |     21.738 |            41.402 |       41.402 |       -4.3e-04 |
 | c50to80       |     16.176 |            55.638 |       55.638 |       -1.1e-04 |
 | c30to50       |      8.610 |           104.529 |      104.530 |       -2.8e-04 |
-| lt30          |      2.724 |           330.396 |      330.396 |       -6.1e-05 |
+| lt30          |      2.724 |           330.396 |      330.396 |       -6.4e-05 |
 
 Gate 3 (PASS): simulated steady-state AUC0-24 for 300 mg q8 h matches
 daily dose / (CL/F) to better than 0.05%. {.table}
@@ -660,7 +660,9 @@ subj <- cohort |>
 
 stopifnot(
   nrow(subj) == nrow(armGrid) * N_ARM,
-  all(cohort$Cc[!is.na(cohort$Cc)] >= 0)
+  # a numerically integrated ODE undershoots zero by about its absolute
+  # tolerance on a decaying tail (observed -5.6e-12 at atol 1e-10)
+  all(cohort$Cc[!is.na(cohort$Cc)] >= -1e-9)
 )
 cat("simulated subjects:", nrow(subj), "in", nrow(armGrid), "arms\n")
 #> simulated subjects: 3200 in 16 arms
@@ -1050,19 +1052,19 @@ ganCmp |>
 | Renal stratum | Regimen | Published Ganesan PTA % | Simulated PTA % | Difference |
 |:---|:---|---:|---:|---:|
 | CCR \>= 80 mL/min | 150 mg q12 h | 0.2 | 0.5 | 0.3 |
-| CCR \>= 80 mL/min | 250 mg q12 h | 2.2 | 4.5 | 2.3 |
-| CCR \>= 80 mL/min | 300 mg q8 h | 45.3 | 45.5 | 0.2 |
+| CCR \>= 80 mL/min | 250 mg q12 h | 2.2 | 3.0 | 0.8 |
+| CCR \>= 80 mL/min | 300 mg q8 h | 45.3 | 44.5 | -0.8 |
 | CCR \>= 80 mL/min | 600 mg q8 h | 87.9 | 85.0 | -2.9 |
 | 50 \<= CCR \< 80 mL/min | 150 mg q12 h | 1.2 | 1.5 | 0.3 |
-| 50 \<= CCR \< 80 mL/min | 250 mg q12 h | 9.6 | 9.5 | -0.1 |
-| 50 \<= CCR \< 80 mL/min | 300 mg q8 h | 62.2 | 69.5 | 7.3 |
-| 50 \<= CCR \< 80 mL/min | 600 mg q8 h | 93.3 | 93.0 | -0.3 |
-| 30 \<= CCR \< 50 mL/min | 150 mg q12 h | 5.4 | 6.5 | 1.1 |
-| 30 \<= CCR \< 50 mL/min | 250 mg q12 h | 24.2 | 25.0 | 0.8 |
-| 30 \<= CCR \< 50 mL/min | 300 mg q8 h | 84.7 | 84.5 | -0.2 |
-| 30 \<= CCR \< 50 mL/min | 600 mg q8 h | 98.7 | 97.5 | -1.2 |
-| CCR \< 30 mL/min | 150 mg q12 h | 89.1 | 91.0 | 1.9 |
-| CCR \< 30 mL/min | 250 mg q12 h | 98.9 | 98.5 | -0.4 |
+| 50 \<= CCR \< 80 mL/min | 250 mg q12 h | 9.6 | 7.5 | -2.1 |
+| 50 \<= CCR \< 80 mL/min | 300 mg q8 h | 62.2 | 63.0 | 0.8 |
+| 50 \<= CCR \< 80 mL/min | 600 mg q8 h | 93.3 | 96.0 | 2.7 |
+| 30 \<= CCR \< 50 mL/min | 150 mg q12 h | 5.4 | 7.0 | 1.6 |
+| 30 \<= CCR \< 50 mL/min | 250 mg q12 h | 24.2 | 20.5 | -3.7 |
+| 30 \<= CCR \< 50 mL/min | 300 mg q8 h | 84.7 | 90.5 | 5.8 |
+| 30 \<= CCR \< 50 mL/min | 600 mg q8 h | 98.7 | 98.5 | -0.2 |
+| CCR \< 30 mL/min | 150 mg q12 h | 89.1 | 86.0 | -3.1 |
+| CCR \< 30 mL/min | 250 mg q12 h | 98.9 | 98.0 | -0.9 |
 | CCR \< 30 mL/min | 300 mg q8 h | 99.9 | 100.0 | 0.1 |
 | CCR \< 30 mL/min | 600 mg q8 h | 100.0 | 100.0 | 0.0 |
 
@@ -1077,7 +1079,7 @@ model under the standardising conditions of Ebihara 2025 Methods 4.4.
 ganRmse <- sqrt(mean(ganCmp$diff^2))
 cat(sprintf("Ganesan-column RMSE = %.2f points; max |difference| = %.1f; mean bias = %+.2f\n",
             ganRmse, max(abs(ganCmp$diff)), mean(ganCmp$diff)))
-#> Ganesan-column RMSE = 2.16 points; max |difference| = 7.3; mean bias = +0.57
+#> Ganesan-column RMSE = 2.27 points; max |difference| = 5.8; mean bias = -0.08
 stopifnot(ganRmse < 4)
 ```
 
@@ -1128,10 +1130,10 @@ foldCmp |>
 
 | Renal stratum | Recommended regimen | Japanese gm fAUC0-24 | Ganesan gm fAUC0-24 | Published fold | Simulated fold | Difference |
 |:---|:---|---:|---:|---:|---:|---:|
-| CCR \>= 80 mL/min | 600 mg q8 h | 28.37 | 15.64 | 1.6 | 1.81 | 0.21 |
-| 50 \<= CCR \< 80 mL/min | 300 mg q8 h | 19.20 | 11.05 | 1.8 | 1.74 | -0.06 |
-| 30 \<= CCR \< 50 mL/min | 300 mg q8 h | 34.75 | 15.15 | 2.2 | 2.29 | 0.09 |
-| CCR \< 30 mL/min | 150 mg q12 h | 35.13 | 25.24 | 1.5 | 1.39 | -0.11 |
+| CCR \>= 80 mL/min | 600 mg q8 h | 28.48 | 15.65 | 1.6 | 1.82 | 0.22 |
+| 50 \<= CCR \< 80 mL/min | 300 mg q8 h | 18.52 | 10.07 | 1.8 | 1.84 | 0.04 |
+| 30 \<= CCR \< 50 mL/min | 300 mg q8 h | 32.56 | 16.71 | 2.2 | 1.95 | -0.25 |
+| CCR \< 30 mL/min | 150 mg q12 h | 35.56 | 23.14 | 1.5 | 1.54 | 0.04 |
 
 Fold-higher free AUC0-24 of the Japanese model over the Ganesan model at
 each stratum’s recommended regimen, against the values stated in the
@@ -1143,12 +1145,12 @@ Ebihara 2025 Results. {.table}
 foldRmse <- sqrt(mean((foldCmp$simFold - foldCmp$pubFold)^2))
 cat(sprintf("fold-difference RMSE = %.3f (published folds span %.1f-%.1fx)\n",
             foldRmse, min(foldCmp$pubFold), max(foldCmp$pubFold)))
-#> fold-difference RMSE = 0.133 (published folds span 1.5-2.2x)
+#> fold-difference RMSE = 0.169 (published folds span 1.5-2.2x)
 stopifnot(foldRmse < 0.3, all(foldCmp$simFold > 1))
 ```
 
 Both halves of the published comparison reproduce: the Ganesan PTA
-column to 2.16 RMSE points, and the exposure fold-differences to 0.133
+column to 2.27 RMSE points, and the exposure fold-differences to 0.169
 RMSE on a 1.5-2.2x scale, with the Japanese model predicting higher
 exposure in every stratum as reported. Because the two model files were
 extracted independently from different papers, this is a mutual check: a
@@ -1335,7 +1337,7 @@ knitr::kable(
 | t½ (h)                 | CCR \>= 80 mL/min       | 0.844     | 0.844     | +0.0%  |
 | t½ (h)                 | 50 \<= CCR \< 80 mL/min | 1.47      | 1.47      | +0.1%  |
 | t½ (h)                 | 30 \<= CCR \< 50 mL/min | 1.44      | 1.44      | +0.0%  |
-| t½ (h)                 | CCR \< 30 mL/min        | 4.01      | 4.01      | -0.0%  |
+| t½ (h)                 | CCR \< 30 mL/min        | 4.01      | 4.01      | +0.0%  |
 
 PKNCA on the typical-value single-dose profile versus the exact analytic
 closed forms for each stratum’s recommended dose. \* marks rows

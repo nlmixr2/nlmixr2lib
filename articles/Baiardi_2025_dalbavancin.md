@@ -389,15 +389,15 @@ cmp_3dose |>
 
 | Weight band | Simulated last week with PTA \>90% | Published (Results 2.3) | Simulated PTA (%) at that week |
 |:---|---:|---:|---:|
-| 40-80 kg | 8 | 9 | 89.5 |
-| 80-120 kg | 7 | 7 | 94.5 |
-| 120-200 kg | 5 | 6 | 87.0 |
+| 40-80 kg | 9 | 9 | 92.0 |
+| 80-120 kg | 7 | 7 | 93.5 |
+| 120-200 kg | 5 | 6 | 86.5 |
 
 Figure 4 replication: total treatment duration covered by the three-dose
 regimen. {.table}
 
 The 40-80 kg and 80-120 kg bands reproduce the published 9 and 7 weeks
-exactly. The 120-200 kg band reaches 87.0% at week 6 against the paper’s
+exactly. The 120-200 kg band reaches 86.5% at week 6 against the paper’s
 stated 6 weeks - a shortfall of a couple of percentage points, which the
 weight-sensitivity analysis below attributes to the uniform within-band
 weight distribution used here rather than to the model.
@@ -448,11 +448,11 @@ sens |>
 
 | Body weight (kg) | Week-6 PTA (%) |
 |-----------------:|---------------:|
-|              125 |           92.5 |
+|              125 |           92.0 |
 |              135 |           90.0 |
-|              145 |           89.5 |
-|              160 |           85.0 |
-|              175 |           87.0 |
+|              145 |           86.5 |
+|              160 |           87.5 |
+|              175 |           85.0 |
 
 Week-6 PTA for the three-dose regimen (doses at day 0, day 7, week 3) at
 fixed body weights spanning the 120-200 kg band. {.table}
@@ -616,7 +616,7 @@ stopifnot(nrow(auc_check) == 3L * n_per_band)
 
 max_abs_err <- max(abs(auc_check$pct_error))
 max_abs_err
-#> [1] 0.2198963
+#> [1] 0.1241723
 
 # Trapezoidal AUC on this grid is within a fraction of a percent of Dose/CL for
 # every one of the 600 simulated subjects.
@@ -677,9 +677,9 @@ knitr::kable(
 
 | NCA parameter | band       | Reference | Simulated |   % diff |
 |:--------------|:-----------|----------:|----------:|---------:|
-| t½ (h)        | 40-80 kg   |       346 |       381 |   +10.4% |
-| t½ (h)        | 80-120 kg  |       346 |       496 | +43.6%\* |
-| t½ (h)        | 120-200 kg |       346 |       519 | +50.0%\* |
+| t½ (h)        | 40-80 kg   |       346 |       418 | +21.0%\* |
+| t½ (h)        | 80-120 kg  |       346 |       445 | +28.9%\* |
+| t½ (h)        | 120-200 kg |       346 |       515 | +49.0%\* |
 
 Simulated versus published terminal half-life. \* differs from reference
 by more than 20%. The reference value is the literature half-life quoted
@@ -794,12 +794,12 @@ allo_ci <- confint(fit_hl)["log(WT)", ]
 
 c(estimate = coef(fit_hl)[["log(WT)"]], allo_ci)
 #>  estimate     2.5 %    97.5 % 
-#> 0.2814090 0.2121948 0.3506233
+#> 0.2152271 0.1487243 0.2817300
 
 stopifnot(allo_ci[[1]] <= 0.25, allo_ci[[2]] >= 0.25)
 ```
 
-The NCA-estimated exponent is 0.281 (95% CI 0.212 to 0.351), consistent
+The NCA-estimated exponent is 0.215 (95% CI 0.149 to 0.282), consistent
 with the exact structural value, confirming that the allometric scaling
 is wired into the model as the paper describes and survives the round
 trip through the solver and PKNCA’s lambda-z fit.

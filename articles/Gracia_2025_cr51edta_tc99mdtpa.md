@@ -245,13 +245,15 @@ lose its IIV; `omega = NA` and `omega = ui$omega` pin each direction.
 
 ``` r
 
+# Tight solver tolerances: this profile feeds the per-subject NCA identities
+# (Dose / AUC0-inf = CL, CL / lambda_z = V) that are asserted to 1e-8 below,
+# and the default rtol of 1e-6 leaves ~1e-6 relative error in both.
 sim_typ <- rxode2::rxSolve(
   rxode2::zeroRe(ui), events = events, omega = NA,
-  keep = c("tracer", "dose"), returnType = "data.frame"
+  keep = c("tracer", "dose"), returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12
 )
 #> Warning: No sigma parameters in the model
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: multi-subject simulation without without 'omega'
@@ -602,11 +604,11 @@ knitr::kable(
 | Cmax (MBq/mL)              | 51Cr-EDTA  |  0.000227 |  0.000227 |  +0.0% |
 | Cmax (MBq/mL)              | 99mTc-DTPA |   0.00134 |   0.00134 |  +0.0% |
 | AUC0-∞ (obs) (MBq\*min/mL) | 51Cr-EDTA  |    0.0256 |    0.0256 |  +0.0% |
-| AUC0-∞ (obs) (MBq\*min/mL) | 99mTc-DTPA |     0.147 |     0.147 |  -0.0% |
-| t½ (min)                   | 51Cr-EDTA  |      78.4 |      78.4 |  -0.0% |
-| t½ (min)                   | 99mTc-DTPA |      76.4 |      76.4 |  -0.0% |
+| AUC0-∞ (obs) (MBq\*min/mL) | 99mTc-DTPA |     0.147 |     0.147 |  +0.0% |
+| t½ (min)                   | 51Cr-EDTA  |      78.4 |      78.4 |  +0.0% |
+| t½ (min)                   | 99mTc-DTPA |      76.4 |      76.4 |  +0.0% |
 | CL/F (mL/min)              | 51Cr-EDTA  |      80.8 |      80.8 |  -0.0% |
-| CL/F (mL/min)              | 99mTc-DTPA |      81.5 |      81.5 |  +0.0% |
+| CL/F (mL/min)              | 99mTc-DTPA |      81.5 |      81.5 |  -0.0% |
 | Vz/F (mL)                  | 51Cr-EDTA  |      9140 |      9140 |  -0.0% |
 | Vz/F (mL)                  | 99mTc-DTPA |      8980 |      8980 |  -0.0% |
 

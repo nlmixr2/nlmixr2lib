@@ -577,22 +577,22 @@ knitr::kable(
 
 | NCA parameter | treatment | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
-| Cmax (ng/mL) | Not collected \| Patient \| One infusion (3 mg/kg) | 3900 | 4000 | +2.5% |
-| Cmax (ng/mL) | EM \| Volunteer \| One infusion (3 mg/kg) | 3370 | 3250 | -3.6% |
-| Cmax (ng/mL) | EM/URM \| Patient \| One infusion (3 mg/kg) | 3860 | 4040 | +4.6% |
-| Cmax (ng/mL) | PM \| Either \| One infusion (3 mg/kg) | 4010 | 3700 | -7.7% |
-| Cmax (ng/mL) | Not collected \| Patient \| Two infusions (3 + 2 mg/kg) | 4300 | 4420 | +2.6% |
-| Cmax (ng/mL) | EM \| Volunteer \| Two infusions (3 + 2 mg/kg) | 3700 | 3470 | -6.2% |
-| Cmax (ng/mL) | EM/URM \| Patient \| Two infusions (3 + 2 mg/kg) | 4210 | 4210 | +0.2% |
-| Cmax (ng/mL) | PM \| Either \| Two infusions (3 + 2 mg/kg) | 4560 | 4500 | -1.3% |
-| t½ (h) | Not collected \| Patient \| One infusion (3 mg/kg) | 3.45 | 3.63 | +5.2% |
-| t½ (h) | EM \| Volunteer \| One infusion (3 mg/kg) | 2.11 | 2.24 | +5.9% |
-| t½ (h) | EM/URM \| Patient \| One infusion (3 mg/kg) | 3.01 | 3.19 | +5.9% |
-| t½ (h) | PM \| Either \| One infusion (3 mg/kg) | 5.62 | 5.75 | +2.3% |
-| t½ (h) | Not collected \| Patient \| Two infusions (3 + 2 mg/kg) | 3.45 | 3.53 | +2.3% |
-| t½ (h) | EM \| Volunteer \| Two infusions (3 + 2 mg/kg) | 2.11 | 2.2 | +4.3% |
-| t½ (h) | EM/URM \| Patient \| Two infusions (3 + 2 mg/kg) | 3.01 | 3.11 | +3.2% |
-| t½ (h) | PM \| Either \| Two infusions (3 + 2 mg/kg) | 5.62 | 5.95 | +5.9% |
+| Cmax (ng/mL) | Not collected \| Patient \| One infusion (3 mg/kg) | 3900 | 3800 | -2.8% |
+| Cmax (ng/mL) | EM \| Volunteer \| One infusion (3 mg/kg) | 3370 | 3410 | +1.3% |
+| Cmax (ng/mL) | EM/URM \| Patient \| One infusion (3 mg/kg) | 3860 | 3850 | -0.3% |
+| Cmax (ng/mL) | PM \| Either \| One infusion (3 mg/kg) | 4010 | 4200 | +4.6% |
+| Cmax (ng/mL) | Not collected \| Patient \| Two infusions (3 + 2 mg/kg) | 4300 | 4170 | -3.1% |
+| Cmax (ng/mL) | EM \| Volunteer \| Two infusions (3 + 2 mg/kg) | 3700 | 3640 | -1.5% |
+| Cmax (ng/mL) | EM/URM \| Patient \| Two infusions (3 + 2 mg/kg) | 4210 | 4320 | +2.6% |
+| Cmax (ng/mL) | PM \| Either \| Two infusions (3 + 2 mg/kg) | 4560 | 4540 | -0.4% |
+| t½ (h) | Not collected \| Patient \| One infusion (3 mg/kg) | 3.45 | 3.61 | +4.7% |
+| t½ (h) | EM \| Volunteer \| One infusion (3 mg/kg) | 2.11 | 2.2 | +4.2% |
+| t½ (h) | EM/URM \| Patient \| One infusion (3 mg/kg) | 3.01 | 3.13 | +3.9% |
+| t½ (h) | PM \| Either \| One infusion (3 mg/kg) | 5.62 | 6.04 | +7.5% |
+| t½ (h) | Not collected \| Patient \| Two infusions (3 + 2 mg/kg) | 3.45 | 3.61 | +4.7% |
+| t½ (h) | EM \| Volunteer \| Two infusions (3 + 2 mg/kg) | 2.11 | 2.18 | +3.1% |
+| t½ (h) | EM/URM \| Patient \| Two infusions (3 + 2 mg/kg) | 3.01 | 3.28 | +9.1% |
+| t½ (h) | PM \| Either \| Two infusions (3 + 2 mg/kg) | 5.62 | 5.75 | +2.4% |
 
 Simulated vs published NCA (Mao 2012 Table IV). \* differs from
 reference by \>20%. {.table}
@@ -615,7 +615,7 @@ cmax_med <- sim |>
 stopifnot(nrow(cmax_med) == 8L, !anyNA(cmax_med$pct))
 cat(sprintf("Cmax: median |difference| %.1f%%, worst %.1f%% (Monte Carlo SE ~%.1f%%)\n",
             median(abs(cmax_med$pct)), max(abs(cmax_med$pct)), mc_se_pct))
-#> Cmax: median |difference| 3.1%, worst 7.7% (Monte Carlo SE ~5.9%)
+#> Cmax: median |difference| 2.1%, worst 4.6% (Monte Carlo SE ~5.9%)
 
 stopifnot(
   # Centre of the distribution of arm-level errors: robust to which arm

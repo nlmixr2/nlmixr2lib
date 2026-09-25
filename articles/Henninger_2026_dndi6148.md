@@ -437,14 +437,14 @@ cmp_mouse |>
 
 | Dose level | Window | Simulated (h\*ug/mL) | Published (h\*ug/mL) | Pct diff |
 |:---|:---|---:|---:|---:|
-| 12.5 mg/kg bid | AUC0-D10 | 836.9 | 856.7 | -2.3 |
-| 12.5 mg/kg bid | AUCss,0-24h | 84.1 | 85.8 | -2.0 |
-| 25 mg/kg bid | AUC0-D10 | 1666.0 | 1783.0 | -6.6 |
-| 25 mg/kg bid | AUCss,0-24h | 168.4 | 178.6 | -5.7 |
-| 50 mg/kg bid | AUC0-D10 | 4448.7 | 4419.0 | 0.7 |
-| 50 mg/kg bid | AUCss,0-24h | 472.4 | 442.6 | 6.7 |
-| 6.25 mg/kg bid | AUC0-D10 | 445.7 | 451.5 | -1.3 |
-| 6.25 mg/kg bid | AUCss,0-24h | 44.7 | 45.2 | -1.2 |
+| 12.5 mg/kg bid | AUC0-D10 | 826.9 | 856.7 | -3.5 |
+| 12.5 mg/kg bid | AUCss,0-24h | 83.1 | 85.8 | -3.2 |
+| 25 mg/kg bid | AUC0-D10 | 1663.6 | 1783.0 | -6.7 |
+| 25 mg/kg bid | AUCss,0-24h | 168.2 | 178.6 | -5.8 |
+| 50 mg/kg bid | AUC0-D10 | 4439.9 | 4419.0 | 0.5 |
+| 50 mg/kg bid | AUCss,0-24h | 471.5 | 442.6 | 6.5 |
+| 6.25 mg/kg bid | AUC0-D10 | 445.1 | 451.5 | -1.4 |
+| 6.25 mg/kg bid | AUCss,0-24h | 44.6 | 45.2 | -1.3 |
 
 Simulated vs published plasma exposure (Henninger 2026 Table 3).
 {.table}
@@ -515,7 +515,7 @@ make_human_arm <- function(mgkg, id_offset) {
                          treatment = paste0(mgkg, " mg/kg qd"))
   doses <- tidyr::crossing(subj, time = seq(0, 24 * (days_human - 1), by = 24)) |>
     mutate(evid = 1L, amt = mgkg * wt_human, cmt = "depot")
-  obs <- tidyr::crossing(subj, time = seq(0, 24 * days_human, by = 6)) |>
+  obs <- tidyr::crossing(subj, time = seq(0, 24 * days_human, by = 1)) |>
     mutate(evid = 0L, amt = NA_real_, cmt = "central")
   bind_rows(doses, obs) |> arrange(id, time, desc(evid))
 }
@@ -596,12 +596,12 @@ pta_cmp |>
 
 | Dose level | Model, 95% target | Table S1, 95% target | Model, 99% target | Table S1, 99% target |
 |:---|---:|---:|---:|---:|
-| 3 mg/kg qd | 82.5 | 76.6 | 47.0 | 48.5 |
-| 4 mg/kg qd | 95.0 | 91.5 | 81.5 | 72.0 |
-| 5 mg/kg qd | 97.5 | 96.6 | 89.0 | 85.7 |
-| 6 mg/kg qd | 100.0 | 98.8 | 95.0 | 92.9 |
+| 3 mg/kg qd | 83.5 | 76.6 | 58.0 | 48.5 |
+| 4 mg/kg qd | 91.0 | 91.5 | 73.5 | 72.0 |
+| 5 mg/kg qd | 97.5 | 96.6 | 88.0 | 85.7 |
+| 6 mg/kg qd | 99.0 | 98.8 | 95.5 | 92.9 |
 | 8 mg/kg qd | 100.0 | 99.8 | 99.0 | 98.1 |
-| 10 mg/kg qd | 100.0 | 100.0 | 99.5 | 99.5 |
+| 10 mg/kg qd | 100.0 | 100.0 | 100.0 | 99.5 |
 
 Human PTA after 14 days of qd dosing vs Henninger 2026 Table S1.
 {.table}
@@ -679,8 +679,8 @@ cmp_human |>
 
 | Dose level | Simulated AUCss,0-24h (h\*ug/mL) | Published (h\*ug/mL) | Pct diff |
 |:-----------|---------------------------------:|---------------------:|---------:|
-| 4 mg/kg qd |                             82.1 |                 81.6 |      0.6 |
-| 6 mg/kg qd |                            116.6 |                122.0 |     -4.4 |
+| 4 mg/kg qd |                             77.1 |                 81.6 |     -5.5 |
+| 6 mg/kg qd |                            121.1 |                122.0 |     -0.8 |
 
 Simulated vs published human AUCss,0-24h (Henninger 2026 Results 3.2.6).
 {.table}
@@ -688,8 +688,13 @@ Simulated vs published human AUCss,0-24h (Henninger 2026 Results 3.2.6).
 ``` r
 
 
-# The simulated median is slightly below Dose/CL because the trapezoidal AUC is
-# taken on a 6 h grid; the closed-form check above already pins Dose/CL exactly.
+# The simulated median sits a few percent below the published AUC: the trapezoidal
+# rule on a discrete grid cannot recover the absorption peak exactly, and the
+# closed-form check above already pins Dose/CL. The observation grid is hourly
+# (it was 6-hourly until 2026-09-18, which missed the peak badly enough to bias
+# the 4 mg/kg arm by -10.0% and trip this gate; the mouse arm above uses 0.5 h).
+# Hourly is converged -- halving the step again to 0.5 h moves the
+# worst arm by 0.1 percentage points, from -5.51% to -5.41%.
 stopifnot(max(abs(cmp_human$pct_diff)) < 8)
 ```
 

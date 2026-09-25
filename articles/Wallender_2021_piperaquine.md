@@ -293,9 +293,9 @@ trough_summary |>
 
 | Quantity          | Simulated (ng/mL) | Wallender 2021 (ng/mL) | Ratio |
 |:------------------|------------------:|-----------------------:|------:|
-| median            |              5.02 |                   4.90 |  1.02 |
-| 2.5th percentile  |              1.01 |                   0.88 |  1.15 |
-| 97.5th percentile |             20.69 |                  18.40 |  1.12 |
+| median            |              5.03 |                   4.90 |  1.03 |
+| 2.5th percentile  |              1.13 |                   0.88 |  1.28 |
+| 97.5th percentile |             18.06 |                  18.40 |  0.98 |
 
 28-day post-dose piperaquine trough concentration, simulated versus the
 observed values reported in the Results section and Figure 5A. {.table}
@@ -396,14 +396,14 @@ cmp_6a |>
 
 | Nutritional stratum | Age (weeks) | Simulated median | Wallender 2021 Fig. 6A | Ratio |
 |:---|---:|---:|---:|---:|
-| WAZ \<= -2 | 16 | 11.78 | 14.20 | 0.83 |
-| WAZ \<= -2 | 28 | 19.58 | 9.25 | 2.12 |
-| WAZ \<= -2 | 52 | 15.66 | 13.82 | 1.13 |
-| WAZ \<= -2 | 104 | 8.49 | 9.60 | 0.88 |
-| WAZ \> -2 | 16 | 17.10 | 23.16 | 0.74 |
-| WAZ \> -2 | 28 | 30.78 | 16.55 | 1.86 |
-| WAZ \> -2 | 52 | 21.78 | 16.99 | 1.28 |
-| WAZ \> -2 | 104 | 13.42 | 12.22 | 1.10 |
+| WAZ \<= -2 | 16 | 11.38 | 14.20 | 0.80 |
+| WAZ \<= -2 | 28 | 18.41 | 9.25 | 1.99 |
+| WAZ \<= -2 | 52 | 15.56 | 13.82 | 1.13 |
+| WAZ \<= -2 | 104 | 9.88 | 9.60 | 1.03 |
+| WAZ \> -2 | 16 | 15.86 | 23.16 | 0.68 |
+| WAZ \> -2 | 28 | 29.32 | 16.55 | 1.77 |
+| WAZ \> -2 | 52 | 20.80 | 16.99 | 1.22 |
+| WAZ \> -2 | 104 | 12.67 | 12.22 | 1.04 |
 
 Median trough piperaquine concentration (ng/mL) under the clinical trial
 protocol with full adherence, simulated versus the Figure 6A Source
@@ -849,10 +849,10 @@ nca_wide |>
 
 | NCA parameter | Median | 5th pctile | 95th pctile |
 |:--------------|-------:|-----------:|------------:|
-| cmax          | 208.00 |      70.95 |      524.60 |
+| cmax          | 244.50 |      74.85 |      768.70 |
 | tmax          |   0.10 |       0.06 |        0.16 |
-| aucinf.obs    | 337.70 |     113.10 |      862.50 |
-| half.life     |  22.87 |      17.84 |       31.56 |
+| aucinf.obs    | 394.80 |     136.70 |     1091.00 |
+| half.life     |  22.57 |      18.13 |       30.03 |
 
 Simulated non-compartmental parameters after a single 160 mg piperaquine
 dose in a typical 8.6 kg child (Cmax ng/mL, Tmax days, AUC(0-inf)
@@ -874,7 +874,7 @@ cat(sprintf(
   "AUC(0-inf) versus dose * F / CL: median relative difference %.4f%%, maximum %.4f%%\n",
   100 * median(mass_balance$rel_diff), 100 * max(mass_balance$rel_diff)
 ))
-#> AUC(0-inf) versus dose * F / CL: median relative difference 0.0136%, maximum 0.0595%
+#> AUC(0-inf) versus dose * F / CL: median relative difference 0.0131%, maximum 0.0619%
 
 # Deterministic per subject (numerical integration error only), so tight.
 stopifnot(max(mass_balance$rel_diff) < 0.02)

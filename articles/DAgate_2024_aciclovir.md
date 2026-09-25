@@ -466,11 +466,11 @@ nca_tbl |>
 | Term, CLcr 25-50     | auclast       | 130 | 134.84 | 38.09 | 391.22 |
 | Term, CLcr 25-50     | cav           | 130 |   5.62 |  1.59 |  16.30 |
 | Term, CLcr 25-50     | cmax          | 130 |  14.50 |  3.89 |  40.10 |
-| Term, CLcr 25-50     | tmax          | 130 |  13.00 |  1.00 |  13.00 |
+| Term, CLcr 25-50     | tmax          | 130 |  13.00 | 13.00 |  13.00 |
 | Term, CLcr \> 50     | auclast       |  70 | 174.46 | 79.56 | 523.22 |
 | Term, CLcr \> 50     | cav           |  70 |   7.27 |  3.31 |  21.80 |
 | Term, CLcr \> 50     | cmax          |  70 |  16.04 |  6.68 |  53.63 |
-| Term, CLcr \> 50     | tmax          |  70 |  17.00 |  1.00 |  17.00 |
+| Term, CLcr \> 50     | tmax          |  70 |  17.00 | 17.00 |  17.00 |
 
 Simulated steady-state NCA by renal dosing band. AUClast is AUC0-24 at
 steady state (mg\*h/L); Cmax and Cav in mg/L; Tmax in h. {.table}

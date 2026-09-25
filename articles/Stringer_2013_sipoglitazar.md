@@ -179,8 +179,6 @@ simPhase1 <- rxode2::rxSolve(
   keep   = c("geno", "FFM")
 ) |>
   as.data.frame()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etapropSdPhase2
-#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 A deterministic typical-value solve is used for the structural checks.
@@ -207,8 +205,6 @@ simTypical <- rxode2::rxSolve(
 ) |>
   as.data.frame()
 #> Warning: No sigma parameters in the model
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etapropSdPhase2
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etapropSdPhase2
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: multi-subject simulation without without 'omega'
@@ -328,15 +324,15 @@ profileCheck |>
 
 | Time (h) | CcObs\_*1/*1 | CcObs\_*1/*2 | CcObs\_*2/*2 | CcSim\_*1/*1 | CcSim\_*1/*2 | CcSim\_*2/*2 | pctDiff\_*1/*1 | pctDiff\_*1/*2 | pctDiff\_*2/*2 |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 4100.0 | 4800 | 5300 | 4210.00 | 4700.0 | 5510 | 2.7 | -2.1 | 4.1 |
-| 2 | 3300.0 | 4300 | 5600 | 3040.00 | 3700.0 | 5240 | -8.0 | -13.9 | -6.5 |
-| 3 | 2100.0 | 3000 | 4600 | 1960.00 | 2610.0 | 4340 | -6.6 | -13.1 | -5.6 |
-| 4 | 1350.0 | 2400 | 4000 | 1250.00 | 1840.0 | 3550 | -7.3 | -23.2 | -11.2 |
-| 6 | 480.0 | 950 | 2200 | 536.00 | 971.0 | 2440 | 11.8 | 2.2 | 11.1 |
-| 8 | 200.0 | 570 | 1600 | 244.00 | 500.0 | 1790 | 21.8 | -12.2 | 11.9 |
-| 12 | 60.0 | 200 | 830 | 71.00 | 172.0 | 1030 | 18.3 | -14.2 | 24.7 |
-| 16 | 21.0 | 80 | 530 | 27.80 | 69.1 | 595 | 32.5 | -13.6 | 12.2 |
-| 24 | 6.5 | 18 | 230 | 6.91 | 16.9 | 219 | 6.3 | -6.3 | -4.8 |
+| 1 | 4100.0 | 4800 | 5300 | 4330.00 | 4590.0 | 5740 | 5.5 | -4.3 | 8.3 |
+| 2 | 3300.0 | 4300 | 5600 | 3080.00 | 3590.0 | 5200 | -6.7 | -16.4 | -7.2 |
+| 3 | 2100.0 | 3000 | 4600 | 1960.00 | 2480.0 | 4320 | -6.7 | -17.2 | -6.1 |
+| 4 | 1350.0 | 2400 | 4000 | 1180.00 | 1760.0 | 3500 | -12.6 | -26.6 | -12.4 |
+| 6 | 480.0 | 950 | 2200 | 493.00 | 874.0 | 2440 | 2.8 | -8.0 | 11.0 |
+| 8 | 200.0 | 570 | 1600 | 215.00 | 464.0 | 1740 | 7.4 | -18.6 | 8.9 |
+| 12 | 60.0 | 200 | 830 | 61.80 | 158.0 | 930 | 3.0 | -21.1 | 12.0 |
+| 16 | 21.0 | 80 | 530 | 25.00 | 66.7 | 524 | 18.9 | -16.7 | -1.0 |
+| 24 | 6.5 | 18 | 230 | 5.68 | 16.2 | 177 | -12.7 | -10.2 | -23.2 |
 
 Digitised observed median (CcObs, ng/mL) vs simulated median (CcSim,
 ng/mL) after a single 64 mg dose, by UGT2B15 genotype. {.table
@@ -407,18 +403,18 @@ aucSummary |>
 
 | Total daily dose (mg) | UGT2B15 genotype | Median AUC (mg\*h/L) | 25th percentile | 75th percentile | % above 73 mg\*h/L |
 |---:|:---|---:|---:|---:|---:|
-| 8 | *1/*1 | 1.85 | 1.42 | 2.28 | 0.0 |
-| 8 | *1/*2 | 2.45 | 1.96 | 3.05 | 0.0 |
-| 8 | *2/*2 | 5.21 | 4.47 | 6.82 | 0.0 |
-| 16 | *1/*1 | 3.71 | 2.84 | 4.56 | 0.0 |
-| 16 | *1/*2 | 4.90 | 3.92 | 6.10 | 0.0 |
-| 16 | *2/*2 | 10.40 | 8.94 | 13.60 | 0.0 |
-| 32 | *1/*1 | 7.42 | 5.67 | 9.13 | 0.0 |
-| 32 | *1/*2 | 9.79 | 7.83 | 12.20 | 0.0 |
-| 32 | *2/*2 | 20.80 | 17.90 | 27.30 | 0.0 |
-| 64 | *1/*1 | 14.80 | 11.30 | 18.30 | 0.0 |
-| 64 | *1/*2 | 19.60 | 15.70 | 24.40 | 0.0 |
-| 64 | *2/*2 | 41.60 | 35.80 | 54.60 | 10.5 |
+| 8 | *1/*1 | 1.88 | 1.37 | 2.44 | 0 |
+| 8 | *1/*2 | 2.34 | 1.79 | 3.02 | 0 |
+| 8 | *2/*2 | 5.23 | 4.35 | 6.57 | 0 |
+| 16 | *1/*1 | 3.76 | 2.74 | 4.88 | 0 |
+| 16 | *1/*2 | 4.68 | 3.58 | 6.05 | 0 |
+| 16 | *2/*2 | 10.50 | 8.71 | 13.10 | 0 |
+| 32 | *1/*1 | 7.52 | 5.47 | 9.75 | 0 |
+| 32 | *1/*2 | 9.36 | 7.16 | 12.10 | 0 |
+| 32 | *2/*2 | 20.90 | 17.40 | 26.30 | 0 |
+| 64 | *1/*1 | 15.00 | 10.90 | 19.50 | 0 |
+| 64 | *1/*2 | 18.70 | 14.30 | 24.20 | 0 |
+| 64 | *2/*2 | 41.80 | 34.80 | 52.50 | 6 |
 
 Simulated steady-state AUC by dose and genotype (200 subjects per
 genotype). {.table}
@@ -459,8 +455,6 @@ simMixTypical <- rxode2::rxSolve(
 ) |>
   as.data.frame()
 #> Warning: No sigma parameters in the model
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etapropSdPhase2
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etapropSdPhase2
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: multi-subject simulation without without 'omega'
@@ -605,18 +599,18 @@ knitr::kable(
 
 | NCA parameter          | geno  | Reference | Simulated |   % diff |
 |:-----------------------|:------|----------:|----------:|---------:|
-| Cmax (mg/L)            | *1/*1 |       4.1 |      4.21 |    +2.7% |
-| Cmax (mg/L)            | *1/*2 |       4.8 |       4.7 |    -2.1% |
-| Cmax (mg/L)            | *2/*2 |       5.6 |      5.51 |    -1.5% |
+| Cmax (mg/L)            | *1/*1 |       4.1 |      4.33 |    +5.5% |
+| Cmax (mg/L)            | *1/*2 |       4.8 |      4.59 |    -4.3% |
+| Cmax (mg/L)            | *2/*2 |       5.6 |      5.74 |    +2.5% |
 | Tmax (h)               | *1/*1 |         1 |         1 |    +0.0% |
 | Tmax (h)               | *1/*2 |         1 |         1 |    +0.0% |
 | Tmax (h)               | *2/*2 |         2 |         1 | -50.0%\* |
-| AUC0-∞ (obs) (mg\*h/L) | *1/*1 |      13.2 |      13.1 |    -0.7% |
-| AUC0-∞ (obs) (mg\*h/L) | *1/*2 |      20.2 |      18.1 |   -10.7% |
-| AUC0-∞ (obs) (mg\*h/L) | *2/*2 |      39.7 |      40.3 |    +1.7% |
-| t½ (h)                 | *1/*1 |      3.86 |      3.62 |    -6.1% |
-| t½ (h)                 | *1/*2 |      3.49 |      3.63 |    +4.0% |
-| t½ (h)                 | *2/*2 |       6.5 |      5.28 |   -18.8% |
+| AUC0-∞ (obs) (mg\*h/L) | *1/*1 |      13.2 |      12.9 |    -2.2% |
+| AUC0-∞ (obs) (mg\*h/L) | *1/*2 |      20.2 |      17.2 |   -14.8% |
+| AUC0-∞ (obs) (mg\*h/L) | *2/*2 |      39.7 |      38.8 |    -2.1% |
+| t½ (h)                 | *1/*1 |      3.86 |      3.52 |    -8.8% |
+| t½ (h)                 | *1/*2 |      3.49 |      3.68 |    +5.6% |
+| t½ (h)                 | *2/*2 |       6.5 |      5.02 |   -22.8% |
 
 NCA of the simulated median profile vs NCA of the median profile
 digitised from Supplementary Figure S2a. \* differs from the reference
@@ -733,10 +727,10 @@ stopifnot(abs(sum(mixtureWeights) - 1) < 0.005)
 | Typical CL is 4.46 / 3.25 / 1.53 L/h for *1/*1 / *1/*2 / *2/*2 | Table 2 | reproduced exactly |
 | Typical V = 9.03 L and V2 = 1.71 L at the reference FFM | Table 2 | reproduced exactly |
 | AUC(0-inf) after a single dose equals Dose / CL | Results, Final Model | max deviation 0.003% |
-| Median concentration-time profile after 64 mg, by genotype | Suppl. Figure S2a (digitised) | median \|difference\| 11.2%, 90th percentile 22.3% |
+| Median concentration-time profile after 64 mg, by genotype | Suppl. Figure S2a (digitised) | median \|difference\| 10.2%, 90th percentile 19.7% |
 | Steady-state AUC is ordered *2/*2 \> *1/*2 \> *1/*1 at every dose | Figure 2 | reproduced at 8, 16, 32 and 64 mg |
 | Exposure is dose-proportional (linear kinetics) | Results, Base Model | 64 mg / 8 mg median AUC ratio = 8.00 |
-| No subject exceeds 73 mg*h/L at 8 mg; a minority of* 2/\*2 subjects do at 64 mg | Figure 2 | 0% at 8 mg; 10.5% of *2/*2 at 64 mg |
+| No subject exceeds 73 mg*h/L at 8 mg; a minority of* 2/\*2 subjects do at 64 mg | Figure 2 | 0% at 8 mg; 6% of *2/*2 at 64 mg |
 | Mixture-model typical CL is 5.04 / 3.35 / 1.53 L/h for EM / IM / PM | Suppl. Table A1 | reproduced exactly |
 
 Published claims checked by this vignette. {.table}

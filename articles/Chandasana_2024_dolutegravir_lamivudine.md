@@ -398,10 +398,10 @@ knitr::kable(
 
 | NCA parameter      | analyte    | Reference | Simulated |   % diff |
 |:-------------------|:-----------|----------:|----------:|---------:|
-| Cmax (ug/mL)       | Lamivudine |       2.5 |      2.04 |   -18.5% |
+| Cmax (ug/mL)       | Lamivudine |       2.5 |      2.06 |   -17.5% |
 | Tmax (h)           | Lamivudine |       1.5 |         1 | -33.3%\* |
-| AUClast (ug\*h/mL) | Lamivudine |      14.1 |      14.5 |    +3.1% |
-| Ctrough (ug/mL)    | Lamivudine |     0.089 |     0.109 | +22.9%\* |
+| AUClast (ug\*h/mL) | Lamivudine |      14.1 |      14.2 |    +0.9% |
+| Ctrough (ug/mL)    | Lamivudine |     0.089 |     0.103 |   +16.2% |
 
 Lamivudine: simulated vs. Chandasana 2024 Table 3 population geometric
 means (n = 361). \* flags rows differing from the reference by \>20%.

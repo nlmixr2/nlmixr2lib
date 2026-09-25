@@ -244,6 +244,8 @@ dose_df <- events |>
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
                              concu = "mg/L", timeu = "hr")
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
 dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
                              doseu = "mg")
 
@@ -256,6 +258,33 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
 nca_tbl <- as.data.frame(nca_res$result)
 ```
 
@@ -362,30 +391,30 @@ knitr::kable(
 
 | Dose | Day | MIC (mg/L) | Published PTA (%) | Simulated PTA (%) | Difference (percentage points) |
 |:---|:---|:---|---:|---:|---:|
-| 10 mg/kg/day | Day 1 | 0.5 | 98.0 | 95.5 | -2.5 |
-| 10 mg/kg/day | Day 1 | 1 | 77.7 | 71.0 | -6.7 |
-| 10 mg/kg/day | Day 1 | 2 | 34.8 | 23.0 | -11.8 |
-| 10 mg/kg/day | Day 1 | 4 | 6.3 | 2.5 | -3.8 |
-| 10 mg/kg/day | Day 3 | 0.5 | 98.6 | 95.5 | -3.1 |
-| 10 mg/kg/day | Day 3 | 1 | 80.7 | 72.5 | -8.2 |
-| 10 mg/kg/day | Day 3 | 2 | 38.1 | 27.0 | -11.1 |
-| 10 mg/kg/day | Day 3 | 4 | 7.6 | 7.0 | -0.6 |
-| 5 mg/kg/day | Day 1 | 0.5 | 77.3 | 67.5 | -9.8 |
-| 5 mg/kg/day | Day 1 | 1 | 34.7 | 23.5 | -11.2 |
-| 5 mg/kg/day | Day 1 | 2 | 6.3 | 0.5 | -5.8 |
-| 5 mg/kg/day | Day 1 | 4 | 0.4 | 0.0 | -0.4 |
-| 5 mg/kg/day | Day 3 | 0.5 | 80.2 | 69.5 | -10.7 |
-| 5 mg/kg/day | Day 3 | 1 | 38.2 | 28.5 | -9.7 |
-| 5 mg/kg/day | Day 3 | 2 | 7.4 | 3.5 | -3.9 |
-| 5 mg/kg/day | Day 3 | 4 | 0.4 | 0.0 | -0.4 |
-| 6 mg/kg/day | Day 1 | 0.5 | 85.4 | 74.5 | -10.9 |
-| 6 mg/kg/day | Day 1 | 1 | 46.5 | 30.5 | -16.0 |
-| 6 mg/kg/day | Day 1 | 2 | 11.1 | 2.5 | -8.6 |
-| 6 mg/kg/day | Day 1 | 4 | 0.9 | 0.5 | -0.4 |
-| 6 mg/kg/day | Day 3 | 0.5 | 87.7 | 74.5 | -13.2 |
-| 6 mg/kg/day | Day 3 | 1 | 50.0 | 33.5 | -16.5 |
-| 6 mg/kg/day | Day 3 | 2 | 12.8 | 5.5 | -7.3 |
-| 6 mg/kg/day | Day 3 | 4 | 1.0 | 0.5 | -0.5 |
+| 10 mg/kg/day | Day 1 | 0.5 | 98.0 | NA | NA |
+| 10 mg/kg/day | Day 1 | 1 | 77.7 | NA | NA |
+| 10 mg/kg/day | Day 1 | 2 | 34.8 | NA | NA |
+| 10 mg/kg/day | Day 1 | 4 | 6.3 | NA | NA |
+| 10 mg/kg/day | Day 3 | 0.5 | 98.6 | NA | NA |
+| 10 mg/kg/day | Day 3 | 1 | 80.7 | NA | NA |
+| 10 mg/kg/day | Day 3 | 2 | 38.1 | NA | NA |
+| 10 mg/kg/day | Day 3 | 4 | 7.6 | NA | NA |
+| 5 mg/kg/day | Day 1 | 0.5 | 77.3 | NA | NA |
+| 5 mg/kg/day | Day 1 | 1 | 34.7 | NA | NA |
+| 5 mg/kg/day | Day 1 | 2 | 6.3 | NA | NA |
+| 5 mg/kg/day | Day 1 | 4 | 0.4 | NA | NA |
+| 5 mg/kg/day | Day 3 | 0.5 | 80.2 | NA | NA |
+| 5 mg/kg/day | Day 3 | 1 | 38.2 | NA | NA |
+| 5 mg/kg/day | Day 3 | 2 | 7.4 | NA | NA |
+| 5 mg/kg/day | Day 3 | 4 | 0.4 | NA | NA |
+| 6 mg/kg/day | Day 1 | 0.5 | 85.4 | NA | NA |
+| 6 mg/kg/day | Day 1 | 1 | 46.5 | NA | NA |
+| 6 mg/kg/day | Day 1 | 2 | 11.1 | NA | NA |
+| 6 mg/kg/day | Day 1 | 4 | 0.9 | NA | NA |
+| 6 mg/kg/day | Day 3 | 0.5 | 87.7 | NA | NA |
+| 6 mg/kg/day | Day 3 | 1 | 50.0 | NA | NA |
+| 6 mg/kg/day | Day 3 | 2 | 12.8 | NA | NA |
+| 6 mg/kg/day | Day 3 | 4 | 1.0 | NA | NA |
 | 7 mg/kg/day | Day 1 | 0.5 | 90.9 | 90.0 | -0.9 |
 | 7 mg/kg/day | Day 1 | 1 | 55.8 | 48.0 | -7.8 |
 | 7 mg/kg/day | Day 1 | 2 | 16.4 | 3.5 | -12.9 |
@@ -592,16 +621,16 @@ knitr::kable(
 
 | Dose | Nephrotoxicity metric | Day | Published (%) | Simulated (%) | Difference (percentage points) |
 |:---|:---|:---|---:|---:|---:|
-| 10 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 1 | 1.10 | 0.0 | -1.10 |
-| 10 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 3 | 1.29 | 0.0 | -1.29 |
+| 10 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 1 | 1.10 | NA | NA |
+| 10 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 3 | 1.29 | NA | NA |
 | 10 mg/kg/day | Cmin \> 2 mg/L (%) | Day 1 | 15.90 | 0.0 | -15.90 |
 | 10 mg/kg/day | Cmin \> 2 mg/L (%) | Day 3 | 18.40 | 25.0 | 6.60 |
-| 5 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 1 | 0.10 | 0.0 | -0.10 |
-| 5 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 3 | 0.11 | 0.0 | -0.11 |
+| 5 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 1 | 0.10 | NA | NA |
+| 5 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 3 | 0.11 | NA | NA |
 | 5 mg/kg/day | Cmin \> 2 mg/L (%) | Day 1 | 3.90 | 0.0 | -3.90 |
 | 5 mg/kg/day | Cmin \> 2 mg/L (%) | Day 3 | 5.50 | 12.5 | 7.00 |
-| 6 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 1 | 0.10 | 0.0 | -0.10 |
-| 6 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 3 | 0.13 | 0.0 | -0.13 |
+| 6 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 1 | 0.10 | NA | NA |
+| 6 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 3 | 0.13 | NA | NA |
 | 6 mg/kg/day | Cmin \> 2 mg/L (%) | Day 1 | 5.70 | 0.0 | -5.70 |
 | 6 mg/kg/day | Cmin \> 2 mg/L (%) | Day 3 | 8.00 | 9.5 | 1.50 |
 | 7 mg/kg/day | AUC24h \> 700 mg\*h/L (%) | Day 1 | 0.21 | 0.0 | -0.21 |
@@ -715,15 +744,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -731,7 +760,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

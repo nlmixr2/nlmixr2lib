@@ -454,9 +454,9 @@ tibble::tibble(
 
 | Quantity                 | Value |
 |:-------------------------|------:|
-| Median Cmax (mg/L)       | 1.102 |
-| Time of median peak (h)  | 4.000 |
-| Median Celf/Cc after 4 h | 0.501 |
+| Median Cmax (mg/L)       | 1.146 |
+| Time of median peak (h)  | 4.750 |
+| Median Celf/Cc after 4 h | 0.516 |
 
 Summary of the simulated single-dose median profile. {.table}
 
@@ -525,13 +525,12 @@ knitr::kable(summary(nca_res),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 168 | 192 | 100 mg q12h - ELF | 200 | 9.44 \[110\] | 0.496 \[92.8\] | 0.269 \[173\] | 15.5 \[1.50, 20.0\] | 0.393 \[110\] |
-| 168 | 192 | 100 mg q12h - plasma | 200 | 18.5 \[105\] | 0.996 \[86.8\] | 0.506 \[175\] | 15.0 \[0.500, 19.5\] | 0.772 \[105\] |
-| 168 | 192 | 50 mg q12h - ELF | 200 | 5.12 \[126\] | 0.265 \[108\] | 0.150 \[184\] | 15.5 \[2.00, 20.0\] | 0.213 \[126\] |
-| 168 | 192 | 50 mg q12h - plasma | 200 | 10.4 \[116\] | 0.552 \[97.3\] | 0.294 \[178\] | 15.0 \[1.00, 19.5\] | 0.435 \[116\] |
+| 168 | 192 | 100 mg q12h - ELF | 200 | 9.87 \[126\] | 0.513 \[105\] | 0.286 \[201\] | 15.5 \[2.00, 20.5\] | 0.411 \[126\] |
+| 168 | 192 | 100 mg q12h - plasma | 200 | 20.0 \[121\] | 1.06 \[99.4\] | 0.556 \[207\] | 15.0 \[1.00, 20.0\] | 0.834 \[121\] |
+| 168 | 192 | 50 mg q12h - ELF | 200 | 5.09 \[134\] | 0.262 \[115\] | 0.152 \[186\] | 15.0 \[1.50, 20.5\] | 0.212 \[134\] |
+| 168 | 192 | 50 mg q12h - plasma | 200 | 10.6 \[126\] | 0.560 \[107\] | 0.306 \[183\] | 14.5 \[1.00, 20.0\] | 0.443 \[126\] |
 
-Steady-state NCA over the 168-192 h dosing interval. {.table
-style="width:100%;"}
+Steady-state NCA over the 168-192 h dosing interval. {.table}
 
 ### Comparison against published NCA
 
@@ -567,10 +566,10 @@ knitr::kable(cmp, caption = paste(
 
 | NCA parameter    | treatment            | Reference | Simulated | % diff |
 |:-----------------|:---------------------|----------:|----------:|-------:|
-| AUClast (mg.h/L) | 100 mg q12h - plasma |        21 |      18.1 | -13.7% |
-| AUClast (mg.h/L) | 100 mg q12h - ELF    |      10.2 |      9.18 |  -9.7% |
-| AUClast (mg.h/L) | 50 mg q12h - plasma  |      10.4 |      11.3 |  +8.8% |
-| AUClast (mg.h/L) | 50 mg q12h - ELF     |      5.12 |      5.37 |  +4.9% |
+| AUClast (mg.h/L) | 100 mg q12h - plasma |        21 |      20.1 |  -4.1% |
+| AUClast (mg.h/L) | 100 mg q12h - ELF    |      10.2 |      10.8 |  +5.8% |
+| AUClast (mg.h/L) | 50 mg q12h - plasma  |      10.4 |        11 |  +5.6% |
+| AUClast (mg.h/L) | 50 mg q12h - ELF     |      5.12 |      5.27 |  +3.0% |
 
 Simulated (200 subjects per arm) vs. published median steady-state
 AUC0-24. \* differs from the reference by more than 20%. {.table}

@@ -223,7 +223,7 @@ analytic <- 1500 / p[["vc"]] *
 
 max_rel_err <- max(abs(sim_cf$Cc - analytic) / analytic)
 signif(max_rel_err, 3)
-#> [1] 1.49e-14
+#> [1] 5.46e-07
 stopifnot(max_rel_err < 1e-6)
 ```
 
@@ -797,11 +797,11 @@ nca_wide |>
 
 | Parameter | Median | 5th pct | 95th pct |
 |:----------|-------:|--------:|---------:|
-| cmax      | 108.19 |   41.40 |   214.54 |
+| cmax      | 101.64 |   44.48 |   200.41 |
 | tmax      |   0.08 |    0.08 |     0.09 |
-| cmin      |   2.10 |    0.13 |    17.19 |
-| auclast   | 100.17 |   44.32 |   246.80 |
-| half.life |   2.01 |    1.04 |     5.65 |
+| cmin      |   1.95 |    0.13 |    14.96 |
+| auclast   |  95.04 |   46.79 |   239.91 |
+| half.life |   2.08 |    1.05 |     5.01 |
 
 Simulated steady-state NCA over the 72-80 h interval, 750 mg q8h (n =
 200). Concentrations mg/L, AUC mg\*h/L, times h. {.table}
@@ -824,7 +824,7 @@ mb <- nca_wide |>
 
 summary(mb$pct_diff)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -0.355087 -0.035276 -0.015712 -0.030001 -0.008157 -0.002312
+#> -0.267713 -0.030149 -0.014111 -0.026446 -0.007306 -0.002223
 stopifnot(
   !anyNA(mb$pct_diff),
   abs(median(mb$pct_diff)) < 1,

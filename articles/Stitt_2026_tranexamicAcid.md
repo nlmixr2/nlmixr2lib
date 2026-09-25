@@ -478,26 +478,26 @@ knitr::kable(
 
 | NCA parameter          | arm                | Reference | Simulated | % diff |
 |:-----------------------|:-------------------|----------:|----------:|-------:|
-| AUC0-4h (mg\*min/L)    | Adult 2 g          |      8740 |      8730 |  -0.1% |
-| AUC0-4h (mg\*min/L)    | Pediatric 20 mg/kg |      5010 |      5040 |  +0.6% |
-| AUC0-4h (mg\*min/L)    | Pediatric 25 mg/kg |      6260 |      6300 |  +0.6% |
-| AUC0-4h (mg\*min/L)    | Pediatric 30 mg/kg |      7520 |      7570 |  +0.7% |
-| AUC0-4h (mg\*min/L)    | Pediatric 35 mg/kg |      8770 |      8830 |  +0.6% |
-| AUC0-8h (mg\*min/L)    | Adult 2 g          |     10700 |     10900 |  +1.6% |
-| AUC0-8h (mg\*min/L)    | Pediatric 20 mg/kg |      5680 |      5680 |  +0.1% |
-| AUC0-8h (mg\*min/L)    | Pediatric 25 mg/kg |      7100 |      7100 |  +0.1% |
-| AUC0-8h (mg\*min/L)    | Pediatric 30 mg/kg |      8510 |      8520 |  +0.1% |
-| AUC0-8h (mg\*min/L)    | Pediatric 35 mg/kg |      9930 |      9940 |  +0.1% |
-| Cmax (mg/L)            | Adult 2 g          |       117 |       123 |  +5.0% |
-| Cmax (mg/L)            | Pediatric 20 mg/kg |      91.7 |      96.4 |  +5.1% |
-| Cmax (mg/L)            | Pediatric 25 mg/kg |       115 |       120 |  +5.1% |
-| Cmax (mg/L)            | Pediatric 30 mg/kg |       138 |       145 |  +4.7% |
-| Cmax (mg/L)            | Pediatric 35 mg/kg |       160 |       169 |  +5.1% |
-| Time above 10 mg/L (h) | Adult 2 g          |      5.27 |      5.08 |  -3.6% |
-| Time above 10 mg/L (h) | Pediatric 20 mg/kg |       2.5 |       2.5 |  +0.0% |
-| Time above 10 mg/L (h) | Pediatric 25 mg/kg |         3 |      2.86 |  -4.7% |
-| Time above 10 mg/L (h) | Pediatric 30 mg/kg |       3.3 |      3.21 |  -2.7% |
-| Time above 10 mg/L (h) | Pediatric 35 mg/kg |       3.7 |      3.53 |  -4.6% |
+| AUC0-4h (mg\*min/L)    | Adult 2 g          |      8740 |      8910 |  +2.0% |
+| AUC0-4h (mg\*min/L)    | Pediatric 20 mg/kg |      5010 |      5090 |  +1.5% |
+| AUC0-4h (mg\*min/L)    | Pediatric 25 mg/kg |      6260 |      6360 |  +1.5% |
+| AUC0-4h (mg\*min/L)    | Pediatric 30 mg/kg |      7520 |      7630 |  +1.5% |
+| AUC0-4h (mg\*min/L)    | Pediatric 35 mg/kg |      8770 |      8900 |  +1.5% |
+| AUC0-8h (mg\*min/L)    | Adult 2 g          |     10700 |     10800 |  +1.2% |
+| AUC0-8h (mg\*min/L)    | Pediatric 20 mg/kg |      5680 |      5740 |  +1.1% |
+| AUC0-8h (mg\*min/L)    | Pediatric 25 mg/kg |      7100 |      7170 |  +1.1% |
+| AUC0-8h (mg\*min/L)    | Pediatric 30 mg/kg |      8510 |      8610 |  +1.1% |
+| AUC0-8h (mg\*min/L)    | Pediatric 35 mg/kg |      9930 |     10000 |  +1.2% |
+| Cmax (mg/L)            | Adult 2 g          |       117 |       118 |  +0.6% |
+| Cmax (mg/L)            | Pediatric 20 mg/kg |      91.7 |      92.2 |  +0.5% |
+| Cmax (mg/L)            | Pediatric 25 mg/kg |       115 |       115 |  +0.5% |
+| Cmax (mg/L)            | Pediatric 30 mg/kg |       138 |       138 |  +0.2% |
+| Cmax (mg/L)            | Pediatric 35 mg/kg |       160 |       161 |  +0.5% |
+| Time above 10 mg/L (h) | Adult 2 g          |      5.27 |      4.97 |  -5.6% |
+| Time above 10 mg/L (h) | Pediatric 20 mg/kg |       2.5 |      2.53 |  +1.2% |
+| Time above 10 mg/L (h) | Pediatric 25 mg/kg |         3 |      2.89 |  -3.5% |
+| Time above 10 mg/L (h) | Pediatric 30 mg/kg |       3.3 |      3.22 |  -2.4% |
+| Time above 10 mg/L (h) | Pediatric 35 mg/kg |       3.7 |      3.59 |  -3.0% |
 
 Simulated versus published NCA (Stitt 2026 Table 3), medians. \* differs
 from the reference by more than 20%. {.table}
@@ -556,11 +556,11 @@ tibble::tibble(
 
 | Arm | Cmax % diff | AUC0-4h % diff | AUC0-8h % diff | Time above 10 mg/L % diff |
 |:---|---:|---:|---:|---:|
-| Adult 2 g | 5.0 | -0.1 | 1.6 | -3.6 |
-| Pediatric 20 mg/kg | 5.1 | 0.6 | 0.1 | 0.0 |
-| Pediatric 25 mg/kg | 5.1 | 0.6 | 0.1 | -4.7 |
-| Pediatric 30 mg/kg | 4.7 | 0.7 | 0.1 | -2.7 |
-| Pediatric 35 mg/kg | 5.1 | 0.6 | 0.1 | -4.6 |
+| Adult 2 g | 0.6 | 2.0 | 1.2 | -5.6 |
+| Pediatric 20 mg/kg | 0.5 | 1.5 | 1.1 | 1.2 |
+| Pediatric 25 mg/kg | 0.5 | 1.5 | 1.1 | -3.5 |
+| Pediatric 30 mg/kg | 0.2 | 1.5 | 1.1 | -2.4 |
+| Pediatric 35 mg/kg | 0.5 | 1.5 | 1.2 | -3.0 |
 
 Per-arm agreement with Stitt 2026 Table 3. All four metrics are
 asserted: 8% (Cmax, AUC0-4h), 10% (AUC0-8h), 20% (time above target).
@@ -645,11 +645,11 @@ cmax_cmp |>
 
 | Arm | Stitt 2026 Table 3 (mg/L) | From Cc, no residual error (mg/L) | From sim, 15.4% residual error (mg/L) | Cc % diff | sim % diff |
 |:---|---:|---:|---:|---:|---:|
-| Adult 2 g | 117.1 | 105.5 | 123.0 | -9.9 | 5.0 |
-| Pediatric 20 mg/kg | 91.7 | 84.2 | 96.4 | -8.2 | 5.1 |
-| Pediatric 25 mg/kg | 114.6 | 105.2 | 120.5 | -8.2 | 5.1 |
-| Pediatric 30 mg/kg | 138.0 | 126.3 | 144.5 | -8.5 | 4.7 |
-| Pediatric 35 mg/kg | 160.4 | 147.3 | 168.6 | -8.2 | 5.1 |
+| Adult 2 g | 117.1 | 102.2 | 117.8 | -12.7 | 0.6 |
+| Pediatric 20 mg/kg | 91.7 | 81.8 | 92.2 | -10.8 | 0.5 |
+| Pediatric 25 mg/kg | 114.6 | 102.2 | 115.2 | -10.8 | 0.5 |
+| Pediatric 30 mg/kg | 138.0 | 122.7 | 138.2 | -11.1 | 0.2 |
+| Pediatric 35 mg/kg | 160.4 | 143.1 | 161.3 | -10.8 | 0.5 |
 
 Cmax against Stitt 2026 Table 3, computed both ways. An NCA Cmax is a
 maximum over noisy samples and so is biased upward by roughly one
@@ -732,7 +732,7 @@ tibble::tibble(
 
 | Max \|% difference\| | Median % difference | Subjects checked |
 |---------------------:|--------------------:|-----------------:|
-|                0.007 |               0.001 |               50 |
+|                0.008 |               0.001 |               50 |
 
 Per-subject AUC0-inf versus dose / CL. Asserted to within 1%. {.table}
 
@@ -831,18 +831,18 @@ knitr::kable(
 
 | NCA parameter          | arm             | Reference | Simulated | % diff |
 |:-----------------------|:----------------|----------:|----------:|-------:|
-| AUC0-4h (mg\*min/L)    | 1 min infusion  |      6260 |      6300 |  +0.6% |
-| AUC0-4h (mg\*min/L)    | 5 min infusion  |      6260 |      6290 |  +0.5% |
-| AUC0-4h (mg\*min/L)    | 10 min infusion |      6240 |      6270 |  +0.4% |
-| AUC0-8h (mg\*min/L)    | 1 min infusion  |      7100 |      7100 |  +0.1% |
-| AUC0-8h (mg\*min/L)    | 5 min infusion  |      7090 |      7100 |  +0.1% |
-| AUC0-8h (mg\*min/L)    | 10 min infusion |      7090 |      7090 |  +0.1% |
-| Cmax (mg/L)            | 1 min infusion  |       115 |       120 |  +5.1% |
-| Cmax (mg/L)            | 5 min infusion  |       108 |       111 |  +3.0% |
-| Cmax (mg/L)            | 10 min infusion |      95.9 |       105 |  +9.1% |
-| Time above 10 mg/L (h) | 1 min infusion  |         3 |      2.86 |  -4.7% |
-| Time above 10 mg/L (h) | 5 min infusion  |         3 |      2.89 |  -3.5% |
-| Time above 10 mg/L (h) | 10 min infusion |       2.9 |      2.94 |  +1.3% |
+| AUC0-4h (mg\*min/L)    | 1 min infusion  |      6260 |      6360 |  +1.5% |
+| AUC0-4h (mg\*min/L)    | 5 min infusion  |      6260 |      6350 |  +1.4% |
+| AUC0-4h (mg\*min/L)    | 10 min infusion |      6240 |      6330 |  +1.4% |
+| AUC0-8h (mg\*min/L)    | 1 min infusion  |      7100 |      7170 |  +1.1% |
+| AUC0-8h (mg\*min/L)    | 5 min infusion  |      7090 |      7170 |  +1.2% |
+| AUC0-8h (mg\*min/L)    | 10 min infusion |      7090 |      7170 |  +1.2% |
+| Cmax (mg/L)            | 1 min infusion  |       115 |       115 |  +0.5% |
+| Cmax (mg/L)            | 5 min infusion  |       108 |       112 |  +3.5% |
+| Cmax (mg/L)            | 10 min infusion |      95.9 |       101 |  +5.4% |
+| Time above 10 mg/L (h) | 1 min infusion  |         3 |      2.89 |  -3.5% |
+| Time above 10 mg/L (h) | 5 min infusion  |         3 |      2.93 |  -2.4% |
+| Time above 10 mg/L (h) | 10 min infusion |       2.9 |      2.97 |  +2.4% |
 
 Simulated versus published NCA for 25 mg/kg at three infusion durations
 (Stitt 2026 Table 4), medians. {.table}
@@ -894,9 +894,9 @@ tibble::tibble(
 
 | Arm | AUC0-8h (mg\*min/L) | Cmax (mg/L) | Stitt 2026 Table 4 Cmax (mg/L) | Cmax % diff | Cmax relative to 1 min |
 |:---|---:|---:|---:|---:|---:|
-| 1 min infusion | 7101 | 120.5 | 114.6 | 5.1 | 1.000 |
-| 5 min infusion | 7096 | 111.1 | 107.8 | 3.0 | 0.922 |
-| 10 min infusion | 7091 | 104.6 | 95.9 | 9.1 | 0.868 |
+| 1 min infusion | 7174 | 115.2 | 114.6 | 0.5 | 1.000 |
+| 5 min infusion | 7172 | 111.6 | 107.8 | 3.5 | 0.968 |
+| 10 min infusion | 7170 | 101.1 | 95.9 | 5.4 | 0.877 |
 
 Infusion duration changes the peak but not the exposure. AUC0-8h is
 asserted to vary by less than 1% across the three durations, and each
@@ -976,7 +976,7 @@ tibble::tibble(
 |:---|:---|
 | 25 mg/kg gives the paediatric Cmax closest to an adult 2 g bolus | asserted |
 | 20, 25 and 30 mg/kg all fall short of the adult AUC0-8h | asserted |
-| 35 mg/kg also falls short of the adult AUC0-8h | reported, not asserted: -8.5% versus adult |
+| 35 mg/kg also falls short of the adult AUC0-8h | reported, not asserted: -7.2% versus adult |
 | Every paediatric dose spends less time above 10 mg/L than the adult | asserted |
 | 35 mg/kg spends the most time above 10 mg/L of the four | asserted |
 

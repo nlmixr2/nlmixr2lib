@@ -409,7 +409,7 @@ cat(sprintf(
   stats::quantile(abs(gate1$pct_diff), 0.9),
   max(abs(gate1$pct_diff))
 ))
-#> closed-form gate: median -0.0000%, 90th pct of |diff| 0.0013%, max |diff| 0.1076%
+#> closed-form gate: median -0.0000%, 90th pct of |diff| 0.0002%, max |diff| 0.0140%
 
 stopifnot(
   nrow(gate1) == n_sub,
@@ -532,11 +532,11 @@ knitr::kable(
 
 | Statistic           | Simulated | Published | Difference (%) |
 |:--------------------|----------:|----------:|---------------:|
-| Median (ng\*h/mL)   |   391.912 |   349.000 |           12.3 |
-| Q1 (ng\*h/mL)       |   248.869 |   234.000 |            6.4 |
-| Q3 (ng\*h/mL)       |   583.076 |   581.000 |            0.4 |
-| Mean / median ratio |     1.126 |     1.218 |           -7.5 |
-| CV (%)              |    61.225 |    62.824 |           -2.5 |
+| Median (ng\*h/mL)   |   371.437 |   349.000 |            6.4 |
+| Q1 (ng\*h/mL)       |   240.028 |   234.000 |            2.6 |
+| Q3 (ng\*h/mL)       |   495.168 |   581.000 |          -14.8 |
+| Mean / median ratio |     1.142 |     1.218 |           -6.3 |
+| CV (%)              |    64.373 |    62.824 |            2.5 |
 
 Simulated vs published AUCtau,ss distribution (Olsson Gisleskog 2025
 Results 3.1 and Table 3). {.table}
@@ -642,9 +642,9 @@ cat(sprintf(
   min(c_edges$tad_at_min), max(c_edges$tad_at_min)
 ))
 #> n = 200 subjects
-#>   max |C(0 h) - C(24 h)| / C(24 h) : 0.00446   (steady state reached)
-#>   max |cmin   - C(24 h)| / C(24 h) : 0.122   (cmin is NOT the trough)
-#>   time-after-dose at cmin, range   : 0.020 to 1.120 h
+#>   max |C(0 h) - C(24 h)| / C(24 h) : 0.000404   (steady state reached)
+#>   max |cmin   - C(24 h)| / C(24 h) : 0.0887   (cmin is NOT the trough)
+#>   time-after-dose at cmin, range   : 0.020 to 0.700 h
 
 stopifnot(
   nrow(c_edges) == n_sub,
@@ -699,8 +699,8 @@ knitr::kable(
 
 | NCA parameter      | scenario           | Reference | Simulated | % diff |
 |:-------------------|:-------------------|:----------|:----------|:-------|
-| Cmax (ng/mL)       | 560 mg QD, fasting | 62.5      | 67.2      | +7.5%  |
-| AUClast (ng\*h/mL) | 560 mg QD, fasting | 349       | 392       | +12.3% |
+| Cmax (ng/mL)       | 560 mg QD, fasting | 62.5      | 63.9      | +2.3%  |
+| AUClast (ng\*h/mL) | 560 mg QD, fasting | 349       | 371       | +6.4%  |
 
 Simulated (PKNCA) vs published steady-state exposure, ibrutinib 560 mg
 once daily under fasting conditions. Published Cmax is the
@@ -731,7 +731,7 @@ knitr::kable(
 
 | NCA parameter   | scenario           | Reference | Simulated | % diff |
 |:----------------|:-------------------|----------:|----------:|:-------|
-| Ctrough (ng/mL) | 560 mg QD, fasting |      3.23 |     3.245 | 0.5%   |
+| Ctrough (ng/mL) | 560 mg QD, fasting |      3.23 |     3.112 | -3.7%  |
 
 Simulated vs published steady-state trough. Read directly off the
 profile rather than via PKNCA (see above). Published value is the
@@ -971,9 +971,9 @@ knitr::kable(
 
 | Endpoint | Mean predicted incidence (%) | SHINE observed (%) |
 |:---|---:|---:|
-| Atrial fibrillation (any) | 13.6 | 13.9 |
-| Any hemorrhage, no CYP3A inhibitor | 32.0 | 31.6 |
-| Any hemorrhage, any CYP3A inhibitor | 46.4 | 47.8 |
+| Atrial fibrillation (any) | 13.3 | 13.9 |
+| Any hemorrhage, no CYP3A inhibitor | 31.6 | 31.6 |
+| Any hemorrhage, any CYP3A inhibitor | 45.9 | 47.8 |
 
 Mean predicted incidence over the simulated exposure distribution,
 against the SHINE observed incidences (Introduction para 4 for atrial

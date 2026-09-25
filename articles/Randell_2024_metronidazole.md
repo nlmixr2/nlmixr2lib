@@ -351,10 +351,10 @@ auc_gate |>
 
 | Typical subject | CL (L/h) | V (L) | Dose/CL (mg\*h/L) | PKNCA AUC(tau) (mg\*h/L) | Difference (%) |
 |:---|---:|---:|---:|---:|---:|
-| PMA 26 wk, 0.9 kg | 0.0182 | 0.787 | 371.66 | 371.64 | -0.0047 |
-| PMA 32 wk, 1.9 kg | 0.0664 | 1.392 | 214.60 | 214.58 | -0.0098 |
-| PMA 38 wk, 2.9 kg | 0.1042 | 1.922 | 208.76 | 208.74 | -0.0066 |
-| PMA 44 wk, 4.0 kg | 0.1440 | 2.457 | 208.38 | 208.37 | -0.0048 |
+| PMA 26 wk, 0.9 kg | 0.0182 | 0.787 | 371.66 | 371.64 | -0.0046 |
+| PMA 32 wk, 1.9 kg | 0.0664 | 1.392 | 214.60 | 214.58 | -0.0097 |
+| PMA 38 wk, 2.9 kg | 0.1042 | 1.922 | 208.76 | 208.74 | -0.0065 |
+| PMA 44 wk, 4.0 kg | 0.1440 | 2.457 | 208.38 | 208.37 | -0.0046 |
 
 Gate 1: steady-state AUC over one dosing interval versus the closed-form
 Dose/CL. {.table style="width:100%;"}
@@ -648,7 +648,7 @@ knitr::kable(ss_summary, digits = 2,
 | PMA 34-40 wk (q8h)                 | Cmax (mg/L)        |  31.01 |  19.08 |  51.39 |
 | PMA 34-40 wk (q8h)                 | Cmin (mg/L)        |  21.14 |   9.05 |  41.25 |
 | PMA 34-40 wk (q8h)                 | Cavg (mg/L)        |  25.71 |  13.25 |  45.73 |
-| PMA 34-40 wk (q8h)                 | AUC(tau) (mg\*h/L) | 205.67 | 105.99 | 365.83 |
+| PMA 34-40 wk (q8h)                 | AUC(tau) (mg\*h/L) | 205.67 | 105.99 | 365.84 |
 | PMA 34-40 wk (q8h)                 | Half-life (h)      |  13.61 |   6.47 |  26.63 |
 | PMA \>40 wk (q12h, counterfactual) | Cmax (mg/L)        |  23.72 |  15.25 |  36.69 |
 | PMA \>40 wk (q12h, counterfactual) | Cmin (mg/L)        |  12.31 |   5.15 |  24.90 |

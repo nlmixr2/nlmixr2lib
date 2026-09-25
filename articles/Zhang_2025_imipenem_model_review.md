@@ -320,7 +320,7 @@ dplyr::glimpse(sim)
 #> Columns: 3
 #> $ model <chr> "Ikawa_2008_imipenem", "Ikawa_2008_imipenem", "Ikawa_2008_imipen…
 #> $ time  <dbl> 0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50…
-#> $ Cc    <dbl> 107.29614, 69.15468, 50.41882, 40.69728, 35.20715, 31.74291, 29.…
+#> $ Cc    <dbl> 107.29614, 69.15468, 50.41881, 40.69727, 35.20714, 31.74291, 29.…
 ```
 
 ### Figure: typical-value profiles after a single IV bolus
@@ -335,8 +335,18 @@ visible as a wide spread of terminal slopes.
 
 ``` r
 
+# Drop each profile's numerically-zero tail before NCA. The 120 h grid takes
+# the fast-clearing adult models (terminal half-lives 1-2 h) down to
+# ~1e-17 mg/L, far below the ODE integrator's absolute error; there the
+# solution scatters around zero (Jaruratanasirikul 2021 dips negative at
+# 74-76 h), PKNCA's log-down trapezoid returns NaN across the sign change and
+# the terminal fit follows the noise. Keeping Cc >= 1e-6 x Cmax leaves every
+# model's extrapolated AUC below 0.001%.
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(model) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id = model, time, Cc) |>
   dplyr::mutate(treatment = "IV bolus")
 
@@ -363,24 +373,17 @@ intervals <- data.frame(
 )
 
 res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#> Warning: aucpext is typically only calculated when aucinf is greater than auclast.
-#> aucpext is typically only calculated when aucinf is greater than auclast.
-#> aucpext is typically only calculated when aucinf is greater than auclast.
-#> aucpext is typically only calculated when aucinf is greater than auclast.
-#> aucpext is typically only calculated when aucinf is greater than auclast.
-#> aucpext is typically only calculated when aucinf is greater than auclast.
-#> aucpext is typically only calculated when aucinf is greater than auclast.
 nca <- as.data.frame(res)
 head(nca)
 #> # A tibble: 6 × 8
-#>   treatment id                 start   end PPTESTCD  PPORRES exclude PPORRESU
-#>   <chr>     <chr>              <dbl> <dbl> <chr>       <dbl> <chr>   <chr>   
-#> 1 IV bolus  Chen_2020_imipenem     0   Inf auclast   5.63e+1 <NA>    h*mg/L  
-#> 2 IV bolus  Chen_2020_imipenem     0   Inf cmax      2.44e+1 <NA>    mg/L    
-#> 3 IV bolus  Chen_2020_imipenem     0   Inf tmax      0       <NA>    h       
-#> 4 IV bolus  Chen_2020_imipenem     0   Inf tlast     1.2 e+2 <NA>    h       
-#> 5 IV bolus  Chen_2020_imipenem     0   Inf clast.obs 3.64e-8 <NA>    mg/L    
-#> 6 IV bolus  Chen_2020_imipenem     0   Inf lambda.z  1.52e-1 <NA>    1/h
+#>   treatment id                 start   end PPTESTCD     PPORRES exclude PPORRESU
+#>   <chr>     <chr>              <dbl> <dbl> <chr>          <dbl> <chr>   <chr>   
+#> 1 IV bolus  Chen_2020_imipenem     0   Inf auclast   56.3       <NA>    h*mg/L  
+#> 2 IV bolus  Chen_2020_imipenem     0   Inf cmax      24.4       <NA>    mg/L    
+#> 3 IV bolus  Chen_2020_imipenem     0   Inf tmax       0         <NA>    h       
+#> 4 IV bolus  Chen_2020_imipenem     0   Inf tlast     76         <NA>    h       
+#> 5 IV bolus  Chen_2020_imipenem     0   Inf clast.obs  0.0000279 <NA>    mg/L    
+#> 6 IV bolus  Chen_2020_imipenem     0   Inf lambda.z   0.152     <NA>    1/h
 ```
 
 ### Gate 1 – clearance identity `AUC(0, inf) x CL = Dose`
@@ -426,20 +429,20 @@ knitr::kable(
 
 | Model | Published CL (L/h) | NCA Dose/AUCinf (L/h) | % difference | AUC extrapolated (%) |
 |:---|---:|---:|---:|---:|
-| Chen_2020_imipenem | 8.8800 | 8.8792 | -0.009 | 0 |
-| Dao_2022_imipenem | 0.2100 | 0.2100 | 0.000 | 0 |
-| Dinh_2022_imipenem | 4.7900 | 4.7896 | -0.008 | 0 |
-| Dong_2019_imipenem | 8.6000 | 8.5987 | -0.015 | 0 |
-| Ikawa_2008_imipenem | 9.4200 | 9.4004 | -0.208 | 0 |
-| Jaruratanasirikul_2021_imipenem | 13.3000 | 13.2970 | -0.022 | 0 |
-| Lafaurie_2023_imipenem_neutropenia | 14.3000 | 14.3000 | 0.000 | 0 |
-| Lafaurie_2023_imipenem_recovery | 10.9000 | 10.9000 | 0.000 | 0 |
-| Nguyen_2021_imipenem | 7.8800 | 7.8800 | 0.000 | 0 |
-| Por_2021_imipenem | 15.3100 | 15.3076 | -0.016 | 0 |
-| Truong_2025_imipenem | 14.6000 | 14.5986 | -0.010 | 0 |
-| Yoshizawa_2013_imipenem_children | 7.6140 | 7.6130 | -0.013 | 0 |
-| Yoshizawa_2013_imipenem_neonates | 0.6338 | 0.6338 | 0.000 | 0 |
-| deVelde_2020_imipenem | 18.8552 | 18.8525 | -0.014 | 0 |
+| Chen_2020_imipenem | 8.8800 | 8.8792 | -0.009 | 0.000 |
+| Dao_2022_imipenem | 0.2100 | 0.2100 | 0.000 | 0.000 |
+| Dinh_2022_imipenem | 4.7900 | 4.7896 | -0.008 | 0.000 |
+| Dong_2019_imipenem | 8.6000 | 8.5987 | -0.015 | 0.001 |
+| Ikawa_2008_imipenem | 9.4200 | 9.4004 | -0.208 | 0.000 |
+| Jaruratanasirikul_2021_imipenem | 13.3000 | 13.2970 | -0.022 | 0.000 |
+| Lafaurie_2023_imipenem_neutropenia | 14.3000 | 14.3000 | 0.000 | 0.000 |
+| Lafaurie_2023_imipenem_recovery | 10.9000 | 10.9000 | 0.000 | 0.000 |
+| Nguyen_2021_imipenem | 7.8800 | 7.8800 | 0.000 | 0.000 |
+| Por_2021_imipenem | 15.3100 | 15.3076 | -0.016 | 0.000 |
+| Truong_2025_imipenem | 14.6000 | 14.5986 | -0.010 | 0.000 |
+| Yoshizawa_2013_imipenem_children | 7.6140 | 7.6130 | -0.013 | 0.000 |
+| Yoshizawa_2013_imipenem_neonates | 0.6338 | 0.6338 | 0.000 | 0.000 |
+| deVelde_2020_imipenem | 18.8552 | 18.8525 | -0.014 | 0.000 |
 
 Clearance recovered from the simulated profile against the value printed
 in Zhang 2025 Table 2. {.table}
@@ -679,12 +682,17 @@ renal_cl <- function(nm) {
     cov$CRCL <- cr
     for (cv in names(cov)) ev[[cv]] <- cov[[cv]]
     out <- rxode2::rxSolve(mod, events = ev)
+    # Same numerically-zero-tail floor as the NCA above: a tail point that
+    # the integrator puts at or below zero turns this AUC into NaN.
+    keep <- out$Cc >= 1e-6 * max(out$Cc)
+    cc <- out$Cc[keep]
+    tt <- out$time[keep]
     # Dose / AUC recovers CL without reading any model internal.
-    spec$dose / PKNCA::pk.calc.auc(out$Cc, out$time, interval = c(0, Inf),
+    spec$dose / PKNCA::pk.calc.auc(cc, tt, interval = c(0, Inf),
                                   auc.type = "AUCinf",
                                   lambda.z = PKNCA::pk.calc.half.life(
-                                    out$Cc, out$time)$lambda.z,
-                                  clast = PKNCA::pk.calc.clast.obs(out$Cc, out$time))
+                                    cc, tt)$lambda.z,
+                                  clast = PKNCA::pk.calc.clast.obs(cc, tt))
   }, numeric(1))
 }
 

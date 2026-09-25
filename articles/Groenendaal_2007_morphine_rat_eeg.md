@@ -514,22 +514,22 @@ knitr::kable(
 
 | NCA parameter             | treatment          | Reference | Simulated | % diff |
 |:--------------------------|:-------------------|:----------|:----------|:-------|
-| Cmax (ng/mL)              | 10 mg/kg           | 7040      | 7040      | +0.0%  |
-| Cmax (ng/mL)              | 4 mg/kg            | 2870      | 2870      | +0.0%  |
-| Cmax (ng/mL)              | 4 mg/kg + GF120918 | 2850      | 2850      | +0.0%  |
-| Cmax (ng/mL)              | 40 mg/kg           | 27900     | 27900     | +0.0%  |
+| Cmax (ng/mL)              | 10 mg/kg           | 6930      | 6930      | +0.0%  |
+| Cmax (ng/mL)              | 4 mg/kg            | 2910      | 2910      | +0.0%  |
+| Cmax (ng/mL)              | 4 mg/kg + GF120918 | 2770      | 2770      | +0.0%  |
+| Cmax (ng/mL)              | 40 mg/kg           | 28200     | 28200     | +0.0%  |
 | Tmax (min)                | 10 mg/kg           | 10        | 10        | +0.0%  |
 | Tmax (min)                | 4 mg/kg            | 10        | 10        | +0.0%  |
 | Tmax (min)                | 4 mg/kg + GF120918 | 10        | 10        | +0.0%  |
 | Tmax (min)                | 40 mg/kg           | 10        | 10        | +0.0%  |
-| AUC0-∞ (obs) (ng\*min/mL) | 10 mg/kg           | 163000    | 163000    | -0.0%  |
-| AUC0-∞ (obs) (ng\*min/mL) | 4 mg/kg            | 58300     | 58300     | -0.0%  |
-| AUC0-∞ (obs) (ng\*min/mL) | 4 mg/kg + GF120918 | 59600     | 59600     | -0.0%  |
-| AUC0-∞ (obs) (ng\*min/mL) | 40 mg/kg           | 570000    | 570000    | -0.0%  |
-| t½ (min)                  | 10 mg/kg           | 50        | 49.7      | -0.5%  |
-| t½ (min)                  | 4 mg/kg            | 63.3      | 62.9      | -0.5%  |
-| t½ (min)                  | 4 mg/kg + GF120918 | 61.4      | 61.1      | -0.6%  |
-| t½ (min)                  | 40 mg/kg           | 60.4      | 60.1      | -0.5%  |
+| AUC0-∞ (obs) (ng\*min/mL) | 10 mg/kg           | 156000    | 156000    | -0.0%  |
+| AUC0-∞ (obs) (ng\*min/mL) | 4 mg/kg            | 61700     | 61700     | -0.0%  |
+| AUC0-∞ (obs) (ng\*min/mL) | 4 mg/kg + GF120918 | 54700     | 54700     | -0.0%  |
+| AUC0-∞ (obs) (ng\*min/mL) | 40 mg/kg           | 556000    | 555000    | -0.0%  |
+| t½ (min)                  | 10 mg/kg           | 46.8      | 46.6      | -0.5%  |
+| t½ (min)                  | 4 mg/kg            | 65.5      | 65.1      | -0.5%  |
+| t½ (min)                  | 4 mg/kg + GF120918 | 59.1      | 58.8      | -0.5%  |
+| t½ (min)                  | 40 mg/kg           | 59        | 58.7      | -0.5%  |
 
 Simulated NCA versus the model’s closed form (AUC = Dose/CL; terminal
 half-life from the disposition eigenvalues; Tmax at the end of the

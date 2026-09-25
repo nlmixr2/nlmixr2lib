@@ -303,9 +303,16 @@ reported in Smythe 2013.
 
 ``` r
 
+# Keep the t = 0 record. PKNCA refuses an interval that starts before the
+# first measurement, so filtering `time > 0` here silently returns NA for
+# auclast and aucinf.obs on every subject ("Requesting an AUC range
+# starting (0) before the first measurement (0.25) is not allowed").
+# Dosing is extravascular, so the t = 0 concentration is a true zero.
 sim_nca <- sim |>
-  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, occasion)
+
+stopifnot(0 %in% sim_nca$time)
 
 dose_df <- events |>
   dplyr::filter(evid == 1) |>
@@ -354,16 +361,16 @@ knitr::kable(
 )
 ```
 
-| occasion              | PPTESTCD   | median |  q05 |   q95 |
-|:----------------------|:-----------|-------:|-----:|------:|
-| First dose            | aucinf.obs |     NA |   NA |    NA |
-| First dose            | cmax       |   3.08 | 2.02 |  4.81 |
-| First dose            | half.life  |   7.26 | 4.09 | 13.02 |
-| First dose            | tmax       |   1.75 | 1.25 |  3.25 |
-| Steady state (day 28) | aucinf.obs |     NA |   NA |    NA |
-| Steady state (day 28) | cmax       |   2.73 | 1.76 |  3.99 |
-| Steady state (day 28) | half.life  |   6.95 | 3.85 | 13.24 |
-| Steady state (day 28) | tmax       |   1.75 | 1.00 |  3.00 |
+| occasion              | PPTESTCD   | median |   q05 |   q95 |
+|:----------------------|:-----------|-------:|------:|------:|
+| First dose            | aucinf.obs |  35.97 | 23.89 | 58.43 |
+| First dose            | cmax       |   3.08 |  2.02 |  4.81 |
+| First dose            | half.life  |   7.26 |  4.09 | 13.02 |
+| First dose            | tmax       |   1.75 |  1.25 |  3.25 |
+| Steady state (day 28) | aucinf.obs |  32.44 | 21.24 | 46.81 |
+| Steady state (day 28) | cmax       |   2.73 |  1.76 |  3.99 |
+| Steady state (day 28) | half.life  |   6.95 |  3.85 | 13.24 |
+| Steady state (day 28) | tmax       |   1.75 |  1.00 |  3.00 |
 
 Simulated NCA summary by occasion (median, 5th, 95th percentiles).
 {.table}
@@ -397,8 +404,8 @@ dplyr::left_join(published, simulated_auc, by = "occasion") |>
 
 | occasion | AUC_inf_pub | AUC_inf_p05_pub | AUC_inf_p95_pub | AUC_inf_sim | AUC_inf_p05_sim | AUC_inf_p95_sim |
 |:---|---:|---:|---:|---:|---:|---:|
-| First dose | 41.2 | 17.9 | 93.8 | NA | NA | NA |
-| Steady state (day 28) | 35.4 | 15.2 | 80.4 | NA | NA | NA |
+| First dose | 41.2 | 17.9 | 93.8 | 35.97 | 23.89 | 58.43 |
+| Steady state (day 28) | 35.4 | 15.2 | 80.4 | 32.44 | 21.24 | 46.81 |
 
 Published vs simulated AUC0-inf (mg\*h/L). Published values from Smythe
 2013 Figure 2 caption. {.table}

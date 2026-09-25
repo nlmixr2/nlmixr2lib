@@ -185,7 +185,11 @@ correct assertion.
 cfSubject <- makeSubject(1L, WT = 1.06, pma_wk = 28.9, CREAT = 56,
                          cohort = "closed form", nDoses = 4L, ii = 12,
                          grid_by = 0.25)
-cf_sim <- rxode2::rxSolve(mod, events = cfSubject) |> as.data.frame()
+# Tight solver tolerances: this identity is asserted to the numerical floor.
+# rxode2's ODE-to-linCmt() conversion met it analytically until the
+# conversion became opt-in (September 2026, rxode2 issue 1389); the ODE as
+# written must meet it too, so the tolerances are set where it is asserted.
+cf_sim <- rxode2::rxSolve(mod, events = cfSubject, rtol = 1e-10, atol = 1e-12) |> as.data.frame()
 
 cf_cl  <- cf_sim$cl[1]
 cf_vc  <- cf_sim$vc[1]
@@ -213,7 +217,7 @@ keep_cf <- cf_sim$Cc > 0.1
 cf_max_rel <- max(abs(cf_pred[keep_cf] - cf_sim$Cc[keep_cf]) / cf_sim$Cc[keep_cf])
 
 cf_max_rel
-#> [1] 3.545433e-15
+#> [1] 1.005451e-10
 stopifnot(cf_max_rel < 1e-8)
 ```
 
@@ -443,7 +447,10 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("cohort", "tau", "WT", "pma_wk", "CREAT")
+  keep   = c("cohort", "tau", "WT", "pma_wk", "CREAT"),
+  # The ODE is integrated numerically; the PKNCA identities below are asserted
+  # to 1e-6 %, which needs tighter step tolerances than the defaults.
+  rtol = 1e-10, atol = 1e-12
 ) |>
   as.data.frame()
 #> Warning: multi-subject simulation without without 'omega'
@@ -651,7 +658,7 @@ stopifnot(nrow(hl_check) == N_COHORT * 2L + 1L, nrow(auc_check) == N_COHORT)
 c(max_abs_pct_half_life = signif(max(abs(hl_check$pct)), 3),
   max_abs_pct_auc_tau_ss = signif(max(abs(auc_check$pct)), 3))
 #>  max_abs_pct_half_life max_abs_pct_auc_tau_ss 
-#>               1.30e-12               1.39e-03
+#>               4.25e-10               1.39e-03
 
 # PKNCA log-linear t1/2 against each subject's own log(2) * V / CL: the decay
 # is exactly mono-exponential, so the regression recovers it to machine

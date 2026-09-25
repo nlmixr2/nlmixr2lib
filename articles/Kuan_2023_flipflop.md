@@ -134,7 +134,9 @@ regardless.
 # Neither model declares an eta, so `omega = NA` must NOT be passed (it would
 # fail in rep(0, dim(NA)[1])), and zeroRe() is unnecessary.
 solve_perm <- function(mod, label) {
-  rxode2::rxSolve(mod, events = events) |>
+  # Tight solver tolerances: the gates below hold two numerically integrated
+  # profiles to each other and to the closed form at 1e-8 / 1e-10.
+  rxode2::rxSolve(mod, events = events, rtol = 1e-10, atol = 1e-12) |>
     as.data.frame() |>
     # rxSolve omits `id` for a single-subject event table; PKNCA needs it.
     mutate(id = 1L, permutation = label)
@@ -199,11 +201,12 @@ rel_diff <- max(abs((w$`Permutation 1` - w$`Permutation 2`) / w$`Permutation 1`)
 
 c(max_abs_difference = abs_diff, max_relative_difference = rel_diff)
 #>      max_abs_difference max_relative_difference 
-#>            4.857226e-17            3.038369e-15
+#>            1.927555e-12            3.972251e-10
 
-# Achieved 4.9e-17 (absolute) and 3.0e-15 (relative): machine precision.
-# Bound set many orders of magnitude above that but still far below any real
-# structural error -- a single mis-transcribed parameter moves these to O(1).
+# Achieved 1.9e-12 (absolute) and 4.0e-10 (relative) with the ODE integrator at
+# rtol 1e-10 / atol 1e-12 (4.9e-17 / 3.0e-15 under the analytic linCmt path).
+# Bound set well above that but still far below any real structural error --
+# a single mis-transcribed parameter moves these to O(1).
 stopifnot(abs_diff < 1e-10, rel_diff < 1e-8)
 ```
 
@@ -236,15 +239,16 @@ knitr::kable(closed_form, digits = 20,
 
 | permutation   | max_abs_error | max_rel_error |
 |:--------------|--------------:|--------------:|
-| Permutation 1 |     9.021e-17 |  1.691232e-14 |
-| Permutation 2 |     6.939e-17 |  1.479106e-14 |
+| Permutation 1 |  5.385553e-13 |  2.498681e-11 |
+| Permutation 2 |  1.982825e-12 |  4.086150e-10 |
 
 Numerical solve vs. the closed-form solution. {.table}
 
 ``` r
 
 
-# Achieved ~2e-16 absolute / ~5e-14 relative for both permutations.
+# Achieved <= 2.0e-12 absolute / <= 4.1e-10 relative for both permutations with
+# the ODE integrator at rtol 1e-10 / atol 1e-12 (~2e-16 / ~5e-14 analytic).
 stopifnot(closed_form$max_abs_error < 1e-10, closed_form$max_rel_error < 1e-8)
 ```
 

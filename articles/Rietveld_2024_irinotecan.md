@@ -392,7 +392,7 @@ stopifnot(
 )
 round(med, 2)
 #>   iri  sn_p sn_ip 
-#>  5.84  2.22  3.26
+#>  5.84  2.25  3.26
 ```
 
 ## PKNCA validation

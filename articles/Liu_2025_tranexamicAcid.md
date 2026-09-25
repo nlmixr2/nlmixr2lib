@@ -247,7 +247,7 @@ knitr::kable(fig1_cmp, digits = 1,
 
 | Quantity | Simulated | Observed (Figure 1) | % difference |
 |:---|---:|---:|---:|
-| Median concentration at 140 min (mg/L) | 173.4 | 182 | -4.7 |
+| Median concentration at 140 min (mg/L) | 174.6 | 182 | -4.1 |
 
 Simulated high-dose cohort vs the digitised Liu 2025 Figure 1 profiles
 at 140 min. {.table}
@@ -329,8 +329,8 @@ knitr::kable(scale_cmp, digits = 3,
 
 | Reading | Implied omega | Simulated BSV-only log SD | Observed total log SD | Verdict |
 |:---|:---|---:|---:|:---|
-| Table 4 values are log-scale SDs (omega) | 0.28, 0.44, 0.30, 0.22 | 0.159 | 0.263 | compatible |
-| Table 4 values are variances (omega^2) | 0.529, 0.663, 0.548, 0.469 | 0.347 | 0.263 | IMPOSSIBLE - exceeds the total observed spread |
+| Table 4 values are log-scale SDs (omega) | 0.28, 0.44, 0.30, 0.22 | 0.170 | 0.263 | compatible |
+| Table 4 values are variances (omega^2) | 0.529, 0.663, 0.548, 0.469 | 0.333 | 0.263 | IMPOSSIBLE - exceeds the total observed spread |
 
 Between-subject dispersion at 140 min implied by each reading of the Liu
 2025 Table 4 BSV column. {.table}
@@ -442,8 +442,8 @@ nca_tab |>
 
 | Dose arm | AUClast (mg\*h/L) | Cav over the CPB window (mg/L) | Cmax (mg/L) | Terminal half-life (h) | Tmax (h) |
 |:---|---:|---:|---:|---:|---:|
-| High dose | 700.46 | 166.83 | 245.63 | 2.91 | 0.17 |
-| Low dose | 140.91 | 35.08 | 78.25 | 2.63 | 0.17 |
+| High dose | 642.42 | 165.53 | 241.25 | 2.75 | 0.17 |
+| Low dose | 118.50 | 35.11 | 75.99 | 2.67 | 0.17 |
 
 PKNCA summary of the simulated cohort, median per dose arm. {.table}
 
@@ -491,9 +491,9 @@ knitr::kable(claims, digits = 2,
 
 | Claim | Source | Reference | Achieved |
 |:---|:---|:---|---:|
-| High-dose concentration during CPB (mg/L) | Discussion: “generally maintained within the range of 150-180 mg/L” | 150-180 | 166.83 |
-| Terminal half-life (h) | Closed form from the Table 4 typical values | 2.69 | 2.76 |
-| Median high-dose concentration at 140 min (mg/L) | Digitised Liu 2025 Figure 1 | 182.0 | 173.39 |
+| High-dose concentration during CPB (mg/L) | Discussion: “generally maintained within the range of 150-180 mg/L” | 150-180 | 165.53 |
+| Terminal half-life (h) | Closed form from the Table 4 typical values | 2.69 | 2.73 |
+| Median high-dose concentration at 140 min (mg/L) | Digitised Liu 2025 Figure 1 | 182.0 | 174.56 |
 
 Simulated results against the quantitative claims Liu 2025 makes.
 {.table}
@@ -563,8 +563,8 @@ knitr::kable(
 
 | Dose arm  | Median % error | 90th percentile of \|% error\| |
 |:----------|---------------:|-------------------------------:|
-| High dose |          0.129 |                          0.197 |
-| Low dose  |          0.334 |                          0.523 |
+| High dose |          0.131 |                          0.206 |
+| Low dose  |          0.321 |                          0.528 |
 
 Mass-balance identity AUC(0,T) \* CL = administered - remaining, at T =
 12 h. {.table}

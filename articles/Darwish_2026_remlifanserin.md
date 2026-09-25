@@ -572,12 +572,12 @@ knitr::kable(t2, digits = c(0, 4, 4, 4, 2),
 
 | Parameter | Published mean (Table 2) | Model expected mean | Cohort mean (n = 200) | % diff (analytic) |
 |:---|---:|---:|---:|---:|
-| CL/F (L/day) | 919.8500 | 922.8431 | 911.6031 | 0.33 |
-| V/F (L) | 931.8300 | 934.6525 | 935.9889 | 0.30 |
-| Kel (1/day) | 0.9800 | 0.9815 | 0.9802 | 0.15 |
-| T1/2 (h) | 17.7500 | 17.8509 | 18.0086 | 0.57 |
-| Ka (1/day) | 19.6100 | 20.0274 | 21.5314 | 2.13 |
-| ALAG1 (day) | 0.0332 | 0.0327 | 0.0328 | -1.48 |
+| CL/F (L/day) | 919.8500 | 922.8431 | 899.3847 | 0.33 |
+| V/F (L) | 931.8300 | 934.6525 | 903.8784 | 0.30 |
+| Kel (1/day) | 0.9800 | 0.9815 | 0.9864 | 0.15 |
+| T1/2 (h) | 17.7500 | 17.8509 | 17.6255 | 0.57 |
+| Ka (1/day) | 19.6100 | 20.0274 | 19.9456 | 2.13 |
+| ALAG1 (day) | 0.0332 | 0.0327 | 0.0329 | -1.48 |
 
 Table 2 post hoc means vs. the model’s closed-form expectations.
 {.table}
@@ -646,10 +646,10 @@ knitr::kable(contrasts, digits = 3,
 
 | metric     | contrast      |   gmr | lower | upper |
 |:-----------|:--------------|------:|------:|------:|
-| Cmax,ss    | Fed / fasted  | 0.979 | 0.936 | 1.024 |
-| AUC0-24,ss | Fed / fasted  | 0.974 | 0.927 | 1.022 |
-| Cmax,ss    | Female / male | 1.017 | 0.972 | 1.064 |
-| AUC0-24,ss | Female / male | 0.971 | 0.925 | 1.020 |
+| Cmax,ss    | Fed / fasted  | 1.003 | 0.960 | 1.047 |
+| AUC0-24,ss | Fed / fasted  | 1.007 | 0.961 | 1.056 |
+| Cmax,ss    | Female / male | 1.045 | 1.001 | 1.091 |
+| AUC0-24,ss | Female / male | 0.997 | 0.951 | 1.046 |
 
 Geometric mean ratios with 90% CIs (Figure 4 of Darwish 2026). {.table}
 
@@ -734,11 +734,11 @@ knitr::kable(nca_wide, digits = 4,
 
 | PPTESTCD   |  median |     p10 |      p90 |
 |:-----------|--------:|--------:|---------:|
-| aucinf.obs | 69.7634 | 42.8641 | 108.0446 |
-| auclast    | 69.1760 | 42.6532 | 107.4547 |
-| cmax       | 56.3322 | 37.9939 |  86.4265 |
-| half.life  |  0.7296 |  0.5298 |   1.0181 |
-| tmax       |  0.2000 |  0.1200 |   0.3200 |
+| aucinf.obs | 72.2487 | 44.5477 | 124.5597 |
+| auclast    | 71.3440 | 44.4515 | 121.8180 |
+| cmax       | 58.4373 | 37.5249 |  96.4429 |
+| half.life  |  0.7171 |  0.5436 |   0.9385 |
+| tmax       |  0.2200 |  0.1400 |   0.3400 |
 
 PKNCA results, 60 mg single oral dose (time in days). {.table}
 
@@ -755,7 +755,7 @@ auc_by_id <- as.data.frame(nca_res) |>
   dplyr::mutate(ratio = cl * aucinf / 60000)
 cat(sprintf("CL/F * AUCinf / dose: median %.4f, range %.4f-%.4f\n",
             median(auc_by_id$ratio), min(auc_by_id$ratio), max(auc_by_id$ratio)))
-#> CL/F * AUCinf / dose: median 1.0002, range 0.9990-1.0010
+#> CL/F * AUCinf / dose: median 1.0002, range 0.9993-1.0008
 stopifnot(abs(median(auc_by_id$ratio) - 1) < 0.01,
           quantile(abs(auc_by_id$ratio - 1), 0.95) < 0.02)
 ```
@@ -787,7 +787,7 @@ knitr::kable(cmp, caption = "Simulated vs. published half-life. * differs by >20
 
 | NCA parameter | arm           | Reference | Simulated | % diff |
 |:--------------|:--------------|:----------|:----------|:-------|
-| t½ (h)        | Analysis-like | 17.4      | 17.5      | +0.3%  |
+| t½ (h)        | Analysis-like | 17.4      | 17.2      | -1.4%  |
 
 Simulated vs. published half-life. \* differs by \>20%. {.table}
 
@@ -797,7 +797,7 @@ Simulated vs. published half-life. \* differs by \>20%. {.table}
 sim_half_life <- median(nca_hours$PPORRES, na.rm = TRUE)
 cat(sprintf("Simulated median t1/2 %.2f h vs. published post hoc median 17.45 h (%.1f%%)\n",
             sim_half_life, 100 * (sim_half_life / 17.45 - 1)))
-#> Simulated median t1/2 17.51 h vs. published post hoc median 17.45 h (0.3%)
+#> Simulated median t1/2 17.21 h vs. published post hoc median 17.45 h (-1.4%)
 stopifnot(abs(sim_half_life / 17.45 - 1) < 0.10)
 ```
 

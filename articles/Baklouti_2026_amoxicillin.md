@@ -248,10 +248,10 @@ str(sim[, c("id", "time", "Cc", "Cmilk", "k_central_milk", "keff_milk")])
 #> 'data.frame':    32200 obs. of  6 variables:
 #>  $ id            : int  1 1 1 1 1 1 1 1 1 1 ...
 #>  $ time          : num  112 112 112 112 112 ...
-#>  $ Cc            : num  9.68 9.86 10.03 10.19 10.36 ...
-#>  $ Cmilk         : num  1.06 1.05 1.05 1.05 1.05 ...
-#>  $ k_central_milk: num  0.0263 0.0263 0.0263 0.0263 0.0263 ...
-#>  $ keff_milk     : num  0.294 0.294 0.294 0.294 0.294 ...
+#>  $ Cc            : num  3.33 3.52 3.7 3.88 4.05 ...
+#>  $ Cmilk         : num  0.208 0.207 0.206 0.205 0.204 ...
+#>  $ k_central_milk: num  0.0217 0.0217 0.0217 0.0217 0.0217 ...
+#>  $ keff_milk     : num  0.467 0.467 0.467 0.467 0.467 ...
 ```
 
 `Cc` and `Cmilk` above are individual predictions (IPRED); no residual
@@ -325,12 +325,12 @@ head(nca_wide)
 #> # A tibble: 6 × 7
 #>      id Matrix auclast  cmax  cmin  tmax   cav
 #>   <int> <chr>    <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1     1 Milk      8.83 1.15  1.04   4.85 1.10 
-#> 2     2 Milk     18.1  2.29  2.22   5.40 2.26 
-#> 3     3 Milk      6.47 0.838 0.768  4.60 0.809
-#> 4     4 Milk      1.27 0.194 0.110  3.55 0.158
-#> 5     5 Milk      8.17 1.06  0.976  4.90 1.02 
-#> 6     6 Milk      2.36 0.325 0.253  4.10 0.295
+#> 1     1 Milk      1.97 0.276 0.204  4    0.246
+#> 2     2 Milk      5.78 0.760 0.672  4.75 0.722
+#> 3     3 Milk      4.69 0.629 0.526  4.45 0.586
+#> 4     4 Milk     10.7  1.42  1.22   4.7  1.33 
+#> 5     5 Milk      3.90 0.548 0.403  4.05 0.488
+#> 6     6 Milk     12.0  1.56  1.43   5    1.51
 ```
 
 ``` r
@@ -354,8 +354,8 @@ nca_wide |>
 
 | Matrix | Cmax (mg/L) | Tmax (h) | Cmin (mg/L) | Cavg (mg/L) | AUC0-tau (mg\*h/L) |
 |:-------|------------:|---------:|------------:|------------:|-------------------:|
-| Milk   |       0.894 |     4.70 |       0.785 |       0.845 |              6.763 |
-| Plasma |      11.099 |     2.75 |       7.508 |       9.726 |             77.811 |
+| Milk   |       0.838 |     4.65 |       0.714 |       0.786 |              6.289 |
+| Plasma |      10.301 |     2.70 |       6.550 |       8.880 |             71.040 |
 
 Median steady-state NCA parameters at 2 g q8h, by matrix. {.table}
 
@@ -390,7 +390,7 @@ ratio_chk <- nca_wide |>
 
 summary(ratio_chk$pct_diff)
 #>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -0.0410995  0.0007687  0.0012342  0.0011221  0.0017082  0.0061861
+#> -0.0227078  0.0007894  0.0013469  0.0011479  0.0019255  0.0108162
 
 stopifnot(
   # Solve against its own closed form: pure numerical error, so bound tightly.
@@ -414,8 +414,8 @@ data.frame(
 
 | Statistic      | Simulated | Published |
 |:---------------|:----------|:----------|
-| First quartile | 6.32%     | 6.6%      |
-| Median         | 8.69%     | 8.5%      |
+| First quartile | 6.38%     | 6.6%      |
+| Median         | 8.51%     | 8.5%      |
 | Third quartile | 11.36%    | 11.1%     |
 
 Simulated milk/plasma AUC ratio vs Baklouti 2026 Table 4 (simulated,
@@ -472,7 +472,7 @@ data.frame(
 | Source                                      | Q1   | Median | Q3    |
 |:--------------------------------------------|:-----|:-------|:------|
 | Typical subject, across the dosing interval | 7.6% | 8.4%   | 9.5%  |
-| Cohort (200 subjects, all interval times)   | 6.4% | 8.6%   | 11.7% |
+| Cohort (200 subjects, all interval times)   | 6.4% | 8.5%   | 11.6% |
 | Published simulated concentration ratio     | 4.1% | 4.8%   | 5.2%  |
 | Published simulated AUC ratio               | 6.6% | 8.5%   | 11.1% |
 | Published MEASURED concentration ratio      | 4.5% | 6.0%   | 9.6%  |
@@ -555,9 +555,9 @@ data.frame(
 
 | Statistic      | Simulated | Published |
 |:---------------|:----------|:----------|
-| Median         | 0.137%    | 0.03%     |
-| Third quartile | 0.191%    | 0.03%     |
-| Maximum        | 0.581%    | 0.07%     |
+| Median         | 0.128%    | 0.03%     |
+| Third quartile | 0.196%    | 0.03%     |
+| Maximum        | 0.668%    | 0.07%     |
 
 Relative infant dose at 2 g q8h vs Baklouti 2026 Table 4 (simulated,
 adult dosage). {.table}

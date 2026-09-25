@@ -317,7 +317,7 @@ cat(sprintf(
   err_pza, err_emb
 ))
 #> Max relative deviation from the closed-form steady-state profile:
-#>   pyrazinamide 7.19e-14
+#>   pyrazinamide 1.15e-07
 #>   ethambutol   6.48e-06
 ```
 
@@ -619,26 +619,26 @@ dplyr::bind_rows(
 
 | Drug | Weight band (kg) | Group | Cmax (ug/mL) | Tmax (h) | Cmin (ug/mL) | AUC0-24 (ug\*h/mL) |
 |:---|:---|:---|---:|---:|---:|---:|
-| Pyrazinamide | 4 to \<8 | TB | 25.80 | 1.20 | 1.81 | 227.78 |
-| Pyrazinamide | 4 to \<8 | TB/HIV | 24.83 | 1.25 | 0.92 | 186.84 |
-| Pyrazinamide | 8 to \<12 | TB | 38.45 | 1.10 | 2.52 | 328.35 |
-| Pyrazinamide | 8 to \<12 | TB/HIV | 34.63 | 1.15 | 1.59 | 268.64 |
-| Pyrazinamide | 12 to \<16 | TB | 39.60 | 1.20 | 3.34 | 358.34 |
-| Pyrazinamide | 12 to \<16 | TB/HIV | 38.58 | 1.30 | 1.52 | 291.09 |
-| Pyrazinamide | 16 to \<25 | TB | 39.92 | 1.45 | 2.95 | 351.37 |
-| Pyrazinamide | 16 to \<25 | TB/HIV | 37.46 | 1.20 | 3.05 | 350.73 |
-| Pyrazinamide | 25 to \<35 | TB | 40.79 | 1.30 | 4.05 | 409.31 |
-| Pyrazinamide | 25 to \<35 | TB/HIV | 38.94 | 1.20 | 2.35 | 330.24 |
-| Ethambutol | 4 to \<8 | TB | 1.40 | 1.30 | 0.14 | 8.73 |
-| Ethambutol | 4 to \<8 | TB/HIV | 1.39 | 1.30 | 0.08 | 6.41 |
-| Ethambutol | 8 to \<12 | TB | 1.99 | 1.40 | 0.14 | 10.84 |
-| Ethambutol | 8 to \<12 | TB/HIV | 2.03 | 1.40 | 0.08 | 8.62 |
-| Ethambutol | 12 to \<16 | TB | 2.73 | 1.40 | 0.18 | 14.31 |
-| Ethambutol | 12 to \<16 | TB/HIV | 2.38 | 1.30 | 0.08 | 10.91 |
-| Ethambutol | 16 to \<25 | TB | 2.94 | 1.35 | 0.11 | 14.41 |
-| Ethambutol | 16 to \<25 | TB/HIV | 2.68 | 1.40 | 0.07 | 11.31 |
-| Ethambutol | 25 to \<35 | TB | 2.64 | 1.40 | 0.09 | 14.09 |
-| Ethambutol | 25 to \<35 | TB/HIV | 2.76 | 1.30 | 0.07 | 11.88 |
+| Pyrazinamide | 4 to \<8 | TB | 25.52 | 1.30 | 1.89 | 243.14 |
+| Pyrazinamide | 4 to \<8 | TB/HIV | 24.48 | 1.20 | 1.06 | 191.09 |
+| Pyrazinamide | 8 to \<12 | TB | 36.45 | 1.20 | 2.44 | 320.95 |
+| Pyrazinamide | 8 to \<12 | TB/HIV | 35.15 | 1.20 | 1.41 | 268.20 |
+| Pyrazinamide | 12 to \<16 | TB | 39.39 | 1.30 | 3.04 | 349.34 |
+| Pyrazinamide | 12 to \<16 | TB/HIV | 39.26 | 1.40 | 2.24 | 335.46 |
+| Pyrazinamide | 16 to \<25 | TB | 41.09 | 1.25 | 3.39 | 371.51 |
+| Pyrazinamide | 16 to \<25 | TB/HIV | 39.79 | 1.20 | 1.45 | 303.42 |
+| Pyrazinamide | 25 to \<35 | TB | 40.99 | 1.30 | 3.23 | 383.36 |
+| Pyrazinamide | 25 to \<35 | TB/HIV | 36.87 | 1.40 | 2.44 | 340.53 |
+| Ethambutol | 4 to \<8 | TB | 1.50 | 1.30 | 0.11 | 7.97 |
+| Ethambutol | 4 to \<8 | TB/HIV | 1.41 | 1.20 | 0.08 | 6.85 |
+| Ethambutol | 8 to \<12 | TB | 2.13 | 1.40 | 0.12 | 10.95 |
+| Ethambutol | 8 to \<12 | TB/HIV | 1.94 | 1.40 | 0.08 | 9.08 |
+| Ethambutol | 12 to \<16 | TB | 2.29 | 1.40 | 0.14 | 13.90 |
+| Ethambutol | 12 to \<16 | TB/HIV | 2.42 | 1.40 | 0.10 | 11.74 |
+| Ethambutol | 16 to \<25 | TB | 2.99 | 1.30 | 0.13 | 14.91 |
+| Ethambutol | 16 to \<25 | TB/HIV | 2.42 | 1.35 | 0.07 | 10.47 |
+| Ethambutol | 25 to \<35 | TB | 2.96 | 1.50 | 0.11 | 14.47 |
+| Ethambutol | 25 to \<35 | TB/HIV | 2.62 | 1.45 | 0.07 | 11.64 |
 
 Median simulated steady-state NCA by weight band and HIV status,
 WHO-recommended doses (PKNCA). {.table}
@@ -835,7 +835,7 @@ cat(sprintf(
   "Attainment agreement over %d gated cells: mean |diff| %.1f pp, max %.1f pp, correlation %.3f\n",
   nrow(gated), mean_abs_pp, max_abs_pp, shape_cor
 ))
-#> Attainment agreement over 38 gated cells: mean |diff| 8.2 pp, max 23.9 pp, correlation 0.964
+#> Attainment agreement over 38 gated cells: mean |diff| 9.2 pp, max 26.2 pp, correlation 0.953
 ```
 
 ``` r
@@ -860,46 +860,46 @@ attain |>
 
 | Drug | Metric | Weight band (kg) | Group | Published (%) | Simulated (%) | Difference (pp) | Note |
 |:---|:---|:---|:---|---:|---:|---:|:---|
-| Ethambutol | AUC | 4 to \<8 | TB | 1.9 | 7 | 5.1 |  |
-| Ethambutol | AUC | 4 to \<8 | TB/HIV | 0.0 | 0 | 0.0 |  |
-| Ethambutol | AUC | 8 to \<12 | TB | 0.1 | 12 | 11.9 | see text |
-| Ethambutol | AUC | 8 to \<12 | TB/HIV | 0.1 | 5 | 4.9 | see text |
-| Ethambutol | AUC | 12 to \<16 | TB | 13.1 | 37 | 23.9 |  |
-| Ethambutol | AUC | 12 to \<16 | TB/HIV | 3.7 | 16 | 12.3 |  |
-| Ethambutol | AUC | 16 to \<25 | TB | 18.2 | 31 | 12.8 |  |
-| Ethambutol | AUC | 16 to \<25 | TB/HIV | 6.9 | 11 | 4.1 |  |
-| Ethambutol | AUC | 25 to \<35 | TB | 21.2 | 30 | 8.8 |  |
-| Ethambutol | AUC | 25 to \<35 | TB/HIV | 7.2 | 13 | 5.8 |  |
-| Ethambutol | Cmax | 4 to \<8 | TB | 20.8 | 21 | 0.2 |  |
-| Ethambutol | Cmax | 4 to \<8 | TB/HIV | 13.5 | 18 | 4.5 |  |
-| Ethambutol | Cmax | 8 to \<12 | TB | 38.6 | 49 | 10.4 |  |
-| Ethambutol | Cmax | 8 to \<12 | TB/HIV | 53.2 | 51 | -2.2 |  |
-| Ethambutol | Cmax | 12 to \<16 | TB | 64.6 | 70 | 5.4 |  |
-| Ethambutol | Cmax | 12 to \<16 | TB/HIV | 61.5 | 68 | 6.5 |  |
-| Ethambutol | Cmax | 16 to \<25 | TB | 65.2 | 78 | 12.8 |  |
-| Ethambutol | Cmax | 16 to \<25 | TB/HIV | 62.9 | 73 | 10.1 |  |
-| Ethambutol | Cmax | 25 to \<35 | TB | 55.8 | 76 | 20.2 |  |
-| Ethambutol | Cmax | 25 to \<35 | TB/HIV | 72.5 | 72 | -0.5 |  |
-| Pyrazinamide | AUC | 4 to \<8 | TB | 5.4 | 9 | 3.6 |  |
+| Ethambutol | AUC | 4 to \<8 | TB | 1.9 | 4 | 2.1 |  |
+| Ethambutol | AUC | 4 to \<8 | TB/HIV | 0.0 | 1 | 1.0 |  |
+| Ethambutol | AUC | 8 to \<12 | TB | 0.1 | 14 | 13.9 | see text |
+| Ethambutol | AUC | 8 to \<12 | TB/HIV | 0.1 | 3 | 2.9 | see text |
+| Ethambutol | AUC | 12 to \<16 | TB | 13.1 | 34 | 20.9 |  |
+| Ethambutol | AUC | 12 to \<16 | TB/HIV | 3.7 | 13 | 9.3 |  |
+| Ethambutol | AUC | 16 to \<25 | TB | 18.2 | 41 | 22.8 |  |
+| Ethambutol | AUC | 16 to \<25 | TB/HIV | 6.9 | 13 | 6.1 |  |
+| Ethambutol | AUC | 25 to \<35 | TB | 21.2 | 40 | 18.8 |  |
+| Ethambutol | AUC | 25 to \<35 | TB/HIV | 7.2 | 15 | 7.8 |  |
+| Ethambutol | Cmax | 4 to \<8 | TB | 20.8 | 30 | 9.2 |  |
+| Ethambutol | Cmax | 4 to \<8 | TB/HIV | 13.5 | 21 | 7.5 |  |
+| Ethambutol | Cmax | 8 to \<12 | TB | 38.6 | 58 | 19.4 |  |
+| Ethambutol | Cmax | 8 to \<12 | TB/HIV | 53.2 | 48 | -5.2 |  |
+| Ethambutol | Cmax | 12 to \<16 | TB | 64.6 | 66 | 1.4 |  |
+| Ethambutol | Cmax | 12 to \<16 | TB/HIV | 61.5 | 66 | 4.5 |  |
+| Ethambutol | Cmax | 16 to \<25 | TB | 65.2 | 81 | 15.8 |  |
+| Ethambutol | Cmax | 16 to \<25 | TB/HIV | 62.9 | 61 | -1.9 |  |
+| Ethambutol | Cmax | 25 to \<35 | TB | 55.8 | 82 | 26.2 |  |
+| Ethambutol | Cmax | 25 to \<35 | TB/HIV | 72.5 | 76 | 3.5 |  |
+| Pyrazinamide | AUC | 4 to \<8 | TB | 5.4 | 10 | 4.6 |  |
 | Pyrazinamide | AUC | 4 to \<8 | TB/HIV | 0.0 | 1 | 1.0 |  |
-| Pyrazinamide | AUC | 8 to \<12 | TB | 21.0 | 36 | 15.0 |  |
-| Pyrazinamide | AUC | 8 to \<12 | TB/HIV | 12.7 | 15 | 2.3 |  |
-| Pyrazinamide | AUC | 12 to \<16 | TB | 41.8 | 49 | 7.2 |  |
-| Pyrazinamide | AUC | 12 to \<16 | TB/HIV | 24.8 | 30 | 5.2 |  |
-| Pyrazinamide | AUC | 16 to \<25 | TB | 47.0 | 48 | 1.0 |  |
-| Pyrazinamide | AUC | 16 to \<25 | TB/HIV | 31.6 | 48 | 16.4 |  |
-| Pyrazinamide | AUC | 25 to \<35 | TB | 48.2 | 66 | 17.8 |  |
-| Pyrazinamide | AUC | 25 to \<35 | TB/HIV | 33.3 | 31 | -2.3 |  |
-| Pyrazinamide | Cmax | 4 to \<8 | TB | 14.3 | 8 | -6.3 |  |
-| Pyrazinamide | Cmax | 4 to \<8 | TB/HIV | 6.1 | 7 | 0.9 |  |
-| Pyrazinamide | Cmax | 8 to \<12 | TB | 45.7 | 65 | 19.3 |  |
-| Pyrazinamide | Cmax | 8 to \<12 | TB/HIV | 34.7 | 44 | 9.3 |  |
-| Pyrazinamide | Cmax | 12 to \<16 | TB | 63.3 | 71 | 7.7 |  |
-| Pyrazinamide | Cmax | 12 to \<16 | TB/HIV | 55.0 | 70 | 15.0 |  |
-| Pyrazinamide | Cmax | 16 to \<25 | TB | 56.7 | 68 | 11.3 |  |
-| Pyrazinamide | Cmax | 16 to \<25 | TB/HIV | 60.6 | 63 | 2.4 |  |
-| Pyrazinamide | Cmax | 25 to \<35 | TB | 60.7 | 75 | 14.3 |  |
-| Pyrazinamide | Cmax | 25 to \<35 | TB/HIV | 60.6 | 69 | 8.4 |  |
+| Pyrazinamide | AUC | 8 to \<12 | TB | 21.0 | 30 | 9.0 |  |
+| Pyrazinamide | AUC | 8 to \<12 | TB/HIV | 12.7 | 20 | 7.3 |  |
+| Pyrazinamide | AUC | 12 to \<16 | TB | 41.8 | 43 | 1.2 |  |
+| Pyrazinamide | AUC | 12 to \<16 | TB/HIV | 24.8 | 38 | 13.2 |  |
+| Pyrazinamide | AUC | 16 to \<25 | TB | 47.0 | 55 | 8.0 |  |
+| Pyrazinamide | AUC | 16 to \<25 | TB/HIV | 31.6 | 32 | 0.4 |  |
+| Pyrazinamide | AUC | 25 to \<35 | TB | 48.2 | 55 | 6.8 |  |
+| Pyrazinamide | AUC | 25 to \<35 | TB/HIV | 33.3 | 41 | 7.7 |  |
+| Pyrazinamide | Cmax | 4 to \<8 | TB | 14.3 | 18 | 3.7 |  |
+| Pyrazinamide | Cmax | 4 to \<8 | TB/HIV | 6.1 | 6 | -0.1 |  |
+| Pyrazinamide | Cmax | 8 to \<12 | TB | 45.7 | 57 | 11.3 |  |
+| Pyrazinamide | Cmax | 8 to \<12 | TB/HIV | 34.7 | 50 | 15.3 |  |
+| Pyrazinamide | Cmax | 12 to \<16 | TB | 63.3 | 72 | 8.7 |  |
+| Pyrazinamide | Cmax | 12 to \<16 | TB/HIV | 55.0 | 71 | 16.0 |  |
+| Pyrazinamide | Cmax | 16 to \<25 | TB | 56.7 | 77 | 20.3 |  |
+| Pyrazinamide | Cmax | 16 to \<25 | TB/HIV | 60.6 | 74 | 13.4 |  |
+| Pyrazinamide | Cmax | 25 to \<35 | TB | 60.7 | 76 | 15.3 |  |
+| Pyrazinamide | Cmax | 25 to \<35 | TB/HIV | 60.6 | 58 | -2.6 |  |
 
 Target attainment at WHO-recommended doses: published (Maranchick 2026
 Results) against simulated. Targets are PZA Cmax \> 35 ug/mL and AUC0-24

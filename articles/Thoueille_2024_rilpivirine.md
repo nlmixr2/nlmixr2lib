@@ -661,12 +661,12 @@ knitr::kable(
 | NCA parameter   | window            | Reference | Simulated | % diff |
 |:----------------|:------------------|----------:|----------:|-------:|
 | Ctrough (ng/mL) | Week 4-8          |        50 |      50.8 |  +1.6% |
-| Ctrough (ng/mL) | Week 8-16         |        39 |      40.7 |  +4.4% |
-| Ctrough (ng/mL) | Week 16-24        |        45 |      44.7 |  -0.6% |
-| Ctrough (ng/mL) | Week 24-32        |        50 |      50.6 |  +1.1% |
-| Ctrough (ng/mL) | Week 32-40        |        53 |      53.1 |  +0.2% |
-| Ctrough (ng/mL) | Week 40-48        |        55 |      57.4 |  +4.3% |
-| Ctrough (ng/mL) | Oral steady state |        80 |      77.9 |  -2.6% |
+| Ctrough (ng/mL) | Week 8-16         |        39 |      37.4 |  -4.1% |
+| Ctrough (ng/mL) | Week 16-24        |        45 |      44.4 |  -1.3% |
+| Ctrough (ng/mL) | Week 24-32        |        50 |      48.9 |  -2.1% |
+| Ctrough (ng/mL) | Week 32-40        |        53 |      52.7 |  -0.5% |
+| Ctrough (ng/mL) | Week 40-48        |        55 |      55.2 |  +0.4% |
+| Ctrough (ng/mL) | Oral steady state |        80 |      79.1 |  -1.1% |
 
 Simulated versus published rilpivirine trough concentrations (Thoueille
 2024 Supplementary Table S2, covariate-free row, and Results 3.2 for the
@@ -761,10 +761,10 @@ knitr::kable(claims, digits = 1,
 | Claim | Source | Paper | Model |
 |:---|:---|---:|---:|
 | About 50% of long-acting Ctrough at week 8 exceed 50 ng/mL | Results 3.2 / Conclusion | 50 | 51.5 |
-| Median Ctrough falls about 22% from week 8 to week 16 | Results 3.2 | 22 | 19.9 |
-| About 5% of long-acting Ctrough fall below 2 x PAIC90 (24 ng/mL) | Results 3.2 | 5 | 4.0 |
-| About 15% of long-acting Ctrough fall below 32 ng/mL | Results 3.2 / Abstract | 15 | 16.5 |
-| About 85% of oral Ctrough at steady state exceed 50 ng/mL | Results 3.2 | 85 | 81.5 |
+| Median Ctrough falls about 22% from week 8 to week 16 | Results 3.2 | 22 | 26.4 |
+| About 5% of long-acting Ctrough fall below 2 x PAIC90 (24 ng/mL) | Results 3.2 | 5 | 3.0 |
+| About 15% of long-acting Ctrough fall below 32 ng/mL | Results 3.2 / Abstract | 15 | 13.5 |
+| About 85% of oral Ctrough at steady state exceed 50 ng/mL | Results 3.2 | 85 | 81.0 |
 
 Headline simulation claims of Thoueille 2024 versus this packaged model.
 {.table}

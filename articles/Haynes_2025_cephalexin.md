@@ -251,10 +251,10 @@ knitr::kable(cf_chk, digits = c(0, 3, 4, 3, 3, 9, 6))
 
 | label | ka | kel | vc | tlag | max_abs_diff | max_rel_diff_pct |
 |:---|---:|---:|---:|---:|---:|---:|
-| 2.0 kg, GA 31 wk, PNA 10 d | 0.493 | 0.2523 | 0.875 | 0.61 | 0 | 0 |
-| 3.36 kg, GA 37.3 wk, PNA 31 d | 1.397 | 0.4624 | 1.470 | 0.61 | 0 | 0 |
-| 4.5 kg, GA 39 wk, PNA 50 d | 2.169 | 0.5771 | 1.969 | 0.61 | 0 | 0 |
-| 5.4 kg, GA 40 wk, PNA 56 d | 2.408 | 0.6187 | 2.363 | 0.61 | 0 | 0 |
+| 2.0 kg, GA 31 wk, PNA 10 d | 0.493 | 0.2523 | 0.875 | 0.61 | 2.980e-07 | 2.0e-05 |
+| 3.36 kg, GA 37.3 wk, PNA 31 d | 1.397 | 0.4624 | 1.470 | 0.61 | 2.511e-06 | 2.0e-05 |
+| 4.5 kg, GA 39 wk, PNA 50 d | 2.169 | 0.5771 | 1.969 | 0.61 | 6.390e-06 | 3.5e-05 |
+| 5.4 kg, GA 40 wk, PNA 56 d | 2.408 | 0.6187 | 2.363 | 0.61 | 6.715e-06 | 4.3e-05 |
 
 ``` r
 
@@ -633,10 +633,10 @@ nca_wide |>
 
 | arm | n | Cmax (mg/L) | Tmax (h) | AUClast (mg\*h/L) | t1/2 (h) | t1/2 not estimable |
 |:---|---:|:---|:---|:---|:---|---:|
-| GA \<35 wk, PNA 7-28 d | 200 | 30.3 (19.7-42.4) | 2.75 (1.40-5.00) | 171.8 (120.3-227.0) | 2.45 (1.71-4.47) | 0 |
-| GA \>=35 wk, PNA 7-28 d | 200 | 27.6 (16.4-40.4) | 2.50 (1.50-4.26) | 128.0 (92.8-174.9) | 1.82 (1.23-3.49) | 0 |
-| GA \<35 wk, PNA 29-60 d | 200 | 37.3 (26.4-46.6) | 1.75 (0.95-3.25) | 143.5 (100.3-193.7) | 1.81 (1.23-2.62) | 0 |
-| GA \>=35 wk, PNA 29-60 d | 200 | 34.7 (24.1-44.6) | 1.60 (0.90-3.00) | 108.8 (75.1-158.5) | 1.34 (0.92-2.03) | 0 |
+| GA \<35 wk, PNA 7-28 d | 200 | 30.6 (19.0-41.5) | 2.75 (1.40-5.50) | 161.8 (119.4-217.7) | 2.36 (1.54-4.75) | 0 |
+| GA \>=35 wk, PNA 7-28 d | 200 | 28.4 (16.9-40.2) | 2.25 (1.35-3.76) | 130.7 (86.9-175.1) | 1.84 (1.20-3.17) | 0 |
+| GA \<35 wk, PNA 29-60 d | 200 | 38.6 (26.2-48.1) | 1.75 (0.85-3.76) | 147.1 (102.7-203.7) | 1.88 (1.29-2.66) | 0 |
+| GA \>=35 wk, PNA 29-60 d | 200 | 34.7 (22.3-43.2) | 1.65 (0.90-3.25) | 107.3 (74.7-148.1) | 1.35 (0.91-1.95) | 0 |
 
 Simulated single-dose NCA over 0-12 h, median (5th-95th percentile).
 AUClast is used rather than AUCinf because a few long-lag subjects have
@@ -703,10 +703,10 @@ auc_chk |>
 
 | arm | n | Median % diff | 90th pct abs % diff | Max abs % diff |
 |:---|---:|---:|---:|---:|
-| GA \<35 wk, PNA 7-28 d | 200 | -0.042 | 0.086 | 0.477 |
-| GA \>=35 wk, PNA 7-28 d | 200 | -0.047 | 0.097 | 0.524 |
-| GA \<35 wk, PNA 29-60 d | 200 | -0.030 | 0.096 | 0.966 |
-| GA \>=35 wk, PNA 29-60 d | 200 | -0.033 | 0.133 | 0.883 |
+| GA \<35 wk, PNA 7-28 d | 200 | -0.042 | 0.103 | 0.307 |
+| GA \>=35 wk, PNA 7-28 d | 200 | -0.045 | 0.103 | 0.429 |
+| GA \<35 wk, PNA 29-60 d | 200 | -0.030 | 0.117 | 1.215 |
+| GA \>=35 wk, PNA 29-60 d | 200 | -0.037 | 0.128 | 1.595 |
 
 NCA AUClast vs the mass-balance identity (Dose - remaining)/(CL/F).
 {.table}
@@ -972,86 +972,86 @@ pta_tab |>
 
 | regimen       | arm                      | MIC | PTA 50% (%) | PTA 70% (%) |
 |:--------------|:-------------------------|----:|------------:|------------:|
-| 25 mg/kg q12h | GA \<35 wk, PNA 7-28 d   |   2 |       100.0 |        97.0 |
-| 25 mg/kg q12h | GA \<35 wk, PNA 7-28 d   |   4 |       100.0 |        76.5 |
-| 25 mg/kg q12h | GA \<35 wk, PNA 7-28 d   |   8 |        83.0 |        32.0 |
-| 25 mg/kg q12h | GA \<35 wk, PNA 7-28 d   |  16 |        16.5 |         2.5 |
-| 25 mg/kg q12h | GA \>=35 wk, PNA 7-28 d  |   2 |        94.5 |        70.5 |
-| 25 mg/kg q12h | GA \>=35 wk, PNA 7-28 d  |   4 |        83.0 |        40.5 |
-| 25 mg/kg q12h | GA \>=35 wk, PNA 7-28 d  |   8 |        45.5 |         7.5 |
-| 25 mg/kg q12h | GA \>=35 wk, PNA 7-28 d  |  16 |         1.0 |         0.0 |
-| 25 mg/kg q12h | GA \<35 wk, PNA 29-60 d  |   2 |        97.0 |        59.5 |
-| 25 mg/kg q12h | GA \<35 wk, PNA 29-60 d  |   4 |        78.0 |        21.5 |
-| 25 mg/kg q12h | GA \<35 wk, PNA 29-60 d  |   8 |        24.5 |         4.0 |
-| 25 mg/kg q12h | GA \<35 wk, PNA 29-60 d  |  16 |         1.5 |         0.0 |
-| 25 mg/kg q12h | GA \>=35 wk, PNA 29-60 d |   2 |        69.5 |        19.0 |
-| 25 mg/kg q12h | GA \>=35 wk, PNA 29-60 d |   4 |        34.0 |         3.0 |
-| 25 mg/kg q12h | GA \>=35 wk, PNA 29-60 d |   8 |         4.0 |         0.0 |
+| 25 mg/kg q12h | GA \<35 wk, PNA 7-28 d   |   2 |       100.0 |        95.5 |
+| 25 mg/kg q12h | GA \<35 wk, PNA 7-28 d   |   4 |        97.5 |        72.0 |
+| 25 mg/kg q12h | GA \<35 wk, PNA 7-28 d   |   8 |        79.0 |        30.5 |
+| 25 mg/kg q12h | GA \<35 wk, PNA 7-28 d   |  16 |        14.5 |         2.0 |
+| 25 mg/kg q12h | GA \>=35 wk, PNA 7-28 d  |   2 |        99.0 |        74.5 |
+| 25 mg/kg q12h | GA \>=35 wk, PNA 7-28 d  |   4 |        91.5 |        45.5 |
+| 25 mg/kg q12h | GA \>=35 wk, PNA 7-28 d  |   8 |        45.0 |         6.0 |
+| 25 mg/kg q12h | GA \>=35 wk, PNA 7-28 d  |  16 |         1.5 |         0.0 |
+| 25 mg/kg q12h | GA \<35 wk, PNA 29-60 d  |   2 |        96.5 |        60.0 |
+| 25 mg/kg q12h | GA \<35 wk, PNA 29-60 d  |   4 |        75.5 |        25.5 |
+| 25 mg/kg q12h | GA \<35 wk, PNA 29-60 d  |   8 |        32.5 |         3.5 |
+| 25 mg/kg q12h | GA \<35 wk, PNA 29-60 d  |  16 |         1.0 |         0.5 |
+| 25 mg/kg q12h | GA \>=35 wk, PNA 29-60 d |   2 |        69.5 |        18.0 |
+| 25 mg/kg q12h | GA \>=35 wk, PNA 29-60 d |   4 |        35.0 |         3.5 |
+| 25 mg/kg q12h | GA \>=35 wk, PNA 29-60 d |   8 |         5.5 |         0.0 |
 | 25 mg/kg q12h | GA \>=35 wk, PNA 29-60 d |  16 |         0.0 |         0.0 |
 | 25 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   2 |       100.0 |       100.0 |
 | 25 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   4 |       100.0 |       100.0 |
-| 25 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   8 |       100.0 |        99.5 |
-| 25 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |  16 |        96.5 |        83.5 |
+| 25 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   8 |       100.0 |       100.0 |
+| 25 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |  16 |        99.5 |        83.5 |
 | 25 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   2 |       100.0 |       100.0 |
-| 25 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   4 |       100.0 |        99.5 |
-| 25 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   8 |        99.5 |        93.5 |
-| 25 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |  16 |        83.5 |        45.5 |
+| 25 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   4 |       100.0 |        98.0 |
+| 25 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   8 |        98.5 |        90.5 |
+| 25 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |  16 |        81.0 |        46.0 |
 | 25 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   2 |       100.0 |       100.0 |
-| 25 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   4 |       100.0 |        97.5 |
-| 25 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   8 |        99.0 |        85.0 |
-| 25 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |  16 |        73.0 |        31.5 |
-| 25 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   2 |       100.0 |        98.0 |
-| 25 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   4 |        99.0 |        84.5 |
-| 25 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   8 |        88.5 |        42.0 |
-| 25 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |  16 |        28.0 |         5.0 |
+| 25 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   4 |       100.0 |        99.5 |
+| 25 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   8 |       100.0 |        88.0 |
+| 25 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |  16 |        77.5 |        28.0 |
+| 25 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   2 |       100.0 |        97.5 |
+| 25 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   4 |        99.0 |        87.5 |
+| 25 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   8 |        89.0 |        50.5 |
+| 25 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |  16 |        32.0 |         5.0 |
 | 25 mg/kg q8h  | GA \<35 wk, PNA 7-28 d   |   2 |       100.0 |       100.0 |
-| 25 mg/kg q8h  | GA \<35 wk, PNA 7-28 d   |   4 |       100.0 |       100.0 |
-| 25 mg/kg q8h  | GA \<35 wk, PNA 7-28 d   |   8 |       100.0 |        92.0 |
-| 25 mg/kg q8h  | GA \<35 wk, PNA 7-28 d   |  16 |        87.0 |        39.5 |
-| 25 mg/kg q8h  | GA \>=35 wk, PNA 7-28 d  |   2 |       100.0 |        97.5 |
-| 25 mg/kg q8h  | GA \>=35 wk, PNA 7-28 d  |   4 |        99.5 |        89.0 |
-| 25 mg/kg q8h  | GA \>=35 wk, PNA 7-28 d  |   8 |        91.0 |        54.5 |
-| 25 mg/kg q8h  | GA \>=35 wk, PNA 7-28 d  |  16 |        30.5 |         9.0 |
-| 25 mg/kg q8h  | GA \<35 wk, PNA 29-60 d  |   2 |       100.0 |        98.5 |
-| 25 mg/kg q8h  | GA \<35 wk, PNA 29-60 d  |   4 |        99.5 |        85.5 |
-| 25 mg/kg q8h  | GA \<35 wk, PNA 29-60 d  |   8 |        87.5 |        45.5 |
-| 25 mg/kg q8h  | GA \<35 wk, PNA 29-60 d  |  16 |        31.5 |         4.5 |
-| 25 mg/kg q8h  | GA \>=35 wk, PNA 29-60 d |   2 |        99.5 |        74.0 |
-| 25 mg/kg q8h  | GA \>=35 wk, PNA 29-60 d |   4 |        90.0 |        44.0 |
-| 25 mg/kg q8h  | GA \>=35 wk, PNA 29-60 d |   8 |        49.0 |        12.0 |
-| 25 mg/kg q8h  | GA \>=35 wk, PNA 29-60 d |  16 |         3.5 |         0.0 |
+| 25 mg/kg q8h  | GA \<35 wk, PNA 7-28 d   |   4 |       100.0 |        99.0 |
+| 25 mg/kg q8h  | GA \<35 wk, PNA 7-28 d   |   8 |       100.0 |        89.5 |
+| 25 mg/kg q8h  | GA \<35 wk, PNA 7-28 d   |  16 |        76.0 |        29.5 |
+| 25 mg/kg q8h  | GA \>=35 wk, PNA 7-28 d  |   2 |       100.0 |       100.0 |
+| 25 mg/kg q8h  | GA \>=35 wk, PNA 7-28 d  |   4 |       100.0 |        94.0 |
+| 25 mg/kg q8h  | GA \>=35 wk, PNA 7-28 d  |   8 |        95.0 |        56.5 |
+| 25 mg/kg q8h  | GA \>=35 wk, PNA 7-28 d  |  16 |        33.0 |         7.5 |
+| 25 mg/kg q8h  | GA \<35 wk, PNA 29-60 d  |   2 |       100.0 |        99.5 |
+| 25 mg/kg q8h  | GA \<35 wk, PNA 29-60 d  |   4 |        99.5 |        87.0 |
+| 25 mg/kg q8h  | GA \<35 wk, PNA 29-60 d  |   8 |        91.5 |        43.0 |
+| 25 mg/kg q8h  | GA \<35 wk, PNA 29-60 d  |  16 |        26.5 |         5.0 |
+| 25 mg/kg q8h  | GA \>=35 wk, PNA 29-60 d |   2 |       100.0 |        85.0 |
+| 25 mg/kg q8h  | GA \>=35 wk, PNA 29-60 d |   4 |        95.0 |        49.0 |
+| 25 mg/kg q8h  | GA \>=35 wk, PNA 29-60 d |   8 |        56.0 |        13.0 |
+| 25 mg/kg q8h  | GA \>=35 wk, PNA 29-60 d |  16 |         4.0 |         0.0 |
 | 35 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   2 |       100.0 |       100.0 |
 | 35 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   4 |       100.0 |       100.0 |
 | 35 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   8 |       100.0 |       100.0 |
-| 35 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |  16 |       100.0 |        97.5 |
+| 35 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |  16 |       100.0 |        97.0 |
 | 35 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   2 |       100.0 |       100.0 |
-| 35 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   4 |       100.0 |       100.0 |
-| 35 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   8 |       100.0 |        97.5 |
-| 35 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |  16 |        97.5 |        77.0 |
+| 35 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   4 |       100.0 |        99.5 |
+| 35 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   8 |       100.0 |        95.5 |
+| 35 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |  16 |        94.5 |        71.5 |
 | 35 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   2 |       100.0 |       100.0 |
-| 35 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   4 |       100.0 |        99.0 |
+| 35 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   4 |       100.0 |       100.0 |
 | 35 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   8 |       100.0 |        96.0 |
-| 35 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |  16 |        95.5 |        63.0 |
-| 35 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   2 |       100.0 |       100.0 |
-| 35 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   4 |       100.0 |        96.5 |
-| 35 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   8 |        98.0 |        71.0 |
-| 35 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |  16 |        69.0 |        19.0 |
+| 35 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |  16 |        95.5 |        65.5 |
+| 35 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   2 |       100.0 |        99.5 |
+| 35 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   4 |       100.0 |        94.0 |
+| 35 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   8 |        97.0 |        66.5 |
+| 35 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |  16 |        64.0 |        22.5 |
 | 50 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   2 |       100.0 |       100.0 |
 | 50 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   4 |       100.0 |       100.0 |
 | 50 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |   8 |       100.0 |       100.0 |
-| 50 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |  16 |       100.0 |       100.0 |
+| 50 mg/kg q6h  | GA \<35 wk, PNA 7-28 d   |  16 |       100.0 |        99.5 |
 | 50 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   2 |       100.0 |       100.0 |
 | 50 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   4 |       100.0 |       100.0 |
-| 50 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   8 |       100.0 |       100.0 |
-| 50 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |  16 |       100.0 |        94.0 |
+| 50 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |   8 |       100.0 |        99.5 |
+| 50 mg/kg q6h  | GA \>=35 wk, PNA 7-28 d  |  16 |        99.5 |        93.5 |
 | 50 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   2 |       100.0 |       100.0 |
 | 50 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   4 |       100.0 |       100.0 |
-| 50 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   8 |       100.0 |        99.0 |
-| 50 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |  16 |        99.5 |        90.5 |
+| 50 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |   8 |       100.0 |        97.5 |
+| 50 mg/kg q6h  | GA \<35 wk, PNA 29-60 d  |  16 |        99.0 |        85.0 |
 | 50 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   2 |       100.0 |        99.5 |
-| 50 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   4 |        99.5 |        97.5 |
-| 50 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   8 |        99.0 |        86.0 |
-| 50 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |  16 |        89.5 |        45.5 |
+| 50 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   4 |       100.0 |        98.0 |
+| 50 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |   8 |        99.0 |        84.5 |
+| 50 mg/kg q6h  | GA \>=35 wk, PNA 29-60 d |  16 |        88.5 |        42.0 |
 
 Probability of target attainment (% of virtual infants reaching fT\>MIC
 over 24-48 h), by regimen, stratum and MIC. {.table}
@@ -1120,7 +1120,7 @@ maturation_gaps <- c(
 )
 maturation_gaps
 #> q12_mic4  q8_mic8 
-#>       66       51
+#>     62.5     44.0
 # Measured 66.0 / 66.0 (q12h at MIC 4) and 51.0 / 49.0 (q8h at MIC 8) at 2 and
 # 8 solver threads: the effect is an order of magnitude larger than the bound.
 stopifnot(all(maturation_gaps > 10))
@@ -1137,10 +1137,10 @@ d_ladder <- vapply(
 )
 q_ladder
 #> 25 mg/kg q12h  25 mg/kg q8h  25 mg/kg q6h 
-#>           4.0          49.0          88.5
+#>           5.5          56.0          89.0
 d_ladder
 #> 25 mg/kg q6h 35 mg/kg q6h 50 mg/kg q6h 
-#>          5.0         19.0         45.5
+#>          5.0         22.5         42.0
 stopifnot(q_ladder[[3]] > q_ladder[[1]] + 10)
 stopifnot(d_ladder[[3]] > d_ladder[[1]] + 10)
 
@@ -1156,7 +1156,7 @@ mssa_q12 <- c(
   cell("25 mg/kg q12h", arm_levels[2], 4, "PTA 50% (%)")
 )
 mssa_q12
-#> [1] 100  83
+#> [1] 97.5 91.5
 # Measured 100.0 / 97.0 (arm 1) and 83.0 / 87.0 (arm 2) at 2 and 8 solver
 # threads. The binding value is ~83, and the binomial standard error of a
 # proportion at n = 200 is ~2.6 points, so 80 would sit inside the noise.

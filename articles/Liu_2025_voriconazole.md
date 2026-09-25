@@ -649,8 +649,8 @@ auc_trap |>
 
 | Route | Median AUC0-tau (mg\*h/L) | Median Dose/CL (mg\*h/L) | Max abs diff % |
 |:---|---:|---:|---:|
-| Intravenous | 48.494 | 48.494 | 0.000 |
-| Oral | 45.010 | 45.011 | 0.003 |
+| Intravenous | 44.285 | 44.285 | 0.001 |
+| Oral | 46.757 | 46.758 | 0.004 |
 
 Steady-state AUC over the dosing interval vs the closed form Dose/CL.
 {.table}
@@ -697,8 +697,8 @@ approach |>
 
 | Route       | Median % of steady state | 10th percentile |
 |:------------|-------------------------:|----------------:|
-| Intravenous |                     96.8 |            42.0 |
-| Oral        |                     94.6 |            49.9 |
+| Intravenous |                    103.5 |            46.6 |
+| Oral        |                     89.6 |            42.5 |
 
 Day-6 exposure as a percentage of true steady state. {.table}
 
@@ -767,8 +767,8 @@ nca_tab |>
 
 | Route       | auclast |  cav | cmax | ctrough | tmax |
 |:------------|--------:|-----:|-----:|--------:|-----:|
-| Intravenous |   48.49 | 4.04 |  4.8 |    3.37 | 0.00 |
-| Oral        |   45.01 | 3.75 |  4.2 |    3.17 | 2.25 |
+| Intravenous |   44.29 | 3.69 | 4.45 |    3.02 | 0.00 |
+| Oral        |   46.76 | 3.90 | 4.35 |    3.32 | 2.25 |
 
 Median steady-state NCA parameters over one 12 h dosing interval.
 {.table}

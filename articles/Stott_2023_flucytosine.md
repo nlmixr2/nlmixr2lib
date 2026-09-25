@@ -649,12 +649,12 @@ cmp |>
 
 | NCA parameter     | Matrix | Reference | Simulated | % diff   |
 |:------------------|:-------|:----------|:----------|:---------|
-| Cmax (mg/L)       | Plasma | 50.6      | 42.6      | -15.8%   |
-| Cmax (mg/L)       | CSF    | 41.9      | 27.7      | -33.8%\* |
-| Cmin (mg/L)       | Plasma | 38        | 28.2      | -25.8%\* |
-| Cmin (mg/L)       | CSF    | 23.9      | 20.2      | -15.5%   |
-| AUClast (mg\*h/L) | Plasma | 890       | 800       | -10.2%   |
-| AUClast (mg\*h/L) | CSF    | 596       | 583       | -2.1%    |
+| Cmax (mg/L)       | Plasma | 50.6      | 40.4      | -20.2%\* |
+| Cmax (mg/L)       | CSF    | 41.9      | 23.2      | -44.7%\* |
+| Cmin (mg/L)       | Plasma | 38        | 28        | -26.4%\* |
+| Cmin (mg/L)       | CSF    | 23.9      | 16.5      | -31.0%\* |
+| AUClast (mg\*h/L) | Plasma | 890       | 805       | -9.6%    |
+| AUClast (mg\*h/L) | CSF    | 596       | 465       | -22.0%\* |
 | t½ (h)            | Plasma | 14.5      | 14.4      | -0.5%    |
 
 Simulated versus Stott 2023 published exposure. AUC references are the
@@ -693,15 +693,15 @@ pct <- function(sim, ref) 100 * (sim - ref) / ref
 
 cat(sprintf("Plasma AUC144-168 median: %.1f vs 890.4 (%+.1f%%)\n",
             med("Plasma", "auclast"), pct(med("Plasma", "auclast"), 890.38)))
-#> Plasma AUC144-168 median: 799.9 vs 890.4 (-10.2%)
+#> Plasma AUC144-168 median: 805.0 vs 890.4 (-9.6%)
 cat(sprintf("CSF    AUC144-168 median: %.1f vs 595.7 (%+.1f%%)\n",
             med("CSF", "auclast"), pct(med("CSF", "auclast"), 595.66)))
-#> CSF    AUC144-168 median: 582.9 vs 595.7 (-2.1%)
+#> CSF    AUC144-168 median: 464.7 vs 595.7 (-22.0%)
 cat(sprintf("CSF:plasma AUC ratio median: %.3f vs 0.69 (%+.1f%%)\n",
             stats::median(auc_cohort$ratio[auc_cohort$treatment == "25 mg/kg q6h"]),
             pct(stats::median(auc_cohort$ratio[auc_cohort$treatment == "25 mg/kg q6h"]),
                 0.69)))
-#> CSF:plasma AUC ratio median: 0.730 vs 0.69 (+5.8%)
+#> CSF:plasma AUC ratio median: 0.675 vs 0.69 (-2.1%)
 
 # The cohort medians are ONE draw from a 200-subject sample of a distribution
 # whose IIV reaches CV 168%, and rxSetSeed() fixes the draw per solver-thread

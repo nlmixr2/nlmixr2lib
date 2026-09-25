@@ -315,7 +315,15 @@ solve_once <- function() {
 
     keep = c("treatment"),
     addDosing = FALSE,
-    returnType = "data.frame"
+    returnType = "data.frame",
+    # The check below compares against a closed form at 1e-6 relative, so the
+    # ODE integration must be tighter than that. Both tolerance pairs are
+    # needed: the `ss = 1` steady-state search has its own convergence
+    # criterion (defaults 1e-6 / 1e-8) and alone leaves ~1e-6 relative error
+    # in the trough; tightening rtol/atol alone leaves ~4e-6. Measured with
+    # all four: 6e-10.
+    rtol = 1e-10, atol = 1e-12,
+    ssRtol = 1e-10, ssAtol = 1e-12
   )
 }
 
@@ -355,11 +363,12 @@ c(`solve attempts` = attempt,
 #>                            solve attempts 
 #>                              1.000000e+00 
 #> worst relative deviation from closed form 
-#>                              8.881784e-15
+#>                              5.955816e-10
 ```
 
 The packaged ODE model reproduces the closed-form steady-state solution
-to machine precision for all 400 subject-regimen combinations.
+to within the 1e-6 relative tolerance of the check (the worst deviation
+is printed above) for all 400 subject-regimen combinations.
 
 ``` r
 
@@ -409,7 +418,7 @@ c(`typical Cmax (mg/L)` = max(sim_typ$Cc),
   `observed median peak (paper)` = 22.26,
   `observed median trough (paper)` = 8.5)
 #>            typical Cmax (mg/L)         typical Ctrough (mg/L) 
-#>                      20.629261                       7.029167 
+#>                      20.629275                       7.029171 
 #>   observed median peak (paper) observed median trough (paper) 
 #>                      22.260000                       8.500000
 ```
@@ -705,8 +714,8 @@ nca_wide |>
 
 | Regimen     | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | AUC24 (mg\*h/L) | Cavg (mg/L) |
 |:------------|------------:|------------:|---------:|----------------:|------------:|
-| 600 mg q12h |       17.41 |        3.34 |     12.5 |          205.71 |        8.57 |
-| 600 mg q8h  |       21.53 |        7.14 |      8.5 |          308.57 |       12.86 |
+| 600 mg q12h |       17.41 |        3.34 |      0.5 |          205.71 |        8.57 |
+| 600 mg q8h  |       21.53 |        7.14 |      0.5 |          308.57 |       12.86 |
 
 Median steady-state NCA parameters by regimen. {.table}
 
@@ -827,8 +836,8 @@ the tail of the clearance distribution, agree closely.
   guards against it by checking every subject’s simulated steady-state
   peak and trough against the analytic one-compartment solution and
   re-solving until the whole cohort agrees to within 1e-6 relative. The
-  rendered result above shows the check passing to machine precision, so
-  no downstream number is affected.
+  rendered result above shows the check passing, so no downstream number
+  is affected.
 - **Cohort size is 200 per arm, against the paper’s 5000.** Monte Carlo
   standard error on a PTA near 90% is about 2 percentage points at n =
   200, so the simulated PTA values are expected to sit within a few

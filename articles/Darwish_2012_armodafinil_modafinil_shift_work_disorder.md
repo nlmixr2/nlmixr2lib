@@ -428,7 +428,7 @@ placebo_curve <- mslt_summary |>
 names(placebo_curve) <- sprintf("%02d00", mslt_clock)
 print(round(placebo_curve, 2))
 #> 0000 0200 0400 0600 0800 
-#> 4.72 3.08 1.85 1.41 1.87
+#> 4.90 3.21 1.93 1.47 1.94
 
 stopifnot(
   # "gradual decrease in wake time from 0000 h" through the early morning
@@ -496,11 +496,11 @@ knitr::kable(contrast_summary |> dplyr::rename("Clock time (h)" = clock),
 
 | Clock time (h) | Armodafinil 200 vs modafinil 200 | Armodafinil 150 vs modafinil 200 |
 |---:|---:|---:|
-| 0 | 0.44 | -0.26 |
-| 2 | 0.70 | 0.03 |
-| 4 | 0.69 | 0.18 |
-| 6 | 0.60 | 0.24 |
-| 8 | 0.78 | 0.35 |
+| 0 | 0.43 | -0.24 |
+| 2 | 0.70 | 0.02 |
+| 4 | 0.73 | 0.19 |
+| 6 | 0.64 | 0.25 |
+| 8 | 0.86 | 0.39 |
 
 Median paired difference in placebo-subtracted MSLT time (min). {.table}
 
@@ -626,11 +626,11 @@ knitr::kable(cmp, caption = "Simulated vs published-derived NCA. * differs by >2
 
 | NCA parameter           | treatment          | Reference | Simulated | % diff |
 |:------------------------|:-------------------|----------:|----------:|-------:|
-| AUC0-∞ (obs) (ug\*h/mL) | Armodafinil 150 mg |      69.8 |      71.8 |  +2.9% |
-| AUC0-∞ (obs) (ug\*h/mL) | Armodafinil 200 mg |        93 |      95.7 |  +2.9% |
-| AUC0-∞ (obs) (ug\*h/mL) | Modafinil 200 mg   |      54.1 |      57.2 |  +5.7% |
-| t½ (h)                  | Armodafinil 150 mg |      12.8 |      12.8 |  +0.1% |
-| t½ (h)                  | Armodafinil 200 mg |      12.8 |      12.8 |  +0.1% |
+| AUC0-∞ (obs) (ug\*h/mL) | Armodafinil 150 mg |      69.8 |      70.1 |  +0.5% |
+| AUC0-∞ (obs) (ug\*h/mL) | Armodafinil 200 mg |        93 |      93.5 |  +0.5% |
+| AUC0-∞ (obs) (ug\*h/mL) | Modafinil 200 mg   |      54.1 |      56.5 |  +4.4% |
+| t½ (h)                  | Armodafinil 150 mg |      12.8 |      12.9 |  +0.1% |
+| t½ (h)                  | Armodafinil 200 mg |      12.8 |      12.9 |  +0.1% |
 | t½ (h)                  | Modafinil 200 mg   |      13.1 |        13 |  -0.5% |
 
 Simulated vs published-derived NCA. \* differs by \>20%. {.table}
@@ -687,9 +687,9 @@ knitr::kable(
 
 | Treatment          | max \|AUC\*CL/dose - 1\| | max \|t-half / published - 1\| |
 |:-------------------|-------------------------:|-------------------------------:|
-| Armodafinil 150 mg |                  0.00019 |                        0.00648 |
-| Armodafinil 200 mg |                  0.00019 |                        0.00648 |
-| Modafinil 200 mg   |                  0.00038 |                        0.00815 |
+| Armodafinil 150 mg |                  0.00018 |                        0.00636 |
+| Armodafinil 200 mg |                  0.00018 |                        0.00636 |
+| Modafinil 200 mg   |                  0.00037 |                        0.00576 |
 
 Exact per-subject identities (deterministic; tight bounds apply).
 {.table}

@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -532,8 +532,8 @@ fig4 |>
 
 | weight_kg      | 250 | 500 | 750 | 1000 | 1500 | 2000 |
 |:---------------|----:|----:|----:|-----:|-----:|-----:|
-| 10 kg patient  |   9 |  24 |  37 |   46 |   70 |   85 |
-| 100 kg patient |  45 |  86 |  95 |   98 |   98 |  100 |
+| 10 kg patient  |   4 |  24 |  31 |   52 |   65 |   78 |
+| 100 kg patient |  43 |  85 |  89 |   98 |  100 |  100 |
 
 Percentage of simulated subjects with 48 h concentration \>= 100 IU/L,
 by weight and IU/kg dose. {.table}

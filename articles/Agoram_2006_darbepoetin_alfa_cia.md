@@ -591,11 +591,11 @@ knitr::kable(fig4, digits = 2, caption = "Figure 4 band, published vs simulated.
 
 | Quantity                                  | Figure 4 (read off) | Simulated |
 |:------------------------------------------|:--------------------|----------:|
-| Median Hb at week 0 (g/dL)                | ~10                 |      9.87 |
-| Median Hb at week 16 (g/dL)               | ~11.5-12            |     11.12 |
-| Rise in median Hb, week 0 to 16 (g/dL)    | ~1.5-2              |      1.25 |
-| Lower 2.5th percentile at week 16 (g/dL)  | ~8.5                |      8.47 |
-| Upper 97.5th percentile at week 16 (g/dL) | ~13.5-15            |     14.68 |
+| Median Hb at week 0 (g/dL)                | ~10                 |     10.01 |
+| Median Hb at week 16 (g/dL)               | ~11.5-12            |     11.19 |
+| Rise in median Hb, week 0 to 16 (g/dL)    | ~1.5-2              |      1.19 |
+| Lower 2.5th percentile at week 16 (g/dL)  | ~8.5                |      8.70 |
+| Upper 97.5th percentile at week 16 (g/dL) | ~13.5-15            |     15.12 |
 
 Figure 4 band, published vs simulated. {.table}
 

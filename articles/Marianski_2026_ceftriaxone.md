@@ -383,7 +383,7 @@ cf_dev <- vapply(split(cf_sim, cf_sim$id), function(z) {
 
 cat(sprintf("Closed form vs ODE, %d subjects: max relative deviation = %.2e\n",
             n_cf, max(cf_dev)))
-#> Closed form vs ODE, 30 subjects: max relative deviation = 3.73e-04
+#> Closed form vs ODE, 30 subjects: max relative deviation = 8.89e-05
 stopifnot(max(cf_dev) < 1e-3)
 ```
 
@@ -412,7 +412,7 @@ mb_dev <- vapply(split(cf_sim, cf_sim$id), function(z) {
 
 cat(sprintf("Mass balance, %d subjects: max relative deviation = %.2e\n",
             n_cf, max(mb_dev)))
-#> Mass balance, 30 subjects: max relative deviation = 4.43e-05
+#> Mass balance, 30 subjects: max relative deviation = 2.88e-05
 stopifnot(max(mb_dev) < 1e-3)
 ```
 
@@ -618,8 +618,8 @@ tibble::tibble(
 |:--------------------------------------------------|:-------------|
 | Distribution half-life, typical (h)               | 3.23         |
 | Terminal half-life, typical (h)                   | 29.5         |
-| Terminal half-life, cohort median (h)             | 40.9         |
-| Terminal half-life, cohort 5th-95th pct (h)       | 6.9 to 187.2 |
+| Terminal half-life, cohort median (h)             | 39           |
+| Terminal half-life, cohort 5th-95th pct (h)       | 8.4 to 337.4 |
 | Share of AUC(0,inf) accrued in the first 24 h (%) | 63.1         |
 
 Terminal-phase behaviour implied by the published Q and V2. {.table}
@@ -790,10 +790,10 @@ knitr::kable(ft_summary, caption = "Simulated fT>MIC distribution by MIC.")
 
 | MIC | 5th pct | 1st quartile | Median | 3rd quartile | 95th pct | % of subjects at or above 50% |
 |---:|---:|---:|---:|---:|---:|---:|
-| 1 | 34.4 | 72.9 | 99.6 | 99.6 | 99.6 | 87.5 |
-| 2 | 22.4 | 43.9 | 77.0 | 99.6 | 99.6 | 71.0 |
-| 4 | 12.4 | 23.2 | 39.4 | 62.3 | 99.2 | 36.0 |
-| 8 | 0.8 | 7.9 | 14.5 | 23.3 | 63.9 | 7.5 |
+| 1 | 37.7 | 79.8 | 99.6 | 99.6 | 99.6 | 86.5 |
+| 2 | 22.4 | 44.3 | 77.6 | 99.6 | 99.6 | 70.0 |
+| 4 | 12.4 | 25.2 | 43.4 | 67.8 | 99.2 | 39.5 |
+| 8 | 2.5 | 8.6 | 15.8 | 27.5 | 51.9 | 7.0 |
 
 Simulated fT\>MIC distribution by MIC. {.table}
 
@@ -834,9 +834,9 @@ knitr::kable(claims, caption = "The paper's three printed fT>MIC claims, scored 
 | Claim | Paper (Results) | Achieved | Pass |
 |:---|:---|:---|:---|
 | fT\>MIC exceeds 50% at MIC 1 mg/L | “fT\>MIC was \>50% at CRO MICs \<=1 mg/L” | median 99.6% | TRUE |
-| fT\>MIC is variable at MIC 2 mg/L | “variable for CRO MICs of 2-4 mg/L” | interquartile width 55.7 pp | TRUE |
-| fT\>MIC is variable at MIC 4 mg/L | “variable for CRO MICs of 2-4 mg/L” | interquartile width 39.1 pp | TRUE |
-| fT\>MIC falls below 50% at MIC 8 mg/L | “\< 50% at 8 mg/L” | median 14.5% | TRUE |
+| fT\>MIC is variable at MIC 2 mg/L | “variable for CRO MICs of 2-4 mg/L” | interquartile width 55.3 pp | TRUE |
+| fT\>MIC is variable at MIC 4 mg/L | “variable for CRO MICs of 2-4 mg/L” | interquartile width 42.6 pp | TRUE |
+| fT\>MIC falls below 50% at MIC 8 mg/L | “\< 50% at 8 mg/L” | median 15.8% | TRUE |
 
 The paper’s three printed fT\>MIC claims, scored against the simulated
 cohort. {.table}

@@ -226,11 +226,11 @@ auc_chk |>
 
 | Regimen                    | Max \|AUC(0-24) / (Dose24/CL) - 1\| |
 |:---------------------------|------------------------------------:|
-| 0.25 g q8h, 0.5 h infusion |                                   0 |
-| 0.75 g/day, continuous     |                                   0 |
-| 2 g q12h, 4 h infusion     |                                   0 |
-| 2 g q8h, 0.5 h infusion    |                                   0 |
-| 2 g q8h, 4 h infusion      |                                   0 |
+| 0.25 g q8h, 0.5 h infusion |                             1.0e-06 |
+| 0.75 g/day, continuous     |                             6.0e-07 |
+| 2 g q12h, 4 h infusion     |                             5.0e-07 |
+| 2 g q8h, 0.5 h infusion    |                             1.0e-06 |
+| 2 g q8h, 4 h infusion      |                             1.1e-06 |
 
 Steady-state mass-balance identity across renal function and regimen.
 {.table}
@@ -349,7 +349,15 @@ ct_events <- dplyr::bind_rows(lapply(
 stopifnot(!anyDuplicated(unique(ct_events[, c("id", "time", "evid")])))
 
 ct_sim <- rxode2::rxSolve(mod, ct_events, keep = c("arm", "CRCL"),
-                          returnType = "data.frame")
+                          returnType = "data.frame",
+                          # CLCR ~ Uniform(0, 10) occasionally draws a subject
+                          # with CLCR near 0.001 mL/min (CL ~ 0.005 L/h, half-life
+                          # ~6,500 h). Integrating that subject's continuous
+                          # infusion to steady state exhausts the default
+                          # 70,000 integrator steps and rxode2 returns NA for
+                          # the subject, which would propagate into every PTA
+                          # cell of its arm and the gate below.
+                          maxsteps = 1e6)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
 # Per-subject steady-state extremes. For a continuous infusion these are the
@@ -460,8 +468,8 @@ knitr::kable(ct_metrics, digits = 2,
 
 | Reading                                       | RMSE | Max abs. dev. | Mean dev. |
 |:----------------------------------------------|-----:|--------------:|----------:|
-| f T\>MIC on unbound concentration (f = 0.81)  | 7.55 |          29.5 |     -2.98 |
-| T\>MIC on total concentration (f not applied) | 3.54 |          11.0 |     -0.40 |
+| f T\>MIC on unbound concentration (f = 0.81)  | 7.21 |          32.2 |     -2.45 |
+| T\>MIC on total concentration (f not applied) | 3.19 |          12.2 |     -0.02 |
 
 Agreement with all 192 published continuous-infusion cells, under the
 two readings of the unbound-fraction correction. {.table}
@@ -546,7 +554,16 @@ int_events <- dplyr::bind_rows(lapply(seq_len(nrow(int_arms)), function(i) {
 stopifnot(!anyDuplicated(unique(int_events[, c("id", "time", "evid")])))
 
 int_sim <- rxode2::rxSolve(mod, int_events, keep = c("arm", "CRCL"),
-                           returnType = "data.frame")
+                           returnType = "data.frame",
+                           # The shape check at the end of the vignette asserts
+                           # Cmin,ss == C(tau) to 1e-8 mg/L. The `ss = 1`
+                           # initialisation and the integration across the
+                           # interval each carry their own tolerance (defaults
+                           # 1e-6 relative), leaving ~2e-5 mg/L between C(0)
+                           # and C(tau); with both pairs tightened the
+                           # difference is ~2e-9 mg/L.
+                           rtol = 1e-10, atol = 1e-12,
+                           ssRtol = 1e-10, ssAtol = 1e-12)
 
 # One pass per MIC rather than a crossing() of the 289,000-row simulation
 # frame with the MIC grid, which would materialise 2.3 million rows.
@@ -617,30 +634,30 @@ int_cmp |>
 
 | Regimen | MIC (mg/L) | PTA, unbound (%) | PTA, total (%) | PTA, Suppl. Table 3 (%) |
 |:---|---:|---:|---:|---:|
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 0.25 | 94.5 | 94.5 | 99.1 |
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 0.50 | 94.5 | 94.5 | 99.1 |
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 1.00 | 94.5 | 94.5 | 99.1 |
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 2.00 | 94.5 | 94.5 | 99.1 |
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 4.00 | 91.5 | 93.0 | 99.1 |
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 8.00 | 56.5 | 71.0 | 56.6 |
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 16.00 | 6.0 | 13.5 | 8.0 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 0.25 | 97.5 | 97.5 | 99.1 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 0.50 | 97.5 | 97.5 | 99.1 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 1.00 | 97.5 | 97.5 | 99.1 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 2.00 | 97.5 | 97.5 | 99.1 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 4.00 | 91.0 | 94.5 | 99.1 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 8.00 | 51.0 | 69.5 | 56.6 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 16.00 | 11.0 | 15.0 | 8.0 |
 | 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 32.00 | 0.0 | 0.0 | 0.0 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 0.25 | 99.0 | 99.0 | 98.7 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 0.50 | 99.0 | 99.0 | 98.7 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 1.00 | 99.0 | 99.0 | 98.7 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 2.00 | 99.0 | 99.0 | 98.3 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 4.00 | 98.0 | 98.0 | 97.8 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 8.00 | 88.0 | 95.0 | 90.0 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 16.00 | 40.5 | 59.0 | 39.0 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 32.00 | 1.0 | 5.5 | 1.3 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 0.25 | 74.5 | 74.5 | 82.3 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 0.50 | 74.5 | 74.5 | 82.3 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 1.00 | 74.5 | 74.5 | 82.3 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 2.00 | 74.5 | 74.5 | 82.3 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 4.00 | 74.5 | 74.5 | 82.3 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 8.00 | 74.5 | 74.5 | 81.8 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 16.00 | 62.5 | 71.0 | 73.6 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 32.00 | 4.5 | 20.0 | 4.8 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 0.25 | 98.5 | 98.5 | 98.7 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 0.50 | 98.5 | 98.5 | 98.7 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 1.00 | 98.5 | 98.5 | 98.7 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 2.00 | 98.5 | 98.5 | 98.3 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 4.00 | 96.5 | 97.5 | 97.8 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 8.00 | 85.0 | 90.0 | 90.0 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 16.00 | 33.5 | 49.0 | 39.0 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 32.00 | 0.0 | 4.5 | 1.3 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 0.25 | 81.5 | 81.5 | 82.3 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 0.50 | 81.5 | 81.5 | 82.3 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 1.00 | 81.5 | 81.5 | 82.3 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 2.00 | 81.5 | 81.5 | 82.3 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 4.00 | 81.5 | 81.5 | 82.3 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 8.00 | 81.5 | 81.5 | 81.8 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 16.00 | 70.0 | 78.5 | 73.6 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 32.00 | 2.5 | 25.5 | 4.8 |
 
 Probability of attaining 50% fT\>MIC with a steady-state trough below 20
 mg/L, for the three regimens Seo 2023 singles out. {.table}
@@ -783,9 +800,9 @@ auc_tau |>
 
 | Regimen | Median AUC(0-tau), PKNCA (mg\*h/L) | Median Dose / CL (mg\*h/L) | Max abs. relative deviation |
 |:---|---:|---:|---:|
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 97.9 | 97.9 | 9.28e-05 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 253.6 | 253.6 | 6.84e-05 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 242.4 | 242.4 | 7.25e-05 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 87.4 | 87.4 | 1.54e-04 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 237.5 | 237.6 | 6.12e-05 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 243.4 | 243.4 | 6.09e-05 |
 
 Steady-state AUC(0-tau) from PKNCA against the exact linear-system
 identity Dose / CL. {.table}
@@ -812,9 +829,9 @@ nca_summary |>
 
 | Regimen | Cmax,ss (mg/L) | Tmax,ss (h) | Cmin,ss (mg/L) | C at end of interval (mg/L) | Cavg,ss (mg/L) |
 |:---|---:|---:|---:|---:|---:|
-| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 22.48 | 0.5 | 8.06 | 8.06 | 12.23 |
-| 2 g q12h, 4 h inf. \| CLCR 90-130 | 45.20 | 4.0 | 4.53 | 4.53 | 21.13 |
-| 2 g q8h, 4 h inf. \| CLCR 90-130 | 47.01 | 4.0 | 13.73 | 13.73 | 30.30 |
+| 0.25 g q8h, 0.5 h inf. \| CLCR 10-30 | 21.24 | 0.5 | 6.83 | 6.83 | 10.92 |
+| 2 g q12h, 4 h inf. \| CLCR 90-130 | 43.29 | 4.0 | 3.71 | 3.71 | 19.80 |
+| 2 g q8h, 4 h inf. \| CLCR 90-130 | 48.17 | 4.0 | 13.07 | 13.07 | 30.42 |
 
 Median steady-state NCA parameters over one dosing interval (n = 200 per
 arm). {.table}

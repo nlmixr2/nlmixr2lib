@@ -355,7 +355,8 @@ conventions, and the Carreno k12 / k21 to Q / Vp derivation.
 ## Check 1b: the closed-form and ODE solvers agree
 
 [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-defaults to `useLinCmt = TRUE`, which rewrites a recognisably linear
+defaulted to `useLinCmt = TRUE` until rxode2 made the conversion opt-in
+in September 2026 (issue 1389), which rewrites a recognisably linear
 two-compartment system into a closed form. When such a model is written
 straight from stored micro-constants, that rewrite can silently drop
 `peripheral1` and solve a *one-compartment* model instead – with total
@@ -681,10 +682,10 @@ ss_chk |>
 
 | treatment | n | median AUCtau (mg\*h/L) | median Dose/CL (mg\*h/L) | max \|% diff\| |
 |:---|---:|---:|---:|---:|
-| carreno | 100 | 448.0 | 448.0 | 0.00227 |
-| goti | 100 | 406.7 | 406.7 | 0.00142 |
-| hughes | 100 | 576.2 | 576.2 | 0.00160 |
-| thomson | 100 | 372.7 | 372.7 | 0.00334 |
+| carreno | 100 | 448.0 | 448.0 | 0.00230 |
+| goti | 100 | 406.7 | 406.7 | 0.00140 |
+| hughes | 100 | 576.2 | 576.2 | 0.00157 |
+| thomson | 100 | 372.7 | 372.7 | 0.00331 |
 
 Check 2. PKNCA AUC over the steady-state dosing interval against the
 exact linear-system identity Dose / CL, for every subject in every arm.
@@ -1113,8 +1114,8 @@ knitr::kable(spread, caption = paste(
 
 | Model   | median AUC24 | geometric CV % | 90% interval width / median |
 |:--------|-------------:|---------------:|----------------------------:|
-| carreno |        886.8 |           67.2 |                        2.02 |
-| hughes  |       1135.2 |           50.2 |                        1.96 |
+| carreno |        928.4 |           66.8 |                        2.05 |
+| hughes  |       1140.0 |           46.6 |                        1.63 |
 
 Check 6. Between-subject dispersion of steady-state AUC24 under the two
 BMI \>= 40 models. Reflects each model’s published IIV structure:
@@ -1189,11 +1190,12 @@ fixed effects, matching `$THETA(3)` and `$THETA(4)`, but computes
 is an exact algebraic re-routing, not a change of model, and it is
 necessary: written the literal way,
 [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)’s
-default `useLinCmt = TRUE` rewrite drops `peripheral1` and silently
-solves a one-compartment model (terminal half-life 5.22 h against a true
-13.82 h, Cmax 52.8 against 27.1 mg/L). Because total AUC is unaffected
-by that collapse, an exposure check would not reveal it, so Check 1b
-asserts the half-life against the analytic beta root instead.
+former default `useLinCmt = TRUE` rewrite (opt-in since September 2026)
+drops `peripheral1` and silently solves a one-compartment model
+(terminal half-life 5.22 h against a true 13.82 h, Cmax 52.8 against
+27.1 mg/L). Because total AUC is unaffected by that collapse, an
+exposure check would not reveal it, so Check 1b asserts the half-life
+against the analytic beta root instead.
 
 **The AUC accumulator compartment is omitted.** Three of the four
 streams declare a third state, `DADT(3) = A(1)/V`, which integrates

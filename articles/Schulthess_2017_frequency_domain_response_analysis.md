@@ -4,7 +4,7 @@
 
 library(nlmixr2lib)
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -174,8 +174,13 @@ readModelDb("Schulthess_2017_moderator_stim")
 #>   # itself, and the supplementary R script adds dose = 0.1 to that state), so
 #>   # the implied central volume is 1 and `central` carries a concentration.
 #>   compartmentData <- list(
-#>     central    = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
-#>     effect     = list(analyte = "biomarker response x1 (the model output)", units = "mL", specimen = "plasma", verified = TRUE),
+#>     central = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
+#>     effect = list(
+#>       analyte = "biomarker response x1 (the model output)",
+#>       units = "mL",
+#>       specimen = "plasma",
+#>       verified = TRUE
+#>     ),
 #>     moderator1 = list(analyte = "endogenous moderator x2", units = "mL", specimen = "not applicable", verified = TRUE)
 #>   )
 #> 
@@ -251,7 +256,7 @@ readModelDb("Schulthess_2017_moderator_stim")
 #>     d/dt(moderator1) <- ktol * (effect - moderator1)
 #>   })
 #> }
-#> <environment: 0x5626982e8840>
+#> <environment: 0x5615a524aa90>
 ```
 
 The published illustrative parameter set, shared by every model:

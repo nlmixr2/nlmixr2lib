@@ -379,9 +379,9 @@ nlmixr2lib::ncaComparisonTable(
 | AUC0-∞ (obs) (mg\*h/L) | Group 1, day 1 (1,000 mg)  | 47.8      | 47.8      | -0.0%  |
 | AUC0-∞ (obs) (mg\*h/L) | Group 2, day 14 (1,000 mg) | 58.1      | 58.1      | -0.0%  |
 | AUC0-∞ (obs) (mg\*h/L) | Group 2, day 28 (1,500 mg) | 93        | 93        | -0.0%  |
-| t½ (h)                 | Group 1, day 1 (1,000 mg)  | 1.42      | 1.42      | -0.0%  |
-| t½ (h)                 | Group 2, day 14 (1,000 mg) | 1.31      | 1.31      | -0.0%  |
-| t½ (h)                 | Group 2, day 28 (1,500 mg) | 1.38      | 1.38      | -0.0%  |
+| t½ (h)                 | Group 1, day 1 (1,000 mg)  | 1.42      | 1.42      | +0.0%  |
+| t½ (h)                 | Group 2, day 14 (1,000 mg) | 1.31      | 1.31      | +0.0%  |
+| t½ (h)                 | Group 2, day 28 (1,500 mg) | 1.38      | 1.38      | +0.0%  |
 
 Typical-value PKNCA output vs. the exact closed-form solution of the
 packaged model. \* marks a \>20% difference. {.table
@@ -430,12 +430,12 @@ as.data.frame(nca_pop) |>
 | Group 1, day 1 (1,000 mg) | Median | 47.54 | 16.17 | 1.43 | 1.0 |
 | Group 1, day 1 (1,000 mg) | 5th | 20.70 | 9.50 | 0.59 | 0.5 |
 | Group 1, day 1 (1,000 mg) | 95th | 111.74 | 28.49 | 4.08 | 2.0 |
-| Group 2, day 14 (1,000 mg) | Median | 58.34 | 20.62 | 1.35 | 1.0 |
-| Group 2, day 14 (1,000 mg) | 5th | 26.90 | 13.16 | 0.59 | 1.0 |
-| Group 2, day 14 (1,000 mg) | 95th | 115.80 | 30.15 | 2.75 | 2.0 |
-| Group 2, day 28 (1,500 mg) | Median | 89.78 | 32.86 | 1.43 | 1.0 |
-| Group 2, day 28 (1,500 mg) | 5th | 46.09 | 23.04 | 0.64 | 0.5 |
-| Group 2, day 28 (1,500 mg) | 95th | 173.91 | 43.71 | 3.17 | 1.5 |
+| Group 2, day 14 (1,000 mg) | Median | 58.27 | 20.19 | 1.36 | 1.0 |
+| Group 2, day 14 (1,000 mg) | 5th | 24.74 | 13.99 | 0.55 | 0.5 |
+| Group 2, day 14 (1,000 mg) | 95th | 124.69 | 29.14 | 3.15 | 2.0 |
+| Group 2, day 28 (1,500 mg) | Median | 94.51 | 33.97 | 1.50 | 1.0 |
+| Group 2, day 28 (1,500 mg) | 5th | 56.52 | 23.25 | 0.78 | 0.5 |
+| Group 2, day 28 (1,500 mg) | 95th | 164.81 | 47.09 | 2.59 | 1.5 |
 
 Simulated population NCA on the protocol sampling grid (200 subjects per
 occasion). {.table}
@@ -614,11 +614,11 @@ mc_all |>
 
 | Dose (mg once daily) | Published progression % | group1day1 | group2day14 | group2day28 |
 |---:|---:|---:|---:|---:|
-| 1000 | 96 | 94.0 | 92.5 | 97.0 |
-| 1500 | 83 | 63.5 | 58.0 | 41.5 |
-| 2000 | 55 | 34.0 | 19.5 | 9.0 |
-| 2500 | 27 | 15.0 | 5.0 | 2.0 |
-| 3000 | 12 | 7.5 | 1.0 | 0.0 |
+| 1000 | 96 | 94.0 | 91.5 | 95.5 |
+| 1500 | 83 | 63.5 | 49.0 | 40.0 |
+| 2000 | 55 | 34.0 | 19.0 | 8.5 |
+| 2500 | 27 | 15.0 | 2.5 | 0.5 |
+| 3000 | 12 | 7.5 | 0.0 | 0.5 |
 
 Tumour-progression percentage by parameter set (observed-Cmax reading).
 All three agree at 1,000 mg; the sets separate at higher doses, where

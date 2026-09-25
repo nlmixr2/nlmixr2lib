@@ -368,7 +368,7 @@ identity_chk |>
 | 300 mg, 65 kg, CrCl 100  |             70.773 |                   70.738 | -0.049 |
 | 300 mg, 65 kg, CrCl 15   |            159.707 |                  159.335 | -0.233 |
 | 300 mg, 65 kg, CrCl 45   |             99.687 |                   99.648 | -0.040 |
-| 300 mg, 65 kg, CrCl 70   |             82.475 |                   82.440 | -0.042 |
+| 300 mg, 65 kg, CrCl 70   |             82.475 |                   82.440 | -0.043 |
 | 300 mg, 90 kg, CrCl 100  |             55.446 |                   55.421 | -0.045 |
 
 Steady-state AUCtau against the closed form Dose/CL. {.table}

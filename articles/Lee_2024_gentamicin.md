@@ -486,9 +486,9 @@ cmp_switch |>
 | 262.05 | 0.004 | 0.003 | -30.690 |
 | 309.80 | 0.001 | 0.000 | -35.797 |
 | 364.55 | 0.000 | 0.000 | -42.026 |
-| 406.72 | 0.000 | 0.000 | -47.649 |
-| 479.22 | 0.000 | 0.000 | -52.700 |
-| 526.72 | 0.710 | 0.641 | -9.702 |
+| 406.72 | 0.000 | 0.000 | -47.647 |
+| 479.22 | 0.000 | 0.000 | -52.716 |
+| 526.72 | 0.710 | 0.641 | -9.703 |
 
 Post-dialysis concentrations under the two candidate readings of CL_HD,
 at the panel-1B individual estimates. {.table}
@@ -549,7 +549,7 @@ stopifnot(abs(t_half_obs - log(2) * 24.69 / 4.69) < 0.05)
 
 Turning the dialysis sessions off raises the late-record concentration
 by a factor of 69.4, and a single session clears drug with a half-life
-of 3.69 h against the 3.65 h implied by the published `CL_HD` and `Vd`.
+of 3.65 h against the 3.65 h implied by the published `CL_HD` and `Vd`.
 
 ## Virtual cohort and population simulation
 
@@ -698,13 +698,23 @@ nca_events <- do.call(dplyr::bind_rows, lapply(seq_len(n_subj), function(i) {
 })) |>
   as.data.frame()
 
+# Tight tolerances: the closed-form comparison below is asserted to 1%.
 nca_sim <- rxode2::rxSolve(mod, nca_events, covsInterpolation = "locf",
-                           keep = c("CRCL", "treatment")) |>
+                           keep = c("CRCL", "treatment"),
+                           rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalvc'
 
+# Drop the numerically-zero tail before NCA. The 720 h grid runs the
+# fastest-clearing subjects (t1/2 ~ 6 h) out to 1e-30 mg/L, where the ODE
+# integrator's relative error dwarfs the terminal slope and PKNCA's
+# log-linear half-life fit follows that noise (measured: 13% half-life
+# error). Per subject, keep Cc >= 1e-6 * max(Cc).
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 sim_nca <- dplyr::bind_rows(
@@ -808,16 +818,16 @@ nca_wide |>
 
 | NCA parameter      | Median | 5th percentile | 95th percentile |
 |:-------------------|-------:|---------------:|----------------:|
-| Cmax (mg/L)        |   14.8 |          14.60 |            14.9 |
-| Tmax (h)           |    0.5 |           0.50 |             0.5 |
-| AUC0-inf (mg\*h/L) |  686.0 |         213.00 |          4160.0 |
-| t1/2 (h)           |   31.9 |           9.89 |           194.0 |
+| Cmax (mg/L)        |   14.8 |           14.7 |            14.9 |
+| Tmax (h)           |    0.5 |            0.5 |             0.5 |
+| AUC0-inf (mg\*h/L) |  730.0 |          281.0 |          4570.0 |
+| t1/2 (h)           |   34.0 |           13.1 |           213.0 |
 
 Simulated non-compartmental summary for a single 350 mg infusion in the
 virtual end-stage-renal-disease cohort with no dialysis. Lee 2024
 reports no NCA values, so there is no published column. {.table}
 
-The simulated half-lives are long – a median of about 31.9 h – which is
+The simulated half-lives are long – a median of about 34 h – which is
 the expected consequence of a population whose only elimination pathway
 between dialysis sessions is a residual clearance of at most 1.06 L/h.
 It is also why gentamicin in this population is dosed against dialysis

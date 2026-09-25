@@ -388,8 +388,6 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
-#> points)
 
 nca_summary <- as.data.frame(nca_res) |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
@@ -412,8 +410,8 @@ nca_summary |>
 
 | Arm                   | Cmax (ug/L) | Tmax (h) | AUClast (ug\*h/L) | Half-life (h) |
 |:----------------------|------------:|---------:|------------------:|--------------:|
-| 2 sprays (5.2 mg THC) |       1.939 |     5.25 |            10.280 |         1.323 |
-| 3 sprays (8.1 mg THC) |       2.941 |     5.00 |            14.989 |         1.129 |
+| 2 sprays (5.2 mg THC) |       1.898 |     5.00 |             9.647 |         1.305 |
+| 3 sprays (8.1 mg THC) |       2.932 |     5.25 |            15.412 |         1.274 |
 
 Median individual-prediction NCA for THC, by arm. {.table}
 
@@ -504,10 +502,10 @@ knitr::kable(cmp, caption = paste(
 ))
 ```
 
-| NCA parameter | arm                   | Reference | Simulated | % diff    |
-|:--------------|:----------------------|:----------|:----------|:----------|
-| Cmax (ug/L)   | 2 sprays (5.2 mg THC) | 1.85      | 3.84      | +107.7%\* |
-| Cmax (ug/L)   | 3 sprays (8.1 mg THC) | 4.25      | 5.44      | +28.0%\*  |
+| NCA parameter | arm                   | Reference | Simulated | % diff   |
+|:--------------|:----------------------|:----------|:----------|:---------|
+| Cmax (ug/L)   | 2 sprays (5.2 mg THC) | 1.85      | 3.69      | +99.4%\* |
+| Cmax (ug/L)   | 3 sprays (8.1 mg THC) | 4.25      | 5.76      | +35.6%\* |
 
 Simulated observed-scale Cmax vs the published means. \* differs from
 reference by more than 20%. {.table}
@@ -562,8 +560,8 @@ cmax_context |>
 
 | Arm | Structural Cmax (mean of max Cc) | Observed-scale Cmax (mean of max sim) | Published mean Cmax | n behind the published mean |
 |:---|---:|---:|---:|---:|
-| 2 sprays (5.2 mg THC) | 1.98 | 4.35 | 1.85 | 2 |
-| 3 sprays (8.1 mg THC) | 3.08 | 6.78 | 4.25 | 18 |
+| 2 sprays (5.2 mg THC) | 1.94 | 4.22 | 1.85 | 2 |
+| 3 sprays (8.1 mg THC) | 3.13 | 6.68 | 4.25 | 18 |
 
 The published three-spray mean sits between the model’s structural
 prediction and its residual-error-inflated observation scale. {.table}
@@ -635,8 +633,8 @@ knitr::kable(peak_split, digits = 1, caption =
 
 | arm                   | % with Cmax after the second dose |
 |:----------------------|----------------------------------:|
-| 2 sprays (5.2 mg THC) |                              65.0 |
-| 3 sprays (8.1 mg THC) |                              62.5 |
+| 2 sprays (5.2 mg THC) |                              65.5 |
+| 3 sprays (8.1 mg THC) |                              61.5 |
 
 Which dose produced Cmax. Storgaard 2026 Results 3.1 reports 55% after
 the second dose (n = 20). {.table}
@@ -649,8 +647,8 @@ knitr::kable(blq, digits = 1, caption =
 
 | analyte   | % below the 0.25 ug/L LLOQ |
 |:----------|---------------------------:|
-| 11-OH-THC |                       12.9 |
-| THC       |                       16.0 |
+| 11-OH-THC |                       12.8 |
+| THC       |                       16.5 |
 
 Fraction below the LLOQ. Storgaard 2026 reports 20.5% for THC and 18.4%
 for THC-OH. {.table}

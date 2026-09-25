@@ -519,7 +519,7 @@ med_wk11 <- qw_sum$Q50[which.min(abs(qw_sum$time - WEEK * 11))]
 stopifnot(med_wk11 > 100, med_wk11 < 250)
 c(simulated_median_week11_ug_per_mL = med_wk11)
 #> simulated_median_week11_ug_per_mL 
-#>                          144.5793
+#>                          135.6996
 ```
 
 ## Figure 4: body-weight effect on steady-state exposure

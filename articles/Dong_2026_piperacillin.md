@@ -357,7 +357,7 @@ mb <- sim_typ |>
 stopifnot(nrow(mb) == n_sub, max(abs(mb$recovered - 1)) < 2e-3)
 cat(sprintf("CL * AUCtau / dose: min %.6f, max %.6f (exact identity = 1)\n",
             min(mb$recovered), max(mb$recovered)))
-#> CL * AUCtau / dose: min 0.999998, max 1.000000 (exact identity = 1)
+#> CL * AUCtau / dose: min 1.000000, max 1.000002 (exact identity = 1)
 ```
 
 ## Replicate published figures
@@ -397,7 +397,7 @@ sim |>
 dv <- sim$sim[!is.na(sim$sim)]
 cat(sprintf("Simulated 4 g q8h steady-state interval: 1st pctile %.2f, 99th pctile %.1f mg/L\n",
             quantile(dv, 0.01), quantile(dv, 0.99)))
-#> Simulated 4 g q8h steady-state interval: 1st pctile -0.15, 99th pctile 366.4 mg/L
+#> Simulated 4 g q8h steady-state interval: 1st pctile -0.41, 99th pctile 373.1 mg/L
 # The observed 1.25-376.34 mg/L range pools every sample from every patient and
 # every regimen, so it is an envelope rather than a per-percentile target. Assert
 # only that the simulated interval lands inside a plausible multiple of it.
@@ -459,12 +459,12 @@ knitr::kable(pta, digits = 1,
 
 | regimen | 50% fT\>MIC, MIC 1 | 50% fT\>MIC, MIC 8 | 50% fT\>MIC, MIC 16 | 100% fT\>MIC, MIC 1 | 100% fT\>MIC, MIC 8 | 100% fT\>MIC, MIC 16 | 100% fT\>4xMIC, MIC 1 | 100% fT\>4xMIC, MIC 8 | 100% fT\>4xMIC, MIC 16 |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 12 g/day q12h | 99.0 | 81.5 | 67.5 | 67.5 | 38.5 | 26.0 | 50.0 | 13.0 | 7.0 |
-| 12 g/day q8h | 99.5 | 93.5 | 84.5 | 87.5 | 59.5 | 50.0 | 70.5 | 26.0 | 7.5 |
-| 12 g/day q6h | 99.5 | 96.5 | 89.0 | 91.5 | 69.0 | 55.5 | 80.0 | 41.0 | 14.5 |
-| 12 g/day q4h | 100.0 | 98.5 | 94.0 | 97.0 | 84.0 | 73.5 | 93.0 | 46.5 | 21.5 |
-| 20 g/day CII | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 98.0 | 73.0 |
-| 24 g/day CII | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 99.0 | 83.0 |
+| 12 g/day q12h | 95.5 | 83.5 | 69.5 | 70.0 | 39.5 | 25.0 | 52.5 | 12.5 | 3.0 |
+| 12 g/day q8h | 98.5 | 93.5 | 83.5 | 88.5 | 62.5 | 45.5 | 74.5 | 27.5 | 11.5 |
+| 12 g/day q6h | 100.0 | 94.5 | 88.0 | 91.5 | 73.5 | 58.5 | 83.0 | 34.0 | 13.0 |
+| 12 g/day q4h | 100.0 | 97.5 | 94.5 | 96.5 | 83.5 | 66.0 | 91.5 | 44.0 | 18.5 |
+| 20 g/day CII | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 95.0 | 73.0 |
+| 24 g/day CII | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 99.5 | 82.0 |
 
 Probability of target attainment (%) by regimen and target. Replicates
 Figure 5 of Dong 2026. {.table}
@@ -538,13 +538,13 @@ knitr::kable(claims |> mutate(Achieved = round(Achieved, 1)) |>
 
 | Claim | Achieved PTA (%) | Pass | Deviation |
 |:---|---:|:---|:---|
-| 50% fT\>MIC, MIC 16: q12h fails to reach 90% PTA | 67.5 | TRUE | FALSE |
+| 50% fT\>MIC, MIC 16: q12h fails to reach 90% PTA | 69.5 | TRUE | FALSE |
 | 100% fT\>MIC, MIC 1: q6h or more frequent reaches 90% PTA | 91.5 | TRUE | FALSE |
 | 100% fT\>MIC, MIC 8: CII reaches 90% PTA | 100.0 | TRUE | FALSE |
 | 100% fT\>MIC, MIC 16: CII reaches 90% PTA | 100.0 | TRUE | FALSE |
-| 100% fT\>4xMIC, MIC 1: q4h or more frequent reaches 90% PTA | 93.0 | TRUE | FALSE |
-| 100% fT\>4xMIC, MIC 8: CII at \>=20 g/day reaches 90% PTA | 98.0 | TRUE | FALSE |
-| 100% fT\>4xMIC, MIC 16: only 24 g/day CII approaches 90% PTA; paper reports 78% | 83.0 | TRUE | FALSE |
+| 100% fT\>4xMIC, MIC 1: q4h or more frequent reaches 90% PTA | 91.5 | TRUE | FALSE |
+| 100% fT\>4xMIC, MIC 8: CII at \>=20 g/day reaches 90% PTA | 95.0 | TRUE | FALSE |
+| 100% fT\>4xMIC, MIC 16: only 24 g/day CII approaches 90% PTA; paper reports 78% | 82.0 | TRUE | FALSE |
 
 Dong 2026 Results claims evaluated against the packaged model. {.table
 style="width:100%;"}
@@ -710,10 +710,10 @@ knitr::kable(
 
 | Parameter | Median | 5th pctile | 95th pctile |
 |:----------|-------:|-----------:|------------:|
-| auclast   | 647.74 |     250.75 |     1681.52 |
-| cav       |  80.97 |      31.34 |      210.19 |
-| cmax      | 217.35 |     139.79 |      375.91 |
-| cmin      |  16.37 |       0.12 |      126.11 |
+| auclast   | 631.99 |     236.95 |     1726.37 |
+| cav       |  79.00 |      29.62 |      215.80 |
+| cmax      | 220.16 |     126.57 |      368.34 |
+| cmin      |  15.12 |       0.18 |      130.99 |
 | tmax      |   0.50 |       0.50 |        0.50 |
 
 PKNCA steady-state parameters over one 8 h interval, 4 g q8h (n = 200).
@@ -736,7 +736,7 @@ closed <- nca_wide |>
 stopifnot(nrow(closed) == n_sub)
 cat(sprintf("AUC(0-tau) vs dose/CL: median rel. error %.4f%%, max %.4f%%\n",
             100 * median(closed$auc_relerr), 100 * max(closed$auc_relerr)))
-#> AUC(0-tau) vs dose/CL: median rel. error 0.0003%, max 0.0058%
+#> AUC(0-tau) vs dose/CL: median rel. error 0.0003%, max 0.0070%
 
 # The only difference between the two sides is trapezoidal error on a 0.02 h
 # grid, so this is a numerical-accuracy check, not a cohort statistic: a tight

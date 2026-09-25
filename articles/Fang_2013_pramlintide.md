@@ -789,12 +789,12 @@ knitr::kable(
 
 | Treatment | Median simulated AUC0-inf (pmol\*min/L) | Dose / CL (pmol\*min/L) | % difference |
 |:---|---:|---:|---:|
-| 100 ug bolus | 26256 | 26513 | -0.97 |
-| 100 ug infusion | 25832 | 26513 | -2.57 |
-| 30 ug bolus | 7430 | 7954 | -6.59 |
-| 30 ug infusion | 7268 | 7954 | -8.62 |
-| 300 ug bolus | 79906 | 79540 | 0.46 |
-| 300 ug infusion | 78405 | 79540 | -1.43 |
+| 100 ug bolus | 27691 | 26513 | 4.44 |
+| 100 ug infusion | 25303 | 26513 | -4.57 |
+| 30 ug bolus | 8065 | 7954 | 1.40 |
+| 30 ug infusion | 7906 | 7954 | -0.61 |
+| 300 ug bolus | 78568 | 79540 | -1.22 |
+| 300 ug infusion | 77969 | 79540 | -1.98 |
 
 Simulated AUC0-inf against the closed-form Dose/CL of the model.
 {.table}
@@ -833,7 +833,7 @@ cat(sprintf(
   "Simulated power coefficient b = %.4f (Fang 2013: 0.99, 95%% CI 0.916 to 1.25)\n",
   power_b
 ))
-#> Simulated power coefficient b = 1.0326 (Fang 2013: 0.99, 95% CI 0.916 to 1.25)
+#> Simulated power coefficient b = 0.9914 (Fang 2013: 0.99, 95% CI 0.916 to 1.25)
 
 stopifnot(power_b > 0.916, power_b < 1.25)
 ```
@@ -871,38 +871,38 @@ knitr::kable(
 )
 ```
 
-| NCA parameter              | treatment       | Reference | Simulated |    % diff |
-|:---------------------------|:----------------|----------:|----------:|----------:|
-| Cmax (pmol/L)              | 30 ug bolus     |       304 |       326 |     +7.3% |
-| Cmax (pmol/L)              | 100 ug bolus    |      1300 |      1130 |    -12.8% |
-| Cmax (pmol/L)              | 300 ug bolus    |      3700 |      3600 |     -2.7% |
-| Cmax (pmol/L)              | 30 ug infusion  |      67.5 |      58.2 |    -13.8% |
-| Cmax (pmol/L)              | 100 ug infusion |       221 |       202 |     -8.5% |
-| Cmax (pmol/L)              | 300 ug infusion |       827 |       598 |  -27.6%\* |
-| Tmax (min)                 | 30 ug bolus     |         4 |       4.5 |    +12.5% |
-| Tmax (min)                 | 100 ug bolus    |         6 |         5 |    -16.7% |
-| Tmax (min)                 | 300 ug bolus    |         7 |      4.25 |  -39.3%\* |
-| Tmax (min)                 | 30 ug infusion  |        90 |       120 |  +33.3%\* |
-| Tmax (min)                 | 100 ug infusion |       110 |       120 |     +9.1% |
-| Tmax (min)                 | 300 ug infusion |        90 |       120 |  +33.3%\* |
-| AUC0-∞ (obs) (pmol\*min/L) | 30 ug bolus     |      5410 |      7430 |  +37.3%\* |
-| AUC0-∞ (obs) (pmol\*min/L) | 100 ug bolus    |     28200 |     26300 |     -6.9% |
-| AUC0-∞ (obs) (pmol\*min/L) | 300 ug bolus    |     78900 |     79900 |     +1.3% |
-| AUC0-∞ (obs) (pmol\*min/L) | 30 ug infusion  |      7140 |      7270 |     +1.8% |
-| AUC0-∞ (obs) (pmol\*min/L) | 100 ug infusion |     25400 |     25800 |     +1.7% |
-| AUC0-∞ (obs) (pmol\*min/L) | 300 ug infusion |     94100 |     78400 |    -16.7% |
-| t½ (min)                   | 30 ug bolus     |      22.5 |      39.9 |  +77.3%\* |
-| t½ (min)                   | 100 ug bolus    |      55.1 |      40.3 |  -26.9%\* |
-| t½ (min)                   | 300 ug bolus    |      50.7 |      39.4 |  -22.2%\* |
-| t½ (min)                   | 30 ug infusion  |      19.6 |      42.7 | +117.6%\* |
-| t½ (min)                   | 100 ug infusion |      36.7 |      41.4 |    +12.8% |
-| t½ (min)                   | 300 ug infusion |      49.8 |      42.3 |    -15.1% |
-| CL/F (L/min)               | 30 ug bolus     |       1.9 |      1.02 |  -46.2%\* |
-| CL/F (L/min)               | 100 ug bolus    |     0.923 |     0.964 |     +4.5% |
-| CL/F (L/min)               | 300 ug bolus    |     0.984 |     0.951 |     -3.4% |
-| CL/F (L/min)               | 30 ug infusion  |      1.12 |      1.05 |     -6.7% |
-| CL/F (L/min)               | 100 ug infusion |      1.04 |      0.98 |     -5.7% |
-| CL/F (L/min)               | 300 ug infusion |     0.819 |     0.969 |    +18.3% |
+| NCA parameter              | treatment       | Reference | Simulated |   % diff |
+|:---------------------------|:----------------|----------:|----------:|---------:|
+| Cmax (pmol/L)              | 30 ug bolus     |       304 |       348 |   +14.5% |
+| Cmax (pmol/L)              | 100 ug bolus    |      1300 |      1140 |   -12.6% |
+| Cmax (pmol/L)              | 300 ug bolus    |      3700 |      3440 |    -7.0% |
+| Cmax (pmol/L)              | 30 ug infusion  |      67.5 |      61.5 |    -8.9% |
+| Cmax (pmol/L)              | 100 ug infusion |       221 |       200 |    -9.4% |
+| Cmax (pmol/L)              | 300 ug infusion |       827 |       600 | -27.5%\* |
+| Tmax (min)                 | 30 ug bolus     |         4 |       4.5 |   +12.5% |
+| Tmax (min)                 | 100 ug bolus    |         6 |         5 |   -16.7% |
+| Tmax (min)                 | 300 ug bolus    |         7 |       4.5 | -35.7%\* |
+| Tmax (min)                 | 30 ug infusion  |        90 |       120 | +33.3%\* |
+| Tmax (min)                 | 100 ug infusion |       110 |       120 |    +9.1% |
+| Tmax (min)                 | 300 ug infusion |        90 |       120 | +33.3%\* |
+| AUC0-∞ (obs) (pmol\*min/L) | 30 ug bolus     |      5410 |      8070 | +49.1%\* |
+| AUC0-∞ (obs) (pmol\*min/L) | 100 ug bolus    |     28200 |     27700 |    -1.8% |
+| AUC0-∞ (obs) (pmol\*min/L) | 300 ug bolus    |     78900 |     78600 |    -0.4% |
+| AUC0-∞ (obs) (pmol\*min/L) | 30 ug infusion  |      7140 |      7910 |   +10.7% |
+| AUC0-∞ (obs) (pmol\*min/L) | 100 ug infusion |     25400 |     25300 |    -0.4% |
+| AUC0-∞ (obs) (pmol\*min/L) | 300 ug infusion |     94100 |     78000 |   -17.1% |
+| t½ (min)                   | 30 ug bolus     |      22.5 |      34.1 | +51.7%\* |
+| t½ (min)                   | 100 ug bolus    |      55.1 |      46.7 |   -15.3% |
+| t½ (min)                   | 300 ug bolus    |      50.7 |      32.7 | -35.5%\* |
+| t½ (min)                   | 30 ug infusion  |      19.6 |      37.9 | +93.1%\* |
+| t½ (min)                   | 100 ug infusion |      36.7 |      42.6 |   +16.2% |
+| t½ (min)                   | 300 ug infusion |      49.8 |      43.2 |   -13.3% |
+| CL/F (L/min)               | 30 ug bolus     |       1.9 |     0.942 | -50.4%\* |
+| CL/F (L/min)               | 100 ug bolus    |     0.923 |     0.914 |    -0.9% |
+| CL/F (L/min)               | 300 ug bolus    |     0.984 |     0.967 |    -1.7% |
+| CL/F (L/min)               | 30 ug infusion  |      1.12 |     0.961 |   -14.2% |
+| CL/F (L/min)               | 100 ug infusion |      1.04 |         1 |    -3.8% |
+| CL/F (L/min)               | 300 ug infusion |     0.819 |     0.974 |   +19.0% |
 
 Simulated vs. Fang 2013 Table I. \* differs from reference by \>20%.
 {.table}

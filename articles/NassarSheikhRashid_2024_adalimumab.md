@@ -446,11 +446,11 @@ knitr::kable(wt_median, digits = 2,
 
 | arm      | Median Cc over the interval (mg/L) |
 |:---------|-----------------------------------:|
-| \<30 kg  |                               8.17 |
-| 30-40 kg |                              11.29 |
-| 40-50 kg |                               9.08 |
-| 50-60 kg |                               8.74 |
-| \>60 kg  |                               6.87 |
+| \<30 kg  |                               8.21 |
+| 30-40 kg |                              11.47 |
+| 40-50 kg |                               9.57 |
+| 50-60 kg |                               8.70 |
+| \>60 kg  |                               6.72 |
 
 Median steady-state concentration by body-weight stratum. {.table}
 
@@ -461,7 +461,7 @@ ratio_30_40_vs_60 <- wt_median[[2]][wt_median$arm == "30-40 kg"] /
   wt_median[[2]][wt_median$arm == ">60 kg"]
 ```
 
-The 30-40 kg stratum reaches 1.64-fold the concentrations of the
+The 30-40 kg stratum reaches 1.71-fold the concentrations of the
 above-60 kg stratum. The paper describes this contrast as “nearly twice
 as high” (Section 3.4); the model reproduces the direction and
 approximate magnitude of the published claim.
@@ -536,10 +536,10 @@ knitr::kable(panel_dir, digits = 2,
 
 | panel                   | favoured      | ratio |
 |:------------------------|:--------------|------:|
-| B. Uveitis              | No uveitis    |  1.49 |
-| C. Methotrexate         | On MTX        |  1.31 |
-| D. Anti-drug antibodies | ADA-negative  |  1.90 |
-| E. C-reactive protein   | CRP \< 1 mg/L |  2.15 |
+| B. Uveitis              | No uveitis    |  1.72 |
+| C. Methotrexate         | On MTX        |  1.44 |
+| D. Anti-drug antibodies | ADA-negative  |  2.00 |
+| E. C-reactive protein   | CRP \< 1 mg/L |  1.94 |
 
 Higher-exposure group in each covariate panel, and the ratio between
 groups. {.table}
@@ -677,9 +677,9 @@ tibble::tibble(
 
 | Statistic                           |  Value |
 |:------------------------------------|-------:|
-| Median % difference                 | -0.015 |
-| 90th percentile of \|% difference\| |  1.237 |
-| Maximum \|% difference\|            |  8.777 |
+| Median % difference                 | -0.014 |
+| 90th percentile of \|% difference\| |  0.961 |
+| Maximum \|% difference\|            |  9.118 |
 
 AUC over the final dosing interval versus Dose / CL. {.table}
 
@@ -729,7 +729,7 @@ knitr::kable(cmp, caption = paste(
 
 | NCA parameter | arm                  | Reference | Simulated | % diff |
 |:--------------|:---------------------|:----------|:----------|:-------|
-| Cmin (mg/L)   | Simulated JIA cohort | 7.4       | 6.24      | -15.6% |
+| Cmin (mg/L)   | Simulated JIA cohort | 7.4       | 6.27      | -15.3% |
 
 Simulated steady-state trough (PKNCA Cmin over the final dosing
 interval, which the chunk above confirms is the pre-dose trough) versus
@@ -764,9 +764,9 @@ tibble::tibble(
 
 | Quantity                                             | Paper | Model |
 |:-----------------------------------------------------|------:|------:|
-| Mean 10-week trough (mg/L)                           |   7.4 |  7.26 |
-| SD of trough, between-subject only (mg/L)            |    NA |  4.53 |
-| SD of trough, including the additive residual (mg/L) |   5.5 |  5.79 |
+| Mean 10-week trough (mg/L)                           |   7.4 |  6.99 |
+| SD of trough, between-subject only (mg/L)            |    NA |  3.95 |
+| SD of trough, including the additive residual (mg/L) |   5.5 |  5.35 |
 
 Ten-week (five-interval) trough in the simulated JIA cohort, against
 Section 3.4 of Nassar-Sheikh Rashid 2024. {.table}
@@ -821,9 +821,9 @@ knitr::kable(obs_cmp, digits = 2, caption = paste(
 
 | Statistic              | Observed (Table 1) | Model |
 |:-----------------------|-------------------:|------:|
-| Median (mg/L)          |              12.00 |  9.36 |
-| 25th percentile (mg/L) |               6.12 |  6.42 |
-| 75th percentile (mg/L) |              15.80 | 14.17 |
+| Median (mg/L)          |              12.00 |  9.41 |
+| 25th percentile (mg/L) |               6.12 |  6.20 |
+| 75th percentile (mg/L) |              15.80 | 13.37 |
 
 Randomly-timed steady-state samples from a virtual cohort matching the
 observed Table 1 demographics, against the observed adalimumab levels.

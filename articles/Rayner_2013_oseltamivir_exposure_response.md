@@ -1037,8 +1037,8 @@ spread |>
 
 | Study | Median (ng\*h/mL) | 5th percentile | 95th percentile | 95th / 5th |
 |:---|---:|---:|---:|---:|
-| Study 1 (A/Texas) | 9151 | 1291 | 23362 | 18.09 |
-| Study 2 (B/Yamagata) | 8875 | 5346 | 18920 | 3.54 |
+| Study 1 (A/Texas) | 8788 | 1287 | 29248 | 22.73 |
+| Study 2 (B/Yamagata) | 7675 | 4601 | 16594 | 3.61 |
 
 Figure 1 summary: similar medians, wider spread in study 1. {.table}
 
@@ -1130,12 +1130,12 @@ cell |>
 
 | Study | OC AUC0-24 group (ng\*h/mL) | Subjects | Predicted AUCSC (score\*day) |
 |:---|:---|---:|---:|
-| Study 1 (A/Texas) | \<= 1,495 | 20 | 14.60 |
+| Study 1 (A/Texas) | \<= 1,495 | 19 | 14.60 |
 | Study 1 (A/Texas) | \> 1,495 to 14,497 | 35 | 9.24 |
-| Study 1 (A/Texas) | \> 14,497 | 14 | 7.57 |
+| Study 1 (A/Texas) | \> 14,497 | 15 | 7.57 |
 | Study 2 (B/Yamagata) | \<= 1,495 | 16 | 16.37 |
-| Study 2 (B/Yamagata) | \> 1,495 to 14,497 | 25 | 11.01 |
-| Study 2 (B/Yamagata) | \> 14,497 | 5 | 9.34 |
+| Study 2 (B/Yamagata) | \> 1,495 to 14,497 | 28 | 11.01 |
+| Study 2 (B/Yamagata) | \> 14,497 | 2 | 9.34 |
 
 Predicted composite symptom score AUC by exposure group and study.
 Monotone decreasing within each study. {.table}

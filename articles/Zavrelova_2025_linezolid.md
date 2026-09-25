@@ -118,8 +118,6 @@ typical_params <- function(day4) {
 }
 
 d1 <- typical_params(0)
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etae_day4_cl
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl', 'etae_day4_cl'
 d4 <- typical_params(1)
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl', 'etae_day4_cl'
@@ -413,8 +411,6 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etae_day4_cl
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etae_day4_cl
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 if (is.null(sim$id)) sim$id <- 1L
 sim$regimen <- factor(sim$regimen, levels = c(
@@ -663,9 +659,9 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
-#> points)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)

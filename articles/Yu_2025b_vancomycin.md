@@ -429,8 +429,6 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 if (is.null(sim$id)) sim$id <- 1L
 stopifnot(nrow(sim) > 0, !all(is.na(sim$Cc)))
@@ -598,8 +596,6 @@ probe_sim <- rxode2::rxSolve(
     vc_ref = vc_hand(WT),
     Cc_ref = conc_closed_form(time, cl_ref, vc_ref, dose_mg, tau, tinf, n_doses)
   )
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_cl_7'
 #> Warning: multi-subject simulation without without 'omega'
 
@@ -620,11 +616,11 @@ cf_tab |>
 
 | label                    | CL (L/h) | Vd (L) | t1/2 (h) | Max abs rel. error (%) |
 |:-------------------------|---------:|-------:|---------:|-----------------------:|
-| Median subject, 10 mg/kg |   0.2132 | 2.1200 |   6.8937 |                      0 |
-| Median subject, 15 mg/kg |   0.2132 | 2.1200 |   6.8937 |                      0 |
-| Median subject, 20 mg/kg |   0.2132 | 2.1200 |   6.8937 |                      0 |
-| P5 corner, 15 mg/kg      |   0.0189 | 0.4952 |  18.2007 |                      0 |
-| P95 corner, 15 mg/kg     |   1.0757 | 4.9441 |   3.1857 |                      0 |
+| Median subject, 10 mg/kg |   0.2132 | 2.1200 |   6.8937 |                  2e-04 |
+| Median subject, 15 mg/kg |   0.2132 | 2.1200 |   6.8937 |                  2e-04 |
+| Median subject, 20 mg/kg |   0.2132 | 2.1200 |   6.8937 |                  2e-04 |
+| P5 corner, 15 mg/kg      |   0.0189 | 0.4952 |  18.2007 |                  2e-04 |
+| P95 corner, 15 mg/kg     |   1.0757 | 4.9441 |   3.1857 |                  1e-04 |
 
 ODE solve vs the analytic superposition solution, typical values.
 {.table}
@@ -658,9 +654,9 @@ knitr::kable(prop_tab, digits = 6,
 
 | mgkg |  auc_tau | AUCtau / (mg/kg) |
 |-----:|---------:|-----------------:|
-|   10 | 131.3549 |         13.13549 |
-|   15 | 197.0324 |         13.13549 |
-|   20 | 262.7099 |         13.13549 |
+|   10 | 131.3551 |         13.13551 |
+|   15 | 197.0327 |         13.13551 |
+|   20 | 262.7103 |         13.13551 |
 
 Dose linearity of the typical-value steady-state AUC0-tau (median
 subject). {.table}
@@ -712,11 +708,11 @@ mb_tab |>
 
 | label | Infused (mg) | Remaining (mg) | CL \* AUC (mg) | Rel. error (%) |
 |:---|---:|---:|---:|---:|
-| Median subject, 10 mg/kg | 280.0 | 12.5771 | 267.4228 | 0 |
-| Median subject, 15 mg/kg | 420.0 | 18.8657 | 401.1343 | 0 |
-| Median subject, 20 mg/kg | 560.0 | 25.1543 | 534.8457 | 0 |
-| P5 corner, 15 mg/kg | 98.1 | 17.0811 | 81.0189 | 0 |
-| P95 corner, 15 mg/kg | 979.5 | 8.6762 | 970.8238 | 0 |
+| Median subject, 10 mg/kg | 280.0 | 12.5772 | 267.4232 | 1e-04 |
+| Median subject, 15 mg/kg | 420.0 | 18.8657 | 401.1348 | 1e-04 |
+| Median subject, 20 mg/kg | 560.0 | 25.1543 | 534.8464 | 1e-04 |
+| P5 corner, 15 mg/kg | 98.1 | 17.0811 | 81.0190 | 2e-04 |
+| P95 corner, 15 mg/kg | 979.5 | 8.6762 | 970.8243 | 1e-04 |
 
 CL \* AUC\[0,T\] vs (infused - remaining) at T = 120 h. {.table}
 
@@ -772,13 +768,13 @@ cat(sprintf(
   "Within-subject SD of log(CL) across occasions: median %.3f (target gamma_Cl = 0.161)\n",
   median(iov_cv$within_sd)
 ))
-#> Within-subject SD of log(CL) across occasions: median 0.155 (target gamma_Cl = 0.161)
+#> Within-subject SD of log(CL) across occasions: median 0.152 (target gamma_Cl = 0.161)
 cat(sprintf("Max abs rel. error, ODE vs closed form: %.3g %%\n",
             max(cf_tab$`Max abs rel. error (%)`)))
-#> Max abs rel. error, ODE vs closed form: 1.62e-12 %
+#> Max abs rel. error, ODE vs closed form: 0.000228 %
 cat(sprintf("Max abs rel. error, mass balance:      %.3g %%\n",
             max(mb_tab$`Rel. error (%)`)))
-#> Max abs rel. error, mass balance:      9.91e-06 %
+#> Max abs rel. error, mass balance:      0.000185 %
 
 # Cohort-derived, so a magnitude band wide of the sampling noise: an SD from 7
 # draws has a relative standard error of about 1/sqrt(2*6) = 29%.

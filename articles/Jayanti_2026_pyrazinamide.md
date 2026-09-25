@@ -299,8 +299,6 @@ sim_typ <- rxode2::rxSolve(
   mutate(tad = time - t_ss)
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalclKorean
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalclKorean
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 typ_par <- sim_typ |>
   group_by(arm) |>
@@ -386,7 +384,7 @@ mb |>
 |:---|---:|---:|---:|
 | Indonesian, DM | 306.79 | 306.80 | -0.0016 |
 | Indonesian, non-DM | 377.34 | 377.36 | -0.0053 |
-| Korean, old DM | 272.11 | 272.11 | -0.0011 |
+| Korean, old DM | 272.11 | 272.11 | -0.0012 |
 | Korean, other | 342.85 | 342.86 | -0.0027 |
 | Korean, young DM | 342.85 | 342.86 | -0.0027 |
 
@@ -554,10 +552,10 @@ as.data.frame(nca_res) |>
 
 | Subgroup | AUC0-24 (mg\*h/L) | Cavg (mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) |
 |:---|---:|---:|---:|---:|---:|
-| Indonesian, DM | 293.56 | 12.23 | 25.39 | 3.92 | 1.60 |
-| Indonesian, non-DM | 363.26 | 15.14 | 28.01 | 5.94 | 1.65 |
-| Korean, old DM | 259.89 | 10.83 | 23.13 | 3.61 | 1.60 |
-| Korean, other | 339.62 | 14.15 | 25.68 | 6.32 | 1.65 |
+| Indonesian, DM | 324.91 | 13.54 | 25.60 | 5.60 | 1.65 |
+| Indonesian, non-DM | 391.11 | 16.30 | 30.26 | 6.57 | 1.65 |
+| Korean, old DM | 264.55 | 11.02 | 22.82 | 3.51 | 1.60 |
+| Korean, other | 337.29 | 14.05 | 27.05 | 5.86 | 1.65 |
 
 Simulated steady-state NCA (medians of 200 subjects per arm), 1,200 mg
 once daily. {.table}
@@ -593,14 +591,14 @@ knitr::kable(cmp,
 
 | NCA parameter     | arm                | Reference | Simulated | % diff |
 |:------------------|:-------------------|----------:|----------:|-------:|
-| Cmax (mg/L)       | Indonesian, DM     |      25.3 |      25.4 |  +0.5% |
-| Cmax (mg/L)       | Indonesian, non-DM |      28.7 |        28 |  -2.4% |
-| Cmax (mg/L)       | Korean, old DM     |      21.5 |      23.1 |  +7.8% |
-| Cmax (mg/L)       | Korean, other      |      25.8 |      25.7 |  -0.6% |
-| AUClast (mg\*h/L) | Indonesian, DM     |       322 |       294 |  -8.9% |
-| AUClast (mg\*h/L) | Indonesian, non-DM |       389 |       363 |  -6.5% |
-| AUClast (mg\*h/L) | Korean, old DM     |       261 |       260 |  -0.6% |
-| AUClast (mg\*h/L) | Korean, other      |       346 |       340 |  -1.8% |
+| Cmax (mg/L)       | Indonesian, DM     |      25.3 |      25.6 |  +1.3% |
+| Cmax (mg/L)       | Indonesian, non-DM |      28.7 |      30.3 |  +5.4% |
+| Cmax (mg/L)       | Korean, old DM     |      21.5 |      22.8 |  +6.4% |
+| Cmax (mg/L)       | Korean, other      |      25.8 |        27 |  +4.7% |
+| AUClast (mg\*h/L) | Indonesian, DM     |       322 |       325 |  +0.8% |
+| AUClast (mg\*h/L) | Indonesian, non-DM |       389 |       391 |  +0.6% |
+| AUClast (mg\*h/L) | Korean, old DM     |       261 |       265 |  +1.2% |
+| AUClast (mg\*h/L) | Korean, other      |       346 |       337 |  -2.4% |
 
 Simulated vs. published (S2 Table) steady-state NCA at 1,200 mg once
 daily. \* differs from reference by \>20%. {.table}
@@ -641,10 +639,10 @@ gate |>
 
 | Subgroup           | Cmax difference (%) | AUC0-24 difference (%) |
 |:-------------------|--------------------:|-----------------------:|
-| Indonesian, DM     |                 0.5 |                   -8.9 |
-| Indonesian, non-DM |                -2.4 |                   -6.5 |
-| Korean, old DM     |                 7.8 |                   -0.6 |
-| Korean, other      |                -0.6 |                   -1.8 |
+| Indonesian, DM     |                 1.3 |                    0.8 |
+| Indonesian, non-DM |                 5.4 |                    0.6 |
+| Korean, old DM     |                 6.4 |                    1.2 |
+| Korean, other      |                 4.7 |                   -2.4 |
 
 Simulated minus published, as a percentage of published. {.table}
 
@@ -679,10 +677,10 @@ vd_cmp |>
 
 | Subgroup           | Simulated Vd/F (L) | S2 Table Vd/F (L) | Difference (%) |
 |:-------------------|-------------------:|------------------:|---------------:|
-| Indonesian, DM     |               53.1 |              51.3 |            3.5 |
-| Indonesian, non-DM |               53.5 |              48.3 |           10.7 |
-| Korean, old DM     |               52.3 |              56.7 |           -7.8 |
-| Korean, other      |               55.1 |              50.6 |            9.0 |
+| Indonesian, DM     |               54.5 |              51.3 |            6.3 |
+| Indonesian, non-DM |               46.4 |              48.3 |           -3.9 |
+| Korean, old DM     |               52.9 |              56.7 |           -6.7 |
+| Korean, other      |               53.1 |              50.6 |            4.9 |
 
 Apparent volume of distribution, simulated median against S2 Table.
 {.table}
@@ -827,10 +825,10 @@ pta_cmp |>
 
 | WHO weight band | Median model PTA (%) | Median published PTA (%) | Median difference (points) | Largest difference (points) |
 |:---|---:|---:|---:|---:|
-| 40-54 kg | 47.8 | 97.3 | -45.9 | -73.8 |
-| 55-70 kg | 32.8 | 85.7 | -47.4 | -74.5 |
-| \<40 kg | 59.2 | 99.2 | -40.2 | -77.0 |
-| \>70 kg | 24.0 | 81.0 | -41.2 | -71.0 |
+| 40-54 kg | 47.0 | 97.3 | -46.4 | -76.3 |
+| 55-70 kg | 34.0 | 85.7 | -49.4 | -77.0 |
+| \<40 kg | 56.0 | 99.2 | -43.4 | -81.0 |
+| \>70 kg | 22.2 | 81.0 | -44.5 | -72.0 |
 
 Model minus published probability of target attainment, over the 12
 band-by-dose cells S4 Table reports. {.table}
@@ -869,7 +867,7 @@ tibble::tibble(
 
 | Source                                           | PTA (%) |
 |:-------------------------------------------------|--------:|
-| This model                                       |    57.5 |
+| This model                                       |    57.0 |
 | Implied by S2 Table’s own post-hoc AUC quartiles |    57.6 |
 | As printed in S3 Table                           |    97.8 |
 
@@ -938,10 +936,10 @@ claims |>
 
 | Claim | Model PTA (%) |
 |:---|---:|
-| WHO 800 mg under-doses the \<40 kg band (paper: 70.4%) | 27.0 |
-| Raising \<40 kg to 1,250 mg improves attainment | 72.0 |
-| Korean old DM attains less than Korean other, \<40 kg 1,250 mg | 32.5 |
-| Indonesian DM attains less than Indonesian non-DM, 40-54 kg 1,250 mg | 42.0 |
+| WHO 800 mg under-doses the \<40 kg band (paper: 70.4%) | 30.5 |
+| Raising \<40 kg to 1,250 mg improves attainment | 63.5 |
+| Korean old DM attains less than Korean other, \<40 kg 1,250 mg | 27.0 |
+| Indonesian DM attains less than Indonesian non-DM, 40-54 kg 1,250 mg | 49.0 |
 
 Directional claims from the paper’s dose exploration, evaluated on the
 packaged model. {.table}

@@ -193,13 +193,13 @@ ss_check |>
 
 | Stratum | AUC0-tau,ss (mg\*h/L) | Dose / CL (mg\*h/L) | Cmax,ss (mg/L) | Cmin,ss (mg/L) | % difference |
 |:---|---:|---:|---:|---:|---:|
-| CCR 20 | 1761.71 | 1761.71 | 150.66 | 45.25 | -3e-06 |
-| CCR 30 | 1606.57 | 1606.57 | 144.59 | 39.30 | -1e-06 |
-| CCR 40 | 1476.54 | 1476.54 | 139.56 | 34.40 | 0e+00 |
-| CCR 60 | 1270.83 | 1270.83 | 131.74 | 26.83 | 0e+00 |
-| CCR 90 | 1051.16 | 1051.16 | 123.62 | 19.12 | 0e+00 |
-| CCR 120 | 896.24 | 896.24 | 118.11 | 14.01 | 0e+00 |
-| CRRT | 1295.34 | 1295.34 | 132.66 | 27.72 | 0e+00 |
+| CCR 20 | 1761.71 | 1761.71 | 150.66 | 45.25 | 2e-06 |
+| CCR 30 | 1606.57 | 1606.57 | 144.59 | 39.30 | 3e-06 |
+| CCR 40 | 1476.54 | 1476.54 | 139.56 | 34.40 | 4e-06 |
+| CCR 60 | 1270.83 | 1270.83 | 131.74 | 26.83 | 4e-06 |
+| CCR 90 | 1051.16 | 1051.16 | 123.62 | 19.12 | 5e-06 |
+| CCR 120 | 896.24 | 896.24 | 118.11 | 14.01 | 4e-06 |
+| CRRT | 1295.34 | 1295.34 | 132.66 | 27.72 | 4e-06 |
 
 Steady-state AUC over the 20th dosing interval versus the closed form
 Dose / CL, 500 mg q24h. {.table}
@@ -506,13 +506,13 @@ cmp_auc |>
 
 | Stratum | Published AUC24h (mg\*h/L) | Simulated AUC 24-48 h (mg\*h/L) | % difference | In gate | Note |
 |:---|---:|---:|---:|:---|:---|
-| CCR 20 | 1432.3 | 1340.7 | -6.4 | TRUE |  |
-| CCR 30 | 1105.3 | 1317.8 | 19.2 | FALSE | excluded: published column duplicates CRRT |
-| CCR 40 | 1226.4 | 1244.4 | 1.5 | TRUE |  |
-| CCR 60 | 1089.4 | 1131.5 | 3.9 | TRUE |  |
-| CCR 90 | 943.0 | 971.8 | 3.1 | TRUE |  |
-| CCR 120 | 824.6 | 800.0 | -3.0 | TRUE |  |
-| CRRT | 1105.3 | 1197.1 | 8.3 | TRUE |  |
+| CCR 20 | 1432.3 | 1368.9 | -4.4 | TRUE |  |
+| CCR 30 | 1105.3 | 1350.3 | 22.2 | FALSE | excluded: published column duplicates CRRT |
+| CCR 40 | 1226.4 | 1233.3 | 0.6 | TRUE |  |
+| CCR 60 | 1089.4 | 1106.3 | 1.6 | TRUE |  |
+| CCR 90 | 943.0 | 988.5 | 4.8 | TRUE |  |
+| CCR 120 | 824.6 | 837.0 | 1.5 | TRUE |  |
+| CRRT | 1105.3 | 1104.5 | -0.1 | TRUE |  |
 
 Simulated second-interval AUC versus Wu 2024 Table 3, 500 mg daily.
 {.table}
@@ -621,13 +621,13 @@ nca_tbl |>
 
 | Stratum | Cmax,ss (mg/L) | Tmax (h) | Cmin,ss (mg/L) | Cav,ss (mg/L) | AUC0-tau,ss (mg\*h/L) | t1/2 (h) |
 |:---|---:|---:|---:|---:|---:|---:|
-| CCR 20 | 151.45 | 0.5 | 43.34 | 70.27 | 1686.55 | 19.11 |
-| CCR 30 | 146.09 | 0.5 | 40.36 | 68.88 | 1653.19 | 18.13 |
-| CCR 40 | 140.57 | 0.5 | 35.28 | 60.90 | 1461.64 | 16.83 |
-| CCR 60 | 134.80 | 0.5 | 28.49 | 54.09 | 1298.07 | 14.64 |
-| CCR 90 | 131.10 | 0.5 | 20.01 | 43.86 | 1052.75 | 12.31 |
-| CCR 120 | 121.61 | 0.5 | 12.48 | 34.31 | 823.40 | 10.08 |
-| CRRT | 136.12 | 0.5 | 31.57 | 57.20 | 1372.70 | 15.46 |
+| CCR 20 | 152.10 | 0.5 | 45.12 | 72.15 | 1731.72 | 20.43 |
+| CCR 30 | 149.39 | 0.5 | 39.38 | 67.90 | 1629.64 | 18.12 |
+| CCR 40 | 142.64 | 0.5 | 35.77 | 61.77 | 1482.51 | 17.93 |
+| CCR 60 | 131.80 | 0.5 | 26.36 | 52.44 | 1258.58 | 14.89 |
+| CCR 90 | 129.86 | 0.5 | 18.96 | 44.81 | 1075.35 | 12.35 |
+| CCR 120 | 118.17 | 0.5 | 13.81 | 37.07 | 889.68 | 10.53 |
+| CRRT | 135.00 | 0.5 | 25.76 | 52.60 | 1262.32 | 14.40 |
 
 PKNCA summary over the tenth dosing interval (216-240 h), 500 mg q24h,
 median of 200 subjects per stratum. {.table style="width:100%;"}
@@ -665,15 +665,15 @@ knitr::kable(
 )
 ```
 
-| NCA parameter     | treatment | Reference | Simulated | % diff |
-|:------------------|:----------|----------:|----------:|-------:|
-| AUClast (mg\*h/L) | CCR 20    |      1430 |      1340 |  -6.4% |
-| AUClast (mg\*h/L) | CCR 30    |      1110 |      1320 | +19.2% |
-| AUClast (mg\*h/L) | CCR 40    |      1230 |      1240 |  +1.4% |
-| AUClast (mg\*h/L) | CCR 60    |      1090 |      1130 |  +3.8% |
-| AUClast (mg\*h/L) | CCR 90    |       943 |       972 |  +3.0% |
-| AUClast (mg\*h/L) | CCR 120   |       825 |       799 |  -3.1% |
-| AUClast (mg\*h/L) | CRRT      |      1110 |      1200 |  +8.3% |
+| NCA parameter     | treatment | Reference | Simulated |   % diff |
+|:------------------|:----------|----------:|----------:|---------:|
+| AUClast (mg\*h/L) | CCR 20    |      1430 |      1370 |    -4.5% |
+| AUClast (mg\*h/L) | CCR 30    |      1110 |      1350 | +22.1%\* |
+| AUClast (mg\*h/L) | CCR 40    |      1230 |      1230 |    +0.5% |
+| AUClast (mg\*h/L) | CCR 60    |      1090 |      1110 |    +1.5% |
+| AUClast (mg\*h/L) | CCR 90    |       943 |       988 |    +4.8% |
+| AUClast (mg\*h/L) | CCR 120   |       825 |       836 |    +1.4% |
+| AUClast (mg\*h/L) | CRRT      |      1110 |      1100 |    -0.1% |
 
 Simulated second-interval AUC versus Wu 2024 Table 3 at 500 mg daily. \*
 marks a difference above 20%. The CCR 30 row is a known published-table

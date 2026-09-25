@@ -386,14 +386,14 @@ knitr::kable(
 
 | Parameter                            | Published | Simulated | % diff |
 |:-------------------------------------|----------:|----------:|-------:|
-| CL (L/day), geometric mean           |     0.095 |   0.09816 |    3.3 |
-| CL (L/day), median                   |     0.091 |   0.09889 |    8.7 |
-| V2 (L), geometric mean               |     3.287 |   3.41200 |    3.8 |
-| V3 (L), geometric mean               |     4.429 |   4.53800 |    2.5 |
-| Vss (L), geometric mean              |     7.881 |   8.32200 |    5.6 |
-| Terminal half-life (days), geo. mean |    60.670 |  61.87000 |    2.0 |
-| Terminal half-life (days), median    |    61.240 |  60.96000 |   -0.4 |
-| i.m. bioavailability, median         |     0.497 |   0.51480 |    3.6 |
+| CL (L/day), geometric mean           |     0.095 |   0.09789 |    3.0 |
+| CL (L/day), median                   |     0.091 |   0.09749 |    7.1 |
+| V2 (L), geometric mean               |     3.287 |   3.46700 |    5.5 |
+| V3 (L), geometric mean               |     4.429 |   4.46800 |    0.9 |
+| Vss (L), geometric mean              |     7.881 |   8.24400 |    4.6 |
+| Terminal half-life (days), geo. mean |    60.670 |  61.37000 |    1.1 |
+| Terminal half-life (days), median    |    61.240 |  60.86000 |   -0.6 |
+| i.m. bioavailability, median         |     0.497 |   0.52820 |    6.3 |
 
 Derived PK parameters: packaged model versus Sager 2023 Table S6.
 {.table}
@@ -618,12 +618,12 @@ knitr::kable(
 
 | NCA parameter | label       | Reference | Simulated | % diff |
 |:--------------|:------------|----------:|----------:|-------:|
-| t½ (h)        | 500 mg i.v. |      1470 |      1500 |  +2.2% |
-| t½ (h)        | 500 mg i.m. |      1470 |      1470 |  +0.3% |
-| t½ (h)        | 250 mg i.m. |      1470 |      1460 |  -0.4% |
-| CL/F (L/h)    | 500 mg i.v. |   0.00396 |   0.00402 |  +1.4% |
-| CL/F (L/h)    | 500 mg i.m. |         — |   0.00859 |      — |
-| CL/F (L/h)    | 250 mg i.m. |         — |   0.00855 |      — |
+| t½ (h)        | 500 mg i.v. |      1470 |      1510 |  +2.7% |
+| t½ (h)        | 500 mg i.m. |      1470 |      1510 |  +2.7% |
+| t½ (h)        | 250 mg i.m. |      1470 |      1480 |  +0.6% |
+| CL/F (L/h)    | 500 mg i.v. |   0.00396 |   0.00402 |  +1.5% |
+| CL/F (L/h)    | 500 mg i.m. |         — |   0.00794 |      — |
+| CL/F (L/h)    | 250 mg i.m. |         — |   0.00788 |      — |
 
 Simulated (PKNCA) versus published NCA-comparable values. \* differs
 from reference by \>20%. Published half-life is Sager 2023 Table S6
@@ -667,9 +667,9 @@ hl
 #> # A tibble: 3 × 4
 #>   label       n_fit n_total median_h
 #>   <chr>       <int>   <int>    <dbl>
-#> 1 250 mg i.m.   200     200    1463.
-#> 2 500 mg i.m.   200     200    1474.
-#> 3 500 mg i.v.   200     200    1502.
+#> 1 250 mg i.m.   200     200    1478.
+#> 2 500 mg i.m.   200     200    1510.
+#> 3 500 mg i.v.   200     200    1509.
 ```
 
 ## Exposure-response
@@ -773,10 +773,10 @@ knitr::kable(
 
 | Arm | Published mean | Published median | Simulated mean | Simulated median | % diff (mean) |
 |:---|---:|---:|---:|---:|---:|
-| 250 mg i.m. | 0.0340 | 0.0337 | 0.0341 | 0.0356 | 0.4 |
-| 500 mg i.m. | 0.0267 | 0.0266 | 0.0268 | 0.0265 | 0.5 |
-| 500 mg i.v. | 0.0120 | 0.0111 | 0.0110 | 0.0106 | -8.5 |
-| Overall | 0.0221 | 0.0204 | 0.0218 | 0.0218 | -1.4 |
+| 250 mg i.m. | 0.0340 | 0.0337 | 0.0345 | 0.0351 | 1.4 |
+| 500 mg i.m. | 0.0267 | 0.0266 | 0.0261 | 0.0255 | -2.2 |
+| 500 mg i.v. | 0.0120 | 0.0111 | 0.0116 | 0.0112 | -3.3 |
+| Overall | 0.0221 | 0.0204 | 0.0218 | 0.0215 | -1.3 |
 
 Model-predicted probability of COVID-19 progression through day 29, by
 treatment arm: packaged models versus Sager 2023 Table S10. {.table}
@@ -943,9 +943,9 @@ knitr::kable(
 | Arm         | Observed (Table 2) | Predicted (Table 3 model) |
 |:------------|-------------------:|--------------------------:|
 | 250 mg i.m. |              0.040 |                    0.0299 |
-| 500 mg i.m. |              0.022 |                    0.0241 |
-| 500 mg i.v. |              0.014 |                    0.0116 |
-| Overall     |              0.022 |                    0.0201 |
+| 500 mg i.m. |              0.022 |                    0.0240 |
+| 500 mg i.v. |              0.014 |                    0.0118 |
+| Overall     |              0.022 |                    0.0202 |
 
 Observed versus final-model-predicted progression rates in COMET-TAIL.
 {.table}

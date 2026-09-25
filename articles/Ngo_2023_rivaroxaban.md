@@ -455,10 +455,10 @@ res_first <- PKNCA::pk.nca(
 )
 summary(res_first)
 #>  Interval Start Interval End treatment   N AUClast (h*ng/mL) Cmax (ng/mL)
-#>               0           24 RIV alone 200       1270 [26.4]   132 [22.0]
-#>               0           24 RIV + CBZ 200        573 [39.1]  68.4 [26.9]
+#>               0           24 RIV alone 200       1270 [26.1]   131 [22.5]
+#>               0           24 RIV + CBZ 200        571 [36.6]  67.9 [26.6]
 #>  Cmin (ng/mL)           Tmax (h)
-#>            NC  3.75 [1.25, 7.00]
+#>            NC  4.38 [1.50, 7.00]
 #>            NC 1.75 [0.750, 9.25]
 #> 
 #> Caption: AUClast, Cmax, Cmin: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
@@ -487,11 +487,11 @@ res_ss <- PKNCA::pk.nca(
 )
 summary(res_ss)
 #>  Interval Start Interval End treatment   N AUClast (h*ng/mL) Cmax (ng/mL)
-#>               0           24 RIV alone 200       2300 [49.1]   181 [33.2]
-#>               0           24 RIV + CBZ 200        711 [50.2]  76.1 [31.7]
+#>               0           24 RIV alone 200       2310 [50.4]   181 [35.4]
+#>               0           24 RIV + CBZ 200        706 [46.1]  75.3 [30.4]
 #>  Cmin (ng/mL)           Tmax (h)
-#>   47.0 [81.8]  3.50 [1.25, 7.00]
-#>    6.66 [104] 1.75 [0.750, 9.25]
+#>   47.2 [82.1]  4.00 [1.50, 7.00]
+#>   6.61 [94.7] 1.75 [0.750, 9.25]
 #> 
 #> Caption: AUClast, Cmax, Cmin: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```
@@ -526,24 +526,24 @@ knitr::kable(tbl, digits = 1,
              caption = "Simulated cohort means vs Ngo 2023 Table 2 (PopPK model-based approach).")
 ```
 
-| NCA parameter      | group                    | Reference | Simulated | % diff |
-|:-------------------|:-------------------------|:----------|:----------|:-------|
-| Cmax (ng/mL)       | RIV alone / First dose   | 133       | 135       | +1.4%  |
-| Cmax (ng/mL)       | RIV + CBZ / First dose   | 78.6      | 70.8      | -9.9%  |
-| Cmax (ng/mL)       | RIV alone / Steady state | 172       | 191       | +10.8% |
-| Cmax (ng/mL)       | RIV + CBZ / Steady state | 86.5      | 79.8      | -7.7%  |
-| AUClast (ng\*h/mL) | RIV alone / First dose   | 1290      | 1310      | +1.3%  |
-| AUClast (ng\*h/mL) | RIV + CBZ / First dose   | 616       | 613       | -0.4%  |
-| AUClast (ng\*h/mL) | RIV alone / Steady state | 2160      | 2550      | +18.3% |
-| AUClast (ng\*h/mL) | RIV + CBZ / Steady state | 775       | 795       | +2.6%  |
+| NCA parameter      | group                    | Reference | Simulated | % diff   |
+|:-------------------|:-------------------------|:----------|:----------|:---------|
+| Cmax (ng/mL)       | RIV alone / First dose   | 133       | 135       | +1.0%    |
+| Cmax (ng/mL)       | RIV + CBZ / First dose   | 78.6      | 70.2      | -10.6%   |
+| Cmax (ng/mL)       | RIV alone / Steady state | 172       | 192       | +11.4%   |
+| Cmax (ng/mL)       | RIV + CBZ / Steady state | 86.5      | 78.7      | -9.1%    |
+| AUClast (ng\*h/mL) | RIV alone / First dose   | 1290      | 1310      | +1.5%    |
+| AUClast (ng\*h/mL) | RIV + CBZ / First dose   | 616       | 606       | -1.6%    |
+| AUClast (ng\*h/mL) | RIV alone / Steady state | 2160      | 2590      | +20.1%\* |
+| AUClast (ng\*h/mL) | RIV + CBZ / Steady state | 775       | 775       | -0.0%    |
 
 Simulated cohort means vs Ngo 2023 Table 2 (PopPK model-based approach).
-{.table style="width:100%;"}
+{.table}
 
 ``` r
 
 attr(tbl, "footnote")
-#> NULL
+#> [1] "* differs from reference by more than ±20%."
 ```
 
 Seven of the eight cells land within 10 %. The outlier is steady-state
@@ -571,14 +571,14 @@ knitr::kable(nca_chk, digits = 1,
 
 | group                    | PPTESTCD | Reference | PPORRES | % diff |
 |:-------------------------|:---------|----------:|--------:|-------:|
-| RIV alone / First dose   | cmax     |     133.2 |   135.0 |    1.4 |
-| RIV alone / First dose   | auclast  |    1291.7 |  1308.5 |    1.3 |
-| RIV + CBZ / First dose   | cmax     |      78.6 |    70.8 |   -9.9 |
-| RIV + CBZ / First dose   | auclast  |     615.7 |   613.3 |   -0.4 |
-| RIV alone / Steady state | cmax     |     172.2 |   190.9 |   10.8 |
-| RIV alone / Steady state | auclast  |    2157.5 |  2551.9 |   18.3 |
-| RIV + CBZ / Steady state | cmax     |      86.5 |    79.8 |   -7.7 |
-| RIV + CBZ / Steady state | auclast  |     775.2 |   795.4 |    2.6 |
+| RIV alone / First dose   | cmax     |     133.2 |   134.5 |    1.0 |
+| RIV alone / First dose   | auclast  |    1291.7 |  1311.0 |    1.5 |
+| RIV + CBZ / First dose   | cmax     |      78.6 |    70.2 |  -10.6 |
+| RIV + CBZ / First dose   | auclast  |     615.7 |   606.0 |   -1.6 |
+| RIV alone / Steady state | cmax     |     172.2 |   191.9 |   11.4 |
+| RIV alone / Steady state | auclast  |    2157.5 |  2591.5 |   20.1 |
+| RIV + CBZ / Steady state | cmax     |      86.5 |    78.7 |   -9.1 |
+| RIV + CBZ / Steady state | auclast  |     775.2 |   775.2 |    0.0 |
 
 Numeric form of the comparison above, used for the assertions. {.table}
 

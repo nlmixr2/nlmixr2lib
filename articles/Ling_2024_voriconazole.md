@@ -37,17 +37,17 @@ mod
 #>   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 #> 
 #>   compartmentData <- list(
-#>     depot   = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),
+#>     depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),
 #>     central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = TRUE)
 #>   )
 #> 
 #>   covariateData <- list(
 #>     CRP = list(
-#>       description        = "C-reactive protein concentration (standard clinical assay), time-varying: Ling 2024 recorded CRP on the same day as each therapeutic-drug-monitoring sample",
-#>       units              = "mg/L",
-#>       type               = "continuous",
+#>       description = "C-reactive protein concentration (standard clinical assay), time-varying: Ling 2024 recorded CRP on the same day as each therapeutic-drug-monitoring sample",
+#>       units = "mg/L",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Enters CL as an exponential effect scaled by the cohort-median CRP of 59 mg/L",
 #>         "(Table 1 reports median 58.85 mg/L, rounded to 59 in the published final-model equation):",
 #>         "exp(e_crp_cl * CRP / 59). Note this is a median-SCALED but not median-CENTERED form -- the",
@@ -59,14 +59,14 @@ mod
 #>         "(a 3% CL change over CRP 1 to 100 mg/L) and the term was dropped for PM patients.",
 #>         "Cohort CRP: mean 77.10, SD 68.74, median 58.85, range 0.9-306.6 mg/L (Ling 2024 Table 1)."
 #>       ),
-#>       source_name        = "CRP"
+#>       source_name = "CRP"
 #>     ),
 #>     CYP2C19_IM = list(
-#>       description        = "CYP2C19 intermediate-metabolizer phenotype indicator",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "CYP2C19 intermediate-metabolizer phenotype indicator",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (normal metabolizer; the implicit reference when both CYP2C19_IM and CYP2C19_PM are 0)",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Ling 2024 assigned CPIC phenotypes from fluorescence in-situ hybridization genotyping.",
 #>         "IM genotypes pooled by Ling 2024 were *1/*2, *1/*3 and *2/*17 (Methods, 'Genotyping and phenotype",
 #>         "assignment'). 72 of 167 patients (43.1%) were IM (Table 1). The paper's reference category is the",
@@ -75,67 +75,67 @@ mod
 #>         "reparameterization was needed. The published effect is a multiplicative ratio applied as",
 #>         "e_cyp2c19_im_cl^CYP2C19_IM (Ling 2024 final-model equation)."
 #>       ),
-#>       source_name        = "IM"
+#>       source_name = "IM"
 #>     ),
 #>     CYP2C19_PM = list(
-#>       description        = "CYP2C19 poor-metabolizer phenotype indicator",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "CYP2C19 poor-metabolizer phenotype indicator",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (normal metabolizer; the implicit reference when both CYP2C19_IM and CYP2C19_PM are 0)",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Companion to CYP2C19_IM; see those notes for the reference-category rationale. PM genotypes pooled",
 #>         "by Ling 2024 were *2/*2, *2/*3 and *3/*3. 29 of 167 patients (17.4%) were PM (Table 1).",
 #>         "CYP2C19_PM appears twice in model(): once as the multiplicative phenotype ratio on CL",
 #>         "(e_cyp2c19_pm_cl^CYP2C19_PM) and once as the (1 - CYP2C19_PM) switch that removes the CRP",
 #>         "inflammation effect for poor metabolizers."
 #>       ),
-#>       source_name        = "PM"
+#>       source_name = "PM"
 #>     ),
 #>     AGE = list(
-#>       description        = "Age",
-#>       units              = "years",
-#>       type               = "continuous",
+#>       description = "Age",
+#>       units = "years",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Power-form effect on CL scaled to the cohort-median age of 71 years (Ling 2024 Table 1):",
 #>         "(AGE / 71)^e_age_cl. Cohort age mean 68.87, SD 14.87, median 71, range 16-97 years. The abstract",
 #>         "states patients aged >= 16 years while the Methods state >= 18 years; Table 1's range starts at 16."
 #>       ),
-#>       source_name        = "AGE"
+#>       source_name = "AGE"
 #>     ),
 #>     ALB = list(
-#>       description        = "Serum albumin concentration",
-#>       units              = "g/L",
-#>       type               = "continuous",
+#>       description = "Serum albumin concentration",
+#>       units = "g/L",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Reported by Ling 2024 in SI units (g/L), matching the canonical unit -- no conversion is applied",
 #>         "in model(). Power-form effect on CL scaled to the cohort-median albumin of 34.8 g/L",
 #>         "(Ling 2024 Table 1): (ALB / 34.8)^e_alb_cl. Cohort albumin mean 36.36, SD 8.54, median 34.8,",
 #>         "range 18.3-75.1 g/L. The positive exponent means low albumin lowers clearance, consistent with",
 #>         "the paper's Discussion recommendation to monitor for toxicity in hypoalbuminaemic patients."
 #>       ),
-#>       source_name        = "ALB"
+#>       source_name = "ALB"
 #>     ),
 #>     SEXF = list(
-#>       description        = "Sex indicator, 1 = female",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Sex indicator, 1 = female",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (male)",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Ling 2024 codes gender as M = 0, F = 1 in the final-model equation, matching the canonical SEXF",
 #>         "orientation exactly -- no value transformation is needed. The effect is a multiplicative ratio",
 #>         "applied as e_sexf_cl^SEXF, so women have 1.41-fold higher voriconazole clearance than men.",
 #>         "Cohort composition 119 male / 48 female (Ling 2024 Table 1)."
 #>       ),
-#>       source_name        = "gender"
+#>       source_name = "gender"
 #>     ),
 #>     WT = list(
-#>       description        = "Body weight",
-#>       units              = "kg",
-#>       type               = "continuous",
+#>       description = "Body weight",
+#>       units = "kg",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Power-form effect on V scaled to the cohort-median weight of 65 kg (Ling 2024 Table 1):",
 #>         "(WT / 65)^e_wt_vc. Cohort weight mean 64.48, SD 12.24, median 65, range 37-100 kg. The estimated",
 #>         "exponent 2.21 is far above the allometric-theory value of 1 and is imprecisely estimated",
@@ -143,7 +143,7 @@ mod
 #>         "the trough-only sampling design, which gave 65.7% eta-shrinkage on V. Do not extrapolate this",
 #>         "exponent outside the observed 37-100 kg range."
 #>       ),
-#>       source_name        = "WT"
+#>       source_name = "WT"
 #>     )
 #>   )
 #> 
@@ -156,73 +156,73 @@ mod
 #>   covariatesDataExcluded <- list(
 #>     CONMED_PPI = list(
 #>       description = "Concomitant proton-pump-inhibitor use",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = "117 of 167 patients (70.1%) received a PPI (Ling 2024 Table 1). No significant effect on voriconazole PK was found; the Discussion attributes this to most patients receiving rabeprazole or pantoprazole rather than omeprazole."
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = "117 of 167 patients (70.1%) received a PPI (Ling 2024 Table 1). No significant effect on voriconazole PK was found; the Discussion attributes this to most patients receiving rabeprazole or pantoprazole rather than omeprazole."
 #>     ),
 #>     CONMED_STEROID = list(
 #>       description = "Concomitant systemic corticosteroid use",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = "43 of 167 patients (25.7%) received a glucocorticoid (Ling 2024 Table 1). Screened as a co-medication covariate and not retained."
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = "43 of 167 patients (25.7%) received a glucocorticoid (Ling 2024 Table 1). Screened as a co-medication covariate and not retained."
 #>     ),
 #>     AST = list(
 #>       description = "Aspartate aminotransferase",
-#>       units       = "U/L",
-#>       type        = "continuous",
-#>       notes       = "Mean 63.98, median 34.7, range 7.8-1211.6 U/L (Ling 2024 Table 1). Screened as a liver-function covariate and not retained."
+#>       units = "U/L",
+#>       type = "continuous",
+#>       notes = "Mean 63.98, median 34.7, range 7.8-1211.6 U/L (Ling 2024 Table 1). Screened as a liver-function covariate and not retained."
 #>     ),
 #>     ALT = list(
 #>       description = "Alanine aminotransferase",
-#>       units       = "U/L",
-#>       type        = "continuous",
-#>       notes       = "Mean 44.42, median 25.35, range 2.6-629.1 U/L (Ling 2024 Table 1). Screened as a liver-function covariate and not retained."
+#>       units = "U/L",
+#>       type = "continuous",
+#>       notes = "Mean 44.42, median 25.35, range 2.6-629.1 U/L (Ling 2024 Table 1). Screened as a liver-function covariate and not retained."
 #>     ),
 #>     TBILI = list(
 #>       description = "Total bilirubin",
-#>       units       = "umol/L",
-#>       type        = "continuous",
-#>       notes       = "Mean 26.65, median 13.35, range 1.7-514.8 umol/L (Ling 2024 Table 1). Screened as a liver-function covariate and not retained."
+#>       units = "umol/L",
+#>       type = "continuous",
+#>       notes = "Mean 26.65, median 13.35, range 1.7-514.8 umol/L (Ling 2024 Table 1). Screened as a liver-function covariate and not retained."
 #>     ),
 #>     HGB = list(
 #>       description = "Hemoglobin",
-#>       units       = "g/L",
-#>       type        = "continuous",
-#>       notes       = "Mean 97.96, median 96, range 64-152 (Ling 2024 Table 1). Table 1 prints the unit as mmol/L, but the magnitudes are unambiguously g/L (the SI mmol/L scale for hemoglobin runs about 4-10). Screened as a complete-blood-count covariate and not retained."
+#>       units = "g/L",
+#>       type = "continuous",
+#>       notes = "Mean 97.96, median 96, range 64-152 (Ling 2024 Table 1). Table 1 prints the unit as mmol/L, but the magnitudes are unambiguously g/L (the SI mmol/L scale for hemoglobin runs about 4-10). Screened as a complete-blood-count covariate and not retained."
 #>     ),
 #>     PLT = list(
 #>       description = "Platelet count",
-#>       units       = "10^9/L",
-#>       type        = "continuous",
-#>       notes       = "Mean 174.25, median 165, range 4-624 x 10^9/L (Ling 2024 Table 1). Screened as a complete-blood-count covariate and not retained."
+#>       units = "10^9/L",
+#>       type = "continuous",
+#>       notes = "Mean 174.25, median 165, range 4-624 x 10^9/L (Ling 2024 Table 1). Screened as a complete-blood-count covariate and not retained."
 #>     ),
 #>     CREAT = list(
 #>       description = "Serum creatinine",
-#>       units       = "umol/L",
-#>       type        = "continuous",
-#>       notes       = "Mean 106.50, median 78, range 2.77-641 umol/L (Ling 2024 Table 1). Screened as a renal-function covariate and not retained, consistent with voriconazole being cleared by hepatic metabolism."
+#>       units = "umol/L",
+#>       type = "continuous",
+#>       notes = "Mean 106.50, median 78, range 2.77-641 umol/L (Ling 2024 Table 1). Screened as a renal-function covariate and not retained, consistent with voriconazole being cleared by hepatic metabolism."
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human",
-#>     n_subjects     = 167L,
-#>     n_studies      = 1L,
+#>     species = "human",
+#>     n_subjects = 167L,
+#>     n_studies = 1L,
 #>     n_observations = 232L,
-#>     age_range      = "16-97 years",
-#>     age_median     = "71 years",
-#>     age_mean       = "68.87 +/- 14.87 years",
-#>     weight_range   = "37-100 kg",
-#>     weight_median  = "65 kg",
-#>     weight_mean    = "64.48 +/- 12.24 kg",
+#>     age_range = "16-97 years",
+#>     age_median = "71 years",
+#>     age_mean = "68.87 +/- 14.87 years",
+#>     weight_range = "37-100 kg",
+#>     weight_median = "65 kg",
+#>     weight_mean = "64.48 +/- 12.24 kg",
 #>     sex_female_pct = 28.7,
 #>     race_ethnicity = c(Chinese = 100),
 #>     cyp2c19_phenotype = c(NM_pct = 39.5, IM_pct = 43.1, PM_pct = 17.4, RM_pct = 0, UM_pct = 0),
-#>     co_medication  = c(ProtonPumpInhibitor_pct = 70.1, Corticosteroid_pct = 25.7),
-#>     disease_state  = "Adult inpatients with proven, probable or possible invasive fungal infection treated with voriconazole and undergoing therapeutic drug monitoring. Patients receiving other antifungals or co-medications known to alter voriconazole PK were excluded.",
-#>     dose_range     = "Intravenous or oral voriconazole twice daily. 57 patients received an intravenous loading dose of 600 or 400 mg twice daily followed by an intravenous maintenance dose of 300 or 200 mg twice daily; 4 patients received an oral loading dose of 400 or 300 mg twice daily followed by 200 mg twice daily orally; 106 patients received 200 mg twice daily intravenously or orally with no loading dose. Intravenous infusion rate was kept below 3 mg/kg/h. Oral doses were taken 1 h before or after a meal.",
-#>     regions        = "Single center: The First People's Hospital of Changzhou / The Third Affiliated Hospital of Soochow University, Changzhou, Jiangsu, China.",
-#>     notes          = paste(
+#>     co_medication = c(ProtonPumpInhibitor_pct = 70.1, Corticosteroid_pct = 25.7),
+#>     disease_state = "Adult inpatients with proven, probable or possible invasive fungal infection treated with voriconazole and undergoing therapeutic drug monitoring. Patients receiving other antifungals or co-medications known to alter voriconazole PK were excluded.",
+#>     dose_range = "Intravenous or oral voriconazole twice daily. 57 patients received an intravenous loading dose of 600 or 400 mg twice daily followed by an intravenous maintenance dose of 300 or 200 mg twice daily; 4 patients received an oral loading dose of 400 or 300 mg twice daily followed by 200 mg twice daily orally; 106 patients received 200 mg twice daily intravenously or orally with no loading dose. Intravenous infusion rate was kept below 3 mg/kg/h. Oral doses were taken 1 h before or after a meal.",
+#>     regions = "Single center: The First People's Hospital of Changzhou / The Third Affiliated Hospital of Soochow University, Changzhou, Jiangsu, China.",
+#>     notes = paste(
 #>       "Retrospective single-center study, October 2020 - June 2023 (the Methods 'Patients' section states",
 #>       "March 2020 - August 2023 for the study period; the abstract gives the October 2020 - June 2023",
 #>       "data-collection window). Ethics approval No. 2023-038. 232 steady-state trough concentrations from",
@@ -326,7 +326,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55bd1836be18>
+#> <environment: 0x5578c0fb0e90>
 ```
 
 ## Population
@@ -533,7 +533,13 @@ rxode2::rxSetSeed(20240820)
 sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("arm", "phenotype", "dose_mg", "CRP", "CYP2C19_IM", "CYP2C19_PM"),
-  returnType = "data.frame", addDosing = FALSE
+  returnType = "data.frame", addDosing = FALSE,
+  # Tight tolerances for the 1e-6 closed-form gate below. The `ss = 1` record
+  # has its own convergence test (ssRtol / ssAtol, defaults 1e-6 / 1e-8) that
+  # stops once successive dosing intervals differ by less than the tolerance;
+  # for slowly equilibrating subjects that leaves a residual of roughly
+  # ssRtol / (k * tau), so it is tightened together with rtol / atol.
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 trough <- sim |> filter(time == obs_time, !is.na(Cc))
@@ -556,7 +562,7 @@ chk <- trough |>
   )
 
 max(chk$rel_err)
-#> [1] 6.469058e-16
+#> [1] 4.278639e-10
 stopifnot(max(chk$rel_err) < 1e-6)
 ```
 
@@ -712,10 +718,10 @@ cmp |>
 
 | CRP stratum | CYP2C19 phenotype | Published in range % | Simulated in range % | Difference (pp) | Published above 5 % | Simulated above 5 % |
 |:---|:---|---:|---:|---:|---:|---:|
-| CRP \< 10 mg/L | Normal metabolizer | 79.4 | 79 | -0.4 | 20.1 | 21 |
-| CRP \< 10 mg/L | Intermediate metabolizer | 58.7 | 46 | -12.7 | 41.1 | 54 |
+| CRP \< 10 mg/L | Normal metabolizer | 79.4 | 70 | -9.4 | 20.1 | 30 |
+| CRP \< 10 mg/L | Intermediate metabolizer | 58.7 | 49 | -9.7 | 41.1 | 51 |
 | CRP \> 200 mg/L | Normal metabolizer | 26.6 | 23 | -3.6 | 73.3 | 77 |
-| CRP \> 200 mg/L | Intermediate metabolizer | 14.1 | 14 | -0.1 | 85.9 | 86 |
+| CRP \> 200 mg/L | Intermediate metabolizer | 14.1 | 10 | -4.1 | 85.9 | 90 |
 
 Percentage of simulated steady-state troughs inside the 0.5-5.0 ug/mL
 target window at 200 mg twice daily, against the values published in
@@ -725,7 +731,7 @@ Ling 2024 Results ‘Simulation’. {.table style="width:100%;"}
 
 mae <- mean(abs(cmp$diff_in_range))
 mae
-#> [1] 4.2025
+#> [1] 6.7025
 
 # The paper's simulation resolves CRP within a stratum ("< 10", "> 200") while
 # this one uses a single representative CRP per stratum, and each arm has 100
@@ -919,8 +925,8 @@ nca_tab |>
 
 | arm                      | auclast |   cav |  cmax |  cmin | ctrough | tmax |
 |:-------------------------|--------:|------:|------:|------:|--------:|-----:|
-| Intermediate metabolizer |  64.755 | 5.396 | 6.263 | 4.712 |   4.712 |    1 |
-| Normal metabolizer       |  50.231 | 4.186 | 5.071 | 3.470 |   3.470 |    1 |
+| Intermediate metabolizer |  66.776 | 5.565 | 6.274 | 4.757 |   4.757 |    1 |
+| Normal metabolizer       |  53.011 | 4.418 | 5.361 | 3.800 |   3.800 |    1 |
 
 Median steady-state NCA over the final 12 h dosing interval, 200 mg
 twice daily, CRP 5 mg/L (PKNCA). {.table}
@@ -974,8 +980,8 @@ mb |>
 
 | Arm | AUC0-tau simulated (h\*ug/mL) | Cav (ug/mL) | Ctrough (ug/mL) | AUC0-tau = dose/CL (h\*ug/mL) | % difference |
 |:---|---:|---:|---:|---:|---:|
-| Intermediate metabolizer | 64.75 | 5.40 | 4.71 | 66.64 | -2.82 |
-| Normal metabolizer | 50.23 | 4.19 | 3.47 | 52.91 | -5.06 |
+| Intermediate metabolizer | 66.78 | 5.56 | 4.76 | 66.64 | 0.21 |
+| Normal metabolizer | 53.01 | 4.42 | 3.80 | 52.91 | 0.19 |
 
 Simulated steady-state AUC0-tau against the dose/CL identity. The median
 AUC is compared with the identity at the typical clearance, so the
@@ -1010,7 +1016,7 @@ obs_bracket <- trough |>
   summarise(median_trough = median(Cc), .groups = "drop")
 
 range(obs_bracket$median_trough)
-#> [1] 3.227321 8.413480
+#> [1] 3.715232 9.353722
 
 # Observed cohort median trough, Ling 2024 Table 1.
 observed_median <- 4.45

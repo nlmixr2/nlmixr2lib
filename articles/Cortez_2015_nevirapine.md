@@ -358,17 +358,20 @@ cf_check
 #> # A tibble: 6 × 2
 #>   treatment                   max_rel_err
 #>   <chr>                             <dbl>
-#> 1 Rat LA-1, 45 mg, 0.33 kg       2.14e-13
-#> 2 Rat LA-2, 6.7 mg, 0.21 kg      4.36e-14
-#> 3 Infant LA-1, 200 mg, 2.0 kg    2.72e-13
-#> 4 Infant LA-1, 200 mg, 3.9 kg    3.16e-13
-#> 5 Infant LA-2, 60 mg, 2.0 kg     1.53e-14
-#> 6 Infant LA-2, 60 mg, 3.9 kg     1.66e-14
+#> 1 Rat LA-1, 45 mg, 0.33 kg       2.35e-10
+#> 2 Rat LA-2, 6.7 mg, 0.21 kg      2.39e- 9
+#> 3 Infant LA-1, 200 mg, 2.0 kg    3.10e-10
+#> 4 Infant LA-1, 200 mg, 3.9 kg    8.92e-11
+#> 5 Infant LA-2, 60 mg, 2.0 kg     4.04e- 9
+#> 6 Infant LA-2, 60 mg, 3.9 kg     2.51e- 9
 
 # Pure numerical-integration error between two evaluations of the SAME
 # parameters -- not a cohort-derived quantity, so a tight bound is correct.
-# Observed max 3.2e-13 across the six scenarios at atol 1e-12 / rtol 1e-10.
-stopifnot(all(cf_check$max_rel_err < 1e-9))
+# Observed max 3.2e-13 across the six scenarios when rxode2 solved these
+# analytically (its ODE-to-linCmt() conversion was on by default until
+# September 2026, rxode2 issue 1389) and 4.0e-9 with the ODE integrated at
+# atol 1e-12 / rtol 1e-10; the bound sits above the numerical floor.
+stopifnot(all(cf_check$max_rel_err < 1e-8))
 ```
 
 ## Replicate published figures

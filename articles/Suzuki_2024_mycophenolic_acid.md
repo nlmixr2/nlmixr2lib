@@ -322,7 +322,7 @@ sim_crcl <- rxode2::rxSolve(
 
 sim_crcl$arm <- factor(sim_crcl$arm, levels = paste0("CLcr ", crcl_levels, " mL/min/70 kg"))
 range(sim_crcl$Cc)
-#> [1]  0.2002648 32.4055189
+#> [1]  0.2002648 32.4055179
 ```
 
 ### Steady-state profiles across renal function
@@ -585,10 +585,10 @@ g1$pct <- 100 * (g1$PPORRES / g1$auclast - 1)
 stopifnot(nrow(g1) == length(crcl_levels))
 print(g1)
 #>                     arm  PPORRES  auclast           pct
-#> 1 CLcr 100 mL/min/70 kg 38.56292 38.56313 -0.0005665818
-#> 2  CLcr 25 mL/min/70 kg 70.63126 70.63764 -0.0090219879
-#> 3  CLcr 50 mL/min/70 kg 55.30373 55.30462 -0.0015968955
-#> 4  CLcr 75 mL/min/70 kg 45.44065 45.44094 -0.0006294143
+#> 1 CLcr 100 mL/min/70 kg 38.56292 38.56313 -0.0005666177
+#> 2  CLcr 25 mL/min/70 kg 70.63126 70.63764 -0.0090220100
+#> 3  CLcr 50 mL/min/70 kg 55.30373 55.30462 -0.0015969227
+#> 4  CLcr 75 mL/min/70 kg 45.44065 45.44094 -0.0006294462
 stopifnot(max(abs(g1$pct)) < 0.2)
 ```
 
@@ -911,10 +911,10 @@ tibble(
 
 | Statistic              | Value |
 |:-----------------------|------:|
-| Median                 |  78.9 |
-| 10th percentile        |  38.1 |
-| 90th percentile        | 142.0 |
-| % within 30-60 mg\*h/L |  26.0 |
+| Median                 |  74.4 |
+| 10th percentile        |  41.1 |
+| 90th percentile        | 140.1 |
+| % within 30-60 mg\*h/L |  32.0 |
 
 Steady-state MPA AUC0-12 for a cohort at the Table 1 median covariates
 (MMF 750 mg twice daily, weight distribution matched to Table 1, CLcr
@@ -923,8 +923,8 @@ Steady-state MPA AUC0-12 for a cohort at the Table 1 median covariates
 This cohort sits at the modal prescribed regimen (750 mg twice daily, n
 = 25 of 42) and at the cohort’s median renal function and
 post-transplantation day, and the model puts the typical patient
-**above** the 30-60 mg h/L target: the median AUC0-12 is 79 mg h/L and
-only 26% of the cohort falls inside the band. The closed form of
+**above** the 30-60 mg h/L target: the median AUC0-12 is 74 mg h/L and
+only 32% of the cohort falls inside the band. The closed form of
 Equation 7 at exactly 55.9 kg gives 75.6 mg h/L, so the simulated median
 is the same quantity carrying the realised weight draw and the lognormal
 clearance IIV. That is not a contradiction of the paper – it is

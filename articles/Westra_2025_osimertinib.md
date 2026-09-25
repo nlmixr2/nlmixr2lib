@@ -842,9 +842,9 @@ knitr::kable(
 | Metric | DL2 sim | DL2 published | DL3 sim | DL3 published | DL4 sim | DL4 published |
 |:---|---:|---:|---:|---:|---:|---:|
 | Osimertinib AUC0-144h | 1.420 | 1.43 | 0.947 | 0.96 | 0.710 | 0.73 |
-| Osimertinib Cmax | 1.384 | 1.39 | 1.046 | 1.06 | 0.779 | 0.79 |
+| Osimertinib Cmax | 1.382 | 1.39 | 1.050 | 1.06 | 0.782 | 0.79 |
 | AZ5104 AUC0-144h | 1.000 | 1.00 | 0.667 | 0.67 | 0.500 | 0.51 |
-| AZ5104 Cmax | 0.982 | 0.90 | 0.739 | 0.74 | 0.548 | 0.56 |
+| AZ5104 Cmax | 0.981 | 0.90 | 0.742 | 0.74 | 0.550 | 0.56 |
 
 Within-patient geometric mean ratios vs. DL 1, simulated and as
 published in Westra 2025 Table 3. {.table}

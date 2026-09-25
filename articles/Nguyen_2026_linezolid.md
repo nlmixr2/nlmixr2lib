@@ -320,7 +320,7 @@ ss <- rxode2::rxSolve(
 ss_rel <- abs(ss[[paste0("t", t_last)]] / ss[[paste0("t", t_last - tau)]] - 1)
 summary(ss_rel)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> 0.000e+00 3.000e-13 1.160e-12 1.928e-08 1.070e-11 9.133e-07
+#> 0.000e+00 1.300e-13 8.900e-13 1.907e-08 1.497e-11 1.330e-06
 
 # Accumulation is complete to well under 1% for every subject. 2% leaves
 # headroom over the solver tolerance while still going red if the dosing
@@ -494,7 +494,7 @@ cohort_ratio <- sim |>
   )
 
 range(cohort_ratio$ratio)
-#> [1] 1.243838 1.278051
+#> [1] 1.244328 1.297790
 # On the coarse hourly grid the trapezoid biases the ratio up by ~2% and the
 # bias varies slightly with clearance, so this is a spread bound, not an
 # equality. Realised spread max/min was 1.033 across both arms (range
@@ -656,10 +656,10 @@ knitr::kable(
 
 | NCA parameter     | treatment   | Reference | Simulated | % diff |
 |:------------------|:------------|----------:|----------:|-------:|
-| Cmax (mg/L)       | 600 mg q24h |      11.2 |        12 |  +7.3% |
+| Cmax (mg/L)       | 600 mg q24h |      11.2 |      12.3 |  +9.7% |
 | Tmax (h)          | 600 mg q24h |      1.98 |         2 |  +1.0% |
-| AUClast (mg\*h/L) | 600 mg q24h |       132 |       137 |  +4.0% |
-| t½ (h)            | 600 mg q24h |      8.01 |      7.75 |  -3.3% |
+| AUClast (mg\*h/L) | 600 mg q24h |       132 |       139 |  +5.7% |
+| t½ (h)            | 600 mg q24h |      8.01 |      7.84 |  -2.1% |
 
 Simulated (600 mg once daily) vs Nguyen 2026 Table S6, NONMEM column. \*
 differs from reference by \>20%. The published values are for the
@@ -709,7 +709,7 @@ thalf_pct <- 100 * (get_median("half.life") / 8.01 - 1)
 tmax_pct  <- 100 * (get_median("tmax") / 1.98 - 1)
 c(half_life_pct_diff = thalf_pct, tmax_pct_diff = tmax_pct)
 #> half_life_pct_diff      tmax_pct_diff 
-#>          -3.251805           1.010101
+#>          -2.121251           1.010101
 
 # The theoretical median half-life is ln2 * V/CL at the typical value, since
 # neither V's weight term nor CL's eta shifts a median.
@@ -768,8 +768,8 @@ knitr::kable(
 
 | NCA parameter | 450 mg cohort median | 600 mg cohort median | 600 mg typical | 450 mg typical | Table S6 (450-600 mg mix) |
 |:---|---:|---:|---:|---:|---:|
-| auclast | 102.14 | 136.82 | 137.93 | 103.45 | 131.5 |
-| cmax | 9.21 | 12.02 | 12.05 | 9.04 | 11.2 |
+| auclast | 102.49 | 139.05 | 137.93 | 103.45 | 131.5 |
+| cmax | 9.39 | 12.29 | 12.05 | 9.04 | 11.2 |
 
 The published mixed-dose means fall between the 450 mg and 600 mg arms,
 as expected for quantities directly proportional to dose. {.table}
@@ -821,13 +821,13 @@ as.data.frame(nca_sal$result) |>
 
 | Arm         | NCA parameter | Median | 5th pctile | 95th pctile |
 |:------------|:--------------|-------:|-----------:|------------:|
-| 450 mg q24h | auclast       | 128.00 |      60.38 |      244.55 |
-| 450 mg q24h | cmax          |  11.39 |       8.23 |       16.33 |
-| 450 mg q24h | cmin          |   1.42 |       0.11 |        5.71 |
-| 450 mg q24h | tmax          |   2.00 |       2.00 |        2.05 |
-| 600 mg q24h | auclast       | 171.17 |      77.98 |      355.43 |
-| 600 mg q24h | cmax          |  14.78 |      11.14 |       22.56 |
-| 600 mg q24h | cmin          |   2.20 |       0.11 |        9.39 |
+| 450 mg q24h | auclast       | 128.53 |      60.65 |      265.55 |
+| 450 mg q24h | cmax          |  11.65 |       7.93 |       16.42 |
+| 450 mg q24h | cmin          |   1.50 |       0.11 |        6.03 |
+| 450 mg q24h | tmax          |   2.00 |       2.00 |        3.00 |
+| 600 mg q24h | auclast       | 174.03 |      83.28 |      351.16 |
+| 600 mg q24h | cmax          |  15.21 |      10.64 |       22.75 |
+| 600 mg q24h | cmin          |   2.20 |       0.20 |        8.36 |
 | 600 mg q24h | tmax          |   2.00 |       2.00 |        3.00 |
 
 Simulated saliva NCA over the steady-state dosing interval. {.table}
@@ -874,8 +874,8 @@ as.data.frame(nca_res$result) |>
 
 | Arm         | Median AUC(0-24) | % above efficacy | % above toxicity |
 |:------------|-----------------:|-----------------:|-----------------:|
-| 450 mg q24h |            102.1 |               74 |                1 |
-| 600 mg q24h |            136.8 |               91 |                6 |
+| 450 mg q24h |            102.5 |             73.5 |              0.0 |
+| 600 mg q24h |            139.0 |             92.0 |              4.5 |
 
 Illustrative target attainment against the thresholds Nguyen 2026
 states. Not a published-value comparison. {.table}

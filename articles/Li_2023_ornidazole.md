@@ -503,14 +503,14 @@ cmp_auc |>
 
 | NCA parameter     | Matrix      | Day | Reference | Simulated | % diff   |
 |:------------------|:------------|----:|:----------|:----------|:---------|
-| AUClast (mg\*h/L) | plasma      |   1 | 475       | 496       | +4.6%    |
-| AUClast (mg\*h/L) | plasma      |   2 | 435       | 432       | -0.6%    |
-| AUClast (mg\*h/L) | plasma      |   3 | 141       | 140       | -0.5%    |
-| AUClast (mg\*h/L) | plasma      |   4 | 45.3      | 44.7      | -1.3%    |
-| AUClast (mg\*h/L) | breast milk |   1 | 87.3      | 42.5      | -51.3%\* |
-| AUClast (mg\*h/L) | breast milk |   2 | 215       | 147       | -31.5%\* |
-| AUClast (mg\*h/L) | breast milk |   3 | 123       | 95.3      | -22.5%\* |
-| AUClast (mg\*h/L) | breast milk |   4 | 59.1      | 50.6      | -14.3%   |
+| AUClast (mg\*h/L) | plasma      |   1 | 475       | 496       | +4.5%    |
+| AUClast (mg\*h/L) | plasma      |   2 | 435       | 431       | -0.9%    |
+| AUClast (mg\*h/L) | plasma      |   3 | 141       | 139       | -1.2%    |
+| AUClast (mg\*h/L) | plasma      |   4 | 45.3      | 44.3      | -2.3%    |
+| AUClast (mg\*h/L) | breast milk |   1 | 87.3      | 38.9      | -55.4%\* |
+| AUClast (mg\*h/L) | breast milk |   2 | 215       | 131       | -39.0%\* |
+| AUClast (mg\*h/L) | breast milk |   3 | 123       | 82.6      | -32.8%\* |
+| AUClast (mg\*h/L) | breast milk |   4 | 59.1      | 40.9      | -30.8%\* |
 
 Simulated vs Table S2 AUC24 medians (TBIL 17 umol/L). \* differs from
 the published value by more than 20%. {.table}
@@ -560,18 +560,18 @@ cmp_peak |>
 
 | NCA parameter | Liver function | Matrix      | Reference | Simulated | % diff |
 |:--------------|:---------------|:------------|:----------|:----------|:-------|
-| Cmax (mg/L)   | normal         | plasma      | 27.5      | 27.6      | +0.1%  |
-| Cmax (mg/L)   | normal         | breast milk | 5.41      | 5.57      | +3.0%  |
-| Cmax (mg/L)   | abnormal       | plasma      | 30.2      | 30.4      | +0.5%  |
-| Cmax (mg/L)   | abnormal       | breast milk | 6.21      | 6.16      | -0.8%  |
+| Cmax (mg/L)   | normal         | plasma      | 27.5      | 27.8      | +0.8%  |
+| Cmax (mg/L)   | normal         | breast milk | 5.41      | 5.83      | +7.9%  |
+| Cmax (mg/L)   | abnormal       | plasma      | 30.2      | 30.1      | -0.4%  |
+| Cmax (mg/L)   | abnormal       | breast milk | 6.21      | 6.38      | +2.7%  |
 | Tmax (h)      | normal         | plasma      | 25        | 25        | +0.0%  |
-| Tmax (h)      | normal         | breast milk | 27        | 25.5      | -5.6%  |
+| Tmax (h)      | normal         | breast milk | 27        | 26        | -3.7%  |
 | Tmax (h)      | abnormal       | plasma      | 25        | 25        | +0.0%  |
-| Tmax (h)      | abnormal       | breast milk | 33        | 31        | -6.1%  |
-| t½ (h)        | normal         | plasma      | 12.5      | 12.9      | +3.6%  |
-| t½ (h)        | normal         | breast milk | —         | 18.2      | —      |
-| t½ (h)        | abnormal       | plasma      | —         | 15.6      | —      |
-| t½ (h)        | abnormal       | breast milk | —         | 23.9      | —      |
+| Tmax (h)      | abnormal       | breast milk | 33        | 30.5      | -7.6%  |
+| t½ (h)        | normal         | plasma      | 12.5      | 13.1      | +5.0%  |
+| t½ (h)        | normal         | breast milk | —         | 18.6      | —      |
+| t½ (h)        | abnormal       | plasma      | —         | 15.4      | —      |
+| t½ (h)        | abnormal       | breast milk | —         | 23.3      | —      |
 
 Simulated vs published peak concentration, time to peak, and half-life.
 \* differs from the published value by more than 20%. The half-life
@@ -641,10 +641,10 @@ peak_spread |>
 
 | Liver function | Matrix      | 2.5th | Median | 97.5th | Published 2.5th-97.5th |
 |:---------------|:------------|------:|-------:|-------:|:-----------------------|
-| abnormal       | breast milk |  1.99 |   6.16 |  21.07 | 2.01-20.34             |
-| abnormal       | plasma      | 25.98 |  30.36 |  34.79 | 25.67-34.56            |
-| normal         | breast milk |  1.68 |   5.57 |  15.33 | 1.82-18.19             |
-| normal         | plasma      | 25.20 |  27.55 |  31.73 | 23.12-31.94            |
+| abnormal       | breast milk |  2.17 |   6.38 |  18.40 | 2.01-20.34             |
+| abnormal       | plasma      | 25.88 |  30.11 |  35.04 | 25.67-34.56            |
+| normal         | breast milk |  1.72 |   5.83 |  16.31 | 1.82-18.19             |
+| normal         | plasma      | 25.08 |  27.76 |  32.40 | 23.12-31.94            |
 
 Simulated vs published Cmax percentiles. {.table}
 
@@ -685,8 +685,8 @@ safety_margin |>
 
 | Liver function | PST (h) | Milk 97.5th (mg/L) | Minimum gap (mg/L) | Published gap (mg/L) |
 |:---|---:|---:|---:|---:|
-| abnormal | 95 | 7.99 | 22.16 | 21.36 |
-| normal | 96 | 3.37 | 26.59 | 24.90 |
+| abnormal | 96 | 6.18 | 23.78 | 21.36 |
+| normal | 96 | 3.61 | 26.35 | 24.90 |
 
 Minimum distance between the RID-10% safety threshold and the 97.5th
 percentile of the milk concentration. {.table}

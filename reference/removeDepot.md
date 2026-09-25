@@ -1,6 +1,10 @@
 # To convert from first order oral absorption to IV/Intravenous
 
-To convert from first order oral absorption to IV/Intravenous
+Any compartment property lines for the depot (`f()`,
+[`lag()`](https://rdrr.io/r/stats/lag.html), `dur()`, `rate()` or an
+initial condition) are removed with its differential equation; the
+variables that defined them are left in place (use
+\[removeLinesAndInis()\] to drop them as well).
 
 ## Usage
 

@@ -442,7 +442,7 @@ tibble(
 
 | Max \|difference\| (%) | Median difference (%) | Subjects compared |
 |-----------------------:|----------------------:|------------------:|
-|                 3.8848 |               -0.0379 |               600 |
+|                 3.8848 |               -0.0377 |               600 |
 
 PKNCA AUCtau vs. the closed form dose / CL, across all 600 cohort-B
 subjects. {.table style="width:100%;"}

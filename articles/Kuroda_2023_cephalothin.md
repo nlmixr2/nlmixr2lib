@@ -144,7 +144,9 @@ mod <- readModelDb("Kuroda_2023_cephalothin")
 mod_typ <- rxode2::zeroRe(mod)
 
 sim_im <- rxode2::rxSolve(
-  mod_typ, events = events_im, returnType = "data.frame"
+  mod_typ, events = events_im, returnType = "data.frame",
+  # Tight solver tolerances: the weight-invariance gate below is at 1e-8.
+  rtol = 1e-10, atol = 1e-12
 ) |>
   filter(!is.na(Cc))
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalvp', 'etalvp2', 'etalcl', 'etalq', 'etalq2', 'etalka', 'etalfdepot'

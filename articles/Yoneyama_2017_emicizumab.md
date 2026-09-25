@@ -287,9 +287,9 @@ knitr::kable(ss_trough,
 
 | regimen      |   n | trough_median |
 |:-------------|----:|--------------:|
-| 1.5 mg/kg QW |  80 |      54.14346 |
+| 1.5 mg/kg QW |  80 |      54.14345 |
 | 3 mg/kg Q2W  |  80 |      52.63641 |
-| 6 mg/kg Q4W  |  80 |      46.20966 |
+| 6 mg/kg Q4W  |  80 |      46.20967 |
 
 Simulated median plasma emicizumab C_trough at week 52 by phase III
 regimen. {.table}

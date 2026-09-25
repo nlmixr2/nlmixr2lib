@@ -375,7 +375,7 @@ sprintf(
   "Individual t1/2 spans %.1f-%.1f h; the %d h run-in is >= %.1f half-lives for every subject",
   min(indiv$t_half), max(indiv$t_half), t_ss, t_ss / max(indiv$t_half)
 )
-#> [1] "Individual t1/2 spans 6.7-50.5 h; the 744 h run-in is >= 14.7 half-lives for every subject"
+#> [1] "Individual t1/2 spans 6.2-40.8 h; the 744 h run-in is >= 18.2 half-lives for every subject"
 stopifnot(t_ss / max(indiv$t_half) >= 10)
 
 ident <- nca |>
@@ -401,7 +401,7 @@ sprintf(
   "Once-daily arms (n = %d): AUC0-24 vs F*Dose/CL, max |error| = %.4f%%",
   nrow(qd), max(abs(qd$pct_err))
 )
-#> [1] "Once-daily arms (n = 400): AUC0-24 vs F*Dose/CL, max |error| = 0.0458%"
+#> [1] "Once-daily arms (n = 400): AUC0-24 vs F*Dose/CL, max |error| = 0.0008%"
 stopifnot(max(abs(qd$pct_err)) < 0.05)
 
 # Multi-dose arms: the identity holds for the population but not for every
@@ -411,7 +411,7 @@ sprintf(
   "Multi-dose arms (n = %d): median error %.4f%%; %d subject(s) (%.1f%%) exceed 1%%",
   nrow(md), median(md$pct_err), sum(abs(md$pct_err) > 1), 100 * mean(abs(md$pct_err) > 1)
 )
-#> [1] "Multi-dose arms (n = 1200): median error -0.0001%; 14 subject(s) (1.2%) exceed 1%"
+#> [1] "Multi-dose arms (n = 1200): median error -0.0001%; 1 subject(s) (0.1%) exceed 1%"
 stopifnot(abs(median(md$pct_err)) < 0.01, mean(abs(md$pct_err) > 1) < 0.02)
 ```
 
@@ -432,7 +432,7 @@ sprintf(
   "MTT of the multi-dose subjects missing the identity by >1%%: median %.2f h, vs %.2f h across all multi-dose subjects (typical value 0.610 h)",
   median(md_mtt$mtt[abs(md_mtt$pct_err) > 1]), median(md_mtt$mtt)
 )
-#> [1] "MTT of the multi-dose subjects missing the identity by >1%: median 6.66 h, vs 0.59 h across all multi-dose subjects (typical value 0.610 h)"
+#> [1] "MTT of the multi-dose subjects missing the identity by >1%: median 4.72 h, vs 0.58 h across all multi-dose subjects (typical value 0.610 h)"
 ```
 
 This is a faithful consequence of the published absorption model, not a
@@ -476,14 +476,14 @@ nlmixr2lib::ncaComparisonTable(
 
 | NCA parameter     | treatment         | Reference | Simulated | % diff |
 |:------------------|:------------------|:----------|:----------|:-------|
-| AUClast (mg\*h/L) | 250 mg QD         | 170       | 165       | -3.0%  |
-| AUClast (mg\*h/L) | 500 mg QD         | 340       | 329       | -3.1%  |
-| AUClast (mg\*h/L) | 250 mg BID        | 309       | 329       | +6.7%  |
-| AUClast (mg\*h/L) | 250/500 am/pm     | 507       | 494       | -2.5%  |
-| AUClast (mg\*h/L) | 250 mg TID        | 513       | 494       | -3.8%  |
-| AUClast (mg\*h/L) | 500 mg BID        | 671       | 659       | -1.8%  |
-| AUClast (mg\*h/L) | 750 mg BID        | 1010      | 988       | -1.8%  |
-| AUClast (mg\*h/L) | WHO weight-banded | 462       | 454       | -1.8%  |
+| AUClast (mg\*h/L) | 250 mg QD         | 170       | 154       | -9.0%  |
+| AUClast (mg\*h/L) | 500 mg QD         | 340       | 309       | -9.0%  |
+| AUClast (mg\*h/L) | 250 mg BID        | 309       | 309       | +0.1%  |
+| AUClast (mg\*h/L) | 250/500 am/pm     | 507       | 463       | -8.6%  |
+| AUClast (mg\*h/L) | 250 mg TID        | 513       | 463       | -9.7%  |
+| AUClast (mg\*h/L) | 500 mg BID        | 671       | 618       | -7.9%  |
+| AUClast (mg\*h/L) | 750 mg BID        | 1010      | 927       | -7.9%  |
+| AUClast (mg\*h/L) | WHO weight-banded | 462       | 419       | -9.2%  |
 
 Simulated vs published median AUC0-24 (Resendiz-Galvan 2025 Table 3).
 {.table}
@@ -553,7 +553,7 @@ auc_by <- ident |>
 # 1. Strict dose proportionality between the two once-daily arms.
 dp <- 100 * (auc_by[["500 mg QD"]] / (2 * auc_by[["250 mg QD"]]) - 1)
 sprintf("Simulated 500 mg QD vs 2 x 250 mg QD, per subject: max |error| = %.4f%%", max(abs(dp)))
-#> [1] "Simulated 500 mg QD vs 2 x 250 mg QD, per subject: max |error| = 0.0005%"
+#> [1] "Simulated 500 mg QD vs 2 x 250 mg QD, per subject: max |error| = 0.0006%"
 stopifnot(max(abs(dp)) < 0.05)
 
 # 2. The property the published table violates: 500 mg QD and 250 mg BID are
@@ -625,14 +625,14 @@ pta |>
 
 | Regimen | PTA %T\>MIC \>= 30% | PTA %T\>MIC \>= 64% | Published \>= 30% | Published \>= 64% |
 |:---|---:|---:|---:|---:|
-| 250 mg BID | 44 | 35 | 50 | NA |
-| 250 mg QD | 4 | 3 | 6 | NA |
-| 250 mg TID | 75 | 69 | 75 | 71 |
-| 250/500 am/pm | 78 | 66 | 75 | 64 |
-| 500 mg BID | 96 | 87 | 93 | 86 |
-| 500 mg QD | 50 | 28 | 50 | NA |
-| 750 mg BID | 99 | 98 | 99 | 96 |
-| WHO weight-banded | 72 | 60 | 68 | 57 |
+| 250 mg BID | 38 | 28 | 50 | NA |
+| 250 mg QD | 4 | 1 | 6 | NA |
+| 250 mg TID | 72 | 60 | 75 | 71 |
+| 250/500 am/pm | 74 | 58 | 75 | 64 |
+| 500 mg BID | 90 | 81 | 93 | 86 |
+| 500 mg QD | 45 | 22 | 50 | NA |
+| 750 mg BID | 100 | 94 | 99 | 96 |
+| WHO weight-banded | 69 | 52 | 68 | 57 |
 
 Simulated vs published probability of target attainment at the cohort
 median MIC of 16 mg/L (Resendiz-Galvan 2025 Figure 3 and Results).
@@ -715,7 +715,7 @@ sprintf(
   "Simulated tmax after the morning dose: median %.2f h (IQR %.2f-%.2f); paper: 2 h (IQR 1.2-2.2)",
   median(tmax_sim$tmax), quantile(tmax_sim$tmax, 0.25), quantile(tmax_sim$tmax, 0.75)
 )
-#> [1] "Simulated tmax after the morning dose: median 2.55 h (IQR 1.80-3.40); paper: 2 h (IQR 1.2-2.2)"
+#> [1] "Simulated tmax after the morning dose: median 2.40 h (IQR 1.68-3.40); paper: 2 h (IQR 1.2-2.2)"
 stopifnot(median(tmax_sim$tmax) > 1, median(tmax_sim$tmax) < 4)
 ```
 

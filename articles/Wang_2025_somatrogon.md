@@ -148,18 +148,18 @@ readModelDb("Wang_2025_somatrogon")
 #>   # `cHat[i] = x[2,i]/theta[i,3]` (central amount / Vc), i.e. compartment 1 =
 #>   # depot (subcutaneous injection site), 2 = central (plasma), 3 = peripheral.
 #>   compartmentData <- list(
-#>     depot       = list(analyte = "somatrogon", units = "mg", specimen = "administration site", verified = TRUE),
-#>     central     = list(analyte = "somatrogon", units = "mg", specimen = "plasma", verified = TRUE),
+#>     depot = list(analyte = "somatrogon", units = "mg", specimen = "administration site", verified = TRUE),
+#>     central = list(analyte = "somatrogon", units = "mg", specimen = "plasma", verified = TRUE),
 #>     peripheral1 = list(analyte = "somatrogon", units = "mg", specimen = "plasma", verified = TRUE)
 #>   )
 #> 
 #>   covariateData <- list(
 #>     WT = list(
-#>       description        = "Body weight",
-#>       units              = "kg",
-#>       type               = "continuous",
+#>       description = "Body weight",
+#>       units = "kg",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Allometric scaling on CL/F, Q/F, Vc/F and Vp/F with reference weight 15 kg.",
 #>         "The reference value is not printed in the article; it is read from the",
 #>         "NONMEM control stream shipped as Wang 2025 Data S3, which defines",
@@ -170,14 +170,14 @@ readModelDb("Wang_2025_somatrogon")
 #>         "so the article and Stan code alone do not disclose the normalizer.",
 #>         "Both exponents are estimated, not fixed at the 0.75/1 allometric defaults."
 #>       ),
-#>       source_name        = "WT"
+#>       source_name = "WT"
 #>     ),
 #>     ADA_POS = list(
-#>       description        = "Anti-drug (anti-somatrogon) antibody positive status at the time of the observation",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Anti-drug (anti-somatrogon) antibody positive status at the time of the observation",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (ADA-negative)",
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Time-varying: the article's ADAT column is the ADA status at each",
 #>         "observation, dichotomized positive (1) / negative (0) (Methods, 'Modeling",
 #>         "approach'). ADA-positive occasions carry both a proportional shift in CL/F",
@@ -191,25 +191,25 @@ readModelDb("Wang_2025_somatrogon")
 #>         "the first year of dosing (article Table 3); only the first year of",
 #>         "observations was used for estimation."
 #>       ),
-#>       source_name        = "ADAT"
+#>       source_name = "ADAT"
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human",
-#>     n_subjects     = 42,
-#>     n_studies      = 1,
+#>     species = "human",
+#>     n_subjects = 42,
+#>     n_studies = 1,
 #>     n_observations = 560,
-#>     age_range      = "3-11 years",
-#>     age_median     = "5.5 years",
-#>     weight_range   = "10-26.3 kg",
-#>     weight_median  = "14.8 kg",
+#>     age_range = "3-11 years",
+#>     age_median = "5.5 years",
+#>     weight_range = "10-26.3 kg",
+#>     weight_median = "14.8 kg",
 #>     sex_female_pct = 33.3,
 #>     race_ethnicity = c(White = 95.2, `African American` = 2.4, `Other or Missing` = 2.4),
-#>     disease_state  = "Pediatric growth hormone deficiency (GHD)",
-#>     dose_range     = "3.05-17.5 mg/week (0.228-0.711 mg/kg/week) by once-weekly subcutaneous injection; median 6.74 mg/week (0.482 mg/kg/week)",
-#>     regions        = "Not reported in the article",
-#>     notes          = paste(
+#>     disease_state = "Pediatric growth hormone deficiency (GHD)",
+#>     dose_range = "3.05-17.5 mg/week (0.228-0.711 mg/kg/week) by once-weekly subcutaneous injection; median 6.74 mg/week (0.482 mg/kg/week)",
+#>     regions = "Not reported in the article",
+#>     notes = paste(
 #>       "Baseline demographics from Wang 2025 Table 3, column 'Phase II (004)'.",
 #>       "Posterior sampling used the 560 observations from the 42 pediatric",
 #>       "participants of the Phase II study CP-4-004 (Results, first paragraph).",
@@ -369,7 +369,7 @@ readModelDb("Wang_2025_somatrogon")
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x55bd175264c8>
+#> <environment: 0x5578bfa52d88>
 ```
 
 ## Source trace
@@ -518,7 +518,7 @@ sim_hl <- log(2) / -coef(lm(log(Cc) ~ time, data = tail_dat))[2]
 c(closed_form_beta = beta_hl, simulated = unname(sim_hl),
   closed_form_alpha = alpha_hl)
 #>  closed_form_beta         simulated closed_form_alpha 
-#>         29.570890         29.570890          8.195347
+#>         29.570890         29.649832          8.195347
 stopifnot(abs(sim_hl / beta_hl - 1) < 0.01)
 ```
 
@@ -670,7 +670,7 @@ cmax_spread <- spread(prior_nca$`Cmax (ug/mL)`)
 auc_spread  <- spread(prior_nca$`AUC0-336 (ug*h/mL)`)
 c(cmax_spread_pct = 100 * cmax_spread, auc_spread_pct = 100 * auc_spread)
 #> cmax_spread_pct  auc_spread_pct 
-#>       16.560926        9.748414
+#>       16.560925        9.748414
 ```
 
 ``` r
@@ -808,8 +808,8 @@ nca_summary |>
 
 | Arm          | AUClast (ug\*h/mL) | Cmax (ug/mL) | t1/2 (h) | Tmax (h) |
 |:-------------|-------------------:|-------------:|---------:|---------:|
-| ADA-negative |             20.531 |        0.750 |   29.683 |        8 |
-| ADA-positive |             23.788 |        0.798 |   31.186 |        8 |
+| ADA-negative |             20.553 |        0.727 |   29.845 |        8 |
+| ADA-positive |             22.299 |        0.715 |   30.348 |       10 |
 
 Median simulated NCA by ADA arm. {.table}
 
@@ -832,7 +832,7 @@ auc_ratio <- auc_by_arm$median_auc[auc_by_arm$arm == "ADA-positive"] /
 
 c(observed_ratio = auc_ratio, deterministic_expectation = 1 / (1 - 0.111))
 #>            observed_ratio deterministic_expectation 
-#>                  1.158632                  1.124859
+#>                  1.084974                  1.124859
 ```
 
 ``` r
@@ -892,7 +892,7 @@ pre  <- troughs[5]   # end of week 5, still ADA-negative
 post <- troughs[11]  # end of week 11, ADA-positive since week 6
 c(trough_week5 = pre, trough_week11 = post, ratio = post / pre)
 #>  trough_week5 trough_week11         ratio 
-#>   0.002676602   0.003835011   1.432791272
+#>   0.002676602   0.003835008   1.432789910
 stopifnot(post > pre)
 ```
 
@@ -929,14 +929,14 @@ knitr::kable(cmp, caption = "Simulated vs. published NCA. * differs from referen
 
 | NCA parameter      | arm          | Reference | Simulated | % diff   |
 |:-------------------|:-------------|:----------|:----------|:---------|
-| Cmax (ug/mL)       | ADA-negative | 1.15      | 0.75      | -34.9%\* |
-| Cmax (ug/mL)       | ADA-positive | 1.15      | 0.798     | -30.7%\* |
+| Cmax (ug/mL)       | ADA-negative | 1.15      | 0.727     | -36.8%\* |
+| Cmax (ug/mL)       | ADA-positive | 1.15      | 0.715     | -37.9%\* |
 | Tmax (h)           | ADA-negative | 9         | 8         | -11.1%   |
-| Tmax (h)           | ADA-positive | 9         | 8         | -11.1%   |
-| AUClast (ug\*h/mL) | ADA-negative | 28.1      | 20.5      | -26.9%\* |
-| AUClast (ug\*h/mL) | ADA-positive | 28.1      | 23.8      | -15.3%   |
-| t½ (h)             | ADA-negative | 22.4      | 29.7      | +32.5%\* |
-| t½ (h)             | ADA-positive | 22.4      | 31.2      | +39.2%\* |
+| Tmax (h)           | ADA-positive | 9         | 10        | +11.1%   |
+| AUClast (ug\*h/mL) | ADA-negative | 28.1      | 20.6      | -26.8%\* |
+| AUClast (ug\*h/mL) | ADA-positive | 28.1      | 22.3      | -20.6%\* |
+| t½ (h)             | ADA-negative | 22.4      | 29.8      | +33.2%\* |
+| t½ (h)             | ADA-positive | 22.4      | 30.3      | +35.5%\* |
 
 Simulated vs. published NCA. \* differs from reference by \>20%.
 {.table}
@@ -956,7 +956,7 @@ tmax_med
 #>   arm              m
 #>   <chr>        <dbl>
 #> 1 ADA-negative     8
-#> 2 ADA-positive     8
+#> 2 ADA-positive    10
 stopifnot(all(tmax_med$m >= 6), all(tmax_med$m <= 12))
 ```
 

@@ -308,7 +308,10 @@ solve_drug <- function(mod, events, extra_cov = list()) {
   events$OCC <- 1
   s <- rxode2::rxSolve(
     rxode2::zeroRe(mod, "sigma"), events,
-    keep = c("band"), returnType = "data.frame", omega = NULL, sigma = NULL
+    keep = c("band"), returnType = "data.frame", omega = NULL, sigma = NULL,
+    # Two lamivudine weight bands lost subjects to LSODA's default step budget
+    # once the ODE was integrated rather than solved analytically.
+    maxsteps = 1e6
   )
   # rxSolve occasionally drops subjects silently; assert the count.
   stopifnot(dplyr::n_distinct(s$id) == dplyr::n_distinct(events$id))
@@ -328,8 +331,6 @@ sim_abc <- solve_drug(mABC, ev_abc,
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 sim_dtg <- solve_drug(mDTG, ev_dtg |> dplyr::rename(FORM_DTG_DT = form_dt),
                       list(FED = 0, STUDY_ODYSSEY = 0))
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -338,12 +339,8 @@ sim_dtg <- solve_drug(mDTG, ev_dtg |> dplyr::rename(FORM_DTG_DT = form_dt),
 #> Warning: No sigma parameters in the model
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lka_1, etaiov_lka_2
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lka_1, etaiov_lka_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 sim_3tc <- solve_drug(m3TC, ev_3tc, list(FORM_SOLUTION = 0))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lvc_1, etaiov_lvc_2, etaiov_lka_1, etaiov_lka_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lvc_1, etaiov_lvc_2, etaiov_lka_1, etaiov_lka_2
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lvc_1, etaiov_lvc_2, etaiov_lka_1, etaiov_lka_2
@@ -399,8 +396,13 @@ weight band so the results line up with Chandasana 2024 Table 4.
 ``` r
 
 run_nca <- function(sim, events) {
+  # A few fast-eliminating subjects reach a numerically-zero trough and the ODE
+  # integrator undershoots it by ~1e-12; PKNCA's log-down trapezoid returns NaN
+  # for a negative concentration. Assert the undershoot is noise, then floor it.
+  stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE), na.rm = TRUE))
   conc <- sim |>
     dplyr::filter(!is.na(Cc)) |>
+    dplyr::mutate(Cc = pmax(Cc, 0)) |>
     dplyr::select(id, band, time, Cc)
 
   # Guarantee a time = 0 row per subject (pre-dose at steady state is the
@@ -519,21 +521,21 @@ compare_drug(nca_dtg, published_dtg, "Dolutegravir")
 
 | NCA parameter      | band             | Reference | Simulated | % diff   |
 |:-------------------|:-----------------|:----------|:----------|:---------|
-| Cmax (ug/mL)       | \>=6 to \<10 kg  | 6.99      | 5.89      | -15.7%   |
-| Cmax (ug/mL)       | \>=10 to \<14 kg | 6.88      | 5.59      | -18.7%   |
-| Cmax (ug/mL)       | \>=14 to \<20 kg | 7.12      | 5.99      | -15.9%   |
-| Cmax (ug/mL)       | \>=20 to \<25 kg | 7.42      | 6.15      | -17.1%   |
-| Cmax (ug/mL)       | \>=25 to \<40 kg | 6.24      | 5.23      | -16.2%   |
-| Clast (ug/mL)      | \>=6 to \<10 kg  | 0.94      | 1.25      | +33.1%\* |
-| Clast (ug/mL)      | \>=10 to \<14 kg | 0.74      | 0.872     | +17.9%   |
-| Clast (ug/mL)      | \>=14 to \<20 kg | 0.81      | 1.03      | +27.5%\* |
-| Clast (ug/mL)      | \>=20 to \<25 kg | 0.88      | 0.996     | +13.2%   |
-| Clast (ug/mL)      | \>=25 to \<40 kg | 0.95      | 1.13      | +18.9%   |
-| AUClast (ug\*h/mL) | \>=6 to \<10 kg  | 70.6      | 78.6      | +11.4%   |
-| AUClast (ug\*h/mL) | \>=10 to \<14 kg | 65.4      | 65.4      | +0.1%    |
-| AUClast (ug\*h/mL) | \>=14 to \<20 kg | 68.6      | 72.6      | +5.9%    |
-| AUClast (ug\*h/mL) | \>=20 to \<25 kg | 72.4      | 75.1      | +3.8%    |
-| AUClast (ug\*h/mL) | \>=25 to \<40 kg | 66.8      | 69.4      | +4.0%    |
+| Cmax (ug/mL)       | \>=6 to \<10 kg  | 6.99      | 5.91      | -15.4%   |
+| Cmax (ug/mL)       | \>=10 to \<14 kg | 6.88      | 5.61      | -18.4%   |
+| Cmax (ug/mL)       | \>=14 to \<20 kg | 7.12      | 6.07      | -14.7%   |
+| Cmax (ug/mL)       | \>=20 to \<25 kg | 7.42      | 6.25      | -15.7%   |
+| Cmax (ug/mL)       | \>=25 to \<40 kg | 6.24      | 5.15      | -17.5%   |
+| Clast (ug/mL)      | \>=6 to \<10 kg  | 0.94      | 1.26      | +34.5%\* |
+| Clast (ug/mL)      | \>=10 to \<14 kg | 0.74      | 0.943     | +27.4%\* |
+| Clast (ug/mL)      | \>=14 to \<20 kg | 0.81      | 0.918     | +13.4%   |
+| Clast (ug/mL)      | \>=20 to \<25 kg | 0.88      | 0.948     | +7.8%    |
+| Clast (ug/mL)      | \>=25 to \<40 kg | 0.95      | 1.04      | +9.5%    |
+| AUClast (ug\*h/mL) | \>=6 to \<10 kg  | 70.6      | 75.8      | +7.5%    |
+| AUClast (ug\*h/mL) | \>=10 to \<14 kg | 65.4      | 66        | +0.9%    |
+| AUClast (ug\*h/mL) | \>=14 to \<20 kg | 68.6      | 72.3      | +5.4%    |
+| AUClast (ug\*h/mL) | \>=20 to \<25 kg | 72.4      | 70.7      | -2.2%    |
+| AUClast (ug\*h/mL) | \>=25 to \<40 kg | 66.8      | 68.1      | +2.0%    |
 
 Dolutegravir: simulated vs. Chandasana 2024 Table 4 geometric means. \*
 differs from reference by \>20%. {.table}
@@ -545,21 +547,21 @@ compare_drug(nca_3tc, published_3tc, "Lamivudine")
 
 | NCA parameter      | band             | Reference | Simulated | % diff   |
 |:-------------------|:-----------------|:----------|:----------|:---------|
-| Cmax (ug/mL)       | \>=6 to \<10 kg  | 2.83      | 2.66      | -6.0%    |
-| Cmax (ug/mL)       | \>=10 to \<14 kg | 2.84      | 2.84      | -0.1%    |
-| Cmax (ug/mL)       | \>=14 to \<20 kg | 2.74      | 2.68      | -2.2%    |
-| Cmax (ug/mL)       | \>=20 to \<25 kg | 2.7       | 2.79      | +3.4%    |
-| Cmax (ug/mL)       | \>=25 to \<40 kg | 3.48      | 3.68      | +5.8%    |
-| Clast (ug/mL)      | \>=6 to \<10 kg  | 0.012     | 0.00135   | -88.8%\* |
-| Clast (ug/mL)      | \>=10 to \<14 kg | 0.0118    | 0.000262  | -97.8%\* |
-| Clast (ug/mL)      | \>=14 to \<20 kg | 0.0114    | 0.000633  | -94.5%\* |
-| Clast (ug/mL)      | \>=20 to \<25 kg | 0.0112    | 0.000369  | -96.7%\* |
-| Clast (ug/mL)      | \>=25 to \<40 kg | 0.0115    | 0.000159  | -98.6%\* |
-| AUClast (ug\*h/mL) | \>=6 to \<10 kg  | 11.6      | 11.5      | -0.3%    |
-| AUClast (ug\*h/mL) | \>=10 to \<14 kg | 11.4      | 10.9      | -4.4%    |
-| AUClast (ug\*h/mL) | \>=14 to \<20 kg | 10.8      | 11        | +1.6%    |
-| AUClast (ug\*h/mL) | \>=20 to \<25 kg | 10.5      | 10.3      | -1.6%    |
-| AUClast (ug\*h/mL) | \>=25 to \<40 kg | 13.2      | 12.8      | -3.2%    |
+| Cmax (ug/mL)       | \>=6 to \<10 kg  | 2.83      | 2.68      | -5.3%    |
+| Cmax (ug/mL)       | \>=10 to \<14 kg | 2.84      | 2.89      | +1.8%    |
+| Cmax (ug/mL)       | \>=14 to \<20 kg | 2.74      | 2.62      | -4.6%    |
+| Cmax (ug/mL)       | \>=20 to \<25 kg | 2.7       | 2.8       | +3.7%    |
+| Cmax (ug/mL)       | \>=25 to \<40 kg | 3.48      | 3.42      | -1.8%    |
+| Clast (ug/mL)      | \>=6 to \<10 kg  | 0.012     | 0.00128   | -89.4%\* |
+| Clast (ug/mL)      | \>=10 to \<14 kg | 0.0118    | 0.000249  | -97.9%\* |
+| Clast (ug/mL)      | \>=14 to \<20 kg | 0.0114    | 0.000551  | -95.2%\* |
+| Clast (ug/mL)      | \>=20 to \<25 kg | 0.0112    | 0.000678  | -93.9%\* |
+| Clast (ug/mL)      | \>=25 to \<40 kg | 0.0115    | 0.000721  | -93.7%\* |
+| AUClast (ug\*h/mL) | \>=6 to \<10 kg  | 11.6      | 11.3      | -2.1%    |
+| AUClast (ug\*h/mL) | \>=10 to \<14 kg | 11.4      | 10.6      | -7.1%    |
+| AUClast (ug\*h/mL) | \>=14 to \<20 kg | 10.8      | 10.8      | -0.2%    |
+| AUClast (ug\*h/mL) | \>=20 to \<25 kg | 10.5      | 10.5      | -0.2%    |
+| AUClast (ug\*h/mL) | \>=25 to \<40 kg | 13.2      | 13.3      | +1.1%    |
 
 Lamivudine: simulated vs. Chandasana 2024 Table 4 geometric means. \*
 differs from reference by \>20%. {.table}
@@ -647,16 +649,16 @@ target_check |>
 | Abacavir | \>=14 to \<20 kg | 16.97 | 6.3-50.4 | TRUE |
 | Abacavir | \>=20 to \<25 kg | 16.60 | 6.3-50.4 | TRUE |
 | Abacavir | \>=25 to \<40 kg | 19.42 | 6.3-50.4 | TRUE |
-| Dolutegravir | \>=6 to \<10 kg | 76.12 | 37-134 | TRUE |
-| Dolutegravir | \>=10 to \<14 kg | 67.96 | 37-134 | TRUE |
-| Dolutegravir | \>=14 to \<20 kg | 70.96 | 37-134 | TRUE |
-| Dolutegravir | \>=20 to \<25 kg | 74.98 | 37-134 | TRUE |
-| Dolutegravir | \>=25 to \<40 kg | 68.19 | 37-134 | TRUE |
-| Lamivudine | \>=6 to \<10 kg | 11.33 | 6.3-26.5 | TRUE |
-| Lamivudine | \>=10 to \<14 kg | 10.77 | 6.3-26.5 | TRUE |
-| Lamivudine | \>=14 to \<20 kg | 10.78 | 6.3-26.5 | TRUE |
-| Lamivudine | \>=20 to \<25 kg | 10.38 | 6.3-26.5 | TRUE |
-| Lamivudine | \>=25 to \<40 kg | 12.97 | 6.3-26.5 | TRUE |
+| Dolutegravir | \>=6 to \<10 kg | 78.57 | 37-134 | TRUE |
+| Dolutegravir | \>=10 to \<14 kg | 69.31 | 37-134 | TRUE |
+| Dolutegravir | \>=14 to \<20 kg | 71.30 | 37-134 | TRUE |
+| Dolutegravir | \>=20 to \<25 kg | 76.28 | 37-134 | TRUE |
+| Dolutegravir | \>=25 to \<40 kg | 67.08 | 37-134 | TRUE |
+| Lamivudine | \>=6 to \<10 kg | 11.42 | 6.3-26.5 | TRUE |
+| Lamivudine | \>=10 to \<14 kg | 10.88 | 6.3-26.5 | TRUE |
+| Lamivudine | \>=14 to \<20 kg | 10.75 | 6.3-26.5 | TRUE |
+| Lamivudine | \>=20 to \<25 kg | 10.24 | 6.3-26.5 | TRUE |
+| Lamivudine | \>=25 to \<40 kg | 13.47 | 6.3-26.5 | TRUE |
 
 Simulated geometric-mean AUC0-24 against the Chandasana 2024 predefined
 target ranges. {.table}
@@ -681,11 +683,11 @@ dtg_c24 |>
 
 | Weight band      | GM C24 (ug/mL) | Within 0.697-2.26 |
 |:-----------------|---------------:|:------------------|
-| \>=6 to \<10 kg  |          1.100 | TRUE              |
-| \>=10 to \<14 kg |          0.828 | TRUE              |
-| \>=14 to \<20 kg |          0.866 | TRUE              |
-| \>=20 to \<25 kg |          0.915 | TRUE              |
-| \>=25 to \<40 kg |          0.913 | TRUE              |
+| \>=6 to \<10 kg  |          1.205 | TRUE              |
+| \>=10 to \<14 kg |          0.843 | TRUE              |
+| \>=14 to \<20 kg |          0.876 | TRUE              |
+| \>=20 to \<25 kg |          0.957 | TRUE              |
+| \>=25 to \<40 kg |          0.941 | TRUE              |
 
 Simulated dolutegravir geometric-mean C24 against the Chandasana 2024
 target range. {.table}

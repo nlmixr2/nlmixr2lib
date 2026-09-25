@@ -357,7 +357,7 @@ closed |>
 | Quantity     | Analytic | Simulated | Difference (%) |
 |:-------------|---------:|----------:|---------------:|
 | Tmax (h)     |   2.7730 |    2.7500 |        -0.8295 |
-| Cmax (ug/mL) |   2.7297 |    2.7296 |        -0.0027 |
+| Cmax (ug/mL) |   2.7297 |    2.7296 |        -0.0026 |
 
 Gate 2: analytic vs simulated typical-value disposition (300 mg single
 dose, SCr = 1.3 mg/dL). t1/2 and AUCinf are validated independently

@@ -820,46 +820,46 @@ fig5_cmp |>
 
 | Fluoxetine | Dose (mg/kg/day) | Weight (kg) | Model (%) | Figure 5 (%) | Difference (points) | Note |
 |:---|---:|---:|---:|---:|---:|:---|
-| with | 0.2 | 40 | 84.0 | 90.7 | -6.7 | recorded deviation |
-| with | 0.2 | 60 | 83.0 | 94.7 | -11.7 | recorded deviation |
-| with | 0.2 | 80 | 70.5 | 95.5 | -25.0 | recorded deviation |
-| with | 0.2 | 100 | 69.0 | 94.3 | -25.3 | recorded deviation |
-| with | 0.2 | 120 | 61.0 | 92.2 | -31.2 | recorded deviation |
-| with | 0.3 | 40 | 52.0 | 64.2 | -12.2 | recorded deviation |
-| with | 0.3 | 60 | 24.5 | 44.3 | -19.8 | recorded deviation |
-| with | 0.3 | 80 | 18.0 | 33.4 | -15.4 | recorded deviation |
-| with | 0.3 | 100 | 17.0 | 25.1 | -8.1 | recorded deviation |
-| with | 0.3 | 120 | 11.0 | 20.2 | -9.2 | recorded deviation |
-| with | 0.4 | 40 | 17.5 | 18.2 | -0.7 |  |
-| with | 0.4 | 60 | 5.5 | 9.3 | -3.8 |  |
+| with | 0.2 | 40 | 90.0 | 90.7 | -0.7 | recorded deviation |
+| with | 0.2 | 60 | 84.0 | 94.7 | -10.7 | recorded deviation |
+| with | 0.2 | 80 | 75.0 | 95.5 | -20.5 | recorded deviation |
+| with | 0.2 | 100 | 68.0 | 94.3 | -26.3 | recorded deviation |
+| with | 0.2 | 120 | 62.5 | 92.2 | -29.7 | recorded deviation |
+| with | 0.3 | 40 | 48.5 | 64.2 | -15.7 | recorded deviation |
+| with | 0.3 | 60 | 36.5 | 44.3 | -7.8 | recorded deviation |
+| with | 0.3 | 80 | 25.0 | 33.4 | -8.4 | recorded deviation |
+| with | 0.3 | 100 | 19.5 | 25.1 | -5.6 | recorded deviation |
+| with | 0.3 | 120 | 12.0 | 20.2 | -8.2 | recorded deviation |
+| with | 0.4 | 40 | 11.0 | 18.2 | -7.2 |  |
+| with | 0.4 | 60 | 5.0 | 9.3 | -4.3 |  |
 | with | 0.4 | 80 | 4.0 | 5.5 | -1.5 |  |
 | with | 0.4 | 100 | 1.0 | 3.3 | -2.3 |  |
-| with | 0.4 | 120 | 1.0 | 2.3 | -1.3 |  |
-| without | 0.2 | 40 | 50.0 | 46.8 | 3.2 |  |
-| without | 0.2 | 60 | 65.5 | 64.3 | 1.2 |  |
-| without | 0.2 | 80 | 73.0 | 75.0 | -2.0 |  |
-| without | 0.2 | 100 | 75.5 | 81.3 | -5.8 |  |
-| without | 0.2 | 120 | 89.0 | 85.9 | 3.1 |  |
-| without | 0.3 | 40 | 84.0 | 86.6 | -2.6 | recorded deviation |
-| without | 0.3 | 60 | 80.5 | 86.7 | -6.2 | recorded deviation |
-| without | 0.3 | 80 | 71.5 | 83.8 | -12.3 | recorded deviation |
-| without | 0.3 | 100 | 65.5 | 79.0 | -13.5 | recorded deviation |
-| without | 0.3 | 120 | 66.0 | 73.5 | -7.5 | recorded deviation |
-| without | 0.4 | 40 | 66.0 | 71.0 | -5.0 |  |
-| without | 0.4 | 60 | 48.5 | 53.3 | -4.8 |  |
+| with | 0.4 | 120 | 0.0 | 2.3 | -2.3 |  |
+| without | 0.2 | 40 | 48.0 | 46.8 | 1.2 |  |
+| without | 0.2 | 60 | 73.5 | 64.3 | 9.2 |  |
+| without | 0.2 | 80 | 77.5 | 75.0 | 2.5 |  |
+| without | 0.2 | 100 | 87.5 | 81.3 | 6.2 |  |
+| without | 0.2 | 120 | 79.5 | 85.9 | -6.4 |  |
+| without | 0.3 | 40 | 82.0 | 86.6 | -4.6 | recorded deviation |
+| without | 0.3 | 60 | 81.0 | 86.7 | -5.7 | recorded deviation |
+| without | 0.3 | 80 | 73.5 | 83.8 | -10.3 | recorded deviation |
+| without | 0.3 | 100 | 68.0 | 79.0 | -11.0 | recorded deviation |
+| without | 0.3 | 120 | 55.0 | 73.5 | -18.5 | recorded deviation |
+| without | 0.4 | 40 | 64.5 | 71.0 | -6.5 |  |
+| without | 0.4 | 60 | 44.0 | 53.3 | -9.3 |  |
 | without | 0.4 | 80 | 39.0 | 40.7 | -1.7 |  |
-| without | 0.4 | 100 | 33.5 | 32.3 | 1.2 |  |
-| without | 0.4 | 120 | 19.0 | 25.7 | -6.7 |  |
-| without | 0.5 | 40 | 32.5 | 37.0 | -4.5 |  |
-| without | 0.5 | 60 | 23.0 | 23.2 | -0.2 |  |
-| without | 0.5 | 80 | 17.0 | 14.8 | 2.2 |  |
-| without | 0.5 | 100 | 13.0 | 11.5 | 1.5 |  |
-| without | 0.5 | 120 | 4.0 | 7.0 | -3.0 |  |
+| without | 0.4 | 100 | 25.0 | 32.3 | -7.3 |  |
+| without | 0.4 | 120 | 25.0 | 25.7 | -0.7 |  |
+| without | 0.5 | 40 | 42.0 | 37.0 | 5.0 |  |
+| without | 0.5 | 60 | 13.5 | 23.2 | -9.7 |  |
+| without | 0.5 | 80 | 12.0 | 14.8 | -2.8 |  |
+| without | 0.5 | 100 | 6.5 | 11.5 | -5.0 |  |
+| without | 0.5 | 120 | 7.0 | 7.0 | 0.0 |  |
 | without | 0.6 | 40 | 17.5 | 18.0 | -0.5 |  |
-| without | 0.6 | 60 | 9.5 | 8.9 | 0.6 |  |
-| without | 0.6 | 80 | 7.5 | 5.3 | 2.2 |  |
-| without | 0.6 | 100 | 4.5 | 3.4 | 1.1 |  |
-| without | 0.6 | 120 | 0.5 | 2.3 | -1.8 |  |
+| without | 0.6 | 60 | 7.0 | 8.9 | -1.9 |  |
+| without | 0.6 | 80 | 4.0 | 5.3 | -1.3 |  |
+| without | 0.6 | 100 | 3.0 | 3.4 | -0.4 |  |
+| without | 0.6 | 120 | 1.5 | 2.3 | -0.8 |  |
 
 Once-daily target attainment: packaged model versus Figure 5A and 5B of
 Zhang 2024. {.table}
@@ -992,21 +992,21 @@ bid_cmp |>
 
 | Weight (kg) | Dose (mg/kg/day) | Twice daily (%) | Once daily (%) |
 |------------:|-----------------:|----------------:|---------------:|
-|          40 |              0.2 |            68.5 |           50.0 |
-|          60 |              0.2 |            74.0 |           65.5 |
-|          80 |              0.2 |            89.0 |           73.0 |
-|         100 |              0.2 |            88.5 |           75.5 |
-|         120 |              0.2 |            89.5 |           89.0 |
-|          40 |              0.3 |            82.0 |           84.0 |
-|          60 |              0.3 |            73.5 |           80.5 |
-|          80 |              0.3 |            61.0 |           71.5 |
-|         100 |              0.3 |            56.0 |           65.5 |
-|         120 |              0.3 |            44.5 |           66.0 |
-|          40 |              0.4 |            48.0 |           66.0 |
-|          60 |              0.4 |            33.5 |           48.5 |
-|          80 |              0.4 |            19.0 |           39.0 |
-|         100 |              0.4 |            17.0 |           33.5 |
-|         120 |              0.4 |            11.0 |           19.0 |
+|          40 |              0.2 |            64.0 |           48.0 |
+|          60 |              0.2 |            90.5 |           73.5 |
+|          80 |              0.2 |            88.0 |           77.5 |
+|         100 |              0.2 |            86.0 |           87.5 |
+|         120 |              0.2 |            88.0 |           79.5 |
+|          40 |              0.3 |            83.5 |           82.0 |
+|          60 |              0.3 |            70.5 |           81.0 |
+|          80 |              0.3 |            62.0 |           73.5 |
+|         100 |              0.3 |            54.5 |           68.0 |
+|         120 |              0.3 |            35.0 |           55.0 |
+|          40 |              0.4 |            50.5 |           64.5 |
+|          60 |              0.4 |            22.5 |           44.0 |
+|          80 |              0.4 |            18.5 |           39.0 |
+|         100 |              0.4 |            16.0 |           25.0 |
+|         120 |              0.4 |             8.5 |           25.0 |
 
 Model attainment without fluoxetine, twice-daily versus once-daily at
 the same total daily dose. Zhang 2024 Figure 5C reports 96.3-99.2% for

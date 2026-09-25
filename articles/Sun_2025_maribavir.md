@@ -412,7 +412,7 @@ str(dplyr::select(sim, id, time, Cc), max.level = 1)
 #> 'data.frame':    48400 obs. of  3 variables:
 #>  $ id  : int  1 1 1 1 1 1 1 1 1 1 ...
 #>  $ time: num  228 228 228 228 228 ...
-#>  $ Cc  : num  3.26 3.23 3.27 4.73 6.02 ...
+#>  $ Cc  : num  3.75 3.71 4.87 10 13.81 ...
 ```
 
 ### Steady-state concentration-time profiles
@@ -631,14 +631,14 @@ nca_gm |>
 
 | Arm                            | Parameter        | Geometric mean |   CV% |
 |:-------------------------------|:-----------------|---------------:|------:|
-| Healthy volunteers             | AUCss (ug\*h/mL) |         97.954 |  51.1 |
-| Healthy volunteers             | Cmax,ss (ug/mL)  |         16.343 |  36.5 |
-| Healthy volunteers             | Cmin,ss (ug/mL)  |          2.701 | 127.6 |
-| Healthy volunteers             | t1/2 (h)         |          5.417 |  55.0 |
-| Transplant recipients with CMV | AUCss (ug\*h/mL) |        162.675 |  51.8 |
-| Transplant recipients with CMV | Cmax,ss (ug/mL)  |         22.187 |  40.3 |
-| Transplant recipients with CMV | Cmin,ss (ug/mL)  |          6.703 |  91.9 |
-| Transplant recipients with CMV | t1/2 (h)         |          7.650 |  50.7 |
+| Healthy volunteers             | AUCss (ug\*h/mL) |         95.272 |  48.9 |
+| Healthy volunteers             | Cmax,ss (ug/mL)  |         15.760 |  36.8 |
+| Healthy volunteers             | Cmin,ss (ug/mL)  |          2.627 | 106.3 |
+| Healthy volunteers             | t1/2 (h)         |          5.184 |  43.8 |
+| Transplant recipients with CMV | AUCss (ug\*h/mL) |        159.833 |  46.4 |
+| Transplant recipients with CMV | Cmax,ss (ug/mL)  |         22.305 |  37.5 |
+| Transplant recipients with CMV | Cmin,ss (ug/mL)  |          6.492 |  77.0 |
+| Transplant recipients with CMV | t1/2 (h)         |          7.409 |  51.7 |
 
 Simulated steady-state exposure at 400 mg twice daily without
 concomitant medication. {.table}
@@ -680,14 +680,14 @@ nlmixr2lib::ncaComparisonTable(
 
 | NCA parameter | treatment                      | Reference | Simulated | % diff   |
 |:--------------|:-------------------------------|:----------|:----------|:---------|
-| Cmax          | Healthy volunteers             | 16.7      | 16.2      | -3.2%    |
+| Cmax          | Healthy volunteers             | 16.7      | 16        | -4.4%    |
 | Cmax          | Transplant recipients with CMV | 20.1      | 22.4      | +11.3%   |
-| Cmin          | Healthy volunteers             | 2.57      | 2.96      | +15.0%   |
-| Cmin          | Transplant recipients with CMV | 5.43      | 7.74      | +42.5%\* |
+| Cmin          | Healthy volunteers             | 2.57      | 3.07      | +19.3%   |
+| Cmin          | Transplant recipients with CMV | 5.43      | 6.6       | +21.6%\* |
 | AUClast       | Healthy volunteers             | 97        | 99.3      | +2.4%    |
-| AUClast       | Transplant recipients with CMV | 142       | 169       | +19.2%   |
-| t½            | Healthy volunteers             | 4.84      | 5.08      | +5.0%    |
-| t½            | Transplant recipients with CMV | 6.68      | 7.56      | +13.2%   |
+| AUClast       | Transplant recipients with CMV | 142       | 156       | +10.1%   |
+| t½            | Healthy volunteers             | 4.84      | 5.18      | +7.0%    |
+| t½            | Transplant recipients with CMV | 6.68      | 7.06      | +5.6%    |
 
 Simulated versus Sun 2025 Table 3 steady-state exposure. Values marked
 with a star differ by more than 20%. {.table}
@@ -746,12 +746,12 @@ check |>
 
 | treatment                      | PPTESTCD | simulated_gm | published | pct_diff |
 |:-------------------------------|:---------|-------------:|----------:|---------:|
-| Healthy volunteers             | auclast  |        97.95 |     97.00 |     0.98 |
-| Healthy volunteers             | cmax     |        16.34 |     16.70 |    -2.14 |
-| Healthy volunteers             | cmin     |         2.70 |      2.57 |     5.08 |
-| Transplant recipients with CMV | auclast  |       162.67 |    142.00 |    14.56 |
-| Transplant recipients with CMV | cmax     |        22.19 |     20.10 |    10.38 |
-| Transplant recipients with CMV | cmin     |         6.70 |      5.43 |    23.45 |
+| Healthy volunteers             | auclast  |        95.27 |     97.00 |    -1.78 |
+| Healthy volunteers             | cmax     |        15.76 |     16.70 |    -5.63 |
+| Healthy volunteers             | cmin     |         2.63 |      2.57 |     2.22 |
+| Transplant recipients with CMV | auclast  |       159.83 |    142.00 |    12.56 |
+| Transplant recipients with CMV | cmax     |        22.30 |     20.10 |    10.97 |
+| Transplant recipients with CMV | cmin     |         6.49 |      5.43 |    19.55 |
 
 Percent difference between simulated and published geometric mean
 steady-state exposure. {.table}
@@ -1493,13 +1493,13 @@ knitr::kable(endtoend, caption = paste(
 
 | Quantity                                     | Value         |
 |:---------------------------------------------|:--------------|
-| Simulated AUCss, median (ug\*h/mL)           | 152.0         |
-| Simulated AUCss, 10th-90th percentile        | 86.8 - 255.4  |
+| Simulated AUCss, median (ug\*h/mL)           | 156.6         |
+| Simulated AUCss, 10th-90th percentile        | 72.0 - 282.7  |
 | P(clearance at week 8), median               | 0.891         |
-| P(clearance at week 8), 10th-90th percentile | 0.885 - 0.900 |
+| P(clearance at week 8), 10th-90th percentile | 0.884 - 0.902 |
 
-A 2.9-fold spread in simulated steady-state exposure maps to a spread of
-just 0.015 in predicted probability of confirmed CMV clearance – the
+A 3.9-fold spread in simulated steady-state exposure maps to a spread of
+just 0.019 in predicted probability of confirmed CMV clearance – the
 paper’s flat exposure-efficacy finding, reproduced end to end from dose
 to response. {.table}
 

@@ -471,7 +471,12 @@ sim_cohort <-
   mutate(treatment = "20 mg/kg")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
-stopifnot(dplyr::n_distinct(sim_cohort$id) == n_fish, all(sim_cohort$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance;
+# a genuinely negative concentration would be comparable to the peak.
+stopifnot(
+  dplyr::n_distinct(sim_cohort$id) == n_fish,
+  all(sim_cohort$Cc >= -1e-6 * max(sim_cohort$Cc, na.rm = TRUE))
+)
 ```
 
 ![](Ma_2023_difloxacin_crucianCarp_files/figure-html/figure-4-1.png)
@@ -530,9 +535,9 @@ realised |>
 
 | Parameter | Encoded median | Encoded omega | Cohort median | Cohort SD(log) | log(median ratio) | SD difference |
 |:---|---:|---:|---:|---:|---:|---:|
-| ka | 1.18 | 0.831 | 1.147 | 0.854 | -0.028 | 0.024 |
-| vc | 14.18 | 1.058 | 13.800 | 1.051 | -0.027 | -0.007 |
-| cl | 0.20 | 0.990 | 0.201 | 0.927 | 0.007 | -0.063 |
+| ka | 1.18 | 0.831 | 1.143 | 0.836 | -0.032 | 0.006 |
+| vc | 14.18 | 1.058 | 16.572 | 1.028 | 0.156 | -0.030 |
+| cl | 0.20 | 0.990 | 0.207 | 1.023 | 0.037 | 0.033 |
 
 Gate 3: realised cohort vs the encoded log-normal IIV. {.table}
 

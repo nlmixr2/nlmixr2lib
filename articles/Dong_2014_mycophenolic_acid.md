@@ -449,8 +449,8 @@ published-vs-simulated comparison.
 
 A useful end-to-end sanity check is whether the cohort-mean IMPDH
 inhibition at the simulated Cmax is consistent with the EC50. With EC50
-= 1.73 mg/L and a typical Cmax around 8-12 mg/L (above), the expected
-trough IMPDH activity is `E0 * EC50 / (EC50 + Cmax)`, i.e., ~13-18% of
+= 1.73 mg/L and a typical Cmax around 7-10 mg/L (above), the expected
+trough IMPDH activity is `E0 * EC50 / (EC50 + Cmax)`, i.e., ~15-20% of
 baseline at peak.
 
 ``` r

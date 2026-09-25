@@ -480,16 +480,16 @@ q_lin <- list(placebo     = run_pd(pd_linear, 0,  8.4),
 
 | Arm         | Day | Observed (Fig. 2) | Log-scale reading | Linear reading |
 |:------------|----:|------------------:|------------------:|---------------:|
-| placebo     |   0 |               8.3 |              8.30 |           8.34 |
-| placebo     |  28 |               8.0 |              7.72 |           8.07 |
-| placebo     |  56 |               7.8 |              7.78 |           7.99 |
-| placebo     |  84 |               8.0 |              7.52 |           7.80 |
-| placebo     | 112 |               7.7 |              7.47 |           8.01 |
-| nemolizumab |   0 |               8.5 |              8.57 |           8.61 |
-| nemolizumab |  28 |               6.0 |              5.50 |           7.53 |
-| nemolizumab |  56 |               4.6 |              4.39 |           7.17 |
-| nemolizumab |  84 |               3.6 |              3.84 |           6.91 |
-| nemolizumab | 112 |               3.1 |              3.69 |           7.03 |
+| placebo     |   0 |               8.3 |              8.26 |           8.35 |
+| placebo     |  28 |               8.0 |              7.90 |           8.14 |
+| placebo     |  56 |               7.8 |              7.67 |           7.92 |
+| placebo     |  84 |               8.0 |              7.64 |           7.94 |
+| placebo     | 112 |               7.7 |              7.60 |           7.83 |
+| nemolizumab |   0 |               8.5 |              8.62 |           8.66 |
+| nemolizumab |  28 |               6.0 |              5.03 |           7.40 |
+| nemolizumab |  56 |               4.6 |              4.21 |           7.00 |
+| nemolizumab |  84 |               3.6 |              3.34 |           6.97 |
+| nemolizumab | 112 |               3.1 |              3.21 |           6.87 |
 
 Median weekly average PP-NRS: observed (Fig. 2) vs the two readings of
 Table 2. {.table}
@@ -506,7 +506,7 @@ err_log <- abs(row_of(q_log, "nemolizumab", 2) - obs_fig2$nemolizumab["p50", ])
 err_lin <- abs(row_of(q_lin, "nemolizumab", 2) - obs_fig2$nemolizumab["p50", ])
 c(log_scale_max_err = max(err_log), linear_max_err = max(err_lin))
 #> log_scale_max_err    linear_max_err 
-#>         0.5900888         3.9284731
+#>         0.9717639         3.7730637
 
 # Cohort-derived, so bounds are deliberately loose (see the note below). The
 # separation between the two readings is ~3 points at day 112, far outside any
@@ -529,16 +529,16 @@ on a mis-transcribed theta.
 
 | Arm         | Day | Sim 5th | Obs 5th | Sim 50th | Obs 50th | Sim 95th | Obs 95th |
 |:------------|----:|--------:|--------:|---------:|---------:|---------:|---------:|
-| placebo     |   0 |     6.6 |     7.0 |      8.3 |      8.3 |     10.1 |     10.0 |
-| placebo     |  28 |     0.8 |     6.1 |      7.7 |      8.0 |      9.8 |     10.0 |
-| placebo     |  56 |    -1.0 |     4.4 |      7.8 |      7.8 |     10.1 |     10.0 |
-| placebo     |  84 |    -1.3 |     3.0 |      7.5 |      8.0 |      9.7 |     10.0 |
-| placebo     | 112 |    -2.3 |     2.7 |      7.5 |      7.7 |      9.7 |     10.0 |
-| nemolizumab |   0 |     6.7 |     7.0 |      8.6 |      8.5 |     10.4 |     10.0 |
-| nemolizumab |  28 |   -12.1 |     1.6 |      5.5 |      6.0 |      9.1 |      8.9 |
-| nemolizumab |  56 |   -14.7 |     0.3 |      4.4 |      4.6 |      8.7 |      8.5 |
-| nemolizumab |  84 |   -16.5 |     0.0 |      3.8 |      3.6 |      8.0 |      8.9 |
-| nemolizumab | 112 |   -18.1 |     0.1 |      3.7 |      3.1 |      8.5 |      8.2 |
+| placebo     |   0 |     6.4 |     7.0 |      8.3 |      8.3 |     10.2 |     10.0 |
+| placebo     |  28 |     3.4 |     6.1 |      7.9 |      8.0 |     10.1 |     10.0 |
+| placebo     |  56 |     3.0 |     4.4 |      7.7 |      7.8 |     10.1 |     10.0 |
+| placebo     |  84 |     2.8 |     3.0 |      7.6 |      8.0 |     10.0 |     10.0 |
+| placebo     | 112 |    -0.1 |     2.7 |      7.6 |      7.7 |      9.9 |     10.0 |
+| nemolizumab |   0 |     6.8 |     7.0 |      8.6 |      8.5 |     10.6 |     10.0 |
+| nemolizumab |  28 |   -12.9 |     1.6 |      5.0 |      6.0 |      9.2 |      8.9 |
+| nemolizumab |  56 |   -16.0 |     0.3 |      4.2 |      4.6 |      9.2 |      8.5 |
+| nemolizumab |  84 |   -17.1 |     0.0 |      3.3 |      3.6 |      9.0 |      8.9 |
+| nemolizumab | 112 |   -16.5 |     0.1 |      3.2 |      3.1 |      8.9 |      8.2 |
 
 Simulated vs observed PP-NRS percentiles (observed values read from
 Takechi 2025 Fig. 2). {.table style="width:100%;"}
@@ -570,10 +570,10 @@ knitr::kable(gate, digits = 2, caption = "Maximum absolute deviation from the ob
 
 | arm         | pct  |  err |
 |:------------|:-----|-----:|
-| placebo     | 50th | 0.48 |
-| placebo     | 95th | 0.34 |
-| nemolizumab | 50th | 0.59 |
-| nemolizumab | 95th | 0.87 |
+| placebo     | 50th | 0.36 |
+| placebo     | 95th | 0.19 |
+| nemolizumab | 50th | 0.97 |
+| nemolizumab | 95th | 0.74 |
 
 Maximum absolute deviation from the observed percentile, by arm.
 {.table}
@@ -826,9 +826,9 @@ tibble::tibble(
 
 | quantity                         |  value |
 |:---------------------------------|-------:|
-| simulated residual SD (N = 1)    | 0.4114 |
+| simulated residual SD (N = 1)    | 0.3865 |
 | expected addSd \* sqrt(Pr(1-Pr)) | 0.3865 |
-| rescaled for an arm of N = 190   | 0.0298 |
+| rescaled for an arm of N = 190   | 0.0280 |
 
 Residual SD of the shipped model and its per-arm rescaling. {.table}
 
@@ -1149,9 +1149,9 @@ tibble::tibble(
 
 | quantity                         |  value |
 |:---------------------------------|-------:|
-| simulated residual SD (N = 1)    | 0.4271 |
+| simulated residual SD (N = 1)    | 0.4045 |
 | expected addSd \* sqrt(Pr(1-Pr)) | 0.4250 |
-| rescaled for an arm of N = 77    | 0.0487 |
+| rescaled for an arm of N = 77    | 0.0461 |
 
 Residual SD of the shipped PP-NRS model and its per-arm rescaling.
 {.table}
@@ -1289,15 +1289,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] PKNCA_0.12.1          rxode2_5.1.7          nlmixr2lib_0.3.2.9000
+#> [4] PKNCA_0.12.1          rxode2_5.1.8          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1305,7 +1305,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

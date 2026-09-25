@@ -567,24 +567,24 @@ nca_all |>
 | t½ (h) | Piperacillin 4 g | 0.79 | 0.68 | 0.93 |
 | λz | Piperacillin 4 g | 0.88 | 0.74 | 1.02 |
 | λz n points | Piperacillin 4 g | 129.00 | 109.85 | 137.05 |
-| AUC0-∞ (obs) (mg\*h/L) | Tazobactam 0.5 g | 40.26 | 33.76 | 47.41 |
-| AUMC0-∞ (obs) | Tazobactam 0.5 g | 49.82 | 37.90 | 67.63 |
-| CL/F (L/h) | Tazobactam 0.5 g | 12.42 | 10.55 | 14.81 |
+| AUC0-∞ (obs) (mg\*h/L) | Tazobactam 0.5 g | 39.71 | 33.36 | 46.14 |
+| AUMC0-∞ (obs) | Tazobactam 0.5 g | 49.08 | 36.26 | 65.09 |
+| CL/F (L/h) | Tazobactam 0.5 g | 12.59 | 10.84 | 14.99 |
 | Clast | Tazobactam 0.5 g | 0.06 | 0.02 | 0.13 |
-| Cmax (mg/L) | Tazobactam 0.5 g | 36.82 | 34.85 | 38.55 |
-| MRT (IV) (h) | Tazobactam 0.5 g | 0.99 | 0.84 | 1.17 |
+| Cmax (mg/L) | Tazobactam 0.5 g | 36.63 | 34.70 | 38.43 |
+| MRT (IV) (h) | Tazobactam 0.5 g | 0.99 | 0.84 | 1.16 |
 | Tlast | Tazobactam 0.5 g | 8.00 | 8.00 | 8.00 |
 | Tmax (h) | Tazobactam 0.5 g | 0.50 | 0.50 | 0.50 |
-| Vss (IV) (L) | Tazobactam 0.5 g | 12.31 | 11.80 | 13.24 |
+| Vss (IV) (L) | Tazobactam 0.5 g | 12.32 | 11.80 | 13.24 |
 | adj.r.squared | Tazobactam 0.5 g | 1.00 | 1.00 | 1.00 |
 | clast.pred | Tazobactam 0.5 g | 0.06 | 0.02 | 0.13 |
-| lambda.z.time.first | Tazobactam 0.5 g | 2.10 | 1.75 | 2.60 |
+| lambda.z.time.first | Tazobactam 0.5 g | 2.10 | 1.70 | 2.55 |
 | lambda.z.time.last | Tazobactam 0.5 g | 8.00 | 8.00 | 8.00 |
 | r.squared | Tazobactam 0.5 g | 1.00 | 1.00 | 1.00 |
-| span.ratio | Tazobactam 0.5 g | 6.45 | 4.93 | 7.79 |
-| t½ (h) | Tazobactam 0.5 g | 0.92 | 0.78 | 1.11 |
-| λz | Tazobactam 0.5 g | 0.76 | 0.62 | 0.88 |
-| λz n points | Tazobactam 0.5 g | 119.00 | 109.00 | 126.05 |
+| span.ratio | Tazobactam 0.5 g | 6.49 | 5.02 | 7.74 |
+| t½ (h) | Tazobactam 0.5 g | 0.92 | 0.79 | 1.10 |
+| λz | Tazobactam 0.5 g | 0.75 | 0.63 | 0.87 |
+| λz n points | Tazobactam 0.5 g | 119.00 | 109.95 | 127.00 |
 
 Simulated non-compartmental parameters across the 200 -subject virtual
 cohort (single 4 g / 0.5 g dose, 30 min infusion). {.table}
@@ -816,7 +816,7 @@ knitr::kable(
 |:------------------------|-----------:|:----------------------------|------:|
 | 4 g q6h, 0.5 h infusion |          4 | 4 g q6h adequate (\>= 90%)  | 100.0 |
 | 4 g q6h, 0.5 h infusion |          8 | 4 g q6h inadequate (\< 90%) |  72.5 |
-| 4 g q6h, 3 h infusion   |         32 | 4 g q6h adequate (\>= 90%)  |  97.5 |
+| 4 g q6h, 3 h infusion   |         32 | 4 g q6h adequate (\>= 90%)  |  97.0 |
 | 4 g q6h, 3 h infusion   |         64 | 4 g q6h inadequate (\< 90%) |   0.0 |
 
 PK/PD breakpoints reproduced against Lee 2025 Table A3. {.table}

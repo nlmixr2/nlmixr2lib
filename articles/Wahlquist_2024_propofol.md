@@ -280,8 +280,11 @@ build_events <- function(covs, mgkg) {
 }
 
 ev <- build_events(cohort, dose_mg_per_kg)
+# Tight integration tolerances: the dose-linearity gate below compares two
+# ODE-integrated solves to 1e-6, which the defaults (rtol 1e-6, atol 1e-8)
+# cannot deliver.
 sim <- rxode2::rxSolve(mod, events = ev, keep = c("subject", "dose_mg"),
-                       returnType = "data.frame")
+                       returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
@@ -399,11 +402,12 @@ exposure metric to within integration tolerance.
 ``` r
 
 sim2 <- rxode2::rxSolve(mod, events = build_events(cohort, 2 * dose_mg_per_kg),
-                        keep = c("subject", "dose_mg"), returnType = "data.frame")
+                        keep = c("subject", "dose_mg"), returnType = "data.frame",
+                        rtol = 1e-10, atol = 1e-12)
 #> Warning: multi-subject simulation without without 'omega'
 ratio <- sim2$Cc[sim2$time > 0] / sim$Cc[sim$time > 0]
 cat(sprintf("max |Cc(4 mg/kg) / Cc(2 mg/kg) - 2| = %.3g\n", max(abs(ratio - 2))))
-#> max |Cc(4 mg/kg) / Cc(2 mg/kg) - 2| = 0
+#> max |Cc(4 mg/kg) / Cc(2 mg/kg) - 2| = 1.04e-09
 stopifnot("Model must be exactly dose-linear" = max(abs(ratio - 2)) < 1e-6)
 ```
 

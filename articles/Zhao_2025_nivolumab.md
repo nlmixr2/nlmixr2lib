@@ -569,12 +569,12 @@ expo_long |>
 
 | Exposure measure | i.v. GM (ug/mL) | s.c. GM (ug/mL) | i.v. CV% | s.c. CV% |
 |:-----------------|----------------:|----------------:|---------:|---------:|
-| Cavgd28          |            34.6 |            68.8 |     29.1 |     36.9 |
-| Cavgss           |            90.0 |           161.5 |     43.1 |     50.5 |
-| Cmax1            |            58.4 |            97.3 |     37.3 |     40.2 |
-| Cmaxss           |           132.5 |           205.9 |     36.1 |     46.7 |
-| Cmind28          |            28.8 |            44.1 |     35.2 |     40.0 |
-| Cminss           |            70.2 |           112.3 |     50.3 |     60.3 |
+| Cavgd28          |            33.7 |            66.5 |     27.3 |     36.6 |
+| Cavgss           |            80.2 |           143.0 |     45.4 |     49.3 |
+| Cmax1            |            60.3 |            96.1 |     36.9 |     38.4 |
+| Cmaxss           |           125.1 |           188.0 |     36.8 |     44.2 |
+| Cmind28          |            26.9 |            40.1 |     34.0 |     43.6 |
+| Cminss           |            60.2 |            93.9 |     54.4 |     61.9 |
 
 Simulated nivolumab exposures by route (200 subjects per arm). {.table}
 
@@ -635,12 +635,12 @@ gmr_tab |>
 
 | Exposure measure | GMR (s.c./i.v.) | 90% CI lower | 90% CI upper | Co-primary endpoint |
 |:---|---:|---:|---:|:---|
-| Cavgd28 | 1.99 | 1.90 | 2.09 | yes |
-| Cavgss | 1.79 | 1.72 | 1.88 |  |
-| Cmax1 | 1.66 | 1.58 | 1.75 |  |
-| Cmaxss | 1.55 | 1.48 | 1.63 |  |
-| Cmind28 | 1.53 | 1.47 | 1.60 |  |
-| Cminss | 1.60 | 1.53 | 1.67 | yes |
+| Cavgd28 | 1.97 | 1.89 | 2.06 | yes |
+| Cavgss | 1.78 | 1.71 | 1.86 |  |
+| Cmax1 | 1.59 | 1.51 | 1.68 |  |
+| Cmaxss | 1.50 | 1.44 | 1.57 |  |
+| Cmind28 | 1.49 | 1.43 | 1.56 |  |
+| Cminss | 1.56 | 1.50 | 1.63 | yes |
 
 Simulated geometric mean ratios (subcutaneous / intravenous). The
 CheckMate 67T non-inferiority criterion is a 90% CI lower bound not less
@@ -739,10 +739,10 @@ nca_summary |>
 
 | treatment | window | auclast | cav | cmax | tlast | tmax |
 |:---|:---|---:|---:|---:|---:|---:|
-| i.v. 3 mg/kg q2w | Days 0-28 | 973.7 | 34.78 | 76.72 | 28 | 14.04000 |
-| i.v. 3 mg/kg q2w | Steady state (from day 336) | 1262.0 | 90.14 | 135.10 | 14 | 0.04167 |
-| s.c. 1200 mg q4w | Days 0-28 | 2018.0 | 72.08 | 102.60 | 28 | 5.50000 |
-| s.c. 1200 mg q4w | Steady state (from day 336) | 4533.0 | 161.90 | 210.40 | 28 | 4.50000 |
+| i.v. 3 mg/kg q2w | Days 0-28 | 939.4 | 33.55 | 79.32 | 28 | 14.04000 |
+| i.v. 3 mg/kg q2w | Steady state (from day 336) | 1096.0 | 78.30 | 120.30 | 14 | 0.04167 |
+| s.c. 1200 mg q4w | Days 0-28 | 1995.0 | 71.25 | 103.50 | 28 | 5.00000 |
+| s.c. 1200 mg q4w | Steady state (from day 336) | 3901.0 | 139.30 | 188.60 | 28 | 4.50000 |
 
 PKNCA results (per-subject medians) by arm and window. cav over days
 0-28 is the paper’s Cavgd28. {.table style="width:100%;"}
@@ -769,8 +769,8 @@ chk
 #> # A tibble: 2 × 4
 #>   treatment        cav_pknca cav_manual pct_diff
 #>   <chr>                <dbl>      <dbl>    <dbl>
-#> 1 i.v. 3 mg/kg q2w      34.5       34.6 -0.0247 
-#> 2 s.c. 1200 mg q4w      68.8       68.8 -0.00240
+#> 1 i.v. 3 mg/kg q2w      33.7       33.7 -0.0286 
+#> 2 s.c. 1200 mg q4w      66.5       66.5 -0.00277
 
 stopifnot(all(abs(chk$pct_diff) < 2))
 ```
@@ -822,19 +822,19 @@ tbl <- nlmixr2lib::ncaComparisonTable(
 knitr::kable(tbl, caption = "Steady-state peak concentration after i.v. nivolumab 10 mg/kg q2w: Zhao 2025 Figure 2 legend (352 ug/mL) vs this model, under two sampling definitions.")
 ```
 
-| NCA parameter | basis | Reference | Simulated | % diff |
-|:---|:---|:---|:---|:---|
-| Cmax (ug/mL) | Conventional sample, 2 d post-dose | 352 | 361 | +2.5% |
-| Cmax (ug/mL) | End of infusion (model peak) | 352 | 442 | +25.5%\* |
+| NCA parameter | basis                              | Reference | Simulated | % diff |
+|:--------------|:-----------------------------------|:----------|:----------|:-------|
+| Cmax (ug/mL)  | Conventional sample, 2 d post-dose | 352       | 330       | -6.4%  |
+| Cmax (ug/mL)  | End of infusion (model peak)       | 352       | 417       | +18.5% |
 
 Steady-state peak concentration after i.v. nivolumab 10 mg/kg q2w: Zhao
 2025 Figure 2 legend (352 ug/mL) vs this model, under two sampling
-definitions. {.table}
+definitions. {.table style="width:100%;"}
 
 ``` r
 
 attr(tbl, "footnote")
-#> [1] "* differs from reference by more than ±20%."
+#> NULL
 ```
 
 ``` r
@@ -1013,8 +1013,8 @@ eliminated <- trap(mb$time, mb$cl * mb$Cc)
 
 c(absorbed = absorbed, remaining = remaining, eliminated = eliminated,
   residual_pct = 100 * (absorbed - remaining - eliminated) / absorbed)
-#>      absorbed     remaining    eliminated  residual_pct 
-#>  6.316800e+03  8.112270e+02  5.505649e+03 -1.202685e-03
+#>     absorbed    remaining   eliminated residual_pct 
+#> 6.316800e+03 8.112227e+02 5.505574e+03 5.486254e-05
 
 stopifnot(abs(absorbed - remaining - eliminated) / absorbed < 0.001)
 ```
@@ -1170,15 +1170,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1186,7 +1186,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] utf8_1.2.6          withr_3.0.3         scales_1.4.0       
 #> [49] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         

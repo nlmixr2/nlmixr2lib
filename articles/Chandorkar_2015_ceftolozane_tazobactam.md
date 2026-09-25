@@ -649,7 +649,7 @@ cat(sprintf(
   median(ident$pct_diff), quantile(abs(ident$pct_diff), 0.9),
   max(abs(ident$pct_diff)), nrow(ident)
 ))
-#> AUC0-inf vs Dose/CL: median -0.009%, 90th pctile 0.049%, max 0.189% (n = 300)
+#> AUC0-inf vs Dose/CL: median -0.009%, 90th pctile 0.036%, max 0.112% (n = 300)
 
 # Realised median -0.010% / -0.009% and max 0.141% / 0.189% at 16 and 2 solver
 # threads. The bounds sit an order of magnitude outside that, and still go red
@@ -686,7 +686,7 @@ hl <- wide_nca(nca_renal_cef) |>
 cat(sprintf("Terminal t1/2: median %+.2f%%, 90th pctile %.2f%%, max %.2f%%\n",
             median(hl$pct_diff), quantile(abs(hl$pct_diff), 0.9),
             max(abs(hl$pct_diff))))
-#> Terminal t1/2: median -0.67%, 90th pctile 0.77%, max 0.98%
+#> Terminal t1/2: median -0.67%, 90th pctile 0.77%, max 1.03%
 
 # Realised median -0.67% at both 16 and 2 solver threads, with 90th percentile
 # 0.79% / 0.77% and max 0.93% / 0.98%. Bounds set well outside that range;
@@ -762,9 +762,9 @@ dplyr::left_join(
 
 | Ceftolozane dose (mg) | Typical AUC0-inf (ug\*h/mL) | Typical dose-normalised AUC | N | Cohort median dose-normalised AUC |
 |---:|---:|---:|---:|---:|
-| 1000 | 195.6853 | 0.1957 | 100 | 0.1514 |
-| 2000 | 391.3706 | 0.1957 | 100 | 0.1591 |
-| 500 | 97.8427 | 0.1957 | 100 | 0.1597 |
+| 1000 | 195.6854 | 0.1957 | 100 | 0.1738 |
+| 2000 | 391.3708 | 0.1957 | 100 | 0.1691 |
+| 500 | 97.8427 | 0.1957 | 100 | 0.1606 |
 
 Dose proportionality of ceftolozane exposure. {.table}
 
@@ -821,14 +821,14 @@ knitr::kable(renal_tab, digits = 2,
 
 | Analyte | Renal function | Median Cmax (ug/mL) | Median AUC0-inf (ug\*h/mL) | Median t1/2 (h) |
 |:---|:---|---:|---:|---:|
-| Ceftolozane 1000 mg | Normal | 60.55 | 150.64 | 2.31 |
-| Ceftolozane 1000 mg | Mild | 69.84 | 250.70 | 3.21 |
-| Ceftolozane 1000 mg | Moderate | 73.90 | 404.26 | 4.56 |
-| Ceftolozane 1000 mg | Severe | 78.72 | 570.66 | 6.05 |
-| Tazobactam 500 mg | Normal | 16.91 | 25.47 | 1.21 |
-| Tazobactam 500 mg | Mild | 20.12 | 36.77 | 1.47 |
-| Tazobactam 500 mg | Moderate | 21.39 | 56.62 | 1.81 |
-| Tazobactam 500 mg | Severe | 25.77 | 81.21 | 2.30 |
+| Ceftolozane 1000 mg | Normal | 61.64 | 163.97 | 2.40 |
+| Ceftolozane 1000 mg | Mild | 73.32 | 293.90 | 3.35 |
+| Ceftolozane 1000 mg | Moderate | 66.63 | 395.32 | 4.72 |
+| Ceftolozane 1000 mg | Severe | 76.81 | 569.35 | 6.31 |
+| Tazobactam 500 mg | Normal | 15.61 | 23.00 | 1.18 |
+| Tazobactam 500 mg | Mild | 20.05 | 39.09 | 1.46 |
+| Tazobactam 500 mg | Moderate | 23.37 | 55.86 | 1.78 |
+| Tazobactam 500 mg | Severe | 25.37 | 78.14 | 2.33 |
 
 Simulated exposure by renal-function stratum, single 1-hour infusion of
 1000/500 mg. {.table style="width:100%;"}
@@ -864,8 +864,8 @@ knitr::kable(ratios, digits = 2,
 
 | Analyte             | Mild | Moderate | Severe |
 |:--------------------|-----:|---------:|-------:|
-| Ceftolozane 1000 mg | 1.66 |     2.68 |   3.79 |
-| Tazobactam 500 mg   | 1.44 |     2.22 |   3.19 |
+| Ceftolozane 1000 mg | 1.79 |     2.41 |   3.47 |
+| Tazobactam 500 mg   | 1.70 |     2.43 |   3.40 |
 
 Median AUC0-inf relative to normal renal function. {.table}
 

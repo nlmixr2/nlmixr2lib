@@ -295,8 +295,12 @@ ev_base <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(time, dplyr::desc(evid))
 
+# Tight tolerances: the closed-form gate below asserts 1e-8 relative
+# agreement, and the default rtol = 1e-6 leaves about 2e-7 when the model is
+# integrated numerically.
 sim_base <- rxode2::rxSolve(
-  mod_base, events = ev_base, returnType = "data.frame"
+  mod_base, events = ev_base, returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 if (is.null(sim_base$id)) sim_base$id <- 1L
@@ -602,11 +606,11 @@ nca |>
 
 | Study site | Cmax (ng/mL) | Tmax (h) | AUC0-6h (ng\*h/mL) | AUC0-inf (ng\*h/mL) | Terminal t1/2 (h) | Elimination t1/2 (min) |
 |:---|---:|---:|---:|---:|---:|---:|
-| Bangkok | 442 | 3.10 | 2028 | 4090 | 3.52 | 77.9 |
-| Ghana | 538 | 1.60 | 2332 | 3788 | 3.48 | 25.5 |
-| Mae-Sot | 503 | 1.80 | 2269 | 3761 | 3.49 | 31.9 |
-| Malawi | 529 | 1.60 | 2371 | 3719 | 3.48 | 25.4 |
-| South Africa | 381 | 3.35 | 1744 | 3978 | 3.54 | 91.5 |
+| Bangkok | 406 | 3.15 | 1861 | 4200 | 3.52 | 81.3 |
+| Ghana | 471 | 1.80 | 2191 | 3782 | 3.49 | 29.7 |
+| Mae-Sot | 527 | 2.00 | 2278 | 3926 | 3.49 | 37.2 |
+| Malawi | 609 | 1.65 | 2602 | 4392 | 3.48 | 27.1 |
+| South Africa | 390 | 3.70 | 1740 | 3845 | 3.59 | 107.1 |
 
 Median simulated NCA by study site (PKNCA). {.table}
 
@@ -626,7 +630,7 @@ c(
   max = max(auc_pct)
 )
 #>     median        q95        max 
-#> 0.01892196 0.81447982 4.85574383
+#>  0.0193270  0.6682271 10.1161249
 
 # Realised median 0.02%, 95th percentile 0.69%, max 5.2% at 16 threads. The
 # few large residuals belong to subjects whose eta draw makes kel < ka, so the
@@ -653,9 +657,9 @@ c(
   median_elimination_half_life_min = stats::median(nca$thalf_elim_min)
 )
 #>           median_nca_half_life_h                    ln2_over_ka_h 
-#>                         3.495973                         3.465736 
+#>                         3.497311                         3.465736 
 #> median_elimination_half_life_min 
-#>                        43.884077
+#>                        47.248222
 
 # ln(2)/ka = 3.466 h; realised cohort median 3.50 h. The bound admits cohort
 # noise but still fails on any mis-transcription of the fixed ka.
@@ -709,8 +713,8 @@ span of the AUC0-6h values plotted on the x axis of Figure 5 of Simpson
 
 auc06_q <- stats::quantile(nca$auc06_nghml, c(0.10, 0.50, 0.90))
 auc06_q
-#>       10%       50%       90% 
-#>  973.7722 2063.1469 4260.6731
+#>      10%      50%      90% 
+#> 1052.672 2096.079 4056.708
 
 # Realised 1,005 / 2,071 / 4,764 ng*h/mL at 16 threads. Figure 5's plotted
 # points run from about 600 to 5,500 ng*h/mL. The bounds below admit cohort
@@ -789,7 +793,7 @@ claims |>
 | V/F at 70 kg (L/kg) | Table 5 | 6.34 | 6.34 | TRUE |
 | Base-model elimination half-life (min) | Abstract / Results | 43 | 43.3 | TRUE |
 | Terminal slope equals the fixed appearance rate (1/h) | Discussion | 0.20 | 0.200 | TRUE |
-| AUC0-6h median inside the Figure 5 point cloud (ng\*h/mL) | Figure 5 | 1,000-4,000 | 2063 | TRUE |
+| AUC0-6h median inside the Figure 5 point cloud (ng\*h/mL) | Figure 5 | 1,000-4,000 | 2096 | TRUE |
 | AUC0-inf equals Dose / (CL/F) | Model identity | 0% difference | 0.02% median | TRUE |
 
 Published claims against the packaged model. {.table}

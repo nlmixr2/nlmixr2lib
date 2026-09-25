@@ -282,10 +282,28 @@ solve_one <- function(label, zero_re) {
 
 sim <- bind_rows(lapply(names(model_names), solve_one, zero_re = FALSE))
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: some ID(s) could not solve the ODEs correctly; These values are
+#> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
 typ <- bind_rows(lapply(names(model_names), solve_one, zero_re = TRUE))
 #> Warning: multi-subject simulation without without 'omega'
@@ -346,9 +364,9 @@ unbound_auc |>
 
 | Model                           | Max abs error (%) |
 |:--------------------------------|------------------:|
-| Model I (one binding site)      |            0.0139 |
-| Model II (Langmuir)             |            0.0136 |
-| Model IV (linear non-saturable) |            0.0122 |
+| Model I (one binding site)      |            0.0145 |
+| Model II (Langmuir)             |            0.0143 |
+| Model IV (linear non-saturable) |            0.0130 |
 
 Unbound AUC0-tau equals Dose/CL exactly: the amount kinetics are linear.
 {.table}
@@ -492,20 +510,20 @@ cav |>
 
 | Model | Daily dose (mg/kg/day) | Median typical Cav (mg/L) | Cav ratio vs 25 mg/kg/day | Dose ratio |
 |:---|---:|---:|---:|---:|
-| Base model | 12.5 | 31.815 | 0.500 | 0.5 |
+| Base model | 12.5 | 31.814 | 0.500 | 0.5 |
 | Base model | 25.0 | 63.629 | 1.000 | 1.0 |
-| Base model | 50.0 | 127.258 | 2.000 | 2.0 |
-| Model I (one binding site) | 12.5 | 44.863 | 0.768 | 0.5 |
+| Base model | 50.0 | 127.257 | 2.000 | 2.0 |
+| Model I (one binding site) | 12.5 | 44.862 | 0.768 | 0.5 |
 | Model I (one binding site) | 25.0 | 58.415 | 1.000 | 1.0 |
 | Model I (one binding site) | 50.0 | 68.887 | 1.179 | 2.0 |
 | Model II (Langmuir) | 12.5 | 38.226 | 0.623 | 0.5 |
-| Model II (Langmuir) | 25.0 | 61.359 | 1.000 | 1.0 |
+| Model II (Langmuir) | 25.0 | 61.358 | 1.000 | 1.0 |
 | Model II (Langmuir) | 50.0 | 89.462 | 1.458 | 2.0 |
 | Model III (dose-dependent Emax) | 12.5 | 32.993 | 0.511 | 0.5 |
-| Model III (dose-dependent Emax) | 25.0 | 64.557 | 1.000 | 1.0 |
-| Model III (dose-dependent Emax) | 50.0 | 128.212 | 1.986 | 2.0 |
+| Model III (dose-dependent Emax) | 25.0 | 64.556 | 1.000 | 1.0 |
+| Model III (dose-dependent Emax) | 50.0 | 128.210 | 1.986 | 2.0 |
 | Model IV (linear non-saturable) | 12.5 | 41.943 | 0.695 | 0.5 |
-| Model IV (linear non-saturable) | 25.0 | 60.349 | 1.000 | 1.0 |
+| Model IV (linear non-saturable) | 25.0 | 60.348 | 1.000 | 1.0 |
 | Model IV (linear non-saturable) | 50.0 | 83.691 | 1.387 | 2.0 |
 | Model V (simple exponent) | 12.5 | 47.166 | 0.789 | 0.5 |
 | Model V (simple exponent) | 25.0 | 59.778 | 1.000 | 1.0 |
@@ -826,6 +844,22 @@ run_nca <- function(model_name) {
 }
 
 nca <- lapply(setNames(nm = names(model_names)), run_nca)
+#> Warning: arm=12.5 mg/kg/day; id=96: No concentration data
+#> Warning: arm=50 mg/kg/day; id=280: No concentration data
+#> Warning: arm=12.5 mg/kg/day; id=39: No concentration data
+#> Warning: arm=25 mg/kg/day; id=212: No concentration data
+#> Warning: arm=50 mg/kg/day; id=296: No concentration data
+#> Warning: arm=12.5 mg/kg/day; id=97: No concentration data
+#> Warning: arm=12.5 mg/kg/day; id=112: No concentration data
+#> Warning: arm=25 mg/kg/day; id=157: No concentration data
+#> Warning: arm=25 mg/kg/day; id=166: No concentration data
+#> Warning: arm=25 mg/kg/day; id=167: No concentration data
+#> Warning: arm=25 mg/kg/day; id=189: No concentration data
+#> Warning: arm=50 mg/kg/day; id=279: No concentration data
+#> Warning: arm=50 mg/kg/day; id=294: No concentration data
+#> Warning: arm=50 mg/kg/day; id=308: No concentration data
+#> Warning: arm=12.5 mg/kg/day; id=96: No concentration data
+#> Warning: arm=25 mg/kg/day; id=181: No concentration data
 ```
 
 ``` r
@@ -854,24 +888,24 @@ nca_tbl |>
 
 | Model | Arm | AUClast | Cavg | Cmax | Cmin | Tmax |
 |:---|:---|---:|---:|---:|---:|---:|
-| Base model | 12.5 mg/kg/day | 362.55 | 30.21 | 31.93 | 26.72 | 1.25 |
-| Base model | 25 mg/kg/day | 696.61 | 58.05 | 61.86 | 53.88 | 1.25 |
-| Base model | 50 mg/kg/day | 1504.50 | 125.37 | 135.98 | 115.06 | 1.25 |
-| Model I (one binding site) | 12.5 mg/kg/day | 534.23 | 44.52 | 45.77 | 43.31 | 1.25 |
-| Model I (one binding site) | 25 mg/kg/day | 710.07 | 59.17 | 59.85 | 57.06 | 1.25 |
-| Model I (one binding site) | 50 mg/kg/day | 824.08 | 68.67 | 69.81 | 66.84 | 1.25 |
-| Model II (Langmuir) | 12.5 mg/kg/day | 449.56 | 37.46 | 38.78 | 35.72 | 1.25 |
-| Model II (Langmuir) | 25 mg/kg/day | 770.99 | 64.25 | 66.01 | 62.30 | 1.25 |
-| Model II (Langmuir) | 50 mg/kg/day | 1132.41 | 94.37 | 96.31 | 92.04 | 1.25 |
-| Model III (dose-dependent Emax) | 12.5 mg/kg/day | 395.49 | 32.96 | 33.83 | 31.99 | 1.25 |
-| Model III (dose-dependent Emax) | 25 mg/kg/day | 819.45 | 68.29 | 70.46 | 64.77 | 1.25 |
-| Model III (dose-dependent Emax) | 50 mg/kg/day | 1572.69 | 131.06 | 135.06 | 126.41 | 1.25 |
-| Model IV (linear non-saturable) | 12.5 mg/kg/day | 477.33 | 39.78 | 41.21 | 38.12 | 1.25 |
-| Model IV (linear non-saturable) | 25 mg/kg/day | 714.47 | 59.54 | 61.50 | 57.81 | 1.25 |
-| Model IV (linear non-saturable) | 50 mg/kg/day | 980.50 | 81.71 | 84.43 | 79.44 | 1.25 |
-| Model V (simple exponent) | 12.5 mg/kg/day | 572.10 | 47.67 | 51.07 | 44.11 | 1.25 |
-| Model V (simple exponent) | 25 mg/kg/day | 668.40 | 55.70 | 62.02 | 48.15 | 1.25 |
-| Model V (simple exponent) | 50 mg/kg/day | 878.03 | 73.17 | 86.50 | 62.16 | 1.25 |
+| Base model | 12.5 mg/kg/day | 357.49 | 29.79 | 31.77 | 26.59 | 1.25 |
+| Base model | 25 mg/kg/day | 696.60 | 58.05 | 61.86 | 53.88 | 1.25 |
+| Base model | 50 mg/kg/day | 1502.30 | 125.19 | 135.28 | 114.55 | 1.25 |
+| Model I (one binding site) | 12.5 mg/kg/day | 531.43 | 44.29 | 46.32 | 42.99 | 1.25 |
+| Model I (one binding site) | 25 mg/kg/day | 722.22 | 60.19 | 60.61 | 59.02 | 1.25 |
+| Model I (one binding site) | 50 mg/kg/day | 821.47 | 68.46 | 69.39 | 67.39 | 1.25 |
+| Model II (Langmuir) | 12.5 mg/kg/day | 502.02 | 41.83 | 43.93 | 40.83 | 1.25 |
+| Model II (Langmuir) | 25 mg/kg/day | 723.48 | 60.29 | 63.79 | 57.82 | 1.25 |
+| Model II (Langmuir) | 50 mg/kg/day | 1023.87 | 85.32 | 89.57 | 83.10 | 1.25 |
+| Model III (dose-dependent Emax) | 12.5 mg/kg/day | 350.27 | 29.19 | 30.60 | 27.50 | 1.25 |
+| Model III (dose-dependent Emax) | 25 mg/kg/day | 725.94 | 60.50 | 63.85 | 57.93 | 1.25 |
+| Model III (dose-dependent Emax) | 50 mg/kg/day | 1503.49 | 125.29 | 127.47 | 122.66 | 1.25 |
+| Model IV (linear non-saturable) | 12.5 mg/kg/day | 496.76 | 41.40 | 43.28 | 39.73 | 1.25 |
+| Model IV (linear non-saturable) | 25 mg/kg/day | 719.39 | 59.95 | 61.16 | 58.18 | 1.25 |
+| Model IV (linear non-saturable) | 50 mg/kg/day | 1041.09 | 86.76 | 88.54 | 84.23 | 1.25 |
+| Model V (simple exponent) | 12.5 mg/kg/day | 565.98 | 47.17 | 50.98 | 44.23 | 1.25 |
+| Model V (simple exponent) | 25 mg/kg/day | 703.73 | 58.64 | 63.92 | 51.73 | 1.25 |
+| Model V (simple exponent) | 50 mg/kg/day | 895.74 | 74.64 | 87.20 | 64.14 | 1.25 |
 
 Median steady-state NCA over one 12 h interval. Cmin is the trough the
 paper’s TDM samples measured. {.table style="width:100%;"}
@@ -913,11 +947,11 @@ cmp |>
 | Model | NCA parameter | arm | Reference | Simulated | % diff |
 |:---|:---|:---|---:|---:|---:|
 | Base model | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 53.9 | +6.9% |
-| Model I (one binding site) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 57.1 | +13.2% |
-| Model II (Langmuir) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 62.3 | +23.6%\* |
-| Model III (dose-dependent Emax) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 64.8 | +28.5%\* |
-| Model IV (linear non-saturable) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 57.8 | +14.7% |
-| Model V (simple exponent) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 48.2 | -4.5% |
+| Model I (one binding site) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 59 | +17.1% |
+| Model II (Langmuir) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 57.8 | +14.7% |
+| Model III (dose-dependent Emax) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 57.9 | +14.9% |
+| Model IV (linear non-saturable) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 58.2 | +15.4% |
+| Model V (simple exponent) | Cmin (mg/L) | 25 mg/kg/day | 50.4 | 51.7 | +2.6% |
 
 Simulated vs published steady-state trough (Zhang 2023 Table 2). \*
 differs from the reference by more than 20%. {.table}

@@ -609,9 +609,9 @@ knitr::kable(dur_above_half, digits = 0,
 
 | driver      | 1 mg/kg | 7.3 mg/kg |
 |:------------|--------:|----------:|
-| Plasma      |     360 |       635 |
-| Brain ECF   |     290 |       495 |
-| Total brain |     288 |       450 |
+| Plasma      |     348 |       590 |
+| Brain ECF   |     302 |       470 |
+| Total brain |     275 |       435 |
 
 Median time (min) at which occupancy last exceeds 47% (about half of
 Bmax) {.table}
@@ -673,8 +673,8 @@ knitr::kable(nca_wide, digits = 2,
 
 | treatment | aucinf.obs |    cmax | half.life | tmax |
 |:----------|-----------:|--------:|----------:|-----:|
-| 1 mg/kg   |    8081.38 |  167.04 |     98.16 |   30 |
-| 7.3 mg/kg |   58994.11 | 1219.36 |     98.16 |   30 |
+| 1 mg/kg   |    8081.39 |  167.04 |     98.16 |   30 |
+| 7.3 mg/kg |   58994.12 | 1219.36 |     98.16 |   30 |
 
 Median PKNCA parameters of the simulated typical plasma profile {.table}
 
@@ -699,8 +699,8 @@ knitr::kable(
 
 | Dose arm  | PKNCA AUC0-inf (ng.min/mL) | Dose / CL (ng.min/mL) | Ratio |
 |:----------|---------------------------:|----------------------:|------:|
-| 1 mg/kg   |                   8081.385 |              8108.108 | 0.997 |
-| 7.3 mg/kg |                  58994.108 |             59189.189 | 0.997 |
+| 1 mg/kg   |                   8081.387 |              8108.108 | 0.997 |
+| 7.3 mg/kg |                  58994.125 |             59189.189 | 0.997 |
 
 ``` r
 

@@ -529,7 +529,7 @@ knitr::kable(baselineSummary)
 | Source                       | Mean baseline TB (cm) | SD (cm) |
 |:-----------------------------|----------------------:|--------:|
 | Feng 2019 Table 1 (observed) |                  9.60 |    8.70 |
-| Simulated cohort             |                  9.95 |   12.99 |
+| Simulated cohort             |                  9.12 |    9.78 |
 
 ``` r
 
@@ -576,8 +576,8 @@ knitr::kable(slope0)
 
 | Subpopulation        | % with initial shrinkage |
 |:---------------------|-------------------------:|
-| Fast TG              |                     19.7 |
-| Intermediate TG & TS |                     43.1 |
+| Fast TG              |                     17.1 |
+| Intermediate TG & TS |                     48.5 |
 | No growth            |                    100.0 |
 
 ``` r
@@ -668,11 +668,11 @@ med <- baseline |>
 knitr::kable(med, digits = 5)
 ```
 
-| Subpopulation        |      TB0 |      TS |      TG |
-|:---------------------|---------:|--------:|--------:|
-| Fast TG              | 10.22735 | 0.00309 | 0.27412 |
-| Intermediate TG & TS |  4.99875 | 0.00188 | 0.01711 |
-| No growth            |  2.24454 | 0.05060 | 0.00000 |
+| Subpopulation        |     TB0 |      TS |      TG |
+|:---------------------|--------:|--------:|--------:|
+| Fast TG              | 9.33185 | 0.00270 | 0.30388 |
+| Intermediate TG & TS | 4.45766 | 0.00306 | 0.01661 |
+| No growth            | 2.00774 | 0.04292 | 0.00000 |
 
 ``` r
 
@@ -734,9 +734,9 @@ knitr::kable(respSummary)
 
 | Subpopulation        | Median PRW8 (cm/week) | Median CTB8 (% of baseline) |
 |:---------------------|----------------------:|----------------------------:|
-| Fast TG              |                0.2087 |                       117.0 |
-| Intermediate TG & TS |                0.0043 |                       100.5 |
-| No growth            |               -0.0690 |                        82.6 |
+| Fast TG              |                0.2257 |                       117.0 |
+| Intermediate TG & TS |                0.0012 |                       100.1 |
+| No growth            |               -0.0582 |                        86.0 |
 
 Feng 2019 Results state that *“the risk of death increased with an
 increase in PRW8.MIXC”*, and supplement **Table S5** reports the hazard
@@ -762,9 +762,9 @@ knitr::kable(tableS5)
 
 | Subpopulation        | Table S5 HR vs fast TG | Median PRW8 (cm/week) |
 |:---------------------|-----------------------:|----------------------:|
-| Fast TG              |                   1.00 |                0.2087 |
-| Intermediate TG & TS |                   0.53 |                0.0043 |
-| No growth            |                   0.33 |               -0.0690 |
+| Fast TG              |                   1.00 |                0.2257 |
+| Intermediate TG & TS |                   0.53 |                0.0012 |
+| No growth            |                   0.33 |               -0.0582 |
 
 ``` r
 
@@ -963,15 +963,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -979,7 +979,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

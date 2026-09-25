@@ -778,8 +778,8 @@ arm_log_hr <- cohort |>
 stopifnot(length(arm_log_hr) == n_arms, stats::sd(arm_log_hr) > 0)
 
 round(c(mean = mean(arm_log_hr), sd = stats::sd(arm_log_hr)), 3)
-#>   mean     sd 
-#> -0.024  0.238
+#>  mean    sd 
+#> 0.013 0.253
 
 # A 200-draw sample standard deviation has about a 5% relative standard error,
 # so this is a deliberately wide envelope around the nominal 0.257 rather than

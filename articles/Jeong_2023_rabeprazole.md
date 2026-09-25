@@ -282,7 +282,7 @@ sim |>
 | Gender | Median Cc at 1 h (ng/mL) | Subjects with Cc \> 1 ng/mL at 1 h (%) |
 |:-------|-------------------------:|---------------------------------------:|
 | Female |                        0 |                                      0 |
-| Male   |                        0 |                                     12 |
+| Male   |                        0 |                                     13 |
 
 Simulated 1 h detectability by gender (Jeong 2023 Results 3.1). {.table}
 
@@ -361,20 +361,27 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 )
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
-#> points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
+#> points)
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
 #> points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
 #> points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
 #> points)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
 #> points)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 1 points)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
 #> points)
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 ```
 
 ### Comparison against published NCA
@@ -406,16 +413,16 @@ knitr::kable(
 
 | NCA parameter           | treatment | Reference | Simulated |   % diff |
 |:------------------------|:----------|----------:|----------:|---------:|
-| Cmax (ng/mL)            | Male      |       216 |       134 | -38.0%\* |
-| Cmax (ng/mL)            | Female    |       260 |       138 | -46.8%\* |
+| Cmax (ng/mL)            | Male      |       216 |       144 | -33.4%\* |
+| Cmax (ng/mL)            | Female    |       260 |       133 | -48.9%\* |
 | Tmax (h)                | Male      |      3.38 |         3 |   -11.2% |
-| Tmax (h)                | Female    |       4.1 |       4.5 |    +9.8% |
-| AUC0-∞ (obs) (ng\*h/mL) | Male      |       459 |       397 |   -13.5% |
-| AUC0-∞ (obs) (ng\*h/mL) | Female    |       453 |       362 | -20.2%\* |
-| AUClast (ng\*h/mL)      | Male      |       439 |       358 |   -18.5% |
-| AUClast (ng\*h/mL)      | Female    |       424 |       337 | -20.6%\* |
-| t½ (h)                  | Male      |       1.6 |       1.8 |   +12.8% |
-| t½ (h)                  | Female    |      1.48 |      1.52 |    +2.6% |
+| Tmax (h)                | Female    |       4.1 |         4 |    -2.4% |
+| AUC0-∞ (obs) (ng\*h/mL) | Male      |       459 |       392 |   -14.6% |
+| AUC0-∞ (obs) (ng\*h/mL) | Female    |       453 |       388 |   -14.3% |
+| AUClast (ng\*h/mL)      | Male      |       439 |       356 |   -19.0% |
+| AUClast (ng\*h/mL)      | Female    |       424 |       340 |   -19.8% |
+| t½ (h)                  | Male      |       1.6 |      1.72 |    +7.3% |
+| t½ (h)                  | Female    |      1.48 |      1.61 |    +8.8% |
 
 Simulated (median of 100 individual predictions per gender) vs. Jeong
 2023 Table 1 (observed mean). \* differs from reference by \>20%.

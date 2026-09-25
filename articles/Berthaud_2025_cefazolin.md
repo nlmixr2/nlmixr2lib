@@ -169,7 +169,9 @@ it is here because the natural way to write this model is silently
 wrong.
 
 The paper’s total clearance is additive, `CLtot = CL + CLdial`, with the
-dialysis arm contributing only while a session runs. rxode2 recognises
+dialysis arm contributing only while a session runs. When rxode2’s
+ODE-to-`linCmt()` conversion is enabled (`useLinCmt = TRUE`; the default
+until rxode2 made it opt-in in September 2026, issue 1389) it recognises
 the joint presence of `cl` and `vc` and solves the one-compartment
 system analytically from that pair, **discarding the explicit
 `d/dt()`**. A model that assigns only the interdialytic arm to `cl` and
@@ -177,7 +179,8 @@ then eliminates via a separate `cl_total / vc` therefore reports a
 correct-looking `cl_total` and `kel` while the simulated concentrations
 decay at the interdialytic rate in both states – the dialysis arm is
 inert and the model silently loses its entire reason for existing. The
-packaged model avoids this by assigning the gated sum to `cl` itself.
+packaged model avoids this by assigning the gated sum to `cl` itself,
+which is correct under either solve path.
 
 The check below is a genuine two-state comparison of the simulated
 *amounts*, not of the reported clearance columns, so it fails if the
@@ -191,9 +194,13 @@ gate_events <- function(gate, wt = 70, sa = 1) {
   e$WT <- wt; e$FILT_SA <- sa; e$RRT_HEMODIAL_ACTIVE <- gate
   e
 }
-sim_on  <- rxode2::rxSolve(mod_typ, events = gate_events(1), returnType = "data.frame")
+# Tight solver tolerances: the identity below is held to 1e-8, which the
+# analytic linCmt() path meets trivially but a numerically integrated ODE at
+# the default rtol = 1e-6 misses by about 1e-6. The check must hold on either
+# path, so the tolerances are set where the identity is asserted.
+sim_on  <- rxode2::rxSolve(mod_typ, events = gate_events(1), returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
-sim_off <- rxode2::rxSolve(mod_typ, events = gate_events(0), returnType = "data.frame")
+sim_off <- rxode2::rxSolve(mod_typ, events = gate_events(0), returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 
 kel_emp <- function(s) -diff(log(s$central[c(1, nrow(s))])) / diff(s$time[c(1, nrow(s))])
@@ -387,7 +394,7 @@ slope_off <- slope(56, 72)     # the interval after it
 stopifnot(slope_on > 5 * slope_off, slope_off > 0)
 cat(sprintf("median log-slope during dialysis %.4f /h vs interdialytic %.4f /h (ratio %.1f)\n",
             slope_on, slope_off, slope_on / slope_off))
-#> median log-slope during dialysis 0.2389 /h vs interdialytic 0.0215 /h (ratio 11.1)
+#> median log-slope during dialysis 0.2802 /h vs interdialytic 0.0160 /h (ratio 17.5)
 ```
 
 ## PKNCA validation
@@ -431,6 +438,12 @@ sim_nca_raw <- rxode2::rxSolve(ui, events = nca_events,
 
 sim_nca <- sim_nca_raw |>
   dplyr::filter(!is.na(Cc)) |>
+  # Drop the numerically-zero tail (the 240 h grid runs to ~1e-25 mg/L). With
+  # the ODE integrated numerically those points carry relative error far above
+  # the terminal-slope signal, and PKNCA's half-life fit would follow the noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(Cc >= 1e-6 * max(Cc, na.rm = TRUE)) |>
+  dplyr::ungroup() |>
   dplyr::mutate(treatment = "15 mg/kg IV, interdialytic") |>
   dplyr::select(id, time, Cc, treatment)
 
@@ -495,9 +508,9 @@ tibble::tibble(
 
 | NCA parameter    | Simulated median | Closed-form median | Max \|deviation\| (%) |
 |:-----------------|-----------------:|-------------------:|----------------------:|
-| t1/2 (h)         |            54.39 |              54.39 |               0.00000 |
-| AUCinf (mg\*h/L) |          5413.00 |            5413.00 |               0.02136 |
-| Cmax (mg/L)      |            71.80 |                 NA |                    NA |
+| t1/2 (h)         |            48.89 |              48.89 |             0.0000693 |
+| AUCinf (mg\*h/L) |          5328.00 |            5328.00 |             0.0361200 |
+| Cmax (mg/L)      |            72.67 |                 NA |                    NA |
 | Tmax (h)         |             0.50 |                 NA |                    NA |
 
 PKNCA on a simulated interdialytic single dose, against the model’s own
@@ -605,12 +618,12 @@ s1_tab |>
 
 | CL range (L/h) | 10 kg | 15 kg | 20 kg | 30 kg | 40 kg | 51 kg | Published (Table S1) |
 |:---------------|------:|------:|------:|------:|------:|------:|---------------------:|
-| 0.001-0.025    |  94.1 |  88.7 |  82.0 |  73.7 |  74.0 |  74.0 |                 99.5 |
-| 0.026-0.15     |  45.8 |  69.5 |  82.8 |  95.2 |  95.1 |  93.8 |                 97.1 |
-| 0.16-0.35      |  17.4 |  33.3 |  56.0 |  92.1 |  95.1 |  96.0 |                 97.2 |
-| 0.36-0.54      |  11.9 |  26.2 |  45.0 |  83.7 |  94.5 |  96.0 |                 96.8 |
-| 0.55-0.7       |  10.4 |  24.5 |  44.1 |  85.0 |  95.1 |  96.4 |                 97.3 |
-| 0.71-0.9       |  13.4 |  25.0 |  40.9 |  76.1 |  94.9 |  96.1 |                 97.0 |
+| 0.001-0.025    |  94.5 |  89.0 |  82.3 |  73.7 |  73.8 |  73.8 |                 99.5 |
+| 0.026-0.15     |  45.8 |  69.5 |  83.1 |  95.7 |  95.5 |  93.9 |                 97.1 |
+| 0.16-0.35      |  17.4 |  33.3 |  56.0 |  92.7 |  95.5 |  96.3 |                 97.2 |
+| 0.36-0.54      |  11.9 |  26.2 |  45.0 |  84.1 |  94.9 |  96.3 |                 96.8 |
+| 0.55-0.7       |  10.4 |  24.5 |  44.1 |  85.4 |  95.5 |  96.7 |                 97.3 |
+| 0.71-0.9       |  13.4 |  25.0 |  40.9 |  76.5 |  95.1 |  96.6 |                 97.0 |
 
 Time within the 20-80 mg/L target (%) over the final simulated week, by
 body weight, running the Table S1 regimens verbatim. The published
@@ -675,12 +688,12 @@ s1_dev |>
 
 | CL range (L/h) | Simulated, 40-51 kg (%) | Published (%) | Difference (pp) |
 |:---------------|------------------------:|--------------:|----------------:|
-| 0.001-0.025    |                    74.0 |          99.5 |           -25.5 |
-| 0.026-0.15     |                    94.4 |          97.1 |            -2.7 |
-| 0.16-0.35      |                    95.5 |          97.2 |            -1.7 |
-| 0.36-0.54      |                    95.2 |          96.8 |            -1.6 |
-| 0.55-0.7       |                    95.8 |          97.3 |            -1.5 |
-| 0.71-0.9       |                    95.5 |          97.0 |            -1.5 |
+| 0.001-0.025    |                    73.8 |          99.5 |           -25.7 |
+| 0.026-0.15     |                    94.7 |          97.1 |            -2.4 |
+| 0.16-0.35      |                    95.9 |          97.2 |            -1.3 |
+| 0.36-0.54      |                    95.6 |          96.8 |            -1.2 |
+| 0.55-0.7       |                    96.1 |          97.3 |            -1.2 |
+| 0.71-0.9       |                    95.8 |          97.0 |            -1.2 |
 
 Table S1 attainment at the upper end of the weight range, against the
 published values. {.table}

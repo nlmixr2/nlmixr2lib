@@ -489,34 +489,34 @@ knitr::kable(
 
 | NCA parameter           | arm                 | Reference | Simulated | % diff |
 |:------------------------|:--------------------|----------:|----------:|-------:|
-| Cmax (ng/mL)            | NM+UM, single dose  |       139 |       133 |  -4.5% |
-| Cmax (ng/mL)            | IM, single dose     |       140 |       136 |  -2.6% |
-| Cmax (ng/mL)            | NM+UM, steady state |       185 |       180 |  -2.7% |
-| Cmax (ng/mL)            | IM, steady state    |       203 |       205 |  +0.8% |
+| Cmax (ng/mL)            | NM+UM, single dose  |       139 |       139 |  +0.3% |
+| Cmax (ng/mL)            | IM, single dose     |       140 |       143 |  +2.0% |
+| Cmax (ng/mL)            | NM+UM, steady state |       185 |       183 |  -0.8% |
+| Cmax (ng/mL)            | IM, steady state    |       203 |       206 |  +1.3% |
 | Tmax (h)                | NM+UM, single dose  |      0.71 |      0.75 |  +5.6% |
-| Tmax (h)                | IM, single dose     |      0.75 |     0.765 |  +2.0% |
+| Tmax (h)                | IM, single dose     |      0.75 |      0.77 |  +2.7% |
 | Tmax (h)                | NM+UM, steady state |       0.7 |     0.735 |  +5.0% |
-| Tmax (h)                | IM, steady state    |      0.73 |      0.75 |  +2.7% |
-| AUC0-∞ (obs) (ng\*h/mL) | NM+UM, single dose  |       739 |       748 |  +1.2% |
-| AUC0-∞ (obs) (ng\*h/mL) | IM, single dose     |       911 |       933 |  +2.4% |
-| AUC0-∞ (obs) (ng\*h/mL) | NM+UM, steady state |      1060 |      1090 |  +2.8% |
-| AUC0-∞ (obs) (ng\*h/mL) | IM, steady state    |      1480 |      1510 |  +1.8% |
-| AUClast (ng\*h/mL)      | NM+UM, single dose  |       717 |       717 |  +0.0% |
-| AUClast (ng\*h/mL)      | IM, single dose     |       859 |       866 |  +0.9% |
-| AUClast (ng\*h/mL)      | NM+UM, steady state |      1030 |      1060 |  +2.5% |
-| AUClast (ng\*h/mL)      | IM, steady state    |      1390 |      1440 |  +3.3% |
-| t½ (h)                  | NM+UM, single dose  |       4.2 |      4.47 |  +6.3% |
-| t½ (h)                  | IM, single dose     |       5.3 |      5.47 |  +3.1% |
-| t½ (h)                  | NM+UM, steady state |       4.2 |      4.47 |  +6.3% |
-| t½ (h)                  | IM, steady state    |       5.3 |      5.47 |  +3.2% |
-| CL/F (L/h)              | NM+UM, single dose  |        51 |      50.1 |  -1.7% |
-| CL/F (L/h)              | IM, single dose     |      41.3 |      40.2 |  -2.7% |
-| CL/F (L/h)              | NM+UM, steady state |      50.9 |      50.1 |  -1.5% |
-| CL/F (L/h)              | IM, steady state    |      40.9 |      40.2 |  -1.7% |
-| Vz/F (L)                | NM+UM, single dose  |       309 |       319 |  +3.1% |
-| Vz/F (L)                | IM, single dose     |       316 |       312 |  -1.2% |
-| Vz/F (L)                | NM+UM, steady state |       308 |       319 |  +3.4% |
-| Vz/F (L)                | IM, steady state    |       311 |       312 |  +0.4% |
+| Tmax (h)                | IM, steady state    |      0.73 |      0.74 |  +1.4% |
+| AUC0-∞ (obs) (ng\*h/mL) | NM+UM, single dose  |       739 |       681 |  -7.8% |
+| AUC0-∞ (obs) (ng\*h/mL) | IM, single dose     |       911 |       849 |  -6.8% |
+| AUC0-∞ (obs) (ng\*h/mL) | NM+UM, steady state |      1060 |       979 |  -7.7% |
+| AUC0-∞ (obs) (ng\*h/mL) | IM, steady state    |      1480 |      1370 |  -7.7% |
+| AUClast (ng\*h/mL)      | NM+UM, single dose  |       717 |       668 |  -6.9% |
+| AUClast (ng\*h/mL)      | IM, single dose     |       859 |       810 |  -5.7% |
+| AUClast (ng\*h/mL)      | NM+UM, steady state |      1030 |       951 |  -7.7% |
+| AUClast (ng\*h/mL)      | IM, steady state    |      1390 |      1290 |  -7.1% |
+| t½ (h)                  | NM+UM, single dose  |       4.2 |      4.34 |  +3.3% |
+| t½ (h)                  | IM, single dose     |       5.3 |      5.29 |  -0.1% |
+| t½ (h)                  | NM+UM, steady state |       4.2 |      4.34 |  +3.3% |
+| t½ (h)                  | IM, steady state    |       5.3 |       5.3 |  -0.0% |
+| CL/F (L/h)              | NM+UM, single dose  |        51 |        55 |  +7.9% |
+| CL/F (L/h)              | IM, single dose     |      41.3 |      44.1 |  +6.9% |
+| CL/F (L/h)              | NM+UM, steady state |      50.9 |        55 |  +8.1% |
+| CL/F (L/h)              | IM, steady state    |      40.9 |      44.1 |  +7.9% |
+| Vz/F (L)                | NM+UM, single dose  |       309 |       325 |  +5.1% |
+| Vz/F (L)                | IM, single dose     |       316 |       320 |  +1.1% |
+| Vz/F (L)                | NM+UM, steady state |       308 |       325 |  +5.5% |
+| Vz/F (L)                | IM, steady state    |       311 |       320 |  +2.7% |
 
 Simulated versus published (Table 4 of Soria-Chacartegui 2026) exposure
 metrics by CYP2D6 phenotype. \* differs from the reference by more than
@@ -598,9 +598,9 @@ knitr::kable(contrast, digits = 4,
 
 | Quantity | Simulated | Published | Note |
 |:---|---:|---:|:---|
-| AUC0-inf ratio, IM / NM+UM, single dose | 1.2468 | 1.2327 | closed form 1/(1 - 0.198) = 1.2469 |
-| AUC0-24 ratio, IM / NM+UM, single dose | 1.2084 | 1.1980 | Results 3.5: ‘23% higher AUC’ after a single dose |
-| AUC0-inf ratio, IM / NM+UM, steady state | 1.3820 | 1.3962 | Results 3.5: differences ‘climbed up to 40%’ at steady state |
+| AUC0-inf ratio, IM / NM+UM, single dose | 1.2467 | 1.2327 | closed form 1/(1 - 0.198) = 1.2469 |
+| AUC0-24 ratio, IM / NM+UM, single dose | 1.2137 | 1.1980 | Results 3.5: ‘23% higher AUC’ after a single dose |
+| AUC0-inf ratio, IM / NM+UM, steady state | 1.3959 | 1.3962 | Results 3.5: differences ‘climbed up to 40%’ at steady state |
 
 CYP2D6 intermediate-metabolizer exposure contrast. {.table}
 
@@ -698,7 +698,7 @@ stopifnot(
 
 - **`t1/2` and `Vz` carry the largest residuals, and the cause is the
   NCA terminal-window choice, not the model.** Every exposure metric
-  agrees closely with Table 4 – AUC to within 3.3%, `Cmax` and `CL` to
+  agrees closely with Table 4 – AUC to within 7.7%, `Cmax` and `CL` to
   within a few percent – but the simulated half-life runs about 8% (NM +
   UM) and 4% (IM) above the tabulated values, and `Vz = CL / lambda_z`
   inherits that offset almost exactly.
@@ -711,7 +711,7 @@ stopifnot(
   parameters imply, because a terminal regression run over a 24 h window
   on a drug with a 4.4 h terminal half-life and a fast, high-`Q`
   distribution phase still picks up some distributional curvature. The
-  value obtained here, 4.47 h, is the closer of the two to the model’s
+  value obtained here, 4.34 h, is the closer of the two to the model’s
   own terminal slope. No parameter was adjusted to narrow the gap.
 
 - **No parameter was tuned.** Every value comes from Table 2 of the

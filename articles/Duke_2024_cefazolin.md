@@ -145,53 +145,53 @@ mod
 #>   # X(1) = unbound drug in the central compartment, X(2) = albumin-bound
 #>   # drug, X(3) = peripheral drug (Figure S1 compartment diagram).
 #>   compartmentData <- list(
-#>     central     = list(analyte = "unbound cefazolin", units = "mg", specimen = "plasma", verified = FALSE),
-#>     complex     = list(analyte = "albumin-bound cefazolin", units = "mg", specimen = "plasma", verified = FALSE),
+#>     central = list(analyte = "unbound cefazolin", units = "mg", specimen = "plasma", verified = FALSE),
+#>     complex = list(analyte = "albumin-bound cefazolin", units = "mg", specimen = "plasma", verified = FALSE),
 #>     peripheral1 = list(analyte = "cefazolin", units = "mg", specimen = "plasma", verified = FALSE)
 #>   )
 #> 
 #>   covariateData <- list(
 #>     T_HEMODIAL_INIT = list(
-#>       description        = "Time the patient has been established on intermittent haemodialysis therapy for end-stage kidney disease, measured from the initiation of that therapy",
-#>       units              = "month",
-#>       type               = "continuous",
+#>       description = "Time the patient has been established on intermittent haemodialysis therapy for end-stage kidney disease, measured from the initiation of that therapy",
+#>       units = "month",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = "Time-fixed per subject in the source analysis. The only covariate retained in the final model (Duke 2024 Results: TOH 'was the only covariate retained in the final pharmacokinetic model'). Enters as an inverse-power effect on the interdialytic clearance arm, CL = CLnHD * (59 / TOH)^0.28 (Duke 2024 Results equation 'When dialysis is off', reproduced verbatim as 'CL=CLnHD*(59/TOH)**0.28' in the Table S3 Pmetrics model file). The 59-month reference is the cohort median TOH (Table 1: 59 months, IQR 24.3-120), so the effect is centred rather than arbitrary -- unlike the bilirubin reference in the sibling model Tsai_2023_ceftriaxone.R. Clearance and TOH followed an inverse-power relationship with r^2 = 0.433. The Discussion reads TOH as 'a surrogate for the incremental reduction in the residual renal function from the initiation of haemodialysis therapy', which is why clearance FALLS as TOH rises; the authors state this covariate had not previously been included in a popPK model for patients requiring intermittent haemodialysis. Must be strictly positive: the covariate enters as a denominator, so TOH = 0 is undefined. The paper's own dosing simulations (Table 4) span TOH = 6, 12, 24, 36 and 60 months.",
-#>       source_name        = "TOH"
+#>       notes = "Time-fixed per subject in the source analysis. The only covariate retained in the final model (Duke 2024 Results: TOH 'was the only covariate retained in the final pharmacokinetic model'). Enters as an inverse-power effect on the interdialytic clearance arm, CL = CLnHD * (59 / TOH)^0.28 (Duke 2024 Results equation 'When dialysis is off', reproduced verbatim as 'CL=CLnHD*(59/TOH)**0.28' in the Table S3 Pmetrics model file). The 59-month reference is the cohort median TOH (Table 1: 59 months, IQR 24.3-120), so the effect is centred rather than arbitrary -- unlike the bilirubin reference in the sibling model Tsai_2023_ceftriaxone.R. Clearance and TOH followed an inverse-power relationship with r^2 = 0.433. The Discussion reads TOH as 'a surrogate for the incremental reduction in the residual renal function from the initiation of haemodialysis therapy', which is why clearance FALLS as TOH rises; the authors state this covariate had not previously been included in a popPK model for patients requiring intermittent haemodialysis. Must be strictly positive: the covariate enters as a denominator, so TOH = 0 is undefined. The paper's own dosing simulations (Table 4) span TOH = 6, 12, 24, 36 and 60 months.",
+#>       source_name = "TOH"
 #>     ),
 #>     ALB = list(
-#>       description        = "Serum albumin concentration",
-#>       units              = "g/L",
-#>       type               = "continuous",
+#>       description = "Serum albumin concentration",
+#>       units = "g/L",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = "Time-fixed per subject in the source analysis. Not a covariate on any structural PK parameter; instead it sets the albumin-binding capacity of the central compartment through the Table S3 secondary variable Bmax1 = Alb * Vc * 4.1 (mg). The 4.1 mg cefazolin per g albumin constant encodes the paper's Bmax equation Bmax = Alb * N * (MCFZ / MAlb) * 1000 with N = 0.6 binding sites per albumin molecule, MCFZ = 455 g/mol and MAlb = 66500 g/mol: 0.6 * 455 / 66500 * 1000 = 4.105, rounded to 4.1 in the model file. Cohort median 38.5 g/L (IQR 35.5-40); the Discussion notes the absence of hypoalbuminaemia (< 24 g/L) in this cohort and attributes the unusually high unbound fraction to competitive displacement by uraemia (median pre-dialysis urea 19.6 mmol/L) and by heparin-induced free fatty acids instead.",
-#>       source_name        = "Alb"
+#>       notes = "Time-fixed per subject in the source analysis. Not a covariate on any structural PK parameter; instead it sets the albumin-binding capacity of the central compartment through the Table S3 secondary variable Bmax1 = Alb * Vc * 4.1 (mg). The 4.1 mg cefazolin per g albumin constant encodes the paper's Bmax equation Bmax = Alb * N * (MCFZ / MAlb) * 1000 with N = 0.6 binding sites per albumin molecule, MCFZ = 455 g/mol and MAlb = 66500 g/mol: 0.6 * 455 / 66500 * 1000 = 4.105, rounded to 4.1 in the model file. Cohort median 38.5 g/L (IQR 35.5-40); the Discussion notes the absence of hypoalbuminaemia (< 24 g/L) in this cohort and attributes the unusually high unbound fraction to competitive displacement by uraemia (median pre-dialysis urea 19.6 mmol/L) and by heparin-induced free fatty acids instead.",
+#>       source_name = "Alb"
 #>     ),
 #>     RRT_HEMODIAL_ACTIVE = list(
-#>       description        = "Haemodialysis-active indicator (1 while an intermittent high-flux haemodialysis session is running, 0 in the interdialytic interval)",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Haemodialysis-active indicator (1 while an intermittent high-flux haemodialysis session is running, 0 in the interdialytic interval)",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (no dialysis session running)",
-#>       notes              = "Time-varying within subject. Implemented in the source as the Pmetrics conditional '&IF (HDx.EQ.1) CL=CLHD' (Table S3 secondary variables), i.e. the dialytic clearance REPLACES the interdialytic clearance arm for the duration of the session rather than being added to it. This is the opposite composition rule from the additive dialysis-arm precedents (Veinstein_2013_gentamicin.R, Eyler_2014_ertapenem.R, Jacobs_2016_colistin.R, Dohmann_2025_piperacillin.R) and follows the replacement precedent already set by the same group's Tsai_2023_ceftriaxone.R; it is encoded here as the paper wrote it. Because CLHD replaces CL entirely, the T_HEMODIAL_INIT covariate does not act during a dialysis session. Unbound cefazolin clearance was 41-fold higher during dialysis (16.36 vs 0.40 L/h), which the authors attribute to the high-flux membranes used (FX80 / FX100 / FX120, Fresenius). Doses in this study were given post-dialysis (slow push over 5 min at the completion of the session), so RRT_HEMODIAL_ACTIVE = 0 at the dosing times of the observed data. Median dialysis session duration was 4.0 h (Table 2).",
-#>       source_name        = "HDx"
+#>       notes = "Time-varying within subject. Implemented in the source as the Pmetrics conditional '&IF (HDx.EQ.1) CL=CLHD' (Table S3 secondary variables), i.e. the dialytic clearance REPLACES the interdialytic clearance arm for the duration of the session rather than being added to it. This is the opposite composition rule from the additive dialysis-arm precedents (Veinstein_2013_gentamicin.R, Eyler_2014_ertapenem.R, Jacobs_2016_colistin.R, Dohmann_2025_piperacillin.R) and follows the replacement precedent already set by the same group's Tsai_2023_ceftriaxone.R; it is encoded here as the paper wrote it. Because CLHD replaces CL entirely, the T_HEMODIAL_INIT covariate does not act during a dialysis session. Unbound cefazolin clearance was 41-fold higher during dialysis (16.36 vs 0.40 L/h), which the authors attribute to the high-flux membranes used (FX80 / FX100 / FX120, Fresenius). Doses in this study were given post-dialysis (slow push over 5 min at the completion of the session), so RRT_HEMODIAL_ACTIVE = 0 at the dosing times of the observed data. Median dialysis session duration was 4.0 h (Table 2).",
+#>       source_name = "HDx"
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species          = "human",
-#>     n_subjects       = 16L,
-#>     n_studies        = 1L,
-#>     n_samples        = 130L,
-#>     age_median       = "51 years (IQR 38.8-62.3); full range not reported",
-#>     weight_median    = "69.5 kg (IQR 58.5-76.3); full range not reported",
-#>     sex_female_pct   = 87.5,
-#>     race_ethnicity   = "100% Indigenous Australian (an explicit inclusion criterion). The Discussion notes that this population commences haemodialysis considerably younger than their non-Indigenous counterparts, which is why vein preservation -- and therefore a post-dialysis regimen requiring no separate cannulation -- carries particular weight.",
-#>     disease_state    = "Adults with end-stage kidney disease established on three-times-weekly intermittent high-flux haemodialysis, treated with cefazolin for an active infection or for surgical prophylaxis. Indications as printed in Table 1: line-associated cellulitis (4), wound infection (3), abscess (3), bacteraemia (3), diabetic foot infection (2), periorbital cellulitis (2), surgical prophylaxis (1). Baseline laboratory values (median, IQR): albumin 38.5 g/L (35.5-40), pre-dialysis urea 19.6 mmol/L (16.2-22.8), total bilirubin 7.5 umol/L (6-12), ALP 233 U/L (179-307), GGT 142 U/L (71-192), ALT 9 U/L (5.75-18.75). No adverse drug reactions were reported.",
-#>     renal_function   = "End-stage kidney disease requiring three-times-weekly intermittent haemodialysis. Residual renal function could not be quantified because serum creatinine in maintenance-dialysis patients is dominated by time since the last session (stated study limitation); the authors used months since initiation of haemodialysis (TOH, median 59, IQR 24.3-120) as its surrogate instead. Dialysers were high-flux throughout: FX80 in 5 subjects, FX100 in 10, FX120 in 1 (ultrafiltration coefficients 59, 73 and 87 mL/h/mmHg; surface areas 1.8, 2.2 and 2.5 m^2). Dialysis parameters (Table S4, mean +/- SD): blood flow rate 348 +/- 47 mL/min, ultrafiltration volume 2939 +/- 819 mL, Kt/V 1.69 +/- 0.37, recirculation 11.4 +/- 1.9%. No subject received haemodiafiltration.",
-#>     dose_range       = "2 g cefazolin (Cefazolin-AFT) reconstituted in 10 mL water-for-injection and injected through the arteriovenous fistula or central line as a slow push over 5 min at the completion of each dialysis session, three times weekly.",
-#>     regions          = "Australia (renal dialysis unit of a remote Northern Territory hospital, Alice Springs)",
-#>     protein_binding  = "Measured directly rather than assumed: median unbound fraction 0.38 (IQR 0.32-0.46), roughly double the 0.21 reported for healthy volunteers. Median pre-dialysis unbound trough was 35.7 mg/L (IQR 27.5-45.7) over a 2-day interval and 17.7 mg/L (IQR 13.5-31.4) over a 3-day interval; the lowest pre-dialysis unbound concentration observed in the whole study was 9.1 mg/L. The unbound fraction was higher immediately before dialysis than immediately after (mean 36.5% +/- 6.8% versus 24.5% +/- 14.3%).",
-#>     notes            = "Prospective single-centre population PK study. 260 concentrations (130 total, 130 unbound) from 16 patients. Plasma sampled over two dosing or dialysis intervals: directly before dialysis, immediately after dialysis, then 5, 15, 60 and 1440 min after the dose, then at 48 h or immediately before the next dialysis session (whichever came first), and again before the next session when the interval was 72 h. Total and unbound cefazolin assayed 1-500 mg/L by validated UHPLC-MS/MS (Table S1); the unbound fraction was isolated by ultrafiltration at 37 C with Centrifree devices. Exclusion criteria: pregnancy, cephalosporin allergy, or a requirement for more frequent dialysis."
+#>     species = "human",
+#>     n_subjects = 16L,
+#>     n_studies = 1L,
+#>     n_samples = 130L,
+#>     age_median = "51 years (IQR 38.8-62.3); full range not reported",
+#>     weight_median = "69.5 kg (IQR 58.5-76.3); full range not reported",
+#>     sex_female_pct = 87.5,
+#>     race_ethnicity = "100% Indigenous Australian (an explicit inclusion criterion). The Discussion notes that this population commences haemodialysis considerably younger than their non-Indigenous counterparts, which is why vein preservation -- and therefore a post-dialysis regimen requiring no separate cannulation -- carries particular weight.",
+#>     disease_state = "Adults with end-stage kidney disease established on three-times-weekly intermittent high-flux haemodialysis, treated with cefazolin for an active infection or for surgical prophylaxis. Indications as printed in Table 1: line-associated cellulitis (4), wound infection (3), abscess (3), bacteraemia (3), diabetic foot infection (2), periorbital cellulitis (2), surgical prophylaxis (1). Baseline laboratory values (median, IQR): albumin 38.5 g/L (35.5-40), pre-dialysis urea 19.6 mmol/L (16.2-22.8), total bilirubin 7.5 umol/L (6-12), ALP 233 U/L (179-307), GGT 142 U/L (71-192), ALT 9 U/L (5.75-18.75). No adverse drug reactions were reported.",
+#>     renal_function = "End-stage kidney disease requiring three-times-weekly intermittent haemodialysis. Residual renal function could not be quantified because serum creatinine in maintenance-dialysis patients is dominated by time since the last session (stated study limitation); the authors used months since initiation of haemodialysis (TOH, median 59, IQR 24.3-120) as its surrogate instead. Dialysers were high-flux throughout: FX80 in 5 subjects, FX100 in 10, FX120 in 1 (ultrafiltration coefficients 59, 73 and 87 mL/h/mmHg; surface areas 1.8, 2.2 and 2.5 m^2). Dialysis parameters (Table S4, mean +/- SD): blood flow rate 348 +/- 47 mL/min, ultrafiltration volume 2939 +/- 819 mL, Kt/V 1.69 +/- 0.37, recirculation 11.4 +/- 1.9%. No subject received haemodiafiltration.",
+#>     dose_range = "2 g cefazolin (Cefazolin-AFT) reconstituted in 10 mL water-for-injection and injected through the arteriovenous fistula or central line as a slow push over 5 min at the completion of each dialysis session, three times weekly.",
+#>     regions = "Australia (renal dialysis unit of a remote Northern Territory hospital, Alice Springs)",
+#>     protein_binding = "Measured directly rather than assumed: median unbound fraction 0.38 (IQR 0.32-0.46), roughly double the 0.21 reported for healthy volunteers. Median pre-dialysis unbound trough was 35.7 mg/L (IQR 27.5-45.7) over a 2-day interval and 17.7 mg/L (IQR 13.5-31.4) over a 3-day interval; the lowest pre-dialysis unbound concentration observed in the whole study was 9.1 mg/L. The unbound fraction was higher immediately before dialysis than immediately after (mean 36.5% +/- 6.8% versus 24.5% +/- 14.3%).",
+#>     notes = "Prospective single-centre population PK study. 260 concentrations (130 total, 130 unbound) from 16 patients. Plasma sampled over two dosing or dialysis intervals: directly before dialysis, immediately after dialysis, then 5, 15, 60 and 1440 min after the dose, then at 48 h or immediately before the next dialysis session (whichever came first), and again before the next session when the interval was 72 h. Total and unbound cefazolin assayed 1-500 mg/L by validated UHPLC-MS/MS (Table S1); the unbound fraction was isolated by ultrafiltration at 37 C with Centrifree devices. Exclusion criteria: pregnancy, cephalosporin allergy, or a requirement for more frequent dialysis."
 #>   )
 #> 
 #>   ini({
@@ -362,7 +362,7 @@ mod
 #>     Cunbound ~ add(addSd_Cunbound) + prop(propSd_Cunbound)
 #>   })
 #> }
-#> <environment: 0x55becf809710>
+#> <environment: 0x55d5e30c6a48>
 ```
 
 ## Virtual cohort
@@ -614,7 +614,7 @@ tibble(
 
 | Unbound fraction     |    Q1 | Median |    Q3 |
 |:---------------------|------:|-------:|------:|
-| Simulated            | 0.305 |  0.362 | 0.409 |
+| Simulated            | 0.307 |  0.353 | 0.401 |
 | Duke 2024 (observed) | 0.320 |  0.380 | 0.460 |
 
 Unbound fraction: simulated vs Duke 2024 Table 2. {.table}
@@ -694,9 +694,9 @@ tibble(
 
 | Analyte | Source    |   Q1 | Median |   Q3 |
 |:--------|:----------|-----:|-------:|-----:|
-| Unbound | Simulated | 71.7 |   82.2 | 89.3 |
+| Unbound | Simulated | 72.4 |   81.0 | 89.4 |
 | Unbound | Duke 2024 | 78.7 |   83.3 | 86.3 |
-| Total   | Simulated | 63.3 |   75.0 | 84.5 |
+| Total   | Simulated | 63.8 |   72.9 | 85.0 |
 | Total   | Duke 2024 | 69.2 |   72.6 | 75.8 |
 
 Concentration reduction across one 4.0 h dialysis session, simulated vs
@@ -742,13 +742,13 @@ knitr::kable(trough_tbl, digits = 1, caption = paste(
 
 | Interval | Analyte | Source    |   Q1 | Median |    Q3 |
 |:---------|:--------|:----------|-----:|-------:|------:|
-| 72 h     | Unbound | Simulated | 17.0 |   27.7 |  36.7 |
+| 72 h     | Unbound | Simulated | 16.5 |   25.3 |  34.6 |
 | 72 h     | Unbound | Duke 2024 | 13.5 |   17.7 |  31.4 |
-| 72 h     | Total   | Simulated | 62.9 |   89.1 | 109.7 |
+| 72 h     | Total   | Simulated | 57.2 |   84.4 | 108.8 |
 | 72 h     | Total   | Duke 2024 | 38.2 |   53.0 |  67.2 |
-| 48 h     | Unbound | Simulated | 25.7 |   35.5 |  44.1 |
+| 48 h     | Unbound | Simulated | 24.7 |   34.0 |  43.4 |
 | 48 h     | Unbound | Duke 2024 | 27.5 |   35.7 |  45.7 |
-| 48 h     | Total   | Simulated | 84.1 |  104.7 | 128.2 |
+| 48 h     | Total   | Simulated | 79.6 |  102.7 | 128.8 |
 | 48 h     | Total   | Duke 2024 | 76.6 |   98.7 | 114.3 |
 
 Steady-state pre-dialysis troughs (mg/L), simulated vs Duke 2024 Table
@@ -767,7 +767,7 @@ c(simulated_ratio = median(tr_48$Cunbound) / median(tr_72$Cunbound),
   implied_by_mean_t_half   = 2^(24 / 65.31),   # Table 3 t1/2nHD mean
   implied_by_median_t_half = 2^(24 / 41.12))   # Table 3 t1/2nHD median
 #>          simulated_ratio           reported_ratio   implied_by_mean_t_half 
-#>                 1.281017                 2.016949                 1.290096 
+#>                 1.341461                 2.016949                 1.290096 
 #> implied_by_median_t_half 
 #>                 1.498644
 ```
@@ -845,13 +845,13 @@ bind_rows(summarise_nca(nca_total, "Total"),
 
 | Analyte | NCA parameter |  Median |      Q1 |      Q3 |
 |:--------|:--------------|--------:|--------:|--------:|
-| Total   | auclast       | 7344.03 | 5895.54 | 8916.98 |
-| Total   | cmax          |  276.84 |  242.68 |  311.86 |
-| Total   | half.life     |   75.94 |   46.68 |  120.63 |
+| Total   | auclast       | 7327.06 | 5900.48 | 8839.94 |
+| Total   | cmax          |  259.32 |  236.27 |  298.67 |
+| Total   | half.life     |   69.21 |   44.45 |  119.59 |
 | Total   | tmax          |    0.10 |    0.10 |    0.10 |
-| Unbound | auclast       | 2403.34 | 1901.10 | 3156.22 |
-| Unbound | cmax          |  152.75 |  124.63 |  187.25 |
-| Unbound | half.life     |   56.26 |   37.23 |   88.41 |
+| Unbound | auclast       | 2383.09 | 1884.55 | 3223.73 |
+| Unbound | cmax          |  142.10 |  115.99 |  174.34 |
+| Unbound | half.life     |   52.38 |   35.40 |   88.26 |
 | Unbound | tmax          |    0.10 |    0.10 |    0.10 |
 
 Simulated NCA over the 72 h interdialytic interval after a single 2 g
@@ -889,7 +889,7 @@ knitr::kable(cmp, caption = paste(
 
 | NCA parameter | treatment         | Reference | Simulated | % diff |
 |:--------------|:------------------|:----------|:----------|:-------|
-| t½ (h)        | 2 g post-dialysis | 65.3      | 75.9      | +16.3% |
+| t½ (h)        | 2 g post-dialysis | 65.3      | 69.2      | +6.0%  |
 
 Simulated vs published interdialytic half-life (total cefazolin). \*
 marks a difference of more than 20% from the reference. {.table}
@@ -920,13 +920,13 @@ tibble::tribble(
 
 | Quantity                                   | Simulated | Duke 2024 reported |
 |:-------------------------------------------|----------:|-------------------:|
-| Unbound trough, 48 h interval (mg/L)       |     35.50 |              35.70 |
-| Unbound trough, 72 h interval (mg/L)       |     27.71 |              17.70 |
-| Total trough, 48 h interval (mg/L)         |    104.71 |              98.70 |
-| Total trough, 72 h interval (mg/L)         |     89.10 |              53.00 |
-| Unbound fraction                           |      0.36 |               0.38 |
-| Unbound reduction per dialysis session (%) |     82.25 |              83.30 |
-| Total reduction per dialysis session (%)   |     75.04 |              72.60 |
+| Unbound trough, 48 h interval (mg/L)       |     33.98 |              35.70 |
+| Unbound trough, 72 h interval (mg/L)       |     25.33 |              17.70 |
+| Total trough, 48 h interval (mg/L)         |    102.72 |              98.70 |
+| Total trough, 72 h interval (mg/L)         |     84.43 |              53.00 |
+| Unbound fraction                           |      0.35 |               0.38 |
+| Unbound reduction per dialysis session (%) |     81.01 |              83.30 |
+| Total reduction per dialysis session (%)   |     72.90 |              72.60 |
 | Interdialytic CL at TOH 59 months (L/h)    |      0.40 |               0.40 |
 | Dialytic / interdialytic clearance ratio   |     40.90 |              40.90 |
 
@@ -985,17 +985,17 @@ knitr::kable(pta_tbl, digits = 1, caption = paste(
 ))
 ```
 
-| Regimen | TOH (months) | 0.125 | 0.25 |   0.5 |     1 |     2 |    4 |    8 |   16 |
-|:--------|-------------:|------:|-----:|------:|------:|------:|-----:|-----:|-----:|
-| 1 g     |            6 |   100 |  100 |  97.5 |  94.5 |  90.5 | 76.5 | 42.5 |  6.5 |
-| 1 g     |           24 |   100 |  100 | 100.0 | 100.0 |  96.5 | 91.5 | 72.5 | 24.0 |
-| 1 g     |           60 |   100 |  100 | 100.0 | 100.0 | 100.0 | 96.0 | 87.0 | 39.0 |
-| 2 g     |            6 |   100 |  100 |  99.5 |  96.0 |  92.5 | 87.5 | 73.5 | 39.5 |
-| 2 g     |           24 |   100 |  100 | 100.0 | 100.0 |  98.5 | 95.0 | 90.0 | 67.0 |
-| 2 g     |           60 |   100 |  100 | 100.0 | 100.0 | 100.0 | 98.5 | 95.0 | 84.5 |
+| Regimen | TOH (months) | 0.125 |  0.25 |   0.5 |     1 |     2 |    4 |    8 |   16 |
+|:--------|-------------:|------:|------:|------:|------:|------:|-----:|-----:|-----:|
+| 1 g     |            6 |   100 |  99.5 |  99.5 |  98.5 |  90.0 | 75.5 | 38.0 |  4.0 |
+| 1 g     |           24 |   100 | 100.0 | 100.0 | 100.0 |  99.0 | 94.5 | 70.0 | 16.0 |
+| 1 g     |           60 |   100 | 100.0 | 100.0 | 100.0 | 100.0 | 99.0 | 87.0 | 33.0 |
+| 2 g     |            6 |   100 | 100.0 |  99.5 |  99.0 |  97.5 | 87.5 | 70.5 | 33.5 |
+| 2 g     |           24 |   100 | 100.0 | 100.0 | 100.0 |  99.5 | 99.0 | 89.5 | 63.0 |
+| 2 g     |           60 |   100 | 100.0 | 100.0 | 100.0 | 100.0 | 99.5 | 98.5 | 82.0 |
 
 Simulated PTA (%) for 100% fT \> MIC over the final 24 h of a 72 h
-interval. Compare Duke 2024 Table 4. {.table}
+interval. Compare Duke 2024 Table 4. {.table style="width:100%;"}
 
 The paper’s two headline numbers are both at MIC = 2 mg/L with TOH = 6
 months: 99.7% for the 2 g regimen and 95.4% for the 1 g regimen.
@@ -1019,8 +1019,8 @@ knitr::kable(
 
 | Dose (mg) | Simulated PTA at MIC 2 (%) | Duke 2024 Table 4 |
 |----------:|---------------------------:|------------------:|
-|      1000 |                       90.5 |              95.4 |
-|      2000 |                       92.5 |              99.7 |
+|      1000 |                       90.0 |              95.4 |
+|      2000 |                       97.5 |              99.7 |
 
 Headline PTA at MIC 2 mg/L, TOH 6 months. {.table}
 

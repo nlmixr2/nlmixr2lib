@@ -447,8 +447,8 @@ cohort |>
 
 | Week | Simulated median | Simulated q10 | Simulated q90 | Observed median | Observed min | Observed max |
 |---:|---:|---:|---:|---:|---:|---:|
-| 12 | 14.0 | 9.6 | 26.6 | 15.9 | 4.6 | 36.8 |
-| 16 | 15.2 | 10.5 | 28.9 | 14.6 | 6.1 | 39.4 |
+| 12 | 15.1 | 10.0 | 25.4 | 15.9 | 4.6 | 36.8 |
+| 16 | 16.4 | 10.9 | 27.2 | 14.6 | 6.1 | 39.4 |
 
 200 virtual placebo arms versus the observed across-trial distribution
 (Serrano 2026 Results 3.1). {.table style="width:100%;"}
@@ -475,7 +475,7 @@ stopifnot(
 )
 sprintf("Week 12 simulated median %.1f%% vs observed 15.9%%; q10-q90 %.1f-%.1f%%",
         median(wk12), quantile(wk12, 0.10), quantile(wk12, 0.90))
-#> [1] "Week 12 simulated median 14.0% vs observed 15.9%; q10-q90 9.6-26.6%"
+#> [1] "Week 12 simulated median 15.1% vs observed 15.9%; q10-q90 10.0-25.4%"
 ```
 
 The simulated Week-16 median (about 16%) sits slightly *above* the
@@ -1113,7 +1113,7 @@ sprintf("binomial residual SD at N = %d: expected %.2f pp, realised %.2f pp",
         n_per_arm,
         100 * sqrt(mean(obs_arms$prob_easi75 * (1 - obs_arms$prob_easi75) / n_per_arm)),
         sd(obs_arms$observed_pct - obs_arms$rate_pct))
-#> [1] "binomial residual SD at N = 78: expected 4.13 pp, realised 4.67 pp"
+#> [1] "binomial residual SD at N = 78: expected 4.16 pp, realised 4.78 pp"
 ```
 
 ``` r

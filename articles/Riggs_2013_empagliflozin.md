@@ -539,8 +539,8 @@ dp <- vpc |>
 # Common random numbers across the two arms are NOT used here (each arm has its
 # own subjects), so compare the population medians, which are robust.
 summary(dp$pct_diff)
-#>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>  -4.955   1.517   3.924   2.741   5.139   6.872
+#>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+#> -15.9901 -11.0871  -9.8665  -9.4730  -6.8631   0.4955
 stopifnot(abs(median(dp$pct_diff)) < 10)
 ```
 
@@ -588,11 +588,11 @@ head(nca_res)
 #> # A tibble: 6 × 8
 #>   treatment    id start   end PPTESTCD PPORRES exclude PPORRESU
 #>   <fct>     <int> <dbl> <dbl> <chr>      <dbl> <chr>   <chr>   
-#> 1 10 mg QD      1   648   672 auclast  1869.   <NA>    h*nmol/L
-#> 2 10 mg QD      1   648   672 cmax      322.   <NA>    nmol/L  
-#> 3 10 mg QD      1   648   672 cmin       14.3  <NA>    nmol/L  
+#> 1 10 mg QD      1   648   672 auclast  2379.   <NA>    h*nmol/L
+#> 2 10 mg QD      1   648   672 cmax      304.   <NA>    nmol/L  
+#> 3 10 mg QD      1   648   672 cmin       32.1  <NA>    nmol/L  
 #> 4 10 mg QD      1   648   672 tmax        1.25 <NA>    h       
-#> 5 10 mg QD      1   648   672 cav        77.9  <NA>    nmol/L  
+#> 5 10 mg QD      1   648   672 cav        99.1  <NA>    nmol/L  
 #> 6 10 mg QD      1   672   792 tmax        0    <NA>    h
 ```
 
@@ -625,8 +625,8 @@ hl_cmp <- nca_res |>
 
 stopifnot(nrow(hl_cmp) == 2L * n_per_arm)
 summary(hl_cmp$pct_diff)
-#>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-#> -0.73856 -0.23382 -0.13499 -0.17027 -0.06662 -0.00262
+#>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+#> -0.707211 -0.263112 -0.153078 -0.185071 -0.065186 -0.001535
 
 stopifnot(
   # Same drawn parameters on both sides: the residual is pure regression /
@@ -692,8 +692,8 @@ knitr::kable(
 
 | NCA parameter | treatment | Reference | Simulated | % diff |
 |:--------------|:----------|:----------|:----------|:-------|
-| t½ (h)        | 10 mg QD  | 14.5      | 13.7      | -5.4%  |
-| t½ (h)        | 25 mg QD  | 14.5      | 13.5      | -6.7%  |
+| t½ (h)        | 10 mg QD  | 14.5      | 13.8      | -4.9%  |
+| t½ (h)        | 25 mg QD  | 14.5      | 13.7      | -5.2%  |
 
 Median simulated steady-state terminal half-life versus the midpoint of
 the 10-19 h observed range quoted in Riggs 2013 (Introduction, citing
@@ -714,8 +714,8 @@ knitr::kable(
 
 | Treatment | Cavg,ss (nmol/L) | Cmax,ss (nmol/L) | t1/2 (h) | Tmax (h) |
 |:----------|-----------------:|-----------------:|---------:|---------:|
-| 10 mg QD  |            86.40 |           292.64 |    13.72 |     1.25 |
-| 25 mg QD  |           224.17 |           767.44 |    13.53 |     1.25 |
+| 10 mg QD  |            92.43 |           300.24 |    13.80 |     1.25 |
+| 25 mg QD  |           215.60 |           732.50 |    13.74 |     1.25 |
 
 Median simulated steady-state NCA parameters over the final 24 h dosing
 interval. {.table}

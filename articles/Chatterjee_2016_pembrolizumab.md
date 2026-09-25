@@ -441,9 +441,9 @@ knitr::kable(
 
 | Regimen | AUCss-6weeks, median (mg\*day/L) | 5th percentile | 95th percentile |
 |:---|---:|---:|---:|
-| 2 mg/kg Q3W | 1331 | 718 | 2585 |
-| 10 mg/kg Q3W | 6655 | 3590 | 12923 |
-| 10 mg/kg Q2W | 9983 | 5385 | 19385 |
+| 2 mg/kg Q3W | 1406 | 676 | 2763 |
+| 10 mg/kg Q3W | 7030 | 3378 | 13817 |
+| 10 mg/kg Q2W | 10545 | 5067 | 20726 |
 
 Derived pembrolizumab AUCss-6weeks by regimen, from individual
 clearances of the companion Ahamadi 2017 popPK model. {.table}
@@ -464,7 +464,7 @@ q3w <- med$m[med$arm == "10 mg/kg Q3W"]
 q2w <- med$m[med$arm == "10 mg/kg Q2W"]
 c(`10 mg/kg Q3W median` = q3w, `AUCtypical (paper)` = 7079, `10 mg/kg Q2W median` = q2w)
 #> 10 mg/kg Q3W median  AUCtypical (paper) 10 mg/kg Q2W median 
-#>            6655.476            7079.000            9983.215
+#>            7029.749            7079.000           10544.623
 stopifnot(q3w < 7079, 7079 < q2w)
 ```
 
@@ -627,9 +627,9 @@ knitr::kable(dplyr::rename(resp, `Regimen` = arm), digits = 1,
 
 | Regimen | Response | Stable disease | Progressive disease | Published response rate | Difference |
 |:---|---:|---:|---:|---:|---:|
-| 2 mg/kg Q3W | 43.5 | 34.5 | 22.0 | 39 | 4.5 |
-| 10 mg/kg Q3W | 48.5 | 30.0 | 21.5 | 40 | 8.5 |
-| 10 mg/kg Q2W | 49.0 | 29.5 | 21.5 | 44 | 5.0 |
+| 2 mg/kg Q3W | 35.0 | 38.5 | 26.5 | 39 | -4.0 |
+| 10 mg/kg Q3W | 39.5 | 35.0 | 25.5 | 40 | -0.5 |
+| 10 mg/kg Q2W | 42.5 | 32.5 | 25.0 | 44 | -1.5 |
 
 Simulated week-27 response categories (%) for PD-L1 TPS \>= 50%, against
 the medians reported in Chatterjee 2016 Results for Figure 3A. {.table
@@ -721,9 +721,9 @@ knitr::kable(dplyr::rename(resp_b, `Regimen` = arm), digits = 1,
 
 | Regimen      | Response | Stable disease | Progressive disease |
 |:-------------|---------:|---------------:|--------------------:|
-| 2 mg/kg Q3W  |     28.5 |           42.5 |                29.0 |
-| 10 mg/kg Q3W |     35.0 |           37.5 |                27.5 |
-| 10 mg/kg Q2W |     36.0 |           37.0 |                27.0 |
+| 2 mg/kg Q3W  |     21.5 |           49.0 |                29.5 |
+| 10 mg/kg Q3W |     25.5 |           45.5 |                29.0 |
+| 10 mg/kg Q2W |     27.5 |           44.0 |                28.5 |
 
 Simulated week-27 response categories (%) for the PD-L1 TPS 1% to 49%
 reference stratum (Figure 3B; no published point estimates). {.table}
@@ -777,9 +777,9 @@ span <- slope * diff(log(range(
 c(`slope (% per log-AUC unit)` = slope,
   `swing across 2 to 10 mg/kg Q2W (% points)` = span)
 #>                slope (% per log-AUC unit) 
-#>                                  1.233811 
+#>                                 -6.971772 
 #> swing across 2 to 10 mg/kg Q2W (% points) 
-#>                                  2.486009
+#>                                -14.047445
 
 ggplot2::ggplot(wk18, ggplot2::aes(AUC_PEMBRO, pct)) +
   ggplot2::geom_point(ggplot2::aes(colour = arm), alpha = 0.35, size = 1) +

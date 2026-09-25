@@ -612,13 +612,13 @@ nca_tbl |>
 | Patient, 50 mg fasted | Cmax | 1365.22 | 745.01 | 2762.15 |
 | Patient, 50 mg fasted | Cmin | 109.39 | 9.03 | 467.89 |
 | Patient, 50 mg fasted | Tmax | 2.40 | 1.32 | 4.23 |
-| Patient, 50 mg fed | AUClast | 14899.13 | 7094.29 | 28400.40 |
+| Patient, 50 mg fed | AUClast | 14899.12 | 7094.29 | 28400.40 |
 | Patient, 50 mg fed | C24 (end of dosing interval) | 89.84 | 14.91 | 474.49 |
 | Patient, 50 mg fed | Cavg | 620.80 | 295.60 | 1183.35 |
 | Patient, 50 mg fed | Cmax | 2000.95 | 978.55 | 3454.18 |
 | Patient, 50 mg fed | Cmin | 89.83 | 14.91 | 474.14 |
 | Patient, 50 mg fed | Tmax | 2.92 | 1.60 | 6.68 |
-| Phase 1, 50 mg fasted | AUClast | 4705.17 | 2553.75 | 8626.96 |
+| Phase 1, 50 mg fasted | AUClast | 4705.17 | 2553.75 | 8626.95 |
 | Phase 1, 50 mg fasted | C24 (end of dosing interval) | 15.51 | 0.05 | 80.40 |
 | Phase 1, 50 mg fasted | Cavg | 196.05 | 106.41 | 359.46 |
 | Phase 1, 50 mg fasted | Cmax | 896.84 | 444.22 | 1568.08 |
@@ -660,7 +660,7 @@ sprintf(
   nrow(id_cohort), 100 * median(abs(id_cohort$rel_err)),
   100 * quantile(abs(id_cohort$rel_err), 0.9), 100 * max(abs(id_cohort$rel_err))
 )
-#> [1] "stochastic cohort (n = 450): median 0.00005%, 90th pctile 0.2734%, max 13.022%"
+#> [1] "stochastic cohort (n = 450): median 0.00005%, 90th pctile 0.2735%, max 13.022%"
 
 # The identity holds to machine-level accuracy for the typical participant.
 stopifnot(max(abs(id_typical$rel_err)) < 1e-4)

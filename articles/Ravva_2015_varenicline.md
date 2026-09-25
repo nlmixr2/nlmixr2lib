@@ -528,8 +528,8 @@ baseline |>
 
 | Arm              | Time (h) | Mean craving at baseline |
 |:-----------------|---------:|-------------------------:|
-| Placebo          |        0 |                     63.0 |
-| Varenicline 2 mg |        0 |                     66.6 |
+| Placebo          |        0 |                     65.3 |
+| Varenicline 2 mg |        0 |                     66.3 |
 
 Simulated baseline craving versus 64.5-67.5 read off Figure 2. {.table}
 
@@ -621,8 +621,8 @@ knitr::kable(cmp, caption = paste(
 
 | NCA parameter | arm              | Reference | Simulated | % diff   |
 |:--------------|:-----------------|:----------|:----------|:---------|
-| Cmax (ng/mL)  | Varenicline 2 mg | 8.27      | 6.05      | -26.9%\* |
-| Tmax (h)      | Varenicline 2 mg | 3         | 3         | +0.0%    |
+| Cmax (ng/mL)  | Varenicline 2 mg | 8.27      | 5.74      | -30.7%\* |
+| Tmax (h)      | Varenicline 2 mg | 3         | 2.5       | -16.7%   |
 
 Simulated versus published NCA for the single 2 mg dose. \* differs from
 the reference by more than 20%. Published Cmax is a mean (SD 1.47);

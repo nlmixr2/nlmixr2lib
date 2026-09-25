@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.7 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.8 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -492,7 +492,7 @@ observed_over_1 <- sim |>
   summarise(pct = 100 * mean(ffo > 1)) |>
   pull(pct)
 observed_over_1
-#> [1] 3
+#> [1] 2
 ```
 
 ``` r
@@ -619,11 +619,11 @@ knitr::kable(
 
 | Regimen | Cmin pub | Cmin sim | Cmin % diff | Cmax pub | Cmax sim | Cmax % diff | AUC pub | AUC sim | AUC % diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 20 mg QD fasted | 269 | 263 | -2.1 | 387 | 402 | 4.0 | 17534 | 21458 | 22.4 |
-| 40 mg 2d+1skip fed | 504 | 479 | -5.0 | 819 | 900 | 9.9 | 36697 | 42923 | 17.0 |
-| 40 mg QD fasted | 529 | 529 | 0.0 | 727 | 772 | 6.2 | 34270 | 42917 | 25.2 |
-| 40 mg q72h fed | 221 | 216 | -2.5 | 587 | 577 | -1.7 | 18088 | 21464 | 18.7 |
-| 60 mg 2d+1skip fasted | 469 | 480 | 2.3 | 765 | 872 | 14.0 | 34279 | 42923 | 25.2 |
+| 20 mg QD fasted | 269 | 263 | -2.2 | 387 | 398 | 2.8 | 17534 | 21341 | 21.7 |
+| 40 mg 2d+1skip fed | 504 | 479 | -5.0 | 819 | 890 | 8.7 | 36697 | 42689 | 16.3 |
+| 40 mg QD fasted | 529 | 528 | -0.1 | 727 | 765 | 5.3 | 34270 | 42683 | 24.5 |
+| 40 mg q72h fed | 221 | 216 | -2.4 | 587 | 569 | -3.1 | 18088 | 21348 | 18.0 |
+| 60 mg 2d+1skip fasted | 469 | 480 | 2.3 | 765 | 864 | 13.0 | 34279 | 42689 | 24.5 |
 
 Simulated cohort (n = 200 per arm) against Tan 2024 Table 3. Cmin in
 ng/mL, Cmax in ng/mL, AUCss,72h in ng\*h/mL. {.table}
@@ -770,11 +770,11 @@ knitr::kable(nca_tbl |> rename("NCA parameter" = PPTESTCD, "Mean" = mean),
 
 | NCA parameter |    Mean |
 |:--------------|--------:|
-| auclast       | 42916.4 |
-| cav           |   596.1 |
-| cmax          |   772.1 |
-| cmin          |   528.8 |
-| tmax          |    51.0 |
+| auclast       | 42682.5 |
+| cav           |   592.8 |
+| cmax          |   765.5 |
+| cmin          |   528.5 |
+| tmax          |    50.9 |
 
 PKNCA steady-state NCA over 864-936 h, 40 mg QD fasted arm. {.table}
 
@@ -802,11 +802,11 @@ stopifnot(
 # typical-value Dose/CL by exp(omega^2/2) because CL is log-normal.
 auc_expected <- 120 * 1000 / 3.11 * exp(0.213 / 2)
 100 * (getp("auclast") - auc_expected) / auc_expected
-#> [1] -0.01161231
+#> [1] -0.5563502
 stopifnot(abs(100 * (getp("auclast") - auc_expected) / auc_expected) < 12)
 ```
 
-The PKNCA `auclast` for this arm is 4.2916^{4} ng*h/mL against a
+The PKNCA `auclast` for this arm is 4.2683^{4} ng*h/mL against a
 closed-form cohort expectation of 4.2921^{4} ng*h/mL – i.e. the model’s
 steady-state exposure is governed by `Dose / (CL/F)` as it must be, and
 Table 3’s 34270 ng\*h/mL for the same arm is roughly 20% below that.

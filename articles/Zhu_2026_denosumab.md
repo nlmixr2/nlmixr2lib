@@ -527,8 +527,8 @@ cohort_summary |>
 
 | Treatment | Cmax median (ug/mL) | AUC0-6mon median (day\*ug/mL) | Cmax observed | AUC0-6mon observed | Cmax (% diff) | AUC0-6mon (% diff) |
 |:---|---:|---:|---:|---:|---:|---:|
-| KN012 | 5.49 | 315.64 | 5.47 | 319.89 | 0.33 | -1.33 |
-| US-denosumab | 5.03 | 283.69 | 5.08 | 274.76 | -0.97 | 3.25 |
+| KN012 | 5.68 | 326.31 | 5.47 | 319.89 | 3.75 | 2.01 |
+| US-denosumab | 5.01 | 278.24 | 5.08 | 274.76 | -1.29 | 1.27 |
 
 Simulated cohort medians vs the observed NCA exposures of Zhu 2026 Table
 4. {.table}
@@ -585,8 +585,8 @@ ratio |>
 
 | Metric    |   KN012 | US-denosumab | Simulated ratio | Zhu 2026 Table 4 GMR (%) |
 |:----------|--------:|-------------:|----------------:|-------------------------:|
-| Cmax      |   5.488 |        5.031 |           1.091 |                   107.68 |
-| AUC0-6mon | 315.642 |      283.688 |           1.113 |                   116.43 |
+| Cmax      |   5.675 |        5.014 |           1.132 |                   107.68 |
+| AUC0-6mon | 326.306 |      278.237 |           1.173 |                   116.43 |
 
 Exposure ratio of KN012 to US-denosumab in the simulated cohort, against
 the trial’s published GMR. {.table}

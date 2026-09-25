@@ -680,7 +680,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ggplot2_4.0.3         dplyr_1.2.1           rxode2_5.1.7         
+#> [1] ggplot2_4.0.3         dplyr_1.2.1           rxode2_5.1.8         
 #> [4] nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
@@ -688,20 +688,20 @@ sessionInfo()
 #>  [4] xml2_1.6.0          digest_0.6.39       magrittr_2.0.5     
 #>  [7] RColorBrewer_1.1-3  evaluate_1.0.5      grid_4.6.1         
 #> [10] fastmap_1.2.0       lotri_1.0.5         jsonlite_2.0.0     
-#> [13] whisker_0.4.1       rxode2ll_2.0.17     backports_1.5.1    
+#> [13] whisker_0.4.1       rxode2ll_2.0.18     backports_1.5.1    
 #> [16] purrr_1.2.2         scales_1.4.0        textshaping_1.0.5  
 #> [19] jquerylib_0.1.4     cli_3.6.6           crayon_1.5.3       
 #> [22] symengine_0.2.13    rlang_1.3.0         withr_3.0.3        
 #> [25] cachem_1.1.0        yaml_2.3.12         otel_0.2.0         
 #> [28] tools_4.6.1         parallel_4.6.1      memoise_2.0.1      
-#> [31] checkmate_2.3.4     vctrs_0.7.3         R6_2.6.1           
-#> [34] lifecycle_1.0.5     fs_2.1.0            ragg_1.5.2         
-#> [37] PreciseSums_0.7     fontawesome_0.5.3   pkgconfig_2.0.3    
-#> [40] desc_1.4.3          rex_1.2.2           pkgdown_2.2.1      
-#> [43] RcppParallel_6.2.1  pillar_1.11.1       bslib_0.12.0       
+#> [31] checkmate_2.3.4     rxode2lincmt_0.1.0  vctrs_0.7.3        
+#> [34] R6_2.6.1            lifecycle_1.0.5     fs_2.1.0           
+#> [37] ragg_1.5.2          PreciseSums_0.7     fontawesome_0.5.3  
+#> [40] pkgconfig_2.0.3     desc_1.4.3          rex_1.2.2          
+#> [43] pkgdown_2.2.1       pillar_1.11.1       bslib_0.12.0       
 #> [46] gtable_0.3.6        glue_1.8.1          data.table_1.18.6.1
 #> [49] Rcpp_1.1.2          systemfonts_1.3.2   tidyselect_1.2.1   
-#> [52] xfun_0.60           tibble_3.3.1        sys_3.4.3          
+#> [52] xfun_0.61           tibble_3.3.1        sys_3.4.3          
 #> [55] knitr_1.52          farver_2.1.2        dparser_1.3.1-13   
 #> [58] htmltools_0.5.9     labeling_0.4.3      rmarkdown_2.32     
 #> [61] compiler_4.6.1      S7_0.2.2            downlit_0.4.5      

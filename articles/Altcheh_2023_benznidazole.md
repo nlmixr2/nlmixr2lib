@@ -483,16 +483,16 @@ nca_res |>
 
 | Formulation         | NCA parameter | Median |   P10 |    P90 |
 |:--------------------|:--------------|-------:|------:|-------:|
-| 100 mg tablet       | AUClast       |  93.60 | 64.00 | 150.00 |
-| 100 mg tablet       | Cavg          |   7.80 |  5.33 |  12.50 |
-| 100 mg tablet       | Cmax          |   9.65 |  6.78 |  14.20 |
-| 100 mg tablet       | Cmin          |   6.09 |  3.33 |  10.30 |
-| 100 mg tablet       | Tmax          |   2.00 |  1.25 |   3.00 |
-| 12.5 mg dispersible | AUClast       |  68.00 | 44.00 | 110.00 |
-| 12.5 mg dispersible | Cavg          |   5.67 |  3.66 |   9.21 |
-| 12.5 mg dispersible | Cmax          |   6.86 |  4.83 |  10.40 |
-| 12.5 mg dispersible | Cmin          |   4.32 |  2.17 |   7.70 |
-| 12.5 mg dispersible | Tmax          |   2.00 |  1.25 |   3.25 |
+| 100 mg tablet       | AUClast       |  98.30 | 64.90 | 155.00 |
+| 100 mg tablet       | Cavg          |   8.19 |  5.41 |  12.90 |
+| 100 mg tablet       | Cmax          |   9.74 |  6.83 |  14.50 |
+| 100 mg tablet       | Cmin          |   6.54 |  3.33 |  11.40 |
+| 100 mg tablet       | Tmax          |   2.25 |  1.35 |   3.00 |
+| 12.5 mg dispersible | AUClast       |  72.30 | 48.40 | 118.00 |
+| 12.5 mg dispersible | Cavg          |   6.02 |  4.04 |   9.82 |
+| 12.5 mg dispersible | Cmax          |   7.69 |  5.09 |  11.40 |
+| 12.5 mg dispersible | Cmin          |   4.37 |  2.55 |   8.43 |
+| 12.5 mg dispersible | Tmax          |   2.00 |  1.25 |   3.00 |
 
 Steady-state NCA over the final 12 h dosing interval. {.table}
 
@@ -515,7 +515,7 @@ cav <- nca_res |>
 
 cat(sprintf("Cavg vs Dose/(tau*CL): median %.3f%%, max |diff| %.3f%%\n",
             stats::median(cav$pct), max(abs(cav$pct))))
-#> Cavg vs Dose/(tau*CL): median -0.033%, max |diff| 0.263%
+#> Cavg vs Dose/(tau*CL): median -0.031%, max |diff| 0.197%
 stopifnot(max(abs(cav$pct)) < 1)
 ```
 
@@ -577,12 +577,12 @@ knitr::kable(
 
 | NCA parameter | Formulation         | Reference | Simulated | % diff    |
 |:--------------|:--------------------|:----------|:----------|:----------|
-| Cmax (mg/L)   | 100 mg tablet       | 10.5      | 9.05      | -13.6%    |
-| Cmax (mg/L)   | 12.5 mg dispersible | 6.8       | 6.45      | -5.2%     |
-| Cmax (mg/L)   | All patients        | 8.32      | 7.8       | -6.2%     |
-| Cmin (mg/L)   | 100 mg tablet       | 3.36      | 4.66      | +38.7%\*  |
-| Cmin (mg/L)   | 12.5 mg dispersible | 1.58      | 3.35      | +112.1%\* |
-| Cmin (mg/L)   | All patients        | 2         | 3.83      | +91.5%\*  |
+| Cmax (mg/L)   | 100 mg tablet       | 10.5      | 9.02      | -13.9%    |
+| Cmax (mg/L)   | 12.5 mg dispersible | 6.8       | 7.07      | +4.0%     |
+| Cmax (mg/L)   | All patients        | 8.32      | 8.07      | -3.0%     |
+| Cmin (mg/L)   | 100 mg tablet       | 3.36      | 4.87      | +44.9%\*  |
+| Cmin (mg/L)   | 12.5 mg dispersible | 1.58      | 3.46      | +118.9%\* |
+| Cmin (mg/L)   | All patients        | 2         | 4.1       | +105.2%\* |
 
 Simulated vs published benznidazole concentrations (Altcheh 2023
 Results). ‘Cmin’ is the observed concentration 12-24 h AFTER the final
@@ -635,9 +635,9 @@ knitr::kable(
 
 | Claim | Published | Simulated | Deviation | % diff |
 |:---|---:|---:|:---|---:|
-| Overall median observed Cmax (mg/L) | 8.32 | 7.80 | FALSE | -6.2 |
-| Cmax ratio, 100 mg tablet / 12.5 mg dispersible | 1.54 | 1.40 | FALSE | -8.9 |
-| Overall median 12-24 h post-final-dose concentration (mg/L) | 2.00 | 3.83 | TRUE | 91.5 |
+| Overall median observed Cmax (mg/L) | 8.32 | 8.07 | FALSE | -3.0 |
+| Cmax ratio, 100 mg tablet / 12.5 mg dispersible | 1.54 | 1.28 | FALSE | -17.2 |
+| Overall median 12-24 h post-final-dose concentration (mg/L) | 2.00 | 4.10 | TRUE | 105.2 |
 
 Published-value checks. Deviation = TRUE marks a claim that is
 reproducibly NOT reproduced and is excluded from the pass gate; it is

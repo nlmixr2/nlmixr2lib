@@ -352,8 +352,6 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lcl_3, etaiov_lcl_4, etaiov_lka_1, etaiov_lka_2
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lcl_3, etaiov_lcl_4, etaiov_lka_1, etaiov_lka_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 stopifnot(nrow(sim) == n_per_arm * nrow(bands) * length(obs_grid))
 ```
@@ -474,8 +472,6 @@ sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
 #> Warning: No sigma parameters in the model
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lcl_3, etaiov_lcl_4, etaiov_lka_1, etaiov_lka_2
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_lcl_1, etaiov_lcl_2, etaiov_lcl_3, etaiov_lcl_4, etaiov_lka_1, etaiov_lka_2
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etaiov_lcl_1', 'etaiov_lcl_2', 'etaiov_lcl_3', 'etaiov_lcl_4', 'etaiov_lka_1', 'etaiov_lka_2'
 #> Warning: multi-subject simulation without without 'omega'
 
@@ -587,39 +583,39 @@ stopifnot(nrow(cmp) == nrow(published))
 
 | Weight band / dose | Statistic | Cmax sim (ug/mL) | Cmax pub (ug/mL) | Cmax % diff | C24 sim (ug/mL) | C24 pub (ug/mL) | C24 % diff | AUC0-24 sim (ug\*h/mL) | AUC0-24 pub (ug\*h/mL) | AUC0-24 % diff |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 3 to \<6 kg (\>=1 month), DT 5 | p10 | 2.14 | 2.44 | -12.4 | 0.432 | 0.357 | 21.1 | 28.5 | 25.4 | 12.1 |
-| 3 to \<6 kg (\>=1 month), DT 5 | median | 3.10 | 4.02 | -22.8 | 1.113 | 1.070 | 4.0 | 49.0 | 49.4 | -0.9 |
-| 3 to \<6 kg (\>=1 month), DT 5 | p90 | 4.98 | 6.78 | -26.6 | 3.024 | 3.010 | 0.5 | 93.7 | 95.4 | -1.8 |
-| 6 to \<10 kg (1-\<6 mo), DT 10 | p10 | 3.44 | 3.67 | -6.3 | 0.589 | 0.392 | 50.3 | 43.5 | 35.9 | 21.1 |
-| 6 to \<10 kg (1-\<6 mo), DT 10 | median | 5.19 | 5.90 | -12.0 | 1.675 | 1.240 | 35.1 | 78.7 | 67.4 | 16.7 |
-| 6 to \<10 kg (1-\<6 mo), DT 10 | p90 | 8.57 | 9.57 | -10.5 | 4.651 | 3.630 | 28.1 | 158.8 | 127.0 | 25.0 |
-| 6 to \<10 kg (\>=6 mo), DT 15 | p10 | 3.62 | 4.24 | -14.6 | 0.231 | 0.262 | -11.8 | 33.0 | 36.4 | -9.4 |
-| 6 to \<10 kg (\>=6 mo), DT 15 | median | 5.19 | 6.67 | -22.2 | 1.018 | 0.964 | 5.6 | 67.6 | 68.4 | -1.2 |
-| 6 to \<10 kg (\>=6 mo), DT 15 | p90 | 7.71 | 10.60 | -27.2 | 2.573 | 3.210 | -19.8 | 113.5 | 128.0 | -11.3 |
-| 10 to \<14 kg, DT 20 | p10 | 4.20 | 4.30 | -2.4 | 0.236 | 0.184 | 28.1 | 37.6 | 34.3 | 9.6 |
-| 10 to \<14 kg, DT 20 | median | 5.71 | 6.61 | -13.6 | 0.850 | 0.719 | 18.3 | 68.1 | 63.1 | 7.9 |
-| 10 to \<14 kg, DT 20 | p90 | 8.60 | 10.20 | -15.6 | 2.861 | 2.560 | 11.8 | 136.3 | 115.0 | 18.5 |
-| 14 to \<20 kg, DT 25 | p10 | 4.14 | 4.63 | -10.5 | 0.204 | 0.212 | -4.0 | 40.9 | 37.8 | 8.3 |
-| 14 to \<20 kg, DT 25 | median | 5.75 | 7.17 | -19.8 | 0.799 | 0.824 | -3.1 | 66.1 | 69.5 | -4.9 |
-| 14 to \<20 kg, DT 25 | p90 | 8.70 | 11.20 | -22.3 | 2.394 | 2.870 | -16.6 | 122.3 | 127.0 | -3.7 |
-| 14 to \<20 kg, FCT 40 | p10 | 3.71 | 4.38 | -15.2 | 0.270 | 0.254 | 6.4 | 42.8 | 39.6 | 8.0 |
-| 14 to \<20 kg, FCT 40 | median | 5.44 | 6.96 | -21.8 | 0.951 | 0.972 | -2.2 | 69.4 | 72.6 | -4.4 |
-| 14 to \<20 kg, FCT 40 | p90 | 7.93 | 11.00 | -27.9 | 2.630 | 3.250 | -19.1 | 121.1 | 132.0 | -8.2 |
-| 20 to \<25 kg, DT 30 | p10 | 4.16 | 4.77 | -12.7 | 0.280 | 0.227 | 23.5 | 44.7 | 39.3 | 13.8 |
-| 20 to \<25 kg, DT 30 | median | 5.91 | 7.37 | -19.8 | 1.071 | 0.881 | 21.6 | 74.4 | 72.0 | 3.4 |
-| 20 to \<25 kg, DT 30 | p90 | 8.80 | 11.40 | -22.8 | 3.090 | 3.020 | 2.3 | 136.2 | 133.0 | 2.4 |
-| 20 to \<25 kg, FCT 50 | p10 | 3.98 | 4.73 | -15.9 | 0.272 | 0.289 | -5.8 | 45.1 | 43.2 | 4.5 |
-| 20 to \<25 kg, FCT 50 | median | 6.06 | 7.43 | -18.4 | 1.328 | 1.080 | 22.9 | 82.5 | 78.6 | 5.0 |
-| 20 to \<25 kg, FCT 50 | p90 | 9.03 | 11.80 | -23.5 | 3.338 | 3.620 | -7.8 | 134.5 | 145.0 | -7.2 |
-| 25 to \<30 kg, FCT 50 | p10 | 3.73 | 4.26 | -12.4 | 0.403 | 0.272 | 48.0 | 44.6 | 39.3 | 13.5 |
-| 25 to \<30 kg, FCT 50 | median | 5.74 | 6.74 | -14.8 | 1.254 | 0.997 | 25.8 | 76.6 | 71.4 | 7.3 |
-| 25 to \<30 kg, FCT 50 | p90 | 8.96 | 10.60 | -15.4 | 3.190 | 3.320 | -3.9 | 134.9 | 131.0 | 3.0 |
-| 30 to \<35 kg, FCT 50 | p10 | 3.36 | 3.94 | -14.6 | 0.230 | 0.256 | -10.1 | 41.4 | 36.5 | 13.5 |
-| 30 to \<35 kg, FCT 50 | median | 5.15 | 6.20 | -17.0 | 1.110 | 0.944 | 17.6 | 68.7 | 66.6 | 3.2 |
-| 30 to \<35 kg, FCT 50 | p90 | 7.85 | 9.78 | -19.8 | 3.196 | 3.100 | 3.1 | 119.7 | 121.0 | -1.1 |
-| \>=35 kg, FCT 50 | p10 | 2.60 | 3.07 | -15.4 | 0.274 | 0.233 | 17.7 | 31.4 | 29.2 | 7.4 |
-| \>=35 kg, FCT 50 | median | 3.82 | 4.93 | -22.6 | 0.791 | 0.814 | -2.8 | 52.7 | 54.0 | -2.4 |
-| \>=35 kg, FCT 50 | p90 | 6.01 | 7.93 | -24.2 | 2.319 | 2.590 | -10.5 | 96.1 | 99.1 | -3.0 |
+| 3 to \<6 kg (\>=1 month), DT 5 | p10 | 2.02 | 2.44 | -17.1 | 0.427 | 0.357 | 19.7 | 26.7 | 25.4 | 5.3 |
+| 3 to \<6 kg (\>=1 month), DT 5 | median | 3.17 | 4.02 | -21.1 | 1.193 | 1.070 | 11.5 | 50.8 | 49.4 | 2.7 |
+| 3 to \<6 kg (\>=1 month), DT 5 | p90 | 4.98 | 6.78 | -26.6 | 2.966 | 3.010 | -1.5 | 95.3 | 95.4 | -0.1 |
+| 6 to \<10 kg (1-\<6 mo), DT 10 | p10 | 3.44 | 3.67 | -6.4 | 0.548 | 0.392 | 39.7 | 41.3 | 35.9 | 15.0 |
+| 6 to \<10 kg (1-\<6 mo), DT 10 | median | 5.29 | 5.90 | -10.4 | 1.804 | 1.240 | 45.5 | 82.7 | 67.4 | 22.6 |
+| 6 to \<10 kg (1-\<6 mo), DT 10 | p90 | 8.68 | 9.57 | -9.3 | 4.642 | 3.630 | 27.9 | 159.9 | 127.0 | 25.9 |
+| 6 to \<10 kg (\>=6 mo), DT 15 | p10 | 3.65 | 4.24 | -13.9 | 0.234 | 0.262 | -10.6 | 37.1 | 36.4 | 1.8 |
+| 6 to \<10 kg (\>=6 mo), DT 15 | median | 5.09 | 6.67 | -23.7 | 0.946 | 0.964 | -1.9 | 62.5 | 68.4 | -8.6 |
+| 6 to \<10 kg (\>=6 mo), DT 15 | p90 | 7.61 | 10.60 | -28.2 | 2.696 | 3.210 | -16.0 | 122.2 | 128.0 | -4.6 |
+| 10 to \<14 kg, DT 20 | p10 | 3.93 | 4.30 | -8.7 | 0.179 | 0.184 | -2.9 | 36.9 | 34.3 | 7.6 |
+| 10 to \<14 kg, DT 20 | median | 5.54 | 6.61 | -16.2 | 0.909 | 0.719 | 26.5 | 66.7 | 63.1 | 5.7 |
+| 10 to \<14 kg, DT 20 | p90 | 7.51 | 10.20 | -26.3 | 2.428 | 2.560 | -5.2 | 115.4 | 115.0 | 0.4 |
+| 14 to \<20 kg, DT 25 | p10 | 4.10 | 4.63 | -11.5 | 0.303 | 0.212 | 43.1 | 43.0 | 37.8 | 13.7 |
+| 14 to \<20 kg, DT 25 | median | 6.33 | 7.17 | -11.8 | 1.028 | 0.824 | 24.7 | 78.4 | 69.5 | 12.8 |
+| 14 to \<20 kg, DT 25 | p90 | 8.58 | 11.20 | -23.4 | 3.016 | 2.870 | 5.1 | 131.6 | 127.0 | 3.6 |
+| 14 to \<20 kg, FCT 40 | p10 | 3.87 | 4.38 | -11.7 | 0.319 | 0.254 | 25.8 | 41.3 | 39.6 | 4.3 |
+| 14 to \<20 kg, FCT 40 | median | 5.75 | 6.96 | -17.3 | 1.389 | 0.972 | 42.9 | 79.9 | 72.6 | 10.0 |
+| 14 to \<20 kg, FCT 40 | p90 | 8.73 | 11.00 | -20.6 | 3.412 | 3.250 | 5.0 | 140.1 | 132.0 | 6.2 |
+| 20 to \<25 kg, DT 30 | p10 | 4.20 | 4.77 | -11.9 | 0.327 | 0.227 | 44.0 | 42.6 | 39.3 | 8.5 |
+| 20 to \<25 kg, DT 30 | median | 6.44 | 7.37 | -12.7 | 1.112 | 0.881 | 26.2 | 76.7 | 72.0 | 6.6 |
+| 20 to \<25 kg, DT 30 | p90 | 9.08 | 11.40 | -20.3 | 3.340 | 3.020 | 10.6 | 144.6 | 133.0 | 8.7 |
+| 20 to \<25 kg, FCT 50 | p10 | 4.28 | 4.73 | -9.6 | 0.446 | 0.289 | 54.3 | 51.7 | 43.2 | 19.7 |
+| 20 to \<25 kg, FCT 50 | median | 6.24 | 7.43 | -16.1 | 1.433 | 1.080 | 32.7 | 85.0 | 78.6 | 8.1 |
+| 20 to \<25 kg, FCT 50 | p90 | 9.50 | 11.80 | -19.5 | 3.946 | 3.620 | 9.0 | 149.0 | 145.0 | 2.7 |
+| 25 to \<30 kg, FCT 50 | p10 | 3.51 | 4.26 | -17.6 | 0.300 | 0.272 | 10.4 | 41.7 | 39.3 | 6.0 |
+| 25 to \<30 kg, FCT 50 | median | 5.51 | 6.74 | -18.3 | 1.190 | 0.997 | 19.3 | 72.7 | 71.4 | 1.8 |
+| 25 to \<30 kg, FCT 50 | p90 | 8.27 | 10.60 | -22.0 | 2.915 | 3.320 | -12.2 | 127.9 | 131.0 | -2.4 |
+| 30 to \<35 kg, FCT 50 | p10 | 3.44 | 3.94 | -12.8 | 0.322 | 0.256 | 25.8 | 38.0 | 36.5 | 4.2 |
+| 30 to \<35 kg, FCT 50 | median | 5.16 | 6.20 | -16.8 | 1.071 | 0.944 | 13.5 | 66.9 | 66.6 | 0.4 |
+| 30 to \<35 kg, FCT 50 | p90 | 7.14 | 9.78 | -27.0 | 2.849 | 3.100 | -8.1 | 110.1 | 121.0 | -9.0 |
+| \>=35 kg, FCT 50 | p10 | 2.76 | 3.07 | -10.2 | 0.202 | 0.233 | -13.5 | 29.9 | 29.2 | 2.3 |
+| \>=35 kg, FCT 50 | median | 3.93 | 4.93 | -20.3 | 1.012 | 0.814 | 24.4 | 56.1 | 54.0 | 3.9 |
+| \>=35 kg, FCT 50 | p90 | 6.27 | 7.93 | -20.9 | 2.832 | 2.590 | 9.4 | 108.8 | 99.1 | 9.8 |
 
 Simulated vs published (Chandasana 2023 Table 3) steady-state exposures,
 11 QD weight band / dose / formulation arms. {.table
@@ -670,17 +666,17 @@ knitr::kable(c24_gm, digits = 3,
 
 | arm                            | c24_geomean | formulation |
 |:-------------------------------|------------:|:------------|
-| 10 to \<14 kg, DT 20           |       0.840 | DT          |
-| 14 to \<20 kg, DT 25           |       0.772 | DT          |
-| 14 to \<20 kg, FCT 40          |       0.926 | FCT         |
-| 20 to \<25 kg, DT 30           |       1.000 | DT          |
-| 20 to \<25 kg, FCT 50          |       1.100 | FCT         |
-| 25 to \<30 kg, FCT 50          |       1.159 | FCT         |
-| 3 to \<6 kg (\>=1 month), DT 5 |       1.124 | DT          |
-| 30 to \<35 kg, FCT 50          |       1.013 | FCT         |
-| 6 to \<10 kg (1-\<6 mo), DT 10 |       1.653 | DT          |
-| 6 to \<10 kg (\>=6 mo), DT 15  |       0.857 | DT          |
-| \>=35 kg, FCT 50               |       0.769 | FCT         |
+| 10 to \<14 kg, DT 20           |       0.754 | DT          |
+| 14 to \<20 kg, DT 25           |       0.979 | DT          |
+| 14 to \<20 kg, FCT 40          |       1.157 | FCT         |
+| 20 to \<25 kg, DT 30           |       1.026 | DT          |
+| 20 to \<25 kg, FCT 50          |       1.346 | FCT         |
+| 25 to \<30 kg, FCT 50          |       1.023 | FCT         |
+| 3 to \<6 kg (\>=1 month), DT 5 |       1.180 | DT          |
+| 30 to \<35 kg, FCT 50          |       0.950 | FCT         |
+| 6 to \<10 kg (1-\<6 mo), DT 10 |       1.714 | DT          |
+| 6 to \<10 kg (\>=6 mo), DT 15  |       0.846 | DT          |
+| \>=35 kg, FCT 50               |       0.868 | FCT         |
 
 Geometric mean steady-state C24 by arm; the paper’s adult-matching
 target is 0.995 ug/mL, its target range 0.697-2.260, and its individual
@@ -750,17 +746,17 @@ published_ceiling <- ceiling_check |>
 
 | Weight band / dose | kel (1/h) | Published AUC0-24 (ug\*h/mL) | Published Cmax (ug/mL) | Ceiling at ka = Inf (ug/mL) | Published / ceiling | Reachable? |
 |:---|---:|---:|---:|---:|---:|:---|
-| 3 to \<6 kg (\>=1 month), DT 5 | 0.0473 | 49.4 | 4.02 | 3.44 | 1.167 | no |
-| 6 to \<10 kg (1-\<6 mo), DT 10 | 0.0524 | 67.4 | 5.90 | 4.93 | 1.196 | no |
-| 6 to \<10 kg (\>=6 mo), DT 15 | 0.0805 | 68.4 | 6.67 | 6.44 | 1.036 | no |
+| 3 to \<6 kg (\>=1 month), DT 5 | 0.0464 | 49.4 | 4.02 | 3.41 | 1.178 | no |
+| 6 to \<10 kg (1-\<6 mo), DT 10 | 0.0479 | 67.4 | 5.90 | 4.73 | 1.248 | no |
+| 6 to \<10 kg (\>=6 mo), DT 15 | 0.0820 | 68.4 | 6.67 | 6.52 | 1.023 | no |
 | 10 to \<14 kg, DT 20 | 0.0863 | 63.1 | 6.61 | 6.23 | 1.061 | no |
-| 14 to \<20 kg, DT 25 | 0.0948 | 69.5 | 7.17 | 7.34 | 0.976 | only as ka -\> Inf |
-| 14 to \<20 kg, FCT 40 | 0.0908 | 72.6 | 6.96 | 7.43 | 0.936 | only as ka -\> Inf |
-| 20 to \<25 kg, DT 30 | 0.0836 | 72.0 | 7.37 | 6.95 | 1.060 | no |
-| 20 to \<25 kg, FCT 50 | 0.0846 | 78.6 | 7.43 | 7.65 | 0.971 | only as ka -\> Inf |
-| 25 to \<30 kg, FCT 50 | 0.0810 | 71.4 | 6.74 | 6.75 | 0.999 | only as ka -\> Inf |
-| 30 to \<35 kg, FCT 50 | 0.0788 | 66.6 | 6.20 | 6.18 | 1.003 | no |
-| \>=35 kg, FCT 50 | 0.0876 | 54.0 | 4.93 | 5.39 | 0.915 | only as ka -\> Inf |
+| 14 to \<20 kg, DT 25 | 0.0829 | 69.5 | 7.17 | 6.67 | 1.074 | no |
+| 14 to \<20 kg, FCT 40 | 0.0811 | 72.6 | 6.96 | 6.87 | 1.013 | no |
+| 20 to \<25 kg, DT 30 | 0.0826 | 72.0 | 7.37 | 6.90 | 1.068 | no |
+| 20 to \<25 kg, FCT 50 | 0.0803 | 78.6 | 7.43 | 7.39 | 1.005 | no |
+| 25 to \<30 kg, FCT 50 | 0.0831 | 71.4 | 6.74 | 6.87 | 0.981 | only as ka -\> Inf |
+| 30 to \<35 kg, FCT 50 | 0.0817 | 66.6 | 6.20 | 6.33 | 0.979 | only as ka -\> Inf |
+| \>=35 kg, FCT 50 | 0.0750 | 54.0 | 4.93 | 4.85 | 1.016 | no |
 
 Chandasana 2023 Table 3 median Cmax against the largest Cmax the
 published model can produce, computed from the paper’s own median
@@ -772,10 +768,10 @@ absorption rate. {.table}
 n_impossible <- sum(published_ceiling$`Published / ceiling` > 1)
 cat("Arms whose published median Cmax exceeds the ka = Inf ceiling: ",
     n_impossible, " of ", nrow(published_ceiling), "\n", sep = "")
-#> Arms whose published median Cmax exceeds the ka = Inf ceiling: 6 of 11
+#> Arms whose published median Cmax exceeds the ka = Inf ceiling: 9 of 11
 cat("Ratio range: ", sprintf("%.3f", min(published_ceiling$`Published / ceiling`)),
     " to ", sprintf("%.3f", max(published_ceiling$`Published / ceiling`)), "\n", sep = "")
-#> Ratio range: 0.915 to 1.196
+#> Ratio range: 0.979 to 1.248
 
 # Gate the FINDING, not a match. Every arm's published Cmax sits at or near the
 # instantaneous-absorption ceiling, so the whole column requires an absorption

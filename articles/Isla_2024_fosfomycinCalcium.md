@@ -154,8 +154,6 @@ cap <- solve_typical(0)
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 sus <- solve_typical(1)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
@@ -542,8 +540,6 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 sim <- sim |>
   dplyr::mutate(treatment = factor(treatment, levels = arms$treatment))
@@ -818,8 +814,8 @@ auc_thy <- 1000 / ref$cl[1]
 
 c(numeric = auc_num, `Dose/CL` = auc_thy,
   `% diff` = 100 * (auc_num - auc_thy) / auc_thy)
-#>    numeric    Dose/CL     % diff 
-#> 42.1853225 42.1940928 -0.0207857
+#>     numeric     Dose/CL      % diff 
+#> 42.18532250 42.19409283 -0.02078567
 
 stopifnot(abs(auc_num - auc_thy) / auc_thy < 0.005)
 ```

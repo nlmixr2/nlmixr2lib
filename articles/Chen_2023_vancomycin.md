@@ -1294,8 +1294,8 @@ tibble::tibble(
 
 | Statistic                |  Value |
 |:-------------------------|-------:|
-| Median \|% difference\|  | 0.0041 |
-| Maximum \|% difference\| | 0.0143 |
+| Median \|% difference\|  | 0.0039 |
+| Maximum \|% difference\| | 0.0169 |
 
 AUC24 from PKNCA versus daily dose / CL. {.table}
 
@@ -1383,10 +1383,10 @@ knitr::kable(
 
 | NCA parameter | sampling | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
-| Cmax (mg/L) | NCA extremes over the dosing interval | 19.9 | 28.3 | +41.9%\* |
-| Cmax (mg/L) | Chen 2023 Table 1 sampling windows | 19.9 | 22.1 | +11.0% |
-| Cmin (mg/L) | NCA extremes over the dosing interval | 7.18 | 4.49 | -37.4%\* |
-| Cmin (mg/L) | Chen 2023 Table 1 sampling windows | 7.18 | 9.03 | +25.8%\* |
+| Cmax (mg/L) | NCA extremes over the dosing interval | 19.9 | 29.5 | +48.0%\* |
+| Cmax (mg/L) | Chen 2023 Table 1 sampling windows | 19.9 | 22.3 | +12.0% |
+| Cmin (mg/L) | NCA extremes over the dosing interval | 7.18 | 4.75 | -33.9%\* |
+| Cmin (mg/L) | Chen 2023 Table 1 sampling windows | 7.18 | 8.71 | +21.3%\* |
 
 Simulated versus Chen 2023 Table 1 peak and trough concentrations
 (medians). Reference values are identical across both rows - only the
@@ -1423,8 +1423,8 @@ tibble::tibble(
 
 | Quantity | Chen 2023 Table 1 | Simulated median | % difference |
 |:---|---:|---:|---:|
-| Peak (window 0-2 h post-infusion) | 19.9 | 22.1 | 11.0 |
-| Trough (window \>2 h post-infusion) | 7.2 | 9.0 | 25.8 |
+| Peak (window 0-2 h post-infusion) | 19.9 | 22.3 | 12.0 |
+| Trough (window \>2 h post-infusion) | 7.2 | 8.7 | 21.3 |
 
 Window-matched simulated concentrations versus Chen 2023 Table 1.
 {.table}
@@ -1509,8 +1509,8 @@ tibble::tibble(
 
 | Quantity                 | Median \[IQR\]   | Chen 2023                      |
 |:-------------------------|:-----------------|:-------------------------------|
-| Pre-dose trough (mg/L)   | 6.8 \[3.8-11.7\] | 8-15 (Figure 6, optimal range) |
-| AUC24/MIC (MIC = 1 mg/L) | 500 \[410-633\]  | 400-650 (target, Table 5)      |
+| Pre-dose trough (mg/L)   | 7.6 \[3.9-11.8\] | 8-15 (Figure 6, optimal range) |
+| AUC24/MIC (MIC = 1 mg/L) | 517 \[441-603\]  | 400-650 (target, Table 5)      |
 
 Virtual cohort dosed at its Chen 2023 Table 5 recommended dose. {.table
 style="width:100%;"}
@@ -1525,9 +1525,9 @@ style="width:100%;"}
 stopifnot(median(auc24$AUC24) > 400, median(auc24$AUC24) < 650)
 ```
 
-The cohort median AUC24/MIC of 500 sits near the centre of the paper’s
+The cohort median AUC24/MIC of 517 sits near the centre of the paper’s
 400-650 target, which is the substantive claim of Table 5. The pre-dose
-trough distribution, median 6.8 mg/L, sits a little below the 8-15 mg/L
+trough distribution, median 7.6 mg/L, sits a little below the 8-15 mg/L
 band of Figure 6. That is expected rather than contradictory: Figure 6
 is built on the paper’s own resampled virtual population, whose joint
 covariate structure this vignette reproduces only marginally (see

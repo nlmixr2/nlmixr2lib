@@ -508,10 +508,10 @@ knitr::kable(
 
 | Regimen     | Median AUC (ug/mL \* week) | CV (%) |
 |:------------|---------------------------:|-------:|
-| 5 mg/kg SC  |                      142.9 |   25.2 |
-| 10 mg/kg SC |                      297.6 |   28.8 |
-| 20 mg/kg SC |                      608.4 |   28.1 |
-| 1200 mg SC  |                      541.5 |   18.1 |
+| 5 mg/kg SC  |                      152.7 |   26.4 |
+| 10 mg/kg SC |                      298.5 |   27.7 |
+| 20 mg/kg SC |                      608.0 |   27.9 |
+| 1200 mg SC  |                      536.8 |   18.0 |
 
 Exposure and its variability by regimen. {.table}
 
@@ -539,7 +539,7 @@ stopifnot(ratio_20 > 0.75, ratio_20 < 1.1)
 stopifnot(wb_cv - fixed_cv > 5)
 round(c(fixed_cv = fixed_cv, weight_based_cv = wb_cv, ratio_20 = ratio_20), 3)
 #>        fixed_cv weight_based_cv        ratio_20 
-#>          18.115          28.077           0.890
+#>          17.956          27.854           0.883
 ```
 
 ## PKNCA validation
@@ -613,14 +613,14 @@ knitr::kable(
 
 | NCA parameter      | arm         | Reference | Simulated | % diff |
 |:-------------------|:------------|----------:|----------:|-------:|
-| Cmax (ug/mL)       | 5 mg/kg SC  |      38.5 |      37.3 |  -3.0% |
-| Cmax (ug/mL)       | 10 mg/kg SC |      77.1 |      74.9 |  -2.9% |
-| Cmax (ug/mL)       | 20 mg/kg SC |       154 |       158 |  +2.9% |
-| Cmax (ug/mL)       | 1200 mg SC  |       138 |       139 |  +0.4% |
-| AUClast (ug\*h/mL) | 5 mg/kg SC  |     25600 |     24000 |  -6.1% |
-| AUClast (ug\*h/mL) | 10 mg/kg SC |     50300 |     50000 |  -0.6% |
+| Cmax (ug/mL)       | 5 mg/kg SC  |      38.5 |      38.4 |  -0.2% |
+| Cmax (ug/mL)       | 10 mg/kg SC |      77.1 |      76.3 |  -1.0% |
+| Cmax (ug/mL)       | 20 mg/kg SC |       154 |       155 |  +0.8% |
+| Cmax (ug/mL)       | 1200 mg SC  |       138 |       138 |  -0.6% |
+| AUClast (ug\*h/mL) | 5 mg/kg SC  |     25600 |     25600 |  +0.3% |
+| AUClast (ug\*h/mL) | 10 mg/kg SC |     50300 |     50100 |  -0.3% |
 | AUClast (ug\*h/mL) | 20 mg/kg SC |     99500 |    102000 |  +2.7% |
-| AUClast (ug\*h/mL) | 1200 mg SC  |     90400 |     91000 |  +0.7% |
+| AUClast (ug\*h/mL) | 1200 mg SC  |     90400 |     90200 |  -0.2% |
 
 Simulated (median of 200 subjects per arm) versus the published Monte
 Carlo medians. \* differs from reference by more than 20%. {.table}
@@ -642,7 +642,7 @@ stopifnot(
 )
 round(summary(pct), 2)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   -6.10   -2.92   -0.10   -0.74    1.20    2.90
+#>   -1.00   -0.38   -0.20    0.19    0.42    2.70
 ```
 
 The half-life PKNCA returns for these profiles is the terminal half-life
@@ -661,10 +661,10 @@ knitr::kable(hl |> dplyr::rename(Regimen = arm), caption = "Terminal half-life i
 
 | Regimen     | Terminal half-life (days) |
 |:------------|--------------------------:|
-| 10 mg/kg SC |                      30.1 |
-| 1200 mg SC  |                      30.7 |
-| 20 mg/kg SC |                      30.2 |
-| 5 mg/kg SC  |                      29.7 |
+| 10 mg/kg SC |                      30.0 |
+| 1200 mg SC  |                      30.0 |
+| 20 mg/kg SC |                      29.9 |
+| 5 mg/kg SC  |                      29.9 |
 
 Terminal half-life implied by the model. {.table}
 

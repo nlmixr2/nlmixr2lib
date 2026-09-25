@@ -435,30 +435,30 @@ knitr::kable(
 
 | NCA parameter            | stratum              | Reference | Simulated | % diff |
 |:-------------------------|:---------------------|:----------|:----------|:-------|
-| Cmax (ug/L)              | Toddlers (1-2 y)     | 976       | 973       | -0.3%  |
-| Cmax (ug/L)              | Preschoolers (3-5 y) | 1050      | 879       | -16.1% |
-| Cmax (ug/L)              | School-age (6-9 y)   | 881       | 881       | +0.0%  |
-| Cmax (ug/L)              | All (n = 25)         | 976       | 897       | -8.0%  |
+| Cmax (ug/L)              | Toddlers (1-2 y)     | 976       | 919       | -5.8%  |
+| Cmax (ug/L)              | Preschoolers (3-5 y) | 1050      | 883       | -15.7% |
+| Cmax (ug/L)              | School-age (6-9 y)   | 881       | 923       | +4.8%  |
+| Cmax (ug/L)              | All (n = 25)         | 976       | 903       | -7.4%  |
 | Tmax (min)               | Toddlers (1-2 y)     | 2         | 2         | +0.0%  |
 | Tmax (min)               | Preschoolers (3-5 y) | 2         | 2         | +0.0%  |
 | Tmax (min)               | School-age (6-9 y)   | 2         | 2         | +0.0%  |
 | Tmax (min)               | All (n = 25)         | 2         | 2         | +0.0%  |
-| AUC0-∞ (obs) (ug\*min/L) | Toddlers (1-2 y)     | 16400     | 18300     | +11.4% |
-| AUC0-∞ (obs) (ug\*min/L) | Preschoolers (3-5 y) | 19400     | 19000     | -2.2%  |
-| AUC0-∞ (obs) (ug\*min/L) | School-age (6-9 y)   | 17500     | 18400     | +5.3%  |
-| AUC0-∞ (obs) (ug\*min/L) | All (n = 25)         | 17800     | 18600     | +4.5%  |
-| AUClast (ug\*min/L)      | Toddlers (1-2 y)     | 15200     | 16500     | +7.9%  |
-| AUClast (ug\*min/L)      | Preschoolers (3-5 y) | 17000     | 17200     | +0.9%  |
-| AUClast (ug\*min/L)      | School-age (6-9 y)   | 16000     | 16400     | +3.0%  |
-| AUClast (ug\*min/L)      | All (n = 25)         | 16100     | 16500     | +2.7%  |
-| t½ (min)                 | Toddlers (1-2 y)     | 54.3      | 57.1      | +5.1%  |
-| t½ (min)                 | Preschoolers (3-5 y) | 64.4      | 59.7      | -7.2%  |
-| t½ (min)                 | School-age (6-9 y)   | 57.6      | 55.9      | -3.0%  |
-| t½ (min)                 | All (n = 25)         | 58.8      | 57.4      | -2.4%  |
-| CL/F (mL/min/kg)         | Toddlers (1-2 y)     | 39.1      | 32.9      | -16.0% |
-| CL/F (mL/min/kg)         | Preschoolers (3-5 y) | 31.8      | 31.6      | -0.7%  |
-| CL/F (mL/min/kg)         | School-age (6-9 y)   | 35.4      | 32.6      | -7.9%  |
-| CL/F (mL/min/kg)         | All (n = 25)         | 35.5      | 32.3      | -9.1%  |
+| AUC0-∞ (obs) (ug\*min/L) | Toddlers (1-2 y)     | 16400     | 18400     | +12.4% |
+| AUC0-∞ (obs) (ug\*min/L) | Preschoolers (3-5 y) | 19400     | 17400     | -10.5% |
+| AUC0-∞ (obs) (ug\*min/L) | School-age (6-9 y)   | 17500     | 19200     | +9.5%  |
+| AUC0-∞ (obs) (ug\*min/L) | All (n = 25)         | 17800     | 18200     | +2.3%  |
+| AUClast (ug\*min/L)      | Toddlers (1-2 y)     | 15200     | 16300     | +7.1%  |
+| AUClast (ug\*min/L)      | Preschoolers (3-5 y) | 17000     | 15700     | -7.6%  |
+| AUClast (ug\*min/L)      | School-age (6-9 y)   | 16000     | 17100     | +7.0%  |
+| AUClast (ug\*min/L)      | All (n = 25)         | 16100     | 16300     | +1.5%  |
+| t½ (min)                 | Toddlers (1-2 y)     | 54.3      | 57        | +5.1%  |
+| t½ (min)                 | Preschoolers (3-5 y) | 64.4      | 56        | -13.1% |
+| t½ (min)                 | School-age (6-9 y)   | 57.6      | 58.2      | +1.1%  |
+| t½ (min)                 | All (n = 25)         | 58.8      | 56.9      | -3.1%  |
+| CL/F (mL/min/kg)         | Toddlers (1-2 y)     | 39.1      | 32.5      | -16.8% |
+| CL/F (mL/min/kg)         | Preschoolers (3-5 y) | 31.8      | 34.5      | +8.5%  |
+| CL/F (mL/min/kg)         | School-age (6-9 y)   | 35.4      | 31.3      | -11.5% |
+| CL/F (mL/min/kg)         | All (n = 25)         | 35.5      | 33        | -7.2%  |
 
 Simulated vs. published non-compartmental parameters (Wang 2026 Table
 2). \* differs from the reference by more than 20%. {.table
@@ -501,11 +501,11 @@ knitr::kable(pooled, digits = 2,
 
 | PPTESTCD   | Simulated | n_subj | Reference | % diff |
 |:-----------|----------:|-------:|----------:|-------:|
-| aucinf.obs |  18592.44 |    300 |   17795.0 |   4.48 |
-| auclast    |  16521.67 |    300 |   16090.0 |   2.68 |
-| cl.obs     |     32.27 |    300 |      35.5 |  -9.10 |
-| cmax       |    897.16 |    300 |     975.5 |  -8.03 |
-| half.life  |     57.37 |    300 |      58.8 |  -2.42 |
+| aucinf.obs |  18207.74 |    299 |   17795.0 |   2.32 |
+| auclast    |  16325.40 |    300 |   16090.0 |   1.46 |
+| cl.obs     |     32.95 |    299 |      35.5 |  -7.17 |
+| cmax       |    903.22 |    300 |     975.5 |  -7.41 |
+| half.life  |     56.95 |    299 |      58.8 |  -3.15 |
 | tmax       |      2.00 |    300 |       2.0 |   0.00 |
 
 Pooled (n = 300 simulated) values used by the gate below. {.table}

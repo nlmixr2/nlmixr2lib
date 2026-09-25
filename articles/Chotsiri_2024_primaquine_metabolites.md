@@ -483,18 +483,18 @@ knitr::kable(
 
 | NCA parameter      | analyte | Reference | Simulated |     % diff |
 |:-------------------|:--------|----------:|----------:|-----------:|
-| Cmax (ng/mL)       | PQ      |       259 |       176 |   -31.9%\* |
-| Cmax (ng/mL)       | CPQ     |       338 |       311 |      -8.0% |
-| Cmax (ng/mL)       | PQCG    |      1550 |       868 |   -44.0%\* |
-| Tmax (h)           | PQ      |     0.872 |      1.25 |   +43.3%\* |
-| Tmax (h)           | CPQ     |      4.57 |      4.78 |      +4.5% |
-| Tmax (h)           | PQCG    |      1.61 |       2.2 |   +36.6%\* |
-| AUClast (h\*ng/mL) | PQ      |       130 |      1770 | +1259.3%\* |
-| AUClast (h\*ng/mL) | CPQ     |      8030 |      7030 |     -12.5% |
-| AUClast (h\*ng/mL) | PQCG    |      1240 |     11900 |  +861.3%\* |
-| t½ (h)             | PQ      |      7.42 |      7.32 |      -1.3% |
-| t½ (h)             | CPQ     |       469 |       515 |      +9.9% |
-| t½ (h)             | PQCG    |      17.5 |      13.5 |   -23.1%\* |
+| Cmax (ng/mL)       | PQ      |       259 |       155 |   -40.1%\* |
+| Cmax (ng/mL)       | CPQ     |       338 |       319 |      -5.5% |
+| Cmax (ng/mL)       | PQCG    |      1550 |       825 |   -46.7%\* |
+| Tmax (h)           | PQ      |     0.872 |       1.2 |   +37.6%\* |
+| Tmax (h)           | CPQ     |      4.57 |      4.58 |      +0.1% |
+| Tmax (h)           | PQCG    |      1.61 |       2.4 |   +49.1%\* |
+| AUClast (h\*ng/mL) | PQ      |       130 |      1580 | +1114.4%\* |
+| AUClast (h\*ng/mL) | CPQ     |      8030 |      7100 |     -11.6% |
+| AUClast (h\*ng/mL) | PQCG    |      1240 |     12500 |  +908.4%\* |
+| t½ (h)             | PQ      |      7.42 |      7.47 |      +0.7% |
+| t½ (h)             | CPQ     |       469 |       529 |     +12.8% |
+| t½ (h)             | PQCG    |      17.5 |      14.4 |     -17.5% |
 
 Simulated (n = 100 virtual subjects, median) vs Chotsiri 2024 Table 3 (n
 = 28, median). AUC is over 0-24 h in both columns. \* differs by more
@@ -559,10 +559,10 @@ cpq_num |> transmute(PPTESTCD, simulated = sim, published = PPORRES,
 #> # A tibble: 4 × 4
 #>   PPTESTCD  simulated published `% difference`
 #>   <chr>         <dbl>     <dbl>          <dbl>
-#> 1 auclast     7027.     8030             -12.5
-#> 2 cmax         311.      338              -8  
-#> 3 half.life    515.      469               9.9
-#> 4 tmax           4.78      4.57            4.5
+#> 1 auclast     7096.     8030             -11.6
+#> 2 cmax         319.      338              -5.5
+#> 3 half.life    529.      469              12.8
+#> 4 tmax           4.58      4.57            0.1
 ```
 
 ### Table 3’s primaquine and glucuronide rows cannot be reproduced

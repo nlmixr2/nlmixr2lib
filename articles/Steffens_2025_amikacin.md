@@ -163,7 +163,7 @@ stopifnot(trough_ratio > 2)   # realised ~3.6; a dropped covariate gives 1.0
 
 | Check | Expected | Achieved |
 |:---|:---|:---|
-| Solve vs closed-form 1-cmt IV infusion (max relative error) | \< 1e-6 | 7.5e-15 |
+| Solve vs closed-form 1-cmt IV infusion (max relative error) | \< 1e-6 | 1.26e-08 |
 | CL at CRCL = 0 (L/h) | 1.49 (Table 2) | 1.4900 |
 | CL at median CRCL 79.01 mL/min (L/h) | 2.04 (Section 2.2 base model) | 2.0438 |
 | 24 h trough ratio, CRCL 30 vs 200 mL/min | \> 1 (covariate active) | 5.25 |
@@ -213,7 +213,7 @@ stopifnot(abs(mb_pct) < 1.5)
 ```
 
 Amount cleared per 24 h interval: **1000.0 mg** against a 1000 mg dose
-(-0.000%).
+(+0.000%).
 
 ## Virtual cohort
 

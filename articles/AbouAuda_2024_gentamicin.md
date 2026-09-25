@@ -505,8 +505,8 @@ per_subject |>
 
 | Arm | AUC(0-8) from PKNCA, median (mg\*h/L) | Dose/CL, median (mg\*h/L) | Max relative error |
 |:---|---:|---:|---:|
-| ALL | 21.889 | 21.890 | 9.821e-05 |
-| non-ALL | 19.389 | 19.389 | 7.797e-05 |
+| ALL | 21.889 | 21.890 | 9.613e-05 |
+| non-ALL | 19.389 | 19.389 | 7.612e-05 |
 
 Steady-state AUC(0-tau) from PKNCA against the closed-form Dose/CL
 identity. {.table}

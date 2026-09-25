@@ -225,8 +225,6 @@ mis-drawn cohort measures nothing.
 
 chk <- solve_cohort(regimen(1000, 0, "IV", 68.8, 12), n = 2000L, seed = 11L) |>
   filter(time == 12)
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7, etaiov_cl_8
-#> as a work-around try putting the mu-referenced expression on a simple line
 
 tibble::tibble(
   quantity = c("median V (L)", "median CL (L/h)", "sd(log V)", "sd(log CL)"),
@@ -314,10 +312,10 @@ fig2 |>
 
 | arm                 | median_Cmin |
 |:--------------------|------------:|
-| IV load / IV maint. |       27.87 |
-| IV load / PO maint. |       26.92 |
-| PO load / IV maint. |       27.80 |
-| PO load / PO maint. |       26.86 |
+| IV load / IV maint. |       27.88 |
+| IV load / PO maint. |       26.93 |
+| PO load / IV maint. |       27.82 |
+| PO load / PO maint. |       26.87 |
 
 Trough at t = 336 h by route combination; oral and intravenous agree
 closely. {.table}
@@ -343,8 +341,6 @@ set.seed(404L)
 sim_nca_raw <- as.data.frame(
   rxode2::rxSolve(ui_typ, nca_events, returnType = "data.frame")
 )
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7, etaiov_cl_8
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_cl_7', 'etaiov_cl_8'
 if (is.null(sim_nca_raw$id)) sim_nca_raw$id <- 1L
 
@@ -439,7 +435,7 @@ u <- solve_cohort(regimen(1, 0, "IV", 70, 12), n = 200L, seed = 505L) |> filter(
 m <- solve_cohort(regimen(1100, 0, "IV", 70, 12), n = 200L, seed = 505L) |> filter(time == 12)
 c(max_relative_error = max(abs(1100 * u$Cc - m$Cc) / m$Cc))
 #> max_relative_error 
-#>       2.171103e-16
+#>       7.300765e-07
 ```
 
 Dose-proportionality holds to machine precision, so the scaling is exact
@@ -541,18 +537,18 @@ maintenance |>
 
 | IBW | route | Model optimum (mg) | Table 3 (mg) | PTA at model optimum (%) | PTA at Table 3 dose (%) | PTA loss (pp) |
 |---:|:---|---:|---:|---:|---:|---:|
-| 55 | IV | 150 | 100 | 63.5 | 57.0 | 6.5 |
-| 55 | PO | 150 | 100 | 64.0 | 57.0 | 7.0 |
-| 60 | IV | 150 | 150 | 65.0 | 65.0 | 0.0 |
-| 60 | PO | 150 | 150 | 65.0 | 65.0 | 0.0 |
-| 65 | IV | 150 | 150 | 64.0 | 64.0 | 0.0 |
-| 65 | PO | 150 | 150 | 66.5 | 66.5 | 0.0 |
-| 70 | IV | 150 | 150 | 65.0 | 65.0 | 0.0 |
+| 55 | IV | 150 | 100 | 60.0 | 56.0 | 4.0 |
+| 55 | PO | 150 | 100 | 61.5 | 55.0 | 6.5 |
+| 60 | IV | 150 | 150 | 62.5 | 62.5 | 0.0 |
+| 60 | PO | 150 | 150 | 62.5 | 62.5 | 0.0 |
+| 65 | IV | 150 | 150 | 61.5 | 61.5 | 0.0 |
+| 65 | PO | 150 | 150 | 62.0 | 62.0 | 0.0 |
+| 70 | IV | 150 | 150 | 63.5 | 63.5 | 0.0 |
 | 70 | PO | 150 | 150 | 65.0 | 65.0 | 0.0 |
-| 75 | IV | 150 | 150 | 65.0 | 65.0 | 0.0 |
-| 75 | PO | 150 | 150 | 65.5 | 65.5 | 0.0 |
-| 80 | IV | 150 | 150 | 65.0 | 65.0 | 0.0 |
-| 80 | PO | 200 | 150 | 67.0 | 62.5 | 4.5 |
+| 75 | IV | 150 | 150 | 64.5 | 64.5 | 0.0 |
+| 75 | PO | 150 | 150 | 63.5 | 63.5 | 0.0 |
+| 80 | IV | 200 | 150 | 62.5 | 61.5 | 1.0 |
+| 80 | PO | 200 | 150 | 63.5 | 61.0 | 2.5 |
 
 Maintenance doses: model optimum vs Stoschus 2025 Table 3, with the same
 paired comparison on identical subjects. {.table style="width:100%;"}
@@ -580,8 +576,8 @@ tibble::tibble(
 |:------------------|----------:|--------------:|--------------:|
 | Loading, IV       |      50.2 |          42.7 |           7.5 |
 | Loading, oral     |      49.8 |          42.5 |           7.3 |
-| Maintenance, IV   |      64.6 |          44.3 |          20.3 |
-| Maintenance, oral |      65.5 |          44.5 |          21.0 |
+| Maintenance, IV   |      62.4 |          44.3 |          18.1 |
+| Maintenance, oral |      63.0 |          44.5 |          18.5 |
 
 Target attainment at each optimal dose, averaged over IBW 55-80 kg
 (Stoschus 2025 Results 3.3). {.table}

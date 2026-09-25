@@ -504,66 +504,66 @@ gate <- gate |>
 
 | Arm | Drug | Matrix | Isolate | fT\>MPC paper | fT\>MPC sim | fT\>MPC diff | fTMSW paper | fTMSW sim | fTMSW diff |
 |:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|
-| CrCL \>50-150 | Aztreonam | Plasma | EC13, EC48 | 96.3 | 94.67 | -1.63 | 3.20 | 4.27 | 1.07 |
-| CrCL \>50-150 | Aztreonam | Plasma | LW13 | 99.6 | 98.94 | -0.66 | 0.40 | 1.06 | 0.66 |
-| CrCL \>50-150 | Aztreonam | Plasma | EC37 | 99.9 | 99.86 | -0.04 | 0.12 | 0.14 | 0.02 |
-| CrCL \>50-150 | Aztreonam | Plasma | LW8 | 99.9 | 99.98 | 0.08 | 0.03 | 0.02 | -0.01 |
-| CrCL \>50-150 | Aztreonam | Plasma | EC45 | 99.9 | 99.98 | 0.08 | 0.04 | 0.02 | -0.02 |
-| CrCL \>30-50 | Aztreonam | Plasma | EC13, EC48 | 95.8 | 95.54 | -0.26 | 4.00 | 4.40 | 0.40 |
-| CrCL \>30-50 | Aztreonam | Plasma | LW13 | 99.8 | 99.93 | 0.13 | 0.20 | 0.07 | -0.13 |
+| CrCL \>50-150 | Aztreonam | Plasma | EC13, EC48 | 96.3 | 95.65 | -0.65 | 3.20 | 3.98 | 0.78 |
+| CrCL \>50-150 | Aztreonam | Plasma | LW13 | 99.6 | 99.64 | 0.04 | 0.40 | 0.36 | -0.04 |
+| CrCL \>50-150 | Aztreonam | Plasma | EC37 | 99.9 | 100.00 | 0.10 | 0.12 | 0.00 | -0.12 |
+| CrCL \>50-150 | Aztreonam | Plasma | LW8 | 99.9 | 100.00 | 0.10 | 0.03 | 0.00 | -0.03 |
+| CrCL \>50-150 | Aztreonam | Plasma | EC45 | 99.9 | 100.00 | 0.10 | 0.04 | 0.00 | -0.04 |
+| CrCL \>30-50 | Aztreonam | Plasma | EC13, EC48 | 95.8 | 95.88 | 0.08 | 4.00 | 4.00 | 0.00 |
+| CrCL \>30-50 | Aztreonam | Plasma | LW13 | 99.8 | 99.88 | 0.08 | 0.20 | 0.12 | -0.08 |
 | CrCL \>30-50 | Aztreonam | Plasma | EC37 | 99.9 | 100.00 | 0.10 | 0.10 | 0.00 | -0.10 |
 | CrCL \>30-50 | Aztreonam | Plasma | LW8 | 99.9 | 100.00 | 0.10 | 0.04 | 0.00 | -0.04 |
 | CrCL \>30-50 | Aztreonam | Plasma | EC45 | 100.0 | 100.00 | 0.00 | 0.02 | 0.00 | -0.02 |
-| CrCL 10-30 | Aztreonam | Plasma | EC13, EC48 | 92.2 | 78.98 | -13.22 | 7.20 | 18.82 | 11.62 |
-| CrCL 10-30 | Aztreonam | Plasma | LW13 | 99.3 | 97.81 | -1.49 | 0.60 | 2.19 | 1.59 |
-| CrCL 10-30 | Aztreonam | Plasma | EC37 | 99.8 | 99.77 | -0.03 | 0.10 | 0.23 | 0.13 |
-| CrCL 10-30 | Aztreonam | Plasma | LW8 | 99.9 | 100.00 | 0.10 | 0.03 | 0.00 | -0.03 |
-| CrCL 10-30 | Aztreonam | Plasma | EC45 | 99.9 | 100.00 | 0.10 | 0.05 | 0.00 | -0.05 |
-| CrCL \>50-150 | Aztreonam | ELF | EC13, EC48 | 94.2 | 93.34 | -0.86 | 4.30 | 5.31 | 1.01 |
-| CrCL \>50-150 | Aztreonam | ELF | LW13 | 99.4 | 98.65 | -0.75 | 0.60 | 1.35 | 0.75 |
-| CrCL \>50-150 | Aztreonam | ELF | EC37 | 99.8 | 99.83 | 0.03 | 0.14 | 0.17 | 0.03 |
-| CrCL \>50-150 | Aztreonam | ELF | LW8 | 99.9 | 99.97 | 0.07 | 0.03 | 0.03 | 0.00 |
-| CrCL \>50-150 | Aztreonam | ELF | EC45 | 99.9 | 99.97 | 0.07 | 0.04 | 0.03 | -0.01 |
-| CrCL \>30-50 | Aztreonam | ELF | EC13, EC48 | 93.9 | 93.62 | -0.28 | 5.80 | 6.20 | 0.40 |
-| CrCL \>30-50 | Aztreonam | ELF | LW13 | 99.7 | 99.82 | 0.12 | 0.30 | 0.18 | -0.12 |
+| CrCL 10-30 | Aztreonam | Plasma | EC13, EC48 | 92.2 | 76.26 | -15.94 | 7.20 | 21.02 | 13.82 |
+| CrCL 10-30 | Aztreonam | Plasma | LW13 | 99.3 | 97.28 | -2.02 | 0.60 | 2.72 | 2.12 |
+| CrCL 10-30 | Aztreonam | Plasma | EC37 | 99.8 | 99.78 | -0.02 | 0.10 | 0.22 | 0.12 |
+| CrCL 10-30 | Aztreonam | Plasma | LW8 | 99.9 | 99.93 | 0.03 | 0.03 | 0.07 | 0.04 |
+| CrCL 10-30 | Aztreonam | Plasma | EC45 | 99.9 | 99.93 | 0.03 | 0.05 | 0.07 | 0.02 |
+| CrCL \>50-150 | Aztreonam | ELF | EC13, EC48 | 94.2 | 94.22 | 0.02 | 4.30 | 5.26 | 0.96 |
+| CrCL \>50-150 | Aztreonam | ELF | LW13 | 99.4 | 99.48 | 0.08 | 0.60 | 0.52 | -0.08 |
+| CrCL \>50-150 | Aztreonam | ELF | EC37 | 99.8 | 99.99 | 0.19 | 0.14 | 0.01 | -0.13 |
+| CrCL \>50-150 | Aztreonam | ELF | LW8 | 99.9 | 100.00 | 0.10 | 0.03 | 0.00 | -0.03 |
+| CrCL \>50-150 | Aztreonam | ELF | EC45 | 99.9 | 100.00 | 0.10 | 0.04 | 0.00 | -0.04 |
+| CrCL \>30-50 | Aztreonam | ELF | EC13, EC48 | 93.9 | 94.06 | 0.16 | 5.80 | 5.69 | -0.11 |
+| CrCL \>30-50 | Aztreonam | ELF | LW13 | 99.7 | 99.75 | 0.05 | 0.30 | 0.25 | -0.05 |
 | CrCL \>30-50 | Aztreonam | ELF | EC37 | 99.8 | 100.00 | 0.20 | 0.10 | 0.00 | -0.10 |
 | CrCL \>30-50 | Aztreonam | ELF | LW8 | 99.9 | 100.00 | 0.10 | 0.03 | 0.00 | -0.03 |
 | CrCL \>30-50 | Aztreonam | ELF | EC45 | 99.9 | 100.00 | 0.10 | 0.04 | 0.00 | -0.04 |
-| CrCL 10-30 | Aztreonam | ELF | EC13, EC48 | 89.7 | 72.05 | -17.65 | 9.50 | 24.85 | 15.35 |
-| CrCL 10-30 | Aztreonam | ELF | LW13 | 99.1 | 96.90 | -2.20 | 0.80 | 3.10 | 2.30 |
-| CrCL 10-30 | Aztreonam | ELF | EC37 | 99.8 | 99.69 | -0.11 | 0.20 | 0.31 | 0.11 |
-| CrCL 10-30 | Aztreonam | ELF | LW8 | 99.9 | 99.99 | 0.09 | 0.04 | 0.01 | -0.03 |
-| CrCL 10-30 | Aztreonam | ELF | EC45 | 99.9 | 99.99 | 0.09 | 0.05 | 0.01 | -0.04 |
-| CrCL \>50-150 | Amoxicillin | Plasma | EC13, EC48 | 75.8 | 78.91 | 3.11 | 14.40 | 13.77 | -0.63 |
-| CrCL \>50-150 | Amoxicillin | Plasma | LW13 | 90.0 | 92.68 | 2.68 | 5.80 | 5.38 | -0.42 |
-| CrCL \>50-150 | Amoxicillin | Plasma | EC37 | 95.6 | 98.06 | 2.46 | 2.60 | 1.43 | -1.17 |
-| CrCL \>50-150 | Amoxicillin | Plasma | LW8 | 98.2 | 99.49 | 1.29 | 0.00 | 0.00 | 0.00 |
-| CrCL \>50-150 | Amoxicillin | Plasma | EC45 | 98.2 | 99.49 | 1.29 | 0.00 | 0.00 | 0.00 |
-| CrCL \>30-50 | Amoxicillin | Plasma | EC13, EC48 | 96.9 | 99.60 | 2.70 | 2.40 | 0.40 | -2.00 |
+| CrCL 10-30 | Aztreonam | ELF | EC13, EC48 | 89.7 | 69.81 | -19.89 | 9.50 | 26.31 | 16.81 |
+| CrCL 10-30 | Aztreonam | ELF | LW13 | 99.1 | 96.13 | -2.97 | 0.80 | 3.87 | 3.07 |
+| CrCL 10-30 | Aztreonam | ELF | EC37 | 99.8 | 99.73 | -0.07 | 0.20 | 0.27 | 0.07 |
+| CrCL 10-30 | Aztreonam | ELF | LW8 | 99.9 | 99.92 | 0.02 | 0.04 | 0.08 | 0.04 |
+| CrCL 10-30 | Aztreonam | ELF | EC45 | 99.9 | 99.92 | 0.02 | 0.05 | 0.08 | 0.03 |
+| CrCL \>50-150 | Amoxicillin | Plasma | EC13, EC48 | 75.8 | 78.64 | 2.84 | 14.40 | 14.28 | -0.12 |
+| CrCL \>50-150 | Amoxicillin | Plasma | LW13 | 90.0 | 92.92 | 2.92 | 5.80 | 4.77 | -1.03 |
+| CrCL \>50-150 | Amoxicillin | Plasma | EC37 | 95.6 | 97.69 | 2.09 | 2.60 | 1.64 | -0.96 |
+| CrCL \>50-150 | Amoxicillin | Plasma | LW8 | 98.2 | 99.33 | 1.13 | 0.00 | 0.00 | 0.00 |
+| CrCL \>50-150 | Amoxicillin | Plasma | EC45 | 98.2 | 99.33 | 1.13 | 0.00 | 0.00 | 0.00 |
+| CrCL \>30-50 | Amoxicillin | Plasma | EC13, EC48 | 96.9 | 99.68 | 2.78 | 2.40 | 0.32 | -2.08 |
 | CrCL \>30-50 | Amoxicillin | Plasma | LW13 | 99.4 | 100.00 | 0.60 | 0.50 | 0.00 | -0.50 |
 | CrCL \>30-50 | Amoxicillin | Plasma | EC37 | 99.7 | 100.00 | 0.30 | 0.20 | 0.00 | -0.20 |
 | CrCL \>30-50 | Amoxicillin | Plasma | LW8 | 99.9 | 100.00 | 0.10 | 0.00 | 0.00 | 0.00 |
 | CrCL \>30-50 | Amoxicillin | Plasma | EC45 | 99.9 | 100.00 | 0.10 | 0.00 | 0.00 | 0.00 |
-| CrCL 10-30 | Amoxicillin | Plasma | EC13, EC48 | 98.8 | 93.52 | -5.28 | 1.00 | 5.50 | 4.50 |
-| CrCL 10-30 | Amoxicillin | Plasma | LW13 | 99.8 | 99.02 | -0.78 | 0.10 | 0.95 | 0.85 |
-| CrCL 10-30 | Amoxicillin | Plasma | EC37 | 99.8 | 99.97 | 0.17 | 0.10 | 0.03 | -0.07 |
+| CrCL 10-30 | Amoxicillin | Plasma | EC13, EC48 | 98.8 | 93.53 | -5.27 | 1.00 | 5.58 | 4.58 |
+| CrCL 10-30 | Amoxicillin | Plasma | LW13 | 99.8 | 99.11 | -0.69 | 0.10 | 0.87 | 0.77 |
+| CrCL 10-30 | Amoxicillin | Plasma | EC37 | 99.8 | 99.98 | 0.18 | 0.10 | 0.02 | -0.08 |
 | CrCL 10-30 | Amoxicillin | Plasma | LW8 | 99.9 | 100.00 | 0.10 | 0.00 | 0.00 | 0.00 |
 | CrCL 10-30 | Amoxicillin | Plasma | EC45 | 99.9 | 100.00 | 0.10 | 0.00 | 0.00 | 0.00 |
-| CrCL \>50-150 | Amoxicillin | ELF | EC13, EC48 | 28.2 | 24.96 | -3.24 | 35.00 | 40.53 | 5.53 |
-| CrCL \>50-150 | Amoxicillin | ELF | LW13 | 63.2 | 65.49 | 2.29 | 22.00 | 22.30 | 0.30 |
-| CrCL \>50-150 | Amoxicillin | ELF | EC37 | 84.5 | 87.79 | 3.29 | 8.90 | 8.30 | -0.60 |
-| CrCL \>50-150 | Amoxicillin | ELF | LW8 | 93.5 | 96.09 | 2.59 | 0.00 | 0.00 | 0.00 |
-| CrCL \>50-150 | Amoxicillin | ELF | EC45 | 93.5 | 96.09 | 2.59 | 0.00 | 0.00 | 0.00 |
-| CrCL \>30-50 | Amoxicillin | ELF | EC13, EC48 | 74.3 | 86.25 | 11.95 | 19.30 | 12.63 | -6.67 |
-| CrCL \>30-50 | Amoxicillin | ELF | LW13 | 93.6 | 98.87 | 5.27 | 4.90 | 1.08 | -3.82 |
-| CrCL \>30-50 | Amoxicillin | ELF | EC37 | 98.0 | 99.95 | 1.95 | 1.40 | 0.05 | -1.35 |
+| CrCL \>50-150 | Amoxicillin | ELF | EC13, EC48 | 28.2 | 18.91 | -9.29 | 35.00 | 45.01 | 10.01 |
+| CrCL \>50-150 | Amoxicillin | ELF | LW13 | 63.2 | 63.92 | 0.72 | 22.00 | 23.94 | 1.94 |
+| CrCL \>50-150 | Amoxicillin | ELF | EC37 | 84.5 | 87.86 | 3.36 | 8.90 | 8.16 | -0.74 |
+| CrCL \>50-150 | Amoxicillin | ELF | LW8 | 93.5 | 96.02 | 2.52 | 0.00 | 0.00 | 0.00 |
+| CrCL \>50-150 | Amoxicillin | ELF | EC45 | 93.5 | 96.02 | 2.52 | 0.00 | 0.00 | 0.00 |
+| CrCL \>30-50 | Amoxicillin | ELF | EC13, EC48 | 74.3 | 81.71 | 7.41 | 19.30 | 17.19 | -2.11 |
+| CrCL \>30-50 | Amoxicillin | ELF | LW13 | 93.6 | 98.90 | 5.30 | 4.90 | 1.07 | -3.83 |
+| CrCL \>30-50 | Amoxicillin | ELF | EC37 | 98.0 | 99.97 | 1.97 | 1.40 | 0.03 | -1.37 |
 | CrCL \>30-50 | Amoxicillin | ELF | LW8 | 99.4 | 100.00 | 0.60 | 0.00 | 0.00 | 0.00 |
 | CrCL \>30-50 | Amoxicillin | ELF | EC45 | 99.4 | 100.00 | 0.60 | 0.00 | 0.00 | 0.00 |
-| CrCL 10-30 | Amoxicillin | ELF | EC13, EC48 | 82.5 | 40.80 | -41.70 | 14.30 | 44.43 | 30.13 |
-| CrCL 10-30 | Amoxicillin | ELF | LW13 | 96.8 | 85.23 | -11.57 | 2.70 | 11.99 | 9.29 |
-| CrCL 10-30 | Amoxicillin | ELF | EC37 | 99.1 | 97.23 | -1.87 | 0.60 | 2.53 | 1.93 |
-| CrCL 10-30 | Amoxicillin | ELF | LW8 | 99.8 | 99.76 | -0.04 | 0.00 | 0.00 | 0.00 |
-| CrCL 10-30 | Amoxicillin | ELF | EC45 | 99.8 | 99.76 | -0.04 | 0.00 | 0.00 | 0.00 |
+| CrCL 10-30 | Amoxicillin | ELF | EC13, EC48 | 82.5 | 39.46 | -43.04 | 14.30 | 45.15 | 30.85 |
+| CrCL 10-30 | Amoxicillin | ELF | LW13 | 96.8 | 84.60 | -12.20 | 2.70 | 12.97 | 10.27 |
+| CrCL 10-30 | Amoxicillin | ELF | EC37 | 99.1 | 97.57 | -1.53 | 0.60 | 2.24 | 1.64 |
+| CrCL 10-30 | Amoxicillin | ELF | LW8 | 99.8 | 99.81 | 0.01 | 0.00 | 0.00 | 0.00 |
+| CrCL 10-30 | Amoxicillin | ELF | EC45 | 99.8 | 99.81 | 0.01 | 0.00 | 0.00 | 0.00 |
 
 Reproduction of Tables 4 (plasma) and 5 (ELF). Differences are simulated
 minus published, in percentage points. {.table style="width:100%;"}
@@ -572,18 +572,18 @@ Worst-case agreement per drug, matrix and renal arm:
 
 | Arm | Drug | Matrix | Max \|fT\>MPC diff\| | Max \|fTMSW diff\| | Mean fT\>MPC diff |
 |:---|:---|:---|---:|---:|---:|
-| CrCL \>50-150 | Amoxicillin | ELF | 3.29 | 5.53 | 1.50 |
-| CrCL \>50-150 | Amoxicillin | Plasma | 3.11 | 1.17 | 2.16 |
-| CrCL \>50-150 | Aztreonam | ELF | 0.86 | 1.01 | -0.29 |
-| CrCL \>50-150 | Aztreonam | Plasma | 1.63 | 1.07 | -0.43 |
-| CrCL \>30-50 | Amoxicillin | ELF | 11.95 | 6.67 | 4.07 |
-| CrCL \>30-50 | Amoxicillin | Plasma | 2.70 | 2.00 | 0.76 |
-| CrCL \>30-50 | Aztreonam | ELF | 0.28 | 0.40 | 0.05 |
-| CrCL \>30-50 | Aztreonam | Plasma | 0.26 | 0.40 | 0.01 |
-| CrCL 10-30 | Amoxicillin | ELF | 41.70 | 30.13 | -11.04 |
-| CrCL 10-30 | Amoxicillin | Plasma | 5.28 | 4.50 | -1.14 |
-| CrCL 10-30 | Aztreonam | ELF | 17.65 | 15.35 | -3.95 |
-| CrCL 10-30 | Aztreonam | Plasma | 13.22 | 11.62 | -2.91 |
+| CrCL \>50-150 | Amoxicillin | ELF | 9.29 | 10.01 | -0.04 |
+| CrCL \>50-150 | Amoxicillin | Plasma | 2.92 | 1.03 | 2.02 |
+| CrCL \>50-150 | Aztreonam | ELF | 0.19 | 0.96 | 0.10 |
+| CrCL \>50-150 | Aztreonam | Plasma | 0.65 | 0.78 | -0.06 |
+| CrCL \>30-50 | Amoxicillin | ELF | 7.41 | 3.83 | 3.17 |
+| CrCL \>30-50 | Amoxicillin | Plasma | 2.78 | 2.08 | 0.78 |
+| CrCL \>30-50 | Aztreonam | ELF | 0.20 | 0.11 | 0.12 |
+| CrCL \>30-50 | Aztreonam | Plasma | 0.10 | 0.10 | 0.07 |
+| CrCL 10-30 | Amoxicillin | ELF | 43.04 | 30.85 | -11.35 |
+| CrCL 10-30 | Amoxicillin | Plasma | 5.27 | 4.58 | -1.12 |
+| CrCL 10-30 | Aztreonam | ELF | 19.89 | 16.81 | -4.58 |
+| CrCL 10-30 | Aztreonam | Plasma | 15.94 | 13.82 | -3.58 |
 
 The two higher renal-function arms reproduce. The CrCL 10-30 arm does
 not, for either drug and in both matrices, under the regimen Table 1
@@ -674,14 +674,14 @@ alt <- bind_rows(
 
 | Drug | Matrix | Isolate | fT\>MPC paper | Table 1 as printed | diff | Alternative reading | alt fT\>MPC | alt diff |
 |:---|:---|:---|---:|---:|---:|:---|---:|---:|
-| Aztreonam | Plasma | EC13, EC48 | 92.2 | 78.98 | -13.22 | 500 mg q8h, first 24 h incl. 2 g load | 92.48 | 0.28 |
-| Aztreonam | Plasma | LW13 | 99.3 | 97.81 | -1.49 | 500 mg q8h, first 24 h incl. 2 g load | 98.80 | -0.50 |
-| Aztreonam | ELF | EC13, EC48 | 89.7 | 72.05 | -17.65 | 500 mg q8h, first 24 h incl. 2 g load | 90.39 | 0.69 |
-| Aztreonam | ELF | LW13 | 99.1 | 96.90 | -2.20 | 500 mg q8h, first 24 h incl. 2 g load | 98.46 | -0.64 |
-| Amoxicillin | Plasma | EC13, EC48 | 98.8 | 93.52 | -5.28 | 1000 mg q12h, steady state | 99.22 | 0.42 |
-| Amoxicillin | Plasma | LW13 | 99.8 | 99.02 | -0.78 | 1000 mg q12h, steady state | 100.00 | 0.20 |
-| Amoxicillin | ELF | EC13, EC48 | 82.5 | 40.80 | -41.70 | 1000 mg q12h, steady state | 81.42 | -1.08 |
-| Amoxicillin | ELF | LW13 | 96.8 | 85.23 | -11.57 | 1000 mg q12h, steady state | 97.40 | 0.60 |
+| Aztreonam | Plasma | EC13, EC48 | 92.2 | 76.26 | -15.94 | 500 mg q8h, first 24 h incl. 2 g load | 93.18 | 0.98 |
+| Aztreonam | Plasma | LW13 | 99.3 | 97.28 | -2.02 | 500 mg q8h, first 24 h incl. 2 g load | 98.54 | -0.76 |
+| Aztreonam | ELF | EC13, EC48 | 89.7 | 69.81 | -19.89 | 500 mg q8h, first 24 h incl. 2 g load | 91.41 | 1.71 |
+| Aztreonam | ELF | LW13 | 99.1 | 96.13 | -2.97 | 500 mg q8h, first 24 h incl. 2 g load | 98.23 | -0.87 |
+| Amoxicillin | Plasma | EC13, EC48 | 98.8 | 93.53 | -5.27 | 1000 mg q12h, steady state | 98.13 | -0.67 |
+| Amoxicillin | Plasma | LW13 | 99.8 | 99.11 | -0.69 | 1000 mg q12h, steady state | 99.72 | -0.08 |
+| Amoxicillin | ELF | EC13, EC48 | 82.5 | 39.46 | -43.04 | 1000 mg q12h, steady state | 81.52 | -0.98 |
+| Amoxicillin | ELF | LW13 | 96.8 | 84.60 | -12.20 | 1000 mg q12h, steady state | 96.03 | -0.77 |
 
 CrCL 10-30 arm: Table 1 as printed against the reading that reproduces
 the published column. {.table}
@@ -742,10 +742,10 @@ elfCandidates <- elfCandidates |>
 
 | Reading             | fT\>MPC sim | fT\>MPC err | fTMSW sim | fTMSW err |
 |:--------------------|------------:|------------:|----------:|----------:|
-| 0.40 x total plasma |       93.34 |        0.86 |      5.31 |      1.01 |
-| 0.55 x total plasma |       96.79 |        2.59 |      2.65 |      1.65 |
-| 0.40 x free plasma  |       58.64 |       35.56 |     32.31 |     28.01 |
-| 0.55 x free plasma  |       78.16 |       16.04 |     17.56 |     13.26 |
+| 0.40 x total plasma |       94.22 |        0.02 |      5.26 |      0.96 |
+| 0.55 x total plasma |       97.89 |        3.69 |      1.99 |      2.31 |
+| 0.40 x free plasma  |       60.52 |       33.68 |     31.20 |     26.90 |
+| 0.55 x free plasma  |       79.06 |       15.14 |     17.70 |     13.40 |
 
 Candidate ELF readings against Table 5 for EC13/EC48, CrCL \>50-150
 (published fT\>MPC 94.2%, fTMSW 4.3%). {.table}
@@ -816,9 +816,9 @@ clCmp <- paperPlasma1 |>
 
 | Isolate    | fT\>MPC paper | sim CL 4.93 | err 4.93 | sim CL 4.73 | err 4.73 |
 |:-----------|--------------:|------------:|---------:|------------:|---------:|
-| EC13, EC48 |          96.3 |       96.40 |     0.10 |       97.06 |     0.76 |
-| LW13       |          99.6 |       99.55 |     0.05 |       99.65 |     0.05 |
-| EC37       |          99.9 |       99.94 |     0.04 |       99.97 |     0.07 |
+| EC13, EC48 |          96.3 |       96.29 |     0.01 |       96.96 |     0.66 |
+| LW13       |          99.6 |       99.55 |     0.05 |       99.70 |     0.10 |
+| EC37       |          99.9 |       99.99 |     0.09 |      100.00 |     0.10 |
 | LW8        |          99.9 |      100.00 |     0.10 |      100.00 |     0.10 |
 | EC45       |          99.9 |      100.00 |     0.10 |      100.00 |     0.10 |
 
@@ -897,9 +897,9 @@ ncaRes <- PKNCA::pk.nca(PKNCA::PKNCAdata(concObj, doseObj, intervals = intervals
 
 | Drug            | AUCtau (mg h/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) |
 |:----------------|----------------:|------------:|------------:|---------:|
-| Amoxicillin     |           100.3 |      25.640 |       7.942 |        3 |
-| Aztreonam       |           293.4 |      71.880 |      23.710 |        3 |
-| Clavulanic acid |            29.4 |       7.565 |       2.257 |        3 |
+| Amoxicillin     |          102.70 |      25.740 |       7.936 |        3 |
+| Aztreonam       |          293.90 |      73.100 |      25.140 |        3 |
+| Clavulanic acid |           30.91 |       7.803 |       2.528 |        3 |
 
 Median steady-state total-drug NCA over 114 to 120 h, CrCL \>50-150 arm.
 {.table}
@@ -917,7 +917,7 @@ cat(sprintf(
   "AUCtau vs Dose/CL: max |relative error| = %.2e, median %.2e, over %d pairs\n",
   max(abs(identity$relErr)), median(abs(identity$relErr)), nrow(identity)
 ))
-#> AUCtau vs Dose/CL: max |relative error| = 4.46e-03, median 4.02e-05, over 600 pairs
+#> AUCtau vs Dose/CL: max |relative error| = 1.31e-02, median 4.09e-05, over 600 pairs
 
 # Both sides share the drawn per-subject clearance, so the only discrepancy is
 # numerical. It is not integrator error but AUC discretisation: the paper's grid
@@ -1015,10 +1015,10 @@ claims <- tibble::tribble(
 
 | Claim | Source | Simulated PTA (%) | Reproduced | Gated |
 |:---|:---|---:|:---|:---|
-| Aztreonam plasma: \>=90% PTA at MIC 8 mg/L | Section 3.3, Figure 2 | 99.0 | TRUE | TRUE |
-| Aztreonam ELF: \>=90% PTA at MIC 8 mg/L | Section 3.4, Figure 3 | 97.5 | TRUE | TRUE |
-| Amoxicillin plasma: about 80% PTA at MIC 8 mg/L when CrCL \>50 mL/min | Section 3.3, Figure 2 | 84.0 | TRUE | TRUE |
-| Amoxicillin ELF: \>=90% PTA at MIC 2 mg/L when CrCL \>50 mL/min | Section 3.4, Figure 3 | 97.5 | TRUE | TRUE |
+| Aztreonam plasma: \>=90% PTA at MIC 8 mg/L | Section 3.3, Figure 2 | 98.5 | TRUE | TRUE |
+| Aztreonam ELF: \>=90% PTA at MIC 8 mg/L | Section 3.4, Figure 3 | 98.5 | TRUE | TRUE |
+| Amoxicillin plasma: about 80% PTA at MIC 8 mg/L when CrCL \>50 mL/min | Section 3.3, Figure 2 | 85.0 | TRUE | TRUE |
+| Amoxicillin ELF: \>=90% PTA at MIC 2 mg/L when CrCL \>50 mL/min | Section 3.4, Figure 3 | 96.0 | TRUE | TRUE |
 | Amoxicillin ELF: \>=90% PTA at MIC 4 mg/L when CrCL 30-50 mL/min | Section 3.4, Figure 3 | 100.0 | TRUE | TRUE |
 | Amoxicillin ELF: \>=90% PTA at MIC 4 mg/L when CrCL 10-30 mL/min | Section 3.4, Figure 3 (arm excluded from the gate) | 87.0 | FALSE | FALSE |
 

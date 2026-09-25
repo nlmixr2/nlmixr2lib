@@ -1026,11 +1026,11 @@ summary_paired |>
 
 | Dose (mg/d) | Median improvement vs own placebo (% points) | Q25 | Q75 | Subjects improved (%) |
 |---:|---:|---:|---:|---:|
-| 5 | 2.02 | 1.02 | 3.31 | 89.5 |
-| 10 | 2.72 | 1.37 | 4.47 | 89.5 |
-| 20 | 3.41 | 1.72 | 5.59 | 89.5 |
-| 40 | 4.05 | 2.04 | 6.64 | 89.5 |
-| 60 | 4.28 | 2.16 | 7.03 | 89.5 |
+| 5 | 1.85 | 0.74 | 3.22 | 90 |
+| 10 | 2.50 | 0.99 | 4.35 | 90 |
+| 20 | 3.14 | 1.25 | 5.45 | 90 |
+| 40 | 3.72 | 1.48 | 6.47 | 90 |
+| 60 | 3.94 | 1.57 | 6.85 | 90 |
 
 Paired within-subject improvement in percentage OFF time at week 12,
 each subject compared against their own placebo-arm prediction. {.table}
@@ -1122,11 +1122,11 @@ cmp_vi |>
 
 | Dose (mg/d) | Simulated paired median (% points) | Knebel 2012 Table VI (95% CI) | \|difference\| | Inside published CI |
 |---:|---:|:---|---:|:---|
-| 5 | -2.02 | -2.2 (-2.8, -1.6) | 0.18 | TRUE |
-| 10 | -2.72 | -3.2 (-4.1, -2.3) | 0.48 | TRUE |
-| 20 | -3.41 | -4.0 (-5.1, -2.9) | 0.59 | TRUE |
-| 40 | -4.05 | -4.7 (-6.0, -3.4) | 0.65 | TRUE |
-| 60 | -4.28 | -4.9 (-6.3, -3.6) | 0.62 | TRUE |
+| 5 | -1.85 | -2.2 (-2.8, -1.6) | 0.35 | TRUE |
+| 10 | -2.50 | -3.2 (-4.1, -2.3) | 0.70 | TRUE |
+| 20 | -3.14 | -4.0 (-5.1, -2.9) | 0.86 | TRUE |
+| 40 | -3.72 | -4.7 (-6.0, -3.4) | 0.98 | TRUE |
+| 60 | -3.94 | -4.9 (-6.3, -3.6) | 0.96 | TRUE |
 
 Paired within-subject change in percentage OFF time due to
 istradefylline, against Knebel 2012 Table VI. Exposure map derived from

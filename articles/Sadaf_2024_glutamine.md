@@ -237,8 +237,6 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalka'
 
 # rxSolve has been observed to silently drop subjects; assert the count.
@@ -268,8 +266,6 @@ sim_typical <- rxode2::rxSolve(
   omega  = NA
 ) |>
   as.data.frame()
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: multi-subject simulation without without 'omega'
 ```
 

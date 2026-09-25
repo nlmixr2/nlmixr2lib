@@ -542,11 +542,11 @@ knitr::kable(
 
 | Body-weight band |   N |   Q1 | Median |   Q3 | % within 2-7 mg/L |
 |:-----------------|----:|-----:|-------:|-----:|------------------:|
-| 10-15 kg         | 150 | 2.06 |   2.43 | 3.03 |             76.67 |
-| 15-20 kg         | 150 | 2.69 |   3.38 | 4.03 |             98.00 |
-| 20-40 kg         | 150 | 3.15 |   3.91 | 4.85 |             98.67 |
-| 40-50 kg         | 150 | 3.41 |   4.05 | 4.77 |             97.33 |
-| \>=50 kg         | 150 | 3.39 |   3.93 | 5.23 |             97.33 |
+| 10-15 kg         | 150 | 2.06 |   2.40 | 2.84 |             76.00 |
+| 15-20 kg         | 150 | 2.80 |   3.32 | 3.94 |             98.00 |
+| 20-40 kg         | 150 | 3.04 |   3.65 | 4.61 |             98.67 |
+| 40-50 kg         | 150 | 3.36 |   4.24 | 4.97 |             96.67 |
+| \>=50 kg         | 150 | 3.47 |   4.20 | 5.16 |             98.00 |
 
 Model I simulated steady-state trough by band, dosing each subject at
 the band’s Table 1 median mg/kg (or 150 mg for \>= 50 kg), with IIV on
@@ -568,7 +568,7 @@ stopifnot(min(iqr_tab$pct_in_target) > 60)
 cat(sprintf("Target attainment by band: %s\n",
             paste(sprintf("%s %.0f%%", iqr_tab$band, iqr_tab$pct_in_target),
                   collapse = "; ")))
-#> Target attainment by band: 10-15 kg 77%; 15-20 kg 98%; 20-40 kg 99%; 40-50 kg 97%; >=50 kg 97%
+#> Target attainment by band: 10-15 kg 76%; 15-20 kg 98%; 20-40 kg 99%; 40-50 kg 97%; >=50 kg 98%
 ```
 
 ## Replicating Figure 2 – dose versus simulated exposure
@@ -946,9 +946,9 @@ knitr::kable(
 
 | treatment | adj.r.squared | auclast | cav | clast.pred | cmax | cmin | ctrough | half.life | lambda.z | lambda.z.n.points | lambda.z.time.first | lambda.z.time.last | r.squared | span.ratio | tlast | tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| AA | 1 | 58.977 | 4.915 | 3.356 | 6.503 | 3.353 | NA | 10.840 | 0.064 | 42 | 1.75 | 12 | 1 | 0.946 | 12 | 1.25 |
-| GA | 1 | 66.517 | 5.543 | 3.962 | 7.118 | 3.959 | NA | 12.226 | 0.057 | 42 | 1.75 | 12 | 1 | 0.838 | 12 | 1.25 |
-| GG | 1 | 79.493 | 6.624 | 5.014 | 8.181 | 5.011 | NA | 14.611 | 0.047 | 42 | 1.75 | 12 | 1 | 0.702 | 12 | 1.25 |
+| AA | 1 | 58.840 | 4.903 | 3.345 | 6.492 | 3.342 | NA | 10.815 | 0.064 | 42 | 1.75 | 12 | 1 | 0.948 | 12 | 1.25 |
+| GA | 1 | 67.362 | 5.613 | 4.030 | 7.187 | 4.027 | NA | 12.381 | 0.056 | 42 | 1.75 | 12 | 1 | 0.828 | 12 | 1.25 |
+| GG | 1 | 78.050 | 6.504 | 4.897 | 8.062 | 4.894 | NA | 14.346 | 0.048 | 42 | 1.75 | 12 | 1 | 0.714 | 12 | 1.25 |
 
 PKNCA steady-state parameters over the final 12 h dosing interval,
 median across 100 subjects per genotype arm, Model II, 30 kg, 100 mg
@@ -988,9 +988,9 @@ knitr::kable(
 
 | Genotype arm | AUC(0,tau) (mg\*h/L) | CL/F (L/h) | AUC x CL/F (mg) | Error vs 100 mg dose (%) |
 |:---|---:|---:|---:|---:|
-| AA | 58.977 | 1.694 | 99.917 | -0.083 |
-| GA | 66.517 | 1.502 | 99.927 | -0.073 |
-| GG | 79.493 | 1.257 | 99.939 | -0.061 |
+| AA | 58.840 | 1.698 | 99.926 | -0.074 |
+| GA | 67.362 | 1.483 | 99.927 | -0.073 |
+| GG | 78.050 | 1.280 | 99.937 | -0.063 |
 
 Steady-state mass balance: AUC(0,tau) x CL/F should recover the 100 mg
 dose. {.table}
@@ -1030,9 +1030,9 @@ knitr::kable(
 
 | Genotype arm | NCA half-life (h) | log(2)\*V/F/(CL/F) (h) | % diff |
 |:-------------|------------------:|-----------------------:|-------:|
-| AA           |             10.84 |                  10.80 |   0.36 |
-| GA           |             12.23 |                  12.18 |   0.37 |
-| GG           |             14.61 |                  14.56 |   0.38 |
+| AA           |             10.81 |                  10.78 |   0.37 |
+| GA           |             12.38 |                  12.34 |   0.37 |
+| GG           |             14.35 |                  14.29 |   0.38 |
 
 NCA-recovered half-life versus the closed form from the packaged
 parameters. {.table}
@@ -1098,7 +1098,7 @@ knitr::kable(
 
 | NCA parameter  | Reference | Simulated | % diff |
 |:---------------|:----------|:----------|:-------|
-| Ctrough (mg/L) | 3.71      | 3.78      | +1.9%  |
+| Ctrough (mg/L) | 3.71      | 3.73      | +0.5%  |
 
 Simulated versus published steady-state trough. Reference is Table 1’s
 median observed plasma LCM concentration in the development group (3.71
@@ -1111,7 +1111,7 @@ if (!is.null(attr(cmp, "footnote"))) cat(attr(cmp, "footnote"), "\n")
 pct <- 100 * (simulated_nca$PPORRES - observed_median) / observed_median
 cat(sprintf("Pooled simulated median trough %.2f mg/L vs observed %.2f mg/L (%+.1f %%)\n",
             simulated_nca$PPORRES, observed_median, pct))
-#> Pooled simulated median trough 3.78 mg/L vs observed 3.71 mg/L (+1.9 %)
+#> Pooled simulated median trough 3.73 mg/L vs observed 3.71 mg/L (+0.5 %)
 # Cohort-derived: assert on the CENTRE with headroom for the draw, not on a
 # tight bound taken from one run.
 stopifnot(abs(pct) < 20)
@@ -1129,7 +1129,7 @@ two.
 cat(sprintf("Simulated pooled trough: median %.2f, 5th-95th pct %.2f-%.2f mg/L\n",
             stats::median(pooled), stats::quantile(pooled, 0.05),
             stats::quantile(pooled, 0.95)))
-#> Simulated pooled trough: median 3.78, 5th-95th pct 2.25-6.21 mg/L
+#> Simulated pooled trough: median 3.73, 5th-95th pct 2.20-5.89 mg/L
 cat(sprintf("Observed (Table 1):      median %.2f, full range 0.70-11.90 mg/L\n",
             observed_median))
 #> Observed (Table 1):      median 3.71, full range 0.70-11.90 mg/L

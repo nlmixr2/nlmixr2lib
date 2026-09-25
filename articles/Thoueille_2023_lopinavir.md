@@ -542,7 +542,7 @@ tibble::tibble(
 
 | Check                               | Simulated | Expected |
 |:------------------------------------|----------:|---------:|
-| AUC0-tau (70 kg, 400 mg) vs Dose/CL |   99.5024 |  99.5025 |
+| AUC0-tau (70 kg, 400 mg) vs Dose/CL |   99.5023 |  99.5025 |
 | AUC0-tau ratio 800 mg / 400 mg      |    2.0000 |   2.0000 |
 | AUC0-tau ratio 70 kg / 100 kg       |    1.1916 |   1.1916 |
 

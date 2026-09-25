@@ -341,9 +341,9 @@ stopifnot(max(chk_nca$auc_rel) < 1e-3)
 stopifnot(max(chk_nca$hl_rel) < 0.02)
 
 cat("max |AUCinf - Dose/CL| / (Dose/CL) =", signif(max(chk_nca$auc_rel), 3), "\n")
-#> max |AUCinf - Dose/CL| / (Dose/CL) = 6.52e-06
+#> max |AUCinf - Dose/CL| / (Dose/CL) = 6.54e-06
 cat("max |t1/2 - closed form| / closed form =", signif(max(chk_nca$hl_rel), 3), "\n")
-#> max |t1/2 - closed form| / closed form = 0.00794
+#> max |t1/2 - closed form| / closed form = 0.00795
 ```
 
 ## Probability of target attainment
@@ -479,7 +479,7 @@ stopifnot(nrow(ss_chk) == n_sub * nrow(regimens), !anyNA(ss_chk$rel_c100))
 stopifnot(max(ss_chk$rel_c100) < 0.005, max(ss_chk$rel_c65) < 0.005)
 cat("max between-interval relative difference:",
     signif(max(ss_chk$rel_c100, ss_chk$rel_c65), 3), "\n")
-#> max between-interval relative difference: 0.000633
+#> max between-interval relative difference: 0.00027
 
 pta <- pta_raw |> filter(interval == "final") |> select(-interval, -n_pt)
 ```
@@ -572,12 +572,12 @@ bp_cmp |>
 
 | Dosing regimen | 65% fT\>MIC (published) | 65% fT\>MIC (simulated) | 100% fT\>MIC (published) | 100% fT\>MIC (simulated) | 100% fT\>4xMIC (published) | 100% fT\>4xMIC (simulated) |
 |:---|---:|---:|---:|---:|---:|---:|
-| qd 24-h infusion 150 mg/kg | 16 | 16 | 16 | 16.0 | 4.00 | 4.000 |
-| qd 24-h infusion 100 mg/kg | 16 | 16 | 16 | 16.0 | 4.00 | 4.000 |
-| q12h 3-h infusion | 4 | 4 | 1 | 1.0 | 0.25 | 0.250 |
-| q12h 30-min infusion | 2 | 2 | 1 | 0.5 | 0.25 | 0.125 |
-| q8h 3-h infusion | 16 | 8 | 4 | 4.0 | 1.00 | 1.000 |
-| q8h 30-min infusion | 8 | 8 | 2 | 2.0 | 0.50 | 0.500 |
+| qd 24-h infusion 150 mg/kg | 16 | 32 | 16 | 32 | 4.00 | 8.00 |
+| qd 24-h infusion 100 mg/kg | 16 | 16 | 16 | 16 | 4.00 | 4.00 |
+| q12h 3-h infusion | 4 | 4 | 1 | 1 | 0.25 | 0.25 |
+| q12h 30-min infusion | 2 | 2 | 1 | 1 | 0.25 | 0.25 |
+| q8h 3-h infusion | 16 | 16 | 4 | 4 | 1.00 | 1.00 |
+| q8h 30-min infusion | 8 | 8 | 2 | 4 | 0.50 | 1.00 |
 
 Cefepime breakpoints (mg/L): Rolsma 2026 Table 2 versus this simulation.
 {.table}
@@ -600,7 +600,7 @@ cat("breakpoint cells within one dilution:",
 #> breakpoint cells within one dilution: 18 of 18
 cat("breakpoint cells matching exactly:   ",
     sum(dilution_err == 0), "of", length(dilution_err), "\n")
-#> breakpoint cells matching exactly:    15 of 18
+#> breakpoint cells matching exactly:    13 of 18
 ```
 
 The relationships Rolsma 2026 draws from Table 2 are reproduced exactly,
@@ -648,7 +648,7 @@ vals <- vapply(ord, g, numeric(1), col = "q10_c65")
 stopifnot(!is.unsorted(rev(vals)))
 
 cat("q8h extended/standard exposure ratio:", round(ratio_q8h, 3), "\n")
-#> q8h extended/standard exposure ratio: 1.77
+#> q8h extended/standard exposure ratio: 1.688
 cat("continuous 150/100 mg/kg exposure ratio:", round(ratio_ci, 6), "\n")
 #> continuous 150/100 mg/kg exposure ratio: 1.5
 ```
@@ -683,12 +683,12 @@ ecoff_tbl |>
 
 | Dosing regimen | 65% fT\>MIC at 8 mg/L | 65% fT\>MIC at 16 mg/L | 100% fT\>MIC at 8 mg/L | 100% fT\>4xMIC at 8 mg/L |
 |:---|---:|---:|---:|---:|
-| q12h 3-h infusion | 83.0 | 66.5 | 58.5 | 17.0 |
-| q12h 30-min infusion | 74.0 | 58.5 | 55.0 | 14.0 |
-| q8h 3-h infusion | 96.0 | 89.0 | 83.5 | 51.5 |
-| q8h 30-min infusion | 90.5 | 80.0 | 74.5 | 39.5 |
-| qd 24-h infusion 100 mg/kg | 99.5 | 95.5 | 99.5 | 68.0 |
-| qd 24-h infusion 150 mg/kg | 100.0 | 99.5 | 100.0 | 88.5 |
+| q12h 3-h infusion | 87.5 | 67.0 | 59.0 | 15.0 |
+| q12h 30-min infusion | 75.0 | 57.0 | 50.5 | 11.5 |
+| q8h 3-h infusion | 97.5 | 93.0 | 88.5 | 43.0 |
+| q8h 30-min infusion | 94.0 | 85.0 | 76.0 | 33.5 |
+| qd 24-h infusion 100 mg/kg | 99.5 | 95.0 | 99.5 | 67.0 |
+| qd 24-h infusion 150 mg/kg | 100.0 | 99.5 | 100.0 | 90.0 |
 
 PTA (%) at the P. aeruginosa ECOFF (8 mg/L) and at twice the ECOFF.
 {.table}
@@ -728,13 +728,13 @@ stopifnot(ci150 > 0.80, ci150 < 0.95)
 
 cat("q8h extended minus standard infusion PTA at 16 mg/L:",
     round(100 * ei_vs_si, 1), "percentage points\n")
-#> q8h extended minus standard infusion PTA at 16 mg/L: 9 percentage points
+#> q8h extended minus standard infusion PTA at 16 mg/L: 8 percentage points
 cat("100% fT>4xMIC at the ECOFF, highest PTA among the other five regimens:",
     round(100 * max(not_ci150), 1), "%\n")
-#> 100% fT>4xMIC at the ECOFF, highest PTA among the other five regimens: 68 %
+#> 100% fT>4xMIC at the ECOFF, highest PTA among the other five regimens: 67 %
 cat("100% fT>4xMIC at the ECOFF, 24-h infusion 150 mg/kg:",
     round(100 * ci150, 1), "%\n")
-#> 100% fT>4xMIC at the ECOFF, 24-h infusion 150 mg/kg: 88.5 %
+#> 100% fT>4xMIC at the ECOFF, 24-h infusion 150 mg/kg: 90 %
 ```
 
 ### Figure 3: PTA by covariate group
@@ -803,11 +803,11 @@ bind_rows(
 
 | Group                  | Median c65 (mg/L) |   N |
 |:-----------------------|------------------:|----:|
-| 9 kg or less           |             33.08 | 372 |
-| 9-25 kg                |             36.69 | 450 |
-| over 25 kg             |             52.40 | 378 |
-| CrCl 90 mL/min or less |             56.88 | 558 |
-| CrCl over 90 mL/min    |             27.66 | 642 |
+| 9 kg or less           |             27.52 | 372 |
+| 9-25 kg                |             43.95 | 450 |
+| over 25 kg             |             46.26 | 378 |
+| CrCl 90 mL/min or less |             54.10 | 558 |
+| CrCl over 90 mL/min    |             27.73 | 642 |
 
 Median unbound concentration exceeded for 65% of the dosing interval, by
 covariate group (pooled across regimens). {.table}

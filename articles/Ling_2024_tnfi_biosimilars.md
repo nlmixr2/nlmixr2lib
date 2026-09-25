@@ -750,8 +750,8 @@ knitr::kable(bands, digits = 2,
 
 | Drug       | Published median (mg/L) | Simulated median (mg/L) | % diff |
 |:-----------|------------------------:|------------------------:|-------:|
-| adalimumab |                    9.03 |                    9.16 |   1.43 |
-| etanercept |                    7.50 |                    7.53 |   0.44 |
+| adalimumab |                    9.03 |                    8.32 |  -7.84 |
+| etanercept |                    7.50 |                    7.66 |   2.18 |
 
 Gate 5. Plateau (days 80-110) population median vs the digitised
 published curves of Ling 2024 Figures 1 and 2. {.table}
@@ -873,7 +873,7 @@ knitr::kable(auc_tab, digits = 2,
 |:---|---:|---:|---:|
 | adalimumab 40 mg q7d | 3305.79 | 3299.68 | -0.18 |
 | adalimumab 40 mg q14d | 3305.79 | 3298.17 | -0.23 |
-| adalimumab 40 mg q21d | 3305.79 | 3296.29 | -0.29 |
+| adalimumab 40 mg q21d | 3305.79 | 3296.28 | -0.29 |
 | etanercept 50 mg q5d | 1237.62 | 1237.60 | 0.00 |
 | etanercept 50 mg q7d | 1237.62 | 1237.60 | 0.00 |
 | etanercept 50 mg q10d | 1237.62 | 1237.60 | 0.00 |

@@ -472,24 +472,24 @@ knitr::kable(
 
 | NCA parameter | treatment                | Reference | Simulated | % diff |
 |:--------------|:-------------------------|:----------|:----------|:-------|
-| Cmax (ng/mL)  | TV-44749 318 mg QM       | 38.8      | 39        | +0.4%  |
-| Cmax (ng/mL)  | TV-44749 425 mg QM       | 50        | 49.9      | -0.4%  |
-| Cmax (ng/mL)  | TV-44749 531 mg QM       | 60.6      | 65.9      | +8.8%  |
-| Cmax (ng/mL)  | Oral olanzapine 10 mg QD | 23.3      | 25.4      | +9.0%  |
-| Cmax (ng/mL)  | Oral olanzapine 15 mg QD | 35.3      | 35.9      | +1.9%  |
-| Cmax (ng/mL)  | Oral olanzapine 20 mg QD | 48.7      | 51.2      | +5.2%  |
-| Cmin (ng/mL)  | TV-44749 318 mg QM       | 14.3      | 14.2      | -0.3%  |
-| Cmin (ng/mL)  | TV-44749 425 mg QM       | 20.9      | 19.8      | -5.3%  |
-| Cmin (ng/mL)  | TV-44749 531 mg QM       | 25.7      | 27.1      | +5.5%  |
-| Cmin (ng/mL)  | Oral olanzapine 10 mg QD | 13.4      | 15        | +11.9% |
-| Cmin (ng/mL)  | Oral olanzapine 15 mg QD | 20.2      | 20.8      | +2.6%  |
-| Cmin (ng/mL)  | Oral olanzapine 20 mg QD | 28.5      | 30.7      | +7.9%  |
-| Cavg (ng/mL)  | TV-44749 318 mg QM       | 26.5      | 27.8      | +5.1%  |
-| Cavg (ng/mL)  | TV-44749 425 mg QM       | 35.8      | 35.7      | -0.5%  |
-| Cavg (ng/mL)  | TV-44749 531 mg QM       | 45.5      | 47        | +3.2%  |
-| Cavg (ng/mL)  | Oral olanzapine 10 mg QD | 18.2      | 20.5      | +12.2% |
-| Cavg (ng/mL)  | Oral olanzapine 15 mg QD | 27.5      | 27.9      | +1.4%  |
-| Cavg (ng/mL)  | Oral olanzapine 20 mg QD | 38        | 40.8      | +7.5%  |
+| Cmax (ng/mL)  | TV-44749 318 mg QM       | 38.8      | 37.9      | -2.4%  |
+| Cmax (ng/mL)  | TV-44749 425 mg QM       | 50        | 47.1      | -5.9%  |
+| Cmax (ng/mL)  | TV-44749 531 mg QM       | 60.6      | 60        | -0.8%  |
+| Cmax (ng/mL)  | Oral olanzapine 10 mg QD | 23.3      | 23.6      | +1.3%  |
+| Cmax (ng/mL)  | Oral olanzapine 15 mg QD | 35.3      | 33.2      | -5.8%  |
+| Cmax (ng/mL)  | Oral olanzapine 20 mg QD | 48.7      | 49.5      | +1.7%  |
+| Cmin (ng/mL)  | TV-44749 318 mg QM       | 14.3      | 14.9      | +4.2%  |
+| Cmin (ng/mL)  | TV-44749 425 mg QM       | 20.9      | 20.2      | -3.3%  |
+| Cmin (ng/mL)  | TV-44749 531 mg QM       | 25.7      | 25.1      | -2.3%  |
+| Cmin (ng/mL)  | Oral olanzapine 10 mg QD | 13.4      | 13.6      | +1.9%  |
+| Cmin (ng/mL)  | Oral olanzapine 15 mg QD | 20.2      | 18.8      | -6.9%  |
+| Cmin (ng/mL)  | Oral olanzapine 20 mg QD | 28.5      | 28.8      | +1.0%  |
+| Cavg (ng/mL)  | TV-44749 318 mg QM       | 26.5      | 27.6      | +4.3%  |
+| Cavg (ng/mL)  | TV-44749 425 mg QM       | 35.8      | 34.5      | -3.8%  |
+| Cavg (ng/mL)  | TV-44749 531 mg QM       | 45.5      | 44.6      | -2.1%  |
+| Cavg (ng/mL)  | Oral olanzapine 10 mg QD | 18.2      | 18.2      | -0.0%  |
+| Cavg (ng/mL)  | Oral olanzapine 15 mg QD | 27.5      | 25.6      | -6.9%  |
+| Cavg (ng/mL)  | Oral olanzapine 20 mg QD | 38        | 39        | +2.6%  |
 
 Simulated vs. published steady-state exposure (Perlstein 2026 Table 2).
 \* differs from reference by \>20%. {.table}
@@ -509,7 +509,7 @@ stopifnot(
 )
 ```
 
-All 18 cells reproduce within 12.2% (median 5.2%), with deviations in
+All 18 cells reproduce within 6.9% (median 2.5%), with deviations in
 both directions and no systematic bias. The simulated values are medians
 of a 200-subject Monte Carlo cohort compared against the paper’s
 250-subject Monte Carlo medians, so a few percent of disagreement is
@@ -549,14 +549,14 @@ knitr::kable(mb_summary, digits = 4,
 
 | treatment                | median |    q05 |    min |
 |:-------------------------|-------:|-------:|-------:|
-| Oral olanzapine 10 mg QD | 0.9998 | 0.9996 | 0.9936 |
-| Oral olanzapine 15 mg QD | 0.9998 | 0.9996 | 0.9988 |
-| Oral olanzapine 20 mg QD | 0.9998 | 0.9996 | 0.9972 |
-| TV-44749 283 mg QM       | 0.9997 | 0.9985 | 0.9968 |
-| TV-44749 318 mg QM       | 0.9996 | 0.9966 | 0.8551 |
-| TV-44749 425 mg QM       | 0.9996 | 0.9982 | 0.8985 |
-| TV-44749 531 mg QM       | 0.9997 | 0.9981 | 0.9219 |
-| TV-44749 566 mg QM       | 0.9997 | 0.9986 | 0.9921 |
+| Oral olanzapine 10 mg QD | 0.9998 | 0.9996 | 0.9922 |
+| Oral olanzapine 15 mg QD | 0.9998 | 0.9996 | 0.9979 |
+| Oral olanzapine 20 mg QD | 0.9998 | 0.9996 | 0.9871 |
+| TV-44749 283 mg QM       | 0.9996 | 0.9986 | 0.9920 |
+| TV-44749 318 mg QM       | 0.9996 | 0.9986 | 0.9853 |
+| TV-44749 425 mg QM       | 0.9996 | 0.9973 | 0.9010 |
+| TV-44749 531 mg QM       | 0.9997 | 0.9981 | 0.9881 |
+| TV-44749 566 mg QM       | 0.9997 | 0.9984 | 0.9561 |
 
 AUC0-tau,ss divided by Dose/CL. The identity value is 1. {.table}
 
@@ -641,9 +641,9 @@ ratios |>
 
 | Dose pair | Cmin ratio (simulated) | Cmin ratio (Table 2) | Cavg ratio | Cmax ratio |
 |:---|---:|---:|---:|---:|
-| TV-44749 318 mg QM vs oral 10 mg QD | 0.95 | 1.07 | 1.36 | 1.53 |
-| TV-44749 425 mg QM vs oral 15 mg QD | 0.95 | 1.03 | 1.28 | 1.39 |
-| TV-44749 531 mg QM vs oral 20 mg QD | 0.88 | 0.90 | 1.15 | 1.29 |
+| TV-44749 318 mg QM vs oral 10 mg QD | 1.09 | 1.07 | 1.51 | 1.60 |
+| TV-44749 425 mg QM vs oral 15 mg QD | 1.07 | 1.03 | 1.35 | 1.42 |
+| TV-44749 531 mg QM vs oral 20 mg QD | 0.87 | 0.90 | 1.14 | 1.21 |
 
 Median steady-state exposure of TV-44749 divided by that of the matched
 oral dose. {.table style="width:100%;"}
@@ -687,9 +687,9 @@ knitr::kable(d2ro_summary, digits = 2,
 
 | dose_mg | min_med | max_med | mean_med | frac_above_60 | days_above_80 |
 |--------:|--------:|--------:|---------:|--------------:|--------------:|
-|     318 |   56.38 |   77.65 |    70.17 |          0.89 |          0.00 |
-|     425 |   64.27 |   81.45 |    75.32 |          1.00 |          6.00 |
-|     531 |   71.16 |   85.26 |    80.27 |          1.00 |         19.25 |
+|     318 |   57.45 |   77.11 |    70.13 |           0.9 |           0.0 |
+|     425 |   64.74 |   80.68 |    74.97 |           1.0 |           3.5 |
+|     531 |   69.57 |   84.07 |    79.36 |           1.0 |          17.5 |
 
 D2RO of the median TV-44749 profile over the dosing interval. {.table}
 
@@ -717,8 +717,8 @@ The occupancy pattern matches the paper’s qualitative narrative: all
 three selected doses hold at or above 60% occupancy for essentially the
 whole interval, and the interval-*average* occupancy stays inside the
 60%-80% window at 318 and 425 mg. The two higher doses do push the
-median transiently above 80% around the peak — 6.0 days at 425 mg and
-19.2 days at 531 mg — while 318 mg stays below the ceiling throughout.
+median transiently above 80% around the peak — 3.5 days at 425 mg and
+17.5 days at 531 mg — while 318 mg stays below the ceiling throughout.
 See the Errata below for the one quantitative D2RO claim that the
 paper’s own Table 2 does not support.
 
@@ -855,7 +855,7 @@ concentration of `EC50 * 80 / (100 - 80)` = 44 ng/mL. Table 2 reports
 the median steady-state **Cavg** for the 531 mg dose as 45.53 ng/mL —
 above that threshold — so the paper’s own answer key implies the median
 profile spends *more* than half of the 28-day interval above 80%, not
-one quarter of it. This simulation gives 19.2 days, consistent with
+one quarter of it. This simulation gives 17.5 days, consistent with
 Table 2 and not with the prose. The exposure numbers, not the sentence,
 are what this extraction reproduces; no parameter was changed to chase
 the 7-day figure.

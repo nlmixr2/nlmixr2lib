@@ -345,9 +345,9 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 head(sim[, c("id", "time", "cl", "vc", "Cc", "dose_group")], 3)
 #>   id time       cl       vc       Cc   dose_group
-#> 1  1 0.00 4.726441 64.84745 7.020610 30 mg/kg/day
+#> 1  1 0.00 4.726441 64.84745 7.020606 30 mg/kg/day
 #> 2  1 0.25 4.726441 64.84745 8.221001 30 mg/kg/day
-#> 3  1 0.50 4.726441 64.84745 9.399717 30 mg/kg/day
+#> 3  1 0.50 4.726441 64.84745 9.399715 30 mg/kg/day
 ```
 
 ## PKNCA validation
@@ -420,12 +420,12 @@ auc_i <- as.data.frame(nca_res) |>
 
 max_abs_err <- max(abs(auc_i$rel_err))
 max_abs_err
-#> [1] 0.0003875435
+#> [1] 0.0003863372
 stopifnot(max_abs_err < 0.001)
 ```
 
 The largest relative deviation across all 400 simulated subjects is
-3.88e-04, i.e. the simulated steady-state AUC reproduces the paper’s Eq.
+3.86e-04, i.e. the simulated steady-state AUC reproduces the paper’s Eq.
 (6) to numerical-integration precision. This validates the ODE, the
 infusion handling, the covariate model on CL and the age-stratum switch
 simultaneously - a mis-transcribed exponent or a mis-wired stratum
@@ -456,11 +456,23 @@ sd_events <- dplyr::bind_rows(
   as.data.frame()
 
 sd_sim <- rxode2::rxSolve(mod, sd_events, keep = c("dose_group"),
-                          returnType = "data.frame")
+                          returnType = "data.frame",
+                          # The half-life identity below is asserted to 1%
+                          # against log(2) * V / CL over a 14-day washout, so
+                          # the ODE integration has to be tight.
+                          rtol = 1e-10, atol = 1e-12)
 
+# Drop the numerically-zero tail before NCA. Over 14 days the concentration
+# falls below 1e-20 mg/L, where the ODE integrator's error dwarfs the true
+# terminal slope and PKNCA's log-linear fit follows the noise (observed: 39%
+# half-life error). Keep each subject's profile up to the last point at or
+# above 1e-6 of its peak; the discarded tail holds < 1e-6 of the AUC.
 sd_conc <- sd_sim |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, dose_group)
+  dplyr::select(id, time, Cc, dose_group) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= max(time[Cc >= 1e-6 * max(Cc)])) |>
+  dplyr::ungroup()
 
 sd_dose <- sd_events |>
   dplyr::filter(evid == 1) |>
@@ -487,7 +499,7 @@ sd_check <- as.data.frame(sd_res) |>
 
 sprintf("max |rel. error|: half-life %.2e, AUC(0-inf) %.2e",
         max(abs(sd_check$hl_err)), max(abs(sd_check$auc_err)))
-#> [1] "max |rel. error|: half-life 7.77e-16, AUC(0-inf) 2.30e-03"
+#> [1] "max |rel. error|: half-life 3.04e-10, AUC(0-inf) 1.94e-03"
 stopifnot(
   max(abs(sd_check$hl_err)) < 0.01,
   max(abs(sd_check$auc_err)) < 0.01

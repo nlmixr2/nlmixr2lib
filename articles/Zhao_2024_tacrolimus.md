@@ -370,9 +370,9 @@ rbind(
   ipred = quantile(at72$ipredSim, c(0.05, 0.25, 0.5, 0.75, 0.95)),
   sim   = quantile(at72$sim,      c(0.05, 0.25, 0.5, 0.75, 0.95))
 )
-#>              5%       25%      50%      75%       95%
-#> ipred  1.974678 2.9971377 3.579605 4.051096  5.014983
-#> sim   -1.660666 0.8097808 2.779653 6.539655 10.385545
+#>              5%      25%     50%      75%      95%
+#> ipred  2.313409 3.086776 3.81256 4.199064 4.956764
+#> sim   -1.156809 1.699948 4.12033 6.293366 8.600039
 ```
 
 ![](Zhao_2024_tacrolimus_files/figure-html/cohort-plot-1.png)
@@ -412,7 +412,7 @@ c(day3Typical       = day3Trough(0, 237, doseMg),
   cohortObservedMedian = 7.90)
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl'
 #>          day3Typical   steadyStateTypical    cohortMedianIpred 
-#>             3.618766             5.301796             3.579605 
+#>             3.618766             5.301796             3.812560 
 #> cohortObservedMedian 
 #>             7.900000
 

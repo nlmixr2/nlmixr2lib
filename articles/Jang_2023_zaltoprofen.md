@@ -232,7 +232,11 @@ ev_tv$ALB  <- 49.0          # 4.90 g/dL in canonical SI g/L
 
 mod_tv <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-sim_tv <- rxode2::rxSolve(mod_tv, ev_tv, returnType = "data.frame") |>
+# Tight solver tolerances: the ODE solve is checked against closed-form
+# identities below, so its integration error has to sit far under those
+# bounds (the default rtol of 1e-6 leaves ~5e-7 relative error).
+sim_tv <- rxode2::rxSolve(mod_tv, ev_tv, returnType = "data.frame",
+                          rtol = 1e-10, atol = 1e-12) |>
   dplyr::filter(!is.na(Cc))
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvp'
 
@@ -248,10 +252,11 @@ cf <- cf_2cmt_oral(sim_tv$time, dose = 80, ka = 1.73, vc = 4.88,
 keep <- sim_tv$time > 0
 rel_cf <- max(abs(cf[keep] - sim_tv$Cc[keep]) / cf[keep])
 cat(sprintf("max relative difference, closed form vs ODE solve: %.3e\n", rel_cf))
-#> max relative difference, closed form vs ODE solve: 4.313e-14
+#> max relative difference, closed form vs ODE solve: 4.008e-11
 
-# Achieved ~6e-14. The bound leaves six orders of magnitude of headroom and
-# still fails instantly on any mis-transcribed structural value.
+# Achieved ~4e-11 with the ODE solve at rtol 1e-10 (worst at the first grid
+# point, 0.002 h). The bound leaves over two orders of magnitude of headroom
+# and still fails instantly on any mis-transcribed structural value.
 stopifnot(rel_cf < 1e-8)
 ```
 
@@ -292,7 +297,11 @@ dose_prop <- vapply(c(80, 160, 240), function(d) {
     as.data.frame()
   ev$CRCL <- 104.38
   ev$ALB  <- 49.0
-  s <- rxode2::rxSolve(mod_tv, ev, returnType = "data.frame") |>
+  # Same tight tolerances as the typical-value solve: the three doses are
+  # integrated separately, so each carries its own integration error and the
+  # proportionality identity is only as exact as the solver.
+  s <- rxode2::rxSolve(mod_tv, ev, returnType = "data.frame",
+                       rtol = 1e-10, atol = 1e-12) |>
     dplyr::filter(!is.na(Cc))
   auc <- sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
   c(cmax = max(s$Cc), auc24 = auc)

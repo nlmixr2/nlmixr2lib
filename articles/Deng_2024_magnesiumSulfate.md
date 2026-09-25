@@ -330,7 +330,7 @@ ref_obs$analytic <- conc_two_infusions(
 closed_form_err <- max(abs(ref_obs$Cc - ref_obs$analytic) /
                          pmax(ref_obs$analytic, 1e-8))
 closed_form_err
-#> [1] 4.417554e-15
+#> [1] 9.734301e-07
 
 # Same parameters on both sides: this is pure numerical error, so assert tightly.
 stopifnot(closed_form_err < 1e-6)
@@ -710,7 +710,7 @@ nca_gate |>
 #> # A tibble: 1 × 2
 #>   max_abs_cl_pct_diff max_abs_hl_pct_diff
 #>                 <dbl>               <dbl>
-#> 1             0.00251            2.03e-13
+#> 1             0.00247           0.0000171
 
 # Both sides are built from the same parameter values, so the residual is
 # trapezoidal / log-linear-regression error only and a tight bound is correct.
@@ -778,12 +778,12 @@ pta |>
 
 | Arm           | Time (h) | Median total Mg (mmol/L) | % in 2.0-3.5 mmol/L |
 |:--------------|---------:|-------------------------:|--------------------:|
-| Furosemide    |      4.0 |                     1.71 |                   5 |
-| Furosemide    |      4.5 |                     1.80 |                   6 |
-| Furosemide    |      5.0 |                     1.88 |                  26 |
+| Furosemide    |      4.0 |                     1.69 |                   1 |
+| Furosemide    |      4.5 |                     1.78 |                   8 |
+| Furosemide    |      5.0 |                     1.85 |                  23 |
 | No furosemide |      4.0 |                     1.49 |                   0 |
-| No furosemide |      4.5 |                     1.56 |                   2 |
-| No furosemide |      5.0 |                     1.62 |                   2 |
+| No furosemide |      4.5 |                     1.57 |                   0 |
+| No furosemide |      5.0 |                     1.63 |                   1 |
 
 Maintenance-dose-only day-2 regimen. Deng 2024 observed 9.80% target
 attainment at 4-5 h. {.table}

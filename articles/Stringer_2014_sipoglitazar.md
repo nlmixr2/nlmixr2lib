@@ -694,11 +694,11 @@ resp |>
 
 | Dose (mg/day) | *1/*1 | *1/*2 | *2/*2 |
 |--------------:|------:|------:|------:|
-|             8 |    39 |    40 |    44 |
-|            16 |    40 |    43 |    53 |
-|            32 |    45 |    53 |    67 |
-|            64 |    55 |    61 |    79 |
-|            96 |    61 |    75 |    83 |
+|             8 |    42 |    44 |    47 |
+|            16 |    44 |    46 |    59 |
+|            32 |    52 |    57 |    66 |
+|            64 |    62 |    66 |    77 |
+|            96 |    66 |    71 |    82 |
 
 Percent of simulated subjects achieving an HbA1c reduction greater than
 0.7% at 6 months, by dose and genotype (replicates Figure 3 of Stringer
@@ -726,15 +726,15 @@ designs |>
 
 | Design   | Genotype | Dose (mg/day) | Responders (%) |
 |:---------|:---------|--------------:|---------------:|
-| Design A | *1/*1    |            32 |             45 |
-| Design A | *1/*2    |            16 |             43 |
-| Design A | *2/*2    |             8 |             44 |
-| Design B | *1/*1    |            64 |             55 |
-| Design B | *1/*2    |            32 |             53 |
-| Design B | *2/*2    |            16 |             53 |
-| Design C | *1/*1    |            96 |             61 |
-| Design C | *1/*2    |            64 |             61 |
-| Design C | *2/*2    |            32 |             67 |
+| Design A | *1/*1    |            32 |             52 |
+| Design A | *1/*2    |            16 |             46 |
+| Design A | *2/*2    |             8 |             47 |
+| Design B | *1/*1    |            64 |             62 |
+| Design B | *1/*2    |            32 |             57 |
+| Design B | *2/*2    |            16 |             59 |
+| Design C | *1/*1    |            96 |             66 |
+| Design C | *1/*2    |            64 |             66 |
+| Design C | *2/*2    |            32 |             66 |
 
 Responder rate under each genotype-based dose-assignment design
 (Stringer 2014 Table 1 dose levels). {.table}
@@ -749,9 +749,9 @@ spread
 #> # A tibble: 3 × 2
 #>   design   spread
 #>   <chr>     <dbl>
-#> 1 Design A   2   
-#> 2 Design B   2.00
-#> 3 Design C   6
+#> 1 Design A   6   
+#> 2 Design B   5.00
+#> 3 Design C   0
 ```
 
 The paper’s finding is a *relative* one: Design C is the design under

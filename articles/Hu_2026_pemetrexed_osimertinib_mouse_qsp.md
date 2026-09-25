@@ -778,7 +778,7 @@ knitr::kable(orr_end, caption = "Simulated versus published objective response r
 | Arm         | Simulated ORR at day 210 (%) | Hu 2026 Figure 11C (%) |
 |:------------|-----------------------------:|-----------------------:|
 | PEM + OSI   |                         61.1 |                  67.14 |
-| PEM -\> OSI |                         91.1 |                  91.60 |
+| PEM -\> OSI |                         92.3 |                  91.60 |
 
 Simulated versus published objective response rate. {.table}
 

@@ -306,7 +306,7 @@ cf <- bind_rows(
 stopifnot(max(abs(cf$pct)) < 0.5)
 sprintf("Closed-form agreement: max |%% difference| = %.4f%% over %d subjects",
         max(abs(cf$pct)), nrow(cf))
-#> [1] "Closed-form agreement: max |% difference| = 0.0252% over 600 subjects"
+#> [1] "Closed-form agreement: max |% difference| = 0.0110% over 600 subjects"
 ```
 
 ## Replicate published figures
@@ -432,8 +432,8 @@ olap_summary |>
 
 | Arm | Cmax (mg/L) | Tmax (h) | AUC0-12 (mg\*h/L) | Cav (mg/L) | Ctrough (mg/L) |
 |:---|---:|---:|---:|---:|---:|
-| Olaparib 100 mg BID + cobicistat | 5.58 | 1.4 | 41.47 | 3.46 | 1.78 |
-| Olaparib 300 mg BID (monotherapy) | 6.32 | 1.3 | 31.76 | 2.65 | 0.36 |
+| Olaparib 100 mg BID + cobicistat | 5.67 | 1.4 | 42.87 | 3.57 | 1.82 |
+| Olaparib 300 mg BID (monotherapy) | 6.30 | 1.2 | 31.31 | 2.61 | 0.50 |
 
 Simulated median steady-state olaparib NCA by arm. {.table}
 
@@ -476,10 +476,10 @@ cobi_summary |>
 
 | Study | Cmax (mg/L) | Tmax (h) | AUC0-24 simulated (mg\*h/L) | AUC0-24 Fig. 3 median (mg\*h/L) |
 |:---|---:|---:|---:|---:|
-| DATE-4 | 1.55 | 2.0 | 15.14 | 14.0 |
-| PANNA | 1.61 | 2.1 | 14.82 | 27.0 |
-| PRACTICAL | 1.45 | 2.2 | 13.11 | 16.5 |
-| PROACTIVE | 1.89 | 13.4 | 24.78 | 30.0 |
+| DATE-4 | 1.58 | 1.85 | 15.43 | 14.0 |
+| PANNA | 1.53 | 2.15 | 14.50 | 27.0 |
+| PRACTICAL | 1.38 | 2.10 | 13.54 | 16.5 |
+| PROACTIVE | 1.96 | 13.60 | 27.88 | 30.0 |
 
 Simulated median steady-state cobicistat NCA by study, against the Fig.
 3 medians. {.table}
@@ -638,7 +638,7 @@ knitr::kable(var_tab, digits = 1,
 
 | arm | Simulated AUC0-12 %CV | Published CL_int %CV |
 |:---|---:|---:|
-| Olaparib 100 mg BID + cobicistat | 47.8 | 43.2 |
+| Olaparib 100 mg BID + cobicistat | 45.3 | 43.2 |
 | Olaparib 300 mg BID (monotherapy) | 52.3 | 52.6 |
 
 Simulated exposure variability against the published arm-specific CL_int

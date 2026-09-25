@@ -414,6 +414,10 @@ nrow(events)
 sim <- rxode2::rxSolve(
   mod, events,
   omega = NA,                       # etas supplied as data columns
+  # 24 of 800 subjects (those drawn with a very small intercompartmental
+  # clearance) exhaust LSODA's default step budget and come back NA once the
+  # ODE is integrated rather than solved analytically.
+  maxsteps = 1e6,
   # Only what is actually read back from `sim`. `tau` and `amt_dose` are read
   # from `regimens` / `events` instead, so they are not carried through the
   # solve -- fewer chances of colliding with an rxode2 name.
@@ -556,9 +560,9 @@ ident |>
 
 | Regimen    | Median % diff | 90th pct \|% diff\| | Max \|% diff\| |
 |:-----------|--------------:|--------------------:|---------------:|
-| 300 mg q6h |        -0.001 |               0.002 |          0.005 |
+| 300 mg q6h |        -0.002 |               0.003 |          0.005 |
 | 300 mg q8h |        -0.003 |               0.005 |          0.009 |
-| 600 mg q6h |        -0.001 |               0.002 |          0.005 |
+| 600 mg q6h |        -0.002 |               0.003 |          0.005 |
 | 600 mg q8h |        -0.003 |               0.005 |          0.009 |
 
 AUC(0-tau) x CL versus the administered dose, by regimen. {.table}

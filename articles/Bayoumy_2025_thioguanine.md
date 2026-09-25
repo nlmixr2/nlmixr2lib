@@ -484,7 +484,7 @@ knitr::kable(
 | Arm | N | Cav\*CL/Dose (median) | Cav\*CL/Dose (max \|dev\|) | t1/2 NCA / closed form (median) | t1/2 ratio (max \|dev\|) |
 |:---|---:|---:|---:|---:|---:|
 | Concomitant 5-ASA | 150 | 0.99988 | 0.00172 | 1 | 0.00298 |
-| No 5-ASA | 150 | 0.99990 | 0.00077 | 1 | 0.00280 |
+| No 5-ASA | 150 | 0.99990 | 0.00077 | 1 | 0.00281 |
 
 Closed-form gates. A value of 1 is exact; the maximum absolute deviation
 across all subjects is shown. {.table}

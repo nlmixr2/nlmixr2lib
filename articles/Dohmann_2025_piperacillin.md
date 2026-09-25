@@ -276,9 +276,13 @@ solve_ss <- function(co, dose, tinf, tau, grid = 0.1, bsa_scale = 1) {
   # (BSA / r)^b == ((BSA * 1.88 / r) / 1.88)^b.
   evdf$BSA <- evdf$BSA * bsa_scale
   evdf$RRT_HEMODIAL_ACTIVE <- 0
+  # The ODE is integrated numerically and ss = 1 is found iteratively, so both
+  # the step tolerances and the steady-state convergence tolerances are
+  # tightened; the closed-form comparison is asserted to 1e-8.
   suppressWarnings(
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
-                    returnType = "data.frame")
+                    returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                    ssRtol = 1e-10, ssAtol = 1e-12)
   )
 }
 
@@ -333,7 +337,7 @@ cmp_struct <- sol30 |>
 
 sprintf("max |rel. error|: Cmax,ss %.2e, Cmin,ss %.2e",
         max(abs(cmp_struct$cmax_err)), max(abs(cmp_struct$cmin_err)))
-#> [1] "max |rel. error|: Cmax,ss 2.66e-15, Cmin,ss 4.77e-15"
+#> [1] "max |rel. error|: Cmax,ss 5.89e-11, Cmin,ss 1.51e-10"
 stopifnot(
   max(abs(cmp_struct$cmax_err)) < 1e-8,
   max(abs(cmp_struct$cmin_err)) < 1e-8
@@ -365,9 +369,13 @@ nca_conc <- dplyr::bind_rows(lapply(nca_groups, function(g) {
   evdf <- as.data.frame(ev)
   evdf <- dplyr::left_join(evdf, co[, c("id", "CRCL", "BSA")], by = "id")
   evdf$RRT_HEMODIAL_ACTIVE <- 0
+  # The ODE is integrated numerically and ss = 1 is found iteratively, so both
+  # the step tolerances and the steady-state convergence tolerances are
+  # tightened; the closed-form comparison is asserted to 1e-8.
   suppressWarnings(
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
-                    returnType = "data.frame")
+                    returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                    ssRtol = 1e-10, ssAtol = 1e-12)
   ) |>
     dplyr::mutate(egfr_group = paste0("eGFR ", g, " mL/min"))
 }))
@@ -771,7 +779,8 @@ solve_hd <- function(co, dose, tinf, tau, days = 4, supp_dose = 0,
   )
   sol <- suppressWarnings(
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
-                    returnType = "data.frame")
+                    returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                    ssRtol = 1e-10, ssAtol = 1e-12)
   )
   # Bound the interval at BOTH ends. The attainment statistic is defined over
   # one dosing interval, and the session-transition records added above can sit
@@ -819,10 +828,10 @@ knitr::kable(
 
 | Regimen                 | Simulated (%) | Published (%) | Gate forced off (%) |
 |:------------------------|--------------:|--------------:|--------------------:|
-| 4.5 g q8 h over 30 min  |          94.5 |          99.8 |                 100 |
-| 4.5 g q8 h over 3 h     |         100.0 |         100.0 |                 100 |
-| 4.5 g q12 h over 30 min |         100.0 |          99.7 |                 100 |
-| 4.5 g q12 h over 3 h    |         100.0 |          99.9 |                 100 |
+| 4.5 g q8 h over 30 min  |            92 |          99.8 |                 100 |
+| 4.5 g q8 h over 3 h     |           100 |         100.0 |                 100 |
+| 4.5 g q12 h over 30 min |           100 |          99.7 |                 100 |
+| 4.5 g q12 h over 3 h    |           100 |          99.9 |                 100 |
 
 Dohmann 2025 Table 3, eGFR 10 mL/min with haemodialysis. The final
 column is the same simulation with the CL_HD arm switched off, which is
@@ -1037,7 +1046,7 @@ tab4 <- arms4 |>
 | eGFR 10 mL/min w/o HD | Dosing according to SmPC |          21.8 |          24.5 |
 | eGFR 10 mL/min w/o HD | Prolonged 4 h infusion   |          94.4 |          96.0 |
 | eGFR 10 mL/min w/o HD | Continuous infusion      |          94.4 |          96.0 |
-| eGFR 10 mL/min w/ HD  | Dosing according to SmPC |           8.9 |           3.0 |
+| eGFR 10 mL/min w/ HD  | Dosing according to SmPC |           8.9 |           2.5 |
 | eGFR 10 mL/min w/ HD  | Prolonged 4 h infusion   |          59.6 |          63.5 |
 | eGFR 10 mL/min w/ HD  | Continuous infusion      |          92.1 |          96.0 |
 
@@ -1076,7 +1085,7 @@ knitr::kable(
 | eGFR 10 mL/min w/o HD | Dosing according to SmPC | 21.8 | 24.5 | 2.7 |
 | eGFR 10 mL/min w/o HD | Prolonged 4 h infusion | 94.4 | 96.0 | 1.6 |
 | eGFR 10 mL/min w/o HD | Continuous infusion | 94.4 | 96.0 | 1.6 |
-| eGFR 10 mL/min w/ HD | Dosing according to SmPC | 8.9 | 3.0 | -5.9 |
+| eGFR 10 mL/min w/ HD | Dosing according to SmPC | 8.9 | 2.5 | -6.4 |
 | eGFR 10 mL/min w/ HD | Prolonged 4 h infusion | 59.6 | 63.5 | 3.9 |
 | eGFR 10 mL/min w/ HD | Continuous infusion | 92.1 | 96.0 | 3.9 |
 
@@ -1087,7 +1096,7 @@ Per-cell agreement with Dohmann 2025 Table 4. {.table}
 
 sprintf("Table 4: mean bias %+.2f pp, RMSE %.2f pp, Spearman rho %.3f",
         mean(err4), sqrt(mean(err4^2)), rho4)
-#> [1] "Table 4: mean bias +3.24 pp, RMSE 5.40 pp, Spearman rho 0.984"
+#> [1] "Table 4: mean bias +3.21 pp, RMSE 5.43 pp, Spearman rho 0.979"
 
 stopifnot(
   # The model must rank the 15 strategies as the paper does. This is the
@@ -1117,7 +1126,7 @@ stopifnot(
 ```
 
 The simulated table reproduces the paper’s own ordering of all 15
-strategies (Spearman rho 0.984) and its structural conclusion that
+strategies (Spearman rho 0.979) and its structural conclusion that
 dosing according to the SmPC is, in every renal-function group, worse
 than both alternatives while continuous infusion attains the aggressive
 target throughout. It does **not** reproduce the absolute level: every
@@ -1229,7 +1238,7 @@ the final interval is not scored against the target.
 Taken together the corrections *improved* agreement with the paper:
 across the 15 cells of Table 4 the worst cell moved from 16 pp to 12 pp,
 the 90th-percentile absolute error from about 13 pp to 10 pp, and
-Spearman rank correlation with the published ordering to 0.984. No
+Spearman rank correlation with the published ordering to 0.979. No
 parameter value was changed in either correction.
 
 ### The BSA reference in the Vd covariate equation (deliberate deviation)
@@ -1284,7 +1293,7 @@ The conservative target of Table 3 is reproduced to within 2.60 pp RMSE
 across its twelve non-dialysis cells. The aggressive target of Table 4
 is not: all fifteen cells come out high, by +3.2 pp on average, with the
 worst cell (+12.0 pp) the haemodialysis group on SmPC dosing. The rank
-ordering is preserved (Spearman rho 0.984), so this is a level shift,
+ordering is preserved (Spearman rho 0.979), so this is a level shift,
 not a structural disagreement.
 
 This is reported rather than tuned away. Nothing in the model file was
@@ -1453,15 +1462,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1469,7 +1478,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

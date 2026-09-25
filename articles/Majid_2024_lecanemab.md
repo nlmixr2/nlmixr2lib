@@ -205,11 +205,11 @@ knitr::kable(exposure_chk, digits = 1,
 
 | quantity             | simulated | published | pct_diff |
 |:---------------------|----------:|----------:|---------:|
-| Css,max mean (ug/mL) |     298.7 |       305 |     -2.1 |
-| Css,max 5th pctile   |     197.9 |        NA |       NA |
-| Css,max 95th pctile  |     425.3 |        NA |       NA |
-| Css,min median       |      69.8 |        NA |       NA |
-| Css,av median        |     138.5 |        NA |       NA |
+| Css,max mean (ug/mL) |     301.9 |       305 |       -1 |
+| Css,max 5th pctile   |     205.7 |        NA |       NA |
+| Css,max 95th pctile  |     445.5 |        NA |       NA |
+| Css,min median       |      74.2 |        NA |       NA |
+| Css,av median        |     145.3 |        NA |       NA |
 
 Simulated steady-state exposure vs the Majid 2024 Discussion {.table}
 
@@ -231,8 +231,8 @@ stopifnot(
 )
 ```
 
-The simulated cohort mean C_(ss,max) is 298.7 ug/mL against the
-published 305 ug/mL, a difference of -2.1%.
+The simulated cohort mean C_(ss,max) is 301.9 ug/mL against the
+published 305 ug/mL, a difference of -1.0%.
 
 ### Typical subject: closed-form and terminal half-life gates
 
@@ -483,10 +483,10 @@ knitr::kable(
 
 | PPTESTCD |    mean |  median |      p5 |     p95 |
 |:---------|--------:|--------:|--------:|--------:|
-| auclast  | 50163.6 | 46673.9 | 24121.7 | 86989.0 |
-| cav      |   149.3 |   138.9 |    71.8 |   258.9 |
-| cmax     |   298.7 |   289.4 |   197.9 |   425.3 |
-| cmin     |    78.2 |    69.8 |    21.5 |   172.4 |
+| auclast  | 52043.8 | 48985.0 | 25787.9 | 89765.4 |
+| cav      |   154.9 |   145.8 |    76.7 |   267.2 |
+| cmax     |   301.9 |   288.6 |   205.7 |   445.5 |
+| cmin     |    83.2 |    74.2 |    22.2 |   170.1 |
 | tmax     |     2.0 |     2.0 |     2.0 |     2.0 |
 
 PKNCA steady-state parameters over the final dosing interval (n = 200)
@@ -521,7 +521,7 @@ knitr::kable(nca_tbl, caption = "Simulated vs published lecanemab exposure metri
 
 | NCA parameter | Reference | Simulated | % diff |
 |:--------------|:----------|:----------|:-------|
-| Cmax (ug/mL)  | 305       | 299       | -2.1%  |
+| Cmax (ug/mL)  | 305       | 302       | -1.0%  |
 | t½ (h)        | 348       | 348       | +0.0%  |
 
 Simulated vs published lecanemab exposure metrics {.table}
@@ -732,9 +732,9 @@ knitr::kable(coupled_summary, digits = 2,
 
 | genotype     |   n | mean_cmax | mean_prob_pct | observed_study301_pct |
 |:-------------|----:|----------:|--------------:|----------------------:|
-| Heterozygous | 111 |    292.95 |          9.89 |                  10.9 |
-| Homozygous   |  29 |    307.25 |         28.90 |                  32.6 |
-| Non-carrier  |  60 |    305.12 |          6.16 |                   5.4 |
+| Heterozygous | 111 |    299.42 |         10.39 |                  10.9 |
+| Homozygous   |  29 |    306.58 |         28.82 |                  32.6 |
+| Non-carrier  |  60 |    304.34 |          6.10 |                   5.4 |
 
 PK cohort fed into the ARIA-E model, by APOE4 genotype, vs observed
 Study 301 rates {.table}

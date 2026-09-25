@@ -31,7 +31,7 @@ readModelDb("PK_1cmt")
 #>   # model description; units derived from the units block. verified = FALSE
 #>   # means NOT checked against the source paper.
 #>   compartmentData <- list(
-#>     depot   = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+#>     depot = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
 #>     central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE)
 #>   )
 #> 
@@ -50,5 +50,5 @@ readModelDb("PK_1cmt")
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55b408e7ba78>
+#> <environment: 0x55cfa3bb8ae8>
 ```

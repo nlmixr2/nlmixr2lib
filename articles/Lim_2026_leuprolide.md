@@ -565,10 +565,10 @@ slope_tab |>
 
 | Parameter | Covariate   | Slope on log-parameter (% per unit) | p-value |
 |:----------|:------------|------------------------------------:|--------:|
-| CL/F      | Age         |                              -2.270 |   0.272 |
-| Vd/F      | Age         |                              -3.317 |   0.259 |
-| CL/F      | Body weight |                               0.046 |   0.879 |
-| Vd/F      | Body weight |                              -0.175 |   0.681 |
+| CL/F      | Age         |                              -2.630 |   0.247 |
+| Vd/F      | Age         |                              -3.501 |   0.212 |
+| CL/F      | Body weight |                              -0.424 |   0.197 |
+| Vd/F      | Body weight |                               0.090 |   0.825 |
 
 Regression of the log individual parameter on each screened covariate.
 The paper retained neither; the packaged model contains neither.
@@ -772,9 +772,9 @@ tibble::tibble(
 
 | Identity                                | Minimum |  Median | Maximum |
 |:----------------------------------------|--------:|--------:|--------:|
-| AUC(0-inf) vs Dose \* F_eff / CL_i      | 0.99973 | 0.99991 | 1.00032 |
-| Terminal half-life vs log(2) / Ka2_i    | 1.00191 | 1.00483 | 1.24696 |
-| Cmax vs the immediate-route closed form | 0.99967 | 0.99996 | 1.00000 |
+| AUC(0-inf) vs Dose \* F_eff / CL_i      | 0.99964 | 0.99993 | 1.00041 |
+| Terminal half-life vs log(2) / Ka2_i    | 1.00185 | 1.00505 | 1.01460 |
+| Cmax vs the immediate-route closed form | 0.99954 | 0.99997 | 1.00000 |
 
 Ratio of the PKNCA result to its closed form, over 200 subjects.
 {.table}
@@ -893,8 +893,8 @@ prop_chk |>
 
 | NCA parameter | Geometric mean, 11.25 mg | Geometric mean, 30 mg | Observed ratio | Dose ratio |
 |:---|---:|---:|---:|---:|
-| aucinf.obs | 65.891 | 166.108 | 2.521 | 2.667 |
-| cmax | 25.010 | 62.298 | 2.491 | 2.667 |
+| aucinf.obs | 66.193 | 170.272 | 2.572 | 2.667 |
+| cmax | 24.911 | 64.021 | 2.570 | 2.667 |
 
 Dose proportionality between the two arms. {.table}
 

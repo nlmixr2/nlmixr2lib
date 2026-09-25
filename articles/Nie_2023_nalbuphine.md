@@ -71,20 +71,26 @@ mod
 #> 
 #>   compartmentData <- list(
 #>     central = list(
-#>       analyte = "nalbuphine", units = "ug", specimen = "plasma", verified = TRUE
+#>       analyte = "nalbuphine",
+#>       units = "ug",
+#>       specimen = "plasma",
+#>       verified = TRUE
 #>     ),
 #>     peripheral1 = list(
-#>       analyte = "nalbuphine", units = "ug", specimen = "tissue", verified = TRUE
+#>       analyte = "nalbuphine",
+#>       units = "ug",
+#>       specimen = "tissue",
+#>       verified = TRUE
 #>     )
 #>   )
 #> 
 #>   covariateData <- list(
 #>     PFA_NET_RATE = list(
-#>       description        = "Hourly net fluid volume infused during surgery",
-#>       units              = "mL/h",
-#>       type               = "continuous",
+#>       description = "Hourly net fluid volume infused during surgery",
+#>       units = "mL/h",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Source column HNF. Nie 2023 Table 1 footnote defines it as",
 #>         "HNF = (FVI + BVI - UVO) / OT, where FVI is the fluid volume infused, BVI the blood",
 #>         "volume infused and UVO the urine volume output during surgery, and OT the operation",
@@ -102,7 +108,7 @@ mod
 #>         "(Results 3.1).",
 #>         sep = " "
 #>       ),
-#>       source_name        = "HNF"
+#>       source_name = "HNF"
 #>     )
 #>   )
 #> 
@@ -117,9 +123,9 @@ mod
 #>   covariatesDataExcluded <- list(
 #>     ALT = list(
 #>       description = "Alanine aminotransferase",
-#>       units       = "U/L",
-#>       type        = "continuous",
-#>       notes       = paste(
+#>       units = "U/L",
+#>       type = "continuous",
+#>       notes = paste(
 #>         "Tested on CL as an exponential function (Nie 2023 Table 3 models 2 and 20, functional",
 #>         "expression 'a' = Eq. 1 linear per the table footnote key). Entered the full model",
 #>         "(OFV 2158.168 -> 2150.776 alone; 2148.529 -> 2141.133 on top of HNF-on-Q) but was",
@@ -130,21 +136,21 @@ mod
 #>     ),
 #>     GGT = list(
 #>       description = "Gamma-glutamyltransferase",
-#>       units       = "U/L",
-#>       type        = "continuous",
-#>       notes       = "Tested on CL (Table 3 model 3, dOFV -4.90) and on V2 (model 13, dOFV -7.02); not retained. No coefficient printed."
+#>       units = "U/L",
+#>       type = "continuous",
+#>       notes = "Tested on CL (Table 3 model 3, dOFV -4.90) and on V2 (model 13, dOFV -7.02); not retained. No coefficient printed."
 #>     ),
 #>     HR = list(
 #>       description = "Heart rate",
-#>       units       = "beats/min",
-#>       type        = "continuous",
-#>       notes       = "Tested on V1 (Table 3 model 5, dOFV -7.06) and on Q (model 8, dOFV -5.88); not retained. No coefficient printed."
+#>       units = "beats/min",
+#>       type = "continuous",
+#>       notes = "Tested on V1 (Table 3 model 5, dOFV -7.06) and on Q (model 8, dOFV -5.88); not retained. No coefficient printed."
 #>     ),
 #>     WT = list(
 #>       description = "Total body weight",
-#>       units       = "kg",
-#>       type        = "continuous",
-#>       notes       = paste(
+#>       units = "kg",
+#>       type = "continuous",
+#>       notes = paste(
 #>         "Tested on V2 only (Table 3 model 12, dOFV -4.07) and not retained; no allometric",
 #>         "scaling appears anywhere in the final model. This is the paper's central dosing",
 #>         "finding -- because body weight does not enter the PK, a fixed 12 mg dose and a",
@@ -157,42 +163,42 @@ mod
 #>     ),
 #>     UA = list(
 #>       description = "Uric acid",
-#>       units       = "umol/L",
-#>       type        = "continuous",
-#>       notes       = "Tested on V2 (Table 3 model 14, dOFV -5.37); not retained. No coefficient printed."
+#>       units = "umol/L",
+#>       type = "continuous",
+#>       notes = "Tested on V2 (Table 3 model 14, dOFV -5.37); not retained. No coefficient printed."
 #>     ),
 #>     DDIMER = list(
 #>       description = "Plasma D-dimer",
-#>       units       = "mg/L",
-#>       type        = "continuous",
-#>       notes       = "Tested on V2 (Table 3 model 15, dOFV -4.79); not retained. No coefficient printed."
+#>       units = "mg/L",
+#>       type = "continuous",
+#>       notes = "Tested on V2 (Table 3 model 15, dOFV -4.79); not retained. No coefficient printed."
 #>     ),
 #>     SMOKE = list(
 #>       description = "Current-smoker indicator",
-#>       units       = "(binary)",
-#>       type        = "binary",
-#>       notes       = "Tested on V2 (Table 3 model 19, dOFV -3.94); not retained. No coefficient printed. Table 1: 11/27 (40.7%) in the model-building cohort."
+#>       units = "(binary)",
+#>       type = "binary",
+#>       notes = "Tested on V2 (Table 3 model 19, dOFV -3.94); not retained. No coefficient printed. Table 1: 11/27 (40.7%) in the model-building cohort."
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species         = "human",
-#>     n_subjects      = 47L,
-#>     n_studies       = 1L,
-#>     age_range       = "21-78 years overall; model-building cohort 53.85 +/- 16.63 years (median 58, range 21-76), external-validation cohort 52.5 +/- 13.56 (median 54.5, range 27-78)",
-#>     age_median      = "58 years (model-building cohort, Table 1)",
-#>     weight_range    = "48-86 kg overall; model-building cohort 63.32 +/- 9.3 kg (median 62, range 48-82), external-validation cohort 62.25 +/- 9.67 (median 59.5, range 50.8-86)",
-#>     weight_median   = "62 kg (model-building cohort, Table 1)",
-#>     height_range    = "Model-building cohort 163.96 +/- 6.87 cm (median 165, range 153-175)",
-#>     sex_female_pct  = 55.6,
-#>     race_ethnicity  = "Not reported; single-centre Chinese cohort",
-#>     disease_state   = "Adults scheduled for elective surgery under general anaesthesia. Liver resection 14.8%, cholecystectomy 12.8%, pancreatic resection 36.2%, other surgery 36.2%; 29.8% laparoscopic and 70.2% open. Model-building cohort: tumour 77.8%, hepatobiliary disease 55.6%, hypertension 25.9%, Child-Turcotte-Pugh class B 18.5% (the remainder class A).",
-#>     dose_range      = "Single nalbuphine 15 mg intravenous injection over 2-3 min at induction (0.24 +/- 0.04 mg/kg), followed by midazolam 0.05 mg/kg, sufentanil 0.2 ug/kg, etomidate 0.03 mg/kg and cisatracurium 0.2 mg/kg; anaesthesia maintained with sevoflurane and remifentanil",
-#>     regions         = "China (Shijiazhuang; the Fourth Hospital of Hebei Medical University, single centre, 2021)",
+#>     species = "human",
+#>     n_subjects = 47L,
+#>     n_studies = 1L,
+#>     age_range = "21-78 years overall; model-building cohort 53.85 +/- 16.63 years (median 58, range 21-76), external-validation cohort 52.5 +/- 13.56 (median 54.5, range 27-78)",
+#>     age_median = "58 years (model-building cohort, Table 1)",
+#>     weight_range = "48-86 kg overall; model-building cohort 63.32 +/- 9.3 kg (median 62, range 48-82), external-validation cohort 62.25 +/- 9.67 (median 59.5, range 50.8-86)",
+#>     weight_median = "62 kg (model-building cohort, Table 1)",
+#>     height_range = "Model-building cohort 163.96 +/- 6.87 cm (median 165, range 153-175)",
+#>     sex_female_pct = 55.6,
+#>     race_ethnicity = "Not reported; single-centre Chinese cohort",
+#>     disease_state = "Adults scheduled for elective surgery under general anaesthesia. Liver resection 14.8%, cholecystectomy 12.8%, pancreatic resection 36.2%, other surgery 36.2%; 29.8% laparoscopic and 70.2% open. Model-building cohort: tumour 77.8%, hepatobiliary disease 55.6%, hypertension 25.9%, Child-Turcotte-Pugh class B 18.5% (the remainder class A).",
+#>     dose_range = "Single nalbuphine 15 mg intravenous injection over 2-3 min at induction (0.24 +/- 0.04 mg/kg), followed by midazolam 0.05 mg/kg, sufentanil 0.2 ug/kg, etomidate 0.03 mg/kg and cisatracurium 0.2 mg/kg; anaesthesia maintained with sevoflurane and remifentanil",
+#>     regions = "China (Shijiazhuang; the Fourth Hospital of Hebei Medical University, single centre, 2021)",
 #>     hepatic_function = "55.6% of the model-building cohort had hepatobiliary disease; 18.5% were Child-Turcotte-Pugh class B and the rest class A. Excluded: known or suspected cardiopulmonary, renal or metabolic disease.",
-#>     renal_function  = "Creatinine clearance (Cockcroft-Gault) 111.19 +/- 27.38 mL/min in the model-building cohort (median 105.14, range 53.4-160.98)",
-#>     co_medication   = "Midazolam, sufentanil, etomidate, cisatracurium, sevoflurane and remifentanil, all part of the anaesthetic protocol. Nie 2023 Discussion notes as a limitation that nalbuphine, midazolam, sufentanil and sevoflurane are all CYP3A4 substrates and that the study design could not resolve any interaction between them.",
-#>     notes           = "Baseline demographics per Nie 2023 Table 1. 458 concentrations were drawn from 48 patients; one subject (5 samples) was dropped for a missing HNF value, leaving 27 patients / 353 samples for model building (intensive sampling: pre-dose and 3, 5, 10, 15, 30, 45 min and 1, 1.5, 2, 3, 4, 5, 6, 12 h) and 20 patients / 100 samples for external validation (sparse sampling: pre-dose, during intubation, and 1, 3, 10 min after intubation). Every post-dose sample was above the 0.1 ng/mL LLOQ and none was flagged as an outlier."
+#>     renal_function = "Creatinine clearance (Cockcroft-Gault) 111.19 +/- 27.38 mL/min in the model-building cohort (median 105.14, range 53.4-160.98)",
+#>     co_medication = "Midazolam, sufentanil, etomidate, cisatracurium, sevoflurane and remifentanil, all part of the anaesthetic protocol. Nie 2023 Discussion notes as a limitation that nalbuphine, midazolam, sufentanil and sevoflurane are all CYP3A4 substrates and that the study design could not resolve any interaction between them.",
+#>     notes = "Baseline demographics per Nie 2023 Table 1. 458 concentrations were drawn from 48 patients; one subject (5 samples) was dropped for a missing HNF value, leaving 27 patients / 353 samples for model building (intensive sampling: pre-dose and 3, 5, 10, 15, 30, 45 min and 1, 1.5, 2, 3, 4, 5, 6, 12 h) and 20 patients / 100 samples for external validation (sparse sampling: pre-dose, during intubation, and 1, 3, 10 min after intubation). Every post-dose sample was above the 0.1 ng/mL LLOQ and none was flagged as an outlier."
 #>   )
 #> 
 #>   ini({
@@ -274,7 +280,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5606288925e0>
+#> <environment: 0x5615a4e49ca0>
 ```
 
 ## Population
@@ -396,8 +402,12 @@ ev_typ <- as.data.frame(
 )
 ev_typ$PFA_NET_RATE <- 617.96  # the normalizing value, so Q = 245 exactly
 
+# Tight solver tolerances: this solve feeds the 1e-6 closed-form gate below,
+# and the default rtol = 1e-6 leaves about 7e-6 relative error when the model
+# is integrated numerically rather than solved via linCmt().
 sim_typ <- rxode2::rxSolve(
-  rxode2::zeroRe(mod), ev_typ, returnType = "data.frame", addDosing = FALSE
+  rxode2::zeroRe(mod), ev_typ, returnType = "data.frame", addDosing = FALSE,
+  rtol = 1e-10, atol = 1e-12
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
@@ -418,15 +428,15 @@ data.frame(
   )
 ```
 
-|  time | closed_form | ode_solve | rel_diff |
-|------:|------------:|----------:|---------:|
-|  0.00 |    369.2308 |  369.2308 |        0 |
-|  0.05 |    248.1411 |  248.1411 |        0 |
-|  0.25 |    101.1021 |  101.1021 |        0 |
-|  1.00 |     69.0459 |   69.0459 |        0 |
-|  4.00 |     31.2040 |   31.2040 |        0 |
-|  8.00 |     10.8228 |   10.8228 |        0 |
-| 12.00 |      3.7538 |    3.7538 |        0 |
+|  time | closed_form | ode_solve |  rel_diff |
+|------:|------------:|----------:|----------:|
+|  0.00 |    369.2308 |  369.2308 |  0.00e+00 |
+|  0.05 |    248.1411 |  248.1411 |  2.00e-12 |
+|  0.25 |    101.1021 |  101.1021 | -7.10e-11 |
+|  1.00 |     69.0459 |   69.0459 |  1.20e-11 |
+|  4.00 |     31.2040 |   31.2040 | -1.33e-10 |
+|  8.00 |     10.8228 |   10.8228 | -1.55e-10 |
+| 12.00 |      3.7538 |    3.7538 | -2.70e-10 |
 
 Typical-value nalbuphine concentration (ng/mL) after a 12 mg IV bolus:
 rxode2 ODE solve against the bi-exponential closed form built from Nie
@@ -637,7 +647,12 @@ runArm <- function(amt_ug, label) {
   # Reseed inside each arm so the two arms share a common random-number
   # stream; a single seed set once would give the second arm different etas.
   rxode2::rxSetSeed(20230321)
-  out <- rxode2::rxSolve(mod, ev, returnType = "data.frame", addDosing = FALSE)
+  # Tight tolerances: the dose-linearity gate below is an exact identity to
+  # 1e-8, and under ODE integration the ratio error tracks rtol (measured
+  # 1.6e-5 at the default 1e-6, 7e-9 at 1e-10, 2e-10 at 1e-12), so 1e-12 keeps
+  # a 40x margin at no extra solve time.
+  out <- rxode2::rxSolve(mod, ev, returnType = "data.frame", addDosing = FALSE,
+                         rtol = 1e-12, atol = 1e-14)
   out$regimen <- label
   out
 }
@@ -666,7 +681,7 @@ cat(sprintf(
   "Common-random-number dose linearity holds to %.2e relative error.\n",
   max(abs(conc_ratio[finite] / dose_ratio[finite] - 1))
 ))
-#> Common-random-number dose linearity holds to 1.11e-15 relative error.
+#> Common-random-number dose linearity holds to 2.30e-10 relative error.
 ```
 
 ``` r
@@ -716,12 +731,12 @@ table6 |>
 
 | Time (h) | Regimen | Mean (pub) | Mean (sim) | Median (pub) | Median (sim) | 25th (pub) | 25th (sim) | 75th (pub) | 75th (sim) |
 |---:|:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0.05 | Fixed 12 mg | 246.75 | 241.93 | 241.84 | 233.94 | 203.51 | 193.57 | 284.82 | 284.55 |
-| 0.05 | Bodyweight 0.2 mg/kg | 260.22 | 258.44 | 251.36 | 242.42 | 206.57 | 197.14 | 306.13 | 312.81 |
-| 4.00 | Fixed 12 mg | 30.14 | 31.30 | 29.65 | 31.11 | 23.50 | 23.13 | 36.19 | 38.14 |
-| 4.00 | Bodyweight 0.2 mg/kg | 31.82 | 32.96 | 30.78 | 32.51 | 23.87 | 23.94 | 38.56 | 39.77 |
-| 12.00 | Fixed 12 mg | 5.06 | 5.47 | 3.99 | 4.75 | 1.71 | 1.63 | 7.39 | 8.11 |
-| 12.00 | Bodyweight 0.2 mg/kg | 5.34 | 5.77 | 4.15 | 4.98 | 1.76 | 1.67 | 7.71 | 8.29 |
+| 0.05 | Fixed 12 mg | 246.75 | 244.58 | 241.84 | 244.13 | 203.51 | 205.61 | 284.82 | 281.88 |
+| 0.05 | Bodyweight 0.2 mg/kg | 260.22 | 261.13 | 251.36 | 257.56 | 206.57 | 207.90 | 306.13 | 316.00 |
+| 4.00 | Fixed 12 mg | 30.14 | 31.95 | 29.65 | 31.31 | 23.50 | 24.70 | 36.19 | 38.36 |
+| 4.00 | Bodyweight 0.2 mg/kg | 31.82 | 33.64 | 30.78 | 33.11 | 23.87 | 26.63 | 38.56 | 39.35 |
+| 12.00 | Fixed 12 mg | 5.06 | 5.37 | 3.99 | 4.29 | 1.71 | 2.08 | 7.39 | 7.44 |
+| 12.00 | Bodyweight 0.2 mg/kg | 5.34 | 5.64 | 4.15 | 4.60 | 1.76 | 2.16 | 7.71 | 7.57 |
 
 Replicates Table 6 of Nie 2023: simulated nalbuphine concentration
 (ng/mL) for the two dosage regimens. {.table style="width:100%;"}
@@ -766,7 +781,7 @@ cat(sprintf(
   "Worst |sim/pub - 1|: %.3f at 0.05-4 h, %.3f at 12 h.\n",
   worst(early), worst(late)
 ))
-#> Worst |sim/pub - 1|: 0.056 at 0.05-4 h, 0.200 at 12 h.
+#> Worst |sim/pub - 1|: 0.116 at 0.05-4 h, 0.227 at 12 h.
 ```
 
 ``` r
@@ -796,9 +811,9 @@ bias |>
 
 | Time (h) | Bodyweight 0.2 mg/kg | Fixed 12 mg | Bias, simulated (%) | Bias, Nie 2023 Table 6 (%) |
 |---:|---:|---:|---:|---:|
-| 0.05 | 258.44 | 241.93 | 6.83 | 5.46 |
-| 4.00 | 32.96 | 31.30 | 5.30 | 5.58 |
-| 12.00 | 5.77 | 5.47 | 5.56 | 5.55 |
+| 0.05 | 261.13 | 244.58 | 6.77 | 5.46 |
+| 4.00 | 33.64 | 31.95 | 5.29 | 5.58 |
+| 12.00 | 5.64 | 5.37 | 4.88 | 5.55 |
 
 Bias between the two regimens. Nie 2023 reports \< 6% at every time, the
 basis for its recommendation that a fixed dose can replace weight-based
@@ -992,8 +1007,8 @@ knitr::kable(
 
 | NCA parameter | treatment | Reference | Simulated | % diff |
 |:--------------|:----------|----------:|----------:|-------:|
-| CL/F (L/h)    | 15 mg IV  |      33.4 |      31.3 |  -6.3% |
-| Vz/F (L)      | 15 mg IV  |       138 |       128 |  -6.7% |
+| CL/F (L/h)    | 15 mg IV  |      33.4 |      31.1 |  -6.8% |
+| Vz/F (L)      | 15 mg IV  |       138 |       121 | -11.9% |
 
 Simulated NCA on the 15 mg induction dose against the non-compartmental
 analysis of the same cohort (Gao 2022) that Nie 2023 cites for
@@ -1026,12 +1041,12 @@ nca_wide |>
 
 | NCA parameter | Simulated (median) |
 |:--------------|-------------------:|
-| aucinf.obs    |            479.094 |
-| cl.obs        |             31.309 |
-| cmax          |            452.222 |
-| half.life     |              2.871 |
+| aucinf.obs    |            481.752 |
+| cl.obs        |             31.137 |
+| cmax          |            483.092 |
+| half.life     |              2.732 |
 | tmax          |              0.000 |
-| vz.obs        |            128.460 |
+| vz.obs        |            121.346 |
 
 Median simulated NCA parameters over the 200-subject virtual cohort
 after a single 15 mg IV injection. {.table}
@@ -1055,7 +1070,7 @@ cat(sprintf(
   med[["cl.obs"]], 100 * (med[["cl.obs"]] / 33.42 - 1),
   med[["vz.obs"]], 100 * (med[["vz.obs"]] / 137.69 - 1)
 ))
-#> NCA cl.obs = 31.31 L/h vs Gao 2022 33.42 (-6.3%); vz.obs = 128.5 L vs 137.69 (-6.7%)
+#> NCA cl.obs = 31.14 L/h vs Gao 2022 33.42 (-6.8%); vz.obs = 121.3 L vs 137.69 (-11.9%)
 ```
 
 `tmax` is 0 by construction: nalbuphine is given as an intravenous

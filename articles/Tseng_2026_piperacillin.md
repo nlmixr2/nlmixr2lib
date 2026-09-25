@@ -236,8 +236,12 @@ solve_arm <- function(dose, tinf, tau, egfr, etas) {
   d <- do.call(rbind, lapply(seq_along(etas), function(i) {
     transform(ev, id = i, CRCL = egfr, etalcl = etas[i])
   }))
+  # Gate 1 compares this solve to its closed form, so hold the ODE integrator
+  # and the ss = 1 steady-state search well below the 1e-6 bound.
   out <- rxode2::rxSolve(mod, d, omega = NA, addDosing = FALSE,
-                         returnType = "data.frame")
+                         returnType = "data.frame",
+                         rtol = 1e-10, atol = 1e-12,
+                         ssRtol = 1e-10, ssAtol = 1e-12)
   out[out$time == tau, ]
 }
 
@@ -327,7 +331,7 @@ chk <- troughs |>
 
 max_rel_err <- max(abs(chk$rel_err))
 max_rel_err
-#> [1] 8.881784e-15
+#> [1] 4.487694e-09
 
 # Same drawn parameters on both sides, so this is pure integrator error, not
 # cohort noise: a tight absolute bound is the correct assertion here.
@@ -1097,7 +1101,14 @@ subject_pk <- sim |>
   mutate(auc_ref = 4500 / cl,
          hl_ref = log(2) * vc / cl,
          cav_ref = 4500 / (cl * tau_nca),
-         cmin_ref = ctrough_analytic(4500, 1, tau_nca, cl, vc))
+         # The NCA interval opens just BEFORE the 10th dose, so its minimum is
+         # the trough after 9 doses, not the steady-state trough. For a
+         # one-compartment model that is the steady-state value times
+         # (1 - exp(-9 k tau)); a subject drawn with eGFR ~60 (t1/2 6.5 h) is
+         # still 0.3% short of steady state there, which the tight bound below
+         # would otherwise flag as an NCA error.
+         cmin_ref = ctrough_analytic(4500, 1, tau_nca, cl, vc) *
+           (1 - exp(-(n_doses - 1) * (cl / vc) * tau_nca)))
 
 nca_wide <- nca |>
   dplyr::select(id, PPTESTCD, PPORRES) |>
@@ -1143,10 +1154,10 @@ nca_summary |>
 
 | Comparison | Median difference (%) | 90th percentile \|difference\| (%) | Max \|difference\| (%) |
 |:---|---:|---:|---:|
-| AUC(0-tau) vs Dose/CL | -0.003 | 0.008 | 0.020 |
+| AUC(0-tau) vs Dose/CL | -0.003 | 0.008 | 0.179 |
 | Half-life vs log(2)\*V/CL | 0.000 | 0.000 | 0.000 |
-| Cav vs Dose/(CL\*tau) | -0.003 | 0.008 | 0.020 |
-| Cmin vs closed-form trough | 0.000 | 0.000 | 0.027 |
+| Cav vs Dose/(CL\*tau) | -0.003 | 0.008 | 0.179 |
+| Cmin vs closed-form trough | 0.000 | 0.000 | 0.000 |
 
 PKNCA output against the closed-form steady-state identities, computed
 from each subject’s own drawn clearance. {.table}
@@ -1185,7 +1196,7 @@ summary(nca_res) |>
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 54 | 60 | 4500 mg Q6H, 1-hr infusion | 200 | 906 \[43.3\] | 341 \[18.6\] | 35.4 \[170\] | 1.00 \[1.00, 1.00\] | 151 \[43.3\] | 1.81 \[0.758\] |
+| 54 | 60 | 4500 mg Q6H, 1-hr infusion | 200 | 918 \[50.9\] | 345 \[22.3\] | 34.8 \[213\] | 1.00 \[1.00, 1.00\] | 153 \[50.9\] | 1.90 \[0.962\] |
 
 PKNCA steady-state summary over the final dosing interval, 4500 mg Q6H
 as a 1-hour infusion. {.table}

@@ -131,9 +131,18 @@ mod
 #>   # inside mature circulating red cells), which IS a canonical member of
 #>   # the `rbc_<analyte>` family.
 #>   paper_specific_compartments <- c(
-#>     "is_liver1", "is_liver2", "is_liver3", "is_liver4", "is_liver5",
-#>     "int_liver1", "int_liver2", "int_liver3", "int_liver4", "int_liver5",
-#>     "rbc_precursor", "renal_duct"
+#>     "is_liver1",
+#>     "is_liver2",
+#>     "is_liver3",
+#>     "is_liver4",
+#>     "is_liver5",
+#>     "int_liver1",
+#>     "int_liver2",
+#>     "int_liver3",
+#>     "int_liver4",
+#>     "int_liver5",
+#>     "rbc_precursor",
+#>     "renal_duct"
 #>   )
 #> 
 #>   # Time in hours (the Napp code steps in hours and doses every 24). The
@@ -187,27 +196,27 @@ mod
 #>   )
 #> 
 #>   compartmentData <- list(
-#>     depot         = list(analyte = "ergothioneine", units = "umol", specimen = "administration site", verified = TRUE),
-#>     central       = list(analyte = "ergothioneine", units = "umol/L", specimen = "plasma", verified = TRUE),
-#>     is_liver1     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     int_liver1    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     is_liver2     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     int_liver2    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     is_liver3     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     int_liver3    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     is_liver4     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     int_liver4    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     is_liver5     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     int_liver5    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     is_skin       = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     int_skin      = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     is_muscle     = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     int_muscle    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     is_adipose    = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
-#>     int_adipose   = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     depot = list(analyte = "ergothioneine", units = "umol", specimen = "administration site", verified = TRUE),
+#>     central = list(analyte = "ergothioneine", units = "umol/L", specimen = "plasma", verified = TRUE),
+#>     is_liver1 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     int_liver1 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     is_liver2 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     int_liver2 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     is_liver3 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     int_liver3 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     is_liver4 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     int_liver4 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     is_liver5 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     int_liver5 = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     is_skin = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     int_skin = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     is_muscle = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     int_muscle = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     is_adipose = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
+#>     int_adipose = list(analyte = "ergothioneine", units = "umol/L", specimen = "tissue", verified = TRUE),
 #>     rbc_precursor = list(analyte = "ergothioneine", units = "umol", specimen = "blood cell", verified = TRUE),
-#>     rbc_egt       = list(analyte = "ergothioneine", units = "umol/L", specimen = "blood cell", verified = TRUE),
-#>     renal_duct    = list(analyte = "ergothioneine", units = "umol/L", specimen = "urine", verified = TRUE)
+#>     rbc_egt = list(analyte = "ergothioneine", units = "umol/L", specimen = "blood cell", verified = TRUE),
+#>     renal_duct = list(analyte = "ergothioneine", units = "umol/L", specimen = "urine", verified = TRUE)
 #>   )
 #> 
 #>   population <- list(
@@ -593,7 +602,7 @@ mod
 #>     Crbc ~ prop(propSd_Crbc)
 #>   })
 #> }
-#> <environment: 0x55bd19b31788>
+#> <environment: 0x55d5e11cb538>
 ```
 
 ## Population
@@ -1085,7 +1094,7 @@ c(
   mean_pct_diff = mean(table2_cmp$pct_diff)
 )
 #>          n_cells max_abs_pct_diff    mean_pct_diff 
-#>       48.0000000        1.1103161       -0.7858274
+#>       48.0000000        1.1103160       -0.7858274
 ```
 
 Every one of the 48 published cells is reproduced to within 1.2%, with a
@@ -1478,7 +1487,7 @@ c(
   drift_fraction_pct = 100 * rise_diet / rise_total
 )
 #>      total_rise_umol_L diet_only_drift_umol_L     drift_fraction_pct 
-#>               6.783074               2.887496              42.569133
+#>               6.783074               2.887496              42.569131
 ```
 
 About 43% of the modelled 16-week rise at 8 mg/day is baseline drift
@@ -1698,15 +1707,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1714,7 +1723,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

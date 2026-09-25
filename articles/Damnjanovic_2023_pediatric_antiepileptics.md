@@ -451,9 +451,9 @@ ident |>
 
 | Drug          | Rows compared (%) | Max relative error |
 |:--------------|------------------:|:-------------------|
-| Levetiracetam |               100 | 3.40e-15           |
-| Lamotrigine   |               100 | 8.59e-11           |
-| Valproic acid |               100 | 3.28e-15           |
+| Levetiracetam |               100 | 2.73e-06           |
+| Lamotrigine   |               100 | 1.25e-05           |
+| Valproic acid |               100 | 8.95e-07           |
 
 Solved concentrations against the closed-form n-dose superposition. Rows
 within 0.1 1/h of the formula’s ka == kel singularity are excluded; the
@@ -609,12 +609,12 @@ trough_summary |>
 
 | Drug | Regimen | Median trough (mg/L) | 10th pct | 90th pct | Reference range (mg/L) |
 |:---|:---|---:|---:|---:|:---|
-| Lamotrigine | LTG/LEV | 3.49 | 0.16 | 9.7 | 3-15 |
-| Lamotrigine | VA/LTG | 24.00 | 6.40 | 40.8 | 3-15 |
-| Levetiracetam | LTG/LEV | 13.90 | 6.27 | 29.9 | 12-46 |
-| Levetiracetam | VA/LEV | 13.00 | 6.38 | 25.3 | 12-46 |
-| Valproic acid | VA/LEV | 81.50 | 63.60 | 96.4 | 50-100 |
-| Valproic acid | VA/LTG | 83.50 | 61.60 | 103.0 | 50-100 |
+| Lamotrigine | LTG/LEV | 4.45 | 0.275 | 10.6 | 3-15 |
+| Lamotrigine | VA/LTG | 23.50 | 5.800 | 38.3 | 3-15 |
+| Levetiracetam | LTG/LEV | 12.10 | 5.580 | 28.0 | 12-46 |
+| Levetiracetam | VA/LEV | 14.00 | 7.850 | 27.3 | 12-46 |
+| Valproic acid | VA/LEV | 85.90 | 67.100 | 103.0 | 50-100 |
+| Valproic acid | VA/LTG | 82.50 | 64.100 | 99.4 | 50-100 |
 
 Simulated steady-state trough concentrations against the therapeutic
 reference ranges quoted by Damnjanovic 2023. {.table
@@ -754,12 +754,12 @@ nca_summary |>
 
 | Drug | Regimen | AUC0-tau (mg\*h/L) | Cav,ss (mg/L) | Cmax,ss (mg/L) | Cmin,ss (mg/L) | t1/2 (h) | Tmax (h) |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| Lamotrigine | LTG/LEV | 176 | 14.7 | 29.1 | 3.49 | 3.77 | 1.50 |
-| Lamotrigine | VA/LTG | 348 | 29.0 | 35.3 | 24.00 | 22.10 | 1.75 |
-| Levetiracetam | LTG/LEV | 286 | 23.8 | 32.2 | 13.90 | 11.20 | 1.25 |
-| Levetiracetam | VA/LEV | 230 | 19.2 | 24.6 | 13.00 | 11.40 | 1.25 |
-| Valproic acid | VA/LEV | 1160 | 96.5 | 108.0 | 81.50 | 27.30 | 1.75 |
-| Valproic acid | VA/LTG | 1180 | 98.6 | 112.0 | 83.50 | 26.50 | 1.75 |
+| Lamotrigine | LTG/LEV | 183 | 15.3 | 31.3 | 4.45 | 4.01 | 1.50 |
+| Lamotrigine | VA/LTG | 346 | 28.8 | 35.8 | 23.50 | 19.10 | 1.75 |
+| Levetiracetam | LTG/LEV | 242 | 20.2 | 25.9 | 12.10 | 11.60 | 1.25 |
+| Levetiracetam | VA/LEV | 254 | 21.2 | 28.1 | 14.00 | 11.30 | 1.25 |
+| Valproic acid | VA/LEV | 1220 | 102.0 | 114.0 | 85.90 | 26.70 | 1.75 |
+| Valproic acid | VA/LTG | 1150 | 95.7 | 108.0 | 82.50 | 27.10 | 1.75 |
 
 Median steady-state NCA over the final 12-hour dosing interval, by drug
 and regimen. Damnjanovic 2023 reports no NCA values, so there is no

@@ -624,8 +624,8 @@ inc |> dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 3))) |> kni
 
 | Arm             | Tachycardia (HR \> 100), reproduced % | Published % |
 |:----------------|--------------------------------------:|------------:|
-| C/T 50 mg       |                                   7.5 |         6.5 |
-| Ephedrine 15 mg |                                  33.0 |        30.4 |
+| C/T 50 mg       |                                     8 |         6.5 |
+| Ephedrine 15 mg |                                    26 |        30.4 |
 
 ``` r
 
@@ -652,8 +652,8 @@ tibble::tibble(Arm = names(never_rose),
 
 | Arm             | Heart rate never rose above baseline, % |
 |:----------------|----------------------------------------:|
-| C/T 50 mg       |                                    42.0 |
-| Ephedrine 15 mg |                                    13.5 |
+| C/T 50 mg       |                                    45.5 |
+| Ephedrine 15 mg |                                    15.5 |
 
 ``` r
 

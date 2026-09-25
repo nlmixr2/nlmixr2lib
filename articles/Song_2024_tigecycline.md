@@ -263,20 +263,20 @@ nca_tbl |>
 
 | Regimen     | Parameter | Median | 5th pctile | 95th pctile |
 |:------------|:----------|-------:|-----------:|------------:|
-| 100 mg q12h | auclast   |  21.02 |      10.23 |       45.23 |
-| 100 mg q12h | cav       |   1.75 |       0.85 |        3.77 |
-| 100 mg q12h | cmax      |   4.09 |       2.25 |        6.40 |
-| 100 mg q12h | cmin      |   1.34 |       0.51 |        3.28 |
+| 100 mg q12h | auclast   |  23.59 |      12.08 |       49.45 |
+| 100 mg q12h | cav       |   1.97 |       1.01 |        4.12 |
+| 100 mg q12h | cmax      |   3.91 |       2.33 |        7.00 |
+| 100 mg q12h | cmin      |   1.53 |       0.66 |        3.60 |
 | 100 mg q12h | tmax      |   0.50 |       0.50 |        0.50 |
-| 150 mg q12h | auclast   |  35.38 |      15.43 |       69.48 |
-| 150 mg q12h | cav       |   2.95 |       1.29 |        5.79 |
-| 150 mg q12h | cmax      |   5.88 |       2.92 |        9.81 |
-| 150 mg q12h | cmin      |   2.30 |       0.74 |        5.20 |
+| 150 mg q12h | auclast   |  35.15 |      18.05 |       73.48 |
+| 150 mg q12h | cav       |   2.93 |       1.50 |        6.12 |
+| 150 mg q12h | cmax      |   6.23 |       3.45 |       11.04 |
+| 150 mg q12h | cmin      |   2.30 |       0.92 |        5.57 |
 | 150 mg q12h | tmax      |   0.50 |       0.50 |        0.50 |
-| 50 mg q12h  | auclast   |  11.69 |       5.71 |       22.75 |
-| 50 mg q12h  | cav       |   0.97 |       0.48 |        1.90 |
-| 50 mg q12h  | cmax      |   2.01 |       1.14 |        3.40 |
-| 50 mg q12h  | cmin      |   0.76 |       0.30 |        1.66 |
+| 50 mg q12h  | auclast   |  11.49 |       6.02 |       25.81 |
+| 50 mg q12h  | cav       |   0.96 |       0.50 |        2.15 |
+| 50 mg q12h  | cmax      |   2.02 |       1.08 |        3.51 |
+| 50 mg q12h  | cmin      |   0.74 |       0.29 |        1.91 |
 | 50 mg q12h  | tmax      |   0.50 |       0.50 |        0.50 |
 
 Simulated steady-state NCA over one 12 h dosing interval. Cmax / Cmin /
@@ -313,7 +313,7 @@ stopifnot(max(abs(auc_chk$pct_diff)) < 0.5)
 
 sprintf("AUC0-12,ss vs dose/CL: max |%% diff| = %.3f%% over %d subjects",
         max(abs(auc_chk$pct_diff)), nrow(auc_chk))
-#> [1] "AUC0-12,ss vs dose/CL: max |% diff| = 0.019% over 600 subjects"
+#> [1] "AUC0-12,ss vs dose/CL: max |% diff| = 0.017% over 600 subjects"
 ```
 
 ## Comparison against published results
@@ -385,7 +385,7 @@ sprintf("Cohort vs closed-form PTA: max = %.1f points, mean = %.1f points over %
         max(abs(pta_sim$pta_sim - pta_sim$pta_cf)),
         mean(abs(pta_sim$pta_sim - pta_sim$pta_cf)),
         nrow(pta_sim))
-#> [1] "Cohort vs closed-form PTA: max = 7.5 points, mean = 0.7 points over 90 cells"
+#> [1] "Cohort vs closed-form PTA: max = 4.2 points, mean = 0.5 points over 90 cells"
 ```
 
 ### Figure 3 - probability of target attainment versus MIC

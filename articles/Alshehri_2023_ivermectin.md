@@ -123,8 +123,8 @@ mod
 #>   )
 #>   vignette <- "Alshehri_2023_ivermectin"
 #>   units <- list(
-#>     time          = "h",
-#>     dosing        = "ug",
+#>     time = "h",
+#>     dosing = "ug",
 #>     concentration = "ng/mL"
 #>   )
 #> 
@@ -132,18 +132,18 @@ mod
 #>   # biological matrix. Derived mechanically; verified = FALSE means it has
 #>   # NOT been checked against the source paper.
 #>   compartmentData <- list(
-#>     depot       = list(analyte = "ivermectin", units = "ug", specimen = "administration site", verified = FALSE),
-#>     central     = list(analyte = "ivermectin", units = "ug", specimen = "plasma", verified = FALSE),
+#>     depot = list(analyte = "ivermectin", units = "ug", specimen = "administration site", verified = FALSE),
+#>     central = list(analyte = "ivermectin", units = "ug", specimen = "plasma", verified = FALSE),
 #>     peripheral1 = list(analyte = "ivermectin", units = "ug", specimen = "plasma", verified = FALSE)
 #>   )
 #> 
 #>   covariateData <- list(
 #>     WT = list(
-#>       description        = "Body weight",
-#>       units              = "kg",
-#>       type               = "continuous",
+#>       description = "Body weight",
+#>       units = "kg",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste0(
+#>       notes = paste0(
 #>         "Time-fixed (single-dose study). Allometric scaling is applied to all ",
 #>         "four disposition parameters with exponents FIXED by the authors: 1 on ",
 #>         "Vc/F and Vp/F, 0.75 on CL/F and Q/F (Alshehri 2023 Methods 'Covariate ",
@@ -157,14 +157,14 @@ mod
 #>         "weight reported in Alshehri 2023 Table 1 (range 51-135 kg); see the ",
 #>         "vignette 'Assumptions and deviations' section."
 #>       ),
-#>       source_name        = "Weight"
+#>       source_name = "Weight"
 #>     ),
 #>     SEXF = list(
-#>       description        = "Biological sex indicator, 1 = female, 0 = male.",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Biological sex indicator, 1 = female, 0 = male.",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (male)",
-#>       notes              = paste0(
+#>       notes = paste0(
 #>         "REFERENCE-CATEGORY INVERSION relative to the source. Alshehri 2023 ",
 #>         "codes its `Sex` covariate as 1 = male / 0 = female (Methods ",
 #>         "'Covariate analysis': 'categorical covariate value of 0 (female sex ",
@@ -182,16 +182,16 @@ mod
 #>         "quoting the rounded -0.74 coefficient. Sex is the only covariate ",
 #>         "retained in the final model, and it acts only on Vp/F."
 #>       ),
-#>       source_name        = "Sex (1 = male, 0 = female)"
+#>       source_name = "Sex (1 = male, 0 = female)"
 #>     )
 #>   )
 #> 
 #>   covariatesDataExcluded <- list(
 #>     AGE = list(
 #>       description = "Age",
-#>       units       = "years",
-#>       type        = "continuous",
-#>       notes       = paste0(
+#>       units = "years",
+#>       type = "continuous",
+#>       notes = paste0(
 #>         "Screened in the ETA plots and in the stepwise forward-addition / ",
 #>         "backward-elimination covariate selection, but not retained. Alshehri ",
 #>         "2023 Results: 'Other tested covariates did not show any trend in the ",
@@ -203,9 +203,9 @@ mod
 #>     ),
 #>     CREAT = list(
 #>       description = "Serum creatinine",
-#>       units       = "mg/dL",
-#>       type        = "continuous",
-#>       notes       = paste0(
+#>       units = "mg/dL",
+#>       type = "continuous",
+#>       notes = paste0(
 #>         "Screened but not retained (see AGE note). Median 1.1 mg/dL (range ",
 #>         "0.6-1.6), Table 1. Creatinine clearance was deliberately NOT tested: ",
 #>         "Alshehri 2023 Methods 'Covariate analysis' states 'Creatinine ",
@@ -216,9 +216,9 @@ mod
 #>     ),
 #>     ALT = list(
 #>       description = "Alanine aminotransferase",
-#>       units       = "U/L",
-#>       type        = "continuous",
-#>       notes       = paste0(
+#>       units = "U/L",
+#>       type = "continuous",
+#>       notes = paste0(
 #>         "Screened but not retained (see AGE note). Median 25 U/L (range ",
 #>         "14-67), Table 1."
 #>       ),
@@ -226,9 +226,9 @@ mod
 #>     ),
 #>     AST = list(
 #>       description = "Aspartate aminotransferase",
-#>       units       = "U/L",
-#>       type        = "continuous",
-#>       notes       = paste0(
+#>       units = "U/L",
+#>       type = "continuous",
+#>       notes = paste0(
 #>         "Screened but not retained (see AGE note). Median 29 U/L (range ",
 #>         "15-53), Table 1."
 #>       ),
@@ -240,10 +240,10 @@ mod
 #>         "microfilaria plasma level >= 50 Mf/mL at screening), 0 = uninfected ",
 #>         "community control."
 #>       ),
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (uninfected)",
-#>       notes       = paste0(
+#>       notes = paste0(
 #>         "Screened but not retained -- this is the paper's headline negative ",
 #>         "finding. Alshehri 2023 Abstract: 'The final model identifies that the ",
 #>         "PK parameters of IVM are not affected by LF infection'; S2 Fig shows ",
@@ -260,31 +260,31 @@ mod
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human",
-#>     n_subjects     = 56L,
-#>     n_studies      = 1L,
-#>     age_range      = "18-66 years (eligibility 18-70 years)",
-#>     age_median     = "40 years",
-#>     weight_range   = "51-135 kg",
-#>     weight_median  = "61.6 kg",
+#>     species = "human",
+#>     n_subjects = 56L,
+#>     n_studies = 1L,
+#>     age_range = "18-66 years (eligibility 18-70 years)",
+#>     age_median = "40 years",
+#>     weight_range = "51-135 kg",
+#>     weight_median = "61.6 kg",
 #>     sex_female_pct = 43,
 #>     race_ethnicity = "not reported; participants resident in the Agboville district, Cote d'Ivoire",
-#>     disease_state  = paste0(
+#>     disease_state = paste0(
 #>       "32 (57%) treatment-naive Wuchereria bancrofti-infected adults ",
 #>       "(microfilaria plasma level >= 50 Mf/mL) and 24 (43%) uninfected adults"
 #>     ),
-#>     dose_range     = paste0(
+#>     dose_range = paste0(
 #>       "single oral dose of ivermectin 200 ug/kg co-administered with ",
 #>       "diethylcarbamazine 6 mg/kg and albendazole 400 mg (IDA triple-drug ",
 #>       "therapy), taken after a high-fat breakfast"
 #>     ),
-#>     regions        = "Agboville district, Cote d'Ivoire",
+#>     regions = "Agboville district, Cote d'Ivoire",
 #>     n_observations = paste0(
 #>       "724 plasma ivermectin concentrations (pre-dose and 1, 2, 3, 4, 6, 8, ",
 #>       "12, 24, 36, 48, 72 h and 7 days post-dose); all above the 0.1 ng/mL ",
 #>       "LLOQ; the 168 h sample was missing for 4 participants"
 #>     ),
-#>     exclusions     = paste0(
+#>     exclusions = paste0(
 #>       "renal or hepatic disease; ALT, AST or creatinine > 1.5x ULN; ",
 #>       "hemoglobin < 7 g/dL; positive pregnancy test; interacting concomitant ",
 #>       "medication within one week; urinary tract infection; albendazole or ",
@@ -297,7 +297,7 @@ mod
 #>       "drug-interaction trial (S2 Table); used for a VPC-based external ",
 #>       "validation with structural and error parameters fixed"
 #>     ),
-#>     notes          = paste0(
+#>     notes = paste0(
 #>       "Data are from the open-label IDA triple-drug therapy cohort study ",
 #>       "registered as NCT02845713 and NCT03664063. Model built in Phoenix NLME ",
 #>       "8.3 (Certara) using FOCE-I; the full PML control code for the final ",
@@ -536,7 +536,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55bed029e540>
+#> <environment: 0x55d5e38ff2c0>
 ```
 
 ## Source trace
@@ -945,7 +945,7 @@ nca_tbl |>
 
 | Regimen   | NCA parameter      |  Median |     5th |    95th |
 |:----------|:-------------------|--------:|--------:|--------:|
-| 200 ug/kg | AUClast (h\*ng/mL) | 1555.05 |  841.77 | 2975.30 |
+| 200 ug/kg | AUClast (h\*ng/mL) | 1555.05 |  841.77 | 2975.29 |
 | 200 ug/kg | Cmax (ng/mL)       |   56.00 |   29.31 |  102.10 |
 | 200 ug/kg | t½ (h)             |   61.64 |   27.79 |  154.81 |
 | 200 ug/kg | Tmax (h)           |    6.50 |    4.50 |   10.01 |

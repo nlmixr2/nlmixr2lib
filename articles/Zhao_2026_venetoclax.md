@@ -413,9 +413,9 @@ head(nca_wide, 3)
 #> # A tibble: 3 × 6
 #>      id cohort          auclast  cmax  cmin   cav
 #>   <int> <chr>             <dbl> <dbl> <dbl> <dbl>
-#> 1     1 Newly diagnosed  91286. 3906. 3557. 3804.
-#> 2     2 Newly diagnosed  52868. 2667. 1476. 2203.
-#> 3     3 Newly diagnosed  49131. 2497. 1347. 2047.
+#> 1     1 Newly diagnosed 100066. 4454. 3667. 4169.
+#> 2     2 Newly diagnosed 100587. 4520. 3618. 4191.
+#> 3     3 Newly diagnosed  47667. 2431. 1296. 1986.
 ```
 
 ### Per-subject mass-balance identity
@@ -474,7 +474,7 @@ sprintf(paste("At steady state (%d/%d subjects, >=10 half-lives elapsed):",
         nrow(ss_subj), nrow(per_subj),
         100 * max(abs(ss_subj$auc_err)),
         100 * median(abs(per_subj$auc_err)))
-#> [1] "At steady state (259/400 subjects, >=10 half-lives elapsed): max |AUCtau - Dose/CL| / (Dose/CL) = 0.838%. Whole-cohort median 0.065%."
+#> [1] "At steady state (257/400 subjects, >=10 half-lives elapsed): max |AUCtau - Dose/CL| / (Dose/CL) = 0.458%. Whole-cohort median 0.052%."
 ```
 
 The subjects excluded above are not unexplained: their shortfall is
@@ -501,7 +501,7 @@ stopifnot(
 sprintf("Accumulation-corrected residual: median %.3f%%, 95th percentile %.2f%%",
         100 * median(accum_chk$resid),
         100 * quantile(abs(accum_chk$resid), 0.95))
-#> [1] "Accumulation-corrected residual: median -0.014%, 95th percentile 2.21%"
+#> [1] "Accumulation-corrected residual: median -0.014%, 95th percentile 2.52%"
 ```
 
 ### Terminal half-life
@@ -565,8 +565,8 @@ per_subj |>
 
 | Cohort | Median dose (mg) | Median CL/F (L/h) | Median Cmax (ng/mL) | Median Cmin (ng/mL) | Median AUCtau (ng\*h/mL) |
 |:---|---:|---:|---:|---:|---:|
-| Newly diagnosed | 335 | 6.1 | 2469.7 | 1307.3 | 45895.1 |
-| R/R | 305 | 4.7 | 3135.7 | 2195.8 | 63439.8 |
+| Newly diagnosed | 335 | 6.3 | 2370.6 | 1426.8 | 49040.0 |
+| R/R | 305 | 4.0 | 3566.7 | 2267.9 | 74128.8 |
 
 Simulated steady-state NCA summary by cohort. {.table}
 
@@ -632,13 +632,13 @@ ratio_cmp |>
 
 | Cohort          | Published C6/C0 | Simulated C6/C0 | Difference (%) |
 |:----------------|----------------:|----------------:|---------------:|
-| Newly diagnosed |            1.96 |            1.64 |          -16.1 |
-| R/R             |            1.23 |            1.39 |           12.6 |
+| Newly diagnosed |            1.96 |            1.56 |          -20.5 |
+| R/R             |            1.23 |            1.43 |           15.7 |
 
 Dose-free check: steady-state C6/C0 ratio (Zhao 2026 Table 2 medians).
 {.table}
 
-The model predicts a ratio near 1.52 in both cohorts, and the two
+The model predicts a ratio near 1.49 in both cohorts, and the two
 published ratios bracket it (1.23 in R/R and 1.96 in newly diagnosed).
 The prediction is a structural consequence of ka being **fixed** at 0.15
 1/h: with kel = 0.0385 1/h the model puts Tmax near 12 h, so a 6-hour
@@ -703,10 +703,10 @@ knitr::kable(
 
 | NCA parameter | cohort          | Reference | Simulated |   % diff |
 |:--------------|:----------------|----------:|----------:|---------:|
-| C0 (ng/mL)    | Newly diagnosed |      1660 |      1310 | -21.2%\* |
-| C0 (ng/mL)    | R/R             |      2450 |      2200 |   -10.1% |
-| C6 (ng/mL)    | Newly diagnosed |      3250 |      2420 | -25.3%\* |
-| C6 (ng/mL)    | R/R             |      3020 |      3100 |    +2.9% |
+| C0 (ng/mL)    | Newly diagnosed |      1660 |      1430 |   -14.0% |
+| C0 (ng/mL)    | R/R             |      2450 |      2270 |    -7.4% |
+| C6 (ng/mL)    | Newly diagnosed |      3250 |      2330 | -28.1%\* |
+| C6 (ng/mL)    | R/R             |      3020 |      3530 |   +17.2% |
 
 Simulated vs published venetoclax exposures (Zhao 2026 Table 2 medians).
 C0 is the 22-24 h trough and C6 the 6-hour post-dose concentration. \*
@@ -743,10 +743,10 @@ fwd |>
 
 | Cohort | Exposure | Simulated median (ng/mL) | Published median (ng/mL) | Difference (%) |
 |:---|:---|---:|---:|---:|
-| Newly diagnosed | C0 (trough) | 1307 | 1658 | -21.2 |
-| Newly diagnosed | C6 | 2425 | 3247 | -25.3 |
-| R/R | C0 (trough) | 2201 | 2449 | -10.1 |
-| R/R | C6 | 3104 | 3017 | 2.9 |
+| Newly diagnosed | C0 (trough) | 1427 | 1658 | -14.0 |
+| Newly diagnosed | C6 | 2333 | 3247 | -28.1 |
+| R/R | C0 (trough) | 2268 | 2449 | -7.4 |
+| R/R | C6 | 3534 | 3017 | 17.2 |
 
 Forward prediction at 240 mg/m2 once daily vs published medians. {.table
 style="width:100%;"}
@@ -929,8 +929,8 @@ c6_c0 |>
 
 | Cohort | Median C0 (ng/mL) | Within 500-4000 ng/mL (%) | Below 500 ng/mL (%) |
 |:---|---:|---:|---:|
-| Newly diagnosed | 1307 | 56.5 | 26.0 |
-| R/R | 2201 | 49.0 | 19.5 |
+| Newly diagnosed | 1427 | 57.0 | 20.5 |
+| R/R | 2268 | 54.5 | 15.0 |
 
 Simulated attainment of the published 0.5-4 ug/mL venetoclax trough
 reference range at 240 mg/m2 once daily. {.table}

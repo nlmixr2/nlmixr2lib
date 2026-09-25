@@ -478,7 +478,7 @@ knitr::kable(typComparison)
 | Model | Arm | NCA parameter | Simulated | Published | Published source | Difference (%) |
 |:---|:---|:---|---:|---:|:---|---:|
 | Paromomycin | 14-day course | AUC0-24, Day 1 | 173.6 | 171.0 | Table 5, Total (n = 26) | 1.5 |
-| Paromomycin | 14-day course | AUC0-24, Day 14 | 224.0 | 202.0 | Table 5, Total (n = 26) | 10.9 |
+| Paromomycin | 14-day course | AUC0-24, Day 14 | 223.7 | 202.0 | Table 5, Total (n = 26) | 10.7 |
 | Miltefosine | PM+MF14D | AUC D0-7 | 22.6 | 21.0 | Table 6, children 20 / adults 22 | 7.6 |
 | Miltefosine | PM+MF14D | AUC D0-EOT | 116.4 | 112.5 | Table 6, children 111 / adults 114 | 3.5 |
 | Miltefosine | PM+MF14D | AUC D0-210 | 329.0 | 357.5 | Table 6, children 336 / adults 379 | -8.0 |
@@ -704,10 +704,10 @@ pmCompare |>
 
 | Treatment day | Age group | Simulated AUC0-24 (ug\*h/mL) | Published median | Published IQR | Difference (%) |
 |:---|:---|---:|---:|:---|---:|
-| Day 1 | Adults (\>12 y) | 176 | 219 | 199-252 | -19.5 |
-| Day 1 | Children (\<=12 y) | 161 | 145 | 136-167 | 11.3 |
-| Day 14 | Adults (\>12 y) | 227 | 242 | 217-328 | -6.1 |
-| Day 14 | Children (\<=12 y) | 208 | 187 | 162-203 | 11.0 |
+| Day 1 | Adults (\>12 y) | 213 | 219 | 199-252 | -2.8 |
+| Day 1 | Children (\<=12 y) | 156 | 145 | 136-167 | 7.3 |
+| Day 14 | Adults (\>12 y) | 278 | 242 | 217-328 | 15.0 |
+| Day 14 | Children (\<=12 y) | 199 | 187 | 162-203 | 6.7 |
 
 ``` r
 
@@ -912,22 +912,22 @@ mfCompare |>
 
 | Arm | Age group | NCA parameter | Published median | Published IQR | Simulated | Difference (%) |
 |:---|:---|:---|---:|:---|---:|---:|
-| PM+MF14D | Children (\<=12 y) | AUC D0-7 | 20 | 17-25 | 24.3 | 21.4 |
-| PM+MF14D | Adults (\>12 y) | AUC D0-7 | 22 | 15-27 | 21.2 | -3.8 |
-| PM+MF14D | Children (\<=12 y) | AUC D0-EOT | 114 | 98-130 | 125.6 | 10.2 |
-| PM+MF14D | Adults (\>12 y) | AUC D0-EOT | 111 | 94-136 | 117.5 | 5.8 |
-| PM+MF14D | Children (\<=12 y) | AUC D0-210 | 336 | 293-384 | 336.9 | 0.3 |
-| PM+MF14D | Adults (\>12 y) | AUC D0-210 | 379 | 329-440 | 361.8 | -4.5 |
-| PM+MF14D | Children (\<=12 y) | T \> EC90 | 12 | 11-14 | 12.0 | 0.0 |
-| PM+MF14D | Adults (\>12 y) | T \> EC90 | 14 | 12-16 | 13.2 | -5.4 |
-| PM+MF28D | Children (\<=12 y) | AUC D0-7 | 20 | 18-22 | 30.0 | 50.2 |
-| PM+MF28D | Adults (\>12 y) | AUC D0-7 | 18 | 16-20 | 23.9 | 32.7 |
-| PM+MF28D | Children (\<=12 y) | AUC D0-EOT | 517 | 464-552 | 560.4 | 8.4 |
-| PM+MF28D | Adults (\>12 y) | AUC D0-EOT | 524 | 456-567 | 560.4 | 7.0 |
-| PM+MF28D | Children (\<=12 y) | AUC D0-210 | 790 | 687-824 | 841.2 | 6.5 |
-| PM+MF28D | Adults (\>12 y) | AUC D0-210 | 898 | 784-961 | 930.8 | 3.7 |
-| PM+MF28D | Children (\<=12 y) | T \> EC90 | 27 | 25-28 | 28.8 | 6.5 |
-| PM+MF28D | Adults (\>12 y) | T \> EC90 | 30 | 28-32 | 31.0 | 3.3 |
+| PM+MF14D | Children (\<=12 y) | AUC D0-7 | 20 | 17-25 | 25.6 | 28.0 |
+| PM+MF14D | Adults (\>12 y) | AUC D0-7 | 22 | 15-27 | 21.3 | -3.0 |
+| PM+MF14D | Children (\<=12 y) | AUC D0-EOT | 114 | 98-130 | 130.4 | 14.4 |
+| PM+MF14D | Adults (\>12 y) | AUC D0-EOT | 111 | 94-136 | 118.6 | 6.9 |
+| PM+MF14D | Children (\<=12 y) | AUC D0-210 | 336 | 293-384 | 347.5 | 3.4 |
+| PM+MF14D | Adults (\>12 y) | AUC D0-210 | 379 | 329-440 | 357.2 | -5.7 |
+| PM+MF14D | Children (\<=12 y) | T \> EC90 | 12 | 11-14 | 12.5 | 4.2 |
+| PM+MF14D | Adults (\>12 y) | T \> EC90 | 14 | 12-16 | 12.8 | -8.9 |
+| PM+MF28D | Children (\<=12 y) | AUC D0-7 | 20 | 18-22 | 22.9 | 14.6 |
+| PM+MF28D | Adults (\>12 y) | AUC D0-7 | 18 | 16-20 | 23.7 | 31.5 |
+| PM+MF28D | Children (\<=12 y) | AUC D0-EOT | 517 | 464-552 | 547.3 | 5.9 |
+| PM+MF28D | Adults (\>12 y) | AUC D0-EOT | 524 | 456-567 | 557.2 | 6.3 |
+| PM+MF28D | Children (\<=12 y) | AUC D0-210 | 790 | 687-824 | 830.7 | 5.1 |
+| PM+MF28D | Adults (\>12 y) | AUC D0-210 | 898 | 784-961 | 945.1 | 5.2 |
+| PM+MF28D | Children (\<=12 y) | T \> EC90 | 27 | 25-28 | 28.2 | 4.6 |
+| PM+MF28D | Adults (\>12 y) | T \> EC90 | 30 | 28-32 | 31.2 | 4.2 |
 
 ``` r
 

@@ -422,6 +422,8 @@ dose_df <- ev_nca |>
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id,
                              concu = "mg/L", timeu = "h")
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
 dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id, doseu = "mg")
 
 intervals <- data.frame(
@@ -436,6 +438,60 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
 nca_tbl <- as.data.frame(nca_res$result)
 stopifnot(nrow(nca_tbl) > 0)
 ```
@@ -463,7 +519,7 @@ stopifnot(nrow(auc_chk) == n_nca)
 c(median_pct_diff = median(auc_chk$pct_diff),
   q90_abs_pct_diff = unname(quantile(abs(auc_chk$pct_diff), 0.9)))
 #>  median_pct_diff q90_abs_pct_diff 
-#>     -0.001223956      2.486855688
+#>     -0.001223589      2.486855689
 
 # Centre and a robust quantile, never the extreme: subjects with very low eGFR
 # have half-lives long enough that 240 h is not yet steady state, so the tail of
@@ -510,7 +566,7 @@ hl_med <- median(nca_tbl$PPORRES[nca_tbl$PPTESTCD == "half.life"], na.rm = TRUE)
 c(simulated_median_h = hl_med, published_median_h = 11.9,
   published_iqr = "8.8-18.4")
 #> simulated_median_h published_median_h      published_iqr 
-#> "13.8902377128819"             "11.9"         "8.8-18.4"
+#> "13.8902379648416"             "11.9"         "8.8-18.4"
 
 # Assert against the IQR the paper itself prints, not against a bound taken
 # from one run. Realised 14.05-14.96 h at 2/4/16 threads.

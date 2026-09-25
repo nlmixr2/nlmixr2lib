@@ -609,7 +609,7 @@ peak_time <- fig1_dat |>
 cat(sprintf("Median Tmax %.2f h (10th-90th percentile %.2f-%.2f)\n",
             median(peak_time$tad),
             quantile(peak_time$tad, 0.1), quantile(peak_time$tad, 0.9)))
-#> Median Tmax 1.05 h (10th-90th percentile 0.65-1.85)
+#> Median Tmax 0.95 h (10th-90th percentile 0.60-1.85)
 
 # Tmax is set by ktr, which carries no random effect, so it varies only
 # through weight; the bound is deliberately wide of the 0.9-1.3 h realised
@@ -748,8 +748,8 @@ knitr::kable(attainment, digits = 1,
 
 | treatment           | Median AUC | 25th pct | 75th pct | IQR width | In target (%) |
 |:--------------------|-----------:|---------:|---------:|----------:|--------------:|
-| Licensed dose       |       72.8 |     41.1 |    126.0 |      84.9 |          27.0 |
-| Model-informed dose |       55.4 |     33.3 |    104.5 |      71.2 |          31.5 |
+| Licensed dose       |       70.4 |     45.1 |    107.1 |      61.9 |          30.5 |
+| Model-informed dose |       53.9 |     38.7 |     95.0 |      56.3 |          39.0 |
 
 With-variability cohort. Reported for comparison with Figure 6; the
 gated claims are in the deterministic table above. {.table}
@@ -832,16 +832,16 @@ nca_res$result |>
 
 | Regimen             | Parameter | Median | 5th pct | 95th pct |
 |:--------------------|:----------|-------:|--------:|---------:|
-| Licensed dose       | AUClast   |  72.75 |   21.67 |   224.40 |
-| Licensed dose       | Cavg      |   6.06 |    1.81 |    18.70 |
-| Licensed dose       | Cmax      |  13.81 |    4.69 |    33.11 |
-| Licensed dose       | Cmin      |   3.95 |    0.79 |    15.94 |
-| Licensed dose       | Tmax      |   1.05 |    0.60 |     2.10 |
-| Model-informed dose | AUClast   |  55.42 |   16.82 |   181.43 |
-| Model-informed dose | Cavg      |   4.62 |    1.40 |    15.12 |
-| Model-informed dose | Cmax      |  11.59 |    3.97 |    29.04 |
-| Model-informed dose | Cmin      |   3.10 |    0.61 |    12.17 |
-| Model-informed dose | Tmax      |   1.05 |    0.60 |     2.10 |
+| Licensed dose       | AUClast   |  70.38 |   19.07 |   197.36 |
+| Licensed dose       | Cavg      |   5.87 |    1.59 |    16.45 |
+| Licensed dose       | Cmax      |  14.43 |    5.03 |    38.84 |
+| Licensed dose       | Cmin      |   3.80 |    0.64 |    12.88 |
+| Licensed dose       | Tmax      |   0.95 |    0.55 |     2.25 |
+| Model-informed dose | AUClast   |  53.87 |   16.34 |   161.11 |
+| Model-informed dose | Cavg      |   4.49 |    1.36 |    13.43 |
+| Model-informed dose | Cmax      |  11.85 |    4.21 |    30.56 |
+| Model-informed dose | Cmin      |   3.07 |    0.61 |    10.74 |
+| Model-informed dose | Tmax      |   0.95 |    0.55 |     2.25 |
 
 Steady-state NCA over the 12 h dosing interval, by regimen. {.table}
 

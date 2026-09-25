@@ -287,10 +287,10 @@ sim |>
 
 | treatment             | DOSE_HIGH | ka_min | ka_max |
 |:----------------------|----------:|-------:|-------:|
-| DM-1 1000 mg q.d.     |         1 |  0.307 |  1.161 |
-| DM-1 400 mg q.d.      |         0 |  0.402 |  1.554 |
-| Healthy 1000 mg q.d.  |         1 |  0.338 |  0.992 |
-| Healthy 400 mg b.i.d. |         0 |  0.425 |  1.469 |
+| DM-1 1000 mg q.d.     |         1 |  0.340 |  1.036 |
+| DM-1 400 mg q.d.      |         0 |  0.351 |  1.892 |
+| Healthy 1000 mg q.d.  |         1 |  0.355 |  1.091 |
+| Healthy 400 mg b.i.d. |         0 |  0.437 |  1.426 |
 
 Absorption rate constant by dose group. {.table}
 
@@ -511,10 +511,10 @@ mass_balance |>
 
 | treatment             | min_ratio | median_ratio | q95_abs_dev |
 |:----------------------|----------:|-------------:|------------:|
-| DM-1 1000 mg q.d.     |    0.9753 |       0.9999 |      0.0027 |
-| DM-1 400 mg q.d.      |    0.9927 |       0.9998 |      0.0010 |
-| Healthy 1000 mg q.d.  |    0.9886 |       0.9998 |      0.0010 |
-| Healthy 400 mg b.i.d. |    0.9920 |       0.9997 |      0.0021 |
+| DM-1 1000 mg q.d.     |    0.9974 |       0.9999 |      0.0012 |
+| DM-1 400 mg q.d.      |    0.9915 |       0.9997 |      0.0012 |
+| Healthy 1000 mg q.d.  |    0.9949 |       0.9998 |      0.0016 |
+| Healthy 400 mg b.i.d. |    0.9904 |       0.9997 |      0.0016 |
 
 Cohort steady-state mass balance by arm. {.table}
 
@@ -605,10 +605,10 @@ knitr::kable(rho, digits = 3, caption = "Spearman correlation of AUC with body w
 
 | treatment             |    rho |
 |:----------------------|-------:|
-| DM-1 1000 mg q.d.     | -0.276 |
-| DM-1 400 mg q.d.      | -0.407 |
-| Healthy 1000 mg q.d.  | -0.258 |
-| Healthy 400 mg b.i.d. | -0.367 |
+| DM-1 1000 mg q.d.     | -0.605 |
+| DM-1 400 mg q.d.      | -0.457 |
+| Healthy 1000 mg q.d.  | -0.368 |
+| Healthy 400 mg b.i.d. | -0.210 |
 
 Spearman correlation of AUC with body weight. {.table}
 
@@ -690,18 +690,18 @@ knitr::kable(
 
 | NCA parameter      | treatment             | Reference | Simulated | % diff   |
 |:-------------------|:----------------------|:----------|:----------|:---------|
-| Cmax (ng/mL)       | Healthy 400 mg b.i.d. | 505       | 453       | -10.3%   |
-| Cmax (ng/mL)       | Healthy 1000 mg q.d.  | 702       | 797       | +13.5%   |
-| Cmax (ng/mL)       | DM-1 400 mg q.d.      | 514       | 475       | -7.6%    |
-| Cmax (ng/mL)       | DM-1 1000 mg q.d.     | 1170      | 937       | -20.0%   |
+| Cmax (ng/mL)       | Healthy 400 mg b.i.d. | 505       | 395       | -21.8%\* |
+| Cmax (ng/mL)       | Healthy 1000 mg q.d.  | 702       | 697       | -0.7%    |
+| Cmax (ng/mL)       | DM-1 400 mg q.d.      | 514       | 426       | -17.0%   |
+| Cmax (ng/mL)       | DM-1 1000 mg q.d.     | 1170      | 945       | -19.3%   |
 | Tmax (h)           | Healthy 400 mg b.i.d. | 0.7       | 0.625     | -10.7%   |
 | Tmax (h)           | Healthy 1000 mg q.d.  | 0.7       | 0.7       | +0.0%    |
-| Tmax (h)           | DM-1 400 mg q.d.      | 0.75      | 0.7       | -6.7%    |
+| Tmax (h)           | DM-1 400 mg q.d.      | 0.75      | 0.65      | -13.3%   |
 | Tmax (h)           | DM-1 1000 mg q.d.     | 0.7       | 0.7       | +0.0%    |
-| AUClast (ng\*h/mL) | Healthy 400 mg b.i.d. | 950       | 1150      | +21.3%\* |
-| AUClast (ng\*h/mL) | Healthy 1000 mg q.d.  | 1750      | 2360      | +35.0%\* |
-| AUClast (ng\*h/mL) | DM-1 400 mg q.d.      | 1220      | 1230      | +1.3%    |
-| AUClast (ng\*h/mL) | DM-1 1000 mg q.d.     | 3150      | 2710      | -14.0%   |
+| AUClast (ng\*h/mL) | Healthy 400 mg b.i.d. | 950       | 1080      | +13.4%   |
+| AUClast (ng\*h/mL) | Healthy 1000 mg q.d.  | 1750      | 2170      | +23.9%\* |
+| AUClast (ng\*h/mL) | DM-1 400 mg q.d.      | 1220      | 1190      | -2.7%    |
+| AUClast (ng\*h/mL) | DM-1 1000 mg q.d.     | 3150      | 2880      | -8.3%    |
 
 Simulated vs. published NCA (Di Deo 2025 Table 3). \* differs from
 reference by \>20%. {.table}
@@ -759,8 +759,8 @@ knitr::kable(ref_tab, caption = "Section 2.7 reference adult exposure, median (5
 
 | Parameter | Simulated | Published | % diff (median) |
 |:---|:---|:---|:---|
-| AUC(0-24) (ng\*h/mL) | 2393.2 (1220.3-4306.8) | 2560.8 (1282.5-5286.7) | -6.5% |
-| Cmax (ng/mL) | 736.6 (431.3-1457.5) | 929.6 (446.4-1834.4) | -20.8% |
+| AUC(0-24) (ng\*h/mL) | 2422.4 (1289.4-4862.5) | 2560.8 (1282.5-5286.7) | -5.4% |
+| Cmax (ng/mL) | 771.1 (425.2-1399.5) | 929.6 (446.4-1834.4) | -17.0% |
 
 Section 2.7 reference adult exposure, median (5th-95th percentile).
 {.table}

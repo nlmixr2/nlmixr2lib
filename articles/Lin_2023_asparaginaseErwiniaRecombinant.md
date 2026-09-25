@@ -627,7 +627,7 @@ nsaa <- sim_cohort |>
   dplyr::summarise(nsaa = min(Cc), .groups = "drop")
 
 sprintf("median NSAA over the last interval = %.2f IU/mL", stats::median(nsaa$nsaa))
-#> [1] "median NSAA over the last interval = 0.46 IU/mL"
+#> [1] "median NSAA over the last interval = 0.43 IU/mL"
 sprintf("proportion with NSAA >= 0.1 IU/mL = %.1f%% (Lin 2023 reports 93.8%% on the NHANES population)",
         100 * mean(nsaa$nsaa >= 0.1))
 #> [1] "proportion with NSAA >= 0.1 IU/mL = 100.0% (Lin 2023 reports 93.8% on the NHANES population)"

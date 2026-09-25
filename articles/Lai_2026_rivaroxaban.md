@@ -387,8 +387,8 @@ knitr::kable(
 
 | Window | Observed median (ng/mL) | Observed IQR (ng/mL) | Simulated median (ng/mL) | Simulated IQR (ng/mL) | Ratio sim / obs |
 |:---|---:|:---|---:|:---|---:|
-| Peak | 232.8 | 162.7 - 343.2 | 225.04 | 161.3 - 314.9 | 0.97 |
-| Trough | 27.1 | 15.6 - 50.5 | 26.15 | 3.6 - 73.4 | 0.97 |
+| Peak | 232.8 | 162.7 - 343.2 | 227.00 | 165.4 - 318.8 | 0.98 |
+| Trough | 27.1 | 15.6 - 50.5 | 23.45 | 3.7 - 73.8 | 0.87 |
 
 Simulated steady-state concentrations at the paper’s two nominal
 sampling times versus the pooled observed values in Table 1 of Lai 2026.
@@ -624,7 +624,7 @@ message(sprintf(
   "Flip-flop subjects (kel > ka): %d of %d (%.1f%%)",
   n_flipflop, nrow(sd_chk), 100 * n_flipflop / nrow(sd_chk)
 ))
-#> Flip-flop subjects (kel > ka): 8 of 400 (2.0%)
+#> Flip-flop subjects (kel > ka): 7 of 400 (1.8%)
 # ka is fixed, so no subject may have kel exactly equal to ka (the closed forms
 # above are singular there).
 stopifnot(all(abs(sd_chk$ka - sd_chk$kel) > 1e-8))
@@ -653,7 +653,7 @@ knitr::kable(
 
 | AUC0-Inf: median abs % diff | AUC0-Inf: max abs % diff | Half-life: median abs % diff | Half-life: 90th pctile abs % diff | Half-life: max abs % diff (ka/kel separated \>= 2x) | Tmax: max abs diff (h) |
 |---:|---:|---:|---:|---:|---:|
-| 0.0557 | 0.8087 | 0.4098 | 1.033 | 1.209 | 0.1262 |
+| 0.0552 | 0.7466 | 0.3741 | 0.9349 | 1.2208 | 0.1285 |
 
 Closed-form NCA gates. Both sides use the same drawn individual
 parameters, so the residual is pure numerical error. {.table}
@@ -757,7 +757,7 @@ knitr::kable(
 
 | AUC0-tau,ss: median abs % diff | AUC0-tau,ss: 90th pctile | AUC0-tau,ss: max abs % diff |
 |---:|---:|---:|
-| 0.046 | 0.159 | 0.632 |
+| 0.048 | 0.198 | 0.957 |
 
 Steady-state AUC0-tau against the paper’s own Dose / (CL/F) definition.
 {.table}
@@ -809,16 +809,16 @@ knitr::kable(
 )
 ```
 
-| NCA parameter      | treatment | Reference | Simulated | % diff   |
-|:-------------------|:----------|:----------|:----------|:---------|
-| Cmax (ng/mL)       | 10 mg QD  | —         | 188       | —        |
-| Cmax (ng/mL)       | 15 mg QD  | —         | 290       | —        |
-| Cmin (ng/mL)       | 10 mg QD  | —         | 22.8      | —        |
-| Cmin (ng/mL)       | 15 mg QD  | —         | 32.7      | —        |
-| Tmax (h)           | 10 mg QD  | —         | 2.75      | —        |
-| Tmax (h)           | 15 mg QD  | —         | 2.75      | —        |
-| AUClast (ng\*h/mL) | 10 mg QD  | 2980      | 2080      | -30.2%\* |
-| AUClast (ng\*h/mL) | 15 mg QD  | 3610      | 3020      | -16.2%   |
+| NCA parameter      | treatment | Reference | Simulated | % diff |
+|:-------------------|:----------|:----------|:----------|:-------|
+| Cmax (ng/mL)       | 10 mg QD  | —         | 195       | —      |
+| Cmax (ng/mL)       | 15 mg QD  | —         | 282       | —      |
+| Cmin (ng/mL)       | 10 mg QD  | —         | 25.8      | —      |
+| Cmin (ng/mL)       | 15 mg QD  | —         | 21.5      | —      |
+| Tmax (h)           | 10 mg QD  | —         | 2.75      | —      |
+| Tmax (h)           | 15 mg QD  | —         | 2.75      | —      |
+| AUClast (ng\*h/mL) | 10 mg QD  | 2980      | 2170      | -27.2% |
+| AUClast (ng\*h/mL) | 15 mg QD  | 3610      | 2660      | -26.3% |
 
 Simulated steady-state NCA versus the mean model-estimated AUC per dose
 group in Table of Results 3.5 of Lai 2026 (10 mg: 2976.5 +/- 1920.3; 15
@@ -866,8 +866,8 @@ knitr::kable(
 
 | Regimen | Simulated mean AUC0-tau (ng\*h/mL) | Simulated median AUC0-tau (ng\*h/mL) | Published mean AUC (ng\*h/mL) | Mean vs published (%) |
 |:---|---:|---:|---:|---:|
-| 10 mg QD | 2598.7 | 2077.0 | 2976.5 | -12.7 |
-| 15 mg QD | 3643.8 | 3020.8 | 3606.3 | 1.0 |
+| 10 mg QD | 2675.2 | 2167.2 | 2976.5 | -10.1 |
+| 15 mg QD | 3480.5 | 2658.8 | 3606.3 | -3.5 |
 
 Mean-to-mean comparison of steady-state AUC against the cohort means
 reported in Results 3.5 of Lai 2026. {.table}
@@ -907,10 +907,33 @@ stopifnot(
   median(auc15) < 5434
 )
 
-# Dose proportionality: this model is linear, so with covariates drawn from the
-# same distribution in both arms the AUC ratio must be 1.5 up to sampling noise.
-auc10 <- ss_chk |> filter(treatment == "10 mg QD") |> pull(auclast)
-stopifnot(abs(median(auc15) / median(auc10) - 1.5) < 0.15)
+# Dose proportionality: this model is linear, so the same subject at 15 mg must
+# have exactly 1.5x the steady-state AUC at 10 mg. The two arms above are
+# independent cohorts, so a ratio of their medians carries roughly 10% of
+# sampling noise and cannot be held tightly. Instead the 10 mg cohort is solved
+# at both doses with the same subjects and the same eta draw -- rxSetSeed()
+# immediately before each solve gives common random numbers -- and the
+# per-subject ratio is held to solver tolerance.
+solve_paired <- function(dose_mg) {
+  ev <- ss_events |>
+    filter(treatment == "10 mg QD") |>
+    mutate(amt = ifelse(evid == 1L, dose_mg, amt))
+  rxode2::rxSetSeed(20260901)
+  rxode2::rxSolve(mod, events = ev, keep = c("treatment")) |> as.data.frame()
+}
+paired <- list(lo = solve_paired(10), hi = solve_paired(15))
+# Common random numbers actually held: identical individual clearances.
+stopifnot(isTRUE(all.equal(distinct(paired$lo, id, cl)$cl, distinct(paired$hi, id, cl)$cl)))
+auc_tau <- function(d) {
+  d |>
+    filter(!is.na(Cc)) |>
+    group_by(id) |>
+    arrange(time, .by_group = TRUE) |>
+    summarise(auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2), .groups = "drop")
+}
+prop_chk <- inner_join(auc_tau(paired$lo), auc_tau(paired$hi), by = "id", suffix = c("_10", "_15")) |>
+  mutate(ratio = auc_15 / auc_10)
+stopifnot(nrow(prop_chk) == n_per_arm, max(abs(prop_chk$ratio / 1.5 - 1)) < 1e-4)
 ```
 
 ## Assumptions and deviations

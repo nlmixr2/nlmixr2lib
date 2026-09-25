@@ -461,9 +461,9 @@ knitr::kable(med_summary, digits = 3,
 
 | Endpoint | Median abs % difference | 90th pctile abs % difference |
 |:---------|------------------------:|-----------------------------:|
-| ACR20    |                   0.619 |                        1.110 |
-| ACR50    |                   2.294 |                        2.528 |
-| DAS28    |                   1.516 |                        1.516 |
+| ACR20    |                   0.157 |                        0.558 |
+| ACR50    |                   1.427 |                        6.801 |
+| DAS28    |                   0.611 |                        0.611 |
 
 Cohort median vs typical value across the 52-week grid. {.table}
 

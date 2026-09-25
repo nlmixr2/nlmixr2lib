@@ -542,12 +542,20 @@ Simulated (n = 100 per arm, n = 200 combined) vs Barras 2009 Table 3
 PD-subset (n = 103) exposure metrics. \* indicates median differs from
 paper by \> 20%. {.table}
 
-The Table 3 exposure metrics aggregate a heterogeneous mix of dose
-levels (conventional and individualised, with mean treatment duration
-3.5 +/- 2.3 days, range 1 to many days). The virtual-cohort simulation
-here uses a fixed 96-h treatment course at a single mg/kg-style dose per
-arm, so moderate (~20-30%) discrepancies in cAUC are expected and
-reflect the treatment-duration mix, not a model defect.
+Cmax and AUC0-24 reproduce Table 3 to within about 15%, which is the
+level of agreement a virtual cohort matched only on marginal
+demographics can be expected to reach.
+
+The two starred rows have structural explanations, not model defects.
+**cAUC** is roughly 2.7-fold above the published median because the two
+quantities are not the same integral: Table 3’s cAUC runs from first
+dose to the bleeding/bruising *event*, over a mean therapy duration of
+3.5 +/- 2.3 days, whereas the simulation integrates a fixed 96-h course
+for every subject with no event-time truncation. **Cmin** is about half
+the published median because the paper’s Cmin is a pre-dose trough drawn
+on the trial’s real mixed schedule, which includes renal-function-based
+48-h dose reductions, while this cohort holds a uniform 12-h interval
+(see *Dose-regimen simplification* below).
 
 ## Assumptions and deviations
 

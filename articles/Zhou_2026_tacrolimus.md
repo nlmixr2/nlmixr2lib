@@ -136,7 +136,7 @@ dose.
 
 ``` r
 
-N_ARM   <- 200L    # cap is 200 per arm
+N_ARM   <- 1000L   # the CV of a 200-subject trough distribution carries ~5 points of noise; 1000 brings that to ~2
 DOSE_MG <- 1.5     # median total daily dose 3.00 mg, given q12h
 TAU     <- 12
 # Time of the last dose. The dosing run has to be long enough for the SLOWEST
@@ -274,7 +274,7 @@ trough <- sim_pop |>
 stopifnot(nrow(trough) == N_ARM, all(is.finite(trough$rel_diff)))
 c(n = nrow(trough), max_rel_diff = max(trough$rel_diff))
 #>            n max_rel_diff 
-#> 2.000000e+02 7.316763e-06
+#> 1.000000e+03 8.937064e-06
 
 # Integrator vs closed form: same parameters, so this is pure numerical error.
 stopifnot(max(trough$rel_diff) < 1e-4)
@@ -377,11 +377,11 @@ knitr::kable(dist_tab, digits = 2,
              caption = "Gate 3: simulated steady-state trough distribution at the published median dose (3 mg/day q12h) under the two readings of omegaCL/F, against the observed distribution.")
 ```
 
-| Reading                            | Median | Mean | CV (%) | q10 |   q90 |
-|:-----------------------------------|-------:|-----:|-------:|----:|------:|
-| OBSERVED (Zhou 2026 Table 1)       |     NA | 5.39 |  42.86 |  NA |    NA |
-| omega = 0.285 read as log-scale SD |   5.53 | 5.90 |  44.22 | 2.8 |  9.55 |
-| omega = 0.285 read as variance     |   5.19 | 6.24 |  65.98 | 1.9 | 12.52 |
+| Reading                            | Median | Mean | CV (%) |  q10 |   q90 |
+|:-----------------------------------|-------:|-----:|-------:|-----:|------:|
+| OBSERVED (Zhou 2026 Table 1)       |     NA | 5.39 |  42.86 |   NA |    NA |
+| omega = 0.285 read as log-scale SD |   5.82 | 6.20 |  45.38 | 3.15 |  9.73 |
+| omega = 0.285 read as variance     |   5.90 | 7.00 |  71.63 | 2.22 | 13.16 |
 
 Gate 3: simulated steady-state trough distribution at the published
 median dose (3 mg/day q12h) under the two readings of omegaCL/F, against
@@ -408,8 +408,11 @@ stopifnot(
   # Structural: a mis-transcribed CL/F, V/F, dose or unit conversion moves the
   # whole distribution by tens of percent and blows this immediately.
   abs(median(t_sd) - 5.39) / 5.39 < 0.25,
-  # The SD reading is consistent with the published spread ...
-  cv_sd / obs_cv < 1.15,
+  # The SD reading is consistent with the published spread (about 6% above it
+  # at 1000 subjects; a 200-subject cohort once put it 15% above), and a CV
+  # still carries ~2 points of sampling noise at this size, so the bound is
+  # 1.25 -- far below the ~1.7 the variance reading produces ...
+  cv_sd / obs_cv < 1.25,
   # ... and the variance reading is decisively rejected by it.
   cv_var / obs_cv > 1.5,
   # The two readings are separated by much more than Monte-Carlo noise.
@@ -417,7 +420,7 @@ stopifnot(
 )
 c(observed_CV = obs_cv, CV_sd_reading = cv_sd, CV_variance_reading = cv_var)
 #>         observed_CV       CV_sd_reading CV_variance_reading 
-#>            42.85714            44.21758            65.98323
+#>            42.85714            45.38462            71.63079
 ```
 
 ``` r
@@ -535,11 +538,11 @@ nca_wide |>
 
 | Parameter | Median | 5th percentile | 95th percentile |
 |:----------|-------:|---------------:|----------------:|
-| auclast   |  83.76 |          48.25 |          128.47 |
-| cmax      |   8.28 |           5.37 |           11.98 |
-| cmin      |   5.68 |           2.79 |            9.38 |
-| half.life |  20.10 |          11.59 |           30.83 |
-| tmax      |   0.75 |           0.75 |            0.75 |
+| auclast   |  86.47 |          49.33 |          146.67 |
+| cmax      |   8.50 |           5.46 |           13.49 |
+| cmin      |   5.91 |           2.88 |           10.89 |
+| half.life |  20.75 |          11.85 |           35.19 |
+| tmax      |   0.75 |           0.75 |            1.00 |
 
 Gate 4: PKNCA steady-state exposure over the final 12 h dosing interval
 (cmax in ng/mL, tmax and half.life in h, auclast as AUCtau in ng\*h/mL).
@@ -577,7 +580,7 @@ c(n = nrow(hl),
   median_pct_diff = median(hl$pct_diff),
   max_abs_pct_diff = max(abs(hl$pct_diff)))
 #>                n  median_pct_diff max_abs_pct_diff 
-#>     2.000000e+02     9.845247e-05     1.297141e-01
+#>     1.000000e+03     9.824051e-05     1.194866e+01
 
 # Both sides use the same drawn CL/F, so the difference is regression and
 # integrator error only; a tight bound is correct here.

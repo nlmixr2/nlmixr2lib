@@ -293,7 +293,7 @@ auc_trap <- ss_win |>
 
 cat(sprintf("Max |%% difference| from 2*Dose/CL across %d subjects: %.4f%%\n",
             nrow(auc_trap), max(abs(auc_trap$pct_diff))))
-#> Max |% difference| from 2*Dose/CL across 200 subjects: 0.0000%
+#> Max |% difference| from 2*Dose/CL across 200 subjects: 0.0008%
 stopifnot(nrow(auc_trap) == n_cohort, max(abs(auc_trap$pct_diff)) < 0.05)
 ```
 

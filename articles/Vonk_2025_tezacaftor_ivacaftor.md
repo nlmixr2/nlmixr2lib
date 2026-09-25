@@ -754,21 +754,21 @@ knitr::kable(
 
 | Analyte       | Dose group    | Simulated AUC CV% | Published AUC CV% |
 |:--------------|:--------------|------------------:|------------------:|
-| Ivacaftor     | 12-17y        |              45.7 |              25.5 |
-| Ivacaftor     | 6-11y \<30kg  |              45.3 |              31.2 |
-| Ivacaftor     | 6-11y \>=30kg |              37.8 |              41.7 |
-| Ivacaftor-M1  | 12-17y        |              45.3 |              16.4 |
-| Ivacaftor-M1  | 6-11y \<30kg  |              47.9 |              62.6 |
-| Ivacaftor-M1  | 6-11y \>=30kg |              45.9 |              49.1 |
-| Ivacaftor-M6  | 12-17y        |              86.1 |              60.4 |
-| Ivacaftor-M6  | 6-11y \<30kg  |              59.8 |              46.0 |
-| Ivacaftor-M6  | 6-11y \>=30kg |              76.4 |              88.0 |
-| Tezacaftor    | 12-17y        |              25.8 |              17.2 |
-| Tezacaftor    | 6-11y \<30kg  |              22.1 |              24.2 |
-| Tezacaftor    | 6-11y \>=30kg |              29.2 |              27.8 |
-| Tezacaftor-M1 | 12-17y        |              23.7 |              17.6 |
-| Tezacaftor-M1 | 6-11y \<30kg  |              23.1 |              28.4 |
-| Tezacaftor-M1 | 6-11y \>=30kg |              24.2 |              24.6 |
+| Ivacaftor     | 12-17y        |              33.0 |              25.5 |
+| Ivacaftor     | 6-11y \<30kg  |              34.8 |              31.2 |
+| Ivacaftor     | 6-11y \>=30kg |              37.3 |              41.7 |
+| Ivacaftor-M1  | 12-17y        |              44.6 |              16.4 |
+| Ivacaftor-M1  | 6-11y \<30kg  |              45.6 |              62.6 |
+| Ivacaftor-M1  | 6-11y \>=30kg |              51.2 |              49.1 |
+| Ivacaftor-M6  | 12-17y        |              70.2 |              60.4 |
+| Ivacaftor-M6  | 6-11y \<30kg  |              92.8 |              46.0 |
+| Ivacaftor-M6  | 6-11y \>=30kg |              87.8 |              88.0 |
+| Tezacaftor    | 12-17y        |              24.4 |              17.2 |
+| Tezacaftor    | 6-11y \<30kg  |              24.8 |              24.2 |
+| Tezacaftor    | 6-11y \>=30kg |              25.5 |              27.8 |
+| Tezacaftor-M1 | 12-17y        |              25.4 |              17.6 |
+| Tezacaftor-M1 | 6-11y \<30kg  |              23.8 |              28.4 |
+| Tezacaftor-M1 | 6-11y \>=30kg |              24.5 |              24.6 |
 
 Between-subject CV% of steady-state AUC: simulated from the encoded IIV
 vs the SD/mean of Vonk 2025 Table 3. {.table}

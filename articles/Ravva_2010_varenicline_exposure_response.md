@@ -920,7 +920,7 @@ chk <- auc_nca |>
 
 summary(chk$pct_diff)
 #>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -1.056e+01 -5.306e-01 -1.108e-01 -4.970e-01 -4.190e-02 -3.073e-04
+#> -1.287e+01 -7.214e-01 -1.617e-01 -7.291e-01 -5.673e-02 -4.158e-04
 ```
 
 ``` r
@@ -944,7 +944,7 @@ tibble::tibble(
 
 | Median difference (%) | 90th percentile \|difference\| (%) | Median NCA AUC(0-24)ss (ng\*h/mL) |
 |---:|---:|---:|
-| -0.11 | 1.37 | 176.4 |
+| -0.16 | 1.43 | 177.5 |
 
 Steady-state AUC from PKNCA trapezoidal integration of the companion PK
 model, versus the analytic dose / (CL/F) identity that Ravva 2010 uses

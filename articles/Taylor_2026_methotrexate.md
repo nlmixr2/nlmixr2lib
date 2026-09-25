@@ -387,7 +387,7 @@ sim_ref$closed_form <- conc_infusion(sim_ref$time, g_to_umol(ref_dose_g) / 4)
 max_rel_err <- max(abs(sim_ref$Cc - sim_ref$closed_form) /
                      pmax(sim_ref$closed_form, 1e-12))
 signif(max_rel_err, 3)
-#> [1] 3e-14
+#> [1] 1e-12
 
 stopifnot(max_rel_err < 1e-6)
 ```
@@ -546,7 +546,7 @@ c(n = nrow(auc_chk),
   max_abs_pct = max(abs(auc_chk$pct_diff)),
   median_pct  = median(auc_chk$pct_diff))
 #>            n  max_abs_pct   median_pct 
-#> 300.00000000   0.07882119  -0.02456908
+#> 300.00000000   0.07873796  -0.02448108
 
 stopifnot(
   nrow(auc_chk) == 2L * N_PER_ARM,   # a lookup that matched nothing must not pass

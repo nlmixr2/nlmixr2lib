@@ -713,18 +713,18 @@ cmp |>
 
 | Regimen | Simulated median (%) | Endpoint | Metric | Published median (%) | Difference (pp) |
 |:---|---:|:---|:---|---:|---:|
-| 25 mg Q3M | -87.5 | APOC3 | average | -87.9 | 0.4 |
-| 25 mg Q3M | -93.3 | APOC3 | nadir | -93.4 | 0.1 |
-| 25 mg Q3M | -79.7 | APOC3 | trough | -79.7 | 0.0 |
-| 25 mg Q3M | -71.9 | Triglycerides | average | -68.6 | -3.3 |
-| 25 mg Q3M | -79.6 | Triglycerides | nadir | -76.5 | -3.1 |
-| 25 mg Q3M | -63.4 | Triglycerides | trough | -59.3 | -4.1 |
+| 25 mg Q3M | -87.6 | APOC3 | average | -87.9 | 0.3 |
+| 25 mg Q3M | -93.4 | APOC3 | nadir | -93.4 | 0.0 |
+| 25 mg Q3M | -78.5 | APOC3 | trough | -79.7 | 1.2 |
+| 25 mg Q3M | -71.5 | Triglycerides | average | -68.6 | -2.9 |
+| 25 mg Q3M | -79.3 | Triglycerides | nadir | -76.5 | -2.8 |
+| 25 mg Q3M | -62.1 | Triglycerides | trough | -59.3 | -2.8 |
 | 50 mg Q3M | -93.3 | APOC3 | average | -93.6 | 0.3 |
-| 50 mg Q3M | -96.5 | APOC3 | nadir | -96.7 | 0.2 |
-| 50 mg Q3M | -88.7 | APOC3 | trough | -88.9 | 0.2 |
-| 50 mg Q3M | -78.4 | Triglycerides | average | -75.9 | -2.5 |
-| 50 mg Q3M | -83.8 | Triglycerides | nadir | -81.1 | -2.7 |
-| 50 mg Q3M | -71.5 | Triglycerides | trough | -68.8 | -2.7 |
+| 50 mg Q3M | -96.6 | APOC3 | nadir | -96.7 | 0.1 |
+| 50 mg Q3M | -88.0 | APOC3 | trough | -88.9 | 0.9 |
+| 50 mg Q3M | -78.1 | Triglycerides | average | -75.9 | -2.2 |
+| 50 mg Q3M | -83.3 | Triglycerides | nadir | -81.1 | -2.2 |
+| 50 mg Q3M | -72.8 | Triglycerides | trough | -68.8 | -4.0 |
 
 Cohort median steady-state percentage change from baseline vs Ousey 2026
 Table 3. {.table}
@@ -825,8 +825,8 @@ below |>
 
 | Regimen   | Simulated (%) | Published (%) |
 |:----------|--------------:|--------------:|
-| 25 mg Q3M |          53.5 |            47 |
-| 50 mg Q3M |          63.5 |            53 |
+| 25 mg Q3M |          47.5 |            47 |
+| 50 mg Q3M |          59.0 |            53 |
 
 Patients with time-averaged steady-state triglycerides below 500 mg/dL.
 {.table}

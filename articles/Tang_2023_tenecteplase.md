@@ -724,10 +724,10 @@ ext |>
 
 | Dose      | Observed mean (ng/mL) | Model mean (ng/mL) | Model / observed |
 |:----------|----------------------:|-------------------:|-----------------:|
-| 0.1 mg/kg |                   389 |                469 |             1.21 |
-| 0.2 mg/kg |                   641 |               1231 |             1.92 |
-| 0.4 mg/kg |                  1227 |               1923 |             1.57 |
-| 0.5 mg/kg |                  1647 |               2621 |             1.59 |
+| 0.1 mg/kg |                   389 |                480 |             1.23 |
+| 0.2 mg/kg |                   641 |               1025 |             1.60 |
+| 0.4 mg/kg |                  1227 |               1800 |             1.47 |
+| 0.5 mg/kg |                  1647 |               2283 |             1.39 |
 
 External validation against study N1811s at 1 hour post dose. Tang 2023
 reports a mean overprediction factor of about 1.39. {.table}

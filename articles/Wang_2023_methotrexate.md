@@ -332,8 +332,6 @@ sim <- bind_rows(lapply(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
 #> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -419,16 +417,16 @@ cpss |>
 
 | model                             | treatment | Median Cp,ss |  P10 |   P90 |
 |:----------------------------------|:----------|-------------:|-----:|------:|
-| Aumente_2006_methotrexate         | 3 g/m^2   |         45.1 | 28.7 |  68.9 |
-| Aumente_2006_methotrexate         | 5 g/m^2   |         83.1 | 49.9 | 138.7 |
-| Gao_2021_methotrexate             | 3 g/m^2   |         27.2 | 20.2 |  34.4 |
-| Gao_2021_methotrexate             | 5 g/m^2   |         44.2 | 34.1 |  58.8 |
-| Hui_2019_methotrexate             | 3 g/m^2   |         24.1 | 20.2 |  31.9 |
-| Hui_2019_methotrexate             | 5 g/m^2   |         43.2 | 29.7 |  53.6 |
-| Jonsson_2011_methotrexate         | 3 g/m^2   |         48.1 | 18.6 |  88.0 |
-| Jonsson_2011_methotrexate         | 5 g/m^2   |         81.4 | 28.1 | 188.5 |
-| MedellinGaribay_2020_methotrexate | 3 g/m^2   |         34.6 | 30.9 |  41.7 |
-| MedellinGaribay_2020_methotrexate | 5 g/m^2   |         58.6 | 51.4 |  69.7 |
+| Aumente_2006_methotrexate         | 3 g/m^2   |         52.9 | 30.4 |  80.8 |
+| Aumente_2006_methotrexate         | 5 g/m^2   |         76.1 | 48.0 | 150.6 |
+| Gao_2021_methotrexate             | 3 g/m^2   |         26.7 | 21.1 |  35.2 |
+| Gao_2021_methotrexate             | 5 g/m^2   |         49.4 | 34.6 |  62.0 |
+| Hui_2019_methotrexate             | 3 g/m^2   |         23.1 | 16.6 |  31.7 |
+| Hui_2019_methotrexate             | 5 g/m^2   |         43.7 | 30.5 |  51.9 |
+| Jonsson_2011_methotrexate         | 3 g/m^2   |         53.2 | 15.6 | 107.0 |
+| Jonsson_2011_methotrexate         | 5 g/m^2   |         95.9 | 30.1 | 191.4 |
+| MedellinGaribay_2020_methotrexate | 3 g/m^2   |         35.1 | 30.4 |  40.7 |
+| MedellinGaribay_2020_methotrexate | 5 g/m^2   |         56.4 | 51.3 |  67.5 |
 
 Simulated Cp,ss (umol/L) at the end of the 24 h infusion. {.table}
 
@@ -491,8 +489,6 @@ typ_res <- do.call(rbind, lapply(names(typ), function(nm) {
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq'
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
 #> as a work-around try putting the mu-referenced expression on a simple line
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4
@@ -707,7 +703,7 @@ knitr::kable(nca_wide, digits = 2,
 | Gao_2021_methotrexate | 734.90 | 27.19 | 24.0 | 114.77 | 738.78 | 115.65 |
 | Hui_2019_methotrexate | 628.83 | 23.73 | 24.0 | 16.84 | 628.83 | 16.90 |
 | Jonsson_2011_methotrexate | 1449.26 | 51.02 | 24.0 | 45.68 | 1450.35 | 45.85 |
-| MedellinGaribay_2020_methotrexate | 928.46 | 56.47 | 0.5 | 5.87 | 928.46 | 5.88 |
+| MedellinGaribay_2020_methotrexate | 928.46 | 56.47 | 0.5 | 5.91 | 928.46 | 5.88 |
 
 PKNCA parameters on the typical-value solve at 3 g/m^2, with the
 analytic terminal half-life for comparison. {.table}
@@ -723,7 +719,7 @@ round(100 * rel_diff, 3)
 #>             Hui_2019_methotrexate         Jonsson_2011_methotrexate 
 #>                             0.376                             0.374 
 #> MedellinGaribay_2020_methotrexate 
-#>                             0.254
+#>                             0.477
 
 # Same parameters on both sides -- the difference is pure numerical error in
 # the log-linear terminal regression, so this is tight by construction.

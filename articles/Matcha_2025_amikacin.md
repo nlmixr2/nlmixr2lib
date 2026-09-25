@@ -614,13 +614,13 @@ ggplot(vpc, aes(time, Q50)) +
     title = "Figure 3 - visual predictive check",
     caption = "Replicates Figure 3 of Matcha 2025: median and 10th-90th prediction interval."
   )
-#> Warning: Removed 6 rows containing missing values or values outside the scale range
+#> Warning: Removed 7 rows containing missing values or values outside the scale range
 #> (`geom_ribbon()`).
 ```
 
 ![](Matcha_2025_amikacin_files/figure-html/figure-3-1.png)
 
-The simulated envelope covers 0.05-48 mg/L across 0-60 h after the dose,
+The simulated envelope covers 0.04-48 mg/L across 0-60 h after the dose,
 which sits inside the published VPC’s 0.1-100 mg/L axis range and
 matches its spread.
 
@@ -689,9 +689,9 @@ nca_res$result |>
 
 | Regimen | AUC0-inf (mg\*h/L) | AUClast (mg\*h/L) | CL (L/h) | Cmax (mg/L) | t1/2 (h) | Tmax (h) |
 |:---|---:|---:|---:|---:|---:|---:|
-| 2.25 kg, SCr 0.62, PNA 4 d: 16 mg/kg q36h | 386.351 | 386.304 | 0.093 | 27.752 | 17.944 | 0.5 |
-| 3.25 kg, SCr 0.62, PNA 11 d: 12 mg/kg q24h | 239.470 | 239.470 | 0.163 | 29.102 | 12.677 | 0.5 |
-| 4.25 kg, SCr 0.22, PNA 25 d: 11 mg/kg q9h | 109.163 | 109.163 | 0.428 | 33.329 | 9.105 | 0.5 |
+| 2.25 kg, SCr 0.62, PNA 4 d: 16 mg/kg q36h | 361.021 | 361.015 | 0.099 | 28.634 | 17.336 | 0.5 |
+| 3.25 kg, SCr 0.62, PNA 11 d: 12 mg/kg q24h | 235.491 | 235.487 | 0.165 | 29.612 | 12.168 | 0.5 |
+| 4.25 kg, SCr 0.22, PNA 25 d: 11 mg/kg q9h | 121.165 | 121.165 | 0.386 | 34.054 | 9.270 | 0.5 |
 
 Median single-dose NCA by regimen (virtual cohort). {.table}
 
@@ -752,7 +752,7 @@ identity_check <-
 stopifnot(nrow(identity_check) == nrow(subj_reg))
 summary(identity_check$pct_error)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -0.046985 -0.046985 -0.006438 -0.018371 -0.001691 -0.001691
+#> -0.046974 -0.046974 -0.006442 -0.018370 -0.001695 -0.001695
 stopifnot(max(abs(identity_check$pct_error)) < 1)
 ```
 
@@ -823,12 +823,12 @@ dplyr::bind_rows(attainment_summary, published) |>
 
 | Endpoint | Basis        | Above (%) | Below (%) | Within (%) |
 |:---------|:-------------|----------:|----------:|-----------:|
-| Peak     | First dose   |      32.4 |      29.8 |       37.8 |
+| Peak     | First dose   |      31.4 |      30.1 |       38.4 |
 | Peak     | Published    |      30.0 |      20.0 |       50.0 |
-| Peak     | Steady state |      43.2 |      13.9 |       42.8 |
-| Trough   | First dose   |       9.0 |      41.3 |       49.6 |
+| Peak     | Steady state |      44.3 |      14.3 |       41.4 |
+| Trough   | First dose   |      10.1 |      41.0 |       48.8 |
 | Trough   | Published    |      20.0 |      30.0 |       50.0 |
-| Trough   | Steady state |      27.8 |      28.0 |       44.1 |
+| Trough   | Steady state |      29.9 |      27.4 |       42.7 |
 
 Target attainment across all 100 nomogram cells (50 virtual neonates
 each), compared with the percentages reported by Matcha 2025. {.table}
@@ -856,10 +856,10 @@ attainment |>
 
 | Endpoint | Basis        | Median (mg/L) | 10th pctile (mg/L) | 90th pctile (mg/L) |
 |:---------|:-------------|--------------:|-------------------:|-------------------:|
-| Peak     | First dose   |         29.29 |              17.85 |              47.44 |
-| Peak     | Steady state |         33.05 |              22.72 |              50.48 |
-| Trough   | First dose   |          2.37 |               0.81 |               4.86 |
-| Trough   | Steady state |          3.27 |               1.07 |               8.08 |
+| Peak     | First dose   |         29.24 |              17.76 |              47.84 |
+| Peak     | Steady state |         33.35 |              22.46 |              50.78 |
+| Trough   | First dose   |          2.38 |               0.86 |               5.02 |
+| Trough   | Steady state |          3.27 |               1.12 |               8.40 |
 
 Simulated peak and trough distributions across the nomogram. {.table}
 
@@ -900,8 +900,8 @@ nlmixr2lib::ncaComparisonTable(
 
 | NCA parameter  | Reference | Simulated | % diff |
 |:---------------|:----------|:----------|:-------|
-| Cmax (mg/L)    | 30        | 33        | +10.2% |
-| Ctrough (mg/L) | 3         | 3.27      | +9.1%  |
+| Cmax (mg/L)    | 30        | 33.4      | +11.2% |
+| Ctrough (mg/L) | 3         | 3.27      | +8.8%  |
 
 Simulated steady-state median peak and trough across the nomogram
 vs. the design targets stated by Matcha 2025. \* differs from reference
@@ -910,7 +910,7 @@ by \>20%. {.table}
 ### How much target attainment is achievable at all
 
 Trough attainment on the first dose reproduces the paper almost exactly
-(49.6% inside 2-5 mg/L against the published ~50%). Peak attainment is
+(48.8% inside 2-5 mg/L against the published ~50%). Peak attainment is
 lower than the published ~50% on both bases. Before reading that as a
 discrepancy it is worth asking what attainment is achievable in
 principle, because target attainment is bounded above by the model’s own
@@ -962,13 +962,13 @@ ceilings
 #> # A tibble: 2 × 6
 #>   endpoint sdlog    lo    hi window_fold ceiling_pct
 #>   <chr>    <dbl> <dbl> <dbl>       <dbl>       <dbl>
-#> 1 Peak     0.308    24    35        1.46        45.9
-#> 2 Trough   0.768     2     5        2.5         44.9
+#> 1 Peak     0.308    24    35        1.46        46.0
+#> 2 Trough   0.764     2     5        2.5         45.1
 ```
 
 The peak’s measured within-cell spread (0.308 on the log scale) is
 indeed appreciably *smaller* than `omega_vc` = 0.395, confirming the
-damping. The trough, by contrast, is far *more* variable (0.768),
+damping. The trough, by contrast, is far *more* variable (0.764),
 because it accumulates the full effect of clearance variability across
 an entire dosing interval rather than being read moments after the dose.
 
@@ -1091,11 +1091,11 @@ stopifnot(all(ceilings$ceiling_pct > 40), all(ceilings$ceiling_pct < 50))
   range of covariates”. The paper used 100 virtual subjects per cell; 50
   are used here to keep the vignette inside its render-time budget.
 - **Peak-window attainment does not reproduce; trough attainment does.**
-  Simulated first-dose trough attainment is 49.6% against the published
-  ~50%, but simulated peak attainment (37.8% at the first dose, 42.8% at
+  Simulated first-dose trough attainment is 48.8% against the published
+  ~50%, but simulated peak attainment (38.4% at the first dose, 41.4% at
   steady state) is below the published ~50% on both bases. As shown
   above, the perfectly-centred upper bound implied by the model’s own
-  between-subject variability is 45.9% for the peak and 44.9% for the
+  between-subject variability is 46.0% for the peak and 45.1% for the
   trough, so a ~50% figure for both is at or just past what the
   published parameters permit. This is reported as a discrepancy in the
   source rather than corrected in the model, and no parameter was tuned.

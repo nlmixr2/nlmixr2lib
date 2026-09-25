@@ -496,9 +496,9 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  start end                 treatment   N     auclast        cmax
-#>      0 Inf 80 mg/m2, 90-min infusion 200 5460 [24.1] 2220 [27.9]
+#>      0 Inf 80 mg/m2, 90-min infusion 200 5450 [27.5] 2240 [33.3]
 #>               tmax   half.life  aucinf.obs
-#>  1.50 [1.50, 1.50] 13.5 [3.74] 5660 [25.0]
+#>  1.50 [1.50, 1.50] 13.2 [3.84] 5650 [28.6]
 #> 
 #> Caption: auclast, cmax, aucinf.obs: geometric mean and geometric coefficient of variation; tmax: median and range; half.life: arithmetic mean and standard deviation; N: number of subjects
 ```
@@ -535,7 +535,7 @@ knitr::kable(
 
 | NCA parameter | treatment                 | Reference | Simulated | % diff |
 |:--------------|:--------------------------|----------:|----------:|-------:|
-| Cmax (ng/mL)  | 80 mg/m2, 90-min infusion |      2360 |      2320 |  -1.9% |
+| Cmax (ng/mL)  | 80 mg/m2, 90-min infusion |      2360 |      2280 |  -3.4% |
 
 Simulated vs. published Cmax (Table 1 cohort mean). \* marks a
 difference of more than 20%. {.table style="width:100%;"}
@@ -651,8 +651,8 @@ knitr::kable(incidence, digits = c(0, 1, 2, 0, 0),
 
 | arm | Simulated here, CIPN8 \> 12 (%) | Median peak CIPN8 | Sun 2025 simulated (%) | C9840 observed (%) |
 |:---|---:|---:|---:|---:|
-| Enhanced (100 x 6 + 80 x 6) | 39 | 5.69 | 35 | 30 |
-| Standard (80 mg/m2 x 12) | 31 | 2.61 | 18 | 21 |
+| Enhanced (100 x 6 + 80 x 6) | 43.0 | 6.47 | 35 | 30 |
+| Standard (80 mg/m2 x 12) | 34.5 | 3.90 | 18 | 21 |
 
 Grade 3+ CIPN incidence. The ‘simulated here’ column draws a fresh
 cohort from the population model and is expected to exceed the paper’s

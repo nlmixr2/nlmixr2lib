@@ -601,7 +601,7 @@ stopifnot(
 stopifnot(diff(range(peaks$tmax)) <= 0.5)
 cat(sprintf("cohort Cmax CV up to %.1f%%; median MC-SE %.2f%%; tolerance %.2f%%\n",
             max(peaks$cv_pct), mc_se_pct, 3 * mc_se_pct))
-#> cohort Cmax CV up to 32.4%; median MC-SE 4.07%; tolerance 12.20%
+#> cohort Cmax CV up to 29.1%; median MC-SE 3.65%; tolerance 10.95%
 
 peaks |>
   dplyr::select(-n) |>
@@ -616,15 +616,15 @@ peaks |>
 
 | Dose (mg) | Median Cmax (ng/mL) | Median Tmax (h) | Cmax CV% | Cmax / dose (ng/mL per mg) |
 |---:|---:|---:|---:|---:|
-| 2 | 3.834 | 2.0 | 32.44 | 1.9170 |
-| 5 | 10.190 | 2.1 | 27.21 | 2.0380 |
-| 10 | 17.730 | 2.0 | 25.16 | 1.7730 |
-| 25 | 44.440 | 2.0 | 27.18 | 1.7770 |
-| 50 | 83.470 | 2.1 | 23.81 | 1.6690 |
-| 100 | 141.900 | 2.1 | 26.08 | 1.4190 |
-| 200 | 210.200 | 2.1 | 25.30 | 1.0510 |
-| 400 | 316.300 | 2.3 | 29.81 | 0.7907 |
-| 800 | 369.400 | 2.3 | 26.33 | 0.4618 |
+| 2 | 4.057 | 2.00 | 24.23 | 2.0290 |
+| 5 | 10.150 | 2.10 | 23.81 | 2.0290 |
+| 10 | 19.460 | 2.00 | 28.77 | 1.9460 |
+| 25 | 46.490 | 2.05 | 27.19 | 1.8590 |
+| 50 | 82.170 | 2.10 | 29.13 | 1.6430 |
+| 100 | 135.800 | 2.00 | 26.69 | 1.3580 |
+| 200 | 222.500 | 2.10 | 26.11 | 1.1130 |
+| 400 | 307.900 | 2.30 | 28.97 | 0.7697 |
+| 800 | 383.800 | 2.30 | 25.92 | 0.4798 |
 
 The n = 100 per-arm cohort reproduces the same dose-normalised Cmax
 pattern within Monte-Carlo error. {.table}
@@ -758,12 +758,12 @@ pm_am |>
 
 | Dose (mg) | Day | Median evening/morning AUC | Minimum ratio | % subjects evening \> morning |
 |---:|:---|---:|---:|---:|
-| 25 | Day 1 | 1.804 | 1.532 | 100 |
-| 25 | Day 14 | 1.136 | 1.021 | 100 |
-| 100 | Day 1 | 1.766 | 1.542 | 100 |
-| 100 | Day 14 | 1.160 | 1.043 | 100 |
-| 200 | Day 1 | 1.790 | 1.564 | 100 |
-| 200 | Day 14 | 1.150 | 1.034 | 100 |
+| 25 | Day 1 | 1.792 | 1.562 | 100 |
+| 25 | Day 14 | 1.145 | 1.037 | 100 |
+| 100 | Day 1 | 1.804 | 1.521 | 100 |
+| 100 | Day 14 | 1.143 | 1.036 | 100 |
+| 200 | Day 1 | 1.817 | 1.547 | 100 |
+| 200 | Day 14 | 1.131 | 1.049 | 100 |
 
 Replicates the Figure 2 claim: exposure after the evening dose exceeds
 exposure after the morning dose on day 1 and still does at steady state
@@ -865,15 +865,15 @@ chk |>
 
 | Dose (mg) | Model CL/F (L/h) | PKNCA cl.obs x Frel (L/h) | Max \|difference\| (%) |
 |----------:|-----------------:|--------------------------:|-----------------------:|
-|         2 |           37.386 |                    37.438 |                  0.396 |
-|         5 |           33.372 |                    33.375 |                  0.196 |
-|        10 |           37.105 |                    37.129 |                  0.196 |
-|        25 |           36.771 |                    36.778 |                  0.296 |
-|        50 |           35.474 |                    35.500 |                  0.239 |
-|       100 |           36.171 |                    36.178 |                  0.398 |
-|       200 |           38.636 |                    38.640 |                  0.232 |
-|       400 |           19.152 |                    19.171 |                  0.956 |
-|       800 |           19.938 |                    19.946 |                  0.266 |
+|         2 |           37.158 |                    37.172 |                  0.256 |
+|         5 |           37.775 |                    37.780 |                  0.228 |
+|        10 |           39.683 |                    39.691 |                  0.352 |
+|        25 |           33.584 |                    33.587 |                  0.586 |
+|        50 |           37.799 |                    37.807 |                  0.257 |
+|       100 |           35.306 |                    35.309 |                  0.505 |
+|       200 |           33.084 |                    33.122 |                  0.226 |
+|       400 |           21.020 |                    21.031 |                  0.504 |
+|       800 |           20.315 |                    20.330 |                  0.287 |
 
 PKNCA’s apparent clearance multiplied by the model’s Frel recovers the
 model’s CL/F at every dose level, confirming that the saturable and
@@ -903,15 +903,15 @@ nca_wide |>
 
 | Dose group | Cmax (ng/mL) | Tmax (h) | AUC0-inf (ng\*h/mL) | t1/2 (h) |
 |:-----------|-------------:|---------:|--------------------:|---------:|
-| 2 mg       |        3.834 |      2.0 |               52.95 |    19.18 |
-| 5 mg       |       10.190 |      2.1 |              146.50 |    16.14 |
-| 10 mg      |       17.730 |      2.0 |              257.70 |    15.14 |
-| 25 mg      |       44.440 |      2.0 |              610.70 |    15.66 |
-| 50 mg      |       83.470 |      2.1 |             1149.00 |    20.26 |
-| 100 mg     |      141.900 |      2.1 |             1903.00 |    18.73 |
-| 200 mg     |      210.200 |      2.1 |             2717.00 |    16.45 |
-| 400 mg     |      316.300 |      2.3 |             7425.00 |    26.71 |
-| 800 mg     |      369.400 |      2.3 |             8682.00 |    27.12 |
+| 2 mg       |        4.057 |     2.00 |               53.32 |    17.26 |
+| 5 mg       |       10.150 |     2.10 |              129.40 |    17.95 |
+| 10 mg      |       19.460 |     2.00 |              241.00 |    18.16 |
+| 25 mg      |       46.490 |     2.05 |              668.70 |    15.96 |
+| 50 mg      |       82.170 |     2.10 |             1079.00 |    17.11 |
+| 100 mg     |      135.800 |     2.00 |             1950.00 |    17.12 |
+| 200 mg     |      222.500 |     2.10 |             3170.00 |    18.04 |
+| 400 mg     |      307.900 |     2.30 |             6769.00 |    25.65 |
+| 800 mg     |      383.800 |     2.30 |             8518.00 |    27.24 |
 
 Median simulated single-dose NCA parameters by dose group. Kastrissios
 2006 publishes no NCA table, so there is no reference column; these are
@@ -951,7 +951,7 @@ stopifnot(abs(median(th$pct_diff)) < 1)
 cat(sprintf(paste("per-subject terminal half-life: median %.3f%%,",
                   "max |diff| %.3f%% over %d subjects\n"),
             median(th$pct_diff), max(abs(th$pct_diff)), nrow(th)))
-#> per-subject terminal half-life: median -0.479%, max |diff| 1.571% over 900 subjects
+#> per-subject terminal half-life: median -0.481%, max |diff| 1.767% over 900 subjects
 
 th |>
   dplyr::group_by(dose_mg) |>
@@ -968,15 +968,15 @@ th |>
 
 | Dose (mg) | Analytic t1/2 (h) | PKNCA t1/2 (h) | Max \|difference\| (%) |
 |----------:|------------------:|---------------:|-----------------------:|
-|         2 |            19.251 |         19.178 |                  0.960 |
-|         5 |            16.213 |         16.145 |                  0.984 |
-|        10 |            15.215 |         15.139 |                  1.407 |
-|        25 |            15.738 |         15.659 |                  0.849 |
-|        50 |            20.365 |         20.263 |                  0.939 |
-|       100 |            18.835 |         18.725 |                  1.037 |
-|       200 |            16.464 |         16.451 |                  1.200 |
-|       400 |            26.749 |         26.713 |                  1.571 |
-|       800 |            27.161 |         27.120 |                  0.933 |
+|         2 |            17.318 |         17.262 |                  1.049 |
+|         5 |            18.040 |         17.953 |                  1.000 |
+|        10 |            18.238 |         18.157 |                  0.808 |
+|        25 |            16.020 |         15.958 |                  1.122 |
+|        50 |            17.184 |         17.106 |                  0.858 |
+|       100 |            17.208 |         17.120 |                  1.069 |
+|       200 |            18.149 |         18.042 |                  0.893 |
+|       400 |            25.761 |         25.652 |                  1.767 |
+|       800 |            27.381 |         27.238 |                  0.978 |
 
 PKNCA recovers each subject’s analytic two-compartment terminal
 half-life. The 400 and 800 mg arms sit higher because DOSE_HIGH = 1
@@ -1112,7 +1112,7 @@ cat(sprintf(paste("AUC0-24 vs closed form over %d subjects: median %+.4f%%,",
                   "p90 %.3f%%, max %.3f%%\n"),
             nrow(auc67), median(auc67$pct_diff),
             quantile(abs(auc67$pct_diff), 0.90), max(abs(auc67$pct_diff))))
-#> AUC0-24 vs closed form over 960 subjects: median +0.0036%, p90 0.012%, max 1.885%
+#> AUC0-24 vs closed form over 960 subjects: median +0.0037%, p90 0.011%, max 1.551%
 
 # EXACT gate, enumerated over all 16 arms: with the random effects zeroed there
 # is no slow-accumulating tail, so the typical-value AUC0-24 must equal its
@@ -1171,7 +1171,7 @@ cat(sprintf("typical-value AUC0-24 vs closed form, all 16 arms: max %.5f%%\n",
 #> typical-value AUC0-24 vs closed form, all 16 arms: max 0.00566%
 cat(sprintf("max |AUC0-24 vs closed form| = %.4f%% over %d subjects\n",
             max(abs(auc67$pct_diff)), nrow(auc67)))
-#> max |AUC0-24 vs closed form| = 1.8852% over 960 subjects
+#> max |AUC0-24 vs closed form| = 1.5508% over 960 subjects
 ```
 
 ``` r
@@ -1230,14 +1230,14 @@ summ67 |>
 
 | Regimen | Japanese mean AUC0-24 | Western mean AUC0-24 | J/W ratio | Japanese CV% | Western CV% |
 |:---|---:|---:|---:|---:|---:|
-| 25 mg b.i.d. | 1139.0 | 1787.6 | 0.637 | 34.8 | 85.3 |
-| 25 mg q.d. | 577.1 | 794.3 | 0.727 | 38.2 | 50.3 |
-| 50 mg b.i.d. | 2521.3 | 3202.6 | 0.787 | 39.2 | 59.7 |
-| 50 mg q.d. | 997.2 | 1415.0 | 0.705 | 44.5 | 57.8 |
-| 100 mg b.i.d. | 3607.0 | 5348.6 | 0.674 | 32.9 | 66.1 |
-| 100 mg q.d. | 1707.1 | 2001.6 | 0.853 | 35.0 | 52.1 |
-| 200 mg b.i.d. | 5807.0 | 7709.7 | 0.753 | 40.8 | 45.4 |
-| 200 mg q.d. | 2403.6 | 3548.2 | 0.677 | 38.2 | 50.8 |
+| 25 mg b.i.d. | 1262.1 | 1808.0 | 0.698 | 36.6 | 56.9 |
+| 25 mg q.d. | 557.2 | 749.9 | 0.743 | 40.3 | 77.7 |
+| 50 mg b.i.d. | 2391.2 | 3535.5 | 0.676 | 31.3 | 61.9 |
+| 50 mg q.d. | 997.1 | 1178.3 | 0.846 | 36.4 | 63.6 |
+| 100 mg b.i.d. | 3574.7 | 5681.2 | 0.629 | 28.8 | 74.6 |
+| 100 mg q.d. | 1433.5 | 2082.7 | 0.688 | 33.7 | 52.2 |
+| 200 mg b.i.d. | 6251.6 | 8007.6 | 0.781 | 48.6 | 47.3 |
+| 200 mg q.d. | 2534.5 | 3046.1 | 0.832 | 36.3 | 34.5 |
 
 Replicates Figure 6 of Kastrissios 2006: Japanese exposures are lower
 and less variable than Western exposures for all eight regimens.
@@ -1367,12 +1367,12 @@ fig7c |>
 
 | Population | Total daily dose (mg) | Analytic ratio | Cohort ratio | 3 Monte-Carlo SE |
 |:---|---:|---:|---:|:---|
-| Japanese | 50 | 1.333 | 1.142 | +-21.9% |
-| Japanese | 100 | 1.434 | 1.477 | +-20.3% |
-| Japanese | 200 | 1.587 | 1.501 | +-19.5% |
-| Western | 50 | 1.333 | 1.263 | +-39.9% |
-| Western | 100 | 1.434 | 1.600 | +-30.7% |
-| Western | 200 | 1.587 | 1.507 | +-32.3% |
+| Japanese | 50 | 1.333 | 1.266 | +-20% |
+| Japanese | 100 | 1.434 | 1.668 | +-17.8% |
+| Japanese | 200 | 1.587 | 1.410 | +-17.9% |
+| Western | 50 | 1.333 | 1.534 | +-33.1% |
+| Western | 100 | 1.434 | 1.698 | +-31.4% |
+| Western | 200 | 1.587 | 1.865 | +-31.8% |
 
 The stochastic cohort reproduces the analytic b.i.d./q.d. exposure ratio
 within Monte-Carlo error at n = 60 per arm. {.table}
@@ -1468,7 +1468,7 @@ cat(sprintf(paste("trough 200/100 mg ratio: analytic %.4f, typical-value",
                   "%.4f, cohort median %.4f (3 MC-SE = %.1f%%)\n"),
             expected_ratio, trough_typ$Cc[2] / trough_typ$Cc[1],
             band$median[2] / band$median[1], 300 * mc_se))
-#> trough 200/100 mg ratio: analytic 1.5249, typical-value 1.5249, cohort median 1.5404 (3 MC-SE = 37.2%)
+#> trough 200/100 mg ratio: analytic 1.5249, typical-value 1.5249, cohort median 1.4050 (3 MC-SE = 34.3%)
 
 band |>
   dplyr::select(-n, -cv) |>
@@ -1483,8 +1483,8 @@ band |>
 
 | Dose (mg) | 2.5th percentile | Median | 97.5th percentile |
 |----------:|-----------------:|-------:|------------------:|
-|       100 |            4.804 |  31.40 |             189.3 |
-|       200 |            9.801 |  48.38 |             261.8 |
+|       100 |            5.292 |  33.88 |             143.6 |
+|       200 |           10.910 |  47.60 |             252.2 |
 
 Replicates the Figure 5 simulation of Kastrissios 2006: the 95% band of
 the 24-h trough after the seventh daily dose (ng/mL). Observed troughs

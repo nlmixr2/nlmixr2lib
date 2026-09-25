@@ -206,39 +206,49 @@ mod
 #>   # and 7 carry PCSK9 and LDL-C as CONCENTRATIONS (TLC, LDL). TDA is converted
 #>   # to the concentration TDC by TDA/V (equation 4).
 #>   compartmentData <- list(
-#>     depot        = list(analyte = "evolocumab", units = "nmol", specimen = "administration site", verified = TRUE),
-#>     central      = list(analyte = "total (unbound + PCSK9-bound) evolocumab", units = "nmol", specimen = "serum", verified = TRUE),
-#>     total_target = list(analyte = "total (unbound + evolocumab-bound) PCSK9", units = "nM", specimen = "serum", verified = TRUE),
-#>     ldl          = list(analyte = "low-density lipoprotein cholesterol", units = "mg/dL", specimen = "serum", verified = TRUE)
+#>     depot = list(analyte = "evolocumab", units = "nmol", specimen = "administration site", verified = TRUE),
+#>     central = list(
+#>       analyte = "total (unbound + PCSK9-bound) evolocumab",
+#>       units = "nmol",
+#>       specimen = "serum",
+#>       verified = TRUE
+#>     ),
+#>     total_target = list(
+#>       analyte = "total (unbound + evolocumab-bound) PCSK9",
+#>       units = "nM",
+#>       specimen = "serum",
+#>       verified = TRUE
+#>     ),
+#>     ldl = list(analyte = "low-density lipoprotein cholesterol", units = "mg/dL", specimen = "serum", verified = TRUE)
 #>   )
 #> 
 #>   covariateData <- list(
 #>     DIS_HEALTHY = list(
-#>       description        = "Healthy-participant cohort indicator, 1 = healthy subject (phase 1a study 20080397), 0 = hypercholesterolemic patient on stable statin therapy (phase 1b study 20080398)",
-#>       units              = "(binary)",
-#>       type               = "binary",
+#>       description = "Healthy-participant cohort indicator, 1 = healthy subject (phase 1a study 20080397), 0 = hypercholesterolemic patient on stable statin therapy (phase 1b study 20080398)",
+#>       units = "(binary)",
+#>       type = "binary",
 #>       reference_category = "0 (statin-treated hypercholesterolemic patient; the population in which BASE_PCSK9 = 5.27 nM was estimated)",
-#>       notes              = "The only covariate retained in the Gibbs 2017 final model. Multiplicative effect on the baseline PCSK9 turnover set point: BASE_PCSK9 * theta1^DIS_HEALTHY with theta1 = 0.637 (Table 2). The paper reports the two resulting typical values explicitly in the Results, which over-determines the coding and fixes the direction: 5.27 nM (379 ng/mL) in statin-treated patients and 5.27 * 0.637 = 3.36 nM (242 ng/mL) in healthy subjects. Because BASE_PCSK9 also sets ksyn (= kdeg * BASE_PCSK9) and the LDL-C baseline balance (kin), this single covariate propagates into both the target-mediated clearance of evolocumab and the achievable LDL-C reduction. Time-fixed per subject.",
-#>       source_name        = "theta 1 (Gibbs 2017 Table 2 footnote: 'fold change in baseline PCSK9 for healthy subjects vs statin-treated patients')"
+#>       notes = "The only covariate retained in the Gibbs 2017 final model. Multiplicative effect on the baseline PCSK9 turnover set point: BASE_PCSK9 * theta1^DIS_HEALTHY with theta1 = 0.637 (Table 2). The paper reports the two resulting typical values explicitly in the Results, which over-determines the coding and fixes the direction: 5.27 nM (379 ng/mL) in statin-treated patients and 5.27 * 0.637 = 3.36 nM (242 ng/mL) in healthy subjects. Because BASE_PCSK9 also sets ksyn (= kdeg * BASE_PCSK9) and the LDL-C baseline balance (kin), this single covariate propagates into both the target-mediated clearance of evolocumab and the achievable LDL-C reduction. Time-fixed per subject.",
+#>       source_name = "theta 1 (Gibbs 2017 Table 2 footnote: 'fold change in baseline PCSK9 for healthy subjects vs statin-treated patients')"
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species          = "human",
-#>     n_subjects       = 101L,
-#>     n_observations   = 4910L,
-#>     n_studies        = 2L,
-#>     n_healthy        = 44L,
-#>     n_patients       = 57L,
-#>     age_mean         = "45.5 years",
-#>     weight_mean      = "81.4 kg",
-#>     sex_female_pct   = 26.7,
-#>     race_ethnicity   = "83.2% white (pooled across both studies; the paper reports only the pooled white percentage)",
-#>     disease_state    = "Pooled: healthy subjects (phase 1a study 20080397, single ascending SC dose) and patients with hypercholesterolemia on stable low- to moderate-intensity statin therapy (phase 1b study 20080398, multiple ascending SC dose). Two additional phase 1b cohorts received high-intensity statin therapy or carried a heterozygous familial hypercholesterolemia diagnosis and were dosed 140 mg Q2W x 3.",
-#>     dose_range       = "Phase 1a: single SC 7, 21, 70, 210, or 420 mg. Phase 1b: SC 14 mg QW x 6, 35 mg QW x 6, 140 mg Q2W x 3, 280 mg Q2W x 3, or 420 mg QM x 2.",
-#>     pcsk9_baseline   = "5.27 nM (379 ng/mL) typical in statin-treated patients; 3.36 nM (242 ng/mL) typical in healthy subjects. Baseline PCSK9 was 1.58-fold higher in the phase 1b study than the phase 1a study.",
-#>     ldlc_baseline    = "116 mg/dL typical (BASE_LDL-C, Table 3)",
-#>     notes            = "A total of 73 participants received evolocumab and 28 received placebo across the two studies; the model dataset comprised the 101 individuals with evaluable PK/PD data. Baseline demographics are given in the paper's Table S1 (Supporting Information), which is not in the on-disk source set; the demographic values recorded here are the pooled summaries stated in the Results narrative. Estimation used NONMEM 7.2 with SAEM followed by importance sampling, and the M3 method for below-limit-of-quantification unbound evolocumab and unbound PCSK9 observations."
+#>     species = "human",
+#>     n_subjects = 101L,
+#>     n_observations = 4910L,
+#>     n_studies = 2L,
+#>     n_healthy = 44L,
+#>     n_patients = 57L,
+#>     age_mean = "45.5 years",
+#>     weight_mean = "81.4 kg",
+#>     sex_female_pct = 26.7,
+#>     race_ethnicity = "83.2% white (pooled across both studies; the paper reports only the pooled white percentage)",
+#>     disease_state = "Pooled: healthy subjects (phase 1a study 20080397, single ascending SC dose) and patients with hypercholesterolemia on stable low- to moderate-intensity statin therapy (phase 1b study 20080398, multiple ascending SC dose). Two additional phase 1b cohorts received high-intensity statin therapy or carried a heterozygous familial hypercholesterolemia diagnosis and were dosed 140 mg Q2W x 3.",
+#>     dose_range = "Phase 1a: single SC 7, 21, 70, 210, or 420 mg. Phase 1b: SC 14 mg QW x 6, 35 mg QW x 6, 140 mg Q2W x 3, 280 mg Q2W x 3, or 420 mg QM x 2.",
+#>     pcsk9_baseline = "5.27 nM (379 ng/mL) typical in statin-treated patients; 3.36 nM (242 ng/mL) typical in healthy subjects. Baseline PCSK9 was 1.58-fold higher in the phase 1b study than the phase 1a study.",
+#>     ldlc_baseline = "116 mg/dL typical (BASE_LDL-C, Table 3)",
+#>     notes = "A total of 73 participants received evolocumab and 28 received placebo across the two studies; the model dataset comprised the 101 individuals with evaluable PK/PD data. Baseline demographics are given in the paper's Table S1 (Supporting Information), which is not in the on-disk source set; the demographic values recorded here are the pooled summaries stated in the Results narrative. Estimation used NONMEM 7.2 with SAEM followed by importance sampling, and the M3 method for below-limit-of-quantification unbound evolocumab and unbound PCSK9 observations."
 #>   )
 #> 
 #>   ini({
@@ -395,7 +405,7 @@ mod
 #>     ldl       ~ add(addSd_ldl) + prop(propSd_ldl)
 #>   })
 #> }
-#> <environment: 0x55bd1963b698>
+#> <environment: 0x5615240ab2e0>
 ```
 
 Equation 5 is the positive root of the one-to-one QSS binding quadratic.

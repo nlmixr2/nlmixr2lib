@@ -77,8 +77,8 @@ mod
 #>   vignette <- "Zhang_2025_abemaciclib"
 #> 
 #>   units <- list(
-#>     time          = "h",
-#>     dosing        = "(not applicable; the analyte concentrations are supplied as the time-varying covariates CP_ABE_NGML, CP_M2_NGML, CP_M18_NGML and CP_M20_NGML)",
+#>     time = "h",
+#>     dosing = "(not applicable; the analyte concentrations are supplied as the time-varying covariates CP_ABE_NGML, CP_M2_NGML, CP_M18_NGML and CP_M20_NGML)",
 #>     concentration = "nmol/L"
 #>   )
 #> 
@@ -88,11 +88,25 @@ mod
 #>   # silently warned on, following the Liang_2024_osimertinib_qsp precedent.
 #>   # `precursor`, `prb` and `topo2a` are the cell-cycle transit states of Eqs 4-6.
 #>   paper_specific_compartments <- c(
-#>     "complex_cdk4_abe",     "complex_cdk4_m2",     "complex_cdk4_m18",     "complex_cdk4_m20",
-#>     "complex_cdk6_abe",     "complex_cdk6_m2",     "complex_cdk6_m18",     "complex_cdk6_m20",
-#>     "complex_cdk4_abe_csf", "complex_cdk4_m2_csf", "complex_cdk4_m18_csf", "complex_cdk4_m20_csf",
-#>     "complex_cdk6_abe_csf", "complex_cdk6_m2_csf", "complex_cdk6_m18_csf", "complex_cdk6_m20_csf",
-#>     "precursor", "prb", "topo2a"
+#>     "complex_cdk4_abe",
+#>     "complex_cdk4_m2",
+#>     "complex_cdk4_m18",
+#>     "complex_cdk4_m20",
+#>     "complex_cdk6_abe",
+#>     "complex_cdk6_m2",
+#>     "complex_cdk6_m18",
+#>     "complex_cdk6_m20",
+#>     "complex_cdk4_abe_csf",
+#>     "complex_cdk4_m2_csf",
+#>     "complex_cdk4_m18_csf",
+#>     "complex_cdk4_m20_csf",
+#>     "complex_cdk6_abe_csf",
+#>     "complex_cdk6_m2_csf",
+#>     "complex_cdk6_m18_csf",
+#>     "complex_cdk6_m20_csf",
+#>     "precursor",
+#>     "prb",
+#>     "topo2a"
 #>   )
 #> 
 #>   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -101,22 +115,42 @@ mod
 #>   # amounts). The three biomarker states are dimensionless expression levels
 #>   # relative to the untreated baseline (see the `prb0` note in ini()).
 #>   compartmentData <- list(
-#>     complex_cdk4_abe     = list(analyte = "abemaciclib-CDK4 complex",  units = "nmol/L", specimen = "plasma", verified = TRUE),
-#>     complex_cdk4_m2      = list(analyte = "M2-CDK4 complex",           units = "nmol/L", specimen = "plasma", verified = TRUE),
-#>     complex_cdk4_m18     = list(analyte = "M18-CDK4 complex",          units = "nmol/L", specimen = "plasma", verified = TRUE),
-#>     complex_cdk4_m20     = list(analyte = "M20-CDK4 complex",          units = "nmol/L", specimen = "plasma", verified = TRUE),
-#>     complex_cdk6_abe     = list(analyte = "abemaciclib-CDK6 complex",  units = "nmol/L", specimen = "plasma", verified = TRUE),
-#>     complex_cdk6_m2      = list(analyte = "M2-CDK6 complex",           units = "nmol/L", specimen = "plasma", verified = TRUE),
-#>     complex_cdk6_m18     = list(analyte = "M18-CDK6 complex",          units = "nmol/L", specimen = "plasma", verified = TRUE),
-#>     complex_cdk6_m20     = list(analyte = "M20-CDK6 complex",          units = "nmol/L", specimen = "plasma", verified = TRUE),
-#>     complex_cdk4_abe_csf = list(analyte = "abemaciclib-CDK4 complex",  units = "nmol/L", specimen = "CSF", verified = TRUE),
-#>     complex_cdk4_m2_csf  = list(analyte = "M2-CDK4 complex",           units = "nmol/L", specimen = "CSF", verified = TRUE),
-#>     complex_cdk4_m18_csf = list(analyte = "M18-CDK4 complex",          units = "nmol/L", specimen = "CSF", verified = TRUE),
-#>     complex_cdk4_m20_csf = list(analyte = "M20-CDK4 complex",          units = "nmol/L", specimen = "CSF", verified = TRUE),
-#>     complex_cdk6_abe_csf = list(analyte = "abemaciclib-CDK6 complex",  units = "nmol/L", specimen = "CSF", verified = TRUE),
-#>     complex_cdk6_m2_csf  = list(analyte = "M2-CDK6 complex",           units = "nmol/L", specimen = "CSF", verified = TRUE),
-#>     complex_cdk6_m18_csf = list(analyte = "M18-CDK6 complex",          units = "nmol/L", specimen = "CSF", verified = TRUE),
-#>     complex_cdk6_m20_csf = list(analyte = "M20-CDK6 complex",          units = "nmol/L", specimen = "CSF", verified = TRUE),
+#>     complex_cdk4_abe = list(
+#>       analyte = "abemaciclib-CDK4 complex",
+#>       units = "nmol/L",
+#>       specimen = "plasma",
+#>       verified = TRUE
+#>     ),
+#>     complex_cdk4_m2 = list(analyte = "M2-CDK4 complex", units = "nmol/L", specimen = "plasma", verified = TRUE),
+#>     complex_cdk4_m18 = list(analyte = "M18-CDK4 complex", units = "nmol/L", specimen = "plasma", verified = TRUE),
+#>     complex_cdk4_m20 = list(analyte = "M20-CDK4 complex", units = "nmol/L", specimen = "plasma", verified = TRUE),
+#>     complex_cdk6_abe = list(
+#>       analyte = "abemaciclib-CDK6 complex",
+#>       units = "nmol/L",
+#>       specimen = "plasma",
+#>       verified = TRUE
+#>     ),
+#>     complex_cdk6_m2 = list(analyte = "M2-CDK6 complex", units = "nmol/L", specimen = "plasma", verified = TRUE),
+#>     complex_cdk6_m18 = list(analyte = "M18-CDK6 complex", units = "nmol/L", specimen = "plasma", verified = TRUE),
+#>     complex_cdk6_m20 = list(analyte = "M20-CDK6 complex", units = "nmol/L", specimen = "plasma", verified = TRUE),
+#>     complex_cdk4_abe_csf = list(
+#>       analyte = "abemaciclib-CDK4 complex",
+#>       units = "nmol/L",
+#>       specimen = "CSF",
+#>       verified = TRUE
+#>     ),
+#>     complex_cdk4_m2_csf = list(analyte = "M2-CDK4 complex", units = "nmol/L", specimen = "CSF", verified = TRUE),
+#>     complex_cdk4_m18_csf = list(analyte = "M18-CDK4 complex", units = "nmol/L", specimen = "CSF", verified = TRUE),
+#>     complex_cdk4_m20_csf = list(analyte = "M20-CDK4 complex", units = "nmol/L", specimen = "CSF", verified = TRUE),
+#>     complex_cdk6_abe_csf = list(
+#>       analyte = "abemaciclib-CDK6 complex",
+#>       units = "nmol/L",
+#>       specimen = "CSF",
+#>       verified = TRUE
+#>     ),
+#>     complex_cdk6_m2_csf = list(analyte = "M2-CDK6 complex", units = "nmol/L", specimen = "CSF", verified = TRUE),
+#>     complex_cdk6_m18_csf = list(analyte = "M18-CDK6 complex", units = "nmol/L", specimen = "CSF", verified = TRUE),
+#>     complex_cdk6_m20_csf = list(analyte = "M20-CDK6 complex", units = "nmol/L", specimen = "CSF", verified = TRUE),
 #>     # The biomarker matrix is SKIN, not tumor -- Zhang 2025 says so explicitly in
 #>     # the Discussion: "it is noteworthy that the biomarker model predicts changes
 #>     # in pRB and TOPO-IIa occurring in skin tissue, rather than in tumor tissue.
@@ -127,18 +161,33 @@ mod
 #>     # (R/conventions.R) has no `skin` term, so these carry the generic `tissue`
 #>     # and name skin in `analyte`; recording `tumor` here would contradict the
 #>     # source.
-#>     precursor            = list(analyte = "cells accumulated in early G1 (precursor compartment PC), skin", units = "fraction of untreated baseline", specimen = "tissue", verified = TRUE),
-#>     prb                  = list(analyte = "phosphorylated retinoblastoma protein (pRB) expression, skin",   units = "fraction of untreated baseline", specimen = "tissue", verified = TRUE),
-#>     topo2a               = list(analyte = "topoisomerase-II alpha (TOPO-IIa) expression, skin",             units = "fraction of untreated baseline", specimen = "tissue", verified = TRUE)
+#>     precursor = list(
+#>       analyte = "cells accumulated in early G1 (precursor compartment PC), skin",
+#>       units = "fraction of untreated baseline",
+#>       specimen = "tissue",
+#>       verified = TRUE
+#>     ),
+#>     prb = list(
+#>       analyte = "phosphorylated retinoblastoma protein (pRB) expression, skin",
+#>       units = "fraction of untreated baseline",
+#>       specimen = "tissue",
+#>       verified = TRUE
+#>     ),
+#>     topo2a = list(
+#>       analyte = "topoisomerase-II alpha (TOPO-IIa) expression, skin",
+#>       units = "fraction of untreated baseline",
+#>       specimen = "tissue",
+#>       verified = TRUE
+#>     )
 #>   )
 #> 
 #>   covariateData <- list(
 #>     CP_ABE_NGML = list(
-#>       description        = "Time-varying TOTAL abemaciclib plasma concentration driving CDK4/6 engagement",
-#>       units              = "ng/mL",
-#>       type               = "continuous",
+#>       description = "Time-varying TOTAL abemaciclib plasma concentration driving CDK4/6 engagement",
+#>       units = "ng/mL",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "TOTAL (not free) plasma concentration. The free concentration that",
 #>         "actually drives binding is computed inside model() as",
 #>         "CP_ABE_NGML * fup_abe, with fup_abe scaled to the subject's albumin by",
@@ -156,28 +205,28 @@ mod
 #>         "regimen, against a stated safety ceiling of 693 ng/mL (Zhang 2025",
 #>         "Sections 2.6 and 3.6)."
 #>       ),
-#>       source_name        = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
+#>       source_name = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
 #>     ),
 #>     CP_M2_NGML = list(
-#>       description        = "Time-varying TOTAL M2 (active abemaciclib metabolite) plasma concentration driving CDK4/6 engagement",
-#>       units              = "ng/mL",
-#>       type               = "continuous",
+#>       description = "Time-varying TOTAL M2 (active abemaciclib metabolite) plasma concentration driving CDK4/6 engagement",
+#>       units = "ng/mL",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "TOTAL plasma concentration of the active metabolite M2; the free",
 #>         "concentration is CP_M2_NGML * fup_m2 inside model(). Zhang 2025",
 #>         "Introduction (citing the FDA multidiscipline review, ref 14) reports",
 #>         "that M2 contributes 13% of total plasma mass in vivo. Set to 0 to",
 #>         "study the parent alone."
 #>       ),
-#>       source_name        = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
+#>       source_name = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
 #>     ),
 #>     CP_M18_NGML = list(
-#>       description        = "Time-varying TOTAL M18 (active abemaciclib metabolite) plasma concentration driving CDK4/6 engagement",
-#>       units              = "ng/mL",
-#>       type               = "continuous",
+#>       description = "Time-varying TOTAL M18 (active abemaciclib metabolite) plasma concentration driving CDK4/6 engagement",
+#>       units = "ng/mL",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "TOTAL plasma concentration of the active metabolite M18; the free",
 #>         "concentration is CP_M18_NGML * fup_m18 inside model(). Zhang 2025",
 #>         "Introduction (ref 14) reports that M18 contributes 5% of total plasma",
@@ -185,28 +234,28 @@ mod
 #>         "its K_CSF,p was assumed to be 1.0 (Zhang 2025 Methods 2.1). Set to 0",
 #>         "to study the parent alone."
 #>       ),
-#>       source_name        = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
+#>       source_name = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
 #>     ),
 #>     CP_M20_NGML = list(
-#>       description        = "Time-varying TOTAL M20 (active abemaciclib metabolite) plasma concentration driving CDK4/6 engagement",
-#>       units              = "ng/mL",
-#>       type               = "continuous",
+#>       description = "Time-varying TOTAL M20 (active abemaciclib metabolite) plasma concentration driving CDK4/6 engagement",
+#>       units = "ng/mL",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "TOTAL plasma concentration of the active metabolite M20; the free",
 #>         "concentration is CP_M20_NGML * fup_m20 inside model(). Zhang 2025",
 #>         "Introduction (ref 14) reports that M20 contributes 26% of total plasma",
 #>         "mass in vivo, making it the largest metabolite contributor. Set to 0",
 #>         "to study the parent alone."
 #>       ),
-#>       source_name        = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
+#>       source_name = "(none; computed by the PK-Sim PBPK model, not a named NONMEM data column)"
 #>     ),
 #>     ALB = list(
-#>       description        = "Plasma albumin concentration; scales the fraction unbound of all four analytes through the paper's Eq 2",
-#>       units              = "g/L",
-#>       type               = "continuous",
+#>       description = "Plasma albumin concentration; scales the fraction unbound of all four analytes through the paper's Eq 2",
+#>       units = "g/L",
+#>       type = "continuous",
 #>       reference_category = NULL,
-#>       notes              = paste(
+#>       notes = paste(
 #>         "Canonical SI units g/L. Zhang 2025 reports albumin in g/dL throughout",
 #>         "(divide by 10): 3.1 g/dL = 31 g/L in breast-cancer patients versus",
 #>         "4.5 g/dL = 45 g/L in healthy subjects (Table 1 and Methods 2.1, after",
@@ -218,20 +267,20 @@ mod
 #>         "PBPK layer as well as through binding, whereas here only the binding",
 #>         "limb is reproduced."
 #>       ),
-#>       source_name        = "albumin (g/dl) (Zhang 2025 Table 1, physiological block)"
+#>       source_name = "albumin (g/dl) (Zhang 2025 Table 1, physiological block)"
 #>     )
 #>   )
 #> 
 #>   population <- list(
-#>     species        = "human (in silico; PK-Sim virtual populations matched to published clinical cohorts)",
-#>     n_subjects     = NA_integer_,
-#>     n_studies      = 4L,
-#>     age_range      = "51-63 years (means of the contributing cohorts; Patnaik 2016 median 60, range 44-73)",
+#>     species = "human (in silico; PK-Sim virtual populations matched to published clinical cohorts)",
+#>     n_subjects = NA_integer_,
+#>     n_studies = 4L,
+#>     age_range = "51-63 years (means of the contributing cohorts; Patnaik 2016 median 60, range 44-73)",
 #>     sex_female_pct = NA_real_,
-#>     disease_state  = "metastatic breast cancer, including hormone-receptor-positive / HER2-negative brain metastases; validation cohorts also included non-small cell lung cancer and other solid tumors",
-#>     dose_range     = "abemaciclib 100-400 mg once daily or twice daily; validation at 100 and 150 mg OD and 100, 150 and 200 mg BID; 200 mg BID is the standard regimen",
-#>     regions        = "United States, Europe and Japan (the contributing clinical studies)",
-#>     notes          = paste(
+#>     disease_state = "metastatic breast cancer, including hormone-receptor-positive / HER2-negative brain metastases; validation cohorts also included non-small cell lung cancer and other solid tumors",
+#>     dose_range = "abemaciclib 100-400 mg once daily or twice daily; validation at 100 and 150 mg OD and 100, 150 and 200 mg BID; 200 mg BID is the standard regimen",
+#>     regions = "United States, Europe and Japan (the contributing clinical studies)",
+#>     notes = paste(
 #>       "Virtual-population demographics were taken per scenario from the four",
 #>       "clinical plasma-PK studies and two CSF-PK studies tabulated in Zhang",
 #>       "2025 Table 2 (Patnaik 2016, Tolaney 2020, Fujiwara 2016, Kim 2018),",
@@ -598,7 +647,7 @@ mod
 #>     totalCdk6Csf    <- free_cdk6_csf + complex_cdk6_abe_csf + complex_cdk6_m2_csf + complex_cdk6_m18_csf + complex_cdk6_m20_csf
 #>   })
 #> }
-#> <environment: 0x55bd1b9b2dc8>
+#> <environment: 0x5615a518d998>
 ```
 
 Abemaciclib (ABE) is a CDK4/6 inhibitor used in

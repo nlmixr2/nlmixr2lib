@@ -983,10 +983,10 @@ cmp_int |>
 
 | Analyte | Timing | Pub 2.5% | Pub 50% | Pub 97.5% | Pub 99% | Sim 2.5% | Sim 50% | Sim 97.5% | Sim 99% |
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Salmeterol | Directly after inhalation | 1.4 | 3.6 | 9.6 | 11.5 | 1.28 | 3.53 | 8.61 | 10.10 |
-| Salmeterol | 30 min post-dose | 0.7 | 2.0 | 5.6 | 6.8 | 0.71 | 2.13 | 6.48 | 7.56 |
-| alpha-hydroxysalmeterol | Directly after inhalation | 0.1 | 0.9 | 4.6 | 6.1 | 0.16 | 0.89 | 4.12 | 5.11 |
-| alpha-hydroxysalmeterol | 30 min post-dose | 0.4 | 1.7 | 7.0 | 9.0 | 0.44 | 1.56 | 5.64 | 8.32 |
+| Salmeterol | Directly after inhalation | 1.4 | 3.6 | 9.6 | 11.5 | 1.50 | 3.69 | 9.92 | 11.41 |
+| Salmeterol | 30 min post-dose | 0.7 | 2.0 | 5.6 | 6.8 | 0.64 | 1.99 | 5.22 | 6.88 |
+| alpha-hydroxysalmeterol | Directly after inhalation | 0.1 | 0.9 | 4.6 | 6.1 | 0.14 | 0.97 | 5.35 | 6.29 |
+| alpha-hydroxysalmeterol | 30 min post-dose | 0.4 | 1.7 | 7.0 | 9.0 | 0.54 | 1.70 | 7.28 | 12.08 |
 
 Table 3 of Thoueille 2026, athletes on 100 ug at 8/16 h: published vs
 simulated percentiles (n = 200, IIV and RUV). {.table}
@@ -1039,16 +1039,16 @@ mrl |>
 
 | Status | Regimen | Population | Median (ng/mL) | 97.5th pct (ng/mL) | % above 10 ng/mL MRL |
 |:---|:---|:---|---:|---:|---:|
-| Permitted | 100 ug at 8/16 h | Athletes/endurance-trained | 2.13 | 6.48 | 0.5 |
-| Permitted | 100 ug at 8/16 h | Healthy participants | 0.81 | 2.53 | 0.0 |
-| Permitted | 100 ug at 8/20 h | Athletes/endurance-trained | 1.83 | 5.29 | 0.0 |
-| Permitted | 100 ug at 8/20 h | Healthy participants | 0.72 | 1.94 | 0.0 |
-| Permitted | 200 ug at 8 h | Athletes/endurance-trained | 3.54 | 11.77 | 7.0 |
-| Permitted | 200 ug at 8 h | Healthy participants | 1.43 | 4.00 | 0.0 |
-| Prohibited | 200 ug at 8/16 h | Athletes/endurance-trained | 4.23 | 10.34 | 3.5 |
-| Prohibited | 200 ug at 8/16 h | Healthy participants | 1.54 | 4.44 | 0.0 |
-| Prohibited | 200 ug at 8/20 h | Athletes/endurance-trained | 3.65 | 9.81 | 2.5 |
-| Prohibited | 200 ug at 8/20 h | Healthy participants | 1.50 | 4.05 | 0.0 |
+| Permitted | 100 ug at 8/16 h | Athletes/endurance-trained | 1.99 | 5.22 | 0.0 |
+| Permitted | 100 ug at 8/16 h | Healthy participants | 0.79 | 1.94 | 0.0 |
+| Permitted | 100 ug at 8/20 h | Athletes/endurance-trained | 2.01 | 5.91 | 0.0 |
+| Permitted | 100 ug at 8/20 h | Healthy participants | 0.71 | 2.19 | 0.0 |
+| Permitted | 200 ug at 8 h | Athletes/endurance-trained | 3.75 | 9.59 | 2.0 |
+| Permitted | 200 ug at 8 h | Healthy participants | 1.36 | 3.32 | 0.0 |
+| Prohibited | 200 ug at 8/16 h | Athletes/endurance-trained | 4.06 | 11.85 | 6.5 |
+| Prohibited | 200 ug at 8/16 h | Healthy participants | 1.46 | 4.30 | 0.0 |
+| Prohibited | 200 ug at 8/20 h | Athletes/endurance-trained | 3.49 | 10.05 | 3.0 |
+| Prohibited | 200 ug at 8/20 h | Healthy participants | 1.58 | 4.11 | 0.0 |
 
 Simulated salmeterol urine concentration 30 min after the last
 inhalation. {.table}
@@ -1181,7 +1181,7 @@ data.frame(
 
 | Identity                     | Max absolute error |
 |:-----------------------------|:-------------------|
-| AUC(0-inf) = Dose / (CL_S/F) | 0.0163 %           |
+| AUC(0-inf) = Dose / (CL_S/F) | 0.0500 %           |
 | Cmax = Dose / (V1/F)         | 0.0000 %           |
 
 Per-subject exposure identities, n = 60 subjects with between-subject
@@ -1223,7 +1223,7 @@ res_met <- as.data.frame(nca_met$result) |>
 stopifnot(max(abs(res_met$pct_err)) < 1)
 cat(sprintf("Metabolite AUC identity: max absolute error %.4f%% over %d subjects\n",
             max(abs(res_met$pct_err)), nrow(res_met)))
-#> Metabolite AUC identity: max absolute error 0.0357% over 60 subjects
+#> Metabolite AUC identity: max absolute error 0.1099% over 60 subjects
 ```
 
 ``` r
@@ -1300,7 +1300,7 @@ between subjects.
 
 summary(res_par$half.life)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   1.241   3.962   5.006   5.483   7.046  14.256
+#>   1.720   4.033   5.143   6.130   6.643  20.432
 ```
 
 ## Assumptions and deviations
@@ -1379,8 +1379,8 @@ neg |>
 
 | Population | Subjects | % with k10 \< 0 | min(k12 + CL_S/V1) (1/h) |
 |:---|---:|---:|---:|
-| Athletes/endurance-trained | 1000 | 5.5 | 0.88 |
-| Healthy participants | 1000 | 26.4 | 0.49 |
+| Athletes/endurance-trained | 1000 | 5.8 | 0.52 |
+| Healthy participants | 1000 | 25.7 | 0.67 |
 
 Subjects whose residual elimination rate constant k10 is negative.
 {.table}

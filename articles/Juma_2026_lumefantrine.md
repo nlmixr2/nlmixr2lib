@@ -494,9 +494,9 @@ cmp |>
 
 | Group | t1/2 sim (h) | t1/2 published (h) | Cmax sim (ug/mL) | Cmax published (ug/mL) | AUC sim (h\*ug/mL) | AUC published (h\*ug/mL) | Day 7 sim (ng/mL) | Day 7 published (ng/mL) | Tmax sim (h) |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Non-pregnant | 109 | 109 | 3.24 | 3.21 | 271 | 275 | 299 | 277 | 67.0 |
-| Pregnant, 2nd trimester | 102 | 103 | 2.40 | 2.28 | 205 | 184 | 220 | 182 | 66.5 |
-| Pregnant, 3rd trimester | 106 | 106 | 2.67 | 2.44 | 218 | 208 | 239 | 192 | 68.0 |
+| Non-pregnant | 109 | 109 | 3.32 | 3.21 | 268 | 275 | 284 | 277 | 66.25 |
+| Pregnant, 2nd trimester | 102 | 103 | 2.66 | 2.28 | 215 | 184 | 226 | 182 | 67.50 |
+| Pregnant, 3rd trimester | 105 | 106 | 2.46 | 2.44 | 207 | 208 | 218 | 192 | 67.00 |
 
 Simulated versus published secondary PK parameters (Table 3 of Juma
 2026). Simulated values are cohort medians; published values are medians
@@ -536,10 +536,10 @@ stopifnot(
   chk$d7[chk$cohort == "Non-pregnant"]   < 0.20
 )
 round(chk[, -1] * 100, 1)
-#>   hl cmax  auc   d7
-#> 1  0  0.9  1.5  7.9
-#> 2  1  5.3 11.4 20.9
-#> 3  0  9.4  4.8 24.5
+#>    hl cmax  auc   d7
+#> 1 0.0  3.4  2.5  2.5
+#> 2 1.0 16.7 16.8 24.2
+#> 3 0.9  0.8  0.5 13.5
 ```
 
 ``` r
@@ -569,9 +569,9 @@ nca_all |>
 
 | Group                   | Median day-7 (ng/mL) | Below 200 ng/mL (%) |
 |:------------------------|---------------------:|--------------------:|
-| Non-pregnant            |                  299 |                16.7 |
-| Pregnant, 2nd trimester |                  220 |                40.7 |
-| Pregnant, 3rd trimester |                  239 |                32.7 |
+| Non-pregnant            |                  284 |                20.0 |
+| Pregnant, 2nd trimester |                  226 |                39.3 |
+| Pregnant, 3rd trimester |                  218 |                43.3 |
 
 Day-7 lumefantrine concentrations against the 200 ng/mL efficacy
 threshold. Juma 2026 reports 44% of pregnant and 20% of non-pregnant

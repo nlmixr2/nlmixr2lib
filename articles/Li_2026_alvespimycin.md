@@ -695,10 +695,10 @@ ncaSummary |>
 
 | Model | AUC0-24 (ng\*h/mL) | Cavg (ng/mL) | Cmax (ng/mL) | Tmax (h) |
 |:---|---:|---:|---:|---:|
-| Li_2026_alvespimycin_nep11 | 4538.14 | 189.09 | 797.91 | 1 |
-| Li_2026_alvespimycin_nep16 | 4287.03 | 178.63 | 792.60 | 1 |
-| Li_2026_alvespimycin_nep5 | 6530.23 | 272.09 | 621.29 | 1 |
-| Li_2026_alvespimycin_nep9 | 4576.44 | 190.69 | 778.77 | 1 |
+| Li_2026_alvespimycin_nep11 | 4652.81 | 193.87 | 828.66 | 1 |
+| Li_2026_alvespimycin_nep16 | 4671.17 | 194.63 | 807.97 | 1 |
+| Li_2026_alvespimycin_nep5 | 6512.47 | 271.35 | 648.21 | 1 |
+| Li_2026_alvespimycin_nep9 | 4587.57 | 191.15 | 838.33 | 1 |
 
 ``` r
 

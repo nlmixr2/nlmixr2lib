@@ -195,8 +195,6 @@ auc_tau <- function(df, tau) {
 }
 
 alone <- typical_profile(50, 24, rifabutin = 0)
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2, etaiov_fdepot_3, etaiov_fdepot_4, etaiov_tlag_1, etaiov_tlag_2, etaiov_tlag_3, etaiov_tlag_4, etaiov_ka_1, etaiov_ka_2, etaiov_ka_3, etaiov_ka_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etaiov_fdepot_1', 'etaiov_fdepot_2', 'etaiov_fdepot_3', 'etaiov_fdepot_4', 'etaiov_tlag_1', 'etaiov_tlag_2', 'etaiov_tlag_3', 'etaiov_tlag_4', 'etaiov_ka_1', 'etaiov_ka_2', 'etaiov_ka_3', 'etaiov_ka_4'
 withrfb <- typical_profile(50, 24, rifabutin = 1)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etaiov_fdepot_1', 'etaiov_fdepot_2', 'etaiov_fdepot_3', 'etaiov_fdepot_4', 'etaiov_tlag_1', 'etaiov_tlag_2', 'etaiov_tlag_3', 'etaiov_tlag_4', 'etaiov_ka_1', 'etaiov_ka_2', 'etaiov_ka_3', 'etaiov_ka_4'
@@ -373,8 +371,6 @@ solve_arm <- function(d) {
 # both arms, which is what makes the per-subject ratio a paired quantity.
 rxode2::rxSetSeed(4242)
 sim_alone <- solve_arm(events_alone)
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_fdepot_1, etaiov_fdepot_2, etaiov_fdepot_3, etaiov_fdepot_4, etaiov_tlag_1, etaiov_tlag_2, etaiov_tlag_3, etaiov_tlag_4, etaiov_ka_1, etaiov_ka_2, etaiov_ka_3, etaiov_ka_4
-#> as a work-around try putting the mu-referenced expression on a simple line
 rxode2::rxSetSeed(4242)
 sim_rfb <- solve_arm(events_rfb)
 
@@ -496,9 +492,9 @@ knitr::kable(ratio_summary, digits = 1,
 
 | NCA parameter  | Median change (%) | Kawuma 2023 (%) | Kawuma 2023 95% CI |
 |:---------------|------------------:|----------------:|:-------------------|
-| Cmax           |              30.0 |            15.1 | -49.8 to 268       |
-| Cmin (Ctrough) |             -25.3 |           -30.1 | -24.7 to -51.5     |
-| AUC0-24        |               0.8 |             0.0 | no effect          |
+| Cmax           |              30.4 |            15.1 | -49.8 to 268       |
+| Cmin (Ctrough) |             -19.3 |           -30.1 | -24.7 to -51.5     |
+| AUC0-24        |               8.9 |             0.0 | no effect          |
 
 Median of the per-subject exposure ratio (rifabutin arm / alone arm)
 over 200 paired subjects, against the changes reported in Kawuma 2023
@@ -536,7 +532,7 @@ cmax_ratio <- paired$`cmax|DTG + rifabutin` / paired$`cmax|DTG alone`
 sprintf("Simulated 95%% range of the per-subject Cmax ratio: %+.0f%% to %+.0f%%",
         100 * (stats::quantile(cmax_ratio, 0.025) - 1),
         100 * (stats::quantile(cmax_ratio, 0.975) - 1))
-#> [1] "Simulated 95% range of the per-subject Cmax ratio: -67% to +299%"
+#> [1] "Simulated 95% range of the per-subject Cmax ratio: -63% to +262%"
 ```
 
 ### Pharmacokinetic target attainment
@@ -566,8 +562,8 @@ knitr::kable(attainment, digits = 3,
 
 | Regimen | Geometric mean C24 (mg/L) | P(C24 \> 0.064 mg/L) | P(C24 \> 0.3 mg/L) |
 |:---|---:|---:|---:|
-| DTG alone | 0.990 | 1 | 0.985 |
-| DTG + rifabutin | 0.737 | 1 | 0.925 |
+| DTG alone | 0.814 | 1.000 | 0.950 |
+| DTG + rifabutin | 0.649 | 0.995 | 0.895 |
 
 Steady-state trough target attainment, dolutegravir 50 mg once daily in
 fasted 70 kg individuals (n = 200 per arm). {.table}
@@ -609,15 +605,20 @@ and the dose proportionality.
 
 ``` r
 
-n_cross <- 100
+n_cross <- 400   # 400 per regimen: the standard error of a geometric mean at this CV is ~2%
 regimens <- tibble::tribble(
-  ~treatment,                  ~dose, ~ii, ~rif, ~id_offset,
-  "DTG 50 mg OD",                 50,  24,    0,         0L,
-  "DTG 50 mg BD + rifampicin",    50,  12,    1,       100L,
-  "DTG 100 mg OD + rifampicin",  100,  24,    1,       200L
-)
+  ~treatment,                  ~dose, ~ii, ~rif,
+  "DTG 50 mg OD",                 50,  24,    0,
+  "DTG 50 mg BD + rifampicin",    50,  12,    1,
+  "DTG 100 mg OD + rifampicin",  100,  24,    1
+) |>
+  # Subject ids must not overlap across regimens, so the offset follows n_cross.
+  dplyr::mutate(id_offset = (dplyr::row_number() - 1L) * n_cross)
 
 set.seed(20260906)
+# One sex per SUBJECT, shared by every regimen. Drawing it per event row would
+# make SEXF a time-varying covariate that flips within a profile.
+sex_cross <- stats::rbinom(n_cross, 1, 0.32)
 cross_events <- do.call(dplyr::bind_rows, lapply(
   seq_len(nrow(regimens)),
   function(i) {
@@ -630,7 +631,7 @@ cross_events <- do.call(dplyr::bind_rows, lapply(
     d$FED <- 0
     d$STUDY_RADIO <- 0
     d$OCC <- 1
-    d$SEXF <- stats::rbinom(nrow(d), 1, 0.32)
+    d$SEXF <- sex_cross[d$id - r$id_offset]
     d$CONMED_RIFAMPICIN <- r$rif
     d$CONMED_RIFABUTIN <- 0
     d$treatment <- r$treatment
@@ -670,6 +671,14 @@ cross_intervals <- sim_cross |>
 cross_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(cross_conc, cross_dose,
                                             intervals = cross_intervals))
 
+# Kawuma 2022 publishes GEOMETRIC means, so the simulated side is aggregated
+# geometrically before the comparison (ncaComparisonTable() would take medians).
+cross_gm <- as.data.frame(cross_res) |>
+  dplyr::filter(PPTESTCD == "ctrough") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(ctrough = exp(mean(log(PPORRES))), .groups = "drop") |>
+  as.data.frame()
+
 published_2022 <- tibble::tribble(
   ~treatment,                   ~ctrough,
   "DTG 50 mg OD",                  0.878,
@@ -678,7 +687,7 @@ published_2022 <- tibble::tribble(
 )
 
 cmp <- nlmixr2lib::ncaComparisonTable(
-  simulated = cross_res,
+  simulated = cross_gm,
   reference = published_2022,
   by = "treatment",
   params = "ctrough",
@@ -687,36 +696,39 @@ cmp <- nlmixr2lib::ncaComparisonTable(
 )
 
 knitr::kable(cmp, digits = 3,
-             caption = "Simulated steady-state trough (median over 100 subjects per regimen, 70 kg, fasted) against the geometric-mean troughs published in Kawuma 2022 Table 3 for the predecessor model. * marks a difference greater than 20%.")
+             caption = "Simulated steady-state trough (geometric mean over 400 subjects per regimen, 70 kg, fasted) against the geometric-mean troughs published in Kawuma 2022 Table 3 for the predecessor model. * marks a difference greater than 20%.")
 ```
 
 | NCA parameter  | treatment                  | Reference | Simulated | % diff |
 |:---------------|:---------------------------|:----------|:----------|:-------|
-| Ctrough (mg/L) | DTG 50 mg OD               | 0.878     | 0.879     | +0.1%  |
-| Ctrough (mg/L) | DTG 50 mg BD + rifampicin  | 0.608     | 0.67      | +10.1% |
-| Ctrough (mg/L) | DTG 100 mg OD + rifampicin | 0.22      | 0.233     | +5.8%  |
+| Ctrough (mg/L) | DTG 50 mg OD               | 0.878     | 0.916     | +4.3%  |
+| Ctrough (mg/L) | DTG 50 mg BD + rifampicin  | 0.608     | 0.647     | +6.5%  |
+| Ctrough (mg/L) | DTG 100 mg OD + rifampicin | 0.22      | 0.228     | +3.7%  |
 
-Simulated steady-state trough (median over 100 subjects per regimen, 70
-kg, fasted) against the geometric-mean troughs published in Kawuma 2022
-Table 3 for the predecessor model. \* marks a difference greater than
-20%. {.table}
+Simulated steady-state trough (geometric mean over 400 subjects per
+regimen, 70 kg, fasted) against the geometric-mean troughs published in
+Kawuma 2022 Table 3 for the predecessor model. \* marks a difference
+greater than 20%. {.table}
 
 ``` r
 
 cross_wide <- as.data.frame(cross_res) |>
   dplyr::filter(PPTESTCD == "ctrough") |>
   dplyr::group_by(treatment) |>
-  dplyr::summarise(sim = stats::median(PPORRES), .groups = "drop") |>
+  dplyr::summarise(sim = exp(mean(log(PPORRES))), .groups = "drop") |>
   dplyr::left_join(published_2022, by = "treatment") |>
   dplyr::mutate(pct = 100 * (sim / ctrough - 1))
 
 stopifnot(
   nrow(cross_wide) == 3, !anyNA(cross_wide$pct),
-  # A 25% band. This compares a median across a 100-subject cohort of THIS
-  # model against a geometric mean published for the PREDECESSOR model, so it
-  # can never be tight; it is here to catch a broken rifampicin effect (which
-  # would put the two rifampicin arms out by a factor of ~2.4) or a lost dose
-  # proportionality (a factor of 2 on the 100 mg arm).
+  # A 25% band. This compares a geometric mean across a 400-subject cohort of
+  # THIS model against a geometric mean published for the PREDECESSOR model
+  # (different Q/F and Vp/F), so it can never be tight; it is here to catch a
+  # broken rifampicin effect (which would put the two rifampicin arms out by a
+  # factor of ~2.4) or a lost dose proportionality (a factor of 2 on the 100 mg
+  # arm). With one sex per subject and a geometric mean the three arms sit
+  # within 10% of the 2022 values across seeds; the previous per-row sex draw
+  # and 100-subject median put the 100 mg arm anywhere from 0% to +26%.
   all(abs(cross_wide$pct) < 25)
 )
 ```

@@ -456,7 +456,7 @@ wt_check <- rxode2::rxSolve(
 wt_cmax <- tapply(wt_check$Cc, wt_check$id, max, na.rm = TRUE)
 wt_rel <- abs(diff(range(wt_cmax))) / mean(wt_cmax)
 cat("Cmax at 430 kg and 563 kg agree to", signif(wt_rel, 3), "relative\n")
-#> Cmax at 430 kg and 563 kg agree to 1.86e-16 relative
+#> Cmax at 430 kg and 563 kg agree to 9.78e-09 relative
 # Analytically identical, and it comes back identical: the two solves agree to
 # ~2e-16, i.e. machine precision. Deterministic, so the bound is tight.
 stopifnot(wt_rel < 1e-8)
@@ -792,8 +792,8 @@ fig8_summary |>
 
 | Regimen | 10th | 50th | 90th | 10th (paper) | 50th (paper) | 90th (paper) | % diff, median |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| Loading 30 + 6.5 q2h | 1.26 | 1.95 | 2.78 | 1.4 | 2.0 | 2.7 | -2.60 |
-| Loading 45 + 9 q2h | 1.89 | 2.64 | 3.58 | 1.9 | 2.8 | 3.8 | -5.82 |
+| Loading 30 + 6.5 q2h | 1.28 | 1.87 | 2.95 | 1.4 | 2.0 | 2.7 | -6.27 |
+| Loading 45 + 9 q2h | 1.79 | 2.66 | 3.88 | 1.9 | 2.8 | 3.8 | -5.02 |
 
 Figure 8 of Kuroda 2024: simulated vs published percentiles of Cav over
 the final dosing interval (ug/mL). {.table style="width:100%;"}
@@ -869,9 +869,9 @@ fig9_summary |>
 
 | Day | 10th | 50th | 90th | 10th (paper) | 50th (paper) | 90th (paper) | % diff, median |
 |----:|-----:|-----:|-----:|-------------:|-------------:|-------------:|---------------:|
-|   1 | 0.52 | 0.81 | 1.09 |          0.6 |          0.8 |          1.1 |           1.35 |
-|   2 | 1.19 | 1.81 | 2.35 |          1.3 |          1.8 |          2.7 |           0.33 |
-|   3 | 1.66 | 2.53 | 3.36 |          1.9 |          2.6 |          3.8 |          -2.65 |
+|   1 | 0.53 | 0.82 | 1.09 |          0.6 |          0.8 |          1.1 |           2.79 |
+|   2 | 1.16 | 1.80 | 2.49 |          1.3 |          1.8 |          2.7 |           0.17 |
+|   3 | 1.62 | 2.55 | 3.53 |          1.9 |          2.6 |          3.8 |          -2.11 |
 
 Figure 9 of Kuroda 2024: simulated vs published percentiles of Cav over
 each day’s final dosing interval (ug/mL). {.table}
@@ -953,8 +953,8 @@ fig7_summary |>
 
 | Regimen | Cmax 10th | Cmax 50th | Cmax 90th | 10th (paper) | 90th (paper) | % diff, 10th | % diff, 90th | Known deviation |
 |:---|---:|---:|---:|---:|---:|---:|---:|:---|
-| Classical 22 q2h x4 | 2.33 | 3.53 | 5.90 | 2.5 | 4.8 | -6.91 | 22.96 | FALSE |
-| Classical 22 q6h x2 | 1.16 | 2.04 | 3.24 | 1.9 | 3.9 | -39.05 | -16.83 | TRUE |
+| Classical 22 q2h x4 | 2.52 | 3.70 | 4.99 | 2.5 | 4.8 | 0.6 | 3.89 | FALSE |
+| Classical 22 q6h x2 | 1.28 | 1.92 | 2.82 | 1.9 | 3.9 | -32.4 | -27.64 | TRUE |
 
 Figure 7 of Kuroda 2024: simulated vs published percentiles of the peak
 concentration in the interval after the final dose (ug/mL). {.table
@@ -977,7 +977,7 @@ stopifnot(max(abs(c(gated7$pct_p10, gated7$pct_p90))) < 30)
 q2h_p90 <- fig7_summary$cmax_p90[fig7_summary$arm == "Classical 22 q2h x4"]
 cat("Classical q2h, 90th percentile of peak concentration:",
     round(q2h_p90, 2), "ug/mL vs the 3.8 ug/mL median toxic concentration\n")
-#> Classical q2h, 90th percentile of peak concentration: 5.9 ug/mL vs the 3.8 ug/mL median toxic concentration
+#> Classical q2h, 90th percentile of peak concentration: 4.99 ug/mL vs the 3.8 ug/mL median toxic concentration
 stopifnot(q2h_p90 > 3.8)
 ```
 
@@ -1008,8 +1008,8 @@ pta |>
 
 | Regimen | PTA 2.0-3.8 ug/mL (%) | Below window (%) | Above window (%) |
 |:---|---:|---:|---:|
-| Loading 30 + 6.5 q2h | 47.3 | 52.7 | 0.0 |
-| Loading 45 + 9 q2h | 78.0 | 14.7 | 7.3 |
+| Loading 30 + 6.5 q2h | 38.7 | 60.0 | 1.3 |
+| Loading 45 + 9 q2h | 69.3 | 19.3 | 11.3 |
 
 Probability of target attainment within the 2.0-3.8 ug/mL therapeutic
 window. {.table style="width:100%;"}
@@ -1024,7 +1024,7 @@ window. {.table style="width:100%;"}
 pta_b <- pta$pta_pct[pta$arm == "Loading 45 + 9 q2h"]
 stopifnot(pta_b > 60, pta_b < 95)
 cat("Regimen B PTA:", round(pta_b, 1), "% vs the paper's quoted 80%\n")
-#> Regimen B PTA: 78 % vs the paper's quoted 80%
+#> Regimen B PTA: 69.3 % vs the paper's quoted 80%
 ```
 
 ## Assumptions and deviations

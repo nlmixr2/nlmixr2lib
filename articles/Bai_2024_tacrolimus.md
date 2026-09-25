@@ -618,9 +618,9 @@ tibble(
 |:---------------------------------------|:--------|
 | Subjects compared                      | 980     |
 | Subjects excluded (ka ~ kel)           | 0       |
-| Max \|% difference\| vs closed form    | 0.2135% |
-| Accumulation fraction, 10th percentile | 0.758   |
-| Accumulation fraction, median          | 0.991   |
+| Max \|% difference\| vs closed form    | 0.0260% |
+| Accumulation fraction, 10th percentile | 0.679   |
+| Accumulation fraction, median          | 0.992   |
 | Accumulation fraction, 90th percentile | 1.000   |
 
 Per-subject PKNCA AUC over the day-10 dosing interval against the exact
@@ -664,11 +664,11 @@ knitr::kable(
 
 | NCA parameter | treatment  | Reference | Simulated | % diff |
 |:--------------|:-----------|----------:|----------:|-------:|
-| Clast (ng/mL) | 2.0 mg BID |      3.99 |       3.7 |  -7.3% |
-| Clast (ng/mL) | 3.0 mg BID |      5.88 |      5.55 |  -5.6% |
-| Clast (ng/mL) | 4.0 mg BID |      7.84 |       7.4 |  -5.6% |
-| Clast (ng/mL) | 5.0 mg BID |       9.8 |      9.25 |  -5.6% |
-| Clast (ng/mL) | 6.0 mg BID |      11.8 |      11.1 |  -6.0% |
+| Clast (ng/mL) | 2.0 mg BID |      3.99 |      3.39 | -14.9% |
+| Clast (ng/mL) | 3.0 mg BID |      5.88 |      5.09 | -13.4% |
+| Clast (ng/mL) | 4.0 mg BID |      7.84 |      6.79 | -13.4% |
+| Clast (ng/mL) | 5.0 mg BID |       9.8 |      8.49 | -13.4% |
+| Clast (ng/mL) | 6.0 mg BID |      11.8 |      10.2 | -13.7% |
 
 Simulated median day-10 trough vs the Bai 2024 Table 4 liver-cancer
 medians. \* differs from reference by more than 20%. {.table}

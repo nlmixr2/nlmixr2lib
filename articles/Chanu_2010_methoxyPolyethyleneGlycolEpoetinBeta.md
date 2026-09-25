@@ -693,14 +693,14 @@ knitr::kable(hb_checks, digits = 2)
 
 | arm                               | Time (weeks) | Time (day) | Median Hb (g/dL) |
 |:----------------------------------|-------------:|-----------:|-----------------:|
-| Correction (ESA-naive, IV Q2W)    |            0 |          0 |             9.22 |
-| Correction (ESA-naive, IV Q2W)    |           10 |         70 |            10.88 |
-| Correction (ESA-naive, IV Q2W)    |           20 |        140 |            11.14 |
-| Correction (ESA-naive, IV Q2W)    |           40 |        280 |            11.17 |
+| Correction (ESA-naive, IV Q2W)    |            0 |          0 |             9.37 |
+| Correction (ESA-naive, IV Q2W)    |           10 |         70 |            11.31 |
+| Correction (ESA-naive, IV Q2W)    |           20 |        140 |            11.49 |
+| Correction (ESA-naive, IV Q2W)    |           40 |        280 |            11.48 |
 | Maintenance (ESA-treated, SC Q4W) |            0 |          0 |            11.73 |
-| Maintenance (ESA-treated, SC Q4W) |           10 |         70 |            11.79 |
-| Maintenance (ESA-treated, SC Q4W) |           20 |        140 |            11.66 |
-| Maintenance (ESA-treated, SC Q4W) |           40 |        280 |            11.60 |
+| Maintenance (ESA-treated, SC Q4W) |           10 |         70 |            11.49 |
+| Maintenance (ESA-treated, SC Q4W) |           20 |        140 |            11.28 |
+| Maintenance (ESA-treated, SC Q4W) |           40 |        280 |            11.32 |
 
 ``` r
 
@@ -852,14 +852,14 @@ knitr::kable(cmp)
 
 | NCA parameter | arm | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
-| Cmax (ng/mL) | Correction (ESA-naive, IV Q2W) | 5.37 | 5.66 | +5.5% |
-| Cmax (ng/mL) | Maintenance (ESA-treated, SC Q4W) | 7.74 | 7.71 | -0.5% |
+| Cmax (ng/mL) | Correction (ESA-naive, IV Q2W) | 5.37 | 5.51 | +2.6% |
+| Cmax (ng/mL) | Maintenance (ESA-treated, SC Q4W) | 7.74 | 7.51 | -3.0% |
 | Tmax (day) | Correction (ESA-naive, IV Q2W) | 0 | 0 | — |
 | Tmax (day) | Maintenance (ESA-treated, SC Q4W) | 2.51 | 2.25 | -10.4% |
-| AUClast (ng/mL\*day) | Correction (ESA-naive, IV Q2W) | 29.8 | 30.6 | +2.4% |
-| AUClast (ng/mL\*day) | Maintenance (ESA-treated, SC Q4W) | 73.2 | 71.9 | -1.8% |
-| t½ (day) | Correction (ESA-naive, IV Q2W) | 4.38 | 4.14 | -5.4% |
-| t½ (day) | Maintenance (ESA-treated, SC Q4W) | 4.38 | 4.5 | +3.0% |
+| AUClast (ng/mL\*day) | Correction (ESA-naive, IV Q2W) | 29.8 | 28.1 | -5.8% |
+| AUClast (ng/mL\*day) | Maintenance (ESA-treated, SC Q4W) | 73.2 | 69.5 | -5.1% |
+| t½ (day) | Correction (ESA-naive, IV Q2W) | 4.38 | 3.89 | -11.2% |
+| t½ (day) | Maintenance (ESA-treated, SC Q4W) | 4.38 | 4.56 | +4.3% |
 
 The simulated column is the **median across the 200 virtual subjects of
 each arm**; every subject carries the published IIV on CL, V and ka (CV%
@@ -890,10 +890,10 @@ knitr::kable(nca_summary, digits = 4)
 
 | Quantity         | Reference | Simulated |  Ratio |
 |:-----------------|----------:|----------:|-------:|
-| IV Cmax          |    5.3670 |    5.6616 | 1.0549 |
-| IV AUC(0,14 day) |   29.8446 |   30.5608 | 1.0240 |
-| IV half-life     |    4.3750 |    4.1395 | 0.9462 |
-| SC half-life     |    4.3750 |    4.5047 | 1.0296 |
+| IV Cmax          |    5.3670 |    5.5084 | 1.0263 |
+| IV AUC(0,14 day) |   29.8446 |   28.1103 | 0.9419 |
+| IV half-life     |    4.3750 |    3.8868 | 0.8884 |
+| SC half-life     |    4.3750 |    4.5636 | 1.0431 |
 
 ``` r
 
@@ -932,12 +932,12 @@ sc_params <- sim_pk |>
   dplyr::distinct(id, ka, kel)
 flip_flop_pct <- 100 * mean(sc_params$ka < sc_params$kel)
 flip_flop_pct
-#> [1] 5
+#> [1] 7
 stopifnot(flip_flop_pct > 0)
 ```
 
-5% of the SC cohort is flip-flop. The IV arm, which has no absorption
-step, recovers the published 105 hours to within 5.4%.
+7% of the SC cohort is flip-flop. The IV arm, which has no absorption
+step, recovers the published 105 hours to within 11.2%.
 
 ## Assumptions and deviations
 
@@ -1080,15 +1080,15 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.7          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
-#>  [4] lattice_0.22-9      vctrs_0.7.3         tools_4.6.1        
-#>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
-#> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-#> [16] desc_1.4.3          RcppParallel_6.2.1  lifecycle_1.0.5    
+#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
+#>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
+#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
@@ -1096,7 +1096,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

@@ -767,9 +767,9 @@ nca_tab |>
 
 | Arm    | AUC0-10.5h (ng\*h/mL) | Cmax (ng/mL) | Tmax (h) |
 |:-------|----------------------:|-------------:|---------:|
-| 10 mg  |                123.09 |        38.70 |     1.30 |
-| 25 mg  |                394.48 |       103.50 |     1.35 |
-| 100 mg |               1885.74 |       455.35 |     1.40 |
+| 10 mg  |                127.34 |        39.97 |      1.3 |
+| 25 mg  |                368.38 |       103.97 |      1.3 |
+| 100 mg |               1732.65 |       413.34 |      1.5 |
 
 Median simulated steady-state NCA for vildagliptin over the morning
 dosing interval of day 5. {.table}
