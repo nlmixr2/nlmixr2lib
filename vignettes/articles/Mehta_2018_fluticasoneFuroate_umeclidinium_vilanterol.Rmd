@@ -235,7 +235,14 @@ simulate_one <- function(spec) {
     rxode2::et(T_LAST + OBS_GRID, cmt = "central") |>
     as.data.frame()
   for (cn in names(spec$covariates)) ev[[cn]] <- spec$covariates[[cn]]
-  rxode2::rxSolve(mod, ev, returnType = "data.frame", addDosing = FALSE) |>
+  # liblsoda's step budget is cumulative across the 90 dose-to-dose restarts,
+  # and the dense final-interval grid pulls the default hmax (the mean event
+  # spacing) down to ~1.2 h: the run-in needs ~1.6e5 steps, over the 70000
+  # default.
+  rxode2::rxSolve(
+    mod, ev,
+    returnType = "data.frame", addDosing = FALSE, maxsteps = 1e6
+  ) |>
     dplyr::filter(!is.na(Cc), time >= T_LAST) |>
     dplyr::transmute(
       treatment = spec$label,
@@ -315,9 +322,12 @@ check_structure <- function(spec) {
     rxode2::et(grid, cmt = "central") |>
     as.data.frame()
   for (cn in names(spec$covariates)) ev[[cn]] <- spec$covariates[[cn]]
+  # Tight tolerances: the identity is checked to 1e-6, and the ODE solve at
+  # the default rtol leaves ~7e-6 relative error.
   num <- rxode2::rxSolve(
     rxode2::zeroRe(mod), ev,
-    returnType = "data.frame", addDosing = FALSE
+    returnType = "data.frame", addDosing = FALSE,
+    rtol = 1e-10, atol = 1e-12
   )
   ana <- closed_form(
     num$time, spec$dose,

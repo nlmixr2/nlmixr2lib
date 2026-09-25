@@ -288,9 +288,14 @@ straight from stored micro-constants).
 
 ```{r simulate-typical}
 mod_typical <- readModelDb("Cagnardi_2018_cefazolin_dog") |> rxode2::zeroRe()
+# Tight tolerances: rxode2 integrates this ODE system numerically unless
+# useLinCmt is requested, and the default rtol of 1e-6 leaves ~1e-6 relative
+# error against the closed form below (measured 1.06e-6); at rtol 1e-10 it is
+# 8.3e-10.
 sim_typical <- rxode2::rxSolve(
   mod_typical,
-  events = make_cohort(1L, "typical", dose_times = 0, obs_times = obs_single)
+  events = make_cohort(1L, "typical", dose_times = 0, obs_times = obs_single),
+  rtol = 1e-10, atol = 1e-12
 ) |>
   as.data.frame()
 

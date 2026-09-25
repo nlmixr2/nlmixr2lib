@@ -645,10 +645,65 @@ stopifnot(
   # mis-transcribed clearance or dose unit moves these by a factor, not by
   # tens of percent, so the gate can still go red.
   abs(stats::median(check$pct_diff)) < 20,
-  max(abs(check$pct_diff)) < 25,
-  # Dose proportionality is a structural property of a linear model and is
-  # independent of the cohort draw.
-  abs(check$gm[check$arm == "0.4 mg"] / check$gm[check$arm == "0.1 mg"] - 4) < 0.2
+  max(abs(check$pct_diff)) < 25
+)
+
+# Dose proportionality is exact in this linear model, but the arms above are
+# independent draws of 120 subjects, so the ratio of their geometric means
+# carries cohort noise and cannot be held tightly: a log-AUC SD of 0.395
+# (37.9% CV on CL/F plus the covariates) gives SD(log ratio) =
+# 0.395 * sqrt(2 / 120) = 0.051, i.e. SD(ratio) ~ 0.21. It is reported, not
+# gated.
+cat(sprintf(
+  "Independent arms: GM AUCss ratio 0.4 mg / 0.1 mg = %.3f (4 in expectation)\n",
+  check$gm[check$arm == "0.4 mg"] / check$gm[check$arm == "0.1 mg"]
+))
+
+# Instead the 0.1 mg arm is solved at both doses with the same subjects and the
+# same eta draw -- rxSetSeed() immediately before each solve gives common
+# random numbers -- so every subject's AUCtau ratio must be 4 to solver
+# tolerance (the trapezoid is linear in Cc on a shared grid, so it cancels).
+# The ODEs are integrated numerically, hence the tight rtol / atol.
+solve_paired <- function(dose_mg) {
+  ev <- events |>
+    dplyr::filter(arm == "0.1 mg") |>
+    dplyr::mutate(amt = ifelse(evid == 1L, dose_mg, amt))
+  rxode2::rxSetSeed(20181002)
+  rxode2::rxSolve(mod, ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12)
+}
+paired <- list(lo = solve_paired(0.1), hi = solve_paired(0.4))
+stopifnot(!anyNA(paired$lo$Cc), !anyNA(paired$hi$Cc))
+
+# Common random numbers actually held: identical individual parameters.
+indiv_par <- function(d) dplyr::distinct(d, id, cl, vc, ka, q, vp)
+stopifnot(
+  nrow(indiv_par(paired$lo)) == n_per_arm,
+  isTRUE(all.equal(indiv_par(paired$lo), indiv_par(paired$hi)))
+)
+
+auc_paired <- function(d) {
+  d |>
+    dplyr::group_by(id) |>
+    dplyr::arrange(time, .by_group = TRUE) |>
+    dplyr::summarise(
+      auc = sum(diff(time) * (utils::head(Cc, -1) + utils::tail(Cc, -1)) / 2),
+      .groups = "drop"
+    )
+}
+prop_chk <- dplyr::inner_join(
+  auc_paired(paired$lo), auc_paired(paired$hi),
+  by = "id", suffix = c("_lo", "_hi")
+) |>
+  dplyr::mutate(ratio = auc_hi / auc_lo)
+
+cat(sprintf(
+  "Paired subjects: max |AUCtau(0.4 mg) / AUCtau(0.1 mg) / 4 - 1| = %.2e over %d subjects\n",
+  max(abs(prop_chk$ratio / 4 - 1)), nrow(prop_chk)
+))
+
+stopifnot(
+  nrow(prop_chk) == n_per_arm,
+  max(abs(prop_chk$ratio / 4 - 1)) < 1e-8
 )
 ```
 

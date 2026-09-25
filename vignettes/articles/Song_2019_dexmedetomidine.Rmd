@@ -681,10 +681,13 @@ prop_events <- dplyr::bind_rows(
   })
 )
 
+# Tight tolerances: the identity is checked to 1e-8, and the ODE solve at the
+# default rtol leaves ~3e-8 of step-size-dependent error in the ratio.
 prop_sim <- rxode2::rxSolve(
   rxode2::zeroRe(ui),
   events = prop_events,
-  keep = c("arm", "WT", "pair")
+  keep = c("arm", "WT", "pair"),
+  rtol = 1e-10, atol = 1e-12
 ) |>
   as.data.frame()
 

@@ -347,10 +347,13 @@ build_events <- function(subj, times, dose_times = 0) {
 typ_events <- build_events(typ_subj, obs_grid)
 # `omega = NA` is required: zeroRe() alone is not enough once any stochastic
 # rxSolve() has run in the session, because rxode2 retains the previous solve's
-# omega and silently re-samples etas.
+# omega and silently re-samples etas. The tight rtol / atol feed the
+# closed-form gate below: when rxode2 integrates the ODEs numerically, its
+# default rtol of 1e-6 leaves ~1e-6 relative error against the closed form.
 typ_sim <- rxode2::rxSolve(
   mod_typ, events = typ_events, omega = NA,
-  keep = c("BSA", "CRCL", "arm", "dose_mg")
+  keep = c("BSA", "CRCL", "arm", "dose_mg"),
+  rtol = 1e-10, atol = 1e-12
 )
 
 # Guard that the typical-value solve really is deterministic: subjects sharing
@@ -379,10 +382,10 @@ closed <- typ_sim |>
 max_rel <- max(closed$rel)
 stopifnot(
   # Deterministic comparison of two independent implementations, so the bound
-  # is tight. Realised 5.9e-13 (rxode2 recognises the cl / vc / q / vp set and
-  # solves the two-compartment system analytically, so this is machine noise
-  # rather than integration error); 1e-7 leaves room for a numerically solved
-  # build. A bolus instead of a 2 h infusion, a multiplicative instead of
+  # is tight. Realised 5.9e-13 when rxode2 solves the cl / vc / q / vp set
+  # analytically (linCmt), and 7.6e-11 when it integrates the ODEs numerically
+  # at the rtol / atol passed to typ_sim above (1.1e-6 at the default rtol).
+  # A bolus instead of a 2 h infusion, a multiplicative instead of
   # additive BSA term, or a swapped CL / Q would each move this by many orders
   # of magnitude.
   max_rel < 1e-7,
