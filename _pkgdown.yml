@@ -1326,6 +1326,20 @@ navbar:
         href: articles/Henninger_2026_dndi6148.html
       - text: "Dndi6148 mouse (Henninger 2026)"
         href: articles/Henninger_2026_dndi6148.html
+      - text: "Dobutamine (Hallik 2020)"
+        href: articles/Hallik_2020_dobutamine.html
+      - text: "Dobutamine cftoe (Hallik 2020)"
+        href: articles/Hallik_2020_dobutamine.html
+      - text: "Dobutamine hr (Hallik 2020)"
+        href: articles/Hallik_2020_dobutamine.html
+      - text: "Dobutamine lvef (Hallik 2020)"
+        href: articles/Hallik_2020_dobutamine.html
+      - text: "Dobutamine lvo (Hallik 2020)"
+        href: articles/Hallik_2020_dobutamine.html
+      - text: "Dobutamine map (Hallik 2020)"
+        href: articles/Hallik_2020_dobutamine.html
+      - text: "Dobutamine rvo (Hallik 2020)"
+        href: articles/Hallik_2020_dobutamine.html
       - text: "Docetaxel (Janssen 2023)"
         href: articles/Janssen_2023_pregnancy_cytotoxics.html
       - text: "Docetaxel (Koolen 2010)"
@@ -6241,6 +6255,7 @@ articles:
   - articles/Hajjar_2018_DMD_6MWT
   - articles/Hajjar_2018_pompe_disease
   - articles/Hall_2017_dapsone
+  - articles/Hallik_2020_dobutamine
   - articles/Hamberg_2007_warfarin_pkpd_pgx
   - articles/Hamren_2008_tesaglitazar
   - articles/Hamuro_2017_DMD_6MWT
