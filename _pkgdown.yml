@@ -760,6 +760,8 @@ navbar:
         href: articles/Schreib_2024_busulfan.html
       - text: "Busulfan (Xu 2023)"
         href: articles/Xu_2023_busulfan.html
+      - text: "Busulfan (vanHoogdalem 2020)"
+        href: articles/vanHoogdalem_2020_busulfan.html
       - text: "Butanediol rat (Fung 2008)"
         href: articles/Fung_2008_butanediol_rat.html
       - text: "C3G (Jeon 2012)"
@@ -8330,6 +8332,7 @@ articles:
   - articles/vanHasselt_2013_eribulin
   - articles/vanHasselt_2014_cefazolin
   - articles/vanHasselt_2015_eribulin
+  - articles/vanHoogdalem_2020_busulfan
   - articles/vanIersel_2018_posaconazole
   - articles/vanMaanen_2025_amyloid
   - articles/vanOs_2024_temocillin
