@@ -198,7 +198,7 @@ which is near 1 here because `Q` (38.8 L/h) greatly exceeds `CL_CRRT`.
 **Identity 2 -- terminal half-life.** The system matrix has characteristic
 polynomial `x^2 - (kel + k12 + k21 + k20) x + (kel*(k21 + k20) + k12*k20)`, whose
 smaller root `beta` sets the terminal slope. This one is load-bearing as a
-regression guard: `rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the conversion opt-in in September 2026 (issue 1389), and a
+regression guard: under `rxSolve()`'s `useLinCmt = TRUE` conversion a
 two-compartment system written with micro-constants can be silently rewritten
 into a one-compartment closed form -- which would leave AUC untouched but make
 the terminal half-life collapse onto `log(2)/kel`. Asserting the half-life

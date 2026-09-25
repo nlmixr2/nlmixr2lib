@@ -235,7 +235,7 @@ stopifnot(dplyr::n_distinct(sim$id) == n_arm)
 
 ## Two-compartment disposition is preserved
 
-`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the conversion opt-in in September 2026 (issue 1389), which rewrites a recognisably-linear
+`rxSolve()` with `useLinCmt = TRUE` rewrites a recognisably-linear
 compartment system into a closed form. A two-compartment body written with
 `k12` / `k21` micro-constants is silently reduced to one compartment, and
 because total AUC still equals `Dose / CL` the usual sanity check does not

@@ -135,7 +135,7 @@ cat(sprintf("Gate 1 PASS: CL = %.4f L/day (published 0.248); F = %.4f (published
 ```{r gate-halflife}
 ## Gate 2 -- terminal half-life must equal the analytic beta root of the
 ## two-compartment system. This is the mechanical guard against rxSolve's
-## former default useLinCmt = TRUE (opt-in since September 2026) silently collapsing a k12/k21-parameterised
+## useLinCmt = TRUE conversion silently collapsing a k12/k21-parameterised
 ## two-compartment model to one compartment: under a collapse the simulated
 ## terminal half-life comes back equal to log(2)/kel instead.
 cl <- 0.248; vc <- 1.87; vp <- 1.96; q <- 0.599
