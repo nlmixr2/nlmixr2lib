@@ -4086,6 +4086,8 @@ navbar:
         href: articles/Dohmann_2025_piperacillin.html
       - text: "Piperacillin (Dong 2026)"
         href: articles/Dong_2026_piperacillin.html
+      - text: "Piperacillin (Ishihara 2020)"
+        href: articles/Ishihara_2020_piperacillin_tazobactam.html
       - text: "Piperacillin (Jeon 2014)"
         href: articles/Jeon_2014_piperacillin.html
       - text: "Piperacillin (Kim 2016)"
@@ -5132,6 +5134,8 @@ navbar:
         href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
       - text: "Tazobactam (CohenWolkowiez 2014)"
         href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
+      - text: "Tazobactam (Ishihara 2020)"
+        href: articles/Ishihara_2020_piperacillin_tazobactam.html
       - text: "Tazobactam (Kim 2016)"
         href: articles/Kim_2016_piperacillin_tazobactam.html
       - text: "Tazobactam (Kumta 2025)"
@@ -6873,6 +6877,7 @@ articles:
   - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Isbister_2015_snake_antivenom
   - articles/Ishibashi_2024_ensitrelvir
+  - articles/Ishihara_2020_piperacillin_tazobactam
   - articles/Isla_2024_fosfomycinCalcium
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
