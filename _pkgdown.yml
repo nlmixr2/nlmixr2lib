@@ -2610,6 +2610,8 @@ navbar:
         href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
       - text: "Levosimendan (Bertin 2026)"
         href: articles/Bertin_2026_levosimendan.html
+      - text: "Lidocaine (Favie 2020)"
+        href: articles/Favie_2020_lidocaine.html
       - text: "Lidocaine (He 2025)"
         href: articles/He_2025_lidocaine.html
       - text: "Ligelizumab (Bienczak 2025)"
@@ -6110,6 +6112,7 @@ articles:
   - articles/Fau_2020_isatuximab
   - articles/Fauchet_2013_zidovudine
   - articles/Fauchet_2015_lopinavir
+  - articles/Favie_2020_lidocaine
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Feillet_2008_sapropterin
   - articles/Felmlee_2010_ghb_rat
