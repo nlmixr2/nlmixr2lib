@@ -3566,6 +3566,10 @@ navbar:
         href: articles/Sun_2025_paclitaxel.html
       - text: "Paclitaxel (deJonge 2005)"
         href: articles/deJonge_2005_paclitaxel.html
+      - text: "Paclitaxel human pbpk (Fu 2019)"
+        href: articles/Fu_2019_paclitaxel_pbpk.html
+      - text: "Paclitaxel mouse pbpk (Fu 2019)"
+        href: articles/Fu_2019_paclitaxel_pbpk.html
       - text: "Paclitaxel myelosuppression (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pacmilimab qsp (Ippolito 2024)"
@@ -6155,6 +6159,7 @@ articles:
   - articles/Frymoyer_2013_gentamicin
   - articles/Frymoyer_2013_mycophenolic_acid
   - articles/Frymoyer_2017_infliximab
+  - articles/Fu_2019_paclitaxel_pbpk
   - articles/Fu_2022_atenolol_qsp
   - articles/Fu_2023_cardiovascular
   - articles/Fuchs_2014_gentamicin
