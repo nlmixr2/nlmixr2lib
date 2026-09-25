@@ -1672,6 +1672,8 @@ navbar:
         href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
       - text: "Ethambutol pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Ethanol (Lim 2017)"
+        href: articles/Lim_2017_ethanol.html
       - text: "Ethanol (Nemoto 2017)"
         href: articles/Nemoto_2017_ethanol.html
       - text: "Ethaselen (Ye 2017)"
@@ -6675,6 +6677,7 @@ articles:
   - articles/Liesenfeld_2006_dabigatran
   - articles/Liesenfeld_2013_dabigatran
   - articles/Lignet_2023_m8891
+  - articles/Lim_2017_ethanol
   - articles/Lim_2025_amikacin
   - articles/Lim_2026_leuprolide
   - articles/Lin_2018_voriconazole
