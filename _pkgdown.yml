@@ -4178,6 +4178,8 @@ navbar:
         href: articles/Thoueille_2024_rilpivirine.html
       - text: "Rimegepant (Comisar 2025)"
         href: articles/Comisar_2025_rimegepant.html
+      - text: "Riociguat (Michalickova 2020)"
+        href: articles/Michalickova_2020_riociguat.html
       - text: "Risankizumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
       - text: "Risankizumab (Suleiman 2018)"
@@ -6795,6 +6797,7 @@ articles:
   - articles/Mi_2024_aditoprim
   - articles/Miano_2024_tacrolimus
   - articles/Miao_2023_teclistamab
+  - articles/Michalickova_2020_riociguat
   - articles/Michelet_2025_BI754111_mpbpk
   - articles/Milakovic_2024_linezolid
   - articles/Milosheska_2016_lamotrigine
