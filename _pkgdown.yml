@@ -2334,6 +2334,10 @@ navbar:
         href: articles/Paule_2011_hydroxyurea.html
       - text: "Hyperoside rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
+      - text: "Iadademstat invitro (Bouhaddou 2020)"
+        href: articles/Bouhaddou_2020_iadademstat.html
+      - text: "Iadademstat mouse (Bouhaddou 2020)"
+        href: articles/Bouhaddou_2020_iadademstat.html
       - text: "Ibalizumab human (Fan 2025)"
         href: articles/Fan_2025_antiCD4_nanobody_HIV.html
       - text: "Ibalizumab mouse (Fan 2025)"
@@ -6250,6 +6254,7 @@ articles:
   - articles/Bouazza_2025_prednisolone
   - articles/Boucher_2016_landmark_mbma
   - articles/Boucher_2018_naproxen_mbma
+  - articles/Bouhaddou_2020_iadademstat
   - articles/Boulanger_2025_trimethoprim_sulfonamides_pig
   - articles/Brain_2008_ifosfamide
   - articles/Bram_2026_node_lasso_model_development
