@@ -3986,6 +3986,8 @@ navbar:
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Pyrazinamide pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Pyrethroids pbpk (Mallick 2020)"
+        href: articles/Mallick_2020_pyrethroids.html
       - text: "Pyrimethamine (Karunajeewa 2009)"
         href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
       - text: "Pyronaridine (Ayyoub 2016)"
@@ -6747,6 +6749,7 @@ articles:
   - articles/Majid_2024_lecanemab
   - articles/Majid_2024_lenvatinib
   - articles/Maleki_2024_brepocitinib
+  - articles/Mallick_2020_pyrethroids
   - articles/Mandema_2005_gemcabene_mbma
   - articles/Mandema_2011_anticoagulants_mbma
   - articles/Mandema_2011_biologicDMARDs_mbma
