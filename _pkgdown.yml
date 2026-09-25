@@ -3798,6 +3798,8 @@ navbar:
         href: articles/ObrinkHansen_2015_piperacillin.html
       - text: "Piperacillin (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
+      - text: "Piperacillin (Thorsted 2019)"
+        href: articles/Thorsted_2019_piperacillin.html
       - text: "Piperacillin (Tseng 2026)"
         href: articles/Tseng_2026_piperacillin.html
       - text: "Piperacillin (Zurawska 2026)"
@@ -7333,6 +7335,7 @@ articles:
   - articles/Thomson_2003_gentamicin
   - articles/Thorsted_2016_somatropin_human
   - articles/Thorsted_2016_somatropin_rat
+  - articles/Thorsted_2019_piperacillin
   - articles/Thoueille_2023_lopinavir
   - articles/Thoueille_2023_tenofovir_ckd
   - articles/Thoueille_2024_rilpivirine
