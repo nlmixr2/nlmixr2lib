@@ -57,6 +57,9 @@
 - [`addLogEstimates()`](https://nlmixr2.github.io/nlmixr2lib/reference/addLogEstimates.md)
   : Add log estimates to a model
 
+- [`addPeriph()`](https://nlmixr2.github.io/nlmixr2lib/reference/addPeriph.md)
+  : Add a peripheral compartment to a model
+
 - [`addResErr()`](https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.md)
   : Add residual error to a model
 
@@ -160,6 +163,9 @@
 
 - [`removeLinesAndInis()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeLinesAndInis.md)
   : Removes lines and inis from a model
+
+- [`removePeriph()`](https://nlmixr2.github.io/nlmixr2lib/reference/removePeriph.md)
+  : Remove a peripheral compartment from a model
 
 - [`removeTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.md)
   : To remove transit compartments from the model

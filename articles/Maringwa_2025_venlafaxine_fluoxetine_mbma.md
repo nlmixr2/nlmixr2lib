@@ -510,7 +510,7 @@ slopes |>
 
 | Drug        | Fitted slope (per HAMD point) | Closed form |
 |:------------|------------------------------:|------------:|
-| fluoxetine  |                       -0.1726 |     -0.1725 |
+| fluoxetine  |                       -0.1725 |     -0.1725 |
 | venlafaxine |                       -0.3851 |     -0.3851 |
 
 ## Directional check against the paper’s RMSE

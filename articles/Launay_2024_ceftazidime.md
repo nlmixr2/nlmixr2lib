@@ -566,7 +566,7 @@ hl_med <- median(nca_tbl$PPORRES[nca_tbl$PPTESTCD == "half.life"], na.rm = TRUE)
 c(simulated_median_h = hl_med, published_median_h = 11.9,
   published_iqr = "8.8-18.4")
 #> simulated_median_h published_median_h      published_iqr 
-#> "13.8902379648416"             "11.9"         "8.8-18.4"
+#> "13.8902379648417"             "11.9"         "8.8-18.4"
 
 # Assert against the IQR the paper itself prints, not against a bound taken
 # from one run. Realised 14.05-14.96 h at 2/4/16 threads.

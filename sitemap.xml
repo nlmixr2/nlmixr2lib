@@ -2328,6 +2328,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addIndirect.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addIndirectLin.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addLogEstimates.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addPeriph.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addSecondAbsorption.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addTransit.html</loc></url>
@@ -2362,6 +2363,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/register_lagState.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeDepot.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeLinesAndInis.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removePeriph.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeZeroOrderAbs.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.html</loc></url>
