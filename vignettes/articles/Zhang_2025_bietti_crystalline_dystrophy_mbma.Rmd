@@ -631,8 +631,7 @@ tibble::tibble(
   written -- the `cfb` suffix and a `d_<instrument>` prefix (`d_updrs`,
   `d_hr`, `d_rr`, `d_viral_load`) -- and the first draft of this model used
   the prefix form (`d_bcva`) on the strength of the `Lee_2011_parkinson_progression`
-  analogy. The operator ratified the **suffix** as the library-wide convention
-  (sidecar `oasweep_PMC11997835` request-001 q1, answered 2026-09-11), so
+  analogy. The maintainers ratified the **suffix** as the library-wide convention, so
   `d_bcva` was renamed to `bcvacfb` and the surviving `d_`-prefixed names are
   scheduled for conversion in a separate follow-up. Note that this model is
   algebraic with no absolute-acuity state of its own; `bcvacfb` is a change

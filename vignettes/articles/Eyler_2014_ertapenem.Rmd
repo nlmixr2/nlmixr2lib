@@ -417,7 +417,7 @@ perturbed by a residual term).
 ## The dialytic clearance arm is load-bearing
 
 Every number in the table above depends on `cl_dialysis` actually being added
-to systemic clearance while the CRRT circuit runs. Until 2026-09-12 it was not:
+to systemic clearance while the CRRT circuit runs. In an earlier revision it was not:
 the model assigned the gated total to a separate `cl_total` while defining both
 `cl` and `vc`, so rxode2 solved the two-compartment system with its analytic
 linear kernel from that pair and discarded the explicit `d/dt()`. The
@@ -451,7 +451,7 @@ gate_compare <- median_c24(sim_fig4) |>
 
 stopifnot(
   # Structural, and the assertion this vignette previously lacked: switching
-  # the circuit off must change the solution. Before 2026-09-12 this ratio was
+  # the circuit off must change the solution. In that earlier revision this ratio was
   # exactly 1 for every regimen, for any value of CLdial.
   all(gate_compare$ratio > 1.4),
   # Attainment reproduces the published Table 3 column to within rounding.
@@ -472,7 +472,7 @@ gate_compare |>
                 "Ratio" = ratio) |>
   knitr::kable(
     digits = 2,
-    caption = "Median unbound ertapenem at 24 h with the CRRT circuit running and with it switched off. The right-hand column is the behaviour the packaged model silently had before 2026-09-12; ignoring the dialytic arm inflates the 24-h unbound concentration by roughly two-fold.",
+    caption = "Median unbound ertapenem at 24 h with the CRRT circuit running and with it switched off. The right-hand column is the behaviour an earlier revision of the packaged model silently had; ignoring the dialytic arm inflates the 24-h unbound concentration by roughly two-fold.",
     align = c("l", "r", "r", "r")
   )
 ```

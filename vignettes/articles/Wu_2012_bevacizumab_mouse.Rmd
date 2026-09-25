@@ -94,7 +94,7 @@ undecodable formulas. They recover exactly as shown below from
 The lymph-node limb of this model introduced four canonical names to
 nlmixr2lib -- the `lnode` compartment (role text broadened from the pre-existing
 mAb-PBPK entry), `lflnode`, `lv_lnode` and `lk_lnode_central`. All four were
-ratified by the operator on 2026-09-02 and are documented in
+ratified by the maintainers and are documented in
 `inst/references/compartment-names.md` and `inst/references/parameter-names.md`.
 
 # Virtual cohort

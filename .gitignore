@@ -37,3 +37,8 @@ vignettes/articles/*.html
 # task runner's "uncommitted work left" gate, which failed oare_PMC13176099 on
 # three consecutive full-effort dispatches before this was noticed.
 Rplots.pdf
+
+# knitr writes figures next to the Rmd when an article is rendered outside
+# pkgdown (probe scripts, callr render gates); they are never content, and a
+# batch of them was once committed by mistake.
+figure/

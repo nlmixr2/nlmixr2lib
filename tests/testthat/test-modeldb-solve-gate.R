@@ -145,10 +145,10 @@ knownBrokenModels <- c(
 # consolidation. The same loop is flat on R 4.6.1 with the identical rxode2
 # build (240 -> 330 MB over 40 models, warm or cold compile cache, 1 to 16
 # solver threads) and in an R 4.5.3 container, so the growth is specific to
-# the hosted runner and not yet root-caused; test-stream.yaml traces it with
-# NLMIXR2LIB_SOLVE_GATE_TRACE=1. Probing each block of models in a fresh R
-# process bounds the damage to one block whatever leaks, at the cost of one
-# package load per block. Both solve paths are probed once per model and
+# the hosted runner. Probing each block of models in a fresh R process bounds
+# the damage to one block whatever leaks, at the cost of one package load per
+# block; setting NLMIXR2LIB_SOLVE_GATE_TRACE=1 prints each child's and the
+# parent's memory after every block. Both solve paths are probed once per model and
 # shared by the tests below, which is no more work than before.
 .probeBlockSize <- 20L
 
