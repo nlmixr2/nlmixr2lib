@@ -109,8 +109,7 @@ dosing regimens the paper itself simulated in its Table 5.
 # rxode2's streams are partitioned PER SOLVER THREAD -- so this cohort is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion downstream is written to hold for ANY cohort
-# the model can produce (see pattern 12 of the skill's
-# known-vignette-failure-patterns.md).
+# the model can produce.
 set.seed(20190330)
 
 n_per_arm <- 200L # cap is 200 per arm
@@ -731,7 +730,7 @@ strata_cmp |>
   )
 
 # Pooled over all 14 cells rather than asserted cell by cell, and a magnitude
-# rather than a sign or an ordering (pattern 12).
+# rather than a sign or an ordering.
 stopifnot(stats::median(abs(strata_cmp$pct_diff)) < 20)
 ```
 

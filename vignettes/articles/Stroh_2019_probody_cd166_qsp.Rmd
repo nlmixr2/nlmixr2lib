@@ -49,8 +49,9 @@ A trailing `R` marks a receptor-bound arm. The extraction keeps the supplement's
 own state names (`pb_c_o_central`, `pb_oR_mR_tumor`, ...), so every ODE can be
 read straight against the deposited matrices.
 
-The paper reports one model structure in two parameterisations, so the extraction
-is two files sharing this vignette (`replicate-author-structure`, species split):
+The paper reports one model structure in two parameterisations, so, following
+the package's convention of replicating the authors' model structure, the
+extraction is two files sharing this vignette, one per species:
 
 * `Stroh_2019_probody_cd166_monkey_qsp` -- the cynomolgus calibration
   (Table 1). Two compartments, 36 states. The monkeys were not tumour-bearing

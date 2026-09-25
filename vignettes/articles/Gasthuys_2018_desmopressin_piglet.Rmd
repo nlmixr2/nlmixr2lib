@@ -758,8 +758,8 @@ stopifnot(
   multiplicative eta cannot be written in that column's format if it is not
   multiplicative. The logit scale keeps `Bio` in (0, 1) with a median of 0.86
   and a 5th-95th percentile range of about 0.63-0.96, and is the form
-  nlmixr2lib uses elsewhere for bounded dose fractions. If the operator
-  establishes from the original control stream that an exponential eta was
+  nlmixr2lib uses elsewhere for bounded dose fractions. If the maintainers
+  establish from the original control stream that an exponential eta was
   used, this is a one-line change to `logitfdepot` / `etalogitfdepot` in the
   model file.
 - **Body weight is the only covariate implemented.** Body surface area, age and

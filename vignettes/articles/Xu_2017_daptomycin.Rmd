@@ -500,7 +500,7 @@ bootstrap resamples of the individual MAP-Bayes parameter sets. The
 reproduction here instead uses the published typical parameters conditioned on
 each subject's known covariates, so the two sides differ by the individual
 random effects and by the covariates Table 1 does not resolve per subject; the
-tolerance is set to 20%, the skill default.
+tolerance is set to 20%, the package's default.
 
 For the Q24h regimens the paper's `AUCss` is the steady-state AUC over the
 24 h interval, compared with the simulated `auc0_24`. For Q48h the paper prints

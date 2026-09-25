@@ -327,7 +327,7 @@ baseline weights from a log-normal centred on the published **median** of 68 kg
 with the published CV of 23% (Table 2), truncated to the observed range of
 31.9-143 kg. Doses are computed per subject on a mg/kg basis, as in the trials.
 
-Two arms of 200 subjects each (the skill's per-arm cap): 8 mg/kg Q2W and
+Two arms of 200 subjects each (the per-arm cohort cap): 8 mg/kg Q2W and
 10 mg/kg Q3W. Both are followed for 24 weeks so that the late troughs provide a
 steady-state reference against which the paper's "steady state around week 9-10"
 claim can be tested.

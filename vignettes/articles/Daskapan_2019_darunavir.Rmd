@@ -455,8 +455,7 @@ reported rather than silently absorbed.
 # set.seed() seeds R's RNG, which is what draws the covariates below, so the
 # COHORT is reproducible. It does NOT seed rxode2's eta sampler, whose streams
 # are partitioned per solver thread -- so every assertion on an eta-driven
-# quantity downstream is written to hold for any draw. See pattern 12 of
-# references/known-vignette-failure-patterns.md.
+# quantity downstream is written to hold for any draw.
 set.seed(20190201)
 
 n_per_arm <- 200L

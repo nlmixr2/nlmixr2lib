@@ -241,7 +241,7 @@ sim_typ <- rxode2::rxSolve(
   make_events(typ_subj, n_doses = 1L, obs_times = grid_sd),
   keep = "genotype",
   # rxode2's automatic ODE -> linCmt() conversion corrupts the dvid mapping for
-  # multi-output models (see known-vignette-failure-patterns pattern 5b).
+  # multi-output models.
   useLinCmt = FALSE
 ) |>
   as.data.frame()

@@ -403,7 +403,7 @@ for baseline AST -- which is itself a mild consistency check on the cohort.
 set.seed(20181101)
 rxode2::rxSetSeed(20181101)
 
-N_ARM <- 150L  # per arm; the skill caps cohorts at 200/arm
+N_ARM <- 150L  # per arm; cohorts are capped at 200/arm
 
 # Log-normal calibrated so median = m and 95th percentile = p95, truncated to
 # the published observed range.

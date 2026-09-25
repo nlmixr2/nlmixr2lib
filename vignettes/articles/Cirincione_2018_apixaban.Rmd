@@ -102,8 +102,8 @@ in the model-file comments).
 | `expSdHvJapan` (theta21), `expSdAppraise1` (theta22), `expSdAristotle` (theta23) | Table 3 residual block |
 | Reference covariate values 65 y, 70 kg, 80 mL/min | Results "PPK model development"; Table S2 Eqs. [1b], [1c], [1e] |
 
-Note on the `omega2-k` row: the preprocessed markdown of the article collapses
-it into the neighbouring row, so it is absent from the trimmed text. It is
+Note on the `omega2-k` row: text extraction from the PDF collapses it into the
+neighbouring row, so it is absent from the extracted text. It is
 present in the PDF (0.0954 for the stage 2 final model, 0.0961 for the ad hoc
 model) and in the control stream's five-element `$OMEGA DIAGONAL(5)`. Both model
 files carry all five IIV terms.

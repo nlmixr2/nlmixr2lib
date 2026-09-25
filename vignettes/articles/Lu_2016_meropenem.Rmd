@@ -589,9 +589,9 @@ Jensen-inequality effect, not a transcription error.
   list is preserved in the model file's `covariatesDataExcluded`. Nine of those
   names (`CSF_WBC`, `CSF_RBC`, `CSF_NEUT`, `CSF_GLU`, `CSF_CHLORIDE`, and four
   `CONMED_*` entries) are documentation keys only and deliberately carry no
-  canonical-register entry, per operator ruling, because no model consumes them.
+  canonical-register entry, per maintainer ruling, because no model consumes them.
 - **`CSF_DRAIN_VOL_24H` is a new canonical covariate column**, registered in
-  `inst/references/covariate-columns.md` alongside this model (operator ruling,
+  `inst/references/covariate-columns.md` alongside this model (maintainer ruling,
   2026-09-21). It is a required model input rather than a covariate effect: the
   model will not solve without it, and a patient with no drain takes the value
   0, which removes the drainage term entirely.

@@ -24,8 +24,8 @@ the fixed-ratio combination product ceftazidime-avibactam: two NONMEM control
 streams, two analysis data sets (9,155 observations from 1,975 subjects for
 ceftazidime, 13,735 from 2,249 for avibactam) and two parameter tables. The
 two are combined only downstream, in the joint PK/PD target attainment
-analysis. Following the `replicate-author-structure` policy the extraction is
-therefore two model files sharing this one vignette.
+analysis. Per the library's policy of replicating the authors' model structure,
+the extraction is therefore two model files sharing this one vignette.
 
 ```{r models}
 uiCaz <- rxode2::rxode(readModelDb("Li_2019_ceftazidime"))
@@ -244,7 +244,7 @@ the label-recommended regimen for their creatinine clearance, exactly as Table
 set.seed(20190211)
 rxode2::rxSetSeed(20190211)
 
-N_ARM <- 200L # per indication; the skill caps this at 200
+N_ARM <- 200L # per indication; the package caps vignette cohorts at 200
 
 # Day 3 CrCL bands and counts, Li 2019 Table 3 (bottom block).
 crclBands <- tribble(
@@ -515,8 +515,7 @@ attr(cmp, "footnote")
 # published marginal counts, not from the patient-level data, so the two sides
 # differ by a genuine physical mechanism (which subjects drew which renal
 # function) rather than by numerical error. Assert on the CENTRE and on a
-# robust quantile, never on the extreme -- see the repository CLAUDE.md note on
-# vignette assertions over a simulated cohort.
+# robust quantile, never on the extreme.
 #
 # The comparison is recomputed from the two source frames rather than parsed
 # back out of `cmp$"% diff"`, which is a formatted character column carrying a
@@ -655,9 +654,9 @@ contrast against.
 
 6. **Two model files, one vignette.** The two analytes were fitted separately,
    to different data sets, with different retained covariates. They are
-   extracted as two files per `replicate-author-structure`, and the joint
-   PK/PD analysis that couples them lives here in the vignette, which is where
-   Li 2019 puts it too.
+   extracted as two files per the library's policy of replicating the authors'
+   model structure, and the joint PK/PD analysis that couples them lives here
+   in the vignette, which is where Li 2019 puts it too.
 7. **The creatinine-clearance slopes are encoded `fixed()`** in the
    ceftazidime model. They are hard-coded constants in the final control
    stream (`SLOPE1=0.01030360`, `SLOPE2=0.00125182`, under the comment

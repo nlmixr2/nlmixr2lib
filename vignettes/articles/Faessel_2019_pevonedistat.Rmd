@@ -82,7 +82,7 @@ pointing at its source location. They are collected here for review.
 | Log-transform-both-sides additive (i.e. log-normal) residual error | n/a | Methods section 2.3 |
 
 The four covariate equations are typeset as display equations in the published PDF
-and are not recovered by text extraction of the trimmed markdown; they were read
+and are not recovered in the markdown text extracted from the PDF; they were read
 from the PDF itself with `pdftotext -layout` (page 2573, beneath Table 3).
 
 ```{r model}
@@ -727,7 +727,7 @@ stopifnot(abs(auc_ratio - 1.79) < 0.25)
 
 # Assumptions and deviations
 
-- **Covariate equations came from the PDF, not the trimmed text.** The four
+- **Covariate equations came from the PDF, not the extracted text.** The four
   displayed equations beneath Faessel 2019 Table 3 are typeset as mathematics and are
   lost by markdown extraction. They were recovered with `pdftotext -layout` from page
   2573 and read:

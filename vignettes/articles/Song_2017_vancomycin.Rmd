@@ -336,7 +336,7 @@ rel_err <- with(
 )
 
 stopifnot(
-  # Guard against a silently empty comparison (pattern 10): all three strata
+  # Guard against a silently empty comparison: all three strata
   # must contribute, and essentially every post-dose row must survive.
   sum(cmp_rows) > 3000L,
   length(unique(profiles$stratum[cmp_rows])) == 3L,
@@ -539,7 +539,7 @@ lands near the published 3.95 kg.
 # seed rxode2's simulation RNG, whose streams are partitioned per solver
 # thread, so the eta draws differ between a workstation and a CI runner.
 # Every assertion downstream is written to hold for any cohort the model can
-# produce; see pattern 12 of known-vignette-failure-patterns.md.
+# produce.
 set.seed(20171026)
 rxode2::rxSetSeed(20171026)
 

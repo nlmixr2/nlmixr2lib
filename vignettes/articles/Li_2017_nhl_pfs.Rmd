@@ -690,8 +690,8 @@ hr |>
   not tabulated anywhere and are not extracted.
 * **The sensitivity analysis is not extracted.** Table S1's second block
   reports a complete-covariate sensitivity analysis on the 91 studies
-  with no imputed covariates. Per the library's
-  replicate-author-structure policy, robustness checks the authors did
+  with no imputed covariates. Per the library's policy of replicating
+  the authors' model structure, robustness checks the authors did
   not report as final are excluded. For reference, it moved `k` to 0.69
   (95% CI 0.47, 0.91) and `lambda` to 118 (95% CI 35.7, 200.3) -- under
   15%, as the paper states -- but additionally retained treatment and

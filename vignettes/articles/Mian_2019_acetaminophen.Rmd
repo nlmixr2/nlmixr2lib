@@ -289,8 +289,7 @@ events_md <- dplyr::bind_rows(doses_md, obs_md) |>
 
 ```{r simulate}
 # useLinCmt = FALSE: rxode2's automatic ODE-to-linCmt conversion corrupts the
-# dvid -> cmt mapping for multi-output models (pattern 5b of the skill's
-# known-vignette-failure-patterns).
+# dvid -> cmt mapping for multi-output models.
 # Tight tolerances: the oxidative pool's elimination rate constant is of the
 # order of 1000 /h, which is stiff relative to the parent's 0.12 /h, and the
 # default absolute tolerance leaves visible noise on its far tail.
@@ -586,9 +585,8 @@ sim_typ_nca <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::mutate(treatment = "typical 6.1 kg")
 
-# rxSolve omits the `id` column entirely for a single-subject event table
-# (pattern 8 of the skill's known-vignette-failure-patterns); restore it so
-# the PKNCA grouping formula below has something to group on.
+# rxSolve omits the `id` column entirely for a single-subject event table;
+# restore it so the PKNCA grouping formula below has something to group on.
 if (is.null(sim_typ_nca$id)) sim_typ_nca$id <- 1L
 
 typ_dose_df <- tibble::tibble(id = 1L, time = 0, amt = typ_dose, treatment = "typical 6.1 kg")

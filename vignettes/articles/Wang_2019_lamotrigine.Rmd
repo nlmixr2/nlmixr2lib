@@ -564,7 +564,7 @@ A modest virtual cohort illustrates the interindividual variability the model
 carries (`etalcl` 15.2% CV, `etalvc` 20.1% CV). No assertion is made on this
 cohort: `rxode2::rxSetSeed()` fixes the draw within an rxode2 version and thread
 count but not across them, so an assertion on a simulated extreme is not
-reproducible in CI (see `known-vignette-failure-patterns.md` pattern 12).
+reproducible in CI.
 
 ```{r vpc, fig.cap = "Steady-state variability at 100 mg b.i.d. for the ordinary and VPA-comedicated patient types (100 subjects per arm, typical-value profile overlaid in black)."}
 rxode2::rxSetSeed(20190725)

@@ -151,7 +151,7 @@ concentration-time profile weight-independent by construction.
 # set.seed() seeds R's RNG, not rxode2's, and rxode2 partitions its streams per
 # solver thread -- so this cohort differs between a 2-core CI runner and a
 # 16-thread workstation. Every assertion below is written to hold for any cohort
-# the model can produce (see known-vignette-failure-patterns.md pattern 12).
+# the model can produce.
 set.seed(20180501)
 
 dose_mgkg <- 29.4 # Results 3.2: study mean dose used to normalise concentrations

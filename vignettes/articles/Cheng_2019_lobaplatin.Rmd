@@ -789,7 +789,7 @@ spread.
   ug*h/L (= ng*h/mL) from the magnitudes and from the ng/mL axis of Figure 2.
 
 - **The digitised Figure 3 percentiles** were read off the published raster by
-  the extractor; roughly +/- 15% reading error applies and that section's gate
+  the maintainers; roughly +/- 15% reading error applies and that section's gate
   is set accordingly.
 
 **Cohort assumptions**

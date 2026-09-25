@@ -512,7 +512,7 @@ stopifnot(all(abs(molar - printed) < 0.15))
   and 5.6%, so the n = 5 estimate is far too unstable to falsify either
   reading, and the model was fitted to a pooled dataset spanning separately
   conducted experiments, which inflates BSV relative to any one group.
-  The variance reading was **ratified by the operator on 2026-09-21** after
+  The variance reading was **ratified by the maintainers on 2026-09-21** after
   this evidence was reviewed; only the stochastic cohort figures and the PKNCA
   spread depend on it, not the structural gate, which uses `zeroRe()`.
 - **Residual error is not published.** Section 4.5 states that an additive plus
@@ -553,7 +553,7 @@ stopifnot(all(abs(molar - printed) < 0.15))
   the paper's equations 4 and 5 act on its amount -- so it is not a
   `central_<metab>` state, and asserting a volume for it would invent a
   concentration the paper never defines. It is named `precursor_5fu`, and
-  `precursor_<metab>` was **ratified by the operator on 2026-09-21** as a
+  `precursor_<metab>` was **ratified by the maintainers on 2026-09-21** as a
   canonical compartment family for amount-only chemical precursors; this model
   is the founding example registered in
   `inst/references/compartment-names.md`. The family is distinct from the

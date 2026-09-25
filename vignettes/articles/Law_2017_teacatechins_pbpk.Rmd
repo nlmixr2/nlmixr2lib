@@ -743,11 +743,10 @@ knitr::kable(
   ordinary three-compartment transit chain with mean residence time `Rt` per
   sub-compartment. The flux into the gut lumen is `bile_transit3 / mtt_bile`,
   and the total bile-duct delay is `3 * mtt_bile`. `bile_transit<n>` is a
-  canonical nlmixr2lib chain family, ratified with these models by operator
-  ruling 2026-09-21 (sidecar `oasweep_PMC5464336` q1); the paired parameter
-  `lmtt_bile` was ratified in the same ruling under the existing
-  `lmtt_<context>` family, with the caveat recorded in
-  `inst/references/parameter-names.md` that it is a **per-sub-compartment**
+  canonical nlmixr2lib chain family, ratified with these models by maintainer
+  ruling 2026-09-21; the paired parameter `lmtt_bile` was ratified in the same
+  ruling under the existing `lmtt_<context>` family, with the caveat recorded
+  in `inst/references/parameter-names.md` that it is a **per-sub-compartment**
   residence time rather than the chain's total mean transit time.
 * **Observation.** `Cc` is the mixed-venous *plasma* concentration of the free
   (unconjugated) catechin, `C_venous / BLPLR` (eq A10). It is not a total

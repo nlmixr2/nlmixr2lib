@@ -153,7 +153,7 @@ vc_pv <- typ_par$vc[typ_par$arm == "Polycythemia vera"]
 
 # These are algebraic identities of the compiled model evaluated with zeroed
 # random effects, not statistics of a random cohort, so an exact tolerance is
-# correct here (see CLAUDE.md on vignette assertions over a simulated cohort).
+# correct here.
 stopifnot(
   # Table 2: TVCL/F 13.0 L/h and TVV2/F 311 L, at CLcr 78.5 vs the 78.3
   # normalisation constant (a 0.075 per cent difference).

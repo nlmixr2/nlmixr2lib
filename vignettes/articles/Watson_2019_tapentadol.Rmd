@@ -188,7 +188,7 @@ treated as the sampling *definition*.
 # rxode2's streams are partitioned per solver thread -- so this cohort is
 # reproducible here and different on a machine with a different thread count.
 # Every assertion below is therefore written to hold for any cohort the model
-# can produce (see known-vignette-failure-patterns.md pattern 12).
+# can produce.
 set.seed(20190101)
 
 N_PER_GROUP <- 200L # cap is 200 per arm
@@ -424,11 +424,11 @@ cat(sprintf("subjects with ka < kel (flip-flop absorption): %.1f%%\n",
 
 # Both sides of this identity come from the SAME draw, so the residual is pure
 # numerical-integration error, not cohort noise -- a tight bound is correct here
-# and should not be loosened (see CLAUDE.md on vignette assertions). Realised
-# median deviation 0.09% and max 0.17%; the bounds leave headroom for a cohort
-# that draws an even slower absorber (whose AUCinf extrapolation from a 72 h
-# window carries the most error) while still going red on any unit or scaling
-# error, which would move these by tens of percent.
+# and should not be loosened. Realised median deviation 0.09% and max 0.17%; the
+# bounds leave headroom for a cohort that draws an even slower absorber (whose
+# AUCinf extrapolation from a 72 h window carries the most error) while still
+# going red on any unit or scaling error, which would move these by tens of
+# percent.
 stopifnot(
   abs(median(nca_wide$auc_identity) - 1) < 0.005,
   max(abs(nca_wide$auc_identity - 1)) < 0.02

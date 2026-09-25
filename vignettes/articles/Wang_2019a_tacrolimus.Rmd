@@ -153,7 +153,7 @@ per-administration `amt` is half of `DOSE_TAC_MGD`.
 # rxode2's simulation RNG, and rxode2's streams are partitioned per solver
 # thread, so the eta draws differ on a machine with a different thread count.
 # Every assertion in this vignette is written to hold for any cohort the model
-# can produce; see pattern 12 of the skill's known-vignette-failure-patterns.
+# can produce.
 set.seed(20190403)
 
 n_per_arm <- 150L # <= the 200-per-arm cap

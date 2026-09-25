@@ -231,7 +231,7 @@ four correlated random effects; no demographic distribution has to be assumed.
 # rxSetSeed() fixes rxode2's RNG per solver thread, not across thread counts, so
 # a CI runner draws a different cohort than a workstation does. Every assertion
 # on a simulated quantity below is written to hold for any cohort the model can
-# produce (see known-vignette-failure-patterns.md pattern 12).
+# produce.
 n_per_arm <- 200L
 
 make_cohort <- function(n, treatment, dose_times, obs_times, id_offset = 0L) {

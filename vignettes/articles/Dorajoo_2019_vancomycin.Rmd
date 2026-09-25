@@ -150,7 +150,7 @@ chk <- sim_one |>
   dplyr::mutate(ref = analytic(time), rel = abs(Cc - ref) / ref)
 
 # Deterministic numerical identity -- solver error only, so a tight bound is
-# correct here (pattern 11 of known-vignette-failure-patterns.md).
+# correct here.
 stopifnot(max(chk$rel) < 1e-4)
 
 c(
@@ -315,7 +315,7 @@ the protocol maximum rate of 500 mg/h, which supports an exact
 # set.seed() seeds R's RNG, not rxode2's; rxode2 partitions its streams per
 # solver thread, so this cohort differs between a 2-core CI runner and a
 # 16-thread workstation. Every assertion below is written to hold for any
-# cohort the model can produce (pattern 12).
+# cohort the model can produce.
 set.seed(20190611)
 
 n_per_arm <- 150L # <= 200/arm cap

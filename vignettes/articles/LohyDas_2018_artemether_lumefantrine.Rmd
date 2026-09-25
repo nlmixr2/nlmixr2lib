@@ -28,7 +28,7 @@ Lohy Das 2018 reports **two separate** population PK models from a single cohort
 * a **lumefantrine** model: 5-transit-compartment absorption followed by two-compartment disposition (Fig. 1A, Table 2), and
 * a joint **artemether + dihydroartemisinin** model: 2-transit-compartment absorption, one-compartment disposition for each analyte, and an enzyme turnover compartment producing autoinduction of artemether clearance (Fig. 1B, Table 2, Eqs. 1 and 4-6).
 
-The authors explicitly attempted and then abandoned a simultaneous fit of the two drugs -- "adding off-diagonal correlation elements to explore MTT correlations resulted in an unstable model" and simultaneous modelling "substantially increased the computational time (>18-fold increase)". Per the `replicate-author-structure` policy the two independent fits are therefore extracted as two model files, with this single vignette walking the paper as a unit.
+The authors explicitly attempted and then abandoned a simultaneous fit of the two drugs -- "adding off-diagonal correlation elements to explore MTT correlations resulted in an unstable model" and simultaneous modelling "substantially increased the computational time (>18-fold increase)". Per the library's policy of replicating the authors' model structure, the two independent fits are therefore extracted as two model files, with this single vignette walking the paper as a unit.
 
 ```{r load-models}
 mod_lf <- rxode2::rxode2(readModelDb("LohyDas_2018_lumefantrine")())
@@ -177,7 +177,7 @@ c(closed_form_h = t_half_closed, closed_form_days = t_half_closed / 24,
   solved_h = t_half_solved)
 
 # The solve must reproduce its own closed form: this is pure numerical error,
-# so a tight bound is correct here (see CLAUDE.md on when tight bounds apply).
+# so a tight bound is correct here.
 stopifnot(abs(t_half_solved / t_half_closed - 1) < 0.01)
 ```
 
@@ -324,7 +324,7 @@ c(median_3day = med3, published_3day = 709,
 # Assertions are on the CENTRE and on the fold-change, not on the extremes: the
 # relative-bioavailability random effect has a 144% CV and a Box-Cox-stretched
 # lower tail, so which subjects land in the tails is not reproducible across
-# rxode2 builds. See CLAUDE.md, "Vignette assertions over a simulated cohort".
+# rxode2 builds.
 stopifnot(
   abs(med3 / 709 - 1) < 0.30,
   abs(med5 / 2010 - 1) < 0.30,

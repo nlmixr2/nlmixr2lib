@@ -322,7 +322,7 @@ regimens to steady state in a phase II/III-like RA population.
 # are partitioned per solver thread -- so this cohort is reproducible on this
 # machine and different on a machine with a different thread count. Every
 # assertion below is written so that it holds for ANY cohort the model can
-# produce (see pattern 12 of the skill's known-vignette-failure-patterns).
+# produce.
 set.seed(20260923)
 rxode2::rxSetSeed(20260923)
 

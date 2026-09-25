@@ -396,10 +396,9 @@ stopifnot(all(lo$n > 20), all(hi$n > 20))
 #    than on the percentage below 2 mg/L. The percentage is a
 #    threshold-crossing proportion: as the dose rises, both groups move above
 #    2 mg/L and the gap between them collapses toward zero, so a fixed margin
-#    on it is a race between two noisy statistics (the exact shape pattern 12
-#    of known-vignette-failure-patterns.md warns against, and it did go red
-#    here at the top of the dose range before being rewritten). The median
-#    trough is stable across doses because clearance scales it uniformly.
+#    on it is a race between two noisy statistics (it did go red here at the
+#    top of the dose range before being rewritten). The median trough is
+#    stable across doses because clearance scales it uniformly.
 stopifnot(all(lo$median_trough > hi$median_trough))
 
 # 2. Magnitude of that contrast. Realised median-trough ratio is about 1.36

@@ -92,7 +92,7 @@ structure despite the biphasic disposition reported for tiapride in adults.
 
 Every equation and every `ini()` value, with the location it came from.
 **Equations 1-10 of the source are vector graphics that both `pdftotext` and
-the markdown preprocessor drop silently**; they were recovered by rendering
+PDF-to-markdown conversion drop silently**; they were recovered by rendering
 pages 3-8 of the PDF at 200-500 dpi and reading them as images.
 
 ```{r source-trace, echo = FALSE}
@@ -135,7 +135,7 @@ knitr::kable(
     "Transport structure",        "Michaelis-Menten, saturable, DRIVEN (no loss from central)", "Figure 2 (dashed arrow); Results; plasma parameters held fixed",
     "Saliva elimination",         "first-order out of saliva",  "Figure 2; Results",
     "Back-transfer saliva -> central", "none (tested, not retained)", "Discussion paragraph 6",
-    "Apparent saliva volume",     "1.35 L -- NOT REPORTED, recovered from Figure 4", "See Errata; operator-ratified 2026-09-21",
+    "Apparent saliva volume",     "1.35 L -- NOT REPORTED, recovered from Figure 4", "See Errata; maintainer-ratified 2026-09-21",
     "Mean saliva:plasma ratio",   "2.3",                        "Discussion paragraph 2",
     "Saliva assay range",         "4-2000 ng/mL",               "Methods 'Sample analysis'"
   ),
@@ -787,8 +787,7 @@ plasma prediction is about 790 ng/mL and its median saliva prediction about
 `Vsaliva` = 1000 x 2.83 / 2100 = 1.35 L. The value is annotated inline in
 `ini()` as figure-derived. This follows the standing figure-digitisation
 policy for parameters available only graphically, and was
-**operator-ratified on 2026-09-21** (sidecar `oasweep_PMC13111164`
-`request-001` / `response-001`, question q1, option B).
+**maintainer-ratified on 2026-09-21**.
 
 **What this costs.** Three caveats, in decreasing order of importance:
 
@@ -833,7 +832,7 @@ reconstruction. It is encoded as **driven** (central is untouched) on the
 three grounds set out in the saliva section above -- the dashed arrow in
 Figure 2, the sequential fit with plasma parameters held fixed, and the fact
 that the printed `Vmax` is too large to be mass-conserving. The same structural
-reading was operator-ratified for `Nguyen_2026_linezolid.R`, the other saliva
+reading was maintainer-ratified for `Nguyen_2026_linezolid.R`, the other saliva
 model in this library. Were the term instead depleting, the plasma layer would
 no longer reproduce Table 2 and the `CL/F * AUC = dose` identity would fail by
 tens of percent, so this is not a fine distinction.

@@ -749,7 +749,7 @@ parameter-table value with one back-solved from a figure in the same paper, so
 it is not a call this workflow makes on its own: the standing policy sanctions
 digitising figures for parameters the tables *omit*, whereas here the table does
 print a value. It was therefore escalated as an unresolvable value conflict
-between two places in one source and ruled on explicitly (operator decision,
+between two places in one source and ruled on explicitly (maintainer decision,
 2026-09-21) in favour of the figure-anchored value, on the grounds that the
 printed 80 L cannot be reconciled with three other independent statements the
 same paper makes. Both readings were implemented and gated before the ruling;

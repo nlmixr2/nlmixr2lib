@@ -135,7 +135,7 @@ scale** rather than multiplicative.
 `nlmixr2lib` already ships `NA_NA_lidocaine`, extracted from DDMORE Foundation
 Model Repository entry **DDMODEL00000281**. That bundle's header states that no
 linked publication could be identified, and the model was filed under a
-placeholder `NA_NA` name with operator-default units and no demographics.
+placeholder `NA_NA` name with maintainer-chosen default units and no demographics.
 
 **That bundle is this analysis.** The evidence is listed below; the two models
 are now cross-linked via `replicate_of` in both files.
@@ -369,8 +369,8 @@ covariates"; by the structural check above this choice cannot influence lidocain
 exposure at all.
 
 The paper simulated 500 individuals per arm. This vignette uses 200 per arm, the
-skill's cap; the comparison below is against medians and robust quantiles, for
-which 200 is ample.
+package's cap for vignette cohorts; the comparison below is against medians and
+robust quantiles, for which 200 is ample.
 
 ```{r cohort}
 # set.seed() seeds R's RNG, not rxode2's simulation stream, and rxode2

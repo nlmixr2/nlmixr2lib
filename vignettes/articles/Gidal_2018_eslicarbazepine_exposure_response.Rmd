@@ -90,7 +90,7 @@ error, and is reproduced as printed.
 
 ```{r load-models}
 # readModelDb() returns the model FUNCTION; rxode2::rxode() resolves it to a
-# ui that works anywhere (known-vignette-failure-patterns.md pattern 7).
+# ui that works anywhere.
 mods <- lapply(
   stats::setNames(models$model, models$model),
   function(m) rxode2::rxode(readModelDb(m))
@@ -257,7 +257,7 @@ exposure-response models consume.
 # rxode2's streams are partitioned PER SOLVER THREAD, so the cohort below is
 # reproducible on this machine and different at a different thread count.
 # Every assertion downstream is written to hold for ANY cohort the model can
-# produce (see known-vignette-failure-patterns.md pattern 12).
+# produce.
 set.seed(20180801)
 
 n_arm <- 200L

@@ -303,7 +303,7 @@ n_doses <- 8L # enough to reach steady state
 # Both PK models declare TWO endpoints (Cc and Cunbound). Observation rows must
 # therefore name a declared endpoint, and rxSolve needs useLinCmt = FALSE --
 # its default ODE->linCmt conversion corrupts the dvid->cmt mapping for this
-# model shape (known-vignette-failure-patterns.md pattern 5b).
+# model shape.
 solve_profile <- function(ui, ega, ii, typical = TRUE, n = 1L, id_offset = 0L) {
   last_dose <- ii * (n_doses - 1L)
   grid <- seq(last_dose, last_dose + ii, by = 1)
@@ -394,7 +394,7 @@ wide <- t_above_mic |>
   tidyr::pivot_wider(names_from = regimen, values_from = pct_T_over_MIC)
 
 stopifnot(
-  # Guard against a lookup that silently tests nothing (pattern 10).
+  # Guard against a lookup that silently tests nothing.
   nrow(wide) == length(gw_levels) * 2L,
   all(c("q6h", "q8h") %in% names(wide)),
   # The paper's claim: q6h prolongs time above MIC90 relative to q8h, in
@@ -551,7 +551,7 @@ stopifnot(
   nrow(spread) == 2L,
   # Both cohorts show a plausible clearance spread. Bounds are wide because
   # these are cohort statistics, which rxode2 draws differently at different
-  # solver-thread counts (pattern 12); realised values here were 16.9% and
+  # solver-thread counts; realised values here were 16.9% and
   # 16.4%. A mis-entered omega would move these by a factor, not a few points.
   all(spread$cv > 3), all(spread$cv < 45)
 )

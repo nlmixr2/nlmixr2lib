@@ -365,9 +365,7 @@ oralChk <- dplyr::mutate(
 )
 
 # Deterministic typical-value solves -- no cohort is drawn, so these bounds do
-# not depend on rxode2's thread-partitioned RNG and a tight bound is correct
-# (see known-vignette-failure-patterns.md pattern 12, which applies to
-# cohort-derived quantities only).
+# not depend on rxode2's thread-partitioned RNG and a tight bound is correct.
 #
 # Realised: |Cmax| <= 6.7%, |AUC| <= 7.4%, |%T>MIC| <= 1.2 points. The residual
 # sits entirely on the q12h / q24h rows and is consistent with the paper's

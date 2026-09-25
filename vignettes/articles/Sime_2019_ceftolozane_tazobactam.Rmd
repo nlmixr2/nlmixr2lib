@@ -293,7 +293,7 @@ render budget.
 # rxode2's streams are partitioned PER SOLVER THREAD -- so the cohorts below are
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion downstream is written to hold for any cohort the
-# model can produce; see pattern 12 of the skill's known-failure-pattern list.
+# model can produce.
 set.seed(20190923)
 
 n_per_arm <- 100L

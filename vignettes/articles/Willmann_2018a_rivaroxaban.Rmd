@@ -342,7 +342,7 @@ deliberately confounded in the model and must be confounded in the cohort too.
 # cohort this model can produce.
 set.seed(20180416)
 
-n_sub <- 150 # per arm; the skill caps validation cohorts at 200 per arm
+n_sub <- 150 # per arm; validation cohorts are capped at 200 per arm
 
 cohort <- tibble::tibble(
   id = seq_len(n_sub),

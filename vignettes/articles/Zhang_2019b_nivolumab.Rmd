@@ -215,7 +215,7 @@ these derivations are listed in "Assumptions and deviations" below.
 # NOT seed rxode2's simulation RNG, and rxode2's eta streams are partitioned per
 # solver thread -- so a 2-core CI runner draws different etas than a 16-thread
 # workstation. Every assertion downstream is written to hold for any cohort the
-# model can produce (see known-vignette-failure-patterns.md pattern 12).
+# model can produce.
 set.seed(20191432)
 n_arm <- 200L
 

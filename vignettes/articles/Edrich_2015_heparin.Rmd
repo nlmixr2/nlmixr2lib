@@ -456,7 +456,7 @@ gate2 |>
   rename("Group" = group, "Requirement" = requirement, "Pass" = pass) |>
   knitr::kable(caption = "Table 2 acceptance criteria, keyed to each group's censoring fraction.")
 
-# Guard against a gate that silently tests nothing (pattern 10): confirm all
+# Guard against a gate that silently tests nothing: confirm all
 # four groups are present and that both requirement branches were exercised.
 stopifnot(
   nrow(gate2) == 4L,
@@ -575,7 +575,7 @@ sim_nca_raw <- rxode2::rxSolve(
   returnType = "data.frame", addDosing = FALSE
 )
 
-# Guard against a log() of a negative solver-noise tail (pattern 11).
+# Guard against a log() of a negative solver-noise tail.
 stopifnot(all(sim_nca_raw$Cc > 0))
 
 # Filter on !is.na(Cc) ONLY -- a `time > 0` or `Cc > 0` filter would drop the
@@ -776,8 +776,7 @@ comment therefore agree with each other and disagree with the literal by
 0.005 L/kg in both sexes, which mis-scales every predicted ACT increment by
 0.075 / 0.070 = 7.1%.
 
-The **code literal is adopted here** (operator decision, task
-`oasweep_PMC4327399` sidecar request 001, question q2, option A), applying the
+The **code literal is adopted here** (maintainer decision), applying the
 standing "text versus printed equation conflict, trust the equation" rule: the
 control stream is what actually ran, and `k_ACT` was estimated conditional on
 whichever `V1` it used, so the literal keeps `k_ACT` and `V1` mutually
