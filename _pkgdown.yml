@@ -2636,6 +2636,8 @@ navbar:
         href: articles/Nguyen_2026_linezolid.html
       - text: "Linezolid (Schmidt 2009)"
         href: articles/Schmidt_2009_oxazolidinones.html
+      - text: "Linezolid (Soraluce 2020)"
+        href: articles/Soraluce_2020_linezolid.html
       - text: "Linezolid (Taubert 2016)"
         href: articles/Taubert_2016_linezolid.html
       - text: "Linezolid (Tian 2025)"
@@ -7232,6 +7234,7 @@ articles:
   - articles/Song_2025_infliximab
   - articles/Songvut_2026_andrographolide
   - articles/Sood_2026_lu177dotatate
+  - articles/Soraluce_2020_linezolid
   - articles/SoriaChacartegui_2026_tramadol
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
