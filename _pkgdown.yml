@@ -3022,6 +3022,10 @@ navbar:
         href: articles/Lyauk_2016_methylphenidate.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
+      - text: "Methylprednisolone il10 (Hornik 2019)"
+        href: articles/Hornik_2019_methylprednisolone.html
+      - text: "Methylprednisolone il6 (Hornik 2019)"
+        href: articles/Hornik_2019_methylprednisolone.html
       - text: "Methylprednisolone sheep (Leber 2023)"
         href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "Metoprolol (Eugene 2016a)"
@@ -6337,6 +6341,7 @@ articles:
   - articles/Horita_2018_isoniazid
   - articles/Horita_2018_pyrazinamide
   - articles/Horita_2018_rifampicin
+  - articles/Hornik_2019_methylprednisolone
   - articles/Hornik_2025_furosemide
   - articles/Hosseini_2024_flt3lfc
   - articles/Hu_2014_bapineuzumab

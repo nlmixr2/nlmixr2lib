@@ -2591,10 +2591,10 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Units:** (categorical; 1-6 integer)
 - **Type:** categorical
 - **Scope:** specific
-- **Reference category:** Paper-specific. Oualha 2014 uses RACHS-1 = 2 as the low-risk reference stratum on SV*SVR_max (categories 1 are absent from the cohort; 3 and 4 are pooled as the higher-risk stratum).
+- **Reference category:** Paper-specific. Oualha 2014 uses RACHS-1 = 2 as the low-risk reference stratum on SV*SVR_max (categories 1 are absent from the cohort; 3 and 4 are pooled as the higher-risk stratum). Hornik 2019 uses RACHS-1 < 4 as the reference and pools >= 4 as the higher-risk stratum.
 - **Source aliases:**
   - `RACHS-1` -- the publication's printed form with a hyphen, not a valid R identifier; renamed to `RACHS1` when assembling input data.
-- **Example models:** `Oualha_2014_epinephrine.R` (decomposed inside `model()` into a binary indicator `rachs1_high <- (RACHS1 >= 3)` that selects an additive log-shift on SV*SVR_max from 0.44 to 0.26 for the high-risk pool).
+- **Example models:** `Oualha_2014_epinephrine.R` (decomposed inside `model()` into a binary indicator `rachs1_high <- (RACHS1 >= 3)` that selects an additive log-shift on SV*SVR_max from 0.44 to 0.26 for the high-risk pool); `Hornik_2019_methylprednisolone_il6.R` (decomposed inside `model()` into `rachs1_high <- (RACHS1 >= 4)`, which multiplies the IL-6 cardiopulmonary-bypass effect CPBE by 2.59; reference stratum RACHS-1 < 4, Hornik 2019 Table 3 and Data S2 `RANKN`).
 - **Notes:** Specific scope because the variable is paediatric-cardiac-surgery-population-bound and the reference category depends on which RACHS-1 strata the cohort contains (Oualha 2014 has categories 2-4 only; a paper with categories 1-6 would need a different decomposition). Decompose inside `model()` into mutually exclusive binary indicators matching the source's pooling (e.g., `rachs1_high <- (RACHS1 >= 3)`) and document the pooling rule in `covariateData[["RACHS1"]]$notes`.
 
 ### CVP (**canonical for central venous pressure**)
