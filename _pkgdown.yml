@@ -2008,12 +2008,20 @@ navbar:
         href: articles/Eissing_2024_finerenone.html
       - text: "Finerenone (Goulooze 2022)"
         href: articles/Goulooze_2022_finerenone.html
+      - text: "Finerenone (Snelder 2020)"
+        href: articles/Snelder_2020_finerenone.html
       - text: "Finerenone (vandenBerg 2021)"
         href: articles/vandenBerg_2021_finerenone.html
       - text: "Finerenone egfr (Goulooze 2022)"
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
+      - text: "Finerenone egfr (Snelder 2020)"
+        href: articles/Snelder_2020_finerenone.html
+      - text: "Finerenone potassium (Snelder 2020)"
+        href: articles/Snelder_2020_finerenone.html
       - text: "Finerenone uacr (Goulooze 2022)"
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
+      - text: "Finerenone uacr (Snelder 2020)"
+        href: articles/Snelder_2020_finerenone.html
       - text: "Flt3lfc cyno (Hosseini 2024)"
         href: articles/Hosseini_2024_flt3lfc.html
       - text: "Flt3lfc human (Hosseini 2024)"
@@ -7760,6 +7768,7 @@ articles:
   - articles/Snelder_2014_cardiovascular_rat
   - articles/Snelder_2019_leuprorelin
   - articles/Snelder_2020_ASP8232
+  - articles/Snelder_2020_finerenone
   - articles/Soehoel_2022_tralokinumab
   - articles/Sokolov_2019_antipcsk9_qsp
   - articles/Sokolov_2023_dapagliflozin
