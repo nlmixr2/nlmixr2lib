@@ -5156,6 +5156,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Urien_2005_capecitabine.R`, `Blesch_2003_capecitabine.R`, `Kim_2017_tegafur_rat.R` (the tegafur route, via the `precursor_5fu` pool).
 
+### 5fuh2 (**canonical 5-fluoro-5,6-dihydrouracil metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 5-fluoro-5,6-dihydrouracil (5FUH2, also written 5-FUH2 or DHFU), the first catabolite of 5-fluorouracil, formed by dihydropyrimidine dehydrogenase (DPD). It lies between 5-FU ([[5fu]]) and alpha-fluoro-beta-alanine ([[fbal]]) in the catabolic cascade. Use it as the compartment suffix (`central_5fuh2`), the observation suffix (`Cc_5fuh2`) and the parameter suffix (`lcl_5fuh2`, `lvc_5fuh2`) when a model carries plasma 5FUH2 as its own species.
+- **Source aliases:** `5FUH2`, `5-FUH2`, `DHFU`.
+- **Example models:** `Arshad_2020_fluorouracil.R` (one-compartment 5FUH2 fed by `fm * kel * central` with `fm` fixed at 0.85; the 5FUH2 clearance shares the linear BSA effect of 5-FU clearance).
+
 ### fbal (**canonical alpha-fluoro-beta-alanine capecitabine catabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** alpha-fluoro-beta-alanine (FBAL), the terminal renally-excreted catabolite of 5-FU produced by the dihydropyrimidine-dehydrogenase / dihydropyrimidinase / beta-ureidopropionase cascade. Plasma FBAL is the most abundant capecitabine-derived species and tracks systemic catabolic capacity; its renal clearance is a function of creatinine clearance.

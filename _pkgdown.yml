@@ -2052,6 +2052,8 @@ navbar:
         href: articles/Polito_2016_fludrocortisone.html
       - text: "Flumazenil pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Fluorouracil (Arshad 2020)"
+        href: articles/Arshad_2020_fluorouracil.html
       - text: "Fluorouracil (Yamada 2025)"
         href: articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab.html
       - text: "Fluoxetine (Han 2025)"
@@ -6129,6 +6131,7 @@ articles:
   - articles/Archary_2019_lamivudine
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
+  - articles/Arshad_2020_fluorouracil
   - articles/Aruldhas_2021_methadone
   - articles/Asaumi_2019_rifampicin_ddi_pbpk
   - articles/Ashraf_2018_s_ketamine_ticlopidine
