@@ -1,0 +1,432 @@
+---
+title: "PSA disease progression under leuprorelin (Zou 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PSA disease progression under leuprorelin (Zou 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# The model
+
+Zou et al. (2020) built a population disease-progression model of serum
+prostate-specific antigen (PSA) in 264 men with hormone-sensitive prostate
+cancer who were treated with the LHRH agonist leuprorelin, using a US medical
+claims database (Humana, 2007-2011). Two resistance mechanisms were compared;
+the final model is the paper's "clonal selection" Model II (AIC 295.7 against
+865.4 for the "adaptation" Model I), which splits the observed baseline PSA
+(`PSA_BL`) into
+
+* a **drug-resistant** fraction `R = exp(-RP)` that grows first-order at `GR`
+  from the baseline draw onwards (state `growth`), and
+* a **drug-sensitive** fraction `1 - R` that grows first-order at `GS` until the
+  first leuprorelin dose and is killed first-order at `DS` from then on (state
+  `shrink`).
+
+`PSA = growth + shrink`, so `PSA(0) = PSA_BL` exactly. Hemoglobin enters as a
+power covariate on `RP`, baseline PSA as a power covariate on `DS`, and
+antiandrogen use within 30 days of leuprorelin initiation as an exponential
+covariate on `DS`.
+
+This is a disease-progression model with no pharmacokinetics: leuprorelin
+enters only through the per-subject time of its first dose,
+`T_SCAN_TO_DOSE`, measured from the baseline PSA draw. There is therefore
+**no PKNCA section** -- there is no drug concentration for non-compartmental
+analysis to act on. Validation is structural (closed-form and covariate
+identities) plus a reproduction of the paper's own simulated nadir, time to
+nadir and PSA-progression rates.
+
+```{r model-load}
+mod_fun <- readModelDb("Zou_2020_leuprorelin")
+mod <- rxode2::rxode2(mod_fun)
+mod
+```
+
+# Population
+
+```{r population}
+str(mod$meta$population)
+```
+
+The 264 subjects (Table 1) had a median age of 80 years (60-100): 189
+Caucasian, 59 Black and 16 Hispanic/other, mostly from the US South (196).
+Median baseline PSA was 8.50 ng/mL (0.200-782) and median hemoglobin 13.6 g/dL
+(6.80-17.4); 33 subjects received an antiandrogen within 30 days of starting
+leuprorelin. Patients with a falling pre-treatment PSA, an undetectable baseline
+or on-treatment PSA, incomplete demographics or hemoglobin below 6 g/dL were
+excluded, and PSA observed after the start of continuous antiandrogen therapy,
+surgery, radiotherapy or chemotherapy was dropped. PSA below 0.1 ng/mL (the
+LLOQ) was retained as censored.
+
+# Source trace
+
+```{r source-trace}
+trace <- tibble::tribble(
+  ~Item, ~Value, ~Source,
+  "Model II resistant clone", "PSA_R = BAS * R * exp(GR * t)", "Methods, Eq 2",
+  "Model II sensitive clone", "PSA_S = BAS * (1 - R) * exp(GS * t_s) * exp(-DS * t_k)", "Methods, Eq 3",
+  "Time split", "t_s = min(t, t1); t_k = max(0, t - t1)", "Methods, text after Eq 3",
+  "Resistant fraction", "R = exp(-RP)", "Methods, text after Eq 3",
+  "IIV form", "theta_i = theta_typical * exp(eta_i), all parameters", "Methods, Eq 4",
+  "Residual error", "additive on log PSA", "Methods, Eq 5; Results",
+  "Covariate on RP", "RP = theta_RP * (HGB / 13.6)^theta_HGB_RP", "Results, Eq 16",
+  "Covariates on DS", "DS = theta_DS * (BAS / 8.5)^theta_BAS_DS * exp(IND_AND * theta_AND_DS)", "Results, Eq 17",
+  "lkse (DS)", "3.78e-2 1/day", "Table 2",
+  "lkge_sens (GS)", "1.96e-3 1/day", "Table 2",
+  "lrp (RP)", "3.94", "Table 2",
+  "lkge (GR)", "6.54e-4 1/day", "Table 2",
+  "etalkse", "omega^2 = 0.453", "Table 2",
+  "etalkge_sens", "omega^2 = 2.59", "Table 2",
+  "etalrp", "omega^2 = 0.944", "Table 2",
+  "etalkge", "omega^2 = 3.76 (row labelled 'DR')", "Table 2",
+  "e_hgb_rp", "2.30", "Table 2",
+  "e_psa_bl_kse", "0.174", "Table 2",
+  "e_antiandrogen_kse", "0.677", "Table 2",
+  "expSd", "0.201", "Table 2"
+)
+knitr::kable(trace)
+```
+
+# Structural checks
+
+## The ODE form reproduces the published closed form
+
+The model writes Eqs 2-3 as two first-order ODEs whose sensitive-clone rate
+switches from `+GS` to `-DS` at `T_SCAN_TO_DOSE`. Solving it for a stochastic
+cohort with a spread of treatment-start delays and comparing each subject's
+PSA against Eqs 2-3 evaluated at the same drawn parameters checks the encoding.
+Both sides use identical parameters, so the difference is numerical error only
+and a tight bound applies.
+
+```{r closed-form-gate}
+set.seed(2020)
+n_cf <- 50
+cf_cov <- tibble(
+  id = seq_len(n_cf),
+  PSA_BL = exp(rnorm(n_cf, log(8.5), 1)),
+  HGB = rnorm(n_cf, 13.6, 1.5),
+  CONMED_ANTIANDROGEN = rbinom(n_cf, 1, 0.125),
+  T_SCAN_TO_DOSE = sample(c(0, 14, 45, 90), n_cf, replace = TRUE)
+)
+cf_times <- c(0, 7, 14, 30, 45, 60, 90, 120, 180, 270, 365, 540, 730)
+cf_ev <- tidyr::crossing(cf_cov, time = cf_times) |>
+  mutate(evid = 0, amt = 0) |>
+  arrange(id, time)
+
+rxode2::rxSetSeed(2020)
+cf_sim <- rxode2::rxSolve(
+  mod, cf_ev,
+  keep = c("PSA_BL", "T_SCAN_TO_DOSE"),
+  returnType = "data.frame",
+  atol = 1e-10, rtol = 1e-10
+)
+
+cf_chk <- cf_sim |>
+  mutate(
+    t_s = pmin(time, T_SCAN_TO_DOSE),
+    t_k = pmax(0, time - T_SCAN_TO_DOSE),
+    psa_closed = PSA_BL * fres * exp(kge * time) +
+      PSA_BL * (1 - fres) * exp(kge_sens * t_s) * exp(-kse * t_k),
+    abs_err = abs(PSA - psa_closed),
+    # Extreme etas start some resistant clones near 1e-6 ng/mL, comparable
+    # to the solver's absolute tolerance, and the ODE then carries a relative
+    # error of order 1e-5 as that clone grows. A structural error (a wrong
+    # rate, a missed switch) would be off by tens of percent, so a 1e-4
+    # relative bound, plus a small absolute term for near-zero values, still
+    # isolates the encoding from numerical noise.
+    within = abs_err <= 1e-4 * psa_closed + 1e-8
+  )
+summary(cf_chk$abs_err / cf_chk$psa_closed)
+stopifnot(all(cf_chk$within))
+```
+
+## Typical covariate effects match the Results
+
+The Results quote typical `RP` (and the implied `R`) at the cohort 5th
+percentile, median and 95th percentile of hemoglobin, and typical `DS` at the
+same percentiles of baseline PSA. These are deterministic functions of Table 2.
+
+```{r covariate-gate}
+th <- mod$theta
+rp_typ <- function(hgb) exp(th[["lrp"]]) * (hgb / 13.6)^th[["e_hgb_rp"]]
+ds_typ <- function(bas, and = 0) {
+  exp(th[["lkse"]]) * (bas / 8.5)^th[["e_psa_bl_kse"]] *
+    exp(th[["e_antiandrogen_kse"]] * and)
+}
+cov_tab <- tibble(
+  Quantity = c(
+    "RP, HGB 10.9", "RP, HGB 13.6", "RP, HGB 16.0",
+    "R (%), HGB 10.9", "R (%), HGB 13.6", "R (%), HGB 16.0",
+    "DS (1/day), PSA_BL 0.515", "DS (1/day), PSA_BL 8.5", "DS (1/day), PSA_BL 120",
+    "DS increase with antiandrogen (%)",
+    "GS doubling time (day)", "GR doubling time (day)"
+  ),
+  Model = c(
+    rp_typ(c(10.9, 13.6, 16.0)),
+    100 * exp(-rp_typ(c(10.9, 13.6, 16.0))),
+    ds_typ(c(0.515, 8.5, 120)),
+    100 * (ds_typ(8.5, 1) / ds_typ(8.5, 0) - 1),
+    log(2) / exp(th[["lkge_sens"]]),
+    log(2) / exp(th[["lkge"]])
+  ),
+  Paper = c(
+    2.37, 3.94, 5.73, 9.36, 1.94, 0.326,
+    2.32e-2, 3.78e-2, 5.99e-2, 96.8, 354, 1060
+  )
+) |>
+  mutate(`Difference (%)` = 100 * (Model / Paper - 1))
+knitr::kable(cov_tab, digits = 4)
+stopifnot(all(abs(cov_tab$`Difference (%)`) < 1.5))
+```
+
+All agree to the three significant figures the paper prints.
+
+# Virtual cohort and simulated PSA profiles
+
+The cohort draws covariates to match Table 1: baseline PSA log-normal with
+median 8.5 ng/mL and the 5th/95th percentiles (0.515 / 120 ng/mL) the Results
+quote; hemoglobin normal with median 13.6 g/dL and the quoted 5th/95th
+percentiles (10.9 / 16.0 g/dL), truncated to the observed range; antiandrogen
+use with probability 33/264. The paper does not report the delay from the
+baseline draw to the first dose, so leuprorelin starts at time 0.
+
+```{r cohort}
+set.seed(71)
+n_sub <- 200
+bl_sdlog <- (log(120) - log(0.515)) / (2 * qnorm(0.95))
+hgb_sd <- (16.0 - 10.9) / (2 * qnorm(0.95))
+cohort <- tibble(
+  id = seq_len(n_sub),
+  PSA_BL = pmin(pmax(exp(rnorm(n_sub, log(8.5), bl_sdlog)), 0.2), 782),
+  HGB = pmin(pmax(rnorm(n_sub, 13.6, hgb_sd), 6.8), 17.4),
+  CONMED_ANTIANDROGEN = rbinom(n_sub, 1, 33 / 264),
+  T_SCAN_TO_DOSE = 0
+)
+obs_times <- c(0, seq(7, 1095, by = 14))
+ev <- tidyr::crossing(cohort, time = obs_times) |>
+  mutate(evid = 0, amt = 0) |>
+  arrange(id, time)
+
+rxode2::rxSetSeed(71)
+sim <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+```
+
+```{r vpc, fig.cap = "Simulated PSA (individual predictions) in 200 virtual subjects starting leuprorelin at time 0: median with 5th-95th percentile band. The observed-data counterpart is the prediction-corrected VPC of S2 Fig of Zou 2020."}
+sim |>
+  group_by(time) |>
+  summarise(
+    q05 = quantile(PSA, 0.05), q50 = median(PSA), q95 = quantile(PSA, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time / 30.4375, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 0.1, linetype = "dotted", colour = "blue") +
+  scale_y_log10() +
+  labs(x = "Time since leuprorelin start (months)", y = "PSA (ng/mL)")
+```
+
+```{r archetypes, fig.cap = "Typical-subject PSA split into its drug-sensitive and drug-resistant parts at the 5th percentile, median and 95th percentile of hemoglobin, with leuprorelin starting 60 days after the baseline draw. Compare the decomposition shown for individual subjects in Figure 4 of Zou 2020."}
+arch <- tibble(
+  id = 1:3, HGB = c(10.9, 13.6, 16.0), PSA_BL = 8.5,
+  CONMED_ANTIANDROGEN = 0, T_SCAN_TO_DOSE = 60
+) |>
+  tidyr::crossing(time = seq(0, 1095, by = 5)) |>
+  mutate(evid = 0, amt = 0) |>
+  arrange(id, time)
+arch_sim <- rxode2::rxSolve(rxode2::zeroRe(mod), arch, keep = "HGB", returnType = "data.frame")
+arch_sim |>
+  select(time, HGB, Total = PSA, Sensitive = shrink, Resistant = growth) |>
+  pivot_longer(c(Total, Sensitive, Resistant), names_to = "part", values_to = "psa") |>
+  ggplot(aes(time / 30.4375, psa, colour = part)) +
+  geom_line() +
+  geom_vline(xintercept = 60 / 30.4375, linetype = "dashed", colour = "red") +
+  facet_wrap(~ paste("HGB", HGB, "g/dL")) +
+  scale_y_log10() +
+  labs(x = "Time since baseline PSA (months)", y = "PSA (ng/mL)", colour = NULL)
+```
+
+# Reproducing the paper's simulations
+
+The paper simulated 1000 subjects per scenario at the 5th percentile, median
+and 95th percentile of one continuous covariate (the others at their medians,
+no antiandrogen), or with and without antiandrogen, and reported
+
+* the median PSA nadir and median time to nadir (Discussion), and
+* the percentage of subjects with PSA progression by PCWG criteria -- a rise of
+  at least 25% and at least 2 ng/mL above the nadir, confirmed three or more
+  weeks later -- within one, two and three years of starting leuprorelin
+  (Figure 3 and Results).
+
+The simulated quantities below are individual predictions (between-subject
+variability, no residual error) on a daily grid, with treatment starting at
+time 0. After the nadir each individual prediction rises monotonically, so any
+first crossing of the PCWG threshold is automatically confirmed three weeks
+later. Because the closed-form check above shows the ODE and Eqs 2-3 agree,
+the scenarios are evaluated with the closed form directly from the packaged
+model's `theta` and `omega`, which allows 4000 draws per scenario at negligible
+cost.
+
+```{r pcwg-sim}
+om <- mod$omega
+eta_names <- c("etalkse", "etalkge_sens", "etalrp", "etalkge")
+sim_scenario <- function(n, hgb = 13.6, bas = 8.5, and = 0, days = 0:1095) {
+  # The four etas are uncorrelated (diagonal omega, Table 2).
+  eta <- vapply(eta_names, function(nm) rnorm(n, 0, sqrt(om[nm, nm])), numeric(n))
+  kse <- ds_typ(bas, and) * exp(eta[, "etalkse"])
+  rp <- rp_typ(hgb) * exp(eta[, "etalrp"])
+  kge <- exp(th[["lkge"]] + eta[, "etalkge"])
+  fres <- exp(-rp)
+  psa <- bas * (fres * exp(outer(kge, days)) + (1 - fres) * exp(-outer(kse, days)))
+  nadir <- apply(psa, 1, min)
+  t_nadir <- days[apply(psa, 1, which.min)]
+  thr <- pmax(1.25 * nadir, nadir + 2)
+  t_prog <- vapply(seq_len(n), function(i) {
+    j <- which(psa[i, ] >= thr[i] & days > t_nadir[i])
+    if (length(j) > 0) days[j[1]] else Inf
+  }, numeric(1))
+  tibble(
+    nadir = median(nadir), t_nadir = median(t_nadir),
+    p1 = 100 * mean(t_prog <= 365), p2 = 100 * mean(t_prog <= 730),
+    p3 = 100 * mean(t_prog <= 1095)
+  )
+}
+set.seed(354)
+scen <- tibble::tribble(
+  ~Scenario, ~hgb, ~bas, ~and,
+  "HGB 10.9 g/dL", 10.9, 8.5, 0,
+  "Median covariates", 13.6, 8.5, 0,
+  "HGB 16.0 g/dL", 16.0, 8.5, 0,
+  "PSA_BL 0.515 ng/mL", 13.6, 0.515, 0,
+  "PSA_BL 120 ng/mL", 13.6, 120, 0,
+  "Antiandrogen use", 13.6, 8.5, 1
+)
+scen_res <- scen |>
+  rowwise() |>
+  mutate(res = list(sim_scenario(4000, hgb, bas, and))) |>
+  ungroup() |>
+  tidyr::unnest(res)
+```
+
+```{r pcwg-table}
+paper_prog <- tibble::tribble(
+  ~Scenario, ~p1_paper, ~p3_paper,
+  "HGB 10.9 g/dL", 19.8, 38.8,
+  "Median covariates", 13.9, 28.2,
+  "HGB 16.0 g/dL", 10.5, 22.1,
+  "PSA_BL 0.515 ng/mL", 6.9, 15.8,
+  "PSA_BL 120 ng/mL", 25.6, 47.8,
+  "Antiandrogen use", NA, 28.5
+)
+prog_cmp <- scen_res |>
+  left_join(paper_prog, by = "Scenario") |>
+  select(Scenario, p1, p1_paper, p2, p3, p3_paper)
+prog_cmp |>
+  dplyr::rename(
+    "Progression by 1 y (%), simulated" = p1,
+    "Progression by 1 y (%), paper" = p1_paper,
+    "Progression by 2 y (%), simulated" = p2,
+    "Progression by 3 y (%), simulated" = p3,
+    "Progression by 3 y (%), paper" = p3_paper
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+Replicates Figure 3 of Zou 2020. The two-year percentages are shown in Figure 3
+but not quoted numerically in the text, so they have no paper column.
+
+```{r pcwg-gate}
+d1 <- prog_cmp$p1 - prog_cmp$p1_paper
+d3 <- prog_cmp$p3 - prog_cmp$p3_paper
+stopifnot(
+  # Every quoted rate within 5 percentage points (the paper's own Monte Carlo
+  # standard error at n = 1000 is about 1.5 points at these rates).
+  all(abs(d1) < 5, na.rm = TRUE),
+  all(abs(d3) < 5, na.rm = TRUE),
+  # The covariate orderings the paper reports.
+  with(scen_res, p3[Scenario == "HGB 10.9 g/dL"] > p3[Scenario == "Median covariates"]),
+  with(scen_res, p3[Scenario == "Median covariates"] > p3[Scenario == "HGB 16.0 g/dL"]),
+  with(scen_res, p3[Scenario == "PSA_BL 120 ng/mL"] > p3[Scenario == "Median covariates"]),
+  with(scen_res, p3[Scenario == "Median covariates"] > p3[Scenario == "PSA_BL 0.515 ng/mL"])
+)
+```
+
+```{r nadir-table}
+paper_nadir <- tibble::tribble(
+  ~Scenario, ~nadir_paper, ~t_nadir_paper,
+  "HGB 10.9 g/dL", 1.19, 155,
+  "Median covariates", 0.290, 198,
+  "HGB 16.0 g/dL", 0.0574, 240,
+  "PSA_BL 0.515 ng/mL", 0.0220, 294,
+  "PSA_BL 120 ng/mL", 3.47, 135
+)
+nadir_cmp <- scen_res |>
+  inner_join(paper_nadir, by = "Scenario") |>
+  select(Scenario, nadir, nadir_paper, t_nadir, t_nadir_paper) |>
+  mutate(
+    nadir_ratio = nadir / nadir_paper,
+    t_nadir_ratio = t_nadir / t_nadir_paper
+  )
+nadir_cmp |>
+  dplyr::rename(
+    "Median nadir (ng/mL), simulated" = nadir,
+    "Median nadir (ng/mL), paper" = nadir_paper,
+    "Median time to nadir (day), simulated" = t_nadir,
+    "Median time to nadir (day), paper" = t_nadir_paper,
+    "Nadir ratio" = nadir_ratio,
+    "Time-to-nadir ratio" = t_nadir_ratio
+  ) |>
+  knitr::kable(digits = 3)
+stopifnot(
+  # The median nadir spans two orders of magnitude across scenarios; its
+  # sample median is noisy at the paper's n = 1000, so allow 30%.
+  all(abs(log(nadir_cmp$nadir_ratio)) < log(1.3)),
+  all(abs(nadir_cmp$t_nadir_ratio - 1) < 0.15)
+)
+```
+
+The nadir values reproduce the two-orders-of-magnitude spread the Discussion
+reports, and time to nadir agrees within about 7%. The simulated median nadir
+at median covariates (about 0.24-0.25 ng/mL against the quoted 0.290) sits at
+the low end of the agreement; the sample median of a quantity this skewed moves
+by tens of percent between Monte Carlo cohorts of 1000.
+
+# Assumptions and deviations
+
+* **Row label 'DR' in Table 2.** The fourth IIV row is labelled `omega^2 DR`;
+  Methods states IIV was estimated on all four structural parameters and there
+  is no `DR` parameter, so it is taken as the IIV of `GR`.
+* **Table 2 IIV values are variances.** The column is headed `omega^2`. The
+  reproduction of the Figure 3 progression rates and the Discussion nadir values
+  confirms the variance reading.
+* **Residual error.** Eq 5 is additive on log PSA, encoded as `lnorm(expSd)`
+  with `expSd = 0.201`. The paper retained PSA below the 0.1 ng/mL LLOQ as
+  censored observations; censoring is a property of the data, not the model.
+* **Treatment start.** Only the first leuprorelin dose enters the model. The
+  analysis pooled continuous and intermittent regimens (which the claims data
+  could not distinguish), and dose intensity was tested and not retained. The
+  vignette simulations start treatment at time 0 because the paper does not
+  report the baseline-to-first-dose interval.
+* **Simulation settings for Figure 3.** The paper states only that 1000
+  subjects per scenario were simulated in R with the final model. The
+  reproduction assumes individual predictions without residual error, the
+  non-varied covariates at their medians, no antiandrogen in the continuous
+  covariate scenarios (the median rows of the hemoglobin and baseline-PSA
+  panels are identical, 13.9% and 28.2%, and equal the no-antiandrogen
+  three-year value), and progression timed from the start of leuprorelin. The
+  close agreement supports these readings.
+* **Covariate cohort.** Table 1 gives medians and ranges only; the log-normal
+  baseline-PSA and normal hemoglobin distributions are built from the 5th and
+  95th percentiles quoted in the Results.
+* **Screened but not retained covariates** (age, AST, ALT, serum creatinine,
+  alkaline phosphatase, albumin, race and region) are documented in the model
+  file's `covariatesDataExcluded`, not used.
