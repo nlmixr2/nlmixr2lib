@@ -253,12 +253,11 @@ Bonner 2015 is a physiological gastric-emptying meta-analysis with
 several load-bearing structural details that the paper's Methods and
 supplementary material do NOT explicitly resolve, and for which the
 NONMEM control stream is not available on disk. Each of the three
-ambiguities below was resolved by an operator-approved best-effort
-choice on 2026-07-24 (sidecar response-003, "best_effort_with_caveats"
-answer to the "how to proceed given the missing supplement" question
-asked after three earlier pause-for-supplement cycles). All three are
-listed here so that a downstream user knows what is well-founded and
-what is a coin toss.
+ambiguities below was resolved by a maintainer-approved best-effort
+choice on 2026-07-24, made with caveats after three earlier attempts to
+obtain the missing supplement were unsuccessful. All three are listed
+here so that a downstream user knows what is well-founded and what is a
+coin toss.
 
 ## 1. Meal-type covariate attachment point
 

@@ -201,19 +201,18 @@ ggplot(vpc, aes(time, Q50)) +
        caption = "Median ribbon flanked by 5th and 95th percentiles.")
 ```
 
-# F.2 self-consistency check (vs the bundle's simulated dataset)
+# Self-consistency check (vs the bundle's simulated dataset)
 
 Because the source publication is paywalled and the bundle does not ship a
-real-data fit, the F.2 substitute from the
-`extract-literature-model` skill applies: re-simulate using the model's
-typical-value parameters and confirm the trajectory falls inside the
-distribution of the bundle's `Simulated_PKPD.txt` observations. Differences
-> 5% on a per-time-point basis are investigated, not tuned.
+real-data fit, a self-consistency check is used instead: re-simulate using
+the model's typical-value parameters and confirm the trajectory falls
+inside the distribution of the bundle's `Simulated_PKPD.txt` observations.
+Differences > 5% on a per-time-point basis are investigated, not tuned.
 
 The bundle's raw simulated dataset is **not** redistributed inside the
 package (the DDMORE Foundation distributes those files under their own
 license). This vignette therefore uses a snapshot of the per-time-point
-summary statistics that the operator computed once at extraction time
+summary statistics that the maintainers computed once at extraction time
 from `dpastoor/ddmore_scraping/192/Simulated_PKPD.txt`:
 
 ```{r bundle-summary}
@@ -274,7 +273,7 @@ The two distributions agree in shape (rapid Cc absorption peak around
 1.5 h, biomarker rise toward a plateau near 6-12 h). Both are single-realisation
 draws from the same model with strong IIV on every parameter, so per-time-point
 medians are not expected to coincide exactly. The qualitative agreement is
-the F.2 acceptance criterion.
+the acceptance criterion for this check.
 
 # PKNCA validation (Cc only)
 
@@ -351,8 +350,8 @@ sampling grid.
   of the trajectories is invariant.
 * **Bundle simulated dataset is not redistributed.** The DDMORE Foundation
   ships `Simulated_PKPD.txt` under its own license; this package does not
-  redistribute the raw file. The F.2 self-consistency overlay uses a
-  per-time-point summary snapshot computed by the operator at extraction
+  redistribute the raw file. The self-consistency overlay uses a
+  per-time-point summary snapshot computed by the maintainers at extraction
   time from `dpastoor/ddmore_scraping/192/Simulated_PKPD.txt`.
 * **No erratum search performed beyond PubMed.** The paper is from 2015
   and a PubMed search returned no associated corrections. The journal's

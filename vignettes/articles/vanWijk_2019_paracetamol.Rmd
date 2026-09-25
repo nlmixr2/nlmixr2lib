@@ -21,13 +21,13 @@ library(ggplot2)
 * Citation: `r rxode2::rxode2(readModelDb("vanWijk_2019_paracetamol"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("vanWijk_2019_paracetamol"))$description`
 * DDMORE Foundation Model Repository entry: `DDMODEL00000294`
-* Article (per task metadata): <https://doi.org/10.1038/s41598-019-38530-w>
+* Article (per the metadata this model was built from):
+  <https://doi.org/10.1038/s41598-019-38530-w>
 
 This is a PRECLINICAL (zebrafish) DDMORE entry. nlmixr2lib is primarily a
-library of human population-PK models; the operator confirmed the
-extract-verbatim disposition for this entry via the runner sidecar
-(response-001, 2026-05-07). The model file's `description` and `population`
-metadata flag the preclinical species, and this vignette uses
+library of human population-PK models; the maintainers confirmed the
+extract-verbatim disposition for this entry. The model file's `description`
+and `population` metadata flag the preclinical species, and this vignette uses
 mechanistic-sanity and self-consistency checks rather than a clinical PKNCA
 comparison (see Validation strategy below for rationale).
 
@@ -81,7 +81,7 @@ final SIGMA block in the same listing.
 
 # Validation strategy
 
-Per the skill's `references/ddmore-source.md` decision tree:
+Per the package's decision tree for DDMORE-sourced models:
 
 1. The linked publication is **not on disk**, so a comparison against
    published NCA / figure values is not possible.
@@ -323,10 +323,9 @@ age-dependent K12 / K25 trajectory predicted by the covariate equations.
 
 - **Preclinical (zebrafish) species.** This is a non-mammalian model of
   paracetamol PK in Danio rerio larvae 3-5 dpf, not a human-PK model. The
-  operator confirmed extract-verbatim disposition for this entry via the
-  runner sidecar (response-001, 2026-05-07). The model file's
-  `description` and `population$species` fields flag the species
-  explicitly, and the `AGE_DPF` covariate is registered with scope
+  maintainers confirmed extract-verbatim disposition for this entry. The
+  model file's `description` and `population$species` fields flag the
+  species explicitly, and the `AGE_DPF` covariate is registered with scope
   `specific` to keep the human-PK `AGE` (years) namespace clean.
 - **Continuous-environmental-exposure dosing model.** The .mod / .lst
   encode the bath as a depot whose state derivative is held at zero
@@ -346,10 +345,10 @@ age-dependent K12 / K25 trajectory predicted by the covariate equations.
   micro-constants (K25 = 1/min first-order elimination rate, K12 =
   pmol/min zero-order absorption rate from a constant-amount depot)
   rather than in CL / V / ka, the canonical `(lka, lcl, lvc)` parameter
-  set does not map cleanly. The skill's `naming-conventions.md`
-  log-prefix rule is preserved (`lk25`, `lk12`), and the source-trace
-  comments tie each name to its `THETA(*)` slot. `checkModelConventions()`
-  reported zero issues for this model.
+  set does not map cleanly. The package's log-prefix naming rule is
+  preserved (`lk25`, `lk12`), and the source-trace comments tie each name
+  to its `THETA(*)` slot. `checkModelConventions()` reported zero issues
+  for this model.
 - **Source `$OMEGA` held FIX 0.** Per the .mod's own comment, IIV on K25
   is "undistinguishable from residual variability due to destructive
   sampling". No eta is declared in the nlmixr2 model.

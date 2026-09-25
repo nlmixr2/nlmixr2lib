@@ -263,7 +263,7 @@ sim_nca <- sim |>
   dplyr::select(id, time, Cc, treatment)
 
 # Guarantee a time = 0 row per (id, treatment); pre-dose extravascular
-# Cc = 0 is the correct value. (See pknca-recipes.md "Time-zero records".)
+# Cc = 0 is the correct value.
 sim_nca <- bind_rows(
   sim_nca,
   sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
@@ -381,7 +381,7 @@ knitr::kable(
   bioavailability (F)" but does not report the IOV magnitudes in
   Table 1. The library encodes only the inter-individual variability
   reported in Table 1 (on CL/F, V/F, Ka, and D1) and drops the IOV
-  terms. Adding back IOV would require operator follow-up with the
+  terms. Adding back IOV would require maintainer follow-up with the
   authors or an `OCC` covariate flag and additional eta blocks on
   `ld1` / `lfdepot`; neither is in scope for a poster-derived library
   model.

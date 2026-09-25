@@ -567,7 +567,7 @@ knitr::kable(
 # Table 3 asserts PTA >= 80% for every listed regimen. This is the paper's own
 # quantitative claim, so it is checked on the centre and on a robust quantile
 # rather than on the single worst cell -- the extreme of a 200-subject draw is
-# not reproducible across rxode2 builds (see CLAUDE.md).
+# not reproducible across rxode2 builds.
 stopifnot(
   stats::median(pta$pta) >= 80,
   stats::quantile(pta$pta, 0.1) >= 70

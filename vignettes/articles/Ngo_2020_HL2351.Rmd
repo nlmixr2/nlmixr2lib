@@ -64,7 +64,7 @@ five HL2351 cohorts only (n = 40); blood samples were collected to
 672 hours postdose (Ngo 2020 Methods, "Materials and PK data
 collection"). Body weight, age distribution, and other demographic
 covariates beyond age range and sex (all male) are not reported in the
-trimmed text available on disk, and no covariates are retained in the
+extracted text available on disk, and no covariates are retained in the
 final structural model.
 
 The same information is available programmatically via
@@ -381,7 +381,7 @@ and the half-life range (27.21-45.28 h) for the HL2351 cohorts.
   virtual-cohort chunk above.
 - **Body weight not modeled.** The final structural model does not
   carry a body-weight covariate, and the source paper does not report
-  baseline weight statistics in the trimmed text. The virtual cohort
+  baseline weight statistics in the extracted text. The virtual cohort
   uses a fixed typical adult weight of 70 kg for mg/kg → nmol
   conversion only.
 - **Kup typical value FIXED, IIV estimated.** The paper fixes the

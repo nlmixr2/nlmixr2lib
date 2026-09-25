@@ -435,8 +435,7 @@ pct <- as.numeric(gsub("[^0-9.+-]", "", cmp$`% diff`))
 names(pct) <- paste(cmp$treatment, cmp$Day, cmp[[1]])
 
 # Cohort-derived quantities, so assert on the CENTRE and a robust envelope
-# rather than on any single arm's extreme (see the repo CLAUDE.md note on
-# cohort assertions). A mis-transcribed clearance, volume, dose or unit moves
+# rather than on any single arm's extreme. A mis-transcribed clearance, volume, dose or unit moves
 # the whole distribution by tens of percent and breaks both bounds.
 stopifnot(
   abs(median(pct)) < 10,

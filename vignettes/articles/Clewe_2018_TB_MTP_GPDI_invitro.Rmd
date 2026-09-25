@@ -271,11 +271,10 @@ sim %>%
 
 This is a typical-value mechanistic in vitro PD model; there is no
 patient-level IIV and no PK structure. PKNCA-style NCA is not applicable.
-The validation strategy follows the endogenous / mechanistic-model pattern
-(`endogenous-validation.md` in the extraction skill): natural-growth
-trajectory check, monotherapy potency check, conservation check for the
-adaptive-resistance loop, and a combination antagonism / synergy check
-against Figure 5b.
+The validation strategy follows the endogenous / mechanistic-model pattern:
+natural-growth trajectory check, monotherapy potency check, conservation
+check for the adaptive-resistance loop, and a combination antagonism /
+synergy check against Figure 5b.
 
 ### 1. Natural-growth trajectory
 
@@ -458,14 +457,14 @@ sim %>%
   "erratum" search as of 2026-05-22.
 * Clewe 2018 Supplementary Data (containing Figures S1, S2 and the final
   MTP-GPDI NONMEM model code) is referenced in the paper but is not on
-  disk in `from_people/literature_2018_search`. The model file extracts
+  disk in the maintainers' literature mirror. The model file extracts
   every parameter value verbatim from Table 1 (MTP + monotherapy effects)
   and Table 3 (GPDI interactions); the functional forms of the GPDI
   interactions, the linear adaptive-resistance form, and the mass-balance
   correction in Eq 2 are reconstructed from the canonical Wicha 2017 GPDI
   formulation, the Mohamed 2014 adaptive-resistance literature, and the
   Chen 2017 in vivo mouse twin (sharing senior authorship), and are
-  documented above in Assumptions and deviations. A future operator with
+  documented above in Assumptions and deviations. A maintainer with
   access to the Clewe 2018 Supplementary NONMEM file should cross-check
   the GPDI modulation-factor shape (Emax-style anchor, EC50 anchor for the
   trio modulator, and the linear vs Hill form of adaptive resistance).

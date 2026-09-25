@@ -188,11 +188,10 @@ the paper's own median daily dose was 600 mg.
 # and rxode2's streams are partitioned PER SOLVER THREAD -- so the etas drawn
 # below differ between a 2-core CI runner and a 16-thread workstation and no seed
 # can make them agree. Every assertion downstream is written to hold for any
-# cohort the model can produce; see pattern 12 of
-# references/known-vignette-failure-patterns.md.
+# cohort the model can produce.
 set.seed(20260902)
 
-n_per_arm <- 200            # skill cap is 200 per arm
+n_per_arm <- 200            # cohort cap is 200 per arm
 tau       <- 24             # dosing interval (h)
 n_dose    <- 21             # 21 daily doses; see the steady-state note below
 t_last    <- tau * (n_dose - 1)
@@ -259,7 +258,7 @@ ss <- rxode2::rxSolve(
   readModelDb("Nguyen_2026_linezolid"),
   events = ss_events, keep = c("treatment", "WT"),
   useLinCmt = FALSE      # rxode2's ODE->linCmt auto-conversion breaks the
-) |>                     # dvid mapping for multi-output models (pattern 5b)
+) |>                     # dvid mapping for multi-output models
   as.data.frame() |>
   filter(time %in% c(t_last - tau, t_last)) |>
   select(id, time, Cc) |>
@@ -786,7 +785,7 @@ of 11.2 mg/L) -- outside the assay's range and contradicted by Figure 3, which
 plots both matrices on one shared 0-40 mg/L axis with the saliva median only
 slightly above plasma. Dividing by `vc` gives 1.2418, matching the paper's own
 independently reported 1.27 (95% CI 1.09-1.44) to 2%. The model encodes
-`Csaliva <- saliva / vc`. Maintainer-ratified.
+`Csaliva <- saliva / vc`. Ratified by the maintainers on 2026-09-02.
 
 ## Other assumptions
 

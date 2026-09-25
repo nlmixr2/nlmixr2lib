@@ -178,8 +178,7 @@ stopifnot(
   max(abs(cov_chk$q  - cov_chk$q_closed))  < 1e-9,
   max(abs(cov_chk$vp - cov_chk$vp_closed)) < 1e-9,
   # The wrong readings must be visibly wrong somewhere on the grid, otherwise
-  # the check above cannot discriminate them (pattern 10 of
-  # known-vignette-failure-patterns.md).
+  # the check above cannot discriminate them.
   max(abs(cov_chk$cl - cov_chk$cl_linear)) > 0.5,
   max(abs(cov_chk$vc - cov_chk$vc_prop))   > 0.05
 )
@@ -414,7 +413,7 @@ sim_nca <- sim |>
   dplyr::select(id, time, Cc, stratum)
 
 # Guarantee a time = 0 record per subject. The steady-state solve already
-# produces one; this is the defensive form from pknca-recipes.md.
+# produces one; this is the defensive form.
 sim_nca <- dplyr::bind_rows(
   sim_nca,
   sim_nca |> dplyr::distinct(id, stratum) |> dplyr::mutate(time = 0, Cc = 0)

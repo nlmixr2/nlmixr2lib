@@ -424,7 +424,7 @@ inside the reported 95% CIs of the class-level human popPK estimates.
   state "Residual errors per compound are shown in Supplementary Table 1"
   (or 2); the supplement was not available on disk during extraction, so
   no class-level typical proportional residual value could be sourced. Per
-  the skill's standing policy for unreported RUV, `propSd` is wrapped in
+  the package's standing policy for unreported RUV, `propSd` is wrapped in
   `fixed(0)` in every packaged model. Users needing residual noise for
   simulation should override with a domain-appropriate typical value
   (mAb popPK residuals are commonly 15-25% CV) or supply the

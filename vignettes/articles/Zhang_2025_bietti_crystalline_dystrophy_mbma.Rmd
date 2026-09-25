@@ -337,7 +337,7 @@ between-eye variability (coefficient of variation about
 # `set.seed()` seeds R's RNG, not rxode2's; rxode2 partitions its streams per
 # solver thread, so a machine with a different thread count draws a different
 # cohort. Every assertion below is written to hold for ANY cohort this model can
-# produce (see references/known-vignette-failure-patterns.md pattern 12).
+# produce.
 set.seed(20250423)
 
 n_eyes  <- 200L   # 200 per arm is the cap; this vignette has a single arm
@@ -631,8 +631,8 @@ tibble::tibble(
   written -- the `cfb` suffix and a `d_<instrument>` prefix (`d_updrs`,
   `d_hr`, `d_rr`, `d_viral_load`) -- and the first draft of this model used
   the prefix form (`d_bcva`) on the strength of the `Lee_2011_parkinson_progression`
-  analogy. The maintainers ratified the **suffix** as the library-wide convention, so
-  `d_bcva` was renamed to `bcvacfb` and the surviving `d_`-prefixed names are
+  analogy. The maintainers ratified the **suffix** as the library-wide convention,
+  so `d_bcva` was renamed to `bcvacfb` and the surviving `d_`-prefixed names are
   scheduled for conversion in a separate follow-up. Note that this model is
   algebraic with no absolute-acuity state of its own; `bcvacfb` is a change
   score throughout, and the covariate register's `SCORE_BCVA` is on the

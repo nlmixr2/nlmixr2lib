@@ -875,21 +875,21 @@ stopifnot(spread(ld2$dose[ld2$crrt_tier == 0]) > 1.3)
   recorded in the model file's `covariatesDataExcluded` for provenance and no
   point estimates are reported for them. No canonical register entry exists for
   dialyser membrane area or type; none was minted, because the covariates were
-  rejected. A future model that retains one should file a naming sidecar.
+  rejected. A future model that retains one should propose a canonical name to
+  the maintainers.
 * **`crrt` is a paper-specific compartment, not a canonical one.** The state is
-  declared via `paper_specific_compartments <- "crrt"` per operator ruling
-  (sidecar request-001 question 1, answered 2026-08-20). Its `compartmentData`
-  entry records `specimen = "not applicable"`: the source defines the state as a
-  kinetic compartment for CRRT elimination and never assigns it a biological
-  matrix, and `Vcrrt` of 23.5 L is body-scale, so it is not the extracorporeal
-  circuit volume.
+  declared via `paper_specific_compartments <- "crrt"` per maintainer ruling.
+  Its `compartmentData` entry records `specimen = "not applicable"`: the source
+  defines the state as a kinetic compartment for CRRT elimination and never
+  assigns it a biological matrix, and `Vcrrt` of 23.5 L is body-scale, so it is
+  not the extracorporeal circuit volume.
 * **`DIS_ARF` is a new canonical covariate**, registered in
-  `inst/references/covariate-columns.md` in this same change per operator ruling
-  (sidecar request-001 question 2). It is deliberately not encoded as
-  `RENALIMP_SEV`: the `RENALIMP_*` bands are chronic-impairment classes defined on
-  creatinine clearance, whereas this cohort's stratum is acute renal failure
-  ascertained from urine output, in patients who are largely anuric or oliguric
-  and for whom creatinine clearance is neither measurable nor gradable.
+  `inst/references/covariate-columns.md` in this same change per maintainer
+  ruling. It is deliberately not encoded as `RENALIMP_SEV`: the `RENALIMP_*`
+  bands are chronic-impairment classes defined on creatinine clearance, whereas
+  this cohort's stratum is acute renal failure ascertained from urine output, in
+  patients who are largely anuric or oliguric and for whom creatinine clearance
+  is neither measurable nor gradable.
 * **Residual error read as a standard deviation.** Table 2's additive-error row is
   annotated "(mg/L)"; a variance would be mg^2/L^2. Consistent with the
   supplement's pure-additive `Y = F + EPS(1)`.

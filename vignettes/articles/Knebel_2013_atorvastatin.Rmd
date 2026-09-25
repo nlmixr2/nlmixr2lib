@@ -845,9 +845,8 @@ stopifnot(all(abs(ss$pct_diff) < 0.5))
   absolute axis, so nothing on disk discriminates the two. Equation S2 is
   used per the standing trust-the-printed-equation policy, because it is
   the only equation printed for the run the parameters come from
-  (operator ruling, sidecar `manacq_Knebel_2013_jcph_66` request-001 q1,
-  option B). A user who prefers the additive reading need only change the
-  single `ka <- exp(lka + l2)` line in the model file.
+  (maintainer ruling). A user who prefers the additive reading need only
+  change the single `ka <- exp(lka + l2)` line in the model file.
 
   A third reading exists: Tables 1 and 2 label the row "Ka = theta4", so
   the paper itself sometimes treats 0.2 1/h as `Ka` outright, which would

@@ -343,11 +343,11 @@ patient.
   reported that this model did not improve fit and that the parameter
   estimates were essentially unchanged (CL/F = 1.75 L/h, V/F = 95.3 L,
   IIV CL/F = 34.1% CV, IIV V/F = 77.3% CV, IOV CL/F = 30% CV). Per the
-  replicate-author-structure policy, sensitivity analyses that the
-  authors did not adopt as final are not packaged as separate model
-  files. The simulated body-weight stratification in Figure 4 above
-  therefore reflects only the dosing-driven scaling (mg/kg), not an
-  allometric structural effect.
+  package's policy of replicating the authors' model structure,
+  sensitivity analyses that the authors did not adopt as final are not
+  packaged as separate model files. The simulated body-weight
+  stratification in Figure 4 above therefore reflects only the
+  dosing-driven scaling (mg/kg), not an allometric structural effect.
 - **IOV folded into BSV-equivalent eta.** The paper reports IOV on CL/F
   (29.5% CV) separately from IIV on CL/F (33.4% CV). nlmixr2lib has no
   idiomatic encoding for per-occasion variability independent of

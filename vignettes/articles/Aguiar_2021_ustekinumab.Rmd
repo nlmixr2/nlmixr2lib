@@ -502,7 +502,7 @@ transcription bug; do not tune parameters to match.
   is reported on the logit scale as an SD (Aguiar 2021 Table 2 footnote e:
   17.3); that value is squared directly without log transformation.
 - **Non-canonical compartment names.** `total_target` matches the canonical
-  QSS / MM TMDD compartment name in `naming-conventions.md`. The companion
+  QSS / MM TMDD compartment name in `inst/references/compartment-names.md`. The companion
   `target_peripheral` (free peripheral target) and `fc` (fecal calprotectin)
   compartments are not in the canonical list; `checkModelConventions()`
   emits two warnings for them. Because Aguiar 2021 distributes the

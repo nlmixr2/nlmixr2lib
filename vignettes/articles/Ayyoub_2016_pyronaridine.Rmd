@@ -496,7 +496,7 @@ half-life and the formulation Ka ratio.
   applied to the natural-log-transformed data of the immediately
   preceding paragraph). Table 2 reports residual variability as a
   log-scale variance sigma^2 = 0.195 (no %CV column). By the standing
-  convention in `references/parameter-names.md`, NONMEM
+  convention in `inst/references/parameter-names.md`, NONMEM
   additive-on-log-scale residual maps to nlmixr2 proportional residual
   in linear space, with `propSd = sqrt(sigma^2) = sqrt(0.195) = 0.4416`
   (the SD on the log scale equals the CV in linear space to first

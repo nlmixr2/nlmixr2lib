@@ -662,9 +662,9 @@ the virtual validation cohort.
 * **The upstream paper is not on disk.** Chung E, Seto W, *Pharmacotherapy*
   2023;43:1262-1276 (doi:10.1002/phar.2865) is the model-development
   publication. Unpaywall reports it as open access but the Wiley PDF endpoint
-  returns HTTP 403 to automated retrieval, so it could not be acquired. It has
-  been recorded for operator acquisition; when it arrives, the IIV and residual
-  error should be added to this model file.
+  returns HTTP 403 to automated retrieval, so it was not available when this
+  model was built; when it is, the IIV and residual error should be added to
+  this model file.
 * **The Chung 2026 supplement is not on disk.** Supplementary Table S2
   ("Equations of population pharmacokinetic models of vancomycin in neonates")
   is behind the MDPI supplement endpoint, which returns HTTP 403. It tabulates

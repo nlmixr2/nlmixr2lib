@@ -46,8 +46,8 @@ The `.mdl` PARAMETERS block carries the publication-derived point
 values used to drive the simulation; there is no `Output_real_*.lst`
 estimation listing in the bundle, so the values cannot be cross-checked
 against a re-fitted set of final estimates. The original Kloft 2004
-publication is not on disk in this worktree, so a side-by-side
-publication-table comparison is also out of scope here.
+publication is not on disk, so a side-by-side publication-table
+comparison is also out of scope here.
 
 # Population
 
@@ -168,12 +168,12 @@ sim_typical <- rxode2::rxSolve(
 # Self-consistency vs the bundle's simulated dataset
 
 Because the original publication is not on disk, the validation here is
-the F.2 self-consistency check from the extraction skill: the typical-
-value trajectory of this `rxode2`-translated model should match the
-shape of the per-subject DV cloud shipped in the bundle's
-`Simulated_sibrotuzumab.csv`. (Per-subject exact matches are not
-expected -- each NMTRAN simulation subject draws its own ETAs and the
-combined-error EPS, which differ from the seeds drawn here.)
+a self-consistency check: the typical-value trajectory of this
+`rxode2`-translated model should match the shape of the per-subject DV
+cloud shipped in the bundle's `Simulated_sibrotuzumab.csv`. (Per-subject
+exact matches are not expected -- each NMTRAN simulation subject draws
+its own ETAs and the combined-error EPS, which differ from the seeds
+drawn here.)
 
 ```{r bundle-overlay, fig.width = 7, fig.height = 4.5}
 bundle_csv <- system.file(
@@ -307,11 +307,11 @@ nca_res$result |>
   `Executable_sibrotuzumab.mdl` PARAMETERS / STRUCTURAL and VARIABILITY
   blocks -- i.e., the publication's reported numbers as transcribed into
   the DDMORE encoding, not numbers obtained from a re-fit.
-- **The Kloft 2004 publication is not on disk in this worktree.** The
+- **The Kloft 2004 publication is not on disk.** The
   package metadata (description, units, citation, DOI) reflects the
   publication, but a side-by-side comparison against the published
   parameter table or NCA summary is not part of this vignette. The
-  validation here is restricted to the F.2 self-consistency check
+  validation here is restricted to the self-consistency check
   against the bundle's own simulated dataset.
 - **Population demographics are intentionally `NA` in `population`.**
   `n_subjects`, `n_studies`, `weight_range`, `age_range`, and

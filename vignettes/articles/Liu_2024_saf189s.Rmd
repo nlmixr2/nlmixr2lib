@@ -203,7 +203,7 @@ c(`AUCss simulated (ng*h/mL)` = auc_trap,
   round(2)
 
 # Same drawn parameters on both sides -> pure numerical error, so a tight
-# bound is correct here (see CLAUDE.md on cohort-extreme assertions).
+# bound is correct here.
 stopifnot(abs(100 * (auc_trap - auc_closed) / auc_closed) < 0.5)
 ```
 

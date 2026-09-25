@@ -311,7 +311,7 @@ sim <- rxode2::rxSolve(
   events = events,
   keep   = c("regimen", "wt_group", "WT", "RRT_CRRT_ACTIVE"),
   # rxode2's automatic ODE -> linCmt conversion mis-maps the endpoints of
-  # multi-output models; see known-vignette-failure-patterns.md pattern 5b.
+  # multi-output models.
   useLinCmt = FALSE
 ) |>
   as.data.frame() |>

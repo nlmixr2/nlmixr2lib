@@ -155,7 +155,7 @@ hv_dose_ev <- hv_subj |>
   transmute(id, time = 0, amt = dose_mg, evid = 1L, cmt = "depot", dvid = NA_integer_, WT)
 # Observation rows use dvid to select the multi-output slot (1 = Cc, 2 = platelet)
 # rather than referencing the algebraic observable by name in `cmt` -- this keeps
-# ODE-state compartment numbering stable per the CLAUDE.md nlmixr2 conventions.
+# ODE-state compartment numbering stable per the nlmixr2 conventions.
 hv_obs_ev <- hv_subj |>
   select(id, WT) |>
   tidyr::crossing(time = hv_times) |>

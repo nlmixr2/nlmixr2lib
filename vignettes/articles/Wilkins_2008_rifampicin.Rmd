@@ -70,8 +70,9 @@ covariates on MTT and CL):
   *real-scenario* publication values, not the simulated-fit values.**
   The simulated-fit scenario is preserved in the bundle for reference
   but not encoded as a separate model file (the difference is dataset-
-  driven, not mechanistic, so per `references/ddmore-source.md` Section  5
-  this is "extract once, document the scenario range in Errata").
+  driven, not mechanistic, so the package's rule for non-mechanistic
+  DDMORE scenarios applies: extract once, document the scenario range in
+  Errata).
 - `Simulated_TB_Rifampicin_PK_Wilkins_2008.csv` -- the simulated event
   dataset (250 subjects, three dose levels 450 / 480 / 600 mg, six
   occasions, FDC = 0 or 1). Used in this vignette as the cohort
@@ -91,18 +92,18 @@ There is no `Model_Accomodations.text` shipped in this bundle; the
 publication identification comes from the `.mod` `$PROBLEM` line and
 the RDF `model-has-description` field
 (*"Population pharmacokinetics of rifampin in tuberculosis patients"*).
-**The Wilkins 2008 publication itself is not on disk** in this worktree
-(`/home/bill/github/mab_human_consensus/literature/`), so a side-by-side
-comparison against the paper's parameter table or PK figures is out of
-scope here. What is in scope:
+**The Wilkins 2008 publication itself was not on disk** in the
+maintainers' literature mirror when this model was built, so a
+side-by-side comparison against the paper's parameter table or PK
+figures is out of scope here. What is in scope:
 
 1. The packaged model parameter values match the `Output_real_*`
    DDMORE-curated summary (which carries the published Wilkins 2008
    final estimates with their published RSEs).
 2. Validation here is the F.2 self-consistency check from the
-   extraction skill, plus mechanistic spot-checks on the FDC formulation
-   effect and the structural absorption shape implied by `MTT = 0.424 h`
-   and `NN = 7.13` transit compartments.
+   package's validation checklist, plus mechanistic spot-checks on the
+   FDC formulation effect and the structural absorption shape implied by
+   `MTT = 0.424 h` and `NN = 7.13` transit compartments.
 
 # Population
 
@@ -436,9 +437,9 @@ keyed to the simulated-scenario refit, not to the publication. The
 two scenarios share the same structural ODE / `$PK` / `$ERROR`
 blocks; only the parameter values differ.
 
-The `references/ddmore-source.md` Section  5 multi-scenario rule
-(`scenarios are non-mechanistic differences ... extract once and
-document the scenario range in the vignette's Errata`) covers this
+The package's multi-scenario rule for DDMORE bundles (when the
+scenarios are non-mechanistic differences, extract once and document
+the scenario range in the vignette's Errata) covers this
 case: a single packaged model file using publication values, with
 the simulated-scenario refit values noted here for reference. The
 mechanistic spot-checks above (steady-state shape vs dose, FDC
@@ -447,7 +448,7 @@ for the absent F.2 overlay.
 
 # Assumptions and deviations
 
-- **The Wilkins 2008 publication is not on disk in this worktree.**
+- **The Wilkins 2008 publication was not on disk when this model was built.**
   The package metadata (description, units, citation, DOI) reflects
   the publication, but a side-by-side comparison against the
   published parameter table (Wilkins 2008 Table 2) or PK figures
@@ -492,8 +493,8 @@ for the absent F.2 overlay.
   drift 19.2 -> 21.9; NN drift 7.13 -> 1.98; etc.) but not encoded as
   a separate model file because the structural ODE / `$PK` /
   `$ERROR` blocks are byte-for-byte identical across the two
-  scenarios. The `references/ddmore-source.md` Section  5 "non-mechanistic
-  scenarios" rule covers this case.
+  scenarios. The package's rule for non-mechanistic DDMORE scenarios
+  covers this case.
 - **`F1 = 0` is encoded as `f(depot) <- 0`.** Source `.mod` `$PK`
   declares `F1 = 0` so no bolus enters the depot compartment; the
   entire dose is delivered via the analytical transit-chain rate

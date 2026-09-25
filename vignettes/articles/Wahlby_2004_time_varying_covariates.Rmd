@@ -355,8 +355,8 @@ provenance.
   the dash as "unchanged from the Reference Model column" (theta_V = 61 L) and
   encodes V with the same exponential covariate form. The underlying Karlsson
   1993 paper (the upstream popPK source) is the authoritative reference for the
-  V parameterisation; it is not on disk in this worktree and has been queued
-  for separate extraction.
+  V parameterisation; it was not on disk when this model was built and has
+  been queued for separate extraction.
 - The "weight up to median WT" qualifier (Methods) is encoded as
   `min(WT_BASE, 65)` in the CL equation, plateauing the WT effect above 65 kg.
   This interpretation may differ from the exact Karlsson 1993 NONMEM

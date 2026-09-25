@@ -34,7 +34,7 @@ The paper extends the Silber 2007 integrated glucose-insulin framework with two 
 
 Palosuran 125 mg b.i.d. was the investigational drug; the paper concludes it has no clinically meaningful effect on insulin secretion or sensitivity, so the published final estimates fix the palosuran effect to zero and the structural model is essentially a drug-free glucose-insulin homeostasis model in DIS_DIAB.
 
-The paper produces two distinct dynamical systems (HGC and MTT) that share the glucose-disposition and effect-compartment structure but differ in the glucose input arm (IV clamp vs. transit-absorbed meal) and the insulin secretion equation (biphasic Gaussian + linear vs. power + incretin Emax). Per the replicate-author-structure policy, this paper contributes two model files (`Hong_2013_glucose_insulin_HGC.R` and `Hong_2013_glucose_insulin_MTT.R`) and one shared vignette (this article).
+The paper produces two distinct dynamical systems (HGC and MTT) that share the glucose-disposition and effect-compartment structure but differ in the glucose input arm (IV clamp vs. transit-absorbed meal) and the insulin secretion equation (biphasic Gaussian + linear vs. power + incretin Emax). Following the package's convention of replicating the authors' model structure, this paper contributes two model files (`Hong_2013_glucose_insulin_HGC.R` and `Hong_2013_glucose_insulin_MTT.R`) and one shared vignette (this article).
 
 # Population
 

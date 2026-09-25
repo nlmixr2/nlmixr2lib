@@ -302,21 +302,21 @@ h*mg/L magnitude is consistent with the source.
 # Assumptions and deviations
 
 - **Year-letter on the file name resolves to 2019, not 2018.** The
-  task metadata names the file as `Archary_2018_*.R` but the source
+  file was initially named `Archary_2018_*.R` but the source
   PDF masthead is unambiguously `Br J Clin Pharmacol. 2019;1-10`
-  (received 9 Nov 2018, accepted 15 May 2019, published 2019). Per
-  Phase 1 step 2 of the extraction skill the file naming is corrected
-  to `Archary_2019_lamivudine.R` to match the publication year on disk.
-- **Two-models-per-paper extraction (operator decision sidecar
-  request-001 Q1).** Archary 2019 BJCP describes two independent
-  popPK models in one paper (abacavir 2-compartment + lamivudine
-  1-compartment); the operator approved option 1A (extract both drugs
-  as paired model files + paired vignettes in a single PR). The
-  abacavir half is in `Archary_2019_abacavir`.
+  (received 9 Nov 2018, accepted 15 May 2019, published 2019), so the
+  file name is corrected to `Archary_2019_lamivudine.R` to match the
+  publication year.
+- **Two-models-per-paper extraction (maintainer decision).** Archary
+  2019 BJCP describes two independent popPK models in one paper
+  (abacavir 2-compartment + lamivudine 1-compartment); the maintainers
+  approved extracting both drugs as paired model files + paired
+  vignettes in a single PR. The abacavir half is in
+  `Archary_2019_abacavir`.
 - **Day-1-vs-day-14 step encoded via a binary `DAY14` covariate
-  (operator decision sidecar request-001 Q2 = option 2i).** Archary
+  (maintainer decision).** Archary
   2019 reports a step change in typical ka between day 1 (0.30 /h)
-  and day 14 (0.34 /h) of ART. The operator approved encoding the
+  and day 14 (0.34 /h) of ART. The maintainers approved encoding the
   step as a binary `DAY14` covariate (0 = day 1, 1 = day 14) on ka
   via the multiplicative shift `(1 + e_day14_ka * DAY14)` with
   `e_day14_ka = 0.34/0.30 - 1 = 0.1333`. The lamivudine ka step is

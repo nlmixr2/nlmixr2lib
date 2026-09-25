@@ -22,7 +22,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Netterberg_2017_docetaxel"))$description`
 * Article: [Netterberg 2017, *Cancer Chemother Pharmacol*](https://doi.org/10.1007/s00280-017-3366-x)
 * DDMORE Foundation Model Repository entry: [DDMODEL00000224](https://repository.ddmore.eu/model/DDMODEL00000224)
-* Parameter source publication: Kloft C, Wallin J, Henningsson A, Chatelut E, Karlsson MO. *Population pharmacokinetic-pharmacodynamic model for neutropenia with patient subgroup identification: comparison across anticancer drugs.* (cited by name in the bundle's `.mod`; full citation not on disk in this worktree).
+* Parameter source publication: Kloft C, Wallin J, Henningsson A, Chatelut E, Karlsson MO. *Population pharmacokinetic-pharmacodynamic model for neutropenia with patient subgroup identification: comparison across anticancer drugs.* (cited by name in the bundle's `.mod`; full citation not on disk).
 
 This is a **PD-only Friberg-style myelosuppression model** for docetaxel-induced neutropenia. Docetaxel pharmacokinetics enter as a time-varying covariate column (`CP_MGL`, in mg/L); they are not modelled here. Users couple this PD layer with any docetaxel popPK simulation (typically Bruno 1996 / 1998) by supplying a `CP_MGL` trajectory at every event row.
 
@@ -36,13 +36,13 @@ The bundle for `DDMODEL00000224` ships:
 * `Model_Accommodations.txt` — notes the deviations between the bundle and Kloft 2006 publication (see *Errata* below).
 * `DDMODEL00000224.rdf` — RDF metadata. Confirms model purpose `pkpd_0000036` (myelosuppression PD) and research stage.
 
-The bundle does **not** ship an `Output_real_*.lst` (i.e., a refit on the original Kloft 2006 cohort data is not part of this DDMORE entry). Parameter values in the model file therefore inherit directly from the publication-fixed `$THETA` block. Neither Netterberg 2017 nor Kloft 2006 PDF is on disk in this worktree, so a side-by-side parameter-table comparison against the published values was not performed; see *Errata*.
+The bundle does **not** ship an `Output_real_*.lst` (i.e., a refit on the original Kloft 2006 cohort data is not part of this DDMORE entry). Parameter values in the model file therefore inherit directly from the publication-fixed `$THETA` block. Neither Netterberg 2017 nor Kloft 2006 PDF is on disk, so a side-by-side parameter-table comparison against the published values was not performed; see *Errata*.
 
 # Population
 
 The Kloft 2006 source analysis pools data from multiple anticancer drugs (docetaxel, paclitaxel, etoposide, CPT-11, vinflunine) into a Friberg-family myelosuppression analysis, with drug-specific parameter sets reported per drug. The DDMODEL00000224 bundle implements only the docetaxel parameter set; Netterberg 2017 reuses this docetaxel model unchanged to evaluate ANC-prediction methodology under frequent-monitoring scenarios (nadir, time-to-baseline-recovery, time-to-different-neutropenic-grade).
 
-Detailed population demographic information (n_subjects, age, weight, sex, race) is not reproduced in the DDMORE bundle and the Netterberg 2017 / Kloft 2006 publication PDFs are not on disk in this worktree. The bundle's `Simulated_myelosuppression_dailyANC.csv` represents a single virtual subject and is a regression-style smoke test, not a representative cohort. The same machine-readable metadata is available as `readModelDb("Netterberg_2017_docetaxel")$population`.
+Detailed population demographic information (n_subjects, age, weight, sex, race) is not reproduced in the DDMORE bundle and the Netterberg 2017 / Kloft 2006 publication PDFs are not on disk. The bundle's `Simulated_myelosuppression_dailyANC.csv` represents a single virtual subject and is a regression-style smoke test, not a representative cohort. The same machine-readable metadata is available as `readModelDb("Netterberg_2017_docetaxel")$population`.
 
 # Source trace
 
@@ -77,12 +77,12 @@ Validation strategy: re-simulate the bundle's `Simulated_myelosuppression_dailyA
 mod <- readModelDb("Netterberg_2017_docetaxel")
 mod_typical <- rxode2::zeroRe(mod)
 
-# Bundle path on this worktree's host. The bundle is in the
-# mab_human_consensus literature directory; the file is not redistributed
-# inside the package, so the chunk is rendered conditionally on the file
-# being present.
-bundle_path <- "/home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/224/Simulated_myelosuppression_dailyANC.csv"
-bundle_present <- file.exists(bundle_path)
+# The DDMORE bundle is not redistributed inside the package. Maintainers who
+# hold a copy point NLMIXR2LIB_LITERATURE_DIR at it; otherwise the chunks that
+# need the file are skipped.
+bundle_path <- file.path(Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", ""),
+                         "ddmore_scraping/224/Simulated_myelosuppression_dailyANC.csv")
+bundle_present <- nzchar(Sys.getenv("NLMIXR2LIB_LITERATURE_DIR", "")) && file.exists(bundle_path)
 ```
 
 ```{r f2_run, eval = bundle_present}
@@ -295,7 +295,7 @@ A future companion vignette could pair this PD model with a docetaxel popPK upst
 
 # Assumptions and deviations / Errata
 
-- **Parameter values are publication-fixed literature constants, not refitted estimates.** The bundle's NM-TRAN `.mod` annotates `$THETA` / `$OMEGA` / `$SIGMA` as `; ... according to Kloft et al., 2006` and uses `$ESTIMATION ... MAXEVALS=0` (no re-fit). The accompanying `Output_simulated_*.lst` reaches the same point values trivially because `MAXEVALS=0` runs an evaluation step only. Neither Netterberg 2017 nor Kloft 2006 publication PDF is on disk in this worktree, so a side-by-side parameter-table comparison against the original published values was not performed.
+- **Parameter values are publication-fixed literature constants, not refitted estimates.** The bundle's NM-TRAN `.mod` annotates `$THETA` / `$OMEGA` / `$SIGMA` as `; ... according to Kloft et al., 2006` and uses `$ESTIMATION ... MAXEVALS=0` (no re-fit). The accompanying `Output_simulated_*.lst` reaches the same point values trivially because `MAXEVALS=0` runs an evaluation step only. Neither Netterberg 2017 nor Kloft 2006 publication PDF is on disk, so a side-by-side parameter-table comparison against the original published values was not performed.
 
 - **Bundle deviation from publication: gamma (PO) IIV fixed to zero.** Per `Model_Accommodations.txt`: "the OMEGA related to the gamma parameter was set to 0 here (estimated to 0.0216452 in the original publication)". The model file therefore omits any IIV term on `lpo`, matching the bundle. This makes the feedback exponent strictly population-level in the nlmixr2 implementation.
 

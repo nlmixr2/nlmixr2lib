@@ -461,7 +461,7 @@ disease-progression equation operating on per-subject summary exposures.
 There is no AUC, Cmax, or terminal-half-life concept to validate. The
 typical-value reproductions of Figures 2A, 2B, and 3B above (plus the
 combined trajectory) are the appropriate validation strategy following
-the `references/endogenous-validation.md` pattern: typical-value
+the package's pattern for endogenous and mechanistic models: typical-value
 replication of the paper's published structural predictions at canonical
 covariate values, paired with deterministic checkpoints against
 analytic equations.

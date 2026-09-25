@@ -285,7 +285,7 @@ trajectory:
 # 0.0483; the OR / EL50 calculation in the Methods uses 0.03 and the
 # 0.0483 value appears to be either a parallel parameterisation or a
 # typesetting artefact. Both values are documented here for the
-# operator; the hazard plot uses the smaller value that reproduces
+# maintainers; the hazard plot uses the smaller value that reproduces
 # the reported OR and EL50 (and therefore the median TTP of 7.4 months
 # stated in the Results).
 b0 <- 0.448           # month^-1

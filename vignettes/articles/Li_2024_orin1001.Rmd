@@ -104,7 +104,7 @@ the paper screened out covariate pairs with Pearson correlation above 0.5
 (Methods 2.4.2), so weak correlation is the right target.
 
 ```{r cohort}
-n_per <- 100L # participants per dose arm; the skill cap is 200
+n_per <- 100L # participants per dose arm; the cohort cap is 200
 doses <- c(100, 200, 300, 400, 500, 650, 900)
 
 # Lognormal quantile matched to a published median + IQR, clamped to the
@@ -586,7 +586,7 @@ scenarios <- tibble::tribble(
   "TBIL 5.22 (5th pctile)", 5.22, 45.13, -37.4,
   "TBIL 22.24 (95th pctile)", 22.24, 45.13, 58.6
 )
-n_scen <- 200L # skill cap; Li 2024 used 500 per scenario
+n_scen <- 200L # cohort cap; Li 2024 used 500 per scenario
 
 events_scen <- bind_rows(lapply(seq_len(nrow(scenarios)), function(k) {
   s <- tibble(

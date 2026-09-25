@@ -364,7 +364,7 @@ comparing the package output to the original paper should be aware:
   comparing the implementation to the source can pattern-match line
   by line. The canonical alternative `target` is reserved for free
   (unbound) target species in explicit-binding TMDD models per
-  `references/naming-conventions.md`; the latent variable here is a
+  `inst/references/compartment-names.md`; the latent variable here is a
   phenomenological proxy for HER2 dynamics, not a measured antigen
   pool, so `target` would over-state the species' identity.
 * **No covariate effects.** Le Tilly 2021 Methods describes a

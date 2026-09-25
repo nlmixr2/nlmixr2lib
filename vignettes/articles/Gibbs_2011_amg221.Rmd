@@ -455,8 +455,8 @@ Any starred rows should be interpreted with two paper-specific caveats:
   paper's estimate exactly at both dose tiers while making the covariate role
   visible to `checkModelConventions()`.
 * **Effect-compartment volume Ve.** The paper's equation for Ve was not
-  decoded in the on-disk trimmed text ("<!-- formula-not-decoded -->" markers
-  in the trimmed markdown). The packaged model uses the equivalent-Vc
+  decoded in the text extracted from the PDF ("<!-- formula-not-decoded -->"
+  markers in the extracted text). The packaged model uses the equivalent-Vc
   parameterisation A(effect) / Vc for the effect-site plasma-equivalent
   concentration and applies the density correction `kpp` (1.36 mL/g) at the
   tissue-concentration observation step. This is mathematically identical to

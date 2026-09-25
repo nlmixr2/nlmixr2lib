@@ -136,7 +136,7 @@ published range spans roughly the central 95%, then clamped to that range).
 # `set.seed()` seeds R's RNG; `rxSetSeed()` seeds rxode2's, but only per solver
 # thread, so the exact cohort differs between machines with different thread
 # counts. Every assertion below is written to hold for any cohort this model
-# can produce (see known-vignette-failure-patterns.md pattern 12).
+# can produce.
 set.seed(20250207)
 rxode2::rxSetSeed(20250207)
 

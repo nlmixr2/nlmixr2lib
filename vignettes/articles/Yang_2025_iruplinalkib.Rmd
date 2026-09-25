@@ -705,6 +705,6 @@ stopifnot(cl_nca > 12.8, cl_nca < 28.2)
 
 - **Equations recovered from the PDF layout.** The seven display equations of
   the final model are vector images in the publisher's PDF and are lost by
-  text extraction (the trimmed markdown shows seven `formula-not-decoded`
+  text extraction (the extracted text shows seven `formula-not-decoded`
   placeholders). They were recovered with `pdftotext -layout`, which is the
   source for every centring constant in the model file.

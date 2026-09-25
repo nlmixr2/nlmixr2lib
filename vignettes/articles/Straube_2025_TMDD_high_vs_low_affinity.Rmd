@@ -320,7 +320,7 @@ ggplot(ftbr, aes(time * 24, ftbr, colour = treatment)) +
 
 The paper's analytical results give several closed-form predictions that the
 packaged full-TMDD models must satisfy. All are deterministic, so the bounds
-below are tight by design (see pattern 11 of the skill's failure-pattern notes).
+below are tight by design.
 
 ## Drug-free steady state (Equation 3)
 

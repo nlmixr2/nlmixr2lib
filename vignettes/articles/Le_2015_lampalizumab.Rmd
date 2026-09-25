@@ -133,7 +133,7 @@ Three dosing regimens are simulated for the figure-replication panel:
 10 mg ITV every 4 weeks (q4w), every 6 weeks (q6w), and every 8 weeks
 (q8w), each for 16 weeks of dosing followed by a 4-week tail. Each
 regimen is given its own disjoint `id` block (per
-`vignette-template.md`'s multi-cohort guidance) so `rxSolve` does not
+the package's multi-cohort guidance) so `rxSolve` does not
 silently merge subjects across regimens. The observation grid is dense
 in the first week (where vitreous-to-serum egress dominates) and
 coarse afterward to keep the simulation under the pkgdown vignette
