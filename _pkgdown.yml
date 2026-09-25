@@ -678,6 +678,8 @@ navbar:
         href: articles/Rognas_2025_bitopertin.html
       - text: "Bivalirudin (Zhang 2012)"
         href: articles/Zhang_2012_bivalirudin.html
+      - text: "Blinatumomab (Clements 2020)"
+        href: articles/Clements_2020_blinatumomab.html
       - text: "Bms911543 cyp1a2 tdi (Zhou 2015)"
         href: articles/Zhou_2015_bms911543_invitro.html
       - text: "Bms911543 hlm (Zhou 2015)"
@@ -6432,6 +6434,7 @@ articles:
   - articles/Cleary_2023_risdiplam
   - articles/Clegg_2024_nirsevimab
   - articles/Clegg_2024_tixagevimab_cilgavimab
+  - articles/Clements_2020_blinatumomab
   - articles/Clewe_2015_rifampicin
   - articles/Clewe_2016_rifampicin
   - articles/Clewe_2018_TB_MTP_GPDI_invitro
