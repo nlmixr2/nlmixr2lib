@@ -1,4 +1,4 @@
-Hallik_2020_dobutamine_cftoe <- function() {
+Hallik_2020_dobutamine_ftoe_cerebral <- function() {
   description <- "Simultaneous PKPD model for intravenous dobutamine and cerebral fractional tissue oxygen extraction (cFTOE = (SaO2 - rScO2) / SaO2, from continuous pulse oximetry and near-infrared spectroscopy, averaged over 1 min) in critically ill preterm and term neonates in the first 3 days of life (Hallik 2020, Table 5). PK is the paper's one-compartment linear model re-estimated jointly with cFTOE: clearance scales with birth weight^0.75 and a sigmoidal postmenstrual-age maturation function (PMA50 and Hill fixed from the PK-only fit), volume scales linearly with birth weight, both referenced to 1618 g, and one shared random effect enters volume multiplied by an estimated scale factor. cFTOE follows a sigmoidal Emax model in the plasma concentration (no effect-compartment delay), FALLING from a baseline of 0.227 toward a plateau LEVEL of 0.206 (the paper's Emax is the plateau value, not the increment, so the typical effect is negative) with EC50 52.9 ug/L and Hill 3.65. Residual errors are proportional for both concentration and cFTOE. The PK-only model is Hallik_2020_dobutamine."
   reference <- paste(
     "Hallik M, Ilmoja M-L, Standing JF, Soeorg H, Jalas T, Raidmae M, Uibo K,",
@@ -13,7 +13,7 @@ Hallik_2020_dobutamine_cftoe <- function() {
 
   # Dose in ug and time in hours, so an infusion of R ug/kg/min enters as a rate
   # of R * WT * 60 ug/h. Concentrations are ug/L; cFTOE is a unitless fraction.
-  units <- list(time = "h", dosing = "ug", concentration = "ug/L", cftoe = "fraction")
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L", ftoe_cerebral = "fraction")
 
   compartmentData <- list(
     central = list(analyte = "dobutamine", units = "ug", specimen = "plasma", verified = TRUE)
@@ -67,18 +67,18 @@ Hallik_2020_dobutamine_cftoe <- function() {
     # (Equation 6). Emax is 'the estimated maximum HD parameter value', i.e.
     # the plateau LEVEL, hence lrmax_ rather than lemax; here it lies below E0,
     # matching Discussion 4.2 'Decrease in cFTOE with dobutamine'.
-    lrbase_cftoe <- log(0.227); label("Baseline cerebral fractional tissue oxygen extraction E0 (fraction)")  # Table 5 cFTOE row 'E0' = 0.227 (SE 0.023)
-    lrmax_cftoe <- log(0.206); label("Plateau cerebral fractional tissue oxygen extraction Emax (fraction)")  # Table 5 cFTOE row 'Emax' = 0.206 (SE 0.027)
-    lec50_cftoe <- log(52.9); label("Plasma concentration at half-maximal cFTOE change (ug/L)")  # Table 5 cFTOE row 'EC50 (ug L-1)' = 52.9 (SE 7.26), no BSV
-    lhill_cftoe <- log(3.65); label("Hill coefficient of the cFTOE concentration-effect curve (unitless)")  # Table 5 cFTOE row 'gamma' = 3.65 (SE 0.573), no BSV
+    lrbase_ftoe_cerebral <- log(0.227); label("Baseline cerebral fractional tissue oxygen extraction E0 (fraction)")  # Table 5 cFTOE row 'E0' = 0.227 (SE 0.023)
+    lrmax_ftoe_cerebral <- log(0.206); label("Plateau cerebral fractional tissue oxygen extraction Emax (fraction)")  # Table 5 cFTOE row 'Emax' = 0.206 (SE 0.027)
+    lec50_ftoe_cerebral <- log(52.9); label("Plasma concentration at half-maximal cFTOE change (ug/L)")  # Table 5 cFTOE row 'EC50 (ug L-1)' = 52.9 (SE 7.26), no BSV
+    lhill_ftoe_cerebral <- log(3.65); label("Hill coefficient of the cFTOE concentration-effect curve (unitless)")  # Table 5 cFTOE row 'gamma' = 3.65 (SE 0.573), no BSV
 
     # Table 5 footnote a: BSV CV = sqrt(omega2) x 100%, so omega2 = CV^2.
     etalcl ~ 0.1225  # Table 5 cFTOE CL BSV 35% (SE 21.5%), shrinkage 9%; omega2 = 0.35^2
-    etalrbase_cftoe ~ 0.25  # Table 5 cFTOE E0 BSV 50% (SE 26.8%), shrinkage 2%; omega2 = 0.50^2
-    etalrmax_cftoe ~ 0.36  # Table 5 cFTOE Emax BSV 60% (SE 36.2%), shrinkage 9%; omega2 = 0.60^2
+    etalrbase_ftoe_cerebral ~ 0.25  # Table 5 cFTOE E0 BSV 50% (SE 26.8%), shrinkage 2%; omega2 = 0.50^2
+    etalrmax_ftoe_cerebral ~ 0.36  # Table 5 cFTOE Emax BSV 60% (SE 36.2%), shrinkage 9%; omega2 = 0.60^2
 
     propSd <- 0.653; label("Proportional residual error, dobutamine concentration (fraction)")  # Table 5 cFTOE row 'Pharmacokinetic residual error (proportional)' = 0.653 (SE 0.061)
-    propSd_cftoe <- 0.181; label("Proportional residual error, cFTOE (fraction)")  # Table 5 cFTOE row 'Pharmacodynamic residual error (proportional)' = 0.181 (SE 0.004)
+    propSd_ftoe_cerebral <- 0.181; label("Proportional residual error, cFTOE (fraction)")  # Table 5 cFTOE row 'Pharmacodynamic residual error (proportional)' = 0.181 (SE 0.004)
   })
 
   model({
@@ -100,13 +100,13 @@ Hallik_2020_dobutamine_cftoe <- function() {
     # selects 'Sigmoidal Emax' without KEO for cFTOE (OFV -5567 vs -5152 with
     # KEO). Because E0 and Emax carry independent etas, an individual's
     # plateau may lie above or below their own baseline.
-    rbase_cftoe <- exp(lrbase_cftoe + etalrbase_cftoe)
-    rmax_cftoe <- exp(lrmax_cftoe + etalrmax_cftoe)
-    ec50_cftoe <- exp(lec50_cftoe)
-    hill_cftoe <- exp(lhill_cftoe)
-    cftoe <- rbase_cftoe + (rmax_cftoe - rbase_cftoe) * Cc^hill_cftoe / (ec50_cftoe^hill_cftoe + Cc^hill_cftoe)
+    rbase_ftoe_cerebral <- exp(lrbase_ftoe_cerebral + etalrbase_ftoe_cerebral)
+    rmax_ftoe_cerebral <- exp(lrmax_ftoe_cerebral + etalrmax_ftoe_cerebral)
+    ec50_ftoe_cerebral <- exp(lec50_ftoe_cerebral)
+    hill_ftoe_cerebral <- exp(lhill_ftoe_cerebral)
+    ftoe_cerebral <- rbase_ftoe_cerebral + (rmax_ftoe_cerebral - rbase_ftoe_cerebral) * Cc^hill_ftoe_cerebral / (ec50_ftoe_cerebral^hill_ftoe_cerebral + Cc^hill_ftoe_cerebral)
 
     Cc ~ prop(propSd)
-    cftoe ~ prop(propSd_cftoe)
+    ftoe_cerebral ~ prop(propSd_ftoe_cerebral)
   })
 }

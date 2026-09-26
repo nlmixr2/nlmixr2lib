@@ -35,7 +35,7 @@ structure, the library carries seven models:
 | `Hallik_2020_dobutamine_lvef` | left ventricular ejection fraction (`lvef`, %) | linear in plasma C | Table 4 |
 | `Hallik_2020_dobutamine_hr` | heart rate (`hr`, beats/min) | sigmoidal Emax in effect-site C | Table 5 |
 | `Hallik_2020_dobutamine_map` | mean arterial pressure (`map`, mmHg) | sigmoidal Emax in plasma C | Table 5 |
-| `Hallik_2020_dobutamine_cftoe` | cerebral fractional tissue O2 extraction (`cftoe`) | sigmoidal Emax in plasma C | Table 5 |
+| `Hallik_2020_dobutamine_ftoe_cerebral` | cerebral fractional tissue O2 extraction (`ftoe_cerebral`) | sigmoidal Emax in plasma C | Table 5 |
 
 * Citation: `r rxode2::rxode(readModelDb("Hallik_2020_dobutamine"))$reference`
 * Description (PK model): `r rxode2::rxode(readModelDb("Hallik_2020_dobutamine"))$description`
@@ -406,7 +406,7 @@ ce <- bind_rows(
   data.frame(endpoint = "MAP (mmHg)", conc = conc_grid,
              effect = emax_curve(conc_grid, theta_of("Hallik_2020_dobutamine_map"), "map")),
   data.frame(endpoint = "cFTOE", conc = conc_grid,
-             effect = emax_curve(conc_grid, theta_of("Hallik_2020_dobutamine_cftoe"), "cftoe"))
+             effect = emax_curve(conc_grid, theta_of("Hallik_2020_dobutamine_ftoe_cerebral"), "ftoe_cerebral"))
 )
 
 ggplot(ce, aes(conc, effect)) +
@@ -429,7 +429,7 @@ frac_of_max <- function(conc, th, sfx) {
 }
 th_map <- theta_of("Hallik_2020_dobutamine_map")
 th_lvo <- theta_of("Hallik_2020_dobutamine_lvo")
-th_cftoe <- theta_of("Hallik_2020_dobutamine_cftoe")
+th_ftoe <- theta_of("Hallik_2020_dobutamine_ftoe_cerebral")
 
 checks <- data.frame(
   Claim = c(
@@ -444,7 +444,7 @@ checks <- data.frame(
     sprintf("%.3f", frac_of_max(50, th_map, "map")),
     sprintf("%.3f", frac_of_max(80, th_hr, "hr")),
     sprintf("%.3f", frac_of_max(200, th_lvo, "lvo")),
-    sprintf("%+.3f", emax_curve(330, th_cftoe, "cftoe") - exp(th_cftoe[["lrbase_cftoe"]]))
+    sprintf("%+.3f", emax_curve(330, th_ftoe, "ftoe_cerebral") - exp(th_ftoe[["lrbase_ftoe_cerebral"]]))
   )
 )
 knitr::kable(checks)
@@ -453,7 +453,7 @@ stopifnot(
   frac_of_max(50, th_map, "map") > 0.99,
   frac_of_max(80, th_hr, "hr") > 0.9,
   frac_of_max(200, th_lvo, "lvo") < 0.9,
-  emax_curve(330, th_cftoe, "cftoe") < exp(th_cftoe[["lrbase_cftoe"]])
+  emax_curve(330, th_ftoe, "ftoe_cerebral") < exp(th_ftoe[["lrbase_ftoe_cerebral"]])
 )
 ```
 
@@ -471,11 +471,11 @@ observation time.
 pd_models <- c(
   rvo = "Hallik_2020_dobutamine_rvo", lvo = "Hallik_2020_dobutamine_lvo",
   lvef = "Hallik_2020_dobutamine_lvef", hr = "Hallik_2020_dobutamine_hr",
-  map = "Hallik_2020_dobutamine_map", cftoe = "Hallik_2020_dobutamine_cftoe"
+  map = "Hallik_2020_dobutamine_map", ftoe_cerebral = "Hallik_2020_dobutamine_ftoe_cerebral"
 )
 pd_labels <- c(
   rvo = "RVO (mL/kg/min)", lvo = "LVO (mL/kg/min)", lvef = "LVEF (%)",
-  hr = "HR (beats/min)", map = "MAP (mmHg)", cftoe = "cFTOE"
+  hr = "HR (beats/min)", map = "MAP (mmHg)", ftoe_cerebral = "cFTOE"
 )
 
 ev_pd <- ev |>
