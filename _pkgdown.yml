@@ -5330,6 +5330,8 @@ navbar:
         href: articles/Sun_2026_tilmicosin.html
       - text: "Tipifarnib (PerezRuixo 2006)"
         href: articles/PerezRuixo_2006_tipifarnib.html
+      - text: "Tiropramide (Jeong 2020)"
+        href: articles/Jeong_2020_tiropramide.html
       - text: "Tirzepatide (Chigutsa 2025)"
         href: articles/Chigutsa_2025_tirzepatide.html
       - text: "Tisagenlecleucel (Stein 2019)"
@@ -6899,6 +6901,7 @@ articles:
   - articles/Jeon_2012_C3G
   - articles/Jeon_2013_interferonAlfa2a
   - articles/Jeon_2014_piperacillin
+  - articles/Jeong_2020_tiropramide
   - articles/Jeong_2022_torsemide
   - articles/Jeong_2023_rabeprazole
   - articles/Jeong_2025_imc002
