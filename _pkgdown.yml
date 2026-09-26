@@ -1066,6 +1066,10 @@ navbar:
         href: articles/Hoglund_2016_chloroquine.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
+      - text: "Chloroquine plasma (AbdRahman 2020)"
+        href: articles/AbdRahman_2020_chloroquine.html
+      - text: "Chloroquine wholeblood (AbdRahman 2020)"
+        href: articles/AbdRahman_2020_chloroquine.html
       - text: "Cholecalciferol (Tuey 2024)"
         href: articles/Tuey_2024_cholecalciferol.html
       - text: "Cholecalciferol pbpk (Muhamad 2025)"
@@ -6052,6 +6056,7 @@ articles:
   contents:
   - articles/Abbasi_2023_gentamicin
   - articles/Abboud_2009_epinephrine
+  - articles/AbdRahman_2020_chloroquine
   - articles/AbdelJalil_2013_tacrolimus
   - articles/Abdelgawad_2024_linezolid
   - articles/Abdelgawad_2025_rifampicin

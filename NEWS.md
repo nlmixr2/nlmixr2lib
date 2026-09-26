@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Abd-Rahman 2020 chloroquine ([doi:10.1002/cpt.1893](https://doi.org/10.1002/cpt.1893)) -- healthy adults in a Plasmodium vivax volunteer infection study; joint chloroquine + desethylchloroquine PK and a delayed-effect parasite-killing PD model, as separate plasma and whole-blood models.
+
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
