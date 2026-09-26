@@ -50,8 +50,8 @@ Sahota 2015 Table 1 summarises two pooled studies:
 A total of 38 subjects across the two studies contributed PK (total
 plasma CPHPC) and PD (total plasma SAP) measurements. Finer demographics
 (precise age range, weight range, female fraction) are reported only in
-the paper's Supplementary Materials S1 and S2, which were not on disk
-for this extraction; the model's `population` metadata records the
+the paper's Supplementary Materials S1 and S2, which were not available
+when this model was built; the model's `population` metadata records the
 fields that are derivable from the main paper.
 
 The same information is available programmatically via
@@ -304,7 +304,7 @@ knitr::kable(nca_summary,
 * **Source breadth.** This extraction is paper-only. Sahota 2015's
   Supplementary Materials S1 (participant demographics) and S2
   (adverse-effect tabulations) and Supplementary Material S3 (NONMEM
-  control stream) were not on disk for this extraction; finer
+  control stream) were not available when this model was built; finer
   demographics and any control-stream-only conventions are therefore
   absent from `population` and from the in-file parameter comments. A
   parallel extraction from the DDMORE Foundation Model Repository entry

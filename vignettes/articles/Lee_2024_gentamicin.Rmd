@@ -45,7 +45,7 @@ their own right.
 
 Two distinct populations matter here and must not be conflated.
 
-**Development population (Teigen 2006, not on disk).** Adults with end-stage
+**Development population (Teigen 2006, not available when this model was built).** Adults with end-stage
 renal disease receiving intermittent hemodialysis, dialysed for at least one
 month, modelled in NONMEM version 5. Everything Lee 2024 quotes about this
 cohort is its group **mean** creatinine clearance, 0.53 L/h (8.83 mL/min) --

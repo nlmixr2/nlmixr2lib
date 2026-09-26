@@ -168,8 +168,8 @@ Li_2024_norvancomycin <- function() {
     # All point estimates are the "Final model estimates" column of Li 2024
     # Table 2, and every one of them is reproduced in the four typical-value
     # equations printed in Results, "PPK Modeling" (recovered from the PDF with
-    # `pdftotext -layout`; the docling-derived markdown renders that display
-    # block as `<!-- formula-not-decoded -->`):
+    # `pdftotext -layout`; a plain-text extraction of the PDF drops that
+    # display block):
     #
     #   CL (L/h) = 3.15 x (Age/57.5)^-0.425 x e^((Scr-59) x (-0.00886)) x e^etaCL
     #   V1 (L)   = 12.3 x e^etaV1

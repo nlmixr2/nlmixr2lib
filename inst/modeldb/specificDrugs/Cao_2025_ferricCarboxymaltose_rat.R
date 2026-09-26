@@ -30,8 +30,8 @@ Cao_2025_ferricCarboxymaltose_rat <- function() {
 
   # Compartment names not in inst/references/compartment-names.md. `prol`
   # (HSPC pool), `hb`, `RBC` and `PLT` are canonical; the erythroid-lineage
-  # states and the two aging chains are declared here pending operator
-  # ratification as a canonical hematopoiesis family.
+  # states and the two aging chains are declared here pending the
+  # maintainers' ratification as a canonical hematopoiesis family.
   paper_specific_compartments <- c("bfue", "cfue", "nor", "ret", "rbc")
   paper_specific_compartment_pattern <- "^(mk|plt)[0-9]+$"
 

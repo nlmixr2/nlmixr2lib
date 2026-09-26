@@ -10,7 +10,7 @@ Netterberg_2017_docetaxel <- function() {
     "Kloft et al. 2006 cross-drug myelosuppression analysis",
     "(per the bundle's NM-TRAN .mod $PK / $THETA `; ... according to",
     "Kloft et al., 2006` block; the original Kloft 2006 publication is",
-    "not on disk in this worktree).",
+    "not available when this model was built).",
     "DDMORE Foundation Model Repository: DDMODEL00000224.",
     sep = " "
   )
@@ -88,7 +88,7 @@ Netterberg_2017_docetaxel <- function() {
     disease_state = "Adult cancer patients receiving docetaxel chemotherapy. The Kloft 2006 source analysis pools data from multiple anticancer drugs (docetaxel, paclitaxel, etoposide, CPT-11, vinflunine) into a single Friberg-family myelosuppression analysis and reports drug-specific parameter sets; the DDMORE bundle for DDMODEL00000224 implements only the docetaxel parameter set, used by Netterberg 2017 as a fixed model for an ANC-prediction-methodology study (frequent-monitoring evaluation of nadir, time-to-baseline-recovery, and time-to-different-neutropenic-grade prediction).",
     dose_range = "Intravenous docetaxel, typical 100 mg/m^2 over 1-hour infusion every 3 weeks (Kloft 2006 / Netterberg 2017 simulated trajectory). The model itself does not encode docetaxel dosing — exposure is consumed via the CP_MGL covariate column.",
     regions = NA_character_,
-    notes = "Population demographic detail (n_subjects, age, weight, sex, race) is not reproduced in the DDMORE bundle for DDMODEL00000224 and neither the Netterberg 2017 nor the Kloft 2006 publication PDF is on disk in this worktree. The bundle's `Simulated_myelosuppression_dailyANC.csv` contains a single virtual subject (54 records, one docetaxel cycle, daily ANC monitoring over 21 days) used as a regression-style smoke test; it is not representative of the source-paper clinical cohort. The Kloft 2006 paper develops the myelosuppression model on a pooled multi-drug cancer-patient cohort; the Netterberg 2017 paper uses the docetaxel arm of that model unchanged to evaluate prediction-methodology under frequent-monitoring scenarios. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
+    notes = "Population demographic detail (n_subjects, age, weight, sex, race) is not reproduced in the DDMORE bundle for DDMODEL00000224 and neither the Netterberg 2017 nor the Kloft 2006 publication PDF was available when this model was built. The bundle's `Simulated_myelosuppression_dailyANC.csv` contains a single virtual subject (54 records, one docetaxel cycle, daily ANC monitoring over 21 days) used as a regression-style smoke test; it is not representative of the source-paper clinical cohort. The Kloft 2006 paper develops the myelosuppression model on a pooled multi-drug cancer-patient cohort; the Netterberg 2017 paper uses the docetaxel arm of that model unchanged to evaluate prediction-methodology under frequent-monitoring scenarios. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({
@@ -101,8 +101,8 @@ Netterberg_2017_docetaxel <- function() {
     # `Output_simulated_*.lst` runs the .mod with MAXEVALS=0 (model
     # evaluation only, no re-fit) and reports the same point values to
     # 3 sig figs in the FINAL PARAMETER ESTIMATE block, confirming no
-    # parameter movement. The original Kloft 2006 paper is not on disk
-    # in this worktree, so a side-by-side parameter-table comparison
+    # parameter movement. The original Kloft 2006 paper was not available
+    # when this model was built, so a side-by-side parameter-table comparison
     # against the publication was not performed; this is documented in
     # the vignette Errata.
     # ------------------------------------------------------------------

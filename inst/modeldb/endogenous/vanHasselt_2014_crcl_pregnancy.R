@@ -75,7 +75,7 @@ vanHasselt_2014_crcl_pregnancy <- function() {
     # This is the additive Anderson-Holford maturation shape with hill = 1,
     # but on a GESTATIONAL-AGE axis rather than the registered family's
     # postnatal-age axis, so every token is kept inside the crcl_ namespace
-    # (operator ruling 2026-09-21; see inst/references/parameter-names.md).
+    # (the maintainers' naming decision; see inst/references/parameter-names.md).
     # crcl_matspan is the SPAN, not the plateau: the plateau CrCL reaches at
     # full term is crcl_ega0 + crcl_matspan * 40/(crcl_ega50 + 40).
     #
@@ -132,7 +132,7 @@ vanHasselt_2014_crcl_pregnancy <- function() {
     # state registered in inst/references/compartment-names.md, following the
     # lowercase-state / uppercase-covariate split this family already uses
     # (`uacr` vs the `UACR` column, `egfr` vs the `EGFR` column) rather than
-    # the paper's own `CrCL` capitalisation. Operator ruling 2026-09-21.
+    # the paper's own `CrCL` capitalisation, by the maintainers' decision.
     crcl <- crcl_ega0 + crcl_matspan * ega / (crcl_ega50 + ega)
 
     crcl ~ prop(propSd)

@@ -351,7 +351,8 @@ ggplot(auc_summary, aes(x = AUC_mg_min_mL)) +
   the indisulam PK structural model from Zandvliet 2006 (J Pharmacokinet
   Pharmacodyn 33:543-570, doi:10.1007/s10928-006-9021-5) and Zandvliet 2007
   (Clin Cancer Res 13:2970-2976, doi:10.1158/1078-0432.CCR-06-2978), neither
-  of which is on disk; that PK is fixed (not re-estimated) in Zandvliet 2008.
+  of which was available when this model was built; that PK is fixed (not
+  re-estimated) in Zandvliet 2008.
 
 - **Cohort distribution.** The original n = 16 individual covariate
   vectors are not reported; the virtual cohort uses log-normal sampling

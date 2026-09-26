@@ -146,12 +146,12 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "session starting 1 hour after the end of the morning 3-hour infusion",
         "(i.e. RRT_HEMODIAL_ACTIVE = 1 from t = 4 h to t = 8 h after the start",
         "of the morning infusion).",
-        "Note on the column choice: the sidecar option ratified for this",
-        "extraction described 'a time-varying HD flag' but named the",
+        "Note on the column choice: the encoding the maintainers approved for",
+        "this model described 'a time-varying HD flag' but named the",
         "subject-level canonical RRT_HEMODIAL_STATUS. The canonical register",
         "reserves RRT_HEMODIAL_STATUS for the subject-level treatment-status",
         "indicator and RRT_HEMODIAL_ACTIVE for exactly this per-session gate,",
-        "so RRT_HEMODIAL_ACTIVE is used here to match the ratified semantics."
+        "so RRT_HEMODIAL_ACTIVE is used here to match the approved semantics."
       ),
       source_name = "HD (on/off during a session)"
     ),

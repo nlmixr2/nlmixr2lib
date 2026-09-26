@@ -115,7 +115,7 @@ vanHasselt_2014_cefazolin_semiphysiological <- function() {
     # only random effects were estimated'), having come from the upstream
     # meta-analysis of gestational CrCL dynamics cited as reference 13.
     #
-    # Names follow the operator ruling of 2026-09-21: this is the additive
+    # Names follow the maintainers' ruling of 2026-09-21: this is the additive
     # Anderson-Holford shape (hill = 1) on a GESTATIONAL-AGE axis, which the
     # registered postnatal-age family does not cover, so every token stays
     # inside the crcl_ namespace. crcl_matspan is the SPAN above baseline, not

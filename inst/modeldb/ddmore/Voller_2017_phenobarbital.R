@@ -85,7 +85,7 @@ Voller_2017_phenobarbital <- function() {
   population <- list(
     n_subjects = 53,
     n_studies = 1,
-    age_range = "Preterm and term newborns; postnatal age (PNA) range not extractable from the DDMORE bundle (Voller 2017 PDF not on disk). The bundle's simulated dataset spans PNA 0-58 days across 5 representative subjects.",
+    age_range = "Preterm and term newborns; postnatal age (PNA) range not extractable from the DDMORE bundle (Voller 2017 PDF not available when this model was built). The bundle's simulated dataset spans PNA 0-58 days across 5 representative subjects.",
     weight_range = paste(
       "Body weight 0.45-4.5 kg, median 2.7 kg (n = 53). Source: Goulooze SC et al.,",
       "Clin Pharmacokinet 2019;58:127-135 (doi:10.1007/s40262-018-0652-7), Sect. 2.1,",
@@ -121,13 +121,13 @@ Voller_2017_phenobarbital <- function() {
       "Population description is reconstructed from the .mod / .lst $PROBLEM line",
       "('Phenobarbital PK in newborns'), the 53-subject / 229-observation totals from",
       "the .lst data-summary block, and the simulated event-table demographics. The",
-      "full Voller 2017 publication PDF is not on disk under",
-      "/home/bill/github/mab_human_consensus/literature/; detailed demographics",
+      "full Voller 2017 publication PDF was not available when this model was",
+      "built; detailed demographics",
       "(age range, weight range, sex distribution, race, indication, regional setting)",
       "could not be cross-checked against the publication itself. The DDMORE entry's",
       "RDF metadata describes the purpose as 'The PK of phenobarbital was quantified in",
       "preterm and term newborns, to optimize drug dosing.'",
-      "Partially cross-checked 2026-09-22 against a secondary source now on disk:",
+      "Partially cross-checked 2026-09-22 against a secondary source that has since become available:",
       "Goulooze SC et al., Clin Pharmacokinet 2019;58:127-135",
       "(doi:10.1007/s40262-018-0652-7, PMC6325985) re-fits this dataset as its case",
       "study and reports n = 53 neonates (matching the .lst subject count), body weight",
@@ -135,7 +135,7 @@ Voller_2017_phenobarbital <- function() {
       "sampling up to 80 h after the last dose, and a typical V of 2.37 L against this",
       "model's 2.38 L. Sex distribution, race and regional setting remain unreported in",
       "both sources. Goulooze is a secondary source for these facts; the Voller 2017",
-      "publication PDF is still not on disk."
+      "publication PDF is still not available."
     )
   )
 

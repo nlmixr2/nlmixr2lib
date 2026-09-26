@@ -194,7 +194,7 @@ Willmann_2022_rivaroxaban <- function() {
       "CL adjustment factors (0.53, 0.64, 0.45 for children aged 4",
       "to <5, 3 to <4, and 2 to <3 years respectively; Willmann 2022",
       "Results 'PBPK model qualification' paragraph 1); the PBPK model",
-      "is inherited from Zhu et al. 2022 (reference 20; not on disk)",
+      "is inherited from Zhu et al. 2022 (reference 20; not available when this model was built)",
       "and its structural / physiologic parameters are not reproduced",
       "in Willmann 2022. Only the popPK model is extracted here."
     )

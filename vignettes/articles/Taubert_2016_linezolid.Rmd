@@ -23,11 +23,9 @@ library(ggplot2)
 * Description: `r readModelDb("Taubert_2016_linezolid")()$description`
 * Article: <https://doi.org/10.1128/AAC.00356-16>
 * Supplement (Table S3 with bootstrap point estimates and the residual-error
-  variance components): hosted on the PMC bin endpoint for PMC4997846 -
-  `supp_60_9_5254__index.html` -> `AAC.00356-16_zac009165457so1.pdf`. Open-
-  access gating is via a PMC proof-of-work cookie rather than a paywall, but
-  the file is not freely downloadable from a publisher mirror at the time of
-  extraction.
+  variance components): `AAC.00356-16_zac009165457so1.pdf`, available from the
+  PMC record for PMC4997846; it was not freely downloadable from the publisher's
+  site when this model was built.
 
 # Population
 
@@ -351,12 +349,10 @@ simulation starts every subject dose-naive on day 1).
 - **Residual error magnitudes from the supplement, not the main text.** The
   combined proportional + additive residual error variances live in
   Supplemental Table S3 only (`sigma^2_prop = 0.115`, `sigma^2_add = 0.005`).
-  An earlier extraction attempt resolved with the missing-RUV fallback policy
-  (`propSd = fixed(0)`, `addSd = fixed(0)` plus an Errata note) because the
-  supplement was not on disk and could not be auto-acquired from the
-  Cloudflare-walled ASM journal page or the non-OA Europe PMC endpoint. The
-  supplement was acquired post-hoc this run via the PMC bin endpoint after
-  solving the cloudpmc-viewer proof-of-work cookie; the published Table S3
+  An earlier version of this model encoded the residual error as
+  `propSd = fixed(0)`, `addSd = fixed(0)` with an Errata note because the
+  supplement was not available when it was built. The supplement has since
+  been obtained from the PMC record for PMC4997846, and the published Table S3
   variances are used here as the more faithful representation of the source
   model.
 - **Reference covariate values use the day-1 medians.** The paper says

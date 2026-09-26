@@ -16,8 +16,8 @@ Willmann_2019_moxifloxacin <- function() {
     "rate, study and sex) retained nothing beyond the a-priori weight scaling.",
     "The companion whole-body PBPK model of the same paper is a PK-Sim / MoBi",
     "platform model whose physiological parameters come from the vendor's",
-    "internal databases and are not printed on disk; it is therefore not",
-    "reproducible as an rxode2 model and is not part of this extraction.",
+    "internal databases and are not printed in the paper; it is therefore not",
+    "reproducible as an rxode2 model and is not encoded here.",
     sep = " "
   )
   reference <- paste(

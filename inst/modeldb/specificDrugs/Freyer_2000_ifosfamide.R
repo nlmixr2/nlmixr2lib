@@ -1,5 +1,5 @@
 Freyer_2000_ifosfamide <- function() {
-  description <- "One-compartment IV population PK model for ifosfamide in 24 small cell lung cancer patients on the AVI regimen (Freyer 2000), with day-1/day-2 clearance collapsed to the mean per operator instruction. Structural reduction from the paper's two-compartment model: only central CL and V were reported in Table 2, so the peripheral compartment is omitted; the paper's day-1 to day-2 autoinduction of clearance is also not represented in this extraction."
+  description <- "One-compartment IV population PK model for ifosfamide in 24 small cell lung cancer patients on the AVI regimen (Freyer 2000), with day-1/day-2 clearance collapsed to the mean by decision of the maintainers. Structural reduction from the paper's two-compartment model: only central CL and V were reported in Table 2, so the peripheral compartment is omitted; the paper's day-1 to day-2 autoinduction of clearance is also not represented in this extraction."
   reference <- paste(
     "Freyer G, Tranchand B, Ligneau B, Ardiet C, Souquet P-J,",
     "Court-Fortune I, Riou R, Rebattu P, Boissel J-P,",
@@ -74,12 +74,12 @@ Freyer_2000_ifosfamide <- function() {
     # estimated two separate clearances -- CL_day1 = 5.6 L/h and CL_day2 =
     # 7.95 L/h -- describing an unmodelled 42% autoinduction of ifosfamide
     # metabolism between the two dosing days. This extraction collapses the
-    # two values to their arithmetic mean per operator instruction: the
+    # two values to their arithmetic mean by decision of the maintainers: the
     # day-specific structure is dropped in favour of a single clearance.
     # The 1-compartment reduction (from the paper's 2-cmt structure) is a
     # separate simplification -- required because the transfer rate
     # constants / peripheral volume are not reported anywhere in the paper.
-    lcl <- log(6.775); label("Typical clearance, mean of day-1 and day-2 values (L/h)")  # (5.6 + 7.95)/2 = 6.775 L/h; Freyer 2000 Table 2 CL_day1 = 5.6 (s.d. 0.330) and CL_day2 = 7.95 (s.d. 0.450); mean per sidecar 001 q2 = BB
+    lcl <- log(6.775); label("Typical clearance, mean of day-1 and day-2 values (L/h)")  # (5.6 + 7.95)/2 = 6.775 L/h; Freyer 2000 Table 2 CL_day1 = 5.6 (s.d. 0.330) and CL_day2 = 7.95 (s.d. 0.450); mean by decision of the maintainers
     lvc <- log(26.0);  label("Typical central volume of distribution (L)")               # Freyer 2000 Table 2: V_d = 26.0 L (s.d. 4.49) -- interpreted as V_central (V1) of the 2-cmt model, not V_ss
 
     # IIV -- Freyer 2000 Table 2 reports NONMEM omega variances.

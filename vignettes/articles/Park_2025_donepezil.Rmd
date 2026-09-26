@@ -624,14 +624,14 @@ stopifnot(
   (structure in Figure S1), and Section 3.8 says its parameters are "summarized in
   Table 6" -- but Table 6 is titled and populated for GB-5001A only. The single
   oral estimate published anywhere in the paper is `ka = 0.7 1/h` (Discussion), so
-  the oral model is not reconstructable from any on-disk source. Figure 2 and the
+  the oral model is not reconstructable from any available source. Figure 2 and the
   Figure S1 caption were both inspected for in-panel parameter annotations; Figure
   2 labels arms with parameter *names* only (`KA3`, `KA4`, `F1`, `Q/F`, `CL/F`)
-  and carries no values. The MDPI supplement endpoint returns HTTP 403 and the
-  EuropePMC supplementary-files endpoint returns HTTP 500, but the published
-  supplementary-materials list (Figures S1-S4, Tables S1-S4) contains no oral
-  parameter table, so the gap is in the publication rather than in the
-  acquisition. Two oral donepezil models from other papers are available:
+  and carries no values. The supplement itself was not available when this model
+  was built, but the published supplementary-materials list (Figures S1-S4,
+  Tables S1-S4) contains no oral parameter table, so the gap is in the
+  publication rather than in what was available. Two oral donepezil models from
+  other papers are available:
   `modellib("Khwarg_2024_donepezil_oral")` and
   `modellib("Jung_2023_donepezil_singledose")`.
 * **`F1 = 1 - F3 - F4 = 0.148` is inferred, not printed.** Figure 2 names the

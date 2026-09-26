@@ -73,7 +73,7 @@ Osawa_2018_daclatasvir <- function() {
     dose_range = "Daclatasvir 10 or 60 mg once daily, orally",
     regimens = "Daclatasvir + asunaprevir (DUAL, all-oral) in 78.9 percent; daclatasvir + peginterferon-alfa/ribavirin in 21.1 percent",
     regions = "Japan",
-    notes = "Baseline demographics from Osawa 2018 Table 1 (daclatasvir panel, n = 336). Data pooled from four trials -- AI444021, AI444022, AI447017 and AI447026 -- listed in Supplementary Table 1, which is not on disk; the per-trial breakdown is therefore not reproduced here. Of 3808 collected pharmacokinetic records, 7 were excluded as below the lower limit of quantification, leaving 3801 for model development. Samples below LLOQ were discarded rather than imputed, and missing actual sampling times were imputed from nominal times."
+    notes = "Baseline demographics from Osawa 2018 Table 1 (daclatasvir panel, n = 336). Data pooled from four trials -- AI444021, AI444022, AI447017 and AI447026 -- listed in Supplementary Table 1, which was not available when this model was built; the per-trial breakdown is therefore not reproduced here. Of 3808 collected pharmacokinetic records, 7 were excluded as below the lower limit of quantification, leaving 3801 for model development. Samples below LLOQ were discarded rather than imputed, and missing actual sampling times were imputed from nominal times."
   )
 
   ini({

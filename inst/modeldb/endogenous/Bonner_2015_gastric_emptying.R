@@ -21,7 +21,7 @@ Bonner_2015_gastric_emptying <- function() {
     "convention, and neither the main paper nor the two supplementary",
     "material files contain the NONMEM control stream. See the",
     "validation vignette's Errata for the full ambiguity list and the",
-    "operator-approved (2026-07-24) best-effort choices. Not a drug",
+    "best-effort choices approved by the maintainers. Not a drug",
     "PK model -- no dose, no plasma compartment, no drug PK",
     "observation; the single state is the percentage of test meal",
     "remaining, initialised to 100 at t = 0 by construction. Reported",
@@ -131,7 +131,7 @@ Bonner_2015_gastric_emptying <- function() {
     # llogit_pr = log(PR / (100 - PR)) with PR here read on the natural
     # percent scale (see Errata for the reporting-scale best-effort).
     # ---------------------------------------------------------------------
-    llogit_pr <- log(0.26 / (100 - 0.26)); label("Logit of the fast-phase-completed remaining fraction PR/100 (unitless; logit(0.0026) = -5.951)")  # Table 3: PR (%) = 0.26 -- natural-percent scale (best-effort, response-003 2026-07-24; see Errata)
+    llogit_pr <- log(0.26 / (100 - 0.26)); label("Logit of the fast-phase-completed remaining fraction PR/100 (unitless; logit(0.0026) = -5.951)")  # Table 3: PR (%) = 0.26 -- natural-percent scale (best-effort reading approved by the maintainers; see Errata)
     lbeta1    <- log(0.816);              label("Log of the fast-phase Weibull shape beta1 (unitless)")                                              # Table 3: beta1 = 0.816
     lbeta2    <- log(2.48);               label("Log of the slow-phase Weibull shape beta2 (unitless)")                                              # Table 3: beta2 = 2.48
     lgamma1   <- log(37.6);               label("Log of the fast-phase Weibull scale gamma1 (min)")                                                  # Table 3: gamma1 = 37.6 min
@@ -159,8 +159,8 @@ Bonner_2015_gastric_emptying <- function() {
     # Between-study variability. Bonner 2015 Table 3 "Variability,
     # omega^2 (RSE)" column. The paper does not state the unit convention
     # for the omega^2 values (114, 38.6, 14.1, 58.7, 19.2), and the
-    # NONMEM control stream is not on disk to disambiguate. The operator-
-    # approved best-effort interpretation
+    # NONMEM control stream was not available to disambiguate. The
+    # best-effort interpretation approved by the maintainers and
     # implemented here is that the reported values are CV% (percent
     # coefficient of variation of the corresponding structural
     # parameter), converted to log-scale variance via
@@ -210,8 +210,8 @@ Bonner_2015_gastric_emptying <- function() {
     # gives ratio = 1 by construction, and MEAL_SOLID = 1 gives ratio =
     # 1.99 / 0.697 = 2.855. Exactly one MEAL_* indicator is expected to
     # be 1 per record (the event table must enforce mutual exclusivity).
-    # This attachment point is the the chosen (response-003,
-    # 2026-07-24) best-effort choice among the three plausible
+    # This attachment point is the best-effort choice the maintainers
+    # approved among the three plausible
     # placements (gamma1, gamma2, or both); see vignette Errata.
     # ---------------------------------------------------------------------
     theta_meal_raw <- exp(ltheta_aq)  * MEAL_AQUEOUS +

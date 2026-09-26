@@ -88,7 +88,7 @@ Jones_2013_perfusionLimited_pbpk <- function() {
     regions = "N/A",
     scope_note = paste(
       "Filed under inst/modeldb/pharmacokinetics/ (not specificDrugs/) because there is no",
-      "drug, following the operator-ratified Beal_2001_iv1cmt_bql precedent for methodology",
+      "drug, following the Beal_2001_iv1cmt_bql precedent the maintainers adopted for methodology",
       "papers whose only pharmacokinetic content is an author-supplied hypothetical compound.",
       "The file stem uses a structural descriptor in the slot where a drug name would sit,",
       "matching the sibling Gaohua_2023_permeabilityLimited_pbpk. The paper itself is a",

@@ -256,9 +256,9 @@ Duong_2016_WHIG_T2DM <- function() {
     # (Petersson 2009 semiparametric distribution). It is NOT
     # implemented here because the paper does not print the closed
     # form of the transformation and the Duong 2017 supplement (the
-    # NONMEM control stream) is not on disk; the transformation
-    # affects only the tails of the etas0 distribution and does not
-    # shift the population median. See vignette Errata.
+    # NONMEM control stream) was not available when this model was built;
+    # the transformation affects only the tails of the etas0 distribution
+    # and does not shift the population median. See vignette Errata.
 
     # -------------------------------------------------------------------
     # b-cell function structural parameters (Duong 2017 Eqs 5-7,

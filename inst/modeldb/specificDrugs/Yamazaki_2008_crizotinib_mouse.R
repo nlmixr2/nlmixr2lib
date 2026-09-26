@@ -110,7 +110,7 @@ Yamazaki_2008_crizotinib_mouse <- function() {
     # and 6 (U87MG) day-0 tumor volumes (~100-200 mm^3 across vehicle and
     # treated groups) for use as a simulation default; documented in the
     # validation vignette under Assumptions and deviations.
-    lrbase_tumor  <- log(150); label("Typical baseline tumor volume V_T0 (mm^3) -- figure-derived")  # operator-extracted from Figures 5 and 6 (paper does not report a numerical typical baseline)
+    lrbase_tumor  <- log(150); label("Typical baseline tumor volume V_T0 (mm^3) -- figure-derived")  # read off Figures 5 and 6 by the maintainers (paper does not report a numerical typical baseline)
 
     # ---- Inter-individual variability ----
     # Paper Methods: "an interanimal variability for kout was estimated using

@@ -386,7 +386,8 @@ Miyagi_2011_ugt1a1_ugt1a6_hepatic_ontogeny <- function() {
     # years, months or weeks, and base e in place of base 10 were all
     # checked), and the paper attributes Eq. 6 to the commercial Simcyp
     # Pediatric platform rather than to any citable reference, so the
-    # correct coefficients are not recoverable from any source on disk.
+    # correct coefficients are not recoverable from any source that was
+    # available when this model was built.
     # Note that Eq. 7, printed immediately below it in the same style,
     # IS correct and is independently corroborated by
     # Han_2025_alfentanil_pbpk.R, which encodes the same polynomial.

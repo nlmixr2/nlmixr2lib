@@ -382,7 +382,7 @@ knitr::kable(summary(nca_res),
 - **Saturable AAG binding solved analytically.** The mass-balance
   fast-equilibrium binding `Ctotal = Cu + AAG * Cu / (KDAAG + Cu)`
   is solved as a quadratic in Cu inside `model()` (positive root).
-  The supplement (Supplementary Appendix S2) was not on disk; the
+  The supplement (Supplementary Appendix S2) was not available; the
   closed-form quadratic is the standard solution given the paper's
   stated mass-balance + fast-equilibrium assumption (Methods
   Structural model + Discussion paragraph citing Widmer 2006 and
@@ -418,7 +418,7 @@ knitr::kable(summary(nca_res),
   uM gives the published Css,trough total 22.8 uM and unbound
   0.172 uM exactly. This vignette and the model file both use uM
   for KDAAG.
-- **Supplements not on disk.** Lu 2015 references Supplementary
+- **Supplements not available.** Lu 2015 references Supplementary
   Appendix S1 (study details), S2 (structural ODEs), S3 (covariate
   list), Tables S1-S2, and Figures S1-S4. None were available at
   extraction time. All structural details needed for the model file

@@ -34,8 +34,8 @@ Jaruratanasirikul_2021_imipenem <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
-  # biological matrix. verified = FALSE because the primary publication is
-  # not on disk.
+  # biological matrix. verified = FALSE because the primary publication was
+  # not available.
   compartmentData <- list(
     central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "tissue", verified = FALSE)

@@ -51,8 +51,9 @@ simvastatin acid plasma concentrations at 0, 0.5, 1, 1.5, 2, 3, 3.5, 4, 5, 6,
 8, 10 and 12 and 24 h post-dose on days 1, 7 and 14, and LDL measured daily
 after an overnight fast. Kim et al. (2011) is titled for prediction in patients
 with primary hyperlipidaemia, so the estimation cohort and the intended
-prediction population differ; that paper was not available on disk, so only the
-two Pichardo-Almarza papers were used to characterise the cohort.
+prediction population differ; that paper was not available when this model was
+built, so only the two Pichardo-Almarza papers were used to characterise the
+cohort.
 
 The source reports a single typical-patient parameter set: there is no
 inter-individual variability and no residual-error model on any PKPD parameter.
@@ -546,7 +547,7 @@ Those oscillations are visible in the ribbon above.
   foam cells (Eq. 13) -- and Table 1 gives the rate constants (`km`, `dm`,
   `dlox`, `dM`, `dF`, `rw`, `rho1`, `gamma0`, the WSS threshold, `m_lumen`,
   `sigma`, `Delta p`, `Q`, blood viscosity, lumen radius). What is **not**
-  published anywhere on disk is everything needed to close the system:
+  published in any available source is everything needed to close the system:
   - the arterial-wall volume and endothelial surface area, which set the
     conversion from the Kedem-Katchalsky flux `Js` into the well-stirred wall
     concentration in Eq. 8;
@@ -599,8 +600,9 @@ Those oscillations are visible in the ribbon above.
   ten structural parameters are wrapped in `fixed()` and the three residual
   standard deviations are `fixed(0)`. No variance was invented.
 - **Kim et al. (2011), the originating PKPD publication, is not open access**
-  and was not available on disk. Every value used here is printed in one of the
-  two Pichardo-Almarza papers; nothing was taken from Kim et al. directly.
+  and was not available when this model was built. Every value used here is
+  printed in one of the two Pichardo-Almarza papers; nothing was taken from Kim
+  et al. directly.
 
 ## Digitisation provenance
 

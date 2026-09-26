@@ -384,7 +384,7 @@ published-value comparison.
   Discussion 'Pharmacokinetics' paragraph 1). We use the Table 2 value
   because Table 2 is the authoritative final-parameter-estimates table.
   The Discussion sentence appears to be a transcription rounding or a
-  typo; we have no NONMEM control stream on disk to disambiguate.
+  typo; no NONMEM control stream was available to disambiguate.
 
 - **Reduced-F window predicate.** Table 2 footnote d defines the window
   as `0 < day <= 7` (monotherapy) and `0 < day <= 1` (combination). We

@@ -218,7 +218,7 @@ Muller_2008_amoxicillin <- function() {
     # Muller 2008 Results paragraph 3 reports that 'Correlations between
     # the random parameters for interindividual variability were found
     # and implemented in the model', but the numeric off-diagonal
-    # entries are not given in Table 2 or elsewhere on disk; a diagonal
+    # entries are not given in Table 2 or elsewhere in the paper; a diagonal
     # OMEGA is used here and the gap is flagged in the vignette's
     # 'Assumptions and deviations' section.
     etalcl ~ 0.042   # Table 2 row 'IIV in CL'  (variance, log scale)

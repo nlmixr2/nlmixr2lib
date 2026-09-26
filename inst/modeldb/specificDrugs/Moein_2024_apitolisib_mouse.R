@@ -149,7 +149,7 @@ Moein_2024_apitolisib_mouse <- function() {
     # ------------------------------------------------------------------
     # PK: the mouse PK model was fitted to MEAN concentration-time profiles
     # and reported "data not shown" (Results Sect. 3.1.1); no residual-error
-    # magnitude is reported anywhere on disk. Encoded fixed(0) per the
+    # magnitude is reported in any available source. Encoded fixed(0) per the
     # unreported-RUV convention; see the vignette Errata.
     propSd           <- fixed(0);     label("Proportional residual error on plasma apitolisib (fraction) -- not reported")
     # pAkt: estimated in the stage-2 PK-PD model (Table 1) and not

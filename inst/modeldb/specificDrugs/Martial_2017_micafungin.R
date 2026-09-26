@@ -93,8 +93,8 @@ Martial_2017_micafungin <- function() {
     # and notes V2 carries no IIV either, so the Table 2 label is treated
     # as a typographical slip). The IOV is NOT encoded in this model
     # because the per-occasion structure (number and definition of
-    # occasions) is not disclosed in the paper or any on-disk supplement
-    # and the NONMEM control stream is not on disk; following the
+    # occasions) is not disclosed in the paper or any available supplement
+    # and the NONMEM control stream was not available; following the
     # Archary_2019_lamivudine precedent the IOV term is documented as a
     # deviation in the vignette Errata rather than encoded with a guessed
     # OCC partitioning.

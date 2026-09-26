@@ -147,10 +147,10 @@ Zurlinden_2016_paracetamol <- function() {
     weight_range = "70 kg reference (Forward_APAP1.in)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state = "Healthy adult, no co-medication, single 1000 mg oral paracetamol dose. The Bayesian population fit in Zurlinden & Reisfeld (2016) used pooled human PK data from multiple published studies (per Methods of the publication, which is not on disk in this worktree); the DDMORE bundle does not redistribute the underlying dataset. The bundle's Real_APAP_data.csv is a digitisation of plasma concentrations from Jansen et al. (2004) J Pharm Biomed Anal 34:585-593 -- a single-study reference dataset re-used by the authors as one validation source, not the full Bayesian inference dataset.",
+    disease_state = "Healthy adult, no co-medication, single 1000 mg oral paracetamol dose. The Bayesian population fit in Zurlinden & Reisfeld (2016) used pooled human PK data from multiple published studies (per Methods of the publication, which was not available when this model was built); the DDMORE bundle does not redistribute the underlying dataset. The bundle's Real_APAP_data.csv is a digitisation of plasma concentrations from Jansen et al. (2004) J Pharm Biomed Anal 34:585-593 -- a single-study reference dataset re-used by the authors as one validation source, not the full Bayesian inference dataset.",
     dose_range = "1000 mg single oral dose (Scenario 4)",
     regions = NA_character_,
-    notes = "Population demographic detail (n, age range, sex distribution, race) is NOT exposed by the DDMORE bundle (Forward_APAP1.in fixes BW=70 kg and reports only the 21 Bayesian posterior-mean parameter values). The original Zurlinden & Reisfeld 2016 publication is not on disk in this worktree, so no cross-check against the publication's Methods is possible. The model is intended for typical-value adult simulation under the Scenario-4 dosing regimen; downstream users wishing to characterise variability must consult the publication directly to obtain the Bayesian posterior distributions for each parameter (these are summarised in the paper but are not exposed by the dpastoor scrape of DDMODEL00000237)."
+    notes = "Population demographic detail (n, age range, sex distribution, race) is NOT exposed by the DDMORE bundle (Forward_APAP1.in fixes BW=70 kg and reports only the 21 Bayesian posterior-mean parameter values). The original Zurlinden & Reisfeld 2016 publication was not available when this model was built, so no cross-check against the publication's Methods is possible. The model is intended for typical-value adult simulation under the Scenario-4 dosing regimen; downstream users wishing to characterise variability must consult the publication directly to obtain the Bayesian posterior distributions for each parameter (these are summarised in the paper but are not exposed by the dpastoor scrape of DDMODEL00000237)."
   )
 
   ini({
@@ -416,8 +416,8 @@ Zurlinden_2016_paracetamol <- function() {
     #    OPPOSITE-side blood volume (CA_APAP = ABLA / VBLV; CV_APAP = ABLV
     #    / VBLA); the AS and AG formulas use the same-side volumes
     #    correctly (CA_AS = ABLA_AS / VBLA, CV_AS = ABLV_AS / VBLV). This
-    #    is preserved verbatim per the operator's `extract_verbatim`
-    #    decision (see vignette Errata "Bundle quirks"); the Bayesian
+    #    is preserved verbatim by the maintainers' decision (see vignette
+    #    Errata "Bundle quirks"); the Bayesian
     #    posterior means in Forward_APAP1.in were obtained against this
     #    same .model so changing the volumes here would invalidate the
     #    parameter values.

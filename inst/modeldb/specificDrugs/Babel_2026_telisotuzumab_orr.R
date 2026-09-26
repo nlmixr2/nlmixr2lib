@@ -61,7 +61,7 @@ Babel_2026_telisotuzumab_orr <- function() {
       description = "c-Met protein overexpression level indicator; 1 = high (at least 50% of tumour cells with strong 3+ immunohistochemistry staining), 0 = intermediate (at least 25% to below 50%).",
       units = "(binary)",
       type = "binary",
-      notes = "Listed in Babel 2026 Table S2 as a covariate of interest for the exposure-efficacy regression, but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate exists on disk. Documented here to preserve the covariate screen without carrying a convention warning; the same applies to the remaining Table S2 efficacy covariates (age, sex, race, ethnicity, body weight, prior therapy, number of prior systemic therapies, baseline ECOG status, treatment-emergent ADA status and nAb status)."
+      notes = "Listed in Babel 2026 Table S2 as a covariate of interest for the exposure-efficacy regression, but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate is reported. Documented here to preserve the covariate screen without carrying a convention warning; the same applies to the remaining Table S2 efficacy covariates (age, sex, race, ethnicity, body weight, prior therapy, number of prior systemic therapies, baseline ECOG status, treatment-emergent ADA status and nAb status)."
     )
   )
 

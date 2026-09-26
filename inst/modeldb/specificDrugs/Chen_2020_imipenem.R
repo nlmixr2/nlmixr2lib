@@ -35,8 +35,8 @@ Chen_2020_imipenem <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
-  # biological matrix. verified = FALSE because the primary publication is
-  # not on disk.
+  # biological matrix. verified = FALSE because the primary publication was
+  # not available when this model was built.
   compartmentData <- list(
     central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
@@ -260,8 +260,8 @@ Chen_2020_imipenem <- function() {
     # SCALE CONVENTION. Zhang 2025 Table 2 prints IIV as a bare percentage
     # per parameter without stating the convention, and the column mixes at
     # least three conventions across the review's constituent studies (the
-    # audit against the four already-extracted primaries is in the
-    # vignette's 'Assumptions and deviations' section). Every model
+    # audit against the four primary studies already in the library is in
+    # the vignette's 'Assumptions and deviations' section). Every model
     # transcribed from this review uses the same documented reading: the
     # printed percentage is an apparent CV of a log-normal random effect,
     # so omega^2 = log(1 + CV^2).

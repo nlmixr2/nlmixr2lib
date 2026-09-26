@@ -63,16 +63,16 @@ Vet_2016_midazolam <- function() {
   population <- list(
     n_subjects = 83L,
     n_studies = 1L,
-    age_range = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
-    weight_range = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
+    age_range = "Not extractable from DDMORE bundle (Vet 2016 PDF not available when this model was built).",
+    weight_range = "Not extractable from DDMORE bundle (Vet 2016 PDF not available when this model was built).",
     weight_reference = "5 kg (allometric reference per .mod $PK)",
-    sex_female_pct = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
-    race_ethnicity = "Not extractable from DDMORE bundle (Vet 2016 PDF not on disk).",
+    sex_female_pct = "Not extractable from DDMORE bundle (Vet 2016 PDF not available when this model was built).",
+    race_ethnicity = "Not extractable from DDMORE bundle (Vet 2016 PDF not available when this model was built).",
     disease_state = "Critically ill paediatric patients receiving continuous IV midazolam in the paediatric intensive care unit (PICU). Inflammation (CRP) and number of failing organs (ORG_FAIL_COUNT, source-data column `ORGF`, 0..>=4) are the two retained covariates.",
     dose_range = "Continuous IV infusion at clinically titrated rates; the bundled simulated dataset spans 300-22500 ug/h infusions over 1-3 day infusion durations following an initial bolus.",
     crp_reference = "32 mg/L (CRP power-effect reference per .mod $PK)",
     regions = "Netherlands (SKIC paediatric ICU research network).",
-    notes = "Population descriptors are derived from the DDMODEL00000249 RDF `model-has-description` (`Midazolam PK in critically ill pediatric patients, using inflammation (quantified as CRP concentrations) and number of organs failing are most important covariates`) and the .mod / .lst FINAL PARAMETER ESTIMATE block. The Vet 2016 publication itself (Am J Respir Crit Care Med 194(1):58-66, doi:10.1164/rccm.201510-2114OC) is not on disk in this worktree, so demographics here come from the DDMORE bundle metadata rather than the paper's Table 1; the absence of a paper cross-check is documented in the validation vignette's Errata."
+    notes = "Population descriptors are derived from the DDMODEL00000249 RDF `model-has-description` (`Midazolam PK in critically ill pediatric patients, using inflammation (quantified as CRP concentrations) and number of organs failing are most important covariates`) and the .mod / .lst FINAL PARAMETER ESTIMATE block. The Vet 2016 publication itself (Am J Respir Crit Care Med 194(1):58-66, doi:10.1164/rccm.201510-2114OC) was not available when this model was built, so demographics here come from the DDMORE bundle metadata rather than the paper's Table 1; the absence of a paper cross-check is documented in the validation vignette's Errata."
   )
 
   ini({

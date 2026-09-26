@@ -80,8 +80,8 @@ The table below collects them in one place for review.
 | IIV ka (CV 148%)            | 1.16025       | Table 3 ka IIV 148%; Discussion 'k_a values between subjects were allowed to vary because of interindividual variability'. |
 | Diagonal omega              | n/a           | Methods 'A diagonal covariance matrix was used; ... covariances between the structural model parameters ... negligible'. |
 | Proportional residual error | 0.096         | Table 3 epsilon_1 (9.6%, RSE 23%); Results 'A proportional model was used for the residual error'.                     |
-| Covariate Eq. 1 (V/F)       | n/a           | Areberg 2006 Results: 'V/F = 8.0*10^2 + 12 * (WT - WT_mean)' (decoded from <formula-not-decoded> in the extracted text). |
-| Covariate Eq. 2 (CL/F)      | n/a           | Areberg 2006 Results: 'CL/F = 19 - 17 * (CYP2C19 - CYP2C19_mean)' (decoded from <formula-not-decoded> in the extracted text). |
+| Covariate Eq. 1 (V/F)       | n/a           | Areberg 2006 Results: 'V/F = 8.0*10^2 + 12 * (WT - WT_mean)' (read from the typeset PDF page; the equation does not survive plain-text extraction). |
+| Covariate Eq. 2 (CL/F)      | n/a           | Areberg 2006 Results: 'CL/F = 19 - 17 * (CYP2C19 - CYP2C19_mean)' (read from the typeset PDF page; the equation does not survive plain-text extraction). |
 
 # Virtual cohort
 

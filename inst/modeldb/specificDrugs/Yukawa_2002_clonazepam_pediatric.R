@@ -97,8 +97,8 @@ Yukawa_2002_clonazepam_pediatric <- function() {
 
   model({
     # Tier indicators for the 3-tier drug-interaction factor (Yukawa 2002 Results
-    # page 84 / Table III row 4). Operator-confirmed encoding via two binary
-    # canonicals (CONMED_AED and CONMED_AED_GE2) per the 2026-06-21 sidecar:
+    # page 84 / Table III row 4). The maintainers confirmed the encoding via
+    # two binary canonicals (CONMED_AED and CONMED_AED_GE2):
     #   monotherapy:        CONMED_AED = 0, CONMED_AED_GE2 = 0  -> ind_mono = 1
     #   1 AED (CBZ or VPA): CONMED_AED = 1, CONMED_AED_GE2 = 0  -> ind_one  = 1
     #   >=2 AEDs:           CONMED_AED = 1, CONMED_AED_GE2 = 1  -> ind_many = 1

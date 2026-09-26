@@ -28,7 +28,7 @@ Aston_2017_efalizumab_qsp <- function() {
     "Pharmacokinetic-pharmacodynamic-efficacy analysis of efalizumab in patients",
     "with moderate to severe psoriasis. Pharm Res. 2005;22(7):1088-1100.",
     "doi:10.1007/s11095-005-5642-4;",
-    "Ng et al. (2005) is NOT on disk for this extraction, and every value below",
+    "Ng et al. (2005) was NOT available when this model was built, and every value below",
     "is transcribed from Sect. 7.2 of Aston et al. (2017), including Aston's own",
     "ten-fold correction to koff. See the vignette Errata.",
     sep = " "
@@ -85,7 +85,7 @@ Aston_2017_efalizumab_qsp <- function() {
       "model of Ng et al. (2005) in order to demonstrate that its observed CD11a",
       "rebound is caused by the slow feedback on CD11a production. The subject",
       "count and demographics of the underlying psoriasis studies are reported in",
-      "Ng et al. (2005), which is not on disk for this extraction, so they are",
+      "Ng et al. (2005), which was not available when this model was built, so they are",
       "left NA rather than guessed. No inter-individual variability and no",
       "residual-error model are reported anywhere in Aston et al., so every",
       "parameter is encoded with fixed(). The paper's own numerical anchors for",

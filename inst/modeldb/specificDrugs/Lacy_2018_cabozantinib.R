@@ -122,7 +122,7 @@ Lacy_2018_cabozantinib <- function() {
       units = "mg",
       type = "continuous",
       reference_category = NULL,
-      notes = "Per-dose-occasion. Power covariate on first-order absorption rate constant Ka: Ka(DOSE) = Ka_ref * (DOSE/DOSE_REF)^0.677. Reference DOSE_REF = 60 mg (the standard tablet daily dose for non-MTC indications and the reference dose used in the companion Lacy 2018 exposure-response paper). The DOSE_REF value is NOT stated in the paper; the 60 mg choice was operator-approved per the sidecar resolution Q2-A and is documented in vignette Errata.",
+      notes = "Per-dose-occasion. Power covariate on first-order absorption rate constant Ka: Ka(DOSE) = Ka_ref * (DOSE/DOSE_REF)^0.677. Reference DOSE_REF = 60 mg (the standard tablet daily dose for non-MTC indications and the reference dose used in the companion Lacy 2018 exposure-response paper). The DOSE_REF value is NOT stated in the paper; the 60 mg choice was approved by the maintainers and is documented in vignette Errata.",
       source_name = "DOSE"
     )
   )
@@ -241,8 +241,8 @@ Lacy_2018_cabozantinib <- function() {
     # dropped and Omega is encoded as diagonal. See vignette
     # Errata.
     etalka      ~ 2.063   # Lacy 2018 Table 3 footnote d omega^2_Ka = 2.063
-    etalcl      ~ 0.202   # Lacy 2018 Table 3 footnote d omega^2_CL/F = 0.202; off-diagonal with etalvc dropped (sidecar Q1-A; see vignette Errata)
-    etalvc      ~ 0.233   # Lacy 2018 Table 3 footnote d omega^2_Vc/F = 0.233; off-diagonal with etalcl dropped (sidecar Q1-A; see vignette Errata)
+    etalcl      ~ 0.202   # Lacy 2018 Table 3 footnote d omega^2_CL/F = 0.202; off-diagonal with etalvc dropped (see vignette Errata)
+    etalvc      ~ 0.233   # Lacy 2018 Table 3 footnote d omega^2_Vc/F = 0.233; off-diagonal with etalcl dropped (see vignette Errata)
     etalogitffo  ~ 0.466   # Lacy 2018 Table 3 footnote d omega^2_F1 = 0.466 (on the logit scale, matching the F1 estimation scale per footnote a)
 
     # ---- Residual error ----
@@ -258,7 +258,7 @@ Lacy_2018_cabozantinib <- function() {
     # median value was used for xREF.'  Overall-cohort medians from Table 2.) ----
     ref_age  <- 64    # years
     ref_wt   <- 81    # kg
-    ref_dose <- 60    # mg (sidecar Q2-A; see vignette Errata)
+    ref_dose <- 60    # mg (see vignette Errata)
 
     # ---- Categorical covariate multipliers (multiplicative fractional change) ----
     # TV_with_cov = TV_ref * (1 + e_<cov>_<param> * IND); reference category

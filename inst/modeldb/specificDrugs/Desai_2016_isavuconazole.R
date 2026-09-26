@@ -65,8 +65,8 @@ Desai_2016_isavuconazole <- function() {
     lq  <- log(33.678);  label("Isavuconazole intercompartmental clearance for the healthy reference subject (L/h)")  # Desai 2016 Table 4: theta_10 (Q, healthy) = 33678 mL/h
     lvp <- log(410);     label("Isavuconazole peripheral volume of distribution at reference BMI 27 (V3 = Vp, L)")  # Desai 2016 Table 4: theta_4 (V3) = 410000 mL (printed in the table as '41,0000' with the comma misplaced; bootstrap mean 410661 mL confirms 410 L)
 
-    # Weibull absorption parameters (Piotrovskij saturating-ka form, operator-
-    # approved interpretation. The paper text
+    # Weibull absorption parameters (Piotrovskij saturating-ka form, an
+    # interpretation approved by the maintainers). The paper text
     # names the three parameters but does not write the equation; the canonical
     # form for these three named parameters is
     #   ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))

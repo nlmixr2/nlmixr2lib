@@ -265,7 +265,7 @@ ggplot(overlay, aes(time)) +
   geom_line(aes(y = sim_median), color = "steelblue", linewidth = 0.7) +
   facet_wrap(~ endpoint, scales = "free_y") +
   labs(x = "Time (h)", y = "5th / 50th / 95th percentiles",
-       title = "F.2 self-consistency: nlmixr2lib (blue) vs DDMORE bundle (grey)",
+       title = "Self-consistency check: nlmixr2lib (blue) vs DDMORE bundle (grey)",
        caption = "Bundle summary is a one-realisation snapshot; nlmixr2lib is a fresh 50-subject draw.")
 ```
 
@@ -360,7 +360,8 @@ sampling grid.
   describes the model as a simplification of the semi-mechanistic
   TGF-β inhibitor PKPD framework of Bueno *et al.* (2008). Bueno's
   model is more elaborate (gene-expression cascades, additional
-  compartments) and is not on disk. nlmixr2lib does not currently
+  compartments) and was not available when this model was built.
+  nlmixr2lib does not currently
   carry the Bueno parent model.
 * **No covariate effects.** The MLXTRAN INDIVIDUAL block declares no
   covariates, and the bundled simulated dataset has no demographic columns.

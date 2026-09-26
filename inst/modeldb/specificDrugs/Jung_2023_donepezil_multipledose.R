@@ -55,8 +55,8 @@ Jung_2023_donepezil_multipledose <- function() {
     notes = paste(
       "Jung 2023 Table 2 reports Model Case 2 as 44 subjects and 3024 observations.",
       "DRUG IDENTITY. Jung 2023 never names the drug for Case 2, and unlike Case 1 the",
-      "description carries no citation. Donepezil is an inference, adopted per operator sidecar",
-      "oare_PMC9867137 request-001 q2 (option A), on this evidence: the case comes from the same",
+      "description carries no citation. Donepezil is an inference, adopted by the maintainers",
+      "on this evidence: the case comes from the same",
       "first author and group as Case 1; it has the same integrated oral-plus-patch structure;",
       "Codes S3 and S5 share the identical concentration scaling IPRED = A(2)/(VC/1000), i.e. mg",
       "dosing with ng/mL observations; and the disposition estimates closely match Case 1's",

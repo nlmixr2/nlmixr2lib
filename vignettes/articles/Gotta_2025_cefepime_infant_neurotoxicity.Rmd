@@ -751,7 +751,7 @@ from the primary when it becomes obtainable.
 estimate.** `r(Cl, V) = 0.5` appears only in the deposited Simulx project file;
 neither Gotta 2025's main text nor its supplemental methods attributes it to
 de Cacqueray 2022, and 0.5 is a suspiciously round number. It is retained because
-it is the value on disk and the value that produced the published Table 2
+it is the deposited value and the value that produced the published Table 2
 percentages -- which this vignette reproduces to within a few percentage points,
 so it is at least consistent. Verify against the primary when available.
 

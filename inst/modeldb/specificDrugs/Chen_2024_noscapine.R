@@ -440,8 +440,8 @@ Chen_2024_noscapine <- function() {
     # data)', and Table 4 footnote d 'Additive error in logarithmic
     # domain' -> Cc ~ lnorm(expSd). The tabulated 0.0420 is the NONMEM
     # $SIGMA VARIANCE on the log scale, so the nlmixr2 SD is its square
-    # root: sqrt(0.0420) = 0.2049, i.e. a 20.7% residual CV. Operator-
-    # ratified reading. The
+    # root: sqrt(0.0420) = 0.2049, i.e. a 20.7% residual CV. The
+    # maintainers confirmed this reading. The
     # variance reading is supported by (a) the NONMEM $SIGMA convention,
     # (b) this being the only variability row left in raw NONMEM units
     # while every other was converted to CV%, (c) the reported 2.4% RSE

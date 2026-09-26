@@ -91,15 +91,15 @@ Hansson_2013_sunitinib_svegfr3_os <- function() {
     species = "human",
     n_subjects = 303L,
     n_studies = 4L,
-    age_range = "adults with imatinib-resistant GIST (Hansson 2013 Table 1 lists baseline tumor size by study but does not break out age / weight / sex / race in the trimmed PDF Methods section)",
-    weight_range = "not reported in the on-disk paper trimmed text",
+    age_range = "adults with imatinib-resistant GIST (Hansson 2013 Table 1 lists baseline tumor size by study but does not break out age / weight / sex / race in the paper's Methods section)",
+    weight_range = "not reported in the paper",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
     disease_state = "Imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
     dose_range = "Sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule. The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib (study 1004 only).",
-    regions = "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the trimmed paper text.",
+    regions = "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the paper.",
     biomarkers = "Survival endpoint: time-to-death (overall survival, OS). Time-varying covariate for OS: model-predicted relative change in sVEGFR-3 from individual baseline (driven by an in-model sVEGFR-3 indirect-response sub-model). Time-fixed covariate for OS: observed baseline SLD (mm).",
-    notes = "n_subjects = 303 reported in Hansson 2013 Methods. Figure 4 caption reports median baseline tumor size = 195 mm and median steady-state decrease in sVEGFR-3_REL = -0.32 -- these are useful anchors for verifying typical-value simulations against the published Kaplan-Meier plot. Detailed baseline demographics (age, weight, sex, race) at the cohort level are not transcribed because the trimmed paper text does not provide them at the per-study or pooled level."
+    notes = "n_subjects = 303 reported in Hansson 2013 Methods. Figure 4 caption reports median baseline tumor size = 195 mm and median steady-state decrease in sVEGFR-3_REL = -0.32 -- these are useful anchors for verifying typical-value simulations against the published Kaplan-Meier plot. Detailed baseline demographics (age, weight, sex, race) at the cohort level are not transcribed because the paper does not provide them at the per-study or pooled level."
   )
 
   ini({

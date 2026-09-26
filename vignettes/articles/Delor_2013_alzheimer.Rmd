@@ -309,7 +309,7 @@ The figure replicates the qualitative finding in the source paper: subjects with
 
 # Assumptions and deviations (Errata)
 
-The Delor 2013 supplement (NONMEM technical details) was not on disk at extraction time. The following choices were made:
+The Delor 2013 supplement (NONMEM technical details) was not available when this model was built. The following choices were made:
 
 1. **Typical mixture probability (`theta_5`).** Table 2 of the source paper tabulates the three covariate coefficients on the mixture-logit (`COV CDR-SOB on $MIX`, `COV SCORE_FAQ on $MIX`, `COV SCORE_RHPNM on $MIX`) but **not** the typical / intercept value `theta_5`. The model file imputes `theta_5 = 0.44` based on the source paper's reported "MCI/AD slow (alpha = 0): 44/3" classification row in Table 2 -- this corresponds to the MCI-cohort slow fraction (the typical patient at median SCORE_CDR_SOB = 1, SCORE_FAQ = 1, SCORE_RHPNM = 1 is approximately an MCI patient). Alternative defaults the maintainers might prefer:
    * Overall slow fraction across MCI + AD cohorts: about 0.31 (computed as `(0.44 * 380 + 0.03 * 180) / 560`).

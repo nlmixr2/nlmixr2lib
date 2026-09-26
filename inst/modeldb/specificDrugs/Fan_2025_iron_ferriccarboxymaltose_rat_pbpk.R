@@ -14,7 +14,7 @@ Fan_2025_iron_ferriccarboxymaltose_rat_pbpk <- function() {
     "bone into the red-cell pool, erythrophagocytic return of that iron to",
     "the spleen over the red-cell lifespan, portal drainage of gut and",
     "spleen into liver, and a physiologic iron loss clearance from plasma.",
-    "Only bone, liver, spleen, heart, muscle and kidney kp values were estimated from the rat data; every other kp, and the loss clearance, were inherited from the mouse fit. The paper does not say WHICH mouse iron-status column it inherited from; the iron-adequate column is used here per the operator ruling (sidecar q1 = B). See the vignette Errata.",
+    "Only bone, liver, spleen, heart, muscle and kidney kp values were estimated from the rat data; every other kp, and the loss clearance, were inherited from the mouse fit. The paper does not say WHICH mouse iron-status column it inherited from; the iron-adequate column is used here by decision of the maintainers. See the vignette Errata.",
     "The routing of the released iron into the SPLEEN (rather than directly",
     "to plasma) is a structural assumption -- the paper describes the limb",
     "only in prose and the supplied control stream is the mouse, pure-iron",
@@ -70,7 +70,7 @@ Fan_2025_iron_ferriccarboxymaltose_rat_pbpk <- function() {
       "estimated from the rat data; every other kp, and the loss clearance,",
       "were inherited from the mouse fit. The paper does not say WHICH mouse",
       "iron-status column it inherited from; the iron-adequate column is used",
-      "here per the operator ruling (sidecar q1 = B). See the vignette Errata."
+      "here by decision of the maintainers. See the vignette Errata."
     )
   )
 
@@ -101,15 +101,16 @@ Fan_2025_iron_ferriccarboxymaltose_rat_pbpk <- function() {
     lkp_other   <- log(2.30e-9); label("Remainder (rest of body)-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
     lkp_skin    <- log(4.651); label("Skin-to-plasma partition coefficient (unitless)")  # Table 2, iron-adequate mouse column
 
-    # NOT REPORTED for the rat anywhere on disk. Derived by a ruling from the
-    # paper's OWN two lifespan anchors: mouse iron-adequate TRBC = 34.44 h at
-    # 0.025 kg and human TRBC = 120 d = 2880 h at 73 kg fix an allometric
-    # exponent b_T = log(2880/34.44)/log(73/0.025) = 0.5547, evaluated at the
+    # NOT REPORTED for the rat in any available source. Derived, by decision
+    # of the maintainers, from the paper's OWN two lifespan anchors: mouse
+    # iron-adequate TRBC = 34.44 h at 0.025 kg and human TRBC = 120 d =
+    # 2880 h at 73 kg fix an allometric exponent
+    # b_T = log(2880/34.44)/log(73/0.025) = 0.5547, evaluated at the
     # paper's rat body weight of 0.345 kg -> 147.7 h.
     lmtt_rbc <- log(34.44 * (0.345 / 0.025)^(log(2880 / 34.44) / log(73 / 0.025))); label("Mean red-blood-cell lifespan (h)")
     # NOT REPORTED for the rat. Scaled from the mouse iron-adequate QE by the
     # paper's own RBC-lifespan allometry, Eq. (9) with b = 0.75, using the
-    # derived rat TRBC above -> 6.47e-4 L/h. Operator sidecar q2 = B.
+    # derived rat TRBC above -> 6.47e-4 L/h, by decision of the maintainers.
     lq_bone_rbc <- log(0.217e-3 * (0.345 / 0.025)^(0.75 * log(2880 / 34.44) / log(73 / 0.025))); label("Erythropoietic iron utilisation flow, bone to red cells (L/h)")
 
     # ---- Rat physiology, fixed to Supplementary Table 1 ----

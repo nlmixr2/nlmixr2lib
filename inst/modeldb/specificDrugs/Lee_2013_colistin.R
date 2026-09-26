@@ -26,7 +26,7 @@ Lee_2013_colistin <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (no clinical edema)",
-      notes = "Source column EDEMA. Stored under canonical DIS_EDEMA per inst/references/covariate-columns.md (DIS_EDEMA entry added in this PR alongside the Lee 2013 extraction; operator-resolved sidecar request-001 / response-001 on the canonical name). Lee 2013 records edema as a single clinical diagnosis on Day 1 of CMS administration (Table 1 footnote d). 18 of 50 enrolled patients were edematous at baseline. Time-fixed per subject in this paper (no serial reassessment). The covariate enters as an additive linear deviation on the CMS-to-colistin turnover rate constant TR: TR = theta3 - theta5 * DIS_EDEMA, reducing TR from 0.796 (non-edematous) to 0.371 h^-1 (edematous).",
+      notes = "Source column EDEMA. Stored under canonical DIS_EDEMA per inst/references/covariate-columns.md (DIS_EDEMA entry added alongside the Lee 2013 model; the canonical name was chosen by the maintainers). Lee 2013 records edema as a single clinical diagnosis on Day 1 of CMS administration (Table 1 footnote d). 18 of 50 enrolled patients were edematous at baseline. Time-fixed per subject in this paper (no serial reassessment). The covariate enters as an additive linear deviation on the CMS-to-colistin turnover rate constant TR: TR = theta3 - theta5 * DIS_EDEMA, reducing TR from 0.796 (non-edematous) to 0.371 h^-1 (edematous).",
       source_name = "EDEMA"
     )
   )

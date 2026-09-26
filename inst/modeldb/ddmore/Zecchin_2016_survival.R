@@ -119,11 +119,11 @@ Zecchin_2016_survival <- function() {
     n_subjects = 336L,
     n_studies = 1L,
     age_range = "median ~59 years (advanced epithelial ovarian cancer cohort; Zecchin 2016 Table S2 / paper text)",
-    weight_range = "not transcribed in this extraction (Zecchin 2016 Table S2 captures the demographic distributions; the WebFetch summary did not report the weight quantiles)",
+    weight_range = "not transcribed (Zecchin 2016 Table S2 captures the demographic distributions; the weight quantiles were not available when this model was built)",
     sex_female_pct = 100,
     disease_state = "advanced (FIGO stage III/IV) epithelial ovarian cancer (recurrent / platinum-sensitive cohort, randomised Phase III chemotherapy trial)",
     dose_range = "Phase III chemotherapy: carboplatin monotherapy (target AUC 5.0 mg*min/mL Q3W) or carboplatin (target AUC 4.0 mg*min/mL Q3W) plus gemcitabine, per the trial protocol referenced by Zecchin 2016",
-    notes = "336 patients pooled from a randomised Phase III trial in advanced epithelial ovarian cancer (Zecchin 2016, BJCP 82(3):717-727; PMID 27136318). The current OS model was fit using the IPP (Iterative Population PK) approach: the upstream SLD model (DDMODEL00000217) supplies subject-level empirical-Bayes posteriors of KG, KD0, KD1, IBASE, which feed into the OS model via the dataset. Median baseline SLD ~70 mm (used as the reference TVSLD0). The publication PDF was not on disk for this extraction; the Methods / Table 2 cross-check was performed via PMC HTML (PMC5338128)."
+    notes = "336 patients pooled from a randomised Phase III trial in advanced epithelial ovarian cancer (Zecchin 2016, BJCP 82(3):717-727; PMID 27136318). The current OS model was fit using the IPP (Iterative Population PK) approach: the upstream SLD model (DDMODEL00000217) supplies subject-level empirical-Bayes posteriors of KG, KD0, KD1, IBASE, which feed into the OS model via the dataset. Median baseline SLD ~70 mm (used as the reference TVSLD0). The publication PDF was not available when this model was built; the Methods / Table 2 cross-check was performed via PMC HTML (PMC5338128)."
   )
 
   ini({

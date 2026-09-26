@@ -70,8 +70,8 @@ Schoemaker_1996_enoxaparin <- function() {
     regions = "Single-centre, Centre for Human Drug Research, Leiden, The Netherlands.",
     notes = paste(
       "Baseline demographics are reported in the upstream Stiekema 1993 paper",
-      "(reference [10] of Schoemaker 1996) which was NOT on disk at extraction",
-      "time. The Schoemaker 1996 paper itself reports only that 12 subjects",
+      "(reference [10] of Schoemaker 1996) which was not available when this",
+      "model was built. The Schoemaker 1996 paper itself reports only that 12 subjects",
       "contributed to the cross-over study. With ordinary nonlinear regression,",
       "five subjects were adequately fit by a mono-exponential function, four",
       "required a bi-exponential function, and three provided no adequate fit",

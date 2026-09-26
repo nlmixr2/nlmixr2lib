@@ -95,7 +95,7 @@ entry in `inst/modeldb/specificDrugs/Sunnaker_2026_mitiperstat.R`.
 ## A note on concentration units
 
 Sunnaker 2026 reports every mitiperstat concentration in **nmol/L** and every
-dose in **mg**, but never states the molar mass, and no supplement on disk
+dose in **mg**, but never states the molar mass, and no available supplement
 supplies it. The packaged model is therefore encoded in self-consistent **mass**
 units: dosing in mg gives compartment amounts in mg and `Cc` in mg/L
 (= ug/mL). Because the model is entirely linear, dosing it in nmol instead
@@ -698,8 +698,8 @@ dp |>
 # Assumptions and deviations
 
 * **Concentration units.** Sunnaker 2026 reports concentrations in nmol/L and
-  doses in mg but never states mitiperstat's molar mass, and no supplement on
-  disk supplies it. The model is encoded in self-consistent mass units (mg dose
+  doses in mg but never states mitiperstat's molar mass, and no available
+  supplement supplies it. The model is encoded in self-consistent mass units (mg dose
   gives `Cc` in mg/L); because the model is linear, dosing in nmol returns `Cc`
   in nmol/L. The Table 4 comparison calibrates one conversion factor
   (`r sprintf("%.0f", 343)` g/mol, computed in the chunk above from the AUC
@@ -731,7 +731,8 @@ dp |>
   computes typical-value contrasts. The AUCss and Ctrough contrasts agree to
   within about 2 percentage points and the Cmax contrasts to within about 3.
 
-* **Supplementary material not on disk.** Tables S1 (stepwise covariate
+* **Supplementary material was not available when this model was built.**
+  Tables S1 (stepwise covariate
   modelling), S2 (the rejected fixed-allometric variant) and S3 (highest- and
   lowest-exposure cases), and Figures S1-S7 (goodness of fit, VPCs, random-effect
   correlations) were not available. None contains a final-model parameter: the

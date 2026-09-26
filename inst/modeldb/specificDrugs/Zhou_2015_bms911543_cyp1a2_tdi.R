@@ -22,7 +22,7 @@ Zhou_2015_bms911543_cyp1a2_tdi <- function() {
     "PBPK model to improve the fit to the clinical data. That whole-body model",
     "is NOT part of this file and is not reproducible from the published",
     "inputs; neither is the CYP1A2 autoinduction arm, whose Emax and EC50 were",
-    "read from a supplementary table that is not on disk. See the validation",
+    "read from a supplementary table that was not available when this model was built. See the validation",
     "vignette for the full accounting.",
     sep = " "
   )
@@ -103,7 +103,7 @@ Zhou_2015_bms911543_cyp1a2_tdi <- function() {
       "The 10-fold dilution step before the probe incubation is what makes the assay a MECHANISM-BASED inactivation measurement rather than a reversible-inhibition measurement: reversible inhibition is largely relieved by the dilution, so residual loss of activity is attributed to irreversible inactivation.",
       "The reported uncertainties (KI +/- 0.9 uM, kinact +/- 0.1 per h) are standard errors of the nonlinear regression, NOT between-subject or between-donor variability, and are therefore not encoded as an omega. No inter-individual variability of any kind is reported for this assay.",
       "The rate constant of CYP1A2 degradation, kdeg, is the third parameter that governs the in-vivo magnitude of TDI. The authors state that they used the Simcyp default value for simplicity and never print it, so no enzyme-turnover term is carried in this file; the model describes the inactivation phase of the in-vitro assay only, over which resynthesis is negligible.",
-      "For the same reason the CYP1A2 autoinduction arm of the paper is absent here: its maximal fold induction and EC50 were taken from experimental values reported in Supplementary Table S3, which is not on disk. The simulated interplay of the two effects (62 percent of hepatic CYP1A2 activity remaining at day 15 with induction, 54 percent without, so induction attenuates the inactivation by 17 percent) is a Simcyp platform output and is recorded in the vignette rather than reproduced."
+      "For the same reason the CYP1A2 autoinduction arm of the paper is absent here: its maximal fold induction and EC50 were taken from experimental values reported in Supplementary Table S3, which was not available when this model was built. The simulated interplay of the two effects (62 percent of hepatic CYP1A2 activity remaining at day 15 with induction, 54 percent without, so induction attenuates the inactivation by 17 percent) is a Simcyp platform output and is recorded in the vignette rather than reproduced."
     )
   )
 
