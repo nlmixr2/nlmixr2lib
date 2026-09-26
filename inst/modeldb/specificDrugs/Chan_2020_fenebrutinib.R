@@ -203,7 +203,7 @@ Chan_2020_fenebrutinib <- function() {
     lq2 <- log(4.47); label("Apparent second intercompartmental clearance Q2/F (L/h)")  # Table I, theta6 'Q2/F' = 4.47 L/h (95% CI 3.73-5.36)
     lnn <- log(14.9); label("Number of transit compartments NTR (reference: capsule, fasted)")  # Table I, theta7 'NTR' = 14.9 (95% CI 13.0-17.1)
     lmtt <- log(0.849); label("Mean transit time MTT (h) (reference: fasted, no PPI)")  # Table I, theta8 'MTT' = 0.849 h (95% CI 0.755-0.954)
-    lfdepot <- fixed(log(1)); label("Relative bioavailability F1 (reference; fixed)")  # Model S1 'TVF1 = 1' (no THETA)
+    lfdepot <- fixed(log(1)); label("Relative bioavailability F1 (reference; unitless)")  # Model S1 'TVF1 = 1' (no THETA)
 
     # Covariate effects, all multiplicative as exp(theta * indicator) in
     # Model S1; values are log(back-transformed Table I value).
@@ -246,7 +246,7 @@ Chan_2020_fenebrutinib <- function() {
     propSd <- 0.390; label("Proportional residual SD in patients (fraction)")  # Table I, theta21 'Proportional residual error in patients' = 0.390 (95% CI 0.372-0.408)
     propSd_hv <- 1.94; label("Proportional residual SD in healthy volunteers at time after dose 0 (fraction)")  # Table I, theta9 'Proportional residual error' = 1.94 (95% CI 1.29-2.92), exp(THETA(9))
     lkruv_hv <- log(1.94); label("Log rate of decline of the healthy-volunteer proportional residual SD with time after dose (1/h)")  # Table I, theta18 'Residual error rate in healthy volunteers' = 1.94 (95% CI 1.53-2.46)
-    logitfruv_hv <- log(6.66); label("Logit of the maximum fractional decline of the healthy-volunteer proportional residual SD")  # Table I, theta19 'Maximum residual error in healthy volunteers' = 6.66 (95% CI 4.21-10.6) = exp(THETA(19))
+    logitfruv_hv <- log(6.66); label("Logit of the maximum fractional decline of the healthy-volunteer proportional residual SD (unitless)")  # Table I, theta19 'Maximum residual error in healthy volunteers' = 6.66 (95% CI 4.21-10.6) = exp(THETA(19))
   })
 
   model({

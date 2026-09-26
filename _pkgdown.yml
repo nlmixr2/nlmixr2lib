@@ -1972,6 +1972,12 @@ navbar:
         href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
       - text: "Felodipine pbpk (Gu 2025)"
         href: articles/Gu_2025_heart_failure_pbpk.html
+      - text: "Fenebrutinib (Chan 2020)"
+        href: articles/Chan_2020_fenebrutinib.html
+      - text: "Fenebrutinib acr (Chan 2020)"
+        href: articles/Chan_2020_fenebrutinib.html
+      - text: "Fenebrutinib das28 (Chan 2020)"
+        href: articles/Chan_2020_fenebrutinib.html
       - text: "Fenofibrate (Back 2018)"
         href: articles/Back_2018_fenofibrate.html
       - text: "Fentanyl (Bista 2015)"
@@ -6340,6 +6346,7 @@ articles:
   - articles/Chala_2023_efavirenz
   - articles/Chan_2008_maraviroc
   - articles/Chan_2017_ipf_fvc
+  - articles/Chan_2020_fenebrutinib
   - articles/Chan_2023_nirmatrelvir
   - articles/Chan_2025_atezolizumab_sc_nsclc
   - articles/Chandasana_2023_dolutegravir

@@ -145,7 +145,7 @@ Chan_2020_fenebrutinib_acr <- function() {
     emax_pbo_acr <- 3.41; label("Maximum placebo effect over time (logit units)")  # Table S4, theta7 'Maximum placebo effect over time' = 3.41 (RSE 14.5%)
     lt50_pbo_acr20 <- log(21.5); label("Log time of 50% placebo effect for ACR20 (day)")  # Table S4, theta8 'Time of 50% placebo effect - ACR20 (d)' = 21.5 (95% CI 16.6-27.7)
     lt50_pbo_acr5070 <- log(32.8); label("Log time of 50% placebo effect for ACR50 and ACR70 (day)")  # Table S4, theta11 'Time of 50% placebo effect - ACR50 and ACR70 (d)' = 32.8 (95% CI 26.1-41.1)
-    lhill_pbo_acr <- log(2.52); label("Log Hill coefficient of the placebo time course")  # Table S4, theta12 'Hill coefficient on time course' = 2.52 (95% CI 1.5-4.23)
+    lhill_pbo_acr <- log(2.52); label("Log Hill coefficient of the placebo time course (unitless)")  # Table S4, theta12 'Hill coefficient on time course' = 2.52 (95% CI 1.5-4.23)
 
     # Drug effect: Emax in AUC, one term for all three thresholds.
     emax_acr <- 1.39; label("Maximum fenebrutinib effect, Eastern Europe (logit units)")  # Table S4, theta9 'Max drug effect over time - Eastern Europe' = 1.39 (RSE 29.8%)
