@@ -4134,12 +4134,18 @@ navbar:
         href: articles/Tarning_2014_piperaquine.html
       - text: "Piperaquine (Wallender 2021)"
         href: articles/Wallender_2021_piperaquine.html
+      - text: "Piperaquine (Wattanakul 2020)"
+        href: articles/Wattanakul_2020_piperaquine.html
+      - text: "Piperaquine dqtc (Wattanakul 2020)"
+        href: articles/Wattanakul_2020_piperaquine.html
       - text: "Piperaquine malaria (Wallender 2021)"
         href: articles/Wallender_2021_piperaquine.html
       - text: "Piperaquine qtc (Chotsiri 2017)"
         href: articles/Chotsiri_2017_dihydroartemisinin_piperaquine.html
       - text: "Piperaquine qtc (Wallender 2021)"
         href: articles/Wallender_2021_piperaquine.html
+      - text: "Piperaquine qtc (Wattanakul 2020)"
+        href: articles/Wattanakul_2020_piperaquine.html
       - text: "Pirtobrutinib (Tian 2025)"
         href: articles/Tian_2025_pirtobrutinib.html
       - text: "Pitavastatin (Kakara 2014)"
@@ -8039,6 +8045,7 @@ articles:
   - articles/Watt_2015_fluconazole
   - articles/Watt_2026_methadone
   - articles/Wattanakul_2016_paracetamol
+  - articles/Wattanakul_2020_piperaquine
   - articles/Wattanakul_2024_primaquine_lactation
   - articles/Weatherley_2009_maraviroc_iv
   - articles/Weatherley_2018_fosdagrocorat
