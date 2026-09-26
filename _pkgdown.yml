@@ -5008,6 +5008,8 @@ navbar:
         href: articles/Andrews_2017_tacrolimus.html
       - text: "Tacrolimus (Andrews 2019)"
         href: articles/Andrews_2019_tacrolimus.html
+      - text: "Tacrolimus (Andrews 2020)"
+        href: articles/Andrews_2020_tacrolimus.html
       - text: "Tacrolimus (Antignac 2007)"
         href: articles/Antignac_2007_tacrolimus.html
       - text: "Tacrolimus (Bai 2024)"
@@ -5096,6 +5098,8 @@ navbar:
         href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "Tacrolimus startingdose (Andrews 2019)"
         href: articles/Andrews_2019_tacrolimus.html
+      - text: "Tacrolimus startingdose (Andrews 2020)"
+        href: articles/Andrews_2020_tacrolimus.html
       - text: "Tacrolimus startingdose (Francke 2025)"
         href: articles/Francke_2025_tacrolimus.html
       - text: "Tacrolimus thoracic (Sikma 2020)"
@@ -6116,6 +6120,7 @@ articles:
   - articles/Anderson_1998_paracetamol
   - articles/Andrews_2017_tacrolimus
   - articles/Andrews_2019_tacrolimus
+  - articles/Andrews_2020_tacrolimus
   - articles/Angeli_2016_iron_hepcidin
   - articles/Antignac_2007_tacrolimus
   - articles/Aoki_2024_bosentan_pbpk
