@@ -248,7 +248,7 @@ Park_2025_cd19_cart_sle_qsp <- function() {
         "Park 2025 does not report individual body weights, and the clinical",
         "source of the cellular-kinetic data (Mackensen 2022, Nat Med",
         "28:2124-2132) is not open access, so no per-patient weights could be",
-        "verified on disk. Every allometric term is normalized to 70 kg, which",
+        "verified. Every allometric term is normalized to 70 kg, which",
         "is the reference used throughout the validation vignette."
       ),
       source_name = "WT"

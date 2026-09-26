@@ -16,8 +16,8 @@ Nakashima_2015_valproic_acid <- function() {
     "analysis (Ogusu 2014 Eqs 5-8 and Table 2), so every PK value here is ",
     "fixed rather than estimated. NOTE: Nakashima 2015 restates that PK ",
     "model in its own Eqs 1-2 and disagrees with Ogusu 2014 on all nine ",
-    "constants; the upstream source values are used here per operator ",
-    "ruling -- see the vignette Errata. The paper carries a PLOS ONE ",
+    "constants; the upstream source values are used here by decision of ",
+    "the maintainers -- see the vignette Errata. The paper carries a PLOS ONE ",
     "Expression of Concern on funding-disclosure grounds only (no concern ",
     "about data, methods or results). Age-subgroup companions in ",
     "Nakashima_2015_valproic_acid_le18y (Eq 7) and ",
@@ -351,7 +351,7 @@ Nakashima_2015_valproic_acid <- function() {
     # restated Vd/F = 110 * (Dose/1000)^1.51 is 110-130 L at this
     # cohort's doses, i.e. about 2.8 L/kg, impossible for valproic acid
     # (V/F about 0.1-0.4 L/kg); Ogusu's 21.4 L is about 0.5 L/kg.
-    # Operator ruling: use the upstream
+    # The maintainers' decision: use the upstream
     # source values and document the misquotation. See vignette Errata.
     # ==================================================================
 

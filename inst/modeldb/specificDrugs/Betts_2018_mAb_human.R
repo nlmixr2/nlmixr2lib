@@ -43,8 +43,9 @@ Betts_2018_mAb_human <- function() {
 
     # Proportional residual error was estimated per compound (Betts 2018 Table 2 footnote:
     # "Residual errors per compound are shown in Supplementary Table 1"); the supplement
-    # is not on disk, so no class-level typical value is available. Fixed at 0 per the
-    # skill's standing policy for unreported RUV (documented in vignette Errata).
+    # was not available when this model was built, so no class-level typical value is
+    # available. Fixed at 0 per the library's standing policy for unreported RUV
+    # (documented in vignette Errata).
     propSd <- fixed(0); label("Proportional residual error (fraction)")
   })
   model({

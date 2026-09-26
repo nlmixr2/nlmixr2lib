@@ -334,9 +334,9 @@ Jaiswal_2025_dordaviprone <- function() {
     #   1.932 mg/L -> 0.0389
     # A saturable form fitted to those five printed points reproduces
     # every one of them to within 4%.
-    # Canonical names ratified by operator sidecar (request-001 q1, answer B):
-    # fumin / fumax / cup50, matching the earlier ruling on the Zhang FDA
-    # review (oare_PMC11544005) for the same concept. The paper's own symbol
+    # Canonical names ratified by the maintainers: fumin / fumax / cup50,
+    # matching the earlier ruling on the Zhang FDA review (PMC11544005) for
+    # the same concept. The paper's own symbol
     # for all three is simply "fu" tabulated against concentration.
     fumin <- fixed(0.02827436)
     label("Lower-asymptote unbound fraction (low concentration)")

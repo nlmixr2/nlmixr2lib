@@ -177,7 +177,7 @@ Netterberg_2018_breast_cancer_FN_biomarkers <- function() {
     # the Slope coefficient (Netterberg 2018 Results "The model improved when the CRP
     # production was stimulated by a change in IL-6 [RCFBIL6(t)] using a linear
     # function (OFV dropped 61 units)"). The exact differential-equation listing is
-    # in Supplementary Material 1 (not included with this on-disk extraction);
+    # in Supplementary Material 1 (not available when this model was built);
     # this is the standard linear-regulation form consistent with the Slope units
     # `RCFBIL-6(t)^(-1)` reported in Table 2.
     rcfb_il6 <- (il6 - bl_il6) / bl_il6

@@ -211,7 +211,7 @@ Granda_2024_kynurenicacid_pbpk <- function() {
     ## framework idiom for "no basic moiety" (Huang 2020 MATLAB comment:
     ## "a very low number for the pKa_base --> no ionization").
     pka_acid <- fixed(2)
-    label("Acid pKa (model-identified as fully ionized; see comment)")  # NOT reported in any on-disk source; identified by reproduction of Tables 3-4
+    label("Acid pKa (model-identified as fully ionized; see comment)")  # NOT reported in any available source; identified by reproduction of Tables 3-4
     pka_base <- fixed(1)
     label("Base pKa (framework sentinel for no basic moiety)")  # Huang & Isoherranen 2020 MATLAB pKa_b = 1
 

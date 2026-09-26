@@ -54,12 +54,12 @@ Svensson_2018_rifampicin <- function() {
   population <- list(
     n_subjects = 83L,
     n_studies = 1L,
-    age_range = "Adults (HIGHRIF1 enrolled adult pulmonary TB patients; per-subject demographics not transcribed from the publication, which is not on disk in this worktree).",
+    age_range = "Adults (HIGHRIF1 enrolled adult pulmonary TB patients; per-subject demographics not transcribed from the publication, which was not available when this model was built).",
     weight_range = "Adults (HIGHRIF1; the bundled Simulated_Rif_PK_data.csv carries WT = 46.5 kg as the smoke-test cohort's single weight).",
     disease_state = "Adult pulmonary tuberculosis on high-dose rifampicin-containing antitubercular therapy.",
     dose_range = "Oral rifampicin 600, 1200, and 2100 mg once daily (the HIGHRIF1 dose-escalation cohorts at 10, 20, and 35 mg/kg for ~60 kg adults). Dense PK sampling at study days 7 and 14 of repeat daily dosing.",
     regions = "South Africa and Tanzania (PanACEA HIGHRIF1 trial sites).",
-    notes = "The Svensson 2018 publication itself is not on disk in this worktree, so per-subject demographics here are reproduced from the DDMODEL00000244 RDF abstract and the .mod $INPUT column comments rather than the paper's Table 1. The bundle's Simulated_Rif_PK_data.csv is a single-subject smoke-test cohort (ID 1, WT = 46.5 kg, FFM = 34.87 kg, male, 600 mg QD x ~7 days at occasion 1 then x ~7 days at occasion 2, dense sampling at days 7 and 14). N_subjects = 83 is the total in the listing's 'TOT. NO. OF INDIVIDUALS' field; the RDF model-has-description-long abstract describes the structural model but does not enumerate per-subject demographics."
+    notes = "The Svensson 2018 publication itself was not available when this model was built, so per-subject demographics here are reproduced from the DDMODEL00000244 RDF abstract and the .mod $INPUT column comments rather than the paper's Table 1. The bundle's Simulated_Rif_PK_data.csv is a single-subject smoke-test cohort (ID 1, WT = 46.5 kg, FFM = 34.87 kg, male, 600 mg QD x ~7 days at occasion 1 then x ~7 days at occasion 2, dense sampling at days 7 and 14). N_subjects = 83 is the total in the listing's 'TOT. NO. OF INDIVIDUALS' field; the RDF model-has-description-long abstract describes the structural model but does not enumerate per-subject demographics."
   )
 
   ini({
@@ -114,8 +114,8 @@ Svensson_2018_rifampicin <- function() {
     # Residual error. The .mod uses log-transformed observations with $ERROR Y = IPRED + EPS(1)
     # where IPRED = LOG(A(2)/S2 + 1e-5); on the back-transformed linear scale this is
     # proportional with proportional-SD = sqrt(SIGMA(1,1)) = sqrt(0.0555) = 0.2356 (NONMEM
-    # 'additive on log-scale' == proportional in nlmixr2's linear space -- see naming-conventions.md
-    # Section  Residual error). The .mod additionally implements the Beal M3 method for BLOQ data
+    # 'additive on log-scale' == proportional in nlmixr2's linear space -- the package's
+    # NONMEM-to-nlmixr2 translation convention). The .mod additionally implements the Beal M3 method for BLOQ data
     # (LLOQ = log(0.13 mg/L), F_FLAG = 1 / Y = PHI((LLOQ - IPRED)/SD)); M3 is an estimation-time
     # construct, not part of the structural model, so it is not carried into the nlmixr2 model.
     propSd <- 0.2356  ; label("Proportional residual error (SD on log-Cc scale == fraction in linear space)") # SIGMA(1,1) FINAL = 5.55E-02 = 0.2356^2

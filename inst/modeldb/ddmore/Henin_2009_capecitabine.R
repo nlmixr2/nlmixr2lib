@@ -59,7 +59,7 @@ Henin_2009_capecitabine <- function() {
     notes = paste(
       "Demographics summarized from the DDMORE Foundation Model Repository",
       "bundle (DDMODEL00000214) and the linked publication abstract; the",
-      "publication PDF is not on disk for this extraction. NOBS = 18,445",
+      "publication PDF was not available when this model was built. NOBS = 18,445",
       "HFS-grade observations across 595 subjects (Output_real_HFSmodel.lst).",
       "Per-subject demographics in the shipped Simulated_GHFS_HFSmodel.csv",
       "show baseline CrCl roughly 60-150 mL/min and adult body weights",

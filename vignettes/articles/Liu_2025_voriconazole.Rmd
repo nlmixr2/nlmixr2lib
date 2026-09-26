@@ -86,10 +86,9 @@ comment naming its origin. They are collected here for review.
 
 The three structural equations are **display equations on page 4024** of the
 article. They are worth calling out because they are vector-drawn and therefore
-invisible to text extraction -- `pdftotext` renders them as a blank gap, and
-the preprocessed markdown drops them entirely. They were recovered by
-rasterising the page and cross-checked against the publisher's own equation
-images in the Europe PMC supplementary-file bundle
+invisible to text extraction -- even `pdftotext` renders them as a blank gap.
+They were recovered by rasterising the page and cross-checked against the
+publisher's own equation images in the Europe PMC supplementary-file bundle
 (`DDDT-19-4021-e0006.jpg` through `e0008.jpg`):
 
 $$\mathrm{CL/F\ (L/h)} = 4.35 \times \left(\frac{\mathrm{PCT}}{0.19}\right)^{-0.209} \times \left(\frac{\mathrm{TBA}}{3.95}\right)^{-0.158} \times e^{[-0.017 \times (\mathrm{AGE} - 72.0)]} \times e^{\eta_{\mathrm{CL}}}$$
@@ -714,8 +713,8 @@ on the interval end, which the 0.05 h grid above guarantees.
 # Errata and source notes
 
 - **The three model equations are invisible to text extraction.** They are
-  vector-drawn display equations on p. 4024; `pdftotext` yields a blank gap and
-  the preprocessed markdown drops them silently. They were recovered by
+  vector-drawn display equations on p. 4024; even `pdftotext` yields only a
+  blank gap where they should be. They were recovered by
   rasterising the page at 400 dpi and independently confirmed against the
   publisher's equation images in the Europe PMC supplementary bundle
   (`DDDT-19-4021-e0006.jpg` to `e0008.jpg`). Any future re-extraction that
@@ -723,10 +722,11 @@ on the interval end, which the 0.05 h grid above guarantees.
   three centring constants, and the fact that age enters exponentially while
   the two laboratory covariates enter as powers.
 - **Table 2's residual-error rows merge under automated table extraction.** The
-  `Prop_error (%)` and `Add_error (mg/L)` rows share a cell block; a markdown
-  conversion renders them as a single row reading "31.4 0.893 | 10.5 11.1 |
-  ...". The layout-preserving extraction separates them correctly, and the
-  values used here (28.9% and 0.885 mg/L final) come from that reading.
+  `Prop_error (%)` and `Add_error (mg/L)` rows share a cell block; naive
+  plain-text extraction renders them as a single row reading
+  "31.4 0.893 | 10.5 11.1 | ...". The layout-preserving extraction separates
+  them correctly, and the values used here (28.9% and 0.885 mg/L final) come
+  from that reading.
 - **Table 1's PCT row header is set as "PCTon CL/F"** in Table 2 (missing space);
   it is the procalcitonin effect on apparent clearance.
 - The paper states 393 concentrations from 270 patients, split 314 / 79 into

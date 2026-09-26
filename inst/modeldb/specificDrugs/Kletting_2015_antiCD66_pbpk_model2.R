@@ -542,7 +542,7 @@ Kletting_2015_antiCD66_pbpk_model2 <- function() {
     # V_MRI,<organ> / V_Cal,<organ>: individually measured (MRI) over
     # individually calculated (Harris 2010 spleen, Johnson 2005 liver) volume.
     # Neither the per-patient volumes nor the calculating formulae appear in
-    # any on-disk source, so the ratio itself is the shipped input, fixed at 1
+    # any available source, so the ratio itself is the shipped input, fixed at 1
     # = an organ of exactly calculated size, which reduces Eq 9 to Eq 8.
     ratioVolLiver <- fixed(1) ; label("Measured over calculated liver volume, V_MRI,L / V_Cal,L (unitless)")   # S1 Text Eq 9; per-patient values unpublished
     ratioVolSpleen <- fixed(1) ; label("Measured over calculated spleen volume, V_MRI,S / V_Cal,S (unitless)") # S1 Text Eq 9; per-patient values unpublished

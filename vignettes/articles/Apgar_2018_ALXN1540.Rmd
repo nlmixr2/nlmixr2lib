@@ -680,7 +680,7 @@ stopifnot(all(claims$Pass[!claims$Deviation]))
   text extractions render it as an exponent. The tabulated values
   (3.5E-05 versus 3.5E-06) confirm the factor is 10.
 
-## Parameters not reported anywhere on disk
+## Parameters not reported in any available source
 
 Three constants appear in the deposited KroneckerBio reaction networks but in no
 table, figure or sentence of the paper or its supplement. All three are encoded

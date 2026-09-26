@@ -59,7 +59,7 @@ Babel_2026_telisotuzumab_teae <- function() {
       description = "Baseline Eastern Cooperative Oncology Group performance status indicator; 1 = ECOG PS at least 1, 0 = ECOG PS 0.",
       units = "(binary)",
       type = "binary",
-      notes = "Babel 2026 Table S2 lists baseline ECOG status as a covariate of interest for the exposure-EFFICACY regressions only, not for safety; it is recorded here because it is the covariate most often retained in oncology composite-tolerability models and its absence is a deliberate feature of this one. No point estimate exists on disk. Babel 2026 reports that 'no covariates were found to have a significant effect on efficacy or safety', so the Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, history of peripheral neuropathy, liver metastasis at baseline, prior therapy, number of prior systemic therapies, treatment-emergent ADA status and nAb status) were screened and dropped."
+      notes = "Babel 2026 Table S2 lists baseline ECOG status as a covariate of interest for the exposure-EFFICACY regressions only, not for safety; it is recorded here because it is the covariate most often retained in oncology composite-tolerability models and its absence is a deliberate feature of this one. No point estimate is reported. Babel 2026 reports that 'no covariates were found to have a significant effect on efficacy or safety', so the Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, history of peripheral neuropathy, liver metastasis at baseline, prior therapy, number of prior systemic therapies, treatment-emergent ADA status and nAb status) were screened and dropped."
     )
   )
 

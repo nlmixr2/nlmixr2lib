@@ -982,7 +982,7 @@ subjects.
 **11. The PP-NRS covariate's functional form is reconstructed, not quoted.**
 Table 4 prints the coefficient `-1.84` but the paper contains no equation
 attaching `PPM` to `Edrug,nemolizumab` anywhere -- not in Methods, not in the
-supplement, and there is no NONMEM control stream on disk. The fractional
+supplement, and no NONMEM control stream was available. The fractional
 deviation `1.63 * (1 + (-1.84) * (IGA_MOD_PCT/100 - 0.590))` used here is the
 reading that reproduces three independent plotted values of Fig. 4, where the
 two obvious alternatives miss by 14 and 4 percentage points respectively; Part 4

@@ -368,7 +368,7 @@ Xie_2025_aztreonam_avibactam <- function() {
         "(theta23 = 53.3%). Xie 2025 does not define which records make up",
         "this fourth stratum as distinct from the separate phase 2",
         "(theta21) and phase 3 (theta22) strata, and no supplement or",
-        "predecessor on disk resolves it; the coefficient is carried here so",
+        "predecessor paper resolves it; the coefficient is carried here so",
         "that the published parameter set is complete, with the stratum",
         "membership left to the user. See the vignette Errata. See the",
         "STUDY_AZTAVI_PHASE2 notes for the full residual-error rationale."

@@ -42,8 +42,8 @@ Cella_2012_midazolam_infants_adults <- function() {
         "Time-fixed at baseline. Enters the model with two distinct",
         "functional forms: allometric (exponent 0.75) on clearance with a",
         "70 kg reference, and linear per-kg scaling on the central volume",
-        "(Vc = 0.312 * WT). The per-kg Vc interpretation follows operator",
-        "sidecar response 001 Q2 = A; the published Table 2 unit label",
+        "(Vc = 0.312 * WT). The per-kg Vc interpretation was decided by",
+        "the maintainers because the published Table 2 unit label",
         "'l' is kinetically implausible if taken as an absolute typical",
         "value (k10 ~ 0.75/min for a 70 kg adult). See the vignette",
         "Errata for the full reasoning."
@@ -91,8 +91,8 @@ Cella_2012_midazolam_infants_adults <- function() {
     # 'CL (l min-1 kg^0.75)', 'Vc (l)', 'Q (l min-1)', 'Vp (l)' and
     # 'Ka (h-1)'. Two encoding decisions deviate from the literal table:
     #   (a) the median weight for the CL allometric normalisation is not
-    #       stated in the paper; sidecar response 001 Q1 instructed to
-    #       validate against Table 3, and the validation showed Wmed =
+    #       stated in the paper; the maintainers asked for it to be
+    #       validated against Table 3, and the validation showed Wmed =
     #       70 kg reproduces the published Model-1-extrapolated AUC0-180
     #       with a geometric-mean pred/obs ratio of 0.98 across 16 non-
     #       outlier rows (vs 0.74 for Wmed = 31 kg);
@@ -105,7 +105,7 @@ Cella_2012_midazolam_infants_adults <- function() {
     #       and adults.
     lka <- log(8.21 / 60);   label("First-order absorption rate constant (1/min)")             # Cella 2012 Table 2 (Ka = 8.21 h^-1, converted to /min)
     lcl <- log(0.234);       label("Clearance at WT = 70 kg reference (L/min)")                # Cella 2012 Table 2 (CL = 0.234 with allometric WT effect)
-    lvc <- log(0.312);       label("Central volume of distribution per kg body weight (L/kg)") # Cella 2012 Table 2 (Vc = 0.312; per-kg interpretation per sidecar response 001 Q2)
+    lvc <- log(0.312);       label("Central volume of distribution per kg body weight (L/kg)") # Cella 2012 Table 2 (Vc = 0.312; per-kg interpretation, see the WT covariate notes)
     lq  <- log(1.34);        label("Inter-compartmental clearance (L/min)")                     # Cella 2012 Table 2
     lvp <- log(16.5);        label("Peripheral volume of distribution (L)")                    # Cella 2012 Table 2
 

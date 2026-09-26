@@ -578,11 +578,11 @@ to improve this comparison.
   an IIV variance sevenfold, and because check (c) above rules the small values
   out directly, Table 2 is used. A reader who preferred the Sect. 3.2 reading
   would set `etalcl ~ 0.0222`, `etalvc ~ 0.0459` and `propSd <- 0.08`.
-* **Supplementary appendices are not on disk.** Appendices A-D (sampling-time
+* **Supplementary appendices are not available.** Appendices A-D (sampling-time
   blocks, bioanalytical method, PD covariate stepwise table, concomitant
-  medication list) were not available. None contains a parameter used by the
-  model; the covariate-screen results they support are documented in
-  `covariatesDataExcluded`.
+  medication list) could not be obtained when this model was built. None
+  contains a parameter used by the model; the covariate-screen results they
+  support are documented in `covariatesDataExcluded`.
 * **`ka` is poorly identified.** Table 2 gives `Var(g3) = 2.09` with a standard
   error of 6.63, i.e. a relative standard error above 300%, and the point
   estimate of `ka` itself has an RSE of 40%. Sect. 4 attributes this to the

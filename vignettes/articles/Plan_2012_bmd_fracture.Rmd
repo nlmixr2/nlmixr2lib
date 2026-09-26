@@ -296,9 +296,8 @@ knitr::kable(publish,
   Figure 5 shows only `theta_h` and `theta_bmd`. The model therefore
   encodes only the BMD(t)-driven covariate effect.
 
-# Source-on-disk note
+# Source note
 
-This extraction was derived from the on-disk PDF
-`metrum_nd_bayesian_joint.pdf` (PAGE 2012 Plan et al. poster, no DOI). The
-poster is a single A0 page with no supplement, no full-text companion paper,
-and no published author erratum at the time of extraction.
+This model was built from the PDF of the PAGE 2012 Plan et al. poster (no
+DOI). The poster is a single A0 page with no supplement, no full-text companion
+paper, and no published author erratum when this model was built.

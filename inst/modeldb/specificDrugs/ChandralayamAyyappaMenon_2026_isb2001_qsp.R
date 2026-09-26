@@ -27,7 +27,7 @@ ChandralayamAyyappaMenon_2026_isb2001_qsp <- function() {
   # divided by the plasma volume). Doses are therefore given in nmol.
   #
   # The source never reports the molecular weight of ISB 2001, so a ug/kg dose
-  # cannot be converted to nmol from on-disk information alone. The vignette
+  # cannot be converted to nmol from the published information alone. The vignette
   # derives an apparent MW of ~1.9e5 g/mol from the paper's own paired reporting
   # of the same in-vitro potencies in nM (Table 2) and ng/mL (Results, "MABEL
   # dose") and states that derivation explicitly; it is NOT used here.

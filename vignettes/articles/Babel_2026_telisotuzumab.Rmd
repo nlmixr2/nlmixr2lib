@@ -897,7 +897,7 @@ identity above are.
   (96.0 L) are physiologically sized for MMAE itself, but the paper reports
   neither the drug-antibody ratio nor the molecular weights nor the
   systemically available payload fraction, so the conversion from an
-  administered conjugate dose cannot be reconstructed from anything on disk. The
+  administered conjugate dose cannot be reconstructed from any available source. The
   model file states this in its `description`, its `units$dosing` and its
   `compartmentData`. The vignette's illustrative fraction of 1.31% was
   back-solved from the Figure 5 CavgMMAE axis and is deliberately **not** part

@@ -72,8 +72,8 @@ Kloprogge_2015_lumefantrine <- function() {
       reference_category = NULL,
       notes = paste(
         "Kloprogge 2015 Table 1: all-cohort median 22.8 weeks, range",
-        "13.1-39.0 weeks across the 116 pregnant women. Per operator",
-        "sidecar (2026-06-07), the existing GA canonical (originally",
+        "13.1-39.0 weeks across the 116 pregnant women. By the maintainers'",
+        "decision, the existing GA canonical (originally",
         "defined as gestational age at birth in pediatric popPK use",
         "cases like Hu 2026 clesrovimab and Clegg 2024 nirsevimab) is",
         "reused for this maternal at-admission semantic, with the",

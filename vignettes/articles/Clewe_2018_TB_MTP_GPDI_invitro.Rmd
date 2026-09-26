@@ -359,7 +359,8 @@ sim %>%
   mechanism. When the modifier has no mechanism-specific EC50 (EMB has linear
   S-kill kSD_EMB; RIF has linear N-kill kND_RIF), the modifier's F-kill EC50
   is used as the saturation anchor. The Clewe 2018 Supplementary NONMEM model
-  code (referenced in the paper but not on disk) would resolve this anchor
+  code (referenced in the paper but not available when this model was built)
+  would resolve this anchor
   choice unambiguously; users with access to that file should cross-check.
 * **Linear adaptive resistance functional form.** Clewe 2018 Materials and
   methods presents Eq 3 (Emax form on isoniazid Emax) and Eq 4 (Emax form on
@@ -456,8 +457,8 @@ sim %>%
   (https://academic.oup.com/jac/article/73/2/437/4604762) or a PubMed
   "erratum" search as of 2026-05-22.
 * Clewe 2018 Supplementary Data (containing Figures S1, S2 and the final
-  MTP-GPDI NONMEM model code) is referenced in the paper but is not on
-  disk in the maintainers' literature mirror. The model file extracts
+  MTP-GPDI NONMEM model code) is referenced in the paper but was not
+  available when this model was built. The model file extracts
   every parameter value verbatim from Table 1 (MTP + monotherapy effects)
   and Table 3 (GPDI interactions); the functional forms of the GPDI
   interactions, the linear adaptive-resistance form, and the mass-balance

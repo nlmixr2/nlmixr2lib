@@ -128,7 +128,7 @@ Ogusu_2014_valproic_acid <- function() {
       description = "Age at the observation.",
       units = "years",
       type = "continuous",
-      notes = "Screened as a covariate on the PD SLOPE and found significant during forward inclusion, but removed from the final PK-PD model because age, body weight and daily VPA dose 'significantly correlated with each other (P < 0.05)' and the authors reduced the set to break the multicollinearity (Ogusu 2014 Results, PK-PD Model). No point estimate is printed anywhere on disk. Cohort: 17.2 +/- 8.3 years, range 2.2-52.2 (PK) and 18.0 +/- 7.8, range 3.0-52.2 (PK-PD); 93.3% were 30 years or younger."
+      notes = "Screened as a covariate on the PD SLOPE and found significant during forward inclusion, but removed from the final PK-PD model because age, body weight and daily VPA dose 'significantly correlated with each other (P < 0.05)' and the authors reduced the set to break the multicollinearity (Ogusu 2014 Results, PK-PD Model). No point estimate is printed in any available source. Cohort: 17.2 +/- 8.3 years, range 2.2-52.2 (PK) and 18.0 +/- 7.8, range 3.0-52.2 (PK-PD); 93.3% were 30 years or younger."
     ),
     WT = list(
       description = "Body weight at the observation.",

@@ -485,7 +485,7 @@ oddities carried through faithfully.
   `Qp_BBB` 0.101 vs 0.10, `Q_BCM` 139 vs 140 and `Q_LYSO` 33.4 vs 33.
 * **`CL_wo` / `CL_ow` are derived, not printed.** LeiCNS-PK3.0 replaced the
   instantaneous binding factor of LeiCNS-PK1.0 with a mechanistic phospholipid
-  compartment, but no source prints the two clearance magnitudes. Three on-disk
+  compartment, but no source prints the two clearance magnitudes. Three
   constraints jointly determine them: the ECF ODE printed in van Valkengoed 2025
   Eq 4 shows `CL_BC,in` acting on `PHF_ECF x C_ECF` and `CL_BC,out` on `C_BCM`; the
   Saleh 2022 supplement pins the ratio `CL_wo / CL_ow = 10^logP`; and the LeiCNS

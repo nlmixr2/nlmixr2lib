@@ -222,7 +222,7 @@ Fournier_2018_amoxicillin <- function() {
     # See the vignette "Assumptions and deviations" section for the full
     # reconciliation. The policy precedent is Delattre 2010 amikacin
     # (inst/modeldb/specificDrugs/Delattre_2010_amikacin.R), where the same
-    # absurd-as-printed centered-linear equation was operator-resolved to
+    # absurd-as-printed centered-linear equation was resolved by the maintainers to
     # the divisively-centered form.
     e_crcl_cl <- 0.57; label("Fractional CL slope per (CRCL/110 - 1)")                     # Table 3 row theta_CLCR_CL
 

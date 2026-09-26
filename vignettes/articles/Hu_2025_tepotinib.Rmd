@@ -62,7 +62,7 @@ the paper reports no between-subject variance and no residual-error model for
 any of its PK modules. All five printed tepotinib PK parameters are attributed
 in Supplementary Table S1 to Johne 2020 (PMID 32221754), a phase I
 mass-balance and absolute-bioavailability study in healthy volunteers. That
-paper is not on disk for this extraction, so the values were taken as printed
+paper was not available when this model was built, so the values were taken as printed
 and could not be checked against their own cited source.
 
 The clinically approved regimen simulated in Figure 7B is 500 mg once daily
@@ -503,7 +503,7 @@ asserts against the analytic beta root for exactly this reason).
 
 **Bioavailability.** Reaction v67 absorbs the full administered amount, so no
 `F` is applied and the disposition parameters are apparent (F = 1) parameters.
-Johne 2020, the cited PK source, is not on disk for this extraction.
+Johne 2020, the cited PK source, was not available when this model was built.
 
 **Dose basis.** Supplementary Figure S4F's legend says 500 mg. The Results
 section distinguishes a 500 mg tablet from its 450 mg active moiety for
@@ -517,7 +517,7 @@ must supply their own magnitudes.
 
 **Scope -- only the PK submodule is packaged.** Supplementary Table S1 prints
 all 69 reaction rate laws of the QSP network, but seven quantities those rate
-laws consume are reported nowhere in any on-disk source (main text, all three
+laws consume are reported nowhere in any available source (main text, all three
 sheets of `Table1.xlsx`, `DataSheet1.pdf`, or the Figure S9 topology diagram):
 
 1. `km_egf`, the Michaelis constant in v36.

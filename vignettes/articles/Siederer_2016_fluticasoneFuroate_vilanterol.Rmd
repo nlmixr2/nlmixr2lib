@@ -961,7 +961,7 @@ footnote text appears to have been copied from the fluticasone furoate table.
 
 **5. Fluticasone furoate Table 1 and Table 3 are mutually inconsistent by a
 factor of roughly 2.4-2.7 on AUC.** This is the largest deviation in the
-extraction and it is *not* resolvable from the sources on disk, so nothing was
+extraction and it is *not* resolvable from the available sources, so nothing was
 tuned.
 
 * Table 1 is internally consistent four ways: its "Ln estimate" and "Estimate"

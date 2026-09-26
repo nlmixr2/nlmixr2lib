@@ -42,7 +42,7 @@ Aumente_2006_methotrexate <- function() {
   # Wang 2023 Methods 2.2 describes plasma sampling for the evaluation cohort
   # and Table 2 lists 'V1: central volume of distribution'. verified = FALSE
   # for the specimen because the Aumente 2006 primary, which would state the
-  # assayed matrix for THIS cohort, is not on disk.
+  # assayed matrix for THIS cohort, was not available when this model was built.
   compartmentData <- list(
     central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE)

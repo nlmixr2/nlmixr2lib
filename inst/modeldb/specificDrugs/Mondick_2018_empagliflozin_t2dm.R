@@ -132,8 +132,8 @@ Mondick_2018_empagliflozin_t2dm <- function() {
       "reproduces the complete parameter set in its Supplementary Table 2 and",
       "reuses it for the type 1 vs type 2 comparison in its Figures 4 and 5,",
       "but does not restate the T2DM cohort size or its baseline demographics;",
-      "n_subjects is therefore NA here. Mondick 2016 is not on disk for this",
-      "extraction, so every value in this file is traced to Mondick 2018",
+      "n_subjects is therefore NA here. Mondick 2016 was not available when",
+      "this model was built, so every value in this file is traced to Mondick 2018",
       "Supplementary Table 2 and should be re-verified against Mondick 2016 if",
       "that paper is acquired."
     )

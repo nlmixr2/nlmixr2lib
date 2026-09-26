@@ -64,7 +64,7 @@ five HL2351 cohorts only (n = 40); blood samples were collected to
 672 hours postdose (Ngo 2020 Methods, "Materials and PK data
 collection"). Body weight, age distribution, and other demographic
 covariates beyond age range and sex (all male) are not reported in the
-extracted text available on disk, and no covariates are retained in the
+text available when this model was built, and no covariates are retained in the
 final structural model.
 
 The same information is available programmatically via
@@ -355,8 +355,8 @@ and the half-life range (27.21-45.28 h) for the HL2351 cohorts.
 
 - **HL2351 only; anakinra not included.** Ngo 2020 fits two distinct
   population PK models in the same paper: HL2351 (Table 1, main text)
-  and anakinra (Table S2, Supplementary Materials). The supplement is
-  not included in the on-disk source for this extraction, so the
+  and anakinra (Table S2, Supplementary Materials). The supplement was
+  not available when this model was built, so the
   packaged model is HL2351 only. Adding the anakinra model is a
   separate follow-up.
 - **Compartment naming.** The paper's "distribution space" — the

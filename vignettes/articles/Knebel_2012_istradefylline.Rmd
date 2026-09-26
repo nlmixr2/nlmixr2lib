@@ -170,8 +170,9 @@ entry. Collected here for review.
 | all three `addSd` | 0.001 | **not from the source** -- placeholder; see Assumptions |
 
 The **functional forms** of the three adverse-event models are stated in
-Knebel 2012 Supplemental Table S2, which is not on disk. The forms encoded in
-the model files are the ones the paper's own Results text specifies in words
+Knebel 2012 Supplemental Table S2, which was not available when this model
+was built. The forms encoded in the model files are the ones the paper's own
+Results text specifies in words
 ("best described by a sigmoid Emax model" for dyskinesia and dizziness, "best
 described by a power model ... characterized by a baseline probability ..., a
 slope ..., and the power term" for nausea, whose three named components map
@@ -962,8 +963,9 @@ transcribed correctly.
 
 - **The three adverse-event model *forms* are reconstructed from the paper's
   prose, not read off a table.** Knebel 2012 states them in Supplemental Table
-  S2, which is not on disk. The Results text names the form of each model and,
-  for nausea, names its three components explicitly; Gate 1c confirms the
+  S2, which was not available when this model was built. The Results text
+  names the form of each model and, for nausea, names its three components
+  explicitly; Gate 1c confirms the
   reconstruction numerically against three independent published anchors (the
   placebo probability of each endpoint) and the dyskinesia asymptote. Should the
   supplement become available, the forms should be re-verified against it.

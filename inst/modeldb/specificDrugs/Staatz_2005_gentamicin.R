@@ -1,5 +1,5 @@
 Staatz_2005_gentamicin <- function() {
-  description <- "Two-compartment IV population PK model for gentamicin in adult cardiothoracic-surgery patients with unstable renal function (Staatz 2005). Clearance scales linearly with raw Cockcroft-Gault creatinine clearance centred at the population baseline median (63 mL/min); central and peripheral volumes scale linearly with body weight; intercompartmental clearance is a population constant. Operator-resolved sidecar (request-001) replaced the paper's Wahlby 2004 baseline-CrCl + change-from-baseline (BCOV+DCOV) decomposition with the simpler CrCl-only covariate form to avoid adding a new canonical baseline-CrCl column; for stable-CrCl subjects the published final-model parameters reproduce the paper's CL exactly because DCOV is zero (see vignette Errata)."
+  description <- "Two-compartment IV population PK model for gentamicin in adult cardiothoracic-surgery patients with unstable renal function (Staatz 2005). Clearance scales linearly with raw Cockcroft-Gault creatinine clearance centred at the population baseline median (63 mL/min); central and peripheral volumes scale linearly with body weight; intercompartmental clearance is a population constant. The maintainers decided to replace the paper's Wahlby 2004 baseline-CrCl + change-from-baseline (BCOV+DCOV) decomposition with the simpler CrCl-only covariate form, to avoid adding a new canonical baseline-CrCl column; for stable-CrCl subjects the published final-model parameters reproduce the paper's CL exactly because DCOV is zero (see vignette Errata)."
   reference <- paste(
     "Staatz CE, Byrne C, Thomson AH.",
     "Population pharmacokinetic modelling of gentamicin and vancomycin in",
@@ -82,8 +82,8 @@ Staatz_2005_gentamicin <- function() {
     # collapsed to operate on the time-varying CRCL alone. The paper's full
     # final form is CL = theta1 x (1 + theta2 x (BCOV - 63) + theta3 x DCOV);
     # this library implements CL = theta1 x (1 + theta2 x (CRCL - 63)),
-    # equivalent for stable-CrCl subjects (DCOV = 0) and recommended by the
-    # operator-resolved sidecar (request-001). The theta3 = 0.0174 DCOV term
+    # equivalent for stable-CrCl subjects (DCOV = 0) and chosen by the
+    # maintainers. The theta3 = 0.0174 DCOV term
     # is documented in vignette Errata but not encoded here.
     e_crcl_cl <- 0.0150; label("Linear effect of (CRCL - 63 mL/min) on CL")    # Table 4 'All data': theta2 = 0.0150 per mL/min
 

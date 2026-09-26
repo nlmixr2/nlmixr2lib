@@ -98,7 +98,7 @@ Mukker_2026_tuvusertib_QTcF <- function() {
       description = "Body weight",
       units = "kg",
       type = "continuous",
-      notes = "Screened as a candidate covariate on the C-DeltaQTcF model and not retained (p > 0.1; Mukker 2026 Results 3.2.2). Cohort mean (SD) 78.6 (18.0) kg (Table 1). No point estimate is reported anywhere on disk, so the effect cannot be encoded."
+      notes = "Screened as a candidate covariate on the C-DeltaQTcF model and not retained (p > 0.1; Mukker 2026 Results 3.2.2). Cohort mean (SD) 78.6 (18.0) kg (Table 1). No point estimate is reported in the paper or its supplementary files, so the effect cannot be encoded."
     ),
     AGE = list(
       description = "Age",
@@ -167,8 +167,8 @@ Mukker_2026_tuvusertib_QTcF <- function() {
     # Garnett linear mixed-effects concentration-QTc model.
     # Mukker 2026 Equation 1 (reproduced from the display-equation
     # image CTS-19-e70496-e001.jpg supplied in the article's
-    # supplementary-file bundle; the trimmed text renders it only as a
-    # 'formula-not-decoded' placeholder):
+    # supplementary-file bundle; the article text carries the equation only
+    # as that image):
     #
     #   DeltaQTcF_ij = (theta0 + eta0_i)
     #                + (theta1 + eta1_i) * C_ij

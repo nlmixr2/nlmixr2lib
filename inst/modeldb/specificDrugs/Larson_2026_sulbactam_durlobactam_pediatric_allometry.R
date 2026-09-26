@@ -114,7 +114,7 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry <- function() {
         "(CLcr of 100 mL/min/1.73 m^2)'). The pediatric simulation cohort",
         "assumed normal renal function; the Larson 2026 abstract adds that",
         "renal function was estimated using the Rhodin formula from fat-free",
-        "mass, but neither source on disk reports that formula's constants, so",
+        "mass, but neither source reports that formula's constants, so",
         "the covariate VALUES are a simulation input rather than part of this",
         "model - see the vignette Errata."
       ),

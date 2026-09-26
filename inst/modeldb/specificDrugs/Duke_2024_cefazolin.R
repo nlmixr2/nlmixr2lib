@@ -143,7 +143,7 @@ Duke_2024_cefazolin <- function() {
     # STARTING value 'G=2', and the paper does not report the final
     # estimated gamma anywhere. The assay polynomial is therefore carried
     # here unscaled (equivalent to gamma = 1), which is the minimum-
-    # assumption reading of the on-disk file, matching the sibling
+    # assumption reading of the Table S3 file, matching the sibling
     # extraction Tsai_2023_ceftriaxone.R. See vignette 'Assumptions and
     # deviations'.
     addSd <- 0.3

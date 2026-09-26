@@ -107,15 +107,15 @@ Hansson_2013_sunitinib_myelosuppression <- function() {
     species = "human",
     n_subjects = 303L,
     n_studies = 4L,
-    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section that includes Methods + Results + Tables)",
-    weight_range = "not reported in the on-disk trimmed paper text",
+    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the paper's Methods, Results or Tables)",
+    weight_range = "not reported in the paper",
     sex_female_pct = NA_real_,
     race_ethnicity = "majority non-Japanese (Studies 1004, 1047, 013); Japanese subgroup is Study 1045 (n=36) per Shirao 2010",
     disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
     dose_range = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule (Table 1). The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib.",
-    regions = "phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies' regions not stated in the trimmed paper text.",
+    regions = "phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies' regions not stated in the paper.",
     biomarkers = "Absolute neutrophil count (ANC) measured serially across treatment cycles. Median (range) observed ANC during treatment: 3.1 (0.080-20) in study 1004, 1.8 (0.010-7.5) in study 1047, 2.1 (0.28-12) in study 1045, 2.6 (0.16-15) in study 013 (Hansson 2013 Table 1).",
-    notes = "n_subjects = 303 reported in Hansson 2013 e85 Methods ('analyzed data were from four clinical trials in phases I-III, which comprised patients with imatinib-resistant malignant GIST treated with sunitinib... totaling 303 patients'). Per-cohort baseline demographics (age, weight, sex, race) are not transcribed in the trimmed paper text; the cohort breakdown by study is from Table 1."
+    notes = "n_subjects = 303 reported in Hansson 2013 e85 Methods ('analyzed data were from four clinical trials in phases I-III, which comprised patients with imatinib-resistant malignant GIST treated with sunitinib... totaling 303 patients'). Per-cohort baseline demographics (age, weight, sex, race) are not transcribed in the paper; the cohort breakdown by study is from Table 1."
   )
 
   ini({

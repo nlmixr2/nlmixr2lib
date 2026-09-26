@@ -597,9 +597,10 @@ c(model = eeg_at_ec50, closed_form = e0 + emax / 2)
   the PD models" -- it publishes no PK parameter table of its own. All eight
   structural blood-PK parameters, both blood-PK IIV variances and the blood
   residual error are therefore taken from **Table 2 of the companion paper**
-  (doi:10.1038/sj.bjp.0707257), which is on disk and open access, and are
-  wrapped in `fixed()` to record that this paper did not estimate them. Only the
-  biophase and pharmacodynamic parameters are estimated in the lead paper.
+  (doi:10.1038/sj.bjp.0707257), which is open access and was available when
+  this model was built, and are wrapped in `fixed()` to record that this paper
+  did not estimate them. Only the biophase and pharmacodynamic parameters are
+  estimated in the lead paper.
 
 - **The body-weight centring value is not published.** The companion paper's
   Equation 7 is `P_i = theta1 * (1 + theta2 * (BW_i - median BW))`, but the

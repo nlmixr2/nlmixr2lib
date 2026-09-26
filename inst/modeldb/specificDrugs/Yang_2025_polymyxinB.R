@@ -139,7 +139,7 @@ Yang_2025_polymyxinB <- function() {
 
     # Equation 7 is written V = 18 L * exp(eta_V), but Table 2 reports NO
     # variance for eta_V (the "Inter-individual variability" block contains
-    # only the etaCL row) and no supplement on disk supplies one. Per the
+    # only the etaCL row) and no available supplement supplies one. Per the
     # standing unreported-IIV policy the term is encoded as an explicit
     # zero-variance random effect rather than invented; see the vignette
     # Assumptions and deviations section.

@@ -11,7 +11,7 @@ Mazzocco_2015_temozolomide <- function() {
     "Carrying capacity K is fixed at 100 mm (= 10 cm), inherited from the",
     "upstream Ribba 2012 LGG model (Clin Cancer Res. 2012;18:5071-5080;",
     "doi:10.1158/1078-0432.CCR-12-0084). Provenance for the K = 10 cm value",
-    "is the on-disk Ribba 2014 review (Table 1 footnote on the Ribba 2012",
+    "is the Ribba 2014 review (Table 1 footnote on the Ribba 2012",
     "row: 'theta was not estimated and was fixed to 10 cm');",
     "CPT Pharmacometrics Syst Pharmacol. 2014;3:e113; doi:10.1038/psp.2014.12.",
     sep = " "
@@ -110,9 +110,9 @@ Mazzocco_2015_temozolomide <- function() {
     # Carrying capacity K fixed at 100 mm (= 10 cm), inherited from the
     # upstream Ribba 2012 LGG model. Ribba 2014 review Table 1 footnote on
     # the Ribba 2012 row records: "theta was not estimated and was fixed
-    # to 10 cm". The Ribba 2014 review PDF is the on-disk provenance
-    # source for this value; the original Ribba 2012 publication was not
-    # on disk for the present extraction.
+    # to 10 cm". The Ribba 2014 review PDF is the provenance source for
+    # this value; the original Ribba 2012 publication was not available
+    # when this model was built.
     lK        <- fixed(log(100)); label("Carrying capacity K (mm)")                                                  # Ribba 2014 review Table 1 footnote: K = 10 cm = 100 mm
 
     # Covariate effects on log-scale typical values. Both coefficients are

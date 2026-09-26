@@ -192,7 +192,7 @@ vanSchaick_2016_prucalopride_pediatric <- function() {
     # Dual sequential first-order absorption. The early rate applies
     # before tkacut hours after the dose and the late rate after it;
     # tad(depot) resets at every dose, so the sequence repeats for each
-    # administration (the reading confirmed by the operator, recorded in
+    # administration (the reading chosen by the maintainers, recorded in
     # the vignette Errata -- the paper does not state whether MTIME is
     # measured from the dose or from the start of the record).
     ka <- exp(lka_early + etalka_early)

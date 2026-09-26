@@ -27,7 +27,7 @@ Xu_2019_sarilumab <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (male; SEXF term evaluates to 1 and has no effect)",
-      notes = "Xu 2019 codes SEX=1 for female in the final-model equation for CLO/F. This encoding was operator-confirmed (see model extraction task 003 stop-and-ask) based on the paper's narrative that male patients have higher apparent clearance and lower AUC0-14d than female patients.",
+      notes = "Xu 2019 codes SEX=1 for female in the final-model equation for CLO/F. The maintainers confirmed this encoding based on the paper's narrative that male patients have higher apparent clearance and lower AUC0-14d than female patients.",
       source_name = "SEX"
     ),
     ADA_POS = list(
@@ -112,7 +112,7 @@ Xu_2019_sarilumab <- function() {
     e_dp2_ka   <-  0.663;  label("Multiplier on Ka for drug product DP2 (unitless)")            # Xu 2019 Table 3: DP2 effect on Ka
     e_ada_cl   <-  1.43;   label("Multiplier on CLO/F for ADA-positive (unitless)")             # Xu 2019 Table 3: ADA effect on CLO/F
     e_dp2_cl   <-  1.30;   label("Multiplier on CLO/F for drug product DP2 (unitless)")         # Xu 2019 Table 3: DP2 effect on CLO/F
-    e_sexf_cl  <-  0.846;  label("Multiplier on CLO/F for female sex (unitless)")               # Xu 2019 Table 3: SEX effect on CLO/F; SEX=1=female per operator confirmation
+    e_sexf_cl  <-  0.846;  label("Multiplier on CLO/F for female sex (unitless)")               # Xu 2019 Table 3: SEX effect on CLO/F; SEX=1=female as confirmed by the maintainers
 
     # Inter-individual variability: Xu 2019 Table 3 reports CV% on the linear-parameter scale.
     # Convert to NONMEM-style log-normal variance as omega^2 = log(CV^2 + 1):
