@@ -50,6 +50,13 @@ SECONDARY` in its `population$notes`. Read the
 using any of them; it reports a **measured** audit of how faithfully the
 review reproduces its primaries, and that audit found a real defect.
 
+One exception: `deVelde_2020_imipenem` has since been re-verified
+against its primary publication. It is now documented, together with
+the primary's nonparametric arm (`deVelde_2020_imipenem_nonparametric`),
+in its own [de Velde 2020 article](deVelde_2020_imipenem.html), and it
+no longer carries the secondary-source notes. It still appears in the
+tables below so that the review's own numbers can be checked.
+
 # Coverage of the review's 18 studies
 
 Four of the review's 18 studies were already in `nlmixr2lib`, extracted
@@ -70,7 +77,7 @@ coverage <- tibble::tribble(
    6L, "Dong et al. (2019)",              "Extracted",              "Dong_2019_imipenem",
    7L, "Li et al. (2020)",                "Blocked: dialysate-compartment role + Qd units", NA_character_,
    8L, "Chen et al. (2020b)",             "Extracted",              "Chen_2020_imipenem",
-   9L, "de Velde et al. (2020)",          "Extracted (NONMEM arm)", "deVelde_2020_imipenem",
+   9L, "de Velde et al. (2020)",          "Re-verified vs primary (2 files)", "deVelde_2020_imipenem / _nonparametric",
   10L, "Nguyen et al. (2021)",            "Extracted",              "Nguyen_2021_imipenem",
   11L, "Jaruratanasirikul et al. (2021)", "Extracted",              "Jaruratanasirikul_2021_imipenem",
   12L, "Por et al. (2021)",               "Extracted",              "Por_2021_imipenem",
@@ -143,7 +150,7 @@ pop <- tibble::tribble(
   "Yoshizawa_2013_imipenem_children",    "Japan",       39L, "9.61 +/- 3.16 y",  "29.5 +/- 10.9",  "Children",
   "Dong_2019_imipenem",                  "China",       56L, "4.86 +/- 2.33 y",  "18.65 +/- 6.90", "Children, haematological malignancy",
   "Chen_2020_imipenem",                  "China",      247L, "67 (20-97) y",     "65 (37.5-110)",  "Critically ill, +/- ECMO",
-  "deVelde_2020_imipenem",               "Netherlands", 26L, "51 (39-54) y",     "75 (66-85)",     "Critically ill",
+  "deVelde_2020_imipenem",               "Switzerland", 26L, "51 (39-54) y",     "75 (66-85)",     "Critically ill",
   "Nguyen_2021_imipenem",                "Vietnam",     44L, "65 (60-72) y",     "50 (47-55)",     "AECOPD",
   "Jaruratanasirikul_2021_imipenem",     "Thailand",    50L, "56.2 (41-66.6) y", "62.9 (52.8-70)", "Critically ill, +/- ECMO",
   "Por_2021_imipenem",                 "USA",         23L, "51-55 y",          "89.6-105.1",     "Burns, +/- CVVH",
@@ -740,6 +747,20 @@ flag. **Treat every IIV magnitude in this family as provisional. The
 structural parameters, covariate equations and residual errors are on
 much firmer ground.**
 
+**A fifth check, added later: de Velde 2020.** Re-verified against its
+primary, the review's de Velde row agrees exactly on every structural
+value (Ke 0.637 1/h, Kcp 0.166 1/h, Kpc 0.195 1/h, Vc 29.6 L), on the
+covariate equation `Ke = 0.637 x (CKD-EPI-abs/119)^0.655`, and on the
+IIV (`Ke: 19%` is an apparent CV; the primary gives `omega^2 = 0.0354`,
+so the uniform reading above is exact here). Two things were wrong. The
+review's residual label "Proportional = 34.8%" is really an additive
+error on log-transformed concentrations (the primary's "Exponential
+error" 0.348, Eq. 1), so the packaged model now uses `lnorm()`. The
+review's country, the Netherlands, is the authors' affiliation; the
+patients were treated in Geneva, Switzerland, which the population
+table above now shows. Residual-error labels therefore deserve the same
+caution as the IIV column.
+
 ## Per-model deviations and warnings
 
 * **`Chen_2020_imipenem` -- residual error is implausibly small.** The
@@ -802,14 +823,12 @@ much firmer ground.**
   parameters are reported per kilogram, i.e. weight exponent 1 on
   clearance as well as volume, unlike the allometric 0.75 used by the
   other paediatric models here.
-* **`deVelde_2020_imipenem` -- only the NONMEM arm is encoded.** The
-  study also fitted the data non-parametrically in Pmetrics. That arm's
-  covariate model is printed in terms of per-subject posterior medians,
-  which are not population parameters; and a non-parametric population
-  is a discrete support-point distribution, not the log-normal random
-  effect `ini()` expresses. It cannot be faithfully encoded even in
-  principle. The review's Pmetrics "Gamma: 3.4" is an error-polynomial
-  multiplier, not a residual SD.
+* **`deVelde_2020_imipenem` -- the nonparametric arm is a separate
+  model.** The study also fitted the data in Pmetrics. That arm is now
+  packaged as `deVelde_2020_imipenem_nonparametric`, from the primary's
+  Table 2. It approximates the discrete NPAG distribution with
+  log-normal marginals; see the
+  [de Velde 2020 article](deVelde_2020_imipenem.html).
 * **`deVelde_2020_imipenem` -- absolute, not BSA-normalised, eGFR.** The
   covariate is CKD-EPI **multiplied by BSA**, in mL/min. Supplying a
   standard mL/min/1.73 m^2 eGFR understates the ratio for anyone larger

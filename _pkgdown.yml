@@ -2451,7 +2451,7 @@ navbar:
       - text: "Imipenem (Wang 2024)"
         href: articles/Wang_2024_imipenem.html
       - text: "Imipenem (deVelde 2020)"
-        href: articles/Zhang_2025_imipenem_model_review.html
+        href: articles/deVelde_2020_imipenem.html
       - text: "Imipenem amikacin PA001 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem amikacin PA088 (Yadav 2017)"
@@ -2462,6 +2462,8 @@ navbar:
         href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem neutropenia (Lafaurie 2023)"
         href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem nonparametric (deVelde 2020)"
+        href: articles/deVelde_2020_imipenem.html
       - text: "Imipenem pbpk (Feng 2026)"
         href: articles/Feng_2026_imipenem_pbpk.html
       - text: "Imipenem qsp (LopezArguello 2023)"
@@ -8319,6 +8321,7 @@ articles:
   - articles/deJonge_2005_paclitaxel
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/deKock_2018_sulfadoxinePyrimethamine
+  - articles/deVelde_2020_imipenem
   - articles/deVriesSchultink_2018_cardiotoxicity
   - articles/deVriesSchultink_2020_zenocutuzumab
   - articles/deVries_2025_durvalumab
