@@ -381,9 +381,9 @@ mg/L targets.
 - **Dose-individualisation supplements not used.** The dosing-regimen
   tables (Tables S1-S4) referenced for the 10-15 and 15-20 mg/L trough
   targets are simulation outputs in the journal’s supplementary
-  information and were not available on disk. They contain no model
-  parameters (all final estimates are in Eq 16-17 and Table 3), so their
-  absence does not affect the packaged model.
+  information and were not available when this model was built. They
+  contain no model parameters (all final estimates are in Eq 16-17 and
+  Table 3), so their absence does not affect the packaged model.
 - **Virtual-cohort demographics.** Race / ethnicity beyond “Chinese
   adults” is not reported and is not a model covariate; the virtual
   cohort fixes age and CRCL per arm to illustrate the covariate effects

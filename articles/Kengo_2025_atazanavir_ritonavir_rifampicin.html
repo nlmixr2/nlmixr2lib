@@ -4396,11 +4396,11 @@ interval (200 simulated participants per arm).</caption>
 </table>
 <p>Kengo 2025 reports no non-compartmental table of its own – the
 companion non-compartmental analysis of the DERIVE trial is its
-reference 8, which is not on disk here – so there is no published Cmax /
-AUC / half-life row to place beside these. The paper’s own quantitative
-simulation output is the trough target-attainment table reproduced next,
-and <code><a href="../reference/ncaComparisonTable.html">nlmixr2lib::ncaComparisonTable()</a></code> is therefore not
-used.</p>
+reference 8, which was not available when this model was built – so
+there is no published Cmax / AUC / half-life row to place beside these.
+The paper’s own quantitative simulation output is the trough
+target-attainment table reproduced next, and
+<code><a href="../reference/ncaComparisonTable.html">nlmixr2lib::ncaComparisonTable()</a></code> is therefore not used.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The NCA interval must be the full dosing interval, and PKNCA's ctrough</span></span>
 <span><span class="co"># (concentration at the interval end) must equal the trough read directly off</span></span>
@@ -4942,23 +4942,22 @@ the reason it is run on every arm of every model.</p>
 Kengo 2025 also re-fitted a rifampicin model to the DERIVE data and
 reports its parameters in supplementary Table S1 (CLint,max x fu = 33.0
 L/h, Km 4.90, Vc 44.7 L, ka 2.40 1/h, MTT 0.502 h, NN 20.3, with VH 1 L,
-QH 90 L/h and fu 0.2 fixed). Its <em>parameters</em> are on disk but its
-<em>equations</em> are not: the paper states only that it fitted “a
+QH 90 L/h and fu 0.2 fixed). Its <em>parameters</em> are reported but
+its <em>equations</em> are not: the paper states only that it fitted “a
 previously published one-compartment model with saturation of
 elimination via a liver compartment” and cites references 41 (Kengo
 2023, Antimicrob Agents Chemother 67(11):e0043123, <a href="doi:10.1128/aac.00431-23" class="uri">doi:10.1128/aac.00431-23</a>) and 42 (Chirehwa 2016,
 Antimicrob Agents Chemother 60(1):487-494, <a href="doi:10.1128/aac.01830-15" class="uri">doi:10.1128/aac.01830-15</a>, which also carries an erratum,
 <a href="doi:10.1128/aac.00483-16" class="uri">doi:10.1128/aac.00483-16</a>). Neither upstream paper is
-open access and automated acquisition was refused by the publisher.
-Rather than infer the hepatic topology from a sibling model, the
-rifampicin fit has been deferred pending acquisition of those two
-references. This costs nothing to the three models shipped here:
-rifampicin exposure is not a covariate in any of them. The paper
-screened ritonavir AUC on atazanavir clearance and rifampicin AUC on
-inter-visit differences and retained neither, encoding rifampicin
-instead as the categorical regimen indicator used above (the control
-stream’s <code>RTVAUC_CL</code> theta is <code>FIX</code>ed at 0). Both
-screened covariates are recorded in
+open access and neither was available when this model was built. Rather
+than infer the hepatic topology from a sibling model, the rifampicin fit
+has been deferred until those two references are available. This costs
+nothing to the three models shipped here: rifampicin exposure is not a
+covariate in any of them. The paper screened ritonavir AUC on atazanavir
+clearance and rifampicin AUC on inter-visit differences and retained
+neither, encoding rifampicin instead as the categorical regimen
+indicator used above (the control stream’s <code>RTVAUC_CL</code> theta
+is <code>FIX</code>ed at 0). Both screened covariates are recorded in
 <code>covariatesDataExcluded</code>.</p>
 <p><strong>Allometric reference fat-free mass is 42 kg, not 41
 kg.</strong> Kengo 2025 Table 2 footnote a and the supplementary control

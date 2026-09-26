@@ -87,7 +87,7 @@ consolidated table below spans all four packaged models.
 | Combined (all species) | delta (V2) | 0.95 | 0.95 | Table 4, all-species column |
 | Combined (all species) | IIV CL / cov / V1 | 0.47 / 0.08 / 0.11 | (log-scale variances) | Table 4, all-species column |
 | All models | 2-cpt IV disposition | \- | \- | Fig. 1a and Materials and methods “PK model” |
-| All models | Proportional error per cpd | \- | fixed(0) per policy | Table 2 / Table 4 footnote, per-compound values in Supp. Table 1 / 2 (not on disk) |
+| All models | Proportional error per cpd | \- | fixed(0) per policy | Table 2 / Table 4 footnote, per-compound values in Supp. Table 1 / 2 (not available) |
 
 All weight-normalized values were converted to absolute units at the
 species-representative body weight used in the source fit (70 kg human,
@@ -452,9 +452,9 @@ estimates.
   the Betts 2018 Supplementary Tables 1 and 2.
 - **Residual error fixed at 0.** The paper’s Table 2 and Table 4
   footnotes state “Residual errors per compound are shown in
-  Supplementary Table 1” (or 2); the supplement was not available on
-  disk during extraction, so no class-level typical proportional
-  residual value could be sourced. Per the package’s standing policy for
+  Supplementary Table 1” (or 2); the supplement was not available when
+  this model was built, so no class-level typical proportional residual
+  value could be sourced. Per the package’s standing policy for
   unreported RUV, `propSd` is wrapped in `fixed(0)` in every packaged
   model. Users needing residual noise for simulation should override
   with a domain-appropriate typical value (mAb popPK residuals are

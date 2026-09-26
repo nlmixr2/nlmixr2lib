@@ -3944,30 +3944,29 @@ be reconstructed without inventing two binding rate constants, so the
 packaged model implements the QSS form exactly as published, augmented
 with the dynamic-receptor-pool ODE that the supplement appendix
 specifies (<code>d/dt(total_target) = kdeg · (R0 · Vc - R_total)</code>
-under <code>kint = kdeg</code>). An earlier extraction attempt (never
-merged into <code>main</code>) had only the main paper available — the
-JCPH supplement was subscription-blocked at that time. With the
-supplement on disk, this implementation can carry the explicit receptor
-pool rather than holding <code>R_total = R0</code> constant.</p></li>
+under <code>kint = kdeg</code>). Because the supplement was available
+when this model was built, the implementation can carry the explicit
+receptor pool rather than holding <code>R_total = R0</code>
+constant.</p></li>
 <li><p><strong><code>kdeg</code> and <code>kint</code>
 provenance.</strong> The receptor degradation rate
 <code>kdeg = 77.4 day⁻¹</code> and the constraint
 <code>kint = kdeg</code> are recorded only in the supplement appendix
-(line 140 of the text extracted from the supplement) and ultimately
-reference Wang et al. 2013 (Clin Pharmacol Ther 93:483-492) — confocal
-imaging studies of IFNAR1 internalization. The main paper Table 1 lists
-the parameter as <code>k_int</code> only, not as <code>kdeg</code>, with
-the value 77.4 day⁻¹ marked “(fixed)”. The packaged model uses the
-supplement’s mechanistic interpretation (a receptor-turnover parameter
-that also drives complex internalisation) and the
-<code>kdeg &lt;- fixed(77.4)</code> declaration carries an inline
-non-paper-source note pointing to the supplement appendix.</p></li>
+and ultimately reference Wang et al. 2013 (Clin Pharmacol Ther
+93:483-492) — confocal imaging studies of IFNAR1 internalization. The
+main paper Table 1 lists the parameter as <code>k_int</code> only, not
+as <code>kdeg</code>, with the value 77.4 day⁻¹ marked “(fixed)”. The
+packaged model uses the supplement’s mechanistic interpretation (a
+receptor-turnover parameter that also drives complex internalisation)
+and the <code>kdeg &lt;- fixed(77.4)</code> declaration carries an
+inline non-paper-source note pointing to the supplement
+appendix.</p></li>
 <li><p><strong>Time-varying-CL Hill exponent fixed at 1.</strong> The
 supplement appendix writes the empirical CL factor as a Hill function
 with exponent <code>LAM = THETA(15)</code>, but the main paper’s Methods
 text reduces this to the simple Emax-on-time form
 <code>t / (TC50 + t)</code>. No value of <code>THETA(15)</code> is
-reported in any on-disk source (neither Table 1 of the main paper nor
+reported in any available source (neither Table 1 of the main paper nor
 any supplementary figure). The packaged model uses <code>LAM = 1</code>
 per the main paper text; the typical-value 1-year CL reduction this
 predicts (~7.3 %) is close to but not identical to the paper’s
@@ -4001,24 +4000,20 @@ only.</p></li>
 </h2>
 <table class="table">
 <colgroup>
-<col width="61%">
-<col width="38%">
+<col width="44%">
+<col width="55%">
 </colgroup>
 <thead><tr class="header">
-<th>Source on disk</th>
+<th>Source</th>
 <th>Used for</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>
-<code>PMID_35383948_pmc.xml</code> (and the text extracted from
-it)</td>
+<td>Main paper full text (PubMed Central, PMID 35383948)</td>
 <td>Main paper Methods, Results, Table 1, demographics tables.</td>
 </tr>
 <tr class="even">
-<td>
-<code>PMID_35383948_supplement_1.docx</code> (and the text extracted
-from it)</td>
+<td>Supplementary appendix (Word document)</td>
 <td>Appendix NONMEM <code>$PK</code> / <code>$DES</code> blocks,
 dynamic-receptor ODE, <code>kdeg = kint = 77.4 day⁻¹</code> constraint,
 study-design Tables S1-S5.</td>
@@ -4026,8 +4021,7 @@ study-design Tables S1-S5.</td>
 </tbody>
 </table>
 <p>No author correspondence was needed; all parameter values are present
-on-disk in either Table 1 of the main paper or the supplement
-appendix.</p>
+in either Table 1 of the main paper or the supplement appendix.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

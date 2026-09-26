@@ -129,7 +129,7 @@ Converting that to a whole-body mg/h rate requires the liver weight and
 the cytosolic-protein-per-gram -liver scalar behind the platform’s
 in-vitro-to-in-vivo extrapolation, together with the liver tissue scalar
 of 11 (Table 1). Those first two are Simcyp system parameters and appear
-nowhere in the paper, so the scaling cannot be done from on-disk
+nowhere in the paper, so the scaling cannot be done from the available
 sources. It is instead recovered from the paper’s own printed output: in
 the sub-saturating concentration range the Michaelis-Menten term reduces
 to `(vmax / km) * Cc`, so `vmax = CL_hepatic * km`. The adult and
@@ -859,16 +859,13 @@ dosing recommendation.
   with no fitted residual-error model, so `propSd` is fixed at 0. The
   models are intended for simulation, not for estimation against
   observed data as supplied.
-- **The supplement is not on disk.** Section S1 (model development
-  detail), Figures S1-S5 and Tables S1-S4 could not be retrieved: the
-  EuropePMC supplementary-files endpoint returned HTTP 500, the PMC
-  `/bin/` route now serves a CAPTCHA rather than the file, and the Wiley
-  landing page returns HTTP
-  403. No parameter used above comes from the supplement – every value
-       is from Table 1, Table 2, Table 3, Equation (1) or the Results
-       text – but the supplement’s Table S2 holds additional
-       predicted-versus-observed PK parameters that would have supplied
-       further validation targets.
+- **The supplement was not available when this model was built.**
+  Section S1 (model development detail), Figures S1-S5 and Tables S1-S4
+  could not be consulted. No parameter used above comes from the
+  supplement – every value is from Table 1, Table 2, Table 3,
+  Equation (1) or the Results text – but the supplement’s Table S2 holds
+  additional predicted-versus-observed PK parameters that would have
+  supplied further validation targets.
 - **Saturation thresholds are compared structurally, not by the paper’s
   detection rule.** The paper flagged saturation as a 1% departure from
   a linear-phase regression fitted across a 200-subject virtual

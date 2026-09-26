@@ -760,7 +760,7 @@ a population criterion requires. {.table}
 - **NHL disease stage is documented but not encoded.** Stage (I-III
   vs IV) is named in Methods as a candidate covariate for both the
   efficacy and safety analyses, but appears in neither Table 2 nor Table
-  3, so no point estimate exists on disk. It is recorded in each model’s
+  3, so no point estimate is available. It is recorded in each model’s
   `covariatesDataExcluded` rather than guessed at. Stage was missing for
   23.5% of the safety cohort and 35.9% of the ATLL cohort, the likely
   reason it was dropped.

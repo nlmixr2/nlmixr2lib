@@ -928,12 +928,13 @@ ref_table2 |>
 
 - **The parameter values are not this paper’s own estimates.** They are
   transcribed by the authors from the FDA CDER clinical pharmacology and
-  biopharmaceutics review for BLA 761041Orig1s000, which is not on disk.
-  Zeng 2026 is the transcription source and the only source consulted
-  here. If the FDA review is obtained later, the values, the covariate
-  reference points and the omega scale should be re-checked against it.
-  The same model underpins Peer et al. J Clin Pharmacol
-  2023;63(6):672-680, also not on disk.
+  biopharmaceutics review for BLA 761041Orig1s000, which was not
+  available when this model was built. Zeng 2026 is the transcription
+  source and the only source consulted here. If the FDA review is
+  obtained later, the values, the covariate reference points and the
+  omega scale should be re-checked against it. The same model underpins
+  Peer et al. J Clin Pharmacol 2023;63(6):672-680, also not available
+  when this model was built.
 - **Everything is `fixed()`.** No parameter in this model was estimated
   from data in this paper. All 17 `$THETA`, all 4 `$OMEGA` and `$SIGMA`
   carry `FIX` in the source control stream.

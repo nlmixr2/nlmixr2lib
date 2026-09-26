@@ -3444,7 +3444,8 @@ only per-subject inputs are the dose and the occasion index.</p>
 <span></span>
 <span><span class="co"># Sampling grid mimicking the trial (Methods 2.1: "nine to 14 time points",</span></span>
 <span><span class="co"># 0-8 h, which is the x-axis of Figure 1). Exact times are in Supporting</span></span>
-<span><span class="co"># Information Table S1, which is not on disk -- see Errata.</span></span>
+<span><span class="co"># Information Table S1, which was not available when this model was built --</span></span>
+<span><span class="co"># see Errata.</span></span>
 <span><span class="va">samp_study</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">1.5</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4.5</span>, <span class="fl">5</span>, <span class="fl">5.5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Denser grid for the individual-profile NCA.</span></span>
@@ -3867,10 +3868,11 @@ own equation (3)). A maximum taken over a sampling grid is a strongly
 upward-biased statistic under that much noise, and how strongly biased
 depends on <strong>how many samples</strong> and <strong>where</strong>
 – exactly the information that lives in Supporting Information Table S1,
-which is not on disk. For the three-spray arm the reproducible statement
-the available sources support is a bracketing one: the structural
-profile under-shoots the published mean, adding the paper’s own residual
-error over-shoots it, and the observed value lies between.</p>
+which was not available when this model was built. For the three-spray
+arm the reproducible statement the available sources support is a
+bracketing one: the structural profile under-shoots the published mean,
+adding the paper’s own residual error over-shoots it, and the observed
+value lies between.</p>
 <p>The two-spray arm supports no such comparison, and the paper’s own
 numbers say why. Its published mean of 1.85 ug/L rests on <strong>n =
 2</strong> patients with a reported SD of 0.15 – an 8% coefficient of
@@ -4009,15 +4011,15 @@ encoded <code>depot -&gt; transit1 -&gt; transit2 -&gt; central</code>.
 The MRT identity above confirms the resulting mean absorption time is
 exactly the published 1.35 h.</li>
 <li>
-<strong>Supporting Information Table S1 is not on disk.</strong> It
-holds the exact sampling times of the three schemes. No model parameter
-depends on it – all eight structural estimates, all five variance terms
-and both residual terms are in Table 2 of the main paper – but the
-observed-Cmax and BLQ-fraction comparisons above do depend on the
-sampling grid, so a study-like grid of 13 points over 0-8 h was assumed
-(the paper states “nine to 14 time points” and Figure 1 spans 0-8 h).
-This is why those two comparisons are asserted with wide bounds and the
-structural identities with tight ones.</li>
+<strong>Supporting Information Table S1 was not available when this
+model was built.</strong> It holds the exact sampling times of the three
+schemes. No model parameter depends on it – all eight structural
+estimates, all five variance terms and both residual terms are in Table
+2 of the main paper – but the observed-Cmax and BLQ-fraction comparisons
+above do depend on the sampling grid, so a study-like grid of 13 points
+over 0-8 h was assumed (the paper states “nine to 14 time points” and
+Figure 1 spans 0-8 h). This is why those two comparisons are asserted
+with wide bounds and the structural identities with tight ones.</li>
 <li>
 <strong>The published Cmax is a mean;
 <code><a href="../reference/ncaComparisonTable.html">ncaComparisonTable()</a></code> reports a median.</strong> Storgaard
@@ -4070,11 +4072,11 @@ formulation), and extrapolating this model far beyond 8 h is not
 supported by the data behind it.</li>
 <li>
 <strong>The <code>11oh</code> metabolite suffix is used, not
-re-registered.</strong> It was ratified for
+re-registered.</strong> It was registered for
 11-hydroxy-delta-9-tetrahydrocannabinol in
-<code>inst/references/compartment-names.md</code> by the Wolowich 2025
-extraction, which lists <code>THC-OH</code> (this paper’s abbreviation)
-among its source aliases. See
+<code>inst/references/compartment-names.md</code> when the Wolowich 2025
+model was added, which lists <code>THC-OH</code> (this paper’s
+abbreviation) among its source aliases. See
 <code>modellib("Wolowich_2025_thc_11oh")</code> for the sibling model of
 the same metabolite.</li>
 <li>

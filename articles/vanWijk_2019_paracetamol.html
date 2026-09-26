@@ -3104,13 +3104,12 @@ file’s <code>description</code> and <code>population</code> metadata
 flag the preclinical species, and this vignette uses mechanistic-sanity
 and self-consistency checks rather than a clinical PKNCA comparison (see
 Validation strategy below for rationale).</p>
-<p>The van Wijk 2019 publication PDF was not on disk under the
-literature tree, so external cross-checks against published tables and
-figures are not possible. The model translation comes exclusively from
-the bundle’s <code>Output_real_Paracetamol_Zebrafish_345dpf.lst</code>
-FINAL PARAMETER ESTIMATE block (post
-<code>MINIMIZATION SUCCESSFUL</code>, OBJV = 466.583) and the structural
-form encoded in
+<p>The van Wijk 2019 publication PDF was not available when this model
+was built, so external cross-checks against published tables and figures
+are not possible. The model translation comes exclusively from the
+bundle’s <code>Output_real_Paracetamol_Zebrafish_345dpf.lst</code> FINAL
+PARAMETER ESTIMATE block (post <code>MINIMIZATION SUCCESSFUL</code>,
+OBJV = 466.583) and the structural form encoded in
 <code>Executable_Paracetamol_Zebrafish_345dpf.mod</code>.</p>
 </div>
 <div class="section level2">
@@ -3248,38 +3247,39 @@ listing.</p>
 </h2>
 <p>Per the package’s decision tree for DDMORE-sourced models:</p>
 <ol style="list-style-type: decimal">
-<li>The linked publication is <strong>not on disk</strong>, so a
-comparison against published NCA / figure values is not possible.</li>
+<li>The linked publication was <strong>not available</strong> when this
+model was built, so a comparison against published NCA / figure values
+is not possible.</li>
 <li>The bundle does <strong>not</strong> ship an
 <code>Output_simulated_*.lst</code> companion run on a simulated
-dataset, so the F.2 self-consistency check substitutes the bundle’s
+dataset, so the self-consistency check substitutes the bundle’s
 <code>Real_Paracetamol_Zebrafish_345dpf.csv</code> as the comparison
 target instead.</li>
 <li>The model is a continuous-environmental-exposure popPK (a regime
 where PKNCA’s Cmax / AUC / t1/2 outputs do not have a clinically
 interpretable counterpart - the bath is held at 1 mM throughout the
 experiment, so “Cmax” reduces to the asymptotic steady-state
-amount-per-larva), so the F.3 mechanistic-sanity recipe is used instead
-of PKNCA.</li>
+amount-per-larva), so the mechanistic-sanity recipe is used instead of
+PKNCA.</li>
 </ol>
 <p>The validation below therefore consists of two checks:</p>
 <ul>
 <li>
-<strong>Self-consistency (F.2 substitute)</strong> - re-simulate the
-bundle’s real dataset through <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> with the
-typical-value model (no IIV; IIV is structurally FIX 0 in this model)
-and compare predicted Cc against the observed DV at every observation
-row. Scatter is expected from residual error (proportional CV ~33% from
-<code>sqrt(0.10906)</code> plus additive ~0.092 pmol/larva from
-<code>sqrt(0.0084383)</code>); the typical-value-vs-observed comparison
-should be unbiased.</li>
+<strong>Self-consistency (substitute target)</strong> - re-simulate
+the bundle’s real dataset through <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> with
+the typical-value model (no IIV; IIV is structurally FIX 0 in this
+model) and compare predicted Cc against the observed DV at every
+observation row. Scatter is expected from residual error (proportional
+CV ~33% from <code>sqrt(0.10906)</code> plus additive ~0.092 pmol/larva
+from <code>sqrt(0.0084383)</code>); the typical-value-vs-observed
+comparison should be unbiased.</li>
 <li>
-<strong>Mechanistic sanity (F.3)</strong> - simulate the
-typical-value trajectory at AGE_DPF = 3, 4, and 5 dpf and confirm the
-qualitative PK behaviour encoded by the covariate effects: K12 ~doubles
-between 3 and &gt;= 4 dpf, K25 grows ~17.4%/dpf, and steady-state amount
-per larva (<code>K12 / K25</code> for a constant unit depot) tracks
-those changes.</li>
+<strong>Mechanistic sanity</strong> - simulate the typical-value
+trajectory at AGE_DPF = 3, 4, and 5 dpf and confirm the qualitative PK
+behaviour encoded by the covariate effects: K12 ~doubles between 3 and
+&gt;= 4 dpf, K25 grows ~17.4%/dpf, and steady-state amount per larva
+(<code>K12 / K25</code> for a constant unit depot) tracks those
+changes.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -3580,8 +3580,8 @@ indicates an unbiased typical-value fit.</caption>
 <div class="section level2">
 <h2 id="comparison-against-published-nca">Comparison against published NCA<a class="anchor" aria-label="anchor" href="#comparison-against-published-nca"></a>
 </h2>
-<p>Not performed - the van Wijk 2019 PDF is not on disk under the
-literature tree, and the model’s continuous-environmental-exposure
+<p>Not performed - the van Wijk 2019 PDF was not available when this
+model was built, and the model’s continuous-environmental-exposure
 dosing regime does not have a clinical PKNCA counterpart even if the
 publication had been available. The validation above relies on (a)
 self-consistency between the model translation and the bundle’s
@@ -3636,7 +3636,7 @@ model.</li>
 variability due to destructive sampling”. No eta is declared in the
 nlmixr2 model.</li>
 <li>
-<strong>Publication PDF not on disk.</strong> The article (<a href="https://doi.org/10.1038/s41598-019-38530-w" class="external-link">Sci Rep,
+<strong>Publication PDF not available.</strong> The article (<a href="https://doi.org/10.1038/s41598-019-38530-w" class="external-link">Sci Rep,
 doi:10.1038/s41598-019-38530-w</a>) was not accessible during
 extraction. Demographics, sample-size cohort structure, and any
 published parameter tables / figures could not be cross-checked. The
@@ -3645,7 +3645,7 @@ bundle.</li>
 <li>
 <strong>No <code>Output_simulated_*.lst</code> companion
 run.</strong> The bundle does not ship a NONMEM listing on a simulated
-dataset, so the F.2 self-consistency check substitutes the bundle’s
+dataset, so the self-consistency check substitutes the bundle’s
 <code>Real_Paracetamol_Zebrafish_345dpf.csv</code> as the comparison
 target. This catches translation errors that change the typical-value
 trajectory but does not exercise the simulator across the full IIV range

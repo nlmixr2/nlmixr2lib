@@ -80,10 +80,10 @@ reproduced in the validation vignette.
 ## Source trace
 
 Every `ini()` entry carries an in-file comment naming its source. The
-two on-disk sources are the Supporting Information S1 (Methods S1
-equations, Table S1 parameters) and the Supporting Information S2
-archive, which ships the executable model as MATLAB (`ADAMTS13_Model.m`,
-a translation of the original J2 implementation) plus a driver script
+two sources are the Supporting Information S1 (Methods S1 equations,
+Table S1 parameters) and the Supporting Information S2 archive, which
+ships the executable model as MATLAB (`ADAMTS13_Model.m`, a translation
+of the original J2 implementation) plus a driver script
 (`Run_ADAMTS13_model.m`).
 
 ### Structure
@@ -837,11 +837,11 @@ far smaller than the uncertainty in comparing a single typical-value
 simulation against a trial mean. Peak activity is dominated by the dose
 and the central volume, and is nearly insensitive to intercompartmental
 clearance; the trough is similarly insensitive (about 6.2% versus 6.4%
-of normal). Nothing on disk discriminates the two. This file uses the
-Data S2 value because Data S2 is the executable artefact that generated
-the published figures, not because the data prefer it, and the ten-fold
-discrepancy is flagged in the Errata as an unresolved inconsistency
-worth raising with the authors.
+of normal). Nothing in the available sources discriminates the two. This
+file uses the Data S2 value because Data S2 is the executable artefact
+that generated the published figures, not because the data prefer it,
+and the ten-fold discrepancy is flagged in the Errata as an unresolved
+inconsistency worth raising with the authors.
 
 ## Validation 6 - active VWF is under 3% of total VWF
 
@@ -1307,11 +1307,11 @@ was seen.
   is used, on the grounds that Data S2 is the executable artefact that
   produced the published figures. **This is a provenance argument, not
   an empirical one**: Validation 5 shows the two values cannot be told
-  apart from anything on disk, because peak and trough ADAMTS13 activity
-  are both nearly insensitive to intercompartmental clearance at these
-  dose intervals (peak 112.3% vs 110.8% of normal; trough 6.2% vs 6.4%),
-  and both sit within about 10% of the Phase 3 observed means. A reader
-  who needs the Table S1 value can set `lq <- log(0.456)`. This
+  apart from any available source, because peak and trough ADAMTS13
+  activity are both nearly insensitive to intercompartmental clearance
+  at these dose intervals (peak 112.3% vs 110.8% of normal; trough 6.2%
+  vs 6.4%), and both sit within about 10% of the Phase 3 observed means.
+  A reader who needs the Table S1 value can set `lq <- log(0.456)`. This
   discrepancy is worth raising with the authors.
 - **Clearance, CL = 0.0398 (Table S1) vs 0.0389 (Data S2 L77).** A digit
   transposition; the Data S2 value is used for consistency with the
@@ -1380,7 +1380,7 @@ was seen.
   gives murine PK parameters and a murine platelet synthesis rate, but
   the recombinant-VWF challenge dose that induces TTP in those
   experiments, and the murine baselines for VWF, TSP-1, hemoglobin and
-  endogenous ADAMTS13, are not reported in any on-disk source;
+  endogenous ADAMTS13, are not reported in any available source;
   `ADAMTS13_Model.m` hard-codes `flux_rVWF = 0` with the comment “only
   used for mouse”. The mouse arm was a Step 2 calibration stage rather
   than a reported final model.

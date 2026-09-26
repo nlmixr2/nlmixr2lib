@@ -3098,10 +3098,10 @@ Python script, which lists them explicitly).</li>
 <li>Supplemental Material 1-4 (Springer electronic supplementary
 material, <code>11419_2025_713_MOESM1_ESM.docx</code>): the Python
 simulation script, the estimation script, and the sensitivity-analysis
-table. Supplemental Material 1 is the <strong>authoritative on-disk
-source for every parameter value in this model</strong>, because the
-upstream Stamyr et al. 2015 paper that the structure and parameters come
-from is not open access.</li>
+table. Supplemental Material 1 is the <strong>authoritative source for
+every parameter value in this model</strong>, because the upstream
+Stamyr et al. 2015 paper that the structure and parameters come from is
+not open access.</li>
 </ul>
 <p>Harada et al. (2025) measured cyanide (CN) and thiocyanate (SCN) in
 the left and right cardiac blood of 29 fire-related deaths autopsied at
@@ -3277,7 +3277,7 @@ measurement.</p>
 </h2>
 <p>Every value below is from the Harada 2025 Supplemental Material 1
 Python script parameter block, which names each variable and gives its
-value and units in a trailing comment. That script is the only on-disk
+value and units in a trailing comment. That script is the only available
 source that states these numbers, since Stamyr et al. 2015 is
 paywalled.</p>
 <table class="table">
@@ -4753,14 +4753,15 @@ any published result. It is documented in a comment in the model file
 rather than carried in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>, which would leave a parameter
 that the model never uses.</li>
 <li>
-<strong>Stamyr et al. 2015 is not on disk.</strong> It is not open
-access. Every parameter value used here comes from the Harada 2025
-Supplemental Material 1 script, which lists each one explicitly with a
-name, a value and a unit comment, so no value was inferred, substituted
-from a class-typical default, or taken from any other paper. What cannot
-be independently verified is whether Harada et al. transcribed Stamyr’s
-values correctly; the excellent reproduction of Table 2 and Figure 3
-confirms internal consistency but not fidelity to Stamyr.</li>
+<strong>Stamyr et al. 2015 was not available when this model was
+built.</strong> It is not open access. Every parameter value used here
+comes from the Harada 2025 Supplemental Material 1 script, which lists
+each one explicitly with a name, a value and a unit comment, so no value
+was inferred, substituted from a class-typical default, or taken from
+any other paper. What cannot be independently verified is whether Harada
+et al. transcribed Stamyr’s values correctly; the excellent reproduction
+of Table 2 and Figure 3 confirms internal consistency but not fidelity
+to Stamyr.</li>
 <li>
 <strong>Every parameter is <code>fixed()</code>.</strong> Nothing in
 this paper is estimated. There is no IIV and no residual error, because

@@ -3589,12 +3589,10 @@ published Monolix fit handled the Simeoni <code>lambda1</code> parameter
 the parameter set, suggesting it is poorly identified), (b) an
 unreported normalisation of the cell-count state during fitting (e.g., R
 in millions instead of raw cells, which would re-scale the growth-kill
-balance), or (c) the modified-Simeoni equation rendered in the text
-extracted from the PDF contains an OCR
-<code>&lt;!-- formula-not-decoded --&gt;</code> placeholder for the
-denominator exponent stack; the packaged form follows the original
-Simeoni 2004 equation (4) `dR/dt = lambda0<em>R / (1 +
-(lambda0</em>R/lambda1)<sup>psi)</sup>(1/psi)</p>
+balance), or (c) the denominator exponent stack of the modified-Simeoni
+equation does not survive plain-text extraction of the PDF; the packaged
+form follows the original Simeoni 2004 equation (4) `dR/dt =
+lambda0<em>R / (1 + (lambda0</em>R/lambda1)<sup>psi)</sup>(1/psi)</p>
 <ul>
 <li>kd<em>deltaC3</em>R<code>which matches the PDF text as best it could be reconstructed. A downstream user wanting to match Figure 6B exactly should consider rescaling either</code>lambda1`
 (the 62 % RSE parameter) or the death rate, with the change documented
@@ -3616,13 +3614,13 @@ output keeps the paper-meaningful name.</p></li>
 <h2 id="errata">Errata<a class="anchor" aria-label="anchor" href="#errata"></a>
 </h2>
 <ul>
-<li><p>The text extracted from the Ande 2018 PDF rendered the four
-Simeoni growth equations and the modified-Simeoni cell-count equation as
-<code>&lt;!-- formula-not-decoded --&gt;</code> placeholders; the
-equation forms used in the packaged model were reconstructed from the
-surrounding prose and Simeoni 2004 (the cited source). The PAC PK ODEs
-(Eqs 12 and 13) and the caspase-3 transit chain Eqs 14 through 18 ARE
-decoded in the extracted text and were transcribed directly.</p></li>
+<li><p>The four Simeoni growth equations and the modified-Simeoni
+cell-count equation do not survive plain-text extraction of the Ande
+2018 PDF; the equation forms used in the packaged model were
+reconstructed from the surrounding prose and Simeoni 2004 (the cited
+source). The PAC PK ODEs (Eqs 12 and 13) and the caspase-3 transit chain
+Eqs 14 through 18 DO survive text extraction and were transcribed
+directly.</p></li>
 <li><p>Ande 2018 Table 1 reports Hill IC50 / Imax / g
 concentration-response curves for each agent individually (PAC IC50 =
 151 nM, EVE IC50 = 3.96 nM, DAS IC50 = 58.5 nM). These are part of the

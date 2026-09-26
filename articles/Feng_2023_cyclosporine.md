@@ -77,7 +77,7 @@ mod
 #>         "constant in Eq. 8 is not the 27.0 % median printed in Table 1 for",
 #>         "the full 251-patient cohort; Eq. 8 was fitted on the 176-patient",
 #>         "training set, whose demographics are in the online supplemental",
-#>         "table S3 (not on disk). The exponent is negative: lower haematocrit",
+#>         "table S3 (not available when this model was built). The exponent is negative: lower haematocrit",
 #>         "leaves less red-cell mass for this highly lipophilic,",
 #>         "erythrocyte-partitioned drug to bind, increasing distribution into",
 #>         "fat and hence the apparent volume (Feng 2023 Discussion)."
@@ -316,7 +316,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55ef1c4af7a8>
+#> <environment: 0x5555f0ca60e0>
 ```
 
 ## Population
@@ -1078,8 +1078,8 @@ concentration.
 - **Haematocrit reference is 28.8 %, not the 27.0 % median of Table 1.**
   Eq. 8 normalises by 28.8. Table 1 summarises all 251 patients while
   Eq. 8 was fitted on the 176-patient training set, whose separate
-  demographics are in online supplemental table S3. That supplement is
-  not on disk; the value is taken from Eq. 8 as printed and no
+  demographics are in online supplemental table S3. That supplement was
+  not available; the value is taken from Eq. 8 as printed and no
   substitute was needed.
 - **Cohort covariate distributions are approximations.** Body weight and
   haematocrit are drawn independently from truncated log-normals matched
@@ -1098,7 +1098,7 @@ concentration.
   `NR1I3` variants of Table 2) are recorded in the model file’s
   `covariatesDataExcluded` metadata. The paper found none of them
   significant; no point estimates exist to encode.
-- **Supplemental tables S1-S5 are not on disk.** They hold the
+- **Supplemental tables S1-S5 were not available.** They hold the
   data-collection list (S1), the error-model comparison (S2), training /
   validation demographics (S3), the stepwise covariate-screening log
   (S4) and a comparison with previously published CsA models (S5). None

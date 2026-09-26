@@ -49,7 +49,7 @@ into rxode2 `d/dt(<state>)` syntax.
 - Adult cohort, 70 kg reference body weight (Forward_APAP1.in fixes BW =
   70 kg). Single 1000 mg oral paracetamol dose (Scenario 4).
 - The publication’s underlying dataset (per its Methods; the publication
-  was not on disk when this model was built) is a pooled Bayesian
+  was not available when this model was built) is a pooled Bayesian
   population fit across multiple published human paracetamol PK studies.
   Per-subject demographics are not exposed by the bundle.
 - The bundle ships a `Real_APAP_data.csv` reference dataset that is a
@@ -129,7 +129,7 @@ physiological constants from the bundle that were **not** estimated.
 
 The DDMORE bundle ships a typical-value simulation trajectory
 (`Output_real_APAP.txt`) with concentrations at the canonical 0.5-12 hr
-observation grid for Scenario 4 (1000 mg PO, 70 kg). The F.2
+observation grid for Scenario 4 (1000 mg PO, 70 kg). The
 self-consistency check re-simulates this trajectory with rxode2 and
 confirms the rxode2 implementation matches the MCSim implementation
 within numerical-solver tolerance.
@@ -252,7 +252,7 @@ ggplot(plot_long, aes(time, Cplasma, colour = source, shape = source)) +
   scale_colour_manual(values = c(bundle = "grey40", nlmixr = "steelblue")) +
   labs(x = "Time (hr)", y = "Plasma concentration (mcg/L)",
        colour = "Source", shape = "Source",
-       title = "F.2 self-consistency: bundle MCSim vs nlmixr2/rxode2 typical-value re-simulation",
+       title = "Self-consistency: bundle MCSim vs nlmixr2/rxode2 typical-value re-simulation",
        caption = "Reproduces Output_real_APAP.txt at canonical observation grid for Scenario 4 (1000 mg PO, 70 kg adult).")
 ```
 
@@ -422,10 +422,10 @@ the verbatim PBPK extraction:
 
 ## Assumptions and deviations / Errata
 
-1.  **No publication on disk.** The Zurlinden & Reisfeld 2016
-    publication (<doi:10.1007/s13318-015-0253-x>) was not on disk at
-    extraction time. Parameter values, structural-model equations, and
-    population demographics could not be cross-checked against the
+1.  **Publication not available.** The Zurlinden & Reisfeld 2016
+    publication (<doi:10.1007/s13318-015-0253-x>) was not available when
+    this model was built. Parameter values, structural-model equations,
+    and population demographics could not be cross-checked against the
     publication; everything is sourced from the DDMORE bundle. A more
     rigorous validation would compare against the publication’s Table of
     posterior summaries and Methods section.

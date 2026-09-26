@@ -863,12 +863,11 @@ across an eightfold change in `Dmet` (11.3 / 10.3 / 10.0) comes out as
 
 **Race differences are parameterised, not tabulated.** Supplement
 section 5 scales the adipose volume by a factor Phi taken from Carpenter
-2013, which is not on disk and could not be retrieved. Rather than
-invent per-race body-fat fractions, the model exposes `BODYFAT_PCT`
-directly, so a user supplying a measured or published body-fat
-percentage recovers the paper’s Figure 5 mechanism. At the reference
-value for the subject’s sex the adipose volume is exactly the tabulated
-one.
+2013, which could not be retrieved. Rather than invent per-race body-fat
+fractions, the model exposes `BODYFAT_PCT` directly, so a user supplying
+a measured or published body-fat percentage recovers the paper’s Figure
+5 mechanism. At the reference value for the subject’s sex the adipose
+volume is exactly the tabulated one.
 
 **No variability.** The source reports neither between-subject
 variability nor a residual-error model, so neither is encoded and none

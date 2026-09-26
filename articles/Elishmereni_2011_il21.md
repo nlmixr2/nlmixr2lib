@@ -36,8 +36,8 @@ Biology). Per the deposit’s `Model_Accommodations.txt` and RDF metadata
 Monolix re-fit removed one compartment from the published model and
 re-estimated all parameters by a mixed-effects approach (the original
 publication used step-wise least-squares fitting). The original
-publication PDF was not on disk during this extraction; parameter values
-and equations were taken verbatim from the bundle’s
+publication PDF was not available when this model was built; parameter
+values and equations were taken verbatim from the bundle’s
 `IL_21_PK_model.mdl`.
 
 ## Population
@@ -267,9 +267,9 @@ ggplot(trace, aes(time, amount + 1e-6, colour = compartment)) +
 stopifnot(all(trace$amount >= -1e-9))
 ```
 
-## F.2 self-consistency check (PKNCA)
+## Self-consistency check (PKNCA)
 
-The Elishmereni 2011 publication is not on disk, so a side-by-side
+The Elishmereni 2011 publication was not available, so a side-by-side
 comparison against published Cmax / AUC / half-life is not performed.
 Instead, this section runs PKNCA on the simulated cohort and records the
 typical-value NCA summaries by route as a self-consistency record.
@@ -333,15 +333,14 @@ self-consistency). {.table style="width:100%;"}
   `model-implementation-conforms-to-literature-controlled = "No"` and
   `model-origin-of-code-in-literature-controlled = "No"`, so that
   divergence is the deposit’s intent rather than a transcription error.
-- **Publication PDF not on disk.** The Elishmereni 2011 PDF was not
-  available during the extraction. No external cross-check against the
-  published parameter tables (Table 1 / supplementary material) was
+- **Publication PDF not available.** The Elishmereni 2011 PDF was not
+  available when this model was built. No external cross-check against
+  the published parameter tables (Table 1 / supplementary material) was
   performed; an external comparison would only test conformance to the
   Monolix re-fit values reported in the DDMORE bundle, since those are
-  what the bundle actually carries. Any future re-extraction with the
-  publication on disk should record the original-publication values in
-  the model file’s `notes` and document any irreconcilable differences
-  here.
+  what the bundle actually carries. Any future revision with access to
+  the publication should record the original-publication values in the
+  model file’s `notes` and document any irreconcilable differences here.
 - **No `Output_real_*.lst` shipped.** The DDMORE bundle for
   DDMODEL00000230 contains only the .mdl, the rendered PharmML .xml, the
   RDF metadata, and `Model_Accommodations.txt`; no NONMEM listing, no
@@ -378,4 +377,4 @@ self-consistency). {.table style="width:100%;"}
   route,
   3.  a per-compartment trace audit, and (d) a PKNCA self-consistency
       table. There is no published Cmax / AUC / half-life table to
-      compare against without the publication on disk.
+      compare against without the publication.

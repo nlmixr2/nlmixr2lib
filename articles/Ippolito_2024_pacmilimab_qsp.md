@@ -528,8 +528,8 @@ describing and does reproduce it.
   value of 0.
 - **`kon_CD80_CD80` and `koff_CD80_CD80`** are used by the inherited
   CD80/CD28/CTLA-4 network but are absent from Ippolito’s Table S2. They
-  are taken from the on-disk upstream Wang 2022 Table S2, the structural
-  source this paper cites for the whole checkpoint module. No value was
+  are taken from the upstream Wang 2022 Table S2, the structural source
+  this paper cites for the whole checkpoint module. No value was
   invented.
 - **State count.** The paper reports 218 ODEs and 45 algebraic rules;
   this implementation has 240 ODEs. The difference is in how widely Eqs

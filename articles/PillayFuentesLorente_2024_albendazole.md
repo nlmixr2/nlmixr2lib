@@ -300,7 +300,7 @@ Results 3.5 states: “The median of simulated AUC from 0 to 48 h was
 slightly lower in Tanzania than Cote d’Ivoire, which is in line with the
 higher clearance seen in Tanzania.” That is the one quantitative claim
 attached to the model-based simulations, so it is a direct validation
-target. ESM Fig. S9 is not on disk, so only the direction and rough
+target. ESM Fig. S9 was not available, so only the direction and rough
 magnitude can be checked.
 
 The country contrast is simulated with **common random numbers**: the
@@ -895,8 +895,8 @@ Over the truncated 0-48 h window the net effect is a roughly 10%
 Ivorian value, the formation clearance rises 1.75-fold and the sulfone
 clearance rises 1.46-fold: `0.92 * 1.75 / 1.46 = 1.10`).
 
-ESM Fig. S9 is not on disk, so it cannot be checked directly. Either the
-Results 3.5 sentence describes only the sulfoxide panel, or the
+ESM Fig. S9 was not available, so it cannot be checked directly. Either
+the Results 3.5 sentence describes only the sulfoxide panel, or the
 published simulation differs from the tabulated final model in a way
 that is not recoverable from the article text. Nothing was tuned to
 remove the discrepancy.
@@ -952,11 +952,11 @@ remove the discrepancy.
   count, but the analysis is explicitly exploratory: it reports grouped
   scatter plots with trend lines and no fitted model, no parameter
   estimates and no equation. There is nothing to encode.
-- **Supplement not on disk.** ESM Figs. S1-S9 and Table S1 were not
-  available. They contain goodness-of-fit plots, VPCs, the
-  AUC-by-country figure and the sensitivity-analysis parameter table -
-  none of which are needed for the final model, whose parameters are all
-  in Table 2.
+- **Supplement not available.** ESM Figs. S1-S9 and Table S1 were not
+  available when this model was built. They contain goodness-of-fit
+  plots, VPCs, the AUC-by-country figure and the sensitivity-analysis
+  parameter table - none of which are needed for the final model, whose
+  parameters are all in Table 2.
 - **Virtual cohort demographics.** No covariate other than country
   enters the model, so the virtual cohorts carry only the country
   indicator; the age, weight and sex distributions of Table 1 are not

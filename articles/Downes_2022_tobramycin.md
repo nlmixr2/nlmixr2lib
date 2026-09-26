@@ -930,15 +930,13 @@ sim_q8h |>
   0.081, as the Wald interval from the tabulated 7.55% RSE confirms
   (`6.69 * (1 - 1.96 * 0.0755) / 70 = 0.0814`). No model parameter is
   affected.
-- **The supplement is not on disk.** Downes 2022 cites a single
-  supplemental PDF (`aac.02377-21-s0001.pdf`) holding the final NONMEM
-  control stream, eta shrinkages, the covariate-selection table S1, the
-  VPC figures S1, and the log-linear equations used for the paper’s “TDM
-  approach” column. The article is a hybrid open-access record: the main
-  text is freely available and on disk, but every supplement route is
-  licence-gated (EuropePMC returns “not open access”, the PMC file
-  endpoint returns a proof-of-work challenge, and the publisher’s own
-  endpoint is behind Cloudflare). No parameter value is missing as a
+- **The supplement was not available when this model was built.** Downes
+  2022 cites a single supplemental PDF (`aac.02377-21-s0001.pdf`)
+  holding the final NONMEM control stream, eta shrinkages, the
+  covariate-selection table S1, the VPC figures S1, and the log-linear
+  equations used for the paper’s “TDM approach” column. The article is a
+  hybrid open-access record: the main text is freely available, but the
+  supplement is licence-gated. No parameter value is missing as a
   result - every final estimate, the complete parameterization, and all
   five target definitions are printed in the main text’s Table 2, Table
   3 and their footnotes, and all of them are traced above. The one thing

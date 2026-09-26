@@ -3778,9 +3778,9 @@ single typical value, whereas the paper’s framework carries the upstream
 popPK between-subject variability in clearance. Because
 <code>auc = DOSE / CLI</code>, clearance variability widens the exposure
 distribution and raises the tail incidence. The upstream popPK (Houk
-2009) is not on disk, so its IIV is not simulated here; the sensitivity
-below shows the gap closes at an entirely ordinary sunitinib clearance
-CV.</p>
+2009) was not available when this model was built, so its IIV is not
+simulated here; the sensitivity below shows the gap closes at an
+entirely ordinary sunitinib clearance CV.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">peak_at_cl_cv</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cl_cv</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">s_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">cl_cv</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>

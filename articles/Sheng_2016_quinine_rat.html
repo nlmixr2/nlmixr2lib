@@ -3607,11 +3607,10 @@ bootstrap CIs (1,000 bootstrap datasets).</caption>
 likelihood is a mixture of two generalized-Poisson distributions, the
 second right-truncated at the observed maximum lick number of 61. rxode2
 / nlmixr2 do not natively express this composite likelihood within the
-<code>ini()</code> / <code>model()</code> syntax in this batch, so the
-packaged model declares two parallel <code>~ pois(...)</code>
-observation branches with means <code>mu_low</code> and
-<code>mu_high</code> – the same pattern used by
-<code>inst/modeldb/ddmore/Plan_2012_pain.R</code> (truncated
+<code>ini()</code> / <code>model()</code> syntax, so the packaged model
+declares two parallel <code>~ pois(...)</code> observation branches with
+means <code>mu_low</code> and <code>mu_high</code> – the same pattern
+used by <code>inst/modeldb/ddmore/Plan_2012_pain.R</code> (truncated
 Markov-inflated Poisson -&gt; plain Poisson on lambda) and by
 <code>inst/modeldb/ddmore/Schoemaker_2018_levetiracetam.R</code>
 (negative-binomial -&gt; Poisson per mixture branch). The mixture
@@ -3642,11 +3641,11 @@ Sheng 2016 Methods states that IIV on every structural parameter except
 the parameters whose typical value is negative (<code>E0</code>,
 <code>d2</code>) or bounded in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>−</mi><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[-1, 1]</annotation></semantics></math>
-(<code>d1</code>, <code>d2</code>). The source NONMEM control stream is
-not on disk for unambiguous encoding. The packaged model uses the
-strict-NONMEM idiom <code>P_i = TVP * exp(eta_P)</code> for every IIV
-including the negative typical values
-(<code>e0_i = e0 * exp(etae0)</code>,
+(<code>d1</code>, <code>d2</code>). The source NONMEM control stream,
+which would settle the encoding unambiguously, was not available when
+this model was built. The packaged model uses the strict-NONMEM idiom
+<code>P_i = TVP * exp(eta_P)</code> for every IIV including the negative
+typical values (<code>e0_i = e0 * exp(etae0)</code>,
 <code>d2_i = d2 * exp(etad2)</code>) – this preserves the sign through
 the multiplicative scaling and matches the
 multiplicative-on-negative-typical-value precedent established in

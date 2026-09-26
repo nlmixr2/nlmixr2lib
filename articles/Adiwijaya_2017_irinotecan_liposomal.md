@@ -1029,7 +1029,7 @@ stopifnot(usn38_high > usn38_low)
   actual-versus-protocol dose issue: the Q2W arm is the 5-FU/LV
   combination arm, where dose reductions are more frequent. No parameter
   was adjusted to close the gap.
-- **Infusion duration is not stated in any on-disk source**, so doses
+- **Infusion duration is not stated in any available source**, so doses
   are given as an instantaneous input to the central compartment. The
   paper’s Table S1 times samples “post drug infusion” but never gives
   its length. The approximation is immaterial here: with a first-phase

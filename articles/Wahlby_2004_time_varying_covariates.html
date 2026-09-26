@@ -3140,7 +3140,7 @@ pefloxacin; Walsh 2004 voriconazole; Friberg 2002 paclitaxel
 myelosuppression). The Friberg 2002 paclitaxel PK / myelosuppression
 model is already packaged separately as
 <code>modellib("Friberg_2002_paclitaxel")</code>; the other three
-primary papers are queued for separate extraction.</p>
+primary papers are planned as separate model entries.</p>
 </div>
 <div class="section level2">
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
@@ -3484,8 +3484,8 @@ because the BCOV / DCOV decomposition was not supported by the data
 (Results section).</li>
 <li>The cohort demographic detail (age, weight, sex, race) is not
 reported in Wahlby 2004; the underlying Rosario 1998 popPK paper has the
-data and should be queued for separate extraction if a full
-demographic-aware virtual cohort is required.</li>
+data and should be encoded separately if a full demographic-aware
+virtual cohort is required.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -3497,9 +3497,8 @@ while retaining covariate effects of WT, CRCL, and BIL on V. This entry
 interprets the dash as “unchanged from the Reference Model column”
 (theta_V = 61 L) and encodes V with the same exponential covariate form.
 The underlying Karlsson 1993 paper (the upstream popPK source) is the
-authoritative reference for the V parameterisation; it was not on disk
-when this model was built and has been queued for separate
-extraction.</li>
+authoritative reference for the V parameterisation; it was not available
+when this model was built and is planned as a separate model entry.</li>
 <li>The “weight up to median WT” qualifier (Methods) is encoded as
 <code>min(WT_BASE, 65)</code> in the CL equation, plateauing the WT
 effect above 65 kg. This interpretation may differ from the exact
@@ -3575,7 +3574,7 @@ Eq 3.</li>
 </div>
 </div>
 <div class="section level2">
-<h2 id="upstream-paper-queue">Upstream-paper queue<a class="anchor" aria-label="anchor" href="#upstream-paper-queue"></a>
+<h2 id="upstream-papers-not-yet-encoded">Upstream papers not yet encoded<a class="anchor" aria-label="anchor" href="#upstream-papers-not-yet-encoded"></a>
 </h2>
 <p>Three of the four primary popPK / PD models cited by Wahlby 2004 are
 not yet in nlmixr2lib and should be extracted separately to recover the

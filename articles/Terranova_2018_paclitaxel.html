@@ -3169,8 +3169,8 @@ have tumors implanted prior to t = 0 (initial proliferating tumor mass
 <code>Vu1_initial = 0.0023 g</code>). Mouse-specific demographic detail
 (strain, sex, individual weights, xenograft cell line) is described in
 the linked publication but is not reproduced in the bundle. The
-publication PDF was paywalled and not available on disk for this
-extraction, so the model’s <code>population</code> metadata records the
+publication PDF was paywalled and not available when this model was
+built, so the model’s <code>population</code> metadata records the
 subject count from the bundle, the species (mouse, xenograft) from the
 RDF <code>model-has-description</code> field, and the typical body
 weight and tumor mass from the <code>.ctl</code> <code>$THETA</code>
@@ -3471,16 +3471,15 @@ catabolic-loss cap.</li>
 <div class="section level2">
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
-<p>The Terranova 2018 publication was paywalled and <strong>not on disk
-when this model was built</strong> (Elsevier J Theor Biol full-text
-access at extraction time was redirect-only via
-<code>linkinghub.elsevier.com</code>, and no PDF or PMC mirror was
-available locally), so the standard publication-figure replication and
+<p>The Terranova 2018 publication was paywalled and <strong>not
+available when this model was built</strong> (the J Theor Biol full text
+is behind an Elsevier subscription and no PMC copy exists for this
+journal), so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The model itself is
 preclinical, mouse-specific, and DEB-mechanistic, so PKNCA on paclitaxel
 central concentration is not the natural validation either.</p>
-<p>The validation in this vignette therefore follows the F.2 / F.3
-substitutes in the package’s validation checklist:</p>
+<p>The validation in this vignette therefore uses the mechanistic-sanity
+and self-consistency checks that stand in for those:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Mechanistic sanity (constant-state hold).</strong> With
@@ -3496,8 +3495,8 @@ Re-simulate the treated and control event tables from
 <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> (typical values, no IIV, no residual
 error) and confirm the simulated trajectory agrees with the per-row DV
 values in the bundle CSV to within numerical precision. Differences &gt;
-5% at any time point are investigated, not tuned (per the F.2
-checklist).</li>
+5% at any time point are investigated, not tuned, as the
+self-consistency check requires.</li>
 <li>
 <strong>Drug-effect direction check.</strong> The treated mouse’s
 tumor must grow more slowly than the control’s, and the treated mouse’s
@@ -4223,14 +4222,12 @@ simulated dataset) – only an <code>Output_simulated_*.pdf</code>
 graphical rendering. The packaged model therefore takes its parameter
 values from the <code>.ctl</code> <code>$THETA</code> block, which under
 <code>$SIM ... ONLYSIM</code> carries the simulation truth rather than
-refitted estimates. The “verify final estimates from the
-<code>.lst</code>” rule in the verification checklist is moot for this
-bundle.</p></li>
+refitted estimates. The usual step of verifying final estimates against
+the <code>.lst</code> is moot for this bundle.</p></li>
 <li><p><strong>Linked publication is paywalled.</strong> The Terranova
-2018 paper (J Theor Biol 450:1-14, <a href="doi:10.1016/j.jtbi.2018.04.012" class="uri">doi:10.1016/j.jtbi.2018.04.012</a>) was not on disk at
-extraction time. Elsevier’s full-text URL redirects via
-<code>linkinghub.elsevier.com</code> and was not accessible without a
-subscription, and no PMC mirror exists for this journal. The
+2018 paper (J Theor Biol 450:1-14, <a href="doi:10.1016/j.jtbi.2018.04.012" class="uri">doi:10.1016/j.jtbi.2018.04.012</a>) was not available when
+this model was built: the full text is not accessible without an
+Elsevier subscription, and no PMC copy exists for this journal. The
 <code>.ctl</code> parameter values were therefore not cross-checked
 against published tables. The packaged <code>population</code> metadata
 records only what the bundle and RDF metadata expose (n_subjects = 2 in

@@ -113,8 +113,8 @@ below collects the whole model in one place.
 | `gfr_specific`, `gfr` | Equation 1, page 1581 |
 
 **Equation 1 is an embedded image in the published PDF** and is dropped
-by every text converter (it appears as `formula-not-decoded` in the
-extracted text and is absent from `pdftotext`). It was recovered from
+by every text converter (it does not survive plain-text extraction of
+the PDF and is absent from `pdftotext` output). It was recovered from
 the publisher’s equation graphic (`40262_2016_422_Article_Equ1.gif`,
 retrieved from the EuropePMC `supplementaryFiles` endpoint for
 PMC5107207) and confirmed by rendering page 8 of the PDF at 400 dpi. As

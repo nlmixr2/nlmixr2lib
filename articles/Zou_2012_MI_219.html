@@ -3214,8 +3214,8 @@ mg</td>
 <tr class="odd">
 <td>Per-species PTV and exponent b for joint NONMEM fit</td>
 <td>–</td>
-<td>Zou 2012 Table S1 of supplement (not on disk for this
-extraction)</td>
+<td>Zou 2012 Table S1 of supplement (not available when this model was
+built)</td>
 </tr>
 </tbody>
 </table>
@@ -3543,9 +3543,10 @@ derivation for the algebraic identities.</p>
 NONMEM-derived predicted human PK as a typical-value projection; the
 per-species Omega (IIV) and Sigma (residual variability) estimates from
 the joint NONMEM fit are reported only in Zou 2012 Table S1 of the
-supplement, which is not on disk for this extraction. The packaged model
-is a structural typical-value forward prediction. Downstream users
-wanting between-subject variability must add their own IIV.</li>
+supplement, which was not available when this model was built. The
+packaged model is a structural typical-value forward prediction.
+Downstream users wanting between-subject variability must add their own
+IIV.</li>
 <li>
 <strong>Predicted human, not fit human.</strong> Zou 2012 did not
 dose human subjects. The encoded parameters are the projection from a
@@ -3566,9 +3567,10 @@ covariate.</strong> Zou 2012 reports CL and Vdss in per-kg units (Table
 encodes the structural parameters at the 70 kg projection target. The
 body-weight exponent <code>b</code> from the joint NONMEM fit
 <code>P = PTV * WT^b</code> is reported per parameter in Zou 2012 Table
-S1 of the supplement (not on disk for this extraction); no body-weight
-covariate is therefore exposed in <code>model()</code>. Simulations at
-body weights other than 70 kg require external scaling.</li>
+S1 of the supplement (not available when this model was built); no
+body-weight covariate is therefore exposed in <code>model()</code>.
+Simulations at body weights other than 70 kg require external
+scaling.</li>
 <li>
 <strong>Closed-form derivation of micro-parameters.</strong> The
 paper reports the predicted human two-compartment model in macroconstant

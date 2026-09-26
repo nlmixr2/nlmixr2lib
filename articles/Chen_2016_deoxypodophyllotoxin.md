@@ -1347,8 +1347,8 @@ cat(sprintf(
   Figure 6 therefore cannot be reproduced from the packaged models;
   everything else in the paper can.
 - **Rat in-vivo data are not in this paper.** They are cited from Liu et
-  al. 2016, which is not on disk, so the rat `population` metadata is
-  sparser than the other species’.
+  al. 2016, which was not available when this model was built, so the
+  rat `population` metadata is sparser than the other species’.
 
 ### Structural interpretations
 

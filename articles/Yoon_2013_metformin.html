@@ -3530,14 +3530,14 @@ a model defect – do not tune parameters to close the gap.</p>
 <strong>Reference weight for V/F.</strong> The paper reports the
 linear body-weight coefficient theta_BW = 0.0183 (Table III) but the
 equation section of the Results paragraph following Table III is
-rendered as an image (“formula-not-decoded” in the extracted markdown)
-and does not print the reference weight explicitly. This vignette (and
-the packaged model) uses a reference weight of 70 kg per the package’s
-“sensible standard when unspecified” convention. Alternative reasonable
-choices are the cohort mean 67.74 kg or the cohort median (not reported
-separately); switching to 67.74 kg shifts the typical V/F point estimate
-by (67.74 - 70) * 0.0183 * 112 = -4.6 L (~4%), which is well within the
-reported RSE of theta_BW (42.8%).</li>
+rendered as an image (it does not survive plain-text extraction of the
+PDF) and does not print the reference weight explicitly. This vignette
+(and the packaged model) uses a reference weight of 70 kg per the
+package’s “sensible standard when unspecified” convention. Alternative
+reasonable choices are the cohort mean 67.74 kg or the cohort median
+(not reported separately); switching to 67.74 kg shifts the typical V/F
+point estimate by (67.74 - 70) * 0.0183 * 112 = -4.6 L (~4%), which is
+well within the reported RSE of theta_BW (42.8%).</li>
 <li>
 <strong>Model equation form (multiplicative fractional
 shifts).</strong> The Results paragraph following Table III uses the

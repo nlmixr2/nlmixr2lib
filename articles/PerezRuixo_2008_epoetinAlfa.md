@@ -378,12 +378,13 @@ cat("relative reticulocyte residence-time inflation: ", 1 / (sig0 / 1.0), "x\n",
 - **PK residual error not in this paper.** The rHuEPO concentration
   residual error (transform-both-sides additive on log scale, Methods
   Statistical Model) was not reported in Perez-Ruixo 2008; its value
-  lives in Olsson-Gisleskog 2007 (the upstream popPK paper, not on disk
-  for this extraction). The model file encodes `propSd <- fixed(0)` per
-  the extraction policy (“If a needed value is unreported, encode
-  fixed(0) + an erratum rather than a class-typical placeholder”). For
-  simulation this means the PK observable `Cc` is delivered without
-  residual noise; the simulator is faithful to the published median PK.
+  lives in Olsson-Gisleskog 2007 (the upstream popPK paper, which was
+  not available when this model was built). The model file encodes
+  `propSd <- fixed(0)` per the library’s policy (“If a needed value is
+  unreported, encode fixed(0) + an erratum rather than a class-typical
+  placeholder”). For simulation this means the PK observable `Cc` is
+  delivered without residual noise; the simulator is faithful to the
+  published median PK.
 - **PD residual error interpretation.** Equation 27 is
   `R_obs = R_pred + epsilon` with `epsilon ~ N(0, sigma^2)` (additive
   normal form) and Table II Model D reports `sigma = 63.1 %`. The
@@ -425,7 +426,7 @@ cat("relative reticulocyte residence-time inflation: ", 1 / (sig0 / 1.0), "x\n",
   mean (used here) and the cohort-empirical posterior mean (which the
   paper’s POSTHOC PK predictions used as per-subject inputs to the PD
   layer). Parameter values were not tuned to close the gap per the
-  extraction policy.
+  library’s policy.
 - **Smax = 1 in the signal-transduction layer.** Perez-Ruixo 2008
   Methods state that the maximum signal effect Smax was not identifiable
   in the presence of the S0/SM ratio, so it is implicitly fixed at 1.

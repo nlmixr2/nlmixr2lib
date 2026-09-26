@@ -3100,9 +3100,9 @@ right column) with IIV on Baseline (18.2 %CV) and Ki,u (30.1 %CV); a
 sibling file Yoshida_2018_coproporphyrin_I_rifampin encodes the rifampin
 calibration with its own Ki,u, kdeg, and no IIV. The original fit used a
 Y. Chen et al. in-house PBPK model for GDC-0810 portal-vein
-concentrations (personal communication, not on disk and not in the
-nlmixr2lib registry), so downstream users must supply CP_GDC_UM
-externally.</li>
+concentrations (personal communication, not available when this model
+was built and not in the nlmixr2lib registry), so downstream users must
+supply CP_GDC_UM externally.</li>
 <li>Article: <a href="https://doi.org/10.1002/psp4.12315" class="external-link uri">https://doi.org/10.1002/psp4.12315</a>
 </li>
 </ul>
@@ -3349,8 +3349,8 @@ than the rifampin Ki,u (0.0203 umol/L) on an unbound basis, consistent
 with GDC-0810 being a more potent OATP1B inhibitor at equivalent unbound
 concentrations. This is <strong>not</strong> a reproduction of the
 original Yoshida 2018 fit – the original used a time-varying in-house
-PBPK GDC-0810 portal-vein profile that is not reproducible from on-disk
-sources.</p>
+PBPK GDC-0810 portal-vein profile that is not reproducible from the
+available sources.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fnh</span> <span class="op">&lt;-</span> <span class="fl">0.129</span></span>
 <span><span class="va">kiu</span> <span class="op">&lt;-</span> <span class="fl">0.00174</span></span>
@@ -3476,13 +3476,13 @@ be reproduced.</p>
 <strong>In-house GDC-0810 PBPK profile not reproducible.</strong>
 Yoshida 2018 used an unpublished Y. Chen et al. PBPK model for GDC-0810
 (cited as personal communication in the paper Methods) as the forcing
-function for <code>CP_GDC_UM</code>; that PBPK output is not on disk and
-no GDC-0810 PK model is currently registered in nlmixr2lib. <strong>Per
-the maintainers’ instruction for this extraction</strong>, the vignette
-intentionally does <strong>not</strong> approximate the GDC-0810 PK with
-an analytic surrogate. Users wishing to reproduce the original CPI
-time-course must supply their own portal-vein unbound GDC-0810
-profile.</li>
+function for <code>CP_GDC_UM</code>; that PBPK output is not available
+and no GDC-0810 PK model is currently registered in nlmixr2lib.
+<strong>Per the maintainers’ instruction for this extraction</strong>,
+the vignette intentionally does <strong>not</strong> approximate the
+GDC-0810 PK with an analytic surrogate. Users wishing to reproduce the
+original CPI time-course must supply their own portal-vein unbound
+GDC-0810 profile.</li>
 <li>
 <strong>fNH is FIXED at the rifampin-CPI estimate.</strong> Table 2
 fixes fNH at 12.9 % for the GDC-0810-CPI fit (the value estimated from

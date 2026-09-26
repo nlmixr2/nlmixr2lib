@@ -459,7 +459,7 @@ paper’s PTA simulations make clear are not what was used.
   by the maintainers to the divisively-centered form. The standing
   policy (“covariate equation absurd as printed -\> sensible
   centered/median-normalized interpretation”) was applied. No NONMEM
-  control stream is available on disk to disambiguate the literal vs.
+  control stream was available to disambiguate the literal vs.
   median-normalized parameterization, so the resolution depends on the
   only physically tenable reading.
 

@@ -76,8 +76,8 @@ Every `ini()` entry carries an in-file comment naming its source
 location in `inst/modeldb/specificDrugs/Yoon_2023_vancomycin.R`. The
 table below collects them for review. Equation numbers refer to the
 display equations of the published article, recovered from the MathML in
-the PubMed Central full-text XML; the PDF-derived markdown renders them
-as `formula-not-decoded`.
+the PubMed Central full-text XML; they do not survive plain-text
+extraction of the PDF.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

@@ -9,8 +9,8 @@
   inherited unchanged from the docetaxel arm of the Kloft et al. 2006
   cross-drug myelosuppression analysis (per the bundle’s NM-TRAN .mod
   \$PK / \$THETA `; ... according to Kloft et al., 2006` block; the
-  original Kloft 2006 publication is not on disk in this worktree).
-  DDMORE Foundation Model Repository: DDMODEL00000224.
+  original Kloft 2006 publication is not available when this model was
+  built). DDMORE Foundation Model Repository: DDMODEL00000224.
 - Description: Friberg-style semi-mechanistic myelosuppression PD model
   for docetaxel-induced neutropenia in adult cancer patients
   (DDMODEL00000224, Netterberg 2017 / Kloft 2006). The bundle’s NM-TRAN
@@ -37,7 +37,7 @@
   Chatelut E, Karlsson MO. *Population pharmacokinetic-pharmacodynamic
   model for neutropenia with patient subgroup identification: comparison
   across anticancer drugs.* (cited by name in the bundle’s `.mod`; full
-  citation not on disk).
+  citation not available).
 
 This is a **PD-only Friberg-style myelosuppression model** for
 docetaxel-induced neutropenia. Docetaxel pharmacokinetics enter as a
@@ -74,9 +74,10 @@ The bundle for `DDMODEL00000224` ships:
 The bundle does **not** ship an `Output_real_*.lst` (i.e., a refit on
 the original Kloft 2006 cohort data is not part of this DDMORE entry).
 Parameter values in the model file therefore inherit directly from the
-publication-fixed `$THETA` block. Neither Netterberg 2017 nor Kloft 2006
-PDF is on disk, so a side-by-side parameter-table comparison against the
-published values was not performed; see *Errata*.
+publication-fixed `$THETA` block. Neither the Netterberg 2017 nor the
+Kloft 2006 PDF was available when this model was built, so a
+side-by-side parameter-table comparison against the published values was
+not performed; see *Errata*.
 
 ## Population
 
@@ -91,11 +92,11 @@ time-to-different-neutropenic-grade).
 
 Detailed population demographic information (n_subjects, age, weight,
 sex, race) is not reproduced in the DDMORE bundle and the Netterberg
-2017 / Kloft 2006 publication PDFs are not on disk. The bundle’s
-`Simulated_myelosuppression_dailyANC.csv` represents a single virtual
-subject and is a regression-style smoke test, not a representative
-cohort. The same machine-readable metadata is available as
-`readModelDb("Netterberg_2017_docetaxel")$population`.
+2017 / Kloft 2006 publication PDFs were not available when this model
+was built. The bundle’s `Simulated_myelosuppression_dailyANC.csv`
+represents a single virtual subject and is a regression-style smoke
+test, not a representative cohort. The same machine-readable metadata is
+available as `readModelDb("Netterberg_2017_docetaxel")$population`.
 
 ## Source trace
 
@@ -121,7 +122,7 @@ significant figures.
 | `e_sexf_ba` | -0.121451 | `.mod` \$THETA(11) “BASEX”; `.lst` TH11 = -0.121 |
 | `addSd` | 0.424093 | `.mod` \$THETA(5) "res err"; \`.lst\` TH 5 = 0.424; with \`\$SIGMA 1 FIX`and $ERROR`Y = LOG(F) + W*EPS(1)`, this is the SD on log-scale (lnorm) | |`etalba`| 0.0639703 |`.mod`$OMEGA(1,1);`.lst`ETA1 = 6.40e-2 | |`etalmt`| 0.0191785 |`.mod`$OMEGA(2,2);`.lst`ETA2 = 1.92e-2 | |`etalsl`| 0.128412 |`.mod`$OMEGA(3,3);`.lst`ETA3 = 1.28e-1 | | Friberg ODE chain (5 cmts: circ + precursor1..4) | n/a |`.mod`$DES DADT(1)..DADT(5) | | Initial conditions A(i)(0) = BA, i=1..5 | n/a |`.mod`$PK F1=BA..F5=BA combined with TIME=0 AMT=1 records on CMT=1..5 in the bundle CSV | | Linear drug effect`(1 - SL* CP_MGL)`| n/a |`.mod`$DES`DRUG = SL*CP`and`DADT(2) = K*A(2)*(1-DRUG)*(BA/A(1))\*\*PO - K*A(2)`| | Composite covariate factor BACOV | n/a |`.mod`$PK`BACOV = (1 + BASEX)* (1 + BAPERF) \* (1 + BAPC) \* (1 + BAAAG)\` |
 
-## F.2 self-consistency: bundle simulated dataset reproduction
+## Self-consistency: bundle simulated dataset reproduction
 
 Validation strategy: re-simulate the bundle’s
 `Simulated_myelosuppression_dailyANC.csv` event trajectory with the
@@ -219,12 +220,12 @@ model’s covariate-adjusted typical-value baseline and the explicit
 
 ## Mechanistic sanity: virtual cohort
 
-Because the source PDFs are not on disk and the bundle’s CSV is a
-1-subject regression dataset, validation extends to a synthetic
-200-subject virtual cohort that exercises the full covariate-and-IIV
-machinery on a typical docetaxel infusion cycle. The cohort and the
-synthetic exposure curve serve a mechanistic-sanity role, not a
-quantitative cross-check against published trial data.
+Because the source PDFs were not available when this model was built and
+the bundle’s CSV is a 1-subject regression dataset, validation extends
+to a synthetic 200-subject virtual cohort that exercises the full
+covariate-and-IIV machinery on a typical docetaxel infusion cycle. The
+cohort and the synthetic exposure curve serve a mechanistic-sanity role,
+not a quantitative cross-check against published trial data.
 
 ``` r
 
@@ -425,8 +426,8 @@ plasma-concentration-time data. The Netterberg 2017 / Kloft 2006 model
 has no concentration output - its observation variable is `ANC` (an
 absolute neutrophil count, units of 10^9 cells/L), not a drug
 concentration. Standard PK NCA parameters (Cmax, AUC, half-life) do not
-apply. Validation here is limited to the F.2 self-consistency check
-above and the mechanistic-sanity virtual cohort.
+apply. Validation here is limited to the self-consistency check above
+and the mechanistic-sanity virtual cohort.
 
 A future companion vignette could pair this PD model with a docetaxel
 popPK upstream (e.g., a Bruno 1996 / 1998 model) and run PKNCA on the
@@ -441,10 +442,10 @@ forward-looking note rather than a validation gap.
   `$OMEGA` / `$SIGMA` as `; ... according to Kloft et al., 2006` and
   uses `$ESTIMATION ... MAXEVALS=0` (no re-fit). The accompanying
   `Output_simulated_*.lst` reaches the same point values trivially
-  because `MAXEVALS=0` runs an evaluation step only. Neither Netterberg
-  2017 nor Kloft 2006 publication PDF is on disk, so a side-by-side
-  parameter-table comparison against the original published values was
-  not performed.
+  because `MAXEVALS=0` runs an evaluation step only. Neither the
+  Netterberg 2017 nor the Kloft 2006 publication PDF was available when
+  this model was built, so a side-by-side parameter-table comparison
+  against the original published values was not performed.
 
 - **Bundle deviation from publication: gamma (PO) IIV fixed to zero.**
   Per `Model_Accommodations.txt`: “the OMEGA related to the gamma
@@ -496,13 +497,13 @@ forward-looking note rather than a validation gap.
   describes the `PC` covariate only as “Previous anticancer therapy
   (categorical)”. The exact set of prior modalities counted (cytotoxic
   chemotherapy, radiotherapy, surgery, hormonal, targeted,
-  immunotherapy) is not specified in any on-disk source. The canonical
-  register entry conservatively interprets `PRIOR_ANTICANCER` as
-  covering any prior anticancer modality; per-subject datasets must
-  respect this broad encoding. If a future paper distinguishes (e.g.)
-  “prior cytotoxic chemotherapy only”, a parallel canonical
-  (`PRIOR_CHEMO` / `LINE_1L` flipped) should be registered rather than
-  overloading `PRIOR_ANTICANCER`.
+  immunotherapy) is not specified in any source available when this
+  model was built. The canonical register entry conservatively
+  interprets `PRIOR_ANTICANCER` as covering any prior anticancer
+  modality; per-subject datasets must respect this broad encoding. If a
+  future paper distinguishes (e.g.) “prior cytotoxic chemotherapy only”,
+  a parallel canonical (`PRIOR_CHEMO` / `LINE_1L` flipped) should be
+  registered rather than overloading `PRIOR_ANTICANCER`.
 
 - **AAG breakpoint.** The piecewise-linear AAG effect on baseline ANC
   uses the Kloft 2006 breakpoint of 1.34 g/L (the source-cohort median).

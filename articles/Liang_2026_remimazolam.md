@@ -30,7 +30,7 @@
   and is NOT reproduced here – the paper publishes only a six-row
   drug-specific parameter table for it and takes all system physiology,
   organ partitioning and CES1 tissue expression from the platform’s
-  built-in libraries, so no ODE system is recoverable from any on-disk
+  built-in libraries, so no ODE system is recoverable from any available
   source. See the vignette Errata.
 - Article: <https://doi.org/10.3390/pharmaceutics18030315>
 - Supplement (CES1 ontogeny equation, final NONMEM control stream,
@@ -596,7 +596,7 @@ verified against it.
   methods rather than values – and no PK-Sim project file is deposited
   with the supplement. Reconstructing it would require substituting the
   platform’s built-in physiology and CES1 tissue-expression libraries
-  from outside any on-disk source, which this repository does not do.
+  from outside any available source, which this repository does not do.
   The PBPK-specific content that *is* published is preserved instead:
   Table 2’s parameters and the CES1 ontogeny function are recorded in
   the model file’s `description` and in the `FCES1` entry of

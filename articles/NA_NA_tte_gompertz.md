@@ -16,14 +16,14 @@
   exp((coef_age/100)\*(AGE-55)). The BAST guiding-document text (Figure
   2-1, page 13) confirms an exponential distribution was selected for
   Event 1; the .mod / file name retain the ‘Gompertz’ label per the
-  source \$PROBLEM line and the operator’s selected option
-  NA_NA_tte_gompertz.R.
+  source \$PROBLEM line; the maintainers chose to keep that name for
+  this file (NA_NA_tte_gompertz.R).
 - Source: BAST Inc Limited, “BAST approach to parametric time-to-event
   (PTTE) modelling,” internal guiding document, 12 July 2017
   (`BAST_PTTE_modelling.pdf` shipped in the DDMORE bundle).
 - DDMORE Foundation Model Repository entry:
   [DDMODEL00000243](https://repository.ddmore.eu/model/DDMODEL00000243)
-- Source bundle (local mirror): `dpastoor/ddmore_scraping/243/`
+- Source bundle: `dpastoor/ddmore_scraping/243/`
 - Linked publication: **none.** The bundle is a methodological teaching
   example built on entirely simulated data; the BAST guiding-document
   text states “there is not yet a publication to go along with the
@@ -168,13 +168,13 @@ sim |>
 
 ![](NA_NA_tte_gompertz_files/figure-html/km-style-1.png)
 
-## Mechanistic sanity checks (verification-checklist Section F.3)
+## Mechanistic sanity checks
 
 The model is a TTE survival model, not a PK/PD concentration model –
 PKNCA is not the right validation tool. The four checks below exercise
 the hazard equation under controlled inputs.
 
-### F.3.1 – Hazard is constant in time at typical covariates
+### Hazard is constant in time at typical covariates
 
 The .mod \$PROBLEM line names this a “Gompertz hazard model” but the
 equation `DADT(1) = VAL * LamC` has no `exp(alpha*t)` factor, so the
@@ -204,7 +204,7 @@ The typical-value baseline hazard is 2.80 / 1000 = 0.0028 / day, giving
 a typical subject’s survival probability `S(t) = exp(-0.0028 * t)`. At
 day 400, `S = exp(-1.12) = 0.326`, matching the simulation output.
 
-### F.3.2 – Each covariate shifts the hazard in the BAST-reported direction
+### Each covariate shifts the hazard in the BAST-reported direction
 
 The BAST guiding document Section 2.4.2 (Table 2-2) reports both AGE and
 baseline NEUT as significant covariates (covariate-selection DeltaOFV
@@ -266,16 +266,16 @@ stopifnot(low_neut_sur < baseline_sur)
 stopifnot(high_neut_sur > baseline_sur)
 ```
 
-### F.3.3 – Final-fit objective-function value matches the bundle
+### Final-fit objective-function value matches the bundle
 
 The bundle’s `Output_simulated_runEV1_201.res` reports an objective
 function value of `OBJV = 1001.926` at the final estimates. This value
 is informational here (we are not refitting the model); it is included
 to link the source-trace to the bundle’s final-fit listing.
 
-## Self-consistency with the bundle’s simulated dataset (F.2)
+## Self-consistency with the bundle’s simulated dataset
 
-A full F.2 self-consistency check would re-simulate the bundle’s shipped
+A full self-consistency check would re-simulate the bundle’s shipped
 `Simulated_event_data.csv` (200 subjects, DVID = 1 records) under the
 nlmixr2lib model and compare against the bundle’s
 `Output_simulated_runEV1_201.res` `$TABLE` output (columns `SURV`,

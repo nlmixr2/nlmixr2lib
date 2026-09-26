@@ -3098,8 +3098,7 @@ discrepancy is documented in the validation vignette’s Errata.</li>
 bundle).</li>
 <li>DDMORE Foundation Model Repository entry: <a href="https://repository.ddmore.eu/model/DDMODEL00000243" class="external-link">DDMODEL00000243</a>
 </li>
-<li>Source bundle (local mirror):
-<code>dpastoor/ddmore_scraping/243/</code>
+<li>Source bundle: <code>dpastoor/ddmore_scraping/243/</code>
 </li>
 <li>Linked publication: <strong>none.</strong> The bundle is a
 methodological teaching example built on entirely simulated data; the
@@ -3259,11 +3258,11 @@ the bundle (71% incidence); at the typical-value parameters (lambda =
 <p><img src="NA_NA_tte_loglogistic_files/figure-html/km-style-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-checks-f-3">Mechanistic sanity checks (F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks-f-3"></a>
+<h2 id="mechanistic-sanity-checks">Mechanistic sanity checks<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks"></a>
 </h2>
 <div class="section level3">
-<h3 id="f-3-1-hazard-has-the-characteristic-log-logistic-shape-rises-then-falls-when-alpha-1">F.3.1 – Hazard has the characteristic log-logistic shape (rises then
-falls when alpha &gt; 1)<a class="anchor" aria-label="anchor" href="#f-3-1-hazard-has-the-characteristic-log-logistic-shape-rises-then-falls-when-alpha-1"></a>
+<h3 id="hazard-has-the-characteristic-log-logistic-shape-rises-then-falls-when-alpha-1">Hazard has the characteristic log-logistic shape (rises then falls
+when alpha &gt; 1)<a class="anchor" aria-label="anchor" href="#hazard-has-the-characteristic-log-logistic-shape-rises-then-falls-when-alpha-1"></a>
 </h3>
 <p>The log-logistic hazard with <code>alpha &gt; 1</code> rises, peaks
 at <code>t_peak = (alpha - 1)^(1/alpha) / lam</code>, and decays at long
@@ -3299,7 +3298,7 @@ The check below confirms the simulated hazard rises, peaks near day
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">sim_typ</span><span class="op">$</span><span class="va">hazard</span><span class="op">[</span><span class="va">hazard_peak_idx</span><span class="op">]</span> <span class="op">&gt;</span> <span class="va">sim_typ</span><span class="op">$</span><span class="va">hazard</span><span class="op">[</span><span class="va">sim_typ</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">500</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-3-2-closed-form-survival-check-at-long-times">F.3.2 – Closed-form survival check at long times<a class="anchor" aria-label="anchor" href="#f-3-2-closed-form-survival-check-at-long-times"></a>
+<h3 id="closed-form-survival-check-at-long-times">Closed-form survival check at long times<a class="anchor" aria-label="anchor" href="#closed-form-survival-check-at-long-times"></a>
 </h3>
 <p>For a log-logistic with <code>lam</code> (rate) and
 <code>alpha</code> (shape), the cumulative hazard is
@@ -3324,7 +3323,7 @@ integrated-ODE simulation:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">S_closed</span> <span class="op">-</span> <span class="va">S_sim</span><span class="op">)</span> <span class="op">/</span> <span class="va">S_closed</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-3-3-final-fit-objective-function-value-matches-the-bundle">F.3.3 – Final-fit objective-function value matches the bundle<a class="anchor" aria-label="anchor" href="#f-3-3-final-fit-objective-function-value-matches-the-bundle"></a>
+<h3 id="final-fit-objective-function-value-matches-the-bundle">Final-fit objective-function value matches the bundle<a class="anchor" aria-label="anchor" href="#final-fit-objective-function-value-matches-the-bundle"></a>
 </h3>
 <p><code>Output_simulated_runCOMPEV2_005.res</code> reports
 <code>OBJV = 1846.946</code> at the final estimates. This value is
@@ -3332,11 +3331,11 @@ informational here.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="self-consistency-with-the-bundles-simulated-dataset-f-2">Self-consistency with the bundle’s simulated dataset (F.2)<a class="anchor" aria-label="anchor" href="#self-consistency-with-the-bundles-simulated-dataset-f-2"></a>
+<h2 id="self-consistency-with-the-bundles-simulated-dataset">Self-consistency with the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-with-the-bundles-simulated-dataset"></a>
 </h2>
-<p>A full F.2 self-consistency check would re-simulate the bundle’s
-shipped <code>Simulated_event_data.csv</code> (200 subjects, DVID = 4
-records) under the nlmixr2lib model and compare against the bundle’s
+<p>A full self-consistency check would re-simulate the bundle’s shipped
+<code>Simulated_event_data.csv</code> (200 subjects, DVID = 4 records)
+under the nlmixr2lib model and compare against the bundle’s
 <code>Output_simulated_runCOMPEV2_005.res</code> <code>$TABLE</code>
 output. The bundle dataset is outside this package and not
 redistributed.</p>

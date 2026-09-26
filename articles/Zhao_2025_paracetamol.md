@@ -979,7 +979,7 @@ sim_stoch |>
 - **No errata identified.** A search of the BJCP article landing page,
   PubMed and Europe PMC for corrections to `doi:10.1002/bcp.70028`
   returned none as of the extraction date (2026-08-17).
-- **No NONMEM control stream on disk.** The Wiley supplement comprises
+- **No NONMEM control stream deposited.** The Wiley supplement comprises
   the supplementary methods (DOCX), supplementary tables S1-S3 (DOCX)
   and figures S1-S9 (PDF/JPEG); no `.mod` / `.ctl` / `.lst` is
   deposited. Every parameter value comes from Table 2 of the main

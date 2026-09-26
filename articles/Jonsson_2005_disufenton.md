@@ -31,11 +31,11 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Jonsson_2005_disufenton"))$meta
 This vignette validates the packaged `Jonsson_2005_disufenton` model
 against DDMORE Foundation Model Repository entry **DDMODEL00000245**,
 the source from which it was extracted. The Jonsson 2005 publication PDF
-is not on disk here, so the validation strategy is a self-consistency
-check: re-simulate the bundle’s dosing scenario and confirm the
-trajectory matches the structural model encoded in the DDMORE bundle
-(`Executable_run111.mod` plus the `Output_real_run111.lst` final
-estimates).
+was not available when this model was built, so the validation strategy
+is a self-consistency check: re-simulate the bundle’s dosing scenario
+and confirm the trajectory matches the structural model encoded in the
+DDMORE bundle (`Executable_run111.mod` plus the `Output_real_run111.lst`
+final estimates).
 
 ## Population
 
@@ -51,9 +51,9 @@ based on baseline creatinine clearance.
 
 Demographic descriptors above are summarised from the DDMODEL00000245
 RDF `model-has-description-long` abstract, which mirrors the Jonsson
-2005 Methods. The Jonsson 2005 PDF is not available on disk in the
-maintainers’ literature mirror, so weight, sex, and race breakdowns from
-the publication’s Table 1 could not be cross-checked.
+2005 Methods. The Jonsson 2005 PDF was not available when this model was
+built, so weight, sex, and race breakdowns from the publication’s Table
+1 could not be cross-checked.
 
 ``` r
 
@@ -316,9 +316,10 @@ sim |>
 
 PKNCA is run on the post-infusion (washout) data so the AUC and terminal
 half-life can be computed cleanly. Because the Jonsson 2005 publication
-PDF is not on disk, the simulated NCA values cannot be compared
-side-by-side against published Cmax / AUC tables; they are reported here
-as a sanity check on the simulation pipeline.
+PDF was not available when this model was built, the simulated NCA
+values cannot be compared side-by-side against published Cmax / AUC
+tables; they are reported here as a sanity check on the simulation
+pipeline.
 
 ``` r
 
@@ -389,15 +390,14 @@ Simulated post-infusion NCA parameters by CRCL stratum (PKNCA). {.table}
   and are not used; the listing reports
   `NO. OF SIG. DIGITS IN FINAL EST.: 4.0`.
 
-- **Jonsson 2005 publication PDF is not on disk** in the maintainers’
-  literature mirror, so weight, sex, and race breakdowns and the
-  publication’s Table 1 / parameter table could not be cross-checked
-  against the bundle. When the publication PDF is available, the
-  `population` narrative should be confirmed against it; the
-  `Model_Accomodations.text` file the DDMORE flow normally relies on for
-  publication mapping is missing from this bundle, so identification of
-  the linked publication relied solely on the DDMODEL00000245 RDF
-  abstract title
+- **Jonsson 2005 publication PDF was not available when this model was
+  built**, so weight, sex, and race breakdowns and the publication’s
+  Table 1 / parameter table could not be cross-checked against the
+  bundle. When the publication PDF is available, the `population`
+  narrative should be confirmed against it; the
+  `Model_Accomodations.text` file normally used for publication mapping
+  is missing from this bundle, so identification of the linked
+  publication relied solely on the DDMODEL00000245 RDF abstract title
   (`"Population Pharmacokinetic Modelling and Estimation of Dosing Strategy for NXY-059, a Nitrone Being Developed for Stroke"`)
   and the DOI supplied when this model was built. The published
   abstract’s “typical clearance 4.54 L/h at CRCL 70 mL/min” was
@@ -449,7 +449,7 @@ Simulated post-infusion NCA parameters by CRCL stratum (PKNCA). {.table}
   `inst/modeldb/`. The approximate equivalent linear-space coefficient
   of variation is `sqrt(exp(0.165^2) - 1) ~= 16.6%`.
 
-- **Validation strategy is self-consistency** (no linked publication on
-  disk). PKNCA values shown above are informational; comparison against
-  Jonsson 2005’s published NCA was not possible from the materials on
-  disk.
+- **Validation strategy is self-consistency** (the linked publication
+  was not available). PKNCA values shown above are informational;
+  comparison against Jonsson 2005’s published NCA was not possible from
+  the materials available when this model was built.

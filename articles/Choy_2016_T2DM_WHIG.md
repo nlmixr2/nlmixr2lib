@@ -401,7 +401,7 @@ stopifnot(abs(hba1c_analytic - sim_ss$HbA1c[sim_ss$time == 0][1]) < 1e-3)
 
 A 200-subject VPC of weight, FSI, FPG, and HbA1c uses the published
 diagonal IIV (the variance-covariance correlation matrix from Choy 2016
-Supplementary Appendix S2 is not on disk; see Assumptions). The
+Supplementary Appendix S2 was not available; see Assumptions). The
 simulation reproduces the *shape* of the published trajectories (small
 weight loss; transient FPG / HbA1c dip; partial recovery) but the 95%
 prediction-interval widths will be wider than the paper’s Figure 3
@@ -505,25 +505,24 @@ ggplot(data.frame(dwgt = dwgt_grid, IS_rel = is_rel),
   strategy follows the endogenous-model pattern: steady-state check,
   mass-balance / flux check, and dimensional analysis.
 
-- **Supplementary Appendix S2 not on disk; diagonal OMEGA.** The
+- **Supplementary Appendix S2 not available; diagonal OMEGA.** The
   variance-covariance correlation matrix (Choy 2016, p. 15 footnote a;
-  described in Supplementary Appendix S2) is not available in the source
-  directory. The two on-disk supplement PDFs
-  (`16_Choy_2016_supp_S1.pdf`, `16_Choy_2016_supp_S2.pdf`) are duplicate
-  copies of the main paper (both 9 pages, both report the title page
-  text). The packaged model therefore uses a diagonal OMEGA structure.
-  Simulation reproduces typical-value predictions exactly but cannot
-  exactly reproduce the published 95% prediction-interval widths in Choy
-  2016 Figures 3 and 4 (which depend on the missing correlations – the
-  paper explicitly notes that the expanded variance-covariance matrix
-  narrows the prediction-interval ribbons; see Discussion paragraph
-  after Figure 6).
+  described in Supplementary Appendix S2) was not available when this
+  model was built. The two supplement PDFs that were available (labelled
+  S1 and S2) are duplicate copies of the main paper (both 9 pages, both
+  report the title page text). The packaged model therefore uses a
+  diagonal OMEGA structure. Simulation reproduces typical-value
+  predictions exactly but cannot exactly reproduce the published 95%
+  prediction-interval widths in Choy 2016 Figures 3 and 4 (which depend
+  on the missing correlations – the paper explicitly notes that the
+  expanded variance-covariance matrix narrows the prediction-interval
+  ribbons; see Discussion paragraph after Figure 6).
 
-- **Supplementary Appendix S1 not on disk; FSI-FPG modelled as algebraic
-  QSS.** Appendix S1 (the linearisation of FSI production into a
-  quadratic for FPG, paper p. 13) is also not on disk; however, the QSS
-  quadratic itself is straightforwardly derived from the structural ODEs
-  in Choy 2016 Eq. 10-12 plus the two HOMA constants
+- **Supplementary Appendix S1 not available; FSI-FPG modelled as
+  algebraic QSS.** Appendix S1 (the linearisation of FSI production into
+  a quadratic for FPG, paper p. 13) was also not available; however, the
+  QSS quadratic itself is straightforwardly derived from the structural
+  ODEs in Choy 2016 Eq. 10-12 plus the two HOMA constants
   (`KinFSI/KoutFSI = 7.8`, `KinFPG/KoutFPG = 35.1`). The packaged model
   encodes the analytic positive root of the FPG quadratic directly in
   `model()`; FSI follows from `FSI_SS = 7.8 * Beff * (FPG_SS - 3.5)`.

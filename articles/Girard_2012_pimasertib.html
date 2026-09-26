@@ -3114,8 +3114,8 @@ in the bundled simulated dataset: 1, 1.5, 2, 2.5, 3.5, 5, 7, 14, 16, 28,
 <li>Demographic detail (age, weight, sex split, race/ethnicity) is
 <strong>not derivable from the DDMORE bundle</strong>. The linked PAGE
 21 abstract (URL &lt;www.page-meeting.org/?abstract=2458&gt;) is
-conference-abstract-only and <strong>was not on disk</strong> at
-extraction time, so a full demographic cross-check was not
+conference-abstract-only and <strong>was not available when this model
+was built</strong>, so a full demographic cross-check was not
 performed.</li>
 </ul>
 <p>The metadata is queryable programmatically via the model file’s
@@ -3397,11 +3397,11 @@ giving a typical-value 12-week dropout probability
 <div class="section level2">
 <h2 id="virtual-cohort-typical-value-single-subject">Virtual cohort (typical-value, single subject)<a class="anchor" aria-label="anchor" href="#virtual-cohort-typical-value-single-subject"></a>
 </h2>
-<p>For the F.3 mechanistic-sanity check we simulate a single typical
-patient over the 12-week horizon. The K-PD exposure compartment is dosed
-weekly with a representative AUC value (<code>AMT = 20000</code> ng*h/mL
-– close to the per-week AUC the bundled simulated dataset records for ID
-= 1 on the 90 mg/day cohort).</p>
+<p>For the mechanistic-sanity check we simulate a single typical patient
+over the 12-week horizon. The K-PD exposure compartment is dosed weekly
+with a representative AUC value (<code>AMT = 20000</code> ng*h/mL –
+close to the per-week AUC the bundled simulated dataset records for ID =
+1 on the 90 mg/day cohort).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Girard_2012_pimasertib"</span><span class="op">)</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">mod0</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>  <span class="co"># IIV (etalogit) zeroed for typical-value path</span></span>
@@ -3453,8 +3453,8 @@ between-dose (long after a single 20000 dose) probability of any AE is
 <code>1 - expit(b01) = 1 - expit(-6.12) ~= 0.0022</code>.</p>
 </div>
 <div class="section level3">
-<h3 id="f-3-mechanistic-sanity-check-cumulative-hazard-survival-reproduction">F.3 mechanistic-sanity check: cumulative-hazard / survival
-reproduction<a class="anchor" aria-label="anchor" href="#f-3-mechanistic-sanity-check-cumulative-hazard-survival-reproduction"></a>
+<h3 id="mechanistic-sanity-check-cumulative-hazard-survival-reproduction">Mechanistic-sanity check: cumulative-hazard / survival
+reproduction<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-check-cumulative-hazard-survival-reproduction"></a>
 </h3>
 <p>The dropout sub-model has a closed-form analytic solution:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">z</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>λ</mi><mspace width="0.167em"></mspace><msup><mi>t</mi><mi>α</mi></msup><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo>⋅</mo><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">E</mi></mrow><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
@@ -3478,13 +3478,14 @@ trajectory:</p>
 <span>                       <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Pick a few canonical time points for a tabular F.3 check.</span></span>
+<span><span class="co"># Pick a few canonical time points for a tabular mechanistic-sanity check.</span></span>
 <span><span class="va">checkpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">reference</span>, <span class="va">time</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">9</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">checkpoints</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"F.3: typical-value cumulative hazard reproduces the analytic Weibull form within numerical tolerance."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Mechanistic-sanity check: typical-value cumulative hazard reproduces the analytic Weibull form within numerical tolerance."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>F.3: typical-value cumulative hazard reproduces the analytic
-Weibull form within numerical tolerance.</caption>
+<caption>Mechanistic-sanity check: typical-value cumulative hazard
+reproduces the analytic Weibull form within numerical
+tolerance.</caption>
 <thead><tr class="header">
 <th align="left"></th>
 <th align="right">time</th>
@@ -3536,8 +3537,8 @@ Weibull form within numerical tolerance.</caption>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">reference</span><span class="op">$</span><span class="va">rel_err_pct</span><span class="op">[</span><span class="va">reference</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum |rel_err_pct| over t in (0, 12]: 0.001217%</span></span></code></pre></div>
 <p>The <code>rxSolve()</code> cumulative-hazard trajectory matches the
-analytic Weibull form to numerical precision at every observation. F.3
-mechanistic-sanity passes for the dropout sub-model.</p>
+analytic Weibull form to numerical precision at every observation. The
+mechanistic-sanity check passes for the dropout sub-model.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">survival</span>, colour <span class="op">=</span> <span class="st">"Survival"</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
@@ -3665,8 +3666,8 @@ source studies.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-re-simulate-against-the-bundle-simulated-dataset">F.2 self-consistency: re-simulate against the bundle simulated
-dataset<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-re-simulate-against-the-bundle-simulated-dataset"></a>
+<h2 id="self-consistency-check-re-simulate-against-the-bundle-simulated-dataset">Self-consistency check: re-simulate against the bundle simulated
+dataset<a class="anchor" aria-label="anchor" href="#self-consistency-check-re-simulate-against-the-bundle-simulated-dataset"></a>
 </h2>
 <p>The DDMORE bundle ships
 <code>Simulated_Pimasertib_AeDropout.csv</code> with 199 simulated
@@ -3676,9 +3677,9 @@ deterministic.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata-readme.txt"</span>, package <span class="op">=</span> <span class="st">"nlmixr2lib"</span><span class="op">)</span>  <span class="co"># placeholder probe</span></span>
 <span><span class="co"># We don't ship the bundle CSV inside nlmixr2lib (it's not under /inst). The</span></span>
-<span><span class="co"># F.2 check below is therefore an independent simulation of two representative</span></span>
-<span><span class="co"># cohorts (DOSE = 60 mg QD vs 60 mg BID, fixed CMAX_M1 = 300 ng/mL) over the</span></span>
-<span><span class="co"># same 12-week horizon the bundle uses, and confirms the typical-value</span></span>
+<span><span class="co"># self-consistency check below is therefore an independent simulation of two</span></span>
+<span><span class="co"># representative cohorts (DOSE = 60 mg QD vs 60 mg BID, fixed CMAX_M1 = 300 ng/mL)</span></span>
+<span><span class="co"># over the same 12-week horizon the bundle uses, and confirms the typical-value</span></span>
 <span><span class="co"># trajectories are finite, monotone-survival, and bounded probabilities.</span></span>
 <span></span>
 <span><span class="va">cohorts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>DOSE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">60</span>, <span class="fl">120</span><span class="op">)</span>, REGI_BID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
@@ -3717,10 +3718,10 @@ deterministic.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">f2_summary</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"F.2 self-consistency: typical-value trajectories at week 12 for six cohorts (DOSE x REGI_BID)."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Self-consistency check: typical-value trajectories at week 12 for six cohorts (DOSE x REGI_BID)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>F.2 self-consistency: typical-value trajectories at week 12 for
-six cohorts (DOSE x REGI_BID).</caption>
+<caption>Self-consistency check: typical-value trajectories at week 12
+for six cohorts (DOSE x REGI_BID).</caption>
 <thead><tr class="header">
 <th align="right">DOSE</th>
 <th align="right">REGI_BID</th>
@@ -3792,21 +3793,20 @@ the AE-score logit, not on the Weibull hazard.</p>
 </h2>
 <ul>
 <li>
-<strong>Linked publication is conference-abstract-only and not on
-disk.</strong> The PAGE 21 (2012) abstract 2458 by Girard et al. is
+<strong>Linked publication is conference-abstract-only and was not
+available.</strong> The PAGE 21 (2012) abstract 2458 by Girard et al. is
 hosted only at &lt;www.page-meeting.org/?abstract=2458&gt; and was not
-present in the maintainers’ literature mirror at extraction time.
-Final-estimate values come solely from the DDMORE bundle’s
+available when this model was built. Final-estimate values come solely
+from the DDMORE bundle’s
 <code>Output_real_Pimasertib_AeDropout.lst</code>
 <code>MAXEVALS=0</code> Laplacian-evaluation echo of
 <code>Executable_Pimasertib_AeDropout.mod</code>. The published
 abstract’s parameter table could not be inspected to confirm signs and
 magnitudes; the <code>.lst</code> <code>FINAL PARAMETER ESTIMATE</code>
-block (TH 1..18; OMEGA ETA1 / ETA2) is the sole source of truth. F.2
-self-consistency against the bundled simulated dataset is the only
-validation anchor; F.1 (publication NCA comparison) is not applicable
-because this is a Markov categorical / TTE model with no NCA
-quantities.</li>
+block (TH 1..18; OMEGA ETA1 / ETA2) is the sole source of truth.
+Self-consistency against the bundled simulated dataset is the only
+validation anchor; a published-NCA comparison is not applicable because
+this is a Markov categorical / TTE model with no NCA quantities.</li>
 <li>
 <strong>Simplified observation likelihood.</strong> The
 publication’s observation model is a multi-DVID conditional likelihood:
@@ -3819,7 +3819,7 @@ joint multi-DVID categorical-plus-TTE likelihood. The model file
 therefore declares the observation as a plain Poisson on the
 typical-value expected ordinal score <code>0*P0 + 1*P1 + 2*P2</code>
 (<code>aescore ~ pois(expected_aescore)</code>) – purely a placeholder
-that lets the model parse and that drives F.3 mechanistic-sanity
+that lets the model parse and that drives the mechanistic-sanity
 simulation. <strong>The placeholder Poisson is not a valid likelihood
 for re-fitting the original Girard 2012 dataset.</strong> The full
 structural equations (<code>p0</code>, <code>p1</code>, <code>p2</code>,
@@ -3836,10 +3836,10 @@ across rows. nlmixr2 cannot update a covariate column in-flight, so the
 user is expected to supply <code>PREV_AE_SCORE</code> as a per-row data
 column, set to 0 at TIME = 0 per subject and updated at each subsequent
 observation to the previous-step sampled grade. For the typical-value
-F.3 simulations in this vignette we set <code>PREV_AE_SCORE = 0</code>
-at every observation (no prior AE), which corresponds to the
-publication’s “first observation” condition and is the default initial
-Markov state.</li>
+mechanistic-sanity simulations in this vignette we set
+<code>PREV_AE_SCORE = 0</code> at every observation (no prior AE), which
+corresponds to the publication’s “first observation” condition and is
+the default initial Markov state.</li>
 <li>
 <strong><code>emax2</code> (CTCAE &gt;= 3) and
 <code>THETA(12)</code> (CL exponent) are intentionally omitted from

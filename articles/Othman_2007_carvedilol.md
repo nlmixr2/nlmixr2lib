@@ -413,14 +413,14 @@ convention. {.table}
   mg free base per 10 mg phosphate; the 0.5 ratio is the 50:50 racemic
   split). For IR, the paper’s nominal dose is in mg of carvedilol
   racemate free base; convert via `S(-)-mg = racemate_mg * 0.5`.
-- **Corrigendum.** The on-disk source file is the AAPS J 2007
+- **Corrigendum.** The primary source used is the AAPS J 2007
   corrigendum (<doi:10.1208/aapsj0903037c>), which republished Tables 1,
   3, and 4 with corrected column alignment. The numeric values are
   unchanged between the original publication and the corrigendum; the
   corrigendum citation appears in the model’s `reference` field. The
-  original Othman 2007 (AAPS J 9(2):E208-E218; PMC2751410) was obtained
-  from Europe PMC for the Methods, Results narrative, and Tables 2 /
-  Figures 1-5 (not republished in the corrigendum).
+  original Othman 2007 (AAPS J 9(2):E208-E218; PMC2751410) was used for
+  the Methods, Results narrative, and Tables 2 / Figures 1-5 (not
+  republished in the corrigendum).
 - **Population demographics not reported.** The publication does not
   give the numeric ranges for age, weight, sex, or race of the 96
   volunteers; the Methods section states only that they were healthy

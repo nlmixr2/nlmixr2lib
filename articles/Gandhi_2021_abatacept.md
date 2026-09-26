@@ -768,10 +768,10 @@ re-reading the source alongside this model should be aware of:
   which is unusually tight for a biologic but plausible given Gandhi
   2021’s larger and more richly-covariated dataset. The paper does not
   explicitly label the residual-error column as variance vs SD; without
-  the supplement (control stream) on disk this cannot be disambiguated
-  beyond the column-symmetry argument used here. If a future reader
-  obtains the supplement and the residual-error parameterisation
-  conflicts with this interpretation, the `propSd` / `addSd` lines in
-  `ini()` should be updated.
+  the supplement (control stream) this cannot be disambiguated beyond
+  the column-symmetry argument used here. If a future reader obtains the
+  supplement and the residual-error parameterisation conflicts with this
+  interpretation, the `propSd` / `addSd` lines in `ini()` should be
+  updated.
 - **No formal erratum.** A search of PubMed and the J Clin Pharmacol
   corrections feed on 2026-04-25 returned no published corrections.

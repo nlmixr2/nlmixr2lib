@@ -3084,8 +3084,8 @@ capecitabine.</em> Clin Pharmacol Ther 85(4):418-425.</li>
 <li>DDMORE Foundation Model Repository entry:
 <code>DDMODEL00000214</code> (<a href="https://repository.ddmore.eu/model/DDMODEL00000214" class="external-link uri">https://repository.ddmore.eu/model/DDMODEL00000214</a>)</li>
 </ul>
-<p>The publication PDF is not on disk for this extraction; parameter
-values and equations come from the DDMORE bundle’s NONMEM
+<p>The publication PDF was not available when this model was built;
+parameter values and equations come from the DDMORE bundle’s NONMEM
 <code>.mod</code> and the <code>Output_real_HFSmodel.lst</code> listing
 (which evaluates the published parameter set on the development data
 with <code>MAXEVALS=0</code> and <code>$THETA … FIX</code>). See
@@ -3280,11 +3280,12 @@ into central</td>
 </h2>
 <p>Henin 2009 reports a categorical-likelihood (proportional-odds)
 Markov model on HFS grades 0/1/2; there are no plasma concentrations and
-no NCA-amenable endpoints. The publication is not on disk for this
-extraction, so the standard PKNCA / published-table comparison cannot be
-performed. Validation follows the <em>F.3 mechanistic-sanity</em> check
-(count / Markov / IRT / dropout / TTE) combined with the <em>F.2
-self-consistency</em> check against the bundled simulated dataset:</p>
+no NCA-amenable endpoints. The publication was not available when this
+model was built, so the standard PKNCA / published-table comparison
+cannot be performed. Validation follows the <em>mechanistic-sanity</em>
+check (count / Markov / IRT / dropout / TTE) combined with the
+<em>self-consistency</em> check against the bundled simulated
+dataset:</p>
 <ol style="list-style-type: decimal">
 <li>The model parses and <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> runs to
 completion on a typical subject (single-subject typical-value,
@@ -3623,7 +3624,7 @@ encodes.</p>
 </h2>
 <ul>
 <li>
-<strong>Source publication PDF not on disk.</strong> Parameter
+<strong>Source publication PDF not available.</strong> Parameter
 values come from the DDMORE bundle’s
 <code>Output_real_HFSmodel.lst</code> listing (an evaluation-only re-run
 of the published parameter set on the development data, with
@@ -3634,12 +3635,12 @@ minimization is reported and none was performed. Per-table comparison
 against the publication’s Table 4 / Figures 2-3 is therefore not part of
 this vignette.</li>
 <li>
-<strong>Validation strategy.</strong> F.3 mechanistic-sanity check
-(count / Markov / IRT / dropout / TTE) combined with the F.2
+<strong>Validation strategy.</strong> Mechanistic-sanity check
+(count / Markov / IRT / dropout / TTE) combined with the
 self-consistency check against the bundle’s simulated dataset, the
-package’s approach for DDMORE-source models with no linked publication
-on disk. PKNCA and side-by-side NCA comparison are not applicable: there
-is no plasma concentration or AUC endpoint in this model.</li>
+package’s approach for DDMORE-source models whose linked publication was
+not available. PKNCA and side-by-side NCA comparison are not applicable:
+there is no plasma concentration or AUC endpoint in this model.</li>
 <li>
 <strong>Markov state as exposed conditional probabilities.</strong>
 The NONMEM source treats the previous HFS grade as a state variable

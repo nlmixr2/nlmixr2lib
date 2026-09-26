@@ -724,8 +724,8 @@ stopifnot(rel_diff < 1e-4)
   should not expect these coefficients to describe the transition.
 - **Phenytoin is out of scope.** The underlying rat study also examined
   phenytoin; Ngo 2023 states it describes “solely the parts related to
-  the effects of CBZ” (Section 2.1), so no phenytoin parameters exist on
-  disk and none are modelled.
+  the effects of CBZ” (Section 2.1), so no phenytoin parameters are
+  reported and none are modelled.
 - **Unbound fraction is not corrected for.** Rivaroxaban is 98.7 %
   protein-bound in rats but only 92-95 % in humans. Ngo 2023
   deliberately omitted `fu` from the allometric scaling because the

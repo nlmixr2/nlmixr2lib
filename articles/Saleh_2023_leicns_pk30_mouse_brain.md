@@ -675,8 +675,8 @@ source oddities carried through faithfully.
 - **`CL_wo` / `CL_ow` are derived, not printed.** LeiCNS-PK3.0 replaced
   the instantaneous binding factor of LeiCNS-PK1.0 with a mechanistic
   phospholipid compartment, but no source prints the two clearance
-  magnitudes. Three on-disk constraints jointly determine them: the ECF
-  ODE printed in van Valkengoed 2025 Eq 4 shows `CL_BC,in` acting on
+  magnitudes. Three constraints jointly determine them: the ECF ODE
+  printed in van Valkengoed 2025 Eq 4 shows `CL_BC,in` acting on
   `PHF_ECF x C_ECF` and `CL_BC,out` on `C_BCM`; the Saleh 2022
   supplement pins the ratio `CL_wo / CL_ow = 10^logP`; and the LeiCNS
   convention that a membrane clearance is permeability x surface area is

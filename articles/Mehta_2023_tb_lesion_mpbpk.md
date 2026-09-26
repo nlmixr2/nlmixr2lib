@@ -651,4 +651,4 @@ on) as reproducible and `Cmax` / `Cmin` as not.
   parameter estimates that the human models were translated from. The
   mouse models are not packaged separately because the mouse lung-volume
   fraction needed to compute the lesion and uninvolved-lung volumes is
-  not reported in any on-disk source.
+  not reported in any available source.

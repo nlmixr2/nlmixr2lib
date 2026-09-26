@@ -3193,9 +3193,10 @@ and four with meningiomas, all scheduled for two to three cycles of
 </h3>
 <p>Budiansah 2025 tabulates no patient characteristics; its eight
 patients are a subset of the nine-patient cohort of the upstream
-Kletting 2016 framework paper, whose Table 1 is the only on-disk source
-of the body surface areas, measured 51Cr-EDTA glomerular filtration
-rates, organ volumes, tumour volumes, sexes and disease types.</p>
+Kletting 2016 framework paper, whose Table 1 is the only available
+source of the body surface areas, measured 51Cr-EDTA glomerular
+filtration rates, organ volumes, tumour volumes, sexes and disease
+types.</p>
 <p>The mapping onto Budiansah’s patient numbering is fixed by two
 independent checks in the paper itself. Budiansah Figure S2 states that
 <strong>patient 5 had a splenectomy</strong>, and Kletting Table 1 marks
@@ -3227,7 +3228,7 @@ surrogate) excluded.</p>
 <span>    splenectomy   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">ORGVOL_SPLEEN</span><span class="op">)</span>,</span>
 <span>    ORGVOL_SPLEEN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">splenectomy</span>, <span class="fl">1</span>, <span class="va">ORGVOL_SPLEEN</span><span class="op">)</span>,</span>
 <span>    <span class="co"># Body weight and hematocrit are "individually measured" per Table S1 but</span></span>
-<span>    <span class="co"># are tabulated nowhere on disk. See Assumptions and deviations.</span></span>
+<span>    <span class="co"># are tabulated in no available source. See Assumptions and deviations.</span></span>
 <span>    WT            <span class="op">=</span> <span class="fl">71</span>,</span>
 <span>    HCT           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">SEXF</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">40</span>, <span class="fl">45</span><span class="op">)</span>,</span>
 <span>    <span class="co"># The canonical CRCL is BSA-normalised; Kletting Table 1 reports absolute</span></span>

@@ -81,10 +81,9 @@ comment naming its source. They are collected here for review.
 | two-compartment ODEs, zero-order input | n/a | Results, “Population pharmacokinetic modeling”; Table S2 base model, “two-compartment model with a zero-order input rate”; Methods, 1 h infusion |
 | `Cc ~ prop(propSd)` | n/a | Results, “proportional residual variability”; Methods lists the three candidate log-scale error forms |
 
-The equation block is typeset as a display equation and is lost by a
-naive text extraction of the PDF (it appears as `formula-not-decoded` in
-the preprocessed markdown). It was recovered with `pdftotext -layout`,
-which preserves it verbatim.
+The equation block is typeset as a display equation and does not survive
+a naive plain-text extraction of the PDF. It was recovered with
+`pdftotext -layout`, which preserves it verbatim.
 
 Two source-internal disagreements are recorded in [Assumptions,
 deviations and errata](#assumptions-deviations-and-errata) below: the

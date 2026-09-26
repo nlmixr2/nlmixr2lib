@@ -4058,14 +4058,14 @@ as printed. A user who prefers the Table 3 value can override it with
 <code>ini(lcl = log(2.3))</code>.</p></li>
 <li><p><strong>Exponents recovered with
 <code>pdftotext -layout</code>.</strong> Both final-model equations are
-display mathematics that the markdown preprocessing of this paper drops
-entirely (it emits <code>&lt;!-- formula-not-decoded --&gt;</code> in
-their place), taking the whole covariate model with them. They are
-recovered from the PDF with <code>pdftotext -layout</code>, which
-preserves superscripts by placing them on the line above; the extraction
-is quoted verbatim in the Source trace section. The same extraction is
-what establishes that the Vd weight term carries <em>no</em> exponent
-(i.e. exactly 1) rather than one that was silently lost.</p></li>
+display mathematics that do not survive plain-text extraction of the PDF
+(they are dropped entirely, taking the whole covariate model with them).
+They are recovered from the PDF with <code>pdftotext -layout</code>,
+which preserves superscripts by placing them on the line above; the
+extraction is quoted verbatim in the Source trace section. The same
+extraction is what establishes that the Vd weight term carries
+<em>no</em> exponent (i.e. exactly 1) rather than one that was silently
+lost.</p></li>
 <li><p><strong>Body-size exponents encoded as
 <code>fixed()</code>.</strong> 0.75 on clearance and 1 on volume are
 printed inside the equations with no standard error and are the

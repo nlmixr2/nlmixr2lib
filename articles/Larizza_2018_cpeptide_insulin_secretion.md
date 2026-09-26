@@ -140,7 +140,7 @@ reports `k01`, `k12` and `k21` for the new subject in Table 1, and those
 values are the forward image of the M0 regression evaluated at that
 subject’s covariates followed by the macro-to-micro conversion. Nothing
 is fitted, nothing is sampled, and nothing depends on a dataset that is
-not on disk – so the reproduction must be exact to the printed
+not available – so the reproduction must be exact to the printed
 precision.
 
 ``` r
@@ -434,12 +434,12 @@ small structural check that the conversion has been wired up correctly.
 
 The minimal model takes plasma glucose as an error-free time-varying
 regressor; it does not model glucose kinetics. The subject’s actual
-glucose series is not on disk, so the profile below is **illustrative**.
-It is anchored on the two glucose values that *are* recoverable from the
-sources (basal 87 mg/dL, peak 391 mg/dL) and given a conventional
-bi-exponential IVGTT return to basal. Every numeric assertion in this
-article is chosen to be independent of this choice – see “Assumptions
-and deviations”.
+glucose series was not available, so the profile below is
+**illustrative**. It is anchored on the two glucose values that *are*
+recoverable from the sources (basal 87 mg/dL, peak 391 mg/dL) and given
+a conventional bi-exponential IVGTT return to basal. Every numeric
+assertion in this article is chosen to be independent of this choice –
+see “Assumptions and deviations”.
 
 The time grid is the one the deposited scripts use for ISR simulation:
 `c(seq(0, 10, 0.05), seq(10, 240, 5))`, refined here in the tail so the
@@ -616,8 +616,8 @@ ggplot(isr_panels, aes(time, ISR, colour = approach)) +
 
 ## Validation
 
-The minimal model’s subject-level dataset is not on disk, so none of the
-checks below leans on a simulated magnitude. Each is either a
+The minimal model’s subject-level dataset was not available, so none of
+the checks below leans on a simulated magnitude. Each is either a
 closed-form identity, a conservation law, or arithmetic on the paper’s
 own printed numbers.
 

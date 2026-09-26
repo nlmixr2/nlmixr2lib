@@ -227,7 +227,7 @@ hl_closed <- log(2) * pub_v / pub_cl
 c(measured_h = hl_model, closed_form_h = hl_closed,
   rel_diff = abs(hl_model - hl_closed) / hl_closed)
 #>    measured_h closed_form_h      rel_diff 
-#>  1.024598e+01  1.024598e+01  3.763888e-13
+#>  1.024598e+01  1.024598e+01  3.760421e-13
 
 stopifnot(abs(hl_model - hl_closed) / hl_closed < 1e-6)
 ```
@@ -966,7 +966,7 @@ The paper’s remaining dosing claims are **fractional** target attainment
 (FTA, Table 3), which weights the PTA by published MIC *distributions*
 for each *Candida* species (the paper’s references 19 and 20). Those
 distributions are not reproduced anywhere in the paper, so FTA cannot be
-recomputed from the source on disk and is not attempted here.
+recomputed from the available source and is not attempted here.
 
 ## Assumptions and deviations
 
@@ -1036,10 +1036,9 @@ recomputed from the source on disk and is not attempted here.
   supplement document. Nothing in the model depends on it: all six final
   parameter estimates are in Table 2, and the covariate equation was
   recovered from the typeset equation image (`aac.01435-24.m002.jpg`)
-  and confirmed against `pdftotext -layout` output. The unobtainable
-  content is the model-building progression (OFV / BICc step table),
-  which is provenance for model *selection* rather than any value used
-  here.
+  and confirmed against the PDF’s text layer. The unobtainable content
+  is the model-building progression (OFV / BICc step table), which is
+  provenance for model *selection* rather than any value used here.
 - **Fractional target attainment is not reproduced**, because the
   *Candida* MIC distributions it weights by are cited rather than
   printed. See the end of the dosing-simulation section.

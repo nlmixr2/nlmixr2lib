@@ -739,13 +739,13 @@ mean above the typical value) rather than at a transcription error in
 - **Two covariate exponents are negative, and the minus signs are easy
   to lose.** `e_age_vc = -0.231` and `e_alt_slope = -0.201` are printed
   with a U+2212 minus in the Elsevier PDF, which some text extractors
-  drop (the preprocessed markdown companion for this article renders
-  both Table 2 and Table 3 with bare positive values). The signs are
-  confirmed three ways in each case: the typeset equations (13 and 15),
-  the Results prose (“the coefficient (theta) of age on V/F value was
-  -0.231”, “the coefficient (theta) of ALT on slope was -0.201”), and
-  the bootstrap confidence intervals (-0.391 to -0.070 and -0.305 to
-  -0.100, both entirely below zero).
+  drop (a plain-text extraction of the PDF renders both Table 2 and
+  Table 3 with bare positive values). The signs are confirmed three ways
+  in each case: the typeset equations (13 and 15), the Results prose
+  (“the coefficient (theta) of age on V/F value was -0.231”, “the
+  coefficient (theta) of ALT on slope was -0.201”), and the bootstrap
+  confidence intervals (-0.391 to -0.070 and -0.305 to -0.100, both
+  entirely below zero).
 
 - **The interindividual-variability rows are read as CV%, the
   residual-error rows as fractions**, even though Tables 2 and 3 head

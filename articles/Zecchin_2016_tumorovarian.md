@@ -22,8 +22,8 @@ stage III/IV) epithelial ovarian cancer. The DDMORE bundle’s `.lst`
 listing confirms the dataset size: `TOT. NO. OF INDIVIDUALS: 336` and
 `TOT. NO. OF OBS RECS: 1358`. Detailed baseline demographics (median
 age, weight, region) were not reproduced here because the linked
-publication PDF was not on disk for this extraction; the population
-block reports only what the PubMed abstract confirms.
+publication PDF was not available when this model was built; the
+population block reports only what the PubMed abstract confirms.
 
 The same information is available programmatically via the model’s
 `population` metadata at
@@ -38,7 +38,7 @@ blocks) and parameter values from the `FINAL PARAMETER ESTIMATE` block
 of `Output_real_SLD.lst`. The `.mod` `$THETA` / `$OMEGA` / `$SIGMA`
 lines hold initial values, not final estimates, and were not used for
 parameter values. The linked publication (Zecchin et al. 2016 BJCP,
-<doi:10.1111/bcp.12994>) was not on disk for this extraction, so
+<doi:10.1111/bcp.12994>) was not available when this model was built, so
 per-table cross-checks against the publication were not performed; see
 the *Assumptions, deviations, and Errata* section below.
 
@@ -306,18 +306,16 @@ trajectory). {.table}
 ## Validation strategy
 
 The validation strategy for this DDMORE-source extraction is
-**mechanistic_sanity** (per the validation flag in the metadata this
-model was built from). For this model type, the relevant checks from the
-package’s validation checklist are F.3 (count / hazard /
-typical-trajectory) plus the F.2 self-consistency substitute, since the
-linked Zecchin 2016 publication was not directly on disk for this
-extraction:
+**mechanistic sanity**. For this model type the relevant checks are the
+mechanistic-sanity check (count / hazard / typical-trajectory) plus the
+self-consistency substitute, since the linked Zecchin 2016 publication
+was not available when this model was built:
 
-- **F.3 typical-value mechanistic check.** The deterministic SLD
-  trajectory matches the model’s mechanism (decline during treatment,
-  regrowth after treatment ends, additive on the two drug effects,
-  baseline = `IBASE * 1000`).
-- **F.2 self-consistency.** The model parses (`buildModelDb()` +
+- **Typical-value mechanistic check.** The deterministic SLD trajectory
+  matches the model’s mechanism (decline during treatment, regrowth
+  after treatment ends, additive on the two drug effects, baseline =
+  `IBASE * 1000`).
+- **Self-consistency check.** The model parses (`buildModelDb()` +
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   clean),
   [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
@@ -330,7 +328,7 @@ A side-by-side comparison against the bundle’s
 `Output_simulated_SLD.lst` IPRED trajectory or against the published
 Zecchin 2016 figures is **not** included because the simulated-listing
 per-subject IPRED tables are not in the bundle and the publication PDF
-was not on disk for this extraction.
+was not available when this model was built.
 
 ## Assumptions, deviations, and Errata
 
@@ -363,16 +361,15 @@ was not on disk for this extraction.
   shrinkage should be borne in mind when interpreting individual
   parameter estimates from this model.**
 - **No external publication-table cross-check.** The publication PDF
-  (Zecchin 2016, BJCP, <doi:10.1111/bcp.12994>) was not on disk for this
-  extraction. Parameter values come exclusively from
+  (Zecchin 2016, BJCP, <doi:10.1111/bcp.12994>) was not available when
+  this model was built. Parameter values come exclusively from
   `Output_real_SLD.lst`; the `Model_Accomodations.text` file that DDMORE
-  bundles usually ship was also not present in this directory. Citation
+  bundles usually ship was also not present in this bundle. Citation
   metadata was confirmed via PubMed E-utilities (PMID 27136318).
 - **No in-bundle `Model_Accomodations.text`.** The DDMORE bundle for
   `DDMODEL00000217` does not ship a `Model_Accomodations` reference file
   (one of the optional bundle artefacts). The publication mapping used
-  here was reconstructed from the PubMed citation match for the metadata
-  this model was built from.
+  here was reconstructed from the PubMed citation match.
 - **M3 censored-likelihood handling omitted.** The source `$ERROR` block
   uses the M3 method to handle below-LLOQ SLD observations
   (`LLOQ = 5 mm`, `BQL` indicator column, `F_FLAG = 1` censoring branch

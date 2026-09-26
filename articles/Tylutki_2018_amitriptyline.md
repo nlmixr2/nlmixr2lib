@@ -309,7 +309,7 @@ mod
 #>     # a few observations, and Tylutki 2018 reports no variance component
 #>     # for it (the inter-individual variability the paper does discuss
 #>     # belongs to the imported PBPK layer, not to this PD model). Per the
-#>     # standing operator policy on unreported IIV this file ships a
+#>     # maintainers' standing policy on unreported IIV this file ships a
 #>     # typical-value-only model; the vignette Errata documents the gap.
 #>     # ==================================================================
 #>   })
@@ -340,7 +340,7 @@ mod
 #>     rr ~ add(addSd)
 #>   })
 #> }
-#> <environment: 0x55ef15db3bd0>
+#> <environment: 0x5555ebac96c0>
 ```
 
 ## Population

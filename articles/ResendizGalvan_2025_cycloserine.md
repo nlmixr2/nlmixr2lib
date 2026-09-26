@@ -791,5 +791,5 @@ stopifnot(median(tmax_sim$tmax) > 1, median(tmax_sim$tmax) < 4)
   representable as a model-level parameter and is omitted.
 - **Erratum.** The article was published 2 September 2025 and reposted 1
   October 2025 correcting the author-contributions statement only. No
-  model parameter was revised; the version on disk is the corrected one.
+  model parameter was revised; the version used is the corrected one.
   \`\`\`

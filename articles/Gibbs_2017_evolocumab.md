@@ -248,7 +248,7 @@ mod
 #>     dose_range = "Phase 1a: single SC 7, 21, 70, 210, or 420 mg. Phase 1b: SC 14 mg QW x 6, 35 mg QW x 6, 140 mg Q2W x 3, 280 mg Q2W x 3, or 420 mg QM x 2.",
 #>     pcsk9_baseline = "5.27 nM (379 ng/mL) typical in statin-treated patients; 3.36 nM (242 ng/mL) typical in healthy subjects. Baseline PCSK9 was 1.58-fold higher in the phase 1b study than the phase 1a study.",
 #>     ldlc_baseline = "116 mg/dL typical (BASE_LDL-C, Table 3)",
-#>     notes = "A total of 73 participants received evolocumab and 28 received placebo across the two studies; the model dataset comprised the 101 individuals with evaluable PK/PD data. Baseline demographics are given in the paper's Table S1 (Supporting Information), which is not in the on-disk source set; the demographic values recorded here are the pooled summaries stated in the Results narrative. Estimation used NONMEM 7.2 with SAEM followed by importance sampling, and the M3 method for below-limit-of-quantification unbound evolocumab and unbound PCSK9 observations."
+#>     notes = "A total of 73 participants received evolocumab and 28 received placebo across the two studies; the model dataset comprised the 101 individuals with evaluable PK/PD data. Baseline demographics are given in the paper's Table S1 (Supporting Information), which was not available when this model was built; the demographic values recorded here are the pooled summaries stated in the Results narrative. Estimation used NONMEM 7.2 with SAEM followed by importance sampling, and the M3 method for below-limit-of-quantification unbound evolocumab and unbound PCSK9 observations."
 #>   )
 #> 
 #>   ini({
@@ -405,7 +405,7 @@ mod
 #>     ldl       ~ add(addSd_ldl) + prop(propSd_ldl)
 #>   })
 #> }
-#> <environment: 0x55562d4a05c8>
+#> <environment: 0x55c1f3145c10>
 ```
 
 Equation 5 is the positive root of the one-to-one QSS binding quadratic.
@@ -1072,12 +1072,12 @@ is the assertion that is gated.
   and the Figure 1 legend defines `kel` as the elimination rate
   constant; `k * FDC * V` is therefore `CL * FDC`, which is how it is
   encoded.
-- **Table S1 is not on disk.** The paper’s baseline-demographics table
-  is in the Supporting Information, which is not part of the open-access
-  deposit. The population metadata therefore uses the pooled demographic
-  summaries stated in the Results narrative (n, sex, race, mean age,
-  mean weight) rather than per-study strata. No model parameter depends
-  on Table S1.
+- **Table S1 was not available.** The paper’s baseline-demographics
+  table is in the Supporting Information, which is not part of the
+  open-access deposit. The population metadata therefore uses the pooled
+  demographic summaries stated in the Results narrative (n, sex, race,
+  mean age, mean weight) rather than per-study strata. No model
+  parameter depends on Table S1.
 - **The statin-intensity strata are simulated by setting `lrbase_target`
   directly**, not through `DIS_HEALTHY`. Statin *intensity* is not a
   covariate in the final model – Gibbs 2017 reports the Table 1 contrast

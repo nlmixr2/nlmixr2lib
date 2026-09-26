@@ -324,7 +324,7 @@ investigation rather than tuning.
   covariate because only 4 of 26 subjects were *1/*3 (insufficient
   power). The packaged model does not encode this hint. Users with a
   CYP3A5-genotyped cohort may wish to consult Chien 2022 Supplement Fig
-  S1 (not on disk when this model was built) for the per-genotype eta
+  S1 (not available when this model was built) for the per-genotype eta
   deviations.
 
 - **Sampling design and external dataset.** The healthy-volunteer

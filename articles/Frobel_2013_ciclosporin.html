@@ -3468,32 +3468,34 @@ whose covariate effects fall inside the joint clinical- relevance
 bands.</p>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-checks-verification-checklist-f-2">Mechanistic sanity checks (verification-checklist F.2)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks-verification-checklist-f-2"></a>
+<h2 id="mechanistic-sanity-checks">Mechanistic sanity checks<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks"></a>
 </h2>
 <p>The model is a TTE survival model, not a PK/PD concentration model -
 PKNCA is not the right validation tool. The checks below exercise the
 hazard equation under controlled inputs.</p>
 <div class="section level3">
-<h3 id="f-2-1---typical-value-hazard-transitions-match-table-3-exactly">F.2.1 - typical-value hazard transitions match Table 3 exactly<a class="anchor" aria-label="anchor" href="#f-2-1---typical-value-hazard-transitions-match-table-3-exactly"></a>
+<h3 id="check-1---typical-value-hazard-transitions-match-table-3-exactly">Check 1 - typical-value hazard transitions match Table 3
+exactly<a class="anchor" aria-label="anchor" href="#check-1---typical-value-hazard-transitions-match-table-3-exactly"></a>
 </h3>
 <p>Shown above in the Figure 1 cross-check.</p>
 </div>
 <div class="section level3">
-<h3 id="f-2-2---cumulative-hazard-is-the-time-integral-of-the-piecewise-hazard">F.2.2 - cumulative hazard is the time-integral of the piecewise
-hazard<a class="anchor" aria-label="anchor" href="#f-2-2---cumulative-hazard-is-the-time-integral-of-the-piecewise-hazard"></a>
+<h3 id="check-2---cumulative-hazard-is-the-time-integral-of-the-piecewise-hazard">Check 2 - cumulative hazard is the time-integral of the piecewise
+hazard<a class="anchor" aria-label="anchor" href="#check-2---cumulative-hazard-is-the-time-integral-of-the-piecewise-hazard"></a>
 </h3>
 <p>Shown above in the Figure 2 cross-check; maximum absolute error of
 the simulated survival vs. hand calculation is below 1e-4 at every break
 point.</p>
 </div>
 <div class="section level3">
-<h3 id="f-2-3---survival-is-monotonically-non-increasing">F.2.3 - survival is monotonically non-increasing<a class="anchor" aria-label="anchor" href="#f-2-3---survival-is-monotonically-non-increasing"></a>
+<h3 id="check-3---survival-is-monotonically-non-increasing">Check 3 - survival is monotonically non-increasing<a class="anchor" aria-label="anchor" href="#check-3---survival-is-monotonically-non-increasing"></a>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">sur</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-2-4---long-time-horizon-survival-saturates-at-the-late-hazard">F.2.4 - long-time-horizon survival saturates at the late hazard<a class="anchor" aria-label="anchor" href="#f-2-4---long-time-horizon-survival-saturates-at-the-late-hazard"></a>
+<h3 id="check-4---long-time-horizon-survival-saturates-at-the-late-hazard">Check 4 - long-time-horizon survival saturates at the late
+hazard<a class="anchor" aria-label="anchor" href="#check-4---long-time-horizon-survival-saturates-at-the-late-hazard"></a>
 </h3>
 <p>After day 100 the hazard is fixed at h5 = 0.00013/day, so survival
 decays exponentially with rate 0.00013/day. At the longest observed

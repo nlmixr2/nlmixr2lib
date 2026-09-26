@@ -3121,8 +3121,9 @@ simulated dataset (<code>ID, TIME, WT, AMT, RATE, DV, MDV</code>) with
 publication-derived point values used to drive the simulation; there is
 no <code>Output_real_*.lst</code> estimation listing in the bundle, so
 the values cannot be cross-checked against a re-fitted set of final
-estimates. The original Kloft 2004 publication is not on disk, so a
-side-by-side publication-table comparison is also out of scope here.</p>
+estimates. The original Kloft 2004 publication was not available when
+this model was built, so a side-by-side publication-table comparison is
+also out of scope here.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3379,13 +3380,14 @@ the random effects so the prediction is deterministic per WT bin:</p>
 <div class="section level2">
 <h2 id="self-consistency-vs-the-bundles-simulated-dataset">Self-consistency vs the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-vs-the-bundles-simulated-dataset"></a>
 </h2>
-<p>Because the original publication is not on disk, the validation here
-is a self-consistency check: the typical-value trajectory of this
-<code>rxode2</code>-translated model should match the shape of the
-per-subject DV cloud shipped in the bundle’s
-<code>Simulated_sibrotuzumab.csv</code>. (Per-subject exact matches are
-not expected – each NMTRAN simulation subject draws its own ETAs and the
-combined-error EPS, which differ from the seeds drawn here.)</p>
+<p>Because the original publication was not available when this model
+was built, the validation here is a self-consistency check: the
+typical-value trajectory of this <code>rxode2</code>-translated model
+should match the shape of the per-subject DV cloud shipped in the
+bundle’s <code>Simulated_sibrotuzumab.csv</code>. (Per-subject exact
+matches are not expected – each NMTRAN simulation subject draws its own
+ETAs and the combined-error EPS, which differ from the seeds drawn
+here.)</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bundle_csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
 <span>  <span class="st">"extdata"</span>, <span class="st">"ddmore"</span>, <span class="st">"DDMODEL00000195_Simulated_sibrotuzumab.csv"</span>,</span>
@@ -3665,12 +3667,12 @@ VARIABILITY blocks – i.e., the publication’s reported numbers as
 transcribed into the DDMORE encoding, not numbers obtained from a
 re-fit.</li>
 <li>
-<strong>The Kloft 2004 publication is not on disk.</strong> The
-package metadata (description, units, citation, DOI) reflects the
-publication, but a side-by-side comparison against the published
-parameter table or NCA summary is not part of this vignette. The
-validation here is restricted to the self-consistency check against the
-bundle’s own simulated dataset.</li>
+<strong>The Kloft 2004 publication was not available when this model
+was built.</strong> The package metadata (description, units, citation,
+DOI) reflects the publication, but a side-by-side comparison against the
+published parameter table or NCA summary is not part of this vignette.
+The validation here is restricted to the self-consistency check against
+the bundle’s own simulated dataset.</li>
 <li>
 <strong>Population demographics are intentionally <code>NA</code> in
 <code>population</code>.</strong> <code>n_subjects</code>,

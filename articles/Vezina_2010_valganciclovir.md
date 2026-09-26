@@ -330,10 +330,10 @@ observed but did not incorporate into the final model.
   approximately 21 ug \* h/mL for a 14 kg subject at 11.1 mg/kg). The
   vignette comparison treats the published value as ug \* h/mL.
 - **Errata search.** A scan of the Dovepress article landing page at
-  doi.org/10.2147/CPAA.S8341 and a search of the on-disk source-paper
-  directory turned up no erratum or corrigendum. The model parameters
-  reflect the values reported in the original Clin Pharmacol Adv Appl
-  2010;2:1-7 publication.
+  doi.org/10.2147/CPAA.S8341 and a search of the source paper itself
+  turned up no erratum or corrigendum. The model parameters reflect the
+  values reported in the original Clin Pharmacol Adv Appl 2010;2:1-7
+  publication.
 - **Vignette uses 200 subjects per cohort.** This produces stable
   percentile envelopes and PKNCA summaries without exceeding the pkgdown
   5-minute render budget. The Vezina 2010 study itself analyzed 43

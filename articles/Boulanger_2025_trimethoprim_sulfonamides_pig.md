@@ -839,12 +839,11 @@ adjusted to move any of these numbers.
 ## Assumptions and deviations
 
 - **Equations 2 and 3 were transcribed from the article, not assumed.**
-  Both display equations are lost by the markdown conversion of the PDF
-  (they render as `formula-not-decoded`), but they extract cleanly from
-  the PDF’s layout text and are quoted verbatim above. No reconstruction
-  was needed. The four worked covariate examples in the Discussion are
-  retained as an independent check and reproduce to the paper’s stated
-  precision.
+  Both display equations are lost by naive plain-text extraction of the
+  PDF, but they extract cleanly from the PDF’s layout text and are
+  quoted verbatim above. No reconstruction was needed. The four worked
+  covariate examples in the Discussion are retained as an independent
+  check and reproduce to the paper’s stated precision.
 
 - **Number of occasions.** The paper reports one IOV standard deviation
   per parameter but does not state how many occasions the estimation

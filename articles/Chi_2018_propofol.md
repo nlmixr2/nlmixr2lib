@@ -393,29 +393,30 @@ CTP class. {.table}
   pattern: Royer 2010 HuHMFG1 (AST on CL) and Weatherley 2018
   fosdagrocorat (AGE on CL).
 - **CTP score encoded as the continuous canonical `CTP_SCORE`.** This is
-  a new canonical covariate registered alongside this extraction in
+  a new canonical covariate registered alongside this model in
   `inst/references/covariate-columns.md`. The existing `HEPIMP_SEV`
   (binary Class C indicator) and `HEPIMP_MODSEV` (binary Class B+C
   indicator) entries cannot represent the continuous power-form encoding
   used by Chi 2018 on V2. Scope: general; founding example:
   `Chi_2018_propofol.R`. See `inst/references/covariate-columns.md` for
   the full entry.
-- **Companion 3-compartment popPK paper (Ye 2012 / Rui 2012) is on disk
-  but not extracted into this entry.** The same first author (Xinjin
-  Chi) co-authored a multicenter Chinese-cohort propofol popPK paper
-  that DOES report a full OMEGA / SIGMA structure: Ye HB, Li JH, Rui JZ
-  et al, “Propofol pharmacokinetics in China: A multicentric study”,
-  Indian J Pharmacol 2012; 44(3):393-7 (PMID 22701253). Ye 2012 uses a
-  3-compartment model with age and sex on V1 and body weight on Q3 (n =
-  220 across four hospitals) and is therefore structurally distinct from
-  Chi 2018’s 2-compartment model with body weight on CL and CTP on V2 (n
-  = 32, hepatic-insufficiency subgroup of the same Sun Yat-sen
-  hospital). Because the two papers describe structurally distinct final
-  models, OMEGA / SIGMA values are not directly transferable between
-  them; the maintainers queued Ye 2012 for its own standalone extraction
-  rather than making this entry depend on it. Users wanting
-  between-subject variability for propofol in a Chinese cohort should
-  consult `modellib("Ye_2012_propofol")` when it becomes available.
+- **Companion 3-compartment popPK paper (Ye 2012 / Rui 2012) was
+  available but is not extracted into this entry.** The same first
+  author (Xinjin Chi) co-authored a multicenter Chinese-cohort propofol
+  popPK paper that DOES report a full OMEGA / SIGMA structure: Ye HB, Li
+  JH, Rui JZ et al, “Propofol pharmacokinetics in China: A multicentric
+  study”, Indian J Pharmacol 2012; 44(3):393-7 (PMID 22701253). Ye 2012
+  uses a 3-compartment model with age and sex on V1 and body weight on
+  Q3 (n = 220 across four hospitals) and is therefore structurally
+  distinct from Chi 2018’s 2-compartment model with body weight on CL
+  and CTP on V2 (n = 32, hepatic-insufficiency subgroup of the same Sun
+  Yat-sen hospital). Because the two papers describe structurally
+  distinct final models, OMEGA / SIGMA values are not directly
+  transferable between them; the maintainers intend to encode Ye 2012 as
+  its own standalone entry rather than making this entry depend on it.
+  Users wanting between-subject variability for propofol in a Chinese
+  cohort should consult `modellib("Ye_2012_propofol")` when it becomes
+  available.
 - **TCI controller not encoded.** Chi 2018’s TCI-performance analysis
   (Figures 2 / 3 / 4 and the published MDPE / MDAPE / wobble /
   divergence summary) compares the Marsh-parameter Diprifusor TCI
@@ -424,7 +425,7 @@ CTP class. {.table}
   concentrations – it is not a TCI controller. Reproducing Chi 2018’s
   Figure 2 measured-Cm overshoot pattern would require simulating the
   Marsh-TCI algorithm as a forcing function on top of the packaged Chi
-  2018 PK model; that is out of scope for this extraction.
+  2018 PK model; that is out of scope for this entry.
 - **Representative CTP scores in the simulation.** The packaged
   covariate column `CTP_SCORE` is a continuous integer 5-15; the
   published cohort spanned 5-14. The simulation panel above used

@@ -8,8 +8,8 @@
   fibrosis patients. *Br J Clin Pharmacol* 63(4):438-450.
   <doi:10.1111/j.1365-2125.2006.02778.x>.
 - Article: <https://doi.org/10.1111/j.1365-2125.2006.02778.x>
-- Source files on disk: the published PDF (`HENNIG_S_BJCP_2007_OD.pdf`)
-  and an example BQL-method NONMEM control stream
+- Source files: the published PDF (`HENNIG_S_BJCP_2007_OD.pdf`) and an
+  example BQL-method NONMEM control stream
   (`HENNIG_S_BJCP_2007_OD EXAMPLE_BQL_METHOD4_(BEAL_JPKPD2001)_CTL.ctl`)
   shipped alongside the paper. The .ctl file is an *example* of the Beal
   2001 M4 likelihood implementation rather than the final-model control

@@ -3108,9 +3108,9 @@ estimates presented as medians”, NONMEM Estimate column). The companion
 from the upstream NONMEM control stream + listing (DDMODEL00000220) and
 therefore carries slightly more decimal-precision on the IIV / IOV
 variances (the paper rounds those to integer % CV). The two entries are
-intentionally redundant under the standing convention that DDMoRE-source
-and paper-source extractions are tracked separately because the
-extraction-route fingerprints differ.</p>
+intentionally redundant under the package’s convention that
+DDMoRE-source and paper-source encodings are kept as separate entries
+because they are built from different source material.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3633,7 +3633,7 @@ paper’s single IOV estimate of 36% CV.</p>
 </h2>
 <ul>
 <li>
-<strong>No observed data on disk.</strong> Direct overlay against
+<strong>No observed data available.</strong> Direct overlay against
 the paper’s Figure 1 (raw concentrations) or Figure 3 (VPC) is not part
 of this vignette – the paper’s observed dataset is not redistributable.
 Validation is by closed-form CL/F vs. AUCss check + PKNCA roundtrip

@@ -728,14 +728,14 @@ ratio as evidence that the underlying EBE difference was zero.
   `ini(lcl = log(2.3))`.
 
 - **Exponents recovered with `pdftotext -layout`.** Both final-model
-  equations are display mathematics that the markdown preprocessing of
-  this paper drops entirely (it emits `<!-- formula-not-decoded -->` in
-  their place), taking the whole covariate model with them. They are
-  recovered from the PDF with `pdftotext -layout`, which preserves
-  superscripts by placing them on the line above; the extraction is
-  quoted verbatim in the Source trace section. The same extraction is
-  what establishes that the Vd weight term carries *no* exponent
-  (i.e. exactly 1) rather than one that was silently lost.
+  equations are display mathematics that do not survive plain-text
+  extraction of the PDF (they are dropped entirely, taking the whole
+  covariate model with them). They are recovered from the PDF with
+  `pdftotext -layout`, which preserves superscripts by placing them on
+  the line above; the extraction is quoted verbatim in the Source trace
+  section. The same extraction is what establishes that the Vd weight
+  term carries *no* exponent (i.e. exactly 1) rather than one that was
+  silently lost.
 
 - **Body-size exponents encoded as `fixed()`.** 0.75 on clearance and 1
   on volume are printed inside the equations with no standard error and

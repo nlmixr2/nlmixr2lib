@@ -571,7 +571,7 @@ Rat mean-ELF to plasma AUC ratio over 0-24 h implied by the model.
 Wen 2025 develops one framework and applies it in four combinations: two
 drugs (salbutamol, fluticasone propionate) in two species (rat, human).
 **Only the rat salbutamol arm is packaged here.** The other three are
-not reproducible from the sources available on disk:
+not reproducible from the available sources:
 
 - **Fluticasone propionate in the rat.** Appendix S1 section 3.2 reports
   only the three *regional* MPPD deposition totals (head 0.9258, TB
@@ -597,7 +597,7 @@ not reproducible from the sources available on disk:
   exported empty.
 
 Filling any of those gaps would mean substituting values that are not in
-any on-disk source, which the nlmixr2lib PBPK sourcing rule forbids.
+any available source, which the nlmixr2lib PBPK sourcing rule forbids.
 
 ## Assumptions and deviations
 

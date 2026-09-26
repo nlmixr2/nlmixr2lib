@@ -65,11 +65,11 @@ The Yoshioka 2018 modelling pipeline has two distinct layers:
     describes these models in prose only – the structural parameters
     (compartments, ka, CL, V, residual error) appear only in
     “supplemental Methods and supplemental Table 1.” That data
-    supplement is not on disk in the source archive for this extraction
-    and is therefore **out of scope** for this model. The published
-    slope-of-PT adjustments to RecombiplasTin reagent equivalence per
-    Gosselin 2016 (ref 26) are similarly in the supplement and are not
-    re-derived here.
+    supplement was not available when this model was built and is
+    therefore **out of scope** for this model. The published slope-of-PT
+    adjustments to RecombiplasTin reagent equivalence per Gosselin 2016
+    (ref 26) are similarly in the supplement and are not re-derived
+    here.
 
 2.  **MBMA event-rate layer (PT ratio -\> event probability).** This is
     the original contribution of Yoshioka 2018 and is **fully specified

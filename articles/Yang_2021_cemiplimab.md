@@ -360,11 +360,12 @@ population median (76.2 kg).
   is internally inconsistent: if `BLK` is a 0/1 indicator (Black = 1,
   non-Black = 0), then `0^1.01 = 0` would zero out T50 for the 96.4% of
   non-Black patients in the cohort. The paper does not show the NONMEM
-  control stream and the supplementary DOCX was not available on disk,
-  so the intended encoding could not be verified. The paper itself
-  states all retained covariates had “limited impact (\< 20%) on
-  cemiplimab exposure” and were “not clinically meaningful” given the
-  flat exposure-response relationship. The packaged model therefore uses
+  control stream and the supplementary DOCX was not available when this
+  model was built, so the intended encoding could not be verified. The
+  paper itself states all retained covariates had “limited impact (\<
+  20%) on cemiplimab exposure” and were “not clinically meaningful”
+  given the flat exposure-response relationship. The packaged model
+  therefore uses
   $`T_{50,i} = T_{50,\mathrm{REF}} \cdot \exp(\eta_{T_{50}})`$ for all
   races. Datasets with a `RACE_BLACK` column will be ignored by this
   model; this should be an immaterial omission per the paper’s own

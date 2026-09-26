@@ -86,7 +86,8 @@ and are called out where they arise:
   all: the CYP1A2 degradation rate constant kdeg (the authors used the
   Simcyp default and never print it), and the maximal fold induction and
   EC50 of CYP1A2 autoinduction (taken from Supplementary Table S3, which
-  is not on disk). Nothing in the five model files depends on them.
+  was not available when this model was built). Nothing in the five
+  model files depends on them.
 
 ## In vitro systems
 
@@ -706,14 +707,14 @@ the paper and what would be needed to close each gap.
 | Published result | Value | Why it is not reproduced |
 |:---|:---|:---|
 | Fraction of BMS-911543 metabolised by CYP1A2 | 96 percent of total clearance | Needs hepatic abundances of CYP1A2, CYP3A4 and CYP2J2, an intersystem extrapolation factor and MPPGL. None is reported. |
-| Absorption rate constant | ka = 4.138 /h | A Simcyp ADAM absorption-model output; the underlying solubility, particle-size and gastrointestinal transit inputs are in Supplementary Tables S1 and S3, which are not on disk. |
+| Absorption rate constant | ka = 4.138 /h | A Simcyp ADAM absorption-model output; the underlying solubility, particle-size and gastrointestinal transit inputs are in Supplementary Tables S1 and S3, which were not available when this model was built. |
 | Fraction of dose absorbed | Fa falls from 1 to 0.42 over 5-240 mg | Same as above; the dose-dependence is a solubility-limited absorption prediction of the platform model. |
 | Fraction escaping gut-wall metabolism | Fg = 1 | A platform output; no intestinal physiology is reported. |
 | Adjusted apparent clearance | Falls from 11.3 to 7.3 L/h over the dose range | Derived as Fa \* dose / AUC(day 1) using the platform’s own Fa and the observed AUCs of Figure 4; both inputs are unavailable as numbers. |
-| Hepatic CYP1A2 activity remaining at day 15 | 62 percent with induction, 54 percent without, so induction attenuates the inactivation by 17 percent | Requires the enzyme degradation rate constant kdeg (Simcyp default, never printed), the autoinduction Emax and EC50 (Supplementary Table S3, not on disk), and a liver unbound-concentration profile from the whole-body model. |
+| Hepatic CYP1A2 activity remaining at day 15 | 62 percent with induction, 54 percent without, so induction attenuates the inactivation by 17 percent | Requires the enzyme degradation rate constant kdeg (Simcyp default, never printed), the autoinduction Emax and EC50 (Supplementary Table S3, not available when this model was built), and a liver unbound-concentration profile from the whole-body model. |
 | Volume of distribution at steady state | 0.26 L/kg (18.2 L at 70 kg) from rat tissue-to-plasma ratios; about 2 L/kg from in silico partition coefficients | The rat tissue distribution study’s partition coefficients are not tabulated in the paper, and no whole-body physiology is reported to combine them with. |
 | Clinical population PK | Vss/F about 50 L, described as a preliminary analysis | A single parameter with no clearance, no absorption and no structural model; not an extractable model. |
-| Clinical half-life by dose | 2.0-2.8 h at 5-40 mg; 2.7-5.7 h at 80-240 mg | Non-compartmental summaries of the first-in-human study, reported without the underlying concentration data (Supplementary Table S2 is not on disk). |
+| Clinical half-life by dose | 2.0-2.8 h at 5-40 mg; 2.7-5.7 h at 80-240 mg | Non-compartmental summaries of the first-in-human study, reported without the underlying concentration data (Supplementary Table S2 was not available when this model was built). |
 
 Published results of the platform half of Zhou 2015, and why each is out
 of scope. {.table}
@@ -771,10 +772,10 @@ of scope. {.table}
   it.
 - **The CYP1A2 autoinduction arm is absent.** Its maximal fold induction
   and EC50 were taken from experimental values reported in Supplementary
-  Table S3, which is not on disk. That supplement is immaterial to
-  everything extracted here: all eight metabolism constants are in
-  Figure 1 and both inactivation constants are in Figure 2 and in the
-  Results text.
+  Table S3, which was not available when this model was built. That
+  supplement is immaterial to everything extracted here: all eight
+  metabolism constants are in Figure 1 and both inactivation constants
+  are in Figure 2 and in the Results text.
 - **No enzyme resynthesis term.** The inactivation model describes the
   inactivation limb of a microsomal assay, in which no enzyme is made.
   Extending it to the in-vivo turnover balance would need kdeg, which

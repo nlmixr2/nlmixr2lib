@@ -111,7 +111,7 @@ is the NONMEM-generated stochastic prediction (`IPRED + EPS(1)`) for the
 scenario-4 model on a representative grid of single-, two-, and
 three-drug exposures. The associated publication
 ([doi:10.1093/jac/dkx380](https://doi.org/10.1093/jac/dkx380)) was not
-on disk when this model was built, so PKNCA-style comparison against
+available when this model was built, so PKNCA-style comparison against
 published Cmax / AUC tables is not applicable (this is bacterial-count
 PD on log scale, not concentration-time PK). The validation strategy is
 therefore the **self-consistency** path augmented with the
@@ -428,14 +428,13 @@ review.
   published scenario-4 fit values; the `Output_simulated_*.lst`
   re-prints these in its `FINAL PARAMETER ESTIMATE` block under
   `MAXEVAL = 0` evaluation, confirming the cross-walk).
-- **Linked publication not on disk.** The associated paper
+- **Linked publication not available.** The associated paper
   ([doi:10.1093/jac/dkx380](https://doi.org/10.1093/jac/dkx380)) was not
-  available in the maintainers’ literature mirror when this model was
-  built. PKNCA-style comparison against published tables / figures from
-  the publication is therefore not possible. Validation reduces to the
-  self-consistency check against the bundle-shipped `DV` and the
-  mechanistic-sanity check on bacterial-subpopulation trajectories
-  above.
+  available when this model was built. PKNCA-style comparison against
+  published tables / figures from the publication is therefore not
+  possible. Validation reduces to the self-consistency check against the
+  bundle-shipped `DV` and the mechanistic-sanity check on
+  bacterial-subpopulation trajectories above.
 - **`koff = 0` (irreversible adaptive resistance).** The source fixes
   `KOFF = 0`, so the ARON / AROFF system is monotone (ARON increases
   with INH exposure; never returns to AROFF). Reproduced verbatim.

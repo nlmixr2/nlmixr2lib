@@ -3510,7 +3510,7 @@ power/log-linear covariate structure.</p>
 <p>The dose-justification simulations in the paper sampled adult
 covariates from the analysis dataset and adolescent covariates from the
 National Health and Examination Survey, which is not reproducible from
-the on-disk sources. Here a 200-subject cohort of adult patients with
+the available sources. Here a 200-subject cohort of adult patients with
 HAE is generated with body weight log-normally distributed to match the
 reported median of 79.2 kg and truncated to the reported 43.3-153 kg
 range; all other covariates are held at the reference values that define
@@ -4062,7 +4062,7 @@ correct, so a leading digit appears to have been dropped.</li>
 </ol>
 </div>
 <div class="section level3">
-<h3 id="parameters-not-reported-in-any-on-disk-source">Parameters not reported in any on-disk source<a class="anchor" aria-label="anchor" href="#parameters-not-reported-in-any-on-disk-source"></a>
+<h3 id="parameters-not-reported-in-any-available-source">Parameters not reported in any available source<a class="anchor" aria-label="anchor" href="#parameters-not-reported-in-any-available-source"></a>
 </h3>
 <ul>
 <li>
@@ -4075,7 +4075,7 @@ coefficient is reported: Table S6 tabulates only the four structural PD
 parameters, and the only rendering is the Figure S6 forest plot (EC50
 only, no E0 panel), an image with no data table whose x-axis anchors –
 the 10th and 90th percentiles of baseline kallikrein activity – are not
-tabulated anywhere on disk. The coefficients are therefore not
+tabulated in any available source. The coefficients are therefore not
 digitisable. The packaged PD model is accordingly the
 <strong>reference-subject</strong> model at baseline kallikrein activity
 0.134 POB, where both covariate terms are exactly zero by construction
@@ -4145,8 +4145,8 @@ is a no-op for physically meaningful states.</li>
 <strong>Virtual cohort covariates.</strong> Body weight is drawn
 log-normally to match the reported median and truncated to the reported
 range; the paper’s own NHANES-based adolescent sampling is not
-reproducible from the on-disk sources. All other covariates are held at
-the reference-subject values.</li>
+reproducible from the available sources. All other covariates are held
+at the reference-subject values.</li>
 <li>
 <strong>Dosing interval.</strong> A 30-day interval is simulated
 throughout (the phase III regimen). Table 1’s <code>n = 173</code>

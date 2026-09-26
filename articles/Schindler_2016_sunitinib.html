@@ -3092,15 +3092,15 @@ change from baseline, RCFB1MAX.</li>
 <li>Article: <a href="https://doi.org/10.1002/psp4.12057" class="external-link uri">https://doi.org/10.1002/psp4.12057</a>
 </li>
 <li>DDMORE Foundation Model Repository entry:
-<code>DDMODEL00000221</code> – bundle directory in the maintainers’
-<code>ddmore_scraping</code> mirror at <code>221/</code>, containing
+<code>DDMODEL00000221</code> – bundle directory
+<code>ddmore_scraping/221/</code>, containing
 <code>Executable_SLD_SUV_OS_GIST.mod</code>,
 <code>Output_real_SLD_SUV_OS_GIST.lst</code>,
 <code>Output_simulated_SLD_SUV_OS_GIST.lst</code>,
 <code>Simulated_SLD_SUV_OS_GIST.csv</code>,
 <code>DDMODEL00000221.rdf</code>, <code>Command.txt</code>, and
 <code>221.json</code>. The linked publication itself (Schindler 2016,
-CPT:PSP) was not on disk when this model was built; parameter values,
+CPT:PSP) was not available when this model was built; parameter values,
 structural equations, and maintainer decisions in this vignette and the
 model file are sourced from the bundle’s <code>.mod</code> (structural
 equations + initial values) and <code>.lst</code> (final
@@ -3119,7 +3119,7 @@ target-lesion sum-of-longest-diameters (SLD) measurements, and overall
 survival follow-up to event or right-censoring. Detailed baseline
 demographics (age, weight, sex, race / ethnicity distribution,
 prior-line distribution) live in Table 1 of the linked publication,
-which was not on disk when this model was built; those fields are
+which was not available when this model was built; those fields are
 recorded as <code>NA</code> in the model’s <code>population</code>
 metadata to make the gap explicit, with a notes string pointing to
 Schindler 2016 Table 1 as the source.</p>
@@ -3394,7 +3394,7 @@ maintainer decision. The caveat is recorded in the Errata below.</p>
 the DDMODEL00000221 bundle. The bundle’s
 <code>Simulated_SLD_SUV_OS_GIST.csv</code> ships a single virtual
 subject with the standard 50 mg/day 4-weeks-on / 2-weeks-off-style
-schedule as a regression-style smoke test. For the F.2 self-consistency
+schedule as a regression-style smoke test. For the self-consistency
 check below the vignette uses a virtual cohort that mirrors that
 single-subject layout for the SUVmax + SLD + cumulative-hazard arms; the
 OS / dropout TTE arms are evaluated at typical-value parameters with
@@ -3657,8 +3657,8 @@ medians and 5th-95th percentile bands instead.</p>
 <p><img src="Schindler_2016_sunitinib_files/figure-html/fig-trajectories-3.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-check-typical-value-re-simulation-of-the-bundle-dataset">F.2 self-consistency check (typical-value re-simulation of the
-bundle dataset)<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-check-typical-value-re-simulation-of-the-bundle-dataset"></a>
+<h2 id="self-consistency-check-typical-value-re-simulation-of-the-bundle-dataset">Self-consistency check (typical-value re-simulation of the bundle
+dataset)<a class="anchor" aria-label="anchor" href="#self-consistency-check-typical-value-re-simulation-of-the-bundle-dataset"></a>
 </h2>
 <p>The bundle’s <code>Output_simulated_*.lst</code> reproduces a
 one-subject MAXEVAL = 0 simulation of the source <code>.mod</code> on
@@ -3725,9 +3725,9 @@ per-time-point.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">structural_summary</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"F.2 self-consistency: typical-value baselines vs. .mod THETA values."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Self-consistency: typical-value baselines vs. .mod THETA values."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>F.2 self-consistency: typical-value baselines vs. .mod THETA
+<caption>Self-consistency: typical-value baselines vs. .mod THETA
 values.</caption>
 <colgroup>
 <col width="31%">
@@ -3821,8 +3821,8 @@ Under the package’s convention for reading final estimates from a DDMORE
 <code>.lst</code>, <code>MINIMIZATION SUCCESSFUL</code> (with caveat) is
 acceptable but flagged here.</li>
 <li>
-<strong>Linked publication not on disk.</strong> The Schindler 2016
-publication is not on disk in the maintainers’ literature mirror; an
+<strong>Linked publication not available.</strong> The Schindler
+2016 publication was not available when this model was built; an
 external check of parameter values against the publication’s tables was
 not performed. Final estimates were taken from the <code>.lst</code>
 only.</li>
@@ -3843,7 +3843,7 @@ single virtual subject on a single dosing schedule, which is consistent
 with NONMEM regression-test usage but is not reflective of the
 66-patient pooled GIST cohort that the model was built on. The
 vignette’s virtual cohort is a deliberately small (n = 5) extension of
-the bundle’s per-subject schedule to make the F.2 self-consistency and
+the bundle’s per-subject schedule to make the self-consistency and
 qualitative-VPC checks tractable; reproducing the publication’s
 per-figure quantitative numbers would require the original observed
 dataset, which is not in the bundle.</li>

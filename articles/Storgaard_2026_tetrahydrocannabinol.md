@@ -218,7 +218,8 @@ n_per_arm <- 200L
 
 # Sampling grid mimicking the trial (Methods 2.1: "nine to 14 time points",
 # 0-8 h, which is the x-axis of Figure 1). Exact times are in Supporting
-# Information Table S1, which is not on disk -- see Errata.
+# Information Table S1, which was not available when this model was built --
+# see Errata.
 samp_study <- c(0, 0.5, 1, 1.5, 2, 3, 4, 4.5, 5, 5.5, 6, 7, 8)
 
 # Denser grid for the individual-profile NCA.
@@ -586,11 +587,11 @@ on the log scale, a 75% CV by the paper’s own equation (3)). A maximum
 taken over a sampling grid is a strongly upward-biased statistic under
 that much noise, and how strongly biased depends on **how many samples**
 and **where** – exactly the information that lives in Supporting
-Information Table S1, which is not on disk. For the three-spray arm the
-reproducible statement the available sources support is a bracketing
-one: the structural profile under-shoots the published mean, adding the
-paper’s own residual error over-shoots it, and the observed value lies
-between.
+Information Table S1, which was not available when this model was built.
+For the three-spray arm the reproducible statement the available sources
+support is a bracketing one: the structural profile under-shoots the
+published mean, adding the paper’s own residual error over-shoots it,
+and the observed value lies between.
 
 The two-spray arm supports no such comparison, and the paper’s own
 numbers say why. Its published mean of 1.85 ug/L rests on **n = 2**
@@ -712,15 +713,15 @@ second dose in every subject and the split collapses to 100%/0%.
   `depot -> transit1 -> transit2 -> central`. The MRT identity above
   confirms the resulting mean absorption time is exactly the published
   1.35 h.
-- **Supporting Information Table S1 is not on disk.** It holds the exact
-  sampling times of the three schemes. No model parameter depends on it
-  – all eight structural estimates, all five variance terms and both
-  residual terms are in Table 2 of the main paper – but the
-  observed-Cmax and BLQ-fraction comparisons above do depend on the
-  sampling grid, so a study-like grid of 13 points over 0-8 h was
-  assumed (the paper states “nine to 14 time points” and Figure 1 spans
-  0-8 h). This is why those two comparisons are asserted with wide
-  bounds and the structural identities with tight ones.
+- **Supporting Information Table S1 was not available when this model
+  was built.** It holds the exact sampling times of the three schemes.
+  No model parameter depends on it – all eight structural estimates, all
+  five variance terms and both residual terms are in Table 2 of the main
+  paper – but the observed-Cmax and BLQ-fraction comparisons above do
+  depend on the sampling grid, so a study-like grid of 13 points over
+  0-8 h was assumed (the paper states “nine to 14 time points” and
+  Figure 1 spans 0-8 h). This is why those two comparisons are asserted
+  with wide bounds and the structural identities with tight ones.
 - **The published Cmax is a mean;
   [`ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
   reports a median.** Storgaard 2026 reports mean Cmax with an SD, while
@@ -765,9 +766,9 @@ second dose in every subject and the split collapses to 100%/0%.
   estimated 616 L/h for an oral formulation), and extrapolating this
   model far beyond 8 h is not supported by the data behind it.
 - **The `11oh` metabolite suffix is used, not re-registered.** It was
-  ratified for 11-hydroxy-delta-9-tetrahydrocannabinol in
-  `inst/references/compartment-names.md` by the Wolowich 2025
-  extraction, which lists `THC-OH` (this paper’s abbreviation) among its
+  registered for 11-hydroxy-delta-9-tetrahydrocannabinol in
+  `inst/references/compartment-names.md` when the Wolowich 2025 model
+  was added, which lists `THC-OH` (this paper’s abbreviation) among its
   source aliases. See `modellib("Wolowich_2025_thc_11oh")` for the
   sibling model of the same metabolite.
 - **Cannabidiol is not modelled.** Every Sativex spray co-delivers CBD

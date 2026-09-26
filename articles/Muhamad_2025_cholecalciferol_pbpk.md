@@ -553,14 +553,15 @@ the rise.
 
 The exact cohort cannot be rebuilt here: the baseline 25(OH)D
 percentiles come from Wolters 2022 and the weights from the WHO growth
-standards, neither of which is on disk. Baseline is therefore sampled
-uniformly over the 10-90 nmol/L bounds the paper itself assumed, and the
-two ages are represented by their approximate WHO median weights (see
-Assumptions). Those choices make the threshold test *harder* than the
-paper’s, because a uniform draw puts more children near 10 nmol/L than
-the real distribution does. What is asserted below is therefore the
-claim that does not depend on them: the ordering of the two age groups,
-and that both reach sufficiency inside a year.
+standards, neither of which was available when this model was built.
+Baseline is therefore sampled uniformly over the 10-90 nmol/L bounds the
+paper itself assumed, and the two ages are represented by their
+approximate WHO median weights (see Assumptions). Those choices make the
+threshold test *harder* than the paper’s, because a uniform draw puts
+more children near 10 nmol/L than the real distribution does. What is
+asserted below is therefore the claim that does not depend on them: the
+ordering of the two age groups, and that both reach sufficiency inside a
+year.
 
 ``` r
 
@@ -940,10 +941,11 @@ quantitative claims the paper does make.
   the Table S1 bands. The individual patient data are not public.
 - **European cohort (Validation 5).** Baseline 25(OH)D drawn uniformly
   on the 10-90 nmol/L bounds the paper assumed, because the Wolters 2022
-  percentiles are not on disk; weights fixed at approximate WHO medians
-  of 20 kg (6 years) and 35 kg (11 years), because the WHO tables are
-  not on disk either. The assertions are restricted to the claims that
-  do not depend on these choices.
+  percentiles were not available when this model was built; weights
+  fixed at approximate WHO medians of 20 kg (6 years) and 35 kg (11
+  years), because the WHO tables were not available either. The
+  assertions are restricted to the claims that do not depend on these
+  choices.
 - **Mongolian cohort (Validation 6).** Baseline 25(OH)D drawn normal
   with the stated mean of 38 nmol/L and truncated at the 14.2 nmol/L
   limit of quantification; the SD is not published, so 14 nmol/L was

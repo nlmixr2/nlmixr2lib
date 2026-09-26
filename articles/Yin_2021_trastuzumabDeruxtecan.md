@@ -391,10 +391,10 @@ paper.
   ratio and molar mass,” but the paper does not give numerical values
   for the DAR / molar-mass conversion factor. The cycle index would have
   to be derived from time (the paper assumes q3w dosing throughout).
-  Both factors require numerical inputs that are not in the source on
-  disk; the released drug is therefore left out of this packaged model.
-  A future model file (separate `.R`) could implement the released-drug
-  PK once those numerical assumptions are settled.
+  Both factors require numerical inputs that are not in the source; the
+  released drug is therefore left out of this packaged model. A future
+  model file (separate `.R`) could implement the released-drug PK once
+  those numerical assumptions are settled.
 - **Covariate-effect parameterization.** Yin 2021 reports categorical-
   covariate effects (Country = Japan, Sex = Male) as fractional
   multipliers on the linear scale: `(1.174, if male)`,

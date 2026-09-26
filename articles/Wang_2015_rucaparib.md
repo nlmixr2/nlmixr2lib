@@ -379,8 +379,8 @@ mg/m^2 range.
   PK parameters” but Table 1 explicitly reports IIV CV% only for CL
   (51.2%) and V1 (57.3%). The paper notes “Estimates for all model
   parameters are available in Supplementary Table 1,” but the supplement
-  was not on disk for this extraction. IIV on V2, V3, Q2, and Q3 is
-  therefore absent from the packaged model. PK uncertainty for
+  was not available when this model was built. IIV on V2, V3, Q2, and Q3
+  is therefore absent from the packaged model. PK uncertainty for
   individual subjects is therefore understated relative to the published
   model; for typical-cohort and dose-response analyses (the bulk of this
   vignette) the omission has no effect because typical-value simulations

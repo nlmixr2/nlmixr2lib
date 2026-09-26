@@ -1015,13 +1015,13 @@ model comes from Table 2.
 
 **Doses are entered in nmol, not mg/kg.** The paper never reports the
 Pb-Tx molecular weight, so mg/kg cannot be converted to a molar amount
-from any on-disk source, and substituting a class-typical antibody mass
-would be a guess. The simulations above instead dose the molar amounts
-that place the 10 mg/kg monkey arm near the `~1.3e3 nM` initial level of
-Figure 3c, scaling the other arms proportionally. This is a presentation
-choice for the figures only: every assertion in the Conclusions table is
-a ratio, an ordering, a mass balance or a structural identity, so none
-of them depends on it.
+from any available source, and substituting a class-typical antibody
+mass would be a guess. The simulations above instead dose the molar
+amounts that place the 10 mg/kg monkey arm near the `~1.3e3 nM` initial
+level of Figure 3c, scaling the other arms proportionally. This is a
+presentation choice for the figures only: every assertion in the
+Conclusions table is a ratio, an ordering, a mass balance or a
+structural identity, so none of them depends on it.
 
 **Deviation – Figure 4e curvature.** The Results describe tumour
 receptor-mediated uptake as “not monotonic and instead may pass through
@@ -1040,8 +1040,8 @@ low-to-mid range, and here it does not – tumour exposure rises about
 eight-fold across the scan while the open fraction falls roughly as
 `1/Kmask`. The published Figure 4e was produced with an unstated `Kmask`
 grid and, as noted above, the deposited code does not carry the Table 2
-values, so the disagreement cannot be resolved from the sources on disk.
-It is recorded here rather than tuned away.
+values, so the disagreement cannot be resolved from the available
+sources. It is recorded here rather than tuned away.
 
 **No variability.** The source model is deterministic: no
 between-subject variability and no residual-error model are reported,

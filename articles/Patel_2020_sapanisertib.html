@@ -3172,10 +3172,10 @@ e.g. <code>readModelDb("Patel_2020_sapanisertib_QTcI")()$population</code>.</p>
 regression-summary table printed <strong>inside</strong> a figure panel.
 Those in-panel tables carry full printed-value authority – they are
 printed parameter tables, not digitised or curve-fitted values – but
-they are invisible to <code>pdftotext</code> and to docling because
-Figures 4 and S2 are raster images. They were recovered with
-<code>pdftoppm -r 400 -f 10</code> on the article PDF (Figures 4A and
-4C, journal page 885) and by unzipping
+they are invisible to plain-text extraction of the PDF (including
+<code>pdftotext</code>) because Figures 4 and S2 are raster images. They
+were recovered with <code>pdftoppm -r 400 -f 10</code> on the article
+PDF (Figures 4A and 4C, journal page 885) and by unzipping
 <code>cpdd808-sup-0001-suppmat.docx</code> and rendering
 <code>word/media/image4.png</code> (Figure S2).</p>
 <table class="table">

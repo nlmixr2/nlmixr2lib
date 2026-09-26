@@ -797,9 +797,9 @@ the cohort weight distribution.
   6.83 days, the published intracellular TFV-DP decay half-life. It is
   encoded here as a fixed first-order rate constant
   `log(2) / (6.83 x 24)` per hour. The sensitivity analysis behind this
-  choice is in the paper’s Table S1 and Figure S4, which are not on disk
-  (see below); the final fixed value itself is printed in Table 2 of the
-  main text.
+  choice is in the paper’s Table S1 and Figure S4, which were not
+  available (see below); the final fixed value itself is printed in
+  Table 2 of the main text.
 
 - **The model does not reproduce the secondary TAF peak.** The
   Discussion notes that the observed TAF profiles show “after an initial
@@ -830,7 +830,7 @@ the cohort weight distribution.
   distribution. The weight distribution used for the cohort simulation
   above is a log-normal matched to the published median and IQR, not a
   resampling of the actual 41 participants, whose individual covariates
-  are not available in a form on disk.
+  were not available.
 
 - **Fat-free mass was tested and rejected.** The authors report that FFM
   scaling did not improve the model over no allometry (dOFV = -3.80)
@@ -843,9 +843,9 @@ The article’s Supporting Information – Figures S1-S4 (raw data and
 goodness-of-fit plots, plus the `t1/2_TAF-Slow` sensitivity figure),
 Table S1 (the `t1/2_TAF-Slow` sensitivity analysis), a NONMEM control
 stream deposited as `PSP4-12-821-s007.mod`, and the concentration
-dataset `PSP4-12-821-s006.xlsx` – could not be retrieved. PMC now serves
-supplementary blobs behind a JavaScript proof-of-work challenge and the
-Wiley landing page returns HTTP 403.
+dataset `PSP4-12-821-s006.xlsx` – could not be retrieved when this model
+was built: PMC serves supplementary files only through an interactive
+browser challenge, and the Wiley landing page refused access.
 
 No parameter used by this model comes from those files: every structural
 element is specified in the Methods and the Figure 2 legend, and every

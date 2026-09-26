@@ -496,9 +496,8 @@ cat(sprintf("Nisin + linezolid: end-of-run CFUall = %.3g, log10 = %.3f (target l
   the implementation uses `k12 * (1 - Inh_k12)` for the effective growth
   rate – equivalent to interpreting `Inh_k12` either as written (with
   the implicit `(1 - ...)` complement) or as the residual fraction.
-  Without the on-disk supplement, no value-changing alternative
-  interpretation is available; the chosen reading is the physically
-  consistent one.
+  Without the supplement, no value-changing alternative interpretation
+  is available; the chosen reading is the physically consistent one.
 - **Sequential dosing implementation.** The paper’s experimental removal
   of nisin at ~1.75 h (centrifugation and resuspension) is implemented
   in this vignette as a step-change in the time-varying covariate `Cnis`

@@ -835,19 +835,19 @@ post-bolus concentration at CPB initiation, or the recommendation
 deliberately trades it off, as Results implies by choosing 30 ug
 “considering the target concentrations at various CPB phases”. The paper
 does not tabulate its own simulated concentrations, and Figure 3 is a
-raster image, so this cannot be settled from the sources on disk. It is
-recorded as an open discrepancy rather than resolved by adjusting any
+raster image, so this cannot be settled from the available sources. It
+is recorded as an open discrepancy rather than resolved by adjusting any
 parameter.
 
 ## Assumptions and deviations
 
-- **No supplementary material on disk.** Tables S1-S3 and Figures S1-S3
-  are not available for this extraction. Every final parameter value is
-  in main-text Table 2, so nothing in the model file depends on the
-  supplement. The supplement carries the model-development trail (Table
-  S1), the clinical laboratory / cytokine data (Table S2) and a
-  literature comparison of Vd and Vdss (Table S3) – none of which enters
-  the model.
+- **No supplementary material available.** Tables S1-S3 and Figures
+  S1-S3 were not available when this model was built. Every final
+  parameter value is in main-text Table 2, so nothing in the model file
+  depends on the supplement. The supplement carries the
+  model-development trail (Table S1), the clinical laboratory / cytokine
+  data (Table S2) and a literature comparison of Vd and Vdss (Table S3)
+  – none of which enters the model.
 - **Post-CPB phase collapses to the pre-CPB reference.** Equation 4
   admits a distinct `COV_post-CPB` multiplier, but Table 2 retains only
   `CL CPB&warming` and `V1 CPB`, so no post-CPB effect was carried into
@@ -909,8 +909,8 @@ parameter.
   ng/mL. Only the additional bolus at CPB commencement reaches the band,
   and only at the top of its explored 50-80 ug range. The paper does not
   tabulate its simulated concentrations and Figure 3 is a raster image,
-  so this cannot be settled from the sources on disk. **No parameter was
-  adjusted to close the gap**; every value remains as published in
+  so this cannot be settled from the available sources. **No parameter
+  was adjusted to close the gap**; every value remains as published in
   Table 2. The two structural gates that *are* exactly checkable (the
   2.80-fold CL and 2.74-fold V1 changes) match to 1e-6, and the paper’s
   two specific claims about the recommended regimen (0.15 ng/mL at end

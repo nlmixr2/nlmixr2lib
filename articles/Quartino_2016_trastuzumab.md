@@ -127,10 +127,11 @@ readModelDb("Quartino_2016_trastuzumab")$meta$population
 ### Virtual cohort
 
 The source paper publishes per-arm summary demographics in Online
-Resource 3 (not on disk). The cohort below is a pragmatic approximation
-centred so that reference-subject predictions reproduce the Table 1
-typical values; weight distribution is consistent with the body-weight
-quartile ranges discussed in Results (lowest quartile \< 58 kg).
+Resource 3 (not available when this model was built). The cohort below
+is a pragmatic approximation centred so that reference-subject
+predictions reproduce the Table 1 typical values; weight distribution is
+consistent with the body-weight quartile ranges discussed in Results
+(lowest quartile \< 58 kg).
 
 ``` r
 
@@ -963,7 +964,7 @@ effect on CL (exponent 1.04) and a milder effect on Vc and Vp (exponents
 
 Quartino 2016 does not publish per-subject covariate data; Online
 Resource 3 (baseline demographics by arm) is referenced in the paper but
-is not on disk for this extraction. The virtual cohort above
+was not available when this model was built. The virtual cohort above
 approximates the source cohort as follows:
 
 - **Body weight** ~ Normal(68, 12) kg clipped to 40-120 kg. Median
@@ -989,9 +990,9 @@ approximates the source cohort as follows:
   Vc, and Vp; the paper does not report a covariance or correlation
   matrix between etas, so the model encodes the four etas as a diagonal
   omega block. If the original NONMEM control stream (Online Resource 4,
-  not on disk) used a block omega, the diagonal approximation here may
-  underestimate population-level correlation between F and CL or between
-  CL and Vc.
+  not available when this model was built) used a block omega, the
+  diagonal approximation here may underestimate population-level
+  correlation between F and CL or between CL and Vc.
 - **Residual-error interpretation**: Table 1 reports proportional
   variability 23.9% and additive variability 4.48 ug/mL. These are
   stored as SDs in the standard NONMEM additive+proportional convention:
@@ -1007,9 +1008,10 @@ approximates the source cohort as follows:
   field will be amended if a later correction surfaces.
 - **Online Resources 3-13** are referenced throughout the paper for
   baseline demographics, the NONMEM control stream, GOF plots, and
-  exposure-response analyses. None are on disk for this extraction, so
-  the virtual cohort and validation here rely solely on what the main
-  paper reports in its Tables, Figures, and in-text covariate equations.
+  exposure-response analyses. None were available when this model was
+  built, so the virtual cohort and validation here rely solely on what
+  the main paper reports in its Tables, Figures, and in-text covariate
+  equations.
 
 ### Model summary
 

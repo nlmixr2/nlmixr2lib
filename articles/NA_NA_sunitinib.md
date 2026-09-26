@@ -6,7 +6,7 @@
   [DDMODEL00000231](https://repository.ddmore.eu/model/DDMODEL00000231)
   (MPD6: Sutent / sunitinib semi-mechanistic PK/PD in non-small cell
   lung cancer; MDL/PharmML deposit, version 3 in the dpastoor scrape).
-- Linked publication: not located on disk. The bundle ships only
+- Linked publication: none located. The bundle ships only
   `Sunitinib_MPD6_model.mdl` (the MDL source) and
   `Sunitinib_MPD6_model.xml` (the auto-rendered PharmML 0.6.1). No
   `Output_real_*.lst`, no `Output_simulated_*.lst`, no
@@ -19,8 +19,7 @@
 This vignette is the validation companion to
 `inst/modeldb/ddmore/NA_NA_sunitinib.R`. Because the bundle ships no
 NONMEM listing, no companion paper, and no simulated reference dataset,
-the validation strategy reduces to **F.2 self-consistency** (model
-parses,
+the validation strategy reduces to **self-consistency** (model parses,
 [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
 runs to completion at typical-value parameters, the trajectory is
 dynamically plausible). No side-by-side comparison against published
@@ -85,12 +84,12 @@ small (mostly \|0.01\|-\|0.07\|) off-diagonal entries; those
 off-diagonal correlations are not encoded in the nlmixr2 port (see
 Errata – “Off-diagonal IIV correlations dropped”).
 
-## Self-consistency simulation (F.2 substitute)
+## Self-consistency simulation (substitute)
 
-The DDMORE bundle ships no simulated dataset, so the canonical F.2
-recipe (“re-simulate the bundle’s `Simulated_*.csv` and visually compare
-with `Output_simulated_*.lst`”) cannot be run. The substitute below
-verifies that the model parses,
+The DDMORE bundle ships no simulated dataset, so the standard
+self-consistency recipe (“re-simulate the bundle’s `Simulated_*.csv` and
+visually compare with `Output_simulated_*.lst`”) cannot be run. The
+substitute below verifies that the model parses,
 [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
 runs to completion at typical-value parameters, and the trajectory is
 dynamically plausible (parent and metabolite plasma concentrations rise
@@ -265,7 +264,7 @@ data.frame(
 
 ## Assumptions and deviations
 
-- **No linked publication on disk.** The bundle for DDMODEL00000231
+- **No linked publication available.** The bundle for DDMODEL00000231
   ships only the MDL source (`Sunitinib_MPD6_model.mdl`) and its
   auto-rendered PharmML XML; no `Model_Accomodations.text`,
   `Output_real_*.lst`, `Output_simulated_*.lst`, or `Simulated_*.csv`.
@@ -274,9 +273,10 @@ data.frame(
   (the RDF-described scope) did not surface a confirming companion
   paper. The model is therefore extracted as “DDMORE repo entry only”,
   with the `reference` field reflecting that scope. Both the
-  publication-comparison validation and the F.2 bundle-simulated-dataset
-  re-simulation are unavailable; only an F.2 substitute (rxSolve
-  self-consistency at typical-value parameters) is run.
+  publication-comparison validation and the self-consistency
+  re-simulation of a bundle-simulated dataset are unavailable; only a
+  substitute (rxSolve self-consistency at typical-value parameters) is
+  run.
 - **No `.lst` cross-check on parameter values.** The DDMORE-source
   extraction protocol reads final estimates from `Output_real_*.lst`.
   This bundle ships no listing. Per a maintainer decision, the MDL
@@ -311,8 +311,8 @@ data.frame(
 - **Two-depot dosing convention.** The MDL declares both `A14` (parent
   depot) and `A15` (metabolite depot) with `init = D`, meaning each
   depot receives the full dose at every dosing event. In nlmixr2 the
-  user dispatches each dose as two simultaneous events (`cmt = "depot"`
-  and `cmt = "depot_metab"` with the same `time` and `amt`); the model
+  user enters each dose as two simultaneous events (`cmt = "depot"` and
+  `cmt = "depot_metab"` with the same `time` and `amt`); the model
   handles the bioavailability split internally through the `(1 - fp)`
   and `fp` factors on the absorption flux. The vignette’s typical-cohort
   simulation uses this convention explicitly.
@@ -401,6 +401,6 @@ data.frame(
 | biom2, biom3, biom4 (Kin-modulated) fall during drug exposure | OK |
 | Tumor volume + radius are finite and non-negative; radius matches `((3/(4*pi))*tumor)^(1/3)` exactly | OK |
 | All trajectories finite (no NaN, no Inf) | OK |
-| Comparison against published numerical or graphical values | Not performed (no publication on disk; see Errata) |
+| Comparison against published numerical or graphical values | Not performed (no publication available; see Errata) |
 | `Output_real_*.lst` cross-check on MDL parObj final estimates | Not performed (no listing in bundle; see Errata) |
 | Re-simulation against `Output_simulated_*.lst` | Not performed (no simulated dataset; see Errata) |

@@ -36,10 +36,9 @@ observations are recorded on the natural-log scale with an additive
   specification” (paper Results).
 - Detailed baseline demographics (age distribution, ECOG, Gleason score,
   prior therapy) are documented in the paper but were not transcribed
-  into this extraction’s `population` block – the paper PDF was not on
-  disk in the maintainers’ literature mirror at extraction time, so
-  demographic values come from the publicly accessible PMC full text via
-  the extraction-time E-utilities lookup.
+  into the model’s `population` block – the paper PDF was not available
+  when this model was built, so demographic values come from the
+  publicly accessible PMC full text (PMC4452933).
 
 The same metadata is available programmatically from the model file’s
 `population` list (free-floating `<-` assignment within the function
@@ -362,7 +361,7 @@ continues to fall after each new cycle because the
 production-from-current-LV term drops faster than the
 elimination-from-delayed-LV term.
 
-## Simulation 3 – F.3 mechanistic-sanity: chemo-only vs hormo-only
+## Simulation 3 – mechanistic sanity: chemo-only vs hormo-only
 
 To confirm the saturable Emax inhibition is correctly wired for each
 treatment independently, we simulate two single-arm scenarios over a
@@ -411,7 +410,7 @@ monotherapy_compare |>
   labs(x = "Time (day)",
        y = NULL,
        colour = NULL,
-       title = "F.3 sanity: response to chemo-only vs hormo-only vs combination",
+       title = "Mechanistic sanity: response to chemo-only vs hormo-only vs combination",
        caption = paste(
          "Hormo-only declines slower than chemo-only because Kh > Kc (faster K-PD elimination",
          "of hormo means each hormo dose is cleared more rapidly, so on-cycle inhibition is shorter).",
@@ -481,7 +480,7 @@ stopifnot(
 )
 ```
 
-## F.2 self-consistency check against the bundle’s simulated dataset
+## Self-consistency check against the bundle’s simulated dataset
 
 The DDMORE bundle ships `Simulated_KPD_CTC.count_PSA.csv` (intentionally
 minimal – two simulated subjects). We re-build subject 1’s dosing
@@ -531,7 +530,7 @@ ggplot(bundle_typical, aes(time, value)) +
              shape = 16, size = 2) +
   facet_wrap(~ biomarker, ncol = 1, scales = "free_y") +
   labs(x = "Time (day)", y = NULL,
-       title = "F.2 self-consistency: typical-value trajectory vs bundle's subject 1 observations",
+       title = "Self-consistency: typical-value trajectory vs bundle's subject 1 observations",
        caption = paste(
          "Blue line: typical-value rxSolve trajectory using the parameters from",
          "Output_real_SAEM_KPD_CTC.count_PSA.lst FINAL PARAMETER ESTIMATE.",
@@ -583,26 +582,23 @@ The typical trajectory and the bundle’s noisy single-subject
 observations track in the same direction – both NCTC and log_PSA decline
 as the cycles accumulate – confirming that the structural model and
 parameter values reproduce the bundle’s expected qualitative behaviour.
-Per-record absolute agreement is intentionally not a target for F.2 in
-the presence of large IIVs (paper CV% up to 450 % on KoutLV); the visual
-overlay is the validation anchor.
+Per-record absolute agreement is intentionally not a target for the
+self-consistency check in the presence of large IIVs (paper CV% up to
+450 % on KoutLV); the visual overlay is the validation anchor.
 
 ## Assumptions and deviations
 
-- **Wilbaux 2015 PDF not on disk for this extraction.** The paper PDF
-  was not present anywhere in the maintainers’ literature mirror at
-  extraction time. Methods quotes, parameter cross-checks, and the
-  model-equation transcription used in this vignette come from the
-  publicly accessible PMC4452933 full text via PubMed E-utilities (PMID
-  26225253; DOI 10.1002/psp4.34). All 14 thetas and the BLOCK(9) /
-  BLOCK(2) OMEGAs in the model file match paper Table 1 to three
-  significant figures. Demographic detail (age distribution, ECOG,
+- **Wilbaux 2015 PDF not available when this model was built.** Methods
+  quotes, parameter cross-checks, and the model-equation transcription
+  used in this vignette come from the publicly accessible PMC4452933
+  full text (PMID 26225253; DOI 10.1002/psp4.34). All 14 thetas and the
+  BLOCK(9) / BLOCK(2) OMEGAs in the model file match paper Table 1 to
+  three significant figures. Demographic detail (age distribution, ECOG,
   Gleason score, prior therapy) was not transcribed because the paper’s
   Table 1 / baseline-demographics narrative was not exhaustively quoted
-  in the PMC extract obtained at extraction time; if the maintainers
-  subsequently obtain the PDF, a follow-up audit pass to populate
-  `population$age_range`, `population$weight_range`, etc. is
-  recommended.
+  in the PMC full text consulted; if the maintainers subsequently obtain
+  the PDF, a follow-up audit pass to populate `population$age_range`,
+  `population$weight_range`, etc. is recommended.
 - **No `MINIMIZATION SUCCESSFUL` marker in the .lst.**
   `Output_real_SAEM_KPD_CTC.count_PSA.lst` is a SAEM run; SAEM listings
   emit `STOCHASTIC APPROXIMATION EXPECTATION-MAXIMIZATION` with
@@ -692,6 +688,6 @@ overlay is the validation anchor.
   sparse observation schedules. This is a regression smoke-test artifact
   and **not** representative of the publication’s clinical study
   population. The vignette’s virtual-cohort sections build their own
-  typical-subject events; the F.2 self-consistency overlay against the
+  typical-subject events; the self-consistency overlay against the
   bundle’s subject 1 records is for direction-of-trajectory confirmation
   only, not per-record agreement.

@@ -639,8 +639,8 @@ recorded as a comment block at the top of `model()` in both files.
     reproduced here. Substituting the reflection coefficients changes
     the plasma profile by at most 0.2%, so the choice is immaterial to
     every result in the paper. The paper does not print these equations,
-    deferring to Li and Shah (2019), which is not on disk; the deposit
-    is therefore the operative definition.
+    deferring to Li and Shah (2019), which was not available when this
+    model was built; the deposit is therefore the operative definition.
 
 2.  **Large-intestine transcapillary terms.** All three of the deposit’s
     ODE files drive the large-intestine two-pore clearance off
@@ -690,8 +690,8 @@ Further notes:
   description, not as measured biology; that is why the liver mRNA chain
   is declared through `paper_specific_compartments` rather than mapped
   onto canonical compartment roles.
-- **Upstream platform.** Li and Shah (2019) is not on disk. It was not
-  needed: the authors’ deposit supplies every physiological constant,
-  every size-dependent two-pore constant and every equation in
-  executable form, and each is traced to the deposit line in the model
-  files.
+- **Upstream platform.** Li and Shah (2019) was not available when this
+  model was built. It was not needed: the authors’ deposit supplies
+  every physiological constant, every size-dependent two-pore constant
+  and every equation in executable form, and each is traced to the
+  deposit line in the model files.

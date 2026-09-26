@@ -1241,9 +1241,10 @@ sim_cov |>
 - **Between-occasion variability.** Not investigated by the paper (“few
   individuals received \> 1 dose of CAM2038”; Discussion 4.1), so none
   is encoded.
-- **Supplement not on disk.** Tables S1-S4 and Figures S1-S8 were not
-  available. They document the trial designs, the dataset composition,
-  the covariate relationships screened, and the stepwise-covariate-model
-  results for the *initial* base model - none of which carry final-model
-  parameter values. All values encoded here come from Table 3 and the
-  Results narrative of the main paper.
+- **Supplement not available.** Tables S1-S4 and Figures S1-S8 could not
+  be obtained when this model was built. They document the trial
+  designs, the dataset composition, the covariate relationships
+  screened, and the stepwise-covariate-model results for the *initial*
+  base model - none of which carry final-model parameter values. All
+  values encoded here come from Table 3 and the Results narrative of the
+  main paper.

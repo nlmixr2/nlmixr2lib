@@ -781,7 +781,8 @@ the Errata below.
   S1.
 - **The number of animals per time point is not recorded.** Chen 2015
   does not state it; it lives in the upstream biodistribution paper,
-  which is not on disk. `population$n_subjects` is therefore `NA`.
+  which was not available when this model was built.
+  `population$n_subjects` is therefore `NA`.
 
 ## Errata
 

@@ -612,8 +612,8 @@ copies/mL and 13.1 ng/mL sit inside and just above those, respectively.
 That comparator model is packaged separately as `Davis_2008_maraviroc` –
 note, however, that the Davis model is a concentration-QT analysis, not
 the antiviral exposure-response the Discussion cites (which is reference
-13 of Marier 2011, not on disk here), so the two are not directly
-comparable and no cross-check is attempted.
+13 of Marier 2011 and was not available when this model was built), so
+the two are not directly comparable and no cross-check is attempted.
 
 ## Assumptions and deviations
 
@@ -646,7 +646,7 @@ comparable and no cross-check is attempted.
   `baseline * 10^dmcp1`. The paper reports baseline HIV-1 RNA by cohort
   (Table 3 medians 4.0-4.6 log10 copies/mL) but reports **no baseline
   MCP-1 concentration at all**, so the MCP-1 model cannot be converted
-  to absolute concentrations from on-disk information.
+  to absolute concentrations from the available information.
 
 - **Drug naming.** The source names the compound only as TBR-652 (also
   TAK-652). The files use the INN cenicriviroc per the library’s

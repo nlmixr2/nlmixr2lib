@@ -1106,7 +1106,7 @@ stopifnot(all(measured$`PTA (%)` >= 90 - BAND))
   `pta_long` but the paper reports no numeric claim about it, so no gate
   is placed on it.
 - **Supplementary material.** Tables S1-S3 (sampling times,
-  model-comparison BICc, raw observations) and Figures S1-S2 were not on
-  disk. None of them carries a final parameter estimate – every value in
-  the model file comes from Table 2 or the Results text of the main
-  article – so the extraction is complete without them.
+  model-comparison BICc, raw observations) and Figures S1-S2 were not
+  available. None of them carries a final parameter estimate – every
+  value in the model file comes from Table 2 or the Results text of the
+  main article – so the extraction is complete without them.

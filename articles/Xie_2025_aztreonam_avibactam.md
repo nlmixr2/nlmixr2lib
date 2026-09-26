@@ -741,7 +741,7 @@ symbol, as in `AGE/35**theta14`); a raw continuous score is also
 arithmetically impossible, since at a typical ICU APACHE II of 10 the
 factor `1 + (-0.118)*10` is negative. The model therefore carries
 `APACHE_II_SEV` as a binary indicator. **The score threshold that sets
-the flag is not stated in any source on disk and has not been invented
+the flag is not stated in any available source and has not been invented
 here.** Every simulation in this vignette holds it at the 0 reference,
 so no reproduced value depends on the inference.
 

@@ -33,7 +33,7 @@
   between-subject variability and no residual-error model. The
   inhalation (cigarette) route of the parent Rostami model is NOT
   implemented because its CFD-derived deposition fractions are
-  unreported in every on-disk source; see the vignette Errata.
+  unreported in every available source; see the vignette Errata.
 
 - Article: <https://doi.org/10.1002/jcph.70038>
 
@@ -963,7 +963,7 @@ the deposition fractions are in any case outputs of an unpublished CFD
 model. The main text (“90% of the inhaled dose deposited in the upper
 respiratory tract”) and Figures S1/S2 (“95% … deposited in lower
 respiratory tract”) also disagree, and neither gives the four-way split
-the code requires. This is a reporting gap that acquisition cannot
+the code requires. This is a reporting gap that no further source can
 close, so the cigarette arm is omitted rather than guessed at. Its one
 fitted parameter (a nicotine yield of 2.0 mg/cigarette, Table 2) is
 reported and is recorded here for completeness.
@@ -971,9 +971,9 @@ reported and is recorded here for completeness.
 **The nicotine mouth-spray validation of Figure 1 is out of scope.** It
 is the one case that takes the Equation 3 branch (flux back out of the
 tissue is non-negligible), which needs an instantaneous saliva volume
-`V_Sal`. No baseline saliva volume is reported anywhere on disk. For the
-pouches and for MST the paper takes the `R_rel(t > t_use) = 0` branch,
-where the GI input reduces analytically to
+`V_Sal`. No baseline saliva volume is reported in any available source.
+For the pouches and for MST the paper takes the `R_rel(t > t_use) = 0`
+branch, where the GI input reduces analytically to
 `(1 - f_tissue(t)) * R_rel(t)` and no saliva volume is needed. Omitting
 Figure 1 costs only a validation of `D` and `l`, both of which are taken
 as given here.
@@ -1003,7 +1003,7 @@ load-bearing.
 ### Unreported values
 
 - **No between-subject variability and no residual-error model** are
-  reported in any on-disk source, so none is encoded. The model is
+  reported in any available source, so none is encoded. The model is
   deterministic typical-value only. Salehi 2025 does explore
   inter-individual variability in the *extent of nicotine release* by
   simulation (Figure S10), but reports no variance parameters that could

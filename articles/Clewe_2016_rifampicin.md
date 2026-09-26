@@ -31,10 +31,10 @@ bacterial growth dynamics only.
   `N = 12`) followed for ~200 days under untreated growth conditions on
   a single-subject-per-culture basis.
 - No human or animal subjects are involved; no covariates are encoded.
-- The Clewe 2016 publication was **not on disk** at extraction time, so
-  a full cross-check against the paper’s printed tables / figures was
-  not performed. Parameter values derive from `Output_real_MTP.lst`
-  `FINAL PARAMETER ESTIMATE` block only.
+- The Clewe 2016 publication was **not available** when this model was
+  built, so a full cross-check against the paper’s printed tables /
+  figures was not performed. Parameter values derive from
+  `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block only.
 
 The same metadata is available programmatically:
 
@@ -367,13 +367,12 @@ dominant non-multiplying pool). {.table}
   executable. Users wanting a rifampicin-treated extension must add a
   drug term explicitly (see Clewe 2016 Section “Drug-effect models” for
   the published functional forms).
-- **No on-disk publication cross-check.** The Clewe 2016 paper
-  (<doi:10.1093/jac/dkv416>) was not present in the maintainers’
-  literature mirror at extraction time. Parameter values therefore rely
-  on the `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block alone;
-  published table values were not independently re-checked.
-  Self-consistency (vs. the bundle’s `Simulated_*.csv`) is the only
-  validation reference.
+- **No publication cross-check.** The Clewe 2016 paper
+  (<doi:10.1093/jac/dkv416>) was not available when this model was
+  built. Parameter values therefore rely on the `Output_real_MTP.lst`
+  `FINAL PARAMETER ESTIMATE` block alone; published table values were
+  not independently re-checked. Self-consistency (vs. the bundle’s
+  `Simulated_*.csv`) is the only validation reference.
 - **Convention deviations** flagged by
   `checkModelConventions("Clewe_2016_rifampicin")`:
   - Compartment names `fbugs`, `sbugs`, `nbugs` are not in the canonical

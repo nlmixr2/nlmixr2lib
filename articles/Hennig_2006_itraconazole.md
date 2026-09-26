@@ -1932,7 +1932,7 @@ tuning parameters.
   cohort was Caucasian and race / disease state are not in the
   final-model covariate equations, so the vignette does not stratify on
   race or disease.
-- **Errata.** No erratum / corrigendum to Hennig 2006 was located on
-  disk for this extraction; users should reconfirm against the Adis /
+- **Errata.** No erratum / corrigendum to Hennig 2006 was located when
+  this model was built; users should reconfirm against the Adis /
   Springer corrections feed for Clin Pharmacokinet 45(11) before relying
   on the model in production.

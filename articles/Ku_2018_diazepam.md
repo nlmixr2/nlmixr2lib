@@ -334,7 +334,7 @@ Adult-scaled (70 kg) typical-value PK parameters from Ku 2018 Table 2.
 - **Erratum search.** A search of the CPT: Pharmacometrics & Systems
   Pharmacology landing page for <doi:10.1002/psp4.12349> and a PubMed
   search for “Ku 2018 diazepam erratum / corrigendum” returned no
-  corrections as of vignette authoring (2026-05-29). No on-disk erratum
+  corrections as of vignette authoring (2026-05-29). No erratum
   accompanies the source PDF.
 - **Active metabolite N-desmethyldiazepam omitted.** Ku 2018 Discussion
   notes that diazepam’s active metabolites are unlikely to contribute

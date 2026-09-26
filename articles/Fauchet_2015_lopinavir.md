@@ -16,9 +16,9 @@ therapeutic-drug-monitoring (TDM) cohort:
   pregnancy effect on apparent maternal clearance.
 
 Both submodels share a one-compartment first-order-absorption
-disposition for maternal LPV. Per the standing extract-literature-model
-policy of replicating the author’s structure, the two are packaged as
-two separate model files (`Fauchet_2015_lopinavir_unbound`,
+disposition for maternal LPV. Following the library’s convention of
+replicating the author’s structure, the two are packaged as two separate
+model files (`Fauchet_2015_lopinavir_unbound`,
 `Fauchet_2015_lopinavir_placental`) under one vignette.
 
 - Citation: Fauchet F, Treluyer JM, Illamola SM, Pressiat C, Lui G,

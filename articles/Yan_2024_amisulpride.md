@@ -1097,7 +1097,8 @@ deep trough before the next scheduled dose arrives.
   depot compartment unscaled. Amisulpride’s absolute bioavailability of
   about 48% (Introduction) is not part of this model.
 - **The supplementary material (Figures S1-S5, Tables S1-S2) was not
-  available on disk.** It holds the covariate-screening steps and the
-  diagnostic panels for the five evaluated models; none of it
-  contributes parameter values to the packaged model, all of which come
-  from Table 5 and the main-text Discussion.
+  available when this model was built.** It holds the
+  covariate-screening steps and the diagnostic panels for the five
+  evaluated models; none of it contributes parameter values to the
+  packaged model, all of which come from Table 5 and the main-text
+  Discussion.

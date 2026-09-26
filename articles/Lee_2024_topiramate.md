@@ -1002,9 +1002,9 @@ responders.
   faithfully rather than adding unreported random effects.
 - **Ka was fixed, not estimated.** Table S1 records “Fixed at 2” for Ka,
   so it is wrapped in `fixed()` in `ini()`. The value was carried from
-  the structural model of Bae 2016, which Lee 2024 adopted; because the
-  paper reports the numeric value on disk, no upstream acquisition was
-  required.
+  the structural model of Bae 2016, which Lee 2024 adopted; because Lee
+  2024 itself reports the numeric value, the upstream paper did not need
+  to be consulted.
 - **IIV scale conversion.** The 31.0 %CV IIV on CL/F is converted to the
   internal log-scale variance as
   `omega^2 = log(1 + 0.310^2) = 0.0917584`, matching the convention used

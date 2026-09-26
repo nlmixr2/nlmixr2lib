@@ -996,8 +996,8 @@ c(max_simulated_mprotein_g_per_L = round(max_mprotein, 1),
   is encoded here as `propSd = 0.026`. Papathanasiou 2025 reports the
   *variance* 0.0633 for the same log-additive form on the same drug,
   i.e. an SD of 0.252 – roughly ten times larger. Because Table S1 says
-  “sigma” and not “sigma^2”, and because it is the value on disk for
-  this paper, 0.026 is used. Users fitting ADC concentrations should be
+  “sigma” and not “sigma^2”, and because it is the value this paper
+  reports, 0.026 is used. Users fitting ADC concentrations should be
   aware of the discrepancy.
 - **KEO appears twice with different values.** The M-protein model’s
   effect-compartment rate constant is TVKEO = 0.0284 /day (Table 1, left

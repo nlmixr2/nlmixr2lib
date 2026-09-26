@@ -378,6 +378,7 @@ values.
 
 - **Errata.** No published erratum or corrigendum to Kim 2018 was
   located. The supplementary information (Supplementary Tables S1-S3,
-  Figures S1-S4) was not on disk; it contains genotype frequencies and
-  MPA/MPAG/AcMPAG NCA values (Table S3) but no additional structural
-  parameters, so its absence does not affect the packaged model.
+  Figures S1-S4) was not available when this model was built; it
+  contains genotype frequencies and MPA/MPAG/AcMPAG NCA values (Table
+  S3) but no additional structural parameters, so its absence does not
+  affect the packaged model.

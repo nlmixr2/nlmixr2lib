@@ -3135,10 +3135,10 @@ and Hussein (2018), <em>J Clin Pharmacol</em> 58:1629-1638,
 <code>doi:10.1002/jcph.1267</code>. <strong>Liu 2025 reports no PD
 parameter of that model at all</strong> – no baseline, no lifespan, no
 slope, no turnover rate, no residual error – so the PD layer cannot be
-source-traced from anything on disk and is deliberately not implemented
-here. See “Assumptions and deviations” for the details, including which
-of the paper’s own PD numbers <em>can</em> be back-solved and which
-cannot.</li>
+source-traced from any available source and is deliberately not
+implemented here. See “Assumptions and deviations” for the details,
+including which of the paper’s own PD numbers <em>can</em> be
+back-solved and which cannot.</li>
 </ol>
 </div>
 <div class="section level2">
@@ -4109,9 +4109,9 @@ drug-effect slope, variance, or residual error appears anywhere in Liu
 2025 or its supplement. Implementing it would mean transcribing another
 paper’s model from a one-sentence citation, which is exactly the
 secondary-source extraction this library forbids. Nomoto 2018 is closed
-access (Unpaywall <code>is_oa: false</code>, no PMC record) and has been
-registered for acquisition so the CLD platelet model can be extracted
-properly, from its own source, as its own model file.</li>
+access (no open-access copy or PMC record); the CLD platelet model is
+left to be extracted properly, from its own source, as its own model
+file.</li>
 <li>
 <strong>What the PD gap does and does not cost.</strong> The PK
 layer is complete and self-contained, and Table 4’s PK columns are fully

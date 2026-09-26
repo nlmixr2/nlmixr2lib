@@ -3136,8 +3136,8 @@ nor organ volumes, nor blood flows, nor partition coefficients, and
 Table S2’s footnote states that the control values the scaling factors
 multiply are “described in PK-Sim for healthy individuals” – i.e. they
 are platform internals, not published numbers. Reconstructing that layer
-would require substituting parameters that appear in no source on disk,
-which the nlmixr2lib PBPK sourcing rule forbids.</p>
+would require substituting parameters that appear in no available
+source, which the nlmixr2lib PBPK sourcing rule forbids.</p>
 <p><strong>Reproduced – the reduced disposition model.</strong> What the
 authors <em>did</em> publish in full is the reduced model they carried
 out of the PBPK and into their Monte Carlo target-attainment analysis:
@@ -4066,8 +4066,9 @@ extended infusions. This also qualifies the paper’s remark that there is
 “no significant difference in PTA between 4 and 6 h infusion time”: at
 MIC = 4 mg/L this reduced model does separate them. Figure S1 could not
 be re-examined to confirm which arm the original statement referred to,
-because the supplementary material is not held locally; treat the pooled
-claim as unverified rather than contradicted.</p></li>
+because the supplementary material was not available when this model was
+built; treat the pooled claim as unverified rather than
+contradicted.</p></li>
 <li><p><strong>The whole-body PK-Sim PBPK layer is not
 implemented.</strong> The paper describes an 18 tissue/organ PK-Sim
 v11.2 model but prints no ODEs, organ volumes, blood flows or partition

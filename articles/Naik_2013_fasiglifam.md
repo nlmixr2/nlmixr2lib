@@ -926,8 +926,8 @@ pct males with 41 pct higher CL / F. {.table}
   samples in a multiple rising dose study in patients with T2DM” (Leifke
   2012 Clin Pharmacol Ther 92:29-39; <doi:10.1038/clpt.2012.43>). The
   phase-2 sparse-sampling design could not identify them. The Leifke
-  2012 paper is not on disk; the fixed values reproduced here are those
-  printed in Naik 2013 Table 2.
+  2012 paper was not available when this model was built; the fixed
+  values reproduced here are those printed in Naik 2013 Table 2.
 - **Placebo half-life HL FIXED at 720 h.** Naik 2013 Methods: “the
   half-life of MPL was fixed to the value (720 h) observed based upon
   the graphical analysis of data” (short-trial-duration rationale). This

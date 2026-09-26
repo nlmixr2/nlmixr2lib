@@ -723,12 +723,12 @@ follow Table 2 and the Methods; nothing was tuned toward Table 3.**
   “None of these correlations are significantly different from the
   zero-slope” (Figs. 4, 5). No slopes are reported in the main text, so
   there is nothing to encode.
-- **Supplement not on disk.** Supplementary Material 1 holds Figure S1
-  (capillary versus venous linear regression), Figure S2 (methaemoglobin
-  over time) and Tables S1-S2 (the haemoglobin and methaemoglobin
-  regressions). None contains a structural parameter of the three PK
-  models; every `ini()` value comes from Table 2 or the Methods of the
-  main text.
+- **Supplement not available.** Supplementary Material 1, which could
+  not be obtained when this model was built, holds Figure S1 (capillary
+  versus venous linear regression), Figure S2 (methaemoglobin over time)
+  and Tables S1-S2 (the haemoglobin and methaemoglobin regressions).
+  None contains a structural parameter of the three PK models; every
+  `ini()` value comes from Table 2 or the Methods of the main text.
 
 ### Errata in the source
 

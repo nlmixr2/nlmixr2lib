@@ -622,7 +622,7 @@ and rxode2 cannot integrate it at all.
 compound properties are tabulated (Table 1). The whole-body structure,
 organ volumes, blood flows and Schmitt-method partition coefficients are
 internal to PK-Sim and are not published, so the PBPK model cannot be
-rebuilt from the on-disk record. Vancomycin exposure is supplied to this
+rebuilt from what is published. Vancomycin exposure is supplied to this
 PD model through the `CONC_VAN_MGL` covariate instead. As a consequence,
 Figures 2, 4 and Tables S2-S5 are not reproduced here, and the tissue
 concentrations quoted in the “Higher-MIC strains” section are read from

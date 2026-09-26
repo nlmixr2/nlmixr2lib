@@ -3089,8 +3089,8 @@ Chemother. 2019;63(2):e01957-18.</li>
 <code>Output_real_CMS_colistin_PK_CRRT.lst</code>, simulated dataset:
 <code>Simulated_Data_CMS_colistin_PK_CRRT.csv</code>).</li>
 </ul>
-<p>The published article was NOT on disk during extraction; all
-parameter values and equations come from the DDMORE bundle’s
+<p>The published article was NOT available when this model was built;
+all parameter values and equations come from the DDMORE bundle’s
 <code>Output_real_*.lst</code> (final estimates) and
 <code>Executable_*.mod</code> (structural equations). The
 <code>Model_Accommodations.txt</code> field “There are no model
@@ -3407,11 +3407,12 @@ no-residual-error) trajectory using <code><a href="https://nlmixr2.github.io/rxo
 <div class="section level2">
 <h2 id="replicate-published-trajectories">Replicate published trajectories<a class="anchor" aria-label="anchor" href="#replicate-published-trajectories"></a>
 </h2>
-<p>The publication is not on disk; the figures below are drawn against
-the DDMORE bundle’s behaviour rather than a paper figure number. The
-plotted ranges reproduce the qualitative shape of the simulated dataset
-shipped with the bundle (approximately 30-50 mg/L peak CMS during the
-loading infusion; approximately 2-5 mg/L colistin at steady state).</p>
+<p>The publication was not available; the figures below are drawn
+against the DDMORE bundle’s behaviour rather than a paper figure number.
+The plotted ranges reproduce the qualitative shape of the simulated
+dataset shipped with the bundle (approximately 30-50 mg/L peak CMS
+during the loading infusion; approximately 2-5 mg/L colistin at steady
+state).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">sim_hours</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3509,7 +3510,7 @@ bundle.</p>
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
 <p>PKNCA is run on the colistin trajectory (the active species and the
-clinical PK target). Because the source publication is not on disk we
+clinical PK target). Because the source publication was not available we
 cannot do a side-by-side comparison against published Cmax/AUC values;
 the table below is the simulated NCA summary at the bundle’s
 regimen.</p>
@@ -3565,7 +3566,7 @@ regimen.</p>
 </h2>
 <ul>
 <li>
-<strong>Source publication not on disk.</strong> The
+<strong>Source publication not available.</strong> The
 Leuppi-Taegtmeyer 2019 AAC publication was not available to the
 maintainers at extraction time. All parameter values and equations were
 taken from the DDMORE bundle’s <code>Output_real_*.lst</code> (final

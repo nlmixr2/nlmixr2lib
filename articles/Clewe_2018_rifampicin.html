@@ -3423,7 +3423,7 @@ the operating final estimates for this scenario.</p>
 (<code>IPRED + EPS(1)</code>) for the scenario-4 model on a
 representative grid of single-, two-, and three-drug exposures. The
 associated publication (<a href="https://doi.org/10.1093/jac/dkx380" class="external-link">doi:10.1093/jac/dkx380</a>)
-was not on disk when this model was built, so PKNCA-style comparison
+was not available when this model was built, so PKNCA-style comparison
 against published Cmax / AUC tables is not applicable (this is
 bacterial-count PD on log scale, not concentration-time PK). The
 validation strategy is therefore the <strong>self-consistency</strong>
@@ -3871,14 +3871,13 @@ values; the <code>Output_simulated_*.lst</code> re-prints these in its
 <code>FINAL PARAMETER ESTIMATE</code> block under
 <code>MAXEVAL = 0</code> evaluation, confirming the cross-walk).</li>
 <li>
-<strong>Linked publication not on disk.</strong> The associated
+<strong>Linked publication not available.</strong> The associated
 paper (<a href="https://doi.org/10.1093/jac/dkx380" class="external-link">doi:10.1093/jac/dkx380</a>)
-was not available in the maintainers’ literature mirror when this model
-was built. PKNCA-style comparison against published tables / figures
-from the publication is therefore not possible. Validation reduces to
-the self-consistency check against the bundle-shipped <code>DV</code>
-and the mechanistic-sanity check on bacterial-subpopulation trajectories
-above.</li>
+was not available when this model was built. PKNCA-style comparison
+against published tables / figures from the publication is therefore not
+possible. Validation reduces to the self-consistency check against the
+bundle-shipped <code>DV</code> and the mechanistic-sanity check on
+bacterial-subpopulation trajectories above.</li>
 <li>
 <strong><code>koff = 0</code> (irreversible adaptive
 resistance).</strong> The source fixes <code>KOFF = 0</code>, so the

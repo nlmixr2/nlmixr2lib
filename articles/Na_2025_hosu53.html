@@ -3171,9 +3171,10 @@ both concentrations in umol/L (Table 3 units for <code>R0</code> and
 amount unit is therefore <strong>nmol</strong>, because nmol / mL =
 umol/L. The paper does not state the dose-amount unit used in its
 Monolix dataset and does not report the HOSU-53 molecular weight, so
-mg/kg doses cannot be converted to model units from on-disk sources.
-Simulated doses below are given in model amount units and anchored to a
-published observation (see <em>Dog dose anchoring</em>).</p>
+mg/kg doses cannot be converted to model units from the available
+sources. Simulated doses below are given in model amount units and
+anchored to a published observation (see <em>Dog dose
+anchoring</em>).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dog_ui</span><span class="op">$</span><span class="va">units</span></span>
 <span><span class="co">#&gt; $time</span></span>
@@ -4595,7 +4596,7 @@ in Table 1 and Supplementary Table S2 (lipophilicity, fu, pKa,
 solubility, intestinal permeability, specific clearance, blood:plasma
 ratio). The physiological structure, organ volumes, blood flows,
 partition coefficients, and cellular permeabilities are supplied by the
-PK-Sim platform and are not written out in any on-disk source, so the
+PK-Sim platform and are not written out in any available source, so the
 PBPK models are not reproducible here without substituting platform
 defaults. Table 4 (time above the 669 pM hepatic target) and Figure 3
 (human plasma and hepatic profiles) are PBPK outputs and are likewise

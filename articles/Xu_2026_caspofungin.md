@@ -1194,8 +1194,8 @@ could be estimated at all.
   troughs are around 3.5-3.7 mg/L, some sixty-fold above that target –
   whereas the paper reports that a 70 mg/m^2 regimen was needed for
   non-ECMO children to exceed 90% PTA and that no simulated ECMO regimen
-  reached it at all. The discrepancy cannot be resolved from the text on
-  disk: Figure 3 is available only as a rendered image, the Methods say
+  reached it at all. The discrepancy cannot be resolved from the paper’s
+  text: Figure 3 is available only as a rendered image, the Methods say
   PTA was computed “across a range of MIC values” without stating which
   MIC each panel’s 90% statement refers to, and the per-panel dose and
   BSA stratification is legible only in the figure itself. The

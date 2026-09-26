@@ -3347,11 +3347,11 @@ brain-homogenate <code>f_u,br</code>). The equations are printed in the
 supplement but the compartment volumes (<code>V_ISF</code>,
 <code>V_cyto</code>, <code>V_lyso</code>) and compartmental pH values
 they require are not - they live in the cited Friden et al. reference,
-which is not among the on-disk sources. The <em>outputs</em> of the
-correction are tabulated (Table S2, parameter rows
+which was not available when this model was built. The <em>outputs</em>
+of the correction are tabulated (Table S2, parameter rows
 <code>brain fu corrected</code>), so the correction is an input-curation
 step whose results the model consumes rather than a step the model
-performs. No constant has been substituted from outside the on-disk
+performs. No constant has been substituted from outside the available
 sources.</li>
 <li>
 <strong>Equation S7</strong> (free-potency correction for
@@ -3368,11 +3368,11 @@ that; the default parameter set is the fit that <em>excludes</em> those
 drugs.</li>
 <li>
 <strong>Residual error.</strong> Main-text Eq. 2 carries an additive
-noise term <code>eta</code>, but no variance for it is reported anywhere
-on disk. Per the standing policy against inventing variances, the model
-is typical-value only. There is also no between-study random effect in
-this MBMA - the study-group sizes enter as regression <em>weights</em>,
-not as a variance component.</li>
+noise term <code>eta</code>, but no variance for it is reported in any
+available source. Per the standing policy against inventing variances,
+the model is typical-value only. There is also no between-study random
+effect in this MBMA - the study-group sizes enter as regression
+<em>weights</em>, not as a variance component.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -4495,8 +4495,8 @@ reflects the point-estimate model as published.</p></li>
 <li><p><strong>No residual-error variance is recoverable.</strong>
 Main-text Eq. 2 includes an additive noise term with no reported
 variance. The model is typical-value only.</p></li>
-<li><p><strong>The Friden pH-partition constants are not on
-disk.</strong> See Scope above.</p></li>
+<li><p><strong>The Friden pH-partition constants were not
+available.</strong> See Scope above.</p></li>
 <li>
 <p><strong>Four cells of Table S5 are low by a factor of about
 ten.</strong> Gate 1 back-computes all 108 published mean / SD / median

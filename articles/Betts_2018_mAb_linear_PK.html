@@ -3332,7 +3332,7 @@ consolidated table below spans all four packaged models.</p>
 <td>-</td>
 <td>fixed(0) per policy</td>
 <td>Table 2 / Table 4 footnote, per-compound values in Supp. Table 1 / 2
-(not on disk)</td>
+(not available)</td>
 </tr>
 </tbody>
 </table>
@@ -3769,10 +3769,10 @@ reported per-compound in the Betts 2018 Supplementary Tables 1 and
 <li>
 <strong>Residual error fixed at 0.</strong> The paper’s Table 2 and
 Table 4 footnotes state “Residual errors per compound are shown in
-Supplementary Table 1” (or 2); the supplement was not available on disk
-during extraction, so no class-level typical proportional residual value
-could be sourced. Per the package’s standing policy for unreported RUV,
-<code>propSd</code> is wrapped in <code>fixed(0)</code> in every
+Supplementary Table 1” (or 2); the supplement was not available when
+this model was built, so no class-level typical proportional residual
+value could be sourced. Per the package’s standing policy for unreported
+RUV, <code>propSd</code> is wrapped in <code>fixed(0)</code> in every
 packaged model. Users needing residual noise for simulation should
 override with a domain-appropriate typical value (mAb popPK residuals
 are commonly 15-25% CV) or supply the compound-specific value from the

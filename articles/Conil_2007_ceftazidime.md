@@ -517,10 +517,11 @@ style="width:100%;"}
   `inst/references/covariate-columns.md` covered the concept (the
   `OXYSUP_HIGH` entry pools mechanical ventilation with high-flow oxygen
   in the Lin 2024 casirivimab analysis but is structurally a different
-  stratification). This PR ratifies the new canonical `MECH_VENT` – a
-  binary mechanical-ventilation treatment-status indicator with general
-  scope, following the precedent of `HEMODIAL` and `CRRT_STATUS`. The
-  orientation matches the source paper directly (0 = no MV, 1 = MV).
+  stratification). This model introduces the new canonical `MECH_VENT` –
+  a binary mechanical-ventilation treatment-status indicator with
+  general scope, following the precedent of `HEMODIAL` and
+  `CRRT_STATUS`. The orientation matches the source paper directly (0 =
+  no MV, 1 = MV).
 
 - **CL covariate equation is additive linear on the linear scale.**
   Conil 2007 final-model equation `CL = 1.08 + 0.0536 * CLCR` is an
@@ -564,7 +565,7 @@ style="width:100%;"}
   off-diagonal covariance estimates, consistent with diagonal OMEGA. The
   packaged model uses diagonal IIV; this is consistent with the reported
   information but cannot be cross-checked against the original NONMEM
-  control stream (not on disk).
+  control stream (not available when this model was built).
 
 - **`omega^2 = log(CV^2 + 1)`.** Conil 2007 reports interindividual
   variability as CV%; the corresponding log-normal variance was computed

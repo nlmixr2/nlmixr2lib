@@ -28,21 +28,21 @@
   concentrations are external time-varying inputs (covariates Cipm and
   Ctob); the model contains no rodent PK component (the paper imported
   the murine one-compartment PK of imipenem and tobramycin from external
-  references and the PK parameter values are not reported in the source
-  on disk).
+  references and the PK parameter values are not reported in the paper).
 - Article: <https://doi.org/10.1128/AAC.01268-17>
 
-The supplementary S-ADAPT control stream for this paper was not on disk.
-The model structure encoded here is the canonical Bulitta two-state
-life-cycle growth model (LCGM) consistent with the parameters and
-equations reported in the main-paper Methods (Eqs 4-7, page 8 of the
-article) and Table 1. The murine one-compartment imipenem and tobramycin
-PK described by Eqs 1-3 was imported from external references (Katsube
-2008 and Moffie 1993) and the numerical PK parameter values were not
-reported in the present paper; the packaged model therefore exposes
-`Cipm` and `Ctob` as time-varying covariates supplied by the user,
-mirroring the `Landersdorfer_2018_imipenem_tobramycin` precedent already
-in `pharmacodynamics/`.
+The supplementary S-ADAPT control stream for this paper was not
+available when this model was built. The model structure encoded here is
+the canonical Bulitta two-state life-cycle growth model (LCGM)
+consistent with the parameters and equations reported in the main-paper
+Methods (Eqs 4-7, page 8 of the article) and Table 1. The murine
+one-compartment imipenem and tobramycin PK described by Eqs 1-3 was
+imported from external references (Katsube 2008 and Moffie 1993) and the
+numerical PK parameter values were not reported in the present paper;
+the packaged model therefore exposes `Cipm` and `Ctob` as time-varying
+covariates supplied by the user, mirroring the
+`Landersdorfer_2018_imipenem_tobramycin` precedent already in
+`pharmacodynamics/`.
 
 ## Population
 
@@ -459,13 +459,13 @@ monotherapy. {.table}
 
 ## Assumptions and deviations
 
-- **Murine PK driver not on disk.** Equations 1-3 of the paper define a
-  one-compartment s.c. PK model for each drug whose parameters (`ka`,
+- **Murine PK driver not available.** Equations 1-3 of the paper define
+  a one-compartment s.c. PK model for each drug whose parameters (`ka`,
   `ke`, `V/F`, `fu`) are imported from external references (Katsube 2008
   for imipenem, Moffie 1993 for tobramycin); those numerical values are
-  not reported in the present paper on disk. The packaged model
-  therefore omits a rodent PK component and exposes `Cipm` and `Ctob` as
-  time-varying covariates supplied by the user, mirroring the existing
+  not reported in the present paper. The packaged model therefore omits
+  a rodent PK component and exposes `Cipm` and `Ctob` as time-varying
+  covariates supplied by the user, mirroring the existing
   `Landersdorfer_2018_imipenem_tobramycin` precedent in
   `pharmacodynamics/`. Users wishing to replay the humanized murine
   experiment exactly should supply the PK driver numerically from the
@@ -475,11 +475,11 @@ monotherapy. {.table}
   TOB; 4.78 for experiment 2 IPM 5 g/day + TOB). The packaged `ini()`
   uses experiment 1’s value as the default; to reproduce experiment 2
   exactly, update `logcfu0` to 4.78.
-- **No supplementary material on disk.** The full S-ADAPT control stream
-  was not available for this extraction. The model encoded here applies
-  the standard Bulitta LCGM convention shared by the Landersdorfer 2018,
-  Wicha 2017, and Rees 2018 models in `pharmacodynamics/`. Items the
-  supplement would have disambiguated:
+- **No supplementary material available.** The full S-ADAPT control
+  stream was not available when this model was built. The model encoded
+  here applies the standard Bulitta LCGM convention shared by the
+  Landersdorfer 2018, Wicha 2017, and Rees 2018 models in
+  `pharmacodynamics/`. Items the supplement would have disambiguated:
   1.  **PLAT application site.** Paper Eq 5 places PLAT on the doubling
       term `2 * k21 * S2` and leaves the slow S1 -\> S2 transition
       unattenuated; the packaged model follows the paper’s explicit
@@ -501,8 +501,8 @@ monotherapy. {.table}
       model uses the IR mutation frequency only to set initial subpop
       fractions; there is no ongoing mutation flux between
       subpopulations during simulation. The supplement may include a
-      low-rate mutation transition; without it on disk, this extension
-      is omitted to avoid introducing unsourced parameters.
+      low-rate mutation transition; without the supplement, this
+      extension is omitted to avoid introducing unsourced parameters.
 - **OM_effect 2.6-fold vs 2.45-fold discrepancy at Ctob = 32 mg/L.** The
   paper Results state “The KC50,IPM for both populations decreased by
   2.6-fold in the presence of 32 mg/liter tobramycin compared to the

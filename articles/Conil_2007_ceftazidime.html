@@ -3832,7 +3832,7 @@ mechanically ventilated) on the peripheral volume V2. No existing entry
 in <code>inst/references/covariate-columns.md</code> covered the concept
 (the <code>OXYSUP_HIGH</code> entry pools mechanical ventilation with
 high-flow oxygen in the Lin 2024 casirivimab analysis but is
-structurally a different stratification). This PR ratifies the new
+structurally a different stratification). This model introduces the new
 canonical <code>MECH_VENT</code> – a binary mechanical-ventilation
 treatment-status indicator with general scope, following the precedent
 of <code>HEMODIAL</code> and <code>CRRT_STATUS</code>. The orientation
@@ -3881,7 +3881,7 @@ reports a single CV per parameter with no off-diagonal covariance
 estimates, consistent with diagonal OMEGA. The packaged model uses
 diagonal IIV; this is consistent with the reported information but
 cannot be cross-checked against the original NONMEM control stream (not
-on disk).</p></li>
+available when this model was built).</p></li>
 <li><p><strong><code>omega^2 = log(CV^2 + 1)</code>.</strong> Conil 2007
 reports interindividual variability as CV%; the corresponding log-normal
 variance was computed via <code>omega^2 = log(CV^2 + 1)</code> – the

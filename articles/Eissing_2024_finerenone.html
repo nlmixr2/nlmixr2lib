@@ -3744,16 +3744,16 @@ parametric time-to-event renal-outcome model). Each consumes the
 individual posthoc CL/F and F1 from this PK fit as fixed inputs, with
 progression-time structures, Box-Cox-transformed random effects, Student
 t-distribution residual errors, and a hazard-function endpoint. They do
-not fit the compact popPK/PD format and would each require their own
-dedicated extraction task; only the upstream FIGARO-DKD PK model is
-packaged here.</li>
+not fit the compact popPK/PD format and would each need to be built as a
+separate model; only the upstream FIGARO-DKD PK model is packaged
+here.</li>
 <li>
 <strong>FIGARO-DKD only, FIDELIO-DKD upstream not packaged.</strong>
 The paper compares FIGARO-DKD against the earlier FIDELIO-DKD PK model
 (van den Berg et al. 2022, also Bayer / LAP&amp;P) but the FIDELIO-DKD
-NONMEM code is not in the on-disk supplement, only the FIGARO-DKD code.
-Packaging the FIDELIO-DKD upstream model would require fetching that
-publication separately and is left for a follow-up extraction.</li>
+NONMEM code is not in the supplement, only the FIGARO-DKD code.
+Packaging the FIDELIO-DKD upstream model would require that publication
+separately and is left for future work.</li>
 <li>
 <strong>Categorical covariate effects fixed at 1.0 in the FIGARO-DKD
 final model.</strong> Supplement <code>$THETA</code> TH14-TH18

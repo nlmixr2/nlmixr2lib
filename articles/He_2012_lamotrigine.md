@@ -891,8 +891,8 @@ Maintenance dose to target Css = 6 mg/L by AED cohort. {.table}
   concentrations) was used by the authors only to confirm predictive
   performance and was not used to refit any parameters. The packaged
   model carries only the PPK model group estimates.
-- **Errata.** No erratum or corrigendum to He 2012 was located on disk
-  for this extraction. A search of PubMed and the Nature (Acta
+- **Errata.** No erratum or corrigendum to He 2012 was known when this
+  model was built. A search of PubMed and the Nature (Acta
   Pharmacologica Sinica is now published by Nature Springer) corrections
   feed for `"He" + "lamotrigine" + 2012 + erratum` returned no hits; the
   maintainers should reconfirm against the journal’s corrections listing

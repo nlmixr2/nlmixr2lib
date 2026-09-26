@@ -436,8 +436,8 @@ details.
   the final transit2 -\> central step (the Bienczak 2016 nevirapine
   convention used elsewhere in nlmixr2lib) - is equally consistent with
   the paper’s prose; without the NONMEM control stream or appendix, the
-  ambiguity cannot be resolved from on-disk sources. Either reading
-  places the rate-limiting step at the slow `klag` rate, so the
+  ambiguity cannot be resolved from the available sources. Either
+  reading places the rate-limiting step at the slow `klag` rate, so the
   simulated peak time and concentration-time-profile shape will not
   precisely reproduce the paper’s reported Tmax of 4-6 h (the
   NCA-derived Tmax from the single-dose trials). The Table 14

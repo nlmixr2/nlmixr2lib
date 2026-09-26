@@ -83,9 +83,9 @@ comment naming its source location; the table below collects them.
 | Two-compartment ODE structure, first-order absorption + lag | n/a | Results section 3.2 first paragraph; Methods section 2.2 |
 | Cockcroft-Gault CRCL definition | n/a | Table 1 footnote a |
 
-Note that the display equations are lost by PDF-to-markdown
-preprocessing (they appear as `formula-not-decoded`); the covariate
-equation above was read from the PDF page directly.
+Note that the display equations do not survive plain-text extraction of
+the PDF; the covariate equation above was read from the typeset PDF page
+directly.
 
 ## Virtual cohort
 

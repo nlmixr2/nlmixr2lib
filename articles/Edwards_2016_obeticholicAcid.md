@@ -386,7 +386,7 @@ mod
 #>     Cc_toca ~ add(addSd_Cc_toca) + prop(propSd_Cc_toca)
 #>   })
 #> }
-#> <environment: 0x55f5ead617c0>
+#> <environment: 0x55fb51c1c198>
 ```
 
 ## Population
@@ -456,8 +456,8 @@ are flagged as such in the model file. `f1` and `f5` appear as labelled
 arrows in Figure 1 but are not tabulated; their values follow from
 blood-flow continuity on the portal and sinusoidal spaces given the
 printed `f3` and `f4`. `f2` follows from the printed equal-magnitude
-shunting rule. No value in this model is taken from outside the on-disk
-sources.
+shunting rule. No value in this model is taken from outside the
+available sources.
 
 ## Virtual cohort
 
@@ -771,7 +771,7 @@ not, for different reasons:
 - The **liver** row moves in the opposite direction to the published
   value (falling rather than rising with cirrhosis stage). This reflects
   an inconsistency inside Table 1 itself, quantified in Assumptions and
-  deviations below; it is not resolvable from the on-disk sources, and
+  deviations below; it is not resolvable from the available sources, and
   nothing was tuned to chase it.
 
 ``` r
@@ -992,11 +992,9 @@ any tuning.
 
 - **Compartment volumes come from the Figure 1 panel.** The Methods
   delegate volumes to the base CDCA model of Molino 1986 (reference 18),
-  which is paywalled and not on disk. The Volumes legend printed inside
-  the Figure 1 panel reproduces all seven values, so no upstream lookup
-  was needed. An earlier extraction attempt deferred this paper on the
-  belief that the volumes were unrecoverable; reading the figure panel
-  falsified that.
+  which is paywalled and was not available when this model was built.
+  The Volumes legend printed inside the Figure 1 panel reproduces all
+  seven values, so no upstream lookup was needed.
 
 - **Residual error is the healthy-volunteer set.** The paper estimated a
   second residual-error set on the hepatic-impairment cohort
@@ -1049,7 +1047,7 @@ any tuning.
   liver AUC ratios 1.12 / 1.47 / 1.74 to within 2%, at the cost of the
   liver mass-share row. No parameter was adjusted to trade one against
   the other; which of the two Table 1 blocks is authoritative cannot be
-  settled from the on-disk sources.
+  settled from the available sources.
 
 - **Supplemental Table 4 notation.** The severe tauro-conjugation row is
   printed as `tb16*`; the intended notation is `b16*`, consistent with

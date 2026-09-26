@@ -809,8 +809,9 @@ style="width:100%;"}
 Franke 2015 reports **no** NCA table of its own – it is a population-PK
 analysis whose companion NCA appears in the separate primary PK
 publication (Devarakonda 2014, *Drug Des Devel Ther* 8:1125-1134), which
-is not on disk here. In place of a published-NCA comparison the sections
-below use closed-form identities that the model must satisfy exactly.
+was not available when this model was built. In place of a published-NCA
+comparison the sections below use closed-form identities that the model
+must satisfy exactly.
 
 ### Mass balance: AUC0-inf x CL/F = dose
 

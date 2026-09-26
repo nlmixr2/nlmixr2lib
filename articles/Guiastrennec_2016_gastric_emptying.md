@@ -409,9 +409,9 @@ prediction-interval envelopes for the three test drinks shown.
   to the simulated subject’s nutrient amounts. This is a standard
   simplification when a single joint model is simulated forward; the
   typical-value predictions are unaffected.
-- **Supplementary Material S2 (parameter shrinkages) not on disk.** The
-  paper’s S2 reports shrinkage diagnostics for the etas; these are not
-  parameter values that drive the simulation but help interpret the
+- **Supplementary Material S2 (parameter shrinkages) not available.**
+  The paper’s S2 reports shrinkage diagnostics for the etas; these are
+  not parameter values that drive the simulation but help interpret the
   realism of the BSV distributions. They are not embedded in the
   packaged model.
 - **Acetaminophen molecular weight 151.17 g/mol.** The

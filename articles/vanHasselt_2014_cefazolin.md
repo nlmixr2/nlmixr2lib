@@ -685,9 +685,9 @@ stopifnot(
 - **The CrCL model’s structural parameters are inherited, not fitted
   here.** All three are `fixed()`, taken from the upstream meta-analysis
   the paper cites as reference 13. Their tabulated RSEs are that
-  meta-analysis’s precision. The upstream meta-analysis itself is not on
-  disk; only the three point estimates it produced, as reprinted in
-  Table 3, are used.
+  meta-analysis’s precision. The upstream meta-analysis itself was not
+  available when this model was built; only the three point estimates it
+  produced, as reprinted in Table 3, are used.
 - **`CrCLMAX` units.** Table 3 leaves the unit cell blank for this row.
   mL/min is forced by equation (4), where the term is added to a mL/min
   baseline.

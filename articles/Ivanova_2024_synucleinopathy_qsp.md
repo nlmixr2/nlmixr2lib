@@ -751,7 +751,7 @@ formula would give roughly 59.
 - **Antibody-specific affinities for prasinezumab and cinpanemab are
   absent.** The export contains only `Kd_mon` and `Kd_MEDI`, both 8 nM.
   The paper states that “prasinezumab and cinpanemab have higher
-  affinities to aggregated aSyn” but the values are not in any on-disk
+  affinities to aggregated aSyn” but the values are not in any available
   source, so only the MEDI1341 parameterisation is packaged. Simulating
   the other two antibodies requires overriding `Kd_MEDI` with values the
   paper does not publish.

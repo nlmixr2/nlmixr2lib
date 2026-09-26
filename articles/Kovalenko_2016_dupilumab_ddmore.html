@@ -3402,7 +3402,7 @@ placeholder). To reproduce the bundle’s trajectory, we set
 <span>    <span class="fu">geom_point</span><span class="op">(</span>data <span class="op">=</span> <span class="va">bundle_obs</span>,  <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">source</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1.3</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Dupilumab concentration (mg/L)"</span>, colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>         title <span class="op">=</span> <span class="st">"F.2 self-consistency: rxode2 vs DDMORE bundle simulated data"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>         title <span class="op">=</span> <span class="st">"Self-consistency check: rxode2 vs DDMORE bundle simulated data"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">theme_minimal</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>The agreement is within a few percent across the entire profile, so

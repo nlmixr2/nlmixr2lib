@@ -1249,8 +1249,7 @@ cat("Analytic AUCinf (typical value, F = 1, no IIV):\n",
   the THETA-on-EPS reading; the magnitudes (~45-65% CV under either
   reading) are similar enough that the typical- value simulation and the
   PKNCA comparison above are unaffected. Future re-analysis with the
-  source NONMEM control stream on disk would disambiguate the
-  parameterisation.
+  source NONMEM control stream would disambiguate the parameterisation.
 
 - **Continuous covariates not retained.** Danielak 2017 tested age,
   weight, BMI, obesity (BMI \>= 30), sex, diabetes mellitus, PPI /

@@ -130,15 +130,14 @@ errors, RSEs or confidence intervals anywhere.
 | `RENALIMP` covariate | “Renal Impairment” | 0 | 1 | n/a | Methods 2.3, Results 3.1 |
 | Residual error form | Equation 7 | not reported | not reported | not reported | Methods 2.3 |
 
-The equations are vector graphics in the published PDF and are dropped
-by markdown conversion (they appear as `formula-not-decoded`). They were
-recovered with `pdftotext -layout` and independently cross-checked
-against the arrow topology of Figure 2, which shows K_P,IM and K_C,IM
-feeding GS-704277 from the peripheral and central remdesivir pools
-respectively, K_P,NUC and K_C,NUC feeding GS-441524 from the
-corresponding GS-704277 pools, K_P,NTP draining peripheral GS-441524,
-the bidirectional Q_i exchanges, and CL_RDV leaving central remdesivir
-only.
+The equations are vector graphics in the published PDF and do not
+survive ordinary plain-text extraction of the PDF. They were recovered
+with `pdftotext -layout` and independently cross-checked against the
+arrow topology of Figure 2, which shows K_P,IM and K_C,IM feeding
+GS-704277 from the peripheral and central remdesivir pools respectively,
+K_P,NUC and K_C,NUC feeding GS-441524 from the corresponding GS-704277
+pools, K_P,NTP draining peripheral GS-441524, the bidirectional Q_i
+exchanges, and CL_RDV leaving central remdesivir only.
 
 Two asymmetries in the published system are deliberate and are
 reproduced verbatim: **remdesivir is eliminated only from its central

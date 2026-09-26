@@ -932,7 +932,8 @@ likewise.
     with `K_Lung(C->I)` exactly as S23 writes it. This introduces no new
     number. The alternative reading – splitting the single printed
     efflux between the two destinations with an invented fraction – was
-    rejected because that fraction appears nowhere on disk.
+    rejected because that fraction appears nowhere in the available
+    sources.
 
 5.  **ELF transfer constants never tabulated.** `K(ELF->C)` and
     `K(ELF->B)` carry no value anywhere in the paper or supplement.
@@ -994,5 +995,5 @@ granulomatous lesion substructures using a *human* Simcyp whole-lung and
 granuloma model, with the drug-specific inputs in supplement Table S1
 (fu 0.436, k(b/p) 0.693, CL_R 3.27 L/h – human values, not the rodent
 values in Table 2). That analysis depends on a proprietary platform
-whole-body model whose equations are not on disk, and it is not part of
-the mPBPK model extracted here.
+whole-body model whose equations were not available when this model was
+built, and it is not part of the mPBPK model extracted here.

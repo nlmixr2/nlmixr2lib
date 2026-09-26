@@ -861,8 +861,8 @@ discrepancy.
   (BMQ-derived) but did not retain it in the final model (the trend was
   a 20% reduction in apparent Fm but did not reach significance). The
   packaged model has no adherence covariate.
-- **Errata.** No erratum or corrigendum to Stocker 2012 was located on
-  disk for this extraction. A search for “Stocker 2012 oxypurinol
+- **Errata.** No erratum or corrigendum to Stocker 2012 was available
+  when this model was built. A search for “Stocker 2012 oxypurinol
   erratum” on PubMed and the British Journal of Clinical Pharmacology /
   Wiley corrections feed returned no hits; the maintainers should
   reconfirm against the journal’s corrections listing if a re-extraction

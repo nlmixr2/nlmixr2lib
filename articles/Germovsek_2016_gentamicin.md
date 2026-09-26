@@ -27,7 +27,7 @@ This vignette validates the packaged `Germovsek_2016_gentamicin` model
 against the DDMORE Foundation Model Repository entry
 **DDMODEL00000238**, the source from which it was extracted. The
 Germovsek 2016 publication PDF was not available when this model was
-built, so the validation strategy is the F.2 self-consistency check:
+built, so the validation strategy is the self-consistency check:
 re-simulate the bundle’s shipped event table and confirm the
 typical-value trajectory matches the bundle’s NONMEM listing and shipped
 concentrations.
@@ -37,12 +37,13 @@ concentrations.
 The Germovsek 2016 meta-analysis pooled 1,325 gentamicin concentrations
 from 205 patients (neonates and infants) across three studies: Glasgow
 (Thomson 1988), Uppsala (Nielsen 2009), and Estonia (unpublished). The
-full publication PDF is not on disk, so detailed demographics (age
-range, weight range, sex balance, race / ethnicity, indication) could
-not be cross-checked. The DDMORE bundle’s `Simulated_simdataDDM.csv`
-uses median covariates from the original analysis (WT 2.12 kg, PMA 33
-weeks, PNA 5.4 days, GA 34 weeks, CREAT 78 umol/L) – representative of a
-preterm neonate around the first postnatal week.
+full publication was not available when this model was built, so
+detailed demographics (age range, weight range, sex balance, race /
+ethnicity, indication) could not be cross-checked. The DDMORE bundle’s
+`Simulated_simdataDDM.csv` uses median covariates from the original
+analysis (WT 2.12 kg, PMA 33 weeks, PNA 5.4 days, GA 34 weeks, CREAT 78
+umol/L) – representative of a preterm neonate around the first postnatal
+week.
 
 ``` r
 
@@ -51,7 +52,7 @@ str(mod_meta$population)
 #>  $ n_subjects    : num 205
 #>  $ n_studies     : num 3
 #>  $ age_range     : chr "Neonates and infants; postnatal age (PNA) and postmenstrual age (PMA) ranges not extractable from the DDMORE bu"| __truncated__
-#>  $ weight_range  : chr "Not extractable from DDMORE bundle (Germovsek 2016 PDF not on disk). The bundle's simulated dataset uses 2.12 k"| __truncated__
+#>  $ weight_range  : chr "Not extractable from DDMORE bundle (Germovsek 2016 PDF not available when this model was built). The bundle's s"| __truncated__
 #>  $ sex_female_pct: chr "Not extractable from DDMORE bundle."
 #>  $ race_ethnicity: chr "Not extractable from DDMORE bundle."
 #>  $ disease_state : chr "Neonates and infants receiving gentamicin (typical clinical indication: suspected or confirmed neonatal sepsis)"| __truncated__
@@ -202,7 +203,7 @@ sim_stoch <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
-## F.2 self-consistency check against the DDMORE bundle
+## Self-consistency check against the DDMORE bundle
 
 The bundle’s `Simulated_simdataDDM.csv` records the simulated `DV`
 column under the model’s typical population at the median covariates
@@ -260,7 +261,7 @@ in bundle DV). {.table}
 The typical-value Cc and the residual-error-laden DDMORE `DV` agree to
 within the magnitude of the residual error reported in the model
 (`addSd ~= 0.13 mg/L` and `propSd ~= 19%`), which is the expected
-outcome of F.2 self-consistency.
+outcome of the self-consistency check.
 
 ## Trajectories across the virtual cohort
 
@@ -318,12 +319,12 @@ sim_stoch |>
 
 PKNCA is run on the typical-value cohort over the first dosing interval
 (0-24 h) and the steady-state interval (96-120 h). The Germovsek 2016
-publication is not on disk, so the simulated NCA values cannot be
-compared side-by-side against published Cmax / AUC tables; they are
-reported here as a sanity check that the simulation pipeline produces
-NCA values in the expected clinical range for gentamicin (Cmax in the
-5-15 mg/L range, trough in the \< 2 mg/L range for once-daily neonatal
-dosing).
+publication was not available when this model was built, so the
+simulated NCA values cannot be compared side-by-side against published
+Cmax / AUC tables; they are reported here as a sanity check that the
+simulation pipeline produces NCA values in the expected clinical range
+for gentamicin (Cmax in the 5-15 mg/L range, trough in the \< 2 mg/L
+range for once-daily neonatal dosing).
 
 ``` r
 
@@ -455,10 +456,11 @@ reported by Germovsek et al.
   `$PK` / `$DES`.** They are not declared as covariates in the packaged
   model.
 
-- **Validation strategy is F.2 self-consistency** (the linked
-  publication exists but is not on disk). PKNCA values shown above are
-  informational; comparison against the Germovsek 2016 published NCA /
-  population-prediction figures could not be performed.
+- **Validation strategy is the self-consistency check** (the linked
+  publication exists but was not available when this model was built).
+  PKNCA values shown above are informational; comparison against the
+  Germovsek 2016 published NCA / population-prediction figures could not
+  be performed.
 
 - **Missing-CREAT imputation.** The source `.mod` substitutes the
   typical PMA-dependent SCr (`TCREA = -2.8488 * PMA_weeks + 166.48`)

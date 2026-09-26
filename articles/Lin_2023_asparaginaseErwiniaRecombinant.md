@@ -578,8 +578,8 @@ by eye off a base-10 log axis on which 1.00 is a printed gridline, so it
 is worth perhaps one significant figure. **No conversion factor is
 committed to the model file**: the specific activity of JZP458 is a
 product attribute rather than a model parameter, it is absent from every
-on-disk source, and baking a figure-derived estimate into `ini()` would
-give it a false precision. See Errata.
+available source, and baking a figure-derived estimate into `ini()`
+would give it a false precision. See Errata.
 
 ## Virtual cohort
 

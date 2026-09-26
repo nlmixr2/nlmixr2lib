@@ -185,7 +185,7 @@ mod
 #>         disease_state = "Mechanically ventilated adult ICU patients requiring at least 24 h of mechanical ventilation and receiving continuous intravenous midazolam for sedation. Mixed admission diagnoses, mostly postoperative patients in relatively good general health (Discussion). Baseline severity was moderate: APACHE II median 16 (range 2-24). Exclusions were hepatic coma or cirrhosis, neurological inability to assess sedation, haemodynamic instability requiring frequent dose changes, and pregnancy / lactation / midazolam allergy.", 
 #>         dose_range = "Continuous intravenous infusion of midazolam 1 mg/mL (50 mg diluted to 40 mL of 0.9% saline or 5% glucose), pumped at 2-4 mL/h at initiation and titrated to the target Richmond Agitation-Sedation Scale score. Observed initial infusion rates ranged 2-6 mg/h. Observation window 0-24 h.", 
 #>         regions = "China (Fujian Medical University Union Hospital, Fuzhou)", 
-#>         notes = "Prospective observational study, April 2020 - August 2022 (IRB 2021YF003-01), reported per STROBE. 69 patients screened, 8 excluded (3 incomplete data, 5 not meeting inclusion criteria). 237 paired midazolam / 1-OH-MDZ plasma samples analysed; 3 midazolam and 3 1-OH-MDZ values below the limit of quantitation (1.3% each) were excluded. Arterial sampling at t = 0 (pre-dose) and windows 0-0.5, 1-3, 4-6 and 10-12 h. LC-MS/MS with midazolam-d4 internal standard; linear ranges 0.5-1000 ng/mL (midazolam) and 0.25-500 ng/mL (1-OH-MDZ); LLOQ 0.5 and 0.25 ng/mL. Observed plasma concentrations: midazolam median 149.26 ng/mL (range 1.53-1622.36), 1-OH-MDZ median 18.66 ng/mL (range 0.28-166.19). Missing covariates imputed at the population median. Fitted in NONMEM 7.5.0 with PsN 5.0.0 and R 3.6.1; evaluated by goodness-of-fit plots, a 1000-replicate non-parametric bootstrap and a 1000-replicate VPC. All 22 evaluable SNP genotypes except NR1I2 rs1464603 satisfied Hardy-Weinberg equilibrium (Supplementary Table 1, not on disk).")
+#>         notes = "Prospective observational study, April 2020 - August 2022 (IRB 2021YF003-01), reported per STROBE. 69 patients screened, 8 excluded (3 incomplete data, 5 not meeting inclusion criteria). 237 paired midazolam / 1-OH-MDZ plasma samples analysed; 3 midazolam and 3 1-OH-MDZ values below the limit of quantitation (1.3% each) were excluded. Arterial sampling at t = 0 (pre-dose) and windows 0-0.5, 1-3, 4-6 and 10-12 h. LC-MS/MS with midazolam-d4 internal standard; linear ranges 0.5-1000 ng/mL (midazolam) and 0.25-500 ng/mL (1-OH-MDZ); LLOQ 0.5 and 0.25 ng/mL. Observed plasma concentrations: midazolam median 149.26 ng/mL (range 1.53-1622.36), 1-OH-MDZ median 18.66 ng/mL (range 0.28-166.19). Missing covariates imputed at the population median. Fitted in NONMEM 7.5.0 with PsN 5.0.0 and R 3.6.1; evaluated by goodness-of-fit plots, a 1000-replicate non-parametric bootstrap and a 1000-replicate VPC. All 22 evaluable SNP genotypes except NR1I2 rs1464603 satisfied Hardy-Weinberg equilibrium (Supplementary Table 1, which was not available when this model was built).")
 #>     reference <- "Xie H, Zheng Y, Zhang H, Guo Y, Liu M, Weng Q, Wu X. Association of NR1I2 Polymorphism with Midazolam Clearance in Mechanically Ventilated ICU Patients: A Population Pharmacokinetic and Pharmacogenetic Study. Drug Des Devel Ther. 2025;19:1527-1541. doi:10.2147/DDDT.S495647."
 #>     units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 #>     vignette <- "Xie_2025_midazolam"
@@ -911,15 +911,16 @@ in either comparison table.
 
 - **Covariate equations are not printed by the paper.** Xie 2025 reports
   the three covariate coefficients in Table 2 but never writes the
-  covariate model equations, and no supplement carrying them is on disk.
-  The power form and the 37 IU/L / 62 kg reference values, and the
-  fractional (rather than exponential) form of the genotype effect, were
-  recovered by back-solving the paper’s own reported typical clearances
-  in Results “Simulations”. All six recoverable checks agree to the
-  printed precision, and the exponential alternative for the genotype
-  effect is excluded numerically (15.07 vs the reported 13.4 L/h). This
-  is a reconstruction, not a transcription; a reader who obtains the
-  authors’ control stream should confirm it.
+  covariate model equations, and no supplement carrying them was
+  available when this model was built. The power form and the 37 IU/L /
+  62 kg reference values, and the fractional (rather than exponential)
+  form of the genotype effect, were recovered by back-solving the
+  paper’s own reported typical clearances in Results “Simulations”. All
+  six recoverable checks agree to the printed precision, and the
+  exponential alternative for the genotype effect is excluded
+  numerically (15.07 vs the reported 13.4 L/h). This is a
+  reconstruction, not a transcription; a reader who obtains the authors’
+  control stream should confirm it.
 
 - **Concentration units of the additive residual errors.** The model was
   fitted in molar units (Methods; Figure 4 is plotted in nmol/mL), but
@@ -978,7 +979,7 @@ in either comparison table.
   `covariatesDataExcluded` metadata rather than `covariateData`, since
   none appears in the final model.
 
-- **Supplementary material not on disk.** Supplementary Table 1
+- **Supplementary material not available.** Supplementary Table 1
   (genotype counts and Hardy-Weinberg tests), Supplementary Table 2 (the
   covariate screening trace) and Supplementary Figure 1 (additional
   goodness-of-fit plots) were not available. None contains a final model

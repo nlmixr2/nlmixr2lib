@@ -49,7 +49,7 @@ bundle for `DDMODEL00000244` (scraped to
   encoded with `BQL = 1` / `DV = -5`). This CSV is installed into the
   package as
   `inst/extdata/ddmore/DDMODEL00000244_Simulated_Rif_PK_data.csv` for
-  the F.2 self-consistency overlay below.
+  the self-consistency overlay below.
 - `DDMODEL00000244.rdf` – RDF metadata
   (`model-field-purpose: pkpd_0001024` pharmacokinetics,
   `model-research-stage`,
@@ -58,20 +58,18 @@ bundle for `DDMODEL00000244` (scraped to
 - `Command.txt`, `244.json` – provenance.
 
 There is no `Model_Accomodations.text` shipped in this bundle. The
-publication identification comes from the metadata this model was built
-from (Svensson et al., Clin Pharmacol Ther 2018, <doi:10.1002/cpt.778>)
-and is corroborated by the `.mod` header (`HIGHRIF1 PK MODEL`,
-`Based on final model by Smythe run 106`, NONMEM license registered to
-Uppsala University) and the RDF abstract describing exactly the
-auto-induction / MM-CL / dose-dependent-F structure of the Svensson 2018
-paper.
+publication this model is attributed to (Svensson et al., Clin Pharmacol
+Ther 2018, <doi:10.1002/cpt.778>) is corroborated by the `.mod` header
+(`HIGHRIF1 PK MODEL`, `Based on final model by Smythe run 106`, NONMEM
+license registered to Uppsala University) and the RDF abstract
+describing exactly the auto-induction / MM-CL / dose-dependent-F
+structure of the Svensson 2018 paper.
 
-The Svensson 2018 publication itself was **not** on disk when this model
-was built, so a side-by-side comparison against the paper’s parameter
-table or PK figures (Figures 2-4) is out of scope here. The validation
-in this vignette is the F.2 self-consistency check from the validation
-checklist: re-simulate the bundle’s
-`DDMODEL00000244_Simulated_Rif_PK_data.csv` through this
+The Svensson 2018 publication itself was **not** available when this
+model was built, so a side-by-side comparison against the paper’s
+parameter table or PK figures (Figures 2-4) is out of scope here. The
+validation in this vignette is the self-consistency check: re-simulate
+the bundle’s `DDMODEL00000244_Simulated_Rif_PK_data.csv` through this
 `rxode2`-translated model and verify that the typical-value trajectory
 tracks the bundle’s own observed-DV (`NDV` column) cloud, plus PKNCA NCA
 on the typical-value steady-state cohort to confirm the magnitudes are
@@ -107,7 +105,7 @@ abstract:
 
 NONMEM listing reports `TOT. NO. OF INDIVIDUALS: 83` and the bundle’s
 single-subject `Simulated_Rif_PK_data.csv` is a smoke-test, not a
-population sample. The validation cohort below is sized for the F.2
+population sample. The validation cohort below is sized for the
 self-consistency check, not for reproduction of HIGHRIF1’s sample size.
 
 The same information is available programmatically:
@@ -154,8 +152,8 @@ Per-parameter origin (also recorded as in-file comments next to each
 
 ## Virtual cohort
 
-The cohort used for the F.2 self-consistency overlay below mirrors the
-shape of the bundle’s `Simulated_Rif_PK_data.csv` so the overlay is
+The cohort used for the self-consistency overlay below mirrors the shape
+of the bundle’s `Simulated_Rif_PK_data.csv` so the overlay is
 apples-to-apples: a population of 60 subjects all dosed at 600 mg QD
 with FFM = 34.87 kg (the bundle’s single-weight smoke-test design),
 sampled around day 7 (OCC = 1) of the QD regimen – close to the
@@ -242,8 +240,8 @@ sim_typical <- rxode2::rxSolve(
 
 ## Self-consistency vs the bundle’s simulated dataset
 
-Because the original publication is not on disk, the validation here is
-the F.2 self-consistency check from the validation checklist: the
+Because the original publication was not available when this model was
+built, the validation here is the self-consistency check: the
 typical-value trajectory of this `rxode2`-translated model should match
 the shape of the per-record `NDV` (back-transformed observed
 concentration in mg/L; the `DV` column is `LOG(NDV)`) cloud shipped in
@@ -513,10 +511,10 @@ Simulated day-7 NCA parameters (600 mg QD, FFM = 34.87 kg, n = 60; OCC =
 The HIGHRIF1 600 mg arm in Svensson 2018 reports day-7 (OCC = 1)
 geometric-mean Cmax ~= 8-10 mg/L and AUC_0-\_2_4 ~= 40-50 mg\*h/L for
 the ~60 kg adult cohort (see the publication’s Figure 2 / Table 2 – not
-on disk when this model was built; the substitution here is the bundle’s
-single-subject simulated-data row sequence, which has Cmax ~= 9 mg/L at
-TADO = 3 h and matches this magnitude). The simulated median should land
-in the same range; see the table above.
+available when this model was built; the substitution here is the
+bundle’s single-subject simulated-data row sequence, which has Cmax ~= 9
+mg/L at TADO = 3 h and matches this magnitude). The simulated median
+should land in the same range; see the table above.
 
 ## Inter-occasion variability (optional check)
 
@@ -597,20 +595,19 @@ ggplot(iov_summary, aes(tad, Q50, colour = occasion)) +
 
 ## Assumptions and deviations
 
-- **The Svensson 2018 publication was not on disk when this model was
+- **The Svensson 2018 publication was not available when this model was
   built.** The package metadata (description, units, citation, DOI)
-  reflects the publication as listed in the metadata this model was
-  built from (<doi:10.1002/cpt.778>), but a side-by-side comparison
-  against the paper’s parameter table or PK figures (Figures 2-4) is out
-  of scope here. The validation is restricted to the F.2
-  self-consistency check against the bundle’s own
-  `Simulated_Rif_PK_data.csv`, plus mechanistic spot-checks on the
-  auto-induction time-course and the dose-dependent bioavailability.
-  Population descriptors are reproduced from the `DDMODEL00000244.rdf`
-  `model-has-description-long` field, which describes only the
-  structural model (compartment count, absorption form, elimination
-  form, FFM scaling, IIV / IOV) and does not enumerate per-subject
-  demographics.
+  reflects the publication this model is attributed to
+  (<doi:10.1002/cpt.778>), but a side-by-side comparison against the
+  paper’s parameter table or PK figures (Figures 2-4) is out of scope
+  here. The validation is restricted to the self-consistency check
+  against the bundle’s own `Simulated_Rif_PK_data.csv`, plus mechanistic
+  spot-checks on the auto-induction time-course and the dose-dependent
+  bioavailability. Population descriptors are reproduced from the
+  `DDMODEL00000244.rdf` `model-has-description-long` field, which
+  describes only the structural model (compartment count, absorption
+  form, elimination form, FFM scaling, IIV / IOV) and does not enumerate
+  per-subject demographics.
 
 - **`MINIMIZATION TERMINATED DUE TO ROUNDING ERRORS (ERROR=134)`, not
   `MINIMIZATION SUCCESSFUL`.** `Output_real_Rif_PK.lst` line 551 reports
@@ -693,9 +690,9 @@ ggplot(iov_summary, aes(tad, Q50, colour = occasion)) +
   34.87 kg (a mid-South-Africa-cohort value), so the `(FFM/70)^0.75`
   Vmax-scaling factor evaluates to `(34.87/70)^0.75 = 0.594` in the
   smoke-test cohort. The vignette cohort uses the same 34.87 kg value
-  for the F.2 overlay so the rxode2 cohort and the bundle are comparing
-  like with like; users who need a 70 kg-typical projection can re-run
-  with `ffm_value <- 70`.
+  for the self-consistency overlay so the rxode2 cohort and the bundle
+  are comparing like with like; users who need a 70 kg-typical
+  projection can re-run with `ffm_value <- 70`.
 
 - **Bundle simulated dataset is a single-subject smoke-test cohort.**
   The `Simulated_Rif_PK_data.csv` has just ID 1 with WT = 46.5 kg, FFM =
@@ -705,7 +702,7 @@ ggplot(iov_summary, aes(tad, Q50, colour = occasion)) +
   1200 / 2100 mg cohorts); it is the regression-style smoke test the
   DDMORE submission shipped to demonstrate that
   `Output_simulated_Rif_PK.lst` reproduces. The vignette’s virtual
-  cohort mirrors this design for the F.2 overlay.
+  cohort mirrors this design for the self-consistency overlay.
 
 - **`SEX`, `RACE`, `HIV`, `WT`, `HT`, `BMI`, `AGE`, `BQL`, `PLOT`,
   `DGRP`, `TADO`, `NDV` columns from the simulated CSV are not used by

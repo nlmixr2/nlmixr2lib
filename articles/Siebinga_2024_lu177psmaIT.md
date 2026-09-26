@@ -1146,10 +1146,10 @@ in the Discussion. {.table}
   This also keeps the model free of any constant not printed in the
   paper.
 - **Supplement.** Additional file 1 (individual model fit results,
-  Figures S1-S4) is not on disk. It contains individual
-  prediction-vs-observation plots only; every parameter used here comes
-  from Table 2, Table 3 or the Methods text, so nothing is missing from
-  the extraction.
+  Figures S1-S4) was not available when this model was built. It
+  contains individual prediction-vs-observation plots only; every
+  parameter used here comes from Table 2, Table 3 or the Methods text,
+  so nothing is missing from the extraction.
 
 ### Modelling assumptions
 

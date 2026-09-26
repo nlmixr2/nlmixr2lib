@@ -574,9 +574,9 @@ That is not enough to solve it. The paper never prints:
   nM/min/nM;
 - human tissue partition coefficients (Table 2 is rat only).
 
-Per the on-disk-only sourcing rule for PBPK models, these gaps are not
-filled from GastroPlus defaults or class-typical values, so the PBPK
-layer is out of scope.
+Because PBPK models in this library are built only from the sources that
+were available, these gaps are not filled from GastroPlus defaults or
+class-typical values, so the PBPK layer is out of scope.
 
 **The human extrapolation.** Table 5 reports predicted human `Cmax`,
 `Tmax` and AUC. Equation (3) gives the single-species allometric scaling

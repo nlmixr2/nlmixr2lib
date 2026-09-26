@@ -994,8 +994,8 @@ to match.
   formation flux into central_dihydroart
   (`d/dt(central_dihydroart) <- ... + k23 * central * (mw_dihydroart / mw_arm) - ...`).
   This avoids double-counting AM elimination via CL and K23 paths. The
-  NONMEM control stream was not on disk for this extraction; this
-  interpretation is the maintainers’ best reading of the published
+  NONMEM control stream was not available when this model was built;
+  this interpretation is the maintainers’ best reading of the published
   parameter description (Methods: “metabolism rate constant from the
   drug to the metabolite compartment (K23)”) and could be refined if the
   control stream becomes available.

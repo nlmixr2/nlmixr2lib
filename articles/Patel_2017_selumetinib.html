@@ -3907,10 +3907,10 @@ condition</strong> is a structural assumption per Patel 2017 Methods
 (and a NONMEM convention for oral dosing without an IV reference arm).
 The reported CL_Meta, V_Meta, Q_Meta, V5 parameters are therefore
 apparent (oral / F) values, not absolute.</p></li>
-<li><p><strong>Patel 2017 NONMEM control stream is not on disk</strong>
-for this extraction. Parameter values come exclusively from the paper’s
-Table 2 final-parameter-estimate column; the in-file source-trace
-comments cite the published table cells.</p></li>
+<li><p><strong>Patel 2017 NONMEM control stream not available</strong>
+when this model was built. Parameter values come exclusively from the
+paper’s Table 2 final-parameter-estimate column; the in-file
+source-trace comments cite the published table cells.</p></li>
 <li><p><strong>rxode2 <code>rate = -2</code> is required on dose event
 records</strong> to invoke the model’s <code>dur(depot) &lt;- d1</code>
 for the sequential zero-order + first-order absorption to behave as

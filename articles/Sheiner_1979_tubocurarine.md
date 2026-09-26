@@ -25,7 +25,7 @@
   does, as the absence of the renal elimination arm of clearance, with
   no other structural difference between the two groups.
 - Article: <https://doi.org/10.1002/cpt1979253358>
-- Facsimile reprint used as the on-disk source:
+- Facsimile reprint used as the source:
   <https://doi.org/10.1002/cpt.3663> (PMC12087688, pages 1519-1532)
 
 This is the paper that introduced the hypothetical effect-compartment

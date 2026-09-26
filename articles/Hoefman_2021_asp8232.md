@@ -411,8 +411,8 @@ cat("Expected active-arm sCr at t = 0: baseline * (1 + Emax) =",
 - **theta_31 (EC50 of creatinine-transporter inhibition, 52.9 nM) is
   fixed from `data on file`**. The paper’s Discussion states that
   theta_31 was fixed at 52.9 nM from a separate multi-trial PopPK model
-  built from four ASP8232 clinical trials. That upstream source is not
-  on disk, so the value ships as fixed-by-paper without an in-model
+  built from four ASP8232 clinical trials. That upstream source was not
+  available, so the value ships as fixed-by-paper without an in-model
   source-trace to an equation of its own. A sensitivity analysis in the
   source (Discussion) varied EC50 by +/- 50% and reported \<10% change
   in Emax and \<6% change in all other parameters; users who need to

@@ -483,7 +483,7 @@ print(sim_c[, c("time", "Cc", "fphase")])
   canonical column is named `SEMESTER` (no suffix) since the second
   indicator was not retained.
 
-- **Errata search.** No erratum file accompanies the on-disk PDF; the
+- **Errata search.** No erratum accompanies the published PDF; the
   open-access AAPS Journal Crossmark record was not separately verified
   for this packaged extraction. Final parameter values match Table III
   of the main publication.

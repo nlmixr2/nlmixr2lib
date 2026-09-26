@@ -832,7 +832,7 @@ monitoring at that dose), and 15 mg puts most patients outside.
   yields a systematically lower Cmax and hence a higher pass rate. The
   paper also gives no simulated `Cmax,ss` or `AUCss,24` summary
   statistics numerically - Figures 3 and 4 are box plots only - so the
-  discrepancy cannot be localised further from on-disk sources. No
+  discrepancy cannot be localised further from the available sources. No
   parameter was adjusted; the gate admits the deviation and remains able
   to fail.
 - **One-row discrepancy in the deposited dataset’s exclusions.** The

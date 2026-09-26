@@ -830,7 +830,7 @@ weight-only model, built on a 5-8 g/m^2 cohort that does not overlap the
 **Four of the five models are transcribed from Wang 2023 Table 2, not
 from their own primary publications**, because those primaries are not
 open access. Each model file records this in its `reference` metadata
-and each is queued for re-extraction from its primary. The exception is
+and each is planned for re-extraction from its primary. The exception is
 Gao 2021, which is open access and is encoded from the primary.
 
 ### Wang 2023 Table 2 mis-transcribes the Gao 2021 row (twice)
@@ -878,7 +878,7 @@ approximately 1.
 
 The alternative grouping `(eGFR x 1.73)/(192 x BSA)` cannot be excluded
 without the primary and would raise typical clearance by about 17%. Hui
-2019 is queued for re-extraction.
+2019 is planned for re-extraction.
 
 ### Jonsson 2011: the residual error is assumed, not published
 
@@ -931,17 +931,17 @@ and two things in it cannot be resolved from any available source:
   roughly doubling typical clearance. Zhang’s own abstract presents 5.04
   L/h *as* the typical clearance, which is only consistent with the `OH`
   term being near zero. The two readings differ about two-fold and
-  cannot be told apart from what is on disk.
+  cannot be told apart from the available sources.
 - **`Gender`’s reference category is unstated.** `(1 - 0.278 * Gender)`
   means `Gender = 1` lowers clearance by 27.8%, but neither Wang nor
   Zhang’s abstract says which sex that is. A flip changes typical
   clearance by ~38%.
 
 The Zhang 2010 primary is not open access. Rather than ship a model with
-an assumed covariate scale that can swing clearance two-fold, the paper
-has been queued for acquisition and will be extracted from its primary,
-where both the units and the coding will be stated. Its row is retained
-in the published performance table above for completeness.
+an assumed covariate scale that can swing clearance two-fold, the Zhang
+2010 model is deferred and will be extracted from its primary, where
+both the units and the coding will be stated. Its row is retained in the
+published performance table above for completeness.
 
 ### Not carried over
 

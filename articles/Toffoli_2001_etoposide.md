@@ -332,13 +332,13 @@ ggplot(emax_curve, aes(free_auc, pct_anc)) +
   pharmacokinetic parameter values and variances were taken from
   published series”, citing reference \[26\] (Arbuck SG et al., J Clin
   Oncol 1986;4:1690-1695, oral+IV etoposide PK) as the source of initial
-  values. The Arbuck 1986 PDF is not on disk, so we cannot lift the
-  exact ka value. We fixed ka to 0.6 /h, a literature-typical oral
-  etoposide absorption rate constant consistent with Slevin ML et
-  al. 1989 (the paper’s own reference \[35\], on oral etoposide
-  bioavailability). Downstream users who plan to fit the model to real
-  oral etoposide data should re-estimate ka or fix it to a value matched
-  to their observed tmax.
+  values. The Arbuck 1986 paper was not available when this model was
+  built, so we cannot lift the exact ka value. We fixed ka to 0.6 /h, a
+  literature-typical oral etoposide absorption rate constant consistent
+  with Slevin ML et al. 1989 (the paper’s own reference \[35\], on oral
+  etoposide bioavailability). Downstream users who plan to fit the model
+  to real oral etoposide data should re-estimate ka or fix it to a value
+  matched to their observed tmax.
 - **Residual error `propSd` fixed at 0.10 (10% proportional; ASSUMED,
   not reported).** Toffoli 2001 does not tabulate the residual error
   variance of the population fit. We chose a 10% proportional value
@@ -388,9 +388,10 @@ ggplot(emax_curve, aes(free_auc, pct_anc)) +
   Toffoli 2001 reports no residual-error estimate for etoposide. An
   earlier version of this model carried `propSd = 0.10`, described in
   the label as assumed from assay validation. That value appears nowhere
-  in the paper, so it has been replaced with `fixed(0)`, following the
-  library policy that an unreported residual error is encoded as zero
-  and documented here rather than filled in with a class-typical guess.
+  in the paper, so it has been replaced with `fixed(0)`, following this
+  package’s convention that an unreported residual error is encoded as
+  zero and documented here rather than filled in with a class-typical
+  guess.
 
   **Consequence for simulation:** simulating from this model returns the
   typical-value prediction without residual noise. If you need a

@@ -631,7 +631,7 @@ Anchor comparisons against Feng 2006 published values. {.table}
   parameter (omega_cl = 40.7%, omega_v2 = 29.4%); no off-diagonal
   covariance is reported. The packaged model uses diagonal IIV. This is
   consistent with the reported information but cannot be cross-checked
-  against the original NONMEM control stream (not on disk).
+  against the original NONMEM control stream (not available).
 
 - **`omega^2 = log(CV^2 + 1)`.** Table 2 reports inter-individual
   variability as CV%; the corresponding log-normal variance was computed
@@ -652,11 +652,11 @@ Anchor comparisons against Feng 2006 published values. {.table}
 - **Theta_NR fixed from upstream publication.** The non-renal CL
   intercept theta_NR = 0.229 L/h was fixed during estimation (Feng 2006
   Methods page 168) at the value reported by Green et al. 2003
-  (reference \[20\]); the upstream Green 2003 paper is not on disk. Feng
-  2006 reports a sensitivity analysis (Results page 170) showing that
-  varying theta_NR by +/-50% changed CrCL slope estimates by 19% but
-  left all other parameter estimates essentially unchanged, supporting
-  use of the fixed value. The model file wraps the value in
+  (reference \[20\]); the upstream Green 2003 paper was not available.
+  Feng 2006 reports a sensitivity analysis (Results page 170) showing
+  that varying theta_NR by +/-50% changed CrCL slope estimates by 19%
+  but left all other parameter estimates essentially unchanged,
+  supporting use of the fixed value. The model file wraps the value in
   `fixed(log(0.229))` to preserve the fixed-during-estimation
   provenance.
 

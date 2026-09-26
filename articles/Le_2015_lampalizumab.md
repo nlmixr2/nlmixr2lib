@@ -553,17 +553,16 @@ is a load-bearing biological feature of intravitreally administered Fabs
   covariate-effect equations.
 - **Sparse / missing baseline demographics.** Per-subject weight, race,
   and exact age distributions reside in the paper’s Supplemental Table
-  1, which was not bundled with the on-disk PDF.
-  `population$weight_range`, `race_ethnicity`, and `sex_female_pct` are
-  therefore `NULL` rather than guessed. Any reader needing the
-  demographic distribution should consult the paper’s supplement
-  directly.
+  1, which was not bundled with the PDF. `population$weight_range`,
+  `race_ethnicity`, and `sex_female_pct` are therefore `NULL` rather
+  than guessed. Any reader needing the demographic distribution should
+  consult the paper’s supplement directly.
 - **Original concentration data not publicly available.** All validation
   in this vignette uses model-derived simulations compared back to the
   paper’s main-text quantitative claims (vitreous-to-serum ratio \>
   11,000-fold; ocular t1/2 ~ 5.9 days; flip-flop apparent serum t1/2 ~
   5.9 days; near-complete vitreous target suppression at day 60).
   Numerical NCA values from Supplemental Table 3 are not reproduced
-  because the supplement was not on disk.
+  because the supplement was not available.
 - **No errata identified.** A PubMed search for the DOI plus `erratum`
   (May 2026) returned no records. No errata or corrigenda were applied.

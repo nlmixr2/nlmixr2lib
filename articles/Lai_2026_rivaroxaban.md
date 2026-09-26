@@ -15,8 +15,8 @@
 - Article: <https://doi.org/10.1007/s40262-026-01650-4>
 
 The article’s supplementary material (Tables S1-S9, Figures S1-S4) is
-referenced throughout the paper but was not available on disk for this
-extraction. Nothing in the final model depends on it: every parameter
+referenced throughout the paper but was not available when this model
+was built. Nothing in the final model depends on it: every parameter
 estimate is printed in the main-text Table 2, and the covariate
 functional forms are named in Results 3.3.1 and 3.3.2. The Errata
 section below records exactly which secondary details are therefore
@@ -1026,7 +1026,7 @@ stopifnot(nrow(prop_chk) == n_per_arm, max(abs(prop_chk$ratio / 1.5 - 1)) < 1e-4
   discrepancy does not affect this extraction. (For reference, the
   sibling model `Wang_2025_rivaroxaban` fixes `ka` at 0.617 h-1 from
   Kaneko 2013.)
-- **Supplementary material was not on disk.** Tables S1-S9 and Figures
+- **Supplementary material was not available.** Tables S1-S9 and Figures
   S1-S4 could not be retrieved. The affected details are: the full drug
   list defining the CYP3A4/P-gp inhibitor category (Table S1 – the main
   text names the four agents actually observed), the printed LBW / LBM /

@@ -383,13 +383,13 @@ within the 95% CI (3.0-8.1).
   control stream as `Y = R*PROB + (1-R)*(1-PROB)` under
   `$EST LIKELIHOOD LAPLACE METHOD=1` (Appendix 1). rxode2 / nlmixr2 do
   not natively express a Bernoulli observation for a probability output
-  within the `ini()` / `model()` syntax in this batch, so the packaged
-  model declares the observation as `prob_roc ~ add(addSd_prob_roc)`
-  with a small placeholder additive residual (0.05). This preserves the
-  typical-value sigmoid Emax mapping that drives Figure 1, but the
-  residual variance structure of the source likelihood (a single
-  Bernoulli draw per record) is dropped. This is the same pattern used
-  by `inst/modeldb/ddmore/Hansson_2013c_sunitinib.R` (Markov /
+  within the `ini()` / `model()` syntax, so the packaged model declares
+  the observation as `prob_roc ~ add(addSd_prob_roc)` with a small
+  placeholder additive residual (0.05). This preserves the typical-value
+  sigmoid Emax mapping that drives Figure 1, but the residual variance
+  structure of the source likelihood (a single Bernoulli draw per
+  record) is dropped. This is the same pattern used by
+  `inst/modeldb/ddmore/Hansson_2013c_sunitinib.R` (Markov /
   proportional-odds -\> additive placeholder on the typical-value
   expected grade) and conceptually parallel to
   `inst/modeldb/ddmore/Plan_2012_pain.R` (truncated Markov-inflated
@@ -440,10 +440,10 @@ within the 95% CI (3.0-8.1).
   that the cohort’s mental-disability definition is comparable to Shin
   2014’s pediatrics-department clinical assessment before stratifying.
 - **No supplements available.** The Shin 2014 paper carries the NONMEM
-  control stream verbatim in Appendix 1 of the main text; there is no
-  separate supplement on disk and no errata or corrigenda were located
-  by a 2026-05-24 search of the Yonsei Medical Journal article landing
-  page and PubMed.
+  control stream verbatim in Appendix 1 of the main text; no separate
+  supplement was available and no errata or corrigenda were located by a
+  2026-05-24 search of the Yonsei Medical Journal article landing page
+  and PubMed.
 - **Abstract vs Table 2 gamma values differ by approximately 0.5%.** The
   Shin 2014 abstract reports gamma = 16.5 (intact) and 4.58 (disabled);
   Table 2 Final-model row reports gamma = 16.4 and 4.53. The packaged

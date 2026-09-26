@@ -3114,9 +3114,9 @@ rows) but <strong>not</strong> a baseline-demographics table. Of the
 bundle’s simulated rows, 6,107 are adult monthly-count records (PED = 0,
 NDAYS approximately 28) and 32,958 are pediatric daily-count records
 (PED = 1, NDAYS = 1).</li>
-<li>The Schoemaker 2018 publication PDF was <strong>not on disk</strong>
-in the maintainers’ literature mirror at extraction time, so subject
-counts, study counts, and demographic distributions are not populated in
+<li>The Schoemaker 2018 publication PDF was <strong>not
+available</strong> when this model was built, so subject counts, study
+counts, and demographic distributions are not populated in
 <code>population</code>. Update the metadata when the PDF becomes
 available.</li>
 </ul>
@@ -3226,7 +3226,7 @@ in focal seizures.</p>
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
 </h2>
-<p>For the F.3 mechanistic-sanity check we simulate two typical-value
+<p>For the mechanistic-sanity check we simulate two typical-value
 subjects covering the four adult and pediatric record types in the
 source bundle:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -3314,7 +3314,7 @@ types.</caption>
 </table>
 </div>
 <div class="section level2">
-<h2 id="simulation-f-3-mechanistic-sanity-check">Simulation (F.3 mechanistic-sanity check)<a class="anchor" aria-label="anchor" href="#simulation-f-3-mechanistic-sanity-check"></a>
+<h2 id="simulation-mechanistic-sanity-check">Simulation (mechanistic-sanity check)<a class="anchor" aria-label="anchor" href="#simulation-mechanistic-sanity-check"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="va">mod_fn</span><span class="op">)</span><span class="op">)</span></span>
@@ -3760,7 +3760,7 @@ and pediatric subjects (peds offset FIXED 0 in the source).</caption>
 </div>
 </div>
 <div class="section level2">
-<h2 id="bundle-self-consistency-snapshot-f-2">Bundle self-consistency snapshot (F.2)<a class="anchor" aria-label="anchor" href="#bundle-self-consistency-snapshot-f-2"></a>
+<h2 id="bundle-self-consistency-snapshot">Bundle self-consistency snapshot<a class="anchor" aria-label="anchor" href="#bundle-self-consistency-snapshot"></a>
 </h2>
 <p>The DDMORE bundle ships <code>Simulated_P241.csv</code> with 39,065
 rows (6,107 adult monthly-count records; 32,958 pediatric daily-count
@@ -3794,13 +3794,13 @@ see “Assumptions and deviations”).</p>
 <span>    by <span class="op">=</span> <span class="st">"id"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Smoke check on bundle-shaped inputs (CAV = 13.73 mg/L is sampled from Simulated_P241.csv row 5, an adult on-treatment record). Verifies the model integrates without error; not a full F.2 self-consistency simulation."</span></span>
+<span>  caption <span class="op">=</span> <span class="st">"Smoke check on bundle-shaped inputs (CAV = 13.73 mg/L is sampled from Simulated_P241.csv row 5, an adult on-treatment record). Verifies the model integrates without error; not a full self-consistency simulation."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Smoke check on bundle-shaped inputs (CAV = 13.73 mg/L is
 sampled from Simulated_P241.csv row 5, an adult on-treatment record).
-Verifies the model integrates without error; not a full F.2
-self-consistency simulation.</caption>
+Verifies the model integrates without error; not a full self-consistency
+simulation.</caption>
 <colgroup>
 <col width="2%">
 <col width="3%">
@@ -3950,7 +3950,7 @@ is added as a source alias to <code>CHILD</code>’s register entry.</li>
 <strong>Negative-binomial -&gt; Poisson observation
 likelihood.</strong> The source likelihood is a negative-binomial with
 overdispersion alpha. The deterministic typical-value rate trajectory
-(which is what the F.3 mechanistic-sanity check above validates) is
+(which is what the mechanistic-sanity check above validates) is
 unaffected by this simplification; the difference is only in the
 dispersion of stochastic VPC samples. The source’s overdispersion alpha
 is exposed as the model variable <code>ovdp</code> (=
@@ -3996,10 +3996,10 @@ the source. We retain them as FIXED 0 in <code>ini()</code> so the
 structural form is preserved verbatim and a downstream re-fitter can
 free them by editing one line.</li>
 <li>
-<strong>Schoemaker 2018 publication PDF not on disk for
-cross-check.</strong> The publication (<a href="doi:10.1007/s40262-017-0597-2" class="uri">doi:10.1007/s40262-017-0597-2</a>) was not present anywhere
-in the maintainers’ literature mirror at extraction time. Final-estimate
-values come solely from the bundle’s <code>Output_real_P241.res</code>
+<strong>Schoemaker 2018 publication PDF not available for
+cross-check.</strong> The publication (<a href="doi:10.1007/s40262-017-0597-2" class="uri">doi:10.1007/s40262-017-0597-2</a>) was not available when
+this model was built. Final-estimate values come solely from the
+bundle’s <code>Output_real_P241.res</code>
 <code>MINIMIZATION SUCCESSFUL</code> block (line 303) and
 <code>FINAL PARAMETER ESTIMATE</code> block (lines 372-407). The
 publication abstract is reproduced verbatim in
@@ -4020,10 +4020,10 @@ these; the precedent is <code>score</code> in
 <code>Plan_2012_pain.R</code>.</li>
 <li>
 <strong>No published NCA / VPC comparison.</strong> Count-likelihood
-seizure models do not produce PK NCA quantities; the F.3 substitute
-(typical-value rate trajectory and closed-form cross-check at the four
-canonical record types) is the only validation anchor available. The
-publication’s reported <code>p_responder = 0.335</code>,
+seizure models do not produce PK NCA quantities; the mechanistic-sanity
+substitute (typical-value rate trajectory and closed-form cross-check at
+the four canonical record types) is the only validation anchor
+available. The publication’s reported <code>p_responder = 0.335</code>,
 <code>EC50 approximately 31.5 mg/L</code>, and the +0.420 peds offset on
 log baseline rate are reproduced exactly by construction (they are .res
 TH 9, exp(TH 6), TH 11). The closed-form cross-check above is a

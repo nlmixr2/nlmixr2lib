@@ -1034,10 +1034,10 @@ comparison between them is unaffected.
   value was digitized from a figure, obtained by author correspondence,
   or carried from another publication. The supplement (Table S1 study
   designs, the Supporting method giving the Japanese Society of
-  Nephrology eGFR equation, and the Figure S1 / S2 diagnostics) is not
-  on disk, but it contains no model parameters: the complete final-model
-  parameter set is in Table 2 and the covariate equations are in Section
-  3.3.
+  Nephrology eGFR equation, and the Figure S1 / S2 diagnostics) was not
+  available when this model was built, but it contains no model
+  parameters: the complete final-model parameter set is in Table 2 and
+  the covariate equations are in Section 3.3.
 - **eGFR, not creatinine clearance.** The model’s renal covariate is the
   BSA-normalized eGFR from the Japanese Society of Nephrology / Japanese
   Society for Pediatric Nephrology equation, mapped to the canonical

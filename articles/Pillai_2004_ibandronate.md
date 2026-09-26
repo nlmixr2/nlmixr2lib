@@ -397,12 +397,12 @@ each range.
   file follows the paper and omits the term.
 - **Bioavailability F is a fixed reference value, not a covariate.** The
   paper reports F = 0.008 for 2.5 mg oral and F = 0.007 for 20 mg oral,
-  both fixed from an upstream popPK fit (paper ref \[31\], not on disk
-  for this extraction). The model file holds `lfdepot = fixed(log(1))`
-  as the IV-default and asks the user to override the parameter when
-  simulating oral dosing. There is no built-in route covariate – a
-  future model that wants to simulate mixed IV + oral in one event table
-  will need to either
+  both fixed from an upstream popPK fit (paper ref \[31\], not available
+  when this model was built). The model file holds
+  `lfdepot = fixed(log(1))` as the IV-default and asks the user to
+  override the parameter when simulating oral dosing. There is no
+  built-in route covariate – a future model that wants to simulate mixed
+  IV + oral in one event table will need to either
   1.  register a `ROUTE_PO` canonical covariate and rewrite the model to
       apply F conditionally, or (b) pre-scale the oral doses by 0.008 in
       the event table and keep `lfdepot = log(1)`.

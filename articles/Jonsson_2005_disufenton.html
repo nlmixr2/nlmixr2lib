@@ -3100,11 +3100,11 @@ log-transform-both-sides residual error model.</li>
 <p>This vignette validates the packaged
 <code>Jonsson_2005_disufenton</code> model against DDMORE Foundation
 Model Repository entry <strong>DDMODEL00000245</strong>, the source from
-which it was extracted. The Jonsson 2005 publication PDF is not on disk
-here, so the validation strategy is a self-consistency check:
-re-simulate the bundle’s dosing scenario and confirm the trajectory
-matches the structural model encoded in the DDMORE bundle
-(<code>Executable_run111.mod</code> plus the
+which it was extracted. The Jonsson 2005 publication PDF was not
+available when this model was built, so the validation strategy is a
+self-consistency check: re-simulate the bundle’s dosing scenario and
+confirm the trajectory matches the structural model encoded in the
+DDMORE bundle (<code>Executable_run111.mod</code> plus the
 <code>Output_real_run111.lst</code> final estimates).</p>
 </div>
 <div class="section level2">
@@ -3121,9 +3121,9 @@ followed by a 71-hour maintenance infusion whose rate was individualised
 based on baseline creatinine clearance.</p>
 <p>Demographic descriptors above are summarised from the DDMODEL00000245
 RDF <code>model-has-description-long</code> abstract, which mirrors the
-Jonsson 2005 Methods. The Jonsson 2005 PDF is not available on disk in
-the maintainers’ literature mirror, so weight, sex, and race breakdowns
-from the publication’s Table 1 could not be cross-checked.</p>
+Jonsson 2005 Methods. The Jonsson 2005 PDF was not available when this
+model was built, so weight, sex, and race breakdowns from the
+publication’s Table 1 could not be cross-checked.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod_meta</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 12</span></span>
@@ -3501,9 +3501,10 @@ across the breakpoint.</p>
 </h2>
 <p>PKNCA is run on the post-infusion (washout) data so the AUC and
 terminal half-life can be computed cleanly. Because the Jonsson 2005
-publication PDF is not on disk, the simulated NCA values cannot be
-compared side-by-side against published Cmax / AUC tables; they are
-reported here as a sanity check on the simulation pipeline.</p>
+publication PDF was not available when this model was built, the
+simulated NCA values cannot be compared side-by-side against published
+Cmax / AUC tables; they are reported here as a sanity check on the
+simulation pipeline.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Reset time-from-end-of-infusion at t = 72 h so PKNCA's lambda.z fit sees a</span></span>
 <span><span class="co"># clean post-infusion decay.</span></span>
@@ -3630,15 +3631,14 @@ reported here as a sanity check on the simulation pipeline.</p>
 <code>$THETA</code> / <code>$OMEGA</code> blocks are initial values and
 are not used; the listing reports
 <code>NO. OF SIG. DIGITS IN FINAL EST.: 4.0</code>.</p></li>
-<li><p><strong>Jonsson 2005 publication PDF is not on disk</strong> in
-the maintainers’ literature mirror, so weight, sex, and race breakdowns
-and the publication’s Table 1 / parameter table could not be
-cross-checked against the bundle. When the publication PDF is available,
-the <code>population</code> narrative should be confirmed against it;
-the <code>Model_Accomodations.text</code> file the DDMORE flow normally
-relies on for publication mapping is missing from this bundle, so
-identification of the linked publication relied solely on the
-DDMODEL00000245 RDF abstract title
+<li><p><strong>Jonsson 2005 publication PDF was not available when this
+model was built</strong>, so weight, sex, and race breakdowns and the
+publication’s Table 1 / parameter table could not be cross-checked
+against the bundle. When the publication PDF is available, the
+<code>population</code> narrative should be confirmed against it; the
+<code>Model_Accomodations.text</code> file normally used for publication
+mapping is missing from this bundle, so identification of the linked
+publication relied solely on the DDMODEL00000245 RDF abstract title
 (<code>"Population Pharmacokinetic Modelling and Estimation of Dosing Strategy for NXY-059, a Nitrone Being Developed for Stroke"</code>)
 and the DOI supplied when this model was built. The published abstract’s
 “typical clearance 4.54 L/h at CRCL 70 mL/min” was confirmed numerically
@@ -3690,10 +3690,11 @@ the packaged model encodes as <code>Cc ~ lnorm(propSd)</code> with
 and Wu_2024_inotuzumab precedents in <code>inst/modeldb/</code>. The
 approximate equivalent linear-space coefficient of variation is
 <code>sqrt(exp(0.165^2) - 1) ~= 16.6%</code>.</p></li>
-<li><p><strong>Validation strategy is self-consistency</strong> (no
-linked publication on disk). PKNCA values shown above are informational;
-comparison against Jonsson 2005’s published NCA was not possible from
-the materials on disk.</p></li>
+<li><p><strong>Validation strategy is self-consistency</strong> (the
+linked publication was not available). PKNCA values shown above are
+informational; comparison against Jonsson 2005’s published NCA was not
+possible from the materials available when this model was
+built.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -924,8 +924,8 @@ Steady-state exposure by regimen (typical individual). {.table}
   and `CL/F` are replaced with the values the paper’s own text and the
   first author’s thesis print, and the additive residual error is fixed
   at zero because the tabulated value is falsified and no corrected
-  value exists anywhere on disk. See the Errata section for the full
-  evidence. Both corrections come from printed prose, not from
+  value exists in any available source. See the Errata section for the
+  full evidence. Both corrections come from printed prose, not from
   figure-fitting; the figure comparisons are confirmation, not the
   source.
 - **No covariates.** Age, body weight, sex and concurrent csDMARD

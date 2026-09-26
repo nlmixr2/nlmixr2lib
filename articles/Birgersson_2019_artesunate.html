@@ -3120,11 +3120,12 @@ dihydroartemisinin (DHA) in venous plasma.</p>
 <code>Executable_run1.mod</code> (a <code>MAXEVAL=0 POSTHOC</code> run)
 and an <code>Output_simulated_run1.lst</code> (a one-subject
 re-evaluation on the bundled <code>Simulated_run1.csv</code>), and
-because the publication PDF is not on disk, all values come from the
-<code>.mod</code> file. The <code>MAXEVAL=0</code> setting makes the
-<code>.mod</code> <code>$THETA / $OMEGA / $SIGMA</code> blocks the
-published Birgersson 2019 final estimates carried verbatim (the
-listing’s <code>FINAL PARAMETER ESTIMATE</code> block confirms
+because the publication PDF was not available when this model was built,
+all values come from the <code>.mod</code> file. The
+<code>MAXEVAL=0</code> setting makes the <code>.mod</code>
+<code>$THETA / $OMEGA / $SIGMA</code> blocks the published Birgersson
+2019 final estimates carried verbatim (the listing’s
+<code>FINAL PARAMETER ESTIMATE</code> block confirms
 <code>TH 1 = 3.57E+03</code> and so on).</p>
 <table class="table">
 <colgroup>
@@ -3405,7 +3406,7 @@ as the self-consistency anchor against the bundle’s
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
 </h2>
-<p>The Birgersson 2019 publication PDF was not on disk when this model
+<p>The Birgersson 2019 publication PDF was not available when this model
 was built; the figure replication here therefore demonstrates the
 typical-value parent-and-metabolite trajectories and stratifies them by
 pregnancy status – the principal covariate finding of the paper. Adding
@@ -4112,8 +4113,8 @@ pregnancy status (median [5%-95%]).</caption>
 <div class="section level3">
 <h3 id="comparison-against-published-nca">Comparison against published NCA<a class="anchor" aria-label="anchor" href="#comparison-against-published-nca"></a>
 </h3>
-<p>The Birgersson 2019 publication PDF was not on disk during this
-extraction, so a numeric side-by-side comparison against the paper’s
+<p>The Birgersson 2019 publication PDF was not available when this model
+was built, so a numeric side-by-side comparison against the paper’s
 published Cmax / AUC tables is not part of this validation. The
 qualitative findings are reproduced:</p>
 <ul>
@@ -4199,7 +4200,7 @@ structural ODE chain implements the published algebraic relationship
 </h2>
 <ul>
 <li>
-<strong>Source publication PDF not on disk.</strong> All
+<strong>Source publication PDF not available.</strong> All
 structural-model values (THETA / OMEGA / SIGMA, equations) come from the
 DDMORE bundle’s <code>Executable_run1.mod</code>. Because that file is a
 <code>MAXEVAL=0 POSTHOC</code> run, the

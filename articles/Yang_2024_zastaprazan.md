@@ -619,13 +619,13 @@ size.
   screen is preserved without implying an effect the paper did not
   estimate.
 
-- **Supplementary material was not available on disk.** Tables S1 and S2
-  (study designs and sampling schemes; the Erlang compartment-count
-  comparison) and Figures S1 and S2 (CYP2C19 phenotype and *H. pylori*
-  diagnostics) were not obtainable. Every final parameter estimate is in
-  main-text Table 2 and every demographic in Table 1, so no model value
-  depends on the supplement; the Methods narrative supplied the study
-  designs quoted above.
+- **Supplementary material was not available.** Tables S1 and S2 (study
+  designs and sampling schemes; the Erlang compartment-count comparison)
+  and Figures S1 and S2 (CYP2C19 phenotype and *H. pylori* diagnostics)
+  were not obtainable. Every final parameter estimate is in main-text
+  Table 2 and every demographic in Table 1, so no model value depends on
+  the supplement; the Methods narrative supplied the study designs
+  quoted above.
 
 - **No bioavailability parameter.** Every disposition parameter in Table
   2 is apparent (CL/F, Vc/F, Q/F, Vp/F) because only oral data were

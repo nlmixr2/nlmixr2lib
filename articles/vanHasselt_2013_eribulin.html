@@ -3396,9 +3396,10 @@ dose, then recovers via the transit-chain feedback loop.</p>
 <h3 id="figure-2---visual-predictive-check-across-200-virtual-subjects">Figure 2 - Visual predictive check across 200 virtual subjects<a class="anchor" aria-label="anchor" href="#figure-2---visual-predictive-check-across-200-virtual-subjects"></a>
 </h3>
 <p>Reproduces the general shape of van Hasselt 2013 Figure 2 (VPC of ANC
-vs time by study). Because the raw study-stratified data are not on
-disk, the figure below is a single-panel VPC across the full virtual
-cohort at reference covariate values with 22.7% G-CSF prevalence.</p>
+vs time by study). Because the raw study-stratified data are not
+available, the figure below is a single-panel VPC across the full
+virtual cohort at reference covariate values with 22.7% G-CSF
+prevalence.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vpc_df</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3672,17 +3673,16 @@ effect. Two possibilities: (a) the pre-2013 snapshot of the Eisai
 analysis referenced by van Hasselt 2013 had a dose-on-Q covariate that
 was dropped between that snapshot and the Majid 2014 publication, or (b)
 Kawamura 2018’s reproduction of Majid 2014 is incomplete on this one
-covariate. The numerical dose-on-Q coefficient is not on disk in either
+covariate. The numerical dose-on-Q coefficient is not given in either
 paper. This model omits it; in practice, dose-on-Q has small impact on
 AUC for a fixed-dose regimen and does not affect the PD structure that
 is the primary focus of van Hasselt 2013.</li>
 <li>
-<strong>CONMED_GCSF is a new canonical.</strong> Following the Phase
-3 covariate-column gate, <code>CONMED_GCSF</code> was registered as a
-new canonical binary covariate in
-<code>inst/references/covariate-columns.md</code> (maintainer decision).
-Follows the well-established <code>CONMED_&lt;drug&gt;</code>
-pattern.</li>
+<strong>CONMED_GCSF is a new canonical.</strong>
+<code>CONMED_GCSF</code> was registered as a new canonical binary
+covariate in <code>inst/references/covariate-columns.md</code> (a
+maintainers’ decision). It follows the well-established
+<code>CONMED_&lt;drug&gt;</code> pattern.</li>
 <li>
 <strong>Table 5 incidence comparison caveat – reference-covariate
 simulation under-represents the deep-nadir tail.</strong> The paper’s

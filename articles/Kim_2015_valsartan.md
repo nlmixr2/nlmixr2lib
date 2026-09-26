@@ -283,12 +283,12 @@ Simulated single-dose NCA across the virtual cohort (160 mg oral).
   does not state the valsartan dose level used in the underlying study.
   The dose comes from the upstream Kim et al. 2013
   fixed-dose-combination bioequivalence paper (Clin Ther 35:934-940),
-  which is not on disk for this extraction. The vignette assumes a
-  single 160 mg oral dose (the standard adult valsartan strength in the
-  Korean Diovan / amlodipine-valsartan FDC product line). The model
-  itself is dose-linear except for absorption duration; users can scale
-  all simulated concentrations linearly by `actual_dose / 160` if a
-  different strength applies.
+  which was not available when this model was built. The vignette
+  assumes a single 160 mg oral dose (the standard adult valsartan
+  strength in the Korean Diovan / amlodipine-valsartan FDC product
+  line). The model itself is dose-linear except for absorption duration;
+  users can scale all simulated concentrations linearly by
+  `actual_dose / 160` if a different strength applies.
 
 - **Apparent oral parameters.** All clearance and volume terms in the
   model are `CL/F`, `V1/F`, `Q/F`, `V2/F` – bioavailability `F` is

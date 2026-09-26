@@ -432,13 +432,14 @@ secondary-parameter values: a closed-form check gives
   3, Table 3). The packaged model exposes only `WT`, `DIS_HEALTHY`, and
   `OCC`.
 - **DOI.** The DOI in the `reference` field
-  (`10.1111/j.1365-2125.2003.02064.x`) was supplied with the metadata
-  used to build this model. The DOI string is not visible inside the
-  text extracted from the on-disk PDF (the PMC-XML / PDF preprocessor
-  strips the copyright header where Wiley typically prints DOI). It is
-  presented here unverified against the publisher’s landing page; users
-  who need a citable identifier should cross-check against the journal’s
-  table of contents for Br J Clin Pharmacol 57(4) (April 2004).
+  (`10.1111/j.1365-2125.2003.02064.x`) was supplied with the
+  bibliographic record from which this model was built. The DOI string
+  is not visible in the article text that was available when this model
+  was built (the copyright header where Wiley typically prints the DOI
+  was not included). It is presented here unverified against the
+  publisher’s landing page; users who need a citable identifier should
+  cross-check against the journal’s table of contents for Br J Clin
+  Pharmacol 57(4) (April 2004).
 - **Validation scope.** The paper does not publish observed Cmax / AUC
   NCA values, so the validation here is restricted to the secondary
   terminal half-life parameter (the only NCA-style value reported in the

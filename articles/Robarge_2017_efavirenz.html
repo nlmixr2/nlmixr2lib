@@ -3970,11 +3970,11 @@ as an asymmetric percent difference.</p>
 reports race (71% Caucasian, 22% African-American, 7% Asian / Indian /
 American Indian) but does not reproduce CYP2B6 metabolizer-status
 frequencies in the main text; Table S1 in the supplemental material (not
-bundled with the on-disk PDF) carries that breakdown. The simulated
-cohort uses an approximate 60% / 30% / 10% normal / intermediate / slow
-split chosen to populate all three multiplier groups in a typical mixed
-North American Caucasian + African-American cohort, not to reproduce the
-exact Robarge 2017 sample. A user with a specific cohort in mind should
+bundled with the PDF) carries that breakdown. The simulated cohort uses
+an approximate 60% / 30% / 10% normal / intermediate / slow split chosen
+to populate all three multiplier groups in a typical mixed North
+American Caucasian + African-American cohort, not to reproduce the exact
+Robarge 2017 sample. A user with a specific cohort in mind should
 rebuild the <code>subjects</code> table with the matching
 frequencies.</p></li>
 <li><p><strong>FFM / FM derivation.</strong> The packaged model accepts
@@ -4004,11 +4004,10 @@ vs. observed Cmin ~150-500 ng/mL), which is biologically
 implausible.</p></li>
 <li><p><strong>FM is a new canonical covariate.</strong> Fat mass is the
 natural complement of fat-free mass (already canonical) and is derived
-by the same Janmahasatian (2005) formula chain (FM = TBW - FFM). The
-current PR adds <code>FM</code> to
+by the same Janmahasatian (2005) formula chain (FM = TBW - FFM).
+<code>FM</code> is registered in
 <code>inst/references/covariate-columns.md</code> as paired with
-<code>FFM</code>; reviewer confirmation of the new register entry is
-requested.</p></li>
+<code>FFM</code>.</p></li>
 <li><p><strong>No published NCA table.</strong> Robarge 2017 reports VPC
 figures (Fig 2) and goodness-of-fit plots (Fig 3) but no tabular Cmax /
 Tmax / AUC summary. The rigorous analytic validation here compares

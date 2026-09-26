@@ -4682,18 +4682,18 @@ and 4 use the model’s built-in state-specific medians (7.56 / 7.80 /
 <li>
 <strong>Figure 6’s design is recovered from the figure legend, not
 from the Methods.</strong> The Methods cite only “a literature design
-(28)”, and reference 28 is not on disk. The legend of Figure 6 states
-the design outright – dosing intervals q3h / q6h / q12h / q24h, daily
-doses 0 / 400 / 800 / 1,600 mg/kg – and that is what this vignette
-simulates. Two independent checks corroborate it: the fAUC/MIC axis
-maximum lands at 7,590 against the paper’s roughly 7,500 (fAUC/MIC
-depends only on the daily dose), and the reproduced fT&gt;MIC R-squared
-values of 0.965 / 0.981 / 0.977 match the printed 0.96 / 0.98 / 0.98.
-The reproduced fAUC/MIC R-squared values run about 0.15 below the
-printed 0.31 / 0.60 / 0.74 while preserving the ordering and the size of
-the immunocompetent-versus-neutropenic gap; the residual difference is
-attributable to the curve-fitting routine (below) rather than to the
-design.</li>
+(28)”, and reference 28 was not available when this model was built. The
+legend of Figure 6 states the design outright – dosing intervals q3h /
+q6h / q12h / q24h, daily doses 0 / 400 / 800 / 1,600 mg/kg – and that is
+what this vignette simulates. Two independent checks corroborate it: the
+fAUC/MIC axis maximum lands at 7,590 against the paper’s roughly 7,500
+(fAUC/MIC depends only on the daily dose), and the reproduced fT&gt;MIC
+R-squared values of 0.965 / 0.981 / 0.977 match the printed 0.96 / 0.98
+/ 0.98. The reproduced fAUC/MIC R-squared values run about 0.15 below
+the printed 0.31 / 0.60 / 0.74 while preserving the ordering and the
+size of the immunocompetent-versus-neutropenic gap; the residual
+difference is attributable to the curve-fitting routine (below) rather
+than to the design.</li>
 <li>
 <strong>The <code>drc</code> sigmoid Emax fit of equation 6 is
 replaced by direct SSE minimisation.</strong> The paper used the

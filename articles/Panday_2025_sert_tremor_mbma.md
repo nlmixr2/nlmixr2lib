@@ -189,12 +189,12 @@ Not included in `model()`, and why:
   brain-homogenate `f_u,br`). The equations are printed in the
   supplement but the compartment volumes (`V_ISF`, `V_cyto`, `V_lyso`)
   and compartmental pH values they require are not - they live in the
-  cited Friden et al. reference, which is not among the on-disk sources.
-  The *outputs* of the correction are tabulated (Table S2, parameter
-  rows `brain fu corrected`), so the correction is an input-curation
-  step whose results the model consumes rather than a step the model
-  performs. No constant has been substituted from outside the on-disk
-  sources.
+  cited Friden et al. reference, which was not available when this model
+  was built. The *outputs* of the correction are tabulated (Table S2,
+  parameter rows `brain fu corrected`), so the correction is an
+  input-curation step whose results the model consumes rather than a
+  step the model performs. No constant has been substituted from outside
+  the available sources.
 - **Equation S7** (free-potency correction for serum-containing assays).
   See Errata - the tabulated corrected potencies could not be reproduced
   from the equation as printed, so the model consumes the
@@ -206,8 +206,8 @@ Not included in `model()`, and why:
   moiety and add the resulting `sertcov` values to reproduce that; the
   default parameter set is the fit that *excludes* those drugs.
 - **Residual error.** Main-text Eq. 2 carries an additive noise term
-  `eta`, but no variance for it is reported anywhere on disk. Per the
-  standing policy against inventing variances, the model is
+  `eta`, but no variance for it is reported in any available source. Per
+  the standing policy against inventing variances, the model is
   typical-value only. There is also no between-study random effect in
   this MBMA - the study-group sizes enter as regression *weights*, not
   as a variance component.
@@ -891,7 +891,7 @@ sprintf("Predicted tremor incidence %.2f%% at a SERT target coverage of %.3f.",
   includes an additive noise term with no reported variance. The model
   is typical-value only.
 
-- **The Friden pH-partition constants are not on disk.** See Scope
+- **The Friden pH-partition constants were not available.** See Scope
   above.
 
 - **Four cells of Table S5 are low by a factor of about ten.** Gate 1

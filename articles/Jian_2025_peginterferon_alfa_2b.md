@@ -82,8 +82,8 @@ Per-parameter provenance is recorded as an in-file comment next to each
 table below collects the whole final model in one place. All values come
 from the **“Final model”** block of Jian 2025 Table 2 unless noted.
 
-The paper’s Supporting Information is on disk and is load-bearing here:
-**Data S2** (`PSP4-14-2014-s002.docx`) is the complete final-model
+The paper’s Supporting Information was available and is load-bearing
+here: **Data S2** (`PSP4-14-2014-s002.docx`) is the complete final-model
 **NONMEM control stream**, and **Data S1** (`PSP4-14-2014-s001.docx`)
 holds the covariate-screening Table S1 and Figures S1-S9. The control
 stream settles three things the main text leaves ambiguous or misprints:

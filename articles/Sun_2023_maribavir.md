@@ -64,15 +64,15 @@ The per-parameter origin is recorded as an in-file comment next to each
 `ini()` entry in `inst/modeldb/specificDrugs/Sun_2023_maribavir.R`. The
 table below collects them in one place for review.
 
-Two on-disk sources are cited. **Table S2** is the published parameter
-table (back-transformed estimates, % RSE, 95% CI and IIV CV%).
-**`s005.txt`** is the supplement’s NONMEM control stream for run 171 –
-the “fixed weight effect exponents” model – whose `$THETA` block is
-annotated `;from 171.cnv`, i.e. the final converged estimates. The
-control stream carries full precision and the complete `$OMEGA BLOCK(6)`
-and `$SIGMA`, so it is the primary source for the `ini()` values; every
-one of them was cross-checked against Table S2 (see the
-“Cross-validation” section below).
+Two sources are cited. **Table S2** is the published parameter table
+(back-transformed estimates, % RSE, 95% CI and IIV CV%). **`s005.txt`**
+is the supplement’s NONMEM control stream for run 171 – the “fixed
+weight effect exponents” model – whose `$THETA` block is annotated
+`;from 171.cnv`, i.e. the final converged estimates. The control stream
+carries full precision and the complete `$OMEGA BLOCK(6)` and `$SIGMA`,
+so it is the primary source for the `ini()` values; every one of them
+was cross-checked against Table S2 (see the “Cross-validation” section
+below).
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -315,7 +315,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55ef1e26da78>
+#> <environment: 0x5555f0ec05d8>
 ```
 
 ### Cross-validation of the control stream against Table S2
@@ -1019,7 +1019,7 @@ therefore biases the Cmax rows.
   not `sim`.
 - **`ini()` values are taken from the run 171 control stream rather than
   from Table S2.** The control stream reports full precision and is the
-  only on-disk source for the complete `$OMEGA BLOCK(6)` and `$SIGMA`.
+  only available source for the complete `$OMEGA BLOCK(6)` and `$SIGMA`.
   Every value was cross-checked against Table S2; the agreement is shown
   explicitly in the “Cross-validation” section above. No parameter value
   came from outside the article and its supplement.

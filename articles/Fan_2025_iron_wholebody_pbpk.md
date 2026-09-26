@@ -857,11 +857,11 @@ well as here.
     in fact the authors’ basis - which is arguable, since both
     validation cohorts had iron-deficiency anaemia.
 2.  **The rat’s `mtt_rbc` and `q_bone_rbc`.** Neither is reported for
-    the rat anywhere on disk, yet both are load-bearing for the bone and
-    spleen profiles of Figure 5. Per a maintainer ruling they were
-    obtained by applying the paper’s **own** Eq. (9) allometry rather
-    than by copying the printed mouse values. The rat red-cell lifespan
-    is derived from the paper’s two lifespan anchors - mouse
+    the rat in any available source, yet both are load-bearing for the
+    bone and spleen profiles of Figure 5. Per a maintainer ruling they
+    were obtained by applying the paper’s **own** Eq. (9) allometry
+    rather than by copying the printed mouse values. The rat red-cell
+    lifespan is derived from the paper’s two lifespan anchors - mouse
     iron-adequate `TRBC` = 34.44 h at 0.025 kg and human `TRBC` = 120
     days at 73 kg - which fix an exponent
     `b_T = log(2880 / 34.44) / log(73 / 0.025)` = 0.5547, evaluated at

@@ -45,12 +45,12 @@ bundle for `DDMODEL00000298` (scraped to
   `Command.txt` – provenance, model-classification metadata, and
   scenario notes.
 
-The Dao 2020 publication itself was not on disk at the time of
-extraction (the DDMORE bundle was uploaded while the paper was “under
+The Dao 2020 publication itself was not available when this model was
+built (the DDMORE bundle was uploaded while the paper was “under
 submission”, per `Model_Accomodations.txt`). A side-by-side comparison
 against published NCA tables or VPC figures is therefore out of scope
 for this vignette. The validation strategy follows the package’s
-approach for DDMORE-sourced models: an F.2 / F.3 self-consistency and
+approach for DDMORE-sourced models: a self-consistency and
 mechanistic-sanity check against the bundle’s own simulated
 trajectories, plus a PKNCA pass on the simulated plasma profile to
 confirm the **dose-disproportional** Cmax / AUClast pattern that the
@@ -78,8 +78,8 @@ from the executable’s `$DATA` block) lists `WT` and `AGE` columns, but
 those covariates are not used by the structural model and the bundle
 does not ship per-subject demographics in the simulated dataset. The
 publication itself characterises a healthy-volunteer Phase 1 study;
-because the publication PDF is not on disk for this extraction, the
-`population` metadata fields beyond `n_subjects = 4`,
+because the publication PDF was not available when this model was built,
+the `population` metadata fields beyond `n_subjects = 4`,
 `disease_state = "healthy adult volunteers"`, and the dose ladder of 50
 / 100 / 200 mg sultiame are intentionally narrative placeholders rather
 than pinned numeric ranges.
@@ -190,13 +190,14 @@ sim_typical <- rxode2::rxSolve(
 
 ## Replicate published-figure shapes
 
-The Dao 2020 publication is not on disk for this extraction, so a direct
-figure-by-figure replication is out of scope. The plots below show the
-qualitative trajectories that any sultiame PK + RBC-binding model must
-produce: dose-proportional plasma kinetics with a mid-1-h absorption
-peak, an order-of-magnitude-higher RBC concentration that follows the
-plasma curve through saturable binding, and cumulative urinary excretion
-that approaches `dose * QREN` on the multi-day terminal window.
+The Dao 2020 publication was not available when this model was built, so
+a direct figure-by-figure replication is out of scope. The plots below
+show the qualitative trajectories that any sultiame PK + RBC-binding
+model must produce: dose-proportional plasma kinetics with a mid-1-h
+absorption peak, an order-of-magnitude-higher RBC concentration that
+follows the plasma curve through saturable binding, and cumulative
+urinary excretion that approaches `dose * QREN` on the multi-day
+terminal window.
 
 ``` r
 
@@ -444,14 +445,14 @@ extra 1-3 h while RBCs absorb the early bolus. {.table}
   appropriate mass-balance check because it reflects the partitioning
   fraction of total elimination that goes to urine versus non-renal
   routes.
-- **Source publication not on disk.** The Dao 2020 paper (Pharmacology
+- **Source publication not available.** The Dao 2020 paper (Pharmacology
   Research & Perspectives 8(2):e00558, <doi:10.1002/prp2.558>) was not
-  available at extraction time; the DDMORE bundle’s
+  available when this model was built; the DDMORE bundle’s
   `Model_Accomodations.txt` describes the paper as “under submission”
   relative to the bundle’s 2018-2019 vintage. A side-by-side comparison
   of simulated NCA against published NCA tables, or of simulated VPCs
   against published VPC figures, is therefore out of scope. The
-  validation here is the DDMORE F.2 / F.3 self-consistency /
+  validation here is the DDMORE-bundle self-consistency /
   mechanistic-sanity check.
 - **NONMEM minimization had problems.**
   `Output_real_sultiame_nonlinear_PK.lst` (line 858) reports
@@ -525,7 +526,7 @@ extra 1-3 h while RBCs absorb the early bolus. {.table}
   need to extend the model.
 - **Population demographics are intentionally narrative.** The DDMORE
   bundle does not ship per-subject `WT` / `AGE` for the four
-  individuals, and the underlying publication PDF is not on disk. The
+  individuals, and the underlying publication PDF was not available. The
   `population` fields beyond `n_subjects = 4`, `disease_state`, and the
   dose ladder are written as narrative placeholders, not pinned numeric
   ranges. Consumers needing demographic detail should consult Dao 2020

@@ -3392,7 +3392,7 @@ pathogens.</p>
 <span><span class="co">#&gt;     Cc ~ add(addSd) + prop(propSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55ce9894af40&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x5569aae01860&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -4777,10 +4777,8 @@ CI 0.0184-0.0394). The abbreviation footnote describes it only as “eta4,
 interindividual variability of IOV” and never names the structural
 parameter it acts on; the Section 2.2 display equations account for
 <code>eta1</code>, <code>eta2</code> and <code>eta3</code> only. No
-supplement or control stream is available (the EuropePMC
-<code>supplementaryFiles</code> endpoint returns HTTP 500 for
-PMC11868765 and the Frontiers file endpoints return 404), and the
-supplement’s documented contents – a study-design table and mean
+supplement or control stream was available when this model was built,
+and the supplement’s documented contents – a study-design table and mean
 concentration-time figures – would not place an eta. Assigning the term
 to CL, D1 or F would be inventing model structure, so it is omitted and
 its reported value preserved in the model file comments. Simulated
@@ -4798,8 +4796,8 @@ deliberately does not carry an <code>fu</code> term.</li>
 <strong>CFR is not reproduced.</strong> Wu 2025 Table 3 also reports
 cumulative fraction of response, which requires the EUCAST MIC frequency
 distributions for each pathogen. Those distributions are external to the
-paper and are not on disk, so only the PTA and cut-off columns are
-validated here.</li>
+paper and were not available when this model was built, so only the PTA
+and cut-off columns are validated here.</li>
 <li>
 <strong>No NCA answer key.</strong> Wu 2025 publishes no
 Cmax/Tmax/AUC table, so the PKNCA results above are reported rather than

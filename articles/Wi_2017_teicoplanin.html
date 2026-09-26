@@ -3717,11 +3717,11 @@ on V2.</strong> Wi 2017 Methods states “Covariance between
 interindividual variability was estimated using a variance-covariance
 matrix”, but Table 2 reports only the diagonal omega^2 values (0.34,
 0.13, 0.15 on CL, V1, Q respectively) with no off-diagonal covariance
-estimates printed in the paper or any supplement on disk. The packaged
+estimates printed in the paper or any available supplement. The packaged
 model uses an independent- eta block
 (<code>etalcl ~ 0.34; etalvc ~ 0.13; etalq ~ 0.15</code>). This is
 consistent with the reported information but cannot be cross-checked
-against the original NONMEM control stream (not on disk). No IIV is
+against the original NONMEM control stream (not available). No IIV is
 included on V2 because no V2 variability is reported in Table
 2.</p></li>
 <li><p><strong>Residual error encoded as combined
@@ -3758,15 +3758,14 @@ The Wi 2017 study cohort exclusively comprised VA-ECMO patients for
 cardiogenic shock. The <code>ECMO_STATUS</code> covariate column does
 not distinguish VA from VV; for VV-ECMO simulations the model’s
 covariate effect should be interpreted with caution.</p></li>
-<li><p><strong>New canonical <code>ECMO_STATUS</code> ratified alongside
-this extraction.</strong> The existing <code>ECMO_PUMP_SPEED</code>
-canonical (continuous centrifugal-pump RPM covariate, Yang 2017
-precedent) and <code>T_POST_ECMO</code> canonical (continuous
-time-since-decannulation, Ahsman 2010 precedent) do not fit the Wi 2017
-binary within-subject ECMO indicator. The founding example for
-<code>ECMO_STATUS</code> is <code>Watt_2015_fluconazole.R</code>
-(ratified earlier in this ingestion batch); the Wi 2017 extraction is
-the second user.</p></li>
+<li><p><strong>New canonical <code>ECMO_STATUS</code> added alongside
+this model.</strong> The existing <code>ECMO_PUMP_SPEED</code> canonical
+(continuous centrifugal-pump RPM covariate, Yang 2017 precedent) and
+<code>T_POST_ECMO</code> canonical (continuous time-since-decannulation,
+Ahsman 2010 precedent) do not fit the Wi 2017 binary within-subject ECMO
+indicator. The founding example for <code>ECMO_STATUS</code> is
+<code>Watt_2015_fluconazole.R</code>; the Wi 2017 model is the second
+user.</p></li>
 <li><p><strong>Race / ethnicity not modeled.</strong> Wi 2017 does not
 report race composition; the single-centre Korean cardiac ICU cohort is
 presumably predominantly Korean but the analysis did not test race as a

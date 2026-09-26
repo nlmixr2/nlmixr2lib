@@ -3103,7 +3103,7 @@ Table 1 = Supplementary Tables S1-S3): <a href="https://www.frontiersin.org/arti
 <span><span class="co">#&gt;     "concentration is NOT fitted here: Liang 2024 generated it with a",</span></span>
 <span><span class="co">#&gt;     "whole-body PK-Sim 10.0 PBPK model that is a platform port (no ODEs, no",</span></span>
 <span><span class="co">#&gt;     "organ volumes and no blood flows are published, and no .pksim5 project",</span></span>
-<span><span class="co">#&gt;     "was deposited), so that layer is not reproducible from the on-disk",</span></span>
+<span><span class="co">#&gt;     "was deposited), so that layer is not reproducible from the available",</span></span>
 <span><span class="co">#&gt;     "sources and is deliberately NOT extracted. The total osimertinib",</span></span>
 <span><span class="co">#&gt;     "concentration is instead supplied per record as the canonical",</span></span>
 <span><span class="co">#&gt;     "time-varying covariate CEFFECT and multiplied by the fraction unbound fu",</span></span>
@@ -3121,8 +3121,7 @@ Table 1 = Supplementary Tables S1-S3): <a href="https://www.frontiersin.org/arti
 <span><span class="co">#&gt;     "steady-state occupancy kon*Cfree / (kon*Cfree + kdeg); it uses only",</span></span>
 <span><span class="co">#&gt;     "published values (kdeg = 0.025 /h is declared in the supplement and used",</span></span>
 <span><span class="co">#&gt;     "on the free-target line), but it is an inferred correction rather than a",</span></span>
-<span><span class="co">#&gt;     "transcription. Extraction performed under operator sidecar decision",</span></span>
-<span><span class="co">#&gt;     "oare_PMC10946252 request-001 = option B (answered 2026-08-05). See the",</span></span>
+<span><span class="co">#&gt;     "transcription. The maintainers decided to encode the corrected form. See the",</span></span>
 <span><span class="co">#&gt;     "vignette 'Assumptions and deviations' section for this and for the",</span></span>
 <span><span class="co">#&gt;     "residual ~400-fold kon / concentration scale discrepancy against Figure",</span></span>
 <span><span class="co">#&gt;     "1's plasma band.",</span></span>
@@ -3331,8 +3330,7 @@ Table 1 = Supplementary Tables S1-S3): <a href="https://www.frontiersin.org/arti
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     # 3. Target-engagement ODEs, one independent pair per EGFR mutant.</span></span>
 <span><span class="co">#&gt;     #</span></span>
-<span><span class="co">#&gt;     #    Liang 2024 printed Eqs 5-6 (recovered from the PDF; the trimmed</span></span>
-<span><span class="co">#&gt;     #    markdown dropped every display equation as `formula-not-decoded`):</span></span>
+<span><span class="co">#&gt;     #    Liang 2024 printed Eqs 5-6 (recovered from the PDF):</span></span>
 <span><span class="co">#&gt;     #       dOEm/dt    = kon * Clung * Emfree - koff * OEm</span></span>
 <span><span class="co">#&gt;     #       dEmfree/dt = (Em0 - Emfree) * kturnover - kon * Clung * Emfree</span></span>
 <span><span class="co">#&gt;     #                    + koff * OEm</span></span>
@@ -3346,7 +3344,7 @@ Table 1 = Supplementary Tables S1-S3): <a href="https://www.frontiersin.org/arti
 <span><span class="co">#&gt;     #    Figure 1's flat sawtooth plateau. With the term restored, total</span></span>
 <span><span class="co">#&gt;     #    target is conserved exactly at rbase (because kturnover = kdeg) and</span></span>
 <span><span class="co">#&gt;     #    steady-state occupancy is kon*cfree / (kon*cfree + kdeg).</span></span>
-<span><span class="co">#&gt;     #    Operator sidecar oare_PMC10946252 request-001, option B.</span></span>
+<span><span class="co">#&gt;     #    Encoded this way by the maintainers' decision.</span></span>
 <span><span class="co">#&gt;     d/dt(target_t790m) &lt;-</span></span>
 <span><span class="co">#&gt;       (rbase - target_t790m) * kturnover -</span></span>
 <span><span class="co">#&gt;       kon_t790m * cfree * target_t790m +</span></span>
@@ -3387,7 +3385,7 @@ Table 1 = Supplementary Tables S1-S3): <a href="https://www.frontiersin.org/arti
 <span><span class="co">#&gt;     totalL858R &lt;- target_l858r + complex_l858r</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55f5e46fc830&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55fb4ea0fa18&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="what-is-extracted-and-what-is-not">What is extracted, and what is not<a class="anchor" aria-label="anchor" href="#what-is-extracted-and-what-is-not"></a>
@@ -3570,11 +3568,10 @@ comparison)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note on equation recovery.</strong> The text extracted from
-this article’s PDF dropped all seven display equations as
-<code>formula-not-decoded</code>. Equations 1-7 were recovered from the
-PDF with <code>pdftotext -layout</code>. Equations 5-7 as printed
-are:</p>
+<p><strong>Note on equation recovery.</strong> The article’s seven
+display equations do not survive ordinary text extraction from the PDF.
+Equations 1-7 were recovered with <code>pdftotext -layout</code>.
+Equations 5-7 as printed are:</p>
 <pre><code>(5)  dOEm/dt      = kon * Clung * Emfree - koff * OEm
 (6)  dEmfree/dt   = (Em0 - Emfree) * kturnover - kon * Clung * Emfree + koff * OEm
 (7)  Inhibition(%) = OEm / (Emfree + OEm) * 100</code></pre>
@@ -4109,7 +4106,7 @@ defaults would be fabrication, so the concentration driver is instead a
 user-supplied <code>CEFFECT</code> covariate.</p></li>
 <li>
 <p><strong>The complex ODE carries an inferred
-<code>-kdeg*complex</code> term that is not in any on-disk
+<code>-kdeg*complex</code> term that is not in any available
 source.</strong> This is the single most important deviation.</p>
 <ul>
 <li>As printed, Eq 5 is

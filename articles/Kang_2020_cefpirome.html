@@ -3626,9 +3626,9 @@ interval (0-12 h after the loading 2 g IV bolus). The simulated values
 below serve as an internal sanity check that the simulation produces NCA
 values in the clinically expected range. Kang 2020’s individual NCA-type
 summaries (Cmax, Tmax, half-life per patient) live in supplemental Table
-S1, which is not on disk; see the <strong>Assumptions and
-deviations</strong> section for the per-publication NCA cross-check
-status.</p>
+S1, which was not available when this model was built; see the
+<strong>Assumptions and deviations</strong> section for the
+per-publication NCA cross-check status.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">first_interval_h</span> <span class="op">&lt;-</span> <span class="fl">12</span></span>
 <span></span>
@@ -3924,18 +3924,16 @@ log(0.475^2 + 1) = 0.20345.</p></li>
 residual error model.”</em> Table 2 reports 21.7% CV. Encoded as
 <code>propSd = 0.217</code> (the proportional SD fraction in linear DV
 space).</p></li>
-<li><p><strong>Supplemental Table S1 (individual NCA) not on
-disk.</strong> The paper references S1 for per-patient half-life, Cmax,
-and Tmax. The supplement was not obtainable through the EuropePMC / PMC
-/ ASM endpoints attempted during extraction (the EuropePMC PDF-render
-endpoint returned the main PDF only; the journals.asm.org supplement URL
-returned HTML rather than the PDF). The packaged model’s parameters all
-come from main-text Table 2 and the printed equations in Results; the
-missing supplement contains derived NCA-type values rather than
-estimated model parameters, so the absence does not affect the model.
-The simulated NCA values in the PKNCA section are internal sanity
-checks; no per-patient comparison against the published S1 is
-performed.</p></li>
+<li><p><strong>Supplemental Table S1 (individual NCA) not
+available.</strong> The paper references S1 for per-patient half-life,
+Cmax, and Tmax. The supplement could not be obtained from EuropePMC, PMC
+or the ASM journal site when this model was built (those sources
+provided the main PDF only). The packaged model’s parameters all come
+from main-text Table 2 and the printed equations in Results; the missing
+supplement contains derived NCA-type values rather than estimated model
+parameters, so the absence does not affect the model. The simulated NCA
+values in the PKNCA section are internal sanity checks; no per-patient
+comparison against the published S1 is performed.</p></li>
 <li><p><strong>Time-varying CREAT and ECMO_STATUS.</strong> Kang 2020
 Methods (Covariate model development): <em>“All data were recorded
 during sampling and tested as time-varying covariates.”</em> Both

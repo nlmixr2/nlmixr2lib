@@ -134,8 +134,8 @@ The same information is available programmatically via `ui$population`.
 Every `ini()` entry in
 `inst/modeldb/specificDrugs/Sy_2018_etirinotecanPegol.R` carries an
 in-file comment naming its source location. They are collected here for
-review. The display equations were read from the typeset PDF; the
-preprocessed markdown drops all of them.
+review. The display equations were read from the typeset PDF; plain-text
+extraction of the PDF drops all of them.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

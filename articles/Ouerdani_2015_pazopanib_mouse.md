@@ -7,10 +7,10 @@
   describe pazopanib clinical effects in renal cell carcinoma. *CPT
   Pharmacometrics Syst Pharmacol.* 2015;4(11):660-668.
   <doi:%5B10.1002/psp4.12001>\](<https://doi.org/10.1002/psp4.12001>).
-- The on-disk PDF is the corrected version of the article (revised
-  online 2015-11-12); the paper’s first-page footnote states that Table
-  1 was replaced after the initial publication. All parameter values
-  used here come from the corrected Table 1.
+- The PDF used is the corrected version of the article (revised online
+  2015-11-12); the paper’s first-page footnote states that Table 1 was
+  replaced after the initial publication. All parameter values used here
+  come from the corrected Table 1.
 
 This vignette validates the preclinical (mouse, CAKI-2 xenograft) fit of
 the semi-mechanistic tumour-growth and angiogenesis-inhibition (TGI)

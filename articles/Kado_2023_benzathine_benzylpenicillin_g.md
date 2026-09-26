@@ -764,8 +764,8 @@ concentrations and slightly shorter time above target.
   approximately spanning the observed 21.9-34.0 kg/m^2 range.
 - **CDC reference cohort not reproduced.** The paper’s simulations drew
   weight and BMI “from the CDC for 20-year-olds” with equal male and
-  female representation. Those reference tables are not on disk, so the
-  trial’s own demographics were used instead rather than inventing
+  female representation. Those reference tables were not available, so
+  the trial’s own demographics were used instead rather than inventing
   percentiles. This is the main reason the simulated threshold metrics
   sit a few percent above the published ones.
 - **Cohort size.** The paper simulated 1,000 individuals; this vignette
@@ -774,9 +774,9 @@ concentrations and slightly shorter time above target.
   intramuscular arm of Figure 4 is generated from the group’s *earlier*
   model (reference 12), which is already packaged separately as
   `Kado_2020_benzathine_benzylpenicillin_g`. It is not a model of this
-  paper, and that extraction carries a documented Cmax discrepancy of
-  its own, so reproducing it here would import an unrelated uncertainty
-  into this model’s validation. Only the subcutaneous arm is shown.
+  paper, and that model carries a documented Cmax discrepancy of its
+  own, so reproducing it here would import an unrelated uncertainty into
+  this model’s validation. Only the subcutaneous arm is shown.
 - **Dosing-interval metrics evaluated at pseudo-steady state.** The
   published percentages describe repeated 13-weekly dosing, so metrics
   are computed over the fifth 91-day interval. Carryover between

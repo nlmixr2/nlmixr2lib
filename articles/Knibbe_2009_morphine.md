@@ -27,8 +27,8 @@ re-simulating the typical-value trajectories on the event table that
 ships with the DDMORE bundle (`Simulated_PaediatricMorphinePK.csv`) and
 visually comparing them to the bundle’s stochastic-simulation dependent
 variable. This is a self-consistency check (the source publication PDF
-was not on disk during extraction, so a direct figure-replication check
-against the publication is not possible).
+was not available when this model was built, so a direct
+figure-replication check against the publication is not possible).
 
 ## Population
 
@@ -42,8 +42,9 @@ glucuronidation pathways. The DDMORE-shipped `Output_real_run4.lst`
 listing was fit to a `Combined_InternalExternalData.csv` dataset
 covering 338 individuals / 2,809 observations / 5,302 records – a
 post-publication re-run on an extended pooled cohort. The full Knibbe
-2009 publication PDF was not on disk during extraction; the model file’s
-`population` metadata flags the demographic detail fields as TODO.
+2009 publication PDF was not available when this model was built; the
+model file’s `population` metadata flags the demographic detail fields
+as TODO.
 
 The same metadata is available programmatically:
 
@@ -53,13 +54,13 @@ str(mod_obj$population, vec.len = 2, no.list = TRUE)
 #>  $ n_subjects    : num 248
 #>  $ n_studies     : chr "pooled (multi-study) cohort; exact study count not stated in the available abstract"
 #>  $ age_range     : chr "preterm newborns to <3 years (postnatal age range covers neonatal day 0 through ~36 months)"
-#>  $ age_median    : chr "TODO: full Knibbe 2009 publication not on disk during DDMORE extraction"
+#>  $ age_median    : chr "TODO: full Knibbe 2009 publication not available when this model was built"
 #>  $ weight_range  : chr "TODO: see age_median note"
 #>  $ weight_median : chr "TODO: see age_median note"
 #>  $ sex_female_pct: NULL
 #>  $ race_ethnicity: NULL
 #>  $ disease_state : chr "Postoperative neonates / infants / toddlers (preterm + term) receiving IV morphine for analgesia"
-#>  $ dose_range    : chr "IV bolus + continuous infusion; doses and infusion rates not captured (full text not on disk)"
+#>  $ dose_range    : chr "IV bolus + continuous infusion; doses and infusion rates not captured (full text not available when this model was built)"
 #>  $ regions       : chr "Pooled European paediatric cohorts (ICU and postoperative settings; original studies span the Netherlands and F"| __truncated__
 #>  $ notes         : chr "Per the publication abstract (PMID 19650676): 248 infants contributing 2,159 morphine concentrations. The DDMOR"| __truncated__
 ```
@@ -300,14 +301,14 @@ metabolite compartment volumes via `vc_m3g = fvm * vc`.
 
 ## Assumptions and deviations
 
-- **Source publication PDF was not on disk during extraction.** All
-  parameter values come from the DDMORE-shipped `Output_real_run4.lst`
-  listing (`MINIMIZATION SUCCESSFUL`, NSIG=3.0). The publication
-  abstract (PubMed PMID 19650676) confirms the headline numbers (n = 248
-  infants, BW exponent on CL = 1.44, PNA cutoff = 10 days). Detailed
-  demographic distributions, NCA tables, and figures from the
-  publication could not be cross-checked. The model file’s `population`
-  metadata flags the affected fields as TODO.
+- **Source publication PDF was not available when this model was
+  built.** All parameter values come from the DDMORE-shipped
+  `Output_real_run4.lst` listing (`MINIMIZATION SUCCESSFUL`, NSIG=3.0).
+  The publication abstract (PubMed PMID 19650676) confirms the headline
+  numbers (n = 248 infants, BW exponent on CL = 1.44, PNA cutoff = 10
+  days). Detailed demographic distributions, NCA tables, and figures
+  from the publication could not be cross-checked. The model file’s
+  `population` metadata flags the affected fields as TODO.
 - **Cohort size.** The publication’s primary cohort is 248 infants /
   2,159 morphine concentrations; the DDMORE-shipped `.lst` is a `run4`
   re-fit on an extended pooled `Combined_InternalExternalData.csv`

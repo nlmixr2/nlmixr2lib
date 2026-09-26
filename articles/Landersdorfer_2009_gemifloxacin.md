@@ -337,15 +337,15 @@ the directional change between arms rather than absolute reproduction.
 
 - **CP_PRB_MGL during the with-probenecid arm is a piecewise-constant
   placeholder (40 mg/L).** Landersdorfer 2009 does NOT report a
-  probenecid PK sub-model parameter table on disk – the Methods
-  describes the structural form (1-compartment + lag + parallel
-  first-order + mixed-order elimination) but the corresponding parameter
-  estimates are not in any on-disk table. The 40 mg/L constant used in
-  this vignette is a simplification motivated by the visual probenecid
-  concentration range in Landersdorfer 2009 Fig. 1C; a more realistic
-  time-varying probenecid profile (digitised from Fig. 1C or supplied
-  from an independent probenecid popPK source) is expected to yield
-  slightly larger absolute predictions for the combo-arm AUC because the
+  probenecid PK sub-model parameter table – the Methods describes the
+  structural form (1-compartment + lag + parallel first-order +
+  mixed-order elimination) but the corresponding parameter estimates are
+  not in any available table. The 40 mg/L constant used in this vignette
+  is a simplification motivated by the visual probenecid concentration
+  range in Landersdorfer 2009 Fig. 1C; a more realistic time-varying
+  probenecid profile (digitised from Fig. 1C or supplied from an
+  independent probenecid popPK source) is expected to yield slightly
+  larger absolute predictions for the combo-arm AUC because the
   probenecid concentration peaks \> 40 mg/L between probenecid doses
   (which strengthens the Kic inhibition during the gemifloxacin Tmax
   window).

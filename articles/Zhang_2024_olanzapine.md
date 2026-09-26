@@ -798,12 +798,13 @@ Table 3 exactly (see the NCA section).
   registered in `inst/references/covariate-columns.md` in the same
   change as this model. It encodes the paper’s `ARI` variable with the
   same 0/1 orientation.
-- **Supplementary Table S1 is not on disk.** It contains the per-drug
-  hypothesis tests (objective-function changes) for the 30 screened
-  concomitant medications. It holds no model parameter values – the
-  final model is fully specified by Equations (6) and (7) and Table 3 –
-  so its absence does not affect the extraction. The stepwise result it
-  documents (only aripiprazole retained) is stated in the main text.
+- **Supplementary Table S1 was not available when this model was
+  built.** It contains the per-drug hypothesis tests (objective-function
+  changes) for the 30 screened concomitant medications. It holds no
+  model parameter values – the final model is fully specified by
+  Equations (6) and (7) and Table 3 – so its absence does not affect the
+  extraction. The stepwise result it documents (only aripiprazole
+  retained) is stated in the main text.
 - **Four exposed patients.** The `-0.392` aripiprazole coefficient rests
   on 4 of 65 patients (Table 2), and its bootstrap 95% interval is
   correspondingly wide (\[-0.535, -0.194\]). The point estimate is used

@@ -433,7 +433,7 @@ Nitrite-plasma flux components at t = 0. Net imbalance (relative):
     recovers Table 1’s typical-value `kMYO = 0.234 /min` given the Table
     1 `kno3_r = 5.91e-6 L/(umol*min)`.
 
-  These are not “training-data substitutions” – they are
+  These are not substitutions from outside the paper – they are
   typical-population values backed out of Table 1 parameter consistency
   and the paper’s narrative baselines.
 

@@ -13,8 +13,9 @@
 - PubMed: <https://pubmed.ncbi.nlm.nih.gov/30038041/> (PMID 30038041;
   open access).
 - Supplemental material referenced by the publication (Fig S1, S2; basic
-  GOF and age-stratified VPCs) was not on disk during this extraction
-  and is not used; all model values are sourced from the main paper.
+  GOF and age-stratified VPCs) was not available when this model was
+  built and is not used; all model values are sourced from the main
+  paper.
 
 The package model can be loaded with:
 
@@ -590,8 +591,8 @@ in the model file reproduce the source publication.
   `MW_DEAQ / MW_AQ = 327.81 / 355.85 = 0.9212` (Ali 2018 Methods,
   “Structural model”). This assumes 100% in-vivo metabolic conversion of
   AQ to DEAQ, consistent with the paper’s assumption.
-- **Supplemental material not on disk**. The Ali 2018 supplement (Fig
+- **Supplemental material not available**. The Ali 2018 supplement (Fig
   S1, S2; basic GOF plots and age-stratified VPCs) was not available
-  during extraction. All parameter values are sourced from the main
-  paper, which contains the complete final-parameter table; the
+  when this model was built. All parameter values are sourced from the
+  main paper, which contains the complete final-parameter table; the
   supplement holds only graphical diagnostics.

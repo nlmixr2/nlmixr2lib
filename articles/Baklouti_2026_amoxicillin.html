@@ -3258,15 +3258,14 @@ of the systemic compartment”)</td>
 </tr>
 </tbody>
 </table>
-<p>The display equations render as
-<code>&lt;!-- formula-not-decoded --&gt;</code> in the markdown
-preprocessor, and the publisher’s symbol font encodes minus and
-multiplication as C0 control bytes, so the ODE signs above were
-recovered from the PDF with <code>pdftotext -layout</code> and
-<code>cat -A</code>. The sign that matters is on <code>kmilk</code>: it
-is subtracted from the central compartment as well as added to milk, so
-transfer into milk is a genuine elimination pathway for plasma and total
-plasma loss is <code>ke + kmilk</code> = 0.338 1/h.</p>
+<p>The display equations do not survive plain-text extraction of the
+PDF, and the publisher’s symbol font encodes minus and multiplication as
+C0 control bytes, so the ODE signs above were recovered from the PDF
+with <code>pdftotext -layout</code> and <code>cat -A</code>. The sign
+that matters is on <code>kmilk</code>: it is subtracted from the central
+compartment as well as added to milk, so transfer into milk is a genuine
+elimination pathway for plasma and total plasma loss is
+<code>ke + kmilk</code> = 0.338 1/h.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span><span class="op">$</span><span class="va">state</span></span>
 <span><span class="co">#&gt; [1] "depot"   "central" "milk"</span></span></code></pre></div>

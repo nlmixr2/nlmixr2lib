@@ -381,6 +381,6 @@ investigation of the model, not tuning of the parameters.
 - Michaelis-Menten (non-linear) elimination was tested by Han et al. and
   did not improve fitting over linear PK across the observed
   concentration range (0.4-741 ug/mL); the packaged model is linear.
-- No published erratum for Han 2015 was located in on-disk sources at
-  the time of extraction; the model uses the values in the
+- No published erratum for Han 2015 was located in the sources available
+  when this model was built; the model uses the values in the
   accepted-article Table 2 verbatim.

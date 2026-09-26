@@ -3103,32 +3103,32 @@ stream on file.</li>
 <li>Article: <a href="https://doi.org/10.1002/psp4.12323" class="external-link uri">https://doi.org/10.1002/psp4.12323</a>
 </li>
 </ul>
-<p>The on-disk source is the paper’s simulation NONMEM control stream
+<p>The available source is the paper’s simulation NONMEM control stream
 (<code>$PROBLEM SMA MONKEY</code>,
 <code>$SIMULATION (12345678) ONLYSIM SUBPROBLEM=1000</code>). All
 <code>$THETA</code>, <code>$OMEGA</code>, and <code>$SIGMA</code>
 entries carry the <code>FIX</code> flag, so every value in the packaged
 <code>ini()</code> block is wrapped in <code>fixed()</code>. See
-“Assumptions and deviations” below for the paper-text sections not on
-disk with the control stream.</p>
+“Assumptions and deviations” below for the paper-text sections not
+available with the control stream.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
 </h2>
 <p>The Biliouris 2018 model was originally fitted to cynomolgus-monkey
 plasma and CNS-tissue data (the <code>$PROBLEM</code> tag “SMA MONKEY”
-identifies the fit dataset). The on-disk simulation control stream then
-re-uses the monkey-fit parameter estimates for a paediatric-human
-extrapolation: volumes are linearly weight-scaled from a 2.8 kg
-reference, rate constants use a slight <code>(WT/2.8)^(-0.08)</code>
-scaling, and the CSF physiological volume <code>V_CSF</code> is
-overridden by a stepwise age function that matches human paediatric CSF
-anatomy (120, 130, 135, 140 mL for age classes &lt; 0.25, 0.25 to &lt;
-0.5, 0.5 to &lt; 1, 1 to &lt; 2 years; adult reference 150 mL). Full
-baseline demographics for the fitted monkey cohort are not on disk with
-the supplementary simulation stream; refer to Biliouris 2018 main text
-Methods and Table 1 (published in CPT Pharmacometrics Syst Pharmacol)
-for <code>n_subjects</code>, age, and sex distributions.</p>
+identifies the fit dataset). The simulation control stream then re-uses
+the monkey-fit parameter estimates for a paediatric-human extrapolation:
+volumes are linearly weight-scaled from a 2.8 kg reference, rate
+constants use a slight <code>(WT/2.8)^(-0.08)</code> scaling, and the
+CSF physiological volume <code>V_CSF</code> is overridden by a stepwise
+age function that matches human paediatric CSF anatomy (120, 130, 135,
+140 mL for age classes &lt; 0.25, 0.25 to &lt; 0.5, 0.5 to &lt; 1, 1 to
+&lt; 2 years; adult reference 150 mL). Full baseline demographics for
+the fitted monkey cohort are not included with the supplementary
+simulation stream; refer to Biliouris 2018 main text Methods and Table 1
+(published in CPT Pharmacometrics Syst Pharmacol) for
+<code>n_subjects</code>, age, and sex distributions.</p>
 <p>The population metadata packaged with the model is available
 programmatically:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -3144,16 +3144,16 @@ programmatically:</p>
 <span><span class="co">#&gt;  $ dose_range           : chr "Intrathecal lumbar-puncture bolus (simulated at 1-12 mg per paediatric-clinic protocol)"</span></span>
 <span><span class="co">#&gt;  $ administration_routes: chr "Intrathecal bolus into CSF"</span></span>
 <span><span class="co">#&gt;  $ regions              : chr "Preclinical / translational (cynomolgus-monkey fit extrapolated to paediatric SMA patients)"</span></span>
-<span><span class="co">#&gt;  $ notes                : chr "The on-disk source is the paper's simulation NONMEM control stream (`$PROBLEM SMA MONKEY`, `$SIMULATION (123456"| __truncated__</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ notes                : chr "The source for this model is the paper's simulation NONMEM control stream (`$PROBLEM SMA MONKEY`, `$SIMULATION "| __truncated__</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Every value below is traced to the paper’s simulation NONMEM control
-stream (on disk as <code>PMID_30043511.pdf</code>, five pages containing
-the <code>$PROBLEM SMA MONKEY</code> model verbatim). The full
-<code>$THETA(k) FIX</code> / <code>$OMEGA k FIX</code> label is repeated
-as the in-file comment on each <code>ini()</code> entry.</p>
+stream (a five-page PDF containing the <code>$PROBLEM SMA MONKEY</code>
+model verbatim). The full <code>$THETA(k) FIX</code> /
+<code>$OMEGA k FIX</code> label is repeated as the in-file comment on
+each <code>ini()</code> entry.</p>
 <table class="table">
 <colgroup>
 <col width="45%">
@@ -3561,16 +3561,16 @@ after a single 12 mg IT dose in the typical paediatric subject.</p>
 </h2>
 <ul>
 <li>
-<strong>On-disk source is the simulation control stream, not the
-full paper text.</strong> The five-page PDF on file contains only the
+<strong>The available source is the simulation control stream, not
+the full paper text.</strong> The five-page PDF contains only the
 <code>$PROBLEM SMA MONKEY</code> simulation model
 (<code>$SIMULATION (12345678) ONLYSIM SUBPROBLEM=1000</code>) with every
 <code>$THETA</code>, <code>$OMEGA</code>, and <code>$SIGMA</code> value
 carrying the <code>FIX</code> flag. All packaged values are traced
-verbatim to the on-disk block. Baseline demographics for the fitted
-monkey cohort, the paper’s narrative Methods, and any published NCA
-comparison values live in Biliouris 2018 main text (CPT PSP
-2018;7(9):581-592) and are not reproduced here.</li>
+verbatim to that block. Baseline demographics for the fitted monkey
+cohort, the paper’s narrative Methods, and any published NCA comparison
+values live in Biliouris 2018 main text (CPT PSP 2018;7(9):581-592) and
+are not reproduced here.</li>
 <li>
 <strong><code>V_CSF</code> piecewise age function is a
 paediatric-human anatomical overlay.</strong> The paper’s

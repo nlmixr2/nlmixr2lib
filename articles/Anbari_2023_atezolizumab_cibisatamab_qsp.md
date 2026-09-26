@@ -353,7 +353,7 @@ is the ordering reported in Section 3.2.
 
 Everything below is a documented departure from a literal reading of the
 published tables, or a value the published tables do not supply. No
-parameter value was taken from outside the on-disk sources.
+parameter value was taken from outside the available sources.
 
 1.  **Table S6 omits the neo-antigen MHC translocation reaction.** The
     self-antigen (P0) and neo-antigen (P1) presentation modules are
@@ -426,8 +426,8 @@ parameter value was taken from outside the on-disk sources.
     tumour-to-central and peripheral-to-central ratios) matches; the
     lymph-node level is the poorest agreement.
 
-8.  **Cibisatamab molar mass is not reported anywhere on disk.** The
-    main paper, the supplement, and the upstream Ma 2020a, Ma 2020b,
+8.  **Cibisatamab molar mass is not reported in any available source.**
+    The main paper, the supplement, and the upstream Ma 2020a, Ma 2020b,
     Wang 2021 and Jafarnejad 2019 supplements all give cibisatamab doses
     in mg without a molar mass, and the two primary sources for the
     molecule (Van de Vyver 2021, Bacac 2016) are not open access. The

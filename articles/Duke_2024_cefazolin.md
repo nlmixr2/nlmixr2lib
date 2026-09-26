@@ -279,7 +279,7 @@ mod
 #>     # STARTING value 'G=2', and the paper does not report the final
 #>     # estimated gamma anywhere. The assay polynomial is therefore carried
 #>     # here unscaled (equivalent to gamma = 1), which is the minimum-
-#>     # assumption reading of the on-disk file, matching the sibling
+#>     # assumption reading of the Table S3 file, matching the sibling
 #>     # extraction Tsai_2023_ceftriaxone.R. See vignette 'Assumptions and
 #>     # deviations'.
 #>     addSd <- 0.3
@@ -362,7 +362,7 @@ mod
 #>     Cunbound ~ add(addSd_Cunbound) + prop(propSd_Cunbound)
 #>   })
 #> }
-#> <environment: 0x55ef174f7618>
+#> <environment: 0x5555ed9db798>
 ```
 
 ## Virtual cohort

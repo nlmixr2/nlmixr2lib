@@ -381,8 +381,9 @@ non-carriers proportional to theta_TTT = 0.792.
   to every other estimated parameter in the column; the base-model
   column had V2 = 475 L with RSE 5.4%. We interpret this pattern as V2
   having been held fixed at 400 L in the final model (the supplementary
-  `Supplementary Data S3` `.lst` file cited in the paper is not on disk
-  for this extraction, so the fixed flag cannot be confirmed directly).
+  `Supplementary Data S3` `.lst` file cited in the paper was not
+  available when this model was built, so the fixed flag cannot be
+  confirmed directly).
 - **V2 / Q not allometrically scaled.** The paper writes “Vd/F was
   allometrically scaled” in the singular, which we read as the central
   volume only. Q is reported in L/h without a `/F` suffix in Table 2 and
@@ -390,12 +391,12 @@ non-carriers proportional to theta_TTT = 0.792.
 - **ABCB1 TTT haplotype carrier prevalence in the simulated cohort is
   set to 50% TTT-carrier vs 50% non-carrier across two equal-sized arms
   for the exposure contrast.** de Wit 2016 reports the haplotype effect
-  size but does not give a numeric carrier frequency in the main text or
-  in the text extracted from the PDF; supplementary Data S1 / S2 (the
-  source for haplotype frequencies) was not on disk for this extraction.
-  The 50/50 split is for illustration of the covariate effect; a
-  real-population deployment of the model should use an empirically
-  observed TTT carrier frequency in the target population.
+  size but does not give a numeric carrier frequency in the main text;
+  supplementary Data S1 / S2 (the source for haplotype frequencies) was
+  not available when this model was built. The 50/50 split is for
+  illustration of the covariate effect; a real-population deployment of
+  the model should use an empirically observed TTT carrier frequency in
+  the target population.
 - **Day-1-vs-day-15 IOV on F is modelled with shared variance across
   occasions (the NONMEM `$OMEGA BLOCK(1) SAME` pattern reproduced via
   `etaiov_fdepot_2 ~ fixed(...)`).** The paper’s Table 2 reports a

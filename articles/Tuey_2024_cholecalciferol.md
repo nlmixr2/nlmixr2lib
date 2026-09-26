@@ -109,9 +109,9 @@ The per-parameter origin is recorded as an in-file comment next to each
 `ini()` entry in
 `inst/modeldb/specificDrugs/Tuey_2024_cholecalciferol.R`. The table
 below collects them in one place for review. Every value comes from
-Table 2 of Tuey 2024, read from the published PDF layout; note that the
-preprocessed markdown rendering of that table is scrambled and should
-not be used.
+Table 2 of Tuey 2024, read from the published PDF layout; note that a
+plain-text extraction of that table comes out scrambled and should not
+be used.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

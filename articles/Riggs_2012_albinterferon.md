@@ -75,7 +75,7 @@ tibble::tibble(
 | disease_state | Chronic hepatitis C virus infection with detectable serum HCV RNA and compensated liver disease. 66% HCV genotype 1, the remainder genotype 2 or 3 apart from 5 patients with genotype 4. Interferon-treatment-naive except for one phase 2 trial (NCT00097435), which enrolled patients who had failed previous interferon alfa treatment. |
 | dose_range | 900-1800 ug albinterferon alfa-2b, self-administered subcutaneously in the thigh or abdomen once every 2 weeks or once every 4 weeks, for 48 weeks (genotype 1) or 24 weeks (genotype 2/3); up to 72 weeks for late responders in NCT00097435. All patients also received daily oral ribavirin per the standard of care for their genotype. The 1200 ug every-2-weeks arms of the phase 3 trials were reduced to 900 ug during the studies because of serious pulmonary adverse events. |
 | regions | multinational |
-| notes | Pooled from three phase 2 and two phase 3 randomized trials (NCT00656006, NCT00097435, NCT00115908, NCT00411385, NCT00402428), contributing 12,042 serum albIFN concentrations. Full baseline demographics are in Supplementary Table I, which is not on disk; the figures given here are those stated in the main-text Results, ‘Population PK Analysis’. sex_female_pct is computed from the reported counts (795 women of 1984). Serum albIFN was measured by ELISA with a lower limit of quantitation of 0.53 ng/mL for all phase 3 specimens and most phase 2 specimens, and 0.26 ng/mL for the remainder. Hypothetical reference individual for the Table I estimates: 45-year-old white woman, 75 kg, HCV genotype 1, negative for immunogenicity, baseline HCV RNA \< 800,000 IU/mL, ribavirin 1200 mg/day, abdomen as injection site, albumin 4.3 g/dL, ALT 34 IU/L, estimated creatinine clearance 120 mL/min. |
+| notes | Pooled from three phase 2 and two phase 3 randomized trials (NCT00656006, NCT00097435, NCT00115908, NCT00411385, NCT00402428), contributing 12,042 serum albIFN concentrations. Full baseline demographics are in Supplementary Table I, which was not available when this model was built; the figures given here are those stated in the main-text Results, ‘Population PK Analysis’. sex_female_pct is computed from the reported counts (795 women of 1984). Serum albIFN was measured by ELISA with a lower limit of quantitation of 0.53 ng/mL for all phase 3 specimens and most phase 2 specimens, and 0.26 ng/mL for the remainder. Hypothetical reference individual for the Table I estimates: 45-year-old white woman, 75 kg, HCV genotype 1, negative for immunogenicity, baseline HCV RNA \< 800,000 IU/mL, ribavirin 1200 mg/day, abdomen as injection site, albumin 4.3 g/dL, ALT 34 IU/L, estimated creatinine clearance 120 mL/min. |
 
 Population metadata for the Riggs 2012 population PK analysis set.
 {.table}
@@ -1131,22 +1131,22 @@ to 96.8%), so the contrast between the strata should not be over-read.
 - **The safety exposure-response is not extracted.** Riggs 2012 assessed
   84 adverse-event categories against exposure quartiles by tabulation
   only, with no fitted model (Methods p. 478), so there is nothing to
-  encode. The supporting Supplementary Tables II and III are not on
-  disk.
+  encode. The supporting Supplementary Tables II and III were not
+  available when this model was built.
 
 **Virtual cohort**
 
-- Supplementary Table I, the baseline-demographics table, is not on
-  disk. The cohort uses the ranges and proportions stated in the
-  main-text Results (n, sex split, age and weight ranges, race
-  percentages, genotype split) and **assumes** everything else: a
-  log-normal weight distribution with median 82 kg, a normal age
-  distribution centred at 47 years, log-normal baseline HCV RNA with
-  median 1.2e6 IU/mL, log-normal ALT with median 60 U/L, normal albumin
-  (43 g/L) and creatinine clearance (110 mL/min), 5% immunogenicity, 5%
-  each CYP2D6- and CYP3A4-inhibitor comedication, 50% thigh injection,
-  and standard weight-banded ribavirin (1000 mg/day below 75 kg, 1200 at
-  or above). None of these is from the paper.
+- Supplementary Table I, the baseline-demographics table, was not
+  available when this model was built. The cohort uses the ranges and
+  proportions stated in the main-text Results (n, sex split, age and
+  weight ranges, race percentages, genotype split) and **assumes**
+  everything else: a log-normal weight distribution with median 82 kg, a
+  normal age distribution centred at 47 years, log-normal baseline HCV
+  RNA with median 1.2e6 IU/mL, log-normal ALT with median 60 U/L, normal
+  albumin (43 g/L) and creatinine clearance (110 mL/min), 5%
+  immunogenicity, 5% each CYP2D6- and CYP3A4-inhibitor comedication, 50%
+  thigh injection, and standard weight-banded ribavirin (1000 mg/day
+  below 75 kg, 1200 at or above). None of these is from the paper.
 - Because of that, the cohort comparisons are consistency checks with
   loose bounds. The tight gates in this vignette are the deterministic
   typical-value ones – the Table I parameters, the half-life, the

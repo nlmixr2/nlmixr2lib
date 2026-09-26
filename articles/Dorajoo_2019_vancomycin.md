@@ -577,8 +577,8 @@ c(
   `theta CrCl = 0.023` but the paper never prints the covariate
   equation, and the Supplementary Methods say continuous covariates were
   screened as “linear, power and exponential functions” without stating
-  which won. Three independent lines of on-disk evidence fix the form as
-  the centred linear one used here,
+  which won. Three independent lines of evidence fix the form as the
+  centred linear one used here,
   `CL = 1.30 * (1 + 0.023 * (CrCl - ref))`:
   1.  The authors’ own deposited VancApp `server.R` (Supplementary R
       code) codes exactly this shape:

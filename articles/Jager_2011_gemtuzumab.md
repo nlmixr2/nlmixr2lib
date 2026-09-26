@@ -25,7 +25,7 @@ as the Monolix-fitted final estimates obtained by re-fitting the Jager
 peripheral PK compartment and simultaneous (rather than step-wise)
 estimation of all parameters. The DDMORE bundle does **not** ship a
 `.lst` listing or a simulated dataset, and the original Jager 2011 PLoS
-One paper is not on disk in the maintainers’ literature mirror, so the
+One paper was not available when this model was built, so the
 implementation is faithful to the MDL but has no external numeric
 cross-check; see **Assumptions and deviations** below.
 
@@ -97,12 +97,12 @@ no `Output_real_*.lst` listing.
 ## Virtual cohort
 
 The DDMORE bundle for DDMODEL00000229 ships no event dataset and the
-Jager 2011 paper is not on disk, so no published clinical regimen is
-available to reproduce. The vignette exercises the packaged ODEs on a
-single typical-individual scenario (one 50 mg IV bolus into the central
-compartment) so that the simulated trajectories can be inspected for
-mechanistic plausibility – *not* as a clinically-grounded dosing
-regimen.
+Jager 2011 paper was not available when this model was built, so no
+published clinical regimen could be reproduced. The vignette exercises
+the packaged ODEs on a single typical-individual scenario (one 50 mg IV
+bolus into the central compartment) so that the simulated trajectories
+can be inspected for mechanistic plausibility – *not* as a
+clinically-grounded dosing regimen.
 
 ``` r
 
@@ -256,8 +256,8 @@ the MDL DSL source (`GO_PK_model.mdl`), its PharmML XML rendering
 (`GO_PK_model.xml`), the `Model_Accommodations.txt` reference note, and
 RDF / scraper metadata – there is **no** `Output_real_*.lst`,
 `Output_simulated_*.lst`, or simulated event dataset. The Jager 2011
-publication itself is not on disk in the maintainers’ literature mirror.
-The following assumptions and deviations apply.
+publication itself was not available when this model was built. The
+following assumptions and deviations apply.
 
 - **Parameter values come from the MDL `parObj` block, not a `.lst`
   listing.** The bundle has no NONMEM listing file with a
@@ -283,8 +283,8 @@ The following assumptions and deviations apply.
 
   The packaged model reproduces the DDMORE bundle’s Monolix-re-fit
   formulation, **not** the published Jager 2011 formulation.
-- **No external numeric cross-check.** Without the publication PDF on
-  disk and without a `.lst` listing in the bundle, neither published
+- **No external numeric cross-check.** Without access to the publication
+  PDF and without a `.lst` listing in the bundle, neither published
   parameter tables nor the bundle’s own re-fit objective function /
   per-subject predictions are available for verification. Source-trace
   comments point at the MDL `parObj` lines; reviewers wishing to verify
@@ -327,12 +327,12 @@ The following assumptions and deviations apply.
 - **Population demographics absent.** The `population` metadata for this
   model uses `NA_*` placeholders for age range, weight range, sex ratio,
   region, and study count because the DDMORE bundle does not ship that
-  detail and the publication itself is not on disk. Consult Jager 2011
-  for the population description.
+  detail and the publication itself was not available. Consult Jager
+  2011 for the population description.
 - **No PKNCA validation.** The structural model is not a standard PK
   model, lacks NCA-amenable single-arm PK output for which Cmax / AUC /
   half-life are clinically interpretable in isolation, and has no
-  published reference NCA values or VPC figure available locally to
-  compare against. Validation in this vignette is reduced to mechanistic
-  sanity (each ODE behaves as its mechanism implies) and an analytical
-  match for the leukemic-blast depletion ODE.
+  published reference NCA values or VPC figure available to compare
+  against. Validation in this vignette is reduced to mechanistic sanity
+  (each ODE behaves as its mechanism implies) and an analytical match
+  for the leukemic-blast depletion ODE.

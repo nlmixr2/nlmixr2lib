@@ -3089,16 +3089,15 @@ h(t) = (lam/1000) </em> exp((coef_neut/10000)<em>(NEUT-4133)) </em>
 exp((coef_age/100)*(AGE-55)). The BAST guiding-document text (Figure
 2-1, page 13) confirms an exponential distribution was selected for
 Event 1; the .mod / file name retain the ‘Gompertz’ label per the source
-$PROBLEM line and the operator’s selected option
-NA_NA_tte_gompertz.R.</li>
+$PROBLEM line; the maintainers chose to keep that name for this file
+(NA_NA_tte_gompertz.R).</li>
 <li>Source: BAST Inc Limited, “BAST approach to parametric time-to-event
 (PTTE) modelling,” internal guiding document, 12 July 2017
 (<code>BAST_PTTE_modelling.pdf</code> shipped in the DDMORE
 bundle).</li>
 <li>DDMORE Foundation Model Repository entry: <a href="https://repository.ddmore.eu/model/DDMODEL00000243" class="external-link">DDMODEL00000243</a>
 </li>
-<li>Source bundle (local mirror):
-<code>dpastoor/ddmore_scraping/243/</code>
+<li>Source bundle: <code>dpastoor/ddmore_scraping/243/</code>
 </li>
 <li>Linked publication: <strong>none.</strong> The bundle is a
 methodological teaching example built on entirely simulated data; the
@@ -3329,13 +3328,13 @@ survival trajectory under the virtual cohort.</p>
 <p><img src="NA_NA_tte_gompertz_files/figure-html/km-style-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-checks-verification-checklist-section-f-3">Mechanistic sanity checks (verification-checklist Section F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks-verification-checklist-section-f-3"></a>
+<h2 id="mechanistic-sanity-checks">Mechanistic sanity checks<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks"></a>
 </h2>
 <p>The model is a TTE survival model, not a PK/PD concentration model –
 PKNCA is not the right validation tool. The four checks below exercise
 the hazard equation under controlled inputs.</p>
 <div class="section level3">
-<h3 id="f-3-1-hazard-is-constant-in-time-at-typical-covariates">F.3.1 – Hazard is constant in time at typical covariates<a class="anchor" aria-label="anchor" href="#f-3-1-hazard-is-constant-in-time-at-typical-covariates"></a>
+<h3 id="hazard-is-constant-in-time-at-typical-covariates">Hazard is constant in time at typical covariates<a class="anchor" aria-label="anchor" href="#hazard-is-constant-in-time-at-typical-covariates"></a>
 </h3>
 <p>The .mod $PROBLEM line names this a “Gompertz hazard model” but the
 equation <code>DADT(1) = VAL * LamC</code> has no
@@ -3364,8 +3363,7 @@ giving a typical subject’s survival probability
 <code>S = exp(-1.12) = 0.326</code>, matching the simulation output.</p>
 </div>
 <div class="section level3">
-<h3 id="f-3-2-each-covariate-shifts-the-hazard-in-the-bast-reported-direction">F.3.2 – Each covariate shifts the hazard in the BAST-reported
-direction<a class="anchor" aria-label="anchor" href="#f-3-2-each-covariate-shifts-the-hazard-in-the-bast-reported-direction"></a>
+<h3 id="each-covariate-shifts-the-hazard-in-the-bast-reported-direction">Each covariate shifts the hazard in the BAST-reported direction<a class="anchor" aria-label="anchor" href="#each-covariate-shifts-the-hazard-in-the-bast-reported-direction"></a>
 </h3>
 <p>The BAST guiding document Section 2.4.2 (Table 2-2) reports both AGE
 and baseline NEUT as significant covariates (covariate-selection
@@ -3422,7 +3420,7 @@ expected directions.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">high_neut_sur</span> <span class="op">&gt;</span> <span class="va">baseline_sur</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-3-3-final-fit-objective-function-value-matches-the-bundle">F.3.3 – Final-fit objective-function value matches the bundle<a class="anchor" aria-label="anchor" href="#f-3-3-final-fit-objective-function-value-matches-the-bundle"></a>
+<h3 id="final-fit-objective-function-value-matches-the-bundle">Final-fit objective-function value matches the bundle<a class="anchor" aria-label="anchor" href="#final-fit-objective-function-value-matches-the-bundle"></a>
 </h3>
 <p>The bundle’s <code>Output_simulated_runEV1_201.res</code> reports an
 objective function value of <code>OBJV = 1001.926</code> at the final
@@ -3432,11 +3430,11 @@ final-fit listing.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="self-consistency-with-the-bundles-simulated-dataset-f-2">Self-consistency with the bundle’s simulated dataset (F.2)<a class="anchor" aria-label="anchor" href="#self-consistency-with-the-bundles-simulated-dataset-f-2"></a>
+<h2 id="self-consistency-with-the-bundles-simulated-dataset">Self-consistency with the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-with-the-bundles-simulated-dataset"></a>
 </h2>
-<p>A full F.2 self-consistency check would re-simulate the bundle’s
-shipped <code>Simulated_event_data.csv</code> (200 subjects, DVID = 1
-records) under the nlmixr2lib model and compare against the bundle’s
+<p>A full self-consistency check would re-simulate the bundle’s shipped
+<code>Simulated_event_data.csv</code> (200 subjects, DVID = 1 records)
+under the nlmixr2lib model and compare against the bundle’s
 <code>Output_simulated_runEV1_201.res</code> <code>$TABLE</code> output
 (columns <code>SURV</code>, <code>CHAZ</code>, <code>HAZNOW</code>). The
 bundle dataset is outside this package and not redistributed. A user

@@ -8,16 +8,16 @@
   Clin Pharmacol Ther. 2025;118(6):1532-1543. <doi:10.1002/cpt.70023>.
   Structural equations from Eqs 1-4 of the main text; all parameter
   values from Table 2. Supplementary Material S1 (Tables S1-S7) was also
-  used and is on disk. The unbound fractions that convert each
-  perpetrator’s modelled total plasma concentration to the unbound
-  concentration driving inhibition are reported nowhere in the paper or
-  its supplement; they are taken from the two upstream models the paper
-  adopts – rifampicin fu = 0.11 (Barnett 2018 Clin Pharmacol Ther
-  104:564-574 Table 1 footnote c) and probenecid fu = 0.062 (Ahmad 2021
-  CPT Pharmacometrics Syst Pharmacol 10:467-477) – and each is pinned by
-  an on-disk answer key: the Table S4 AUCR of 13 at 600 mg rifampicin
-  and the Table S4 renal-clearance ratio of 0.1 under 500 mg QID
-  probenecid. See the vignette Errata.
+  used. The unbound fractions that convert each perpetrator’s modelled
+  total plasma concentration to the unbound concentration driving
+  inhibition are reported nowhere in the paper or its supplement; they
+  are taken from the two upstream models the paper adopts – rifampicin
+  fu = 0.11 (Barnett 2018 Clin Pharmacol Ther 104:564-574 Table 1
+  footnote c) and probenecid fu = 0.062 (Ahmad 2021 CPT Pharmacometrics
+  Syst Pharmacol 10:467-477) – and each is pinned by a published answer
+  key: the Table S4 AUCR of 13 at 600 mg rifampicin and the Table S4
+  renal-clearance ratio of 0.1 under 500 mg QID probenecid. See the
+  vignette Errata.
 - Article: <https://doi.org/10.1002/cpt.70023>
 
 Glycochenodeoxycholic acid 3-O-sulfate (GCDCA-S) is a sulfated bile-acid
@@ -155,7 +155,7 @@ mod
 #>         dose_range = "Endogenous biomarker (no exogenous GCDCA-S dose). Perpetrators: rifampicin single 600 mg oral dose (study #1); probenecid 500 mg orally four times daily (QID) on days 1 to 7, preceded by two loading doses on day 0 (studies #2 and #3).", 
 #>         regions = "(not extracted; Ujihira 2025 Table 1 reports ethnicity but not study region for the three development studies.)", 
 #>         notes = "Pooled from three healthy-volunteer crossover studies, each with a control occasion and an inhibitor occasion: study #1 Tatosian et al. 2021 (n = 6; 3 male, 3 female; microdose probe cocktail +/- rifampicin), study #2 Willemin et al. 2021 (n = 6; 6 female; +/- probenecid), study #3 unpublished data of the same design as study #2 (n = 12; 12 male). Sex percentage is 9 female of 24. 430 GCDCA-S plasma samples and 175 GCDCA-S urine samples were fit simultaneously with 153 perpetrator plasma samples in Monolix 2024R2. Observed GCDCA-S plasma baseline was approximately 80 nmol/L with high between-subject (CV 34-69%) and within-subject diurnal (CV 34-43%) variability. Neither a diurnal-fluctuation function (six forms tested, Table S2) nor a sex effect on ksyn (Table S3) improved the fit, so neither is in the final model. The model was verified against four independent studies (Table S1) not used in fitting.")
-#>     reference <- "Ujihira Y, Georgiev V, Ogungbenro K, Galetin A. Population Pharmacokinetic Modeling of Glycochenodeoxycholic Acid 3-O-Sulfate (GCDCA-S) as Endogenous Biomarker of OATP1B3 and OAT3 Transporters. Clin Pharmacol Ther. 2025;118(6):1532-1543. doi:10.1002/cpt.70023. Structural equations from Eqs 1-4 of the main text; all parameter values from Table 2. Supplementary Material S1 (Tables S1-S7) was also used and is on disk. The unbound fractions that convert each perpetrator's modelled total plasma concentration to the unbound concentration driving inhibition are reported nowhere in the paper or its supplement; they are taken from the two upstream models the paper adopts -- rifampicin fu = 0.11 (Barnett 2018 Clin Pharmacol Ther 104:564-574 Table 1 footnote c) and probenecid fu = 0.062 (Ahmad 2021 CPT Pharmacometrics Syst Pharmacol 10:467-477) -- and each is pinned by an on-disk answer key: the Table S4 AUCR of 13 at 600 mg rifampicin and the Table S4 renal-clearance ratio of 0.1 under 500 mg QID probenecid. See the vignette Errata."
+#>     reference <- "Ujihira Y, Georgiev V, Ogungbenro K, Galetin A. Population Pharmacokinetic Modeling of Glycochenodeoxycholic Acid 3-O-Sulfate (GCDCA-S) as Endogenous Biomarker of OATP1B3 and OAT3 Transporters. Clin Pharmacol Ther. 2025;118(6):1532-1543. doi:10.1002/cpt.70023. Structural equations from Eqs 1-4 of the main text; all parameter values from Table 2. Supplementary Material S1 (Tables S1-S7) was also used. The unbound fractions that convert each perpetrator's modelled total plasma concentration to the unbound concentration driving inhibition are reported nowhere in the paper or its supplement; they are taken from the two upstream models the paper adopts -- rifampicin fu = 0.11 (Barnett 2018 Clin Pharmacol Ther 104:564-574 Table 1 footnote c) and probenecid fu = 0.062 (Ahmad 2021 CPT Pharmacometrics Syst Pharmacol 10:467-477) -- and each is pinned by a published answer key: the Table S4 AUCR of 13 at 600 mg rifampicin and the Table S4 renal-clearance ratio of 0.1 under 500 mg QID probenecid. See the vignette Errata."
 #>     units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 #>     vignette <- "Ujihira_2025_glycochenodeoxycholicAcidSulfate"
 #>     ini({
@@ -869,8 +869,8 @@ unbound constants, but neither the main text nor Supplementary Material
 S1 ever states the `fu` used to convert the modelled *total* plasma
 concentrations to unbound. Both values come from the upstream models the
 paper explicitly adopts, and neither is verifiable from the Ujihira 2025
-sources alone. They are therefore pinned against two on-disk answer keys
-instead:
+sources alone. They are therefore pinned against two published answer
+keys instead:
 
 - **Rifampicin `fu` = 0.11.** Carried by the sibling nlmixr2lib
   extractions `Barnett_2018_coproporphyrin_I` and
@@ -885,7 +885,7 @@ instead:
   attribution itself could not be checked.
 
 The two interaction checks above are what actually pin these values, and
-both are on-disk answer keys:
+both are published answer keys:
 
 - `fu_rif` is pinned by the rifampicin AUCR check, which reproduces
   Table S4’s predicted `AUCR0-24h` of 13 at 600 mg. That number is a

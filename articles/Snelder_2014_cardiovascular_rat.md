@@ -61,13 +61,14 @@ parameter sets must not be mixed.
 `Fu_2023_cardiovascular_qsp` is a
 stochastic-simulation-and-re-estimation identifiability study that fixes
 the system parameters to “the parameter values from the published CVS
-model”. Its vignette records that “the Snelder 2013, 2014 papers that
-supply the rat baseline values are not on disk”. This extraction closes
-that gap for the 2014 paper: every value below is transcribed from the
-primary source. Fu 2023’s Supplemental S1 NONMEM control stream is used
-in one place only – to settle whether Table 5’s IIV and residual “CV%”
-columns are standard deviations or the log-normal `sqrt(exp(omega) - 1)`
-form – and that use is flagged explicitly where it occurs.
+model”. Its vignette records that the Snelder 2013, 2014 papers that
+supply the rat baseline values were not available when that model was
+built. This extraction closes that gap for the 2014 paper: every value
+below is transcribed from the primary source. Fu 2023’s Supplemental S1
+NONMEM control stream is used in one place only – to settle whether
+Table 5’s IIV and residual “CV%” columns are standard deviations or the
+log-normal `sqrt(exp(omega) - 1)` form – and that use is flagged
+explicitly where it occurs.
 
 ## Population
 

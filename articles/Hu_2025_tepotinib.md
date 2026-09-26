@@ -14,7 +14,7 @@
   parameters of Supplementary Table S1 are themselves cited to Johne A,
   Scheible H, Becker A, van Lier JJ, Wolna P, Meyring M. Invest New
   Drugs. 2020;38(5):1507-1519. <doi:10.1007/s10637-020-00926-1> (PMID
-  32221754), which is not on disk for this extraction.
+  32221754), which was not available when this model was built.
 - Article: <https://doi.org/10.3389/fphar.2025.1685468>
 - Supplement:
   <https://www.frontiersin.org/articles/10.3389/fphar.2025.1685468/full#supplementary-material>
@@ -62,9 +62,9 @@ model: the paper reports no between-subject variance and no
 residual-error model for any of its PK modules. All five printed
 tepotinib PK parameters are attributed in Supplementary Table S1 to
 Johne 2020 (PMID 32221754), a phase I mass-balance and
-absolute-bioavailability study in healthy volunteers. That paper is not
-on disk for this extraction, so the values were taken as printed and
-could not be checked against their own cited source.
+absolute-bioavailability study in healthy volunteers. That paper was not
+available when this model was built, so the values were taken as printed
+and could not be checked against their own cited source.
 
 The clinically approved regimen simulated in Figure 7B is 500 mg once
 daily (containing 450 mg active moiety); 600 mg QD was also simulated
@@ -588,8 +588,8 @@ asserts against the analytic beta root for exactly this reason).
 
 **Bioavailability.** Reaction v67 absorbs the full administered amount,
 so no `F` is applied and the disposition parameters are apparent (F = 1)
-parameters. Johne 2020, the cited PK source, is not on disk for this
-extraction.
+parameters. Johne 2020, the cited PK source, was not available when this
+model was built.
 
 **Dose basis.** Supplementary Figure S4F’s legend says 500 mg. The
 Results section distinguishes a 500 mg tablet from its 450 mg active
@@ -603,7 +603,7 @@ stochastic simulations must supply their own magnitudes.
 
 **Scope – only the PK submodule is packaged.** Supplementary Table S1
 prints all 69 reaction rate laws of the QSP network, but seven
-quantities those rate laws consume are reported nowhere in any on-disk
+quantities those rate laws consume are reported nowhere in any available
 source (main text, all three sheets of `Table1.xlsx`, `DataSheet1.pdf`,
 or the Figure S9 topology diagram):
 

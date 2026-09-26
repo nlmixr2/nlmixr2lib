@@ -981,8 +981,8 @@ stopifnot(median(balance$fm_cysmer) < 0.06)
   reproduce at the printed precision, as do all eleven typical-value
   quantities.
 - **No published NCA comparison table.** As described above, the source
-  reports exposures only graphically and in a supplement not available
-  on disk, so
+  reports exposures only graphically and in a supplement that was not
+  available, so
   [`nlmixr2lib::ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
   is not used. The closed-form mass-balance identities and the two
   printed-value tables (typical-value parameters and fractions; fraction

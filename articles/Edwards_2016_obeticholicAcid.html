@@ -3463,7 +3463,7 @@ the gallbladder output <code>f23</code> (1/h) act directly on the
 <span><span class="co">#&gt;     Cc_toca ~ add(addSd_Cc_toca) + prop(propSd_Cc_toca)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55f5ead617c0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55fb51c1c198&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3734,7 +3734,7 @@ printed</strong>, and are flagged as such in the model file.
 on the portal and sinusoidal spaces given the printed <code>f3</code>
 and <code>f4</code>. <code>f2</code> follows from the printed
 equal-magnitude shunting rule. No value in this model is taken from
-outside the on-disk sources.</p>
+outside the available sources.</p>
 </div>
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
@@ -4200,8 +4200,8 @@ and only its internal split moves.</li>
 <li>The <strong>liver</strong> row moves in the opposite direction to
 the published value (falling rather than rising with cirrhosis stage).
 This reflects an inconsistency inside Table 1 itself, quantified in
-Assumptions and deviations below; it is not resolvable from the on-disk
-sources, and nothing was tuned to chase it.</li>
+Assumptions and deviations below; it is not resolvable from the
+available sources, and nothing was tuned to chase it.</li>
 </ul>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gut_gb_normal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">wide</span><span class="op">$</span><span class="va">Normal</span><span class="op">[</span><span class="va">wide</span><span class="op">$</span><span class="va">space</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gut"</span>, <span class="st">"gallbladder"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
@@ -4508,11 +4508,10 @@ of the paper’s own topology and its own printed values, not
 substitutions from an external source.</p></li>
 <li><p><strong>Compartment volumes come from the Figure 1
 panel.</strong> The Methods delegate volumes to the base CDCA model of
-Molino 1986 (reference 18), which is paywalled and not on disk. The
-Volumes legend printed inside the Figure 1 panel reproduces all seven
-values, so no upstream lookup was needed. An earlier extraction attempt
-deferred this paper on the belief that the volumes were unrecoverable;
-reading the figure panel falsified that.</p></li>
+Molino 1986 (reference 18), which is paywalled and was not available
+when this model was built. The Volumes legend printed inside the Figure
+1 panel reproduces all seven values, so no upstream lookup was
+needed.</p></li>
 <li><p><strong>Residual error is the healthy-volunteer set.</strong> The
 paper estimated a second residual-error set on the hepatic-impairment
 cohort (Supplemental Table 4: proportional 122 / 112 / 123%, additive
@@ -4565,7 +4564,7 @@ first-order rate constant on amount). That reproduces the published
 liver AUC ratios 1.12 / 1.47 / 1.74 to within 2%, at the cost of the
 liver mass-share row. No parameter was adjusted to trade one against the
 other; which of the two Table 1 blocks is authoritative cannot be
-settled from the on-disk sources.</p>
+settled from the available sources.</p>
 </li>
 <li><p><strong>Supplemental Table 4 notation.</strong> The severe
 tauro-conjugation row is printed as <code>tb16*</code>; the intended

@@ -375,7 +375,8 @@ fits.
   encoded here.
 - **Supplementary materials**: Supplementary Table S1 (study-design
   table) and Supplementary Figures S1-S5 (diagnostics and VPCs) were not
-  on disk for this extraction and could not be inspected directly.
+  available when this model was built and could not be inspected
+  directly.
 - **Bioavailability parameterisation**: the publication estimated F on
   the logit scale (“F = 1/(1 + theta_F \* exp(eta_F))” – Methods page
   7); for numerical stability and idiomatic nlmixr2lib style, this file

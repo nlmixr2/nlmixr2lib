@@ -49,10 +49,10 @@ extension), uses one shared feedback constant rather than two, applies
 the circadian rhythm multiplicatively to the production rates of HR and
 TPR rather than additively to MAP, and carries its own parameter set
 (BSL_MAP 155 mmHg, BSL_CO 69 mL/min, FB 0.0029 1/mmHg). The Fu 2023
-vignette notes that “the Snelder 2013, 2014 papers that supply the rat
-baseline values are not on disk”. This extraction closes that gap for
-the 2013 paper: the values below are transcribed from the primary
-source, not from a downstream re-use.
+vignette notes that the Snelder 2013, 2014 papers that supply the rat
+baseline values were not available when that model was built. This
+extraction closes that gap for the 2013 paper: the values below are
+transcribed from the primary source, not from a downstream re-use.
 
 Do not mix the two parameter sets. They describe different model
 structures fitted to different data.

@@ -763,7 +763,8 @@ either comparison.
   `Koff`, `FR`, `sigma_IS`, the per-tissue `sigma_V` values and the
   entire mouse physiology are inherited from Shah & Betts 2012, which
   Liu 2023 cites as reference 36 and adopts unchanged apart from `CLup`.
-  That paper is on disk; no value was taken from any other source.
+  That paper was available when this model was built; no value was taken
+  from any other source.
 - **Parameter names describe the mechanism, not the paper’s symbol.**
   The registry names each inter-antibody variability coefficient for the
   quantity it scales: `clup_scale` for the paper’s `F1` (which

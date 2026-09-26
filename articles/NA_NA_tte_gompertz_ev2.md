@@ -22,7 +22,7 @@
   (`BAST_PTTE_modelling.pdf` shipped in the DDMORE bundle).
 - DDMORE Foundation Model Repository entry:
   [DDMODEL00000243](https://repository.ddmore.eu/model/DDMODEL00000243)
-- Source bundle (local mirror): `dpastoor/ddmore_scraping/243/`
+- Source bundle: `dpastoor/ddmore_scraping/243/`
 - Linked publication: **none.** The bundle is a methodological teaching
   example built on entirely simulated data; the BAST guiding-document
   text states “there is not yet a publication to go along with the
@@ -145,9 +145,9 @@ sim |>
 
 ![](NA_NA_tte_gompertz_ev2_files/figure-html/km-style-1.png)
 
-## Mechanistic sanity checks (verification-checklist Section F.3)
+## Mechanistic sanity checks
 
-### F.3.1 – Hazard increases monotonically with time (Gompertz alpha \> 0)
+### Hazard increases monotonically with time (Gompertz alpha \> 0)
 
 The Gompertz form `h(t) = lam_1 * exp(alpha_1 * t)` with `alpha_1 > 0`
 implies a hazard that rises exponentially with time. The check below
@@ -173,7 +173,7 @@ ggplot(sim_typ, aes(time, hazard)) +
 stopifnot(all(diff(sim_typ$hazard) > -1e-12))
 ```
 
-### F.3.2 – Higher AUC increases the hazard (positive coefficient)
+### Higher AUC increases the hazard (positive coefficient)
 
 The BAST guiding document Section 2.4.2 (Table 2-3) reports a +0.309
 coefficient on the centred `(AUC_BAST_FW - 3065.5)/1000` term, meaning
@@ -227,16 +227,16 @@ stopifnot(high_auc_sur < ref_auc_sur)
 stopifnot(low_auc_sur  > ref_auc_sur)
 ```
 
-### F.3.3 – Final-fit objective-function value matches the bundle
+### Final-fit objective-function value matches the bundle
 
 `Output_simulated_runEV2_105.res` reports `OBJV = 1040443.295` at the
 final estimates. This value is informational here (we are not
 refitting); it is included to link the source-trace to the bundle’s
 final-fit listing.
 
-## Self-consistency with the bundle’s simulated dataset (F.2)
+## Self-consistency with the bundle’s simulated dataset
 
-A full F.2 self-consistency check would re-simulate the bundle’s shipped
+A full self-consistency check would re-simulate the bundle’s shipped
 `Simulated_event_data.csv` (200 subjects, DVID = 2 records) under the
 nlmixr2lib model and compare against the bundle’s
 `Output_simulated_runEV2_105.res` `$TABLE` output. The bundle dataset is

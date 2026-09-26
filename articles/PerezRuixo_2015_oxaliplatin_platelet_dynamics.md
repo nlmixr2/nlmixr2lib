@@ -412,10 +412,10 @@ ggplot(sim_stoch_q, aes(day, p50)) +
 
 - **Cp treated as an exogenous covariate.** The source paper obtains
   `Cp` from empirical-Bayes individual-PK estimates of an upstream popPK
-  model (Perez-Ruixo 2013 Cancer Chemother Pharmacol 71:693-704) that is
-  NOT packaged in nlmixr2lib at extraction time. Per the resolution
-  approved by the maintainers, this extraction treats `Cp` as an
-  exogenous time-varying covariate column `CP_OXA_MGL`. The vignette
+  model (Perez-Ruixo 2013 Cancer Chemother Pharmacol 71:693-704) that
+  was NOT packaged in nlmixr2lib when this model was built. Per the
+  resolution approved by the maintainers, this extraction treats `Cp` as
+  an exogenous time-varying covariate column `CP_OXA_MGL`. The vignette
   approximates it with a simple linear-rise-then-monoexponential-decline
   placeholder tuned to the typical HIO Cmax (~ 1 mg/L) and plasma
   half-life (~ 14 h) reported in the source group’s earlier work. Users
@@ -478,10 +478,9 @@ ggplot(sim_stoch_q, aes(day, p50)) +
   reduces peritoneum-to-plasma absorption relative to dextrose), and is
   not modelled in this PD-only extraction.
 
-- **Baseline demographic ranges absent from the on-disk source.** The
-  text extracted from the Perez-Ruixo 2015 PDF does not tabulate age,
-  weight, sex, or race distributions – cross-cohort demographics are
-  described in prior publications by the same group (Perez-Ruixo 2013
-  Cancer Chemother Pharmacol; Perez-Ruixo 2013 Clin Pharmacokinet;
-  Valenzuela 2011 AAPS J). The model’s `population` metadata records
-  this gap.
+- **Baseline demographic ranges absent from the source.** The
+  Perez-Ruixo 2015 PDF does not tabulate age, weight, sex, or race
+  distributions – cross-cohort demographics are described in prior
+  publications by the same group (Perez-Ruixo 2013 Cancer Chemother
+  Pharmacol; Perez-Ruixo 2013 Clin Pharmacokinet; Valenzuela 2011 AAPS
+  J). The model’s `population` metadata records this gap.

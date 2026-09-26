@@ -790,16 +790,16 @@ transcription, and it is discussed below.
   would be 757 L rather than 329 L). **The base-10 reading was ratified
   by the maintainers on the strength of that notation convention; the
   base remains unresolved in the source itself and can only be settled
-  by the authors.** Nothing on disk discriminates the two readings:
-  Table 3 reports interval-average concentrations, which are
-  `dose/(CL * tau)` and therefore exactly independent of V (the residual
-  scan in this vignette finds no interior optimum in V – the fit
-  improves monotonically as V grows and converges on the V-free closed
-  form); the supplement’s Figure S1 VPC is plotted against absolute
-  clock time on trough-only TDM data; and no NONMEM control stream was
-  published. Every gate in this vignette is therefore insensitive to the
-  log base, but a user simulating single-dose exposure, Cmax, or
-  half-life is not.
+  by the authors.** Nothing in the available sources discriminates the
+  two readings: Table 3 reports interval-average concentrations, which
+  are `dose/(CL * tau)` and therefore exactly independent of V (the
+  residual scan in this vignette finds no interior optimum in V – the
+  fit improves monotonically as V grows and converges on the V-free
+  closed form); the supplement’s Figure S1 VPC is plotted against
+  absolute clock time on trough-only TDM data; and no NONMEM control
+  stream was published. Every gate in this vignette is therefore
+  insensitive to the log base, but a user simulating single-dose
+  exposure, Cmax, or half-life is not.
 
 - **`227` is a coefficient, not a volume at a reference weight.**
   Equation (2) applies no normalisation to `LGBW`, so `lvc` carries

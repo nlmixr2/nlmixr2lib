@@ -497,14 +497,14 @@ Simulated vs published key PK anchors (FIGARO-DKD). {.table}
   progression-time structures, Box-Cox-transformed random effects,
   Student t-distribution residual errors, and a hazard-function
   endpoint. They do not fit the compact popPK/PD format and would each
-  require their own dedicated extraction task; only the upstream
-  FIGARO-DKD PK model is packaged here.
+  need to be built as a separate model; only the upstream FIGARO-DKD PK
+  model is packaged here.
 - **FIGARO-DKD only, FIDELIO-DKD upstream not packaged.** The paper
   compares FIGARO-DKD against the earlier FIDELIO-DKD PK model (van den
   Berg et al. 2022, also Bayer / LAP&P) but the FIDELIO-DKD NONMEM code
-  is not in the on-disk supplement, only the FIGARO-DKD code. Packaging
-  the FIDELIO-DKD upstream model would require fetching that publication
-  separately and is left for a follow-up extraction.
+  is not in the supplement, only the FIGARO-DKD code. Packaging the
+  FIDELIO-DKD upstream model would require that publication separately
+  and is left for future work.
 - **Categorical covariate effects fixed at 1.0 in the FIGARO-DKD final
   model.** Supplement `$THETA` TH14-TH18 (SGLT2-inhibitor and CYP3A4-
   inhibitor effects on CL/F, F1, and Vc/F) are reported with a final

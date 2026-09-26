@@ -735,8 +735,8 @@ cat(sprintf("Peak BT_core occurs at t = %.2f h (paper's ps = 7.6 h)\n",
   The current paper fixes the PK to empirical-Bayes individual estimates
   from that fit; the values used here are the population estimates
   re-reported in the PK/PD-model Results paragraph 1 of Othman 2013. The
-  upstream paper was not on disk at extraction time; only the values
-  reproduced in Othman 2013 were available. PK residual error is not
+  upstream paper was not available when this model was built; only the
+  values reproduced in Othman 2013 were. PK residual error is not
   reported in either paper; the packaged model exposes plasma Cc as an
   internal variable for chained simulation but does not declare a PK
   observation tilde / residual error.

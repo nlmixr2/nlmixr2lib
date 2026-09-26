@@ -3255,7 +3255,7 @@ data in patients with schizophrenia or schizoaffective disorder.
 <span><span class="co">#&gt;         "covariates; no influence detected. Concomitant drugs were mainly",</span></span>
 <span><span class="co">#&gt;         "benzodiazepines (lorazepam 24 patients, zolpidem 22 patients) plus",</span></span>
 <span><span class="co">#&gt;         "occasional antihypertensives, antiepileptics and antibiotics",</span></span>
-<span><span class="co">#&gt;         "(Supplemental data Appendix D, not on disk). Cantillon 2018 Sect. 4",</span></span>
+<span><span class="co">#&gt;         "(Supplemental data Appendix D, which was not available when this model was built). Cantillon 2018 Sect. 4",</span></span>
 <span><span class="co">#&gt;         "treats the null covariate result as its drug-drug interaction",</span></span>
 <span><span class="co">#&gt;         "assessment."</span></span>
 <span><span class="co">#&gt;       ),</span></span>
@@ -3421,7 +3421,7 @@ data in patients with schizophrenia or schizoaffective disorder.
 <span><span class="co">#&gt;     PANSS ~ add(addSd_PANSS)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55f5e451a688&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55fb52bcee38&gt;</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
 </h2>
@@ -4450,11 +4450,12 @@ is used. A reader who preferred the Sect. 3.2 reading would set
 <code>etalcl ~ 0.0222</code>, <code>etalvc ~ 0.0459</code> and
 <code>propSd &lt;- 0.08</code>.</li>
 <li>
-<strong>Supplementary appendices are not on disk.</strong>
+<strong>Supplementary appendices are not available.</strong>
 Appendices A-D (sampling-time blocks, bioanalytical method, PD covariate
-stepwise table, concomitant medication list) were not available. None
-contains a parameter used by the model; the covariate-screen results
-they support are documented in <code>covariatesDataExcluded</code>.</li>
+stepwise table, concomitant medication list) could not be obtained when
+this model was built. None contains a parameter used by the model; the
+covariate-screen results they support are documented in
+<code>covariatesDataExcluded</code>.</li>
 <li>
 <strong><code>ka</code> is poorly identified.</strong> Table 2 gives
 <code>Var(g3) = 2.09</code> with a standard error of 6.63, i.e. a

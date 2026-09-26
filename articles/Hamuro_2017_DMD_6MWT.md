@@ -531,9 +531,9 @@ multiplicative `exp(eta)` IIV.
 - **BSV %CV rounding.** Table 2 reports the BSV %CV as 22 and 23 for the
   developmental and disease-induced slopes respectively; the abstract
   gives the slightly more precise 21.9% and 23.3% derived from the same
-  fit. The packaged model uses the Table 2 (rounded) values for the
-  on-disk source-trace, encoded as variances `log(1 + 0.22^2) = 0.04727`
-  and `log(1 + 0.23^2) = 0.05153`.
+  fit. The packaged model uses the Table 2 (rounded) values for
+  source-trace fidelity, encoded as variances
+  `log(1 + 0.22^2) = 0.04727` and `log(1 + 0.23^2) = 0.05153`.
 
 - **Intercept variability.** Table 2 reports BSV %CV as “N/A” for the
   two intercepts and for the residual SD, consistent with the paper’s

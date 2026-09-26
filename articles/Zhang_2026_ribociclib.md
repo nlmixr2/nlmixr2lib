@@ -10,11 +10,10 @@
   parameter values are from main-text Table 1 except the starting CDK4/6
   expression, which is given in the Methods prose beneath Eq 1, and the
   CSF-to-plasma unbound ratio Kp,uu, which is reported in the Results as
-  a predicted quantity per dose level. Note that the trimmed markdown
-  companion of this paper renders Eq 1 as a ‘formula-not-decoded’
-  marker, so Eq 1 was recovered from the PDF. The single supplementary
-  file (MOESM1) is one figure (S1, simulated intracranial CDK4/6
-  occupancy by regimen) and contains no parameter table.
+  a predicted quantity per dose level. Eq 1 was transcribed from the
+  PDF. The single supplementary file (MOESM1) is one figure (S1,
+  simulated intracranial CDK4/6 occupancy by regimen) and contains no
+  parameter table.
 - Article (open access, CC BY-NC-ND 4.0):
   <https://doi.org/10.1186/s12885-026-15561-x>
 - PMC record: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12888661/>
@@ -42,7 +41,7 @@ mod
 #>     "distribution used the built-in Rodgers and Rowland method, and no organ",
 #>     "ODEs, organ volumes, blood flows, per-organ partition coefficients or",
 #>     ".pksim5 project are published -- the paper reports no volume term of any",
-#>     "kind), so that layer is not reproducible from the on-disk sources and is",
+#>     "kind), so that layer is not reproducible from the published sources and is",
 #>     "deliberately NOT extracted. Total plasma concentration is instead supplied",
 #>     "per record as the canonical time-varying covariate CP_RIB_NGML, and the",
 #>     "fraction unbound and the CSF-to-plasma unbound ratio are applied inside",
@@ -74,9 +73,8 @@ mod
 #>     "and 31). All parameter values are from main-text Table 1 except the",
 #>     "starting CDK4/6 expression, which is given in the Methods prose beneath",
 #>     "Eq 1, and the CSF-to-plasma unbound ratio Kp,uu, which is reported in the",
-#>     "Results as a predicted quantity per dose level. Note that the trimmed",
-#>     "markdown companion of this paper renders Eq 1 as a",
-#>     "'formula-not-decoded' marker, so Eq 1 was recovered from the PDF.",
+#>     "Results as a predicted quantity per dose level. Eq 1 was transcribed",
+#>     "from the PDF.",
 #>     "The single supplementary file (MOESM1) is one figure (S1, simulated",
 #>     "intracranial CDK4/6 occupancy by regimen) and contains no parameter",
 #>     "table.",
@@ -283,8 +281,7 @@ mod
 #>     free_cdk6 <- cdk0 - complex_cdk6_csf
 #> 
 #>     # =====================================================================
-#>     # 3. Target engagement. Zhang 2026 Eq 1, recovered from the PDF (the
-#>     #    trimmed markdown drops it as `formula-not-decoded`):
+#>     # 3. Target engagement. Zhang 2026 Eq 1, transcribed from the PDF:
 #>     #        dN/dt = (koff / Ki) * CDK_unbound * C_RIB - koff * CDK_bound
 #>     #    where N is the drug-CDK complex and koff/Ki is the association rate
 #>     #    constant. Applied per isoform, in CSF only -- Zhang 2026 Methods:
@@ -314,7 +311,7 @@ mod
 #>     totalCdk6Csf <- free_cdk6 + complex_cdk6_csf
 #>   })
 #> }
-#> <environment: 0x55ef1a649900>
+#> <environment: 0x5555ee61dac8>
 ```
 
 Ribociclib (RIB) is a CDK4/6 inhibitor approved for
@@ -395,7 +392,7 @@ tibble::tribble(
   "Ki (equilibrium Kd) for CDK6",  "kd6",          "39 nmol/L",   "Table 1, CDK4/6 occupancy block, 'K i (nM) 10/39', second of pair (ref 24)",
   "Dissociation rate constant",    "koff",         "3.78 /h",     "Table 1, koff row: 0.063 /min, x 60 min/h (ref 25)",
   "Starting CDK4/6 expression",    "cdk0",         "100 nmol/L",  "Methods prose beneath Eq 1: 'set to a value of 0.1 uM'",
-  "Target-engagement ODE",         "d/dt(complex)","Eq 1",        "Methods, Eq 1 (recovered from the PDF; the text extracted from the PDF renders it as 'formula-not-decoded')"
+  "Target-engagement ODE",         "d/dt(complex)","Eq 1",        "Methods, Eq 1 (read from the typeset PDF page; the equation does not survive plain text extraction)"
 ) |>
   knitr::kable()
 ```
@@ -409,7 +406,7 @@ tibble::tribble(
 | Ki (equilibrium Kd) for CDK6 | kd6 | 39 nmol/L | Table 1, CDK4/6 occupancy block, ‘K i (nM) 10/39’, second of pair (ref 24) |
 | Dissociation rate constant | koff | 3.78 /h | Table 1, koff row: 0.063 /min, x 60 min/h (ref 25) |
 | Starting CDK4/6 expression | cdk0 | 100 nmol/L | Methods prose beneath Eq 1: ‘set to a value of 0.1 uM’ |
-| Target-engagement ODE | d/dt(complex) | Eq 1 | Methods, Eq 1 (recovered from the PDF; the text extracted from the PDF renders it as ‘formula-not-decoded’) |
+| Target-engagement ODE | d/dt(complex) | Eq 1 | Methods, Eq 1 (read from the typeset PDF page; the equation does not survive plain text extraction) |
 
 ### Units table (dimensional analysis)
 
@@ -962,7 +959,7 @@ stopifnot(
 
 Both available drivers put CDK4 occupancy at 400 mg OD marginally above
 90% (92-94%), where the paper reports a failure. Three candidate causes,
-none of which is resolvable from the on-disk sources:
+none of which is resolvable from the available sources:
 
 1.  The Figure 3 simulations use a BCBM virtual population aligned with
     Johnson’s cohort, whereas the plasma anchors used here come from
@@ -1056,5 +1053,5 @@ No erratum or corrigendum exists for this article as of the extraction
 date. The single supplementary file (MOESM1) was retrieved and contains
 one figure (S1, simulated intracranial CDK4/6 occupancy by regimen,
 presented as means with 10th-90th percentiles); it contains no parameter
-table and no equations. Eq 1 was recovered from the PDF itself because
-the extracted text renders it as a `formula-not-decoded` marker.
+table and no equations. Eq 1 was read from the typeset PDF page because
+it does not survive plain text extraction.

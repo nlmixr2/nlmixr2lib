@@ -3085,14 +3085,14 @@ Pharmacol</em> 2013;2(11):e84.</li>
 <li>DDMORE Foundation Model Repository: <a href="https://repository.ddmore.eu/model/DDMODEL00000197" class="external-link">DDMODEL00000197</a>
 </li>
 </ul>
-<p>The publication PDF was not on disk at extraction time, so all
-parameter values, equations, and the model structure are taken from the
-DDMORE bundle (<code>Executable_Biomarker_GIST.mod</code> and
+<p>The publication PDF was not available when this model was built, so
+all parameter values, equations, and the model structure are taken from
+the DDMORE bundle (<code>Executable_Biomarker_GIST.mod</code> and
 <code>Output_real_Biomarker_GIST.lst</code>). Validation in this
-vignette therefore consists of a mechanistic-sanity check (F.3) plus a
+vignette therefore consists of a mechanistic-sanity check plus a
 self-consistency simulation against the bundle’s shipped simulated
-dataset (F.2); a side-by-side comparison against any published Hansson
-2013 figure or table is not performed.</p>
+dataset; a side-by-side comparison against any published Hansson 2013
+figure or table is not performed.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3104,9 +3104,10 @@ mg PO QD on a 4-weeks-on / 2-weeks-off schedule. The DDMORE bundle
 header reports <code>TOT. NO. OF INDIVIDUALS: 303</code> and
 <code>TOT. NO. OF OBS RECS: 5394</code>. Detailed baseline demographics
 (age, weight, sex, race) are described in the linked publication, which
-was not on disk at extraction time; the model’s <code>population</code>
-metadata records that gap. The full demographics list can be added in a
-follow-up edit when the publication PDF is available.</p>
+was not available when this model was built; the model’s
+<code>population</code> metadata records that gap. The full demographics
+list can be added in a follow-up edit when the publication PDF is
+available.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata
 (<code>readModelDb("Hansson_2013a_sunitinib")$population</code>).</p>
@@ -3415,7 +3416,7 @@ the between-subject variability of CL is then absent.</p>
 <span><span class="co">#&gt; 10  1  216    0   0  NA   50 32.819</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-simulation-f-3">Mechanistic-sanity simulation (F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-simulation-f-3"></a>
+<h2 id="mechanistic-sanity-simulation">Mechanistic-sanity simulation<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-simulation"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">modT</span>, events <span class="op">=</span> <span class="va">events</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -3476,7 +3477,7 @@ back toward baseline during the off-cycle. This matches the qualitative
 behaviour described in Hansson 2013.</p>
 </div>
 <div class="section level2">
-<h2 id="self-consistency-simulation-against-the-ddmore-bundle-f-2">Self-consistency simulation against the DDMORE bundle (F.2)<a class="anchor" aria-label="anchor" href="#self-consistency-simulation-against-the-ddmore-bundle-f-2"></a>
+<h2 id="self-consistency-simulation-against-the-ddmore-bundle">Self-consistency simulation against the DDMORE bundle<a class="anchor" aria-label="anchor" href="#self-consistency-simulation-against-the-ddmore-bundle"></a>
 </h2>
 <p>The bundle ships a simulated 80-subject dataset
 (<code>Simulated_Biomarker_GIST.csv</code>). Re-simulating subject 1’s
@@ -3538,15 +3539,14 @@ balance.</p>
 </h2>
 <ul>
 <li>
-<strong>Publication PDF not on disk.</strong> The Hansson 2013 paper
-text (CPT Pharmacometrics Syst Pharmacol 2013;2:e84, <a href="doi:10.1038/psp.2013.61" class="uri">doi:10.1038/psp.2013.61</a>)
-was not available at extraction time. All parameter values and equations
-were taken from the DDMORE bundle
+<strong>Publication PDF not available.</strong> The Hansson 2013
+paper text (CPT Pharmacometrics Syst Pharmacol 2013;2:e84, <a href="doi:10.1038/psp.2013.61" class="uri">doi:10.1038/psp.2013.61</a>)
+was not available when this model was built. All parameter values and
+equations were taken from the DDMORE bundle
 (<code>Output_real_Biomarker_GIST.lst</code> and
 <code>Executable_Biomarker_GIST.mod</code>). Side-by-side comparison
 against any published figure or table is not performed in this vignette;
-only F.2 self-consistency and F.3 mechanistic-sanity checks are
-run.</li>
+only the self-consistency and mechanistic-sanity checks are run.</li>
 <li>
 <strong>Upstream popPK not packaged.</strong> The drug-exposure
 summary <code>AUC = DOSE / CLI</code> consumes <code>CLI</code>

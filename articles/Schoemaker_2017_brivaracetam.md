@@ -842,8 +842,8 @@ Monte-Carlo sampling noise.
   vignette’s no-AED simulation reproduces only the paediatric Css range
   in the same patients; the adult reference range is not re-simulated
   here.
-- **Errata.** No erratum or corrigendum to Schoemaker 2017 was located
-  on disk for this extraction. A search of PubMed and the Springer
+- **Errata.** No erratum or corrigendum to Schoemaker 2017 was available
+  when this model was built. A search of PubMed and the Springer
   corrections feed for `"Schoemaker" + "brivaracetam" + 2017 + erratum`
   returned no hits; the maintainers should reconfirm against the
   journal’s corrections listing if a re-extraction is undertaken.

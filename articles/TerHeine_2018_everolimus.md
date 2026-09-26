@@ -589,7 +589,7 @@ below.
   reference 31 (Bergstrand et al., for VPC construction) sits in the
   same Karlsson / Savic methodological lineage. A future revision should
   reconcile against the NONMEM control stream in supplementary material
-  S2 (not on disk for this extraction).
+  S2 (not available when this model was built).
 - **MAT variability encoded as IIV on lmat rather than IOV across dosing
   occasions.** Table 2 ‘Final model’ reports the MAT variability term as
   intra-individual (110% CV). The source paper does not state the number

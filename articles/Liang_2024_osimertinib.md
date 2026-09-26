@@ -31,7 +31,7 @@ mod
 #>     "concentration is NOT fitted here: Liang 2024 generated it with a",
 #>     "whole-body PK-Sim 10.0 PBPK model that is a platform port (no ODEs, no",
 #>     "organ volumes and no blood flows are published, and no .pksim5 project",
-#>     "was deposited), so that layer is not reproducible from the on-disk",
+#>     "was deposited), so that layer is not reproducible from the available",
 #>     "sources and is deliberately NOT extracted. The total osimertinib",
 #>     "concentration is instead supplied per record as the canonical",
 #>     "time-varying covariate CEFFECT and multiplied by the fraction unbound fu",
@@ -49,8 +49,7 @@ mod
 #>     "steady-state occupancy kon*Cfree / (kon*Cfree + kdeg); it uses only",
 #>     "published values (kdeg = 0.025 /h is declared in the supplement and used",
 #>     "on the free-target line), but it is an inferred correction rather than a",
-#>     "transcription. Extraction performed under operator sidecar decision",
-#>     "oare_PMC10946252 request-001 = option B (answered 2026-08-05). See the",
+#>     "transcription. The maintainers decided to encode the corrected form. See the",
 #>     "vignette 'Assumptions and deviations' section for this and for the",
 #>     "residual ~400-fold kon / concentration scale discrepancy against Figure",
 #>     "1's plasma band.",
@@ -259,8 +258,7 @@ mod
 #> 
 #>     # 3. Target-engagement ODEs, one independent pair per EGFR mutant.
 #>     #
-#>     #    Liang 2024 printed Eqs 5-6 (recovered from the PDF; the trimmed
-#>     #    markdown dropped every display equation as `formula-not-decoded`):
+#>     #    Liang 2024 printed Eqs 5-6 (recovered from the PDF):
 #>     #       dOEm/dt    = kon * Clung * Emfree - koff * OEm
 #>     #       dEmfree/dt = (Em0 - Emfree) * kturnover - kon * Clung * Emfree
 #>     #                    + koff * OEm
@@ -274,7 +272,7 @@ mod
 #>     #    Figure 1's flat sawtooth plateau. With the term restored, total
 #>     #    target is conserved exactly at rbase (because kturnover = kdeg) and
 #>     #    steady-state occupancy is kon*cfree / (kon*cfree + kdeg).
-#>     #    Operator sidecar oare_PMC10946252 request-001, option B.
+#>     #    Encoded this way by the maintainers' decision.
 #>     d/dt(target_t790m) <-
 #>       (rbase - target_t790m) * kturnover -
 #>       kon_t790m * cfree * target_t790m +
@@ -315,7 +313,7 @@ mod
 #>     totalL858R <- target_l858r + complex_l858r
 #>   })
 #> }
-#> <environment: 0x55f5e46fc830>
+#> <environment: 0x55fb4ea0fa18>
 ```
 
 ## What is extracted, and what is not
@@ -390,10 +388,9 @@ Every parameter and equation, with its location in the source.
 
 Source trace for every parameter and equation. {.table}
 
-**Note on equation recovery.** The text extracted from this article’s
-PDF dropped all seven display equations as `formula-not-decoded`.
-Equations 1-7 were recovered from the PDF with `pdftotext -layout`.
-Equations 5-7 as printed are:
+**Note on equation recovery.** The article’s seven display equations do
+not survive ordinary text extraction from the PDF. Equations 1-7 were
+recovered with `pdftotext -layout`. Equations 5-7 as printed are:
 
     (5)  dOEm/dt      = kon * Clung * Emfree - koff * OEm
     (6)  dEmfree/dt   = (Em0 - Emfree) * kturnover - kon * Clung * Emfree + koff * OEm
@@ -743,7 +740,7 @@ paper, or to defer pending author correspondence.
     `CEFFECT` covariate.
 
 2.  **The complex ODE carries an inferred `-kdeg*complex` term that is
-    not in any on-disk source.** This is the single most important
+    not in any available source.** This is the single most important
     deviation.
 
     - As printed, Eq 5 is `dOEm/dt = kon*Clung*Emfree - koff*OEm`, and

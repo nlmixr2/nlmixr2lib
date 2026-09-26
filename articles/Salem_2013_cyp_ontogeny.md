@@ -371,8 +371,8 @@ protein binding) is common to numerator and denominator and cancels.
 Table 1 of the paper reports the Simcyp-derived fm for two hypothetical
 compounds – COMP 1 (CYP1A2 + CYP2C9) and COMP 2 (CYP3A4 + CYP2D6) – at
 day 1, year 1 and year 20. This is the strongest independent answer key
-on disk for the ontogeny functions, because it was produced by the full
-p-PBPK platform rather than from Equation (1).
+available for the ontogeny functions, because it was produced by the
+full p-PBPK platform rather than from Equation (1).
 
 ``` r
 
@@ -500,8 +500,8 @@ COMP 3 fraction metabolised by age (replicates Figure 4, left panel).
 
 The paper quotes two specific maximum pathway disparities. Both come
 from Supplementary Table S4, which is **caption-only in the
-supplementary file on disk** – the table body was never deposited – so
-only the two values repeated in the main text are available. Neither is
+supplementary file** – the table body was never deposited – so only the
+two values repeated in the main text are available. Neither is
 reproduced by the printed equations, and both are reported rather than
 asserted.
 
@@ -691,14 +691,14 @@ never used to override an equation.
 **Supplementary Table S4 was never deposited.** The main text cites
 Supplementary Table S4 for the maximum fold difference between every
 pathway pair and the age at which it occurs. In the supplementary `.doc`
-on disk that table is a caption followed by empty paragraphs; none of
-its values appears in the `WordDocument`, `1Table` or `Data` streams.
-Supplementary Figures S1 and S2 are likewise caption-only. The only two
-disparity values available anywhere on disk are the ones repeated in the
-main text (20.9-fold CYP2C9:CYP1A2 at day 1, in the Discussion, and
-2.4-fold CYP2B6:CYP2C18/19 at month 5, in the Results), and neither is
-reproduced by the printed equations – see the disparities section above,
-where both are reported with the model’s value alongside.
+that table is a caption followed by empty paragraphs; none of its values
+appears in the `WordDocument`, `1Table` or `Data` streams. Supplementary
+Figures S1 and S2 are likewise caption-only. The only two disparity
+values available anywhere are the ones repeated in the main text
+(20.9-fold CYP2C9:CYP1A2 at day 1, in the Discussion, and 2.4-fold
+CYP2B6:CYP2C18/19 at month 5, in the Results), and neither is reproduced
+by the printed equations – see the disparities section above, where both
+are reported with the model’s value alongside.
 
 **Renal function is validated only against its own equation.** The renal
 polynomial is encoded exactly as printed. No age-to-BSA growth function

@@ -63,12 +63,12 @@ str(m$meta$population, max.level = 1)
 #>  $ n_subjects    : int 303
 #>  $ n_studies     : int 4
 #>  $ age_range     : chr "adults with imatinib-resistant GIST (Hansson 2013 Table 1 lists baseline tumor size by study but does not break"| __truncated__
-#>  $ weight_range  : chr "not reported in the on-disk paper trimmed text"
+#>  $ weight_range  : chr "not reported in the paper"
 #>  $ sex_female_pct: num NA
 #>  $ race_ethnicity: NULL
 #>  $ disease_state : chr "Imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (study "| __truncated__
 #>  $ dose_range    : chr "Sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule. The larges"| __truncated__
-#>  $ regions       : chr "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the"| __truncated__
+#>  $ regions       : chr "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the paper."
 #>  $ biomarkers    : chr "Survival endpoint: time-to-death (overall survival, OS). Time-varying covariate for OS: model-predicted relativ"| __truncated__
 #>  $ notes         : chr "n_subjects = 303 reported in Hansson 2013 Methods. Figure 4 caption reports median baseline tumor size = 195 mm"| __truncated__
 ```

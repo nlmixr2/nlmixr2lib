@@ -1082,7 +1082,7 @@ probability. Two points make this the encoded reading:
 **Resolution (maintainer ruling):** encode Eq 8 exactly as printed and
 document the ambiguity. A user who prefers the alternative reading – all
 three genotype terms inside a slope group – must supply the base slope
-themselves, as it is not recoverable from any source on disk.
+themselves, as it is not recoverable from any available source.
 
 ### Other notes on the source
 

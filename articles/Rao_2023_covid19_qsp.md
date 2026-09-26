@@ -809,7 +809,7 @@ Supplementary Table S2.
     bounds, is published as a bitmap with no extractable text, so
     neither the plausible population (N = 14,545) nor the refined
     virtual populations (N = 502 Blaze-1, N = 402 REGEN-COV) can be
-    regenerated from on-disk sources. Consequently the trial-level
+    regenerated from the available sources. Consequently the trial-level
     endpoints that depend on the population – event rates, relative risk
     reductions (Figure 5), and the bootstrapped prediction intervals –
     are not reproduced. Comparisons here are qualitative and

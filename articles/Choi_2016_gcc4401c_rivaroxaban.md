@@ -866,10 +866,10 @@ is therefore taken to be a transcription error.
 - **Unpublished IIV covariances.** The supplementary control stream fits
   Vc, CLNR and CLR as an `$OMEGA BLOCK(3)`, but Table 2(a) reports only
   the three diagonal variances. The model therefore carries three
-  independent etas; the covariances cannot be recovered from any on-disk
-  source. The coagulation-factor-X PD stream `PSP4-5-532-s009` likewise
-  fits Emax and EC50 as an `$OMEGA BLOCK(2)` whose off-diagonal Table
-  3(a) does not report, so those two etas are also carried as
+  independent etas; the covariances cannot be recovered from any
+  available source. The coagulation-factor-X PD stream `PSP4-5-532-s009`
+  likewise fits Emax and EC50 as an `$OMEGA BLOCK(2)` whose off-diagonal
+  Table 3(a) does not report, so those two etas are also carried as
   independent.
 - **The PD control stream hardcodes the assay factor as 0.8, not 0.82.**
   The sequential PD fit in `PSP4-5-532-s009` sets

@@ -64,9 +64,8 @@ table below collects them in one place for review.
 | Exponential IIV, `P_i = theta * exp(eta_i)` | n/a | Li 2024 Equation 1 |
 
 Equations 5 and 6 are typeset as stacked fractions in the published PDF
-and are dropped by markdown converters (they appear as
-`formula-not-decoded`). They were recovered with `pdftotext -layout`,
-which resolves both in full:
+and do not survive naive plain-text extraction. They were recovered with
+`pdftotext -layout`, which resolves both in full:
 
     CL (L/h) = 7.76  * (weight/70)^0.9 * (eGFR/116.93)^0.38 * exp(eta_CL)
     Vd (L)   = 27.83 * (weight/70)                          * exp(eta_Vd)
@@ -615,7 +614,7 @@ stopifnot(!anyDuplicated(unique(pta_events[, c("id", "time", "evid")])))
 pta_sim <- rxode2::rxSolve(mod, events = pta_events, keep = c("cell")) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:03
 ```
 
 `fT>MIC` is computed two ways. The closed form uses each simulated
@@ -908,9 +907,8 @@ elevated dose.
   candidate list and the Section 3.2 narrative rather than from S1’s
   statistics.
 - **Equations 5 and 6 are vector-typeset.** Both are stacked fractions
-  in the published PDF and survive neither the PDF-to-markdown
-  conversion nor a plain text extraction; `pdftotext -layout` recovers
-  them intact and was the source used.
+  in the published PDF and do not survive naive plain-text extraction;
+  `pdftotext -layout` recovers them intact and was the source used.
 - **A dose off the search grid.** Table 4 uses a 2.5 mg/kg dose grid
   with a 10 mg/kg floor in every cell except `<10 kg` / eGFR 120-200 /
   MIC 4 mg/L, which prints 16 mg/kg q6h. That value is off the grid

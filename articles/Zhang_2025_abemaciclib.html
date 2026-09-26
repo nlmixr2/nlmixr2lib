@@ -3082,10 +3082,8 @@ Brain Metastatic Patients. ACS Omega 10(9):9245-9256. <a href="doi:10.1021/acsom
 Target-engagement equation from Methods 2.1 (Eq 1, after Wong 2019);
 fraction-unbound albumin scaling from Methods 2.1 (Eq 2, after Alsmadi
 2021); biomarker chain from Methods 2.2 (Eqs 4-7, framework from Tate
-2014). All parameter values are from main-text Table 1. Note that the
-trimmed markdown companion of this paper retains Table 1 and Section 3.6
-but drops every display equation (eight ‘formula-not-decoded’ markers),
-so Eqs 1-7 were recovered from the PDF.</li>
+2014). All parameter values are from main-text Table 1. Eqs 1-7 were
+transcribed from the PDF.</li>
 <li>Article (open access, CC BY-NC-ND 4.0): <a href="https://doi.org/10.1021/acsomega.4c09472" class="external-link uri">https://doi.org/10.1021/acsomega.4c09472</a>
 </li>
 <li>PMC record: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11904693/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11904693/</a>
@@ -3110,7 +3108,7 @@ so Eqs 1-7 were recovered from the PDF.</li>
 <span><span class="co">#&gt;     "the built-in PK-Sim database, distribution used the built-in Rodgers and",</span></span>
 <span><span class="co">#&gt;     "Rowland method, no organ ODEs / volumes / blood flows are published and no",</span></span>
 <span><span class="co">#&gt;     ".pksim5 project was deposited), so that layer is not reproducible from the",</span></span>
-<span><span class="co">#&gt;     "on-disk sources and is deliberately NOT extracted. Total plasma",</span></span>
+<span><span class="co">#&gt;     "published sources and is deliberately NOT extracted. Total plasma",</span></span>
 <span><span class="co">#&gt;     "concentrations are instead supplied per record as the canonical",</span></span>
 <span><span class="co">#&gt;     "time-varying covariates CP_ABE_NGML, CP_M2_NGML, CP_M18_NGML and",</span></span>
 <span><span class="co">#&gt;     "CP_M20_NGML, and the albumin-scaled fraction unbound is applied inside",</span></span>
@@ -3140,10 +3138,8 @@ so Eqs 1-7 were recovered from the PDF.</li>
 <span><span class="co">#&gt;     "Target-engagement equation from Methods 2.1 (Eq 1, after Wong 2019);",</span></span>
 <span><span class="co">#&gt;     "fraction-unbound albumin scaling from Methods 2.1 (Eq 2, after Alsmadi",</span></span>
 <span><span class="co">#&gt;     "2021); biomarker chain from Methods 2.2 (Eqs 4-7, framework from Tate",</span></span>
-<span><span class="co">#&gt;     "2014). All parameter values are from main-text Table 1. Note that the",</span></span>
-<span><span class="co">#&gt;     "trimmed markdown companion of this paper retains Table 1 and Section 3.6",</span></span>
-<span><span class="co">#&gt;     "but drops every display equation (eight 'formula-not-decoded' markers), so",</span></span>
-<span><span class="co">#&gt;     "Eqs 1-7 were recovered from the PDF.",</span></span>
+<span><span class="co">#&gt;     "2014). All parameter values are from main-text Table 1. Eqs 1-7 were",</span></span>
+<span><span class="co">#&gt;     "transcribed from the PDF.",</span></span>
 <span><span class="co">#&gt;     sep = " "</span></span>
 <span><span class="co">#&gt;   )</span></span>
 <span><span class="co">#&gt;   vignette &lt;- "Zhang_2025_abemaciclib"</span></span>
@@ -3607,8 +3603,7 @@ so Eqs 1-7 were recovered from the PDF.</li>
 <span><span class="co">#&gt;     free_cdk6_csf &lt;- cdk0 - (complex_cdk6_abe_csf + complex_cdk6_m2_csf + complex_cdk6_m18_csf + complex_cdk6_m20_csf)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     # =====================================================================</span></span>
-<span><span class="co">#&gt;     # 5. Target engagement. Zhang 2025 Eq 1, recovered from the PDF (the</span></span>
-<span><span class="co">#&gt;     #    trimmed markdown drops it as `formula-not-decoded`):</span></span>
+<span><span class="co">#&gt;     # 5. Target engagement. Zhang 2025 Eq 1, transcribed from the PDF:</span></span>
 <span><span class="co">#&gt;     #        dN/dt = (koff / Kd) * CDK_unbound * C_drug - koff * CDK_bound</span></span>
 <span><span class="co">#&gt;     #    where N is the drug-CDK complex. koff/Kd is the association rate</span></span>
 <span><span class="co">#&gt;     #    constant. Applied per analyte, per isoform, in plasma and in CSF.</span></span>
@@ -3659,8 +3654,7 @@ so Eqs 1-7 were recovered from the PDF.</li>
 <span><span class="co">#&gt;     #    sentence after Eq 6, "CO is the CDK occupancy fraction", and it never</span></span>
 <span><span class="co">#&gt;     #    says which of the four occupancy traces it computes (CDK4 / CDK6,</span></span>
 <span><span class="co">#&gt;     #    plasma / CSF) is meant -- the quantity is under-determined by a factor</span></span>
-<span><span class="co">#&gt;     #    of four. Resolved to CSF CDK6 (operator decision, task</span></span>
-<span><span class="co">#&gt;     #    oare_PMC11904693 sidecar request-001 answer D, 2026-08-20) on a</span></span>
+<span><span class="co">#&gt;     #    of four. The maintainers resolved it to CSF CDK6 on a</span></span>
 <span><span class="co">#&gt;     #    reproduction check rather than on preference:</span></span>
 <span><span class="co">#&gt;     #</span></span>
 <span><span class="co">#&gt;     #      * Eqs 4-6 have the exact drug-free-vs-constant-CO steady state</span></span>
@@ -3719,7 +3713,7 @@ so Eqs 1-7 were recovered from the PDF.</li>
 <span><span class="co">#&gt;     totalCdk6Csf    &lt;- free_cdk6_csf + complex_cdk6_abe_csf + complex_cdk6_m2_csf + complex_cdk6_m18_csf + complex_cdk6_m20_csf</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55ef1eb5e648&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x5555edbd2b98&gt;</span></span></code></pre></div>
 <p>Abemaciclib (ABE) is a CDK4/6 inhibitor used in
 hormone-receptor-positive, HER2-negative metastatic breast cancer (MBC).
 Zhang 2025 asks whether the standard 200 mg twice-daily (BID) regimen
@@ -5194,7 +5188,7 @@ fold change in ABCB1 expression alone moves CSF occupancy across the 90%
 threshold. A <em>fixed</em> <code>KCSF,p</code> makes CSF exposure
 strictly proportional to plasma exposure, so any dose-dependent
 saturation of that efflux is invisible to the extracted layer.</p>
-<p>The two causes are not mutually exclusive, and the on-disk sources
+<p>The two causes are not mutually exclusive, and the available sources
 cannot separate them: doing so would need the PBPK layer’s CSF
 concentration-time output, which is neither tabulated nor deposited. The
 residual gap after the exposure correction (about 1.7 percentage points
@@ -5271,14 +5265,11 @@ reason.</li>
 <strong>Supporting Information not obtained.</strong> The ACS
 Supporting Information PDF (Table S1, predicted vs. observed single-dose
 plasma PK in healthy volunteers; Tables S2-S3, sensitivity coefficients)
-could not be retrieved – EuropePMC’s supplementary-files endpoint
-returns HTTP 500, the NCBI OA package href 404s over HTTPS, the PMC
-<code>/bin/</code> route 404s, and the publisher route is behind the ACS
-Cloudflare gate. It is not a blocker: every model parameter is in
-main-text Table 1, and S1-S3 are validation and sensitivity
-<em>output</em>. Had S1 been available it would have supplied measured
-metabolite exposure ratios in place of the 13% / 5% / 26% mass split
-used above.</li>
+could not be retrieved when this model was built. It is not a blocker:
+every model parameter is in main-text Table 1, and S1-S3 are validation
+and sensitivity <em>output</em>. Had S1 been available it would have
+supplied measured metabolite exposure ratios in place of the 13% / 5% /
+26% mass split used above.</li>
 <li>
 <strong>No erratum.</strong> A search of the ACS landing page and
 PubMed found no correction notice for this article.</li>

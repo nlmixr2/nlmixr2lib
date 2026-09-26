@@ -398,8 +398,8 @@ tails of the curves above.
 
 ## Assumptions and deviations (Errata)
 
-The Delor 2013 supplement (NONMEM technical details) was not on disk at
-extraction time. The following choices were made:
+The Delor 2013 supplement (NONMEM technical details) was not available
+when this model was built. The following choices were made:
 
 1.  **Typical mixture probability (`theta_5`).** Table 2 of the source
     paper tabulates the three covariate coefficients on the

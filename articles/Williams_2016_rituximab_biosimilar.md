@@ -226,8 +226,8 @@ ggplot(sim_das28_summary, aes(time, Q50, colour = arm, fill = arm)) +
 
 Rituximab concentration profile used to drive the DAS28cfb Emax term.
 This biphasic-decay approximation stands in for the paper’s own popPK
-output (not on disk) and is meant for the vignette’s illustrative
-simulation only.
+output (which was not available when this model was built) and is meant
+for the vignette’s illustrative simulation only.
 
 ``` r
 

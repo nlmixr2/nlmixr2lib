@@ -72,11 +72,11 @@ bundle for `DDMODEL00000262`. The bundle contains:
   studies CPH113776 and CPH114527).
 - `262.json`, `Command.txt` – scraper metadata and NONMEM run command.
 
-The linked Sahota 2015 paper is on disk in the maintainers’ literature
-mirror and provides the external cross-check for every parameter value
-(Sahota 2015 Table 2 vs Output_real_CPHPC.lst FINAL PARAMETER ESTIMATE
-block; agreement to within the paper’s rounding precision is documented
-in the source-trace table below).
+The linked Sahota 2015 paper was available in the maintainers’
+literature mirror and provides the external cross-check for every
+parameter value (Sahota 2015 Table 2 vs Output_real_CPHPC.lst FINAL
+PARAMETER ESTIMATE block; agreement to within the paper’s rounding
+precision is documented in the source-trace table below).
 
 ## Population
 
@@ -355,11 +355,11 @@ sim_vpc |>
 
 ![](NA_NA_miridesap_files/figure-html/figure-vpc-sap-1.png)
 
-## Self-consistency check (F.2)
+## Self-consistency check
 
-Per the package’s F.2 validation strategy (self-consistency for source
-bundles whose primary check is internal coherence with the source
-`.ctl`), the acceptance criteria are (a) the model parses, (b)
+Per the package’s self-consistency validation strategy (self-consistency
+for source bundles whose primary check is internal coherence with the
+source `.ctl`), the acceptance criteria are (a) the model parses, (b)
 [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
 runs to completion on representative regimens, (c) qualitative
 behaviours match the source `.ctl`’s known dynamics, (d) typical-value

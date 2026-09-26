@@ -115,10 +115,10 @@ tumour-volume rule.
 ### Equation 2 identity
 
 Equation 2 gives the maximal cancer-cell capacity from a maximum tumour
-diameter and a cancer-cell density. `pdftotext` renders its stacked
-leading fraction ambiguously, and neither the diameter nor the density
-is tabulated. Both are recovered exactly from the stored `C_max` in
-Table S4:
+diameter and a cancer-cell density. Text extraction from the PDF renders
+its stacked leading fraction ambiguously, and neither the diameter nor
+the density is tabulated. Both are recovered exactly from the stored
+`C_max` in Table S4:
 
 ``` r
 
@@ -638,7 +638,7 @@ tumour diameter for the chemotherapy-only and triple-combination arms.
     the published one (75th percentile near +90% against a published
     +20%). Four pieces of information needed to reproduce that table are
     absent from the paper and the supplement, and none can be settled
-    from on-disk sources:
+    from the available sources:
 
 - the time at which the “percentage change in tumour diameter” is read –
   day 400, the best overall response, or a nominated scan. Note that

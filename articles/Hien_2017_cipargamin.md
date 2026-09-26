@@ -63,7 +63,7 @@ The table below collects them in one place for review.
 | `lmtt` (MTT) | 0.867 h | Table 3, PK model row ‘MTT’ |
 | `lka` (Ka) | 1.65 /h | Table 3, PK model row ‘Ka’ |
 | `lfdepot` (F) | 100% fix | Table 3, PK model row ‘F’ |
-| `e_wt_cl` / `e_wt_vc` (allometric) | 0.75 / 1.0 fix | Methods ‘Pharmacokinetic modeling’; supplement Text S1 not on disk |
+| `e_wt_cl` / `e_wt_vc` (allometric) | 0.75 / 1.0 fix | Methods ‘Pharmacokinetic modeling’; supplement Text S1 not available |
 | `lkgrow` (K_grow) | 0.0479 /h fix | Table 3, PD model row ‘K_grow’; = ln(10)/48 |
 | `lemax` (typical E_max at 10 mg) | 0.564 /h | Table 3, PD model row ‘E_max’ |
 | `lec50` (EC50) | 0.354 ng/mL | Table 3, PD model row ‘EC50’ |
@@ -442,9 +442,9 @@ distribution. {.table}
   incorporated as a fixed allometric function on the clearance and
   volume parameters” (Methods ‘Pharmacokinetic modeling’) but does not
   print the exponent values in the main text; supplement Text S1 (0.6
-  MB) was not on disk at extraction time. The canonical Anderson-Holford
-  exponents 0.75 (CL/F) and 1.0 (V/F) are applied, referenced at the
-  typical body weight of 59 kg (Table 3 footnote a).
+  MB) was not available when this model was built. The canonical
+  Anderson-Holford exponents 0.75 (CL/F) and 1.0 (V/F) are applied,
+  referenced at the typical body weight of 59 kg (Table 3 footnote a).
 - **Fsen encoded on the log scale.** The paper reports Fsen = 99.1% with
   81.8% CV IIV computed from the log-normal formula in Table 3 footnote
   1.  `lfsen = log(0.991)` is combined with `etalfsen ~ 0.512` (i.e.
@@ -470,7 +470,7 @@ distribution. {.table}
   CV, clamped to the 5,000-50,000 range. Downstream users simulating
   against real data should override PARA per subject from the observed
   admission microscopy count.
-- **Supplement Text S1 not on disk.** Detailed equations (including
+- **Supplement Text S1 not available.** Detailed equations (including
   equation 7 for the dose-dependent Emax term, the transit-chain
   formulation choice, and the full IIV block-covariance structure) are
   referenced from Text S1 but were not available. The transit-chain ODE

@@ -1718,11 +1718,10 @@ BSV is included.
   midazolam assays. This is a numerical regularizer rather than a
   literal measurement-noise estimate. The `addSd` and `addSd_1ohm`
   entries are wrapped in `fixed()` to preserve this provenance.
-- **No supplementary control stream on disk.** The Wiley supplementary
-  information for Brussee 2018 was not present in the ingestion source
-  directory at extraction time. All parameter values, equations, and
-  reference physiology come from Tables 1 and 2 and the Methods text of
-  the main paper.
+- **No supplementary control stream available.** The Wiley supplementary
+  information for Brussee 2018 was not available when this model was
+  built. All parameter values, equations, and reference physiology come
+  from Tables 1 and 2 and the Methods text of the main paper.
 
 ## Reference
 

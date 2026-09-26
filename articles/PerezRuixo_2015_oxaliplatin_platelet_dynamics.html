@@ -3645,11 +3645,11 @@ the paper’s reported CV% (nadir CV 58.9%, peak CV 53.2%).</p>
 <li><p><strong>Cp treated as an exogenous covariate.</strong> The source
 paper obtains <code>Cp</code> from empirical-Bayes individual-PK
 estimates of an upstream popPK model (Perez-Ruixo 2013 Cancer Chemother
-Pharmacol 71:693-704) that is NOT packaged in nlmixr2lib at extraction
-time. Per the resolution approved by the maintainers, this extraction
-treats <code>Cp</code> as an exogenous time-varying covariate column
-<code>CP_OXA_MGL</code>. The vignette approximates it with a simple
-linear-rise-then-monoexponential-decline placeholder tuned to the
+Pharmacol 71:693-704) that was NOT packaged in nlmixr2lib when this
+model was built. Per the resolution approved by the maintainers, this
+extraction treats <code>Cp</code> as an exogenous time-varying covariate
+column <code>CP_OXA_MGL</code>. The vignette approximates it with a
+simple linear-rise-then-monoexponential-decline placeholder tuned to the
 typical HIO Cmax (~ 1 mg/L) and plasma half-life (~ 14 h) reported in
 the source group’s earlier work. Users with a real oxaliplatin popPK
 profile in hand should substitute a proper simulation (either digitised
@@ -3707,13 +3707,12 @@ absence is auditable but they do not affect the ODEs. The HIO carrier
 effect is captured entirely upstream in the oxaliplatin PK layer
 (icodextrin reduces peritoneum-to-plasma absorption relative to
 dextrose), and is not modelled in this PD-only extraction.</p></li>
-<li><p><strong>Baseline demographic ranges absent from the on-disk
-source.</strong> The text extracted from the Perez-Ruixo 2015 PDF does
-not tabulate age, weight, sex, or race distributions – cross-cohort
-demographics are described in prior publications by the same group
-(Perez-Ruixo 2013 Cancer Chemother Pharmacol; Perez-Ruixo 2013 Clin
-Pharmacokinet; Valenzuela 2011 AAPS J). The model’s
-<code>population</code> metadata records this gap.</p></li>
+<li><p><strong>Baseline demographic ranges absent from the
+source.</strong> The Perez-Ruixo 2015 PDF does not tabulate age, weight,
+sex, or race distributions – cross-cohort demographics are described in
+prior publications by the same group (Perez-Ruixo 2013 Cancer Chemother
+Pharmacol; Perez-Ruixo 2013 Clin Pharmacokinet; Valenzuela 2011 AAPS J).
+The model’s <code>population</code> metadata records this gap.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

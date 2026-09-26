@@ -862,15 +862,14 @@ stopifnot(nrow(study_check) == 6L,
   PN001 was chosen as the earliest study and the first row of both Table
   1 and the Table 3 residual block. A record with all five indicators at
   0 therefore receives the PN001 magnitude.
-- **Supplementary Table S1 is not on disk.** The EuropePMC
-  supplementary-files endpoint returns no deposit for PMC13185089, so
-  the baseline demographic table (age, weight and race distributions)
-  could not be read. The population metadata records the percentages
-  quoted in the Results text instead, and the virtual cohort’s
-  body-weight distribution is an assumption (70 kg median, 20% CV)
-  rather than a transcription. The albumin, alkaline phosphatase and
-  creatinine clearance distributions *are* anchored to published
-  percentiles.
+- **Supplementary Table S1 was not available.** Europe PMC holds no
+  supplementary deposit for PMC13185089, so the baseline demographic
+  table (age, weight and race distributions) could not be read. The
+  population metadata records the percentages quoted in the Results text
+  instead, and the virtual cohort’s body-weight distribution is an
+  assumption (70 kg median, 20% CV) rather than a transcription. The
+  albumin, alkaline phosphatase and creatinine clearance distributions
+  *are* anchored to published percentiles.
 - **No published NCA table.** Gaffney 2026 reports no non-compartmental
   Cmax / Tmax / AUC summary, so there is no
   [`ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)

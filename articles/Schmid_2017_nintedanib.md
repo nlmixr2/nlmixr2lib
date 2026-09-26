@@ -572,9 +572,9 @@ is no Monte-Carlo noise in this block).
   ratified by the maintainers on 2026-06-21; `RACE_INDIAN` was added in
   the same extraction as a natural analogue of `RACE_KOREAN` for the
   BIBF 1202 Indian-alone effect (the BIBF 1202 covariate was not part of
-  the original ratification request because the supplement containing
-  Table S5 was not yet available when that request was made; the
-  supplement was acquired during this extraction from
+  the original ratification because the supplement containing Table S5
+  was not yet available at that time; the supplement was obtained during
+  this extraction from
   <https://static-content.springer.com/esm/art%3A10.1007%2Fs00280-017-3452-0/MediaObjects/280_2017_3452_MOESM1_ESM.docx>).
 - **ECOG performance status for IPF patients is encoded as
   `ECOG_GE1 = 0`.** Schmid 2017 Table 2 reports ECOG as “Missing (due to
@@ -634,14 +634,13 @@ is no Monte-Carlo noise in this block).
 
 ## Errata
 
-- The on-disk PDF is named
-  `Schmid_2018_Population_pharmacokinetics_of_nintedani_b579d1.pdf` but
-  the paper itself has a 2017 acceptance date and CC-BY 2017 copyright
-  (“Received: 20 June 2017 / Accepted: 10 October 2017 / Published
-  online: 8 November 2017 The Author(s) 2017”). The packaged model file
-  is named `Schmid_2017_nintedanib.R` per the package’s naming
-  convention (acceptance year) and per a maintainer decision of
-  2026-05-30.
+- The paper’s journal issue is dated 2018 (Cancer Chemother Pharmacol
+  81(1):89-101, January 2018), but the paper itself has a 2017
+  acceptance date and CC-BY 2017 copyright (“Received: 20 June 2017 /
+  Accepted: 10 October 2017 / Published online: 8 November 2017 The
+  Author(s) 2017”). The packaged model file is named
+  `Schmid_2017_nintedanib.R` per the package’s naming convention
+  (acceptance year) and per a maintainer decision of 2026-05-30.
 - The “Indian / Chinese / Taiwanese” ethnic-origin composite on
   nintedanib F1 (Schmid 2017 Table 3) and the “Indian alone” composite
   on BIBF 1202 F2 (Online Resource Table S5) are paper-specific

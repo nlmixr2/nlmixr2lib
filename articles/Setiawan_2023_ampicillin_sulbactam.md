@@ -529,12 +529,12 @@ other than a short-interval *f*T\>MIC calculation.
   `propSd` and `addSd` are therefore `fixed(0)` rather than invented, so
   simulated `Cc` is the individual prediction. Users who need residual
   noise must supply their own.
-- **Supplementary material not on disk.** Supplementary Figures 1-2 and
-  Supplementary Tables 1-3 hold the 100% *f*T\>MIC PTA and FTA results.
-  They contain simulation output only – no model structure and no
-  parameter values – so their absence does not affect this extraction.
-  The 60% *f*T\>MIC results used for validation below are all in the
-  main article (Table 3).
+- **Supplementary material not available when this model was built.**
+  Supplementary Figures 1-2 and Supplementary Tables 1-3 hold the 100%
+  *f*T\>MIC PTA and FTA results. They contain simulation output only –
+  no model structure and no parameter values – so their absence does not
+  affect this extraction. The 60% *f*T\>MIC results used for validation
+  below are all in the main article (Table 3).
 
 ## Reproducing Table 3: probability of target attainment
 

@@ -424,7 +424,7 @@ patient). {.table}
 - **Saturable AAG binding solved analytically.** The mass-balance
   fast-equilibrium binding `Ctotal = Cu + AAG * Cu / (KDAAG + Cu)` is
   solved as a quadratic in Cu inside `model()` (positive root). The
-  supplement (Supplementary Appendix S2) was not on disk; the
+  supplement (Supplementary Appendix S2) was not available; the
   closed-form quadratic is the standard solution given the paper’s
   stated mass-balance + fast-equilibrium assumption (Methods Structural
   model + Discussion paragraph citing Widmer 2006 and Mager-Krzyzanski
@@ -459,12 +459,12 @@ patient). {.table}
   “(uM)”; the value 0.056 uM gives the published Css,trough total 22.8
   uM and unbound 0.172 uM exactly. This vignette and the model file both
   use uM for KDAAG.
-- **Supplements not on disk.** Lu 2015 references Supplementary Appendix
-  S1 (study details), S2 (structural ODEs), S3 (covariate list), Tables
-  S1-S2, and Figures S1-S4. None were available at extraction time. All
-  structural details needed for the model file were extracted from the
-  main text (Methods, Structural model; Eqs. 4-6; Table 2; Discussion
-  paragraph on the Widmer 2006 parameterisation).
+- **Supplements not available.** Lu 2015 references Supplementary
+  Appendix S1 (study details), S2 (structural ODEs), S3 (covariate
+  list), Tables S1-S2, and Figures S1-S4. None were available at
+  extraction time. All structural details needed for the model file were
+  extracted from the main text (Methods, Structural model; Eqs. 4-6;
+  Table 2; Discussion paragraph on the Widmer 2006 parameterisation).
 - **Race / ethnicity distribution.** Patient cohort is 97.1% Caucasian
   per Lu 2015 Results paragraph 1; HV cohort is 100% Caucasian. The
   model does not include race as a covariate (Lu 2015 did not retain

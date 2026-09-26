@@ -725,10 +725,11 @@ stopifnot(
   the saturable-efflux capacity `N***max` in addition to the `kin`,
   `kout` and `C50` values that Table 2 does report. Its value (30,700)
   is taken from Table II of the companion paper Geldof et al. (2008)
-  *Pharm Res* 25(4):792-804, which is on disk and is already extracted
-  in this library as `modellib("Geldof_2008_fluvoxamine_rat")`. This is
-  the only parameter in the three models that does not come from the
-  present paper, and it is flagged as such inline in both model files.
+  *Pharm Res* 25(4):792-804, which was available and is already
+  extracted in this library as
+  `modellib("Geldof_2008_fluvoxamine_rat")`. This is the only parameter
+  in the three models that does not come from the present paper, and it
+  is flagged as such inline in both model files.
 - **`N***max` units.** The companion paper’s Table II prints the unit of
   `N***max` as ng/h. That is dimensionally inconsistent with `N***max`
   appearing as an additive term against `CT` and `C50` in the partition
@@ -748,12 +749,13 @@ stopifnot(
   the distinction is not lost. No IIV or residual error is available for
   the PK layer from this source, so none is encoded; the only random
   effect in these models is the IIV on EC50 that the paper does report.
-- **The upstream plasma popPK paper (Geldof 2007a) is not on disk.** It
-  is not required: the paper states the structure (“population
-  three-compartment pharmacokinetic model”, Table 1 caption) and
-  tabulates all six parameter values, so nothing about the plasma layer
-  had to be inferred. Only the population-level THETAs and IIV, which
-  this model does not use, live in that upstream reference.
+- **The upstream plasma popPK paper (Geldof 2007a) was not available
+  when this model was built.** It is not required: the paper states the
+  structure (“population three-compartment pharmacokinetic model”, Table
+  1 caption) and tabulates all six parameter values, so nothing about
+  the plasma layer had to be inferred. Only the population-level THETAs
+  and IIV, which this model does not use, live in that upstream
+  reference.
 - **The 8% per hour decline rate is not reproducible, and conflicts with
   the paper’s own figures.** Results p1374 states a linear decline of 8%
   per hour, identical at both doses. The same paragraph states that

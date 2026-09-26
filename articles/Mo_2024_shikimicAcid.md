@@ -833,9 +833,9 @@ about one percentage point by three independent routes. {.table}
   single-depot first-order model the authors selected does not describe
   it, and neither does the packaged model.
 - **Supplement not available.** The Supporting Information (Tables
-  S1-S2, Figures S1-S5) is not part of the open-access record on disk.
-  It contains body weights, the AIC model-selection table, and
-  diagnostic trend plots – no parameter values used by either model. The
+  S1-S2, Figures S1-S5) was not available when this model was built. It
+  contains body weights, the AIC model-selection table, and diagnostic
+  trend plots – no parameter values used by either model. The
   body-weight gap is immaterial here because all parameters are already
   per kg.
 - **Species.** These are growing pigs, not humans. Both `description`

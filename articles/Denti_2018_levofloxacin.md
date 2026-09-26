@@ -627,9 +627,9 @@ Cross-check of model recovery against Denti 2018 Table 2 and Table 4.
   tablet was crushed or an NGT was used.”
 - **Virtual cohort weight-for-age is approximated.** The original Denti
   2018 cohort drew on a WHO weight-for-age-for-TB-children model
-  (reference 49 in the paper, not on disk). The virtual cohort above
-  uses a simple `WT = 2 * age_yr + 8.5` heuristic with Gaussian noise to
-  span the published 5.88-21.8 kg range; the validation does not depend
-  on the exact weight-for-age shape because the per-subject (WT, age)
-  pair drives the typical-value CL prediction directly through the
-  model’s covariate algebra.
+  (reference 49 in the paper, not available when this model was built).
+  The virtual cohort above uses a simple `WT = 2 * age_yr + 8.5`
+  heuristic with Gaussian noise to span the published 5.88-21.8 kg
+  range; the validation does not depend on the exact weight-for-age
+  shape because the per-subject (WT, age) pair drives the typical-value
+  CL prediction directly through the model’s covariate algebra.

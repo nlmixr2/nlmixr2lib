@@ -289,9 +289,9 @@ Sheng 2016 Table 2 2GP final-model point estimates and 90% bootstrap CIs
   mixture of two generalized-Poisson distributions, the second
   right-truncated at the observed maximum lick number of 61. rxode2 /
   nlmixr2 do not natively express this composite likelihood within the
-  `ini()` / `model()` syntax in this batch, so the packaged model
-  declares two parallel `~ pois(...)` observation branches with means
-  `mu_low` and `mu_high` – the same pattern used by
+  `ini()` / `model()` syntax, so the packaged model declares two
+  parallel `~ pois(...)` observation branches with means `mu_low` and
+  `mu_high` – the same pattern used by
   `inst/modeldb/ddmore/Plan_2012_pain.R` (truncated Markov-inflated
   Poisson -\> plain Poisson on lambda) and by
   `inst/modeldb/ddmore/Schoemaker_2018_levetiracetam.R`
@@ -316,8 +316,9 @@ Sheng 2016 Table 2 2GP final-model point estimates and 90% bootstrap CIs
   states that IIV on every structural parameter except `c` is
   “log-normal” without specifying the link function for the parameters
   whose typical value is negative (`E0`, `d2`) or bounded in $`[-1, 1]`$
-  (`d1`, `d2`). The source NONMEM control stream is not on disk for
-  unambiguous encoding. The packaged model uses the strict-NONMEM idiom
+  (`d1`, `d2`). The source NONMEM control stream, which would settle the
+  encoding unambiguously, was not available when this model was built.
+  The packaged model uses the strict-NONMEM idiom
   `P_i = TVP * exp(eta_P)` for every IIV including the negative typical
   values (`e0_i = e0 * exp(etae0)`, `d2_i = d2 * exp(etad2)`) – this
   preserves the sign through the multiplicative scaling and matches the

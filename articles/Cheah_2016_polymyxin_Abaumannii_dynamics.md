@@ -364,7 +364,7 @@ approximations (also recorded in each model file’s `ini()` comments).
   (Antimicrob Agents Chemother 59:2315-2327,
   <doi:10.1128/AAC.04099-14>), Table 1 PAO1-RH (tobramycin SC50,Adapt).
   The Stim half-saturation polymyxin concentration is not reported in
-  Cheah 2016 or any on-disk supplement. The Bulitta 2015 framework is
+  Cheah 2016 or any available supplement. The Bulitta 2015 framework is
   the closest published source for the same turnover-style adaptation
   model used by Cheah 2016 (maintainer-approved fixed-from-class proxy).
 - **Kd_cations = 200 umol/L** and **Kd_polymyxin = 0.3 umol/L** in Eq 4

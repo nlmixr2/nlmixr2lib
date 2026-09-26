@@ -698,9 +698,9 @@ predicted progression. {.table}
   out of scope for the model file; the 100%-adherence column is the one
   reproduced.
 - **Supplementary Figures S1-S12 and Table S1** (Additional File 1) were
-  not on disk for this extraction. They hold goodness-of-fit / VPC
-  figures and the OFV / AIC / BIC / BICc model-selection statistics – no
-  parameter values – so no `ini()` entry depends on them.
+  not available when this model was built. They hold goodness-of-fit /
+  VPC figures and the OFV / AIC / BIC / BICc model-selection statistics
+  – no parameter values – so no `ini()` entry depends on them.
 - **Atractylodin sub-model not carried.** Saeheng 2024 states that a
   pop-PK model was also developed for atractylodin but reports no
   parameters for it and did not use it for dose prediction, so there is

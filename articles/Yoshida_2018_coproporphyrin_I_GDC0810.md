@@ -27,9 +27,9 @@
   sibling file Yoshida_2018_coproporphyrin_I_rifampin encodes the
   rifampin calibration with its own Ki,u, kdeg, and no IIV. The original
   fit used a Y. Chen et al. in-house PBPK model for GDC-0810 portal-vein
-  concentrations (personal communication, not on disk and not in the
-  nlmixr2lib registry), so downstream users must supply CP_GDC_UM
-  externally.
+  concentrations (personal communication, not available when this model
+  was built and not in the nlmixr2lib registry), so downstream users
+  must supply CP_GDC_UM externally.
 - Article: <https://doi.org/10.1002/psp4.12315>
 
 ## Population and biological context
@@ -189,7 +189,7 @@ rifampin Ki,u (0.0203 umol/L) on an unbound basis, consistent with
 GDC-0810 being a more potent OATP1B inhibitor at equivalent unbound
 concentrations. This is **not** a reproduction of the original Yoshida
 2018 fit – the original used a time-varying in-house PBPK GDC-0810
-portal-vein profile that is not reproducible from on-disk sources.
+portal-vein profile that is not reproducible from the available sources.
 
 ``` r
 
@@ -292,7 +292,7 @@ be reproduced.
 - **In-house GDC-0810 PBPK profile not reproducible.** Yoshida 2018 used
   an unpublished Y. Chen et al. PBPK model for GDC-0810 (cited as
   personal communication in the paper Methods) as the forcing function
-  for `CP_GDC_UM`; that PBPK output is not on disk and no GDC-0810 PK
+  for `CP_GDC_UM`; that PBPK output is not available and no GDC-0810 PK
   model is currently registered in nlmixr2lib. **Per the maintainers’
   instruction for this extraction**, the vignette intentionally does
   **not** approximate the GDC-0810 PK with an analytic surrogate. Users

@@ -379,8 +379,8 @@ cat(sprintf(
   uM*h) per the model’s `units` metadata.
 
 - **Sigmoidal-Imax inhibition form for enzyme degradation.** Equation 3
-  of Kerbusch 2000 (`<!-- formula-not-decoded -->` in the preprocessed
-  source) is implemented as a fractional-inhibition form
+  of Kerbusch 2000 (not decoded in the text extracted from the PDF) is
+  implemented as a fractional-inhibition form
   `dA2/dt = K_enz,out * (1 - A2 * IC50 / (IC50 + Cp))`, i.e., the enzyme
   degradation rate is suppressed by ifosfamide via `IC50 / (IC50 + Cp)`
   (equivalently, fractional inhibition `Cp / (IC50 + Cp)` with maximum
@@ -392,12 +392,12 @@ cat(sprintf(
   K_enz,out used to write Eq. 4. The simulated dose-doubling AUC ratio
   is somewhat higher than the paper’s reported 56% (Table 2): the model
   reproduces the qualitative sub-proportional behaviour but the exact
-  magnitude is sensitive to the precise functional form (which is
-  `<!-- formula-not-decoded -->` in the source PDF rendering used here).
-  Inspection of the original PDF equations or the underlying NONMEM
-  control stream (not on disk for this task) would be required to close
-  the gap; the parameter values themselves are taken verbatim from Table
-  1 and have not been tuned.
+  magnitude is sensitive to the precise functional form (which is not
+  decoded in the text extracted from the PDF). Inspection of the
+  original PDF equations or the underlying NONMEM control stream (not
+  available when this model was built) would be required to close the
+  gap; the parameter values themselves are taken verbatim from Table 1
+  and have not been tuned.
 
 - **No covariates.** Kerbusch 2000 does not report a covariate analysis;
   the 15-patient dataset was not powered to detect demographic effects.

@@ -660,29 +660,26 @@ yields a comparable median.
   packaged model implements the QSS form exactly as published, augmented
   with the dynamic-receptor-pool ODE that the supplement appendix
   specifies (`d/dt(total_target) = kdeg · (R0 · Vc - R_total)` under
-  `kint = kdeg`). An earlier extraction attempt (never merged into
-  `main`) had only the main paper available — the JCPH supplement was
-  subscription-blocked at that time. With the supplement on disk, this
-  implementation can carry the explicit receptor pool rather than
-  holding `R_total = R0` constant.
+  `kint = kdeg`). Because the supplement was available when this model
+  was built, the implementation can carry the explicit receptor pool
+  rather than holding `R_total = R0` constant.
 
 - **`kdeg` and `kint` provenance.** The receptor degradation rate
   `kdeg = 77.4 day⁻¹` and the constraint `kint = kdeg` are recorded only
-  in the supplement appendix (line 140 of the text extracted from the
-  supplement) and ultimately reference Wang et al. 2013 (Clin Pharmacol
-  Ther 93:483-492) — confocal imaging studies of IFNAR1 internalization.
-  The main paper Table 1 lists the parameter as `k_int` only, not as
-  `kdeg`, with the value 77.4 day⁻¹ marked “(fixed)”. The packaged model
-  uses the supplement’s mechanistic interpretation (a receptor-turnover
-  parameter that also drives complex internalisation) and the
-  `kdeg <- fixed(77.4)` declaration carries an inline non-paper-source
-  note pointing to the supplement appendix.
+  in the supplement appendix and ultimately reference Wang et al. 2013
+  (Clin Pharmacol Ther 93:483-492) — confocal imaging studies of IFNAR1
+  internalization. The main paper Table 1 lists the parameter as `k_int`
+  only, not as `kdeg`, with the value 77.4 day⁻¹ marked “(fixed)”. The
+  packaged model uses the supplement’s mechanistic interpretation (a
+  receptor-turnover parameter that also drives complex internalisation)
+  and the `kdeg <- fixed(77.4)` declaration carries an inline
+  non-paper-source note pointing to the supplement appendix.
 
 - **Time-varying-CL Hill exponent fixed at 1.** The supplement appendix
   writes the empirical CL factor as a Hill function with exponent
   `LAM = THETA(15)`, but the main paper’s Methods text reduces this to
   the simple Emax-on-time form `t / (TC50 + t)`. No value of `THETA(15)`
-  is reported in any on-disk source (neither Table 1 of the main paper
+  is reported in any available source (neither Table 1 of the main paper
   nor any supplementary figure). The packaged model uses `LAM = 1` per
   the main paper text; the typical-value 1-year CL reduction this
   predicts (~7.3 %) is close to but not identical to the paper’s
@@ -713,10 +710,10 @@ yields a comparable median.
 
 ## Provenance summary
 
-| Source on disk | Used for |
+| Source | Used for |
 |----|----|
-| `PMID_35383948_pmc.xml` (and the text extracted from it) | Main paper Methods, Results, Table 1, demographics tables. |
-| `PMID_35383948_supplement_1.docx` (and the text extracted from it) | Appendix NONMEM `$PK` / `$DES` blocks, dynamic-receptor ODE, `kdeg = kint = 77.4 day⁻¹` constraint, study-design Tables S1-S5. |
+| Main paper full text (PubMed Central, PMID 35383948) | Main paper Methods, Results, Table 1, demographics tables. |
+| Supplementary appendix (Word document) | Appendix NONMEM `$PK` / `$DES` blocks, dynamic-receptor ODE, `kdeg = kint = 77.4 day⁻¹` constraint, study-design Tables S1-S5. |
 
-No author correspondence was needed; all parameter values are present
-on-disk in either Table 1 of the main paper or the supplement appendix.
+No author correspondence was needed; all parameter values are present in
+either Table 1 of the main paper or the supplement appendix.

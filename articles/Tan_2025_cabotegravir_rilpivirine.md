@@ -1003,10 +1003,10 @@ Deviation are reported but not gated. {.table}
   sex’s median weight are +6% against the observed medians, and its sex
   ratio comes out at 1.17 against an observed 1.18. The discrepancy is
   therefore specific to cabotegravir, not to the encoding method. Three
-  candidate mechanisms, none of which can be settled from what is on
-  disk: (i) the unstated dose – a 17% overprediction is exactly what a
-  512 mg rather than 600 mg dose would give, and the model is linear in
-  dose;
+  candidate mechanisms, none of which can be settled from the available
+  sources: (i) the unstated dose – a 17% overprediction is exactly what
+  a 512 mg rather than 600 mg dose would give, and the model is linear
+  in dose;
 
   2.  the unstated clearance exponent – setting `e_wt_cl` to 1.0 instead
       of 0.75 moves the typical male prediction from about 1498 to about

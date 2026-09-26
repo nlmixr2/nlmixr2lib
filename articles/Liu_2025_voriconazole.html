@@ -3174,11 +3174,10 @@ an in-file comment naming its origin. They are collected here for
 review.</p>
 <p>The three structural equations are <strong>display equations on page
 4024</strong> of the article. They are worth calling out because they
-are vector-drawn and therefore invisible to text extraction –
-<code>pdftotext</code> renders them as a blank gap, and the preprocessed
-markdown drops them entirely. They were recovered by rasterising the
-page and cross-checked against the publisher’s own equation images in
-the Europe PMC supplementary-file bundle
+are vector-drawn and therefore invisible to text extraction – even
+<code>pdftotext</code> renders them as a blank gap. They were recovered
+by rasterising the page and cross-checked against the publisher’s own
+equation images in the Europe PMC supplementary-file bundle
 (<code>DDDT-19-4021-e0006.jpg</code> through
 <code>e0008.jpg</code>):</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">F</mi><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix" mathvariant="normal">(</mo><mi mathvariant="normal">L</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">h</mi><mo stretchy="false" form="postfix" mathvariant="normal">)</mo></mrow><mo>=</mo><mn>4.35</mn><mo>×</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">T</mi></mrow><mn>0.19</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>0.209</mn></mrow></msup><mo>×</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">B</mi><mi mathvariant="normal">A</mi></mrow><mn>3.95</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>0.158</mn></mrow></msup><mo>×</mo><msup><mi>e</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>−</mi><mn>0.017</mn><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">G</mi><mi mathvariant="normal">E</mi></mrow><mo>−</mo><mn>72.0</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>×</mo><msup><mi>e</mi><msub><mi>η</mi><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow></msub></msup></mrow><annotation encoding="application/x-tex">\mathrm{CL/F\ (L/h)} = 4.35 \times \left(\frac{\mathrm{PCT}}{0.19}\right)^{-0.209} \times \left(\frac{\mathrm{TBA}}{3.95}\right)^{-0.158} \times e^{[-0.017 \times (\mathrm{AGE} - 72.0)]} \times e^{\eta_{\mathrm{CL}}}</annotation></semantics></math></p>
@@ -4218,20 +4217,19 @@ ensemble’s most important feature is extracted.</li>
 <li>
 <strong>The three model equations are invisible to text
 extraction.</strong> They are vector-drawn display equations on p. 4024;
-<code>pdftotext</code> yields a blank gap and the preprocessed markdown
-drops them silently. They were recovered by rasterising the page at 400
-dpi and independently confirmed against the publisher’s equation images
-in the Europe PMC supplementary bundle
-(<code>DDDT-19-4021-e0006.jpg</code> to <code>e0008.jpg</code>). Any
-future re-extraction that works only from extracted text will miss the
-covariate functional forms, the three centring constants, and the fact
-that age enters exponentially while the two laboratory covariates enter
-as powers.</li>
+even <code>pdftotext</code> yields only a blank gap where they should
+be. They were recovered by rasterising the page at 400 dpi and
+independently confirmed against the publisher’s equation images in the
+Europe PMC supplementary bundle (<code>DDDT-19-4021-e0006.jpg</code> to
+<code>e0008.jpg</code>). Any future re-extraction that works only from
+extracted text will miss the covariate functional forms, the three
+centring constants, and the fact that age enters exponentially while the
+two laboratory covariates enter as powers.</li>
 <li>
 <strong>Table 2’s residual-error rows merge under automated table
 extraction.</strong> The <code>Prop_error (%)</code> and
-<code>Add_error (mg/L)</code> rows share a cell block; a markdown
-conversion renders them as a single row reading “31.4 0.893 | 10.5 11.1
+<code>Add_error (mg/L)</code> rows share a cell block; naive plain-text
+extraction renders them as a single row reading “31.4 0.893 | 10.5 11.1
 | …”. The layout-preserving extraction separates them correctly, and the
 values used here (28.9% and 0.885 mg/L final) come from that
 reading.</li>

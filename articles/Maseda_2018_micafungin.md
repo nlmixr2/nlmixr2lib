@@ -794,8 +794,8 @@ Dose linearity for the typical study subject (95 kg, 58 years). {.table}
     weights the attainment at each MIC by the fraction of isolates at
     that MIC, taken from the SENTRY surveillance programme. Those MIC
     distributions are cited but not printed in the article, so the
-    weights are not available on disk and the calculation cannot be
-    reproduced without fabricating them.
+    weights are not available and the calculation cannot be reproduced
+    without fabricating them.
 
 **Assumptions made because the source does not say.**
 

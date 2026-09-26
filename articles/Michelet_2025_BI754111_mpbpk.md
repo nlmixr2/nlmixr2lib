@@ -724,5 +724,5 @@ tables or results contradict.
     one to set unilaterally from a single extraction.
 
 12. **Demographics.** No age, weight, sex or race information is
-    reported for the six participants in any on-disk source, so none is
-    simulated.
+    reported for the six participants in any source available when this
+    model was built, so none is simulated.

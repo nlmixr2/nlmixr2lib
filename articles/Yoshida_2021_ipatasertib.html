@@ -3097,7 +3097,7 @@ and <code>f(depot_m1) = 1</code> are then multiplicatively adjusted by
 the model’s covariate effects to produce the observed parent and
 metabolite exposure.</p>
 <p>The source paper fitted ipatasertib and M1 in TWO SEPARATE NONMEM
-runs (Yoshida 2021 Discussion). The on-disk control stream
+runs (Yoshida 2021 Discussion). The control stream
 (<code>run230.mod</code>/<code>run230.lst</code>) is for the parent fit
 only; the M1 fit is documented in Supplementary Text S2 of the paper.
 The packaged model combines them into one rxode2 object for ease of
@@ -3833,10 +3833,10 @@ reported accumulation ratio of 1.8-2.4 at the 200-800 mg dose range
 (paper Introduction) is measured at the visible terminal phase rather
 than at full asymptotic SS, and the model reproduces this at day 14
 (parent trough at day 14 ~ 95% of asymptotic SS at day 60).</p></li>
-<li><p><strong>NONMEM minimization caveat.</strong> The on-disk
-run230.lst reports <code>MINIMIZATION SUCCESSFUL</code> with the
-standard <code>HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION</code>
-caveat (NSIG = 3.3 of 3 requested; gradient values were large but the
+<li><p><strong>NONMEM minimization caveat.</strong> The run230.lst
+listing reports <code>MINIMIZATION SUCCESSFUL</code> with the standard
+<code>HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION</code> caveat
+(NSIG = 3.3 of 3 requested; gradient values were large but the
 covariance step ran successfully and the FINAL PARAMETER ESTIMATE values
 match the published Table 3 within the precision the paper reports). The
 paper’s authors clearly accepted these as final estimates.</p></li>

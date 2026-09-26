@@ -932,17 +932,17 @@ independent instrument recovers it.
   over 1,000-10,000 freshly drawn virtual compounds per scenario.
   Regenerating that population would require the multivariate log-normal
   correlation matrix of Kato et al. (2003), which is cited but not
-  reproduced in any Aoki 2024 source on disk, so the virtual population
-  cannot be redrawn faithfully. The supplement does ship the first 1,000
-  draws (`SuppMaterial_modelParameter.csv`), but embedding them in the
-  package would mean redistributing several thousand supplement values
-  for a statistic that is not needed to validate the model structure.
-  The sweeps above therefore reproduce the *direction and mechanism* of
-  Figures 4A, 4D and 4E on the nine Table S2 compounds, and assert
-  monotonicity, rather than reproducing the published probability
-  values. The one Figure 4 claim that is checkable exactly – the
-  receptor-abundance ceiling imposed by the 100 ug microdose cap – is
-  asserted as a hard bound.
+  reproduced in any available Aoki 2024 source, so the virtual
+  population cannot be redrawn faithfully. The supplement does ship the
+  first 1,000 draws (`SuppMaterial_modelParameter.csv`), but embedding
+  them in the package would mean redistributing several thousand
+  supplement values for a statistic that is not needed to validate the
+  model structure. The sweeps above therefore reproduce the *direction
+  and mechanism* of Figures 4A, 4D and 4E on the nine Table S2
+  compounds, and assert monotonicity, rather than reproducing the
+  published probability values. The one Figure 4 claim that is checkable
+  exactly – the receptor-abundance ceiling imposed by the 100 ug
+  microdose cap – is asserted as a hard bound.
 
 - **No between-subject variability and no residual-error model.** This
   is a simulation study with no observed data, so there is nothing to
@@ -1010,7 +1010,7 @@ the Frontiers in Pharmacology site or in PubMed.
 
 The upstream structural source, Koyama et al. (2021)
 [doi:10.1124/dmd.120.000023](https://doi.org/10.1124/dmd.120.000023), is
-not open access and is not on disk. It is not needed: Aoki 2024
+not open access and was not available. It is not needed: Aoki 2024
 publishes the complete ODE system and every parameter value in its own
 supplement, and the cross-check above confirms the packaged model
 against that code directly.

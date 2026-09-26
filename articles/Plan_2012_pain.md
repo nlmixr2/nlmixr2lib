@@ -24,10 +24,10 @@ RDF `model-implementation-source-discrepancies-freetext` field).
   **18 weeks** (22,492 observations total).
 - Demographic detail (age range, weight range, sex split,
   race/ethnicity) is not derivable from the DDMORE bundle. The linked
-  publication (Plan 2012, <doi:10.1038/clpt.2011.301>) was **not on
-  disk** at extraction time, so a full demographic cross-check was not
-  performed; the n_subjects = 231 figure is taken from the DDMORE RDF
-  `model-has-description-long` field.
+  publication (Plan 2012, <doi:10.1038/clpt.2011.301>) was **not
+  available** when this model was built, so a full demographic
+  cross-check was not performed; the n_subjects = 231 figure is taken
+  from the DDMORE RDF `model-has-description-long` field.
 
 The same metadata is available programmatically:
 
@@ -112,7 +112,7 @@ used in this nlmixr2 implementation.
 
 ## Virtual cohort
 
-For the typical-value F.3 mechanistic-sanity check we simulate a single
+For the typical-value mechanistic-sanity check we simulate a single
 placebo subject without concomitant paracetamol over the 126-day
 (18-week) trial horizon at the canonical observation grid:
 
@@ -138,7 +138,7 @@ events
 #> 8   126 0:Observation           0
 ```
 
-## Simulation (F.3 mechanistic-sanity check)
+## Simulation (mechanistic-sanity check)
 
 Typical-value lambda(t) reproduction with all etas zeroed:
 
@@ -188,9 +188,9 @@ ggplot(result, aes(time, lam)) +
 ![](Plan_2012_pain_files/figure-html/figure-placebo-decay-1.png)
 
 The simulation reproduces the analytic placebo decay form to within
-numerical precision (relative error well under the F.3 5% threshold) at
-every canonical time point. The asymptote at long times approaches
-`BAS * (1 - PEF) = 6.21 * (1 - 0.190) ≈ 5.03`.
+numerical precision (relative error well under the mechanistic-sanity
+check’s 5% threshold) at every canonical time point. The asymptote at
+long times approaches `BAS * (1 - PEF) = 6.21 * (1 - 0.190) ≈ 5.03`.
 
 ### Sensitivity to concomitant paracetamol
 
@@ -230,15 +230,14 @@ Effect of CONMED_PARA = 1 on the typical pain score lambda. {.table}
 
 ## Assumptions and deviations
 
-- **Plan 2012 publication not on disk for cross-check.** The linked
-  paper (<doi:10.1038/clpt.2011.301>) was not present anywhere in the
-  maintainers’ literature mirror at extraction time. Final-estimate
-  values come solely from the DDMORE bundle’s
+- **Plan 2012 publication not available for cross-check.** The linked
+  paper (<doi:10.1038/clpt.2011.301>) was not available when this model
+  was built. Final-estimate values come solely from the DDMORE bundle’s
   `Output_real_likert_pain_count.lst` MAXEVAL=0 echo of
   `Executable_likert_pain_count.mod`. The published Plan 2012 tables
   could not be inspected to confirm parameter signs and magnitudes; if
-  the maintainers subsequently obtain the PDF, a follow-up audit pass is
-  recommended.
+  the paper becomes available, a follow-up cross-check against its
+  tables is recommended.
 - **Simplified observation likelihood.** The publication’s full
   observation model is a truncated (0-10) Poisson with underdispersion
   `DIS` and Markov inflations `pi0` / `pi1` / `pi2` / `pi3` conditional
@@ -249,7 +248,7 @@ Effect of CONMED_PARA = 1 on the typical pain score lambda. {.table}
   trajectory but dropping the Markov / underdispersion / inflation
   variance structure. The full likelihood expressions (`pi00`, `pi09`,
   `pi10`, `pi1`, `pi2`, `pi3`, `dis`) are still computed in `model()`
-  for source-trace fidelity. **F.3 mechanistic-sanity validation is
+  for source-trace fidelity. **Mechanistic-sanity validation is
   therefore restricted to the typical-value `lam(t)` trajectory** (which
   the simplified Poisson reproduces exactly). VPC-style validation of
   the Markov / underdispersion structure is out of scope of this
@@ -286,10 +285,10 @@ Effect of CONMED_PARA = 1 on the typical pain score lambda. {.table}
   registered in `inst/references/covariate-columns.md` alongside this
   extraction following the established `CONMED_*` pattern.
 - **No published NCA / VPC comparison.** Pain score models do not
-  produce PK NCA quantities; the F.3 substitute (typical-value
-  mean-count trajectory) is the only validation anchor the bundle
-  supports. The publication’s reported `BAS = 6.21`, `PEF = 0.190`,
-  `PHA = 27.7 d` are reproduced exactly by construction (they are
-  `THETA(1) / THETA(2) / THETA(3)`); the validation plot above is a
-  numerical confirmation that the nlmixr2 model and `rxSolve()` evaluate
-  the closed-form placebo-decay expression correctly.
+  produce PK NCA quantities; the mechanistic-sanity substitute
+  (typical-value mean-count trajectory) is the only validation anchor
+  the bundle supports. The publication’s reported `BAS = 6.21`,
+  `PEF = 0.190`, `PHA = 27.7 d` are reproduced exactly by construction
+  (they are `THETA(1) / THETA(2) / THETA(3)`); the validation plot above
+  is a numerical confirmation that the nlmixr2 model and `rxSolve()`
+  evaluate the closed-form placebo-decay expression correctly.

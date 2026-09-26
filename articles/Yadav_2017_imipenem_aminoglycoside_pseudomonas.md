@@ -410,12 +410,9 @@ Simulated log10 viable counts at sampling time-points used by Yadav 2017
   aeruginosa* isolate. No PKNCA validation is performed (there is no
   drug NCA to compute); the mechanistic checks above replace it, per the
   endogenous/mechanistic validation strategy.
-- **File naming.** The bibliographic metadata these models were built
-  from listed the drug as “Antimicrobial Agents and Chemo”, which is the
-  journal name (Antimicrobial Agents and Chemotherapy), not a drug. The
-  paper unambiguously models imipenem combined with tobramycin or
-  amikacin, so the five model files use the corresponding drug + isolate
-  suffix.
+- **File naming.** The paper unambiguously models imipenem combined with
+  tobramycin or amikacin, so the five model files use the corresponding
+  drug + isolate suffix.
 - **Five files, one paper.** Following the package’s convention of
   replicating the authors’ model structure, one vignette walks the paper
   as a whole and loads each of the five
@@ -430,7 +427,7 @@ Simulated log10 viable counts at sampling time-points used by Yadav 2017
 - **Signal-molecule ODE form.** Methods Eq 2 defines the inhibition term
   `Inh_k12 = Imax,sig12 * Csig / (Csig + IC50,sig)` but the main paper
   does **not** give the `Csig` ODE; it cites Bulitta 2010 (ref 61),
-  which is not on disk. The standard form
+  which was not available when this model was built. The standard form
   `d/dt(csig) = (1/MTT_sig) * (CFU_all - csig)` with `csig(0) = cfu0` is
   used, giving `csig = CFU_all` at steady state. This is the canonical
   Bulitta life-cycle formulation and the only internally-consistent

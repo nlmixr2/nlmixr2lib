@@ -802,10 +802,10 @@ are reproduced here, so the structural parameters and relative
 bioavailability are transcribed correctly. The most likely explanation
 is that Table 3’s Cmax column was produced with a different absorption
 parameterisation from the one in Table 2 – the adult model of Table S1
-carries Ka = 2.24 1/h against the pediatric 0.854 – but nothing on disk
-settles which, so no change is made to the model: the packaged file
-follows Table 2 and the control stream, which are the paper’s definitive
-statements of the fitted model.
+carries Ka = 2.24 1/h against the pediatric 0.854 – but nothing in the
+paper or its supplement settles which, so no change is made to the
+model: the packaged file follows Table 2 and the control stream, which
+are the paper’s definitive statements of the fitted model.
 
 ## Assumptions and deviations
 

@@ -538,7 +538,7 @@ is approximately linear in F_Lung). {.table}
   corticosteroids including FP. Weber 2015 does not re-fit any
   parameter; it reproduces the upstream Table I values for FP and adds
   BOV terms for the crossover-trial-simulation purpose of the present
-  paper. The upstream paper is not on disk in this extraction;
+  paper. The upstream paper was not available when this model was built;
   consequently the original demographic distributions of the subjects
   whose data informed the typical-value estimates are recorded only as
   “healthy adult volunteers” without numeric ranges.

@@ -413,7 +413,7 @@ reported in the paper.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warning for its PD output variable `APR`.)
 - **Errata search.** No published erratum / corrigendum to Fostvedt 2021
-  was located via available channels; the source on disk is treated as
-  the authoritative reference. If a correction is subsequently
+  was located via available channels; the published article is treated
+  as the authoritative reference. If a correction is subsequently
   identified that revises any value in Table 3, this vignette and the
   two model files should be updated.

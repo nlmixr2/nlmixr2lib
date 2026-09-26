@@ -112,11 +112,11 @@ No published erratum or corrigendum was located for Boucher 2018. The
 article is open access (CPT: Pharmacometrics & Systems Pharmacology,
 2018;7(5):288-297; PMID 29368402). The Supplementary Materials (dataset,
 NONMEM/BUGS/R model code, Table S1 of application examples, and Table S2
-of study characteristics) are referenced by the paper but were not on
-disk for this extraction; none of the model’s parameter values depend on
-the supplement (all are in Table 2 of the main text). The total patient
-count (Table S2) is therefore unavailable and is recorded as `NA` in the
-model `population` metadata.
+of study characteristics) are referenced by the paper but were not
+available when this model was built; none of the model’s parameter
+values depend on the supplement (all are in Table 2 of the main text).
+The total patient count (Table S2) is therefore unavailable and is
+recorded as `NA` in the model `population` metadata.
 
 ## PKNCA not applicable
 
@@ -447,6 +447,7 @@ between-study structural variability only.
   estimates, not the intervals.
 
 - **Total patient count unavailable.** The per-trial sample sizes are in
-  Supplementary Table S2, which was not on disk; `population$n_subjects`
-  is `NA`. The number of trials (18) and the flare/non-flare split
-  (12/6) are from the main-text “Example dataset” section.
+  Supplementary Table S2, which was not available;
+  `population$n_subjects` is `NA`. The number of trials (18) and the
+  flare/non-flare split (12/6) are from the main-text “Example dataset”
+  section.

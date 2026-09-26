@@ -180,8 +180,8 @@ model: five estimates differ in the third significant figure (THETA 6
 9 0.939 vs 0.938, and the three omegas 0.391/0.200/0.311 vs
 0.39/0.2/0.312), and the `.res` listing reports **325 individuals**
 against this paper’s **212 patients** over the same 1989 observations.
-The subject-count difference is not explained by anything on disk; it is
-recorded here as an open discrepancy rather than resolved.
+The subject-count difference is not explained by any available source;
+it is recorded here as an open discrepancy rather than resolved.
 
 Use **this** model for the published final estimates and the real units,
 population and covariate semantics; use `NA_NA_lidocaine` when you
@@ -924,11 +924,11 @@ stopifnot(
 
 - **The subject count disagrees with the DDMORE sibling** (212 patients
   here versus 325 individuals in the DDMODEL00000281 `.res` listing)
-  over the same 1989 observations. Nothing on disk explains the
+  over the same 1989 observations. No available source explains the
   difference; it is recorded as an open discrepancy, not resolved.
 
 - **No erratum or corrigendum was located** for this article on the
-  publisher’s page or in PubMed Central as of this extraction.
+  publisher’s page or in PubMed Central when this model was built.
 
 - **Every parameter value comes from the paper’s Table 3.** No value was
   digitised from a figure, obtained by correspondence, or carried from

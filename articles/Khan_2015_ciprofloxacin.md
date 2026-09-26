@@ -67,14 +67,14 @@ final estimates differ materially only for `SIGMA(1)` (2.42 -\> 1.78);
 the `.mod` initial 2.41597 is what the model file uses for `addSd`.
 
 The Khan et al. 2015 publication itself (J Antimicrob Chemother
-70(11):3051-3060) is paywalled and is not on disk; PMID 26349518 has no
-PMC full-text mirror. A side-by-side comparison against the
-publication’s per-strain MIC table or per-tube time-kill figure is
-therefore out of scope here. Validation in this vignette is a
-mechanistic-sanity check: the typical-value bacterial-count trajectory
-is qualitatively consistent with a 24-hour ciprofloxacin time-kill
-experiment on `Escherichia coli` LM202 wild-type at concentrations
-spanning 0-8 x MIC.
+70(11):3051-3060) is paywalled and was not available when this model was
+built; PMID 26349518 has no PMC full-text mirror. A side-by-side
+comparison against the publication’s per-strain MIC table or per-tube
+time-kill figure is therefore out of scope here. Validation in this
+vignette is a mechanistic-sanity check: the typical-value
+bacterial-count trajectory is qualitatively consistent with a 24-hour
+ciprofloxacin time-kill experiment on `Escherichia coli` LM202 wild-type
+at concentrations spanning 0-8 x MIC.
 
 ## Population
 
@@ -216,8 +216,8 @@ wild-type time-kill panel: at sub-MIC concentrations the bacterial count
 grows to a stationary plateau (capped by the density-dependent active
 -\> resting flux); at 1 x MIC the count collapses sharply through ~24
 hours; at 2-8 x MIC the count drops to near-eradication levels within
-the first 9 hours and stays low. The published Khan 2015 figures are not
-on disk for a side-by-side panel-by-panel comparison.
+the first 9 hours and stays low. The published Khan 2015 figures were
+not available for a side-by-side panel-by-panel comparison.
 
 ``` r
 
@@ -376,15 +376,15 @@ model type is the mechanistic-sanity check used above instead.
   file uses `addSd = sqrt(2.41597) = 1.5544` to remain consistent with
   the publication-derived initials.
 
-- **The Khan 2015 publication itself is not on disk.** PMID 26349518 /
-  DOI `10.1093/jac/dkv233` is paywalled and has no PMC full-text mirror;
-  a direct fetch returns only the abstract. As a result the per-strain
-  MIC table, the per-strain EC50 table, the time-kill figure panels, and
-  the residual-error structure description in the publication cannot be
-  cross-checked here. The numerical values shown above match the
-  bundle’s `.mod`; whether they match the publication’s printed tables
-  exactly is a question this vignette cannot answer until full text is
-  available.
+- **The Khan 2015 publication itself was not available when this model
+  was built.** PMID 26349518 / DOI `10.1093/jac/dkv233` is paywalled and
+  has no PMC full-text mirror; only the abstract is openly available. As
+  a result the per-strain MIC table, the per-strain EC50 table, the
+  time-kill figure panels, and the residual-error structure description
+  in the publication cannot be cross-checked here. The numerical values
+  shown above match the bundle’s `.mod`; whether they match the
+  publication’s printed tables exactly is a question this vignette
+  cannot answer until full text is available.
 
 - **Multi-level residual error collapsed to across-tube only.** The
   `.mod` `$ERROR` block writes

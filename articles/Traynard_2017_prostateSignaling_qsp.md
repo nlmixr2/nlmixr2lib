@@ -826,8 +826,8 @@ the paper reports (survival 0.87 with DHT, 0.33 with PI3K inhibition,
   strengths (`k(Rac -> JNK)` and `k(AKT -> AR)`, both of which match the
   supplement exactly); all remaining parameter values come from the
   GitHub repository the article’s Supplementary Materials section
-  designates. The relevant files are archived alongside the article PDF
-  in the maintainers’ literature mirror.
+  designates. The relevant files were available alongside the article
+  PDF when this model was built.
 - **Transfer-function and right-hand-side semantics were read from
   source.** The article does not write out `FG_transfer_function` or the
   inhibitor factor; those were read from the C sources of `CNORode2017`,

@@ -322,12 +322,12 @@ Simulated lumefantrine NCA by ART arm (per-subject medians). {.table}
 
 Kay 2022 does not tabulate per-arm typical Cmax / Tmax / half-life in
 the main text; per-arm AUC distributions are reported only in
-Supplementary Table S3 (not on disk for this extraction). The Discussion
-gives one quantitative anchor: the paper-wide individual day-0-42 AUC
-range was 65,644-9,430,142 ng\*h/mL. The simulated per-arm medians above
-sit comfortably inside that range and reproduce the qualitative rank
-ordering described in the Discussion (LPV/r highest, NVP and
-HIV-uninfected equivalent, EFV lowest).
+Supplementary Table S3 (not available when this model was built). The
+Discussion gives one quantitative anchor: the paper-wide individual
+day-0-42 AUC range was 65,644-9,430,142 ng\*h/mL. The simulated per-arm
+medians above sit comfortably inside that range and reproduce the
+qualitative rank ordering described in the Discussion (LPV/r highest,
+NVP and HIV-uninfected equivalent, EFV lowest).
 
 ``` r
 
@@ -400,16 +400,16 @@ range 65 644 - 9 430 142 ng\*h/mL (Discussion paragraph 6). {.table}
   encoding for the C50 parameter (Table 3 theta_4 = 0.284 mapping
   wild-type C50 ~= 120 ng/mL to mutant C50 ~= 35 ng/mL per Figure 3b)
   cannot be uniquely recovered from the main paper text alone, and the
-  supplementary control stream (Supplement Data S1) is not on disk for
-  this extraction. Both TTE models are summarised in the source paper
-  itself (Table 3, Figures 2-3, Supplementary Table S4) and a future
-  extraction is welcome to encode them as a separate
+  supplementary control stream (Supplement Data S1) was not available
+  when this model was built. Both TTE models are summarised in the
+  source paper itself (Table 3, Figures 2-3, Supplementary Table S4) and
+  could be encoded in future as a separate
   `Kay_2022_lumefantrine_recurrence` model file once the supplement is
   available.
 - **Supplementary tables and figures not available.** Supplement Data
   S1, Supplementary Tables S1-S4, and Supplementary Figures S1-S4
-  referenced in the main text are not present in the on-disk extraction
-  package. Where the supplement would give a per-arm typical AUC
+  referenced in the main text were not available when this model was
+  built. Where the supplement would give a per-arm typical AUC
   (Supplementary Table S3) or detailed PoC durations (Supplementary
   Table S4), the vignette compares simulated per-arm AUC against the
   paper’s reported individual-subject AUC range (Discussion) and the

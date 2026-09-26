@@ -56,9 +56,9 @@ Liu 2025 has three analytical layers:
     `doi:10.1002/jcph.1267`. **Liu 2025 reports no PD parameter of that
     model at all** – no baseline, no lifespan, no slope, no turnover
     rate, no residual error – so the PD layer cannot be source-traced
-    from anything on disk and is deliberately not implemented here. See
-    “Assumptions and deviations” for the details, including which of the
-    paper’s own PD numbers *can* be back-solved and which cannot.
+    from any available source and is deliberately not implemented here.
+    See “Assumptions and deviations” for the details, including which of
+    the paper’s own PD numbers *can* be back-solved and which cannot.
 
 ## Population
 
@@ -618,9 +618,9 @@ state. Replicates the PK panels of Figure 4 of Liu 2025.
   supplement. Implementing it would mean transcribing another paper’s
   model from a one-sentence citation, which is exactly the
   secondary-source extraction this library forbids. Nomoto 2018 is
-  closed access (Unpaywall `is_oa: false`, no PMC record) and has been
-  registered for acquisition so the CLD platelet model can be extracted
-  properly, from its own source, as its own model file.
+  closed access (no open-access copy or PMC record); the CLD platelet
+  model is left to be extracted properly, from its own source, as its
+  own model file.
 - **What the PD gap does and does not cost.** The PK layer is complete
   and self-contained, and Table 4’s PK columns are fully reproduced
   above. Table 4’s *PD* columns are not reproducible here, but they are

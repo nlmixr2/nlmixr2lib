@@ -975,8 +975,9 @@ years’. {.table}
 - **CFR is not reproduced.** The paper’s cumulative fraction of response
   (Table 3) weights PTA by the *P. aeruginosa* MIC distribution taken
   from Hou et al. 2024. That MIC distribution is not reported in Tao
-  2025 and the cited source is not on disk, so CFR cannot be recomputed.
-  Only PTA, which needs no external distribution, is scored here.
+  2025 and the cited source was not available, so CFR cannot be
+  recomputed. Only PTA, which needs no external distribution, is scored
+  here.
 - **“Aged over 60 years”.** The stringent-target anchor in Results 3.5
   does not say which simulated stratum it refers to, so both the 60 y
   and 90 y arms are reported rather than picking one.

@@ -3582,7 +3582,7 @@ subjects).</caption>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">sim_median</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"5th / 50th / 95th percentiles"</span>,</span>
-<span>       title <span class="op">=</span> <span class="st">"F.2 self-consistency: nlmixr2lib (blue) vs DDMORE bundle (grey)"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Self-consistency check: nlmixr2lib (blue) vs DDMORE bundle (grey)"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Bundle summary is a one-realisation snapshot; nlmixr2lib is a fresh 50-subject draw."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Lestini_2015_tgfbinhibitor_files/figure-html/f2-overlay-1.png" class="r-plt" alt="" width="672"></p>
 <p>The two distributions agree in shape (rapid Cc absorption peak around
@@ -3770,8 +3770,8 @@ for retraction notices.</li>
 entry’s RDF describes the model as a simplification of the
 semi-mechanistic TGF-β inhibitor PKPD framework of Bueno <em>et al.</em>
 (2008). Bueno’s model is more elaborate (gene-expression cascades,
-additional compartments) and is not on disk. nlmixr2lib does not
-currently carry the Bueno parent model.</li>
+additional compartments) and was not available when this model was
+built. nlmixr2lib does not currently carry the Bueno parent model.</li>
 <li>
 <strong>No covariate effects.</strong> The MLXTRAN INDIVIDUAL block
 declares no covariates, and the bundled simulated dataset has no

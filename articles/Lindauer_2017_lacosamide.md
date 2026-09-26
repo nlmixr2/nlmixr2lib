@@ -52,7 +52,7 @@ readModelDb("Lindauer_2017_lacosamide_seizure")()$population
 #> [1] "16-87 years (median 40, IQR 26-55)"
 #> 
 #> $weight_range
-#> [1] "not reported in the on-disk trimmed paper text"
+#> [1] "not reported in the paper"
 #> 
 #> $sex_female_pct
 #> [1] 46.3
@@ -506,12 +506,12 @@ check shown above.
   pharmacokinetic model for CBZ-CR” and “a previously developed
   population pharmacokinetic model for LCM” that produced the
   per-subject daily AUC used as the exposure covariate. Neither upstream
-  model is on disk for this extraction; the model files therefore expose
-  `AUC_LCM` and `AUC_CBZ` as data covariates and leave it to downstream
-  users to supply per-subject AUC values (either from an external popPK
-  simulation or from a fixed daily-dose scaling). The typical
-  dose-to-AUC scaling used in the vignette (LCM 200 mg/day -\> ~104
-  mg*h/L; LCM 400 mg/day -\> ~208 mg*h/L; LCM 600 mg/day -\> ~312
+  model was available when these models were built; the model files
+  therefore expose `AUC_LCM` and `AUC_CBZ` as data covariates and leave
+  it to downstream users to supply per-subject AUC values (either from
+  an external popPK simulation or from a fixed daily-dose scaling). The
+  typical dose-to-AUC scaling used in the vignette (LCM 200 mg/day -\>
+  ~104 mg*h/L; LCM 400 mg/day -\> ~208 mg*h/L; LCM 600 mg/day -\> ~312
   mg*h/L; CBZ-CR 400 mg/day -\> ~132 mg*h/L) is the paper’s
   typical-value scaling stated in Table 3 note
   3.  and Section 3.4.

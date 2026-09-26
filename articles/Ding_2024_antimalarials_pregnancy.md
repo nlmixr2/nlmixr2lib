@@ -33,10 +33,10 @@ mod_pq <- rxode2::rxode2(mod_pq_fn())
 ```
 
 The supporting information (Figures S1-S6: model structure diagrams,
-basic goodness-of-fit plots and prediction-corrected VPCs) was not on
-disk during this extraction. Every value used below comes from the main
-article text, Table 1, Table 2 and Table 3, which together are complete
-for both models.
+basic goodness-of-fit plots and prediction-corrected VPCs) was not
+available when this model was built. Every value used below comes from
+the main article text, Table 1, Table 2 and Table 3, which together are
+complete for both models.
 
 ## Population
 
@@ -845,5 +845,5 @@ and range.
 
 11. **Supplementary figures not used.** Figures S1-S6 (structure
     diagrams, goodness-of-fit plots, prediction-corrected VPCs) were not
-    on disk. They contain no parameter values; Tables 1-3 in the main
+    available. They contain no parameter values; Tables 1-3 in the main
     article are complete for both models.

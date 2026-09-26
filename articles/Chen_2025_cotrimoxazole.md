@@ -58,9 +58,9 @@ mg/kg/day delivers X/6 mg/kg/day of trimethoprim and 5X/6 mg/kg/day of
 sulfamethoxazole. The sulfamethoxazole model of the same paper is a
 separate file; see modellib(‘Chen_2025_sulfamethoxazole’).
 
-The publisher PDF renders the four model equations as images, so the
-text extracted from the PDF shows them only as `formula-not-decoded`.
-They were recovered with `pdftotext -layout`:
+The publisher PDF renders the four model equations as images, so they do
+not survive plain-text extraction of the PDF. They were recovered with
+`pdftotext -layout`:
 
     (1)  V  = tvV * exp(etaV)                                                    [SMX]
     (2)  CL = tvCL * (CrCL/75.7)^dCLdCrCL * exp[dCLdCRRT * (CRRT == 1)] * exp(etaCL)

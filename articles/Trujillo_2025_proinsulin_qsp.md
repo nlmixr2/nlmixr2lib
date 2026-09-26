@@ -695,12 +695,12 @@ see Errata.
 
 ## Assumptions and deviations
 
-- **`Vmax_G6P` is not reported anywhere on disk.** It is derived from
-  the paper’s own numbers as documented above (`560 mg/min`), giving
-  exactly 140 mg/min basal hepatic glucose release at the model’s own
-  reference point and reproducing VPHealthy’s reported fasting glucose.
-  It is flagged inline in `ini()` and is the only value in the model
-  file that is not a direct transcription. No value was taken from
+- **`Vmax_G6P` is not reported in any available source.** It is derived
+  from the paper’s own numbers as documented above (`560 mg/min`),
+  giving exactly 140 mg/min basal hepatic glucose release at the model’s
+  own reference point and reproducing VPHealthy’s reported fasting
+  glucose. It is flagged inline in `ini()` and is the only value in the
+  model file that is not a direct transcription. No value was taken from
   outside the paper.
 - **The conversion term is gated on `ON_TREATMENT`.** Table S3 lists
   `K_CPro = 20` for all four VPs with no on/off column, but Section 2.2

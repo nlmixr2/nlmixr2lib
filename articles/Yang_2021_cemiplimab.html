@@ -3607,11 +3607,12 @@ is written as
 inconsistent: if <code>BLK</code> is a 0/1 indicator (Black = 1,
 non-Black = 0), then <code>0^1.01 = 0</code> would zero out T50 for the
 96.4% of non-Black patients in the cohort. The paper does not show the
-NONMEM control stream and the supplementary DOCX was not available on
-disk, so the intended encoding could not be verified. The paper itself
-states all retained covariates had “limited impact (&lt; 20%) on
-cemiplimab exposure” and were “not clinically meaningful” given the flat
-exposure-response relationship. The packaged model therefore uses
+NONMEM control stream and the supplementary DOCX was not available when
+this model was built, so the intended encoding could not be verified.
+The paper itself states all retained covariates had “limited impact
+(&lt; 20%) on cemiplimab exposure” and were “not clinically meaningful”
+given the flat exposure-response relationship. The packaged model
+therefore uses
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mn>50</mn><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>T</mi><mrow><mn>50</mn><mo>,</mo><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">E</mi><mi mathvariant="normal">F</mi></mrow></mrow></msub><mo>⋅</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>η</mi><msub><mi>T</mi><mn>50</mn></msub></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T_{50,i} = T_{50,\mathrm{REF}} \cdot \exp(\eta_{T_{50}})</annotation></semantics></math>
 for all races. Datasets with a <code>RACE_BLACK</code> column will be
 ignored by this model; this should be an immaterial omission per the

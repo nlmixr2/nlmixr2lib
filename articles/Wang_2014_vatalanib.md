@@ -8,8 +8,7 @@
   patients with myelodysplastic syndrome: CALGB 10105 (Alliance). *Br J
   Clin Pharmacol.* 2014;78(5):1005-1013.
 - Article: <https://doi.org/10.1111/bcp.12427>
-- Source files on disk: the article PDF, in the maintainers’ literature
-  mirror.
+- Source used for this model: the article PDF.
 
 The packaged model `Wang_2014_vatalanib` is a one-compartment open model
 with lagged first-order absorption and a first-order auto-induction term

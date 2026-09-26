@@ -799,8 +799,8 @@ weight, which is not a plausible allometric relationship for a
 monoclonal antibody. These files follow Kim 2025.
 
 This is flagged rather than resolved here: settling it requires the
-Fasanmade 2011 primary publication, which is not on disk.
-`Frymoyer_2017_infliximab` is left untouched by this extraction.
+Fasanmade 2011 primary publication, which was not available when this
+model was built. `Frymoyer_2017_infliximab` is left untouched here.
 
 ## Assumptions and deviations
 

@@ -37,8 +37,8 @@ chemoembolisation plus 30 mg doxorubicin on Day 8 of Cycle 1. PK and
 sVEGFR2 plasma samples were drawn 24 h post-dose on Days 8, 10, and 35;
 DCE-MRI tumor volumes were obtained at baseline and on Days 8, 10, and
 35 in the n = 8 imaging subset. Baseline demographics (age, weight, sex,
-race) are reported in Supplementary Table S1, which is not on disk; the
-`population` field of the model is populated from the main text.
+race) are reported in Supplementary Table S1, which was not available;
+the `population` field of the model is populated from the main text.
 
 The same information is available programmatically:
 
@@ -337,11 +337,12 @@ ggplot(ttp_input, aes(month, hazard_per_month)) +
   (`dIC50,i = dIC50,pop * (Ktrans / median(Ktrans))^beta`,
   `beta = 2.12`, Table 2). The cohort-median `Ktrans` value required to
   centre that power covariate is not reported anywhere in the paper or
-  its supplements (the supplement is not on disk). Without the median,
-  the covariate is not deployable; the effect is omitted from `model()`
-  here. The `beta = 2.12` value is preserved in the source-trace table
-  for future re-enablement if the median becomes available
-  (Supplementary Table S1 in the paper, or author correspondence).
+  its supplements (the supplement was not available). Without the
+  median, the covariate is not deployable; the effect is omitted from
+  `model()` here. The `beta = 2.12` value is preserved in the
+  source-trace table for future re-enablement if the median becomes
+  available (Supplementary Table S1 in the paper, or author
+  correspondence).
 
 - **Alpha units in Table 2.** The paper’s Table 2 lists the sVEGFR2
   intrinsic-activity alpha = 0.77 with units `(ug/L)^-1`. Eq 7 of the
@@ -373,11 +374,11 @@ ggplot(ttp_input, aes(month, hazard_per_month)) +
 
 - **Baseline tumor volume.** The paper does not publish per- subject
   baseline tumor volumes for the n = 16 cohort; the n = 8 DCE-MRI subset
-  is described in Supplementary Table S1 (not on disk). The vignette
-  uses a representative tumor volume of 50,000 mm^3 for the
-  typical-cohort simulation. Users running patient-level simulations
-  should supply the per-subject DCE-MRI baseline as the `TUM_VOL`
-  column.
+  is described in Supplementary Table S1 (not available when this model
+  was built). The vignette uses a representative tumor volume of 50,000
+  mm^3 for the typical-cohort simulation. Users running patient-level
+  simulations should supply the per-subject DCE-MRI baseline as the
+  `TUM_VOL` column.
 
 - **TTP not encoded as ODE.** The Cox-style TTP hazard requires a
   24-hour rolling AUC of `dsVEGFR2` that is not a natural ODE state; the

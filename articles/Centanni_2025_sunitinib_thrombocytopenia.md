@@ -538,9 +538,10 @@ and one-directional. The cohort above holds clearance at a single
 typical value, whereas the paper’s framework carries the upstream popPK
 between-subject variability in clearance. Because `auc = DOSE / CLI`,
 clearance variability widens the exposure distribution and raises the
-tail incidence. The upstream popPK (Houk 2009) is not on disk, so its
-IIV is not simulated here; the sensitivity below shows the gap closes at
-an entirely ordinary sunitinib clearance CV.
+tail incidence. The upstream popPK (Houk 2009) was not available when
+this model was built, so its IIV is not simulated here; the sensitivity
+below shows the gap closes at an entirely ordinary sunitinib clearance
+CV.
 
 ``` r
 

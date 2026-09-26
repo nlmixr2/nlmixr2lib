@@ -51,7 +51,7 @@ str(pop, max.level = 1)
 #>  $ disease_state: chr "N/A (Monte Carlo simulation study; not a fit of any real molecule)."
 #>  $ dose_range   : chr "Single unit-valued IV bolus dose at t = 0 (Beal 2001 section 2.2, page 486)."
 #>  $ regions      : chr "N/A"
-#>  $ scope_note   : chr "Filed under inst/modeldb/pharmacokinetics/ (not specificDrugs/) at the operator's direction (sidecar zotero-077"| __truncated__
+#>  $ scope_note   : chr "Filed under inst/modeldb/pharmacokinetics/ (not specificDrugs/) by the maintainers' decision. The paper is a me"| __truncated__
 #>  $ notes        : chr "Section 2.2 (page 486): 'The clearance CL is taken to be .693, so that the units of time may be regarded as hal"| __truncated__
 ```
 

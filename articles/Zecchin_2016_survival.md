@@ -21,7 +21,8 @@
 - Article: <https://doi.org/10.1111/bcp.12994>
 - DDMORE Foundation Model Repository entry:
   [DDMODEL00000218](https://repository.ddmore.eu/model/DDMODEL00000218)
-- Source bundle (local mirror): `dpastoor/ddmore_scraping/218/`
+- Source bundle: GitHub mirror
+  [`dpastoor/ddmore_scraping/218/`](https://github.com/dpastoor/ddmore_scraping/tree/master/218)
 
 This vignette validates the Zecchin 2016 overall-survival (OS) model
 packaged under `inst/modeldb/ddmore/Zecchin_2016_survival.R`. The model
@@ -33,9 +34,9 @@ Zecchin 2016 SLD model (`Zecchin_2016_tumorovarian` / DDMODEL00000217).
 
 The DDMORE bundle ships only an OS-fit listing; the linked publication
 (Zecchin 2016 BJCP 82(3):717-727; PMID 27136318; PMC5338128) reports the
-final estimates in Table 2 of the paper. The publication PDF was not on
-disk for this extraction; Methods / Table 2 cross-checks were performed
-via PMC HTML.
+final estimates in Table 2 of the paper. The publication PDF was not
+available when this model was built; Methods / Table 2 cross-checks were
+performed via PMC HTML.
 
 ## Population
 
@@ -60,7 +61,7 @@ str(m$meta$population, max.level = 1)
 #>  $ n_subjects    : int 336
 #>  $ n_studies     : int 1
 #>  $ age_range     : chr "median ~59 years (advanced epithelial ovarian cancer cohort; Zecchin 2016 Table S2 / paper text)"
-#>  $ weight_range  : chr "not transcribed in this extraction (Zecchin 2016 Table S2 captures the demographic distributions; the WebFetch "| __truncated__
+#>  $ weight_range  : chr "not transcribed (Zecchin 2016 Table S2 captures the demographic distributions; the weight quantiles were not av"| __truncated__
 #>  $ sex_female_pct: num 100
 #>  $ disease_state : chr "advanced (FIGO stage III/IV) epithelial ovarian cancer (recurrent / platinum-sensitive cohort, randomised Phase"| __truncated__
 #>  $ dose_range    : chr "Phase III chemotherapy: carboplatin monotherapy (target AUC 5.0 mg*min/mL Q3W) or carboplatin (target AUC 4.0 m"| __truncated__
@@ -185,7 +186,7 @@ sim <- rxode2::rxSolve(m, events = events, keep = c("arm")) |>
 
 Zecchin 2016 reports a Kaplan-Meier survival curve overlaid with the
 Weibull-hazard model fit (paper Figure 4 / Figure 5). Without the
-original patient-level data on disk, the vignette compares the model’s
+original patient-level data, the vignette compares the model’s
 typical-value behaviour to the qualitative trajectory the paper reports:
 an approximately Weibull S(t) with shape 1.99, scale 0.036/month,
 modulated by the cohort’s covariate distribution.
@@ -233,15 +234,16 @@ sim |>
 
 ![](Zecchin_2016_survival_files/figure-html/km-by-arm-1.png)
 
-## Mechanistic sanity checks (F.3)
+## Mechanistic sanity checks
 
 The model is a TTE (time-to-event) survival model, not a PK / PD
-concentration model — PKNCA is not the right validation tool. The
-package’s validation checklist calls for typical-value hazard / survival
-trajectories to reproduce qualitative behaviour reported in the source.
-The four checks below exercise each covariate arm of the OS hazard.
+concentration model — PKNCA is not the right validation tool. For a
+time-to-event model the appropriate check is that typical-value hazard /
+survival trajectories reproduce the qualitative behaviour reported in
+the source. The four checks below exercise each covariate arm of the OS
+hazard.
 
-### F.3.1 — Hazard increases monotonically with time (Weibull α ≈ 2)
+### Check 1 — Hazard increases monotonically with time (Weibull α ≈ 2)
 
 Weibull shape α \> 1 means a hazard that increases with time. With α =
 1.99 the cumulative hazard grows quadratically and the survival function
@@ -275,7 +277,7 @@ ggplot(sim_ref, aes(time, hazard)) +
 stopifnot(all(diff(sim_ref$hazard[sim_ref$time > 0]) > -1e-12))
 ```
 
-### F.3.2 — Each covariate shifts the hazard in the published direction
+### Check 2 — Each covariate shifts the hazard in the published direction
 
 Zecchin 2016 reports all four covariate effects as positive (γ \> 0;
 Table 2 of the paper), i.e. higher baseline SLD, more positive TSR(t),
@@ -334,7 +336,7 @@ non_baseline <- final_sur |> filter(arm != "baseline")
 stopifnot(all(non_baseline$sur < baseline_sur))
 ```
 
-### F.3.3 — TSR clamp at week 12 (“WTS frozen at day 84”)
+### Check 3 — TSR clamp at week 12 (“WTS frozen at day 84”)
 
 The source `$DES` block freezes the TSR effect on the hazard at the
 week-12 (84-day) value. The model’s auxiliary `wts` state is constructed
@@ -365,17 +367,16 @@ sim_one_tail <- sim_one |> filter(time > 84)
 stopifnot(diff(range(sim_one_tail$wts)) < 1e-9)
 ```
 
-### F.3.4 — Self-consistency with the bundle’s simulated dataset
+### Check 4 — Self-consistency with the bundle’s simulated dataset
 
-A full F.2-style self-consistency check would re-simulate the bundle’s
-shipped `Simulated_OS.csv` (336 subjects, 4780 records) under the
-nlmixr2lib model and compare against the bundle’s
-`Output_simulated_OS.lst` IPRED column. The bundle dataset is outside
-this package (in `dpastoor/ddmore_scraping/218/`) and not redistributed;
-exercising the check requires the user to point `events` at the bundle
-CSV. The cohort built above is a faithful smaller-scale analogue and the
-sanity checks F.3.1-F.3.3 above are the substitute exercised in this
-vignette.
+A full self-consistency check would re-simulate the bundle’s shipped
+`Simulated_OS.csv` (336 subjects, 4780 records) under the nlmixr2lib
+model and compare against the bundle’s `Output_simulated_OS.lst` IPRED
+column. The bundle dataset is outside this package (in
+`dpastoor/ddmore_scraping/218/`) and not redistributed; exercising the
+check requires the user to point `events` at the bundle CSV. The cohort
+built above is a faithful smaller-scale analogue and Checks 1-3 above
+are the substitute exercised in this vignette.
 
 ## Assumptions and deviations
 
@@ -428,8 +429,8 @@ vignette.
   numerical equivalence with the bundle.
 
 - **No publication-PDF cross-check.** The Zecchin 2016 BJCP PDF was not
-  on disk for this extraction. Methods / Table 2 cross-checks were
-  performed against the PMC HTML version (PMC5338128) via WebFetch.
+  available when this model was built. Methods / Table 2 cross-checks
+  were performed against the PMC HTML version (PMC5338128).
 
 - **Convention warnings.**
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)

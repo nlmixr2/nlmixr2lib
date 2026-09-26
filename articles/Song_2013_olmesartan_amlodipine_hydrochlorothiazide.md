@@ -839,18 +839,17 @@ surface |>
 
 - **Supplemental Equations S7-S16 are not recoverable from the
   supplement file.** The supplement’s ten exposure-response equations
-  are MathType (`Equation.DSMT4`) OLE objects. The `.doc` on disk
-  retains only the field results – its `ObjectPool` storage and the
-  rendered metafile bits are both absent, so the equation images cannot
-  be extracted or rendered. The structure encoded here is therefore
-  taken from main-text Equations 1-7, which *are* fully legible in the
-  article PDF and which the supplement describes S7-S16 as
-  instantiating. Which parameter each covariate multiplies is pinned
-  independently by the Table S6 / S7 row labels, which name the target
-  explicitly (“Effect of age on Drug Effect of OM”, “Effect of sex on
-  Drug Effect of AML”), and corroborated a third time by the
-  Supplemental Results narrative. Nothing in the packaged models rests
-  on the undecodable images.
+  are MathType (`Equation.DSMT4`) OLE objects. The `.doc` retains only
+  the field results – its `ObjectPool` storage and the rendered metafile
+  bits are both absent, so the equation images cannot be extracted or
+  rendered. The structure encoded here is therefore taken from main-text
+  Equations 1-7, which *are* fully legible in the article PDF and which
+  the supplement describes S7-S16 as instantiating. Which parameter each
+  covariate multiplies is pinned independently by the Table S6 / S7 row
+  labels, which name the target explicitly (“Effect of age on Drug
+  Effect of OM”, “Effect of sex on Drug Effect of AML”), and
+  corroborated a third time by the Supplemental Results narrative.
+  Nothing in the packaged models rests on the undecodable images.
 
 - **No parameter value in any of the five models came from outside the
   paper.** Every `ini()` entry traces to Song 2013 Tables S3-S7 or

@@ -40,7 +40,7 @@ expressible in `rxode2`, and that is what
 |----|----|----|
 | Cellular reaction kinetics: 4 species x 2 subcellular compartments, oxygen-inhibited activation, two cell-kill readouts | Equations (1)-(5), Table S1 | **Yes – this file**, in the well-mixed (no-gradient) limit |
 | 1-D reaction-diffusion across a multicellular layer (donor / support membrane / MCL / receiver) | Supplementary Methods, “MCL model” | No – a partial differential equation in one spatial dimension |
-| 3-D steady-state Green’s-function solve over digitized R3230Ac and FaDu microvascular networks | Supplementary Methods, “SR-PK/PD modelling”; Visual C++ | No – requires the network geometry, which is published elsewhere and is not on disk |
+| 3-D steady-state Green’s-function solve over digitized R3230Ac and FaDu microvascular networks | Supplementary Methods, “SR-PK/PD modelling”; Visual C++ | No – requires the network geometry, which is published elsewhere and was not available when this model was built |
 
 Equations (1) and (2) carry a Laplacian diffusion term `D * del^2(Ce)`
 on the extracellular species. Setting that term to zero – the well-mixed
@@ -174,7 +174,7 @@ mod
 #>     "resolved: the same equations are solved with a Laplacian diffusion term",
 #>     "by Green's function methods over digitized R3230Ac and FaDu",
 #>     "microvascular networks, which rxode2 cannot express and whose network",
-#>     "geometry is not on disk. Diffusion coefficients are therefore NOT",
+#>     "geometry was not available when this model was built. Diffusion coefficients are therefore NOT",
 #>     "parameters of this file. See the vignette for what this scope does and",
 #>     "does not reproduce.",
 #>     sep = " "
@@ -490,7 +490,7 @@ mod
 #>     # any output; the only uncertainties reported are SEs across 3 MCLs.
 #>   })
 #> }
-#> <environment: 0x5556291bee18>
+#> <environment: 0x55c1f3377530>
 ```
 
 ``` r

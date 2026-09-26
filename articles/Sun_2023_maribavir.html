@@ -3136,17 +3136,16 @@ only as a bar chart in Figure S1.</p>
 each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Sun_2023_maribavir.R</code>. The table
 below collects them in one place for review.</p>
-<p>Two on-disk sources are cited. <strong>Table S2</strong> is the
-published parameter table (back-transformed estimates, % RSE, 95% CI and
-IIV CV%). <strong><code>s005.txt</code></strong> is the supplement’s
-NONMEM control stream for run 171 – the “fixed weight effect exponents”
-model – whose <code>$THETA</code> block is annotated
-<code>;from 171.cnv</code>, i.e. the final converged estimates. The
-control stream carries full precision and the complete
-<code>$OMEGA BLOCK(6)</code> and <code>$SIGMA</code>, so it is the
-primary source for the <code>ini()</code> values; every one of them was
-cross-checked against Table S2 (see the “Cross-validation” section
-below).</p>
+<p>Two sources are cited. <strong>Table S2</strong> is the published
+parameter table (back-transformed estimates, % RSE, 95% CI and IIV CV%).
+<strong><code>s005.txt</code></strong> is the supplement’s NONMEM
+control stream for run 171 – the “fixed weight effect exponents” model –
+whose <code>$THETA</code> block is annotated <code>;from 171.cnv</code>,
+i.e. the final converged estimates. The control stream carries full
+precision and the complete <code>$OMEGA BLOCK(6)</code> and
+<code>$SIGMA</code>, so it is the primary source for the
+<code>ini()</code> values; every one of them was cross-checked against
+Table S2 (see the “Cross-validation” section below).</p>
 <table class="table">
 <colgroup>
 <col width="47%">
@@ -3512,7 +3511,7 @@ independent model, so it is deliberately not packaged.</p>
 <span><span class="co">#&gt;     Cc ~ prop(propSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55ef1e26da78&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x5555f0ec05d8&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="cross-validation-of-the-control-stream-against-table-s2">Cross-validation of the control stream against Table S2<a class="anchor" aria-label="anchor" href="#cross-validation-of-the-control-stream-against-table-s2"></a>
@@ -4570,7 +4569,7 @@ matching the paper’s Methods. All figures and tables use <code>Cc</code>
 <li>
 <strong><code>ini()</code> values are taken from the run 171 control
 stream rather than from Table S2.</strong> The control stream reports
-full precision and is the only on-disk source for the complete
+full precision and is the only available source for the complete
 <code>$OMEGA BLOCK(6)</code> and <code>$SIGMA</code>. Every value was
 cross-checked against Table S2; the agreement is shown explicitly in the
 “Cross-validation” section above. No parameter value came from outside

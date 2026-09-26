@@ -3627,10 +3627,10 @@ central-compartment administration occurs at ~
 <strong>PK residual error not in this paper.</strong> The rHuEPO
 concentration residual error (transform-both-sides additive on log
 scale, Methods Statistical Model) was not reported in Perez-Ruixo 2008;
-its value lives in Olsson-Gisleskog 2007 (the upstream popPK paper, not
-on disk for this extraction). The model file encodes
-<code>propSd &lt;- fixed(0)</code> per the extraction policy (“If a
-needed value is unreported, encode fixed(0) + an erratum rather than a
+its value lives in Olsson-Gisleskog 2007 (the upstream popPK paper,
+which was not available when this model was built). The model file
+encodes <code>propSd &lt;- fixed(0)</code> per the library’s policy (“If
+a needed value is unreported, encode fixed(0) + an erratum rather than a
 class-typical placeholder”). For simulation this means the PK observable
 <code>Cc</code> is delivered without residual noise; the simulator is
 faithful to the published median PK.</li>
@@ -3685,7 +3685,7 @@ attributed to the PK trajectory differences between the Olsson-
 Gisleskog 2007 prior mean (used here) and the cohort-empirical posterior
 mean (which the paper’s POSTHOC PK predictions used as per-subject
 inputs to the PD layer). Parameter values were not tuned to close the
-gap per the extraction policy.</li>
+gap per the library’s policy.</li>
 <li>
 <strong>Smax = 1 in the signal-transduction layer.</strong>
 Perez-Ruixo 2008 Methods state that the maximum signal effect Smax was

@@ -497,12 +497,10 @@ used here can shift the median.
 
 ## Assumptions and deviations
 
-- **Drug field correction.** The metadata supplied when this model was
-  built included “drug: Antimicrobial Agents and Chemo”, which is the
-  journal name rather than the drug under study. The on-disk PDF
-  unambiguously describes a zidovudine + G-ZDV pediatric popPK model;
-  the model file and vignette use `zidovudine` as the drug token. The
-  source paper was matched by author / year / journal / DOI exactly.
+- **Drug identity.** The source PDF unambiguously describes a
+  zidovudine + G-ZDV pediatric popPK model; the model file and vignette
+  use `zidovudine` as the drug token. The source paper is identified by
+  author / year / journal / DOI.
 
 - **Molar-to-mass framing.** Fauchet 2013 estimated the model on the
   molar scale (Methods “Population pharmacokinetic analysis” paragraph

@@ -413,7 +413,7 @@ The AUC0-24 column above should approximately satisfy:
   fixed-effect typical- value point estimates with 95% bootstrap
   confidence intervals – the IIV omega^2 / CV% magnitudes are not
   published anywhere in the paper, and no supplement / NONMEM control
-  stream / .lst file was provided on disk for this extraction. Per the
+  stream / .lst file was available when this model was built. Per the
   maintainer-approved encoding, the model is registered as typical-value
   only: `ini()` carries no `eta*` parameters and
   [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)

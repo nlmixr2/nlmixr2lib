@@ -715,10 +715,10 @@ from the printed constants - see Errata. {.table}
 The DDI layer applies the supplement’s reversible-inhibition ratio to
 the CYP3A-mediated fraction of hepatic clearance. Pei 2023 generated the
 perpetrator concentration from a companion voriconazole PBPK model whose
-partition coefficients are not tabulated anywhere on disk, so this model
-takes the voriconazole whole-blood concentration as an input column
-(`CONC_VORI_NGML`) rather than substituting distribution parameters from
-another paper.
+partition coefficients are not tabulated in any available source, so
+this model takes the voriconazole whole-blood concentration as an input
+column (`CONC_VORI_NGML`) rather than substituting distribution
+parameters from another paper.
 
 Because the equation and both of its constants (KI = 8.70 ng/mL, fub,vor
 = 0.42) are published, the paper’s own reported result - “the ratio of

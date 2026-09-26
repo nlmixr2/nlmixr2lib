@@ -434,7 +434,7 @@ adjustment, both of which broaden the published range).
 
 - The relative bioavailability `F1 = 0.281` that Hussein 2005 estimated
   for 92 of 753 records (12 percent) classified as suspected
-  noncompliance is NOT applied in this model file. The on-disk model
+  noncompliance is NOT applied in this model file. The packaged model
   assumes full compliance with `F1 = 1` (`lfdepot <- fixed(log(1))`) for
   simulation purposes. Users who want to reproduce the paper’s
   noncompliant arm can add a per-record noncompliance covariate and

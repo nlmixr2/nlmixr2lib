@@ -85,10 +85,10 @@ str(mod_col()$population, max.level = 1)
 #>  $ n_subjects    : int NA
 #>  $ n_simulated   : int 10000
 #>  $ n_studies     : int 1
-#>  $ age_range     : chr "Not reported on disk. Rodjun 2023 reproduces only the parameter table of Nation 2017 and does not restate that "| __truncated__
-#>  $ weight_range  : chr "Not reported on disk. The colistin model carries no body-weight covariate, so weight does not enter the simulation."
+#>  $ age_range     : chr "Not reported in the available sources. Rodjun 2023 reproduces only the parameter table of Nation 2017 and does "| __truncated__
+#>  $ weight_range  : chr "Not reported in the available sources. The colistin model carries no body-weight covariate, so weight does not "| __truncated__
 #>  $ sex_female_pct: num NA
-#>  $ race_ethnicity: chr "Not reported on disk."
+#>  $ race_ethnicity: chr "Not reported in the available sources."
 #>  $ disease_state : chr "Critically ill adults receiving intravenous colistimethate sodium (the Nation 2017 estimation cohort, described"| __truncated__
 #>  $ dose_range    : chr "Intravenous loading dose of 300 mg or 450 mg colistin base activity (CBA) infused over 30 min, followed by main"| __truncated__
 #>  $ regions       : chr "Thailand (simulation study, Mahidol University, Bangkok); the underlying Nation 2017 PK cohort was multinational."

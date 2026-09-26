@@ -12,8 +12,8 @@
   L, Johnson DW. Dosing of gentamicin in patients with end-stage renal
   disease receiving hemodialysis. J Clin Pharmacol.
   2006;46(11):1259-1267. <doi:10.1177/0091270006292987>, which is closed
-  access and was NOT available on disk; the values encoded here are
-  those Lee 2024 prints.
+  access and was NOT available when this model was built; the values
+  encoded here are those Lee 2024 prints.
 - Description: Teigen one-compartment population PK model for
   intravenous gentamicin in adults with end-stage renal disease
   receiving thrice-weekly intermittent hemodialysis, as transcribed and
@@ -53,14 +53,14 @@ in their own right.
 
 Two distinct populations matter here and must not be conflated.
 
-**Development population (Teigen 2006, not on disk).** Adults with
-end-stage renal disease receiving intermittent hemodialysis, dialysed
-for at least one month, modelled in NONMEM version 5. Everything Lee
-2024 quotes about this cohort is its group **mean** creatinine
-clearance, 0.53 L/h (8.83 mL/min) – which is the reference value the
-covariate model is normalised to – and its group **maximum**, 1.24 L/h
-(20.7 mL/min). No subject count, demographic table, sampling design or
-dialyzer list is reproduced.
+**Development population (Teigen 2006, not available when this model was
+built).** Adults with end-stage renal disease receiving intermittent
+hemodialysis, dialysed for at least one month, modelled in NONMEM
+version 5. Everything Lee 2024 quotes about this cohort is its group
+**mean** creatinine clearance, 0.53 L/h (8.83 mL/min) – which is the
+reference value the covariate model is normalised to – and its group
+**maximum**, 1.24 L/h (20.7 mL/min). No subject count, demographic
+table, sampling design or dialyzer list is reproduced.
 
 **Application population (Lee 2024, n = 1).** A 53-year-old obese Korean
 woman, 158 cm, 66.9 kg, BMI 26.8 kg/m^2 – obese by the WHO Asia-Pacific

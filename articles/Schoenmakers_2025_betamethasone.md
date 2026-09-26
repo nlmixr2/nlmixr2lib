@@ -408,10 +408,11 @@ AUC0-inf vs (Dose / CL) ratio raises.
 - **Metabolites not modelled.** Schoenmakers 2025 reports half-lives of
   0.5 h for 11-keto-betamethasone and 2.4 h for
   6-beta-hydroxybetamethasone (Table S3 in the supplementary
-  information). The supplement is not on disk for this extraction; the
-  metabolite parameters are therefore not represented in the model.
-  Adding the metabolite compartments would require the supplement’s
-  Tables S2/S3 plus the figure-S5 metabolite VPC for validation.
+  information). The supplement was not available when this model was
+  built; the metabolite parameters are therefore not represented in the
+  model. Adding the metabolite compartments would require the
+  supplement’s Tables S2/S3 plus the figure-S5 metabolite VPC for
+  validation.
 
 - **DIS_EOPE canonical covariate ratified with this extraction.**
   Early-onset pre-eclampsia (eoPE; pre-eclampsia diagnosed \< 34 weeks

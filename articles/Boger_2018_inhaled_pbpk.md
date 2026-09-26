@@ -9,8 +9,8 @@ This paper presents the first inhalation PBPK model that treats the lung
 as a **continuous heterogeneous organ** and the inhaled powder as a
 distribution that is continuous in **both lung depth and particle
 size**. The authors deposited their complete MATLAB implementation as
-Appendix S2, so every constant and every equation used here comes from
-an on-disk source: the main text (Eqs 1-9, Tables 1-2), Appendix S1 (Eqs
+Appendix S2, so every constant and every equation used here comes from a
+published source: the main text (Eqs 1-9, Tables 1-2), Appendix S1 (Eqs
 S1-S41, Tables S1-S3) or the deposited code.
 
 There is no drug. The compound is a hypothetical neutral small molecule

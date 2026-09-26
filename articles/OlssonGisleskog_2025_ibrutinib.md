@@ -754,13 +754,13 @@ regressions of event occurrence on AUCtau,ss – not ODE systems – so they
 are reproduced here rather than packaged as model files. The same
 precedent applies in `Yin_2021_pexidartinib.R`.
 
-The coefficient tables (Tables S2 and S6) are not among the sources on
-disk, so the coefficients are **recovered by inverting the logit** at
-the three AUCtau,ss percentiles that main-text Table 4 tabulates. Three
-points determine a two-parameter line with one degree of freedom left
-over, so the recovery is falsifiable rather than merely fitted – and the
-residual check below shows it reproduces all three published incidences
-exactly at the reported precision.
+The coefficient tables (Tables S2 and S6) were not available when this
+model was built, so the coefficients are **recovered by inverting the
+logit** at the three AUCtau,ss percentiles that main-text Table 4
+tabulates. Three points determine a two-parameter line with one degree
+of freedom left over, so the recovery is falsifiable rather than merely
+fitted – and the residual check below shows it reproduces all three
+published incidences exactly at the reported precision.
 
 ``` r
 
@@ -805,7 +805,7 @@ knitr::kable(
     Estimate = signif(c(er$afib_b0, er$afib_b1, er$hem_b0, er$hem_b1,
                         er$hem_cyp3a), 4)
   ),
-  caption = "Logistic exposure-response coefficients recovered from Olsson Gisleskog 2025 Table 4. Tables S2 / S6, which report them directly, are not available on disk."
+  caption = "Logistic exposure-response coefficients recovered from Olsson Gisleskog 2025 Table 4. Tables S2 / S6, which report them directly, were not available when this model was built."
 )
 ```
 
@@ -818,8 +818,8 @@ knitr::kable(
 | Any hemorrhage      | Any CYP3A inhibitor (logit offset) |  0.622900 |
 
 Logistic exposure-response coefficients recovered from Olsson Gisleskog
-2025 Table 4. Tables S2 / S6, which report them directly, are not
-available on disk. {.table}
+2025 Table 4. Tables S2 / S6, which report them directly, were not
+available when this model was built. {.table}
 
 The CYP3A-inhibitor offset is the strongest internal check available:
 recovered independently at each of the three AUCtau,ss points it comes
@@ -991,15 +991,16 @@ assertion is placed on it.
 
 ### Errata and unresolved points in the source
 
-1.  **The age-effect centering value is not reported anywhere on disk,
-    and 65 years is a back-solve.** Table 2 gives the power exponent
-    (0.699 FIX) but no reference age, and the upstream Marostica 2015
-    paper (reference 15) is not open access. An *uncentered* power is
-    arithmetically excluded: `71^0.699 = 19.7` would make F1 about 13
-    and AUCtau,ss roughly 6500 ng.h/mL against a reported median of 349.
-    Among centered readings, 65 y is the protocol’s own enrolment floor
-    (Methods 2.1, “eligible patients were \>= 65 years of age”) and it
-    reproduces the paper’s answer key: at the median age of 71,
+1.  **The age-effect centering value is not reported in any available
+    source, and 65 years is a back-solve.** Table 2 gives the power
+    exponent (0.699 FIX) but no reference age, and the upstream
+    Marostica 2015 paper (reference 15) is not open access. An
+    *uncentered* power is arithmetically excluded: `71^0.699 = 19.7`
+    would make F1 about 13 and AUCtau,ss roughly 6500 ng.h/mL against a
+    reported median of 349. Among centered readings, 65 y is the
+    protocol’s own enrolment floor (Methods 2.1, “eligible patients were
+    \>= 65 years of age”) and it reproduces the paper’s answer key: at
+    the median age of 71,
     `AUCtau,ss = 560 mg x 0.666 x (71/65)^0.699 / 1123 L/h = 353 ng.h/mL`
     against the Table 3 median of 349, a 1.2% difference. The main
     alternative, centering at the Table 1 median of 71 y, gives 332
@@ -1038,7 +1039,7 @@ assertion is placed on it.
     re-estimation during model refinement, so the final RUV may differ.
     It is encoded as `expSd <- fixed(0.813)` with the `fixed()`
     recording that it was imported rather than estimated. No other value
-    exists on disk.
+    is available.
 
 4.  **Table 2 and the Results prose disagree about the change in
     intercompartmental flow.** Results 3.1 states that “apparent
@@ -1086,16 +1087,16 @@ assertion is placed on it.
     (correction added 10 July 2025). The correction affects figure
     rendering only, not any parameter value.
 
-8.  **Tables S1-S6 are not on disk.** Table S2 (exposure-response
-    coefficients within the ibrutinib arm), Table S3 (covariate
-    subgroups tested), Tables S4/S5 (covariate screening results) and
-    Table S6 (final hemorrhage model coefficients) are cited in the text
-    but were not in the open-access package. The exposure-response
-    coefficients are therefore recovered from main-text Table 4 by logit
-    inversion, which reproduces all nine published cells to the reported
-    0.1-percentage-point precision (see *Exposure-response*). Should the
-    supplement become available, the recovered coefficients should be
-    replaced by the tabulated ones.
+8.  **Tables S1-S6 were not available when this model was built.** Table
+    S2 (exposure-response coefficients within the ibrutinib arm), Table
+    S3 (covariate subgroups tested), Tables S4/S5 (covariate screening
+    results) and Table S6 (final hemorrhage model coefficients) are
+    cited in the text but were not in the open-access package. The
+    exposure-response coefficients are therefore recovered from
+    main-text Table 4 by logit inversion, which reproduces all nine
+    published cells to the reported 0.1-percentage-point precision (see
+    *Exposure-response*). Should the supplement become available, the
+    recovered coefficients should be replaced by the tabulated ones.
 
 ### Modelling assumptions made in this vignette
 

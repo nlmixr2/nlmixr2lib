@@ -1177,6 +1177,6 @@ correct. The half-life and Tmax rows are unaffected and are used above.
   dosing rather than the phenotype-individualised dosing of Studies B
   and C.
 - **No parameter value in this model came from outside Tobin 2026.** No
-  supplement was available on disk; every `ini()` entry traces to the
-  main article’s Table 3 or its Results text, both of which report the
-  final covariate model in full.
+  supplement was available; every `ini()` entry traces to the main
+  article’s Table 3 or its Results text, both of which report the final
+  covariate model in full.

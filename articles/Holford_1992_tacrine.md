@@ -33,11 +33,11 @@
   proportional. NOTE: the lead Holford 1992 PNAS 89:11471-11475 ‘Results
   and validation’ paper supplies all parameter values but the exact ODE
   form of the placebo dynamics is described in the companion methodology
-  paper (PNAS 89:11466-11470) which was not available on disk at
-  extraction time; the ODE form here is the field-standard
-  reconstruction (asymmetric on/off placebo compartment plus
-  multiplicative tolerance) and is documented in the validation
-  vignette’s Assumptions and deviations section.
+  paper (PNAS 89:11466-11470) which was not available when this model
+  was built; the ODE form here is the field-standard reconstruction
+  (asymmetric on/off placebo compartment plus multiplicative tolerance)
+  and is documented in the validation vignette’s Assumptions and
+  deviations section.
 - Article: <https://doi.org/10.1073/pnas.89.23.11471>
 - Companion methodology paper:
   <https://doi.org/10.1073/pnas.89.23.11466>
@@ -56,9 +56,9 @@ titration orderings.
 
 Demographic detail (age range, sex split, baseline ADAS-cog
 distribution) is described in the companion methodology paper (Holford
-and Peace 1992, PNAS 89:11466-11470), which was not on disk at
-extraction time; the on-disk `Results and validation` paper reports only
-that the population mean ideal body weight is 60 kg (used as the
+and Peace 1992, PNAS 89:11466-11470), which was not available when this
+model was built; the `Results and validation` paper reports only that
+the population mean ideal body weight is 60 kg (used as the
 size-normalisation reference inside `model()`). The same information is
 available programmatically via the model’s `population` metadata:
 
@@ -78,10 +78,10 @@ rxode2::rxode(readModelDb("Holford_1992_tacrine"))$population
 #> [1] 5253
 #> 
 #> $age_range
-#> [1] "Adults / elderly with probable Alzheimer's disease (specific age range not tabulated in the source 'Results and validation' paper; demographic detail lives in the companion methodology paper Holford and Peace 1992 PNAS 89:11466-11470 which was not on disk at extraction time)."
+#> [1] "Adults / elderly with probable Alzheimer's disease (specific age range not tabulated in the source 'Results and validation' paper; demographic detail lives in the companion methodology paper Holford and Peace 1992 PNAS 89:11466-11470 which was not available when this model was built)."
 #> 
 #> $age_median
-#> [1] "(not reported in the on-disk source paper)"
+#> [1] "(not reported in the source paper)"
 #> 
 #> $weight_range
 #> [1] "(not tabulated; ideal body weight mean across the cohort was 60 kg per source paper Data section)"
@@ -128,8 +128,8 @@ rxode2::rxode(readModelDb("Holford_1992_tacrine"))$population
 | `propSd` | 0.105 | Table 2, Error class: SD ADASC = 3.14 (SE 0.08); interpreted as proportional residual at typical ADAS-cog ~30, propSd = 3.14 / 30 ~= 0.105 (see Assumptions below) |
 | Disease progression `ADAS_cog = S0 + alpha*t + ...` | n/a | Results paragraph + Discussion (“linear disease progression model”, “an effect shifting the disease progression curve (offset model)”) |
 | Tacrine effect compartment `d/dt(effect1) = keqa * (Dr_norm - effect1)` | n/a | Discussion (“response may be proportional to the average steady-state concentration”) + Data paragraph (“Tacrine clearance was calculated from the patient’s size covariate divided by the mean value … 60 kg for IBW”) + Results (“3-week equilibration half-time”) |
-| Placebo effect compartment `d/dt(effect2) = TRT_PHASE * keqp * (1 - effect2) - (1 - TRT_PHASE) * kelp * effect2` | n/a | Field-standard reconstruction (companion paper not on disk); see Assumptions and deviations |
-| Tolerance compartment `d/dt(effect3) = ktolp * (TRT_PHASE - effect3)` | n/a | Field-standard reconstruction (companion paper not on disk); see Assumptions and deviations |
+| Placebo effect compartment `d/dt(effect2) = TRT_PHASE * keqp * (1 - effect2) - (1 - TRT_PHASE) * kelp * effect2` | n/a | Field-standard reconstruction (companion paper not available); see Assumptions and deviations |
+| Tolerance compartment `d/dt(effect3) = ktolp * (TRT_PHASE - effect3)` | n/a | Field-standard reconstruction (companion paper not available); see Assumptions and deviations |
 
 ## Virtual cohort
 
@@ -461,25 +461,23 @@ dose-rate-scaling steps in `model()` were done correctly.
 
 ## Assumptions and deviations
 
-- **Companion paper not on disk; placebo ODE form is a field-standard
+- **Companion paper not available; placebo ODE form is a field-standard
   reconstruction.** The lead Holford 1992 PNAS 89:11471-11475
   `Results and validation` paper supplies all parameter values (Table 2)
   but defers the structural model definition to the companion
   methodology paper, Holford and Peace 1992 PNAS 89:11466-11470, which
-  was not on disk at extraction time and could not be retrieved through
-  the acquisition script (PNAS direct download is Cloudflare-blocked;
-  PMC PDF download is bot-protected). The placebo ODE form encoded here
-  – asymmetric on/off effect compartment with rate `keqp` during
-  treatment and rate `kelp` after treatment, plus a multiplicative
-  tolerance compartment driven by `ktolp` – is the field-standard
-  reconstruction consistent with the lead paper’s prose
-  (“equilibration”, “elimination”, “tolerance” half-times described as
-  three distinct phenomena) and with how the parameters are reported
-  (separate half-time estimates, separate SEs, separate units in Table 2
-  “Pharmacokinetic class” rows). When the companion paper becomes
-  available a second pass should verify the exact ODE form and the
-  precise coupling between the tolerance and placebo-effect
-  compartments.
+  was not available when this model was built (the maintainers could not
+  obtain a copy). The placebo ODE form encoded here – asymmetric on/off
+  effect compartment with rate `keqp` during treatment and rate `kelp`
+  after treatment, plus a multiplicative tolerance compartment driven by
+  `ktolp` – is the field-standard reconstruction consistent with the
+  lead paper’s prose (“equilibration”, “elimination”, “tolerance”
+  half-times described as three distinct phenomena) and with how the
+  parameters are reported (separate half-time estimates, separate SEs,
+  separate units in Table 2 “Pharmacokinetic class” rows). When the
+  companion paper becomes available a second pass should verify the
+  exact ODE form and the precise coupling between the tolerance and
+  placebo-effect compartments.
 
 - **Tacrine clearance unobserved; effect-compartment input uses
   IBW-normalised dose rate.** The source paper explicitly says
@@ -548,13 +546,14 @@ dose-rate-scaling steps in `model()` were done correctly.
   score rather than a mass/volume concentration; the lint warning on the
   units field is the same downstream of that choice.
 
-- **Population demographic detail is partial.** The on-disk source paper
-  reports only the pooled n (909), the US n (632), the France n (277),
-  and the population mean IBW (60 kg); it does not tabulate age range /
-  median, sex split, race / ethnicity, or weight range. Those details
-  live in the companion methodology paper (Holford and Peace 1992 PNAS
-  89:11466-11470) which was not on disk. The virtual cohort here uses a
-  plausible IBW distribution centered at 60 kg.
+- **Population demographic detail is partial.** The source paper reports
+  only the pooled n (909), the US n (632), the France n (277), and the
+  population mean IBW (60 kg); it does not tabulate age range / median,
+  sex split, race / ethnicity, or weight range. Those details live in
+  the companion methodology paper (Holford and Peace 1992 PNAS
+  89:11466-11470) which was not available when this model was built. The
+  virtual cohort here uses a plausible IBW distribution centered at 60
+  kg.
 
 ## Errata
 

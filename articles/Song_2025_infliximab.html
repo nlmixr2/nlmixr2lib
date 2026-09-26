@@ -3127,8 +3127,8 @@ apply to induction.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Both final-model covariate equations are rendered as
-<strong>images</strong> in the published PDF; <code>docling</code> emits
-<code>formula-not-decoded</code> for them. They were recovered with
+<strong>images</strong> in the published PDF and do not survive
+plain-text extraction of it. They were recovered with
 <code>pdftotext -layout</code> from page 380, column 1, and read:</p>
 <pre><code>CL = 0.248 x (ALB/4.4)^-0.372 x (CRP/0.18)^0.022 x (ADA/10)^0.022 x (BMI/22.5)^0.360
 F  = 0.667 x (ADA/10)^-0.213 x (BMI/22.5)^-0.832</code></pre>
@@ -4066,18 +4066,18 @@ preceded enrolment and is outside the model’s stated applicability.</li>
 <ul>
 <li>
 <strong>Both final-model equations are images in the PDF.</strong>
-<code>docling</code> returns <code>formula-not-decoded</code>; they were
+They do not survive plain-text extraction of the PDF; they were
 recovered with <code>pdftotext -layout</code> from p. 380 col. 1 and are
 reproduced verbatim in the Source trace section above.</li>
 <li>
 <strong>The two steady-state trough closed forms on p. 380 could not
-be decoded</strong> by either <code>docling</code> or
-<code>pdftotext</code> – they are also images, and the surrounding prose
-defines only their symbols (<code>kel = CL / Vc</code>, <code>tau</code>
-= dosing interval). Nothing is lost: they are algebraic consequences of
-the estimated parameters rather than independent model content, and the
-Gate 3 identities above test the same steady-state behaviour
-directly.</li>
+be decoded</strong> by plain-text extraction of the PDF,
+<code>pdftotext</code> included – they are also images, and the
+surrounding prose defines only their symbols
+(<code>kel = CL / Vc</code>, <code>tau</code> = dosing interval).
+Nothing is lost: they are algebraic consequences of the estimated
+parameters rather than independent model content, and the Gate 3
+identities above test the same steady-state behaviour directly.</li>
 <li>
 <strong>The Vp/Q sensitivity-analysis interval for Q appears to be a
 unit or transcription error.</strong> Methods section 6 states the

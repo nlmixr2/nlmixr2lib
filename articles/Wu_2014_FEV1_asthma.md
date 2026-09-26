@@ -14010,11 +14010,11 @@ parameter values exactly.
   downstream associations rather than covariates that enter the
   longitudinal model. They are not encoded in `covariateData` because
   they do not modify any structural parameter in the published fit.
-- **Supplementary Tables E1 to E4 not on disk.** Supplements were not
-  available during extraction (a gap reviewed by the maintainers). The
-  cited supplementary tables (E1: AIC model comparison; E2: alternative
-  theta3 definition; E3: DGKH tissue expression; E4: NHGRI-catalog
-  lung-function SNPs) describe model-selection rationale and downstream
-  GWAS material rather than parameter values used in the final model;
-  every final-model estimate this file consumes is in the main paper
-  Table 2.
+- **Supplementary Tables E1 to E4 not available.** Supplements were not
+  available when this model was built (a gap reviewed by the
+  maintainers). The cited supplementary tables (E1: AIC model
+  comparison; E2: alternative theta3 definition; E3: DGKH tissue
+  expression; E4: NHGRI-catalog lung-function SNPs) describe
+  model-selection rationale and downstream GWAS material rather than
+  parameter values used in the final model; every final-model estimate
+  this file consumes is in the main paper Table 2.

@@ -3807,7 +3807,7 @@ assumed.</p>
 <span></span>
 <span><span class="co"># Composite genotype is assigned BY DESIGN as a balanced 100/100 split rather</span></span>
 <span><span class="co"># than drawn at an assumed allele frequency. The paper's own variant</span></span>
-<span><span class="co"># frequencies are in Supplementary Appendix SA1, which is not on disk, so any</span></span>
+<span><span class="co"># frequencies are in Supplementary Appendix SA1, which was not available, so any</span></span>
 <span><span class="co"># frequency here would be invented; a balanced design also keeps both strata</span></span>
 <span><span class="co"># well powered for the carrier comparison below. Non-carrier patterns sum to</span></span>
 <span><span class="co"># 3 or less, carrier patterns to 4 or more, per the Results 3.2 rule.</span></span>
@@ -4234,9 +4234,9 @@ the order of the <code>1/sqrt(2N)</code> precision an SD estimate
 carries on the roughly 2000 administrations in this dataset, whereas a
 variance estimate carries the much looser <code>sqrt(2/N)</code>; and
 reading 27.3 as a variance would imply a log-scale SD of 5.2, which is
-not physically plausible. <strong>What remains genuinely ambiguous on
-disk</strong> is whether the authors tabulated <code>100 * omega</code>
-directly or the exact log-normal CV
+not physically plausible. <strong>What remains genuinely
+ambiguous</strong> is whether the authors tabulated
+<code>100 * omega</code> directly or the exact log-normal CV
 <code>sqrt(exp(omega^2) - 1) * 100</code>. The two coincide to within 2%
 for CL, Vc and Vp2, but differ materially for the two large ones: under
 the alternative reading <code>omega_Q1</code> would be 0.826 rather than
@@ -4294,7 +4294,7 @@ extraction does not silently invert the sign.</li>
 <li>
 <strong>Genotype frequencies are not reproduced.</strong> The
 per-variant allele frequencies are in Supplementary Appendix SA1, which
-is not on disk, so the cohort above does not attempt to reproduce the
+was not available, so the cohort above does not attempt to reproduce the
 cohort’s real carrier prevalence. Instead the composite genotype is
 assigned by design as a balanced 100 carrier / 100 non-carrier split,
 which keeps the carrier comparison well powered and avoids inventing a

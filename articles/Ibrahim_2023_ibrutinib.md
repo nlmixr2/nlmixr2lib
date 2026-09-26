@@ -913,7 +913,7 @@ system, and replication of the paper’s Figures 3, 4 and 5.
 3.  **Population simulations use assumed covariate distributions.** Age
     was drawn as N(62.4, 9.9) truncated at 30 years and treatment-naive
     status as Bernoulli(0.208), both from Supplementary Table S1. The
-    IGHV-mutated fraction is **not** reported in the on-disk Table S1
+    IGHV-mutated fraction is **not** reported in the available Table S1
     excerpt, so 35% was assumed for the Figure 4 cohort; it affects only
     the baseline-SPD mixture and not any conclusion drawn here.
 4.  **`TUMSZ` is registered in mm^2, the paper reports SPD in cm^2.**

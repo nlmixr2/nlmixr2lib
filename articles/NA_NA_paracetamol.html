@@ -3077,7 +3077,7 @@
 <ul>
 <li>DDMORE entry: <a href="https://repository.ddmore.eu/model/DDMODEL00000228" class="external-link">DDMODEL00000228</a>
 </li>
-<li>Bundle artefacts on disk: <code>Executable_run126h.mod</code> ($PK +
+<li>Bundle artefacts used: <code>Executable_run126h.mod</code> ($PK +
 $DES + $ERROR equations), <code>Output_real_run126c.lst</code> (NONMEM
 7.3 final parameter estimates),
 <code>Simulated_ddmoremockdata2.txt</code> (bundled simulated dataset),
@@ -3085,7 +3085,7 @@ $DES + $ERROR equations), <code>Output_real_run126c.lst</code> (NONMEM
 <li>No publication is linked in the bundle. The bundle’s
 <code>.rdf</code> does not carry a
 <code>model-described-in-literature</code> URI, and the bundle contains
-no <code>Model_Accommodations.txt</code>. The on-disk listing is
+no <code>Model_Accommodations.txt</code>. The bundle’s listing is
 therefore the sole authoritative source for both structure and final
 parameter estimates.</li>
 </ul>
@@ -3124,8 +3124,8 @@ representative dataset). Plasma insulin enters as a time-varying
 regressor (<code>INSU</code>, here renamed to the canonical
 <code>INS</code>); per-subject baseline insulin is carried in
 <code>BASI</code> / <code>INS_BL</code>. Demographic detail (age, sex,
-race, exact study identities) is not recoverable from the on-disk bundle
-and the linked publication is not on disk to consult.</p>
+race, exact study identities) is not recoverable from the bundle, and no
+linked publication was available to consult.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 10</span></span>
@@ -3420,23 +3420,23 @@ rather than the 1 / 2 / 3 the <code>$PK</code> block expects, which
 suppresses the per-study APAPBL and T50 selectors at simulation time
 (the listing’s WARNING 3 records that “variables defined with IF
 statements … may be zero” for these slots). The published reference
-dataset is not on disk, and no publication is linked in the bundle to
-anchor a head-to-head numeric comparison. Validation therefore relies
-on:</p>
+dataset was not available when this model was built, and no publication
+is linked in the bundle to anchor a head-to-head numeric comparison.
+Validation therefore relies on:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>F.2 self-consistency</strong>: a typical-value forward
+<strong>Self-consistency</strong>: a typical-value forward
 simulation with the packaged parameters produces post-OGTT trajectories
 that match the bundle’s representative simulated dataset within
 reasonable tolerance for a typical (no-IIV) prediction overlaid on noisy
 simulated observations.</li>
 <li>
-<strong>F.3 mechanistic-sanity checks</strong>: DIS_DIAB versus
-healthy stratification reproduces the expected qualitative differences
-(higher fasting glucose, attenuated insulin-dependent clearance, no
-glucose-on- production suppression in DIS_DIAB); steady-state hold
-without dosing confirms initial conditions are at baseline; switching
-off the paracetamol dose alone does not perturb the glucose / incretin
+<strong>Mechanistic-sanity checks</strong>: DIS_DIAB versus healthy
+stratification reproduces the expected qualitative differences (higher
+fasting glucose, attenuated insulin-dependent clearance, no glucose-on-
+production suppression in DIS_DIAB); steady-state hold without dosing
+confirms initial conditions are at baseline; switching off the
+paracetamol dose alone does not perturb the glucose / incretin
 trajectories.</li>
 </ol>
 <p>PKNCA is not the appropriate validation tool here – the model has
@@ -3512,7 +3512,7 @@ qualitative OGTT-response checks.</p>
 <p><img src="NA_NA_paracetamol_files/figure-html/figure-incretins-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-checks-f-3">Mechanistic-sanity checks (F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks-f-3"></a>
+<h2 id="mechanistic-sanity-checks">Mechanistic-sanity checks<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks"></a>
 </h2>
 <div class="section level3">
 <h3 id="steady-state-hold-without-dosing">Steady-state hold without dosing<a class="anchor" aria-label="anchor" href="#steady-state-hold-without-dosing"></a>
@@ -3613,7 +3613,7 @@ DIS_DIAB term in paracetamol PK arm).</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="f-2-self-consistency-representative-subject-from-the-bundle">F.2 self-consistency: representative subject from the bundle<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-representative-subject-from-the-bundle"></a>
+<h3 id="self-consistency-representative-subject-from-the-bundle">Self-consistency: representative subject from the bundle<a class="anchor" aria-label="anchor" href="#self-consistency-representative-subject-from-the-bundle"></a>
 </h3>
 <p>The bundle ships <code>Simulated_ddmoremockdata2.txt</code> with 16
 subjects of representative DV trajectories on the log-transformed scale.
@@ -3648,20 +3648,20 @@ regressor).</p>
 <span>      <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">obs_glucose</span><span class="op">$</span><span class="va">DV</span><span class="op">)</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"mM\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Bundle dataset not shipped with the installed package;\n"</span>,</span>
-<span>      <span class="st">"the F.2 self-consistency overlay is documented in the\n"</span>,</span>
-<span>      <span class="st">"Errata section below. The typical-value-only F.3\n"</span>,</span>
+<span>      <span class="st">"the self-consistency overlay is documented in the\n"</span>,</span>
+<span>      <span class="st">"Errata section below. The typical-value-only\n"</span>,</span>
 <span>      <span class="st">"mechanistic-sanity checks above are sufficient for the\n"</span>,</span>
 <span>      <span class="st">"convention checks the lint requires.\n"</span>, sep <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Bundle dataset not shipped with the installed package;</span></span>
-<span><span class="co">#&gt; the F.2 self-consistency overlay is documented in the</span></span>
-<span><span class="co">#&gt; Errata section below. The typical-value-only F.3</span></span>
+<span><span class="co">#&gt; the self-consistency overlay is documented in the</span></span>
+<span><span class="co">#&gt; Errata section below. The typical-value-only</span></span>
 <span><span class="co">#&gt; mechanistic-sanity checks above are sufficient for the</span></span>
 <span><span class="co">#&gt; convention checks the lint requires.</span></span></code></pre></div>
 <p>The bundle’s full simulated dataset is not redistributed with the
 nlmixr2lib package (size and license considerations); users with access
 to the DDMORE Foundation Model Repository can download DDMODEL00000228
-to reproduce the F.2 overlay directly.</p>
+to reproduce the self-consistency overlay directly.</p>
 </div>
 </div>
 <div class="section level2">
@@ -3735,13 +3735,13 @@ natural nlmixr2 form for log-additive residuals on the linear- scale
 signal. The 0.00001 offset in the source is dropped because it is
 numerically negligible relative to the APAPBL &gt; 6 uM baseline.</li>
 <li>
-<strong>No publication available on disk for cross-check.</strong>
-Self- consistency against the bundle’s simulated dataset is the only
-available numeric anchor; the linked publication that the bundle states
-“the uploaded model conforms to” is not identified in the bundle’s RDF
-or accommodations text. Users with access to the DDMORE Foundation Model
+<strong>No publication available for cross-check.</strong> Self-
+consistency against the bundle’s simulated dataset is the only available
+numeric anchor; the linked publication that the bundle states “the
+uploaded model conforms to” is not identified in the bundle’s RDF or
+accommodations text. Users with access to the DDMORE Foundation Model
 Repository can recover the linked publication via the DDMORE web
-interface, but the bundle on disk does not provide that pointer.</li>
+interface, but the bundle itself does not provide that pointer.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

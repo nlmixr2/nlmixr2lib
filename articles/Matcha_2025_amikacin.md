@@ -103,15 +103,14 @@ comment naming its source location. They are collected here for review.
 | Target attainment: peak 50 / 30 / 20 %, trough 50 / 20 / 30 % (in / above / below) | n/a | Results, final paragraph of “Dosing nomogram” results |
 | Dosing nomogram (100 covariate cells) | n/a | Table 3 |
 
-Two points in the source trace needed care, because the markdown
-conversion of the article drops every display equation (each of Eqs. 4-8
-appears only as a `formula-not-decoded` placeholder). Both were read
-directly off the publisher’s own typesetting, by rasterising page 3 of
-the article PDF at 600 dpi (`pdftoppm -r 600 -f 3 -l 3`) and cropping to
-the equation bounding boxes located with `pdftotext -bbox`. At that
-resolution the superscript structure and the leading signs are
-unambiguous. Each was then corroborated against a second, independent
-source:
+Two points in the source trace needed care, because naive text
+extraction of the article PDF drops every display equation (none of Eqs.
+4-8 survives it). Both were read directly off the publisher’s own
+typesetting, by rasterising page 3 of the article PDF at 600 dpi
+(`pdftoppm -r 600 -f 3 -l 3`) and cropping to the equation bounding
+boxes located with `pdftotext -bbox`. At that resolution the superscript
+structure and the leading signs are unambiguous. Each was then
+corroborated against a second, independent source:
 
 - **Eq. 4 uses an exponential, not a power, body-weight model.** The
   typeset equation reads
@@ -1003,18 +1002,18 @@ stopifnot(all(ceilings$ceiling_pct > 40), all(ceilings$ceiling_pct < 50))
 
 - **Equation typography.** Eq. 4’s weight effect is exponential
   (`Exp^(WT * 0.308)`), not the more usual allometric power form, and
-  Eq. 8 carries two leading minus signs. The markdown conversion of the
-  article drops every display equation outright, and the PDF’s flat text
-  layer loses both superscript structure and leading signs, so Eqs. 4-8
-  were read off a 600 dpi raster of page 3 of the article PDF (bounding
-  boxes from `pdftotext -bbox`). Each was then corroborated against a
-  second, independent source: Eq. 4 against the Table 3 nomogram
-  arithmetic above, and Eq. 8 against supplementary Table S1, which
-  prints it in code form. A third, purely mechanical check supports Eq.
-  4: in the `pdftotext -bbox` output the token `WT0:308` sits at yMin
-  487.1 while the adjacent `Exp` sits at 489.0, so the weight term is
-  positionally a superscript on `Exp` rather than a base of a power. No
-  value was inferred.
+  Eq. 8 carries two leading minus signs. Naive text extraction of the
+  article PDF drops every display equation outright, and even the PDF’s
+  flat text layer loses both superscript structure and leading signs, so
+  Eqs. 4-8 were read off a 600 dpi raster of page 3 of the article PDF
+  (bounding boxes from `pdftotext -bbox`). Each was then corroborated
+  against a second, independent source: Eq. 4 against the Table 3
+  nomogram arithmetic above, and Eq. 8 against supplementary Table S1,
+  which prints it in code form. A third, purely mechanical check
+  supports Eq. 4: in the `pdftotext -bbox` output the token `WT0:308`
+  sits at yMin 487.1 while the adjacent `Exp` sits at 489.0, so the
+  weight term is positionally a superscript on `Exp` rather than a base
+  of a power. No value was inferred.
 - **Eq. 4’s exponential weight model is independently confirmed by Table
   3.** Since dose rate must track clearance to hold the same
   concentration window, the five weight bands of a nomogram row measure

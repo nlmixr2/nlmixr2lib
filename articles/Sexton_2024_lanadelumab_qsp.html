@@ -4319,14 +4319,15 @@ Set <code>ksyn_c1inh = 39.608</code> nM/h and
 unchanged.</li>
 <li>
 <strong>The fixed-dose C1-INH arm is only partially reproducible
-from on-disk sources.</strong> The packaged model supports exogenous
-C1-INH as a dose into the <code>c1inh</code> compartment, matching the
-<code>flux_C1Inh_inj_nmol_per_hr</code> term of Table S5 (E6), which the
-published lanadelumab parameter set holds at zero. However the C1-INH
-product PK (cited to references [16, 17]) and the IU-to-nM conversion
-for a 1000 U Cinryze dose are not reported in the paper, its supplement,
-or the published code, so the Figure 7 / Figure S6 C1-INH scenarios are
-not simulated here. No substitute values were invented.</li>
+from the available sources.</strong> The packaged model supports
+exogenous C1-INH as a dose into the <code>c1inh</code> compartment,
+matching the <code>flux_C1Inh_inj_nmol_per_hr</code> term of Table S5
+(E6), which the published lanadelumab parameter set holds at zero.
+However the C1-INH product PK (cited to references [16, 17]) and the
+IU-to-nM conversion for a 1000 U Cinryze dose are not reported in the
+paper, its supplement, or the published code, so the Figure 7 / Figure
+S6 C1-INH scenarios are not simulated here. No substitute values were
+invented.</li>
 <li>
 <strong>The ex vivo fluorogenic-assay model (Tables S2 / S3) is not
 packaged.</strong> Its six ODEs and most parameters are published, but

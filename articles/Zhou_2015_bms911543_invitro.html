@@ -3156,7 +3156,8 @@ adjusted inputs “are not identifiable”.</li>
 all: the CYP1A2 degradation rate constant kdeg (the authors used the
 Simcyp default and never print it), and the maximal fold induction and
 EC50 of CYP1A2 autoinduction (taken from Supplementary Table S3, which
-is not on disk). Nothing in the five model files depends on them.</li>
+was not available when this model was built). Nothing in the five model
+files depends on them.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -4015,9 +4016,9 @@ scope of the paper and what would be needed to close each gap.</p>
 <caption>Published results of the platform half of Zhou 2015, and why
 each is out of scope.</caption>
 <colgroup>
-<col width="11%">
-<col width="29%">
-<col width="58%">
+<col width="10%">
+<col width="27%">
+<col width="61%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Published result</th>
@@ -4036,7 +4037,8 @@ an intersystem extrapolation factor and MPPGL. None is reported.</td>
 <td align="left">ka = 4.138 /h</td>
 <td align="left">A Simcyp ADAM absorption-model output; the underlying
 solubility, particle-size and gastrointestinal transit inputs are in
-Supplementary Tables S1 and S3, which are not on disk.</td>
+Supplementary Tables S1 and S3, which were not available when this model
+was built.</td>
 </tr>
 <tr class="odd">
 <td align="left">Fraction of dose absorbed</td>
@@ -4063,8 +4065,8 @@ numbers.</td>
 induction attenuates the inactivation by 17 percent</td>
 <td align="left">Requires the enzyme degradation rate constant kdeg
 (Simcyp default, never printed), the autoinduction Emax and EC50
-(Supplementary Table S3, not on disk), and a liver unbound-concentration
-profile from the whole-body model.</td>
+(Supplementary Table S3, not available when this model was built), and a
+liver unbound-concentration profile from the whole-body model.</td>
 </tr>
 <tr class="odd">
 <td align="left">Volume of distribution at steady state</td>
@@ -4086,7 +4088,7 @@ no structural model; not an extractable model.</td>
 <td align="left">2.0-2.8 h at 5-40 mg; 2.7-5.7 h at 80-240 mg</td>
 <td align="left">Non-compartmental summaries of the first-in-human
 study, reported without the underlying concentration data (Supplementary
-Table S2 is not on disk).</td>
+Table S2 was not available when this model was built).</td>
 </tr>
 </tbody>
 </table>
@@ -4156,10 +4158,10 @@ in the Figure 1 fit depends on it.</li>
 <li>
 <strong>The CYP1A2 autoinduction arm is absent.</strong> Its maximal
 fold induction and EC50 were taken from experimental values reported in
-Supplementary Table S3, which is not on disk. That supplement is
-immaterial to everything extracted here: all eight metabolism constants
-are in Figure 1 and both inactivation constants are in Figure 2 and in
-the Results text.</li>
+Supplementary Table S3, which was not available when this model was
+built. That supplement is immaterial to everything extracted here: all
+eight metabolism constants are in Figure 1 and both inactivation
+constants are in Figure 2 and in the Results text.</li>
 <li>
 <strong>No enzyme resynthesis term.</strong> The inactivation model
 describes the inactivation limb of a microsomal assay, in which no

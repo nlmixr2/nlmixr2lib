@@ -662,8 +662,8 @@ stopifnot(
   be reproduced.
 - **No IIV on volume of distribution.** Equation 7 is written
   `V = 18 L * exp(eta_V)`, but Table 2’s inter-individual-variability
-  block contains only the `etaCL` row, and no supplementary table on
-  disk supplies a value (the article’s deposited supplementary material
+  block contains only the `etaCL` row, and no available supplementary
+  table supplies a value (the article’s deposited supplementary material
   is the base-model goodness-of-fit figure only). `etalvc` is therefore
   encoded as `fixed(0)` – the random effect is declared, as the paper
   writes it, with a variance of zero rather than an invented magnitude.

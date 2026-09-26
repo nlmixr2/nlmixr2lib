@@ -3499,8 +3499,8 @@ estimates and with the assumed 0.25 kg reference rat weight.</p>
 <p>The infected-lung parameters of Tables S11 and S13 were estimated
 against the Irwin 2016 BALB/c and Kramnik plasma models, which this
 paper does not tabulate. Absolute mouse tissue concentrations therefore
-cannot be reproduced from on-disk sources (see Errata). What the lung
-PBPK actually determines – the <strong>tissue-to-plasma exposure
+cannot be reproduced from the available sources (see Errata). What the
+lung PBPK actually determines – the <strong>tissue-to-plasma exposure
 ratio</strong> – can be checked directly against the independent
 noncompartmental analysis in Irwin 2016 Table 3.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -4067,17 +4067,17 @@ converges, so the choice is weakly influential – over 0-24 h,
 <code>tau = 1e-3</code> and <code>tau = 1e-6</code> differ by about 7%
 in cumulative diffusion, and less thereafter.</p>
 <p><strong>Absolute mouse infected-lung concentrations are not
-reproducible from on-disk sources.</strong> Results 3.3 and 3.4 state
-that the cellular-lesion and caseum parameters were optimised using the
-empirical plasma models for the Irwin 2016 BALB/c and Kramnik mice,
-which this paper does not tabulate. The mouse model file uses the only
-tabulated mouse plasma model, Table S5, whose plasma AUC0-168 after 25
-mg/kg is 13.7 ug<em>h/mL against the 33.7 ug</em>h/mL measured by Irwin
-2016 (Table 3) in BALB/c mice. Mouse tissue predictions are therefore
-roughly 2 to 3-fold below the tabulated observations, in proportion to
-that plasma difference. Validation 2 works around this by comparing
-tissue:plasma ratios, which are what the lung PBPK actually determines
-and which agree with Irwin 2016 within about 10%.</p>
+reproducible from the available sources.</strong> Results 3.3 and 3.4
+state that the cellular-lesion and caseum parameters were optimised
+using the empirical plasma models for the Irwin 2016 BALB/c and Kramnik
+mice, which this paper does not tabulate. The mouse model file uses the
+only tabulated mouse plasma model, Table S5, whose plasma AUC0-168 after
+25 mg/kg is 13.7 ug<em>h/mL against the 33.7 ug</em>h/mL measured by
+Irwin 2016 (Table 3) in BALB/c mice. Mouse tissue predictions are
+therefore roughly 2 to 3-fold below the tabulated observations, in
+proportion to that plasma difference. Validation 2 works around this by
+comparing tissue:plasma ratios, which are what the lung PBPK actually
+determines and which agree with Irwin 2016 within about 10%.</p>
 <p><strong><code>KEW:B</code> is derived, not tabulated.</strong> The
 paper uses <code>KEW:B</code> in equation (S1) but does not list a
 value. It follows from the paper’s own stated instantaneous PB/EW

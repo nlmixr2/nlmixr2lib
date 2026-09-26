@@ -3087,18 +3087,19 @@ Repository entry DDMODEL00000301.</li>
 <li>DDMORE Foundation Model Repository entry:
 <code>DDMODEL00000301</code>
 </li>
-<li>Article (per the metadata this model was built from): <a href="https://doi.org/10.1007/s40268-019-0268-x" class="external-link uri">https://doi.org/10.1007/s40268-019-0268-x</a>
+<li>Article (the publication this model is attributed to): <a href="https://doi.org/10.1007/s40268-019-0268-x" class="external-link uri">https://doi.org/10.1007/s40268-019-0268-x</a>
 </li>
 </ul>
 <p>The DDMORE Model_Accomodations file describes the same body of work
 (same authors, drug, indication, scenario = 4) as a British Journal of
 Pharmacology submission dated July 2019. The published article in Drugs
 in R&amp;D (DOI above) was used as the canonical citation; the
-publication PDF was not on disk so external cross-checks against
-published tables/figures were not possible. See the Errata section for
-how the .lst’s final estimates were used in lieu of a published
-parameter table, and how a unit convention in the source NONMEM model
-was reconciled against the simulated dataset shipped in the bundle.</p>
+publication PDF was not available when this model was built, so external
+cross-checks against published tables/figures were not possible. See the
+Errata section for how the .lst’s final estimates were used in lieu of a
+published parameter table, and how a unit convention in the source
+NONMEM model was reconciled against the simulated dataset shipped in the
+bundle.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3106,11 +3107,11 @@ was reconciled against the simulated dataset shipped in the bundle.</p>
 <p>The model was fit to adult patients with severe pneumonia receiving
 meropenem by IV infusion. Specific demographics (n, age, sex, race,
 study sites) could not be cross-checked against the publication because
-the article PDF was not on disk; the demographics of the bundle’s
+the article PDF was not available; the demographics of the bundle’s
 <code>Simulated_dataset.csv</code> (60 simulated subjects) provide the
-only on-disk reference and span body weight 45-128 kg (mean ~78 kg) and
-raw measured GFR 19-401 mL/min. The wide GFR range covers severe renal
-impairment through to augmented renal clearance, consistent with a
+only available reference and span body weight 45-128 kg (mean ~78 kg)
+and raw measured GFR 19-401 mL/min. The wide GFR range covers severe
+renal impairment through to augmented renal clearance, consistent with a
 critically ill ICU pneumonia population.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata
@@ -3274,7 +3275,7 @@ V2/THETA(10)</td>
 simulated cohort (1 g IV meropenem, 0.5 h infusion, q8h at steady state;
 WT 45-128 kg, raw GFR 19-401 mL/min; one ELF observation per subject
 within the dosing interval). The publication’s actual study population
-demographics could not be reconstructed from the on-disk material; the
+demographics could not be reconstructed from the available material; the
 virtual cohort below mirrors the bundle’s covariate ranges.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2019301L</span><span class="op">)</span></span>
@@ -3369,7 +3370,7 @@ random effects:</p>
 <div class="section level2">
 <h2 id="replicate-observed-behaviour">Replicate observed behaviour<a class="anchor" aria-label="anchor" href="#replicate-observed-behaviour"></a>
 </h2>
-<p>The publication PDF was not on disk, so the figures below are not
+<p>The publication PDF was not available, so the figures below are not
 direct figure-by-figure replications of the article. Instead they
 provide two kinds of sanity check:</p>
 <ol style="list-style-type: decimal">
@@ -3616,20 +3617,19 @@ ill adults (e.g. Frippiat 2015; Lodise 2011).</p>
 <div class="section level2">
 <h2 id="comparison-against-published-nca">Comparison against published NCA<a class="anchor" aria-label="anchor" href="#comparison-against-published-nca"></a>
 </h2>
-<p>The Themans 2019 publication PDF was not located on disk under the
-literature tree, so a side-by-side comparison against the article’s
-reported Cmax / AUC tables (if any) was not performed. The validation
-above relies on (a) self-consistency between the model translation and
-the bundle’s <code>Simulated_dataset.csv</code> ELF observations and (b)
-the qualitative biological plausibility of the simulated
-trajectories.</p>
+<p>The Themans 2019 publication PDF was not available when this model
+was built, so a side-by-side comparison against the article’s reported
+Cmax / AUC tables (if any) was not performed. The validation above
+relies on (a) self-consistency between the model translation and the
+bundle’s <code>Simulated_dataset.csv</code> ELF observations and (b) the
+qualitative biological plausibility of the simulated trajectories.</p>
 </div>
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
 <ul>
 <li>
-<strong>Article PDF not on disk.</strong> The publication (<a href="https://doi.org/10.1007/s40268-019-0268-x" class="external-link">Drugs in R&amp;D,
+<strong>Article PDF not available.</strong> The publication (<a href="https://doi.org/10.1007/s40268-019-0268-x" class="external-link">Drugs in R&amp;D,
 doi:10.1007/s40268-019-0268-x</a>) was not accessible during extraction.
 Demographics, dosing detail beyond the bundle’s
 <code>Simulated_dataset.csv</code>, and any published NCA tables could
@@ -3642,9 +3642,9 @@ come exclusively from <code>Output_real_merop_PK_run3.lst</code>’s
 <code>Model_Accomodations.text</code>.</strong> The bundle’s
 <code>Model_Accomodations.text</code> describes a British Journal of
 Pharmacology submission (“submitted - July 2019, scenario = 4”); the
-metadata this model was built from names a Drugs in R&amp;D 2019
-publication. These are treated as the same body of work at different
-stages of journal review.</li>
+publication this model is attributed to is the Drugs in R&amp;D 2019
+article. These are treated as the same body of work at different stages
+of journal review.</li>
 <li>
 <strong><code>OMEGA BLOCK(4)</code> reduced to four independent
 etas.</strong> The .mod declares <code>$OMEGA BLOCK(4)</code> but every

@@ -274,8 +274,8 @@ Simulation-derived NCA parameters by dose cohort. {.table}
 - **The 0-back N-back model in the paper uses four buffer / transit
   compartments** to introduce a delay between drug effect and the
   log-odds observed correct-answer response. Reproducing the exact
-  4-transit chain requires the paper’s NONMEM control stream (not on
-  disk). The 0-back logit response here is modelled as a single
+  4-transit chain requires the paper’s NONMEM control stream (not
+  available). The 0-back logit response here is modelled as a single
   indirect-response compartment (`red_nb0`) driven by drug effect with
   rate `kin_nb0` and elimination `kout_nb0`; the residual variance and
   IIV blocks match Table 2. The four-buffer transit chain is

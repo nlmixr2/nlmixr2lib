@@ -478,7 +478,8 @@ AUC distribution), whereas the comparison here is against the
 deterministic typical-value mean. Both means agree to within roughly a
 factor of two and preserve the rank ordering with body weight;
 reconstructing the exact per- subject post-hoc draws would require the
-original NONMEM .lst file, which is not on disk.
+original NONMEM .lst file, which was not available when this model was
+built.
 
 ## Errata
 
@@ -491,7 +492,7 @@ original NONMEM .lst file, which is not on disk.
       across 16 non- outlier rows); (2) per-kg interpretation of Vc in
       both models, validated by physical-kinetic plausibility (k10, t1/2
       consistent with published midazolam PK in adults and children).
-- **No supplement, no NONMEM .lst on disk.** The decisions above were
+- **No supplement, no NONMEM .lst available.** The decisions above were
   taken from the printed paper alone. If the original NONMEM .lst file
   or supplementary control stream becomes available, the encoding
   choices in these two model files should be re-verified.

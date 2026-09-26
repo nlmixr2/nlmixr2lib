@@ -520,7 +520,7 @@ anti-Xa IU IV vs SC (12 subjects per route). {.table}
   against the peak anti-Xa activity in Figures 2–4 of Schoemaker 1996.
   This is a *simulation choice* to make the figures match – it is not a
   fit to the published dose specification, which would require the
-  upstream papers on disk.
+  upstream papers (not available when this model was built).
 - **IIV reparameterisation**: Schoemaker 1996 parameterises in (`CL`,
   `t1/2`) (Example 2) and (`CL`, `t1/2E`, `t1/2A`, `F`, `Base`, `APTT0`,
   `I10`) (Example 3), with independent etas on each. The packaged models

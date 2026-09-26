@@ -3219,9 +3219,8 @@ parameterized by Vd and CL”</td>
 </tbody>
 </table>
 <p>Equations 5 and 6 are typeset as stacked fractions in the published
-PDF and are dropped by markdown converters (they appear as
-<code>formula-not-decoded</code>). They were recovered with
-<code>pdftotext -layout</code>, which resolves both in full:</p>
+PDF and do not survive naive plain-text extraction. They were recovered
+with <code>pdftotext -layout</code>, which resolves both in full:</p>
 <pre><code><span><span class="fu">CL</span> <span class="op">(</span><span class="va">L</span><span class="op">/</span><span class="va">h</span><span class="op">)</span> <span class="op">=</span> <span class="fl">7.76</span>  <span class="op">*</span> <span class="op">(</span><span class="va">weight</span><span class="op">/</span><span class="fl">70</span><span class="op">)</span><span class="op">^</span><span class="fl">0.9</span> <span class="op">*</span> <span class="op">(</span><span class="va">eGFR</span><span class="op">/</span><span class="fl">116.93</span><span class="op">)</span><span class="op">^</span><span class="fl">0.38</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">eta_CL</span><span class="op">)</span></span>
 <span><span class="fu">Vd</span> <span class="op">(</span><span class="va">L</span><span class="op">)</span>   <span class="op">=</span> <span class="fl">27.83</span> <span class="op">*</span> <span class="op">(</span><span class="va">weight</span><span class="op">/</span><span class="fl">70</span><span class="op">)</span>                          <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">eta_Vd</span><span class="op">)</span></span></code></pre>
 <p>Note that Eq. 6 carries no printed exponent on
@@ -3873,7 +3872,7 @@ regimen to steady state and recomputes PTA.</p>
 <span><span class="va">pta_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">pta_events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:02</span></span></code></pre></div>
+<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:03</span></span></code></pre></div>
 <p><code>fT&gt;MIC</code> is computed two ways. The closed form uses
 each simulated subject’s own <code>cl</code> and <code>vc</code>
 (returned as columns by <code>rxSolve</code>) and is exact for a
@@ -4326,10 +4325,9 @@ from the Methods candidate list and the Section 3.2 narrative rather
 than from S1’s statistics.</li>
 <li>
 <strong>Equations 5 and 6 are vector-typeset.</strong> Both are
-stacked fractions in the published PDF and survive neither the
-PDF-to-markdown conversion nor a plain text extraction;
-<code>pdftotext -layout</code> recovers them intact and was the source
-used.</li>
+stacked fractions in the published PDF and do not survive naive
+plain-text extraction; <code>pdftotext -layout</code> recovers them
+intact and was the source used.</li>
 <li>
 <strong>A dose off the search grid.</strong> Table 4 uses a 2.5
 mg/kg dose grid with a 10 mg/kg floor in every cell except

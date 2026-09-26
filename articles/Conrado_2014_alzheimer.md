@@ -38,10 +38,9 @@ The DDMORE bundle ships the model as a NONMEM control stream
 (`Executable_simulated_CPathAD.mod`) plus a real-data fit listing
 (`Output_real_CPathAD.lst`) and a simulated-dataset companion
 (`Output_simulated_CPathAD.lst` and `Simulated_data_CPathAD.csv`). The
-linked publication PDF was not on disk in the maintainers’ literature
-mirror at extraction time, so an external cross-check against the
-published parameter table was not performed; see the Errata section for
-the full deviation list.
+linked publication PDF was not available when this model was built, so
+an external cross-check against the published parameter table was not
+performed; see the Errata section for the full deviation list.
 
 ## Population
 
@@ -421,14 +420,14 @@ if (nzchar(lit_dir) && file.exists(bundle_csv)) {
     labs(x = "Time (years)", y = "ADAS-Cog / 70 (bounded fraction)",
          title = "Bundle simulated cohort vs. nlmixr2lib typical value",
          subtitle = "Grey ribbon: bundle 5-95% across subjects (median in dark grey). Red: nlmixr2lib typical value.",
-         caption = "F.2 self-consistency check; covariate strata fixed to the bundle's typical-value group.") +
+         caption = "Self-consistency check; covariate strata fixed to the bundle's typical-value group.") +
     theme_minimal()
 } else {
-  message("Bundle CSV not on disk at the expected paths; skipping the F.2 self-consistency overlay. ",
+  message("Bundle CSV not found at the expected paths; skipping the self-consistency overlay. ",
           "The model file remains a faithful translation of the source NONMEM equations and final estimates ",
-          "and the F.3 mechanistic-sanity check above exercises the full data path through rxSolve.")
+          "and the mechanistic-sanity check above exercises the full data path through rxSolve.")
 }
-#> Bundle CSV not on disk at the expected paths; skipping the F.2 self-consistency overlay. The model file remains a faithful translation of the source NONMEM equations and final estimates and the F.3 mechanistic-sanity check above exercises the full data path through rxSolve.
+#> Bundle CSV not found at the expected paths; skipping the self-consistency overlay. The model file remains a faithful translation of the source NONMEM equations and final estimates and the mechanistic-sanity check above exercises the full data path through rxSolve.
 ```
 
 The nlmixr2lib typical-value MUR trajectory falls inside the bundle’s
@@ -553,10 +552,9 @@ deviations listed below to fit nlmixr2’s modelling frame.
   `mur` x 70 as the model’s prediction of the ADAS-Cog total score on
   the 0-70 scale.
 
-- **Linked publication PDF not on disk.** The Conrado 2014 publication
-  (<doi:10.1007/s10928-014-9375-z>) was not on disk in the maintainers’
-  literature mirror at extraction time. Final-estimate values were taken
-  directly from the bundle’s
+- **Linked publication PDF not available.** The Conrado 2014 publication
+  (<doi:10.1007/s10928-014-9375-z>) was not available when this model
+  was built. Final-estimate values were taken directly from the bundle’s
   `Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE` block (after
   `MINIMIZATION SUCCESSFUL`); the bundle’s `.mod` `$THETA` initial
   values are within ~3% of the .lst final values, consistent with a
@@ -569,9 +567,9 @@ deviations listed below to fit nlmixr2’s modelling frame.
   the per-subject covariates AGE, SEX, APOE4C, COMED2, SCORE_MMSE in the
   simulated dataset). Age range / median, weight range / median, sex
   distribution, and regional breakdown are described in the Conrado 2014
-  publication’s Methods / Tables but were not available on disk; the
-  `population` metadata records these descriptors as `NA` rather than
-  fabricating values.
+  publication’s Methods / Tables but were not available when this model
+  was built; the `population` metadata records these descriptors as `NA`
+  rather than fabricating values.
 
 - **Time scaling of the slope.** The source `.mod` rescales `TIME`
   (days) to `YTIME = TIME / 365.25` (years) inside `$PRED` to avoid

@@ -20,7 +20,7 @@ GIST cohort: a four-compartment soluble-biomarker model (extracted as
 inhibition (TGI) model captured here from DDMODEL00000198. Parameter
 values were taken from `Output_real_TGI_GIST.lst` (FINAL PARAMETER
 ESTIMATE block, post-MINIMIZATION SUCCESSFUL) and cross-checked against
-the published Table 3 of the on-disk paper. Equations come from
+the published Table 3 of the paper. Equations come from
 `Executable_TGI_GIST.mod` `$PK` / `$DES` / `$ERROR` blocks.
 
 ## Population
@@ -47,9 +47,9 @@ The same information is available programmatically via the model’s
 
 All parameter values come from the `FINAL PARAMETER ESTIMATE` block of
 `Output_real_TGI_GIST.lst` and have been cross-checked against the
-on-disk paper’s Table 3. Rate constants are reported in 1/week in the
-paper and `.mod` `$THETA`; the `.mod` and the model file convert to 1/h
-via `/24/7` so all rates carry units of `units$time = "h"`.
+paper’s Table 3. Rate constants are reported in 1/week in the paper and
+`.mod` `$THETA`; the `.mod` and the model file convert to 1/h via
+`/24/7` so all rates carry units of `units$time = "h"`.
 
 | Equation / parameter | Source value | nlmixr2 form | Source location (DDMODEL00000198) |
 |----|----|----|----|
@@ -162,7 +162,7 @@ head(events, 6)
 #> 6 3.577303e-05       63900       400.8            1
 ```
 
-## Mechanistic-sanity simulation (F.3)
+## Mechanistic-sanity simulation
 
 ``` r
 
@@ -264,7 +264,7 @@ tumor approaches a quasi-steady-state below the observed baseline. This
 matches the qualitative TGI behavior described in Hansson 2013 (Figure
 3, VPC of the longitudinal tumor model).
 
-## Self-consistency simulation against the DDMORE bundle (F.2)
+## Self-consistency simulation against the DDMORE bundle
 
 The bundle ships a single-subject simulated dataset
 (`Simulated_TGI_GIST.csv`). Re-simulating subject 1’s events through the
@@ -340,9 +340,9 @@ shrinkage.
 | Baseline-residual omega | OMEGA fixed at 1 (IPP) | n/a (IPP construct shared with residual error) | exact |
 
 PKNCA is not appropriate for a tumor-size endpoint (no concentration /
-dose / time NCA semantics). The mechanistic-sanity (F.3) and
-self-consistency (F.2) checks above plus the Table 3 parameter-match
-above are the operative validation strategy for this model class.
+dose / time NCA semantics). The mechanistic-sanity and self-consistency
+checks above plus the Table 3 parameter-match above are the operative
+validation strategy for this model class.
 
 ## Assumptions and deviations
 
@@ -450,6 +450,6 @@ above are the operative validation strategy for this model class.
 
 No published errata or corrigenda were located for Hansson 2013 e84
 (searched PubMed and the publisher’s article landing page on extraction
-date 2026-05-15). The text extracted from the on-disk paper and the
-DDMORE bundle were the authoritative sources for parameter values and
+date 2026-05-15). The text extracted from the paper and the DDMORE
+bundle were the authoritative sources for parameter values and
 equations.

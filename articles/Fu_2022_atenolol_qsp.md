@@ -91,9 +91,8 @@ readModelDb("Fu_2022_atenolol_qsp")()$population
 
 Every `ini()` value is annotated inline with a source location in
 `inst/modeldb/specificDrugs/Fu_2022_atenolol_qsp.R`. The summary table
-below collects the per-parameter provenance for review; the source-trace
-helper `nlmixr2libingest::source_trace()` confirms all 36 parameters
-match a number in the trimmed paper text (`ini_unverified = 0`).
+below collects the per-parameter provenance for review; every one of the
+36 parameter values matches a number printed in the paper.
 
 | Group | Parameter | Value | Source location |
 |----|----|----|----|
@@ -503,9 +502,9 @@ sim_s2 |>
   Study 1 baselines and interpret the results as
   Servier-baseline-anchored predictions.
 - **BSL_EDV literature source**. The Fu 2022 Discussion attributes the
-  31.13 mL BSL_EDV value to reference 29 of the paper (not on-disk; the
-  value is a reported literature typical for beagle end-diastolic
-  volume). Fixed as stated in Table 2.
+  31.13 mL BSL_EDV value to reference 29 of the paper (not available
+  when this model was built; the value is a reported literature typical
+  for beagle end-diastolic volume). Fixed as stated in Table 2.
 - **Amp_TPR = per-study Amp (both studies)**. The Fu 2022 Table 2
   footnote reads “AmpHR = AmpCTR = AmpTPR = Amp, Amp_1 and Amp_2 are the
   amplitudes of circadian rhythm for studies 1 and 2 respectively, and

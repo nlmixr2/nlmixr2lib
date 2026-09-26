@@ -253,7 +253,7 @@ mod
 #>     # STARTING value 'G=2', and the paper does not report the final
 #>     # estimated gamma anywhere. The assay polynomial is therefore carried
 #>     # here unscaled (equivalent to gamma = 1), which is the minimum-
-#>     # assumption reading of the on-disk file. See vignette 'Assumptions
+#>     # assumption reading of the published Table S2 file. See vignette 'Assumptions
 #>     # and deviations'.
 #>     addSd <- 0.3
 #>     label("Additive residual error on total Cc (mg/L)")
@@ -331,7 +331,7 @@ mod
 #>     Cunbound ~ add(addSd_Cunbound) + prop(propSd_Cunbound)
 #>   })
 #> }
-#> <environment: 0x55f5e4514d50>
+#> <environment: 0x55fb53529d60>
 ```
 
 ## Virtual cohort

@@ -3144,7 +3144,7 @@ Methods 2.1).</p>
 <p>Detailed baseline demographics (age, weight, sex, race, time
 post-transplant) live in the two primary publications and are therefore
 not reproduced here. The <code>population</code> metadata records what
-the on-disk sources do state:</p>
+the available sources do state:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ui_rong</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 7</span></span>
@@ -3415,8 +3415,8 @@ L/h)</td>
 1 reports the random effects as SDs (<code>omega</code>,
 <code>kappa</code>); the S1 <code>[OMEGA]</code> blocks report them as
 variances. All 13 entries agree on squaring, which is the strongest
-available evidence that the two independent on-disk sources describe the
-same models:</p>
+available evidence that the two independent sources describe the same
+models:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">Model</span>,      <span class="op">~</span><span class="va">Parameter</span>, <span class="op">~</span><span class="va">`Table 1 (SD)`</span>, <span class="op">~</span><span class="va">`S1 [OMEGA] (variance)`</span>,</span>
@@ -3576,7 +3576,7 @@ comparisons need; the relative-difference comparisons are far tighter
 still because scenarios are paired within subject.</p>
 <p>Covariates are set to the <code>mrgsolve</code>
 <code>@covariates</code> defaults of the S1 File, which are the only
-per-subject covariate values any on-disk source supplies. Sex for the
+per-subject covariate values any available source supplies. Sex for the
 van Hest cohort is drawn 50/50, matching
 <code>rbinom(1000, 1, 0.50)</code> in S1.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -4753,7 +4753,7 @@ same MMF dose, so the normalisation cancels and the computed ratio
 <strong>van Hest’s inter-occasion variability is declared with two
 occasions.</strong> The paper reports IOV (its <code>kappa</code> terms)
 on Ka, V1/F and CL/F, but the <strong>number of occasions in the
-original analysis is not stated in any on-disk source</strong>. The
+original analysis is not stated in any available source</strong>. The
 model declares the minimal two-occasion expansion, with occasion 2 fixed
 equal to occasion 1 (the NONMEM <code>$OMEGA BLOCK(1) SAME</code>
 convention every shipped nlmixr2lib IOV model uses), decomposed inside
@@ -4777,7 +4777,7 @@ defaults, not published values.</strong>
 <code>ACMPAG_CC = 0.54 mg/L</code>, <code>AUC_MPAG = 588.8</code> and
 <code>AUC_MPA = 53 mg*h/L/g</code> appear <strong>only</strong> as
 <code>@covariates</code> defaults in the S1 File. Their provenance –
-presumably Rong 2019 cohort medians – is not stated in any on-disk
+presumably Rong 2019 cohort medians – is not stated in any available
 source. The same applies to van Hest’s <code>CRCL = 60</code>,
 <code>ALB = 40</code> and <code>CONMED_CSA_DOSE = 300</code>, and to the
 centering constants 48 mL/min, 30 g/L and 450 mg/day.</li>

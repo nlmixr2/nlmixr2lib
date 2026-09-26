@@ -907,8 +907,8 @@ a strikingly low 11% for the meloxicam oral suspension.
   and the Results text states the recycling did not improve the fit. Per
   the standing policy, rejected structural alternatives are not carried.
   Two further reasons apply here: the paper does not write out the
-  recycling equations (it cites Gabrielsson and Weiner, which is not on
-  disk), and that block’s own printed secondary parameters are
+  recycling equations (it cites Gabrielsson and Weiner, which was not
+  available), and that block’s own printed secondary parameters are
   internally inconsistent, giving `C0` = 385.515 ng/mL and `AUC0-inf` =
   149.05 ng.h/mL where its `Vd` = 0.148 L/kg and `Cl` = 0.383 L/h/kg
   imply 6757 ng/mL and 2611 ng.h/mL. No oral meloxicam recycling fit is

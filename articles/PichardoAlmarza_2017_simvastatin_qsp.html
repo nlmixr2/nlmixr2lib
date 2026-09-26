@@ -3109,7 +3109,7 @@ The multiscale arterial-wall module of the source (hemodynamics,
 endothelial LDL transport, oxidised LDL, monocytes, macrophages, foam
 cells and plaque growth) is NOT encoded here because its wall geometry,
 endothelial surface area, LDL wall diffusivity and per-species volume
-constants are not reported in any source on disk; see the validation
+constants are not reported in any available source; see the validation
 vignette for the full gap list. The vignette also reproduces the paper’s
 two-state Markov chain for medication adherence, which is a
 dosing-schedule construct rather than part of the differential-equation
@@ -3148,8 +3148,9 @@ at 0, 0.5, 1, 1.5, 2, 3, 3.5, 4, 5, 6, 8, 10 and 12 and 24 h post-dose
 on days 1, 7 and 14, and LDL measured daily after an overnight fast. Kim
 et al. (2011) is titled for prediction in patients with primary
 hyperlipidaemia, so the estimation cohort and the intended prediction
-population differ; that paper was not available on disk, so only the two
-Pichardo-Almarza papers were used to characterise the cohort.</p>
+population differ; that paper was not available when this model was
+built, so only the two Pichardo-Almarza papers were used to characterise
+the cohort.</p>
 <p>The source reports a single typical-patient parameter set: there is
 no inter-individual variability and no residual-error model on any PKPD
 parameter. The 1,000-subject virtual population of the 2015 paper varies
@@ -3935,8 +3936,8 @@ Table 1 gives the rate constants (<code>km</code>, <code>dm</code>,
 <code>rho1</code>, <code>gamma0</code>, the WSS threshold,
 <code>m_lumen</code>, <code>sigma</code>, <code>Delta p</code>,
 <code>Q</code>, blood viscosity, lumen radius). What is
-<strong>not</strong> published anywhere on disk is everything needed to
-close the system:
+<strong>not</strong> published in any available source is everything
+needed to close the system:
 <ul>
 <li>the arterial-wall volume and endothelial surface area, which set the
 conversion from the Kedem-Katchalsky flux <code>Js</code> into the
@@ -4009,9 +4010,9 @@ reported.</strong> All ten structural parameters are wrapped in
 <code>fixed(0)</code>. No variance was invented.</li>
 <li>
 <strong>Kim et al. (2011), the originating PKPD publication, is not
-open access</strong> and was not available on disk. Every value used
-here is printed in one of the two Pichardo-Almarza papers; nothing was
-taken from Kim et al. directly.</li>
+open access</strong> and was not available when this model was built.
+Every value used here is printed in one of the two Pichardo-Almarza
+papers; nothing was taken from Kim et al. directly.</li>
 </ul>
 </div>
 <div class="section level3">

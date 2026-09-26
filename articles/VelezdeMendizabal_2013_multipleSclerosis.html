@@ -3269,7 +3269,7 @@ amplification (consistent with the source paper’s 66.44% diminution
 quote).</p>
 </div>
 <div class="section level2">
-<h2 id="f-3-mechanistic-sanity-check-typical-value-evaluation">F.3 mechanistic-sanity check (typical-value evaluation)<a class="anchor" aria-label="anchor" href="#f-3-mechanistic-sanity-check-typical-value-evaluation"></a>
+<h2 id="mechanistic-sanity-check-typical-value-evaluation">Mechanistic-sanity check (typical-value evaluation)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-check-typical-value-evaluation"></a>
 </h2>
 <p>The model has no ODE state, so the per-record prediction is the
 algebraic evaluation of equation 5. The chunk below confirms that
@@ -3527,9 +3527,9 @@ CONMED_STEROID).</caption>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">rel_err_pct</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span></span></code></pre></div>
-<p>The maximum relative error across the grid is well under the F.3 5%
-threshold (numerical precision only); the packaged model evaluates
-equation 5 with the steroid switch exactly.</p>
+<p>The maximum relative error across the grid is well under the
+mechanistic-sanity check’s 5% threshold (numerical precision only); the
+packaged model evaluates equation 5 with the steroid switch exactly.</p>
 </div>
 <div class="section level2">
 <h2 id="recursive-markov-simulation">Recursive Markov simulation<a class="anchor" aria-label="anchor" href="#recursive-markov-simulation"></a>
@@ -3802,8 +3802,8 @@ discrete count likelihood for an imaging endpoint, not a PK exposure
 curve. There are no Cmax / AUC / half-life values to compare against –
 the source paper reports model-based descriptors (probability of zero
 CELs, maximum elapsed time without lesions, cumulative CELs per year)
-which the model reproduces by construction. The F.3 mechanistic-sanity
-check above is the analogue of the PKNCA check for count models, and the
+which the model reproduces by construction. The mechanistic-sanity check
+above is the analogue of the PKNCA check for count models, and the
 Figure 5 distribution replication is the analogue of a VPC.</p></li>
 <li><p><strong>Markov simulation is iterative, not native
 rxode2.</strong> Because the observation depends recursively on prior
@@ -3811,13 +3811,13 @@ observations, the 48-month simulation cannot be expressed as a single
 <code>rxSolve</code> call. The model is registered as
 <code>algebraic = TRUE</code> in <code>modeldb</code>, so the
 closed-form equation 5 evaluation is identical between the packaged
-model (verified by the F.3 grid above) and the vectorized base-R helper
-<code>simulate_cohort_markov()</code> used for the 1000-subject
-Markov-cohort replication. Either route is acceptable; the base-R helper
-is preferred for stochastic sweeps because it avoids the per-call
-overhead of <code>rxSolve</code>. A future rxode2 release exposing
-observation-as-future-covariate would let this collapse to a single
-<code>rxSolve</code> invocation.</p></li>
+model (verified by the mechanistic-sanity grid above) and the vectorized
+base-R helper <code>simulate_cohort_markov()</code> used for the
+1000-subject Markov-cohort replication. Either route is acceptable; the
+base-R helper is preferred for stochastic sweeps because it avoids the
+per-call overhead of <code>rxSolve</code>. A future rxode2 release
+exposing observation-as-future-covariate would let this collapse to a
+single <code>rxSolve</code> invocation.</p></li>
 <li><p><strong>Demographic detail not in source.</strong> Age range,
 weight range, sex split, race / ethnicity are not tabulated in the Velez
 de Mendizabal 2013 publication; the Methods section refers to Bagnato et

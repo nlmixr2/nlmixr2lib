@@ -503,7 +503,7 @@ by the packaged models.
 - **Excluded animals.** Table 5 footnote a notes one animal was excluded
   from one mAb SC arm for a dosing problem; this is folded into the
   paper-reported population estimates.
-- **All values traced to Zheng 2012 on disk.** Every parameter in every
-  ini() block is sourced from Table 1, Table 4 (pI) or Table 5 (dosing /
-  body weight) of the paper on disk. No values were substituted from
-  training data.
+- **All values traced to Zheng 2012.** Every parameter in every ini()
+  block is sourced from Table 1, Table 4 (pI) or Table 5 (dosing / body
+  weight) of the paper. No values were substituted from outside the
+  paper.

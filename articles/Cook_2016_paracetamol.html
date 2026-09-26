@@ -3112,24 +3112,24 @@ bundle’s <code>.lst</code> reports <code>N: 54</code> subjects in its
 post-fit ETABAR block, which is the number of subjects contributing to
 the final fit; full demographics (age range, sex balance, race /
 ethnicity, region, indication) could not be cross-checked because the
-publication PDF is not on disk. The bundle’s
-<code>Simulated_ParacetamolPKnewborns.csv</code> is a 10-subject
-smoke-test cohort with body weights spanning 0.5-4 kg plus one outlier
-at 6.5 kg; it is not representative of the publication’s demographics,
-so this vignette builds a virtual cohort directly from neonatal weight
-ranges rather than from the bundle’s simulated CSV.</p>
+publication PDF was not available when this model was built. The
+bundle’s <code>Simulated_ParacetamolPKnewborns.csv</code> is a
+10-subject smoke-test cohort with body weights spanning 0.5-4 kg plus
+one outlier at 6.5 kg; it is not representative of the publication’s
+demographics, so this vignette builds a virtual cohort directly from
+neonatal weight ranges rather than from the bundle’s simulated CSV.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod_meta</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 10</span></span>
 <span><span class="co">#&gt;  $ n_subjects    : num 54</span></span>
-<span><span class="co">#&gt;  $ n_studies     : chr "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk)."</span></span>
-<span><span class="co">#&gt;  $ age_range     : chr "Term and preterm newborns. Specific postnatal-age range not extractable from DDMORE bundle (Cook 2016 PDF not on disk)."</span></span>
+<span><span class="co">#&gt;  $ n_studies     : chr "Not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built)."</span></span>
+<span><span class="co">#&gt;  $ age_range     : chr "Term and preterm newborns. Specific postnatal-age range not extractable from DDMORE bundle (Cook 2016 PDF not a"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ weight_range  : chr "Newborn body weights. The bundle's simulated dataset (Simulated_ParacetamolPKnewborns.csv) contains BWS values "| __truncated__</span></span>
-<span><span class="co">#&gt;  $ sex_female_pct: chr "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk)."</span></span>
-<span><span class="co">#&gt;  $ race_ethnicity: chr "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk)."</span></span>
+<span><span class="co">#&gt;  $ sex_female_pct: chr "Not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built)."</span></span>
+<span><span class="co">#&gt;  $ race_ethnicity: chr "Not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built)."</span></span>
 <span><span class="co">#&gt;  $ disease_state : chr "Term and preterm newborns receiving IV paracetamol. Specific clinical setting not extractable from DDMORE bundl"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ dose_range    : chr "IV paracetamol given as a short infusion. Bundle's simulated dataset uses ~10 mg/kg single doses (5, 10, 20, 35"| __truncated__</span></span>
-<span><span class="co">#&gt;  $ regions       : chr "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk)."</span></span>
+<span><span class="co">#&gt;  $ regions       : chr "Not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built)."</span></span>
 <span><span class="co">#&gt;  $ notes         : chr "N=54 subjects taken from the .lst FINAL ETABAR / shrinkage block ('N: 54 54 54 54'). Full demographics, study d"| __truncated__</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -3283,14 +3283,14 @@ proportional, per the deposited correct form)</td>
 </tr>
 </tbody>
 </table>
-<p>The Cook 2016 publication PDF is not available on disk, so the table
-cites the DDMORE bundle’s <code>.lst</code> FINAL block as the primary
-source. The <code>Model_Accommodations.txt</code> in the bundle records
-one model-vs-publication discrepancy: the publication describes the
-urinary residual errors as additive, while the deposited NONMEM code
-(which is what produced the <code>.lst</code> final estimates) uses the
-correct proportional form. The packaged nlmixr2 model uses the deposited
-(proportional) form.</p>
+<p>The Cook 2016 publication PDF was not available when this model was
+built, so the table cites the DDMORE bundle’s <code>.lst</code> FINAL
+block as the primary source. The <code>Model_Accommodations.txt</code>
+in the bundle records one model-vs-publication discrepancy: the
+publication describes the urinary residual errors as additive, while the
+deposited NONMEM code (which is what produced the <code>.lst</code>
+final estimates) uses the correct proportional form. The packaged
+nlmixr2 model uses the deposited (proportional) form.</p>
 </div>
 <div class="section level2">
 <h2 id="virtual-cohort-and-simulation">Virtual cohort and simulation<a class="anchor" aria-label="anchor" href="#virtual-cohort-and-simulation"></a>
@@ -3502,11 +3502,11 @@ weight stratum.</caption>
 <h2 id="pknca-on-plasma-paracetamol">PKNCA on plasma paracetamol<a class="anchor" aria-label="anchor" href="#pknca-on-plasma-paracetamol"></a>
 </h2>
 <p>PKNCA is run on the plasma APAP output (<code>Cc</code>) of the
-stochastic simulation. Because the Cook 2016 publication PDF is not on
-disk, the simulated NCA values cannot be compared side-by-side against
-published Cmax / AUC tables; they are reported as a sanity check on the
-simulation pipeline (typical newborn paracetamol half-life is on the
-order of 3-5 hours after a single IV dose, increasing with
+stochastic simulation. Because the Cook 2016 publication PDF was not
+available, the simulated NCA values cannot be compared side-by-side
+against published Cmax / AUC tables; they are reported as a sanity check
+on the simulation pipeline (typical newborn paracetamol half-life is on
+the order of 3-5 hours after a single IV dose, increasing with
 prematurity).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_for_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
@@ -3616,22 +3616,22 @@ prematurity).</p>
 </h2>
 <ul>
 <li><p><strong>Validation strategy is self-consistency</strong> (the
-package’s strategy for a DDMORE-sourced model with no linked publication
-on disk). PKNCA values shown above are informational; comparison against
-Cook 2016’s published NCA / figures was not possible because the
-publication PDF is not on disk in the maintainers’ literature
-mirror.</p></li>
-<li><p><strong>Cook 2016 publication PDF is not on disk</strong>, so
-demographic ranges (age range, weight range, sex balance, race /
-ethnicity, region, indication) and any published parameter table or
-figure could not be cross-checked. Where these fields appear in the
-model’s <code>population</code> metadata they are recorded as “Not
-extractable from DDMORE bundle”. Maintainer follow-up: pull the
-publication PDF and confirm the population narrative; cross-check the
-<code>.lst</code> FINAL estimates against any published parameter table
-(and re-verify the unit reading of the <code>THETA(2..4)/1000</code>
-scale factor against the publication’s reported per-kg
-clearances).</p></li>
+package’s strategy for a DDMORE-sourced model whose linked publication
+was not available). PKNCA values shown above are informational;
+comparison against Cook 2016’s published NCA / figures was not possible
+because the publication PDF was not available when this model was
+built.</p></li>
+<li><p><strong>Cook 2016 publication PDF was not available when this
+model was built</strong>, so demographic ranges (age range, weight
+range, sex balance, race / ethnicity, region, indication) and any
+published parameter table or figure could not be cross-checked. Where
+these fields appear in the model’s <code>population</code> metadata they
+are recorded as “Not extractable from DDMORE bundle”. Maintainer
+follow-up: pull the publication PDF and confirm the population
+narrative; cross-check the <code>.lst</code> FINAL estimates against any
+published parameter table (and re-verify the unit reading of the
+<code>THETA(2..4)/1000</code> scale factor against the publication’s
+reported per-kg clearances).</p></li>
 <li><p><strong>Per-kg parameterisation with no reference
 weight.</strong> The <code>.mod</code> <code>$PK</code> writes
 <code>V1 = TH1*BWS</code>, <code>CLG = TH2*BWS</code>,

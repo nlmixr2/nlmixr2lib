@@ -83,11 +83,11 @@ them.
   parameter is encoded with `fixed()`.
 - **Example 2** reproduces the efalizumab model of Ng et al. (2005),
   developed in patients with moderate-to-severe plaque psoriasis. The
-  subject count and demographics live in Ng et al. (2005), which is
-  **not on disk** for this extraction, so `population$n_subjects` is
-  left `NA` rather than guessed. The model is body-weight normalised
-  throughout (`Vc` = 64.3 mL/kg, dose in mg/kg), and CD11a is expressed
-  as a percentage of its own baseline.
+  subject count and demographics live in Ng et al. (2005), which was
+  **not available** when this model was built, so
+  `population$n_subjects` is left `NA` rather than guessed. The model is
+  body-weight normalised throughout (`Vc` = 64.3 mL/kg, dose in mg/kg),
+  and CD11a is expressed as a percentage of its own baseline.
 
 The same information is available programmatically via each model’s
 `population` metadata,
@@ -722,21 +722,20 @@ stopifnot(
 
 - **`Kmc03` is derived, not transcribed.** Aston et al. print eleven of
   the twelve Section 7.2 parameters but never print `Kmc03`. Ng et
-  al. (2005), where it originates, is **not open access and is not on
-  disk** for this extraction (the maintainers have it on their
-  acquisition list). Rather than guess it, the model file parameterises
-  the CD11a pool by its baseline, `bl_total_target = 100` %CD11a - a
-  value that is not an assumption but the definition of an endpoint
-  reported as a percentage of baseline, and which the Fig. 11 axis
-  displays directly. Eq. (72) then determines `Kmc03 = 15.33` %CD11a
-  exactly. Two independent checks corroborate it. First, the paper’s
-  printed slowest feedback-block eigenvalue of `-1.37e-2`, which this
-  value reproduces as `-1.3755e-2`, a 0.4% error, against roughly 1.9%
-  and 1.1% for the nearest competing baselines of 80 and 120 %CD11a -
-  the discriminating table is computed above. Second, the Figure 11 time
-  course itself, which the model reproduces in peak height, peak timing
-  and trough depth. If Ng et al. (2005) is later acquired, the printed
-  `Kmc03` should be checked against 15.33.
+  al. (2005), where it originates, is **not open access and was not
+  available** when this model was built. Rather than guess it, the model
+  file parameterises the CD11a pool by its baseline,
+  `bl_total_target = 100` %CD11a - a value that is not an assumption but
+  the definition of an endpoint reported as a percentage of baseline,
+  and which the Fig. 11 axis displays directly. Eq. (72) then determines
+  `Kmc03 = 15.33` %CD11a exactly. Two independent checks corroborate it.
+  First, the paper’s printed slowest feedback-block eigenvalue of
+  `-1.37e-2`, which this value reproduces as `-1.3755e-2`, a 0.4% error,
+  against roughly 1.9% and 1.1% for the nearest competing baselines of
+  80 and 120 %CD11a - the discriminating table is computed above.
+  Second, the Figure 11 time course itself, which the model reproduces
+  in peak height, peak timing and trough depth. If Ng et al. (2005) is
+  later acquired, the printed `Kmc03` should be checked against 15.33.
 - **`Vm` is printed with the wrong units.** Section 7.2 gives
   `Vm = 26.9 ug/mL`. `Vm` is the saturating maximum of a term added to
   `dX1/dt`, so it must carry amount-per-time units, here ug/kg/day; a
@@ -780,5 +779,5 @@ stopifnot(
   branch point at `R0 + 1/H0 = 3.69` nM, so the statement holds
   throughout the swept range.
 - **Population demographics for Example 2 are unavailable.** They are
-  reported in Ng et al. (2005), which is not on disk; `n_subjects` and
-  `n_studies` are left `NA` rather than guessed.
+  reported in Ng et al. (2005), which was not available; `n_subjects`
+  and `n_studies` are left `NA` rather than guessed.

@@ -433,8 +433,8 @@ the simulated cohort:
 - **`omega^2 = log(CV^2 + 1)` translation.** Table 1 reports IIV as CV%;
   the corresponding log-normal variance was computed via omega^2 =
   log(CV^2 + 1) – the standard NONMEM / PsN back-transformation – and
-  entered as the `eta...` initial value. No NONMEM control stream is on
-  disk to cross-check the exact internal variance scale.
+  entered as the `eta...` initial value. No NONMEM control stream was
+  available to cross-check the exact internal variance scale.
 
 - **Race / ethnicity not modeled.** Livio 2014 enrolled a single-centre
   Swiss orthopaedic cohort; the paper does not report racial composition

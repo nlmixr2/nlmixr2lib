@@ -579,10 +579,10 @@ targets of 73.3% (*Enterobacterales*), 72.2% (*P. aeruginosa*), 88.1%
 
 The unbound fraction of cefiderocol is not reported anywhere in the
 paper or its supplement, so the free-drug index cannot be computed from
-on-disk sources. The table below therefore reports `%T>MIC` on **total**
-plasma concentration for the typical participant at steady state. It is
-an upper bound on `%fT>MIC`, not a reproduction of the published target
-attainment; see *Assumptions and deviations*.
+the published sources. The table below therefore reports `%T>MIC` on
+**total** plasma concentration for the typical participant at steady
+state. It is an upper bound on `%fT>MIC`, not a reproduction of the
+published target attainment; see *Assumptions and deviations*.
 
 ``` r
 

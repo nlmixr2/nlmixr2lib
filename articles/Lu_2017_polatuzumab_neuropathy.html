@@ -3300,10 +3300,10 @@ The table below collects the Lu 2017 TTE-specific values in one place
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
 </h2>
-<p>The dataset that Lu 2017 fit (155 R/R B-cell NHL patients) is not on
-disk for this extraction; the vignette builds a small virtual cohort
-programmatically that mirrors the cohort composition described in the
-paper’s Methods. Each subject receives pola q3w IV for 8 cycles (168
+<p>The dataset that Lu 2017 fit (155 R/R B-cell NHL patients) was not
+available when this model was built; the vignette builds a small virtual
+cohort programmatically that mirrors the cohort composition described in
+the paper’s Methods. Each subject receives pola q3w IV for 8 cycles (168
 days = 4032 hours), with the dose administered as MMAE-equivalent
 micrograms into the acMMAE central compartment per the Lu 2019 PK input
 convention.</p>
@@ -3607,10 +3607,10 @@ simulation and confirms the ordering of cumulative incidence.</p>
 <strong>Upstream PK source substitution.</strong> The Lu 2017 TTE PD
 parameters were fit by NONMEM using empirical-Bayes (EBE) individual PK
 parameters from a previously developed Lu 2015 ASCPT-poster popPK model
-that is not in the peer-reviewed literature and is not on disk for this
-extraction. Per the standing nlmixr2lib policy of reusing a published
-same-drug PK as the upstream layer, the model file inlines the acMMAE
-side of the peer-reviewed Lu 2019 integrated two-analyte popPK
+that is not in the peer-reviewed literature and was not available when
+this model was built. Per the standing nlmixr2lib policy of reusing a
+published same-drug PK as the upstream layer, the model file inlines the
+acMMAE side of the peer-reviewed Lu 2019 integrated two-analyte popPK
 (<code>Lu_2019_polatuzumab.R</code>). The Lu 2019 PK is more
 sophisticated than the Lu 2015 poster popPK – adding a Hill-shaped
 time-decay on CL_NS, a separate exponential decay on CL_t,
@@ -3660,11 +3660,11 @@ side.</li>
 <li>
 <strong>Virtual cohort covariate distributions.</strong> Lu 2017
 Supplemental Table S1 tabulates per-patient covariate distributions but
-the supplement is not on disk; the vignette draws WT, AGE, ALB, TUMSZ,
-and binary history indicators from defensible distributions anchored at
-the Figure 3 forest-plot reference values. The qualitative dose-response
-and covariate-shift checks below should be insensitive to the exact
-draw.</li>
+the supplement was not available; the vignette draws WT, AGE, ALB,
+TUMSZ, and binary history indicators from defensible distributions
+anchored at the Figure 3 forest-plot reference values. The qualitative
+dose-response and covariate-shift checks below should be insensitive to
+the exact draw.</li>
 <li>
 <strong>Errata search.</strong> A search for corrections / errata to
 Lu 2017 (publisher landing page, PMC, Google Scholar

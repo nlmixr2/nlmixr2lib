@@ -3129,7 +3129,7 @@ syntax.</p>
 <li>Adult cohort, 70 kg reference body weight (Forward_APAP1.in fixes BW
 = 70 kg). Single 1000 mg oral paracetamol dose (Scenario 4).</li>
 <li>The publication’s underlying dataset (per its Methods; the
-publication was not on disk when this model was built) is a pooled
+publication was not available when this model was built) is a pooled
 Bayesian population fit across multiple published human paracetamol PK
 studies. Per-subject demographics are not exposed by the bundle.</li>
 <li>The bundle ships a <code>Real_APAP_data.csv</code> reference dataset
@@ -3357,7 +3357,7 @@ Output_real_APAP.txt<a class="anchor" aria-label="anchor" href="#simulation-typi
 </h2>
 <p>The DDMORE bundle ships a typical-value simulation trajectory
 (<code>Output_real_APAP.txt</code>) with concentrations at the canonical
-0.5-12 hr observation grid for Scenario 4 (1000 mg PO, 70 kg). The F.2
+0.5-12 hr observation grid for Scenario 4 (1000 mg PO, 70 kg). The
 self-consistency check re-simulates this trajectory with rxode2 and
 confirms the rxode2 implementation matches the MCSim implementation
 within numerical-solver tolerance.</p>
@@ -3639,7 +3639,7 @@ LSODA – not a structural translation error.</caption>
 <span>  <span class="fu">scale_colour_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>bundle <span class="op">=</span> <span class="st">"grey40"</span>, nlmixr <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (hr)"</span>, y <span class="op">=</span> <span class="st">"Plasma concentration (mcg/L)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"Source"</span>, shape <span class="op">=</span> <span class="st">"Source"</span>,</span>
-<span>       title <span class="op">=</span> <span class="st">"F.2 self-consistency: bundle MCSim vs nlmixr2/rxode2 typical-value re-simulation"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Self-consistency: bundle MCSim vs nlmixr2/rxode2 typical-value re-simulation"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Reproduces Output_real_APAP.txt at canonical observation grid for Scenario 4 (1000 mg PO, 70 kg adult)."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Zurlinden_2016_paracetamol_files/figure-html/figure-overlay-1.png" class="r-plt" alt="" width="630"></p>
 </div>
@@ -3860,9 +3860,9 @@ mg.</li>
 <h2 id="assumptions-and-deviations-errata">Assumptions and deviations / Errata<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations-errata"></a>
 </h2>
 <ol style="list-style-type: decimal">
-<li><p><strong>No publication on disk.</strong> The Zurlinden &amp;
-Reisfeld 2016 publication (<a href="doi:10.1007/s13318-015-0253-x" class="uri">doi:10.1007/s13318-015-0253-x</a>) was not on disk at
-extraction time. Parameter values, structural-model equations, and
+<li><p><strong>Publication not available.</strong> The Zurlinden &amp;
+Reisfeld 2016 publication (<a href="doi:10.1007/s13318-015-0253-x" class="uri">doi:10.1007/s13318-015-0253-x</a>) was not available when
+this model was built. Parameter values, structural-model equations, and
 population demographics could not be cross-checked against the
 publication; everything is sourced from the DDMORE bundle. A more
 rigorous validation would compare against the publication’s Table of

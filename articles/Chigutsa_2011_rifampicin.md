@@ -20,18 +20,17 @@
   Results body text page 4124 – women have a 30% LONGER absorption delay
   than men; Table 2 Final-model row prints -30% with a CI bit-identical
   to the V/F row immediately above, which is the canonical signature of
-  a typesetting row-duplication error; per the operator sidecar
-  request-001 directive the body text +30% is the source of truth);
-  high-dose-band effect on MTT (-27% for daily doses \>= 600 mg vs the
-  450 mg reference); SLCO1B1 rs4149032 genotype-dependent oral
-  bioavailability F (heterozygous carriers -18%; homozygous variant
-  carriers -28%; relative to the homozygous-common-allele wild-type
-  reference). Between-subject variability (BSV) is carried on F, CL, and
-  MTT with the CL-MTT correlation block 0.86 from Table 2;
-  within-subject (WSV / IOV) variability reported in Table 2 is NOT
-  carried (forward-simulation users do not need the second-occasion IOV
-  layer; see vignette Errata). Combined additive + proportional residual
-  error.
+  a typesetting row-duplication error; the maintainers decided that the
+  body text +30% is the source of truth); high-dose-band effect on MTT
+  (-27% for daily doses \>= 600 mg vs the 450 mg reference); SLCO1B1
+  rs4149032 genotype-dependent oral bioavailability F (heterozygous
+  carriers -18%; homozygous variant carriers -28%; relative to the
+  homozygous-common-allele wild-type reference). Between-subject
+  variability (BSV) is carried on F, CL, and MTT with the CL-MTT
+  correlation block 0.86 from Table 2; within-subject (WSV / IOV)
+  variability reported in Table 2 is NOT carried (forward-simulation
+  users do not need the second-occasion IOV layer; see vignette Errata).
+  Combined additive + proportional residual error.
 - Article: [Antimicrob Agents Chemother
   55(9):4122-4127](https://doi.org/10.1128/AAC.01833-10)
 

@@ -3137,11 +3137,12 @@ publication-derived point values used to drive the simulation; there is
 no <code>Output_real_*.lst</code> estimation listing in the bundle, so
 the values cannot be cross-checked against a re-fitted set of final
 estimates from the original real data. The original Friberg 2002
-publication is not on disk, so a side-by-side publication-table
-comparison of the parameter values is also out of scope here. The
-validation in this vignette is therefore the F.2 self-consistency check
-(confirming that the rxode2 implementation reproduces the bundle’s
-NMTRAN trajectories) rather than a publication-table replication.</p>
+publication was not available when this model was built, so a
+side-by-side publication-table comparison of the parameter values is
+also out of scope here. The validation in this vignette is therefore the
+self-consistency check (confirming that the rxode2 implementation
+reproduces the bundle’s NMTRAN trajectories) rather than a
+publication-table replication.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3390,11 +3391,11 @@ a 410 umol paclitaxel infusion over 3 hours.</p>
 <div class="section level2">
 <h2 id="mechanistic-sanity-check">Mechanistic sanity check<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-check"></a>
 </h2>
-<p>Per the F.3 mechanistic-sanity check in the package’s validation
-checklist and its approach for DDMORE-sourced models (no PKNCA-amenable
-PK output, no on-disk publication for a published-NCA comparison),
-validation here is restricted to confirming that the typical-value
-trajectory matches the canonical Friberg myelosuppression shape:</p>
+<p>As the mechanistic-sanity check, following the approach used for
+DDMORE-sourced models (no PKNCA-amenable PK output, no publication
+available for a published-NCA comparison), validation here is restricted
+to confirming that the typical-value trajectory matches the canonical
+Friberg myelosuppression shape:</p>
 <ol style="list-style-type: decimal">
 <li>baseline circulating leukocytes hold at <code>CIRC0</code> before
 drug administration;</li>
@@ -3543,12 +3544,12 @@ recovers these values to three significant figures, consistent with a
 well-specified self-consistency check, but it is not an independent
 numerical confirmation.</li>
 <li>
-<strong>The Friberg 2002 publication is not on disk.</strong> The
-package metadata (description, units, citation, DOI) reflects the
-publication, but a side-by-side comparison against the published
-parameter table or per-cycle WBC profiles is not part of this vignette.
-The validation here is restricted to the F.2 / F.3 self-consistency and
-mechanistic-sanity checks against the bundle.</li>
+<strong>The Friberg 2002 publication was not available when this
+model was built.</strong> The package metadata (description, units,
+citation, DOI) reflects the publication, but a side-by-side comparison
+against the published parameter table or per-cycle WBC profiles is not
+part of this vignette. The validation here is restricted to the
+self-consistency and mechanistic-sanity checks against the bundle.</li>
 <li>
 <strong>Bundle implements only the paclitaxel + leukocyte
 sub-fit.</strong> Per <code>Model_Accommodations.txt</code>, the

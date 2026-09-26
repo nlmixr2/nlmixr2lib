@@ -479,8 +479,8 @@ stopifnot(
 
 ACP-5862 is a genuinely important part of the paper – its whole clinical
 argument is that the total active moiety changes far less than the
-parent does. It is nonetheless not reproducible from what is on disk,
-and the reason is worth showing rather than asserting.
+parent does. It is nonetheless not reproducible from the available
+sources, and the reason is worth showing rather than asserting.
 
 With `fa` = 0.98 and `F` = 0.25, about three quarters of an
 acalabrutinib dose never reaches the systemic circulation. Partitioning
@@ -529,7 +529,7 @@ on first pass – and therefore the dominant source of ACP-5862 – moves by
 a factor of 2.07. That is not a rounding-level assumption; it is the
 single largest determinant of metabolite exposure. A confirmatory check
 is that a metabolite arm built *without* the first-pass term, which is
-all the on-disk data supports, misses the paper’s predicted ACP-5862
+all the published data supports, misses the paper’s predicted ACP-5862
 Cmax of 345 ng/mL by three to fivefold. Shipping a metabolite
 compartment would therefore mean inventing `Q_H` and then validating the
 invention against the number it was chosen to reproduce, so none is

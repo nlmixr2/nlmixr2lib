@@ -130,8 +130,8 @@ value the paper’s own AOM Ka equation is centred on – and a geometric CV
 of 22%. The paper states only that the virtual BMI values were
 “log-normally distributed on the basis of sex to be similar to the phase
 3 population” and reports the observed range (15-61 kg/m^2); the per-sex
-distribution parameters are in the supplement, which is not on disk. See
-Assumptions and deviations.
+distribution parameters are in the supplement, which was not available
+when this model was built. See Assumptions and deviations.
 
 ``` r
 
@@ -666,14 +666,15 @@ stopifnot(
 
 ## Assumptions and deviations
 
-- **Supplement not on disk.** Wang 2022 Tables S1-S4, Figures S1-S3 and
-  Appendices S1-S2 were not available for this extraction. Nothing
-  needed for either model is in them: Table 1 gives every final popPK
-  estimate and both covariate equations, and Table 2 gives both survival
-  parameters. Table S4 holds the *base* model (before the phase 3 data
-  were added), which the final model supersedes; Tables S2/S3 hold
-  per-study covariate summaries, which is why the `population` metadata
-  reports the demographic ranges only where the main text states them.
+- **Supplement not available.** Wang 2022 Tables S1-S4, Figures S1-S3
+  and Appendices S1-S2 were not available when this model was built.
+  Nothing needed for either model is in them: Table 1 gives every final
+  popPK estimate and both covariate equations, and Table 2 gives both
+  survival parameters. Table S4 holds the *base* model (before the phase
+  3 data were added), which the final model supersedes; Tables S2/S3
+  hold per-study covariate summaries, which is why the `population`
+  metadata reports the demographic ranges only where the main text
+  states them.
 
 - **Virtual-cohort BMI distribution.** Log-normal, median 28 kg/m^2,
   geometric CV 22%. The paper’s own virtual population used sex-specific

@@ -437,9 +437,9 @@ observed mTTP_0 compared with those with the highest’).
   encodes the same Petersson 2009 transformation); the source paper
   cites Petersson 2009 by reference but does not state the exact NM-TRAN
   code, and the online Supplementary Data containing the full NONMEM
-  control stream was not on disk for this extraction. Variance 0.33
-  enters as the diagonal on the eta scale (pre-transform); shape lambda
-  = 0.66 is held at its point-estimate value (no IIV on the shape
+  control stream was not available when this model was built. Variance
+  0.33 enters as the diagonal on the eta scale (pre-transform); shape
+  lambda = 0.66 is held at its point-estimate value (no IIV on the shape
   itself, in line with the source which reports a single estimated shape
   per parameter).
 - **Pre-XDR and XDR strata are pooled (`DIS_TB_XDR = 1` reference
@@ -461,7 +461,7 @@ observed mTTP_0 compared with those with the highest’).
   7). Users simulating high-dose scenarios should treat the predicted
   half-life as a lower bound.
 - **The source’s online supplementary information (with the full NONMEM
-  model code) was not available on disk for this extraction.** The
+  model code) was not available when this model was built.** The
   structural model is fully described in the main paper’s Equations 1-3
   and Table 2; the ambiguities the supplement would have resolved (exact
   Box-Cox NM-TRAN form, the ordering of multiplicative covariate factors

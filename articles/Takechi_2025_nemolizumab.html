@@ -4977,17 +4977,16 @@ subjects.</p>
 not quoted.</strong> Table 4 prints the coefficient <code>-1.84</code>
 but the paper contains no equation attaching <code>PPM</code> to
 <code>Edrug,nemolizumab</code> anywhere – not in Methods, not in the
-supplement, and there is no NONMEM control stream on disk. The
-fractional deviation
-<code>1.63 * (1 + (-1.84) * (IGA_MOD_PCT/100 - 0.590))</code> used here
-is the reading that reproduces three independent plotted values of Fig.
-4, where the two obvious alternatives miss by 14 and 4 percentage points
-respectively; Part 4 runs that discrimination as a test. The centring
-constant <code>0.590</code> is likewise not printed – it is the median
-of Table 3’s 13 arms, which the vignette recomputes and asserts. A
-reader who has access to the authors’ control stream should check this
-term before relying on the model outside the 45.5-72.0% severity range
-the meta-analysis spans.</p>
+supplement, and no NONMEM control stream was available. The fractional
+deviation <code>1.63 * (1 + (-1.84) * (IGA_MOD_PCT/100 - 0.590))</code>
+used here is the reading that reproduces three independent plotted
+values of Fig. 4, where the two obvious alternatives miss by 14 and 4
+percentage points respectively; Part 4 runs that discrimination as a
+test. The centring constant <code>0.590</code> is likewise not printed –
+it is the median of Table 3’s 13 arms, which the vignette recomputes and
+asserts. A reader who has access to the authors’ control stream should
+check this term before relying on the model outside the 45.5-72.0%
+severity range the meta-analysis spans.</p>
 <p><strong>12. <code>IGA_MOD_PCT</code> scale.</strong> The covariate
 register stores this column as a <strong>percent</strong> (0-100),
 matching its arm-level siblings <code>TUMTP_SQUAM_PCT</code>,

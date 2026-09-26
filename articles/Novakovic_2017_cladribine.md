@@ -40,11 +40,11 @@ bundle for `DDMODEL00000223` (scraped to
 - `DDMODEL00000223.rdf`, `Command.txt`, `223.json` – provenance and
   scraper metadata.
 
-The Novakovic 2017 publication is not on disk, so the validation here
-cannot replicate the published figures or NCA-style endpoints directly;
-instead it walks through mechanistic-sanity checks on the typical-value
-trajectory and the per-item baseline category probabilities (the F.3 IRT
-validation path).
+The Novakovic 2017 publication was not available when this model was
+built, so the validation here cannot replicate the published figures or
+NCA-style endpoints directly; instead it walks through
+mechanistic-sanity checks on the typical-value trajectory and the
+per-item baseline category probabilities (the IRT validation path).
 
 ## Population
 
@@ -172,7 +172,7 @@ sim_typical <- rxode2::rxSolve(
 #> Warning: multi-subject simulation without without 'omega'
 ```
 
-## Mechanistic sanity (F.3 IRT validation path)
+## Mechanistic sanity (IRT validation path)
 
 ### Latent disease progression matches the closed-form expression
 
@@ -471,13 +471,13 @@ not errors in the bundle itself.
   values as the final estimates and document the convergence status here
   as informational rather than drop the model.
 
-- **No on-disk publication.** The Novakovic 2017 publication is not on
-  disk, so the side-by-side comparison against the published figures
-  (e.g., per-item probability curves, latent disability trajectories by
-  treatment arm) is not done here. The validation is the F.3
-  mechanistic-sanity path: typical-value trajectory closed-form check,
-  treatment vs placebo monotonicity, per-item probability validity, FREM
-  mean recovery.
+- **No publication available.** The Novakovic 2017 publication was not
+  available when this model was built, so the side-by-side comparison
+  against the published figures (e.g., per-item probability curves,
+  latent disability trajectories by treatment arm) is not done here. The
+  validation is the mechanistic-sanity path: typical-value trajectory
+  closed-form check, treatment vs placebo monotonicity, per-item
+  probability validity, FREM mean recovery.
 
 - **FREM observations as outputs rather than fit-time tricks.** The
   source `.mod` treats Age, MSD, and EXNB as RTYPE=1/2/3 rows in the

@@ -614,7 +614,7 @@ indicate a covariate-encoding or event-table bug. {.table}
   They are documented in the packaged `covariatesDataExcluded` list for
   provenance.
 - **Errata.** No erratum or corrigendum to Milosheska 2016 was located
-  on disk for this extraction. A search of the Wiley / BJCP corrections
+  when this model was built. A search of the Wiley / BJCP corrections
   feed for “Milosheska 2016 erratum” and “bcp.12984 erratum” returned no
   hits (searched 2026-06-20); the maintainers should reconfirm against
   the journal’s current corrections listing if a re-extraction is

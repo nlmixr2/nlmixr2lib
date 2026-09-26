@@ -3505,13 +3505,9 @@ parameter-translation error and should not be tuned away.</p>
 </h2>
 <ul>
 <li>
-<strong>Drug name corrected from the supplied metadata.</strong> The
-metadata this model was built from named the drug as “Cancer
-Chemotherapy and Pharma”, which is the journal (“Cancer Chemother
-Pharmacol”) rather than the drug. The on-disk PDF is unambiguously the
-carboplatin paper (Ekhart et al. 2008, doi 10.1007/s00280-008-0856-x),
-so the drug field has been corrected to <code>carboplatin</code> and the
-file paths renamed to match.</li>
+<strong>Drug identity.</strong> The source PDF is unambiguously the
+carboplatin paper (Ekhart et al. 2008, doi 10.1007/s00280-008-0856-x);
+the model’s drug field and file names use <code>carboplatin</code>.</li>
 <li>
 <strong>No covariate effects in the final model.</strong> Ekhart
 2008 fitted six candidate covariate models that scaled CL allometrically

@@ -140,9 +140,9 @@ groups (tapentadol and tramadol) as in placebo.”
 No published erratum or corrigendum for Mercier 2014 was located (Pain
 Therapy 2014;3(1):31-44; open access via Springer). The paper describes
 supplementary material (Table S1: list of trials; Table S2: comparison
-with previous meta-analysis) which was not on disk for this extraction;
-none of the pain-intensity model’s Table 3 parameters depend on these
-supplements.
+with previous meta-analysis) which was not available when this model was
+built; none of the pain-intensity model’s Table 3 parameters depend on
+these supplements.
 
 The paper also describes logistic MBMA sub-models for adverse-event
 frequencies (constipation, nausea, vomiting, dizziness, somnolence) and

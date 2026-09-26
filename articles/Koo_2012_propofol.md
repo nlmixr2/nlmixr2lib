@@ -495,13 +495,12 @@ probability of NOT recovering consciousness is ~ 0.95. {.table}
   applicable. The Figure 3 replication, the 25 / 50 / 75-year
   reference-value cross-check, and the Discussion `Ce5` anchor at AGE =
   25 are the primary validation anchors.
-- **No supplements; no errata identified.** The Koo 2012 paper has no
-  separate supplement on disk in the maintainers’ literature mirror, and
-  no errata or corrigenda were located by a 2026-06-27 search of the
-  Acta Pharmacologica Sinica article landing page and PubMed (PMID
-  22796761). The sigmoid Emax formula itself is rendered in the source
-  PDF as a non-decoded image (the text extracted from the PDF shows
-  `<!-- formula-not-decoded -->` in place of the equation); the
+- **No supplements; no errata identified.** No separate supplement to
+  the Koo 2012 paper was available when this model was built, and no
+  errata or corrigenda were located by a 2026-06-27 search of the Acta
+  Pharmacologica Sinica article landing page and PubMed (PMID 22796761).
+  The sigmoid Emax formula itself is rendered in the source PDF as an
+  image that the text extracted from the PDF does not decode; the
   consistent textbook interpretation P(ROC) = Ce50^lambda /
   (Ce50^lambda + Ce^lambda) is adopted here and is verified to reproduce
   the paper’s 25 / 50 / 75-year reference Ce50 / lambda predictions and

@@ -576,17 +576,18 @@ to 5 weeks at high concentrations (where the linear pathway dominates).
 
 - **Errata / Vmax unit.** The published Table 1 reports Vmax in the
   printed form `5.91 (mu-g h^-1)`, where mu is the Greek lower-case
-  letter for “micro-”. Common PDF text extractors (pdftotext, docling,
-  PyMuPDF) render the embedded Symbol-font mu glyph as ASCII “m”, giving
-  the misleading appearance “5.91 mg/h” in plain-text dumps. The model
-  file uses the correct micro-gram value (`lvmax <- log(0.00591)` in the
-  mg/h state-scale of the ODE), and the unit is cross-checked against
-  the prose: Vmax / Km = 5.91 ug/h / 0.957 ng/mL = 6.17 L/h, matching
-  the paper’s stated “maximum clearance of 6.2 l h^-1 (calculated as
-  Vmax/Km)” (Results p55). The 3-day and 5-week half-life regimes the
-  paper describes are faithfully reproduced by the simulation only with
-  this corrected unit; the alternative `5.91 mg/h` reading produces a
-  ~1000x-too-fast nonlinear pathway and unrealistic Cmax values.
+  letter for “micro-”. Common PDF text extractors (pdftotext, PyMuPDF
+  and others) render the embedded Symbol-font mu glyph as ASCII “m”,
+  giving the misleading appearance “5.91 mg/h” in plain-text dumps. The
+  model file uses the correct micro-gram value (`lvmax <- log(0.00591)`
+  in the mg/h state-scale of the ODE), and the unit is cross-checked
+  against the prose: Vmax / Km = 5.91 ug/h / 0.957 ng/mL = 6.17 L/h,
+  matching the paper’s stated “maximum clearance of 6.2 l h^-1
+  (calculated as Vmax/Km)” (Results p55). The 3-day and 5-week half-life
+  regimes the paper describes are faithfully reproduced by the
+  simulation only with this corrected unit; the alternative `5.91 mg/h`
+  reading produces a ~1000x-too-fast nonlinear pathway and unrealistic
+  Cmax values.
 
 - **0.01 mg dose excluded.** The smallest single dose (0.01 mg) produced
   no measurable concentrations – the LC/MS LLOQ was 0.1 ng/mL (Methods

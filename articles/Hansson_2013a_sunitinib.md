@@ -12,12 +12,12 @@
 - DDMORE Foundation Model Repository:
   [DDMODEL00000197](https://repository.ddmore.eu/model/DDMODEL00000197)
 
-The publication PDF was not on disk at extraction time, so all parameter
-values, equations, and the model structure are taken from the DDMORE
-bundle (`Executable_Biomarker_GIST.mod` and
+The publication PDF was not available when this model was built, so all
+parameter values, equations, and the model structure are taken from the
+DDMORE bundle (`Executable_Biomarker_GIST.mod` and
 `Output_real_Biomarker_GIST.lst`). Validation in this vignette therefore
-consists of a mechanistic-sanity check (F.3) plus a self-consistency
-simulation against the bundle’s shipped simulated dataset (F.2); a
+consists of a mechanistic-sanity check plus a self-consistency
+simulation against the bundle’s shipped simulated dataset; a
 side-by-side comparison against any published Hansson 2013 figure or
 table is not performed.
 
@@ -30,9 +30,9 @@ mg PO QD on a 4-weeks-on / 2-weeks-off schedule. The DDMORE bundle
 header reports `TOT. NO. OF INDIVIDUALS: 303` and
 `TOT. NO. OF OBS RECS: 5394`. Detailed baseline demographics (age,
 weight, sex, race) are described in the linked publication, which was
-not on disk at extraction time; the model’s `population` metadata
-records that gap. The full demographics list can be added in a follow-up
-edit when the publication PDF is available.
+not available when this model was built; the model’s `population`
+metadata records that gap. The full demographics list can be added in a
+follow-up edit when the publication PDF is available.
 
 The same information is available programmatically via the model’s
 `population` metadata
@@ -149,7 +149,7 @@ head(events, 10)
 #> 10  1  216    0   0  NA   50 32.819
 ```
 
-## Mechanistic-sanity simulation (F.3)
+## Mechanistic-sanity simulation
 
 ``` r
 
@@ -217,7 +217,7 @@ Interpretation: VEGF more than triples at the end of the first on-cycle
 toward baseline during the off-cycle. This matches the qualitative
 behaviour described in Hansson 2013.
 
-## Self-consistency simulation against the DDMORE bundle (F.2)
+## Self-consistency simulation against the DDMORE bundle
 
 The bundle ships a simulated 80-subject dataset
 (`Simulated_Biomarker_GIST.csv`). Re-simulating subject 1’s events
@@ -280,14 +280,14 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
 
 ## Assumptions and deviations
 
-- **Publication PDF not on disk.** The Hansson 2013 paper text (CPT
+- **Publication PDF not available.** The Hansson 2013 paper text (CPT
   Pharmacometrics Syst Pharmacol 2013;2:e84, <doi:10.1038/psp.2013.61>)
-  was not available at extraction time. All parameter values and
+  was not available when this model was built. All parameter values and
   equations were taken from the DDMORE bundle
   (`Output_real_Biomarker_GIST.lst` and
   `Executable_Biomarker_GIST.mod`). Side-by-side comparison against any
-  published figure or table is not performed in this vignette; only F.2
-  self-consistency and F.3 mechanistic-sanity checks are run.
+  published figure or table is not performed in this vignette; only the
+  self-consistency and mechanistic-sanity checks are run.
 - **Upstream popPK not packaged.** The drug-exposure summary
   `AUC = DOSE / CLI` consumes `CLI` (individual posthoc clearance) from
   the paper’s upstream 2-compartment popPK fit. That popPK is not

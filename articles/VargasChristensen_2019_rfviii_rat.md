@@ -37,7 +37,7 @@ Per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/VargasChristensen_2019_rfviii_rat.R`. The
 table below collects them in one place for review. All parameter
 estimates come from Table 1 of the paper; the NONMEM control stream
-lives in Data S1 (not on disk).
+lives in Data S1, which was not available when this model was built.
 
 | Parameter / equation | Value (RSE) | Source location |
 |----|----|----|

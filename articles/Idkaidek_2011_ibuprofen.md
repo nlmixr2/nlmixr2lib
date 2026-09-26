@@ -855,8 +855,8 @@ fingerprint of the two-analysis pairing.
   fractions absorbed. Those are outputs of a proprietary whole-gut
   platform model whose ODEs, segment volumes, transit times and
   physiology are not written out anywhere in the paper, so the analysis
-  is not reproducible from on-disk sources and no Simcyp-derived value
-  is carried into these model files.
+  is not reproducible from the available sources and no Simcyp-derived
+  value is carried into these model files.
 - **Body position is encoded as two model files, not as a covariate.**
   The authors fit each position separately and compared the two
   parameter sets by ANOVA; they never estimated a position effect within

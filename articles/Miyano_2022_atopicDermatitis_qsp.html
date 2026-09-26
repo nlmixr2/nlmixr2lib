@@ -3187,9 +3187,10 @@ MIT-licensed)</td>
 <td>11 elimination-rate mu values</td>
 <td>Paper Sec 2.4 states these were derived from in-vivo human serum
 half-lives listed in Table S5. Table S5 lives in the paper’s Wiley
-supplement, which is not currently on disk; the numerical values here
-are taken from <code>mu.csv</code> (author-supplied companion) so no
-substitution from external data is used.</td>
+supplement, which was not available when this model was built; the
+numerical values here are taken from <code>mu.csv</code>
+(author-supplied companion) so no substitution from external data is
+used.</td>
 </tr>
 <tr class="even">
 <td>Table S2 baseline biological-factor levels (paper seed IC’s for the
@@ -3430,14 +3431,13 @@ caption); the vignette’s 50-per-arm point estimate is illustrative.</p>
 <li>
 <strong>Paper supplement (SI Section 3 with the S1 Table of ODEs,
 Table S3 with r_inhibit derivations, Tables S4/S5 with the 51 mu and
-sigma parameter values)</strong> is not currently on disk. The parameter
-values (mu.csv, sigma.csv) and the ODE equations used here were
-reproduced from the authors’ MIT-licensed reference implementation at <a href="https://github.com/Tanaka-Group/AD_QSP_model" class="external-link uri">https://github.com/Tanaka-Group/AD_QSP_model</a>, which the
+sigma parameter values)</strong> was not available when this model was
+built. The parameter values (mu.csv, sigma.csv) and the ODE equations
+used here were reproduced from the authors’ MIT-licensed reference
+implementation at <a href="https://github.com/Tanaka-Group/AD_QSP_model" class="external-link uri">https://github.com/Tanaka-Group/AD_QSP_model</a>, which the
 paper explicitly cites as the canonical implementation (Section 4.6:
-“The code of the QSP model is available at …”). The failed
-auto-acquisition of the Wiley supplement is recorded in
-<code>needs_acquisition.jsonl</code> for future manual pickup; when the
-supplement lands, the two sources should be cross-checked for numerical
+“The code of the QSP model is available at …”). When the supplement
+becomes available, the two sources should be cross-checked for numerical
 agreement.</li>
 <li>
 <strong>Between-patient variability interpretation.</strong> The
@@ -3474,20 +3474,21 @@ mechanistic validation pattern, the vignette uses steady-state check and
 figure replication instead.</li>
 <li>
 <strong>Table S3 r_inhibit derivations from IC50 and skin drug
-concentrations</strong> are not on disk. The r_inhibit = 0.99 for
-antibodies and r_inhibit = 0.44 for tralokinumab (via e_a2 = 0.4396) are
-used as stated in the paper’s Section 2.3 and Section 4.2 respectively;
-the derivations of these two values from IC50 + skin concentration data
-(paper Section 3.4 and Table S3) cannot be independently verified from
-the on-disk sources.</li>
+concentrations</strong> were not available when this model was built.
+The r_inhibit = 0.99 for antibodies and r_inhibit = 0.44 for
+tralokinumab (via e_a2 = 0.4396) are used as stated in the paper’s
+Section 2.3 and Section 4.2 respectively; the derivations of these two
+values from IC50 + skin concentration data (paper Section 3.4 and Table
+S3) cannot be independently verified from the sources available when
+this model was built.</li>
 <li>
-<strong>Table S5 elimination-rate half-lives</strong> are not on
-disk. The paper states these were derived from published in-vivo human
-serum half-lives. The numerical mu values used for <code>ld1</code>,
-<code>ld8</code>, <code>ld9</code>, <code>ld10-d17</code> come from
-<code>mu.csv</code> in the reference implementation; the underlying
-half-life citations from Table S5 are not visible for
-cross-reference.</li>
+<strong>Table S5 elimination-rate half-lives</strong> were not
+available when this model was built. The paper states these were derived
+from published in-vivo human serum half-lives. The numerical mu values
+used for <code>ld1</code>, <code>ld8</code>, <code>ld9</code>,
+<code>ld10-d17</code> come from <code>mu.csv</code> in the reference
+implementation; the underlying half-life citations from Table S5 are not
+visible for cross-reference.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

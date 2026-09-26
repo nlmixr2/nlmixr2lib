@@ -43,11 +43,11 @@ bundle for `DDMODEL00000268` (scraped to
   al. 2012, J Pharmacokinet Pharmacodyn,
   <doi:10.1007/s10928-012-9262-4>.
 
-The Stevens 2012 publication itself was not on disk when this model was
-built, so the standard publication-figure replication and
+The Stevens 2012 publication itself was not available when this model
+was built, so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The validation in this
-vignette therefore follows the F.2 self-consistency and F.3
-mechanistic-sanity substitutes in the package’s validation checklist.
+vignette therefore uses the self-consistency and mechanistic-sanity
+checks that stand in for them.
 
 ## Population
 
@@ -113,22 +113,24 @@ never fire; they are not reproduced in the nlmixr2 implementation.
 
 This bundle ships a simulated dataset (`Simulated_PK_rats.csv`) and a
 re-fit listing (`Output_simulated_PK_rats.lst`) but the linked
-publication is not on disk. Following the package’s validation strategy
-for DDMORE bundles (decision tree -\> no PKNCA -\> mechanistic /
-endogenous -\> F.2 + F.3 substitutes), this vignette validates by:
+publication was not available when this model was built. Following the
+package’s validation strategy for DDMORE bundles (no PKNCA comparison is
+possible for a mechanistic / endogenous model, so the self-consistency
+and mechanistic-sanity checks stand in), this vignette validates by:
 
-1.  **Steady-state hold (F.1 / endogenous-model pattern).** With no drug
-    administration, the lactotroph and plasma-prolactin states must stay
-    at their analytic baselines. The .mod sets
-    `A_0(6) = BSL * K70 / K67` and `A_0(7) = BSL` so the system is at
-    steady state at `t = 0`; integrating forward without dose inputs
-    must keep the states at those values within numerical tolerance.
+1.  **Steady-state hold (the closed-form check for an endogenous
+    model).** With no drug administration, the lactotroph and
+    plasma-prolactin states must stay at their analytic baselines. The
+    .mod sets `A_0(6) = BSL * K70 / K67` and `A_0(7) = BSL` so the
+    system is at steady state at `t = 0`; integrating forward without
+    dose inputs must keep the states at those values within numerical
+    tolerance.
 2.  **Drug-response sanity.** A single intravenous remoxipride dose must
     produce a transient brain-ECF concentration that drives an
     Emax-shaped stimulation of plasma prolactin, with prolactin rising
     above baseline, peaking, and decaying back as the brain ECF clears.
     A larger dose must produce a larger (and longer- lasting) response.
-3.  **F.2 self-consistency against the bundle’s simulated dataset.**
+3.  **Self-consistency against the bundle’s simulated dataset.**
     Re-simulate the bundle’s typical-value trajectory at the conditions
     present in `Simulated_PK_rats.csv` (rat 304: 3.8 mg/kg IV at `t = 0`
     and `t = 4` h, `STUD = 3`, `WT = 0.252` kg) and confirm the
@@ -315,7 +317,7 @@ tracks the rapid brain-ECF kinetics; return to within 1% of baseline
 takes longer at higher doses because the lactotroph pool depletes and
 refills on a slower time scale. {.table}
 
-## 3. F.2 self-consistency vs. the bundle’s simulated dataset
+## 3. Self-consistency vs. the bundle’s simulated dataset
 
 Re-simulate the bundle’s typical-value trajectory at the same dosing
 conditions used by the first rat in `Simulated_PK_rats.csv` (ID 304,
@@ -376,7 +378,7 @@ ggplot() +
     x = "Time (h)",
     y = "Plasma prolactin (ug/L)",
     title = paste(
-      "F.2 self-consistency: simulated typical-value trajectory",
+      "Self-consistency: simulated typical-value trajectory",
       "(blue line) vs observed DV (red dots) for rat 304 from",
       "Simulated_PK_rats.csv"
     ),
@@ -454,14 +456,14 @@ noise model.
   scale (mg*kg/L) so the Emax driver is dimensionally consistent inside
   the model. Users comparing brain-ECF concentrations against absolute
   mg/L values in the literature should multiply by body weight (in kg).
-- **No publication on disk.** The Stevens 2012 paper itself is paywalled
-  (J Pharmacokinet Pharmacodyn) and was not available when this model
-  was built. The DDMORE specification document confirms the publication
-  match (title, authors, journal, DOI in the document’s reference block)
-  but stores parameter tables as embedded MS Equation 3.0 OLE objects
-  that are not text- extractable. The cross-check against published
-  parameter tables is therefore not performed; the `.lst` final
-  estimates are the sole source of values.
+- **No publication available.** The Stevens 2012 paper itself is
+  paywalled (J Pharmacokinet Pharmacodyn) and was not available when
+  this model was built. The DDMORE specification document confirms the
+  publication match (title, authors, journal, DOI in the document’s
+  reference block) but stores parameter tables as embedded MS Equation
+  3.0 OLE objects that are not text- extractable. The cross-check
+  against published parameter tables is therefore not performed; the
+  `.lst` final estimates are the sole source of values.
 - **Solver tolerance.** The .mod uses `ADVAN9 TOL=3`. rxode2’s default
   LSODA tolerances (atol=1e-8, rtol=1e-6) are tighter, so trajectory
   differences at the third significant figure between the rxode2

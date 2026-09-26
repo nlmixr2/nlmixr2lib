@@ -3791,9 +3791,8 @@ exponential inhibition of ATV CL by ritonavir plasma concentration. The
 packaged model therefore exposes no covariate columns.</li>
 <li>
 <strong>Inhibition functional form.</strong> The paper does not
-render the exponential equation as printable text (the PDF source
-carries it as <code>&lt;!-- formula-not-decoded --&gt;</code>). The
-packaged form
+render the exponential equation as printable text (it does not survive
+plain-text extraction of the PDF). The packaged form
 <code>CL_ATV(t) = exp(lcl) * exp(-e_crtv_cl * C_RTV(t))</code> is the
 standard exponential-inhibition convention and reproduces the paper’s
 reported ~18% reduction in ATV CL at the cohort-mean C_RTV = 0.63 mg/L

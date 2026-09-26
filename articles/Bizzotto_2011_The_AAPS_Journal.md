@@ -88,7 +88,7 @@ description of sleep architecture in untreated insomnia.
 
 ## Population (study A, used for model identification)
 
-- Source: paper Methods + ESM Table I (not included in the on-disk PDF).
+- Source: paper Methods + ESM Table I (not included in the PDF).
 - N = 116 insomniac adults, placebo arm of a multicentre, randomized,
   double-blind, placebo-controlled parallel-group study.
 - Inclusion (PSG screening): mean total sleep time (TST) 240-390 min,
@@ -700,7 +700,7 @@ omegas
 | Numeric parameter values (sub-model AW, ST1, ST2, SWS, REM) | Table II, p. 450 |
 | Typical individual transition probability profiles | Figure 1, p. 451 |
 | Stage time effects (exp scale) | Figure 2, p. 452 |
-| Covariate effect equations (Eq. 14-15) | p. 453 – covariate coefficients not extracted (no on-disk source) |
+| Covariate effect equations (Eq. 14-15) | p. 453 – covariate coefficients not extracted (no available source) |
 | External validation OFV comparison | Table III, p. 452 |
 
 ## Assumptions and deviations
@@ -735,7 +735,7 @@ verify each one.
     break point, with coefficients `alpha_kmA`, `beta_kmA`, `delta_kmA`.
     The numeric values of these coefficients are not present in Table II
     and (per the paper’s discussion) appear only in the full text and
-    ESM tables, which were not on disk during this extraction.
+    ESM tables, which were not available when this model was built.
     Reproducing Figure 7 of the paper would require the missing
     coefficients.
 
@@ -765,18 +765,17 @@ verify each one.
     per Table II footnote c**: `BPB = IS + (960 - IS) * 0.0679`. The
     simulator resolves this when it needs an absolute `BPB` value.
 
-## Errata and source-acquisition notes
+## Errata and source notes
 
-- The lead PDF
-  (`Bizzotto_2011_Multinomial_logistic_functions_in_markov_*.pdf`) was
-  used as the sole source. Electronic Supplementary Material (ESM) Table
-  I (demographic statistics) and ESM Table II (final parameter estimates
-  from study B, plus the full PSG dataset) and Appendix 1 (the NONMEM
-  control stream for sub-model AW) were referenced in the paper but not
-  on disk for this extraction.
+- The main-text PDF was used as the sole source. Electronic
+  Supplementary Material (ESM) Table I (demographic statistics) and ESM
+  Table II (final parameter estimates from study B, plus the full PSG
+  dataset) and Appendix 1 (the NONMEM control stream for sub-model AW)
+  were referenced in the paper but were not available when this model
+  was built.
 - No errata for Bizzotto 2011 were located via PubMed search
   (`"Bizzotto" 2011 sleep markov` and `"Bizzotto" 2011 erratum`) at the
   time of extraction (2026-06-09).
 - This model is outside the standard `nlmixr2lib` scope; the maintainers
-  approved a non-standard, vignette-only extraction with strict
-  validation and documented AI provenance.
+  ship it as a non-standard, vignette-only model with strict validation
+  and documented AI provenance.

@@ -290,7 +290,7 @@ vector states). Every deviation is enumerated below.
   parameters, so the activation functions Dn/Dm/En/Em remain near zero
   and the downstream T-cell and B-cell branches do not fire visibly in
   the 100-day demo. The paper’s MATLAB implementation almost certainly
-  uses a larger effective coupling; the on-disk equation set alone is
+  uses a larger effective coupling; the published equation set alone is
   insufficient to reproduce Figure 4d/4e quantitatively.
 - **Immune-complex clearance rate `betaCmp` marked “Ag-specific” in
   Table S2** - no default value given. Set to `betaCmp = betaAb` (0.0301

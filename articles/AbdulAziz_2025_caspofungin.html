@@ -3415,7 +3415,7 @@ cannot go red).</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>measured_h <span class="op">=</span> <span class="va">hl_model</span>, closed_form_h <span class="op">=</span> <span class="va">hl_closed</span>,</span>
 <span>  rel_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">hl_model</span> <span class="op">-</span> <span class="va">hl_closed</span><span class="op">)</span> <span class="op">/</span> <span class="va">hl_closed</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    measured_h closed_form_h      rel_diff </span></span>
-<span><span class="co">#&gt;  1.024598e+01  1.024598e+01  3.763888e-13</span></span>
+<span><span class="co">#&gt;  1.024598e+01  1.024598e+01  3.760421e-13</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">hl_model</span> <span class="op">-</span> <span class="va">hl_closed</span><span class="op">)</span> <span class="op">/</span> <span class="va">hl_closed</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -4380,8 +4380,8 @@ every one of them.</p>
 target attainment (FTA, Table 3), which weights the PTA by published MIC
 <em>distributions</em> for each <em>Candida</em> species (the paper’s
 references 19 and 20). Those distributions are not reproduced anywhere
-in the paper, so FTA cannot be recomputed from the source on disk and is
-not attempted here.</p>
+in the paper, so FTA cannot be recomputed from the available source and
+is not attempted here.</p>
 </div>
 </div>
 <div class="section level2">
@@ -4468,10 +4468,10 @@ archive for PMC11823646 contains only per-figure and per-equation raster
 images, not the supplement document. Nothing in the model depends on it:
 all six final parameter estimates are in Table 2, and the covariate
 equation was recovered from the typeset equation image
-(<code>aac.01435-24.m002.jpg</code>) and confirmed against
-<code>pdftotext -layout</code> output. The unobtainable content is the
-model-building progression (OFV / BICc step table), which is provenance
-for model <em>selection</em> rather than any value used here.</li>
+(<code>aac.01435-24.m002.jpg</code>) and confirmed against the PDF’s
+text layer. The unobtainable content is the model-building progression
+(OFV / BICc step table), which is provenance for model
+<em>selection</em> rather than any value used here.</li>
 <li>
 <strong>Fractional target attainment is not reproduced</strong>,
 because the <em>Candida</em> MIC distributions it weights by are cited

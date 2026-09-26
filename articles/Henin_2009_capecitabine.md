@@ -10,10 +10,10 @@
 - DDMORE Foundation Model Repository entry: `DDMODEL00000214`
   (<https://repository.ddmore.eu/model/DDMODEL00000214>)
 
-The publication PDF is not on disk for this extraction; parameter values
-and equations come from the DDMORE bundle’s NONMEM `.mod` and the
-`Output_real_HFSmodel.lst` listing (which evaluates the published
-parameter set on the development data with `MAXEVALS=0` and
+The publication PDF was not available when this model was built;
+parameter values and equations come from the DDMORE bundle’s NONMEM
+`.mod` and the `Output_real_HFSmodel.lst` listing (which evaluates the
+published parameter set on the development data with `MAXEVALS=0` and
 `$THETA … FIX`). See *Assumptions and deviations* for the implications.
 
 ## Population
@@ -67,11 +67,11 @@ evaluation run (`Output_real_HFSmodel.lst` THETA block, supplied
 
 Henin 2009 reports a categorical-likelihood (proportional-odds) Markov
 model on HFS grades 0/1/2; there are no plasma concentrations and no
-NCA-amenable endpoints. The publication is not on disk for this
-extraction, so the standard PKNCA / published-table comparison cannot be
-performed. Validation follows the *F.3 mechanistic-sanity* check (count
-/ Markov / IRT / dropout / TTE) combined with the *F.2 self-consistency*
-check against the bundled simulated dataset:
+NCA-amenable endpoints. The publication was not available when this
+model was built, so the standard PKNCA / published-table comparison
+cannot be performed. Validation follows the *mechanistic-sanity* check
+(count / Markov / IRT / dropout / TTE) combined with the
+*self-consistency* check against the bundled simulated dataset:
 
 1.  The model parses and
     [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
@@ -325,19 +325,19 @@ structure encodes.
 
 ## Assumptions and deviations
 
-- **Source publication PDF not on disk.** Parameter values come from the
-  DDMORE bundle’s `Output_real_HFSmodel.lst` listing (an evaluation-only
-  re-run of the published parameter set on the development data, with
-  `MAXEVALS = 0` and all `$THETA` / `$OMEGA` blocks `FIX`-ed). Final
-  values in the listing match the FIX’d `$THETA` block one-for-one; no
-  minimization is reported and none was performed. Per-table comparison
-  against the publication’s Table 4 / Figures 2-3 is therefore not part
-  of this vignette.
-- **Validation strategy.** F.3 mechanistic-sanity check (count / Markov
-  / IRT / dropout / TTE) combined with the F.2 self-consistency check
-  against the bundle’s simulated dataset, the package’s approach for
-  DDMORE-source models with no linked publication on disk. PKNCA and
-  side-by-side NCA comparison are not applicable: there is no plasma
+- **Source publication PDF not available.** Parameter values come from
+  the DDMORE bundle’s `Output_real_HFSmodel.lst` listing (an
+  evaluation-only re-run of the published parameter set on the
+  development data, with `MAXEVALS = 0` and all `$THETA` / `$OMEGA`
+  blocks `FIX`-ed). Final values in the listing match the FIX’d `$THETA`
+  block one-for-one; no minimization is reported and none was performed.
+  Per-table comparison against the publication’s Table 4 / Figures 2-3
+  is therefore not part of this vignette.
+- **Validation strategy.** Mechanistic-sanity check (count / Markov /
+  IRT / dropout / TTE) combined with the self-consistency check against
+  the bundle’s simulated dataset, the package’s approach for
+  DDMORE-source models whose linked publication was not available. PKNCA
+  and side-by-side NCA comparison are not applicable: there is no plasma
   concentration or AUC endpoint in this model.
 - **Markov state as exposed conditional probabilities.** The NONMEM
   source treats the previous HFS grade as a state variable `SWM1`

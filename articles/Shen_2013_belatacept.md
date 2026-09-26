@@ -357,9 +357,9 @@ in Table 1 element by element:
   significant covariate on CL and V per Zhou et al. (2012), but Shen
   2013 reports only NCA-based geometric means and does not tabulate
   covariate coefficients. Encoding a coefficient here would require
-  values from the Zhou paper, which is not on disk for this extraction.
-  Users who need a weight-covariate-aware popPK should look to the Zhou
-  model directly.
+  values from the Zhou paper, which was not available when this model
+  was built. Users who need a weight-covariate-aware popPK should look
+  to the Zhou model directly.
 - **One-compartment approximation.** Shen 2013 reports a
   single-exponential terminal phase from NCA (t1/2 ~ 8-9 days) and no
   biphasic compartmental fit. The model uses a 1-compartment IV

@@ -398,15 +398,15 @@ synergy on N-state bacteria. {.table}
   without isoniazid.
 - **GPDI functional form.** Chen 2017’s Methods describes the reduced
   GPDI with EC50_INT -\> 0 and joint INTAB = INTBA, but the published
-  main-text formula is encoded with a placeholder
-  (“formula-not-decoded”) in the PDF extraction and Supplementary
-  Material S3 (containing the NONMEM model code) is not on disk. The
-  implementation here follows the canonical Wicha 2017 GPDI formulation,
-  slope_eff = slope_mono / (1 + INT) with INT \> 0 = decreased potency
-  and INT \< 0 = increased potency, gated on/off by whether the partner
-  drug’s plasma concentration exceeds 1e-8 ug/mL. The reported parameter
-  VALUES (INT_S_RH = 4.49, INT_N_RH = 0.32, INT_N_RE = -0.15) are
-  encoded verbatim from Chen 2017 Table 2 and the qualitative simulation
+  main-text formula does not survive plain-text extraction of the PDF,
+  and Supplementary Material S3 (containing the NONMEM model code) was
+  not available when this model was built. The implementation here
+  follows the canonical Wicha 2017 GPDI formulation, slope_eff =
+  slope_mono / (1 + INT) with INT \> 0 = decreased potency and INT \< 0
+  = increased potency, gated on/off by whether the partner drug’s plasma
+  concentration exceeds 1e-8 ug/mL. The reported parameter VALUES
+  (INT_S_RH = 4.49, INT_N_RH = 0.32, INT_N_RE = -0.15) are encoded
+  verbatim from Chen 2017 Table 2 and the qualitative simulation
   behaviour (antagonism in R10H25, synergism in R10H25Z150E100) matches
   the paper’s published findings. Users needing perfect numerical
   fidelity to the source-paper Supplementary S3 should obtain that file
@@ -470,9 +470,9 @@ synergy on N-state bacteria. {.table}
   the Chen 2017 CPT-PSP article via the journal landing page or a PubMed
   “erratum” search as of 2026-05-17.
 - Chen 2017 Supplementary Material S3 (the final NONMEM model code) is
-  referenced in the paper but is not on disk in the maintainers’
-  literature mirror. The model file extracts every parameter VALUE
-  verbatim from Table 1 (popPK) and Table 2 (MTP-GPDI); only the precise
-  GPDI reduction algebra is reconstructed from the canonical Wicha 2017
+  referenced in the paper but was not available when this model was
+  built. The model file extracts every parameter VALUE verbatim from
+  Table 1 (popPK) and Table 2 (MTP-GPDI); only the precise GPDI
+  reduction algebra is reconstructed from the canonical Wicha 2017
   formulation per the “GPDI functional form” note above. A maintainer
   with access to S3 should cross-check the GPDI multiplier shape.

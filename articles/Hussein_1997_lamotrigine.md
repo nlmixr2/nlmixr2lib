@@ -11,8 +11,7 @@
   lamotrigine drug-monitoring concentrations collected in three
   multicentre Phase II/III trials of lamotrigine monotherapy in patients
   with newly diagnosed epilepsy.
-- Source files on disk: the publication PDF, in the maintainers’
-  literature mirror.
+- Source files: the publication PDF.
 
 The packaged model `Hussein_1997_lamotrigine` is a one-compartment open
 model with first-order absorption, a first-order auto-induction term on

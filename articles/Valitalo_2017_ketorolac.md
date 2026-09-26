@@ -8,11 +8,10 @@
   pharmacokinetics. *Br J Clin Pharmacol* 83(9):1966-1975.
   <doi:10.1111/bcp.13311>.
 - Article: <https://doi.org/10.1111/bcp.13311>
-- Source files on disk: the published PDF
-  (`Vlitalo_2017_Body_weight_gender_and_pregnancy_affect__c9886c.pdf`).
-  No supplementary NONMEM control stream was available when this model
-  was built; all parameter values come from the paper’s Table 2
-  final-model column and the Methods (equations 1-6).
+- Source: the published article. No supplementary NONMEM control stream
+  was available when this model was built; all parameter values come
+  from the paper’s Table 2 final-model column and the Methods (equations
+  1-6).
 
 ``` r
 

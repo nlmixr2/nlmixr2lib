@@ -40,11 +40,11 @@ subject with a `POP` value that codes the age stratum:
   `ADOLESCENT = 0`, the implicit baseline).
 
 Body weights in the bundle’s simulated dataset span 0.6 kg (term
-neonate) to 85 kg (adult). The original Wang 2013 PDF was not on disk in
-the maintainers’ literature mirror at extraction time, so per-study
-counts, sex / race breakdowns, and indication-specific information could
-not be cross-checked against the publication; everything in this section
-comes from the abstract (PMID 23754691) and the `.mod` \$INPUT comments.
+neonate) to 85 kg (adult). The original Wang 2013 PDF was not available
+when this model was built, so per-study counts, sex / race breakdowns,
+and indication-specific information could not be cross-checked against
+the publication; everything in this section comes from the abstract
+(PMID 23754691) and the `.mod` \$INPUT comments.
 
 The same information is available programmatically via
 `readModelDb("Wang_2013_morphine")$population`.
@@ -340,9 +340,9 @@ The Wang 2013 publication does not tabulate per-subject or per-stratum
 NCA values for direct numerical comparison (the publication focuses on
 clearance scaling, not exposure metrics), so the side-by-side
 “comparison-against-published-NCA” sanity check normally rendered here
-is deferred to the F.2 self-consistency check below.
+is deferred to the self-consistency check below.
 
-## F.2 self-consistency check vs the bundled simulated dataset
+## Self-consistency check vs the bundled simulated dataset
 
 `Simulated_DataModel1_Morphine.csv` ships with the DDMORE bundle. The
 bundle’s `Output_simulated_ModelI_Morphine.lst` re-fits the model on
@@ -435,7 +435,7 @@ ggplot() +
   labs(x = "Time post-first-dose (min)",
        y = paste0("Cc (", conc_unit, "), log scale"),
        colour = NULL,
-       title = "F.2 self-consistency: typical-value re-simulation vs bundle CONC",
+       title = "Self-consistency: typical-value re-simulation vs bundle CONC",
        caption = paste("Lines: this model's typical-value (zeroRe) prediction;",
                        "Points: bundle Simulated_DataModel1_Morphine.csv CONC column."))
 ```
@@ -468,7 +468,7 @@ knitr::kable(
       `Median (Cc - obs)/obs` = median_rel_err,
       `5th / 95th pct`        = q05_q95
     ),
-  caption = paste("F.2 self-consistency: relative error of the typical-value",
+  caption = paste("Self-consistency: relative error of the typical-value",
     "re-simulation against the bundle's recorded CONC values."))
 ```
 
@@ -495,12 +495,12 @@ rather than a miscoded equation.
 - **Adult oral-bioavailability arm.** The `.mod` `$PK` block applies
   `F1 = 0.88` only when `POP = 3` (adults). The publication abstract
   does not describe the route of administration in detail, and the
-  original Wang 2013 PDF was not on disk in the maintainers’ literature
-  mirror at extraction time, so the rationale for the 0.88 reduction in
-  adults could not be cross-checked against the paper text. The model
-  here preserves the `.mod`’s F1 logic verbatim (`f(central) = 0.88`
-  whenever `CHILD = 0` AND `ADOLESCENT = 0`) and exposes the value as
-  `e_age_adult_f` so it is overridable.
+  original Wang 2013 PDF was not available when this model was built, so
+  the rationale for the 0.88 reduction in adults could not be
+  cross-checked against the paper text. The model here preserves the
+  `.mod`’s F1 logic verbatim (`f(central) = 0.88` whenever `CHILD = 0`
+  AND `ADOLESCENT = 0`) and exposes the value as `e_age_adult_f` so it
+  is overridable.
 - **POP encoding.** The source data column `POP` (1 = 0-3 yr, 2 = 6-15
   yr, 3 = 18-36 yr) is decomposed into the canonical binary indicators
   `CHILD` (POP = 1) and `ADOLESCENT` (POP = 2). Adults are the implicit
@@ -530,9 +530,9 @@ rather than a miscoded equation.
   representative population. The “Virtual cohort” section above builds a
   larger cohort spanning the publication’s reported BW range for the VPC
   and PKNCA panels.
-- **External cross-check.** No publication PDF was on disk in the
-  maintainers’ literature mirror at extraction time, so per-subject
-  parameter estimates and tabulated NCA values from the publication
-  could not be compared against the simulation. The F.2 self-consistency
-  check above is the standard substitute validation for DDMORE-source
-  models without an on-disk publication.
+- **External cross-check.** The publication PDF was not available when
+  this model was built, so per-subject parameter estimates and tabulated
+  NCA values from the publication could not be compared against the
+  simulation. The self-consistency check above is the standard
+  substitute validation for DDMORE-source models whose publication was
+  not available.

@@ -7,10 +7,10 @@
   describe pazopanib clinical effects in renal cell carcinoma. *CPT
   Pharmacometrics Syst Pharmacol.* 2015;4(11):660-668.
   <doi:%5B10.1002/psp4.12001>\](<https://doi.org/10.1002/psp4.12001>).
-- The on-disk PDF is the corrected version of the article (revised
-  online 2015-11-12); the paper’s first-page footnote states that Table
-  1 was replaced after the initial publication. All parameter values
-  used here come from the corrected Table 1.
+- The PDF used is the corrected version of the article (revised online
+  2015-11-12); the paper’s first-page footnote states that Table 1 was
+  replaced after the initial publication. All parameter values used here
+  come from the corrected Table 1.
 
 This vignette validates the clinical fit of the semi-mechanistic
 tumour-growth and angiogenesis-inhibition (TGI) model in renal-cell
@@ -320,9 +320,8 @@ preclinical-to-clinical re-parameterisation.
   mechanistic-sanity checks above (drug-free = pure growth, K-below-P
   crossover, dimensional analysis), matching the validation pattern used
   by the paired mouse model and by `Zecchin_2016_tumorovarian`.
-- **Erratum (Table 1 replacement) folded into the on-disk PDF.** The
-  paper’s first-page footnote states that an error in Table 1 was
-  corrected, with the revised version published online on 2015-11-12.
-  The on-disk PDF used for this extraction is the corrected version; all
-  parameter values come from that corrected Table 1 (no separate erratum
-  document to track).
+- **Erratum (Table 1 replacement) folded into the PDF.** The paper’s
+  first-page footnote states that an error in Table 1 was corrected,
+  with the revised version published online on 2015-11-12. The PDF used
+  for this model is the corrected version; all parameter values come
+  from that corrected Table 1 (no separate erratum document to track).

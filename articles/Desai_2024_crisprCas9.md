@@ -767,9 +767,9 @@ data.frame(Analyte = names(expected),
 - The step-1 “mechanistic model” used to identify drug-specific
   attributes is **not extracted**: its structure appears only as a
   schematic in Supplementary Figure S1 with no equations, so it is not
-  reproducible from on-disk sources. Its final estimates are carried
-  into the three translational models wherever Table 2 marks a parameter
-  “fixed from the mechanistic model” (footnote c), and those are traced
-  to Table 2.
+  reproducible from the available sources. Its final estimates are
+  carried into the three translational models wherever Table 2 marks a
+  parameter “fixed from the mechanistic model” (footnote c), and those
+  are traced to Table 2.
 - The global sensitivity analysis (Sobol indices, Figure 6) is a
   diagnostic, not part of the model, and is not extracted.

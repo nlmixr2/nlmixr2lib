@@ -3118,12 +3118,11 @@ here as <code>ADOLESCENT = 1</code>).</li>
 baseline).</li>
 </ul>
 <p>Body weights in the bundle’s simulated dataset span 0.6 kg (term
-neonate) to 85 kg (adult). The original Wang 2013 PDF was not on disk in
-the maintainers’ literature mirror at extraction time, so per-study
-counts, sex / race breakdowns, and indication-specific information could
-not be cross-checked against the publication; everything in this section
-comes from the abstract (PMID 23754691) and the <code>.mod</code> $INPUT
-comments.</p>
+neonate) to 85 kg (adult). The original Wang 2013 PDF was not available
+when this model was built, so per-study counts, sex / race breakdowns,
+and indication-specific information could not be cross-checked against
+the publication; everything in this section comes from the abstract
+(PMID 23754691) and the <code>.mod</code> $INPUT comments.</p>
 <p>The same information is available programmatically via
 <code>readModelDb("Wang_2013_morphine")$population</code>.</p>
 </div>
@@ -3602,10 +3601,10 @@ infusion).</caption>
 per-stratum NCA values for direct numerical comparison (the publication
 focuses on clearance scaling, not exposure metrics), so the side-by-side
 “comparison-against-published-NCA” sanity check normally rendered here
-is deferred to the F.2 self-consistency check below.</p>
+is deferred to the self-consistency check below.</p>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-check-vs-the-bundled-simulated-dataset">F.2 self-consistency check vs the bundled simulated dataset<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-check-vs-the-bundled-simulated-dataset"></a>
+<h2 id="self-consistency-check-vs-the-bundled-simulated-dataset">Self-consistency check vs the bundled simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-check-vs-the-bundled-simulated-dataset"></a>
 </h2>
 <p><code>Simulated_DataModel1_Morphine.csv</code> ships with the DDMORE
 bundle. The bundle’s <code>Output_simulated_ModelI_Morphine.lst</code>
@@ -3694,7 +3693,7 @@ typical-value model and confirm the trajectories track the recorded
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time post-first-dose (min)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Cc ("</span>, <span class="va">conc_unit</span>, <span class="st">"), log scale"</span><span class="op">)</span>,</span>
 <span>       colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>       title <span class="op">=</span> <span class="st">"F.2 self-consistency: typical-value re-simulation vs bundle CONC"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Self-consistency: typical-value re-simulation vs bundle CONC"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Lines: this model's typical-value (zeroRe) prediction;"</span>,</span>
 <span>                       <span class="st">"Points: bundle Simulated_DataModel1_Morphine.csv CONC column."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -3724,7 +3723,7 @@ typical-value model and confirm the trajectories track the recorded
 <span>      `Median (Cc - obs)/obs` <span class="op">=</span> <span class="va">median_rel_err</span>,</span>
 <span>      `5th / 95th pct`        <span class="op">=</span> <span class="va">q05_q95</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"F.2 self-consistency: relative error of the typical-value"</span>,</span>
+<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Self-consistency: relative error of the typical-value"</span>,</span>
 <span>    <span class="st">"re-simulation against the bundle's recorded CONC values."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The bundle’s <code>CONC</code> values include between-subject
 variability (they were generated with the full IIV / residual-error
@@ -3755,13 +3754,12 @@ metabolic-pathway clearances and would warrant a separate
 <code>.mod</code> <code>$PK</code> block applies <code>F1 = 0.88</code>
 only when <code>POP = 3</code> (adults). The publication abstract does
 not describe the route of administration in detail, and the original
-Wang 2013 PDF was not on disk in the maintainers’ literature mirror at
-extraction time, so the rationale for the 0.88 reduction in adults could
-not be cross-checked against the paper text. The model here preserves
-the <code>.mod</code>’s F1 logic verbatim
-(<code>f(central) = 0.88</code> whenever <code>CHILD = 0</code> AND
-<code>ADOLESCENT = 0</code>) and exposes the value as
-<code>e_age_adult_f</code> so it is overridable.</li>
+Wang 2013 PDF was not available when this model was built, so the
+rationale for the 0.88 reduction in adults could not be cross-checked
+against the paper text. The model here preserves the <code>.mod</code>’s
+F1 logic verbatim (<code>f(central) = 0.88</code> whenever
+<code>CHILD = 0</code> AND <code>ADOLESCENT = 0</code>) and exposes the
+value as <code>e_age_adult_f</code> so it is overridable.</li>
 <li>
 <strong>POP encoding.</strong> The source data column
 <code>POP</code> (1 = 0-3 yr, 2 = 6-15 yr, 3 = 18-36 yr) is decomposed
@@ -3803,12 +3801,12 @@ smoke test, not a representative population. The “Virtual cohort”
 section above builds a larger cohort spanning the publication’s reported
 BW range for the VPC and PKNCA panels.</li>
 <li>
-<strong>External cross-check.</strong> No publication PDF was on
-disk in the maintainers’ literature mirror at extraction time, so
-per-subject parameter estimates and tabulated NCA values from the
-publication could not be compared against the simulation. The F.2
-self-consistency check above is the standard substitute validation for
-DDMORE-source models without an on-disk publication.</li>
+<strong>External cross-check.</strong> The publication PDF was not
+available when this model was built, so per-subject parameter estimates
+and tabulated NCA values from the publication could not be compared
+against the simulation. The self-consistency check above is the standard
+substitute validation for DDMORE-source models whose publication was not
+available.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

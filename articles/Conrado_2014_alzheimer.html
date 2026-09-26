@@ -3119,9 +3119,9 @@ headline methodological contribution.</li>
 listing (<code>Output_real_CPathAD.lst</code>) and a simulated-dataset
 companion (<code>Output_simulated_CPathAD.lst</code> and
 <code>Simulated_data_CPathAD.csv</code>). The linked publication PDF was
-not on disk in the maintainers’ literature mirror at extraction time, so
-an external cross-check against the published parameter table was not
-performed; see the Errata section for the full deviation list.</p>
+not available when this model was built, so an external cross-check
+against the published parameter table was not performed; see the Errata
+section for the full deviation list.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3673,14 +3673,14 @@ ADAS-Cog/70 distribution at each scheduled visit.</p>
 <span>    <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (years)"</span>, y <span class="op">=</span> <span class="st">"ADAS-Cog / 70 (bounded fraction)"</span>,</span>
 <span>         title <span class="op">=</span> <span class="st">"Bundle simulated cohort vs. nlmixr2lib typical value"</span>,</span>
 <span>         subtitle <span class="op">=</span> <span class="st">"Grey ribbon: bundle 5-95% across subjects (median in dark grey). Red: nlmixr2lib typical value."</span>,</span>
-<span>         caption <span class="op">=</span> <span class="st">"F.2 self-consistency check; covariate strata fixed to the bundle's typical-value group."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>         caption <span class="op">=</span> <span class="st">"Self-consistency check; covariate strata fixed to the bundle's typical-value group."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Bundle CSV not on disk at the expected paths; skipping the F.2 self-consistency overlay. "</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Bundle CSV not found at the expected paths; skipping the self-consistency overlay. "</span>,</span>
 <span>          <span class="st">"The model file remains a faithful translation of the source NONMEM equations and final estimates "</span>,</span>
-<span>          <span class="st">"and the F.3 mechanistic-sanity check above exercises the full data path through rxSolve."</span><span class="op">)</span></span>
+<span>          <span class="st">"and the mechanistic-sanity check above exercises the full data path through rxSolve."</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; Bundle CSV not on disk at the expected paths; skipping the F.2 self-consistency overlay. The model file remains a faithful translation of the source NONMEM equations and final estimates and the F.3 mechanistic-sanity check above exercises the full data path through rxSolve.</span></span></code></pre></div>
+<span><span class="co">#&gt; Bundle CSV not found at the expected paths; skipping the self-consistency overlay. The model file remains a faithful translation of the source NONMEM equations and final estimates and the mechanistic-sanity check above exercises the full data path through rxSolve.</span></span></code></pre></div>
 <p>The nlmixr2lib typical-value MUR trajectory falls inside the bundle’s
 per-subject 5-95% envelope and tracks the bundle median closely across
 the 5-year window, indicating the Richards parameters and covariate
@@ -3805,12 +3805,11 @@ disease-progression model, not a PK model. The
 bounded outcome’s scale and range; users loading the model should
 interpret <code>mur</code> x 70 as the model’s prediction of the
 ADAS-Cog total score on the 0-70 scale.</p></li>
-<li><p><strong>Linked publication PDF not on disk.</strong> The Conrado
-2014 publication (<a href="doi:10.1007/s10928-014-9375-z" class="uri">doi:10.1007/s10928-014-9375-z</a>) was not on disk in the
-maintainers’ literature mirror at extraction time. Final-estimate values
-were taken directly from the bundle’s
-<code>Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE</code> block
-(after <code>MINIMIZATION SUCCESSFUL</code>); the bundle’s
+<li><p><strong>Linked publication PDF not available.</strong> The
+Conrado 2014 publication (<a href="doi:10.1007/s10928-014-9375-z" class="uri">doi:10.1007/s10928-014-9375-z</a>) was not available when
+this model was built. Final-estimate values were taken directly from the
+bundle’s <code>Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE</code>
+block (after <code>MINIMIZATION SUCCESSFUL</code>); the bundle’s
 <code>.mod</code> <code>$THETA</code> initial values are within ~3% of
 the .lst final values, consistent with a converged minimisation. An
 external cross-check of these final estimates against the publication’s
@@ -3822,9 +3821,9 @@ bundle does not ship demographic summary statistics for the
 APOE4C, COMED2, SCORE_MMSE in the simulated dataset). Age range /
 median, weight range / median, sex distribution, and regional breakdown
 are described in the Conrado 2014 publication’s Methods / Tables but
-were not available on disk; the <code>population</code> metadata records
-these descriptors as <code>NA</code> rather than fabricating
-values.</p></li>
+were not available when this model was built; the
+<code>population</code> metadata records these descriptors as
+<code>NA</code> rather than fabricating values.</p></li>
 <li><p><strong>Time scaling of the slope.</strong> The source
 <code>.mod</code> rescales <code>TIME</code> (days) to
 <code>YTIME = TIME / 365.25</code> (years) inside <code>$PRED</code> to

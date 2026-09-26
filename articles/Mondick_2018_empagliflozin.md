@@ -1321,13 +1321,14 @@ stopifnot(tmg_mg_min > 250, tmg_mg_min < 450)
   Mondick 2018 Supplementary Table 2 reproduces the complete Mondick
   2016 (Diabetes Obes Metab 18:241-248) parameter set, including
   covariate effects, the IIV block and residual error, and the 2018
-  paper uses it for its own Figures 4 and 5. That primary paper is not
-  on disk for this extraction, so `Mondick_2018_empagliflozin_t2dm`
-  should be re-verified against it if it is acquired. The T2DM file also
-  has no PK layer of its own: it reuses the T1DM PK parameters, which is
-  the pairing the authors themselves used (“the PK parameter estimates
-  from the analysis presented here were used to simulate PK profiles for
-  both populations”).
+  paper uses it for its own Figures 4 and 5. That primary paper was not
+  available when this model was built, so
+  `Mondick_2018_empagliflozin_t2dm` should be re-verified against it if
+  it is acquired. The T2DM file also has no PK layer of its own: it
+  reuses the T1DM PK parameters, which is the pairing the authors
+  themselves used (“the PK parameter estimates from the analysis
+  presented here were used to simulate PK profiles for both
+  populations”).
 - **The T2DM cohort size and demographics are not restated** in Mondick
   2018, so `population$n_subjects` is `NA` in the T2DM model file.
 - **Age effects are retained at their published point estimates** even

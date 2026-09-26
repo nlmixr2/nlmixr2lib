@@ -3209,18 +3209,19 @@ arms rather than a pooled patient proportion. One trial contributed TWO
 placebo arms with different dosing frequencies, which is why 40 trials
 give 41 arms. Covariate values missing from a publication were filled by
 random-forest imputation (Methods 2.2), with Table S4 confirming
-arm-mean trends were preserved; the supplement is NOT on disk, so the
-per-covariate imputation fractions are unknown (see vignette Errata).
-Six further screened covariates were rejected and are recorded here in
-prose because the register has no canonical for them and this file mints
-none for a rejected covariate: mean affected body surface area (strongly
-collinear with baseline EASI, r = 0.96, and therefore not separately
-identifiable), mean disease duration, prior therapy, trial start year,
-study phase (Phase 2 vs Phase 3), and the proportion of male patients.
-Of these, affected BSA DID show a significant univariate inverse
-correlation with the Week 12 placebo rate (r = -0.39, p &lt; 0.05) but
-lost to baseline EASI in the stepwise selection. Fitted in R 4.2.1 with
-nlme 3.1-157 by maximum likelihood, not in NONMEM.</td>
+arm-mean trends were preserved; the supplement was NOT available when
+this model was built, so the per-covariate imputation fractions are
+unknown (see vignette Errata). Six further screened covariates were
+rejected and are recorded here in prose because the register has no
+canonical for them and this file mints none for a rejected covariate:
+mean affected body surface area (strongly collinear with baseline EASI,
+r = 0.96, and therefore not separately identifiable), mean disease
+duration, prior therapy, trial start year, study phase (Phase 2 vs Phase
+3), and the proportion of male patients. Of these, affected BSA DID show
+a significant univariate inverse correlation with the Week 12 placebo
+rate (r = -0.39, p &lt; 0.05) but lost to baseline EASI in the stepwise
+selection. Fitted in R 4.2.1 with nlme 3.1-157 by maximum likelihood,
+not in NONMEM.</td>
 </tr>
 </tbody>
 </table>
@@ -3262,8 +3263,8 @@ value.</caption>
 <td align="left">Structural model (binomial + logit
 exponential-approach)</td>
 <td align="left">model() lp_easi75</td>
-<td align="left">Methods 2.4, display equation (PDF vector math;
-recovered with pdftotext, it is dropped by markdown conversion)</td>
+<td align="left">Methods 2.4, display equation (set as vector graphics
+in the PDF; recovered with pdftotext)</td>
 <td align="left">logit(P) = Ebase + Em_i<em>(1 - exp(-k_i</em>t))</td>
 </tr>
 <tr class="even">
@@ -3408,12 +3409,13 @@ models are independent across records. A user simulating repeated
 observations from one arm and wanting realistic serial correlation must
 impose it after the solve.</li>
 </ol>
-<p>Two further gaps, both from the supplement not being on disk:</p>
+<p>Two further gaps, both from the supplement not being available when
+this model was built:</p>
 <ol start="3" style="list-style-type: decimal">
 <li>
 <strong>Per-trial covariate values are in Table S1</strong>, which
 is distributed in <code>Data S1</code> / <code>Data S2</code>. Those
-files were not retrievable, so the virtual trial-arm cohort below is
+files were not available, so the virtual trial-arm cohort below is
 constructed from the Table 2 marginal summaries (mean, median, range)
 rather than from the actual 41 arms. See Assumptions.</li>
 <li>
@@ -3706,13 +3708,13 @@ trial’s placebo arm can land from the typical trajectory. Here 200
 virtual placebo arms are drawn and compared against the observed
 distribution the source reports in Results 3.1.</p>
 <p>The per-trial baseline EASI values live in supplementary Table S1,
-which is not on disk, so the arm-mean baseline EASI is drawn from a
-scaled Beta distribution chosen to match the three marginal statistics
-Table 2 <em>does</em> report – mean 29, median 29.6, range 11.1-34.5 –
-and TCS permission is assigned at the observed 14-in-41 frequency. Table
-S3 reports that arm demographics and baseline severity are broadly
-comparable across concomitant-therapy groups, which is what licenses
-assigning the two independently.</p>
+which was not available when this model was built, so the arm-mean
+baseline EASI is drawn from a scaled Beta distribution chosen to match
+the three marginal statistics Table 2 <em>does</em> report – mean 29,
+median 29.6, range 11.1-34.5 – and TCS permission is assigned at the
+observed 14-in-41 frequency. Table S3 reports that arm demographics and
+baseline severity are broadly comparable across concomitant-therapy
+groups, which is what licenses assigning the two independently.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20260912</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260912</span><span class="op">)</span></span>
@@ -4553,10 +4555,10 @@ model does not land on exactly: the source reports 0.961 (95% CI
 0.949-0.972) and the model gives 0.960 at baseline EASI 29. The ratio is
 not constant in a logistic model – it depends slightly on which pair of
 baseline scores it is evaluated between – and the source computes it as
-an average over pairs (Table S8, not on disk), so 0.960 versus 0.961 is
-a rounding-level difference well inside the published interval, not a
-transcription error. The spread across the observed baseline range is
-small:</p>
+an average over pairs (Table S8, not available when this model was
+built), so 0.960 versus 0.961 is a rounding-level difference well inside
+the published interval, not a transcription error. The spread across the
+observed baseline range is small:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  `Baseline EASI pair` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"19 -&gt; 20"</span>, <span class="st">"24 -&gt; 25"</span>, <span class="st">"29 -&gt; 30"</span>, <span class="st">"34 -&gt; 35"</span><span class="op">)</span>,</span>
@@ -4647,14 +4649,15 @@ which is why all six published quantities are reproduced exactly.</p>
 <ul>
 <li>The <strong>virtual trial-arm cohort</strong> in Validation 3 is
 constructed, not extracted. The per-trial covariate values are in
-supplementary Table S1, which is not on disk. Arm-mean baseline EASI is
-drawn from a Beta(6, 1.84) scaled to the observed range 11.1-34.5,
-chosen because it matches all three marginal statistics Table 2 reports
-(mean 29, median 29.6, range). TCS permission is assigned at the
-observed 14-in-41 frequency and independently of baseline EASI, which
-Table S3’s finding of “broadly comparable median values of study arm
-demographics and baseline disease metrics across these categorical
-groups” supports but does not prove.</li>
+supplementary Table S1, which was not available when this model was
+built. Arm-mean baseline EASI is drawn from a Beta(6, 1.84) scaled to
+the observed range 11.1-34.5, chosen because it matches all three
+marginal statistics Table 2 reports (mean 29, median 29.6, range). TCS
+permission is assigned at the observed 14-in-41 frequency and
+independently of baseline EASI, which Table S3’s finding of “broadly
+comparable median values of study arm demographics and baseline disease
+metrics across these categorical groups” supports but does not
+prove.</li>
 <li>The <strong>arm size of 78</strong> used for the binomial-residual
 demonstration is the Table 2 median (range 27-321); the source weights
 each arm by its own <code>N</code>.</li>

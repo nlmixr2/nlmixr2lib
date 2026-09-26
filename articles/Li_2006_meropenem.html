@@ -3109,24 +3109,25 @@ at the sample median of 83 mL/min because no CrCl distribution was
 reported in the publication. Six dose groups span 500, 1000, and 2000 mg
 administered as 0.5-h or 3-h IV infusions. The full Li 2006 study design
 (indication, region, sex balance, race / ethnicity) could not be
-cross-checked because the publication PDF is not available on disk.</p>
+cross-checked because the publication PDF was not available when this
+model was built.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod_meta</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 15</span></span>
 <span><span class="co">#&gt;  $ n_subjects    : num 79</span></span>
 <span><span class="co">#&gt;  $ n_studies     : num 1</span></span>
-<span><span class="co">#&gt;  $ age_range     : chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."</span></span>
+<span><span class="co">#&gt;  $ age_range     : chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."</span></span>
 <span><span class="co">#&gt;  $ age_median    : chr "35 years (DDMORE Model_Accommodations)"</span></span>
 <span><span class="co">#&gt;  $ age_sd        : chr "18.2 years (DDMORE Model_Accommodations; treated as lognormal sd in the bundle's simulated cohort)"</span></span>
-<span><span class="co">#&gt;  $ weight_range  : chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."</span></span>
+<span><span class="co">#&gt;  $ weight_range  : chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."</span></span>
 <span><span class="co">#&gt;  $ weight_median : chr "70 kg (DDMORE Model_Accommodations)"</span></span>
 <span><span class="co">#&gt;  $ weight_sd     : chr "16.1 kg (DDMORE Model_Accommodations; treated as lognormal sd in the bundle's simulated cohort)"</span></span>
-<span><span class="co">#&gt;  $ sex_female_pct: chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."</span></span>
-<span><span class="co">#&gt;  $ race_ethnicity: chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."</span></span>
+<span><span class="co">#&gt;  $ sex_female_pct: chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."</span></span>
+<span><span class="co">#&gt;  $ race_ethnicity: chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."</span></span>
 <span><span class="co">#&gt;  $ disease_state : chr "Adult patients receiving meropenem for clinical infection. Specific indication not extractable from DDMORE bund"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ dose_range    : chr "500-2000 mg meropenem IV. Six dosing groups in the DDMORE simulated cohort: 500/1000/2000 mg given as 0.5-h inf"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ crcl_median   : chr "83 mL/min (DDMORE Model_Accommodations; raw measured CrCl, not BSA-normalized)"</span></span>
-<span><span class="co">#&gt;  $ regions       : chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."</span></span>
+<span><span class="co">#&gt;  $ regions       : chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."</span></span>
 <span><span class="co">#&gt;  $ notes         : chr "Demographic medians come from DDMORE Model_Accommodations.txt, which states the model 'was used as described in"| __truncated__</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -3267,11 +3268,11 @@ typical V2, L)</td>
 </tr>
 </tbody>
 </table>
-<p>The Li 2006 publication PDF is not available on disk, so the table
-cites the DDMORE bundle’s MDL file as the proximate source. The
-Model_Accommodations.txt file in the bundle states “Original model was
-used as described in publication (Li et al)”, which is the basis for
-treating the parObj values as the published Li 2006 typical
+<p>The Li 2006 publication PDF was not available when this model was
+built, so the table cites the DDMORE bundle’s MDL file as the proximate
+source. The Model_Accommodations.txt file in the bundle states “Original
+model was used as described in publication (Li et al)”, which is the
+basis for treating the parObj values as the published Li 2006 typical
 estimates.</p>
 </div>
 <div class="section level2">
@@ -3479,9 +3480,9 @@ group.</caption>
 <h2 id="pknca-nca-on-the-simulated-cohort">PKNCA NCA on the simulated cohort<a class="anchor" aria-label="anchor" href="#pknca-nca-on-the-simulated-cohort"></a>
 </h2>
 <p>PKNCA is run on the full stochastic simulation. Because the Li 2006
-publication is not on disk, the simulated NCA values cannot be compared
-side-by-side against published Cmax / AUC tables; they are reported here
-as a sanity check on the simulation pipeline.</p>
+publication was not available, the simulated NCA values cannot be
+compared side-by-side against published Cmax / AUC tables; they are
+reported here as a sanity check on the simulation pipeline.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_for_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3619,15 +3620,14 @@ were “the model as described in publication (Li et al)”, so the parObj
 initial-estimate block IS treated as Li 2006’s published typical-value
 estimates. The simulated-listing’s <code>FINAL PARAMETER ESTIMATE</code>
 block is a re-fit on simulated data and is NOT used.</p></li>
-<li><p><strong>Li 2006 publication PDF is not on disk</strong> in the
-maintainers’ literature mirror, so demographic ranges (age range, weight
-range, sex balance, race/ethnicity, region, indication) and the
-publication’s NCA tables could not be cross-checked. Where these fields
-appear in the model’s <code>population</code> metadata, they are
-recorded as “Not extractable from DDMORE bundle”. When the publication
-PDF is available, the population narrative should be confirmed against
-it and the parObj values cross-checked against any in-paper parameter
-table.</p></li>
+<li><p><strong>Li 2006 publication PDF was not available when this model
+was built</strong>, so demographic ranges (age range, weight range, sex
+balance, race/ethnicity, region, indication) and the publication’s NCA
+tables could not be cross-checked. Where these fields appear in the
+model’s <code>population</code> metadata, they are recorded as “Not
+extractable from DDMORE bundle”. When the publication PDF is available,
+the population narrative should be confirmed against it and the parObj
+values cross-checked against any in-paper parameter table.</p></li>
 <li><p><strong>CRCL covariate semantics deviate from the canonical
 register entry.</strong> The canonical <code>CRCL</code> in
 <code>inst/references/covariate-columns.md</code> is BSA-normalized
@@ -3663,9 +3663,10 @@ conventional combined form with <code>RUV_ADD</code> additive and
 <code>RUV_PROP</code> proportional. The NMTRAN rendering is the executed
 model and is what this nlmixr2lib model reproduces
 (<code>addSd = 0.47</code>, <code>propSd = 0.19</code>).</p></li>
-<li><p><strong>Validation strategy is self-consistency</strong> (no
-linked publication on disk). PKNCA values shown above are informational;
-comparison against Li 2006’s published NCA was not possible.</p></li>
+<li><p><strong>Validation strategy is self-consistency</strong> (the
+publication was not available). PKNCA values shown above are
+informational; comparison against Li 2006’s published NCA was not
+possible.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

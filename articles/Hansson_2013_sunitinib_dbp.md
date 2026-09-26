@@ -98,7 +98,7 @@ head(events, 6)
 #> 6  1  120    0   0 dbp   50 32.819       0
 ```
 
-## Mechanistic-sanity simulation (F.3)
+## Mechanistic-sanity simulation
 
 The paper Results: ‘The final model predicted a drug-induced increase in
 dBP by 10 mmHg for the typical patient with a baseline dBP of 71.8 mmHg
@@ -194,7 +194,7 @@ stopifnot(abs(placebo_baseline - 77.6) < 0.5)  # typical placebo baseline
   `CLI = 32.819 L/h`.
 
 - **Detailed per-cohort demographics absent.** Hansson 2013 e85 Table 1
-  reports per-study sample size and dosing schedule but the trimmed PDF
-  section does not include a baseline-demographics breakdown by cohort
+  reports per-study sample size and dosing schedule but the available
+  PDF text does not include a baseline-demographics breakdown by cohort
   (age, weight, sex, race); the model’s `population` metadata records
   that gap.

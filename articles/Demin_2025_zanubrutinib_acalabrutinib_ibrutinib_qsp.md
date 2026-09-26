@@ -790,8 +790,8 @@ Table S1, the code wins and the disagreement is recorded here.
     24-72 h after the last dose. The trough values agree, the ordering
     of the three drugs is preserved at every timepoint and in every
     tissue, and the discrepancy is far smaller than the alternative `D1`
-    reading would produce, but it is not fully resolved from the on-disk
-    sources.
+    reading would produce, but it is not fully resolved from the
+    available sources.
 
 9.  **Read the `z` column with care in the tail.** Where the published
     percentage is close to zero – acalabrutinib at 48-72 h, published

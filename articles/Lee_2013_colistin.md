@@ -520,7 +520,7 @@ drawn from the published demographics.
   covariance estimates, consistent with a diagonal OMEGA. The packaged
   model uses diagonal IIV; this is consistent with the reported
   information but cannot be cross-checked against the original NONMEM
-  6.2 control stream (not on disk).
+  6.2 control stream (not available).
 
 - **CRCL stored under the canonical `CRCL` column despite being raw
   Cockcroft-Gault (not BSA-normalized).** The canonical `CRCL` column in

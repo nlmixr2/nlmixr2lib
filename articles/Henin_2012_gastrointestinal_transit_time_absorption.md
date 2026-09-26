@@ -692,7 +692,8 @@ linearly with FA and the dose.
   transition width of about 0.22 h around each inflection point.
   Downstream users can change the value by editing the model file. The
   paper’s supplementary NONMEM control file (which would fix the value
-  unambiguously) is referenced in the paper but is not on disk.
+  unambiguously) is referenced in the paper but was not available when
+  this model was built.
 - **Only the ‘no return to fundus’ subpopulation is encoded.** Henin
   2012 fits a 3-component mixture over the antrum-to-fundus return
   behaviour (subpop 1 = no return, subpop 2 = one return, subpop 3 = two
@@ -749,9 +750,10 @@ linearly with FA and the dose.
 ## Errata
 
 - The paper mentions an “electronic supplement file” containing an
-  example NONMEM control file; the supplement is not on disk. The
-  extraction is based on the paper text and Tables I, II, III.
+  example NONMEM control file; the supplement was not available when
+  this model was built. The extraction is based on the paper text and
+  Tables I, II, III.
 - Reference (14) in the paper (Bergstrand et al. 2009, CPT 86:77-83)
-  supplies the Table II MRT / VRT distributions but is likewise not on
-  disk. The Table II values reproduced in the paper are treated as
+  supplies the Table II MRT / VRT distributions but was likewise not
+  available. The Table II values reproduced in the paper are treated as
   authoritative for the current extraction.

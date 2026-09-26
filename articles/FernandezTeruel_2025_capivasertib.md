@@ -791,7 +791,7 @@ is 14.7% higher than in the \< 65 y subgroup. `b` and `A` appear solely
 as the product `b*A`, so the reconstruction pins the *shape* of every
 curve but not its horizontal scale. That is why this is documented here
 rather than shipped as a model file: a model file would have to commit
-to a value of `b`, and no source on disk supplies one.
+to a value of `b`, and no available source supplies one.
 
 The practical size of the effect is worth stating plainly. Halving a
 patient’s AUC – far more than any tolerated dose reduction achieves –

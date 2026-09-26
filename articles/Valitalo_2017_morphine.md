@@ -103,7 +103,7 @@ This model has **no dosing compartments** – morphine plasma
 concentration is supplied per event row via the `CP_MORPH_NGML`
 covariate, and the suctioning state, item, and observer type are
 likewise supplied per row. We build observation-only event tables
-(`evid = 0`) for each F.2 mechanistic-sanity check below.
+(`evid = 0`) for each mechanistic-sanity check below.
 
 ``` r
 
@@ -115,7 +115,7 @@ mod_typ <- rxode2::zeroRe(mod)
 #> Warning: No sigma parameters in the model
 ```
 
-### F.2 anchor 1: baseline pain matches Table 2 at CP = 0, t = 0
+### Mechanistic-sanity anchor 1: baseline pain matches Table 2 at CP = 0, t = 0
 
 At time 0 with no morphine exposure, the latent pain reduces to the
 suctioning-state-specific theta_bl,s. We verify this for all three
@@ -146,7 +146,7 @@ result_baseline <- data.frame(
 )
 result_baseline$abs_err <- result_baseline$simulated - result_baseline$paper
 knitr::kable(result_baseline, digits = 4,
-             caption = "F.2 anchor 1: typical-value latent pain at CP = 0, t = 0 matches Valitalo 2017 Table 2.")
+             caption = "Mechanistic-sanity anchor 1: typical-value latent pain at CP = 0, t = 0 matches Valitalo 2017 Table 2.")
 ```
 
 | MOMENT | label             |  paper | simulated | abs_err |
@@ -155,13 +155,13 @@ knitr::kable(result_baseline, digits = 4,
 |      2 | during suctioning |  1.150 |     1.150 |       0 |
 |      3 | after suctioning  | -0.393 |    -0.393 |       0 |
 
-F.2 anchor 1: typical-value latent pain at CP = 0, t = 0 matches
-Valitalo 2017 Table 2. {.table}
+Mechanistic-sanity anchor 1: typical-value latent pain at CP = 0, t = 0
+matches Valitalo 2017 Table 2. {.table}
 
 All three values should match the paper to numerical precision (\< 1e-10
 absolute error) because they are read directly out of `ini()`.
 
-### F.2 anchor 2: Figure 5a (concentration-effect during suctioning)
+### Mechanistic-sanity anchor 2: Figure 5a (concentration-effect during suctioning)
 
 Valitalo 2017 Figure 5a shows the expected COMFORT-B and VAS scores as
 functions of morphine concentration during suctioning (MOMENT = 2). The
@@ -191,7 +191,7 @@ sim_5a <- rxode2::rxSolve(mod_typ, events = events_5a,
 result_5a <- as.data.frame(sim_5a)[, c("time", "CP_MORPH_NGML",
                                        "pain_typ", "vas_pred_typ")]
 knitr::kable(result_5a, digits = 4,
-             caption = "F.2 anchor 2: latent pain and VAS prediction during suctioning, as a function of morphine concentration.")
+             caption = "Mechanistic-sanity anchor 2: latent pain and VAS prediction during suctioning, as a function of morphine concentration.")
 ```
 
 | time | CP_MORPH_NGML | pain_typ | vas_pred_typ |
@@ -205,8 +205,8 @@ knitr::kable(result_5a, digits = 4,
 |    0 |            40 |   0.7860 |       2.1394 |
 |    0 |            60 |   0.6040 |       1.8057 |
 
-F.2 anchor 2: latent pain and VAS prediction during suctioning, as a
-function of morphine concentration. {.table}
+Mechanistic-sanity anchor 2: latent pain and VAS prediction during
+suctioning, as a function of morphine concentration. {.table}
 
 ``` r
 
@@ -235,10 +235,10 @@ cat(sprintf("VAS drop from CP = 0 to CP = 20 ng/mL: %.3f units (paper Discussion
 ```
 
 The simulated drop is on the order of 0.4 units, consistent with the
-paper’s “\< 0.5 units” statement (within the F.2 5% threshold around the
-published narrative anchor).
+paper’s “\< 0.5 units” statement (within the mechanistic-sanity check’s
+5% threshold around the published narrative anchor).
 
-### F.2 anchor 3: Figure 5b (study-time effect during suctioning)
+### Mechanistic-sanity anchor 3: Figure 5b (study-time effect during suctioning)
 
 Figure 5b shows the expected COMFORT-B and VAS scores as functions of
 study time (in days) during suctioning, with CP held at 0. The paper
@@ -264,7 +264,7 @@ sim_5b <- rxode2::rxSolve(mod_typ, events = events_5b)
 
 result_5b <- as.data.frame(sim_5b)[, c("time", "pain_typ", "vas_pred_typ")]
 knitr::kable(result_5b, digits = 4,
-             caption = "F.2 anchor 3: latent pain and VAS prediction during suctioning, as a function of study time (CP = 0).")
+             caption = "Mechanistic-sanity anchor 3: latent pain and VAS prediction during suctioning, as a function of study time (CP = 0).")
 ```
 
 | time | pain_typ | vas_pred_typ |
@@ -278,8 +278,8 @@ knitr::kable(result_5b, digits = 4,
 |   10 |   1.6260 |       4.1901 |
 |   14 |   1.8164 |       4.7354 |
 
-F.2 anchor 3: latent pain and VAS prediction during suctioning, as a
-function of study time (CP = 0). {.table}
+Mechanistic-sanity anchor 3: latent pain and VAS prediction during
+suctioning, as a function of study time (CP = 0). {.table}
 
 ``` r
 
@@ -310,7 +310,7 @@ cat(sprintf("VAS rise from t = 0 to t = 7 d: %.3f units (paper Discussion: ~1 un
 The simulated rise of approximately 1 unit reproduces the paper’s
 narrative anchor.
 
-### F.2 anchor 4: nurse vs investigator VAS
+### Mechanistic-sanity anchor 4: nurse vs investigator VAS
 
 The bedside nurse uses different VAS difficulty / discrimination thetas
 (50 / 52) and a wider residual-error SD (sqrt(2.55) = 1.60 vs
@@ -334,7 +334,7 @@ result_obs <- as.data.frame(sim_obs)[,
   c("time", "OBSTYPE", "pain_typ", "vas_pred_typ", "vas_diff_typ",
     "vas_discr_typ")]
 knitr::kable(result_obs, digits = 4,
-             caption = "F.2 anchor 4: VAS prediction at baseline during suctioning differs by observer.")
+             caption = "Mechanistic-sanity anchor 4: VAS prediction at baseline during suctioning differs by observer.")
 ```
 
 | time | OBSTYPE | pain_typ | vas_pred_typ | vas_diff_typ | vas_discr_typ |
@@ -342,8 +342,8 @@ knitr::kable(result_obs, digits = 4,
 |    0 |       1 |     1.15 |       2.9337 |       1.9077 |        1.1601 |
 |    0 |       2 |     1.15 |       2.7973 |       2.5764 |        0.6630 |
 
-F.2 anchor 4: VAS prediction at baseline during suctioning differs by
-observer. {.table}
+Mechanistic-sanity anchor 4: VAS prediction at baseline during
+suctioning differs by observer. {.table}
 
 ## Assumptions and deviations
 
@@ -358,18 +358,18 @@ observer. {.table}
   morphine. The `Output_simulated_OriginalModelCode.lst` was not used in
   this extraction. **Parameter values were therefore taken from Table 2
   of the linked publication (Valitalo 2017, <doi:10.1002/psp4.12156>),
-  which is on disk and which the bundle’s `.mod` \$THETA / \$OMEGA /
-  \$SIGMA blocks reproduce exactly as their inline initial values.** No
-  re-fit was needed because the paper, the `.mod`, and the published
-  bootstrap CIs are mutually consistent. The mismatched `.lst` is
-  documented here so a future audit pass can flag the same bundle
-  inconsistency without surprise.
+  which was available when this model was built and which the bundle’s
+  `.mod` \$THETA / \$OMEGA / \$SIGMA blocks reproduce exactly as their
+  inline initial values.** No re-fit was needed because the paper, the
+  `.mod`, and the published bootstrap CIs are mutually consistent. The
+  mismatched `.lst` is documented here so that anyone revisiting the
+  bundle is not surprised by the same inconsistency.
 - **No PKNCA validation.** This is a PD-only IRT model; NCA quantities
-  (Cmax / Tmax / AUC / half-life) are not applicable. F.2 (Count /
-  Markov / IRT / dropout / TTE) substitutes from the package’s
-  validation checklist apply, anchored on the published numerical
-  statements above (latent baselines, “\< 0.5 VAS drop per 20 ng/mL”,
-  “~1 VAS rise per 7 days”).
+  (Cmax / Tmax / AUC / half-life) are not applicable. The
+  mechanistic-sanity substitutes this package uses for count / Markov /
+  IRT / dropout / TTE models apply instead, anchored on the published
+  numerical statements above (latent baselines, “\< 0.5 VAS drop per 20
+  ng/mL”, “~1 VAS rise per 7 days”).
 - **Simplified formal observation.** The source NONMEM model is a mixed
   continuous + categorical likelihood: VAS (ITEM = 12) is a continuous
   additive-error observation, and all 8 other items (ITEM in 1, 2, 3, 5,
@@ -382,11 +382,10 @@ observer. {.table}
   categorical-likelihood machinery (per-grade probabilities
   `peq1..peq8`) is still computed in `model()` for source-trace fidelity
   and for vignette analysis, but is not exercised as the
-  fitted-observation in this nlmixr2 implementation. F.2
-  mechanistic-sanity validation is restricted to the latent-pain
-  trajectory and the typical-value VAS prediction;
-  categorical-item-grade VPC validation against Figure 3 / Figure 4 is
-  out of scope.
+  fitted-observation in this nlmixr2 implementation. Mechanistic-sanity
+  validation is restricted to the latent-pain trajectory and the
+  typical-value VAS prediction; categorical-item-grade VPC validation
+  against Figure 3 / Figure 4 is out of scope.
 - **`vas_pred` observation name (vs. `Cc` convention).** The
   naming-conventions register reserves `Cc` for concentration outputs;
   this is a 0-10 cm VAS pain score, not a concentration, so `vas_pred`

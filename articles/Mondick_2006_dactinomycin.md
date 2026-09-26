@@ -374,11 +374,11 @@ Direct round-trip check: model ini() values equal the published Mondick
 
 - **Source is a one-page PAGE 2006 conference abstract.** Mondick 2006
   is the full publication of this PK model; no journal-length companion
-  paper or supplement is available on disk. The structural model and
-  typical values are reported in the abstract Results section;
-  everything else (allometric exponents, the remaining IIVs, the
-  residual error model, dosing details) is either omitted or described
-  qualitatively.
+  paper or supplement was available when this model was built. The
+  structural model and typical values are reported in the abstract
+  Results section; everything else (allometric exponents, the remaining
+  IIVs, the residual error model, dosing details) is either omitted or
+  described qualitatively.
 - **Allometric exponents are not printed; theory-based values are
   assumed.** The abstract states that “all parameters \[were\]
   allometrically scaled by total body weight, normalized to a weight of
@@ -400,7 +400,7 @@ Direct round-trip check: model ini() values equal the published Mondick
   this vignette comes from the two reported IIVs (`etalvc`, `etalcl`)
   only. Adding a non-zero residual-error term would require either a
   value from a follow-up author correspondence or an external literature
-  value, neither of which is on disk.
+  value, neither of which was available when this model was built.
 - **CV-to-omega conversion.** The abstract reports %CV next to V1 and
   CL; this packaging applies the exact log-normal back-transformation
   omega^2 = log(1 + CV^2), yielding omega^2_V1 = 0.259 and omega^2_CL =

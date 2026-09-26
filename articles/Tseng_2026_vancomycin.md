@@ -35,11 +35,11 @@ Supplementary Table S1 (the univariate and multivariate linear
 regressions of AUC against clinical variables), Supplementary Table S2
 (the one- versus two- versus three-compartment comparison) and
 Supplementary Figures S1-S2 (visual predictive check and goodness-of-fit
-plots) are cited by the paper but are not retrievable from the EuropePMC
-supplementary-files endpoint, which returns HTTP 404 for PMC12965103.
-None of them carries a final-model parameter value: every number this
-model encodes comes from Table 5 of the main article, whose significant
-regression results are also reproduced verbatim in the Results text.
+plots) are cited by the paper but were not available from Europe PMC
+(PMC12965103) when this model was built. None of them carries a
+final-model parameter value: every number this model encodes comes from
+Table 5 of the main article, whose significant regression results are
+also reproduced verbatim in the Results text.
 
 ## Population
 
@@ -924,13 +924,13 @@ stopifnot(all(abs(cmp_num) < 35))
   and 8 hours), while the Figure 1 caption lists six (0, 2, 3, 4, 6 and
   8 hours). This affects neither the model nor any gate here; it is
   recorded because it bears on how Figure 1 should be read.
-- **Supplementary material is not on disk.** Supplementary Tables S1-S2
-  and Figures S1-S2 are cited but the EuropePMC supplementary-files
-  endpoint returns HTTP 404 for PMC12965103. None holds a final-model
-  parameter value: S1 is the linear-regression table whose significant
-  rows are reproduced verbatim in the Results text, S2 is the one-
-  versus two- versus three-compartment selection comparison, and S1-S2
-  figures are diagnostic plots.
+- **Supplementary material was not available when this model was
+  built.** Supplementary Tables S1-S2 and Figures S1-S2 are cited but
+  are not available from Europe PMC (PMC12965103). None holds a
+  final-model parameter value: S1 is the linear-regression table whose
+  significant rows are reproduced verbatim in the Results text, S2 is
+  the one- versus two- versus three-compartment selection comparison,
+  and S1-S2 figures are diagnostic plots.
 - **`cmin` stands in for the published trough.** The paper reports a
   median plasma trough concentration; PKNCA’s `ctrough` returns `NA` for
   this interval even with a record at the interval end, so `cmin` over

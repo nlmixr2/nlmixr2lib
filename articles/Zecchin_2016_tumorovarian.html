@@ -3094,8 +3094,8 @@ stage III/IV) epithelial ovarian cancer. The DDMORE bundle’s
 <code>TOT. NO. OF INDIVIDUALS: 336</code> and
 <code>TOT. NO. OF OBS RECS: 1358</code>. Detailed baseline demographics
 (median age, weight, region) were not reproduced here because the linked
-publication PDF was not on disk for this extraction; the population
-block reports only what the PubMed abstract confirms.</p>
+publication PDF was not available when this model was built; the
+population block reports only what the PubMed abstract confirms.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata at
 <code>readModelDb("Zecchin_2016_tumorovarian")$meta$population</code>
@@ -3111,9 +3111,9 @@ from the <code>FINAL PARAMETER ESTIMATE</code> block of
 <code>$THETA</code> / <code>$OMEGA</code> / <code>$SIGMA</code> lines
 hold initial values, not final estimates, and were not used for
 parameter values. The linked publication (Zecchin et al. 2016 BJCP, <a href="doi:10.1111/bcp.12994" class="uri">doi:10.1111/bcp.12994</a>) was
-not on disk for this extraction, so per-table cross-checks against the
-publication were not performed; see the <em>Assumptions, deviations, and
-Errata</em> section below.</p>
+not available when this model was built, so per-table cross-checks
+against the publication were not performed; see the <em>Assumptions,
+deviations, and Errata</em> section below.</p>
 <table class="table">
 <colgroup>
 <col width="20%">
@@ -3470,20 +3470,19 @@ pure-growth trajectory).</caption>
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
 <p>The validation strategy for this DDMORE-source extraction is
-<strong>mechanistic_sanity</strong> (per the validation flag in the
-metadata this model was built from). For this model type, the relevant
-checks from the package’s validation checklist are F.3 (count / hazard /
-typical-trajectory) plus the F.2 self-consistency substitute, since the
-linked Zecchin 2016 publication was not directly on disk for this
-extraction:</p>
+<strong>mechanistic sanity</strong>. For this model type the relevant
+checks are the mechanistic-sanity check (count / hazard /
+typical-trajectory) plus the self-consistency substitute, since the
+linked Zecchin 2016 publication was not available when this model was
+built:</p>
 <ul>
 <li>
-<strong>F.3 typical-value mechanistic check.</strong> The
-deterministic SLD trajectory matches the model’s mechanism (decline
-during treatment, regrowth after treatment ends, additive on the two
-drug effects, baseline = <code>IBASE * 1000</code>).</li>
+<strong>Typical-value mechanistic check.</strong> The deterministic
+SLD trajectory matches the model’s mechanism (decline during treatment,
+regrowth after treatment ends, additive on the two drug effects,
+baseline = <code>IBASE * 1000</code>).</li>
 <li>
-<strong>F.2 self-consistency.</strong> The model parses
+<strong>Self-consistency check.</strong> The model parses
 (<code>buildModelDb()</code> + <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code>
 clean), <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> runs to completion across the
 50-subject virtual cohort with no NaNs or negative SLD values across the
@@ -3495,7 +3494,7 @@ qualitative shape one would expect from the source
 <code>Output_simulated_SLD.lst</code> IPRED trajectory or against the
 published Zecchin 2016 figures is <strong>not</strong> included because
 the simulated-listing per-subject IPRED tables are not in the bundle and
-the publication PDF was not on disk for this extraction.</p>
+the publication PDF was not available when this model was built.</p>
 </div>
 <div class="section level2">
 <h2 id="assumptions-deviations-and-errata">Assumptions, deviations, and Errata<a class="anchor" aria-label="anchor" href="#assumptions-deviations-and-errata"></a>
@@ -3536,19 +3535,18 @@ individual parameter estimates from this model.</strong>
 </li>
 <li>
 <strong>No external publication-table cross-check.</strong> The
-publication PDF (Zecchin 2016, BJCP, <a href="doi:10.1111/bcp.12994" class="uri">doi:10.1111/bcp.12994</a>) was not on disk for this
-extraction. Parameter values come exclusively from
+publication PDF (Zecchin 2016, BJCP, <a href="doi:10.1111/bcp.12994" class="uri">doi:10.1111/bcp.12994</a>) was not available when this model
+was built. Parameter values come exclusively from
 <code>Output_real_SLD.lst</code>; the
 <code>Model_Accomodations.text</code> file that DDMORE bundles usually
-ship was also not present in this directory. Citation metadata was
+ship was also not present in this bundle. Citation metadata was
 confirmed via PubMed E-utilities (PMID 27136318).</li>
 <li>
 <strong>No in-bundle <code>Model_Accomodations.text</code>.</strong>
 The DDMORE bundle for <code>DDMODEL00000217</code> does not ship a
 <code>Model_Accomodations</code> reference file (one of the optional
 bundle artefacts). The publication mapping used here was reconstructed
-from the PubMed citation match for the metadata this model was built
-from.</li>
+from the PubMed citation match.</li>
 <li>
 <strong>M3 censored-likelihood handling omitted.</strong> The source
 <code>$ERROR</code> block uses the M3 method to handle below-LLOQ SLD

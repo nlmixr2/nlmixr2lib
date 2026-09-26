@@ -587,7 +587,7 @@ point. This is discussed further below.
   parameters, or efavirenz induction parameters (Indmax, IndC50) are
   reported anywhere in the article or its supplement, and no ODEs are
   written out. Reconstructing them would require substituting platform
-  defaults that no on-disk source states, so the PBPK model is
+  defaults that no available source states, so the PBPK model is
   documented here rather than approximated. The MEM captures the paper’s
   levonorgestrel disposition and its efavirenz interaction in full.
 - **The implant release-rate profile is an event-table input, not a

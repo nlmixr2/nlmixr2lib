@@ -119,13 +119,13 @@ head(events, 6)
 #> 6  1  120    0   0 svegfr3   50 32.819       63900         401            1
 ```
 
-## Mechanistic-sanity simulation (F.3)
+## Mechanistic-sanity simulation
 
 The HFS model is a Markov + proportional-odds modality without a
-published NCA table; the F.3 mechanistic-sanity check applies.
-Typical-value simulation should reproduce sVEGFR-3 depletion under drug,
-`bm` (the effect-compartment-smoothed relative-change signal) moving
-negative, and each per-state P(grade \>= 1) rising.
+published NCA table; the mechanistic-sanity check applies. Typical-value
+simulation should reproduce sVEGFR-3 depletion under drug, `bm` (the
+effect-compartment-smoothed relative-change signal) moving negative, and
+each per-state P(grade \>= 1) rising.
 
 ``` r
 

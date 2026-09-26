@@ -97,14 +97,14 @@ Collected here:
 | multiplicative rate structure | – | Eq. 2, Eq. 10a |
 
 **A transcription hazard worth recording.** The publisher’s PDF drops
-the minus sign in front of several printed quantities, and the
-preprocessor trim renders *every* equation in this paper as
-`formula-not-decoded`. Two signs matter and were both recovered from
-Table 3 and then confirmed against the paper’s own arithmetic (see the
-checks below): the exponent in Eq. 10e is **negative** (-0.608), and the
-drug-effect polynomial is `+a x^2 - b x`. The indicator in Eq. 10d is
-`I(DAY >= 1)`, not “day 1 only”; the subscript `>=` is dropped by every
-text extractor and was confirmed by rendering the page as an image.
+the minus sign in front of several printed quantities, and *every*
+equation in this paper is lost by plain-text extraction of the PDF. Two
+signs matter and were both recovered from Table 3 and then confirmed
+against the paper’s own arithmetic (see the checks below): the exponent
+in Eq. 10e is **negative** (-0.608), and the drug-effect polynomial is
+`+a x^2 - b x`. The indicator in Eq. 10d is `I(DAY >= 1)`, not “day 1
+only”; the subscript `>=` is dropped by every text extractor and was
+confirmed by rendering the page as an image.
 
 ## Mechanistic structure
 
@@ -829,15 +829,15 @@ and normalized-dosage equivalence) take their place.
   rounding or transcription slip in the publication. Values in the model
   file are taken from Table 3 and left unaltered.
 - **Signs recovered from Table 3, not from the printed equations.** The
-  publisher PDF drops minus signs in the display equations, and the
-  preprocessor trim renders every equation as `formula-not-decoded`. The
-  Eq. 10e exponent is negative (-0.608 per Table 3) and the drug
-  polynomial is `+a x^2 - b x`; both readings are confirmed by the
-  paper’s own arithmetic in the anchor sections above. The Eq. 10d
-  indicator is `I(DAY >= 1)`; the `>=` subscript is dropped by every
-  text extractor and was confirmed by rendering the page as an image.
-  Reading it as “day 1 only” would switch the time effect off for the
-  entire treatment period.
+  publisher PDF drops minus signs in the display equations, and every
+  equation is lost by plain-text extraction of the PDF. The Eq. 10e
+  exponent is negative (-0.608 per Table 3) and the drug polynomial is
+  `+a x^2 - b x`; both readings are confirmed by the paper’s own
+  arithmetic in the anchor sections above. The Eq. 10d indicator is
+  `I(DAY >= 1)`; the `>=` subscript is dropped by every text extractor
+  and was confirmed by rendering the page as an image. Reading it as
+  “day 1 only” would switch the time effect off for the entire treatment
+  period.
 - **Box-Cox transform applies to the adult cohorts only.** “The Box-Cox
   transformation in the random effects for lambda was not required for
   the pediatric data. Therefore, the shape parameter was not estimated”

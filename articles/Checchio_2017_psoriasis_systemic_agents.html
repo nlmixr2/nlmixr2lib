@@ -3103,10 +3103,9 @@ text.</p></li>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="va">uiLand</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="va">modLand</span><span class="op">)</span></span></code></pre></div>
 <p><strong>A note on reading the source.</strong> Every display equation
-in the published PDF is a rasterised image. The markdown preprocessor
-renders all thirteen of them as
-<code>&lt;!-- formula-not-decoded --&gt;</code>, and any extraction
-working from that file alone would have no structural model at all. All
+in the published PDF is a rasterised image. None of the thirteen
+survives plain-text extraction of the PDF, and a reading that worked
+from such an extraction alone would have no structural model at all. All
 thirteen were recovered with <code>pdftotext -layout</code>, which
 reproduces the mathematical text (mangled in places, but unambiguously)
 directly from the PDF’s font layer.</p>
@@ -4676,10 +4675,9 @@ typical-value trajectory.
 <div class="section level3">
 <h3 id="equation-recovery">Equation recovery<a class="anchor" aria-label="anchor" href="#equation-recovery"></a>
 </h3>
-<p>Every display equation is rasterised in the published PDF. The
-preprocessed markdown contains thirteen
-<code>&lt;!-- formula-not-decoded --&gt;</code> placeholders and no
-mathematics at all. All thirteen equations were recovered with
+<p>Every display equation is rasterised in the published PDF. Plain-text
+extraction of the PDF loses all thirteen and yields no mathematics at
+all. All thirteen equations were recovered with
 <code>pdftotext -layout</code>. Wherever the recovered text was
 ambiguous, the reading was settled by whether it reproduces the source’s
 own published predictions, not by plausibility – the Table 1 and Table 2

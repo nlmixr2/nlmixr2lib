@@ -45,7 +45,7 @@ The remaining four drugs (rifampicin, itraconazole, erythromycin,
 clarithromycin) were simulated from Simcyp’s proprietary default
 compound files. Only scattered parameters for those four are printed, so
 they are not packaged: extracting them would require substituting values
-that appear in no on-disk source.
+that appear in no available source.
 
 ``` r
 
@@ -588,7 +588,7 @@ one brings ethambutol onto the paper’s reported value while leaving
 isoniazid inside its published 0.8-1.2 band and pyrazinamide close to
 the observed 0.83. That is physiologically coherent – the alveolar
 absorption surface is the air-facing side of the epithelium, not the
-capillary side – but no on-disk source gives a capillary surface area,
+capillary side – but no available source gives a capillary surface area,
 so it is **not** shipped as the default. `ratioPdBasal` is exposed so
 the question can be explored without editing the ODEs.
 
@@ -625,11 +625,12 @@ The published model embeds this lung system in a Simcyp full PBPK with
 twelve perfusion-limited tissue compartments. Those compartments need
 per-tissue partition coefficients (`Kp`), which the paper does not print
 for any of its seven drugs; the Rodgers and Rowland tissue-composition
-tables needed to derive them sit one citation further upstream and are
-not on disk. **The systemic side is therefore reduced here to a single
-well-stirred compartment** carrying venous blood and all non-lung
-tissue, at the compound file’s own Vss, ka, fa and clearance, with
-arterial blood and the whole lung layer solved exactly as published.
+tables needed to derive them sit one citation further upstream and were
+not available when this model was built. **The systemic side is
+therefore reduced here to a single well-stirred compartment** carrying
+venous blood and all non-lung tissue, at the compound file’s own Vss,
+ka, fa and clearance, with arterial blood and the whole lung layer
+solved exactly as published.
 
 The reduction was tested before being adopted, not assumed:
 
@@ -651,7 +652,7 @@ mildly, in the isoniazid Tmax: neither can carry a distribution phase.
 Supplementary Table S2 reports the metabolic route for isoniazid and
 pyrazinamide as `CLu,int` in uL/min/mg **cytosolic** protein. Converting
 that to L/h requires CPPGL (cytosolic protein per gram liver), which
-appears in no on-disk source – the Jamei 2014 ESM supplies MPPGL, a
+appears in no available source – the Jamei 2014 ESM supplies MPPGL, a
 *microsomal* factor, which is the wrong subcellular fraction. Both
 non-renal clearances were therefore back-solved from the AUC of the
 paper’s own predicted mean plasma profile (Supplementary Figure 2),
@@ -712,7 +713,7 @@ can be switched on for a volatile compound.
   fixed at zero so the model remains solvable by nlmixr2 without
   inventing a variance. The population variability in the paper’s
   figures comes from the Simcyp population library, which is not
-  reproducible from on-disk sources.
+  reproducible from the available sources.
 - **Recovered-equation typo.** The pulmonary blood reservoir equation
   (Appendix S1 eq 6) prints `C_RLB` inside the RM, RT and LT terms. That
   is an artefact of decoding the supplement’s embedded equation objects;

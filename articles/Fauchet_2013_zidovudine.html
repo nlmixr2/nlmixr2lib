@@ -3810,13 +3810,10 @@ used here can shift the median.</p>
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
 <ul>
-<li><p><strong>Drug field correction.</strong> The metadata supplied
-when this model was built included “drug: Antimicrobial Agents and
-Chemo”, which is the journal name rather than the drug under study. The
-on-disk PDF unambiguously describes a zidovudine + G-ZDV pediatric popPK
-model; the model file and vignette use <code>zidovudine</code> as the
-drug token. The source paper was matched by author / year / journal /
-DOI exactly.</p></li>
+<li><p><strong>Drug identity.</strong> The source PDF unambiguously
+describes a zidovudine + G-ZDV pediatric popPK model; the model file and
+vignette use <code>zidovudine</code> as the drug token. The source paper
+is identified by author / year / journal / DOI.</p></li>
 <li><p><strong>Molar-to-mass framing.</strong> Fauchet 2013 estimated
 the model on the molar scale (Methods “Population pharmacokinetic
 analysis” paragraph 1: “Doses (in mg) and plasma drug concentrations (in

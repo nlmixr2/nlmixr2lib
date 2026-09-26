@@ -493,15 +493,14 @@ Any starred rows should be interpreted with two paper-specific caveats:
   estimate exactly at both dose tiers while making the covariate role
   visible to
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md).
-- **Effect-compartment volume Ve.** The paper’s equation for Ve was not
-  decoded in the text extracted from the PDF (“” markers in the
-  extracted text). The packaged model uses the equivalent-Vc
-  parameterisation A(effect) / Vc for the effect-site plasma-equivalent
-  concentration and applies the density correction `kpp` (1.36 mL/g) at
-  the tissue-concentration observation step. This is mathematically
-  identical to the Ve = Vc / kpp formulation the paper describes
-  elsewhere (kpp inverse approximates the density of fat, 0.735 g/mL,
-  per Gibbs 2011 Discussion).
+- **Effect-compartment volume Ve.** The paper’s equation for Ve does not
+  survive plain-text extraction of the PDF. The packaged model uses the
+  equivalent-Vc parameterisation A(effect) / Vc for the effect-site
+  plasma-equivalent concentration and applies the density correction
+  `kpp` (1.36 mL/g) at the tissue-concentration observation step. This
+  is mathematically identical to the Ve = Vc / kpp formulation the paper
+  describes elsewhere (kpp inverse approximates the density of fat,
+  0.735 g/mL, per Gibbs 2011 Discussion).
 - **Imax model driver.** Gibbs 2011 Table IV states that “IC50 is the
   plasma AMG 221 concentration associated with 50% inhibition”; the
   packaged Imax model therefore uses the effect-site *plasma-equivalent*

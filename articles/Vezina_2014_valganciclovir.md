@@ -405,7 +405,7 @@ ratio acting on a typical 33 kg child).
   `population` block in the model file uses N = 95 from the Methods
   narrative, with the discrepancy noted in `population$notes`.
 - **Errata search.** A scan of the journal landing page DOI listing and
-  a search of the on-disk source-paper directory turned up no
+  a search of the source paper itself turned up no
   erratum/corrigendum/correction notice. The model parameters reflect
   the values reported in the original Br J Clin Pharmacol
   2014;78(2):343-352 publication.

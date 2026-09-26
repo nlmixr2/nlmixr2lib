@@ -664,8 +664,9 @@ stopifnot(
   Nothing is invented; both models are typical-value only.
 - **Two of the paper’s models are not packaged.** The neonatal weight
   model (Equation 18) and the LASSO-distilled warfarin model
-  (Equation 24) report no final estimates anywhere on disk. See the
-  coverage table above for why the Figure 4 panels do not rescue them.
+  (Equation 24) report no final estimates in any available source. See
+  the coverage table above for why the Figure 4 panels do not rescue
+  them.
 - **`podo()` and `tad()` need their compartment argument.** In
   `Bram_2026_biexponential`, the transient flux is written
   `podo(central) * wdist * exp(-kdist * tad(central))`. Verified on

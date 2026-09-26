@@ -276,13 +276,12 @@ interval at 15 mg/kg Q3W. {.table}
 - **Infusion duration assumed 1 hour for the validation simulation.**
   Zhang 2016 confirms an IV infusion regimen (PK samples were collected
   at “pre-dose, end of infusion (EOI), 2, 24, 168 and 336 h after start
-  of infusion at cycle 1”) but does not state the infusion duration in
-  the on-disk source. A 1-hour infusion is used here for the validation
-  plot; the typical infusion duration for rilotumumab in Phase 1 / 2 / 3
-  trials should be verified against Zhu 2014 (or the protocol) when that
-  extraction is built. The choice affects only the shape of the earliest
-  post-infusion samples; AUC and steady-state Cmin / Cmax are
-  unaffected.
+  of infusion at cycle 1”) but does not state the infusion duration. A
+  1-hour infusion is used here for the validation plot; the typical
+  infusion duration for rilotumumab in Phase 1 / 2 / 3 trials should be
+  verified against Zhu 2014 (or the protocol) when that extraction is
+  built. The choice affects only the shape of the earliest post-infusion
+  samples; AUC and steady-state Cmin / Cmax are unaffected.
 
 ## Errata
 

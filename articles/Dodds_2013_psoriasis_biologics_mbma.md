@@ -770,12 +770,13 @@ stopifnot(
   subject count, no demographic table and no per-trial listing for its
   27-trial meta-analysis database, so `n_subjects` and the demographic
   fields of `population` are absent rather than guessed.
-- **Supplement not on disk.** Supplementary Table S1 and the
-  Supplementary Methods were not retrieved. Per the source’s own
-  description, Table S1 repeats the maximal response, ED50 and placebo
-  response already printed in Table 1, and the Supplementary Methods
-  cover the estimation step of the trial simulation rather than the
-  dose-response model. No parameter encoded here depends on them.
+- **Supplement not available.** Supplementary Table S1 and the
+  Supplementary Methods were not available when this model was built.
+  Per the source’s own description, Table S1 repeats the maximal
+  response, ED50 and placebo response already printed in Table 1, and
+  the Supplementary Methods cover the estimation step of the trial
+  simulation rather than the dose-response model. No parameter encoded
+  here depends on them.
 - **No errata found.** The article landing page and PubMed record show
   no correction, corrigendum or author notice for
   <doi:10.1038/psp.2013.32>.

@@ -5766,8 +5766,8 @@ reflect the high IIV / shrinkage on CL acknowledged in Niloy 2026
   multiplies by 1e6 to express plasma concentration in ng/mL, matching
   the typical LC-MS/MS reporting unit and the implicit scale of Niloy
   2026 Figure 1. The reference bioanalytical paper cited as \[8\] in
-  Niloy 2026 is not on disk; the units assumption is documented here in
-  case it differs.
+  Niloy 2026 was not available when this model was built; the units
+  assumption is documented here in case it differs.
 - **IIV variance encoding.** Niloy 2026 Table 1 reports IIV as %CV (5.8%
   on CL, 25% on V). These were converted to NONMEM-style omega^2 via the
   Monolix log-normal convention `omega^2 = log(1 + CV^2)`, giving

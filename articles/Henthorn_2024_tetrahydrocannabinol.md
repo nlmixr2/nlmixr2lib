@@ -739,13 +739,12 @@ nothing to do with the model.
   0.82 +/- 0.23 in the Results. The point estimates agree everywhere and
   only point estimates are encoded, so neither affects the model.
 - **Exponential, not proportional, covariate form.** Equation (3) is
-  `theta_i = theta_TV * e^(theta_cov) * e^(eta_i)`. The text extracted
-  from the source PDF dropped all four display equations
-  (“formula-not-decoded”); they were recovered from the PDF text layer
-  directly. The exponential reading is confirmed arithmetically against
-  the published 10.78 mg typical daily dose. The paper’s prose
-  description of the effect as “an approximate 5-fold difference” is a
-  loose gloss of `exp(1.79) = 5.99`.
+  `theta_i = theta_TV * e^(theta_cov) * e^(eta_i)`. Naive plain-text
+  extraction of the PDF drops all four display equations; they were
+  recovered from the PDF text layer directly. The exponential reading is
+  confirmed arithmetically against the published 10.78 mg typical daily
+  dose. The paper’s prose description of the effect as “an approximate
+  5-fold difference” is a loose gloss of `exp(1.79) = 5.99`.
 - **Inhalation modelled as an instantaneous input.** Figure 2 shows drug
   inhaled directly into `VC` with no absorption or infusion compartment,
   and the paper describes no input rate, so the dose is encoded as a

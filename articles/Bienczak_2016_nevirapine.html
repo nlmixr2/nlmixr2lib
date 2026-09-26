@@ -3334,7 +3334,7 @@ FpreH = 17.02% dropped; see Assumptions and deviations)</td>
 </td>
 <td>n/a</td>
 <td>Results ‘Population pharmacokinetics’ paragraph 4 + Equation (7) of
-Appendix S1; Appendix S1 not on disk so the form is reconstructed from
+Appendix S1; Appendix S1 not available so the form is reconstructed from
 the narrative (matches the paper’s reported 90% at age 3.3 years)</td>
 </tr>
 <tr class="even">
@@ -3841,9 +3841,9 @@ different anchor must shift their event-table times accordingly.</li>
 <strong>Transit-compartment parameterisation.</strong> Bienczak 2016
 reports both <code>MTT = 0.56 h</code> (NTRANS = 3 fixed) and
 <code>Ka = 0.84 1/h</code> as separate joint-identified parameters.
-Appendix S1 (which would disambiguate the parameterisation) was not on
-disk at extraction time. The chosen interpretation places NTRANS = 3
-sequential transit compartments with shared rate
+Appendix S1 (which would disambiguate the parameterisation) was not
+available when this model was built. The chosen interpretation places
+NTRANS = 3 sequential transit compartments with shared rate
 <code>ktr = NTRANS / MTT = 5.36 1/h</code> between depot, transit_1,
 transit_2, transit_3, then a separate first-order absorption from
 transit_3 into central at rate <code>ka = 0.84 1/h</code>. An
@@ -3883,7 +3883,7 @@ canonical well-stirred relationship.</li>
 <li>
 <strong>FpreH equation reconstructed from narrative.</strong>
 Equation (7) for the age-driven FpreH maturation lives in Appendix S1,
-which is not on disk. The implementation reconstructs the form as
+which was not available. The implementation reconstructs the form as
 <code>FpreH(AGE) = 1 - (1 - 0.583) * exp(-ln(2) / 1.54 * AGE)</code>
 from the paper’s narrative (‘FpreH at birth … 58.30%, half-life of the
 process 1.54 years, 90% reached at age 3.3 years’). The reconstructed
@@ -3909,7 +3909,7 @@ with frequencies fixed to those observed in the study population. This
 nlmixr2lib model assumes known genotype and expects the user to supply
 the three indicator columns <code>CYP2B6_IM</code>,
 <code>CYP2B6_SM</code>, <code>CYP2B6_USM</code> directly; the
-mixture-model dispatch is not part of the packaged model.</li>
+mixture-model imputation is not part of the packaged model.</li>
 <li>
 <strong>Increased residual error and BOV for unobserved-intake-time
 data dropped.</strong> Bienczak 2016 Table 3 reports a 1.56-fold

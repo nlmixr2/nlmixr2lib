@@ -776,11 +776,11 @@ threshold.
   structural K_(out) varies only with the typical-value estimate.
 - **Time-varying WBC rxode2 limitation.** A time-varying WBC column in
   the events data frame segfaults rxode2 when combined with the repeated
-  IV bolus dose schedule used here (observed on rxode2 in
-  `claude_runner` 015-mould_2007_alemtuzumab); the baseline-WBC
-  simplification above avoids the crash. The underlying PK model file
-  supports time-varying WBC and will benefit from the fix once the
-  rxode2 issue is resolved.
+  IV bolus dose schedule used here (observed by the maintainers on
+  rxode2 when this model was built); the baseline-WBC simplification
+  above avoids the crash. The underlying PK model file supports
+  time-varying WBC and will benefit from the fix once the rxode2 issue
+  is resolved.
 - **Race.** Not reported in Mould 2007; not simulated.
 - **Weight.** Tested but not retained as a covariate; not simulated.
 - **Dose escalation.** The initial 3 → 10 → 30 mg escalation doses were
@@ -788,9 +788,9 @@ threshold.
   regimen.
 - **IIV**. Block covariance was not reported; the model uses the paper’s
   diagonal Ω on V_(max), K_(m), V₁, V₂.
-- **Publisher restriction on full-text XML.** The on-disk PMC XML for
-  PMID 17506867 contained front matter only (the publisher blocks
-  full-text XML download). Parameter values, equations, and population
+- **Publisher restriction on full-text XML.** The PMC XML for PMID
+  17506867 contained front matter only (the publisher blocks full-text
+  XML download). Parameter values, equations, and population
   demographics were verified against the PMC-rendered full-text page
   (`https://pmc.ncbi.nlm.nih.gov/articles/PMC2000651/`). No errata were
   found on PubMed or Wiley Online Library.

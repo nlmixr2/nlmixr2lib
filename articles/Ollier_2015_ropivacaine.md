@@ -30,7 +30,7 @@
   per-subject postoperative fibrinogen-slope effect on kin (beta =
   0.422), was dropped in this packaged model because the population mean
   fibrinogen slope used to centre the covariate was not reported in any
-  source on disk; see vignette Assumptions and deviations. Ropivacaine
+  available source; see vignette Assumptions and deviations. Ropivacaine
   is dosed as 5 TAP boluses of 3 mg/kg (10.9 umol/kg) at 0, 12, 24, 36,
   48 h post-incision by protocol. Concentrations throughout are in molar
   units (uM) matching the paper.
@@ -47,7 +47,7 @@ resection reduces free-drug clearance by 53%. The paper’s third retained
 covariate (a per-subject postoperative fibrinogen slope on the
 binding-site production rate) was dropped in this packaged model because
 the population-mean reference used to centre the covariate was not
-reported in any source on disk. See **Assumptions and deviations**
+reported in any available source. See **Assumptions and deviations**
 below.
 
 ## Population

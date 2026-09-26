@@ -79,7 +79,7 @@ tibble::tibble(Field = names(pop), Value = vapply(pop, as.character, character(1
 | dose_range | n/a (placebo arms only) |
 | timepoints | EASI-75 responder counts at the timepoints each trial reported over its double-blind period; the source’s primary read-outs are Week 12 and Week 16. Observed placebo EASI-75 rates ranged 4.6-36.8% at Week 12 and 6.1-39.4% at Week 16 (Results 3.1). |
 | regions | International; 40 randomised trials published 2014-2024 (search window 2000-2024), 18 Phase 2 and 22 Phase 3. Table 1 lists every trial with its NCT number and data source. |
-| notes | MBMA at the STUDY-ARM level: each modelled observation is one placebo arm’s EASI-75 responder count at one timepoint, so the random effects are BETWEEN-TRIAL, not between-subject, and this model must not be used to simulate individual patients. sex_female_pct is derived as 100 - 55.1, the complement of the Table 2 median ‘Percent of males (%)’ of 55.1 (range 35.7-82.2), and is therefore a median across arms rather than a pooled patient proportion. One trial contributed TWO placebo arms with different dosing frequencies, which is why 40 trials give 41 arms. Covariate values missing from a publication were filled by random-forest imputation (Methods 2.2), with Table S4 confirming arm-mean trends were preserved; the supplement is NOT on disk, so the per-covariate imputation fractions are unknown (see vignette Errata). Six further screened covariates were rejected and are recorded here in prose because the register has no canonical for them and this file mints none for a rejected covariate: mean affected body surface area (strongly collinear with baseline EASI, r = 0.96, and therefore not separately identifiable), mean disease duration, prior therapy, trial start year, study phase (Phase 2 vs Phase 3), and the proportion of male patients. Of these, affected BSA DID show a significant univariate inverse correlation with the Week 12 placebo rate (r = -0.39, p \< 0.05) but lost to baseline EASI in the stepwise selection. Fitted in R 4.2.1 with nlme 3.1-157 by maximum likelihood, not in NONMEM. |
+| notes | MBMA at the STUDY-ARM level: each modelled observation is one placebo arm’s EASI-75 responder count at one timepoint, so the random effects are BETWEEN-TRIAL, not between-subject, and this model must not be used to simulate individual patients. sex_female_pct is derived as 100 - 55.1, the complement of the Table 2 median ‘Percent of males (%)’ of 55.1 (range 35.7-82.2), and is therefore a median across arms rather than a pooled patient proportion. One trial contributed TWO placebo arms with different dosing frequencies, which is why 40 trials give 41 arms. Covariate values missing from a publication were filled by random-forest imputation (Methods 2.2), with Table S4 confirming arm-mean trends were preserved; the supplement was NOT available when this model was built, so the per-covariate imputation fractions are unknown (see vignette Errata). Six further screened covariates were rejected and are recorded here in prose because the register has no canonical for them and this file mints none for a rejected covariate: mean affected body surface area (strongly collinear with baseline EASI, r = 0.96, and therefore not separately identifiable), mean disease duration, prior therapy, trial start year, study phase (Phase 2 vs Phase 3), and the proportion of male patients. Of these, affected BSA DID show a significant univariate inverse correlation with the Week 12 placebo rate (r = -0.39, p \< 0.05) but lost to baseline EASI in the stepwise selection. Fitted in R 4.2.1 with nlme 3.1-157 by maximum likelihood, not in NONMEM. |
 
 population metadata of the model file (Serrano 2026 Tables 1 and 2).
 {.table}
@@ -105,7 +105,7 @@ the source it came from.
 
 | Quantity | Model file | Source location | Value |
 |:---|:---|:---|:---|
-| Structural model (binomial + logit exponential-approach) | model() lp_easi75 | Methods 2.4, display equation (PDF vector math; recovered with pdftotext, it is dropped by markdown conversion) | logit(P) = Ebase + Em_i*(1 - exp(-k_i*t)) |
+| Structural model (binomial + logit exponential-approach) | model() lp_easi75 | Methods 2.4, display equation (set as vector graphics in the PDF; recovered with pdftotext) | logit(P) = Ebase + Em_i*(1 - exp(-k_i*t)) |
 | Continuous-covariate form (mean-centred) | model() emax_i | Methods 2.4, display equation f(X,theta) = theta_X\*(X - Xbar) | theta_X \* (X - mean X) |
 | Categorical-covariate form (m-1 indicators) | model() emax_i | Methods 2.4 prose | binary indicator vs reference category |
 | Final covariate model, fully numeric | model() emax_i, lp_easi75 | Results 3.2, display equation | -4.97 + (3.21 + 0.774*I_TCS - 0.0486*(EASI - 29)) \* (1 - exp(-0.291 t)) |
@@ -168,10 +168,11 @@ why every published number checked below is reproduced exactly.
     simulating repeated observations from one arm and wanting realistic
     serial correlation must impose it after the solve.
 
-Two further gaps, both from the supplement not being on disk:
+Two further gaps, both from the supplement not being available when this
+model was built:
 
 3.  **Per-trial covariate values are in Table S1**, which is distributed
-    in `Data S1` / `Data S2`. Those files were not retrievable, so the
+    in `Data S1` / `Data S2`. Those files were not available, so the
     virtual trial-arm cohort below is constructed from the Table 2
     marginal summaries (mean, median, range) rather than from the actual
     41 arms. See Assumptions.
@@ -391,13 +392,13 @@ compared against the observed distribution the source reports in Results
 3.1.
 
 The per-trial baseline EASI values live in supplementary Table S1, which
-is not on disk, so the arm-mean baseline EASI is drawn from a scaled
-Beta distribution chosen to match the three marginal statistics Table 2
-*does* report – mean 29, median 29.6, range 11.1-34.5 – and TCS
-permission is assigned at the observed 14-in-41 frequency. Table S3
-reports that arm demographics and baseline severity are broadly
-comparable across concomitant-therapy groups, which is what licenses
-assigning the two independently.
+was not available when this model was built, so the arm-mean baseline
+EASI is drawn from a scaled Beta distribution chosen to match the three
+marginal statistics Table 2 *does* report – mean 29, median 29.6, range
+11.1-34.5 – and TCS permission is assigned at the observed 14-in-41
+frequency. Table S3 reports that arm demographics and baseline severity
+are broadly comparable across concomitant-therapy groups, which is what
+licenses assigning the two independently.
 
 ``` r
 
@@ -1213,10 +1214,10 @@ does not land on exactly: the source reports 0.961 (95% CI 0.949-0.972)
 and the model gives 0.960 at baseline EASI 29. The ratio is not constant
 in a logistic model – it depends slightly on which pair of baseline
 scores it is evaluated between – and the source computes it as an
-average over pairs (Table S8, not on disk), so 0.960 versus 0.961 is a
-rounding-level difference well inside the published interval, not a
-transcription error. The spread across the observed baseline range is
-small:
+average over pairs (Table S8, not available when this model was built),
+so 0.960 versus 0.961 is a rounding-level difference well inside the
+published interval, not a transcription error. The spread across the
+observed baseline range is small:
 
 ``` r
 
@@ -1288,14 +1289,15 @@ reproduced exactly.
 
 - The **virtual trial-arm cohort** in Validation 3 is constructed, not
   extracted. The per-trial covariate values are in supplementary Table
-  S1, which is not on disk. Arm-mean baseline EASI is drawn from a
-  Beta(6, 1.84) scaled to the observed range 11.1-34.5, chosen because
-  it matches all three marginal statistics Table 2 reports (mean 29,
-  median 29.6, range). TCS permission is assigned at the observed
-  14-in-41 frequency and independently of baseline EASI, which Table
-  S3’s finding of “broadly comparable median values of study arm
-  demographics and baseline disease metrics across these categorical
-  groups” supports but does not prove.
+  S1, which was not available when this model was built. Arm-mean
+  baseline EASI is drawn from a Beta(6, 1.84) scaled to the observed
+  range 11.1-34.5, chosen because it matches all three marginal
+  statistics Table 2 reports (mean 29, median 29.6, range). TCS
+  permission is assigned at the observed 14-in-41 frequency and
+  independently of baseline EASI, which Table S3’s finding of “broadly
+  comparable median values of study arm demographics and baseline
+  disease metrics across these categorical groups” supports but does not
+  prove.
 - The **arm size of 78** used for the binomial-residual demonstration is
   the Table 2 median (range 27-321); the source weights each arm by its
   own `N`.

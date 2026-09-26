@@ -637,7 +637,7 @@ sim |>
        title = "Simulated concentration-time profiles by NAT2 genotype",
        caption = paste("Median with 5th-95th percentile band, 200 subjects per",
                        "arm, 300 mg oral isoniazid. Comparable to Figure S2",
-                       "(visual predictive check), which is not on disk."))
+                       "(visual predictive check), which was not available when this model was built."))
 #> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.

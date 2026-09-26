@@ -40,7 +40,7 @@ uL/min/mg microsomal protein; cyclosporine `Vss` 1.52 L/kg, CYP3A4
 `CLint` 2.03 uL/min/pmol isoform), but turning either `CLint` into a
 systemic clearance needs the microsomal protein per gram of liver, the
 liver weight, the CYP3A4 abundance and the hepatic blood flow, and none
-of those is printed anywhere on disk – they are Simcyp V11.0
+of those is printed in any available source – they are Simcyp V11.0
 population-library outputs.
 
 That gap is not cosmetic, and one number shows why. Cyclosporine is
@@ -935,7 +935,7 @@ implementation deliberately departs from the published analysis.
     2, 3 and 5) require Simcyp V11.0 population-library values –
     microsomal protein per gram of liver, liver weight, CYP3A4
     abundance, hepatic blood flow, and the `Qgut` absorption model –
-    none of which is on disk. Supplementary Tables S1 and S2 give the
+    none of which was available. Supplementary Tables S1 and S2 give the
     compound layers but not the scalars needed to use them. No
     substitute was taken from a textbook or from another paper.
 2.  **Enzyme baseline `E0` is carried as 1.** The paper defines `E0` as

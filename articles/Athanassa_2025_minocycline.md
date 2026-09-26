@@ -707,12 +707,12 @@ design.
   no effect on the model, which is covariate-free.
 - **Limit of quantification.** The paper states that 10 of 182
   concentrations (5.49%) were below the LOQ and discarded, but the
-  assay’s LOQ is reported only in the Supplementary Material, which is
-  not available on disk here. The observed concentration range in Table
-  1 (0.06-8.735 mg/L) is used as the LOQ for the observation-process
-  replication. This affects only the observed-style Cmax panel, not the
-  model or any structural check.
-- **Supplementary Material not on disk.** Figures S1-S9 and Sections
+  assay’s LOQ is reported only in the Supplementary Material, which was
+  not available. The observed concentration range in Table 1 (0.06-8.735
+  mg/L) is used as the LOQ for the observation-process replication. This
+  affects only the observed-style Cmax panel, not the model or any
+  structural check.
+- **Supplementary Material not available.** Figures S1-S9 and Sections
   S2-S3 cover the HPLC assay, chromatograms, a spaghetti plot and
   goodness-of-fit plots. No parameter value used by this model comes
   from the supplement – Table 2 of the main paper is complete – so the

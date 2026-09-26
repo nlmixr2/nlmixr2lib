@@ -784,7 +784,7 @@ and Vc have both. {.table}
   paper identifies “weight and sex on CL and Vc” (19 models) as the
   third most common combination but neither simulates it nor reports the
   median coefficients for that subset, so it cannot be parameterised
-  from on-disk sources.
+  from the available sources.
 - **Screened but unused covariates.** Median effects for body weight,
   albumin, sex and ADA status across the 160 models are recorded in the
   generic model’s `covariatesDataExcluded` metadata (allometric

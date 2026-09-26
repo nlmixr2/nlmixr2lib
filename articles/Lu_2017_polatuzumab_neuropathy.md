@@ -109,10 +109,10 @@ upstream Lu 2019 PK-side values are documented in
 
 ## Virtual cohort
 
-The dataset that Lu 2017 fit (155 R/R B-cell NHL patients) is not on
-disk for this extraction; the vignette builds a small virtual cohort
-programmatically that mirrors the cohort composition described in the
-paper’s Methods. Each subject receives pola q3w IV for 8 cycles (168
+The dataset that Lu 2017 fit (155 R/R B-cell NHL patients) was not
+available when this model was built; the vignette builds a small virtual
+cohort programmatically that mirrors the cohort composition described in
+the paper’s Methods. Each subject receives pola q3w IV for 8 cycles (168
 days = 4032 hours), with the dose administered as MMAE-equivalent
 micrograms into the acMMAE central compartment per the Lu 2019 PK input
 convention.
@@ -407,21 +407,22 @@ stopifnot(incidence_at_168$incidence[incidence_at_168$arm == "WT = 80 kg"] >
 - **Upstream PK source substitution.** The Lu 2017 TTE PD parameters
   were fit by NONMEM using empirical-Bayes (EBE) individual PK
   parameters from a previously developed Lu 2015 ASCPT-poster popPK
-  model that is not in the peer-reviewed literature and is not on disk
-  for this extraction. Per the standing nlmixr2lib policy of reusing a
-  published same-drug PK as the upstream layer, the model file inlines
-  the acMMAE side of the peer-reviewed Lu 2019 integrated two-analyte
-  popPK (`Lu_2019_polatuzumab.R`). The Lu 2019 PK is more sophisticated
-  than the Lu 2015 poster popPK – adding a Hill-shaped time-decay on
-  CL_NS, a separate exponential decay on CL_t, Michaelis-Menten
-  elimination, and several covariates not present in the 2015 model –
-  and therefore produces somewhat different acMMAE concentration
-  profiles than were used to fit the Lu 2017 TTE PD parameters. The
-  absolute predicted PN incidences in the Table 2 reproduction above are
-  therefore expected to diverge from Lu 2017 Table 2 values, but the
-  dose-response direction (2.4 mg/kg \> 1.8 mg/kg), time trend
-  (incidence increases with cycle count), and risk-ratio magnitude
-  (around 1.3-1.4 between 6 and 8 cycles) should be preserved.
+  model that is not in the peer-reviewed literature and was not
+  available when this model was built. Per the standing nlmixr2lib
+  policy of reusing a published same-drug PK as the upstream layer, the
+  model file inlines the acMMAE side of the peer-reviewed Lu 2019
+  integrated two-analyte popPK (`Lu_2019_polatuzumab.R`). The Lu 2019 PK
+  is more sophisticated than the Lu 2015 poster popPK – adding a
+  Hill-shaped time-decay on CL_NS, a separate exponential decay on CL_t,
+  Michaelis-Menten elimination, and several covariates not present in
+  the 2015 model – and therefore produces somewhat different acMMAE
+  concentration profiles than were used to fit the Lu 2017 TTE PD
+  parameters. The absolute predicted PN incidences in the Table 2
+  reproduction above are therefore expected to diverge from Lu 2017
+  Table 2 values, but the dose-response direction (2.4 mg/kg \> 1.8
+  mg/kg), time trend (incidence increases with cycle count), and
+  risk-ratio magnitude (around 1.3-1.4 between 6 and 8 cycles) should be
+  preserved.
 - **TTE PD parameters have no IIV.** Lu 2017 reports a single point
   estimate (with RSE / SE) for each of alpha, beta, k1e, and the 12
   covariate effects, with no omega block on the TTE PD parameters; the
@@ -451,8 +452,8 @@ stopifnot(incidence_at_168$incidence[incidence_at_168$arm == "WT = 80 kg"] >
   physical column and are applied separately in `model()`; no value
   translation is needed on the dataset side.
 - **Virtual cohort covariate distributions.** Lu 2017 Supplemental Table
-  S1 tabulates per-patient covariate distributions but the supplement is
-  not on disk; the vignette draws WT, AGE, ALB, TUMSZ, and binary
+  S1 tabulates per-patient covariate distributions but the supplement
+  was not available; the vignette draws WT, AGE, ALB, TUMSZ, and binary
   history indicators from defensible distributions anchored at the
   Figure 3 forest-plot reference values. The qualitative dose-response
   and covariate-shift checks below should be insensitive to the exact

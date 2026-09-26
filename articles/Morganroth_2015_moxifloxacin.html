@@ -3095,10 +3095,10 @@ ug/mL). The source publication does not fit a popPK model; the PK driver
 in this file is a typical-value 1-compartment oral approximation with
 CL/F = 8.47 L/h, V/F = 132.6 L, and ka = 1.7 /h derived from the pooled
 NCA summary statistics in Morganroth 2015 Table 1 (see vignette Errata).
-Per operator sidecar-001 (option C) the paper’s BVN(0, Sigma) subject
-random effects on the PD intercept and slope are OMITTED because Sigma
-is not numerically reported in the paper, and a small placeholder
-additive residual SD of 1 ms is used to satisfy rxode2’s residual-error
+By decision of the maintainers, the paper’s BVN(0, Sigma) subject random
+effects on the PD intercept and slope are OMITTED because Sigma is not
+numerically reported in the paper, and a small placeholder additive
+residual SD of 1 ms is used to satisfy rxode2’s residual-error
 requirement; downstream users who need VPC-style simulation must add
 their own IIV.</li>
 <li>Article: <a href="https://doi.org/10.1111/bcp.12684" class="external-link uri">https://doi.org/10.1111/bcp.12684</a>

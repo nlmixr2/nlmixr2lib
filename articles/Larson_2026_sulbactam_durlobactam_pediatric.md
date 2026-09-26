@@ -523,8 +523,8 @@ Poster P-444 Table 2. Every regimen is a 3-hour intravenous infusion at
 a 1:1 sulbactam:durlobactam ratio. Birth is defined as 7 days
 post-natal. {.table}
 
-The sources on disk give the regimens **by age**, but the model is
-driven by **weight** — and neither the CDC growth charts nor the Rhodin
+The sources give the regimens **by age**, but the model is driven by
+**weight** — and neither the CDC growth charts nor the Rhodin
 fat-free-mass formula that the poster used to turn age into body size
 and renal function are reported in them. Rather than invent an
 age-to-weight mapping, everything below is presented against body
@@ -807,8 +807,8 @@ CL_(CR)”, because durlobactam clearance is identical between them. Since
 the poster’s Figure 3\[A\] does show lower durlobactam exposure, the two
 models must have been driven with **different renal function** — which
 is what their names imply and what the Rhodin formula in the abstract
-was for. That formula is not in either source on disk, so this vignette
-does not guess at it. See *Assumptions and deviations*.
+was for. That formula is not in either source, so this vignette does not
+guess at it. See *Assumptions and deviations*.
 
 ## Virtual cohort and stochastic simulation
 
@@ -964,7 +964,7 @@ band_summary <- ped_auc |>
     median_inside = med >= p05 & med <= p95,
     # The 2-5 kg band is the neonatal stratum, where BSA-normalized renal
     # function is far below the adult reference. Reproducing it needs the
-    # Rhodin maturation function, which is not in either source on disk, so
+    # Rhodin maturation function, which is not in either source, so
     # it is recorded as a deviation rather than gated. See Errata.
     deviation = band == "2-5 kg"
   )
@@ -1407,8 +1407,8 @@ poster does not report. {.table}
 
 - **The Rhodin fat-free-mass renal-maturation formula is not
   reproduced.** The abstract states that “Renal function was estimated
-  using the Rhodin formula using free fat mass”, but neither source on
-  disk gives that formula or its constants, and the poster describes the
+  using the Rhodin formula using free fat mass”, but neither source
+  gives that formula or its constants, and the poster describes the
   cohort simply as “assuming normal renal function”. Every simulation
   here therefore sets `CRCL = 100 mL/min/1.73 m^2` — the model’s own
   definition of normal renal function (Cammarata 2024 Results) — rather
@@ -1439,15 +1439,15 @@ poster does not report. {.table}
 
 - **Age-to-weight mapping is not reproduced.** Poster Table 2 gives the
   regimens by age cohort, and the cohort was built from CDC growth
-  charts, which are not on disk. Rather than invent a weight-for-age
-  table, results are presented against body weight, which is the model’s
-  actual covariate. The weight bands in the stochastic cohort are
-  illustrative strata chosen to span the pediatric range; they are
-  **not** taken from any source and no claim is made that a given band
-  corresponds to a given Table 2 age cohort. The one age-related
-  quantity that *is* reproduced is structural: the 1 g cap binds at 40
-  kg, and the resulting exposure peak is visible in the poster’s Figure
-  2\[A\].
+  charts, which are not reproduced in either source. Rather than invent
+  a weight-for-age table, results are presented against body weight,
+  which is the model’s actual covariate. The weight bands in the
+  stochastic cohort are illustrative strata chosen to span the pediatric
+  range; they are **not** taken from any source and no claim is made
+  that a given band corresponds to a given Table 2 age cohort. The one
+  age-related quantity that *is* reproduced is structural: the 1 g cap
+  binds at 40 kg, and the resulting exposure peak is visible in the
+  poster’s Figure 2\[A\].
 
 - **Simulation covariate settings come from the poster’s Figure 1
   notes:** infection type set to bacteremia, East Asian flag set to not

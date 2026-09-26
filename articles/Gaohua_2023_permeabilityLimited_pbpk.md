@@ -572,9 +572,9 @@ stopifnot(transporter("uptake", 1) > transporter("none", 1),
   water are removed, so it absorbs the non-water tissue mass (lipid,
   protein) as well as the water. A smaller, tabulated Simcyp
   intracellular *water* fraction would reduce those cells. The paper
-  tabulates no such fraction and the only on-disk definition is the
+  tabulates no such fraction and the only available definition is the
   supplement’s remainder, so the remainder definition is what is
-  shipped; substituting a Simcyp default not present in any on-disk
+  shipped; substituting a Simcyp default not present in any available
   source would be unauditable.
 - **An internal inconsistency between Table 1 and Table 3.** The
   IV-infusion intracellular-water cells of Table 3 at `CL/Q` 0.5 and 1

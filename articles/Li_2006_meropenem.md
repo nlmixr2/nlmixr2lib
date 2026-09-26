@@ -37,7 +37,8 @@ sample median of 83 mL/min because no CrCl distribution was reported in
 the publication. Six dose groups span 500, 1000, and 2000 mg
 administered as 0.5-h or 3-h IV infusions. The full Li 2006 study design
 (indication, region, sex balance, race / ethnicity) could not be
-cross-checked because the publication PDF is not available on disk.
+cross-checked because the publication PDF was not available when this
+model was built.
 
 ``` r
 
@@ -45,18 +46,18 @@ str(mod_meta$population)
 #> List of 15
 #>  $ n_subjects    : num 79
 #>  $ n_studies     : num 1
-#>  $ age_range     : chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."
+#>  $ age_range     : chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."
 #>  $ age_median    : chr "35 years (DDMORE Model_Accommodations)"
 #>  $ age_sd        : chr "18.2 years (DDMORE Model_Accommodations; treated as lognormal sd in the bundle's simulated cohort)"
-#>  $ weight_range  : chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."
+#>  $ weight_range  : chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."
 #>  $ weight_median : chr "70 kg (DDMORE Model_Accommodations)"
 #>  $ weight_sd     : chr "16.1 kg (DDMORE Model_Accommodations; treated as lognormal sd in the bundle's simulated cohort)"
-#>  $ sex_female_pct: chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."
-#>  $ race_ethnicity: chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."
+#>  $ sex_female_pct: chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."
+#>  $ race_ethnicity: chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."
 #>  $ disease_state : chr "Adult patients receiving meropenem for clinical infection. Specific indication not extractable from DDMORE bund"| __truncated__
 #>  $ dose_range    : chr "500-2000 mg meropenem IV. Six dosing groups in the DDMORE simulated cohort: 500/1000/2000 mg given as 0.5-h inf"| __truncated__
 #>  $ crcl_median   : chr "83 mL/min (DDMORE Model_Accommodations; raw measured CrCl, not BSA-normalized)"
-#>  $ regions       : chr "Not extractable from DDMORE bundle (Li 2006 PDF not on disk)."
+#>  $ regions       : chr "Not extractable from DDMORE bundle (Li 2006 PDF not available when this model was built)."
 #>  $ notes         : chr "Demographic medians come from DDMORE Model_Accommodations.txt, which states the model 'was used as described in"| __truncated__
 ```
 
@@ -86,10 +87,10 @@ collects them in one place.
 | `d/dt(central)`, `d/dt(peripheral1)` | n/a | DDMODEL00000213 .mdl `mdlObj$MODEL_PREDICTION$DEQ` |
 | `Cc ~ add(addSd) + prop(propSd)` | n/a | DDMODEL00000213 NMTRAN-rendered `$ERROR`: `W = sqrt(RUV_ADD^2 + RUV_PROP^2 * IPRED^2)` |
 
-The Li 2006 publication PDF is not available on disk, so the table cites
-the DDMORE bundle’s MDL file as the proximate source. The
-Model_Accommodations.txt file in the bundle states “Original model was
-used as described in publication (Li et al)”, which is the basis for
+The Li 2006 publication PDF was not available when this model was built,
+so the table cites the DDMORE bundle’s MDL file as the proximate source.
+The Model_Accommodations.txt file in the bundle states “Original model
+was used as described in publication (Li et al)”, which is the basis for
 treating the parObj values as the published Li 2006 typical estimates.
 
 ## Virtual cohort and simulation
@@ -275,9 +276,9 @@ sim |>
 ## PKNCA NCA on the simulated cohort
 
 PKNCA is run on the full stochastic simulation. Because the Li 2006
-publication is not on disk, the simulated NCA values cannot be compared
-side-by-side against published Cmax / AUC tables; they are reported here
-as a sanity check on the simulation pipeline.
+publication was not available, the simulated NCA values cannot be
+compared side-by-side against published Cmax / AUC tables; they are
+reported here as a sanity check on the simulation pipeline.
 
 ``` r
 
@@ -343,14 +344,14 @@ style="width:100%;"}
   `FINAL PARAMETER ESTIMATE` block is a re-fit on simulated data and is
   NOT used.
 
-- **Li 2006 publication PDF is not on disk** in the maintainers’
-  literature mirror, so demographic ranges (age range, weight range, sex
-  balance, race/ethnicity, region, indication) and the publication’s NCA
-  tables could not be cross-checked. Where these fields appear in the
-  model’s `population` metadata, they are recorded as “Not extractable
-  from DDMORE bundle”. When the publication PDF is available, the
-  population narrative should be confirmed against it and the parObj
-  values cross-checked against any in-paper parameter table.
+- **Li 2006 publication PDF was not available when this model was
+  built**, so demographic ranges (age range, weight range, sex balance,
+  race/ethnicity, region, indication) and the publication’s NCA tables
+  could not be cross-checked. Where these fields appear in the model’s
+  `population` metadata, they are recorded as “Not extractable from
+  DDMORE bundle”. When the publication PDF is available, the population
+  narrative should be confirmed against it and the parObj values
+  cross-checked against any in-paper parameter table.
 
 - **CRCL covariate semantics deviate from the canonical register
   entry.** The canonical `CRCL` in
@@ -386,6 +387,6 @@ style="width:100%;"}
   and is what this nlmixr2lib model reproduces (`addSd = 0.47`,
   `propSd = 0.19`).
 
-- **Validation strategy is self-consistency** (no linked publication on
-  disk). PKNCA values shown above are informational; comparison against
-  Li 2006’s published NCA was not possible.
+- **Validation strategy is self-consistency** (the publication was not
+  available). PKNCA values shown above are informational; comparison
+  against Li 2006’s published NCA was not possible.

@@ -403,10 +403,11 @@ simulated is:
 | \> 4        | \> 39            | 1800 mg/day  | Twice daily |
 
 The paper drew 2000 virtual children from the NHANES and Pediatric
-Trials Network demographic repositories. Those repositories are not on
-disk, so the cohort below is instead constructed from quantities the
-paper itself reports, and the construction is stated explicitly rather
-than sampled from an external growth reference:
+Trials Network demographic repositories. Those repositories were not
+available when this model was built, so the cohort below is instead
+constructed from quantities the paper itself reports, and the
+construction is stated explicitly rather than sampled from an external
+growth reference:
 
 - **BMI strata.** Table 2 gives a median BMI of 18.5 kg/m^2 for POP01
   (mixed obesity status) and 24.6 kg/m^2 for AED01 (every participant
@@ -894,24 +895,25 @@ Median steady-state MHD trough per label dose tier; all fall inside the
   singular OMEGA.
 - **Virtual cohort is a paper-anchored reconstruction, not the
   paper’s.** The paper sampled 2000 children from the NHANES and
-  Pediatric Trials Network demographic repositories, neither of which is
-  on disk. The cohort here is built from quantities the paper reports:
-  the BMI strata are the Table 2 medians for the mixed-obesity POP01
-  cohort (18.5 kg/m^2) and the all-obese AED01 cohort (24.6 kg/m^2), and
-  heights follow from a non-obese weight sampled across the span of the
-  label’s weight bands. The **weight-to-age mapping** – anchors of 12 kg
-  at 3 y, 24.5 kg at 7 y, 34 kg at 11 y, 50 kg at 15 y and 60 kg at 18
-  y, linearly interpolated – **is an assumption of this vignette**, not
-  a paper value; the paper sampled uniformly across ten age bins drawn
-  from the two repositories. The trough IQR comparison is therefore a
-  consistency check on the exposure range, not a reproduction of the
-  paper’s Monte-Carlo result, and the simulated IQR overlap between
-  obesity groups is expected to be lower than the paper’s 93% because a
-  deterministic weight-to-age mapping concentrates subjects at the
-  label’s discrete tier boundaries where a real cohort spreads across
-  them. The exact structural identities, the MHD:OXZ exposure ratio and
-  the reference-subject clearances are the checks that do not depend on
-  the cohort construction at all.
+  Pediatric Trials Network demographic repositories, neither of which
+  was available when this model was built. The cohort here is built from
+  quantities the paper reports: the BMI strata are the Table 2 medians
+  for the mixed-obesity POP01 cohort (18.5 kg/m^2) and the all-obese
+  AED01 cohort (24.6 kg/m^2), and heights follow from a non-obese weight
+  sampled across the span of the label’s weight bands. The
+  **weight-to-age mapping** – anchors of 12 kg at 3 y, 24.5 kg at 7 y,
+  34 kg at 11 y, 50 kg at 15 y and 60 kg at 18 y, linearly interpolated
+  – **is an assumption of this vignette**, not a paper value; the paper
+  sampled uniformly across ten age bins drawn from the two repositories.
+  The trough IQR comparison is therefore a consistency check on the
+  exposure range, not a reproduction of the paper’s Monte-Carlo result,
+  and the simulated IQR overlap between obesity groups is expected to be
+  lower than the paper’s 93% because a deterministic weight-to-age
+  mapping concentrates subjects at the label’s discrete tier boundaries
+  where a real cohort spreads across them. The exact structural
+  identities, the MHD:OXZ exposure ratio and the reference-subject
+  clearances are the checks that do not depend on the cohort
+  construction at all.
 - **Residual error in the trough comparison.** `Cc_mhd` from `rxSolve`
   is an individual prediction without residual error. The published
   trough IQRs may or may not include the 24% proportional residual; the

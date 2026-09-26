@@ -924,7 +924,7 @@ The paper simulates MRD under a venetoclax ramp (20 -\> 50 -\> 100 -\>
 two-compartment venetoclax popPK model of Jones et al. (AAPS J.
 2016;18(5):1192-1202). That model is not open access, is not reproduced
 in the paper or its supplement, and is not part of `nlmixr2lib`, so the
-mg-to-concentration mapping cannot be reconstructed from any on-disk
+mg-to-concentration mapping cannot be reconstructed from any available
 source. Substituting venetoclax PK parameters from elsewhere is exactly
 what the QSP sourcing rule forbids.
 

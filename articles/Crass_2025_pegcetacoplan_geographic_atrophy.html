@@ -3941,8 +3941,9 @@ volume), and the every-other-month effect about 745 ug/mL (20%). The
 halving the dosing frequency of a drug eliminated slowly from the
 vitreous, and both sit below the immediate post-dose concentration, as
 they must. This reproduces the paper’s own reconciliation of the two
-models without requiring the upstream population PK model, which is not
-on disk (see <em>Assumptions and deviations</em>).</p>
+models without requiring the upstream population PK model, which was not
+available when this model was built (see <em>Assumptions and
+deviations</em>).</p>
 <p>Evaluating the same relationship directly at the immediate post-dose
 concentration gives 0.786, which brackets the 0.80 monthly dose-response
 estimate from below – as expected, since the concentration decays
@@ -4236,19 +4237,20 @@ The vitreous pegcetacoplan concentration that drives the
 exposure-response model was generated in the source analysis by a
 separate population PK model reported only as a conference presentation
 (Crass et al., American Conference on Pharmacometrics, November 2023),
-which is not available on disk. That model is therefore <em>not</em>
-encoded here: <code>Crass_2025_pegcetacoplan_ga_exposureresponse</code>
-consumes the vitreous concentration as the <code>CEFFECT</code>
-time-varying covariate, exactly as the source NONMEM run consumed it as
-a data item. Users must supply the trajectory. The paper states the
-concentration was computed from each patient’s actual dosing history and
-the empirical Bayes estimate of the vitreous-to-serum absorption rate
-constant, with the vitreous volume assumed to be 4 mL; the elimination
-rate constant itself is not reported anywhere in the paper or its
-supplement, so no PK layer could be reconstructed without inventing it.
-The Figure 4 section above works around this by back-solving the
-concentration implied by each dose-response point estimate rather than
-forward-simulating a PK profile.</li>
+which was not available when this model was built. That model is
+therefore <em>not</em> encoded here:
+<code>Crass_2025_pegcetacoplan_ga_exposureresponse</code> consumes the
+vitreous concentration as the <code>CEFFECT</code> time-varying
+covariate, exactly as the source NONMEM run consumed it as a data item.
+Users must supply the trajectory. The paper states the concentration was
+computed from each patient’s actual dosing history and the empirical
+Bayes estimate of the vitreous-to-serum absorption rate constant, with
+the vitreous volume assumed to be 4 mL; the elimination rate constant
+itself is not reported anywhere in the paper or its supplement, so no PK
+layer could be reconstructed without inventing it. The Figure 4 section
+above works around this by back-solving the concentration implied by
+each dose-response point estimate rather than forward-simulating a PK
+profile.</li>
 <li>
 <strong>Three model files, one per source parameter table.</strong>
 The paper reports the disease-progression model (Table S4), the

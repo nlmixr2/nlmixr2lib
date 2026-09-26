@@ -1221,8 +1221,7 @@ stopifnot(
   200-subject-per-arm cohort resolves; the `>= 3000` column is shown for
   inspection and neither is gated. The parent PTA columns are computed
   exactly instead, by root-finding rather than sampling.
-- **Equation recovery.** All twelve numbered equations were lost by the
-  PDF-to-markdown conversion (each rendered as `formula-not-decoded`);
-  they were recovered from the PDF text layer directly and are the basis
-  for the ODE system, the covariate forms and the fixed allometric
-  exponents.
+- **Equation recovery.** All twelve numbered equations do not survive
+  automated text extraction of the PDF; they were recovered from the PDF
+  text layer directly and are the basis for the ODE system, the
+  covariate forms and the fixed allometric exponents.

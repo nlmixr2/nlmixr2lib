@@ -113,9 +113,8 @@ with its location in the source.
 
 Source trace for the Nagy 2017 models. {.table}
 
-The three equation blocks render as `formula-not-decoded` in the
-automated PDF conversion; they were recovered verbatim from the on-disk
-PDF with `pdftotext -layout` (page 4, right column). The
+The three equation blocks were recovered verbatim from the PDF with
+`pdftotext -layout` (page 4, right column). The
 [`exp()`](https://rdrr.io/r/base/Log.html) around the bacteremia term in
 `logit(psurv)` is taken from the second published report of this same
 fitted model, Yamamoto 2016 (<doi:10.1128/AAC.00972-16>), which prints

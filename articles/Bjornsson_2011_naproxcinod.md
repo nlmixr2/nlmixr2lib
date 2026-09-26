@@ -524,9 +524,9 @@ terminal half-life.
   the hazard COV form (paper Methods, “Model for request of rescue
   medication”, display equation following “h(t) = h0(t) \* exp(COV)”)
   are both rendered as figure images in the PDF and were not recoverable
-  from the trimmed text. The packaged model implements the most-common
-  NONMEM conventions consistent with the surrounding paper prose:
-  multiplicative combination
+  from the PDF’s text layer. The packaged model implements the
+  most-common NONMEM conventions consistent with the surrounding paper
+  prose: multiplicative combination
   `PI = PI_baseline * (1 - placebo) * (1 - drug)` for the PI sub-model
   (placebo expressed as a fractional reduction, drug as a sigmoid Emax
   fractional reduction, both clamped through PI’s \[0, 100\] bounds),

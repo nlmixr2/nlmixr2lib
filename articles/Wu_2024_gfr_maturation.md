@@ -474,8 +474,8 @@ The Table S3 estimates were:
 
 These three popPK applications are not separately packaged as
 `Wu_2024_<drug>` models because the structural backbone is inherited
-from de Cock 2014 (which is not on disk for the current extraction); the
-paper’s own contribution to the drug models is limited to the `f`,
+from de Cock 2014 (which was not available when this model was built);
+the paper’s own contribution to the drug models is limited to the `f`,
 `V_4kg`, and `k` parameters reported above. A downstream user who wants
 to use the Wu 2024 GFR maturation function as a covariate on CL in their
 own renally-cleared-drug popPK can do so by embedding the GFR equation

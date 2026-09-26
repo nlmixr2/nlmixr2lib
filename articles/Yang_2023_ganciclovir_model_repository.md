@@ -22,9 +22,8 @@ secondary source.
 - Yang 2023 supplementary materials (Tables S1-S2, Figures S1-S2, and
   the repository’s R source code) are hosted at
   <https://www.mdpi.com/article/10.3390/pharmaceutics15071801/s1> and
-  were **not retrievable** during extraction (the MDPI endpoint returns
-  HTTP 403). Nothing in this vignette depends on them; see *Assumptions
-  and deviations*.
+  were **not available** when this model was built. Nothing in this
+  vignette depends on them; see *Assumptions and deviations*.
 
 ### Models contributed by this paper
 
@@ -1203,7 +1202,7 @@ top end.
 **Unavailable supplement.** Yang 2023’s supplementary materials (Table
 S1 uniform covariate ranges and reference values, Table S2 full PTA
 percentages, Figures S1-S2 similarity comparisons, and the repository’s
-R source code) are behind an MDPI endpoint that returns HTTP 403.
+R source code) were not available when this model was built.
 Consequences: (a) the derived covariates in the *Virtual cohort* section
 use standard formulas rather than the review’s own Table S1 values; (b)
 the Figure 4 reproduction uses a 30-130 mL/min/1.73 m^2 renal range
@@ -1319,4 +1318,4 @@ stated, and (b) `Lalagkas_2023`’s Vp = 219 L is a second value worth
 re-verifying against its primary, alongside the Zhao 2009 exponent.
 Neither was tuned. The review’s own t1/2 comparison lives in the
 unavailable Figures S1-S2, so the exact basis of its ranking cannot be
-checked from the material on disk.
+checked from the available material.

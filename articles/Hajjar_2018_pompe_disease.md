@@ -482,11 +482,11 @@ ug/mL*h: 25,900 ng/mL*h = 25.9 ug/mL*h). \* differs from reference by
   the covariate, citing the small n = 5 ERT-naive subgroup. The encoded
   models document this screen via the `covariatesDataExcluded$BACT`
   entry but do not include the effect in the structural CL equation.
-- **DOI mismatch in the source metadata.** The publication index this
+- **DOI mismatch in the source metadata.** The bibliographic record this
   model was built from supplied a DOI of `10.1038/mt.2009.53`, which is
-  a 2009 Molecular Therapy paper unrelated to the on-disk source. The
-  on-disk source is the 2018 ACCP poster by Hajjar et al.; the DOI is a
-  vendor-index defect and is not used as the canonical citation.
+  a 2009 Molecular Therapy paper unrelated to the source used here. That
+  source is the 2018 ACCP poster by Hajjar et al.; the DOI is a defect
+  in the bibliographic record and is not used as the canonical citation.
 
 ## Assumptions and deviations
 

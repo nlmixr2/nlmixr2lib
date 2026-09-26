@@ -95,9 +95,10 @@ exclusive per dose record:
 
 Krishna 2011 publishes no age, weight, sex or race distribution for
 either analysis set in the main text (they are in the Electronic
-Supplementary Material Tables IA and IB, which are not on disk – see
-Errata), and no demographic covariate enters any of the three models.
-The full metadata is available programmatically:
+Supplementary Material Tables IA and IB, which were not available when
+this model was built – see Errata), and no demographic covariate enters
+any of the three models. The full metadata is available
+programmatically:
 
 ``` r
 
@@ -174,12 +175,12 @@ location. The table below collects them.
 
 ### Two readings that had to be recovered rather than transcribed
 
-The extracted text of this paper renders all nine display equations as
-`formula-not-decoded`, and the PDF’s symbol font maps multiplication
-signs, minus signs and Greek letters onto control bytes that `pdftotext`
-drops. Every equation was therefore reconstructed and then checked
-against predictions the paper publishes about its own model. Two pieces
-needed real adjudication.
+The text extracted from this paper’s PDF decodes none of its nine
+display equations, and the PDF’s symbol font maps multiplication signs,
+minus signs and Greek letters onto control bytes that `pdftotext` drops.
+Every equation was therefore reconstructed and then checked against
+predictions the paper publishes about its own model. Two pieces needed
+real adjudication.
 
 **1. The dosage-unit terms apply to the capsule only.** Eqs. 4-7 do not
 say so, but the Methods do – the model assessed “number of capsules per
@@ -1396,25 +1397,27 @@ distribution needed to be assumed.
 
 No erratum or corrigendum to Krishna 2011 was located.
 
-**The Electronic Supplementary Material is not on disk.** It holds Table
-IA and Table IB (per-study designs: doses, formulations, sampling
-schedules and per-study subject counts) and five supplementary
-diagnostic figures. Every parameter of all three models is in the
-main-text tables, so the gap costs demographic and per-study detail
-only, and it is the reason `population$age_range`, `weight_range`,
-`sex_female_pct` and `race_ethnicity` are absent from all three model
-files rather than populated. An attempt to retrieve it on 2026-09-03
-failed: the EuropePMC `supplementaryFiles` endpoint returned HTTP 504
-for both this PMCID and a control PMCID (so an outage, not a missing
-deposit), and the Springer static-content route returned HTTP 403.
+**The Electronic Supplementary Material was not available when this
+model was built.** It holds Table IA and Table IB (per-study designs:
+doses, formulations, sampling schedules and per-study subject counts)
+and five supplementary diagnostic figures. Every parameter of all three
+models is in the main-text tables, so the gap costs demographic and
+per-study detail only, and it is the reason `population$age_range`,
+`weight_range`, `sex_female_pct` and `race_ethnicity` are absent from
+all three model files rather than populated. An attempt to retrieve it
+on 2026-09-03 failed: EuropePMC’s supplementary-file service was
+unavailable at the time (for a control article as well, so an outage
+rather than a missing deposit), and the publisher’s copy was not
+accessible.
 
-**The extracted text of this paper is unusable for the equations.** All
-nine display equations render as `formula-not-decoded`, and the PDF’s
-symbol font encodes multiplication signs, minus signs and Greek letters
-as C0 control bytes that `pdftotext` silently drops. The equations in
-this vignette were recovered with `pdftotext -layout` plus `cat -A` and
-then confirmed numerically against the fifteen published predictions
-checked above, rather than trusted as printed.
+**The text extracted from the PDF is unusable for the equations.** None
+of the nine display equations is decoded, and the PDF’s symbol font
+encodes multiplication signs, minus signs and Greek letters as C0
+control bytes that `pdftotext` silently drops. The equations in this
+vignette were recovered by inspecting the raw bytes of the
+`pdftotext -layout` output and then confirmed numerically against the
+fifteen published predictions checked above, rather than trusted as
+printed.
 
 **Upstream dependency.** Krishna 2011’s higher-atorvastatin-dose
 extrapolations lean on the Mandema 2005 statin dose-response

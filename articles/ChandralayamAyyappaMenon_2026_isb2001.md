@@ -911,7 +911,7 @@ stopifnot(
 **Molecular weight is not reported.** Neither ISB 2001’s nor
 teclistamab’s molecular weight appears in the article or in any of the
 four supplements, so a `ug/kg` dose cannot be converted to the `nmol`
-the model consumes from on-disk information alone. A class-typical
+the model consumes from the published information alone. A class-typical
 antibody molecular weight was **not** substituted. Instead ISB 2001’s
 was derived from the paper’s own duplicate reporting of three in-vitro
 potencies in nM and in ng/mL (194,000 g/mol), and independently
@@ -1004,7 +1004,7 @@ teclistamab Table 2 anchors (a fitted value runs to the boundary of any
 plausible range). Possible explanations - an undocumented
 teclistamab-specific adaptation, a different soluble-BCMA setting for
 the teclistamab runs, or an error in the teclistamab column of Table 2 -
-cannot be distinguished from the material on disk.
+cannot be distinguished from the published material.
 
 The teclistamab model is therefore published here as a faithful
 transcription of the reported parameters, and its **qualitative**
@@ -1016,7 +1016,7 @@ confirmation from the authors.
 
 The paper builds three further models on the way to the human QSP model.
 They are not extracted, because their ODE systems are not fully written
-down in any on-disk source and the missing structure was not
+down in any published source and the missing structure was not
 reconstructed from class knowledge:
 
 - **In-vitro target engagement and cytotoxicity model.** Equations 4, 5

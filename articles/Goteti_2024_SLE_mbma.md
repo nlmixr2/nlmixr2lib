@@ -29,18 +29,18 @@
   fenebrutinib, IPP-201101, the s.c. q.w. lulizumab pegol arm, lupuzor,
   PF-04236921, tabalumab, ustekinumab) were modelled as discrete
   per-regimen additive effects on the latent-scale delta multiplier (1 +
-  xi_ij); the operator passes the reference discrete-effect value
-  through the CONMED_XI_DISCRETE covariate (documented lookup in the
-  vignette). SRI-4/5/6 responder probabilities are modelled as a
-  generalized proportional-odds transform of the latent SLE activity
-  (thresholds c_SRI5 = 0.586, c_SRI6 = 0.693), and BICLA responder
-  probability is the logistic transform of the latent SLE activity
-  directly. Between-study variability is encoded as study-level etas on
-  theta_wk4 and delta_wk24 for both endpoints (no subject-level IIV);
-  the simulation scope is aggregate study-arm-mean responder
-  probability, not individual patient trajectories. All Table 3 point
-  estimates are the posterior mean under the reference Bayesian fit
-  (model 106-bm-1 in Table S1 of the supplement).
+  xi_ij); the user passes the reference discrete-effect value through
+  the CONMED_XI_DISCRETE covariate (documented lookup in the vignette).
+  SRI-4/5/6 responder probabilities are modelled as a generalized
+  proportional-odds transform of the latent SLE activity (thresholds
+  c_SRI5 = 0.586, c_SRI6 = 0.693), and BICLA responder probability is
+  the logistic transform of the latent SLE activity directly.
+  Between-study variability is encoded as study-level etas on theta_wk4
+  and delta_wk24 for both endpoints (no subject-level IIV); the
+  simulation scope is aggregate study-arm-mean responder probability,
+  not individual patient trajectories. All Table 3 point estimates are
+  the posterior mean under the reference Bayesian fit (model 106-bm-1 in
+  Table S1 of the supplement).
 - Article: <https://doi.org/10.1002/psp4.13083> (Open Access)
 - Supplement: available with the article; contains the
   disease-trajectory reparametrization (Eq 3-5), the study-effect Eq

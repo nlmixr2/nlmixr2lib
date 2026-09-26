@@ -3263,11 +3263,12 @@ week</td>
 article is open access (CPT: Pharmacometrics &amp; Systems Pharmacology,
 2018;7(5):288-297; PMID 29368402). The Supplementary Materials (dataset,
 NONMEM/BUGS/R model code, Table S1 of application examples, and Table S2
-of study characteristics) are referenced by the paper but were not on
-disk for this extraction; none of the model’s parameter values depend on
-the supplement (all are in Table 2 of the main text). The total patient
-count (Table S2) is therefore unavailable and is recorded as
-<code>NA</code> in the model <code>population</code> metadata.</p>
+of study characteristics) are referenced by the paper but were not
+available when this model was built; none of the model’s parameter
+values depend on the supplement (all are in Table 2 of the main text).
+The total patient count (Table S2) is therefore unavailable and is
+recorded as <code>NA</code> in the model <code>population</code>
+metadata.</p>
 </div>
 <div class="section level2">
 <h2 id="pknca-not-applicable">PKNCA not applicable<a class="anchor" aria-label="anchor" href="#pknca-not-applicable"></a>
@@ -3634,7 +3635,7 @@ differences. The packaged model carries point estimates only (no
 parameter covariance matrix is published), so the comparison table
 reproduces the point estimates, not the intervals.</p></li>
 <li><p><strong>Total patient count unavailable.</strong> The per-trial
-sample sizes are in Supplementary Table S2, which was not on disk;
+sample sizes are in Supplementary Table S2, which was not available;
 <code>population$n_subjects</code> is <code>NA</code>. The number of
 trials (18) and the flare/non-flare split (12/6) are from the main-text
 “Example dataset” section.</p></li>

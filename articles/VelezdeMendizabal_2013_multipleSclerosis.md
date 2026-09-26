@@ -106,7 +106,7 @@ corticosteroid administration:
 a **67% reduction** in the first-order Markov amplification (consistent
 with the source paper’s 66.44% diminution quote).
 
-## F.3 mechanistic-sanity check (typical-value evaluation)
+## Mechanistic-sanity check (typical-value evaluation)
 
 The model has no ODE state, so the per-record prediction is the
 algebraic evaluation of equation 5. The chunk below confirms that
@@ -185,9 +185,9 @@ steroid switch) at canonical (PDV, PPDV, CONMED_STEROID). {.table}
 stopifnot(max(abs(result$rel_err_pct)) < 1e-6)
 ```
 
-The maximum relative error across the grid is well under the F.3 5%
-threshold (numerical precision only); the packaged model evaluates
-equation 5 with the steroid switch exactly.
+The maximum relative error across the grid is well under the
+mechanistic-sanity check’s 5% threshold (numerical precision only); the
+packaged model evaluates equation 5 with the steroid switch exactly.
 
 ## Recursive Markov simulation
 
@@ -429,20 +429,20 @@ PDV).
   no Cmax / AUC / half-life values to compare against – the source paper
   reports model-based descriptors (probability of zero CELs, maximum
   elapsed time without lesions, cumulative CELs per year) which the
-  model reproduces by construction. The F.3 mechanistic-sanity check
-  above is the analogue of the PKNCA check for count models, and the
-  Figure 5 distribution replication is the analogue of a VPC.
+  model reproduces by construction. The mechanistic-sanity check above
+  is the analogue of the PKNCA check for count models, and the Figure 5
+  distribution replication is the analogue of a VPC.
 
 - **Markov simulation is iterative, not native rxode2.** Because the
   observation depends recursively on prior observations, the 48-month
   simulation cannot be expressed as a single `rxSolve` call. The model
   is registered as `algebraic = TRUE` in `modeldb`, so the closed-form
   equation 5 evaluation is identical between the packaged model
-  (verified by the F.3 grid above) and the vectorized base-R helper
-  `simulate_cohort_markov()` used for the 1000-subject Markov-cohort
-  replication. Either route is acceptable; the base-R helper is
-  preferred for stochastic sweeps because it avoids the per-call
-  overhead of `rxSolve`. A future rxode2 release exposing
+  (verified by the mechanistic-sanity grid above) and the vectorized
+  base-R helper `simulate_cohort_markov()` used for the 1000-subject
+  Markov-cohort replication. Either route is acceptable; the base-R
+  helper is preferred for stochastic sweeps because it avoids the
+  per-call overhead of `rxSolve`. A future rxode2 release exposing
   observation-as-future-covariate would let this collapse to a single
   `rxSolve` invocation.
 

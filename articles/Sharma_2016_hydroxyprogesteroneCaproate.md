@@ -384,16 +384,17 @@ cat(sprintf(
   “cord:maternal (model predicted) ~ 0.28” ratio, but the supplemental
   NONMEM control stream (Table S1 referenced on page 1090) which would
   encode how the fetal compartment amount converts to a predicted cord
-  blood concentration is not on disk. This model file therefore exposes
-  the fetal compartment as a dynamic state (`fetal` in the rxSolve
-  output, in mg) but does not declare a `Ccord` observable or fit
-  residual error against the cord-blood data. Downstream consumers who
-  need a cord-blood prediction must supply their own volume-of-cord
-  assumption; the steady-state amount ratio Afetal / Amaternal from this
-  model converges to kMF / kFM = 0.00893, so reproducing the published
-  0.28 cord:maternal **concentration** ratio implies an apparent fetal
-  volume in the neighbourhood of Vmaternal / 32 (approximately 1000 L) –
-  notably absent from Table 2 and unrecovered without the supplement.
+  blood concentration was not available when this model was built. This
+  model file therefore exposes the fetal compartment as a dynamic state
+  (`fetal` in the rxSolve output, in mg) but does not declare a `Ccord`
+  observable or fit residual error against the cord-blood data.
+  Downstream consumers who need a cord-blood prediction must supply
+  their own volume-of-cord assumption; the steady-state amount ratio
+  Afetal / Amaternal from this model converges to kMF / kFM = 0.00893,
+  so reproducing the published 0.28 cord:maternal **concentration**
+  ratio implies an apparent fetal volume in the neighbourhood of
+  Vmaternal / 32 (approximately 1000 L) – notably absent from Table 2
+  and unrecovered without the supplement.
 
 - **OCC assignment in the validation cohort.** The paper’s IOV is
   defined across two intensive PK sampling occasions (PK1 at 20-24 weeks
@@ -426,8 +427,8 @@ cat(sprintf(
         documented for transparency and does not indicate a model
         encoding error.
 
-- **No supplemental NONMEM code on disk.** Supplement Table S1 (NONMEM
-  Code; referenced on page 1090) is not on disk for this extraction.
-  Re-extracting with the supplement available would let the cord-blood
-  observable be added with confidence (resolving the fetal-compartment
-  encoding gap above).
+- **No supplemental NONMEM code available.** Supplement Table S1 (NONMEM
+  Code; referenced on page 1090) was not available when this model was
+  built. Re-extracting with the supplement available would let the
+  cord-blood observable be added with confidence (resolving the
+  fetal-compartment encoding gap above).

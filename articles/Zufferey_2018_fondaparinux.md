@@ -395,7 +395,7 @@ Reported values for context (Table 1): POP-A-RIX 9.3 +/- 3.4, PROPICE
   dose and CrCl_LBW, exactly as in the paper’s simulation procedure
   (page 5). The fuller PK structural model that produced this clearance
   term is described in the paper’s online Supporting Information (Table
-  S1), which was not on disk at extraction time; users who need
+  S1), which was not available when this model was built; users who need
   concentration-time profiles (rather than just AUCinf-driven hazard)
   should consult the upstream popPK references (Delavenne 2010 and
   Delavenne 2012, cited as references 7 and 8 of Zufferey 2018).

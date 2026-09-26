@@ -119,8 +119,8 @@ authoritative source for those.
 
 ## Validation strategy
 
-The Laouenan 2015 publication PDF / PMC full text is not on disk here,
-so the standard publication-figure replication and
+The Laouenan 2015 publication PDF / PMC full text was not available when
+this model was built, so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The validation in this
 vignette therefore uses two substitutes, bundle self-consistency and
 endogenous mechanistic sanity:
@@ -645,7 +645,7 @@ stopifnot(
   `NA`; readers needing those details should consult Laouenan 2015
   directly.
 - **Validation strategy is self-consistency, not publication-figure
-  replication.** Because the publication PDF is not on disk, this
+  replication.** Because the publication PDF was not available, this
   vignette does not reproduce a figure from Laouenan 2015 and does not
   run a PKNCA NCA comparison (PKNCA is inappropriate for an
   indirect-response hemoglobin model anyway). The mechanistic-sanity

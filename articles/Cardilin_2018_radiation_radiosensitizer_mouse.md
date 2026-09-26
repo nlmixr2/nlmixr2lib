@@ -304,10 +304,9 @@ multiplied by the LQ surviving fraction
   drug slot, and the online-first year 2017 was used). The article’s
   formal citation is *CPT Pharmacometrics Syst Pharmacol*
   **2018**;7(1):51-58 (published online 14 December 2017); 2018 is the
-  volume/citation year used by PubMed (PMID 29218836) and matches the
-  on-disk source filename. The compound is anonymized as “RS1” in the
-  source, so the descriptive slot `radiation_radiosensitizer` and the
-  `_mouse` species suffix are used.
+  volume/citation year used by PubMed (PMID 29218836). The compound is
+  anonymized as “RS1” in the source, so the descriptive slot
+  `radiation_radiosensitizer` and the `_mouse` species suffix are used.
 - **Coefficient placement (paper “a” vs “b”).** Table 1 of the source
   and the code variables in the Mathematica supplement label the two
   radiosensitizer coefficients oppositely. The placement here

@@ -341,8 +341,8 @@ mg/L.
       is not listed in Table I, or (iii) the cited Rougier 2003 / Croes
       2011 parameters being normalised to renal-cortex tissue mass.
       Resolving the discrepancy requires the original Rougier 2003 /
-      Croes 2011 model formulations, which are not on disk for this
-      extraction. The packaged model is faithful to the paper’s
+      Croes 2011 model formulations, which were not available when this
+      model was built. The packaged model is faithful to the paper’s
       published equations and parameter table; users who need to
       reproduce the paper’s rDeltaRF magnitudes should treat `lvmax_rc`
       (and possibly `lkm_rc`) as scalable.

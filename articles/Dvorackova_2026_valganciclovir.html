@@ -3824,7 +3824,7 @@ the cohort eGFR distribution.</p>
 <span>       y <span class="op">=</span> <span class="st">"Ganciclovir concentration (mg/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Simulated steady-state profiles, median with 5th-95th percentile"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"The source paper's concentration-time figure (online"</span>,</span>
-<span>                       <span class="st">"suppl. Fig. S1) is not on disk, so no figure-level"</span>,</span>
+<span>                       <span class="st">"suppl. Fig. S1) was not available, so no figure-level"</span>,</span>
 <span>                       <span class="st">"overlay is possible; the observed concentration range"</span>,</span>
 <span>                       <span class="st">"0.1-19.2 mg/L is checked numerically below."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Dvorackova_2026_valganciclovir_files/figure-html/profiles-1.png" class="r-plt" alt="" width="672"></p>
@@ -4228,13 +4228,13 @@ quotes, although the paper concludes all parameters were consistent with
 earlier work. Recorded rather than adjusted, and excluded from that
 gate.</li>
 <li>
-<strong>The online supplementary material is not on disk.</strong>
-It contains the bioanalytical assay description and Figures S1-S8
-(concentration-time profiles, NPDE plots, and PTA for the additional
-<code>Ctrough</code> 1-2 / 2-4 mg/L and AUC24h 40-60 mg*h/L targets). No
-parameter value used by this model comes from it, so this is not an
-acquisition gap; it does mean the concentration-time figure cannot be
-overlaid.</li>
+<strong>The online supplementary material was not
+available.</strong> It contains the bioanalytical assay description and
+Figures S1-S8 (concentration-time profiles, NPDE plots, and PTA for the
+additional <code>Ctrough</code> 1-2 / 2-4 mg/L and AUC24h 40-60 mg*h/L
+targets). No parameter value used by this model comes from it, so
+nothing in the model depends on it; it does mean the concentration-time
+figure cannot be overlaid.</li>
 <li>
 <strong>The Monte Carlo regimens are not reprinted.</strong> Figures
 2-5 simulate the standard regimens of Kotton et al. (reference [14]),

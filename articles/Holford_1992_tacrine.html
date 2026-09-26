@@ -3106,7 +3106,7 @@ compartments are typical-value only. Residual error is proportional.
 NOTE: the lead Holford 1992 PNAS 89:11471-11475 ‘Results and validation’
 paper supplies all parameter values but the exact ODE form of the
 placebo dynamics is described in the companion methodology paper (PNAS
-89:11466-11470) which was not available on disk at extraction time; the
+89:11466-11470) which was not available when this model was built; the
 ODE form here is the field-standard reconstruction (asymmetric on/off
 placebo compartment plus multiplicative tolerance) and is documented in
 the validation vignette’s Assumptions and deviations section.</li>
@@ -3130,11 +3130,11 @@ up to five months per subject. Active treatment cycled through 0
 titration orderings.</p>
 <p>Demographic detail (age range, sex split, baseline ADAS-cog
 distribution) is described in the companion methodology paper (Holford
-and Peace 1992, PNAS 89:11466-11470), which was not on disk at
-extraction time; the on-disk <code>Results and validation</code> paper
-reports only that the population mean ideal body weight is 60 kg (used
-as the size-normalisation reference inside <code>model()</code>). The
-same information is available programmatically via the model’s
+and Peace 1992, PNAS 89:11466-11470), which was not available when this
+model was built; the <code>Results and validation</code> paper reports
+only that the population mean ideal body weight is 60 kg (used as the
+size-normalisation reference inside <code>model()</code>). The same
+information is available programmatically via the model’s
 <code>population</code> metadata:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Holford_1992_tacrine"</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">population</span></span>
@@ -3151,10 +3151,10 @@ same information is available programmatically via the model’s
 <span><span class="co">#&gt; [1] 5253</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $age_range</span></span>
-<span><span class="co">#&gt; [1] "Adults / elderly with probable Alzheimer's disease (specific age range not tabulated in the source 'Results and validation' paper; demographic detail lives in the companion methodology paper Holford and Peace 1992 PNAS 89:11466-11470 which was not on disk at extraction time)."</span></span>
+<span><span class="co">#&gt; [1] "Adults / elderly with probable Alzheimer's disease (specific age range not tabulated in the source 'Results and validation' paper; demographic detail lives in the companion methodology paper Holford and Peace 1992 PNAS 89:11466-11470 which was not available when this model was built)."</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $age_median</span></span>
-<span><span class="co">#&gt; [1] "(not reported in the on-disk source paper)"</span></span>
+<span><span class="co">#&gt; [1] "(not reported in the source paper)"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $weight_range</span></span>
 <span><span class="co">#&gt; [1] "(not tabulated; ideal body weight mean across the cohort was 60 kg per source paper Data section)"</span></span>
@@ -3306,7 +3306,7 @@ calculated from the patient’s size covariate divided by the mean value …
 <code>d/dt(effect2) = TRT_PHASE * keqp * (1 - effect2) - (1 - TRT_PHASE) * kelp * effect2</code>
 </td>
 <td>n/a</td>
-<td>Field-standard reconstruction (companion paper not on disk); see
+<td>Field-standard reconstruction (companion paper not available); see
 Assumptions and deviations</td>
 </tr>
 <tr class="even">
@@ -3314,7 +3314,7 @@ Assumptions and deviations</td>
 <code>d/dt(effect3) = ktolp * (TRT_PHASE - effect3)</code>
 </td>
 <td>n/a</td>
-<td>Field-standard reconstruction (companion paper not on disk); see
+<td>Field-standard reconstruction (companion paper not available); see
 Assumptions and deviations</td>
 </tr>
 </tbody>
@@ -3686,25 +3686,23 @@ dose-rate-scaling steps in <code>model()</code> were done correctly.</p>
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
 <ul>
-<li><p><strong>Companion paper not on disk; placebo ODE form is a
+<li><p><strong>Companion paper not available; placebo ODE form is a
 field-standard reconstruction.</strong> The lead Holford 1992 PNAS
 89:11471-11475 <code>Results and validation</code> paper supplies all
 parameter values (Table 2) but defers the structural model definition to
 the companion methodology paper, Holford and Peace 1992 PNAS
-89:11466-11470, which was not on disk at extraction time and could not
-be retrieved through the acquisition script (PNAS direct download is
-Cloudflare-blocked; PMC PDF download is bot-protected). The placebo ODE
-form encoded here – asymmetric on/off effect compartment with rate
-<code>keqp</code> during treatment and rate <code>kelp</code> after
-treatment, plus a multiplicative tolerance compartment driven by
-<code>ktolp</code> – is the field-standard reconstruction consistent
-with the lead paper’s prose (“equilibration”, “elimination”, “tolerance”
-half-times described as three distinct phenomena) and with how the
-parameters are reported (separate half-time estimates, separate SEs,
-separate units in Table 2 “Pharmacokinetic class” rows). When the
-companion paper becomes available a second pass should verify the exact
-ODE form and the precise coupling between the tolerance and
-placebo-effect compartments.</p></li>
+89:11466-11470, which was not available when this model was built (the
+maintainers could not obtain a copy). The placebo ODE form encoded here
+– asymmetric on/off effect compartment with rate <code>keqp</code>
+during treatment and rate <code>kelp</code> after treatment, plus a
+multiplicative tolerance compartment driven by <code>ktolp</code> – is
+the field-standard reconstruction consistent with the lead paper’s prose
+(“equilibration”, “elimination”, “tolerance” half-times described as
+three distinct phenomena) and with how the parameters are reported
+(separate half-time estimates, separate SEs, separate units in Table 2
+“Pharmacokinetic class” rows). When the companion paper becomes
+available a second pass should verify the exact ODE form and the precise
+coupling between the tolerance and placebo-effect compartments.</p></li>
 <li><p><strong>Tacrine clearance unobserved; effect-compartment input
 uses IBW-normalised dose rate.</strong> The source paper explicitly says
 “Clearance could not be estimated directly, but potential relationships
@@ -3773,12 +3771,12 @@ observation is kept as <code>ADAS_cog</code>. The
 ADAS-cog score rather than a mass/volume concentration; the lint warning
 on the units field is the same downstream of that choice.</p></li>
 <li><p><strong>Population demographic detail is partial.</strong> The
-on-disk source paper reports only the pooled n (909), the US n (632),
-the France n (277), and the population mean IBW (60 kg); it does not
-tabulate age range / median, sex split, race / ethnicity, or weight
-range. Those details live in the companion methodology paper (Holford
-and Peace 1992 PNAS 89:11466-11470) which was not on disk. The virtual
-cohort here uses a plausible IBW distribution centered at 60
+source paper reports only the pooled n (909), the US n (632), the France
+n (277), and the population mean IBW (60 kg); it does not tabulate age
+range / median, sex split, race / ethnicity, or weight range. Those
+details live in the companion methodology paper (Holford and Peace 1992
+PNAS 89:11466-11470) which was not available when this model was built.
+The virtual cohort here uses a plausible IBW distribution centered at 60
 kg.</p></li>
 </ul>
 </div>

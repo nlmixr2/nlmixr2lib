@@ -374,11 +374,11 @@ with the source-trace evidence.
   set, suggesting it is poorly identified), (b) an unreported
   normalisation of the cell-count state during fitting (e.g., R in
   millions instead of raw cells, which would re-scale the growth-kill
-  balance), or (c) the modified-Simeoni equation rendered in the text
-  extracted from the PDF contains an OCR `<!-- formula-not-decoded -->`
-  placeholder for the denominator exponent stack; the packaged form
-  follows the original Simeoni 2004 equation (4) \`dR/dt = lambda0*R /
-  (1 + (lambda0*R/lambda1)^(psi))(1/psi)
+  balance), or (c) the denominator exponent stack of the
+  modified-Simeoni equation does not survive plain-text extraction of
+  the PDF; the packaged form follows the original Simeoni 2004
+  equation (4) \`dR/dt = lambda0*R / (1 +
+  (lambda0*R/lambda1)^(psi))(1/psi)
 
   - kd*deltaC3*R`which matches the PDF text as best it could be reconstructed. A downstream user wanting to match Figure 6B exactly should consider rescaling either`lambda1\`
     (the 62 % RSE parameter) or the death rate, with the change
@@ -396,13 +396,12 @@ with the source-trace evidence.
 
 ## Errata
 
-- The text extracted from the Ande 2018 PDF rendered the four Simeoni
-  growth equations and the modified-Simeoni cell-count equation as
-  `<!-- formula-not-decoded -->` placeholders; the equation forms used
-  in the packaged model were reconstructed from the surrounding prose
-  and Simeoni 2004 (the cited source). The PAC PK ODEs (Eqs 12 and 13)
-  and the caspase-3 transit chain Eqs 14 through 18 ARE decoded in the
-  extracted text and were transcribed directly.
+- The four Simeoni growth equations and the modified-Simeoni cell-count
+  equation do not survive plain-text extraction of the Ande 2018 PDF;
+  the equation forms used in the packaged model were reconstructed from
+  the surrounding prose and Simeoni 2004 (the cited source). The PAC PK
+  ODEs (Eqs 12 and 13) and the caspase-3 transit chain Eqs 14 through 18
+  DO survive text extraction and were transcribed directly.
 
 - Ande 2018 Table 1 reports Hill IC50 / Imax / g concentration-response
   curves for each agent individually (PAC IC50 = 151 nM, EVE IC50 = 3.96

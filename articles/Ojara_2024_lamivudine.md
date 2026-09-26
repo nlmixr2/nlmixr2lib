@@ -978,8 +978,8 @@ adjusted.
   `AGE`, `CRCL`, `BMI`, `TPP`) are documented in the model file’s
   `covariatesDataExcluded` metadata so the covariate screen is preserved
   without declaring unused covariates. Table S1 (the supplement) was not
-  on disk; it holds only the rejected covariate coefficients, none of
-  which enter the packaged model.
+  available when this model was built; it holds only the rejected
+  covariate coefficients, none of which enter the packaged model.
 
 ### Simulation assumptions
 

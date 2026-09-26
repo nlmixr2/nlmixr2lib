@@ -25,7 +25,7 @@
   (`BAST_PTTE_modelling.pdf` shipped in the DDMORE bundle).
 - DDMORE Foundation Model Repository entry:
   [DDMODEL00000243](https://repository.ddmore.eu/model/DDMODEL00000243)
-- Source bundle (local mirror): `dpastoor/ddmore_scraping/243/`
+- Source bundle: `dpastoor/ddmore_scraping/243/`
 - Linked publication: **none.** The bundle is a methodological teaching
   example built on entirely simulated data; the BAST guiding-document
   text states “there is not yet a publication to go along with the
@@ -143,9 +143,9 @@ sim |>
 
 ![](NA_NA_tte_loglogistic_files/figure-html/km-style-1.png)
 
-## Mechanistic sanity checks (F.3)
+## Mechanistic sanity checks
 
-### F.3.1 – Hazard has the characteristic log-logistic shape (rises then falls when alpha \> 1)
+### Hazard has the characteristic log-logistic shape (rises then falls when alpha \> 1)
 
 The log-logistic hazard with `alpha > 1` rises, peaks at
 `t_peak = (alpha - 1)^(1/alpha) / lam`, and decays at long times. With
@@ -186,7 +186,7 @@ stopifnot(sim_typ$hazard[hazard_peak_idx] > sim_typ$hazard[sim_typ$time == 1])
 stopifnot(sim_typ$hazard[hazard_peak_idx] > sim_typ$hazard[sim_typ$time == 500])
 ```
 
-### F.3.2 – Closed-form survival check at long times
+### Closed-form survival check at long times
 
 For a log-logistic with `lam` (rate) and `alpha` (shape), the cumulative
 hazard is `H(t) = log(1 + (lam * t)^alpha)`. Compute the typical-value
@@ -212,14 +212,14 @@ cat(sprintf("S(%d) closed-form = %.4f, simulation = %.4f\n",
 stopifnot(abs(S_closed - S_sim) / S_closed < 0.01)
 ```
 
-### F.3.3 – Final-fit objective-function value matches the bundle
+### Final-fit objective-function value matches the bundle
 
 `Output_simulated_runCOMPEV2_005.res` reports `OBJV = 1846.946` at the
 final estimates. This value is informational here.
 
-## Self-consistency with the bundle’s simulated dataset (F.2)
+## Self-consistency with the bundle’s simulated dataset
 
-A full F.2 self-consistency check would re-simulate the bundle’s shipped
+A full self-consistency check would re-simulate the bundle’s shipped
 `Simulated_event_data.csv` (200 subjects, DVID = 4 records) under the
 nlmixr2lib model and compare against the bundle’s
 `Output_simulated_runCOMPEV2_005.res` `$TABLE` output. The bundle

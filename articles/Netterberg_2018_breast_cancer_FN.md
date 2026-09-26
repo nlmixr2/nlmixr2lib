@@ -426,7 +426,7 @@ The following implementation choices warrant explicit documentation.
   production was stimulated by a change in IL-6 \[RCFBIL6(t)\] using a
   linear function (OFV dropped 61 units)” (Netterberg 2018 Results). The
   exact differential-equation listing lives in Supplementary Material 1,
-  which was not bundled with the on-disk extraction; if the supplement
+  which was not available when this model was built; if the supplement
   contains a different functional form (e.g., regulation on the loss
   term rather than on the production term, or a different normalisation
   of RCFB_IL6), the encoded form should be revised. The Slope

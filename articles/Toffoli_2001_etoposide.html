@@ -3537,13 +3537,13 @@ estimated PK parameters (CL, V, k12, k21, F) but not ka. The Methods
 (page 3) state that “initial pharmacokinetic parameter values and
 variances were taken from published series”, citing reference [26]
 (Arbuck SG et al., J Clin Oncol 1986;4:1690-1695, oral+IV etoposide PK)
-as the source of initial values. The Arbuck 1986 PDF is not on disk, so
-we cannot lift the exact ka value. We fixed ka to 0.6 /h, a
-literature-typical oral etoposide absorption rate constant consistent
-with Slevin ML et al. 1989 (the paper’s own reference [35], on oral
-etoposide bioavailability). Downstream users who plan to fit the model
-to real oral etoposide data should re-estimate ka or fix it to a value
-matched to their observed tmax.</li>
+as the source of initial values. The Arbuck 1986 paper was not available
+when this model was built, so we cannot lift the exact ka value. We
+fixed ka to 0.6 /h, a literature-typical oral etoposide absorption rate
+constant consistent with Slevin ML et al. 1989 (the paper’s own
+reference [35], on oral etoposide bioavailability). Downstream users who
+plan to fit the model to real oral etoposide data should re-estimate ka
+or fix it to a value matched to their observed tmax.</li>
 <li>
 <strong>Residual error <code>propSd</code> fixed at 0.10 (10%
 proportional; ASSUMED, not reported).</strong> Toffoli 2001 does not
@@ -3608,8 +3608,8 @@ published.</li>
 estimate for etoposide. An earlier version of this model carried
 <code>propSd = 0.10</code>, described in the label as assumed from assay
 validation. That value appears nowhere in the paper, so it has been
-replaced with <code>fixed(0)</code>, following the library policy that
-an unreported residual error is encoded as zero and documented here
+replaced with <code>fixed(0)</code>, following this package’s convention
+that an unreported residual error is encoded as zero and documented here
 rather than filled in with a class-typical guess.</p>
 <p><strong>Consequence for simulation:</strong> simulating from this
 model returns the typical-value prediction without residual noise. If

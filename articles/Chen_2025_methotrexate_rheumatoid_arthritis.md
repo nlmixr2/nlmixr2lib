@@ -143,9 +143,10 @@ No erratum or corrigendum was located for Chen 2025.
 The Supplemental Information (Table S1, the study-level overview; Tables
 S2-S6, the covariate stepwise results; Figures S1-S6, risk-of-bias,
 goodness-of-fit and LOO-CV plots) is referenced by the paper but was
-**not on disk** for this extraction. No parameter value depends on it:
-the final models retained no covariates, so every estimate is in Table 2
-of the main text. Two consequences are recorded rather than resolved:
+**not available** when these models were built. No parameter value
+depends on it: the final models retained no covariates, so every
+estimate is in Table 2 of the main text. Two consequences are recorded
+rather than resolved:
 
 1.  **Study-count discrepancy.** The Results say “Table S1 provides an
     overview of the 71 studies” while the Abstract and the same Results

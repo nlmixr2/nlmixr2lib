@@ -1117,10 +1117,10 @@ stopifnot(any(bid$`Cmax > 2.0 ng/mL (%)` > 0))
     route-invariant, so it is a clearance discrepancy rather than an
     absorption or integration artefact: reproducing the published value
     would require a total plasma clearance of about 143 mL/min against
-    the 166.6 mL/min that Table S2 tabulates (112.7 + 53.9). No on-disk
-    source resolves the difference and no parameter has been tuned to
-    close it. All furosemide rows remain inside the paper’s own 0.5-2.0
-    fold acceptance criterion.
+    the 166.6 mL/min that Table S2 tabulates (112.7 + 53.9). No
+    available source resolves the difference and no parameter has been
+    tuned to close it. All furosemide rows remain inside the paper’s own
+    0.5-2.0 fold acceptance criterion.
 
 4.  **Published AUC windows are heterogeneous and partly
     unrecoverable.** Table 2 and Table S4 mix `AUC0-inf` with 6, 8, 10,

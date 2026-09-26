@@ -540,8 +540,8 @@ covariates for the reference simulation.
   V_Meta, Q_Meta, V5 parameters are therefore apparent (oral / F)
   values, not absolute.
 
-- **Patel 2017 NONMEM control stream is not on disk** for this
-  extraction. Parameter values come exclusively from the paper’s Table 2
+- **Patel 2017 NONMEM control stream not available** when this model was
+  built. Parameter values come exclusively from the paper’s Table 2
   final-parameter-estimate column; the in-file source-trace comments
   cite the published table cells.
 

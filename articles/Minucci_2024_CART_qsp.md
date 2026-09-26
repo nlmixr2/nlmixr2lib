@@ -449,8 +449,8 @@ ggplot(sim_scan, aes(time, pmax(CAR_perUL, 1e-4),
 - **Endogenous lymphocyte concentration.** Methods 2.3.1 of the paper
   reports 10^9 per L but the supplementary Table S1
   (`params-case-study-final`) lists 5e8 per L; the Table S1 value is
-  used here per the on-disk-final rule. The final case-study simulations
-  use Table S1 values.
+  used here because the final parameter sheet takes precedence over the
+  Methods text. The final case-study simulations use Table S1 values.
 
 - **CD19 receptors per cell.** Methods 2.3.1 reports 5000 per B cell and
   Table S1 lists `mAgperCell = 5000` and also `RPC_CD19 = 15877`, both

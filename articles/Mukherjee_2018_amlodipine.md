@@ -52,7 +52,7 @@ fitted, and none is imported from a Simcyp population file.
 
 The PD layer needs no reduction at all: the authors deposited the **Lua
 source code** as supplementary Figure S2, so the equation that generated
-every published SBP figure is on disk verbatim.
+every published SBP figure is available verbatim.
 
 Three things the model deliberately does **not** do, all expanded in
 [Assumptions and deviations](#assumptions-and-deviations):
@@ -668,8 +668,8 @@ in the model’s `population` metadata instead. It also cannot be turned
 into the interaction term: the printed apportionment, run through the
 well-stirred liver model, caps the attainable AUC ratio for complete
 CYP3A inhibition below the 2.28 the paper predicts, which is one more
-sign that the interaction depends on platform internals that are not on
-disk.
+sign that the interaction depends on platform internals that are not
+available.
 
 **Enterohepatic recirculation is not carried.** Table S1 lists biliary
 clearance as an assumption motivated by reported enterohepatic recycling

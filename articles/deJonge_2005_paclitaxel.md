@@ -650,12 +650,12 @@ comparison instead.
   the most parsimonious mass-action mechanism that reproduces the
   narrative; the steady-state ratio `bound / depot = cremophor` falls
   smoothly to zero as the CrEL pool empties, so the apparent absorption
-  rate increases with time. A control stream is not on disk; reviewers
-  comparing this implementation to the original NONMEM code may wish to
-  confirm the exact `$DES` form. The published Tmax (1-4 h), the shape
-  of Figure 3 (residuals improved after introducing the bound pool), and
-  the dose-vs-AUC non-proportionality (Figure 4) are all reproduced by
-  the implementation above.
+  rate increases with time. A control stream was not available;
+  reviewers comparing this implementation to the original NONMEM code
+  may wish to confirm the exact `$DES` form. The published Tmax (1-4 h),
+  the shape of Figure 3 (residuals improved after introducing the bound
+  pool), and the dose-vs-AUC non-proportionality (Figure 4) are all
+  reproduced by the implementation above.
 - **CrEL pool normalisation.** The compartment `cremophor` is normalised
   to a unit-amount initial condition at each oral paclitaxel
   administration. The paper’s source studies dosed oral paclitaxel

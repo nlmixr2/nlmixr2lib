@@ -3343,10 +3343,10 @@ study-dependent SD</td>
 </table>
 <p><strong>A transcription hazard worth recording.</strong> The
 publisher’s PDF drops the minus sign in front of several printed
-quantities, and the preprocessor trim renders <em>every</em> equation in
-this paper as <code>formula-not-decoded</code>. Two signs matter and
-were both recovered from Table 3 and then confirmed against the paper’s
-own arithmetic (see the checks below): the exponent in Eq. 10e is
+quantities, and <em>every</em> equation in this paper is lost by
+plain-text extraction of the PDF. Two signs matter and were both
+recovered from Table 3 and then confirmed against the paper’s own
+arithmetic (see the checks below): the exponent in Eq. 10e is
 <strong>negative</strong> (-0.608), and the drug-effect polynomial is
 <code>+a x^2 - b x</code>. The indicator in Eq. 10d is
 <code>I(DAY &gt;= 1)</code>, not “day 1 only”; the subscript
@@ -4485,15 +4485,14 @@ file are taken from Table 3 and left unaltered.</li>
 <li>
 <strong>Signs recovered from Table 3, not from the printed
 equations.</strong> The publisher PDF drops minus signs in the display
-equations, and the preprocessor trim renders every equation as
-<code>formula-not-decoded</code>. The Eq. 10e exponent is negative
-(-0.608 per Table 3) and the drug polynomial is
-<code>+a x^2 - b x</code>; both readings are confirmed by the paper’s
-own arithmetic in the anchor sections above. The Eq. 10d indicator is
-<code>I(DAY &gt;= 1)</code>; the <code>&gt;=</code> subscript is dropped
-by every text extractor and was confirmed by rendering the page as an
-image. Reading it as “day 1 only” would switch the time effect off for
-the entire treatment period.</li>
+equations, and every equation is lost by plain-text extraction of the
+PDF. The Eq. 10e exponent is negative (-0.608 per Table 3) and the drug
+polynomial is <code>+a x^2 - b x</code>; both readings are confirmed by
+the paper’s own arithmetic in the anchor sections above. The Eq. 10d
+indicator is <code>I(DAY &gt;= 1)</code>; the <code>&gt;=</code>
+subscript is dropped by every text extractor and was confirmed by
+rendering the page as an image. Reading it as “day 1 only” would switch
+the time effect off for the entire treatment period.</li>
 <li>
 <strong>Box-Cox transform applies to the adult cohorts
 only.</strong> “The Box-Cox transformation in the random effects for

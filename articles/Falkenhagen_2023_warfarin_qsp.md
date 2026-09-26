@@ -962,9 +962,10 @@ pharmacodynamic parameter and has no effect on warfarin exposure.
   “~39 h” quoted in the Results (Biomarker proposal section). The
   genotype parameters in the archive’s active branch reproduce
   Supplementary Table S1 exactly.
-- The Wajima 2009 primary publication (<doi:10.1038/clpt.2009.87>) is
-  **not** on disk and was not consulted; it is the upstream provenance
-  of these values but the archive is the proximate source.
+- The Wajima 2009 primary publication (<doi:10.1038/clpt.2009.87>) was
+  **not** available when this model was built and was not consulted; it
+  is the upstream provenance of these values but the archive is the
+  proximate source.
 
 ### Discrepancy between Table S1 and the population-generation code
 

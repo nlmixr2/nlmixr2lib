@@ -798,7 +798,7 @@ since Methods 4.4 states the paediatric simulations combined the
   simulates paediatric profiles by combining each species’ absorption
   parameters with allometrically scaled adult CL and Vd, comparing
   against digitised literature data from Hopkins et al. and Walson et
-  al. Those two external datasets are not on disk, and the paper states
-  the prandial state was not reported in either, so Figure 4 is not
-  replicated here. Both packaged models support the simulation directly
-  by supplying a paediatric `WT`.
+  al. Those two external datasets were not available when this model was
+  built, and the paper states the prandial state was not reported in
+  either, so Figure 4 is not replicated here. Both packaged models
+  support the simulation directly by supplying a paediatric `WT`.

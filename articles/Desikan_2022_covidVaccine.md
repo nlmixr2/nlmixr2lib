@@ -60,7 +60,7 @@ collects the per-parameter and per-equation origin in one place.
 | `k_bind` | 5e-4 s^-1 day^-1 | Table 1 row `k` (antibody-antigen binding rate constant); `model.m` line 5 `k = param(1)` |
 | `d_ag` | 1 day^-1 | Table 1 row `d_Ag` (decay rate of free and bound antigen); `model.m` line 6 `d = param(2)` |
 | `d_ab` | 0.1 day^-1 | Table 1 row `d_Ab` (decay rate of antibody); `model.m` line 7 `da = param(3)` |
-| `lambda_b` | 1 day^-1 | Table 1 row for max B-cell proliferation (`l` in the docling-parsed table; symbol lambda in the equations); `model.m` line 8 `s = param(4)` |
+| `lambda_b` | 1 day^-1 | Table 1 row for max B-cell proliferation (`l` in the plain-text extraction of the table; symbol lambda in the equations); `model.m` line 8 `s = param(4)` |
 | `phi` | 100 (scaled units s) | Table 1 row for antigen amount that half-maximally stimulates B-cell proliferation; `model.m` line 9 `phi = param(5)` |
 | `p_ab` | 0.1 day^-1 | Table 1 row `p` (antibody production rate per unit B cell); `model.m` line 10 `p = param(6)` |
 | `d_b` | ln(2)/47 day^-1 approx 0.01475 | Table 1 row `d_B` (B-cell decay rate; 47-day half-life anchored to Cromer et al. 2021); `model.m` line 11 `db = param(7)`; `MS_plots.m` line 14 `db = log(2)/47` |

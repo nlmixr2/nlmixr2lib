@@ -26,11 +26,11 @@ CO \* TPR) – are linked through three coupled indirect-response ODEs on
 HR, SV-turnover (SVT), and TPR, plus a shared MAP-negative-feedback term
 on the production rate of each state and cosine circadian rhythms on HR
 and TPR. A hypothetical one-compartment iv-bolus drug with a fixed 4-h
-half-life perturbs HR-production through an Emax function in the on-disk
-NONMEM code (Fu 2023 Supplemental Materials S1); this vignette
-reproduces the paper’s baseline hemodynamic behaviour and drug-response
-magnitudes and demonstrates how the model is used for the SSE
-identifiability sweep of Section 2.3.
+half-life perturbs HR-production through an Emax function in the NONMEM
+code (Fu 2023 Supplemental Materials S1); this vignette reproduces the
+paper’s baseline hemodynamic behaviour and drug-response magnitudes and
+demonstrates how the model is used for the SSE identifiability sweep of
+Section 2.3.
 
 The model is packaged as a QSP model with 4 ODE states (`central`, `hr`,
 `svt`, `tpr`), 3 algebraic hemodynamic observables (`HR`, `CO`, `MAP`)
@@ -339,7 +339,7 @@ rhythm.
 
 ## Relocating the drug effect to SV or TPR
 
-The on-disk NONMEM control stream places the drug effect on
+The supplemental NONMEM control stream places the drug effect on
 HR-production; the SSE identifiability sweep of Fu 2023 Sections 2.3.2
 and 3.2 evaluates whether the correct MoA (HR vs. SV vs. TPR) can be
 identified from the observed HR / CO / MAP data. To simulate the
@@ -392,12 +392,13 @@ magnitudes that the SSE-derived identifiability conclusions rest on.
   different species (e.g., dog per Snelder 2013b or human per Snelder
   2014b) would need to remove the `fixed()` wrappers and supply the
   species-appropriate starting values.
-- **Rat physiologic backbone; species not on-disk.** The Snelder 2013,
-  2014 papers that supply the rat baseline values are not on disk; the
-  parameters here are taken from the Fu 2023 supplemental NONMEM control
-  stream verbatim (which transcribes them from Snelder for the SSE
-  reference set). If a downstream user needs the original Snelder
-  derivation, those primary papers should be acquired separately.
+- **Rat physiologic backbone; upstream Snelder papers not available.**
+  The Snelder 2013, 2014 papers that supply the rat baseline values were
+  not available when this model was built; the parameters here are taken
+  from the Fu 2023 supplemental NONMEM control stream verbatim (which
+  transcribes them from Snelder for the SSE reference set). If a
+  downstream user needs the original Snelder derivation, those primary
+  papers should be acquired separately.
 - **No PKNCA validation.** This is an endogenous / mechanistic QSP model
   with no exogenous concentration to characterise via NCA; the drug is a
   hypothetical Emax perturbation of the HR-production rate, not a

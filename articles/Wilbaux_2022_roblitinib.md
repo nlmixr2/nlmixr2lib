@@ -486,9 +486,9 @@ reported in Wilbaux 2022. {.table}
 - **NCA reference values not in the extracted paper.** Wilbaux 2022 does
   not tabulate NCA values (Cmax, Tmax, AUC0-tau, Ctrough) directly; the
   NCA was reported in Chan 2022 (J Exp Clin Cancer Res 41:189) which was
-  not on disk during extraction. The simulated NCA table above stands as
-  an internal consistency check and can be cross-checked against Chan
-  2022 by future reviewers.
+  not available when this model was built. The simulated NCA table above
+  stands as an internal consistency check and can be cross-checked
+  against Chan 2022 by future reviewers.
 
 - **Inter-eta correlations not reported.** Table 1 reports only diagonal
   omega SDs. IIV on Tlag, Tk0, CL/F, V1/F, and V2/F is encoded as

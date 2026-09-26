@@ -3115,9 +3115,7 @@ dataset).</li>
 <li>Article: <a href="https://doi.org/10.1111/bph.16336" class="external-link uri">https://doi.org/10.1111/bph.16336</a>
 </li>
 <li>Supplement (model code, parameter tables, figures): published with
-the article and on disk at
-<code>papers/PMID_38403793/supplements/</code>
-</li>
+the article</li>
 </ul>
 <p>This model couples a one-compartment first-order-absorption
 cotadutide PK model (structure and typical values fixed from the
@@ -3923,8 +3921,8 @@ taken from the observed data. The published Bosch 2024 Table 3 reports
 only fixed-effect typical values and proportional residual errors; no
 random-effect variance components are tabulated. The supplement S12
 mrgSolve code contains a single active eta on insulin-dependent glucose
-clearance CLglci, but the omega value is not reported in the on-disk
-paper or supplement, so it is not encoded here.</li>
+clearance CLglci, but the omega value is not reported in the paper or
+supplement, so it is not encoded here.</li>
 <li>
 <strong>Healthy-volunteer parameter set not encoded.</strong> The
 supplement S12 code includes a <code>PAT == 1</code> branch with
@@ -3966,16 +3964,16 @@ lifestyle-effect formula (<code>TIMEd = T / 24</code>). The model file
 uses 1/day for Klsc and Kred and converts internally, matching the
 supplement code.</li>
 <li>
-<strong>Upstream PK and 4GI sources not on disk.</strong> The
+<strong>Upstream PK and 4GI sources not available.</strong> The
 cotadutide PK structure and individual EBE inputs are fixed from Guan et
-al. 2022 (cited in Bosch 2024 Methods Section 2.3) which was not on disk
-when this model was built; the typical values (KA = 0.343 1/h, CL = 1.04
-L/h, V = 18.7 L) are taken from the on-disk supplement S12
+al. 2022 (cited in Bosch 2024 Methods Section 2.3) which was not
+available when this model was built; the typical values (KA = 0.343 1/h,
+CL = 1.04 L/h, V = 18.7 L) are taken from the supplement S12
 <code>$PK</code> block defaults. The 4GI system parameters are fixed
 from Bosch et al. 2022 (also cited in Bosch 2024 Methods Section 2.3)
-which was not on disk when this model was built; the numeric values are
-taken from the on-disk supplement Tables S1 and S2 and the supplement
-S12 <code>$THETA</code> block.</li>
+which was not available when this model was built; the numeric values
+are taken from the supplement Tables S1 and S2 and the supplement S12
+<code>$THETA</code> block.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

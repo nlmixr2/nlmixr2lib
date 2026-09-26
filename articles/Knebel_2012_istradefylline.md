@@ -183,14 +183,14 @@ Per-parameter origins are recorded as in-file comments beside each
 | all three `addSd` | 0.001 | **not from the source** – placeholder; see Assumptions |
 
 The **functional forms** of the three adverse-event models are stated in
-Knebel 2012 Supplemental Table S2, which is not on disk. The forms
-encoded in the model files are the ones the paper’s own Results text
-specifies in words (“best described by a sigmoid Emax model” for
-dyskinesia and dizziness, “best described by a power model …
-characterized by a baseline probability …, a slope …, and the power
-term” for nausea, whose three named components map one-to-one onto the
-three rows of the Table IV Nausea block). The next section confirms that
-reading numerically rather than taking it on trust.
+Knebel 2012 Supplemental Table S2, which was not available when this
+model was built. The forms encoded in the model files are the ones the
+paper’s own Results text specifies in words (“best described by a
+sigmoid Emax model” for dyskinesia and dizziness, “best described by a
+power model … characterized by a baseline probability …, a slope …, and
+the power term” for nausea, whose three named components map one-to-one
+onto the three rows of the Table IV Nausea block). The next section
+confirms that reading numerically rather than taking it on trust.
 
 ## Gate 1: exact structural anchors
 
@@ -1146,12 +1146,13 @@ structure and the omega block are transcribed correctly.
 
 - **The three adverse-event model *forms* are reconstructed from the
   paper’s prose, not read off a table.** Knebel 2012 states them in
-  Supplemental Table S2, which is not on disk. The Results text names
-  the form of each model and, for nausea, names its three components
-  explicitly; Gate 1c confirms the reconstruction numerically against
-  three independent published anchors (the placebo probability of each
-  endpoint) and the dyskinesia asymptote. Should the supplement become
-  available, the forms should be re-verified against it.
+  Supplemental Table S2, which was not available when this model was
+  built. The Results text names the form of each model and, for nausea,
+  names its three components explicitly; Gate 1c confirms the
+  reconstruction numerically against three independent published anchors
+  (the placebo probability of each endpoint) and the dyskinesia
+  asymptote. Should the supplement become available, the forms should be
+  re-verified against it.
 - **The percentage OFF time file carries the final full covariate model,
   not the base model.** Both are printed in Table II; per the package’s
   policy, a base-plus-final model-development paper contributes the

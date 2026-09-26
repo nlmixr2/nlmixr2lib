@@ -410,7 +410,7 @@ balance is correct. {.table}
 - **No errata identified.** A PubMed search of
   `van Rongen 2016 acetaminophen morbidly obese erratum` returned no
   corrections as of the extraction date (2026-05-11).
-- **No NONMEM control stream on disk.** The Springer electronic
+- **No NONMEM control stream available.** The Springer electronic
   supplementary material consists of two EPS figure files
   (40262_2015_357_MOESM1_ESM.eps, MOESM2_ESM.eps); no `.mod` / `.ctl` /
   `.lst` is available. All parameter values are sourced from Table 2 of

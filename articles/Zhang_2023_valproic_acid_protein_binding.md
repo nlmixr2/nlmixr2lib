@@ -290,17 +290,13 @@ sim <- bind_rows(lapply(names(model_names), solve_one, zero_re = FALSE))
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'

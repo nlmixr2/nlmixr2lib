@@ -447,12 +447,12 @@ the virtual population approximates Table 3 medians and ranges:
   rate constants except K21”).
 - **Online Resources 1-4** of the paper (online supplement, including
   the NONMEM control stream of the base model and several
-  sensitivity-analysis plots) are not on disk and were not retrieved
-  (Springer static-content endpoint returned HTTP 403). All final-model
-  parameter values used here come from Table 4 of the main paper, which
-  contains the complete set; the supplements would only confirm the
-  base-model control stream and the alternative covariate models, not
-  change any final-model number.
+  sensitivity-analysis plots) were not available when this model was
+  built (the Springer supplement download returned HTTP 403). All
+  final-model parameter values used here come from Table 4 of the main
+  paper, which contains the complete set; the supplements would only
+  confirm the base-model control stream and the alternative covariate
+  models, not change any final-model number.
 
 ### Notes on the model
 

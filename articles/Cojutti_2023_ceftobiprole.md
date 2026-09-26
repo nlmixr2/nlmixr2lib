@@ -463,6 +463,8 @@ sim_nca_raw <- dplyr::bind_rows(
 #> replaced with 'NA'
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
+#> IDID=-1, excess work done on this call (perhaps wrong jt).
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 

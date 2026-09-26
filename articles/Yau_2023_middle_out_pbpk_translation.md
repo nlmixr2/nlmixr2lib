@@ -719,7 +719,7 @@ style="width:100%;"}
 - **Midazolam in human is not packaged as a model file.** The paper
   reports the human `Vss,b` predicted from the rat Model 3D fit (183 L
   against an observed 141 L), but no human midazolam blood clearance
-  appears in any on-disk source, and midazolam is a high-extraction
+  appears in any available source, and midazolam is a high-extraction
   compound whose hepatic extraction ratio – and hence the `Vss,b` liver
   term – depends materially on that clearance. Rather than substitute a
   value, the human midazolam projection is left out of the registry. The
@@ -752,13 +752,11 @@ style="width:100%;"}
 - **Canonical names come from the sibling extraction.** The Kpu cluster
   scalars use the `sf<n>` / `lsf<n>` canonical and the bare `pancreas`
   compartment, both registered by the companion paper’s extraction,
-  which is now on `main` as
-  `Yau_2023_diazepam_pbpk_{lumped,kpu,scalar}_{rat,human}`. Per the
-  maintainers’ decision this branch adds no register entry of its own,
-  so that one canonical serves both papers and the two pull requests do
-  not conflict in `inst/references/`.
+  packaged as `Yau_2023_diazepam_pbpk_{lumped,kpu,scalar}_{rat,human}`.
+  Per the maintainers’ decision these models add no register entry of
+  their own, so that one canonical serves both papers.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
-  now reports no issues for any of the five models here.
+  reports no issues for any of the five models here.
 
 - **No covariates.** The physiology is fixed at the reference individual
   of Table S6, so `covariateData` is empty in every model. Users

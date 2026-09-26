@@ -925,9 +925,10 @@ simulated participants per arm). {.table}
 
 Kengo 2025 reports no non-compartmental table of its own – the companion
 non-compartmental analysis of the DERIVE trial is its reference 8, which
-is not on disk here – so there is no published Cmax / AUC / half-life
-row to place beside these. The paper’s own quantitative simulation
-output is the trough target-attainment table reproduced next, and
+was not available when this model was built – so there is no published
+Cmax / AUC / half-life row to place beside these. The paper’s own
+quantitative simulation output is the trough target-attainment table
+reproduced next, and
 [`nlmixr2lib::ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
 is therefore not used.
 
@@ -1360,7 +1361,7 @@ every model.
 re-fitted a rifampicin model to the DERIVE data and reports its
 parameters in supplementary Table S1 (CLint,max x fu = 33.0 L/h, Km
 4.90, Vc 44.7 L, ka 2.40 1/h, MTT 0.502 h, NN 20.3, with VH 1 L, QH 90
-L/h and fu 0.2 fixed). Its *parameters* are on disk but its *equations*
+L/h and fu 0.2 fixed). Its *parameters* are reported but its *equations*
 are not: the paper states only that it fitted “a previously published
 one-compartment model with saturation of elimination via a liver
 compartment” and cites references 41 (Kengo 2023, Antimicrob Agents
@@ -1368,11 +1369,11 @@ Chemother 67(11):e0043123, <doi:10.1128/aac.00431-23>) and 42 (Chirehwa
 2016, Antimicrob Agents Chemother 60(1):487-494,
 <doi:10.1128/aac.01830-15>, which also carries an erratum,
 <doi:10.1128/aac.00483-16>). Neither upstream paper is open access and
-automated acquisition was refused by the publisher. Rather than infer
-the hepatic topology from a sibling model, the rifampicin fit has been
-deferred pending acquisition of those two references. This costs nothing
-to the three models shipped here: rifampicin exposure is not a covariate
-in any of them. The paper screened ritonavir AUC on atazanavir clearance
+neither was available when this model was built. Rather than infer the
+hepatic topology from a sibling model, the rifampicin fit has been
+deferred until those two references are available. This costs nothing to
+the three models shipped here: rifampicin exposure is not a covariate in
+any of them. The paper screened ritonavir AUC on atazanavir clearance
 and rifampicin AUC on inter-visit differences and retained neither,
 encoding rifampicin instead as the categorical regimen indicator used
 above (the control stream’s `RTVAUC_CL` theta is `FIX`ed at 0). Both

@@ -297,19 +297,19 @@ between the 90 mg and 120 mg arms.
   terminal ka2 into central). Table 2 / A2 report the rate constants but
   do NOT report an explicit bioavailability split between the two paths;
   the upstream Gomeni 2013 / Laffont 2014 / Laffont 2015 papers (where
-  the structural model was originally developed) are not on disk. The
-  package model encodes the simplest mass-conserving interpretation
-  consistent with the Table 2 parameters: a single SC depot that
-  simultaneously eliminates via ka1 (directly to central, fast-peak
-  path) and via ktr (into transit1 of the chain, slow-peak path). The
-  implicit fast-path fraction is then `ka1 / (ka1 + ktr)` ~ 18% and the
-  slow-path fraction is `ktr / (ka1 + ktr)` ~ 82% at the typical-value
-  estimates. This is one of several mathematically equivalent ways to
-  express the dual-absorption pattern; if the upstream papers used a
-  fitted F1 split with both depots receiving the full dose, the package
-  model’s apparent V (129 L) absorbs the difference. The PANSS PK/PD
-  output is unchanged because total active moiety is the integrating
-  variable.
+  the structural model was originally developed) were not available when
+  this model was built. The package model encodes the simplest
+  mass-conserving interpretation consistent with the Table 2 parameters:
+  a single SC depot that simultaneously eliminates via ka1 (directly to
+  central, fast-peak path) and via ktr (into transit1 of the chain,
+  slow-peak path). The implicit fast-path fraction is then
+  `ka1 / (ka1 + ktr)` ~ 18% and the slow-path fraction is
+  `ktr / (ka1 + ktr)` ~ 82% at the typical-value estimates. This is one
+  of several mathematically equivalent ways to express the
+  dual-absorption pattern; if the upstream papers used a fitted F1 split
+  with both depots receiving the full dose, the package model’s apparent
+  V (129 L) absorbs the difference. The PANSS PK/PD output is unchanged
+  because total active moiety is the integrating variable.
 
 - **CGI-S proportional-odds model not implemented.** The paper also fits
   a CGI-S proportional-odds logistic-regression PD model (Section

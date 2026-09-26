@@ -18,8 +18,8 @@ ui <- rxode2::rxode(readModelDb("Wickramasinghe_2025_abemaciclib_cns_pbpk"))
   interindividual variability and the driving plasma profile in Table
   S2. The 9-CNS model was originally developed and validated across six
   drugs in Li J, Wickramasinghe C, Jiang J, et al. Clin Pharmacol Ther.
-  2025;117(3):690-703 (reference 7 of the 2025 tutorial), which is not
-  on disk for this extraction.
+  2025;117(3):690-703 (reference 7 of the 2025 tutorial), which was not
+  available when this model was built.
 - Article: <https://doi.org/10.1002/psp4.70026>
 - PubMed Central: <https://pmc.ncbi.nlm.nih.gov/articles/PMC12072228/>
 
@@ -961,7 +961,7 @@ stopifnot(
   paper never states the distribution. It was recovered from Table S3,
   the app’s own five virtual patients, by the test reported in the “IIV
   reproduces the app’s own virtual patients” section above. This is a
-  derivation from an on-disk source, not a class-typical default.
+  derivation from a published source, not a class-typical default.
 
 - **Concentration units.** The paper labels its figure axes only
   “Concentrations” and never states a unit. The 9-CNS ODE system is
@@ -1005,7 +1005,7 @@ stopifnot(
 - **Upstream development paper.** The 9-CNS model was originally
   developed and validated across six drugs in Li J, Wickramasinghe C,
   Jiang J, et al., *Clin Pharmacol Ther* 2025;117(3):690-703 (reference
-  7). That paper is not on disk; it is the richer source for the other
-  five drugs’ parameter sets, but nothing in this extraction depends on
-  it - the tutorial and its supplement are self-contained for
-  abemaciclib.
+  7). That paper was not available when this model was built; it is the
+  richer source for the other five drugs’ parameter sets, but nothing in
+  this extraction depends on it - the tutorial and its supplement are
+  self-contained for abemaciclib.

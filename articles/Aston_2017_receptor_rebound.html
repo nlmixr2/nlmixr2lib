@@ -3157,7 +3157,7 @@ parameter is encoded with <code>fixed()</code>.</li>
 <strong>Example 2</strong> reproduces the efalizumab model of Ng et
 al. (2005), developed in patients with moderate-to-severe plaque
 psoriasis. The subject count and demographics live in Ng et al. (2005),
-which is <strong>not on disk</strong> for this extraction, so
+which was <strong>not available</strong> when this model was built, so
 <code>population$n_subjects</code> is left <code>NA</code> rather than
 guessed. The model is body-weight normalised throughout (<code>Vc</code>
 = 64.3 mL/kg, dose in mg/kg), and CD11a is expressed as a percentage of
@@ -4017,15 +4017,15 @@ point only accumulates solver noise.</p>
 <strong><code>Kmc03</code> is derived, not transcribed.</strong>
 Aston et al. print eleven of the twelve Section 7.2 parameters but never
 print <code>Kmc03</code>. Ng et al. (2005), where it originates, is
-<strong>not open access and is not on disk</strong> for this extraction
-(the maintainers have it on their acquisition list). Rather than guess
-it, the model file parameterises the CD11a pool by its baseline,
-<code>bl_total_target = 100</code> %CD11a - a value that is not an
-assumption but the definition of an endpoint reported as a percentage of
-baseline, and which the Fig. 11 axis displays directly. Eq. (72) then
-determines <code>Kmc03 = 15.33</code> %CD11a exactly. Two independent
-checks corroborate it. First, the paper’s printed slowest feedback-block
-eigenvalue of <code>-1.37e-2</code>, which this value reproduces as
+<strong>not open access and was not available</strong> when this model
+was built. Rather than guess it, the model file parameterises the CD11a
+pool by its baseline, <code>bl_total_target = 100</code> %CD11a - a
+value that is not an assumption but the definition of an endpoint
+reported as a percentage of baseline, and which the Fig. 11 axis
+displays directly. Eq. (72) then determines <code>Kmc03 = 15.33</code>
+%CD11a exactly. Two independent checks corroborate it. First, the
+paper’s printed slowest feedback-block eigenvalue of
+<code>-1.37e-2</code>, which this value reproduces as
 <code>-1.3755e-2</code>, a 0.4% error, against roughly 1.9% and 1.1% for
 the nearest competing baselines of 80 and 120 %CD11a - the
 discriminating table is computed above. Second, the Figure 11 time
@@ -4088,9 +4088,9 @@ branch point at <code>R0 + 1/H0 = 3.69</code> nM, so the statement holds
 throughout the swept range.</li>
 <li>
 <strong>Population demographics for Example 2 are
-unavailable.</strong> They are reported in Ng et al. (2005), which is
-not on disk; <code>n_subjects</code> and <code>n_studies</code> are left
-<code>NA</code> rather than guessed.</li>
+unavailable.</strong> They are reported in Ng et al. (2005), which was
+not available; <code>n_subjects</code> and <code>n_studies</code> are
+left <code>NA</code> rather than guessed.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

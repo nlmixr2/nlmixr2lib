@@ -733,12 +733,11 @@ AUClast. AUCinf exceeds AUClast by the 48 h tail, as expected. {.table}
   16% and 12.4%, the ordinary magnitudes for a Phase-1 LC-MS/MS assay;
   read as variances they would be 40% and 35%, which is implausible for
   the well-behaved profiles in Figure 1.
-- **Equations 1-8 were recovered from the PDF text layer.** The
-  preprocessor’s markdown conversion emitted `formula-not-decoded` for
-  all eight displayed equations, so they were read from the PDF’s
-  embedded text (`pdftotext -layout`). The `0.75` exponent of Equation 6
-  in particular is present only in the superscript run of that text
-  layer.
+- **Equations 1-8 were recovered from the PDF text layer.** None of the
+  eight displayed equations survives naive plain-text extraction of the
+  PDF, so they were read from the PDF’s embedded text
+  (`pdftotext -layout`). The `0.75` exponent of Equation 6 in particular
+  is present only in the superscript run of that text layer.
 - **The mixture model is not part of the packaged model.** Khwarg 2024
   used a two-component mixture with fixed Hardy-Weinberg probabilities
   (0.7 CC / 0.3 CT) to impute the genotype of the three ungenotyped

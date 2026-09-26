@@ -791,9 +791,9 @@ Reading the table:
 - **Strict steady-state solve of Supp Eq 14**,
   `k7 = (k6 * NaiveBlood_ss - kdeg_ln * NaiveLN_ss) / NaiveLN_ss = 11.92`,
   is the biologically correct derivation and gives an exactly flat
-  homeostasis layer. It is *not* used, because the extraction policy is
-  to reproduce the model the authors built and ran; the difference from
-  the deposited code is under 2% on every output.
+  homeostasis layer. It is *not* used, because the aim here is to
+  reproduce the model the authors built and ran; the difference from the
+  deposited code is under 2% on every output.
 
 Note that Table 1’s downstream values `k5 = 73.53` and `kdeg_spl = 4.78`
 are internally consistent with `k7 = 62.62`: substituting 62.62 into
@@ -910,7 +910,7 @@ than accommodated by changing any value.
 - **`Vmax` is 490.60**, the Table 1 and deposited-code value. The
   inter-study heterogeneity section quotes 492.8 cells/day as “the
   typical calibrated value”; the 0.4% difference is not resolved by any
-  on-disk source and does not affect any conclusion.
+  available source and does not affect any conclusion.
 - **No IIV and no residual error.** Ugolkov 2026 minimised a -2
   log-likelihood whose per-variable sigma was computed from the
   residuals themselves and tabulates no residual-error magnitude for any

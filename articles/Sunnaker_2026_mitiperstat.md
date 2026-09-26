@@ -29,7 +29,7 @@ mod
 #> 
 #>   # Sunnaker 2026 reports every mitiperstat concentration in nmol/L and every
 #>   # dose in mg, but never states the molar mass, so no exact mg <-> nmol
-#>   # conversion is available from any on-disk source. The model is linear, so it
+#>   # conversion could be obtained from any available source. The model is linear, so it
 #>   # is encoded in self-consistent mass units: a dose in mg gives compartment
 #>   # amounts in mg and Cc in mg/L (= ug/mL). Dosing the same model in nmol
 #>   # returns Cc directly in nmol/L, which is the scale the paper prints.
@@ -196,7 +196,7 @@ mod
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x55ce98c6c1b0>
+#> <environment: 0x5569aeff04b8>
 ```
 
 ## Population
@@ -261,8 +261,8 @@ Every value below is also carried as an in-file comment beside its
 ### A note on concentration units
 
 Sunnaker 2026 reports every mitiperstat concentration in **nmol/L** and
-every dose in **mg**, but never states the molar mass, and no supplement
-on disk supplies it. The packaged model is therefore encoded in
+every dose in **mg**, but never states the molar mass, and no available
+supplement supplies it. The packaged model is therefore encoded in
 self-consistent **mass** units: dosing in mg gives compartment amounts
 in mg and `Cc` in mg/L (= ug/mL). Because the model is entirely linear,
 dosing it in nmol instead returns `Cc` directly in nmol/L.
@@ -1043,7 +1043,7 @@ dose. {.table}
 
 - **Concentration units.** Sunnaker 2026 reports concentrations in
   nmol/L and doses in mg but never states mitiperstat’s molar mass, and
-  no supplement on disk supplies it. The model is encoded in
+  no available supplement supplies it. The model is encoded in
   self-consistent mass units (mg dose gives `Cc` in mg/L); because the
   model is linear, dosing in nmol returns `Cc` in nmol/L. The Table 4
   comparison calibrates one conversion factor (343 g/mol, computed in
@@ -1079,14 +1079,14 @@ dose. {.table}
   contrasts agree to within about 2 percentage points and the Cmax
   contrasts to within about 3.
 
-- **Supplementary material not on disk.** Tables S1 (stepwise covariate
-  modelling), S2 (the rejected fixed-allometric variant) and S3
-  (highest- and lowest-exposure cases), and Figures S1-S7 (goodness of
-  fit, VPCs, random-effect correlations) were not available. None
-  contains a final-model parameter: the complete final model is in Table
-  3 of the main text with its centering values and reference categories
-  in the Table 3 footnote, and the covariate equation forms are in
-  Methods 2.4.3.
+- **Supplementary material was not available when this model was
+  built.** Tables S1 (stepwise covariate modelling), S2 (the rejected
+  fixed-allometric variant) and S3 (highest- and lowest-exposure cases),
+  and Figures S1-S7 (goodness of fit, VPCs, random-effect correlations)
+  were not available. None contains a final-model parameter: the
+  complete final model is in Table 3 of the main text with its centering
+  values and reference categories in the Table 3 footnote, and the
+  covariate equation forms are in Methods 2.4.3.
 
 - **Correlated random effects not included.** The authors report a
   weak-to- moderate correlation of 0.46 between the CL/F and Vc/F random

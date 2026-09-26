@@ -743,17 +743,18 @@ Median steady-state NCA metrics by arm. {.table}
   baseline urinary oxalate, IC50 and Imax – not on Kout, despite Methods
   section 2.4 describing a Kout eta in the *prior* model. The final
   model as tabulated is what is implemented.
-- **Supporting Information is not on disk.** Tables S1-S3 and Figures
-  S1-S4 were not available. Table 1 and Table 2 carry the complete final
-  parameter set and Figure 3 the complete structure, so nothing the
-  model needs is missing; the gap affects baseline demographics, the
-  covariate screening list, and the goodness-of-fit diagnostics only.
+- **Supporting Information not available.** Tables S1-S3 and Figures
+  S1-S4 were not available when this model was built. Table 1 and Table
+  2 carry the complete final parameter set and Figure 3 the complete
+  structure, so nothing the model needs is missing; the gap affects
+  baseline demographics, the covariate screening list, and the
+  goodness-of-fit diagnostics only.
 - **`cmt = "Cc"` on observation rows is correct here.** The model
   declares two endpoints, so rxode2 places endpoint slots after the ten
   ODE states and observation rows must address an endpoint rather than
-  an ODE state. `nlmixr2libingest`’s `lint_vignette.R` flags this
-  pattern as `[cmt-observable]`; that warning is a known false positive
-  for declared multi-endpoint models, where `cmt = "central"` fails
-  outright.
+  an ODE state. The maintainers’ automated vignette checks flag this
+  pattern as a possible observable-name mistake; that warning is a known
+  false positive for declared multi-endpoint models, where
+  `cmt = "central"` fails outright.
 - **All simulated participants are PH1 patients** (`DIS_PH1 = 1`),
   matching the populations of Figures 5 and 6 and of Table 3.

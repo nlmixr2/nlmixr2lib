@@ -36,7 +36,7 @@ bundle for `DDMODEL00000267` (scraped to
   on the original real dataset; the FINAL PARAMETER ESTIMATE block
   (lines 519-567) appears after `MINIMIZATION SUCCESSFUL` (line 452,
   OBJV = 5286.743) and is the authoritative source of parameter point
-  values for this extraction.
+  values for this model.
 - `Output_simulated_OriginalModelCode.lst` – companion listing run on
   the bundle’s simulated dataset; used for self-consistency checks
   below.
@@ -47,7 +47,7 @@ bundle for `DDMODEL00000267` (scraped to
 - `DDMODEL00000267.rdf` – model classification metadata
   (`pkpd-ontology#pkpd_0006013` purpose).
 
-The Allegaert 2015 BMC Anesthesiol publication itself was not on disk
+The Allegaert 2015 BMC Anesthesiol publication itself was not available
 when this model was built, so the validation strategy below is a
 DDMORE-source self-consistency check and the linked publication’s tables
 are not used as a parameter cross-check. Per-parameter source comments
@@ -376,8 +376,8 @@ accelerates the terminal phase relative to the OCC = 3, 4 baselines.
 
 ### Comparison against published NCA
 
-The Allegaert 2015 BMC Anesthesiol publication was not on disk when this
-model was built, so a side-by-side comparison against published NCA
+The Allegaert 2015 BMC Anesthesiol publication was not available when
+this model was built, so a side-by-side comparison against published NCA
 parameters cannot be produced. The .lst-based self-consistency check
 above (typical-value simulation reproducing sensible plasma / urinary
 trajectories with the expected OCC-stratum ordering) is the substitute.
@@ -392,14 +392,13 @@ covariate-effect implementation are coherent.
 
 ## Assumptions and deviations
 
-- **Publication PDF not on disk.** The Allegaert 2015 paper (BMC
+- **Publication PDF not available.** The Allegaert 2015 paper (BMC
   Anesthesiol 15:151;
   [doi:10.1186/s12871-015-0144-3](https://doi.org/10.1186/s12871-015-0144-3))
-  was not available in the maintainers’ literature mirror. Parameter
-  point values are taken verbatim from
-  `Output_real_OriginalModelCode.lst` after `MINIMIZATION SUCCESSFUL`
-  (OBJV = 5286.743). The absence of a paper cross-check is the main
-  residual risk in the parameter trace.
+  was not available when this model was built. Parameter point values
+  are taken verbatim from `Output_real_OriginalModelCode.lst` after
+  `MINIMIZATION SUCCESSFUL` (OBJV = 5286.743). The absence of a paper
+  cross-check is the main residual risk in the parameter trace.
 - **Demographic detail not in the bundle.** The DDMORE bundle ships the
   .mod, the .lst, the simulated dataset, and the RDF metadata but no
   `Model_Accomodations.text` or `_Long_*.txt` description file with the
@@ -471,14 +470,13 @@ covariate-effect implementation are coherent.
   covariate effects) so the single-dose check is considered sufficient
   for a pre-publication validation.
 - **Canonical covariate-column names `CONMED_BIRTHCONTROL` and
-  `URINE_FLOW`.** The first version of this extraction (commit
-  `ced840f2`, then merged into `main`) registered the source-data
-  columns `BC` and `UF` under the canonical names `BC_USE` and `UF`.
-  Maintainer review preferred the full-word forms `CONMED_BIRTHCONTROL`
-  and `URINE_FLOW` for clarity in source traces; the canonicals were
-  renamed in `inst/references/covariate-columns.md` and propagated
-  through this model file and vignette. The source-data column names in
-  the DDMORE bundle (`BC`, `UF`) are unchanged and remain the documented
-  source aliases. Datasets passed to `rxSolve` for this model must
-  rename `BC` -\> `CONMED_BIRTHCONTROL` and `UF` -\> `URINE_FLOW` before
-  the call.
+  `URINE_FLOW`.** The first version of this model registered the
+  source-data columns `BC` and `UF` under the canonical names `BC_USE`
+  and `UF`. Maintainer review preferred the full-word forms
+  `CONMED_BIRTHCONTROL` and `URINE_FLOW` for clarity in source traces;
+  the canonicals were renamed in `inst/references/covariate-columns.md`
+  and propagated through this model file and vignette. The source-data
+  column names in the DDMORE bundle (`BC`, `UF`) are unchanged and
+  remain the documented source aliases. Datasets passed to `rxSolve` for
+  this model must rename `BC` -\> `CONMED_BIRTHCONTROL` and `UF` -\>
+  `URINE_FLOW` before the call.

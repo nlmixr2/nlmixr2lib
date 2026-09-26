@@ -188,7 +188,7 @@ mod
 #>         "covariates; no influence detected. Concomitant drugs were mainly",
 #>         "benzodiazepines (lorazepam 24 patients, zolpidem 22 patients) plus",
 #>         "occasional antihypertensives, antiepileptics and antibiotics",
-#>         "(Supplemental data Appendix D, not on disk). Cantillon 2018 Sect. 4",
+#>         "(Supplemental data Appendix D, which was not available when this model was built). Cantillon 2018 Sect. 4",
 #>         "treats the null covariate result as its drug-drug interaction",
 #>         "assessment."
 #>       ),
@@ -354,7 +354,7 @@ mod
 #>     PANSS ~ add(addSd_PANSS)
 #>   })
 #> }
-#> <environment: 0x55f5e451a688>
+#> <environment: 0x55fb52bcee38>
 ```
 
 ## Population
@@ -1063,11 +1063,12 @@ parameter has been adjusted to improve this comparison.
   directly, Table 2 is used. A reader who preferred the Sect. 3.2
   reading would set `etalcl ~ 0.0222`, `etalvc ~ 0.0459` and
   `propSd <- 0.08`.
-- **Supplementary appendices are not on disk.** Appendices A-D
+- **Supplementary appendices are not available.** Appendices A-D
   (sampling-time blocks, bioanalytical method, PD covariate stepwise
-  table, concomitant medication list) were not available. None contains
-  a parameter used by the model; the covariate-screen results they
-  support are documented in `covariatesDataExcluded`.
+  table, concomitant medication list) could not be obtained when this
+  model was built. None contains a parameter used by the model; the
+  covariate-screen results they support are documented in
+  `covariatesDataExcluded`.
 - **`ka` is poorly identified.** Table 2 gives `Var(g3) = 2.09` with a
   standard error of 6.63, i.e. a relative standard error above 300%, and
   the point estimate of `ka` itself has an RSE of 40%. Sect. 4

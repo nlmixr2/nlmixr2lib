@@ -112,9 +112,9 @@ str(ui$population, max.level = 1)
 Every `ini()` entry in
 `inst/modeldb/specificDrugs/Kastrissios_2006_apricoxib.R` carries an
 in-file comment naming its source location. They are collected here for
-review. The preprocessed markdown companion of the PDF renders all eight
-equations as `<!-- formula-not-decoded -->`; the equation forms below
-were recovered verbatim with `pdftotext -layout`.
+review. None of the eight equations survives naive plain-text extraction
+of the PDF; the equation forms below were recovered verbatim with
+`pdftotext -layout`.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

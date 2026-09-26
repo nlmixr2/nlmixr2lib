@@ -106,10 +106,10 @@ comment naming its source location. They are collected here.
 All values come from **Miao 2023 Table 2**, “Parameter estimates of
 teclistamab for the final population PK model”. The four covariate
 equations are the footnotes a-d of that table; they were read from the
-MathML in the EuropePMC JATS full text of PMC10518021, because the
-`pdftotext` and docling renderings of footnote c lose the division bar
-and print `V1 = 4.13 x (BWT)^0.358` with a stranded `74` on the
-following line.
+MathML in the EuropePMC JATS full text of PMC10518021, because
+plain-text renderings of the PDF lose the division bar in footnote c and
+print `V1 = 4.13 x (BWT)^0.358` with a stranded `74` on the following
+line.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -950,5 +950,6 @@ stopifnot(all(gate$Pass[!gate$Deviation]))
   ratios for baseline soluble BCMA (0.99 per ng/mL) and PD-1 expression
   on CD3+ T cells (0.96), which are prognostic factors rather than
   exposure terms and come without an intercept. The exposure-response
-  layer is therefore not reconstructable from any on-disk source and
-  only the population PK model is packaged here.
+  layer is therefore not reconstructable from any source available when
+  this model was built and only the population PK model is packaged
+  here.

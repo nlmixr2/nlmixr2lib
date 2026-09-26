@@ -533,14 +533,14 @@ coefficients.
   magnitude is `sqrt(0.202 * 0.233) = 0.217`; the published 2.475
   implies a correlation of 11.4, which is impossible). The same value
   2.475 reproduces in `pdftotext` extraction directly from the published
-  PDF, so it is the paper’s printed value, not a docling / OCR artifact.
-  We treat this as a publication transcription error of uninterpretable
-  kind: the off-diagonal is dropped and the IIV is encoded as a diagonal
-  Omega with the marginal variances. The packaged model therefore
-  simulates `etalcl` and `etalvc` as independent etas, which is a
-  published deviation but does not change typical-value predictions. The
-  maintainer-approved choice was a diagonal Omega, with the dropped
-  covariance documented here.
+  PDF, so it is the paper’s printed value, not an extraction or OCR
+  artifact. We treat this as a publication transcription error of
+  uninterpretable kind: the off-diagonal is dropped and the IIV is
+  encoded as a diagonal Omega with the marginal variances. The packaged
+  model therefore simulates `etalcl` and `etalvc` as independent etas,
+  which is a published deviation but does not change typical-value
+  predictions. The maintainer-approved choice was a diagonal Omega, with
+  the dropped covariance documented here.
 - **Reference dose for the dose-dependent Ka power model set to 60 mg
   (maintainer decision).** Lacy 2018 states “The first-order absorption
   process including a lag time and a dose-dependent effect on the

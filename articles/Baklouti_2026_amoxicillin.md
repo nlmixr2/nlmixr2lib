@@ -104,14 +104,13 @@ each `ini()` entry in
 | `propSd` (plasma) | 0.48 | Table 3, `b1 (se)`, RSE 10.9% |
 | `propSd_Cmilk` (milk) | 0.26 | Table 3, `b2 (se)`, RSE 11.3% |
 
-The display equations render as `<!-- formula-not-decoded -->` in the
-markdown preprocessor, and the publisher’s symbol font encodes minus and
-multiplication as C0 control bytes, so the ODE signs above were
-recovered from the PDF with `pdftotext -layout` and `cat -A`. The sign
-that matters is on `kmilk`: it is subtracted from the central
-compartment as well as added to milk, so transfer into milk is a genuine
-elimination pathway for plasma and total plasma loss is `ke + kmilk` =
-0.338 1/h.
+The display equations do not survive plain-text extraction of the PDF,
+and the publisher’s symbol font encodes minus and multiplication as C0
+control bytes, so the ODE signs above were recovered from the PDF with
+`pdftotext -layout` and `cat -A`. The sign that matters is on `kmilk`:
+it is subtracted from the central compartment as well as added to milk,
+so transfer into milk is a genuine elimination pathway for plasma and
+total plasma loss is `ke + kmilk` = 0.338 1/h.
 
 ``` r
 

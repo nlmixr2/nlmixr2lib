@@ -727,7 +727,7 @@ per drug. {.table}
   supplementary control streams fit a full `$OMEGA BLOCK` across every
   subject-level eta (BLOCK(6) for efavirenz, BLOCK(7) for atazanavir,
   BLOCK(5) for ritonavir). Table 2 prints only the diagonal CV% values,
-  so the off-diagonal covariances are not recoverable from any on-disk
+  so the off-diagonal covariances are not recoverable from any available
   source and the packaged models carry independent etas. Simulated
   marginal variability is therefore correct, but simulated correlations
   between individual parameters are not.

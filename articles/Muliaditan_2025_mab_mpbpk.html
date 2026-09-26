@@ -3821,17 +3821,17 @@ from ventricular CSF <code>A(12) * (VCSFLV + VCSFTFV)</code> and a
 denominator <code>(VBtotal + VCSFLV + VCSFTFV)</code>. The volumes
 <code>VBtotal</code>, <code>VCSFLV</code>, and <code>VCSFTFV</code> are
 Bloomingdale 2017 model constants that are not reported in the
-Muliaditan 2025 paper, supplement, or any other on-disk source for this
-extraction. The model file therefore approximates <code>Cbrain</code> as
-a volume-weighted average over the (BBB endosomal + brain ISF + BCSFB
-endosomal) compartments only, scaled by the estimated
-<code>FAC_BPRED = 0.05</code> correction. This is a strict subset of the
-published equation and may under-predict brain homogenate by a small
-amount that depends on ventricular CSF contribution. Users who want the
-full equation can re-derive <code>VBtotal</code>, <code>VCSFLV</code>,
-and <code>VCSFTFV</code> from the Bloomingdale 2017 source publication
-and pass them through a wrapper that recomputes <code>Cbrain</code> post
-hoc from the rxode2 state vector.</li>
+Muliaditan 2025 paper, supplement, or any other source available when
+this model was built. The model file therefore approximates
+<code>Cbrain</code> as a volume-weighted average over the (BBB endosomal
++ brain ISF + BCSFB endosomal) compartments only, scaled by the
+estimated <code>FAC_BPRED = 0.05</code> correction. This is a strict
+subset of the published equation and may under-predict brain homogenate
+by a small amount that depends on ventricular CSF contribution. Users
+who want the full equation can re-derive <code>VBtotal</code>,
+<code>VCSFLV</code>, and <code>VCSFTFV</code> from the Bloomingdale 2017
+source publication and pass them through a wrapper that recomputes
+<code>Cbrain</code> post hoc from the rxode2 state vector.</li>
 <li>
 <strong>Mixture model selection.</strong> The paper’s NONMEM mixture
 model assigns each subject to either POP1 (fast kint, fraction 0.437) or

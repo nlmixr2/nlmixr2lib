@@ -29,12 +29,12 @@
 
 The article’s supplemental material (Fig. S1 – targeted vs observed
 tobramycin profile; Fig. S2 – model fit panels; Fig. S4 – three-
-subpopulation schematic; S-ADAPT control stream) was not available on
-disk for this extraction. The model structure encoded here is the
-canonical Bulitta two-state life-cycle growth model (LCGM) consistent
-with the parameters reported in the main-paper Table 1; see the
-Assumptions and deviations section for a precise statement of which
-structural choices the supplement would have disambiguated.
+subpopulation schematic; S-ADAPT control stream) was not available when
+this model was built. The model structure encoded here is the canonical
+Bulitta two-state life-cycle growth model (LCGM) consistent with the
+parameters reported in the main-paper Table 1; see the Assumptions and
+deviations section for a precise statement of which structural choices
+the supplement would have disambiguated.
 
 ## Population
 
@@ -376,13 +376,12 @@ Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM
 
 ## Assumptions and deviations
 
-- **Supplement not on disk.** The paper’s supplemental PDF (Fig. S2,
-  Fig. S4, S-ADAPT control stream) was not available for this
-  extraction. The exact ODE form of the LCGM was therefore inferred from
-  the canonical Bulitta two-state convention consistent with the
-  parameters tabulated in main-paper Table 1 and the verbal mechanism
-  description in the Results section. Items the supplement would have
-  disambiguated:
+- **Supplement not available.** The paper’s supplemental PDF (Fig. S2,
+  Fig. S4, S-ADAPT control stream) was not available when this model was
+  built. The exact ODE form of the LCGM was therefore inferred from the
+  canonical Bulitta two-state convention consistent with the parameters
+  tabulated in main-paper Table 1 and the verbal mechanism description
+  in the Results section. Items the supplement would have disambiguated:
   1.  \*\*Whether the carrying-capacity logistic limit attenuates the
       slow S1 -\> S2 step or the doubling S2 -\> 2\*S1 step.\*\* The
       packaged model attenuates the slow step
@@ -403,8 +402,8 @@ Sub-threshold (1.10) vs super-threshold (1.20) tobramycin at fixed IPM
       frequencies (Table 1, `log MUT,IPM` and `log MUT,TOB`) only to set
       initial subpop fractions; there is no ongoing flux between
       subpopulations during simulation. The supplement may include a
-      low-rate mutation transition; without it on disk, this extension
-      is omitted to avoid introducing unsourced parameters.
+      low-rate mutation transition; without it, this extension is
+      omitted to avoid introducing unsourced parameters.
 - **Quantitative kill-rate caveat for monotherapy arms.** The LCGM with
   the as-published `Kmax,IPM = 1.74 /h` produces a slower observed-CFU
   decline than the paper’s Figure 1A (which shows approximately 3 log10

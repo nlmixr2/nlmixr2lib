@@ -266,13 +266,14 @@ are:
 Figure 4 of the paper shows the target free-drug concentration-time
 profiles delivered by the syringe pumps. Reproducing the exact PK
 trajectories requires the published FAV PK structural model (Madelain
-2017, <doi:10.1128/AAC.01305-16>), which is not on disk. The vignette
-below uses the simplest source-faithful approximation: a
-piecewise-constant FAV concentration set to the reported average (Cavg)
-over each dosing interval. This preserves the 24-h cumulative exposure
-(AUC) and recovers the day-5 reductions the paper reports (~2.9 log10
-for low-dose, ~4.0 log10 for high-dose) up to the smoothing introduced
-by ignoring the within-interval Cmax/Cmin ripple.
+2017, <doi:10.1128/AAC.01305-16>), which was not available when this
+model was built. The vignette below uses the simplest source-faithful
+approximation: a piecewise-constant FAV concentration set to the
+reported average (Cavg) over each dosing interval. This preserves the
+24-h cumulative exposure (AUC) and recovers the day-5 reductions the
+paper reports (~2.9 log10 for low-dose, ~4.0 log10 for high-dose) up to
+the smoothing introduced by ignoring the within-interval Cmax/Cmin
+ripple.
 
 ``` r
 
@@ -561,15 +562,15 @@ cat(sprintf("  net rate (should be ~0 at peak)    = %.2g PFU/mL/h\n",
   require a separate FAV PK model to reproduce the Figure 4 free-drug
   concentration-time profiles delivered by the HFIM syringe pumps. The
   paper cites Madelain 2017 (<doi:10.1128/AAC.01305-16>) for the FAV PK
-  structural model; that paper is not on disk. The Figure 5 reproduction
-  above uses a piecewise-constant approximation (`CONC_FAV_UM = Cavg`)
-  over each dosing interval, set to the published Cavg values (206 uM
-  low-dose, 390 uM high-dose). This preserves the 24-h cumulative
-  exposure and recovers the paper’s reported day-5 reductions (~2.9
-  log10 low-dose, ~4.0 log10 high-dose), up to smoothing of the
-  within-interval Cmax/Cmin ripple. Users who need the exact Figure 4
-  trajectories should drive `CONC_FAV_UM` from a separately-fit FAV PK
-  profile.
+  structural model; that paper was not available when this model was
+  built. The Figure 5 reproduction above uses a piecewise-constant
+  approximation (`CONC_FAV_UM = Cavg`) over each dosing interval, set to
+  the published Cavg values (206 uM low-dose, 390 uM high-dose). This
+  preserves the 24-h cumulative exposure and recovers the paper’s
+  reported day-5 reductions (~2.9 log10 low-dose, ~4.0 log10 high-dose),
+  up to smoothing of the within-interval Cmax/Cmin ripple. Users who
+  need the exact Figure 4 trajectories should drive `CONC_FAV_UM` from a
+  separately-fit FAV PK profile.
 
 - **Eq 6 algebraic simplification.** As written in the paper,
   `dVi4/dt = ktr * (Vi3 - Vi4 * INH_FAV) - ktr * Vi4 * (1 - INH_FAV)`,

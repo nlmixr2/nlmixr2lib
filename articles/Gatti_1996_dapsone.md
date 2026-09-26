@@ -425,13 +425,13 @@ model parameter difference.
   built from this model will show no residual variability around the
   model predictions**. Users wishing to run a stochastic VPC must supply
   their own residual-error magnitudes. Defensible lower bounds derived
-  from on-disk assay specs (Materials and Methods paragraph 3) are:
-  proportional component \<= ~10% CV (matching the HPLC inter- and
-  intra-day RSD at QC concentrations 62.5-5000 ng/mL); additive
-  component on the order of the LLOQ (31.2 ng/mL = 0.031 mg/L). The true
-  population residual would exceed these floors because it also absorbs
-  within-subject biological noise and model-misspecification noise on
-  top of the assay floor.
+  from the paper’s assay specifications (Materials and Methods
+  paragraph 3) are: proportional component \<= ~10% CV (matching the
+  HPLC inter- and intra-day RSD at QC concentrations 62.5-5000 ng/mL);
+  additive component on the order of the LLOQ (31.2 ng/mL = 0.031 mg/L).
+  The true population residual would exceed these floors because it also
+  absorbs within-subject biological noise and model-misspecification
+  noise on top of the assay floor.
 - **theta_3 is reported in Table 51.3 to 51.3 significant figures
   (17.784) but appears to have a precise value near 17.835** based on
   the paper’s own simulation value (16.365 17.1/h at TBILI = 11.97

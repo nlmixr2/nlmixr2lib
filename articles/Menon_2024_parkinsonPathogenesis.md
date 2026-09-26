@@ -352,9 +352,9 @@ approximately 10-fold rise consistent with the paper’s Fig 2(I)
 description of “increased proteasome availability”.
 
 The upstream Sneppen et al. 2009 proteasome-dynamics paper cited by
-Menon 2024 as reference \[6\] is not on disk in the source directory;
-anyone wishing to resolve this from the primary source will find it at
-DOI 10.1088/1478-3975/6/3/036005.
+Menon 2024 as reference \[6\] was not available when this model was
+built; anyone wishing to resolve this from the primary source will find
+it at DOI 10.1088/1478-3975/6/3/036005.
 
 ### Unbounded vesicular DA in the DA variant (healthy regime)
 
@@ -378,8 +378,8 @@ The DA vignette simulations here are therefore restricted to a 6-month
 window; longer simulations should be interpreted with this caveat in
 mind.
 
-The upstream Best, Nijhout & Reed 2009 dopamine-homeostasis paper is not
-on disk in the source directory; DOI 10.1186/1742-4682-6-21.
+The upstream Best, Nijhout & Reed 2009 dopamine-homeostasis paper was
+not available when this model was built; DOI 10.1186/1742-4682-6-21.
 
 ### Fig S8(C) extracellular-DA feedback variant not extracted
 

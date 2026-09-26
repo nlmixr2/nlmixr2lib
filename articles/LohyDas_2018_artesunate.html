@@ -4117,15 +4117,14 @@ scale MTT and F by a function of admission log-parasitaemia minus an
 undefined <code>Log(PARA_min)</code> reference value. The reference
 value is inherited a priori from the Thailand-Cambodia popPK/PD analysis
 (Lohy Das 2017 <em>AAPS Journal</em> 19:1842-54, reference [36] of the
-current paper). That upstream paper is not on disk in the source
-directory used by this extraction. The maintainers therefore decided
-(2026-05-30) to drop Eqs. 3 and 4 and extract a self-contained PK model
-rather than fabricate <code>Log(PARA_min)</code>. The structural
-disposition parameters (CL, V, MTT for both species, F, allometric
-scaling) are fully reproducible from Lohy Das 2018 Table 2 alone; the
-omitted covariate effects can be added in a follow-up extraction once
-the upstream paper is on disk and the reference value is
-confirmed.</p></li>
+current paper). That upstream paper was not available when this model
+was built. The maintainers therefore decided (2026-05-30) to drop Eqs. 3
+and 4 and extract a self-contained PK model rather than fabricate
+<code>Log(PARA_min)</code>. The structural disposition parameters (CL,
+V, MTT for both species, F, allometric scaling) are fully reproducible
+from Lohy Das 2018 Table 2 alone; the omitted covariate effects can be
+added in a follow-up extraction once the upstream paper becomes
+available and the reference value is confirmed.</p></li>
 <li><p><strong>PD layer is not encoded.</strong> Lohy Das 2018 reports a
 parasite-biomass PD compartment with first-order growth
 (<code>KGROWTH = 10</code> per 48 h fixed), a delayed-effect compartment

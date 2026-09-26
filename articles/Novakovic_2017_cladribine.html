@@ -3121,11 +3121,11 @@ both listings.</li>
 <code>DDMODEL00000223.rdf</code>, <code>Command.txt</code>,
 <code>223.json</code> – provenance and scraper metadata.</li>
 </ul>
-<p>The Novakovic 2017 publication is not on disk, so the validation here
-cannot replicate the published figures or NCA-style endpoints directly;
-instead it walks through mechanistic-sanity checks on the typical-value
-trajectory and the per-item baseline category probabilities (the F.3 IRT
-validation path).</p>
+<p>The Novakovic 2017 publication was not available when this model was
+built, so the validation here cannot replicate the published figures or
+NCA-style endpoints directly; instead it walks through
+mechanistic-sanity checks on the typical-value trajectory and the
+per-item baseline category probabilities (the IRT validation path).</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3417,7 +3417,7 @@ mechanistic checks below, zero out the random effects:</p>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-f-3-irt-validation-path">Mechanistic sanity (F.3 IRT validation path)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-f-3-irt-validation-path"></a>
+<h2 id="mechanistic-sanity-irt-validation-path">Mechanistic sanity (IRT validation path)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-irt-validation-path"></a>
 </h2>
 <div class="section level3">
 <h3 id="latent-disease-progression-matches-the-closed-form-expression">Latent disease progression matches the closed-form expression<a class="anchor" aria-label="anchor" href="#latent-disease-progression-matches-the-closed-form-expression"></a>
@@ -3806,13 +3806,14 @@ initial values and the .lst run being a re-fit from those values that
 converged but flagged the shallow optimum. The maintainers decided to
 use these values as the final estimates and document the convergence
 status here as informational rather than drop the model.</p></li>
-<li><p><strong>No on-disk publication.</strong> The Novakovic 2017
-publication is not on disk, so the side-by-side comparison against the
-published figures (e.g., per-item probability curves, latent disability
-trajectories by treatment arm) is not done here. The validation is the
-F.3 mechanistic-sanity path: typical-value trajectory closed-form check,
-treatment vs placebo monotonicity, per-item probability validity, FREM
-mean recovery.</p></li>
+<li><p><strong>No publication available.</strong> The Novakovic 2017
+publication was not available when this model was built, so the
+side-by-side comparison against the published figures (e.g., per-item
+probability curves, latent disability trajectories by treatment arm) is
+not done here. The validation is the mechanistic-sanity path:
+typical-value trajectory closed-form check, treatment vs placebo
+monotonicity, per-item probability validity, FREM mean
+recovery.</p></li>
 <li><p><strong>FREM observations as outputs rather than fit-time
 tricks.</strong> The source <code>.mod</code> treats Age, MSD, and EXNB
 as RTYPE=1/2/3 rows in the estimation dataset with

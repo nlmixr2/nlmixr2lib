@@ -3255,7 +3255,7 @@ OBSTYPE.</p>
 plasma concentration is supplied per event row via the
 <code>CP_MORPH_NGML</code> covariate, and the suctioning state, item,
 and observer type are likewise supplied per row. We build
-observation-only event tables (<code>evid = 0</code>) for each F.2
+observation-only event tables (<code>evid = 0</code>) for each
 mechanistic-sanity check below.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Valitalo_2017_morphine"</span><span class="op">)</span></span>
@@ -3265,7 +3265,8 @@ mechanistic-sanity check below.</p>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: No sigma parameters in the model</span></span></code></pre></div>
 <div class="section level3">
-<h3 id="f-2-anchor-1-baseline-pain-matches-table-2-at-cp-0-t-0">F.2 anchor 1: baseline pain matches Table 2 at CP = 0, t = 0<a class="anchor" aria-label="anchor" href="#f-2-anchor-1-baseline-pain-matches-table-2-at-cp-0-t-0"></a>
+<h3 id="mechanistic-sanity-anchor-1-baseline-pain-matches-table-2-at-cp-0-t-0">Mechanistic-sanity anchor 1: baseline pain matches Table 2 at CP =
+0, t = 0<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-anchor-1-baseline-pain-matches-table-2-at-cp-0-t-0"></a>
 </h3>
 <p>At time 0 with no morphine exposure, the latent pain reduces to the
 suctioning-state-specific theta_bl,s. We verify this for all three
@@ -3294,10 +3295,10 @@ suctioning states.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">result_baseline</span><span class="op">$</span><span class="va">abs_err</span> <span class="op">&lt;-</span> <span class="va">result_baseline</span><span class="op">$</span><span class="va">simulated</span> <span class="op">-</span> <span class="va">result_baseline</span><span class="op">$</span><span class="va">paper</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">result_baseline</span>, digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"F.2 anchor 1: typical-value latent pain at CP = 0, t = 0 matches Valitalo 2017 Table 2."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Mechanistic-sanity anchor 1: typical-value latent pain at CP = 0, t = 0 matches Valitalo 2017 Table 2."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>F.2 anchor 1: typical-value latent pain at CP = 0, t = 0
-matches Valitalo 2017 Table 2.</caption>
+<caption>Mechanistic-sanity anchor 1: typical-value latent pain at CP =
+0, t = 0 matches Valitalo 2017 Table 2.</caption>
 <thead><tr class="header">
 <th align="right">MOMENT</th>
 <th align="left">label</th>
@@ -3334,8 +3335,8 @@ matches Valitalo 2017 Table 2.</caption>
 <code>ini()</code>.</p>
 </div>
 <div class="section level3">
-<h3 id="f-2-anchor-2-figure-5a-concentration-effect-during-suctioning">F.2 anchor 2: Figure 5a (concentration-effect during
-suctioning)<a class="anchor" aria-label="anchor" href="#f-2-anchor-2-figure-5a-concentration-effect-during-suctioning"></a>
+<h3 id="mechanistic-sanity-anchor-2-figure-5a-concentration-effect-during-suctioning">Mechanistic-sanity anchor 2: Figure 5a (concentration-effect during
+suctioning)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-anchor-2-figure-5a-concentration-effect-during-suctioning"></a>
 </h3>
 <p>Valitalo 2017 Figure 5a shows the expected COMFORT-B and VAS scores
 as functions of morphine concentration during suctioning (MOMENT = 2).
@@ -3363,10 +3364,10 @@ units</strong>, on average.”</p>
 <span><span class="va">result_5a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim_5a</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"CP_MORPH_NGML"</span>,</span>
 <span>                                       <span class="st">"pain_typ"</span>, <span class="st">"vas_pred_typ"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">result_5a</span>, digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"F.2 anchor 2: latent pain and VAS prediction during suctioning, as a function of morphine concentration."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Mechanistic-sanity anchor 2: latent pain and VAS prediction during suctioning, as a function of morphine concentration."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>F.2 anchor 2: latent pain and VAS prediction during suctioning,
-as a function of morphine concentration.</caption>
+<caption>Mechanistic-sanity anchor 2: latent pain and VAS prediction
+during suctioning, as a function of morphine concentration.</caption>
 <thead><tr class="header">
 <th align="right">time</th>
 <th align="right">CP_MORPH_NGML</th>
@@ -3443,11 +3444,12 @@ as a function of morphine concentration.</caption>
 <span>            <span class="va">drop_20</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; VAS drop from CP = 0 to CP = 20 ng/mL: 0.418 units (paper Discussion: &lt; 0.5)</span></span></code></pre></div>
 <p>The simulated drop is on the order of 0.4 units, consistent with the
-paper’s “&lt; 0.5 units” statement (within the F.2 5% threshold around
-the published narrative anchor).</p>
+paper’s “&lt; 0.5 units” statement (within the mechanistic-sanity
+check’s 5% threshold around the published narrative anchor).</p>
 </div>
 <div class="section level3">
-<h3 id="f-2-anchor-3-figure-5b-study-time-effect-during-suctioning">F.2 anchor 3: Figure 5b (study-time effect during suctioning)<a class="anchor" aria-label="anchor" href="#f-2-anchor-3-figure-5b-study-time-effect-during-suctioning"></a>
+<h3 id="mechanistic-sanity-anchor-3-figure-5b-study-time-effect-during-suctioning">Mechanistic-sanity anchor 3: Figure 5b (study-time effect during
+suctioning)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-anchor-3-figure-5b-study-time-effect-during-suctioning"></a>
 </h3>
 <p>Figure 5b shows the expected COMFORT-B and VAS scores as functions of
 study time (in days) during suctioning, with CP held at 0. The paper
@@ -3472,10 +3474,10 @@ unit</strong>, on average.”</p>
 <span></span>
 <span><span class="va">result_5b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim_5b</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"pain_typ"</span>, <span class="st">"vas_pred_typ"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">result_5b</span>, digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"F.2 anchor 3: latent pain and VAS prediction during suctioning, as a function of study time (CP = 0)."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Mechanistic-sanity anchor 3: latent pain and VAS prediction during suctioning, as a function of study time (CP = 0)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>F.2 anchor 3: latent pain and VAS prediction during suctioning,
-as a function of study time (CP = 0).</caption>
+<caption>Mechanistic-sanity anchor 3: latent pain and VAS prediction
+during suctioning, as a function of study time (CP = 0).</caption>
 <thead><tr class="header">
 <th align="right">time</th>
 <th align="right">pain_typ</th>
@@ -3546,7 +3548,7 @@ as a function of study time (CP = 0).</caption>
 narrative anchor.</p>
 </div>
 <div class="section level3">
-<h3 id="f-2-anchor-4-nurse-vs-investigator-vas">F.2 anchor 4: nurse vs investigator VAS<a class="anchor" aria-label="anchor" href="#f-2-anchor-4-nurse-vs-investigator-vas"></a>
+<h3 id="mechanistic-sanity-anchor-4-nurse-vs-investigator-vas">Mechanistic-sanity anchor 4: nurse vs investigator VAS<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-anchor-4-nurse-vs-investigator-vas"></a>
 </h3>
 <p>The bedside nurse uses different VAS difficulty / discrimination
 thetas (50 / 52) and a wider residual-error SD (sqrt(2.55) = 1.60 vs
@@ -3568,10 +3570,10 @@ prediction differs by OBSTYPE at fixed pain:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"OBSTYPE"</span>, <span class="st">"pain_typ"</span>, <span class="st">"vas_pred_typ"</span>, <span class="st">"vas_diff_typ"</span>,</span>
 <span>    <span class="st">"vas_discr_typ"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">result_obs</span>, digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"F.2 anchor 4: VAS prediction at baseline during suctioning differs by observer."</span><span class="op">)</span></span></code></pre></div>
+<span>             caption <span class="op">=</span> <span class="st">"Mechanistic-sanity anchor 4: VAS prediction at baseline during suctioning differs by observer."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>F.2 anchor 4: VAS prediction at baseline during suctioning
-differs by observer.</caption>
+<caption>Mechanistic-sanity anchor 4: VAS prediction at baseline during
+suctioning differs by observer.</caption>
 <thead><tr class="header">
 <th align="right">time</th>
 <th align="right">OBSTYPE</th>
@@ -3618,20 +3620,20 @@ likewise for midazolam, not morphine. The
 <code>Output_simulated_OriginalModelCode.lst</code> was not used in this
 extraction. <strong>Parameter values were therefore taken from Table 2
 of the linked publication (Valitalo 2017, <a href="doi:10.1002/psp4.12156" class="uri">doi:10.1002/psp4.12156</a>),
-which is on disk and which the bundle’s <code>.mod</code> $THETA /
-$OMEGA / $SIGMA blocks reproduce exactly as their inline initial
-values.</strong> No re-fit was needed because the paper, the
-<code>.mod</code>, and the published bootstrap CIs are mutually
-consistent. The mismatched <code>.lst</code> is documented here so a
-future audit pass can flag the same bundle inconsistency without
-surprise.</li>
+which was available when this model was built and which the bundle’s
+<code>.mod</code> $THETA / $OMEGA / $SIGMA blocks reproduce exactly as
+their inline initial values.</strong> No re-fit was needed because the
+paper, the <code>.mod</code>, and the published bootstrap CIs are
+mutually consistent. The mismatched <code>.lst</code> is documented here
+so that anyone revisiting the bundle is not surprised by the same
+inconsistency.</li>
 <li>
 <strong>No PKNCA validation.</strong> This is a PD-only IRT model;
-NCA quantities (Cmax / Tmax / AUC / half-life) are not applicable. F.2
-(Count / Markov / IRT / dropout / TTE) substitutes from the package’s
-validation checklist apply, anchored on the published numerical
-statements above (latent baselines, “&lt; 0.5 VAS drop per 20 ng/mL”,
-“~1 VAS rise per 7 days”).</li>
+NCA quantities (Cmax / Tmax / AUC / half-life) are not applicable. The
+mechanistic-sanity substitutes this package uses for count / Markov /
+IRT / dropout / TTE models apply instead, anchored on the published
+numerical statements above (latent baselines, “&lt; 0.5 VAS drop per 20
+ng/mL”, “~1 VAS rise per 7 days”).</li>
 <li>
 <strong>Simplified formal observation.</strong> The source NONMEM
 model is a mixed continuous + categorical likelihood: VAS (ITEM = 12) is
@@ -3646,7 +3648,7 @@ nlmixr2 fits directly. The full categorical-likelihood machinery
 (per-grade probabilities <code>peq1..peq8</code>) is still computed in
 <code>model()</code> for source-trace fidelity and for vignette
 analysis, but is not exercised as the fitted-observation in this nlmixr2
-implementation. F.2 mechanistic-sanity validation is restricted to the
+implementation. Mechanistic-sanity validation is restricted to the
 latent-pain trajectory and the typical-value VAS prediction;
 categorical-item-grade VPC validation against Figure 3 / Figure 4 is out
 of scope.</li>

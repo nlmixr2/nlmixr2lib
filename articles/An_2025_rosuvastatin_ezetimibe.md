@@ -82,8 +82,8 @@ Every `ini()` entry in
 `inst/modeldb/specificDrugs/An_2025_rosuvastatin_ezetimibe.R` carries an
 in-file comment naming its source location. They are collected here for
 review. All display equations were read from the typeset PDF: the
-publisher renders them as vector artwork, so both `pdftotext` and the
-preprocessed markdown drop them.
+publisher renders them as vector artwork, so they do not survive
+plain-text extraction of the PDF (even `pdftotext` drops them).
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

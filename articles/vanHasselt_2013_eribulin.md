@@ -236,7 +236,7 @@ ggplot(typ_med, aes(time / 24, ANC)) +
 ### Figure 2 - Visual predictive check across 200 virtual subjects
 
 Reproduces the general shape of van Hasselt 2013 Figure 2 (VPC of ANC vs
-time by study). Because the raw study-stratified data are not on disk,
+time by study). Because the raw study-stratified data are not available,
 the figure below is a single-panel VPC across the full virtual cohort at
 reference covariate values with 22.7% G-CSF prevalence.
 
@@ -452,14 +452,14 @@ report per-subject NCA. {.table}
   referenced by van Hasselt 2013 had a dose-on-Q covariate that was
   dropped between that snapshot and the Majid 2014 publication, or (b)
   Kawamura 2018’s reproduction of Majid 2014 is incomplete on this one
-  covariate. The numerical dose-on-Q coefficient is not on disk in
-  either paper. This model omits it; in practice, dose-on-Q has small
-  impact on AUC for a fixed-dose regimen and does not affect the PD
-  structure that is the primary focus of van Hasselt 2013.
-- **CONMED_GCSF is a new canonical.** Following the Phase 3
-  covariate-column gate, `CONMED_GCSF` was registered as a new canonical
-  binary covariate in `inst/references/covariate-columns.md` (maintainer
-  decision). Follows the well-established `CONMED_<drug>` pattern.
+  covariate. The numerical dose-on-Q coefficient is not given in either
+  paper. This model omits it; in practice, dose-on-Q has small impact on
+  AUC for a fixed-dose regimen and does not affect the PD structure that
+  is the primary focus of van Hasselt 2013.
+- **CONMED_GCSF is a new canonical.** `CONMED_GCSF` was registered as a
+  new canonical binary covariate in
+  `inst/references/covariate-columns.md` (a maintainers’ decision). It
+  follows the well-established `CONMED_<drug>` pattern.
 - **Table 5 incidence comparison caveat – reference-covariate simulation
   under-represents the deep-nadir tail.** The paper’s Table 5 (26.6%
   grade 3, 16.85% grade 4) is derived from the no-covariate BASE model

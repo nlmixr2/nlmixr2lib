@@ -38,7 +38,8 @@ Stockmann 2015 nonetheless **reprints the model in full** – Equations 1
 and 2 give every structural constant, and the Methods text gives both
 inter-individual variances and both residual-error terms – so the
 extraction below is sourced entirely from Stockmann 2015 and no value is
-carried in from a publication that is not on disk.
+carried in from a publication that was not available when this model was
+built.
 
 ## Population
 
@@ -716,11 +717,11 @@ published AUC24 row agrees to within about 8%.
   every structural and variance parameter to the previously published
   estimates of Frymoyer 2014 and estimated nothing, so all `ini()`
   entries are wrapped in `fixed()` and none carries a standard error or
-  confidence interval. Frymoyer 2014 is not on disk, but it is not
-  needed: Stockmann 2015 reprints the complete model. The Stockmann 2015
-  reference list cites Frymoyer 2014 without volume, pages or DOI, so
-  the model file records it exactly that way rather than supplying
-  identifiers that are not in the source.
+  confidence interval. Frymoyer 2014 was not available when this model
+  was built, but it is not needed: Stockmann 2015 reprints the complete
+  model. The Stockmann 2015 reference list cites Frymoyer 2014 without
+  volume, pages or DOI, so the model file records it exactly that way
+  rather than supplying identifiers that are not in the source.
 - **Equation constants were read from the typeset PDF.** Text extraction
   of this article renders decimal points in the equation font as colons
   (`0:75`, `0:267`, `0:345`), so Equations 1 and 2 were read from the

@@ -101,7 +101,7 @@ str(rxode2::rxode(readModelDb("GonzalezSales_2024_imetelstat"))$population)
 #>  $ race_ethnicity: chr "not enumerated in main paper text (race / ethnicity available in supplement Table S1; no race effect on PK identified)"
 #>  $ disease_state : chr "Pooled adults with hematologic malignancies (myelofibrosis, lower-risk MDS, multiple myeloma, essential thrombo"| __truncated__
 #>  $ dose_range    : chr "0.4-11.7 mg/kg of imetelstat sodium (MW 4896 g/mol) administered as a 2-hour or 6-hour IV infusion (per-study s"| __truncated__
-#>  $ regions       : chr "Multinational (specific regions not enumerated in the main paper text on disk)."
+#>  $ regions       : chr "Multinational (specific regions not enumerated in the main paper text)."
 #>  $ notes         : chr "Baseline-covariate summary statistics quoted from Gonzalez-Sales 2024 main-paper Results (Table S1 referenced b"| __truncated__
 ```
 
@@ -508,19 +508,18 @@ by \>20%. {.table}
 
 - **No supplement Figure S1 / S2 covariate-pairwise screen.** The
   paper’s supplement Figures S1 and S2 (scatter and box plots of
-  pairwise covariate correlations) are not on disk in zip form and were
-  not used to gate the extraction; the final-model covariates retained
-  after backward elimination are those reported in Table 2 and
-  reproduced here.
+  pairwise covariate correlations) were not available when this model
+  was built; the final-model covariates retained after backward
+  elimination are those reported in Table 2 and reproduced here.
 
 - **Population body-weight distribution.** The published Table S1 (full
-  baseline-demographics table) was not on disk in zip form; the virtual
-  cohort uses a normal weight distribution centred at the main-paper
-  mean (77.2 kg) with a standard deviation chosen to span the published
-  44.0-161 kg range. This is conservative for the cycle-1 NCA comparison
-  because the allometric weight scaling on CL and Vc, plus the
-  dose-on-CL effect at fixed mg/kg dosing, are not strongly sensitive to
-  the exact weight distribution.
+  baseline-demographics table) was not available when this model was
+  built; the virtual cohort uses a normal weight distribution centred at
+  the main-paper mean (77.2 kg) with a standard deviation chosen to span
+  the published 44.0-161 kg range. This is conservative for the cycle-1
+  NCA comparison because the allometric weight scaling on CL and Vc,
+  plus the dose-on-CL effect at fixed mg/kg dosing, are not strongly
+  sensitive to the exact weight distribution.
 
 - **Reference-disease group.** The reference disease group for the
   malignancy-effect coefficients on CL, Vc, and Bmax is “solid tumors

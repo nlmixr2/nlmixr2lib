@@ -867,11 +867,11 @@ model.
   `*1/*2` and 0.76 for `*1/*3`), which its own model mispredicts as 1.18
   and 1.29 and which the Discussion leaves unexplained. This model
   reproduces the paper’s *predictions*, so it inherits that mismatch.
-- **Supplementary Tables S1-S4 and Figures S1-S4 are not on disk.** They
-  carry transporter screening, the population-PK intrinsic clearances,
-  simulation trial designs and sensitivity analyses. Nothing in the
-  model depends on them; the sensitivity results quoted above are from
-  the main-text Results.
+- **Supplementary Tables S1-S4 and Figures S1-S4 were not available when
+  this model was built.** They carry transporter screening, the
+  population-PK intrinsic clearances, simulation trial designs and
+  sensitivity analyses. Nothing in the model depends on them; the
+  sensitivity results quoted above are from the main-text Results.
 - **No variability.** The source reports no inter-individual variance
   components and no residual-error model, so there are no etas and
   `propSd` is fixed at zero. The coefficients of variation in Tables 1

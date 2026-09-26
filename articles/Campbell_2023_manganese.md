@@ -999,13 +999,13 @@ tracer directly, which makes tracer mass balance exactly 1 as intended.
   *concentration* output it was presumably meant to support is retained
   as `Cbile` in the monkey file.
 
-### Parameters not reported anywhere on disk
+### Parameters not reported in any available source
 
 Five constants sit in the supplement’s `# Dosing Controls` block, which
 the supplement introduces with “Note: parameters are set in simulation
 scripts” – they are scenario inputs, not fitted parameters – and no
 value for any of them appears in the paper, its supplement, or any other
-on-disk source. **No value has been invented for any of them.**
+available source. **No value has been invented for any of them.**
 
 | Parameter | Role | Consequence |
 |:---|:---|:---|
@@ -1028,7 +1028,7 @@ Consequences for validation scope:
 - The monkey **intraperitoneal, subcutaneous and ppm-diet** tracer
   routes (Figures 4A and 5) are implemented structurally but are **not
   validated here**. Schroeter et al. (2011), the upstream source of
-  `INFAC`, is not on disk.
+  `INFAC`, was not available when this model was built.
 
 ### Other assumptions
 

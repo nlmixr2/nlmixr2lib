@@ -3135,7 +3135,7 @@ b.i.d.; anemia n = 1 in 8 mg q.d.; neutropenia n = 1 in 6 mg q.d.).</p>
 covariates and were not retained in the final model (drop in objective
 function value &lt; 3.84; Results, page 1621). The full per-cohort
 baseline demographics are summarised in Appendix Table S1 of the source,
-which is not on disk.</p>
+which was not available when this model was built.</p>
 <p>The population metadata can be inspected programmatically:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_meta</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">population</span></span>
@@ -3164,7 +3164,7 @@ which is not on disk.</p>
 <span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $notes</span></span>
-<span><span class="co">#&gt; [1] "Baseline body weight, age, and hepatic function were tested as PK covariates and were not retained in the final model (drop in objective function value &lt; 3.84). Demographic detail (age, weight, sex, race) is summarised in Appendix Table S1, which is not on disk in this worktree; the population fields above therefore record disease state, dosing, and dose-limiting toxicities verbatim from the main text (Analysis Plan and Results). Trial registration: NCT03854227."</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Baseline body weight, age, and hepatic function were tested as PK covariates and were not retained in the final model (drop in objective function value &lt; 3.84). Demographic detail (age, weight, sex, race) is summarised in Appendix Table S1, which was not available when this model was built; the population fields above therefore record disease state, dosing, and dose-limiting toxicities verbatim from the main text (Analysis Plan and Results). Trial registration: NCT03854227."</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
@@ -3816,7 +3816,7 @@ parameter values can be entered verbatim from Table 1.
 <li>
 <strong>Population demographics (age, weight, sex, race,
 region)</strong> are reported in the source’s Appendix Table S1, which
-is not on disk; the <code>population</code> field in the model file
+was not available; the <code>population</code> field in the model file
 therefore records dosing, disease state, and DLT counts verbatim from
 the main text (Analysis Plan and Results sections) and leaves the
 demographic numerics as <code>NA_*_</code>.</li>

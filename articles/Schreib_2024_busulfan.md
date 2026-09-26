@@ -1330,9 +1330,9 @@ First-interval AUC versus the 9-12 mg*h/L initial-dose target of Schreib
 The paper reports no tabulated NCA summary in the main text; the
 non-parametric `AUC`, `Cmax`, `CL`, `V`, `t1/2` and `MRT` values
 computed in Section 2.6 appear only in Table S1 and Figures S4-S9 of the
-supplement, which is not on disk. The comparison above therefore uses
-the explicitly stated exposure targets of Section 2.2 rather than a
-transcribed NCA table.
+supplement, which was not available when this model was built. The
+comparison above therefore uses the explicitly stated exposure targets
+of Section 2.2 rather than a transcribed NCA table.
 
 ## Assumptions and deviations
 
@@ -1402,10 +1402,10 @@ transcribed NCA table.
   weight-for-age curve is an assumption, calibrated to pass through the
   cohort medians (17.2 kg at 4.3 years). The 3 h / 4 h infusion split is
   set to 50/50 because the per-protocol patient counts appear only in
-  Figure S1, which is not on disk. Disease indicators are assigned
-  within conditioning arms (ALL to myeloablative, HLH/XLP to reduced
-  intensity) at within-arm prevalences that reproduce the whole-cohort
-  10% and 11%.
+  Figure S1, which was not available when this model was built. Disease
+  indicators are assigned within conditioning arms (ALL to
+  myeloablative, HLH/XLP to reduced intensity) at within-arm prevalences
+  that reproduce the whole-cohort 10% and 11%.
 - **Dosing.** Doses are set from the model itself to the midpoint of the
   paper’s 9-12 mg*h/L first-interval target, using population parameters
   with the random effects zeroed, because a prescriber does not know a

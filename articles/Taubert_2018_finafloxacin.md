@@ -744,7 +744,7 @@ investigate them in the model file rather than tuning parameters.
   `0.001` additive). These are interpreted as SDs (i.e., 24% / 33% /
   0.001 mg L^-1) based on the tight bootstrap 95% CIs around 0.24
   (\[0.22, 0.26\]) and the popPK-reporting convention. The supplementary
-  NONMEM control stream is not on disk to confirm the variance-vs-SD
+  NONMEM control stream was not available to confirm the variance-vs-SD
   interpretation directly.
 - **Oral residual errors not encoded.** Table 3 reports separate
   residuals for the sequential oral fit (additive 0.03 mg L^-1,

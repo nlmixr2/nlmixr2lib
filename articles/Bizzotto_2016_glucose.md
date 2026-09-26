@@ -59,10 +59,9 @@ bundle for `DDMODEL00000227` (scraped to
 
 The `.mdl` `gu_v1_par` `STRUCTURAL` block is annotated as the “final
 parameter estimates from related publication” and is the authoritative
-source of point values for this extraction. The `Output_real_*.txt`
-listing is **not** used as the parameter source because the bundle
-itself flags re-estimation on the shipped simulated dataset as
-unreliable.
+source of point values for this model. The `Output_real_*.txt` listing
+is **not** used as the parameter source because the bundle itself flags
+re-estimation on the shipped simulated dataset as unreliable.
 
 ## Population
 
@@ -128,7 +127,7 @@ The constants `VHL = 700` mL/m^2, `deltaHL = 15` /min, and `delta = 10`
 
 ## Validation strategy
 
-The Bizzotto 2016 publication was **not on disk when this model was
+The Bizzotto 2016 publication was **not available when this model was
 built**, so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The validation in this
 vignette therefore uses mechanistic-sanity and self-consistency
@@ -154,7 +153,7 @@ reproduces these qualitative behaviours in the chunks below. The
 typical-value trajectories shown here are deterministic (no IIV, no
 residual error); inter-individual variability is not exercised in the
 validation simulations because the bundle is shipped as a typical-value
-simulator and the published cohort-level summaries are not on disk for
+simulator and the published cohort-level summaries are not available for
 comparison.
 
 ## Setup
@@ -448,7 +447,7 @@ columns, and pass the result to
     GLU)`in`model()`so only`INS`and`GLU`need to be supplied -- the bracketing columns are not required. The two forms are mathematically equivalent at any simulation time provided that`INS`and`GLU\`
     are supplied at every observation row.
 
-- **Bizzotto 2016 publication is not on disk.** The packaged model’s
+- **Bizzotto 2016 publication not available.** The packaged model’s
   `reference` field carries the citation and DOI, and the parameter
   values in the `.mdl` are annotated as the publication’s final
   estimates; however, no PDF of Bizzotto et al. was available when this

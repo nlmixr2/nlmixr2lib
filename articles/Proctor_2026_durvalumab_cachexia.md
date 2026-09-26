@@ -567,7 +567,8 @@ discussed below.
     first on-treatment observation rather than from the moment of the
     first dose. Since Figure 2’s observed points are digitized means
     whose sampling times are not reported, this cannot be settled from
-    the sources on disk. **No parameter was adjusted to close the gap.**
+    the sources that were available when this model was built. **No
+    parameter was adjusted to close the gap.**
 
 4.  **Initial conditions and the equilibration window.** The paper never
     states initial conditions in prose; they are taken from the Appendix
@@ -584,7 +585,7 @@ discussed below.
 5.  **IgG molecular weight is back-solved, not printed.** 150000 g/mol
     is recovered exactly from two independent Appendix S3 quantities
     (the small-pore reflection coefficient and the dose conversion at 71
-    kg). This is a verifiable derivation from on-disk values, not a
+    kg). This is a verifiable derivation from published values, not a
     class-typical substitution.
 
 6.  **No IIV and no residual error.** Table 1 reports RSEs from a fit to
@@ -596,15 +597,15 @@ discussed below.
 7.  **The Figure 5 confidence band is not reproduced.** The paper
     bootstrapped the popPK parameters using standard errors approximated
     from Baverel 2018’s non-parametric 95% CIs. Table S3 carries point
-    estimates only and Baverel 2018 is not on disk, so only the
-    point-estimate curve is drawn.
+    estimates only and Baverel 2018 was not available when this model
+    was built, so only the point-estimate curve is drawn.
 
 8.  **The comparator popPK model is a secondary transcription.** Its
     parameters originate in Baverel 2018 and reach us through Proctor
     2026 Table S3, which omits that paper’s covariate model, IIV and
-    residual error. Re-extract from Baverel 2018 directly when it is
-    acquired. The other nine checkpoint inhibitors in Table S3 are
-    deliberately *not* packaged as model files.
+    residual error. Rebuild from Baverel 2018 directly when that paper
+    becomes available. The other nine checkpoint inhibitors in Table S3
+    are deliberately *not* packaged as model files.
 
 9.  **Lung and plasma flow balance.** Table S1’s lung plasma flow
     (181913 mL/h) exceeds the sum of the systemic organ flows (178244

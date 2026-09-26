@@ -488,10 +488,10 @@ than q12h curves for both MICs).
   (mg/L equivalent to ug/mL), not as a percentage. The packaged model
   takes ERR(2) = 16.0 mg/L on that convention – consistent with the
   precedent set by `Delattre_2010_amikacin` (additive 1.03 mg/L) and
-  other antibiotic-PK extractions in this library. No `.lst` file is on
-  disk to confirm the SIGMA output directly. The high relative standard
-  error on ERR(2) (RSE 87.9%; bootstrap 5th-95th 9.2-22.2) is consistent
-  with the additive component being poorly identified against
+  other antibiotic-PK extractions in this library. No `.lst` file was
+  available to confirm the SIGMA output directly. The high relative
+  standard error on ERR(2) (RSE 87.9%; bootstrap 5th-95th 9.2-22.2) is
+  consistent with the additive component being poorly identified against
   sparse-sampling data where most concentrations are well above the
   LLOQ.
 
@@ -509,7 +509,8 @@ than q12h curves for both MICs).
   and no off-diagonal covariance estimates, consistent with diagonal
   OMEGA. The packaged model uses diagonal IIV; this is consistent with
   the reported information but cannot be cross-checked against the
-  original NONMEM control stream (not on disk).
+  original NONMEM control stream, which was not available when this
+  model was built.
 
 - **`omega^2 = log(CV^2 + 1)`.** Table 2 reports IIV as CV%; the
   corresponding log-normal variance was computed via the standard

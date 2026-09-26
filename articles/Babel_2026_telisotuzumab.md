@@ -966,8 +966,8 @@ are.
   itself, but the paper reports neither the drug-antibody ratio nor the
   molecular weights nor the systemically available payload fraction, so
   the conversion from an administered conjugate dose cannot be
-  reconstructed from anything on disk. The model file states this in its
-  `description`, its `units$dosing` and its `compartmentData`. The
+  reconstructed from any available source. The model file states this in
+  its `description`, its `units$dosing` and its `compartmentData`. The
   vignette’s illustrative fraction of 1.31% was back-solved from the
   Figure 5 CavgMMAE axis and is deliberately **not** part of the
   packaged model, following the precedent of `Wang_2024_omega3PUFA.Rmd`.

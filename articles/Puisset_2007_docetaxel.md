@@ -553,7 +553,7 @@ That coupling is outside the scope of Puisset 2007.
   1997 (which itself wraps the Bruno et al 1996 docetaxel popPK
   structural model), then a PD analysis of ANC vs time using each
   subject’s individual Bayesian posthoc PK profile. The Baille 1997 and
-  Bruno 1996 PK structural models were not on disk when this model was
+  Bruno 1996 PK structural models were not available when this model was
   built, so the upstream docetaxel PK is not encoded inside
   `Puisset_2007_docetaxel.R`. The validation vignette substitutes a
   Bruno-style triexponential synthetic exposure curve (Cmax ~3.5 mg/L

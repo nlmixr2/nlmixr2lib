@@ -3289,8 +3289,8 @@ the table below summarises them for quick review.</p>
 <tr class="even">
 <td>Structural model diagram (three-pathway absorption + transit)</td>
 <td>n/a</td>
-<td>Figure S5 (structural model; not on disk) plus Results ‘PK
-modelling’ prose</td>
+<td>Figure S5 (structural model; not available when this model was
+built) plus Results ‘PK modelling’ prose</td>
 </tr>
 <tr class="odd">
 <td>Dose-fraction derivation <code>f_slow</code>, <code>f_fast</code>,
@@ -3734,38 +3734,38 @@ come directly from Kado 2020 Table 1.</p>
 </h2>
 <ul>
 <li>
-<strong>Structural model diagram not on disk; transit-chain length
+<strong>Structural model diagram not available; transit-chain length
 unresolved.</strong> Kado 2020 Figure S5 (the structural model
 schematic) resides in a Word-document supplement behind the Oxford
-University Press paywall and could not be acquired for this extraction.
-The triple-parallel-absorption implementation in the model file was
-derived from the paper’s Methods ‘PK modelling’ prose (“simultaneous…
-slow and fast absorption… A third, more immediate, absorption that did
-not pass through the transit compartment”) and the mass-balance
-interpretation of the dose-split ratios RAT-transit and RAT-slowfast
-against Table 2’s %dose columns. The IM %dose splits computed by the
-model from RAT-transit = 25.8 and RAT-slowfast = 2.96 reproduce Table
-2’s IM values (71.3% slow / 24.9% fast / 3.8% immediate) within
-rounding, confirming the pre-split-at-injection-site interpretation.
-However, the typical-value Cmax simulated here overshoots the paper’s
-Table 3 Cmax values by ~35-50% (see the comparison table above). The
-mass balance is correct (per-dose slow/fast/immediate splits reproduce
-Table 2) and the elimination and dose amounts are correct, so the
-residual overshoot most plausibly reflects an under-specified
-transit-compartment TOPOLOGY: the paper’s “transit compartment” may be a
-Wu-Savic-style CHAIN of N &gt; 1 first-order transit boxes rather than a
-single box, with <code>t1/2,tr = 0.978</code> days being the per-box
-half-life so the effective total delay is <code>N * 0.978</code> days. A
-larger N spreads the fast-pathway peak over a longer window and reduces
-the peak amplitude without changing the total mass absorbed, which is
-exactly the direction needed to close the Cmax gap. This vignette
-assumes N = 1 (single transit box per pathway) as the most literal
-reading of “a transit compartment” (singular); a downstream user who
-obtains the supplement schematic or the NONMEM control stream should
-adjust N in the model file’s <code>d/dt(transitN)</code> chain
-accordingly. Cmin, T &gt; 20, and T &gt; 10 predictions are less
-sensitive to N than Cmax and remain within reasonable agreement of the
-paper’s Table 3.</li>
+University Press paywall and was not available when this model was
+built. The triple-parallel-absorption implementation in the model file
+was derived from the paper’s Methods ‘PK modelling’ prose
+(“simultaneous… slow and fast absorption… A third, more immediate,
+absorption that did not pass through the transit compartment”) and the
+mass-balance interpretation of the dose-split ratios RAT-transit and
+RAT-slowfast against Table 2’s %dose columns. The IM %dose splits
+computed by the model from RAT-transit = 25.8 and RAT-slowfast = 2.96
+reproduce Table 2’s IM values (71.3% slow / 24.9% fast / 3.8% immediate)
+within rounding, confirming the pre-split-at-injection-site
+interpretation. However, the typical-value Cmax simulated here
+overshoots the paper’s Table 3 Cmax values by ~35-50% (see the
+comparison table above). The mass balance is correct (per-dose
+slow/fast/immediate splits reproduce Table 2) and the elimination and
+dose amounts are correct, so the residual overshoot most plausibly
+reflects an under-specified transit-compartment TOPOLOGY: the paper’s
+“transit compartment” may be a Wu-Savic-style CHAIN of N &gt; 1
+first-order transit boxes rather than a single box, with
+<code>t1/2,tr = 0.978</code> days being the per-box half-life so the
+effective total delay is <code>N * 0.978</code> days. A larger N spreads
+the fast-pathway peak over a longer window and reduces the peak
+amplitude without changing the total mass absorbed, which is exactly the
+direction needed to close the Cmax gap. This vignette assumes N = 1
+(single transit box per pathway) as the most literal reading of “a
+transit compartment” (singular); a downstream user who obtains the
+supplement schematic or the NONMEM control stream should adjust N in the
+model file’s <code>d/dt(transitN)</code> chain accordingly. Cmin, T &gt;
+20, and T &gt; 10 predictions are less sensitive to N than Cmax and
+remain within reasonable agreement of the paper’s Table 3.</li>
 <li>
 <strong>Body-weight scaling.</strong> Kado 2020 reports kel and V/F
 “per 70 kg” but does not report allometric exponents. Combined with the

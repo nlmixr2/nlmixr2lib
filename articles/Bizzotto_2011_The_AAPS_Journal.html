@@ -3160,8 +3160,7 @@ is purely a description of sleep architecture in untreated insomnia.</p>
 <h2 id="population-study-a-used-for-model-identification">Population (study A, used for model identification)<a class="anchor" aria-label="anchor" href="#population-study-a-used-for-model-identification"></a>
 </h2>
 <ul>
-<li>Source: paper Methods + ESM Table I (not included in the on-disk
-PDF).</li>
+<li>Source: paper Methods + ESM Table I (not included in the PDF).</li>
 <li>N = 116 insomniac adults, placebo arm of a multicentre, randomized,
 double-blind, placebo-controlled parallel-group study.</li>
 <li>Inclusion (PSG screening): mean total sleep time (TST) 240-390 min,
@@ -3979,7 +3978,7 @@ variances (no AWAW).</li>
 </tr>
 <tr class="odd">
 <td>Covariate effect equations (Eq. 14-15)</td>
-<td>p. 453 – covariate coefficients not extracted (no on-disk
+<td>p. 453 – covariate coefficients not extracted (no available
 source)</td>
 </tr>
 <tr class="even">
@@ -4022,8 +4021,8 @@ at each nighttime break point, with coefficients <code>alpha_kmA</code>,
 <code>beta_kmA</code>, <code>delta_kmA</code>. The numeric values of
 these coefficients are not present in Table II and (per the paper’s
 discussion) appear only in the full text and ESM tables, which were not
-on disk during this extraction. Reproducing Figure 7 of the paper would
-require the missing coefficients.</p></li>
+available when this model was built. Reproducing Figure 7 of the paper
+would require the missing coefficients.</p></li>
 <li><p><strong>No inter-individual variability sampling.</strong> Figure
 1 of the paper shows the 5th-95th-percentile band for inter-individual
 variability; we display only the typical-individual line. Sampling the
@@ -4053,22 +4052,21 @@ when it needs an absolute <code>BPB</code> value.</p></li>
 </ol>
 </div>
 <div class="section level2">
-<h2 id="errata-and-source-acquisition-notes">Errata and source-acquisition notes<a class="anchor" aria-label="anchor" href="#errata-and-source-acquisition-notes"></a>
+<h2 id="errata-and-source-notes">Errata and source notes<a class="anchor" aria-label="anchor" href="#errata-and-source-notes"></a>
 </h2>
 <ul>
-<li>The lead PDF
-(<code>Bizzotto_2011_Multinomial_logistic_functions_in_markov_*.pdf</code>)
-was used as the sole source. Electronic Supplementary Material (ESM)
-Table I (demographic statistics) and ESM Table II (final parameter
-estimates from study B, plus the full PSG dataset) and Appendix 1 (the
-NONMEM control stream for sub-model AW) were referenced in the paper but
-not on disk for this extraction.</li>
+<li>The main-text PDF was used as the sole source. Electronic
+Supplementary Material (ESM) Table I (demographic statistics) and ESM
+Table II (final parameter estimates from study B, plus the full PSG
+dataset) and Appendix 1 (the NONMEM control stream for sub-model AW)
+were referenced in the paper but were not available when this model was
+built.</li>
 <li>No errata for Bizzotto 2011 were located via PubMed search
 (<code>"Bizzotto" 2011 sleep markov</code> and
 <code>"Bizzotto" 2011 erratum</code>) at the time of extraction
 (2026-06-09).</li>
 <li>This model is outside the standard <code>nlmixr2lib</code> scope;
-the maintainers approved a non-standard, vignette-only extraction with
+the maintainers ship it as a non-standard, vignette-only model with
 strict validation and documented AI provenance.</li>
 </ul>
 </div>

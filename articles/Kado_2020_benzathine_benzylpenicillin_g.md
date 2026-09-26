@@ -92,7 +92,7 @@ the table below summarises them for quick review.
 | IIV on `RAT-SC` (CV%) | 54 | Table 1 |
 | IIV on `RAT2-SC` (CV%) | 54 | Table 1 |
 | Residual variability RV (proportional, CV%) | 22 | Table 1 |
-| Structural model diagram (three-pathway absorption + transit) | n/a | Figure S5 (structural model; not on disk) plus Results ‘PK modelling’ prose |
+| Structural model diagram (three-pathway absorption + transit) | n/a | Figure S5 (structural model; not available when this model was built) plus Results ‘PK modelling’ prose |
 | Dose-fraction derivation `f_slow`, `f_fast`, `f_immediate` from RAT, RAT2 | n/a | Table 2 (%dose slow / fast / immediate absorption); the model file computes these fractions from RAT-transit and RAT-slowfast so the encoding reproduces Table 2 within rounding |
 
 ## Virtual cohort
@@ -410,10 +410,10 @@ come directly from Kado 2020 Table 1.
 
 ## Assumptions and deviations
 
-- **Structural model diagram not on disk; transit-chain length
+- **Structural model diagram not available; transit-chain length
   unresolved.** Kado 2020 Figure S5 (the structural model schematic)
   resides in a Word-document supplement behind the Oxford University
-  Press paywall and could not be acquired for this extraction. The
+  Press paywall and was not available when this model was built. The
   triple-parallel-absorption implementation in the model file was
   derived from the paper’s Methods ‘PK modelling’ prose (“simultaneous…
   slow and fast absorption… A third, more immediate, absorption that did

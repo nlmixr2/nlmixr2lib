@@ -434,7 +434,8 @@ elimination. {.table}
   and the paper text does not enumerate the off-diagonal covariances.
   The model file therefore encodes diagonal IIV on `etalcl`, `etalvc`,
   and `etalvp`. Users who need the published off-diagonal structure
-  should consult the original NONMEM control stream (not on disk).
+  should consult the original NONMEM control stream, which was not
+  available when this model was built.
 
 - **Source IIV form vs canonical log-normal.** Schaefer 1996 used the
   proportional IIV form CL_i = TVCL \* (1 + h_CL_i) with `var(h)` set so

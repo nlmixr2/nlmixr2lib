@@ -498,11 +498,11 @@ small residual GT1a-vs-GT1b differences are simulation noise). {.table}
   ng/mL peak at 200 mg BID). The 500x discrepancy suggests Table 3 Vc
   may actually be in L/kg (a weight-normalised apparent volume) or that
   the study D dosing units differ from mg. Absent an explicit statement
-  in the on-disk paper text, the packaged model uses Vc = 5.11 L as
-  literally reported; downstream users who need Figure-3A-consistent
-  absolute concentrations should rescale Vc (e.g., multiply by a
-  reference body weight in kg). This concentration-scale discrepancy is
-  why the Simulated vs Table 4 comparison above shows a 0.88 log10 IU/mL
+  in the paper text, the packaged model uses Vc = 5.11 L as literally
+  reported; downstream users who need Figure-3A-consistent absolute
+  concentrations should rescale Vc (e.g., multiply by a reference body
+  weight in kg). This concentration-scale discrepancy is why the
+  Simulated vs Table 4 comparison above shows a 0.88 log10 IU/mL
   over-prediction at GT1a 200 mg BID: the packaged model’s
   over-predicted Cc saturates the sigmoid Emax to e = 0.997 even at the
   lowest dose, while Canini 2018’s own Figure 3D predicts e = 0.960 for
@@ -511,7 +511,7 @@ small residual GT1a-vs-GT1b differences are simulation noise). {.table}
   Table 4 within 0.15 log10 IU/mL because Emax saturation collapses the
   residual concentration sensitivity.
 
-- **No supplement on disk.** Canini 2018 Additional file 1 (referenced
+- **No supplement available.** Canini 2018 Additional file 1 (referenced
   in the paper as
   <https://www.intmedpress.com/uploads/documents/4229_Canini_>
   Addfile_1.pdf) contains goodness-of-fit plots and individual-patient

@@ -3100,23 +3100,23 @@ effective imipenem KC50 via OM_effect. Imipenem and tobramycin
 concentrations are external time-varying inputs (covariates Cipm and
 Ctob); the model contains no rodent PK component (the paper imported the
 murine one-compartment PK of imipenem and tobramycin from external
-references and the PK parameter values are not reported in the source on
-disk).</li>
+references and the PK parameter values are not reported in the
+paper).</li>
 <li>Article: <a href="https://doi.org/10.1128/AAC.01268-17" class="external-link uri">https://doi.org/10.1128/AAC.01268-17</a>
 </li>
 </ul>
-<p>The supplementary S-ADAPT control stream for this paper was not on
-disk. The model structure encoded here is the canonical Bulitta
-two-state life-cycle growth model (LCGM) consistent with the parameters
-and equations reported in the main-paper Methods (Eqs 4-7, page 8 of the
-article) and Table 1. The murine one-compartment imipenem and tobramycin
-PK described by Eqs 1-3 was imported from external references (Katsube
-2008 and Moffie 1993) and the numerical PK parameter values were not
-reported in the present paper; the packaged model therefore exposes
-<code>Cipm</code> and <code>Ctob</code> as time-varying covariates
-supplied by the user, mirroring the
-<code>Landersdorfer_2018_imipenem_tobramycin</code> precedent already in
-<code>pharmacodynamics/</code>.</p>
+<p>The supplementary S-ADAPT control stream for this paper was not
+available when this model was built. The model structure encoded here is
+the canonical Bulitta two-state life-cycle growth model (LCGM)
+consistent with the parameters and equations reported in the main-paper
+Methods (Eqs 4-7, page 8 of the article) and Table 1. The murine
+one-compartment imipenem and tobramycin PK described by Eqs 1-3 was
+imported from external references (Katsube 2008 and Moffie 1993) and the
+numerical PK parameter values were not reported in the present paper;
+the packaged model therefore exposes <code>Cipm</code> and
+<code>Ctob</code> as time-varying covariates supplied by the user,
+mirroring the <code>Landersdorfer_2018_imipenem_tobramycin</code>
+precedent already in <code>pharmacodynamics/</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3731,15 +3731,14 @@ end below monotherapy.</caption>
 </h2>
 <ul>
 <li>
-<strong>Murine PK driver not on disk.</strong> Equations 1-3 of the
-paper define a one-compartment s.c. PK model for each drug whose
+<strong>Murine PK driver not available.</strong> Equations 1-3 of
+the paper define a one-compartment s.c. PK model for each drug whose
 parameters (<code>ka</code>, <code>ke</code>, <code>V/F</code>,
 <code>fu</code>) are imported from external references (Katsube 2008 for
 imipenem, Moffie 1993 for tobramycin); those numerical values are not
-reported in the present paper on disk. The packaged model therefore
-omits a rodent PK component and exposes <code>Cipm</code> and
-<code>Ctob</code> as time-varying covariates supplied by the user,
-mirroring the existing
+reported in the present paper. The packaged model therefore omits a
+rodent PK component and exposes <code>Cipm</code> and <code>Ctob</code>
+as time-varying covariates supplied by the user, mirroring the existing
 <code>Landersdorfer_2018_imipenem_tobramycin</code> precedent in
 <code>pharmacodynamics/</code>. Users wishing to replay the humanized
 murine experiment exactly should supply the PK driver numerically from
@@ -3752,10 +3751,10 @@ packaged <code>ini()</code> uses experiment 1’s value as the default; to
 reproduce experiment 2 exactly, update <code>logcfu0</code> to
 4.78.</li>
 <li>
-<strong>No supplementary material on disk.</strong> The full S-ADAPT
-control stream was not available for this extraction. The model encoded
-here applies the standard Bulitta LCGM convention shared by the
-Landersdorfer 2018, Wicha 2017, and Rees 2018 models in
+<strong>No supplementary material available.</strong> The full
+S-ADAPT control stream was not available when this model was built. The
+model encoded here applies the standard Bulitta LCGM convention shared
+by the Landersdorfer 2018, Wicha 2017, and Rees 2018 models in
 <code>pharmacodynamics/</code>. Items the supplement would have
 disambiguated:
 <ol style="list-style-type: decimal">
@@ -3784,7 +3783,7 @@ first 1 / k21 minute.</li>
 packaged model uses the IR mutation frequency only to set initial subpop
 fractions; there is no ongoing mutation flux between subpopulations
 during simulation. The supplement may include a low-rate mutation
-transition; without it on disk, this extension is omitted to avoid
+transition; without the supplement, this extension is omitted to avoid
 introducing unsourced parameters.</li>
 </ol>
 </li>

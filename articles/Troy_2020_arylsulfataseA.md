@@ -699,7 +699,7 @@ stopifnot(
   children aged 1-120 months” (reference 20, Matsuzawa 2001). The three
   regression equations are written out only in `Data S1 $PK`, which is
   where they were transcribed from. Matsuzawa 2001 itself was not needed
-  and is not on disk.
+  and was not available when this model was built.
 - **`AGE` is stored in years, not months.** The control stream carries
   months. The register-canonical `AGE` is in years, so `model()`
   converts (`agec <- 12 * AGE + t / (24 * 30)`). Event tables must

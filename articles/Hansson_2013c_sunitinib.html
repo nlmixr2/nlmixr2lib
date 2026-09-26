@@ -3086,14 +3086,14 @@ Pharmacometrics Syst Pharmacol</em> 2013;2(11):e85.</li>
 <li>Upstream sVEGFR-3 biomarker dynamics:
 <code>Hansson_2013a_sunitinib</code> (DDMODEL00000197, <a href="doi:10.1038/psp.2013.61" class="uri">doi:10.1038/psp.2013.61</a>).</li>
 </ul>
-<p>The publication PDF was not on disk at extraction time, so all
-parameter values, equations, and the model structure are taken from the
-DDMORE bundle (<code>Executable_Fatigue_GIST.mod</code> and
+<p>The publication PDF was not available when this model was built, so
+all parameter values, equations, and the model structure are taken from
+the DDMORE bundle (<code>Executable_Fatigue_GIST.mod</code> and
 <code>Output_real_Fatigue_GIST.lst_Fatigue_PSP_2014</code>). Validation
-in this vignette therefore consists of a mechanistic-sanity check (F.3)
-plus a self-consistency simulation against the bundle’s shipped
-simulated dataset (F.2); a side-by-side comparison against any published
-Hansson 2013 figure or table is not performed.</p>
+in this vignette therefore consists of a mechanistic-sanity check plus a
+self-consistency simulation against the bundle’s shipped simulated
+dataset; a side-by-side comparison against any published Hansson 2013
+figure or table is not performed.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3107,11 +3107,11 @@ companion 2013 overall-survival paper. Subjects received sunitinib 50 mg
 PO QD on a 4-weeks-on / 2-weeks-off schedule with a placebo-controlled
 run-in. The DDMORE bundle does not expose detailed baseline demographics
 (age, weight, sex, race, prior-imatinib duration); the linked
-publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e85) was not on
-disk, so the <code>population</code> metadata records that gap and
-carries <code>n_subjects = 303</code> over from the upstream Hansson
-2013a model. The fatigue analysis-set count is not derivable from the
-bundle.</p>
+publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e85) was not
+available when this model was built, so the <code>population</code>
+metadata records that gap and carries <code>n_subjects = 303</code> over
+from the upstream Hansson 2013a model. The fatigue analysis-set count is
+not derivable from the bundle.</p>
 <p>The same information is available programmatically via the model’s
 <code>population</code> metadata
 (<code>readModelDb("Hansson_2013c_sunitinib")$population</code> after
@@ -3433,10 +3433,10 @@ mg*h/L; the Houk 2010 sunitinib typical CL ~ 32.8 L/h).</p>
 <span><span class="co">#&gt; 10  1  216    0   0  NA   50 32.819       63900         401            1</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-simulation-f-3">Mechanistic-sanity simulation (F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-simulation-f-3"></a>
+<h2 id="mechanistic-sanity-simulation">Mechanistic-sanity simulation<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-simulation"></a>
 </h2>
 <p>The fatigue model is a count / Markov / proportional-odds modality
-without a published NCA table; the F.3 mechanistic-sanity check applies.
+without a published NCA table; the mechanistic-sanity check applies.
 Typical-value (no IIV, no residual error) simulation should reproduce
 the qualitative dynamics implied by the source parameters: sVEGFR-3
 depletion under drug, <code>bm</code> going negative, each per-state
@@ -3556,7 +3556,7 @@ within numerical tolerance:</p>
 <span><span class="co">#&gt;       1       1       1       1</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="self-consistency-simulation-against-the-ddmore-bundle-f-2">Self-consistency simulation against the DDMORE bundle (F.2)<a class="anchor" aria-label="anchor" href="#self-consistency-simulation-against-the-ddmore-bundle-f-2"></a>
+<h2 id="self-consistency-simulation-against-the-ddmore-bundle">Self-consistency simulation against the DDMORE bundle<a class="anchor" aria-label="anchor" href="#self-consistency-simulation-against-the-ddmore-bundle"></a>
 </h2>
 <p>The bundle ships a three-subject simulated dataset
 <code>Simulated_Fatigue_GIST.txt</code> with daily observations over 27
@@ -3604,25 +3604,25 @@ baseline logits. The bundle’s
 <code>Output_simulated_Fatigue_GIST.lst</code> was generated with
 <code>MAXEVAL=0 LIKE</code> (a likelihood evaluation, not a state
 simulation output), so the listing does not directly report the
-time-course of sVEGFR-3; the F.2 self-consistency check therefore
-compares against the structural shape implied by the model’s parameters
-at subject 1’s posthoc-CL/BAS/MRT/EC50 values, not against a numeric
+time-course of sVEGFR-3; the self-consistency check therefore compares
+against the structural shape implied by the model’s parameters at
+subject 1’s posthoc-CL/BAS/MRT/EC50 values, not against a numeric
 trajectory in the listing.</p>
 </div>
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
 <ul>
-<li><p><strong>Publication PDF not on disk.</strong> The Hansson 2013c
+<li><p><strong>Publication PDF not available.</strong> The Hansson 2013c
 paper text (CPT Pharmacometrics Syst Pharmacol 2013;2:e85, <a href="doi:10.1038/psp.2013.62" class="uri">doi:10.1038/psp.2013.62</a>)
-was not available in the maintainers’ literature mirror at extraction
-time. All parameter values and equations were taken from the DDMORE
-bundle (<code>Output_real_Fatigue_GIST.lst_Fatigue_PSP_2014</code> and
+was not available when this model was built. All parameter values and
+equations were taken from the DDMORE bundle
+(<code>Output_real_Fatigue_GIST.lst_Fatigue_PSP_2014</code> and
 <code>Executable_Fatigue_GIST.mod</code>). Side-by-side comparison
 against any published Hansson 2013c figure or table (e.g. the
 proportional-odds parameter table or the simulated-time-course-by-cycle
-plots) is not performed in this vignette; only F.3 mechanistic-sanity
-and F.2 self-consistency checks are run.</p></li>
+plots) is not performed in this vignette; only the mechanistic-sanity
+and self-consistency checks are run.</p></li>
 <li><p><strong>Cumulative-logit reparameterisation.</strong> The source
 <code>.mod</code> parameterises the per-state proportional-odds
 cumulative logits as <code>B1 + B2 + B3</code> with
@@ -3731,9 +3731,9 @@ ODE.</p></li>
 <li><p><strong>Bundle dataset is intentionally minimal.</strong>
 <code>Simulated_Fatigue_GIST.txt</code> carries three subjects with
 daily observations over 27 days. It is a smoke-test dataset, not a
-representative GIST cohort; the F.3 cohort in this vignette uses the
-typical-value Hansson 2013a baseline / MRT / EC50 / CLI for a 12-week
-4-on/2-off simulation instead.</p></li>
+representative GIST cohort; the mechanistic-sanity cohort in this
+vignette uses the typical-value Hansson 2013a baseline / MRT / EC50 /
+CLI for a 12-week 4-on/2-off simulation instead.</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

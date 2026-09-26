@@ -361,7 +361,7 @@ documented in the Errata section below.
 | propSd | Table S2 proportional = 0.204 |
 | Disposition ODEs | Methods 2.2; control streams \$SUBROUTINE ADVAN4 TRANS4, S2 = V2 |
 | Time-varying CL equation | Control streams \$PK: CL_TIME = EXP(EMAX\*TIME**HILL/(T50**HILL+TIME\*\*HILL)) |
-| Logit bioavailability | Main text Eq. for F_i (recovered via pdftotext -layout); control streams \$PK LOGITF1 block |
+| Logit bioavailability | Main text Eq. for F_i (read from the layout-preserved PDF text); control streams \$PK LOGITF1 block |
 | Reference WT / eGFR | Control streams \$PK: BBWT_R = 80 kg, BGFR_R = 90 mL/min |
 
 Source trace for every parameter and equation. {.table}
@@ -1083,11 +1083,11 @@ stopifnot(abs(absorbed - remaining - eliminated) / absorbed < 0.001)
     ug/mL is matched to within 2% by a sample taken about 2 days after
     the steady-state dose. The legend describes the value as “simulated”
     but attaches it to a regimen whose safety margins come from a
-    separate published analysis (reference 17, Agrawal 2016), which is
-    not on disk, so whether the number came from this model under a
-    coarse sampling grid or from that earlier analysis cannot be settled
-    from the sources available. No parameter was adjusted to close the
-    gap.
+    separate published analysis (reference 17, Agrawal 2016), which was
+    not available when this model was built, so whether the number came
+    from this model under a coarse sampling grid or from that earlier
+    analysis cannot be settled from the sources available. No parameter
+    was adjusted to close the gap.
 
 ### Assumptions made because the paper does not say
 
@@ -1123,8 +1123,8 @@ stopifnot(abs(absorbed - remaining - eliminated) / absorbed < 0.001)
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags as a warning for fixed-effect PK parameters. This is deliberate
   and matches the sibling `Bajaj_2017_nivolumab.R`, which carries the
-  identical three warnings on `main`: `cl_time_max` is negative (-0.303)
-  and therefore cannot be held on the log scale, and it carries an
+  identical three warnings: `cl_time_max` is negative (-0.303) and
+  therefore cannot be held on the log scale, and it carries an
   **additive** random effect (`EMAX = AEMAX + ZEMAX` in the source), so
   a log parameterisation would misrepresent both the sign and the IIV
   structure.

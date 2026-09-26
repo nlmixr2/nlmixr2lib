@@ -19,16 +19,15 @@
   SUVmax change from baseline, RCFB1MAX.
 - Article: <https://doi.org/10.1002/psp4.12057>
 - DDMORE Foundation Model Repository entry: `DDMODEL00000221` – bundle
-  directory in the maintainers’ `ddmore_scraping` mirror at `221/`,
-  containing `Executable_SLD_SUV_OS_GIST.mod`,
-  `Output_real_SLD_SUV_OS_GIST.lst`,
+  directory `ddmore_scraping/221/`, containing
+  `Executable_SLD_SUV_OS_GIST.mod`, `Output_real_SLD_SUV_OS_GIST.lst`,
   `Output_simulated_SLD_SUV_OS_GIST.lst`,
   `Simulated_SLD_SUV_OS_GIST.csv`, `DDMODEL00000221.rdf`, `Command.txt`,
   and `221.json`. The linked publication itself (Schindler 2016,
-  CPT:PSP) was not on disk when this model was built; parameter values,
-  structural equations, and maintainer decisions in this vignette and
-  the model file are sourced from the bundle’s `.mod` (structural
-  equations + initial values) and `.lst` (final estimates).
+  CPT:PSP) was not available when this model was built; parameter
+  values, structural equations, and maintainer decisions in this
+  vignette and the model file are sourced from the bundle’s `.mod`
+  (structural equations + initial values) and `.lst` (final estimates).
 
 ## Population
 
@@ -41,7 +40,7 @@ target-lesion sum-of-longest-diameters (SLD) measurements, and overall
 survival follow-up to event or right-censoring. Detailed baseline
 demographics (age, weight, sex, race / ethnicity distribution,
 prior-line distribution) live in Table 1 of the linked publication,
-which was not on disk when this model was built; those fields are
+which was not available when this model was built; those fields are
 recorded as `NA` in the model’s `population` metadata to make the gap
 explicit, with a notes string pointing to Schindler 2016 Table 1 as the
 source.
@@ -102,7 +101,7 @@ recorded in the Errata below.
 The original observed dataset is not publicly available and is not in
 the DDMODEL00000221 bundle. The bundle’s `Simulated_SLD_SUV_OS_GIST.csv`
 ships a single virtual subject with the standard 50 mg/day 4-weeks-on /
-2-weeks-off-style schedule as a regression-style smoke test. For the F.2
+2-weeks-off-style schedule as a regression-style smoke test. For the
 self-consistency check below the vignette uses a virtual cohort that
 mirrors that single-subject layout for the SUVmax + SLD +
 cumulative-hazard arms; the OS / dropout TTE arms are evaluated at
@@ -360,7 +359,7 @@ print(p_haz)
 
 ![](Schindler_2016_sunitinib_files/figure-html/fig-trajectories-3.png)
 
-## F.2 self-consistency check (typical-value re-simulation of the bundle dataset)
+## Self-consistency check (typical-value re-simulation of the bundle dataset)
 
 The bundle’s `Output_simulated_*.lst` reproduces a one-subject MAXEVAL =
 0 simulation of the source `.mod` on `Simulated_SLD_SUV_OS_GIST.csv`.
@@ -427,7 +426,7 @@ structural_summary <- tibble(
 )
 
 knitr::kable(structural_summary,
-             caption = "F.2 self-consistency: typical-value baselines vs. .mod THETA values.")
+             caption = "Self-consistency: typical-value baselines vs. .mod THETA values.")
 ```
 
 | endpoint | simulated_typical | expected | source |
@@ -438,7 +437,7 @@ knitr::kable(structural_summary,
 | Final cumulative OS hazard | 0.0545183 | NA | structural sanity (monotone non-negative) |
 | Final cumulative dropout hazard | 0.2846286 | NA | structural sanity (monotone non-negative) |
 
-F.2 self-consistency: typical-value baselines vs. .mod THETA values.
+Self-consistency: typical-value baselines vs. .mod THETA values.
 {.table}
 
 ## Assumptions and deviations
@@ -477,10 +476,10 @@ F.2 self-consistency: typical-value baselines vs. .mod THETA values.
   Under the package’s convention for reading final estimates from a
   DDMORE `.lst`, `MINIMIZATION SUCCESSFUL` (with caveat) is acceptable
   but flagged here.
-- **Linked publication not on disk.** The Schindler 2016 publication is
-  not on disk in the maintainers’ literature mirror; an external check
-  of parameter values against the publication’s tables was not
-  performed. Final estimates were taken from the `.lst` only.
+- **Linked publication not available.** The Schindler 2016 publication
+  was not available when this model was built; an external check of
+  parameter values against the publication’s tables was not performed.
+  Final estimates were taken from the `.lst` only.
 - **Iteration-log precision used for estimated THETAs.** THETA(12),
   THETA(14), and THETA(16) (the only THETAs that moved during
   minimization) are reported in the `FINAL PARAMETER ESTIMATE` block at
@@ -494,7 +493,7 @@ F.2 self-consistency: typical-value baselines vs. .mod THETA values.
   which is consistent with NONMEM regression-test usage but is not
   reflective of the 66-patient pooled GIST cohort that the model was
   built on. The vignette’s virtual cohort is a deliberately small (n
-  = 5) extension of the bundle’s per-subject schedule to make the F.2
+  = 5) extension of the bundle’s per-subject schedule to make the
   self-consistency and qualitative-VPC checks tractable; reproducing the
   publication’s per-figure quantitative numbers would require the
   original observed dataset, which is not in the bundle.

@@ -858,7 +858,8 @@ stopifnot(diff(range(trend$sim_amplitude)) < 10)
   that its “parameter estimation suffered from issues with practical
   identifiability and this model variant was therefore not considered
   further”. The numeric values for both variants live only in the
-  supplementary tables, which are not on disk for this extraction.
+  supplementary tables, which were not available when this model was
+  built.
 
 - **`Omega` is reconstructed rather than transcribed.** The packaged
   covariance matrices are built from the Table 2 decomposition

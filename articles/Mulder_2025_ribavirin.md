@@ -393,8 +393,9 @@ comparison; values here are typical-value sanity checks. {.table}
 
 - **Healthy-hepatocyte half-life (TDEG = 6398 h) and the
   infected:healthy hepatocyte decay ratio (Factor = 100) come from
-  Dahari 2007 (reference 20).** They are not re-estimated by Mulder 2025
-  and the on-disk source has no other estimate to reconcile.
+  Dahari 2007 (reference 20).** They are not re-estimated by Mulder
+  2025, and the source material available when this model was built has
+  no other estimate to reconcile.
 
 - **HEV viral-load residual error model.** The source paper reports the
   residual error as “additive function on the log scale” with SD = 2.01.

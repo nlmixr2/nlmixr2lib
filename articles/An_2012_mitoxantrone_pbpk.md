@@ -337,11 +337,11 @@ sim_human <- rxode2::rxSolve(mod_human_typical, events = events_human,
 
 The paper overlays Larson 1987 (gray symbols) and Peng 1982 (black
 symbols) digitised plasma observations onto the Model 3 typical-value
-prediction. We render only the typical-value prediction (no on-disk
-clinical data); the curve shape and approximate magnitude (Cmax in the
-1-10 mg/L range immediately post-dose, decline to \<0.1 mg/L by 4 h, a
-slow tail beyond 8 h) are the qualitative features the paper highlights
-as a successful inter-species extrapolation.
+prediction. We render only the typical-value prediction (the clinical
+observations are not available); the curve shape and approximate
+magnitude (Cmax in the 1-10 mg/L range immediately post-dose, decline to
+\<0.1 mg/L by 4 h, a slow tail beyond 8 h) are the qualitative features
+the paper highlights as a successful inter-species extrapolation.
 
 ``` r
 

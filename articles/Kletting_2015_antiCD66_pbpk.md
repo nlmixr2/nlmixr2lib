@@ -748,7 +748,7 @@ which is the paper’s reason for abandoning the assumption.
   Eq 9 weights each organ’s antigen number by `V_MRI / V_Cal`. Neither
   the per-patient MRI volumes nor the formulae for the calculated
   volumes (refs \[9\] Harris 2010 and \[10\] Johnson 2005) appear in any
-  on-disk source, so the ratios themselves are the shipped input
+  available source, so the ratios themselves are the shipped input
   (`ratioVolLiver`, `ratioVolSpleen`), fixed at `1` = an organ of
   exactly calculated size. At that default Model 2 reduces to Model 1’s
   constraint and differs only through its own column of Table 1

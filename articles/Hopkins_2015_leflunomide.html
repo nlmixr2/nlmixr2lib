@@ -3508,14 +3508,14 @@ representative times inside each interval:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">got_hcensor</span>, <span class="va">expected_hcensor</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-checks-verification-checklist-f-2">Mechanistic sanity checks (verification-checklist F.2)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks-verification-checklist-f-2"></a>
+<h2 id="mechanistic-sanity-checks">Mechanistic sanity checks<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks"></a>
 </h2>
 <p>The model is a TTE survival model, not a PK/PD concentration model;
 PKNCA is not the right validation tool. The checks below exercise the
 hazard equations under controlled inputs.</p>
 <div class="section level3">
-<h3 id="f-2-1---typical-value-cessation-hazard-transitions-match-table-3-exactly">F.2.1 - typical-value cessation-hazard transitions match Table 3
-exactly<a class="anchor" aria-label="anchor" href="#f-2-1---typical-value-cessation-hazard-transitions-match-table-3-exactly"></a>
+<h3 id="check-1---typical-value-cessation-hazard-transitions-match-table-3-exactly">Check 1 - typical-value cessation-hazard transitions match Table 3
+exactly<a class="anchor" aria-label="anchor" href="#check-1---typical-value-cessation-hazard-transitions-match-table-3-exactly"></a>
 </h3>
 <p>The piecewise-exponential cessation hazard is verified at
 representative times within each interval:</p>
@@ -3549,8 +3549,8 @@ representative times within each interval:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">got_hcess_cc</span> <span class="op">-</span> <span class="fl">2.29</span> <span class="op">*</span> <span class="va">expected_hcess</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-2-2---survival-is-monotonically-non-increasing-in-both-hazards">F.2.2 - survival is monotonically non-increasing in both
-hazards<a class="anchor" aria-label="anchor" href="#f-2-2---survival-is-monotonically-non-increasing-in-both-hazards"></a>
+<h3 id="check-2---survival-is-monotonically-non-increasing-in-both-hazards">Check 2 - survival is monotonically non-increasing in both
+hazards<a class="anchor" aria-label="anchor" href="#check-2---survival-is-monotonically-non-increasing-in-both-hazards"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">sim_aa</span><span class="op">$</span><span class="va">sur</span><span class="op">)</span>        <span class="op">&lt;=</span> <span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span></span>
@@ -3558,8 +3558,8 @@ hazards<a class="anchor" aria-label="anchor" href="#f-2-2---survival-is-monotoni
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">sim_aa</span><span class="op">$</span><span class="va">sur_cens</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-2-3---the-simulated-1-year-cessation-probability-agrees-with-the-papers-observed-cessation-rate">F.2.3 - the simulated 1-year cessation probability agrees with the
-paper’s observed cessation rate<a class="anchor" aria-label="anchor" href="#f-2-3---the-simulated-1-year-cessation-probability-agrees-with-the-papers-observed-cessation-rate"></a>
+<h3 id="check-3---the-simulated-1-year-cessation-probability-agrees-with-the-papers-observed-cessation-rate">Check 3 - the simulated 1-year cessation probability agrees with the
+paper’s observed cessation rate<a class="anchor" aria-label="anchor" href="#check-3---the-simulated-1-year-cessation-probability-agrees-with-the-papers-observed-cessation-rate"></a>
 </h3>
 <p>Hopkins 2015 reports (Results ‘Patients’) that 34/105 (32.4%)
 patients ceased leflunomide due to toxicity before day 365. This raw
@@ -3616,7 +3616,7 @@ survival overlay.</p>
 <span><span class="co">#&gt; 2 Fraction still under follow-up at day 365 0.371</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-2-4---dimensional-consistency">F.2.4 - dimensional consistency<a class="anchor" aria-label="anchor" href="#f-2-4---dimensional-consistency"></a>
+<h3 id="check-4---dimensional-consistency">Check 4 - dimensional consistency<a class="anchor" aria-label="anchor" href="#check-4---dimensional-consistency"></a>
 </h3>
 <p>Every hazard value is in units of 1/day; the cumulative hazard is
 dimensionless (integrated over days); <code>sur = exp(-cumhaz)</code> is

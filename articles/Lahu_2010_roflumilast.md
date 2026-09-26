@@ -70,11 +70,11 @@ nlmixr2lib::readModelDb("Lahu_2010_roflumilast")$population
 
 Demographic table S-2 of the source supplement (per-subject covariate
 distributions across the 28 studies) is in Supplemental Digital Content
-1 and is not on disk for this extraction. Its phase I equivalent was
-instead recovered from the FDA NDA 22-522 Clinical Pharmacology review
-(Table 5, printed page 75), which reprints the sponsor’s own population
-PK study report 114/2005 – the same analysis Lahu published. For the n =
-338 phase I model-building dataset:
+1 and was not available when this model was built. Its phase I
+equivalent was instead recovered from the FDA NDA 22-522 Clinical
+Pharmacology review (Table 5, printed page 75), which reprints the
+sponsor’s own population PK study report 114/2005 – the same analysis
+Lahu published. For the n = 338 phase I model-building dataset:
 
 | Stratum                 | n   | Percent |
 |-------------------------|-----|---------|
@@ -475,10 +475,11 @@ Lahu 2010 does not tabulate explicit AUC24 / Cmax / Cmin point values in
 the main text; supplemental table S-6 reports geometric mean percentage
 deviations between model-predicted and noncompartmental observed AUC24
 values stratified by dose group and covariate cohort, but the absolute
-AUC24 values are in the supplement (not on disk for this extraction).
-The published statement is that the geometric mean percentage deviations
-of dose-normalised observed AUCs from model-predicted AUCs were no
-greater than 6.57 percent for the index dataset (Results page 597).
+AUC24 values are in the supplement (not available when this model was
+built). The published statement is that the geometric mean percentage
+deviations of dose-normalised observed AUCs from model-predicted AUCs
+were no greater than 6.57 percent for the index dataset (Results page
+597).
 
 The self-consistency check below uses the steady-state mass balance
 implied by the model parameters as the validation target:
@@ -586,13 +587,13 @@ transcription error).
   columns, so the eta was absent from the base model onward rather than
   dropped partway through covariate selection.
 
-- **No supplement on disk; demographics recovered from the FDA review
+- **Supplement not available; demographics recovered from the FDA review
   instead.** Supplemental Digital Content 1 (table S-2 demographic
   distributions, table S-6 NCA predictive-performance AUC24 deviations,
   figure S-1 goodness-of-fit plots, figures S-2 to S-5 bootstrap
-  distributions, etc.) was not on disk for this extraction. The “Source
-  trace” table and the PKNCA validation comparison values were derived
-  from the main paper text and Table I.
+  distributions, etc.) was not available when this model was built. The
+  “Source trace” table and the PKNCA validation comparison values were
+  derived from the main paper text and Table I.
 
   The demographic distributions that table S-2 would have supplied for
   the phase I model-building dataset were subsequently recovered from

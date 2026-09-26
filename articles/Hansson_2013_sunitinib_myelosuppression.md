@@ -135,10 +135,10 @@ head(events, 6)
 #> 6             0
 ```
 
-## Mechanistic-sanity simulation (F.3)
+## Mechanistic-sanity simulation
 
 The output is ordinal-grade ANC (10^9/L); no published NCA table
-applies, so the F.3 mechanistic-sanity check is the right check.
+applies, so the mechanistic-sanity check is the right check.
 Typical-value (no IIV) simulation should reproduce the qualitative
 dynamics implied by the source parameters: sVEGFR-3 depletes under drug,
 `svegfr3_rel` rises, `edrug` engages on the proliferation rate, and

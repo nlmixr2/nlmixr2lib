@@ -281,13 +281,12 @@ knitr::kable(scenarios, digits = 3,
 Simulated vs Xia 2024 supplement Section 1.6 targets. {.table}
 
 The agreement is within ~10% across the 21 scenarios, well inside the
-~20% threshold the package’s validation checklist recommends as the
-investigate-but-do-not-tune cutoff. A small consistent overshoot (the
-typical-subject prediction is 2.13 instead of 2.0 at 2.5 mg/d) is likely
-a combination of rounding in the supplement’s reported doses and the
-fact that the supplement reads steady-state INR from a typical
-(deterministic) curve where the slow coagulation chain may not have
-reached full equilibrium.
+~20% threshold used here as the investigate-but-do-not-tune cutoff. A
+small consistent overshoot (the typical-subject prediction is 2.13
+instead of 2.0 at 2.5 mg/d) is likely a combination of rounding in the
+supplement’s reported doses and the fact that the supplement reads
+steady-state INR from a typical (deterministic) curve where the slow
+coagulation chain may not have reached full equilibrium.
 
 ## Reproducing dose-titration trajectories (Xia 2024 Figure 2 family)
 
@@ -676,10 +675,10 @@ Units in each ODE term, walked once for review:
 - **PK observations are absent in the source dataset.** All structural
   PK parameters are reproduced from the Hamberg literature model as
   inline constants in `ini()` wrapped in `fixed()`. The original Hamberg
-  publication is not on disk; Xia 2024 itself reports the inherited
-  Hamberg values numerically in Table 3, so the model file’s values come
-  directly from the on-disk Xia 2024 paper rather than from
-  training-data recall of the Hamberg paper.
+  publication was not available when this model was built; Xia 2024
+  itself reports the inherited Hamberg values numerically in Table 3, so
+  the model file’s values come directly from the Xia 2024 paper rather
+  than from the Hamberg paper.
 - **Amiodarone effect encoding.** Xia 2024 supplement Section 1.3 Eq 9
   describes the categorical-covariate model as a piecewise
   multiplicative factor `P_TV * (1 + theta)`; the model file encodes the

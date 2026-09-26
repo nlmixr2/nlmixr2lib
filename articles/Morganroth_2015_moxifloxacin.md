@@ -23,7 +23,7 @@
   the PK driver in this file is a typical-value 1-compartment oral
   approximation with CL/F = 8.47 L/h, V/F = 132.6 L, and ka = 1.7 /h
   derived from the pooled NCA summary statistics in Morganroth 2015
-  Table 1 (see vignette Errata). Per operator sidecar-001 (option C) the
+  Table 1 (see vignette Errata). By decision of the maintainers, the
   paper’s BVN(0, Sigma) subject random effects on the PD intercept and
   slope are OMITTED because Sigma is not numerically reported in the
   paper, and a small placeholder additive residual SD of 1 ms is used to

@@ -545,11 +545,11 @@ slowly-eliminated FBAL whose terminal phase extends beyond 24 h.
 - **Covariate centering values are not paper-derived.** Blesch 2003 does
   not tabulate the population’s baseline medians for ALP, CRCL, or BSA
   (those numeric distributions live in the cited Phase III source
-  publications, Hoff 2001 \[10\] and Van Cutsem 2001 \[11\], which are
-  not on disk for this extraction). The model file declares ALP = 100
-  U/L, CRCL = 80 mL/min/1.73 m^2, BSA = 1.73 m^2 as the centering values
-  applied in the multiplicative power covariate effects on CL2/F, CL3/F,
-  and V3/F. These are clinically reasonable medians for an
+  publications, Hoff 2001 \[10\] and Van Cutsem 2001 \[11\], which were
+  not available when this model was built). The model file declares ALP
+  = 100 U/L, CRCL = 80 mL/min/1.73 m^2, BSA = 1.73 m^2 as the centering
+  values applied in the multiplicative power covariate effects on CL2/F,
+  CL3/F, and V3/F. These are clinically reasonable medians for an
   advanced-colorectal-cancer cohort but are not from the source paper
   itself. Users wishing to centre on a different reference need only
   redivide the covariate column by their preferred reference value (the
@@ -612,9 +612,9 @@ slowly-eliminated FBAL whose terminal phase extends beyond 24 h.
   PBPK model (GI, blood, liver, tumour, non-eliminating tissues) for
   capecitabine + the three downstream-of-5’-DFCR metabolites. The PBPK
   parameter values are referenced from Tsukamoto et al. 2001 \[reference
-  30 in Blesch 2003\] which is not on disk for this extraction, and the
-  PBPK section of Blesch 2003 itself reports parameter values only in
-  narrative form rather than in a tabulated form suitable for
+  30 in Blesch 2003\] which was not available when this model was built,
+  and the PBPK section of Blesch 2003 itself reports parameter values
+  only in narrative form rather than in a tabulated form suitable for
   extraction. Only the popPK model “CAP7440” (Table 1) is implemented
   here. The conceptual simulations, Phase I logistic-regression DLT
   models, and the Phase III concentration-effect analyses are likewise

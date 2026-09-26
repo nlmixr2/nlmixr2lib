@@ -818,7 +818,7 @@ stopifnot(max(abs(ss_check$pct_diff)) < 2)
   only nominal intra-infusion sample was at 0.5 h; the simulation
   assumes every infusion ran exactly 2 h at a constant rate. Neither the
   realised infusion durations nor the actual sample times are reported,
-  so this cannot be resolved from the sources on disk. It does not
+  so this cannot be resolved from the available sources. It does not
   affect the model’s own VPC (Figure 2), which the authors report as
   satisfactory.
 - **Cmax on noisy simulated data.** PKNCA takes Cmax as the maximum over
@@ -847,13 +847,13 @@ stopifnot(max(abs(ss_check$pct_diff)) < 2)
   reports the rejected separate-saliva-compartment model (CL 6.22 L/h,
   k12 0.074 /h, k20 10 /h). It was rejected by the authors on OFV and on
   an 87% RSE for `k20`, so it is not packaged.
-- **Supplement not on disk.** Tables S1 (example data file) and S2
+- **Supplement not available.** Tables S1 (example data file) and S2
   (NONMEM model code) and Figures S1-S8 are referenced but were not
-  retrievable. Every parameter value and every equation encoded in the
-  model file comes from the main article’s Table 3 and its footnote
-  equations, so the supplement is not needed for the extraction; it
-  would only have provided an independent cross-check of the control
-  stream.
+  available when this model was built. Every parameter value and every
+  equation encoded in the model file comes from the main article’s Table
+  3 and its footnote equations, so the supplement is not needed for the
+  extraction; it would only have provided an independent cross-check of
+  the control stream.
 - **Naming.** The saliva:plasma scale factor is encoded as `lfsaliva` /
   `fsaliva`, and the saliva observation as `Csaliva`, following the
   `f<matrix>` / `C<matrix>` pattern established by

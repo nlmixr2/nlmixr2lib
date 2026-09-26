@@ -3145,7 +3145,7 @@ the Bizzotto 2016 publication.</li>
 <p>The <code>.mdl</code> <code>gu_v1_par</code> <code>STRUCTURAL</code>
 block is annotated as the “final parameter estimates from related
 publication” and is the authoritative source of point values for this
-extraction. The <code>Output_real_*.txt</code> listing is
+model. The <code>Output_real_*.txt</code> listing is
 <strong>not</strong> used as the parameter source because the bundle
 itself flags re-estimation on the shipped simulated dataset as
 unreliable.</p>
@@ -3449,10 +3449,10 @@ also from <code>MODEL_PREDICTION</code> (the “# constants” block).</p>
 <div class="section level2">
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
-<p>The Bizzotto 2016 publication was <strong>not on disk when this model
-was built</strong>, so the standard publication-figure replication and
-PKNCA-vs-published-NCA checks are out of scope. The validation in this
-vignette therefore uses mechanistic-sanity and self-consistency
+<p>The Bizzotto 2016 publication was <strong>not available when this
+model was built</strong>, so the standard publication-figure replication
+and PKNCA-vs-published-NCA checks are out of scope. The validation in
+this vignette therefore uses mechanistic-sanity and self-consistency
 substitutes:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -3479,7 +3479,7 @@ the chunks below. The typical-value trajectories shown here are
 deterministic (no IIV, no residual error); inter-individual variability
 is not exercised in the validation simulations because the bundle is
 shipped as a typical-value simulator and the published cohort-level
-summaries are not on disk for comparison.</p>
+summaries are not available for comparison.</p>
 </div>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
@@ -3884,7 +3884,7 @@ GLU)<code>in</code>model()<code>so only</code>INS<code>and</code>GLU<code>need t
 are supplied at every observation row.</li>
 </ul>
 </li>
-<li><p><strong>Bizzotto 2016 publication is not on disk.</strong> The
+<li><p><strong>Bizzotto 2016 publication not available.</strong> The
 packaged model’s <code>reference</code> field carries the citation and
 DOI, and the parameter values in the <code>.mdl</code> are annotated as
 the publication’s final estimates; however, no PDF of Bizzotto et

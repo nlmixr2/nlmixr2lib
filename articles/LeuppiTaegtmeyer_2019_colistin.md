@@ -16,14 +16,15 @@
   `Output_real_CMS_colistin_PK_CRRT.lst`, simulated dataset:
   `Simulated_Data_CMS_colistin_PK_CRRT.csv`).
 
-The published article was NOT on disk during extraction; all parameter
-values and equations come from the DDMORE bundle’s `Output_real_*.lst`
-(final estimates) and `Executable_*.mod` (structural equations). The
-`Model_Accommodations.txt` field “There are no model differences with
-the publication referenced” indicates that the bundle reproduces the
-published final-model structure verbatim. The vignette’s validation
-strategy is therefore self-consistency (re-simulate against the bundle’s
-`Simulated_*.csv`) rather than a publication side-by-side comparison.
+The published article was NOT available when this model was built; all
+parameter values and equations come from the DDMORE bundle’s
+`Output_real_*.lst` (final estimates) and `Executable_*.mod` (structural
+equations). The `Model_Accommodations.txt` field “There are no model
+differences with the publication referenced” indicates that the bundle
+reproduces the published final-model structure verbatim. The vignette’s
+validation strategy is therefore self-consistency (re-simulate against
+the bundle’s `Simulated_*.csv`) rather than a publication side-by-side
+comparison.
 
 ## Population
 
@@ -179,11 +180,11 @@ sim_typical <- rxode2::rxSolve(mod_typical, events = cohort[cohort$id == 1L, ]) 
 
 ## Replicate published trajectories
 
-The publication is not on disk; the figures below are drawn against the
-DDMORE bundle’s behaviour rather than a paper figure number. The plotted
-ranges reproduce the qualitative shape of the simulated dataset shipped
-with the bundle (approximately 30-50 mg/L peak CMS during the loading
-infusion; approximately 2-5 mg/L colistin at steady state).
+The publication was not available; the figures below are drawn against
+the DDMORE bundle’s behaviour rather than a paper figure number. The
+plotted ranges reproduce the qualitative shape of the simulated dataset
+shipped with the bundle (approximately 30-50 mg/L peak CMS during the
+loading infusion; approximately 2-5 mg/L colistin at steady state).
 
 ``` r
 
@@ -268,7 +269,7 @@ colistin DV values (approximately 2 to 5 mg/L) shipped with the bundle.
 ## PKNCA validation
 
 PKNCA is run on the colistin trajectory (the active species and the
-clinical PK target). Because the source publication is not on disk we
+clinical PK target). Because the source publication was not available we
 cannot do a side-by-side comparison against published Cmax/AUC values;
 the table below is the simulated NCA summary at the bundle’s regimen.
 
@@ -324,7 +325,7 @@ interval) provides the reusable steady-state exposure summary.
 
 ## Assumptions and deviations
 
-- **Source publication not on disk.** The Leuppi-Taegtmeyer 2019 AAC
+- **Source publication not available.** The Leuppi-Taegtmeyer 2019 AAC
   publication was not available to the maintainers at extraction time.
   All parameter values and equations were taken from the DDMORE bundle’s
   `Output_real_*.lst` (final estimates) and `Executable_*.mod`. The

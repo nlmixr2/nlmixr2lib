@@ -47,15 +47,15 @@ bundle for `DDMODEL00000250` (scraped to
   dosing).
 - `DDMODEL00000250.rdf` – purpose / research-stage / modelling- question
   metadata.
-- `250.json`, `Command.txt` – scraper / run metadata.
+- `250.json`, `Command.txt` – provenance / run metadata.
 
-The original publication was **not on disk** when this model was built;
-publication-level demographics, NCA tables, and figures are taken from
-the PubMed abstract (PMID 28785981) only. Numerical values used by the
-packaged model are the `Output_real_FinalModelCode.lst` final estimates
-(i.e., from the bundle’s re-fit on the simulated dataset), not directly
-the publication’s typical values. See **Assumptions and deviations**
-below for the bundle-vs-publication comparison.
+The original publication was **not available** when this model was
+built; publication-level demographics, NCA tables, and figures are taken
+from the PubMed abstract (PMID 28785981) only. Numerical values used by
+the packaged model are the `Output_real_FinalModelCode.lst` final
+estimates (i.e., from the bundle’s re-fit on the simulated dataset), not
+directly the publication’s typical values. See **Assumptions and
+deviations** below for the bundle-vs-publication comparison.
 
 ## Population
 
@@ -482,12 +482,12 @@ the publication’s typical CL by treatment group. {.table}
   different summary statistic (mean vs median or rounding) used at
   fitting time. The packaged model uses the .mod’s values to remain
   mass-balance consistent with the published parameter estimates.
-- **Original publication PDF was not on disk when this model was
+- **Original publication PDF was not available when this model was
   built.** The model’s `description`, `reference`, and `population`
   fields are populated from the PubMed abstract (PMID 28785981) plus the
   DDMORE bundle metadata. A side-by-side comparison against the full
   publication’s parameter table or a published NCA summary is not part
-  of this vignette’s scope; the validation here is the F.2
+  of this vignette’s scope; the validation here is the
   bundle-self-consistency check plus a comparison against the abstract’s
   two typical-CL numbers.
 - **Population demographic detail is intentionally `NA`** for the fields

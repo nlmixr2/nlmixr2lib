@@ -397,7 +397,7 @@ features are possible:
   “mL/min” unit label in Table 2 refers to the source covariate’s unit;
   both `theta_1 = 0.77` (CL intercept) and `theta_CL-CLCR = 1.42` (CL
   slope per unit `CRCL / 55.5`) carry units of L/h. No NONMEM control
-  stream is available on disk, so this resolution depended on the only
+  stream was available, so this resolution depended on the only
   physically tenable reading.
 
 - **CRCL stored under the canonical `CRCL` column despite NOT being
@@ -423,7 +423,7 @@ features are possible:
   off-diagonal covariance estimates, consistent with diagonal OMEGA. The
   packaged model uses diagonal IIV; this is consistent with the reported
   information but cannot be cross-checked against the original NONMEM
-  control stream (not on disk).
+  control stream (not available).
 
 - **`omega^2 = log(CV^2 + 1)`.** Table 2 reports inter-individual
   variability as CV%; the corresponding log-normal variance was computed

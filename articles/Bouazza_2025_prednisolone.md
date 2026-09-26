@@ -687,12 +687,12 @@ Simulated peak against the published assay range. {.table}
   accordingly.
 - **Supplementary material.** Supplemental files S1-S4 (covariate
   correlation plot, Monolix code of the final model, goodness-of-fit
-  plots, BLQ predictive check) are referenced by the paper but were not
-  available on disk. Every value used here comes from Table 2 and the
-  Methods text of the main article, which are complete for the final
-  model; the Monolix code in S2 would provide an independent
-  confirmation of the equation forms but is not required to reproduce
-  them.
+  plots, BLQ predictive check) are referenced by the paper but could not
+  be obtained when this model was built. Every value used here comes
+  from Table 2 and the Methods text of the main article, which are
+  complete for the final model; the Monolix code in S2 would provide an
+  independent confirmation of the equation forms but is not required to
+  reproduce them.
 - **Validation targets.** The paper reports no NCA table, so the
   comparison table uses the authors’ own quantitative statement (75 L/h)
   plus closed-form identities derived from the Table 2 point estimates.

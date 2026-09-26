@@ -3126,10 +3126,9 @@ component of the combination product: a co-trimoxazole dose of X
 mg/kg/day delivers X/6 mg/kg/day of trimethoprim and 5X/6 mg/kg/day of
 sulfamethoxazole. The sulfamethoxazole model of the same paper is a
 separate file; see modellib(‘Chen_2025_sulfamethoxazole’).</p>
-<p>The publisher PDF renders the four model equations as images, so the
-text extracted from the PDF shows them only as
-<code>formula-not-decoded</code>. They were recovered with
-<code>pdftotext -layout</code>:</p>
+<p>The publisher PDF renders the four model equations as images, so they
+do not survive plain-text extraction of the PDF. They were recovered
+with <code>pdftotext -layout</code>:</p>
 <pre><code>(1)  V  = tvV * exp(etaV)                                                    [SMX]
 (2)  CL = tvCL * (CrCL/75.7)^dCLdCrCL * exp[dCLdCRRT * (CRRT == 1)] * exp(etaCL)
 (3)  V  = tvV * exp(etaV)                                                    [TMP]

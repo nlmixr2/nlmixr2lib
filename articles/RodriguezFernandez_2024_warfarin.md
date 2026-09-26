@@ -784,13 +784,13 @@ interchangeable with a true steady-state INR.
   threshold. No point estimates are published for them, so they are
   recorded in the model file’s `covariatesDataExcluded` list as
   documentation only.
-- **Supplementary material not on disk.** Supplementary Table S1 holds
+- **Supplementary material not available.** Supplementary Table S1 holds
   the *base* (pre-covariate) PK/PD parameter estimates, which are
   superseded by the final estimates in Table 2 used here; the supplement
-  is a Word document behind a PMC bot challenge and could not be
-  retrieved. Nothing in the final model depends on it. Supplementary
-  Figures S1-S5 are diagnostic plots (covariate distributions, GOF,
-  NPDE, eta distributions) and carry no parameter values.
+  is a Word document that was not available when this model was built.
+  Nothing in the final model depends on it. Supplementary Figures S1-S5
+  are diagnostic plots (covariate distributions, GOF, NPDE, eta
+  distributions) and carry no parameter values.
 - **Virtual cohorts use the cohort median weight (83 kg).** The paper’s
   simulations do not state the weight distribution used; holding weight
   fixed isolates the genotype effect, which is what Table 3 is

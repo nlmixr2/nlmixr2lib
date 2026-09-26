@@ -128,13 +128,13 @@ parameter values; Tables 2 and 3 in the main paper hold the complete
 final-model parameter set extracted into this model file. The supplement
 is referenced from the journal landing page at
 <https://onlinelibrary.wiley.com/doi/10.1111/bcp.13358> (file
-`bcp13358-sup-0001-supinfo.docx`); a PMC mirror at
+`bcp13358-sup-0001-supinfo.docx`); the PMC copy at
 <https://pmc.ncbi.nlm.nih.gov/articles/PMC5651313/> lists the same file
-in its supplementary-data section but the direct download path was 404
-at the time of extraction. Reviewers who need the bootstrap-table
-predictions to reproduce the paper’s covariate-conditioned summary
-figures (Figures 1 and 5) can fetch the supplement separately from Wiley
-after authentication.
+in its supplementary-data section but the file could not be retrieved
+from there when this model was built. Readers who need the
+bootstrap-table predictions to reproduce the paper’s
+covariate-conditioned summary figures (Figures 1 and 5) can fetch the
+supplement separately from Wiley after authentication.
 
 The Table 2 column header for theta1 reads “Log A1-PI exposure for
 placebo (umol l-1)” while the underlying value 5.42 must be interpreted
@@ -628,9 +628,10 @@ checkpoints against analytic equations.
   some unexplained interpatient variability”). The model file follows
   the same convention.
 
-- **Supporting Information not on disk.** Tables S1-S5 and Figures S1-S3
-  document the bootstrap covariate-selection algorithm and the
-  bootstrap-conditional summary tables that underlie Figures 1, 5, and
+- **Supporting Information was not available when this model was
+  built.** Tables S1-S5 and Figures S1-S3 document the bootstrap
+  covariate-selection algorithm and the bootstrap-conditional summary
+  tables that underlie Figures 1, 5, and
 
   6.  The supplement does not contain additional structural-model
       parameter values (the structural-model parameter set is complete

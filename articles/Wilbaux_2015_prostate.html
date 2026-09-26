@@ -3116,10 +3116,9 @@ final model: “No covariates were identified in the final model
 specification” (paper Results).</li>
 <li>Detailed baseline demographics (age distribution, ECOG, Gleason
 score, prior therapy) are documented in the paper but were not
-transcribed into this extraction’s <code>population</code> block – the
-paper PDF was not on disk in the maintainers’ literature mirror at
-extraction time, so demographic values come from the publicly accessible
-PMC full text via the extraction-time E-utilities lookup.</li>
+transcribed into the model’s <code>population</code> block – the paper
+PDF was not available when this model was built, so demographic values
+come from the publicly accessible PMC full text (PMC4452933).</li>
 </ul>
 <p>The same metadata is available programmatically from the model file’s
 <code>population</code> list (free-floating <code>&lt;-</code>
@@ -3812,7 +3811,7 @@ production-from-current-LV term drops faster than the
 elimination-from-delayed-LV term.</p>
 </div>
 <div class="section level2">
-<h2 id="simulation-3-f-3-mechanistic-sanity-chemo-only-vs-hormo-only">Simulation 3 – F.3 mechanistic-sanity: chemo-only vs hormo-only<a class="anchor" aria-label="anchor" href="#simulation-3-f-3-mechanistic-sanity-chemo-only-vs-hormo-only"></a>
+<h2 id="simulation-3-mechanistic-sanity-chemo-only-vs-hormo-only">Simulation 3 – mechanistic sanity: chemo-only vs hormo-only<a class="anchor" aria-label="anchor" href="#simulation-3-mechanistic-sanity-chemo-only-vs-hormo-only"></a>
 </h2>
 <p>To confirm the saturable Emax inhibition is correctly wired for each
 treatment independently, we simulate two single-arm scenarios over a
@@ -3859,7 +3858,7 @@ doses).</p>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (day)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>       colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>       title <span class="op">=</span> <span class="st">"F.3 sanity: response to chemo-only vs hormo-only vs combination"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Mechanistic sanity: response to chemo-only vs hormo-only vs combination"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>         <span class="st">"Hormo-only declines slower than chemo-only because Kh &gt; Kc (faster K-PD elimination"</span>,</span>
 <span>         <span class="st">"of hormo means each hormo dose is cleared more rapidly, so on-cycle inhibition is shorter)."</span>,</span>
@@ -4003,8 +4002,7 @@ of A_h sooner and the inhibition has a shorter window per cycle.</li>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-check-against-the-bundles-simulated-dataset">F.2 self-consistency check against the bundle’s simulated
-dataset<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-check-against-the-bundles-simulated-dataset"></a>
+<h2 id="self-consistency-check-against-the-bundles-simulated-dataset">Self-consistency check against the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-check-against-the-bundles-simulated-dataset"></a>
 </h2>
 <p>The DDMORE bundle ships <code>Simulated_KPD_CTC.count_PSA.csv</code>
 (intentionally minimal – two simulated subjects). We re-build subject
@@ -4052,7 +4050,7 @@ overall trend are the right comparison.</p>
 <span>             shape <span class="op">=</span> <span class="fl">16</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">biomarker</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (day)"</span>, y <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>       title <span class="op">=</span> <span class="st">"F.2 self-consistency: typical-value trajectory vs bundle's subject 1 observations"</span>,</span>
+<span>       title <span class="op">=</span> <span class="st">"Self-consistency: typical-value trajectory vs bundle's subject 1 observations"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>         <span class="st">"Blue line: typical-value rxSolve trajectory using the parameters from"</span>,</span>
 <span>         <span class="st">"Output_real_SAEM_KPD_CTC.count_PSA.lst FINAL PARAMETER ESTIMATE."</span>,</span>
@@ -4140,29 +4138,27 @@ cohort behaviour.</caption>
 observations track in the same direction – both NCTC and log_PSA decline
 as the cycles accumulate – confirming that the structural model and
 parameter values reproduce the bundle’s expected qualitative behaviour.
-Per-record absolute agreement is intentionally not a target for F.2 in
-the presence of large IIVs (paper CV% up to 450 % on KoutLV); the visual
-overlay is the validation anchor.</p>
+Per-record absolute agreement is intentionally not a target for the
+self-consistency check in the presence of large IIVs (paper CV% up to
+450 % on KoutLV); the visual overlay is the validation anchor.</p>
 </div>
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
 </h2>
 <ul>
 <li>
-<strong>Wilbaux 2015 PDF not on disk for this extraction.</strong>
-The paper PDF was not present anywhere in the maintainers’ literature
-mirror at extraction time. Methods quotes, parameter cross-checks, and
-the model-equation transcription used in this vignette come from the
-publicly accessible PMC4452933 full text via PubMed E-utilities (PMID
-26225253; DOI 10.1002/psp4.34). All 14 thetas and the BLOCK(9) /
-BLOCK(2) OMEGAs in the model file match paper Table 1 to three
-significant figures. Demographic detail (age distribution, ECOG, Gleason
-score, prior therapy) was not transcribed because the paper’s Table 1 /
+<strong>Wilbaux 2015 PDF not available when this model was
+built.</strong> Methods quotes, parameter cross-checks, and the
+model-equation transcription used in this vignette come from the
+publicly accessible PMC4452933 full text (PMID 26225253; DOI
+10.1002/psp4.34). All 14 thetas and the BLOCK(9) / BLOCK(2) OMEGAs in
+the model file match paper Table 1 to three significant figures.
+Demographic detail (age distribution, ECOG, Gleason score, prior
+therapy) was not transcribed because the paper’s Table 1 /
 baseline-demographics narrative was not exhaustively quoted in the PMC
-extract obtained at extraction time; if the maintainers subsequently
-obtain the PDF, a follow-up audit pass to populate
-<code>population$age_range</code>, <code>population$weight_range</code>,
-etc. is recommended.</li>
+full text consulted; if the maintainers subsequently obtain the PDF, a
+follow-up audit pass to populate <code>population$age_range</code>,
+<code>population$weight_range</code>, etc. is recommended.</li>
 <li>
 <strong>No <code>MINIMIZATION SUCCESSFUL</code> marker in the
 .lst.</strong> <code>Output_real_SAEM_KPD_CTC.count_PSA.lst</code> is a
@@ -4277,7 +4273,7 @@ minimal.</strong> <code>Simulated_KPD_CTC.count_PSA.csv</code> contains
 only two subjects with very sparse observation schedules. This is a
 regression smoke-test artifact and <strong>not</strong> representative
 of the publication’s clinical study population. The vignette’s
-virtual-cohort sections build their own typical-subject events; the F.2
+virtual-cohort sections build their own typical-subject events; the
 self-consistency overlay against the bundle’s subject 1 records is for
 direction-of-trajectory confirmation only, not per-record
 agreement.</li>

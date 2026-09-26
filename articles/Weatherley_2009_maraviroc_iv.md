@@ -341,7 +341,7 @@ of infusion; reference terminal half-life = 12.9 h (Results p.651).
   form (ED50 fasted = 59.7 mg, ED50 fed = 365 mg; full Hill coefficient,
   NAUC0 and NAUCmax estimates, and the per-covariate effect estimates
   are not tabulated in the published article), so faithful reproduction
-  of analysis 2 from the on-disk source is not possible without
+  of analysis 2 from the published article is not possible without
   additional information.
 
 - **No covariates in this model.** Weatherley 2009 explicitly tested

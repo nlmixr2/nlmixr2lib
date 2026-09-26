@@ -30,7 +30,7 @@ OAT3 Km 850 umol/L and optimised Vmax 82.48 umol/L/min, a hypothetical
 renal efflux transporter with Km 1500 umol/L and optimised Vmax 21.92
 umol/L/min, DPEP1 first-order clearance 0.037 L/min, biliary clearance
 6.5e-04 L/h/kg) but not the whole-body ODEs, so the PBPK model cannot be
-reproduced from on-disk sources and is not encoded.
+reproduced from the available sources and is not encoded.
 
 ## Population
 
@@ -795,8 +795,8 @@ No parameter was adjusted to improve any comparison.
 - **The PBPK model is not encoded.** Its whole-body structure and
   physiology come from the PK-Sim platform database rather than from the
   paper or its supplement (Supplementary Table S3 gives the
-  drug-specific inputs only), so the ODEs cannot be reproduced from
-  on-disk sources.
+  drug-specific inputs only), so the ODEs cannot be reproduced from the
+  available sources.
 - **Virtual-cohort weights are assumed.** The paper publishes eGFR
   medians per age stratum (Table 1) but no per-stratum body weights, and
   its simulation section says only that “median eGFR and BW” were used.
@@ -806,7 +806,7 @@ No parameter was adjusted to improve any comparison.
   Table 1 stratum counts. A 30% CV on weight and a 45% CV on eGFR were
   chosen so that the pooled cohort spread approximates the Table 1 eGFR
   IQR of 80.9-180.1 around a median of 123.4.
-- **ARC thresholds are not on disk.** The paper defines ARC as an eGFR
+- **ARC thresholds are not available.** The paper defines ARC as an eGFR
   above one standard deviation over the mean of the age-specific healthy
   reference and points to the Supplementary Materials for the reference
   values, but the supplement as published (Tables S1-S4, Figures S1-S3)

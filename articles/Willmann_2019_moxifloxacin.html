@@ -3103,8 +3103,8 @@ screen (age, serum creatinine, estimated glomerular filtration rate,
 study and sex) retained nothing beyond the a-priori weight scaling. The
 companion whole-body PBPK model of the same paper is a PK-Sim / MoBi
 platform model whose physiological parameters come from the vendor’s
-internal databases and are not printed on disk; it is therefore not
-reproducible as an rxode2 model and is not part of this extraction.</li>
+internal databases and are not printed in the paper; it is therefore not
+reproducible as an rxode2 model and is not encoded here.</li>
 <li>Article: <a href="https://doi.org/10.1002/psp4.12446" class="external-link uri">https://doi.org/10.1002/psp4.12446</a>
 </li>
 <li>Supplement (Supplementary Methods, Tables S1-S2, Figures S1-S6):
@@ -3121,7 +3121,7 @@ and scaled from adults to children; the <strong>confirmation</strong>
 step is the pediatric population PK model fitted in NONMEM to the pooled
 phase I and phase III data. Only the popPK model is packaged here – see
 <em>Assumptions and deviations</em> for why the PBPK layer is not
-reproducible from the material on disk.</p>
+reproducible from the material available when this model was built.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -4485,9 +4485,10 @@ actually integrates are not printed in the paper, in the supplement, or
 in the deposited model code, and several of the physicochemical inputs
 themselves come from a Bayer in-house cheminformatics tool (“Pythia”).
 The PBPK model therefore cannot be reconstructed as an rxode2 model from
-any material on disk, and no attempt was made to substitute platform
-defaults. The popPK model, which is fully specified by Table S2 plus the
-deposited control stream, is packaged in full.</p></li>
+any material available when this model was built, and no attempt was
+made to substitute platform defaults. The popPK model, which is fully
+specified by Table S2 plus the deposited control stream, is packaged in
+full.</p></li>
 <li><p><strong>Infusion duration is assumed to be 60 minutes.</strong>
 The paper states the infusion duration for its PBPK simulations and for
 the adult reference exposures (60 minutes) but does not restate it for

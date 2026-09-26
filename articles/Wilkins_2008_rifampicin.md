@@ -71,7 +71,7 @@ and CL):
 - `Simulated_TB_Rifampicin_PK_Wilkins_2008.csv` – the simulated event
   dataset (250 subjects, three dose levels 450 / 480 / 600 mg, six
   occasions, FDC = 0 or 1). Used in this vignette as the cohort
-  blueprint for the F.2 self-consistency check shape.
+  blueprint for the self-consistency check shape.
 - `DDMODEL00000280.rdf` – RDF metadata
   (`model-field-purpose = pkpd_0001024` pharmacokinetics,
   `model-research-stage = pkpd_0006012`, conformance to literature
@@ -87,14 +87,14 @@ There is no `Model_Accomodations.text` shipped in this bundle; the
 publication identification comes from the `.mod` `$PROBLEM` line and the
 RDF `model-has-description` field (*“Population pharmacokinetics of
 rifampin in tuberculosis patients”*). **The Wilkins 2008 publication
-itself was not on disk** in the maintainers’ literature mirror when this
-model was built, so a side-by-side comparison against the paper’s
-parameter table or PK figures is out of scope here. What is in scope:
+itself was not available** when this model was built, so a side-by-side
+comparison against the paper’s parameter table or PK figures is out of
+scope here. What is in scope:
 
 1.  The packaged model parameter values match the `Output_real_*`
     DDMORE-curated summary (which carries the published Wilkins 2008
     final estimates with their published RSEs).
-2.  Validation here is the F.2 self-consistency check from the package’s
+2.  Validation here is the self-consistency check from the package’s
     validation checklist, plus mechanistic spot-checks on the FDC
     formulation effect and the structural absorption shape implied by
     `MTT = 0.424 h` and `NN = 7.13` transit compartments.
@@ -120,8 +120,8 @@ cohort, reproduced from the `.lst` header and the `DDMODEL00000280.rdf`
 The full demographic detail (age, weight, sex breakdown,
 HIV-co-infection prevalence, dosing-history details) is not derivable
 from the bundle alone; it lives in the Wilkins 2008 paper’s Methods and
-Table 1 which are not on disk here. The cohort summary above is
-sufficient for the F.2 self-consistency overlay used below.
+Table 1, which were not available when this model was built. The cohort
+summary above is sufficient for the self-consistency overlay used below.
 
 The same information is available programmatically:
 `readModelDb("Wilkins_2008_rifampicin")$population` after the model is
@@ -388,9 +388,9 @@ dose levels: `Cmax`, `Tmax`, and AUC over the 24-hour dose interval
 (`PKNCA::pk.calc.auclast` between `start = 0` and `end = 24` post-
 dose). The Wilkins 2008 published Cmax for typical 600 mg FDC rifampicin
 is reported in the literature in the 6-10 mg/L range (the precise table
-is in the publication’s Table 2, not on disk here); the simulated
+is in the publication’s Table 2, which was not available); the simulated
 typical-value `cmax` should land in that range to call this a passing
-F-block sanity check.
+sanity check.
 
 ``` r
 
@@ -452,7 +452,7 @@ knitr::kable(
 Simulated steady-state NCA parameters (FDC = 1, OCC = 1, n = 20 per
 dose). {.table}
 
-## F.2 self-consistency caveat
+## Self-consistency caveat
 
 The bundle’s `Simulated_TB_Rifampicin_PK_Wilkins_2008.csv` was generated
 by the *simulated-scenario* `.mod` (CL/F = 21.9 L/h, NN = 1.98, MTT =
@@ -461,7 +461,7 @@ publication values that this package encodes (CL/F = 19.2 L/h, NN =
 7.13, MTT = 0.424 h, Ka = 1.15 /h, FDC-on-MTT = 1.04, …). A direct
 row-by-row comparison of this package’s typical-value predictions
 against the bundle’s `sdtab.simulated_*` `PRED` column will therefore
-*not* match – by design, not by translation error. The standard F.2
+*not* match – by design, not by translation error. The standard
 self-consistency check is bypassed here because the bundle’s simulated
 dataset is keyed to the simulated-scenario refit, not to the
 publication. The two scenarios share the same structural ODE / `$PK` /
@@ -473,11 +473,11 @@ range in the vignette’s Errata) covers this case: a single packaged
 model file using publication values, with the simulated-scenario refit
 values noted here for reference. The mechanistic spot-checks above
 (steady-state shape vs dose, FDC formulation effect, stochastic VPC) are
-the substitute validation for the absent F.2 overlay.
+the substitute validation for the absent self-consistency overlay.
 
 ## Assumptions and deviations
 
-- **The Wilkins 2008 publication was not on disk when this model was
+- **The Wilkins 2008 publication was not available when this model was
   built.** The package metadata (description, units, citation, DOI)
   reflects the publication, but a side-by-side comparison against the
   published parameter table (Wilkins 2008 Table 2) or PK figures

@@ -3465,7 +3465,7 @@ and that it is positive definite:</p>
 <span><span class="co">#&gt;     dose_range = "Phase 1a: single SC 7, 21, 70, 210, or 420 mg. Phase 1b: SC 14 mg QW x 6, 35 mg QW x 6, 140 mg Q2W x 3, 280 mg Q2W x 3, or 420 mg QM x 2.",</span></span>
 <span><span class="co">#&gt;     pcsk9_baseline = "5.27 nM (379 ng/mL) typical in statin-treated patients; 3.36 nM (242 ng/mL) typical in healthy subjects. Baseline PCSK9 was 1.58-fold higher in the phase 1b study than the phase 1a study.",</span></span>
 <span><span class="co">#&gt;     ldlc_baseline = "116 mg/dL typical (BASE_LDL-C, Table 3)",</span></span>
-<span><span class="co">#&gt;     notes = "A total of 73 participants received evolocumab and 28 received placebo across the two studies; the model dataset comprised the 101 individuals with evaluable PK/PD data. Baseline demographics are given in the paper's Table S1 (Supporting Information), which is not in the on-disk source set; the demographic values recorded here are the pooled summaries stated in the Results narrative. Estimation used NONMEM 7.2 with SAEM followed by importance sampling, and the M3 method for below-limit-of-quantification unbound evolocumab and unbound PCSK9 observations."</span></span>
+<span><span class="co">#&gt;     notes = "A total of 73 participants received evolocumab and 28 received placebo across the two studies; the model dataset comprised the 101 individuals with evaluable PK/PD data. Baseline demographics are given in the paper's Table S1 (Supporting Information), which was not available when this model was built; the demographic values recorded here are the pooled summaries stated in the Results narrative. Estimation used NONMEM 7.2 with SAEM followed by importance sampling, and the M3 method for below-limit-of-quantification unbound evolocumab and unbound PCSK9 observations."</span></span>
 <span><span class="co">#&gt;   )</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   ini({</span></span>
@@ -3622,7 +3622,7 @@ and that it is positive definite:</p>
 <span><span class="co">#&gt;     ldl       ~ add(addSd_ldl) + prop(propSd_ldl)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55562d4a05c8&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55c1f3145c10&gt;</span></span></code></pre></div>
 <p>Equation 5 is the positive root of the one-to-one QSS binding
 quadratic. With <code>RC</code> the complex concentration, QSS binding
 gives <code>RC = FDC * FLC / kss</code>, and mass balance gives
@@ -4367,7 +4367,7 @@ elimination term as <code>k * FDC * V</code> while Table 2 reports
 elimination rate constant; <code>k * FDC * V</code> is therefore
 <code>CL * FDC</code>, which is how it is encoded.</li>
 <li>
-<strong>Table S1 is not on disk.</strong> The paper’s
+<strong>Table S1 was not available.</strong> The paper’s
 baseline-demographics table is in the Supporting Information, which is
 not part of the open-access deposit. The population metadata therefore
 uses the pooled demographic summaries stated in the Results narrative

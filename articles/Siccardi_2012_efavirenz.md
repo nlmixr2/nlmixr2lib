@@ -35,7 +35,7 @@ whole-body PBPK model whose system parameters (organ volumes, blood
 flows, enzyme abundances, ISEF and fu-mic corrections) come from the
 Simcyp North European Caucasian population library rather than from the
 paper, and no ODE system is written out; it is therefore not
-reproducible from any on-disk source. What *is* fully specified is the
+reproducible from any available source. What *is* fully specified is the
 population PK model (Table 2 and the Results section) and the two
 logistic PK/PD relationships (Equation 1 and the “PD of dose reduction”
 section), and those are what `modellib("Siccardi_2012_efavirenz")`
@@ -1126,7 +1126,7 @@ differences above are not over-interpreted.
 PK/PD relationships are packaged. The Simcyp 10.1 whole-body IVIVE/PBPK
 arm is not reproduced: its system parameters come from the Simcyp North
 European Caucasian population library and its ODE system is never
-written out, so it cannot be reconstructed from any on-disk source.
+written out, so it cannot be reconstructed from any available source.
 Table 4 of the paper (efavirenz physicochemical and in-vitro metabolic
 characteristics) is therefore not encoded either, since those inputs are
 only meaningful inside that platform model.

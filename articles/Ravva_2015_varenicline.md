@@ -36,7 +36,7 @@ pooled analysis were used as prior information in a maximum a posteriori
 (MAP) Bayesian analysis (POSTHOC option) of the new PK data from this
 study.” That pooled analysis is reference 30, Ravva 2009, which is
 packaged here as `modellib("Ravva_2009_varenicline")`. Every PK fixed
-effect and the whole PK IIV block are transcribed from that on-disk
+effect and the whole PK IIV block are transcribed from that packaged
 sibling model and wrapped in `fixed()`, because in the Ravva 2015
 analysis they are prior constants.
 
@@ -706,7 +706,7 @@ PK layer, not of the craving model, and is discussed next.
   Minnesota Nicotine Withdrawal Scale “urge to smoke” item (Results;
   Supplementary Figures S4-S5). Supplementary Table S1 covers only the
   Smoking Urges Scale model, and no coefficient for the MNWS model is
-  printed anywhere on disk – not in the text, not in Table S1, and not
+  printed in any source – not in the text, not in Table S1, and not
   annotated in any figure panel (all of Figures 1-4 and Supplementary
   Figures S1-S5 were inspected). The exclusion stands on
   *unidentifiability*, not merely on “no printed number”: the only

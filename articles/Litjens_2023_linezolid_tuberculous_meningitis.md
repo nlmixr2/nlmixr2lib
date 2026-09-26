@@ -630,14 +630,14 @@ whole-body distribution model (Method 2 of Rodgers and Rowland, with a
 Kp scaler of 1.7 for the critically-ill simulations and 1 for the
 tuberculosis simulations). The 13 tissue:plasma partition coefficients
 that model needs are **not reported anywhere in the paper or its
-supplement**, and could not be recovered from any on-disk source, so the
-whole-body model is not reproducible outside Simcyp. It is replaced here
-by a single well-stirred plasma compartment parameterised with the two
-aggregate quantities the paper *does* report – Vss (L/kg, Suppl. Table
-S1) and the per-study total plasma clearance (Suppl. Table S2). The
-consequence is that steady-state plasma AUC, which is Dose x F / CL and
-is the quantity on which every PK-PD conclusion of the paper rests, is
-preserved exactly, while the shape of the distribution phase within a
+supplement**, and could not be recovered from any available source, so
+the whole-body model is not reproducible outside Simcyp. It is replaced
+here by a single well-stirred plasma compartment parameterised with the
+two aggregate quantities the paper *does* report – Vss (L/kg, Suppl.
+Table S1) and the per-study total plasma clearance (Suppl. Table S2).
+The consequence is that steady-state plasma AUC, which is Dose x F / CL
+and is the quantity on which every PK-PD conclusion of the paper rests,
+is preserved exactly, while the shape of the distribution phase within a
 dosing interval is approximate. Nothing was tuned to match a published
 number. The four CNS compartments and all CNS physiology are the
 published equations, unmodified.

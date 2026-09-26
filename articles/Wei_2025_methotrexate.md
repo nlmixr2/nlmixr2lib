@@ -446,7 +446,7 @@ makeSubjects <- function(n, idOffset = 0L) {
 
 # Composite genotype is assigned BY DESIGN as a balanced 100/100 split rather
 # than drawn at an assumed allele frequency. The paper's own variant
-# frequencies are in Supplementary Appendix SA1, which is not on disk, so any
+# frequencies are in Supplementary Appendix SA1, which was not available, so any
 # frequency here would be invented; a balanced design also keeps both strata
 # well powered for the carrier comparison below. Non-carrier patterns sum to
 # 3 or less, carrier patterns to 4 or more, per the Results 3.2 rule.
@@ -809,7 +809,7 @@ stopifnot(all(anySubject$pct_any > 17.4))
   administrations in this dataset, whereas a variance estimate carries
   the much looser `sqrt(2/N)`; and reading 27.3 as a variance would
   imply a log-scale SD of 5.2, which is not physically plausible. **What
-  remains genuinely ambiguous on disk** is whether the authors tabulated
+  remains genuinely ambiguous** is whether the authors tabulated
   `100 * omega` directly or the exact log-normal CV
   `sqrt(exp(omega^2) - 1) * 100`. The two coincide to within 2% for CL,
   Vc and Vp2, but differ materially for the two large ones: under the
@@ -858,13 +858,13 @@ stopifnot(all(anySubject$pct_any > 17.4))
   definition, and the covariate register entry records the collision
   explicitly so a future extraction does not silently invert the sign.
 - **Genotype frequencies are not reproduced.** The per-variant allele
-  frequencies are in Supplementary Appendix SA1, which is not on disk,
-  so the cohort above does not attempt to reproduce the cohort’s real
-  carrier prevalence. Instead the composite genotype is assigned by
-  design as a balanced 100 carrier / 100 non-carrier split, which keeps
-  the carrier comparison well powered and avoids inventing a frequency.
-  This affects only the mix of simulated subjects, not any model
-  parameter; a user with real genotype data supplies the three
+  frequencies are in Supplementary Appendix SA1, which was not
+  available, so the cohort above does not attempt to reproduce the
+  cohort’s real carrier prevalence. Instead the composite genotype is
+  assigned by design as a balanced 100 carrier / 100 non-carrier split,
+  which keeps the carrier comparison well powered and avoids inventing a
+  frequency. This affects only the mix of simulated subjects, not any
+  model parameter; a user with real genotype data supplies the three
   allele-count columns directly.
 - **Covariate distributions are assumed.** Table 3 gives medians and
   ranges but no distributional form or correlation structure. The

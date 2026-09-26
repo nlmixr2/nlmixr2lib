@@ -741,8 +741,8 @@ of a 100-subject arm. See Errata item 4.
     the tabulated 6.19. Note also that `N0` is the one row of Table 2
     carrying no unit, and that 6.19 is exactly the body-weight SD
     reported in Table 1 (70.87 +/- 6.19 kg); whether that coincidence
-    reflects a transcription error cannot be determined from the sources
-    on disk. Consequences, all reproduced above:
+    reflects a transcription error cannot be determined from the
+    available sources. Consequences, all reproduced above:
     - the *shape* is right – the typical CD34+ peak lands at 76-78 h
       against an observed peak at the 72 h sample;
     - the *fold rise* is close – 5.7-6.4x after a single dose, against
@@ -775,7 +775,7 @@ of a 100-subject arm. See Errata item 4.
     whose chi-square p-values (Table S1) are 0.0001-0.006. Neither the
     packaged model nor the lower-baseline sensitivity run reproduces the
     ordering consistently across all three durations. Possible
-    explanations that the on-disk sources cannot distinguish: the
+    explanations that the available sources cannot distinguish: the
     simulations may have used the bootstrap-median `EC50` of 0.0081
     ng/mL or some other value rather than the Table 2 point estimate;
     the reported `Emax`/`EC50` pair may be more weakly identified than

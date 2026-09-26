@@ -693,13 +693,13 @@ error (its AUC column duplicates the CRRT column), not a model defect.
   set aside outright – it also disagrees with Table 2 on Vc (4.20 vs
   4.14), Vp (3.67 vs 3.52), Q (2.13 vs 2.09) and the CRRT clearance
   (0.388 vs 0.386), so it is evidently an earlier model run. That leaves
-  equation versus Table 2, which nothing on disk resolves: the Frontiers
-  supplement is a model-building OFV table with no parameter values and
-  no control stream, and Table 3 is too noisy to arbitrate (see below).
-  The practical impact is negligible – at the reference CCR of 54 the
-  renal arm is 39% of total clearance, so 0.148 versus 0.152 shifts
-  total non-CRRT clearance by 1.1%, far inside the parameter’s own 31.3%
-  RSE.
+  equation versus Table 2, which nothing in the available sources
+  resolves: the Frontiers supplement is a model-building OFV table with
+  no parameter values and no control stream, and Table 3 is too noisy to
+  arbitrate (see below). The practical impact is negligible – at the
+  reference CCR of 54 the renal arm is 39% of total clearance, so 0.148
+  versus 0.152 shifts total non-CRRT clearance by 1.1%, far inside the
+  parameter’s own 31.3% RSE.
 - **Table 3’s CCR 30 AUC column duplicates the CRRT column** at all four
   doses (884.2 / 1105.3 / 1326.3 / 1547.4). This is demonstrably a
   transcription error: it makes the column non-monotonic against CCR 40,

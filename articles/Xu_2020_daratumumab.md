@@ -456,8 +456,9 @@ timing of the second infusion. {.table}
   mathematically natural reading of “first-order rate of decrease,” and
   we encode it as Vmax(t) = Vmax(0) \* exp(-KDES \* t). The paper
   credits the structural form to a referenced prior publication (Xu 2020
-  Methods, reference 25) which is not on disk; the parameter values used
-  here are exclusively from Xu 2020 Online Resource 6.
+  Methods, reference 25) which was not available when this model was
+  built; the parameter values used here are exclusively from Xu 2020
+  Online Resource 6.
 - **Residual error.** Xu 2020 reports “Additive error term on the
   log-scale 13.8% CV”. An additive error on the log-transformed
   observation in NONMEM is equivalent to a proportional error in linear
@@ -474,7 +475,7 @@ timing of the second infusion. {.table}
   canonical column semantics and applies the shift as
   `(1 + e_igg_cl * (1 - MM_NIGG))`, faithful to the paper’s Online
   Resource 6 footnote equation `TPMMCL = 1 (non-IgG) or 1+0.806 (IgG)`.
-- **Errata.** No erratum or correction notice was located on disk; the
-  source files comprise the main PMC XML plus the docx supplement. If a
+- **Errata.** No erratum or correction notice was located; the sources
+  consulted comprise the main PMC XML plus the docx supplement. If a
   later correction adjusts an Online Resource 6 value, the affected
   `ini()` entry should be updated and the citation extended.

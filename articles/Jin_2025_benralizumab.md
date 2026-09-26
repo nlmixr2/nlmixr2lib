@@ -1132,8 +1132,8 @@ in the pivotal trials – so omitting the centred terms leaves a coherent
 typical-subject model, which is what the FEV1 section above validates.
 
 This is a reporting gap in the literature rather than a missing file:
-the relevant table is on disk, and the upstream source was acquired and
-does not resolve it.
+the relevant table was available, and the upstream source was obtained
+and does not resolve it.
 
 ### The Chinese AAER ratio is lower than published
 

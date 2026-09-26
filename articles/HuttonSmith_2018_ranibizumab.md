@@ -433,7 +433,7 @@ for reference. {.table}
   derived inside `model()` from the paper’s eq 17 half-life relationship
   and the free-species mass balance. Section S2 of the Supporting
   Information (referenced by the main paper for this derivation) was not
-  on disk during extraction; the closed-form expression
+  available when this model was built; the closed-form expression
   `k_el^(i) = lambda^(i) + (S_ret / vol_vit) * p_ILM^(i) * (alpha^(i) - 1)`
   used here follows directly from the vitreous eigenmode balance for a
   free (non-binding) species and reproduces the paper’s stated

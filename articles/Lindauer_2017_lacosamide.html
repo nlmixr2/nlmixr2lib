@@ -3128,7 +3128,7 @@ Lindauer 2017 Table 1.</p>
 <span><span class="co">#&gt; [1] "16-87 years (median 40, IQR 26-55)"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $weight_range</span></span>
-<span><span class="co">#&gt; [1] "not reported in the on-disk trimmed paper text"</span></span>
+<span><span class="co">#&gt; [1] "not reported in the paper"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $sex_female_pct</span></span>
 <span><span class="co">#&gt; [1] 46.3</span></span>
@@ -3728,14 +3728,15 @@ extraction.</strong> Lindauer 2017 Section 2.3 refers to “a previously
 published population pharmacokinetic model for CBZ-CR” and “a previously
 developed population pharmacokinetic model for LCM” that produced the
 per-subject daily AUC used as the exposure covariate. Neither upstream
-model is on disk for this extraction; the model files therefore expose
-<code>AUC_LCM</code> and <code>AUC_CBZ</code> as data covariates and
-leave it to downstream users to supply per-subject AUC values (either
-from an external popPK simulation or from a fixed daily-dose scaling).
-The typical dose-to-AUC scaling used in the vignette (LCM 200 mg/day
--&gt; ~104 mg<em>h/L; LCM 400 mg/day -&gt; ~208 mg</em>h/L; LCM 600
-mg/day -&gt; ~312 mg<em>h/L; CBZ-CR 400 mg/day -&gt; ~132 mg</em>h/L) is
-the paper’s typical-value scaling stated in Table 3 note
+model was available when these models were built; the model files
+therefore expose <code>AUC_LCM</code> and <code>AUC_CBZ</code> as data
+covariates and leave it to downstream users to supply per-subject AUC
+values (either from an external popPK simulation or from a fixed
+daily-dose scaling). The typical dose-to-AUC scaling used in the
+vignette (LCM 200 mg/day -&gt; ~104 mg<em>h/L; LCM 400 mg/day -&gt; ~208
+mg</em>h/L; LCM 600 mg/day -&gt; ~312 mg<em>h/L; CBZ-CR 400 mg/day -&gt;
+~132 mg</em>h/L) is the paper’s typical-value scaling stated in Table 3
+note
 <ol start="3" style="list-style-type: lower-alpha">
 <li>and Section 3.4.</li>
 </ol>

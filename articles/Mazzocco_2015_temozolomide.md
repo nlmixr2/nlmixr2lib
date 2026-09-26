@@ -42,8 +42,8 @@ metadata is available programmatically via
 Equations from Mazzocco 2015 page 731 (the boxed ODE block) and Figure 2
 schematic. Parameter values from Table 2 (final model with both
 covariates). The carrying-capacity value `K = 100 mm` is inherited from
-the upstream Ribba 2012 LGG model and provenance-cited via the on-disk
-Ribba 2014 review (Table 1 footnote on the Ribba 2012 row).
+the upstream Ribba 2012 LGG model and provenance-cited via the Ribba
+2014 review (Table 1 footnote on the Ribba 2012 row).
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -497,8 +497,8 @@ value of `gamma = 0.254` was estimated against the source paper’s
   Mazzocco 2015 Table 2 reports only seven structural parameters plus
   two initial conditions; the carrying-capacity value is inherited
   (without being re-listed) from the predecessor Ribba 2012 LGG TGI
-  model. The Ribba 2012 PDF is not on disk for this extraction; the
-  on-disk Ribba 2014 review (<doi:10.1038/psp.2014.12>, PMID 24622904)
+  model. The Ribba 2012 PDF was not available when this model was built;
+  the Ribba 2014 review (<doi:10.1038/psp.2014.12>, PMID 24622904)
   records the value in its Table 1 footnote on the Ribba 2012 row:
   “theta was not estimated and was fixed to 10 cm”. The model file pins
   the value via `lK <- fixed(log(100))` and cites the provenance in the

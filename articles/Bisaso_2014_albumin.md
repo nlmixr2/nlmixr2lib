@@ -461,5 +461,5 @@ than wild-type within each TB stratum.
 - **Erratum search:** A web search for “Bisaso 2014 In Silico
   Pharmacology erratum / corrigendum” against the journal landing page
   and PubMed (DOI 10.1186/s40203-014-0003-9) returned no corrections as
-  of vignette authoring (2026-05-20). No on-disk erratum is provided
-  alongside the source PDF.
+  of vignette authoring (2026-05-20). No erratum was available alongside
+  the source PDF.

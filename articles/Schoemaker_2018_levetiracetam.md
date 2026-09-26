@@ -36,10 +36,10 @@ PDV = previous-day observed count).
   a baseline-demographics table. Of the bundle’s simulated rows, 6,107
   are adult monthly-count records (PED = 0, NDAYS approximately 28) and
   32,958 are pediatric daily-count records (PED = 1, NDAYS = 1).
-- The Schoemaker 2018 publication PDF was **not on disk** in the
-  maintainers’ literature mirror at extraction time, so subject counts,
-  study counts, and demographic distributions are not populated in
-  `population`. Update the metadata when the PDF becomes available.
+- The Schoemaker 2018 publication PDF was **not available** when this
+  model was built, so subject counts, study counts, and demographic
+  distributions are not populated in `population`. Update the metadata
+  when the PDF becomes available.
 
 ``` r
 
@@ -137,9 +137,8 @@ exposure-response in focal seizures.
 
 ## Virtual cohort
 
-For the F.3 mechanistic-sanity check we simulate two typical-value
-subjects covering the four adult and pediatric record types in the
-source bundle:
+For the mechanistic-sanity check we simulate two typical-value subjects
+covering the four adult and pediatric record types in the source bundle:
 
 ``` r
 
@@ -176,7 +175,7 @@ knitr::kable(events, caption = "Per-subject covariate vectors for the four canon
 Per-subject covariate vectors for the four canonical record types.
 {.table}
 
-## Simulation (F.3 mechanistic-sanity check)
+## Simulation (mechanistic-sanity check)
 
 ``` r
 
@@ -411,7 +410,7 @@ Per-day seizure rate by record type and LEV CAV. Mixture-weighted rate
 uses p_responder_subject = 0.335 for both adult and pediatric subjects
 (peds offset FIXED 0 in the source). {.table style="width:100%;"}
 
-## Bundle self-consistency snapshot (F.2)
+## Bundle self-consistency snapshot
 
 The DDMORE bundle ships `Simulated_P241.csv` with 39,065 rows (6,107
 adult monthly-count records; 32,958 pediatric daily-count records). The
@@ -447,7 +446,7 @@ knitr::kable(
     by = "id"
   ),
   digits = 3,
-  caption = "Smoke check on bundle-shaped inputs (CAV = 13.73 mg/L is sampled from Simulated_P241.csv row 5, an adult on-treatment record). Verifies the model integrates without error; not a full F.2 self-consistency simulation."
+  caption = "Smoke check on bundle-shaped inputs (CAV = 13.73 mg/L is sampled from Simulated_P241.csv row 5, an adult on-treatment record). Verifies the model integrates without error; not a full self-consistency simulation."
 )
 ```
 
@@ -460,8 +459,8 @@ knitr::kable(
 
 Smoke check on bundle-shaped inputs (CAV = 13.73 mg/L is sampled from
 Simulated_P241.csv row 5, an adult on-treatment record). Verifies the
-model integrates without error; not a full F.2 self-consistency
-simulation. {.table}
+model integrates without error; not a full self-consistency simulation.
+{.table}
 
 ## Assumptions and deviations
 
@@ -502,7 +501,7 @@ simulation. {.table}
   is added as a source alias to `CHILD`’s register entry.
 - **Negative-binomial -\> Poisson observation likelihood.** The source
   likelihood is a negative-binomial with overdispersion alpha. The
-  deterministic typical-value rate trajectory (which is what the F.3
+  deterministic typical-value rate trajectory (which is what the
   mechanistic-sanity check above validates) is unaffected by this
   simplification; the difference is only in the dispersion of stochastic
   VPC samples. The source’s overdispersion alpha is exposed as the model
@@ -538,13 +537,12 @@ simulation. {.table}
   source. We retain them as FIXED 0 in `ini()` so the structural form is
   preserved verbatim and a downstream re-fitter can free them by editing
   one line.
-- **Schoemaker 2018 publication PDF not on disk for cross-check.** The
-  publication (<doi:10.1007/s40262-017-0597-2>) was not present anywhere
-  in the maintainers’ literature mirror at extraction time.
-  Final-estimate values come solely from the bundle’s
-  `Output_real_P241.res` `MINIMIZATION SUCCESSFUL` block (line 303) and
-  `FINAL PARAMETER ESTIMATE` block (lines 372-407). The publication
-  abstract is reproduced verbatim in `DDMODEL00000239.rdf`’s
+- **Schoemaker 2018 publication PDF not available for cross-check.** The
+  publication (<doi:10.1007/s40262-017-0597-2>) was not available when
+  this model was built. Final-estimate values come solely from the
+  bundle’s `Output_real_P241.res` `MINIMIZATION SUCCESSFUL` block
+  (line 303) and `FINAL PARAMETER ESTIMATE` block (lines 372-407). The
+  publication abstract is reproduced verbatim in `DDMODEL00000239.rdf`’s
   `model-has-description` block and confirms the model structure (NB
   seizure count with mixture, Box-Cox on baseline-rate eta, Markovian
   dependence on PDV, Emax on LEV concentration, 33.5% responders) but
@@ -558,9 +556,9 @@ simulation. {.table}
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   does not flag these; the precedent is `score` in `Plan_2012_pain.R`.
 - **No published NCA / VPC comparison.** Count-likelihood seizure models
-  do not produce PK NCA quantities; the F.3 substitute (typical-value
-  rate trajectory and closed-form cross-check at the four canonical
-  record types) is the only validation anchor available. The
+  do not produce PK NCA quantities; the mechanistic-sanity substitute
+  (typical-value rate trajectory and closed-form cross-check at the four
+  canonical record types) is the only validation anchor available. The
   publication’s reported `p_responder = 0.335`,
   `EC50 approximately 31.5 mg/L`, and the +0.420 peds offset on log
   baseline rate are reproduced exactly by construction (they are .res TH

@@ -454,12 +454,11 @@ and depend on the dose distribution only. {.table}
   log multipliers (`e_breast_slope_p50 = log(1.11)`,
   `e_glio_slope_p50 = log(1.28)`, `e_other_slope_p50 = log(0.854)`).
   Numerically identical to the paper’s form.
-- **Equation 1 typesetting.** The “formula-not-decoded” placeholder in
-  the preprocessed Markdown trim of the poster PDF was resolved by
-  re-extracting Equation 1 from the source PDF via pdftotext; the
-  explicit reference values used are BSA = 1.8 m^2, AGE = 60 yr, BALB =
-  3.5 g/dL, MDOS = 6800 mg (all taken directly from the Equation 1
-  denominators on page 13 of the poster).
+- **Equation 1 typesetting.** Equation 1 does not survive plain-text
+  extraction of the poster PDF; it was recovered by re-extracting it
+  from the PDF via pdftotext, and the explicit reference values used are
+  BSA = 1.8 m^2, AGE = 60 yr, BALB = 3.5 g/dL, MDOS = 6800 mg (all taken
+  directly from the Equation 1 denominators on page 13 of the poster).
 - **Baseline albumin units.** The paper uses BALB in g/dL with reference
   value 3.5 g/dL in Equation 1, while the canonical ALB covariate is in
   g/L (SI). The model file converts inline via `alb_gdL <- ALB * 0.1`

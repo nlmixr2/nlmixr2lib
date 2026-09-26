@@ -871,8 +871,8 @@ mg/kg trough, consistent with linear kinetics. {.table}
   paper’s own NONMEM run on the PPK model group. The cited prior studies
   (Pigeole 2007, Toublanc 2008, Chhun 2009, Glauser 2007, Merhar 2011,
   Pellock 2001) appear only in the Discussion as comparison points.
-- **Errata.** No erratum or corrigendum to Wang 2012 was located on disk
-  for this extraction. A search of PubMed and the Acta Pharmacologica
+- **Errata.** No erratum or corrigendum to Wang 2012 was available when
+  this model was built. A search of PubMed and the Acta Pharmacologica
   Sinica corrections feed for
   `"Wang 2012" + levetiracetam + Chinese pediatric + erratum` returned
   no hits as of the extraction date (2026-06-03); the maintainers should

@@ -3093,9 +3093,9 @@ as <code>Hansson_2013a_sunitinib</code> from DDMODEL00000197) and the
 tumor growth inhibition (TGI) model captured here from DDMODEL00000198.
 Parameter values were taken from <code>Output_real_TGI_GIST.lst</code>
 (FINAL PARAMETER ESTIMATE block, post-MINIMIZATION SUCCESSFUL) and
-cross-checked against the published Table 3 of the on-disk paper.
-Equations come from <code>Executable_TGI_GIST.mod</code>
-<code>$PK</code> / <code>$DES</code> / <code>$ERROR</code> blocks.</p>
+cross-checked against the published Table 3 of the paper. Equations come
+from <code>Executable_TGI_GIST.mod</code> <code>$PK</code> /
+<code>$DES</code> / <code>$ERROR</code> blocks.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3123,8 +3123,8 @@ paper does not break them out at the cohort level.</p>
 <p>All parameter values come from the
 <code>FINAL PARAMETER ESTIMATE</code> block of
 <code>Output_real_TGI_GIST.lst</code> and have been cross-checked
-against the on-disk paper’s Table 3. Rate constants are reported in
-1/week in the paper and <code>.mod</code> <code>$THETA</code>; the
+against the paper’s Table 3. Rate constants are reported in 1/week in
+the paper and <code>.mod</code> <code>$THETA</code>; the
 <code>.mod</code> and the model file convert to 1/h via
 <code>/24/7</code> so all rates carry units of
 <code>units$time = "h"</code>.</p>
@@ -3424,7 +3424,7 @@ trajectory shown below).</p>
 <span><span class="co">#&gt; 6 3.577303e-05       63900       400.8            1</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-simulation-f-3">Mechanistic-sanity simulation (F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-simulation-f-3"></a>
+<h2 id="mechanistic-sanity-simulation">Mechanistic-sanity simulation<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-simulation"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">modT</span>, events <span class="op">=</span> <span class="va">events</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -3520,7 +3520,7 @@ described in Hansson 2013 (Figure 3, VPC of the longitudinal tumor
 model).</p>
 </div>
 <div class="section level2">
-<h2 id="self-consistency-simulation-against-the-ddmore-bundle-f-2">Self-consistency simulation against the DDMORE bundle (F.2)<a class="anchor" aria-label="anchor" href="#self-consistency-simulation-against-the-ddmore-bundle-f-2"></a>
+<h2 id="self-consistency-simulation-against-the-ddmore-bundle">Self-consistency simulation against the DDMORE bundle<a class="anchor" aria-label="anchor" href="#self-consistency-simulation-against-the-ddmore-bundle"></a>
 </h2>
 <p>The bundle ships a single-subject simulated dataset
 (<code>Simulated_TGI_GIST.csv</code>). Re-simulating subject 1’s events
@@ -3661,9 +3661,9 @@ damps the drug-driven shrinkage.</p>
 </tbody>
 </table>
 <p>PKNCA is not appropriate for a tumor-size endpoint (no concentration
-/ dose / time NCA semantics). The mechanistic-sanity (F.3) and
-self-consistency (F.2) checks above plus the Table 3 parameter-match
-above are the operative validation strategy for this model class.</p>
+/ dose / time NCA semantics). The mechanistic-sanity and
+self-consistency checks above plus the Table 3 parameter-match above are
+the operative validation strategy for this model class.</p>
 </div>
 <div class="section level2">
 <h2 id="assumptions-and-deviations">Assumptions and deviations<a class="anchor" aria-label="anchor" href="#assumptions-and-deviations"></a>
@@ -3800,8 +3800,8 @@ documented in the <code>covariateData[[*]]$notes</code> fields.</li>
 </h2>
 <p>No published errata or corrigenda were located for Hansson 2013 e84
 (searched PubMed and the publisher’s article landing page on extraction
-date 2026-05-15). The text extracted from the on-disk paper and the
-DDMORE bundle were the authoritative sources for parameter values and
+date 2026-05-15). The text extracted from the paper and the DDMORE
+bundle were the authoritative sources for parameter values and
 equations.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

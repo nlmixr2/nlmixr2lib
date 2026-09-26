@@ -327,13 +327,9 @@ parameter-translation error and should not be tuned away.
 
 ## Assumptions and deviations
 
-- **Drug name corrected from the supplied metadata.** The metadata this
-  model was built from named the drug as “Cancer Chemotherapy and
-  Pharma”, which is the journal (“Cancer Chemother Pharmacol”) rather
-  than the drug. The on-disk PDF is unambiguously the carboplatin paper
-  (Ekhart et al. 2008, doi 10.1007/s00280-008-0856-x), so the drug field
-  has been corrected to `carboplatin` and the file paths renamed to
-  match.
+- **Drug identity.** The source PDF is unambiguously the carboplatin
+  paper (Ekhart et al. 2008, doi 10.1007/s00280-008-0856-x); the model’s
+  drug field and file names use `carboplatin`.
 - **No covariate effects in the final model.** Ekhart 2008 fitted six
   candidate covariate models that scaled CL allometrically by ABW, IBW,
   AIBW, the Benezet weight, FFM, or LBM (Table 6). All six produced

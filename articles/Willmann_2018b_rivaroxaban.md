@@ -457,7 +457,7 @@ structural-model issue. See the Assumptions section below.
   mg-equivalent” / “20 mg-equivalent” target labels; the per-weight
   rivaroxaban mg amounts assigned in EINSTEIN-Jr phase I appear in the
   accompanying clinical publication (reference 18 of Willmann 2018),
-  which is not on disk for this extraction. The vignette uses
+  which was not available when this model was built. The vignette uses
   `dose = nominal_eq_mg * (WT / 70)^0.323` to approximate the
   dosing-design intent under the estimated allometric CL exponent; this
   matches the popPK exposures asymptotically but may diverge by ~10-20%

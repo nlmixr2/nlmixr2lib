@@ -3124,8 +3124,8 @@ mg).</li>
 <p>A total of 38 subjects across the two studies contributed PK (total
 plasma CPHPC) and PD (total plasma SAP) measurements. Finer demographics
 (precise age range, weight range, female fraction) are reported only in
-the paper’s Supplementary Materials S1 and S2, which were not on disk
-for this extraction; the model’s <code>population</code> metadata
+the paper’s Supplementary Materials S1 and S2, which were not available
+when this model was built; the model’s <code>population</code> metadata
 records the fields that are derivable from the main paper.</p>
 <p>The same information is available programmatically via
 <code>rxode2::rxode(readModelDb("Sahota_2015_miridesap"))$meta$population</code>.</p>
@@ -3574,11 +3574,11 @@ single-row reference summary matches the figure replicates above.</p>
 <strong>Source breadth.</strong> This extraction is paper-only.
 Sahota 2015’s Supplementary Materials S1 (participant demographics) and
 S2 (adverse-effect tabulations) and Supplementary Material S3 (NONMEM
-control stream) were not on disk for this extraction; finer demographics
-and any control-stream-only conventions are therefore absent from
-<code>population</code> and from the in-file parameter comments. A
-parallel extraction from the DDMORE Foundation Model Repository entry
-for the same paper is available as
+control stream) were not available when this model was built; finer
+demographics and any control-stream-only conventions are therefore
+absent from <code>population</code> and from the in-file parameter
+comments. A parallel extraction from the DDMORE Foundation Model
+Repository entry for the same paper is available as
 <code>rxode2::rxode(readModelDb("NA_NA_miridesap"))$meta</code>; that
 companion model carries control-stream-derived final estimates (slightly
 different rounding, e.g. CL = 6.82 vs paper 6.85) and additional

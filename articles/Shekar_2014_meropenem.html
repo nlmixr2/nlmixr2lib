@@ -3896,10 +3896,10 @@ typesetting. The “CrCL in L/h” conversion (CrCL_mL_min</p>
 dimensionless published <code>CL_CRCL = 1.89</code> produces CL in
 L/h.</li>
 </ul>
-<p>No NONMEM control stream is available on disk to cross-check the
-equation form, so this resolution depends on the only reading that
-reconciles the parameter table, the observed mean CL by subgroup, and
-the published Monte-Carlo simulation table.</p>
+<p>No NONMEM control stream was available to cross-check the equation
+form, so this resolution depends on the only reading that reconciles the
+parameter table, the observed mean CL by subgroup, and the published
+Monte-Carlo simulation table.</p>
 </li>
 <li><p><strong>CRCL stored under the canonical <code>CRCL</code> column
 despite NOT being BSA-normalized.</strong> The canonical
@@ -3937,7 +3937,8 @@ the absence of any reported off-diagonal estimate is consistent with
 diagonal OMEGA, and the packaged model uses diagonal IIV. No IIV is
 included on Q because no Q variability is reported. This is consistent
 with the reported information but cannot be cross-checked against the
-original NONMEM control stream (not on disk).</p></li>
+original NONMEM control stream, which was not available when this model
+was built.</p></li>
 <li><p><strong><code>omega^2 = log(CV^2 + 1)</code>.</strong> Table 2
 reports inter-individual variability as CV%; the corresponding
 log-normal variance was computed via

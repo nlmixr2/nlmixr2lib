@@ -862,11 +862,11 @@ should filter or shorten the window accordingly.
   and `Km * Vc` = 9.97 nmol matches the blue line.
 - **Species is inferred.** The source never states it.
   `population$species` records “human (implied, not stated)”.
-- **The upstream `$DESIGN` tutorial is not on disk.** The structure was
-  “adapted from a previously published TMDD example in the tutorial for
-  `$DESIGN` in NONMEM” (reference \[24\]). Nothing is inherited from it:
-  Equations 1-5 and every parameter value used here come from Duffull
-  2025 itself, so no value depends on the unavailable source.
+- **The upstream `$DESIGN` tutorial was not available.** The structure
+  was “adapted from a previously published TMDD example in the tutorial
+  for `$DESIGN` in NONMEM” (reference \[24\]). Nothing is inherited from
+  it: Equations 1-5 and every parameter value used here come from
+  Duffull 2025 itself, so no value depends on the unavailable source.
 - **The full model’s parameters are nominal, not fitted.** Table 2’s
   first column is the parameter set at which the Fisher information
   matrix was evaluated. Only the simplified model’s column is a
@@ -902,9 +902,8 @@ should filter or shorten the window accordingly.
 ## Errata
 
 No erratum, corrigendum or author correction was located for
-<doi:10.1002/psp4.70049> at the time of extraction. Supporting
+<doi:10.1002/psp4.70049> when this model was built. Supporting
 Information S1-S3 (the worked `$DESIGN` and empirical-prior examples)
-are referenced by the paper but were not present in the open-access
-package on disk; they illustrate the NONMEM workflow rather than supply
-parameter values, and nothing in the two packaged models depends on
-them.
+are referenced by the paper but were not available when this model was
+built; they illustrate the NONMEM workflow rather than supply parameter
+values, and nothing in the two packaged models depends on them.

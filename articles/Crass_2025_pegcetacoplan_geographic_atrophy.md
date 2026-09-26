@@ -631,8 +631,8 @@ volume), and the every-other-month effect about 745 ug/mL (20%). The
 halving the dosing frequency of a drug eliminated slowly from the
 vitreous, and both sit below the immediate post-dose concentration, as
 they must. This reproduces the paper’s own reconciliation of the two
-models without requiring the upstream population PK model, which is not
-on disk (see *Assumptions and deviations*).
+models without requiring the upstream population PK model, which was not
+available when this model was built (see *Assumptions and deviations*).
 
 Evaluating the same relationship directly at the immediate post-dose
 concentration gives 0.786, which brackets the 0.80 monthly dose-response
@@ -887,8 +887,8 @@ stopifnot(
   pegcetacoplan concentration that drives the exposure-response model
   was generated in the source analysis by a separate population PK model
   reported only as a conference presentation (Crass et al., American
-  Conference on Pharmacometrics, November 2023), which is not available
-  on disk. That model is therefore *not* encoded here:
+  Conference on Pharmacometrics, November 2023), which was not available
+  when this model was built. That model is therefore *not* encoded here:
   `Crass_2025_pegcetacoplan_ga_exposureresponse` consumes the vitreous
   concentration as the `CEFFECT` time-varying covariate, exactly as the
   source NONMEM run consumed it as a data item. Users must supply the

@@ -1427,8 +1427,8 @@ weight increases MHD exposure allometrically) are reproduced.
   `population$weight_range` field documents this; users simulating
   outside the fitted weight range should treat the predictions as
   exploratory.
-- **Errata.** No erratum / corrigendum to Rodrigues 2017 was located on
-  disk for this extraction. A search of PubMed and the BJCP corrections
+- **Errata.** No erratum / corrigendum to Rodrigues 2017 was available
+  when this model was built. A search of PubMed and the BJCP corrections
   feed for `"Rodrigues" + "oxcarbazepine" + 2017 + erratum` returned no
   hits; the maintainers should reconfirm against the BJCP / Wiley
   corrections listing if any concerns arise.

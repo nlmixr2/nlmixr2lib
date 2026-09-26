@@ -3995,12 +3995,9 @@ isolate. No PKNCA validation is performed (there is no drug NCA to
 compute); the mechanistic checks above replace it, per the
 endogenous/mechanistic validation strategy.</li>
 <li>
-<strong>File naming.</strong> The bibliographic metadata these
-models were built from listed the drug as “Antimicrobial Agents and
-Chemo”, which is the journal name (Antimicrobial Agents and
-Chemotherapy), not a drug. The paper unambiguously models imipenem
-combined with tobramycin or amikacin, so the five model files use the
-corresponding drug + isolate suffix.</li>
+<strong>File naming.</strong> The paper unambiguously models
+imipenem combined with tobramycin or amikacin, so the five model files
+use the corresponding drug + isolate suffix.</li>
 <li>
 <strong>Five files, one paper.</strong> Following the package’s
 convention of replicating the authors’ model structure, one vignette
@@ -4017,7 +4014,8 @@ makes the shared / drug-specific split explicit.</li>
 inhibition term
 <code>Inh_k12 = Imax,sig12 * Csig / (Csig + IC50,sig)</code> but the
 main paper does <strong>not</strong> give the <code>Csig</code> ODE; it
-cites Bulitta 2010 (ref 61), which is not on disk. The standard form
+cites Bulitta 2010 (ref 61), which was not available when this model was
+built. The standard form
 <code>d/dt(csig) = (1/MTT_sig) * (CFU_all - csig)</code> with
 <code>csig(0) = cfu0</code> is used, giving <code>csig = CFU_all</code>
 at steady state. This is the canonical Bulitta life-cycle formulation

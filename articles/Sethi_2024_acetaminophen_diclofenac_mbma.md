@@ -745,5 +745,5 @@ sort(unique(round(arm_sim$Cc, 2)))
   “The Author(s) 2024, corrected publication 2024”. No correction or
   erratum is indexed for this DOI in Crossref (the record carries no
   `relation` or `update-to`) or in EuropePMC, and no content in the
-  article is flagged as corrected. The on-disk PDF is the corrected
-  version of record and its values are used as final.
+  article is flagged as corrected. The PDF is the corrected version of
+  record and its values are used as final.

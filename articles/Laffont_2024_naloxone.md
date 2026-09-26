@@ -34,8 +34,8 @@ naloxone absorption during the first 20 minutes post dose when compared
 with published data in healthy volunteers (refs 10, 23), so the
 absorption parameters in Table 2 were used as-is for opioid-overdose
 rescue simulations. Detailed baseline demographics (N, age, sex, race)
-are given in Supplementary Table 2 of Laffont 2024, which is not on disk
-for this extraction.
+are given in Supplementary Table 2 of Laffont 2024, which was not
+available when this model was built.
 
 The same information is available programmatically via
 `readModelDb("Laffont_2024_naloxone")$population`.
@@ -238,8 +238,9 @@ reported for naloxone.
   `Laffont_2024_naloxone` model has no covariate inputs.
 - **Detailed baseline demographics deferred to Supplementary Table 2.**
   N, age range, sex balance, race distribution, and median weight are in
-  Supplementary Table 2, which is not on disk; the `population` metadata
-  carries TODO markers for those fields.
+  Supplementary Table 2, which was not available when this model was
+  built; the `population` metadata carries TODO markers for those
+  fields.
 - **No native PD layer in this model file.** Laffont 2024 expands the
   Mann et al. 2022 translational model (mu-opioid receptor competitive
   binding, ventilatory drives, gas exchange, blood-flow control) using

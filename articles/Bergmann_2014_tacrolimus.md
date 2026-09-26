@@ -392,7 +392,7 @@ multiplier of 1.60 on CL/F.
   reports IOV_CL/F = 29.9% and IOV_V1/F = 126.5%, on top of the IIV
   implemented here. The paper does not specify how many sampling
   occasions per subject the IOV multiplexed across, and the source
-  `.lst` is not on disk. Implementing IOV would require an `OCC`
+  `.lst` was not available. Implementing IOV would require an `OCC`
   indicator column from the user’s dataset (see the
   `Jonsson_2011_ethambutol` model file for a worked IOV pattern). For
   typical-value simulation the IIV-only form is sufficient; for

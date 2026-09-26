@@ -417,7 +417,7 @@ vpc_sim |>
   encoding is the published model form. Users simulating intermediate
   dose levels (\>2000 and \<3000 mg/kg) should set the indicator
   according to the paper’s threshold; the model does not interpolate.
-- **Original NONMEM control stream not on disk.** The Savic 2007
+- **Original NONMEM control stream not available.** The Savic 2007
   transit-chain Stirling approximation cited by the paper is the
   analytical input form built into rxode2’s `transit()` function, so no
   Stirling code is required in the model file.

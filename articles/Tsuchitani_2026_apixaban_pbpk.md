@@ -760,7 +760,7 @@ in typesetting.
 Section 2.4 of the paper fits a second analysis: apixaban
 co-administered with 50 g activated charcoal at 2 or 6 h post-dose, with
 six parameters re-estimated (Table S2: `aAC`, `b`, `CL_int,all`,
-`f_bile`, `Kd,AC`, `PS_difentBE`). Those *estimates* are on disk, but
+`f_bile`, `Kd,AC`, `PS_difentBE`). Those *estimates* are available, but
 the *equations* are not. The paper describes the charcoal layer only in
 prose – “the binding of apixaban to AC in the intestinal lumen was
 modeled assuming rapid equilibrium and linear binding kinetics” – and

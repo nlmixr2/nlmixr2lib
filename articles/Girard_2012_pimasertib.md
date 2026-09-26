@@ -33,8 +33,8 @@ simulated dataset.
 - Demographic detail (age, weight, sex split, race/ethnicity) is **not
   derivable from the DDMORE bundle**. The linked PAGE 21 abstract (URL
   \<www.page-meeting.org/?abstract=2458\>) is conference-abstract-only
-  and **was not on disk** at extraction time, so a full demographic
-  cross-check was not performed.
+  and **was not available when this model was built**, so a full
+  demographic cross-check was not performed.
 
 The metadata is queryable programmatically via the model file’s
 free-floating assignments before `ini()`:
@@ -122,11 +122,11 @@ and `etalogit = 0`), the model says:
 
 ## Virtual cohort (typical-value, single subject)
 
-For the F.3 mechanistic-sanity check we simulate a single typical
-patient over the 12-week horizon. The K-PD exposure compartment is dosed
-weekly with a representative AUC value (`AMT = 20000` ng\*h/mL – close
-to the per-week AUC the bundled simulated dataset records for ID = 1 on
-the 90 mg/day cohort).
+For the mechanistic-sanity check we simulate a single typical patient
+over the 12-week horizon. The K-PD exposure compartment is dosed weekly
+with a representative AUC value (`AMT = 20000` ng\*h/mL – close to the
+per-week AUC the bundled simulated dataset records for ID = 1 on the 90
+mg/day cohort).
 
 ``` r
 
@@ -184,7 +184,7 @@ zero and EFF collapses. The asymptotic between-dose (long after a single
 20000 dose) probability of any AE is
 `1 - expit(b01) = 1 - expit(-6.12) ~= 0.0022`.
 
-### F.3 mechanistic-sanity check: cumulative-hazard / survival reproduction
+### Mechanistic-sanity check: cumulative-hazard / survival reproduction
 
 The dropout sub-model has a closed-form analytic solution:
 
@@ -209,10 +209,10 @@ reference <- data.frame(
                        0)
 )
 
-# Pick a few canonical time points for a tabular F.3 check.
+# Pick a few canonical time points for a tabular mechanistic-sanity check.
 checkpoints <- subset(reference, time %in% c(1, 3, 6, 9, 12))
 knitr::kable(checkpoints, digits = c(1, 4, 4, 3),
-             caption = "F.3: typical-value cumulative hazard reproduces the analytic Weibull form within numerical tolerance.")
+             caption = "Mechanistic-sanity check: typical-value cumulative hazard reproduces the analytic Weibull form within numerical tolerance.")
 ```
 
 |     | time | rxSolve_cumhaz | analytic_cumhaz | rel_err_pct |
@@ -223,8 +223,8 @@ knitr::kable(checkpoints, digits = c(1, 4, 4, 3),
 | 181 |    9 |         0.7412 |          0.7412 |           0 |
 | 241 |   12 |         1.0654 |          1.0654 |           0 |
 
-F.3: typical-value cumulative hazard reproduces the analytic Weibull
-form within numerical tolerance. {.table}
+Mechanistic-sanity check: typical-value cumulative hazard reproduces the
+analytic Weibull form within numerical tolerance. {.table}
 
 ``` r
 
@@ -235,8 +235,8 @@ cat(sprintf("Maximum |rel_err_pct| over t in (0, 12]: %.4g%%\n",
 ```
 
 The `rxSolve()` cumulative-hazard trajectory matches the analytic
-Weibull form to numerical precision at every observation. F.3
-mechanistic-sanity passes for the dropout sub-model.
+Weibull form to numerical precision at every observation. The
+mechanistic-sanity check passes for the dropout sub-model.
 
 ``` r
 
@@ -344,7 +344,7 @@ The hazard increases by about 1.27x per 60 mg increment in daily dose
 retention curves across the 15-180 mg/day range tested in the source
 studies.
 
-## F.2 self-consistency: re-simulate against the bundle simulated dataset
+## Self-consistency check: re-simulate against the bundle simulated dataset
 
 The DDMORE bundle ships `Simulated_Pimasertib_AeDropout.csv` with 199
 simulated subjects. We re-simulate the typical-value (no-IIV)
@@ -355,9 +355,9 @@ well-defined and deterministic.
 
 csv <- system.file("extdata-readme.txt", package = "nlmixr2lib")  # placeholder probe
 # We don't ship the bundle CSV inside nlmixr2lib (it's not under /inst). The
-# F.2 check below is therefore an independent simulation of two representative
-# cohorts (DOSE = 60 mg QD vs 60 mg BID, fixed CMAX_M1 = 300 ng/mL) over the
-# same 12-week horizon the bundle uses, and confirms the typical-value
+# self-consistency check below is therefore an independent simulation of two
+# representative cohorts (DOSE = 60 mg QD vs 60 mg BID, fixed CMAX_M1 = 300 ng/mL)
+# over the same 12-week horizon the bundle uses, and confirms the typical-value
 # trajectories are finite, monotone-survival, and bounded probabilities.
 
 cohorts <- expand.grid(DOSE = c(30, 60, 120), REGI_BID = c(0, 1))
@@ -396,7 +396,7 @@ f2_summary <- sims |>
   )
 
 knitr::kable(f2_summary,
-             caption = "F.2 self-consistency: typical-value trajectories at week 12 for six cohorts (DOSE x REGI_BID).")
+             caption = "Self-consistency check: typical-value trajectories at week 12 for six cohorts (DOSE x REGI_BID).")
 ```
 
 | DOSE | REGI_BID | week_12_p0 | week_12_p1 | week_12_p2 | week_12_dropout |
@@ -408,7 +408,7 @@ knitr::kable(f2_summary,
 |  120 |        0 |     0.9790 |     0.0201 |      9e-04 |           0.745 |
 |  120 |        1 |     0.9858 |     0.0136 |      6e-04 |           0.745 |
 
-F.2 self-consistency: typical-value trajectories at week 12 for six
+Self-consistency check: typical-value trajectories at week 12 for six
 cohorts (DOSE x REGI_BID). {.table}
 
 All six cohorts produce finite, monotone-survival, bounded-in-\[0, 1\]
@@ -420,20 +420,19 @@ not on the Weibull hazard.
 
 ## Assumptions and deviations
 
-- **Linked publication is conference-abstract-only and not on disk.**
-  The PAGE 21 (2012) abstract 2458 by Girard et al. is hosted only at
-  \<www.page-meeting.org/?abstract=2458\> and was not present in the
-  maintainers’ literature mirror at extraction time. Final-estimate
-  values come solely from the DDMORE bundle’s
-  `Output_real_Pimasertib_AeDropout.lst` `MAXEVALS=0`
-  Laplacian-evaluation echo of `Executable_Pimasertib_AeDropout.mod`.
-  The published abstract’s parameter table could not be inspected to
-  confirm signs and magnitudes; the `.lst` `FINAL PARAMETER ESTIMATE`
-  block (TH 1..18; OMEGA ETA1 / ETA2) is the sole source of truth. F.2
-  self-consistency against the bundled simulated dataset is the only
-  validation anchor; F.1 (publication NCA comparison) is not applicable
-  because this is a Markov categorical / TTE model with no NCA
-  quantities.
+- **Linked publication is conference-abstract-only and was not
+  available.** The PAGE 21 (2012) abstract 2458 by Girard et al. is
+  hosted only at \<www.page-meeting.org/?abstract=2458\> and was not
+  available when this model was built. Final-estimate values come solely
+  from the DDMORE bundle’s `Output_real_Pimasertib_AeDropout.lst`
+  `MAXEVALS=0` Laplacian-evaluation echo of
+  `Executable_Pimasertib_AeDropout.mod`. The published abstract’s
+  parameter table could not be inspected to confirm signs and
+  magnitudes; the `.lst` `FINAL PARAMETER ESTIMATE` block (TH 1..18;
+  OMEGA ETA1 / ETA2) is the sole source of truth. Self-consistency
+  against the bundled simulated dataset is the only validation anchor; a
+  published-NCA comparison is not applicable because this is a Markov
+  categorical / TTE model with no NCA quantities.
 - **Simplified observation likelihood.** The publication’s observation
   model is a multi-DVID conditional likelihood: `Y = P0 / P1 / P2` per
   CTCAE ocular-AE row (DVID == 2 with DV in {0; 1 or 2; \>= 3}),
@@ -444,7 +443,7 @@ not on the Weibull hazard.
   model file therefore declares the observation as a plain Poisson on
   the typical-value expected ordinal score `0*P0 + 1*P1 + 2*P2`
   (`aescore ~ pois(expected_aescore)`) – purely a placeholder that lets
-  the model parse and that drives F.3 mechanistic-sanity simulation.
+  the model parse and that drives the mechanistic-sanity simulation.
   **The placeholder Poisson is not a valid likelihood for re-fitting the
   original Girard 2012 dataset.** The full structural equations (`p0`,
   `p1`, `p2`, `pc1`, `pc2`, `hazard`, `cumhaz`, `survival`) are still
@@ -457,10 +456,10 @@ not on the Weibull hazard.
   covariate column in-flight, so the user is expected to supply
   `PREV_AE_SCORE` as a per-row data column, set to 0 at TIME = 0 per
   subject and updated at each subsequent observation to the
-  previous-step sampled grade. For the typical-value F.3 simulations in
-  this vignette we set `PREV_AE_SCORE = 0` at every observation (no
-  prior AE), which corresponds to the publication’s “first observation”
-  condition and is the default initial Markov state.
+  previous-step sampled grade. For the typical-value mechanistic-sanity
+  simulations in this vignette we set `PREV_AE_SCORE = 0` at every
+  observation (no prior AE), which corresponds to the publication’s
+  “first observation” condition and is the default initial Markov state.
 - **`emax2` (CTCAE \>= 3) and `THETA(12)` (CL exponent) are
   intentionally omitted from `ini()`.** Both are fixed at 0 in the
   source `.mod`. `emax2` is referenced only inside an

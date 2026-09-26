@@ -1164,8 +1164,8 @@ logistic-regression models for objective response rate in MSI-H patients
 and for five safety endpoints.
 
 **None of these sub-models can be encoded, because no coefficient is
-published anywhere in the sources on disk.** This was checked
-exhaustively rather than assumed:
+published in any available source.** This was checked exhaustively
+rather than assumed:
 
 - The main text reports only outcomes (“a 0.1% difference in OS”,
   “predicted ORR differing by \< 1%”, “maximum difference in AE

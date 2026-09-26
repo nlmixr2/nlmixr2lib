@@ -300,14 +300,15 @@ chloroquine row (with 95% CI) vs simulated. {.table}
 - **Slope (gamma) covariate effects dropped.** The Simpson 2013 second
   NLME analysis fit covariate effects on both EC50 (theta_1..theta_4)
   and slope gamma (theta_5..theta_8). The slope-covariate effects live
-  in File S2 (a PDF supplement) which is not on disk. The Simpson 2013
-  main text describes the slope effects as “minimal” / “did not differ
-  significantly for these molecular comparisons” (Results paragraphs on
-  each genotype group), so dropping the slope-covariate term is faithful
-  to the paper’s qualitative conclusion. The eta variance for gamma uses
-  the Table 1 no-covariate-model SD (0.41 log_e units; variance 0.1681)
-  because the Table 3 footnote reports only the EC50 between-isolate
-  variance for the covariate model.
+  in File S2 (a PDF supplement) which was not available when this model
+  was built. The Simpson 2013 main text describes the slope effects as
+  “minimal” / “did not differ significantly for these molecular
+  comparisons” (Results paragraphs on each genotype group), so dropping
+  the slope-covariate term is faithful to the paper’s qualitative
+  conclusion. The eta variance for gamma uses the Table 1
+  no-covariate-model SD (0.41 log_e units; variance 0.1681) because the
+  Table 3 footnote reports only the EC50 between-isolate variance for
+  the covariate model.
 - **Observation variable named `effect` (not `Cc`).** The convention
   lint warns that the single observation variable should be named `Cc`
   (the canonical concentration-in-central-compartment name). Here the

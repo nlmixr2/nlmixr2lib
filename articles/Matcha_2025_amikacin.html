@@ -3270,11 +3270,10 @@ above / below)</td>
 </tr>
 </tbody>
 </table>
-<p>Two points in the source trace needed care, because the markdown
-conversion of the article drops every display equation (each of Eqs. 4-8
-appears only as a <code>formula-not-decoded</code> placeholder). Both
-were read directly off the publisher’s own typesetting, by rasterising
-page 3 of the article PDF at 600 dpi
+<p>Two points in the source trace needed care, because naive text
+extraction of the article PDF drops every display equation (none of Eqs.
+4-8 survives it). Both were read directly off the publisher’s own
+typesetting, by rasterising page 3 of the article PDF at 600 dpi
 (<code>pdftoppm -r 600 -f 3 -l 3</code>) and cropping to the equation
 bounding boxes located with <code>pdftotext -bbox</code>. At that
 resolution the superscript structure and the leading signs are
@@ -4277,19 +4276,19 @@ degrade.</p>
 <li>
 <strong>Equation typography.</strong> Eq. 4’s weight effect is
 exponential (<code>Exp^(WT * 0.308)</code>), not the more usual
-allometric power form, and Eq. 8 carries two leading minus signs. The
-markdown conversion of the article drops every display equation
-outright, and the PDF’s flat text layer loses both superscript structure
-and leading signs, so Eqs. 4-8 were read off a 600 dpi raster of page 3
-of the article PDF (bounding boxes from <code>pdftotext -bbox</code>).
-Each was then corroborated against a second, independent source: Eq. 4
-against the Table 3 nomogram arithmetic above, and Eq. 8 against
-supplementary Table S1, which prints it in code form. A third, purely
-mechanical check supports Eq. 4: in the <code>pdftotext -bbox</code>
-output the token <code>WT0:308</code> sits at yMin 487.1 while the
-adjacent <code>Exp</code> sits at 489.0, so the weight term is
-positionally a superscript on <code>Exp</code> rather than a base of a
-power. No value was inferred.</li>
+allometric power form, and Eq. 8 carries two leading minus signs. Naive
+text extraction of the article PDF drops every display equation
+outright, and even the PDF’s flat text layer loses both superscript
+structure and leading signs, so Eqs. 4-8 were read off a 600 dpi raster
+of page 3 of the article PDF (bounding boxes from
+<code>pdftotext -bbox</code>). Each was then corroborated against a
+second, independent source: Eq. 4 against the Table 3 nomogram
+arithmetic above, and Eq. 8 against supplementary Table S1, which prints
+it in code form. A third, purely mechanical check supports Eq. 4: in the
+<code>pdftotext -bbox</code> output the token <code>WT0:308</code> sits
+at yMin 487.1 while the adjacent <code>Exp</code> sits at 489.0, so the
+weight term is positionally a superscript on <code>Exp</code> rather
+than a base of a power. No value was inferred.</li>
 <li>
 <strong>Eq. 4’s exponential weight model is independently confirmed
 by Table 3.</strong> Since dose rate must track clearance to hold the

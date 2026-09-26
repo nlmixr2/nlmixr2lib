@@ -321,7 +321,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55ce9894af40>
+#> <environment: 0x5569aae01860>
 ```
 
 ## Population
@@ -1290,15 +1290,14 @@ stopifnot(
   footnote describes it only as “eta4, interindividual variability of
   IOV” and never names the structural parameter it acts on; the Section
   2.2 display equations account for `eta1`, `eta2` and `eta3` only. No
-  supplement or control stream is available (the EuropePMC
-  `supplementaryFiles` endpoint returns HTTP 500 for PMC11868765 and the
-  Frontiers file endpoints return 404), and the supplement’s documented
-  contents – a study-design table and mean concentration-time figures –
-  would not place an eta. Assigning the term to CL, D1 or F would be
-  inventing model structure, so it is omitted and its reported value
-  preserved in the model file comments. Simulated between-subject spread
-  in AUC is therefore marginally narrower than the paper’s, which if
-  anything makes the PTAs above slightly optimistic at the extremes.
+  supplement or control stream was available when this model was built,
+  and the supplement’s documented contents – a study-design table and
+  mean concentration-time figures – would not place an eta. Assigning
+  the term to CL, D1 or F would be inventing model structure, so it is
+  omitted and its reported value preserved in the model file comments.
+  Simulated between-subject spread in AUC is therefore marginally
+  narrower than the paper’s, which if anything makes the PTAs above
+  slightly optimistic at the extremes.
 - **The unbound fraction is not from Wu 2025.** `fu = 0.388` used in the
   PK/PD section is carried from `Rodjun_2023_sitafloxacin` (Rodjun 2023
   Methods, sourced there to Tanigawara 2013). Wu 2025 computes
@@ -1307,8 +1306,8 @@ stopifnot(
 - **CFR is not reproduced.** Wu 2025 Table 3 also reports cumulative
   fraction of response, which requires the EUCAST MIC frequency
   distributions for each pathogen. Those distributions are external to
-  the paper and are not on disk, so only the PTA and cut-off columns are
-  validated here.
+  the paper and were not available when this model was built, so only
+  the PTA and cut-off columns are validated here.
 - **No NCA answer key.** Wu 2025 publishes no Cmax/Tmax/AUC table, so
   the PKNCA results above are reported rather than compared, and the
   validation weight rests on the per-subject `AUC24h = daily dose / CL`

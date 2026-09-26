@@ -362,8 +362,8 @@ of the figure.
 ## Assumptions and deviations
 
 - **PD parameterization.** The source supplement (which contains the
-  explicit equation) was not on disk for this extraction. The packaged
-  model uses a margin-above-1 Imax parameterization
+  explicit equation) was not available when this model was built. The
+  packaged model uses a margin-above-1 Imax parameterization
   (`stim_ratio = 1 + (Base - 1) * (1 - Imax * Cc / (IC50 + Cc))`) rather
   than the more common multiplicative form
   (`Base * (1 - Imax * Cc / (IC50 + Cc))`). The margin-above-1 form is

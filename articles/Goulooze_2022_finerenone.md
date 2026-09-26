@@ -550,8 +550,9 @@ serum potassium level \> 4.8 mmol/L”).
     $`\text{CL}/F`$ = 28.0 L/h is quoted from Goulooze 2022 Figure 5
     caption; the implicit $`F_1`$ is absorbed into the apparent
     clearance ($`F_1`$ = 1 in the AUC$`_{\text{ss}}`$ expression). The
-    upstream popPK paper (van den Berg 2022) is not on disk; only
-    Goulooze’s stated typical $`\text{CL}`$ is reproduced.
+    upstream popPK paper (van den Berg 2022) was not available when this
+    model was built; only Goulooze’s stated typical $`\text{CL}`$ is
+    reproduced.
 
 2.  **Step-function exposure model – titration encoding.** Because the
     exposure metric is $`\text{DOSE} / \text{CL}`$ rather than a

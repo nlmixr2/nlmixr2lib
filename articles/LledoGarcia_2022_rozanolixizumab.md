@@ -646,8 +646,8 @@ Results-section IgG reductions instead.
 ### Non-paper-derived parameter values
 
 - **`MWT` = 148 kDa (rozanolixizumab molecular weight).** This value is
-  *not reported anywhere on disk for this paper*: not in the main text,
-  not in Supplementary Texts S1-S4, and not in the cited
+  *not reported in any available source for this paper*: not in the main
+  text, not in Supplementary Texts S1-S4, and not in the cited
   characterisation paper (Smith et al. 2018, mAbs 10:1111-1130), which
   was retrieved and searched. It is nonetheless load-bearing, because
   the paper reports `KD` and `[FcRn]` in nmol/L but `EC50` and all

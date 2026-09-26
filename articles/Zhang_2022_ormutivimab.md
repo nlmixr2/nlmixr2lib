@@ -54,8 +54,8 @@ component was combined with the vaccine-induced Emax component (`Y2`) to
 give the final `E = Y1 + Y2` model fitted to the drug+vaccine arms of
 phase IIb. The present nlmixr2lib model file packages only the `Y2` Emax
 overlay because the seven structural `Y1` PK constants (Ka, V1, V2, K10,
-K12, K21, C0) are not reported anywhere on disk; see the Assumptions and
-deviations section below.
+K12, K21, C0) are not reported anywhere in the sources available when
+this model was built; see the Assumptions and deviations section below.
 
 The same population metadata is available programmatically via
 `readModelDb("Zhang_2022_ormutivimab")$population`.
@@ -370,19 +370,20 @@ checks.
   volume), `K10` (elimination rate), `K12` / `K21` (inter-compartmental
   rate constants), and `C0` (drug-free baseline). **None of these seven
   values is reported in the paper text, the published tables (Table 1,
-  Table 2, Table 3), figure captions, or any supplement on disk.** Per
-  the package’s missing-parameter rule (“never substitute training-data
-  values”), the packaged model omits the `Y1` overlay entirely and ships
-  only the fully-parameterised `Y2` Emax layer. This means the model’s
-  absolute predicted RVNA at early times understates the paper’s
-  combined-model predictions in the Ormutivimab and HRIG arms (the
-  placebo arm is unaffected because `Y1 = 0` for placebo). Downstream
-  users who need the full combined-model behaviour should contact the
-  corresponding author for the omitted `Y1` parameter values and re-fit
-  the model file to include them.
+  Table 2, Table 3), figure captions, or any supplement available when
+  this model was built.** Per the package’s missing-parameter rule
+  (“never substitute values from outside the cited sources”), the
+  packaged model omits the `Y1` overlay entirely and ships only the
+  fully-parameterised `Y2` Emax layer. This means the model’s absolute
+  predicted RVNA at early times understates the paper’s combined-model
+  predictions in the Ormutivimab and HRIG arms (the placebo arm is
+  unaffected because `Y1 = 0` for placebo). Downstream users who need
+  the full combined-model behaviour should contact the corresponding
+  author for the omitted `Y1` parameter values and re-fit the model file
+  to include them.
 
 - **Final-model “popPD” scope versus the “popPK model” framing.** The
-  metadata this model was built from described the source as a
+  maintainers’ initial catalogue entry described the source as a
   “population PK model”; the paper itself describes it as a population
   pharmacodynamic (PPD) analysis whose endpoint is RVNA bioassay
   activity in IU/mL. For monoclonal-antibody drugs the bioassay activity
@@ -434,10 +435,10 @@ checks.
   confirmatory study (recommended target dose 20 IU/kg per the paper’s
   conclusion) would extend coverage if those data become public.
 
-- **No erratum found.** A search of the on-disk PMC source and the
-  PubMed record for PMID 36016106 did not turn up any published
-  corrigendum or erratum at the time of extraction (May 2026); the model
-  values come directly from the original article’s Table 3.
+- **No erratum found.** A search of the PMC full text and the PubMed
+  record for PMID 36016106 did not turn up any published corrigendum or
+  erratum at the time of extraction (May 2026); the model values come
+  directly from the original article’s Table 3.
 
 ## Reference
 

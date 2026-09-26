@@ -869,7 +869,7 @@ stopifnot(
   replication above sweeps each covariate over its Table 1 min-max range
   instead and checks the paper’s clinical-relevance conclusions at the
   reported arm means.
-- **Supplement not on disk.** Figures S1-S4 (visual predictive checks
+- **Supplement not available.** Figures S1-S4 (visual predictive checks
   for the three studies and weighted residuals versus ADA titre) are not
   part of the open-access PMC deposit. They contain diagnostics only –
   every parameter value used here is in main-text Tables 2, 3 and 4 – so

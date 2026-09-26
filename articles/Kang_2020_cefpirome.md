@@ -421,8 +421,9 @@ interval (0-12 h after the loading 2 g IV bolus). The simulated values
 below serve as an internal sanity check that the simulation produces NCA
 values in the clinically expected range. Kang 2020’s individual NCA-type
 summaries (Cmax, Tmax, half-life per patient) live in supplemental Table
-S1, which is not on disk; see the **Assumptions and deviations** section
-for the per-publication NCA cross-check status.
+S1, which was not available when this model was built; see the
+**Assumptions and deviations** section for the per-publication NCA
+cross-check status.
 
 ``` r
 
@@ -576,18 +577,16 @@ available against the printed paper are:
   model.”* Table 2 reports 21.7% CV. Encoded as `propSd = 0.217` (the
   proportional SD fraction in linear DV space).
 
-- **Supplemental Table S1 (individual NCA) not on disk.** The paper
+- **Supplemental Table S1 (individual NCA) not available.** The paper
   references S1 for per-patient half-life, Cmax, and Tmax. The
-  supplement was not obtainable through the EuropePMC / PMC / ASM
-  endpoints attempted during extraction (the EuropePMC PDF-render
-  endpoint returned the main PDF only; the journals.asm.org supplement
-  URL returned HTML rather than the PDF). The packaged model’s
-  parameters all come from main-text Table 2 and the printed equations
-  in Results; the missing supplement contains derived NCA-type values
-  rather than estimated model parameters, so the absence does not affect
-  the model. The simulated NCA values in the PKNCA section are internal
-  sanity checks; no per-patient comparison against the published S1 is
-  performed.
+  supplement could not be obtained from EuropePMC, PMC or the ASM
+  journal site when this model was built (those sources provided the
+  main PDF only). The packaged model’s parameters all come from
+  main-text Table 2 and the printed equations in Results; the missing
+  supplement contains derived NCA-type values rather than estimated
+  model parameters, so the absence does not affect the model. The
+  simulated NCA values in the PKNCA section are internal sanity checks;
+  no per-patient comparison against the published S1 is performed.
 
 - **Time-varying CREAT and ECMO_STATUS.** Kang 2020 Methods (Covariate
   model development): *“All data were recorded during sampling and

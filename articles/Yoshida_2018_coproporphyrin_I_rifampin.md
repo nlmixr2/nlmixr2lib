@@ -9,9 +9,9 @@
   calibration (Table 2 left column) was fit to the Lai et al. 2016
   plasma CPI profile cohort using portal-vein rifampin concentrations
   from the Simcyp v16r1 default single-dose rifampin model file as the
-  forcing function; that Simcyp output is not reproducible from on-disk
-  sources, so users must supply CP_RIF_UM externally. The companion
-  GDC-0810 calibration is parameterised in
+  forcing function; that Simcyp output is not reproducible from the
+  available sources, so users must supply CP_RIF_UM externally. The
+  companion GDC-0810 calibration is parameterised in
   modellib(‘Yoshida_2018_coproporphyrin_I_GDC0810’).
 - Description: One-compartment endogenous turnover model for the
   OATP1B-substrate biomarker coproporphyrin I (CPI) in healthy adults
@@ -28,11 +28,12 @@
   Yoshida_2018_coproporphyrin_I_GDC0810 encodes the GDC-0810 calibration
   with its own Ki,u, kdeg, and IIV structure. The original fit used a
   Simcyp v16r1 default single-dose rifampin model for the portal-vein
-  concentration profile; that PBPK output is not reproducible from
-  on-disk sources and the paper itself documents an approximately 5-fold
-  sensitivity of the estimated Ki,u to the choice of perpetrator-PK
-  model, so downstream users must supply CP_RIF_UM externally and treat
-  the calibrated Ki,u as conditional on that choice.
+  concentration profile; that PBPK output is not reproducible from the
+  available sources and the paper itself documents an approximately
+  5-fold sensitivity of the estimated Ki,u to the choice of
+  perpetrator-PK model, so downstream users must supply CP_RIF_UM
+  externally and treat the calibrated Ki,u as conditional on that
+  choice.
 - Article: <https://doi.org/10.1002/psp4.12315>
 
 ## Population and biological context
@@ -186,8 +187,8 @@ involved); the figure below shows the inhibition response curve over a
 range of constant Cinh values spanning unbound concentrations typical of
 a 600 mg oral rifampin dose. This is **not** a reproduction of the
 original Yoshida 2018 fit – the original used a time-varying
-Simcyp-predicted portal-vein profile that is not reproducible from
-on-disk sources.
+Simcyp-predicted portal-vein profile that is not reproducible from the
+available sources.
 
 ``` r
 
@@ -264,7 +265,7 @@ reproduced.
 - **Simcyp portal-vein rifampin concentration not reproducible.**
   Yoshida 2018 used the Simcyp v16r1 default single-dose rifampin model
   file as the forcing function for `CP_RIF_UM`; that PBPK output is not
-  on disk and is not reproducible from open sources. **Per the
+  available and is not reproducible from open sources. **Per the
   maintainers’ instruction for this extraction**, the vignette
   intentionally does **not** approximate the rifampin PK with an
   analytic surrogate. Users wishing to reproduce the original CPI

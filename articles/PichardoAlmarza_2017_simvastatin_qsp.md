@@ -39,7 +39,7 @@
   transport, oxidised LDL, monocytes, macrophages, foam cells and plaque
   growth) is NOT encoded here because its wall geometry, endothelial
   surface area, LDL wall diffusivity and per-species volume constants
-  are not reported in any source on disk; see the validation vignette
+  are not reported in any available source; see the validation vignette
   for the full gap list. The vignette also reproduces the paper’s
   two-state Markov chain for medication adherence, which is a
   dosing-schedule construct rather than part of the
@@ -77,8 +77,9 @@ at 0, 0.5, 1, 1.5, 2, 3, 3.5, 4, 5, 6, 8, 10 and 12 and 24 h post-dose
 on days 1, 7 and 14, and LDL measured daily after an overnight fast. Kim
 et al. (2011) is titled for prediction in patients with primary
 hyperlipidaemia, so the estimation cohort and the intended prediction
-population differ; that paper was not available on disk, so only the two
-Pichardo-Almarza papers were used to characterise the cohort.
+population differ; that paper was not available when this model was
+built, so only the two Pichardo-Almarza papers were used to characterise
+the cohort.
 
 The source reports a single typical-patient parameter set: there is no
 inter-individual variability and no residual-error model on any PKPD
@@ -674,7 +675,7 @@ Figure 11E). Those oscillations are visible in the ribbon above.
   macrophages (Eq. 12), foam cells (Eq. 13) – and Table 1 gives the rate
   constants (`km`, `dm`, `dlox`, `dM`, `dF`, `rw`, `rho1`, `gamma0`, the
   WSS threshold, `m_lumen`, `sigma`, `Delta p`, `Q`, blood viscosity,
-  lumen radius). What is **not** published anywhere on disk is
+  lumen radius). What is **not** published in any available source is
   everything needed to close the system:
   - the arterial-wall volume and endothelial surface area, which set the
     conversion from the Kedem-Katchalsky flux `Js` into the well-stirred
@@ -732,9 +733,9 @@ Figure 11E). Those oscillations are visible in the ribbon above.
   the three residual standard deviations are `fixed(0)`. No variance was
   invented.
 - **Kim et al. (2011), the originating PKPD publication, is not open
-  access** and was not available on disk. Every value used here is
-  printed in one of the two Pichardo-Almarza papers; nothing was taken
-  from Kim et al. directly.
+  access** and was not available when this model was built. Every value
+  used here is printed in one of the two Pichardo-Almarza papers;
+  nothing was taken from Kim et al. directly.
 
 ### Digitisation provenance
 

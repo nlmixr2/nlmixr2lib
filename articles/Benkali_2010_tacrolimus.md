@@ -15,7 +15,7 @@
   multiplicative CYP3A5\*1-carrier (expresser) effect on apparent
   clearance and combined additive + proportional residual error.
 - Article: Clin Pharmacokinet 2010;49(10):683-692 (Adis Data; DOI not
-  extracted from on-disk PDF).
+  printed in the PDF).
 
 ## Population
 
@@ -345,10 +345,11 @@ ratio reported in the Abstract and Discussion).
   transitions driven by the same `ktr`. This matches the n = 3 Erlang
   ADVAN5 SS5 parameterisation that the source paper used in NONMEM and
   gives the same three-stage convolution.
-- **DOI not extracted from on-disk PDF.** The article PDF on disk does
-  not print a DOI; the citation in the model file is by journal / volume
-  / issue / page number only. NEWS.md follows the precedent set by
-  `Bista_2015_fentanyl` (“manuscript, journal/DOI not on disk”).
+- **DOI not printed in the PDF.** The article PDF does not print a DOI;
+  the citation in the model file is by journal / volume / issue / page
+  number only. NEWS.md follows the precedent set by
+  `Bista_2015_fentanyl` (cited by manuscript because the journal / DOI
+  metadata was unavailable).
 - **Vignette uses 200 subjects per CYP3A5 stratum.** This is small
   enough to render the vignette in well under 5 minutes (the pkgdown
   gate) but large enough to give stable percentiles for the VPC and

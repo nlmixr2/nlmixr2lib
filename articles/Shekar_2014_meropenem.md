@@ -542,10 +542,10 @@ observed Cmin of 4.9 mg/L.
   - 60 / 1000) is applied inside `model()` so that the dimensionless
     published `CL_CRCL = 1.89` produces CL in L/h.
 
-  No NONMEM control stream is available on disk to cross-check the
-  equation form, so this resolution depends on the only reading that
-  reconciles the parameter table, the observed mean CL by subgroup, and
-  the published Monte-Carlo simulation table.
+  No NONMEM control stream was available to cross-check the equation
+  form, so this resolution depends on the only reading that reconciles
+  the parameter table, the observed mean CL by subgroup, and the
+  published Monte-Carlo simulation table.
 
 - **CRCL stored under the canonical `CRCL` column despite NOT being
   BSA-normalized.** The canonical `CRCL` entry in
@@ -581,7 +581,8 @@ observed Cmin of 4.9 mg/L.
   diagonal OMEGA, and the packaged model uses diagonal IIV. No IIV is
   included on Q because no Q variability is reported. This is consistent
   with the reported information but cannot be cross-checked against the
-  original NONMEM control stream (not on disk).
+  original NONMEM control stream, which was not available when this
+  model was built.
 
 - **`omega^2 = log(CV^2 + 1)`.** Table 2 reports inter-individual
   variability as CV%; the corresponding log-normal variance was computed

@@ -906,8 +906,8 @@ The readings used here, and the evidence for each:
   reading is the one consistent with their own statement.
 - **The daily-dose covariates are applied untransformed.** Neither the
   article nor the supplement reports a mean or median daily dose for any
-  of the three drugs, so mean-centring is not implementable from
-  anything on disk. The untransformed reading is also the one that
+  of the three drugs, so mean-centring is not implementable from any
+  available source. The untransformed reading is also the one that
   reproduces the cited literature: it puts valproate `CL/F` at 0.2-0.7
   L/h across plausible paediatric doses, inside Supplemental Table S4’s
   0.0466-0.854 L/h, whereas centring would pin it at 0.12 L/h.

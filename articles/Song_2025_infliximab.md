@@ -56,7 +56,7 @@ The same information is available programmatically via
 ## Source trace
 
 Both final-model covariate equations are rendered as **images** in the
-published PDF; `docling` emits `formula-not-decoded` for them. They were
+published PDF and do not survive plain-text extraction of it. They were
 recovered with `pdftotext -layout` from page 380, column 1, and read:
 
     CL = 0.248 x (ALB/4.4)^-0.372 x (CRP/0.18)^0.022 x (ADA/10)^0.022 x (BMI/22.5)^0.360
@@ -721,17 +721,17 @@ treated as weak.
 
 ## Errata and source anomalies
 
-- **Both final-model equations are images in the PDF.** `docling`
-  returns `formula-not-decoded`; they were recovered with
+- **Both final-model equations are images in the PDF.** They do not
+  survive plain-text extraction of the PDF; they were recovered with
   `pdftotext -layout` from p. 380 col. 1 and are reproduced verbatim in
   the Source trace section above.
 - **The two steady-state trough closed forms on p. 380 could not be
-  decoded** by either `docling` or `pdftotext` – they are also images,
-  and the surrounding prose defines only their symbols (`kel = CL / Vc`,
-  `tau` = dosing interval). Nothing is lost: they are algebraic
-  consequences of the estimated parameters rather than independent model
-  content, and the Gate 3 identities above test the same steady-state
-  behaviour directly.
+  decoded** by plain-text extraction of the PDF, `pdftotext` included –
+  they are also images, and the surrounding prose defines only their
+  symbols (`kel = CL / Vc`, `tau` = dosing interval). Nothing is lost:
+  they are algebraic consequences of the estimated parameters rather
+  than independent model content, and the Gate 3 identities above test
+  the same steady-state behaviour directly.
 - **The Vp/Q sensitivity-analysis interval for Q appears to be a unit or
   transcription error.** Methods section 6 states the analysis varied Vp
   over 1.71-2.13 and “Q ranging from 74.0 to 84.3”. That interval does

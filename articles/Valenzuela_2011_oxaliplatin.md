@@ -10,8 +10,8 @@
   Mar;13(1):72-82.
 - DOI: <https://doi.org/10.1208/s12248-010-9249-2> (PMID 21210260).
 - Erratum: AAPS J. 2011 Jun;13(2):318 (referenced in the PubMed “Erratum
-  in” field of PMID 21210260; the erratum text was not available on disk
-  at extraction time – see Section Errata).
+  in” field of PMID 21210260; the erratum text was not available when
+  this model was built – see Section Errata).
 - Friberg backbone: Friberg LE, Henningsson A, Maas H, Nguyen L,
   Karlsson MO. *Model of chemotherapy-induced myelosuppression with
   parameter consistency across drugs.* J Clin Oncol
@@ -1022,8 +1022,8 @@ cat("Paper Results (p. 76): median nadir 3.09 x 10^9/L (range 0.03 - 10.31);",
 
 An erratum to Valenzuela 2011 is listed in the PubMed record for PMID
 21210260 as “Erratum in: AAPS J. 2011 Jun;13(2):318”. The erratum text
-was not available on disk at extraction time, and a public-web search
-for its full content was inconclusive (the publisher’s full-text site
+was not available when this model was built, and a public-web search for
+its full content was inconclusive (the publisher’s full-text site
 requires subscription authentication; the PubMed record for the erratum
 itself was not located via DOI or title search at the time of writing).
 Maintainers reviewing this model file should locate the erratum and

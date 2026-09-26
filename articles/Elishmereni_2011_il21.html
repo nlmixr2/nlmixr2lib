@@ -3110,8 +3110,8 @@ Computational Biology). Per the deposit’s
 the Monolix re-fit removed one compartment from the published model and
 re-estimated all parameters by a mixed-effects approach (the original
 publication used step-wise least-squares fitting). The original
-publication PDF was not on disk during this extraction; parameter values
-and equations were taken verbatim from the bundle’s
+publication PDF was not available when this model was built; parameter
+values and equations were taken verbatim from the bundle’s
 <code>IL_21_PK_model.mdl</code>.</p>
 </div>
 <div class="section level2">
@@ -3409,9 +3409,9 @@ ip-depot first-pass elimination (<code>k_ipelim</code>).</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">trace</span><span class="op">$</span><span class="va">amount</span> <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">1e-9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-check-pknca">F.2 self-consistency check (PKNCA)<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-check-pknca"></a>
+<h2 id="self-consistency-check-pknca">Self-consistency check (PKNCA)<a class="anchor" aria-label="anchor" href="#self-consistency-check-pknca"></a>
 </h2>
-<p>The Elishmereni 2011 publication is not on disk, so a side-by-side
+<p>The Elishmereni 2011 publication was not available, so a side-by-side
 comparison against published Cmax / AUC / half-life is not performed.
 Instead, this section runs PKNCA on the simulated cohort and records the
 typical-value NCA summaries by route as a self-consistency record.
@@ -3530,15 +3530,15 @@ and <code>model-origin-of-code-in-literature-controlled = "No"</code>,
 so that divergence is the deposit’s intent rather than a transcription
 error.</li>
 <li>
-<strong>Publication PDF not on disk.</strong> The Elishmereni 2011
-PDF was not available during the extraction. No external cross-check
+<strong>Publication PDF not available.</strong> The Elishmereni 2011
+PDF was not available when this model was built. No external cross-check
 against the published parameter tables (Table 1 / supplementary
 material) was performed; an external comparison would only test
 conformance to the Monolix re-fit values reported in the DDMORE bundle,
-since those are what the bundle actually carries. Any future
-re-extraction with the publication on disk should record the
-original-publication values in the model file’s <code>notes</code> and
-document any irreconcilable differences here.</li>
+since those are what the bundle actually carries. Any future revision
+with access to the publication should record the original-publication
+values in the model file’s <code>notes</code> and document any
+irreconcilable differences here.</li>
 <li>
 <strong>No <code>Output_real_*.lst</code> shipped.</strong> The
 DDMORE bundle for DDMODEL00000230 contains only the .mdl, the rendered
@@ -3585,7 +3585,7 @@ VPC by route,
 <ol start="3" style="list-style-type: lower-alpha">
 <li>a per-compartment trace audit, and (d) a PKNCA self-consistency
 table. There is no published Cmax / AUC / half-life table to compare
-against without the publication on disk.</li>
+against without the publication.</li>
 </ol>
 </li>
 </ul>

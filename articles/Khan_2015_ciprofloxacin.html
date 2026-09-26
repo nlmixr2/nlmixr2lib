@@ -3155,14 +3155,14 @@ The <code>output_simulated.lst</code> final estimates differ materially
 only for <code>SIGMA(1)</code> (2.42 -&gt; 1.78); the <code>.mod</code>
 initial 2.41597 is what the model file uses for <code>addSd</code>.</p>
 <p>The Khan et al. 2015 publication itself (J Antimicrob Chemother
-70(11):3051-3060) is paywalled and is not on disk; PMID 26349518 has no
-PMC full-text mirror. A side-by-side comparison against the
-publication’s per-strain MIC table or per-tube time-kill figure is
-therefore out of scope here. Validation in this vignette is a
-mechanistic-sanity check: the typical-value bacterial-count trajectory
-is qualitatively consistent with a 24-hour ciprofloxacin time-kill
-experiment on <code>Escherichia coli</code> LM202 wild-type at
-concentrations spanning 0-8 x MIC.</p>
+70(11):3051-3060) is paywalled and was not available when this model was
+built; PMID 26349518 has no PMC full-text mirror. A side-by-side
+comparison against the publication’s per-strain MIC table or per-tube
+time-kill figure is therefore out of scope here. Validation in this
+vignette is a mechanistic-sanity check: the typical-value
+bacterial-count trajectory is qualitatively consistent with a 24-hour
+ciprofloxacin time-kill experiment on <code>Escherichia coli</code>
+LM202 wild-type at concentrations spanning 0-8 x MIC.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3537,7 +3537,7 @@ count grows to a stationary plateau (capped by the density-dependent
 active -&gt; resting flux); at 1 x MIC the count collapses sharply
 through ~24 hours; at 2-8 x MIC the count drops to near-eradication
 levels within the first 9 hours and stays low. The published Khan 2015
-figures are not on disk for a side-by-side panel-by-panel
+figures were not available for a side-by-side panel-by-panel
 comparison.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/pal_viridis.html" class="external-link">viridis_pal</a></span><span class="op">(</span>option <span class="op">=</span> <span class="st">"C"</span>, end <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">sim_typical</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -3691,15 +3691,16 @@ The <code>output_simulated.lst</code> values round-trip-recover the
 <code>2.41597</code>; the model file uses
 <code>addSd = sqrt(2.41597) = 1.5544</code> to remain consistent with
 the publication-derived initials.</p></li>
-<li><p><strong>The Khan 2015 publication itself is not on disk.</strong>
-PMID 26349518 / DOI <code>10.1093/jac/dkv233</code> is paywalled and has
-no PMC full-text mirror; a direct fetch returns only the abstract. As a
-result the per-strain MIC table, the per-strain EC50 table, the
-time-kill figure panels, and the residual-error structure description in
-the publication cannot be cross-checked here. The numerical values shown
-above match the bundle’s <code>.mod</code>; whether they match the
-publication’s printed tables exactly is a question this vignette cannot
-answer until full text is available.</p></li>
+<li><p><strong>The Khan 2015 publication itself was not available when
+this model was built.</strong> PMID 26349518 / DOI
+<code>10.1093/jac/dkv233</code> is paywalled and has no PMC full-text
+mirror; only the abstract is openly available. As a result the
+per-strain MIC table, the per-strain EC50 table, the time-kill figure
+panels, and the residual-error structure description in the publication
+cannot be cross-checked here. The numerical values shown above match the
+bundle’s <code>.mod</code>; whether they match the publication’s printed
+tables exactly is a question this vignette cannot answer until full text
+is available.</p></li>
 <li><p><strong>Multi-level residual error collapsed to across-tube
 only.</strong> The <code>.mod</code> <code>$ERROR</code> block writes
 <code>Y = IPRED + EPS(1) + SAM1*EPS(2) + SAM2*EPS(3) + SAM3*EPS(4) + SAM4*EPS(5)</code>

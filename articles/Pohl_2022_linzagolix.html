@@ -4293,7 +4293,7 @@ E2 scaling function (E2-50 = 0.202 pg/mL, sigmoidicity 1.17) and fixed
 Pharmacometrics Syst Pharmacol</em> 1:e11, <a href="doi:10.1038/psp.2012.10" class="uri">doi:10.1038/psp.2012.10</a>),
 which in turn fixes its own system parameters to Peterson &amp; Riggs
 2010 and the authors’ <code>OpenBoneMin</code> code deposit (<a href="https://github.com/metrumresearchgroup/OpenBoneMin" class="external-link uri">https://github.com/metrumresearchgroup/OpenBoneMin</a>).
-Both upstream sources were acquired during this extraction, but the
+Both upstream sources were available when this model was built, but the
 underlying bone model is a 43-state, multi-hundred-parameter
 calcium/bone homeostasis system whose compartments have no canonical
 names in the library, and the published Riggs 2012 estimate of one power
@@ -4303,8 +4303,9 @@ corresponding constant in the code deposit
 structure belongs to Riggs 2012 rather than to Pohl 2022 – which
 contributes only the two E2-scaling parameters of Table 8 – the bone
 model is properly a separate extraction of Riggs 2012 itself, not a
-sub-model of this paper. Riggs 2012 has been acquired to the source
-directory for that purpose.</li>
+sub-model of this paper. The Riggs 2012 paper was already available to
+the maintainers when this model was built, so it can be taken up as its
+own extraction.</li>
 </ul>
 </div>
 <div class="section level3">

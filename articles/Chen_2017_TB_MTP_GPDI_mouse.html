@@ -3761,9 +3761,9 @@ regimens without isoniazid.</li>
 <li>
 <strong>GPDI functional form.</strong> Chen 2017’s Methods describes
 the reduced GPDI with EC50_INT -&gt; 0 and joint INTAB = INTBA, but the
-published main-text formula is encoded with a placeholder
-(“formula-not-decoded”) in the PDF extraction and Supplementary Material
-S3 (containing the NONMEM model code) is not on disk. The implementation
+published main-text formula does not survive plain-text extraction of
+the PDF, and Supplementary Material S3 (containing the NONMEM model
+code) was not available when this model was built. The implementation
 here follows the canonical Wicha 2017 GPDI formulation, slope_eff =
 slope_mono / (1 + INT) with INT &gt; 0 = decreased potency and INT &lt;
 0 = increased potency, gated on/off by whether the partner drug’s plasma
@@ -3847,12 +3847,12 @@ column.</li>
 for the Chen 2017 CPT-PSP article via the journal landing page or a
 PubMed “erratum” search as of 2026-05-17.</li>
 <li>Chen 2017 Supplementary Material S3 (the final NONMEM model code) is
-referenced in the paper but is not on disk in the maintainers’
-literature mirror. The model file extracts every parameter VALUE
-verbatim from Table 1 (popPK) and Table 2 (MTP-GPDI); only the precise
-GPDI reduction algebra is reconstructed from the canonical Wicha 2017
-formulation per the “GPDI functional form” note above. A maintainer with
-access to S3 should cross-check the GPDI multiplier shape.</li>
+referenced in the paper but was not available when this model was built.
+The model file extracts every parameter VALUE verbatim from Table 1
+(popPK) and Table 2 (MTP-GPDI); only the precise GPDI reduction algebra
+is reconstructed from the canonical Wicha 2017 formulation per the “GPDI
+functional form” note above. A maintainer with access to S3 should
+cross-check the GPDI multiplier shape.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

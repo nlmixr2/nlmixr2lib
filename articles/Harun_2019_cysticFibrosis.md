@@ -461,5 +461,5 @@ implements the published equation correctly.
   final model and is therefore not a covariate of this packaged model.
 - **VPC reference**: The stochastic-VPC chunk shows the model’s
   simulated percentile bands but cannot overlay the published pcVPC
-  reference curves because the original observations are not on disk;
+  reference curves because the original observations are not available;
   the comparison is therefore qualitative.

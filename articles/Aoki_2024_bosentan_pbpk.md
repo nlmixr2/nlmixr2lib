@@ -16,8 +16,9 @@
   physiologically based pharmacokinetic modeling: target binding, albeit
   not a major contributor to nonlinearity, can offer prediction of
   target occupancy. Drug Metab Dispos. 2021;49(4):298-304.
-  <doi:10.1124/dmd.120.000023> (not open access; not on disk – every
-  value here is traced to the Aoki 2024 sources listed above).
+  <doi:10.1124/dmd.120.000023> (not open access; not available when this
+  model was built – every value here is traced to the Aoki 2024 sources
+  listed above).
 - Description: PBPK-TMDD (semi-mechanistic, dispersion liver). Bosentan
   disposition after single intravenous doses of 10-750 mg in healthy
   adults, re-estimated by Aoki & Sugiyama (2024) with the Cluster
@@ -88,7 +89,7 @@ from 10, 50, 250, 500, and 750 mg arms” (Results, Example 3). Subject
 counts, ages, weights and sex distribution are not reported; they belong
 to the underlying clinical study, which reaches this paper through
 Koyama et al. (2021), Drug Metab Dispos 49(4):298-304 – a paper that is
-not open access and is not available on disk for this extraction. Every
+not open access and was not available when this model was built. Every
 physiological volume, flow and partition coefficient in the model is a
 single fixed constant for one typical adult, and the published code
 carries no body-weight or demographic scaling of any kind, so there is
@@ -635,7 +636,7 @@ two models should be extracted from that paper.
 
 - **The model is Koyama’s; the parameter values are Aoki’s.** The
   structure and the fixed physiological constants originate with Koyama
-  et al. (2021), which is not open access and is not on disk. Nothing
+  et al. (2021), which is not open access and was not available. Nothing
   was taken from it: every structural equation and every fixed constant
   here is transcribed from Aoki 2024’s own Supporting Information file
   `PSP4-13-54-s004.r`, and every estimated value from Table S2 of the

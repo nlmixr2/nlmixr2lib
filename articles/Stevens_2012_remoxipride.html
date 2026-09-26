@@ -3123,12 +3123,11 @@ values themselves (those are embedded as MS Equation 3.0 OLE objects
 that are not text-extractable). Confirms the publication match: Stevens
 et al. 2012, J Pharmacokinet Pharmacodyn, <a href="doi:10.1007/s10928-012-9262-4" class="uri">doi:10.1007/s10928-012-9262-4</a>.</li>
 </ul>
-<p>The Stevens 2012 publication itself was not on disk when this model
+<p>The Stevens 2012 publication itself was not available when this model
 was built, so the standard publication-figure replication and
 PKNCA-vs-published-NCA checks are out of scope. The validation in this
-vignette therefore follows the F.2 self-consistency and F.3
-mechanistic-sanity substitutes in the package’s validation
-checklist.</p>
+vignette therefore uses the self-consistency and mechanistic-sanity
+checks that stand in for them.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3334,17 +3333,18 @@ are not reproduced in the nlmixr2 implementation.</p>
 <p>This bundle ships a simulated dataset
 (<code>Simulated_PK_rats.csv</code>) and a re-fit listing
 (<code>Output_simulated_PK_rats.lst</code>) but the linked publication
-is not on disk. Following the package’s validation strategy for DDMORE
-bundles (decision tree -&gt; no PKNCA -&gt; mechanistic / endogenous
--&gt; F.2 + F.3 substitutes), this vignette validates by:</p>
+was not available when this model was built. Following the package’s
+validation strategy for DDMORE bundles (no PKNCA comparison is possible
+for a mechanistic / endogenous model, so the self-consistency and
+mechanistic-sanity checks stand in), this vignette validates by:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Steady-state hold (F.1 / endogenous-model pattern).</strong>
-With no drug administration, the lactotroph and plasma-prolactin states
-must stay at their analytic baselines. The .mod sets
-<code>A_0(6) = BSL * K70 / K67</code> and <code>A_0(7) = BSL</code> so
-the system is at steady state at <code>t = 0</code>; integrating forward
-without dose inputs must keep the states at those values within
+<strong>Steady-state hold (the closed-form check for an endogenous
+model).</strong> With no drug administration, the lactotroph and
+plasma-prolactin states must stay at their analytic baselines. The .mod
+sets <code>A_0(6) = BSL * K70 / K67</code> and <code>A_0(7) = BSL</code>
+so the system is at steady state at <code>t = 0</code>; integrating
+forward without dose inputs must keep the states at those values within
 numerical tolerance.</li>
 <li>
 <strong>Drug-response sanity.</strong> A single intravenous
@@ -3354,7 +3354,7 @@ rising above baseline, peaking, and decaying back as the brain ECF
 clears. A larger dose must produce a larger (and longer- lasting)
 response.</li>
 <li>
-<strong>F.2 self-consistency against the bundle’s simulated
+<strong>Self-consistency against the bundle’s simulated
 dataset.</strong> Re-simulate the bundle’s typical-value trajectory at
 the conditions present in <code>Simulated_PK_rats.csv</code> (rat 304:
 3.8 mg/kg IV at <code>t = 0</code> and <code>t = 4</code> h,
@@ -3595,7 +3595,7 @@ depletes and refills on a slower time scale.</caption>
 </table>
 </div>
 <div class="section level2">
-<h2 id="f-2-self-consistency-vs--the-bundles-simulated-dataset">3. F.2 self-consistency vs. the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#f-2-self-consistency-vs--the-bundles-simulated-dataset"></a>
+<h2 id="self-consistency-vs--the-bundles-simulated-dataset">3. Self-consistency vs. the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-vs--the-bundles-simulated-dataset"></a>
 </h2>
 <p>Re-simulate the bundle’s typical-value trajectory at the same dosing
 conditions used by the first rat in <code>Simulated_PK_rats.csv</code>
@@ -3655,7 +3655,7 @@ conditions used by the first rat in <code>Simulated_PK_rats.csv</code>
 <span>    x <span class="op">=</span> <span class="st">"Time (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Plasma prolactin (ug/L)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
-<span>      <span class="st">"F.2 self-consistency: simulated typical-value trajectory"</span>,</span>
+<span>      <span class="st">"Self-consistency: simulated typical-value trajectory"</span>,</span>
 <span>      <span class="st">"(blue line) vs observed DV (red dots) for rat 304 from"</span>,</span>
 <span>      <span class="st">"Simulated_PK_rats.csv"</span></span>
 <span>    <span class="op">)</span>,</span>
@@ -3743,7 +3743,7 @@ inside the model. Users comparing brain-ECF concentrations against
 absolute mg/L values in the literature should multiply by body weight
 (in kg).</li>
 <li>
-<strong>No publication on disk.</strong> The Stevens 2012 paper
+<strong>No publication available.</strong> The Stevens 2012 paper
 itself is paywalled (J Pharmacokinet Pharmacodyn) and was not available
 when this model was built. The DDMORE specification document confirms
 the publication match (title, authors, journal, DOI in the document’s

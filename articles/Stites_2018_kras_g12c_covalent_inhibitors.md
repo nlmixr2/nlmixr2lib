@@ -68,7 +68,7 @@ eleven MATLAB scripts and a `Read_Me.pdf`:
 Every value in
 `inst/modeldb/therapeuticArea/Stites_2018_kras_g12c_qsp.R` is
 transcribed from those files, cross-checked against Table 1 where Table
-1 reports it. Nothing is supplied from outside the on-disk sources.
+1 reports it. Nothing is supplied from outside those sources.
 
 ``` r
 
@@ -94,7 +94,7 @@ str(mod$population)
 
 Eleven parameters are printed in the paper itself; the remaining
 twenty-one are biochemical constants that appear only in the deposited
-code. Both are on disk.
+code. Both were available when this model was built.
 
 | Model parameter | Value | Source in the paper | Source in the deposited code |
 |----|----|----|----|
@@ -307,8 +307,8 @@ parameter estimates.
 
 The deposited archive ships drivers for Figures 2 through 6 only, so the
 G12V, G12D and F28L columns of Figure 1b – whose mutant scaling factors
-come from the 2007 paper and are not on disk – cannot be reproduced
-here. The wild-type and G12C columns can.
+come from the 2007 paper, which was not available when this model was
+built – cannot be reproduced here. The wild-type and G12C columns can.
 
 ``` r
 

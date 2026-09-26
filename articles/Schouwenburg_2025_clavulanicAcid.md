@@ -579,10 +579,10 @@ published figure is a round decade (50, 70, 80, 100) whereas the
 simulated crossings are not, and rounding a crossing at 78% down to the
 nearest labelled gridline gives exactly “up to 70%”. The underlying
 tabulated values live in Supplementary Table S4, which was not available
-on disk, so this cannot be settled against the source. The PTA curve is
-steep where it crosses 90%, so a small shift in attainment moves the
-crossing several percentage points. No parameter was adjusted to close
-the gap.
+when this model was built, so this cannot be settled against the source.
+The PTA curve is steep where it crosses 90%, so a small shift in
+attainment moves the crossing several percentage points. No parameter
+was adjusted to close the gap.
 
 The second row is also the evidence for the postnatal-age encoding
 discussed above: the paper’s “PNA 0 days” scenario is reproduced by PNA
@@ -998,14 +998,14 @@ gates above.
   vignette compares against the 40.2-42.6% band.
 
 - **Supplementary Tables S1-S4** (the tabulated target-attainment values
-  behind Figures 3 and 4) were not available on disk, so the comparison
-  above uses only the target-attainment numbers quoted in the main text.
-  This matters for two of the six comparisons: the paper’s “PTA \> 90%
-  up to 70%” (4:1) and “up to 50%” (7:1) statements at CT = 0.5 mg/L are
-  reproduced as 78% and 58%, about 8 percentage points more optimistic
-  in both cases. Because all four such statements are round decades
-  while the simulated crossings are not, these read as figure-derived
-  rather than tabulated, and Table S4 would be needed to settle it. The
-  two point-valued published percentages both reproduce within Monte
-  Carlo uncertainty, and every closed-form and analytic-NCA gate is
-  exact, so this is not evidence of a parameter error.
+  behind Figures 3 and 4) were not available when this model was built,
+  so the comparison above uses only the target-attainment numbers quoted
+  in the main text. This matters for two of the six comparisons: the
+  paper’s “PTA \> 90% up to 70%” (4:1) and “up to 50%” (7:1) statements
+  at CT = 0.5 mg/L are reproduced as 78% and 58%, about 8 percentage
+  points more optimistic in both cases. Because all four such statements
+  are round decades while the simulated crossings are not, these read as
+  figure-derived rather than tabulated, and Table S4 would be needed to
+  settle it. The two point-valued published percentages both reproduce
+  within Monte Carlo uncertainty, and every closed-form and analytic-NCA
+  gate is exact, so this is not evidence of a parameter error.

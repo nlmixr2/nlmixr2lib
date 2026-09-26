@@ -627,7 +627,7 @@ Assumptions and deviations below; no parameter was adjusted to close it.
   model: the paper simulated in C++ via `mrgsolve` with 100 000
   (loading) and 10 000 (maintenance) replicates per covariate-dose
   combination, and Appendix S1 – which documents that simulation code
-  and is not available on disk for this extraction – may specify
+  and was not available when this model was built – may specify
   additional variability, a different occasion structure, or a different
   trough definition. Notably, the published attainment of about 42-43%
   is what a lognormal trough distribution with a log-scale SD of 0.71
@@ -638,10 +638,10 @@ Assumptions and deviations below; no parameter was adjusted to close it.
 
 - **Ideal body weight formula.** Methods 2.1 states IBW was computed
   with the formula of Brower et al. (paper reference 25) but does not
-  reproduce the formula, and that reference is not on disk. A user
-  deriving IBW from height and sex must consult that reference; the
-  model takes `IBW` as a supplied covariate column and does not derive
-  it.
+  reproduce the formula, and that reference was not available when this
+  model was built. A user deriving IBW from height and sex must consult
+  that reference; the model takes `IBW` as a supplied covariate column
+  and does not derive it.
 
 - **Appendix S1 not available.** The supplement holds the CV definition
   (Equation 1), the covariate screening list (Table S1), the OFV table

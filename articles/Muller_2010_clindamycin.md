@@ -706,8 +706,7 @@ candidate explanations. {.table}
   performed.
 - **Errata not searched externally.** The package’s validation checklist
   prescribes an erratum search on the publisher landing page; for this
-  2010 article the external search was not performed during extraction
-  (web search was not available at extraction time). The PMC-XML / PDF
-  on disk shows no notice of corrections. If a subsequent erratum
-  revises a Table 3 estimate, the packaged values should be refreshed
-  accordingly.
+  2010 article the external search was not performed when this model was
+  built (web search was not available at the time). The PMC XML and PDF
+  show no notice of corrections. If a subsequent erratum revises a Table
+  3 estimate, the packaged values should be refreshed accordingly.

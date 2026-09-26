@@ -3460,8 +3460,8 @@ below.</p>
 <table class="table">
 <caption>Source trace for every parameter and equation.</caption>
 <colgroup>
-<col width="25%">
-<col width="74%">
+<col width="23%">
+<col width="76%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Parameter</th>
@@ -3578,8 +3578,8 @@ EXP(EMAX*TIME<strong>HILL/(T50</strong>HILL+TIME**HILL))</td>
 </tr>
 <tr class="odd">
 <td align="left">Logit bioavailability</td>
-<td align="left">Main text Eq. for F_i (recovered via pdftotext
--layout); control streams $PK LOGITF1 block</td>
+<td align="left">Main text Eq. for F_i (read from the layout-preserved
+PDF text); control streams $PK LOGITF1 block</td>
 </tr>
 <tr class="even">
 <td align="left">Reference WT / eGFR</td>
@@ -4509,10 +4509,11 @@ i.v. 10 mg/kg q2w is about 438 ug/mL (geometric mean); the printed 352
 ug/mL is matched to within 2% by a sample taken about 2 days after the
 steady-state dose. The legend describes the value as “simulated” but
 attaches it to a regimen whose safety margins come from a separate
-published analysis (reference 17, Agrawal 2016), which is not on disk,
-so whether the number came from this model under a coarse sampling grid
-or from that earlier analysis cannot be settled from the sources
-available. No parameter was adjusted to close the gap.</p></li>
+published analysis (reference 17, Agrawal 2016), which was not available
+when this model was built, so whether the number came from this model
+under a coarse sampling grid or from that earlier analysis cannot be
+settled from the sources available. No parameter was adjusted to close
+the gap.</p></li>
 </ol>
 </div>
 <div class="section level3">
@@ -4559,9 +4560,9 @@ estimate only, and are narrower than the paper’s.</li>
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> flags as a warning for fixed-effect
 PK parameters. This is deliberate and matches the sibling
 <code>Bajaj_2017_nivolumab.R</code>, which carries the identical three
-warnings on <code>main</code>: <code>cl_time_max</code> is negative
-(-0.303) and therefore cannot be held on the log scale, and it carries
-an <strong>additive</strong> random effect
+warnings: <code>cl_time_max</code> is negative (-0.303) and therefore
+cannot be held on the log scale, and it carries an
+<strong>additive</strong> random effect
 (<code>EMAX = AEMAX + ZEMAX</code> in the source), so a log
 parameterisation would misrepresent both the sign and the IIV
 structure.</li>

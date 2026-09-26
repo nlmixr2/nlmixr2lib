@@ -377,8 +377,8 @@ any window from 8 to 96 h). So with the same simultaneous timing, the
 shipped parameters give the same AUCR for 20 mg as for the 33 ug Maeda
 microdose, and the microdose row matches (3.06 vs 3.01). The published
 1.64 must come from a scenario detail of the authors’ Deng simulation
-that neither the paper nor the Napp code on disk gives, such as dose
-timing, body weight or a study-specific setting. The row is shown for
+that neither the paper nor the Napp code gives, such as dose timing,
+body weight or a study-specific setting. The row is shown for
 transparency and is left out of the gate. No parameter was adjusted.
 
 ## Coproporphyrin I (endogenous OATP1B biomarker)

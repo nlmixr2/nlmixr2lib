@@ -425,9 +425,9 @@ cat(sprintf("  vextra = %.2g PFU/mL (log10 = %.2f)\n",
   autoinhibition adapted from Madelain 2017 <doi:10.1128/AAC.01305-16>;
   IFN linear one-compartment from Gutterman 1982 IM data) in the
   supplemental file `https://doi.org/10.1128/AAC.01983-17`. That
-  supplemental PDF was not on disk when this model was built, and the PK
-  structures are adapted from prior publications rather than original to
-  this paper. This registry entry therefore covers only the PD MBM.
+  supplemental PDF was not available when this model was built, and the
+  PK structures are adapted from prior publications rather than original
+  to this paper. This registry entry therefore covers only the PD MBM.
   Users who need human plasma-PK input functions for the FAV + IFN
   combination simulations (paper Figure 5) should drive `CONC_FAV_UM`
   and `CONC_IFN_IUML` from external PK profiles (e.g. Madelain 2017 FAV;

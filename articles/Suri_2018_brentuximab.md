@@ -9,13 +9,12 @@
 - Article: <https://doi.org/10.1002/cpt.1037> (PMID 29377077)
 - Open-access PMC copy:
   <https://pmc.ncbi.nlm.nih.gov/articles/PMC6220930/>
-- Supplements: ten supplementary files
-  (`PMID_29377077_supplement_{1..10}.docx`). The popPK final-model
-  parameter values come from supplements 6 (Table S1, ADC) and 8 (Table
-  S3, MMAE); the structural-model methodology, IIV / residual error /
-  covariate-effect equations come from supplement 1; covariate
-  exploration and study-design details come from supplements 7, 9, and
-  10 (Tables S2, S4, S5).
+- Supplements: ten supplementary `.docx` files (supplements 1-10). The
+  popPK final-model parameter values come from supplements 6 (Table S1,
+  ADC) and 8 (Table S3, MMAE); the structural-model methodology, IIV /
+  residual error / covariate-effect equations come from supplement 1;
+  covariate exploration and study-design details come from supplements
+  7, 9, and 10 (Tables S2, S4, S5).
 
 The Suri 2018 paper reports a coupled population-PK model for the
 brentuximab vedotin (BV) antibody-drug conjugate (ADC) and its released
@@ -876,7 +875,7 @@ quirks in the source documentation that needed re-derivation.
   the* shape\* of the MMAE profile (Tmax ~1-2 days, slow elimination
   matching the paper’s Figure 3d) are correctly reproduced. Resolving
   this requires access to the original Suri 2018 NONMEM control stream,
-  which is not in the supplements on disk.
+  which is not in the supplements.
 - **Off-diagonal IIV.** Suri 2018 supplement Table S1 / S3 do not report
   any off-diagonal correlations between IIV terms, and supplement 1 only
   states “the highest feasible number of variance terms was added to the

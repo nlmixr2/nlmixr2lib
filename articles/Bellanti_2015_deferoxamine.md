@@ -746,10 +746,10 @@ trajectories are monotonic and well-behaved.
   0.75 on clearances and 1.0 on volumes) are documented in
   `covariateData[[CSS_DFO]]$notes` and reproduced in the
   `compute_css_dfo()` helper above. Bellanti 2015 reference 25 (the
-  upstream literature source for the PK fit) is not on disk and was not
-  located via author-citation searches; the upstream provenance is
-  therefore documented in the vignette but not chained as a `depends_on`
-  task.
+  upstream literature source for the PK fit) was not available and was
+  not located via author-citation searches; the upstream provenance is
+  therefore documented in this vignette, but the PK source is not itself
+  packaged as a model.
 - **Compliance covariate (`CMPL`) collapsed into a time-varying
   `CSS_DFO`.** Bellanti 2015 introduces CMPL (derived from the
   percentage of each subject’s ferritin observations above the 2500 ug/L
@@ -775,8 +775,8 @@ trajectories are monotonic and well-behaved.
 - **Erratum search:** A web search for “Bellanti 2015 Pharmaceutical
   Research erratum / corrigendum” against the journal landing page and
   PubMed (<doi:10.1007/s11095-015-1805-0>) returned no corrections as of
-  vignette authoring (2026-05-22). No on-disk erratum is provided
-  alongside the source PDF.
+  vignette authoring (2026-05-22). No erratum was available alongside
+  the source PDF.
 - **No PKNCA validation.** This is an endogenous-biomarker
   disease-progression model with no PK observations (only ferritin
   time-courses); PKNCA-style Cmax / AUC / half-life parameters are not

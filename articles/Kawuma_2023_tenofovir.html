@@ -4127,8 +4127,8 @@ changes in terms of goodness-of-fit” anywhere in the range 5 to 60 days.
 They fixed it at 6.83 days, the published intracellular TFV-DP decay
 half-life. It is encoded here as a fixed first-order rate constant
 <code>log(2) / (6.83 x 24)</code> per hour. The sensitivity analysis
-behind this choice is in the paper’s Table S1 and Figure S4, which are
-not on disk (see below); the final fixed value itself is printed in
+behind this choice is in the paper’s Table S1 and Figure S4, which were
+not available (see below); the final fixed value itself is printed in
 Table 2 of the main text.</p></li>
 <li><p><strong>The model does not reproduce the secondary TAF
 peak.</strong> The Discussion notes that the observed TAF profiles show
@@ -4157,7 +4157,7 @@ gives sex, age, weight, height and creatinine clearance only, so
 distribution. The weight distribution used for the cohort simulation
 above is a log-normal matched to the published median and IQR, not a
 resampling of the actual 41 participants, whose individual covariates
-are not available in a form on disk.</p></li>
+were not available.</p></li>
 <li><p><strong>Fat-free mass was tested and rejected.</strong> The
 authors report that FFM scaling did not improve the model over no
 allometry (dOFV = -3.80) whereas total body weight did (dOFV = -18), so
@@ -4171,8 +4171,9 @@ goodness-of-fit plots, plus the <code>t1/2_TAF-Slow</code> sensitivity
 figure), Table S1 (the <code>t1/2_TAF-Slow</code> sensitivity analysis),
 a NONMEM control stream deposited as <code>PSP4-12-821-s007.mod</code>,
 and the concentration dataset <code>PSP4-12-821-s006.xlsx</code> – could
-not be retrieved. PMC now serves supplementary blobs behind a JavaScript
-proof-of-work challenge and the Wiley landing page returns HTTP 403.</p>
+not be retrieved when this model was built: PMC serves supplementary
+files only through an interactive browser challenge, and the Wiley
+landing page refused access.</p>
 <p>No parameter used by this model comes from those files: every
 structural element is specified in the Methods and the Figure 2 legend,
 and every final estimate is printed in Table 2 of the main text. The

@@ -48,7 +48,7 @@ length(mouse$state)
 > counts – labelled phage *plus* free label – generated jointly with a
 > second, “twin” PBPK model for free `125I` that the paper describes
 > only in prose. That twin model is not implemented here because no
-> source on disk contains its equations, compartments or parameter
+> available source contains its equations, compartments or parameter
 > values.
 
 ## Population

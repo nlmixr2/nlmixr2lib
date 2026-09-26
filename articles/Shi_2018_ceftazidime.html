@@ -3687,11 +3687,11 @@ concentration units (mg/L equivalent to ug/mL), not as a percentage. The
 packaged model takes ERR(2) = 16.0 mg/L on that convention – consistent
 with the precedent set by <code>Delattre_2010_amikacin</code> (additive
 1.03 mg/L) and other antibiotic-PK extractions in this library. No
-<code>.lst</code> file is on disk to confirm the SIGMA output directly.
-The high relative standard error on ERR(2) (RSE 87.9%; bootstrap
-5th-95th 9.2-22.2) is consistent with the additive component being
-poorly identified against sparse-sampling data where most concentrations
-are well above the LLOQ.</p></li>
+<code>.lst</code> file was available to confirm the SIGMA output
+directly. The high relative standard error on ERR(2) (RSE 87.9%;
+bootstrap 5th-95th 9.2-22.2) is consistent with the additive component
+being poorly identified against sparse-sampling data where most
+concentrations are well above the LLOQ.</p></li>
 <li><p><strong>Allometric exponents fixed at 0.75 and 1.0.</strong> Shi
 2018 Covariate analysis explicitly fixes the allometric exponents on CL
 (0.75) and V (1.0): “this model with fixed allometric coefficients was
@@ -3705,7 +3705,8 @@ default hold them at the source-paper values.</p></li>
 variability and no off-diagonal covariance estimates, consistent with
 diagonal OMEGA. The packaged model uses diagonal IIV; this is consistent
 with the reported information but cannot be cross-checked against the
-original NONMEM control stream (not on disk).</p></li>
+original NONMEM control stream, which was not available when this model
+was built.</p></li>
 <li><p><strong><code>omega^2 = log(CV^2 + 1)</code>.</strong> Table 2
 reports IIV as CV%; the corresponding log-normal variance was computed
 via the standard NONMEM/PsN back-transformation

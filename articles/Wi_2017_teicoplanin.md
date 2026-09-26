@@ -436,12 +436,12 @@ teicoplanin reported in the literature for adult ICU patients (typically
   was estimated using a variance-covariance matrix”, but Table 2 reports
   only the diagonal omega^2 values (0.34, 0.13, 0.15 on CL, V1, Q
   respectively) with no off-diagonal covariance estimates printed in the
-  paper or any supplement on disk. The packaged model uses an
+  paper or any available supplement. The packaged model uses an
   independent- eta block (`etalcl ~ 0.34; etalvc ~ 0.13; etalq ~ 0.15`).
   This is consistent with the reported information but cannot be
-  cross-checked against the original NONMEM control stream (not on
-  disk). No IIV is included on V2 because no V2 variability is reported
-  in Table 2.
+  cross-checked against the original NONMEM control stream (not
+  available). No IIV is included on V2 because no V2 variability is
+  reported in Table 2.
 
 - **Residual error encoded as combined `add + prop` on the linear
   scale.** Wi 2017 Methods describes the residual model formula
@@ -477,14 +477,13 @@ teicoplanin reported in the literature for adult ICU patients (typically
   for VV-ECMO simulations the model’s covariate effect should be
   interpreted with caution.
 
-- **New canonical `ECMO_STATUS` ratified alongside this extraction.**
-  The existing `ECMO_PUMP_SPEED` canonical (continuous centrifugal-pump
-  RPM covariate, Yang 2017 precedent) and `T_POST_ECMO` canonical
+- **New canonical `ECMO_STATUS` added alongside this model.** The
+  existing `ECMO_PUMP_SPEED` canonical (continuous centrifugal-pump RPM
+  covariate, Yang 2017 precedent) and `T_POST_ECMO` canonical
   (continuous time-since-decannulation, Ahsman 2010 precedent) do not
   fit the Wi 2017 binary within-subject ECMO indicator. The founding
-  example for `ECMO_STATUS` is `Watt_2015_fluconazole.R` (ratified
-  earlier in this ingestion batch); the Wi 2017 extraction is the second
-  user.
+  example for `ECMO_STATUS` is `Watt_2015_fluconazole.R`; the Wi 2017
+  model is the second user.
 
 - **Race / ethnicity not modeled.** Wi 2017 does not report race
   composition; the single-centre Korean cardiac ICU cohort is presumably

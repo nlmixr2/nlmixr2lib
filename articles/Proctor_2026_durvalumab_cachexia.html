@@ -3996,8 +3996,8 @@ implementation error. The model’s albumin passes through 36.1 g/L at day
 measured from roughly the first on-treatment observation rather than
 from the moment of the first dose. Since Figure 2’s observed points are
 digitized means whose sampling times are not reported, this cannot be
-settled from the sources on disk. <strong>No parameter was adjusted to
-close the gap.</strong></p></li>
+settled from the sources that were available when this model was built.
+<strong>No parameter was adjusted to close the gap.</strong></p></li>
 <li><p><strong>Initial conditions and the equilibration window.</strong>
 The paper never states initial conditions in prose; they are taken from
 the Appendix S3 <code>initialAssignment</code> rules – endogenous
@@ -4014,8 +4014,8 @@ here.</p></li>
 <li><p><strong>IgG molecular weight is back-solved, not
 printed.</strong> 150000 g/mol is recovered exactly from two independent
 Appendix S3 quantities (the small-pore reflection coefficient and the
-dose conversion at 71 kg). This is a verifiable derivation from on-disk
-values, not a class-typical substitution.</p></li>
+dose conversion at 71 kg). This is a verifiable derivation from
+published values, not a class-typical substitution.</p></li>
 <li><p><strong>No IIV and no residual error.</strong> Table 1 reports
 RSEs from a fit to digitized summary means; there is no residual-error
 model for either endpoint (fit quality is reported as RMSE = 0.245 g/L
@@ -4025,14 +4025,16 @@ only.</p></li>
 <li><p><strong>The Figure 5 confidence band is not reproduced.</strong>
 The paper bootstrapped the popPK parameters using standard errors
 approximated from Baverel 2018’s non-parametric 95% CIs. Table S3
-carries point estimates only and Baverel 2018 is not on disk, so only
-the point-estimate curve is drawn.</p></li>
+carries point estimates only and Baverel 2018 was not available when
+this model was built, so only the point-estimate curve is
+drawn.</p></li>
 <li><p><strong>The comparator popPK model is a secondary
 transcription.</strong> Its parameters originate in Baverel 2018 and
 reach us through Proctor 2026 Table S3, which omits that paper’s
-covariate model, IIV and residual error. Re-extract from Baverel 2018
-directly when it is acquired. The other nine checkpoint inhibitors in
-Table S3 are deliberately <em>not</em> packaged as model files.</p></li>
+covariate model, IIV and residual error. Rebuild from Baverel 2018
+directly when that paper becomes available. The other nine checkpoint
+inhibitors in Table S3 are deliberately <em>not</em> packaged as model
+files.</p></li>
 <li><p><strong>Lung and plasma flow balance.</strong> Table S1’s lung
 plasma flow (181913 mL/h) exceeds the sum of the systemic organ flows
 (178244 mL/h) by ~2%, so the lung vascular concentration settles ~2.3%

@@ -49,11 +49,12 @@ Every parameter and equation traces back to the DDMORE bundle for
 `DDMODEL00000297`. Because the bundle ships only an
 `Executable_run1.mod` (a `MAXEVAL=0 POSTHOC` run) and an
 `Output_simulated_run1.lst` (a one-subject re-evaluation on the bundled
-`Simulated_run1.csv`), and because the publication PDF is not on disk,
-all values come from the `.mod` file. The `MAXEVAL=0` setting makes the
-`.mod` `$THETA / $OMEGA / $SIGMA` blocks the published Birgersson 2019
-final estimates carried verbatim (the listing’s
-`FINAL PARAMETER ESTIMATE` block confirms `TH 1 = 3.57E+03` and so on).
+`Simulated_run1.csv`), and because the publication PDF was not available
+when this model was built, all values come from the `.mod` file. The
+`MAXEVAL=0` setting makes the `.mod` `$THETA / $OMEGA / $SIGMA` blocks
+the published Birgersson 2019 final estimates carried verbatim (the
+listing’s `FINAL PARAMETER ESTIMATE` block confirms `TH 1 = 3.57E+03`
+and so on).
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -189,8 +190,8 @@ sim_typical <- rxode2::rxSolve(
 
 ## Replicate published figures
 
-The Birgersson 2019 publication PDF was not on disk when this model was
-built; the figure replication here therefore demonstrates the
+The Birgersson 2019 publication PDF was not available when this model
+was built; the figure replication here therefore demonstrates the
 typical-value parent-and-metabolite trajectories and stratifies them by
 pregnancy status – the principal covariate finding of the paper. Adding
 a side-by-side comparison against the published Figure 4 is left for a
@@ -798,8 +799,8 @@ dose, by pregnancy status (median \[5%-95%\]). {.table}
 
 ### Comparison against published NCA
 
-The Birgersson 2019 publication PDF was not on disk during this
-extraction, so a numeric side-by-side comparison against the paper’s
+The Birgersson 2019 publication PDF was not available when this model
+was built, so a numeric side-by-side comparison against the paper’s
 published Cmax / AUC tables is not part of this validation. The
 qualitative findings are reproduced:
 
@@ -882,7 +883,7 @@ structural ODE chain implements the published algebraic relationship
 
 ## Assumptions and deviations
 
-- **Source publication PDF not on disk.** All structural-model values
+- **Source publication PDF not available.** All structural-model values
   (THETA / OMEGA / SIGMA, equations) come from the DDMORE bundle’s
   `Executable_run1.mod`. Because that file is a `MAXEVAL=0 POSTHOC` run,
   the `$THETA / $OMEGA / $SIGMA` blocks are the published Birgersson

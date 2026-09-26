@@ -3096,8 +3096,7 @@ first-week AUC as the only covariate.</li>
 bundle).</li>
 <li>DDMORE Foundation Model Repository entry: <a href="https://repository.ddmore.eu/model/DDMODEL00000243" class="external-link">DDMODEL00000243</a>
 </li>
-<li>Source bundle (local mirror):
-<code>dpastoor/ddmore_scraping/243/</code>
+<li>Source bundle: <code>dpastoor/ddmore_scraping/243/</code>
 </li>
 <li>Linked publication: <strong>none.</strong> The bundle is a
 methodological teaching example built on entirely simulated data; the
@@ -3266,11 +3265,11 @@ model’s typical-value survival drops from <code>S(0) = 1</code> to
 <p><img src="NA_NA_tte_gompertz_ev2_files/figure-html/km-style-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-checks-verification-checklist-section-f-3">Mechanistic sanity checks (verification-checklist Section F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks-verification-checklist-section-f-3"></a>
+<h2 id="mechanistic-sanity-checks">Mechanistic sanity checks<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks"></a>
 </h2>
 <div class="section level3">
-<h3 id="f-3-1-hazard-increases-monotonically-with-time-gompertz-alpha-0">F.3.1 – Hazard increases monotonically with time (Gompertz alpha
-&gt; 0)<a class="anchor" aria-label="anchor" href="#f-3-1-hazard-increases-monotonically-with-time-gompertz-alpha-0"></a>
+<h3 id="hazard-increases-monotonically-with-time-gompertz-alpha-0">Hazard increases monotonically with time (Gompertz alpha &gt;
+0)<a class="anchor" aria-label="anchor" href="#hazard-increases-monotonically-with-time-gompertz-alpha-0"></a>
 </h3>
 <p>The Gompertz form <code>h(t) = lam_1 * exp(alpha_1 * t)</code> with
 <code>alpha_1 &gt; 0</code> implies a hazard that rises exponentially
@@ -3290,7 +3289,7 @@ across the observation window for a typical subject.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">sim_typ</span><span class="op">$</span><span class="va">hazard</span><span class="op">)</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-3-2-higher-auc-increases-the-hazard-positive-coefficient">F.3.2 – Higher AUC increases the hazard (positive coefficient)<a class="anchor" aria-label="anchor" href="#f-3-2-higher-auc-increases-the-hazard-positive-coefficient"></a>
+<h3 id="higher-auc-increases-the-hazard-positive-coefficient">Higher AUC increases the hazard (positive coefficient)<a class="anchor" aria-label="anchor" href="#higher-auc-increases-the-hazard-positive-coefficient"></a>
 </h3>
 <p>The BAST guiding document Section 2.4.2 (Table 2-3) reports a +0.309
 coefficient on the centred <code>(AUC_BAST_FW - 3065.5)/1000</code>
@@ -3338,7 +3337,7 @@ expected direction.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">low_auc_sur</span>  <span class="op">&gt;</span> <span class="va">ref_auc_sur</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-3-3-final-fit-objective-function-value-matches-the-bundle">F.3.3 – Final-fit objective-function value matches the bundle<a class="anchor" aria-label="anchor" href="#f-3-3-final-fit-objective-function-value-matches-the-bundle"></a>
+<h3 id="final-fit-objective-function-value-matches-the-bundle">Final-fit objective-function value matches the bundle<a class="anchor" aria-label="anchor" href="#final-fit-objective-function-value-matches-the-bundle"></a>
 </h3>
 <p><code>Output_simulated_runEV2_105.res</code> reports
 <code>OBJV = 1040443.295</code> at the final estimates. This value is
@@ -3347,11 +3346,11 @@ source-trace to the bundle’s final-fit listing.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="self-consistency-with-the-bundles-simulated-dataset-f-2">Self-consistency with the bundle’s simulated dataset (F.2)<a class="anchor" aria-label="anchor" href="#self-consistency-with-the-bundles-simulated-dataset-f-2"></a>
+<h2 id="self-consistency-with-the-bundles-simulated-dataset">Self-consistency with the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#self-consistency-with-the-bundles-simulated-dataset"></a>
 </h2>
-<p>A full F.2 self-consistency check would re-simulate the bundle’s
-shipped <code>Simulated_event_data.csv</code> (200 subjects, DVID = 2
-records) under the nlmixr2lib model and compare against the bundle’s
+<p>A full self-consistency check would re-simulate the bundle’s shipped
+<code>Simulated_event_data.csv</code> (200 subjects, DVID = 2 records)
+under the nlmixr2lib model and compare against the bundle’s
 <code>Output_simulated_runEV2_105.res</code> <code>$TABLE</code> output.
 The bundle dataset is outside this package and not redistributed. The
 cohort built above (50 subjects, weekly observations to day 540) is a

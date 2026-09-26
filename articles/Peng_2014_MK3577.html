@@ -3104,8 +3104,8 @@ undergoing glucagon challenge (Fig. 1a).</li>
 with GPRG1 = 0, CL_GI scaled to 11%, and theta-fold elevated baseline
 glucose (Fig. 1b).</li>
 </ul>
-<p>The MK-3577 PK layer is NOT modeled in either file. The on-disk paper
-does not report the absorption rate <code>ka</code>, apparent volume
+<p>The MK-3577 PK layer is NOT modeled in either file. The paper does
+not report the absorption rate <code>ka</code>, apparent volume
 <code>V/F</code>, or molecular weight needed to convert the mg dose to a
 nM plasma concentration; users supply the time-varying MK-3577
 concentration through the covariate column <code>CP_MK3577_NM</code>
@@ -3598,10 +3598,10 @@ glucagon-driven glucose production blocks most of the glucose excursion
 at high doses, matching the qualitative pattern of Peng 2014 Fig. 2b
 (dose = 30 mg / 300 mg panels).</p>
 <p>The PK profile parameters below are <strong>illustrative
-only</strong> – the on-disk Peng 2014 PDF does not report
-<code>ka</code>, <code>V/F</code>, or the molecular weight that would
-let us derive a self-contained mg-to-nM mapping. Users who need a
-runnable PK layer should supply their own profile.</p>
+only</strong> – the Peng 2014 PDF does not report <code>ka</code>,
+<code>V/F</code>, or the molecular weight that would let us derive a
+self-contained mg-to-nM mapping. Users who need a runnable PK layer
+should supply their own profile.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Illustrative MK-3577 PK profile: 1-compartment first-order absorption.</span></span>
 <span><span class="co"># Parameters are placeholders chosen so that a 300 mg dose produces nM</span></span>
@@ -3724,12 +3724,12 @@ the Phase IIa programme.</p>
 <ul>
 <li>
 <strong>MK-3577 PK layer is not modeled in either file.</strong> The
-on-disk Peng 2014 PDF reports the elimination-rate structure (k_min,
-k_max, T_KM for the circadian k_d(t) form in Eq. 1) but does NOT report
-the absorption rate <code>ka</code>, the apparent volume of distribution
+Peng 2014 PDF reports the elimination-rate structure (k_min, k_max, T_KM
+for the circadian k_d(t) form in Eq. 1) but does NOT report the
+absorption rate <code>ka</code>, the apparent volume of distribution
 <code>V/F</code>, or the molecular weight needed to convert mg dose to
-nM plasma concentration. Per a maintainer decision (2026-06-17), the PD
-layer is shipped with <code>CP_MK3577_NM</code> (nM) as a user-provided
+nM plasma concentration. By the maintainers’ decision, the PD layer is
+shipped with <code>CP_MK3577_NM</code> (nM) as a user-provided
 time-varying covariate. The vignette uses a stylized one-compartment
 first-order absorption profile with placeholder values
 (<code>ka = 0.6 /h</code>, <code>V/F = 100 L</code>,

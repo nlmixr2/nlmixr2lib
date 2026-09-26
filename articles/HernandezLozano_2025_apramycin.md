@@ -1028,17 +1028,16 @@ through the event table.
   (reference 24, *Int J Antimicrob Agents*,
   <doi:10.1016/j.ijantimicag.2022.106616> – the paper cited at the
   `kada` sentence itself) are both Elsevier titles outside the PMC
-  open-access subset, and every automated route returned an IP block
-  rather than a document. Neither is on disk, so neither was read, and
-  nothing in this vignette rests on their contents. They are of
-  **corroborative** value only: obtaining them would confirm the `kada`
-  equation form recorded above, not supply any missing number. Every
-  numeric value packaged in the three model files comes from
-  Hernandez-Lozano 2025 itself or from the two upstream PK papers that
-  *are* on disk (Sou 2021, Zhao 2022). In particular, the two unbound
-  fractions for which Aranzana-Climent 2022 is cited (91.6% mouse, 92.9%
-  human) are quoted directly in the Hernandez-Lozano 2025 Methods text
-  and were taken from there.
+  open-access subset, and the maintainers could not obtain either.
+  Neither was read, and nothing in this vignette rests on their
+  contents. They are of **corroborative** value only: obtaining them
+  would confirm the `kada` equation form recorded above, not supply any
+  missing number. Every numeric value packaged in the three model files
+  comes from Hernandez-Lozano 2025 itself or from the two upstream PK
+  papers that *were* available (Sou 2021, Zhao 2022). In particular, the
+  two unbound fractions for which Aranzana-Climent 2022 is cited (91.6%
+  mouse, 92.9% human) are quoted directly in the Hernandez-Lozano 2025
+  Methods text and were taken from there.
 
 ## Session information
 

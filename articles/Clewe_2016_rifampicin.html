@@ -3111,8 +3111,8 @@ for ~200 days under untreated growth conditions on a
 single-subject-per-culture basis.</li>
 <li>No human or animal subjects are involved; no covariates are
 encoded.</li>
-<li>The Clewe 2016 publication was <strong>not on disk</strong> at
-extraction time, so a full cross-check against the paper’s printed
+<li>The Clewe 2016 publication was <strong>not available</strong> when
+this model was built, so a full cross-check against the paper’s printed
 tables / figures was not performed. Parameter values derive from
 <code>Output_real_MTP.lst</code> <code>FINAL PARAMETER ESTIMATE</code>
 block only.</li>
@@ -3742,14 +3742,13 @@ rifampicin-treated extension must add a drug term explicitly (see Clewe
 2016 Section “Drug-effect models” for the published functional
 forms).</li>
 <li>
-<strong>No on-disk publication cross-check.</strong> The Clewe 2016
-paper (<a href="doi:10.1093/jac/dkv416" class="uri">doi:10.1093/jac/dkv416</a>) was not present in the
-maintainers’ literature mirror at extraction time. Parameter values
-therefore rely on the <code>Output_real_MTP.lst</code>
-<code>FINAL PARAMETER ESTIMATE</code> block alone; published table
-values were not independently re-checked. Self-consistency (vs. the
-bundle’s <code>Simulated_*.csv</code>) is the only validation
-reference.</li>
+<strong>No publication cross-check.</strong> The Clewe 2016 paper
+(<a href="doi:10.1093/jac/dkv416" class="uri">doi:10.1093/jac/dkv416</a>) was not available when this
+model was built. Parameter values therefore rely on the
+<code>Output_real_MTP.lst</code> <code>FINAL PARAMETER ESTIMATE</code>
+block alone; published table values were not independently re-checked.
+Self-consistency (vs. the bundle’s <code>Simulated_*.csv</code>) is the
+only validation reference.</li>
 <li>
 <strong>Convention deviations</strong> flagged by
 <code>checkModelConventions("Clewe_2016_rifampicin")</code>:

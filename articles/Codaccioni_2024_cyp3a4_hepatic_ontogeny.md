@@ -615,7 +615,7 @@ chk |>
   blood:plasma ratio, unbound fraction) nor the whole-body distribution
   ODEs nor the Simcyp age functions for `MPPGL`, liver weight, `Q_H` and
   `fu_B` (cited to Barter 2007, Johnson 2005 and Johnson 2006 in the
-  supplement’s reference list) appear in any on-disk source. Per the
+  supplement’s reference list) appear in any available source. Per the
   PBPK sourcing rule, none of them were substituted from platform
   defaults or class-typical values, so the whole-body PBPK layer is
   **not** reproduced here. The two Simcyp clearance equations are

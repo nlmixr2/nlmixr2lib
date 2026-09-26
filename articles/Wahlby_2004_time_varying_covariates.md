@@ -48,7 +48,7 @@ pefloxacin; Walsh 2004 voriconazole; Friberg 2002 paclitaxel
 myelosuppression). The Friberg 2002 paclitaxel PK / myelosuppression
 model is already packaged separately as
 `modellib("Friberg_2002_paclitaxel")`; the other three primary papers
-are queued for separate extraction.
+are planned as separate model entries.
 
 ## Source trace
 
@@ -388,8 +388,8 @@ provenance.
   section).
 - The cohort demographic detail (age, weight, sex, race) is not reported
   in Wahlby 2004; the underlying Rosario 1998 popPK paper has the data
-  and should be queued for separate extraction if a full
-  demographic-aware virtual cohort is required.
+  and should be encoded separately if a full demographic-aware virtual
+  cohort is required.
 
 ### Pefloxacin
 
@@ -399,8 +399,8 @@ provenance.
   (theta_V = 61 L) and encodes V with the same exponential covariate
   form. The underlying Karlsson 1993 paper (the upstream popPK source)
   is the authoritative reference for the V parameterisation; it was not
-  on disk when this model was built and has been queued for separate
-  extraction.
+  available when this model was built and is planned as a separate model
+  entry.
 - The “weight up to median WT” qualifier (Methods) is encoded as
   `min(WT_BASE, 65)` in the CL equation, plateauing the WT effect above
   65 kg. This interpretation may differ from the exact Karlsson 1993
@@ -461,7 +461,7 @@ provenance.
   inter-individual variability on the effect coefficient per Wahlby 2004
   Eq 3.
 
-## Upstream-paper queue
+## Upstream papers not yet encoded
 
 Three of the four primary popPK / PD models cited by Wahlby 2004 are not
 yet in nlmixr2lib and should be extracted separately to recover the full

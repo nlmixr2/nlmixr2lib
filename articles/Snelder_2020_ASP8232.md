@@ -490,11 +490,12 @@ available when this model was built.
 
 ## Errata
 
-- **Supplementary NONMEM code not on disk**: the electronic supplement
+- **Supplementary NONMEM code not available**: the electronic supplement
   referenced on page 1 of Snelder 2020 (which contains the NONMEM
-  control stream and per-study VPCs for the three non-ALBUM studies) is
-  not on disk in the extraction. All parameter values in Table 4 are
-  self-contained, so the extraction proceeded from the main text alone;
-  the supplement would additionally confirm the transit- compartment
-  implementation and the exact sigmoid-Emax parameterisation.
+  control stream and per-study VPCs for the three non-ALBUM studies) was
+  not available when this model was built. All parameter values in Table
+  4 are self-contained, so the extraction proceeded from the main text
+  alone; the supplement would additionally confirm the transit-
+  compartment implementation and the exact sigmoid-Emax
+  parameterisation.
 - No published errata are known for Snelder 2020 as of 2026-07-09.

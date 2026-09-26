@@ -592,9 +592,9 @@ ggplot(band_exp, aes(band, auc)) +
 The published 5th and 95th adult percentiles that Figure 2 draws its
 reference lines from are taken from Zemanick et al. and are not printed
 numerically anywhere in Truong 2025, so the paper’s exact “% above the
-adult 95th percentile” figures cannot be reproduced from the sources on
-disk. What *is* reproducible, and is the mechanism behind the finding,
-is the exposure step at the 30 kg dose switch.
+adult 95th percentile” figures cannot be reproduced from the available
+sources. What *is* reproducible, and is the mechanism behind the
+finding, is the exposure step at the 30 kg dose switch.
 
 ``` r
 
@@ -737,7 +737,7 @@ be larger by a factor of about 1.8 and this gate would fail.
   are written on medians and robust ratios rather than on distribution
   extremes.
 - **The adult reference percentiles are not reproducible from the
-  sources on disk.** Truong 2025 compares its simulated AUCs against
+  available sources.** Truong 2025 compares its simulated AUCs against
   5th-95th percentiles from Zemanick et al., which the paper does not
   print numerically. Table 3’s adult column is from Choong et al. and
   reports mean (SD), not percentiles. The exposure-step mechanism behind

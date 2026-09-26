@@ -23,7 +23,7 @@
   (`BAST_PTTE_modelling.pdf` shipped in the DDMORE bundle).
 - DDMORE Foundation Model Repository entry:
   [DDMODEL00000243](https://repository.ddmore.eu/model/DDMODEL00000243)
-- Source bundle (local mirror): `dpastoor/ddmore_scraping/243/`
+- Source bundle: `dpastoor/ddmore_scraping/243/`
 - Linked publication: **none.** The bundle is a methodological teaching
   example built on entirely simulated data; the BAST guiding-document
   text states “there is not yet a publication to go along with the
@@ -146,9 +146,9 @@ sim |>
 
 ![](NA_NA_tte_lognormal_files/figure-html/km-style-1.png)
 
-## Mechanistic sanity checks (verification-checklist Section F.3)
+## Mechanistic sanity checks
 
-### F.3.1 – Hazard has the characteristic log-normal shape (rises then falls)
+### Hazard has the characteristic log-normal shape (rises then falls)
 
 The log-normal hazard rises from 0 at `t = 0`, peaks near `t = alpha`
 (the median time scale), and decays at long times. The check below
@@ -181,7 +181,7 @@ stopifnot(hazard_peak > hazard_early)
 stopifnot(hazard_peak > hazard_late)
 ```
 
-### F.3.2 – Older patients have higher hazard (positive AGE coefficient)
+### Older patients have higher hazard (positive AGE coefficient)
 
 The BAST guiding document Section 2.4.2 (Table 2-4) reports a +50.9
 coefficient on the centred `(AGE - 55)/1000` term, meaning older
@@ -234,14 +234,14 @@ stopifnot(old_sur < ref_sur)
 stopifnot(young_sur > ref_sur)
 ```
 
-### F.3.3 – Final-fit objective-function value matches the bundle
+### Final-fit objective-function value matches the bundle
 
 `Output_simulated_runCOMPEV1_101.res` reports `OBJV = 360253.678` at the
 final estimates. This value is informational here.
 
-## Self-consistency with the bundle’s simulated dataset (F.2)
+## Self-consistency with the bundle’s simulated dataset
 
-A full F.2 self-consistency check would re-simulate the bundle’s shipped
+A full self-consistency check would re-simulate the bundle’s shipped
 `Simulated_event_data.csv` (200 subjects, DVID = 3 records) under the
 nlmixr2lib model and compare against the bundle’s
 `Output_simulated_runCOMPEV1_101.res` `$TABLE` output. The bundle

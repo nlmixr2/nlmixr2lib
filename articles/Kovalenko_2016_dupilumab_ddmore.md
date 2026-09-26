@@ -228,7 +228,7 @@ if (!is.null(bundle)) {
     geom_point(data = bundle_obs,  aes(time, conc, colour = source), size = 1.3, alpha = 0.7) +
     scale_y_log10() +
     labs(x = "Time (days)", y = "Dupilumab concentration (mg/L)", colour = NULL,
-         title = "F.2 self-consistency: rxode2 vs DDMORE bundle simulated data") +
+         title = "Self-consistency check: rxode2 vs DDMORE bundle simulated data") +
     theme_minimal(base_size = 11)
 }
 ```

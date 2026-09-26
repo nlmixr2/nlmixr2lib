@@ -1845,14 +1845,15 @@ not tune any parameter to close these gaps.
   Ifo) models.** Freyer 2000 Table 2 reports only central clearance and
   central volume of distribution; the intercompartmental clearances /
   peripheral volumes / transfer rate constants are not tabulated in the
-  paper text, tables, figures, Discussion, or any on-disk supplement
-  (there is no supplement on disk, and the Methods statement
-  “parameterization involved CL, V_d and transfer rate constants” is
-  followed by no tabulation of the rate constants). The 1-cmt reduction
-  preserves `dose / CL` and therefore AUC, but does NOT reproduce the
-  early-time distribution phases visible in Figure 2 or the terminal
-  half-lives quoted in the Discussion for the paper’s fitted 3- and
-  2-cmt models. The 1-cmt reduction was a maintainer decision.
+  paper text, tables, figures, Discussion, or any supplement (no
+  supplement was available when this model was built, and the Methods
+  statement “parameterization involved CL, V_d and transfer rate
+  constants” is followed by no tabulation of the rate constants). The
+  1-cmt reduction preserves `dose / CL` and therefore AUC, but does NOT
+  reproduce the early-time distribution phases visible in Figure 2 or
+  the terminal half-lives quoted in the Discussion for the paper’s
+  fitted 3- and 2-cmt models. The 1-cmt reduction was a maintainer
+  decision.
 - **Ifosfamide day-1 to day-2 autoinduction of CL is not represented.**
   Freyer 2000 fitted two separate CL parameters (CL_day1 = 5.6 L/h,
   CL_day2 = 7.95 L/h; +42% autoinduction) with no structural induction

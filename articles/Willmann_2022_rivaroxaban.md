@@ -475,9 +475,9 @@ age-binned constants. {.table style="width:100%;"}
   model with three age-dependent CL adjustment factors (0.53, 0.64, 0.45
   for children aged 4 to \<5, 3 to \<4, and 2 to \<3 years). The
   underlying PBPK model is inherited from Zhu et al. 2020 (reference 20
-  of Willmann 2022, not on disk in this workspace) and its physiologic
-  parameters are not reproduced in Willmann 2022. Only the popPK model
-  is extracted here.
+  of Willmann 2022, not available when this model was built) and its
+  physiologic parameters are not reproduced in Willmann 2022. Only the
+  popPK model is extracted here.
 - **Downstream forward simulation uses Willmann 2021, not this model.**
   For post-Fontan patients aged 9-18 y or \>=30 kg (the target
   population of the paper), the paper explicitly uses the original

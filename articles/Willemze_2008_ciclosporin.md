@@ -343,9 +343,8 @@ paper does not give numerical targets for any of these outside the
   variability was held at zero.
 - **Sex distribution.** The source paper does not report the sex
   breakdown of the 17 patients in the text (Table 1 of the source
-  carries baseline demographics but is not transcribed in the PDF
-  available on disk); the `population$sex_female_pct` field is therefore
-  `NA_real_`.
+  carries baseline demographics but is not transcribed in the PDF); the
+  `population$sex_female_pct` field is therefore `NA_real_`.
 - **Cohort weight distribution.** Inclusion required \> 10 kg and the
   Discussion (paragraph 4) names a mean of 35 kg; the virtual cohort
   spans 10-60 kg log-uniformly to bracket the dosing recommendations the

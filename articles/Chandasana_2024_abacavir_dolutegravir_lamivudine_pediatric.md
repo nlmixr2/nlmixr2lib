@@ -60,8 +60,8 @@ Each model file also names its upstream primary source in its
 FDA clinical pharmacology review for Ziagen and Epivir (Chandasana 2024
 reference 16), and the dolutegravir model from Chandasana et al., *Clin
 Pharmacokinet* 2023;62(10):1445-1459 (reference 15). Those primary
-sources are not on disk for this extraction; see *Assumptions and
-deviations* below.
+sources were not available when these models were built; see
+*Assumptions and deviations* below.
 
 ``` r
 
@@ -711,7 +711,7 @@ appropriate for children weighing 6 to 40 kg.
   lamivudine) and Chandasana et al. *Clin Pharmacokinet* 2023
   (dolutegravir) – and applies them without re-estimation. Every value
   here is traced to Chandasana 2024 Tables 1-3 as printed. Those primary
-  sources were not available on disk for this extraction and should be
+  sources were not available when these models were built and should be
   consulted if the models are re-extracted.
 
 - **Lamivudine residual error is incompletely specified.** Table 3

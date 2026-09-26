@@ -3082,15 +3082,14 @@ $PROBLEM line <code>B.dat 4-cRUN249</code>; license registered to BAST
 Inc. Ltd; NONMEM run dated 29/11/2016.</li>
 <li>DDMORE Foundation Model Repository: <a href="https://repository.ddmore.eu/model/DDMODEL00000281" class="external-link">DDMODEL00000281</a>
 </li>
-<li>Source bundle (local):
-<code>dpastoor/ddmore_scraping/281/</code>
+<li>Source bundle: <code>dpastoor/ddmore_scraping/281/</code>
 </li>
 </ul>
 <p>The DDMORE bundle does not link to a journal publication. The
 <code>Model_Accommodations.txt</code> file in the bundle states that the
 uploaded model matches the (un-named) reference publication, but no
-first author / year / journal is recoverable from any on-disk material –
-neither the <code>Executable_ddmore_final_run249.ctl</code>
+first author / year / journal is recoverable from any of the bundle’s
+material – neither the <code>Executable_ddmore_final_run249.ctl</code>
 <code>$PROBLEM</code> line (<code>B.dat 4-cRUN249</code>), the bundle’s
 <code>DDMODEL00000281.rdf</code>, the <code>281.json</code> scraper
 metadata, nor the bundle’s other text files name a paper.</p>
@@ -3139,16 +3138,16 @@ intensive-care anti-arrhythmic / pain-management dosing.</p>
 <span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $disease_state</span></span>
-<span><span class="co">#&gt; [1] "Patient population not stated in the DDMORE bundle. The `.res` listing reports 325 subjects contributing 1989 observations; the bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`) has subjects receiving repeated short IV infusions of lidocaine consistent with surgical / intensive-care or anti-arrhythmic dosing. The linked publication is not on disk to confirm the indication."</span></span>
+<span><span class="co">#&gt; [1] "Patient population not stated in the DDMORE bundle. The `.res` listing reports 325 subjects contributing 1989 observations; the bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`) has subjects receiving repeated short IV infusions of lidocaine consistent with surgical / intensive-care or anti-arrhythmic dosing. The indication could not be confirmed against the linked publication, which was not available when this model was built."</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $dose_range</span></span>
-<span><span class="co">#&gt; [1] "Repeated IV infusions of approximately 12 time-units' duration (AMT 21600 / RATE 1800 in the bundle's simulated dataset). Mass and time units are not declared in the source `.ctl`; under the operator-chosen `units$time = 'h'` interpretation each infusion runs ~12 h."</span></span>
+<span><span class="co">#&gt; [1] "Repeated IV infusions of approximately 12 time-units' duration (AMT 21600 / RATE 1800 in the bundle's simulated dataset). Mass and time units are not declared in the source `.ctl`; under the maintainers' `units$time = 'h'` interpretation each infusion runs ~12 h."</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $regions</span></span>
 <span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $notes</span></span>
-<span><span class="co">#&gt; [1] "Demographics fields marked NA because the linked publication is not on disk for this extraction. n_subjects = 325 from the `.res` listing's `TOT. NO. OF INDIVIDUALS:    325` line. The DDMORE-shipped simulated dataset (`Simulated_Lid_B04_ddmore.csv`) carries 17112 records distributed over a smaller demographic-replicated cohort and is intended only as a regression-style smoke test, not a representative clinical population."</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Demographics fields marked NA because the linked publication was not available when this model was built. n_subjects = 325 from the `.res` listing's `TOT. NO. OF INDIVIDUALS:    325` line. The DDMORE-shipped simulated dataset (`Simulated_Lid_B04_ddmore.csv`) carries 17112 records distributed over a smaller demographic-replicated cohort and is intended only as a regression-style smoke test, not a representative clinical population."</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
@@ -3394,10 +3393,10 @@ sqrt(6.39) ~= 2.53</td>
 <div class="section level2">
 <h2 id="virtual-cohort">Virtual cohort<a class="anchor" aria-label="anchor" href="#virtual-cohort"></a>
 </h2>
-<p>The published cohort demographics are not on disk for this extraction
-(no linked publication). The simulations below use a small reference
-covariate set drawn from one representative subject in the bundle’s
-simulated dataset:</p>
+<p>The published cohort demographics were not available when this model
+was built (no linked publication). The simulations below use a small
+reference covariate set drawn from one representative subject in the
+bundle’s simulated dataset:</p>
 <table class="table">
 <colgroup>
 <col width="12%">
@@ -3806,11 +3805,10 @@ covariate set.</p>
 <li>
 <strong>No linked publication.</strong> The bundle’s
 <code>Model_Accommodations.txt</code> asserts equivalence to an
-unspecified reference publication, but the paper is not on disk and
-could not be identified from the bundle. The <code>reference</code>
-field of the model file therefore records only the DDMORE bundle
-citation. Per-parameter validation against a published table is not
-possible.</li>
+unspecified reference publication, but the paper could not be identified
+from the bundle and was not available. The <code>reference</code> field
+of the model file therefore records only the DDMORE bundle citation.
+Per-parameter validation against a published table is not possible.</li>
 <li>
 <strong>Unit ambiguity.</strong> The bundle’s <code>.ctl</code> does
 not declare time, dose, or concentration units.

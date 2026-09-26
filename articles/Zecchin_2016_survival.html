@@ -3094,8 +3094,7 @@ Zecchin 2016 SLD model) integrated inline.</li>
 </li>
 <li>DDMORE Foundation Model Repository entry: <a href="https://repository.ddmore.eu/model/DDMODEL00000218" class="external-link">DDMODEL00000218</a>
 </li>
-<li>Source bundle (local mirror):
-<code>dpastoor/ddmore_scraping/218/</code>
+<li>Source bundle: GitHub mirror <a href="https://github.com/dpastoor/ddmore_scraping/tree/master/218" class="external-link"><code>dpastoor/ddmore_scraping/218/</code></a>
 </li>
 </ul>
 <p>This vignette validates the Zecchin 2016 overall-survival (OS) model
@@ -3109,8 +3108,8 @@ carried in via the dataset from the upstream Zecchin 2016 SLD model
 <p>The DDMORE bundle ships only an OS-fit listing; the linked
 publication (Zecchin 2016 BJCP 82(3):717-727; PMID 27136318; PMC5338128)
 reports the final estimates in Table 2 of the paper. The publication PDF
-was not on disk for this extraction; Methods / Table 2 cross-checks were
-performed via PMC HTML.</p>
+was not available when this model was built; Methods / Table 2
+cross-checks were performed via PMC HTML.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3134,7 +3133,7 @@ diameters (SLD) was about 70 mm (the paper’s reference value
 <span><span class="co">#&gt;  $ n_subjects    : int 336</span></span>
 <span><span class="co">#&gt;  $ n_studies     : int 1</span></span>
 <span><span class="co">#&gt;  $ age_range     : chr "median ~59 years (advanced epithelial ovarian cancer cohort; Zecchin 2016 Table S2 / paper text)"</span></span>
-<span><span class="co">#&gt;  $ weight_range  : chr "not transcribed in this extraction (Zecchin 2016 Table S2 captures the demographic distributions; the WebFetch "| __truncated__</span></span>
+<span><span class="co">#&gt;  $ weight_range  : chr "not transcribed (Zecchin 2016 Table S2 captures the demographic distributions; the weight quantiles were not av"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ sex_female_pct: num 100</span></span>
 <span><span class="co">#&gt;  $ disease_state : chr "advanced (FIGO stage III/IV) epithelial ovarian cancer (recurrent / platinum-sensitive cohort, randomised Phase"| __truncated__</span></span>
 <span><span class="co">#&gt;  $ dose_range    : chr "Phase III chemotherapy: carboplatin monotherapy (target AUC 5.0 mg*min/mL Q3W) or carboplatin (target AUC 4.0 m"| __truncated__</span></span>
@@ -3329,7 +3328,7 @@ trajectory<a class="anchor" aria-label="anchor" href="#replicate-published-behav
 </h2>
 <p>Zecchin 2016 reports a Kaplan-Meier survival curve overlaid with the
 Weibull-hazard model fit (paper Figure 4 / Figure 5). Without the
-original patient-level data on disk, the vignette compares the model’s
+original patient-level data, the vignette compares the model’s
 typical-value behaviour to the qualitative trajectory the paper reports:
 an approximately Weibull S(t) with shape 1.99, scale 0.036/month,
 modulated by the cohort’s covariate distribution.</p>
@@ -3370,16 +3369,17 @@ modulated by the cohort’s covariate distribution.</p>
 <p><img src="Zecchin_2016_survival_files/figure-html/km-by-arm-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
-<h2 id="mechanistic-sanity-checks-f-3">Mechanistic sanity checks (F.3)<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks-f-3"></a>
+<h2 id="mechanistic-sanity-checks">Mechanistic sanity checks<a class="anchor" aria-label="anchor" href="#mechanistic-sanity-checks"></a>
 </h2>
 <p>The model is a TTE (time-to-event) survival model, not a PK / PD
-concentration model — PKNCA is not the right validation tool. The
-package’s validation checklist calls for typical-value hazard / survival
-trajectories to reproduce qualitative behaviour reported in the source.
-The four checks below exercise each covariate arm of the OS hazard.</p>
+concentration model — PKNCA is not the right validation tool. For a
+time-to-event model the appropriate check is that typical-value hazard /
+survival trajectories reproduce the qualitative behaviour reported in
+the source. The four checks below exercise each covariate arm of the OS
+hazard.</p>
 <div class="section level3">
-<h3 id="f-3-1-hazard-increases-monotonically-with-time-weibull-α-2">F.3.1 — Hazard increases monotonically with time (Weibull α ≈
-2)<a class="anchor" aria-label="anchor" href="#f-3-1-hazard-increases-monotonically-with-time-weibull-%CE%B1-2"></a>
+<h3 id="check-1-hazard-increases-monotonically-with-time-weibull-α-2">Check 1 — Hazard increases monotonically with time (Weibull α ≈
+2)<a class="anchor" aria-label="anchor" href="#check-1-hazard-increases-monotonically-with-time-weibull-%CE%B1-2"></a>
 </h3>
 <p>Weibull shape α &gt; 1 means a hazard that increases with time. With
 α = 1.99 the cumulative hazard grows quadratically and the survival
@@ -3407,8 +3407,8 @@ function is a right-shifted Weibull S(t) = exp(-(λt)^α).</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">sim_ref</span><span class="op">$</span><span class="va">hazard</span><span class="op">[</span><span class="va">sim_ref</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-3-2-each-covariate-shifts-the-hazard-in-the-published-direction">F.3.2 — Each covariate shifts the hazard in the published
-direction<a class="anchor" aria-label="anchor" href="#f-3-2-each-covariate-shifts-the-hazard-in-the-published-direction"></a>
+<h3 id="check-2-each-covariate-shifts-the-hazard-in-the-published-direction">Check 2 — Each covariate shifts the hazard in the published
+direction<a class="anchor" aria-label="anchor" href="#check-2-each-covariate-shifts-the-hazard-in-the-published-direction"></a>
 </h3>
 <p>Zecchin 2016 reports all four covariate effects as positive (γ &gt;
 0; Table 2 of the paper), i.e. higher baseline SLD, more positive
@@ -3461,7 +3461,7 @@ subject with one covariate toggled at a time.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">non_baseline</span><span class="op">$</span><span class="va">sur</span> <span class="op">&lt;</span> <span class="va">baseline_sur</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-3-3-tsr-clamp-at-week-12-wts-frozen-at-day-84">F.3.3 — TSR clamp at week 12 (“WTS frozen at day 84”)<a class="anchor" aria-label="anchor" href="#f-3-3-tsr-clamp-at-week-12-wts-frozen-at-day-84"></a>
+<h3 id="check-3-tsr-clamp-at-week-12-wts-frozen-at-day-84">Check 3 — TSR clamp at week 12 (“WTS frozen at day 84”)<a class="anchor" aria-label="anchor" href="#check-3-tsr-clamp-at-week-12-wts-frozen-at-day-84"></a>
 </h3>
 <p>The source <code>$DES</code> block freezes the TSR effect on the
 hazard at the week-12 (84-day) value. The model’s auxiliary
@@ -3487,17 +3487,17 @@ frozen-at-84 ratio) for a representative subject:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">sim_one_tail</span><span class="op">$</span><span class="va">wts</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-9</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="f-3-4-self-consistency-with-the-bundles-simulated-dataset">F.3.4 — Self-consistency with the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#f-3-4-self-consistency-with-the-bundles-simulated-dataset"></a>
+<h3 id="check-4-self-consistency-with-the-bundles-simulated-dataset">Check 4 — Self-consistency with the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#check-4-self-consistency-with-the-bundles-simulated-dataset"></a>
 </h3>
-<p>A full F.2-style self-consistency check would re-simulate the
-bundle’s shipped <code>Simulated_OS.csv</code> (336 subjects, 4780
-records) under the nlmixr2lib model and compare against the bundle’s
+<p>A full self-consistency check would re-simulate the bundle’s shipped
+<code>Simulated_OS.csv</code> (336 subjects, 4780 records) under the
+nlmixr2lib model and compare against the bundle’s
 <code>Output_simulated_OS.lst</code> IPRED column. The bundle dataset is
 outside this package (in <code>dpastoor/ddmore_scraping/218/</code>) and
 not redistributed; exercising the check requires the user to point
 <code>events</code> at the bundle CSV. The cohort built above is a
-faithful smaller-scale analogue and the sanity checks F.3.1-F.3.3 above
-are the substitute exercised in this vignette.</p>
+faithful smaller-scale analogue and Checks 1-3 above are the substitute
+exercised in this vignette.</p>
 </div>
 </div>
 <div class="section level2">
@@ -3555,9 +3555,9 @@ FINAL TH1 = 1.18E-03 (1/day) ≡ 0.036/30.4375 ≈ 0.001183 (1/day). The
 nlmixr2lib model declares time in days and stores λ in 1/day to maintain
 numerical equivalence with the bundle.</p></li>
 <li><p><strong>No publication-PDF cross-check.</strong> The Zecchin 2016
-BJCP PDF was not on disk for this extraction. Methods / Table 2
-cross-checks were performed against the PMC HTML version (PMC5338128)
-via WebFetch.</p></li>
+BJCP PDF was not available when this model was built. Methods / Table 2
+cross-checks were performed against the PMC HTML version
+(PMC5338128).</p></li>
 <li><p><strong>Convention warnings.</strong>
 <code><a href="../reference/checkModelConventions.html">nlmixr2lib::checkModelConventions()</a></code> flags three
 non-canonical compartment names (<code>tumorSize</code>,

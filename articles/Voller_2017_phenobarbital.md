@@ -25,12 +25,12 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Voller_2017_phenobarbital"))$meta
 This vignette validates the packaged `Voller_2017_phenobarbital` model
 against the DDMORE Foundation Model Repository entry
 **DDMODEL00000256**, the source from which it was extracted. The Voller
-2017 publication PDF is not available on this machine, so the validation
-strategy follows the F.2 self-consistency recipe from the package’s
-validation checklist: re-simulate the bundle’s shipped event table with
-typical-value parameters and confirm the trajectory is in the expected
-clinical range for phenobarbital in newborns receiving a loading dose
-followed by oral maintenance.
+2017 publication PDF was not available when this model was built, so the
+validation strategy follows the self-consistency recipe from the
+package’s validation checklist: re-simulate the bundle’s shipped event
+table with typical-value parameters and confirm the trajectory is in the
+expected clinical range for phenobarbital in newborns receiving a
+loading dose followed by oral maintenance.
 
 ## Population
 
@@ -39,12 +39,12 @@ line as “Phenobarbital PK in newborns” and the `Output_real_run522.lst`
 data summary reports 53 individuals contributing 229 observations. The
 DDMORE entry’s RDF metadata states the purpose is to quantify
 phenobarbital PK in preterm and term newborns to optimize drug dosing.
-The full Voller 2017 publication PDF is not on disk, so detailed
-demographics (age range, weight range, sex balance, race / ethnicity,
-indication, regional setting) could not be cross-checked. The bundle’s
-`Simulated_PhenobarbitalNewbornsPK.csv` event table includes 5
-representative subjects spanning birth weights 0.8 kg (extreme preterm)
-to 4.2 kg (term) and postnatal ages 0-58 days.
+The full Voller 2017 publication PDF was not available when this model
+was built, so detailed demographics (age range, weight range, sex
+balance, race / ethnicity, indication, regional setting) could not be
+cross-checked. The bundle’s `Simulated_PhenobarbitalNewbornsPK.csv`
+event table includes 5 representative subjects spanning birth weights
+0.8 kg (extreme preterm) to 4.2 kg (term) and postnatal ages 0-58 days.
 
 ``` r
 
@@ -207,7 +207,7 @@ sim_stoch <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
-## F.2 self-consistency check against the DDMORE bundle
+## Self-consistency check against the DDMORE bundle
 
 The bundle’s `Simulated_PhenobarbitalNewbornsPK.csv` records
 concentrations for 5 individual subjects under the model’s typical
@@ -288,12 +288,12 @@ error in bundle DV). {.table}
 
 The typical-value Cc and the residual-error-laden DDMORE `DV` agree to
 within the magnitude of the residual error reported in the model
-(`propSd ~ 16%`), which is the expected outcome of an F.2
-self-consistency check. Larger discrepancies on individual time points
-(e.g. observation 80 h vs the maintenance-dose schedule) reflect
-day-to-day fluctuations in the post-loading absorption phase plus
-residual error; the typical-value trajectory passes through the centre
-of the observed values.
+(`propSd ~ 16%`), which is the expected outcome of a self-consistency
+check. Larger discrepancies on individual time points (e.g. observation
+80 h vs the maintenance-dose schedule) reflect day-to-day fluctuations
+in the post-loading absorption phase plus residual error; the
+typical-value trajectory passes through the centre of the observed
+values.
 
 ## Trajectories across the virtual cohort
 
@@ -345,7 +345,7 @@ sim_stoch |>
 
 PKNCA is run on the typical-value cohort over the loading-dose interval
 (0-24 h) and the steady-state interval (144-168 h). The Voller 2017
-publication is not on disk, so the simulated NCA values cannot be
+publication was not available, so the simulated NCA values cannot be
 compared side-by-side against published Cmax / AUC tables; they are
 reported here as a sanity check that the simulation pipeline produces
 NCA values in the expected clinical range for phenobarbital in newborns
@@ -408,11 +408,11 @@ Simulated NCA parameters by cohort (PKNCA). {.table style="width:100%;"}
 
 ### Comparison against published NCA
 
-The Voller 2017 publication PDF is not on disk in the maintainers’
-literature mirror, so the in-paper NCA tables (Cmax, AUC, trough by
-birth-weight or postnatal-age stratum) cannot be reproduced here. This
-is the F.2 substitute path of the package’s validation strategy for
-DDMORE bundles. Maintainer follow-up: pull the publication PDF and
+The Voller 2017 publication PDF was not available when this model was
+built, so the in-paper NCA tables (Cmax, AUC, trough by birth-weight or
+postnatal-age stratum) cannot be reproduced here. This is the
+self-consistency substitute path of the package’s validation strategy
+for DDMORE bundles. Maintainer follow-up: pull the publication PDF and
 compare the PKNCA outputs above against any in-paper loading-dose Cmax /
 AUC / trough values reported by Voller et al.
 
@@ -458,16 +458,16 @@ AUC / trough values reported by Voller et al.
   nlmixr2 model preserves the diagonal structure
   (`etalcl ~ 0.0898; etalvc ~ 0.0504`).
 
-- **Validation strategy is F.2 self-consistency** (per the package’s
+- **Validation strategy is self-consistency** (per the package’s
   validation strategy for DDMORE bundles whose linked publication exists
-  but is not on disk). PKNCA values shown above are informational;
-  comparison against the Voller 2017 published NCA /
-  population-prediction figures could not be performed.
+  but was not available when the model was built). PKNCA values shown
+  above are informational; comparison against the Voller 2017 published
+  NCA / population-prediction figures could not be performed.
 
 - **No external publication cross-check.** The Voller 2017 publication
-  PDF is not on disk in the maintainers’ literature mirror; parameter
-  values were not cross-checked against published tables in the paper.
-  The maintainers resolved this case in advance: proceed using the .lst
-  only and note the absence of an external check in the vignette Errata.
-  Maintainer follow-up: pull the publication PDF and verify the `.lst`
-  final estimates against the paper’s parameter table.
+  PDF was not available when this model was built; parameter values were
+  not cross-checked against published tables in the paper. The
+  maintainers’ decision was to proceed using the .lst only and note the
+  absence of an external check in the vignette Errata. Maintainer
+  follow-up: pull the publication PDF and verify the `.lst` final
+  estimates against the paper’s parameter table.

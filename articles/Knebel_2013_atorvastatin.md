@@ -1001,12 +1001,12 @@ stopifnot(all(abs(ss$pct_diff) < 0.5))
   `Ka` = 0.219 1/h, while the additive reading gives `Ka` = 0.292 1/h –
   about **28% higher atorvastatin Cmax** and ~41% lower trough. The
   paper publishes no NCA table, no Tmax and no concentration-time figure
-  with an absolute axis, so nothing on disk discriminates the two.
-  Equation S2 is used per the standing trust-the-printed-equation
-  policy, because it is the only equation printed for the run the
-  parameters come from (maintainer ruling). A user who prefers the
-  additive reading need only change the single `ka <- exp(lka + l2)`
-  line in the model file.
+  with an absolute axis, so nothing in the available material
+  discriminates the two. Equation S2 is used per the package’s
+  convention that the printed equation has authority, because it is the
+  only equation printed for the run the parameters come from (maintainer
+  ruling). A user who prefers the additive reading need only change the
+  single `ka <- exp(lka + l2)` line in the model file.
 
   A third reading exists: Tables 1 and 2 label the row “Ka = theta4”, so
   the paper itself sometimes treats 0.2 1/h as `Ka` outright, which

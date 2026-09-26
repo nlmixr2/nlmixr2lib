@@ -9,13 +9,13 @@
   NONMEM run dated 29/11/2016.
 - DDMORE Foundation Model Repository:
   [DDMODEL00000281](https://repository.ddmore.eu/model/DDMODEL00000281)
-- Source bundle (local): `dpastoor/ddmore_scraping/281/`
+- Source bundle: `dpastoor/ddmore_scraping/281/`
 
 The DDMORE bundle does not link to a journal publication. The
 `Model_Accommodations.txt` file in the bundle states that the uploaded
 model matches the (un-named) reference publication, but no first author
-/ year / journal is recoverable from any on-disk material – neither the
-`Executable_ddmore_final_run249.ctl` `$PROBLEM` line
+/ year / journal is recoverable from any of the bundle’s material –
+neither the `Executable_ddmore_final_run249.ctl` `$PROBLEM` line
 (`B.dat 4-cRUN249`), the bundle’s `DDMODEL00000281.rdf`, the `281.json`
 scraper metadata, nor the bundle’s other text files name a paper.
 
@@ -64,16 +64,16 @@ rxode2::rxode2(readModelDb("NA_NA_lidocaine"))$meta$population
 #> [1] NA
 #> 
 #> $disease_state
-#> [1] "Patient population not stated in the DDMORE bundle. The `.res` listing reports 325 subjects contributing 1989 observations; the bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`) has subjects receiving repeated short IV infusions of lidocaine consistent with surgical / intensive-care or anti-arrhythmic dosing. The linked publication is not on disk to confirm the indication."
+#> [1] "Patient population not stated in the DDMORE bundle. The `.res` listing reports 325 subjects contributing 1989 observations; the bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`) has subjects receiving repeated short IV infusions of lidocaine consistent with surgical / intensive-care or anti-arrhythmic dosing. The indication could not be confirmed against the linked publication, which was not available when this model was built."
 #> 
 #> $dose_range
-#> [1] "Repeated IV infusions of approximately 12 time-units' duration (AMT 21600 / RATE 1800 in the bundle's simulated dataset). Mass and time units are not declared in the source `.ctl`; under the operator-chosen `units$time = 'h'` interpretation each infusion runs ~12 h."
+#> [1] "Repeated IV infusions of approximately 12 time-units' duration (AMT 21600 / RATE 1800 in the bundle's simulated dataset). Mass and time units are not declared in the source `.ctl`; under the maintainers' `units$time = 'h'` interpretation each infusion runs ~12 h."
 #> 
 #> $regions
 #> [1] NA
 #> 
 #> $notes
-#> [1] "Demographics fields marked NA because the linked publication is not on disk for this extraction. n_subjects = 325 from the `.res` listing's `TOT. NO. OF INDIVIDUALS:    325` line. The DDMORE-shipped simulated dataset (`Simulated_Lid_B04_ddmore.csv`) carries 17112 records distributed over a smaller demographic-replicated cohort and is intended only as a regression-style smoke test, not a representative clinical population."
+#> [1] "Demographics fields marked NA because the linked publication was not available when this model was built. n_subjects = 325 from the `.res` listing's `TOT. NO. OF INDIVIDUALS:    325` line. The DDMORE-shipped simulated dataset (`Simulated_Lid_B04_ddmore.csv`) carries 17112 records distributed over a smaller demographic-replicated cohort and is intended only as a regression-style smoke test, not a representative clinical population."
 ```
 
 ## Source trace
@@ -121,10 +121,10 @@ NONMEM `.lst` from running the model on the original real dataset) after
 
 ## Virtual cohort
 
-The published cohort demographics are not on disk for this extraction
-(no linked publication). The simulations below use a small reference
-covariate set drawn from one representative subject in the bundle’s
-simulated dataset:
+The published cohort demographics were not available when this model was
+built (no linked publication). The simulations below use a small
+reference covariate set drawn from one representative subject in the
+bundle’s simulated dataset:
 
 | Covariate | Value | Source                                             |
 |-----------|-------|----------------------------------------------------|
@@ -443,10 +443,10 @@ covariate set.
 
 - **No linked publication.** The bundle’s `Model_Accommodations.txt`
   asserts equivalence to an unspecified reference publication, but the
-  paper is not on disk and could not be identified from the bundle. The
-  `reference` field of the model file therefore records only the DDMORE
-  bundle citation. Per-parameter validation against a published table is
-  not possible.
+  paper could not be identified from the bundle and was not available.
+  The `reference` field of the model file therefore records only the
+  DDMORE bundle citation. Per-parameter validation against a published
+  table is not possible.
 - **Unit ambiguity.** The bundle’s `.ctl` does not declare time, dose,
   or concentration units. `units$time = "h"`, `units$dosing = "mg"`, and
   `units$concentration = "mg/L"` are maintainer-default placeholders

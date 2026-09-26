@@ -1063,12 +1063,12 @@ c(`observed AUC ratio` = observed_ratio, `fitted relative F` = fitted_rel_f)
 **Not extracted.**
 
 - Supplementary Tables 1-4 (trial listing, prespecified covariates,
-  base-model and full-model parameters) are not on disk. Only the
-  **final** models are packaged, which is the library’s standing policy
-  for model-development papers, so the gap does not affect what is
-  shipped. The base-model IIV values quoted in the Results text (CL/F
-  39.7 %, V/F 40.7 % for daclatasvir; 51.5 % and 97.4 % for asunaprevir)
-  are recorded here for completeness.
+  base-model and full-model parameters) were not available when this
+  model was built. Only the **final** models are packaged, which is the
+  library’s standing policy for model-development papers, so the gap
+  does not affect what is shipped. The base-model IIV values quoted in
+  the Results text (CL/F 39.7 %, V/F 40.7 % for daclatasvir; 51.5 % and
+  97.4 % for asunaprevir) are recorded here for completeness.
 - The paper mentions later, larger popPK analyses of both drugs that
   added non-Japanese patients (its references 24 and 30, the latter
   finding race significant on asunaprevir CL/F). Those are separate

@@ -324,12 +324,12 @@ covariate).
   11 – 12) and HbA1c compartments 2 and 3 (Choy 2016 Eqs 14 – 17) are
   explicitly referenced to the upstream WHIG paper. Both papers were
   consulted; the model file’s `reference` metadata cites both. The Duong
-  2017 supplement (NONMEM control stream, Wiley) was not accessible from
-  open sources at extraction time – had it been on disk, the exact
-  SS-linearised quadratic for FSI could have been cross-checked against
-  the NONMEM implementation. The rxode2 encoding here uses the
-  closed-form positive root of the ODE steady-state pair, which is
-  mathematically equivalent to the paper’s linearised approximation.
+  2017 supplement (NONMEM control stream, Wiley) was not available when
+  this model was built – had it been, the exact SS-linearised quadratic
+  for FSI could have been cross-checked against the NONMEM
+  implementation. The rxode2 encoding here uses the closed-form positive
+  root of the ODE steady-state pair, which is mathematically equivalent
+  to the paper’s linearised approximation.
 - **Placebo-run-in phase length is hard-coded to 42 days for Study 1.**
   Duong 2017 Methods reports a 6-week run-in for Study 1 and a 2-week
   run-in for Studies 2 and 3; the run-in end triggers EFPL (Study 1
@@ -342,8 +342,7 @@ covariate).
 ## Errata
 
 No published erratum was located for Duong 2017 (CrossRef `update-to` /
-`updated-by` fields empty). The Duong 2017 online supplement was blocked
-by the publisher’s supplement endpoint at extraction time; if a
-corrigendum is published in the future the model file’s parameter values
-and the residual-error IIV assumption should be re-verified against the
-corrected supplement.
+`updated-by` fields empty). The Duong 2017 online supplement was not
+available when this model was built; if a corrigendum is published in
+the future the model file’s parameter values and the residual-error IIV
+assumption should be re-verified against the corrected supplement.

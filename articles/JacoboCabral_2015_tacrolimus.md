@@ -370,7 +370,8 @@ stochastic cohort of 225 subjects). The Jacobo-Cabral 2015 Methods state
 the original cohort’s per-subject NCA was performed with Phoenix
 WinNonlin 6.3 using linear trapezoidal / log-interpolation; the paper
 reports per-subject Cmax, Cmin and AUC(0,12 h) statistics in online
-supplements (Tables S1 / S2) that are not on disk for this extraction.
+supplements (Tables S1 / S2) that were not available when this model was
+built.
 
 ``` r
 
@@ -430,7 +431,7 @@ manuscript – the only paper-reported NCA statistics in the main text are
 dose-normalised CV%s (AUC(0,12h)/D = 67.5%, Cmax/D = 63.7%, Cmin/D =
 74.4%; Results paragraph 1). The detailed per-stratum medians and
 prediction intervals live in online supplements (Tables S1 / S2) that
-are not on disk. The check below confirms the simulated cohort’s
+were not available. The check below confirms the simulated cohort’s
 dose-normalised CV% is in the same general range as the published
 values.
 
@@ -574,9 +575,9 @@ publication.
 - **PKNCA reference NCA values come from the paper’s Results-paragraph
   dose-normalised CV%s.** The detailed per-stratum medians and
   prediction intervals are reported in online supplements (Tables S1 /
-  S2) that are not on disk for this extraction. The dose-normalised CV%
-  comparison in the validation section uses only the headline values
-  quoted in the main text.
+  S2) that were not available when this model was built. The
+  dose-normalised CV% comparison in the validation section uses only the
+  headline values quoted in the main text.
 - **Virtual cohort size n =75 per stratum.** Small enough to render the
   vignette inside the pkgdown 5-minute gate, large enough to give stable
   percentiles for the dose-normalised CV% comparison. The Jacobo-Cabral

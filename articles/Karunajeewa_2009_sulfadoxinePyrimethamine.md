@@ -623,7 +623,8 @@ etas which carry into the metabolite CL through the structural 10x).
   the headline result; users who wish to follow the bootstrap value can
   replace `etalka ~ log(1 + 0.107^2)` with `etalka ~ log(1 + 1.12^2)` in
   the `ini()` block. The cause of the discrepancy is not explained in
-  the source paper and could not be resolved from on-disk material.
+  the source paper and could not be resolved from the available
+  material.
 - **PYR proportional-error column units.** Table 4’s “Proportional error
   in PYR” row carries a column-header annotation of “( ug/liter \[ RSE%
   \] )”. A proportional error is a unitless fractional SD; the

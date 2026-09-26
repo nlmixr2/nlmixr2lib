@@ -553,12 +553,11 @@ at steady state.
 
 ## Provenance summary
 
-| Source on disk | Used for |
+| Source | Used for |
 |----|----|
-| `Yoneyama_2018_A_Pharmacometric_Approach_to_Substitute__4df84e.pdf` | Main paper Methods, Results, Table 1, Table 2, Figure 5, Section 3.5 narrative on phase III regimen selection. |
-| Text extracted from the PDF | Same content, used during extraction for searchability. |
+| Main paper (PDF) | Methods, Results, Table 1, Table 2, Figure 5, Section 3.5 narrative on phase III regimen selection. |
 
 The Electronic Supplementary Material (ESM Methods, Table S1, Figures
-S1-S6) is referenced in the paper but is not on disk for this
-extraction; all parameter values used by the packaged model are present
+S1-S6) is referenced in the paper but was not available when this model
+was built; all parameter values used by the packaged model are present
 in Table 2 of the main paper. No author correspondence was required.

@@ -409,7 +409,7 @@ not include.
 
 - **Demographics not reproduced from supplement.** The FeDeriCa baseline
   demographics table is in Wang 2021 Online Resource 1 (supplementary
-  material) and was not on disk when this model was built. The virtual
+  material) and was not available when this model was built. The virtual
   cohort uses Gaussian approximations to the LBW (mean 45.5 kg, SD 4.5
   kg) and albumin (mean 43.0 g/L, SD 3.0 g/L) distributions implied by
   the 5th-95th percentile values reported in Wang 2021 Figs 1 and 2 and

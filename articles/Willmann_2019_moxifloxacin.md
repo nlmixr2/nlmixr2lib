@@ -30,9 +30,8 @@
   study and sex) retained nothing beyond the a-priori weight scaling.
   The companion whole-body PBPK model of the same paper is a PK-Sim /
   MoBi platform model whose physiological parameters come from the
-  vendor’s internal databases and are not printed on disk; it is
-  therefore not reproducible as an rxode2 model and is not part of this
-  extraction.
+  vendor’s internal databases and are not printed in the paper; it is
+  therefore not reproducible as an rxode2 model and is not encoded here.
 - Article: <https://doi.org/10.1002/psp4.12446>
 - Supplement (Supplementary Methods, Tables S1-S2, Figures S1-S6):
   `PSP4-8-654-s001.pdf`, retrieved from the EuropePMC open-access
@@ -47,7 +46,7 @@ scaled from adults to children; the **confirmation** step is the
 pediatric population PK model fitted in NONMEM to the pooled phase I and
 phase III data. Only the popPK model is packaged here – see *Assumptions
 and deviations* for why the PBPK layer is not reproducible from the
-material on disk.
+material available when this model was built.
 
 ## Population
 
@@ -983,9 +982,10 @@ sprintf("Oral / intravenous median AUC ratio in the 400 mg band: %.3f (F = 0.866
   code, and several of the physicochemical inputs themselves come from a
   Bayer in-house cheminformatics tool (“Pythia”). The PBPK model
   therefore cannot be reconstructed as an rxode2 model from any material
-  on disk, and no attempt was made to substitute platform defaults. The
-  popPK model, which is fully specified by Table S2 plus the deposited
-  control stream, is packaged in full.
+  available when this model was built, and no attempt was made to
+  substitute platform defaults. The popPK model, which is fully
+  specified by Table S2 plus the deposited control stream, is packaged
+  in full.
 
 - **Infusion duration is assumed to be 60 minutes.** The paper states
   the infusion duration for its PBPK simulations and for the adult

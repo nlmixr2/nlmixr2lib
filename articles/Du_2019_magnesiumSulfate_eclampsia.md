@@ -662,9 +662,9 @@ is not reproducible from this model – see below.
   events are wanted.
 - **Two screened covariates carry no estimate.** Preeclampsia severity
   (the blood-pressure / urinary-protein level) and previous
-  anticonvulsant use were tested and not retained; no point estimate
-  exists on disk. They are documented in `covariatesDataExcluded` rather
-  than `covariateData`.
+  anticonvulsant use were tested and not retained; no point estimate is
+  available. They are documented in `covariatesDataExcluded` rather than
+  `covariateData`.
 - **The virtual cohort’s covariate distributions are an assumption.** Du
   2019 reports only means, SDs and the P5-P95 span per covariate (Table
   S3), not a correlation structure or a distributional family. The

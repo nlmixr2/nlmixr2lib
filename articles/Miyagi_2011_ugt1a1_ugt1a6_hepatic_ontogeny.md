@@ -954,10 +954,11 @@ for UGT1A6. {.table}
   `e` in place of base 10 were all checked). The paper attributes Eqs. 5
   to 10 to the commercial Simcyp Pediatric platform and gives Eq. 6 no
   citation at all, so the correct coefficients are not recoverable from
-  any source on disk. Encoding it verbatim would emit values wrong by
-  three orders of magnitude in infancy and `Inf` above about 8 years.
-  The defect is isolated: Eq. 7, printed immediately below it in the
-  identical style, is correct and is independently corroborated by
+  any source available when this model was built. Encoding it verbatim
+  would emit values wrong by three orders of magnitude in infancy and
+  `Inf` above about 8 years. The defect is isolated: Eq. 7, printed
+  immediately below it in the identical style, is correct and is
+  independently corroborated by
   `inst/modeldb/specificDrugs/Han_2025_alfentanil_pbpk.R`, which encodes
   the same polynomial. The numeric proof:
 

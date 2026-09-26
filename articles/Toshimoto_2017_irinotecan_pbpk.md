@@ -866,9 +866,9 @@ while the Supplementary Text’s “Optional equation” block gives the
 
     Rdif,ent = PSact,eff,ent / (AR * PSdif,eff,ent)
 
-The two on-disk sources contradict each other, and the choice changes
-enterocyte SN-38 exposure 2.4-fold - it is not cosmetic. It was settled
-against two quantities the authors themselves published:
+The two sources contradict each other, and the choice changes enterocyte
+SN-38 exposure 2.4-fold - it is not cosmetic. It was settled against two
+quantities the authors themselves published:
 
 - the ID 2 unbound plasma SN-38 AUC threshold of 26.35 nM\*h is
   reproduced to within about 3 percent by the supplement form, and

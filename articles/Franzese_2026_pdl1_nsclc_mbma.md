@@ -113,7 +113,7 @@ each “id” in the rxode2 event dataset as one study strata arm.
 
 ## Source trace
 
-Every value in `ini()` is drawn from the on-disk paper + supplement. The
+Every value in `ini()` is drawn from the paper and its supplement. The
 table below lists the source for every equation and every parameter
 estimate.
 

@@ -82,7 +82,7 @@ refer to the model file for the full per-parameter comments.
 | `etalka` (folded BOV on Ka as BSV-equivalent) | `var = 0.18458` | Table 3 BOV Ka = 44.91% folded in; no BSV reported |
 | `addSd` (additive residual SD) | `0.32 mg/L` | Table 3 row `Additive error (mg/L) = 0.32 (0.21-0.38)` |
 | `propSd` (proportional residual SD) | `0.0526` | Table 3 row `Proportional error (%) = 5.26 (4.26-6.18)` |
-| Equation `FpreH(AGE) = 1 - (1 - 0.583) * exp(-ln(2)/1.54 * AGE)` | n/a | Results ‘Population pharmacokinetics’ paragraph 4 + Equation (7) of Appendix S1; Appendix S1 not on disk so the form is reconstructed from the narrative (matches the paper’s reported 90% at age 3.3 years) |
+| Equation `FpreH(AGE) = 1 - (1 - 0.583) * exp(-ln(2)/1.54 * AGE)` | n/a | Results ‘Population pharmacokinetics’ paragraph 4 + Equation (7) of Appendix S1; Appendix S1 not available so the form is reconstructed from the narrative (matches the paper’s reported 90% at age 3.3 years) |
 | Equation `FH = QH / (QH + fu * CLint)` | n/a | Well-stirred liver, Gordi et al. 2003 (ref 40) |
 | Equation `diurnal(t) = 1 + AMP * cos(2 pi (t - SHIFT) / 24)` | n/a | Methods ‘Structural model’ + Results ‘Population pharmacokinetics’ paragraph 2; zenith near noon when t = 0 anchored to midnight |
 
@@ -446,16 +446,17 @@ investigated in ‘Assumptions and deviations’. {.table}
 - **Transit-compartment parameterisation.** Bienczak 2016 reports both
   `MTT = 0.56 h` (NTRANS = 3 fixed) and `Ka = 0.84 1/h` as separate
   joint-identified parameters. Appendix S1 (which would disambiguate the
-  parameterisation) was not on disk at extraction time. The chosen
-  interpretation places NTRANS = 3 sequential transit compartments with
-  shared rate `ktr = NTRANS / MTT = 5.36 1/h` between depot, transit_1,
-  transit_2, transit_3, then a separate first-order absorption from
-  transit_3 into central at rate `ka = 0.84 1/h`. An alternative reading
-  (Savic-style shared rate with `ktr = (NTRANS + 1) / MTT = 7.14 1/h`
-  and the reported `Ka` being a separate quantity, e.g., a
-  population-level mean absorption time scalar) cannot be excluded; the
-  chosen form was retained because it gives a Cmax / Tmax profile
-  consistent with the published intensive-sampling traces.
+  parameterisation) was not available when this model was built. The
+  chosen interpretation places NTRANS = 3 sequential transit
+  compartments with shared rate `ktr = NTRANS / MTT = 5.36 1/h` between
+  depot, transit_1, transit_2, transit_3, then a separate first-order
+  absorption from transit_3 into central at rate `ka = 0.84 1/h`. An
+  alternative reading (Savic-style shared rate with
+  `ktr = (NTRANS + 1) / MTT = 7.14 1/h` and the reported `Ka` being a
+  separate quantity, e.g., a population-level mean absorption time
+  scalar) cannot be excluded; the chosen form was retained because it
+  gives a Cmax / Tmax profile consistent with the published
+  intensive-sampling traces.
 - **Well-stirred liver collapsed into algebraic adjustments.** The model
   implements the well-stirred hepatic extraction (Gordi 2003 form)
   algebraically as `FH = QH / (QH + fu * CLint)` applied to the depot
@@ -481,8 +482,8 @@ investigated in ‘Assumptions and deviations’. {.table}
   because adjusting would distort the canonical well-stirred
   relationship.
 - **FpreH equation reconstructed from narrative.** Equation (7) for the
-  age-driven FpreH maturation lives in Appendix S1, which is not on
-  disk. The implementation reconstructs the form as
+  age-driven FpreH maturation lives in Appendix S1, which was not
+  available. The implementation reconstructs the form as
   `FpreH(AGE) = 1 - (1 - 0.583) * exp(-ln(2) / 1.54 * AGE)` from the
   paper’s narrative (‘FpreH at birth … 58.30%, half-life of the process
   1.54 years, 90% reached at age 3.3 years’). The reconstructed form
@@ -504,7 +505,7 @@ investigated in ‘Assumptions and deviations’. {.table}
   frequencies fixed to those observed in the study population. This
   nlmixr2lib model assumes known genotype and expects the user to supply
   the three indicator columns `CYP2B6_IM`, `CYP2B6_SM`, `CYP2B6_USM`
-  directly; the mixture-model dispatch is not part of the packaged
+  directly; the mixture-model imputation is not part of the packaged
   model.
 - **Increased residual error and BOV for unobserved-intake-time data
   dropped.** Bienczak 2016 Table 3 reports a 1.56-fold increase in

@@ -372,7 +372,7 @@ in day. {.table}
   Burmester 2011 / Padhi 2011 sources.
 - **Supplementary material not consulted.** Stein and Peletier 2018
   reference a Supplementary Material containing the model fits to the
-  Figure 1 data; that supplement was not available on disk during this
-  extraction. Table 1 in the main article carries the parameter values
-  used here, and Stein and Peletier 2018 page 672 confirms those are the
+  Figure 1 data; that supplement was not available when this model was
+  built. Table 1 in the main article carries the parameter values used
+  here, and Stein and Peletier 2018 page 672 confirms those are the
   values used for all simulations in the main text.

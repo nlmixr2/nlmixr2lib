@@ -3362,16 +3362,16 @@ cascade leaves <code>KE2 = 0</code>.</p>
 <h2 id="validation-strategy">Validation strategy<a class="anchor" aria-label="anchor" href="#validation-strategy"></a>
 </h2>
 <p>The bundle ships an in vitro experimental dataset that is not a
-re-extractable population PK study, and the linked publication is not on
-local disk (searched the maintainers’ literature mirror). The validation
-strategy is therefore <strong>F.2 self-consistency</strong>: re-simulate
-the bundle’s <code>Simulated_ColistinMeropenem_Interaction.csv</code>
-through <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> with typical-value parameters (no
-IIV, no residual error) and compare the trajectory against the simulated
+re-extractable population PK study, and the linked publication was not
+available when this model was built. The validation strategy is
+therefore <strong>self-consistency</strong>: re-simulate the bundle’s
+<code>Simulated_ColistinMeropenem_Interaction.csv</code> through
+<code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> with typical-value parameters (no IIV, no
+residual error) and compare the trajectory against the simulated
 observations in the bundle. PKNCA does not apply (this is
 bacterial-count PD on log scale, not concentration-time PK). Population
 NCA comparison against a published table is not possible because the
-publication is not on disk.</p>
+publication was not available.</p>
 </div>
 <div class="section level2">
 <h2 id="re-simulation-of-the-bundles-simulated-dataset">Re-simulation of the bundle’s simulated dataset<a class="anchor" aria-label="anchor" href="#re-simulation-of-the-bundles-simulated-dataset"></a>
@@ -3675,11 +3675,12 @@ collapses these into a single combined additive residual on natural-log
 scale
 (<code>addSd_log_cfu = sqrt(0.422 + 0.0364) * log(10)</code>).</li>
 <li>
-<strong>No linked publication on disk.</strong> The associated paper
-(<a href="https://doi.org/10.1093/jac/dkv488" class="external-link">doi:10.1093/jac/dkv488</a>) is
-not available locally; PKNCA-style comparison against published tables
-is therefore not possible. Validation reduces to F.2 self-consistency
-against the bundle-shipped <code>Output_simulated_*.lst</code>.</li>
+<strong>No linked publication available.</strong> The associated
+paper (<a href="https://doi.org/10.1093/jac/dkv488" class="external-link">doi:10.1093/jac/dkv488</a>)
+was not available when this model was built; PKNCA-style comparison
+against published tables is therefore not possible. Validation reduces
+to self-consistency against the bundle-shipped
+<code>Output_simulated_*.lst</code>.</li>
 <li>
 <strong>Unused THETA placeholders.</strong> THETA(6), THETA(24),
 THETA(25), THETA(30), and THETA(32) are FIX placeholders in the source

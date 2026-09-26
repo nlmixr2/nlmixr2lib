@@ -70,7 +70,7 @@ Equations from van Hasselt 2015 Methods Eq. 1 (K-PD depot decay), Eq. 2
 | Correlation `xPSA0*xKG` | `-0.032` | Table 2 footnote c |
 | Correlation `xPSA0*xKD0` | `0` (fixed) | Results “Statistical model”: “the correlation between the drug effect parameter KD and PSA0, which approached zero in the final obtained estimate.” |
 | `propSd` | `0.342` | Table 2: rprop = 34.2 CV% (RSE 27.5%, shrinkage 14%) |
-| Typical per-dose eribulin AUC | `200 ng*h/mL` | Approximation for 1.4 mg/m^2 IV eribulin from the upstream popPK literature; the modelling paper does not tabulate individual AUC values in the on-disk text (Supporting Table S1 is referenced but not on disk). Used for the vignette demonstrations only; users with patient-specific AUC values should supply them per dose event. |
+| Typical per-dose eribulin AUC | `200 ng*h/mL` | Approximation for 1.4 mg/m^2 IV eribulin from the upstream popPK literature; the modelling paper does not tabulate individual AUC values in the main text (Supporting Table S1 is referenced but was not available when this model was built). Used for the vignette demonstrations only; users with patient-specific AUC values should supply them per dose event. |
 
 ## Virtual cohort and dosing schedule
 
@@ -81,8 +81,8 @@ ng*h/mL supplied as the K-PD bolus, and follows PSA out to 200 days so
 the post-treatment regrowth phase is visible. The 200 ng*h/mL
 placeholder is a literature-typical eribulin AUC for adults receiving
 the 1.4 mg/m^2 IV dose – the modelling paper does not publish individual
-AUC values in the main text on disk, so users with patient-level AUC
-predictions should override this default.
+AUC values in the main text, so users with patient-level AUC predictions
+should override this default.
 
 ``` r
 
@@ -498,12 +498,13 @@ unchanged.
   van Hasselt 2013) with albumin, alkaline phosphatase, and total
   bilirubin on clearance to predict per-dose AUC values; those
   predictions then enter the DP model as the K-PD bolus amount. The two
-  upstream popPK references are not on disk, and the DP model itself
-  does not fix any PK parameter from those publications – it only
-  consumes AUC as a dose input. Users with their own eribulin popPK
-  model (or with per-patient AUC measurements) should supply AUC values
-  via the `amt` column on each dose event; the vignette uses a single
-  literature-typical placeholder of 200 ng\*h/mL per dose.
+  upstream popPK references were not available when this model was
+  built, and the DP model itself does not fix any PK parameter from
+  those publications – it only consumes AUC as a dose input. Users with
+  their own eribulin popPK model (or with per-patient AUC measurements)
+  should supply AUC values via the `amt` column on each dose event; the
+  vignette uses a single literature-typical placeholder of 200 ng\*h/mL
+  per dose.
 
 - **K-PD `depot_kpd` compartment naming.** The paper’s “drug effect
   compartment D” is a K-PD construct that receives the per-dose
@@ -539,14 +540,14 @@ unchanged.
   hepatic function (albumin, ALP, bilirubin), and dose adjustments per
   the trial protocol. Supporting Table S1 of van Hasselt 2015 is
   referenced in the paper as the source of cohort-level AUC summaries
-  but is not on disk for this extraction.
+  but was not available when this model was built.
 
 - **Population demographics gaps.** The age range, weight range, race /
   ethnicity distribution, and dose range used for the cohort summary in
-  `population` are not fully reported in the main paper text on disk.
-  The paper’s Supporting Table S1 was not accompanying the PDF in the
-  ingestion bundle; users with the supplement should consult it for the
-  per-stratum demographic detail.
+  `population` are not fully reported in the main paper text. The
+  paper’s Supporting Table S1 was not available when this model was
+  built; users with the supplement should consult it for the per-stratum
+  demographic detail.
 
 - **PKNCA validation is omitted.** This is a PSA disease-progression
   model with no drug-concentration ODE – there is no plasma drug

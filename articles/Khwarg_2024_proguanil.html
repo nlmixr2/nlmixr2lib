@@ -4188,12 +4188,11 @@ for a Phase-1 LC-MS/MS assay; read as variances they would be 40% and
 1.</li>
 <li>
 <strong>Equations 1-8 were recovered from the PDF text
-layer.</strong> The preprocessor’s markdown conversion emitted
-<code>formula-not-decoded</code> for all eight displayed equations, so
-they were read from the PDF’s embedded text
-(<code>pdftotext -layout</code>). The <code>0.75</code> exponent of
-Equation 6 in particular is present only in the superscript run of that
-text layer.</li>
+layer.</strong> None of the eight displayed equations survives naive
+plain-text extraction of the PDF, so they were read from the PDF’s
+embedded text (<code>pdftotext -layout</code>). The <code>0.75</code>
+exponent of Equation 6 in particular is present only in the superscript
+run of that text layer.</li>
 <li>
 <strong>The mixture model is not part of the packaged
 model.</strong> Khwarg 2024 used a two-component mixture with fixed

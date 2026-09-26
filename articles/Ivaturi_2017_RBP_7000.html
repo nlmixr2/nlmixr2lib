@@ -3570,19 +3570,19 @@ and a slow ATRIGEL-release route through a 5-compartment transit chain
 (ktr, with terminal ka2 into central). Table 2 / A2 report the rate
 constants but do NOT report an explicit bioavailability split between
 the two paths; the upstream Gomeni 2013 / Laffont 2014 / Laffont 2015
-papers (where the structural model was originally developed) are not on
-disk. The package model encodes the simplest mass-conserving
-interpretation consistent with the Table 2 parameters: a single SC depot
-that simultaneously eliminates via ka1 (directly to central, fast-peak
-path) and via ktr (into transit1 of the chain, slow-peak path). The
-implicit fast-path fraction is then <code>ka1 / (ka1 + ktr)</code> ~ 18%
-and the slow-path fraction is <code>ktr / (ka1 + ktr)</code> ~ 82% at
-the typical-value estimates. This is one of several mathematically
-equivalent ways to express the dual-absorption pattern; if the upstream
-papers used a fitted F1 split with both depots receiving the full dose,
-the package model’s apparent V (129 L) absorbs the difference. The PANSS
-PK/PD output is unchanged because total active moiety is the integrating
-variable.</p></li>
+papers (where the structural model was originally developed) were not
+available when this model was built. The package model encodes the
+simplest mass-conserving interpretation consistent with the Table 2
+parameters: a single SC depot that simultaneously eliminates via ka1
+(directly to central, fast-peak path) and via ktr (into transit1 of the
+chain, slow-peak path). The implicit fast-path fraction is then
+<code>ka1 / (ka1 + ktr)</code> ~ 18% and the slow-path fraction is
+<code>ktr / (ka1 + ktr)</code> ~ 82% at the typical-value estimates.
+This is one of several mathematically equivalent ways to express the
+dual-absorption pattern; if the upstream papers used a fitted F1 split
+with both depots receiving the full dose, the package model’s apparent V
+(129 L) absorbs the difference. The PANSS PK/PD output is unchanged
+because total active moiety is the integrating variable.</p></li>
 <li><p><strong>CGI-S proportional-odds model not implemented.</strong>
 The paper also fits a CGI-S proportional-odds logistic-regression PD
 model (Section “Pharmacodynamic model for CGI-S”, Table 4) on the 4

@@ -438,11 +438,12 @@ units field as “log10 copies/mL”.
   mg\*h/L) is a time-varying covariate **supplied by the user**, not
   computed inside the model. The source authors use the Franck 2021
   pediatric popPK model (<doi:10.1007/s40262-021-01034-w>) to produce
-  subject-specific AUC_0-12 values; that PK model is not on disk for
-  this extraction and is therefore not bundled with this PD model. Users
-  who want a coupled simulation can either pre-compute AUC values from
-  any PK source or wait for a future task that bundles the Franck 2021
-  PK model and pipes its `AUC_0-12` output into this PD model.
+  subject-specific AUC_0-12 values; that PK model was not available when
+  this model was built and is therefore not bundled with this PD model.
+  Users who want a coupled simulation can either pre-compute AUC values
+  from any PK source or wait for a future release that bundles the
+  Franck 2021 PK model and pipes its `AUC_0-12` output into this PD
+  model.
 
 - **No PKNCA validation.** The model has no drug-concentration output
   and no dosing events; PKNCA’s NCA recipes do not apply. The validation

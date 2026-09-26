@@ -70,8 +70,8 @@ recipients** receiving ciclosporin (Maizaud 2025 Methods 2.1).
 
 Detailed baseline demographics (age, weight, sex, race, time
 post-transplant) live in the two primary publications and are therefore
-not reproduced here. The `population` metadata records what the on-disk
-sources do state:
+not reproduced here. The `population` metadata records what the
+available sources do state:
 
 ``` r
 
@@ -149,8 +149,8 @@ in `inst/modeldb/specificDrugs/`. `S1 [PARAM]` / `S1 [OMEGA]` /
 **Random-effect scale cross-check.** Maizaud 2025 Table 1 reports the
 random effects as SDs (`omega`, `kappa`); the S1 `[OMEGA]` blocks report
 them as variances. All 13 entries agree on squaring, which is the
-strongest available evidence that the two independent on-disk sources
-describe the same models:
+strongest available evidence that the two independent sources describe
+the same models:
 
 ``` r
 
@@ -204,8 +204,8 @@ need; the relative-difference comparisons are far tighter still because
 scenarios are paired within subject.
 
 Covariates are set to the `mrgsolve` `@covariates` defaults of the S1
-File, which are the only per-subject covariate values any on-disk source
-supplies. Sex for the van Hest cohort is drawn 50/50, matching
+File, which are the only per-subject covariate values any available
+source supplies. Sex for the van Hest cohort is drawn 50/50, matching
 `rbinom(1000, 1, 0.50)` in S1.
 
 ``` r
@@ -909,7 +909,7 @@ stopifnot(nrow(half_dose) >= 3L, all(half_dose$rel_pct > 0), all(half_dose$rel_p
 - **van Hest’s inter-occasion variability is declared with two
   occasions.** The paper reports IOV (its `kappa` terms) on Ka, V1/F and
   CL/F, but the **number of occasions in the original analysis is not
-  stated in any on-disk source**. The model declares the minimal
+  stated in any available source**. The model declares the minimal
   two-occasion expansion, with occasion 2 fixed equal to occasion 1 (the
   NONMEM `$OMEGA BLOCK(1) SAME` convention every shipped nlmixr2lib IOV
   model uses), decomposed inside `model()` via an `OCC` column. This
@@ -927,7 +927,7 @@ stopifnot(nrow(half_dose) >= 3L, all(half_dose$rel_pct > 0), all(half_dose$rel_p
   published values.** `ACMPAG_CC = 0.54 mg/L`, `AUC_MPAG = 588.8` and
   `AUC_MPA = 53 mg*h/L/g` appear **only** as `@covariates` defaults in
   the S1 File. Their provenance – presumably Rong 2019 cohort medians –
-  is not stated in any on-disk source. The same applies to van Hest’s
+  is not stated in any available source. The same applies to van Hest’s
   `CRCL = 60`, `ALB = 40` and `CONMED_CSA_DOSE = 300`, and to the
   centering constants 48 mL/min, 30 g/L and 450 mg/day.
 - **AcMPAG vs. MPAG naming conflict in S1.** The S1 annotation for the

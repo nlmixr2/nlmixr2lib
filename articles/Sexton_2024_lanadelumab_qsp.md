@@ -838,8 +838,8 @@ vpc |>
   `ksyn_c1inh = 39.608` nM/h and `init_c1inh = 2400` nM (`Param_HAE.r`
   line 8; `Init_HAE.r` line 7 comment). All other system parameters are
   unchanged.
-- **The fixed-dose C1-INH arm is only partially reproducible from
-  on-disk sources.** The packaged model supports exogenous C1-INH as a
+- **The fixed-dose C1-INH arm is only partially reproducible from the
+  available sources.** The packaged model supports exogenous C1-INH as a
   dose into the `c1inh` compartment, matching the
   `flux_C1Inh_inj_nmol_per_hr` term of Table S5 (E6), which the
   published lanadelumab parameter set holds at zero. However the C1-INH

@@ -991,7 +991,7 @@ the eventual steady-state exposure.
 
 - **Independent (diagonal) IIV on CL, V1, Q and V2.** Chen 2023 Table 2
   reports four diagonal IIV terms and no off-diagonal covariances, and
-  no supplement containing the NONMEM control stream is on disk. The
+  no supplement containing the NONMEM control stream was available. The
   packaged model therefore uses independent etas. If the original model
   estimated an OMEGA block, the reproduced prediction intervals would be
   somewhat mis-shaped even though the medians match; the close agreement
@@ -1003,9 +1003,10 @@ the eventual steady-state exposure.
   MIC distribution. The paper states only that “most MRSA had an MIC
   distribution for teicoplanin of 0.5-1 mg/L” and does not tabulate the
   per-MIC isolate fractions `p(MIC_i)` used in its Equation 4, and the
-  EUCAST distribution is not on disk. Reproducing Figure 5 would require
-  inventing those weights, so it is omitted. The PTA values that feed
-  the CFR calculation are reproduced above.
+  EUCAST distribution was not available when this model was built.
+  Reproducing Figure 5 would require inventing those weights, so it is
+  omitted. The PTA values that feed the CFR calculation are reproduced
+  above.
 
 - **Race / ethnicity not modeled.** Chen 2023 does not report race
   composition by category; the Conclusion describes the cohort as “a

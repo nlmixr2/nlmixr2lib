@@ -515,7 +515,7 @@ paper.
   effects were retained in the final model. Body weight is registered
   only to drive the Q_H mapping.
 
-- **No supplement on disk.** No NONMEM control stream, `.lst` listing,
+- **No supplement available.** No NONMEM control stream, `.lst` listing,
   or supplementary file was available for either Asimus 2007 or
   Gordi 2005. The structural model is reconstructed from the Gordi 2005
   main-text Eqs. 1-11 plus the Asimus 2007 Table 2 parameter values.

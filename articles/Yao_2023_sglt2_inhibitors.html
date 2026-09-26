@@ -4469,12 +4469,12 @@ only plausible under one direction for the PK layer and the other for
 the endpoint layer: the PK proportional SD of 0.676 is 68% at
 <code>W = 1</code>, implausible for study-arm means unless divided,
 whereas the FPG additive SD of 0.18 mg/dL is implausibly small unless
-multiplied. The direction is not resolvable from any on-disk source. The
-models therefore carry the <strong>reported variances back-transformed
-to SD at <code>W = 1</code></strong>, verbatim, and every validation
-above uses <code><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">rxode2::zeroRe()</a></code> typical-value solves so that no
-conclusion depends on the weighting. A downstream user simulating a
-study of <code>N</code> subjects must decide the direction
+multiplied. The direction is not resolvable from any available source.
+The models therefore carry the <strong>reported variances
+back-transformed to SD at <code>W = 1</code></strong>, verbatim, and
+every validation above uses <code><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">rxode2::zeroRe()</a></code> typical-value
+solves so that no conclusion depends on the weighting. A downstream user
+simulating a study of <code>N</code> subjects must decide the direction
 themselves.</p>
 </div>
 <div class="section level3">
