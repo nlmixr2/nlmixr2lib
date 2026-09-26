@@ -5392,6 +5392,8 @@ navbar:
         href: articles/Roberts_2016_topotecan.html
       - text: "Topotecan mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Torasemide dog (Pelligand 2020)"
+        href: articles/Pelligand_2020_torasemide_dog.html
       - text: "Torasemide pbpk (Gu 2025)"
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Torsemide (Jeong 2022)"
@@ -7514,6 +7516,7 @@ articles:
   - articles/Pei_2023_tacrolimus
   - articles/Pejcic_2024_clopidogrel
   - articles/Pelligand_2016_robenacoxib_cat
+  - articles/Pelligand_2020_torasemide_dog
   - articles/Peng_2014_MK3577
   - articles/Peng_2024_SAL003
   - articles/Peng_2025_meropenem
