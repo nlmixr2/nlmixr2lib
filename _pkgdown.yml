@@ -3176,6 +3176,8 @@ navbar:
         href: articles/Liu_2025_meropenem.html
       - text: "Meropenem (Lu 2016)"
         href: articles/Lu_2016_meropenem.html
+      - text: "Meropenem (Onichimowski 2020)"
+        href: articles/Onichimowski_2020_meropenem.html
       - text: "Meropenem (Padari 2012)"
         href: articles/Padari_2012_meropenem.html
       - text: "Meropenem (Peng 2025)"
@@ -7452,6 +7454,7 @@ articles:
   - articles/Ollier_2015_ropivacaine
   - articles/Olmos_2019_clozapine
   - articles/OlssonGisleskog_2025_ibrutinib
+  - articles/Onichimowski_2020_meropenem
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Onita_2025_sulbactam
   - articles/Ooi_2026_elafibranor
