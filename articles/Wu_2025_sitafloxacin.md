@@ -321,7 +321,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5569aae01860>
+#> <environment: 0x55f822a7c3c8>
 ```
 
 ## Population
@@ -697,7 +697,8 @@ hl_sim <- rxode2::rxSolve(mod_typ, events = ev_hl, returnType = "data.frame")
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etald1'
 
 # Terminal slope from the log-linear tail, well past the distribution phase.
-tail_fit  <- stats::lm(log(Cc) ~ time, data = subset(hl_sim, time >= 36 & Cc > 0))
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_fit  <- stats::lm(log(Cc) ~ time, data = subset(hl_sim, time >= 36 & Cc >= 1e-6 * max(Cc)))
 hl_simval <- log(2) / -unname(coef(tail_fit)[2])
 
 # Analytic beta root from the published Table 2 typical values.

@@ -181,7 +181,9 @@ sim <- rxode2::rxSolve(
   # Tight ODE and steady-state tolerances: the closed-form trough gate below
   # asserts 1e-6 relative agreement, and the defaults (rtol 1e-6, ssRtol 1e-6)
   # leave about 2e-6 when the model is integrated numerically.
-  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc)) |>

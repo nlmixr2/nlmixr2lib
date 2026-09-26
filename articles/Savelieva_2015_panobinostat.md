@@ -446,7 +446,9 @@ terminal_half_life <- function(mod, covs) {
   ev <- iv_events(covs, tmax = 400, by = 0.5)
   s <- rxode2::rxSolve(rxode2::zeroRe(mod), ev, returnType = "data.frame",
                        addDosing = FALSE) |>
-    dplyr::filter(!is.na(Cc), Cc > 0, time >= 200)
+    dplyr::filter(!is.na(Cc)) |>
+    # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+    dplyr::filter(Cc >= 1e-6 * max(Cc), time >= 200)
   # Fit the slope well after distribution is complete; measuring from the dose
   # would fold in the distribution transient and read long.
   log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = s))[["time"]]

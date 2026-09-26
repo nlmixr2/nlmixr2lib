@@ -315,6 +315,10 @@ pk_sim <- dplyr::bind_rows(lapply(ibsm_base, pk_cohort)) |>
 
 conc_data <- pk_sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, treatment, dose, time, Cc)
 
 dose_data <- conc_data |>

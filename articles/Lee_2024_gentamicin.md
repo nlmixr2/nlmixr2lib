@@ -709,11 +709,11 @@ nca_sim <- rxode2::rxSolve(mod, nca_events, covsInterpolation = "locf",
 # fastest-clearing subjects (t1/2 ~ 6 h) out to 1e-30 mg/L, where the ODE
 # integrator's relative error dwarfs the terminal slope and PKNCA's
 # log-linear half-life fit follows that noise (measured: 13% half-life
-# error). Per subject, keep Cc >= 1e-6 * max(Cc).
+# error). Per subject, keep Cc >= 1e-6 * max(Cc) after the peak.
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(id) |>
-  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 

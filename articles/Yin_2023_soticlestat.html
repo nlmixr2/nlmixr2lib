@@ -3784,7 +3784,8 @@ system.</p>
 <span><span class="va">k21</span> <span class="op">&lt;-</span> <span class="va">p</span><span class="op">$</span><span class="va">q</span> <span class="op">/</span> <span class="va">p</span><span class="op">$</span><span class="va">vp</span></span>
 <span><span class="va">betaAnalytic</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="op">(</span><span class="va">k10</span> <span class="op">+</span> <span class="va">k12</span> <span class="op">+</span> <span class="va">k21</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">k10</span> <span class="op">+</span> <span class="va">k12</span> <span class="op">+</span> <span class="va">k21</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">4</span> <span class="op">*</span> <span class="va">k10</span> <span class="op">*</span> <span class="va">k21</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">tail96</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">sTab</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">48</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">96</span> <span class="op">&amp;</span> <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co"># Keep Cc &gt;= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.</span></span>
+<span><span class="va">tail96</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">sTab</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">48</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">96</span> <span class="op">&amp;</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">betaObserved</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">tail96</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span> <span class="op">~</span> <span class="va">tail96</span><span class="op">$</span><span class="va">time</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"peripheral1 peak amount     : %.2f mg\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">sTab</span><span class="op">$</span><span class="va">peripheral1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -4744,7 +4745,11 @@ prediction interval, 100 subjects per arm).
 <span><span class="co"># measurement" warning on every subject.</span></span>
 <span><span class="va">conc</span> <span class="op">&lt;-</span> <span class="va">srd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Per subject, keep Cc &gt;= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The dose amount is renamed `amt`: `dose` is a reserved column name in PKNCA.</span></span>
 <span><span class="co"># PKNCAdose() also rejects a slash (nested) grouping, so both objects use the</span></span>
@@ -4829,7 +4834,7 @@ after a single oral-solution dose.</caption>
 <td align="left">600 mg</td>
 <td align="right">2656.33</td>
 <td align="right">0.40</td>
-<td align="right">3465.65</td>
+<td align="right">3465.64</td>
 <td align="right">3482.04</td>
 <td align="right">5.02</td>
 </tr>
@@ -4845,7 +4850,7 @@ after a single oral-solution dose.</caption>
 <td align="left">1350 mg</td>
 <td align="right">6628.73</td>
 <td align="right">0.45</td>
-<td align="right">10465.41</td>
+<td align="right">10465.26</td>
 <td align="right">10469.19</td>
 <td align="right">4.26</td>
 </tr>

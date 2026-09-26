@@ -198,8 +198,9 @@ gate_ev <- bind_rows(
 ) |>
   arrange(id, time, desc(evid))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 gate <- rxode2::rxSolve(mod, gate_ev, omega = NA, keep = "scenario",
-                        returnType = "data.frame") |>
+                        returnType = "data.frame", maxsteps = 1e6) |>
   filter(!is.na(Cc)) |>
   select(scenario, cl, vc)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -278,7 +279,9 @@ typ_profile <- function(daily_dose, tau, wt, comeds = c(0, 0, 0, 0)) {
       mutate(evid = 0L, amt = NA_real_, ii = 0, ss = 0L, cmt = "central")
   ) |>
     arrange(id, time, desc(evid))
-  rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame") |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame",
+                  maxsteps = 1e6) |>
     filter(!is.na(Cc))
 }
 
@@ -587,7 +590,9 @@ stopifnot(dplyr::n_distinct(events$id) == n_per_arm * nrow(arms))
 sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("arm", "WT", "DOSE_TPM_MGD",
-           "CONMED_PHT", "CONMED_CBZ", "CONMED_OXC", "CONMED_PB")
+           "CONMED_PHT", "CONMED_CBZ", "CONMED_OXC", "CONMED_PB"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 

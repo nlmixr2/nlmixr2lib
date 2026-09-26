@@ -202,7 +202,9 @@ mod_typical <- rxode2::zeroRe(mod)
 # dose, so `time_rel` (time after that dose) is simply `time`.
 sim_fig4 <- rxode2::rxSolve(
   mod_typical, events = ev_fig4, keep = c("scenario", "WT", "SEXF", "FED_HIGHFAT"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   dplyr::mutate(time_rel = time)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka'
@@ -210,7 +212,9 @@ sim_fig4 <- rxode2::rxSolve(
 
 sim_cohorts <- rxode2::rxSolve(
   mod, events = ev_cohorts, keep = c("cohort", "WT", "SEXF", "DIS_HEALTHY"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   dplyr::mutate(time_rel = time)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -255,7 +259,9 @@ proportional to dose within a fixed covariate set.
 dose_levels <- c(5, 10, 15, 20)
 lin <- lapply(seq_along(dose_levels), function(i) {
   ev <- make_ss_events(base_covs, dose = dose_levels[i], id_offset = i)
-  s <- rxode2::rxSolve(mod_typical, events = ev, returnType = "data.frame")
+  s <- rxode2::rxSolve(mod_typical, events = ev, returnType = "data.frame",
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6)
   data.frame(dose = dose_levels[i], AUCtau = trapz(s$time, s$Cc))
 }) |> dplyr::bind_rows() |>
   dplyr::mutate(AUC_per_mg = AUCtau / dose)
@@ -720,8 +726,10 @@ matched <- dplyr::bind_rows(
   base_covs |> dplyr::mutate(DIS_HEALTHY = 1, cohort = "Healthy"),
   base_covs |> dplyr::mutate(DIS_HEALTHY = 0, cohort = "oHCM")
 )
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_matched <- rxode2::rxSolve(mod_typical, events = make_ss_events(matched, dose = 15),
-                               keep = "cohort", returnType = "data.frame")
+                               keep = "cohort", returnType = "data.frame",
+                               maxsteps = 1e6)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka'
 #> Warning: multi-subject simulation without without 'omega'
 matched_auc <- sim_matched |>

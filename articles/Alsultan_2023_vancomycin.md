@@ -306,7 +306,9 @@ solve_arm <- function(i) {
   out <- rxode2::rxSolve(
     mod, events = build_events(arm_row, arm_cohort),
     keep = c("regimen", "stratum", "arm", "WT", "PAGE", "CREAT"),
-    returnType = "data.frame"
+    returnType = "data.frame",
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   )
   out$ii_h <- arm_row$ii
   out$mgkg <- arm_row$mgkg
@@ -361,7 +363,9 @@ tau_chk   <- 18
 runin_end <- 21 * 24
 
 ev_ss <- build_events(tibble::tibble(mgkg = 15, ii = tau_chk), ss_grid)
-sim_ss <- rxode2::rxSolve(mod_typ, events = ev_ss, returnType = "data.frame")
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod_typ, events = ev_ss, returnType = "data.frame",
+                          maxsteps = 1e6)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
 

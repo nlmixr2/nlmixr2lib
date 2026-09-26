@@ -386,6 +386,11 @@ labelling simulations.
 
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc_ng_per_mL), time > 0) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc_ng_per_mL)] |
+                  Cc_ng_per_mL >= 1e-6 * max(Cc_ng_per_mL)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc = Cc_ng_per_mL, cohort)
 
 dose_df <- events |>

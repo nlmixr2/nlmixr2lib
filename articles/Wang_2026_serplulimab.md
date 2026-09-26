@@ -378,13 +378,14 @@ printed in the Section 3.1 clearance equation had been applied twice
 
 # Fit the terminal slope well after the distribution phase and after the
 # time-varying clearance has settled, so log(2)/k is the true beta half-life.
-tail_win <- dplyr::filter(s_single, time >= 300, time <= 600, Cc > 0)
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_win <- dplyr::filter(s_single, time >= 300, time <= 600, Cc >= 1e-6 * max(Cc))
 k_beta   <- -unname(coef(lm(log(Cc) ~ time, data = tail_win))[2])
 
 c(`terminal half-life (days)` = round(log(2) / k_beta, 1),
   `Vss (L)` = 3.25 + 2.98)
 #> terminal half-life (days)                   Vss (L) 
-#>                     28.10                      6.23
+#>                     28.00                      6.23
 stopifnot(log(2) / k_beta > 20, log(2) / k_beta < 32)
 ```
 

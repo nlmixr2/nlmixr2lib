@@ -421,7 +421,7 @@ slope_fit <- coef(lm(QTcI ~ Cc, data = typ_qtc))
 ms_per_100 <- unname(slope_fit["Cc"]) * 100
 c(intercept_ms = unname(slope_fit["(Intercept)"]), ms_per_100_ng_per_mL = ms_per_100)
 #>         intercept_ms ms_per_100_ng_per_mL 
-#>         8.110045e-17         4.170000e+00
+#>         1.146484e-16         4.170000e+00
 
 # Exact algebra of a straight line through a zero intercept -- no cohort
 # sampling is involved, so this is held to machine-ish tolerance.

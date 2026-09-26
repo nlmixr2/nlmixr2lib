@@ -147,7 +147,9 @@ mod <- readModelDb("Csajka_2004_indinavir")()
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("arm", "regimen", "dose_mg", "tau_h", "WT", "SEXF", "CONMED_RTV")
+  keep = c("arm", "regimen", "dose_mg", "tau_h", "WT", "SEXF", "CONMED_RTV"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::as_tibble()
@@ -200,7 +202,9 @@ mod_typical <- rxode2::zeroRe(mod)
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events_typ,
-  keep   = c("arm", "regimen", "dose_mg", "tau_h", "WT", "SEXF", "CONMED_RTV")
+  keep   = c("arm", "regimen", "dose_mg", "tau_h", "WT", "SEXF", "CONMED_RTV"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::as_tibble()

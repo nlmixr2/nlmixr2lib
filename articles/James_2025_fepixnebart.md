@@ -585,7 +585,9 @@ ev_ss$treatment <- "500 mg q2w, steady state"
 for (nm in names(cov_typ)) ev_ss[[nm]] <- cov_typ[[nm]]
 
 sim_ss <- rxode2::rxSolve(mod_typ, ev_ss, omega = NA,
-                          keep = c("treatment"), returnType = "data.frame")
+                          keep = c("treatment"), returnType = "data.frame",
+                          # steady-state searches for long-half-life subjects exceed the default step budget
+                          maxsteps = 1e6)
 
 nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(sim_ss |> dplyr::filter(!is.na(Cc)) |>

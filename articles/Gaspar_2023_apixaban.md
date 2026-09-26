@@ -336,7 +336,9 @@ stopifnot(nrow(dplyr::distinct(events, id)) == n_per_arm * nrow(arms))
 
 mod <- readModelDb("Gaspar_2023_apixaban")
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("arm", "CRCL", "AUC_FEXO")) |>
+                       keep = c("arm", "CRCL", "AUC_FEXO"),
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2
@@ -417,7 +419,9 @@ grid_ev <- bind_rows(
   arrange(id, time, desc(evid))
 
 typ_cmin <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = grid_ev,
-                            keep = c("ckd", "pgp")) |>
+                            keep = c("ckd", "pgp"),
+                            # steady-state searches for long-half-life subjects exceed the default step budget
+                            maxsteps = 1e6) |>
   as.data.frame() |>
   filter(!is.na(Cc)) |>
   group_by(ckd, pgp) |>
@@ -544,7 +548,8 @@ asserted rather than assumed.
 # Verify dose-proportionality before relying on it: solve one small arm at
 # 2.5 mg and confirm the profile is exactly half the 5 mg profile.
 lin_ev <- events |> filter(id <= 5L)
-lin_5  <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = lin_ev) |> as.data.frame()
+# steady-state searches for long-half-life subjects exceed the default step budget
+lin_5  <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = lin_ev, maxsteps = 1e6) |> as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2
 #> as a work-around try putting the mu-referenced expression on a simple line
@@ -553,7 +558,8 @@ lin_5  <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = lin_ev) |> as.data.f
 #> ℹ omega/sigma items treated as zero: 'etaltlag', 'etalka', 'etalq', 'etalvp', 'etaiov_cl_1', 'etaiov_cl_2'
 #> Warning: multi-subject simulation without without 'omega'
 lin_25 <- rxode2::rxSolve(mod |> rxode2::zeroRe(),
-                          events = lin_ev |> mutate(amt = ifelse(evid == 1L, 2.5, amt))) |>
+                          events = lin_ev |> mutate(amt = ifelse(evid == 1L, 2.5, amt)),
+                          maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2
@@ -829,7 +835,9 @@ typ_events <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(time, dplyr::desc(evid))
 
-sim_typ <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = typ_events) |>
+sim_typ <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = typ_events,
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc))
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -842,7 +850,8 @@ sim_typ <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = typ_events) |>
 # Terminal slope fitted well after the washout transient: a time-to-50%
 # measured from the moment of withdrawal includes the distribution phase and
 # reads long.
-term <- sim_typ |> dplyr::filter(time >= 48, time <= 240, Cc > 0)
+# Below 1e-6 of the peak the integrator has no relative accuracy left.
+term <- sim_typ |> dplyr::filter(time >= 48, time <= 240, Cc >= 1e-6 * max(Cc))
 hl_fit <- log(2) / -coef(lm(log(Cc) ~ time, data = term))[["time"]]
 
 published_nca <- tibble::tibble(

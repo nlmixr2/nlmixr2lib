@@ -341,12 +341,14 @@ half_life <- function(mod, dose_mgkg, wt, t_end, lo, hi, col) {
                  1L, seq(0, t_end, by = 1))
   s <- rxode2::rxSolve(mod, ev, omega = NA, useLinCmt = FALSE,
                        returnType = "data.frame")
-  s <- s[s$time >= lo & s$time <= hi & s[[col]] > 0, ]
+  # Keep points >= 1e-6 * max: below that the ODE solution is integrator noise.
+  s <- s[s$time >= lo & s$time <= hi & s[[col]] >= 1e-6 * max(s[[col]]), ]
   log(2) / -stats::coef(stats::lm(log(s[[col]]) ~ s$time))[2]
 }
 
 th_cyno_prot  <- half_life(mod_cyno,  0.15,  2.5, 500, 300, 500, "Rel2vlk")
-th_cyno_mrna  <- half_life(mod_cyno,  0.15,  2.5, 500, 200, 350, "Cc")
+# Cyno mRNA falls below 1e-6 of its peak at ~197 h, so its window opens at 100 h.
+th_cyno_mrna  <- half_life(mod_cyno,  0.15,  2.5, 500, 100, 350, "Cc")
 th_human_prot <- half_life(mod_human, 0.025, 70,  900, 600, 900, "Rel2vlk")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 th_human_mrna <- half_life(mod_human, 0.025, 70,  900, 300, 600, "Cc")
@@ -636,7 +638,11 @@ intervals_cyno <- data.frame(
 
 nca_one <- function(conc_col) {
   cdf <- conc_cyno |>
-    dplyr::select(id, time, arm, conc = dplyr::all_of(conc_col))
+    dplyr::select(id, time, arm, conc = dplyr::all_of(conc_col)) |>
+    # Keep conc >= 1e-6 * max(conc) per animal after the peak (solver noise below), plus time zero.
+    dplyr::group_by(arm, id) |>
+    dplyr::filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc) | time == 0) |>
+    dplyr::ungroup()
   o_conc <- PKNCA::PKNCAconc(cdf, conc ~ time | arm + id)
   o_dose <- PKNCA::PKNCAdose(dose_cyno, amt ~ time | arm + id,
                              duration = "duration")
@@ -666,17 +672,17 @@ nca_cyno |>
 | aucinf.obs          | Rel2-vlk mRNA    |  1.029e+04 | 3.429e+04 | 6.858e+04 |
 | auclast             | Rel2-vlk mRNA    |  1.029e+04 | 3.429e+04 | 6.858e+04 |
 | cl.obs              | Rel2-vlk mRNA    |  3.645e+01 | 3.645e+01 | 3.645e+01 |
-| clast.obs           | Rel2-vlk mRNA    |  1.000e-07 | 4.000e-07 | 8.000e-07 |
-| clast.pred          | Rel2-vlk mRNA    |  1.000e-07 | 4.000e-07 | 8.000e-07 |
+| clast.obs           | Rel2-vlk mRNA    |  1.514e-03 | 5.047e-03 | 1.009e-02 |
+| clast.pred          | Rel2-vlk mRNA    |  1.553e-03 | 5.175e-03 | 1.035e-02 |
 | cmax                | Rel2-vlk mRNA    |  1.352e+03 | 4.506e+03 | 9.012e+03 |
-| half.life           | Rel2-vlk mRNA    |  1.037e+01 | 1.037e+01 | 1.037e+01 |
-| lambda.z            | Rel2-vlk mRNA    |  6.683e-02 | 6.683e-02 | 6.683e-02 |
-| lambda.z.n.points   | Rel2-vlk mRNA    |  1.610e+02 | 1.610e+02 | 1.610e+02 |
-| lambda.z.time.first | Rel2-vlk mRNA    |  5.000e+00 | 5.000e+00 | 5.000e+00 |
-| lambda.z.time.last  | Rel2-vlk mRNA    |  3.370e+02 | 3.370e+02 | 3.370e+02 |
+| half.life           | Rel2-vlk mRNA    |  1.038e+01 | 1.038e+01 | 1.038e+01 |
+| lambda.z            | Rel2-vlk mRNA    |  6.676e-02 | 6.676e-02 | 6.676e-02 |
+| lambda.z.n.points   | Rel2-vlk mRNA    |  1.050e+02 | 1.050e+02 | 1.050e+02 |
+| lambda.z.time.first | Rel2-vlk mRNA    |  7.250e+00 | 7.250e+00 | 7.250e+00 |
+| lambda.z.time.last  | Rel2-vlk mRNA    |  1.960e+02 | 1.960e+02 | 1.960e+02 |
 | r.squared           | Rel2-vlk mRNA    |  9.999e-01 | 9.999e-01 | 9.999e-01 |
-| span.ratio          | Rel2-vlk mRNA    |  3.201e+01 | 3.201e+01 | 3.201e+01 |
-| tlast               | Rel2-vlk mRNA    |  3.370e+02 | 3.370e+02 | 3.370e+02 |
+| span.ratio          | Rel2-vlk mRNA    |  1.818e+01 | 1.818e+01 | 1.818e+01 |
+| tlast               | Rel2-vlk mRNA    |  1.960e+02 | 1.960e+02 | 1.960e+02 |
 | tmax                | Rel2-vlk mRNA    |  1.000e+00 | 1.000e+00 | 1.000e+00 |
 | adj.r.squared       | Rel2-vlk protein |  9.999e-01 | 9.999e-01 | 9.999e-01 |
 | aucinf.obs          | Rel2-vlk protein |  1.215e+03 | 4.049e+03 | 8.098e+03 |

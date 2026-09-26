@@ -694,6 +694,10 @@ terminal slope is not corrupted by simulated assay noise.
 
 sim_nca <- sim_analysis |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, arm)
 
 # Guarantee a time = 0 row per subject; pre-dose Cc = 0 is correct for an

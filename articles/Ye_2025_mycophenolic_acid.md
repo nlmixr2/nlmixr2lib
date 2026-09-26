@@ -404,7 +404,8 @@ wash <- tibble::tibble(id = 1L, WT = WT_REF) |>
 
 wsim <- rxode2::rxSolve(rxode2::zeroRe(mod), wash, addDosing = FALSE) |>
   as.data.frame() |>
-  dplyr::filter(time > 200, Cc > 0)
+  # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  dplyr::filter(time > 200, Cc >= 1e-6 * max(Cc))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalvp', 'etalq'
 

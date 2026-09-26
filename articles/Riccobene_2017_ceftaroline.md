@@ -324,7 +324,9 @@ sim <- lapply(levels(events$arm), function(a) {
   rxode2::rxSolve(
     mod, events = ev_a,
     keep = c("arm", "dose_mg", "tau_h"),
-    useLinCmt = FALSE
+    useLinCmt = FALSE,
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   ) |> as.data.frame()
 }) |> bind_rows()
 #> ℹ parameter labels from comments will be replaced by 'label()'

@@ -379,7 +379,9 @@ c(arms = nrow(arms), subjects = nrow(arms) * n_cohort, event_rows = nrow(events)
 
 sim <- rxode2::rxSolve(
   mod, events = events, returnType = "data.frame",
-  keep = "treatment"
+  keep = "treatment",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```

@@ -760,6 +760,10 @@ sim_nca <- sim |>
   # trough record that PKNCA anchors AUC(0-tau) on.
   filter(!is.na(Cc)) |>
   select(id, time = tad, Cc, treatment) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak (and the time-zero trough): below that the ODE integrator has no relative accuracy left.
+  group_by(treatment, id) |>
+  filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   arrange(treatment, id, time)
 
 dose_df <- events |>
@@ -798,6 +802,10 @@ nca_res <- PKNCA::pk.nca(
 sal_nca <- sim |>
   filter(!is.na(Csaliva)) |>
   select(id, time = tad, Cc = Csaliva, treatment) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak (and the time-zero trough): below that the ODE integrator has no relative accuracy left.
+  group_by(treatment, id) |>
+  filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   arrange(treatment, id, time)
 
 nca_sal <- PKNCA::pk.nca(

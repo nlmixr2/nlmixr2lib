@@ -300,7 +300,9 @@ ss_events <- dplyr::bind_rows(ss_dose_rows, ss_obs_rows) |>
   as.data.frame()
 
 ss_sim <- rxode2::rxSolve(mod_typical, events = ss_events,
-                          keep = c("treatment")) |>
+                          keep = c("treatment"),
+                          # steady-state searches for long-half-life subjects exceed the default step budget
+                          maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
@@ -393,6 +395,10 @@ sd_sim <- rxode2::rxSolve(mod_typical, events = sd_events,
 sd_conc <- sd_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   as.data.frame()
 
 sd_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
@@ -569,6 +575,10 @@ tau_by_arm <- tibble::tibble(
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   as.data.frame()
 
 dose_df <- events |>

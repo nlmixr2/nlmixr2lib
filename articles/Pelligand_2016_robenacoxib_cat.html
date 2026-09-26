@@ -3655,7 +3655,9 @@ absorption rather than by elimination.</p>
 <span><span class="co"># Terminal slope recovered by regression well after the peak, per arm.</span></span>
 <span><span class="va">term_slope</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">this_id</span>, <span class="va">from</span>, <span class="va">to</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">d</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id</span> <span class="op">==</span> <span class="va">this_id</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="va">from</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">to</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id</span> <span class="op">==</span> <span class="va">this_id</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="co"># Keep Cc &gt;= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">from</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">to</span>, <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">5</span><span class="op">)</span> <span class="co"># a lookup that matched nothing must not pass silently</span></span>
 <span>  <span class="op">-</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"time"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="op">}</span></span>
@@ -3971,7 +3973,11 @@ record for downstream users.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_pop</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">arm</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">arm</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Per subject, keep Cc &gt;= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">arm</span>, <span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># One dose row per administration. The s.c. arms carry two model dose records</span></span>
 <span><span class="co"># (depot bolus + central zero-order input) that together deliver a single</span></span>
@@ -4051,10 +4057,10 @@ arm).</caption>
 <tr class="odd">
 <td align="left">IV, conscious</td>
 <td align="right">3936.353</td>
-<td align="right">3936.350</td>
+<td align="right">3936.339</td>
 <td align="right">11784.817</td>
-<td align="right">0.610</td>
-<td align="right">1.137</td>
+<td align="right">0.609</td>
+<td align="right">1.138</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="even">
@@ -4181,7 +4187,7 @@ cat.</caption>
 <span><span class="co">#&gt; # A tibble: 3 × 2</span></span>
 <span><span class="co">#&gt;   arm                  hl</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 IV, conscious     0.610</span></span>
+<span><span class="co">#&gt; 1 IV, conscious     0.609</span></span>
 <span><span class="co">#&gt; 2 SC, anaesthetised 1.04 </span></span>
 <span><span class="co">#&gt; 3 SC, conscious     0.941</span></span></code></pre></div>
 </div>

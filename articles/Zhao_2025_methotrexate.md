@@ -405,6 +405,10 @@ Equations 5-8.
 
 sim_nca <- sim |>
   filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  group_by(id, arm) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, arm)
 
 # Guarantee a time = 0 row per (id, arm); an intravenous infusion starting at

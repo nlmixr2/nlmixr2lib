@@ -214,7 +214,9 @@ ev_t1 <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
   ss_events(i, arms$dose[i], arms$age_t1[i], arms$amio[i]) |>
     dplyr::mutate(grp = arms$grp[i], dose = arms$dose[i])
 }))
-sim_t1 <- rxode2::rxSolve(mod_typical, events = ev_t1, keep = "grp") |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_t1 <- rxode2::rxSolve(mod_typical, events = ev_t1, keep = "grp",
+                          maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
@@ -445,7 +447,9 @@ stopifnot(
 
 ``` r
 
-sim <- rxode2::rxSolve(ui, events = events, keep = "grp") |> as.data.frame()
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(ui, events = events, keep = "grp", maxsteps = 1e6) |>
+  as.data.frame()
 stopifnot(!any(is.nan(sim$Cc)), all(sim$Cc[!is.na(sim$Cc)] >= 0))
 ```
 
@@ -729,7 +733,9 @@ ev_t2 <- dplyr::bind_rows(lapply(seq_len(nrow(implied)), function(i) {
   ss_events(i, implied$dose[i], implied$age_implied[i], implied$amio[i]) |>
     dplyr::mutate(grp = implied$grp[i])
 }))
-sim_t2 <- rxode2::rxSolve(mod_typical, events = ev_t2, keep = "grp") |> as.data.frame()
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_t2 <- rxode2::rxSolve(mod_typical, events = ev_t2, keep = "grp",
+                          maxsteps = 1e6) |> as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
 

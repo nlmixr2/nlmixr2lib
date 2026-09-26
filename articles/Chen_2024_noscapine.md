@@ -686,6 +686,8 @@ typ <- rxode2::rxSolve(mod, typical_events(times = obs_pk),
 long <- rxode2::rxSolve(mod, typical_events(times = seq(24, 400, by = 0.5)),
                         omega = NA, returnType = "data.frame",
                         atol = 1e-10, rtol = 1e-10)
+# Keep Cc >= 1e-6 * Cmax (the peak is in `typ`; `long` starts at 24 h): below that the ODE integrator has no relative accuracy left.
+long <- filter(long, Cc >= 1e-6 * max(typ$Cc))
 
 fit_thalf <- function(d) {
   log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = d))[[2]]

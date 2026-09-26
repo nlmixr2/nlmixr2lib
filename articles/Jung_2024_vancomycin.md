@@ -288,7 +288,9 @@ sim <- rxode2::rxSolve(
   events = events,
   keep   = c("treatment", "WT", "CRCL"),
   omega  = NA,
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> Warning: multi-subject simulation without without 'omega'
 

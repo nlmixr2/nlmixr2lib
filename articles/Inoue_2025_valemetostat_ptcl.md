@@ -481,7 +481,7 @@ mod
 #>     Cu ~ prop(sdCu)
 #>   })
 #> }
-#> <environment: 0x5569b0cfe0f0>
+#> <environment: 0x55f821c61328>
 ```
 
 ## Population
@@ -850,7 +850,8 @@ wash <- rxode2::rxSolve(modT, buildEvents(DOSE, 1, washGrid, refCov),
   dplyr::distinct(time, .keep_all = TRUE) |>
   dplyr::filter(Cu > 0)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etald1', 'etalbmax', 'etalfdepot'
-tailFit <- dplyr::filter(wash, time >= 400)
+# Below 1e-6 of the peak the integrator has no relative accuracy left.
+tailFit <- dplyr::filter(wash, time >= 400, Cu >= 1e-6 * max(Cu))
 tHalf <- log(2) / -stats::coef(stats::lm(log(Cu) ~ time, data = tailFit))[["time"]]
 vssU  <- 42.5 * (1 + 8280 / 221) + 3670 + 2950
 
@@ -858,7 +859,7 @@ c(`terminal half-life, h`                 = tHalf,
   `unbound-basis Vss, L`                  = vssU,
   `effective half-life ln2 * Vss / CL, h` = log(2) * vssU / CL)
 #>                 terminal half-life, h                  unbound-basis Vss, L 
-#>                              69.01332                            8254.80769 
+#>                              69.01368                            8254.80769 
 #> effective half-life ln2 * Vss / CL, h 
 #>                              11.00346
 stopifnot(tHalf > 40, tHalf < 110)

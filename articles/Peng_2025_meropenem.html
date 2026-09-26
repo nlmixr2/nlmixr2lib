@@ -3328,7 +3328,9 @@ calculation (below) rather than on the simulated proportions.</p>
 <span>  <span class="co"># Tight ODE and steady-state tolerances: the closed-form trough gate below</span></span>
 <span>  <span class="co"># asserts 1e-6 relative agreement, and the defaults (rtol 1e-6, ssRtol 1e-6)</span></span>
 <span>  <span class="co"># leave about 2e-6 when the model is integrated numerically.</span></span>
-<span>  rtol <span class="op">=</span> <span class="fl">1e-10</span>, atol <span class="op">=</span> <span class="fl">1e-12</span>, ssRtol <span class="op">=</span> <span class="fl">1e-10</span>, ssAtol <span class="op">=</span> <span class="fl">1e-12</span></span>
+<span>  rtol <span class="op">=</span> <span class="fl">1e-10</span>, atol <span class="op">=</span> <span class="fl">1e-12</span>, ssRtol <span class="op">=</span> <span class="fl">1e-10</span>, ssAtol <span class="op">=</span> <span class="fl">1e-12</span>,</span>
+<span>  <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>  maxsteps <span class="op">=</span> <span class="fl">1e6</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

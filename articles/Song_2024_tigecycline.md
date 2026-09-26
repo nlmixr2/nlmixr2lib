@@ -141,7 +141,9 @@ stopifnot(dplyr::n_distinct(events$id) == 3L * n_per_arm)
 ``` r
 
 mod <- readModelDb("Song_2024_tigecycline")
-sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "dose_mg")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "dose_mg"),
+                       maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 

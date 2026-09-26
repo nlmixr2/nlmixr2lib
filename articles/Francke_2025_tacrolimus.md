@@ -255,7 +255,9 @@ make_ss_events <- function(subj, dose_col = "dose", tau = 12,
 # lsoda solves it cleanly.
 solve_ss <- function(mod, events, keep = character()) {
   out <- rxode2::rxSolve(mod, events = events, method = "lsoda",
-                         keep = keep) |>
+                         keep = keep,
+                         # steady-state searches for long-half-life subjects exceed the default step budget
+                         maxsteps = 1e6) |>
     as.data.frame()
   # rxSolve omits `id` entirely for a single-subject event table.
   if (is.null(out$id)) out$id <- 1L
@@ -946,7 +948,9 @@ simulate_arm <- function(dose_col, arm_label) {
     dplyr::left_join(eta_df, by = "id")
   ev <- make_ss_events(subj, obs_times = c(0, 12))
   out <- rxode2::rxSolve(mod_full, events = ev, method = "lsoda",
-                         omega = NA, keep = character()) |>
+                         omega = NA, keep = character(),
+                         # steady-state searches for long-half-life subjects exceed the default step budget
+                         maxsteps = 1e6) |>
     as.data.frame()
   if (is.null(out$id)) out$id <- 1L
   out |>

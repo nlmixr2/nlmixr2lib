@@ -3536,11 +3536,12 @@ the pkgdown wall-clock budget.</p>
 <span>  <span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scenario</span>, levels <span class="op">=</span> <span class="va">scenarios</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.6708e-310 illegal]: 8 warning(s) for subject(s): 1 (sim 5)</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.6708e-310 illegal]: 6 warning(s) for subject(s): 1 (sim 19), 1 (sim 42), 1 (sim 56)</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.90559e-310 illegal]: 1 warning(s) for subject(s): 1 (sim 42)</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.6708e-310 illegal]: 14 warning(s) for subject(s): 1 (sim 31), 1 (sim 35), 1 (sim 40)</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.90559e-310 illegal]: 1 warning(s) for subject(s): 1 (sim 40)</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.93557e-310 illegal]: 8 warning(s) for subject(s): 1 (sim 5)</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.67911e-310 illegal]: 2 warning(s) for subject(s): 1 (sim 56)</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.67912e-310 illegal]: 2 warning(s) for subject(s): 1 (sim 19)</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.93557e-310 illegal]: 3 warning(s) for subject(s): 1 (sim 42)</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.67912e-310 illegal]: 5 warning(s) for subject(s): 1 (sim 31)</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.93557e-310 illegal]: 10 warning(s) for subject(s): 1 (sim 35), 1 (sim 40)</span></span>
 <span></span>
 <span><span class="va">vpc_median</span> <span class="op">&lt;-</span> <span class="va">vpc</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">scenario</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>

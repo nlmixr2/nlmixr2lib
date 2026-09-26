@@ -559,6 +559,10 @@ stopifnot(all(sim_sd$Cc[sim_sd$time > 0.5] > 0))
 
 sim_nca <- sim_sd |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, band)
 
 # Guarantee a time-zero record per subject; for an intravenous dose the
@@ -794,7 +798,7 @@ allo_ci <- confint(fit_hl)["log(WT)", ]
 
 c(estimate = coef(fit_hl)[["log(WT)"]], allo_ci)
 #>  estimate     2.5 %    97.5 % 
-#> 0.2152271 0.1487243 0.2817300
+#> 0.2152241 0.1487218 0.2817263
 
 stopifnot(allo_ci[[1]] <= 0.25, allo_ci[[2]] >= 0.25)
 ```

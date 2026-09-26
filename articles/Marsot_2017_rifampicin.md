@@ -121,7 +121,9 @@ mod <- readModelDb("Marsot_2017_rifampicin")
 
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("treatment", "CONMED_FUSIDIC")
+  keep = c("treatment", "CONMED_FUSIDIC"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |> as.data.frame()
 ```
 
@@ -135,7 +137,9 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events |> dplyr::filter(id %in% c(1L, n_per_arm + 1L)),
-  keep   = c("treatment", "CONMED_FUSIDIC")
+  keep   = c("treatment", "CONMED_FUSIDIC"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |> as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'

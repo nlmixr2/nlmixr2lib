@@ -301,6 +301,10 @@ sim_sd <- rxode2::rxSolve(mod, events = events_sd, keep = "dose") |>
 
 sim_nca <- sim_sd |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::transmute(id, time, Cc, treatment = paste0(dose, " mg PO"), dose)
 
 dose_nca <- events_sd |>
@@ -802,7 +806,7 @@ tibble::tibble(
 | Cmax (mg/L per 100 mg)      |                   NA |              0.887 |
 | AUCinf (mg\*h/L per 100 mg) |             1.777778 |                NaN |
 | Tmax (h, median)            |                   NA |              1.000 |
-| Terminal t1/2 (h)           |             2.038668 |              2.220 |
+| Terminal t1/2 (h)           |             2.038668 |              2.210 |
 
 Simulated NCA (mixed-dose cohort, geometric means) vs Debord 2001 Table
 I implied values. {.table}

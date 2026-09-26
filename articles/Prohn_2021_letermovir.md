@@ -220,7 +220,9 @@ trap <- function(t, y) sum(diff(t) * (utils::head(y, -1) + utils::tail(y, -1)) /
 solved <- vapply(seq_len(4), function(i) {
   spec <- list(c(480, 1, 0), c(240, 1, 1), c(480, 0, 0), c(240, 0, 1))[[i]]
   s <- rxode2::rxSolve(rxode2::zeroRe(hsct), grid_ss(spec[1], spec[2] == 1, spec[3]),
-                       returnType = "data.frame")
+                       returnType = "data.frame",
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6)
   s <- s[!is.na(s$Cc), ]
   trap(s$time, s$Cc)
 }, numeric(1))
@@ -328,7 +330,9 @@ events <- dplyr::bind_rows(
 )
 events$id <- as.integer(factor(paste(events$regimen, events$id)))
 
-sim <- rxode2::rxSolve(hsct, events, keep = "regimen", returnType = "data.frame")
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(hsct, events, keep = "regimen", returnType = "data.frame",
+                       maxsteps = 1e6)
 sim <- sim[!is.na(sim$Cc), ]
 
 auc_by_id <- sim |>
@@ -751,7 +755,8 @@ independent check on the typical-value prediction.
 
 c24 <- function(dose, csa) {
   d <- grid_ss(dose, TRUE, csa)
-  s <- rxode2::rxSolve(rxode2::zeroRe(hsct), d, returnType = "data.frame")
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  s <- rxode2::rxSolve(rxode2::zeroRe(hsct), d, returnType = "data.frame", maxsteps = 1e6)
   s <- s[!is.na(s$Cc), ]
   s$Cc[which.min(abs(s$time - 24))]
 }

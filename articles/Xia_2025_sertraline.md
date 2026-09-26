@@ -172,8 +172,9 @@ makeEvents <- function(doseTime, doseAmt, obsTime, id = 1L, ss1 = TRUE) {
 }
 
 solveTypical <- function(ev) {
+  # steady-state searches for long-half-life subjects exceed the default step budget
   suppressWarnings(rxode2::rxSolve(modT, ev, keep = intersect("scenario", names(ev)),
-                                   returnType = "data.frame"))
+                                   returnType = "data.frame", maxsteps = 1e6))
 }
 concAt <- function(s, t) stats::approx(s$time, s$Cc, xout = t)$y
 ```
@@ -359,7 +360,9 @@ ncaEvents <- dplyr::bind_rows(lapply(seq_along(DOSES), function(i) {
   ev
 }))
 ncaSim <- suppressWarnings(
-  rxode2::rxSolve(modT, ncaEvents, keep = "treatment", returnType = "data.frame")
+  rxode2::rxSolve(modT, ncaEvents, keep = "treatment", returnType = "data.frame",
+                  # steady-state searches for long-half-life subjects exceed the default step budget
+                  maxsteps = 1e6)
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 
@@ -508,7 +511,9 @@ cohortEvents <- dplyr::bind_rows(lapply(seq_along(DOSES), function(i) {
 stopifnot(!anyDuplicated(unique(cohortEvents[, c("id", "time", "evid")])))
 
 cohortSim <- rxode2::rxSolve(mod, cohortEvents, keep = "treatment",
-                             returnType = "data.frame")
+                             returnType = "data.frame",
+                             # steady-state searches for long-half-life subjects exceed the default step budget
+                             maxsteps = 1e6)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 

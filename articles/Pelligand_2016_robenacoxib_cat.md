@@ -392,7 +392,9 @@ alpha_typ <- (S + sqrt(S^2 - 4 * P)) / 2
 # Terminal slope recovered by regression well after the peak, per arm.
 term_slope <- function(this_id, from, to) {
   d <- sim_typ |>
-    dplyr::filter(id == this_id, !is.na(Cc), time >= from, time <= to, Cc > 0)
+    dplyr::filter(id == this_id, !is.na(Cc)) |>
+    # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+    dplyr::filter(time >= from, time <= to, Cc >= 1e-6 * max(Cc))
   stopifnot(nrow(d) > 5) # a lookup that matched nothing must not pass silently
   -stats::coef(stats::lm(log(Cc) ~ time, data = d))[["time"]]
 }
@@ -681,7 +683,11 @@ for downstream users.
 
 sim_nca <- sim_pop |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, arm)
+  dplyr::select(id, time, Cc, arm) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(arm, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # One dose row per administration. The s.c. arms carry two model dose records
 # (depot bolus + central zero-order input) that together deliver a single
@@ -743,7 +749,7 @@ knitr::kable(
 
 | Arm | AUC0-inf (ng\*h/mL) | AUClast (ng\*h/mL) | Cmax (ng/mL) | t1/2 (h) | lambda-z (1/h) | Tmax (h) |
 |:---|---:|---:|---:|---:|---:|---:|
-| IV, conscious | 3936.353 | 3936.350 | 11784.817 | 0.610 | 1.137 | 0.00 |
+| IV, conscious | 3936.353 | 3936.339 | 11784.817 | 0.609 | 1.138 | 0.00 |
 | SC, anaesthetised | 2924.095 | 2922.456 | 1127.635 | 1.036 | 0.669 | 1.25 |
 | SC, conscious | 3047.470 | 3046.518 | 1387.750 | 0.941 | 0.737 | 0.85 |
 
@@ -824,7 +830,7 @@ hl
 #> # A tibble: 3 × 2
 #>   arm                  hl
 #>   <chr>             <dbl>
-#> 1 IV, conscious     0.610
+#> 1 IV, conscious     0.609
 #> 2 SC, anaesthetised 1.04 
 #> 3 SC, conscious     0.941
 ```

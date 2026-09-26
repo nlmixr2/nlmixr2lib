@@ -264,7 +264,7 @@ mod
 #>     Cc ~ add(addSd)
 #>   })
 #> }
-#> <environment: 0x5569aabfcd48>
+#> <environment: 0x55f8224d2280>
 
 # Parsed once here so the metadata lists below can be read off the model file
 # itself. readModelDb() returns the raw function; `$population` on the uncalled
@@ -744,7 +744,9 @@ events <- as.data.frame(ev_ss) |>
   arrange(id, time, desc(evid))
 
 sim <- rxode2::rxSolve(mod, events, returnType = "data.frame",
-                       keep = c("arm"))
+                       keep = c("arm"),
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6)
 
 obs <- sim |>
   filter(!is.na(Cc)) |>

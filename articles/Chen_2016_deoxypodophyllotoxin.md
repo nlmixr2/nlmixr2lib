@@ -621,6 +621,10 @@ min, so each unit system gets its own PKNCA run.
 dpt_nca <- function(sim, concu, timeu, doseu, tmax) {
   conc_df <- sim |>
     dplyr::filter(!is.na(Cc)) |>
+    # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+    dplyr::group_by(id, treatment) |>
+    dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+    dplyr::ungroup() |>
     dplyr::select(id, time, Cc, treatment)
 
   # Defensive time-zero row (the grid already contains time 0; the existing

@@ -520,6 +520,10 @@ stopifnot(dplyr::n_distinct(sim_sd$id) == N_PER_ARM)
 
 conc_sd <- sim_sd |>
   filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  group_by(regimen, id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, regimen)
 
 # Guarantee a time-zero row (Cc = 0 pre-dose for an extravascular model) so
@@ -552,21 +556,21 @@ nca_sd <- as.data.frame(res_sd$result) |>
   summarise(median = median(PPORRES), .groups = "drop")
 nca_sd
 #> # A tibble: 14 × 2
-#>    PPTESTCD                  median
-#>    <chr>                      <dbl>
-#>  1 adj.r.squared          1.000    
-#>  2 aucinf.obs          7133.       
-#>  3 clast.obs              0.0000892
-#>  4 clast.pred             0.0000892
-#>  5 cmax                 132.       
-#>  6 half.life             32.3      
-#>  7 lambda.z               0.0214   
-#>  8 lambda.z.n.points    333        
-#>  9 lambda.z.time.first    8        
-#> 10 lambda.z.time.last   672        
-#> 11 r.squared              1.000    
-#> 12 span.ratio            20.5      
-#> 13 tlast                672        
+#>    PPTESTCD                 median
+#>    <chr>                     <dbl>
+#>  1 adj.r.squared          1.000   
+#>  2 aucinf.obs          7133.      
+#>  3 clast.obs              0.000137
+#>  4 clast.pred             0.000137
+#>  5 cmax                 132.      
+#>  6 half.life             32.3     
+#>  7 lambda.z               0.0214  
+#>  8 lambda.z.n.points    323       
+#>  9 lambda.z.time.first    8       
+#> 10 lambda.z.time.last   652       
+#> 11 r.squared              1.000   
+#> 12 span.ratio            19.9     
+#> 13 tlast                652       
 #> 14 tmax                   6
 ```
 
@@ -635,7 +639,7 @@ thalf_i |>
 
 | Subjects | Median % error | Max abs % error |
 |---------:|---------------:|----------------:|
-|      200 |         0.0041 |          0.3506 |
+|      200 |         0.0056 |          0.0148 |
 
 Per-subject check of half-life = log(2) \* V / CL. {.table}
 

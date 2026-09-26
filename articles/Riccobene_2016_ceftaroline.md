@@ -232,7 +232,9 @@ sim <- rxode2::rxSolve(
   mod,
   events = events,
   keep = c("treatment", "tau", "WT", "AGE"),
-  useLinCmt = FALSE
+  useLinCmt = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -246,7 +248,9 @@ sim_typical <- rxode2::rxSolve(
     mutate(WT = 80, AGE = 34),
   keep = c("treatment", "tau"),
   omega = NA,
-  useLinCmt = FALSE
+  useLinCmt = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> Warning: multi-subject simulation without without 'omega'
@@ -756,8 +760,9 @@ one_arm <- events |> filter(id %in% c(1L, n_per_arm + 1L)) |> mutate(WT = 80, AG
 
 solve_variant <- function(dis_healthy, extra = NULL) {
   ev <- one_arm |> mutate(DIS_HEALTHY = dis_healthy)
+  # steady-state searches for long-half-life subjects exceed the default step budget
   args <- list(object = mod, events = ev, keep = c("treatment", "tau"),
-               omega = NA, useLinCmt = FALSE)
+               omega = NA, useLinCmt = FALSE, maxsteps = 1e6)
   if (!is.null(extra)) args$params <- extra
   s <- as.data.frame(do.call(rxode2::rxSolve, args)) |> filter(!is.na(Cc_ceftaroline))
   s |>

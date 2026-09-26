@@ -242,7 +242,9 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # omega = NA gives the covariate-only (no-IIV) prediction per virtual subject.
 # zeroRe() is avoided deliberately: it mutates shared model state.
 sim <- rxode2::rxSolve(mod, events = events, omega = NA,
-                       keep = c("regimen", "dose_iu_per_kg", "WT")) |>
+                       keep = c("regimen", "dose_iu_per_kg", "WT"),
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: multi-subject simulation without without 'omega'
@@ -280,7 +282,8 @@ sprintf("closed form vs compiled ODE: max |difference| = %.2e IU/mL", max_abs_di
 
 prof_events <- make_arm(200, 1L, obs_times = seq(0, 12, by = 0.25))
 set.seed(20240131)
-prof <- rxode2::rxSolve(mod, events = prof_events) |> as.data.frame()
+# steady-state searches for long-half-life subjects exceed the default step budget
+prof <- rxode2::rxSolve(mod, events = prof_events, maxsteps = 1e6) |> as.data.frame()
 
 prof |>
   dplyr::filter(!is.na(Cc)) |>
@@ -458,6 +461,10 @@ nca_sim <- rxode2::rxSolve(mod, events = nca_events, omega = NA,
 # Only !is.na(Cc): a time > 0 or Cc > 0 filter would drop the time-zero anchor.
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, regimen)
 
 # Guarantee a time-zero row (extravascular: pre-dose Cc = 0).

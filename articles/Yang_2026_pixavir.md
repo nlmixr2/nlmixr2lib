@@ -284,7 +284,8 @@ the dedicated food-effect analysis; see *Assumptions and deviations*.
 
 hl <- solve_typical(40, 61.30, 0, 0)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka'
-tail_win <- hl[hl$time >= 400 & hl$time <= 900, ]
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_win <- hl[hl$time >= 400 & hl$time <= 900 & hl$Cc >= 1e-6 * max(hl$Cc), ]
 lambda_z <- -coef(lm(log(Cc) ~ time, data = tail_win))[["time"]]
 t_half <- log(2) / lambda_z
 
@@ -603,6 +604,10 @@ c(`Representative weight <80 kg (kg)` = wt_light,
 
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id, arm) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, arm)
 
 # Guarantee a time = 0 row per (id, arm); pre-dose Cc = 0 is correct for an

@@ -335,7 +335,9 @@ events_typ <- scenarios |>
 
 sim_typ <- rxode2::rxSolve(
   rxode2::zeroRe(mod), events_typ,
-  keep = c("BSA", "dose_mgm2", "scenario"), addDosing = FALSE
+  keep = c("BSA", "dose_mgm2", "scenario"), addDosing = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -635,7 +637,9 @@ stopifnot(
 
 sim_stoch <- rxode2::rxSolve(
   mod, events_sim,
-  keep = c("BSA", "dose_mgm2", "scenario"), addDosing = FALSE
+  keep = c("BSA", "dose_mgm2", "scenario"), addDosing = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'

@@ -576,7 +576,11 @@ before the first measurement.
 
 ncaConc <- typical |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::mutate(id = Model, treatment = Model)
+  dplyr::mutate(id = Model, treatment = Model) |>
+  # Past each peak, keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(Model) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 ncaDose <- do.call(rbind, lapply(names(spec), function(nm) {
   data.frame(id = nm, treatment = nm, time = 0, dose = spec[[nm]]$dose)
@@ -873,6 +877,8 @@ estimate, not whether the point estimates coincide.
 
 aucInfBySubject <- function(d) {
   d <- d[d$Cc > 0, ]
+  # Past the peak, keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  d <- d[d$time <= d$time[which.max(d$Cc)] | d$Cc >= 1e-6 * max(d$Cc), ]
   n  <- nrow(d)
   tail_idx <- seq(max(1, n - 40), n)
   lz  <- -stats::coef(stats::lm(log(d$Cc[tail_idx]) ~ d$time[tail_idx]))[2]

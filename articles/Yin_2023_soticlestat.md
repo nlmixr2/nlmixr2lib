@@ -300,7 +300,8 @@ k12 <- p$q / p$vc
 k21 <- p$q / p$vp
 betaAnalytic <- 0.5 * ((k10 + k12 + k21) - sqrt((k10 + k12 + k21)^2 - 4 * k10 * k21))
 
-tail96 <- subset(sTab, time >= 48 & time <= 96 & Cc > 0)
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail96 <- subset(sTab, time >= 48 & time <= 96 & Cc >= 1e-6 * max(Cc))
 betaObserved <- -stats::coef(stats::lm(log(tail96$Cc) ~ tail96$time))[[2]]
 
 cat(sprintf("peripheral1 peak amount     : %.2f mg\n", max(sTab$peripheral1)))
@@ -1099,7 +1100,11 @@ prediction interval, 100 subjects per arm).
 # measurement" warning on every subject.
 conc <- srd |>
   select(id, time, Cc, treatment) |>
-  filter(!is.na(Cc))
+  filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  group_by(id, treatment) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup()
 
 # The dose amount is renamed `amt`: `dose` is a reserved column name in PKNCA.
 # PKNCAdose() also rejects a slash (nested) grouping, so both objects use the
@@ -1143,9 +1148,9 @@ ncaSummary |>
 | 15 mg | 28.30 | 0.20 | 31.82 | 33.87 | 13.31 |
 | 50 mg | 130.10 | 0.25 | 152.59 | 156.17 | 9.36 |
 | 200 mg | 695.06 | 0.30 | 854.12 | 857.06 | 7.22 |
-| 600 mg | 2656.33 | 0.40 | 3465.65 | 3482.04 | 5.02 |
+| 600 mg | 2656.33 | 0.40 | 3465.64 | 3482.04 | 5.02 |
 | 900 mg | 4336.65 | 0.40 | 6026.58 | 6052.11 | 5.83 |
-| 1350 mg | 6628.73 | 0.45 | 10465.41 | 10469.19 | 4.26 |
+| 1350 mg | 6628.73 | 0.45 | 10465.26 | 10469.19 | 4.26 |
 
 PKNCA summary (median across 100 simulated subjects per arm) after a
 single oral-solution dose. {.table}

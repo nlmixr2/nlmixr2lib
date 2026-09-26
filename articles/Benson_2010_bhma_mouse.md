@@ -419,6 +419,10 @@ compared per arm.
 
 sim_nca <- sim_pk |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 # Guarantee a time = 0 row per (id, treatment). For an extravascular dose the
@@ -529,7 +533,11 @@ auc_typ <- sim_typ |>
   summarise(
     auc  = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
     ctail = Cc[which.max(time)],
-    lz    = -unname(coef(lm(log(tail(Cc, 40)) ~ tail(time, 40)))[2]),
+    # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+    lz    = {
+      ok <- Cc >= 1e-6 * max(Cc)
+      -unname(coef(lm(log(tail(Cc[ok], 40)) ~ tail(time[ok], 40)))[2])
+    },
     .groups = "drop"
   ) |>
   mutate(

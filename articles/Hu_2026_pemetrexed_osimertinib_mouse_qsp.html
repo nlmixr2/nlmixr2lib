@@ -3897,6 +3897,10 @@ root of the two-compartment characteristic equation.</p>
 <span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="va">pk_pem</span>, <span class="va">pk_osi</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Per subject, keep conc &gt;= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">treatment</span>, <span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">conc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">conc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">conc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Guarantee a time-zero row per (id, treatment); pre-dose concentration is 0</span></span>
@@ -4016,8 +4020,8 @@ difference.</caption>
 <td align="left">t½ (day)</td>
 <td align="left">Pemetrexed 35 mg/kg i.p.</td>
 <td align="left">0.256</td>
-<td align="left">0.256</td>
-<td align="left">-0.2%</td>
+<td align="left">0.255</td>
+<td align="left">-0.3%</td>
 </tr>
 <tr class="even">
 <td align="left">t½ (day)</td>

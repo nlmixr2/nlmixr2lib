@@ -507,7 +507,9 @@ sim_nca <- rxode2::rxSolve(mod_typical, events = ev_nca,
 #> ℹ omega/sigma items treated as zero: 'etag0res', 'etalkout', 'etalemaxss', 'etaldemax0'
 #> Warning: multi-subject simulation without without 'omega'
 
-conc_obj <- PKNCA::PKNCAconc(sim_nca,
+# Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca |> group_by(id) |> filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |> ungroup(),
   Cc ~ time | dose_group + id)
 dose_df <- ev_nca |> filter(evid == 1) |>
   transmute(id, time, amt, dose_group)

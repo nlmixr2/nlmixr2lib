@@ -3867,7 +3867,9 @@ comparisons to published summaries.</p>
 <span><span class="va">thalf_theory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="va">lambda_z</span></span>
 <span></span>
 <span><span class="co"># Empirical terminal slope, taken well after the distribution phase.</span></span>
-<span><span class="va">tail_dat</span> <span class="op">&lt;-</span> <span class="va">single</span><span class="op">[</span><span class="va">single</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">120</span> <span class="op">&amp;</span> <span class="va">single</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">168</span>, <span class="op">]</span></span>
+<span><span class="co"># Keep Cc &gt;= 1e-6 of Cmax: below that the ODE tail is solver noise.</span></span>
+<span><span class="va">tail_dat</span> <span class="op">&lt;-</span> <span class="va">single</span><span class="op">[</span><span class="va">single</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">120</span> <span class="op">&amp;</span> <span class="va">single</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">168</span> <span class="op">&amp;</span></span>
+<span>                     <span class="va">single</span><span class="op">$</span><span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">single</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="va">thalf_emp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">tail_dat</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span> <span class="op">~</span> <span class="va">tail_dat</span><span class="op">$</span><span class="va">time</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">checks</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
@@ -3954,6 +3956,8 @@ NCA parameters.</p>
 <span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">single_nca</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Keep Cc &gt;= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, treatment <span class="op">=</span> <span class="st">"100 mg single oral dose"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
@@ -4034,17 +4038,17 @@ typical-value profile).</caption>
 <td align="right">14.2844</td>
 <td align="right">1.9406</td>
 <td align="right">0.95</td>
-<td align="right">168</td>
+<td align="right">166</td>
 <td align="right">0</td>
 <td align="right">0.0788</td>
 <td align="right">0.9999</td>
 <td align="right">0.9999</td>
-<td align="right">6.2</td>
-<td align="right">168</td>
-<td align="right">249</td>
+<td align="right">6.25</td>
+<td align="right">166</td>
+<td align="right">247</td>
 <td align="right">0</td>
-<td align="right">8.7937</td>
-<td align="right">18.3996</td>
+<td align="right">8.7931</td>
+<td align="right">18.1676</td>
 <td align="right">14.2844</td>
 </tr></tbody>
 </table>

@@ -3363,7 +3363,9 @@ vignette’s core validation.</p>
 <span>      <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>        <span class="va">model</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>        keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"genotype"</span>, <span class="st">"HCT"</span>, <span class="st">"WT"</span><span class="op">)</span>,</span>
-<span>        omega <span class="op">=</span> <span class="cn">NA</span></span>
+<span>        omega <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>        <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>        maxsteps <span class="op">=</span> <span class="fl">1e6</span></span>
 <span>      <span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span>    <span class="va">n_solved</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="fl">1L</span> <span class="kw">else</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/n_distinct.html" class="external-link">n_distinct</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span>
@@ -3437,7 +3439,9 @@ every typical-value call.</p>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>    <span class="va">mod_ui</span><span class="op">$</span><span class="va">simulationModel</span>, <span class="va">events_ss</span>,</span>
 <span>    keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"genotype"</span>, <span class="st">"HCT"</span>, <span class="st">"WT"</span><span class="op">)</span>,</span>
-<span>    omega <span class="op">=</span> <span class="va">mod_ui</span><span class="op">$</span><span class="va">omega</span></span>
+<span>    omega <span class="op">=</span> <span class="va">mod_ui</span><span class="op">$</span><span class="va">omega</span>,</span>
+<span>    <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>    maxsteps <span class="op">=</span> <span class="fl">1e6</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>

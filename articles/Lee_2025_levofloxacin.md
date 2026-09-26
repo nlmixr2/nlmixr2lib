@@ -291,7 +291,9 @@ typ <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq'
 
-tail_fit <- lm(log(Cc) ~ time, data = typ |> filter(time >= 24, time <= 72, Cc > 0))
+# Keep Cc >= 1e-6 * max(Cc): below that the ODE solution is integrator noise.
+tail_fit <- lm(log(Cc) ~ time,
+               data = typ |> filter(time >= 24, time <= 72, Cc >= 1e-6 * max(Cc)))
 t12_beta_sim <- log(2) / (-coef(tail_fit)[["time"]])
 
 tibble(
@@ -393,7 +395,11 @@ sim |>
 
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, arm)
+  dplyr::select(id, time, Cc, arm) |>
+  # Keep Cc >= 1e-6 * max(Cc) per subject after the peak (solver noise below); time zero is re-added below.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Guarantee a time-zero record per (id, arm). For an IV infusion the pre-dose
 # concentration is 0; the simulation grid already contains t = 0, so this is a

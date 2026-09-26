@@ -3381,7 +3381,9 @@ sizes sufficient for vignette-time replication.</p>
 <span>  <span class="va">mod</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"dose_atv_mg"</span>, <span class="st">"WT"</span>, <span class="st">"AGE"</span>, <span class="st">"SEXF"</span>,</span>
-<span>             <span class="st">"REGION_AFRICA"</span>, <span class="st">"CONMED_RTV"</span>, <span class="st">"FORM_POWDER"</span><span class="op">)</span></span>
+<span>             <span class="st">"REGION_AFRICA"</span>, <span class="st">"CONMED_RTV"</span>, <span class="st">"FORM_POWDER"</span><span class="op">)</span>,</span>
+<span>  <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>  maxsteps <span class="op">=</span> <span class="fl">1e6</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>

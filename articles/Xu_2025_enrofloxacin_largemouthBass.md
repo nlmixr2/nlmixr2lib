@@ -404,7 +404,11 @@ nca_input <- dplyr::bind_rows(
                   returnType = "data.frame") |>
     dplyr::transmute(id = 2L, arm = "IV 10 mg/kg", time, Cc)
 ) |>
-  dplyr::filter(!is.na(Cc))
+  dplyr::filter(!is.na(Cc)) |>
+  # Per profile, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id, arm) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalcl'
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalvp', 'etalcl', 'etalq'
 
@@ -473,7 +477,7 @@ cmp |>
 |:------------------------|:--------------|:----------|:----------|:-------|
 | AUC0-∞ (obs) (ug\*h/mL) | Oral 20 mg/kg | 204       | 204       | -0.0%  |
 | AUC0-∞ (obs) (ug\*h/mL) | IV 10 mg/kg   | 833       | 834       | +0.0%  |
-| t½ (h)                  | Oral 20 mg/kg | 49.5      | 48.2      | -2.5%  |
+| t½ (h)                  | Oral 20 mg/kg | 49.5      | 48.2      | -2.6%  |
 | t½ (h)                  | IV 10 mg/kg   | 107       | 107       | +0.8%  |
 
 Simulated (PKNCA) vs. published NCA. \* differs from reference by \>20%.

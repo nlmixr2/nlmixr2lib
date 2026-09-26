@@ -499,7 +499,11 @@ row.
 run_nca <- function(sim, conc_col, events) {
   conc_df <- sim |>
     dplyr::filter(!is.na(.data[[conc_col]])) |>
-    dplyr::transmute(id = sid, time, arm, conc = .data[[conc_col]])
+    dplyr::transmute(id = sid, time, arm, conc = .data[[conc_col]]) |>
+    # Keep conc >= 1e-6 * max(conc) per subject after the peak: below that it is solver noise.
+    dplyr::group_by(id, arm) |>
+    dplyr::filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>
+    dplyr::ungroup()
 
   # Guarantee a time = 0 row per (id, arm); pre-dose concentration is 0
   # for an extravascular single dose.
@@ -626,7 +630,8 @@ and no cohort.
 ``` r
 
 terminal_slope <- function(df, conc_col, lo = 48, hi = 72) {
-  d <- df[df$time >= lo & df$time <= hi, ]
+  # Keep points >= 1e-6 * max: below that the ODE solution is integrator noise.
+  d <- df[df$time >= lo & df$time <= hi & df[[conc_col]] >= 1e-6 * max(df[[conc_col]]), ]
   fit <- stats::lm(log(d[[conc_col]]) ~ d$time)
   c(k = -unname(coef(fit)[2]), r2 = summary(fit)$r.squared)
 }

@@ -584,8 +584,10 @@ why the low-affinity approximation reproduces it only approximately.
 
 NCA on the simulated total-drug profiles for the two intravenously dosed
 molecules. The observation window is eight terminal half-lives, long
-enough to capture $`AUC_{0-\infty}`$ but short enough that the tail has
-not decayed into solver noise (which would corrupt the half-life fit).
+enough to capture $`AUC_{0-\infty}`$. At the higher doses the profile
+still falls below $`10^{-6}`$ of its peak, where the solved
+concentrations are numerical noise, so those points are dropped before
+the half-life fit.
 
 ``` r
 
@@ -596,10 +598,14 @@ nca_sims <- lapply(which(doses$drug %in% c("caplacizumab", "linagliptin")), func
             tmax = 8 * log(2) / exp(ui[[model]]$theta[["lkint"]]), n = 4000)
 }) |> dplyr::bind_rows()
 
-# Only `!is.na(Cc)` -- a `time > 0` or `Cc > 0` filter would drop the time-zero
-# row that anchors AUC0-*.
+# Never drop the time-zero row that anchors AUC0-* (a `time > 0` or `Cc > 0`
+# filter would). Per profile, keep Cc >= 1e-6 of Cmax after the peak: below
+# that is solver noise.
 sim_nca <- nca_sims |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 stopifnot(nrow(sim_nca) > 0, !anyNA(sim_nca$Cc), all(sim_nca$Cc >= 0))
 
@@ -657,7 +663,7 @@ knitr::kable(cmp, caption = paste(
 | t½ (day)      | 8 mg/kg    | 0.731     | 0.72      | -1.5%    |
 | t½ (day)      | 0.5 mg     | 6.03      | 1.74      | -71.1%\* |
 | t½ (day)      | 2.5 mg     | 6.03      | 1.74      | -71.1%\* |
-| t½ (day)      | 10 mg      | 6.03      | 1.74      | -71.1%\* |
+| t½ (day)      | 10 mg      | 6.03      | 1.75      | -71.0%\* |
 
 Simulated NCA vs the paper’s closed-form predictions. \* differs from
 reference by \>20%. {.table}
@@ -692,8 +698,8 @@ knitr::kable(obs |> dplyr::select(treatment, cmax_pct, thalf_pct),
 | 0.02 mg/kg |        0 |     -0.80 |
 | 0.4 mg/kg  |        0 |     -1.46 |
 | 0.5 mg     |        0 |    -71.11 |
-| 10 mg      |        0 |    -71.11 |
-| 2.5 mg     |        0 |    -71.12 |
+| 10 mg      |        0 |    -71.04 |
+| 2.5 mg     |        0 |    -71.08 |
 | 8 mg/kg    |        0 |     -1.48 |
 
 Percent difference from the closed-form predictions. {.table}
@@ -740,7 +746,7 @@ tibble::tibble(
 | Model | koff / keD | t1/2 from slow eigenvalue (d) | ln(2)/keDR (d) | Simulated (d) |
 |:---|---:|---:|---:|---:|
 | Straube_2025_caplacizumab_1cmt | 1.4124 | 0.7263 | 0.7312 | 0.7220 |
-| Straube_2025_linagliptin_1cmt | 0.1874 | 1.7409 | 6.0274 | 1.7411 |
+| Straube_2025_linagliptin_1cmt | 0.1874 | 1.7409 | 6.0274 | 1.7433 |
 
 The simulated terminal half-life tracks the slow eigenvalue of the
 linearised binding system, not ln(2)/keDR, whenever koff is not large

@@ -251,7 +251,9 @@ sim_typical <- rxode2::rxSolve(
 
 sim_cohort <- rxode2::rxSolve(
   mod, events = ev_cohort,
-  keep = c("WT", "treatment"), atol = 1e-10, rtol = 1e-8
+  keep = c("WT", "treatment"), atol = 1e-10, rtol = 1e-8,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'

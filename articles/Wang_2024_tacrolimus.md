@@ -224,7 +224,9 @@ solve_checked <- function(model, events, expected, tol = 1e-4, tries = 8L) {
       rxode2::rxSolve(
         model, events = events,
         keep = c("genotype", "HCT", "WT"),
-        omega = NA
+        omega = NA,
+        # steady-state searches for long-half-life subjects exceed the default step budget
+        maxsteps = 1e6
       )
     )
     n_solved <- if (is.null(out$id)) 1L else dplyr::n_distinct(out$id)
@@ -302,7 +304,9 @@ sim_ss_pop <- as.data.frame(
   rxode2::rxSolve(
     mod_ui$simulationModel, events_ss,
     keep = c("genotype", "HCT", "WT"),
-    omega = mod_ui$omega
+    omega = mod_ui$omega,
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   )
 )
 

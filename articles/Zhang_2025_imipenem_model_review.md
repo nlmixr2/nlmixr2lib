@@ -345,7 +345,7 @@ visible as a wide spread of terminal slopes.
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(model) |>
-  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::ungroup() |>
   dplyr::select(id = model, time, Cc) |>
   dplyr::mutate(treatment = "IV bolus")
@@ -684,7 +684,7 @@ renal_cl <- function(nm) {
     out <- rxode2::rxSolve(mod, events = ev)
     # Same numerically-zero-tail floor as the NCA above: a tail point that
     # the integrator puts at or below zero turns this AUC into NaN.
-    keep <- out$Cc >= 1e-6 * max(out$Cc)
+    keep <- out$time <= out$time[which.max(out$Cc)] | out$Cc >= 1e-6 * max(out$Cc)
     cc <- out$Cc[keep]
     tt <- out$time[keep]
     # Dose / AUC recovers CL without reading any model internal.

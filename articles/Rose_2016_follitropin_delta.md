@@ -365,7 +365,11 @@ weight-independent.
 
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, treatment)
+  dplyr::select(id, time, Cc, treatment) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
                              concu = "ug/L", timeu = "hour")

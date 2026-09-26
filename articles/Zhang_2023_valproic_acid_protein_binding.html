@@ -3597,7 +3597,9 @@ dosing).</caption>
 <span></span>
 <span><span class="va">solve_one</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">label</span>, <span class="va">zero_re</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="va">model_names</span><span class="op">[[</span><span class="va">label</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="va">args</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="va">keep_cols</span><span class="op">)</span></span>
+<span>  <span class="va">args</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="va">keep_cols</span>,</span>
+<span>               <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>               maxsteps <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span></span>
 <span>  <span class="co"># omega = NA zeroes the random effects for THIS call only, without mutating</span></span>
 <span>  <span class="co"># the shared model object (and without inheriting a previous solve's omega).</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">zero_re</span><span class="op">)</span> <span class="va">args</span><span class="op">$</span><span class="va">omega</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
@@ -3608,24 +3610,10 @@ dosing).</caption>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">model_names</span><span class="op">)</span>, <span class="va">solve_one</span>, zero_re <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
-<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
-<span><span class="co">#&gt; replaced with 'NA'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
-<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
-<span><span class="co">#&gt; replaced with 'NA'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
-<span><span class="co">#&gt; replaced with 'NA'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
-<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
-<span><span class="co">#&gt; replaced with 'NA'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; IDID=-1, excess work done on this call (perhaps wrong jt).</span></span>
-<span><span class="co">#&gt; Warning: some ID(s) could not solve the ODEs correctly; These values are</span></span>
-<span><span class="co">#&gt; replaced with 'NA'</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">typ</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">model_names</span><span class="op">)</span>, <span class="va">solve_one</span>, zero_re <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
@@ -4403,23 +4391,7 @@ deliberately omitted.</p>
 <span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">nca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span>nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">model_names</span><span class="op">)</span><span class="op">)</span>, <span class="va">run_nca</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: arm=12.5 mg/kg/day; id=96: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=50 mg/kg/day; id=280: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=12.5 mg/kg/day; id=39: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=25 mg/kg/day; id=212: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=50 mg/kg/day; id=296: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=12.5 mg/kg/day; id=97: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=12.5 mg/kg/day; id=112: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=25 mg/kg/day; id=157: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=25 mg/kg/day; id=166: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=25 mg/kg/day; id=167: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=25 mg/kg/day; id=189: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=50 mg/kg/day; id=279: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=50 mg/kg/day; id=294: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=50 mg/kg/day; id=308: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=12.5 mg/kg/day; id=96: No concentration data</span></span>
-<span><span class="co">#&gt; Warning: arm=25 mg/kg/day; id=181: No concentration data</span></span></code></pre></div>
+<span><span class="va">nca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span>nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">model_names</span><span class="op">)</span><span class="op">)</span>, <span class="va">run_nca</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tidy_nca</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">res</span>, <span class="va">model_name</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -4466,10 +4438,10 @@ trough the paper’s TDM samples measured.</caption>
 <tr class="odd">
 <td align="left">Base model</td>
 <td align="left">12.5 mg/kg/day</td>
-<td align="right">357.49</td>
-<td align="right">29.79</td>
-<td align="right">31.77</td>
-<td align="right">26.59</td>
+<td align="right">362.54</td>
+<td align="right">30.21</td>
+<td align="right">31.93</td>
+<td align="right">26.72</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="even">
@@ -4484,28 +4456,28 @@ trough the paper’s TDM samples measured.</caption>
 <tr class="odd">
 <td align="left">Base model</td>
 <td align="left">50 mg/kg/day</td>
-<td align="right">1502.30</td>
-<td align="right">125.19</td>
-<td align="right">135.28</td>
-<td align="right">114.55</td>
+<td align="right">1504.49</td>
+<td align="right">125.37</td>
+<td align="right">135.98</td>
+<td align="right">115.06</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="even">
 <td align="left">Model I (one binding site)</td>
 <td align="left">12.5 mg/kg/day</td>
-<td align="right">531.43</td>
-<td align="right">44.29</td>
-<td align="right">46.32</td>
-<td align="right">42.99</td>
+<td align="right">534.99</td>
+<td align="right">44.58</td>
+<td align="right">46.33</td>
+<td align="right">43.07</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Model I (one binding site)</td>
 <td align="left">25 mg/kg/day</td>
-<td align="right">722.22</td>
-<td align="right">60.19</td>
-<td align="right">60.61</td>
-<td align="right">59.02</td>
+<td align="right">722.41</td>
+<td align="right">60.20</td>
+<td align="right">60.67</td>
+<td align="right">59.12</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="even">
@@ -4538,55 +4510,55 @@ trough the paper’s TDM samples measured.</caption>
 <tr class="odd">
 <td align="left">Model II (Langmuir)</td>
 <td align="left">50 mg/kg/day</td>
-<td align="right">1023.87</td>
-<td align="right">85.32</td>
-<td align="right">89.57</td>
-<td align="right">83.10</td>
+<td align="right">1028.87</td>
+<td align="right">85.74</td>
+<td align="right">89.90</td>
+<td align="right">83.22</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="even">
 <td align="left">Model III (dose-dependent Emax)</td>
 <td align="left">12.5 mg/kg/day</td>
-<td align="right">350.27</td>
-<td align="right">29.19</td>
-<td align="right">30.60</td>
-<td align="right">27.50</td>
+<td align="right">351.58</td>
+<td align="right">29.30</td>
+<td align="right">30.82</td>
+<td align="right">27.84</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Model III (dose-dependent Emax)</td>
 <td align="left">25 mg/kg/day</td>
-<td align="right">725.94</td>
-<td align="right">60.50</td>
-<td align="right">63.85</td>
-<td align="right">57.93</td>
+<td align="right">752.95</td>
+<td align="right">62.75</td>
+<td align="right">66.05</td>
+<td align="right">61.62</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="even">
 <td align="left">Model III (dose-dependent Emax)</td>
 <td align="left">50 mg/kg/day</td>
-<td align="right">1503.49</td>
-<td align="right">125.29</td>
-<td align="right">127.47</td>
-<td align="right">122.66</td>
+<td align="right">1523.08</td>
+<td align="right">126.92</td>
+<td align="right">130.57</td>
+<td align="right">123.71</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="odd">
 <td align="left">Model IV (linear non-saturable)</td>
 <td align="left">12.5 mg/kg/day</td>
-<td align="right">496.76</td>
-<td align="right">41.40</td>
-<td align="right">43.28</td>
-<td align="right">39.73</td>
+<td align="right">499.22</td>
+<td align="right">41.60</td>
+<td align="right">43.37</td>
+<td align="right">39.77</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="even">
 <td align="left">Model IV (linear non-saturable)</td>
 <td align="left">25 mg/kg/day</td>
-<td align="right">719.39</td>
-<td align="right">59.95</td>
-<td align="right">61.16</td>
-<td align="right">58.18</td>
+<td align="right">722.27</td>
+<td align="right">60.19</td>
+<td align="right">61.58</td>
+<td align="right">58.43</td>
 <td align="right">1.25</td>
 </tr>
 <tr class="odd">
@@ -4662,12 +4634,12 @@ mg/kg/day. The 25 mg/kg/day arm is the closest match.</p>
 <caption>Simulated vs published steady-state trough (Zhang 2023 Table
 2). * differs from the reference by more than 20%.</caption>
 <colgroup>
-<col width="37%">
+<col width="36%">
 <col width="16%">
-<col width="15%">
+<col width="14%">
 <col width="11%">
 <col width="11%">
-<col width="8%">
+<col width="9%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Model</th>
@@ -4691,8 +4663,8 @@ mg/kg/day. The 25 mg/kg/day arm is the closest match.</p>
 <td align="left">Cmin (mg/L)</td>
 <td align="left">25 mg/kg/day</td>
 <td align="right">50.4</td>
-<td align="right">59</td>
-<td align="right">+17.1%</td>
+<td align="right">59.1</td>
+<td align="right">+17.3%</td>
 </tr>
 <tr class="odd">
 <td align="left">Model II (Langmuir)</td>
@@ -4707,16 +4679,16 @@ mg/kg/day. The 25 mg/kg/day arm is the closest match.</p>
 <td align="left">Cmin (mg/L)</td>
 <td align="left">25 mg/kg/day</td>
 <td align="right">50.4</td>
-<td align="right">57.9</td>
-<td align="right">+14.9%</td>
+<td align="right">61.6</td>
+<td align="right">+22.3%*</td>
 </tr>
 <tr class="odd">
 <td align="left">Model IV (linear non-saturable)</td>
 <td align="left">Cmin (mg/L)</td>
 <td align="left">25 mg/kg/day</td>
 <td align="right">50.4</td>
-<td align="right">58.2</td>
-<td align="right">+15.4%</td>
+<td align="right">58.4</td>
+<td align="right">+15.9%</td>
 </tr>
 <tr class="even">
 <td align="left">Model V (simple exponent)</td>

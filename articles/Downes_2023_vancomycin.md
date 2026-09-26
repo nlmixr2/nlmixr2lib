@@ -184,7 +184,9 @@ solve_typical <- function(nm, ev) {
   if (any(!is.na(rxode2::rxode(m)$iniDf$neta1))) m <- rxode2::zeroRe(m)
   # Tight tolerances: the closed-form gate below is held to 1e-6; the ODE at
   # default tolerances lands at 1-2e-6, at rtol 1e-10 far below.
-  as.data.frame(rxode2::rxSolve(m, events = ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12))
+  as.data.frame(rxode2::rxSolve(m, events = ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                                # steady-state searches for long-half-life subjects exceed the default step budget
+                                maxsteps = 1e6))
 }
 
 one_subject_ss <- function(dose, covs, times) {
@@ -405,7 +407,9 @@ sim <- bind_rows(
   as.data.frame(rxode2::rxSolve(
     readModelDb(MODELS[["Full"]]),
     events = events |> filter(arm == "Full (with IIV)"),
-    keep = KEEP, returnType = "data.frame"))
+    keep = KEEP, returnType = "data.frame",
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6))
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ parameter labels from comments will be replaced by 'label()'

@@ -447,7 +447,9 @@ sim_single <- as.data.frame(
 # Trapezoidal AUC over the observed grid plus an extrapolated terminal tail.
 auc_obs <- sum(diff(sim_single$time) *
                  (head(sim_single$Cc, -1) + tail(sim_single$Cc, -1)) / 2)
-tail_fit <- lm(log(Cc) ~ time, data = tail(sim_single, 60))
+# Fit only Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_fit <- lm(log(Cc) ~ time,
+               data = tail(filter(sim_single, Cc >= 1e-6 * max(Cc)), 60))
 lambda_z <- -unname(coef(tail_fit)[2])
 auc_inf <- auc_obs + tail(sim_single$Cc, 1) / lambda_z
 

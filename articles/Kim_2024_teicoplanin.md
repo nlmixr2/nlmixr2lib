@@ -253,7 +253,8 @@ sim_typ <- rxode2::rxSolve(
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalq2', 'etalvp2'
 
-tail_fit <- sim_typ |> dplyr::filter(time >= 800, time <= 1500, Cc > 0)
+# Keep Cc >= 1e-6 * max(Cc): below that the ODE solution is integrator noise.
+tail_fit <- sim_typ |> dplyr::filter(time >= 800, time <= 1500, Cc >= 1e-6 * max(Cc))
 slope_hl <- log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = tail_fit))[["time"]]
 
 cat(sprintf("Eigenvalue t1/2 = %.2f h; solved terminal-slope t1/2 = %.2f h (%.2f%% diff)\n",

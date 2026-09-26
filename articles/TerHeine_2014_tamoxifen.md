@@ -138,7 +138,9 @@ mod_typ <- rxode2::zeroRe(mod)
 sim <- rxode2::rxSolve(
   mod_typ,
   events = events,
-  keep   = c("scenario", "CYP2D6", "CYP3A4")
+  keep   = c("scenario", "CYP2D6", "CYP3A4"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_endox'
 #> Warning: multi-subject simulation without without 'omega'

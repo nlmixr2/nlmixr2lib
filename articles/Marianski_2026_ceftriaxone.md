@@ -521,6 +521,8 @@ reference_nca <- tibble::tibble(
 
 sim_nca <- sim_nca_raw |>
   filter(!is.na(Cc)) |>
+  # Keep Cc >= 1e-6 * max(Cc) after the peak (solver noise below), plus the time-zero anchor.
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc) | time == 0) |>
   transmute(id, time, Cc, treatment = TRT)
 dose_nca <- data.frame(id = 1L, time = 0, amt = DOSE_TYP, treatment = TRT)
 

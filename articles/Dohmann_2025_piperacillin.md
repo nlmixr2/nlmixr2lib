@@ -282,7 +282,9 @@ solve_ss <- function(co, dose, tinf, tau, grid = 0.1, bsa_scale = 1) {
   suppressWarnings(
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
                     returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
-                    ssRtol = 1e-10, ssAtol = 1e-12)
+                    ssRtol = 1e-10, ssAtol = 1e-12,
+                    # steady-state searches for long-half-life subjects exceed the default step budget
+                    maxsteps = 1e6)
   )
 }
 
@@ -375,7 +377,9 @@ nca_conc <- dplyr::bind_rows(lapply(nca_groups, function(g) {
   suppressWarnings(
     rxode2::rxSolve(uiz, params = co[, par_cols], events = evdf,
                     returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
-                    ssRtol = 1e-10, ssAtol = 1e-12)
+                    ssRtol = 1e-10, ssAtol = 1e-12,
+                    # steady-state searches for long-half-life subjects exceed the default step budget
+                    maxsteps = 1e6)
   ) |>
     dplyr::mutate(egfr_group = paste0("eGFR ", g, " mL/min"))
 }))

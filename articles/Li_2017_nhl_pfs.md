@@ -356,7 +356,7 @@ stopifnot(
   max(abs(lin$intercept + lin$k * log(lin$lambda))) < 1e-5
 )
 max(abs(lin$slope - lin$k))
-#> [1] 1.554312e-15
+#> [1] 1.110223e-15
 ```
 
 The median PFS time must be the time at which `sur` crosses 0.5.

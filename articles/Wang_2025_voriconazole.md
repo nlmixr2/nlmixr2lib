@@ -349,7 +349,9 @@ typical_trough <- function(mg_per_kg, crrt) {
   ev <- rxode2::et(amt = mg_per_kg * WT, dur = mg_per_kg / 3, ii = 12, ss = 1) |>
     rxode2::et(0)
   s <- rxode2::rxSolve(rxode2::zeroRe(mod), add_cov(as.data.frame(ev), crrt),
-                       returnType = "data.frame")
+                       returnType = "data.frame",
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6)
   s$Cc[1]
 }
 ```
@@ -366,7 +368,9 @@ equation is 1, so clearance collapses to 3.17 L/h off CRRT and
 cl_arm <- vapply(c(0, 1), function(a) {
   ev <- rxode2::et(amt = 4 * WT, dur = 4 / 3, ii = 12, ss = 1) |> rxode2::et(0)
   rxode2::rxSolve(rxode2::zeroRe(mod), add_cov(as.data.frame(ev), a),
-                  returnType = "data.frame")$cl[1]
+                  returnType = "data.frame",
+                  # steady-state searches for long-half-life subjects exceed the default step budget
+                  maxsteps = 1e6)$cl[1]
 }, numeric(1))
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 #> ℹ omega/sigma items treated as zero: 'etalcl'
@@ -432,7 +436,9 @@ model_cl <- vapply(seq_len(nrow(scenarios)), function(i) {
   cov <- list(PLT = scenarios$PLT[i], CRP = scenarios$CRP[i],
               GGT = scenarios$GGT[i], AST = scenarios$AST[i])
   d   <- add_cov(as.data.frame(ev), scenarios$CRRT[i], cov)
-  rxode2::rxSolve(rxode2::zeroRe(mod), d, returnType = "data.frame")$cl[1]
+  rxode2::rxSolve(rxode2::zeroRe(mod), d, returnType = "data.frame",
+                  # steady-state searches for long-half-life subjects exceed the default step budget
+                  maxsteps = 1e6)$cl[1]
 }, numeric(1))
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 #> ℹ omega/sigma items treated as zero: 'etalcl'
@@ -495,7 +501,9 @@ closed_form <- function(D, CL, V, Tinf, tau) {
 # 1e-6 percent, so the ODE error must sit well under 1e-8 relative.
 cf_chk <- rxode2::rxSolve(mod, as_cohort(ev_ss, 0), returnType = "data.frame",
                           rtol = 1e-10, atol = 1e-12,
-                          ssRtol = 1e-10, ssAtol = 1e-12) |>
+                          ssRtol = 1e-10, ssAtol = 1e-12,
+                          # steady-state searches for long-half-life subjects exceed the default step budget
+                          maxsteps = 1e6) |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(analytic = closed_form(4 * WT, cl, vc, 4 / 3, 12),
                 pct_diff = 100 * (Cc - analytic) / analytic)
@@ -524,7 +532,9 @@ linear one-compartment model:
 tobs   <- sort(unique(c(seq(0, 12, by = 0.25), 4 / 3)))
 ev_nca <- rxode2::et(amt = 4 * WT, dur = 4 / 3, ii = 12, ss = 1) |> rxode2::et(tobs)
 
-sim_nca <- rxode2::rxSolve(mod, as_cohort(ev_nca, 0), returnType = "data.frame") |>
+sim_nca <- rxode2::rxSolve(mod, as_cohort(ev_nca, 0), returnType = "data.frame",
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6) |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, cl, vc)
 
@@ -730,7 +740,9 @@ the full three-band split for comparison with the published Monte Carlo.
 cohort_bands <- function(mg_per_kg, crrt) {
   ev <- rxode2::et(amt = mg_per_kg * WT, dur = mg_per_kg / 3, ii = 12, ss = 1) |>
     rxode2::et(0)
-  cc <- rxode2::rxSolve(mod, as_cohort(ev, crrt), returnType = "data.frame")
+  cc <- rxode2::rxSolve(mod, as_cohort(ev, crrt), returnType = "data.frame",
+                        # steady-state searches for long-half-life subjects exceed the default step budget
+                        maxsteps = 1e6)
   cc <- cc$Cc[!is.na(cc$Cc)]
   c(lt2 = mean(cc < 2) * 100, in25 = mean(cc >= 2 & cc <= 5) * 100,
     gt5 = mean(cc > 5) * 100)
@@ -840,7 +852,9 @@ grid_for <- function(nm, xs) {
     ev  <- rxode2::et(amt = 4 * WT, dur = 4 / 3, ii = 12, ss = 1) |> rxode2::et(0)
     rxode2::rxSolve(rxode2::zeroRe(mod),
                     add_cov(as.data.frame(ev), 0, cov),
-                    returnType = "data.frame")$cl[1]
+                    returnType = "data.frame",
+                    # steady-state searches for long-half-life subjects exceed the default step budget
+                    maxsteps = 1e6)$cl[1]
   }, numeric(1))
   tibble::tibble(Covariate = nm, x = xs / ref_cov[[nm]], ratio = cl / 3.17)
 }

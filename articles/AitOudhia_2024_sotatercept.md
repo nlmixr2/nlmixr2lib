@@ -139,7 +139,8 @@ solve_typical <- function(events, wt = 70, alb = 45, healthy = 0) {
   d$WT <- wt
   d$ALB <- alb
   d$DIS_HEALTHY <- healthy
-  rxode2::rxSolve(mod, d, omega = NA, returnType = "data.frame")
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  rxode2::rxSolve(mod, d, omega = NA, returnType = "data.frame", maxsteps = 1e6)
 }
 ```
 
@@ -516,6 +517,10 @@ sim |>
 
 sim_sd <- sim |>
   filter(cohort == "Healthy, single SC 1.0 mg/kg", !is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, cohort)
 
 # Guarantee a time-zero row per subject; pre-dose Cc = 0 for an extravascular
@@ -641,7 +646,9 @@ sim_typ <- solve_typical(ev_typ) |>
   mutate(id = 1L, cohort = "Typical 70 kg, albumin 4.5 g/dL")
 
 conc_typ <- PKNCA::PKNCAconc(
-  sim_typ |> filter(!is.na(Cc)) |> select(id, time, Cc, cohort),
+  # Keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  sim_typ |> filter(!is.na(Cc), time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc, na.rm = TRUE)) |>
+    select(id, time, Cc, cohort),
   Cc ~ time | cohort + id, concu = "mg/L", timeu = "day"
 )
 dobj_typ <- PKNCA::PKNCAdose(

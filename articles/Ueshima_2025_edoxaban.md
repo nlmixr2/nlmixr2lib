@@ -222,8 +222,9 @@ stopifnot(
 
 ``` r
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim <- rxode2::rxSolve(mod, events = as.data.frame(events),
-                       keep = c("arm", "WT", "CRCL")) |>
+                       keep = c("arm", "WT", "CRCL"), maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -255,7 +256,9 @@ typical_ids <- (seq_len(nrow(arms)) - 1L) * n_per_arm + 1L
 sim0 <- rxode2::rxSolve(
   mod0,
   events = as.data.frame(dplyr::filter(events, id %in% typical_ids)),
-  keep = c("arm", "WT", "CRCL")
+  keep = c("arm", "WT", "CRCL"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl'
@@ -285,7 +288,9 @@ mod_slow <- rxode2::zeroRe(mod) |> rxode2::ini(lcl = log(28.2 / 2))
 #> ℹ change initial estimate of `lcl` to `2.64617479738412`
 sim_slow <- rxode2::rxSolve(
   mod_slow,
-  events = as.data.frame(dplyr::filter(events, id == n_per_arm + 1L))
+  events = as.data.frame(dplyr::filter(events, id == n_per_arm + 1L)),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl'
@@ -493,6 +498,10 @@ than assumed.
 
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, arm)
 
 # Every subject must already carry a record at the interval start; PKNCA
@@ -774,8 +783,9 @@ study_ev <- dplyr::bind_rows(
 # Observations beyond 24 h describe the profile after the LAST dose, i.e. a
 # missed / delayed dose -- which is exactly the situation Figure 2's 24-47 h
 # samples represent -- so dosing is not continued past time 0.
+# steady-state searches for long-half-life subjects exceed the default step budget
 study_sim <- rxode2::rxSolve(mod, events = as.data.frame(study_ev),
-                             keep = c("WT", "CRCL")) |>
+                             keep = c("WT", "CRCL"), maxsteps = 1e6) |>
   as.data.frame()
 
 study_pct <- study_sim |>

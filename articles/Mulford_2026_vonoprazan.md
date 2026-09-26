@@ -234,7 +234,9 @@ ss_profile <- function(model, dose, sexf, age, wt, day2 = 1L, by = 0.01) {
   e$AGE  <- age
   e$WT   <- wt
   e$DAY2 <- day2
-  rxode2::rxSolve(model, e, returnType = "data.frame") |> dplyr::filter(!is.na(Cc))
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  rxode2::rxSolve(model, e, returnType = "data.frame", maxsteps = 1e6) |>
+    dplyr::filter(!is.na(Cc))
 }
 
 trapz <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
@@ -375,7 +377,9 @@ stopifnot(!anyDuplicated(unique(ev_ss[, c("id", "time", "evid")])))
 ``` r
 
 sim_ss <- rxode2::rxSolve(mod, events = ev_ss,
-                          keep = c("population", "arm", "AGE", "WT", "SEXF")) |>
+                          keep = c("population", "arm", "AGE", "WT", "SEXF"),
+                          # steady-state searches for long-half-life subjects exceed the default step budget
+                          maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_d1 <- rxode2::rxSolve(mod, events = ev_d1,
@@ -1122,7 +1126,9 @@ ev_mat <- {
 }
 
 sim_mat <- rxode2::rxSolve(mod_mat, events = ev_mat,
-                           keep = c("band", "arm", "dose")) |>
+                           keep = c("band", "arm", "dose"),
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 

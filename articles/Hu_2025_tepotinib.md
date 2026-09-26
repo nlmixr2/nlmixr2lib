@@ -178,7 +178,8 @@ sroot   <- kel + k12 + k21
 beta    <- (sroot - sqrt(sroot^2 - 4 * kel * k21)) / 2
 thalf_z <- log(2) / beta
 
-tail_dat  <- dplyr::filter(sim_single, time >= 1500)
+# Below 1e-6 of the peak the integrator has no relative accuracy left.
+tail_dat  <- dplyr::filter(sim_single, time >= 1500, Cc >= 1e-6 * max(Cc, na.rm = TRUE))
 slope_fit <- lm(log(Cc) ~ time, data = tail_dat)
 thalf_sim <- log(2) / -unname(coef(slope_fit)[2])
 
@@ -193,6 +194,8 @@ nca_single <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(
     sim_single |>
       dplyr::filter(!is.na(Cc)) |>
+      # Keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+      dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
       dplyr::transmute(id = 1L, treatment = "500 mg single oral dose", time, Cc),
     Cc ~ time | treatment + id
   ),

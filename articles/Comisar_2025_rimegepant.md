@@ -456,6 +456,10 @@ Per-subject AUC(0-inf) = F1 \* Dose / CL identity. {.table}
 nca_of <- function(sim, ev, interval) {
   conc <- sim |>
     filter(!is.na(Cc)) |>
+    # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+    group_by(id, arm) |>
+    filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+    ungroup() |>
     select(id, time, Cc, arm)
   # Guarantee a record at the interval start (pre-dose Cc = 0 for the single
   # dose arms); PKNCA needs it to anchor AUC.

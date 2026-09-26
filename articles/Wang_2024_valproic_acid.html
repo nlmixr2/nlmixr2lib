@@ -3403,7 +3403,7 @@ available, and then were excluded from the model.”</li>
 <span><span class="co">#&gt;     Cc ~ prop(propSd) + add(addSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55c1f0484b40&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5590c407df20&gt;</span></span>
 <span></span>
 <span><span class="co"># Parsed once here so the metadata lists below can be read off the model file</span></span>
 <span><span class="co"># itself. readModelDb() returns the raw function; `$population` on the uncalled</span></span>
@@ -3787,9 +3787,10 @@ tight bound is the correct assertion here.</p>
 <span>  <span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">add_cov</span><span class="op">(</span><span class="va">ev</span>, WT <span class="op">=</span> <span class="va">BW</span>, SEXF <span class="op">=</span> <span class="va">SEXF</span>, FORM_VPA_SR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">sr</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="co"># Tight integrator and ss = 1 steady-state tolerances: this solve is compared</span></span>
 <span>  <span class="co"># to its closed form below, so the ODE error must sit well under the bound.</span></span>
+<span>  <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
 <span>  <span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">d</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>, omega <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>                       rtol <span class="op">=</span> <span class="fl">1e-10</span>, atol <span class="op">=</span> <span class="fl">1e-12</span>,</span>
-<span>                       ssRtol <span class="op">=</span> <span class="fl">1e-10</span>, ssAtol <span class="op">=</span> <span class="fl">1e-12</span><span class="op">)</span></span>
+<span>                       ssRtol <span class="op">=</span> <span class="fl">1e-10</span>, ssAtol <span class="op">=</span> <span class="fl">1e-12</span>, maxsteps <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span></span>
 <span>  <span class="va">r</span><span class="op">$</span><span class="va">Cc</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -4014,7 +4015,8 @@ range and keeps the render inside its time budget.</p>
 <span>  <span class="va">d</span><span class="op">$</span><span class="va">WT</span> <span class="op">&lt;-</span> <span class="va">BW</span></span>
 <span>  <span class="va">d</span><span class="op">$</span><span class="va">SEXF</span> <span class="op">&lt;-</span> <span class="va">SEXF</span></span>
 <span>  <span class="va">d</span><span class="op">$</span><span class="va">FORM_VPA_SR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">sr</span><span class="op">)</span></span>
-<span>  <span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">d</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
+<span>  <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>  <span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">d</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>, maxsteps <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span></span>
 <span>  <span class="co"># `sim` carries the residual error; `Cc` is the individual prediction only.</span></span>
 <span>  <span class="co"># A TDM trough is an observed concentration, so PTA uses `sim`.</span></span>
 <span>  <span class="va">r</span><span class="op">$</span><span class="va">sim</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span></span>
@@ -4319,8 +4321,9 @@ tablets, and the paper’s recommended SR dose.</p>
 <span>  <span class="fu">mutate</span><span class="op">(</span>amt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">WT</span> <span class="op">*</span> <span class="va">mgkgd</span> <span class="op">/</span> <span class="fl">2</span>, <span class="va">amt</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
-<span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span><span class="op">)</span>, maxsteps <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>

@@ -132,7 +132,8 @@ solve_scenario <- function(label, dose_nmol_kg, ...) {
 # profile -- well clear of the distribution and TMDD transients. The paper
 # computes ln(2) / (-dD_Free/dt / D_Free); on the terminal phase the two agree.
 terminal_half_life <- function(df) {
-  d <- df[df$time > 0 & df$Cc > 0, ]
+  # Keep Cc >= 1e-6 * Cmax before taking the last quarter: below that the ODE integrator has no relative accuracy left.
+  d <- df[df$time > 0 & df$Cc >= 1e-6 * max(df$Cc), ]
   d <- d[d$time >= 0.75 * max(d$time), ]
   as.numeric(log(2) / -coef(stats::lm(log(Cc) ~ time, data = d))[2])
 }
@@ -191,7 +192,7 @@ tibble::tibble(
 |        31.60 |                     8.32 |
 |        10.00 |                     4.45 |
 |         3.16 |                     2.22 |
-|         1.00 |                     1.38 |
+|         1.00 |                     1.37 |
 
 Terminal half-life by CD3 affinity (compare Figure 2a legend). {.table}
 
@@ -430,7 +431,11 @@ fit used above, and supplies Cmax and AUC for the Figure 2a scenarios.
 
 sim_nca <- sim_2a |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, treatment)
+  dplyr::select(id, time, Cc, treatment) |>
+  # Per scenario, keep Cc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Guarantee a time = 0 row per (id, treatment). For an IV bolus into a
 # concentration state the t = 0 record is already present, but the bind/distinct

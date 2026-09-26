@@ -329,7 +329,9 @@ ff_events <-
 ff_sim <- rxode2::rxSolve(
   ff, ff_events,
   keep = c("dose", "race_label"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
@@ -772,7 +774,9 @@ vi_events <- vi_arms |>
   arrange(id, time, dplyr::desc(evid))
 
 vi_sim <- rxode2::rxSolve(
-  vi, vi_events, keep = "arm", returnType = "data.frame"
+  vi, vi_events, keep = "arm", returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp2'
 #> Warning: multi-subject simulation without without 'omega'
@@ -1075,7 +1079,9 @@ cohort_events <- cohort |>
 
 cohort_sim <- rxode2::rxSolve(
   vi, cohort_events, keep = c("AGE", "WT", "SEXF", "SMOKE"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp2'
 #> Warning: multi-subject simulation without without 'omega'

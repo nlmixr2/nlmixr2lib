@@ -3581,6 +3581,10 @@ to the paper’s Discussion, which reports mean elimination half-lives of
 <span><span class="va">make_nca</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sim</span>, <span class="va">events</span>, <span class="va">treatment_col</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">conc_df</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="co"># Per subject, keep Cc &gt;= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">treatment_col</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Guarantee a time = 0, Cc = 0 anchor per subject</span></span>
@@ -3632,54 +3636,7 @@ to the paper’s Discussion, which reports mean elimination half-lives of
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_lor</span> <span class="op">&lt;-</span> <span class="fu">make_nca</span><span class="op">(</span><span class="va">sim_lor_long</span>, <span class="va">events_lor_long</span>, <span class="st">"cohort"</span><span class="op">)</span></span>
-<span><span class="va">nca_mid</span> <span class="op">&lt;-</span> <span class="fu">make_nca</span><span class="op">(</span><span class="va">sim_mid_long</span>, <span class="va">events_mid_long</span>, <span class="st">"cohort"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span></code></pre></div>
+<span><span class="va">nca_mid</span> <span class="op">&lt;-</span> <span class="fu">make_nca</span><span class="op">(</span><span class="va">sim_mid_long</span>, <span class="va">events_mid_long</span>, <span class="st">"cohort"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="comparison-against-the-papers-reported-half-lives">Comparison against the paper’s reported half-lives<a class="anchor" aria-label="anchor" href="#comparison-against-the-papers-reported-half-lives"></a>
 </h3>

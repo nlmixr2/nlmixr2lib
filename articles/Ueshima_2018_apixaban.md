@@ -179,7 +179,9 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("group", "CRCL", "CYP3A5_STAR1_HOM", "SNP_ABCG2_RS2231142_HOM")
+  keep   = c("group", "CRCL", "CYP3A5_STAR1_HOM", "SNP_ABCG2_RS2231142_HOM"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |> as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
@@ -290,7 +292,9 @@ full IIV and residual error structure.
 sim_stoch <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("group", "CRCL", "CYP3A5_STAR1_HOM", "SNP_ABCG2_RS2231142_HOM")
+  keep   = c("group", "CRCL", "CYP3A5_STAR1_HOM", "SNP_ABCG2_RS2231142_HOM"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |> as.data.frame()
 
 fig4_auc <- sim_stoch |>

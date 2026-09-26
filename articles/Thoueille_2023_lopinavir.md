@@ -248,7 +248,9 @@ Simulated cohorts. Compare median and range against Thoueille 2023 Table
 
 mod <- readModelDb("Thoueille_2023_lopinavir")
 
-sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort", "WT")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort", "WT"),
+                       maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -285,7 +287,9 @@ tv_events <- bind_rows(
 
 tv_sim <- rxode2::rxSolve(
   rxode2::zeroRe(mod), events = tv_events,
-  keep = c("arm", "WT"), omega = NA, sigma = NA
+  keep = c("arm", "WT"), omega = NA, sigma = NA,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'

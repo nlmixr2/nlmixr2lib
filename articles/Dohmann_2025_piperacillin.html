@@ -3521,7 +3521,9 @@ differences are not contaminated by resampling noise.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span>
 <span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">uiz</span>, params <span class="op">=</span> <span class="va">co</span><span class="op">[</span>, <span class="va">par_cols</span><span class="op">]</span>, events <span class="op">=</span> <span class="va">evdf</span>,</span>
 <span>                    returnType <span class="op">=</span> <span class="st">"data.frame"</span>, rtol <span class="op">=</span> <span class="fl">1e-10</span>, atol <span class="op">=</span> <span class="fl">1e-12</span>,</span>
-<span>                    ssRtol <span class="op">=</span> <span class="fl">1e-10</span>, ssAtol <span class="op">=</span> <span class="fl">1e-12</span><span class="op">)</span></span>
+<span>                    ssRtol <span class="op">=</span> <span class="fl">1e-10</span>, ssAtol <span class="op">=</span> <span class="fl">1e-12</span>,</span>
+<span>                    <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>                    maxsteps <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -3610,7 +3612,9 @@ including the eGFR covariate term.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span></span>
 <span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">uiz</span>, params <span class="op">=</span> <span class="va">co</span><span class="op">[</span>, <span class="va">par_cols</span><span class="op">]</span>, events <span class="op">=</span> <span class="va">evdf</span>,</span>
 <span>                    returnType <span class="op">=</span> <span class="st">"data.frame"</span>, rtol <span class="op">=</span> <span class="fl">1e-10</span>, atol <span class="op">=</span> <span class="fl">1e-12</span>,</span>
-<span>                    ssRtol <span class="op">=</span> <span class="fl">1e-10</span>, ssAtol <span class="op">=</span> <span class="fl">1e-12</span><span class="op">)</span></span>
+<span>                    ssRtol <span class="op">=</span> <span class="fl">1e-10</span>, ssAtol <span class="op">=</span> <span class="fl">1e-12</span>,</span>
+<span>                    <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>                    maxsteps <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>egfr_group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"eGFR "</span>, <span class="va">g</span>, <span class="st">" mL/min"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span>

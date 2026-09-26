@@ -3670,13 +3670,16 @@ simulation must recover it.</p>
 <span><span class="va">gamma</span>  <span class="op">&lt;-</span> <span class="va">roots</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>                       <span class="co"># slowest (terminal) rate</span></span>
 <span><span class="va">t_half</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="va">gamma</span></span>
 <span></span>
+<span><span class="co"># Keep Cc &gt;= 1e-6 of Cmax (below that the ODE tail is solver noise). The floor</span></span>
+<span><span class="co"># ends the window near 160 h, so it opens at 96 h, long after the beta phase.</span></span>
 <span><span class="va">tail_fit</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cohort</span> <span class="op">==</span> <span class="st">"axi-cel (30 mg/m2)"</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">150</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">240</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cohort</span> <span class="op">==</span> <span class="st">"axi-cel (30 mg/m2)"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">96</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">240</span>, <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">t_half_fitted</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span>, <span class="va">tail_fit</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  quantity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alpha (1/h)"</span>, <span class="st">"beta (1/h)"</span>, <span class="st">"gamma (1/h)"</span>,</span>
-<span>               <span class="st">"terminal t-half, analytic (h)"</span>, <span class="st">"terminal t-half, fitted 150-240 h (h)"</span><span class="op">)</span>,</span>
+<span>               <span class="st">"terminal t-half, analytic (h)"</span>, <span class="st">"terminal t-half, fitted from 96 h (h)"</span><span class="op">)</span>,</span>
 <span>  value    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">roots</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">roots</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">gamma</span>, <span class="va">t_half</span>, <span class="va">t_half_fitted</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="st">"Quantity"</span> <span class="op">=</span> <span class="va">quantity</span>, <span class="st">"Value"</span> <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3705,7 +3708,7 @@ simulation must recover it.</p>
 <td align="right">8.4934</td>
 </tr>
 <tr class="odd">
-<td align="left">terminal t-half, fitted 150-240 h (h)</td>
+<td align="left">terminal t-half, fitted from 96 h (h)</td>
 <td align="right">8.4934</td>
 </tr>
 </tbody>
@@ -3873,13 +3876,18 @@ tabulate; see Assumptions below.</p>
 <div class="section level2">
 <h2 id="pknca-validation">PKNCA validation<a class="anchor" aria-label="anchor" href="#pknca-validation"></a>
 </h2>
-<p>NCA is run on the single-dose cohort simulation. The filter is
-<code>!is.na(Cc)</code> only – adding <code>time &gt; 0</code> or
-<code>Cc &gt; 0</code> would drop the time-zero row that anchors
-AUC.</p>
+<p>NCA is run on the single-dose cohort simulation. The time-zero row
+that anchors AUC is always kept (a <code>time &gt; 0</code> or
+<code>Cc &gt; 0</code> filter would drop it); points past each subject’s
+peak that fall below 1e-6 of it, where the solved profile is numerical
+noise, are dropped before the half-life fit.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_single</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Per subject, keep Cc &gt;= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Guarantee a time = 0 row per (id, cohort). For intravenous input the</span></span>
@@ -3963,16 +3971,16 @@ raw dose/AUC scale here – see the unit note below.</caption>
 <tr class="even">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">AUC0-∞ (obs)</td>
-<td align="right">6674.46187</td>
-<td align="right">4058.01291</td>
-<td align="right">11120.87609</td>
+<td align="right">6674.46183</td>
+<td align="right">4058.01288</td>
+<td align="right">11120.87600</td>
 </tr>
 <tr class="odd">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">AUMC0-∞ (obs)</td>
-<td align="right">79080.07731</td>
-<td align="right">37450.44731</td>
-<td align="right">163991.12535</td>
+<td align="right">79080.06867</td>
+<td align="right">37450.44273</td>
+<td align="right">163991.11099</td>
 </tr>
 <tr class="even">
 <td align="left">axi-cel (30 mg/m2)</td>
@@ -3984,16 +3992,16 @@ raw dose/AUC scale here – see the unit note below.</caption>
 <tr class="odd">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">Clast</td>
-<td align="right">0.00000</td>
-<td align="right">0.00000</td>
-<td align="right">0.00036</td>
+<td align="right">0.00107</td>
+<td align="right">0.00055</td>
+<td align="right">0.00199</td>
 </tr>
 <tr class="even">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">clast.pred</td>
-<td align="right">0.00000</td>
-<td align="right">0.00000</td>
-<td align="right">0.00035</td>
+<td align="right">0.00104</td>
+<td align="right">0.00054</td>
+<td align="right">0.00195</td>
 </tr>
 <tr class="odd">
 <td align="left">axi-cel (30 mg/m2)</td>
@@ -4005,37 +4013,37 @@ raw dose/AUC scale here – see the unit note below.</caption>
 <tr class="even">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">t½</td>
-<td align="right">8.84091</td>
-<td align="right">6.86723</td>
-<td align="right">11.92519</td>
+<td align="right">8.84065</td>
+<td align="right">6.86783</td>
+<td align="right">11.92547</td>
 </tr>
 <tr class="odd">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">λz</td>
 <td align="right">0.07840</td>
 <td align="right">0.05812</td>
-<td align="right">0.10094</td>
+<td align="right">0.10093</td>
 </tr>
 <tr class="even">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">λz n points</td>
-<td align="right">204.00000</td>
-<td align="right">198.00000</td>
-<td align="right">212.00000</td>
+<td align="right">176.50000</td>
+<td align="right">163.00000</td>
+<td align="right">192.10000</td>
 </tr>
 <tr class="odd">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">lambda.z.time.first</td>
-<td align="right">3.25000</td>
-<td align="right">2.85000</td>
-<td align="right">3.55000</td>
+<td align="right">3.75000</td>
+<td align="right">3.50000</td>
+<td align="right">3.95000</td>
 </tr>
 <tr class="even">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">lambda.z.time.last</td>
-<td align="right">240.00000</td>
-<td align="right">240.00000</td>
-<td align="right">240.00000</td>
+<td align="right">168.00000</td>
+<td align="right">128.00000</td>
+<td align="right">224.00000</td>
 </tr>
 <tr class="odd">
 <td align="left">axi-cel (30 mg/m2)</td>
@@ -4047,23 +4055,23 @@ raw dose/AUC scale here – see the unit note below.</caption>
 <tr class="even">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">r.squared</td>
-<td align="right">0.99990</td>
+<td align="right">0.99991</td>
 <td align="right">0.99990</td>
 <td align="right">0.99991</td>
 </tr>
 <tr class="odd">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">span.ratio</td>
-<td align="right">26.81980</td>
-<td align="right">19.83951</td>
-<td align="right">34.50454</td>
+<td align="right">18.40592</td>
+<td align="right">17.94922</td>
+<td align="right">18.87117</td>
 </tr>
 <tr class="even">
 <td align="left">axi-cel (30 mg/m2)</td>
 <td align="left">Tlast</td>
-<td align="right">240.00000</td>
-<td align="right">240.00000</td>
-<td align="right">240.00000</td>
+<td align="right">168.00000</td>
+<td align="right">128.00000</td>
+<td align="right">224.00000</td>
 </tr>
 <tr class="odd">
 <td align="left">axi-cel (30 mg/m2)</td>
@@ -4082,23 +4090,23 @@ raw dose/AUC scale here – see the unit note below.</caption>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">adj.r.squared</td>
-<td align="right">0.99990</td>
+<td align="right">0.99991</td>
 <td align="right">0.99990</td>
 <td align="right">0.99991</td>
 </tr>
 <tr class="even">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">AUC0-∞ (obs)</td>
-<td align="right">5996.86153</td>
-<td align="right">3797.83095</td>
-<td align="right">10338.47621</td>
+<td align="right">5996.86149</td>
+<td align="right">3797.83091</td>
+<td align="right">10338.47620</td>
 </tr>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">AUMC0-∞ (obs)</td>
-<td align="right">75655.81401</td>
-<td align="right">35753.32077</td>
-<td align="right">159555.01472</td>
+<td align="right">75655.80696</td>
+<td align="right">35753.31597</td>
+<td align="right">159555.00251</td>
 </tr>
 <tr class="even">
 <td align="left">tisa-cel (25 mg/m2)</td>
@@ -4110,16 +4118,16 @@ raw dose/AUC scale here – see the unit note below.</caption>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">Clast</td>
-<td align="right">0.00001</td>
-<td align="right">0.00000</td>
-<td align="right">0.00047</td>
+<td align="right">0.00085</td>
+<td align="right">0.00052</td>
+<td align="right">0.00156</td>
 </tr>
 <tr class="even">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">clast.pred</td>
-<td align="right">0.00001</td>
-<td align="right">0.00000</td>
-<td align="right">0.00046</td>
+<td align="right">0.00083</td>
+<td align="right">0.00051</td>
+<td align="right">0.00153</td>
 </tr>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
@@ -4131,37 +4139,37 @@ raw dose/AUC scale here – see the unit note below.</caption>
 <tr class="even">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">t½</td>
-<td align="right">9.40083</td>
-<td align="right">7.09149</td>
-<td align="right">12.12587</td>
+<td align="right">9.40089</td>
+<td align="right">7.09183</td>
+<td align="right">12.12498</td>
 </tr>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">λz</td>
 <td align="right">0.07373</td>
-<td align="right">0.05716</td>
+<td align="right">0.05717</td>
 <td align="right">0.09774</td>
 </tr>
 <tr class="even">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">λz n points</td>
-<td align="right">203.00000</td>
-<td align="right">198.00000</td>
-<td align="right">213.00000</td>
+<td align="right">179.00000</td>
+<td align="right">166.00000</td>
+<td align="right">196.00000</td>
 </tr>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">lambda.z.time.first</td>
-<td align="right">3.30000</td>
-<td align="right">2.80000</td>
-<td align="right">3.55000</td>
+<td align="right">3.70000</td>
+<td align="right">3.45000</td>
+<td align="right">3.90000</td>
 </tr>
 <tr class="even">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">lambda.z.time.last</td>
-<td align="right">240.00000</td>
-<td align="right">240.00000</td>
-<td align="right">240.00000</td>
+<td align="right">180.00000</td>
+<td align="right">135.80000</td>
+<td align="right">228.00000</td>
 </tr>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
@@ -4173,23 +4181,23 @@ raw dose/AUC scale here – see the unit note below.</caption>
 <tr class="even">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">r.squared</td>
-<td align="right">0.99990</td>
+<td align="right">0.99991</td>
 <td align="right">0.99990</td>
 <td align="right">0.99991</td>
 </tr>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">span.ratio</td>
-<td align="right">25.17589</td>
-<td align="right">19.49142</td>
-<td align="right">33.44623</td>
+<td align="right">18.50030</td>
+<td align="right">17.95311</td>
+<td align="right">18.85652</td>
 </tr>
 <tr class="even">
 <td align="left">tisa-cel (25 mg/m2)</td>
 <td align="left">Tlast</td>
-<td align="right">240.00000</td>
-<td align="right">240.00000</td>
-<td align="right">240.00000</td>
+<td align="right">180.00000</td>
+<td align="right">135.80000</td>
+<td align="right">228.00000</td>
 </tr>
 <tr class="odd">
 <td align="left">tisa-cel (25 mg/m2)</td>
@@ -4232,6 +4240,10 @@ construction.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typ_nca_in</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Per subject, keep Cc &gt;= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">cohort</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">typ_nca_in</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>

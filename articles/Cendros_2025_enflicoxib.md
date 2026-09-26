@@ -832,7 +832,8 @@ simulate_washout <- function(wt) {
 # the concentration has decayed to zero are dropped so log() stays finite.
 slope_thalf_d <- function(df, col, from_d, to_d) {
   w <- df[df$time >= from_d * 24 & df$time <= to_d * 24, ]
-  w <- w[w[[col]] > 0, ]
+  # Keep conc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  w <- w[w[[col]] >= 1e-6 * max(df[[col]], na.rm = TRUE), ]
   stopifnot(nrow(w) >= 10)
   log(2) / -stats::coef(stats::lm(log(w[[col]]) ~ w$time))[[2]] / 24
 }

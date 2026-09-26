@@ -453,6 +453,10 @@ pk_osi <- as.data.frame(rxode2::rxSolve(
 
 sim_nca <- bind_rows(pk_pem, pk_osi) |>
   filter(!is.na(conc)) |>
+  # Per subject, keep conc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  group_by(treatment, id) |>
+  filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>
+  ungroup() |>
   select(id, time, conc, treatment)
 
 # Guarantee a time-zero row per (id, treatment); pre-dose concentration is 0
@@ -519,7 +523,7 @@ knitr::kable(cmp, caption = paste(
 | Tmax (day)               | Osimertinib 1 mg/kg p.o. | 0.0458    | 0.046     | +0.4%  |
 | AUC0-∞ (obs) (ug\*day/L) | Pemetrexed 35 mg/kg i.p. | 1580      | 1580      | -0.0%  |
 | AUC0-∞ (obs) (ug\*day/L) | Osimertinib 1 mg/kg p.o. | 13.1      | 13.1      | -0.0%  |
-| t½ (day)                 | Pemetrexed 35 mg/kg i.p. | 0.256     | 0.256     | -0.2%  |
+| t½ (day)                 | Pemetrexed 35 mg/kg i.p. | 0.256     | 0.255     | -0.3%  |
 | t½ (day)                 | Osimertinib 1 mg/kg p.o. | 0.298     | 0.297     | -0.3%  |
 
 Simulated NCA versus reference. AUC(0-inf) and half-life references are

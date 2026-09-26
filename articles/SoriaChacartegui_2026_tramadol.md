@@ -264,7 +264,9 @@ analytic_beta <- function(cl, vc, q, vp) {
   (s - sqrt(s^2 - 4 * kel * k32)) / 2
 }
 beta_nm <- analytic_beta(cl_typ, vc_typ, q_typ, vp_typ)
-tail_typ <- obs_typ[obs_typ$time > 48 & obs_typ$time < 200, ]
+# Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+tail_typ <- obs_typ[obs_typ$time > 48 & obs_typ$time < 200 &
+                      obs_typ$Cc >= 1e-6 * max(obs_typ$Cc), ]
 beta_sim <- -coef(lm(log(Cc) ~ time, tail_typ))[[2]]
 
 # --- 3. Steady-state volume. The Discussion reports Vd = 297 L, which is
@@ -295,7 +297,7 @@ knitr::kable(structural, digits = 4,
 | Check | Simulated | Expected | Source |
 |:---|---:|---:|:---|
 | Dose delivered through the transit chain (fraction of 37.5 mg) | 1.0000 | 1.0000 | mass balance: AUC(0,Inf) \* CL = Dose |
-| Terminal half-life, simulated (h) | 4.4481 | 4.4456 | closed form from Table 2 CL/Vc/Q/Vp |
+| Terminal half-life, simulated (h) | 4.4456 | 4.4456 | closed form from Table 2 CL/Vc/Q/Vp |
 | Terminal half-life, analytic beta (h) | 4.4456 | 4.4456 | closed form from Table 2 CL/Vc/Q/Vp |
 | Vc + Vp at 70 kg (L) | 297.0000 | 297.0000 | Discussion: ‘the reported volume of distribution (Vd) (297 L)’ |
 
@@ -384,6 +386,10 @@ sim_nca <- sim |>
   mutate(time = if_else(grepl("steady state", arm),
                         time - ss_last_dose, time)) |>
   filter(time >= 0) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  group_by(arm, id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, arm)
 
 # Fail loudly if any subject lost its time-zero anchor; PKNCA would otherwise

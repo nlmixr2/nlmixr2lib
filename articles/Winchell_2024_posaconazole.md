@@ -173,7 +173,9 @@ typ_events <- bind_rows(
   arrange(id, time, -evid)
 
 typ <- rxode2::rxSolve(mod, typ_events, omega = NA, returnType = "data.frame",
-                       keep = "WT") |>
+                       keep = "WT",
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6) |>
   filter(!is.na(Cc))
 #> Warning: multi-subject simulation without without 'omega'
 
@@ -223,7 +225,9 @@ prop_events <- bind_rows(
 ) |>
   arrange(id, time, -evid)
 
-prop <- rxode2::rxSolve(mod, prop_events, omega = NA, returnType = "data.frame") |>
+prop <- rxode2::rxSolve(mod, prop_events, omega = NA, returnType = "data.frame",
+                        # steady-state searches for long-half-life subjects exceed the default step budget
+                        maxsteps = 1e6) |>
   filter(!is.na(Cc)) |>
   group_by(id) |>
   summarise(cavg = trap_mean(time, Cc), .groups = "drop")
@@ -365,7 +369,9 @@ events <- lapply(seq_len(nrow(arms)), function(k) {
 # omega = NA: the etas are supplied per subject from the Latin hypercube above
 # rather than resampled internally, so the whole vignette is deterministic.
 sim <- rxode2::rxSolve(mod, events, omega = NA, returnType = "data.frame",
-                       keep = c("WT", "agegrp", "form", "dose_mgkg")) |>
+                       keep = c("WT", "agegrp", "form", "dose_mgkg"),
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6) |>
   filter(!is.na(Cc)) |>
   mutate(dose_label = paste0(dose_mgkg, " mg/kg"))
 #> Warning: multi-subject simulation without without 'omega'
@@ -676,7 +682,9 @@ band_events <- lapply(seq_len(nrow(bands)), function(k) {
   arrange(id, time, -evid)
 
 band_sim <- rxode2::rxSolve(mod, band_events, omega = NA, returnType = "data.frame",
-                            keep = c("WT", "band")) |>
+                            keep = c("WT", "band"),
+                            # steady-state searches for long-half-life subjects exceed the default step budget
+                            maxsteps = 1e6) |>
   filter(!is.na(Cc))
 #> Warning: multi-subject simulation without without 'omega'
 

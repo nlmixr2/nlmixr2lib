@@ -184,7 +184,9 @@ mod <- readModelDb("Xu_2024_linezolid")
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("arm", "sweep", "dose_mg", "AGE", "CRCL")
+  keep = c("arm", "sweep", "dose_mg", "AGE", "CRCL"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -220,7 +222,9 @@ sim_typical <- rxode2::rxSolve(
   # The closed-form trough gate under "Quantifying the Table 4 discrepancy"
   # holds this ss = 1 solve to 1e-8 mg/L, which needs tighter integration and
   # steady-state-search tolerances than the defaults.
-  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl'

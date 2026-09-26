@@ -197,7 +197,9 @@ mod <- readModelDb("Yang_2025_polymyxinB")
 # rxSolve returns observation records only, so there is no `evid` column to
 # filter on.
 sim_cohort <- rxode2::rxSolve(mod, events = events,
-                              keep = c("CRCL", "PLT")) |>
+                              keep = c("CRCL", "PLT"),
+                              # steady-state searches for long-half-life subjects exceed the default step budget
+                              maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalvc'
@@ -221,7 +223,9 @@ events_typical <- events |>
   dplyr::filter(id == 1L) |>
   dplyr::mutate(CRCL = 75.99, PLT = 163.50)
 
-sim_typical <- rxode2::rxSolve(mod_typical, events = events_typical) |>
+sim_typical <- rxode2::rxSolve(mod_typical, events = events_typical,
+                               # steady-state searches for long-half-life subjects exceed the default step budget
+                               maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 ```
@@ -313,7 +317,9 @@ scen_events <- dplyr::bind_rows(
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   as.data.frame()
 
-scen_cl <- rxode2::rxSolve(mod_typical, events = scen_events) |>
+scen_cl <- rxode2::rxSolve(mod_typical, events = scen_events,
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6) |>
   as.data.frame() |>
   dplyr::group_by(id) |>
   dplyr::summarise(cl_typ = dplyr::first(cl), .groups = "drop")

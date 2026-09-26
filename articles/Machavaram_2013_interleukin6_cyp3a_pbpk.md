@@ -498,7 +498,9 @@ target <- enz_ss(100)
 
 # Terminal rate constant of the approach to the new steady state, measured
 # after the 20.9 h IL-6 accumulation transient is spent.
-window <- dplyr::filter(s100, time >= 150, time <= 500)
+# Keep residuals >= 1e-6 of their maximum: below that they are integrator noise.
+window <- dplyr::filter(s100, time >= 150, time <= 500,
+                        enzyme_3a4 - target >= 1e-6 * max(enzyme_3a4 - target))
 slope <- stats::coef(stats::lm(log(enzyme_3a4 - target) ~ time, data = window))
 k_obs <- -unname(slope[2])
 
@@ -769,7 +771,11 @@ nca_conc <- pert |>
     time = time,
     Cc = Cc
   ) |>
-  dplyr::filter(!is.na(Cc))
+  dplyr::filter(!is.na(Cc)) |>
+  # Keep Cc >= 1e-6 * max(Cc) per arm after the peak (solver noise below); time zero is re-added below.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Ensure a time-zero record exists for every subject (PKNCA needs it for AUC
 # ranges starting at 0); the grid above already includes t = 0, so this is

@@ -175,7 +175,9 @@ mod <- readModelDb("Yukawa_2002_clonazepam_pediatric")
 sim <- rxode2::rxSolve(
   mod,
   events,
-  keep = c("tier", "WT", "CONMED_AED", "CONMED_AED_GE2", "per_dose_mg")
+  keep = c("tier", "WT", "CONMED_AED", "CONMED_AED_GE2", "per_dose_mg"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'

@@ -264,7 +264,9 @@ clf_per_m2 <- cl_ref / f_ref / bsa_ref / 1000   # mL/h -> L/h, then per m^2
 vf_per_m2  <- vc_ref / f_ref / bsa_ref / 1000   # mL   -> L,   then per m^2
 
 # Terminal slope taken well after the input has stopped, so it reports ka.
-tail_s  <- s_rate[s_rate$time >= 150 & s_rate$time <= 240, ]
+# Keep Cc >= 1e-6 * max(Cc): below that the ODE solution is integrator noise.
+tail_s  <- s_rate[s_rate$time >= 150 & s_rate$time <= 240 &
+                    s_rate$Cc >= 1e-6 * max(s_rate$Cc), ]
 slope   <- stats::coef(stats::lm(log(tail_s$Cc) ~ tail_s$time))[[2]]
 thalf   <- log(2) / (-slope)
 
@@ -373,7 +375,9 @@ published `t1/2` means.
 
 nca_in <- s_rate |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc)
+  dplyr::select(id, time, Cc) |>
+  # Keep Cc >= 1e-6 * max(Cc) after the peak (solver noise below), plus the time-zero anchor.
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc) | time == 0)
 
 # Defensive time-zero record so PKNCA does not warn about an AUC range
 # starting before the first measurement.

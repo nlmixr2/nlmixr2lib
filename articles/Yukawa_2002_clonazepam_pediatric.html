@@ -3374,7 +3374,9 @@ interval at 0.1 h resolution to give PKNCA a dense profile.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>,</span>
 <span>  <span class="va">events</span>,</span>
-<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tier"</span>, <span class="st">"WT"</span>, <span class="st">"CONMED_AED"</span>, <span class="st">"CONMED_AED_GE2"</span>, <span class="st">"per_dose_mg"</span><span class="op">)</span></span>
+<span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tier"</span>, <span class="st">"WT"</span>, <span class="st">"CONMED_AED"</span>, <span class="st">"CONMED_AED_GE2"</span>, <span class="st">"per_dose_mg"</span><span class="op">)</span>,</span>
+<span>  <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>  maxsteps <span class="op">=</span> <span class="fl">1e6</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>

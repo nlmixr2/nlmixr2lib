@@ -260,7 +260,8 @@ betaHalfLife <- function(ui) {
   log(2) / ((b - sqrt(b^2 - 4 * kel * k21)) / 2)
 }
 terminalSlopeHalfLife <- function(d) {
-  tail40 <- d |> filter(time >= 40, time <= 60, Cc > 0)
+  # Keep Cc >= 1e-6 * max(Cc): below that the ODE solution is integrator noise.
+  tail40 <- d |> filter(time >= 40, time <= 60, Cc >= 1e-6 * max(Cc))
   log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = tail40))[["time"]]
 }
 hlCheck <- vapply(constituents$constituent, function(cn) {

@@ -151,7 +151,9 @@ ev_long <- rxode2::et(amt = 325, cmt = "central") |>
 terminal_half_life <- function(use_lin) {
   d <- rxode2::rxSolve(mod_typ, ev_long, params = ref, useLinCmt = use_lin,
                        returnType = "data.frame")
-  d <- d[d$time >= 300 & d$Cc > 0, ]
+  # Keep Cc >= 1e-6 of Cmax (below that the ODE tail is solver noise). The floor
+  # ends near 220 d, so the window opens at 100 d, 100 alpha half-lives in.
+  d <- d[d$time >= 100 & d$Cc >= 1e-6 * max(d$Cc), ]
   stopifnot(nrow(d) > 20)
   log(2) / -unname(stats::coef(stats::lm(log(d$Cc) ~ d$time))[2])
 }
@@ -171,7 +173,7 @@ stopifnot(
 cat(sprintf(paste0("Gate 2 PASS: analytic beta t1/2 = %.3f day; simulated %.3f (ODE) / ",
                    "%.3f (useLinCmt) day.\n  One-compartment collapse would give %.3f day.\n"),
             hl_beta, hl_ode, hl_lin, hl_kel))
-#> Gate 2 PASS: analytic beta t1/2 = 11.984 day; simulated 11.982 (ODE) / 11.984 (useLinCmt) day.
+#> Gate 2 PASS: analytic beta t1/2 = 11.984 day; simulated 11.984 (ODE) / 11.984 (useLinCmt) day.
 #>   One-compartment collapse would give 5.227 day.
 ```
 

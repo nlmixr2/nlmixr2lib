@@ -3691,8 +3691,10 @@ mis-signed.</p>
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">half_life_chk</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose_mg</span> <span class="op">==</span> <span class="fl">1500</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">3000</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">5000</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose_mg</span> <span class="op">==</span> <span class="fl">1500</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Below 1e-6 of the peak the integrator has no relative accuracy left.</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">3000</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">5000</span>, <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    t_half_sim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="op">-</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
@@ -3735,13 +3737,13 @@ log(2)/beta.</caption>
 <td align="left">NLLS</td>
 <td align="right">190.32</td>
 <td align="right">190.32</td>
-<td align="right">1e-07</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">NLME</td>
 <td align="right">664.15</td>
 <td align="right">664.15</td>
-<td align="right">0e+00</td>
+<td align="right">0</td>
 </tr>
 </tbody>
 </table>
@@ -3758,10 +3760,14 @@ than a restatement of the model.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Per subject, keep Cc &gt;= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">arm</span>, <span class="va">nca_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">nca_id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">arm</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Guarantee a time-zero record per (arm, id). For an intravenous dose the</span></span>
-<span><span class="co"># pre-dose concentration is 0. Filter above is !is.na() only -- adding</span></span>
+<span><span class="co"># pre-dose concentration is 0. The filters above keep time zero -- adding</span></span>
 <span><span class="co"># `time &gt; 0` or `Cc &gt; 0` would drop this anchor and trigger PKNCA's</span></span>
 <span><span class="co"># "AUC range starting (0) before the first measurement" warning.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
@@ -4085,9 +4091,9 @@ difference; none is expected or observed.</caption>
 <span><span class="va">cmax_pct</span>  <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">nca_wide</span><span class="op">$</span><span class="va">cmax</span>       <span class="op">-</span> <span class="va">nca_wide</span><span class="op">$</span><span class="va">cmax_ref</span><span class="op">)</span>  <span class="op">/</span> <span class="va">nca_wide</span><span class="op">$</span><span class="va">cmax_ref</span></span>
 <span><span class="va">thalf_pct</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">nca_wide</span><span class="op">$</span><span class="va">half.life</span>  <span class="op">-</span> <span class="va">nca_wide</span><span class="op">$</span><span class="va">thalf_ref</span><span class="op">)</span> <span class="op">/</span> <span class="va">nca_wide</span><span class="op">$</span><span class="va">thalf_ref</span></span>
 <span></span>
-<span><span class="co"># Realised: AUC 0.001%, Cmax 0.000%, t1/2 -0.62% (NLME) / -0.26% (NLLS).</span></span>
+<span><span class="co"># Realised: AUC 0.001%, Cmax 0.000%, t1/2 -0.61% (NLME) / -0.27% (NLLS).</span></span>
 <span><span class="co"># AUC and Cmax are exact identities, so they are held to 0.05%. The t1/2 bound</span></span>
-<span><span class="co"># is looser because PKNCA selects its own lambda-z window (from 10.5 h here),</span></span>
+<span><span class="co"># is looser because PKNCA selects its own lambda-z window (from 15 h for NLLS),</span></span>
 <span><span class="co"># which still carries a trace of the alpha phase; 2% admits that and still</span></span>
 <span><span class="co"># goes red on a mis-transcribed Q or V2, either of which moves beta by tens of</span></span>
 <span><span class="co"># percent.</span></span>

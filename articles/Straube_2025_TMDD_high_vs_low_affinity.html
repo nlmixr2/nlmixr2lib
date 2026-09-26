@@ -4056,9 +4056,11 @@ approximately.</p>
 <p>NCA on the simulated total-drug profiles for the two intravenously
 dosed molecules. The observation window is eight terminal half-lives,
 long enough to capture
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>U</mi><msub><mi>C</mi><mrow><mn>0</mn><mo>−</mo><mi>∞</mi></mrow></msub></mrow><annotation encoding="application/x-tex">AUC_{0-\infty}</annotation></semantics></math>
-but short enough that the tail has not decayed into solver noise (which
-would corrupt the half-life fit).</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>U</mi><msub><mi>C</mi><mrow><mn>0</mn><mo>−</mo><mi>∞</mi></mrow></msub></mrow><annotation encoding="application/x-tex">AUC_{0-\infty}</annotation></semantics></math>.
+At the higher doses the profile still falls below
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>6</mn></mrow></msup><annotation encoding="application/x-tex">10^{-6}</annotation></semantics></math>
+of its peak, where the solved concentrations are numerical noise, so
+those points are dropped before the half-life fit.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nca_sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">doses</span><span class="op">$</span><span class="va">drug</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"caplacizumab"</span>, <span class="st">"linagliptin"</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">model</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">doses</span><span class="op">$</span><span class="va">drug</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"caplacizumab"</span><span class="op">)</span> <span class="st">"Straube_2025_caplacizumab_1cmt"</span></span>
@@ -4067,10 +4069,14 @@ would corrupt the half-life fit).</p>
 <span>            tmax <span class="op">=</span> <span class="fl">8</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">ui</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">theta</span><span class="op">[[</span><span class="st">"lkint"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">4000</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Only `!is.na(Cc)` -- a `time &gt; 0` or `Cc &gt; 0` filter would drop the time-zero</span></span>
-<span><span class="co"># row that anchors AUC0-*.</span></span>
+<span><span class="co"># Never drop the time-zero row that anchors AUC0-* (a `time &gt; 0` or `Cc &gt; 0`</span></span>
+<span><span class="co"># filter would). Per profile, keep Cc &gt;= 1e-6 of Cmax after the peak: below</span></span>
+<span><span class="co"># that is solver noise.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">nca_sims</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sim_nca</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA</a></span><span class="op">(</span><span class="va">sim_nca</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">sim_nca</span><span class="op">$</span><span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -4205,8 +4211,8 @@ from reference by &gt;20%.</caption>
 <td align="left">t½ (day)</td>
 <td align="left">10 mg</td>
 <td align="left">6.03</td>
-<td align="left">1.74</td>
-<td align="left">-71.1%*</td>
+<td align="left">1.75</td>
+<td align="left">-71.0%*</td>
 </tr>
 </tbody>
 </table>
@@ -4258,12 +4264,12 @@ from reference by &gt;20%.</caption>
 <tr class="even">
 <td align="left">10 mg</td>
 <td align="right">0</td>
-<td align="right">-71.11</td>
+<td align="right">-71.04</td>
 </tr>
 <tr class="odd">
 <td align="left">2.5 mg</td>
 <td align="right">0</td>
-<td align="right">-71.12</td>
+<td align="right">-71.08</td>
 </tr>
 <tr class="even">
 <td align="left">8 mg/kg</td>
@@ -4342,7 +4348,7 @@ large relative to keD.</caption>
 <td align="right">0.1874</td>
 <td align="right">1.7409</td>
 <td align="right">6.0274</td>
-<td align="right">1.7411</td>
+<td align="right">1.7433</td>
 </tr>
 </tbody>
 </table>

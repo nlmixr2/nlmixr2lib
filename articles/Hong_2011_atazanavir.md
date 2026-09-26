@@ -176,7 +176,9 @@ sim <- rxode2::rxSolve(
   mod,
   events = events,
   keep   = c("treatment", "dose_atv_mg", "WT", "AGE", "SEXF",
-             "REGION_AFRICA", "CONMED_RTV", "FORM_POWDER")
+             "REGION_AFRICA", "CONMED_RTV", "FORM_POWDER"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::as_tibble()

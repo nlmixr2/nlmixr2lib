@@ -221,7 +221,9 @@ set.seed(1275909)
 col_sim <- rxode2::rxSolve(
   mod_col, col_events,
   keep = c("CRCL", "regimen", "tau", "daily_mg"),
-  addDosing = FALSE
+  addDosing = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -231,7 +233,9 @@ col_sim <- rxode2::rxSolve(
 col_typ <- rxode2::rxSolve(
   mod_col, col_events |> filter(subj == 1L),
   keep = c("CRCL", "regimen", "tau", "daily_mg"),
-  omega = NA, sigma = NA, addDosing = FALSE
+  omega = NA, sigma = NA, addDosing = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
@@ -277,7 +281,9 @@ set.seed(1275909)
 sita_sim <- rxode2::rxSolve(
   mod_sita, sita_events,
   keep = c("CRCL", "WT", "regimen", "tau", "daily_mg"),
-  addDosing = FALSE
+  addDosing = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -285,7 +291,9 @@ sita_sim <- rxode2::rxSolve(
 sita_typ <- rxode2::rxSolve(
   mod_sita, sita_events |> filter(subj == 1L),
   keep = c("CRCL", "WT", "regimen", "tau", "daily_mg"),
-  omega = NA, sigma = NA, addDosing = FALSE
+  omega = NA, sigma = NA, addDosing = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 

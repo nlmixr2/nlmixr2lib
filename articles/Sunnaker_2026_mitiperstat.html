@@ -3268,7 +3268,7 @@ and volume is apparent (CL/F, Vc/F, Q/F, Vp/F).</p>
 <span><span class="co">#&gt;     Cc ~ lnorm(expSd)</span></span>
 <span><span class="co">#&gt;   })</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x5569aeff04b8&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55f8228629c8&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -3568,7 +3568,9 @@ reproduce typical-value predictions rather than a cohort median.</p>
 <span></span>
 <span><span class="va">ss_typical</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span>, <span class="va">cov</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="fu">ss_events</span><span class="op">(</span><span class="va">dose</span>, <span class="va">cov</span><span class="op">)</span>,</span>
-<span>                             returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                             returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
+<span>                             <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>                             maxsteps <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -3709,7 +3711,8 @@ reached around day 10 (Introduction and Discussion).</p>
 <span></span>
 <span><span class="co"># Fit the terminal slope well after the distribution phase has resolved</span></span>
 <span><span class="co"># (pattern 11: a slope taken too early reads the distribution phase).</span></span>
-<span><span class="va">term</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sim_single</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">400</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">800</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co"># Keep Cc &gt;= 1e-6 of Cmax: below that the ODE tail is solver noise.</span></span>
+<span><span class="va">term</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sim_single</span>, <span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">400</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">800</span>, <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lambda_z</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">term</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"time"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">t_half</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="va">lambda_z</span></span>
 <span></span>
@@ -4151,7 +4154,9 @@ doses tabulated in Sunnaker 2026 Table 4.</p>
 <span></span>
 <span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSetSeed.html" class="external-link">rxSetSeed</a></span><span class="op">(</span><span class="fl">20260913</span><span class="op">)</span></span>
 <span><span class="va">nca_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">nca_events</span>, keep <span class="op">=</span> <span class="st">"treatment"</span>,</span>
-<span>                           returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span></code></pre></div>
+<span>                           returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
+<span>                           <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>                           maxsteps <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Filter on !is.na(Cc) only -- adding `time &gt; 0` or `Cc &gt; 0` would drop the</span></span>
 <span><span class="co"># record anchoring the start of the interval.</span></span>

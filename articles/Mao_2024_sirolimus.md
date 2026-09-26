@@ -202,7 +202,9 @@ mod <- readModelDb("Mao_2024_sirolimus")
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("regimen", "hct_label", "HCT")
+  keep   = c("regimen", "hct_label", "HCT"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
@@ -298,7 +300,9 @@ typ_sim <- rxode2::rxSolve(
   events = do.call(bind_rows, lapply(seq_len(nrow(typ_grid)),
                                      function(i) make_typ_arm(typ_grid[i, ]))),
   omega  = NA,
-  keep   = "HCT"
+  keep   = "HCT",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> Warning: multi-subject simulation without without 'omega'
@@ -706,7 +710,9 @@ nca_events <- do.call(
 )
 
 nca_sim <- rxode2::rxSolve(
-  mod, events = nca_events, keep = c("treatment", "HCT")
+  mod, events = nca_events, keep = c("treatment", "HCT"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 stopifnot(dplyr::n_distinct(nca_sim$id) == 300L)
@@ -800,7 +806,9 @@ typ_nca_events <- do.call(
 )
 
 typ_nca_sim <- rxode2::rxSolve(
-  mod, events = typ_nca_events, omega = NA, keep = c("treatment", "HCT")
+  mod, events = typ_nca_events, omega = NA, keep = c("treatment", "HCT"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> Warning: multi-subject simulation without without 'omega'

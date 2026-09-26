@@ -586,6 +586,10 @@ individual subject.
 
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id, treatment) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 # Guarantee one row at time = 0 per subject. For this IV-bolus model the
@@ -654,7 +658,8 @@ o_ref <- rxode2::rxSolve(mod_typ, ev_ref, returnType = "data.frame")
 
 auc_ref <- sum(diff(o_ref$time) * (head(o_ref$Cc, -1) + tail(o_ref$Cc, -1)) / 2)
 cl_ref  <- REF_DOSE / auc_ref
-tail_fit <- lm(log(Cc) ~ time, data = subset(o_ref, time >= 12 & time <= 36))
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_fit <- lm(log(Cc) ~ time, data = subset(o_ref, time >= 12 & time <= 36 & Cc >= 1e-6 * max(Cc)))
 thalf_ref <- log(2) / -coef(tail_fit)[["time"]]
 
 comparison <- tibble::tribble(

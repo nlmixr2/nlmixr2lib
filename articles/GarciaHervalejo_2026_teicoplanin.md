@@ -1039,12 +1039,13 @@ sd_sim <- rxode2::rxSolve(rxode2::zeroRe(mod), sd_ev,
 # AUC0-*. The floor is needed because the 4000 h grid runs to about 1e-50 mg/L
 # at IBW 80 kg (t1/2 ~ 21 h); down there the integrator's relative error
 # dwarfs the terminal slope and PKNCA's log-linear half-life fit follows the
-# noise (measured 7.6% half-life error without it). Keeping Cc >= 1e-6 of the
-# peak retains ~20 half-lives, so the AUC extrapolation stays negligible.
+# noise (measured 7.6% half-life error without it). After the peak, keeping
+# Cc >= 1e-6 of it retains ~20 half-lives, so the AUC extrapolation stays
+# negligible; everything up to the peak is kept.
 sd_conc <- sd_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(id) |>
-  dplyr::filter(time == 0 | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::ungroup() |>
   dplyr::select(id, time, Cc, stratum)
 

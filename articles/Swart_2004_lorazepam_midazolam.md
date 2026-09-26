@@ -392,6 +392,10 @@ to the paper’s Discussion, which reports mean elimination half-lives of
 make_nca <- function(sim, events, treatment_col) {
   conc_df <- sim |>
     dplyr::filter(!is.na(Cc)) |>
+    # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+    dplyr::group_by(id) |>
+    dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+    dplyr::ungroup() |>
     dplyr::select(id, time, Cc, dplyr::all_of(treatment_col))
 
   # Guarantee a time = 0, Cc = 0 anchor per subject
@@ -444,53 +448,6 @@ sim_mid_long <- rxode2::rxSolve(
 
 nca_lor <- make_nca(sim_lor_long, events_lor_long, "cohort")
 nca_mid <- make_nca(sim_mid_long, events_mid_long, "cohort")
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
 ```
 
 ### Comparison against the paper’s reported half-lives

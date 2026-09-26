@@ -297,7 +297,7 @@ sim <- as.data.frame(rxode2::rxSolve(
   mod_pk, events, keep = c("regimen"), returnType = "data.frame"
 ))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:05
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:04
 
 exposure <- sim |>
   filter(!is.na(Cc)) |>
@@ -697,7 +697,11 @@ nca_sim <- as.data.frame(rxode2::rxSolve(
 # time-zero row PKNCA needs to anchor AUC0-*.
 sim_nca <- nca_sim |>
   filter(!is.na(Cc)) |>
-  select(id, time, Cc, treatment)
+  select(id, time, Cc, treatment) |>
+  # Keep Cc >= 1e-6 * max(Cc) per subject after the peak (solver noise below); time zero is re-added below.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup()
 
 # Guarantee a time = 0 record per subject. For an intravenous infusion the
 # pre-dose concentration is zero.

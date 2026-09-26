@@ -205,7 +205,9 @@ sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events,
   keep   = c("AGE", "POD", "CYP3A5_STAR1_HET", "CYP3A5_STAR1_HOM",
-             "CONMED_STEROID_SPARING", "CONMED_CCB")
+             "CONMED_STEROID_SPARING", "CONMED_CCB"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |> as.data.frame() |> dplyr::filter(time == 12)
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
@@ -217,7 +219,9 @@ sim_stoch <- rxode2::rxSolve(
   mod,
   events = events,
   keep   = c("AGE", "POD", "CYP3A5_STAR1_HET", "CYP3A5_STAR1_HOM",
-             "CONMED_STEROID_SPARING", "CONMED_CCB")
+             "CONMED_STEROID_SPARING", "CONMED_CCB"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |> as.data.frame() |> dplyr::filter(time == 12)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -286,7 +290,8 @@ ex1_obs <- ex1 |>
   dplyr::mutate(time = 12, evid = 0L, amt = 0, rate = 0, ss = 0L, ii = 0)
 ex1_events <- dplyr::bind_rows(ex1, ex1_obs)
 
-ex1_sim <- rxode2::rxSolve(mod_typical, events = ex1_events) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+ex1_sim <- rxode2::rxSolve(mod_typical, events = ex1_events, maxsteps = 1e6) |>
   as.data.frame() |>
   dplyr::filter(time == 12)
 #> ℹ omega/sigma items treated as zero: 'etalcl'
@@ -329,7 +334,8 @@ ex2_obs <- ex2 |>
   dplyr::mutate(time = 12, evid = 0L, amt = 0, rate = 0, ss = 0L, ii = 0)
 ex2_events <- dplyr::bind_rows(ex2, ex2_obs)
 
-ex2_sim <- rxode2::rxSolve(mod_typical, events = ex2_events) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+ex2_sim <- rxode2::rxSolve(mod_typical, events = ex2_events, maxsteps = 1e6) |>
   as.data.frame() |>
   dplyr::filter(time == 12)
 #> ℹ omega/sigma items treated as zero: 'etalcl'

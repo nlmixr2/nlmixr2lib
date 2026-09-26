@@ -421,13 +421,16 @@ roots  <- sort(Re(polyroot(c(-a0, a1, -a2, 1))))
 gamma  <- roots[1]                       # slowest (terminal) rate
 t_half <- log(2) / gamma
 
+# Keep Cc >= 1e-6 of Cmax (below that the ODE tail is solver noise). The floor
+# ends the window near 160 h, so it opens at 96 h, long after the beta phase.
 tail_fit <- sim_typ |>
-  dplyr::filter(cohort == "axi-cel (30 mg/m2)", time >= 150, time <= 240, Cc > 0)
+  dplyr::filter(cohort == "axi-cel (30 mg/m2)") |>
+  dplyr::filter(time >= 96, time <= 240, Cc >= 1e-6 * max(Cc))
 t_half_fitted <- -log(2) / stats::coef(stats::lm(log(Cc) ~ time, tail_fit))[[2]]
 
 tibble::tibble(
   quantity = c("alpha (1/h)", "beta (1/h)", "gamma (1/h)",
-               "terminal t-half, analytic (h)", "terminal t-half, fitted 150-240 h (h)"),
+               "terminal t-half, analytic (h)", "terminal t-half, fitted from 96 h (h)"),
   value    = c(roots[3], roots[2], gamma, t_half, t_half_fitted)
 ) |>
   dplyr::rename("Quantity" = quantity, "Value" = value) |>
@@ -440,7 +443,7 @@ tibble::tibble(
 | beta (1/h)                            | 0.3323 |
 | gamma (1/h)                           | 0.0816 |
 | terminal t-half, analytic (h)         | 8.4934 |
-| terminal t-half, fitted 150-240 h (h) | 8.4934 |
+| terminal t-half, fitted from 96 h (h) | 8.4934 |
 
 Analytic vs. fitted terminal disposition. {.table}
 
@@ -604,14 +607,20 @@ Assumptions below.
 
 ## PKNCA validation
 
-NCA is run on the single-dose cohort simulation. The filter is
-`!is.na(Cc)` only – adding `time > 0` or `Cc > 0` would drop the
-time-zero row that anchors AUC.
+NCA is run on the single-dose cohort simulation. The time-zero row that
+anchors AUC is always kept (a `time > 0` or `Cc > 0` filter would drop
+it); points past each subject’s peak that fall below 1e-6 of it, where
+the solved profile is numerical noise, are dropped before the half-life
+fit.
 
 ``` r
 
 sim_nca <- sim_single |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, cohort)
 
 # Guarantee a time = 0 row per (id, cohort). For intravenous input the
@@ -672,39 +681,39 @@ nca_summary |>
 | Arm                 | NCA parameter       |      Median |     5th pct |     95th pct |
 |:--------------------|:--------------------|------------:|------------:|-------------:|
 | axi-cel (30 mg/m2)  | adj.r.squared       |     0.99990 |     0.99990 |      0.99991 |
-| axi-cel (30 mg/m2)  | AUC0-∞ (obs)        |  6674.46187 |  4058.01291 |  11120.87609 |
-| axi-cel (30 mg/m2)  | AUMC0-∞ (obs)       | 79080.07731 | 37450.44731 | 163991.12535 |
+| axi-cel (30 mg/m2)  | AUC0-∞ (obs)        |  6674.46183 |  4058.01288 |  11120.87600 |
+| axi-cel (30 mg/m2)  | AUMC0-∞ (obs)       | 79080.06867 | 37450.44273 | 163991.11099 |
 | axi-cel (30 mg/m2)  | CL/F                |     0.00656 |     0.00393 |      0.01177 |
-| axi-cel (30 mg/m2)  | Clast               |     0.00000 |     0.00000 |      0.00036 |
-| axi-cel (30 mg/m2)  | clast.pred          |     0.00000 |     0.00000 |      0.00035 |
+| axi-cel (30 mg/m2)  | Clast               |     0.00107 |     0.00055 |      0.00199 |
+| axi-cel (30 mg/m2)  | clast.pred          |     0.00104 |     0.00054 |      0.00195 |
 | axi-cel (30 mg/m2)  | Cmax                |   877.57610 |   482.49182 |   1522.06962 |
-| axi-cel (30 mg/m2)  | t½                  |     8.84091 |     6.86723 |     11.92519 |
-| axi-cel (30 mg/m2)  | λz                  |     0.07840 |     0.05812 |      0.10094 |
-| axi-cel (30 mg/m2)  | λz n points         |   204.00000 |   198.00000 |    212.00000 |
-| axi-cel (30 mg/m2)  | lambda.z.time.first |     3.25000 |     2.85000 |      3.55000 |
-| axi-cel (30 mg/m2)  | lambda.z.time.last  |   240.00000 |   240.00000 |    240.00000 |
+| axi-cel (30 mg/m2)  | t½                  |     8.84065 |     6.86783 |     11.92547 |
+| axi-cel (30 mg/m2)  | λz                  |     0.07840 |     0.05812 |      0.10093 |
+| axi-cel (30 mg/m2)  | λz n points         |   176.50000 |   163.00000 |    192.10000 |
+| axi-cel (30 mg/m2)  | lambda.z.time.first |     3.75000 |     3.50000 |      3.95000 |
+| axi-cel (30 mg/m2)  | lambda.z.time.last  |   168.00000 |   128.00000 |    224.00000 |
 | axi-cel (30 mg/m2)  | MRT (IV)            |    11.70377 |     8.82807 |     15.91567 |
-| axi-cel (30 mg/m2)  | r.squared           |     0.99990 |     0.99990 |      0.99991 |
-| axi-cel (30 mg/m2)  | span.ratio          |    26.81980 |    19.83951 |     34.50454 |
-| axi-cel (30 mg/m2)  | Tlast               |   240.00000 |   240.00000 |    240.00000 |
+| axi-cel (30 mg/m2)  | r.squared           |     0.99991 |     0.99990 |      0.99991 |
+| axi-cel (30 mg/m2)  | span.ratio          |    18.40592 |    17.94922 |     18.87117 |
+| axi-cel (30 mg/m2)  | Tlast               |   168.00000 |   128.00000 |    224.00000 |
 | axi-cel (30 mg/m2)  | Tmax                |     0.50000 |     0.50000 |      0.50000 |
 | axi-cel (30 mg/m2)  | Vss (IV)            |     0.07726 |     0.05077 |      0.12694 |
-| tisa-cel (25 mg/m2) | adj.r.squared       |     0.99990 |     0.99990 |      0.99991 |
-| tisa-cel (25 mg/m2) | AUC0-∞ (obs)        |  5996.86153 |  3797.83095 |  10338.47621 |
-| tisa-cel (25 mg/m2) | AUMC0-∞ (obs)       | 75655.81401 | 35753.32077 | 159555.01472 |
+| tisa-cel (25 mg/m2) | adj.r.squared       |     0.99991 |     0.99990 |      0.99991 |
+| tisa-cel (25 mg/m2) | AUC0-∞ (obs)        |  5996.86149 |  3797.83091 |  10338.47620 |
+| tisa-cel (25 mg/m2) | AUMC0-∞ (obs)       | 75655.80696 | 35753.31597 | 159555.00251 |
 | tisa-cel (25 mg/m2) | CL/F                |     0.00615 |     0.00349 |      0.01028 |
-| tisa-cel (25 mg/m2) | Clast               |     0.00001 |     0.00000 |      0.00047 |
-| tisa-cel (25 mg/m2) | clast.pred          |     0.00001 |     0.00000 |      0.00046 |
+| tisa-cel (25 mg/m2) | Clast               |     0.00085 |     0.00052 |      0.00156 |
+| tisa-cel (25 mg/m2) | clast.pred          |     0.00083 |     0.00051 |      0.00153 |
 | tisa-cel (25 mg/m2) | Cmax                |   720.98806 |   458.83681 |   1266.45037 |
-| tisa-cel (25 mg/m2) | t½                  |     9.40083 |     7.09149 |     12.12587 |
-| tisa-cel (25 mg/m2) | λz                  |     0.07373 |     0.05716 |      0.09774 |
-| tisa-cel (25 mg/m2) | λz n points         |   203.00000 |   198.00000 |    213.00000 |
-| tisa-cel (25 mg/m2) | lambda.z.time.first |     3.30000 |     2.80000 |      3.55000 |
-| tisa-cel (25 mg/m2) | lambda.z.time.last  |   240.00000 |   240.00000 |    240.00000 |
+| tisa-cel (25 mg/m2) | t½                  |     9.40089 |     7.09183 |     12.12498 |
+| tisa-cel (25 mg/m2) | λz                  |     0.07373 |     0.05717 |      0.09774 |
+| tisa-cel (25 mg/m2) | λz n points         |   179.00000 |   166.00000 |    196.00000 |
+| tisa-cel (25 mg/m2) | lambda.z.time.first |     3.70000 |     3.45000 |      3.90000 |
+| tisa-cel (25 mg/m2) | lambda.z.time.last  |   180.00000 |   135.80000 |    228.00000 |
 | tisa-cel (25 mg/m2) | MRT (IV)            |    12.52621 |     9.26405 |     16.29298 |
-| tisa-cel (25 mg/m2) | r.squared           |     0.99990 |     0.99990 |      0.99991 |
-| tisa-cel (25 mg/m2) | span.ratio          |    25.17589 |    19.49142 |     33.44623 |
-| tisa-cel (25 mg/m2) | Tlast               |   240.00000 |   240.00000 |    240.00000 |
+| tisa-cel (25 mg/m2) | r.squared           |     0.99991 |     0.99990 |      0.99991 |
+| tisa-cel (25 mg/m2) | span.ratio          |    18.50030 |    17.95311 |     18.85652 |
+| tisa-cel (25 mg/m2) | Tlast               |   180.00000 |   135.80000 |    228.00000 |
 | tisa-cel (25 mg/m2) | Tmax                |     0.50000 |     0.50000 |      0.50000 |
 | tisa-cel (25 mg/m2) | Vss (IV)            |     0.07789 |     0.05060 |      0.11236 |
 
@@ -738,6 +747,10 @@ mL/min by construction.
 
 typ_nca_in <- sim_typ |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, cohort)
 
 typ_nca_in <- dplyr::bind_rows(

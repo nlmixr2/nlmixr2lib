@@ -227,7 +227,9 @@ simScen <- rxode2::rxSolve(
   # rxode2's automatic ODE -> linCmt() conversion is not needed here and the
   # explicit ODEs plus dur(depot) are what the paper specifies.
   useLinCmt = FALSE,
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> Warning: No sigma parameters in the model
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etaexpSd'
@@ -421,7 +423,9 @@ stopifnot(!anyDuplicated(unique(evCohort[, c("id", "time", "evid")])))
 
 simCohort <- rxode2::rxSolve(
   uis[["Parasrampuria_2025_temsavir"]], evCohort,
-  keep = "WT", useLinCmt = FALSE, returnType = "data.frame"
+  keep = "WT", useLinCmt = FALSE, returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 ```
 

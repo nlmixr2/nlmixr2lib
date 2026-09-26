@@ -858,7 +858,8 @@ The observed recovery half-life must equal `log(2) / kout`.
 low <- recover |>
   dplyr::filter(mult == 0.5, time <= 350) |>
   dplyr::mutate(disp = rbase_closed - hc24) |>
-  dplyr::filter(disp > 1e-6)
+  # Keep disp >= 1e-6 * its peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::filter(disp > 1e-6, disp >= 1e-6 * max(disp))
 stopifnot(nrow(low) > 10)
 fit <- lm(log(disp) ~ time, data = low)
 t_half_obs <- -log(2) / coef(fit)[[2]]

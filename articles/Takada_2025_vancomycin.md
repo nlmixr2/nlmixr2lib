@@ -359,7 +359,9 @@ events <- dplyr::bind_rows(
 # the very duplicates being tested for, making the assertion unfalsifiable.
 stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 
-sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "CRCL", "ALB")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "CRCL", "ALB"),
+                       maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 stopifnot(nrow(sim) > 0L, !all(is.na(sim$Cc)))
@@ -544,8 +546,10 @@ grid_events <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 grid_sim <- rxode2::rxSolve(mod, events = grid_events, omega = NA,
-                            keep = c("cell", "CRCL", "ALB")) |>
+                            keep = c("cell", "CRCL", "ALB"),
+                            maxsteps = 1e6) |>
   as.data.frame()
 #> Warning: multi-subject simulation without without 'omega'
 

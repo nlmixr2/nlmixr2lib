@@ -340,7 +340,9 @@ model, not of the assay noise.
 sim <- rxode2::rxSolve(
   mod, events,
   keep = c("dose_group", "AGE", "WT", "CRCL", "STUDY_VANCO_CENTER2"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 head(sim[, c("id", "time", "cl", "vc", "Cc", "dose_group")], 3)

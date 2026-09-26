@@ -619,7 +619,11 @@ while every concentration remains numerically positive.
 nca_run <- function(sim, ev) {
   conc <- sim |>
     dplyr::filter(!is.na(Cc)) |>
-    dplyr::select(id, time, Cc, treatment)
+    dplyr::select(id, time, Cc, treatment) |>
+    # Keep Cc >= 1e-6 * max(Cc) per subject after the peak (solver noise below); time zero is re-added below.
+    dplyr::group_by(id) |>
+    dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+    dplyr::ungroup()
   conc <- dplyr::bind_rows(
     conc,
     conc |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
@@ -773,7 +777,7 @@ tibble::tibble(
 | Identity                                | Minimum |  Median | Maximum |
 |:----------------------------------------|--------:|--------:|--------:|
 | AUC(0-inf) vs Dose \* F_eff / CL_i      | 0.99964 | 0.99993 | 1.00041 |
-| Terminal half-life vs log(2) / Ka2_i    | 1.00185 | 1.00505 | 1.01460 |
+| Terminal half-life vs log(2) / Ka2_i    | 1.00185 | 1.00512 | 1.01496 |
 | Cmax vs the immediate-route closed form | 0.99954 | 0.99997 | 1.00000 |
 
 Ratio of the PKNCA result to its closed form, over 200 subjects.

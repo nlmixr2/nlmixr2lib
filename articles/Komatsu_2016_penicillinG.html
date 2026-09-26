@@ -3479,7 +3479,7 @@ is the library cap and is ample for a target attainment curve.</p>
 <span>  <span class="va">mod_pk</span>, <span class="va">events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span><span class="op">)</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:05</span></span>
+<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:04</span></span>
 <span></span>
 <span><span class="va">exposure</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3974,7 +3974,11 @@ one reference row.</p>
 <span><span class="co"># time-zero row PKNCA needs to anchor AUC0-*.</span></span>
 <span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">nca_sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Keep Cc &gt;= 1e-6 * max(Cc) per subject after the peak (solver noise below); time zero is re-added below.</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span> <span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Guarantee a time = 0 record per subject. For an intravenous infusion the</span></span>
 <span><span class="co"># pre-dose concentration is zero.</span></span>

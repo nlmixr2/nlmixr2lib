@@ -359,8 +359,9 @@ against the closed-form two-compartment `beta` eigenvalue.
 ``` r
 
 events_wash <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  # The end-of-infusion record is the peak the 1e-6 floor below is taken against.
   make_arm(arms[i, ], n = 1L, n_doses = 1L,
-           obs_times = seq(60, 140, by = 1), id_offset = i - 1L)
+           obs_times = c(INFUSION_DUR, seq(60, 140, by = 1)), id_offset = i - 1L)
 }))
 sim_wash <- rxode2::rxSolve(mod_typical, events = events_wash, keep = "arm") |>
   as.data.frame()
@@ -369,6 +370,8 @@ sim_wash <- rxode2::rxSolve(mod_typical, events = events_wash, keep = "arm") |>
 
 thalf <- sim_wash |>
   group_by(arm) |>
+  # Fit days 60-140, keeping Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  filter(time >= 60, Cc >= 1e-6 * max(Cc)) |>
   summarise(
     t_half_fitted = log(2) / -stats::coef(stats::lm(log(Cc) ~ time))[["time"]],
     cl = first(cl), vc = first(vc), q = first(q), vp = first(vp),

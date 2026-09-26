@@ -249,6 +249,10 @@ ggplot(sd_sim, aes(time, Cc, colour = formulation)) +
 
 sd_nca <- sd_sim |>
   filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, formulation)
 
 sd_nca <- bind_rows(
@@ -347,9 +351,10 @@ ss_events <- bind_rows(
               id_offset = 1L, regimen = "720 mg q12h")
 )
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 ss_sim <- rxode2::rxSolve(rxode2::zeroRe(modSodium),
                           events = as.data.frame(ss_events),
-                          keep = "regimen") |>
+                          keep = "regimen", maxsteps = 1e6) |>
   as.data.frame() |>
   filter(!is.na(Cc))
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_ka_1, etaiov_ka_2, etaiov_ka_3, etaiov_ka_4, etaiov_ka_5, etaiov_ka_6, etaiov_vc_1, etaiov_vc_2, etaiov_vc_3, etaiov_vc_4, etaiov_vc_5, etaiov_vc_6, etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6
@@ -515,8 +520,9 @@ regimens <- tibble::tribble(
 adjust_auc <- function(cl_factor, dose, ii) {
   grid <- seq(0, ii, by = ii / 480)
   ev <- make_ss_arm(1, dose = dose, ii = ii, obs_times = grid, pod_months = 67)
+  # steady-state searches for long-half-life subjects exceed the default step budget
   s <- rxode2::rxSolve(rxode2::zeroRe(scale_cl(modSodium, cl_factor)),
-                       events = as.data.frame(ev)) |>
+                       events = as.data.frame(ev), maxsteps = 1e6) |>
     as.data.frame() |>
     filter(!is.na(Cc))
   auc_tau <- sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)

@@ -315,7 +315,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5555f0ec05d8>
+#> <environment: 0x55b0e84d22b8>
 ```
 
 ### Cross-validation of the control stream against Table S2
@@ -497,12 +497,16 @@ predictions”).
 # rxSolve() returns observation rows only (no dose rows, hence no `evid`
 # column), so no post-filtering is needed.
 sim_adult <- rxode2::rxSolve(
-  mod, events = adult_events, keep = c("arm", "WT", "DOSE")
+  mod, events = adult_events, keep = c("arm", "WT", "DOSE"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
 sim_adolescent <- rxode2::rxSolve(
-  mod, events = adolescent_events, keep = c("arm", "band", "WT")
+  mod, events = adolescent_events, keep = c("arm", "band", "WT"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
@@ -732,7 +736,8 @@ wt_sens <- lapply(c(70, 75, 78, 80, 85), function(w) {
     make_cohort(1L, dose = 1200, wt = w, label = "1200 mg b.i.d.",
                 obs_times = grid_adult, id_offset = 10L)
   )
-  s <- rxode2::rxSolve(mod, ev, omega = NA, keep = "arm") |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  s <- rxode2::rxSolve(mod, ev, omega = NA, keep = "arm", maxsteps = 1e6) |>
     as.data.frame() |>
     filter(!is.na(Cc))
   s |>

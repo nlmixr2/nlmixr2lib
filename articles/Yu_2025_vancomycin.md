@@ -311,7 +311,9 @@ sim <- rxode2::rxSolve(
   # Gate 3 below holds the ss = 1 trough to 1e-8 relative, which needs tighter
   # integration and steady-state-search tolerances than the defaults.
   rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> Warning: multi-subject simulation without without 'omega'
 
@@ -539,7 +541,9 @@ typical_trough <- function(CRCL, mg_per_kg, tau) {
     rxode2::et(0, cmt = "central")
   out <- rxode2::rxSolve(
     mod, ev, params = c(WT = 24, CRCL = CRCL, etalcl = 0),
-    omega = NA, returnType = "data.frame"
+    omega = NA, returnType = "data.frame",
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   )
   out$Cc[out$time == 0][1]
 }
@@ -756,7 +760,9 @@ typical_trough_exp <- function(CRCL, mg_per_kg, tau, e_crcl) {
   out <- rxode2::rxSolve(
     mod, ev,
     params = c(WT = 24, CRCL = CRCL, etalcl = 0, e_crcl_cl = e_crcl),
-    omega = NA, returnType = "data.frame"
+    omega = NA, returnType = "data.frame",
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   )
   out$Cc[out$time == 0][1]
 }

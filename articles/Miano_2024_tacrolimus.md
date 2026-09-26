@@ -640,7 +640,9 @@ ss_events <- bind_rows(
   arrange(id, time, desc(evid))
 
 ss_sim <- as.data.frame(
-  rxode2::rxSolve(mod_typical, ss_events, covsInterpolation = "locf")
+  rxode2::rxSolve(mod_typical, ss_events, covsInterpolation = "locf",
+                  # steady-state searches for long-half-life subjects exceed the default step budget
+                  maxsteps = 1e6)
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'

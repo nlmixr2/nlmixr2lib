@@ -323,7 +323,9 @@ solve_once <- function() {
     # in the trough; tightening rtol/atol alone leaves ~4e-6. Measured with
     # all four: 6e-10.
     rtol = 1e-10, atol = 1e-12,
-    ssRtol = 1e-10, ssAtol = 1e-12
+    ssRtol = 1e-10, ssAtol = 1e-12,
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   )
 }
 
@@ -392,7 +394,9 @@ ev_typ <- data.frame(
 
 # `omega = NA` omitted -- redundant after zeroRe(); see the note above.
 sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod_ui), ev_typ,
-                           addDosing = FALSE, returnType = "data.frame") |>
+                           addDosing = FALSE, returnType = "data.frame",
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6) |>
   rename(time_in_interval = time)
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl'
 

@@ -592,7 +592,7 @@ mod
 #>     Cc_enm ~ add(addSd_enm) + prop(propSd_enm)
 #>   })
 #> }
-#> <environment: 0x55c1ea129ef0>
+#> <environment: 0x5590bb2dff70>
 ```
 
 ## Population
@@ -1027,9 +1027,12 @@ sd_prof <- solve_regimen(typ, cbind(base_cov(DIS_CUTI = 1), id = 1L),
                          t_start = 0, t_end = 24)
 #> ℹ omega/sigma items treated as zero: 'etalcl_inf', 'etalvc_inf', 'etalcl_enm_inf', 'etalvc_enm_inf', 'etalcl_enm_hlth', 'etalvc_enm_hlth', 'etalcl_hlth', 'etalvp', 'etalvp_enm'
 tail_w  <- sd_prof$time >= 14 & sd_prof$time <= 24
+# Per analyte, keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+w_fep <- tail_w & sd_prof$Cc >= 1e-6 * max(sd_prof$Cc)
+w_enm <- tail_w & sd_prof$Cc_enm >= 1e-6 * max(sd_prof$Cc_enm)
 
-hl <- c(cefepime       = half_life(sd_prof$time[tail_w], sd_prof$Cc[tail_w]),
-        enmetazobactam = half_life(sd_prof$time[tail_w], sd_prof$Cc_enm[tail_w]))
+hl <- c(cefepime       = half_life(sd_prof$time[w_fep], sd_prof$Cc[w_fep]),
+        enmetazobactam = half_life(sd_prof$time[w_enm], sd_prof$Cc_enm[w_enm]))
 
 knitr::kable(
   data.frame(Drug = c("Cefepime", "Enmetazobactam"),

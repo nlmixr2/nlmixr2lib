@@ -552,7 +552,9 @@ lambda_z <- min(abs(Re(eigen(Amat)$values)))
 thalf_theory <- log(2) / lambda_z
 
 # Empirical terminal slope, taken well after the distribution phase.
-tail_dat <- single[single$time >= 120 & single$time <= 168, ]
+# Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+tail_dat <- single[single$time >= 120 & single$time <= 168 &
+                     single$Cc >= 1e-6 * max(single$Cc), ]
 thalf_emp <- log(2) / -coef(lm(log(tail_dat$Cc) ~ tail_dat$time))[[2]]
 
 checks <- tibble::tribble(
@@ -617,6 +619,8 @@ single_nca <- rxode2::rxSolve(
 
 sim_nca <- single_nca |>
   dplyr::filter(!is.na(Cc)) |>
+  # Keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::mutate(id = 1L, treatment = "100 mg single oral dose") |>
   dplyr::select(id, time, Cc, treatment)
 
@@ -660,7 +664,7 @@ knitr::kable(nca_wide, digits = 4,
 
 | auclast | cmax | tmax | tlast | clast.obs | lambda.z | r.squared | adj.r.squared | lambda.z.time.first | lambda.z.time.last | lambda.z.n.points | clast.pred | half.life | span.ratio | aucinf.obs |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 14.2844 | 1.9406 | 0.95 | 168 | 0 | 0.0788 | 0.9999 | 0.9999 | 6.2 | 168 | 249 | 0 | 8.7937 | 18.3996 | 14.2844 |
+| 14.2844 | 1.9406 | 0.95 | 166 | 0 | 0.0788 | 0.9999 | 0.9999 | 6.25 | 166 | 247 | 0 | 8.7931 | 18.1676 | 14.2844 |
 
 PKNCA summary for a single 100 mg oral dose (deterministic typical-value
 profile). {.table}

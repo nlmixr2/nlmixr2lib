@@ -383,7 +383,9 @@ for (m in unique(arms$model)) {
   s <- rxode2::rxSolve(
     mod, events = ev,
     keep = c("arm", "cohort", "route", "WT", "CRCL"),
-    useLinCmt = FALSE
+    useLinCmt = FALSE,
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   )
   sim_list[[m]] <- as.data.frame(s) |> mutate(model = m)
 }

@@ -158,7 +158,9 @@ typ_ev <- bind_rows(
   mutate(WT = ref_wt, PAGE = ref_pma, CREAT = ref_cr) |>
   arrange(time, desc(evid))
 
-sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_ev) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_ev,
+                           maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 
@@ -348,7 +350,9 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # defaults the steady-state search alone leaves ~1e-4 % of residual.
 sim <- rxode2::rxSolve(
   mod, events = events, keep = c("amt_mg"),
-  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 

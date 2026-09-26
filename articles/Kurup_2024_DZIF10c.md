@@ -230,6 +230,11 @@ stopifnot(
   abs(thalf_lung_sim / thalf_lung_pred - 1) < 0.005,
   thalf_lung_pred / 24 > 2.0, thalf_lung_pred / 24 < 3.0
 )
+
+# Days 14-56 ELF slope quoted below; keep Celf >= 1e-6 * max(Celf) (solver noise below).
+elf_tail <- sim_inh_typ[sim_inh_typ$time >= 336 & sim_inh_typ$time <= 1344 &
+                          sim_inh_typ$Celf >= 1e-6 * max(sim_inh_typ$Celf), ]
+thalf_elf_tail <- -log(2) / stats::coef(stats::lm(log(Celf) ~ time, data = elf_tail))[["time"]]
 ```
 
 The lung effective half-life of 2.34 days matches the “relatively short
@@ -523,7 +528,11 @@ cl_ind <- sim_long_iv |> group_by(id) |> summarise(cl_i = first(cl), .groups = "
 
 nca_long <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(sim_long_iv |> filter(!is.na(Cc)) |>
-                     select(id, time, conc = Cc, regimen),
+                     select(id, time, conc = Cc, regimen) |>
+                     # Drop the post-peak solver-noise tail (< 1e-6 * max per subject); keep time zero.
+                     group_by(id) |>
+                     filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc) | time == 0) |>
+                     ungroup(),
                    conc ~ time | regimen + id),
   PKNCA::PKNCAdose(subj_iv |> select(id, regimen) |> mutate(time = 0, amt = 700),
                    amt ~ time | regimen + id),

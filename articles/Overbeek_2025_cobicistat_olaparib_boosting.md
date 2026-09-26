@@ -239,9 +239,12 @@ ev_olap <- rbind(
 mod_cobi <- readModelDb("Overbeek_2025_cobicistat")
 mod_olap <- readModelDb("Overbeek_2025_olaparib")
 
-sim_cobi <- rxode2::rxSolve(mod_cobi, ev_cobi, keep = "arm", addDosing = FALSE)
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_cobi <- rxode2::rxSolve(mod_cobi, ev_cobi, keep = "arm", addDosing = FALSE,
+                            maxsteps = 1e6)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-sim_olap <- rxode2::rxSolve(mod_olap, ev_olap, keep = "arm", addDosing = FALSE)
+sim_olap <- rxode2::rxSolve(mod_olap, ev_olap, keep = "arm", addDosing = FALSE,
+                            maxsteps = 1e6)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalclint_nocobicistat, etalclint_cobicistat
 #> as a work-around try putting the mu-referenced expression on a simple line
@@ -506,7 +509,8 @@ mod_olap_t <- rxode2::zeroRe(mod_olap)
 typical <- function(mod, amt, ii, covs, wt = 70) {
   ev <- make_arm(1L, amt = amt, ii = ii, window = ii, wt = wt, covs = covs,
                  label = "typical", grid = 0.01)
-  as.data.frame(rxode2::rxSolve(mod, ev, addDosing = FALSE))
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  as.data.frame(rxode2::rxSolve(mod, ev, addDosing = FALSE, maxsteps = 1e6))
 }
 
 t_cobi_od   <- typical(mod_cobi_t, 150, 24, list(STUDY_PROACTIVE = 0))

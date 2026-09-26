@@ -365,7 +365,7 @@ readModelDb("Wang_2025_somatrogon")
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x55c1f228e868>
+#> <environment: 0x5590c36e9aa0>
 ```
 
 ## Source trace
@@ -508,13 +508,14 @@ disc <- sqrt((kel + k12 + k21)^2 - 4 * k21 * kel)
 beta_hl  <- log(2) / ((kel + k12 + k21 - disc) / 2)
 alpha_hl <- log(2) / ((kel + k12 + k21 + disc) / 2)
 
-tail_dat <- s15[s15$time > 500 & s15$time < 3000, ]
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_dat <- s15[s15$time > 500 & s15$time < 3000 & s15$Cc >= 1e-6 * max(s15$Cc), ]
 sim_hl <- log(2) / -coef(lm(log(Cc) ~ time, data = tail_dat))[2]
 
 c(closed_form_beta = beta_hl, simulated = unname(sim_hl),
   closed_form_alpha = alpha_hl)
 #>  closed_form_beta         simulated closed_form_alpha 
-#>         29.570890         29.649832          8.195347
+#>         29.570890         29.570890          8.195347
 stopifnot(abs(sim_hl / beta_hl - 1) < 0.01)
 ```
 
@@ -757,6 +758,10 @@ sim |>
 
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id, arm) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, arm)
 
 # Guarantee a time-zero record per subject; pre-dose extravascular Cc = 0.

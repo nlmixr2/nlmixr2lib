@@ -218,7 +218,9 @@ s_hl <- rxode2::rxSolve(
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 # Last infusion ends at 97 h; regress 130-200 h (>3 half-lives clear of it).
-w_hl <- s_hl[!is.na(s_hl$Cc) & s_hl$time >= 130 & s_hl$time <= 200, ]
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+w_hl <- s_hl[!is.na(s_hl$Cc) & s_hl$time >= 130 & s_hl$time <= 200 &
+               s_hl$Cc >= 1e-6 * max(s_hl$Cc, na.rm = TRUE), ]
 stopifnot(nrow(w_hl) > 50) # a regression on zero rows must not pass silently
 kel_fit <- -unname(coef(lm(log(Cc) ~ time, data = w_hl))[2])
 

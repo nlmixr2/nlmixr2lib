@@ -568,7 +568,8 @@ singleSim <- solveEvents(
   mod, buildEvents(singleSubj, doseTimes = 0, obsTimes = seq(0, 400, by = 0.5))
 )
 
-terminal <- singleSim |> dplyr::filter(time >= 200, Cc > 0)
+# Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+terminal <- singleSim |> dplyr::filter(time >= 200, Cc >= 1e-6 * max(Cc))
 lambdaZ  <- -stats::coef(stats::lm(log(Cc) ~ time, data = terminal))[["time"]]
 simHalfLife <- log(2) / lambdaZ
 

@@ -379,20 +379,23 @@ long_events <- long_events[order(long_events$time, -long_events$evid), ]
 sim_long_horizon <- rxode2::rxSolve(
   mod_typical, events = long_events, useLinCmt = FALSE
 ) |>
-  as.data.frame() |>
-  dplyr::filter(time >= 150 * 24)
+  as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalvc_dcq', 'etalvp', 'etalvp_dcq', 'etalfdepot'
 
-slope_cq_far  <- slope_thalf_days(sim_long_horizon$Cc,     sim_long_horizon$time)
-slope_dcq_far <- slope_thalf_days(sim_long_horizon$Cc_dcq, sim_long_horizon$time)
+# Below 1e-6 of each analyte's peak the integrator has no relative accuracy
+# left, so each far-tail slope stops where its profile crosses that floor.
+far_cq  <- dplyr::filter(sim_long_horizon, time >= 150 * 24, Cc >= 1e-6 * max(Cc))
+far_dcq <- dplyr::filter(sim_long_horizon, time >= 150 * 24, Cc_dcq >= 1e-6 * max(Cc_dcq))
+slope_cq_far  <- slope_thalf_days(far_cq$Cc,      far_cq$time)
+slope_dcq_far <- slope_thalf_days(far_dcq$Cc_dcq, far_dcq$time)
 
 tibble::tibble(
   Quantity = c("Chloroquine, own disposition t1/2",
                "Desethylchloroquine, own disposition t1/2",
                "Chloroquine profile slope, days 30-60",
                "Desethylchloroquine profile slope, days 30-60",
-               "Chloroquine profile slope, days 150-400",
-               "Desethylchloroquine profile slope, days 150-400"),
+               sprintf("Chloroquine profile slope, days 150-%.0f", max(far_cq$time) / 24),
+               sprintf("Desethylchloroquine profile slope, days 150-%.0f", max(far_dcq$time) / 24)),
   `t1/2 (days)` = c(cq, dcq, slope_cq, slope_dcq, slope_cq_far, slope_dcq_far)
 ) |>
   knitr::kable(digits = 3,
@@ -405,8 +408,8 @@ tibble::tibble(
 | Desethylchloroquine, own disposition t1/2       |       8.736 |
 | Chloroquine profile slope, days 30-60           |      10.717 |
 | Desethylchloroquine profile slope, days 30-60   |      12.728 |
-| Chloroquine profile slope, days 150-400         |      10.717 |
-| Desethylchloroquine profile slope, days 150-400 |      10.765 |
+| Chloroquine profile slope, days 150-204         |      10.717 |
+| Desethylchloroquine profile slope, days 150-229 |      10.848 |
 
 Disposition half-life vs observable profile slope for each analyte.
 {.table}
@@ -423,8 +426,8 @@ stopifnot(
   # 8.74 days -- this is the claim that justifies the NA reference below.
   # Realised 12.73 days, i.e. 46% above 8.74.
   abs(slope_dcq - 8.74) / 8.74 > 0.25,
-  # and it converges onto the PARENT's slope at long times. Realised 10.765
-  # vs 10.717 days, a 0.45% gap.
+  # and it converges onto the PARENT's slope at long times. Realised 10.848
+  # vs 10.717 days, a 1.2% gap.
   abs(slope_dcq_far - slope_cq_far) / slope_cq_far < 0.02
 )
 ```

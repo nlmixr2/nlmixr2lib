@@ -483,8 +483,10 @@ signif(max_mb_pct, 3)
 ``` r
 
 half_life_chk <- sim |>
-  dplyr::filter(dose_mg == 1500, time >= 3000, time <= 5000, Cc > 0) |>
+  dplyr::filter(dose_mg == 1500) |>
   dplyr::group_by(model) |>
+  # Below 1e-6 of the peak the integrator has no relative accuracy left.
+  dplyr::filter(time >= 3000, time <= 5000, Cc >= 1e-6 * max(Cc)) |>
   dplyr::summarise(
     t_half_sim = log(2) / -stats::coef(stats::lm(log(Cc) ~ time))[2],
     .groups = "drop"
@@ -511,8 +513,8 @@ half_life_chk |>
 
 | Estimation | t1/2 from simulated tail (h) | t1/2 closed form (h) | Difference (%) |
 |:-----------|-----------------------------:|---------------------:|---------------:|
-| NLLS       |                       190.32 |               190.32 |          1e-07 |
-| NLME       |                       664.15 |               664.15 |          0e+00 |
+| NLLS       |                       190.32 |               190.32 |              0 |
+| NLME       |                       664.15 |               664.15 |              0 |
 
 Terminal half-life: simulated tail slope vs log(2)/beta. {.table
 style="width:100%;"}
@@ -528,10 +530,14 @@ makes this a real gate rather than a restatement of the model.
 
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(arm, nca_id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(nca_id, time, Cc, arm)
 
 # Guarantee a time-zero record per (arm, id). For an intravenous dose the
-# pre-dose concentration is 0. Filter above is !is.na() only -- adding
+# pre-dose concentration is 0. The filters above keep time zero -- adding
 # `time > 0` or `Cc > 0` would drop this anchor and trigger PKNCA's
 # "AUC range starting (0) before the first measurement" warning.
 sim_nca <- dplyr::bind_rows(
@@ -661,9 +667,9 @@ auc_pct   <- 100 * (nca_wide$aucinf.obs - nca_wide$auc_ref)   / nca_wide$auc_ref
 cmax_pct  <- 100 * (nca_wide$cmax       - nca_wide$cmax_ref)  / nca_wide$cmax_ref
 thalf_pct <- 100 * (nca_wide$half.life  - nca_wide$thalf_ref) / nca_wide$thalf_ref
 
-# Realised: AUC 0.001%, Cmax 0.000%, t1/2 -0.62% (NLME) / -0.26% (NLLS).
+# Realised: AUC 0.001%, Cmax 0.000%, t1/2 -0.61% (NLME) / -0.27% (NLLS).
 # AUC and Cmax are exact identities, so they are held to 0.05%. The t1/2 bound
-# is looser because PKNCA selects its own lambda-z window (from 10.5 h here),
+# is looser because PKNCA selects its own lambda-z window (from 15 h for NLLS),
 # which still carries a trace of the alpha phase; 2% admits that and still
 # goes red on a mis-transcribed Q or V2, either of which moves beta by tens of
 # percent.

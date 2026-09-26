@@ -3658,7 +3658,9 @@ PMA 28.9 / 3.81 weeks, SCr 56.0 [39.0-79.5] umol/L).</caption>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"tau"</span>, <span class="st">"WT"</span>, <span class="st">"pma_wk"</span>, <span class="st">"CREAT"</span><span class="op">)</span>,</span>
 <span>  <span class="co"># The ODE is integrated numerically; the PKNCA identities below are asserted</span></span>
 <span>  <span class="co"># to 1e-6 %, which needs tighter step tolerances than the defaults.</span></span>
-<span>  rtol <span class="op">=</span> <span class="fl">1e-10</span>, atol <span class="op">=</span> <span class="fl">1e-12</span></span>
+<span>  rtol <span class="op">=</span> <span class="fl">1e-10</span>, atol <span class="op">=</span> <span class="fl">1e-12</span>,</span>
+<span>  <span class="co"># steady-state searches for long-half-life subjects exceed the default step budget</span></span>
+<span>  maxsteps <span class="op">=</span> <span class="fl">1e6</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>

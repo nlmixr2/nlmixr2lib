@@ -257,7 +257,11 @@ sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment) |>
   dplyr::group_by(id, time, treatment) |>
-  dplyr::summarise(Cc = mean(Cc), .groups = "drop")
+  dplyr::summarise(Cc = mean(Cc), .groups = "drop") |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 dose_df <- events |>
   dplyr::filter(evid == 1) |>
@@ -306,9 +310,9 @@ knitr::kable(nca_summary,
 
 | treatment               | PPTESTCD  |     median |        p05 |        p95 |
 |:------------------------|:----------|-----------:|-----------:|-----------:|
-| Mefloquine + artesunate | auclast   | 440861.706 | 228188.319 | 930949.464 |
+| Mefloquine + artesunate | auclast   | 440860.964 | 228188.287 | 930949.464 |
 | Mefloquine + artesunate | cmax      |   2062.126 |   1384.337 |   2500.977 |
-| Mefloquine + artesunate | half.life |    264.054 |    109.817 |    537.079 |
+| Mefloquine + artesunate | half.life |    264.054 |    109.653 |    537.079 |
 | Mefloquine + artesunate | tmax      |     31.000 |     28.950 |     37.050 |
 
 Simulated NCA over 0-150 days for the two-day mefloquine schedule (750
@@ -363,8 +367,9 @@ auc_typical_ng_h_mL <- sum(
   na.rm = TRUE
 )
 
+# Below 1e-6 of the peak the integrator has no relative accuracy left.
 late <- sim_typical |>
-  dplyr::filter(time >= 24 * 14)
+  dplyr::filter(time >= 24 * 14, Cc >= 1e-6 * max(Cc, na.rm = TRUE))
 fit <- stats::lm(log(pmax(Cc, 1e-12)) ~ time, data = late)
 lambda_z_per_h <- -coef(fit)[["time"]]
 half_life_d <- log(2) / lambda_z_per_h / 24

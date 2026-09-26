@@ -450,7 +450,9 @@ sim <- rxode2::rxSolve(
   keep   = c("cohort", "tau", "WT", "pma_wk", "CREAT"),
   # The ODE is integrated numerically; the PKNCA identities below are asserted
   # to 1e-6 %, which needs tighter step tolerances than the defaults.
-  rtol = 1e-10, atol = 1e-12
+  rtol = 1e-10, atol = 1e-12,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> Warning: multi-subject simulation without without 'omega'

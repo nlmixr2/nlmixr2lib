@@ -363,7 +363,12 @@ stopifnot(all(nca_input$conc >= 0))
 
 doses <- data.frame(id = c(1, 2), treatment = c("THP 200 mg", "CIP 500 mg"),
                     time = 0, dose = c(200, 500))
-o_conc <- PKNCA::PKNCAconc(nca_input, conc ~ time | treatment + id,
+# Per profile, keep conc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+nca_fit <- nca_input |>
+  group_by(treatment, id) |>
+  filter(time == 0 | time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>
+  ungroup()
+o_conc <- PKNCA::PKNCAconc(nca_fit, conc ~ time | treatment + id,
                            concu = "mg/L", timeu = "h")
 o_dose <- PKNCA::PKNCAdose(doses, dose ~ time | treatment + id, doseu = "mg")
 res <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose))
@@ -382,7 +387,7 @@ knitr::kable(nca, digits = 3)
 | CIP 500 mg | auclast   |   8.940 |
 | CIP 500 mg | cmax      |   2.441 |
 | CIP 500 mg | tmax      |   2.083 |
-| CIP 500 mg | half.life |   0.762 |
+| CIP 500 mg | half.life |   0.756 |
 
 ``` r
 

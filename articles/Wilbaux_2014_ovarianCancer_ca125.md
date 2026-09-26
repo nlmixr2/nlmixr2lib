@@ -261,9 +261,8 @@ sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> [intdy -- t = 3.31024e-322 illegal]: 97 warning(s) for subject(s): 1 (sim 68)
 #> [intdy -- t = 3.70549e-322 illegal]: 97 warning(s) for subject(s): 1 (sim 76)
-#> [intdy -- t = 4.63571e-310 illegal]: 2 warning(s) for subject(s): 1 (sim 2), 1 (sim 21)
 #> [intdy -- t = 4.94066e-324 illegal]: 10 warning(s) for subject(s): 1 (sim 2)
-#> [intdy -- t = 6.90838e-310 illegal]: 12 warning(s) for subject(s): 1 (sim 68), 1 (sim 76)
+#> [intdy -- t = 6.9438e-310 illegal]: 14 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
 #> [intdy -- t = 9.88131e-323 illegal]: 10 warning(s) for subject(s): 1 (sim 21)
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
 # rxSolve duplicates rows when multiple cmts are observed at the same time;

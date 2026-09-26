@@ -326,7 +326,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55fb50d46918>
+#> <environment: 0x562289ec7a30>
 ```
 
 ## Population
@@ -539,7 +539,9 @@ sim <- rxode2::rxSolve(
   # stops once successive dosing intervals differ by less than the tolerance;
   # for slowly equilibrating subjects that leaves a residual of roughly
   # ssRtol / (k * tau), so it is tightened together with rtol / atol.
-  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 trough <- sim |> filter(time == obs_time, !is.na(Cc))
@@ -877,7 +879,9 @@ stopifnot(!anyDuplicated(unique(events_nca[, c("id", "time", "evid")])))
 rxode2::rxSetSeed(20240821)
 sim_nca_raw <- rxode2::rxSolve(
   mod, events = events_nca, keep = c("arm"),
-  returnType = "data.frame", addDosing = FALSE
+  returnType = "data.frame", addDosing = FALSE,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 ```
 

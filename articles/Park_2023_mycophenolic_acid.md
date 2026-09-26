@@ -196,7 +196,9 @@ mod <- readModelDb("Park_2023_mycophenolic_acid")
 # measured concentrations, so `sim` is the like-for-like column and `Cc` is
 # not. Negative draws (possible because the error model has an additive
 # term) are floored at zero, as a real assay would report them.
-sim_pop <- rxode2::rxSolve(mod, events = events, keep = c("BSA", "WT")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_pop <- rxode2::rxSolve(mod, events = events, keep = c("BSA", "WT"),
+                           maxsteps = 1e6) |>
   as.data.frame() |>
   mutate(Cobs = pmax(sim, 0))
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -205,7 +207,9 @@ sim_pop <- rxode2::rxSolve(mod, events = events, keep = c("BSA", "WT")) |>
 # residual error for this call only. (`zeroRe()` mutates shared model state
 # and is deliberately avoided.) Here `Cc` is the typical-value prediction.
 sim_typ <- rxode2::rxSolve(mod, events = events, keep = c("BSA", "WT"),
-                           omega = NA, sigma = NA) |>
+                           omega = NA, sigma = NA,
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6) |>
   as.data.frame() |>
   mutate(Cobs = Cc)
 
@@ -313,7 +317,9 @@ f5_events <- bind_rows(
 ) |>
   arrange(id, time, desc(evid))
 
-f5_sim <- rxode2::rxSolve(mod, events = f5_events, keep = c("BSA", "arm")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+f5_sim <- rxode2::rxSolve(mod, events = f5_events, keep = c("BSA", "arm"),
+                          maxsteps = 1e6) |>
   as.data.frame()
 
 # Deterministic companion run: one subject per arm, no IIV, on a fine grid.
@@ -334,7 +340,9 @@ f5_typ_events <- bind_rows(
   arrange(id, time, desc(evid))
 
 f5_typ_auc <- rxode2::rxSolve(mod, events = f5_typ_events, keep = c("BSA", "arm"),
-                              omega = NA, sigma = NA) |>
+                              omega = NA, sigma = NA,
+                              # steady-state searches for long-half-life subjects exceed the default step budget
+                              maxsteps = 1e6) |>
   as.data.frame() |>
   arrange(id, time) |>
   group_by(arm) |>

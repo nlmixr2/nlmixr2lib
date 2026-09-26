@@ -196,7 +196,7 @@ mod
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x5569aeff04b8>
+#> <environment: 0x55f8228629c8>
 ```
 
 ## Population
@@ -367,7 +367,9 @@ ss_metrics <- function(sim) {
 
 ss_typical <- function(dose, cov) {
   ss_metrics(rxode2::rxSolve(mod_typ, events = ss_events(dose, cov),
-                             returnType = "data.frame"))
+                             returnType = "data.frame",
+                             # steady-state searches for long-half-life subjects exceed the default step budget
+                             maxsteps = 1e6))
 }
 ```
 
@@ -459,7 +461,8 @@ sim_single <- rxode2::rxSolve(mod_typ, events = ev_single, returnType = "data.fr
 
 # Fit the terminal slope well after the distribution phase has resolved
 # (pattern 11: a slope taken too early reads the distribution phase).
-term <- dplyr::filter(sim_single, time >= 400, time <= 800, Cc > 0)
+# Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+term <- dplyr::filter(sim_single, time >= 400, time <= 800, Cc >= 1e-6 * max(Cc))
 lambda_z <- -stats::coef(stats::lm(log(Cc) ~ time, data = term))[["time"]]
 t_half <- log(2) / lambda_z
 
@@ -825,7 +828,9 @@ stopifnot(!anyDuplicated(unique(nca_events[, c("id", "time", "evid")])))
 
 rxode2::rxSetSeed(20260913)
 nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment",
-                           returnType = "data.frame")
+                           returnType = "data.frame",
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6)
 ```
 
 ``` r

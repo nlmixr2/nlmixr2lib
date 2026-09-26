@@ -199,9 +199,10 @@ solve_check <- function(ev, mdl = mod_typ) {
   out
 }
 
-# Terminal slope over a window well clear of the distribution phase.
+# Terminal slope over a window well clear of the distribution phase, skipping
+# points below 1e-6 of the peak (no relative accuracy left there).
 terminal_half_life <- function(d, col, lo, hi) {
-  w <- d[d$time >= lo & d$time <= hi, ]
+  w <- d[d$time >= lo & d$time <= hi & d[[col]] >= 1e-6 * max(d[[col]]), ]
   log(2) / -stats::coef(stats::lm(log(w[[col]]) ~ w$time))[[2]]
 }
 

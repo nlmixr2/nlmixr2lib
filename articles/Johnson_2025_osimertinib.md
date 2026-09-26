@@ -256,7 +256,9 @@ scen_events <- dplyr::bind_rows(scen_dose, scen_obs) |>
 sim_scen <- rxode2::rxSolve(
   rxode2::zeroRe(mod), events = scen_events,
   keep = c("WT", "ALB", "RACE_CHINESE", "RACE_JAPANESE",
-           "RACE_ASIAN_OTH", "RACE_OTHER")
+           "RACE_ASIAN_OTH", "RACE_OTHER"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::left_join(dplyr::select(scenarios, id, scenario, dose), by = "id")
@@ -690,8 +692,10 @@ coh_events <- dplyr::bind_rows(
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   as.data.frame()
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_cohort <- rxode2::rxSolve(mod, events = coh_events,
-                              keep = c("WT", "ALB", "race_label")) |>
+                              keep = c("WT", "ALB", "race_label"),
+                              maxsteps = 1e6) |>
   as.data.frame() |>
   dplyr::mutate(Cc_nM = Cc * 1e6 / mw_parent,
                 Cc_az5104_nM = Cc_az5104 * 1e6 / mw_az5104)

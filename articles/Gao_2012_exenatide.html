@@ -3822,13 +3822,19 @@ Gao 2012 Table 1.</caption>
 <h3 id="rat-pknca-on-the-intravenous-bolus-arms">Rat: PKNCA on the intravenous-bolus arms<a class="anchor" aria-label="anchor" href="#rat-pknca-on-the-intravenous-bolus-arms"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Filter with `!is.na(Cc)` ONLY: adding `time &gt; 0` or `Cc &gt; 0` would drop the</span></span>
-<span><span class="co"># time-zero row PKNCA needs to anchor AUC. The observation grid already starts</span></span>
-<span><span class="co"># at time 0 and the dose record sorts ahead of it, so for this IV bolus the</span></span>
-<span><span class="co"># time-zero concentration is the model's own dose/Vc -- exactly what PKNCA</span></span>
-<span><span class="co"># wants. Assert that rather than patching a row in blind.</span></span>
+<code class="sourceCode R"><span><span class="co"># Filter with `!is.na(Cc)` and the noise floor ONLY: adding `time &gt; 0` or</span></span>
+<span><span class="co"># `Cc &gt; 0` would drop the time-zero row PKNCA needs to anchor AUC. The</span></span>
+<span><span class="co"># observation grid already starts at time 0 and the dose record sorts ahead of</span></span>
+<span><span class="co"># it, so for this IV bolus the time-zero concentration is the model's own</span></span>
+<span><span class="co"># dose/Vc -- exactly what PKNCA wants. Assert that rather than patching a row</span></span>
+<span><span class="co"># in blind.</span></span>
 <span><span class="va">nca_in</span> <span class="op">&lt;-</span> <span class="va">sim_rat_iv</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Per subject, keep Cc &gt;= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="va">.data</span><span class="op">$</span><span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">|</span></span>
+<span>                  <span class="va">.data</span><span class="op">$</span><span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">1e-6</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">treatment</span>, <span class="va">time</span><span class="op">)</span></span>
 <span></span>

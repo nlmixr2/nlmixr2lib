@@ -280,7 +280,11 @@ PKNCA is run once per output. Two grouping variables carry: `cohort`
 sim_nca_enaat <- sim_ref |>
   filter(!is.na(Cc_enaat)) |>
   select(id, time, Cc_enaat, cohort) |>
-  rename(Cc = Cc_enaat)
+  rename(Cc = Cc_enaat) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup()
 
 # Guarantee a time=0 row per (id, cohort); pre-dose Cc = 0 for extravascular.
 sim_nca_enaat <- bind_rows(
@@ -315,6 +319,10 @@ nca_res_enaat  <- suppressWarnings(PKNCA::pk.nca(nca_data_enaat))
 
 sim_nca_ena <- sim_ref |>
   filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, cohort)
 
 sim_nca_ena <- bind_rows(
@@ -326,8 +334,6 @@ sim_nca_ena <- bind_rows(
   arrange(id, cohort, time)
 
 conc_obj_ena <- PKNCA::PKNCAconc(sim_nca_ena, Cc ~ time | cohort + id)
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
 dose_obj_ena <- PKNCA::PKNCAdose(dose_df_enaat, amt ~ time | cohort + id)
 nca_data_ena <- PKNCA::PKNCAdata(conc_obj_ena, dose_obj_ena,
                                  intervals = intervals)

@@ -443,7 +443,8 @@ sim_arm <- function(dose, lbl) {
   set.seed(4)
   # Tight tolerances: dose proportionality is asserted per subject to 1e-6,
   # and the ODE at default tolerances lands at 1.6e-6.
-  rxode2::rxSolve(mod, events = ev, rtol = 1e-10, atol = 1e-12) |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  rxode2::rxSolve(mod, events = ev, rtol = 1e-10, atol = 1e-12, maxsteps = 1e6) |>
     as.data.frame() |>
     dplyr::mutate(treatment = lbl, amt_mg = dose)
 }
@@ -451,22 +452,6 @@ sim_arm <- function(dose, lbl) {
 sim_nca_raw <- dplyr::bind_rows(
   lapply(names(arms), function(l) sim_arm(unname(arms[[l]]), l))
 )
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> Warning: some ID(s) could not solve the ODEs correctly; These values are
-#> replaced with 'NA'
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> Warning: some ID(s) could not solve the ODEs correctly; These values are
-#> replaced with 'NA'
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> Warning: some ID(s) could not solve the ODEs correctly; These values are
-#> replaced with 'NA'
 
 nca_subj <- sim_nca_raw |> dplyr::distinct(treatment, id, amt_mg)
 
@@ -500,18 +485,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#> Warning: treatment=1000 mg q8h; id=22: No concentration data
-#> Warning: treatment=1000 mg q8h; id=52: No concentration data
-#> Warning: treatment=1000 mg q8h; id=58: No concentration data
-#> Warning: treatment=1000 mg q8h; id=70: No concentration data
-#> Warning: treatment=250 mg q8h; id=22: No concentration data
-#> Warning: treatment=250 mg q8h; id=52: No concentration data
-#> Warning: treatment=250 mg q8h; id=58: No concentration data
-#> Warning: treatment=250 mg q8h; id=70: No concentration data
-#> Warning: treatment=500 mg q8h; id=22: No concentration data
-#> Warning: treatment=500 mg q8h; id=52: No concentration data
-#> Warning: treatment=500 mg q8h; id=58: No concentration data
-#> Warning: treatment=500 mg q8h; id=70: No concentration data
 ```
 
 ``` r
@@ -549,9 +522,9 @@ ident |>
 
 | Regimen | AUCtau, PKNCA (mg\*h/L) | AUCtau, Dose/CL (mg\*h/L) | Max abs. % error | Cmax (mg/L) | Cmin (mg/L) |
 |:---|---:|---:|---:|---:|---:|
-| 1000 mg q8h | 227.2 | 227.2 | 0.0074 | 42.10 | 18.35 |
-| 250 mg q8h | 56.8 | 56.8 | 0.0074 | 10.52 | 4.59 |
-| 500 mg q8h | 113.6 | 113.6 | 0.0074 | 21.05 | 9.18 |
+| 1000 mg q8h | 227.2 | 227.2 | 0.0079 | 42.10 | 18.51 |
+| 250 mg q8h | 56.8 | 56.8 | 0.0079 | 10.52 | 4.63 |
+| 500 mg q8h | 113.6 | 113.6 | 0.0079 | 21.05 | 9.25 |
 
 Steady-state NCA vs. the exact linear identity AUCtau = Dose / CL.
 {.table}

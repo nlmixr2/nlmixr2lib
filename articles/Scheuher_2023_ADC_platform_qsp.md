@@ -205,7 +205,8 @@ cmax_nM <- max(sim_mo_df$Cc, na.rm = TRUE)
 cmax_ug_mL <- max(sim_mo_df$Cc_ug_per_mL, na.rm = TRUE)
 
 # Approximate terminal half-life from log-linear regression on last 5 points
-tail_dat <- tail(sim_mo_df[sim_mo_df$Cc > 0, ], 6)
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_dat <- tail(sim_mo_df[sim_mo_df$Cc >= 1e-6 * cmax_nM, ], 6)
 if (nrow(tail_dat) >= 3 && all(tail_dat$Cc > 0)) {
   fit <- lm(log(Cc) ~ time_day, data = tail_dat)
   thalf_day <- log(2) / abs(coef(fit)[2])
@@ -229,7 +230,7 @@ knitr::kable(nca_table)
 |:---|:---|:---|
 | Cmax (ug/mL) | 60.00 | ~72-90 ug/mL @ 3 mg/kg (Erickson 2012 / Fig. S4A) |
 | Cmax (nM) | 403.3 | ~485-604 nM |
-| Terminal half-life (day) | 0.33 | ~11.6 day (Table S2b antibody half-life) |
+| Terminal half-life (day) | 0.34 | ~11.6 day (Table S2b antibody half-life) |
 
 ## Human model - plasma PK at 3.6 mg/kg T-DM1 Q3W
 
