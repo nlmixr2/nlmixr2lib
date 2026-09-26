@@ -1492,6 +1492,8 @@ navbar:
         href: articles/Waalewijn_2024_dolutegravir.html
       - text: "Dolutegravir (Zhang 2015)"
         href: articles/Zhang_2015_dolutegravir.html
+      - text: "Dolutegravir pregnancy pbpk (Freriksen 2020)"
+        href: articles/Freriksen_2020_dolutegravir_pregnancy_pbpk.html
       - text: "Domagrozumab (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_domagrozumab.html
       - text: "Donepezil im (Khwarg 2024)"
@@ -6626,6 +6628,7 @@ articles:
   - articles/Franken_2017_midazolam
   - articles/Franzese_2026_pdl1_nsclc_mbma
   - articles/Frederiksen_2023_brexpiprazole
+  - articles/Freriksen_2020_dolutegravir_pregnancy_pbpk
   - articles/Frey_2010_tocilizumab
   - articles/Frey_2013_tocilizumab
   - articles/Freyer_2000_AVI_regimen
