@@ -206,7 +206,11 @@ sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment) |>
   dplyr::group_by(id, time, treatment) |>
-  dplyr::summarise(Cc = mean(Cc), .groups = "drop")
+  dplyr::summarise(Cc = mean(Cc), .groups = "drop") |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 dose_df <- events |>
   dplyr::filter(evid == 1) |>
@@ -280,8 +284,9 @@ auc_typical_ng_h_mL <- sum(
   na.rm = TRUE
 )
 
+# Below 1e-6 of the peak the integrator has no relative accuracy left.
 late <- sim_typical |>
-  dplyr::filter(time >= 24 * 14)
+  dplyr::filter(time >= 24 * 14, Cc >= 1e-6 * max(Cc, na.rm = TRUE))
 fit <- stats::lm(log(pmax(Cc, 1e-12)) ~ time, data = late)
 lambda_z_per_h <- -coef(fit)[["time"]]
 half_life_d <- log(2) / lambda_z_per_h / 24

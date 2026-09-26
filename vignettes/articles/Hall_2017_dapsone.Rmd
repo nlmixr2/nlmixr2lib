@@ -276,6 +276,7 @@ the median weight / age (CL = 2.048 L/h, giving AUCinf ~= 49 mg.h/L).
   MARS model (WT, AGE, BUN); race and gender are not used.
 - **Supplement S1**: Supplementary Table S1 (model selection AIC / BIC
   comparison across 1-, 2-, and 3-compartment structures) was referenced in
-  the paper but is not on disk. The 1-compartment selection is reported in
-  the Results text and is encoded as such; the supplement would only inform
+  the paper but was not available when this model was built. The
+  1-compartment selection is reported in the Results text and is encoded as
+  such; the supplement would only inform
   the model-comparison narrative, not the parameter values.

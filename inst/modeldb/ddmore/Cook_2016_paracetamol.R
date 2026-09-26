@@ -65,15 +65,15 @@ Cook_2016_paracetamol <- function() {
 
   population <- list(
     n_subjects = 54,
-    n_studies = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
-    age_range = "Term and preterm newborns. Specific postnatal-age range not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
+    n_studies = "Not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built).",
+    age_range = "Term and preterm newborns. Specific postnatal-age range not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built).",
     weight_range = "Newborn body weights. The bundle's simulated dataset (Simulated_ParacetamolPKnewborns.csv) contains BWS values 0.5-4 kg for 9 of 10 subjects plus one outlier at 6.5 kg; the simulated dataset is a smoke-test cohort and does not represent the publication's reported demographics.",
-    sex_female_pct = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
-    race_ethnicity = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
+    sex_female_pct = "Not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built).",
+    race_ethnicity = "Not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built).",
     disease_state = "Term and preterm newborns receiving IV paracetamol. Specific clinical setting not extractable from DDMORE bundle alone; Cook 2016 reports a parent-metabolite population PK analysis describing the maturation of paracetamol glucuronidation, sulfation, and oxidation in newborns.",
     dose_range = "IV paracetamol given as a short infusion. Bundle's simulated dataset uses ~10 mg/kg single doses (5, 10, 20, 35 mg paired with BWS 0.5, 1, 2, 3.5 kg respectively) infused over approximately 15 minutes (RATE=AMT/15 mg/min).",
-    regions = "Not extractable from DDMORE bundle (Cook 2016 PDF not on disk).",
-    notes = "N=54 subjects taken from the .lst FINAL ETABAR / shrinkage block ('N: 54 54 54 54'). Full demographics, study design, and inclusion criteria could not be cross-checked because the Cook 2016 publication PDF is not on disk. The DDMORE Model_Accommodations.txt note states only that the publication reported additive errors on urine recoveries while the deposited code uses (correct) proportional errors."
+    regions = "Not extractable from DDMORE bundle (Cook 2016 PDF not available when this model was built).",
+    notes = "N=54 subjects taken from the .lst FINAL ETABAR / shrinkage block ('N: 54 54 54 54'). Full demographics, study design, and inclusion criteria could not be cross-checked because the Cook 2016 publication PDF was not available when this model was built. The DDMORE Model_Accommodations.txt note states only that the publication reported additive errors on urine recoveries while the deposited code uses (correct) proportional errors."
   )
 
   ini({

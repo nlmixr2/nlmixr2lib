@@ -291,7 +291,7 @@ Muller_2009_amoxicillin <- function() {
     # Results paragraph 3 states that 'A correlation between the random
     # parameters for interindividual variability was found and was
     # accounted for in the model', but the off-diagonal covariance is not
-    # reported anywhere on disk, so a diagonal OMEGA is used here. See the
+    # reported anywhere in the paper, so a diagonal OMEGA is used here. See the
     # vignette 'Assumptions and deviations' section.
     etalcl ~ 0.076  # Table 2 row 'Interindividual variability in CL' (SE 0.026, CI 0.026-0.13)
     etalvc ~ 0.038  # Table 2 row 'Interindividual variability in V1' (SE 0.013, CI 0.014-0.063)

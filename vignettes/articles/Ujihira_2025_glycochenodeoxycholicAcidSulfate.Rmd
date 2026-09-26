@@ -527,7 +527,7 @@ and both inhibition constants in Table 2 are unbound constants, but neither the
 main text nor Supplementary Material S1 ever states the `fu` used to convert the
 modelled *total* plasma concentrations to unbound. Both values come from the
 upstream models the paper explicitly adopts, and neither is verifiable from the
-Ujihira 2025 sources alone. They are therefore pinned against two on-disk answer
+Ujihira 2025 sources alone. They are therefore pinned against two published answer
 keys instead:
 
 * **Rifampicin `fu` = 0.11.** Carried by the sibling nlmixr2lib extractions
@@ -542,7 +542,7 @@ keys instead:
   not be checked.
 
 The two interaction checks above are what actually pin these values, and both
-are on-disk answer keys:
+are published answer keys:
 
 * `fu_rif` is pinned by the rifampicin AUCR check, which reproduces Table S4's
   predicted `AUCR0-24h` of 13 at 600 mg. That number is a product of the

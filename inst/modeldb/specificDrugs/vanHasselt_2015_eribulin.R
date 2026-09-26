@@ -52,13 +52,13 @@ vanHasselt_2015_eribulin <- function() {
     species = "human",
     n_subjects = 108L,
     n_studies = 1L,
-    age_range = "adult metastatic CRPC patients (median ages by stratum reported in Supporting Table S1 of van Hasselt 2015; specific range not on disk in the main paper)",
-    weight_range = "not reported in the main paper text on disk",
+    age_range = "adult metastatic CRPC patients (median ages by stratum reported in Supporting Table S1 of van Hasselt 2015; specific range not given in the main paper)",
+    weight_range = "not reported in the main paper text",
     sex_female_pct = 0,
-    race_ethnicity = "not reported in the main paper text on disk",
+    race_ethnicity = "not reported in the main paper text",
     disease_state = "Metastatic castration-resistant prostate cancer (CRPC). Phase II trial of eribulin mesilate (E7389), de Bono et al. Ann Oncol 2012;23:1241; van Hasselt 2015 reference 33. Subset stratification: 50 patients with prior docetaxel/taxane therapy, 58 taxane-naive.",
     dose_range = "eribulin mesilate IV (per de Bono 2012 phase II protocol); per-dose AUC is provided as the amt input to the K-PD depot_kpd compartment in this model, not the mg dose itself. The upstream eribulin popPK model used to predict individual AUC (3-compartment linear elimination with albumin / alkaline phosphatase / total bilirubin on CL, Majid 2014 J Clin Pharmacol 54:1134-1143 and van Hasselt 2013 Br J Clin Pharmacol 76:412-424) is referenced but not encoded here.",
-    regions = "not reported in the main paper text on disk",
+    regions = "not reported in the main paper text",
     notes = "108 metastatic CRPC patients from a single Phase II trial of eribulin mesilate (de Bono et al. 2012). PSA-time profiles analysed with NONMEM 7.2 FOCE; survival analysed separately in R survreg. The PD model uses a K-PD approach where the predicted eribulin AUC per dose (from the external popPK model) drives a transient drug-effect compartment. PK data were not available for this study (van Hasselt 2015 Methods 'Pharmacokinetic model')."
   )
 

@@ -21,8 +21,8 @@ Beal_2001_iv1cmt_bql <- function() {
     dose_range = "Single unit-valued IV bolus dose at t = 0 (Beal 2001 section 2.2, page 486).",
     regions = "N/A",
     scope_note = paste(
-      "Filed under inst/modeldb/pharmacokinetics/ (not specificDrugs/) at the operator's direction",
-      "(sidecar zotero-077-beal_2001_unknown request-001 q1=B, response 2026-06-21).",
+      "Filed under inst/modeldb/pharmacokinetics/ (not specificDrugs/) by the maintainers'",
+      "decision.",
       "The paper is a methodology reference introducing the M1-M7 estimation methods for handling",
       "concentration measurements below the assay's quantification limit; it is not a fit of any",
       "specific drug. The typical values CL = 0.693 and Vd = 1 are scale-fixed teaching constants",

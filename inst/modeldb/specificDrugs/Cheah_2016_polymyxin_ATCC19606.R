@@ -133,7 +133,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # FIXED here; the chosen fixed-from-class proxy (see vignette
     # Errata).
     sc50 <- fixed(36.5)
-    label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50;, inherited from Bulitta 2015 ref 31 framework -- not reported in Cheah 2016)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (operator-approved fixed-from-class proxy)
+    label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50;, inherited from Bulitta 2015 ref 31 framework -- not reported in Cheah 2016)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (fixed-from-class proxy approved by the maintainers)
     k_adapt <- 7.20
     label("Adaptation rate constant for R_adaptive turnover (1/h; k_adapt)")  # Cheah 2016 Table 1, ATCC 19606
 
@@ -141,7 +141,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # Fitness cost (Eq 10) -- NOT estimated for ATCC 19606 (Table 1 NE)
     # ===============================================================
     # Holds f_cost identically at 0 in the susceptible-growth term of
-    # Eq 1. The the chosen policy for unreported / not-estimated
+    # Eq 1. The chosen policy for unreported / not-estimated
     # structural shifts is fixed(0) with a clear inline note.
     g_inhib_max <- fixed(0)
     label("Maximal fitness cost associated with adaptive resistance (G_inhib,max; 0 -- Cheah 2016 Table 1 reports NE for ATCC 19606)")  # Cheah 2016 Table 1, ATCC 19606 (NE, not estimated)
@@ -251,7 +251,7 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
     # Stim uses RAW reservoir C_polymyxin per the printed equation
     # (not effective C); the paper's prose calls it "accounting for
     # effective polymyxin concentration (Stim)" but the printed Eq 8
-    # uses C_polymyxin -- trust the equation per the operator policy.
+    # uses C_polymyxin -- trust the equation, per the maintainers' policy.
     # ---------------------------------------------------------------
     stim <- s_max * Cc / ((sc50) + (Cc))
 

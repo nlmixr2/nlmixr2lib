@@ -83,12 +83,12 @@ Allegaert_2015_paracetamol <- function() {
     disease_state = "Young women across five reproductive states (DDMODEL00000267 .mod $INPUT comment for OCC): pregnant (OCC = 1), 2 weeks postpartum (OCC = 2), 1 year postpartum (OCC = 3), non-pregnant volunteer not on birth control (OCC = 4), non-pregnant volunteer on birth control (OCC = 5). The intent of the analysis is to quantify how pregnancy, time post partum, and oral-contraceptive use modify paracetamol disposition in this population.",
     dose_range = "Single-dose intravenous propacetamol (a paracetamol pro-drug; 1 g propacetamol is approximately equivalent to 0.5 g paracetamol on a molar basis), administered as a short infusion (the bundle's Simulated_APAP_YoungWomen.csv ships 1 g and 2 g propacetamol-equivalent doses delivered over ~20-30 min). Multiple-dose regimens are present in the simulated dataset for some subjects.",
     regions = NA_character_,
-    notes = "n_subjects (69) and n_obs (1118) come from the Output_real_OriginalModelCode.lst run summary lines 'TOT. NO. OF INDIVIDUALS:' and 'TOT. NO. OF OBS RECS:' respectively. The Allegaert 2015 BMC Anesthesiol publication is not on disk in this worktree, so finer-grained demographics (age range, weight range, region, baseline-renal/hepatic profile) are recorded as NA. The .mod's covariate columns (OCC, BC -> CONMED_BIRTHCONTROL, TERM -> TERM_BIRTH, UF -> URINE_FLOW, BW -> WT) reveal the variability axes the model resolves but do not by themselves constrain the underlying demographic distributions. See the validation vignette's Errata section for the full caveat list."
+    notes = "n_subjects (69) and n_obs (1118) come from the Output_real_OriginalModelCode.lst run summary lines 'TOT. NO. OF INDIVIDUALS:' and 'TOT. NO. OF OBS RECS:' respectively. The Allegaert 2015 BMC Anesthesiol publication was not available when this model was built, so finer-grained demographics (age range, weight range, region, baseline-renal/hepatic profile) are recorded as NA. The .mod's covariate columns (OCC, BC -> CONMED_BIRTHCONTROL, TERM -> TERM_BIRTH, UF -> URINE_FLOW, BW -> WT) reveal the variability axes the model resolves but do not by themselves constrain the underlying demographic distributions. See the validation vignette's Errata section for the full caveat list."
   )
 
   ini({
-    # Final parameter estimates from
-    # /home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/267/Output_real_OriginalModelCode.lst
+    # Final parameter estimates from the DDMORE bundle's
+    # Output_real_OriginalModelCode.lst
     # FINAL PARAMETER ESTIMATE block (lst lines 519-567), captured after
     # `MINIMIZATION SUCCESSFUL` (lst line 452, OBJV 5286.743). NONMEM THETAs are
     # log-back-transformed values, so each `lX <- log(value)` wraps the lst

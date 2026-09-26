@@ -451,7 +451,11 @@ concentration remains numerically positive.
 nca_run <- function(sim, ev) {
   conc <- sim |>
     dplyr::filter(!is.na(Cc)) |>
-    dplyr::select(id, time, Cc, treatment)
+    dplyr::select(id, time, Cc, treatment) |>
+    # Keep Cc >= 1e-6 * max(Cc) per subject after the peak (solver noise below); time zero is re-added below.
+    dplyr::group_by(id) |>
+    dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+    dplyr::ungroup()
   conc <- dplyr::bind_rows(
     conc,
     conc |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)

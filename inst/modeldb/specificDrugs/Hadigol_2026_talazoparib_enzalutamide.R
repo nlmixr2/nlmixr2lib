@@ -120,7 +120,7 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
         "(Results, Population PK Model for Talazoparib). The reference value",
         "86.85 mL/min is the value Hadigol 2026 names for the typical",
         "patient; the paper does NOT state that it is the cohort median, and",
-        "Table S2 (demographics) is not on disk, so it must not be reported",
+        "Table S2 (demographics) was not available when this model was built, so it must not be reported",
         "as one. Baseline creatinine clearance was deliberately NOT entered",
         "into the enzalutamide or metabolite covariate search because it is",
         "highly correlated with both baseline body weight and age. Two",
@@ -144,7 +144,7 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
         "relative standard error was 72%, which made the estimate unreliable",
         "and the model unstable (Results, Population PK Model for",
         "N-Desmethyl Enzalutamide). No point estimate is reported for either",
-        "effect in any on-disk source, so neither can be encoded."
+        "effect in any available source, so neither can be encoded."
       )
     ),
     CONMED_PGP_INHIB_MOD = list(

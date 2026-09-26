@@ -34,7 +34,7 @@ DDMODEL00000237 is **not** a NONMEM bundle. The executable model is shipped in *
 # Population
 
 * Adult cohort, 70 kg reference body weight (Forward_APAP1.in fixes BW = 70 kg). Single 1000 mg oral paracetamol dose (Scenario 4).
-* The publication's underlying dataset (per its Methods; the publication was not on disk when this model was built) is a pooled Bayesian population fit across multiple published human paracetamol PK studies. Per-subject demographics are not exposed by the bundle.
+* The publication's underlying dataset (per its Methods; the publication was not available when this model was built) is a pooled Bayesian population fit across multiple published human paracetamol PK studies. Per-subject demographics are not exposed by the bundle.
 * The bundle ships a `Real_APAP_data.csv` reference dataset that is a digitisation of plasma concentrations from **Jansen et al. (2004)** *J Pharm Biomed Anal* 34:585-593 -- a single-study reference re-used by the bundle authors as one validation source for Scenario 4. It is *not* the dataset on which the Bayesian fit was performed.
 
 # Source trace
@@ -105,7 +105,7 @@ Oral 1000 mg APAP
 
 # Simulation: typical-value reproduction of bundle Output_real_APAP.txt
 
-The DDMORE bundle ships a typical-value simulation trajectory (`Output_real_APAP.txt`) with concentrations at the canonical 0.5-12 hr observation grid for Scenario 4 (1000 mg PO, 70 kg). The F.2 self-consistency check re-simulates this trajectory with rxode2 and confirms the rxode2 implementation matches the MCSim implementation within numerical-solver tolerance.
+The DDMORE bundle ships a typical-value simulation trajectory (`Output_real_APAP.txt`) with concentrations at the canonical 0.5-12 hr observation grid for Scenario 4 (1000 mg PO, 70 kg). The self-consistency check re-simulates this trajectory with rxode2 and confirms the rxode2 implementation matches the MCSim implementation within numerical-solver tolerance.
 
 ```{r simulate}
 mod <- readModelDb("Zurlinden_2016_paracetamol")
@@ -183,7 +183,7 @@ ggplot(plot_long, aes(time, Cplasma, colour = source, shape = source)) +
   scale_colour_manual(values = c(bundle = "grey40", nlmixr = "steelblue")) +
   labs(x = "Time (hr)", y = "Plasma concentration (mcg/L)",
        colour = "Source", shape = "Source",
-       title = "F.2 self-consistency: bundle MCSim vs nlmixr2/rxode2 typical-value re-simulation",
+       title = "Self-consistency: bundle MCSim vs nlmixr2/rxode2 typical-value re-simulation",
        caption = "Reproduces Output_real_APAP.txt at canonical observation grid for Scenario 4 (1000 mg PO, 70 kg adult).")
 ```
 
@@ -280,7 +280,7 @@ The model raises 32 `checkModelConventions()` warnings (no errors). Every warnin
 
 # Assumptions and deviations / Errata
 
-1. **No publication on disk.** The Zurlinden & Reisfeld 2016 publication (doi:10.1007/s13318-015-0253-x) was not on disk at extraction time. Parameter values, structural-model equations, and population demographics could not be cross-checked against the publication; everything is sourced from the DDMORE bundle. A more rigorous validation would compare against the publication's Table of posterior summaries and Methods section.
+1. **Publication not available.** The Zurlinden & Reisfeld 2016 publication (doi:10.1007/s13318-015-0253-x) was not available when this model was built. Parameter values, structural-model equations, and population demographics could not be cross-checked against the publication; everything is sourced from the DDMORE bundle. A more rigorous validation would compare against the publication's Table of posterior summaries and Methods section.
 
 2. **No IIV / no residual error.** The DDMORE bundle exposes only the population posterior-mean parameters (Forward_APAP1.in `# Mean parameters`). The publication's Bayesian inference produces a full joint posterior over all 21 estimated parameters; that posterior, the per-individual draws, and the residual-error distribution are not exposed by the dpastoor scrape and were not transcribed into this file. The packaged model is therefore strictly a typical-value simulator.
 

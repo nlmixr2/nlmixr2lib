@@ -26,7 +26,7 @@ Farrell_2012_farletuzumab <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (Phase I study, MORAb-003-001)",
-      notes = "Switches the residual-error model between the Phase I proportional-only and the Phase II combined additive + proportional error reported in Farrell 2012 Table 3. Derived from the trial identifier. Renamed from generic canonical PHASE2 to paper-specific STUDY_FARLETUZUMAB_PHASE2 on 2026-06-19 per the canonical-register standardization audit (operator decision: the generic PHASE2 token collided with Valenzuela 2025's PHASE1 canonical that picks the opposite reference category).",
+      notes = "Switches the residual-error model between the Phase I proportional-only and the Phase II combined additive + proportional error reported in Farrell 2012 Table 3. Derived from the trial identifier. Renamed from the generic canonical PHASE2 to the paper-specific STUDY_FARLETUZUMAB_PHASE2 on 2026-06-19 by decision of the maintainers, because the generic PHASE2 token collided with Valenzuela 2025's PHASE1 canonical, which picks the opposite reference category.",
       source_name = "STUDY"
     )
   )

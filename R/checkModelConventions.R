@@ -1616,7 +1616,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # needs to be demoted to "warning" to land a change, the change is
 # reintroducing the class the rule exists to prevent.
 # History and the false-positive classes are in
-# inst/references/fixed-provenance-followup.md.
+# data-raw/fixed-provenance-followup.md.
 #
 # Issue #479: `iniDf$fix` is the only machine-readable signal that a value was
 # not estimated from the study's own data. Models that SAY in the label that a
@@ -1738,7 +1738,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   cd <- meta$compartmentData
   if (is.null(cd)) {
     # Warning rather than error while the database is being backfilled; see
-    # inst/references/compartment-data-followup.md for the remaining models.
+    # data-raw/compartment-data-followup.md for the remaining models.
     return(rbind(
       issues,
       .issue(

@@ -238,13 +238,13 @@ data.frame(
 stopifnot(all.equal(got_hcensor, expected_hcensor))
 ```
 
-# Mechanistic sanity checks (verification-checklist F.2)
+# Mechanistic sanity checks
 
 The model is a TTE survival model, not a PK/PD concentration model;
 PKNCA is not the right validation tool. The checks below exercise the
 hazard equations under controlled inputs.
 
-## F.2.1 - typical-value cessation-hazard transitions match Table 3 exactly
+## Check 1 - typical-value cessation-hazard transitions match Table 3 exactly
 
 The piecewise-exponential cessation hazard is verified at
 representative times within each interval:
@@ -269,7 +269,7 @@ stopifnot(all.equal(got_hcess_aa, expected_hcess))
 stopifnot(all(abs(got_hcess_cc - 2.29 * expected_hcess) < 1e-6))
 ```
 
-## F.2.2 - survival is monotonically non-increasing in both hazards
+## Check 2 - survival is monotonically non-increasing in both hazards
 
 ```{r monotonic}
 stopifnot(all(diff(sim_aa$sur)        <= 1e-12))
@@ -277,7 +277,7 @@ stopifnot(all(diff(sim_cc$sur)        <= 1e-12))
 stopifnot(all(diff(sim_aa$sur_cens) <= 1e-12))
 ```
 
-## F.2.3 - the simulated 1-year cessation probability agrees with the paper's observed cessation rate
+## Check 3 - the simulated 1-year cessation probability agrees with the paper's observed cessation rate
 
 Hopkins 2015 reports (Results 'Patients') that 34/105 (32.4%) patients
 ceased leflunomide due to toxicity before day 365. This raw rate is
@@ -333,7 +333,7 @@ data.frame(metric = c("S_censor(365)", "Fraction still under follow-up at day 36
                       round(sur_cens_365,        3)))
 ```
 
-## F.2.4 - dimensional consistency
+## Check 4 - dimensional consistency
 
 Every hazard value is in units of 1/day; the cumulative hazard is
 dimensionless (integrated over days); `sur = exp(-cumhaz)` is a

@@ -46,7 +46,7 @@ Morris_2011_artesunate <- function() {
         "non-pregnant reference and pregnant women have approximately 42.3%",
         "higher CLM (Morris 2011 Table 2). Postpartum data could not be",
         "characterised by any tested structural model (Results, p.123 of the",
-        "trimmed source) and are not represented in this final model."
+        "paper) and are not represented in this final model."
       ),
       source_name = "PREG"
     )

@@ -162,7 +162,7 @@ Zhang_2024_olanzapine <- function() {
       "pyrazinamide, risperidone, sertraline, valsartan, zaleplon, ziprasidone, zopiclone).",
       "Only body weight and concomitant aripiprazole survived (inclusion dOFV > 6.63,",
       "exclusion dOFV > 10.8). The per-drug hypothesis tests are Supplementary Table S1,",
-      "which is not on disk here. Globulin, total protein, mean corpuscular hemoglobin and",
+      "which was not available when this model was built. Globulin, total protein, mean corpuscular hemoglobin and",
       "mean corpuscular hemoglobin concentration have no canonical covariate-column entry",
       "and so are recorded in this note rather than in covariatesDataExcluded.",
       "The model was qualified by goodness-of-fit plots, a VPC, and a 1000-replicate",

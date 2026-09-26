@@ -153,8 +153,7 @@ Kloos_2021_pegasparaginase <- function() {
     # model (8.50 / 4.14 / 2.74 days vs the stated 8.5 / 4.1 / 2.7) where the
     # multiplicative form misses them by 1.9-2.7x. See the vignette's
     # 'Assumptions and deviations' section for the full evidence table. This
-    # reading was ratified by the operator (sidecar request-001 / response-001,
-    # question q1, option A).
+    # reading was ratified by the maintainers.
     lcl_time <- log(0.082); label("Slope of the linear clearance increase after the split point (L/day/m^2/day)")  # Kloos 2021 Table 2 final model ('Slope CL_ind' 0.082 L/day/m^2/day, RSE 20.5%; bootstrap 0.080, 95% CI 0.052-0.115)
     tsplit   <- 12.7;       label("Time after dose at which clearance starts to increase (split point, days)")     # Kloos 2021 Table 2 final model (split point 12.7 days, RSE 0.2%; bootstrap 12.7, 95% CI 11.8-13.1)
 

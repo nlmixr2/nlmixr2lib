@@ -252,8 +252,8 @@ are:
 Figure 4 of the paper shows the target free-drug concentration-time
 profiles delivered by the syringe pumps. Reproducing the exact PK
 trajectories requires the published FAV PK structural model (Madelain
-2017, doi:10.1128/AAC.01305-16), which is not on disk. The vignette
-below uses the simplest source-faithful
+2017, doi:10.1128/AAC.01305-16), which was not available when this model
+was built. The vignette below uses the simplest source-faithful
 approximation: a piecewise-constant FAV concentration set to the
 reported average (Cavg) over each dosing interval. This preserves the
 24-h cumulative exposure (AUC) and recovers the day-5 reductions the
@@ -505,7 +505,7 @@ cat(sprintf("  net rate (should be ~0 at peak)    = %.2g PFU/mL/h\n",
   free-drug concentration-time profiles delivered by the HFIM syringe
   pumps. The paper cites Madelain 2017
   (doi:10.1128/AAC.01305-16) for the FAV PK structural model; that
-  paper is not on disk. The Figure 5 reproduction
+  paper was not available when this model was built. The Figure 5 reproduction
   above uses a piecewise-constant approximation
   (`CONC_FAV_UM = Cavg`) over each dosing interval, set to the
   published Cavg values (206 uM low-dose, 390 uM high-dose). This

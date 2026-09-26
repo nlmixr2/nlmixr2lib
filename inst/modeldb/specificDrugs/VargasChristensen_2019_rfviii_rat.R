@@ -67,7 +67,7 @@ VargasChristensen_2019_rfviii_rat <- function() {
         "(300 g = 0.3 kg; Methods) is assumed here as the WT/0.3 kg",
         "reference, so the typical CL value of 0.0287 L/h corresponds",
         "to a 0.3 kg rat. Cohort weight range 200-550 g (Methods).",
-        "The NONMEM code in Data S1 (not on disk) would nail down the",
+        "The NONMEM code in Data S1 (not available when this model was built) would nail down the",
         "reference; if it differs, simulated CL scales by",
         "(0.3 kg / actual_ref_kg)^0.75."
       ),

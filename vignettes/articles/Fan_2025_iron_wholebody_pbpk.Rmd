@@ -664,7 +664,7 @@ or its supplement. Each is flagged inline in the model file as well as here.
    column was in fact the authors' basis - which is arguable, since both
    validation cohorts had iron-deficiency anaemia.
 2. **The rat's `mtt_rbc` and `q_bone_rbc`.** Neither is reported for the rat
-   anywhere on disk, yet both are load-bearing for the bone and spleen profiles
+   in any available source, yet both are load-bearing for the bone and spleen profiles
    of Figure 5. Per a maintainer ruling they were obtained by
    applying the paper's **own** Eq. (9) allometry rather than by copying the
    printed mouse values. The rat red-cell lifespan is derived from the paper's

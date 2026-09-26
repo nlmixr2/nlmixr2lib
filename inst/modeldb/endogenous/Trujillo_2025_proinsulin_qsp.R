@@ -201,7 +201,7 @@ Trujillo_2025_proinsulin_qsp <- function() {
 
     # --- Hepatic glucose handling ----------------------------------------
     lvmax_g6p    <- fixed(log(560))    ; label("Maximum hepatic glucose release Vmax_G6P (mg/min) -- DERIVED, not tabulated")
-    # ^^ NOT REPORTED ANYWHERE ON DISK. Vmax_G6P is used by the Ra_Liver rule
+    # ^^ NOT REPORTED in any available source. Vmax_G6P is used by the Ra_Liver rule
     #    in Table S2 but has no row in Table S3. Derived here from the paper's
     #    own numbers, not substituted from outside the paper:
     #      (a) At the model's own normal reference point (Conc_Glucose_Pl =

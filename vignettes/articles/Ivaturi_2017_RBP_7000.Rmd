@@ -267,7 +267,7 @@ the 90 mg and 120 mg arms.
   central). Table 2 / A2 report the rate constants but do NOT report an
   explicit bioavailability split between the two paths; the upstream Gomeni
   2013 / Laffont 2014 / Laffont 2015 papers (where the structural model was
-  originally developed) are not on disk. The package model encodes the
+  originally developed) were not available when this model was built. The package model encodes the
   simplest mass-conserving interpretation consistent with the Table 2
   parameters: a single SC depot that simultaneously eliminates via ka1
   (directly to central, fast-peak path) and via ktr (into transit1 of the

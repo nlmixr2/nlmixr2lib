@@ -453,18 +453,18 @@ knitr::kable(
 
 - **No supplement Figure S1 / S2 covariate-pairwise screen.** The paper's
   supplement Figures S1 and S2 (scatter and box plots of pairwise covariate
-  correlations) are not on disk in zip form and were not used to gate the
-  extraction; the final-model covariates retained after backward elimination
-  are those reported in Table 2 and reproduced here.
+  correlations) were not available when this model was built; the final-model
+  covariates retained after backward elimination are those reported in Table 2
+  and reproduced here.
 
 - **Population body-weight distribution.** The published Table S1 (full
-  baseline-demographics table) was not on disk in zip form; the virtual
-  cohort uses a normal weight distribution centred at the main-paper mean
-  (77.2 kg) with a standard deviation chosen to span the published 44.0-161
-  kg range. This is conservative for the cycle-1 NCA comparison because the
-  allometric weight scaling on CL and Vc, plus the dose-on-CL effect at
-  fixed mg/kg dosing, are not strongly sensitive to the exact weight
-  distribution.
+  baseline-demographics table) was not available when this model was built;
+  the virtual cohort uses a normal weight distribution centred at the
+  main-paper mean (77.2 kg) with a standard deviation chosen to span the
+  published 44.0-161 kg range. This is conservative for the cycle-1 NCA
+  comparison because the allometric weight scaling on CL and Vc, plus the
+  dose-on-CL effect at fixed mg/kg dosing, are not strongly sensitive to the
+  exact weight distribution.
 
 - **Reference-disease group.** The reference disease group for the
   malignancy-effect coefficients on CL, Vc, and Bmax is "solid tumors and

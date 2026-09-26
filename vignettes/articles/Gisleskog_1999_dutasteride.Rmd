@@ -455,8 +455,8 @@ knitr::kable(t_half_check,
 
 - **Errata / Vmax unit.** The published Table 1 reports Vmax in the
   printed form `5.91 (mu-g h^-1)`, where mu is the Greek lower-case
-  letter for "micro-". Common PDF text extractors (pdftotext, docling,
-  PyMuPDF) render the embedded Symbol-font mu glyph as ASCII "m",
+  letter for "micro-". Common PDF text extractors (pdftotext, PyMuPDF
+  and others) render the embedded Symbol-font mu glyph as ASCII "m",
   giving the misleading appearance "5.91 mg/h" in plain-text dumps.
   The model file uses the correct micro-gram value (`lvmax <-
   log(0.00591)` in the mg/h state-scale of the ODE), and the unit is

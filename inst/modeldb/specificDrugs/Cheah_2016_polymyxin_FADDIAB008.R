@@ -117,7 +117,7 @@ Cheah_2016_polymyxin_FADDIAB008 <- function() {
     s_max <- fixed(300)
     label("Maximal fold reduction in effective polymyxin via adaptive resistance (S_max; per Cheah 2016)")  # Cheah 2016 Table 1 (fixed) + Results paragraph 3
     sc50 <- fixed(36.5)
-    label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50;, inherited from Bulitta 2015)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (operator-approved fixed-from-class proxy; not in Cheah 2016)
+    label("Adaptive-resistance half-saturation polymyxin concentration (mg/L; SC50;, inherited from Bulitta 2015)")  # Bulitta JB et al. 2015 AAC 59:2315-2327, Table 1 PAO1-RH (fixed-from-class proxy approved by the maintainers; not in Cheah 2016)
     k_adapt <- 8.09
     label("Adaptation rate constant for R_adaptive turnover (1/h; k_adapt)")  # Cheah 2016 Table 1, FADDI-AB008
 

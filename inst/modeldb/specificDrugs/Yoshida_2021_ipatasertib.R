@@ -94,7 +94,7 @@ Yoshida_2021_ipatasertib <- function() {
     n_observations = "3050 ipatasertib observations and 2050 M1 observations across the five studies.",
     hepatic_impairment = c(Normal = 78.7, Mild = 20.2, Moderate = 0.585, Missing = 0.585),
     egfr_range = "39.4 to 212 mL/min/1.73 m^2; median 92 (geometric mean 94.4).",
-    notes = "Mild and moderate renal impairment, mild hepatic impairment, and race were tested but not identified as significant covariates in the final reduced models per Yoshida 2021 Discussion. Ipatasertib was fitted in NONMEM 7.4.3 with FOCE-I (run230 reported MINIMIZATION SUCCESSFUL; the standard 'however, problems occurred with the minimization' caveat appeared but the covariance step ran successfully). The M1 model was fitted in a separate NONMEM run; the on-disk control stream is in Supplementary Text S2 and the final estimates come from paper Table 4."
+    notes = "Mild and moderate renal impairment, mild hepatic impairment, and race were tested but not identified as significant covariates in the final reduced models per Yoshida 2021 Discussion. Ipatasertib was fitted in NONMEM 7.4.3 with FOCE-I (run230 reported MINIMIZATION SUCCESSFUL; the standard 'however, problems occurred with the minimization' caveat appeared but the covariance step ran successfully). The M1 model was fitted in a separate NONMEM run; the control stream is reproduced in Supplementary Text S2 and the final estimates come from paper Table 4."
   )
 
   ini({
@@ -103,8 +103,8 @@ Yoshida_2021_ipatasertib <- function() {
     # ------------------------------------------------------------------
     # All parent values come from the run230.lst FINAL PARAMETER
     # ESTIMATE block; they round to the paper Table 3 values to within
-    # the precision the paper reports. The NONMEM listing was the
-    # operator-provided authoritative source.
+    # the precision the paper reports. The NONMEM listing, supplied by
+    # the maintainers, was taken as the authoritative source.
 
     lcl <- log(162)
     label("Ipatasertib apparent clearance CL/F (L/h)")                # run230.lst FINAL PARAMETER ESTIMATE TH1 = 1.62E+02; Table 3
@@ -177,7 +177,7 @@ Yoshida_2021_ipatasertib <- function() {
     # METABOLITE (M1 / G-037720) STRUCTURAL PARAMETERS
     # ------------------------------------------------------------------
     # All M1 values come from paper Table 4 (final reduced model for M1
-    # PK). No NONMEM listing file is on disk for the M1 fit; the source
+    # PK). No NONMEM listing file was available for the M1 fit; the source
     # NONMEM control stream is reproduced in Supplementary Text S2 (the
     # initial-value THETAs there are run-development starting values
     # that differ slightly from the Table 4 final estimates, so Table 4

@@ -294,7 +294,7 @@ Nakashima_2015_valproic_acid_le18y <- function() {
     # Nakashima_2015_valproic_acid.R for the full nine-constant table
     # documenting why the upstream Ogusu 2014 values are used in
     # preference to Nakashima 2015's own restatement in its Eqs 1-2
-    # (operator ruling, sidecar oare_PMC9833507 q2 = A), and for the
+    # (a decision of the maintainers), and for the
     # physiological falsifier on the restated Vd/F. Nakashima 2015
     # Methods: "The individual PK parameters, determined from our
     # previously reported population PK model [8], were fixed in the

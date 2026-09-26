@@ -375,13 +375,13 @@ formation kinetics on either species' tail).
   reference value. The reference value is inherited a priori from the
   Thailand-Cambodia popPK/PD analysis (Lohy Das 2017 *AAPS Journal*
   19:1842-54, reference [36] of the current paper). That upstream paper
-  is not on disk in the source directory used by this extraction. The
+  was not available when this model was built. The
   maintainers therefore decided (2026-05-30) to drop Eqs. 3 and 4 and
   extract a self-contained PK model rather than fabricate
   `Log(PARA_min)`. The structural disposition parameters (CL, V, MTT for
   both species, F, allometric scaling) are fully reproducible from
   Lohy Das 2018 Table 2 alone; the omitted covariate effects can be added
-  in a follow-up extraction once the upstream paper is on disk and the
+  in a follow-up extraction once the upstream paper becomes available and the
   reference value is confirmed.
 
 * **PD layer is not encoded.** Lohy Das 2018 reports a parasite-biomass

@@ -83,8 +83,8 @@ deCacqueray_2022_cefepime <- function() {
       "collected from 59 patients; the sampling times are not reported in",
       "the secondary source, and Gotta 2025 characterise the underlying",
       "design as sparse. The de Cacqueray 2022 primary publication is not",
-      "open access and was not available on disk when this model was",
-      "extracted, so no baseline demographic table, no covariate ranges,",
+      "open access and was not available when this model was built,",
+      "so no baseline demographic table, no covariate ranges,",
       "and no parameter uncertainty (RSE / confidence intervals) could be",
       "recorded. Neonates were NOT included in model development, which is",
       "why Gotta 2025 do not apply this model below 1 month of age",
@@ -134,7 +134,7 @@ deCacqueray_2022_cefepime <- function() {
     # main text nor its supplemental methods attribute it to de Cacqueray
     # 2022. It may therefore be an assumption made by Gotta et al. rather
     # than a de Cacqueray estimate. It is retained here because it is the
-    # value on disk and the value that produced Gotta 2025's published
+    # deposited value and the value that produced Gotta 2025's published
     # Table 2 percentages; verify against the primary when obtainable.
     etalcl + etalvc ~ c(0.1521,
                         0.06825, 0.1225) # Gotta 2025 Section 2.2.2 (39% CL, 35% Vc) + Suppl. Data S1 sdCl = 0.39, sdV = 0.35, corr_Cl_V = 0.5

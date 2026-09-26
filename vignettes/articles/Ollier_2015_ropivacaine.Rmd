@@ -33,7 +33,7 @@ kinetics; and the size of the hepatic resection reduces free-drug clearance by
 53%. The paper's third retained covariate (a per-subject postoperative
 fibrinogen slope on the binding-site production rate) was dropped in this
 packaged model because the population-mean reference used to centre the
-covariate was not reported in any source on disk. See **Assumptions and
+covariate was not reported in any available source. See **Assumptions and
 deviations** below.
 
 # Population

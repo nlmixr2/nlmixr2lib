@@ -216,7 +216,7 @@ Roepcke_2018_tak_079 <- function() {
     # PK layer -- 2-compartment linear disposition with QSS-TMDD elimination
     # and first-order SC absorption. Equations from Roepcke 2018 Figure 2
     # and the Berkeley Madonna reference implementation in Supplement
-    # (lines 155-213 of PMID_29864242_trimmed.md).
+    # (Supplementary Material).
     # =========================================================================
 
     # Bioavailability (logit -> fraction). Only applies to depot dosing (SC).

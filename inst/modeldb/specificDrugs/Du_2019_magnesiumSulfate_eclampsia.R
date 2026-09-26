@@ -93,13 +93,13 @@ Du_2019_magnesiumSulfate_eclampsia <- function() {
       description = "Previous anticonvulsant use before magnesium sulfate treatment (yes/no).",
       units = "(binary)",
       type = "binary",
-      notes = "Screened as a candidate covariate on the eclampsia logit and NOT retained: Du 2019 Results, Exposure-Response Model Results -- 'Level of blood pressure/urinary protein and anticonvulsant drug use before MgSO4 treatment did not show a significant relationship with eclampsia'. No point estimate exists on disk. Table S3 reports the Magpie distribution as No 8969 (90.7%), Yes 861 (8.7%), Unknown 61 (0.6%); not collected in the Thai study."
+      notes = "Screened as a candidate covariate on the eclampsia logit and NOT retained: Du 2019 Results, Exposure-Response Model Results -- 'Level of blood pressure/urinary protein and anticonvulsant drug use before MgSO4 treatment did not show a significant relationship with eclampsia'. No point estimate exists in any available source. Table S3 reports the Magpie distribution as No 8969 (90.7%), Yes 861 (8.7%), Unknown 61 (0.6%); not collected in the Thai study."
     ),
     BP_PROTEINURIA_LEVEL = list(
       description = "Composite preeclampsia severity category built from blood pressure and urinary protein: level 2 = diastolic BP at least 110 mmHg on two occasions or systolic BP at least 170 mmHg on two occasions plus at least 3+ proteinuria; level 1 = diastolic BP at least 100 mmHg on two occasions or systolic BP at least 150 mmHg on two occasions plus at least 2+ proteinuria; level 0 = neither.",
       units = "(0, 1, 2)",
       type = "categorical",
-      notes = "Screened and NOT retained (same Results sentence as PRIOR_ANTICONV). No point estimate exists on disk. Table S3 Magpie distribution: level 2 2459 (24.9%), level 1 4252 (43.0%), level 0 3176 (32.1%), unknown 4 (0.04%); not collected in the Thai study. Du 2019 notes the three levels were derived for this analysis and are only similar to, not identical with, the Magpie Trial's own dichotomous severe/not-severe classification, because signs and symptoms of imminent eclampsia were unavailable."
+      notes = "Screened and NOT retained (same Results sentence as PRIOR_ANTICONV). No point estimate exists in any available source. Table S3 Magpie distribution: level 2 2459 (24.9%), level 1 4252 (43.0%), level 0 3176 (32.1%), unknown 4 (0.04%); not collected in the Thai study. Du 2019 notes the three levels were derived for this analysis and are only similar to, not identical with, the Magpie Trial's own dichotomous severe/not-severe classification, because signs and symptoms of imminent eclampsia were unavailable."
     )
   )
 

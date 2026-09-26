@@ -92,9 +92,9 @@ tribble(
   knitr::kable(caption = "Source trace for every parameter and equation.")
 ```
 
-**Note on equation recovery.** The text extracted from this article's PDF
-dropped all seven display equations as `formula-not-decoded`. Equations 1-7 were
-recovered from the PDF with `pdftotext -layout`. Equations 5-7 as printed are:
+**Note on equation recovery.** The article's seven display equations do not
+survive ordinary text extraction from the PDF. Equations 1-7 were recovered
+with `pdftotext -layout`. Equations 5-7 as printed are:
 
 ```
 (5)  dOEm/dt      = kon * Clung * Emfree - koff * OEm
@@ -426,7 +426,7 @@ pending author correspondence.
    a user-supplied `CEFFECT` covariate.
 
 2. **The complex ODE carries an inferred `-kdeg*complex` term that is not in
-   any on-disk source.** This is the single most important deviation.
+   any available source.** This is the single most important deviation.
    * As printed, Eq 5 is `dOEm/dt = kon*Clung*Emfree - koff*OEm`, and the
      authors' supplementary listing agrees (`d/dt(TC) = kon*Cc*fu*Tfree -
      Koff*TC`). With `koff = 0` this makes `dOEm/dt >= 0` always, so the

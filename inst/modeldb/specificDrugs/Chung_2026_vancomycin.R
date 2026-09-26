@@ -113,8 +113,9 @@ Chung_2026_vancomycin <- function() {
     # individual predictions (Figure 2b), neither of which is computable
     # without them -- but no omega and no sigma is printed anywhere in
     # Chung 2026 or its supplementary file list, and Chung 2023 is paywalled
-    # and not on disk. The magnitudes are therefore encoded as zero rather
-    # than invented; simulations from this model are typical-value profiles.
+    # and was not available when this model was built. The magnitudes are
+    # therefore encoded as zero rather than invented; simulations from this
+    # model are typical-value profiles.
     # See the vignette Errata.
     propSd <- fixed(0); label("Proportional residual SD (fraction; 0 -- not reported in the source)")  # Chung 2026: no residual-error estimate published
     addSd  <- fixed(0); label("Additive residual SD (mg/L; 0 -- not reported in the source)")          # Chung 2026: no residual-error estimate published

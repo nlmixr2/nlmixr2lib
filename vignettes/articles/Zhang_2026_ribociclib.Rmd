@@ -94,7 +94,7 @@ tibble::tribble(
   "Ki (equilibrium Kd) for CDK6",  "kd6",          "39 nmol/L",   "Table 1, CDK4/6 occupancy block, 'K i (nM) 10/39', second of pair (ref 24)",
   "Dissociation rate constant",    "koff",         "3.78 /h",     "Table 1, koff row: 0.063 /min, x 60 min/h (ref 25)",
   "Starting CDK4/6 expression",    "cdk0",         "100 nmol/L",  "Methods prose beneath Eq 1: 'set to a value of 0.1 uM'",
-  "Target-engagement ODE",         "d/dt(complex)","Eq 1",        "Methods, Eq 1 (recovered from the PDF; the text extracted from the PDF renders it as 'formula-not-decoded')"
+  "Target-engagement ODE",         "d/dt(complex)","Eq 1",        "Methods, Eq 1 (read from the typeset PDF page; the equation does not survive plain text extraction)"
 ) |>
   knitr::kable()
 ```
@@ -532,7 +532,7 @@ stopifnot(
 
 Both available drivers put CDK4 occupancy at 400 mg OD marginally above 90%
 (92-94%), where the paper reports a failure. Three candidate causes, none of
-which is resolvable from the on-disk sources:
+which is resolvable from the available sources:
 
 1. The Figure 3 simulations use a BCBM virtual population aligned with Johnson's
    cohort, whereas the plasma anchors used here come from Infante's cohort and
@@ -612,5 +612,5 @@ No erratum or corrigendum exists for this article as of the extraction date. The
 single supplementary file (MOESM1) was retrieved and contains one figure
 (S1, simulated intracranial CDK4/6 occupancy by regimen, presented as means with
 10th-90th percentiles); it contains no parameter table and no equations. Eq 1
-was recovered from the PDF itself because the extracted text renders it as
-a `formula-not-decoded` marker.
+was read from the typeset PDF page because it does not survive plain text
+extraction.

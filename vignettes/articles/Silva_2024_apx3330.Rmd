@@ -411,6 +411,10 @@ stopifnot(abs(max(fed_shifted$Cc) / max(fasted$Cc) - 1) < 1e-6)
 ```{r pknca}
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 # Guarantee a time-zero record per subject; pre-dose concentration after an

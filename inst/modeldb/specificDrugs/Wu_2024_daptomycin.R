@@ -180,7 +180,7 @@ Wu_2024_daptomycin <- function() {
         "marginally associated with individual-specific CL and was excluded",
         "from the backward elimination process', and Supplementary Table S1",
         "model 3 (base + SOFA on CL) gives dOFV = -1.224, p > 0.05. Table 1",
-        "median 12 (range 4-19). NOTE: as of this extraction 'SOFA' is NOT a",
+        "median 12 (range 4-19). NOTE: when this model was built 'SOFA' was NOT a",
         "registered canonical in inst/references/covariate-columns.md (the only",
         "mention of the score there is incidental, inside the LACT entry's",
         "notes). It is recorded here under its plain source name purely to",
@@ -271,7 +271,7 @@ Wu_2024_daptomycin <- function() {
     # run entirely -- it also disagrees with Table 2 on VC (4.20 vs 4.14), VP
     # (3.67 vs 3.52), Q (2.13 vs 2.09) and the CRRT clearance (0.388 vs 0.386)
     # -- so it carries no weight for the final model. That leaves equation vs
-    # Table 2, which no on-disk source resolves: the Frontiers supplement is a
+    # Table 2, which no available source resolves: the Frontiers supplement is a
     # model-building OFV table with no parameter values and no control stream,
     # and the Table 3 Monte Carlo AUCs are too noisy to arbitrate (see the
     # vignette Errata). The equation is preferred per the standing

@@ -352,7 +352,8 @@ as children without obesity. The dosing scheme simulated is:
 | > 4 | > 39 | 1800 mg/day | Twice daily |
 
 The paper drew 2000 virtual children from the NHANES and Pediatric Trials
-Network demographic repositories. Those repositories are not on disk, so the
+Network demographic repositories. Those repositories were not available when
+this model was built, so the
 cohort below is instead constructed from quantities the paper itself reports,
 and the construction is stated explicitly rather than sampled from an
 external growth reference:
@@ -767,7 +768,8 @@ knitr::kable(tier_med |> dplyr::rename(`Dosing tier` = tier,
   `~ fixed(0)`, which is numerically equivalent and avoids a singular OMEGA.
 * **Virtual cohort is a paper-anchored reconstruction, not the paper's.** The
   paper sampled 2000 children from the NHANES and Pediatric Trials Network
-  demographic repositories, neither of which is on disk. The cohort here is
+  demographic repositories, neither of which was available when this model was
+  built. The cohort here is
   built from quantities the paper reports: the BMI strata are the Table 2
   medians for the mixed-obesity POP01 cohort (18.5 kg/m^2) and the all-obese
   AED01 cohort (24.6 kg/m^2), and heights follow from a non-obese weight

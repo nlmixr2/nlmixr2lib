@@ -318,8 +318,8 @@ knitr::kable(
   provenance.** Suleiman 2018 Sect. 3.2 states "Residual variability
   was best described by a proportional error model" but Table 3 does
   not report the magnitude; the value is expected to be in the paper's
-  Electronic Supplementary Material, which was not on disk during
-  extraction. The packaged value 0.19 is carried from the sibling
+  Electronic Supplementary Material, which was not available when this
+  model was built. The packaged value 0.19 is carried from the sibling
   `Suleiman_2019_risankizumab` model in the same registry: same first
   author (Suleiman AA) and same authorship group (Khatri, Minocha,
   Othman), same drug, and the 2018 phase I-II cohort is a strict

@@ -201,7 +201,8 @@ beta_analytic <- function(cl, vc, q, vp) {
 
 hl_analytic <- log(2) / beta_analytic(ref[["cl"]], ref[["vc"]], ref[["q"]], ref[["vp"]])
 
-tail_fit <- s_ref |> dplyr::filter(time >= 24, time <= 72, Cc > 0)
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_fit <- s_ref |> dplyr::filter(time >= 24, time <= 72, Cc >= 1e-6 * max(Cc, na.rm = TRUE))
 hl_solve <- -log(2) / stats::coef(stats::lm(log(Cc) ~ time, data = tail_fit))[["time"]]
 
 cat(sprintf("Terminal half-life: analytic %.3f h, from the solve %.3f h (%.3f%% diff)\n",
@@ -439,6 +440,10 @@ knitr::kable(blq, caption = "Simulated observations below the 5 ng/mL LLOQ over 
 ```{r pknca}
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 # Guarantee a time = 0 row per subject so PKNCA can anchor AUC from 0. The dose

@@ -489,13 +489,16 @@ stopifnot(max(abs(sim$Cc / closed_form - 1)) < 1e-8)   # measured ~1e-10
 stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE)))
 
 # Before PKNCA: assert the undershoot is noise, floor it, and drop the
-# numerically-zero tail so a half-life fit does not follow integrator noise.
+# numerically-zero TAIL so a half-life fit does not follow integrator noise.
+# Floor only what follows the peak: a plain `Cc >= 1e-6 * max(Cc)` also
+# deletes rising-phase points on lag / transit absorption models and shifts
+# the trapezoid AUC.
 stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE), na.rm = TRUE))
 conc <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(Cc = pmax(Cc, 0)) |>
   dplyr::group_by(id) |>
-  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::ungroup()
 
 # Subjects that return NA: raise the step budget before anything else.
@@ -525,6 +528,12 @@ sim <- rxode2::rxSolve(mod, events = ev, maxsteps = 1e6)
   AUC identity, which holds regardless of absorption shape); write the
   measured agreement and the mechanism into a comment beside the call.
 - Never `filter(!is.na(Cc))` past a failure you have not explained.
+- `ss = 1` solves: pass `maxsteps = 1e6`. liblsoda's 70000-step budget is
+  charged cumulatively across the steady-state search's dose-to-dose
+  restarts, so a subject with a several-hundred-hour half-life comes back
+  `NA` (or a single-subject solve aborts) for no better reason than its eta
+  draw. Long dose-only run-ins and dense output grids (which cap `hmax`)
+  hit the same limit.
 
 ## Process reminder
 

@@ -163,7 +163,7 @@ Zhang_2025_fluconazole <- function() {
         "column MEMAREA. NOT a canonical register name: no entry in",
         "inst/references/covariate-columns.md covers dialyser membrane surface area, and none was",
         "minted here because Zhang 2025 screened and rejected the covariate. A future model that",
-        "RETAINS a dialyser-membrane covariate should file a naming sidecar rather than reuse this",
+        "RETAINS a dialyser-membrane covariate should register a canonical name rather than reuse this",
         "ad-hoc name.",
         sep = " "
       )

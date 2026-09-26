@@ -58,7 +58,7 @@ Canini_2018_setrobuvir <- function() {
     disease_state = "Chronic HCV genotype-1 infection (44 percent GT1A, 56 percent GT1B in the 27 treated patients from study D); healthy volunteers for PK studies A, B, and C.",
     dose_range = "200 mg to 2000 mg single or repeated oral setrobuvir. Multiple-dose regimens all BID or QD as above.",
     regions = "Canini 2018 does not report study region; study D references Antiviral Therapy dose-ranging trial (Roche).",
-    notes = "Population sourced from Canini 2018 Methods, Table 1 (PK study designs), and Table 2 (baseline characteristics of the 27 treated patients: 5 GT1A + 6 GT1B in arm 1 200 mg; 3 GT1A + 5 GT1B in arm 2 400 mg; 4 GT1A + 4 GT1B in arm 3 800 mg). Median initial viral load ranged from 5.71 to 6.89 log10 IU/mL across dose arms (Table 2). Baseline viral load was not significantly associated with dose group (P = 0.35, Spearman). Baseline demographics beyond genotype and viral load are not tabulated in the trimmed manuscript (see Additional file 1 supplement, not on disk)."
+    notes = "Population sourced from Canini 2018 Methods, Table 1 (PK study designs), and Table 2 (baseline characteristics of the 27 treated patients: 5 GT1A + 6 GT1B in arm 1 200 mg; 3 GT1A + 5 GT1B in arm 2 400 mg; 4 GT1A + 4 GT1B in arm 3 800 mg). Median initial viral load ranged from 5.71 to 6.89 log10 IU/mL across dose arms (Table 2). Baseline viral load was not significantly associated with dose group (P = 0.35, Spearman). Baseline demographics beyond genotype and viral load are not tabulated in the main paper; the Additional file 1 supplement was not available when this model was built."
   )
 
   ini({

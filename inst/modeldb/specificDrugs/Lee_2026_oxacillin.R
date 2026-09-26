@@ -298,7 +298,7 @@ Lee_2026_oxacillin <- function() {
     # unit and no 'variance' / 'SD' / 'CV' qualifier. Read as a NONMEM
     # OMEGA variance it implies an SD of sqrt(0.568) = 0.754 on the log
     # scale; read as a standard deviation it is 0.568 itself. Two
-    # independent checks against on-disk sources both exclude the
+    # independent checks against the available sources both exclude the
     # variance reading:
     #
     #   1. Supplemental Table S2 gives each infant's dose rate, weight,

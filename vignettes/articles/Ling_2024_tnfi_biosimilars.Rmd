@@ -761,7 +761,7 @@ as.data.frame(nca_res$result) |>
 - **Three values in Ling 2024 Table 3 are not used as printed.** `ka` and `CL/F`
   are replaced with the values the paper's own text and the first author's thesis
   print, and the additive residual error is fixed at zero because the tabulated
-  value is falsified and no corrected value exists anywhere on disk. See the
+  value is falsified and no corrected value exists in any available source. See the
   Errata section for the full evidence. Both corrections come from printed prose,
   not from figure-fitting; the figure comparisons are confirmation, not the
   source.

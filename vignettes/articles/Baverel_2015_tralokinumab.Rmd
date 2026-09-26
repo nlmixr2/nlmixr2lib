@@ -296,7 +296,7 @@ paper-derived value by more than 20%; investigate the source rather than
 tuning. Cmax and Tmax are not tabulated against reference values because
 Baverel 2015 reports only the structural PK estimates (Table 3) and a
 graphical profile (Figure 3, supplementary Table S2); single-dose NCA Cmax
-and Tmax values do not appear in the on-disk text.
+and Tmax values do not appear in the paper's text.
 
 # Assumptions and deviations
 

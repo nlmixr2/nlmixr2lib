@@ -65,9 +65,9 @@ Zhou_2015_bms911543_hlm <- function() {
   # A microsomal incubation has no body compartments, so each chemical species
   # in the incubation is a state named after the species itself. `m1` is the
   # metabolite the paper names only as M1 (structure in Supplementary Figure
-  # S1, which is not on disk); it is not a registered metabolite suffix, so
-  # the parent + metabolite `<canonical>_<metab>` scheme in
-  # compartment-names.md does not apply.
+  # S1, which was not available when this model was built); it is not a
+  # registered metabolite suffix, so the parent + metabolite
+  # `<canonical>_<metab>` scheme in compartment-names.md does not apply.
   paper_specific_compartments <- c("bms911543", "m1")
 
   compartmentData <- list(
@@ -96,7 +96,7 @@ Zhou_2015_bms911543_hlm <- function() {
     replication = "All experiments were performed in triplicate; Km and Vmax were determined by nonlinear fitting in GraphPad Prism and are presented as mean and SE, but the SEs on Km and Vmax are not printed",
     disease_state = "not applicable (in vitro)",
     notes = paste(
-      "This is the paper's own bench work and is the reason the extraction exists: the Simcyp V12 whole-body PBPK model built on top of these constants is a vendor platform model whose physiology is not published, and is recorded in the vignette rather than extracted.",
+      "This is the paper's own bench work and is the reason this model exists: the Simcyp V12 whole-body PBPK model built on top of these constants is a vendor platform model whose physiology is not published, and is recorded in the vignette rather than extracted.",
       "Preliminary reaction phenotyping (data not shown in the source) established that CYP1A2, CYP3A4 and CYP2J2 are the only CYP enzymes capable of producing M1. The kinetic data in Figure 1, together with a CYP-inhibition study in HLM using specific chemical inhibitors (also data not shown), identified CYP1A2 as the primary enzyme, with CYP3A4 and CYP2J2 playing a minor role. The Simcyp model predicted CYP1A2 to carry 96 percent of total clearance.",
       "Studies in bile-duct cannulated rats showed direct excretion of BMS-911543 in bile and urine to be minimal, under 2 percent of total clearance, so metabolic clearance dominates.",
       "Three further metabolites (M2, M3, M4) were later found by profiling human plasma samples, and all were judged to be downstream products formed from M1; no kinetic constants are reported for them and they are not carried in this model.",

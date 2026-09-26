@@ -387,7 +387,8 @@ sim_arm <- function(dose, lbl) {
   set.seed(4)
   # Tight tolerances: dose proportionality is asserted per subject to 1e-6,
   # and the ODE at default tolerances lands at 1.6e-6.
-  rxode2::rxSolve(mod, events = ev, rtol = 1e-10, atol = 1e-12) |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  rxode2::rxSolve(mod, events = ev, rtol = 1e-10, atol = 1e-12, maxsteps = 1e6) |>
     as.data.frame() |>
     dplyr::mutate(treatment = lbl, amt_mg = dose)
 }

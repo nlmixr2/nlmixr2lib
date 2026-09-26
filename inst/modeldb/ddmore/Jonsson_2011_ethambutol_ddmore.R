@@ -64,7 +64,7 @@ Jonsson_2011_ethambutol_ddmore <- function() {
     disease_state = "Adults with pulmonary tuberculosis. 12% HIV-positive (HIV is a within-cohort comorbidity rather than the primary indication).",
     dose_range = "Oral ethambutol 800-1500 mg daily, multiple-dose at steady state, combined with a standard antitubercular backbone.",
     regions = "South Africa (two centers).",
-    notes = "Population descriptors are reproduced from the DDMODEL00000220 RDF `model-has-description-long` abstract, which mirrors the Jonsson 2011 paper's Methods. Estimated baseline creatinine clearance 79 mL/min (range 23-150 mL/min); renal function was not retained as a PK covariate. The Jonsson 2011 publication itself is not on disk in this worktree, so the demographics here come from the RDF abstract rather than the paper's Table 1; see the validation vignette's Errata section for the full caveat list."
+    notes = "Population descriptors are reproduced from the DDMODEL00000220 RDF `model-has-description-long` abstract, which mirrors the Jonsson 2011 paper's Methods. Estimated baseline creatinine clearance 79 mL/min (range 23-150 mL/min); renal function was not retained as a PK covariate. The Jonsson 2011 publication itself was not available when this model was built, so the demographics here come from the RDF abstract rather than the paper's Table 1; see the validation vignette's Errata section for the full caveat list."
   )
 
   ini({

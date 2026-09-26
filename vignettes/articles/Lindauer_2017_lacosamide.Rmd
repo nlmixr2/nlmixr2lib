@@ -387,7 +387,8 @@ Kaplan-Meier VPC and hazard-ratio spot check shown above.
   Section 2.3 refers to "a previously published population pharmacokinetic
   model for CBZ-CR" and "a previously developed population pharmacokinetic
   model for LCM" that produced the per-subject daily AUC used as the exposure
-  covariate. Neither upstream model is on disk for this extraction; the model
+  covariate. Neither upstream model was available when these models were built;
+  the model
   files therefore expose `AUC_LCM` and `AUC_CBZ` as data covariates and leave
   it to downstream users to supply per-subject AUC values (either from an
   external popPK simulation or from a fixed daily-dose scaling). The typical

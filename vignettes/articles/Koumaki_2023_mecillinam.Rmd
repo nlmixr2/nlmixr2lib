@@ -271,7 +271,9 @@ L/h and mL/kg to L unit conversions in `ini()`.
 # would drop the time-zero row that anchors AUC0-*.
 sim_nca <- sim_typ |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, treatment)
+  dplyr::select(id, time, Cc, treatment) |>
+  # Keep Cc >= 1e-6 * max(Cc) after the peak (solver noise below); the time-zero anchor is re-added below.
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc))
 
 sim_nca <- dplyr::bind_rows(
   sim_nca,

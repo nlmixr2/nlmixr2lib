@@ -364,7 +364,7 @@ range.
   rather than 87. The `population$sex_female_pct` field uses the
   reported 32 girls / 87 total = 36.8 %, with a note in
   `population$notes`. Three patients with unknown / unreported sex is
-  one possible explanation; the original record is not on disk to
+  one possible explanation; the original record is not available to
   resolve.
 - **Variability scale interpretation.** Urien 2013 Table 1 reports eta
   and gamma without explicitly stating whether the column is SD or

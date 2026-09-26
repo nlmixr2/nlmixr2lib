@@ -64,7 +64,7 @@ Kim_2026_midazolam_ecmo <- function() {
         "See the vignette Errata. Naturally time-varying (flow is",
         "titrated during support and stepped down during weaning); the",
         "paper does not state the time resolution used in the fit.",
-        "Operator-ratified canonical (sidecar oare_PMC12777615 q1)."
+        "Canonical ratified by the maintainers."
       ),
       source_name = "ECMO flow rate"
     )
@@ -260,7 +260,7 @@ Kim_2026_midazolam_ecmo <- function() {
     # 0-0.56). It is NOT encoded here: it names an eta on Q,1-OH MDZ,
     # and no variance for that eta is reported anywhere in the paper,
     # so the correlation cannot be built without inventing one.
-    # (Operator sidecar oare_PMC12777615 q3.) Recorded verbatim in the
+    # (Confirmed by the maintainers.) Recorded verbatim in the
     # vignette Errata so a reader holding the control stream can
     # restore it.
 

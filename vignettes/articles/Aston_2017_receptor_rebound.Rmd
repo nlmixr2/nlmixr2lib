@@ -58,8 +58,8 @@ test the paper's analytic rebound criteria against them.
   no residual-error model, so every parameter is encoded with `fixed()`.
 * **Example 2** reproduces the efalizumab model of Ng et al. (2005), developed
   in patients with moderate-to-severe plaque psoriasis. The subject count and
-  demographics live in Ng et al. (2005), which is **not on disk** for this
-  extraction, so `population$n_subjects` is left `NA` rather than guessed. The
+  demographics live in Ng et al. (2005), which was **not available** when
+  this model was built, so `population$n_subjects` is left `NA` rather than guessed. The
   model is body-weight normalised throughout (`Vc` = 64.3 mL/kg, dose in
   mg/kg), and CD11a is expressed as a percentage of its own baseline.
 
@@ -598,8 +598,8 @@ stopifnot(
 
 * **`Kmc03` is derived, not transcribed.** Aston et al. print eleven of the
   twelve Section 7.2 parameters but never print `Kmc03`. Ng et al. (2005),
-  where it originates, is **not open access and is not on disk** for this
-  extraction (the maintainers have it on their acquisition list). Rather than
+  where it originates, is **not open access and was not available** when
+  this model was built. Rather than
   guess it, the model
   file parameterises the CD11a pool by its baseline, `bl_total_target = 100`
   %CD11a - a value that is not an assumption but the definition of an endpoint
@@ -650,5 +650,5 @@ stopifnot(
   puts the free receptor at 3.14 nM against a branch point at
   `R0 + 1/H0 = 3.69` nM, so the statement holds throughout the swept range.
 * **Population demographics for Example 2 are unavailable.** They are reported
-  in Ng et al. (2005), which is not on disk; `n_subjects` and `n_studies` are
+  in Ng et al. (2005), which was not available; `n_subjects` and `n_studies` are
   left `NA` rather than guessed.

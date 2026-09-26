@@ -423,7 +423,7 @@ comparator values agree with the paper's.
   then below 0.1% across the tubular pH range 6.5-7.2 and every passive-diffusion
   term vanishes. The model-identified quantity is "un-ionized fraction is
   effectively zero", not a chemical constant, and `fixed(2)` simply encodes that.
-  No pKa was taken from training data or an external database.
+  No pKa was taken from an external database or assumed.
 
 - **`fu_invitro` is the framework default, not a Granda value.** The intrinsic
   permeability is `papp / fu_invitro / 1.5`. Granda 2024 does not report the

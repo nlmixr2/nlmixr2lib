@@ -296,7 +296,8 @@ lincmt_chk <- dplyr::bind_rows(lapply(names(lincmt_cov), function(nm) {
   hl <- vapply(c(TRUE, FALSE), function(lin) {
     s <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mods[[nm]]), ev,
                                        useLinCmt = lin, returnType = "data.frame"))
-    s <- s[s$time >= 100 & s$Cc > 0, ]
+    # Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+    s <- s[s$time >= 100 & s$Cc >= 1e-6 * max(s$Cc), ]
     -log(2) / stats::coef(stats::lm(log(Cc) ~ time, data = s))[["time"]]
   }, numeric(1))
   s <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mods[[nm]]), ev,

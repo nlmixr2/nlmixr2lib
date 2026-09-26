@@ -29,7 +29,7 @@ This is the **Multistate Tuberculosis Pharmacometric (MTP) model** for in vitro 
 * **In vitro** time-kill experiments on *M. tuberculosis* H37Rv (St George's University strain).
 * **12 replicate cultures** (per the `Output_real_MTP.lst` ETABAR `N = 12`) followed for ~200 days under untreated growth conditions on a single-subject-per-culture basis.
 * No human or animal subjects are involved; no covariates are encoded.
-* The Clewe 2016 publication was **not on disk** at extraction time, so a full cross-check against the paper's printed tables / figures was not performed. Parameter values derive from `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block only.
+* The Clewe 2016 publication was **not available** when this model was built, so a full cross-check against the paper's printed tables / figures was not performed. Parameter values derive from `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block only.
 
 The same metadata is available programmatically:
 
@@ -217,7 +217,7 @@ knitr::kable(balance, caption = "State distribution at t = 200 days (F: dying, S
 # Assumptions and deviations
 
 - **Drug-name caveat.** The DDMORE `Model_Accomodations.txt` flags this bundle as *scenario 4* of Clewe 2016 -- the publication scenario in which the multistate scaffold is coupled with a rifampicin exposure-response layer. The shipped `Executable_MTP.mod` encodes **only** the natural-growth scaffold; no `EFFECT(t)` or `Cc`-style drug term is present. The filename `Clewe_2016_rifampicin.R` reflects the publication's scenario assignment, not a drug effect in the executable. Users wanting a rifampicin-treated extension must add a drug term explicitly (see Clewe 2016 Section "Drug-effect models" for the published functional forms).
-- **No on-disk publication cross-check.** The Clewe 2016 paper (doi:10.1093/jac/dkv416) was not present in the maintainers' literature mirror at extraction time. Parameter values therefore rely on the `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block alone; published table values were not independently re-checked. Self-consistency (vs. the bundle's `Simulated_*.csv`) is the only validation reference.
+- **No publication cross-check.** The Clewe 2016 paper (doi:10.1093/jac/dkv416) was not available when this model was built. Parameter values therefore rely on the `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block alone; published table values were not independently re-checked. Self-consistency (vs. the bundle's `Simulated_*.csv`) is the only validation reference.
 - **Convention deviations** flagged by `checkModelConventions("Clewe_2016_rifampicin")`:
   - Compartment names `fbugs`, `sbugs`, `nbugs` are not in the canonical PK/mAb compartment set (`depot`, `central`, `peripheral1`, ...). They are mechanism-specific names retained from the source `.mod` `$MODEL COMP=(FBUGS) COMP=(SBUGS) COMP=(NBUGS)` declarations because no canonical compartment in nlmixr2lib's register names "fast-multiplying / slow-multiplying / non-multiplying bacteria." This follows the package's guidance to use paper-specific names for non-PK mechanism states. Lower-cased to match the package's casing convention.
   - Observation variable `cfu` rather than `Cc`. `Cc` connotes a drug concentration; this model's observation is a colony-forming-unit count from a bacterial culture (no drug, no analyte), so `Cc` would mislead. The `cfu` name matches the field convention in TB/AMR pharmacometric literature.

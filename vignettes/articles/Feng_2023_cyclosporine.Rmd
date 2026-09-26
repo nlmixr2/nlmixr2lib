@@ -580,7 +580,7 @@ volume covariate cannot change a trough concentration.
 - **Haematocrit reference is 28.8 %, not the 27.0 % median of Table 1.**
   Eq. 8 normalises by 28.8. Table 1 summarises all 251 patients while Eq. 8
   was fitted on the 176-patient training set, whose separate demographics are
-  in online supplemental table S3. That supplement is not on disk; the value
+  in online supplemental table S3. That supplement was not available; the value
   is taken from Eq. 8 as printed and no substitute was needed.
 - **Cohort covariate distributions are approximations.** Body weight and
   haematocrit are drawn independently from truncated log-normals matched to
@@ -598,7 +598,7 @@ volume covariate cannot change a trough concentration.
   eight `ABCB1` / `CYP3A4` / `CYP3A5` / `POR` / `NR1I3` variants of Table 2)
   are recorded in the model file's `covariatesDataExcluded` metadata. The
   paper found none of them significant; no point estimates exist to encode.
-- **Supplemental tables S1-S5 are not on disk.** They hold the data-collection
+- **Supplemental tables S1-S5 were not available.** They hold the data-collection
   list (S1), the error-model comparison (S2), training / validation
   demographics (S3), the stepwise covariate-screening log (S4) and a
   comparison with previously published CsA models (S5). None is a source for

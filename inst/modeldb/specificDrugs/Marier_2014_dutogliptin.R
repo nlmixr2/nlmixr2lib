@@ -179,7 +179,7 @@ Marier_2014_dutogliptin <- function() {
     # named and present so the published structure stays visible and a user can
     # perturb it. Consequence: simulated Tmax is earlier than the published
     # model's by the (small) unreported lag. See the vignette Errata.
-    tlag <- fixed(0);       label("Absorption lag time (ALAG, h) at 0; value not reported in Marier 2014")  # NOT REPORTED anywhere in the paper or supplement; operator ruling 2026-08-26 (sidecar request-001 q1 = A)
+    tlag <- fixed(0);       label("Absorption lag time (ALAG, h) at 0; value not reported in Marier 2014")  # NOT REPORTED anywhere in the paper or supplement; fixed at 0 by the maintainers' decision
 
     # ---- Disposition ------------------------------------------------------
     lcl <- log(176);        label("Apparent clearance at CrCL 115.7 mL/min (L/h)")  # Table 2: CL/F = 176 * (CrCL/115.7)^0.848
@@ -196,7 +196,7 @@ Marier_2014_dutogliptin <- function() {
     # figures (12.199 / 15.430 / 21.290 h). Sweeping the full 3-significant-
     # figure rounding envelope of the printed half-lives admits only Vc/F
     # 1167-1306 L, Vp/F 735-874 L, Q/F 70.2-91.6 L/h, so the solve is tightly
-    # bounded. Operator ruling 2026-08-26.
+    # bounded. The back-solve was approved by the maintainers.
     lvc <- log(1250);       label("Apparent central volume at 82.5 kg, Caucasian/Asian (L)")            # BACK-SOLVED from Table 2 Vss/F = 2041 L plus the three printed terminal half-lives (Results p.302-303); not printed in Marier 2014
     lvp <- log(791);        label("Apparent peripheral volume at 82.5 kg, Caucasian/Asian (L)")         # BACK-SOLVED; 2041 - 1250 = 791 L preserves the printed Vss/F exactly
     lq  <- log(78.6);       label("Apparent intercompartmental clearance (L/h)")                         # BACK-SOLVED from the same three (CL/F, t1/2) pairs

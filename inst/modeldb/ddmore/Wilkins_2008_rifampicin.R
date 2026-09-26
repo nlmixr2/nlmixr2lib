@@ -44,14 +44,14 @@ Wilkins_2008_rifampicin <- function() {
   population <- list(
     n_subjects = 263L,
     n_studies = 1L,
-    age_range = "Adults with pulmonary tuberculosis; demographic detail not extracted (Wilkins 2008 publication PDF not on disk in this worktree).",
-    weight_range = "(not extracted; Wilkins 2008 publication not on disk for cross-check)",
+    age_range = "Adults with pulmonary tuberculosis; demographic detail not extracted (Wilkins 2008 publication PDF not available when this model was built).",
+    weight_range = "(not extracted; Wilkins 2008 publication not available for cross-check when this model was built)",
     sex_female_pct = "(not extracted)",
     disease_state = "Adults with newly-diagnosed pulmonary tuberculosis treated with a standard antitubercular backbone (rifampicin + isoniazid + pyrazinamide +/- ethambutol).",
     dose_range = "Oral rifampicin 450, 480, or 600 mg daily, multiple-dose at steady-state. The DDMORE bundle's Simulated_TB_Rifampicin_PK_Wilkins_2008.csv carries 250 simulated subjects across these three dose levels with sampling on six occasions (day 1, week 1, 2, 4, 8, 24-ish).",
     regions = "South Africa (Wilkins 2008 cohort).",
     n_observations = 2913L,
-    notes = "Population descriptors are inferred from the bundle metadata (DDMODEL00000280.rdf model-has-description-long, the .lst's `TOT. NO. OF INDIVIDUALS: 263 / TOT. NO. OF OBS RECS: 2913` header, and the .mod $INPUT column list) because the Wilkins 2008 publication PDF is not on disk in /home/bill/github/mab_human_consensus/literature/ at extraction time. n_subjects = 263 is taken directly from the .lst header. The cohort's age / weight / sex breakdown is not derivable from the bundle alone; the validation vignette's Errata section documents this caveat."
+    notes = "Population descriptors are inferred from the bundle metadata (DDMODEL00000280.rdf model-has-description-long, the .lst's `TOT. NO. OF INDIVIDUALS: 263 / TOT. NO. OF OBS RECS: 2913` header, and the .mod $INPUT column list) because the Wilkins 2008 publication PDF was not available when this model was built. n_subjects = 263 is taken directly from the .lst header. The cohort's age / weight / sex breakdown is not derivable from the bundle alone; the validation vignette's Errata section documents this caveat."
   )
 
   ini({

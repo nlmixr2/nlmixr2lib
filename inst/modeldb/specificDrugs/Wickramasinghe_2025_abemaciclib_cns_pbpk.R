@@ -37,7 +37,7 @@ Wickramasinghe_2025_abemaciclib_cns_pbpk <- function() {
     "plasma profile in Table S2. The 9-CNS model was originally developed",
     "and validated across six drugs in Li J, Wickramasinghe C, Jiang J,",
     "et al. Clin Pharmacol Ther. 2025;117(3):690-703 (reference 7 of the",
-    "2025 tutorial), which is not on disk for this extraction."
+    "2025 tutorial), which was not available when this model was built."
   )
   vignette <- "Wickramasinghe_2025_spatial_cns_pbpk"
 
@@ -91,7 +91,7 @@ Wickramasinghe_2025_abemaciclib_cns_pbpk <- function() {
       "The driving plasma profile in Table S2 is the population-mean",
       "abemaciclib concentration-time profile determined in glioblastoma",
       "patients and is attributed to reference 7 (Li 2025 Clin Pharmacol",
-      "Ther), which is not on disk. Table S2 also carries paired observed",
+      "Ther), which was not available when this model was built. Table S2 also carries paired observed",
       "abemaciclib concentrations for 39 patients (subject IDs 100-0049 to",
       "300-0013): 39 non-enhancing tumor, 37 contrast-enhancing tumor and 34",
       "CSF samples (110 in total), collected 120.0-130.1 h after the start of",

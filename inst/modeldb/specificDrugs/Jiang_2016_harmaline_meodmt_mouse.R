@@ -7,7 +7,7 @@ Jiang_2016_harmaline_meodmt_mouse <- function() {
   # suffix rather than one of them taking the bare canonical names. `stress` is
   # the paper's handling/injection signal (Fig. 1, lower panel); `temp` is the
   # core-body-temperature turnover state. `temp` is held paper-specific rather
-  # than promoted to a canonical compartment: the standing operator ruling is
+  # than promoted to a canonical compartment: the maintainers' standing ruling is
   # that a compartment canonical needs a second independent paper, and `temp`
   # is a collision-prone token besides. See the vignette Assumptions and
   # deviations for the residual convention warning this leaves.

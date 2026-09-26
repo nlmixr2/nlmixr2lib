@@ -683,8 +683,8 @@ shortly after dosing.
   paper's continuous-covariate equation centres on `COV_median`, but Table 2
   reports only means and SDs, and the medians appear nowhere in the article or
   its supplement. The model uses the Table 2 overall means -- **BMI 28.7 kg/m^2**
-  and **injection volume 0.303 mL** -- as centring values. Both are on-disk
-  published numbers for the same population, and the resulting error is small: a
+  and **injection volume 0.303 mL** -- as centring values. Both are published
+  numbers for the same population, and the resulting error is small: a
   100 mg injection (0.278 mL) is mis-scaled by
   `(0.278/0.303)^-0.384 - 1` = +3.4% on `ka1`, and a BMI shift of 0.2 kg/m^2
   moves `ka1` by under 1%. A user who knows the true medians can override the two
