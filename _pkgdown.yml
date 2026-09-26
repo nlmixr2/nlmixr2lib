@@ -1228,6 +1228,8 @@ navbar:
         href: articles/ParraGuillen_2013_tumor_immunotherapy.html
       - text: "Cyanide pbpk (Harada 2025)"
         href: articles/Harada_2025_cyanide_pbpk.html
+      - text: "Cyclophosphamide (Ahmed 2020)"
+        href: articles/Ahmed_2020_cyclophosphamide.html
       - text: "Cyclophosphamide mouse (Campagne 2019)"
         href: articles/Campagne_2019_cyclophosphamide_mouse.html
       - text: "Cyclophosphamide mouse pbpk (Saleh 2023)"
@@ -6079,6 +6081,7 @@ articles:
   - articles/Ahlstrom_2010_nicotinicAcid_rat
   - articles/Ahmed_2015_topiramate
   - articles/Ahmed_2016_lorenzosOil
+  - articles/Ahmed_2020_cyclophosphamide
   - articles/Ahmed_2024_vancomycin
   - articles/Ahn_2014_parathyroidHormone
   - articles/Ahn_2023_vupanorsen
