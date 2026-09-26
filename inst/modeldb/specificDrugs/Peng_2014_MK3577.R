@@ -15,9 +15,9 @@ Peng_2014_MK3577 <- function() {
     "ng/mL) secretion at a fixed Imax of 1. The MK-3577 PK layer is NOT",
     "modeled here because the absorption rate ka, apparent volume V/F, and",
     "molecular weight for the mg-to-nM conversion are not reported in the",
-    "on-disk paper or its tables; users supply the MK-3577 plasma",
+    "paper or its tables; users supply the MK-3577 plasma",
     "concentration as a time-varying covariate column CP_MK3577_NM (nM)",
-    "per the standing operator decision (extract PD layer only; PK supplied",
+    "by decision of the maintainers (PD layer only; PK supplied",
     "externally). See vignette Assumptions and deviations for the gap.",
     sep = " "
   )
@@ -91,7 +91,7 @@ Peng_2014_MK3577 <- function() {
       type = "continuous",
       reference_category = NULL,
       notes = paste(
-        "Supplied externally because the on-disk Peng 2014 PDF does not",
+        "Supplied externally because the Peng 2014 PDF does not",
         "report the MK-3577 absorption rate ka, apparent volume V/F, or",
         "molecular weight needed to derive a mg-dose-to-nM-plasma profile",
         "internally. Users with access to a published or internal MK-3577",

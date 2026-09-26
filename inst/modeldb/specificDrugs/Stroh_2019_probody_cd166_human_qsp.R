@@ -358,7 +358,7 @@ Stroh_2019_probody_cd166_human_qsp <- function() {
       "A single 4.5 mg/kg dose for the plasma / peripheral / tumour projections of",
       "Figure 4 and multiple 3 mg/kg doses for the intact-versus-cleaved",
       "projection of Figure 5. Doses are entered into this model in nmol; see the",
-      "vignette Errata for why mg/kg cannot be converted from on-disk sources.",
+      "vignette Errata for why mg/kg cannot be converted from the available sources.",
       sep = " "
     ),
     notes = paste(

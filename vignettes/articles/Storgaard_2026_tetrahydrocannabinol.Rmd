@@ -190,7 +190,8 @@ n_per_arm <- 200L
 
 # Sampling grid mimicking the trial (Methods 2.1: "nine to 14 time points",
 # 0-8 h, which is the x-axis of Figure 1). Exact times are in Supporting
-# Information Table S1, which is not on disk -- see Errata.
+# Information Table S1, which was not available when this model was built --
+# see Errata.
 samp_study <- c(0, 0.5, 1, 1.5, 2, 3, 4, 4.5, 5, 5.5, 6, 7, 8)
 
 # Denser grid for the individual-profile NCA.
@@ -495,7 +496,7 @@ the log scale, a 75% CV by the paper's own equation (3)). A maximum taken over
 a sampling grid is a strongly upward-biased statistic under that much noise,
 and how strongly biased depends on **how many samples** and **where** --
 exactly the information that lives in Supporting Information Table S1, which
-is not on disk. For the three-spray arm the reproducible statement the
+was not available when this model was built. For the three-spray arm the reproducible statement the
 available sources support is a bracketing one: the structural profile
 under-shoots the published mean, adding the paper's own residual error
 over-shoots it, and the observed value lies between.
@@ -591,7 +592,8 @@ subject and the split collapses to 100%/0%.
   `depot`, so the three boxes are encoded `depot -> transit1 -> transit2 ->
   central`. The MRT identity above confirms the resulting mean absorption time
   is exactly the published 1.35 h.
-* **Supporting Information Table S1 is not on disk.** It holds the exact
+* **Supporting Information Table S1 was not available when this model was
+  built.** It holds the exact
   sampling times of the three schemes. No model parameter depends on it -- all
   eight structural estimates, all five variance terms and both residual terms
   are in Table 2 of the main paper -- but the observed-Cmax and BLQ-fraction
@@ -637,10 +639,10 @@ subject and the split collapses to 100%/0%.
   (Heuberger 2015 estimated 38.8 L/h; van Amerongen 2018 estimated 616 L/h for
   an oral formulation), and extrapolating this model far beyond 8 h is not
   supported by the data behind it.
-* **The `11oh` metabolite suffix is used, not re-registered.** It was ratified
+* **The `11oh` metabolite suffix is used, not re-registered.** It was registered
   for 11-hydroxy-delta-9-tetrahydrocannabinol in
-  `inst/references/compartment-names.md` by the Wolowich 2025 extraction,
-  which lists `THC-OH` (this paper's abbreviation) among its source aliases.
+  `inst/references/compartment-names.md` when the Wolowich 2025 model was
+  added, which lists `THC-OH` (this paper's abbreviation) among its source aliases.
   See `modellib("Wolowich_2025_thc_11oh")` for the sibling model of the same
   metabolite.
 * **Cannabidiol is not modelled.** Every Sativex spray co-delivers CBD (5 or

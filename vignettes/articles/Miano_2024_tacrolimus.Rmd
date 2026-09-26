@@ -643,7 +643,7 @@ error.
   as a robustness check -- "the final model results were similar when using a
   fixed ka of 0.58 liter/hour" -- not as an alternative final model, so it is
   excluded per the library's policy on sensitivity analyses. The online
-  supplement holding Table S1 was not on disk for this extraction; no parameter
+  supplement holding Table S1 was not available when this model was built; no parameter
   in this model file depends on it.
 * **The external-validation cohort results.** Mean prediction error 36.4%
   (95% CI 30.8-41.9), median 7.2% (IQR -29.3% to 70.53%), with 34.7% and 59.1%

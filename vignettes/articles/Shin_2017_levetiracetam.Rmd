@@ -386,8 +386,8 @@ knitr::kable(
   likely absorbed weight-distribution heterogeneity that the per-kg
   scaling does not fully capture. Downstream users planning population
   simulations may wish to refit the IIV terms on their own data.
-- **Errata.** No erratum or corrigendum to Shin 2017 was located on
-  disk for this extraction. A search of PubMed and the Korean Journal of
+- **Errata.** No erratum or corrigendum to Shin 2017 was available
+  when this model was built. A search of PubMed and the Korean Journal of
   Pediatrics corrections feed for `"Shin 2017" + "levetiracetam" + neonatal +
   erratum` returned no hits as of the extraction date (2026-05-21);
   the maintainers should reconfirm against the journal's corrections listing

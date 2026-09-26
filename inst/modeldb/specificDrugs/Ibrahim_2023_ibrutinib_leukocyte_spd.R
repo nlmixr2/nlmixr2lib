@@ -87,7 +87,7 @@ Ibrahim_2023_ibrutinib_leukocyte_spd <- function() {
         "no drug compartment and no dosing events. Ibrahim 2023 derived per-subject AUC(0-24) by integrating the",
         "individual post hoc profiles of the two-compartment ibrutinib population PK model of Marostica et al.",
         "(Cancer Chemother Pharmacol. 2015;75(1):111-121), which is NOT part of nlmixr2lib; downstream users must",
-        "supply AUC(0-24) from that model, from another on-disk ibrutinib popPK model, or from observed exposure.",
+        "supply AUC(0-24) from that model, from another shipped ibrutinib popPK model, or from observed exposure.",
         "Enters the pBtk production-inhibition Imax function as AUC_IBRU / (IAUC50 + AUC_IBRU) with",
         "IAUC50 = 34.1 h*ng/mL (Ibrahim 2023 Table 1)."
       ),

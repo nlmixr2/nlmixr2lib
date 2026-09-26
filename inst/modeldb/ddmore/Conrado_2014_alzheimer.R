@@ -56,13 +56,13 @@ Conrado_2014_alzheimer <- function() {
   population <- list(
     n_subjects = 4494L,
     n_studies = 15L,
-    age_range = "Adults with Alzheimer's disease, mild cognitive impairment, or healthy elderly comparators; specific age-range and median not extracted from the source bundle and the linked publication PDF was not on disk in /home/bill/github/mab_human_consensus/literature for cross-check at extraction time.",
+    age_range = "Adults with Alzheimer's disease, mild cognitive impairment, or healthy elderly comparators; specific age-range and median not extracted from the source bundle, and the linked publication PDF was not available for cross-check when this model was built.",
     weight_range = "(not extracted; not a covariate in the disease-progression model)",
     sex_female_pct = NA_real_,
     disease_state = "Alzheimer's disease (mild-to-moderate AD predominates), pooled across the 15 randomised-controlled-trial arms contributing to the CAMD ADAS-Cog disease-progression dataset (2014 release).",
     dose_range = "(not applicable; disease-progression model on the placebo and active-treatment arms pooled, with concomitant Alzheimer's-symptomatic medication as a covariate rather than a dosed input)",
     regions = "(not extracted; CAMD pools randomised-controlled-trial arms across multiple international sponsors)",
-    notes = "Subject and study counts taken directly from the bundle's Output_real_CPathAD.lst header (TOT. NO. OF INDIVIDUALS = 4494; ETABAR N = 15 for the study-level etas, indicating 15 randomised-controlled-trial arms in the source dataset). Demographic detail (age range / median, weight range, sex split, regional breakdown) is described in the Conrado 2014 publication's Methods / Results tables but the publication PDF was not on disk at extraction time, so finer-grained population descriptors are recorded as NA. The dataset is the Coalition Against Major Diseases (CAMD) ADAS-Cog database aggregated by the Critical Path Institute for the published model-fitting exercise."
+    notes = "Subject and study counts taken directly from the bundle's Output_real_CPathAD.lst header (TOT. NO. OF INDIVIDUALS = 4494; ETABAR N = 15 for the study-level etas, indicating 15 randomised-controlled-trial arms in the source dataset). Demographic detail (age range / median, weight range, sex split, regional breakdown) is described in the Conrado 2014 publication's Methods / Results tables but the publication PDF was not available when this model was built, so finer-grained population descriptors are recorded as NA. The dataset is the Coalition Against Major Diseases (CAMD) ADAS-Cog database aggregated by the Critical Path Institute for the published model-fitting exercise."
   )
 
   ini({
@@ -70,7 +70,7 @@ Conrado_2014_alzheimer <- function() {
     # block (after MINIMIZATION SUCCESSFUL at line 872). The .mod $THETA /
     # $OMEGA blocks are the initial estimates only -- the .lst final estimates
     # are the canonical source per the DDMORE-source convention. The
-    # publication's Tables 4-5 were not available on disk for cross-check;
+    # publication's Tables 4-5 were not available for cross-check;
     # this is documented in the vignette's Errata section. The TVBL parameter
     # is log-transformed because the typical baseline score must remain
     # strictly positive; TVSL is left on its natural scale because the

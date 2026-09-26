@@ -1200,7 +1200,7 @@ test_that("a plain label on an estimated parameter is not flagged", {
 test_that("the fixed-claim pattern only matches claims about the parameter itself", {
   # Each FALSE case is a real label from the database where the "fixed" clause
   # describes a DIFFERENT parameter. Matching them was the rule's main source
-  # of false positives; see inst/references/fixed-provenance-followup.md.
+  # of false positives; see data-raw/fixed-provenance-followup.md.
   pat <- nlmixr2lib:::.fixedClaimPattern
   claims <- c(
     "Allometric exponent on CL/F (unitless; fixed)",

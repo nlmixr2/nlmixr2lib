@@ -438,7 +438,7 @@ range the paper analysed; metformin co-administration adds approximately
   fixed to estimates of the previous model" (Retlich et al.,
   J Clin Pharmacol. 2010;50(8):873-885). The numeric values are reported
   in Retlich 2015 Table 4 and are encoded as `fixed()` parameters here.
-  The upstream paper itself is not on disk in the extraction queue.
+  The upstream paper itself was not available when this model was built.
 - **Inter-individual variability only; intra-individual omitted.** The
   paper reports inter-individual variability omega_F (CV 47.4%) and
   intra-individual variability pF (CV 40.0%) on relative bioavailability

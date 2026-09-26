@@ -42,7 +42,7 @@ Aoki_2024_bosentan_pbpk <- function() {
     "physiologically based pharmacokinetic modeling: target binding, albeit",
     "not a major contributor to nonlinearity, can offer prediction of",
     "target occupancy. Drug Metab Dispos. 2021;49(4):298-304.",
-    "doi:10.1124/dmd.120.000023 (not open access; not on disk -- every",
+    "doi:10.1124/dmd.120.000023 (not open access; not available when this model was built -- every",
     "value here is traced to the Aoki 2024 sources listed above).",
     sep = " "
   )
@@ -121,7 +121,7 @@ Aoki_2024_bosentan_pbpk <- function() {
       "reproduced in the vignette. Subject counts, ages, weights and sex",
       "distribution are not reported by Aoki 2024; they belong to the",
       "underlying clinical study reported through Koyama 2021, which is",
-      "not open access and is not on disk. The intravenous route is not",
+      "not open access and was not available when this model was built. The intravenous route is not",
       "stated in words by Aoki 2024 but is unambiguous from the code and",
       "the data: the dose enters the central compartment instantaneously",
       "at t = 0.08 h with no absorption compartment, and for the 750 mg",

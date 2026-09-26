@@ -304,7 +304,7 @@ Sime_2019_posaconazole <- function() {
     # error was modelled as a linear polynomial Error = C0 + C1*[obs] 'starting
     # with a generic set of coefficients, followed by iterative optimization'.
     # Neither the selected model nor any of gamma, lambda, C0 or C1 appears in
-    # the paper, and there is no supplement on disk carrying them. Carried as
+    # the paper, and no available supplement carries them. Carried as
     # fixed(0) on both outputs rather than invented -- see vignette Errata.
     # ------------------------------------------------------------------------
     propSd <- fixed(0); label("Proportional residual SD on the total concentration (fraction; 0 because not reported in the source)")

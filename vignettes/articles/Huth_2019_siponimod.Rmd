@@ -769,7 +769,7 @@ build the model.
   for `*1/*3`), which its own model mispredicts as 1.18 and 1.29 and which the
   Discussion leaves unexplained. This model reproduces the paper's *predictions*,
   so it inherits that mismatch.
-* **Supplementary Tables S1-S4 and Figures S1-S4 are not on disk.** They carry
+* **Supplementary Tables S1-S4 and Figures S1-S4 were not available when this model was built.** They carry
   transporter screening, the population-PK intrinsic clearances, simulation trial
   designs and sensitivity analyses. Nothing in the model depends on them; the
   sensitivity results quoted above are from the main-text Results.

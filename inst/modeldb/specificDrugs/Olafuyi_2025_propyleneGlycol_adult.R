@@ -67,8 +67,9 @@ Olafuyi_2025_propyleneGlycol_adult <- function() {
       "built from PG physicochemical properties (Table 1) plus alcohol-",
       "dehydrogenase kinetics measured in pooled human liver cytosol in this study",
       "(Table 2). Model qualification used digitised concentration-time profiles",
-      "from two published adult clinical studies (Table S3, supplement not on",
-      "disk) and the clearance comparison in Table 3. Not a fitted population-PK",
+      "from two published adult clinical studies (Table S3; the supplement was not",
+      "available when this model was built) and the clearance comparison in",
+      "Table 3. Not a fitted population-PK",
       "analysis: no observed individual-level data were fitted, so the variability",
       "terms below are Simcyp virtual-population output %CVs, not estimated omegas."
     )
@@ -100,7 +101,7 @@ Olafuyi_2025_propyleneGlycol_adult <- function() {
     lkm <- fixed(log(1909.1)); label("Michaelis constant for ADH-mediated metabolism (mg/L)")  # Table 2: Km = 25.1 mM x MW 76.06 g/mol (Table 1)
     #
     # vmax: the in vitro Vmax of 1.57 nmole/min/mg cytosolic protein (Table 2)
-    # cannot be scaled to a whole-body rate from on-disk sources, because the
+    # cannot be scaled to a whole-body rate from the available sources, because the
     # liver weight and the cytosolic-protein-per-gram-liver scalar behind
     # Simcyp's in-vitro-to-in-vivo extrapolation are platform system parameters
     # and are not printed anywhere in the paper. It is instead back-solved from

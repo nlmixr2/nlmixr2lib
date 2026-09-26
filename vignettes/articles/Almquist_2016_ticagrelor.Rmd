@@ -74,7 +74,7 @@ groups them for review.
 | Eq 7 (FabV)                           | n/a                    | Almquist 2016 Eq 7, p. 317                                                                       |
 | Eq 8 (FabTicaV)                       | n/a                    | Almquist 2016 Eq 8, p. 317                                                                       |
 | Eq 9 (FabTamV)                        | n/a                    | Almquist 2016 Eq 9, p. 317                                                                       |
-| Observation model (closed-form quadratic) | derivation in vignette | Almquist 2016 "Observation model" paragraph, p. 317; closed-form derivation in Supplementary Text S2 (not on disk; the quadratic below is re-derived from the conservation + equilibrium equations in the main text) |
+| Observation model (closed-form quadratic) | derivation in vignette | Almquist 2016 "Observation model" paragraph, p. 317; closed-form derivation in Supplementary Text S2 (not available; the quadratic below is re-derived from the conservation + equilibrium equations in the main text) |
 | Residual error `r^2_tica = 0.076`     | expSd ~ 0.276          | Almquist 2016 Table 1, refined model                                                             |
 | Residual error `r^2_TAM = 0.080`      | expSd_tam ~ 0.283      | Almquist 2016 Table 1, refined model                                                             |
 | Residual error `r^2_MEDI = 0.28`      | expSd_freeMEDI ~ 0.529 | Almquist 2016 Table 1, refined model                                                             |
@@ -300,7 +300,7 @@ consistent with the dominant decay phase governed by Cl / (V + V_1)).
   choice for the example simulations, not a model parameter.
 - **Observation model (closed-form ex-vivo equilibrium).** Almquist
   2016 derives the analytical solution in Supplementary Text S2 (not
-  available on disk for this extraction). The quadratic implemented
+  available when this model was built). The quadratic implemented
   in `model()` is re-derived from the conservation laws plus the
   in-text equilibrium relations K_d = f * X * Fab / X_complex; the
   derivation is reproduced inline in the "Observation model" section
@@ -328,7 +328,7 @@ consistent with the dominant decay phase governed by Cl / (V + V_1)).
 - **PD model not included.** Almquist 2016 also reports a turnover-
   style PD model linking free ticagrelor + TAM in plasma to
   ADP-induced platelet aggregation (Figure 6, Supplementary Text S2).
-  The PD parameters live in the supplement (not on disk) and the PD
+  The PD parameters live in the supplement (not available) and the PD
   model is therefore not extracted here; only the PK side is shipped.
 - **No PD validation in this vignette.** Almquist 2016 Figures 5 and
   6 are tested via the Figure 3 buffer-effect replication above; the

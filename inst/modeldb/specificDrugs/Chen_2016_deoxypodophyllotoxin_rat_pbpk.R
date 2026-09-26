@@ -66,7 +66,7 @@ Chen_2016_deoxypodophyllotoxin_rat_pbpk <- function() {
     disease_state = "Healthy rats.",
     dose_range = "Intravenous bolus 1.0, 2.0 and 4.0 mg/kg.",
     regions = "China Pharmaceutical University, Nanjing, China",
-    notes = "The rat in vivo pharmacokinetic data were not generated in this paper: they are cited from the authors' earlier study (Liu et al. 2016), which is not on disk here. Chen 2016 therefore reports the rat cohort size, age and sampling schedule nowhere. The rat is the reference species of the model: Kt:pl was computed de novo for the rat from tissue composition (Ruark et al. 2014) and every other species Kt:pl is derived from it by the fu ratio."
+    notes = "The rat in vivo pharmacokinetic data were not generated in this paper: they are cited from the authors' earlier study (Liu et al. 2016), which was not available when this model was built. Chen 2016 therefore reports the rat cohort size, age and sampling schedule nowhere. The rat is the reference species of the model: Kt:pl was computed de novo for the rat from tissue composition (Ruark et al. 2014) and every other species Kt:pl is derived from it by the fu ratio."
   )
 
   ini({

@@ -87,7 +87,7 @@ Garcia_2025_garadacimab_hae_attack <- function() {
   )
 
   # Covariates the source screened on the ER parameters but for which no
-  # point estimate is reported anywhere on disk. Documentation only --
+  # point estimate is reported in any available source. Documentation only --
   # checkModelConventions() does not require these to be referenced in
   # model(). See the vignette's Assumptions and deviations section.
   covariatesDataExcluded <- list(

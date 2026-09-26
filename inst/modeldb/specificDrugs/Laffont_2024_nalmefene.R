@@ -25,9 +25,9 @@ Laffont_2024_nalmefene <- function() {
   )
 
   population <- list(
-    n_subjects = "TODO: not reported in main text; population PK dataset pooled three healthy-volunteer studies (Crystal 2024 ref 22 [two PK studies, one nostril vs. two nostrils] and Ellison 2024 ref 23 [pharmacodynamic remifentanil-induced respiratory depression study]). Detail is in Supplementary Tables 1-2 (not on disk).",
+    n_subjects = "TODO: not reported in main text; population PK dataset pooled three healthy-volunteer studies (Crystal 2024 ref 22 [two PK studies, one nostril vs. two nostrils] and Ellison 2024 ref 23 [pharmacodynamic remifentanil-induced respiratory depression study]). Detail is in Supplementary Tables 1-2 (not available when this model was built).",
     n_studies = 3,
-    age_range = "Adult (healthy volunteers); detailed range in Supplementary Table 1 (not on disk).",
+    age_range = "Adult (healthy volunteers); detailed range in Supplementary Table 1 (not available when this model was built).",
     weight_median = "74.7 kg (median body weight reported as the allometric reference value in Table 1)",
     sex_female_pct = "TODO: not reported in main text",
     race_ethnicity = "TODO: not reported in main text",

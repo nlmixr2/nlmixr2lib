@@ -73,7 +73,7 @@ Pei_2023_tacrolimus_pbpk <- function() {
         "in relation to the bodyweight (BW) and the proportion of adipose",
         "tissue [24]', citing Levitt 2002 PKQuest. No explicit scaling",
         "formula is printed, so this model follows the scaling used by the",
-        "cited physiology source (and by the sibling extraction",
+        "cited physiology source (and by the sibling model",
         "Levitt_2005_propofol_pbpk.R): lean organ weights and their blood",
         "flows scale by lean_mass / 52.5 kg, and the adipose compartment",
         "weight is set directly to WT * BODYFAT_PCT / 100. The reference",
@@ -177,7 +177,7 @@ Pei_2023_tacrolimus_pbpk <- function() {
         "CYP3A-mediated fraction of hepatic clearance only. Pei 2023",
         "generated Cb,vor from a separate voriconazole PBPK model whose",
         "tissue-to-plasma partition coefficients, ka and Fg are NOT",
-        "tabulated anywhere on disk (Table S6 gives only MW, pKa, LogP,",
+        "tabulated in any available source (Table S6 gives only MW, pKa, LogP,",
         "fup, BPR, KI and CLint), so the voriconazole disposition is not",
         "reproducible from the source. Rather than substitute partition",
         "coefficients from another paper, this model exposes the",
@@ -336,7 +336,7 @@ Pei_2023_tacrolimus_pbpk <- function() {
     # up to 16 fold. The value encoded here, 9.15 = 11.9 / 1.3, is the
     # mouse-to-human average-Kp ratio that the Methods sentence above
     # motivates directly; it is read off the paper rather than fitted by
-    # us. ratified 2026-08-05.
+    # us, and the maintainers accepted this reading.
     # The companion popPK model corroborates the 9-30 range independently:
     # Vd/F 656.8 L at Fg 0.2 implies a true Vd of about 131 L, which needs
     # a of roughly 29 rather than 350. See the vignette Errata.

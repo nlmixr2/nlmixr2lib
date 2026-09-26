@@ -44,9 +44,9 @@ uiLand <- rxode2::rxode2(modLand)
 ```
 
 **A note on reading the source.** Every display equation in the published PDF
-is a rasterised image. The markdown preprocessor renders all thirteen of them
-as `<!-- formula-not-decoded -->`, and any extraction working from that file
-alone would have no structural model at all. All thirteen were recovered with
+is a rasterised image. None of the thirteen survives plain-text extraction of
+the PDF, and a reading that worked from such an extraction alone would have no
+structural model at all. All thirteen were recovered with
 `pdftotext -layout`, which reproduces the mathematical text (mangled in
 places, but unambiguously) directly from the PDF's font layer.
 
@@ -682,9 +682,9 @@ stopifnot(
 
 ## Equation recovery
 
-Every display equation is rasterised in the published PDF. The preprocessed
-markdown contains thirteen `<!-- formula-not-decoded -->` placeholders and no
-mathematics at all. All thirteen equations were recovered with
+Every display equation is rasterised in the published PDF. Plain-text
+extraction of the PDF loses all thirteen and yields no mathematics at all. All
+thirteen equations were recovered with
 `pdftotext -layout`. Wherever the recovered text was ambiguous, the reading was
 settled by whether it reproduces the source's own published predictions, not by
 plausibility -- the Table 1 and Table 2 comparisons above are that test.

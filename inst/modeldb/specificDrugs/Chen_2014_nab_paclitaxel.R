@@ -64,7 +64,7 @@ Chen_2014_nab_paclitaxel <- function() {
     race_ethnicity = c(White = 91, Asian = 9, Black = 1, Other = 0),
     disease_state = "Advanced or metastatic solid tumors (breast cancer 16%, melanoma 29%, other solid tumors 55%). Five Phase I studies (one of which enrolled patients with hepatic impairment), one Phase II study, and two Phase III studies pooled per Chen 2014 Methods and Supplemental Table S1. Baseline laboratory characteristics include median total bilirubin 8.6 umol/L (range 3.4-81.0; 13.3% above ULN of 17 umol/L; 8% with moderate-to-severe hepatic impairment, total bilirubin > 1.5 to 5 x ULN), median CrCl 82.7 mL/min (range 29.6-150; 15.3% with moderate renal impairment, CrCl 30 to < 60 mL/min), median albumin 3.9 g/dL (range 2.1-4.7), median BSA 1.9 m^2 (range 1.3-2.4).",
     dose_range = "nab-paclitaxel (nanoparticle albumin-bound paclitaxel; Abraxane) 80-375 mg/m^2 IV as a 30-minute infusion on day 1, 8, 15 of each 28-day cycle or day 1 of each 21-day cycle (q3w). One 135 mg/m^2 q3w cohort received a 3-hour infusion; all other doses were 30-minute infusions.",
-    regions = "Pooled across the eight contributing studies; specific country breakdown not detailed in the main paper text on disk.",
+    regions = "Pooled across the eight contributing studies; specific country breakdown not detailed in the main paper text.",
     notes = "Pharmacokinetic analysis used 1418 paclitaxel concentration records from 150 patients (Results, Population PK Model). The pharmacodynamic analysis subset comprised 558 ANC records from 125 patients in the first treatment cycle (Results, Population PD Model). The PK analysis pooled whole-blood (WB) and plasma concentration data with an estimated WB / plasma ratio of 1.00 (95% CI 0.93-1.10); the model below produces plasma concentrations directly and omits the WB / plasma bridging multiplier (see vignette Assumptions and deviations). The original residual error model used a two-subpopulation NONMEM MIXEST mixture with fractions 0.341 / 0.659 and proportional CV 38.0% / 17.9%; this implementation collapses the mixture to a single variance-weighted lognormal residual (see vignette Assumptions and deviations)."
   )
 
@@ -151,8 +151,8 @@ Chen_2014_nab_paclitaxel <- function() {
 
   model({
     # SI -> US-convention unit conversion (canonical ALB is in SI g/L per the
-    # 2026-06-19 register standardization audit; the original calibration
-    # used the g/dL reference value, so convert inline here).
+    # covariate register; the original calibration used the g/dL reference
+    # value, so convert inline here).
     alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
 
     # ---- Derived dichotomous covariate ----

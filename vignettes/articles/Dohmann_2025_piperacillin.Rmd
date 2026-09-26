@@ -1094,7 +1094,7 @@ of the paper's clinical conclusions.
   `covariateData`, since no point estimate exists for any of them. The
   categorical form the paper would have used for sex is given in Methods 2.5
   but no `beta_sex` was estimated.
-* **Supplement not on disk.** Supplementary Table S1 and Figures S1-S4
+* **Supplement not available.** Supplementary Table S1 and Figures S1-S4
   (covariate-screening summary and goodness-of-fit diagnostics) were not
   available. They contain no final parameter values - all of those are in
   Table 2 - so nothing in the model depends on them.

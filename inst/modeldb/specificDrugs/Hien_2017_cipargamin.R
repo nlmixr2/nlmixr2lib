@@ -149,8 +149,8 @@ Hien_2017_cipargamin <- function() {
       "parasite densities; DNA density estimates were censored when",
       "gametocyte-stage Pfs25 mRNA > 10% of the total measurement to",
       "reduce confounding by gametocytemia (Methods 'Pharmacodynamic",
-      "modeling'). Supplement Text S1 (0.6 MB) was not on disk at",
-      "extraction time; canonical allometric exponents 0.75 (CL) and 1.0",
+      "modeling'). Supplement Text S1 (0.6 MB) was not available when this",
+      "model was built; canonical allometric exponents 0.75 (CL) and 1.0",
       "(V) applied per Methods 'Pharmacokinetic modeling' ('Body weight",
       "was incorporated as a fixed allometric function on the clearance",
       "and volume parameters'). See vignette Assumptions and deviations."
@@ -179,8 +179,8 @@ Hien_2017_cipargamin <- function() {
     # paragraph: 'Body weight was incorporated as a fixed allometric function
     # on the clearance and volume parameters.') Uses the canonical Anderson-
     # Holford 0.75 exponent on CL/F and 1.0 on V/F; the paper's supplement
-    # (Text S1) with the explicit allometric equations was not on disk at
-    # extraction time. See vignette Assumptions and deviations.
+    # (Text S1) with the explicit allometric equations was not available when
+    # this model was built. See vignette Assumptions and deviations.
     e_wt_cl <- fixed(0.75); label("Allometric exponent on cipargamin CL/F with body weight (unitless)") # Methods 'Pharmacokinetic modeling' + canonical Anderson-Holford 0.75
     e_wt_vc <- fixed(1.0);  label("Allometric exponent on cipargamin V/F with body weight (unitless)")  # Methods 'Pharmacokinetic modeling' + canonical Anderson-Holford 1.0
 

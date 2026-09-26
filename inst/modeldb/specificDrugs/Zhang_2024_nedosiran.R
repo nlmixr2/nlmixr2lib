@@ -45,7 +45,7 @@ Zhang_2024_nedosiran <- function() {
       units = "mL/min/1.73 m^2",
       type = "continuous",
       reference_category = NULL,
-      notes = "Zhang 2024 reports this covariate as eGFR in mL/min/1.73 m^2; eGFR is a registered source alias of the canonical CRCL column. Power effects normalised to a reference of 90 mL/min/1.73 m^2 on CL/F (exponent 0.87) and Vc/F (exponent 0.19). The published equations write the covariate as eGFR*RMF, where RMF is a renal maturation function (Anderson & Holford 2011, cited as reference 31 and not on disk) applied ONLY when deriving eGFR for the virtual paediatric cohort of the simulation section; RMF = 1 in adults and no fitted parameter depends on its form, so this column carries the already-matured eGFR.",
+      notes = "Zhang 2024 reports this covariate as eGFR in mL/min/1.73 m^2; eGFR is a registered source alias of the canonical CRCL column. Power effects normalised to a reference of 90 mL/min/1.73 m^2 on CL/F (exponent 0.87) and Vc/F (exponent 0.19). The published equations write the covariate as eGFR*RMF, where RMF is a renal maturation function (Anderson & Holford 2011, cited as reference 31; not available when this model was built) applied ONLY when deriving eGFR for the virtual paediatric cohort of the simulation section; RMF = 1 in adults and no fitted parameter depends on its form, so this column carries the already-matured eGFR.",
       source_name = "eGFR"
     ),
     DIS_PH1 = list(
@@ -66,7 +66,7 @@ Zhang_2024_nedosiran <- function() {
       description = "Age",
       units = "years",
       type = "continuous",
-      notes = "Zhang 2024 Discussion: 'After accounting for weight, other size metrics, such as age, BSA and BMI, were found not to be significant covariates to the PKs of nedosiran.' Also not significant on the PD model. Full screening list is Supporting Information Table S2 (not on disk)."
+      notes = "Zhang 2024 Discussion: 'After accounting for weight, other size metrics, such as age, BSA and BMI, were found not to be significant covariates to the PKs of nedosiran.' Also not significant on the PD model. Full screening list is Supporting Information Table S2 (not available when this model was built)."
     ),
     BSA = list(
       description = "Body surface area",
@@ -86,14 +86,14 @@ Zhang_2024_nedosiran <- function() {
     species = "human",
     n_subjects = 143L,
     n_studies = 5L,
-    age_range = "adults and children aged >= 6 years (14 participants aged 9 to <18 years contributed PK, 10 contributed PD); exact range is in Supporting Information Table S1, which is not on disk",
+    age_range = "adults and children aged >= 6 years (14 participants aged 9 to <18 years contributed PK, 10 contributed PD); exact range is in Supporting Information Table S1, which was not available when this model was built",
     weight_range = "not reported in the main text (Supporting Information Table S1); the simulation reference subject is 70 kg and the weight-banded dosing cut-point is 50 kg",
     sex_female_pct = NA_real_,
     disease_state = "85 healthy adult volunteers without a primary hyperoxaluria diagnosis, 46 patients with primary hyperoxaluria type 1 (PH1) and 12 with PH2; PHYOX5 additionally enrolled non-PH adults with severe renal impairment or kidney failure",
     dose_range = "1.5, 3.0 or 6.0 mg/kg single s.c. dose (PHYOX1, PHYOX6); 170 mg s.c. single dose (PHYOX5); repeat flat s.c. doses of 170 mg (nedosiran sodium salt, 160 mg free-acid equivalent) once monthly, or 136 mg once monthly for body weight <50 kg (PHYOX2, PHYOX3)",
     regions = "not reported in the main text; PHYOX6 was an ethno-bridging study in Japanese and Caucasian healthy adults",
     renal_function = "eGFR spanned normal through end-stage renal disease; all participants with eGFR <30 mL/min/1.73 m^2 were non-PH volunteers from PHYOX5",
-    notes = "PK: 1978 plasma nedosiran concentrations from 143 participants across PHYOX1, PHYOX2, PHYOX3, PHYOX5 and PHYOX6. PD: 588 24-h urinary oxalate observations from the 46 PH1 patients in PHYOX1, PHYOX2 and PHYOX3 (adjusted per 1.73 m^2 body surface area in participants aged <18 years). Placebo-arm PD data (n = 11) were excluded after showing no apparent change in 24-h Uox for up to 28 weeks. 13.1% of PK observations were below the 1.0 ng/mL LLOQ and were excluded. Baseline demographics are tabulated in Supporting Information Table S1, which is not on disk. Estimation: NONMEM VII level 4.0 with PsN 5.0.0; standard errors by importance sampling."
+    notes = "PK: 1978 plasma nedosiran concentrations from 143 participants across PHYOX1, PHYOX2, PHYOX3, PHYOX5 and PHYOX6. PD: 588 24-h urinary oxalate observations from the 46 PH1 patients in PHYOX1, PHYOX2 and PHYOX3 (adjusted per 1.73 m^2 body surface area in participants aged <18 years). Placebo-arm PD data (n = 11) were excluded after showing no apparent change in 24-h Uox for up to 28 weeks. 13.1% of PK observations were below the 1.0 ng/mL LLOQ and were excluded. Baseline demographics are tabulated in Supporting Information Table S1, which was not available when this model was built. Estimation: NONMEM VII level 4.0 with PsN 5.0.0; standard errors by importance sampling."
   )
 
   ini({

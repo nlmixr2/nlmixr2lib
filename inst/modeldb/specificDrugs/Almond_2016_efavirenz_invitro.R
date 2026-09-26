@@ -58,7 +58,7 @@ Almond_2016_efavirenz_invitro <- function() {
       reference_category = NULL,
       notes = paste(
         "Almond 2016 Table 1: efavirenz was assayed at seven final concentrations in culture medium containing 0.1 percent dimethyl sulfoxide (v/v) -- 0.1, 0.3, 1, 2, 3, 10 and 30 uM. This is the only inducer whose ladder is not a clean half-log series; the paper packs three of the seven points (1, 2, 3 uM) around the fitted activity IndC50 of 4.9 uM.",
-        "Efavirenz is NOT a perpetrator in the paper's Simcyp DDI simulations, so no efavirenz compound file appears in Supplemental Table 2 and no molecular weight is reported anywhere on disk. No uM-to-mass unit conversion is given here for that reason.",
+        "Efavirenz is NOT a perpetrator in the paper's Simcyp DDI simulations, so no efavirenz compound file appears in Supplemental Table 2 and no molecular weight is reported in any available source. No uM-to-mass unit conversion is given here for that reason.",
         "Set to 0 for the vehicle-control condition, at which the model returns fold = 1 by construction."
       ),
       source_name = "concentration of the inducer"
@@ -83,7 +83,7 @@ Almond_2016_efavirenz_invitro <- function() {
       "Both a three-parameter (Hill exponent constrained to 1) and a four-parameter sigmoidal model were fitted in GraphPad Prism version 5, and the paper states the two were 'not significantly different', so the three-parameter fit was used. This file therefore carries NO Hill exponent by the authors' own model-selection decision.",
       "Indmax is NOT baseline-corrected: the paper states it 'is equal to Emax + 1'. This is the reason the file carries emax = Indmax - 1.",
       "SCOPE CAVEAT. Efavirenz appears in Table 1 (concentration range) and Table 2 (fitted parameters) but nowhere else in the paper: it is absent from Table 4 (clinical DDI studies for non-rifampicin inducers), from Fig. 5 and from Table 6 (prediction accuracy). The Results narrative for the in vitro parameters covers all six inducers, but the DDI-prediction half of the study covers only rifampicin, carbamazepine, phenytoin and phenobarbital. These efavirenz parameters are therefore a complete and fully sourced in vitro characterisation with NO in vivo verification within this paper.",
-      "The calibration equations (Eqs. 5 and 6) can nonetheless be applied to these values, since calibration only requires the test compound's in vitro parameters and rifampicin's in vitro and in vivo parameters -- all of which are on disk. The vignette demonstrates that calculation for efavirenz alongside the three inducers the paper itself calibrated."
+      "The calibration equations (Eqs. 5 and 6) can nonetheless be applied to these values, since calibration only requires the test compound's in vitro parameters and rifampicin's in vitro and in vivo parameters -- all of which are available. The vignette demonstrates that calculation for efavirenz alongside the three inducers the paper itself calibrated."
     )
   )
 

@@ -41,7 +41,7 @@ Kloft_2004_sibrotuzumab <- function() {
     disease_state = "Adults with metastatic fibroblast-activation-protein (FAP)-positive cancers (Kloft 2004 enrolled patients with metastatic colorectal, non-small-cell lung, and head-and-neck carcinomas in a Phase I/II program of repeated weekly IV sibrotuzumab infusions).",
     dose_range = "Repeated weekly intravenous sibrotuzumab infusions (Phase I dose escalation per Kloft 2004). Detailed dose levels are not reproduced in the DDMORE bundle; the bundle's Simulated_sibrotuzumab.csv ships a single 80 mg / 1-hour IV infusion per subject as a smoke test.",
     regions = NA_character_,
-    notes = "Population demographic detail (n_subjects, weight range, age, sex distribution) is not reproduced in the DDMORE Foundation Model Repository bundle for DDMODEL00000195, and the original Kloft 2004 publication is not on disk in this worktree. The bundle's Simulated_sibrotuzumab.csv carries 20 virtual subjects with WT in {70, 80, 90, 100} kg drawn evenly across IDs as a regression-test cohort. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
+    notes = "Population demographic detail (n_subjects, weight range, age, sex distribution) is not reproduced in the DDMORE Foundation Model Repository bundle for DDMODEL00000195, and the original Kloft 2004 publication was not available when this model was built. The bundle's Simulated_sibrotuzumab.csv carries 20 virtual subjects with WT in {70, 80, 90, 100} kg drawn evenly across IDs as a regression-test cohort. See the validation vignette's Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({

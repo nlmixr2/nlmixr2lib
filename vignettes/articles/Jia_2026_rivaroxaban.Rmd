@@ -696,7 +696,7 @@ inside both exposure limits, 10 mg leaves a substantial minority outside them
   any coarser or nominal-time grid yields a systematically lower Cmax and hence
   a higher pass rate. The paper also gives no simulated `Cmax,ss` or `AUCss,24`
   summary statistics numerically - Figures 3 and 4 are box plots only - so the
-  discrepancy cannot be localised further from on-disk sources. No parameter was
+  discrepancy cannot be localised further from the available sources. No parameter was
   adjusted; the gate admits the deviation and remains able to fail.
 * **One-row discrepancy in the deposited dataset's exclusions.** The paper's
   arithmetic is 136 samples - 3 invalid - 2 influential = 131 observations. The

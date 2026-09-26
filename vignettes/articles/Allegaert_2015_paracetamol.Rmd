@@ -34,7 +34,7 @@ bundle for `DDMODEL00000267` (scraped to
   fit on the original real dataset; the FINAL PARAMETER ESTIMATE
   block (lines 519-567) appears after `MINIMIZATION SUCCESSFUL`
   (line 452, OBJV = 5286.743) and is the authoritative source of
-  parameter point values for this extraction.
+  parameter point values for this model.
 - `Output_simulated_OriginalModelCode.lst` -- companion listing run
   on the bundle's simulated dataset; used for self-consistency
   checks below.
@@ -45,8 +45,8 @@ bundle for `DDMODEL00000267` (scraped to
 - `DDMODEL00000267.rdf` -- model classification metadata
   (`pkpd-ontology#pkpd_0006013` purpose).
 
-The Allegaert 2015 BMC Anesthesiol publication itself was not on
-disk when this model was built, so the validation strategy below
+The Allegaert 2015 BMC Anesthesiol publication itself was not
+available when this model was built, so the validation strategy below
 is a DDMORE-source self-consistency check and the linked
 publication's tables are not used as a parameter
 cross-check. Per-parameter source comments in
@@ -322,7 +322,7 @@ knitr::kable(
 
 ## Comparison against published NCA
 
-The Allegaert 2015 BMC Anesthesiol publication was not on disk when
+The Allegaert 2015 BMC Anesthesiol publication was not available when
 this model was built, so a side-by-side comparison against published NCA
 parameters cannot be produced. The .lst-based self-consistency
 check above (typical-value simulation reproducing sensible plasma /
@@ -339,10 +339,10 @@ structural model and covariate-effect implementation are coherent.
 
 # Assumptions and deviations
 
-- **Publication PDF not on disk.** The Allegaert 2015 paper
+- **Publication PDF not available.** The Allegaert 2015 paper
   (BMC Anesthesiol 15:151;
   [doi:10.1186/s12871-015-0144-3](https://doi.org/10.1186/s12871-015-0144-3))
-  was not available in the maintainers' literature mirror. Parameter
+  was not available when this model was built. Parameter
   point values are taken verbatim from
   `Output_real_OriginalModelCode.lst` after `MINIMIZATION SUCCESSFUL`
   (OBJV = 5286.743). The absence of a paper cross-check is the main
@@ -419,8 +419,8 @@ structural model and covariate-effect implementation are coherent.
   (same ODEs, same covariate effects) so the single-dose check is
   considered sufficient for a pre-publication validation.
 - **Canonical covariate-column names `CONMED_BIRTHCONTROL` and `URINE_FLOW`.**
-  The first version of this extraction (commit `ced840f2`, then merged
-  into `main`) registered the source-data columns `BC` and `UF` under
+  The first version of this model registered the source-data columns
+  `BC` and `UF` under
   the canonical names `BC_USE` and `UF`. Maintainer review
   preferred the full-word forms `CONMED_BIRTHCONTROL` and
   `URINE_FLOW` for clarity in source traces; the canonicals were

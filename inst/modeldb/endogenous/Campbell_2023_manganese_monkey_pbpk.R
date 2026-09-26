@@ -685,7 +685,7 @@ Campbell_2023_manganese_monkey_pbpk <- function() {
     # per simulation, not fitted. Defaults give an unexposed animal.
     # =====================================================================
     f_intake_diet <- fixed(0)
-    label("Dietary intake factor, INFAC (kg diet/day/BW^0.75) -- NOT REPORTED by Campbell 2023")  # supplement, "INFAC = 99.9; # Dietary Intake Factors (kg/day/BW) (from EPA 1986)". No value appears in the paper, its supplement, or any on-disk source; it is needed ONLY to convert a ppm diet (diet_mn_ppm) to an intake rate. Default 0 leaves that route inert -- check the Rdiet output. Use diet_mn_mgd instead.
+    label("Dietary intake factor, INFAC (kg diet/day/BW^0.75) -- NOT REPORTED by Campbell 2023")  # supplement, "INFAC = 99.9; # Dietary Intake Factors (kg/day/BW) (from EPA 1986)". No value appears in the paper, its supplement, or any source available when this model was built; it is needed ONLY to convert a ppm diet (diet_mn_ppm) to an intake rate. Default 0 leaves that route inert -- check the Rdiet output. Use diet_mn_mgd instead.
     ksc <- fixed(0)
     label("Absorption rate constant from the subcutaneous injection site, KSBQ (1/h) -- NOT REPORTED")  # supplement "Dosing Controls"; needed only for the Newland 1987 sc-infusion simulation (Figure 5A)
     kip <- fixed(0)

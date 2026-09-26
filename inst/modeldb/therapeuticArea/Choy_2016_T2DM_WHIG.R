@@ -89,11 +89,11 @@ Choy_2016_T2DM_WHIG <- function() {
   #     readings give biologically sensible IIV magnitudes; see the vignette
   #     Assumptions and deviations section for details.
   #   - Supplementary Appendix S2 (variance-covariance correlation matrix,
-  #     paper p.15 footnote a) is not on disk; the packaged model uses a
-  #     diagonal OMEGA structure. Simulation reproduces typical-value
-  #     predictions exactly but cannot exactly reproduce the published 95%
-  #     prediction-interval widths in Figures 3 and 4 (which depend on the
-  #     missing correlations).
+  #     paper p.15 footnote a) was not available when this model was built;
+  #     the packaged model uses a diagonal OMEGA structure. Simulation
+  #     reproduces typical-value predictions exactly but cannot exactly
+  #     reproduce the published 95% prediction-interval widths in Figures 3
+  #     and 4 (which depend on the missing correlations).
   ini({
     # ----- Weight model (Choy 2016 Eq. 1-4; Table 1) -----
     t_half_wgt <- 96.9     ; label("Half-life of the weight compartment (day)")  # Choy 2016 Table 1
@@ -124,7 +124,7 @@ Choy_2016_T2DM_WHIG <- function() {
     scaleppg   <- 0.963       ; label("Scaling factor on PPG for t > 0 (unitless)")                                    # Choy 2016 Table 1
     lmtt       <- log(38.9)   ; label("Log mean transit time of the HbA1c transit chain (day)")                        # Choy 2016 Table 1
 
-    # ----- IIV (diagonal OMEGA; S2 correlation matrix not on disk) -----
+    # ----- IIV (diagonal OMEGA; S2 correlation matrix not available) -----
     etalblwt     ~ 0.02109   # Choy 2016 Table 1; log-normal, CV 14.6% -> log(1 + 0.146^2)
     etais0       ~ 0.09303   # Choy 2016 Table 1; normal SD 0.305 on the logit scale (footnote b)
     etalscaleefs ~ 0.37570   # Choy 2016 Table 1; log-normal, CV 67% -> log(1 + 0.67^2)

@@ -124,7 +124,7 @@ Olafuyi_2025_propyleneGlycol_neonate <- function() {
     # Maximum metabolic rate at FULL (adult-equivalent) ADH activity, scaled to
     # the neonatal liver. As in the adult model the in vitro Vmax of
     # 1.57 nmole/min/mg cytosolic protein (Table 2) cannot be scaled to a
-    # whole-body rate from on-disk sources, so it is back-solved from the
+    # whole-body rate from the available sources, so it is back-solved from the
     # paper's own printed neonatal hepatic clearance and then divided by the
     # ontogeny factor at birth so that the ontogeny function below reproduces
     # it: vmax = CL_hepatic * km / Fbirth = 0.063 L/h * 1909.1 mg/L / 0.18.

@@ -661,7 +661,7 @@ that would require the individual NONMEM EBEs.
   parameter without off-diagonal correlation estimates. The packaged
   model uses diagonal OMEGA; this is consistent with the reported
   information but cannot be cross-checked against the original NONMEM
-  control stream (not on disk).
+  control stream (not available).
 
 - **`omega^2 = log(CV^2 + 1)`.** Table 2 reports inter-individual
   variability as %CV; the corresponding log-normal variance was

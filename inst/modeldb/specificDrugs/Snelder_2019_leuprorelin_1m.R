@@ -122,7 +122,7 @@ Snelder_2019_leuprorelin_1m <- function() {
     )
     # Supplement 1 states "IIV was identified on RBIO, Ka3_SLP, CL and Fr",
     # but Table S1.1 has no omega^2 CL row, so the CL variance is not
-    # recoverable from any on-disk source and no eta on CL is carried here.
+    # recoverable from any available source and no eta on CL is carried here.
     # Do not read the absence as "no IIV on CL" -- see the vignette Errata.
 
     # ------------------------------------------------------------------

@@ -5,7 +5,7 @@ NA_NA_sunitinib <- function() {
     "DDMORE Foundation Model Repository: DDMODEL00000231",
     "(MPD6: Sutent / sunitinib semi-mechanistic PK/PD model in non-small",
     "cell lung cancer; MDL/PharmML deposit, version 3 in the dpastoor",
-    "scrape). No linked publication has been located on disk; the bundle",
+    "scrape). No linked publication has been located; the bundle",
     "ships only Sunitinib_MPD6_model.mdl and the auto-rendered",
     "Sunitinib_MPD6_model.xml. The deposit's metadata description reads:",
     "\"This is a semi-mechanistic PK/PD model for sunitinib therapy in",
@@ -79,7 +79,7 @@ NA_NA_sunitinib <- function() {
   ini({
     # ----------------------------------------------------------------------
     # All values come from the MDL parObj STRUCTURAL{} and VARIABILITY{}
-    # blocks (Sunitinib_MPD6_model.mdl). For DDMORE-source extractions the
+    # blocks (Sunitinib_MPD6_model.mdl). For DDMORE-source models the
     # final estimates normally come from Output_real_*.lst, but this bundle
     # ships no listing -- see vignette Errata, so the parObj values are
     # treated as the deposited final estimates.

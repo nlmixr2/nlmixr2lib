@@ -413,7 +413,7 @@ parameter values are faithful to Table 2.
   text (the published NONMEM control streams are in the supplement). To
   avoid guessing those values, the packaged model implements only the
   ADC moiety; the cys-mcMMAF sub-model can be added in a future revision
-  once the supplement is on disk. This restricts the scope of the
+  once the supplement is available. This restricts the scope of the
   packaged model to ADC concentrations (`Cc`); cys-mcMMAF concentrations
   cannot be predicted by this file.
 - **Omitted IgG-on-TI50 covariate effect.** The Papathanasiou 2025

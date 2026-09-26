@@ -113,7 +113,7 @@ Diep_2022_eplontersen <- function() {
     # component on log-transformed plasma concentrations. NONMEM/Phoenix
     # "additive on log scale" maps to a proportional residual in linear
     # space; propSd = sqrt(0.0851) = 0.2917 (the per-conventions translation
-    # in references/naming-conventions.md NONMEM error-block table).
+    # of NONMEM error blocks used throughout the library).
     # PD: Diep 2022 Table 3 reports sigma^2_prop = 0.0368 as the proportional
     # component on linear TTR concentrations; propSd_ttr = sqrt(0.0368) = 0.1918.
     propSd     <- 0.2917; label("Proportional residual error on plasma eplontersen Cc (fraction)")        # Diep 2022 Table 2 sigma^2_add = 0.0851 (log-additive form) -> sqrt(0.0851)

@@ -34,8 +34,8 @@ Law_2017_ecg_rat_pbpk <- function() {
   # Gibaldi 1977). Each state holds the amount in transit; dividing by the
   # per-sub-compartment residence time mtt_bile gives the transfer rate R_j of
   # the paper, so the total bile-duct delay is 3 * mtt_bile. bile_transit<n> is
-  # a canonical chain family (operator ruling 2026-09-21, sidecar
-  # oasweep_PMC5464336 q1); see inst/references/compartment-names.md.
+  # a canonical chain family (by the maintainers' decision); see
+  # inst/references/compartment-names.md.
 
   compartmentData <- list(
     depot = list(analyte = "ECg", units = "mg", specimen = "administration site", verified = TRUE),
@@ -128,8 +128,8 @@ Law_2017_ecg_rat_pbpk <- function() {
     # ODE code reproduces the paper's human Table 7 predicted Cmax in 14 of 15
     # cells. Nothing here has been tuned to close the gap -- no single reading
     # of the printed parameters reconciles Cmax, Tmax and the terminal slope
-    # together. Extracted with loud errata by operator ruling 2026-09-21
-    # (sidecar oasweep_PMC5464336 q3 = A). See the vignette section 'The rat
+    # together. Extracted with loud errata by the maintainers' decision. See
+    # the vignette section 'The rat
     # models do not reproduce the paper's own rat figures'.
 
     # Table 3 (kac ECg = 0.002 /min per kg^-0.3; assumed equal to EC)

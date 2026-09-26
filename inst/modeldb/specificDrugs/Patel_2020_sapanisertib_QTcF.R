@@ -167,7 +167,7 @@ Patel_2020_sapanisertib_QTcF <- function() {
     # (columns: Parameter | Estimate | SE | df | t-value | P-value |
     # 95% Bootstrap CI). That in-panel table is a PRINTED parameter
     # table with full printed-value authority -- it is not a digitised
-    # or curve-fitted value. It is invisible to pdftotext / docling
+    # or curve-fitted value. It is invisible to text extraction
     # because Figure 4 is a raster image; it was read by rendering
     # page 10 of the PDF at 400 dpi.
     #
@@ -243,14 +243,14 @@ Patel_2020_sapanisertib_QTcF <- function() {
     # residual df of 440 against 44 patients is consistent with a
     # per-subject random intercept. However the paper does NOT report
     # any variance estimate for any of the three concentration-effect
-    # models. Per the standing operator policy on unreported IIV, this
+    # models. Per the maintainers' standing policy on unreported IIV, this
     # file omits the eta declarations and ships a typical-value-only
     # model. The vignette Errata documents the gap.
     # ==================================================================
 
     # ==================================================================
     # Residual error: not reported numerically in Patel 2020. Encoded
-    # as fixed(0) per the standing operator policy on unreported
+    # as fixed(0) per the maintainers' standing policy on unreported
     # residual error (the model returns the deterministic typical-
     # value prediction). Same encoding as
     # Darpo_2014_racSotalol_QTcF.R. The vignette Errata documents the

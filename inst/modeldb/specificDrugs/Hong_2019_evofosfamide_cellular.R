@@ -23,7 +23,7 @@ Hong_2019_evofosfamide_cellular <- function() {
     "resolved: the same equations are solved with a Laplacian diffusion term",
     "by Green's function methods over digitized R3230Ac and FaDu",
     "microvascular networks, which rxode2 cannot express and whose network",
-    "geometry is not on disk. Diffusion coefficients are therefore NOT",
+    "geometry was not available when this model was built. Diffusion coefficients are therefore NOT",
     "parameters of this file. See the vignette for what this scope does and",
     "does not reproduce.",
     sep = " "

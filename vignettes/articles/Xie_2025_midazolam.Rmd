@@ -674,8 +674,9 @@ either comparison table.
 
 - **Covariate equations are not printed by the paper.** Xie 2025 reports the
   three covariate coefficients in Table 2 but never writes the covariate model
-  equations, and no supplement carrying them is on disk. The power form and
-  the 37 IU/L / 62 kg reference values, and the fractional (rather than
+  equations, and no supplement carrying them was available when this model was
+  built. The power form and the 37 IU/L / 62 kg reference values, and the
+  fractional (rather than
   exponential) form of the genotype effect, were recovered by back-solving the
   paper's own reported typical clearances in Results "Simulations". All six
   recoverable checks agree to the printed precision, and the exponential
@@ -737,7 +738,7 @@ either comparison table.
   `covariatesDataExcluded` metadata rather than `covariateData`, since none
   appears in the final model.
 
-- **Supplementary material not on disk.** Supplementary Table 1 (genotype
+- **Supplementary material not available.** Supplementary Table 1 (genotype
   counts and Hardy-Weinberg tests), Supplementary Table 2 (the covariate
   screening trace) and Supplementary Figure 1 (additional goodness-of-fit
   plots) were not available. None contains a final model parameter; every

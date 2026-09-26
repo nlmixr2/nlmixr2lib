@@ -28,8 +28,8 @@ library(ggplot2)
 
 The Ter Heine 2014 publication reports a popPK study of tamoxifen and its
 active metabolite endoxifen at steady state in adult breast-cancer patients
-on standard 20 mg PO QD chronic dosing. The full publication PDF was not on
-disk during model extraction; only the Table 2 of final estimates was
+on standard 20 mg PO QD chronic dosing. The full publication PDF was not
+available when this model was built; only the Table 2 of final estimates was
 embedded in the DDMORE bundle (`Output_real_tamoxifen.pdf`), so the
 demographic ranges captured in `population` are partial — the
 `age_range` / `weight_range` fields carry a TODO marker. The DDMORE
@@ -289,14 +289,13 @@ tamoxifen in adult breast-cancer patients.
 
 # Assumptions and deviations
 
-- **Source-publication PDF not on disk during extraction.** Only Table 2
+- **Source-publication PDF not available when this model was built.** Only Table 2
   of the original Ter Heine 2014 publication was embedded in the DDMORE
   bundle (`Output_real_tamoxifen.pdf`). The full publication
   (Br J Clin Pharmacol 2014;78:572-586, doi:10.1111/bcp.12388) was not
-  available locally, so the `population$age_range` and
+  available when this model was built, so the `population$age_range` and
   `population$weight_range` fields carry TODO markers. Demographic
-  fields can be filled in via a follow-up edit once the full PDF is on
-  disk.
+  fields can be filled in once the full publication is available.
 
 - **Parameter values from the publication, not from the DDMORE re-fit.**
   The bundle's `Output_simulated_tamoxifen.lst` reports a NONMEM re-fit

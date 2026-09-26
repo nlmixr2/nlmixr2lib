@@ -59,13 +59,13 @@ Hansson_2013_sunitinib_dbp <- function() {
     species = "human",
     n_subjects = 303L,
     n_studies = 4L,
-    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the trimmed PDF section that includes Methods + Results + Tables)",
-    weight_range = "not reported in the on-disk trimmed paper text",
+    age_range = "adults with imatinib-resistant GIST (paper text reports n=303 pooled across phases I-III; per-cohort baseline-demographics table not in the paper's Methods, Results or Tables)",
+    weight_range = "not reported in the paper",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
     disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006 study 1004, George 2009 study 1047, Shirao 2010 study 1045, Maki 2005 study 013).",
     dose_range = "sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 or continuous schedule (Table 1). Placebo arm: no sunitinib.",
-    regions = "phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies' regions not stated in the trimmed paper text.",
+    regions = "phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies' regions not stated in the paper.",
     biomarkers = "Diastolic blood pressure (dBP) measured serially during treatment cycles. Median (range) observed dBP during treatment: 80 (20-120) mmHg in study 1004, 78 (40-120) in study 1047, 79 (40-120) in study 1045, 80 (50-130) in study 013 (Hansson 2013 Table 1).",
     notes = "n_subjects = 303 reported in Hansson 2013 e85 Methods. The dBP model was fit with Methods-specified blood pressure observations assumed to occur in the morning ('The actual times of the day for blood pressure measurements were not available and were therefore assumed to occur in the morning for all observations')."
   )

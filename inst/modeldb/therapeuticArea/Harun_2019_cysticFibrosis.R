@@ -90,7 +90,7 @@ Harun_2019_cysticFibrosis <- function() {
     # `t` variable inside model() is taken to be age in years (the dataset's
     # `time` column carries age in years). The NMTRAN source converts the input
     # column from hours to years via TIME1 = ((TIME/24)/365); in the nlmixr2
-    # data convention the operator carries age directly in the time column.
+    # data convention the dataset carries age directly in the time column.
     age_yr <- t
 
     # Individual structural parameters. Each parameter applies its IIV and

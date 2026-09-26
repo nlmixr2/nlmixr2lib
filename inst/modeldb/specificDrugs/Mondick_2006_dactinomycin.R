@@ -84,7 +84,7 @@ Mondick_2006_dactinomycin <- function() {
     notes = paste(
       "Source is a one-page PAGE 2006 conference abstract; no",
       "supplement or subsequent full-text publication of this PK model",
-      "is available on disk. NIH Award #CA098543-0251.",
+      "was available when this model was built. NIH Award #CA098543-0251.",
       "Final NONMEM fit reports %CV next to V1 and CL only; the",
       "remaining IIVs and the residual error are not reported and are",
       "encoded here as fixed(0)."

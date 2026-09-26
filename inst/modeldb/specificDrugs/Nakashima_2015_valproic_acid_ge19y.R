@@ -11,7 +11,7 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     "multiplies the trough concentration, so G/G and G/A adults get a ",
     "CONCENTRATION-INDEPENDENT response probability. That is the equation ",
     "exactly as printed -- Eq 8 carries no parentheses, unlike Eqs 6 and 7 ",
-    "-- and is encoded verbatim by operator ruling; the ambiguity is ",
+    "-- and is encoded verbatim by decision of the maintainers; the ambiguity is ",
     "documented in the ini() block and in the vignette Errata, and no ",
     "source anchor exists to test it. A one-compartment first-order ",
     "absorption model with lag time supplies the trough; its parameters ",
@@ -360,7 +360,7 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     # A user who wants the alternative reading (all three genotype terms
     # inside a slope group, with a base slope that Eq 8 does not print)
     # must supply that base slope themselves; it is not recoverable from
-    # any source on disk. See the vignette Errata.
+    # any available source. See the vignette Errata.
     #
     # The concentration scaling (trough enters as Cc/100) is inherited
     # from Eq 6, where it is established six times over against Table 4;

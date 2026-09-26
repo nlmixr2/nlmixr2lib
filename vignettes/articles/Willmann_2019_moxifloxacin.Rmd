@@ -34,7 +34,7 @@ its two metabolites, built in PK-Sim and MoBi and scaled from adults to
 children; the **confirmation** step is the pediatric population PK model fitted
 in NONMEM to the pooled phase I and phase III data. Only the popPK model is
 packaged here -- see *Assumptions and deviations* for why the PBPK layer is not
-reproducible from the material on disk.
+reproducible from the material available when this model was built.
 
 # Population
 
@@ -852,7 +852,8 @@ sprintf("Oral / intravenous median AUC ratio in the 400 mg band: %.3f (F = 0.866
   the deposited model code, and several of the physicochemical inputs
   themselves come from a Bayer in-house cheminformatics tool ("Pythia"). The
   PBPK model therefore cannot be reconstructed as an rxode2 model from any
-  material on disk, and no attempt was made to substitute platform defaults.
+  material available when this model was built, and no attempt was made to
+  substitute platform defaults.
   The popPK model, which is fully specified by Table S2 plus the deposited
   control stream, is packaged in full.
 
