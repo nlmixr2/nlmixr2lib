@@ -244,6 +244,8 @@ navbar:
         href: articles/Heo_2016_amlodipine_valsartan.html
       - text: "Amodiaquine (Ali 2018)"
         href: articles/Ali_2018_amodiaquine.html
+      - text: "Amodiaquine (Ding 2020)"
+        href: articles/Ding_2020_amodiaquine.html
       - text: "Amodiaquine (Ding 2024)"
         href: articles/Ding_2024_antimalarials_pregnancy.html
       - text: "Amodiaquine (Ding 2026)"
@@ -6510,6 +6512,7 @@ articles:
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
   - articles/Dimelow_2018_ceftazidime_avibactam_elf
+  - articles/Ding_2020_amodiaquine
   - articles/Ding_2024_antimalarials_pregnancy
   - articles/Ding_2026_artemether_lumefantrine_amodiaquine
   - articles/Ding_2026_vancomycin
