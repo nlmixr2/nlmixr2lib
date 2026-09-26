@@ -68,38 +68,138 @@ Nguyen_2020_taldefgrobepAlfa_qsp <- function() {
   )
 
   compartmentData <- list(
-    depot = list(analyte = "anti-myostatin adnectin (BMS-986089)", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "anti-myostatin adnectin (BMS-986089) (free, not ligand-bound)", units = "mg", specimen = "plasma", verified = TRUE),
-    drug_muscle = list(analyte = "anti-myostatin adnectin (BMS-986089) (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    drug_pituitary = list(analyte = "anti-myostatin adnectin (BMS-986089) (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    drug_other = list(analyte = "anti-myostatin adnectin (BMS-986089) (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    md_plasma = list(analyte = "anti-myostatin adnectin (BMS-986089)-myostatin complex", units = "nM", specimen = "plasma", verified = TRUE),
-    md_muscle = list(analyte = "anti-myostatin adnectin (BMS-986089)-myostatin complex", units = "nM", specimen = "tissue", verified = TRUE),
-    md_other = list(analyte = "anti-myostatin adnectin (BMS-986089)-myostatin complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ad_plasma = list(analyte = "anti-myostatin adnectin (BMS-986089)-activin A complex", units = "nM", specimen = "plasma", verified = TRUE),
-    ad_muscle = list(analyte = "anti-myostatin adnectin (BMS-986089)-activin A complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ad_pituitary = list(analyte = "anti-myostatin adnectin (BMS-986089)-activin A complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ad_other = list(analyte = "anti-myostatin adnectin (BMS-986089)-activin A complex", units = "nM", specimen = "tissue", verified = TRUE),
+    depot = list(
+      analyte = "anti-myostatin adnectin (BMS-986089)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(
+      analyte = "anti-myostatin adnectin (BMS-986089; free, not ligand-bound)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    drug_muscle = list(
+      analyte = "anti-myostatin adnectin (BMS-986089) (free)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    drug_pituitary = list(
+      analyte = "anti-myostatin adnectin (BMS-986089) (free)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    drug_other = list(
+      analyte = "anti-myostatin adnectin (BMS-986089) (free)",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    md_plasma = list(
+      analyte = "anti-myostatin adnectin (BMS-986089)-myostatin complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    md_muscle = list(
+      analyte = "anti-myostatin adnectin (BMS-986089)-myostatin complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    md_other = list(
+      analyte = "anti-myostatin adnectin (BMS-986089)-myostatin complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ad_plasma = list(
+      analyte = "anti-myostatin adnectin (BMS-986089)-activin A complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    ad_muscle = list(
+      analyte = "anti-myostatin adnectin (BMS-986089)-activin A complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ad_pituitary = list(
+      analyte = "anti-myostatin adnectin (BMS-986089)-activin A complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ad_other = list(
+      analyte = "anti-myostatin adnectin (BMS-986089)-activin A complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     myo_plasma = list(analyte = "mature myostatin (free)", units = "nM", specimen = "plasma", verified = TRUE),
     myo_muscle = list(analyte = "mature myostatin (free)", units = "nM", specimen = "tissue", verified = TRUE),
     myo_other = list(analyte = "mature myostatin (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    ppmyo_plasma = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "plasma", verified = TRUE),
-    ppmyo_muscle = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ppmyo_other = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "tissue", verified = TRUE),
+    ppmyo_plasma = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    ppmyo_muscle = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ppmyo_other = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     act_plasma = list(analyte = "mature activin A (free)", units = "nM", specimen = "plasma", verified = TRUE),
     act_muscle = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     act_pituitary = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     act_other = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     ppact_plasma = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "plasma", verified = TRUE),
     ppact_muscle = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ppact_pituitary = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
+    ppact_pituitary = list(
+      analyte = "activin A-propeptide complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ppact_other = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
     actriib_muscle = list(analyte = "ActRIIB receptor (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    myo_actriib_muscle = list(analyte = "myostatin-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
-    act_actriib_muscle = list(analyte = "activin A-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
+    myo_actriib_muscle = list(
+      analyte = "myostatin-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    act_actriib_muscle = list(
+      analyte = "activin A-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     actriib_pituitary = list(analyte = "ActRIIB receptor (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    act_actriib_pituitary = list(analyte = "activin A-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
-    muscle_growth = list(analyte = "muscle volume change from baseline", units = "%", specimen = "not applicable", verified = TRUE),
+    act_actriib_pituitary = list(
+      analyte = "activin A-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    muscle_growth = list(
+      analyte = "muscle volume change from baseline",
+      units = "%",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
     fsh = list(analyte = "follicle-stimulating hormone", units = "ng/mL", specimen = "plasma", verified = TRUE)
   )
 
@@ -168,7 +268,7 @@ Nguyen_2020_taldefgrobepAlfa_qsp <- function() {
     kon_drug_myo <- fixed(0.22); label("anti-myostatin adnectin-myostatin association rate constant (1/(nM*h))") # Table 2, adnectin column kon_drug-Myo = 0.22
     koff_drug_myo <- fixed(0.013); label("anti-myostatin adnectin-myostatin dissociation rate constant (1/h)") # Table 2, adnectin column koff_drug-Myo = 0.013
     kon_drug_act <- fixed(0.6); label("anti-myostatin adnectin-activin A association rate constant (1/(nM*h))") # Table 2, adnectin column kon_drug-Act = 0.6 (footnote i)
-    koff_drug_act <- fixed(600000.0); label("anti-myostatin adnectin-activin A dissociation rate constant (1/h)") # Table 2, adnectin column koff_drug-Act = 6 x 10^5 (footnote g: arbitrary high value, negligible activin binding)
+    koff_drug_act <- fixed(6e5); label("anti-myostatin adnectin-activin A dissociation rate constant (1/h)") # Table 2, adnectin column koff_drug-Act = 6 x 10^5 (footnote g: arbitrary high value, negligible activin binding)
     sigma_v_drug <- fixed(0.72); label("Vascular reflection coefficient of drug and drug complexes (unitless)") # Table 2, adnectin column sigma_m_V_drug = 0.72
     sigma_is_drug <- fixed(0.2); label("Lymphatic reflection coefficient of drug and drug complexes (unitless)") # Table 2, adnectin column sigma_m_IS_drug = 0.2 (footnote h: same in pituitary and other tissues)
 

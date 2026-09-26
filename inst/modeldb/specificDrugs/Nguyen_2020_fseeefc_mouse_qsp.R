@@ -82,23 +82,63 @@ Nguyen_2020_fseeefc_mouse_qsp <- function() {
     myo_plasma = list(analyte = "mature myostatin (free)", units = "nM", specimen = "plasma", verified = TRUE),
     myo_muscle = list(analyte = "mature myostatin (free)", units = "nM", specimen = "tissue", verified = TRUE),
     myo_other = list(analyte = "mature myostatin (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    ppmyo_plasma = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "plasma", verified = TRUE),
-    ppmyo_muscle = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ppmyo_other = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "tissue", verified = TRUE),
+    ppmyo_plasma = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    ppmyo_muscle = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ppmyo_other = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     act_plasma = list(analyte = "mature activin A (free)", units = "nM", specimen = "plasma", verified = TRUE),
     act_muscle = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     act_pituitary = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     act_other = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     ppact_plasma = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "plasma", verified = TRUE),
     ppact_muscle = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ppact_pituitary = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
+    ppact_pituitary = list(
+      analyte = "activin A-propeptide complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ppact_other = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
     actriib_muscle = list(analyte = "ActRIIB receptor (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    myo_actriib_muscle = list(analyte = "myostatin-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
-    act_actriib_muscle = list(analyte = "activin A-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
+    myo_actriib_muscle = list(
+      analyte = "myostatin-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    act_actriib_muscle = list(
+      analyte = "activin A-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     actriib_pituitary = list(analyte = "ActRIIB receptor (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    act_actriib_pituitary = list(analyte = "activin A-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
-    muscle_growth = list(analyte = "muscle mass change from baseline (body-weight surrogate)", units = "%", specimen = "not applicable", verified = TRUE)
+    act_actriib_pituitary = list(
+      analyte = "activin A-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    muscle_growth = list(
+      analyte = "muscle mass change from baseline (body-weight surrogate)",
+      units = "%",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()

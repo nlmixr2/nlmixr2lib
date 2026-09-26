@@ -1494,6 +1494,8 @@ navbar:
         href: articles/Zhang_2015_dolutegravir.html
       - text: "Domagrozumab (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_domagrozumab.html
+      - text: "Domagrozumab qsp (Nguyen 2020)"
+        href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
       - text: "Donepezil im (Khwarg 2024)"
         href: articles/Khwarg_2024_donepezil.html
       - text: "Donepezil im (Park 2025)"
@@ -2128,6 +2130,14 @@ navbar:
         href: articles/Zhou_2025_fruquintinib.html
       - text: "Fruquintinib poppk (Zhou 2025)"
         href: articles/Zhou_2025_fruquintinib_poppk.html
+      - text: "Fseeefc monkey qsp (Nguyen 2020)"
+        href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
+      - text: "Fseeefc mouse qsp (Nguyen 2020)"
+        href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
+      - text: "Fseeefc qsp (Nguyen 2020)"
+        href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
+      - text: "Fseeefc rat qsp (Nguyen 2020)"
+        href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
       - text: "Furmonertinib (Zou 2022)"
         href: articles/Zou_2022_furmonertinib.html
       - text: "Furosemide (Hornik 2025)"
@@ -4408,6 +4418,8 @@ navbar:
         href: articles/Wang_2011_raltegravir.html
       - text: "Raltitrexed (Blair 2004)"
         href: articles/Blair_2004_raltitrexed.html
+      - text: "Ramatercept qsp (Nguyen 2020)"
+        href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
       - text: "Ramucirumab (OBrien 2017)"
         href: articles/OBrien_2017_ramucirumab.html
       - text: "Ranibizumab (HuttonSmith 2018)"
@@ -5114,6 +5126,8 @@ navbar:
         href: articles/Roepcke_2018_tak_079.html
       - text: "Talazoparib enzalutamide (Hadigol 2026)"
         href: articles/Hadigol_2026_talazoparib_enzalutamide.html
+      - text: "TaldefgrobepAlfa qsp (Nguyen 2020)"
+        href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
       - text: "Tamibarotene pediatric (Azechi 2024)"
         href: articles/Azechi_2024_tamibarotene_pediatric.html
       - text: "Tamsulosin (Tsuda 2010)"
@@ -7411,6 +7425,7 @@ articles:
   - articles/Ngo_2020_HL2351
   - articles/Ngo_2023_rivaroxaban
   - articles/Nguyen_2019_cabozantinib
+  - articles/Nguyen_2020_myostatin_activin_dmd_qsp
   - articles/Nguyen_2025_valbenazine_huntington_chorea
   - articles/Nguyen_2026_dupilumab
   - articles/Nguyen_2026_levofloxacin

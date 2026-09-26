@@ -69,37 +69,117 @@ Nguyen_2020_ramatercept_qsp <- function() {
 
   compartmentData <- list(
     depot = list(analyte = "ACE-031 (ActRIIB-Fc)", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "ACE-031 (ActRIIB-Fc) (free, not ligand-bound)", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(
+      analyte = "ACE-031 (ActRIIB-Fc; free, not ligand-bound)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
     drug_muscle = list(analyte = "ACE-031 (ActRIIB-Fc) (free)", units = "nM", specimen = "tissue", verified = TRUE),
     drug_pituitary = list(analyte = "ACE-031 (ActRIIB-Fc) (free)", units = "nM", specimen = "tissue", verified = TRUE),
     drug_other = list(analyte = "ACE-031 (ActRIIB-Fc) (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    md_plasma = list(analyte = "ACE-031 (ActRIIB-Fc)-myostatin complex", units = "nM", specimen = "plasma", verified = TRUE),
-    md_muscle = list(analyte = "ACE-031 (ActRIIB-Fc)-myostatin complex", units = "nM", specimen = "tissue", verified = TRUE),
-    md_other = list(analyte = "ACE-031 (ActRIIB-Fc)-myostatin complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ad_plasma = list(analyte = "ACE-031 (ActRIIB-Fc)-activin A complex", units = "nM", specimen = "plasma", verified = TRUE),
-    ad_muscle = list(analyte = "ACE-031 (ActRIIB-Fc)-activin A complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ad_pituitary = list(analyte = "ACE-031 (ActRIIB-Fc)-activin A complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ad_other = list(analyte = "ACE-031 (ActRIIB-Fc)-activin A complex", units = "nM", specimen = "tissue", verified = TRUE),
+    md_plasma = list(
+      analyte = "ACE-031 (ActRIIB-Fc)-myostatin complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    md_muscle = list(
+      analyte = "ACE-031 (ActRIIB-Fc)-myostatin complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    md_other = list(
+      analyte = "ACE-031 (ActRIIB-Fc)-myostatin complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ad_plasma = list(
+      analyte = "ACE-031 (ActRIIB-Fc)-activin A complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    ad_muscle = list(
+      analyte = "ACE-031 (ActRIIB-Fc)-activin A complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ad_pituitary = list(
+      analyte = "ACE-031 (ActRIIB-Fc)-activin A complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ad_other = list(
+      analyte = "ACE-031 (ActRIIB-Fc)-activin A complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     myo_plasma = list(analyte = "mature myostatin (free)", units = "nM", specimen = "plasma", verified = TRUE),
     myo_muscle = list(analyte = "mature myostatin (free)", units = "nM", specimen = "tissue", verified = TRUE),
     myo_other = list(analyte = "mature myostatin (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    ppmyo_plasma = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "plasma", verified = TRUE),
-    ppmyo_muscle = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ppmyo_other = list(analyte = "myostatin-propeptide latent complex", units = "nM", specimen = "tissue", verified = TRUE),
+    ppmyo_plasma = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    ppmyo_muscle = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    ppmyo_other = list(
+      analyte = "myostatin-propeptide latent complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     act_plasma = list(analyte = "mature activin A (free)", units = "nM", specimen = "plasma", verified = TRUE),
     act_muscle = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     act_pituitary = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     act_other = list(analyte = "mature activin A (free)", units = "nM", specimen = "tissue", verified = TRUE),
     ppact_plasma = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "plasma", verified = TRUE),
     ppact_muscle = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
-    ppact_pituitary = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
+    ppact_pituitary = list(
+      analyte = "activin A-propeptide complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     ppact_other = list(analyte = "activin A-propeptide complex", units = "nM", specimen = "tissue", verified = TRUE),
     actriib_muscle = list(analyte = "ActRIIB receptor (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    myo_actriib_muscle = list(analyte = "myostatin-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
-    act_actriib_muscle = list(analyte = "activin A-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
+    myo_actriib_muscle = list(
+      analyte = "myostatin-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    act_actriib_muscle = list(
+      analyte = "activin A-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     actriib_pituitary = list(analyte = "ActRIIB receptor (free)", units = "nM", specimen = "tissue", verified = TRUE),
-    act_actriib_pituitary = list(analyte = "activin A-ActRIIB complex", units = "nM", specimen = "tissue", verified = TRUE),
-    muscle_growth = list(analyte = "muscle volume change from baseline", units = "%", specimen = "not applicable", verified = TRUE),
+    act_actriib_pituitary = list(
+      analyte = "activin A-ActRIIB complex",
+      units = "nM",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    muscle_growth = list(
+      analyte = "muscle volume change from baseline",
+      units = "%",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
     fsh = list(analyte = "follicle-stimulating hormone", units = "ng/mL", specimen = "plasma", verified = TRUE)
   )
 
