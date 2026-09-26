@@ -89,7 +89,7 @@ $d > 0$, which is the indicator form the paper's displayed final equation uses.
 # Errata
 
 **Two errors in the published presentation of this model are corrected here.**
-Both were established from on-disk sources only -- the paper, its figures, and
+Both were established from the available sources only -- the paper, its figures, and
 its supplement -- and both are load-bearing: encoding the paper exactly as
 printed reproduces none of its own published predictions and reverses its
 headline conclusion.

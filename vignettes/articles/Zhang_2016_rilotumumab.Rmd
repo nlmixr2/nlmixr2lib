@@ -47,8 +47,8 @@ model typical-value point estimates and IIV %CV verbatim but does not
 reproduce the covariate equations or the residual error model** -- those
 live in Zhu 2014. The Zhang 2016 model file therefore encodes only the
 structural two-compartment skeleton and the four IIV terms; the upstream
-`Zhu_2014_rilotumumab` extraction (ingestion task 127) will carry the
-full covariate model and residual error specification.
+`Zhu_2014_rilotumumab` extraction will carry the full covariate model and
+residual error specification.
 
 Structure: linear two-compartment IV model with first-order elimination
 from the central compartment, parameterised by `CL`, `Vc`, `Q`, and `Vp`
@@ -264,7 +264,7 @@ knitr::kable(
   predictions identical to the typical Zhu 2014 reference subject; the
   body weight column in the virtual cohort is used only to compute the
   per-subject mg/kg dose. The full covariate model lives in the
-  upstream Zhu 2014 extraction (ingestion task 127).
+  upstream Zhu 2014 extraction.
 - **Age covariate effect is not encoded.** Same rationale as for weight.
 - **Residual error model is not encoded.** Zhang 2016 does not report
   the form (additive / proportional / combined) or magnitude of the
@@ -278,8 +278,8 @@ knitr::kable(
 - **Infusion duration assumed 1 hour for the validation simulation.**
   Zhang 2016 confirms an IV infusion regimen (PK samples were collected
   at "pre-dose, end of infusion (EOI), 2, 24, 168 and 336 h after start
-  of infusion at cycle 1") but does not state the infusion duration in
-  the on-disk source. A 1-hour infusion is used here for the validation
+  of infusion at cycle 1") but does not state the infusion duration. A
+  1-hour infusion is used here for the validation
   plot; the typical infusion duration for rilotumumab in Phase 1 / 2 /
   3 trials should be verified against Zhu 2014 (or the protocol) when
   that extraction is built. The choice affects only the shape of the
@@ -327,6 +327,5 @@ It is **not** suitable for:
 - Covariate-stratified predictions by body weight or age (covariate
   equations not encoded; use the Zhu 2014 extraction when available).
 
-The Zhu_2014_rilotumumab extraction (ingestion task 127) is the
-canonical source for the full popPK model including covariates and
-residual error.
+The Zhu_2014_rilotumumab extraction is the canonical source for the
+full popPK model including covariates and residual error.

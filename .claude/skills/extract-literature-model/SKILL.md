@@ -331,6 +331,8 @@ File path: `vignettes/articles/<FirstAuthor>_<Year>_<topic>.Rmd`. Drug-specific 
 - **`vignette <- "..."` in every contributing model file** points to the same basename. `buildModelDb()` records the vignette per model so all N models in `modellib()` link to the same rendered page.
 - **YAML `title:` and `\VignetteIndexEntry{...}`** use the **human form** of the paper's subject and citation, e.g. `Anthracycline + trastuzumab cardiotoxicity (de Vries Schultink 2018)` — drug list at the start, citation in parentheses. For single-model papers the existing form `<Drug> (<FirstAuthor> <Year>)` (e.g. `Ustekinumab (Aguiar 2021)`) continues unchanged. The filename stays in the machine form. See `references/vignette-template.md` for header rules.
 
+**Articles are for package users.** Nothing about the pipeline belongs in one: no "operator", no sidecar or request/option ids, no task or queue identifiers, no reference to this skill or its files, no worktree or local path, no "trimmed" source, no dispatch metadata, no PR talk. Write the decision and its reason as the maintainers' ("digitised by the maintainers from Figure 2", "the maintainers ratified the suffix form"). Dated literature checks stay. A sweep of 780 articles removed this vocabulary on 2026-09-24; do not put it back.
+
 Use `references/vignette-template.md`. Required sections, in order:
 
 1. **Header and setup** — libraries include `nlmixr2lib`, `PKNCA`, `rxode2`, `dplyr`, `ggplot2`.

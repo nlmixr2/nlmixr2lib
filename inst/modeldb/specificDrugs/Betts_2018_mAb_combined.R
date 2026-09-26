@@ -58,8 +58,9 @@ Betts_2018_mAb_combined <- function() {
     etalcl + etalvc ~ c(0.47,
                         0.08, 0.11)
 
-    # Per-compound residual error is in Supplementary Table 2 (not on disk); fixed at 0
-    # per the skill's standing policy for unreported RUV (documented in vignette Errata).
+    # Per-compound residual error is in Supplementary Table 2, which was not available
+    # when this model was built; fixed at 0 per the library's standing policy for
+    # unreported RUV (documented in vignette Errata).
     propSd <- fixed(0); label("Proportional residual error (fraction)")
   })
   model({

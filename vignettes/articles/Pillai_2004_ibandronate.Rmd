@@ -315,8 +315,7 @@ Discussion section (pages 627-628). The table below collates the simulated
 typical-value change-from-baseline at the matching time points alongside the
 paper's narrative ranges. Differences greater than 20% absolute are flagged
 in the narrative below the table -- they are not adjusted to match (per the
-extract-literature-model skill's "Never tune parameter values to match a
-validation target" rule).
+package's "Never tune parameter values to match a validation target" rule).
 
 ```{r compare-numeric}
 get_change <- function(sim, t) {
@@ -353,7 +352,7 @@ trajectory should sit near the centre of each range.
 
 # Assumptions and deviations
 
-- **Single .R file, K-PD final model only.** Per the skill's "base + final
+- **Single .R file, K-PD final model only.** Per the package's "base + final
   in a model-development paper" policy, only the K-PD final model from
   Table 4 is implemented as a model file. The classical 4-compartment PK-PD
   model from Table 3 is documented in the Source-trace section so the
@@ -370,8 +369,8 @@ trajectory should sit near the centre of each range.
   and omits the term.
 - **Bioavailability F is a fixed reference value, not a covariate.** The
   paper reports F = 0.008 for 2.5 mg oral and F = 0.007 for 20 mg oral, both
-  fixed from an upstream popPK fit (paper ref [31], not on disk for this
-  extraction). The model file holds `lfdepot = fixed(log(1))` as the
+  fixed from an upstream popPK fit (paper ref [31], not available when this
+  model was built). The model file holds `lfdepot = fixed(log(1))` as the
   IV-default and asks the user to override the parameter when simulating
   oral dosing. There is no built-in route covariate -- a future model that
   wants to simulate mixed IV + oral in one event table will need to either

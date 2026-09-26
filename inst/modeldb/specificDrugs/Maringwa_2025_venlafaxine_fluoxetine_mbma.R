@@ -97,7 +97,7 @@ Maringwa_2025_venlafaxine_fluoxetine_mbma <- function() {
     # in HAMD points and a negative value is a clinical improvement.
     #
     # ------------------------------------------------------------------------
-    # ERRATUM -- TWO PUBLISHED ERRORS, both proven from on-disk sources.
+    # ERRATUM -- TWO PUBLISHED ERRORS, both proven from the paper and its supplement.
     #
     # (1) TABLE 2's TWO DRUG-EFFECT ROWS CARRY TRANSPOSED LABELS. Re-running
     #     the supplement's own gnls script verbatim against the supplement's

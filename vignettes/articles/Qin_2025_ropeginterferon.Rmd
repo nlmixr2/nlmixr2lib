@@ -1168,15 +1168,16 @@ logistic regression (Results 3.4), was deferred on first extraction and is now
 packaged as `Qin_2025_ropeginterferon_anemia`. The delay was a naming decision,
 not a reporting gap: the model is fully reported, but its covariate --
 **baseline *JAK2* V617F allele burden, in per cent** -- had no canonical entry
-in `inst/references/covariate-columns.md`, and minting one is an operator
-decision rather than an extractor's.
+in `inst/references/covariate-columns.md`, and minting one requires a
+maintainer decision.
 
-It is registered here as **`TUM_JAK2_V617F_VAF`** (operator-ratified), a
+It is registered here as **`TUM_JAK2_V617F_VAF`** (maintainer-ratified), a
 continuous somatic variant allele frequency on a 0-100 per cent scale. The
 three near neighbours it is deliberately *not* filed under:
 
 * **`SNP_JAK2_RS77375493`.** *JAK2* V617F does have an rsid, so this would be
-  mechanically well formed under the auto-approve `SNP_<GENE>_RS<rsid>` family.
+  mechanically well formed under the accepted `SNP_<GENE>_RS<rsid>` naming
+  family.
   But every registered `SNP_*` column carries a germline **genotype** -- an
   allele count or a carrier indicator -- whereas this is a somatic **clone
   fraction** that moves under treatment. A value of `61.2` under a `SNP_` name

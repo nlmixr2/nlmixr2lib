@@ -333,7 +333,9 @@ alpha_typ <- (S + sqrt(S^2 - 4 * P)) / 2
 # Terminal slope recovered by regression well after the peak, per arm.
 term_slope <- function(this_id, from, to) {
   d <- sim_typ |>
-    dplyr::filter(id == this_id, !is.na(Cc), time >= from, time <= to, Cc > 0)
+    dplyr::filter(id == this_id, !is.na(Cc)) |>
+    # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+    dplyr::filter(time >= from, time <= to, Cc >= 1e-6 * max(Cc))
   stopifnot(nrow(d) > 5) # a lookup that matched nothing must not pass silently
   -stats::coef(stats::lm(log(Cc) ~ time, data = d))[["time"]]
 }
@@ -569,7 +571,11 @@ record for downstream users.
 ```{r pknca}
 sim_nca <- sim_pop |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, arm)
+  dplyr::select(id, time, Cc, arm) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(arm, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # One dose row per administration. The s.c. arms carry two model dose records
 # (depot bolus + central zero-order input) that together deliver a single

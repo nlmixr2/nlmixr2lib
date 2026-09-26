@@ -84,8 +84,7 @@ entry. The table below collects them in one place for review.
 # Assumptions and deviations
 
 The published Table 2 of Cella 2012 leaves two encoding decisions ambiguous;
-both were resolved by operator sidecar (request-001) before drafting these
-model files.
+both were resolved by the maintainers before these model files were drafted.
 
 * **CL allometric reference weight (Model 1).** The paper's covariate
   formula `theta_i = theta * (COV / median)^EXP` is stated without giving the
@@ -108,7 +107,7 @@ model files.
   physically plausible kinetics. We therefore encode **Vc as a per-kg
   coefficient** (Vc_i = TVVc_per_kg * WT_i) in both models. Vp is kept as the
   literal table reading (absolute L in Model 1; linear-by-age L in Model 2),
-  which the operator endorsed as consistent with population-typical absolute
+  which the maintainers endorsed as consistent with population-typical absolute
   volumes.
 
 These choices are also recorded as comments inside both model `.R` files.
@@ -381,8 +380,8 @@ simulated each subject 200 times to summarise the per-subject AUC
 distribution), whereas the comparison here is against the deterministic
 typical-value mean. Both means agree to within roughly a factor of two and
 preserve the rank ordering with body weight; reconstructing the exact per-
-subject post-hoc draws would require the original NONMEM .lst file, which is
-not on disk.
+subject post-hoc draws would require the original NONMEM .lst file, which was
+not available when this model was built.
 
 # Errata
 
@@ -394,7 +393,7 @@ not on disk.
   outlier rows); (2) per-kg interpretation of Vc in both models, validated
   by physical-kinetic plausibility (k10, t1/2 consistent with published
   midazolam PK in adults and children).
-* **No supplement, no NONMEM .lst on disk.** The decisions above were taken
+* **No supplement, no NONMEM .lst available.** The decisions above were taken
   from the printed paper alone. If the original NONMEM .lst file or
   supplementary control stream becomes available, the encoding choices in
   these two model files should be re-verified.

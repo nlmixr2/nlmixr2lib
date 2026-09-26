@@ -38,7 +38,7 @@ Quartino_2016_trastuzumab <- function() {
     n_studies = 1L,
     n_observations = 15761L,
     study = "HannaH (NCT00950300); phase III, randomized, international, open-label, neoadjuvant-adjuvant trial.",
-    age_range = "Not reported in the main publication; baseline demographics in Online Resource 3 (not on disk).",
+    age_range = "Not reported in the main publication; baseline demographics in Online Resource 3 (not available when this model was built).",
     weight_range = "Spans at least <58 kg to >85 kg per the body-weight quartile analysis in Results; reference (median-equivalent) is 68 kg per Table 1.",
     weight_median = "68 kg (reference subject of the Quartino 2016 covariate model)",
     sex_female_pct = 100,
@@ -46,7 +46,7 @@ Quartino_2016_trastuzumab <- function() {
     dose_range = "Subcutaneous (SC): fixed 600 mg trastuzumab q3w by manual handheld syringe (5 min). Intravenous (IV): 8 mg/kg loading dose, 6 mg/kg maintenance q3w (90 min then 30 min infusions). Both arms received 8 cycles neoadjuvant (with concomitant chemotherapy) + 10 cycles adjuvant trastuzumab monotherapy.",
     regions = "International, multicentre HannaH study (sites in multiple countries).",
     reference_subject = "68 kg, ALT 19 IU/L per Quartino 2016 covariate equations and the 'typical patient' used in Figure 3 typical-subject simulations.",
-    notes = "Baseline demographics in Quartino 2016 Online Resource 3 (not on disk). HannaH enrolled 596 patients; 595 received at least one dose (297 SC, 298 IV). After outlier and BLQ handling the PK analysis dataset contained 592 patients and 15,761 trastuzumab serum concentrations (Quartino 2016 Results 'Patient population and PK samples'). All patients are women with HER2-positive EBC. Co-medication with anthracycline-, taxane-, or other neoadjuvant chemotherapy during cycles 1-8 (Patients and methods). ATA- and AHA-positivity rates (5.0% and 5.7%) were too low to detect immunogenicity effects on PK."
+    notes = "Baseline demographics in Quartino 2016 Online Resource 3 (not available when this model was built). HannaH enrolled 596 patients; 595 received at least one dose (297 SC, 298 IV). After outlier and BLQ handling the PK analysis dataset contained 592 patients and 15,761 trastuzumab serum concentrations (Quartino 2016 Results 'Patient population and PK samples'). All patients are women with HER2-positive EBC. Co-medication with anthracycline-, taxane-, or other neoadjuvant chemotherapy during cycles 1-8 (Patients and methods). ATA- and AHA-positivity rates (5.0% and 5.7%) were too low to detect immunogenicity effects on PK."
   )
 
   ini({

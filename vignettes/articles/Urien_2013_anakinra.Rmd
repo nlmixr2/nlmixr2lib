@@ -334,7 +334,7 @@ range.
   non-trivial change of structure -- see the precedent in
   `Sherwin_2012_risperidone.R` for a 3-subpopulation case), (b) a new
   canonical parameter name for the resistance rate constant `kRESI`
-  (not in `references/parameter-names.md`), and (c) handling of the
+  (not in `inst/references/parameter-names.md`), and (c) handling of the
   paper's log10-additive residual error on CRP. The Urien 2013 PD model
   is therefore deferred to a follow-up extraction; the PK model is
   delivered here as the headline contribution of the paper ("This is
@@ -364,7 +364,7 @@ range.
   rather than 87. The `population$sex_female_pct` field uses the
   reported 32 girls / 87 total = 36.8 %, with a note in
   `population$notes`. Three patients with unknown / unreported sex is
-  one possible explanation; the original record is not on disk to
+  one possible explanation; the original record is not available to
   resolve.
 - **Variability scale interpretation.** Urien 2013 Table 1 reports eta
   and gamma without explicitly stating whether the column is SD or

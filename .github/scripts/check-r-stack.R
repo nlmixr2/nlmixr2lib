@@ -102,9 +102,9 @@ for (p in tbl$package) {
     next
   }
   lag <- as.numeric(difftime(now_t, have_t, units = "hours"))
-  cat(sprintf("%s: installed build %s UTC; r-universe current %s (%+.1f h)\n", p, have, now, lag))
+  cat(sprintf("%s: installed build %s; r-universe current %s (%+.1f h)\n", p, have, now, lag))
   if (lag > 1) {
-    cat(sprintf("::warning title=Stale r-universe build::%s installed here was built %s UTC but nlmixr2.r-universe.dev now serves a build from %s; the dependency cache restored an older build. Check that the cache key includes the r-universe build time.\n", p, have, now))
+    cat(sprintf("::warning title=Stale r-universe build::%s installed here was built %s but nlmixr2.r-universe.dev now serves a build from %s; the dependency cache restored an older build. Check that the cache key includes the r-universe build time.\n", p, have, now))
   }
 }
 cat("\n")

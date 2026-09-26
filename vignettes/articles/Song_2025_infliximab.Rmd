@@ -61,7 +61,7 @@ The same information is available programmatically via
 # Source trace
 
 Both final-model covariate equations are rendered as **images** in the published
-PDF; `docling` emits `formula-not-decoded` for them. They were recovered with
+PDF and do not survive plain-text extraction of it. They were recovered with
 `pdftotext -layout` from page 380, column 1, and read:
 
 ```
@@ -135,7 +135,7 @@ cat(sprintf("Gate 1 PASS: CL = %.4f L/day (published 0.248); F = %.4f (published
 ```{r gate-halflife}
 ## Gate 2 -- terminal half-life must equal the analytic beta root of the
 ## two-compartment system. This is the mechanical guard against rxSolve's
-## former default useLinCmt = TRUE (opt-in since September 2026) silently collapsing a k12/k21-parameterised
+## useLinCmt = TRUE conversion silently collapsing a k12/k21-parameterised
 ## two-compartment model to one compartment: under a collapse the simulated
 ## terminal half-life comes back equal to log(2)/kel instead.
 cl <- 0.248; vc <- 1.87; vp <- 1.96; q <- 0.599
@@ -151,7 +151,9 @@ ev_long <- rxode2::et(amt = 325, cmt = "central") |>
 terminal_half_life <- function(use_lin) {
   d <- rxode2::rxSolve(mod_typ, ev_long, params = ref, useLinCmt = use_lin,
                        returnType = "data.frame")
-  d <- d[d$time >= 300 & d$Cc > 0, ]
+  # Keep Cc >= 1e-6 of Cmax (below that the ODE tail is solver noise). The floor
+  # ends near 220 d, so the window opens at 100 d, 100 alpha half-lives in.
+  d <- d[d$time >= 100 & d$Cc >= 1e-6 * max(d$Cc), ]
   stopifnot(nrow(d) > 20)
   log(2) / -unname(stats::coef(stats::lm(log(d$Cc) ~ d$time))[2])
 }
@@ -643,12 +645,13 @@ zero), so the ADA-on-clearance effect should be treated as weak.
 
 # Errata and source anomalies
 
-* **Both final-model equations are images in the PDF.** `docling` returns
-  `formula-not-decoded`; they were recovered with `pdftotext -layout` from
-  p. 380 col. 1 and are reproduced verbatim in the Source trace section above.
+* **Both final-model equations are images in the PDF.** They do not survive
+  plain-text extraction of the PDF; they were recovered with `pdftotext -layout`
+  from p. 380 col. 1 and are reproduced verbatim in the Source trace section above.
 * **The two steady-state trough closed forms on p. 380 could not be decoded** by
-  either `docling` or `pdftotext` -- they are also images, and the surrounding
-  prose defines only their symbols (`kel = CL / Vc`, `tau` = dosing interval).
+  plain-text extraction of the PDF, `pdftotext` included -- they are also images,
+  and the surrounding prose defines only their symbols (`kel = CL / Vc`, `tau` =
+  dosing interval).
   Nothing is lost: they are algebraic consequences of the estimated parameters
   rather than independent model content, and the Gate 3 identities above test
   the same steady-state behaviour directly.

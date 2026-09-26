@@ -432,15 +432,16 @@ this check.
 
 # Why there is no PKNCA section
 
-`references/endogenous-validation.md` applies here. Neither model has a dose, an
-absorption-distribution-elimination profile, or a concentration-time curve to
-integrate --- `ghb_buffer` is static by construction and `ghb_cell` rises
-linearly over a 15 s initial-rate window. The paper's own noncompartmental
-analysis was run on the **in vivo** microdialysis arm, which these models do not
-describe. NCA of the in vitro states would compute a number with no published
-counterpart, which pattern 10 of `known-vignette-failure-patterns.md` warns
-against. The structural-identity, figure-replication, species-comparison and in
-vivo-consistency checks above are the validations this model class supports.
+The package's validation pattern for endogenous and mechanistic models applies
+here. Neither model has a dose, an absorption-distribution-elimination profile,
+or a concentration-time curve to integrate --- `ghb_buffer` is static by
+construction and `ghb_cell` rises linearly over a 15 s initial-rate window. The
+paper's own noncompartmental analysis was run on the **in vivo** microdialysis
+arm, which these models do not describe. NCA of the in vitro states would
+compute a number with no published counterpart --- a check that cannot fail
+and so tests nothing. The structural-identity, figure-replication,
+species-comparison and in vivo-consistency checks above are the validations
+this model class supports.
 
 # Assumptions and deviations
 

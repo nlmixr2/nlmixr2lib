@@ -77,7 +77,7 @@ with separate (a, b) for OBSTYPE = 1 (video investigator) vs OBSTYPE = 2 (bedsid
 
 # Virtual cohort and simulation
 
-This model has **no dosing compartments** -- morphine plasma concentration is supplied per event row via the `CP_MORPH_NGML` covariate, and the suctioning state, item, and observer type are likewise supplied per row. We build observation-only event tables (`evid = 0`) for each F.2 mechanistic-sanity check below.
+This model has **no dosing compartments** -- morphine plasma concentration is supplied per event row via the `CP_MORPH_NGML` covariate, and the suctioning state, item, and observer type are likewise supplied per row. We build observation-only event tables (`evid = 0`) for each mechanistic-sanity check below.
 
 ```{r load-mod}
 mod_fn <- readModelDb("Valitalo_2017_morphine")
@@ -87,7 +87,7 @@ mod    <- rxode2::rxode2(mod_fn)
 mod_typ <- rxode2::zeroRe(mod)
 ```
 
-## F.2 anchor 1: baseline pain matches Table 2 at CP = 0, t = 0
+## Mechanistic-sanity anchor 1: baseline pain matches Table 2 at CP = 0, t = 0
 
 At time 0 with no morphine exposure, the latent pain reduces to the suctioning-state-specific theta_bl,s. We verify this for all three suctioning states.
 
@@ -114,12 +114,12 @@ result_baseline <- data.frame(
 )
 result_baseline$abs_err <- result_baseline$simulated - result_baseline$paper
 knitr::kable(result_baseline, digits = 4,
-             caption = "F.2 anchor 1: typical-value latent pain at CP = 0, t = 0 matches Valitalo 2017 Table 2.")
+             caption = "Mechanistic-sanity anchor 1: typical-value latent pain at CP = 0, t = 0 matches Valitalo 2017 Table 2.")
 ```
 
 All three values should match the paper to numerical precision (< 1e-10 absolute error) because they are read directly out of `ini()`.
 
-## F.2 anchor 2: Figure 5a (concentration-effect during suctioning)
+## Mechanistic-sanity anchor 2: Figure 5a (concentration-effect during suctioning)
 
 Valitalo 2017 Figure 5a shows the expected COMFORT-B and VAS scores as functions of morphine concentration during suctioning (MOMENT = 2). The paper Discussion paragraph 5 reports: "As morphine concentrations increase from 0 to 20 ng/mL, the COMFORT-B score is expected to drop by **one unit**, and VAS score by **< 0.5 units**, on average."
 
@@ -143,7 +143,7 @@ sim_5a <- rxode2::rxSolve(mod_typ, events = events_5a,
 result_5a <- as.data.frame(sim_5a)[, c("time", "CP_MORPH_NGML",
                                        "pain_typ", "vas_pred_typ")]
 knitr::kable(result_5a, digits = 4,
-             caption = "F.2 anchor 2: latent pain and VAS prediction during suctioning, as a function of morphine concentration.")
+             caption = "Mechanistic-sanity anchor 2: latent pain and VAS prediction during suctioning, as a function of morphine concentration.")
 
 ggplot(result_5a, aes(CP_MORPH_NGML, vas_pred_typ)) +
   geom_line(colour = "steelblue", linewidth = 1) +
@@ -164,9 +164,9 @@ cat(sprintf("VAS drop from CP = 0 to CP = 20 ng/mL: %.3f units (paper Discussion
             drop_20))
 ```
 
-The simulated drop is on the order of 0.4 units, consistent with the paper's "< 0.5 units" statement (within the F.2 5% threshold around the published narrative anchor).
+The simulated drop is on the order of 0.4 units, consistent with the paper's "< 0.5 units" statement (within the mechanistic-sanity check's 5% threshold around the published narrative anchor).
 
-## F.2 anchor 3: Figure 5b (study-time effect during suctioning)
+## Mechanistic-sanity anchor 3: Figure 5b (study-time effect during suctioning)
 
 Figure 5b shows the expected COMFORT-B and VAS scores as functions of study time (in days) during suctioning, with CP held at 0. The paper Discussion paragraph 5 reports: "As study day increases from 0 to 7, the COMFORT-B score is expected to increase by about **two units**, and VAS score by **approximately one unit**, on average."
 
@@ -186,7 +186,7 @@ sim_5b <- rxode2::rxSolve(mod_typ, events = events_5b)
 
 result_5b <- as.data.frame(sim_5b)[, c("time", "pain_typ", "vas_pred_typ")]
 knitr::kable(result_5b, digits = 4,
-             caption = "F.2 anchor 3: latent pain and VAS prediction during suctioning, as a function of study time (CP = 0).")
+             caption = "Mechanistic-sanity anchor 3: latent pain and VAS prediction during suctioning, as a function of study time (CP = 0).")
 
 ggplot(result_5b, aes(time, vas_pred_typ)) +
   geom_line(colour = "darkorange", linewidth = 1) +
@@ -209,7 +209,7 @@ cat(sprintf("VAS rise from t = 0 to t = 7 d: %.3f units (paper Discussion: ~1 un
 
 The simulated rise of approximately 1 unit reproduces the paper's narrative anchor.
 
-## F.2 anchor 4: nurse vs investigator VAS
+## Mechanistic-sanity anchor 4: nurse vs investigator VAS
 
 The bedside nurse uses different VAS difficulty / discrimination thetas (50 / 52) and a wider residual-error SD (sqrt(2.55) = 1.60 vs sqrt(0.755) = 0.87 for video). We confirm the typical-value VAS prediction differs by OBSTYPE at fixed pain:
 
@@ -228,18 +228,18 @@ result_obs <- as.data.frame(sim_obs)[,
   c("time", "OBSTYPE", "pain_typ", "vas_pred_typ", "vas_diff_typ",
     "vas_discr_typ")]
 knitr::kable(result_obs, digits = 4,
-             caption = "F.2 anchor 4: VAS prediction at baseline during suctioning differs by observer.")
+             caption = "Mechanistic-sanity anchor 4: VAS prediction at baseline during suctioning differs by observer.")
 ```
 
 # Assumptions and deviations
 
-- **DDMORE bundle file mismatch (load-bearing).** The DDMORE-shipped bundle for DDMODEL00000247 ships an `Output_real_OriginalModelCode.lst` whose `$PROBLEM` line is "Midazolam PK in critically ill Children" with a 2-compartment popPK model fit to `Data20150701.csv` -- a completely different problem, drug, and dataset from the Valitalo 2017 morphine IRT PD model that the bundle's `.mod` actually contains. The companion `Simulated_MidaCriticallyIll.csv` is likewise for midazolam, not morphine. The `Output_simulated_OriginalModelCode.lst` was not used in this extraction. **Parameter values were therefore taken from Table 2 of the linked publication (Valitalo 2017, doi:10.1002/psp4.12156), which is on disk and which the bundle's `.mod` $THETA / $OMEGA / $SIGMA blocks reproduce exactly as their inline initial values.** No re-fit was needed because the paper, the `.mod`, and the published bootstrap CIs are mutually consistent. The mismatched `.lst` is documented here so a future audit pass can flag the same bundle inconsistency without surprise.
-- **No PKNCA validation.** This is a PD-only IRT model; NCA quantities (Cmax / Tmax / AUC / half-life) are not applicable. F.2 (Count / Markov / IRT / dropout / TTE) substitutes from `references/verification-checklist.md` apply, anchored on the published numerical statements above (latent baselines, "< 0.5 VAS drop per 20 ng/mL", "~1 VAS rise per 7 days").
-- **Simplified formal observation.** The source NONMEM model is a mixed continuous + categorical likelihood: VAS (ITEM = 12) is a continuous additive-error observation, and all 8 other items (ITEM in 1, 2, 3, 5, 7, 25, 26, 27, 28) use a categorical likelihood (`F_FLAG = 1`, `Y = P`, per-grade probability). nlmixr2 / rxode2 do not natively express the joint mixed-likelihood structure in a single observation row. The model file therefore declares only the continuous VAS observation as the formal `vas_pred ~ add(vas_add)` -- the only observation type that nlmixr2 fits directly. The full categorical-likelihood machinery (per-grade probabilities `peq1..peq8`) is still computed in `model()` for source-trace fidelity and for vignette analysis, but is not exercised as the fitted-observation in this nlmixr2 implementation. F.2 mechanistic-sanity validation is restricted to the latent-pain trajectory and the typical-value VAS prediction; categorical-item-grade VPC validation against Figure 3 / Figure 4 is out of scope.
+- **DDMORE bundle file mismatch (load-bearing).** The DDMORE-shipped bundle for DDMODEL00000247 ships an `Output_real_OriginalModelCode.lst` whose `$PROBLEM` line is "Midazolam PK in critically ill Children" with a 2-compartment popPK model fit to `Data20150701.csv` -- a completely different problem, drug, and dataset from the Valitalo 2017 morphine IRT PD model that the bundle's `.mod` actually contains. The companion `Simulated_MidaCriticallyIll.csv` is likewise for midazolam, not morphine. The `Output_simulated_OriginalModelCode.lst` was not used in this extraction. **Parameter values were therefore taken from Table 2 of the linked publication (Valitalo 2017, doi:10.1002/psp4.12156), which was available when this model was built and which the bundle's `.mod` $THETA / $OMEGA / $SIGMA blocks reproduce exactly as their inline initial values.** No re-fit was needed because the paper, the `.mod`, and the published bootstrap CIs are mutually consistent. The mismatched `.lst` is documented here so that anyone revisiting the bundle is not surprised by the same inconsistency.
+- **No PKNCA validation.** This is a PD-only IRT model; NCA quantities (Cmax / Tmax / AUC / half-life) are not applicable. The mechanistic-sanity substitutes this package uses for count / Markov / IRT / dropout / TTE models apply instead, anchored on the published numerical statements above (latent baselines, "< 0.5 VAS drop per 20 ng/mL", "~1 VAS rise per 7 days").
+- **Simplified formal observation.** The source NONMEM model is a mixed continuous + categorical likelihood: VAS (ITEM = 12) is a continuous additive-error observation, and all 8 other items (ITEM in 1, 2, 3, 5, 7, 25, 26, 27, 28) use a categorical likelihood (`F_FLAG = 1`, `Y = P`, per-grade probability). nlmixr2 / rxode2 do not natively express the joint mixed-likelihood structure in a single observation row. The model file therefore declares only the continuous VAS observation as the formal `vas_pred ~ add(vas_add)` -- the only observation type that nlmixr2 fits directly. The full categorical-likelihood machinery (per-grade probabilities `peq1..peq8`) is still computed in `model()` for source-trace fidelity and for vignette analysis, but is not exercised as the fitted-observation in this nlmixr2 implementation. Mechanistic-sanity validation is restricted to the latent-pain trajectory and the typical-value VAS prediction; categorical-item-grade VPC validation against Figure 3 / Figure 4 is out of scope.
 - **`vas_pred` observation name (vs. `Cc` convention).** The naming-conventions register reserves `Cc` for concentration outputs; this is a 0-10 cm VAS pain score, not a concentration, so `vas_pred` is used. `nlmixr2lib::checkModelConventions()` may flag this as a warning; it is a justified deviation for a non-PK observation.
 - **`units$concentration` does not contain `/`.** Same root cause: the formal observation is a latent-mapped VAS score, not a drug concentration. `units$concentration` documents the latent-pain / VAS / CP_MORPH_NGML conventions textually.
 - **Upstream PK is external.** Morphine plasma concentration enters the model only through the `CP_MORPH_NGML` covariate column. In Valitalo 2017 the column was generated by simulating individual morphine concentrations from the Knibbe 2009 popPK model (DDMODEL00000248; see `modellib("Knibbe_2009_morphine")`) given the trial's per-subject dosing schedule. For new simulations the user should generate `CP_MORPH_NGML` by an independent `rxSolve` of `Knibbe_2009_morphine` for the chosen virtual cohort, then merge those predictions onto the Valitalo 2017 event table by `(id, time)` before calling `rxSolve` here. No automatic PK-coupling is encoded in the model.
 - **`CP_MORPH_NGML`, `MOMENT`, `ITEM`, `OBSTYPE` newly registered.** No prior nlmixr2lib model carried instantaneous morphine concentration as a PD-driver covariate, the endotracheal-suctioning procedural state, the IRT-item identifier, or the VAS observer-type indicator. All four were registered in `inst/references/covariate-columns.md` alongside this extraction following the `CP_OXY_NGML` / `TRT_PHASE` precedents.
 - **Time units.** `units$time = "day"` so the time-effect coefficient (`e_time_pain = 0.0476 1/day`) is applied directly to `time`. The source NONMEM .mod has `TIME ; minutes` in `$INPUT` and computes `COVEFF = THETA(57) * TIME / (24 * 60)`; users who supply event tables with `time` in days do not need that conversion.
 - **No covariate effects on the IRT discrimination / difficulty parameters.** The source paper fixed the IRT discrimination and difficulty thetas to their graded-response sub-model estimates and did not test covariates on them in the PD layer (only on baseline pain and on the morphine / time slopes). This nlmixr2lib model therefore exposes them all as `fixed()` in `ini()`.
-- **Sex split not reported.** Valitalo 2017 does not tabulate sex distribution in the available trimmed source; `population$sex_female_pct = NA_real_`.
+- **Sex split not reported.** Valitalo 2017 does not tabulate sex distribution in the available extracted text; `population$sex_female_pct = NA_real_`.

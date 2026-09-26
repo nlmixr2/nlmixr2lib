@@ -141,7 +141,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
       units = "kg",
       type = "continuous",
       reference_category = NULL,
-      notes = "Reference weight 88 kg, set to the pooled study-population median (Studies A-C: Hansen 89.9, Bagger 89.6, Sonne 86.2 kg). The supplementary control stream that would unambiguously fix the reference is not on disk; see vignette Errata.",
+      notes = "Reference weight 88 kg, set to the pooled study-population median (Studies A-C: Hansen 89.9, Bagger 89.6, Sonne 86.2 kg). The supplementary control stream that would unambiguously fix the reference was not available when this model was built; see vignette Errata.",
       source_name = "WT"
     ),
     AGE = list(
@@ -149,7 +149,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
       units = "years",
       type = "continuous",
       reference_category = NULL,
-      notes = "Reference age 58 years, set to the pooled study-population median (Studies A-C: Hansen 62, Bagger 57, Sonne 60). The supplementary control stream that would unambiguously fix the reference is not on disk; see vignette Errata.",
+      notes = "Reference age 58 years, set to the pooled study-population median (Studies A-C: Hansen 62, Bagger 57, Sonne 60). The supplementary control stream that would unambiguously fix the reference was not available when this model was built; see vignette Errata.",
       source_name = "AGE"
     ),
     SEXF = list(
@@ -198,7 +198,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     disease_state = "33 patients with type 2 diabetes and 33 matched (gender, age, BMI) nondiabetic controls. Cross-over test-drink challenge (water, glucose only at 25/75/125 g, or isocaloric fat-mixed drinks at low/medium/high fat) after an overnight (10 h) fast. An external validation cohort (Study D, 10 nondiabetic controls, medium-high fat drink) was used for the GE / CCK predictive checks but not pooled into the model-development fit.",
     dose_range = "Acetaminophen 1.5 g oral (1-min infusion into stomach in Study A via a nasogastric tube; bolus in Studies B / C / D). Test-drink macronutrient composition spans 0-125 g carbohydrate, 0-13 g protein, 0-40 g fat (Table 2 of the paper); caloric range 0-506 kcal.",
     regions = "Denmark (Studies A-D conducted in Copenhagen / Hellerup); fits performed in Sweden (Uppsala).",
-    notes = "Subject demographics, study design, and assessment times come from Table 1 of Guiastrennec 2016. Subject counts and study counts reflect the model-development pool (Studies A + B + C); the Study D external-validation cohort is not pooled in. Pooled medians for WT and AGE were derived from the per-study median ranges; the NONMEM control stream that would unambiguously fix the covariate-effect reference values is in Supplementary Material S1 (not on disk; see vignette Errata)."
+    notes = "Subject demographics, study design, and assessment times come from Table 1 of Guiastrennec 2016. Subject counts and study counts reflect the model-development pool (Studies A + B + C); the Study D external-validation cohort is not pooled in. Pooled medians for WT and AGE were derived from the per-study median ranges; the NONMEM control stream that would unambiguously fix the covariate-effect reference values is in Supplementary Material S1 (not available when this model was built; see vignette Errata)."
   )
 
   ini({
@@ -222,7 +222,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     # emptying model" column. KG0 is the baseline first-order emptying
     # rate constant (min^-1); SLPCAL is the linear caloric-feedback
     # slope on KG (units 1/kcal; reported as the unicode minus sign
-    # 0.0173 in the trimmed-markdown rendering of the paper table).
+    # 0.0173 in the text of the paper table).
     # SEX-SLPCAL is the relative increase in SLPCAL magnitude for females
     # (+40.7%). The GE onset is a Hill function in time-after-dose
     # (sigmoidicity SIG); T50OGTT applies to glucose-only drinks and

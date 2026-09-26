@@ -219,7 +219,7 @@ rat |>
 
 The infected-lung parameters of Tables S11 and S13 were estimated against the Irwin 2016
 BALB/c and Kramnik plasma models, which this paper does not tabulate. Absolute mouse tissue
-concentrations therefore cannot be reproduced from on-disk sources (see Errata). What the lung
+concentrations therefore cannot be reproduced from the available sources (see Errata). What the lung
 PBPK actually determines -- the **tissue-to-plasma exposure ratio** -- can be checked directly
 against the independent noncompartmental analysis in Irwin 2016 Table 3.
 
@@ -488,7 +488,7 @@ constant to avoid infinities for t = 0" without a value; 1e-3 h is used. Because
 time integral of `kcaseum` converges, so the choice is weakly influential -- over 0-24 h,
 `tau = 1e-3` and `tau = 1e-6` differ by about 7% in cumulative diffusion, and less thereafter.
 
-**Absolute mouse infected-lung concentrations are not reproducible from on-disk sources.**
+**Absolute mouse infected-lung concentrations are not reproducible from the available sources.**
 Results 3.3 and 3.4 state that the cellular-lesion and caseum parameters were optimised using
 the empirical plasma models for the Irwin 2016 BALB/c and Kramnik mice, which this paper does
 not tabulate. The mouse model file uses the only tabulated mouse plasma model, Table S5, whose
@@ -528,6 +528,6 @@ fixed at its mouse estimate, and all human lung outputs are extrapolations whose
 is the successful healthy-lung extrapolation to rats and dogs.
 
 **Caseum compartment naming.** `caseum1` to `caseum6` are declared through
-`paper_specific_compartments` rather than as canonical compartments, pending operator
+`paper_specific_compartments` rather than as canonical compartments, pending maintainer
 ratification of a `caseum<n>` canonical chain prefix in
 `inst/references/compartment-names.md`.

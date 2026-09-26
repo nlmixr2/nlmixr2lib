@@ -70,8 +70,8 @@ str(readModelDb("Wang_2023_zoledronicAcid_mbma")()$population)
 ## Model equations
 
 Every equation below was read from the typeset PDF of Wang 2023 Methods 2.2
-(page 4). The `formula-not-decoded` placeholders left by automated PDF-to-text
-conversion were resolved by rendering page 4 as an image and reading the
+(page 4). The equations do not survive automated plain-text extraction of the
+PDF; they were resolved by rendering page 4 as an image and reading the
 typeset mathematics directly.
 
 | Source equation | As printed in Wang 2023 | Encoded in `model()` |
@@ -163,8 +163,7 @@ choice affects only the absolute g/cm^2 axis.
 # set.seed() seeds R's RNG, not rxode2's; rxode2 partitions its streams per
 # solver thread, so the between-study cohort below is reproducible on this
 # machine and different on a machine with a different thread count. Every
-# assertion downstream is written to hold for ANY cohort the model can produce
-# (see pattern 12 of the skill's known-vignette-failure-patterns.md).
+# assertion downstream is written to hold for ANY cohort the model can produce.
 set.seed(20230927)
 
 BMD_BL_REF <- 0.81   # Wang 2023 Table 1, Black 2012 baseline vertebral BMD
@@ -462,14 +461,14 @@ stopifnot(slope_solved < slope_closed, slope_solved > 0.9 * slope_closed)
 ## Digitised reference values
 
 Wang 2023 publishes no numeric table of its simulated BMD trajectories, so the
-comparison values below were **digitised by the operator from the published
+comparison values below were **digitised by the maintainers from the published
 figures** (page 8 Figure 4 and page 9 Figure 5 of the PDF, rendered at 300-400
 dpi and read against the printed axis ticks). Digitisation uncertainty is about
 +/- 0.3 percentage points of BMD change; they are used for comparison only and
 no model parameter is derived from them.
 
 ```{r digitised}
-# Operator-digitised from Wang 2023 Figure 4B (observed points, red circles):
+# Maintainer-digitised from Wang 2023 Figure 4B (observed points, red circles):
 # annual 5 mg, arm-level median observed lumbar-spine BMD percent change.
 fig4b_obs <- tibble::tribble(
   ~time, ~pct_obs,
@@ -481,7 +480,7 @@ fig4b_obs <- tibble::tribble(
      72,    11.91
 )
 
-# Operator-digitised from Wang 2023 Figure 4A (observed points): single 5 mg.
+# Maintainer-digitised from Wang 2023 Figure 4A (observed points): single 5 mg.
 fig4a_obs <- tibble::tribble(
   ~time, ~pct_obs,
       0,     0.00,
@@ -491,7 +490,7 @@ fig4a_obs <- tibble::tribble(
      24,     4.60
 )
 
-# Operator-digitised peak (maximum) BMD percent change of the paper's own
+# Maintainer-digitised peak (maximum) BMD percent change of the paper's own
 # simulated curves in Figure 5.
 fig5_peaks <- tibble::tribble(
   ~regimen,             ~pct_peak_paper,
@@ -783,7 +782,7 @@ band_5mg_single <- bands |>
 band_5mg_single
 
 # Wang 2023 Figure 4A prints its simulated 95% interval at month 24 as roughly
-# 3.05% to 7.10% (operator-digitised), i.e. a WIDTH of about 4.05 percentage
+# 3.05% to 7.10% (maintainer-digitised), i.e. a WIDTH of about 4.05 percentage
 # points around a median of 4.65%. The width is the quantity that isolates the
 # random-effect encoding from the single-dose level deviation documented in the
 # Errata, so it is the width that is compared here.
@@ -900,8 +899,8 @@ stopifnot(any(apr$apr_n > apr$total_n))   # the Table 3 inconsistency is real
 ## Non-paper-derived values
 
 * The reference values in `fig4a_obs`, `fig4b_obs` and `fig5_peaks` were
-  **digitised by the operator** from Wang 2023 Figures 4 and 5 (page 8 and page
-  9 of the PDF, rendered at 300-400 dpi and read against the printed axis
+  **digitised by the maintainers** from Wang 2023 Figures 4 and 5 (page 8 and
+  page 9 of the PDF, rendered at 300-400 dpi and read against the printed axis
   ticks), with an estimated uncertainty of about +/- 0.3 percentage points.
   Wang 2023 publishes no numeric table of its simulated trajectories. These
   values are used only for comparison; **no model parameter is derived from

@@ -210,8 +210,6 @@ Klein_2026_alprazolam <- function() {
     etalka ~ 0.730^2                                                          # Table S3: IIV on ka 73.0% (shrinkage 26.0%)
     # Table S3: IIV on CL/F 58.6% (shrinkage 5.3%) and on Vc/F 76.3%
     # (shrinkage 8.7%); footnote "Correlation between CL and Vc: 0.342".
-    # (The source trace sits ABOVE the block: a trailing comment on a
-    # multi-line omega c(...) trips an rxode2 comment-to-label parse bug.)
     etalcl + etalvc ~ c(0.586^2,
                         0.342 * 0.586 * 0.763, 0.763^2)
     etalq  ~ 0.396^2                                                          # Table S3: IIV on Q/F 39.6% (shrinkage 44.7%)

@@ -448,7 +448,7 @@ itself (rounding in the published estimates and the use of the band midpoint
 
 * **Supplement could not be downloaded during extraction.** The PMC-hosted
   supplementary file (Word document `clpt201326x1.doc`) sits behind a JavaScript
-  proof-of-work challenge that the extraction environment could not solve, and
+  proof-of-work challenge that could not be solved when this model was built, and
   the Europe PMC mirror returned HTTP/2 stream errors for the same file. The
   main paper Table 2 (Population estimate column), Methods (p.447), and Results
   (p.444-445) contain the full parameter list, model-structure narrative, and
@@ -471,8 +471,8 @@ itself (rounding in the published estimates and the use of the band midpoint
 * **Residual-error mapping.** Hendriksen 2013 fits ARS and DHA plasma
   concentrations as natural logarithms of molar concentration with additive
   residual on the log scale; the reported `sigma_ARS = 0.0942` and `sigma_DHA =
-  0.211` are variances on that log scale. By the standing convention in
-  `references/naming-conventions.md`, NONMEM additive-on-log-scale residual
+  0.211` are variances on that log scale. By the package's standing
+  convention, NONMEM additive-on-log-scale residual
   maps to nlmixr2 proportional residual in linear space, with
   `propSd = sqrt(omega^2)` (the SD on the log scale equals the CV in linear
   space to first order). The slight bias relative to the more accurate

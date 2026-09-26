@@ -69,9 +69,9 @@ collects them in one place for review.
 | `d/dt(central) <- -kel * central` | n/a | Li 2024 Sect. 3.2: "one-compartment model with linear elimination ... parameterized by Vd and CL" |
 | Exponential IIV, `P_i = theta * exp(eta_i)` | n/a | Li 2024 Equation 1 |
 
-Equations 5 and 6 are typeset as stacked fractions in the published PDF and are
-dropped by markdown converters (they appear as `formula-not-decoded`). They were
-recovered with `pdftotext -layout`, which resolves both in full:
+Equations 5 and 6 are typeset as stacked fractions in the published PDF and do
+not survive naive plain-text extraction. They were recovered with
+`pdftotext -layout`, which resolves both in full:
 
 ```
 CL (L/h) = 7.76  * (weight/70)^0.9 * (eGFR/116.93)^0.38 * exp(eta_CL)
@@ -143,8 +143,7 @@ covariate-sampled cohort for the target-attainment check.
 # rxode2's streams are partitioned PER SOLVER THREAD -- so a cohort drawn with
 # IIV is reproducible on this machine and different on a machine with a
 # different thread count. Every assertion on a cohort-derived quantity below is
-# written to hold for ANY cohort the model can produce (see pattern 12 of
-# references/known-vignette-failure-patterns.md).
+# written to hold for ANY cohort the model can produce.
 set.seed(20241127)
 rxode2::rxSetSeed(20241127)
 
@@ -807,8 +806,8 @@ Discussion singles out as requiring an elevated dose.
   `covariatesDataExcluded` are therefore documented from the Methods candidate
   list and the Section 3.2 narrative rather than from S1's statistics.
 - **Equations 5 and 6 are vector-typeset.** Both are stacked fractions in the
-  published PDF and survive neither the markdown trim nor a plain text
-  extraction; `pdftotext -layout` recovers them intact and was the source used.
+  published PDF and do not survive naive plain-text extraction;
+  `pdftotext -layout` recovers them intact and was the source used.
 - **A dose off the search grid.** Table 4 uses a 2.5 mg/kg dose grid with a
   10 mg/kg floor in every cell except `<10 kg` / eGFR 120-200 / MIC 4 mg/L,
   which prints 16 mg/kg q6h. That value is off the grid every other cell

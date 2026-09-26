@@ -283,7 +283,9 @@ Eq. (6) - is a property of the structural model, not of the assay noise.
 sim <- rxode2::rxSolve(
   mod, events,
   keep = c("dose_group", "AGE", "WT", "CRCL", "STUDY_VANCO_CENTER2"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 head(sim[, c("id", "time", "cl", "vc", "Cc", "dose_group")], 3)
 ```
@@ -550,7 +552,7 @@ and 70 mg/kg/day. Inverting the normal CDF and regressing `log(dose)` on the
 resulting z-scores recovers `omega` directly:
 
 ```{r omega-recovery}
-# Operator-digitised from Figure 3, panel (b), 12 kg. Precision roughly
+# Maintainer-digitised from Figure 3, panel (b), 12 kg. Precision roughly
 # +/- 3 PTA points; used only for this scale-invariant slope check.
 pub_pta <- c(44, 77, 92, 98, 99.5) / 100
 pub_dose <- c(30, 40, 50, 60, 70)

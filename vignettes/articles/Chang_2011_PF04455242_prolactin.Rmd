@@ -26,7 +26,7 @@ KOR-mediated inhibition of tuberoinfundibular dopaminergic (TIDA) neurons, and
 PF-04455242 blocks this elevation by competitive antagonism at the KOR.
 
 The paper contributes two coupled PK-PD models, extracted here as two separate
-model files (Phase 1 replicate-author-structure policy):
+model files, replicating the authors' model structure:
 
 * `modellib("Chang_2011_PF04455242_rat")` -- Sprague-Dawley rat preclinical
   model: one-compartment first-order absorption PK for both spiradoline and

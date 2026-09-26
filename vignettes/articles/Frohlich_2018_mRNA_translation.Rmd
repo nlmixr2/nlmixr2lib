@@ -75,7 +75,7 @@ All states are in dimensionless m0 / scale units (see paper's identifiability-dr
 
 # Simulation cohort
 
-The validation cohort uses 200 cells per arm (the per-arm cap from the skill) -- a stochastic simulation that exercises both the structural model and its IIV.
+The validation cohort uses 200 cells per arm (the package's per-arm cap for validation cohorts) -- a stochastic simulation that exercises both the structural model and its IIV.
 
 ```{r cohort}
 n_per_arm <- 200L
@@ -287,7 +287,7 @@ All three are within ~7% of the paper's rounded Table S2 values (the small resid
 
 # Assumptions and deviations
 
-* **Parameter provenance.** Population means (`beta`) and diagonal random-effect variances (`D`) come from the authors' Zenodo deposit (doi:10.5281/zenodo.1228899), not from the main paper or its single supplement. The main paper's Table S2 numerically reports only three derived half-lives (mRNA, eGFP, d2eGFP), and the remaining six population means plus the entire IIV variance structure live in figure-only kernel-density plots. The Zenodo deposit contains `results_ribo.mat`, the 200-multistart MEMOIR optimisation output; the best multistart's parameter vector is the one carried in `ini()`. This pathway was sidecar-approved by the operator before extraction (sidecar request-001 Q1 option A).
+* **Parameter provenance.** Population means (`beta`) and diagonal random-effect variances (`D`) come from the authors' Zenodo deposit (doi:10.5281/zenodo.1228899), not from the main paper or its single supplement. The main paper's Table S2 numerically reports only three derived half-lives (mRNA, eGFP, d2eGFP), and the remaining six population means plus the entire IIV variance structure live in figure-only kernel-density plots. The Zenodo deposit contains `results_ribo.mat`, the 200-multistart MEMOIR optimisation output; the best multistart's parameter vector is the one carried in `ini()`. This pathway was maintainer-approved before extraction.
 * **MEMOIR -> nlmixr2 unit conversion.** MEMOIR uses log10(parameter) internally and stores `Var[log10(p)]` as the diagonal of D. nlmixr2 uses natural log. The conversion `Var[ln(p)] = ln(10)^2 * Var[log10(p)] = 5.30190 * Var[log10(p)]` is applied per parameter in `ini()`.
 * **Offset has no IIV.** The per-experiment `phi` mapping in `experiments_transfection_ribo.m` shows that `offset` uses only `beta(6)` -- no random-effect `b` is added. The deposited 18-element parameter vector still contains a `C_offset` value (the random-effect dimension is 9 in the model definition), but that dimension is unconstrained by the likelihood and is not used in the nlmixr2 file.
 * **Residual error.** Population-level residual SD on log-fluorescence is held at 0.3 (the initialisation in `experiments_transfection_ribo.m`). Per-cell sigmas are estimated as inner-loop nuisance parameters in MEMOIR (`estim_sigma = true` in `optimize_transfection.m`) and not retained at the population level, so 0.3 is the population-level value carried forward here. Wrapped in `fixed()` because it is not a free population-level parameter.

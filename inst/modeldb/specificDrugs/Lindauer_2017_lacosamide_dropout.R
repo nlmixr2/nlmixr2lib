@@ -50,7 +50,7 @@ Lindauer_2017_lacosamide_dropout <- function() {
     n_subjects = 883L,
     n_studies = 1L,
     age_range = "16-87 years (median 40, IQR 26-55)",
-    weight_range = "not reported in the on-disk trimmed paper text",
+    weight_range = "not reported in the paper",
     sex_female_pct = 46.3,
     race_ethnicity = NULL,
     disease_state = "Adult patients (>=16 years) newly diagnosed with focal or generalized tonic-clonic seizures without signs of focal onset, provided they had no history or clinical or electroencephalographic findings suggestive of idiopathic generalized epilepsy (SP0993 inclusion criteria; ClinicalTrials.gov NCT01243177).",

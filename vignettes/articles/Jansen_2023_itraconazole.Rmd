@@ -509,9 +509,9 @@ targets |>
 
 ```{r target-checks}
 # Only the claims the paper states as absolutes are gated, and as proportions
-# with headroom rather than as exact 0 / 100 (see pattern 12 of
-# known-vignette-failure-patterns.md). The two treatment-target percentages are
-# NOT gated: they depend on a covariate distribution the paper does not report.
+# with headroom rather than as exact 0 / 100. The two treatment-target
+# percentages are NOT gated: they depend on a covariate distribution the paper
+# does not report.
 stopifnot(
   mean(day14$ITZ > 0.5) > 0.95,
   mean(day14$SUM > 1.0) > 0.95,

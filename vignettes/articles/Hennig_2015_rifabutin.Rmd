@@ -36,7 +36,7 @@ daily dosing) on a virtual cohort matched to the published Table 1
 demographics, then summarizing the resulting parent and metabolite
 exposures. The Hennig 2015 supplemental material (Fig. S1, S2, S3 and
 Table S1, which contain the published VPC and per-subgroup exposure
-summaries) was not available on disk during extraction; this vignette
+summaries) was not available when this model was built; this vignette
 therefore validates the typical-value structural behaviour and the
 covariate-effect direction / magnitude rather than reproducing a
 specific published figure.
@@ -76,7 +76,7 @@ collects the structural-equation provenance in one place. All numeric
 values come from Hennig 2015 Table 2 'Final model' column. The Hennig
 2015 AAC supplement (Fig. S1 model diagram, Fig. S2 VPC, Fig. S3 GOF,
 Table S1 per-subgroup AUC summary) and the source NONMEM control
-stream were not available on disk during extraction; the structural
+stream were not available when this model was built; the structural
 ODE topology comes from the paper Methods + Results paragraphs and the
 parameter-table footer, cross-referenced for parameterization style
 against the Hennig 2016 JAC pooled-rifabutin DDI follow-up paper
@@ -416,7 +416,7 @@ bind_rows(res_rfb, res_des) |>
 Hennig 2015 Table S1 in the AAC supplemental material reports
 predicted AUC_0-24 and AUC_M_0-24 for rifabutin and des-rifabutin
 across covariate subgroups (sex x SLCO1B1 rs11045819 genotype). That
-supplement was not on disk during extraction, so a numerical-table
+supplement was not available when this model was built, so a numerical-table
 comparison is not possible here. The qualitative directionality
 nonetheless matches the published claims:
 
@@ -458,7 +458,7 @@ nonetheless matches the published claims:
   IIV) are estimable.
 * The Hennig 2015 AAC supplemental material (Fig. S1 model schematic,
   Fig. S2 VPC, Fig. S3 GOF, Table S1 covariate-subgroup exposure
-  summary) was not on disk during extraction; structural ODE topology
+  summary) was not available when this model was built; structural ODE topology
   was inferred from the Methods + Results paragraphs and the Hennig
   2016 JAC pooled-rifabutin DDI follow-up paper's NONMEM control
   stream (`run2305.mod`, by the same first author), which uses the

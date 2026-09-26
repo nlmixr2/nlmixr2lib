@@ -186,8 +186,8 @@ struct_tab <- sim_struct |>
 
 # Deterministic identity: the packaged model must reproduce Equation 1 to
 # machine precision. This is NOT a cohort statistic, so an exact bound is the
-# right gate (see known-vignette-failure-patterns.md pattern 12, which applies
-# to simulated cohorts and explicitly not to closed-form identities).
+# right gate (the headroom rule applies to simulated cohorts, which vary with
+# the solver thread count, and explicitly not to closed-form identities).
 stopifnot(
   max(abs(struct_tab$cl_pct)) < 1e-8,
   max(abs(struct_tab$vc_pct)) < 1e-8
@@ -469,13 +469,13 @@ fig3 <- tibble::tibble(
 
 knitr::kable(fig3, caption = "Chala 2023 Figure 3 / Results paragraph 8 claims against the packaged model.")
 
-# Bounds chosen with headroom over what a cohort draw can move (pattern 12 of
-# known-vignette-failure-patterns.md). The band-spread bound of 1.5 is a
-# magnitude claim about "comparable", not a race between two noisy statistics;
-# a mis-transcribed allometric exponent takes the 7.5-15 kg / >40 kg ratio well
-# past 2. The two percentage bounds sit 5-10 points below the paper's own ">80%"
-# so a different eta draw cannot flip them, while a wrong genotype fold-factor
-# (which moves these by tens of points) still fails them.
+# Bounds chosen with headroom over what a cohort draw can move. The
+# band-spread bound of 1.5 is a magnitude claim about "comparable", not a race
+# between two noisy statistics; a mis-transcribed allometric exponent takes the
+# 7.5-15 kg / >40 kg ratio well past 2. The two percentage bounds sit 5-10
+# points below the paper's own ">80%" so a different eta draw cannot flip them,
+# while a wrong genotype fold-factor (which moves these by tens of points)
+# still fails them.
 stopifnot(
   max(band_medians$band_spread) < 1.5,
   pct_over_4 > 70,

@@ -24,7 +24,7 @@ Proctor_2026_durvalumab_poppk <- function() {
       "PROVENANCE: this is a SECONDARY transcription. Proctor 2026 Table S3 lists",
       "the structural parameters for ten immune-checkpoint inhibitors taken from",
       "their original popPK publications; the durvalumab row is from Baverel 2018,",
-      "which is not on disk for this extraction. Proctor 2026 states that it",
+      "which was not available when this model was built. Proctor 2026 states that it",
       "rebuilt this model in RxODE and simulated it as the empirical comparator",
       "for its PBPK predictions, so the model as packaged here is exactly the one",
       "Proctor 2026 ran. Re-extract directly from Baverel 2018 when that paper is",
@@ -38,7 +38,7 @@ Proctor_2026_durvalumab_poppk <- function() {
       "both are fixed at zero. The other nine checkpoint inhibitors in Table S3",
       "are NOT packaged as model files -- they are other authors' models",
       "transcribed for a figure, and three of them already have primary-source",
-      "extractions in this library (Lindauer_2017_pembrolizumab,",
+      "models in this library (Lindauer_2017_pembrolizumab,",
       "Bajaj_2017_nivolumab_ddmore, Hwang_2022_tremelimumab). Their Table S3",
       "time-dependent-clearance parameters are reproduced in the vignette for the",
       "Figure 6 replication only."

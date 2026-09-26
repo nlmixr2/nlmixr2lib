@@ -57,7 +57,7 @@ Wang_2022_aripiprazole <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (CYP2D6 extensive metabolizer)",
-      notes = "Selects between the two separately estimated apparent oral clearances, CL/F = 3.71 L/h for extensive metabolizers and 1.88 L/h for poor metabolizers (Wang 2022 Table 1; Table 1 footnote equation CL/F = (3.71 * EM + 1.88 * PM) * (1 - 0.511 * CYP2D6) * (1 - 0.237 * CYP3A4)). Only two phenotype levels appear in the source model, so the companion CYP2D6_EM / CYP2D6_IM / CYP2D6_UM indicators are not needed: EM is simply CYP2D6_PM = 0. In the source analysis, phenotype was measured for part of the cohort and imputed for the remainder with a NONMEM mixture model that assigned the most probable status assuming 90% extensive metabolizers in the general population (Wang 2022 Methods, 'Population Pharmacokinetic Model Development'); the mixture step is an estimation device for subjects with unknown status and is not part of the final structural model, so this extraction carries the phenotype as an ordinary observed covariate. Of the 663 subjects in the model development data set, 621 were classified extensive and 42 poor metabolizers (Wang 2022 Results, 'Model Simulations'). Time-fixed per subject (germline genotype-derived phenotype).",
+      notes = "Selects between the two separately estimated apparent oral clearances, CL/F = 3.71 L/h for extensive metabolizers and 1.88 L/h for poor metabolizers (Wang 2022 Table 1; Table 1 footnote equation CL/F = (3.71 * EM + 1.88 * PM) * (1 - 0.511 * CYP2D6) * (1 - 0.237 * CYP3A4)). Only two phenotype levels appear in the source model, so the companion CYP2D6_EM / CYP2D6_IM / CYP2D6_UM indicators are not needed: EM is simply CYP2D6_PM = 0. In the source analysis, phenotype was measured for part of the cohort and imputed for the remainder with a NONMEM mixture model that assigned the most probable status assuming 90% extensive metabolizers in the general population (Wang 2022 Methods, 'Population Pharmacokinetic Model Development'); the mixture step is an estimation device for subjects with unknown status and is not part of the final structural model, so this model carries the phenotype as an ordinary observed covariate. Of the 663 subjects in the model development data set, 621 were classified extensive and 42 poor metabolizers (Wang 2022 Results, 'Model Simulations'). Time-fixed per subject (germline genotype-derived phenotype).",
       source_name = "PM / EM"
     ),
     CONMED_CYP2D6_INH = list(
@@ -91,11 +91,11 @@ Wang_2022_aripiprazole <- function() {
     n_subjects = 663L,
     n_studies = 5L,
     n_observations = "6153 aripiprazole plasma concentration records in the model development data set (Wang 2022 Methods, 'Population PK Analysis Source Data').",
-    age_range = "Adults; the per-study age distribution is in Wang 2022 Table S2 (supplement not on disk -- see the vignette Errata).",
-    weight_range = "Not reported in the main text; per-study body-weight summaries are in Wang 2022 Table S2 (supplement not on disk).",
+    age_range = "Adults; the per-study age distribution is in Wang 2022 Table S2 (the supplement was not available when this model was built -- see the vignette Errata).",
+    weight_range = "Not reported in the main text; per-study body-weight summaries are in Wang 2022 Table S2 (the supplement was not available when this model was built).",
     bmi_range = "15 to 61 kg/m^2 in the popPK analysis population (Wang 2022 Discussion, 'Population PK Analysis').",
     sex_female_pct = NA_real_,
-    race_ethnicity = "Self-reported race category (interpreted per US FDA guidance) was screened as a covariate on CL/F and was not retained. The distribution is in Wang 2022 Table S3 (supplement not on disk).",
+    race_ethnicity = "Self-reported race category (interpreted per US FDA guidance) was screened as a covariate on CL/F and was not retained. The distribution is in Wang 2022 Table S3 (the supplement was not available when this model was built).",
     disease_state = "52 healthy subjects (oral aripiprazole only) and 611 subjects with schizophrenia or schizoaffective disorder (Wang 2022 Methods).",
     dose_range = "Oral aripiprazole tablets and AOM intramuscular injections. The model development data set contained no AOM dose below 300 mg; the phase 3 arms used 400 mg AOM with one permitted reduction to 300 mg. Doses of 50/25 mg AOM (study 31-07-247) were shown NOT to be adequately described by this model and were excluded from the source paper's own downstream analyses.",
     regions = "Not reported in the main text.",

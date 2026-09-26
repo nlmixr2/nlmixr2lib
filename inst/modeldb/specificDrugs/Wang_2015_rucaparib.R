@@ -88,7 +88,7 @@ Wang_2015_rucaparib <- function() {
     # IIV -- Wang 2015 Table 1 reports CV% on the log-normal scale; omega^2 = log(1 + CV^2)
     # The paper text states "IIV on all PK parameters" but Table 1 reports IIV
     # CV% only for CL and V1 (the supplementary Table 1 with IIV for V2/V3/Q2/Q3
-    # was not on disk for this extraction). IIV on the additional PK parameters
+    # was not available when this model was built). IIV on the additional PK parameters
     # is therefore omitted -- see vignette Assumptions and deviations.
     etalcl ~ 0.2329  # log(1 + 0.512^2); Wang 2015 Table 1: IIV CL = 51.2 %CV
     etalvc ~ 0.2840  # log(1 + 0.573^2); Wang 2015 Table 1: IIV V1 = 57.3 %CV

@@ -55,7 +55,7 @@ Rong_2019_mycophenolic_acid <- function() {
         "steady-state AUC0-12h values of Maizaud 2025 Table 2 to within 1-3% across",
         "all three Rong dose arms. The default value 0.54 mg/L is the mrgsolve",
         "'@covariates' default in Maizaud 2025 S1 File; its provenance (presumably a",
-        "Rong 2019 cohort median trough) is not stated in any on-disk source. The S1",
+        "Rong 2019 cohort median trough) is not stated in any available source. The S1",
         "annotation text reads 'Mycophenolic acid glucuronide C0' while both the",
         "parameter name (AcMPAG) and Maizaud 2025 Table 1 identify the ACYL",
         "glucuronide; the parameter name and Table 1 are followed here. See vignette",
@@ -81,7 +81,7 @@ Rong_2019_mycophenolic_acid <- function() {
         "the same MMF dose, so the normalisation cancels in the ratio and the",
         "internally-computed value reproduces the paper's covariate exactly",
         "(588.8 / 53 = 11.11). Default 588.8 mg*h/L/g is the mrgsolve '@covariates'",
-        "default in Maizaud 2025 S1 File; provenance not stated on disk."
+        "default in Maizaud 2025 S1 File; provenance not stated in the available sources."
       ),
       source_name = "AUCMPAG"
     ),
@@ -99,7 +99,7 @@ Rong_2019_mycophenolic_acid <- function() {
         "AUC_MPAG notes for why the ratio is formed inside model() from the two",
         "family members rather than registered as a single ratio canonical. Default",
         "53 mg*h/L/g is the mrgsolve '@covariates' default in Maizaud 2025 S1 File;",
-        "provenance not stated on disk. Note this is a COVARIATE describing the",
+        "provenance not stated in the available sources. Note this is a COVARIATE describing the",
         "subject's own historical MPA exposure, not a model output -- it is a",
         "measured per-subject quantity in the Rong 2019 dataset."
       ),

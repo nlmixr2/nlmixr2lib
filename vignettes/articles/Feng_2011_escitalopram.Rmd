@@ -286,7 +286,7 @@ tibble::tibble(
                caption = "Numerical agreement between PKNCA and closed form.")
 
 # Both sides use the SAME drawn parameters, so this is pure numerical error,
-# not cohort noise -- an all() bound is correct (see CLAUDE.md). Bounds carry
+# not cohort noise -- an all() bound is correct. Bounds carry
 # headroom over the observed maxima but would still break instantly on a
 # mis-transcribed CL, V2, Q or V3, which shift these by tens of percent.
 stopifnot(

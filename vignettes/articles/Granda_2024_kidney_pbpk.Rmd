@@ -214,9 +214,8 @@ sim_oc  <- simulate_clr("Granda_2024_oseltamivircarboxylate_pbpk",  granda$CLINT
 Because the endpoint is a clearance derived at steady state rather than a
 concentration-time curve, the usual PKNCA battery is not the right check --
 Granda 2024 reports no Cmax, Tmax, AUC or half-life. The four mechanistic checks
-below are used instead (see `references/endogenous-validation.md`): a
-mass-balance / flux check, a physiological-constraint check, and two exact
-reproductions of the paper's own tables.
+below are used instead: a mass-balance / flux check, a physiological-constraint
+check, and two exact reproductions of the paper's own tables.
 
 ## Gate 1 -- mass balance at steady state
 
@@ -424,7 +423,7 @@ comparator values agree with the paper's.
   then below 0.1% across the tubular pH range 6.5-7.2 and every passive-diffusion
   term vanishes. The model-identified quantity is "un-ionized fraction is
   effectively zero", not a chemical constant, and `fixed(2)` simply encodes that.
-  No pKa was taken from training data or an external database.
+  No pKa was taken from an external database or assumed.
 
 - **`fu_invitro` is the framework default, not a Granda value.** The intrinsic
   permeability is `papp / fu_invitro / 1.5`. Granda 2024 does not report the

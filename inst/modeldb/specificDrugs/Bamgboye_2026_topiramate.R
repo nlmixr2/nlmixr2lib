@@ -151,10 +151,7 @@ Bamgboye_2026_topiramate <- function() {
     #   cov(CL,V2) = 0.03 * sqrt(0.1063625 * 0.0365720) = 0.00187107
     #   cov(V1,V2) = 0.03 * sqrt(0.0322358 * 0.0365720) = 0.00103007
     # ------------------------------------------------------------------
-    # Element-by-element source trace for the block below (comments cannot be
-    # placed inside the c(...) itself: rxode2's ini() comment-to-label rewriter
-    # turns a trailing comment on an element line into a label() call and the
-    # block then fails to parse):
+    # Element-by-element source trace for the block below:
     #   [1,1] 0.1063625  Table 2 "IIV on CL (CV%)"  33.5 (RSE 40%,   bootstrap 20.2-52.6, shrinkage 1.48%)
     #   [2,1] 0.00351330 Table 2 "Correlation (Omega CL,V1)" 0.06 (RSE 51.7%)
     #   [2,2] 0.0322358  Table 2 "IIV on V1 (CV%)"  18.1 (RSE 74.2%, bootstrap 5.5-32.0,  shrinkage 1.50%)

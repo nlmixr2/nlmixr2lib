@@ -353,7 +353,7 @@ synthetic cohort.
   (correlated) IIV structure for V1, CL, and V2 in the final NONMEM run
   ("$OMEGA BLOCK"), but Table 1 tabulates only the diagonal CV% values for
   each parameter. Off-diagonal covariances are not reported, and no
-  supplementary control stream is on disk for this extraction (the task
+  supplementary control stream was available (the source
   metadata lists `Supplements: (none)`). The packaged model implements
   diagonal-only IIV; correlation between simulated eta_CL, eta_V1, and eta_V2
   is therefore zero, whereas the source paper's simulation would have non-zero
@@ -404,8 +404,8 @@ synthetic cohort.
   eight-fold increase in Q from 1.85 L/h to 15.35 L/h). The paper does not
   detail the clinical criteria that classified a patient as severe. This is
   registered as the new canonical `DIS_INFECT_CSSSI_SEV` (see
-  `inst/references/covariate-columns.md`) and is operator-decoded from any
-  source data assembler's protocol-specific severity column.
+  `inst/references/covariate-columns.md`) and is decoded by the data
+  assembler from the source study's protocol-specific severity column.
 
 - **Synthetic cohort demographics.** Lodise 2018 Table 3 does not tabulate
   sex frequencies, severity-of-infection prevalence, or the joint distribution

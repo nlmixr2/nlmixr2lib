@@ -103,7 +103,7 @@ Paule_2011_hydroxyurea <- function() {
     # Vc/CL/kcp block. Paper-reported formula k_a = theta_ka * exp(eta_ka + alpha)
     # is encoded here as standard log-normal IIV on theta_ka = 3.02; the
     # reported population-marginal value k_a = 3.29 differs from theta_ka
-    # but is unexplained in the trimmed source and likely reflects a small
+    # but is unexplained in the paper and likely reflects a small
     # population-mean shift (alpha) that the table does not quantify.
     etalka ~ 1.7956  # Paule 2011 Table 2 (SD 1.34 -> 1.34^2 = 1.7956)
 

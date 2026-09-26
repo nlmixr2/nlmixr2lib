@@ -321,7 +321,8 @@ already in L/day; re-multiplying would give a 5.6-day half-life).
 ```{r half-life}
 # Fit the terminal slope well after the distribution phase and after the
 # time-varying clearance has settled, so log(2)/k is the true beta half-life.
-tail_win <- dplyr::filter(s_single, time >= 300, time <= 600, Cc > 0)
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_win <- dplyr::filter(s_single, time >= 300, time <= 600, Cc >= 1e-6 * max(Cc))
 k_beta   <- -unname(coef(lm(log(Cc) ~ time, data = tail_win))[2])
 
 c(`terminal half-life (days)` = round(log(2) / k_beta, 1),
@@ -562,7 +563,7 @@ make_events <- function(r) {
   stopifnot(
     nrow(ev) > 0,
     all(c("WT", "ALB", "ALP", "TUM_SLD", "SEXF") %in% names(ev)),
-    # A time-zero observation must exist for PKNCA (see pknca-recipes).
+    # A time-zero observation must exist for PKNCA.
     any(ev$TIME == 0 & ev$EVID == 0L),
     # And one at each end of the final dosing interval.
     any(ev$TIME == ss_start & ev$EVID == 0L),
@@ -920,7 +921,7 @@ squamous NSCLC, SCLC and ESCC, and logistic-regression models for objective
 response rate in MSI-H patients and for five safety endpoints.
 
 **None of these sub-models can be encoded, because no coefficient is published
-anywhere in the sources on disk.** This was checked exhaustively rather than
+in any available source.** This was checked exhaustively rather than
 assumed:
 
 * The main text reports only outcomes ("a 0.1% difference in OS", "predicted

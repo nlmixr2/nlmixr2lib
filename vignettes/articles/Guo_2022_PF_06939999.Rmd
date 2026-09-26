@@ -59,7 +59,7 @@ n = 2 in 6 mg b.i.d.; anemia n = 1 in 8 mg q.d.; neutropenia n = 1 in 6 mg q.d.)
 Baseline body weight, age, and hepatic function were tested as PK covariates and
 were not retained in the final model (drop in objective function value < 3.84;
 Results, page 1621). The full per-cohort baseline demographics are summarised in
-Appendix Table S1 of the source, which is not on disk in this worktree.
+Appendix Table S1 of the source, which was not available when this model was built.
 
 The population metadata can be inspected programmatically:
 
@@ -465,10 +465,10 @@ knitr::kable(summary(nca_res),
   (0.00496 per ng/mL) parameter values can be entered verbatim from Table 1.
   `units$dosing = "mg"`, `units$concentration = "ng/mL"`.
 - **Population demographics (age, weight, sex, race, region)** are reported
-  in the source's Appendix Table S1, which is not on disk in this worktree;
-  the `population` field in the model file therefore records dosing, disease
-  state, and DLT counts verbatim from the main text (Analysis Plan and
-  Results sections) and leaves the demographic numerics as `NA_*_`.
+  in the source's Appendix Table S1, which was not available; the `population`
+  field in the model file therefore records dosing, disease state, and DLT
+  counts verbatim from the main text (Analysis Plan and Results sections)
+  and leaves the demographic numerics as `NA_*_`.
 - **Steady-state SDMA reduction proxy.** Source Figure 3 reports
   "steady-state plasma SDMA reduction from baseline (%)" simulated from the
   fit. The vignette computes this by averaging SDMA over the 28th (last)

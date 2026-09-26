@@ -80,7 +80,7 @@ independent checks confirm this is the paper's own omission rather than
 a text-extraction artefact:
 
 1. Table 3 contains exactly six rows (V1, V2, CL1, CL2, BW on V1,
-   CLcr on CL1) in both the PDF and the trimmed text.
+   CLcr on CL1) in both the PDF and the extracted text.
 2. The Results state that "the RSE of all the parameters was
    3.582-16.55%". Those endpoints are exactly the smallest (V1, 3.582)
    and largest (CLcr on CL1, 16.55) of the six tabulated %RSE values,

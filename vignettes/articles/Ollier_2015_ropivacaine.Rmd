@@ -33,7 +33,7 @@ kinetics; and the size of the hepatic resection reduces free-drug clearance by
 53%. The paper's third retained covariate (a per-subject postoperative
 fibrinogen slope on the binding-site production rate) was dropped in this
 packaged model because the population-mean reference used to centre the
-covariate was not reported in any source on disk. See **Assumptions and
+covariate was not reported in any available source. See **Assumptions and
 deviations** below.
 
 # Population
@@ -312,8 +312,7 @@ running higher (lower clearance -> higher Cmax).
   cohort medians of fibrinogen concentration (3.6, 4.5, 5.8 g/L). Rather than
   invent an unreported reference (which would silently anchor the covariate
   effect), this packaged model uses the population-typical `kin_pop` directly
-  with no covariate adjustment. Operator sidecar `request-001.json` (queue
-  frompeople-955) records the decision.
+  with no covariate adjustment. This was a maintainer decision.
 - **`kb` reduced from `1e12` to `100` uM^-1 h^-1 for numerical stability.**
   The paper reports `kb = 1e12 uM^-1 h^-1` (Methods "Base model") but
   explicitly states the model is insensitive to the value across `kb` in

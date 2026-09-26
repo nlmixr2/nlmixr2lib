@@ -134,10 +134,10 @@ events <- data.frame(
 head(events, 6)
 ```
 
-# Mechanistic-sanity simulation (F.3)
+# Mechanistic-sanity simulation
 
 The output is ordinal-grade ANC (10^9/L); no published NCA table
-applies, so the verification-checklist's F.3 recipe is the right check.
+applies, so the mechanistic-sanity check is the right check.
 Typical-value (no IIV) simulation should reproduce the qualitative
 dynamics implied by the source parameters: sVEGFR-3 depletes under
 drug, `svegfr3_rel` rises, `edrug` engages on the proliferation
@@ -237,7 +237,7 @@ stopifnot(svegfr3_nadir < svegfr3_bl) # drug depletes sVEGFR-3
 
 * **Detailed per-cohort demographics absent.** Hansson 2013 e85 Table 1
   reports the per-study sample size, dosing schedule, and observed-AE
-  distributions, but the trimmed PDF section that includes Methods +
-  Results + Tables does not carry a baseline-demographics breakdown by
+  distributions, but the text extracted from the PDF (Methods +
+  Results + Tables) does not carry a baseline-demographics breakdown by
   cohort (age, weight, sex, race); the model's `population` metadata
   records that gap.

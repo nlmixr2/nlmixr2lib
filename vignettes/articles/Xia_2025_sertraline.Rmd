@@ -129,8 +129,9 @@ makeEvents <- function(doseTime, doseAmt, obsTime, id = 1L, ss1 = TRUE) {
 }
 
 solveTypical <- function(ev) {
+  # steady-state searches for long-half-life subjects exceed the default step budget
   suppressWarnings(rxode2::rxSolve(modT, ev, keep = intersect("scenario", names(ev)),
-                                   returnType = "data.frame"))
+                                   returnType = "data.frame", maxsteps = 1e6))
 }
 concAt <- function(s, t) stats::approx(s$time, s$Cc, xout = t)$y
 ```
@@ -275,7 +276,9 @@ ncaEvents <- dplyr::bind_rows(lapply(seq_along(DOSES), function(i) {
   ev
 }))
 ncaSim <- suppressWarnings(
-  rxode2::rxSolve(modT, ncaEvents, keep = "treatment", returnType = "data.frame")
+  rxode2::rxSolve(modT, ncaEvents, keep = "treatment", returnType = "data.frame",
+                  # steady-state searches for long-half-life subjects exceed the default step budget
+                  maxsteps = 1e6)
 )
 
 # Filter on !is.na(Cc) only -- a `time > 0` or `Cc > 0` filter would drop the
@@ -394,7 +397,9 @@ cohortEvents <- dplyr::bind_rows(lapply(seq_along(DOSES), function(i) {
 stopifnot(!anyDuplicated(unique(cohortEvents[, c("id", "time", "evid")])))
 
 cohortSim <- rxode2::rxSolve(mod, cohortEvents, keep = "treatment",
-                             returnType = "data.frame")
+                             returnType = "data.frame",
+                             # steady-state searches for long-half-life subjects exceed the default step budget
+                             maxsteps = 1e6)
 ```
 
 ```{r cohort-summary}
@@ -839,12 +844,12 @@ resume.
   covariates the paper screened (or, for CYP2C19, could not screen) are recorded
   in `covariatesDataExcluded` with the paper's reasoning; they carry no encoded
   effect.
-* **Supplement not on disk.** Xia 2025 cites Tables S1 (drug information) and S2
-  (theoretical remedial doses). Neither is in the PMC deposit
-  (`hasSuppl: N`; the EuropePMC supplementary bundle contains only the figure and
-  equation images). No parameter depends on them: every remedial dose used above
-  is stated in the Results text, and Table S2's content is reconstructed in the
-  remedial table. Recorded as a documentation gap only.
+* **Supplement not available.** Xia 2025 cites Tables S1 (drug information) and
+  S2 (theoretical remedial doses). Neither is in the PMC deposit (the EuropePMC
+  supplementary bundle contains only the figure and equation images). No
+  parameter depends on them: every remedial dose used above is stated in the
+  Results text, and Table S2's content is reconstructed in the remedial table.
+  Recorded as a documentation gap only.
 * **Cohort simulation.** The 200-subject-per-arm cohort is not a replication of
   any published figure -- Xia 2025 simulated only typical values -- and its
   assertions are written on medians, never on extremes.

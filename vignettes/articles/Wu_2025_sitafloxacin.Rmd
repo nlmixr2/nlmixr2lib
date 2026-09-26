@@ -313,7 +313,7 @@ stopifnot(max_conc_before_lag == 0, min_conc_after_lag > 0)
 
 ## Falsifier: the peripheral compartment is actually solved
 
-`rxSolve()` defaulted to `useLinCmt = TRUE` until rxode2 made the conversion opt-in in September 2026 (issue 1389), which rewrites a recognisably linear
+`rxSolve()` with `useLinCmt = TRUE` rewrites a recognisably linear
 system into closed form. On some two-compartment models written with
 micro-constants that rewrite silently drops the peripheral compartment and
 solves a one-compartment model instead. Total AUC is unaffected by that failure
@@ -340,7 +340,8 @@ ev_hl <- dplyr::bind_rows(
 hl_sim <- rxode2::rxSolve(mod_typ, events = ev_hl, returnType = "data.frame")
 
 # Terminal slope from the log-linear tail, well past the distribution phase.
-tail_fit  <- stats::lm(log(Cc) ~ time, data = subset(hl_sim, time >= 36 & Cc > 0))
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_fit  <- stats::lm(log(Cc) ~ time, data = subset(hl_sim, time >= 36 & Cc >= 1e-6 * max(Cc)))
 hl_simval <- log(2) / -unname(coef(tail_fit)[2])
 
 # Analytic beta root from the published Table 2 typical values.
@@ -793,11 +794,10 @@ stopifnot(
   bootstrap 95% CI 0.0184-0.0394). The abbreviation footnote describes it only as
   "eta4, interindividual variability of IOV" and never names the structural
   parameter it acts on; the Section 2.2 display equations account for `eta1`,
-  `eta2` and `eta3` only. No supplement or control stream is available
-  (the EuropePMC `supplementaryFiles` endpoint returns HTTP 500 for PMC11868765
-  and the Frontiers file endpoints return 404), and the supplement's documented
-  contents -- a study-design table and mean concentration-time figures -- would
-  not place an eta. Assigning the term to CL, D1 or F would be inventing model
+  `eta2` and `eta3` only. No supplement or control stream was available when
+  this model was built, and the supplement's documented contents -- a
+  study-design table and mean concentration-time figures -- would not place an
+  eta. Assigning the term to CL, D1 or F would be inventing model
   structure, so it is omitted and its reported value preserved in the model file
   comments. Simulated between-subject spread in AUC is therefore marginally
   narrower than the paper's, which if anything makes the PTAs above slightly
@@ -809,8 +809,9 @@ stopifnot(
   not carry an `fu` term.
 * **CFR is not reproduced.** Wu 2025 Table 3 also reports cumulative fraction of
   response, which requires the EUCAST MIC frequency distributions for each
-  pathogen. Those distributions are external to the paper and are not on disk, so
-  only the PTA and cut-off columns are validated here.
+  pathogen. Those distributions are external to the paper and were not available
+  when this model was built, so only the PTA and cut-off columns are validated
+  here.
 * **No NCA answer key.** Wu 2025 publishes no Cmax/Tmax/AUC table, so the PKNCA
   results above are reported rather than compared, and the validation weight
   rests on the per-subject `AUC24h = daily dose / CL` identity and the PK/PD

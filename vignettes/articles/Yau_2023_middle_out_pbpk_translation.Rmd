@@ -526,7 +526,7 @@ nca_wide |>
   midazolam rat 1.19 / 4.80 / 0.236 and midazolam monkey 0.323 / 11.565 /
   1.481, with adipose folded into group 1.
 
-* **Hepatic-artery flow and the tabulated "Liver" row (operator-ratified).**
+* **Hepatic-artery flow and the tabulated "Liver" row (maintainer-ratified).**
   The tabulated "Liver" blood flow is the *portal-vein pool*, not total hepatic
   flow: in rat (12.546 = 9.139 + 1.080 + 0.831 + 1.496 mL/min) and in monkey
   (123.4 = 90.4 + 11 + 14.9 + 7.1 mL/min) the row equals the splanchnic sum
@@ -546,7 +546,7 @@ nca_wide |>
   as the portal pool -- the convention proven on rat and monkey -- keeps the
   twice-tabulated rest-of-body 0.730 L/min and yields portal 0.817, hepatic
   artery 0.379 and total hepatic 1.196 L/min. That is the reading used here and
-  it was ratified by the operator. (The lead paper's Table S6 prints the same
+  it was ratified by the maintainers. (The lead paper's Table S6 prints the same
   reference man to two decimals and gives the human liver flow as 1.11, which
   duplicates its kidney entry; at three decimals the two are distinct -- kidney
   1.109 versus liver 1.489 -- so the lead table's value is a rounding-level
@@ -594,7 +594,7 @@ nca_wide |>
 
 * **Midazolam in human is not packaged as a model file.** The paper reports the
   human `Vss,b` predicted from the rat Model 3D fit (183 L against an observed
-  141 L), but no human midazolam blood clearance appears in any on-disk source,
+  141 L), but no human midazolam blood clearance appears in any available source,
   and midazolam is a high-extraction compound whose hepatic extraction ratio --
   and hence the `Vss,b` liver term -- depends materially on that clearance.
   Rather than substitute a value, the human midazolam projection is left out of
@@ -625,12 +625,11 @@ nca_wide |>
 
 * **Canonical names come from the sibling extraction.** The Kpu cluster scalars
   use the `sf<n>` / `lsf<n>` canonical and the bare `pancreas` compartment, both
-  registered by the companion paper's extraction, which is now on `main` as
-  `Yau_2023_diazepam_pbpk_{lumped,kpu,scalar}_{rat,human}`. Per the operator's
-  decision (sidecar request-002 q1) this branch adds no register entry of its
-  own, so that one canonical serves both papers and the two pull requests do
-  not conflict in `inst/references/`. `checkModelConventions()` now reports no
-  issues for any of the five models here.
+  registered by the companion paper's extraction, packaged as
+  `Yau_2023_diazepam_pbpk_{lumped,kpu,scalar}_{rat,human}`. Per the
+  maintainers' decision these models add no register entry of their own, so that
+  one canonical serves both papers. `checkModelConventions()` reports no issues
+  for any of the five models here.
 
 * **No covariates.** The physiology is fixed at the reference individual of
   Table S6, so `covariateData` is empty in every model. Users simulating

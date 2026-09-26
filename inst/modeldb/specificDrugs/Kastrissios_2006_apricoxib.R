@@ -89,8 +89,7 @@ Kastrissios_2006_apricoxib <- function() {
       type = "binary",
       reference_category = 0,
       notes = paste(
-        "VALUE INVERSION, sign confirmed by the operator (sidecar",
-        "request-001 q4, option A). The published coefficient",
+        "VALUE INVERSION, sign confirmed by the maintainers. The published coefficient",
         "K_CL/F-SEX = +0.325 multiplies the paper's MALE indicator, so",
         "it is applied here to (1 - SEXF) and the typical value",
         "lcl = log(34.1) is the FEMALE apparent oral clearance. Males",

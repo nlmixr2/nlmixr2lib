@@ -88,7 +88,9 @@ Simpson_2013_lumefantrine <- function() {
     # Population EC50 and slope (Genotype 1 reference). EC50 from Table 3
     # row "Lumefantrine" Genotype 1 column: 35.7 nM (95% CI 31.4, 39.9).
     # Slope from Table 1 NLME row lumefantrine: 2.73 (95% reference range
-    # 1.22, 6.10). Slope covariates dropped per skill sidecar.
+    # 1.22, 6.10). Slope covariates dropped by decision of the maintainers
+    # (File S2 was not available when this model was built; the main text
+    # describes slope effects as "minimal" / "not significant").
     # ---------------------------------------------------------------------
     lec50  <- log(35.7); label("Population log-EC50 for the WT reference parasite (log of nM)") # Table 3 Lumefantrine Genotype 1 reference
     lgamma <- log(2.73); label("Population log-slope gamma of the sigmoid inhibition curve (log of unitless)") # Table 1 NLME row lumefantrine

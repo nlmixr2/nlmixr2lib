@@ -152,7 +152,7 @@ Hajjar_2018_cipaglucosidase <- function() {
       "predictive checks (quantile-quantile plots and visual predictive",
       "checks for the 5/50/95 percentiles) supported the structural",
       "model. The 2018 ACCP poster source carries no peer-reviewed DOI;",
-      "the on-disk metadata DOI 10.1038/mt.2009.53 is a vendor-index",
+      "the DOI 10.1038/mt.2009.53 attached to it by a vendor index is a",
       "defect (it points to an unrelated 2009 Molecular Therapy paper)",
       "and is not used as the canonical reference for this extraction."
     )

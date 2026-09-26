@@ -84,8 +84,8 @@ metadata, e.g. `readModelDb("Patel_2020_sapanisertib_QTcI")()$population`.
 Every value in every `ini()` block comes from a regression-summary table printed
 **inside** a figure panel. Those in-panel tables carry full printed-value
 authority -- they are printed parameter tables, not digitised or curve-fitted
-values -- but they are invisible to `pdftotext` and to docling because Figures 4
-and S2 are raster images. They were recovered with
+values -- but they are invisible to plain-text extraction of the PDF (including
+`pdftotext`) because Figures 4 and S2 are raster images. They were recovered with
 `pdftoppm -r 400 -f 10` on the article PDF (Figures 4A and 4C, journal page 885)
 and by unzipping `cpdd808-sup-0001-suppmat.docx` and rendering
 `word/media/image4.png` (Figure S2).
@@ -725,15 +725,15 @@ reciprocally related), so no quantitative gate between them is appropriate.
   and QTcF", and the residual degrees of freedom (409, 440, 470 against 44
   patients) are consistent with a per-subject random intercept. But no variance
   estimate, random-effect standard deviation or shrinkage value is reported for
-  any of the three models. Per the standing operator policy on unreported IIV,
-  the packaged models omit the eta declarations and ship typical-value-only
+  any of the three models. Per the maintainers' standing policy on unreported
+  IIV, the packaged models omit the eta declarations and ship typical-value-only
   encodings. The only surviving traces of the variance components are Table 4's
   threshold-exceedance probability columns and the Figure 4B / 4D 90% prediction
   intervals; neither inverts to a unique variance, so no value is guessed. Users
   who need an IIV envelope must impose one externally.
 
 - **Residual error is not reported numerically.** `addSd <- fixed(0)` in all
-  three files, per the standing operator policy, so each model returns its
+  three files, per the maintainers' standing policy, so each model returns its
   deterministic typical-value prediction. This follows the same encoding as
   `Darpo_2014_racSotalol_QTcI.R` / `_QTcF.R`.
 
@@ -765,8 +765,8 @@ reciprocally related), so no quantitative gate between them is appropriate.
   and, because they come from one paper, this single vignette.
 
 - **The RR endpoint is named `d_rr`, the two QTc endpoints are not `d`-prefixed.**
-  This asymmetry within the file set is deliberate and was an operator ruling
-  (sidecar `oare_PMC7586797` request-001 q1, answered 2026-09-02). The register
+  This asymmetry within the file set is deliberate and was a maintainer ruling
+  of 2026-09-02. The register
   had no RR entry of either form. `d_rr` was ratified as a canonical sibling of
   the existing `d_hr` change-from-baseline heart-rate endpoint, on the
   scale-incomparability grounds that entry already states -- an absolute RR

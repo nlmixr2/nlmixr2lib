@@ -335,10 +335,10 @@ sim_nca <- sim_ss %>%
   dplyr::filter(!is.na(Cc)) %>%
   dplyr::transmute(id, protocol, time = time_in_tau, Cc)
 
-# Defensive time-zero row guarantee per the pknca-recipes.md guidance: the
-# extravascular pre-dose concentration is 0. The dense observation grid
-# already includes time = 0 in the steady-state window, but the defensive
-# bind_rows / distinct pattern protects against future grid changes.
+# Defensive time-zero row guarantee: the extravascular pre-dose
+# concentration is 0. The dense observation grid already includes time = 0
+# in the steady-state window, but the defensive bind_rows / distinct pattern
+# protects against future grid changes.
 sim_nca <- dplyr::bind_rows(
   sim_nca,
   sim_nca %>% dplyr::distinct(id, protocol) %>%

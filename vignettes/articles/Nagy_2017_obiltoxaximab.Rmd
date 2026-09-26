@@ -99,8 +99,7 @@ source_trace <- tibble::tribble(
 knitr::kable(source_trace, caption = "Source trace for the Nagy 2017 models.")
 ```
 
-The three equation blocks render as `formula-not-decoded` in the automated PDF
-conversion; they were recovered verbatim from the on-disk PDF with
+The three equation blocks were recovered verbatim from the PDF with
 `pdftotext -layout` (page 4, right column). The `exp()` around the bacteremia
 term in `logit(psurv)` is taken from the second published report of this same
 fitted model, Yamamoto 2016 (doi:10.1128/AAC.00972-16), which prints that
@@ -457,8 +456,8 @@ All three rows now reproduce the paper: the largest gap is at the degenerate
 `exp(0) = 1` regardless of `theta1` and `theta2`.
 
 The same agreement holds across every panel of Supplementary Figure S2. The
-"digitised" columns below were read off the published figure by the extractor
-(they are not tabulated anywhere in the paper):
+"digitised" columns below were read off the published figure by the
+maintainers (they are not tabulated anywhere in the paper):
 
 ```{r figs2-check}
 ptt_mid <- c(2.06, 3.49, 4.42, 6.18)
@@ -473,7 +472,7 @@ figs2 <- tibble::tibble(
 
 figs2 |>
   knitr::kable(
-    caption = "Published Table S2 parameters vs. the extractor's digitisation of Supplementary Figure S2, by PTT-bacteremia quartile."
+    caption = "Published Table S2 parameters vs. the maintainers' digitisation of Supplementary Figure S2, by PTT-bacteremia quartile."
   )
 
 # The pre-fix equation was off by 0.46 and 0.75 in the two highest quartiles at

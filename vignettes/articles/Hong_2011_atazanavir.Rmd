@@ -143,7 +143,7 @@ make_cohort <- function(treatment, wt_lo, wt_hi, age_lo, age_hi,
                   treatment, dose_atv_mg)
 
   # Observations: one row per observation time per subject (cmt = "central"
-  # references the ODE state name per known-vignette-failure-patterns.md #2).
+  # references the ODE state name).
   obs_rows <- subj |>
     tidyr::crossing(time = obs_times) |>
     dplyr::mutate(
@@ -169,7 +169,7 @@ events <- dplyr::bind_rows(
   make_cohort("Adult",      50, 90, 22, 64, 300, id_offset = 1500L)
 )
 
-# Disjoint-ID assertion (regression guard per template guidance)
+# Disjoint-ID assertion (regression guard)
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 
@@ -182,7 +182,9 @@ sim <- rxode2::rxSolve(
   mod,
   events = events,
   keep   = c("treatment", "dose_atv_mg", "WT", "AGE", "SEXF",
-             "REGION_AFRICA", "CONMED_RTV", "FORM_POWDER")
+             "REGION_AFRICA", "CONMED_RTV", "FORM_POWDER"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::as_tibble()

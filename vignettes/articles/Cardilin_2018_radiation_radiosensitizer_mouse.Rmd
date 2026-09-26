@@ -261,13 +261,13 @@ fraction `exp(-lethal) = exp(-(1 + bRad*Cc)(alpha*D + beta*D^2))`.
 
 # Assumptions and deviations
 
-- **Metadata correction (year and name).** The dispatch metadata named the model
-  `Cardilin_2017_CPT_Pharmacometrics_amp_Sys` (a queue-generation artifact in
+- **Metadata correction (year and name).** The provisional metadata named the model
+  `Cardilin_2017_CPT_Pharmacometrics_amp_Sys` (an automated-naming artifact in
   which the journal name was placed in the drug slot, and the online-first year
   2017 was used). The article's formal citation is *CPT Pharmacometrics Syst
   Pharmacol* **2018**;7(1):51-58 (published online 14 December 2017); 2018 is
-  the volume/citation year used by PubMed (PMID 29218836) and matches the
-  on-disk source filename. The compound is anonymized as "RS1" in the source, so
+  the volume/citation year used by PubMed (PMID 29218836). The compound is
+  anonymized as "RS1" in the source, so
   the descriptive slot `radiation_radiosensitizer` and the `_mouse` species
   suffix are used.
 - **Coefficient placement (paper "a" vs "b").** Table 1 of the source and the

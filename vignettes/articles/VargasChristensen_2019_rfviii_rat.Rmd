@@ -52,7 +52,8 @@ Per-parameter origin is recorded as an in-file comment next to each `ini()`
 entry in
 `inst/modeldb/specificDrugs/VargasChristensen_2019_rfviii_rat.R`. The table
 below collects them in one place for review. All parameter estimates come from
-Table 1 of the paper; the NONMEM control stream lives in Data S1 (not on disk).
+Table 1 of the paper; the NONMEM control stream lives in Data S1, which was not
+available when this model was built.
 
 | Parameter / equation                         | Value (RSE)                    | Source location                    |
 |----------------------------------------------|--------------------------------|------------------------------------|
@@ -270,10 +271,10 @@ knitr::kable(nca_summary,
 
 The IIV magnitudes reported in Table 1 (CL 57.1% CV, R0 25.6% CV, Vmax,comp
 36.3% CV; the last with 36% shrinkage) can be sampled to produce a stochastic
-cohort. The example below simulates 40 rats per dose level. Given the cap on
-per-arm cohort sizes documented in the skill (200 subjects per arm), 40 rats
-per arm is well within budget and reproduces the between-subject variability
-shown in the paper's VPC bands qualitatively.
+cohort. The example below simulates 40 rats per dose level. Given the
+package's cap on per-arm cohort sizes (200 subjects per arm), 40 rats per arm
+is well within budget and reproduces the between-subject variability shown in
+the paper's VPC bands qualitatively.
 
 ```{r vpc-simulate}
 set.seed(42)

@@ -739,9 +739,8 @@ and is not itself the discriminator -- it inherits the CSF under-prediction
 described next. The identification rests on the paper's own occupancy statements,
 not on this reconstruction's numbers.
 
-This choice was ratified by the operator (task `oare_PMC11904693`, sidecar
-request-001, answer D, 2026-08-20). To explore an alternative, change the single
-`co <- occCdk6Csf / 100` line in the model file.
+This choice was ratified by the maintainers. To explore an alternative, change
+the single `co <- occCdk6Csf / 100` line in the model file.
 
 ## Deviation: CSF CDK6 occupancy falls short at 200 mg BID
 
@@ -788,7 +787,7 @@ across the 90% threshold. A *fixed* `KCSF,p` makes CSF exposure strictly
 proportional to plasma exposure, so any dose-dependent saturation of that efflux
 is invisible to the extracted layer.
 
-The two causes are not mutually exclusive, and the on-disk sources cannot
+The two causes are not mutually exclusive, and the available sources cannot
 separate them: doing so would need the PBPK layer's CSF concentration-time
 output, which is neither tabulated nor deposited. The residual gap after the
 exposure correction (about 1.7 percentage points of occupancy, or a factor of
@@ -847,14 +846,11 @@ constant for a published one and hide the gap.
   (occupancy relaxes in minutes, biomarkers over days) is the mechanistic reason.
 - **Supporting Information not obtained.** The ACS Supporting Information PDF
   (Table S1, predicted vs. observed single-dose plasma PK in healthy volunteers;
-  Tables S2-S3, sensitivity coefficients) could not be retrieved -- EuropePMC's
-  supplementary-files endpoint returns HTTP 500, the NCBI OA package href 404s
-  over HTTPS, the PMC `/bin/` route 404s, and the publisher route is behind the
-  ACS Cloudflare gate. It is not a blocker: every model parameter is in
+  Tables S2-S3, sensitivity coefficients) could not be retrieved when this
+  model was built. It is not a blocker: every model parameter is in
   main-text Table 1, and S1-S3 are validation and sensitivity *output*. Had S1
   been available it would have supplied measured metabolite exposure ratios in
-  place of the 13% / 5% / 26% mass split used above. Logged for operator
-  acquisition.
+  place of the 13% / 5% / 26% mass split used above.
 - **No erratum.** A search of the ACS landing page and PubMed found no
   correction notice for this article.
 - **What the paper concludes about these biomarkers.** The Discussion states

@@ -550,7 +550,7 @@ knitr::kable(
   = 40.7%, omega_v2 = 29.4%); no off-diagonal covariance is reported.
   The packaged model uses diagonal IIV. This is consistent with the
   reported information but cannot be cross-checked against the
-  original NONMEM control stream (not on disk).
+  original NONMEM control stream (not available).
 
 - **`omega^2 = log(CV^2 + 1)`.** Table 2 reports inter-individual
   variability as CV%; the corresponding log-normal variance was
@@ -571,20 +571,20 @@ knitr::kable(
 - **Theta_NR fixed from upstream publication.** The non-renal CL
   intercept theta_NR = 0.229 L/h was fixed during estimation (Feng
   2006 Methods page 168) at the value reported by Green et al. 2003
-  (reference [20]); the upstream Green 2003 paper is not on disk in
-  this worktree. Feng 2006 reports a sensitivity analysis (Results
-  page 170) showing that varying theta_NR by +/-50% changed CrCL slope
-  estimates by 19% but left all other parameter estimates essentially
-  unchanged, supporting use of the fixed value. The model file wraps
-  the value in `fixed(log(0.229))` to preserve the fixed-during-
-  estimation provenance.
+  (reference [20]); the upstream Green 2003 paper was not available. Feng
+  2006 reports a sensitivity analysis (Results page 170) showing that
+  varying theta_NR by +/-50% changed CrCL slope estimates by 19% but
+  left all other parameter estimates essentially unchanged, supporting
+  use of the fixed value. The model file wraps the value in
+  `fixed(log(0.229))` to preserve the fixed-during-estimation
+  provenance.
 
 - **No errata identified.** A search for published corrections to the
   Br J Clin Pharmacol article via the journal landing page and
   PubMed-style "<Feng 2006 enoxaparin> erratum" queries returned no
-  hits in this worktree. If a future search uncovers an erratum, the
-  affected parameter value(s) should be updated and the in-file
-  source-trace comments should point to the erratum.
+  hits. If a future search uncovers an erratum, the affected parameter
+  value(s) should be updated and the in-file source-trace comments
+  should point to the erratum.
 
 - **Race / ethnicity not modeled.** Feng 2006 does not report race
   composition for either the CII or SC cohorts. The analysis did not

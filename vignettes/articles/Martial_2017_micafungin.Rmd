@@ -278,8 +278,8 @@ Assumptions and deviations below) are taken into account.
   and notes that V2 carries no IIV either, so the Table 2 row label is
   treated as a typographical slip). The IOV is not encoded because the
   per-occasion structure (number and definition of occasions) is not
-  disclosed in the paper, no on-disk supplement carries it, and the NONMEM
-  control stream is not available. Following the Archary_2019_lamivudine
+  disclosed in the paper, the supplement was not available to check, and the
+  NONMEM control stream is not available. Following the Archary_2019_lamivudine
   precedent, the IOV term is documented here rather than encoded with a
   guessed OCC partitioning. Encoding IOV would broaden within-subject
   prediction intervals and would slightly inflate the AUC IQRs at any
@@ -301,10 +301,10 @@ Assumptions and deviations below) are taken into account.
   within the 5-minute pkgdown wall-time budget. Median AUC estimates are
   robust at this sample size; tail-percentile estimates (e.g., 95th /
   fifth) are noisier than the published values.
-- **No supplements on disk.** Martial 2017 references electronic
+- **No supplements available.** Martial 2017 references electronic
   supplementary material at doi:10.1007/s40262-017-0509-5 (Figs. S1-S3 and
-  Supplementary Tables 1-2). The supplement is not on disk in this
-  worktree; the figure references in the manuscript text were sufficient
-  to construct the model without it (the supplement contains GOF plots,
+  Supplementary Tables 1-2). The supplement was not available; the figure
+  references in the manuscript text were sufficient to construct the
+  model without it (the supplement contains GOF plots,
   the VPC, simulated profile plots, and detailed PTA tables, none of which
   feed the parameter values).

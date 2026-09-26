@@ -29,7 +29,7 @@ This is the **Multistate Tuberculosis Pharmacometric (MTP) model** for in vitro 
 * **In vitro** time-kill experiments on *M. tuberculosis* H37Rv (St George's University strain).
 * **12 replicate cultures** (per the `Output_real_MTP.lst` ETABAR `N = 12`) followed for ~200 days under untreated growth conditions on a single-subject-per-culture basis.
 * No human or animal subjects are involved; no covariates are encoded.
-* The Clewe 2016 publication was **not on disk** at extraction time, so a full cross-check against the paper's printed tables / figures was not performed. Parameter values derive from `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block only.
+* The Clewe 2016 publication was **not available** when this model was built, so a full cross-check against the paper's printed tables / figures was not performed. Parameter values derive from `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block only.
 
 The same metadata is available programmatically:
 
@@ -62,7 +62,7 @@ Per-parameter origins are recorded as in-file comments next to each `ini()` entr
 | Time-varying F->S  | .mod `$DES` line 12 (`KFS = KFSLIN * T`)                          |  |  |  |
 | Initial conditions| .mod `$PK` lines 31-33 (`A_0(1) = F0`, `A_0(2) = S0`, `A_0(3) = 1e-5`) |  |  |  |
 | Observation       | .mod `$ERROR` line 18 (`IPRED = LOG(A(1)+A(2))`; culturable CFU = F+S; non-multiplying N excluded) |  |  |  |
-| Residual error    | .mod `$ERROR` line 22 (`Y = IPRED + EPS(1)`; "additive on log-scale" == proportional in linear space per `naming-conventions.md`) |  |  |  |
+| Residual error    | .mod `$ERROR` line 22 (`Y = IPRED + EPS(1)`; "additive on log-scale" == proportional in linear space per package convention) |  |  |  |
 
 The minimization in `Output_real_MTP.lst` succeeded (`#TERM: 0MINIMIZATION SUCCESSFUL`, line 322; OFV = -92.456, line 375). ETA shrinkage on F0 was 40.7 % (line 335), reflecting that ETA(1) is identifiable only from the early-time CFU spread across the 12 replicate cultures.
 
@@ -96,7 +96,7 @@ The observable is the culturable colony-forming-unit count `CFU = F + S`. Non-mu
 
 # Virtual cohort
 
-For the F.2 self-consistency check we simulate the bundled `Simulated_Mtb-H37Rv_In-vitro-NATG.csv` event grid (one subject, 11 observation times spanning t = 0 to 200 days). The 11 rows below are reproduced inline from the DDMODEL00000240 bundle (`TIME`, `NDV` = bacterial count CFU/mL, `DV` = ln(NDV)):
+For the self-consistency check we simulate the bundled `Simulated_Mtb-H37Rv_In-vitro-NATG.csv` event grid (one subject, 11 observation times spanning t = 0 to 200 days). The 11 rows below are reproduced inline from the DDMODEL00000240 bundle (`TIME`, `NDV` = bacterial count CFU/mL, `DV` = ln(NDV)):
 
 ```{r cohort}
 bundle <- data.frame(
@@ -118,7 +118,7 @@ events <- rxode2::et(time = bundle$TIME, evid = 0)
 events
 ```
 
-# Simulation (F.2 self-consistency)
+# Simulation (self-consistency)
 
 Typical-value F+S trajectory reproduction with all etas zeroed (the bundle's `Output_simulated_MTP.lst` is also a `MAXEVAL=0` evaluation at OMEGA = 0):
 
@@ -145,7 +145,7 @@ knitr::kable(cmp, digits = c(0, 2, 2, 2, 2, 0, 2, 2, 4, 4),
              caption = "Typical-value F+S trajectory vs. bundled `Simulated_*.csv` (NDV = F+S linear, DV = ln(F+S)).")
 ```
 
-The relative differences between the worktree simulation and the DDMORE bundle's published trajectory are sub-2% across the full 200-day horizon. The residual gap is explained by the .lst final estimates being rounded to 3 significant figures (TH 1 = 2.06E-01, TH 8 = 4.10E+00, ...) versus the higher-precision `.mod` `$THETA` initial values (0.206361, 4.109880, ...) actually used to generate `Simulated_Mtb-H37Rv_In-vitro-NATG.csv`. F.2 self-consistency gate (<= 5% per-time-point differences) is met.
+The relative differences between the simulation here and the DDMORE bundle's published trajectory are sub-2% across the full 200-day horizon. The residual gap is explained by the .lst final estimates being rounded to 3 significant figures (TH 1 = 2.06E-01, TH 8 = 4.10E+00, ...) versus the higher-precision `.mod` `$THETA` initial values (0.206361, 4.109880, ...) actually used to generate `Simulated_Mtb-H37Rv_In-vitro-NATG.csv`. The self-consistency gate (<= 5% per-time-point differences) is met.
 
 ```{r figure-trajectory}
 plot_df <- as.data.frame(sim) |>
@@ -217,9 +217,9 @@ knitr::kable(balance, caption = "State distribution at t = 200 days (F: dying, S
 # Assumptions and deviations
 
 - **Drug-name caveat.** The DDMORE `Model_Accomodations.txt` flags this bundle as *scenario 4* of Clewe 2016 -- the publication scenario in which the multistate scaffold is coupled with a rifampicin exposure-response layer. The shipped `Executable_MTP.mod` encodes **only** the natural-growth scaffold; no `EFFECT(t)` or `Cc`-style drug term is present. The filename `Clewe_2016_rifampicin.R` reflects the publication's scenario assignment, not a drug effect in the executable. Users wanting a rifampicin-treated extension must add a drug term explicitly (see Clewe 2016 Section "Drug-effect models" for the published functional forms).
-- **No on-disk publication cross-check.** The Clewe 2016 paper (doi:10.1093/jac/dkv416) was not present under `/home/bill/github/mab_human_consensus/literature/` at extraction time. Parameter values therefore rely on the `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block alone; published table values were not independently re-checked. F.2 self-consistency (vs. the bundle's `Simulated_*.csv`) is the only validation reference.
+- **No publication cross-check.** The Clewe 2016 paper (doi:10.1093/jac/dkv416) was not available when this model was built. Parameter values therefore rely on the `Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block alone; published table values were not independently re-checked. Self-consistency (vs. the bundle's `Simulated_*.csv`) is the only validation reference.
 - **Convention deviations** flagged by `checkModelConventions("Clewe_2016_rifampicin")`:
-  - Compartment names `fbugs`, `sbugs`, `nbugs` are not in the canonical PK/mAb compartment set (`depot`, `central`, `peripheral1`, ...). They are mechanism-specific names retained from the source `.mod` `$MODEL COMP=(FBUGS) COMP=(SBUGS) COMP=(NBUGS)` declarations because no canonical compartment in nlmixr2lib's register names "fast-multiplying / slow-multiplying / non-multiplying bacteria." This follows the `naming-conventions.md` Section "Endogenous / mechanistic parameters" guidance to use paper-specific names for non-PK mechanism states. Lower-cased to match the package's casing convention.
+  - Compartment names `fbugs`, `sbugs`, `nbugs` are not in the canonical PK/mAb compartment set (`depot`, `central`, `peripheral1`, ...). They are mechanism-specific names retained from the source `.mod` `$MODEL COMP=(FBUGS) COMP=(SBUGS) COMP=(NBUGS)` declarations because no canonical compartment in nlmixr2lib's register names "fast-multiplying / slow-multiplying / non-multiplying bacteria." This follows the package's guidance to use paper-specific names for non-PK mechanism states. Lower-cased to match the package's casing convention.
   - Observation variable `cfu` rather than `Cc`. `Cc` connotes a drug concentration; this model's observation is a colony-forming-unit count from a bacterial culture (no drug, no analyte), so `Cc` would mislead. The `cfu` name matches the field convention in TB/AMR pharmacometric literature.
   - `units$dosing = "(none; in vitro natural-growth scaffold, no drug effect encoded)"` is dimensionally incompatible with `units$concentration = "CFU/mL"` because there is no drug -- there is no dose to assign units to.
 - **Wide IIV on F0.** `etalf0 ~ 22.4` (variance on the log scale; SD ~= 4.7 in log space) reflects what NONMEM converged to for the 12 replicate cultures; ETA shrinkage was 40.7 % and the ETABAR p-value was 0.062. Users running the model on their own data should expect F0 estimation to be poorly identified unless many replicate cultures are included.

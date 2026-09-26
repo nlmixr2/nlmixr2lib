@@ -13,7 +13,7 @@ LohyDas_2018_artesunate <- function() {
     "model file omits the published time-varying parasite-density covariates",
     "on MTT and on F (Eqs. 3 and 4) and the entire PD layer (mixture-Emax",
     "parasite-killing model with effect compartment); both depend on the",
-    "upstream Lohy Das 2017 AAPS J paper (ref [36]) which is not on disk.",
+    "upstream Lohy Das 2017 AAPS J paper (ref [36]), which was not available when this model was built.",
     "See the vignette's Assumptions and deviations section for the rationale."
   )
   reference <- paste(

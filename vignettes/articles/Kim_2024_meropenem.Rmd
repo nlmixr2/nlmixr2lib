@@ -212,9 +212,8 @@ make_single <- function(times) {
 solve_pop <- function(ev, label) {
   s <- rxode2::rxSolve(mod, events = ev, keep = c("CREAT"), omega = mod_omega) |>
     as.data.frame()
-  # Guards (see the rxSolve caveats in the nlmixr2lib skill notes): every
-  # subject must come back, every concentration must be finite, and the
-  # between-subject variability must actually be present.
+  # Guards: every subject must come back, every concentration must be
+  # finite, and the between-subject variability must actually be present.
   if (dplyr::n_distinct(s$id) != n_sub) {
     stop("rxSolve dropped subjects in arm: ", label)
   }

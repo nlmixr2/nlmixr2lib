@@ -234,8 +234,7 @@ knitr::kable(ratio_row,
 
 PKNCA is used to compute NCA parameters (Cmax, Tmax, AUC over one dose
 interval, half-life) from the last dose interval of the Q2W simulation
-grouped by tumour type. See `references/pknca-recipes.md` in the skill
-for the multi-dose steady-state recipe.
+grouped by tumour type.
 
 ```{r pknca}
 # Analytic window: the tenth dose interval (day 126-140). All doses through
@@ -351,6 +350,6 @@ tuning of the parameters.
 - Michaelis-Menten (non-linear) elimination was tested by Han et al. and
   did not improve fitting over linear PK across the observed concentration
   range (0.4-741 ug/mL); the packaged model is linear.
-- No published erratum for Han 2015 was located in on-disk sources at
-  the time of extraction; the model uses the values in the accepted-article
+- No published erratum for Han 2015 was located in the sources available
+  when this model was built; the model uses the values in the accepted-article
   Table 2 verbatim.

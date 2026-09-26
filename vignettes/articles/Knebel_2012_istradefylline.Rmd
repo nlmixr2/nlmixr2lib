@@ -21,9 +21,9 @@ library(ggplot2)
 Knebel 2012 reports four independent exposure-response models built on the same
 pooled database of six phase 2/3 istradefylline trials: one for the primary
 efficacy endpoint (percentage of awake time spent in the OFF state) and one for
-each of three treatment-emergent adverse events. Following the
-`replicate-author-structure` policy, each is a separate model file and all four
-share this vignette.
+each of three treatment-emergent adverse events. Following the package's
+convention of replicating the authors' structure, each is a separate model file
+and all four share this vignette.
 
 | Model | Endpoint | Structure | Source table |
 |---|---|---|---|
@@ -55,9 +55,8 @@ That has two consequences for this vignette:
    integrate, so the usual PKNCA validation section does not apply. It is
    replaced by exact structural gates on the published anchors, a cross-endpoint
    consistency check, and reproduction of the paper's published figures on the
-   exposure axis -- the analogue of the
-   `references/endogenous-validation.md` strategy for models where NCA is the
-   wrong instrument.
+   exposure axis -- the analogue of the endogenous-model validation strategy
+   for models where NCA is the wrong instrument.
 
 ```{r load-models}
 # readModelDb() returns the raw model FUNCTION, not a parsed model, so it is
@@ -171,8 +170,9 @@ entry. Collected here for review.
 | all three `addSd` | 0.001 | **not from the source** -- placeholder; see Assumptions |
 
 The **functional forms** of the three adverse-event models are stated in
-Knebel 2012 Supplemental Table S2, which is not on disk. The forms encoded in
-the model files are the ones the paper's own Results text specifies in words
+Knebel 2012 Supplemental Table S2, which was not available when this model
+was built. The forms encoded in the model files are the ones the paper's own
+Results text specifies in words
 ("best described by a sigmoid Emax model" for dyskinesia and dizziness, "best
 described by a power model ... characterized by a baseline probability ..., a
 slope ..., and the power term" for nausea, whose three named components map
@@ -285,9 +285,9 @@ The abstract's headline numbers -- "the typical maximum decrease in percentage
 OFF time due to istradefylline exposure would be 5.79% ... with one-half of the
 maximum effect reached at an exposure of 1690 ng x hr/mL" -- are **base-model**
 values (Table II, "Base Model" column), not final-model values. Per the
-`replicate-author-structure` policy the packaged file carries the final model,
-but the base model is one `ini()` override away, and reproducing the abstract is
-a useful independent check that the structure is right.
+package's policy for base-plus-final papers, the packaged file carries the final
+model, but the base model is one `ini()` override away, and reproducing the
+abstract is a useful independent check that the structure is right.
 
 ```{r gate-base}
 mod_off_base <- mod_off |>
@@ -963,14 +963,15 @@ transcribed correctly.
 
 - **The three adverse-event model *forms* are reconstructed from the paper's
   prose, not read off a table.** Knebel 2012 states them in Supplemental Table
-  S2, which is not on disk. The Results text names the form of each model and,
-  for nausea, names its three components explicitly; Gate 1c confirms the
+  S2, which was not available when this model was built. The Results text
+  names the form of each model and, for nausea, names its three components
+  explicitly; Gate 1c confirms the
   reconstruction numerically against three independent published anchors (the
   placebo probability of each endpoint) and the dyskinesia asymptote. Should the
   supplement become available, the forms should be re-verified against it.
 - **The percentage OFF time file carries the final full covariate model, not the
   base model.** Both are printed in Table II; per the
-  `replicate-author-structure` policy a base-plus-final model-development paper
+  package's policy, a base-plus-final model-development paper
   contributes the final model. The abstract's headline values (EmaxI 5.79%,
   EC50 1690 ng x hr/mL) are base-model values -- Gate 1b reproduces them via an
   `ini()` override rather than by shipping a second file. The base-model

@@ -662,6 +662,10 @@ sim_sd <- rxode2::rxSolve(modt, ev_sd, keep = "genotype", returnType = "data.fra
 
 sim_nca <- sim_sd |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(genotype, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, genotype)
 
 sim_nca <- dplyr::bind_rows(
@@ -748,9 +752,9 @@ warfarin exposure.
   Factors II, VII and X, matching the "~69 h", "~6 h" and "~39 h" quoted in the
   Results (Biomarker proposal section). The genotype parameters in the archive's
   active branch reproduce Supplementary Table S1 exactly.
-* The Wajima 2009 primary publication (doi:10.1038/clpt.2009.87) is **not** on
-  disk and was not consulted; it is the upstream provenance of these values but
-  the archive is the proximate source.
+* The Wajima 2009 primary publication (doi:10.1038/clpt.2009.87) was **not**
+  available when this model was built and was not consulted; it is the upstream
+  provenance of these values but the archive is the proximate source.
 
 ## Discrepancy between Table S1 and the population-generation code
 

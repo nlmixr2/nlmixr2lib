@@ -34,10 +34,9 @@ This vignette validates the `Knibbe_2009_morphine` packaged model by
 re-simulating the typical-value trajectories on the event table that
 ships with the DDMORE bundle (`Simulated_PaediatricMorphinePK.csv`)
 and visually comparing them to the bundle's stochastic-simulation
-dependent variable. This is the F.2 self-consistency check from the
-extraction skill's verification checklist (the source publication PDF
-was not on disk during extraction, so a direct figure-replication
-check against the publication is not possible).
+dependent variable. This is a self-consistency check (the source
+publication PDF was not available when this model was built, so a direct
+figure-replication check against the publication is not possible).
 
 # Population
 
@@ -51,8 +50,8 @@ glucuronidation pathways. The DDMORE-shipped `Output_real_run4.lst`
 listing was fit to a `Combined_InternalExternalData.csv` dataset
 covering 338 individuals / 2,809 observations / 5,302 records -- a
 post-publication re-run on an extended pooled cohort. The full Knibbe
-2009 publication PDF was not on disk during extraction; the model file's
-`population` metadata flags the demographic detail fields as TODO.
+2009 publication PDF was not available when this model was built; the model
+file's `population` metadata flags the demographic detail fields as TODO.
 
 The same metadata is available programmatically:
 
@@ -95,7 +94,7 @@ control stream (`$MODEL`, `$PK`, `$ERROR` blocks).
 | ODE for `central_m6g` (NONMEM CMT 3)       | n/a        | `$MODEL COMP=(3)`, `$PK` K13, K30                              |
 | Residual error (log-additive in NONMEM)    | n/a        | `$ERROR` block: `Y = LOG(F) + ERR(i)`, mapped to nlmixr2 proportional |
 
-# Validation: F.2 self-consistency against the DDMORE simulated dataset
+# Validation: self-consistency against the DDMORE simulated dataset
 
 The DDMORE bundle ships `Simulated_PaediatricMorphinePK.csv`, an event
 dataset for 5 subjects (BW 600 g-16,800 g, PNA 0.2 d-613 d) generated
@@ -259,7 +258,7 @@ the metabolite compartment volumes via `vc_m3g = fvm * vc`.
 
 # Assumptions and deviations
 
-- **Source publication PDF was not on disk during extraction.** All
+- **Source publication PDF was not available when this model was built.** All
   parameter values come from the DDMORE-shipped
   `Output_real_run4.lst` listing (`MINIMIZATION SUCCESSFUL`, NSIG=3.0).
   The publication abstract (PubMed PMID 19650676) confirms the headline
@@ -300,8 +299,8 @@ the metabolite compartment volumes via `vc_m3g = fvm * vc`.
   `etalcl_form_m3g` has no matching fixed-effect parameter
   `lcl_form_m3g`; the deviation is intentional and documented here.
 - **`$ERROR` block residual mapping.** The source `.mod` reports
-  log-additive errors on log-IPRED (`Y = LOG(F) + ERR(i)`). Per
-  `naming-conventions.md` `$ERROR block patterns`, this maps to
+  log-additive errors on log-IPRED (`Y = LOG(F) + ERR(i)`). Per the
+  package's convention for translating NONMEM `$ERROR` blocks, this maps to
   `Cc ~ prop(propSd)` in nlmixr2 with `propSd = sqrt(SIGMA)`.
 - **NKOD-conditional 24-hour additive error term dropped.** The
   source `.mod` includes a fourth `EPS(4)` slot

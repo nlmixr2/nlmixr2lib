@@ -61,8 +61,8 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
     # with body-surface-area 1.8 m^2 (per-BSA units in the table). The
     # underlying PK model is Kontny et al. 2013 J Clin Oncol
     # doi:10.1200/JCO.2012.44.7466 (paper ref [30]), reproduced inline
-    # by Mody 2023 -- values are lifted directly from Table 2, no
-    # upstream Kontny paper needed on disk.
+    # by Mody 2023 -- values are lifted directly from Table 2, so the
+    # upstream Kontny paper is not needed.
     lcl  <- log(53.3)  ; label("Doxorubicin clearance CL (L/h per 1.8 m^2)")     # Mody 2023 Table 2 top
     lvc  <- log(17.7)  ; label("Doxorubicin central volume Vc (L per 1.8 m^2)")  # Mody 2023 Table 2 top
     lq   <- log(58.7)  ; label("Doxorubicin Q2 inter-compartmental clearance (L/h per 1.8 m^2)")  # Mody 2023 Table 2 top

@@ -29,7 +29,7 @@ explicitly flagged -- from digitisation of Figure 3.
 
 Two mechanical notes on reading this particular source. First, Eqs. 1-5 do not
 survive text extraction: in the publisher PDF they are typeset images, and both
-the trimmed markdown and `pdftotext` in default mode drop them. They were
+the markdown text extraction and `pdftotext` in default mode drop them. They were
 recovered with `pdftotext -layout` and cross-read against the equation images
 `41598_2025_3503_Article_Equ1-5.gif`, which EuropePMC serves from
 `https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12106615/supplementaryFiles`.
@@ -273,7 +273,7 @@ invariant to the dose scale for a linear model, so it validates the structural
 parameters before any unit question is settled.
 
 ```{r fig3-digitised}
-# Operator-digitised from Figure 3 panel A of Sun 2025 (1.0 MU q8h, 1 h
+# Maintainer-digitised from Figure 3 panel A of Sun 2025 (1.0 MU q8h, 1 h
 # infusion), rendered from the publisher PDF at 300 dpi. Peaks fall at
 # t = 1, 9, ..., 65 h and troughs at t = 8, 16, ..., 72 h. Read to roughly
 # +/- 0.05 mg/L; the first peak sits exactly on the 1.0 gridline.
@@ -330,7 +330,7 @@ knitr::kable(shape, digits = 3, caption = paste(
   "noise enters."
 ))
 
-# Bounds admit operator digitisation error of ~+/- 0.05 mg/L on values of
+# Bounds admit the maintainers' digitisation error of ~+/- 0.05 mg/L on values of
 # 0.42-2.15 mg/L (up to ~12% on the smallest), but would still break on a
 # mis-transcribed volume, inter-compartmental clearance or dosing interval,
 # each of which moves these ratios by tens of percent.
@@ -931,7 +931,7 @@ setting out plainly:
   35 mg/MU. Figure 2 refutes that reading itself: it draws four regimens that
   share a maintenance dose as four distinct curves, which is only possible for
   a first-24-hour AUC. Demonstrated mechanically above. No PTA claim is gated.
-- **Figure 3 panel A is operator-digitised.** The nine hourly-mean peaks and
+- **Figure 3 panel A is maintainer-digitised.** The nine hourly-mean peaks and
   nine troughs were read off the panel rendered at 300 dpi, to roughly
   +/- 0.05 mg/L. They appear nowhere in the text or tables. The dose-scale-free
   shape check is therefore bounded at 20% and the conversion at a range rather

@@ -513,7 +513,7 @@ model (Method 2 of Rodgers and Rowland, with a Kp scaler of 1.7 for the
 critically-ill simulations and 1 for the tuberculosis simulations). The 13
 tissue:plasma partition coefficients that model needs are **not reported
 anywhere in the paper or its supplement**, and could not be recovered from any
-on-disk source, so the whole-body model is not reproducible outside Simcyp. It
+available source, so the whole-body model is not reproducible outside Simcyp. It
 is replaced here by a single well-stirred plasma compartment parameterised with
 the two aggregate quantities the paper *does* report -- Vss (L/kg, Suppl.
 Table S1) and the per-study total plasma clearance (Suppl. Table S2). The

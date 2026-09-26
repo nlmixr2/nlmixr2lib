@@ -504,8 +504,7 @@ as.data.frame(nca_tumor$result) |>
 ## Canonical names introduced with this extraction
 
 This is the library's first somatostatin-receptor radioligand model, and it
-introduced three canonical names, ratified by the operator (sidecar request 001
-of task `oare_PMC10449733`):
+introduced three canonical names, ratified by the maintainers:
 
 - `sstr` - the lumped somatostatin-receptor-expressing organ-group compartment
   (compartment five: lungs, pancreas, stomach, thyroid, liver), registered in
@@ -518,14 +517,14 @@ of task `oare_PMC10449733`):
   distinct from the preclinical caliper `TUM_VOL` (mm^3) and from the length-valued
   `TUMSZ` / `TUM_SLD`.
 
-The sidecar also proposed a new `lkupt_<tissue>` parameter family for the
-capacity-limited uptake rate constant. Between the question being asked and
-answered, the canonical `lkin_<compartment>` / `lkout_<compartment>`
+The naming proposal also included a new `lkupt_<tissue>` parameter family for the
+capacity-limited uptake rate constant. Between the proposal being made and
+ratified, the canonical `lkin_<compartment>` / `lkout_<compartment>`
 tissue-exchange family was registered in `inst/references/parameter-names.md`
 (founded in part by this paper's sibling model
 `Siebinga_2023_lu177psma617.R`), and it covers precisely this role. The register's
 own precedence rule is to reuse an existing canonical, so these models use
-`lkin_<tissue>` rather than founding a duplicate name; the operator's ratified
+`lkin_<tissue>` rather than founding a duplicate name; the maintainers' ratified
 intent -- a name distinct from the complex-internalisation `kint` canonical, with
 suffixes drawn from the canonical compartment names -- is preserved. Likewise,
 `bmax` / `lbmax` had been registered in the interim, so the ratified

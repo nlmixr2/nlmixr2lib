@@ -104,8 +104,7 @@ simulated and observed profiles are compared at the same accumulation state.
 # rxode2's streams are partitioned PER SOLVER THREAD, so the cohort below is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion downstream is written to hold for ANY cohort
-# the model can produce; see pattern 12 of the skill's
-# known-vignette-failure-patterns reference.
+# the model can produce.
 set.seed(20240129)
 rxode2::rxSetSeed(20240129)
 
@@ -190,7 +189,9 @@ mod <- readModelDb("Su_2024_tigecycline")
 sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("stratum", "WT", "CRCL", "ALB", "GGT", "TBILI", "t_ref"),
-  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::mutate(tad = time - t_ref,

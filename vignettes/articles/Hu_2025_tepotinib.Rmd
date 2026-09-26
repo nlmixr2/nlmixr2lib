@@ -62,7 +62,7 @@ the paper reports no between-subject variance and no residual-error model for
 any of its PK modules. All five printed tepotinib PK parameters are attributed
 in Supplementary Table S1 to Johne 2020 (PMID 32221754), a phase I
 mass-balance and absolute-bioavailability study in healthy volunteers. That
-paper is not on disk for this extraction, so the values were taken as printed
+paper was not available when this model was built, so the values were taken as printed
 and could not be checked against their own cited source.
 
 The clinically approved regimen simulated in Figure 7B is 500 mg once daily
@@ -164,7 +164,8 @@ sroot   <- kel + k12 + k21
 beta    <- (sroot - sqrt(sroot^2 - 4 * kel * k21)) / 2
 thalf_z <- log(2) / beta
 
-tail_dat  <- dplyr::filter(sim_single, time >= 1500)
+# Below 1e-6 of the peak the integrator has no relative accuracy left.
+tail_dat  <- dplyr::filter(sim_single, time >= 1500, Cc >= 1e-6 * max(Cc, na.rm = TRUE))
 slope_fit <- lm(log(Cc) ~ time, data = tail_dat)
 thalf_sim <- log(2) / -unname(coef(slope_fit)[2])
 
@@ -179,6 +180,8 @@ nca_single <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(
     sim_single |>
       dplyr::filter(!is.na(Cc)) |>
+      # Keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+      dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
       dplyr::transmute(id = 1L, treatment = "500 mg single oral dose", time, Cc),
     Cc ~ time | treatment + id
   ),
@@ -444,7 +447,7 @@ round(pct, 1)
 # Assumptions and deviations
 
 **The packaged model does not reproduce the paper's own tepotinib figure, and
-ships anyway.** This is a deliberate, operator-ratified decision for this
+ships anyway.** This is a deliberate, maintainer-ratified decision for this
 extraction, and it is the single most important thing to know before using the
 model. The choice was between transcribing what Supplementary Table S1 prints
 (which fails against Supplementary Figure S4F) and substituting disposition
@@ -500,7 +503,7 @@ asserts against the analytic beta root for exactly this reason).
 
 **Bioavailability.** Reaction v67 absorbs the full administered amount, so no
 `F` is applied and the disposition parameters are apparent (F = 1) parameters.
-Johne 2020, the cited PK source, is not on disk for this extraction.
+Johne 2020, the cited PK source, was not available when this model was built.
 
 **Dose basis.** Supplementary Figure S4F's legend says 500 mg. The Results
 section distinguishes a 500 mg tablet from its 450 mg active moiety for
@@ -514,7 +517,7 @@ must supply their own magnitudes.
 
 **Scope -- only the PK submodule is packaged.** Supplementary Table S1 prints
 all 69 reaction rate laws of the QSP network, but seven quantities those rate
-laws consume are reported nowhere in any on-disk source (main text, all three
+laws consume are reported nowhere in any available source (main text, all three
 sheets of `Table1.xlsx`, `DataSheet1.pdf`, or the Figure S9 topology diagram):
 
 1. `km_egf`, the Michaelis constant in v36.

@@ -126,7 +126,7 @@ Uses PKNCA on the day-1 oral dose window to compute Cmax, Tmax, half-life, and A
 
 ```{r pknca}
 # Slice to day-1 for single-dose NCA. Keep only !is.na(Cc) so the time=0 pre-dose
-# record is preserved for PKNCA's AUC start (see pknca-recipes.md).
+# record is preserved for PKNCA's AUC start.
 sim_day1 <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(regimen = "100 mg oral") |>
@@ -274,7 +274,7 @@ ggplot(emax_curve, aes(free_auc, pct_anc)) +
 
 # Assumptions and deviations
 
-- **Absorption rate constant `ka` fixed at 0.6 /h (ASSUMED, not reported by Toffoli 2001).** Table 2 lists five estimated PK parameters (CL, V, k12, k21, F) but not ka. The Methods (page 3) state that "initial pharmacokinetic parameter values and variances were taken from published series", citing reference [26] (Arbuck SG et al., J Clin Oncol 1986;4:1690-1695, oral+IV etoposide PK) as the source of initial values. The Arbuck 1986 PDF is not on disk, so we cannot lift the exact ka value. We fixed ka to 0.6 /h, a literature-typical oral etoposide absorption rate constant consistent with Slevin ML et al. 1989 (the paper's own reference [35], on oral etoposide bioavailability). Downstream users who plan to fit the model to real oral etoposide data should re-estimate ka or fix it to a value matched to their observed tmax.
+- **Absorption rate constant `ka` fixed at 0.6 /h (ASSUMED, not reported by Toffoli 2001).** Table 2 lists five estimated PK parameters (CL, V, k12, k21, F) but not ka. The Methods (page 3) state that "initial pharmacokinetic parameter values and variances were taken from published series", citing reference [26] (Arbuck SG et al., J Clin Oncol 1986;4:1690-1695, oral+IV etoposide PK) as the source of initial values. The Arbuck 1986 paper was not available when this model was built, so we cannot lift the exact ka value. We fixed ka to 0.6 /h, a literature-typical oral etoposide absorption rate constant consistent with Slevin ML et al. 1989 (the paper's own reference [35], on oral etoposide bioavailability). Downstream users who plan to fit the model to real oral etoposide data should re-estimate ka or fix it to a value matched to their observed tmax.
 - **Residual error `propSd` fixed at 0.10 (10% proportional; ASSUMED, not reported).** Toffoli 2001 does not tabulate the residual error variance of the population fit. We chose a 10% proportional value consistent with the paper's assay validation (Methods, page 3: intra-assay CV 5% at 0.4 mg/mL and 11% at 0.06 mg/mL). This is a lower bound because model misspecification and inter-occasion variability inflate the residual above the assay CV in practice.
 - **Vp and Q derived from the paper's microconstants.** Toffoli 2001 reports k12 = 0.14 /h and k21 = 0.07 /h alongside Vc = 6.1 L (Table 2 "Mean with covariables"). Standard nlmixr2lib convention uses macro-constants (lvp, lq), so Vp and Q are derived from the paper's k12, k21, Vc via Q = k12 * Vc = 0.854 L/h and Vp = Q / k21 = 12.174 L. This is a lossless reparametrization at the typical value.
 - **IIV mapping k12 -> Q and k21 -> Vp (approximation).** The paper reports IIVs on the microconstants k12 (13% CV) and k21 (20% CV) but not on the derived macroconstants. We mapped these to log-normal variances on Q and Vp respectively as a pragmatic first-pass approximation. A rigorous mapping would require the full micro-constant covariance matrix which the paper does not report.
@@ -289,8 +289,8 @@ ggplot(emax_curve, aes(free_auc, pct_anc)) +
   Toffoli 2001 reports no residual-error estimate for etoposide. An
   earlier version of this model carried `propSd = 0.10`, described in the
   label as assumed from assay validation. That value appears nowhere in
-  the paper, so it has been replaced with `fixed(0)`, following the
-  library policy that an unreported residual error is encoded as zero and
+  the paper, so it has been replaced with `fixed(0)`, following this
+  package's convention that an unreported residual error is encoded as zero and
   documented here rather than filled in with a class-typical guess.
 
   **Consequence for simulation:** simulating from this model returns the

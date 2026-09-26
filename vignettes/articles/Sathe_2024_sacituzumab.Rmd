@@ -511,7 +511,7 @@ ggplot(data.frame(time_days = t_grid / 24, cl_factor = cl_factor),
 * **Compartment names.** Multi-output ADC simulation requires named
   compartments (`central_sn38`, `peripheral1_sn38`, `central_tab`,
   `peripheral1_tab`) outside the canonical `central`/`peripheral1`
-  set defined in `naming-conventions.md`. `nlmixr2lib::checkModelConventions`
+  set defined in `inst/references/compartment-names.md`. `nlmixr2lib::checkModelConventions`
   flags these compartments as warnings; this is by design for multi-analyte
   models (see also `Bender_2014_trastuzumabEmtansine_mechanistic`).
 * **Time-after-last-dose effect on residual error.** Sathe 2024 Tables 1 and 2

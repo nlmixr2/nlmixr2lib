@@ -34,7 +34,7 @@ The paper extends the Silber 2007 integrated glucose-insulin framework with two 
 
 Palosuran 125 mg b.i.d. was the investigational drug; the paper concludes it has no clinically meaningful effect on insulin secretion or sensitivity, so the published final estimates fix the palosuran effect to zero and the structural model is essentially a drug-free glucose-insulin homeostasis model in DIS_DIAB.
 
-The paper produces two distinct dynamical systems (HGC and MTT) that share the glucose-disposition and effect-compartment structure but differ in the glucose input arm (IV clamp vs. transit-absorbed meal) and the insulin secretion equation (biphasic Gaussian + linear vs. power + incretin Emax). Per the replicate-author-structure policy, this paper contributes two model files (`Hong_2013_glucose_insulin_HGC.R` and `Hong_2013_glucose_insulin_MTT.R`) and one shared vignette (this article).
+The paper produces two distinct dynamical systems (HGC and MTT) that share the glucose-disposition and effect-compartment structure but differ in the glucose input arm (IV clamp vs. transit-absorbed meal) and the insulin secretion equation (biphasic Gaussian + linear vs. power + incretin Emax). Following the package's convention of replicating the authors' model structure, this paper contributes two model files (`Hong_2013_glucose_insulin_HGC.R` and `Hong_2013_glucose_insulin_MTT.R`) and one shared vignette (this article).
 
 # Population
 
@@ -123,6 +123,7 @@ The HGC model carries a small caveat: the Gaussian first-phase insulin pulse fir
 ss_events <- rxode2::et(seq(0, 1000, by = 10), cmt = "Gc")
 ss_events$FPG    <- 1300
 ss_events$INS_BL <- 13
+ss_events$OCC    <- 1        # occasion index for the IOV terms; see Assumptions
 ss_hgc <- rxode2::rxSolve(mod_hgc_typ, events = ss_events, returnType = "tibble")
 cat("HGC Gc range:", round(range(ss_hgc$Gc), 3), "mg/L\n")
 cat("HGC Ic range:", round(range(ss_hgc$Ic), 3), "mU/L\n")
@@ -169,6 +170,7 @@ hgc_events <- rxode2::et() |>
   rxode2::et(seq(0, 240, by = 2), cmt = "Gc")
 hgc_events$FPG    <- gcss
 hgc_events$INS_BL <- icss
+hgc_events$OCC    <- 1
 
 hgc_sim <- rxode2::rxSolve(mod_hgc_typ, events = hgc_events, returnType = "tibble")
 
@@ -205,6 +207,7 @@ mtt_events <- rxode2::et() |>
   rxode2::et(seq(0, 240, by = 2), cmt = "Gc")
 mtt_events$FPG    <- gcss
 mtt_events$INS_BL <- icss
+mtt_events$OCC    <- 1
 
 mtt_sim <- rxode2::rxSolve(mod_mtt_typ, events = mtt_events, returnType = "tibble")
 
@@ -239,7 +242,8 @@ n_sub <- 100L
 cohort_baseline <- tibble::tibble(
   id     = seq_len(n_sub),
   FPG    = runif(n_sub, min = 1100, max = 1800),   # mg/L  (= 110-180 mg/dL)
-  INS_BL = runif(n_sub, min = 6,    max = 25)      # mU/L
+  INS_BL = runif(n_sub, min = 6,    max = 25),     # mU/L
+  OCC    = 1L                                      # single occasion; see Assumptions
 )
 
 # Population-size simulation: replicate the single-subject event table
@@ -338,7 +342,7 @@ ggplot(mtt_pop_summary, aes(time)) +
 - **HGC GIR (glucose infusion rate) is a user-supplied dataset input.** The Biostator regulates GIR minute-to-minute in the actual study; in the model, GIR enters as dose / infusion records on the `glucose` compartment via the dataset. The vignette uses a constant approximate GIR of 200 mg/min for illustration; downstream users can supply any observed or simulated GIR profile.
 - **HGC Gaussian first-phase pulse is not gated by glucose elevation.** The paper's HGC insulin-secretion equation `IR_first(t) = Amplitude / (Tdur * sqrt(2*pi)) * exp(-(t - Tsec)^2 / (2 * Tdur^2))` fires at t ~= Tsec = 3.54 min regardless of whether a glucose challenge is present at t = 0. The paper implicitly treats t = 0 as the start of the HGC procedure; the model file does the same. Consequently, drug-free baseline simulations show a small transient insulin spike at ~3.5 min and a small glucose dip from baseline within the first ~10 min before returning to baseline (see the approach-to-baseline check above). Downstream users who want to skip the first-phase pulse can multiply `ir_first` by a glucose-elevation gate (`(G/VG - GCss > 0)`) or set Amplitude to zero. The MTT companion model has no first-phase pulse and therefore holds exactly at baseline under no perturbation.
 - **VPC populations downscaled (n = 100 vs. paper n = 1000).** Hong 2013 Figures 5 and 6 used 1000 simulated datasets; this vignette uses 100 subjects to keep the render under the 5-minute pkgdown gate. The qualitative shape and the 10th / 50th / 90th percentile bands are preserved; downstream users seeking publication-quality VPCs should re-run with n = 1000.
-- **Inter-occasion variability (IOV) is reported but not encoded.** Hong 2013 Tables I and II report IOV on CLG (31.8% CV HGC, 65.7% CV MTT) and VG (9.22% HGC, 19.5% MTT). These are not encoded structurally in the model files because the rxode2 mu-reference parser does not accept `theta + eta_iiv + eta_iov` on a single line, and the model-library use case has no operational occasion column. This follows the Andrews 2017 tacrolimus and Brooks 2021 tacrolimus precedent. Downstream users who want to simulate IOV can add an OCC indicator and a per-occasion eta in their own rxode2 model.
+- **Inter-occasion variability (IOV) is encoded via occasion indicators.** Hong 2013 Tables I and II report IOV on CLG (31.8% CV HGC, 65.7% CV MTT) and VG (9.22% HGC, 19.5% MTT), and both model files now encode it. The form is the occasion-indicator expansion used throughout this library: one eta slot per occasion (`etaiov_clg_<occ>`, `etaiov_vg_<occ>`) selected inside `model()` by mutually exclusive `oc<n>` indicators built from the required `OCC` column -- two occasions for HGC (one per treatment period of the crossover), four for MTT (two crossover periods x palosuran / placebo). Occasions after the first have their variance `fixed()` to the first, which is what NONMEM writes as `$OMEGA BLOCK(1) SAME`. The simulations in this vignette set `OCC = 1` throughout, so they show the between-subject component only; supply a varying `OCC` to exercise the between-occasion component as well.
 
 # Session info
 

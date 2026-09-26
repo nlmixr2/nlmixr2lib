@@ -51,7 +51,7 @@ Terranova_2018_paclitaxel <- function() {
     disease_state = "Preclinical xenograft-mouse oncology efficacy / cachexia model. Terranova 2018 develops the Dynamic Energy Budget (DEB) framework as a generalisation of the Simeoni 2004 TGI model that simultaneously predicts tumor growth and host body-weight loss (cachexia). The framework was fit across multiple anticancer agents in xenograft mice; the DDMODEL00000274 bundle implements the paclitaxel scenario only ('Among the drugs considered in the paper, only PACLITAXEL has been used' -- Model_Accomodations.txt).",
     dose_range = "Paclitaxel intravenous bolus AMT = 3e+07 (source units; consistent with K10/K12/K21 in 1/day and V1 = 813.1) at days 8, 12, 16, 20, 24 in the bundle's Simulated_DEB_TGI_data.csv (treated subject ID = 1; control subject ID = 2 receives no doses).",
     regions = NA_character_,
-    notes = "DDMORE bundle 274 ships only a single Simulated_DEB_TGI_data.csv with two virtual subjects (one treated, one control) and a Simulated_*.pdf rendering of the typical-value trajectory; no Output_real_*.lst (real-data fit listing) is shipped, and the .ctl is configured for $SIM ONLYSIM with $OMEGA 0 FIX and $SIGMA 1 FIX for both DVID arms. The .ctl $THETA values are therefore the simulation-truth (publication-derived) point estimates rather than re-fitted final estimates; see the Errata section of the validation vignette for the full bundle-versus-publication caveat list. The Terranova 2018 publication (J Theor Biol 450:1-14) was paywalled and not available on disk at extraction time, so the simulation-truth values were not cross-checked against published tables."
+    notes = "DDMORE bundle 274 ships only a single Simulated_DEB_TGI_data.csv with two virtual subjects (one treated, one control) and a Simulated_*.pdf rendering of the typical-value trajectory; no Output_real_*.lst (real-data fit listing) is shipped, and the .ctl is configured for $SIM ONLYSIM with $OMEGA 0 FIX and $SIGMA 1 FIX for both DVID arms. The .ctl $THETA values are therefore the simulation-truth (publication-derived) point estimates rather than re-fitted final estimates; see the Errata section of the validation vignette for the full bundle-versus-publication caveat list. The Terranova 2018 publication (J Theor Biol 450:1-14) was paywalled and not available when this model was built, so the simulation-truth values were not cross-checked against published tables."
   )
 
   ini({
@@ -64,10 +64,10 @@ Terranova_2018_paclitaxel <- function() {
     # The .ctl is configured for $SIM (12345) (54321) ONLYSIM with
     # $OMEGA 0 FIX and $SIGMA 1.0 FIX, so the $THETA values are the
     # publication-derived simulation truth, not refitted final estimates.
-    # See ddmore-source.md and the validation vignette Errata for the
+    # See the validation vignette Errata for the
     # full caveat list. The Terranova 2018 publication is paywalled and
-    # was not available on disk for cross-checking the values against
-    # published tables at extraction time.
+    # was not available for cross-checking the values against
+    # published tables when this model was built.
     # ----------------------------------------------------------------------
 
     # ----- Estimated DEB-TGI parameters (.ctl $THETA non-FIX entries) -----
@@ -90,7 +90,7 @@ Terranova_2018_paclitaxel <- function() {
     # call out the simplification in the vignette Errata. Forward-simulation
     # validation in the vignette uses `rxode2::zeroRe()` and compares typical
     # trajectories against the bundle, so the residual form does not affect
-    # the F.2 self-consistency check.
+    # the self-consistency check.
     addSd_bodyWeight  <- 0.101 ; label("Additive residual-error coefficient on body weight (b_W; original form: SD = b_W * sqrt(W))")    # .ctl $THETA(10) = 0.101  ; b_W
     addSd_tumorWeight <- 0.134 ; label("Additive residual-error coefficient on tumor weight (b_Wu; original form: SD = b_Wu * sqrt(Wu))") # .ctl $THETA(11) = 0.134  ; b_Wu
 

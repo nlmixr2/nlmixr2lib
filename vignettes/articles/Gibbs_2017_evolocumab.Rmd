@@ -151,7 +151,7 @@ stopifnot(
   abs(round(stats::cov2cor(blk)[1, 3] * 100) - -78) <= 1,
   abs(round(stats::cov2cor(blk)[2, 3] * 100) - -48) <= 1,
   # Positive definite, so rxode2's Cholesky sampler can draw from it as-is
-  # (no off-diagonal nudge needed; see known-vignette-failure-patterns.md #1).
+  # (no off-diagonal nudge needed).
   all(eigen(blk, symmetric = TRUE, only.values = TRUE)$values > 0)
 )
 ```
@@ -203,7 +203,7 @@ mod_typ <- rxode2::zeroRe(mod)
 # observable name such as "Cc", which would inject an extra compartment slot
 # and renumber the states -- and every model variable is returned as its own
 # column regardless of which endpoint `dvid` names. `useLinCmt = FALSE` is
-# required for the same reason (see known-vignette-failure-patterns.md #2, #5b).
+# required for the same reason.
 make_events <- function(amt, ii, addl, until, dis_healthy = 0,
                         by = 0.05, id = 1L) {
   obs <- data.frame(id = id, time = seq(0, until, by = by), amt = NA_real_,
@@ -726,7 +726,7 @@ immune to all three, which is why it is the assertion that is gated.
   elimination term as `k * FDC * V` while Table 2 reports `CL`, and the Figure 1
   legend defines `kel` as the elimination rate constant; `k * FDC * V` is
   therefore `CL * FDC`, which is how it is encoded.
-* **Table S1 is not on disk.** The paper's baseline-demographics table is in
+* **Table S1 was not available.** The paper's baseline-demographics table is in
   the Supporting Information, which is not part of the open-access deposit. The
   population metadata therefore uses the pooled demographic summaries stated in
   the Results narrative (n, sex, race, mean age, mean weight) rather than

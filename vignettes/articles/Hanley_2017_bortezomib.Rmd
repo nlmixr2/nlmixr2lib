@@ -551,13 +551,13 @@ volume, dose or unit would move individual rows by tens of percent.
 
 ```{r derived-gate}
 # Assertions on cohort geometric means, so the bound must admit the eta draw.
-# Measured 2026-09-16 at 1, 2 and 16 solver threads: -6.5 / -1.0 / -4.5 / +0.2 /
+# Measured at 1, 2 and 16 solver threads: -6.5 / -1.0 / -4.5 / +0.2 /
 # +5.7 percent on the five rows, IDENTICAL at all three thread counts (the BSA
 # draw is R's RNG, which is thread-independent, and a 104-subject geometric mean
 # is insensitive to the eta partitioning). Worst observed magnitude 6.5%, and
 # the systematic part of that is the ~5% normalisation offset discussed below.
 # Do NOT tighten below ~12%: the bound must survive a different cohort. 20% is
-# the skill's standard tolerance and still goes red on a mis-transcribed value
+# the package's standard tolerance and still goes red on a mis-transcribed value
 # (a volume or dose error moves a row by tens of percent; reading the BSA
 # reference as 1.8 m2 moves the gamma half-life by +40%).
 stopifnot(

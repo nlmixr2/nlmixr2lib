@@ -89,7 +89,7 @@ concentrations in umol/L (Table 3 units for `R0` and `IC50`; the Figure 1 and
 Figure 2 axis labels). The model amount unit is therefore **nmol**, because
 nmol / mL = umol/L. The paper does not state the dose-amount unit used in its
 Monolix dataset and does not report the HOSU-53 molecular weight, so mg/kg doses
-cannot be converted to model units from on-disk sources. Simulated doses below
+cannot be converted to model units from the available sources. Simulated doses below
 are given in model amount units and anchored to a published observation (see
 *Dog dose anchoring*).
 
@@ -200,7 +200,8 @@ thalf_mouse_analytic <- analytic_thalf(0.07, 1.2, 1.6, 1.2)
 sim_thalf <- function(mod, amt, tmax, tfit) {
   s <- solve_typical(mod, add_obs(rxode2::et(amt = amt, cmt = "central"),
                                   seq(0, tmax, by = tmax / 2000)))
-  s <- s[s$time >= tfit & s$Cc > 0, ]
+  # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  s <- s[s$time >= tfit & s$Cc >= 1e-6 * max(s$Cc), ]
   unname(log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = s))[2])
 }
 thalf_dog_sim   <- sim_thalf(dog_mod,   20000, 96,  48)
@@ -464,7 +465,11 @@ nca_conc <- dplyr::bind_rows(
   single_dose(mouse_mod, 20,    336, "IV", "mouse"),
   single_dose(mouse_mod, 20,    336, "PO", "mouse")
 ) |>
-  dplyr::filter(!is.na(Cc))
+  dplyr::filter(!is.na(Cc)) |>
+  # Per profile, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Time-zero guarantee (extravascular pre-dose Cc = 0).
 nca_conc <- dplyr::bind_rows(
@@ -755,7 +760,7 @@ Supplementary Table S3 and were re-checked against the supplement PDF.
   specific clearance, blood:plasma ratio). The physiological structure,
   organ volumes, blood flows, partition coefficients, and cellular
   permeabilities are supplied by the PK-Sim platform and are not written out in
-  any on-disk source, so the PBPK models are not reproducible here without
+  any available source, so the PBPK models are not reproducible here without
   substituting platform defaults. Table 4 (time above the 669 pM hepatic target)
   and Figure 3 (human plasma and hepatic profiles) are PBPK outputs and are
   likewise not reproduced.

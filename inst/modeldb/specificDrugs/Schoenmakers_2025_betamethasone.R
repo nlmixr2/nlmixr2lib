@@ -72,7 +72,7 @@ Schoenmakers_2025_betamethasone <- function() {
       "confirmed point estimates); the in-file source-trace comments cite the",
       "specific Table 2 row for each value. The two betamethasone metabolites",
       "(11-keto-betamethasone and 6-beta-hydroxybetamethasone) reported in",
-      "Table S3 are NOT modelled here; the supplement is not on disk and the",
+      "Table S3 are NOT modelled here; the supplement was not available when this model was built and the",
       "main paper only describes the parent betamethasone fit. See vignette",
       "Assumptions and deviations for the IIV / residual-error reporting-",
       "convention interpretation."

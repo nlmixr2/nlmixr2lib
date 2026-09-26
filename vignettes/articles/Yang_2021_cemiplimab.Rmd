@@ -351,8 +351,8 @@ weight equals the population median (76.2 kg).
   (Black = 1, non-Black = 0), then `0^1.01 = 0` would zero out
   T50 for the 96.4% of non-Black patients in the cohort. The paper
   does not show the NONMEM control stream and the supplementary DOCX
-  was not available on disk, so the intended encoding could not be
-  verified. The paper itself states all retained covariates had
+  was not available when this model was built, so the intended encoding
+  could not be verified. The paper itself states all retained covariates had
   "limited impact (< 20%) on cemiplimab exposure" and were "not
   clinically meaningful" given the flat exposure-response
   relationship. The packaged model therefore uses

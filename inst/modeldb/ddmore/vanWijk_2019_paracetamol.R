@@ -61,14 +61,14 @@ vanWijk_2019_paracetamol <- function() {
       "Destructive-sampling design: each larva contributes one DV observation, then is sacrificed for",
       "the assay (which is why the .mod $OMEGA on K25 was held at FIX 0 -- per-larva IIV is",
       "indistinguishable from residual error when each animal is sampled exactly once).",
-      "The van Wijk 2019 PDF is not on disk under the literature tree, so the original n / cohort",
+      "The van Wijk 2019 PDF was not available when this model was built, so the original n / cohort",
       "structure / inclusion criteria could not be cross-checked against the DDMORE bundle's run summary."
     )
   )
 
   ini({
-    # Final parameter estimates from
-    # /home/bill/github/mab_human_consensus/literature/from_people/ddmore/ddmore_scraping/294/Output_real_Paracetamol_Zebrafish_345dpf.lst
+    # Final parameter estimates from the DDMORE bundle's
+    # Output_real_Paracetamol_Zebrafish_345dpf.lst
     # FINAL PARAMETER ESTIMATE block (.lst lines 313-352), captured after
     # `MINIMIZATION SUCCESSFUL` (.lst line 260, OBJV 466.583). NONMEM THETAs
     # are log-back-transformed values, so each `lX <- log(value)` wraps the

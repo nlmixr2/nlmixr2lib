@@ -590,8 +590,7 @@ tibble::tibble(
 # The claim being gated is that the model predicts NO clinically meaningful
 # separation between the arms, i.e. that every ratio is near 1. Assert the
 # MAGNITUDE of the deviation, never its sign or the ordering of the two arms --
-# with a difference this small, sign is a coin flip across cohort draws
-# (pattern 12 of known-vignette-failure-patterns.md).
+# with a difference this small, sign is a coin flip across cohort draws.
 ratios <- c(ratio_of("cl"), ratio_of("vd"), ratio_of("auc"), ratio_of("cmax"))
 stopifnot(all(abs(ratios - 1) < 0.25))
 ```
@@ -634,9 +633,9 @@ underlying EBE difference was zero.
   `ini(lcl = log(2.3))`.
 
 - **Exponents recovered with `pdftotext -layout`.** Both final-model equations
-  are display mathematics that the markdown preprocessing of this paper drops
-  entirely (it emits `<!-- formula-not-decoded -->` in their place), taking the
-  whole covariate model with them. They are recovered from the PDF with
+  are display mathematics that do not survive plain-text extraction of the PDF
+  (they are dropped entirely, taking the whole covariate model with them). They
+  are recovered from the PDF with
   `pdftotext -layout`, which preserves superscripts by placing them on the line
   above; the extraction is quoted verbatim in the Source trace section. The
   same extraction is what establishes that the Vd weight term carries *no*

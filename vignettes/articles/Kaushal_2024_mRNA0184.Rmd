@@ -354,12 +354,14 @@ half_life <- function(mod, dose_mgkg, wt, t_end, lo, hi, col) {
                  1L, seq(0, t_end, by = 1))
   s <- rxode2::rxSolve(mod, ev, omega = NA, useLinCmt = FALSE,
                        returnType = "data.frame")
-  s <- s[s$time >= lo & s$time <= hi & s[[col]] > 0, ]
+  # Keep points >= 1e-6 * max: below that the ODE solution is integrator noise.
+  s <- s[s$time >= lo & s$time <= hi & s[[col]] >= 1e-6 * max(s[[col]]), ]
   log(2) / -stats::coef(stats::lm(log(s[[col]]) ~ s$time))[2]
 }
 
 th_cyno_prot  <- half_life(mod_cyno,  0.15,  2.5, 500, 300, 500, "Rel2vlk")
-th_cyno_mrna  <- half_life(mod_cyno,  0.15,  2.5, 500, 200, 350, "Cc")
+# Cyno mRNA falls below 1e-6 of its peak at ~197 h, so its window opens at 100 h.
+th_cyno_mrna  <- half_life(mod_cyno,  0.15,  2.5, 500, 100, 350, "Cc")
 th_human_prot <- half_life(mod_human, 0.025, 70,  900, 600, 900, "Rel2vlk")
 th_human_mrna <- half_life(mod_human, 0.025, 70,  900, 300, 600, "Cc")
 
@@ -602,7 +604,11 @@ intervals_cyno <- data.frame(
 
 nca_one <- function(conc_col) {
   cdf <- conc_cyno |>
-    dplyr::select(id, time, arm, conc = dplyr::all_of(conc_col))
+    dplyr::select(id, time, arm, conc = dplyr::all_of(conc_col)) |>
+    # Keep conc >= 1e-6 * max(conc) per animal after the peak (solver noise below), plus time zero.
+    dplyr::group_by(arm, id) |>
+    dplyr::filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc) | time == 0) |>
+    dplyr::ungroup()
   o_conc <- PKNCA::PKNCAconc(cdf, conc ~ time | arm + id)
   o_dose <- PKNCA::PKNCAdose(dose_cyno, amt ~ time | arm + id,
                              duration = "duration")

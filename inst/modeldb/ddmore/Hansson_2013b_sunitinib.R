@@ -117,15 +117,15 @@ Hansson_2013b_sunitinib <- function() {
     species = "human",
     n_subjects = 303L,
     n_studies = 4L,
-    age_range = "adults with imatinib-resistant GIST (Hansson 2013 e84 Table 1 lists baseline tumor size by study but does not break out age / weight / sex / race in the on-disk Methods section of the trimmed PDF)",
-    weight_range = "not reported in the on-disk paper trimmed text",
+    age_range = "adults with imatinib-resistant GIST (Hansson 2013 e84 Table 1 lists baseline tumor size by study but does not break out age / weight / sex / race in the available Methods text of the PDF)",
+    weight_range = "not reported in the available paper text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
     disease_state = "Imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (NCT00075218 / study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (NCT00428220 / study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
     dose_range = "Sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule. The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib (study 1004 only).",
-    regions = "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the trimmed paper text.",
+    regions = "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the available paper text.",
     biomarkers = "Tumor size endpoint: sum of longest tumor diameters (SLD, mm). Baseline (median, range): 194 (35-822) mm in study 1004; 108 (29-191) mm in study 1047; 166 (31-644) mm in study 1045; 255 (55-687) mm in study 013 (Hansson 2013 e84 Table 1). Two soluble-biomarker time-courses driven from the upstream Hansson 2013a fit: sKIT and sVEGFR-3.",
-    notes = "n_subjects = 303 reported in Hansson 2013 e84 Methods (`pooled four clinical studies, comprising a total of 303 patients with imatinib-resistant GIST`) and confirmed by the .lst header (`TOT. NO. OF INDIVIDUALS: 303`). The .lst also reports `TOT. NO. OF OBS RECS: 973` (tumor SLD observations only; FLAG=4 records). Detailed baseline demographics (age, weight, sex, race) at the cohort level are not in the trimmed paper text; populating those keys requires reading the original paper's untrimmed PDF or its supplement."
+    notes = "n_subjects = 303 reported in Hansson 2013 e84 Methods (`pooled four clinical studies, comprising a total of 303 patients with imatinib-resistant GIST`) and confirmed by the .lst header (`TOT. NO. OF INDIVIDUALS: 303`). The .lst also reports `TOT. NO. OF OBS RECS: 973` (tumor SLD observations only; FLAG=4 records). Detailed baseline demographics (age, weight, sex, race) at the cohort level are not in the available paper text; populating those keys requires reading the original paper's full PDF or its supplement."
   )
 
   ini({

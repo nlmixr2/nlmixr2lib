@@ -262,7 +262,7 @@ knitr::kable(
 )
 ```
 
-The typical-value structure recovers the published median CL/kg (0.221 vs 0.25 L/h/kg in the paper) and Vss/kg (0.309 vs 0.31 L/kg) to within roughly 12% and 1% respectively -- both well inside the 20% acceptance band the skill uses for validation. The small CL/kg gap reflects that the simulated cohort uses a slightly broader weight distribution centred at 18.4 kg while the published median is 17.8 kg; under a 0.75 allometric exponent on CL, lower-weight children have proportionally higher CL/kg, which raises the cohort median when more low-weight children are sampled relative to the original cohort.
+The typical-value structure recovers the published median CL/kg (0.221 vs 0.25 L/h/kg in the paper) and Vss/kg (0.309 vs 0.31 L/kg) to within roughly 12% and 1% respectively -- both well inside the 20% acceptance band the package uses for validation. The small CL/kg gap reflects that the simulated cohort uses a slightly broader weight distribution centred at 18.4 kg while the published median is 17.8 kg; under a 0.75 allometric exponent on CL, lower-weight children have proportionally higher CL/kg, which raises the cohort median when more low-weight children are sampled relative to the original cohort.
 
 # Assumptions and deviations
 

@@ -70,7 +70,7 @@ The same information is available programmatically via each model's
 
 Per-parameter origins are recorded as in-file comments beside each `ini()`
 entry. Collected here for review. Equation numbers are those printed in the
-article; note that the trimmed-text companion of this PDF drops every display
+article; note that the text extracted from this PDF drops every display
 equation, so equations 1-8 below were read from the rendered PDF pages.
 
 | Equation / parameter | Value | Source location |
@@ -712,8 +712,8 @@ authors derived independently of the parameter table.
   Equations 7 and 8.
 
 - **Supplementary material.** Supplementary Tables 1-6 and Supplementary
-  Figures 1-4 are referenced by the paper but were not on disk for this
-  extraction. They hold the covariate-screening summaries, the external
+  Figures 1-4 are referenced by the paper but were not available when this
+  model was built. They hold the covariate-screening summaries, the external
   validation results, the fixed-parameter sensitivity analysis, and the
   subgroup counts. No parameter value in any of the three model files depends
   on them: every final estimate is in Table 2 and every equation is in the

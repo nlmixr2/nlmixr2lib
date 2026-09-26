@@ -156,8 +156,7 @@ MW_MG1113 <- 145360                      # g/mol, Kwak 2025 section 2.1
 nM_to_ugmL <- MW_MG1113 * 1e-9 * 1e3     # 1 nM = 0.14536 ug/mL
 
 # A time grid dense enough to resolve the steep early distribution phase (an
-# under-resolved grid understates AUC by several percent; see pattern 11 of
-# the known-vignette-failure-patterns reference).
+# under-resolved grid understates AUC by several percent).
 obs_grid <- function(tmax) {
   sort(unique(c(
     seq(0, 1, by = 0.002),

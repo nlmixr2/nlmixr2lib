@@ -356,7 +356,7 @@ sim |>
 
 # PKNCA validation
 
-Steady-state NCA over the final dosing interval (recipe 3). Time is re-based so
+Steady-state NCA over the final dosing interval. Time is re-based so
 that the last dose sits at `time = 0`, which makes the interval `[0, tau]`.
 Because the observation grid starts exactly at the last dose, a genuine
 `time = 0` record already exists and anchors the AUC -- and at steady state its
@@ -472,8 +472,8 @@ knitr::kable(
 ```{r nca_compare_check}
 worst <- max(abs(as.numeric(gsub("[^0-9.eE+-]", "", cmp[["% diff"]]))), na.rm = TRUE)
 cat(sprintf("Largest absolute discrepancy vs Table 4: %.1f%%\n", worst))
-# Tightened to the accuracy actually achieved (the skill's 20% gate is looser
-# than this model warrants), so a future regression is caught.
+# Tightened to the accuracy actually achieved (the package's standard 20%
+# gate is looser than this model warrants), so a future regression is caught.
 stopifnot(worst < 10)
 ```
 

@@ -81,7 +81,7 @@ $$
 
 a **67% reduction** in the first-order Markov amplification (consistent with the source paper's 66.44% diminution quote).
 
-# F.3 mechanistic-sanity check (typical-value evaluation)
+# Mechanistic-sanity check (typical-value evaluation)
 
 The model has no ODE state, so the per-record prediction is the algebraic evaluation of equation 5. The chunk below confirms that `rxSolve` on the packaged model reproduces the closed-form lambda exactly at a grid of canonical (PDV, PPDV, CONMED_STEROID) combinations.
 
@@ -120,7 +120,7 @@ knitr::kable(result, digits = 4,
 stopifnot(max(abs(result$rel_err_pct)) < 1e-6)
 ```
 
-The maximum relative error across the grid is well under the F.3 5% threshold (numerical precision only); the packaged model evaluates equation 5 with the steroid switch exactly.
+The maximum relative error across the grid is well under the mechanistic-sanity check's 5% threshold (numerical precision only); the packaged model evaluates equation 5 with the steroid switch exactly.
 
 # Recursive Markov simulation
 
@@ -247,8 +247,8 @@ At PDV = 10 (a high-activity month at the previous MRI), the typical-value lambd
 
 - **IIV on no-steroid branch only.** Table 3 reports ISV for $\lambda_0$ and $\theta_{\mathrm{PDV}}$ but not for $\theta_{\mathrm{PDV\_S}}$, suggesting the original NONMEM `$PK` block applied the eta only in the no-steroid branch (the steroid branch substitutes the population-typical reduced value). This is the encoding adopted here: `theta_pdv_eff = (1 - CONMED_STEROID) * theta_pdv_subject + CONMED_STEROID * theta_pdv_s`, with `theta_pdv_subject` carrying the eta. A downstream re-fitter who wishes to attach an eta to $\theta_{\mathrm{PDV\_S}}$ as well can change the `theta_pdv_s <- exp(ltheta_pdv_s)` line in `model()` to `theta_pdv_s <- exp(ltheta_pdv_s + etaltheta_pdv)` (sharing the eta with the no-steroid branch) or introduce a separate eta in `ini()`.
 
-- **No PKNCA validation; no NCA in source.** This is a discrete count likelihood for an imaging endpoint, not a PK exposure curve. There are no Cmax / AUC / half-life values to compare against -- the source paper reports model-based descriptors (probability of zero CELs, maximum elapsed time without lesions, cumulative CELs per year) which the model reproduces by construction. The F.3 mechanistic-sanity check above is the analogue of the PKNCA check for count models, and the Figure 5 distribution replication is the analogue of a VPC.
+- **No PKNCA validation; no NCA in source.** This is a discrete count likelihood for an imaging endpoint, not a PK exposure curve. There are no Cmax / AUC / half-life values to compare against -- the source paper reports model-based descriptors (probability of zero CELs, maximum elapsed time without lesions, cumulative CELs per year) which the model reproduces by construction. The mechanistic-sanity check above is the analogue of the PKNCA check for count models, and the Figure 5 distribution replication is the analogue of a VPC.
 
-- **Markov simulation is iterative, not native rxode2.** Because the observation depends recursively on prior observations, the 48-month simulation cannot be expressed as a single `rxSolve` call. The model is registered as `algebraic = TRUE` in `modeldb`, so the closed-form equation 5 evaluation is identical between the packaged model (verified by the F.3 grid above) and the vectorized base-R helper `simulate_cohort_markov()` used for the 1000-subject Markov-cohort replication. Either route is acceptable; the base-R helper is preferred for stochastic sweeps because it avoids the per-call overhead of `rxSolve`. A future rxode2 release exposing observation-as-future-covariate would let this collapse to a single `rxSolve` invocation.
+- **Markov simulation is iterative, not native rxode2.** Because the observation depends recursively on prior observations, the 48-month simulation cannot be expressed as a single `rxSolve` call. The model is registered as `algebraic = TRUE` in `modeldb`, so the closed-form equation 5 evaluation is identical between the packaged model (verified by the mechanistic-sanity grid above) and the vectorized base-R helper `simulate_cohort_markov()` used for the 1000-subject Markov-cohort replication. Either route is acceptable; the base-R helper is preferred for stochastic sweeps because it avoids the per-call overhead of `rxSolve`. A future rxode2 release exposing observation-as-future-covariate would let this collapse to a single `rxSolve` invocation.
 
 - **Demographic detail not in source.** Age range, weight range, sex split, race / ethnicity are not tabulated in the Velez de Mendizabal 2013 publication; the Methods section refers to Bagnato et al. 2003 (reference [25] of the source paper) for the cohort description. The `population` metadata block records these fields as "(not reported)".

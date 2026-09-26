@@ -8,11 +8,9 @@ Bienczak_2016_nevirapine <- function() {
     "Journal of Antimicrobial Chemotherapy 72(1):190-199.",
     "doi:10.1093/jac/dkw388.",
     "(Open Access; accepted 17 August 2016, published online 2016, print",
-    "issue January 2017. The on-disk PDF filename is 'Bienczak_2017_*' for",
-    "the print issue year while the paper text reports 'The Author 2016';",
-    "this model file follows the print-issue-year convention only for the",
-    "filename's task-dispatcher metadata and uses the 2017 doi-resolvable",
-    "citation here.)",
+    "issue January 2017. The paper text reports 'The Author 2016', which is",
+    "the year used in this model's name; the citation here uses the 2017",
+    "print-issue year, which is what the DOI resolves to.)",
     sep = " "
   )
   vignette <- "Bienczak_2016_nevirapine"
@@ -43,7 +41,7 @@ Bienczak_2016_nevirapine <- function() {
       units = "years",
       type = "continuous",
       reference_category = NULL,
-      notes = "Drives the exponential maturation of pre-hepatic bioavailability FpreH per Bienczak 2016 Results 'Population pharmacokinetics' paragraph 4 / Equation (7) in Appendix S1 (Appendix S1 was not on disk at extraction time; the equation is reconstructed from the paper's narrative as FpreH(AGE) = 1 - (1 - FpreH_birth) * exp(-ln(2) / t_half_FpreH * AGE), with FpreH(0) = 0.583, FpreH(infty) = 1, t_half = 1.54 years from Table 3, and FpreH(3.3 y) ~ 0.906 matching the paper's reported 90%). Treated as time-invariant per subject for steady-state PK simulation; in the source cohort age was the baseline value (Table 1 footnote b).",
+      notes = "Drives the exponential maturation of pre-hepatic bioavailability FpreH per Bienczak 2016 Results 'Population pharmacokinetics' paragraph 4 / Equation (7) in Appendix S1 (Appendix S1 was not available when this model was built; the equation is reconstructed from the paper's narrative as FpreH(AGE) = 1 - (1 - FpreH_birth) * exp(-ln(2) / t_half_FpreH * AGE), with FpreH(0) = 0.583, FpreH(infty) = 1, t_half = 1.54 years from Table 3, and FpreH(3.3 y) ~ 0.906 matching the paper's reported 90%). Treated as time-invariant per subject for steady-state PK simulation; in the source cohort age was the baseline value (Table 1 footnote b).",
       source_name = "AGE"
     ),
     CYP2B6_IM = list(
@@ -111,8 +109,9 @@ Bienczak_2016_nevirapine <- function() {
     # (rate ka), with ktr = NN / MTT (i.e. MTT covers only the NN transit
     # compartments, not the depot-to-transit_1 step nor the last-transit-
     # to-central absorption). Appendix S1 of Bienczak 2016 (which would
-    # disambiguate the parameterization) was not on disk at extraction time;
-    # see vignette Assumptions and deviations for the chosen interpretation.
+    # disambiguate the parameterization) was not available when this model
+    # was built; see vignette Assumptions and deviations for the chosen
+    # interpretation.
     # =========================================================================
     lmtt   <- log(0.56);   label("Mean transit time MTT through the NTRANS-compartment chain (h)")           # Bienczak 2016 Table 3 row 'MTT (h) = 0.56 (0.49-0.70)'
     lka    <- log(0.84);   label("First-order absorption rate from the last transit to central (1/h)")      # Bienczak 2016 Table 3 row 'Ka (1/h) = 0.84 (0.67-1.12)'
@@ -147,8 +146,8 @@ Bienczak_2016_nevirapine <- function() {
     # half-life of 1.54 years (Table 3 row 't_1/2 (years) = 1.54'). The
     # functional form is reconstructed from the narrative as
     #     FpreH(AGE) = 1 - (1 - fpreh_birth) * exp(-ln(2) / t_half * AGE)
-    # because Appendix S1 was not on disk at extraction time; the recon-
-    # struction reproduces the paper's reported 90% FpreH at age 3.3 years
+    # because Appendix S1 was not available when this model was built; the
+    # reconstruction reproduces the paper's reported 90% FpreH at age 3.3 years
     # (FpreH(3.3) = 1 - (1 - 0.583) * exp(-0.450 * 3.3) = 0.906, paper says
     # 'approximately 90%'). See vignette Assumptions and deviations.
     # =========================================================================

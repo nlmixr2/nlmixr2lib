@@ -198,7 +198,7 @@ ggplot(typ_med, aes(time / 24, ANC)) +
 ## Figure 2 - Visual predictive check across 200 virtual subjects
 
 Reproduces the general shape of van Hasselt 2013 Figure 2 (VPC of ANC vs
-time by study). Because the raw study-stratified data are not on disk, the
+time by study). Because the raw study-stratified data are not available, the
 figure below is a single-panel VPC across the full virtual cohort at reference
 covariate values with 22.7% G-CSF prevalence.
 
@@ -374,9 +374,7 @@ nca_summary |>
   Eisai eribulin popPK analysis and shares the same first-author affiliation
   and Hussein co-authorship. The Majid 2014 PK parameters are used here
   verbatim from the encoding already in the registry at
-  `Kawamura_2018_eribulin.R`. Operator decision recorded in sidecar
-  request-001 of task
-  frompeople-910-van_hasselt_2013_british_journal_of_clinical_ph.
+  `Kawamura_2018_eribulin.R`, per maintainer decision.
 - **PK dose-on-Q covariate NOT encoded.** van Hasselt 2013 mentions "the
   covariate dose was related to intercompartmental clearance" in the PK
   description, but the Majid 2014 published equations (reproduced in
@@ -385,14 +383,14 @@ nca_summary |>
   by van Hasselt 2013 had a dose-on-Q covariate that was dropped between
   that snapshot and the Majid 2014 publication, or (b) Kawamura 2018's
   reproduction of Majid 2014 is incomplete on this one covariate. The
-  numerical dose-on-Q coefficient is not on disk in either paper. This
+  numerical dose-on-Q coefficient is not given in either paper. This
   model omits it; in practice, dose-on-Q has small impact on AUC for a
   fixed-dose regimen and does not affect the PD structure that is the
   primary focus of van Hasselt 2013.
-- **CONMED_GCSF is a new canonical.** Following the Phase 3 covariate-column
-  gate, `CONMED_GCSF` was registered as a new canonical binary covariate in
-  `inst/references/covariate-columns.md` (operator decision recorded in
-  sidecar request-002). Follows the well-established `CONMED_<drug>` pattern.
+- **CONMED_GCSF is a new canonical.** `CONMED_GCSF` was registered as a new
+  canonical binary covariate in `inst/references/covariate-columns.md` (a
+  maintainers' decision). It follows the well-established `CONMED_<drug>`
+  pattern.
 - **Table 5 incidence comparison caveat -- reference-covariate simulation
   under-represents the deep-nadir tail.** The paper's Table 5 (26.6% grade
   3, 16.85% grade 4) is derived from the no-covariate BASE model with
@@ -420,8 +418,7 @@ nca_summary |>
   not tabulate NCA parameters for eribulin plasma concentrations. The PKNCA
   block is included as a sanity check on the Majid 2014 PK layer only, not
   as a comparison against the paper's reported values. For a comparison
-  against Majid 2014's own NCA, see the future extraction task for that
-  paper.
+  against Majid 2014's own NCA, see the future extraction of that paper.
 - **BSA distribution parameterisation.** The Methods section reports a
   simulation BSA distribution of mean = 1.57 m^2, sd = 0.22, truncated to
   [1, 3] m^2. Table 2 reports the observed cohort BSA median 1.73 m^2 (IQR

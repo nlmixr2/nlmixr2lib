@@ -569,6 +569,10 @@ each unit system gets its own PKNCA run.
 dpt_nca <- function(sim, concu, timeu, doseu, tmax) {
   conc_df <- sim |>
     dplyr::filter(!is.na(Cc)) |>
+    # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+    dplyr::group_by(id, treatment) |>
+    dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+    dplyr::ungroup() |>
     dplyr::select(id, time, Cc, treatment)
 
   # Defensive time-zero row (the grid already contains time 0; the existing
@@ -1078,8 +1082,8 @@ cat(sprintf(
   cannot be reproduced from the packaged models; everything else in the paper
   can.
 * **Rat in-vivo data are not in this paper.** They are cited from Liu et al.
-  2016, which is not on disk, so the rat `population` metadata is sparser than
-  the other species'.
+  2016, which was not available when this model was built, so the rat
+  `population` metadata is sparser than the other species'.
 
 ## Structural interpretations
 

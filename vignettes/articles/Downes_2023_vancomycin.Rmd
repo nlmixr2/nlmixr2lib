@@ -171,7 +171,9 @@ solve_typical <- function(nm, ev) {
   if (any(!is.na(rxode2::rxode(m)$iniDf$neta1))) m <- rxode2::zeroRe(m)
   # Tight tolerances: the closed-form gate below is held to 1e-6; the ODE at
   # default tolerances lands at 1-2e-6, at rtol 1e-10 far below.
-  as.data.frame(rxode2::rxSolve(m, events = ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12))
+  as.data.frame(rxode2::rxSolve(m, events = ev, returnType = "data.frame", rtol = 1e-10, atol = 1e-12,
+                                # steady-state searches for long-half-life subjects exceed the default step budget
+                                maxsteps = 1e6))
 }
 
 one_subject_ss <- function(dose, covs, times) {
@@ -281,10 +283,10 @@ observed range where one is given.
 # set.seed() seeds R's RNG only. rxode2's own streams are partitioned per solver
 # thread, so a machine with a different thread count draws a different cohort.
 # Every assertion below is written to hold for any cohort this model can
-# produce; see references/known-vignette-failure-patterns.md pattern 12.
+# produce.
 set.seed(20230425)
 
-N <- 200L  # per arm; the skill caps validation cohorts at 200
+N <- 200L  # per arm; validation cohorts are capped at 200
 lnq <- function(n, med, q1, q3) {
   stats::rlnorm(n, meanlog = log(med), sdlog = log(q3 / q1) / (2 * stats::qnorm(0.75)))
 }
@@ -353,7 +355,9 @@ sim <- bind_rows(
   as.data.frame(rxode2::rxSolve(
     readModelDb(MODELS[["Full"]]),
     events = events |> filter(arm == "Full (with IIV)"),
-    keep = KEEP, returnType = "data.frame"))
+    keep = KEEP, returnType = "data.frame",
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6))
 )
 # The three typical arms lose `keep` columns through zeroRe(); reattach by id.
 sim <- sim |>

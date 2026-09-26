@@ -953,8 +953,7 @@ stopifnot(
 * **`kdig` is not independently identified.** The Results state that the
   digestion rate "was not significantly different from `kphag`" and Table 1 has
   no `kdig` row, so the model writes `kdig <- kphag` as a derived local rather
-  than carrying a parameter the paper never estimated (operator ruling, sidecar
-  `oare_PMC13041408` q2).
+  than carrying a parameter the paper never estimated (maintainer ruling).
 * **Model time zero is 2 h after infection.** That is both the start of
   treatment and the time at which the initial susceptible counts apply. Figures
   3 and 4 above shift the x-axis by 2 h so it reads as time after infection, to
@@ -967,7 +966,8 @@ stopifnot(
   the setting the model was estimated under.
 * **Figure 6's design is recovered from the figure legend, not from the
   Methods.** The Methods cite only "a literature design (28)", and reference 28
-  is not on disk. The legend of Figure 6 states the design outright -- dosing
+  was not available when this model was built. The legend of Figure 6 states
+  the design outright -- dosing
   intervals q3h / q6h / q12h / q24h, daily doses 0 / 400 / 800 / 1,600 mg/kg --
   and that is what this vignette simulates. Two independent checks corroborate
   it: the fAUC/MIC axis maximum lands at 7,590 against the paper's roughly
@@ -985,13 +985,12 @@ stopifnot(
   `E0`, `PDmax`, `H` and `Index50` are not tabulated anywhere in the paper, so
   they are not carried in the model file -- only the Figure 6 R-squared values
   are checkable.
-* **`IMMUNE_STATE` is a newly registered canonical covariate.** Ratified with
-  this extraction (sidecar `oare_PMC13041408` q3); see
-  `inst/references/covariate-columns.md`.
+* **`IMMUNE_STATE` is a newly registered canonical covariate.** Ratified by the
+  maintainers with this extraction; see `inst/references/covariate-columns.md`.
 * **`kphag` was broadened, and `lv_lung` / `lq_elf_lung` newly registered.** The
   register previously reserved `kphag` for the threshold-gated TMDD form; the
   ungated bacterial-phagocytosis case is now covered by the same canonical
-  (sidecar `oare_PMC13041408` q1). `lv_lung` and `lq_elf_lung` are well-formed
+  (maintainer decision). `lv_lung` and `lq_elf_lung` are well-formed
   members of the existing `lv_<compartment>` and `lq_<destination>` families.
 * **Multi-endpoint event tables select the endpoint with `dvid`, not `cmt`.**
   With three endpoints rxode2 requires every observation row to identify an

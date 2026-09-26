@@ -222,11 +222,10 @@ sim |>
 
 # PKNCA validation
 
-Steady-state NCA over the final 72-h dosing interval (recipe 3 of
-`pknca-recipes.md`). The treatment grouping variable goes before `id` in
-the formula per project convention. PKNCA reports `cmax`, `tmax`, `cmin`,
-`cav` and `auclast` over the interval; the interval is the entire 72-h
-patch wear period.
+Steady-state NCA over the final 72-h dosing interval. The treatment
+grouping variable goes before `id` in the formula per project convention.
+PKNCA reports `cmax`, `tmax`, `cmin`, `cav` and `auclast` over the
+interval; the interval is the entire 72-h patch wear period.
 
 ```{r pknca}
 sim_nca <- sim |>
@@ -339,7 +338,7 @@ steady state.
   individual prescribed regimens.
 - **Race / ethnicity.** Not reported in Bista 2015 Table 1 and not a
   model covariate; the cohort is therefore neutral on race.
-- **Full publication metadata not on disk.** The on-disk PDF is a
+- **Full publication metadata not available.** The PDF is a
   manuscript form without journal / DOI metadata. The model file's
   `reference` field flags the missing publication citation explicitly;
   the title, author list and study design are taken verbatim from the

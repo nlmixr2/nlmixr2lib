@@ -26,7 +26,7 @@ Franke_2015_acetaminophen <- function() {
       description = "Sex indicator, 1 = female",
       units = "(binary)",
       type = "binary",
-      notes = "Screened in the stepwise covariate search but not retained in the pooled FASTED acetaminophen model (Table 4). Sex WAS retained on CL/F and V2/F in the separate 31-subject food-effect acetaminophen model, which is not packaged because Table 5 omits Q and V3/F for that fit."
+      notes = "Screened in the stepwise covariate search but not retained in the pooled FASTED acetaminophen model (Table 4). Sex WAS retained on CL/F and V2/F in the separate 31-subject food-effect acetaminophen model, modellib('Franke_2015_acetaminophen_food'); that a term as large as the food-effect fit's (multipliers 0.278 and 0.295 for women) was rejected here, in the much larger cohort, is noted in the vignette Errata."
     ),
     AGE = list(
       description = "Age",

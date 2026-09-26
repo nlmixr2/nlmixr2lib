@@ -655,8 +655,8 @@ states `A`, the median AUC in the >= 65 y subgroup -- only that it is 14.7%
 higher than in the < 65 y subgroup. `b` and `A` appear solely as the product
 `b*A`, so the reconstruction pins the *shape* of every curve but not its
 horizontal scale. That is why this is documented here rather than shipped as a
-model file: a model file would have to commit to a value of `b`, and no source
-on disk supplies one.
+model file: a model file would have to commit to a value of `b`, and no
+available source supplies one.
 
 The practical size of the effect is worth stating plainly. Halving a patient's
 AUC -- far more than any tolerated dose reduction achieves -- moves the AEDM
@@ -687,7 +687,7 @@ stopifnot(all(tab$Pass[!tab$Deviation]))
   equation -- nor in Tables S1-S5, nor inside any figure panel (the publisher's
   native-resolution figure files were checked).
 
-  Per operator decision (2026-09-11), the model carries `Imax_pacl = 1.15`
+  Per a maintainer decision (2026-09-11), the model carries `Imax_pacl = 1.15`
   across from the 2024 parent (`FernandezTeruel_2024_capivasertib.R`,
   Fernandez-Teruel 2024 Table 3: RSE 12.5%, bootstrap 95% CI 1-6.91), held
   constant via `fixed()`. **This is a cross-fit borrow, not a 2025 estimate.**

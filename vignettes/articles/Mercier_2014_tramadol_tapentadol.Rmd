@@ -120,7 +120,7 @@ and tramadol) as in placebo."
 No published erratum or corrigendum for Mercier 2014 was located
 (Pain Therapy 2014;3(1):31-44; open access via Springer). The paper describes
 supplementary material (Table S1: list of trials; Table S2: comparison with
-previous meta-analysis) which was not on disk for this extraction; none of the
+previous meta-analysis) which was not available when this model was built; none of the
 pain-intensity model's Table 3 parameters depend on these supplements.
 
 The paper also describes logistic MBMA sub-models for adverse-event
@@ -429,7 +429,7 @@ ggplot(env_summary, aes(x = time)) +
   are between-study/arm random effects capturing the correlation between
   repeated timepoints within a study arm. They are encoded as `eta_study_e0`
   and `eta_study_emax` to flag them as MBMA study-level variability rather
-  than individual between-subject variability, per SKILL Phase-1 Step-3a MBMA
+  than individual between-subject variability, per the package's MBMA
   guidance. `checkModelConventions()` warns that these etas have no matching
   structural fixed-effect parameter of the same suffix; this is expected for
   the MBMA between-study naming convention and is not a defect. The `ini()`

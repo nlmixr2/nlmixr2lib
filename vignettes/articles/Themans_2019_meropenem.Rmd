@@ -22,14 +22,14 @@ library(ggplot2)
 * Citation: `r rxode2::rxode2(readModelDb("Themans_2019_meropenem"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Themans_2019_meropenem"))$description`
 * DDMORE Foundation Model Repository entry: `DDMODEL00000301`
-* Article (per task metadata): <https://doi.org/10.1007/s40268-019-0268-x>
+* Article (the publication this model is attributed to): <https://doi.org/10.1007/s40268-019-0268-x>
 
 The DDMORE Model_Accomodations file describes the same body of work (same
 authors, drug, indication, scenario = 4) as a British Journal of
 Pharmacology submission dated July 2019. The published article in
 Drugs in R&D (DOI above) was used as the canonical citation; the
-publication PDF was not on disk so external cross-checks against
-published tables/figures were not possible. See the Errata section for
+publication PDF was not available when this model was built, so external
+cross-checks against published tables/figures were not possible. See the Errata section for
 how the .lst's final estimates were used in lieu of a published
 parameter table, and how a unit convention in the source NONMEM model
 was reconciled against the simulated dataset shipped in the bundle.
@@ -39,9 +39,9 @@ was reconciled against the simulated dataset shipped in the bundle.
 The model was fit to adult patients with severe pneumonia receiving
 meropenem by IV infusion. Specific demographics (n, age, sex, race,
 study sites) could not be cross-checked against the publication
-because the article PDF was not on disk; the demographics of the
+because the article PDF was not available; the demographics of the
 bundle's `Simulated_dataset.csv` (60 simulated subjects) provide the
-only on-disk reference and span body weight 45-128 kg (mean ~78 kg)
+only available reference and span body weight 45-128 kg (mean ~78 kg)
 and raw measured GFR 19-401 mL/min. The wide GFR range covers severe
 renal impairment through to augmented renal clearance, consistent with
 a critically ill ICU pneumonia population.
@@ -90,7 +90,7 @@ The bundle's `Simulated_dataset.csv` ships a 60-subject simulated
 cohort (1 g IV meropenem, 0.5 h infusion, q8h at steady state; WT
 45-128 kg, raw GFR 19-401 mL/min; one ELF observation per subject
 within the dosing interval). The publication's actual study population
-demographics could not be reconstructed from the on-disk material;
+demographics could not be reconstructed from the available material;
 the virtual cohort below mirrors the bundle's covariate ranges.
 
 ```{r cohort}
@@ -155,7 +155,9 @@ mod <- rxode2::rxode2(readModelDb("Themans_2019_meropenem"))
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("WT", "CRCL")
+  keep   = c("WT", "CRCL"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
@@ -167,13 +169,15 @@ random effects:
 
 ```{r simulate-typical}
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = c("WT", "CRCL")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = c("WT", "CRCL"),
+                           maxsteps = 1e6) |>
   as.data.frame()
 ```
 
 # Replicate observed behaviour
 
-The publication PDF was not on disk, so the figures below are not
+The publication PDF was not available, so the figures below are not
 direct figure-by-figure replications of the article. Instead they
 provide two kinds of sanity check:
 
@@ -196,7 +200,9 @@ ref_events <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(id, time, evid)
 
-ref_sim <- rxode2::rxSolve(mod_typ, events = ref_events) |> as.data.frame()
+# steady-state searches for long-half-life subjects exceed the default step budget
+ref_sim <- rxode2::rxSolve(mod_typ, events = ref_events, maxsteps = 1e6) |>
+  as.data.frame()
 
 ref_long <- ref_sim |>
   dplyr::select(time, Cc, Celf) |>
@@ -257,10 +263,12 @@ selfcheck_events <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(id, time, evid)
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 selfcheck_sim <- rxode2::rxSolve(mod_typ,
                                   events = selfcheck_events |>
                                     dplyr::select(-DV_observed),
-                                  keep = c("WT", "CRCL")) |>
+                                  keep = c("WT", "CRCL"),
+                                  maxsteps = 1e6) |>
   as.data.frame()
 
 # Pair each observed DV with the typical-value Celf at the same id/time.
@@ -345,8 +353,8 @@ penetration estimates of 0.2-0.5 in critically ill adults (e.g. Frippiat
 
 # Comparison against published NCA
 
-The Themans 2019 publication PDF was not located on disk under the
-literature tree, so a side-by-side comparison against the article's
+The Themans 2019 publication PDF was not available when this model was
+built, so a side-by-side comparison against the article's
 reported Cmax / AUC tables (if any) was not performed. The validation
 above relies on (a) self-consistency between the model translation
 and the bundle's `Simulated_dataset.csv` ELF observations and (b) the
@@ -354,7 +362,7 @@ qualitative biological plausibility of the simulated trajectories.
 
 # Assumptions and deviations
 
-- **Article PDF not on disk.** The publication
+- **Article PDF not available.** The publication
   ([Drugs in R&D, doi:10.1007/s40268-019-0268-x](https://doi.org/10.1007/s40268-019-0268-x))
   was not accessible during extraction. Demographics, dosing detail
   beyond the bundle's `Simulated_dataset.csv`, and any published NCA
@@ -365,9 +373,9 @@ qualitative biological plausibility of the simulated trajectories.
 - **Journal mismatch with `Model_Accomodations.text`.** The bundle's
   `Model_Accomodations.text` describes a British Journal of
   Pharmacology submission ("submitted - July 2019, scenario = 4");
-  the task metadata names a Drugs in R&D 2019 publication. These are
-  treated as the same body of work at different stages of journal
-  review.
+  the publication this model is attributed to is the Drugs in R&D 2019
+  article. These are treated as the same body of work at
+  different stages of journal review.
 - **`OMEGA BLOCK(4)` reduced to four independent etas.** The .mod
   declares `$OMEGA BLOCK(4)` but every off-diagonal is held at 0 in
   both the .mod and the .lst's FINAL OMEGA matrix, so the nlmixr2

@@ -93,11 +93,12 @@ Simpson_2013_chloroquine <- function() {
     # column "Genotype 1 Single Copy WT": 242 nM (95% CI 223, 260). Slope
     # gamma population estimate from Table 1 NLME row chloroquine: 4.14
     # (95% reference range 1.85 to 9.25). The slope-covariate effects
-    # (theta_5 to theta_8) are dropped (File S2 not on disk; main text:
-    # "minimal changes in the slope of the concentration-effect profile
-    # with the 1042D variant were observed" and "the slope of the
-    # effect-concentration curve did not differ significantly for these
-    # molecular comparisons"); documented in vignette Errata.
+    # (theta_5 to theta_8) are dropped (File S2 was not available when this
+    # model was built; main text: "minimal changes in the slope of the
+    # concentration-effect profile with the 1042D variant were observed" and
+    # "the slope of the effect-concentration curve did not differ
+    # significantly for these molecular comparisons"); documented in
+    # vignette Errata.
     # ---------------------------------------------------------------------
     lec50  <- log(242);  label("Population log-EC50 for the WT reference parasite (log of nM)")  # Table 3 Chloroquine Genotype 1 reference
     lgamma <- log(4.14); label("Population log-slope gamma of the sigmoid inhibition curve (log of unitless)") # Table 1 NLME row chloroquine

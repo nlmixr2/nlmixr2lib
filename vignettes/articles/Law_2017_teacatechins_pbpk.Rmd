@@ -274,7 +274,11 @@ stopifnot(max(abs(fig67_peak$pct_diff)) < 25)
 ```{r human-pknca}
 sim_nca <- human_sim |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, treatment)
+  dplyr::select(id, time, Cc, treatment) |>
+  # Cut each arm's tail once Cc is below 1e-6 * max(Cc) (solver noise); the slow rise is kept.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= max(time[Cc >= 1e-6 * max(Cc)])) |>
+  dplyr::ungroup()
 
 # Guarantee a time = 0 row per arm; pre-dose Cc = 0 is correct for an oral dose.
 sim_nca <- dplyr::bind_rows(
@@ -741,9 +745,13 @@ knitr::kable(
   `Rt dR_j/dt = R_(j-1) - R_j`. The packaged models carry the equivalent
   *amount* states `bile_transit_j = Rt * R_j`, which turns eq A5 into an
   ordinary three-compartment transit chain with mean residence time `Rt` per
-  sub-compartment. The flux into the gut lumen is `bile_transit3 / rt_bile`.
-  These three states are declared `paper_specific_compartments` because no
-  canonical nlmixr2lib compartment family covers a biliary transit chain.
+  sub-compartment. The flux into the gut lumen is `bile_transit3 / mtt_bile`,
+  and the total bile-duct delay is `3 * mtt_bile`. `bile_transit<n>` is a
+  canonical nlmixr2lib chain family, ratified with these models by maintainer
+  ruling 2026-09-21; the paired parameter `lmtt_bile` was ratified in the same
+  ruling under the existing `lmtt_<context>` family, with the caveat recorded
+  in `inst/references/parameter-names.md` that it is a **per-sub-compartment**
+  residence time rather than the chain's total mean transit time.
 * **Observation.** `Cc` is the mixed-venous *plasma* concentration of the free
   (unconjugated) catechin, `C_venous / BLPLR` (eq A10). It is not a total
   (free plus conjugate) concentration; Law et al. discuss at length why the free

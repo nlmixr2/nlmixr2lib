@@ -22,12 +22,12 @@ suppressPackageStartupMessages({
 
 * Citation: `r rxode2::rxode2(readModelDb("NA_NA_lidocaine"))$reference`
 * DDMORE Foundation Model Repository: [DDMODEL00000281](https://repository.ddmore.eu/model/DDMODEL00000281)
-* Source bundle (local): `dpastoor/ddmore_scraping/281/`
+* Source bundle: `dpastoor/ddmore_scraping/281/`
 
 The DDMORE bundle does not link to a journal publication. The
 `Model_Accommodations.txt` file in the bundle states that the uploaded model
 matches the (un-named) reference publication, but no first author / year /
-journal is recoverable from any on-disk material -- neither the
+journal is recoverable from any of the bundle's material -- neither the
 `Executable_ddmore_final_run249.ctl` `$PROBLEM` line (`B.dat 4-cRUN249`),
 the bundle's `DDMODEL00000281.rdf`, the `281.json` scraper metadata, nor
 the bundle's other text files name a paper.
@@ -105,8 +105,8 @@ collects them in one place for review. All values come from the
 
 # Virtual cohort
 
-The published cohort demographics are not on disk for this extraction
-(no linked publication). The simulations below use a small reference
+The published cohort demographics were not available when this model was
+built (no linked publication). The simulations below use a small reference
 covariate set drawn from one representative subject in the bundle's
 simulated dataset:
 
@@ -380,19 +380,19 @@ covariate set.
 
 * **No linked publication.** The bundle's `Model_Accommodations.txt`
   asserts equivalence to an unspecified reference publication, but the
-  paper is not on disk and could not be identified from the bundle. The
+  paper could not be identified from the bundle and was not available. The
   `reference` field of the model file therefore records only the DDMORE
   bundle citation. Per-parameter validation against a published table is
   not possible.
 * **Unit ambiguity.** The bundle's `.ctl` does not declare time, dose,
   or concentration units. `units$time = "h"`, `units$dosing = "mg"`, and
-  `units$concentration = "mg/L"` are operator-default placeholders chosen
+  `units$concentration = "mg/L"` are maintainer-default placeholders chosen
   so the values flow through `checkModelConventions()` consistently. The
   numeric values in `ini()` are unchanged from the `.res` listing
   regardless of the unit interpretation. If the linked publication is
   later identified, the units may need to be revised; the parameter
   values stay correct.
-* **Time-unit physiological plausibility.** Under the operator-default
+* **Time-unit physiological plausibility.** Under the maintainer-default
   `units$time = "h"`, total lidocaine elimination = `k_megx_form +
   k_xyl_form = 0.037 1/h` with apparent t1/2 = `ln(2)/0.037 ~ 18.7 h`,
   slower than the textbook lidocaine IV t1/2 (~1.5-2 h after a single
@@ -406,7 +406,7 @@ covariate set.
   prolonged infusion accumulation, etc.). Without the linked publication
   the choice between these interpretations cannot be settled. The
   model file faithfully reproduces the rate constants from the `.res`
-  listing; the unit declaration is operator-default.
+  listing; the unit declaration is maintainer-default.
 * **DLVL and S1A2 semantics.** The bundle's simulated dataset shows DLVL
   values ranging continuously from 0 to 10 (not strictly integer 1-4 as
   one might expect for a dose-level indicator); the model uses `DLVL > 2`

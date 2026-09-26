@@ -27,13 +27,13 @@ library(ggplot2)
 * Upstream sVEGFR-3 biomarker dynamics: `Hansson_2013a_sunitinib`
   (DDMODEL00000197, doi:10.1038/psp.2013.61).
 
-The publication PDF was not on disk at extraction time, so all
+The publication PDF was not available when this model was built, so all
 parameter values, equations, and the model structure are taken from the
 DDMORE bundle (`Executable_Fatigue_GIST.mod` and
 `Output_real_Fatigue_GIST.lst_Fatigue_PSP_2014`). Validation in this
-vignette therefore consists of a mechanistic-sanity check (F.3) plus a
+vignette therefore consists of a mechanistic-sanity check plus a
 self-consistency simulation against the bundle's shipped simulated
-dataset (F.2); a side-by-side comparison against any published
+dataset; a side-by-side comparison against any published
 Hansson 2013 figure or table is not performed.
 
 # Population
@@ -48,10 +48,10 @@ companion 2013 overall-survival paper. Subjects received sunitinib
 placebo-controlled run-in. The DDMORE bundle does not expose detailed
 baseline demographics (age, weight, sex, race, prior-imatinib
 duration); the linked publication (CPT Pharmacometrics Syst
-Pharmacol 2013;2:e85) was not on disk in the extraction environment, so
-the `population` metadata records that gap and carries
-`n_subjects = 303` over from the upstream Hansson 2013a model. The
-fatigue analysis-set count is not derivable from the bundle.
+Pharmacol 2013;2:e85) was not available when this model was built, so the `population` metadata
+records that gap and carries `n_subjects = 303` over from the upstream
+Hansson 2013a model. The fatigue analysis-set count is not derivable
+from the bundle.
 
 The same information is available programmatically via the model's
 `population` metadata
@@ -190,11 +190,11 @@ events <- data.frame(
 head(events, 10)
 ```
 
-# Mechanistic-sanity simulation (F.3)
+# Mechanistic-sanity simulation
 
 The fatigue model is a count / Markov / proportional-odds modality
-without a published NCA table; the verification-checklist's F.3
-recipe applies. Typical-value (no IIV, no residual error) simulation
+without a published NCA table; the mechanistic-sanity
+check applies. Typical-value (no IIV, no residual error) simulation
 should reproduce the qualitative dynamics implied by the source
 parameters: sVEGFR-3 depletion under drug, `bm` going negative,
 each per-state baseline logit being shifted toward higher fatigue
@@ -307,7 +307,7 @@ stopifnot(all(abs(rowSums(P_typical) - 1) < 1e-9))
 rowSums(P_typical)
 ```
 
-# Self-consistency simulation against the DDMORE bundle (F.2)
+# Self-consistency simulation against the DDMORE bundle
 
 The bundle ships a three-subject simulated dataset
 `Simulated_Fatigue_GIST.txt` with daily observations over 27 days.
@@ -354,23 +354,23 @@ adding meaningful placebo-coefficient shifts to the per-state baseline
 logits. The bundle's `Output_simulated_Fatigue_GIST.lst` was generated
 with `MAXEVAL=0 LIKE` (a likelihood evaluation, not a state simulation
 output), so the listing does not directly report the time-course of
-sVEGFR-3; the F.2 self-consistency check therefore compares against the
+sVEGFR-3; the self-consistency check therefore compares against the
 structural shape implied by the model's parameters at subject 1's
 posthoc-CL/BAS/MRT/EC50 values, not against a numeric trajectory in the
 listing.
 
 # Assumptions and deviations
 
-* **Publication PDF not on disk.** The Hansson 2013c paper text
+* **Publication PDF not available.** The Hansson 2013c paper text
   (CPT Pharmacometrics Syst Pharmacol 2013;2:e85,
-  doi:10.1038/psp.2013.62) was not available in
-  `/home/bill/github/mab_human_consensus/literature/` at extraction
-  time. All parameter values and equations were taken from the DDMORE
-  bundle (`Output_real_Fatigue_GIST.lst_Fatigue_PSP_2014` and
+  doi:10.1038/psp.2013.62) was not available when this model was
+  built. All parameter values and
+  equations were taken from the DDMORE bundle
+  (`Output_real_Fatigue_GIST.lst_Fatigue_PSP_2014` and
   `Executable_Fatigue_GIST.mod`). Side-by-side comparison against any
   published Hansson 2013c figure or table (e.g. the proportional-odds
   parameter table or the simulated-time-course-by-cycle plots) is not
-  performed in this vignette; only F.3 mechanistic-sanity and F.2
+  performed in this vignette; only the mechanistic-sanity and
   self-consistency checks are run.
 
 * **Cumulative-logit reparameterisation.** The source `.mod`
@@ -408,8 +408,8 @@ listing.
   units; **not** from the source). Users who want to fit the actual
   published likelihood need to extend the model file with a custom
   likelihood mechanism (e.g., per-record `PDV` data column plus a
-  conditional `~ ll(...)` form) outside the scope of this skill's
-  typical workflow. This deviation is the same shape as the
+  conditional `~ ll(...)` form) outside the scope of the package's
+  typical extraction workflow. This deviation is the same shape as the
   `Plan_2012_pain` deviation and is documented in the same way.
 
 * **Per-state shared eta on cumulative logits.** The .mod adds
@@ -444,9 +444,8 @@ listing.
   (paper-named) rather than the canonical `Cc`, because the value is
   an ordinal fatigue grade (0-3+), not a drug concentration.
   `checkModelConventions()` flags this as an `observation` warning;
-  the deviation matches the "non-PK multi-output paper-named
-  variable" exemption documented in `naming-conventions.md` section
-  "Observation variable".
+  the deviation matches the package's naming-convention exemption for
+  non-PK, multi-output, paper-named observation variables.
 
 * **Concentration units field.** `units$concentration` is set to
   `"(NCI-CTC fatigue grade 0-3+, ordinal)"` rather than a `mass/volume`
@@ -471,7 +470,7 @@ listing.
 
 * **Bundle dataset is intentionally minimal.** `Simulated_Fatigue_GIST.txt`
   carries three subjects with daily observations over 27 days. It is a
-  smoke-test dataset, not a representative GIST cohort; the F.3
-  cohort in this vignette uses the typical-value Hansson 2013a
+  smoke-test dataset, not a representative GIST cohort; the
+  mechanistic-sanity cohort in this vignette uses the typical-value Hansson 2013a
   baseline / MRT / EC50 / CLI for a 12-week 4-on/2-off simulation
   instead.

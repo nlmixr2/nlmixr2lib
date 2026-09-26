@@ -439,8 +439,7 @@ P(NAFLD) through the BMI-driven sigmoidal-Emax.
 This is a population disease-risk model (no drug, no time-course
 concentration data, no PK compartment), so PKNCA-based validation does
 not apply. The validation pathway used here is the
-endogenous-model / mechanistic-model pathway documented in the
-extract-literature-model skill:
+endogenous-model / mechanistic-model pathway:
 
 1. **Closed-form sanity** -- the two `cat()` lines in the
    `nafld-typical` chunk confirm the rxode2-computed logit at BMI = 30

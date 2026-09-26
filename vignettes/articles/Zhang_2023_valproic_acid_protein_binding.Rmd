@@ -267,7 +267,9 @@ keep_cols <- c("arm", "WT", "ALB", "DOSE_VPA_MGKGD", "DOSE_VPA_MGD", "FORM_VPA_S
 
 solve_one <- function(label, zero_re) {
   mod <- readModelDb(model_names[[label]])
-  args <- list(object = mod, events = events, keep = keep_cols)
+  args <- list(object = mod, events = events, keep = keep_cols,
+               # steady-state searches for long-half-life subjects exceed the default step budget
+               maxsteps = 1e6)
   # omega = NA zeroes the random effects for THIS call only, without mutating
   # the shared model object (and without inheriting a previous solve's omega).
   if (zero_re) args$omega <- NA
@@ -596,7 +598,7 @@ ggplot(ebe, aes(DOSE_VPA_MGD, cl)) +
 
 The same panel for the dose-dependent maximum effect model. **This is the one
 figure the packaged Model III does not reproduce**, and the discrepancy is
-recorded rather than tuned away: on the operator-ratified mg/day reading of
+recorded rather than tuned away: on the maintainer-ratified mg/day reading of
 `DD50` the Hill term is nearly saturated across the whole observed dose range,
 so the typical curve is almost flat near 0.307 L/h, whereas the published
 Figure S5A rises from roughly 0.07 to 0.19 L/h. The Errata section sets out the
@@ -750,7 +752,7 @@ six published `CLp/F` values span more than three orders of magnitude (0.0815 to
 132 L/h). That is what confirms Models I, II and IV are unbound-referenced. A
 total-concentration reading of their `CLp/F` would put their predictions one to
 three orders of magnitude out, not tens of per cent. The same coherence is what
-the operator's ratified `DD50` reading for Model III was chosen to preserve.
+the maintainers' ratified `DD50` reading for Model III was chosen to preserve.
 
 Two rows star at the 20% tolerance (Models II and III), and the family as a
 whole sits above the published 50.40 mg/L rather than centred on it. Read that
@@ -854,8 +856,8 @@ Equation 5 needs `Emax`, a Hill coefficient and `DD50`. The paper fixes
 but **never reports `DD50`** -- it is absent from Supplementary Table S3 (whose
 `CL_DD` row is "/" for this model) and from the body text. The value used here,
 `DD50 = 37.4`, is Ding 2015's own value, tabulated in Zhang's own Table 1, read
-on the **mg/day** scale. This is an operator-ratified decision (sidecar
-`oare_PMC10587682`, question 2, option C), not a value the paper states.
+on the **mg/day** scale. This is a maintainer-ratified decision, not a value the
+paper states.
 
 The evidence conflicts, and the conflict is genuine:
 

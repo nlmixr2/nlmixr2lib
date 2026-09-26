@@ -405,8 +405,7 @@ Chen_2024_noscapine <- function() {
     # whereas the omega = CV reading overshoots to 82.3%. The gate is
     # reproduced in the vignette.
     # ------------------------------------------------------------------
-    # Per-element source trace (comments must stay OUTSIDE the c(...) -- a `#`
-    # inside an omega block breaks rxode2's comment-to-label rewriter):
+    # Per-element source trace:
     #   diag row 1  1.809534  Table 4 IIV D1    = 226%  CV (RSE 40.6%, shrinkage 19.1%) -> log(1 + 2.26^2)
     #   diag row 2  0.283922  Table 4 IIV CL/F  = 57.3% CV (RSE 18.8%, shrinkage  0.1%) -> log(1 + 0.573^2)
     #   diag row 3  0.078095  Table 4 IIV Vc/F  = 28.5% CV (RSE 15.5%, shrinkage  5.2%) -> log(1 + 0.285^2)
@@ -441,8 +440,8 @@ Chen_2024_noscapine <- function() {
     # data)', and Table 4 footnote d 'Additive error in logarithmic
     # domain' -> Cc ~ lnorm(expSd). The tabulated 0.0420 is the NONMEM
     # $SIGMA VARIANCE on the log scale, so the nlmixr2 SD is its square
-    # root: sqrt(0.0420) = 0.2049, i.e. a 20.7% residual CV. Operator-
-    # ratified reading. The
+    # root: sqrt(0.0420) = 0.2049, i.e. a 20.7% residual CV. The
+    # maintainers confirmed this reading. The
     # variance reading is supported by (a) the NONMEM $SIGMA convention,
     # (b) this being the only variability row left in raw NONMEM units
     # while every other was converted to CV%, (c) the reported 2.4% RSE

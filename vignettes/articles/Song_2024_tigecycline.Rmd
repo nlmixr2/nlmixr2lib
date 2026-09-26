@@ -96,8 +96,7 @@ condition.
 # rxode2's streams are partitioned PER SOLVER THREAD, so the cohort below is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion downstream is written to hold for ANY cohort
-# the model can produce; see pattern 12 of the skill's
-# known-vignette-failure-patterns reference.
+# the model can produce.
 set.seed(20241005)
 rxode2::rxSetSeed(20241005)
 
@@ -150,7 +149,9 @@ stopifnot(dplyr::n_distinct(events$id) == 3L * n_per_arm)
 
 ```{r simulate}
 mod <- readModelDb("Song_2024_tigecycline")
-sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "dose_mg")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "dose_mg"),
+                       maxsteps = 1e6) |>
   as.data.frame()
 
 # The model computes cl and vc as model variables, so rxSolve returns them per

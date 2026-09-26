@@ -133,7 +133,7 @@ Three dosing regimens are simulated for the figure-replication panel:
 10 mg ITV every 4 weeks (q4w), every 6 weeks (q6w), and every 8 weeks
 (q8w), each for 16 weeks of dosing followed by a 4-week tail. Each
 regimen is given its own disjoint `id` block (per
-`vignette-template.md`'s multi-cohort guidance) so `rxSolve` does not
+the package's multi-cohort guidance) so `rxSolve` does not
 silently merge subjects across regimens. The observation grid is dense
 in the first week (where vitreous-to-serum egress dominates) and
 coarse afterward to keep the simulation under the pkgdown vignette
@@ -526,7 +526,7 @@ Fabs (Le 2015 Discussion p.601) -- not a model artefact.
   point in the covariate-effect equations.
 * **Sparse / missing baseline demographics.** Per-subject weight,
   race, and exact age distributions reside in the paper's
-  Supplemental Table 1, which was not bundled with the on-disk
+  Supplemental Table 1, which was not bundled with the
   PDF. `population$weight_range`, `race_ethnicity`, and
   `sex_female_pct` are therefore `NULL` rather than guessed. Any
   reader needing the demographic distribution should consult the
@@ -538,7 +538,7 @@ Fabs (Le 2015 Discussion p.601) -- not a model artefact.
   flip-flop apparent serum t1/2 ~ 5.9 days; near-complete vitreous
   target suppression at day 60). Numerical NCA values from
   Supplemental Table 3 are not reproduced because the supplement
-  was not on disk.
+  was not available.
 * **No errata identified.** A PubMed search for the DOI plus
   `erratum` (May 2026) returned no records. No errata or corrigenda
   were applied.

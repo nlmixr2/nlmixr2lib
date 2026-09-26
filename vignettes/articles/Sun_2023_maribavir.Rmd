@@ -67,7 +67,7 @@ The per-parameter origin is recorded as an in-file comment next to each `ini()`
 entry in `inst/modeldb/specificDrugs/Sun_2023_maribavir.R`. The table below
 collects them in one place for review.
 
-Two on-disk sources are cited. **Table S2** is the published parameter table
+Two sources are cited. **Table S2** is the published parameter table
 (back-transformed estimates, % RSE, 95% CI and IIV CV%). **`s005.txt`** is the
 supplement's NONMEM control stream for run 171 -- the "fixed weight effect
 exponents" model -- whose `$THETA` block is annotated `;from 171.cnv`, i.e. the
@@ -278,12 +278,16 @@ paper simulated ("No residual variability was included in the predictions").
 # rxSolve() returns observation rows only (no dose rows, hence no `evid`
 # column), so no post-filtering is needed.
 sim_adult <- rxode2::rxSolve(
-  mod, events = adult_events, keep = c("arm", "WT", "DOSE")
+  mod, events = adult_events, keep = c("arm", "WT", "DOSE"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
 sim_adolescent <- rxode2::rxSolve(
-  mod, events = adolescent_events, keep = c("arm", "band", "WT")
+  mod, events = adolescent_events, keep = c("arm", "band", "WT"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
@@ -455,7 +459,8 @@ wt_sens <- lapply(c(70, 75, 78, 80, 85), function(w) {
     make_cohort(1L, dose = 1200, wt = w, label = "1200 mg b.i.d.",
                 obs_times = grid_adult, id_offset = 10L)
   )
-  s <- rxode2::rxSolve(mod, ev, omega = NA, keep = "arm") |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  s <- rxode2::rxSolve(mod, ev, omega = NA, keep = "arm", maxsteps = 1e6) |>
     as.data.frame() |>
     filter(!is.na(Cc))
   s |>
@@ -686,7 +691,7 @@ slightly under-reads Cmax and therefore biases the Cmax rows.
 - **No residual variability in the simulations**, matching the paper's Methods.
   All figures and tables use `Cc` (the individual prediction), not `sim`.
 - **`ini()` values are taken from the run 171 control stream rather than from
-  Table S2.** The control stream reports full precision and is the only on-disk
+  Table S2.** The control stream reports full precision and is the only available
   source for the complete `$OMEGA BLOCK(6)` and `$SIGMA`. Every value was
   cross-checked against Table S2; the agreement is shown explicitly in the
   "Cross-validation" section above. No parameter value came from outside the
