@@ -1,0 +1,453 @@
+---
+title: "Lumefantrine (Francis 2020)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lumefantrine (Francis 2020)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta}
+mod <- rxode2::rxode2(readModelDb("Francis_2020_lumefantrine"))
+```
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: [doi:10.1128/AAC.02394-19](https://doi.org/10.1128/AAC.02394-19)
+
+Artemether-lumefantrine is the most widely used treatment for uncomplicated
+falciparum malaria, and lumefantrine is cleared mainly by CYP3A4, which many
+antiretrovirals induce or inhibit. Francis 2020 pooled the individual
+participant data of 10 studies collected by the WorldWide Antimalarial
+Resistance Network (WWARN) to quantify these drug-drug interactions in one
+population pharmacokinetic model, and used it to predict the probability of a
+day-7 lumefantrine concentration below the 200 ng/mL efficacy threshold.
+
+# Population
+
+The pooled data set contains 6,100 lumefantrine concentrations from 793
+non-pregnant adults: 41% HIV-malaria coinfected, 36% malaria-infected, 20%
+HIV-infected and 3% healthy volunteers (Abstract; Table 1). 341 samples (5.59%)
+were below the LLOQ and were handled with the M6 method. The studies were
+SEACAT 2.4.1 and 2.4.2 (South Africa), InterACT (Tanzania), four Ugandan
+studies, two Nigerian studies and a U.S. healthy-volunteer study (Table 2).
+Concomitant treatments were no ART, nevirapine-, efavirenz-, dolutegravir- or
+lopinavir-ritonavir-based ART, and rifampicin-based antituberculosis treatment
+(13 participants). All participants received Coartem, 4 tablets (480 mg
+lumefantrine) per dose, twice daily for 3 days, except for two single-dose
+study phases. The median body weight was 57 kg, which is the allometric
+reference.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Three-compartment disposition, first-order elimination | -- | Results '(i) Structural model' |
+| Savic transit absorption plus first-order ka | -- | Results '(i)'; Methods |
+| CL/F | 3.28 L/h | Table 3 |
+| Vc/F | 60 L | Table 3 |
+| Q1/F, Vp1/F | 0.63 L/h, 182 L | Table 3 |
+| Q2/F, Vp2/F | 1.55 L/h, 39.1 L | Table 3 |
+| MTT, NN, ka | 2.86 h, 7.58, 0.727 1/h | Table 3 |
+| F | 1 (fixed) | Table 3 |
+| Allometry on WT/57, exponents 0.75 / 1 (fixed) | -- | Methods; Table 3 footnote c |
+| LPV/r on CL/F, F, ka | -50.1%, +67.2%, -47.6% | Table 3 |
+| Efavirenz on CL/F | +89.9% | Table 3 |
+| Rifampicin on CL/F | +142% | Table 3 |
+| SEACAT first (morning) dose on F | -48.6% | Table 3 |
+| SEACAT consecutive morning doses on F | -77.2% | Table 3 |
+| Uganda studies on F | -26.9% | Table 3 |
+| Nigeria study 1, 6th dose, on F | -60.8% | Table 3 (Results text: 60.1%) |
+| Delay of the unobserved 5th dose | 4.30 h | Table 3, footnote d; Results '(c)' |
+| DBS scaling factor | 2.28 | Table 3, footnote e; Results '(b)' |
+| BSV CL, F, Q1 | 20.8%, 30.2%, 29.1% | Table 3 |
+| BVV CL | 15.4% | Table 3 |
+| BOV F, MTT, ka | 56.5%, 31.9%, 73.8% | Table 3 |
+| Additive, proportional error | 32.9 ng/mL, 14.2% | Table 3 |
+
+# Model structure checks
+
+The transit input is the Savic gamma density with `ktr = (NN + 1) / MTT`,
+written out explicitly. A single dose in a typical subject must deliver
+exactly the administered amount, so `AUC(0-inf) * CL / Dose` must equal 1.
+
+```{r helpers}
+cov_zero <- c(
+  CONMED_LPV = 0, CONMED_EFV = 0, CONMED_RIF = 0, STUDY_SEACAT = 0,
+  STUDY_UGANDA = 0, STUDY_NIGERIA1 = 0, STUDY_USHV = 0, SAMPLE_DBS = 0
+)
+
+# Event table for n subjects on an AL regimen of `days` days (doses at 0 and
+# 8 h, then every 12 h), observations at `tobs`. OCC is the dose number and is
+# carried forward onto the observations that follow each dose.
+make_events <- function(n, wt, tobs, days = 3, id0 = 0, covs = list()) {
+  dose_t <- c(0, 8, if (days > 1) seq(24, 24 * days - 12, by = 12))
+  ev <- expand.grid(id = id0 + seq_len(n), k = seq_along(dose_t))
+  ev <- data.frame(
+    id = ev$id, time = dose_t[ev$k], evid = 1, amt = 480, cmt = "depot",
+    OCC = ev$k
+  )
+  ob <- expand.grid(id = id0 + seq_len(n), time = tobs)
+  ob <- data.frame(id = ob$id, time = ob$time, evid = 0, amt = 0, cmt = "central")
+  ob$OCC <- pmax(findInterval(ob$time, dose_t), 1)
+  d <- rbind(ev, ob)
+  d$WT <- wt
+  for (nm in names(cov_zero)) d[[nm]] <- cov_zero[[nm]]
+  for (nm in names(covs)) d[[nm]] <- covs[[nm]]
+  d[order(d$id, d$time, -d$evid), ]
+}
+
+mod_typ <- rxode2::zeroRe(mod)
+```
+
+```{r mass-balance}
+tgrid <- c(seq(0, 48, by = 0.1), seq(48.5, 400, by = 0.5), seq(410, 30000, by = 10))
+d_sd <- make_events(1, 57, tgrid, days = 1)
+d_sd <- d_sd[!(d_sd$evid == 1 & d_sd$time > 0), ]
+sim_sd <- rxode2::rxSolve(mod_typ, d_sd, returnType = "data.frame")
+auc_sd <- sum(diff(sim_sd$time) * (head(sim_sd$Cc, -1) + tail(sim_sd$Cc, -1)) / 2)
+mb <- auc_sd / 1000 * 3.28 / 480
+mb
+stopifnot(max(sim_sd$Cc) > 1, abs(mb - 1) < 0.005)
+```
+
+The most-recent-dose semantics of `tad()` / `podo()` restart the transit input
+at every new dose. With MTT = 2.86 h against an 8-12 h dosing interval nothing
+is lost; the multiple-dose AUC matches the total dose over CL.
+
+```{r mass-balance-md}
+tgrid_md <- sort(unique(c(seq(0, 72, by = 0.1), seq(72.5, 400, by = 0.5), seq(410, 30000, by = 10))))
+sim_md <- rxode2::rxSolve(mod_typ, make_events(1, 57, tgrid_md), returnType = "data.frame")
+auc_md <- sum(diff(sim_md$time) * (head(sim_md$Cc, -1) + tail(sim_md$Cc, -1)) / 2)
+mb_md <- auc_md / 1000 * 3.28 / (6 * 480)
+mb_md
+stopifnot(abs(mb_md - 1) < 0.005)
+```
+
+# Typical concentration-time profiles
+
+The typical 57-kg patient on the standard 3-day regimen at the reference
+bioavailability (InterACT, and SEACAT evening doses), by concomitant
+treatment.
+
+```{r typical-profiles}
+scen <- list(
+  "AL alone" = list(),
+  "Lopinavir-ritonavir" = list(CONMED_LPV = 1),
+  "Efavirenz" = list(CONMED_EFV = 1),
+  "Rifampicin" = list(CONMED_RIF = 1)
+)
+tprof <- sort(unique(c(seq(0, 72, by = 0.25), seq(73, 336, by = 1))))
+typ <- bind_rows(lapply(seq_along(scen), function(i) {
+  s <- rxode2::rxSolve(mod_typ, make_events(1, 57, tprof, covs = scen[[i]]),
+    returnType = "data.frame"
+  )
+  data.frame(time = s$time, Cc = s$Cc, treatment = names(scen)[i])
+}))
+stopifnot(all(tapply(typ$Cc, typ$treatment, max) > 1))
+
+ggplot(typ, aes(time, Cc, colour = treatment)) +
+  geom_line() +
+  geom_hline(yintercept = 200, linetype = "dashed") +
+  scale_y_log10(limits = c(10, NA)) +
+  labs(
+    x = "Time after first dose (h)", y = "Lumefantrine (ng/mL)", colour = NULL,
+    caption = "Typical 57-kg adult, 480 mg twice daily for 3 days; dashed line 200 ng/mL."
+  ) +
+  theme_bw()
+```
+
+## Exposure ratios of the drug-drug interactions
+
+The Results report AUC changes of about 3.4-fold with lopinavir-ritonavir, -47%
+with efavirenz and -59% with rifampicin. For the typical patient these follow
+from `F / CL` alone, so they are exact checks of the encoding.
+
+```{r ddi-ratios}
+auc_typ <- function(covs) {
+  s <- rxode2::rxSolve(mod_typ, make_events(1, 57, tgrid_md, covs = covs), returnType = "data.frame")
+  sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+}
+auc_ref <- auc_typ(list())
+ratios <- data.frame(
+  treatment = c("Lopinavir-ritonavir", "Efavirenz", "Rifampicin"),
+  simulated = c(auc_typ(scen[[2]]), auc_typ(scen[[3]]), auc_typ(scen[[4]])) / auc_ref,
+  published = c(3.4, 1 - 0.47, 1 - 0.59)
+)
+ratios |>
+  mutate(simulated = signif(simulated, 3)) |>
+  dplyr::rename("Treatment" = treatment, "Simulated AUC ratio" = simulated, "Published AUC ratio" = published) |>
+  knitr::kable()
+stopifnot(
+  abs(ratios$simulated[1] - 1.672 / 0.499) < 0.01,
+  abs(ratios$simulated[2] - 1 / 1.899) < 0.005,
+  abs(ratios$simulated[3] - 1 / 2.42) < 0.005,
+  abs(ratios$simulated / ratios$published - 1) < 0.03
+)
+```
+
+## Study and dose-occasion effects
+
+The bioavailability reference is the evening dose of InterACT and SEACAT.
+SEACAT morning doses (the first, and the consecutive ones) have much lower
+bioavailability; all Ugandan doses are 26.9% lower; in Nigeria study 1 the
+observed 6th dose is 60.8% lower and the unobserved 5th dose is delayed by 4.3
+h (as in the U.S. healthy-volunteer study). Nigeria study 2 measured dried
+blood spots, which read 2.28-fold higher than plasma.
+
+```{r study-profiles}
+st <- list(
+  "Reference (InterACT)" = list(),
+  "SEACAT" = list(STUDY_SEACAT = 1),
+  "Uganda" = list(STUDY_UGANDA = 1),
+  "Nigeria study 1" = list(STUDY_NIGERIA1 = 1),
+  "Nigeria study 2 (DBS)" = list(SAMPLE_DBS = 1)
+)
+stp <- bind_rows(lapply(seq_along(st), function(i) {
+  s <- rxode2::rxSolve(mod_typ, make_events(1, 57, tprof, covs = st[[i]]), returnType = "data.frame")
+  data.frame(time = s$time, Cc = s$Cc, study = names(st)[i])
+}))
+ggplot(stp, aes(time, Cc, colour = study)) +
+  geom_line() +
+  scale_y_log10(limits = c(10, NA)) +
+  labs(x = "Time after first dose (h)", y = "Lumefantrine (ng/mL)", colour = NULL) +
+  theme_bw()
+
+c168 <- stp |>
+  filter(time == 168) |>
+  mutate(ratio = Cc / Cc[study == "Reference (InterACT)"]) |>
+  select(study, Cc, ratio)
+knitr::kable(c168 |> dplyr::rename("Study" = study, "Day-7 concentration (ng/mL)" = Cc, "Ratio to reference" = ratio), digits = 3)
+stopifnot(
+  abs(c168$ratio[c168$study == "Uganda"] - (1 - 0.269)) < 1e-3,
+  abs(c168$ratio[c168$study == "Nigeria study 2 (DBS)"] - 2.28) < 1e-3,
+  c168$ratio[c168$study == "SEACAT"] < 1
+)
+```
+
+# Replication of Table 4 and Figure 2
+
+Francis 2020 simulated 10,000 patients per scenario (typical patient of 40, 57
+and 80 kg) and reported the median (95% prediction interval) day-7
+concentration with, in brackets, a range whose width (about 1.5-fold either
+side of the median) identifies it as the interquartile range, and the
+percentage below 200 ng/mL. Here 200 virtual patients
+per scenario are simulated with full between-subject, between-visit and
+between-occasion variability at the reference bioavailability. Day 7 is taken
+as 168 h after the first dose.
+
+```{r table4-sim}
+rxode2::rxSetSeed(20200421)
+t4_scen <- bind_rows(
+  expand.grid(treatment = names(scen), days = 3, wt = c(40, 57, 80), stringsAsFactors = FALSE),
+  expand.grid(treatment = "Efavirenz", days = 4:5, wt = c(40, 57, 80), stringsAsFactors = FALSE),
+  expand.grid(treatment = "Rifampicin", days = 4:6, wt = c(40, 57, 80), stringsAsFactors = FALSE)
+)
+n_arm <- 200
+t4_scen$arm <- seq_len(nrow(t4_scen))
+ev_t4 <- bind_rows(lapply(t4_scen$arm, function(a) {
+  r <- t4_scen[a, ]
+  d <- make_events(n_arm, r$wt, 168, days = r$days, id0 = (a - 1) * n_arm, covs = scen[[r$treatment]])
+  d$arm <- a
+  d
+}))
+sim_t4 <- rxode2::rxSolve(mod, ev_t4, keep = "arm", returnType = "data.frame")
+stopifnot(all(is.finite(sim_t4$Cc)), median(sim_t4$Cc) > 1)
+
+t4 <- sim_t4 |>
+  group_by(arm) |>
+  summarise(
+    med = median(Cc), q25 = quantile(Cc, 0.25), q75 = quantile(Cc, 0.75),
+    pct_below = 100 * mean(Cc < 200), .groups = "drop"
+  ) |>
+  left_join(t4_scen, by = "arm")
+
+# Francis 2020 Table 4: median day-7 concentration (ng/mL), the bracketed
+# range (read as IQR) and % below 200 ng/mL, by regimen and body weight.
+# Only the 3-day rows' brackets are transcribed; they check the spread.
+pub_t4 <- tibble::tribble(
+  ~treatment, ~days, ~wt, ~pub_med, ~pub_pct,
+  "AL alone", 3, 40, 999, 0, "AL alone", 3, 57, 811, 1, "AL alone", 3, 80, 671, 2,
+  "Lopinavir-ritonavir", 3, 40, 5823, 0, "Lopinavir-ritonavir", 3, 57, 4626, 0, "Lopinavir-ritonavir", 3, 80, 3686, 0,
+  "Efavirenz", 3, 40, 250, 37, "Efavirenz", 3, 57, 203, 49, "Efavirenz", 3, 80, 166, 62,
+  "Efavirenz", 4, 40, 410, 11, "Efavirenz", 4, 57, 336, 18, "Efavirenz", 4, 80, 279, 28,
+  "Efavirenz", 5, 40, 700, 1, "Efavirenz", 5, 57, 576, 3, "Efavirenz", 5, 80, 479, 5,
+  "Rifampicin", 3, 40, 144, 69, "Rifampicin", 3, 57, 118, 80, "Rifampicin", 3, 80, 99, 87,
+  "Rifampicin", 4, 40, 243, 38, "Rifampicin", 4, 57, 201, 50, "Rifampicin", 4, 80, 166, 62,
+  "Rifampicin", 5, 40, 419, 10, "Rifampicin", 5, 57, 343, 16, "Rifampicin", 5, 80, 282, 26,
+  "Rifampicin", 6, 40, 812, 0, "Rifampicin", 6, 57, 656, 2, "Rifampicin", 6, 80, 547, 3
+)
+cmp_t4 <- left_join(t4, pub_t4, by = c("treatment", "days", "wt")) |>
+  mutate(pct_diff_med = 100 * (med / pub_med - 1))
+
+cmp_t4 |>
+  transmute(
+    treatment, days, wt,
+    sim = sprintf("%.0f (%.0f-%.0f) (%.0f%%)", med, q25, q75, pct_below),
+    pub = sprintf("%.0f (%.0f%%)", pub_med, pub_pct),
+    pct_diff_med = round(pct_diff_med, 1)
+  ) |>
+  dplyr::rename(
+    "Treatment" = treatment, "AL regimen (days)" = days, "Weight (kg)" = wt,
+    "Simulated median (IQR) (% < 200)" = sim, "Published median (% < 200)" = pub,
+    "Median difference (%)" = pct_diff_med
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  # Structural: a mis-transcribed clearance, bioavailability or DDI effect
+  # moves every median by tens of percent.
+  abs(median(cmp_t4$pct_diff_med)) < 10,
+  # Envelope, robust to which scenarios land in the tails of n = 200.
+  quantile(abs(cmp_t4$pct_diff_med), 0.9) < 20,
+  quantile(abs(cmp_t4$pct_below - cmp_t4$pub_pct), 0.9) < 12
+)
+
+# Spread: the published 3-day brackets for the 57-kg patient, read as the IQR.
+pub_iqr <- tibble::tribble(
+  ~treatment, ~pub_q25, ~pub_q75,
+  "AL alone", 548, 1194, "Lopinavir-ritonavir", 3294, 6407,
+  "Efavirenz", 132, 310, "Rifampicin", 77, 182
+)
+iqr_cmp <- cmp_t4 |>
+  filter(days == 3, wt == 57) |>
+  inner_join(pub_iqr, by = "treatment") |>
+  mutate(sim_ratio = q75 / q25, pub_ratio = pub_q75 / pub_q25)
+iqr_cmp |>
+  select(treatment, q25, q75, pub_q25, pub_q75, sim_ratio, pub_ratio) |>
+  dplyr::rename(
+    "Treatment" = treatment, "Simulated Q25" = q25, "Simulated Q75" = q75,
+    "Published Q25" = pub_q25, "Published Q75" = pub_q75,
+    "Simulated Q75/Q25" = sim_ratio, "Published Q75/Q25" = pub_ratio
+  ) |>
+  knitr::kable(digits = 2)
+stopifnot(abs(median(iqr_cmp$sim_ratio / iqr_cmp$pub_ratio) - 1) < 0.35)
+```
+
+The extended 4- to 6-day regimens are simulated as a continuation of twice-daily
+dosing (every 12 h after the 8-h second dose) with day 7 at 168 h after the
+first dose. Their simulated medians run about 10% above the published values,
+more than the 3-day rows; the paper does not describe its extended-regimen
+dosing times, so a small difference in the assumed schedule is the likely
+reason.
+
+```{r figure2, fig.height = 5}
+sim_t4 |>
+  left_join(t4_scen, by = "arm") |>
+  mutate(scenario = paste0(treatment, ", ", days, "-day")) |>
+  ggplot(aes(factor(wt), Cc)) +
+  geom_boxplot(outlier.shape = NA, coef = 0) +
+  stat_summary(fun.data = function(x) data.frame(ymin = quantile(x, 0.025), ymax = quantile(x, 0.975)), geom = "errorbar", width = 0.3) +
+  geom_hline(yintercept = 200, linetype = "dashed") +
+  scale_y_log10() +
+  facet_wrap(~scenario, nrow = 2) +
+  labs(
+    x = "Body weight (kg)", y = "Day-7 lumefantrine (ng/mL)",
+    caption = "Replicates Figure 2 of Francis 2020: box 25th-75th, whiskers 2.5th-97.5th percentiles; n = 200 per scenario."
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+Non-compartmental analysis of the standard 3-day regimen in 200 virtual 57-kg
+patients per concomitant treatment, over 0-336 h after the first dose (a
+dense grid, without residual error). The paper reports no NCA table; the check
+is that the ratio of the NCA AUC to the AL-alone arm reproduces the published
+fold changes on the median.
+
+```{r pknca}
+rxode2::rxSetSeed(20200422)
+tnca <- c(0, 0.5, 1, 2, 3, 4, 6, 8, 12, 24, 36, 48, 60, 61, 62, 63, 64, 66, 68, 72, 96, 120, 168, 216, 264, 336)
+ev_nca <- bind_rows(lapply(seq_along(scen), function(i) {
+  d <- make_events(n_arm, 57, tnca, id0 = (i - 1) * n_arm, covs = scen[[i]])
+  d$treatment <- names(scen)[i]
+  d
+}))
+sim_nca <- rxode2::rxSolve(mod, ev_nca, keep = "treatment", returnType = "data.frame")
+
+conc <- sim_nca |>
+  dplyr::filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment) |>
+  distinct(id, time, .keep_all = TRUE)
+doses <- ev_nca |>
+  dplyr::filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(doses, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 336, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+
+nca_sum <- nca_res |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+nca_sum <- nca_sum |>
+  mutate(auc_ratio = auclast / auclast[treatment == "AL alone"])
+nca_sum |>
+  dplyr::rename(
+    "Treatment" = treatment, "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-336 (h*ng/mL)" = auclast, "AUC ratio vs AL alone" = auc_ratio
+  ) |>
+  knitr::kable(digits = 2)
+
+r_nca <- setNames(nca_sum$auc_ratio, nca_sum$treatment)
+stopifnot(
+  abs(r_nca[["Lopinavir-ritonavir"]] / 3.4 - 1) < 0.2,
+  abs(r_nca[["Efavirenz"]] / 0.53 - 1) < 0.2,
+  abs(r_nca[["Rifampicin"]] / 0.41 - 1) < 0.2
+)
+```
+
+# Assumptions and deviations
+
+* **Approximate CV.** Table 3 reports variability as "approximate CV%"
+  (footnote b). For log-normal random effects the approximate CV is
+  `sqrt(omega^2)`, so the variances are encoded as `(CV/100)^2`.
+* **Occasion definition.** The paper does not define the between-occasion
+  level. One occasion per dose is assumed; this is the level at which the
+  dose-specific bioavailability effects are also defined. `OCC` is the dose
+  number (1-12 slots, covering the 4-, 5- and 6-day regimens of Table 4) and
+  must be carried forward onto the observation records after each dose.
+* **Between-visit variability.** BVV on CL/F (between phase 1 and phase 2 of
+  SEACAT 2.4.2, the Uganda studies and the U.S. study) is carried as one
+  subject-level random effect, `etabvv_cl`, which is correct for a simulation
+  of a single visit. Redraw it to simulate a second visit of the same subject.
+* **Dose-occasion mapping.** SEACAT doses at 0, 8 and 24 h and every 12 h
+  thereafter starting in the morning, so odd dose numbers are morning doses:
+  `OCC = 1` receives the first-dose effect and `OCC = 3, 5, ...` the
+  consecutive-morning effect. The Nigeria study 1 effect applies to the 6th
+  dose only and the unobserved-dose delay to the 5th dose only (Table 3,
+  footnote d; Results '(c) Dosing time').
+* **Delay implementation.** The 4.3 h delay is applied to the start of the
+  transit input of the 5th dose (a dosing-time shift), matching the Results
+  description of "a delay in the absorption for this specific occasion".
+* **Nigeria study 1 value.** Table 3 gives -60.8% while the Results text gives
+  60.1%; the table value is used.
+* **Table 4 simulations** are taken at the reference bioavailability (F = 1
+  for every dose); the paper does not state the dosing-condition assumptions
+  of its simulations, and this reading reproduces the published medians.
+* **Rifampicin plus efavirenz.** The two clearance effects combine
+  multiplicatively, as in the final model; the paper notes a non-significant
+  trend toward an even stronger effect with the combination.
+* **Covariates not retained** (nevirapine- and dolutegravir-based ART, HIV and
+  malaria infection, fat-free mass) are documented in
+  `covariatesDataExcluded` and are not part of the model.
+* **Residual error for DBS.** The paper does not report a separate residual
+  error for the dried-blood-spot samples; the DBS scaling factor multiplies the
+  prediction and the same combined residual error applies.
