@@ -96,6 +96,8 @@ navbar:
         href: articles/Sethi_2024_acetaminophen_diclofenac_mbma.html
       - text: "Acetaminophen food (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "Acetaminophen placentaperfusion (Mian 2020)"
+        href: articles/Mian_2020_acetaminophen_placentaperfusion.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
         href: articles/Westerhout_2012_acetaminophen_rat_pbpk.html
       - text: "Acetaminophen rat pbpk (Yamamoto 2017)"
@@ -7311,6 +7313,7 @@ articles:
   - articles/Mi_2023_cefquinome_pbpk
   - articles/Mi_2024_aditoprim
   - articles/Mian_2019_acetaminophen
+  - articles/Mian_2020_acetaminophen_placentaperfusion
   - articles/Miano_2024_tacrolimus
   - articles/Miao_2023_teclistamab
   - articles/Michelet_2025_BI754111_mpbpk
