@@ -2544,6 +2544,8 @@ navbar:
         href: articles/Kim_2025_infliximab.html
       - text: "Infliximab wojciechowski (Kim 2025)"
         href: articles/Kim_2025_infliximab.html
+      - text: "Inotersen (Yu 2020)"
+        href: articles/Yu_2020_inotersen.html
       - text: "Inotuzumab (Garrett 2019)"
         href: articles/Garrett_2019_inotuzumab.html
       - text: "Inotuzumab (Wu 2024)"
@@ -8188,6 +8190,7 @@ articles:
   - articles/Youssef_2024_bepirovirsen
   - articles/Yu_2015_sunitinib
   - articles/Yu_2017_mycophenolic_acid
+  - articles/Yu_2020_inotersen
   - articles/Yu_2022_ofatumumab
   - articles/Yu_2023_vancomycin
   - articles/Yu_2024_ilaprazole
