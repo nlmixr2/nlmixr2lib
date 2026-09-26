@@ -5174,6 +5174,8 @@ navbar:
         href: articles/Chae_2026_teicoplanin.html
       - text: "Teicoplanin (Chen 2023)"
         href: articles/Chen_2023_teicoplanin.html
+      - text: "Teicoplanin (Gao 2020)"
+        href: articles/Gao_2020_teicoplanin.html
       - text: "Teicoplanin (GarciaHervalejo 2026)"
         href: articles/GarciaHervalejo_2026_teicoplanin.html
       - text: "Teicoplanin (Kim 2024)"
@@ -6651,6 +6653,7 @@ articles:
   - articles/Gandhi_2021_abatacept
   - articles/Ganesan_2023_tebipenem
   - articles/Gao_2012_exenatide
+  - articles/Gao_2020_teicoplanin
   - articles/Gao_2025_cefquinome
   - articles/Gao_2026_trastuzumabRezetecan
   - articles/Gaohua_2012_pregnancy_pbpk
