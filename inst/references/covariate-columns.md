@@ -9571,6 +9571,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Akbar_2025_voriconazole.R`.
 - **Notes:** Distinct from the more specific `DIS_AML`, `DIS_BCPALL`, `DIS_CMML`, `DIS_MDS_AML` entries -- those are for leukemia-only or leukemia-vs-leukemia contrasts; `TUMTP_LEUK` is for heterogeneous-cancer pooled cohorts where leukemia is one of several tumor types and the analysis treats `cancer type` as a many-level categorical. Akbar 2025 had leukemia as 56.8% of the cohort and used it as the reference category. Scope: specific because the reference category in any source paper is paper-defined.
 
+### TUMTP_SOLID (**canonical for solid-tumor (vs hematologic malignancy) tumor-type indicator**)
+- **Description:** 1 = patient with a solid-tumor malignancy, 0 = patient with a hematologic malignancy. Time-fixed per subject. For pooled oncology analyses that combine hematologic-malignancy and solid-tumor cohorts and treat tumor type as a two-level contrast.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = hematologic malignancy (in `Lin_2020_glasdegib.R`, the pooled AML / MDS / other hematologic-malignancy patients of studies B1371001 and B1371003).
+- **Source aliases:**
+  - `Solid` -- the indicator name in the Lin 2020 glasdegib final-model equations (`Vp/F = 279.21 x (BWT/70) x (1 - 0.825 x Solid)`); used in `Lin_2020_glasdegib.R`.
+- **Example models:** `Lin_2020_glasdegib.R` (linear effects `(1 + e x TUMTP_SOLID)` on apparent peripheral volume, -0.825, and apparent intercompartmental clearance, -0.653; also selects the solid-tumor residual-error SD).
+- **Notes:** Distinct from `DIS_CANCER`, whose contrast is oncology vs NON-oncology (healthy volunteers or a non-oncology disease cohort); `TUMTP_SOLID` contrasts two oncology cohorts with each other. Member of the `TUMTP_<type>` family. Scope: specific because the complement group (which hematologic malignancies are pooled into the reference) is paper-defined.
+
 ### TUMTP_BCL (**canonical for B-cell lymphoma (pooled residual) tumor-type indicator**)
 - **Description:** 1 = B-cell lymphoma (BCL), 0 = other tumor types. Time-fixed per subject. In Gibiansky 2014 the BCL category is a pooled residual indolent-B-cell-lymphoma group that includes follicular lymphoma (FL was the primary indication in GAUDI; the four-level DIS column in the NONMEM control stream splits B-cell histologies into CLL = 1, BCL = 2 (residual indolent B-cell-lymphoma pool including FL), DLBCL = 3, MCL = 4).
 - **Units:** (binary)
@@ -9753,6 +9764,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
   - `COMBO` -- used in `Sanghavi_2020_ipilimumab.R`. Equivalently derivable from `NIVO_REGIMEN` as `COMBO_NIVO = as.integer(NIVO_REGIMEN != "none")`.
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (additive effect -0.202 on the Emax parameter of the time-varying CL function).
 - **Notes:** Distinct from the per-regimen `NIVO_1Q3W` / `NIVO_3Q2W` indicators on baseline CL: `COMBO_NIVO` aggregates across all nivolumab regimens and acts on the time-varying-CL Emax parameter, whereas the per-regimen indicators act on baseline (time-zero) CL.
+
+### BMBLAST_PCT (**canonical for baseline percentage of blasts in bone marrow**)
+- **Description:** Baseline percentage of nucleated bone-marrow cells that are blasts, from the screening / baseline bone-marrow aspirate or biopsy. Time-fixed baseline value. A marrow tumor-burden measure in AML / MDS analyses.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with linear centering `(1 + slope x (BMBLAST_PCT - ref))`. Reference value observed: 38.2% (`Lin_2020_glasdegib.R`, the median among the hematologic-malignancy patients of the population PK dataset).
+- **Source aliases:**
+  - `BPBL` (baseline percentage blasts in bone marrow) -- Lin 2020 glasdegib population PK source-column name; used in `Lin_2020_glasdegib.R`.
+- **Example models:** `Lin_2020_glasdegib.R` (linear effect -0.004 per percentage point on CL/F, centered at 38.2%). Also used, untransformed, as a screened-but-not-retained covariate in `Lin_2020_glasdegib_treatment.R` (`covariatesDataExcluded`), and log-transformed as `LOG_BMBLAST_PCT` in `Lin_2020_glasdegib_decitabine.R`.
+- **Notes:** Distinct from `BLSTPB` (percentage blasts in PERIPHERAL BLOOD -- a different specimen) and from `BLSTABL` (absolute peripheral-blood blast count). Not collected in solid-tumor patients; a pooled hematologic + solid-tumor analysis must state what value the solid-tumor subjects carry (Lin 2020 imputes missing continuous covariates at the population median, which makes the centered effect vanish). Scope: specific because the covariate is only meaningful in myeloid-malignancy analyses; promote to general if a second paper retains it.
 
 ### BLSTPB (**canonical for baseline percentage of blasts in peripheral blood**)
 - **Description:** Baseline percentage of circulating peripheral-blood leukocytes that are blasts (immature lymphoid/myeloid precursor cells). Time-fixed baseline value. A relative measure of circulating tumour burden in B-cell leukemia population PK analyses, where it proxies the size of the target (CD22) sink available to an anti-CD22 antibody-drug conjugate.
