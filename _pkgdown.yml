@@ -1250,6 +1250,8 @@ navbar:
         href: articles/Wang_2019_cpx351.html
       - text: "DZIF10c (Kurup 2024)"
         href: articles/Kurup_2024_DZIF10c.html
+      - text: "Dabigatran (Fuhr 2020)"
+        href: articles/Fuhr_2020_dabigatran.html
       - text: "Dabigatran (Liesenfeld 2013)"
         href: articles/Liesenfeld_2013_dabigatran.html
       - text: "Dabigatran (Yang 2024)"
@@ -6640,6 +6642,7 @@ articles:
   - articles/Fu_2022_atenolol_qsp
   - articles/Fu_2023_cardiovascular
   - articles/Fuchs_2014_gentamicin
+  - articles/Fuhr_2020_dabigatran
   - articles/Fukae_2024_valemetostat_exposure_response
   - articles/Fukumoto_2023_meropenem
   - articles/Fung_2008_butanediol_rat

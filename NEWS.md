@@ -4,6 +4,8 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
+- Add Fuhr 2020 dabigatran coagulation-time PD (aPTT, dTT, ECT, TT) ([doi:10.1007/s40262-019-00857-y](https://doi.org/10.1007/s40262-019-00857-y)) -- healthy, elderly, renally impaired and Japanese adults on dabigatran etexilate, with and without idarucizumab reversal.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
