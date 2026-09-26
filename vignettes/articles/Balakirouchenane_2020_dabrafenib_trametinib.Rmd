@@ -66,13 +66,13 @@ str(mod_dab$population[c("n_subjects", "age_range", "sex_female_pct", "dose_rang
 | `lka` (fixed) | 1.8 1/h | Table 2; Methods 4.4.1 |
 | `ltlag` | 0.499 h | Table 2 |
 | `lcl`, `lvc`, `lq`, `lvp` | 19.3 L/h, 39.1 L, 3.40 L/h, 18.7 L | Table 2 (CL/F, V2/F, Q/F, V4/F) |
-| `lcl_ohd`, `lvc_ohd`, `lq_ohd`, `lvp_ohd` | 23.2 L/h, 5.11 L, 7.21 L/h, 27.1 L | Table 2 (CLm/F, V3/F, Qm/F, V5/F) |
-| `e_age_cl`, `e_age_cl_ohd` | -0.536, -0.589 | Table 2 (unsigned); sign from Results 2.2.1 and Figure 3 |
+| `lcl_ohdab`, `lvc_ohdab`, `lq_ohdab`, `lvp_ohdab` | 23.2 L/h, 5.11 L, 7.21 L/h, 27.1 L | Table 2 (CLm/F, V3/F, Qm/F, V5/F) |
+| `e_age_cl`, `e_age_cl_ohdab` | -0.536, -0.589 | Table 2 (unsigned); sign from Results 2.2.1 and Figure 3 |
 | `e_sexf_cl` | 0.832 | Table 2 |
 | Covariate equations, MAGE = 61.2 y, Sex 1 = woman | -- | Table 2 footnote |
-| `etalcl`, `etalvc`, `etalcl_ohd`, `etalvc_ohd` | 16.0, 50.8, 24.0, 47.5 %CV | Table 2 |
+| `etalcl`, `etalvc`, `etalcl_ohdab`, `etalvc_ohdab` | 16.0, 50.8, 24.0, 47.5 %CV | Table 2 |
 | `etaiov_cl_*` | 17.4 %CV | Table 2 'IOV' |
-| `propSd`, `propSd_ohd` | 48.7%, 53.1% | Table 2 (correlation 87.0% not encoded) |
+| `propSd`, `propSd_ohdab` | 48.7%, 53.1% | Table 2 (correlation 87.0% not encoded) |
 | Molecular weights 519.56 / 535.56 g/mol | -- | Computed from the formulas; analysis in molar units per Methods 4.4 |
 | Trametinib structure: 2-cmt, lag + first-order absorption | -- | Results 2.2.2 |
 | `lka`, `ltlag`, `lcl`, `lvc`, `lq`, `lvp` | 0.913 1/h, 0.709 h, 5.83 L/h, 61.9 L, 64.9 L/h, 417.0 L | Table 3 |
@@ -132,17 +132,17 @@ sim_typ <- as.data.frame(rxode2::rxSolve(mod_dab, ev_typ, omega = NA, sigma = NA
 
 typ <- sim_typ |>
   dplyr::group_by(group) |>
-  dplyr::summarise(auc_dab = trap(time, Cc), auc_ohd = trap(time, Cc_ohd), .groups = "drop") |>
-  dplyr::mutate(composite = auc_dab + auc_ohd) |>
+  dplyr::summarise(auc_dab = trap(time, Cc), auc_ohdab = trap(time, Cc_ohdab), .groups = "drop") |>
+  dplyr::mutate(composite = auc_dab + auc_ohdab) |>
   dplyr::left_join(groups, by = "group") |>
   dplyr::mutate(pct_diff = 100 * (composite - published) / published)
 
 typ |>
-  dplyr::select(group, auc_dab, auc_ohd, composite, published, pct_diff) |>
-  dplyr::mutate(dplyr::across(c(auc_dab, auc_ohd, composite), round)) |>
+  dplyr::select(group, auc_dab, auc_ohdab, composite, published, pct_diff) |>
+  dplyr::mutate(dplyr::across(c(auc_dab, auc_ohdab, composite), round)) |>
   dplyr::rename(
     "Group" = group, "AUCtau DAB (ng.h/mL)" = auc_dab,
-    "AUCtau OHD (ng.h/mL)" = auc_ohd, "Composite (ng.h/mL)" = composite,
+    "AUCtau OHD (ng.h/mL)" = auc_ohdab, "Composite (ng.h/mL)" = composite,
     "Figure 3 median (ng.h/mL)" = published, "% difference" = pct_diff
   ) |>
   knitr::kable(digits = 2, caption = "Typical-value composite AUC vs Figure 3 medians.")
@@ -168,8 +168,8 @@ sim_dab <- as.data.frame(rxode2::rxSolve(mod_dab, ev_dab, keep = "group",
 
 ```{r plot-dab, fig.cap = "Steady-state profiles over one 12-h interval: median and 5th-95th percentiles of the individual predictions (no residual error), by Figure 3 group. The shape corresponds to the pcVPC of Figure 2."}
 sim_dab |>
-  dplyr::select(id, time, group, Cc, Cc_ohd) |>
-  tidyr::pivot_longer(c(Cc, Cc_ohd), names_to = "analyte", values_to = "conc") |>
+  dplyr::select(id, time, group, Cc, Cc_ohdab) |>
+  tidyr::pivot_longer(c(Cc, Cc_ohdab), names_to = "analyte", values_to = "conc") |>
   dplyr::mutate(analyte = ifelse(analyte == "Cc", "Dabrafenib", "Hydroxy-dabrafenib"),
                 tad = time - ss_start) |>
   dplyr::group_by(group, analyte, tad) |>
@@ -187,8 +187,8 @@ sim_dab |>
 
 ```{r nca-dab}
 nca_in <- sim_dab |>
-  dplyr::select(id, time, group, Cc, Cc_ohd) |>
-  tidyr::pivot_longer(c(Cc, Cc_ohd), names_to = "analyte", values_to = "conc") |>
+  dplyr::select(id, time, group, Cc, Cc_ohdab) |>
+  tidyr::pivot_longer(c(Cc, Cc_ohdab), names_to = "analyte", values_to = "conc") |>
   dplyr::filter(!is.na(conc)) |>
   dplyr::rename(treatment = group)
 
@@ -218,26 +218,26 @@ trapezoidal error and a tight bound is appropriate.
 
 ```{r identity-dab}
 indiv <- sim_dab |>
-  dplyr::distinct(id, cl, cl_ohd)
+  dplyr::distinct(id, cl, cl_ohdab)
 ident <- nca_wide |>
   dplyr::left_join(indiv, by = "id") |>
   dplyr::mutate(
     dab_pct = 100 * (Cc_auclast - 150 / cl * 1000) / (150 / cl * 1000),
-    ohd_ref = 150 / cl_ohd * (535.56 / 519.56) * 1000,
-    ohd_pct = 100 * (Cc_ohd_auclast - ohd_ref) / ohd_ref
+    ohdab_ref = 150 / cl_ohdab * (535.56 / 519.56) * 1000,
+    ohdab_pct = 100 * (Cc_ohdab_auclast - ohdab_ref) / ohdab_ref
   )
 knitr::kable(tibble::tibble(
   Analyte = c("Dabrafenib", "Hydroxy-dabrafenib"),
-  "Max absolute % difference" = c(max(abs(ident$dab_pct)), max(abs(ident$ohd_pct)))
+  "Max absolute % difference" = c(max(abs(ident$dab_pct)), max(abs(ident$ohdab_pct)))
 ), digits = 3, caption = "PKNCA AUCtau vs the analytic steady-state value.")
-stopifnot(max(abs(ident$dab_pct)) < 1, max(abs(ident$ohd_pct)) < 1)
+stopifnot(max(abs(ident$dab_pct)) < 1, max(abs(ident$ohdab_pct)) < 1)
 ```
 
 ### Comparison against Figure 3
 
 ```{r compare-fig3}
 sim_summary <- nca_wide |>
-  dplyr::mutate(composite = Cc_auclast + Cc_ohd_auclast) |>
+  dplyr::mutate(composite = Cc_auclast + Cc_ohdab_auclast) |>
   dplyr::group_by(treatment) |>
   dplyr::summarise(auclast = median(composite), .groups = "drop")
 
@@ -275,7 +275,7 @@ cohort's median age are of the same order.
 ```{r median-age}
 ev_med <- make_dab_events(1, tibble::tibble(group = "Man, 61.2 y", AGE = 61.2, SEXF = 0))
 sim_med <- as.data.frame(rxode2::rxSolve(mod_dab, ev_med, omega = NA, sigma = NA))
-c(auc_dab = trap(sim_med$time, sim_med$Cc), auc_ohd = trap(sim_med$time, sim_med$Cc_ohd))
+c(auc_dab = trap(sim_med$time, sim_med$Cc), auc_ohdab = trap(sim_med$time, sim_med$Cc_ohdab))
 ```
 
 # Trametinib

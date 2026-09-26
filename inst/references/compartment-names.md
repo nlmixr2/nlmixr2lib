@@ -5055,13 +5055,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Hennig_2006_itraconazole.R`, `Hennig_2007_itraconazole.R`.
 
-### ohd (**canonical hydroxy-dabrafenib suffix**)
+### ohdab (**canonical hydroxy-dabrafenib suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Hydroxy-dabrafenib (GSK2285403), the active CYP3A4 / CYP2C8 oxidative metabolite of dabrafenib, roughly twofold more potent than the parent against mutant BRAF. Used in parent + metabolite simultaneous popPK models (compartments `central_ohd` / `peripheral1_ohd`, parameters `lcl_ohd` / `lvc_ohd` / `lq_ohd` / `lvp_ohd`, residual `propSd_ohd`).
+- **Role:** Hydroxy-dabrafenib (GSK2285403), the active CYP3A4 / CYP2C8 oxidative metabolite of dabrafenib, roughly twofold more potent than the parent against mutant BRAF. Used in parent + metabolite simultaneous popPK models (compartments `central_ohdab` / `peripheral1_ohdab`, parameters `lcl_ohdab` / `lvc_ohdab` / `lq_ohdab` / `lvp_ohdab`, residual `propSd_ohdab`).
 - **Source aliases:**
   - `OHD` -- Balakirouchenane 2020 throughout (Figure 1, Table 2).
 - **Example models:** `Balakirouchenane_2020_dabrafenib.R` (founding example; two-compartment parent converted entirely to a two-compartment metabolite).
-- **Notes:** Follows the `oh<drug-initial>` pattern of `ohi` (hydroxy-itraconazole) and the source's own `OHD` abbreviation. Distinct from desmethyl-dabrafenib and carboxy-dabrafenib, which would need their own tokens.
+- **Notes:** Follows the `oh<drug-abbreviation>` pattern of `ohcla` (hydroxy-clarithromycin) and `ohsal`. Spelled `ohdab` rather than the source's `OHD` so that the `d` cannot be read as desmethyl. Distinct from desmethyl-dabrafenib and carboxy-dabrafenib, which would need their own tokens.
 
 ### ohcla (**canonical 14-(R)-hydroxy-clarithromycin suffix**)
 - **Type:** metabolite-suffix

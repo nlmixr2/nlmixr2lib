@@ -49,13 +49,13 @@ Balakirouchenane_2020_dabrafenib <- function() {
       specimen = "plasma",
       verified = FALSE
     ),
-    central_ohd = list(
+    central_ohdab = list(
       analyte = "hydroxy-dabrafenib",
       units = "mg dabrafenib-equivalents (apparent, i.e. amount/F)",
       specimen = "plasma",
       verified = FALSE
     ),
-    peripheral1_ohd = list(
+    peripheral1_ohdab = list(
       analyte = "hydroxy-dabrafenib",
       units = "mg dabrafenib-equivalents (apparent, i.e. amount/F)",
       specimen = "plasma",
@@ -239,10 +239,10 @@ Balakirouchenane_2020_dabrafenib <- function() {
     lvp <- log(18.7); label("Dabrafenib apparent peripheral volume V4/F (L)") # Table 2 'V4/F (L) 18.7' (RSE 20.1%); bootstrap median 18.7
 
     # ---- Hydroxy-dabrafenib disposition (apparent values) ----
-    lcl_ohd <- log(23.2); label("Hydroxy-dabrafenib apparent clearance CLm/F at age 61.2 years (L/h)") # Table 2 'CLm/F (L/h) 23.2' (RSE 5.9%); bootstrap median 22.9
-    lvc_ohd <- log(5.11); label("Hydroxy-dabrafenib apparent central volume V3/F (L)") # Table 2 'V3/F (L) 5.11' (RSE 30.5%); bootstrap median 4.99
-    lq_ohd <- log(7.21); label("Hydroxy-dabrafenib apparent intercompartmental clearance Qm/F (L/h)") # Table 2 'Qm/F (L/h) 7.21' (RSE 22.3%); bootstrap median 7.02
-    lvp_ohd <- log(27.1); label("Hydroxy-dabrafenib apparent peripheral volume V5/F (L)") # Table 2 'V5/F (L) 27.1' (RSE 23.9%); bootstrap median 24.7
+    lcl_ohdab <- log(23.2); label("Hydroxy-dabrafenib apparent clearance CLm/F at age 61.2 years (L/h)") # Table 2 'CLm/F (L/h) 23.2' (RSE 5.9%); bootstrap median 22.9
+    lvc_ohdab <- log(5.11); label("Hydroxy-dabrafenib apparent central volume V3/F (L)") # Table 2 'V3/F (L) 5.11' (RSE 30.5%); bootstrap median 4.99
+    lq_ohdab <- log(7.21); label("Hydroxy-dabrafenib apparent intercompartmental clearance Qm/F (L/h)") # Table 2 'Qm/F (L/h) 7.21' (RSE 22.3%); bootstrap median 7.02
+    lvp_ohdab <- log(27.1); label("Hydroxy-dabrafenib apparent peripheral volume V5/F (L)") # Table 2 'V5/F (L) 27.1' (RSE 23.9%); bootstrap median 24.7
 
     # ---- Covariate effects (Table 2 and its footnote) ----
     # CL_ind/F  = CL/F  * (1 + theta_age,CL  * (AGE - 61.2)/61.2) * theta_sex^Sex * exp(eta)
@@ -251,15 +251,15 @@ Balakirouchenane_2020_dabrafenib <- function() {
     # paper's own 20-vs-90-year clearance decreases (55% and 51%) and its
     # Figure 3 AUCs require (see covariateData$AGE$notes).
     e_age_cl <- -0.536; label("Linear age effect on dabrafenib CL/F per unit relative deviation from 61.2 years (unitless)") # Table 2 'theta age/(CL/F) 0.536' (RSE 28.4%), sign from Results 2.2.1
-    e_age_cl_ohd <- -0.589; label("Linear age effect on hydroxy-dabrafenib CLm/F per unit relative deviation from 61.2 years (unitless)") # Table 2 'theta age/(CLm/F) 0.589' (RSE 33.6%), sign from Results 2.2.1
+    e_age_cl_ohdab <- -0.589; label("Linear age effect on hydroxy-dabrafenib CLm/F per unit relative deviation from 61.2 years (unitless)") # Table 2 'theta age/(CLm/F) 0.589' (RSE 33.6%), sign from Results 2.2.1
     e_sexf_cl <- 0.832; label("Multiplicative factor on dabrafenib CL/F for women vs men (unitless)") # Table 2 'theta sex/(CL/F) 0.832' (RSE 6.4%); bootstrap median 0.829
 
     # ---- Inter-individual variability (Table 2) ----
     # Reported as CV%; on the exponential-eta scale omega^2 = log(1 + CV^2).
     etalcl ~ 0.025278 # log(1 + 0.160^2); Table 2 'IIV CL/F (%) 16.0'
     etalvc ~ 0.229574 # log(1 + 0.508^2); Table 2 'IIV V2/F (%) 50.8'
-    etalcl_ohd ~ 0.056002 # log(1 + 0.240^2); Table 2 'IIV CLm/F (%) 24.0'
-    etalvc_ohd ~ 0.203451 # log(1 + 0.475^2); Table 2 'IIV V3/F (%) 47.5'
+    etalcl_ohdab ~ 0.056002 # log(1 + 0.240^2); Table 2 'IIV CLm/F (%) 24.0'
+    etalvc_ohdab ~ 0.203451 # log(1 + 0.475^2); Table 2 'IIV V3/F (%) 47.5'
 
     # ---- Inter-occasion variability on dabrafenib CL/F (Table 2) ----
     # Occasion-indicator expansion (NONMEM $OMEGA BLOCK(1) SAME style); the
@@ -276,7 +276,7 @@ Balakirouchenane_2020_dabrafenib <- function() {
     # (Table 2 'RUV corr (%) 87.0'); correlated residual errors cannot be
     # expressed in nlmixr2, so they are independent here.
     propSd <- 0.487; label("Dabrafenib proportional residual error (fraction)") # Table 2 'RUV of DAB (%) 48.7' (RSE 6.6%)
-    propSd_ohd <- 0.531; label("Hydroxy-dabrafenib proportional residual error (fraction)") # Table 2 'RUV of OHD (%) 53.1' (RSE 6.3%)
+    propSd_ohdab <- 0.531; label("Hydroxy-dabrafenib proportional residual error (fraction)") # Table 2 'RUV of OHD (%) 53.1' (RSE 6.3%)
   })
 
   model({
@@ -305,35 +305,35 @@ Balakirouchenane_2020_dabrafenib <- function() {
     vc <- exp(lvc + etalvc)
     q <- exp(lq)
     vp <- exp(lvp)
-    cl_ohd <- exp(lcl_ohd + etalcl_ohd) *
-      (1 + e_age_cl_ohd * (AGE - ageMedian) / ageMedian)
-    vc_ohd <- exp(lvc_ohd + etalvc_ohd)
-    q_ohd <- exp(lq_ohd)
-    vp_ohd <- exp(lvp_ohd)
+    cl_ohdab <- exp(lcl_ohdab + etalcl_ohdab) *
+      (1 + e_age_cl_ohdab * (AGE - ageMedian) / ageMedian)
+    vc_ohdab <- exp(lvc_ohdab + etalvc_ohdab)
+    q_ohdab <- exp(lq_ohdab)
+    vp_ohdab <- exp(lvp_ohdab)
 
     # ---- Micro-constants ----
     kel <- cl / vc
     k12 <- q / vc
     k21 <- q / vp
-    kel_ohd <- cl_ohd / vc_ohd
-    k12_ohd <- q_ohd / vc_ohd
-    k21_ohd <- q_ohd / vp_ohd
+    kel_ohdab <- cl_ohdab / vc_ohdab
+    k12_ohdab <- q_ohdab / vc_ohdab
+    k21_ohdab <- q_ohdab / vp_ohdab
 
     # ---- ODE system (Figure 1) ----
     d/dt(depot) <- -ka * depot
     d/dt(central) <- ka * depot - kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
-    d/dt(central_ohd) <- kel * central - kel_ohd * central_ohd -
-      k12_ohd * central_ohd + k21_ohd * peripheral1_ohd
-    d/dt(peripheral1_ohd) <- k12_ohd * central_ohd - k21_ohd * peripheral1_ohd
+    d/dt(central_ohdab) <- kel * central - kel_ohdab * central_ohdab -
+      k12_ohdab * central_ohdab + k21_ohdab * peripheral1_ohdab
+    d/dt(peripheral1_ohdab) <- k12_ohdab * central_ohdab - k21_ohdab * peripheral1_ohdab
 
     lag(depot) <- tlag
 
     # ---- Observations ----
     Cc <- central / vc * mgPerLToNgPerMl
-    Cc_ohd <- central_ohd / vc_ohd * (mwOhd / mwDab) * mgPerLToNgPerMl
+    Cc_ohdab <- central_ohdab / vc_ohdab * (mwOhd / mwDab) * mgPerLToNgPerMl
 
     Cc ~ prop(propSd)
-    Cc_ohd ~ prop(propSd_ohd)
+    Cc_ohdab ~ prop(propSd_ohdab)
   })
 }
