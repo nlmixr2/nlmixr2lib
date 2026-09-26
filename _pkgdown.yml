@@ -4824,6 +4824,8 @@ navbar:
         href: articles/Shin_2014_sevoflurane.html
       - text: "Sglt qsp (Lu 2014)"
         href: articles/Lu_2014_sglt_qsp.html
+      - text: "Sglt qsp (Sokolov 2020)"
+        href: articles/Sokolov_2020_sglt_qsp.html
       - text: "Sglt2 endpoints mbma (Yao 2023)"
         href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "Sglt2 hba1c mbma (Sato 2024)"
@@ -7762,6 +7764,7 @@ articles:
   - articles/Snelder_2020_ASP8232
   - articles/Soehoel_2022_tralokinumab
   - articles/Sokolov_2019_antipcsk9_qsp
+  - articles/Sokolov_2020_sglt_qsp
   - articles/Sokolov_2023_dapagliflozin
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027
