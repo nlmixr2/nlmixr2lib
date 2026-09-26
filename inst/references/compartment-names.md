@@ -2152,7 +2152,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Mean arterial pressure (mmHg) PD output; the mean-pressure sibling of `sbp` and `dbp`. May be an indirect-response turnover state, or -- as in Dings 2026 -- an algebraic Emax output computed from an upstream effect-delay cascade and an at-diagnosis baseline anchor.
 - **Source aliases:**
   - `MAP` -- the near-universal clinical abbreviation; used directly in Dings 2026 Eq. A13.
-- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `map = MAP_BL + (rmax_map - MAP_BL) * conc/(conc + ec50_map) + ...`, fitted jointly with `sbp` and `hr` as one three-output model).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `map = MAP_BL + (rmax_map - MAP_BL) * conc/(conc + ec50_map) + ...`, fitted jointly with `sbp` and `hr` as one three-output model), `Hallik_2020_dobutamine_map.R` (neonatal sigmoidal Emax in plasma dobutamine, `map = rbase_map + (rmax_map - rbase_map) * Cc^hill_map / (ec50_map^hill_map + Cc^hill_map)`, fitted jointly with `Cc`).
 - **Notes:** Holds a blood-pressure value (mmHg), not a drug concentration. Distinct from the raw absolute-value *covariate* anchors `MAP_PRESURG` / `MAP_BL` in `covariate-columns.md`: those are pre-treatment data values used to centre and anchor the model, whereas `map` is the model's predicted output at any time.
 
 ### hr (**canonical heart-rate PD state**)
@@ -2160,8 +2160,40 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Heart rate (beats/min) PD output. May be an indirect-response turnover state, or -- as in Dings 2026 -- an algebraic Emax output computed from an upstream effect-delay cascade and an at-diagnosis baseline anchor.
 - **Source aliases:**
   - `HR` -- the near-universal clinical abbreviation; used directly in Dings 2026 Eq. A12.
-- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + e_event_hr * iu`, fitted jointly with `map` and `sbp`).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + e_event_hr * iu`, fitted jointly with `map` and `sbp`), `Hallik_2020_dobutamine_hr.R` (neonatal sigmoidal Emax in the effect-compartment dobutamine concentration, fitted jointly with `Cc`).
 - **Notes:** Holds a rate in beats/min, not a drug concentration. Distinct from the `HR` *covariate* (an observed heart-rate data value used as a covariate on clearance, e.g. `Ngamprasertwong_2016_propofol_sheep.R`) and from its anchor siblings `HR_PRESURG` / `HR_BL`: those are inputs, `hr` is the predicted output.
+
+### rvo (**canonical right ventricular cardiac output PD output**)
+- **Type:** compartment
+- **Role:** Right ventricular cardiac output (mL/kg/min, echocardiography) PD output: the flow ejected by the right ventricle, normalised to body weight. An algebraic concentration-effect output in the founding example.
+- **Source aliases:**
+  - `RVO` -- the neonatal echocardiography abbreviation; used directly in Hallik 2020 Table 4.
+- **Example models:** `Hallik_2020_dobutamine_rvo.R` (linear in plasma dobutamine, `rvo = rbase_rvo + slope_rvo * Cc`, fitted jointly with `Cc`).
+- **Notes:** Holds a blood flow, not a drug concentration. Ventricle-specific sibling of `lvo`. In neonates the two differ because shunts through the ductus arteriosus and foramen ovale are still open, so they must not share one name. Distinct from total cardiac output (`CO`, used unregistered in the Snelder 2013/2014 rat and Fu 2023 cardiovascular QSP models). Belongs to the lowercase PD-state family with `hr`, `map`, `sbp`, `dbp`.
+
+### lvo (**canonical left ventricular cardiac output PD output**)
+- **Type:** compartment
+- **Role:** Left ventricular cardiac output (mL/kg/min, echocardiography) PD output: the flow ejected by the left ventricle, normalised to body weight. An algebraic concentration-effect output in the founding example.
+- **Source aliases:**
+  - `LVO` -- the neonatal echocardiography abbreviation; used directly in Hallik 2020 Table 4.
+- **Example models:** `Hallik_2020_dobutamine_lvo.R` (sigmoidal Emax in plasma dobutamine toward a plateau level `rmax_lvo`, fitted jointly with `Cc`).
+- **Notes:** Holds a blood flow, not a drug concentration. Ventricle-specific sibling of `rvo`; see there for why the two stay separate and how they differ from total cardiac output.
+
+### lvef (**canonical left ventricular ejection fraction PD output**)
+- **Type:** compartment
+- **Role:** Left ventricular ejection fraction (%) PD output: stroke volume as a percentage of end-diastolic volume, an imaging measure of systolic function.
+- **Source aliases:**
+  - `LVEF` -- the clinical abbreviation; used directly in Hallik 2020 Table 4. It is also the observation name of the earlier `deVriesSchultink_2018_trastuzumab_LVEF.R`, which is left unchanged.
+- **Example models:** `Hallik_2020_dobutamine_lvef.R` (linear in plasma dobutamine, `lvef = rbase_lvef + slope_lvef * Cc`, fitted jointly with `Cc`).
+- **Notes:** Holds a percentage, not a drug concentration. Named in lowercase to match the PD-state family (`hr`, `map`, `rvo`, `lvo`). Distinct from any baseline-LVEF *covariate*, which is an input rather than the model's predicted output.
+
+### ftoe_cerebral (**canonical cerebral fractional tissue oxygen extraction PD output**)
+- **Type:** compartment
+- **Role:** Cerebral fractional tissue oxygen extraction, `(SaO2 - rScO2) / SaO2` (unitless fraction). It is computed from arterial oxygen saturation and cerebral regional oxygen saturation (near-infrared spectroscopy) and used as a surrogate for cerebral oxygen delivery; a fall suggests better cerebral blood flow.
+- **Source aliases:**
+  - `cFTOE` -- the neonatal NIRS abbreviation; used directly in Hallik 2020 Table 5.
+- **Example models:** `Hallik_2020_dobutamine_ftoe_cerebral.R` (sigmoidal Emax in plasma dobutamine toward a plateau level `rmax_ftoe_cerebral` that lies below the baseline, so the typical effect is a fall; fitted jointly with `Cc`).
+- **Notes:** Holds a fraction, not a drug concentration. The name spells out the tissue as a suffix on the `ftoe` stem (the maintainers' spelled-out naming rule), leaving room for renal or splanchnic siblings such as `ftoe_renal`.
 
 ### rr (**canonical absolute R-R interval PD state**)
 - **Type:** compartment
