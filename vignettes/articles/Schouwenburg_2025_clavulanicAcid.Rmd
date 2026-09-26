@@ -146,8 +146,10 @@ gates <- tibble::tibble(
                 auc_or,
                 {
                   # Post-IV decay is exactly mono-exponential for this model, so
-                  # an interior window recovers kel; stay well above solver noise.
-                  tail_dat <- dplyr::filter(s_iv_o, time >= 8, time <= 25, Cc > 1e-8)
+                  # an interior window recovers kel; stay well above solver noise
+                  # (Cc >= 1e-6 of Cmax, below which the ODE tail is noise).
+                  tail_dat <- dplyr::filter(s_iv_o, time >= 8, time <= 25,
+                                            Cc >= 1e-6 * max(Cc))
                   log(2) / -coef(lm(log(Cc) ~ time, tail_dat))[["time"]]
                 },
                 unique(s_iv$cl)[1],
@@ -554,10 +556,14 @@ sim_nca_raw <- rxode2::rxSolve(ui, events = ev_nca, omega = NA,
                                keep = c("treatment", "WT")) |>
   as.data.frame()
 
-# PKNCA input: filter on !is.na(Cc) ONLY. Adding time > 0 or Cc > 0 would drop
-# the time-zero row and trigger the AUC-range warning for every subject.
+# PKNCA input: never drop the time-zero row (a time > 0 or Cc > 0 filter would,
+# triggering the AUC-range warning for every subject). Per subject, keep
+# Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
 sim_nca <- sim_nca_raw |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 # Guarantee a time-zero record (pre-dose Cc = 0 is correct for extravascular).

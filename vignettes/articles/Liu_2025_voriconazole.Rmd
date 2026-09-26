@@ -512,7 +512,9 @@ ss_obs <- subjects |>
 ev_ss <- dplyr::bind_rows(ss_dose, ss_obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-sim_ss <- rxode2::rxSolve(mod, events = ev_ss, keep = c("arm")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod, events = ev_ss, keep = c("arm"),
+                          maxsteps = 1e6) |>
   as.data.frame()
 
 auc_trap <- sim_ss |>

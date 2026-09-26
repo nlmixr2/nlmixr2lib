@@ -187,7 +187,8 @@ cmax_nM <- max(sim_mo_df$Cc, na.rm = TRUE)
 cmax_ug_mL <- max(sim_mo_df$Cc_ug_per_mL, na.rm = TRUE)
 
 # Approximate terminal half-life from log-linear regression on last 5 points
-tail_dat <- tail(sim_mo_df[sim_mo_df$Cc > 0, ], 6)
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_dat <- tail(sim_mo_df[sim_mo_df$Cc >= 1e-6 * cmax_nM, ], 6)
 if (nrow(tail_dat) >= 3 && all(tail_dat$Cc > 0)) {
   fit <- lm(log(Cc) ~ time_day, data = tail_dat)
   thalf_day <- log(2) / abs(coef(fit)[2])

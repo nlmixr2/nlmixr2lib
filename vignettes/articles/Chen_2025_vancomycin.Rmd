@@ -193,7 +193,9 @@ mod <- readModelDb("Chen_2025_vancomycin") |> rxode2::zeroRe()
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("regimen", "tau", "tinf", "n_doses", "CRCL", "SCORE_CCI", "WT")
+  keep   = c("regimen", "tau", "tinf", "n_doses", "CRCL", "SCORE_CCI", "WT"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 

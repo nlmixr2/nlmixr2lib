@@ -348,9 +348,9 @@ stopifnot(max(cov_chk$rel_diff) < 1e-10)
 ## Check 5 - terminal half-life matches the disposition eigenvalue
 
 ```{r check-halflife}
-# `Cc > 1e-12` guards log() against solver round-off in the far tail. This is a
-# typical-value solve, not the PKNCA input.
-tail_win <- sim_tv |> dplyr::filter(time >= 8, time <= 24, Cc > 1e-12)
+# The 1e-6-of-peak floor keeps the fit out of the far tail, where the solver has
+# no relative accuracy left. This is a typical-value solve, not the PKNCA input.
+tail_win <- sim_tv |> dplyr::filter(time >= 8, time <= 24, Cc >= 1e-6 * max(Cc))
 lz <- -coef(lm(log(tail_win$Cc) ~ tail_win$time))[[2]]
 
 cat(sprintf("terminal t1/2 from the beta eigenvalue = %.4f h\n", t_half_beta))
@@ -448,6 +448,10 @@ sim |>
 ```{r pknca}
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 # Guarantee a time = 0 row per (id, treatment); pre-dose Cc = 0 is correct for

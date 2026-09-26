@@ -321,7 +321,8 @@ already in L/day; re-multiplying would give a 5.6-day half-life).
 ```{r half-life}
 # Fit the terminal slope well after the distribution phase and after the
 # time-varying clearance has settled, so log(2)/k is the true beta half-life.
-tail_win <- dplyr::filter(s_single, time >= 300, time <= 600, Cc > 0)
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_win <- dplyr::filter(s_single, time >= 300, time <= 600, Cc >= 1e-6 * max(Cc))
 k_beta   <- -unname(coef(lm(log(Cc) ~ time, data = tail_win))[2])
 
 c(`terminal half-life (days)` = round(log(2) / k_beta, 1),

@@ -327,7 +327,9 @@ mod <- readModelDb("Darwish_2025b_trofinetide")
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("study", "band", "amt_mg")
+  keep = c("study", "band", "amt_mg"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   # rxSolve returns observation records only (there is no `evid` column in the

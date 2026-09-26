@@ -200,7 +200,8 @@ thalf_mouse_analytic <- analytic_thalf(0.07, 1.2, 1.6, 1.2)
 sim_thalf <- function(mod, amt, tmax, tfit) {
   s <- solve_typical(mod, add_obs(rxode2::et(amt = amt, cmt = "central"),
                                   seq(0, tmax, by = tmax / 2000)))
-  s <- s[s$time >= tfit & s$Cc > 0, ]
+  # Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  s <- s[s$time >= tfit & s$Cc >= 1e-6 * max(s$Cc), ]
   unname(log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = s))[2])
 }
 thalf_dog_sim   <- sim_thalf(dog_mod,   20000, 96,  48)
@@ -464,7 +465,11 @@ nca_conc <- dplyr::bind_rows(
   single_dose(mouse_mod, 20,    336, "IV", "mouse"),
   single_dose(mouse_mod, 20,    336, "PO", "mouse")
 ) |>
-  dplyr::filter(!is.na(Cc))
+  dplyr::filter(!is.na(Cc)) |>
+  # Per profile, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Time-zero guarantee (extravascular pre-dose Cc = 0).
 nca_conc <- dplyr::bind_rows(

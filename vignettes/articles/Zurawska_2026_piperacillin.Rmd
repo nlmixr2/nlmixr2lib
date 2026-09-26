@@ -507,7 +507,7 @@ stopifnot(all(nca_sim$Cc > 0))
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(id) |>
-  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 

@@ -373,7 +373,7 @@ sim_nca <- sim_nca_raw |>
   # the ODE integrated numerically those points carry relative error far above
   # the terminal-slope signal, and PKNCA's half-life fit would follow the noise.
   dplyr::group_by(id) |>
-  dplyr::filter(Cc >= 1e-6 * max(Cc, na.rm = TRUE)) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc, na.rm = TRUE)) |>
   dplyr::ungroup() |>
   dplyr::mutate(treatment = "15 mg/kg IV, interdialytic") |>
   dplyr::select(id, time, Cc, treatment)

@@ -293,7 +293,11 @@ stopifnot(
 ```{r pknca-single}
 sd_nca <- sim |>
   filter(arm != "300 mg q12h", !is.na(Cc)) |>
-  select(id, time, Cc, arm)
+  select(id, time, Cc, arm) |>
+  # Keep Cc >= 1e-6 * max(Cc) per subject after the peak (solver noise below); time zero is re-added below.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup()
 
 # Guarantee a time = 0 row per (id, arm) so PKNCA can anchor AUC0-*.
 sd_nca <- bind_rows(

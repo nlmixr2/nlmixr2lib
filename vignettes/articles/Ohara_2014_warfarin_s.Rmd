@@ -322,9 +322,10 @@ rec <- solveTypical(recEvents)
 # Fit the log-linear return to baseline late enough that residual S-warfarin
 # (half-life ~40 h) has decayed far below the turnover mode (half-life ~51 h).
 recTail <- rec |>
-  dplyr::filter(time >= 24 * 40, time <= 24 * 58) |>
   dplyr::mutate(gap = NPT0_REF - NPT) |>
-  dplyr::filter(gap > 1e-9)
+  # Keep gap >= 1e-6 * its peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::filter(gap >= 1e-6 * max(gap)) |>
+  dplyr::filter(time >= 24 * 40, time <= 24 * 58, gap > 1e-9)
 
 kRecovered <- -stats::coef(stats::lm(log(gap) ~ time, data = recTail))[["time"]]
 stopifnot(abs(kRecovered - KOUT_REF) / KOUT_REF < 0.05)
@@ -731,7 +732,11 @@ ncaSim <- solveTypical(ncaEvents, keep = "treatment")
 ```{r pknca}
 simNca <- ncaSim |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, treatment)
+  dplyr::select(id, time, Cc, treatment) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id, treatment) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Guarantee a time-zero record per subject (extravascular pre-dose Cc = 0).
 simNca <- dplyr::bind_rows(
