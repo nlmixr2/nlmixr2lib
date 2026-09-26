@@ -16667,6 +16667,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Hazendonk_2016_factor_viii.R` (multiplicative effect on the predicted FVIII plasma concentration: `Cc = (central / vc) * (1 - theta_bdp * FORM_FVIII_BDD)`; reference category 0 = full-length recombinant or plasma-derived FVIII).
 - **Notes:** General scope because the OSA vs CSA assay artefact for B-domain-deleted FVIII is a class-level phenomenon that recurs across BDD-product FVIII popPK models. Distinct from `FORM_XYNTHA` (which contrasts Xyntha vs Refacto / Refacto AF within the BDD moroctocog product family, capturing the +38 % OSA-vs-CSA potency calibration difference; a subject may have `FORM_FVIII_BDD = 1` and `FORM_XYNTHA = 0` or 1 depending on which Pfizer moroctocog product they received). Distinct also from `ASSAY_OSA` (which is the bioanalytical-method indicator: OSA vs CSA); when both `FORM_FVIII_BDD` and `ASSAY_OSA` are available, the correct interaction structure is `FORM_FVIII_BDD * ASSAY_OSA` (only OSA-assayed BDD-product samples show the under-detection), but many perioperative datasets are OSA-only and collapse the correction onto `FORM_FVIII_BDD` alone (Hazendonk 2016). Per-observation (per-row) when subjects can switch between products across surgical procedures; subject-level otherwise. Mirrors the `FORM_<drug>_<variant>` family pattern.
 
+### FORM_FVIII_FC (**canonical for the Fc-fusion (efmoroctocog alfa, Elocta/Eloctate) vs standard half-life factor VIII product indicator**)
+- **Description:** 1 = the administered factor VIII (FVIII) concentrate is recombinant FVIII Fc fusion protein (rFVIIIFc, efmoroctocog alfa; Elocta in Europe, Eloctate in North America), an extended half-life (EHL) product; 0 = a standard half-life FVIII concentrate (full-length or B-domain-deleted recombinant, or plasma-derived). Per-dose-record binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (standard half-life FVIII product).
+- **Source aliases:** `EHL` (Allard 2020 'EHL (elocta:1 versus others:0)'; Elocta was the only EHL product in that dataset, so `FORM_FVIII_FC = EHL`).
+- **Example models:** `Allard_2020_factorviii.R` (log-scale shift on CL, `cl = exp(lcl + etalcl + e_form_fviii_fc_cl * FORM_FVIII_FC) * ...` with `e_form_fviii_fc_cl = -0.394`, i.e. 33% lower CL and a ~1.48-fold longer terminal half-life on Elocta).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family. Named for the Fc-fusion product rather than for "extended half-life" as a class: other EHL FVIII products (PEGylated rurioctocog alfa pegol, turoctocog alfa pegol, damoctocog alfa pegol, efanesoctocog alfa) prolong half-life by different mechanisms and to different extents, so a model fitted with Elocta as its only EHL product does not describe them. Register a sibling `FORM_FVIII_<product>` indicator for those. Time-varying within subject when patients switch products; set it on each dose record. Independent of `FORM_FVIII_BDD` (rFVIIIFc is itself B-domain deleted, but the assay-artefact contrast and the half-life contrast are distinct).
+
 ### DILUTION (**canonical for diluted-drug-product indicator**)
 - **Description:** 1 = drug diluted (Soehoel 2022 study D2213C00001), 0 = not diluted.
 - **Units:** (binary)

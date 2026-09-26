@@ -1932,6 +1932,8 @@ navbar:
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
       - text: "Factorviia rat (Larsen 2018)"
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
+      - text: "Factorviii (Allard 2020)"
+        href: articles/Allard_2020_factorviii.html
       - text: "Factorviii (Nestorov 2014)"
         href: articles/Nestorov_2014_factorviii.html
       - text: "Factorviii (Valke 2024)"
@@ -6095,6 +6097,7 @@ articles:
   - articles/AlfoseaCuadrado_2024_reserpine_rat
   - articles/Alghamdi_2019_cycloserine
   - articles/Ali_2018_amodiaquine
+  - articles/Allard_2020_factorviii
   - articles/Allegaert_2015_paracetamol
   - articles/Almond_2016_cyp3a4_induction
   - articles/Almquist_2015_Mig1
