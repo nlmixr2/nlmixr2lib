@@ -1,5 +1,5 @@
 Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
-  description <- "One-compartment endogenous turnover model for the OATP1B-substrate biomarker coproporphyrin I (CPI) in healthy adults (Yoshida 2018, GDC-0810-CPI calibration). CPI is produced at a zero-order synthesis rate Ksyn = kdeg * Baseline and eliminated as a single first-order pool whose overall rate constant kdeg is decomposed into a non-hepatic fraction fNH (held fixed at 12.9 %, unaffected by inhibitor) and a hepatic fraction 1 - fNH (competitively inhibited by the OATP1B perpetrator via Ki,u). The perpetrator portal-vein unbound concentration enters as a time-varying covariate CP_GDC_UM (umol/L); setting CP_GDC_UM = 0 collapses the model to the inhibitor-free steady state Baseline. This file encodes the GDC-0810-CPI calibration (Table 2 right column) with IIV on Baseline (18.2 %CV) and Ki,u (30.1 %CV); a sibling file Yoshida_2018_coproporphyrin_I_rifampin encodes the rifampin calibration with its own Ki,u, kdeg, and no IIV. The original fit used a Y. Chen et al. in-house PBPK model for GDC-0810 portal-vein concentrations (personal communication, not on disk and not in the nlmixr2lib registry), so downstream users must supply CP_GDC_UM externally."
+  description <- "One-compartment endogenous turnover model for the OATP1B-substrate biomarker coproporphyrin I (CPI) in healthy adults (Yoshida 2018, GDC-0810-CPI calibration). CPI is produced at a zero-order synthesis rate Ksyn = kdeg * Baseline and eliminated as a single first-order pool whose overall rate constant kdeg is decomposed into a non-hepatic fraction fNH (held fixed at 12.9 %, unaffected by inhibitor) and a hepatic fraction 1 - fNH (competitively inhibited by the OATP1B perpetrator via Ki,u). The perpetrator portal-vein unbound concentration enters as a time-varying covariate CP_GDC_UM (umol/L); setting CP_GDC_UM = 0 collapses the model to the inhibitor-free steady state Baseline. This file encodes the GDC-0810-CPI calibration (Table 2 right column) with IIV on Baseline (18.2 %CV) and Ki,u (30.1 %CV); a sibling file Yoshida_2018_coproporphyrin_I_rifampin encodes the rifampin calibration with its own Ki,u, kdeg, and no IIV. The original fit used a Y. Chen et al. in-house PBPK model for GDC-0810 portal-vein concentrations (personal communication, not available when this model was built and not in the nlmixr2lib registry), so downstream users must supply CP_GDC_UM externally."
   reference <- paste(
     "Yoshida K, Guo C, Sane R.",
     "Quantitative Prediction of OATP-Mediated Drug-Drug Interactions",
@@ -31,7 +31,7 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
       units = "umol/L",
       type = "continuous",
       reference_category = NULL,
-      notes = "Time-varying. Set to 0 outside the GDC-0810 dosing window so the hepatic-inhibition term collapses to the no-inhibition form and the model returns to the steady-state Baseline. The original Yoshida 2018 fit used an in-house Y. Chen et al. PBPK model output for GDC-0810 portal-vein unbound concentration (cited as personal communication in the paper); that profile is not reproducible from on-disk sources and no GDC-0810 PK model is currently registered in nlmixr2lib. Users must supply CP_GDC_UM externally. The paper notes (Discussion) that observed GDC-0810 plasma AUC IIV was about 20 %, so the IIV reported on Ki,u below (30.1 %CV) partially includes per-subject variability in portal-vein exposure rather than purely intrinsic Ki,u variability.",
+      notes = "Time-varying. Set to 0 outside the GDC-0810 dosing window so the hepatic-inhibition term collapses to the no-inhibition form and the model returns to the steady-state Baseline. The original Yoshida 2018 fit used an in-house Y. Chen et al. PBPK model output for GDC-0810 portal-vein unbound concentration (cited as personal communication in the paper); that profile is not reproducible from the available sources and no GDC-0810 PK model is currently registered in nlmixr2lib. Users must supply CP_GDC_UM externally. The paper notes (Discussion) that observed GDC-0810 plasma AUC IIV was about 20 %, so the IIV reported on Ki,u below (30.1 %CV) partially includes per-subject variability in portal-vein exposure rather than purely intrinsic Ki,u variability.",
       source_name = "CGDC"
     )
   )
@@ -73,8 +73,8 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
     # authors fix fNH to the rifampin-CPI estimated value because
     # their sensitivity analysis showed fNH has small influence on
     # the other parameters in the GDC-0810-CPI fit. Wrapped in
-    # fixed() to mark the structural-assumption provenance per
-    # SKILL.md.
+    # fixed() to mark the structural-assumption provenance, following
+    # the nlmixr2lib convention.
 
     lkiu     <- log(0.00174)
     label("GDC-0810 unbound OATP1B inhibition constant Ki,u (umol/L)")
@@ -82,7 +82,7 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
     # 12x lower than the rifampin-CPI Ki,u, consistent with GDC-0810
     # being a more potent OATP1B inhibitor on an unbound-Ki basis.
     # Conditional on the Y. Chen et al. PBPK model for GDC-0810
-    # portal-vein concentration (personal communication; not on disk).
+    # portal-vein concentration (personal communication; not available).
 
     # IIV -- Table 2 reports IIV on Baseline and on Ki,u for the
     # GDC-0810-CPI fit; the rifampin-CPI fit has no IIV. Variances

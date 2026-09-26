@@ -288,7 +288,7 @@ sim_pk |>
 Figure 6A of the paper reports simulated trough concentrations under the
 clinical trial protocol, stratified by age and by weight-for-age z-score. The
 published values come from the authors' 856-child longitudinal demographic
-dataset, which is not on disk, so this is a structural comparison rather than a
+dataset, which is not available, so this is a structural comparison rather than a
 tight gate: the virtual cohort's weight trajectory crosses the protocol's dose
 bands at different ages than the real cohort did, which is enough to move a
 single age point by a factor of two.
@@ -639,6 +639,10 @@ per_subject <- sim_nca_raw |>
 ```{r pknca}
 sim_nca <- sim_nca_raw |>
   filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, arm)
 
 # Guarantee a time-zero row per subject; for extravascular dosing Cc = 0
@@ -742,7 +746,7 @@ stopifnot(max(mass_balance$rel_diff) < 0.02)
   hazard layer unchanged to three significant figures. Supplementary Figure 1A
   was examined specifically to adjudicate this and its x-axis compresses the
   entire 0.5-8 h intensive-sampling window onto one tick, so observed Tmax
-  cannot settle it. The mean-transit-time reading was ratified by the maintainers.
+  cannot settle it. The mean-transit-time reading was confirmed by the maintainers.
   It matters only for the QTc sub-model, whose output is peak-concentration
   driven.
 
@@ -800,7 +804,7 @@ stopifnot(max(mass_balance$rel_diff) < 0.02)
   around the cohort median of -0.5 that Equation 2 centres on, with a spread
   matching the Table 1 percentile range. The Figure 6A comparison uses this
   curve, whereas the published values come from the authors' 856-child
-  longitudinal demographic dataset, which is not on disk; the dose-band
+  longitudinal demographic dataset, which is not available; the dose-band
   crossings therefore fall at different ages, and that is the main reason
   individual age points in that table differ by up to a factor of two.
 

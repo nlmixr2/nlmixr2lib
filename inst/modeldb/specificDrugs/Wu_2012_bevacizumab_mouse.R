@@ -115,9 +115,8 @@ Wu_2012_bevacizumab_mouse <- function() {
     # splits by Frc. It is therefore the canonical lka.
     #
     # NAMING. The lymph-node limb had no canonical coverage before this
-    # extraction. The four names below were ratified by the operator on
-    # 2026-09-02 (sidecar oare_PMC3326166 request-001 / response-001,
-    # questions q1-q4, all option A):
+    # model. The four names below were ratified by the maintainers on
+    # 2026-09-02:
     #   Frc -> lflnode  (fraction routed to the `lnode` compartment, named
     #                    by destination exactly as fdepot names the
     #                    fraction routed to `depot`; the register's
@@ -129,7 +128,7 @@ Wu_2012_bevacizumab_mouse <- function() {
     #                    rate constant but structurally it is a transfer
     #                    between two modelled states)
     #   A_LN,sc -> the already-registered `lnode` compartment, whose role
-    #                    text is broadened by this extraction.
+    #                    text is broadened for this model.
     # ------------------------------------------------------------------
     lka             <- log(4.82)    ; label("First-order absorption rate constant from the SC site ka1 (log 1/h)")            # Table II: ka1 = 4.82 /h (CV 40.9%)
     lflnode         <- log(0.00964) ; label("Fraction of the absorbed SC dose routed through the lymph node Frc (log)")       # Table II: Frc = 0.00964 (CV 19.6%)
@@ -202,7 +201,7 @@ Wu_2012_bevacizumab_mouse <- function() {
     #
     # (The PDF's display equations are set in a symbol font that
     # substitutes glyphs for the operators; they recover exactly as above
-    # from `pdftotext -layout`. See the vignette source-trace table.)
+    # from the PDF's text layer. See the vignette source-trace table.)
     d/dt(depot)       <- -fdepot * ka * depot
     d/dt(central)     <- -(k12 + kel) * central + k21 * peripheral1 +
       k_lnode_central * lnode + fdepot * (1 - flnode) * ka * depot

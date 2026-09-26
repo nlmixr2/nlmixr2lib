@@ -228,7 +228,9 @@ mod_reduced <- readModelDb("Thoueille_2023_tenofovir_reduced")
 sim <- rxode2::rxSolve(
   mod_reduced,
   events = events,
-  keep = c("stage", "regimen", "treatment", "CRCL")
+  keep = c("stage", "regimen", "treatment", "CRCL"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   # Model concentrations are nmol/mL; the paper reports ng/mL.
@@ -307,7 +309,9 @@ events_adj <- dplyr::bind_rows(lapply(seq_len(nrow(adjust_arms2)), function(i) {
 
 sim_adj <- rxode2::rxSolve(
   mod_reduced, events = events_adj,
-  keep = c("stage", "schedule", "CRCL")
+  keep = c("stage", "schedule", "CRCL"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::mutate(Cc_ngml = Cc * MW_TFV)
@@ -425,13 +429,17 @@ joint_events <- {
 # fails with "'dvid'->'cmt' ... on a undefined compartment". `dvid` is set on
 # the dose rows too so the column is not NA-typed. rxode2 still returns both
 # observables as columns on every observation row.
-sim_joint <- rxode2::rxSolve(mod_joint, events = joint_events) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_joint <- rxode2::rxSolve(mod_joint, events = joint_events,
+                             maxsteps = 1e6) |>
   as.data.frame()
 
 # Same scenario through the tenofovir-alone full model, which has a single
 # endpoint and so needs no dvid column.
 alone_events <- joint_events |> dplyr::select(-dvid)
-sim_alone <- rxode2::rxSolve(mod_full, events = alone_events) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_alone <- rxode2::rxSolve(mod_full, events = alone_events,
+                             maxsteps = 1e6) |>
   as.data.frame()
 
 dplyr::bind_rows(

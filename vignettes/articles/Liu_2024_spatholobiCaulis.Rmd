@@ -246,7 +246,8 @@ betaHalfLife <- function(ui) {
   log(2) / ((b - sqrt(b^2 - 4 * kel * k21)) / 2)
 }
 terminalSlopeHalfLife <- function(d) {
-  tail40 <- d |> filter(time >= 40, time <= 60, Cc > 0)
+  # Keep Cc >= 1e-6 * max(Cc): below that the ODE solution is integrator noise.
+  tail40 <- d |> filter(time >= 40, time <= 60, Cc >= 1e-6 * max(Cc))
   log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = tail40))[["time"]]
 }
 hlCheck <- vapply(constituents$constituent, function(cn) {
@@ -503,9 +504,9 @@ prints:
 * the CYP abundance scalars needed to interpret `Vmax` reported in nM/min/nM;
 * human tissue partition coefficients (Table 2 is rat only).
 
-Per the on-disk-only sourcing rule for PBPK models, these gaps are not filled
-from GastroPlus defaults or class-typical values, so the PBPK layer is out of
-scope.
+Because PBPK models in this library are built only from the sources that were
+available, these gaps are not filled from GastroPlus defaults or class-typical
+values, so the PBPK layer is out of scope.
 
 **The human extrapolation.** Table 5 reports predicted human `Cmax`, `Tmax` and
 AUC. Equation (3) gives the single-species allometric scaling used for

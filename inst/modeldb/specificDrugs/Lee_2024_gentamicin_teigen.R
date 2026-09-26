@@ -19,7 +19,7 @@ Lee_2024_gentamicin_teigen <- function() {
     "The structural model and every population parameter value originate from Teigen MM, Duffull S,",
     "Dang L, Johnson DW. Dosing of gentamicin in patients with end-stage renal disease receiving",
     "hemodialysis. J Clin Pharmacol. 2006;46(11):1259-1267. doi:10.1177/0091270006292987, which is",
-    "closed access and was NOT available on disk; the values encoded here are those Lee 2024 prints.",
+    "closed access and was NOT available when this model was built; the values encoded here are those Lee 2024 prints.",
     sep = " "
   )
   vignette <- "Lee_2024_gentamicin"
@@ -207,7 +207,7 @@ Lee_2024_gentamicin_teigen <- function() {
     # on the linear scale and does not discriminate between them.
     #
     # The IIV on Vd is stated to EXIST but its magnitude is never printed, in
-    # Lee 2024 or in any on-disk source; Teigen 2006 is closed access. It is
+    # Lee 2024 or in any available source; Teigen 2006 is closed access. It is
     # encoded as fixed(0) rather than invented -- simulations from this model
     # therefore carry between-subject variability on clearance only.
     # ------------------------------------------------------------------------

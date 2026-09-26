@@ -70,7 +70,7 @@ Lin_2020_glasdegib_decitabine <- function() {
     disease_state = "newly diagnosed AML (WHO 2008) or high-risk MDS in adults ineligible for intensive chemotherapy. The MDS subset enters via the two Phase 1b Arm B subjects.",
     dose_range = "LDAC alone (LDAC 20 mg SC BID for 10 days per 28-day cycle, n = 38, Phase 2); Glasdegib 100 mg QD orally + LDAC (n = 117, Phase 2 randomised + Phase 1b Arm A which evaluated 100 or 200 mg QD); Glasdegib 100 or 200 mg QD orally + decitabine (n = 7, Phase 1b Arm B). Glasdegib dose reductions allowed for adverse-event management.",
     regions = "Multicenter (NCT01546038)",
-    notes = "162 patients pooled across BRIGHT AML 1003 phases: Phase 2 AML cohort (78 glasdegib + LDAC, 38 LDAC alone) plus Phase 1b Arm A (glasdegib + LDAC AML) and Arm B (5 AML + 2 MDS on glasdegib + decitabine). Per the paper, the Phase 1b Arm B sample is small and the CI of the glasdegib + decitabine hazard reduction is wide (-95.0% to -28.6%). Demographic and baseline-characteristic table is published as Online Resource 2 (supplementary; not on disk for this extraction)."
+    notes = "162 patients pooled across BRIGHT AML 1003 phases: Phase 2 AML cohort (78 glasdegib + LDAC, 38 LDAC alone) plus Phase 1b Arm A (glasdegib + LDAC AML) and Arm B (5 AML + 2 MDS on glasdegib + decitabine). Per the paper, the Phase 1b Arm B sample is small and the CI of the glasdegib + decitabine hazard reduction is wide (-95.0% to -28.6%). Demographic and baseline-characteristic table is published as Online Resource 2 (supplementary; not available when this model was built)."
   )
 
   ini({

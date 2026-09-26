@@ -95,7 +95,7 @@ entry in `inst/modeldb/specificDrugs/Sunnaker_2026_mitiperstat.R`.
 ## A note on concentration units
 
 Sunnaker 2026 reports every mitiperstat concentration in **nmol/L** and every
-dose in **mg**, but never states the molar mass, and no supplement on disk
+dose in **mg**, but never states the molar mass, and no available supplement
 supplies it. The packaged model is therefore encoded in self-consistent **mass**
 units: dosing in mg gives compartment amounts in mg and `Cc` in mg/L
 (= ug/mL). Because the model is entirely linear, dosing it in nmol instead
@@ -188,7 +188,9 @@ ss_metrics <- function(sim) {
 
 ss_typical <- function(dose, cov) {
   ss_metrics(rxode2::rxSolve(mod_typ, events = ss_events(dose, cov),
-                             returnType = "data.frame"))
+                             returnType = "data.frame",
+                             # steady-state searches for long-half-life subjects exceed the default step budget
+                             maxsteps = 1e6))
 }
 ```
 
@@ -261,7 +263,8 @@ sim_single <- rxode2::rxSolve(mod_typ, events = ev_single, returnType = "data.fr
 
 # Fit the terminal slope well after the distribution phase has resolved
 # (pattern 11: a slope taken too early reads the distribution phase).
-term <- dplyr::filter(sim_single, time >= 400, time <= 800, Cc > 0)
+# Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+term <- dplyr::filter(sim_single, time >= 400, time <= 800, Cc >= 1e-6 * max(Cc))
 lambda_z <- -stats::coef(stats::lm(log(Cc) ~ time, data = term))[["time"]]
 t_half <- log(2) / lambda_z
 
@@ -536,7 +539,9 @@ stopifnot(!anyDuplicated(unique(nca_events[, c("id", "time", "evid")])))
 
 rxode2::rxSetSeed(20260913)
 nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment",
-                           returnType = "data.frame")
+                           returnType = "data.frame",
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6)
 ```
 
 ```{r pknca}
@@ -698,8 +703,8 @@ dp |>
 # Assumptions and deviations
 
 * **Concentration units.** Sunnaker 2026 reports concentrations in nmol/L and
-  doses in mg but never states mitiperstat's molar mass, and no supplement on
-  disk supplies it. The model is encoded in self-consistent mass units (mg dose
+  doses in mg but never states mitiperstat's molar mass, and no available
+  supplement supplies it. The model is encoded in self-consistent mass units (mg dose
   gives `Cc` in mg/L); because the model is linear, dosing in nmol returns `Cc`
   in nmol/L. The Table 4 comparison calibrates one conversion factor
   (`r sprintf("%.0f", 343)` g/mol, computed in the chunk above from the AUC
@@ -731,7 +736,8 @@ dp |>
   computes typical-value contrasts. The AUCss and Ctrough contrasts agree to
   within about 2 percentage points and the Cmax contrasts to within about 3.
 
-* **Supplementary material not on disk.** Tables S1 (stepwise covariate
+* **Supplementary material was not available when this model was built.**
+  Tables S1 (stepwise covariate
   modelling), S2 (the rejected fixed-allometric variant) and S3 (highest- and
   lowest-exposure cases), and Figures S1-S7 (goodness of fit, VPCs, random-effect
   correlations) were not available. None contains a final-model parameter: the

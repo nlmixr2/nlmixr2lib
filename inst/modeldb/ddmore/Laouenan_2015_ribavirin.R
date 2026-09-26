@@ -53,7 +53,7 @@ Laouenan_2015_ribavirin <- function() {
     disease_state = "Adult HCV genotype 1 patients with cirrhosis (Metavir F4) and prior treatment failure to peg-interferon-alpha plus ribavirin, enrolled in the French ANRS-CO20-CUPIC compassionate-use cohort. Two treatment arms: peg-IFN-alpha2a + ribavirin + telaprevir (TVR; n = 9) and peg-IFN-alpha2a + ribavirin + boceprevir (BOC; n = 6). Baseline hemoglobin median 15.1 g/dL (range 10.8-16.0).",
     dose_range = "Ribavirin 1000-1200 mg/day (weight-adjusted) plus telaprevir 750 mg q8h or boceprevir 800 mg q8h plus peg-IFN-alpha2a 180 ug/week SC. Doses are not consumed by this PD model; the ribavirin exposure is supplied as the per-subject CSS_RBV / K_RBV regressors from the upstream popPK fit.",
     regions = "France (multicentre)",
-    notes = "Population n = 15 and treatment-arm split (9 TVR + 6 BOC) confirmed via the Laouenan 2015 publication (PMID 26225222, doi:10.1002/psp4.8) abstract retrieved from PubMed E-utilities. The DDMORE bundle's `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt` simulated dataset reproduces 15 subject identifiers from the same study. Demographic detail (age range, weight range, sex distribution, race) is reported in the publication's Table 1 but the publication PDF / PMC full text was not accessible from the worktree environment, so the corresponding fields are recorded as NA. The bundle's CAT column (BOC / TVR) records the protease-inhibitor arm but does not enter the PD model equations; the treatment effect on PK is absorbed into the per-subject CSS_RBV / K_RBV upstream-PK regressors."
+    notes = "Population n = 15 and treatment-arm split (9 TVR + 6 BOC) confirmed via the Laouenan 2015 publication (PMID 26225222, doi:10.1002/psp4.8) abstract retrieved from PubMed E-utilities. The DDMORE bundle's `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt` simulated dataset reproduces 15 subject identifiers from the same study. Demographic detail (age range, weight range, sex distribution, race) is reported in the publication's Table 1 but the publication PDF / PMC full text was not available when this model was built, so the corresponding fields are recorded as NA. The bundle's CAT column (BOC / TVR) records the protease-inhibitor arm but does not enter the PD model equations; the treatment effect on PK is absorbed into the per-subject CSS_RBV / K_RBV upstream-PK regressors."
   )
 
   ini({
@@ -62,7 +62,7 @@ Laouenan_2015_ribavirin <- function() {
     # generated 2013-11-06). The publication-reported value of IC50RBV is 7,090 ng/mL
     # (Laouenan 2015 Results); the bundle's Output_real listing reports 8,280 ng/mL. The
     # difference is documented in the validation vignette's Errata and follows the
-    # SKILL.md DDMORE-source guidance to use the .lst final estimates verbatim. The
+    # DDMORE-source convention of using the .lst final estimates verbatim. The
     # publication does not report typical kout,Hb or hb0 values for direct comparison.
     lhb0  <- log(14.3)    ; label("Typical baseline hemoglobin Hb0 (g/dL)")                   # Output_real_Laouenant_2015_CPTPSP_hb_RBV: hb0 = 14.3
     lkout <- log(0.124)   ; label("Hemoglobin elimination (turnover) rate constant kout,Hb (1/day)")  # Output_real_Laouenant_2015_CPTPSP_hb_RBV: Kout = 0.124

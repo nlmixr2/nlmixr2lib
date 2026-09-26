@@ -571,8 +571,8 @@ attributes to the interconversion mechanism.
   tesaglitazar erratum` and a BJCP corrections-feed scan returned no
   corrections as of the extraction date (2026-06-20).
 
-- **No NONMEM control stream on disk.** The source PDF + the text
-  extracted from it are the only artefacts available; no `.mod` /
+- **No NONMEM control stream available.** The published article is the
+  only source available; no `.mod` /
   `.ctl` / `.lst` is supplied. All parameter values are sourced from
   Table 2 of the main publication. The ADVAN6 (general nonlinear
   kinetics) subroutine was used in the original NONMEM VI fit (Methods

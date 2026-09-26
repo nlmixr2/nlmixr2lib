@@ -103,7 +103,7 @@ Fukae_2024_valemetostat_orr_central <- function() {
       description = "Non-Hodgkin lymphoma disease stage indicator; 1 = stage IV, 0 = stage I/II/III.",
       units = "(binary)",
       type = "binary",
-      notes = "Named by Fukae 2024 Methods as a candidate categorical covariate for the exposure-efficacy analysis ('NHL disease stage (I-III/IV)'), but NOT reported in Table 2 and therefore not retained in the final model -- no point estimate exists anywhere on disk. Stage was heavily missing in the source cohort (14 of 39 ATLL patients, 35.9%; Table 1), the likely reason it was dropped. Documented here to preserve the covariate screen without carrying a convention warning."
+      notes = "Named by Fukae 2024 Methods as a candidate categorical covariate for the exposure-efficacy analysis ('NHL disease stage (I-III/IV)'), but NOT reported in Table 2 and therefore not retained in the final model -- no point estimate exists in any available source. Stage was heavily missing in the source cohort (14 of 39 ATLL patients, 35.9%; Table 1), the likely reason it was dropped. Documented here to preserve the covariate screen without carrying a convention warning."
     )
   )
 

@@ -42,7 +42,7 @@ Schoemaker_2018_levetiracetam <- function() {
       units = "(seizures per record interval)",
       type = "count",
       reference_category = NULL,
-      notes = "Source column PDV (canonical name same as source; new entry registered alongside this model). Per operator decision (sidecar response-001 Q2 free-text answer) the Markov dependence on the previous count is preserved in this nlmixr2lib port by representing PDV as a per-record covariate the user supplies, rather than dropping the term or attempting a state-based approximation. Markov amplitude only acts when CHILD = 1 (.ctl `LS0 = LS00 + PED*LSMAX*PDV/(ES50+PDV)`); for CHILD = 0 the value is multiplied by 0 in model() so the sentinel -99 is harmless. New canonical because the name (previous-day-value seizure count) is intrinsically tied to count / Markov-feedback PD models and unlikely to be reused outside that family.",
+      notes = "Source column PDV (canonical name same as source; new entry registered alongside this model). The maintainers decided to preserve the Markov dependence on the previous count in this nlmixr2lib port by representing PDV as a per-record covariate the user supplies, rather than dropping the term or attempting a state-based approximation. Markov amplitude only acts when CHILD = 1 (.ctl `LS0 = LS00 + PED*LSMAX*PDV/(ES50+PDV)`); for CHILD = 0 the value is multiplied by 0 in model() so the sentinel -99 is harmless. New canonical because the name (previous-day-value seizure count) is intrinsically tied to count / Markov-feedback PD models and unlikely to be reused outside that family.",
       source_name = "PDV"
     ),
     NDAYS = list(
@@ -66,14 +66,14 @@ Schoemaker_2018_levetiracetam <- function() {
   population <- list(
     n_subjects = NA_integer_,
     n_studies = NA_integer_,
-    age_range = "Pooled adult and pediatric (4-16 years) levetiracetam focal-seizure trial cohorts. Exact subject counts and demographic distributions are not in the DDMORE bundle and the publication PDF was not on disk for cross-check.",
+    age_range = "Pooled adult and pediatric (4-16 years) levetiracetam focal-seizure trial cohorts. Exact subject counts and demographic distributions are not in the DDMORE bundle and the publication PDF was not available for cross-check when this model was built.",
     weight_range = "(not extracted; bundle does not ship demographics)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
     disease_state = "Focal-onset seizures (uncontrolled on stable background antiepileptic therapy; LEV was added on as monotherapy or adjunctive therapy depending on the contributing trial).",
     dose_range = "Levetiracetam plasma concentrations summarised as CAV per count-interval; the bundle does not document the dose levels the LEV cohorts received. Adult LEV add-on therapy is typically 1000-3000 mg/day in two divided doses.",
     regions = "(not reported in the DDMORE bundle)",
-    notes = "Population field detail is intentionally sparse: the DDMORE bundle for DDMODEL00000239 ships the .ctl, the .res, and the simulated dataset (39065 rows; 6107 adult monthly-count records and 32958 pediatric daily-count records by the bundle's own PED column), but not a baseline-demographics table. The Schoemaker 2018 publication PDF was not on disk under /home/bill/github/mab_human_consensus/literature at extraction time, so subject counts, study counts, and demographic distributions are not populated. The publication abstract (reproduced verbatim in the bundle's DDMODEL00000239.rdf model-has-description block) confirms the model fit is to a combined adult + pediatric (4-16 years) LEV cohort and reports 33.5% as the mixture-responder fraction. Update population fields when the publication PDF becomes available."
+    notes = "Population field detail is intentionally sparse: the DDMORE bundle for DDMODEL00000239 ships the .ctl, the .res, and the simulated dataset (39065 rows; 6107 adult monthly-count records and 32958 pediatric daily-count records by the bundle's own PED column), but not a baseline-demographics table. The Schoemaker 2018 publication PDF was not available when this model was built, so subject counts, study counts, and demographic distributions are not populated. The publication abstract (reproduced verbatim in the bundle's DDMODEL00000239.rdf model-has-description block) confirms the model fit is to a combined adult + pediatric (4-16 years) LEV cohort and reports 33.5% as the mixture-responder fraction. Update population fields when the publication PDF becomes available."
   )
 
   ini({
@@ -221,11 +221,11 @@ Schoemaker_2018_levetiracetam <- function() {
     # The source likelihood is a negative-binomial with overdispersion
     # alpha = exp(lovdp_subject) and per-record mean expected_count_*.
     # rxode2 / nlmixr2 do not natively express the source's joint NB
-    # likelihood within the nlmixr2 ini()/model() syntax in this batch.
+    # likelihood within the nlmixr2 ini()/model() syntax.
     # The simplification used here, matching the ddmore/Plan_2012_pain.R
     # precedent, is to declare a Poisson observation likelihood per
     # output branch with the same per-record mean. The deterministic
-    # typical-value rate trajectory -- which is what the F.3
+    # typical-value rate trajectory -- which is what the
     # mechanistic-sanity vignette validates -- is unaffected; the
     # difference is only in the dispersion of stochastic VPC samples.
     # The vignette's "Assumptions and deviations" section calls this

@@ -345,8 +345,8 @@ Collins_2023_belantamab_mprotein <- function() {
     # Papathanasiou 2025 model reports the variance 0.0633 for the same
     # log-additive form, i.e. an SD of 0.252, so the two publications
     # differ by roughly an order of magnitude on the ADC residual error.
-    # The Collins 2023 value is used here because it is the value on disk
-    # for this paper. See vignette Errata.)
+    # The Collins 2023 value is used here because it is the value published
+    # with this paper. See vignette Errata.)
     # ------------------------------------------------------------------
     propSd       <- 0.026;  label("ADC proportional residual error (fraction; additive on the log scale)")  # Collins 2023 Table S1: RES ERR, additive sigma on log scale = 0.026
     propSd_tumor <- 0.0633; label("M-protein proportional residual error (fraction)")                  # Collins 2023 Table 1: %RES ERR, proportional = 0.0633 (%RSE 6.2)

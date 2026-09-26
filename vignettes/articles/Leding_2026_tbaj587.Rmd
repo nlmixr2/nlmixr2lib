@@ -563,7 +563,8 @@ term_thalf <- function(D) {
   s <- s[!is.na(s$Cc) & s$Cc > 0, ]
   # Fit the slope well after absorption and distribution have died away, so
   # this is the terminal phase and not a washout transient.
-  tl <- s[s$time > 24 * 365 * 1.5, ]
+  # Keep Cc >= 1e-6 * max(Cc) so the fit never reaches the solver-noise tail.
+  tl <- s[s$time > 24 * 365 * 1.5 & s$Cc >= 1e-6 * max(s$Cc), ]
   k <- -stats::coef(stats::lm(log(Cc) ~ time, data = tl))[["time"]]
   log(2) / k / (24 * 30.44)
 }

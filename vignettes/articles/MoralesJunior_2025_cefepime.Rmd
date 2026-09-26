@@ -350,7 +350,9 @@ sim <- lapply(seq_len(nrow(regimens)), function(k) {
   ev <- build_events(cohort, regimens$ii[k], regimens$dur[k])
   rxode2::rxSolve(
     mod, ev, omega = NA,
-    keep = c("stratum", "WT", "CRCL")
+    keep = c("stratum", "WT", "CRCL"),
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   ) |>
     as.data.frame() |>
     mutate(regimen = regimens$regimen[k], tau = regimens$ii[k])

@@ -38,6 +38,12 @@ vignettes/articles/*.html
 # three consecutive full-effort dispatches before this was noticed.
 Rplots.pdf
 
+# testthat >= 3.3 writes one reprex per failing expectation under R CMD check
+# (tests/testthat/_problems/<test>-<line>.R) plus an index (testthat-problems.rds).
+# They are diagnostics, never sources; left untracked in a task worktree they
+# are counted as uncommitted work by the claude_task_runner guard.
+tests/testthat/_problems/
+tests/testthat/testthat-problems.rds
 # knitr writes figures next to the Rmd when an article is rendered outside
 # pkgdown (probe scripts, callr render gates); they are never content, and a
 # batch of them was once committed by mistake.

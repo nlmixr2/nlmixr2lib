@@ -7,7 +7,7 @@ Ouerdani_2015_pazopanib <- function() {
     "CPT Pharmacometrics Syst Pharmacol. 2015;4(11):660-668.",
     "doi:10.1002/psp4.12001.",
     "Erratum/revised version published online 2015-11-12 (Table 1 was replaced;",
-    "the on-disk PDF is the corrected version).",
+    "the values used here are from the corrected version).",
     sep = " "
   )
   vignette <- "Ouerdani_2015_pazopanib"
@@ -67,7 +67,7 @@ Ouerdani_2015_pazopanib <- function() {
 
   ini({
     # Structural parameters -- clinical column of Ouerdani 2015 Table 1
-    # (corrected November 2015 version on disk).
+    # (corrected November 2015 version).
     lk_tumor  <- log(0.0021);  label("Tumour growth rate k (1/day)")                              # Ouerdani 2015 Table 1 clinical k = 0.0021 (RSE 6%)
     lk_cap    <- log(0.0392);  label("Carrying-capacity rate constant b (1/day)")                  # Ouerdani 2015 Table 1 clinical b = 0.0392 (RSE 22%); IIV fixed to 0 per Table 1
     lk_aa0    <- log(0.0023);  label("Baseline antiangiogenic effect rate c0 (1/day)")             # Ouerdani 2015 Table 1 clinical c = 0.0023 (RSE 9%)

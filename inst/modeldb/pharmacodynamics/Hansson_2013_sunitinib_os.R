@@ -77,7 +77,7 @@ Hansson_2013_sunitinib_os <- function() {
     n_subjects = 303L,
     n_studies = 4L,
     age_range = "adults with imatinib-resistant GIST",
-    weight_range = "not reported in the on-disk trimmed paper text",
+    weight_range = "not reported in the paper",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
     disease_state = "imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies (Demetri 2006, George 2009, Shirao 2010, Maki 2005).",

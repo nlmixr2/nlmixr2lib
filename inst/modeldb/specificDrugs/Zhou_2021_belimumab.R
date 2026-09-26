@@ -50,7 +50,7 @@ Zhou_2021_belimumab <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (non-North East Asian)",
-      notes = "Multiplicative effect on V1 (factor 1.07) when RACE_ASIAN_NORTHEAST = 1. Source column RAC4 (Zhou 2021 Table 2 footnote d). Renamed from canonical RACE_NEAS to RACE_ASIAN_NORTHEAST on 2026-06-19 per the canonical-register standardization audit (operator decision: spell out 'Northeast' rather than the opaque NEAS abbreviation).",
+      notes = "Multiplicative effect on V1 (factor 1.07) when RACE_ASIAN_NORTHEAST = 1. Source column RAC4 (Zhou 2021 Table 2 footnote d). Renamed from RACE_NEAS to RACE_ASIAN_NORTHEAST when the covariate register was standardized (the maintainers spell out 'Northeast' rather than use the opaque NEAS abbreviation).",
       source_name = "RAC4"
     ),
     STUDY_LBSL = list(

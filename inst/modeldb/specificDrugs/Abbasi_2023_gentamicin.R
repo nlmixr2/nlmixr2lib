@@ -34,7 +34,7 @@ Abbasi_2023_gentamicin <- function() {
     dose_range = "5-10 mg/kg once daily as a 0.5-h intravenous infusion, 24-h dosing interval, evaluated over 72 h (3 daily doses).",
     regions = "Global (systematic pooling across 21 previously published critically-ill-adult ICU gentamicin PK studies indexed in PubMed / EMBASE / SCOPUS / CINAHL / EBSCO up to September 2022; individual-study geography was not aggregated).",
     renal_function = "Heterogeneous ICU renal function; patients requiring renal replacement therapy were excluded. Seven studies contributed acute-phase (first-dose, within 48-72 h) PK; two studies contributed steady-state PK.",
-    notes = "Pooled meta-analytic PK parameters (Table S1 lists the 21 contributing studies; Table S2 lists 'additional parameters used in the model' [dosing / target / MIC inputs] and is not on disk in this extraction). No individual-level baseline demographic table appears in the paper. Search cut-off: September 2022. See references 14-34 of the paper for the 21 contributing studies. Additional (non-critically-ill) Vd range reported in Discussion: 0.27-0.83 L/kg."
+    notes = "Pooled meta-analytic PK parameters (Table S1 lists the 21 contributing studies; Table S2 lists 'additional parameters used in the model' [dosing / target / MIC inputs] and was not available when this model was built). No individual-level baseline demographic table appears in the paper. Search cut-off: September 2022. See references 14-34 of the paper for the 21 contributing studies. Additional (non-critically-ill) Vd range reported in Discussion: 0.27-0.83 L/kg."
   )
 
   ini({

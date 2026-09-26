@@ -456,6 +456,10 @@ stopifnot(dplyr::n_distinct(sim_sd$id) == N_PER_ARM)
 
 conc_sd <- sim_sd |>
   filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  group_by(regimen, id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, regimen)
 
 # Guarantee a time-zero row (Cc = 0 pre-dose for an extravascular model) so

@@ -22,7 +22,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Sheiner_1979_tubocurarine"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Sheiner_1979_tubocurarine"))$description`
 * Article: <https://doi.org/10.1002/cpt1979253358>
-* Facsimile reprint used as the on-disk source: <https://doi.org/10.1002/cpt.3663> (PMC12087688, pages 1519-1532)
+* Facsimile reprint used as the source: <https://doi.org/10.1002/cpt.3663> (PMC12087688, pages 1519-1532)
 
 This is the paper that introduced the hypothetical effect-compartment model,
 simultaneous PK/PD fitting, and (with Sheiner, Rosenberg and Marathe 1977) the

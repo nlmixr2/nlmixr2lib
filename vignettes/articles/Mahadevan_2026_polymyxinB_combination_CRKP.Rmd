@@ -663,7 +663,7 @@ knitr::kable(
   reductions in AUC_CFU for critically ill patients (Figure 4, Figure S5) drive
   these MBMs with three previously published population PK models -- polymyxin B
   (reference 17), meropenem (reference 46) and fosfomycin (reference 47) -- none
-  of which is on disk for this extraction, and whose parameters are not
+  of which was available when this model was built, and whose parameters are not
   reproduced in this paper. Those simulations are therefore outside the scope of
   this vignette. A user can reproduce them by overriding `d/dt(cpmb)`,
   `d/dt(cmem)` and `d/dt(cfof)` with the corresponding unbound-concentration

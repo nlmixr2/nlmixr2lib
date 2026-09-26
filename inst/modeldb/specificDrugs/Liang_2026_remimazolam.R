@@ -17,7 +17,7 @@ Liang_2026_remimazolam <- function() {
     "and is NOT reproduced here -- the paper publishes only a six-row",
     "drug-specific parameter table for it and takes all system physiology,",
     "organ partitioning and CES1 tissue expression from the platform's",
-    "built-in libraries, so no ODE system is recoverable from any on-disk",
+    "built-in libraries, so no ODE system is recoverable from any available",
     "source. See the vignette Errata."
   )
   reference <- paste(

@@ -97,7 +97,7 @@ Belldina_2003_cysteamine <- function() {
     # Residual error -- the source paper does not report the residual
     # SD values themselves (PK Methods specify a proportional structure
     # with no magnitude; PD Methods do not specify any error structure).
-    # Values below are operator-assumed placeholders documented in the
+    # Values below are placeholders chosen by the maintainers, documented in the
     # vignette Assumptions and deviations section; a refit can re-estimate.
     # ----------------------------------------------------------------
     propSd        <- fixed(0); label("Proportional residual error on plasma cysteamine Cc (fraction)")  # Belldina 2003 specifies a proportional structure but reports no SD; encoded as fixed(0) per the library policy for unreported residual error (see vignette Errata)

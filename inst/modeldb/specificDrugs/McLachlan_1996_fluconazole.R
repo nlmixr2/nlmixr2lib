@@ -62,8 +62,7 @@ McLachlan_1996_fluconazole <- function() {
     label("CL covariate-model intercept (L/h)")
     # McLachlan 1996 Abstract and Discussion p.296: final NONMEM CL regression
     # intercept = 0.25 L/h. Wrapped in log() so the structural intercept is
-    # positive-by-construction inside model() per the operator-resolved sidecar
-    # (request-001, option A).
+    # positive-by-construction inside model().
 
     e_crcl_cl <- 0.0057
     label("Additive CL slope on Cockcroft-Gault CRCL (L/h per mL/min)")
@@ -92,9 +91,8 @@ McLachlan_1996_fluconazole <- function() {
     # for the oral capsule; IV infusion doses are 100% bioavailable and bypass
     # the depot).
 
-    # Inter-individual variability (Table 2 NONMEM column, %CV). Per the
-    # operator-resolved sidecar (request-001, option A), encoded as log-normal
-    # etas: omega^2 = log(CV^2 + 1). The paper's Equation 1 uses a
+    # Inter-individual variability (Table 2 NONMEM column, %CV). Encoded as
+    # log-normal etas: omega^2 = log(CV^2 + 1). The paper's Equation 1 uses a
     # multiplicative-on-linear-scale form (p_j = p_pop * (1 + g_pj)); the
     # log-normal form is the rxode2 / nlmixr2 idiom for positive-constrained
     # structural parameters and is documented as a deviation in the vignette.
@@ -102,9 +100,9 @@ McLachlan_1996_fluconazole <- function() {
     etalcl ~ 0.15532
     # log(0.41^2 + 1); 41% CV from McLachlan 1996 Table 2 base (no-covariate)
     # NONMEM CL IIV. The paper does not report a separate residual CL IIV
-    # after covariate adjustment, so the base-model value is carried per the
-    # operator-resolved sidecar (conservative upper bound; documented in the
-    # vignette Assumptions and deviations section).
+    # after covariate adjustment, so the base-model value is carried forward
+    # as a conservative upper bound; documented in the vignette Assumptions
+    # and deviations section.
 
     etalvc ~ 0.006380
     # log(0.08^2 + 1); 8% CV from McLachlan 1996 Table 2 NONMEM V IIV.
@@ -137,8 +135,8 @@ McLachlan_1996_fluconazole <- function() {
     # ----- Individual PK parameters -----
     # CL: additive intercept-plus-linear-slopes regression on CRCL and CD4_ABS,
     # wrapped in exp(etalcl) to give log-normal IIV on the resulting CL value
-    # (operator-resolved sidecar option A; same idiom as Delattre_2010_amikacin
-    # for an additive-linear renal-function term).
+    # (same idiom as Delattre_2010_amikacin for an additive-linear
+    # renal-function term).
     cl <- (exp(lcl) + e_crcl_cl * CRCL + e_cd4_abs_cl * CD4_ABS) * exp(etalcl)
     vc <- exp(lvc + etalvc)
     ka <- exp(lka + etalka)

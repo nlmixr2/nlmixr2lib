@@ -654,10 +654,10 @@ c(`analytic terminal t1/2 (h)` = round(log(2) / beta, 2),
   Table 1 states them.
 * **Supplementary material.** Figure S1 (literature-search flow diagram),
   Figure S2 (Spanish versus Brazilian mean concentration-time profiles) and
-  Table S1 (covariate model development) are hosted by MDPI behind an edge
-  filter that returned HTTP 403 at extraction time. None of them contain final
-  parameter values: the complete final model is given by Table 3 and Eqs. 8-11
-  in the main text, both of which are on disk.
+  Table S1 (covariate model development) are hosted by MDPI and were not
+  available when this model was built. None of them contain final parameter
+  values: the complete final model is given by Table 3 and Eqs. 8-11 in the
+  main text, both of which were available.
 * **No published NCA to reproduce.** The paper reports no non-compartmental
   analysis of its own cohort, so the NCA comparison above is against the values
   implied by its own printed equations rather than against a published NCA

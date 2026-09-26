@@ -67,7 +67,7 @@ Sahota_2015_miridesap <- function() {
     disease_state = "Healthy volunteers (CPH113776; 21 male subjects) and patients with systemic amyloidosis (CPH114527; cohorts 1-4 spanning small-to-large whole-body amyloid load and normal-to-moderate-severe renal impairment per Sahota 2015 Table 1).",
     dose_range = "Sahota 2015 Methods: CPH113776 used 1 h IV infusions (5-70 mg) and 24 h IV infusion regimens (induction + maintenance, total 86-960 mg). CPH114527 used 48 h IV infusions (124.8-1440 mg) followed by one or three SC doses (10-60 mg). The model also supports SC dosing via the depot compartment with KSC and F fixed at the prior point estimates.",
     regions = NA_character_,
-    notes = "Subject count and study identifiers from Sahota 2015 Methods (Adaptive PK-PD studies). Finer demographics (precise age and weight ranges, female %) are not enumerated in the paper Table 1; Supplementary Materials S1 and S2 were not on disk for this extraction."
+    notes = "Subject count and study identifiers from Sahota 2015 Methods (Adaptive PK-PD studies). Finer demographics (precise age and weight ranges, female %) are not enumerated in the paper Table 1; Supplementary Materials S1 and S2 were not available when this model was built."
   )
 
   ini({

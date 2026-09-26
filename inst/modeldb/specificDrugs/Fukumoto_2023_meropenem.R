@@ -60,7 +60,7 @@ Fukumoto_2023_meropenem <- function() {
         "Cockcroft-Gault estimate (CG-CCr, median 81.1 mL/min) and the",
         "Japanese eGFR equation (median 86.0 mL/min/1.73 m^2) on dOFV;",
         "CG-CCr significantly UNDERestimated renal function in the",
-        "CCr >= 90 mL/min subgroup (Supplementary Table S1, not on disk).",
+        "CCr >= 90 mL/min subgroup (Supplementary Table S1, not available when this model was built).",
         "Treated as time-fixed per subject: a single 8-hour collection was",
         "paired with each patient's PK sampling occasion."
       ),
@@ -80,7 +80,7 @@ Fukumoto_2023_meropenem <- function() {
         "significant covariates') but was not retained in the final model,",
         "which incorporates measured CCr on CL alone. No point estimate is",
         "published for the age effect (the screening dOFV table,",
-        "Supplementary Table S2, is not on disk).",
+        "Supplementary Table S2, was not available when this model was built).",
         "Cohort median 72 years (range 18-94), Table 1."
       )
     ),

@@ -726,7 +726,7 @@ immune to all three, which is why it is the assertion that is gated.
   elimination term as `k * FDC * V` while Table 2 reports `CL`, and the Figure 1
   legend defines `kel` as the elimination rate constant; `k * FDC * V` is
   therefore `CL * FDC`, which is how it is encoded.
-* **Table S1 is not on disk.** The paper's baseline-demographics table is in
+* **Table S1 was not available.** The paper's baseline-demographics table is in
   the Supporting Information, which is not part of the open-access deposit. The
   population metadata therefore uses the pooled demographic summaries stated in
   the Results narrative (n, sex, race, mean age, mean weight) rather than

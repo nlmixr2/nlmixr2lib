@@ -111,7 +111,7 @@ Note the provenance split: Kumar 2024 states in Section 2.5 that "all model
 parameters apart from pinocytosis rate (CLup) and non-specific degradation
 rate of unbound antibody (kdeg) are the same as those used for humans by
 Shah and Betts", so the physiology rows above are read from the upstream
-paper, which is on disk.
+paper, which was available when this model was built.
 
 ## Units in the ODE system
 

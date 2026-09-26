@@ -94,10 +94,10 @@ here for review.
 | Simulated regimens and dose ladder | 3-12 g/day CI after a 4 g LD | Simulations; Figure 3 axis labels |
 | Target window 16-96 mg/L; toxicity 160 mg/L | n/a | Simulations (TARGET post hoc); Table S2 |
 
-The five display equations come back as `formula-not-decoded` in an automated
-text extraction of the PDF, because the fraction bars and parentheses live in a
-symbol font. The forms transcribed above were read from the rendered equation
-images, which resolve the bracketing unambiguously -- in particular that the
+The five display equations do not survive automated plain-text extraction of the
+PDF, because the fraction bars and parentheses live in a symbol font. The forms
+transcribed above were read from the rendered equation images, which resolve the
+bracketing unambiguously -- in particular that the
 `(1 - CRRT) * (1 - HD)` gate in Equation 5 multiplies the **whole**
 renal-plus-non-renal bracket, not just the non-renal term.
 
@@ -507,7 +507,7 @@ stopifnot(all(nca_sim$Cc > 0))
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(id) |>
-  dplyr::filter(Cc >= 1e-6 * max(Cc)) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 

@@ -302,8 +302,8 @@ Nguyen_2026_linezolid <- function() {
     #    steady-state ratio kin_saliva/(kout_saliva + kel_saliva) =
     #    4.93/(1.84 + 2.13) = 1.2418, against the independently reported
     #    "mean saliva-to-plasma ratio ... 1.27 (95% CI 1.09-1.44)"
-    #  (Discussion) -- agreement to 2%. ratified (sidecar
-    #    request-001 q2, 2026-09-02); see the vignette Errata.
+    #    (Discussion) -- agreement to 2%, which the maintainers accepted as
+    #    confirming the vc scaling; see the vignette Errata.
     Cc <- central / vc
     Csaliva <- saliva / vc
 

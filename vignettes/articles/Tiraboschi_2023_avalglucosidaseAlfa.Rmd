@@ -580,11 +580,11 @@ adult range, reproducing the conclusion that supported the approved US labelling
 
 - No erratum or corrigendum was found for this article.
 - The supplementary material (model-search summary Table 1, quality-criteria
-  Table 2, and a virtual-population-versus-CDC-growth-chart figure) is not on
-  disk. It contains no final parameter estimates -- every value in this model
-  comes from Table 3 of the main text -- so the gap does not affect the
-  extraction. It does mean the model-search detail behind "no allometric factors
-  on peripheral compartment parameters" is cited from the main text's summary of
-  it rather than read directly.
+  Table 2, and a virtual-population-versus-CDC-growth-chart figure) was not
+  available when this model was built. It contains no final parameter
+  estimates -- every value in this model comes from Table 3 of the main text --
+  so the gap does not affect the extraction. It does mean the model-search
+  detail behind "no allometric factors on peripheral compartment parameters" is
+  cited from the main text's summary of it rather than read directly.
 - Table 4's column header reads `AUC 2W (ug/mL)`; the quantity is an area under
   the curve and its units are `ug*h/mL`. The header omits the time dimension.

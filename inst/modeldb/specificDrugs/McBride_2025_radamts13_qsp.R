@@ -184,7 +184,7 @@ McBride_2025_radamts13_qsp <- function() {
     # ADAMTS13_Model.m lines 75-78) uses CL = 0.0389 and CLD = 0.0456.
     # The code values are used here because Data S2 is the executable
     # artifact that produced the published figures. Note that the two
-    # candidate Q values CANNOT be told apart from the on-disk data: both
+    # candidate Q values CANNOT be told apart from the published data: both
     # land within ~10% of the Phase 3 observed mean ADAMTS13 Cmax
     # (Table S2: 101% rADAMTS13, 19% PBT). The ten-fold discrepancy is an
     # unresolved inconsistency in the published sources; see the vignette

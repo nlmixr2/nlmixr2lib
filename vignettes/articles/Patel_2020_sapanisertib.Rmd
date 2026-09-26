@@ -84,8 +84,8 @@ metadata, e.g. `readModelDb("Patel_2020_sapanisertib_QTcI")()$population`.
 Every value in every `ini()` block comes from a regression-summary table printed
 **inside** a figure panel. Those in-panel tables carry full printed-value
 authority -- they are printed parameter tables, not digitised or curve-fitted
-values -- but they are invisible to `pdftotext` and to docling because Figures 4
-and S2 are raster images. They were recovered with
+values -- but they are invisible to plain-text extraction of the PDF (including
+`pdftotext`) because Figures 4 and S2 are raster images. They were recovered with
 `pdftoppm -r 400 -f 10` on the article PDF (Figures 4A and 4C, journal page 885)
 and by unzipping `cpdd808-sup-0001-suppmat.docx` and rendering
 `word/media/image4.png` (Figure S2).

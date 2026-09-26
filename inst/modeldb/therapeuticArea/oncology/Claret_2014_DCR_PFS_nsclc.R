@@ -199,8 +199,8 @@ Claret_2014_DCR_PFS_nsclc <- function() {
     #   S(t) = 1 - Phi((log(t) - mu) / sigma).
     #
     # SIGN RECOVERY. The minus sign on the Log(scale) row of Table 3 is
-    # typeset as U+2212 and is dropped by both the trimmed markdown
-    # conversion and `pdftotext -layout`. It is recovered unambiguously
+    # typeset as U+2212 and is dropped by plain-text extraction of the
+    # PDF (including `pdftotext -layout`). It is recovered unambiguously
     # from the table's own Wald statistics, since z equals estimate
     # divided by SE for every row:
     #     0.466 / 0.0477 =  +9.77 vs published z = 9.8

@@ -18,7 +18,7 @@ Peng_2014_MK3577_t2dm <- function() {
     "phase IIa CTS used in Peng 2014 had no glucagon challenge -- only",
     "endogenous homeostasis under multi-day MK-3577 dosing. The MK-3577 PK",
     "layer is NOT modeled here for the same reason as the healthy model",
-    "(ka, V/F, MW not in the on-disk PDF); users supply the time-varying",
+    "(ka, V/F, MW not in the PDF); users supply the time-varying",
     "MK-3577 plasma concentration via CP_MK3577_NM (nM). See vignette",
     "Assumptions and deviations.",
     sep = " "
@@ -77,7 +77,7 @@ Peng_2014_MK3577_t2dm <- function() {
       type = "continuous",
       reference_category = NULL,
       notes = paste(
-        "Supplied externally because the on-disk Peng 2014 PDF does not",
+        "Supplied externally because the Peng 2014 PDF does not",
         "report the MK-3577 absorption rate ka, apparent volume V/F, or",
         "molecular weight needed to derive a mg-dose-to-nM-plasma profile",
         "internally. See modellib('Peng_2014_MK3577') for the healthy",

@@ -163,7 +163,7 @@ Geldof_2008_fluvoxamine_sert_brain_rat <- function() {
     # NOTE ON PROVENANCE: the present BJP paper tabulates only kin, kout and
     # C50. The saturable-efflux capacity N***max is REQUIRED by the brain
     # distribution structure but is NOT reported in this paper; it is taken
-    # from Table II of the companion Pharm Res paper, which is on disk and
+    # from Table II of the companion Pharm Res paper, which was available and
     # is already extracted as modellib('Geldof_2008_fluvoxamine_rat').
     # ------------------------------------------------------------------
     lkin      <- fixed(log(0.2031)); label("Brain influx rate constant kin (1/min)")                         # Geldof 2008 BJP Table 2, 'Brain sampling + microdialysis' row: kin = 0.2031 /min

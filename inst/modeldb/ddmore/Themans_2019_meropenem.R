@@ -55,7 +55,7 @@ Themans_2019_meropenem <- function() {
   )
 
   population <- list(
-    n_subjects = "Not extractable from DDMORE bundle (Themans 2019 PDF not on disk).",
+    n_subjects = "Not extractable from DDMORE bundle (Themans 2019 PDF not available when this model was built).",
     n_studies = "Not extractable from DDMORE bundle.",
     age_range = "Adult (specific range not extractable from bundle; the publication is reported in the bundle as covering adults with severe pneumonia).",
     weight_range = "45-128 kg (range observed in DDMODEL00000301 Simulated_dataset.csv; n = 60 simulated subjects).",
@@ -72,10 +72,10 @@ Themans_2019_meropenem <- function() {
     regions = "Not extractable from DDMORE bundle.",
     notes = paste(
       "Demographics summarised from the DDMORE bundle's Simulated_dataset.csv (60 simulated subjects;",
-      "WT 45-128 kg, GFR 19-401 mL/min). The Themans 2019 PDF is not on disk under the literature tree;",
+      "WT 45-128 kg, GFR 19-401 mL/min). The Themans 2019 PDF was not available when this model was built;",
       "full demographics, study design, sex / race / ethnicity, and inclusion criteria could not be cross-checked.",
       "The DDMORE Model_Accomodations.text references a British Journal of Pharmacology submission",
-      "(July 2019, scenario = 4); the task metadata names a Drugs in R&D 2019 publication",
+      "(July 2019, scenario = 4); the reference cited above is a Drugs in R&D 2019 publication",
       "(DOI 10.1007/s40268-019-0268-x). The two are likely the same body of work at different stages of",
       "journal review; no external check was possible."
     )

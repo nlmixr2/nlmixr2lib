@@ -423,7 +423,11 @@ adding `time > 0` or `conc > 0` would drop the time-zero anchor row.
 run_nca <- function(sim, conc_col, events) {
   conc_df <- sim |>
     dplyr::filter(!is.na(.data[[conc_col]])) |>
-    dplyr::transmute(id = sid, time, arm, conc = .data[[conc_col]])
+    dplyr::transmute(id = sid, time, arm, conc = .data[[conc_col]]) |>
+    # Keep conc >= 1e-6 * max(conc) per subject after the peak: below that it is solver noise.
+    dplyr::group_by(id, arm) |>
+    dplyr::filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc)) |>
+    dplyr::ungroup()
 
   # Guarantee a time = 0 row per (id, arm); pre-dose concentration is 0
   # for an extravascular single dose.
@@ -533,7 +537,8 @@ heuristic in the way. Typical-value profiles, so no seed and no cohort.
 
 ```{r terminal-slope}
 terminal_slope <- function(df, conc_col, lo = 48, hi = 72) {
-  d <- df[df$time >= lo & df$time <= hi, ]
+  # Keep points >= 1e-6 * max: below that the ODE solution is integrator noise.
+  d <- df[df$time >= lo & df$time <= hi & df[[conc_col]] >= 1e-6 * max(df[[conc_col]]), ]
   fit <- stats::lm(log(d[[conc_col]]) ~ d$time)
   c(k = -unname(coef(fit)[2]), r2 = summary(fit)$r.squared)
 }
@@ -842,9 +847,10 @@ stopifnot(all(abs(ss$pct_diff) < 0.5))
   `Ka` = 0.219 1/h, while the additive reading gives `Ka` = 0.292 1/h --
   about **28% higher atorvastatin Cmax** and ~41% lower trough. The paper
   publishes no NCA table, no Tmax and no concentration-time figure with an
-  absolute axis, so nothing on disk discriminates the two. Equation S2 is
-  used per the standing trust-the-printed-equation policy, because it is
-  the only equation printed for the run the parameters come from
+  absolute axis, so nothing in the available material discriminates the two.
+  Equation S2 is used per the package's convention that the printed equation
+  has authority, because it is the only equation printed for the run the
+  parameters come from
   (maintainer ruling). A user who prefers the additive reading need only
   change the single `ka <- exp(lka + l2)` line in the model file.
 

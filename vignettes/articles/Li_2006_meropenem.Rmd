@@ -50,7 +50,7 @@ of 83 mL/min because no CrCl distribution was reported in the publication.
 Six dose groups span 500, 1000, and 2000 mg administered as 0.5-h or 3-h
 IV infusions. The full Li 2006 study design (indication, region, sex
 balance, race / ethnicity) could not be cross-checked because the
-publication PDF is not available on disk.
+publication PDF was not available when this model was built.
 
 ```{r population}
 str(mod_meta$population)
@@ -82,7 +82,7 @@ collects them in one place.
 | `d/dt(central)`, `d/dt(peripheral1)`                  | n/a | DDMODEL00000213 .mdl `mdlObj$MODEL_PREDICTION$DEQ`                     |
 | `Cc ~ add(addSd) + prop(propSd)` | n/a | DDMODEL00000213 NMTRAN-rendered `$ERROR`: `W = sqrt(RUV_ADD^2 + RUV_PROP^2 * IPRED^2)` |
 
-The Li 2006 publication PDF is not available on disk, so the table cites
+The Li 2006 publication PDF was not available when this model was built, so the table cites
 the DDMORE bundle's MDL file as the proximate source. The Model_Accommodations.txt
 file in the bundle states "Original model was used as described in
 publication (Li et al)", which is the basis for treating the parObj values
@@ -245,7 +245,7 @@ sim |>
 # PKNCA NCA on the simulated cohort
 
 PKNCA is run on the full stochastic simulation. Because the Li 2006
-publication is not on disk, the simulated NCA values cannot be compared
+publication was not available, the simulated NCA values cannot be compared
 side-by-side against published Cmax / AUC tables; they are reported here
 as a sanity check on the simulation pipeline.
 
@@ -299,8 +299,8 @@ knitr::kable(
   typical-value estimates. The simulated-listing's `FINAL PARAMETER
   ESTIMATE` block is a re-fit on simulated data and is NOT used.
 
-- **Li 2006 publication PDF is not on disk** in the
-  maintainers' literature mirror, so demographic
+- **Li 2006 publication PDF was not available when this model was
+  built**, so demographic
   ranges (age range, weight range, sex balance, race/ethnicity, region,
   indication) and the publication's NCA tables could not be cross-checked.
   Where these fields appear in the model's `population` metadata, they are
@@ -339,6 +339,6 @@ knitr::kable(
   rendering is the executed model and is what this nlmixr2lib model
   reproduces (`addSd = 0.47`, `propSd = 0.19`).
 
-- **Validation strategy is self-consistency** (no linked publication on
-  disk). PKNCA values shown above are informational; comparison against
+- **Validation strategy is self-consistency** (the publication was not
+  available). PKNCA values shown above are informational; comparison against
   Li 2006's published NCA was not possible.

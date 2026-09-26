@@ -87,7 +87,7 @@ Garcia_2025_garadacimab_hae_attack <- function() {
   )
 
   # Covariates the source screened on the ER parameters but for which no
-  # point estimate is reported anywhere on disk. Documentation only --
+  # point estimate is reported in any available source. Documentation only --
   # checkModelConventions() does not require these to be referenced in
   # model(). See the vignette's Assumptions and deviations section.
   covariatesDataExcluded <- list(
@@ -195,9 +195,7 @@ Garcia_2025_garadacimab_hae_attack <- function() {
     # Table S5 final model, in lower-triangle order: IIV-CL = 0.175 (CV% 43.8);
     # V2-CL covariance = 0.263 (Corr 0.743); IIV-V2 = 0.717 (CV% 102);
     # F1-CL covariance = 0.154 (Corr 0.614); F1-V2 covariance = 0.174
-    # (Corr 0.342); IIV-F1 = 0.359 (logit scale). Comments must sit OUTSIDE the
-    # c() -- rxode2 fails to parse a trailing comment inside a multi-line omega
-    # c() block.
+    # (Corr 0.342); IIV-F1 = 0.359 (logit scale).
     etalcl + etalvc + etalogitfdepot ~ c(
       0.175,
       0.263, 0.717,

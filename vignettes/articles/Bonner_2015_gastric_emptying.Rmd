@@ -252,7 +252,7 @@ a clean between-category separation.
 Bonner 2015 is a physiological gastric-emptying meta-analysis with
 several load-bearing structural details that the paper's Methods and
 supplementary material do NOT explicitly resolve, and for which the
-NONMEM control stream is not available on disk. Each of the three
+NONMEM control stream was not available. Each of the three
 ambiguities below was resolved by a maintainer-approved best-effort
 choice on 2026-07-24, made with caveats after three earlier attempts to
 obtain the missing supplement were unsuccessful. All three are listed

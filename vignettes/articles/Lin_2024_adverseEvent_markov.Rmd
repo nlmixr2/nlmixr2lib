@@ -665,11 +665,10 @@ Supplementary Table S1 rather than assumed silently.
 
 No erratum or corrigendum was found for this article.
 
-The supplement is on disk as a valid Word document and contains Supplementary
+The supplement was available as a Word document and contains Supplementary
 Table S1 (the observed incidence rates used as the answer key above) and the
-captions for Supplementary Figures S1-S3. Note that the figure captions in the
-supplement lost their numbering in conversion (all three read "Figure S"), so
-figures are referred to here by the numbers used in the main text.
+captions for Supplementary Figures S1-S3; figures are referred to here by the
+numbers used in the main text.
 
 Two presentation quirks in the source, neither of which changes a value:
 

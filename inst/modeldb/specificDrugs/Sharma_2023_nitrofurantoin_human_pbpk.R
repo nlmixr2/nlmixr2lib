@@ -15,7 +15,7 @@ Sharma_2023_nitrofurantoin_human_pbpk <- function() {
     "and the between-subject lognormal geometric SD from Agedynamic_montecarlo.in.R;",
     "renal-insufficiency scenarios from GFRdiseasedAgedynamic_montecarlo.in.R).",
     "Age-dependent physiology equations are attributed by Sharma 2023 Methods 2.2 to its",
-    "reference 26; that upstream paper is not on disk, so the equations are transcribed",
+    "reference 26; that upstream paper was not available when this model was built, so the equations are transcribed",
     "verbatim from the deposited model file rather than re-derived.",
     "The article carries a publisher Correction Statement (republished with a minor change",
     "not affecting scientific content); no parameter value is revised by it.",

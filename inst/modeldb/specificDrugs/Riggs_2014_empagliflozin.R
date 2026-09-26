@@ -269,8 +269,9 @@ Riggs_2014_empagliflozin <- function() {
     # Imposed allometric weight exponents. Riggs 2014 says only that "weight
     # was included allometrically on each of these parameters"; the exponents
     # and the 70 kg reference come from Riggs 2013 J Clin Pharmacol Table 3,
-    # where every row is flagged FIXED (non-paper provenance: companion
-    # population PK publication, on disk).
+    # where every row is flagged FIXED (non-paper provenance: the companion
+    # population PK publication, which was available when this model was
+    # built).
     e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F")   # Riggs 2013 Table 3 row 'CL/F (WT/70)^theta_20' = 0.75 FIXED
     e_wt_q  <- fixed(0.75) ; label("Allometric exponent of (WT/70) on Q/F")    # Riggs 2013 Table 3 row 'Q/F (WT/70)^theta_22' = 0.75 FIXED
     e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V2/F (vc)")  # Riggs 2013 Table 3 row 'V2/F (WT/70)^theta_21' = 1 FIXED

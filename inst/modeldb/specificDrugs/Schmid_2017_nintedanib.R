@@ -52,7 +52,7 @@ Schmid_2017_nintedanib <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (Caucasian, Black, Korean, or other Asian; the Schmid 2017 cohort assigns 'other Asian' (subjects of Asian heritage outside China / India / Korea / Taiwan, 3.9% of population) to the reference category alongside Caucasian (75.5%) and Black (0.8%)).",
-      notes = "Time-fixed baseline. Effect on nintedanib F1: F1 = ... * theta_Ethnicity, where theta_Ethnicity = 1.33 if RACE_IND_CHI_TWN = 1, paired exclusively with the RACE_KOREAN = 1 alternative (0.781). Reference 1.00 (Schmid 2017 Table 3). Per the canonical-register entry, this composite is paper-specific to Schmid 2017 and pairs only with the Korean alternative; subjects who are both Indian and (per the operator-distinct RACE_INDIAN canonical) South Asian Indian have both RACE_IND_CHI_TWN = 1 and RACE_INDIAN = 1 -- there is no conflict because the two canonicals address different model-equation slots (RACE_IND_CHI_TWN drives nintedanib F1, RACE_INDIAN drives BIBF 1202 F2).",
+      notes = "Time-fixed baseline. Effect on nintedanib F1: F1 = ... * theta_Ethnicity, where theta_Ethnicity = 1.33 if RACE_IND_CHI_TWN = 1, paired exclusively with the RACE_KOREAN = 1 alternative (0.781). Reference 1.00 (Schmid 2017 Table 3). Per the canonical-register entry, this composite is paper-specific to Schmid 2017 and pairs only with the Korean alternative; subjects who are both Indian and (per the separately registered RACE_INDIAN canonical) South Asian Indian have both RACE_IND_CHI_TWN = 1 and RACE_INDIAN = 1 -- there is no conflict because the two canonicals address different model-equation slots (RACE_IND_CHI_TWN drives nintedanib F1, RACE_INDIAN drives BIBF 1202 F2).",
       source_name = "ETHNIC (paper-specific composite of paper-categorical levels Indian / Chinese / Taiwanese)"
     ),
     RACE_KOREAN = list(
@@ -192,9 +192,9 @@ Schmid_2017_nintedanib <- function() {
   #   non-Indian Asian). The RACE_IND_CHI_TWN canonical handles the F1
   #   composite; RACE_INDIAN handles the F2 Indian-only effect; the
   #   non-Indian Asian F2 flag is derived inside model() from
-  #  RACE_ASIAN AND NOT RACE_INDIAN. ratified sidecar
-  #   2026-06-21 (request-002 Q1, option B) instructed full-fidelity
-  #   extraction with new race canonicals.
+  #  RACE_ASIAN AND NOT RACE_INDIAN. The maintainers decided on
+  #   full-fidelity encoding of the race effects, with new race
+  #   canonicals.
   # * BIBF 1202 ka2 = ka * theta_ka2ka * theta_Trial_ka2 *
   #   theta_NSCLC_histology, so the metabolite ka inherits the parent
   #   ka covariate effects (including the phase-II ka boost = 2.20x)

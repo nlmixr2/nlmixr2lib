@@ -262,7 +262,9 @@ typ <- rxode2::rxSolve(
     rxode2::et(seq(0, 8, by = 0.25), cmt = "central"),
   params = data.frame(WT = 45.85, CRCL = 103.81, CONMED_PPI = 0),
   omega = NA,  # required: zeroRe() alone does not stop eta re-sampling
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 
 # Guards. At the reference covariates both covariate factors are exactly 1, so
@@ -389,8 +391,10 @@ stopifnot(!anyDuplicated(unique(events_pta[, c("id", "time", "evid")])))
 
 ```{r pta-simulate}
 set.seed(20240824)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_pta <- rxode2::rxSolve(mod, events = events_pta, omega = mod$omega,
-                           keep = c("arm"), returnType = "data.frame")
+                           keep = c("arm"), returnType = "data.frame",
+                           maxsteps = 1e6)
 stopifnot(dplyr::n_distinct(round(sim_pta$cl, 8)) > 1L)
 
 pta <- sim_pta |>
@@ -525,8 +529,10 @@ recommendations, and the recommendations validate CL/F and the CCR effect only.
 mod_alt <- mod |> rxode2::ini(lvc = log(829))
 
 set.seed(20240824)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_alt <- rxode2::rxSolve(mod_alt, events = events_pta, omega = mod_alt$omega,
-                           keep = c("arm"), returnType = "data.frame")
+                           keep = c("arm"), returnType = "data.frame",
+                           maxsteps = 1e6)
 stopifnot(dplyr::n_distinct(round(sim_alt$cl, 8)) > 1L)
 
 alt_rec <- sim_alt |>
@@ -590,9 +596,10 @@ events_ss <- bind_rows(
   make_ss_profile(100L, amt = 200, ii = 12, regimen = "200 mg BID", id_offset = 100L)
 )
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_ss <- rxode2::rxSolve(mod, events = events_ss, omega = mod$omega,
                           keep = c("regimen", "WT", "CRCL", "CONMED_PPI"),
-                          returnType = "data.frame")
+                          returnType = "data.frame", maxsteps = 1e6)
 stopifnot(dplyr::n_distinct(round(sim_ss$cl, 8)) > 1L)
 ```
 

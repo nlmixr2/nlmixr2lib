@@ -81,7 +81,7 @@ Ezzati_2014_dexmedetomidine_piglet <- function() {
                         -0.4154, 1.5365)                                                  # Ezzati 2014 Table 2 (CL %BSV 46.6, V %BSV 191) + Results page 737 (correlation -0.756).
 
     # FAED IIV: Table 2 %BSV = 2.6% -> omega^2 = log(0.026^2 + 1) = 0.000676 (effectively negligible
-    # inter-piglet variability on the post-HI factor; preserved per operator instruction).
+    # inter-piglet variability on the post-HI factor; preserved by decision of the maintainers).
     etalfaed ~ 0.000676                                                                    # Ezzati 2014 Table 2 (FAED %BSV = 2.6).
 
     # Karlsson 1998 additional eta on residual variance (eta-on-epsilon). Encoded as a multiplicative

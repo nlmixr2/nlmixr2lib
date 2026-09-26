@@ -49,7 +49,7 @@ AitOudhia_2012_canakinumab <- function() {
     disease_state = "Active rheumatoid arthritis",
     dose_range = "0.1 mg/kg to 900 mg as a 2-hour IV infusion or SC injection Q2W or Q4W; alone or with methotrexate",
     regions = NA,
-    notes = "Demographics from Ait-Oudhia 2012 Results, 'Data were obtained...' paragraph (page 2). Body-weight, age, gender, and methotrexate were tested as covariates; only body weight was retained (page 2-3). Per-study breakdown is described in Supplementary Table S1 (not on disk for this extraction). Other covariate-effect coefficients (age, gender, methotrexate) were tested and dropped during model building and are not encoded here."
+    notes = "Demographics from Ait-Oudhia 2012 Results, 'Data were obtained...' paragraph (page 2). Body-weight, age, gender, and methotrexate were tested as covariates; only body weight was retained (page 2-3). Per-study breakdown is described in Supplementary Table S1 (not available when this model was built). Other covariate-effect coefficients (age, gender, methotrexate) were tested and dropped during model building and are not encoded here."
   )
 
   ini({

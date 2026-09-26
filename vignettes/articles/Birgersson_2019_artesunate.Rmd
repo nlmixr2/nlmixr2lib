@@ -44,7 +44,7 @@ str(attr(rxode2::rxode2(mod_meta_fn()), "metadata")$population)
 
 # Source trace
 
-Every parameter and equation traces back to the DDMORE bundle for `DDMODEL00000297`. Because the bundle ships only an `Executable_run1.mod` (a `MAXEVAL=0 POSTHOC` run) and an `Output_simulated_run1.lst` (a one-subject re-evaluation on the bundled `Simulated_run1.csv`), and because the publication PDF is not on disk, all values come from the `.mod` file. The `MAXEVAL=0` setting makes the `.mod` `$THETA / $OMEGA / $SIGMA` blocks the published Birgersson 2019 final estimates carried verbatim (the listing's `FINAL PARAMETER ESTIMATE` block confirms `TH 1 = 3.57E+03` and so on).
+Every parameter and equation traces back to the DDMORE bundle for `DDMODEL00000297`. Because the bundle ships only an `Executable_run1.mod` (a `MAXEVAL=0 POSTHOC` run) and an `Output_simulated_run1.lst` (a one-subject re-evaluation on the bundled `Simulated_run1.csv`), and because the publication PDF was not available when this model was built, all values come from the `.mod` file. The `MAXEVAL=0` setting makes the `.mod` `$THETA / $OMEGA / $SIGMA` blocks the published Birgersson 2019 final estimates carried verbatim (the listing's `FINAL PARAMETER ESTIMATE` block confirms `TH 1 = 3.57E+03` and so on).
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
@@ -166,7 +166,7 @@ sim_typical <- rxode2::rxSolve(
 
 # Replicate published figures
 
-The Birgersson 2019 publication PDF was not on disk when this model was built; the figure replication here therefore demonstrates the typical-value parent-and-metabolite trajectories and stratifies them by pregnancy status -- the principal covariate finding of the paper. Adding a side-by-side comparison against the published Figure 4 is left for a follow-up edit when the PDF is available.
+The Birgersson 2019 publication PDF was not available when this model was built; the figure replication here therefore demonstrates the typical-value parent-and-metabolite trajectories and stratifies them by pregnancy status -- the principal covariate finding of the paper. Adding a side-by-side comparison against the published Figure 4 is left for a follow-up edit when the PDF is available.
 
 ```{r figure-typical-trajectories}
 sim_typical |>
@@ -301,7 +301,7 @@ knitr::kable(dha_summary,
 
 ## Comparison against published NCA
 
-The Birgersson 2019 publication PDF was not on disk during this extraction, so a numeric side-by-side comparison against the paper's published Cmax / AUC tables is not part of this validation. The qualitative findings are reproduced:
+The Birgersson 2019 publication PDF was not available when this model was built, so a numeric side-by-side comparison against the paper's published Cmax / AUC tables is not part of this validation. The qualitative findings are reproduced:
 
 * Pregnant women have higher dihydroartemisinin clearance than non-pregnant women (the published direction). In the simulation the typical-value pregnant CLM is `190 L/h * (52/52)^0.75 = 190 L/h`, and the typical-value non-pregnant CLM is `190 * 0.786 = 149 L/h`. The corresponding DHA AUC0-inf ratio (non-pregnant / pregnant) is `190 / 149 = 1.272`, i.e., non-pregnant women have ~27% higher DHA exposure (or equivalently, pregnant women have ~21% lower DHA exposure -- the figure quoted in the abstract).
 * Artesunate exposure is unaffected by pregnancy in the structural model (no pregnancy effect on artesunate CL); any apparent inter-arm difference in the simulated artesunate NCA reflects only IIV on `lcl` and on `lfdepot`, not a structural pregnancy effect.
@@ -355,7 +355,7 @@ The simulated AUCs match the closed-form expectations under the structural assum
 
 # Assumptions and deviations
 
-* **Source publication PDF not on disk.** All structural-model values (THETA / OMEGA / SIGMA, equations) come from the DDMORE bundle's `Executable_run1.mod`. Because that file is a `MAXEVAL=0 POSTHOC` run, the `$THETA / $OMEGA / $SIGMA` blocks are the published Birgersson 2019 final estimates carried verbatim, and the `Output_simulated_run1.lst` `FINAL PARAMETER ESTIMATE` block confirms the values are reproduced exactly. Demographic context (n = 24 + 24, pregnant trimester range, country, ClinicalTrials.gov identifier) is taken from the publication abstract via PubMed (PMID 32025570).
+* **Source publication PDF not available.** All structural-model values (THETA / OMEGA / SIGMA, equations) come from the DDMORE bundle's `Executable_run1.mod`. Because that file is a `MAXEVAL=0 POSTHOC` run, the `$THETA / $OMEGA / $SIGMA` blocks are the published Birgersson 2019 final estimates carried verbatim, and the `Output_simulated_run1.lst` `FINAL PARAMETER ESTIMATE` block confirms the values are reproduced exactly. Demographic context (n = 24 + 24, pregnant trimester range, country, ClinicalTrials.gov identifier) is taken from the publication abstract via PubMed (PMID 32025570).
 * **No `Output_real_*.lst` shipped.** The DDMORE bundle ships only the simulated-data listing. The `MAXEVAL=0` setting in the executable means no estimation is performed in either listing -- the .mod's THETA / OMEGA / SIGMA blocks are the authoritative source.
 * **No `Model_Accomodations.text` file.** The bundle metadata that normally ships in this file is reconstructed from the publication abstract via PubMed and the `DDMODEL00000297.rdf` description string.
 * **Pregnancy reference category encoded source-faithfully.** The Birgersson 2019 source NONMEM `.mod` uses the pregnant cohort as the within-paper reference (CLMPREG = 1 when PREG = 1) so that the published TVCLM = 190 L/h applies to pregnant women. The package canonical for `PREG` (`inst/references/covariate-columns.md`) declares the reference category as 0 (non-pregnant) following the broader pharmacology default, but this model preserves the source paper's structural value verbatim by applying the effect coefficient via `(1 - PREG)` in the `model()` block: `cl_dihydroart <- ... * (1 + e_preg_cl_dihydroart * (1 - PREG))` with `e_preg_cl_dihydroart = -0.214`. Pregnant simulations match the published 190 L/h structural value; non-pregnant simulations apply the 0.786 multiplier.

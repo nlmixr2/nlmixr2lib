@@ -207,7 +207,7 @@ PerezRuixo_2020_esketamine <- function() {
     # running stochastic VPCs should refit or override this entry once
     # a numeric value becomes available (e.g. via author correspondence
     # to cperezru@its.jnj.com or a future erratum). See the vignette
-    # Errata section for the full discussion and the sidecar trail.
+    # Errata section for the full discussion.
     etalogitFRn ~ 0.501             # Table 3 omega(FRn) = 70.8 (additive on logit); SD_logit ~ 0.708 -> variance 0.501
     etalka_n    ~ 0.319             # Table 3 omega(ka_n) = 61.5 CV%; omega^2 = log(1 + 0.615^2) = 0.319
     etalka_sw   ~ 1.009             # Table 3 omega(ka_sw) = 132 CV%; omega^2 = log(1 + 1.32^2) = 1.009
@@ -340,8 +340,8 @@ PerezRuixo_2020_esketamine <- function() {
     # Dose units = mg; volumes in L => Cc = central / Vc has units mg/L
     # = 1000 ng/mL. Multiply by 1000 to express in ng/mL (matches Table 4).
     #
-    # NORESKETAMINE AUC0-24 NOTE (see vignette Errata for the full discussion
-    # and the sidecar-001 audit trail): the apparent-V denominator Vcn / 1
+    # NORESKETAMINE AUC0-24 NOTE (see vignette Errata for the full
+    # discussion): the apparent-V denominator Vcn / 1
     # (no F_met scaling) is the most literal reading of Table 3 Vcn/F = 70 L
     # and the printed Section 2.3 equation dA7/dt = kmet*A6 - ken*A7 - ...
     # This faithful encoding reproduces Table 4 esketamine Cmax / AUC0-24
