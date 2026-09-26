@@ -742,6 +742,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Buprenorphine (Bjornsson 2023)"
         href: articles/Bjornsson_2023_buprenorphine.html
+      - text: "Buprenorphine (Kovar 2020)"
+        href: articles/Kovar_2020_buprenorphine.html
       - text: "Burosumab (Zhang 2016)"
         href: articles/Zhang_2016_burosumab.html
       - text: "Busulfan (Balis 2025)"
@@ -7054,6 +7056,7 @@ articles:
   - articles/Kovalenko_2016_dupilumab
   - articles/Kovalenko_2016_dupilumab_ddmore
   - articles/Kovalenko_2020_dupilumab
+  - articles/Kovar_2020_buprenorphine
   - articles/Krause_2017_selexipag
   - articles/KreeftmeijerVegter_2015_levamisole
   - articles/Krekels_2015_paracetamol
