@@ -2725,15 +2725,43 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports headache as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Sun_2025_maribavir_headache.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.05 per 10 ug*h/mL; reference-patient probability 0.035 at zero exposure), `Gidal_2018_eslicarbazepine_headache.R` (adjunctive eslicarbazepine acetate in focal-onset seizures; the paper's most parsimonious TEAE model -- only the first-week starting dose, eslicarbazepine AUC0-24 and body weight are retained, and the AUC0-24 coefficient is NEGATIVE for the first-occurrence reason described under `prob_dizziness`)
+- **Example models:** `Sun_2025_maribavir_headache.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.05 per 10 ug*h/mL; reference-patient probability 0.035 at zero exposure), `Gidal_2018_eslicarbazepine_headache.R` (adjunctive eslicarbazepine acetate in focal-onset seizures; the paper's most parsimonious TEAE model -- only the first-week starting dose, eslicarbazepine AUC0-24 and body weight are retained, and the AUC0-24 coefficient is NEGATIVE for the first-occurrence reason described under `prob_dizziness`), `Lalovic_2020_lemborexant_headache.R` (lemborexant in insomnia; linear in the average steady-state concentration on the logit with a NEGATIVE slope, and coefficients back-solved from the paper's reference-subject probability table because none are printed)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. The endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a laboratory-defined or CTCAE-graded endpoint for the same toxicity and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3` or `prob_sae`. Sibling of `prob_dizziness` in the central-nervous-system tolerability group.
 
 ### prob_somnolence (**canonical somnolence adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports somnolence (drowsiness / sedation) as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model. A per-subject binary outcome.
 - **Source aliases:** none.
-- **Example models:** `Gidal_2018_eslicarbazepine_somnolence.R` (founding example; adjunctive eslicarbazepine acetate in adults with focal-onset seizures. The only one of that paper's three treatment-emergent-adverse-event models driven by PEAK concentration rather than by AUC0-24 -- both metrics were screened for every endpoint and `CMAX` was the significant predictor here).
+- **Example models:** `Gidal_2018_eslicarbazepine_somnolence.R` (founding example; adjunctive eslicarbazepine acetate in adults with focal-onset seizures. The only one of that paper's three treatment-emergent-adverse-event models driven by PEAK concentration rather than by AUC0-24 -- both metrics were screened for every endpoint and `CMAX` was the significant predictor here), `Lalovic_2020_lemborexant_somnolence.R` (lemborexant, a dual orexin receptor antagonist hypnotic; linear in the average steady-state concentration on the logit, not statistically significant, coefficients back-solved from the paper's reference-subject probability table).
 - **Notes:** A probability output in `[0, 1]`, not a concentration. Follows the `prob_<endpoint>` shape and is registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. Sibling of `prob_dizziness` and `prob_headache` in the central-nervous-system tolerability group; a single paper commonly fits all three, and the founding model is one of a set of three that do. The endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a CTCAE-graded endpoint would and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3`. Distinguish it from a measured sedation SCORE (a continuous PD state); this is the probability of the term being reported. Because the source likelihood is Bernoulli and estimates no residual error, the founding model exposes a small placeholder additive residual so the nlmixr2 observation machinery accepts the model.
+
+### prob_nasopharyngitis (**canonical nasopharyngitis adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient reports nasopharyngitis (the common cold) as a treatment-emergent adverse event at any time during a study, in a static landmark exposure-safety logistic model. A per-subject binary outcome.
+- **Source aliases:** none.
+- **Example models:** `Lalovic_2020_lemborexant_nasopharyngitis.R` (founding example; linear in the lemborexant average steady-state concentration on the logit, not statistically significant).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. An investigator-reported adverse-event term with no severity threshold; a background infection common in long trials rather than a pharmacological effect, so an exposure slope near zero is the expected finding. Sibling of `prob_urti` and `prob_influenza` in the respiratory-infection group -- the three are distinct MedDRA preferred terms, not nested.
+
+### prob_uti (**canonical urinary-tract-infection adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient reports a urinary tract infection as a treatment-emergent adverse event at any time during a study, in a static landmark exposure-safety logistic model. A per-subject binary outcome.
+- **Source aliases:** none.
+- **Example models:** `Lalovic_2020_lemborexant_uti.R` (founding example; linear in the lemborexant average steady-state concentration on the logit, not statistically significant).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. An investigator-reported adverse-event term with no severity threshold. Distinct from `prob_infection` (an invasive fungal or bacterial infection composite in transplant recipients).
+
+### prob_influenza (**canonical influenza adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient reports influenza (including 'flu' and influenza-like illness as pooled by the source) as a treatment-emergent adverse event at any time during a study, in a static landmark exposure-safety logistic model. A per-subject binary outcome.
+- **Source aliases:** none (the founding source labels the column 'Influenza' and the text 'flu/influenza').
+- **Example models:** `Lalovic_2020_lemborexant_influenza.R` (founding example; linear in the lemborexant average steady-state concentration on the logit, not statistically significant).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Document in the model file whether the source pooled influenza-like illness with confirmed influenza. Sibling of `prob_nasopharyngitis` and `prob_urti`.
+
+### prob_urti (**canonical upper-respiratory-tract-infection adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient reports an upper respiratory tract infection as a treatment-emergent adverse event at any time during a study, in a static landmark exposure-safety logistic model. A per-subject binary outcome.
+- **Source aliases:** none.
+- **Example models:** `Lalovic_2020_lemborexant_urti.R` (founding example; linear in the lemborexant average steady-state concentration on the logit, not statistically significant).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. A separate MedDRA preferred term from nasopharyngitis and influenza, so `prob_urti` does not subsume `prob_nasopharyngitis` or `prob_influenza`.
 
 ### prob_response (**canonical seizure-responder probability output**)
 - **Type:** compartment
