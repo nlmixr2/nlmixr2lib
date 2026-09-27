@@ -3386,6 +3386,10 @@ navbar:
         href: articles/Vorontsova_2022_misoprostol.html
       - text: "Mitiperstat (Sunnaker 2026)"
         href: articles/Sunnaker_2026_mitiperstat.html
+      - text: "Mitotane (Yin 2021)"
+        href: articles/Yin_2021_mitotane.html
+      - text: "Mitotane nogenotype (Yin 2021)"
+        href: articles/Yin_2021_mitotane.html
       - text: "Mitoxantrone (Brandon 2026)"
         href: articles/Brandon_2026_mitoxantrone.html
       - text: "Mitoxantrone human pbpk (An 2012)"
@@ -8169,6 +8173,7 @@ articles:
   - articles/Ye_2025_mycophenolic_acid
   - articles/Yellepeddi_2025_sotalol
   - articles/Yin_2020_pexidartinib
+  - articles/Yin_2021_mitotane
   - articles/Yin_2021_pexidartinib
   - articles/Yin_2021_trastuzumabDeruxtecan
   - articles/Yin_2023_soticlestat
