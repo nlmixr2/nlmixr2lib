@@ -5776,6 +5776,8 @@ navbar:
         href: articles/Cao_2013_visilizumab.html
       - text: "Vismodegib (Lu 2015)"
         href: articles/Lu_2015_vismodegib.html
+      - text: "Vitacoxib cat (Wang 2020)"
+        href: articles/Wang_2020_vitacoxib_cat.html
       - text: "Vixarelimab (Tang 2026)"
         href: articles/Tang_2026_vixarelimab.html
       - text: "VonicogAlfa (Bauer 2023)"
@@ -8006,6 +8008,7 @@ articles:
   - articles/Wang_2019a_tacrolimus
   - articles/Wang_2019b_tacrolimus
   - articles/Wang_2020_ontamalimab
+  - articles/Wang_2020_vitacoxib_cat
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin
