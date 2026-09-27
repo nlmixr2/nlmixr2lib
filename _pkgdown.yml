@@ -1094,6 +1094,8 @@ navbar:
         href: articles/Clegg_2024_tixagevimab_cilgavimab.html
       - text: "Cilostazol (Yoo 2009)"
         href: articles/Yoo_2009_cilostazol.html
+      - text: "Cimetidine (Hanke 2020)"
+        href: articles/Hanke_2020_cimetidine.html
       - text: "Cimetidine pbpk (Nishiyama 2019)"
         href: articles/Nishiyama_2019_metformin_cimetidine.html
       - text: "Cipaglucosidase (Hajjar 2018)"
@@ -6747,6 +6749,7 @@ articles:
   - articles/Hanan_2026_peginterferon_alfa_hbsag_loss
   - articles/Hanberg_2018_meropenem
   - articles/Hand_2019_benzathine_benzylpenicillin_g
+  - articles/Hanke_2020_cimetidine
   - articles/Hanley_2017_bortezomib
   - articles/Hanley_2024_brigatinib
   - articles/Hansson_2013_sunitinib_dbp
