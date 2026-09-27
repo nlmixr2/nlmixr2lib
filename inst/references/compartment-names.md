@@ -5652,6 +5652,12 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 
+### ebdm (**canonical treosulfan monoepoxide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** (S,S)-1,2-epoxybutane-3,4-diol-4-methanesulfonate (EBDM), the active monoepoxide formed non-enzymatically (pH- and temperature-dependent) from treosulfan; it converts further to the diepoxide (S,S)-1,2:3,4-diepoxybutane (DEB).
+- **Source aliases:** `EBDM`.
+- **Example models:** `Danielak_2020_treosulfan_rat.R` (`central_ebdm`, `brain_extravascular_ebdm`, `Cc_ebdm`, `Cbrain_ebdm`).
+
 ### ftc (**canonical emtricitabine suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Emtricitabine (FTC) sibling-drug suffix.
