@@ -4450,6 +4450,8 @@ navbar:
         href: articles/Liang_2026_remimazolam.html
       - text: "Remimazolam (Zhou 2018)"
         href: articles/Zhou_2018_remimazolam.html
+      - text: "Remimazolam (Zhou 2021)"
+        href: articles/Zhou_2021_remimazolam.html
       - text: "Remimazolam bis (Zhou 2018)"
         href: articles/Zhou_2018_remimazolam.html
       - text: "Remimazolam moaas (Zhou 2018)"
@@ -8281,6 +8283,7 @@ articles:
   - articles/Zhou_2019_acalabrutinib
   - articles/Zhou_2019_vancomycin
   - articles/Zhou_2021_belimumab
+  - articles/Zhou_2021_remimazolam
   - articles/Zhou_2024_HER2breastCancer_qsp
   - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab

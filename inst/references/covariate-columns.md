@@ -6141,7 +6141,7 @@ readable.
 - **Reference category:** 0 (document the actual reference groups used).
 - **Source aliases:**
   - `BLACK` -- used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Wada_2023_sparsentan.R` (log-additive effect on the apparent central volume: `exp(0.309 * RACE_BLACK)`, i.e. 36% higher Vc/F than the White reference; paired with `RACE_ASIAN` so both = 0 selects White).
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Zhou_2021_remimazolam.R` (multiplicative ratios 0.87 on CL and 0.839 on all three volumes versus White and Asian pooled; source `RACE.EQ.1`), `Wada_2023_sparsentan.R` (log-additive effect on the apparent central volume: `exp(0.309 * RACE_BLACK)`, i.e. 36% higher Vc/F than the White reference; paired with `RACE_ASIAN` so both = 0 selects White).
 
 ### RACE_WHITE (**canonical for White race indicator**)
 - **Description:** 1 = White, 0 = non-White.
@@ -14789,6 +14789,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Ooi_2026_elafibranor.R`, `Ooi_2026_elafibranor_gft1007.R` (selects the residual-error magnitudes only; Table S3 tabulates the residual-error rows per study phase).
 - **Notes:** Introduced because `STUDY_PHASE3` alone can only express a two-way phase III versus everything-else split, which is what its founding example `Rich_2026_momelotinib.R` needed. `STUDY_PHASE2A` / `STUDY_PHASE2B` are vupanorsen-specific single-study indicators and are not substitutes for this pooled-stratum column.
 
+### STUDY_NOEARLYPK (**canonical for the no-early-sampling study-stratum indicator that switches off central-volume IIV**)
+- **Description:** 1 = subject comes from a study whose first post-dose concentration was generally drawn more than about 2 minutes after a bolus or an infusion-rate change, so the study carries no information on the central volume; 0 = subject comes from a study with early (first-minutes) sampling. Per-subject (study-fixed) binary indicator. In the founding model it switches the inter-individual random effect on the central volume off, so subjects with the flag set take the typical V1: the random effect was not estimable from late-sampled data, and leaving it on produced unphysiologically high and low individual V1 estimates.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (study with early sampling; the full random effect applies). For simulation of new subjects set it to 0 -- the switch is an estimation device for sparse data, not a claim that V1 does not vary in those populations.
+- **Source aliases:**
+  - `STDY` -- integer study code in the Zhou 2021 Figure S3 control stream, branched in `$PK` as `IF (STDY.GT.11.AND.STDY.NE.17.OR.STDY.EQ.3) THEN V1=TVV1 ELSE V1=TVV1*EXP(ETA(4))`. The code-to-study key is not published; the paper's Methods name the studies instead (see Example models).
+- **Example models:** `Zhou_2021_remimazolam.R` (1 for the procedural-sedation studies CNS7056-002, -004, -006, -008 and -015 and the general-anaesthesia study ONO-2745-03; 0 for CNS7056-001, CNS7056-017, ONO-2745-01, ONO-2745-02 and ONO-2745-IVU007; the random effect on V1, 61.7% CV, is applied only when the indicator is 0).
+- **Notes:** A study-STRATUM member of the `STUDY_<id>` family, like `STUDY_PHASE3`: the id names a sampling-design property shared by several trials rather than one trial, which is what makes it reusable. Distinct from `SAMPLE_INTENSIVE`, which is a per-OBSERVATION rich-versus-sparse switch on residual error; this indicator is per-SUBJECT and gates a random effect on a structural parameter.
+
 ### STUDY_GFT505B_319_1 (**canonical for the ELATIVE phase III elafibranor study indicator**)
 - **Description:** 1 = record from study GFT505B-319-1 (ELATIVE, NCT04526665), the phase III efficacy and safety trial of elafibranor in primary biliary cholangitis; 0 = record from any other pooled study. Per-record (study-fixed) binary indicator.
 - **Units:** (binary)
@@ -17823,7 +17834,8 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** none (continuous). Source analyses typically enter it as a linear deviation from a paper-specific reference duration, so record the reference in the model's `covariateData[["TINF"]]$notes` rather than assuming a library-wide default.
 - **Source aliases:**
   - `Tinf` -- used in `Schreib_2024_busulfan.R` (Table 3 covariates `theta_V3` and `theta_k6`, both entering as `(Tinf - 3 h)`).
-- **Example models:** `Schreib_2024_busulfan.R` (exponential effects on both the central volume, `exp(0.226 * (TINF - 3))`, and the elimination rate constant, `exp(-0.161 * (TINF - 3))`; the center changed its standard busulfan infusion from 3 h to 4 h in October 2014, so only two values occur in that cohort and the covariate term is 0 or 1).
+  - `TSEOI` -- time since the end of the infusion in the Zhou 2021 Figure S3 control stream, where a sample is flagged as during the infusion when `TSEOI.EQ.0`; `Zhou_2021_remimazolam.R` reconstructs that flag as `tad(central) < TINF * 60` because rxode2 does not expose the infusion duration.
+- **Example models:** `Zhou_2021_remimazolam.R` (not a covariate on a PK parameter: it selects the during-infusion branch of a venous:arterial concentration ratio on the venous output only, with a bolus entered as `TINF = 0`), `Schreib_2024_busulfan.R` (exponential effects on both the central volume, `exp(0.226 * (TINF - 3))`, and the elimination rate constant, `exp(-0.161 * (TINF - 3))`; the center changed its standard busulfan infusion from 3 h to 4 h in October 2014, so only two values occur in that cohort and the covariate term is 0 or 1).
 - **Notes:** Matches the near-universal pharmacometric symbol T_inf. **Supply this as an explicit data column even though the event table already encodes the infusion duration** -- rxode2 takes the physical infusion duration from the `dur` / `rate` fields of the dose record and does not expose it to `model()`, so a covariate effect on infusion duration needs its own column. Opposite-signed effects on volume and on the elimination rate constant (as in Schreib 2024) are a recognised signature of a one-compartment model absorbing a distribution phase that a shorter infusion exposes -- clearance is then nearly independent of infusion duration; note that interpretation when it applies rather than reading the two effects as independent physiology.
 
 ### T_PUMP (**canonical for the duration of a breast-milk pumping (expression) session**)
