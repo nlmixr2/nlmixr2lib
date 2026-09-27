@@ -1328,6 +1328,10 @@ navbar:
         href: articles/Brochot_2015_darunavir.html
       - text: "Darunavir (Daskapan 2019)"
         href: articles/Daskapan_2019_darunavir.html
+      - text: "Darunavir covid19 (Cojutti 2020)"
+        href: articles/Cojutti_2020_darunavir.html
+      - text: "Darunavir hiv (Cojutti 2020)"
+        href: articles/Cojutti_2020_darunavir.html
       - text: "Dasabuvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Dasatinib (Hassouneh 2024)"
@@ -6440,6 +6444,7 @@ articles:
   - articles/Codaccioni_2024_cyp3a4_hepatic_ontogeny
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
+  - articles/Cojutti_2020_darunavir
   - articles/Cojutti_2023_ceftobiprole
   - articles/Cojutti_2024_dalbavancin
   - articles/Colin_2014_moxifloxacin

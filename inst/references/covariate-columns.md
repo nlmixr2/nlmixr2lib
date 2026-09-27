@@ -3023,11 +3023,11 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Units:** pg/mL (= ng/L; the two labels are numerically equivalent).
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(IL6 / ref)^exponent` or with the log-transformed form `(log(IL6 * 1000) / log(ref * 1000))^exponent` that some legacy NONMEM analyses adopt. Reference values observed: 20 pg/mL (Frey 2013 baseline; the formula `(log(IL-6 * 1000)/9.9)^exponent` is the algebraic equivalent of `(log(IL-6) / log(20))^exponent` after the constant-factor rescaling that ties the reference log to 9.9 = log(20000)).
+- **Reference category:** n/a -- used with power scaling `(IL6 / ref)^exponent` or with the log-transformed form `(log(IL6 * 1000) / log(ref * 1000))^exponent` that some legacy NONMEM analyses adopt. Reference values observed: 31 pg/mL (Cojutti 2020 darunavir, SARS-CoV-2 cohort median; plain power `(IL6 / 31)^-0.23` on CL/F), 20 pg/mL (Frey 2013 baseline; the formula `(log(IL-6 * 1000)/9.9)^exponent` is the algebraic equivalent of `(log(IL-6) / log(20))^exponent` after the constant-factor rescaling that ties the reference log to 9.9 = log(20000)).
 - **Source aliases:**
   - `BLIL6`, `bIL6`, `IL6_BASE` -- baseline IL-6 (used in some NONMEM control streams; canonical drops the `BL` prefix per the `EOS` / `SCORE_EASI` / `AGE` convention with baseline-vs-time-varying status documented in per-model notes).
   - `IL-6`, `IL_6` -- punctuation variants seen in publication tables and figures.
-- **Example models:** `Frey_2013_tocilizumab.R` (baseline IL-6, reference 20 pg/mL; log-transformed power effects on EC50, BASE, and the DMARD background-effect parameter).
+- **Example models:** `Cojutti_2020_darunavir_covid19.R` (IL-6 on the TDM day, reference 31 pg/mL; power effect on darunavir CL/F), `Frey_2013_tocilizumab.R` (baseline IL-6, reference 20 pg/mL; log-transformed power effects on EC50, BASE, and the DMARD background-effect parameter).
 - **Notes:** Anti-IL-6 / anti-IL-6R drugs (tocilizumab, sarilumab, siltuximab) often see large transient increases in measured IL-6 after dosing -- when the column is time-varying for these drugs, the assay typically detects total (free + drug-bound) IL-6 because the antibody complex slows clearance of IL-6. Document the assay type (free vs. total IL-6) and whether the value is pre-dose (baseline-only) or post-dose / time-varying in each model's `covariateData[[IL6]]$notes`. Frey 2013's formula relies on the relative log-IL-6 ratio rather than the linear concentration, so the column units must be pg/mL exactly (not ng/mL) for the published exponents to apply unchanged.
 
 ### IL8 (**canonical for serum interleukin-8 concentration**)
