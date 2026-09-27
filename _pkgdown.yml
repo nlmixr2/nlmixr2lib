@@ -2648,6 +2648,10 @@ navbar:
         href: articles/Alshehri_2023_ivermectin.html
       - text: "Ivermectin (Fimbo 2023)"
         href: articles/Fimbo_2023_ivermectin.html
+      - text: "Ivermectin (Gwee 2020)"
+        href: articles/Gwee_2020_ivermectin.html
+      - text: "Ivermectin estimatedExponents (Gwee 2020)"
+        href: articles/Gwee_2020_ivermectin.html
       - text: "Ixazomib (Gupta 2015)"
         href: articles/Gupta_2015_ixazomib.html
       - text: "Ixazomib (Gupta 2017)"
@@ -6725,6 +6729,7 @@ articles:
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
+  - articles/Gwee_2020_ivermectin
   - articles/Hadigol_2026_talazoparib_enzalutamide
   - articles/Hahn_2019_sufentanil
   - articles/Hajjar_2018_DMD_6MWT
