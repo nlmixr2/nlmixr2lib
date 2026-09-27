@@ -3862,6 +3862,10 @@ navbar:
         href: articles/Sun_2025_paclitaxel.html
       - text: "Paclitaxel (deJonge 2005)"
         href: articles/deJonge_2005_paclitaxel.html
+      - text: "Paclitaxel liposomal (Zhou 2020)"
+        href: articles/Zhou_2020_paclitaxel_liposomal.html
+      - text: "Paclitaxel liposomal neutropenia (Zhou 2020)"
+        href: articles/Zhou_2020_paclitaxel_liposomal.html
       - text: "Paclitaxel myelosuppression (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pacmilimab qsp (Ippolito 2024)"
@@ -8280,6 +8284,7 @@ articles:
   - articles/Zhou_2018_remimazolam
   - articles/Zhou_2019_acalabrutinib
   - articles/Zhou_2019_vancomycin
+  - articles/Zhou_2020_paclitaxel_liposomal
   - articles/Zhou_2021_belimumab
   - articles/Zhou_2024_HER2breastCancer_qsp
   - articles/Zhou_2024_cetagliptin
