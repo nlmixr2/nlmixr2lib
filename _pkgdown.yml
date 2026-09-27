@@ -5856,6 +5856,8 @@ navbar:
         href: articles/Zhang_2024_XZP5610.html
       - text: "YPEGrhGH (He 2025)"
         href: articles/He_2025_YPEGrhGH.html
+      - text: "Yimitasvir (Guan 2021)"
+        href: articles/Guan_2021_yimitasvir.html
       - text: "Zalcitabine (Adams 1998)"
         href: articles/Adams_1998_zalcitabine.html
       - text: "Zaleplon (Izat 2025)"
@@ -6715,6 +6717,7 @@ articles:
   - articles/Grzesk_2016_m3M3FBS
   - articles/Gu_2025_heart_failure_pbpk
   - articles/Gu_2025_rivaroxaban
+  - articles/Guan_2021_yimitasvir
   - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guidi_2019_artesunate_mefloquine
   - articles/Guo_2016_taurocholate_schh
