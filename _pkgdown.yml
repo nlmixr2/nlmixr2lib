@@ -2988,6 +2988,16 @@ navbar:
         href: articles/Yang_2026_lurasidone.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
+      - text: "Luspatercept (Chen 2021)"
+        href: articles/Chen_2021_luspatercept.html
+      - text: "Luspatercept bone pain (Chen 2021)"
+        href: articles/Chen_2021_luspatercept.html
+      - text: "Luspatercept hb change (Chen 2021)"
+        href: articles/Chen_2021_luspatercept.html
+      - text: "Luspatercept hb response (Chen 2021)"
+        href: articles/Chen_2021_luspatercept.html
+      - text: "Luspatercept teae grade3 (Chen 2021)"
+        href: articles/Chen_2021_luspatercept.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
       - text: "M8891 human (Lignet 2023)"
@@ -6371,6 +6381,7 @@ articles:
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2021_lorlatinib
   - articles/Chen_2021_lorlatinib_exposure_response
+  - articles/Chen_2021_luspatercept
   - articles/Chen_2022_guselkumab
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
