@@ -644,6 +644,8 @@ navbar:
         href: articles/Lallemand_2023_benzylpenicillin_horse.html
       - text: "Bepirovirsen (Youssef 2024)"
         href: articles/Youssef_2024_bepirovirsen.html
+      - text: "Berzosertib (Terranova 2021)"
+        href: articles/Terranova_2021_berzosertib.html
       - text: "Betamethasone (Schoenmakers 2025)"
         href: articles/Schoenmakers_2025_betamethasone.html
       - text: "Bevacizumab (Han 2015)"
@@ -7870,6 +7872,7 @@ articles:
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
   - articles/Terranova_2018_paclitaxel
+  - articles/Terranova_2021_berzosertib
   - articles/Terranova_2022_TGD_OS_gastric
   - articles/Tetschke_2018_erythropoiesis
   - articles/Teuscher_2015_methylphenidate

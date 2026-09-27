@@ -9459,6 +9459,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Lu_2022_patritumab.R` (multiplicative fractional effect 0.811 on CLlin of DXd-conjugated antibody for breast-cancer patients vs the NSCLC reference; CRC effect was tested and found insignificant so CRC is pooled into the reference).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Registers the breast-cancer arm of an oncology-cohort tumor-type contrast; pair with sister `TUMTP_<GROUP>` indicators (e.g., `TUMTP_NSCLC`, `TUMTP_CRC`) when a future paper retains separate effects for additional tumor types beyond the implicit reference.
 
+### TUMTP_TNBC (**canonical for triple-negative breast cancer tumor-type indicator**)
+- **Description:** 1 = triple-negative breast cancer (estrogen-receptor, progesterone-receptor and HER2 negative), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = all other tumor types (per source paper; in Terranova 2021 the reference is the most common 'other tumor types' category, with non-TNBC breast cancer pooled into it).
+- **Source aliases:**
+  - `Tumor type: TNBC` (Terranova 2021 berzosertib Figure 2 forest-plot label) -- decompose a categorical tumor-type column into `TUMTP_TNBC = as.integer(TUMTYPE == "TNBC")`.
+- **Example models:** `Terranova_2021_berzosertib.R` (linear categorical multipliers `1 + e_tumtp_tnbc_<param> * TUMTP_TNBC` of +0.42 on CL, +0.29 on V1 and -0.307 on V2 versus the 'other tumor types' reference; n = 33 / 240 = 13.8% of the cohort, mostly the basaloid-subtype TNBC expansion cohort of Study 001 Part C2).
+- **Notes:** Receptor-status-defined subset of breast cancer. Use `TUMTP_TNBC` when a paper separates TNBC from other breast cancers; use `TUMTP_BREAST` when it pools all breast cancer. The two are not meant to be set together in one model: a paper that keeps both a TNBC and a non-TNBC breast group should pair `TUMTP_TNBC` with a separately registered non-TNBC indicator rather than overloading `TUMTP_BREAST`. A given subject can have at most one of the `TUMTP_<GROUP>` indicators set to 1; all-zero means the reference group.
+
 ### TUMTP_CRC (**canonical for colorectal-cancer tumor-type indicator**)
 - **Description:** 1 = colorectal cancer (any site / histology, including metastatic CRC), 0 = other tumor types.
 - **Units:** (binary)
