@@ -10,6 +10,8 @@
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
+- Add Fouad 2021 diacerein ([doi:10.1371/journal.pone.0245482](https://doi.org/10.1371/journal.pone.0245482)) -- healthy adults (one-compartment reduction of a Simcyp PBPK model; plain drug vs PEG 8000 solid dispersion).
+
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
 
 - Add van Hasselt 2014 cefazolin ([doi:10.1155/2014/897216](https://doi.org/10.1155/2014/897216)) -- pregnant women undergoing in utero surgery, caesarean delivery or fetal intervention; empirical and semiphysiological gestational models plus the underlying creatinine-clearance trajectory.
