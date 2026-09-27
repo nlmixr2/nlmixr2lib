@@ -768,6 +768,8 @@ navbar:
         href: articles/Mahomed_2025_CAP256V2LS.html
       - text: "CC292 (Li 2017)"
         href: articles/Li_2017_CC292.html
+      - text: "CNTO5048 mouse mpbpk (Zheng 2020)"
+        href: articles/Zheng_2020_CNTO5048_mouse_mpbpk.html
       - text: "Cabamiquine (Courlet 2023)"
         href: articles/Courlet_2023_cabamiquine.html
       - text: "Cabamiquine pk (Courlet 2023)"
@@ -8271,6 +8273,7 @@ articles:
   - articles/Zheng_2014_azithromycin
   - articles/Zheng_2016_sifalimumab
   - articles/Zheng_2018_azithromycin
+  - articles/Zheng_2020_CNTO5048_mouse_mpbpk
   - articles/Zhi_2018_cefathiamidine
   - articles/Zhong_2026_abatacept
   - articles/Zhou_2010_digoxin

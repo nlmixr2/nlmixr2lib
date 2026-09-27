@@ -7841,6 +7841,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Li_2017_naproxen_rat.R` (Lewis rats at peak CIA -- day 16 post induction in females, day 21 in males -- versus healthy controls; selects the unbound plasma clearance, the unbound distribution clearance and the peripheral volume from the Arthritic / Healthy pairs of Table 4, selects the interstitial-to-plasma albumin ratio `f_alb_isf` (E/P = 0.9 arthritic vs 0.5 healthy), and jointly with `SEXF` selects the four albumin association constants `kaff_*` / `kaff2_*` of Table 1).
 - **Notes:** Ratified 2026-09-02 alongside the Li 2017 naproxen extraction (PMC5399645). The species itself is recorded in `population$species` and in the model file's `_rat` stem, so this indicator carries only the disease contrast and does not re-encode species. Follows the register's own granularity precedent that arthritis cohorts differing in kind get separate indicators -- `DIS_RA` is kept explicitly "Distinct from `DIS_PJIA`" for the same reason. A study that pools CIA animals with a *different* disease model rather than with healthy controls should say so in the per-model `covariateData[[DIS_CIA]]$notes`, since the reference category is paper-defined.
 
+### DIS_TCT_COLITIS (**canonical for T-cell-transfer colitis (preclinical IBD model) disease-state indicator**)
+- **Description:** 1 = animal with colitis induced by adoptive transfer of naive CD45RB-high T cells into an immunodeficient (SCID or RAG-deficient) recipient, the standard T-cell-driven rodent model of inflammatory bowel disease; 0 = control animal from the same study that did not receive the T-cell transfer. Time-fixed per animal within a study conducted at a single disease stage. Deliberately distinct from `DIS_UC`, `DIS_CD` and `IBD_CD`, whose Descriptions are scoped to human patients: an induced rodent model and a human disease cohort differ in kind (same reasoning as `DIS_CIA` versus `DIS_RA`).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-transferred control animal from the same study; the control cohort is paper-defined).
+- **Source aliases:**
+  - `IBD` / `non-IBD` group labels (Zheng 2020 Table 1, "IBD mice" versus "Non-IBD mice").
+  - Chemically induced colitis models (dextran sulfate sodium, DSS; trinitrobenzene sulfonic acid, TNBS) are **not** aliases: they are different induction mechanisms with different time courses and should register sibling indicators rather than reuse this one.
+- **Example models:** `Zheng_2020_CNTO5048_mouse_mpbpk.R` (female SCID mice 21 days after CD45RB-high T-cell transfer versus non-transferred SCID controls; selects the serum Michaelis-Menten capacity Vmax, the colon reflection coefficient, the colon clearance, and the fixed colon ISF volume and lymph flow from the IBD / non-IBD pairs of Table 2, and sets the serum and colon TNF baselines to zero in controls, where TNF was below the assay limit).
+- **Notes:** The species is recorded in `population$species` and in the model file's `_mouse` stem, so this indicator carries only the disease contrast.
+
 ### DIS_CD (**canonical for Crohn's disease state indicator (multi-indication pooled analyses)**)
 - **Description:** 1 = Crohn's disease patient, 0 = non-CD subject (e.g., healthy volunteer, rheumatoid arthritis, systemic lupus erythematosus, or other indication). Time-fixed per subject. Distinct from `IBD_CD`, which is a pooled-UC+CD discriminator with UC as the reference category; `DIS_CD` is used when the complement group is a heterogeneous non-IBD cohort rather than UC specifically.
 - **Units:** (binary)
