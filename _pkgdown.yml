@@ -724,6 +724,8 @@ navbar:
         href: articles/Maleki_2024_brepocitinib.html
       - text: "Brexpiprazole (Frederiksen 2023)"
         href: articles/Frederiksen_2023_brexpiprazole.html
+      - text: "Brigatinib (Gupta 2021)"
+        href: articles/Gupta_2021_brigatinib.html
       - text: "Brigatinib (Hanley 2024)"
         href: articles/Hanley_2024_brigatinib.html
       - text: "Brilaroxazine (Cantillon 2018)"
@@ -6725,6 +6727,7 @@ articles:
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
+  - articles/Gupta_2021_brigatinib
   - articles/Hadigol_2026_talazoparib_enzalutamide
   - articles/Hahn_2019_sufentanil
   - articles/Hajjar_2018_DMD_6MWT
