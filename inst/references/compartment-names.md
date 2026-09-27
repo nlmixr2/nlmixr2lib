@@ -5933,6 +5933,22 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 
 ## Miscellaneous metabolite suffixes
 
+### dcar (**canonical desmethyl-cariprazine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desmethyl-cariprazine (DCAR), the CYP3A4 / CYP2D6 N-demethylation product of cariprazine and itself an active dopamine D3/D2 partial agonist. Precursor of `ddcar`. Used on `central_dcar`, `peripheral1_dcar`, `lcl_dcar` / `lvc_dcar` / `lq_dcar` / `lvp_dcar`, `Cc_dcar` and `propSd_dcar`.
+- **Source aliases:**
+  - `DCAR` -- Periclou 2021 throughout; its parameters carry a `D` prefix (`DCL/F`, `DVC/F`, `DQ/F`, `DVP/F`).
+- **Example models:** `Periclou_2021_cariprazine.R`, `Periclou_2021_cariprazine_initial.R`.
+- **Notes:** The paper's own abbreviation is used rather than the generic `m1`, because Periclou 2021 does not number its metabolites and the cariprazine literature consistently writes DCAR / DDCAR.
+
+### ddcar (**canonical didesmethyl-cariprazine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Didesmethyl-cariprazine (DDCAR), formed from `dcar` by a second N-demethylation (CYP3A4 / CYP2D6) and further hydroxylated by CYP3A4. The dominant active moiety at steady state (about 64% of total cariprazine exposure) with a much longer effective half-life than the parent. Used on `central_ddcar`, `peripheral1_ddcar`, `lcl_ddcar` / `lvc_ddcar` / `lq_ddcar` / `lvp_ddcar`, `Cc_ddcar` and `propSd_ddcar`.
+- **Source aliases:**
+  - `DDCAR` -- Periclou 2021 throughout; its parameters carry a `DD` prefix (`DDCL/F`, `DDVC/F`, `DDQ/F`, `DDVP/F`, `DDKtr`).
+- **Example models:** `Periclou_2021_cariprazine.R`, `Periclou_2021_cariprazine_initial.R`.
+- **Notes:** A single composite token rather than `dcar2` or `m2`, matching the paper's notation and keeping the parent-to-metabolite chain readable (`central` -> `central_dcar` -> `central_ddcar`).
+
 ### glu (**canonical paracetamol glucuronide suffix (template)**)
 - **Type:** metabolite-suffix
 - **Role:** Glucuronide suffix used by paracetamol PBPK template / placeholder extraction. Sibling of the Allegaert 2015 `gluc`.
