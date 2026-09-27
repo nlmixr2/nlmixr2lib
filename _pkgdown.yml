@@ -604,6 +604,8 @@ navbar:
         href: articles/Zhou_2021_belimumab.html
       - text: "Belzutifan (Marathe 2023)"
         href: articles/Marathe_2023_belzutifan.html
+      - text: "Bemarituzumab (Xiang 2020)"
+        href: articles/Xiang_2020_bemarituzumab.html
       - text: "BempedoicAcid (Jadhav 2023)"
         href: articles/Jadhav_2023_bempedoicAcid.html
       - text: "BempedoicAcid ldlc (Jadhav 2023)"
@@ -8106,6 +8108,7 @@ articles:
   - articles/Xia_2025_pfuroylamphenmulin
   - articles/Xia_2025_sertraline
   - articles/Xiang_2018_baicalein
+  - articles/Xiang_2020_bemarituzumab
   - articles/Xiang_2025_tacrolimus
   - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
