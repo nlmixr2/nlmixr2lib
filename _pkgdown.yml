@@ -644,6 +644,8 @@ navbar:
         href: articles/Lallemand_2023_benzylpenicillin_horse.html
       - text: "Bepirovirsen (Youssef 2024)"
         href: articles/Youssef_2024_bepirovirsen.html
+      - text: "Betamethasone (Krzyzanski 2021)"
+        href: articles/Krzyzanski_2021_corticosteroids.html
       - text: "Betamethasone (Schoenmakers 2025)"
         href: articles/Schoenmakers_2025_betamethasone.html
       - text: "Bevacizumab (Han 2015)"
@@ -1380,6 +1382,8 @@ navbar:
         href: articles/Gasthuys_2018_desmopressin_piglet.html
       - text: "Deutenzalutamide (Liu 2024)"
         href: articles/Liu_2024_deutenzalutamide.html
+      - text: "Dexamethasone (Krzyzanski 2021)"
+        href: articles/Krzyzanski_2021_corticosteroids.html
       - text: "Dexamethasone (Ozdin 2025)"
         href: articles/Ozdin_2025_dexamethasone.html
       - text: "Dexamethasone rat (Li 2012)"
@@ -7060,6 +7064,7 @@ articles:
   - articles/Kretsos_2014_olokizumab
   - articles/Krishna_2011_anacetrapib
   - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin
+  - articles/Krzyzanski_2021_corticosteroids
   - articles/Ku_2018_diazepam
   - articles/Kuan_2023_flipflop
   - articles/Kubota_2018_naldemedine
