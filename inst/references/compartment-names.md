@@ -4115,6 +4115,28 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Kubota_2018_naldemedine_gi_severe_phase3.R` (founding example).
 - **Notes:** See `prob_gi_mild_or_worse` for why the three severity thresholds are cumulative but independently fitted. A severe-only threshold is often unestimable in a small study because no severe event occurs -- the founding paper has no phase 2b counterpart to this model for exactly that reason -- so the absence of a severe-threshold companion alongside a mild and moderate pair is informative, not an omission.
 
+
+### prob_trae_grade34 (**canonical cohort grade 3/4 treatment-related adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing any CTCAE grade 3 or 4 treatment-related adverse event, output by a STUDY-LEVEL logit meta-regression. Algebraic; no ODE state.
+- **Source aliases:** `trAE Grade 3/4`, `total grade 3/4 trAE` -- Shulgin 2020.
+- **Example models:** `Shulgin_2020_ici_trae34_mbma.R`, `Shulgin_2020_ici_trae34_covariate_mbma.R` (founding examples; immune checkpoint inhibitor MBMA driven by potency-normalized anti-CTLA-4 exposure).
+- **Notes:** A cohort-level PROPORTION, not an individual-patient probability -- it is the typical rate across trials with the stated regimen and covariates. Distinct from `prob_teae_grade3`, which counts treatment-EMERGENT events regardless of attribution, is grade >= 3 rather than 3/4, and is an individual-level landmark probability. `prob_gi_imae_grade34` and `prob_hepatic_imae_grade34` are organ-class subsets of immune-mediated events and overlap with this endpoint rather than competing with it.
+
+### prob_gi_imae_grade34 (**canonical cohort grade 3/4 gastrointestinal immune-mediated adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing a grade 3/4 immune-mediated adverse event of the gastrointestinal organ class (for example colitis and diarrhoea), output by a study-level logit meta-regression.
+- **Source aliases:** `Gastrointestinal imAE Grade 3/4` -- Shulgin 2020 Supplemental Table 1.
+- **Example models:** `Shulgin_2020_ici_gi_imae34_mbma.R` (founding example).
+- **Notes:** Immune-mediated (imAE), not merely treatment-related; distinct from the naldemedine `prob_gi_*` severity-threshold family, which are individual-level landmark probabilities of any gastrointestinal-disorder event. Subset of `prob_trae_grade34`.
+
+### prob_hepatic_imae_grade34 (**canonical cohort grade 3/4 hepatic immune-mediated adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing a grade 3/4 immune-mediated adverse event of the hepatic organ class, output by a study-level logit meta-regression.
+- **Source aliases:** `Hepatic imAE Grade 3/4` -- Shulgin 2020 Supplemental Table 1.
+- **Example models:** `Shulgin_2020_ici_hepatic_imae34_mbma.R` (founding example).
+- **Notes:** Subset of `prob_trae_grade34`; see that entry for the cohort-proportion reading.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
