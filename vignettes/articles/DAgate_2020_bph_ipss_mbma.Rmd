@@ -251,7 +251,7 @@ typ_ev <- do.call(rbind, lapply(seq_len(nrow(grid)), function(i) {
   )
 }))
 typ <- as.data.frame(rxode2::rxSolve(mod_typ, typ_ev, returnType = "data.frame"))
-typ <- dplyr::left_join(typ, grid, by = "id")
+typ <- dplyr::select(typ, -dplyr::any_of("IPSS_BL")) |> dplyr::left_join(grid, by = "id")
 
 ggplot(dplyr::filter(typ, arm %in% c("Placebo", "Tamsulosin", "Combination")),
        aes(time, ipss, colour = arm)) +
@@ -297,7 +297,7 @@ cmp |>
 stopifnot(all(abs(cmp$pct_diff) < 15), all(cmp$simulated < 0))
 ```
 
-The typical-value model reproduces every published median to within 5-11%,
+The typical-value model reproduces every published median to within 4-10%,
 consistently slightly smaller in magnitude. The published values are medians of
 200 stochastic simulations whose random-effect settings are not stated (Figure 5
 fixes DISP at chosen percentiles and draws the other parameters), whereas the
@@ -358,5 +358,11 @@ comparison.
 * **Score bounds.** The ODE keeps the score inside (0, 35] on its own, so the
   control stream's truncation of the individual prediction is a no-op; its
   truncation of simulated observations is applied in the simulation above.
+* **Stochastic versus typical trajectories.** The treatment-effect variances
+  (1.4-1.9 on the log scale) are large, and IPSS responds non-linearly to the
+  effect size, so the median simulated trajectory in the active arms runs a few
+  points below the typical-patient curve at 48 months. The paper's VPCs
+  (Figure 3, Figure S6) were not digitised, so this simulation is not compared
+  against the observed trial data here.
 * **Residual error** is additive with one SD per arm (Tables 2 and 3); the
   placebo SD was fixed in the final model, the others estimated.
