@@ -5184,6 +5184,8 @@ navbar:
         href: articles/Wang_2023_teicoplanin.html
       - text: "Teicoplanin (Wi 2017)"
         href: articles/Wi_2017_teicoplanin.html
+      - text: "Teicoplanin (Zhang 2020)"
+        href: articles/Zhang_2020_teicoplanin.html
       - text: "Teicoplanin (Zhao 2015)"
         href: articles/Zhao_2015_teicoplanin.html
       - text: "Teicoplanin (Zhou 2025)"
@@ -8223,6 +8225,7 @@ articles:
   - articles/Zhang_2018_sunitinib
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2019b_nivolumab
+  - articles/Zhang_2020_teicoplanin
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
   - articles/Zhang_2023_aztreonam_amoxicillin_clavulanate
