@@ -553,6 +553,30 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example; `SS1 = 3.25`, a markedly more sigmoidal second phase than the first process's `SS = 1.4`).
 - **Notes:** Note the deliberate asymmetry in the numbering: the FIRST process keeps the unsuffixed-except-for-`1` NONMEM name `gam1` (which predates this entry) while its rate partner is the unnumbered `ra`, so a two-process release model reads `ra` / `gam1` then `ra2` / `gam2`. This is inherited from the Desai 2016 registration and is not worth churning existing files over.
 
+### ltpeak_ig1 (**canonical log-transformed peak time of the first inverse-Gaussian input density**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the time (after the dose) at which the first inverse-Gaussian absorption input density reaches its maximum, in an input model written as a weighted sum of inverse-Gaussian densities, `IR(t) = Dose * (frel * IG1(t) + (1 - frel) * IG2(t))` with `IG(t) = sqrt(MAT / (2 * pi * CV^2 * t^3)) * exp(-(t - MAT)^2 / (2 * CV^2 * MAT * t))`. The density's mean absorption time follows from its peak time and dispersion, `MAT = tpeak / (sqrt(1 + 9/4 * CV^4) - 3/2 * CV^2)`. Bare counterpart inside `model` is `tpeak_ig1` (time).
+- **Source aliases:**
+  - `T1max`, `Tmax_1` -- Leven 2020 Table 3 and Appendix A MLXTRAN.
+- **Example models:** `Leven_2020_roscovitine.R` (founding example; `T1max = 0.676 h`, shifted by `exp(0.680)` under concomitant proton-pump inhibitors).
+- **Notes:** Parameterising each density by its peak time rather than its mean absorption time is the source paper's choice and is kept because the IIV and the covariate effect act on the peak time: `MAT` is a nonlinear function of `tpeak` and `CV` together, so re-expressing the model on `lmat` would change the published random-effect distribution. Distinct from `ltmax_abs`, which is the maximum RATE of saturable Michaelis-Menten absorption and not a time, and from `lmat` / `lmtt`, which parameterise transit and mean-absorption-time models directly.
+
+### ldtpeak_ig2 (**canonical log-transformed peak-time increment of the second inverse-Gaussian input density**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the delay between the peaks of the first and the second inverse-Gaussian input densities, `tpeak_ig2 = tpeak_ig1 + dtpeak_ig2`. Encoding the second peak as a strictly positive increment keeps the two absorption phases ordered and non-overlapping. Bare counterpart inside `model` is `dtpeak_ig2` (time).
+- **Source aliases:**
+  - `dT2max`, `dTmax_2` -- Leven 2020 Table 3 and Appendix A MLXTRAN.
+- **Example models:** `Leven_2020_roscovitine.R` (founding example; `dT2max = 1.04 h`).
+- **Notes:** A third density would continue the numbering (`ldtpeak_ig3`, measured from the second peak).
+
+### lcv_ig1, lcv_ig2 (**canonical log-transformed coefficients of variation of inverse-Gaussian input densities**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the unitless coefficient of variation (relative dispersion) of the first and the second inverse-Gaussian absorption input densities; `CV^2` is the density's relative variance of absorption time. Larger values give a more skewed, longer-tailed input. Bare counterparts inside `model` are `cv_ig1` / `cv_ig2`.
+- **Source aliases:**
+  - `CV1` / `CV2`, `CV_1` / `CV_2` -- Leven 2020 Table 3 and Appendix A MLXTRAN.
+- **Example models:** `Leven_2020_roscovitine.R` (founding example; `CV1 = 0.542`, `CV2 = 0.354`; the pre-systemic metabolite input shares `CV1`).
+- **Notes:** Deliberately suffixed rather than a bare `lcv`, which would read as a generic coefficient of variation (for example of a random effect) rather than as a structural input-shape parameter.
+
 ### logitfrel (**canonical logit-transformed release-process fraction**)
 - **Type:** log-transformed-pk
 - **Role:** Logit-scale encoding of the fraction of a dose entering the **first** process of a multi-phase release input function (unitless, bounded in (0, 1)); the remaining `1 - frel` enters the second process. Inside `model` the bare form is `frel = 1 / (1 + exp(-logitfrel_ind))` where `logitfrel_ind` collects the fixed effect, covariate shifts, and IIV on the logit scale -- so IIV is additive on the logit, not multiplicative. Collect the fixed effect and eta on their own line (`logitfrel_ind <- logitfrel + etalogitfrel`) so the term stays in a mu-referenced position; rxode2 otherwise warns that the eta defaulted to non-mu-referenced.
@@ -1225,6 +1249,13 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 - **Source aliases:**
   - `SS1` -- release-function "sigmoidicity factor for the second process"; `GAM2` / `GAMMA2` -- NONMEM convention.
 - **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example).
+
+### tpeak_ig1, dtpeak_ig2, cv_ig1, cv_ig2 (**canonical bare inverse-Gaussian input-density parameters**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `ltpeak_ig1`, `ldtpeak_ig2`, `lcv_ig1` and `lcv_ig2`: the first density's peak time (time), the delay of the second density's peak after the first (time), and the two densities' unitless coefficients of variation. Used inside `model` after exponentiation and any covariate effect.
+- **Source aliases:**
+  - `T1max`, `dT2max`, `CV1`, `CV2` -- Leven 2020.
+- **Example models:** `Leven_2020_roscovitine.R` (founding example).
 
 ### frel (**canonical bare release-process fraction**)
 - **Type:** bare-pk

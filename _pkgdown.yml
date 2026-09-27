@@ -4672,6 +4672,8 @@ navbar:
         href: articles/Ling_2025_ropivacaine.html
       - text: "Ropivacaine (Ollier 2015)"
         href: articles/Ollier_2015_ropivacaine.html
+      - text: "Roscovitine (Leven 2020)"
+        href: articles/Leven_2020_roscovitine.html
       - text: "Rosuvastatin (Barnett 2018)"
         href: articles/Barnett_2018_rosuvastatin.html
       - text: "Rosuvastatin (Kakara 2014)"
@@ -7143,6 +7145,7 @@ articles:
   - articles/Leshinsky_2017_caspofungin_cat
   - articles/Lestini_2015_tgfbinhibitor
   - articles/LeuppiTaegtmeyer_2019_colistin
+  - articles/Leven_2020_roscovitine
   - articles/Levitt_2005_propofol_pbpk
   - articles/Li_2006_meropenem
   - articles/Li_2010_taranabant
