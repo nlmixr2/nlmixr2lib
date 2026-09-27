@@ -472,14 +472,32 @@ navbar:
         href: articles/Shemesh_2019_atezolizumab.html
       - text: "Atezolizumab (Zeng 2026)"
         href: articles/Zeng_2026_atezolizumab.html
+      - text: "Atezolizumab aeg34 auc (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
+      - text: "Atezolizumab aeg34 cmax (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
+      - text: "Atezolizumab aeg34 ctrough (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
       - text: "Atezolizumab aeg35 (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
+      - text: "Atezolizumab aesi auc (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
+      - text: "Atezolizumab aesi cmax (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
+      - text: "Atezolizumab aesi ctrough (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
       - text: "Atezolizumab carboplatin nabpaclitaxel qsp (Wang 2024)"
         href: articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp.html
       - text: "Atezolizumab cibisatamab qsp (Anbari 2023)"
         href: articles/Anbari_2023_atezolizumab_cibisatamab_qsp.html
       - text: "Atezolizumab isr (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
+      - text: "Atezolizumab orr auc (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
+      - text: "Atezolizumab orr cmax (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
+      - text: "Atezolizumab orr ctrough (Shemesh 2020)"
+        href: articles/Shemesh_2020_atezolizumab_tmb.html
       - text: "Atezolizumab os (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atezolizumab pfs (Chan 2025)"
@@ -7710,6 +7728,7 @@ articles:
   - articles/Sheiner_1979_tubocurarine
   - articles/Shekar_2014_meropenem
   - articles/Shemesh_2019_atezolizumab
+  - articles/Shemesh_2020_atezolizumab_tmb
   - articles/Shen_2013_belatacept
   - articles/Shen_2024_vancomycin
   - articles/Shen_2025_voriconazole
