@@ -68,7 +68,12 @@ Kong_2020_vonoprazan_rat_pbpk <- function() {
     lung = list(analyte = "vonoprazan", units = "mg", specimen = "tissue", verified = TRUE),
     arterial = list(analyte = "vonoprazan", units = "mg", specimen = "whole blood", verified = TRUE),
     venous = list(analyte = "vonoprazan", units = "mg", specimen = "whole blood", verified = TRUE),
-    inhibition = list(analyte = "H+/K+-ATPase inhibition", units = "pH units", specimen = "not applicable", verified = TRUE)
+    inhibition = list(
+      analyte = "H+/K+-ATPase inhibition",
+      units = "pH units",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
