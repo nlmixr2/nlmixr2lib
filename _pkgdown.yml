@@ -1248,6 +1248,8 @@ navbar:
         href: articles/Belldina_2003_cysteamine.html
       - text: "Cytarabine cpx351 (Wang 2019)"
         href: articles/Wang_2019_cpx351.html
+      - text: "DRL17822 (Goulooze 2020)"
+        href: articles/Goulooze_2020_DRL17822.html
       - text: "DZIF10c (Kurup 2024)"
         href: articles/Kurup_2024_DZIF10c.html
       - text: "Dabigatran (Liesenfeld 2013)"
@@ -6700,6 +6702,7 @@ articles:
   - articles/Goti_2018_vancomycin
   - articles/Gotta_2025_cefepime_infant_neurotoxicity
   - articles/Gotz_2025_fosfomycin
+  - articles/Goulooze_2020_DRL17822
   - articles/Goulooze_2022_finerenone
   - articles/Goulooze_2022_finerenone_uacr_egfr
   - articles/Gracia_2025_cr51edta_tc99mdtpa
