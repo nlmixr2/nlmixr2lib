@@ -3474,6 +3474,8 @@ navbar:
         href: articles/Jiao_2008_mycophenolic_acid.html
       - text: "Mycophenolic acid (Park 2023)"
         href: articles/Park_2023_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Quintairos 2021)"
+        href: articles/Quintairos_2021_tacrolimus_mycophenolic_acid.html
       - text: "Mycophenolic acid (Rong 2019)"
         href: articles/Maizaud_2025_missed_mycophenolate_doses.html
       - text: "Mycophenolic acid (Sherwin 2012)"
@@ -5058,6 +5060,8 @@ navbar:
         href: articles/Pei_2023_tacrolimus.html
       - text: "Tacrolimus (Prytula 2016)"
         href: articles/Prytula_2016_tacrolimus.html
+      - text: "Tacrolimus (Quintairos 2021)"
+        href: articles/Quintairos_2021_tacrolimus_mycophenolic_acid.html
       - text: "Tacrolimus (Rower 2017)"
         href: articles/Rower_2017_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
@@ -7564,6 +7568,7 @@ articles:
   - articles/Qin_2025_ropeginterferon
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
+  - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Rambiritch_2016_glibenclamide
   - articles/Ramharter_2019_mefloquine
