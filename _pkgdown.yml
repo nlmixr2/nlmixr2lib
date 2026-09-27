@@ -810,6 +810,8 @@ navbar:
         href: articles/AitOudhia_2012_canakinumab.html
       - text: "Canakinumab (Chakraborty 2012)"
         href: articles/Chakraborty_2012_canakinumab.html
+      - text: "Candesartan (Kassem 2021)"
+        href: articles/Kassem_2021_candesartan.html
       - text: "Canrenone (Suyagh 2012)"
         href: articles/Suyagh_2012_canrenone.html
       - text: "Capecitabine (Blesch 2003)"
@@ -6962,6 +6964,7 @@ articles:
   - articles/Karlsson_2010_acute_stroke
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kashihara_2026_rsvVaccine_immune_correlates
+  - articles/Kassem_2021_candesartan
   - articles/Kassir_2014_tacrolimus
   - articles/Kastrissios_2006_apricoxib
   - articles/Kastrissios_2012_managlinatDialanetil
