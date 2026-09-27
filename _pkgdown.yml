@@ -804,6 +804,8 @@ navbar:
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Camostat (Kim 2023)"
         href: articles/Kim_2023_camostat.html
+      - text: "Camptothecin (Schmidt 2020)"
+        href: articles/Schmidt_2020_camptothecin.html
       - text: "Canagliflozin mbma (Yao 2023)"
         href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "Canakinumab (AitOudhia 2012)"
@@ -7677,6 +7679,7 @@ articles:
   - articles/Schlender_2016_aging_physiology
   - articles/Schmid_2017_nintedanib
   - articles/Schmidt_2009_oxazolidinones
+  - articles/Schmidt_2020_camptothecin
   - articles/Schmitt_2018_vinflunine
   - articles/Schoemaker_1996_low_molecular_weight_heparin_modeling
   - articles/Schoemaker_2017_brivaracetam
