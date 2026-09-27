@@ -3767,6 +3767,14 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Example models:** `Morse_2012_ghb_rbc_invitro.R`.
 - **Notes:** Two scope points distinguish it from `rbc_mtx` / `rbc_tgn`, which are in vivo clinical-PK states. First, **units**: this state holds an amount normalised per mg of red-cell protein (nmol/mg protein), not a concentration, because that is the normalisation an erythrocyte uptake assay reports and the source supplies no protein-per-cell-volume factor with which to convert. A per-mg-protein `rbc_<analyte>` state is a legitimate member of the family; record the units explicitly in `compartmentData` so the deviation from the family's usual concentration units is machine-readable. Second, **direction**: an in vitro initial-rate uptake experiment measures unidirectional influx over a window short enough to stay linear, so the state has influx only and carries no `keff_rbc` efflux term. Do not read the absence of efflux as a claim that none exists -- Morse 2012 states explicitly that bidirectional transport and trans-stimulation are expected in vivo and that equilibrium-exchange `km` and `vmax` would exceed the unidirectional values fitted here.
 
+### rbc_hcq (**canonical red-cell hydroxychloroquine pool**)
+- **Type:** compartment
+- **Role:** Hydroxychloroquine associated with red blood cells, carried as an AMOUNT with its own apparent volume `v_rbc`. It is filled by a transfer from `central` that saturates in the central amount (`vmax_rbc`, `km_rbc`) and drained by first-order return to `central` (`keff_rbc`). The whole-blood concentration is `rbc_hcq / v_rbc + central / vc`.
+- **Source aliases:**
+  - `A3` -- Liu 2020 Equations 3 and 7 ("blood compartment"; Figure 2 labels its volume the red blood cell volume of distribution).
+- **Example models:** `Liu_2020_hydroxychloroquine_monkey.R`.
+- **Notes:** **Units** differ from `rbc_mtx` / `rbc_tgn`: this state is an amount (mg), not a concentration, because the source writes its ODEs in amounts and fits an apparent red-cell volume. As with `rbc_ghb`, the deviation from the family's usual units is recorded in `compartmentData`. Chloroquine-class drugs accumulate strongly in blood cells, so whole-blood and plasma concentrations differ by an order of magnitude and a separate red-cell state is needed to fit both matrices jointly.
+
 ---
 
 ## Intracellular red-cell analyte pools (`rbc_<analyte>` namespace)

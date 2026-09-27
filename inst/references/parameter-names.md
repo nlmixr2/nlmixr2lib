@@ -746,6 +746,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Example models:** `Wu_2012_bevacizumab_mouse.R` (`ka2` = 0.723 /h, CV 9.64%; founding example).
 - **Notes:** Ratified by the maintainers 2026-09-02 (PMC3326166). Member of the registered `k_<from>_<to>` directional-transfer family (`k_central_elf` / `k_elf_central`, `k_central_milk` / `k_milk_central`, `k_csf_plasma`, `k_presystemic_central`), whose own note directs that the family be used whenever a transfer connects `central` to a named non-numbered compartment. Deliberately **not** `lka2`, even though that is the paper's literal symbol: this register states that `lka1` / `lka2` are not canonical because a bare ordinal encodes only sequence, and `lka2` is already in wide use (`Mauro_2025_nilotinib.R`, `Khwarg_2024_donepezil_im.R`, `Perlstein_2025_risperidone_tv46000.R`, `Qi_2024_vosoritide.R`) for absorption from a SECOND DEPOT. Also not `lka_lnode`: the site-labelled absorption family (`lka_duodenum`, `lka_small_intestine`) describes absorption from a lumen outside the body, whereas the node is a modelled internal state, so this is a transfer and not an absorption.
 
+### lk_lung_central (**canonical log-transformed lung-to-central transfer rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant (1 / time) returning drug from the canonical `lung` tissue compartment to `central`. The bare counterpart inside `model()` is `k_lung_central`.
+- **Source aliases:**
+  - `Klc` -- Liu 2020 Table 4 ("Rate constant from the lung to central compartment") and Equations 1 and 4.
+- **Example models:** `Liu_2020_hydroxychloroquine_monkey.R` (`Klc` = 0.159 1/h; founding example).
+- **Notes:** A well-formed member of the registered `k_<from>_<to>` directional-transfer family (`k_central_elf` / `k_elf_central`, `k_lnode_central`), whose own note directs that the family be used whenever a transfer connects `central` to a named non-numbered compartment; compartment-derived names need no separate ruling. In the founding example the uptake leg is saturable (`vmax_lung` / `km_lung`), so there is no `k_central_lung` partner; a model whose uptake is first-order pairs this with `k_central_lung`.
+
 ### lka_fast, lka_slow (**canonical log-transformed rate constants of a PARALLEL two-route depot release**)
 - **Type:** log-transformed-pk
 - **Role:** First-order rate constants (1 / time) of the fast and the slow route of a **simultaneous** (parallel) two-route release input function, in which a bolus is split across two depot compartments that empty at the same time at different rates. Bare forms inside `model()` are `ka_fast` and `ka_slow`; the dose split between them is `frel` / `logitfrel`. Both routes are active from the first dose onward -- this is the defining difference from the registered `lka_early` / `lka_late` pair, which is a **sequential** switch in which one rate replaces the other at a breakpoint `tkacut`.
@@ -2106,6 +2114,14 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
 - **Example models:** `Saporta_2026_meropenem.R` (`VL2 = 9.27 L/kg`, RSE 26%; an apparent volume, because the lung limb is driven by plasma without mass transfer so the whole limb absorbs the unknown partitioning).
 - **Notes:** Auto-approved 2026-09-01 as a well-formed member of the documented `lv_<compartment>` family founded by `lv_elf`, alongside the Saporta 2026 meropenem extraction (maintainers' ruling, PMC13041408, that compartment-derived names need no separate ruling). Pairs with `lq_elf_lung`. Distinct from the `kp_lung` / `lkp_lung` tissue-to-plasma partition coefficients, which are whole-body-PBPK partitioning constants rather than a fitted compartment volume.
 
+### lv_rbc (**canonical log-transformed apparent red-cell compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of an `rbc_<analyte>` red-cell compartment that is carried as an AMOUNT, used to convert it to the red-cell contribution to the whole-blood concentration: `Cblood <- rbc_<analyte> / v_rbc + central / vc`. The `_rbc` token follows the rule of the sibling `vmax_rbc` / `km_rbc` / `keff_rbc` entries: it marks the destination pool, and no analyte suffix is carried because each model file holds a single drug arm.
+- **Source aliases:**
+  - `Vb` -- Liu 2020 Table 4 ("Blood compartment volume of distribution"; Figure 2 legend "red blood cell volume of distribution"), `Vb/F`.
+- **Example models:** `Liu_2020_hydroxychloroquine_monkey.R` (`Vb/F` = 2.68 L; founding example).
+- **Notes:** A well-formed member of the documented `lv_<compartment>` family (`lv_elf`, `lv_lung`). Not needed when the red-cell state is already in concentration units, as in `Gebhard_2023_methotrexate.R` and `Yu_2026_tenofovir.R`. It is an apparent, fitted volume, not a physiological red-cell volume: in the founding example 2.68 L is several times a 4 kg macaque's whole blood volume, because the fit absorbs the unknown red-cell partitioning. Distinct from `satovrbc`, which is an exchange area per unit red-cell volume.
+
 ### lq_kidney (**canonical log-transformed central-to-kidney inter-compartmental flow**)
 - **Type:** log-transformed-pk
 - **Role:** Blood (or plasma) flow perfusing a `kidney` compartment, applied as a bidirectional inter-compartmental clearance between `central` and `kidney` (volume / time). Third member of the `lq_<destination>` family founded by `lq_milk` and continued by `lq_elf`, for the same reason those exist: the bare `lq` / `lq2` mean exchange with `peripheral1` / `peripheral2` specifically, so a perfused organ compartment needs its own destination token. The bare form `q_kidney` is used inside `model()`. In a flow-limited organ the same `q_kidney` appears with opposite sign on both sides (`q_kidney * Cc` leaving central, `q_kidney * Ck` returning), so the organ is effectively well-stirred with a partition coefficient of 1 unless the model states otherwise.
@@ -2321,7 +2337,7 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
 - **Role:** First-order rate constant (1 / time) for loss of drug or active metabolite from the intracellular red-cell pool (`rbc_<analyte>`), combining efflux back to plasma, intracellular catabolism, and red-cell turnover into a single lumped rate. Enters as the `- keff_rbc * rbc_<analyte>` term of the red-cell ODE.
 - **Source aliases:**
   - `Keff` -- used in `Gebhard_2023_methotrexate.R` and `Gebhard_2023_mercaptopurine.R` (paper symbols `K_eff^MTX`, `K_eff^6MP`).
-- **Example models:** `Gebhard_2023_methotrexate.R` (`K_eff^MTX = 0.018 1/day`), `Gebhard_2023_mercaptopurine.R` (`K_eff^6MP = 0.041 1/day`), `Gebhard_2023_mercaptopurine_anc.R` (`K_eff^6MP = 0.050 1/day`).
+- **Example models:** `Gebhard_2023_methotrexate.R` (`K_eff^MTX = 0.018 1/day`), `Gebhard_2023_mercaptopurine.R` (`K_eff^6MP = 0.041 1/day`), `Gebhard_2023_mercaptopurine_anc.R` (`K_eff^6MP = 0.050 1/day`), `Liu_2020_hydroxychloroquine_monkey.R` (`Kbc = 0.718 1/h`, a pure return of hydroxychloroquine from the red-cell pool to plasma).
 - **Notes:** Because the rate is lumped, its reciprocal half-life is a red-cell residence property rather than a pure membrane-transport property -- Gebhard 2023's Discussion validates `K_eff^MTX = 0.018 1/day` against literature red-cell methotrexate half-lives of 30-40 days (0.017-0.023 1/day).
 
 ### lkinf_pbmc, kinf_pbmc (**canonical first-order influx rate constant into the PBMC analyte pool**)
@@ -2361,7 +2377,7 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
 - **Role:** Maximum rate (concentration / time, e.g. umol/L/day) of SATURABLE Michaelis-Menten influx from plasma into the intracellular red-cell pool: `d/dt(rbc_<analyte>) = vmax_rbc * Cc / (km_rbc + Cc) - keff_rbc * rbc_<analyte>`.
 - **Source aliases:**
   - `Vmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `V_mm^6MP`).
-- **Example models:** `Gebhard_2023_mercaptopurine.R` (`V_mm^6MP = 0.096 umol/L/day`), `Gebhard_2023_mercaptopurine_anc.R` (`V_mm^6MP = 0.21 umol/L/day`), `Morse_2012_ghb_rbc_invitro.R` (`Vmax = 20.9 nmol/mg protein/min at pH 7.4`, `5.3` at pH 6.5; carried as the experimental-condition-suffixed pair `lvmax_rbc_ph74` / `lvmax_rbc_ph65`).
+- **Example models:** `Gebhard_2023_mercaptopurine.R` (`V_mm^6MP = 0.096 umol/L/day`), `Gebhard_2023_mercaptopurine_anc.R` (`V_mm^6MP = 0.21 umol/L/day`), `Liu_2020_hydroxychloroquine_monkey.R` (`Kcbmax = 2.48 mg/h`, an AMOUNT rate driven by the central AMOUNT because the red-cell state `rbc_hcq` is carried in mg), `Morse_2012_ghb_rbc_invitro.R` (`Vmax = 20.9 nmol/mg protein/min at pH 7.4`, `5.3` at pH 6.5; carried as the experimental-condition-suffixed pair `lvmax_rbc_ph74` / `lvmax_rbc_ph65`).
 - **Notes:** Extends the blessed `vmax_<suffix>` / `km_<suffix>` disambiguation pattern to a saturable INFLUX. Distinct from the canonical bare `vmax` / log `lvmax`, which are registered for saturable ELIMINATION and carry amount/time units; `vmax_rbc` is an influx into a concentration state and therefore carries concentration/time units -- except where the destination `rbc_<analyte>` state is itself normalised per mg of red-cell protein, as in an in vitro uptake assay, in which case it carries amount / mass protein / time (see `rbc_ghb` in `compartment-names.md`). **Experimental-condition suffixes.** When a source fits the same influx structure independently under two or more deliberately varied experimental conditions, and shares no parameter between them, append a condition token to the registered stem -- `lvmax_rbc_ph74` / `lvmax_rbc_ph65`, and likewise for `lkm_rbc_*` and `lkinf_rbc_*` -- and switch on the corresponding covariate inside `model()`. This is the same device `HernandezLozano_2025_apramycin_invitro.R` uses for its per-strain-and-pH drug-effect parameters, and it is distinct from the `lkinf_rbc_<analyte>` extension reserved for a model fitting two red-cell influx ARMS jointly: a condition suffix indexes one arm characterised repeatedly, an analyte suffix indexes genuinely different arms. Keep the bare registered name whenever only one condition was studied.
 
 ### lkm_rbc, km_rbc (**canonical saturable-influx half-saturation concentration for the red-cell analyte pool**)
@@ -2369,7 +2385,7 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
 - **Role:** Michaelis constant (concentration, e.g. umol/L) of the saturable influx into the intracellular red-cell pool; the plasma concentration at which influx reaches half of `vmax_rbc`.
 - **Source aliases:**
   - `Kmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `K_mm^6MP`).
-- **Example models:** `Gebhard_2023_mercaptopurine.R` (`K_mm^6MP = 0.016 umol/L`), `Gebhard_2023_mercaptopurine_anc.R` (`K_mm^6MP = 0.14 umol/L`).
+- **Example models:** `Gebhard_2023_mercaptopurine.R` (`K_mm^6MP = 0.016 umol/L`), `Gebhard_2023_mercaptopurine_anc.R` (`K_mm^6MP = 0.14 umol/L`), `Liu_2020_hydroxychloroquine_monkey.R` (`Acb50 = 7.05 mg`, an AMOUNT in the central compartment).
 - **Notes:** Paired with `lvmax_rbc`; both are meaningless alone.
 
 ### lvmax_saliva, vmax_saliva (**canonical maximum rate of saturable central-to-saliva transport**)
@@ -2387,6 +2403,22 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
   - `Km` / `KM` -- Huang 2026 Table 3 (`theta_Km`) and Equation 9.
 - **Example models:** `Huang_2026_tiapride.R` (`Km = 762 ng/mL`, held constant because its estimated RSE was unacceptably high).
 - **Notes:** Commonly unidentifiable and held constant, because a saturable secretion curve is only well determined when the observed plasma range straddles the constant. Check where it sits before trusting the saliva output: in the founding example `Km` = 762 ng/mL falls INSIDE the observed plasma range (Figure 4A spans roughly 0-1700 ng/mL), so the predicted saliva:plasma ratio varies severalfold across the data rather than behaving as a constant partition.
+
+### lvmax_lung, vmax_lung (**canonical maximum rate of saturable central-to-lung transfer**)
+- **Type:** log-transformed-pk
+- **Role:** Maximum rate (amount / time) of saturable transfer of drug from the central compartment into the canonical `lung` tissue compartment. Paired with `lkm_lung`; both are meaningless alone. In the founding example the saturation is on the central AMOUNT: `vmax_lung * central / (km_lung + central)`.
+- **Source aliases:**
+  - `Kclmax` -- Liu 2020 Table 4 ("Maximum rate constant from the central compartment to lung"; no unit printed, "h-1" in the Results text) and Equation 1. Equation 1 and the Figure 2 arrow `Kclmax/(Acl50 + A1)` multiplying A1 make the flux an amount rate, so the value is carried in mg/h.
+- **Example models:** `Liu_2020_hydroxychloroquine_monkey.R` (`Kclmax` = 1.92 mg/h; founding example).
+- **Notes:** A well-formed member of the `vmax_<process>` / `km_<process>` disambiguation family (`vmax_rbc` / `km_rbc`, `vmax_saliva` / `km_saliva`, `vmax_reab` / `km_reab`), with the destination token taken from the canonical `lung` compartment. Distinct from the tissue-to-plasma partition coefficients `kp_lung` / `lkp_lung` and from the epithelial-lining-fluid family (`lq_elf`, `km_elf`). With saturable uptake and first-order return (`k_lung_central`) the lung amount plateaus at `vmax_lung / k_lung_central` under sustained high central amounts, independent of dose.
+
+### lkm_lung, km_lung (**canonical half-saturation constant for saturable central-to-lung transfer**)
+- **Type:** log-transformed-pk
+- **Role:** Half-saturation constant of the saturable central-to-lung transfer: the central quantity at which the transfer reaches half of `vmax_lung`. Paired with `lvmax_lung`.
+- **Source aliases:**
+  - `Acl50` -- Liu 2020 Table 4 ("Amount of central compartment where the rate to lung is half-maximal").
+- **Example models:** `Liu_2020_hydroxychloroquine_monkey.R` (`Acl50` = 0.498 mg; founding example).
+- **Notes:** In the founding example this is an AMOUNT in the central compartment (mg), not a concentration. Most `km_<process>` entries are concentrations, so state the unit in the `label()`.
 
 ### lvsaliva, vsaliva (**canonical apparent saliva compartment volume**)
 - **Type:** log-transformed-pk

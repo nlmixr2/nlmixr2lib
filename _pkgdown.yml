@@ -2324,6 +2324,8 @@ navbar:
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Hydroxychloroquine (Carmichael 2003)"
         href: articles/Carmichael_2003_hydroxychloroquine.html
+      - text: "Hydroxychloroquine monkey (Liu 2020)"
+        href: articles/Liu_2020_hydroxychloroquine_monkey.html
       - text: "HydroxyprogesteroneCaproate (Sharma 2016)"
         href: articles/Sharma_2016_hydroxyprogesteroneCaproate.html
       - text: "HydroxysafflorYellowA rat (Chen 2024)"
@@ -7203,6 +7205,7 @@ articles:
   - articles/Lioger_2017_rituximab
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
+  - articles/Liu_2020_hydroxychloroquine_monkey
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s
