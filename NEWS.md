@@ -44,6 +44,19 @@
 
 - Add Yang 2017 buagafuran ([doi:10.3389/fphar.2017.00683](https://doi.org/10.3389/fphar.2017.00683)) -- male Wistar rats in the elevated plus-maze.
 
+- Cite the 2020 erratum to Nishiyama 2019 metformin + cimetidine
+  ([doi:10.1002/psp4.12539](https://doi.org/10.1002/psp4.12539)) in the three
+  `Nishiyama_2019_*` models and their article. The erratum shows that the
+  authors' software computed the hepatic `CL_int,met` without OCT1-mediated
+  efflux (erratum eq. 1), and that the correction changed the fitted `ka`,
+  `ktrans` and `RMATE/dif`. The refitted values are not printed, so the models
+  keep eq. 1, which is the only form consistent with the published Table 1.
+  The article gains a "Published erratum" section with asserted gates: eq. 1
+  reproduces the erratum's pre-correction 15% hepatic share, and eq. 2 is the
+  form that satisfies `beta_liver = 0.5`. It also withdraws an earlier claim
+  that eq. 1 was self-consistent with `beta_liver = 0.5`. No parameter value
+  changes.
+
 - Cite the published corrigendum to Patel 2017 selumetinib
   ([doi:10.1002/psp4.12254](https://doi.org/10.1002/psp4.12254)) in
   `Patel_2017_selumetinib` and its vignette. The corrigendum corrects the
