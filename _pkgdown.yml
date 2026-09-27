@@ -4862,6 +4862,8 @@ navbar:
         href: articles/Stringer_2013_sipoglitazar.html
       - text: "Siponimod (Huth 2019)"
         href: articles/Huth_2019_siponimod.html
+      - text: "Sirolimus (Cheng 2020)"
+        href: articles/Cheng_2020_sirolimus.html
       - text: "Sirolimus (Fan 2024)"
         href: articles/Fan_2024_sirolimus.html
       - text: "Sirolimus (Golubovic 2019)"
@@ -6396,6 +6398,7 @@ articles:
   - articles/Chen_2025_vancomycin
   - articles/Chen_2026_nsclc_os_mbma
   - articles/Cheng_2019_lobaplatin
+  - articles/Cheng_2020_sirolimus
   - articles/Cheng_2026_immunoglobulin
   - articles/Cheng_2026_levamisole_interspecies
   - articles/CherkaouiRbati_2017_midazolam_qsp
