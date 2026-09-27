@@ -2790,6 +2790,8 @@ navbar:
         href: articles/Munana_2018_levetiracetam_dog.html
       - text: "Levocetirizine (Hussein 2005)"
         href: articles/Hussein_2005_levocetirizine.html
+      - text: "Levodopa (Senek 2020)"
+        href: articles/Senek_2020_levodopa.html
       - text: "Levodopa (Suksai 2026)"
         href: articles/Suksai_2026_levodopa.html
       - text: "Levofloxacin (Denti 2018)"
@@ -7691,6 +7693,7 @@ articles:
   - articles/Schutte_2018_desmopressin
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
   - articles/SemereGebreyesus_2024_rifabutin
+  - articles/Senek_2020_levodopa
   - articles/Seng_2015_isoniazid
   - articles/Seo_2023_cefepime
   - articles/Serrano_2026_atopicDermatitis_placebo_mbma

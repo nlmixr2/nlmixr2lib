@@ -12145,6 +12145,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Knebel_2012_istradefylline_offtime.R` (multiplicative effect `e_conmed_comti_<param>^CONMED_COMTI` on the baseline percentage OFF time E0, on EmaxP and on EmaxI; Knebel 2012 Table II thetas 9, 16 and 23).
 - **Notes:** Specific scope. Member of the drug-class arm of the `CONMED_<X>` family, following the enzyme-or-receptor-target-plus-`I` naming of `CONMED_SGLT2I`, `CONMED_PDE5I` and `CONMED_IL6RI`. Agents pooled under this indicator in Knebel 2012 Table III: entacapone, tolcapone. Present in 36 percent of the founding cohort. Knebel 2012 flags this covariate's estimated effect as internally inconsistent and cautions against acting on it: the estimate increases the maximum istradefylline effect in istradefylline-treated patients while decreasing the maximum disease-progression/placebo-response effect in placebo-treated patients, both estimates carry wide bootstrap intervals, and a separate subgroup analysis of the same trials did not identify COMT-inhibitor use as a significant covariate (p = 0.939). Do not treat the founding model's coefficients as a validated drug-interaction effect. A model needing a single named inhibitor rather than the class should register `CONMED_<INN>` (e.g. `CONMED_ENTACAPONE`) instead.
 
+### CONMED_ENTACAPONE (**canonical for concomitant entacapone coadministration indicator**)
+- **Description:** 1 = the subject is receiving entacapone (a reversible peripheral catechol-O-methyl transferase inhibitor) together with levodopa; 0 = not. Per-subject time-varying when a crossover alternates entacapone-containing and entacapone-free levodopa treatment.
+- **Units:** `(binary)`
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no entacapone).
+- **Source aliases:**
+  - No source column name; Senek 2020 encodes the treatment arm (LECIG, levodopa-entacapone-carbidopa intestinal gel, vs LCIG, levodopa-carbidopa intestinal gel).
+- **Example models:** `Senek_2020_levodopa.R` (fractional shift on levodopa CL/F, `cl *= 1 + e_conmed_entacapone_cl * exp(etae_conmed_entacapone_cl) * CONMED_ENTACAPONE`, with `e_conmed_entacapone_cl` = -0.365 and an 11.4% CV IIV on the shift; Senek 2020 Table 2).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family. Single-agent sibling of the class-level [[CONMED_COMTI]] (entacapone + tolcapone pooled); use this name when a paper estimates an entacapone-specific effect. In the founding model entacapone is co-formulated in the infused gel, so the indicator also carries any formulation difference between LECIG and LCIG that the source did not separate from the COMT inhibition.
+
 ### CONMED_SELEGILINE (**canonical for concomitant selegiline coadministration indicator**)
 - **Description:** 1 = the subject is receiving selegiline (a selective, irreversible monoamine oxidase type B inhibitor used as an anti-Parkinson adjunct) as a concomitant medication; 0 = not.
 - **Units:** `(binary)`
