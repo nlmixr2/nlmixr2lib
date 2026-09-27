@@ -1160,6 +1160,8 @@ navbar:
         href: articles/Jung_2024_clopidogrel.html
       - text: "Clopidogrel (Pejcic 2024)"
         href: articles/Pejcic_2024_clopidogrel.html
+      - text: "Clopidogrel pbpk (Xu 2020)"
+        href: articles/Xu_2020_clopidogrel_pbpk.html
       - text: "Cloxacillin (Beijer 2026)"
         href: articles/Beijer_2026_cloxacillin.html
       - text: "Clozapine (Han 2025)"
@@ -8116,6 +8118,7 @@ articles:
   - articles/Xu_2013_ranibizumab
   - articles/Xu_2017_daptomycin
   - articles/Xu_2019_sarilumab
+  - articles/Xu_2020_clopidogrel_pbpk
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
   - articles/Xu_2023_busulfan
