@@ -1242,6 +1242,8 @@ navbar:
         href: articles/Wang_2019_cyclosporin.html
       - text: "Cyclosporine (Feng 2023)"
         href: articles/Feng_2023_cyclosporine.html
+      - text: "Cyclosporine (Li 2019)"
+        href: articles/Li_2019_cyclosporine.html
       - text: "Cyclosporine (Philippe 2015)"
         href: articles/Philippe_2015_cyclosporine.html
       - text: "Cysteamine (Belldina 2003)"
@@ -7163,6 +7165,7 @@ articles:
   - articles/Li_2018_vancomycin
   - articles/Li_2019_abatacept
   - articles/Li_2019_ceftazidime_avibactam
+  - articles/Li_2019_cyclosporine
   - articles/Li_2021_daratumumab_qsstmdd
   - articles/Li_2023_TQB3203
   - articles/Li_2023_granisetron
