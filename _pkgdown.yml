@@ -3474,6 +3474,8 @@ navbar:
         href: articles/Jiao_2008_mycophenolic_acid.html
       - text: "Mycophenolic acid (Park 2023)"
         href: articles/Park_2023_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Riglet 2020)"
+        href: articles/Riglet_2020_mycophenolic_acid.html
       - text: "Mycophenolic acid (Rong 2019)"
         href: articles/Maizaud_2025_missed_mycophenolate_doses.html
       - text: "Mycophenolic acid (Sherwin 2012)"
@@ -7598,6 +7600,7 @@ articles:
   - articles/Riggs_2012_ckd_mbd_qsp
   - articles/Riggs_2013_empagliflozin
   - articles/Riggs_2014_empagliflozin
+  - articles/Riglet_2020_mycophenolic_acid
   - articles/Rini_2013_axitinib
   - articles/Robarge_2017_efavirenz
   - articles/Robbie_2012_palivizumab
