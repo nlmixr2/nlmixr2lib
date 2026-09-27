@@ -3164,6 +3164,8 @@ navbar:
         href: articles/Braune_2018_meropenem.html
       - text: "Meropenem (ButraguenoLaiseca 2024)"
         href: articles/ButraguenoLaiseca_2024_meropenem.html
+      - text: "Meropenem (Cojutti 2020)"
+        href: articles/Cojutti_2020_meropenem.html
       - text: "Meropenem (Fukumoto 2023)"
         href: articles/Fukumoto_2023_meropenem.html
       - text: "Meropenem (Germovsek 2018)"
@@ -6440,6 +6442,7 @@ articles:
   - articles/Codaccioni_2024_cyp3a4_hepatic_ontogeny
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
+  - articles/Cojutti_2020_meropenem
   - articles/Cojutti_2023_ceftobiprole
   - articles/Cojutti_2024_dalbavancin
   - articles/Colin_2014_moxifloxacin
