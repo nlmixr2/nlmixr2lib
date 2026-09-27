@@ -397,7 +397,8 @@ for both formulations. Three differences are expected:
   when they are at least 1 h apart.
 * **Solid-dispersion input.** The healthy-adult solid-dispersion workbook is
   not deposited. The S8 File, labelled "Simulation of optimized SD in healthy
-  volunteers", is identical to the plain-drug S6 File. The mean in-vitro
+  volunteers", has the same inputs and results as the plain-drug S6
+  File. The mean in-vitro
   profile of the optimised system (S2 File, row 'OPTIMIZED') is used on the
   same 15-minute grid as the plain-drug run. Using the full 5-minute grid
   changes the typical Cmax by less than 0.1% and Tmax by 0.07 h.

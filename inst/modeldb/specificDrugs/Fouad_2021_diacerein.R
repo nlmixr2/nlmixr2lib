@@ -100,8 +100,9 @@ Fouad_2021_diacerein <- function() {
     notes = paste(
       "This is a PBPK simulation analysis, not a population-PK fit. The",
       "article describes ten trials of ten subjects (n = 100), but the",
-      "deposited healthy-volunteer workbooks (S6 and S8 Files, which are",
-      "identical) are one trial of ten subjects; n_subjects follows the",
+      "deposited healthy-volunteer workbooks (S6 and S8 Files, which have",
+      "the same inputs and results) are one trial of ten subjects;",
+      "n_subjects follows the",
       "deposit. The source model was verified against the single-dose",
       "clinical study of Nguyen et al. (the article's reference 1). A",
       "geriatric (65-75 years) simulation of the solid dispersion is also",
