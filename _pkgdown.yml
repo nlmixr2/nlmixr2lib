@@ -1514,6 +1514,8 @@ navbar:
         href: articles/AbdulAziz_2016_doripenem.html
       - text: "Doripenem (Lee 2017)"
         href: articles/Lee_2017_doripenem.html
+      - text: "Doripenem (Nonoshita 2020)"
+        href: articles/Nonoshita_2020_doripenem.html
       - text: "Doripenem qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Dorzagliatin (Wang 2023)"
@@ -7430,6 +7432,7 @@ articles:
   - articles/Nishiyama_2019_metformin_cimetidine
   - articles/Niu_2017_veliparib
   - articles/Noe_1996_factor_viii
+  - articles/Nonoshita_2020_doripenem
   - articles/Novakovic_2017_cladribine
   - articles/Nyangwa_2026_pretomanid
   - articles/OBrien_2017_ramucirumab
