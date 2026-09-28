@@ -11002,6 +11002,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Salinger_2019_pretomanid.R` (a main effect on apparent oral clearance, `e_moxifloxacin_cl^CONMED_MOXIFLOXACIN` with `e_moxifloxacin_cl = 0.967`, plus two interaction products -- `e_moxifloxacin_pyrazinamide_cl^(CONMED_MOXIFLOXACIN * CONMED_PYRAZINAMIDE)` = 0.733 and the bedaquiline-containing triple = 1.32 -- and the matching pair of interaction effects on relative bioavailability).
 - **Notes:** Well-formed member of the auto-approved `CONMED_<INN>` family. Full INN spelling is used rather than the source's 3-letter `MOX`, matching the `CONMED_LOPINAVIR` / `CONMED_ATAZANAVIR` precedent for keeping the `CONMED_` namespace unambiguous. In multidrug tuberculosis regimens this indicator is normally one factor of a *product* of partner indicators rather than a standalone effect, because the regimens are given as fixed combinations (PaMZ, BPaMZ) and the individual partner contributions are not separately identifiable; encode the interaction as the literal product of indicators the source's control stream forms, and name the coefficient with every participating drug token (`e_moxifloxacin_pyrazinamide_cl`). Distinct from a fluoroquinolone-*class* indicator, which is not registered.
 
+### CONMED_MPLA (**canonical for coadministered monophosphoryl lipid A (TLR4 agonist) indicator**)
+- **Description:** 1 = monophosphoryl lipid A (MPLA; a detoxified lipid A derivative and toll-like receptor 4 agonist used as an immunostimulant and vaccine adjuvant) has been given alongside the antibacterial, 0 = no MPLA. In the founding model MPLA is a single 2.0 mg/kg intraperitoneal dose given together with oral amoxicillin 12 h after infection, and the column is TIME-VARYING: 0 before the MPLA dose and 1 from it onward, because the published lung-kill effect only reproduces when it switches on at treatment rather than at infection.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no MPLA).
+- **Source aliases:**
+  - `MPLA` -- Franck 2021 binary covariate ('MPLA coadministration (yes/no)', Supplementary Section S2; `MPLA_lung`, `kMPLA,spleen`, `MPLA_TTE` and `FC_AMX+MPLA` in Tables 1 and 2).
+- **Example models:** `Franck_2021_amoxicillin_mouse.R` (PK interaction only: CL/F = 124 + (-0.145 mL/h/ug) * `DOSE_AMOXICILLIN_UG` * `CONMED_MPLA`), `Franck_2021_amoxicillin_mpla_mouse.R` (the same PK interaction plus a 1.40-fold `kkill` in lung, a 3.71 1/h kill in spleen and a -1.32 log hazard ratio on survival).
+- **Notes:** Member of the auto-approved `CONMED_<INN>` family. MPLA has no INN; the abbreviation is used throughout the source literature and in the licensed adjuvant systems (AS01, AS04), following the non-INN `CONMED_HYALURONIDASE` precedent. Only one MPLA dose level was studied in the founding paper and MPLA PK was not measured, so the column is a presence indicator, not an exposure; a future model with MPLA dose-response should register a `DOSE_MPLA_<UNITS>` sibling rather than overload this flag.
+
 ### CONMED_PYRAZINAMIDE (**canonical for concomitant pyrazinamide coadministration indicator**)
 - **Description:** 1 = subject is receiving pyrazinamide (a first-line antitubercular) as a regimen partner during the PK observation period, 0 = no concomitant pyrazinamide. Time-fixed for randomised fixed-combination regimen arms.
 - **Units:** (binary)
@@ -20484,6 +20495,17 @@ is the experimental condition itself, held constant for the whole solve.
   - `dose` -- the daily-dose symbol of Bihorel 2017 Eq. 1 ("the LY2510924 dose at which CL/F reaches half of its possible range"). Studied levels are 1, 2.5, 5, 10, 20 and 30 mg/day in the Study CXAA dose-escalation phase, 2.5 or 20 mg/day in its dose-confirmation phase, and 20 mg/day in Studies CXAB and CXAC.
 - **Example models:** `Bihorel_2017_LY2510924.R` (the only dose-on-clearance covariate in the library; drives `lcl_dosemin` / `lcl_dosespan` / `lcl_dose50`).
 - **Notes:** Member of the `DOSE_<DRUG>_<UNITS>` auto-approve family. LY2510924 has no INN, so the drug token is the development code. Distinct from every other member of the family in what it does: the sibling `DOSE_*_MGD` columns feed an exposure metric that drives a PD effect, whereas this one modifies a PK disposition parameter directly. A dose-dependent clearance is a genuine structural nonlinearity that happens to be parameterised on the dose axis rather than the concentration axis; the authors chose it over a Michaelis-Menten elimination because the phase 1 noncompartmental analysis showed clearance falling with dose while distribution volumes stayed flat.
+
+### DOSE_AMOXICILLIN_UG (**canonical for the administered single amoxicillin dose in micrograms**)
+- **Description:** Amount of the current single amoxicillin dose, in ug per animal (not per kg). Supplied as a covariate column, alongside the dosing event itself, for models in which a structural parameter depends on the dose level.
+- **Units:** ug
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters an additive, MPLA-gated dose dependence of apparent clearance in the founding model, `CL/F = 124 + (-0.145) * DOSE_AMOXICILLIN_UG * CONMED_MPLA` mL/h (Franck 2021 Supplementary Eq. 1, Table S1).
+- **Source aliases:**
+  - `DOSE` -- Franck 2021 Supplementary Eq. 1 ('P = theta1 + theta2 * DOSE'). The paper states doses in mg/kg (0.2, 0.4, 1.2 and 14 mg/kg oral gavage); its reported clearances (73.3 mL/h at 14 mg/kg and 123 mL/h at 0.4 mg/kg with MPLA) reproduce exactly with the mg/kg dose times a 25 g body weight, i.e. 350 ug and 10 ug.
+- **Example models:** `Franck_2021_amoxicillin_mouse.R`, `Franck_2021_amoxicillin_mpla_mouse.R`.
+- **Notes:** Member of the `DOSE_<DRUG>_<UNITS>` auto-approve family. The ug unit follows the source's clearance-slope unit (mL/h/ug) so the coefficient can be transcribed without rescaling; a mouse dose in mg/kg converts as `mg/kg * body weight (g)`.
 
 ### STUDY_CXAA (**canonical for the LY2510924 phase 1 Study I2V-MC-CXAA indicator**)
 - **Description:** 1 = subject enrolled in Study I2V-MC-CXAA, the phase 1 dose-escalation and dose-confirmation study of LY2510924 in advanced metastatic cancer (richly sampled, doses 1-30 mg/day); 0 = subject enrolled in one of the two phase 2 studies, I2V-MC-CXAB or I2V-MC-CXAC. Because CXAA is the only phase 1 study of the pooled analysis, this indicator is exactly the phase 1 / phase 2 split.

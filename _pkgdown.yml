@@ -262,6 +262,10 @@ navbar:
         href: articles/Tang_2019_amoxicillin.html
       - text: "Amoxicillin (Zhang 2023)"
         href: articles/Zhang_2023_aztreonam_amoxicillin_clavulanate.html
+      - text: "Amoxicillin mouse (Franck 2021)"
+        href: articles/Franck_2021_amoxicillin_mpla_pneumonia.html
+      - text: "Amoxicillin mpla mouse (Franck 2021)"
+        href: articles/Franck_2021_amoxicillin_mpla_pneumonia.html
       - text: "Amphenmulin chicken (Wang 2024)"
         href: articles/Wang_2024_amphenmulin.html
       - text: "Amphenmulin killrate (Wang 2024)"
@@ -6619,6 +6623,7 @@ articles:
   - articles/Fostvedt_2021_glasdegib
   - articles/Fournier_2018_amoxicillin
   - articles/Francis_2019_rifapentine
+  - articles/Franck_2021_amoxicillin_mpla_pneumonia
   - articles/Francke_2025_tacrolimus
   - articles/Franke_2015_oxycodone_acetaminophen
   - articles/Franken_2015_morphine
