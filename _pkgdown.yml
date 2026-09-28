@@ -1244,6 +1244,8 @@ navbar:
         href: articles/Feng_2023_cyclosporine.html
       - text: "Cyclosporine (Philippe 2015)"
         href: articles/Philippe_2015_cyclosporine.html
+      - text: "Cyclosporine (Umpierrez 2021)"
+        href: articles/Umpierrez_2021_cyclosporine.html
       - text: "Cysteamine (Belldina 2003)"
         href: articles/Belldina_2003_cysteamine.html
       - text: "Cytarabine cpx351 (Wang 2019)"
@@ -7929,6 +7931,7 @@ articles:
   - articles/Ugolkov_2026_bcell_mouse_qsp
   - articles/Ujihira_2025_glycochenodeoxycholicAcidSulfate
   - articles/Ulldemolins_2015_meropenem
+  - articles/Umpierrez_2021_cyclosporine
   - articles/Urien_2004_cisplatin
   - articles/Urien_2005_capecitabine
   - articles/Urien_2013_anakinra
