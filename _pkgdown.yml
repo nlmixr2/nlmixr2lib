@@ -1148,6 +1148,8 @@ navbar:
         href: articles/Smith_2017_clindamycin.html
       - text: "Clobazam (Tuo 2025)"
         href: articles/Tuo_2025_clobazam.html
+      - text: "Clofarabine (Nijstad 2021)"
+        href: articles/Nijstad_2021_clofarabine.html
       - text: "Clomethiazole (Zingmark 2003)"
         href: articles/Zingmark_2003_clomethiazole.html
       - text: "Clonazepam pediatric (Yukawa 2002)"
@@ -7425,6 +7427,7 @@ articles:
   - articles/Nielsen_2007_semimechanistic_antibiotic_pd
   - articles/Nielsen_2011_antibacterial_efficacy
   - articles/Nielsen_2015_vigabatrin
+  - articles/Nijstad_2021_clofarabine
   - articles/Nikanjam_2019_siltuximab
   - articles/Niloy_2026_MTMSATrp_mouse
   - articles/Nishiyama_2019_metformin_cimetidine
