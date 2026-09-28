@@ -1556,6 +1556,8 @@ navbar:
         href: articles/Li_2025_doxycycline_florfenicol_ducks.html
       - text: "Doxycycline pig (Toutain 2025)"
         href: articles/Toutain_2025_doxycycline_pig.html
+      - text: "Doxycycline rabbit (Mileva 2021)"
+        href: articles/Mileva_2021_doxycycline_rabbit.html
       - text: "Droperidol (Foo 2016)"
         href: articles/Foo_2016_droperidol.html
       - text: "Drospirenone (Reif 2013)"
@@ -7315,6 +7317,7 @@ articles:
   - articles/Miao_2023_teclistamab
   - articles/Michelet_2025_BI754111_mpbpk
   - articles/Milakovic_2024_linezolid
+  - articles/Mileva_2021_doxycycline_rabbit
   - articles/Milosheska_2016_lamotrigine
   - articles/Minichmayr_2024_ceftaroline
   - articles/Minucci_2024_CART_qsp
