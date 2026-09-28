@@ -1996,6 +1996,8 @@ navbar:
         href: articles/Sano_2023_fesoterodine.html
       - text: "Fexofenadine (Gaspar 2025)"
         href: articles/Gaspar_2025_fexofenadine.html
+      - text: "Fexuprazan pbpk (Jeong 2021)"
+        href: articles/Jeong_2021_fexuprazan.html
       - text: "Filgrastim (Harrold 2020)"
         href: articles/Harrold_2020_filgrastim_ars.html
       - text: "Filgrastim (Jiang 2025)"
@@ -6899,6 +6901,7 @@ articles:
   - articles/Jeon_2012_C3G
   - articles/Jeon_2013_interferonAlfa2a
   - articles/Jeon_2014_piperacillin
+  - articles/Jeong_2021_fexuprazan
   - articles/Jeong_2022_torsemide
   - articles/Jeong_2023_rabeprazole
   - articles/Jeong_2025_imc002
