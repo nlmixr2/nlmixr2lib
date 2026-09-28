@@ -236,6 +236,8 @@ navbar:
         href: articles/Marcantonio_2022_efa.html
       - text: "Amlitelimab (Tiraboschi 2025)"
         href: articles/Tiraboschi_2025_amlitelimab.html
+      - text: "Amlodipine (Courlet 2021)"
+        href: articles/Courlet_2021_amlodipine.html
       - text: "Amlodipine (Mukherjee 2018)"
         href: articles/Mukherjee_2018_amlodipine.html
       - text: "Amlodipine (Song 2013)"
@@ -6456,6 +6458,7 @@ articles:
   - articles/Cordes_2016_isoniazid
   - articles/Cortez_2015_nevirapine
   - articles/Couffignal_2014_imipenem
+  - articles/Courlet_2021_amlodipine
   - articles/Courlet_2023_cabamiquine
   - articles/Crass_2024_pegcetacoplan
   - articles/Crass_2025_pegcetacoplan_geographic_atrophy
