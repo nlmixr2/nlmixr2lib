@@ -78,6 +78,8 @@
 
 - Add Kawaguchi 2018 cefiderocol ([doi:10.1128/AAC.01391-17](https://doi.org/10.1128/AAC.01391-17)) -- healthy subjects, subjects spanning normal renal function to end-stage renal disease, and patients with complicated urinary tract infection or acute uncomplicated pyelonephritis. Three model files, one per renal-function marker (`_clcr`, `_egfrabs`, `_egfradj`), as the authors fitted them.
 
+- Add Kawaguchi 2021 cefiderocol ([doi:10.1128/AAC.01437-20](https://doi.org/10.1128/AAC.01437-20)) -- uninfected subjects and patients with pneumonia, bloodstream infection/sepsis, or complicated urinary tract infection.
+
 - Add Braune 2018 meropenem ([doi:10.1186/s13054-018-1940-1](https://doi.org/10.1186/s13054-018-1940-1)) -- septic critically ill adults with acute kidney injury on sustained low-efficiency dialysis.
 
 - Add Geerts 2018 amyloid-beta neurotransmission QSP model
