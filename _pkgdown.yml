@@ -1312,6 +1312,8 @@ navbar:
         href: articles/Wu_2024_daptomycin.html
       - text: "Daptomycin (Xu 2017)"
         href: articles/Xu_2017_daptomycin.html
+      - text: "Daratumumab (Luo 2021)"
+        href: articles/Luo_2021_daratumumab.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
       - text: "Daratumumab qsstmdd (Li 2021)"
@@ -7239,6 +7241,7 @@ articles:
   - articles/Lu_2019_tacrolimus_industry_meta
   - articles/Lu_2022_patritumab
   - articles/Luo_2016_efavirenz
+  - articles/Luo_2021_daratumumab
   - articles/Luo_2023_tigecycline
   - articles/Luo_2024_CES1_cirrhosis
   - articles/Luu_2017_nusinersen
