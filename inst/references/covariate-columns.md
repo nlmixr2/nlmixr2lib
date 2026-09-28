@@ -4980,6 +4980,40 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: initialises the insulin-on-elimination effect compartment `effect_ins(0) = INS_BL / 6.945` and feeds the steady-state baseline-glucose-production rate `gpro = gss * (kg + kgi * INS_BL / 6.945) * vg * 180 / 1000`), `Hong_2013_glucose_insulin_HGC.R` (anchors the dynamic-state `insulin(0) = ICss * VI` initial condition in mU plus the baseline insulin secretion `ICss * CLI`, no rescaling), `Hong_2013_glucose_insulin_MTT.R` (same anchor as the HGC companion), `Denti_2010_glucoseMinimal.R` (Bergman minimal-model basal-insulin anchor; covariate effect on `lsi` (-0.0282 per pmol/L) and `lp2` (-0.0150 per pmol/L), and Ib in the insulin-action ODE `p2 * si * (INS - INS_BL)`; units pmol/L despite the source paper's apparent 'pmol/ml' table label, which is documented as an apparent typo), `Gao_2012_exenatide_glucose_insulin_rat.R` (rat glucose-insulin feedback model; anchors `insulin(0) = Ib` and the zero-order secretion rate `kinI = koutI * Ib`, and is the reference level in the insulin-on-glucose-disposal term `(1 + SIns * (insulin - Ib))`; supplied in pmol/L to match the source's Fig. 5 / Fig. 8 axes and divided by 1000 inside `model()` because `SIns` is reported in 1/nM -- the per-arm values are DIGITISED from Fig. 5, not published).
 - **Notes:** Distinct from `INS` (time-varying regressor); `INS_BL` is a per-subject baseline-state anchor used in initial conditions and steady-state derived quantities, not the dynamic regressor itself. Specific scope because the conversion factor (1/6.945) and the rescaled-units interpretation are paper-specific; future extractions that report baseline insulin in mIU/L or pmol/L directly without rescaling can ratify the same canonical and document the per-model units / conversion in `covariateData[[INS_BL]]$units` / `notes`. Companion concept to `FPG` (baseline fasting plasma glucose).
 
+### PSA_BL (**canonical for baseline serum prostate-specific antigen concentration**)
+- **Description:** Subject's serum prostate-specific antigen (PSA) concentration at the baseline / randomisation visit, before study treatment, carried into a model as a time-fixed per-subject covariate. Used in benign prostatic hyperplasia (BPH) disease-progression and outcome models, where baseline PSA is a surrogate for prostate size and a known risk factor for acute urinary retention and BPH-related surgery.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a centred term. Reference value observed: 3.4 ng/mL (D'Agate 2021 pooled-population median).
+- **Source aliases:**
+  - `B_PSA` -- D'Agate 2021 Supporting Information Figure S3 label ('PSA concentration at baseline').
+- **Example models:** `DAgate_2021_bph_aurs_mbma.R` (founding example; log-linear effect on the hazard of first acute urinary retention or BPH-related surgery, `exp(log(1.08) * (PSA_BL - 3.4))`).
+- **Notes:** Member of the `<X>_BL` per-subject-baseline family (`INS_BL`, `FERRITIN_BL`, `D25OH_BL`). The measured, unadjusted pre-treatment value: 5-alpha-reductase inhibitors such as dutasteride roughly halve PSA on treatment, and a model of on-treatment PSA as a time course must use a separate time-varying column or an output state, never this one. Distinct from PSA as a modelled tumour-marker output in prostate-cancer models (e.g. the `PSA` state of `vanHasselt_2015_eribulin.R`).
+
+### PROSTATE_VOL_BL (**canonical for baseline prostate volume**)
+- **Description:** Subject's total prostate volume at the baseline visit, usually by transrectal ultrasound, carried into a model as a time-fixed per-subject covariate. Used in BPH disease-progression and outcome models.
+- **Units:** mL (equivalently cm^3; document per-model)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a centred term. Reference value observed: 48.5 mL (D'Agate 2021 pooled-population median).
+- **Source aliases:**
+  - `B_PV` -- D'Agate 2021 Supporting Information Figure S3 label ('prostate volume at baseline').
+  - `PV` -- D'Agate 2021 main-text abbreviation.
+- **Example models:** `DAgate_2021_bph_aurs_mbma.R` (founding example; log-linear effect on the hazard of first acute urinary retention or BPH-related surgery, `exp(log(1.01) * (PROSTATE_VOL_BL - 48.5))`).
+- **Notes:** Member of the `<X>_BL` per-subject-baseline family. Total gland volume; a transition-zone volume or an ultrasound-estimated prostate weight is a different quantity and needs its own canonical. The organ is spelled out (rather than `PV_BL`) because `PV` is an ambiguous pharmacometric abbreviation (plasma volume, portal vein).
+
+### QMAX_BL (**canonical for baseline maximum urinary flow rate**)
+- **Description:** Subject's maximum urinary flow rate (Qmax) from uroflowmetry at the baseline visit, carried into a model as a time-fixed per-subject covariate. Lower values indicate more severe bladder outlet obstruction. Used in BPH disease-progression and outcome models.
+- **Units:** mL/s
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a centred term. Reference value observed: 10.2 mL/s (D'Agate 2021 pooled-population median).
+- **Source aliases:**
+  - `Qmax`, `Q max` -- D'Agate 2021 main text and Table 2 ('Baseline maximum urinary flow').
+- **Example models:** `DAgate_2021_bph_aurs_mbma.R` (founding example; log-linear effect on the hazard of first acute urinary retention or BPH-related surgery, `exp(log(0.91) * (QMAX_BL - 10.2))`).
+- **Notes:** Member of the `<X>_BL` per-subject-baseline family. A peak flow RATE from a voiding study, not a volume. Distinct from `URINE_FLOW` (instantaneous urine production rate, mL/min, in renal-excretion models), and from the urine-volume collection canonicals `URINE_VOL_24H` / `URINE_VOL_INTERVAL`.
+
 ### CINH (**canonical for plasma SGLT-inhibitor concentration time-course regressor**)
 - **Description:** Plasma SGLT-inhibitor (e.g., dapagliflozin, canagliflozin) concentration as a time-varying *regressor* input that drives the rate of unbound-drug entry into the proximal tubule via glomerular filtration in renal-glucose-reabsorption QSP models. Not a covariate that modifies a parameter; the model integrates `CINH` directly through `linear(CINH)` and multiplies by the unbound fraction `fup` inside `model`.
 - **Units:** nmol/L (matching the units of the inhibitor's affinity constants Ki1 and Ki2 in the SGLT MM kinetics).
@@ -16184,6 +16218,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Dings_2026_neonatal_acidosis.R` (+3.26 mmol/L neonatal base excess relative to untreated newborns -- the larger of the two treatment effects, which is the paper's central comparative finding).
 - **Notes:** Specific scope. A single canonical for the fixed-dose combination rather than two separate indicators, because the two components are never given apart -- cafedrine and theodrenaline are co-formulated at a fixed 20:1 ratio and doses are expressed as cafedrine equivalents. Do not split into `TRT_CAFEDRINE` and `TRT_THEODRENALINE`: no source reports them independently and the model cannot identify separate effects. Sibling of `TRT_EPHEDRINE`; mutually exclusive with it.
 
+### TRT_TAMSULOSIN, TRT_DUTASTERIDE, TRT_TAMSULOSIN_DUTASTERIDE, TRT_WATCHFUL_WAITING (**canonical for BPH treatment-arm indicators**)
+- **Description:** Four mutually exclusive binary patient-level treatment-arm indicators for benign prostatic hyperplasia trials. `TRT_TAMSULOSIN` = 1 when the patient was randomised to tamsulosin (alpha-1 blocker) monotherapy; `TRT_DUTASTERIDE` = 1 for dutasteride (5-alpha-reductase inhibitor) monotherapy; `TRT_TAMSULOSIN_DUTASTERIDE` = 1 for tamsulosin + dutasteride combination therapy, free or fixed-dose; `TRT_WATCHFUL_WAITING` = 1 for watchful waiting (conservative management, with or without protocol-defined later initiation of drug therapy). All four 0 = placebo.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0; all four 0 = the placebo arm. In `DAgate_2020_bph_ipss_mbma.R` each indicator selects its own estimated treatment effect, its own IIV and its own residual SD, and the placebo arm additionally carries IIV on the disease-progression rate and the placebo magnitude.
+- **Source aliases:**
+  - `ARM` -- the D'Agate 2020 control stream column: 0 = placebo, 1 or 2 = watchful waiting (pooled), 3 = tamsulosin, 4 = dutasteride, 5 = combination ('FDC').
+- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; constant first-order effects on IPSS of 0.015 /month for tamsulosin, 0.016 /month for dutasteride, 0.032 /month for the combination and 0.018 /month for watchful waiting, each added to the decaying placebo effect).
+- **Notes:** Follows the register's written `TRT_<INN>` rule (`TRT_EPHEDRINE`, `TRT_BENRALIZUMAB` Notes): the drug is the study treatment under investigation and the indicator is a property of an individual patient (individual-patient-data meta-analysis), not a published trial arm, so the bare-INN MBMA arm family does not apply. The combination is ONE indicator rather than `TRT_TAMSULOSIN = TRT_DUTASTERIDE = 1`, on the `TRT_CAFEDRINE_THEODRENALINE` precedent, because the source estimates a separate combination effect that is not the sum of the monotherapy effects. `TRT_WATCHFUL_WAITING` names a management strategy rather than an INN, on the `TRT_PBT` precedent.
+
 ### TRT_IPSOS_CONTROL (**canonical for IPSOS-trial control-arm indicator**)
 - **Description:** Binary trial-arm indicator: 1 = the study arm is the CONTROL arm of the phase III IPSOS trial (NCT03191786, reported as Lee 2023), in which investigators chose single-agent gemcitabine or vinorelbine for treatment-naive advanced NSCLC patients unsuitable for platinum-doublet chemotherapy; 0 = the arm is one of the historical single-agent-chemotherapy control arms drawn from the published literature.
 - **Units:** (binary)
@@ -20070,6 +20115,18 @@ sibling such as `AUC_BAST_FW`.
   - `CRTB1` -- the `$INPUT` column name in the Kim 2026 deposited NONMEM control streams, glossed there as "CRT baseline 1h" because the study's baseline battery was run at 1 h on Day -1.
 - **Example models:** `Kim_2026_zolpidem_crt.R` (founding example; retained on BOTH EC50, as the power term `(CRT_BL/438.5)^-1.28`, and HILL, as the linear term `1 + 0.00637 * (CRT_BL - 438.5)`), `Kim_2026_zolpidem.R`, `Kim_2026_zolpidem_dsst.R`, `Kim_2026_zolpidem_vas.R` (screened but not retained; declared in `covariatesDataExcluded` to preserve the screen).
 - **Notes:** Member of the `_BL` per-subject-baseline suffix family, on the `QTC_BL` precedent -- a derived per-subject instrument readout taken before dosing that enters PD parameters as a centred or ratio-normalised term. The clock time at which the baseline battery was administered is study-specific (1 h on Day -1 in the founding example) and belongs in the per-model `covariateData[[CRT_BL]]$notes`, not in the canonical name; do NOT register parallel canonicals such as `CRT_BL_1H`. The name records the instrument, not the units, so a study reporting CRT in seconds uses the same canonical with `units` documented per-model.
+
+### IPSS_BL (**canonical for per-subject baseline International Prostate Symptom Score**)
+- **Description:** Subject's observed International Prostate Symptom Score (IPSS; the sum of the seven symptom questions, 0-35, excluding the separate quality-of-life item) at the baseline / randomisation visit, carried into a model as a time-fixed per-subject covariate. Higher scores indicate more severe lower urinary tract symptoms (0-7 mild, 8-19 moderate, 20-35 severe). Used in BPH / LUTS drug-disease models both as the initial condition of the modelled `ipss` state and as a covariate on disease-progression parameters. Distinct from the screening IPSS, which precedes a placebo run-in and is a different quantity (regression to the mean between screening and baseline).
+- **Units:** IPSS points (0-35)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a centred linear term `1 + e_ipss_bl_<param> * (IPSS_BL - <ref>)`. Reference value observed: 16 points (D'Agate 2020 pooled-population median).
+- **Source aliases:**
+  - `IPSS0` -- the `$INPUT` column in the D'Agate 2020 Supporting Information control stream (`A_0(1) = obsIPSS`, `obsIPSS = IPSS0`).
+  - `IPSSb`, `B_VARIABLE` -- D'Agate 2020 Table 2 and Figure 2 labels.
+- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; initial condition `ipss(0) <- IPSS_BL`, and linear effect on the disease progression rate `DISP * (1 + 0.027 * (IPSS_BL - 16))`).
+- **Notes:** Member of the `_BL` per-subject-baseline instrument-readout family, on the `QTC_BL` / `CRT_BL` / `DSST_BL` precedent: an observed pre-treatment readout of the same instrument the model predicts, used as a data column rather than an estimated baseline parameter. A model that instead ESTIMATES the baseline IPSS should use an `lrbase`-style parameter, not this column. A screening-visit IPSS, if ever needed as a covariate, must be a separate canonical (e.g. `IPSS_SCR`), never overloaded onto this one.
 
 ### DSST_BL (**canonical for per-subject baseline digit symbol substitution test score**)
 - **Description:** Subject's pre-dose baseline score on the digit symbol substitution test (DSST), a pencil-and-paper or computerised cognitive test of motor speed, attention, working memory and visuoperceptual ability, scored as the number of correct substitutions completed in a fixed interval. Higher scores indicate better cognitive performance -- the opposite polarity to `CRT_BL`, where higher is worse. Carried into a model as a time-fixed per-subject covariate on PD parameters. Distinct from the model's own estimated `lrbase` / BASE parameter for the same endpoint.
