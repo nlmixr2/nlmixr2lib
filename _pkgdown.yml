@@ -1838,6 +1838,8 @@ navbar:
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Ethanol (Nemoto 2017)"
         href: articles/Nemoto_2017_ethanol.html
+      - text: "Ethanol pbpk (Zhu 2021)"
+        href: articles/Zhu_2021_ethanol.html
       - text: "Ethaselen (Ye 2017)"
         href: articles/Ye_2017_ethaselen.html
       - text: "Ethinylestradiol (Ezuruike 2018)"
@@ -8293,6 +8295,7 @@ articles:
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2018_asunaprevir
+  - articles/Zhu_2021_ethanol
   - articles/Zhu_2023_omalizumab_pediatric
   - articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer
   - articles/Zhu_2024_borneol_pbpk
