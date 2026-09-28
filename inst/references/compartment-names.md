@@ -4317,7 +4317,7 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Role:** Doxorubicin drug-name suffix for combination-therapy compartments, parameters and residual SDs (`central_dox`, `peripheral1_dox`, `peripheral2_dox`, `transit1_dox`, `conc_dox`, `lkmax_dox`, `lkc50_dox`, `lktr_dox`, `lkdeg_dox`, `addSd_Cc_dox`).
 - **Source aliases:**
   - `DOX` -- Mody 2023 notation.
-- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`.
+- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`, `Choi_2021_doxorubicin_sorafenib_mouse.R`, `Choi_2021_doxorubicin_sorafenib_c1_mouse.R`, `Choi_2021_doxorubicin_sorafenib_c2_mouse.R`.
 - **Notes:** The source paper's own abbreviation and unambiguous across the registry.
 
 ### dexrazoxane (**canonical dexrazoxane drug-name suffix**)
@@ -4327,6 +4327,14 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
   - `DEX` -- Mody 2023 notation.
 - **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`.
 - **Notes:** Deliberately spelled out in full rather than abbreviated to the paper's `DEX`, because `dex` would collide with dexamethasone and dexmedetomidine and permanently burn the token on the less common drug. The resulting asymmetry with the abbreviated `dox` is intentional; ratified by the maintainers on 2026-08-04.
+
+### sorafenib (**canonical sorafenib drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sorafenib drug-name suffix for combination-therapy compartments, parameters and residual SDs (`depot_sorafenib`, `central_sorafenib`, `peripheral1_sorafenib`, `lka_sorafenib`, `lvc_sorafenib`, `lvp_sorafenib`, `lk12_sorafenib`, `lk21_sorafenib`, `lkel_sorafenib`, `ldrugSlope_sorafenib`, `Cc_sorafenib`, `expSd_sorafenib`).
+- **Source aliases:**
+  - `Sor` -- Choi 2021 notation.
+- **Example models:** `Choi_2021_doxorubicin_sorafenib_mouse.R` (founding example), `Choi_2021_doxorubicin_sorafenib_c1_mouse.R`, `Choi_2021_doxorubicin_sorafenib_c2_mouse.R`.
+- **Notes:** Full INN name (lowercase) per the `sunitinib` / `irinotecan` / `osimertinib` precedent for whole co-administered agents; the abbreviation `sor` is not used. Registered because the Choi 2021 combination models fit doxorubicin and sorafenib symmetrically against one shared tumor-growth state, so both arms are suffixed (`dox` / `sorafenib`), as in `Mody_2023_doxorubicin_dexrazoxane_*`. Standalone sorafenib models (`Choi_2021_sorafenib_mouse.R`, `Agarwal_2011_sorafenib_*`) keep bare canonical names because sorafenib is their sole analyte.
 
 ### amphotericinb (**canonical amphotericin B K-PD drug-name suffix**)
 - **Type:** metabolite-suffix
