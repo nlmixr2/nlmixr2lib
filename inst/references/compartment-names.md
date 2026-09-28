@@ -6078,6 +6078,15 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `Bertin_2026_levosimendan.R` (doi:10.1007/s40262-025-01591-4; founding example -- formation from OR-1855 is 3.7-fold slower in patients aged 1 year or younger, which is the paper's central clinical finding).
 - **Notes:** Same token-construction rule as [[or1855]]: development code lowercased, hyphen dropped. The pair is a rare case in this register of a *reversible* metabolic step between two metabolites, neither of which is the parent -- the forward acetylation is `kmet_or1896` and the reverse deacetylation is `kicv_or1855`, named for the species each one forms, so the direction of a rate constant is read off its suffix.
 
+### neu5ac (**canonical N-acetylneuraminic acid (sialic acid) metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Free (unbound to glycans) N-acetylneuraminic acid (Neu5Ac), the predominant mammalian sialic acid, formed intracellularly from dosed N-acetylmannosamine (ManNAc) through the sialic acid biosynthesis pathway and measured in plasma. Endogenous: the species has a non-zero pre-dose baseline, so a model carrying it initialises `central_neu5ac` at `rbase_neu5ac` rather than at zero. Carries `central_neu5ac`, the `Cc_neu5ac` observation, `lrbase_neu5ac`, `lkout_neu5ac` and `propSd_neu5ac`.
+- **Source aliases:**
+  - `Neu5Ac`, `N`, `N0`, `kout` -- Van Wart 2021 Eqs. 3-5 and Table 4.
+  - `sialic acid` -- the generic name used in the pathway description.
+- **Example models:** `VanWart_2021_mannac.R` (doi:10.1007/s40268-021-00343-6; founding example -- `central_neu5ac` holds a concentration (ng/mL) fed through a `precursor1` delay state, both draining at `kout_neu5ac`, with production stimulated linearly by plasma ManNAc).
+- **Notes:** Token is the IUPAC-style abbreviation lowercased. Distinct from the registered `sa` suffix, which in this register denotes salicylic acid; do not reuse `sa` for sialic acid. The Neu5Ac state here is a concentration with no asserted volume -- the source never defines one -- so it is carried as `central_neu5ac` in ng/mL, not as an amount.
+
 ---
 
 ## PBPK organ extracellular / cellular split (Parmar 2023 mPBPK family)
