@@ -5862,7 +5862,7 @@ concentration output, and the `propSd_<drug>` / `addSd_<drug>` residuals.
 - **Role:** Probenecid (organic-anion transport inhibitor) perpetrator drug suffix, used when a model carries probenecid's own one-compartment first-order-absorption PK as coupled states in order to drive a concentration-dependent OAT1/OAT3 inhibition term on a co-modelled substrate or endogenous biomarker.
 - **Source aliases:**
   - `PROB` -- the near-universal paper symbol, used in `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (Table 2, Figure 2).
-- **Example models:** `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (doi:10.1002/cpt.70023; `depot_prob` / `central_prob` drive `cu_prob` into the competitive OAT3 term on GCDCA-S renal clearance).
+- **Example models:** `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (doi:10.1002/cpt.70023; `depot_prob` / `central_prob` drive `cu_prob` into the competitive OAT3 term on GCDCA-S renal clearance), `Ahmad_2021_pyridoxicAcid.R` and `Ahmad_2021_homovanillicAcid.R` (doi:10.1002/psp4.12610; the TOTAL probenecid concentration `Cc_prob` drives the competitive OAT1/3 term on biomarker renal clearance through a total-plasma `ki_oat13`, the unbound value being reported by the paper only for in vitro comparison).
 - **Notes:** Distinct from the covariate canonicals `CONMED_PROBENECID` (binary co-administration indicator) and `CP_PRB_MGL` (probenecid plasma concentration supplied directly as a time-varying column). Use `prob` only when the probenecid PK is carried as ODE states inside the model file; when the concentration is supplied externally, use `CP_PRB_MGL` and register no compartment. Probenecid MW = 285.34 g/mol, so a 500 mg oral dose is 1752 umol.
 
 ## TB-treatment drug suffixes (combination antibiotic)
