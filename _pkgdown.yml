@@ -1798,6 +1798,8 @@ navbar:
         href: articles/Lakota_2018_ertapenem.html
       - text: "Ertapenem qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Ertugliflozin (Fediuk 2021)"
+        href: articles/Fediuk_2021_ertugliflozin.html
       - text: "Erythromycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Escitalopram (Areberg 2006)"
@@ -6590,6 +6592,7 @@ articles:
   - articles/Fau_2020_isatuximab
   - articles/Fauchet_2013_zidovudine
   - articles/Fauchet_2015_lopinavir
+  - articles/Fediuk_2021_ertugliflozin
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Feillet_2008_sapropterin
   - articles/Felmlee_2010_ghb_rat
