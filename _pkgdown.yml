@@ -1834,6 +1834,8 @@ navbar:
         href: articles/Jonsson_2011_ethambutol.html
       - text: "Ethambutol (Maranchick 2026)"
         href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
+      - text: "Ethambutol (Rao 2021)"
+        href: articles/Rao_2021_antituberculosis_critical_illness.html
       - text: "Ethambutol pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Ethanol (Nemoto 2017)"
@@ -4324,6 +4326,8 @@ navbar:
         href: articles/Kim_2023_pyrazinamide.html
       - text: "Pyrazinamide (Maranchick 2026)"
         href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
+      - text: "Pyrazinamide (Rao 2021)"
+        href: articles/Rao_2021_antituberculosis_critical_illness.html
       - text: "Pyrazinamide mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Pyrazinamide pbpk (Ramachandran 2023)"
@@ -7569,6 +7573,7 @@ articles:
   - articles/Ramharter_2019_mefloquine
   - articles/Rancic_2024_meropenem
   - articles/Randell_2024_metronidazole
+  - articles/Rao_2021_antituberculosis_critical_illness
   - articles/Rao_2023_covid19_qsp
   - articles/Ravix_2024_trametinib
   - articles/Ravva_2009_varenicline
