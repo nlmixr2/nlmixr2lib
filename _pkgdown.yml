@@ -2362,6 +2362,8 @@ navbar:
         href: articles/Idkaidek_2011_ibuprofen.html
       - text: "Ibuprofen normalGravity (Idkaidek 2011)"
         href: articles/Idkaidek_2011_ibuprofen.html
+      - text: "Icatibant (Wang 2021)"
+        href: articles/Wang_2021_icatibant.html
       - text: "Iclaprim (Lodise 2018)"
         href: articles/Lodise_2018_iclaprim.html
       - text: "Ifosfamide (Brain 2008)"
@@ -8006,6 +8008,7 @@ articles:
   - articles/Wang_2019a_tacrolimus
   - articles/Wang_2019b_tacrolimus
   - articles/Wang_2020_ontamalimab
+  - articles/Wang_2021_icatibant
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin
