@@ -4115,6 +4115,20 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Kubota_2018_naldemedine_gi_severe_phase3.R` (founding example).
 - **Notes:** See `prob_gi_mild_or_worse` for why the three severity thresholds are cumulative but independently fitted. A severe-only threshold is often unestimable in a small study because no severe event occurs -- the founding paper has no phase 2b counterpart to this model for exactly that reason -- so the absence of a severe-threshold companion alongside a mild and moderate pair is informative, not an omission.
 
+### prob_pasi75 (**canonical PASI75 responder-rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with plaque psoriasis achieves at least a 75% reduction from their own baseline Psoriasis Area and Severity Index (PASI75). In the founding models it is a STUDY-ARM responder proportion from a longitudinal model-based meta-analysis, `prob_pasi75 <- expit(<placebo logit> + <drug logit>)`, evaluated over time since first dose.
+- **Source aliases:** `PASI75`, `P(PASI75)`, `Pr(PASI75)`, `P_response` for the PASI75 end point.
+- **Example models:** `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R`, `He_2021_psoriasis_pasi75_mbma.R`.
+- **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. The threshold is part of the endpoint: PASI75, PASI90 and PASI100 are CUMULATIVE thresholds on one scale (`prob_pasi75 >= prob_pasi90`), and a source that fits them separately (He 2021) or links them through shared terms (Checchio 2017) must still expose each under its own name. It is a time-varying arm-level trajectory, not a landmark per-subject probability, and the residual of the founding models is the binomial standard error of an arm proportion scaled by `N_ARM`.
+
+### prob_pasi90 (**canonical PASI90 responder-rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with plaque psoriasis achieves at least a 90% reduction from their own baseline Psoriasis Area and Severity Index (PASI90). Stricter sibling of `prob_pasi75`.
+- **Source aliases:** `PASI90`, `P(PASI90)`, `Pr(PASI90)`.
+- **Example models:** `He_2021_psoriasis_pasi90_mbma.R` (fitted directly to PASI90 arm data), `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (a secondary, unfitted output that maps the PASI75 model to PASI90 with two scaling factors imported from the companion landmark model).
+- **Notes:** See `prob_pasi75`. A directly fitted PASI90 model and a PASI75 model rescaled to PASI90 are different evidence and should be distinguished in any comparison.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
