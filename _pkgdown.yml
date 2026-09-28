@@ -3404,6 +3404,8 @@ navbar:
         href: articles/Li_2025_modakafuspAlfa.html
       - text: "Mogamulizumab (Mukai 2019)"
         href: articles/Mukai_2019_mogamulizumab.html
+      - text: "Molibresib (Krishnatry 2021)"
+        href: articles/Krishnatry_2021_molibresib.html
       - text: "Molnupiravir (Bihorel 2023)"
         href: articles/Bihorel_2023_molnupiravir.html
       - text: "Momelotinib (Rich 2026)"
@@ -7059,6 +7061,7 @@ articles:
   - articles/Krekels_2015_paracetamol
   - articles/Kretsos_2014_olokizumab
   - articles/Krishna_2011_anacetrapib
+  - articles/Krishnatry_2021_molibresib
   - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin
   - articles/Ku_2018_diazepam
   - articles/Kuan_2023_flipflop
