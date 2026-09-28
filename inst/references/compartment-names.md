@@ -5265,6 +5265,24 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Han_2025_fluoxetine.R` (doi:10.3390/pharmaceutics17121516).
 - **Notes:** Follows the `norcloz` (norclozapine) precedent for an N-desmethyl metabolite whose published name already carries the `nor` prefix, truncating the parent stem rather than spelling out the demethylation (`ndm...`, as in `ndmsel` / `ndmima`, is reserved for metabolites whose published names use the N-desmethyl form).
 
+### noroxycod (**canonical noroxycodone (N-desmethyloxycodone) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Noroxycodone (N-desmethyloxycodone), the major CYP3A4-formed metabolite of oxycodone and the precursor of noroxymorphone. A weak mu-opioid agonist that crosses the blood-brain barrier poorly, measured at plasma concentrations of the same order as the parent. Used on `central_noroxycod`, `lkmet_noroxycod` / `lkel_noroxycod` / `lvc_noroxycod`, `Cc_noroxycod` and `propSd_noroxycod` / `addSd_noroxycod`.
+- **Source aliases:**
+  - `nor-oxycodone` -- the hyphenated spelling of Agema 2021.
+  - `METAB1`, `NOROXY` -- the compartment and data-column names of the Agema 2021 control stream (Document S2).
+- **Example models:** `Agema_2021_oxycodone.R` (doi:10.3390/cancers13112768).
+- **Notes:** Follows the `norcloz` / `norfluox` construction (`nor` + truncated parent stem). Truncated to `noroxycod` rather than `norox` so that it stays distinct from `noroxymor`.
+
+### noroxymor (**canonical noroxymorphone (N-desmethyloxymorphone) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Noroxymorphone (N-desmethyloxymorphone), the secondary oxycodone metabolite formed from noroxycodone (CYP2D6) and from oxymorphone (CYP3A4). A mu-opioid agonist with poor blood-brain-barrier penetration. Used on `central_noroxymor`, `lkmet_noroxymor` / `lkel_noroxymor` / `lvc_noroxymor`, `Cc_noroxymor` and `propSd_noroxymor` / `addSd_noroxymor`; `kmet_noroxymor` names the formation step from its precursor `noroxycod`.
+- **Source aliases:**
+  - `nor-oxymorphone` -- the hyphenated spelling of Agema 2021.
+  - `METAB3`, `NORMOR` -- the compartment and data-column names of the Agema 2021 control stream (Document S2).
+- **Example models:** `Agema_2021_oxycodone.R` (doi:10.3390/cancers13112768).
+- **Notes:** Same construction as `noroxycod`. Distinct from oxymorphone itself (the O-demethylated CYP2D6 metabolite), which would take its own suffix.
+
 ### dnef (**canonical desmethyl-nefopam suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Desmethyl-nefopam (nor-nefopam), N-demethyl metabolite of nefopam formed by CYP3A4-mediated N-demethylation. Followed in plasma alongside the parent in joint parent + metabolite popPK models of postoperative nefopam analgesia. Used as the metabolite suffix on `central_dnef` compartments, `lcl_dnef` / `lvc_dnef` / `lcl_form_dnef` parameters, and `addSd_dnef` / `propSd_dnef` residual SDs.
