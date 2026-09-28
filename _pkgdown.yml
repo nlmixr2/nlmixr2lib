@@ -3808,6 +3808,8 @@ navbar:
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Oxaliplatin organoid (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Oxcarbazepine (Jang 2021)"
+        href: articles/Jang_2021_oxcarbazepine.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
         href: articles/Rodrigues_2017_oxcarbazepine.html
       - text: "Oxcarbazepine (Sinha 2026)"
@@ -6887,6 +6889,7 @@ articles:
   - articles/Jaiswal_2025_dordaviprone
   - articles/James_2025_fepixnebart
   - articles/Jang_2019_cefprozil
+  - articles/Jang_2021_oxcarbazepine
   - articles/Jang_2023_zaltoprofen
   - articles/Jansen_2023_itraconazole
   - articles/Janssen_2017_cabazitaxel_phenotyping
