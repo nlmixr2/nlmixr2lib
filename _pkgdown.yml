@@ -4040,8 +4040,20 @@ navbar:
         href: articles/Betts_2019_pf_06671008.html
       - text: "Pfoa pbpk (Verner 2015)"
         href: articles/Verner_2015_pfas_birthweight.html
+      - text: "Pfos human gestational pbpk (Chou 2021)"
+        href: articles/Chou_2021_pfos_pbpk.html
+      - text: "Pfos human lactational pbpk (Chou 2021)"
+        href: articles/Chou_2021_pfos_pbpk.html
+      - text: "Pfos human prepregnant pbpk (Chou 2021)"
+        href: articles/Chou_2021_pfos_pbpk.html
       - text: "Pfos pbpk (Verner 2015)"
         href: articles/Verner_2015_pfas_birthweight.html
+      - text: "Pfos rat gestational pbpk (Chou 2021)"
+        href: articles/Chou_2021_pfos_pbpk.html
+      - text: "Pfos rat lactational pbpk (Chou 2021)"
+        href: articles/Chou_2021_pfos_pbpk.html
+      - text: "Pfos rat prepregnant pbpk (Chou 2021)"
+        href: articles/Chou_2021_pfos_pbpk.html
       - text: "Pfuroylamphenmulin (Xia 2025)"
         href: articles/Xia_2025_pfuroylamphenmulin.html
       - text: "Phage human pbpk (Echterhof 2026)"
