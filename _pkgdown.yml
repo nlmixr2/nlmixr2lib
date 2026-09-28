@@ -3190,6 +3190,8 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Meropenem (Tao 2025)"
         href: articles/Tao_2025_meropenem.html
+      - text: "Meropenem (Trang 2021)"
+        href: articles/Trang_2021_meropenem_vaborbactam.html
       - text: "Meropenem (Ulldemolins 2015)"
         href: articles/Ulldemolins_2015_meropenem.html
       - text: "Meropenem (Wittau 2015)"
@@ -5546,6 +5548,8 @@ navbar:
         href: articles/Hu_2026_utreloxastat.html
       - text: "VRC07523LS (Huynh 2026)"
         href: articles/Huynh_2026_VRC07523LS.html
+      - text: "Vaborbactam (Trang 2021)"
+        href: articles/Trang_2021_meropenem_vaborbactam.html
       - text: "Valbenazine (Nguyen 2025)"
         href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
       - text: "Valbenazine tmc (Nguyen 2025)"
@@ -7905,6 +7909,7 @@ articles:
   - articles/Toukam_2025_biib107
   - articles/Toutain_2025_doxycycline_pig
   - articles/Trang_2019_plazomicin
+  - articles/Trang_2021_meropenem_vaborbactam
   - articles/Traynard_2017_prostateSignaling_qsp
   - articles/Tremoulet_2014_ampicillin
   - articles/Troy_2020_arylsulfataseA
