@@ -525,7 +525,40 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
   - `CatalanLatorre_2018_taurine_rat.R` (static baseline indicator -- no `T_NUT_SUPP` pairing because there was no nutritional rehabilitation phase in the preclinical Wistar-rat study; `MAL_NOURISH = 1` reduces the saturable tubular secretion Vmax of taurine by 9.4% relative to well-nourished animals).
   - `Kir_2025_atenolol_rat_pbpk.R` (static baseline indicator in a preclinical Sprague-Dawley mPBPK model; no `T_NUT_SUPP` pairing because there was no nutritional rehabilitation phase. Unusually, `MAL_NOURISH` here gates ABSORPTION rather than disposition: it switches all three sequential zero-order absorption rates, the presence and end time of the third absorption window, the blood-to-plasma ratio, and the proportional residual-error magnitude. The structural disposition parameters fd1, Kp1 and CL were deliberately shared across nutrition groups).
   - `Kir_2025_metoprolol_rat_pbpk.R` (companion to the atenolol model above, from the same paper; `MAL_NOURISH` switches both zero-order absorption rates, the end time of the second absorption window, the blood-to-plasma ratio, the additive residual-error magnitude, and the fraction of hepatic intrinsic clearance operating in the oral arm).
-- **Notes:** Specific scope because the malnutrition definition (WHO Z-score thresholds in Tikiso 2021; end-of-adaptation body weight below 80% of the well-nourished mean AND serum albumin below 23 g/L in Catalan-Latorre 2018; a 5% protein isocaloric diet fed for 17-20 days, confirmed by significant falls in body weight, serum albumin and total cholesterol, in Kir 2025; mid-upper arm circumference, weight-for-height vs height-for-age, etc.) is paper-defined; per-model `covariateData[[MAL_NOURISH]]$notes` must document the criterion used. Pairs with `T_NUT_SUPP` (days on nutritional supplementation) when the model uses a time-decaying recovery function; otherwise `MAL_NOURISH` alone serves as a static baseline indicator. Distinct from generic body-weight Z-scores (which are continuous anthropometric metrics rather than a binarised malnutrition indicator).
+- **Notes:** Specific scope because the malnutrition definition (WHO Z-score thresholds in Tikiso 2021; end-of-adaptation body weight below 80% of the well-nourished mean AND serum albumin below 23 g/L in Catalan-Latorre 2018; a 5% protein isocaloric diet fed for 17-20 days, confirmed by significant falls in body weight, serum albumin and total cholesterol, in Kir 2025; mid-upper arm circumference, weight-for-height vs height-for-age, etc.) is paper-defined; per-model `covariateData[[MAL_NOURISH]]$notes` must document the criterion used. Pairs with `T_NUT_SUPP` (days on nutritional supplementation) when the model uses a time-decaying recovery function; otherwise `MAL_NOURISH` alone serves as a static baseline indicator. Distinct from generic body-weight Z-scores (which are continuous anthropometric metrics rather than a binarised malnutrition indicator). For a model that distinguishes malnutrition SEVERITY levels, use the graded `MAL_NOURISH_MILD` / `MAL_NOURISH_MOD` / `MAL_NOURISH_SEV` indicators instead of this pooled one.
+
+### MAL_NOURISH_MILD (**canonical for mild malnutrition indicator**)
+- **Description:** 1 = mild malnutrition per a paper-defined grading, 0 = not malnourished or a different malnutrition level. One of three mutually exclusive severity indicators (`MAL_NOURISH_MILD` / `MAL_NOURISH_MOD` / `MAL_NOURISH_SEV`); all three 0 is the non-malnourished reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not malnourished, when `MAL_NOURISH_MOD` and `MAL_NOURISH_SEV` are also 0).
+- **Source aliases:**
+  - `M` ("mild nutritional impairment") -- used in `Sjogren_2021_malnutrition_physiology.R` (the Barac-Nieto et al. grading, body weight / height 89.5 % of standard).
+- **Example models:** `Sjogren_2021_malnutrition_physiology.R` (selects the 'Mild' column of the physiological scaling parameters that transform a non-malnourished PBPK physiology into a malnourished one).
+- **Notes:** Specific scope because the grading scheme is paper-defined (Barac-Nieto body weight / height bands in Sjogren 2021; Gomez weight-for-age or WHO z-score bands elsewhere); per-model `covariateData[[MAL_NOURISH_MILD]]$notes` must document it. Follows the `HEPIMP_MILD` / `HEPIMP_MOD` / `HEPIMP_SEV` severity-suffix family. Distinct from the pooled binary `MAL_NOURISH`, which does not separate levels; a model that estimates or tabulates per-level effects must use these graded indicators.
+
+### MAL_NOURISH_MOD (**canonical for moderate / intermediate malnutrition indicator**)
+- **Description:** 1 = moderate (or 'intermediate') malnutrition per a paper-defined grading, 0 = not malnourished or a different malnutrition level. Mutually exclusive with `MAL_NOURISH_MILD` and `MAL_NOURISH_SEV`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not malnourished, when `MAL_NOURISH_MILD` and `MAL_NOURISH_SEV` are also 0).
+- **Source aliases:**
+  - `I` ("intermediate nutritional impairment") -- used in `Sjogren_2021_malnutrition_physiology.R` (the Barac-Nieto et al. grading, body weight / height 82.7 % of standard).
+- **Example models:** `Sjogren_2021_malnutrition_physiology.R` (selects the 'Intermediate' column of the physiological scaling parameters).
+- **Notes:** The middle level of a three-level grading, whatever the paper calls it ('moderate', 'intermediate'); the `_MOD` suffix follows the `HEPIMP_MOD` / `RENALIMP_MOD` family. See `MAL_NOURISH_MILD` for scope and the distinction from `MAL_NOURISH`.
+
+### MAL_NOURISH_SEV (**canonical for severe malnutrition indicator**)
+- **Description:** 1 = severe malnutrition per a paper-defined grading, 0 = not malnourished or a different malnutrition level. Mutually exclusive with `MAL_NOURISH_MILD` and `MAL_NOURISH_MOD`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not malnourished, when `MAL_NOURISH_MILD` and `MAL_NOURISH_MOD` are also 0).
+- **Source aliases:**
+  - `S` ("severe nutritional impairment") -- used in `Sjogren_2021_malnutrition_physiology.R` (the Barac-Nieto et al. grading, body weight / height 73.9 % of standard).
+- **Example models:** `Sjogren_2021_malnutrition_physiology.R` (selects the 'Severe' column of the physiological scaling parameters; the level the paper uses for every pediatric PK evaluation, giving a virtual weight-for-height z-score of about -3).
+- **Notes:** See `MAL_NOURISH_MILD` for scope and the distinction from `MAL_NOURISH`. WHO 'severe acute malnutrition' (WHZ < -3 and/or MUAC < 115 mm) is one clinical definition of this level; where a model uses the continuous measurements themselves, carry `WHZ` / `MUAC` instead.
 
 ### MUAC (**canonical for mid-upper arm circumference**)
 - **Description:** Mid-upper arm circumference, the continuous anthropometric measurement of the circumference of the upper arm at its midpoint. A standard WHO nutritional-status measure in children aged 6-59 months; the WHO severe-acute-malnutrition threshold is `MUAC < 115 mm`. Time-fixed at admission in the models that use it, though it is measurable repeatedly during nutritional rehabilitation.
