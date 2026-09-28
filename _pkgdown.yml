@@ -4418,6 +4418,8 @@ navbar:
         href: articles/Xu_2013_ranibizumab.html
       - text: "Ranitidine (Hawwa 2013)"
         href: articles/Hawwa_2013_ranitidine.html
+      - text: "Realgar indigo (Zhang 2021)"
+        href: articles/Zhang_2021_realgar_indigo.html
       - text: "Reboxetine apparent qsp (Benson 2010)"
         href: articles/Benson_2010_reboxetine_hnet_binding.html
       - text: "Reboxetine qsp (Benson 2010)"
@@ -8224,6 +8226,7 @@ articles:
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2019b_nivolumab
   - articles/Zhang_2021_dupilumab
+  - articles/Zhang_2021_realgar_indigo
   - articles/Zhang_2022_ormutivimab
   - articles/Zhang_2023_aztreonam_amoxicillin_clavulanate
   - articles/Zhang_2023_brazikumab
