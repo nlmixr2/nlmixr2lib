@@ -2648,6 +2648,10 @@ navbar:
         href: articles/Alshehri_2023_ivermectin.html
       - text: "Ivermectin (Fimbo 2023)"
         href: articles/Fimbo_2023_ivermectin.html
+      - text: "Ivosidenib (Jiang 2021)"
+        href: articles/Jiang_2021_ivosidenib.html
+      - text: "Ivosidenib QTcF (Jiang 2021)"
+        href: articles/Jiang_2021_ivosidenib.html
       - text: "Ixazomib (Gupta 2015)"
         href: articles/Gupta_2015_ixazomib.html
       - text: "Ixazomib (Gupta 2017)"
@@ -6911,6 +6915,7 @@ articles:
   - articles/Jian_2025_peginterferon_alfa_2b
   - articles/Jiang_2008_gemcitabine
   - articles/Jiang_2016_harmaline_meodmt_mouse
+  - articles/Jiang_2021_ivosidenib
   - articles/Jiang_2023_imatinib
   - articles/Jiang_2024_empagliflozin
   - articles/Jiang_2025_filgrastim
