@@ -13602,6 +13602,18 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Hennig_2015_rifabutin.R` (multiplicative effect on rifabutin bioavailability F: `F * (1 + 0.304 * SNP_SLCO1B1_RS11045819)` -- AC carriers have ~30% higher rifabutin F than CC reference; dOFV = -6.5).
 - **Notes:** Time-fixed per subject. Carrier rate in the Hennig 2015 South-African HIV/TB cohort: 14% (5 of 35 genotyped). SLCO1B1 encodes OATP1B1, a hepatic uptake transporter; rs11045819 has been associated with reduced rifampicin and lopinavir concentrations in prior studies but in Hennig 2015 was associated with INCREASED rifabutin bioavailability (note opposite direction of effect across rifamycins).
 
+### SNP_SLCO3A1_RS8027174 (**canonical for SLCO3A1 rs8027174 variant indicator**)
+- **Description:** Binary genotype indicator for the *SLCO3A1* rs8027174 single-nucleotide polymorphism (g.91941607G>T; intron variant; encodes the OATP3A1 organic anion transporter). 1 = at least one variant (T) allele present (heterozygous G/T or homozygous T/T); 0 = homozygous G/G. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous G/G).
+- **Source aliases:**
+  - `SLCO3A1 G>T` -- Stillemans 2021 (Table 3 row 'SLCO3A1 G>T on V'; the NONMEM control stream is not published).
+  - `SLCO3A1 g.91941607G>T` -- Stillemans 2021 Eur J Clin Pharmacol (Table 1 genotype row; Table 2 row 'theta SLCO3A1 on V').
+- **Example models:** `Stillemans_2021_darunavir.R` (categorical effect on darunavir V/F: `V * (1 + 0.81 * SNP_SLCO3A1_RS8027174)` -- carriers have 81% larger apparent volume), `Stillemans_2021b_darunavir.R` (same categorical form in the reduced no-AAG model re-estimated on the merged learning + validation data: `V * (1 + 0.697 * SNP_SLCO3A1_RS8027174)`).
+- **Notes:** In the Stillemans 2021 Belgian HIV cohort 18 of 123 genotyped subjects were G/T and none T/T (Table 2), so the indicator is effectively heterozygote-vs-G/G there. Distinct from the other *SLCO3A1* SNP genotyped in that study, rs4294800 (g.91917464G>A), which was screened on CL and V but not retained.
+
 ### SNP_SLC22A1_RS628031_HOM (**canonical for SLC22A1 (OCT1) 1222G>A (rs628031) homozygous-variant indicator**)
 - **Description:** Binary genotype indicator for the homozygous-variant stratum of the *SLC22A1* rs628031 single-nucleotide polymorphism (c.1222G>A; exon 7; amino-acid M408V / p.Met408Val; encodes OCT1, the hepatic organic cation uptake transporter). 1 = subject carries two variant alleles (genotype 1222A/A); 0 = otherwise (the union of 1222G/G wild-type homozygotes and 1222G/A heterozygotes). Recessive-model encoding: heterozygotes are pooled with wild-type homozygotes because the founding paper resolved a distinct typical-value effect only for the AA stratum. Time-fixed per subject (germline genotype).
 - **Units:** (binary)

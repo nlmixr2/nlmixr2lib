@@ -1328,6 +1328,8 @@ navbar:
         href: articles/Brochot_2015_darunavir.html
       - text: "Darunavir (Daskapan 2019)"
         href: articles/Daskapan_2019_darunavir.html
+      - text: "Darunavir (Stillemans 2021b)"
+        href: articles/Stillemans_2021b_darunavir.html
       - text: "Dasabuvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Dasatinib (Hassouneh 2024)"
@@ -7784,6 +7786,7 @@ articles:
   - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
+  - articles/Stillemans_2021b_darunavir
   - articles/Stites_2018_kras_g12c_covalent_inhibitors
   - articles/Stitt_2026_tranexamicAcid
   - articles/Stocker_2012_oxypurinol
