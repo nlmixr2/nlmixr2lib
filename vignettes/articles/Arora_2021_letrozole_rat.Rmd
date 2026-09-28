@@ -470,16 +470,18 @@ cmp_obs <- nlmixr2lib::ncaComparisonTable(
   by = "group",
   params = c("cmax", "auclast"),
   units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
-  tolerance_pct = 50
+  tolerance_pct = 30
 )
 knitr::kable(cmp_obs, caption = paste(
   "Reduced model vs observed means of Arora 2021 Tables 2-3.",
-  "* differs from the observed mean by more than 50% (the paper's 1.5-fold criterion)."
+  "* differs from the observed mean by more than 30%."
 ))
 ```
 
 The female steady-state exposures are under-predicted by about 24-37%, as they
 are by the Simcyp model itself (predicted/observed 0.66-0.78, Table 5). The
+male single-dose brain ECF is over-predicted by 25-33%, again in line with the
+Simcyp model (predicted/observed 1.19-1.29, Table 4). The
 paper attributes the extra accumulation in females (observed 4-fold versus a
 predicted 2.6-fold) to possible saturation of hepatic metabolism, which a
 linear model cannot represent.
