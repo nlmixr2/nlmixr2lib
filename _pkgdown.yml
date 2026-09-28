@@ -3934,6 +3934,10 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
+      - text: "Peficitinib (Toyoshima 2021)"
+        href: articles/Toyoshima_2021_peficitinib.html
+      - text: "Peficitinib healthy (Toyoshima 2021)"
+        href: articles/Toyoshima_2021_peficitinib.html
       - text: "Pefloxacin (Bulitta 2019)"
         href: articles/Bulitta_2019_pefloxacin.html
       - text: "Pefloxacin (Wahlby 2004)"
@@ -7904,6 +7908,7 @@ articles:
   - articles/Toshimoto_2017_irinotecan_pbpk
   - articles/Toukam_2025_biib107
   - articles/Toutain_2025_doxycycline_pig
+  - articles/Toyoshima_2021_peficitinib
   - articles/Trang_2019_plazomicin
   - articles/Traynard_2017_prostateSignaling_qsp
   - articles/Tremoulet_2014_ampicillin
