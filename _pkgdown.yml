@@ -500,6 +500,8 @@ navbar:
         href: articles/Saeheng_2024_atractylodesLancea.html
       - text: "AtractylodesLancea group2day28 (Saeheng 2024)"
         href: articles/Saeheng_2024_atractylodesLancea.html
+      - text: "Avadomide (Cheng 2021)"
+        href: articles/Cheng_2021_avadomide.html
       - text: "Avalglucosidase alfa (Tuffal 2023)"
         href: articles/Tuffal_2023_avalglucosidase_alfa.html
       - text: "AvalglucosidaseAlfa (Tiraboschi 2023)"
@@ -6396,6 +6398,7 @@ articles:
   - articles/Chen_2025_vancomycin
   - articles/Chen_2026_nsclc_os_mbma
   - articles/Cheng_2019_lobaplatin
+  - articles/Cheng_2021_avadomide
   - articles/Cheng_2026_immunoglobulin
   - articles/Cheng_2026_levamisole_interspecies
   - articles/CherkaouiRbati_2017_midazolam_qsp
