@@ -3525,6 +3525,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (Emax-in-dose, `Emax_dose = -9.29 * Dose / (80 + Dose)`; the maximum administered dose of 200 mg reaches 66.4 percent of Emax per Guo 2025 Discussion).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Guo 2025 Results 3.1 lists danuglipron under both the mono-agonist and the dual-agonist headings; the compound is a GLP-1 mono-agonist and the duplicate listing is a transcription slip in the source, which does not affect this column. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
 
+### DOSE_LINVENCORVIR_MG (**canonical for the nominal linvencorvir dose per administration**)
+- **Description:** Nominal oral linvencorvir (RO7049389, RG7907) dose per administration of the subject's treatment arm, in mg, carried as a covariate because the plasma clearance of the parent falls with dose through a power function of the dose itself. Constant within a treatment arm; the same value on every record of a subject in that arm.
+- **Units:** mg (per administration)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as `(DOSE_LINVENCORVIR_MG / 200)^e_dose_cl` on plasma clearance, with exponent -0.684 in the founding model, so the clearance is 71.7 L/h at 200 mg and about 12.7 L/h at 2,500 mg in non-Asian males (Cosson 2021 Results).
+- **Source aliases:**
+  - `TRT` -- the NONMEM `$INPUT` column in the Cosson 2021 control stream (Supplementary Material S5), used in `$PK` as `NDOS = DOSE / (200 * BIO)` with `DOSE = TRT * BIO`, so the bioavailability cancels and only the nominal dose enters.
+- **Example models:** `Cosson_2021_linvencorvir.R` (single doses 150-2,500 mg and multiple doses of 200-1,000 mg q.d. or 200-800 mg b.i.d.).
+- **Notes:** Member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. A dedicated column rather than `podo()` because the stream reads the treatment-arm column `TRT`, not the dose record's `AMT`. The per-administration reading (not the daily total) follows the paper's definition of the reference value as "CL when dose equals 200 mg" and its Figure 3, whose dose axis spans the single-dose range up to 2,500 mg. rxode2 can drop a dose-named covariate that precedes `amt` in the event data, so place this column after the event columns.
+
 ### DOSE_RIFAMPICIN_MG (**canonical for the administered daily rifampicin dose in milligrams**)
 - **Description:** Daily rifampicin dose in mg, carried as a covariate in victim-drug models where the magnitude of rifampicin-mediated enzyme induction is dose-graded rather than all-or-none. 0 when rifampicin is not coadministered. Paired with the binary `CONMED_RIFAMPICIN` indicator, which gates whether the column is read at all.
 - **Units:** mg (per day)
