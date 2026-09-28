@@ -465,7 +465,8 @@ addFileToModelDb <- function(dir, file, modeldb) {
 #
 #   * `# AUTOGEN:specific_drugs:BEGIN` / `:END` -- the menu items under
 #     `navbar.components.specific_drugs.menu`. One entry per specificDrugs/
-#     model with a vignette.
+#     model with a vignette, headed by a SEARCH link and a divider when
+#     `vignettes/articles/model-search.Rmd` exists.
 #   * `# AUTOGEN:ddmore:BEGIN` / `:END` -- the menu items under
 #     `navbar.components.ddmore.menu`. One entry per ddmore/ model with a
 #     vignette.
@@ -559,8 +560,24 @@ addFileToModelDb <- function(dir, file, modeldb) {
     )
   }
 
+  # The model search page (vignettes/articles/model-search.Rmd) heads the
+  # specific-drugs menu, followed by a divider, so it is reachable without
+  # scrolling past ~3,000 entries. It is only linked when the page exists.
+  searchLines <- character()
+  if (file.exists(file.path(vignDir, "articles", "model-search.Rmd"))) {
+    searchLines <- c(
+      '- text: "SEARCH"',
+      "  href: articles/model-search.html",
+      '- text: "---------"'
+    )
+  }
+
   ymlLines <- readLines(ymlPath, encoding = "UTF-8", warn = FALSE)
-  result <- .replaceAutogen(ymlLines, "specific_drugs", buildMenuLines(spec))
+  result <- .replaceAutogen(
+    ymlLines,
+    "specific_drugs",
+    c(searchLines, buildMenuLines(spec))
+  )
   result <- .replaceAutogen(result, "ddmore", buildMenuLines(ddmo))
   result <- .replaceAutogen(result, "articles", articlesLines)
 

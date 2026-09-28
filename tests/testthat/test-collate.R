@@ -48,6 +48,28 @@ test_that("the collating wrappers accept empty input", {
   expect_identical(nlmixr2lib:::.collateGlob(file.path(dir, "*.R")), character(0))
 })
 
+test_that(".writePkgdownNavbar() heads the specific-drugs menu with SEARCH when the page exists", {
+  dir <- withr::local_tempdir()
+  .collateNavbarFixture(dir)
+  file.create(file.path(dir, "vignettes", "articles", "model-search.Rmd"))
+  suppressMessages(
+    nlmixr2lib:::.writePkgdownNavbar(.collateNavbarModeldb(), dir)
+  )
+  yml <- readLines(file.path(dir, "_pkgdown.yml"), encoding = "UTF-8", warn = FALSE)
+  begin <- grep("AUTOGEN:specific_drugs:BEGIN", yml, fixed = TRUE)
+  expect_identical(
+    yml[begin + 1:4],
+    c(
+      '        - text: "SEARCH"',
+      "          href: articles/model-search.html",
+      '        - text: "---------"',
+      '        - text: "ABT 102 (Othman 2013)"'
+    )
+  )
+  # Only the specific-drugs menu carries it.
+  expect_length(grep("SEARCH", yml, fixed = TRUE), 1L)
+})
+
 test_that(".writePkgdownNavbar() writes the same bytes in any collation locale", {
   res <- .collateBothLocales(function() {
     dir <- withr::local_tempdir()

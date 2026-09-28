@@ -25,11 +25,10 @@ navbar:
     specific_drugs:
       text: Specific drug models
       menu:
-      # Hand-maintained: sits above the signpost so the autogen rewrite keeps it.
+      # AUTOGEN:specific_drugs:BEGIN
       - text: "SEARCH"
         href: articles/model-search.html
       - text: "---------"
-      # AUTOGEN:specific_drugs:BEGIN
       - text: "3methoxydaidzein rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
       - text: "5hydroxysaxagliptin rat (Wang 2024)"
