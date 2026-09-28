@@ -3264,6 +3264,10 @@ navbar:
         href: articles/Wei_2025_methotrexate.html
       - text: "Methotrexate mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Methotrexate nanoemulsion rat (Jeong 2021)"
+        href: articles/Jeong_2021_methotrexate_nanoformulations.html
+      - text: "Methotrexate nanoformulation rat (Jeong 2021)"
+        href: articles/Jeong_2021_methotrexate_nanoformulations.html
       - text: "Methotrexate rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Methoxsalen blood (Billard 1995)"
@@ -6899,6 +6903,7 @@ articles:
   - articles/Jeon_2012_C3G
   - articles/Jeon_2013_interferonAlfa2a
   - articles/Jeon_2014_piperacillin
+  - articles/Jeong_2021_methotrexate_nanoformulations
   - articles/Jeong_2022_torsemide
   - articles/Jeong_2023_rabeprazole
   - articles/Jeong_2025_imc002
