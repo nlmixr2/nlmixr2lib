@@ -5232,6 +5232,8 @@ navbar:
         href: articles/Baheti_2011_tenofovir.html
       - text: "Tenofovir (Burns 2015)"
         href: articles/Burns_2015_tenofovir.html
+      - text: "Tenofovir (Jayachandran 2021)"
+        href: articles/Jayachandran_2021_tenofovir.html
       - text: "Tenofovir (Kawuma 2023)"
         href: articles/Kawuma_2023_tenofovir.html
       - text: "Tenofovir (Yu 2026)"
@@ -5248,6 +5250,8 @@ navbar:
         href: articles/Chen_2016_tenofovir_emtricitabine.html
       - text: "Tenofovir full (Thoueille 2023)"
         href: articles/Thoueille_2023_tenofovir_ckd.html
+      - text: "Tenofovir p24 (Jayachandran 2021)"
+        href: articles/Jayachandran_2021_tenofovir.html
       - text: "Tenofovir pbpk (Granda 2024)"
         href: articles/Granda_2024_kidney_pbpk.html
       - text: "Tenofovir prdi (Lu 2016)"
@@ -6893,6 +6897,7 @@ articles:
   - articles/Janssen_2023_pregnancy_cytotoxics
   - articles/Jansson_2008_eflornithine
   - articles/Jaworowicz_2006_levalbuterol
+  - articles/Jayachandran_2021_tenofovir
   - articles/Jayanti_2026_pyrazinamide
   - articles/Jelliffe_2014_digoxin
   - articles/Jensen_2023_lngIus52mg
