@@ -990,6 +990,8 @@ navbar:
         href: articles/Li_2024_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
+      - text: "Ceftazidime (WerumeusBuning 2021)"
+        href: articles/WerumeusBuning_2021_ceftazidime.html
       - text: "Ceftazidime (Yin 2026)"
         href: articles/Yin_2026_ceftazidime.html
       - text: "Ceftazidime (Zieck 2023)"
@@ -8049,6 +8051,7 @@ articles:
   - articles/Wen_2016_enrofloxacin_Pmultocida
   - articles/Wen_2025_pulmonary_pbpk
   - articles/Wenker_2024_piperacillin_tazobactam
+  - articles/WerumeusBuning_2021_ceftazidime
   - articles/Westerhout_2012_acetaminophen_rat_pbpk
   - articles/Westerhout_2013_quinidine
   - articles/Westra_2025_osimertinib
