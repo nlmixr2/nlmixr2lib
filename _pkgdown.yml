@@ -3940,6 +3940,8 @@ navbar:
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pegasparaginase (Kloos 2021)"
         href: articles/Kloos_2021_pegasparaginase.html
+      - text: "Pegasparaginase (Wurthwein 2021)"
+        href: articles/Wurthwein_2021_pegasparaginase.html
       - text: "Pegasparaginase germanCzech (Wurthwein 2025)"
         href: articles/Wurthwein_2025_pegasparaginase.html
       - text: "Pegasparaginase hrPostinduction (Wurthwein 2025)"
@@ -8101,6 +8103,7 @@ articles:
   - articles/Wu_2025_paracetamol
   - articles/Wu_2025_sitafloxacin
   - articles/Wurthwein_2013_caspofungin
+  - articles/Wurthwein_2021_pegasparaginase
   - articles/Wurthwein_2025_pegasparaginase
   - articles/Xia_2024_warfarin
   - articles/Xia_2025_pfuroylamphenmulin
