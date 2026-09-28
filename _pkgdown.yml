@@ -2320,6 +2320,16 @@ navbar:
         href: articles/Na_2025_hosu53.html
       - text: "HuHMFG1 (Royer 2010)"
         href: articles/Royer_2010_HuHMFG1.html
+      - text: "HyaluronicAcid 99fill mouse (Ryu 2021)"
+        href: articles/Ryu_2021_hyaluronicAcid_fillers_mouse.html
+      - text: "HyaluronicAcid juvedermVoluma mouse (Ryu 2021)"
+        href: articles/Ryu_2021_hyaluronicAcid_fillers_mouse.html
+      - text: "HyaluronicAcid neuramisVolume mouse (Ryu 2021)"
+        href: articles/Ryu_2021_hyaluronicAcid_fillers_mouse.html
+      - text: "HyaluronicAcid restylaneLyft mouse (Ryu 2021)"
+        href: articles/Ryu_2021_hyaluronicAcid_fillers_mouse.html
+      - text: "HyaluronicAcid yvoireContourPlus mouse (Ryu 2021)"
+        href: articles/Ryu_2021_hyaluronicAcid_fillers_mouse.html
       - text: "Hydrochlorothiazide (Song 2013)"
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Hydroxychloroquine (Carmichael 2003)"
@@ -7629,6 +7639,7 @@ articles:
   - articles/Rozman_2017_rituximab
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
+  - articles/Ryu_2021_hyaluronicAcid_fillers_mouse
   - articles/Sadaf_2024_glutamine
   - articles/Sadiq_2017_ciprofloxacin
   - articles/Sadiq_2024_tozorakimab
