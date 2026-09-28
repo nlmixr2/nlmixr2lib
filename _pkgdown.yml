@@ -5862,6 +5862,8 @@ navbar:
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Zaltoprofen (Jang 2023)"
         href: articles/Jang_2023_zaltoprofen.html
+      - text: "Zanubrutinib (Ou 2021)"
+        href: articles/Ou_2021_zanubrutinib.html
       - text: "Zanubrutinib acalabrutinib ibrutinib qsp (Demin 2025)"
         href: articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.html
       - text: "Zastaprazan (Yang 2024)"
@@ -7462,6 +7464,7 @@ articles:
   - articles/Othman_2007_carvedilol
   - articles/Othman_2013_ABT_102
   - articles/Othman_2014_daclizumab
+  - articles/Ou_2021_zanubrutinib
   - articles/Oualha_2014_epinephrine
   - articles/Oualha_2014_norepinephrine
   - articles/Oualha_2018_enoxaparin
