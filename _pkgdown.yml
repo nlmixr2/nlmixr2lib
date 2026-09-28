@@ -760,6 +760,8 @@ navbar:
         href: articles/Schreib_2024_busulfan.html
       - text: "Busulfan (Xu 2023)"
         href: articles/Xu_2023_busulfan.html
+      - text: "Busulfan (Yuan 2021)"
+        href: articles/Yuan_2021_busulfan.html
       - text: "Butanediol rat (Fung 2008)"
         href: articles/Fung_2008_butanediol_rat.html
       - text: "C3G (Jeon 2012)"
@@ -8198,6 +8200,7 @@ articles:
   - articles/Yu_2026_lacosamide
   - articles/Yu_2026_tenofovir
   - articles/Yuan_2019_concizumab
+  - articles/Yuan_2021_busulfan
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
   - articles/Zakria_2026_voriconazole
