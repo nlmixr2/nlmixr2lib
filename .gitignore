@@ -48,3 +48,6 @@ tests/testthat/testthat-problems.rds
 # pkgdown (probe scripts, callr render gates); they are never content, and a
 # batch of them was once committed by mistake.
 figure/
+
+/.quarto/
+**/*.quarto_ipynb

@@ -25,6 +25,10 @@ navbar:
     specific_drugs:
       text: Specific drug models
       menu:
+      # Hand-maintained: sits above the signpost so the autogen rewrite keeps it.
+      - text: "SEARCH"
+        href: articles/model-search.html
+      - text: "---------"
       # AUTOGEN:specific_drugs:BEGIN
       - text: "3methoxydaidzein rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
@@ -8325,6 +8329,7 @@ articles:
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
+  - articles/model-search
   - articles/vanErp_2010_sunitinib
   - articles/vanEsdonk_2018_pregabalin_pain_models
   - articles/vanHasselt_2013_eribulin

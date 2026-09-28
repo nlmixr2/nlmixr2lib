@@ -1,0 +1,277 @@
+---
+title: "Search models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Search models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+```
+
+Type any combination of drug, author, year or keyword. Every word must match
+(case-insensitive), and each word is looked for in the drug names, model names,
+first author, year, full citation and description. Narrow a word to one field
+with a prefix:
+
+| Example                | Finds                                                   |
+|------------------------|---------------------------------------------------------|
+| `abacavir`             | every abacavir model                                    |
+| `zhao 2012`            | papers by Zhao from 2012                                |
+| `author:Stein`         | papers with Stein anywhere in the author list           |
+| `drug:adalimumab`      | only the drug and model names are searched              |
+| `year:2020-2024 mab`   | 2020-2024 papers mentioning "mab"                       |
+| `pediatric vancomycin` | vancomycin models whose description mentions pediatrics |
+
+The search is shareable: the page address updates to `?q=<your search>` as you
+type. The full table is also on the [List of models](list-of-models.html) page.
+
+```{r build-index, include = FALSE}
+db <- nlmixr2lib::modeldb
+
+# Locate the model files: the installed package when building the site, the
+# source tree when knitting this file directly from vignettes/articles/.
+modelDir <- system.file("modeldb", package = "nlmixr2lib")
+if (!nzchar(modelDir) || !dir.exists(modelDir)) {
+  modelDir <- file.path("..", "..", "inst", "modeldb")
+}
+
+# Pull the `reference <- ...` string out of a model file without calling the
+# model function. Most files build it with paste() over string literals, so the
+# right-hand side is evaluated in baseenv(), where nothing but base functions
+# can be reached.
+getReference <- function(f) {
+  if (!file.exists(f)) {
+    return(NA_character_)
+  }
+  exprs <- tryCatch(parse(f, keep.source = FALSE), error = function(e) NULL)
+  isAssign <- function(x) {
+    is.call(x) && as.character(x[[1]]) %in% c("<-", "=")
+  }
+  for (e in exprs) {
+    if (!isAssign(e) || !is.call(e[[3]]) ||
+          !identical(e[[3]][[1]], as.name("function"))) {
+      next
+    }
+    for (s in as.list(e[[3]][[3]])[-1]) {
+      if (isAssign(s) && identical(s[[2]], as.name("reference"))) {
+        v <- tryCatch(eval(s[[3]], baseenv()), error = function(e) NULL)
+        if (is.character(v)) {
+          return(paste(v, collapse = " "))
+        }
+      }
+    }
+  }
+  NA_character_
+}
+db$reference <- vapply(
+  file.path(modelDir, db$filename), getReference, character(1),
+  USE.NAMES = FALSE
+)
+
+# Author and year come from the `Author_Year_drug` filename convention; files
+# that do not follow it (the generic PK/PD templates) leave both blank. The
+# drug is the part of the label before " (Author Year)".
+parts <- strsplit(tools::file_path_sans_ext(basename(db$filename)), "_",
+                  fixed = TRUE)
+hasAuthorYear <- vapply(parts, function(p) {
+  length(p) >= 3 && grepl("^[0-9]{4}[a-z]?$", p[2]) && p[1] != "NA"
+}, logical(1))
+db$author <- ifelse(hasAuthorYear, vapply(parts, `[`, "", 1), "")
+db$year <- ifelse(hasAuthorYear, vapply(parts, `[`, "", 2), "")
+db$drug <- sub(" \\([^()]*\\)$", "", db$label)
+
+# One search record per vignette: a vignette often validates several models
+# (several drugs, species or model variants from the same paper). Models
+# without a vignette are kept as records of their own, without a link.
+db$key <- ifelse(is.na(db$vignette), paste0("model:", db$name), db$vignette)
+db <- db[order(tolower(db$label)), , drop = FALSE]
+records <- lapply(split(db, factor(db$key, levels = unique(db$key))),
+                  function(g) {
+  first <- function(x) {
+    x <- x[!is.na(x) & nzchar(x)]
+    if (length(x) == 0) "" else x[[1]]
+  }
+  list(
+    v = first(g$vignette),
+    c = first(g$category),
+    a = first(g$author),
+    y = first(g$year),
+    d = unique(g$drug),
+    n = g$name,
+    r = first(g$reference),
+    s = first(g$description)
+  )
+})
+names(records) <- NULL
+
+# Minimal JSON writer (strings and string arrays only), so the page needs no
+# extra package. `</` is escaped so no string can close the <script> element.
+jsonString <- function(x) {
+  x <- gsub("\\", "\\\\", x, fixed = TRUE)
+  x <- gsub('"', '\\"', x, fixed = TRUE)
+  x <- gsub("\n", "\\n", x, fixed = TRUE)
+  x <- gsub("\r", "\\r", x, fixed = TRUE)
+  x <- gsub("\t", "\\t", x, fixed = TRUE)
+  x <- gsub("[[:cntrl:]]", " ", x)
+  x <- gsub("</", "<\\/", x, fixed = TRUE)
+  paste0('"', x, '"')
+}
+jsonRecord <- function(r) {
+  fields <- vapply(names(r), function(k) {
+    val <- if (length(r[[k]]) == 1 && !k %in% c("d", "n")) {
+      jsonString(r[[k]])
+    } else {
+      paste0("[", paste(jsonString(r[[k]]), collapse = ","), "]")
+    }
+    paste0('"', k, '":', val)
+  }, character(1))
+  paste0("{", paste(fields, collapse = ","), "}")
+}
+indexJson <- paste0(
+  "[", paste(vapply(records, jsonRecord, character(1)), collapse = ",\n"), "]"
+)
+stopifnot(length(records) > 0)
+```
+
+```{r search-ui, echo = FALSE, results = "asis"}
+# Everything below is emitted as a pandoc RAW block so pandoc does not reparse
+# the HTML, CSS or JavaScript as markdown (see list-of-models.Rmd for how that
+# goes wrong on `$` and `_`).
+ui <- r"--(
+<style>
+#model-search-controls { display: flex; flex-wrap: wrap; gap: 0.5em; margin: 1em 0; }
+#model-search-q { flex: 1 1 20em; }
+#model-search-controls select, #model-search-controls input[type=number] { width: auto; }
+#model-search-results td { vertical-align: top; }
+#model-search-results td.ms-desc { font-size: 0.9em; }
+#model-search-results .ms-models { font-size: 0.8em; color: #6c757d; }
+</style>
+<div id="model-search-controls">
+  <input id="model-search-q" class="form-control" type="search"
+         placeholder="Search by drug, author, year or keyword, e.g. abacavir zhao 2012"
+         aria-label="Search models" autocomplete="off">
+  <select id="model-search-cat" class="form-select" aria-label="Model group">
+    <option value="">All groups</option>
+    <option value="specificDrugs" selected>Specific drugs</option>
+    <option value="ddmore">DDMoRe</option>
+    <option value="other">General</option>
+  </select>
+  <input id="model-search-from" class="form-control" type="number" min="1900" max="2100"
+         placeholder="Year from" aria-label="Year from">
+  <input id="model-search-to" class="form-control" type="number" min="1900" max="2100"
+         placeholder="Year to" aria-label="Year to">
+</div>
+<p id="model-search-count" aria-live="polite"></p>
+<table id="model-search-results" class="table table-sm table-striped">
+  <thead><tr><th>Drug(s)</th><th>Author</th><th>Year</th><th>Description</th></tr></thead>
+  <tbody></tbody>
+</table>
+<p><button id="model-search-more" class="btn btn-outline-secondary btn-sm" type="button" hidden>Show all results</button></p>
+<script type="application/json" id="model-index">
+@@INDEX@@
+</script>
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById("model-index").textContent);
+  var LIMIT = 200;
+  var q = document.getElementById("model-search-q");
+  var cat = document.getElementById("model-search-cat");
+  var yFrom = document.getElementById("model-search-from");
+  var yTo = document.getElementById("model-search-to");
+  var count = document.getElementById("model-search-count");
+  var tbody = document.querySelector("#model-search-results tbody");
+  var more = document.getElementById("model-search-more");
+  var showAll = false;
+
+  data.forEach(function (r) {
+    r.yn = parseInt(r.y, 10);
+    r.fAuthor = (r.a + " " + r.r).toLowerCase();
+    r.fDrug = (r.d.join(" ") + " " + r.n.join(" ")).toLowerCase();
+    r.fAll = [r.d.join(" "), r.n.join(" "), r.a, r.y, r.r, r.s, r.v]
+      .join(" ").toLowerCase();
+  });
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  // Each whitespace-separated term must match. `field:value` restricts a term
+  // to one field; `year:` also takes a range such as 2015-2020.
+  function parseQuery(text) {
+    return text.toLowerCase().split(/\s+/).filter(Boolean).map(function (t) {
+      var m = t.match(/^(author|drug|year):(.*)$/);
+      return m ? { field: m[1], value: m[2] } : { field: null, value: t };
+    }).filter(function (t) { return t.value.length > 0; });
+  }
+
+  function matchTerm(r, t) {
+    if (t.field === "year") {
+      var range = t.value.match(/^(\d{4})?-(\d{4})?$/);
+      if (range) {
+        var lo = range[1] ? +range[1] : -Infinity;
+        var hi = range[2] ? +range[2] : Infinity;
+        return r.yn >= lo && r.yn <= hi;
+      }
+      return r.y.toLowerCase().indexOf(t.value) === 0;
+    }
+    if (t.field === "author") return r.fAuthor.indexOf(t.value) >= 0;
+    if (t.field === "drug") return r.fDrug.indexOf(t.value) >= 0;
+    return r.fAll.indexOf(t.value) >= 0;
+  }
+
+  function render() {
+    var terms = parseQuery(q.value);
+    var c = cat.value;
+    var lo = yFrom.value ? +yFrom.value : null;
+    var hi = yTo.value ? +yTo.value : null;
+    var hits = data.filter(function (r) {
+      if (c && r.c !== c) return false;
+      if (lo !== null && !(r.yn >= lo)) return false;
+      if (hi !== null && !(r.yn <= hi)) return false;
+      return terms.every(function (t) { return matchTerm(r, t); });
+    });
+    var shown = showAll ? hits : hits.slice(0, LIMIT);
+    tbody.innerHTML = shown.map(function (r) {
+      var drugs = esc(r.d.join(", "));
+      var title = r.v ? '<a href="' + esc(r.v) + '.html">' + drugs + "</a>" : drugs;
+      var desc = r.s.length > 240 ? r.s.slice(0, 237) + "..." : r.s;
+      return "<tr><td>" + title +
+        '<div class="ms-models">' + esc(r.n.join(", ")) + "</div></td>" +
+        "<td>" + esc(r.a) + "</td><td>" + esc(r.y) + "</td>" +
+        '<td class="ms-desc" title="' + esc(r.r) + '">' + esc(desc) + "</td></tr>";
+    }).join("");
+    count.textContent = hits.length + " of " + data.length + " entries match" +
+      (shown.length < hits.length ? " (showing the first " + shown.length + ")" : "") + ".";
+    more.hidden = shown.length >= hits.length;
+  }
+
+  function syncUrl() {
+    var url = new URL(window.location.href);
+    if (q.value) url.searchParams.set("q", q.value); else url.searchParams.delete("q");
+    window.history.replaceState(null, "", url);
+  }
+
+  var timer = null;
+  function onInput() {
+    clearTimeout(timer);
+    timer = setTimeout(function () { showAll = false; render(); syncUrl(); }, 150);
+  }
+
+  q.value = new URLSearchParams(window.location.search).get("q") || "";
+  [q, yFrom, yTo].forEach(function (el) { el.addEventListener("input", onInput); });
+  cat.addEventListener("change", onInput);
+  more.addEventListener("click", function () { showAll = true; render(); });
+  render();
+  q.focus();
+})();
+</script>
+)--"
+# sub() with fixed = TRUE so backslashes in the JSON are inserted verbatim.
+knitr::raw_block(sub("@@INDEX@@", indexJson, ui, fixed = TRUE), "html")
+```
