@@ -4472,6 +4472,8 @@ navbar:
         href: articles/Cerqueira_2025_resveratrol.html
       - text: "Resveratrol rat oral (Cerqueira 2025)"
         href: articles/Cerqueira_2025_resveratrol.html
+      - text: "Revefenacin (Lo 2021)"
+        href: articles/Lo_2021_revefenacin.html
       - text: "Rezafungin (Roepcke 2023)"
         href: articles/Roepcke_2023_rezafungin.html
       - text: "Rfviii rat (VargasChristensen 2019)"
@@ -7217,6 +7219,7 @@ articles:
   - articles/LlanosPaez_2020_gentamicin
   - articles/Llanos_2017_gentamicin
   - articles/LledoGarcia_2022_rozanolixizumab
+  - articles/Lo_2021_revefenacin
   - articles/Lodise_2018_iclaprim
   - articles/LohyDas_2018_artemether_lumefantrine
   - articles/LohyDas_2018_artesunate

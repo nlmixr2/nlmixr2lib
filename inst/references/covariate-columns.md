@@ -3381,6 +3381,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Chen_2024_combinedOralContraceptives_btb_mbma.R` (model-based meta-analysis of breakthrough bleeding across four progestin/EE combinations; EE dose is the only covariate retained on the second-phase intercept and is the paper's central dose-response finding).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: [[DOSE_EMPA_MGD]], [[DOSE_LOR_MGD]], [[DOSE_TPM_MGD]], [[DOSE_SEMAGLUTIDE_MG]]). Ethinyl estradiol is dosed in flat ug/day in every marketed COC, so the ug unit rather than mg is the label-native scale and the one every source table prints. Dose-as-covariate rather than an rxode2 `amt` / `EVID = 1` event because the founding model is purely algebraic with no PK compartment, following the [[DOSE_AGT_UG]] / [[DOSE_ISOPROTERENOL_UG]] precedent. Pairs with [[DOSE_PROGESTIN_UMOL]], which carries the progestin component of the same regimen; a COC arm is fully described by the two columns together. Distinct from [[CONMED_BIRTHCONTROL]], which is a binary "is this subject on hormonal contraception" flag used when contraception is a co-medication rather than the modelled drug. A future model needing the EE dose of a non-oral route (patch, vaginal ring) should register a route-qualified sibling rather than overload this name, since the delivered daily EE differs from the nominal tablet strength.
 
+### DOSE_REVEFENACIN_UG (**canonical for the nominal nebulized revefenacin dose in ug**)
+- **Description:** Nominal revefenacin inhalation-solution dose loaded in the nebulizer for the current once-daily administration, in ug. Carried as a covariate because the bioavailability of the nebulized dose depends on the dose level; the same value is also given as `amt` on the dosing record.
+- **Units:** ug
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a power effect on relative bioavailability, `F1 = TV x (DOSE_REVEFENACIN_UG / 175)^0.0987` in `Lo_2021_revefenacin.R`. The paper normalizes continuous covariates to the population median but does not print the median dose; 175 ug (the approved dose, and the dose level at which the dose-level distribution of the pooled data crosses its median) is the reference the maintainers adopted, and it reproduces the paper's simulated mean steady-state AUC0-24 of both analytes to about 2%.
+- **Source aliases:**
+  - `Dose` -- Lo 2021 Table 2 row 'Dose effect on F1'; observed levels 22, 44, 88, 175, 350 and 700 ug.
+- **Example models:** `Lo_2021_revefenacin.R` (175 ug is absorbed 7% more than 88 ug, the paper's own Discussion figure).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings [[DOSE_EE_UG]], [[DOSE_AGT_UG]]). Distinct from [[CONMED_REVEFENACIN_DOSE]] in the COPD MBMA family, which is a per-arm total daily dose of revefenacin as one of 23 compared maintenance agents rather than the dose of a modelled PK input. In rxode2 5.1.8 place this column AFTER the event columns (`amt`, `evid`, `cmt`, `dur`) in the simulation data frame.
+
 ### DOSE_CEFOTIAM_MG (**canonical for the administered cefotiam dose in milligrams**)
 - **Description:** Milligram dose of cefotiam administered in the current dosing interval, carried as a covariate so that a cumulative-urinary-recovery endpoint can be expressed as a PERCENT OF DOSE rather than as an amount. Time-varying across dosing intervals in a multiple-dose regimen; constant in the single-dose study that founds the name.
 - **Units:** mg
@@ -17299,6 +17310,18 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `ST221` -- used in `Nielsen_2015_vigabatrin.R` (Nielsen 2015 Equation 10c).
 - **Example models:** `Nielsen_2015_vigabatrin.R` (shifts log overdispersion by -1.420 and the asymptotic time effect by -0.374, and raises the log SD of the baseline-rate random effect by +0.358).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family; sibling of `STUDY_118` and `STUDY_192`. Studies 192 and 221 are the two pediatric cohorts with a *larger* maximum time (placebo) effect than adults, which the paper reconciles with the Rheims meta-analysis finding that placebo responder rates are about 1.9-fold greater in children than adults.
+
+### STUDY_0059 (**canonical for Lo 2021 revefenacin phase II Study 0059 cohort indicator**)
+- **Description:** 1 = record from Theravance revefenacin Study 0059 (Lo 2021 "Study 1", NCT03064113; n = 32 patients with moderate to severe COPD, single nebulized doses of 350 and 700 ug in a four-period crossover), 0 = any other study in the pooled analysis. Per-record (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other two phase II studies 0091 and 0117 and the two phase III studies 0126 and 0127).
+- **Source aliases:**
+  - `Study 1` -- Lo 2021 Methods 2.1.1 and Table 2 row 'Study 1 effect on F1'.
+  - `Study 0059` -- FDA Clinical Pharmacology Review of NDA 210598, Table 4.1.2.4.1 row 'Effect of Study 0059 on Bioavailability'.
+- **Example models:** `Lo_2021_revefenacin.R` (multiplies the relative bioavailability of nebulized revefenacin by 0.553 in the form `F1 = TV x 0.553^STUDY_0059`, reflecting the lower exposures observed in that study; the FDA reviewer suggests a different nebulizer as a possible cause).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family; the id keeps the sponsor's four-digit protocol number with its leading zero so it cannot be read as a generic cohort count. Set to 0 when simulating the marketed product; the paper does not attribute the effect to any patient characteristic.
 
 ### STUDY_016 (**canonical for Loprete 2016 safinamide phase 3 Study 016 cohort indicator**)
 - **Description:** 1 = subject enrolled in safinamide phase 3 Study 016 (Borgohain 2014; Parkinson disease with motor fluctuations on stable levodopa, dosed with tablets containing safinamide **free base** at 50 or 100 mg/day). 0 = safinamide phase 3 Study 015 (Stocchi 2012; early Parkinson disease on a single dopamine agonist, dosed with gelatin capsules containing safinamide **methanesulfonate** titrated to 100 or 200 mg/day). Time-fixed per subject.
