@@ -218,6 +218,8 @@ navbar:
         href: articles/Lim_2025_amikacin.html
       - text: "Amikacin (Matcha 2025)"
         href: articles/Matcha_2025_amikacin.html
+      - text: "Amikacin (Rubino 2021)"
+        href: articles/Rubino_2021_amikacin.html
       - text: "Amikacin (Steffens 2025)"
         href: articles/Steffens_2025_amikacin.html
       - text: "Amikacin (Tod 1998)"
@@ -7627,6 +7629,7 @@ articles:
   - articles/Royer_2011_cisplatin
   - articles/Royston_2025_letermovir
   - articles/Rozman_2017_rituximab
+  - articles/Rubino_2021_amikacin
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadaf_2024_glutamine
