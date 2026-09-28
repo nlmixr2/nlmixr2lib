@@ -433,8 +433,19 @@ nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   conc_obj, dose_obj,
   intervals = intervals_ss
 ))
-nca_ss_summary <- as.data.frame(nca_ss$result) |>
-  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "cav", "half.life")) |>
+# Select each metric from its own interval: requesting half.life on the
+# washout interval also emits companion rows (e.g. tmax) for that interval,
+# which a group_by(PPTESTCD) summary would otherwise pool silently.
+nca_ss_ind <- as.data.frame(nca_ss$result) |>
+  filter(
+    (end == 168 & PPTESTCD %in% c("cmax", "tmax", "auclast", "cav")) |
+      (end == 216 & PPTESTCD == "half.life")
+  )
+stopifnot(
+  !anyDuplicated(nca_ss_ind[, c("id", "PPTESTCD")]),
+  nrow(nca_ss_ind) == 5 * length(unique(ss_conc$id))
+)
+nca_ss_summary <- nca_ss_ind |>
   group_by(treatment, PPTESTCD) |>
   summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
   pivot_wider(names_from = PPTESTCD, values_from = median)
