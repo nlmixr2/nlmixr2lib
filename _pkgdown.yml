@@ -2554,6 +2554,8 @@ navbar:
         href: articles/Jeon_2013_interferonAlfa2a.html
       - text: "Iohexol creatinine (Chen 2025)"
         href: articles/Chen_2025_iohexol_creatinine.html
+      - text: "Iohexol dog (Baklouti 2021)"
+        href: articles/Baklouti_2021_iohexol_dog.html
       - text: "IonisFxirx (Willmann 2021)"
         href: articles/Willmann_2021_fxi_aso.html
       - text: "IonizableLipid hela qsp (Wang 2024)"
@@ -6154,6 +6156,7 @@ articles:
   - articles/Baiardi_2025_dalbavancin
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
+  - articles/Baklouti_2021_iohexol_dog
   - articles/Baklouti_2026_amoxicillin
   - articles/Balis_2025_busulfan
   - articles/Bamgboye_2026_topiramate
