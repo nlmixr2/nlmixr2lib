@@ -878,6 +878,8 @@ navbar:
         href: articles/Kleideiter_2018_cebranopadol.html
       - text: "Cediranib (Li 2017)"
         href: articles/Li_2017_cediranib.html
+      - text: "Cefaclor (Jeong 2021)"
+        href: articles/Jeong_2021_cefaclor.html
       - text: "Cefadroxil mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Cefathiamidine (Zhi 2018)"
@@ -6899,6 +6901,7 @@ articles:
   - articles/Jeon_2012_C3G
   - articles/Jeon_2013_interferonAlfa2a
   - articles/Jeon_2014_piperacillin
+  - articles/Jeong_2021_cefaclor
   - articles/Jeong_2022_torsemide
   - articles/Jeong_2023_rabeprazole
   - articles/Jeong_2025_imc002
