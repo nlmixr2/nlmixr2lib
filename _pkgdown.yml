@@ -2364,6 +2364,8 @@ navbar:
         href: articles/Idkaidek_2011_ibuprofen.html
       - text: "Iclaprim (Lodise 2018)"
         href: articles/Lodise_2018_iclaprim.html
+      - text: "IdecabtageneVicleucel human (Singh 2021)"
+        href: articles/Singh_2021_idecabtageneVicleucel.html
       - text: "Ifosfamide (Brain 2008)"
         href: articles/Brain_2008_ifosfamide.html
       - text: "Ifosfamide (Freyer 2000)"
@@ -7748,6 +7750,7 @@ articles:
   - articles/Simpson_2013_chloroquine
   - articles/Simpson_2013_lumefantrine
   - articles/Simpson_2013_mefloquine
+  - articles/Singh_2021_idecabtageneVicleucel
   - articles/Singh_2025_donidalorsen
   - articles/Singu_2024_gentamicin
   - articles/Sinha_2026_oxcarbazepine
