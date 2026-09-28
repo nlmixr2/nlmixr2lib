@@ -4624,6 +4624,8 @@ navbar:
         href: articles/Ngo_2023_rivaroxaban.html
       - text: "Rivaroxaban rat (Ngo 2023)"
         href: articles/Ngo_2023_rivaroxaban.html
+      - text: "Rivipansel (Nayak 2021)"
+        href: articles/Nayak_2021_rivipansel.html
       - text: "Rivipansel (Tammara 2017)"
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rlyb212 (MocWilleford 2024)"
@@ -7401,6 +7403,7 @@ articles:
   - articles/Nath_2010_melphalan
   - articles/Nava_2018_busulfan
   - articles/Navid_2016_theophylline_pbpk
+  - articles/Nayak_2021_rivipansel
   - articles/Nemitz_2026_dapagliflozin_pbpk
   - articles/Nemoto_2017_ethanol
   - articles/Nestorov_2014_factorviii
