@@ -3220,6 +3220,8 @@ navbar:
         href: articles/Nishiyama_2019_metformin_cimetidine.html
       - text: "Methadone (Watt 2026)"
         href: articles/Watt_2026_methadone.html
+      - text: "Methotrexate (Arshad 2021)"
+        href: articles/Arshad_2021_methotrexate.html
       - text: "Methotrexate (Aumente 2006)"
         href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Blackman 2026)"
@@ -3264,6 +3266,8 @@ navbar:
         href: articles/Wei_2025_methotrexate.html
       - text: "Methotrexate mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Methotrexate nonlinear (Arshad 2021)"
+        href: articles/Arshad_2021_methotrexate.html
       - text: "Methotrexate rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Methoxsalen blood (Billard 1995)"
@@ -6129,6 +6133,7 @@ articles:
   - articles/Archary_2019_lamivudine
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
+  - articles/Arshad_2021_methotrexate
   - articles/Aruldhas_2021_methadone
   - articles/Asaumi_2019_rifampicin_ddi_pbpk
   - articles/Ashraf_2018_s_ketamine_ticlopidine
