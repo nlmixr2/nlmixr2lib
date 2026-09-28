@@ -5368,6 +5368,8 @@ navbar:
         href: articles/Frey_2013_tocilizumab.html
       - text: "Tofacitinib (Tsuchiwata 2026)"
         href: articles/Tsuchiwata_2026_tofacitinib.html
+      - text: "Tofacitinib (Vong 2021)"
+        href: articles/Vong_2021_tofacitinib.html
       - text: "Tofacitinib (Xie 2019)"
         href: articles/Xie_2019_tofacitinib.html
       - text: "Tolcapone fluctuators (Jorga 2000)"
@@ -7972,6 +7974,7 @@ articles:
   - articles/Voller_2017_phenobarbital
   - articles/Voller_2019_midazolam
   - articles/Vollmer_2023_cefepime_enmetazobactam
+  - articles/Vong_2021_tofacitinib
   - articles/Vonk_2025_tezacaftor_ivacaftor
   - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
