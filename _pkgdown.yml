@@ -26,6 +26,9 @@ navbar:
       text: Specific drug models
       menu:
       # AUTOGEN:specific_drugs:BEGIN
+      - text: "SEARCH"
+        href: articles/model-search.html
+      - text: "---------"
       - text: "3methoxydaidzein rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
       - text: "5hydroxysaxagliptin rat (Wang 2024)"
@@ -8325,6 +8328,7 @@ articles:
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
+  - articles/model-search
   - articles/vanErp_2010_sunitinib
   - articles/vanEsdonk_2018_pregabalin_pain_models
   - articles/vanHasselt_2013_eribulin
