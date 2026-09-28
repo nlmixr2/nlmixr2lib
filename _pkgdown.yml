@@ -5652,6 +5652,8 @@ navbar:
         href: articles/Ji_2017_vancomycin.html
       - text: "Vancomycin (Jung 2024)"
         href: articles/Jung_2024_vancomycin.html
+      - text: "Vancomycin (Lee 2021)"
+        href: articles/Lee_2021_vancomycin.html
       - text: "Vancomycin (Li 2018)"
         href: articles/Li_2018_vancomycin.html
       - text: "Vancomycin (Ma 2024)"
@@ -7124,6 +7126,7 @@ articles:
   - articles/Lee_2017_doripenem
   - articles/Lee_2018_leuprolide
   - articles/Lee_2019_tramadol
+  - articles/Lee_2021_vancomycin
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin
