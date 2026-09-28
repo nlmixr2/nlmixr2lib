@@ -3660,6 +3660,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Bjornsson_2023_buprenorphine.R` (power-form effect on the logit-transformed SL bioavailability F_SL, exponent -0.371, reference 16 mg; the paper verifies the equation against its own point values of 18.1, 14.0, and 12.0 percent at 8, 16, and 24 mg, the dose-dependence arising from the first-pass metabolism of the swallowed fraction of a sublingual tablet. Set to the SL dose on records in an SL treatment period; the value does not affect intravenous or CAM2038 depot simulations because it scales only the two SL depot compartments).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, with a route qualifier between the drug and unit tokens on the precedent of `DOSE_EFP_MAX_MG`. `BPN` is the source paper's own abbreviation for buprenorphine. Distinct from the rxode2/nlmixr2 event column `amt` (which carries the administered dose at dose events but is not readable from `model`), from the generic `DOSE` canonical (which is unqualified and therefore ambiguous in a model carrying four routes of administration), and from a CAM2038 depot dose column (no such covariate is needed -- Bjornsson 2023 Results 3.1.3 found buprenorphine PK dose-proportional for CAM2038 weekly 8-32 mg and monthly 64-192 mg). A future extraction of a different buprenorphine formulation whose own parameters depend on the administered amount should register a sibling (e.g. `DOSE_BPN_SC_MG`) rather than overload this name. Founded alongside the Bjornsson 2023 buprenorphine / CAM2038 extraction.
 
+### DOSE_APOMORPHINE_SL_MG (**canonical for administered apomorphine sublingual film dose**)
+- **Description:** Apomorphine sublingual film (APL, KYNMOBI) dose in mg of the current administration, supplied as a data column so the dose-dependent sublingual bioavailability can be evaluated inside `model`. rxode2 model code cannot read the `amt` of the dose record it scales, and a model that carries both the sublingual film and subcutaneous apomorphine must scale only the sublingual depot, which is why the name is route-qualified.
+- **Units:** mg (per sublingual administration)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling normalised to a 20 mg reference dose: `F1 = Biosl * Biorsc * (DOSE_APOMORPHINE_SL_MG / 20)^-0.206`.
+- **Source aliases:**
+  - `DOSE` -- Agbo 2021 Table 3 row "Dose of sublingual apomorphine on F1"; the source NMTRAN column name is not reported.
+- **Example models:** `Agbo_2021_apomorphine.R` (power-form effect on the sublingual bioavailability F1, exponent -0.206, reference 20 mg; the Discussion's "relative bioavailability of a 30-mg dose ... is ~80%" of a 10-mg dose is `3^-0.206 = 0.797`. Set to the sublingual film dose on sublingual records; the value on subcutaneous records has no effect because only `f(depot)` uses it).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, with a route qualifier between the drug and unit tokens on the precedent of `DOSE_BPN_SL_MG`. Distinct from the generic `DOSE` canonical, which is unqualified and therefore ambiguous in a model that carries two routes. Founded alongside the Agbo 2021 apomorphine extraction.
+
 ### DOSE_EFP_MAX_MG (**canonical for per-subject maximum administered efaproxiral dose**)
 - **Description:** Per-subject maximum administered single-dose efaproxiral dose, in mg. Time-fixed per subject; defined as the largest single-administration dose the subject received during the trial. Distinct from a per-administration `DOSE` column because the covariate enters the model as a static per-subject scalar (a power-model effect on the RBC:plasma proportionality SLPRBC) rather than a per-dose-record exposure regressor.
 - **Units:** mg
@@ -14695,6 +14706,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Salinger_2019_pretomanid.R` (the most structurally load-bearing `STUDY_` member in the registry: it supplies a 1.54-fold relative-bioavailability effect, inflates the bioavailability random effect via `exp(0.919 * STUDY_NIXTB)`, selects between two pairs of Box-Cox shape parameters for the clearance and central-volume random effects, and gates a SECOND piecewise-constant clearance breakpoint at week 6 through `clStep2 <- STUDY_NIXTB * (tafdNow >= tclchange2)`).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family. Nix-TB was added at the final stage of Salinger 2019's staged model build, after a visual predictive check showed the pre-Nix model could not describe it, so the study indicator carries structure rather than only a nuisance offset -- in particular it is the only condition under which the model's `lcl_late2` / `ltclchange2` second clearance step is active, and it changes the SHAPE of two random-effect distributions rather than just their location. The step-up in clearance from week 6 was retained after the alternative explanation (rising body weight as patients recovered) was tested and rejected. Sibling to `STUDY_NC003` and `STUDY_NC005`.
 
+### SL_CONTACT_TIME_MIN (**canonical for contact time of a sublingual dosage form under the tongue**)
+- **Description:** Time, in minutes, that a sublingual dosage form (film or tablet) remained in contact with the sublingual mucosa under the tongue before it had dissolved or was removed, as recorded at each sublingual administration. Per-dose-record covariate.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; the founding model uses power scaling normalised to 2 min.
+- **Source aliases:** "contact time under the tongue", "contact time for sublingual administration" (Agbo 2021 Table 1 and Table 3 row "Contact time under the tongue for sublingual film on ka for sublingual administration").
+- **Example models:** `Agbo_2021_apomorphine.R` (power effect -0.194 on the sublingual absorption rate constant, reference 2 min; Figure 2's typical patient uses 3 min).
+- **Notes:** A dosing-procedure covariate rather than a formulation indicator: distinct from `FORM_ODT` and the other `FORM_*` columns, which name the dosage form, and from `NTIME` / `TAD`, which are times since dose. General scope because sublingual residence time is a recurring determinant of sublingual absorption across drugs.
+
 ### STUDY_APLIOS (**canonical for APLIOS bioequivalence study indicator**)
 - **Description:** 1 = subject enrolled in the APLIOS bioequivalence study (NCT03560739; phase 2; ofatumumab AI vs PFS in RMS), 0 = other study in the Yu 2022 pooled analysis.
 - **Units:** (binary)
@@ -14704,6 +14725,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** "Study = APLIOS" (categorical effect column in Yu 2022 covariate equations).
 - **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on Emax of B cell lysis).
 - **Notes:** Captures a between-study shift in the maximum B-cell lysis stimulatory effect not explained by the other covariates in the final model.
+
+### STUDY_CTH103 (**canonical for apomorphine sublingual film study CTH-103 indicator**)
+- **Description:** 1 = subject enrolled in study CTH-103 (phase I, three-dose active-comparator, placebo-controlled randomised crossover study in healthy subjects comparing apomorphine sublingual film 10, 15 and 25 mg, formulation K, with subcutaneous apomorphine 2, 3 and 4 mg), 0 = any other study in the Agbo 2021 pooled analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other eight pooled studies: CTH-104, -105, -106, -107, -200, -201, -203, -301).
+- **Source aliases:** "Study CTH-103" (Agbo 2021 Table 3 row "Study CTH-103 on V2/F").
+- **Example models:** `Agbo_2021_apomorphine.R` (proportional shift -0.555 on the apomorphine central volume V2/F).
+- **Notes:** Added by the source authors at the base-model stage to absorb the very high peak concentrations observed in CTH-103, particularly after subcutaneous dosing. It is a between-study artefact rather than a patient characteristic, so simulations of new subjects set it to 0. Follows the `STUDY_<id>` auto-approve family.
 
 ### STUDY_NAPOLI1 (**canonical for NAPOLI-1 study / NAPOLI-1 drug-product manufacturing-site indicator**)
 - **Description:** 1 = subject enrolled in NAPOLI-1 (NCT01494506; phase 3; nanoliposomal irinotecan with or without 5-FU/LV in metastatic pancreatic cancer previously treated with gemcitabine), 0 = subject enrolled in one of the five PharmaEngine (PEI) phase I-II nal-IRI studies pooled in the Adiwijaya 2017 analysis (PEP0201, PEP0203, PEP0206, and two others listed in that paper's Table S1).
