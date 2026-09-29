@@ -3736,6 +3736,8 @@ navbar:
         href: articles/Aston_2017_receptor_rebound.html
       - text: "Ombitasvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
+      - text: "OmecamtivMecarbil (Trivedi 2021)"
+        href: articles/Trivedi_2021_omecamtivMecarbil.html
       - text: "Omega3PUFA (Wang 2024)"
         href: articles/Wang_2024_omega3PUFA.html
       - text: "Omeprazole (Solana 2014)"
@@ -7907,6 +7909,7 @@ articles:
   - articles/Trang_2019_plazomicin
   - articles/Traynard_2017_prostateSignaling_qsp
   - articles/Tremoulet_2014_ampicillin
+  - articles/Trivedi_2021_omecamtivMecarbil
   - articles/Troy_2020_arylsulfataseA
   - articles/Trujillo_2025_proinsulin_qsp
   - articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor
