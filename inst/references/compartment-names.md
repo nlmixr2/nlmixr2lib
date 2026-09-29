@@ -171,7 +171,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Role:** Liver organ state used by paper-specific extraction-ratio first-pass models and whole-organ PBPK extractions.
 - **Source aliases:**
   - `liv` -- deprecated.
-- **Example models:** `Xie_2019_agomelatine.R`, `Ayyar_2024_givosiran.R`, `Gilkey_2015_DiRnanoparticle.R`.
+- **Example models:** `Xie_2019_agomelatine.R`, `Ayyar_2024_givosiran.R`, `Gilkey_2015_DiRnanoparticle.R`, `Krishnatry_2021_molibresib.R` (physiologic liver compartment receiving the absorbed dose, with an extraction ratio that scales with an auto-induced enzyme pool).
 - **Notes:** Always use the full English name; never `liv`.
 
 ### kidney (**canonical kidney compartment**)
@@ -878,7 +878,7 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** Bare `enzyme` compartment for the autoinduction mass-action term in Wicha 2018 / Svensson 2018 rifampicin autoinduction popPK.
 - **Source aliases:** none.
-- **Example models:** `Wicha_2018_rifampicin.R`, `Svensson_2018_rifampicin.R`.
+- **Example models:** `Wicha_2018_rifampicin.R`, `Svensson_2018_rifampicin.R`, `Krishnatry_2021_molibresib.R` (production driven linearly by the drug concentration in a liver compartment rather than in plasma, `d/dt(enzyme) <- kin * (1 + slope * liver / vh) - kout * enzyme`).
 
 ### enz_pool (**canonical enzyme pool (Clewe form)**)
 - **Type:** compartment
@@ -5326,6 +5326,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** AST5902, the CYP3A4-derived active metabolite of furmonertinib (AST2818 / alflutinib), a third-generation irreversible EGFR TKI approved for NSCLC with EGFR-sensitising / T790M mutations. Used as a compartment / parameter suffix in joint parent-plus-metabolite popPK models where furmonertinib and AST5902 are followed simultaneously in plasma.
 - **Source aliases:** none.
 - **Example models:** `Zou_2022_furmonertinib.R` (doi:10.1038/s41401-021-00798-y).
+
+### gsk3529246 (**canonical GSK3529246 molibresib active-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** GSK3529246, the active metabolite composite of molibresib (GSK525762, a BET bromodomain inhibitor). Molibresib is metabolised by CYP3A4 to two major active metabolites that are equipotent to the parent, GSK3536835 (ethyl-hydroxy) and GSK3529246 (N-desethyl). The bioanalytical method converts GSK3536835 fully to GSK3529246, so every measurement reports the SUM of the two as "GSK3529246"; the suffix names that composite, not the N-desethyl species alone. Used on the `transit1_gsk3529246` formation-delay compartment, the `central_gsk3529246` / `peripheral1_gsk3529246` compartments, the `lktr_gsk3529246` / `lcl_gsk3529246` / `lvc_gsk3529246` / `lq_gsk3529246` / `lvp_gsk3529246` parameters, the `e_ast_cl_gsk3529246` covariate effect, the `Cc_gsk3529246` output and the `propSd_gsk3529246` residual SD.
+- **Source aliases:** `m` prefix (`mka`, `mCL/F`, `mV1/F`, `mQ1`, `mV2/F`) and `MET*` compartment names -- Krishnatry 2021 Table 3 and Supplementary Text S2 notation.
+- **Example models:** `Krishnatry_2021_molibresib.R` (doi:10.1002/psp4.12639; formed on a 1:1 molar basis from molibresib extracted by a physiologic liver compartment whose enzyme is auto-induced; two-compartment disposition).
+- **Notes:** Development-code suffix, following the `az5104` / `ast5902` / `thrx195518` pattern. Kept as the full code rather than a chemical abbreviation such as `desethyl`, because the measured quantity is a two-species composite and a chemical name would describe only one of them.
 
 ### ndmsel (**canonical N-desmethyl-selumetinib suffix**)
 - **Type:** metabolite-suffix
