@@ -412,7 +412,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5590c0c68bf8>
+#> <environment: 0x55d5c1af3858>
 ```
 
 ## Virtual cohort

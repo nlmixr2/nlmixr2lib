@@ -365,7 +365,7 @@ readModelDb("Wang_2025_somatrogon")
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x5590c36e9aa0>
+#> <environment: 0x55d5b9d594d0>
 ```
 
 ## Source trace

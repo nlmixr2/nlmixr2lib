@@ -97,5 +97,5 @@ readModelDb("PK_1cmt") |> addEta("ka")
 #>         Cc ~ prop(propSd)
 #>     })
 #> }
-#> <environment: 0x56481331a108>
+#> <environment: 0x557c0a589a70>
 ```

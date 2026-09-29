@@ -418,7 +418,6 @@ sim <- bind_rows(
 #> Warning: multi-subject simulation without without 'omega'
 #> Warning: multi-subject simulation without without 'omega'
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: Cannot keep missing columns: dose
 # The three typical arms lose `keep` columns through zeroRe(); reattach by id.
 sim <- sim |>
   select(-any_of(KEEP)) |>
