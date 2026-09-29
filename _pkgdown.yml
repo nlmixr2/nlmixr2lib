@@ -888,6 +888,8 @@ navbar:
         href: articles/Berthaud_2025_cefazolin.html
       - text: "Cefazolin (Duke 2024)"
         href: articles/Duke_2024_cefazolin.html
+      - text: "Cefazolin (Lanoiselee 2021)"
+        href: articles/Lanoiselee_2021_cefazolin.html
       - text: "Cefazolin dog (Cagnardi 2018)"
         href: articles/Cagnardi_2018_cefazolin_dog.html
       - text: "Cefazolin empirical (vanHasselt 2014)"
@@ -7102,6 +7104,7 @@ articles:
   - articles/Lane_2011_warfarin
   - articles/Langdon_2010_PF00821385
   - articles/Langenhorst_2019_fludarabine
+  - articles/Lanoiselee_2021_cefazolin
   - articles/Laouenan_2015_ribavirin
   - articles/LaporteAmargos_2026_piperacillin
   - articles/Larizza_2018_cpeptide_insulin_secretion
