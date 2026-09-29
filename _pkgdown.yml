@@ -1152,6 +1152,8 @@ navbar:
         href: articles/Zingmark_2003_clomethiazole.html
       - text: "Clonazepam pediatric (Yukawa 2002)"
         href: articles/Yukawa_2002_clonazepam_pediatric.html
+      - text: "Clonidine (Cloesmeijer 2020)"
+        href: articles/Cloesmeijer_2020_clonidine.html
       - text: "Clonidine (Kleiber 2017)"
         href: articles/Kleiber_2017_clonidine.html
       - text: "Clopidogrel (Danielak 2017)"
@@ -6437,6 +6439,7 @@ articles:
   - articles/Clewe_2018_TB_MTP_GPDI_invitro
   - articles/Clewe_2018_rifampicin
   - articles/Clinckers_2008_MHD_rat
+  - articles/Cloesmeijer_2020_clonidine
   - articles/Codaccioni_2024_cyp3a4_hepatic_ontogeny
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam

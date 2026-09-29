@@ -1005,6 +1005,27 @@ form. Log form `lcl_t50`. Units are the model's time unit.
 - **Notes:** This is the one member where `hill` is the correct role token -- it names the
 shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 
+### cl_time_slope (**canonical fractional slope of a linear-in-time clearance change**)
+- **Type:** paper-named-param
+- **Role:** Fractional change in clearance per unit time in the linear-in-time form
+`cl <- cl_base * (1 + cl_time_slope * t)` (1/time). A positive value is a clearance that
+rises from its value at `t = 0`; a negative value one that falls. Carried on the linear
+scale in `ini()`, with no `l` form, because a slope may take either sign (the same reason
+`kel_exp_famp` is linear).
+- **Source aliases:**
+  - `Increase CL per hour` -- Cloesmeijer 2020 Table 3, printed as 0.213 and stated in the Discussion as 0.213 percent per hour.
+  - `e_t_cl_snk` -- Flint 2017, the same linear form on the S-norketamine metabolite clearance under a covariate-effect-style name that predates this entry (not yet renamed).
+- **Example models:** `Cloesmeijer_2020_clonidine.R` (clonidine CL of 17.0 L/h at the start of the infusion rising by 0.00213 per hour, to 20.5 L/h at 96 h).
+- **Notes:** The fourth functional form of the time-varying clearance family, alongside the
+sigmoidal `cl_time_max` / `cl_t50` / `cl_time_hill`, the exponential `cl_exp_*` and the
+step `ltclchange` / `lcl_late`. `t` is the time the source measured the change from --
+usually the start of treatment, so the first dose must sit at `t = 0` -- and the model's
+time unit fixes the slope's unit. A source that reports the slope as a percentage per unit
+time is divided by 100. The form is unbounded, so it is valid only over the time span the
+source studied; unlike `cl_time_max` it has no plateau. Distinct from the additive
+`lcl_ss` / `lcl_time` decomposition, whose `cl_time` is a clearance arm with clearance
+units rather than a dimensionless-per-time rate.
+
 ### cl_pna0 (**canonical value of a maturing parameter at postnatal age zero**)
 - **Type:** bare-pk
 - **Role:** Intercept of an Anderson-Holford postnatal-age maturation curve: the value the maturing parameter takes at PNA 0, in that parameter's own units. Log form `lcl_pna0`. Used in the additive maturation form `cl <- cl_pna0 + cl_matspan * PNA^hill / (pna50^hill + PNA^hill)`. It is the INTERCEPT, not the plateau; the plateau is `cl_pna0 + cl_matspan`.

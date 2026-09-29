@@ -41,10 +41,10 @@ Cloesmeijer_2020_clonidine <- function() {
   covariatesDataExcluded <- list(
     CRCL = list(
       description = "Creatinine clearance",
-      units = "mL/min",
+      units = "mL/min/1.73 m^2",
       type = "continuous",
       reference_category = NULL,
-      notes = "Significant on V1 in forward addition (Table 2 model 3) but removed in backward elimination; not in the final model.",
+      notes = "Significant on V1 in forward addition (Table 2 model 3) but removed in backward elimination; not in the final model. Methods 2.3.2: Cockcroft-Gault, CKD-EPI or 24-h urine creatinine clearance, adjusted for the patient's BSA.",
       source_name = "CLcr"
     ),
     ALB = list(
@@ -54,6 +54,22 @@ Cloesmeijer_2020_clonidine <- function() {
       reference_category = NULL,
       notes = "Significant on V1 in forward addition (Table 2 model 4) but removed in backward elimination; not in the final model.",
       source_name = "albumin"
+    ),
+    TBILI = list(
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      reference_category = NULL,
+      notes = "Significant on V1 in forward addition (Table 2 model 5) but removed in backward elimination; not in the final model.",
+      source_name = "bilirubin"
+    ),
+    RRT_CRRT_STATUS = list(
+      description = "Continuous veno-venous haemofiltration (1 = on CVVH, 0 = not)",
+      units = "(binary)",
+      type = "binary",
+      reference_category = 0,
+      notes = "Tested on CL and V1 (Results 3.1.2; 3 of 24 patients) and not significant; not in the final model.",
+      source_name = "CVVH"
     )
   )
 
@@ -90,7 +106,7 @@ Cloesmeijer_2020_clonidine <- function() {
     # states 'CL increased linearly with 0.213%/h from baseline ... 17 L/h at
     # the start of the treatment and increased to 20.4 L/h after 4 days':
     # 17 * (1 + 0.00213 * 96) = 20.5 L/h, so the slope is 0.00213 per hour.
-    e_t_cl <- 0.00213; label("Fractional linear increase in CL per hour after the start of infusion (1/h)") # Table 3 'Increase CL per hour 0.213 (19)' as percent per hour (Discussion)
+    cl_time_slope <- 0.00213; label("Fractional linear increase in CL per hour after the start of infusion (1/h)") # Table 3 'Increase CL per hour 0.213 (19)' as percent per hour (Discussion)
 
     # IIV -- Table 3 reports %CV; omega^2 = log(CV^2 + 1).
     #   log(0.333^2 + 1) = 0.105189
@@ -107,7 +123,7 @@ Cloesmeijer_2020_clonidine <- function() {
   model({
     # Individual parameters. t is time in hours since the start of the
     # clonidine infusion (the first dose must be at t = 0).
-    cl <- exp(lcl + etalcl) * (1 + e_t_cl * t)
+    cl <- exp(lcl + etalcl) * (1 + cl_time_slope * t)
     vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
     q <- exp(lq)
     vp <- exp(lvp)
