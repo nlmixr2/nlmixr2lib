@@ -1,8 +1,8 @@
 ---
-title: "Enrofloxacin and ciprofloxacin PBPK in pigs (Zhou 2021)"
+title: "Enrofloxacin and ciprofloxacin PBPK in pigs (Zhou 2021b)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Enrofloxacin and ciprofloxacin PBPK in pigs (Zhou 2021)}
+  %\VignetteIndexEntry{Enrofloxacin and ciprofloxacin PBPK in pigs (Zhou 2021b)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,7 +22,7 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("Zhou_2021_enrofloxacin_pig_pbpk"))$reference`
+* Citation: `r rxode2::rxode(readModelDb("Zhou_2021b_enrofloxacin_pig_pbpk"))$reference`
 * Article: <https://doi.org/10.3390/antibiotics10080955>
 * Supplementary information (Tables S1-S8, File S2 acslX model code):
   <https://www.mdpi.com/article/10.3390/antibiotics10080955/s1>
@@ -47,7 +47,7 @@ authors adapted from Lin et al. 2016). Parameter values come from Tables S7
 Table S4.
 
 ```{r load-model}
-mod <- readModelDb("Zhou_2021_enrofloxacin_pig_pbpk")
+mod <- readModelDb("Zhou_2021b_enrofloxacin_pig_pbpk")
 mod_typ <- rxode2::zeroRe(mod)
 ```
 

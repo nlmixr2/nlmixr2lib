@@ -1,4 +1,4 @@
-Zhou_2021_enrofloxacin_pig_pbpk <- function() {
+Zhou_2021b_enrofloxacin_pig_pbpk <- function() {
   description <- paste(
     "Veterinary (pig). PBPK (whole-body, flow-limited, acslXtreme 3.0) for",
     "oral enrofloxacin granules and its main metabolite ciprofloxacin in",
@@ -32,7 +32,7 @@ Zhou_2021_enrofloxacin_pig_pbpk <- function() {
     "Supplementary Table S4.",
     sep = " "
   )
-  vignette <- "Zhou_2021_enrofloxacin_pig_pbpk"
+  vignette <- "Zhou_2021b_enrofloxacin_pig_pbpk"
 
   # Dose in mg; f(stomach) converts it to umol, because the acslX code
   # integrates every amount in umol (`DOSEoral = PDOSEoral*BW*MWmol`).
