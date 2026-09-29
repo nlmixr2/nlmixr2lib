@@ -110,6 +110,8 @@
 
 - Add Kang 2020 quizartinib and its active metabolite AC886 ([doi:10.1002/jcph.1680](https://doi.org/10.1002/jcph.1680)) -- healthy volunteers and adults with relapsed/refractory acute myeloid leukemia. The register entry for the `ac886` metabolite suffix, lost in an earlier merge, is restored.
 
+- Add Riglet 2020 mycophenolic acid ([doi:10.1007/s40268-020-00319-y](https://doi.org/10.1007/s40268-020-00319-y)) -- adult kidney transplant recipients, with total and unbound plasma and PBMC concentrations.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
