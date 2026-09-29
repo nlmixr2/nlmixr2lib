@@ -10,7 +10,7 @@ Decrane_2023_oxyfluorfen_rat <- function() {
   )
   vignette <- "Decrane_2023_oxyfluorfen"
 
-  # Non-canonical states are all registered canonicals as of this PR (see
+  # Non-canonical states are all registered canonicals (see
   # inst/references/compartment-names.md); no paper_specific_compartments needed.
 
   units <- list(
@@ -407,7 +407,7 @@ Decrane_2023_oxyfluorfen_rat <- function() {
     #          human 57 mg/L drinking water -> 10% serum-T4 drop (Fig. 8a)
     #                blood reading: 10.0%  tissue reading: 18.0%
     #
-    #    Flagged as the primary review point in the PR and quantified
+    #    Flagged as the primary review point and quantified
     #    side-by-side in the vignette Errata. To switch to the literal prose
     #    reading, replace c_thyroid_blood with c_thyroid_tissue below.
     # -------------------------------------------------------------------

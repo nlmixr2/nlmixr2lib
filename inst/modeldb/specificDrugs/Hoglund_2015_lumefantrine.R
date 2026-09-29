@@ -256,8 +256,7 @@ Hoglund_2015_lumefantrine <- function() {
     # equivalent to an exponential error on normal scale data) was
     # used." This NONMEM additive-on-log-scale residual maps to a
     # nlmixr2 proportional residual in linear concentration space (see
-    # references/parameter-names.md Residual error and the matching
-    # comment in Hoglund_2018_mefloquine.R / Hoglund_2017_piperaquine.R).
+    # the matching comment in Hoglund_2018_mefloquine.R / Hoglund_2017_piperaquine.R).
     # Table 2 reports the log-scale variance as "RUV"; the SD is
     # sqrt(RUV), which equals the proportional CV to first order.
     #   Lumefantrine          RUV = 0.566 -> SD = sqrt(0.566) = 0.7523

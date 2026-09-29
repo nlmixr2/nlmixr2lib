@@ -169,7 +169,7 @@ Ayyoub_2016_pyronaridine <- function() {
     # Residual variability. The source paper modelled natural-log
     # concentrations with additive residual on the log scale (Methods
     # p. 1453: 'ln Cij = ln Cpred,ij + eps_ij' with eps ~ N(0, sigma^2)).
-    # By the standing convention in references/parameter-names.md, NONMEM
+    # By the standing convention, NONMEM
     # additive-on-log-scale residual maps to nlmixr2 proportional residual
     # in linear space, with propSd = sqrt(sigma^2) on the log scale
     # corresponding to ~CV in linear space to first order. Table 2 reports

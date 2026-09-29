@@ -187,7 +187,7 @@ Hoglund_2012_piperaquine <- function() {
     # logarithms (i.e. essentially equivalent to an exponential error model
     # on an arithmetic scale)." This NONMEM additive-on-log-scale residual
     # maps to nlmixr2 proportional residual in linear concentration space
-    # (see references/parameter-names.md Residual error). Table 2 reports the
+    # (the standing convention). Table 2 reports the
     # log-scale variance RUV = 0.0973; the corresponding SD is sqrt(0.0973) =
     # 0.3119, which equals the proportional CV to first order.
     propSd <- sqrt(0.0973)

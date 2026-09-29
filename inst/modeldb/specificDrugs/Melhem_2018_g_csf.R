@@ -270,7 +270,7 @@ Melhem_2018_g_csf <- function() {
     # Correlated IIV between KCHM and CHMSL (Melhem 2018 Table 2 row
     # 'Correlation (KCHM, CHMSL) = 0.731'). Covariance = r * sigma1 * sigma2.
     etalkel_chem + etalchmsl ~ c(0.259^2,
-                                  0.99 * 0.731 * 0.259 * 2.28, 2.28^2)                                                                                            # Melhem 2018 Table 2 (Omega KCHM = 0.259, Omega CHMSL = 2.28, correlation 0.731; off-diagonal nudged by 0.99 to keep OMEGA positive definite under Cholesky sampling -- see references/known-vignette-failure-patterns.md section 1)
+                                  0.99 * 0.731 * 0.259 * 2.28, 2.28^2)                                                                                            # Melhem 2018 Table 2 (Omega KCHM = 0.259, Omega CHMSL = 2.28, correlation 0.731; off-diagonal nudged by 0.99 to keep OMEGA positive definite under Cholesky sampling)
 
     # -----------------------------------------------------------------
     # Residual error -- Melhem 2018 statistical model: "Residual variability
@@ -408,8 +408,8 @@ Melhem_2018_g_csf <- function() {
     # `cmt = "Cc"` / `cmt = "ANC"` with matching `dvid = 1L` / `dvid = 2L`
     # per the standard multi-output pattern in Harrold 2020 filgrastim;
     # the observable cmt slots land after the ODE states, so the
-    # slot-renumbering bug documented in the skill's
-    # known-vignette-failure-patterns section 2 does not fire.
+    # compartment-slot renumbering that an observable-named event can
+    # otherwise cause does not occur.
     # -----------------------------------------------------------------
     Cc  <- fdc + bsld
     Cc  ~ lnorm(expSd)

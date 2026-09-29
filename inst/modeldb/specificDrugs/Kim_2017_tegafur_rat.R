@@ -158,8 +158,8 @@ Kim_2017_tegafur_rat <- function() {
     # ---- Residual unexplained variability ----
     # Kim 2017 Section 4.5 states 'Residual model with additive and
     # proportional error was used for tegafur and 5-FU concentrations' but
-    # Table 2 reports no residual-error estimates and no other source on
-    # disk supplies them. Carried as fixed(0) so the declared error
+    # Table 2 reports no residual-error estimates and no other available
+    # source supplies them. Carried as fixed(0) so the declared error
     # structure is preserved without inventing magnitudes.
     addSd <- fixed(0)
     label("Tegafur additive residual SD (ng/mL; not published)") # Kim 2017 Section 4.5 declares an additive + proportional residual; no value is reported

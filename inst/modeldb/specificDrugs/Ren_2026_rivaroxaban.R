@@ -205,7 +205,7 @@ Ren_2026_rivaroxaban <- function() {
     #   Equation 14:  CL/F (L/h) = 6.13 * (CrCL / 88.3)^ 0.270
     # NOTE both signs: the age exponent is NEGATIVE. The Elsevier PDF's
     # symbol font drops the minus sign under some text extractors (the
-    # preprocessed _trimmed.md renders Table 2 as a bare "0.231"), but
+    # PDF's text layer renders Table 2 as a bare "0.231"), but
     # the typeset Equation 13, the Results prose ("the coefficient (theta)
     # of age on V/F value was -0.231, indicating that the V/F value
     # decreased with age") and the bootstrap CI (-0.391 to -0.070) all

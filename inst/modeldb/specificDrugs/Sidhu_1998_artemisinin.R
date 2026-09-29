@@ -147,8 +147,8 @@ Sidhu_1998_artemisinin <- function() {
     # residual error model with sigma = 47% (CV; rel. s.e. 41%), expressed
     # in Methods as ln(C_obs) = ln(C_pred) + epsilon, which maps to a
     # proportional residual error on the linear (mg/L = ug/L * 1000) scale
-    # in nlmixr2 (see references/verification-checklist.md D and the
-    # sibling Birgersson_2016_artemisinin.R for the same convention).
+    # in nlmixr2 (see the sibling Birgersson_2016_artemisinin.R for the
+    # same convention).
     propSd <- 0.47 ; label("Proportional residual error (fraction)")                                       # Sidhu 1998 Table 2: sigma = 47% (rel. s.e. 41%)
   })
 

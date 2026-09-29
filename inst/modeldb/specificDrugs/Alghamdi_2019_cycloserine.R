@@ -255,8 +255,8 @@ Alghamdi_2019_cycloserine <- function() {
     # ------------------------------------------------------------------------
     # Covariate effects. Methods gives the two functional forms explicitly;
     # both are reproduced verbatim here from the published display equations
-    # (rendered as images in the publisher's XML, recovered from the EuropePMC
-    # supplementaryFiles bundle as AAC.00055-19-m0001.jpg / m0002.jpg):
+    # (rendered as images in the publisher's XML, AAC.00055-19-m0001.jpg /
+    # m0002.jpg):
     #   equation 1 (categorical): CL = CL_POP * [if sex = male, e^beta_male]
     #   equation 2 (continuous):  CL = CL_POP * (age / age_median)^beta_age
     # i.e. an exponential shift on a 0/1 indicator, and a power function of the

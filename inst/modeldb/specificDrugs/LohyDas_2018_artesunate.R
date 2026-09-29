@@ -171,8 +171,8 @@ LohyDas_2018_artesunate <- function() {
     # variability (RUV) was estimated by separate additive error models
     # for log-transformed ARS and DHA concentrations (i.e. equal to
     # exponential error models on an arithmetic scale).' By the standing
-    # nlmixr2lib convention (see references/parameter-names.md and the
-    # sibling Tan_2009_artesunate, Birgersson_2019_artesunate models),
+    # nlmixr2lib convention (see the sibling Tan_2009_artesunate,
+    # Birgersson_2019_artesunate models),
     # NONMEM additive-on-log-scale residual maps to nlmixr2 proportional
     # residual in linear space, with propSd = SD on the log scale ~= CV
     # in linear space to first order. Table 2 reports RUV as a CV%; the

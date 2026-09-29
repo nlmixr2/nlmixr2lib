@@ -250,7 +250,7 @@ Maseda_2018_micafungin <- function() {
     # carries assay noise as a fixed error polynomial supplied by the analyst,
     # and neither its coefficients nor any estimated proportional/additive term
     # appear in the paper, its tables or its figures (the paper has no
-    # supplement -- EuropePMC reports hasSuppl 'N'). Per the standing policy for
+    # supplement). Per the standing policy for
     # an unreported residual term with the structural values present, the term
     # is declared and fixed to zero rather than invented; Cc is therefore an
     # individual prediction with no measurement noise. The only quantitative
