@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lanoiselee 2021 cefazolin ([doi:10.1038/s41598-021-99162-7](https://doi.org/10.1038/s41598-021-99162-7)) -- adults undergoing total hip arthroplasty.
+- Add Kovalenko 2021 dupilumab ([doi:10.1002/cpdd.986](https://doi.org/10.1002/cpdd.986)) -- children 6 to <12 years and adolescents with atopic dermatitis; base and covariate models for each age group.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
