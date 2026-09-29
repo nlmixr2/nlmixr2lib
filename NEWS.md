@@ -200,6 +200,8 @@
 
 - Add Cosson 2021 linvencorvir (RO7049389) with its metabolite M5 ([doi:10.1002/cpt.2184](https://doi.org/10.1002/cpt.2184)) -- healthy volunteers and adults with chronic hepatitis B, with the liver amount driven by saturable hepatic uptake.
 
+- Add Umpierrez 2021 cyclosporine ([doi:10.1155/2021/3108749](https://doi.org/10.1155/2021/3108749)) -- Uruguayan transplant and autoimmune-disease patients on steady-state therapeutic drug monitoring.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Luo 2021 daratumumab ([doi:10.1002/jcph.1771](https://doi.org/10.1002/jcph.1771)) -- adults with multiple myeloma receiving subcutaneous (1800 mg) or intravenous (16 mg/kg) daratumumab.
