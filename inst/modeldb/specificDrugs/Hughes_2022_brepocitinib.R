@@ -320,9 +320,6 @@ Hughes_2022_brepocitinib <- function() {
     # sqrt(exp(0.6084) - 1) = 91.5% and sqrt(exp(0.366025) - 1) = 66.3%.
     #
     # Element-by-element provenance of the lower-triangular block below.
-    # These comments sit ABOVE the block rather than inline: a comment
-    # inside a multi-line `~ c(...)` breaks rxode2's comment-to-label()
-    # reparse with "unexpected ';'", and buildModelDb() does not catch it.
     #   0.6084   var(etalcl)          Table 3 'omega CL/F (% CV)' = 78.0
     #                                 (57.5 to 98.5) -> 0.780^2
     #   0.358644 cov(etalcl, etalvc)  Table 3 'rho CL/F-Vc/F' = 0.760

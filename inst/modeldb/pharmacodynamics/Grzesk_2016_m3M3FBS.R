@@ -129,8 +129,8 @@ Grzesk_2016_m3M3FBS <- function() {
       "cited refs 21 and 22). The paper does NOT report a Hill",
       "coefficient, BSV / IIV, or residual-error structure -- statistical",
       "comparisons are by Shapiro-Wilk + ANOVA + Newman-Keuls.",
-      "Operator-authorised CRC extraction (sidecar response 001 to task",
-      "frompeople-731): the Hill coefficient is fabricated at 1 and the",
+      "The CRC extraction was authorised by the maintainers: the Hill",
+      "coefficient is fabricated at 1 and the",
       "residual SD is a placeholder; see vignette Errata."
     )
   )

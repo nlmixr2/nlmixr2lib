@@ -348,7 +348,7 @@ FernandezTeruel_2025_capivasertib <- function() {
     # The paper's printed Imax equation (p. 7) retains the factor
     # (1 + PACL * Imax_pacl), and the equation legend states "Imax_pacl
     # represents the relationship between concomitant paclitaxel and Imax",
-    # but no estimate for it appears anywhere on disk: not in Table 2 (which
+    # but no estimate for it appears in any available source: not in Table 2 (which
     # tabulates every OTHER coefficient in every equation), not in the
     # supplement (Tables S1-S5, Figures S1-S6), and not inside any figure
     # panel (the publisher's native-resolution figure files were checked).
@@ -371,7 +371,7 @@ FernandezTeruel_2025_capivasertib <- function() {
     #   CL_ss/F ratio = (1 - 0.0225) / (1 - 0.1711) = 1.179   vs printed 1.20
     # (1.179 is the typical-subject value; the printed 1.20 is a median over a
     # cohort carrying IIV on Imax.)
-    e_pacl_cl_time_max <- fixed(1.15); label("Fractional change in log-Imax with concomitant paclitaxel (unitless)")  # NOT from Fernandez Teruel 2025, which reports no estimate: borrowed from the 2024 parent, Fernandez-Teruel 2024 Table 3 Imax_pacl = 1.15 (RSE 12.5%, bootstrap 95% CI 1-6.91), per operator decision 2026-09-11. See vignette Errata.
+    e_pacl_cl_time_max <- fixed(1.15); label("Fractional change in log-Imax with concomitant paclitaxel (unitless)")  # NOT from Fernandez Teruel 2025, which reports no estimate: borrowed from the 2024 parent, Fernandez-Teruel 2024 Table 3 Imax_pacl = 1.15 (RSE 12.5%, bootstrap 95% CI 1-6.91), by decision of the maintainers (2026-09-11). See vignette Errata.
 
     # --- Between-subject variability ---------------------------------------
     # Table 2 reports every IIV in a single column headed "CV (%)", and one of

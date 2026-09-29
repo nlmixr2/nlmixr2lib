@@ -176,8 +176,7 @@ day1_obs <- c(0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20, 24)
 day28_anchor <- (n_days - 1L) * 24                                     # last full SS dose at t = 648 h
 day28_obs    <- day28_anchor + c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 20, 24)
 
-# Time-zero anchor row (mandatory for PKNCA AUC0-* below; a defensive
-# addition per the extract-literature-model pknca-recipes reference).
+# Time-zero anchor row (a defensive addition; mandatory for PKNCA AUC0-* below).
 zero_obs <- 0
 
 make_subject_events <- function(subj_row) {

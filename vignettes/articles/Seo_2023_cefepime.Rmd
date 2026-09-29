@@ -291,7 +291,15 @@ ct_events <- dplyr::bind_rows(lapply(
 stopifnot(!anyDuplicated(unique(ct_events[, c("id", "time", "evid")])))
 
 ct_sim <- rxode2::rxSolve(mod, ct_events, keep = c("arm", "CRCL"),
-                          returnType = "data.frame")
+                          returnType = "data.frame",
+                          # CLCR ~ Uniform(0, 10) occasionally draws a subject
+                          # with CLCR near 0.001 mL/min (CL ~ 0.005 L/h, half-life
+                          # ~6,500 h). Integrating that subject's continuous
+                          # infusion to steady state exhausts the default
+                          # 70,000 integrator steps and rxode2 returns NA for
+                          # the subject, which would propagate into every PTA
+                          # cell of its arm and the gate below.
+                          maxsteps = 1e6)
 
 # Per-subject steady-state extremes. For a continuous infusion these are the
 # flat steady-state concentration.
@@ -460,7 +468,16 @@ int_events <- dplyr::bind_rows(lapply(seq_len(nrow(int_arms)), function(i) {
 stopifnot(!anyDuplicated(unique(int_events[, c("id", "time", "evid")])))
 
 int_sim <- rxode2::rxSolve(mod, int_events, keep = c("arm", "CRCL"),
-                           returnType = "data.frame")
+                           returnType = "data.frame",
+                           # The shape check at the end of the vignette asserts
+                           # Cmin,ss == C(tau) to 1e-8 mg/L. The `ss = 1`
+                           # initialisation and the integration across the
+                           # interval each carry their own tolerance (defaults
+                           # 1e-6 relative), leaving ~2e-5 mg/L between C(0)
+                           # and C(tau); with both pairs tightened the
+                           # difference is ~2e-9 mg/L.
+                           rtol = 1e-10, atol = 1e-12,
+                           ssRtol = 1e-10, ssAtol = 1e-12)
 
 # One pass per MIC rather than a crossing() of the 289,000-row simulation
 # frame with the MIC grid, which would materialise 2.3 million rows.

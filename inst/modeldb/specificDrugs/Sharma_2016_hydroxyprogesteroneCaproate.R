@@ -304,10 +304,10 @@ Sharma_2016_hydroxyprogesteroneCaproate <- function() {
     # right VPC) and the Discussion (page 1089) reports a 'cord:maternal
     # (model predicted) ~ 0.28' ratio, but the supplemental NONMEM
     # control stream (Table S1) which encodes the cord-blood
-    # observation prediction is not on disk. The fetal-compartment
-    # amount 'fetal' is exposed as a dynamic state for downstream
-    # interpretation, but no Ccord observable / residual error is
-    # declared here. See the vignette Assumptions and deviations
+    # observation prediction was not available when this model was built.
+    # The fetal-compartment amount 'fetal' is exposed as a dynamic state
+    # for downstream interpretation, but no Ccord observable / residual
+    # error is declared here. See the vignette Assumptions and deviations
     # section.
     # ------------------------------------------------------------
     Cc <- 1000 * central / vc

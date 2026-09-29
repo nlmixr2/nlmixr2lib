@@ -311,7 +311,7 @@ documented in the model files and recapped here.
   that the chosen base model included "additive between-subject variability
   associated with slope and intercept" (Darpo 2014 Methods 'Statistical
   analysis' paragraph 5, model structure (i)) but does NOT report the
-  variance estimates omega^2_e0 or omega^2_slope. Per the standing operator
+  variance estimates omega^2_e0 or omega^2_slope. Per the standing maintainer
   policy for unreported IIV, the packaged model omits the eta declarations
   and ships a typical-value-only encoding. Stochastic simulation will return
   the typical-value prediction for every subject; users who require an IIV
@@ -319,7 +319,7 @@ documented in the model files and recapped here.
   `rxode2::ini(mod, etae0 ~ <value>)` after introducing a paper-named eta).
 
 - **Residual error not reported in source.** No residual standard deviation
-  is listed in Table 1. Per the standing operator policy for unreported
+  is listed in Table 1. Per the standing maintainer policy for unreported
   residual error, `addSd <- fixed(0)` -- the model returns the deterministic
   typical-value prediction. Users requiring residual variability for VPC-style
   validation should override `addSd` to a paper-plausible value (the paper's

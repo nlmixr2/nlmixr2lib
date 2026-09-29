@@ -415,7 +415,9 @@ ss_trough <- lapply(seq_len(nrow(arms)), function(i) {
 
 # The solve must have produced one trough per simulated subject per arm.
 stopifnot(nrow(ss_trough) == nrow(arms) * nrow(cohort) * n_rep)
-stopifnot(all(ss_trough$Cc >= 0))
+# The ODE integrator can undershoot zero by about its absolute tolerance;
+# a genuinely negative concentration would be comparable to the peak.
+stopifnot(all(ss_trough$Cc >= -1e-6 * max(ss_trough$Cc, na.rm = TRUE)))
 
 # Confirm the interindividual variability was actually applied. rxode2 can
 # carry an `omega` setting over from an earlier solve -- the typical-value

@@ -152,7 +152,7 @@ Ide_2020_elotuzumab <- function() {
     disease_state = "Multiple myeloma (mix of newly diagnosed previously untreated and relapsed/refractory). 16.4% treatment-naive (NCT02272803, Japanese newly-diagnosed; pivotal addition over the prior PPK analysis); 83.6% with >=1 prior line of therapy.",
     dose_range = "10 or 20 mg/kg IV infusion. Standard regimen: 10 mg/kg weekly for cycles 1-2, then 10 mg/kg every 2 weeks from cycle 3 (continuing thereafter, or switching to 20 mg/kg every 4 weeks beginning cycle 19 in NCT02272803). NCT01441973 Cohort 1 used 20 mg/kg every 4 weeks from cycle 2 as monotherapy.",
     regions = "Five clinical studies pooled: 2 phase 1 (NCT01241292, NCT01393964), 2 phase 2 (NCT01441973, NCT02272803), and 1 phase 3 (NCT01239797 / ELOQUENT-2). NCT02272803 is Japan-only; the others are global.",
-    notes = "Baseline demographics from Ide 2020 Table 1 (n = 420 patients, 8125 elotuzumab serum concentrations). Of 420 patients, 77 (18.3%) were Japanese. Bioanalytical assay: quantitative ELISA, LLOQ 190 ng/mL. Studies pooled via supplement S1 (Table S1 in PMID_32656777_supplement_5_trimmed.md): NCT02272803 (Japanese newly-diagnosed; 10 mg/kg Q2W cycles 3-18, 20 mg/kg Q4W from cycle 19), NCT01239797 (ELOQUENT-2 phase 3, 10 mg/kg Q2W from cycle 3), NCT01241292 (phase 1, 10 or 20 mg/kg Q2W from cycle 3), NCT01393964 (phase 1, 10 mg/kg Q2W from cycle 4), NCT01441973 (phase 2, monotherapy: Cohort 1 20 mg/kg Q4W or Cohort 2 10 mg/kg Q2W)."
+    notes = "Baseline demographics from Ide 2020 Table 1 (n = 420 patients, 8125 elotuzumab serum concentrations). Of 420 patients, 77 (18.3%) were Japanese. Bioanalytical assay: quantitative ELISA, LLOQ 190 ng/mL. Studies pooled via supplement S1 (Table S1 in supplement 5): NCT02272803 (Japanese newly-diagnosed; 10 mg/kg Q2W cycles 3-18, 20 mg/kg Q4W from cycle 19), NCT01239797 (ELOQUENT-2 phase 3, 10 mg/kg Q2W from cycle 3), NCT01241292 (phase 1, 10 or 20 mg/kg Q2W from cycle 3), NCT01393964 (phase 1, 10 mg/kg Q2W from cycle 4), NCT01441973 (phase 2, monotherapy: Cohort 1 20 mg/kg Q4W or Cohort 2 10 mg/kg Q2W)."
   )
 
   ini({
@@ -252,7 +252,7 @@ Ide_2020_elotuzumab <- function() {
     alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL (factor 0.1)
 
     # ---- Derived binary indicators from the canonical continuous B2M -------
-    # Ide 2020 supplement 7 NONMEM control stream (PMID_32656777_supplement_7_trimmed.md):
+    # Ide 2020 supplement 7 NONMEM control stream (supplement 7):
     #   B2MICG1 = 0; IF(B2MICG.GE.0.2) B2MICG1 = 1   ; threshold 0.2 mg/dL = 2.0 mg/L
     #   B2MICG2 = 0; IF(B2MICG.GE.0.35) B2MICG2 = 1  ; threshold 0.35 mg/dL = 3.5 mg/L
     # The two indicators act simultaneously (a subject with B2M >= 3.5 mg/L

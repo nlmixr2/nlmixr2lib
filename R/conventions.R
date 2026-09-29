@@ -193,7 +193,12 @@
   # bin sum is total hemoglobin. It is the collapsed single-state form of
   # the paired `erythrocytes[0-9]+` * `mch[0-9]+` product, used when a
   # paper carries hemoglobin per age bin directly rather than a cell count
-  # and a per-cell content.
+  # and a per-cell content. `bile_transit[0-9]+` is the Bischoff (1971) /
+  # Harrison and Gibaldi (1977) bile-duct delay chain of enterohepatic
+  # recycling models; it carries its own prefix rather than reusing the
+  # absorption `transit[0-9]+` because a model with enterohepatic recycling
+  # normally also carries an oral absorption chain, and the two would
+  # collide.
   # The optional `_slow` / `_fast` qualifier registers the dual-rate
   # effect-delay cascade families (`effect_slow<n>` / `effect_fast<n>`):
   # two parallel first-order lag chains of different speed whose terminal
@@ -210,8 +215,8 @@
   # conflict here, take the UNION of every prefix and every qualifier;
   # never take one side wholesale.
   compartmentRegex = paste0(
-    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|",
-    "moderator|caseum|hb)(_slow|_fast)?[0-9]+$"
+    "^(bile_transit|transit|effect|precursor|lat|depot|erythrocytes|",
+    "reticulocytes|mch|moderator|caseum|hb)(_slow|_fast)?[0-9]+$"
   ),
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
@@ -361,10 +366,20 @@
     # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
     # (Svensson 2016 DDMODEL00000219).
     "m2",
-    # G-037720 metabolite (M1) of ipatasertib, formed mainly by
-    # CYP3A4-mediated metabolism and pharmacologically active (2- to
-    # 4-fold less potent than the parent). Used in parent + metabolite
-    # joint popPK extractions (Yoshida 2021 doi:10.1002/jcph.1942).
+    # Positional "metabolite 1" designator, for papers whose own
+    # nomenclature for the first-named metabolite IS "M1". Two current
+    # users: the G-037720 metabolite (M1) of ipatasertib, formed mainly
+    # by CYP3A4-mediated metabolism and pharmacologically active (2- to
+    # 4-fold less potent than the parent; Yoshida 2021
+    # doi:10.1002/jcph.1942), and O-desmethyltramadol (M1), the
+    # CYP2D6-derived active metabolite of tramadol that carries its
+    # mu-opioid analgesia (Lee 2019 doi:10.2147/DDDT.S199574). The
+    # suffix is scoped PER MODEL FILE -- `central_m1` means whichever
+    # M1 that file's parent forms -- so the same positional label can
+    # serve several drugs, exactly as `m2` does for bedaquiline above.
+    # Prefer a chemical-abbreviation suffix (`deaq`, `dcq`, `mhd`,
+    # `desbutlum`, ...) when the source paper names the metabolite
+    # chemically rather than positionally.
     "m1",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen -- Ter Heine 2014.
@@ -615,7 +630,22 @@
     # suffix is deliberately NOT registered (it would also collide
     # visually with NONMEM's DADT derivative syntax). Founding example:
     # Vanobberghen_2016_tribendimidine (doi:10.1128/AAC.00655-16).
-    "adadt"
+    "adadt",
+    # Norfloxacin, one of the two main metabolites of pefloxacin (formed by
+    # N-demethylation) and a marketed fluoroquinolone in its own right, so
+    # the suffix serves both parent + metabolite extractions in which
+    # pefloxacin is the parent and any future model in which norfloxacin is
+    # a sibling drug. Parallels the registered `cipro` suffix, which carries
+    # ciprofloxacin in exactly that dual role. Founding example:
+    # Bulitta_2019_pefloxacin (doi:10.3390/pharmaceutics11070323).
+    "norflox",
+    # Pefloxacin N-oxide, the second main metabolite of pefloxacin. A
+    # separate suffix is required because the registered `noxide` is scoped
+    # to roflumilast N-oxide; an N-oxide suffix is only meaningful when it
+    # names its parent, so the pattern is <modifier><parent-stem> following
+    # `ohcla` (14-OH-clarithromycin) and `norfluox` (norfluoxetine).
+    # Founding example: Bulitta_2019_pefloxacin.
+    "noxpeflox"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`

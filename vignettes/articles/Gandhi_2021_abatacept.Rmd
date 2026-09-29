@@ -360,7 +360,7 @@ ggplot(vpc_ra, aes(time, Q50, colour = regimen, fill = regimen)) +
 Non-compartmental analysis of the steady-state SC and IV dosing intervals.
 PKNCA computes per-subject C~max~, C~min~, C~avg~, and AUC~tau~. Two
 PKNCA blocks are run (one per regimen-cohort grouping) so that each
-formula carries `id/treatment` per the skill's PKNCA recipe.
+formula carries `id/treatment`.
 
 ```{r pknca-pjia-sc}
 nca_conc_pjia <- sim_pjia_sc |>
@@ -453,7 +453,7 @@ knitr::kable(pct_above_ra, digits = 1,
   constants).
 - **SJC 28-joint scale assumed.** Gandhi 2021 reports a swollen joint
   count covariate (SJC) with reference value 15 but does not explicitly
-  identify the joint-count scale. Per operator decision, the canonical
+  identify the joint-count scale. Per a maintainer decision, the canonical
   `SWOL_28JOINT` is used because (1) the same author group used the
   28-joint count in the prior Li 2019 RA-only analysis, (2) the reference
   value 15 is consistent with the 28-joint scale's 0-28 range, and (3)
@@ -508,7 +508,7 @@ re-reading the source alongside this model should be aware of:
   same "Estimate" column that carries the IIV variances for each ETA.
   The IIV column entries are unambiguously variances (`var(etalka) =
   1.11` is too large to be a SD), so by symmetry the residual-error
-  entries are likely SIGMA (variance) values too. Per operator decision,
+  entries are likely SIGMA (variance) values too. Per a maintainer decision,
   this model treats the residual errors as variances and converts to SDs
   via `sqrt()`: `propSd = sqrt(0.0615) ≈ 0.248` (24.8 % proportional
   error) and `addSd = sqrt(0.00134) ≈ 0.0366 mg/L` (≈ 37 ng/mL
@@ -518,7 +518,7 @@ re-reading the source alongside this model should be aware of:
   which is unusually tight for a biologic but plausible given Gandhi
   2021's larger and more richly-covariated dataset. The paper does not
   explicitly label the residual-error column as variance vs SD; without
-  the supplement (control stream) on disk this cannot be disambiguated
+  the supplement (control stream) this cannot be disambiguated
   beyond the column-symmetry argument used here. If a future reader
   obtains the supplement and the residual-error parameterisation
   conflicts with this interpretation, the `propSd` / `addSd` lines in

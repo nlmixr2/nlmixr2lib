@@ -104,7 +104,7 @@ Shen_2026_shikimicAcid_broiler_taoc <- function() {
     # V/F, no CL/F and no lag time in the paper or in its supplement (which
     # holds only the analytical stability Tables S1/S2). The three values below
     # are therefore RECONSTRUCTED by us from the paper's own published
-    # non-compartmental results, under an operator decision recorded in the
+    # non-compartmental results, under a decision by the maintainers recorded in the
     # vignette Errata. They are not the authors' estimates.
     #
     # Two of the three are exact identities on published numbers:

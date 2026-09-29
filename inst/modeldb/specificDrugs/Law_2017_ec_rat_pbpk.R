@@ -32,14 +32,10 @@ Law_2017_ec_rat_pbpk <- function() {
   # The bile duct is represented as a three-sub-compartment transit chain
   # (Appendix eq A5, n = 3, adapted from Bischoff et al. 1971 and Harrison and
   # Gibaldi 1977). Each state holds the amount in transit; dividing by the
-  # residence time rt_bile gives the transfer rate R_j of the paper. No
-  # canonical compartment family covers a biliary transit chain, so the states
-  # are declared paper-specific.
-  paper_specific_compartments <- c(
-    "bile_transit1",
-    "bile_transit2",
-    "bile_transit3"
-  )
+  # per-sub-compartment residence time mtt_bile gives the transfer rate R_j of
+  # the paper, so the total bile-duct delay is 3 * mtt_bile. bile_transit<n> is
+  # a canonical chain family (by the maintainers' decision); see
+  # inst/references/compartment-names.md.
 
   compartmentData <- list(
     depot = list(analyte = "EC", units = "mg", specimen = "administration site", verified = TRUE),
@@ -122,6 +118,19 @@ Law_2017_ec_rat_pbpk <- function() {
     # (blood/plasma ratio). Nothing was estimated here: Law et al. report no
     # standard errors, no confidence intervals and no random effects, so every
     # entry is fixed().
+    #
+    # IMPORTANT -- READ BEFORE USING THESE VALUES. With Table 2 and Table 3
+    # exactly as printed, this RAT model does not quantitatively reproduce the
+    # simulated curves Law et al. plot in their own Figures 4, 5 and 8 (EGCg
+    # peaks ~2x low, ~3x late, and washes out ~4x slowly). The deviation is in
+    # the SOURCE, not in the transcription or the implementation: every rat
+    # number was re-read from a 300-dpi render of Tables 1-3, and the identical
+    # ODE code reproduces the paper's human Table 7 predicted Cmax in 14 of 15
+    # cells. Nothing here has been tuned to close the gap -- no single reading
+    # of the printed parameters reconciles Cmax, Tmax and the terminal slope
+    # together. Extracted with loud errata by the maintainers' decision. See
+    # the vignette section 'The rat
+    # models do not reproduce the paper's own rat figures'.
 
     # Table 3 (kac EC = 0.002 /min per kg^-0.3)
     lka <- fixed(log(0.002)); label("Absorption rate coefficient kac into gut tissue (/min per kg^-0.3)")
@@ -130,7 +139,7 @@ Law_2017_ec_rat_pbpk <- function() {
     # Table 3 (tlag EC = 5 min)
     ltlag <- fixed(log(5)); label("Oral absorption lag time (min)")
     # Table 3 (Rt EC = 2 min)
-    lrt_bile <- fixed(log(2)); label("Bile-duct sub-compartment residence time Rt (min)")
+    lmtt_bile <- fixed(log(2)); label("Bile-duct sub-compartment residence time Rt (min)")
     # Table 3 (krac EC = 13.4)
     lkreab <- fixed(log(13.4)); label("Colonic reabsorption rate coefficient krac (/min per kg^-0.3)")
     # Table 3 (kfc EC = 0.13)
@@ -248,7 +257,7 @@ Law_2017_ec_rat_pbpk <- function() {
     cl_renal <- exp(lcl_renal) * WT^wt_exp_cl
     fdepot <- exp(lfdepot)
     tlag <- exp(ltlag)
-    rt_bile <- exp(lrt_bile)
+    mtt_bile <- exp(lmtt_bile)
     kp_adipose <- exp(lkp_adipose)
     kp_bone <- exp(lkp_bone)
     kp_brain <- exp(lkp_brain)
@@ -324,11 +333,11 @@ Law_2017_ec_rat_pbpk <- function() {
     # Bile duct. Appendix eq A5: Rt * dR_j/dt = R_(j-1) - R_j with R_0 = RAM and
     # n = 3 sub-compartments. Written here on the AMOUNT scale, bile_transit_j =
     # Rt * R_j, which turns eq A5 into an ordinary transit chain with mean
-    # residence time rt_bile per sub-compartment. The flux delivered to the gut
-    # lumen is R_3 = bile_transit3 / rt_bile.
-    d/dt(bile_transit1) <- ram - bile_transit1 / rt_bile
-    d/dt(bile_transit2) <- (bile_transit1 - bile_transit2) / rt_bile
-    d/dt(bile_transit3) <- (bile_transit2 - bile_transit3) / rt_bile
+    # residence time mtt_bile per sub-compartment. The flux delivered to the gut
+    # lumen is R_3 = bile_transit3 / mtt_bile.
+    d/dt(bile_transit1) <- ram - bile_transit1 / mtt_bile
+    d/dt(bile_transit2) <- (bile_transit1 - bile_transit2) / mtt_bile
+    d/dt(bile_transit3) <- (bile_transit2 - bile_transit3) / mtt_bile
 
     # Gut lumen. Appendix eq A6: V_GC * dC_GC/dt = R_3 - kfec * C_GC * V_GT -
     # kreab * V_GC * C_GC. Note that the faecal-transport term is printed with
@@ -336,7 +345,7 @@ Law_2017_ec_rat_pbpk <- function() {
     # transcribed here exactly as printed. Substituting V_GC changes the rat
     # terminal half-life by about a factor of two and the human profile by less
     # than 0.5%; see the vignette Errata.
-    d/dt(gut_lumen) <- bile_transit3 / rt_bile -
+    d/dt(gut_lumen) <- bile_transit3 / mtt_bile -
       kfec * c_gut_lumen * v_gut - kreab * gut_lumen
 
     # Gut tissue. Appendix eq A7: perfusion term, plus reabsorption from the gut

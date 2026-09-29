@@ -63,9 +63,22 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
+      # r-universe rebuilds rxode2 under a FIXED version string, and
+      # setup-r-dependencies keys its cache on the resolved versions, so a
+      # restored cache can carry a build days older than the one pak resolved
+      # (2026-09-24: the release legs tested a pre-issue-1381 rxode2 while the
+      # freshly compiled legs had the current one). Keying the cache on the
+      # current r-universe build time makes every rebuild invalidate it.
+      - name: Key the dependency cache on the current r-universe rxode2 build
+        id: runiverse
+        shell: bash
+        run: |
+          stamp=$(curl -fsSL --max-time 30 https://nlmixr2.r-universe.dev/api/packages/rxode2 | jq -r '._created // "unknown"' 2>/dev/null || echo unknown)
+          echo "rxode2 r-universe build: $stamp"
+          echo "stamp=${stamp//[^0-9A-Za-z]/-}" >> "$GITHUB_OUTPUT"
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 2
+          cache-version: 3-${{ steps.runiverse.outputs.stamp }}
           extra-packages: any::rcmdcheck
           needs: check
 

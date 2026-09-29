@@ -438,8 +438,7 @@ pknca_combined <- dplyr::bind_rows(
 
 # Headers are bound to columns BY NAME via dplyr::rename() so the labels are
 # correct regardless of pivot_wider's column order (PKNCA emits auclast before
-# cmax). See the extract-literature-model skill, vignette-template.md
-# § "Table column headers".
+# cmax).
 pknca_combined |>
   dplyr::arrange(analyte, treatment) |>
   dplyr::rename(
@@ -505,10 +504,10 @@ race and age covariates.
 Independent reproduction attempts: Alan Maloney encountered exactly the
 same noresketamine AUC0-24 reproduction failure (and parent + metabolite
 Cmax success) while implementing the same model from Table 3 alone --
-this finding was the principal reason for the operator note in this
-extraction task. Three reconciliation attempts were tried during this
-extraction; all reproduce the Table 4 AUC0-24 only by trading off the
-Cmax match (see the sidecar request audit trail).
+this finding was the principal reason the maintainers flagged this
+discrepancy when the model was built. Three reconciliation attempts were
+tried during this extraction; all reproduce the Table 4 AUC0-24 only by
+trading off the Cmax match.
 
 **Downstream usage advice.** Users who want to approximate the published
 noresketamine AUC0-24 can multiply `Cc_snk` by the baseline

@@ -153,8 +153,6 @@ Decker_2024_baricitinib <- function() {
     #   [3,2] -0.00706  cov(CLr/F, V1/F),  Table 2 (%SEE 129), already omega^2
     #   [3,3] 0.108176  V1/F   BSV 33.8% CV (%SEE 23.2) -> log(0.338^2 + 1)
     # The block is positive definite (minimum eigenvalue 0.0059).
-    # NOTE: trailing comments must not appear inside this multi-line c(); the
-    # rxode2 comment-to-label rewriter turns them into stray semicolons.
     etalcl_nonren + etalcl_renal + etalvc ~ c(
       0.539830,
       0.272,     0.144987,

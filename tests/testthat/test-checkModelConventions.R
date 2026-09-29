@@ -1200,7 +1200,7 @@ test_that("a plain label on an estimated parameter is not flagged", {
 test_that("the fixed-claim pattern only matches claims about the parameter itself", {
   # Each FALSE case is a real label from the database where the "fixed" clause
   # describes a DIFFERENT parameter. Matching them was the rule's main source
-  # of false positives; see inst/references/fixed-provenance-followup.md.
+  # of false positives; see data-raw/fixed-provenance-followup.md.
   pat <- nlmixr2lib:::.fixedClaimPattern
   claims <- c(
     "Allometric exponent on CL/F (unitless; fixed)",
@@ -1902,10 +1902,12 @@ test_that("a capitalised pathway token is an error naming the lowercase form", {
 
 test_that("an unregistered pathway is an error pointing at the register", {
   conv <- nlmixr2lib:::.nlmixr2libConventions()
-  issues <- nlmixr2lib:::.checkFmFamily(.fmStubUi(ini = "fm_ugt1a1"), conv)
+  # A pathway token no model will ever register (fm_ugt1a1, the previous
+  # fixture, was registered by the Ezuruike 2018 ethinylestradiol extraction).
+  issues <- nlmixr2lib:::.checkFmFamily(.fmStubUi(ini = "fm_notapathway"), conv)
   expect_equal(nrow(issues), 1L)
   expect_equal(issues$severity, "error")
-  expect_equal(issues$name, "fm_ugt1a1")
+  expect_equal(issues$name, "fm_notapathway")
   expect_true(grepl("parameter-names.md", issues$suggestion, fixed = TRUE))
   # No near-miss exists, so it must not invent one.
   expect_false(grepl("Rename to", issues$suggestion, fixed = TRUE))

@@ -323,7 +323,7 @@ Additional deviations from the SBML rate laws:
     `CB1occ` observation drops the AG2 term algebraically because
     `AG2_b = 0`; the parameters are not carried in the packaged model.
 11. **No residual variability.** The paper reports no residual variability
-    for any observation; per the operator's standing policy for unreported
+    for any observation; per the maintainers' standing policy for unreported
     RUV in mechanistic models, all `propSd_*` and `addSd_*` parameters
     are `fixed(0)`. Users who wish to simulate stochastic profiles should
     override these via `rxode2` model piping.

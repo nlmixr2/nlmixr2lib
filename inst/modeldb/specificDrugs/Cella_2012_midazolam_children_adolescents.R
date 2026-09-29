@@ -35,8 +35,8 @@ Cella_2012_midazolam_children_adolescents <- function() {
       reference_category = NULL,
       notes = paste(
         "Time-fixed at baseline. Used for per-kg linear scaling of the",
-        "central volume (Vc = 1.95 * WT). The per-kg interpretation follows",
-        "operator sidecar response 001 Q2 = A; the published Table 2 unit",
+        "central volume (Vc = 1.95 * WT). The per-kg interpretation was",
+        "decided by the maintainers because the published Table 2 unit",
         "label 'l' (absolute) is kinetically implausible for a typical",
         "29 kg child (k10 ~ 0.097/min, t1/2 ~ 7 min). See the vignette",
         "Errata for the reasoning."
@@ -90,7 +90,7 @@ Cella_2012_midazolam_children_adolescents <- function() {
     # normalisation, with the 74 months representing the population-
     # median age in months.
     lcl <- log(0.19);   label("Clearance (L/min)")                                              # Cella 2012 Table 2 (CL = 0.19)
-    lvc <- log(1.95);   label("Central volume of distribution per kg body weight (L/kg)")    # Cella 2012 Table 2 (Vc = 1.95; per-kg interpretation per sidecar response 001 Q2)
+    lvc <- log(1.95);   label("Central volume of distribution per kg body weight (L/kg)")    # Cella 2012 Table 2 (Vc = 1.95; per-kg interpretation, see the WT covariate notes)
     lq  <- log(0.105);  label("Inter-compartmental clearance (L/min)")                           # Cella 2012 Table 2
     lvp <- log(7.14);   label("Peripheral volume of distribution at AGE = 74 months reference (L)") # Cella 2012 Table 2 (Vp = 7.14 with linear age scaling)
 

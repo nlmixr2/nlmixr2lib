@@ -175,10 +175,6 @@ Wang_2025_somatrogon <- function() {
     # The implied CL/F-Vc/F correlation is 0.742, the only off-diagonal whose
     # 90% CrI excludes zero (Results, final paragraph of the Table 5 discussion).
     #
-    # NOTE: keep this block free of inline comments. Trailing comments inside an
-    # ini() eta block are replaced by a bare ';' when the conventions linter
-    # strips comments and re-parses, which turns c(0.058, # ...) into a syntax
-    # error. The per-element trace therefore lives above, not on the lines.
     # =========================================================================
     etalcl + etalvc + etalka + etalcl_ada ~
       c(0.058,

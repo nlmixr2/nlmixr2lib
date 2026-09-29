@@ -315,7 +315,7 @@ only summary statistics:
 # workstation and no seed can make them agree. Every assertion on a
 # cohort-derived quantity below is written as an absolute band accordingly.
 set.seed(20260910)
-n_arm <- 200L                            # 200 per arm; the skill cap
+n_arm <- 200L                            # 200 per arm; the per-arm cohort cap
 
 rtnorm <- function(n, mean, sd, lo, hi) {
   x <- rnorm(n, mean, sd)
@@ -416,7 +416,7 @@ sim |>
        y = "Ganciclovir concentration (mg/L)",
        title = "Simulated steady-state profiles, median with 5th-95th percentile",
        caption = paste("The source paper's concentration-time figure (online",
-                       "suppl. Fig. S1) is not on disk, so no figure-level",
+                       "suppl. Fig. S1) was not available, so no figure-level",
                        "overlay is possible; the observed concentration range",
                        "0.1-19.2 mg/L is checked numerically below."))
 ```
@@ -631,11 +631,11 @@ estimated random effect with a 39% RSE.
   2.47 L/h** that the Discussion itself quotes, although the paper concludes all
   parameters were consistent with earlier work. Recorded rather than adjusted,
   and excluded from that gate.
-* **The online supplementary material is not on disk.** It contains the
+* **The online supplementary material was not available.** It contains the
   bioanalytical assay description and Figures S1-S8 (concentration-time
   profiles, NPDE plots, and PTA for the additional `Ctrough` 1-2 / 2-4 mg/L and
   AUC24h 40-60 mg*h/L targets). No parameter value used by this model comes
-  from it, so this is not an acquisition gap; it does mean the concentration-time
+  from it, so nothing in the model depends on it; it does mean the concentration-time
   figure cannot be overlaid.
 * **The Monte Carlo regimens are not reprinted.** Figures 2-5 simulate the
   standard regimens of Kotton et al. (reference [14]), which this paper cites

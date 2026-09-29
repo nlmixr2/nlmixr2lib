@@ -228,8 +228,7 @@ adult_spec <- tibble::tribble(
 # the paediatric half-lives are as short as 0.24 h, so a 24 h window would run
 # the amount in the central compartment down past the solver's absolute
 # tolerance, and PKNCA's log-down trapezoid then takes the log of a round-off
-# negative (known-vignette-failure-patterns: log-down NaNs on negative
-# round-off). Thirteen half-lives already leaves < 0.02% of the dose.
+# negative. Thirteen half-lives already leaves < 0.02% of the dose.
 ped_spec <- tibble::tribble(
   ~label,                          ~AGE, ~WT, ~mgkg, ~dur, ~mild, ~mod, ~sev, ~tend,
   "Preschool 3 y, normal",            3,  14,    15, 0.50,     0,    0,    0,     5,
@@ -282,9 +281,8 @@ stopifnot(length(unique(events$id)) == nrow(adult_spec) + nrow(ped_spec))
 ```{r simulate}
 mod <- readModelDb("Feng_2026_imipenem_pbpk")
 
-# No etas are declared, so `omega = NA` / `zeroRe()` would error
-# (known-vignette-failure-patterns.md pattern 9) and is unnecessary: the
-# model is already deterministic.
+# No etas are declared, so `omega = NA` / `zeroRe()` would error and is
+# unnecessary: the model is already deterministic.
 sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("label", "arm", "WT", "AGE",

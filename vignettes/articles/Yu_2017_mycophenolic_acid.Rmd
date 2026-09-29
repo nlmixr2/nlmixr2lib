@@ -372,14 +372,14 @@ evaluations) in the source contributes to a noisier published value.
 
 # Assumptions and deviations
 
-* **Drug-field metadata.** The task metadata gave `drug = "Acta
-  Pharmacologica Sinica"`, which is the journal name. The paper
+* **Drug-field metadata.** The metadata this model was built from gave
+  `drug = "Acta Pharmacologica Sinica"`, which is the journal name. The paper
   unambiguously names the modeled compound as mycophenolic acid (MPA),
   the active component released from the prodrug MMF, so the model file
   is named `Yu_2017_mycophenolic_acid.R` (matching the existing
   `deWinter_2009_mycophenolic_acid.R` precedent). The correction follows
-  the `extract-literature-model` skill's Phase 1 Step 2 -- correct from
-  the paper when the source is unambiguous.
+  the package's rule to correct such metadata from the paper when the
+  source is unambiguous.
 
 * **Canonical (CL, Vc, Q, Vp, ka) parameterisation with IIV transfer.**
   The Yu 2017 paper parameterises the structural model in CL/F, V1/F,

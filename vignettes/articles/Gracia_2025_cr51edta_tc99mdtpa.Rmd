@@ -243,9 +243,13 @@ re-sample etas and a population model can silently lose its IIV; `omega = NA`
 and `omega = ui$omega` pin each direction.
 
 ```{r simulate}
+# Tight solver tolerances: this profile feeds the per-subject NCA identities
+# (Dose / AUC0-inf = CL, CL / lambda_z = V) that are asserted to 1e-8 below,
+# and the default rtol of 1e-6 leaves ~1e-6 relative error in both.
 sim_typ <- rxode2::rxSolve(
   rxode2::zeroRe(ui), events = events, omega = NA,
-  keep = c("tracer", "dose"), returnType = "data.frame"
+  keep = c("tracer", "dose"), returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12
 )
 
 # With the random effects zeroed, each subject must have exactly one CL and one

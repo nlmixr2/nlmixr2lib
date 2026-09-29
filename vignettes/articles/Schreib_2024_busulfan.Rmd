@@ -783,7 +783,8 @@ knitr::kable(
 
 The paper reports no tabulated NCA summary in the main text; the non-parametric
 `AUC`, `Cmax`, `CL`, `V`, `t1/2` and `MRT` values computed in Section 2.6 appear
-only in Table S1 and Figures S4-S9 of the supplement, which is not on disk.
+only in Table S1 and Figures S4-S9 of the supplement, which was not available
+when this model was built.
 The comparison above therefore uses the explicitly stated exposure targets of
 Section 2.2 rather than a transcribed NCA table.
 
@@ -797,7 +798,7 @@ Section 2.2 rather than a transcribed NCA table.
   17% (45% in the HLH/XLP group). Rewriting the ODE did not help: an explicit
   rate variable and a clearance-form denominator were both tested and were
   converted identically, so the flag was the only mitigation. rxode2 now
-  5.1.7 refuses the conversion when it would change the model (rxode2 issue 1370)
+  5.1.7 refuses the conversion when it would change the model
   and the flag is no longer required; this vignette keeps it so that it stays
   correct on older installations. This was always a property of the solver's
   default, not of the published model.
@@ -849,7 +850,8 @@ Section 2.2 rather than a transcribed NCA table.
   joint distribution is not published. The median weight-for-age curve is an
   assumption, calibrated to pass through the cohort medians (17.2 kg at 4.3
   years). The 3 h / 4 h infusion split is set to 50/50 because the per-protocol
-  patient counts appear only in Figure S1, which is not on disk. Disease
+  patient counts appear only in Figure S1, which was not available when this
+  model was built. Disease
   indicators are assigned within conditioning arms (ALL to myeloablative,
   HLH/XLP to reduced intensity) at within-arm prevalences that reproduce the
   whole-cohort 10% and 11%.

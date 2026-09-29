@@ -140,7 +140,7 @@ and kD = 0.000189 µM = 0.0359 mg/L).
 | Source column                                         | Canonical column used here                                                              |
 |-------------------------------------------------------|------------------------------------------------------------------------------------------|
 | `WT` (baseline body weight, kg)                       | `WT` (canonical, per `inst/references/covariate-columns.md`)                             |
-| `PNH` (disease state, PNH versus healthy volunteer)   | `DIS_PNH` (1 = PNH patient, 0 = non-PNH; new entry registered in this PR)                |
+| `PNH` (disease state, PNH versus healthy volunteer)   | `DIS_PNH` (1 = PNH patient, 0 = non-PNH; new entry registered when this model was added) |
 
 # Virtual cohort
 

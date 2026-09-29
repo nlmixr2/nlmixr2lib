@@ -176,7 +176,7 @@ median is the quantity the covariate model is centred on and is matched exactly.
 # solver thread, so a 2-core CI runner and a 16-thread workstation draw
 # different cohorts from identical source. Every assertion below is written to
 # hold for any cohort this model can produce (bounds checked at 2, 4 and 16
-# threads); see pattern 12 of the skill's known-vignette-failure-patterns.
+# threads).
 set.seed(20240811)
 
 n_arm     <- 200   # cap is 200 per arm

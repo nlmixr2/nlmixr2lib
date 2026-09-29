@@ -256,7 +256,7 @@ sd_sim <- rxode2::rxSolve(mod_typ, events = sd_ev) |> as.data.frame()
 if (is.null(sd_sim$id)) sd_sim$id <- 1L
 
 # Concentrations must stay non-negative; a negative far tail would make
-# PKNCA's log-down trapezoid produce NaN (see pknca-recipes.md).
+# PKNCA's log-down trapezoid produce NaN.
 stopifnot(all(sd_sim$Cc >= 0))
 
 sd_sim |>

@@ -4,7 +4,10 @@ Patel_2017_selumetinib <- function() {
     "Patel YT, Daryani VM, Patel P, Zhou D, Fangusaro J, Carlile DJ, Martin PD, Aarons L, Stewart CF.",
     "Population pharmacokinetics of selumetinib and its metabolite N-desmethyl-selumetinib in adult patients with",
     "advanced solid tumors and children with low-grade gliomas.",
-    "CPT Pharmacometrics Syst Pharmacol. 2017;6(5):305-314. doi:10.1002/psp4.12175"
+    "CPT Pharmacometrics Syst Pharmacol. 2017;6(5):305-314. doi:10.1002/psp4.12175.",
+    "Corrigendum: CPT Pharmacometrics Syst Pharmacol. 2017;6(10):719. doi:10.1002/psp4.12254",
+    "(Table 2 units for theta1 and theta9 corrected from 'nmol/hr' to 'hr'; page 307 residual-error",
+    "terms corrected from E to epsilon)."
   )
   vignette <- "Patel_2017_selumetinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -83,12 +86,12 @@ Patel_2017_selumetinib <- function() {
     # population parameters apply at the reference covariate set (BSA = 1.66 m^2,
     # AGE = 53 y, ALT = 20 U/L, FED = 0) and at single dose (the steady-state
     # reduction in Fm is documented in vignette Assumptions and deviations).
-    # The Table 2 column header reads "h1 (nmol/h)" and "h9 (nmol/h)" but the
-    # parameter description column says "Duration of zero-order drug input"; the
-    # nmol/h label is a Table 2 unit typo for these two duration entries. Both
-    # values are interpreted as hours (only interpretation consistent with the
-    # paper's Figure 1 absorption-model diagram and the Figure 4 ~11% food-effect
-    # AUC reduction).
+    # As printed, the Table 2 unit column reads 'nmol/hr' for theta1 and theta9
+    # even though the parameter description column says "Duration of zero-order
+    # drug input". The published corrigendum (doi:10.1002/psp4.12254) corrects
+    # both entries to 'hr', so both values are interpreted as hours. That
+    # reading is also the only one consistent with the paper's Figure 1
+    # absorption-model diagram and the Figure 4 ~11% food-effect AUC reduction.
     ld1   <- log(0.622) ; label("Duration of zero-order drug input in the gut under fasted condition (h)")  # Patel 2017 Table 2 theta1
     ltlag <- log(0.319) ; label("Absorption lag time under fasted condition (h)")                          # Patel 2017 Table 2 theta2
     lcl   <- log(13.5)  ; label("Apparent oral clearance of selumetinib at the reference covariate set (L/h)") # Patel 2017 Table 2 theta3

@@ -28,8 +28,8 @@ This paper presents a multi-scale QSP platform for anti-HER2 antibody-drug conju
 trastuzumab-deruxtecan (T-DXd, Enhertu). The platform is presented at three nested
 scales - in vitro cellular disposition, in vivo mouse xenograft PK+TGI, and human
 clinical PK+TGI+PFS - which the extraction packages as three separate model files
-sharing this vignette (per operator direction and the
-`replicate-author-structure` policy):
+sharing this vignette (per maintainer direction and the package's policy of
+replicating the authors' model structure):
 
 * `Scheuher_2023_ADC_invitro_qsp`: 13-state cellular ADC processing model
   (Tables S1a, S2a, S3a-b).
@@ -187,7 +187,8 @@ cmax_nM <- max(sim_mo_df$Cc, na.rm = TRUE)
 cmax_ug_mL <- max(sim_mo_df$Cc_ug_per_mL, na.rm = TRUE)
 
 # Approximate terminal half-life from log-linear regression on last 5 points
-tail_dat <- tail(sim_mo_df[sim_mo_df$Cc > 0, ], 6)
+# Keep Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_dat <- tail(sim_mo_df[sim_mo_df$Cc >= 1e-6 * cmax_nM, ], 6)
 if (nrow(tail_dat) >= 3 && all(tail_dat$Cc > 0)) {
   fit <- lm(log(Cc) ~ time_day, data = tail_dat)
   thalf_day <- log(2) / abs(coef(fit)[2])
@@ -285,7 +286,7 @@ but requires writing 40 near-identical ODE bodies with careful bookkeeping;
 it is left for a follow-up extraction if a downstream user needs
 per-stage interrogation.
 
-**Best-effort resolution of paper notation ambiguities (per operator sidecar q2=A):**
+**Best-effort resolution of paper notation ambiguities (per maintainer decision):**
 
 1. *Table S3c v_31r rate law.* Printed as
    `v_31r = k_on,PL K_D,PL HER2:Ab_ext,N{s},tumor` but the analogous v_30r

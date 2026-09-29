@@ -85,8 +85,8 @@ Gatti_1996_dapsone <- function() {
         "0.953 1/h; the paper's simulation used Ka = 0.957 1/h",
         "(Discussion paragraph 7), with the 0.4% discrepancy attributed",
         "to rounding of theta3 from a precise estimate near 1.043 down",
-        "to 1.04 in Table 3 display. The form was confirmed by operator",
-        "sidecar response 2026-05-30 (request-001 q1=A)."
+        "to 1.04 in Table 3 display. The form was confirmed by the",
+        "maintainers on 2026-05-30."
       ),
       source_name = "Bilirubin (paper Materials and Methods Table 1)"
     )
@@ -158,8 +158,8 @@ Gatti_1996_dapsone <- function() {
     #   V/F  = theta2 + theta2*theta4*R = theta2 * (1 + theta4 * R)
     # with the SAME theta4 enforced for CL/F and V/F (dOFV 1.23, P > 0.05).
     # The bilirubin form on Ka is NOT written as an equation in the paper;
-    # operator sidecar response (2026-05-30 request-001 q1=A) selected the
-    # multiplicative / fractional form by analogy to the rifampin equation:
+    # the multiplicative / fractional form is used by analogy to the
+    # rifampin equation:
     #   Ka = theta3 * (1 + theta5 * TBILI)
     # ============================================================
     e_rif_cl_vc <- 0.696
@@ -190,9 +190,8 @@ Gatti_1996_dapsone <- function() {
     # Residual error -- form is reported (Results paragraph 1:
     # 'proportional-plus-constant-error model') but the numerical
     # magnitudes for sigma_prop and sigma_add are NOT reported anywhere
-    # in the publication. Operator sidecar response (2026-05-30
-    # request-001 q2=A modified) instructs that both be FIXED at 0 here
-    # and the gap be documented prominently in the validation vignette
+    # in the publication. Both are therefore FIXED at 0 here and the gap
+    # is documented prominently in the validation vignette
     # Errata section. Users running stochastic VPCs must supply their
     # own residual error magnitudes; the assay specs (LLOQ 0.031 mg/L,
     # HPLC RSD < 10%) provide a defensible lower bound.
@@ -213,7 +212,7 @@ Gatti_1996_dapsone <- function() {
     # Individual PK parameters with multiplicative covariate effects.
     # The rifampin form matches the explicit equation in Gatti 1996
     # Results paragraph 3 (shared theta on CL/F and V/F); the
-    # bilirubin form matches by analogy per operator sidecar (q1=A).
+    # bilirubin form matches by analogy.
     # ============================================================
     cl <- exp(lcl + etalcl) * (1 + e_rif_cl_vc * CONMED_RIF)
     vc <- exp(lvc) * (1 + e_rif_cl_vc * CONMED_RIF)

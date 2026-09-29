@@ -186,7 +186,7 @@ stopifnot(!anyDuplicated(unique(ev_pip[, c("id", "time", "evid")])))
 # Solve `$simulationModel` rather than the rxUi object. The piperacillin model
 # has two endpoints reading from different ODE states; on the rxUi solve path
 # the second endpoint's state is misclassified as an input parameter and
-# rxSolve aborts. See references/known-vignette-failure-patterns.md pattern 5b.
+# rxSolve aborts.
 sim_pip <- rxode2::rxSolve(pip$simulationModel, ev_pip,
                            keep = "treatment") |> as.data.frame()
 sim_taz <- rxode2::rxSolve(taz$simulationModel, ev_taz,

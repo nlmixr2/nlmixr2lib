@@ -346,6 +346,6 @@ knitr::kable(chk, digits = 3,
   time-kill curves at low concentrations.
 - **No PKNCA / NCA validation.** Standard PKNCA validation is not applicable
   to an in vitro PD-model output of bacterial count, so the
-  `endogenous-validation.md` mechanistic-validation pattern is used instead
+  mechanistic-validation pattern for endogenous models is used instead
   (growth-control check, static / dynamic kill behaviour, dimensional
   analysis).

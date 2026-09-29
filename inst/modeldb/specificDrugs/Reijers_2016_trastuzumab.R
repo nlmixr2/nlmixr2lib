@@ -104,7 +104,7 @@ Reijers_2016_trastuzumab <- function() {
     # parameter correlation between KM and ke in the model" but neither
     # the main paper nor Online Resource reports the off-diagonal
     # covariance / correlation; the diagonal omega block here is the
-    # closest faithful encoding given on-disk data. See the vignette's
+    # closest faithful encoding given the available data. See the vignette's
     # Assumptions and deviations section.
     etalvc  ~ 0.0217   # V1 omega^2 -- Reijers 2016 Table 2 combined model
     etalkm  ~ 0.121    # KM omega^2 -- Reijers 2016 Table 2 combined model

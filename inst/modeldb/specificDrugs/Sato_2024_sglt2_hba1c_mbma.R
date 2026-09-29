@@ -492,8 +492,6 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
     #   var(eta_study_pmax) = 0.191^2 = 0.036481   (Sato 2024 Table 2A ISV Base)
     #   cov                 = 0.785 * 0.191 * 0.214 = 0.0320861
     #   var(eta_study_emax) = 0.214^2 = 0.045796   (Sato 2024 Table 2A ISV Emax)
-    # Comments must stay OUTSIDE the c() -- a comment inside an omega c()
-    # breaks the rxode2 comment-to-label parser.
     eta_study_pmax + eta_study_emax ~ c(0.036481, 0.0320861, 0.045796)
 
     # ========================================================================

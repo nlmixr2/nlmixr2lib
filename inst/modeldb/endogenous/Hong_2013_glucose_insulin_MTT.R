@@ -71,6 +71,14 @@ Hong_2013_glucose_insulin_MTT <- function() {
       reference_category = NULL,
       notes = "Default reference value 13 mU/L (representative DIS_DIAB fasting insulin). Companion canonical to FPG.",
       source_name = "ICss"
+    ),
+    OCC = list(
+      description = "Occasion index for inter-occasion variability: 1-4 are the four meal-tolerance-test occasions (two crossover periods x palosuran / placebo).",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = "Hong 2013 Table II reports IOV on CLG (65.7% CV) and VG (19.5% CV) across the four MTT occasions. Decomposed inside model() into the binary indicators oc1-oc4 that select the per-occasion eta slots, following the occasion-indicator expansion registered in inst/references/parameter-names.md as `etaiov_<param>_<occ>`. The MTT IOV magnitudes exceed the HGC ones because they span four occasions and absorb intra-individual variability across the placebo / palosuran arms. Supply an integer 1-4 per record; a single-occasion simulation can set OCC = 1 throughout.",
+      source_name = "OCC"
     )
   )
 
@@ -126,18 +134,25 @@ Hong_2013_glucose_insulin_MTT <- function() {
     etaliprg     ~ log(0.389^2 + 1)             # IPRG    IIV 38.9% CV -> var = log(1.15132) = 0.141
 
     # ---------------------------------------------------------------------
-    # Inter-occasion variability NOT structurally encoded. Hong 2013
-    # Table II reports IOV on CLG (65.7% CV) and VG (19.5% CV) across
-    # the four MTT occasions (two crossover periods x
-    # palosuran/placebo); these are NOT encoded here for the same
-    # reason as the HGC companion model -- rxode2's mu-reference parser
-    # cannot combine IIV and IOV etas on a single mu-referenced line,
-    # and the model-library use case has no operational occasion
-    # column. See vignette Assumptions and deviations. Note that the
-    # MTT-table IOV values are larger than the HGC-table values
-    # because they span four occasions and reflect intra-individual
-    # variability across the placebo / palosuran arms.
+    # Inter-occasion variability (Table II "IOV" column). Hong 2013 reports
+    # IOV on CLG and VG across the four MTT occasions (two crossover periods
+    # x palosuran / placebo). Encoded as the occasion-indicator expansion:
+    # one eta slot per occasion, selected by the oc1-oc4 indicators built
+    # from the OCC column in model(), per the convention registered in
+    # inst/references/parameter-names.md as `etaiov_<param>_<occ>`.
+    # Occasions 2-4 are fixed() to the occasion-1 variance, which is what
+    # NONMEM writes as $OMEGA BLOCK(1) SAME. The MTT IOV magnitudes exceed
+    # the HGC ones because they span four occasions and absorb
+    # intra-individual variability across the placebo / palosuran arms.
     # ---------------------------------------------------------------------
+    etaiov_clg_1 ~ log(0.657^2 + 1)           # CLG IOV 65.7% CV -> var = log(1.431649) = 0.35883
+    etaiov_clg_2 ~ fixed(log(0.657^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_clg_3 ~ fixed(log(0.657^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_clg_4 ~ fixed(log(0.657^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_vg_1  ~ log(0.195^2 + 1)           # VG  IOV 19.5% CV -> var = log(1.038025) = 0.037320
+    etaiov_vg_2  ~ fixed(log(0.195^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_vg_3  ~ fixed(log(0.195^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_vg_4  ~ fixed(log(0.195^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
 
     # ---------------------------------------------------------------------
     # Residual error (Table II "Residual proportional error" column).
@@ -159,10 +174,22 @@ Hong_2013_glucose_insulin_MTT <- function() {
     absg50    <- exp(labsg50)
     iprg      <- exp(liprg      + etaliprg)
 
-    # Disposition fixed-from-HGC. IOV on CLG / VG reported in Table II
-    # but not encoded structurally; see ini() comment above.
-    clg       <- exp(lclg)
-    vg        <- exp(lvg)
+    # Occasion indicators for the four-occasion IOV on CLG and VG (see the
+    # ini() comment); mutually exclusive, so exactly one eta slot is active
+    # per record.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    oc3 <- (OCC == 3)
+    oc4 <- (OCC == 4)
+    iov_clg <- oc1 * etaiov_clg_1 + oc2 * etaiov_clg_2 +
+               oc3 * etaiov_clg_3 + oc4 * etaiov_clg_4
+    iov_vg  <- oc1 * etaiov_vg_1  + oc2 * etaiov_vg_2 +
+               oc3 * etaiov_vg_3  + oc4 * etaiov_vg_4
+
+    # Disposition fixed-from-HGC, plus the per-occasion IOV on CLG and VG
+    # reported in Table II.
+    clg       <- exp(lclg + iov_clg)
+    vg        <- exp(lvg  + iov_vg)
     cli       <- exp(lcli)
     vi        <- exp(lvi)
     kie       <- exp(lkie)

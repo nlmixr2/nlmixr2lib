@@ -852,7 +852,7 @@ stopifnot(
   `expSd`, one per source study, because the joint fit estimated each quantity
   twice. They are declared via `paper_specific_etas` and
   `paper_specific_residual_sds`.
-* `STUDY_SPD555303` is a new member of the auto-approved `STUDY_<id>` covariate
+* `STUDY_SPD555303` is a new member of the accepted `STUDY_<id>` covariate
   family, registered in `inst/references/covariate-columns.md`.
 * Because the two absorption windows carry *different* fixed IIVs (Table 3 gives
   separate values for Ka1 and Ka2), the conditional assignment of `ka` inside

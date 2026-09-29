@@ -368,7 +368,9 @@ sim_single <- as.data.frame(
 # Trapezoidal AUC over the observed grid plus an extrapolated terminal tail.
 auc_obs <- sum(diff(sim_single$time) *
                  (head(sim_single$Cc, -1) + tail(sim_single$Cc, -1)) / 2)
-tail_fit <- lm(log(Cc) ~ time, data = tail(sim_single, 60))
+# Fit only Cc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+tail_fit <- lm(log(Cc) ~ time,
+               data = tail(filter(sim_single, Cc >= 1e-6 * max(Cc)), 60))
 lambda_z <- -unname(coef(tail_fit)[2])
 auc_inf <- auc_obs + tail(sim_single$Cc, 1) / lambda_z
 
@@ -1000,11 +1002,10 @@ stopifnot(
   models did not retain those terms and the Figure 4 caption states the
   corresponding curves are predicted identically to the reference.
 * **New canonical names registered with this extraction.** `SCORE_SESCD`,
-  `DISLOC_ILEUM` and `DISLOC_COLON` were ratified as general-scope covariate
-  canonicals (sidecar request 001, operator answer A to both questions), and
-  `prob_clinrem`, `prob_endoimp` and `prob_endorem` were registered as
-  output-state canonicals in the established, explicitly extensible
-  `prob_<endpoint>` family.
+  `DISLOC_ILEUM` and `DISLOC_COLON` were ratified by the maintainers as
+  general-scope covariate canonicals, and `prob_clinrem`, `prob_endoimp` and
+  `prob_endorem` were registered as output-state canonicals in the
+  established, explicitly extensible `prob_<endpoint>` family.
 
 # Reference
 

@@ -53,7 +53,7 @@ Iwama_2024_febuxostat <- function() {
         "equation recommended by the Japanese Society of Nephrology and the",
         "Japanese Society for Pediatric Nephrology (Methods Section 2.1,",
         "reference 46; the equation itself is in the Supporting method,",
-        "which is not on disk). This is NOT the Cockcroft-Gault creatinine",
+        "which was not available). This is NOT the Cockcroft-Gault creatinine",
         "clearance, which the paper also tabulates separately as CLCr in",
         "mL/min (Table 1) - the authors tested both and retained eGFR",
         "because it gave the greater OFV reduction (Discussion). Table 1",
@@ -168,7 +168,7 @@ Iwama_2024_febuxostat <- function() {
       "or renal dysfunction (Study 6). 2611 plasma concentration records",
       "from 142 subjects (110 from pediatric patients < 40 kg, 190 from",
       "pediatric patients >= 40 kg, 2311 from adults). Baseline demographics",
-      "in Table 1; per-study designs in Table S1 (supplement not on disk).",
+      "in Table 1; per-study designs in Table S1 (supplement not available when this model was built).",
       "30 pediatric patients were enrolled in the Phase 2 studies but 29",
       "contributed to the PopPK analysis set."
     )

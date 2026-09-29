@@ -1,0 +1,887 @@
+---
+title: "Tribendimidine pooled population PK (Meister 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tribendimidine pooled population PK (Meister 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  error = FALSE,
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Meister_2019_tribendimidine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Meister_2019_tribendimidine"))$description`
+* Article: <https://doi.org/10.1128/AAC.01391-18>
+
+Tribendimidine is an oral anthelmintic marketed in China since 2004 and under
+development as an alternative to praziquantel for *Opisthorchis viverrini*
+infection. After ingestion it is hydrolysed non-enzymatically, without any
+enzyme involvement, into deacetylated amidantel (dADT) and terephthalaldehyde.
+dADT is the species that carries the trematocidal activity; part of it is
+acetylated to adADT and the rest is excreted unchanged in urine. The parent
+prodrug is never measured, so the model is written entirely in terms of the two
+metabolites.
+
+Meister 2019 pools the two phase 2a ascending-dose trials that
+`Vanobberghen_2016_tribendimidine` was fitted to (68 patients, 25 to 600 mg)
+with a new phase 2b trial (125 patients, 400 mg), and refits. This vignette
+validates the pooled model; the predecessor has its own vignette.
+
+```{r load-model}
+mod <- rxode2::rxode2(readModelDb("Meister_2019_tribendimidine"))
+mod
+```
+
+# Population
+
+`r rxode2::rxode(readModelDb("Meister_2019_tribendimidine"))$population$disease_state`
+
+The pooled analysis set is `r rxode2::rxode(readModelDb("Meister_2019_tribendimidine"))$population$n_subjects`
+patients drawn from `r rxode2::rxode(readModelDb("Meister_2019_tribendimidine"))$population$n_studies`
+trials in Champasack, Lao PDR (Meister 2019 Table 1). The two phase 2a trials
+contributed dense venous plasma and whole-blood sampling plus dried blood
+spots; the phase 2b trial contributed five dried blood spots per patient at
+WinPOPT-optimised times of 0.32, 2.00, 7.75, 8.00 and 30.0 h.
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Meister_2019_tribendimidine"))$population
+tibble::tibble(
+  Field = c("Age", "Weight", "Female", "Doses", "Region"),
+  Value = c(pop$age_range, pop$weight_range, paste0(pop$sex_female_pct, "%"),
+            pop$dose_range, pop$regions)
+) |>
+  knitr::kable()
+```
+
+# Source trace
+
+Every `ini()` value and every non-obvious `model()` equation, with the place in
+Meister 2019 it came from.
+
+```{r source-trace}
+sourceTrace <- tibble::tribble(
+  ~Quantity, ~Value, ~Source,
+  "MTT (whole 50-mg tablet)", "3.18 h", "Table 2, 'MTT (h)'",
+  "Number of transit compartments", "5.27", "Table 2, 'No. of transit compartments'",
+  "Relative bioavailability F", "1 (fixed)", "Table 2, 'F (%)' = 100 (fixed)",
+  "dADT CL/F", "15.8 L/h", "Table 2, dADT 'CL/FdADT (liters/h)'",
+  "dADT V/F", "88.8 L", "Table 2, dADT 'V/FdADT (liters)'",
+  "adADT CL/F", "65.8 L/h", "Table 2, adADT 'CL/FadADT (liters/h)'",
+  "adADT V/F", "15.7 L", "Table 2, adADT 'V/FadADT (liters)'",
+  "Metabolised fraction fm", "0.65 (fixed)", "Methods, 'Structural and stochastic model development'",
+  "Allometric exponents", "0.75 CL / 1 V (fixed)", "Methods, 'Covariate analysis'",
+  "Reference weight / age", "52 kg / 45 years", "Table 2 footnote a; footnote d",
+  "Age on dADT CL/F", "-1.19 %/year", "Table 2, 'Age on CL/FdADT (%)'",
+  "200-mg tablet on MTT", "+42.9 %", "Table 2, 'Formulation on MTT (%)'",
+  "Split 50-mg tablet on MTT", "-79.4 %", "Table 2, 'Split 50-mg tablets on MTT (%)'",
+  "Matrix factors, dADT", "-14.5 % blood, -13.7 % DBS", "Table 2, dADT matrix conversion rows",
+  "Matrix factors, adADT", "+5.00 % blood, +7.00 % DBS", "Table 2, adADT matrix conversion rows",
+  "BSV (7 diagonal terms)", "37.6 to 300 % CV", "Table 2, '% CV for BSV'; footnote b",
+  "RUV (6 terms)", "39.4 to 68.8 % CV", "Table 2, RUV rows; footnote b",
+  "Transit absorption form", "Savic gamma-PDF, ka = ktr", "Results, 'Pooled population PK modeling'",
+  "Therapeutic criteria", "Cmax 384 ng/mL; AUC 4520 ng*h/mL", "Results, 'PK-PD analysis and exposure simulations'"
+)
+knitr::kable(sourceTrace)
+```
+
+Both variance columns are back-transformed with the Table 2 footnote b
+definition, `%CV = sqrt(exp(variance) - 1)`, which inverts to
+`variance = log(1 + CV^2)`. The residual error is additive on the
+natural-log-transformed concentrations the model was fitted to, which is
+`lnorm()` in nlmixr2, so its log-scale SD is `sqrt(log(1 + CV^2))`.
+
+# Units: the model works in nmol
+
+Meister 2019 fitted natural-log-transformed molar concentrations, exactly as
+its predecessor did, so **amounts are nmol and concentrations nmol/L**. Both
+metabolites are on a molar scale and dADT converts to adADT one-for-one, so no
+molecular weight appears anywhere inside the model. Two conversions are needed
+at the edges: milligrams of tribendimidine into nmol for the dose, and nmol/L
+back into ng/mL to compare against the paper's tables.
+
+```{r units}
+# Molecular weights (g/mol). The two metabolite weights are read from the
+# $ERROR LLOQ conversion of the final NONMEM control stream of the predecessor
+# publication (Vanobberghen 2016 supplemental File S1); the parent weight is
+# not printed in either paper. See Assumptions and deviations.
+MW_TRI <- 450.59 # tribendimidine, C28H30N6
+MW_DADT <- 173.214 # dADT
+MW_ADADT <- 215.251 # adADT
+
+# One mole of tribendimidine enters the absorption chain as one mole of
+# dADT-equivalent, which is the stoichiometry the predecessor model encodes.
+mgToNmol <- function(mg) mg * 1e6 / MW_TRI
+nmolToNg <- function(conc, mw) pmax(conc, 0) * mw / 1000
+```
+
+# Structural checks on the typical individual
+
+These run with every random effect set to zero, so each is a deterministic
+algebraic identity that either holds to solver tolerance or does not. Two
+integrating states are appended to accumulate exposure exactly, rather than
+approximating it with a trapezoid on a finite grid.
+
+```{r typical-setup}
+modAuc <- mod |>
+  rxode2::model(d / dt(auc_dadt) <- central / vc, append = TRUE) |>
+  rxode2::model(d / dt(auc_adadt) <- central_adadt / vc_adadt, append = TRUE)
+
+typical <- rxode2::zeroRe(modAuc)
+# zeroRe must actually have zeroed the omega matrix; a non-zero entry here
+# would silently make every "typical" number below a single random draw.
+stopifnot(all(typical$omega == 0))
+
+typicalCovs <- function(age = 45, wt = 52, form200 = 1, split50 = 0,
+                        wholeblood = 0, dbs = 0) {
+  data.frame(
+    id = 1L, AGE = age, WT = wt,
+    FORM_TRI_TAB200 = form200, FORM_TRI_SPLIT50 = split50,
+    SAMPLE_WHOLEBLOOD = wholeblood, SAMPLE_DBS = dbs
+  )
+}
+
+# Route A of the multi-output event-table convention: cmt names the ODE state
+# and dvid names the endpoint. Dose rows carry dvid = NA so the column stays
+# integer. Never name an algebraic observable (Cc) as a compartment.
+makeEvents <- function(mg, times, n = 1L) {
+  rbind(
+    data.frame(
+      id = seq_len(n), time = 0, amt = mgToNmol(mg), cmt = "depot",
+      evid = 1L, dvid = NA_integer_
+    ),
+    data.frame(
+      id = rep(seq_len(n), each = length(times)), time = rep(times, n),
+      amt = NA_real_, cmt = "central", evid = 0L, dvid = 1L
+    )
+  ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+# 480 h is more than 100 dADT half-lives, so the accumulators have converged.
+longGrid <- sort(unique(c(seq(0, 24, by = 0.01), seq(24.5, 480, by = 0.5))))
+
+solveTypical <- function(mg = 400, covs = typicalCovs(), model = typical) {
+  as.data.frame(rxode2::rxSolve(
+    model, makeEvents(mg, longGrid), covs,
+    returnType = "data.frame", atol = 1e-12, rtol = 1e-12, maxsteps = 1e6
+  ))
+}
+
+typ400 <- solveTypical(400)
+```
+
+## Dose recovery
+
+Relative bioavailability is fixed to unity, so the entire administered molar
+amount must be recovered through dADT clearance. This is the single sharpest
+test that the transit chain delivers the whole dose, that suppressing the
+ordinary bolus with `f(depot) <- 0` did not silently zero the input, and that
+the clearance was transcribed correctly.
+
+```{r dose-recovery}
+CL_DADT <- 15.8
+CL_ADADT <- 65.8
+FM <- 0.65
+
+aucInfDadt <- typ400$auc_dadt[nrow(typ400)]
+aucInfAdadt <- typ400$auc_adadt[nrow(typ400)]
+
+doseRecovery <- CL_DADT * aucInfDadt / mgToNmol(400)
+doseRecovery
+stopifnot(abs(doseRecovery - 1) < 1e-6)
+```
+
+## Metabolite mass balance
+
+A fixed 65% of everything cleared as dADT is routed to adADT, so the amount
+adADT eliminates must be exactly 65% of the amount dADT eliminates. In terms
+of exposure that is `CL_adADT * AUC_adADT = fm * CL_dADT * AUC_dADT`.
+
+```{r mass-balance}
+massBalance <- CL_ADADT * aucInfAdadt / (FM * CL_DADT * aucInfDadt)
+massBalance
+stopifnot(abs(massBalance - 1) < 1e-6)
+```
+
+A gate that cannot fail proves nothing, so the same identity is re-measured
+with `fm` deliberately mis-set to 0.50 while the check still divides by 0.65.
+The ratio must move to 0.50/0.65.
+
+```{r mass-balance-mutation}
+mutated <- rxode2::ini(typical, fm = 0.50)
+typMut <- solveTypical(400, model = mutated)
+mutatedBalance <-
+  CL_ADADT * typMut$auc_adadt[nrow(typMut)] /
+    (FM * CL_DADT * typMut$auc_dadt[nrow(typMut)])
+mutatedBalance
+stopifnot(abs(mutatedBalance - 0.50 / 0.65) < 1e-6)
+```
+
+## Disposition half-life
+
+The dADT half-life is `log(2) * Vc / CL` and nothing else. Meister 2019
+Table 3 reports the dADT elimination half-life as a median per dose group,
+ranging from 3.34 to 4.56 h.
+
+```{r half-life}
+halfLifeDadt <- log(2) * 88.8 / 15.8
+halfLifeDadt
+stopifnot(halfLifeDadt > 3.34, halfLifeDadt < 4.56)
+```
+
+## Covariate arithmetic
+
+Each covariate enters exactly one place, so each effect can be read back out of
+the solved model variables. `mtt` and `cl` are returned as columns by
+`rxSolve()`.
+
+```{r covariate-arithmetic}
+mttOf <- function(form200, split50) {
+  solveTypical(400, typicalCovs(form200 = form200, split50 = split50))$mtt[1]
+}
+clOf <- function(age) solveTypical(400, typicalCovs(age = age))$cl[1]
+vcOf <- function(wt) solveTypical(400, typicalCovs(wt = wt))$vc[1]
+
+covariateChecks <- tibble::tibble(
+  Check = c(
+    "MTT, whole 50-mg tablet (reference)",
+    "MTT, 200-mg tablet: +42.9%",
+    "MTT, split 50-mg tablet: -79.4%",
+    "dADT CL/F at 45 years (reference)",
+    "dADT CL/F, +10 years: -11.9%",
+    "dADT Vc/F at 52 kg (reference)",
+    "dADT Vc/F at 104 kg: allometric exponent 1"
+  ),
+  Value = c(
+    mttOf(0, 0), mttOf(1, 0), mttOf(0, 1),
+    clOf(45), clOf(55), vcOf(52), vcOf(104)
+  ),
+  Expected = c(
+    3.18, 3.18 * 1.429, 3.18 * 0.206,
+    15.8, 15.8 * (1 - 0.0119 * 10), 88.8, 88.8 * 2
+  )
+)
+knitr::kable(covariateChecks, digits = 4)
+
+stopifnot(max(abs(covariateChecks$Value - covariateChecks$Expected)) < 1e-9)
+```
+
+## Sampling-matrix conversion factors
+
+Venous plasma is the reference matrix and must scale the prediction by exactly
+one; whole blood and dried blood spots apply the Table 2 factors.
+
+```{r matrix-factors}
+matrixRatio <- function(wholeblood, dbs, column) {
+  s <- solveTypical(400, typicalCovs(wholeblood = wholeblood, dbs = dbs))
+  ref <- solveTypical(400, typicalCovs())
+  max(s[[column]][s$time > 1]) / max(ref[[column]][ref$time > 1])
+}
+
+matrixChecks <- tibble::tibble(
+  Matrix = c("Whole blood", "Dried blood spot", "Whole blood", "Dried blood spot"),
+  Metabolite = c("dADT", "dADT", "adADT", "adADT"),
+  Ratio = c(
+    matrixRatio(1, 0, "Cc"), matrixRatio(0, 1, "Cc"),
+    matrixRatio(1, 0, "Cc_adadt"), matrixRatio(0, 1, "Cc_adadt")
+  ),
+  Expected = c(1 - 0.145, 1 - 0.137, 1 + 0.05, 1 + 0.07)
+)
+knitr::kable(matrixChecks, digits = 6)
+
+stopifnot(max(abs(matrixChecks$Ratio - matrixChecks$Expected)) < 1e-9)
+```
+
+## Exposure at every published dose level
+
+For a one-compartment model, AUC to infinity is `F * dose / CL` and nothing
+else, so it can be evaluated once per dose arm on the typical individual with
+no cohort draw involved at all. This is the sharpest reproducible test that the
+clearance, the allometric reference weight, the age centring, the molar dose
+conversion and the metabolite molecular weight are all right *together*, and
+unlike the cohort comparison further down it gives the same answer on every
+machine and every rxode2 build.
+
+```{r typical-per-arm}
+armCovs <- tibble::tribble(
+  ~mg, ~form200, ~split50, ~age, ~wt, ~published,
+  25, 0, 1, 42, 52, 509,
+  50, 0, 0, 42, 52, 1152,
+  100, 0, 0, 42, 52, 2310,
+  200, 0, 0, 42, 52, 5382,
+  400, 1, 0, 48, 54, 9889,
+  600, 1, 0, 42, 52, 12230
+)
+
+typicalAuc <- function(i) {
+  s <- solveTypical(
+    armCovs$mg[i],
+    typicalCovs(
+      age = armCovs$age[i], wt = armCovs$wt[i],
+      form200 = armCovs$form200[i], split50 = armCovs$split50[i]
+    )
+  )
+  nmolToNg(s$auc_dadt[nrow(s)], MW_DADT)
+}
+
+perArm <-
+  armCovs |>
+  dplyr::mutate(
+    typical = vapply(seq_len(dplyr::n()), typicalAuc, numeric(1)),
+    pct_diff = 100 * (typical - published) / published,
+    typical_per_mg = typical / mg,
+    published_per_mg = published / mg
+  )
+
+knitr::kable(
+  perArm |>
+    dplyr::select(mg, typical, published, pct_diff, typical_per_mg, published_per_mg) |>
+    dplyr::rename(
+      `Dose (mg)` = mg,
+      `Typical AUC0-inf (h*ng/mL)` = typical,
+      `Published AUC0-72 (h*ng/mL)` = published,
+      `% difference` = pct_diff,
+      `Typical AUC per mg` = typical_per_mg,
+      `Published AUC per mg` = published_per_mg
+    ),
+  digits = 2
+)
+```
+
+The model is strictly linear, so its exposure per milligram is constant apart
+from the arm-specific age and weight. The published column is not: it ranges
+from 20.4 to 26.9 h*ng/mL per mg, a 1.32-fold spread across dose levels that a
+linear model cannot generate and that reflects the small per-arm sample sizes
+behind Table 3 (nine patients at 25, 50, 100 and 600 mg). That spread is the
+floor on how well any faithful implementation can match this table, so the
+agreement is asserted on the centre and bounded by the published column's own
+scatter.
+
+```{r typical-per-arm-gate}
+stopifnot(
+  # Centre: a mis-transcribed clearance, dose conversion or molecular weight
+  # would move every arm together by tens of percent.
+  abs(stats::median(perArm$pct_diff)) < 8,
+  # Envelope: no arm may miss by more than the published column's own
+  # dose-to-dose spread.
+  max(abs(perArm$pct_diff)) < 25,
+  # Linearity: exposure per mg varies only through the arm-specific covariates.
+  max(perArm$typical_per_mg) / min(perArm$typical_per_mg) < 1.10
+)
+```
+
+# Virtual cohort
+
+Six dose arms reproducing the provenance of Meister 2019 Table 3. The 25 mg
+level of phase 2a trial 2 was a split 50-mg tablet; 50, 100 and 200 mg used
+whole 50-mg tablets; 400 and 600 mg used 200-mg tablets. Age and weight are
+drawn around the medians Table 1 reports for the trial each arm came from.
+
+```{r cohort}
+N_PER_ARM <- 60L # well under the 200-per-arm cap
+
+arms <- tibble::tibble(
+  arm = paste0(c(25, 50, 100, 200, 400, 600), " mg"),
+  mg = c(25, 50, 100, 200, 400, 600),
+  form200 = c(0, 0, 0, 0, 1, 1),
+  split50 = c(1, 0, 0, 0, 0, 0),
+  # The 400 mg arm is dominated by the phase 2b trial (123 of 132 patients),
+  # whose medians are 48 years and 54 kg; the rest are phase 2a (42 y, 52 kg).
+  medAge = c(42, 42, 42, 42, 48, 42),
+  medWt = c(52, 52, 52, 52, 54, 52)
+)
+knitr::kable(arms)
+
+obsTimes <- sort(unique(c(
+  seq(0, 12, by = 0.25),
+  seq(13, 24, by = 1),
+  seq(28, 72, by = 4)
+)))
+
+rtruncnorm <- function(n, mean, sd, lower, upper) {
+  pmin(pmax(stats::rnorm(n, mean, sd), lower), upper)
+}
+```
+
+```{r simulate}
+simulateArm <- function(i) {
+  covs <- data.frame(
+    id = seq_len(N_PER_ARM),
+    AGE = rtruncnorm(N_PER_ARM, arms$medAge[i], 12, 15, 79),
+    WT = rtruncnorm(N_PER_ARM, arms$medWt[i], 8, 32, 85),
+    FORM_TRI_TAB200 = arms$form200[i],
+    FORM_TRI_SPLIT50 = arms$split50[i],
+    SAMPLE_WHOLEBLOOD = 0,
+    SAMPLE_DBS = 0
+  )
+  as.data.frame(rxode2::rxSolve(
+    mod, makeEvents(arms$mg[i], obsTimes, n = N_PER_ARM), covs,
+    returnType = "data.frame"
+  )) |>
+    dplyr::mutate(
+      arm = arms$arm[i],
+      mg = arms$mg[i],
+      dadt = nmolToNg(Cc, MW_DADT),
+      adadt = nmolToNg(Cc_adadt, MW_ADADT)
+    )
+}
+
+rxode2::rxSetSeed(20190327)
+set.seed(20190327)
+
+sim <-
+  lapply(seq_len(nrow(arms)), simulateArm) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(arm = factor(arm, levels = arms$arm))
+
+nrow(sim)
+```
+
+`Cc` and `Cc_adadt` are algebraic observables, so they are individual
+predictions and carry no residual error. That is what we want here, because
+the paper's Table 3 secondary parameters were likewise derived from individual
+model predictions rather than from observations.
+
+# Replicating the published concentration-time profiles
+
+Meister 2019 Figure 2 shows prediction-corrected visual predictive checks for
+both metabolites. We plot the 5th, 50th and 95th percentiles of the simulated
+individual profiles, the same summary that figure overlays on its observed
+data.
+
+```{r profiles, fig.height = 5.5}
+percentiles <-
+  sim |>
+  tidyr::pivot_longer(c(dadt, adadt), names_to = "metabolite", values_to = "conc") |>
+  dplyr::mutate(
+    metabolite = factor(metabolite, c("dadt", "adadt"), c("dADT", "adADT"))
+  ) |>
+  dplyr::group_by(arm, metabolite, time) |>
+  dplyr::summarise(
+    p05 = stats::quantile(conc, 0.05),
+    p50 = stats::median(conc),
+    p95 = stats::quantile(conc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot2::ggplot(percentiles, ggplot2::aes(time)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = p05, ymax = p95, fill = arm), alpha = 0.2) +
+  ggplot2::geom_line(ggplot2::aes(y = p50, colour = arm)) +
+  ggplot2::facet_wrap(~metabolite, ncol = 1, scales = "free_y") +
+  ggplot2::coord_cartesian(xlim = c(0, 48)) +
+  ggplot2::labs(
+    title = "Simulated profiles by dose arm (replicates Figure 2 of Meister 2019)",
+    x = "Time (h)", y = "Concentration (ng/mL)",
+    colour = "Dose arm", fill = "Dose arm"
+  ) +
+  ggplot2::theme_bw()
+```
+
+The 25 mg arm peaks much earlier than every other arm, which is the split
+50-mg tablet effect: destroying the enteric coating shortens the mean transit
+time by 79.4% and the drug is released immediately.
+
+# Non-compartmental analysis with PKNCA
+
+One PKNCA pass per metabolite. The concentration frame is filtered only on
+`!is.na()` so the time-zero record survives and PKNCA never has to extrapolate
+the start of the interval.
+
+```{r pknca}
+runNca <- function(data, concColumn) {
+  conc <-
+    data |>
+    dplyr::mutate(conc = .data[[concColumn]]) |>
+    dplyr::filter(!is.na(conc)) |>
+    PKNCA::PKNCAconc(conc ~ time | arm + id)
+
+  dose <-
+    data |>
+    dplyr::distinct(arm, id, mg) |>
+    dplyr::mutate(time = 0, dose = mg) |>
+    PKNCA::PKNCAdose(dose ~ time | arm + id)
+
+  intervals <- data.frame(
+    start = 0, end = 72,
+    cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+  )
+
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc, dose, intervals = intervals)) |>
+    as.data.frame()
+}
+
+ncaDadt <- runNca(sim, "dadt")
+ncaAdadt <- runNca(sim, "adadt")
+
+summariseNca <- function(nca) {
+  nca |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+    dplyr::group_by(arm, PPTESTCD) |>
+    dplyr::summarise(median = stats::median(PPORRES, na.rm = TRUE), .groups = "drop")
+}
+
+simDadt <- summariseNca(ncaDadt)
+simAdadt <- summariseNca(ncaAdadt)
+```
+
+## Formation-rate-limited adADT elimination
+
+`CL_adADT / V_adADT` is `r round(65.8 / 15.7, 2)` per hour, a nominal half-life
+of only `r round(log(2) * 15.7 / 65.8 * 60, 0)` minutes, yet Table 3 reports
+the same half-life for both metabolites at every dose. That is the signature of
+formation-rate-limited elimination: adADT cannot disappear faster than dADT
+supplies it, so its terminal slope is the dADT slope. This is a structural
+consequence of the model and can be asserted subject by subject.
+
+```{r formation-limited}
+halfLives <-
+  dplyr::inner_join(
+    ncaDadt |>
+      dplyr::filter(PPTESTCD == "half.life") |>
+      dplyr::select(arm, id, hl_dadt = PPORRES),
+    ncaAdadt |>
+      dplyr::filter(PPTESTCD == "half.life") |>
+      dplyr::select(arm, id, hl_adadt = PPORRES),
+    by = c("arm", "id")
+  ) |>
+  dplyr::filter(!is.na(hl_dadt), !is.na(hl_adadt)) |>
+  dplyr::mutate(pct_diff = 100 * (hl_adadt - hl_dadt) / hl_dadt)
+
+# Assert on the centre and on a robust quantile, never on the extreme of a
+# random cohort.
+stopifnot(
+  abs(stats::median(halfLives$pct_diff)) < 2,
+  stats::quantile(abs(halfLives$pct_diff), 0.9) < 10
+)
+```
+
+# Comparison against the published secondary PK parameters
+
+Meister 2019 Table 3 reports median secondary PK parameters derived from the
+final model for each metabolite and dose. Its AUC is labelled 0 to 72 h in the
+Table 3 footnote, which is the interval used above.
+
+```{r published}
+published <- tibble::tribble(
+  ~arm, ~metabolite, ~cmax, ~tmax, ~auclast, ~half.life,
+  "25 mg", "dADT", 61.4, 1.73, 509, 4.03,
+  "50 mg", "dADT", 173, 4.86, 1152, 3.34,
+  "100 mg", "dADT", 315, 3.73, 2310, 3.68,
+  "200 mg", "dADT", 509, 6.59, 5382, 4.21,
+  "400 mg", "dADT", 863, 8.56, 9889, 4.22,
+  "600 mg", "dADT", 1271, 10.0, 12230, 4.56,
+  "25 mg", "adADT", 23.2, 2.64, 160, 4.03,
+  "50 mg", "adADT", 67.0, 5.34, 372, 3.34,
+  "100 mg", "adADT", 111, 4.98, 771, 3.68,
+  "200 mg", "adADT", 60.8, 6.82, 614, 4.21,
+  "400 mg", "adADT", 107, 8.79, 1479, 4.41,
+  "600 mg", "adADT", 253, 10.2, 3748, 4.97
+)
+
+toWide <- function(summarised) {
+  summarised |>
+    dplyr::select(arm, PPTESTCD, median) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+    dplyr::mutate(arm = as.character(arm))
+}
+```
+
+```{r comparison-dadt}
+tblDadt <- nlmixr2lib::ncaComparisonTable(
+  simulated = toWide(simDadt),
+  reference = published |>
+    dplyr::filter(metabolite == "dADT") |>
+    dplyr::select(-metabolite),
+  by = "arm",
+  units = c(cmax = "ng/mL", auclast = "h*ng/mL", tmax = "h", half.life = "h")
+)
+knitr::kable(tblDadt, caption = "dADT: simulated vs Meister 2019 Table 3")
+attr(tblDadt, "footnote")
+```
+
+```{r comparison-adadt}
+tblAdadt <- nlmixr2lib::ncaComparisonTable(
+  simulated = toWide(simAdadt),
+  reference = published |>
+    dplyr::filter(metabolite == "adADT") |>
+    dplyr::select(-metabolite),
+  by = "arm",
+  units = c(cmax = "ng/mL", auclast = "h*ng/mL", tmax = "h", half.life = "h")
+)
+knitr::kable(tblAdadt, caption = "adADT: simulated vs Meister 2019 Table 3")
+attr(tblAdadt, "footnote")
+```
+
+## dADT exposure agreement
+
+AUC is the quantity the structural parameters fix most directly -- for a
+one-compartment model it is dose divided by clearance and nothing else -- so it
+is the sharpest test that the clearance, the allometric reference weight, the
+age centring and the molar dose conversion are all right together. A
+mis-transcribed clearance or a wrong molecular weight moves the whole
+distribution by tens of percent.
+
+```{r auc-agreement}
+aucAgreement <-
+  dplyr::inner_join(
+    toWide(simDadt) |> dplyr::select(arm, simulated = auclast),
+    published |>
+      dplyr::filter(metabolite == "dADT") |>
+      dplyr::select(arm, reference = auclast),
+    by = "arm"
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (simulated - reference) / reference)
+
+knitr::kable(
+  aucAgreement |>
+    dplyr::rename(
+      `Dose arm` = arm,
+      `Simulated AUC0-72 (h*ng/mL)` = simulated,
+      `Published AUC0-72 (h*ng/mL)` = reference,
+      `% difference` = pct_diff
+    ),
+  digits = 1
+)
+
+# This comparison is noisy on BOTH sides -- 60 drawn subjects here against
+# nine published patients in four of the six arms -- so it is a sanity bound,
+# not the sharp test. The sharp test is the deterministic per-arm table above,
+# which involves no cohort draw. Assert only the centre, with headroom: a
+# quantile over six per-arm values is not a stable statistic across rxode2
+# builds, which resample the cohort.
+stopifnot(abs(stats::median(aucAgreement$pct_diff)) < 20)
+```
+
+# Replicating the weight-stratified exposure simulation
+
+Meister 2019 Figure 4 simulates 1,000 virtual patients at a single oral 400 mg
+dose for each body weight from 30 to 85 kg in 5 kg steps, at a typical age of
+45 years and using the 200-mg formulation, and compares the resulting dADT
+Cmax and AUC against the therapeutic criteria associated with a 90%
+probability of cure. The paper's conclusion is that "400-mg flat dosing
+achieved the Cmax criterion of 384 ng/ml and the AUC criterion of
+4,520 ng*h/ml for all body weights".
+
+```{r figure4}
+CMAX_CRITERION <- 384 # ng/mL, Results, 'PK-PD analysis and exposure simulations'
+AUC_CRITERION <- 4520 # ng*h/mL, same paragraph
+
+N_PER_WEIGHT <- 100L
+weights <- seq(30, 85, by = 5)
+sweepTimes <- seq(0, 72, by = 0.25)
+
+simulateWeight <- function(wt) {
+  covs <- data.frame(
+    id = seq_len(N_PER_WEIGHT), AGE = 45, WT = wt,
+    FORM_TRI_TAB200 = 1, FORM_TRI_SPLIT50 = 0,
+    SAMPLE_WHOLEBLOOD = 0, SAMPLE_DBS = 0
+  )
+  as.data.frame(rxode2::rxSolve(
+    mod, makeEvents(400, sweepTimes, n = N_PER_WEIGHT), covs,
+    returnType = "data.frame"
+  )) |>
+    dplyr::mutate(wt = wt, dadt = nmolToNg(Cc, MW_DADT))
+}
+
+rxode2::rxSetSeed(20190327)
+set.seed(20190327)
+
+exposure <-
+  lapply(weights, simulateWeight) |>
+  dplyr::bind_rows() |>
+  dplyr::group_by(wt, id) |>
+  dplyr::summarise(
+    cmax = max(dadt),
+    auc = sum(diff(time) * (utils::head(dadt, -1) + utils::tail(dadt, -1)) / 2),
+    .groups = "drop"
+  )
+```
+
+```{r figure4-plot, fig.height = 4}
+exposure |>
+  tidyr::pivot_longer(c(cmax, auc), names_to = "metric", values_to = "value") |>
+  dplyr::mutate(
+    metric = factor(metric, c("auc", "cmax"),
+      c("AUC0-72 (h*ng/mL)", "Cmax (ng/mL)")
+    ),
+    criterion = ifelse(metric == "Cmax (ng/mL)", CMAX_CRITERION, AUC_CRITERION)
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(factor(wt), value)) +
+  ggplot2::geom_boxplot(outlier.size = 0.4) +
+  ggplot2::geom_hline(ggplot2::aes(yintercept = criterion), linetype = "dashed") +
+  ggplot2::facet_wrap(~metric, scales = "free_y") +
+  ggplot2::labs(
+    title = "400 mg dADT exposure by body weight (replicates Figure 4 of Meister 2019)",
+    x = "Body weight (kg)", y = NULL
+  ) +
+  ggplot2::theme_bw()
+```
+
+```{r figure4-criteria}
+attainment <-
+  exposure |>
+  dplyr::group_by(wt) |>
+  dplyr::summarise(
+    medCmax = stats::median(cmax),
+    medAuc = stats::median(auc),
+    pctCmax = 100 * mean(cmax > CMAX_CRITERION),
+    pctAuc = 100 * mean(auc > AUC_CRITERION),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  attainment |>
+    dplyr::rename(
+      `Body weight (kg)` = wt,
+      `Median Cmax (ng/mL)` = medCmax,
+      `Median AUC0-72 (h*ng/mL)` = medAuc,
+      `% above Cmax criterion` = pctCmax,
+      `% above AUC criterion` = pctAuc
+    ),
+  digits = 1
+)
+
+# The paper's claim is about the central tendency of each weight stratum, so
+# that is what is asserted: the median of every weight group clears both
+# criteria. The narrowest margin is at the heaviest weight and is still large,
+# which is why this survives a cohort redraw where an extreme-based assertion
+# would not.
+stopifnot(
+  all(attainment$medCmax > CMAX_CRITERION),
+  all(attainment$medAuc > AUC_CRITERION),
+  min(attainment$medCmax) / CMAX_CRITERION > 1.15,
+  min(attainment$medAuc) / AUC_CRITERION > 1.15
+)
+```
+
+The abstract states that 400 mg "attained therapeutic success in over 90% of
+adult patients". At the cohort's own median weight the per-subject attainment
+reproduces that.
+
+```{r figure4-abstract}
+atMedianWeight <- attainment |> dplyr::filter(wt %in% c(50, 55))
+atMedianWeight
+
+stopifnot(all(atMedianWeight$pctCmax > 80))
+```
+
+# Assumptions and deviations
+
+**The reference level of the formulation covariate is a whole 50-mg tablet,
+not the 200-mg tablet named in the Table 2 footnote.** Meister 2019 Table 2
+footnote a describes the typical patient as "receiving the 200-mg formulation
+as whole tablets", which would make the printed MTT of 3.18 h the 200-mg
+value. Three independent lines of evidence say otherwise and the model
+implements `lmtt` as the whole-50-mg-tablet reference:
+
+1. The Results state both absorption covariate effects relative to the 50-mg
+   whole tablet -- "a 42.9% slower mean absorption transit time for the 200-mg
+   formulation **than for the 50-mg formulation**" and "a 79.4% faster mean
+   absorption transit time for broken tablets **than for whole 50-mg
+   tablets**". A covariate's reference level is the level the other levels are
+   quoted against.
+2. The predecessor analysis of the same phase 2a data (Vanobberghen 2016
+   Table 1) prints a reference MTT of 3.38 h with a +40.1% effect for the
+   200-mg tablet, using the 50-mg tablet as reference. Meister's 3.18 h with
+   +42.9% is the same model re-fitted on more data; reading 3.18 h as the
+   200-mg value would imply a 50-mg reference of 2.23 h, which disagrees with
+   the predecessor.
+3. Numerically, the reference reading reproduces Table 3 better. Under it the
+   typical 400 mg Cmax and Tmax are about 955 ng/mL and 7.2 h against the
+   published 863 ng/mL and 8.56 h; under the footnote reading they are about
+   1112 ng/mL and 5.4 h.
+
+Footnote a is read as describing the phase 2b patient who supplied most of the
+data, not the model's reference level, and is the one statement in the paper
+this implementation does not take literally.
+
+**The direction of the matrix conversion factors is ambiguous in the source.**
+Table 2 labels the rows "Whole blood-to-plasma matrix conversion factor" with
+dADT values of -14.5% and -13.7%, and the Results describe the result as
+"13.7 to 14.5% lower ... drug concentrations in plasma than in blood for dADT".
+Taken literally together those say plasma is lower than blood, i.e. that the
+factor multiplies a blood measurement to give plasma. But footnote a fixes
+plasma as the reference matrix of the printed estimates, and every other
+"Covariate effects" row in the table is the effect *of* a non-reference level.
+The implementation follows the table's own internal convention -- plasma is
+the reference with a factor of exactly 1, and each non-reference matrix
+multiplies the plasma-scale prediction by `1 + theta` -- which preserves every
+printed coefficient verbatim. A user who prefers the Results sentence's
+direction should invert the two factors. Nothing else in the paper depends on
+the choice: Table 3, Figure 4 and both therapeutic criteria are all on the
+plasma reference scale, where the factor is 1 either way.
+
+**The simulated adADT exposure runs above the published adADT values.** The
+`ncaComparisonTable` above flags the adADT AUC rows. The mass-balance check
+shows the model routes exactly 65% of dADT elimination into adADT as specified,
+so the gap is in the published column rather than in the transcription:
+Meister 2019 Table 3's own adADT AUC is not dose-proportional under a model
+that is strictly linear, ranging from 3.07 to 7.71 ng*h/mL per mg across the
+six dose levels, and the paper itself notes that "overall adADT exposure was
+also proportional to the dose for all doses except the 200-mg dose, where the
+Cmax and AUC achieved with the 200-mg dose appeared to be lower than those
+achieved with the 100-mg dose", and that the adADT visual predictive check
+"presented overpredicted peak concentrations of the median percentile". The
+same offset in the same direction is present between the predecessor model and
+its own published adADT table. adADT is the inactive metabolite and the paper
+notes its "minor role in the drug's activity"; the active dADT columns agree
+closely.
+
+**Molecular weights are not printed in Meister 2019.** The two metabolite
+weights used to convert nmol/L into ng/mL, 173.214 for dADT and 215.251 for
+adADT, come from the `$ERROR` block LLOQ conversion of the final NONMEM control
+stream published as supplemental File S1 of the predecessor Vanobberghen 2016,
+which analysed the same assay and the same metabolites. The tribendimidine
+weight of 450.59 g/mol used to convert a milligram dose into nmol is not
+printed in either paper and is the molecular weight of C28H30N6. **Event tables
+must dose in nmol, not mg**; `mgToNmol()` above is the conversion.
+
+**One mole of tribendimidine is taken to yield one mole of dADT.** This is the
+stoichiometry the predecessor model encodes, and it is confirmed here
+independently: with it, the typical 400 mg AUC0-inf is 9,732 ng*h/mL against
+the published 9,889, whereas any other ratio would miss by that factor.
+
+**The exposure-response layer is not implemented as a model.** Meister 2019
+fits logistic regressions of *O. viverrini* cure against dADT Cmax and AUC, but
+the continuous coefficients are never printed. Supplemental Table S3 gives only
+odds ratios for exposure *categories* against an unquantified reference
+category, so no absolute probability can be recovered from it; and its Cmax
+categories ("<4000", "4000-<7000", "7000-<10,000", ">=10,000 ng/ml") are
+inconsistent with the paper's own dADT Cmax range, which reaches only
+1,271 ng/ml at the highest dose studied. What the paper does report in a usable
+form are the two therapeutic criteria, 384 ng/mL and 4,520 ng*h/mL, which are
+deterministic thresholds; those are the basis of the Figure 4 replication above
+and are recorded in the vignette rather than invented as a `prob_cure` output.
+
+**Covariate distributions in the virtual cohort are assumed.** Table 1 reports
+medians and ranges but no dispersion, so age and weight are drawn as truncated
+normals centred on the reported medians with standard deviations of 12 years
+and 8 kg, truncated to the reported ranges. The structural checks above are all
+run on the typical individual and are unaffected by this choice.
+
+**Creatinine clearance could not be tested.** The paper states it was
+unavailable for part of the pooled data set, so the retained age effect on
+dADT clearance is the only renal-function proxy in the model. The authors
+attribute it to declining renal function with age.
+
+**The 25 mg arm is the weakest agreement.** It is the only arm that used split
+tablets, it has just nine patients, and the paper reports absorption-phase
+model misspecification for dADT and warns that "caution should be applied if
+the model is used for extrapolation during early absorption". Simulated Cmax
+runs high there.

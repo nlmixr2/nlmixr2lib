@@ -352,9 +352,15 @@ sim_md <- rxode2::rxSolve(
   as.data.frame() |>
   mutate(Cc_ng = Cc * NG_PER_MG)
 
+# The ss = 1 search integrates one 8 h interval after another until the state
+# converges, and every step counts against the integrator's step budget. With
+# this model's wide IIV, subjects at the slow tail (half-life above ~230 h,
+# about 30 intervals per half-life) exhaust the default 70,000 steps and come
+# back as NA, so give the budget the headroom the cohort can need.
 sim_ss <- rxode2::rxSolve(
   mod, events = events_ss,
-  keep = c("regimen", "route", "mgkg", "WT")
+  keep = c("regimen", "route", "mgkg", "WT"),
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   mutate(Cc_ng = Cc * NG_PER_MG)

@@ -544,7 +544,7 @@ wk24 |>
 # The paper's claim, asserted exactly: 75-150 mg inside, 50 and 200 mg outside.
 # This is a typical-value solve with no random effects, so the result is
 # deterministic across machines and rxode2 versions and a hard assertion is
-# correct here (contrast the cohort-extreme trap described in CLAUDE.md).
+# correct here (contrast a cohort-extreme assertion).
 inside  <- wk24$dose[wk24$in_window]
 stopifnot(
   identical(sort(inside), c(75, 100, 125, 150)),
@@ -729,7 +729,7 @@ source-side reasons given below.
   doi:10.1038/psp.2012.10), which in turn fixes its own system parameters to
   Peterson & Riggs 2010 and the authors' `OpenBoneMin` code deposit
   (<https://github.com/metrumresearchgroup/OpenBoneMin>). Both upstream
-  sources were acquired during this extraction, but the underlying bone model
+  sources were available when this model was built, but the underlying bone model
   is a 43-state, multi-hundred-parameter calcium/bone homeostasis system whose
   compartments have no canonical names in the library, and the published
   Riggs 2012 estimate of one power parameter (theta TGF-beta,latent = 0.075)
@@ -737,8 +737,9 @@ source-side reasons given below.
   (`tgfbGAM = 0.0374`). Because essentially the entire structure belongs to
   Riggs 2012 rather than to Pohl 2022 -- which contributes only the two
   E2-scaling parameters of Table 8 -- the bone model is properly a separate
-  extraction of Riggs 2012 itself, not a sub-model of this paper. Riggs 2012
-  has been acquired to the source directory for that purpose.
+  extraction of Riggs 2012 itself, not a sub-model of this paper. The Riggs 2012
+  paper was already available to the maintainers when this model was built, so it
+  can be taken up as its own extraction.
 
 ## Encoding decisions within the population PK model
 

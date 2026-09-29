@@ -467,6 +467,16 @@ sim_nca <- dplyr::bind_rows(
 ) |>
   dplyr::filter(!is.na(Cc))
 
+# The ODE integrator can undershoot zero by about its absolute tolerance where
+# a trough reaches numerically zero: the shortest half-life drawn here is
+# 0.12 h, so a 6 h QID trough is ~50 half-lives down and lands at -2.7e-12
+# ug/mL. PKNCA's log-down trapezoid returns NaN across that sign change, so
+# the undershoot is set to zero -- after checking it is numerical, since a
+# genuinely negative concentration would be comparable to the peak. Dropping
+# those rows instead would bridge each trough with a linear trapezoid.
+stopifnot(all(sim_nca$Cc >= -1e-6 * max(sim_nca$Cc)))
+sim_nca$Cc <- pmax(sim_nca$Cc, 0)
+
 # Guarantee a time = 0 row per (treatment, id); pre-dose Cc = 0 is correct for
 # an extravascular model.
 sim_nca <- dplyr::bind_rows(

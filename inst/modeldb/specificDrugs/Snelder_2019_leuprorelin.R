@@ -234,8 +234,8 @@ Snelder_2019_leuprorelin <- function() {
     # covariances). Each covariance below reproduces the printed correlation
     # to within 0.0016 and the assembled matrix is positive definite.
     # Row-by-row source trace for the block below (comments must live OUTSIDE
-    # the `c(...)`: rxode2 5.1.7 rewrites any comment between `c(` and `)`
-    # into a bare `;` and the model then fails to parse).
+    # the `c(...)`: rxode2 rewrites any comment between `c(` and `)` into a
+    # bare `;` and the model then fails to parse).
     #   row 1  omega^2 DR50  = 0.696  (CV 100%,  RSE 28.4%)
     #   row 2  DR50 x Kd     = -0.249 (r -0.164); omega^2 Kd    = 3.30   (CV 511%,  RSE 23.1%)
     #   row 3  DR50 x KoutT  =  0.164 (r  0.642); Kd x KoutT  = -0.163 (r -0.294);
@@ -321,8 +321,8 @@ Snelder_2019_leuprorelin <- function() {
     #   IF (IPOP .EQ. 2) K34 = SLP        (constant first-order subpopulation)
     # `max(0, tafd())` is 0 before the first dose, so pre-dose baseline
     # observation rows contribute nothing (and do not propagate NA).
-    # The ramp is held in its own symbol because rxode2 5.1.7's mu-reference
-    # pass fails ("mu-ref err: subscript out of bounds") on the fully inlined
+    # The ramp is held in its own symbol because rxode2's mu-reference pass
+    # fails ("mu-ref err: subscript out of bounds") on the fully inlined
     # `MIX_RAMP_REL * ka_slope * max(0, tafd()) + (1 - MIX_RAMP_REL) * ka_slow`.
     k_ramp <- ka_slope * max(0, tafd())
     k_slow <- MIX_RAMP_REL * k_ramp + (1 - MIX_RAMP_REL) * ka_slow

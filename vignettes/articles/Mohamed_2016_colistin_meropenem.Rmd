@@ -116,18 +116,16 @@ not in the cascade leaves `KE2 = 0`.
 # Validation strategy
 
 The bundle ships an in vitro experimental dataset that is not a
-re-extractable population PK study, and the linked publication is not on
-local disk (searched
-`/home/bill/github/mab_human_consensus/literature/`). The validation
-strategy is therefore **F.2 self-consistency** per
-`extract-literature-model` `references/verification-checklist.md`:
+re-extractable population PK study, and the linked publication was not
+available when this model was built. The validation strategy is therefore
+**self-consistency**:
 re-simulate the bundle's `Simulated_ColistinMeropenem_Interaction.csv`
 through `rxode2::rxSolve()` with typical-value parameters (no IIV, no
 residual error) and compare the trajectory against the simulated
 observations in the bundle. PKNCA does not apply (this is bacterial-count
 PD on log scale, not concentration-time PK). Population NCA comparison
-against a published table is not possible because the publication is not
-on disk.
+against a published table is not possible because the publication was not
+available.
 
 # Re-simulation of the bundle's simulated dataset
 
@@ -310,8 +308,7 @@ features of the source model. Each is flagged here for downstream review.
   Downstream users repurposing the model with arbitrary colistin
   concentrations will need to set their own `KE2` (e.g., by editing
   the `model()` block or supplying `KE2` as a covariate). The verbatim
-  decision was made by the operator
-  (`queue/.claude_task_runner/sidecar/006-mohamed_2016_colistin_meropenem/response-001.json`).
+  decision was made by the maintainers.
 * **`ETA(1)` dropped.** The .mod declares `ETA(1)` shared between `KGA`
   and `KGP` with `OMEGA = 0 FIX`, contributing nothing to the
   predictions. The IIV term is dropped from the nlmixr2 translation; the
@@ -321,11 +318,11 @@ features of the source model. Each is flagged here for downstream review.
   `BLOCK(1) SAME`, all `FIXED` at the same variance). The verbatim
   translation collapses these into a single combined additive residual
   on natural-log scale (`addSd_log_cfu = sqrt(0.422 + 0.0364) * log(10)`).
-* **No linked publication on disk.** The associated paper
-  ([doi:10.1093/jac/dkv488](https://doi.org/10.1093/jac/dkv488)) is not
-  available locally; PKNCA-style comparison against published tables is
-  therefore not possible. Validation reduces to F.2 self-consistency
-  against the bundle-shipped `Output_simulated_*.lst`.
+* **No linked publication available.** The associated paper
+  ([doi:10.1093/jac/dkv488](https://doi.org/10.1093/jac/dkv488)) was not
+  available when this model was built; PKNCA-style comparison against
+  published tables is therefore not possible. Validation reduces to
+  self-consistency against the bundle-shipped `Output_simulated_*.lst`.
 * **Unused THETA placeholders.** THETA(6), THETA(24), THETA(25),
   THETA(30), and THETA(32) are FIX placeholders in the source that are
   declared but never referenced in any `$PK` / `$DES` / `$ERROR`

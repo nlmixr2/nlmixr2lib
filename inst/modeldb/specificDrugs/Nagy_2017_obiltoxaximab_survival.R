@@ -115,9 +115,9 @@ Nagy_2017_obiltoxaximab_survival <- function() {
     #                  + Emax * dose / (ED50 + dose)
     #   log(lambda)  = lambda0 + lambda1 * log10 PTT
     #
-    # These three equations render as "formula-not-decoded" in the docling
-    # conversion of the PDF; they were recovered verbatim with
-    # `pdftotext -layout` from the on-disk PDF (page 4, right column).
+    # These three equations are display equations that a layout-unaware
+    # text conversion of the PDF does not decode; they were recovered
+    # verbatim with `pdftotext -layout` from the PDF (page 4, right column).
     #
     # NOTE: Nagy's DISPLAYED logit(psurv) equation omits the exp() shown above,
     # but its own prose one paragraph earlier says the model used "an
@@ -156,7 +156,7 @@ Nagy_2017_obiltoxaximab_survival <- function() {
     #                  + Emax x dose/(ED50 + dose)
     # and describes it twice in the same paragraph as "an exponential effect of
     # log10(PTT bacteremia) on logit(psurv)". Recovered with `pdftotext -layout`
-    # (the docling conversion mangles the sub/superscripts).
+    # (a layout-unaware text conversion mangles the sub/superscripts).
     #
     # Nagy 2017's own displayed equation omits this exp(), so the two printings
     # of this single fit disagree. Yamamoto is followed because (a) BOTH papers'

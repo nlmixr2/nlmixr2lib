@@ -318,7 +318,7 @@ pct <- setNames(blq$pct_blq, blq$arm)
 # perhaps one CI run in ten. rxode2 partitions its RNG streams per solver
 # thread, so CI draws a different cohort than a local render does, and that
 # is exactly the shape of assertion this repository has been bitten by
-# before (see `known-vignette-failure-patterns.md`, pattern 12).
+# before.
 #
 # The separation is ~53 percentage points and both arms move together with
 # the draw, so a 25-point floor is robust while still failing loudly if the

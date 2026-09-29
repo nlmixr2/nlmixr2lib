@@ -136,8 +136,7 @@ in a patient with preserved diuresis and in an oliguric patient.
 # set.seed() seeds R's RNG, not rxode2's; rxode2 partitions its streams per
 # solver thread, so this cohort differs between a 16-thread workstation and a
 # 2-core CI runner and no seed can make them agree. Every assertion below is
-# written to hold for any cohort the model can produce (see pattern 12 of
-# known-vignette-failure-patterns.md).
+# written to hold for any cohort the model can produce.
 set.seed(20230502)
 
 n_per_arm <- 150L
@@ -440,10 +439,10 @@ gate <- sim_for_cmp |>
 
 stopifnot(nrow(gate) == 8L, nrow(cmp) == 8L, !anyNA(gate$pct))
 
-# Realised 0.1-7.4% across these eight comparisons. 20 is the tolerance the
-# skill sets; it sits far enough above that spread to survive a different cohort
-# draw, while a mis-transcribed clearance, volume, dose or dwell schedule moves
-# these by tens of percent and still breaks the gate.
+# Realised 0.1-7.4% across these eight comparisons. 20 is the package's
+# standard tolerance; it sits far enough above that spread to survive a
+# different cohort draw, while a mis-transcribed clearance, volume, dose or
+# dwell schedule moves these by tens of percent and still breaks the gate.
 stopifnot(max(abs(gate$pct)) < 20)
 ```
 

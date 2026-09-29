@@ -13,7 +13,7 @@ Zhang_2025_abemaciclib_qsp <- function() {
     "the built-in PK-Sim database, distribution used the built-in Rodgers and",
     "Rowland method, no organ ODEs / volumes / blood flows are published and no",
     ".pksim5 project was deposited), so that layer is not reproducible from the",
-    "on-disk sources and is deliberately NOT extracted. Total plasma",
+    "published sources and is deliberately NOT extracted. Total plasma",
     "concentrations are instead supplied per record as the canonical",
     "time-varying covariates CP_ABE_NGML, CP_M2_NGML, CP_M18_NGML and",
     "CP_M20_NGML, and the albumin-scaled fraction unbound is applied inside",
@@ -43,10 +43,8 @@ Zhang_2025_abemaciclib_qsp <- function() {
     "Target-engagement equation from Methods 2.1 (Eq 1, after Wong 2019);",
     "fraction-unbound albumin scaling from Methods 2.1 (Eq 2, after Alsmadi",
     "2021); biomarker chain from Methods 2.2 (Eqs 4-7, framework from Tate",
-    "2014). All parameter values are from main-text Table 1. Note that the",
-    "trimmed markdown companion of this paper retains Table 1 and Section 3.6",
-    "but drops every display equation (eight 'formula-not-decoded' markers), so",
-    "Eqs 1-7 were recovered from the PDF.",
+    "2014). All parameter values are from main-text Table 1. Eqs 1-7 were",
+    "transcribed from the PDF.",
     sep = " "
   )
   vignette <- "Zhang_2025_abemaciclib"
@@ -510,8 +508,7 @@ Zhang_2025_abemaciclib_qsp <- function() {
     free_cdk6_csf <- cdk0 - (complex_cdk6_abe_csf + complex_cdk6_m2_csf + complex_cdk6_m18_csf + complex_cdk6_m20_csf)
 
     # =====================================================================
-    # 5. Target engagement. Zhang 2025 Eq 1, recovered from the PDF (the
-    #    trimmed markdown drops it as `formula-not-decoded`):
+    # 5. Target engagement. Zhang 2025 Eq 1, transcribed from the PDF:
     #        dN/dt = (koff / Kd) * CDK_unbound * C_drug - koff * CDK_bound
     #    where N is the drug-CDK complex. koff/Kd is the association rate
     #    constant. Applied per analyte, per isoform, in plasma and in CSF.
@@ -562,8 +559,7 @@ Zhang_2025_abemaciclib_qsp <- function() {
     #    sentence after Eq 6, "CO is the CDK occupancy fraction", and it never
     #    says which of the four occupancy traces it computes (CDK4 / CDK6,
     #    plasma / CSF) is meant -- the quantity is under-determined by a factor
-    #    of four. Resolved to CSF CDK6 (operator decision, task
-    #    oare_PMC11904693 sidecar request-001 answer D, 2026-08-20) on a
+    #    of four. The maintainers resolved it to CSF CDK6 on a
     #    reproduction check rather than on preference:
     #
     #      * Eqs 4-6 have the exact drug-free-vs-constant-CO steady state

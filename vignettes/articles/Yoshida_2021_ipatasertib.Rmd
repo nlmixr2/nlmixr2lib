@@ -38,7 +38,7 @@ multiplicatively adjusted by the model's covariate effects to produce
 the observed parent and metabolite exposure.
 
 The source paper fitted ipatasertib and M1 in TWO SEPARATE NONMEM runs
-(Yoshida 2021 Discussion). The on-disk control stream
+(Yoshida 2021 Discussion). The control stream
 (`run230.mod`/`run230.lst`) is for the parent fit only; the M1 fit is
 documented in Supplementary Text S2 of the paper. The packaged model
 combines them into one rxode2 object for ease of joint simulation, with
@@ -425,7 +425,7 @@ cat(sprintf("M1 AUCss ratio (abi / no abi)     = %.2f (paper: 1.61)\n",
   asymptotic SS, and the model reproduces this at day 14
   (parent trough at day 14 ~ 95% of asymptotic SS at day 60).
 
-* **NONMEM minimization caveat.** The on-disk run230.lst reports
+* **NONMEM minimization caveat.** The run230.lst listing reports
   `MINIMIZATION SUCCESSFUL` with the standard `HOWEVER, PROBLEMS OCCURRED
   WITH THE MINIMIZATION` caveat (NSIG = 3.3 of 3 requested; gradient
   values were large but the covariance step ran successfully and the

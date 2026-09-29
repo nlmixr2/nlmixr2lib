@@ -95,8 +95,8 @@ Feng_2011_escitalopram <- function() {
     #
     # Source trace for the four omegas below. These comments sit ABOVE their
     # ini() lines rather than trailing them: rxode2 promotes a trailing comment
-    # on an ini() entry that has no label() into a label(), and a quoted or
-    # multi-token trailing comment then fails to re-parse.
+    # on an ini() entry that has no label() into a label(), and a source trace
+    # does not belong in a parameter label.
     #   etalcl -- Feng 2011 Table 2, row omega CL% = 50 -> 0.50^2 = 0.2500
     #   etalvc -- Feng 2011 Table 2, row omega v2% = 35 -> 0.35^2 = 0.1225
     #   etalq  -- Feng 2011 Table 2, row omega Q%  = 30 -> 0.30^2 = 0.0900

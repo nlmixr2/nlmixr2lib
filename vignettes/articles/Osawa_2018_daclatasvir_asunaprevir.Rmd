@@ -1,0 +1,826 @@
+---
+title: "Daclatasvir + asunaprevir popPK in Japanese HCV (Osawa 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Daclatasvir + asunaprevir popPK in Japanese HCV (Osawa 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Osawa 2018 reports **two independent one-compartment population PK models** --
+one per drug -- fitted to overlapping but different cohorts of Japanese patients
+with chronic genotype-1 hepatitis C. They are packaged as two model files, per
+the library's replicate-the-author's-structure policy, and share this vignette.
+
+```{r load-models}
+dcv <- rxode2::rxode(readModelDb("Osawa_2018_daclatasvir"))
+asv <- rxode2::rxode(readModelDb("Osawa_2018_asunaprevir"))
+```
+
+* Citation: `r dcv$reference`
+* Article: <https://doi.org/10.1002/jcph.1274>
+* PMC full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6174986/>
+
+**Daclatasvir** -- `r dcv$description`
+
+**Asunaprevir** -- `r asv$description`
+
+The daclatasvir and asunaprevir combination ("DUAL") received the first global
+approval in Japan in 2014 as the first non-ribavirin, all-oral hepatitis C
+therapy, and this analysis is the first model development integrating the
+Japanese phase-3 data for both agents.
+
+# Population
+
+Daclatasvir was fitted to **3801 concentrations from 336 subjects** across four
+trials (AI444021, AI444022, AI447017, AI447026); asunaprevir to **2626
+concentrations from 265 subjects** across two (AI447017, AI447026). All subjects
+were Japanese, aged 20 years or older, with chronic genotype-1 HCV (99.4 %
+genotype 1b in the daclatasvir cohort). Compensated cirrhosis was permitted and
+present in 6.5 % (daclatasvir) and 8.3 % (asunaprevir) of subjects; both cohorts
+were about two-thirds female. Daclatasvir was given at 10 or 60 mg once daily,
+either with asunaprevir or with peginterferon-alfa/ribavirin; asunaprevir at 200
+or 600 mg twice daily as a phase-2 film-coated tablet, or 100 mg twice daily as
+the phase-3 soft-gel capsule. Baseline demographics are Osawa 2018 Table 1.
+
+Concentrations below the lower limit of quantification were **excluded**, not
+imputed (7 of 3808 records for daclatasvir, 50 of 2676 for asunaprevir).
+
+```{r population}
+str(dcv$population, max.level = 1, give.attr = FALSE)
+```
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its origin. The table below
+collects them, and the chunk that follows **asserts the tabulated values against
+the packaged models** so this table cannot silently drift from the code.
+
+```{r source-trace}
+trace <- tibble::tribble(
+  ~Model,         ~Parameter,                  ~Value,  ~`Source location`,
+  "daclatasvir",  "lcl (CL/F, L/h)",            5.29,   "Table 2, daclatasvir theta1",
+  "daclatasvir",  "lvc (V/F, L)",              64.2,    "Table 2, daclatasvir theta2",
+  "daclatasvir",  "lka (Ka, 1/h)",              0.865,  "Table 2, daclatasvir theta3",
+  "daclatasvir",  "e_sexf_cl",                 -0.110,  "Table 2, daclatasvir theta6",
+  "daclatasvir",  "e_conmed_pegifn_rbv_cl",    -0.122,  "Table 2, daclatasvir theta8",
+  "daclatasvir",  "e_crcl_base_cl",             0.235,  "Table 2, daclatasvir theta10",
+  "daclatasvir",  "e_wt_base_vc",               0.605,  "Table 2, daclatasvir theta14",
+  "daclatasvir",  "expSd (log-scale SD)",       0.375,  "Table 2, daclatasvir theta4",
+  "asunaprevir",  "lcl (CL/F, L/h)",           52.1,    "Table 2, asunaprevir theta1",
+  "asunaprevir",  "lvc (V/F, L)",              75.1,    "Table 2, asunaprevir theta2",
+  "asunaprevir",  "lka (Ka, 1/h)",              0.228,  "Table 2, asunaprevir theta3",
+  "asunaprevir",  "e_ast_base_cl",             -0.598,  "Table 2, asunaprevir theta7",
+  "asunaprevir",  "e_ast_cl",                  -0.382,  "Table 2, asunaprevir theta8",
+  "asunaprevir",  "e_form_asv_softgel_cl_vc",  -0.314,  "Table 2, asunaprevir theta10 ('F ~ FORM')",
+  "asunaprevir",  "e_dis_cirrhosis_cl",        -0.428,  "Table 2, asunaprevir theta11",
+  "asunaprevir",  "expSd (log-scale SD)",       0.68,   "Table 2, asunaprevir theta4"
+)
+
+# Gate: each tabulated value must equal the packaged model's estimate. `l`-
+# prefixed structural parameters are stored on the log scale, so exponentiate.
+ini_value <- function(ui, nm) {
+  row <- ui$iniDf[!is.na(ui$iniDf$name) & ui$iniDf$name == nm, ]
+  stopifnot(nrow(row) == 1L)
+  row$est
+}
+uis <- list(daclatasvir = dcv, asunaprevir = asv)
+trace_check <- trace |>
+  mutate(
+    param = sub(" .*$", "", Parameter),
+    packaged = unname(vapply(
+      seq_len(n()),
+      function(i) {
+        p <- param[i]
+        v <- ini_value(uis[[Model[i]]], p)
+        # Structural PK parameters are stored log-transformed.
+        if (p %in% c("lcl", "lvc", "lka")) exp(v) else v
+      },
+      numeric(1)
+    )),
+    rel_diff = abs(packaged - Value) / pmax(abs(Value), 1e-12)
+  )
+stopifnot(
+  nrow(trace_check) == 16L,
+  !anyNA(trace_check$rel_diff),
+  max(trace_check$rel_diff) < 1e-10
+)
+
+knitr::kable(
+  trace,
+  caption = "Source trace. Every value is asserted against the packaged model above."
+)
+```
+
+Random effects (Osawa 2018 Table 2, "Random effects" block, read as
+*variance (standard deviation)* on diagonals and *covariance (correlation)*
+off-diagonal, per footnote b):
+
+| Model | Term | Variance | Notes |
+|---|---|---|---|
+| daclatasvir | `etalcl` | 0.155 | SD 0.394 |
+| daclatasvir | `etalvc` | 0.145 | SD 0.381 |
+| daclatasvir | `etalcl`:`etalvc` | 0.141 | correlation 0.941 |
+| daclatasvir | `etalka` | 0.756 | SD 0.869 |
+| daclatasvir | `etaexpSd` | 0.107 | SD 0.327; IIV on the residual magnitude |
+| asunaprevir | `etalcl` | 0.172 | SD 0.415 |
+| asunaprevir | `etalvc` | 0.872 | SD 0.934 |
+| asunaprevir | `etaexpSd` | 0.0672 | SD 0.259; IIV on the residual magnitude |
+
+Two structural features of that block are worth spelling out, because both are
+easy to mis-transcribe:
+
+1. **The residual error carries its own eta.** Table 2 prints `sigma` twice --
+   once as `theta4` under "Residual error" and once as `omega4,4` under "Random
+   effects" -- with different standard errors (RSE 2.72 % vs 18.0 % for
+   daclatasvir). These are two separate estimated parameters, not one value
+   printed twice. The Methods residual model is log-transform-both-sides,
+   `ln(y) = ln(yhat) + theta_ADD * eps`, so the packaged models use nlmixr2's
+   `lnorm()` structure with a per-subject SD `expSd * exp(etaexpSd)` -- the
+   NONMEM `W = THETA(4) * EXP(ETA(4))` construct.
+2. **Asunaprevir Ka carries no eta at all.** "The random effect of Ka was fixed
+   as zero because the sampling points around the peak concentrations were not
+   enough for all subjects." A zero-variance eta would make OMEGA singular, so
+   the eta is omitted rather than encoded as `fixed(0)`.
+
+## Covariate equations
+
+Transcribed verbatim from the Results section (the PDF renders these as images,
+so they are absent from text-extraction of the article; they were recovered with
+`pdftotext -layout`). Daclatasvir:
+
+$$
+\mathrm{CL/F} = \mathrm{CL/F_{ref}} \cdot
+  \left(\frac{\mathrm{BCRCL}}{86.48}\right)^{0.235} \cdot
+  \exp\left(-0.110\cdot\mathrm{SEX} - 0.122\cdot\mathrm{TX}\right),
+\qquad
+\mathrm{V/F} = \mathrm{V/F_{ref}} \cdot
+  \left(\frac{\mathrm{BBWT}}{56}\right)^{0.605}
+$$
+
+with reference male, DUAL regimen, 86.48 mL/min, 56 kg. Asunaprevir:
+
+$$
+\mathrm{CL/F} = \mathrm{CL/F_{ref}} \cdot
+  \left(\frac{\mathrm{BAST}}{52}\right)^{-0.598}
+  \left(\frac{\mathrm{AST}}{52}\right)^{-0.382} \cdot
+  \exp\left(-0.314\cdot\mathrm{FORM} - 0.428\cdot\mathrm{CIRRHOSIS}\right),
+\qquad
+\mathrm{V/F} = \mathrm{V/F_{ref}} \cdot \exp\left(-0.314\cdot\mathrm{FORM}\right)
+$$
+
+with reference phase-2 tablet, no cirrhosis, and **52 U/L for both AST terms** --
+the printed equation normalises the time-varying AST by `BASTref`, not by a
+separate reference.
+
+The single coefficient `-0.314` appears in both asunaprevir equations because
+Table 2 tabulates it once, labelled `F ~ FORM`: bioavailability is not separately
+identifiable from oral data, so an F effect enters the apparent quantities CL/F
+and V/F identically. Scaling both leaves CL/V untouched and raises concentrations
+by `1/exp(-0.314)`, which is checked below.
+
+# Structural checks
+
+All checks in this section are **deterministic** -- run with random effects
+zeroed -- so they use tight tolerances. They would break on a mis-transcribed
+parameter, reference constant, or equation form.
+
+```{r helpers}
+# Typical-value (zeroRe) solve at a stated covariate set.
+solve_typical <- function(ui, covariates, dose, ii, n_doses, obs_times) {
+  ev <- rxode2::et(amt = dose, ii = ii, addl = n_doses - 1L, cmt = "depot")
+  ev <- rxode2::et(ev, obs_times, cmt = "central")
+  d <- as.data.frame(ev)
+  for (nm in names(covariates)) d[[nm]] <- covariates[[nm]]
+  suppressWarnings(
+    as.data.frame(rxode2::rxSolve(rxode2::zeroRe(ui), d, returnType = "data.frame"))
+  )
+}
+trapz <- function(t, y) sum(diff(t) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+dcv_ref <- list(CRCL_BASE = 86.48, WT_BASE = 56, SEXF = 0, CONMED_PEGIFN_RBV = 0)
+asv_ref <- list(AST_BASE = 52, AST = 52, DIS_CIRRHOSIS = 0, FORM_ASV_SOFTGEL = 0)
+```
+
+## 1. Typical values reproduce Table 2
+
+```{r check-typical}
+dcv_tv <- solve_typical(dcv, dcv_ref, dose = 60, ii = 24, n_doses = 20,
+                        obs_times = seq(0, 480, by = 0.1))
+asv_tv <- solve_typical(asv, asv_ref, dose = 200, ii = 12, n_doses = 40,
+                        obs_times = seq(0, 480, by = 0.1))
+
+stopifnot(
+  isTRUE(all.equal(unique(dcv_tv$cl), 5.29,  tolerance = 1e-10)),
+  isTRUE(all.equal(unique(dcv_tv$vc), 64.2,  tolerance = 1e-10)),
+  isTRUE(all.equal(unique(dcv_tv$ka), 0.865, tolerance = 1e-10)),
+  isTRUE(all.equal(unique(asv_tv$cl), 52.1,  tolerance = 1e-10)),
+  isTRUE(all.equal(unique(asv_tv$vc), 75.1,  tolerance = 1e-10)),
+  isTRUE(all.equal(unique(asv_tv$ka), 0.228, tolerance = 1e-10))
+)
+```
+
+At the reference covariates both models return the Table 2 estimates exactly.
+
+## 2. Steady-state mass balance: `CL/F * AUCtau == Dose`
+
+For a linear model with the whole dose entering the depot, the steady-state area
+over one dosing interval must satisfy `AUCtau = Dose / (CL/F)` exactly. The only
+error here is trapezoidal, so a tight bound is correct (the two sides use the
+same parameters; this is a solve against its own closed form, not a comparison
+across a physical mechanism).
+
+```{r check-mass-balance}
+ss_auc_err <- function(sim, t_start, t_end, dose) {
+  w <- sim[sim$time >= t_start & sim$time <= t_end, ]
+  abs(unique(w$cl) * trapz(w$time, w$Cc) - dose) / dose
+}
+err_dcv <- ss_auc_err(dcv_tv, 456, 480, 60)   # last 24 h interval, QD
+err_asv <- ss_auc_err(asv_tv, 468, 480, 200)  # last 12 h interval, BID
+
+# Realised ~2e-6 (daclatasvir) and ~1e-5 (asunaprevir) on a 0.1 h grid.
+stopifnot(err_dcv < 1e-3, err_asv < 1e-3)
+c(daclatasvir = err_dcv, asunaprevir = err_asv)
+```
+
+## 3. Closed-form one-compartment oral solution
+
+An independent check that the ODE system is the intended structure: after a
+single dose, `Cc(t) = (D * ka) / (V * (ka - kel)) * (exp(-kel*t) - exp(-ka*t))`.
+
+```{r check-closed-form}
+closed_form <- function(t, dose, ka, cl, vc) {
+  kel <- cl / vc
+  dose * ka / (vc * (ka - kel)) * (exp(-kel * t) - exp(-ka * t))
+}
+sd_times <- seq(0, 120, by = 0.1)
+dcv_sd <- solve_typical(dcv, dcv_ref, dose = 60, ii = 24, n_doses = 1, obs_times = sd_times)
+asv_sd <- solve_typical(asv, asv_ref, dose = 200, ii = 12, n_doses = 1, obs_times = sd_times)
+
+max_rel <- function(sim, dose) {
+  cf <- closed_form(sim$time, dose, unique(sim$ka), unique(sim$cl), unique(sim$vc))
+  keep <- cf > 1e-8
+  max(abs(sim$Cc[keep] - cf[keep]) / cf[keep])
+}
+cf_dcv <- max_rel(dcv_sd, 60)
+cf_asv <- max_rel(asv_sd, 200)
+stopifnot(cf_dcv < 1e-4, cf_asv < 1e-4)
+c(daclatasvir = cf_dcv, asunaprevir = cf_asv)
+```
+
+## 4. Asunaprevir is flip-flop
+
+`Ka = 0.228 1/h` sits well below `kel = CL/F / (V/F) = 0.694 1/h`, so the
+terminal slope of the asunaprevir profile reflects **absorption**, not
+elimination. Daclatasvir is the ordinary case.
+
+```{r check-flipflop}
+rates <- tibble::tibble(
+  Drug = c("daclatasvir", "asunaprevir"),
+  ka = c(unique(dcv_tv$ka), unique(asv_tv$ka)),
+  kel = c(unique(dcv_tv$cl) / unique(dcv_tv$vc), unique(asv_tv$cl) / unique(asv_tv$vc))
+) |>
+  mutate(
+    `t1/2 from ka (h)` = log(2) / ka,
+    `t1/2 from kel (h)` = log(2) / kel,
+    `Flip-flop` = ka < kel,
+    `Terminal t1/2 (h)` = log(2) / pmin(ka, kel)
+  )
+stopifnot(
+  rates$`Flip-flop` == c(FALSE, TRUE),
+  # Terminal half-life is set by the slower of the two rate constants.
+  isTRUE(all.equal(rates$`Terminal t1/2 (h)`, c(log(2) / rates$kel[1], log(2) / rates$ka[2])))
+)
+knitr::kable(rates, digits = 3, caption = "Absorption vs elimination rate constants.")
+```
+
+## 5. Covariate effects reproduce the paper's forest plot
+
+Osawa 2018 states each covariate's effect at the 5th and 95th percentiles of the
+covariate (Figure 3 and the "Effect of Covariates" text). Reproducing those
+numbers is the single most informative check on the covariate equations: a wrong
+reference constant, a sign flip, or a power-versus-exponential mix-up all break
+it. Because the fold-changes are deterministic typical-value ratios, the
+tolerances are tight.
+
+```{r check-covariates}
+fold <- function(ui, ref, changes, param, ref_value) {
+  covs <- utils::modifyList(ref, changes)
+  s <- solve_typical(ui, covs, dose = 1, ii = 24, n_doses = 1, obs_times = c(0, 1))
+  unique(s[[param]]) / ref_value
+}
+
+cov_checks <- tibble::tribble(
+  ~Drug, ~Covariate, ~`Paper claim`, ~Published, ~Tol, ~Achieved,
+  "daclatasvir", "BBWT 42.8 kg (5th pct) on V/F", "~15% lower",  0.850, 0.010,
+    fold(dcv, dcv_ref, list(WT_BASE = 42.8), "vc", 64.2),
+  "daclatasvir", "BBWT 78 kg (95th pct) on V/F",  "~22% higher", 1.220, 0.010,
+    fold(dcv, dcv_ref, list(WT_BASE = 78), "vc", 64.2),
+  "daclatasvir", "BCRCL 51.36 (5th pct) on CL/F", "~10% lower",  0.900, 0.030,
+    fold(dcv, dcv_ref, list(CRCL_BASE = 51.36), "cl", 5.29),
+  "daclatasvir", "BCRCL 144.42 (95th pct) on CL/F", "~10% higher", 1.100, 0.035,
+    fold(dcv, dcv_ref, list(CRCL_BASE = 144.42), "cl", 5.29),
+  "daclatasvir", "Female on CL/F",               "~10% lower",  exp(-0.110), 0.001,
+    fold(dcv, dcv_ref, list(SEXF = 1), "cl", 5.29),
+  "daclatasvir", "pegIFN/RBV backbone on CL/F",  "~10% lower",  exp(-0.122), 0.001,
+    fold(dcv, dcv_ref, list(CONMED_PEGIFN_RBV = 1), "cl", 5.29),
+  "asunaprevir", "BAST 22 U/L (5th pct) on CL/F", "1.67-fold higher", 1.67, 0.010,
+    fold(asv, asv_ref, list(AST_BASE = 22), "cl", 52.1),
+  "asunaprevir", "BAST 123.6 U/L (95th pct) on CL/F", "0.60-fold", 0.60, 0.010,
+    fold(asv, asv_ref, list(AST_BASE = 123.6), "cl", 52.1),
+  "asunaprevir", "AST 16 U/L (5th pct) on CL/F", "1.57-fold higher", 1.57, 0.010,
+    fold(asv, asv_ref, list(AST = 16), "cl", 52.1),
+  "asunaprevir", "AST 115 U/L (95th pct) on CL/F", "0.74-fold", 0.74, 0.010,
+    fold(asv, asv_ref, list(AST = 115), "cl", 52.1),
+  "asunaprevir", "Cirrhosis on CL/F",            "0.65-fold", 0.65, 0.010,
+    fold(asv, asv_ref, list(DIS_CIRRHOSIS = 1), "cl", 52.1)
+) |>
+  mutate(
+    Difference = Achieved - Published,
+    Pass = abs(Difference) <= Tol
+  )
+
+stopifnot(is.logical(cov_checks$Pass), !anyNA(cov_checks$Pass), all(cov_checks$Pass))
+
+cov_checks |>
+  select(Drug, Covariate, `Paper claim`, Published, Achieved, Difference, Pass) |>
+  knitr::kable(digits = 4, caption = "Covariate effects vs the values printed in Osawa 2018.")
+```
+
+Every effect reproduces. The two baseline-creatinine-clearance rows carry a wider
+tolerance because the paper reports them only as "approximately 10 %"; the
+encoded power function returns 11.5 % and 12.8 %, which round to the paper's
+one-significant-figure claim. Every other row matches the published figure to
+within 0.01.
+
+## 6. Asunaprevir relative bioavailability is 1.37-fold
+
+```{r check-relative-f}
+asv_softgel <- solve_typical(
+  asv, utils::modifyList(asv_ref, list(FORM_ASV_SOFTGEL = 1)),
+  dose = 100, ii = 12, n_doses = 1, obs_times = c(0, 1)
+)
+rel_f <- 52.1 / unique(asv_softgel$cl)
+kel_tablet <- unique(asv_tv$cl) / unique(asv_tv$vc)
+kel_softgel <- unique(asv_softgel$cl) / unique(asv_softgel$vc)
+
+stopifnot(
+  # Paper: "bioavailability of the phase 3 soft-gel capsule ... 1.37-fold higher".
+  abs(rel_f - 1.37) < 0.005,
+  # The formulation factor must cancel out of CL/V, leaving the rate constant
+  # -- and hence the profile SHAPE -- formulation-independent.
+  isTRUE(all.equal(kel_tablet, kel_softgel, tolerance = 1e-10))
+)
+c(`relative F (softgel/tablet)` = rel_f, `kel tablet` = kel_tablet, `kel softgel` = kel_softgel)
+```
+
+# Virtual cohort
+
+Individual data are not public ("The individual deidentified participant data and
+related documents will not be shared"), so the simulations below use virtual
+cohorts whose covariate distributions match the medians and 5th/95th percentiles
+Osawa 2018 reports. Log-normal distributions calibrated on the published median
+and 95th percentile reproduce the published 5th percentile closely -- 40.2 vs
+42.8 kg for weight, 51.8 vs 51.36 mL/min for creatinine clearance, 21.9 vs 22 U/L
+for baseline AST -- which is itself a mild consistency check on the cohort.
+
+```{r cohort}
+# set.seed() seeds R's RNG, not rxode2's; rxode2 streams are partitioned per
+# solver thread, so the cohort differs between a 2-core CI runner and a
+# workstation. Every assertion downstream is written to hold for ANY cohort.
+set.seed(20181101)
+rxode2::rxSetSeed(20181101)
+
+N_ARM <- 150L  # per arm; cohorts are capped at 200/arm
+
+# Log-normal calibrated so median = m and 95th percentile = p95, truncated to
+# the published observed range.
+rlnorm_pct <- function(n, m, p95, lo, hi) {
+  pmin(pmax(stats::rlnorm(n, log(m), log(p95 / m) / stats::qnorm(0.95)), lo), hi)
+}
+
+make_arm <- function(n, drug, arm, dose, ii, n_doses, obs_grid, id_offset) {
+  subj <- tibble::tibble(id = id_offset + seq_len(n), arm = arm, drug = drug)
+  if (drug == "daclatasvir") {
+    subj <- subj |>
+      mutate(
+        WT_BASE = rlnorm_pct(n, 56, 78, 36, 93),           # Table 1 median 56, p95 78
+        CRCL_BASE = rlnorm_pct(n, 86.48, 144.42, 39.56, 185.96),
+        SEXF = stats::rbinom(n, 1, 0.637),                  # Table 1: 63.7% female
+        CONMED_PEGIFN_RBV = stats::rbinom(n, 1, 0.211)      # Table 1: 21.1% on pegIFN/RBV
+      )
+  } else {
+    subj <- subj |>
+      mutate(
+        AST_BASE = rlnorm_pct(n, 52, 123.6, 13, 595),       # Table 1 median 52, p95 123.6
+        DIS_CIRRHOSIS = stats::rbinom(n, 1, 0.083),         # Table 1: 8.3% cirrhotic
+        FORM_ASV_SOFTGEL = as.integer(arm == "100 mg BID soft-gel"),
+        # Assumption: time-varying AST held at each subject's baseline (the
+        # paper publishes no AST trajectory). See Assumptions below.
+        AST = AST_BASE
+      )
+  }
+  t_last <- ii * (n_doses - 1L)
+  doses <- subj |>
+    tidyr::crossing(time = ii * seq.int(0, n_doses - 1L)) |>
+    mutate(amt = dose, evid = 1L, cmt = "depot")
+  obs <- subj |>
+    tidyr::crossing(time = t_last + obs_grid) |>
+    # cmt is the ODE STATE, never the observable name `Cc`.
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+
+# Observation grid: log-spaced over the first hour, then regular. A UNIFORM
+# grid is not good enough here, because both models draw individuals with very
+# fast early kinetics -- daclatasvir's Ka carries omega = 0.756 (SD 0.869), so
+# some subjects absorb at ~10 /h, and asunaprevir's V/F carries omega = 0.872
+# (SD 0.934), so some subjects have kel = CL/V near 10 /h and a sub-0.1 h
+# post-dose transient. On a uniform 0.25 h grid the trapezoidal AUC of those
+# subjects is off by up to 1%, which is numerical error rather than a model
+# property but is large enough to blunt the mass-balance gate below. Resolving
+# the first hour costs almost nothing and drops the error ~30-fold.
+obs_grid <- function(tau) {
+  sort(unique(c(0, exp(seq(log(0.005), log(1), length.out = 40)), seq(1, tau, by = 0.25))))
+}
+
+# 14 days of dosing, then dense observation across the final dosing interval --
+# matching Osawa 2018 Figure 2, "the pcVPC plot after 14 days at steady state".
+dcv_events <- bind_rows(
+  make_arm(N_ARM, "daclatasvir", "60 mg QD", 60, 24, 14L, obs_grid(24), 0L),
+  make_arm(N_ARM, "daclatasvir", "10 mg QD", 10, 24, 14L, obs_grid(24), 1000L)
+)
+asv_events <- bind_rows(
+  make_arm(N_ARM, "asunaprevir", "100 mg BID soft-gel", 100, 12, 28L, obs_grid(12), 2000L),
+  make_arm(N_ARM, "asunaprevir", "200 mg BID tablet", 200, 12, 28L, obs_grid(12), 3000L)
+)
+
+# Disjoint ids across arms: duplicate ids silently merge into one subject that
+# receives the summed dose.
+stopifnot(
+  !anyDuplicated(unique(dcv_events[, c("id", "time", "evid")])),
+  !anyDuplicated(unique(asv_events[, c("id", "time", "evid")])),
+  length(intersect(dcv_events$id, asv_events$id)) == 0L
+)
+```
+
+# Simulation
+
+```{r simulate}
+dcv_sim <- as.data.frame(rxode2::rxSolve(dcv, dcv_events, keep = c("arm"))) |>
+  mutate(tad = time - 24 * 13)
+asv_sim <- as.data.frame(rxode2::rxSolve(asv, asv_events, keep = c("arm"))) |>
+  mutate(tad = time - 12 * 27)
+
+# `Cc` is the individual prediction; `sim` additionally carries the lnorm
+# residual, which is what an observed concentration would look like.
+stopifnot(
+  all(c("Cc", "sim", "expSdInd") %in% names(dcv_sim)),
+  all(dcv_sim$Cc >= 0), all(asv_sim$Cc >= 0)
+)
+```
+
+The per-subject residual SD varies, because the residual magnitude carries its
+own eta (`omega4,4`). Its population median must return the tabulated `theta4`:
+
+```{r check-residual-iiv}
+resid_sd <- bind_rows(
+  dcv_sim |> distinct(id, expSdInd) |> mutate(Drug = "daclatasvir", theta4 = 0.375),
+  asv_sim |> distinct(id, expSdInd) |> mutate(Drug = "asunaprevir", theta4 = 0.68)
+) |>
+  group_by(Drug, theta4) |>
+  summarise(n = n(), median_sd = stats::median(expSdInd), .groups = "drop") |>
+  mutate(ratio = median_sd / theta4)
+
+# A cohort median, so the bound admits sampling noise rather than asserting
+# equality. With n = 300 per drug and log-SD 0.327 / 0.259 the median of
+# exp(eta) sits within a few percent of 1; 15% leaves ample headroom while
+# still breaking if the eta were applied on the wrong scale (e.g. as a
+# variance, or additively).
+stopifnot(all(abs(resid_sd$ratio - 1) < 0.15))
+knitr::kable(resid_sd, digits = 4,
+             caption = "Median per-subject residual SD vs the tabulated theta4.")
+```
+
+# Replicate published figures
+
+```{r figure-2, fig.cap = "Steady-state concentration-time profiles after 14 days, replicating the layout of Osawa 2018 Figure 2 (prediction-corrected VPC). Ribbons span the 5th-95th percentiles of simulated observations; the line is the median."}
+vpc_summary <- function(sim) {
+  sim |>
+    group_by(arm, tad) |>
+    summarise(
+      Q05 = stats::quantile(sim, 0.05, na.rm = TRUE),
+      Q50 = stats::quantile(sim, 0.50, na.rm = TRUE),
+      Q95 = stats::quantile(sim, 0.95, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+bind_rows(
+  vpc_summary(dcv_sim) |> mutate(Drug = "Daclatasvir"),
+  vpc_summary(asv_sim) |> mutate(Drug = "Asunaprevir")
+) |>
+  ggplot(aes(tad, Q50, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~Drug, scales = "free") +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose on day 14 (h)", y = "Concentration (ug/mL)",
+    colour = NULL, fill = NULL,
+    caption = "Replicates the steady-state layout of Figure 2 of Osawa 2018."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r figure-3, fig.cap = "Covariate effects on the typical PK parameter, replicating Osawa 2018 Figure 3. The 80-125% reference band is shaded."}
+forest <- cov_checks |>
+  mutate(
+    Parameter = ifelse(grepl("V/F", Covariate), "V/F", "CL/F"),
+    Label = sub(" on (CL|V)/F$", "", Covariate)
+  )
+ggplot(forest, aes(Achieved, Label, colour = Drug)) +
+  annotate("rect", xmin = 0.8, xmax = 1.25, ymin = -Inf, ymax = Inf,
+           alpha = 0.15, fill = "grey40") +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  geom_point(size = 2.5) +
+  facet_grid(Drug ~ ., scales = "free_y", space = "free_y") +
+  labs(
+    x = "Fold-change vs the typical subject", y = NULL, colour = NULL,
+    caption = "Replicates Figure 3 of Osawa 2018. Shaded band is the 80-125% boundary."
+  ) +
+  theme(legend.position = "none")
+```
+
+The figure reproduces the paper's central qualitative finding: **every
+daclatasvir covariate effect lies within or overlaps the 80-125 % band**, while
+**every asunaprevir effect escapes it**. That contrast is the paper's headline
+conclusion, so it is asserted rather than left to the eye:
+
+```{r check-forest-conclusion}
+inside_band <- function(x) x >= 0.8 & x <= 1.25
+concl <- forest |>
+  group_by(Drug) |>
+  summarise(n_outside = sum(!inside_band(Achieved)), n = n(), .groups = "drop")
+
+stopifnot(
+  # Osawa 2018 Abstract: daclatasvir covariate effects "were within or
+  # overlapped the 80% to 125% boundaries"; asunaprevir's "exceeded" them.
+  concl$n_outside[concl$Drug == "daclatasvir"] == 0L,
+  concl$n_outside[concl$Drug == "asunaprevir"] == concl$n[concl$Drug == "asunaprevir"]
+)
+knitr::kable(concl, caption = "Covariate effects outside the 80-125% band, by drug.")
+```
+
+# PKNCA validation
+
+NCA is run on the individual predictions `Cc` over the final steady-state dosing
+interval, with time re-zeroed to the last dose so the interval is `[0, tau]`.
+
+```{r pknca}
+run_nca <- function(sim, events, tau, t_last) {
+  conc <- sim |>
+    filter(!is.na(Cc), tad >= 0, tad <= tau) |>
+    transmute(id, arm, time = tad, Cc)
+  # Guarantee a time-zero anchor per (id, arm). At steady state the pre-dose
+  # trough is a real, non-zero concentration, so carry the simulated value
+  # rather than inserting a zero.
+  conc <- conc |>
+    distinct(id, arm, time, .keep_all = TRUE) |>
+    arrange(id, arm, time)
+  stopifnot(nrow(conc) > 0L, all(conc |> count(id) |> pull(n) > 1L))
+
+  dose_df <- events |>
+    filter(evid == 1L, time == t_last) |>
+    transmute(id, arm, time = 0, amt)
+
+  conc_obj <- PKNCA::PKNCAconc(as.data.frame(conc), Cc ~ time | arm + id)
+  dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), amt ~ time | arm + id)
+  intervals <- data.frame(
+    start = 0, end = tau,
+    cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+dcv_nca <- run_nca(dcv_sim, dcv_events, tau = 24, t_last = 24 * 13)
+asv_nca <- run_nca(asv_sim, asv_events, tau = 12, t_last = 12 * 27)
+```
+
+```{r nca-summary}
+nca_wide <- function(res, drug) {
+  as.data.frame(res$result) |>
+    filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast")) |>
+    select(arm, id, PPTESTCD, PPORRES) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+    mutate(Drug = drug)
+}
+nca_all <- bind_rows(nca_wide(dcv_nca, "daclatasvir"), nca_wide(asv_nca, "asunaprevir"))
+
+nca_all |>
+  group_by(Drug, arm) |>
+  summarise(
+    n = n(),
+    `Cmax (ug/mL)` = stats::median(cmax),
+    `Tmax (h)` = stats::median(tmax),
+    `Ctrough (ug/mL)` = stats::median(cmin),
+    `AUCtau (ug*h/mL)` = stats::median(auclast),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 3, caption = "Simulated steady-state NCA (median across subjects).")
+```
+
+## PKNCA AUCtau recovers Dose / (CL/F) per subject
+
+This ties the NCA output back to the closed form, per subject. It is the
+strictest available gate on the whole chain -- model, event table, simulation and
+NCA setup -- and it is exact up to trapezoidal error, so the bound is tight.
+
+```{r check-nca-recovery}
+cl_by_id <- bind_rows(
+  dcv_sim |> distinct(id, arm, cl),
+  asv_sim |> distinct(id, arm, cl)
+)
+dose_by_arm <- tibble::tibble(
+  arm = c("60 mg QD", "10 mg QD", "100 mg BID soft-gel", "200 mg BID tablet"),
+  amt = c(60, 10, 100, 200)
+)
+
+recovery <- nca_all |>
+  left_join(cl_by_id, by = c("id", "arm")) |>
+  left_join(dose_by_arm, by = "arm") |>
+  mutate(rel_err = abs(cl * auclast - amt) / amt)
+
+stopifnot(
+  nrow(recovery) == 4L * N_ARM,
+  !anyNA(recovery$rel_err),
+  # The discrepancy here is pure numerical (AUC quadrature) error: both sides
+  # use the SAME drawn parameters, so this is a solve checked against its own
+  # closed form and a tight bound is correct. Realised max across three seeds
+  # on the log-spaced grid: 2.0e-4 / 2.2e-4 / 2.1e-4 (daclatasvir) and
+  # 3.6e-4 / 3.6e-4 / 1.2e-3 (asunaprevir, the tail driven by the most extreme
+  # V/F draw). 5e-3 leaves ~4x headroom over the worst observed draw while
+  # still breaking on any structural error -- a wrong dose, volume, unit or
+  # covariate reference moves this by tens of percent, not tenths of one.
+  max(recovery$rel_err) < 0.005
+)
+recovery |>
+  group_by(Drug, arm) |>
+  summarise(`max |CL*AUCtau - Dose| / Dose` = max(rel_err), .groups = "drop") |>
+  knitr::kable(digits = 6, caption = "Per-subject steady-state mass-balance recovery.")
+```
+
+## Comparison against published NCA
+
+Osawa 2018 does not publish an NCA table of its own. It does quote observed
+asunaprevir exposures for the two contributing trials, carried over from
+reference 17: **2950 ng*h/mL in AI447017** (the phase-2 study, 200 mg tablet) and
+**2155 ng*h/mL in AI447026** (the phase-3 study, 100 mg soft-gel capsule).
+
+```{r nca-compare}
+asv_sim_nca <- nca_all |>
+  filter(Drug == "asunaprevir") |>
+  group_by(arm) |>
+  summarise(cmax = stats::median(cmax), tmax = stats::median(tmax),
+            auclast = stats::median(auclast) * 1000, .groups = "drop")  # ug*h/mL -> ng*h/mL
+
+published <- tibble::tribble(
+  ~arm,                   ~auclast,
+  "200 mg BID tablet",     2950,
+  "100 mg BID soft-gel",   2155
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = asv_sim_nca |> select(arm, auclast),
+  reference = published,
+  by = "arm",
+  units = c(auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated steady-state AUCtau vs the observed exposures Osawa 2018 quotes from reference 17. * differs by >20%.")
+```
+
+**Both rows are starred, and that is expected rather than a transcription
+error.** The model over-predicts by about 30 % (tablet) and 22 % (soft-gel).
+Three reasons, none of which is fixable by tuning:
+
+1. **The reference values are not this paper's data.** They are observed NCA
+   means quoted from reference 17 for two individual trials, whereas the model
+   was fitted to the pooled dataset.
+2. **The model's typical subject is not those trials' mean subject.** The
+   packaged typical values are defined at baseline AST 52 U/L, time-varying AST
+   52 U/L and no cirrhosis. Asunaprevir CL/F has a combined AST exponent of
+   -0.980, so a cohort whose mean AST sits above 52 U/L has systematically higher
+   clearance and lower exposure than the reference subject.
+3. **A median of a right-skewed simulated distribution is being compared with a
+   published arithmetic mean.** With `omega(V/F) = 0.872` the asunaprevir
+   exposure distribution is very wide.
+
+The internally consistent check the paper *does* let us make is the ratio: the
+two quoted exposures differ by a factor of `r round(2950 / 2155, 3)`, and the
+fitted formulation effect is `r round(1 / exp(-0.314), 3)`-fold. Those agree to
+three decimal places, although at different doses (200 mg vs 100 mg), so the
+agreement is suggestive rather than a controlled relative-bioavailability
+comparison -- which is how the paper itself treats it ("the trend was consistent
+with the result of the relative bioavailability study").
+
+```{r check-published-ratio}
+observed_ratio <- 2950 / 2155
+fitted_rel_f <- 1 / exp(-0.314)
+# Both are fixed published numbers, so this is a transcription check on theta10,
+# not a simulation-derived assertion.
+stopifnot(abs(observed_ratio - fitted_rel_f) < 0.01)
+c(`observed AUC ratio` = observed_ratio, `fitted relative F` = fitted_rel_f)
+```
+
+# Assumptions and deviations
+
+**Assumptions made because the paper does not specify.**
+
+- **Time-varying AST is held at each subject's baseline** in the asunaprevir
+  virtual cohort. Osawa 2018 publishes no AST trajectory, only the baseline
+  distribution and the 5th/95th percentiles of AST at the last sampling time.
+  A subject whose AST never moves carries the *sum* of the two exponents,
+  -0.980, on `(AST/52)`. This affects the simulated spread of CL/F but not the
+  typical value, since both terms equal 1 at the reference. Structural check 5
+  exercises each AST term separately, so the covariate equation is validated
+  independently of this cohort choice.
+- **Covariate distributions** are log-normal (weight, creatinine clearance,
+  baseline AST) or Bernoulli (sex, regimen, cirrhosis, formulation), calibrated
+  on the published medians, 5th/95th percentiles and category frequencies
+  (Table 1 and the "Effect of Covariates" text) and truncated to the published
+  observed range. Correlations among covariates are **not** reproduced, although
+  the paper states that age, baseline weight and baseline creatinine clearance
+  were moderately-to-highly correlated, as were AST and ALT. Only one member of
+  each correlated set entered each final model, so the omission does not bias the
+  typical-value predictions.
+- **Dosing is 14 days of regular administration** with no missed doses, matching
+  the "after 14 days at steady state" framing of Figure 2.
+
+**Encoding decisions worth flagging to a reviewer.**
+
+- **The formulation effect is applied to CL/F and V/F, not through `f(depot)`.**
+  Table 2 labels `theta10` as an effect on `F`, but the paper's printed equations
+  apply that single coefficient to CL/F and to V/F. The two readings are
+  mathematically identical for oral-only data; the packaged model transcribes the
+  equations as printed so a reviewer can check it line by line, and structural
+  check 6 confirms it delivers exactly the 1.37-fold relative bioavailability the
+  paper reports while leaving the elimination rate constant untouched.
+- **Inter-individual variability on the residual-error magnitude is encoded.**
+  Table 2's `omega4,4` row sits in the "Random effects" block under the symbol
+  `sigma`, alongside `theta4` in the "Residual error" block. This is the NONMEM
+  `W = THETA(4) * EXP(ETA(4))` construct, and both models encode it as
+  `expSd * exp(etaexpSd)` passed to `lnorm()`. An extraction that dropped it
+  would understate the spread of simulated observations.
+- **Asunaprevir `Ka` has no eta.** The authors fixed its random effect to zero;
+  a zero-variance eta would make OMEGA singular, so it is omitted from `ini()`
+  rather than written as `fixed(0)`.
+
+**Apparent errors in the source, and how they were resolved.**
+
+- **Figure 3 caption prints the baseline creatinine clearance reference as
+  "88.48 mL/min".** The equation text, the Table 1 median (86.5) and the printed
+  5th/95th-percentile fold-changes all agree on **86.48**, which is what the
+  model uses. The caption is a typo.
+- **Table 1's asunaprevir panel is headed "Covariate (n = 256)".** Every count in
+  that panel sums to **265** (91 + 174 male/female; 22 + 243 cirrhosis;
+  43 + 222 formulation) and the Results text states 265 subjects, so the header
+  is a digit transposition.
+- **Table 1's asunaprevir AST and ALT maxima appear transposed** relative to the
+  daclatasvir panel (595 for AST and 377 for ALT, versus 377 and 595). Only the
+  AST median of 52 U/L is load-bearing for the model, and it is consistent across
+  the table, the equation text and the forest-plot arithmetic.
+- **Table 2's daclatasvir `theta8` confidence interval is printed as
+  "-0.189-0.132"**, which as a range spanning zero would contradict the stated
+  P < 0.001 significance; the other negative estimates in the same column use the
+  "-a to -b" form. The point estimate -0.122 is what the model uses and is
+  unambiguous.
+- **The covariate equations are images in the published PDF** and are absent from
+  text extraction of the article; they were recovered with `pdftotext -layout`
+  and each one is independently corroborated by the fold-changes in structural
+  check 5.
+
+**Not extracted.**
+
+- Supplementary Tables 1-4 (trial listing, prespecified covariates, base-model
+  and full-model parameters) were not available when this model was built. Only
+  the **final** models are packaged, which is the library's standing policy for
+  model-development papers, so the gap does not affect what is shipped. The
+  base-model IIV values quoted in the Results text (CL/F 39.7 %, V/F 40.7 % for
+  daclatasvir; 51.5 % and 97.4 % for asunaprevir) are recorded here for
+  completeness.
+- The paper mentions later, larger popPK analyses of both drugs that added
+  non-Japanese patients (its references 24 and 30, the latter finding race
+  significant on asunaprevir CL/F). Those are separate publications and are not
+  part of this extraction.

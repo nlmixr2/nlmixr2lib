@@ -267,10 +267,8 @@ Schreib_2024_busulfan <- function() {
     # kel_exp_famp is the paper's dk, the dimensionless fractional amplitude
     # of the change; lkel_exp_kdes is the paper's ln(kappa_k).
     #
-    # Naming ratified by the operator on 2026-08-05 (task oare_PMC11154452
-    # sidecar request-001 / response-001, question q1 answer A): mirror the
-    # registered cl_exp_ time-varying-clearance family onto kel, founding the
-    # new `_famp` fractional-amplitude role token.
+    # Mirrors the registered cl_exp_ time-varying-clearance family onto kel,
+    # founding the `_famp` fractional-amplitude role token.
     # ------------------------------------------------------------------
     kel_exp_famp          <- -0.167; label("Fractional amplitude of the change in the elimination rate constant over therapy (unitless)") # Table 3, theta_dk1 = -0.167 (SE 0.0191)
     e_hlhxlp_kel_exp_famp <- -0.145; label("Additional fractional amplitude in the HLH/XLP diagnosis group (unitless)")                   # Table 3, theta_dk2 = -0.145 (SE 0.0540, p = 0.0035)
@@ -368,20 +366,7 @@ Schreib_2024_busulfan <- function() {
     # ------------------------------------------------------------------
     # 4. ODE system. One compartment with intravenous infusion; the infusion
     # duration comes from the event table (see the TINF covariate note).
-    #
-    # ON rxode2 5.1.6 AND EARLIER, SOLVE THIS WITH
-    # rxSolve(..., useLinCmt = FALSE). This is a one-compartment
-    # linear-elimination system, so those versions' default useLinCmt = TRUE
-    # rewrote it as a closed-form linCmt() solution, which can only carry a
-    # CONSTANT rate constant and silently substituted kel_exp_total's t = 0
-    # value for all time. Verified against a hand integration: with the
-    # default flag, the AUC of every dosing interval collapsed to exactly
-    # Dose / (kel(0) * vc) and the entire time dependence disappeared. No way
-    # of writing the ODE avoided the conversion -- an explicit rate variable
-    # and a clearance-form denominator were both tested and were converted
-    # identically -- so the solve-time flag was the only mitigation. rxode2
-    # 5.1.7 refuses the conversion when it would change the model (rxode2
-    # issue 1370), so the flag is no longer required.
+
     # ------------------------------------------------------------------
     d/dt(central) <- -kel_exp_total * central
 

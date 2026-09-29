@@ -146,8 +146,7 @@ Tong_2026_vancomycin_thomson <- function() {
     #   $OMEGA 1.69   FIX                              -> Vp
     # NOTE: these source traces are on their own lines rather than trailing the
     # eta declarations. rxode2 rewrites a trailing comment on an `eta ~ ...` line
-    # into a label() call, and a comment containing double quotes then fails to
-    # parse.
+    # into a label() call, and a source trace does not belong in a label.
     # sqrt(0.0729) = 0.27 -> Table S1 "IIV on CL (%CV) 27"; sqrt(0.0225) = 0.15 ->
     # Table S1 "IIV on V (%CV) 15"; off-diagonal 0.01 gives correlation 0.247
     etalcl + etalvc ~ fixed(c(

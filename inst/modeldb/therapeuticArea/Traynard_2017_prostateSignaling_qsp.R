@@ -78,7 +78,7 @@ Traynard_2017_prostateSignaling_qsp <- function() {
     time = "min",
     dosing = paste(
       "(no dosing events; ligands and inhibitors are applied to the culture",
-      "at time 0 and enter as the STIM_* and INH_* covariates)",
+      "at time 0 and enter as the STIM_* and *_INHIBITED covariates)",
       sep = " "
     ),
     concentration = paste(
@@ -315,7 +315,7 @@ Traynard_2017_prostateSignaling_qsp <- function() {
       ),
       source_name = "TR:DHT"
     ),
-    INH_PI3K = list(
+    PI3K_INHIBITED = list(
       description = "1 = the culture was treated with a PI3K inhibitor, 0 = untreated.",
       units = "(binary)",
       type = "binary",
@@ -333,31 +333,31 @@ Traynard_2017_prostateSignaling_qsp <- function() {
       ),
       source_name = "TR:PI3Ki"
     ),
-    INH_MEK = list(
+    MEK_INHIBITED = list(
       description = "1 = the culture was treated with a MEK inhibitor, 0 = untreated.",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (no MEK inhibitor)",
-      notes = "Per-condition covariate, constant in time. Acts on the MEK node exactly as INH_PI3K acts on PI3K.",
+      notes = "Per-condition covariate, constant in time. Acts on the MEK node exactly as PI3K_INHIBITED acts on PI3K.",
       source_name = "TR:MEKi"
     ),
-    INH_MTOR = list(
+    MTOR_INHIBITED = list(
       description = "1 = the culture was treated with an mTOR inhibitor, 0 = untreated.",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (no mTOR inhibitor)",
-      notes = "Per-condition covariate, constant in time. Acts on the mTOR node exactly as INH_PI3K acts on PI3K.",
+      notes = "Per-condition covariate, constant in time. Acts on the mTOR node exactly as PI3K_INHIBITED acts on PI3K.",
       source_name = "TR:mTORi"
     ),
-    INH_P38 = list(
+    P38_INHIBITED = list(
       description = "1 = the culture was treated with a p38 MAPK inhibitor, 0 = untreated.",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (no p38 inhibitor)",
-      notes = "Per-condition covariate, constant in time. Acts on the p38 node exactly as INH_PI3K acts on PI3K.",
+      notes = "Per-condition covariate, constant in time. Acts on the p38 node exactly as PI3K_INHIBITED acts on PI3K.",
       source_name = "TR:p38i"
     ),
-    INH_IKK = list(
+    IKK_INHIBITED = list(
       description = "1 = the culture was treated with an IKK inhibitor, 0 = untreated.",
       units = "(binary)",
       type = "binary",
@@ -600,21 +600,21 @@ Traynard_2017_prostateSignaling_qsp <- function() {
     d/dt(IL6R) <- tau_IL6R * (fIl6Il6r - IL6R)
     d/dt(TNFR) <- tau_TNFR * (fTnfaTnfr - TNFR)
     d/dt(AR) <- tau_AR * (bAr - AR)
-    d/dt(PI3K) <- tau_PI3K * (bPi3k - PI3K) * (1 - INH_PI3K)
+    d/dt(PI3K) <- tau_PI3K * (bPi3k - PI3K) * (1 - PI3K_INHIBITED)
     d/dt(AKT) <- tau_AKT * (fPi3kAkt - AKT)
-    d/dt(mTOR) <- tau_mTOR * (fAktMtor - mTOR) * (1 - INH_MTOR)
+    d/dt(mTOR) <- tau_mTOR * (fAktMtor - mTOR) * (1 - MTOR_INHIBITED)
     d/dt(RPS6) <- tau_RPS6 * (fMtorRps6 - RPS6)
     d/dt(GSK3a) <- tau_GSK3a * (fAktGsk3a - GSK3a)
     d/dt(Jak) <- tau_Jak * (fIl6rJak - Jak)
     d/dt(Stat3) <- tau_Stat3 * (fJakStat3 - Stat3)
     d/dt(RAS) <- tau_RAS * (bRas - RAS)
-    d/dt(MEK) <- tau_MEK * (fRasMek - MEK) * (1 - INH_MEK)
+    d/dt(MEK) <- tau_MEK * (fRasMek - MEK) * (1 - MEK_INHIBITED)
     d/dt(ERK1_2) <- tau_ERK1_2 * (fMekErk - ERK1_2)
     d/dt(Rac) <- tau_Rac * (fRasRac - Rac)
-    d/dt(p38) <- tau_p38 * (fRacP38 - p38) * (1 - INH_P38)
+    d/dt(p38) <- tau_p38 * (fRacP38 - p38) * (1 - P38_INHIBITED)
     d/dt(HSP27) <- tau_HSP27 * (fP38Hsp27 - HSP27)
     d/dt(JNK) <- tau_JNK * (bJnk - JNK)
-    d/dt(IKKa) <- tau_IKKa * (fTnfrIkka - IKKa) * (1 - INH_IKK)
+    d/dt(IKKa) <- tau_IKKa * (fTnfrIkka - IKKa) * (1 - IKK_INHIBITED)
 
     # =====================================================================
     # Initial conditions. Every state starts at the normalized basal

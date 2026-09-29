@@ -1,9 +1,19 @@
 Voller_2017_phenobarbital <- function() {
   description <- "One-compartment first-order-absorption population PK model for phenobarbital in preterm and term newborns (Voller 2017), as packaged in DDMORE Foundation Model Repository entry DDMODEL00000256."
+  # Citation corrected 2026-09-22. The prior reference field named
+  # 'Voller S, Pichlmeier U, Bauer-Brandl A, Kloft C, Pharmacokinetics of
+  # phenobarbital in newborns: Towards model-based optimisation of the loading
+  # dose' against this same DOI/journal/volume/page range, which cannot be
+  # right -- one page range holds one article. The authoritative citation below
+  # is confirmed twice over: (a) Crossref for doi:10.1016/j.ejps.2017.05.026,
+  # and (b) reference [18] of Goulooze SC et al., Clin Pharmacokinet
+  # 2019;58:127-135 (doi:10.1007/s40262-018-0652-7, PMC6325985), which re-fits
+  # this very dataset as its case study.
   reference <- paste(
-    "Voller S, Pichlmeier U, Bauer-Brandl A, Kloft C (2017).",
-    "Pharmacokinetics of phenobarbital in newborns:",
-    "Towards model-based optimisation of the loading dose.",
+    "Voller S, Flint RB, Stolk LM, Degraeuwe PLJ, Simons SHP, Pokorna P,",
+    "Burger DM, de Groot R, Tibboel D, Knibbe CAJ (2017).",
+    "Model-based clinical dose optimization for phenobarbital in neonates:",
+    "an illustration of the importance of data sharing and external validation.",
     "European Journal of Pharmaceutical Sciences 109S:S90-S97.",
     "doi:10.1016/j.ejps.2017.05.026.",
     "DDMORE Foundation Model Repository: DDMODEL00000256.",
@@ -75,11 +85,29 @@ Voller_2017_phenobarbital <- function() {
   population <- list(
     n_subjects = 53,
     n_studies = 1,
-    age_range = "Preterm and term newborns; postnatal age (PNA) range not extractable from the DDMORE bundle (Voller 2017 PDF not on disk). The bundle's simulated dataset spans PNA 0-58 days across 5 representative subjects.",
-    weight_range = "Birth weight (BWEIGHT) range not extractable from the DDMORE bundle. The bundle's simulated dataset includes subjects from 0.8 kg (extreme preterm) to 4.2 kg (term).",
+    age_range = "Preterm and term newborns; postnatal age (PNA) range not extractable from the DDMORE bundle (Voller 2017 PDF not available when this model was built). The bundle's simulated dataset spans PNA 0-58 days across 5 representative subjects.",
+    weight_range = paste(
+      "Body weight 0.45-4.5 kg, median 2.7 kg (n = 53). Source: Goulooze SC et al.,",
+      "Clin Pharmacokinet 2019;58:127-135 (doi:10.1007/s40262-018-0652-7), Sect. 2.1,",
+      "which re-fits this same 53-neonate dataset as its case study and cites Voller",
+      "2017 as its origin. Goulooze reports a single 'weight' covariate and does not",
+      "state whether the range is current or birth weight; the reported median of",
+      "2.7 kg coincides with this model's current-body-weight (WT) reference of",
+      "2.70 kg, whereas the birth-weight (WT_BIRTH) reference is 2.59 kg, so the range",
+      "is recorded here as current body weight. Birth-weight range remains unreported.",
+      "For comparison, the DDMORE bundle's simulated dataset spans 0.8 kg (extreme",
+      "preterm) to 4.2 kg (term)."
+    ),
     sex_female_pct = "Not extractable from DDMORE bundle.",
     race_ethnicity = "Not extractable from DDMORE bundle.",
-    disease_state = "Preterm and term newborns receiving phenobarbital (typical clinical indication: prevention or treatment of neonatal seizures). The DDMORE bundle does not specify the indication or NICU setting.",
+    disease_state = paste(
+      "Preterm and term newborns receiving phenobarbital (typical clinical indication:",
+      "prevention or treatment of neonatal seizures). The DDMORE bundle does not specify",
+      "the indication or NICU setting. Goulooze 2019 Sect. 2.1 adds that the underlying",
+      "concentrations were collected during routine therapeutic drug monitoring (TDM),",
+      "not a prospective rich-sampling study, and that samples were drawn up to 80 h",
+      "after the last phenobarbital dose."
+    ),
     dose_range = paste(
       "Phenobarbital given as an IV loading dose (typically a short infusion to the",
       "central compartment) followed by oral maintenance doses to the gastrointestinal",
@@ -93,12 +121,21 @@ Voller_2017_phenobarbital <- function() {
       "Population description is reconstructed from the .mod / .lst $PROBLEM line",
       "('Phenobarbital PK in newborns'), the 53-subject / 229-observation totals from",
       "the .lst data-summary block, and the simulated event-table demographics. The",
-      "full Voller 2017 publication PDF is not on disk under",
-      "/home/bill/github/mab_human_consensus/literature/; detailed demographics",
+      "full Voller 2017 publication PDF was not available when this model was",
+      "built; detailed demographics",
       "(age range, weight range, sex distribution, race, indication, regional setting)",
-      "could not be cross-checked. The DDMORE entry's RDF metadata describes the",
-      "purpose as 'The PK of phenobarbital was quantified in preterm and term newborns,",
-      "to optimize drug dosing.'"
+      "could not be cross-checked against the publication itself. The DDMORE entry's",
+      "RDF metadata describes the purpose as 'The PK of phenobarbital was quantified in",
+      "preterm and term newborns, to optimize drug dosing.'",
+      "Partially cross-checked 2026-09-22 against a secondary source that has since become available:",
+      "Goulooze SC et al., Clin Pharmacokinet 2019;58:127-135",
+      "(doi:10.1007/s40262-018-0652-7, PMC6325985) re-fits this dataset as its case",
+      "study and reports n = 53 neonates (matching the .lst subject count), body weight",
+      "0.45-4.5 kg with median 2.7 kg (matching this model's 2.70 kg WT reference), TDM",
+      "sampling up to 80 h after the last dose, and a typical V of 2.37 L against this",
+      "model's 2.38 L. Sex distribution, race and regional setting remain unreported in",
+      "both sources. Goulooze is a secondary source for these facts; the Voller 2017",
+      "publication PDF is still not available."
     )
   )
 

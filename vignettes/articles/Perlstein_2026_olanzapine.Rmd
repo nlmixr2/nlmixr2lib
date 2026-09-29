@@ -666,8 +666,8 @@ correctly across repeated injections.
 
 ## Parameter naming: reciprocal encoding of the release times
 
-Following the operator ruling on this extraction's naming sidecar, the release
-processes reuse the register's existing Weibull stems `ra` / `gam1` (founded by
+Following a maintainer ruling on the parameter naming, the release processes
+reuse the register's existing Weibull stems `ra` / `gam1` (founded by
 `Desai_2016_isavuconazole`) plus new second-process partners `ra2` / `gam2`,
 rather than founding a parallel time-scale family. `ra` is a *rate* scaler and
 the paper reports *times*, so the two are reciprocals: the printed `TD = 117 h`

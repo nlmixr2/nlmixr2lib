@@ -66,7 +66,7 @@ LopezArguello_2023_imipenem_qsp <- function() {
         "Imipenem was the backbone drug of all five datasets and Table S1 reports a single set of",
         "imipenem acylation rate constants; dataset 1 was selected here for the nuisance",
         "parameters, which the paper does not attribute to a particular dataset for imipenem",
-        "(operator decision, task oare_PMC10269149 sidecar request-001 q2, answer A)."
+        "(the maintainers' decision)."
       ),
       "The total number of PBP molecules per cell (1,731) was borrowed from published Escherichia coli data and split across the six PBPs using the P. aeruginosa relative band intensities (Materials and Methods, Mass balance equations; Table S3)."
     )

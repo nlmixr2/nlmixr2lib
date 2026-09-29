@@ -380,7 +380,7 @@ deserve to be called out explicitly.
   unpublished correlation structure cannot be reconstructed.
 
 * **`complex_peripheral` is a non-canonical compartment name.** The
-  canonical compartment register (`naming-conventions.md`) covers
+  canonical compartment register (`inst/references/compartment-names.md`) covers
   `target`, `complex`, and `total_target` for explicit binding models
   but does not currently list a peripheral-complex name. We use
   `complex_peripheral` for the second complex compartment because

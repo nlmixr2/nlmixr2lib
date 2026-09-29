@@ -525,13 +525,12 @@ approached).
   typical-value PK parameters (D = 326 mg, F = 1.01, ka = 2.42, V/F = 7.05,
   CL/F = 1.02, kel = 0.145), the predicted total Cmax is 38.7 mg/L = 87.8
   uM total, giving fu = 56 / 87.8 = 0.64. The same `fu` is applied to both
-  species because no species difference was reported. Operator-confirmed
-  via sidecar 2026-06-17 (see `tracking/operator_followups.md` if open).
-  PF-00821385 development was discontinued at first-in-human (paper
-  Conclusion: "further development of PF-00821385 will not be pursued"),
-  so author correspondence is unlikely to recover the original NONMEM
-  value. A user with access to a different `fu` measurement can override
-  `lfu` at simulation time.
+  species because no species difference was reported. Confirmed by the
+  maintainers (2026-06-17). PF-00821385 development was discontinued at
+  first-in-human (paper Conclusion: "further development of PF-00821385
+  will not be pursued"), so author correspondence is unlikely to recover
+  the original NONMEM value. A user with access to a different `fu`
+  measurement can override `lfu` at simulation time.
 - **Canine text-table discrepancy on PD IIV.** The Methods text states "IIV
   was included on the following structural parameters: baseline HR and
   amplitude of the circadian effect" but Table 1 reports variance terms

@@ -268,10 +268,10 @@ Bian_2024_lefamulin_higher_ppb <- function() {
     # ELF exposures for the IV 1 h, oral fasted and oral fed regimens
     # (Table S6: 16.12, 18.10 and 16.49 mg*h/L) by 23.1%, 21.9% and
     # 20.0%, whereas 3.45 lands within -2.1% to +1.9% across
-    # all five simulated regimens. Encoding the back-solved value is an explicit operator
-    # ruling that
-    # overrides the usual "values from the paper" rule; see the
-    # vignette's Assumptions and deviations section.
+    # all five simulated regimens. Encoding the back-solved value is an
+    # explicit decision by the maintainers that overrides the usual
+    # "values from the paper" rule; see the vignette's Assumptions and
+    # deviations section.
     # ================================================================
     lpenratio_elf     <- log(3.45); label("Lung penetration ratio at 1 mg/L unbound plasma, ELF (unitless)") # BACK-SOLVED from Table S6; Table S2 prints 2.71 (see comment above)
     pwr_penratio_elf  <- 0.51;      label("Power on the unbound plasma concentration in the ELF penetration function (unitless)") # theta29 Power, Table S2

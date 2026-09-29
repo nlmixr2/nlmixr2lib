@@ -100,7 +100,7 @@ reported ranges; baseline hs-CRP sampled log-normally about 8.15 mg/L and
 constrained to the reported range 0.7-215 mg/L.
 
 **Cohort size: 150 participants per active arm x 3 dose arms = 450
-participants total** (the skill caps at 200/arm; keeping some headroom
+participants total** (the cohort cap is 200/arm; keeping some headroom
 below the cap for render-time safety with the multi-output ODE system).
 
 ```{r cohort}

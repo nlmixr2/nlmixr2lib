@@ -59,7 +59,7 @@ Novakovic_2017_cladribine <- function() {
     notes = paste(
       "Per-trial demographic detail (n_subjects, weight, sex distribution, geographic mix) is",
       "not reproduced in the DDMORE Foundation Model Repository bundle for DDMODEL00000223,",
-      "and the Novakovic 2017 publication is not on disk in this worktree. The model includes",
+      "and the Novakovic 2017 publication was not available when this model was built. The model includes",
       "Full Random Effects on covariates (FREM) for Age, months since diagnosis (MSD), and the",
       "annualised exacerbation-rate baseline (EXNB) - the FREM means are exposed as parameters",
       "(`age_mean`, `msd_mean`, `exnb_mean`) and the FREM continuous-covariate observations are",

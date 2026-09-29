@@ -32,7 +32,7 @@ estimates reported previously" and evaluated it against an independent cohort of
 and 2 give every structural constant, and the Methods text gives both
 inter-individual variances and both residual-error terms -- so the extraction
 below is sourced entirely from Stockmann 2015 and no value is carried in from a
-publication that is not on disk.
+publication that was not available when this model was built.
 
 # Population
 
@@ -129,7 +129,9 @@ typ_ev <- bind_rows(
   mutate(WT = ref_wt, PAGE = ref_pma, CREAT = ref_cr) |>
   arrange(time, desc(evid))
 
-sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_ev) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_ev,
+                           maxsteps = 1e6) |>
   as.data.frame()
 
 cl_mod <- sim_typ$cl[1]
@@ -276,7 +278,15 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # Simulation
 
 ```{r simulate}
-sim <- rxode2::rxSolve(mod, events = events, keep = c("amt_mg")) |>
+# The mass-balance identity below is gated at 1e-6 %, so both the ODE solve
+# and its `ss = 1` steady-state search run at tight tolerances: at the
+# defaults the steady-state search alone leaves ~1e-4 % of residual.
+sim <- rxode2::rxSolve(
+  mod, events = events, keep = c("amt_mg"),
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
+) |>
   as.data.frame()
 
 sim_obs <- sim |> filter(!is.na(Cc))
@@ -312,9 +322,10 @@ numerical integration error and a tight bound is correct.
 per_sub <- per_sub |>
   mutate(auc_pct = 100 * (auc24_trap - auc24) / auc24)
 
-# Realised max |% diff| was ~1e-12 at each of five seeds; 1e-6 leaves ample
-# headroom for a coarser integration grid while still failing loudly on any
-# scaling or steady-state error.
+# Realised max |% diff| was ~1e-12 at each of five seeds with the analytic
+# solution, and ~5e-8 with the ODE integrated at rtol 1e-10 / ssRtol 1e-10;
+# 1e-6 leaves headroom for either while still failing loudly on any scaling
+# or steady-state error.
 stopifnot(max(abs(per_sub$auc_pct)) < 1e-6)
 
 sprintf(
@@ -575,7 +586,8 @@ agrees to within about 8%.
   structural and variance parameter to the previously published estimates of
   Frymoyer 2014 and estimated nothing, so all `ini()` entries are wrapped in
   `fixed()` and none carries a standard error or confidence interval. Frymoyer
-  2014 is not on disk, but it is not needed: Stockmann 2015 reprints the complete
+  2014 was not available when this model was built, but it is not needed:
+  Stockmann 2015 reprints the complete
   model. The Stockmann 2015 reference list cites Frymoyer 2014 without volume,
   pages or DOI, so the model file records it exactly that way rather than
   supplying identifiers that are not in the source.

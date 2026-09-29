@@ -270,7 +270,7 @@ Anbari_2023_atezolizumab_cibisatamab_qsp <- function() {
     # ------------------------------------------------------------------
     # Symbols used by the Table S6 reaction rate laws that Table S4 does
     # not itself list. Six are exact renames of a Table S4 entry; two are
-    # recovered from the on-disk upstream SimBiology export of Ma 2020b,
+    # recovered from the upstream SimBiology export of Ma 2020b,
     # which Anbari 2023 states the TCE binding module is based on. See the
     # vignette Errata section.
     # ------------------------------------------------------------------

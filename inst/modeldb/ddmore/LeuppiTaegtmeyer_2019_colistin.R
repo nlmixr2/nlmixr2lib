@@ -77,7 +77,7 @@ LeuppiTaegtmeyer_2019_colistin <- function() {
   population <- list(
     n_subjects = 10L,
     n_studies = 1L,
-    age_range = "adults (critically ill, ICU); detailed age statistics not in the DDMORE bundle and the linked publication is not on disk",
+    age_range = "adults (critically ill, ICU); detailed age statistics not in the DDMORE bundle and the linked publication was not available when this model was built",
     weight_range = "adult body-weight range; not in the DDMORE bundle",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
@@ -85,7 +85,7 @@ LeuppiTaegtmeyer_2019_colistin <- function() {
     dose_range = "Loading dose 9 MIU CMS (~720 mg of CMS sodium / ~300 mg colistin equivalents) IV, then 3 MIU q8h maintenance (~240 mg CMS sodium / ~100 mg colistin equivalents per dose). Dosing follows the standard normal-renal-function regimen (the study question was whether CRRT removal mandates dose adjustment).",
     regions = "Multicenter Switzerland (Basel, Lausanne, Zurich) per the DDMORE-bundle Model_Accommodations file; specific site mix not enumerated.",
     crrt_modality = "Continuous renal replacement therapy. The model abstracts the CRRT circuit as a series of two compartments (filter and cartridge) with priming volumes V_filter = 0.2 L and V_cart = 0.3 L, and operational flow rates QBL (blood) and QEFF (effluent) supplied per event. Sieving coefficients SC_CMS and SC_COL govern membrane permeability for the two analytes.",
-    notes = "n_subjects = 10 per the DDMORE bundle's Model_Accommodations.txt and the .rdf model-has-description-long field ('CMS and colistin pharmacokinetics were assessed prospectively in 10 critically ill patients requiring CRRT. Extensive pharmacokinetic sampling was performed on treatment day 1, 3 and 5 after administration of a loading dose of CMS, followed by a maintenance dosage every eight hours.'). The linked publication (Leuppi-Taegtmeyer 2019, AAC) is not present on the operator's disk, so detailed baseline demographics (age, weight, sex, study sites, comorbidities) could not be read from Table 1; populate these fields if the paper PDF becomes available."
+    notes = "n_subjects = 10 per the DDMORE bundle's Model_Accommodations.txt and the .rdf model-has-description-long field ('CMS and colistin pharmacokinetics were assessed prospectively in 10 critically ill patients requiring CRRT. Extensive pharmacokinetic sampling was performed on treatment day 1, 3 and 5 after administration of a loading dose of CMS, followed by a maintenance dosage every eight hours.'). The linked publication (Leuppi-Taegtmeyer 2019, AAC) was not available when this model was built, so detailed baseline demographics (age, weight, sex, study sites, comorbidities) could not be read from Table 1; populate these fields if the paper PDF becomes available."
   )
 
   ini({

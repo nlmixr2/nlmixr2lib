@@ -373,7 +373,7 @@ knitr::kable(
 ## The dialysis gate is load-bearing
 
 Everything above depends on the dialysis-clearance arm actually being applied
-while a session runs. Until 2026-09-12 it was not: the model carried the gated
+while a session runs. In an earlier revision it was not: the model carried the gated
 sum in a separate `cl_total` and rxode2 solved the system analytically from
 `cl` and `vc`, discarding the explicit `d/dt()`, so the reported `cl_total` and
 `kel` columns switched with the gate while the simulated amounts did not. The
@@ -408,7 +408,7 @@ gate_check <- tibble::tibble(
 
 stopifnot(
   # Structural: the dialysis arm must move the solution at all. This is the
-  # assertion the pre-2026-09-12 model failed, silently.
+  # assertion that earlier revision failed, silently.
   all(abs(gate_check$Gate_live - gate_check$Gate_inert) /
         gate_check$Gate_inert > 0.25),
   # The typical-value solve reproduces the published cohort means. Tight
@@ -421,7 +421,7 @@ stopifnot(
 knitr::kable(
   gate_check,
   digits = 2,
-  caption = "Typical-subject exposure with the dialysis gate live, with it forced off (the behaviour the model silently had before 2026-09-12), and the Veinstein 2013 published values. Ignoring the dialysis arm over-predicts AUC0-24 roughly 2.5-fold and the 24-h trough roughly 3-fold.",
+  caption = "Typical-subject exposure with the dialysis gate live, with it forced off (the behaviour an earlier revision of the model silently had), and the Veinstein 2013 published values. Ignoring the dialysis arm over-predicts AUC0-24 roughly 2.5-fold and the 24-h trough roughly 3-fold.",
   align = c("l", "r", "r", "r")
 )
 ```
@@ -441,7 +441,7 @@ knitr::kable(
   `cl <- exp(lcl + etalcl) * WT + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`, where
   `cl_hemodialysis` is a primary estimated typical-value clearance
   (Table 4 CL_HD = 0.955 mL/min/kg). The single assignment is load-bearing and
-  not a stylistic choice: until 2026-09-12 this model carried the gated sum in
+  not a stylistic choice: an earlier revision of this model carried the gated sum in
   a separate `cl_total` variable and eliminated via `cl_total / vc`, which left
   the dialysis arm **silently inert** -- rxode2 solved the one-compartment
   system analytically from `cl` and `vc` and discarded the explicit `d/dt()`,

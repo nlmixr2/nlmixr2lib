@@ -104,7 +104,7 @@ Decrane_2023_oxyfluorfen_human <- function() {
 
     # Cardiac output (L/h/kg^0.75) = -6.846*log10(age) + 16.775.
     # NB the leading minus sign is present in the PDF text layer; the
-    # docling-converted markdown drops it. At age 30 this evaluates to
+    # plain-text extraction of the PDF drops it. At age 30 this evaluates to
     # 6.662 L/h/kg^0.75 -> 178 L/h at 80 kg, which is below the Brown et al.
     # (1997) adult human cardiac output. Carried verbatim per the
     # trust-the-printed-equation rule; see the vignette Errata.

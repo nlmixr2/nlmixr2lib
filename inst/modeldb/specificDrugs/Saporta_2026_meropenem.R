@@ -134,8 +134,8 @@ Saporta_2026_meropenem <- function() {
     # ERRATUM: Table 1's two PK residual rows are internally transposed --
     # the row NAMED RESPlasma is DESCRIBED as "Residual error of ELF PK" and
     # the row named RESELF as "Residual error of plasma PK". The parameter-name
-    # column is taken as authoritative here (operator ruling); see the vignette
-    # Errata. This assignment is an inference, not a printed fact.
+    # column is taken as authoritative here (the maintainers' ruling); see
+    # the vignette Errata. This assignment is an inference, not a printed fact.
     expSd <- 0.816; label("Exponential residual SD on the plasma meropenem concentration (log scale)")  # Table 1: RESPlasma = 0.816, RSE 17%
     expSd_Celf <- 0.738; label("Exponential residual SD on the ELF meropenem concentration (log scale)") # Table 1: RESELF = 0.738, RSE 22%
     addSd_cfu <- 0.623; label("Additive residual SD on the log10 bacterial count (log10 CFU/lung)")     # Table 1: RESPD = 0.623 log10 CFU/lung, RSE 14%

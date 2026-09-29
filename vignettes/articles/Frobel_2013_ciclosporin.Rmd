@@ -269,29 +269,29 @@ dialysis time / female sex / high baseline weight), as expected for a
 base model whose covariate effects fall inside the joint clinical-
 relevance bands.
 
-# Mechanistic sanity checks (verification-checklist F.2)
+# Mechanistic sanity checks
 
 The model is a TTE survival model, not a PK/PD concentration model -
 PKNCA is not the right validation tool. The checks below exercise the
 hazard equation under controlled inputs.
 
-## F.2.1 - typical-value hazard transitions match Table 3 exactly
+## Check 1 - typical-value hazard transitions match Table 3 exactly
 
 Shown above in the Figure 1 cross-check.
 
-## F.2.2 - cumulative hazard is the time-integral of the piecewise hazard
+## Check 2 - cumulative hazard is the time-integral of the piecewise hazard
 
 Shown above in the Figure 2 cross-check; maximum absolute error of the
 simulated survival vs. hand calculation is below 1e-4 at every break
 point.
 
-## F.2.3 - survival is monotonically non-increasing
+## Check 3 - survival is monotonically non-increasing
 
 ```{r monotonic}
 stopifnot(all(diff(sim$sur) <= 1e-12))
 ```
 
-## F.2.4 - long-time-horizon survival saturates at the late hazard
+## Check 4 - long-time-horizon survival saturates at the late hazard
 
 After day 100 the hazard is fixed at h5 = 0.00013/day, so survival
 decays exponentially with rate 0.00013/day. At the longest observed

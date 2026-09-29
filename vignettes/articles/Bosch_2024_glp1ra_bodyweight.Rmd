@@ -226,10 +226,10 @@ estimates differ because each study has its own LSCI and Kred.
 
 When no drug is dosed and the lifestyle / activity / drug effects are
 all silenced, the body composition model should hold its baseline weight
-indefinitely. This is the steady-state hold described in
-`references/endogenous-validation.md`. The Bosch 2024 model is calibrated
-so the energy intake at baseline (`ei_init = RMR_init * PAL = 1.6 * RMR`)
-equals total energy expenditure at PAL = 1.6.
+indefinitely. This is the steady-state hold check used for endogenous
+models. The Bosch 2024 model is calibrated so the energy intake at baseline
+(`ei_init = RMR_init * PAL = 1.6 * RMR`) equals total energy expenditure at
+PAL = 1.6.
 
 ```{r steady-state}
 ss_subject <- step5_subject

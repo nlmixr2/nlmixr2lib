@@ -92,9 +92,9 @@ tribble(
   knitr::kable(caption = "Source trace for every parameter and equation.")
 ```
 
-**Note on equation recovery.** The preprocessed `_trimmed.md` for this article
-dropped all seven display equations as `formula-not-decoded`. Equations 1-7 were
-recovered from the PDF with `pdftotext -layout`. Equations 5-7 as printed are:
+**Note on equation recovery.** The article's seven display equations do not
+survive ordinary text extraction from the PDF. Equations 1-7 were recovered
+with `pdftotext -layout`. Equations 5-7 as printed are:
 
 ```
 (5)  dOEm/dt      = kon * Clung * Emfree - koff * OEm
@@ -413,11 +413,10 @@ improve the match.**
 
 # Assumptions and deviations
 
-This extraction was performed under operator sidecar decision
-`oare_PMC10946252` `request-001` = **option B**, answered 2026-08-05. The
-alternatives offered and not chosen were: (A) encode Eqs 5-7 verbatim with no
-complex elimination, (C) skip the paper, (D) defer pending author
-correspondence.
+This extraction follows the approach set out below, chosen by the maintainers
+on 2026-08-05. The alternatives considered and not chosen were to encode Eqs
+5-7 verbatim with no complex elimination, to skip the paper, or to defer
+pending author correspondence.
 
 1. **The whole-body PBPK layer is deliberately not extracted.** See the table
    at the top of this vignette. Liang 2024 publishes drug-specific properties
@@ -427,7 +426,7 @@ correspondence.
    a user-supplied `CEFFECT` covariate.
 
 2. **The complex ODE carries an inferred `-kdeg*complex` term that is not in
-   any on-disk source.** This is the single most important deviation.
+   any available source.** This is the single most important deviation.
    * As printed, Eq 5 is `dOEm/dt = kon*Clung*Emfree - koff*OEm`, and the
      authors' supplementary listing agrees (`d/dt(TC) = kon*Cc*fu*Tfree -
      Koff*TC`). With `koff = 0` this makes `dOEm/dt >= 0` always, so the

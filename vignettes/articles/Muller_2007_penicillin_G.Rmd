@@ -94,7 +94,7 @@ Table 2 (page 3723).
 | `lvc`  (V1, central volume)                   | log(0.359)           | Table 2: V1 = 0.359 L (SE 0.0558)                              |
 | `lvp`  (V2, peripheral volume)                | log(0.152)           | Table 2: V2 = 0.152 L (SE 0.0312)                              |
 | `lq`   (Q, intercompartmental clearance)      | log(0.774)           | Table 2: Q = 0.774 L/h (SE 0.277)                              |
-| `e_wt_cl` (exponent of WT/1.195 on CL)        | fixed(1.0)           | Imputed (operator sidecar-001 Q2=B); see Errata                |
+| `e_wt_cl` (exponent of WT/1.195 on CL)        | fixed(1.0)           | Imputed (maintainer decision); see Errata                      |
 | `etalcl` (IIV omega^2 on CL)                  | 0.164                | Table 2 "Variance model parameters": omega^2(CL) = 0.164 (SE 0.0865) |
 | `etalvc` (IIV omega^2 on V; see Errata)       | 0.39                 | Table 2: omega^2(V1) = 0.39 (SE 0.126); see Errata for V1-vs-V2 |
 | `propSd` (proportional residual SD)           | sqrt(0.104)=0.3225   | Table 2: variance sigma^2_prop = 0.104 (SE 0.0316)             |
@@ -394,14 +394,13 @@ knitr::kable(
 # Assumptions and deviations
 
 - **Body-weight effect on CL -- imputed linear scaling at the cohort-mean
-  reference (operator sidecar-001 Q2=B).** Muller 2007 Results page 3724
+  reference (maintainer decision).** Muller 2007 Results page 3724
   and Figure 3 state that body weight was retained on CL in the final
   model (P < 0.01, improved fit), but neither the functional form
   (linear / power / allometric) nor the coefficient is printed in the
-  paper. Per the operator's response to the dispatch-time sidecar
-  question 2 (option B), the packaged model encodes CL = CL_ref *
-  (WT / 1.195 kg)^1, with the reference weight set to the cohort mean
-  (Muller 2007 Table 1) and the exponent fixed at 1. CL at the
+  paper. Per the maintainers' decision, the packaged model encodes
+  CL = CL_ref * (WT / 1.195 kg)^1, with the reference weight set to the
+  cohort mean (Muller 2007 Table 1) and the exponent fixed at 1. CL at the
   reference subject is 0.103 L/h (Table 2). This is a defensible
   imputation that matches the paper's qualitative claim "CL increased
   significantly with increasing body weight" and reproduces the
@@ -409,20 +408,20 @@ knitr::kable(
   the paper.
 
 - **IIV second-volume term assigned to V1 (central) -- Table 2 vs body
-  text discrepancy (operator sidecar-001 Q1=A).** Muller 2007 has an
+  text discrepancy (maintainer decision).** Muller 2007 has an
   internal inconsistency: Table 2 (page 3723) explicitly labels the
   row "Interindividual variability in V1" with V1 subscripted, and
   the Table 2 footnote defines V1 = central. The Results narrative
   (page 3723, right column) and the Discussion (page 3724, left
   column) each say IIV was on V2 (the peripheral compartment) -- two
-  separate places. Per the operator's response to the dispatch-time
-  sidecar question 1 (option A), the packaged model encodes IIV on V1
-  (the central volume) as `etalvc ~ 0.39`. This matches the parameter
-  estimates table; reviewers comparing against the paper's narrative
-  text should expect the table-vs-text discrepancy. A future erratum
-  or author-correspondence resolution may flip this to V2; users who
-  want the V2-IIV alternative can edit the packaged file to use
-  `etalvp ~ 0.39` (with `etalvc` removed) and rebuild.
+  separate places. Per the maintainers' decision, the packaged model
+  encodes IIV on V1 (the central volume) as `etalvc ~ 0.39`. This
+  matches the parameter estimates table; reviewers comparing against
+  the paper's narrative text should expect the table-vs-text
+  discrepancy. A future erratum or author-correspondence resolution
+  may flip this to V2; users who want the V2-IIV alternative can edit
+  the packaged file to use `etalvp ~ 0.39` (with `etalvc` removed)
+  and rebuild.
 
 - **Infusion-rate IIV not encoded.** Muller 2007 Results page 3723
   reports that an IIV on the infusion rate was also estimable, with

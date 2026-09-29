@@ -664,7 +664,7 @@ stopifnot(all(safety_margin$gap > 0))
   ticks every 24 h, and Figure 4B labels the same axis Day 1 to Day 4). An early
   low-resolution read suggesting ~65 h was a misread of the red LOWESS curve for
   the black median line. Adopted per the standing policy for an undefined
-  centering value; confirmed by the operator.
+  centering value; confirmed by the maintainers.
 * **Time postpartum is declared in canonical weeks and converted in `model()`.**
   `TPP`'s canonical unit is weeks; the paper's `PST` is hours. Because only the
   ratio enters Equation 5, `tppHours <- TPP * 168` with a 54 h reference is

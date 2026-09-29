@@ -85,7 +85,7 @@ Original individual-level data are not publicly available. The cohort below appr
 
 ```{r cohort}
 set.seed(2018L)
-n_per_arm <- 100L                       # 200 total; cap <= 200 per arm per skill guidance
+n_per_arm <- 100L                       # 200 total; within the 200-per-arm cohort cap
 
 make_cohort_arm <- function(n, dose_mg, id_offset) {
   tibble(

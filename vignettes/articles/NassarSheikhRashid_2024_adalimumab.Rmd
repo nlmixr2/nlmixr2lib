@@ -169,7 +169,7 @@ knitr::kable(claims, digits = 4,
              caption = "Deterministic covariate-model checks against the values printed in Nassar-Sheikh Rashid 2024.")
 
 # These are algebraic identities, not simulated statistics, so a tight bound is
-# the correct gate here (see known-vignette-failure-patterns.md pattern 11).
+# the correct gate here.
 # The tolerance is set by the paper's own rounding: 0.269 and 1.59 are printed
 # to 3 significant figures, and 0.5946 is 0.5^0.75 rounded to 4.
 stopifnot(max(abs(claims$`% diff`)) < 0.2)
@@ -449,8 +449,7 @@ strata |>
 # detectable ADA, without uveitis during adalimumab treatment and with CRP
 # levels below 1 mg/L". Each of the four contrasts below is driven by a
 # covariate coefficient of at least 28% on clearance, so the ORDERING is a real
-# structural claim rather than a near-zero effect whose sign could flip
-# (contrast pattern 12 of known-vignette-failure-patterns.md).
+# structural claim rather than a near-zero effect whose sign could flip.
 panel_dir <- strata |>
   dplyr::group_by(panel, level) |>
   dplyr::summarise(med = stats::median(Cc), .groups = "drop_last") |>
@@ -482,7 +481,7 @@ nca_for <- function(sim, ev) {
     dplyr::select(id, time, Cc, arm) |>
     dplyr::mutate(arm = as.character(arm))
 
-  # Time-zero guarantee (pknca-recipes.md); pre-dose Cc = 0 is correct for a
+  # Time-zero guarantee; pre-dose Cc = 0 is correct for a
   # subcutaneous model. Any existing time-zero row wins.
   sim_nca <- dplyr::bind_rows(
     sim_nca,

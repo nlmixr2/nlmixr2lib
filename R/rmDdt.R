@@ -43,7 +43,9 @@
 #' @return modelLines with the compartment property lines removed
 #' @noRd
 .rmCmtPropLines <- function(modelLines, cmts) {
-  .props <- c("f", "lag", "alag", "dur", "rate")
+  # rxode2 accepts F() as an alias of f() and lstExpr keeps the
+  # spelling, so both must be enumerated
+  .props <- c("f", "F", "lag", "alag", "dur", "rate")
   .exprs <- unlist(
     lapply(cmts, function(cmt) {
       c(

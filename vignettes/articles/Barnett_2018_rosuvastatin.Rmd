@@ -208,7 +208,7 @@ cat("Cmax fold-increase (sim, typical-value):", round(cmax_rif / cmax_alone, 2),
 cat("Barnett 2018 reported Cmax fold-increase: ~13.2x\n")
 ```
 
-The typical-value simulation underestimates the published mean Cmax fold-increase (paper reports ~13.2x; typical-value sim gives ~10x). The discrepancy is within the ~20% range that the skill's verification checklist flags for narrative discussion rather than parameter tuning. Likely contributors: (1) the typical-value simulation reproduces the population-typical trajectory, whereas the published 13.2x is the cohort mean ratio that includes between-subject variability; (2) the binary CONMED_RIF covariate captures the period-averaged effect on V1 / V2 / Q rather than the instantaneous Cmax dynamics.
+The typical-value simulation underestimates the published mean Cmax fold-increase (paper reports ~13.2x; typical-value sim gives ~10x). The discrepancy is within the ~20% range that the package's validation checklist flags for narrative discussion rather than parameter tuning. Likely contributors: (1) the typical-value simulation reproduces the population-typical trajectory, whereas the published 13.2x is the cohort mean ratio that includes between-subject variability; (2) the binary CONMED_RIF covariate captures the period-averaged effect on V1 / V2 / Q rather than the instantaneous Cmax dynamics.
 
 # Assumptions and deviations
 

@@ -845,7 +845,7 @@ in the under-6 column alone). None of these touch a parameter used by the model.
 
 **A new canonical covariate column was registered.** `ASSAY_IFX` is an integer
 1-6 code naming which commercial infliximab ELISA measured a sample, added to
-`inst/references/covariate-columns.md` as an auto-approved member of the
+`inst/references/covariate-columns.md` as a member of the accepted
 `ASSAY_<method>` family. An integer stratum rather than five or six paired
 binary indicators follows the guidance already recorded in the `ASSAY_CMIA`
 entry for datasets mixing more than two assays, and the `STUDY_TACRO_FRANCKE`

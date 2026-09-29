@@ -593,6 +593,8 @@ typ <- rxode2::rxSolve(mod, typical_events(times = obs_pk),
 long <- rxode2::rxSolve(mod, typical_events(times = seq(24, 400, by = 0.5)),
                         omega = NA, returnType = "data.frame",
                         atol = 1e-10, rtol = 1e-10)
+# Keep Cc >= 1e-6 * Cmax (the peak is in `typ`; `long` starts at 24 h): below that the ODE integrator has no relative accuracy left.
+long <- filter(long, Cc >= 1e-6 * max(typ$Cc))
 
 fit_thalf <- function(d) {
   log(2) / -stats::coef(stats::lm(log(Cc) ~ time, data = d))[[2]]
@@ -623,7 +625,7 @@ mechanism, one generation earlier.
 - **Residual-error scale.** Table 4 reports "Additive error 0.0420" in the
   logarithmic domain without stating whether the figure is the NONMEM `$SIGMA`
   variance or a standard deviation. It is read here as a **variance**, so
-  `expSd = sqrt(0.0420) = 0.2049` (a 20.7% residual CV). Operator-ratified
+  `expSd = sqrt(0.0420) = 0.2049` (a 20.7% residual CV). Maintainer-ratified
   reading. Supporting evidence: the NONMEM `$SIGMA` convention; this being the
   only variability row left in raw NONMEM units while every other was converted
   to CV%; the reported 2.4% RSE matching the `sqrt(2/1920) = 3.2%` expected of a

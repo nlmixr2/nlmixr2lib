@@ -1,8 +1,8 @@
 ---
-title: "Rivaroxaban (Willmann 2018)"
+title: "Rivaroxaban in children, EINSTEIN-Jr phase I (Willmann 2018b)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Rivaroxaban (Willmann 2018)}
+  %\VignetteIndexEntry{Rivaroxaban in children, EINSTEIN-Jr phase I (Willmann 2018b)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -46,14 +46,14 @@ reported in the accompanying clinical study publication, reference 18 of
 Willmann 2018).
 
 ```{r population-summary}
-mod_meta <- readModelDb("Willmann_2018_rivaroxaban")
+mod_meta <- readModelDb("Willmann_2018b_rivaroxaban")
 mod_meta()$population
 ```
 
 # Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each `ini()`
-entry in `inst/modeldb/specificDrugs/Willmann_2018_rivaroxaban.R`. The table
+entry in `inst/modeldb/specificDrugs/Willmann_2018b_rivaroxaban.R`. The table
 below collects them in one place for review. All values come from Willmann 2018
 Table 1 ("Population estimates for the first pediatric PopPK model of
 rivaroxaban").
@@ -170,7 +170,7 @@ cat("Total simulated subjects:", events_n, "across",
 # Simulation
 
 ```{r simulate}
-mod <- readModelDb("Willmann_2018_rivaroxaban")
+mod <- readModelDb("Willmann_2018b_rivaroxaban")
 
 sim <- rxode2::rxSolve(
   mod,
@@ -398,8 +398,8 @@ below.
 - **Dose-by-weight scheme.** Willmann 2018 reports only the
   "10 mg-equivalent" / "20 mg-equivalent" target labels; the per-weight
   rivaroxaban mg amounts assigned in EINSTEIN-Jr phase I appear in the
-  accompanying clinical publication (reference 18 of Willmann 2018), which is
-  not on disk for this extraction. The vignette uses
+  accompanying clinical publication (reference 18 of Willmann 2018), which was
+  not available when this model was built. The vignette uses
   `dose = nominal_eq_mg * (WT / 70)^0.323` to approximate the dosing-design
   intent under the estimated allometric CL exponent; this matches the popPK
   exposures asymptotically but may diverge by ~10-20% from the actual study
@@ -429,7 +429,7 @@ below.
 # How to load the model
 
 ```{r load_model, eval = FALSE}
-mod <- nlmixr2lib::readModelDb("Willmann_2018_rivaroxaban")
+mod <- nlmixr2lib::readModelDb("Willmann_2018b_rivaroxaban")
 # inspect:
 mod
 # show metadata:

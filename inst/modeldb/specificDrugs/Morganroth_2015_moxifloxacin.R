@@ -15,7 +15,7 @@ Morganroth_2015_moxifloxacin <- function() {
     "this file is a typical-value 1-compartment oral approximation with",
     "CL/F = 8.47 L/h, V/F = 132.6 L, and ka = 1.7 /h derived from the",
     "pooled NCA summary statistics in Morganroth 2015 Table 1 (see vignette",
-    "Errata). Per operator sidecar-001 (option C) the paper's",
+    "Errata). By decision of the maintainers, the paper's",
     "BVN(0, Sigma) subject random effects on the PD intercept and slope",
     "are OMITTED because Sigma is not numerically reported in the paper,",
     "and a small placeholder additive residual SD of 1 ms is used to satisfy",
@@ -216,8 +216,8 @@ Morganroth_2015_moxifloxacin <- function() {
     # lines by ethnicity" block.
 
     # ------------------------------------------------------------------
-    # Placeholder additive residual error (per operator sidecar-001
-    # option C). The paper describes an additive residual e_ij ~
+    # Placeholder additive residual error. The paper describes an
+    # additive residual e_ij ~
     # N(0, sigma^2) but does not numerically report sigma. A 1 ms
     # placeholder is used to satisfy rxode2's residual-error machinery
     # for the typical-value simulation; downstream users who need
@@ -252,7 +252,7 @@ Morganroth_2015_moxifloxacin <- function() {
     # ================================================================
     # 2. PD linear concentration-effect model (Morganroth 2015 Eq. 1
     #    fixed-effect form; random-effects terms s_ij, d_ij, e_ij
-    #    omitted per operator sidecar-001 option C):
+    #    omitted):
     #      DDQTcF = (alpha + rho * RACE_WHITE)
     #             + (beta + gamma * RACE_WHITE) * Cc
     # ================================================================
@@ -262,8 +262,7 @@ Morganroth_2015_moxifloxacin <- function() {
     DDQTcF <- intercept_ddqtcf + slope_ind * Cc
 
     # ================================================================
-    # 3. Additive residual error on DDQTcF (placeholder per sidecar-001
-    #    option C).
+    # 3. Additive residual error on DDQTcF (placeholder).
     # ================================================================
     DDQTcF ~ add(addSd)
   })

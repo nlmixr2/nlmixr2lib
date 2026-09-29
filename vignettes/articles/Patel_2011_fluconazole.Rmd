@@ -447,9 +447,7 @@ knitr::kable(
   first order in eps (the standard `Cc ~ add(addSd) + prop(propSd)`
   combination). Patel 2011 Table 2 reports propSd as a CV% (3.67%);
   this is read as the linear-scale CV magnitude and entered as
-  `propSd = 0.0367`. See
-  `.claude/skills/extract-literature-model/references/verification-checklist.md`
-  section D for the canonical NONMEM-to-nlmixr2 residual mapping.
+  `propSd = 0.0367`.
 - **The healthy-subject comparator (reference 31) is documented but not
   packaged.** Patel 2011 Figure 3C overlays the CVVHDF PTA against a
   healthy-subject parameter set drawn from a separate publication

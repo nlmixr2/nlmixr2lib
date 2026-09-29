@@ -156,7 +156,11 @@ grid_probe <- sort(unique(c(seq(0, 3, 0.02), seq(3, 24, 0.1), seq(24, 168, 0.5))
 ev_probe <- et(amt = D_PROBE, dur = T_INF, cmt = "central") |> et(grid_probe)
 
 check_closed_form <- function(mod, cl, vc, q, vp) {
-  s <- rxSolve(zeroRe(mod), ev_probe, returnType = "data.frame")
+  # Tight tolerances: this gate asserts 1e-8 relative agreement, and the
+  # default rtol = 1e-6 leaves about 8e-7 when the model is integrated
+  # numerically.
+  s <- rxSolve(zeroRe(mod), ev_probe, returnType = "data.frame",
+               rtol = 1e-10, atol = 1e-12)
   pred <- closed_form_2cmt_inf(s$time, D_PROBE, T_INF, cl, vc, q, vp)
   keep <- pred > 0
   max(abs(s$Cc[keep] - pred[keep]) / pred[keep])

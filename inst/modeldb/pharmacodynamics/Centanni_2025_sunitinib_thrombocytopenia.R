@@ -133,8 +133,8 @@ Centanni_2025_sunitinib_thrombocytopenia <- function() {
     # rather than with three independent estimation results. Each corrected
     # line is annotated individually below, and the full falsification
     # evidence is tabulated in the vignette's "Assumptions and deviations"
-    # section. Encoded on task sidecar
-    # oare_PMC11724784 request-001 (2026-08-14).
+    # section. The corrections were adopted by the maintainers'
+    # decision.
     # ------------------------------------------------------------------
 
     # Baseline circulating platelet count. Printed value used as-is.

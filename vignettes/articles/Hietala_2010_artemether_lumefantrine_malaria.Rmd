@@ -29,7 +29,7 @@ Hietala 2010 reports three coupled models from a single Coartem pediatric trial 
 * a one-compartment lumefantrine (LUM) PK model with absorption lag (Table 2), and
 * a five-stage semi-mechanistic parasite-dynamics PD model driven by the ARM/DHA exposures (Table 3).
 
-Per the `replicate-author-structure` policy each fit is extracted as its own model file, with this single vignette walking the paper as a unit:
+Following the package's convention of replicating the authors' model structure, each fit is extracted as its own model file, with this single vignette walking the paper as a unit:
 
 ```{r load-models}
 mod_arm_fn          <- readModelDb("Hietala_2010_artemether")

@@ -860,8 +860,12 @@ stopifnot(nrow(pta_cmp) == nrow(pta_pub), !anyNA(pta_cmp$pub_666))
 stopifnot(
   # Discussion claim 1: the nomogram beats weight-based SmPC dosing at MIC 1.
   pta_666[["Nomogram MIC 1"]] > pta_666[["SmPC 6 mg/kg"]],
-  # Discussion claim 2: at 333 mg*h/L every regimen attains the target.
-  all(pta$`PTA AUC24 >= 333 (%)` == 100),
+  # Discussion claim 2: at 333 mg*h/L every regimen attains the target. The
+  # published 100% is 31 of 31 resampled patients, which cannot distinguish
+  # 100% from about 97%; this 200-subject cohort resolves to 0.5 points and at
+  # the model's ~99.5% attainment shows a single miss more often than not, so
+  # the bound is one published quantisation step (100/31 = 3.2 points).
+  all(pta$`PTA AUC24 >= 333 (%)` >= 100 - 100 / 31),
   # The direction alone is a weak check -- it would pass on a badly mis-scaled
   # clearance. Assert the MAGNITUDES against Table 3 as well. Achieved max 2.3
   # percentage points; the published values are themselves quantised to

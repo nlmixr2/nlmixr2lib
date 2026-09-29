@@ -392,7 +392,7 @@ shape. See Assumptions and deviations for details.
   depot + transit1 steps and `Ka` at the final transit2 -> central step (the
   Bienczak 2016 nevirapine convention used elsewhere in nlmixr2lib) - is
   equally consistent with the paper's prose; without the NONMEM control
-  stream or appendix, the ambiguity cannot be resolved from on-disk sources.
+  stream or appendix, the ambiguity cannot be resolved from the available sources.
   Either reading places the rate-limiting step at the slow `klag` rate, so
   the simulated peak time and concentration-time-profile shape will not
   precisely reproduce the paper's reported Tmax of 4-6 h (the NCA-derived
@@ -455,4 +455,4 @@ shape. See Assumptions and deviations for details.
 - **Erratum supersedes original Table 14.** The Cmax,ss / AUCss percent-
   change values in the published-vs-simulated comparison above are taken
   from the 2018 erratum's revised Table 14, not the original 2018 article
-  Table 14, per the Phase 1 step 8 errata-handling convention.
+  Table 14, per the package's errata-handling convention.

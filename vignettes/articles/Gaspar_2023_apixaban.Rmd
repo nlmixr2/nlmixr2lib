@@ -197,13 +197,12 @@ distribution assumed over each covariate's range.
 # rxode2's streams are partitioned PER SOLVER THREAD, so this cohort is
 # reproducible on this machine and different on a machine with a different
 # thread count. Every assertion below is written to hold for ANY cohort the
-# model can produce; see pattern 12 of the known-vignette-failure-patterns
-# reference.
+# model can produce.
 set.seed(20231001)
 
 # 50 per arm across 15 arms (750 subjects). Sized against the render budget:
 # the vignette must stay well inside the 5-minute ceiling because the
-# consolidation merge re-renders every vignette in parallel, where CPU
+# pre-merge check re-renders every vignette in parallel, where CPU
 # contention multiplies wall-clock time. Measured single-threaded here at
 # 40 / 75 / 100 per arm: 54 / 168 / 203 s (the PKNCA step scales worse than
 # linearly), so this sits at roughly 80 s with ample headroom. The only gates
@@ -301,7 +300,9 @@ stopifnot(nrow(dplyr::distinct(events, id)) == n_per_arm * nrow(arms))
 ```{r simulate}
 mod <- readModelDb("Gaspar_2023_apixaban")
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("arm", "CRCL", "AUC_FEXO")) |>
+                       keep = c("arm", "CRCL", "AUC_FEXO"),
+                       # steady-state searches for long-half-life subjects exceed the default step budget
+                       maxsteps = 1e6) |>
   as.data.frame()
 
 # `Cc` is the individual prediction; it carries no residual error (the
@@ -373,7 +374,9 @@ grid_ev <- bind_rows(
   arrange(id, time, desc(evid))
 
 typ_cmin <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = grid_ev,
-                            keep = c("ckd", "pgp")) |>
+                            keep = c("ckd", "pgp"),
+                            # steady-state searches for long-half-life subjects exceed the default step budget
+                            maxsteps = 1e6) |>
   as.data.frame() |>
   filter(!is.na(Cc)) |>
   group_by(ckd, pgp) |>
@@ -459,9 +462,11 @@ profile. The linearity is asserted rather than assumed.
 # Verify dose-proportionality before relying on it: solve one small arm at
 # 2.5 mg and confirm the profile is exactly half the 5 mg profile.
 lin_ev <- events |> filter(id <= 5L)
-lin_5  <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = lin_ev) |> as.data.frame()
+# steady-state searches for long-half-life subjects exceed the default step budget
+lin_5  <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = lin_ev, maxsteps = 1e6) |> as.data.frame()
 lin_25 <- rxode2::rxSolve(mod |> rxode2::zeroRe(),
-                          events = lin_ev |> mutate(amt = ifelse(evid == 1L, 2.5, amt))) |>
+                          events = lin_ev |> mutate(amt = ifelse(evid == 1L, 2.5, amt)),
+                          maxsteps = 1e6) |>
   as.data.frame()
 stopifnot(nrow(lin_5) == nrow(lin_25))
 # Exact linearity: relative deviation is solver tolerance, not physiology.
@@ -656,14 +661,17 @@ typ_events <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(time, dplyr::desc(evid))
 
-sim_typ <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = typ_events) |>
+sim_typ <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = typ_events,
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc))
 
-# Terminal slope fitted well after the washout transient, per pattern 11 of the
-# known-vignette-failure-patterns reference: a time-to-50% measured from the
-# moment of withdrawal includes the distribution phase and reads long.
-term <- sim_typ |> dplyr::filter(time >= 48, time <= 240, Cc > 0)
+# Terminal slope fitted well after the washout transient: a time-to-50%
+# measured from the moment of withdrawal includes the distribution phase and
+# reads long.
+# Below 1e-6 of the peak the integrator has no relative accuracy left.
+term <- sim_typ |> dplyr::filter(time >= 48, time <= 240, Cc >= 1e-6 * max(Cc))
 hl_fit <- log(2) / -coef(lm(log(Cc) ~ time, data = term))[["time"]]
 
 published_nca <- tibble::tibble(

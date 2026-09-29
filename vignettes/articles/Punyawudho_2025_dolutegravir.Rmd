@@ -146,7 +146,7 @@ typical_single_dose <- function(dose = 50, wt = 60, tbili_mgdl = 0.38) {
   d$TBILI <- tbili_mgdl * MGDL_TO_UMOLL
   d$OCC <- 1
   rxode2::rxSolve(mod_typical, d, returnType = "data.frame",
-                  atol = 1e-10, rtol = 1e-8, addDosing = FALSE)
+                  atol = 1e-12, rtol = 1e-10, addDosing = FALSE)
 }
 
 trap_auc <- function(df) {
@@ -181,8 +181,13 @@ deterministic <- tibble::tibble(
 )
 
 # Terminal-slope volume: kel = CL/V, so V = CL / kel, with kel read off the
-# log-linear tail of the typical-value curve (far past the absorption phase).
-tail_dat <- ref |> dplyr::filter(time >= 120, time <= 480, Cc > 0)
+# log-linear tail of the typical-value curve, far past the absorption phase
+# (by 24 h the absorption term is exp(-(ka - kel) * 24) ~ 1e-13 of the
+# elimination term). The fit stops where the curve falls below 1e-6 x Cmax
+# (about 100 h): below that the ODE integrator's absolute error dominates the
+# concentration and a log-linear fit follows the noise (measured: 3% error in
+# V/F when fitted over 120-480 h, where Cc runs from 1e-7 down to 1e-29 mg/L).
+tail_dat <- ref |> dplyr::filter(time >= 24, Cc >= 1e-6 * max(Cc))
 kel_hat <- -stats::coef(stats::lm(log(Cc) ~ time, data = tail_dat))[["time"]]
 deterministic$Simulated[5] <- cl_from_solve() / kel_hat
 

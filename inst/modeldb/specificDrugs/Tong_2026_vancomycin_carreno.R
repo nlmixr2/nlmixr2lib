@@ -134,8 +134,8 @@ Tong_2026_vancomycin_carreno <- function() {
     # are -- 105.7% and 120.1% CV on the two rate constants.
     #
     # These source traces are on their own lines rather than trailing the eta
-    # declarations: rxode2 rewrites a trailing comment on an `eta ~ ...` line into
-    # a label() call, and a comment containing double quotes then fails to parse.
+    # declarations: rxode2 rewrites a trailing comment on an `eta ~ ...` line
+    # into a label() call, and a source trace does not belong in a label.
     # $OMEGA(1,1); sqrt = 0.4534 -> Table S2 "IIV on V (%CV) 45.3"
     etalvc        ~ fixed(0.20559)
     # $OMEGA(2,2); sqrt = 0.5556 -> Table S2 "55.6% slope"

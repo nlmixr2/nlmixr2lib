@@ -651,8 +651,7 @@ mc_cmp |>
                                "Week 1 is pre-steady-state."))
 
 # Cohort proportions near a steep threshold are sampling-noisy, so this gate is
-# on the aggregate rather than on any single cell (see CLAUDE.md on vignette
-# assertions over a simulated cohort).
+# on the aggregate rather than on any single cell.
 cat(sprintf("Monte Carlo vs published: median|diff| = %.1f pp, mean = %+.1f pp\n",
             median(abs(mc_cmp$`difference (pp)`)), mean(mc_cmp$`difference (pp)`)))
 cat(sprintf("highest single-subject Cmax across all arms and weeks: %.0f ng/mL (threshold %.0f)\n",

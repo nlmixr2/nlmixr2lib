@@ -197,7 +197,7 @@ sim_r_nca <- sim_r |>
   dplyr::mutate(id = 1L) |>
   dplyr::transmute(id, time, Cc, regimen = "R 5 mg single dose")
 
-# Guarantee a time = 0 anchor for AUC0-Inf integration (see pknca-recipes.md).
+# Guarantee a time = 0 anchor for AUC0-Inf integration.
 zero_anchor <- function(d) {
   dplyr::bind_rows(
     d,

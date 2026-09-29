@@ -33,7 +33,7 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
     disease_state = "Healthy preclinical animals (no tumour xenograft)",
     dose_range = "Cynomolgus: 30 mg/kg IV single (n=4) and 10 mg/kg IV q3w x4 infusion (n=14); Rat: 0.3, 3, 20 mg/kg IV single (n=24) plus 10 mg/kg IV stability cohorts (n=10)",
     regions = "Preclinical (Genentech/Roche in-house studies)",
-    scope_note = "Preclinical-only (no human PK). All existing specificDrugs/ entries are human except Grimm_2023_trontinemab and this model; confirmed by the operator as an intentional preclinical addition.",
+    scope_note = "Preclinical-only (no human PK). All existing specificDrugs/ entries are human except Grimm_2023_trontinemab and this model; confirmed by the maintainers as an intentional preclinical addition.",
     model_variant = "Reduced T-DM1 model (Bender 2014 Table III). A separate Bender_2014_trastuzumabEmtansine_mechanistic model file encodes the DAR0-DAR7 catenary mechanistic variant (Bender 2014 Table II).",
     species_parameters = list(
       cynomolgus = list(

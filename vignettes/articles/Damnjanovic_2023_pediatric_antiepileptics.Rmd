@@ -157,7 +157,7 @@ them; they set the operating point at which the simulations are run.
 set.seed(20230622)
 rxode2::rxSetSeed(20230622)
 
-n_per_arm <- 100L  # 100 per regimen arm; the skill cap is 200
+n_per_arm <- 100L  # 100 per regimen arm; the per-arm cohort cap is 200
 
 # Weight-based daily doses (mg/kg/day). See "Assumptions and deviations".
 dose_lev_mgkgd     <- 20  # levetiracetam, both regimens
@@ -769,7 +769,7 @@ not tabulated. The readings used here, and the evidence for each:
   with their own statement.
 - **The daily-dose covariates are applied untransformed.** Neither the article
   nor the supplement reports a mean or median daily dose for any of the three
-  drugs, so mean-centring is not implementable from anything on disk. The
+  drugs, so mean-centring is not implementable from any available source. The
   untransformed reading is also the one that reproduces the cited literature:
   it puts valproate `CL/F` at 0.2-0.7 L/h across plausible paediatric doses,
   inside Supplemental Table S4's 0.0466-0.854 L/h, whereas centring would pin

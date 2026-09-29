@@ -545,8 +545,7 @@ sim_summary |>
   dvid mapping in this model as tested; per-observation rows carry
   `cmt = "Cc"` or `cmt = "ANC"` with matching `dvid = 1L` / `dvid = 2L`.
   All algebraic observables land after the ODE states so the
-  slot-injection bug documented in the skill's known-vignette-failure
-  patterns section 2 does not fire.
+  compartment slot-injection bug does not fire.
 * **PKNCA validation is qualitative for Cmax / AUC.** Melhem 2018
   does not report per-drug per-dose NCA parameters as a validation
   table; it validates the model via prediction-corrected VPCs

@@ -638,7 +638,7 @@ stopifnot(abs(mean(arm_log_hr)) < 0.1,
   model-to-hazard-ratio mapping. The values used here were read from the
   laid-out PDF, where the table is intact.
 * **Supporting Information acquisition.** The Supporting Information was not
-  supplied with the task and was retrieved from the Europe PMC supplementary
+  supplied with the source metadata and was retrieved from the Europe PMC supplementary
   files endpoint for PMC12909276. It comprises `Supinfo1` (the NONMEM analysis
   dataset), `Supinfo2` (the control stream discussed above) and `Supinfo3`
   (Tables S1 to S8 and Figures S1 to S3).

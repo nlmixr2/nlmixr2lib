@@ -387,7 +387,8 @@ Kaplan-Meier VPC and hazard-ratio spot check shown above.
   Section 2.3 refers to "a previously published population pharmacokinetic
   model for CBZ-CR" and "a previously developed population pharmacokinetic
   model for LCM" that produced the per-subject daily AUC used as the exposure
-  covariate. Neither upstream model is on disk for this extraction; the model
+  covariate. Neither upstream model was available when these models were built;
+  the model
   files therefore expose `AUC_LCM` and `AUC_CBZ` as data covariates and leave
   it to downstream users to supply per-subject AUC values (either from an
   external popPK simulation or from a fixed daily-dose scaling). The typical
@@ -401,7 +402,7 @@ Kaplan-Meier VPC and hazard-ratio spot check shown above.
   interaction from the paper.
 * **NSP3M categorisation.** The source paper's NSP3M variable is a raw
   seizure-count covariate that the authors split into four categories (<2,
-  2-6, 7-50, >50) with 2-6 as reference. Per the standing operator policy
+  2-6, 7-50, >50) with 2-6 as reference. Per the standing maintainer policy
   ("count covariate -> decomposed binary indicators") the extraction encodes
   three binary indicators `NSP3M_LT2`, `NSP3M_7_50`, `NSP3M_GT50` (all zero
   selects the reference). Data assemblers must enforce mutual exclusivity:

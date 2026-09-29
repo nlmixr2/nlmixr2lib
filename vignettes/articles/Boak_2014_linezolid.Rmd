@@ -114,7 +114,7 @@ GFR. Serum creatinine (SCR) values are back-derived from the target CrCl
 range under a fixed 55-year-old, 65 kg, male CG denominator so the resulting
 GFR spans 15-125 mL/min at WT_STD.
 
-**Cohort size: 200 subjects per treatment arm** (the skill's per-arm cap). The
+**Cohort size: 200 subjects per treatment arm** (the per-arm cohort cap). The
 Boak 2014 paper's Monte Carlo simulations used 1000 subjects, but 200 gives
 qualitatively identical VPCs and PKNCA summaries for a validation vignette.
 
@@ -478,7 +478,7 @@ Base_PL * kout / ktr is exact.
 # Assumptions and deviations
 
 - **Cohort size.** Boak 2014's Monte Carlo simulations used 1000 subjects at
-  each condition; this vignette uses 200 per arm (the skill's per-arm cap).
+  each condition; this vignette uses 200 per arm (the per-arm cohort cap).
   The qualitative reproductions (nadir depth, timing, AUC24 magnitude and CV)
   are consistent with the paper; population probabilities of nadir < 100 would
   require the full 1000-subject cohorts to reproduce with the paper's

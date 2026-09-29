@@ -94,10 +94,10 @@ here for review.
 | Simulated regimens and dose ladder | 3-12 g/day CI after a 4 g LD | Simulations; Figure 3 axis labels |
 | Target window 16-96 mg/L; toxicity 160 mg/L | n/a | Simulations (TARGET post hoc); Table S2 |
 
-The five display equations come back as `formula-not-decoded` in an automated
-text extraction of the PDF, because the fraction bars and parentheses live in a
-symbol font. The forms transcribed above were read from the rendered equation
-images, which resolve the bracketing unambiguously -- in particular that the
+The five display equations do not survive automated plain-text extraction of the
+PDF, because the fraction bars and parentheses live in a symbol font. The forms
+transcribed above were read from the rendered equation images, which resolve the
+bracketing unambiguously -- in particular that the
 `(1 - CRRT) * (1 - HD)` gate in Equation 5 multiplies the **whole**
 renal-plus-non-renal bracket, not just the non-renal term.
 
@@ -113,7 +113,7 @@ CRRT effluent flow is prescribed weight-normalised at 25 and 35 mL/kg/h and
 converted to the canonical absolute mL/h at the paper's assumed 70 kg.
 
 ```{r cohort}
-n_per_arm <- 200L   # skill cap; the paper used 1,000 per regimen
+n_per_arm <- 200L   # cohort cap; the paper used 1,000 per regimen
 wt_crrt <- 70       # kg, "assuming a measured total body weight of 70 kg"
 
 regimens <- tibble::tribble(
@@ -275,7 +275,8 @@ ss_events <- do.call(dplyr::bind_rows, lapply(seq_len(nrow(regimens)), function(
   )
 }))
 
-ss <- rxode2::rxSolve(mod_typ, events = ss_events, keep = "regimen") |>
+ss <- rxode2::rxSolve(mod_typ, events = ss_events, keep = "regimen",
+                      rtol = 1e-10, atol = 1e-12) |>
   as.data.frame() |>
   dplyr::filter(time == 480) |>
   dplyr::transmute(regimen, cl, Cc,
@@ -295,8 +296,10 @@ knitr::kable(
 
 # Both sides use the same drawn parameters, so this is pure numerical error and
 # a tight all() bound is the correct assertion here. Observed max deviation is
-# ~2e-12 %; the bound is set six orders above that so it tolerates solver and
-# rxode2-version differences while still failing instantly on a real regression.
+# ~2e-10 % with the ODE integrated at rtol 1e-10 (~2e-12 % with the analytic
+# linCmt() solution); the bound is set about four orders above that so it
+# tolerates solver and rxode2-version differences while still failing instantly
+# on a real regression.
 stopifnot(max(abs(ss$pct_diff)) < 1e-6)
 ```
 
@@ -489,15 +492,23 @@ nca_events <- tibble::tibble(
   ))() |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment") |>
+nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment",
+                          rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 
 stopifnot(all(nca_sim$Cc > 0))
 ```
 
 ```{r pknca}
+# The fastest-clearing subjects fall below 1e-16 mg/L by 24 h, where the ODE
+# integrator's absolute tolerance dwarfs the terminal slope and PKNCA's
+# log-linear half-life fit would follow the noise. Keep each profile down to
+# 1e-6 of its own peak, which here still leaves 30 or more points per subject.
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
@@ -561,10 +572,12 @@ knitr::kable(
 # Per-subject, same-parameters comparisons: numerical error only, so bound them
 # tightly rather than on a quantile. lin-up/log-down trapezoidal AUC is exact
 # for a mono-exponential decay, which is what a one-compartment IV bolus is --
-# and the observed deviations are ~2e-13 %, i.e. floating-point noise, not
-# approximation error. The bounds below sit several orders above what was
-# actually achieved so they survive a solver or PKNCA version change, while
-# still being tight enough that any structural regression fails immediately.
+# so the observed deviations are ODE integration error, ~1.6e-8 % for AUC and
+# half-life at rtol 1e-10 (~2e-13 % with the analytic linCmt() solution), not
+# approximation error. Cmax is read off the time-zero record, so it is exact.
+# The bounds below sit well above what was actually achieved so they survive a
+# solver or PKNCA version change, while still being tight enough that any
+# structural regression fails immediately.
 stopifnot(
   max(abs(ident$auc_pct_diff))   < 1e-6,
   max(abs(ident$cmax_pct_diff))  < 1e-9,

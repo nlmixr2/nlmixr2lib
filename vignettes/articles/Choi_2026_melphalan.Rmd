@@ -176,7 +176,7 @@ make_events <- function(scn, n, grid, id_offset = 0L) {
 
 Observation rows point at the `central` ODE state, never at the algebraic
 observable `Cc`; referencing an observable as a compartment renumbers the
-compartment slots (see `known-vignette-failure-patterns.md` pattern 2).
+compartment slots.
 
 # Typical-value replication of Table 3
 

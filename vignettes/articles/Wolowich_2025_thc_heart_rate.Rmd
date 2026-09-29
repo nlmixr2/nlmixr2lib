@@ -320,7 +320,7 @@ run_nca <- function(sim_df, conc_col, times = NULL, want_auc = TRUE) {
     filter(!is.na(.data[[conc_col]])) |>
     transmute(id, time, treatment, Cc = .data[[conc_col]])
 
-  # Guarantee a time-zero anchor row per subject (see pknca-recipes.md).
+  # Guarantee a time-zero anchor row per subject.
   conc <- bind_rows(
     conc,
     conc |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)

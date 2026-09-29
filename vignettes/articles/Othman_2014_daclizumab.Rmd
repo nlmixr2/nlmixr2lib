@@ -378,7 +378,7 @@ Differences are within ~15% for every arm. Mean Cmax for the SC single
 dose is a few percent below published because the typical-value
 prediction plus lognormal IIV averages below the arithmetic mean Cmax
 from small observed arms; the match improves with larger virtual cohort
-sizes but is already within the skill's 20% acceptance band.
+sizes but is already within the package's 20% acceptance band.
 
 ## Phase III steady-state comparison (§3.7)
 

@@ -67,6 +67,14 @@ Hong_2013_glucose_insulin_HGC <- function() {
       reference_category = NULL,
       notes = "Default reference value 13 mU/L (representative DIS_DIAB fasting insulin; paper does not report a single typical value because subject-level baseline insulin was used as a per-subject covariate). Companion canonical to FPG. NA_NA_paracetamol's INS_BL is in pmol/L with a 1/6.945 rescale; Hong 2013 uses mU/L directly so no rescaling is applied here.",
       source_name = "ICss"
+    ),
+    OCC = list(
+      description = "Occasion index for inter-occasion variability: 1 and 2 are the two hyperglycaemic-clamp occasions, one per treatment period of the crossover.",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = "Hong 2013 Table I reports IOV on CLG (31.8% CV) and VG (9.22% CV) across the two HGC occasions. Decomposed inside model() into the binary indicators oc1 / oc2 that select the per-occasion eta slots, following the occasion-indicator expansion registered in inst/references/parameter-names.md as `etaiov_<param>_<occ>`. Supply an integer 1 or 2 per record; a single-occasion simulation can set OCC = 1 throughout.",
+      source_name = "OCC"
     )
   )
 
@@ -119,17 +127,21 @@ Hong_2013_glucose_insulin_HGC <- function() {
     etalkie       ~ log(0.902^2  + 1)             # kIE IIV 90.2% CV  -> var = log(1.8136)  = 0.595
 
     # ---------------------------------------------------------------------
-    # Inter-occasion variability NOT structurally encoded. Hong 2013
-    # Table I reports IOV on CLG (31.8% CV) and VG (9.22% CV) across the
-    # two HGC occasions (one per treatment period); these are NOT
-    # encoded here because nlmixr2lib follows the Andrews 2017 /
-    # Brooks 2021 tacrolimus precedent: the rxode2 mu-reference parser
-    # does not accept `theta + eta_iiv + eta_iov` on a single line, and
-    # the model-library use case has no operational occasion column.
-    # Downstream users who want to simulate IOV can add an OCC indicator
-    # and a per-occasion eta in their own rxode2 model. See vignette
-    # Assumptions and deviations.
+    # Inter-occasion variability (Table I "IOV" column). Hong 2013 reports
+    # IOV on CLG and VG across the two HGC occasions, one per treatment
+    # period of the crossover. Encoded as the occasion-indicator expansion:
+    # one eta slot per occasion, selected by the oc1 / oc2 indicators built
+    # from the OCC column in model(). That is the IOV convention used
+    # throughout this library and registered in
+    # inst/references/parameter-names.md as `etaiov_<param>_<occ>`; the
+    # second occasion's variance is fixed() to the first, which is what
+    # NONMEM writes as $OMEGA BLOCK(1) SAME. Same %CV -> log-scale variance
+    # conversion as the IIV block above.
     # ---------------------------------------------------------------------
+    etaiov_clg_1 ~ log(0.318^2 + 1)           # CLG IOV 31.8% CV -> var = log(1.101124) = 0.09633
+    etaiov_clg_2 ~ fixed(log(0.318^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_vg_1  ~ log(0.0922^2 + 1)          # VG  IOV 9.22% CV -> var = log(1.008501) = 0.008465
+    etaiov_vg_2  ~ fixed(log(0.0922^2 + 1))   # SAME-equivalent: equal to the occasion-1 variance
 
     # ---------------------------------------------------------------------
     # Residual error (Table I "Residual proportional error" column).
@@ -144,14 +156,20 @@ Hong_2013_glucose_insulin_HGC <- function() {
   })
 
   model({
+    # Occasion indicators for the two-occasion IOV on CLG and VG (see the
+    # ini() comment); mutually exclusive, so exactly one eta slot is active
+    # per record.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    iov_clg <- oc1 * etaiov_clg_1 + oc2 * etaiov_clg_2
+    iov_vg  <- oc1 * etaiov_vg_1  + oc2 * etaiov_vg_2
+
     # Individual structural parameters. IIV-bearing parameters use the
-    # standard mu-reference form `exp(lX + etalX)`; IOV (reported by
-    # paper but not encoded; see ini() comment) would add an additional
-    # per-occasion eta term that the parser does not support on the
-    # same line.
-    clg       <- exp(lclg       + etalclg)
+    # standard mu-reference form `exp(lX + etalX)`; CLG and VG additionally
+    # carry the per-occasion IOV term.
+    clg       <- exp(lclg       + etalclg + iov_clg)
     clgi_hgc  <- exp(lclgi_hgc)
-    vg        <- exp(lvg        + etalvg)
+    vg        <- exp(lvg        + etalvg + iov_vg)
     gamma     <- exp(lgamma)
     amplitude <- exp(lamplitude + etalamplitude)
     cli       <- exp(lcli       + etalcli)

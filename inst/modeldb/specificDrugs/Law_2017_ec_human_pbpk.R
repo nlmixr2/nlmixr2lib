@@ -28,14 +28,10 @@ Law_2017_ec_human_pbpk <- function() {
   # The bile duct is represented as a three-sub-compartment transit chain
   # (Appendix eq A5, n = 3, adapted from Bischoff et al. 1971 and Harrison and
   # Gibaldi 1977). Each state holds the amount in transit; dividing by the
-  # residence time rt_bile gives the transfer rate R_j of the paper. No
-  # canonical compartment family covers a biliary transit chain, so the states
-  # are declared paper-specific.
-  paper_specific_compartments <- c(
-    "bile_transit1",
-    "bile_transit2",
-    "bile_transit3"
-  )
+  # per-sub-compartment residence time mtt_bile gives the transfer rate R_j of
+  # the paper, so the total bile-duct delay is 3 * mtt_bile. bile_transit<n> is
+  # a canonical chain family (by the maintainers' decision); see
+  # inst/references/compartment-names.md.
 
   compartmentData <- list(
     depot = list(analyte = "EC", units = "mg", specimen = "administration site", verified = TRUE),
@@ -128,7 +124,7 @@ Law_2017_ec_human_pbpk <- function() {
     # Table 5 (tlag EC = 0.4 h)
     ltlag <- fixed(log(0.4)); label("Oral absorption lag time (h)")
     # Table 5 (Rt EC = 0.03 h)
-    lrt_bile <- fixed(log(0.03)); label("Bile-duct sub-compartment residence time Rt (h)")
+    lmtt_bile <- fixed(log(0.03)); label("Bile-duct sub-compartment residence time Rt (h)")
     # Table 5 (krac EC = 0.18)
     lkreab <- fixed(log(0.18)); label("Colonic reabsorption rate coefficient krac (/h per kg^-0.3)")
     # Table 5 (kfc EC = 25.6)
@@ -247,7 +243,7 @@ Law_2017_ec_human_pbpk <- function() {
     cl_renal <- exp(lcl_renal) * WT^wt_exp_cl
     fdepot <- exp(lfdepot)
     tlag <- exp(ltlag)
-    rt_bile <- exp(lrt_bile)
+    mtt_bile <- exp(lmtt_bile)
     kp_adipose <- exp(lkp_adipose)
     kp_bone <- exp(lkp_bone)
     kp_brain <- exp(lkp_brain)
@@ -323,11 +319,11 @@ Law_2017_ec_human_pbpk <- function() {
     # Bile duct. Appendix eq A5: Rt * dR_j/dt = R_(j-1) - R_j with R_0 = RAM and
     # n = 3 sub-compartments. Written here on the AMOUNT scale, bile_transit_j =
     # Rt * R_j, which turns eq A5 into an ordinary transit chain with mean
-    # residence time rt_bile per sub-compartment. The flux delivered to the gut
-    # lumen is R_3 = bile_transit3 / rt_bile.
-    d/dt(bile_transit1) <- ram - bile_transit1 / rt_bile
-    d/dt(bile_transit2) <- (bile_transit1 - bile_transit2) / rt_bile
-    d/dt(bile_transit3) <- (bile_transit2 - bile_transit3) / rt_bile
+    # residence time mtt_bile per sub-compartment. The flux delivered to the gut
+    # lumen is R_3 = bile_transit3 / mtt_bile.
+    d/dt(bile_transit1) <- ram - bile_transit1 / mtt_bile
+    d/dt(bile_transit2) <- (bile_transit1 - bile_transit2) / mtt_bile
+    d/dt(bile_transit3) <- (bile_transit2 - bile_transit3) / mtt_bile
 
     # Gut lumen. Appendix eq A6: V_GC * dC_GC/dt = R_3 - kfec * C_GC * V_GT -
     # kreab * V_GC * C_GC. Note that the faecal-transport term is printed with
@@ -335,7 +331,7 @@ Law_2017_ec_human_pbpk <- function() {
     # transcribed here exactly as printed. Substituting V_GC changes the rat
     # terminal half-life by about a factor of two and the human profile by less
     # than 0.5%; see the vignette Errata.
-    d/dt(gut_lumen) <- bile_transit3 / rt_bile -
+    d/dt(gut_lumen) <- bile_transit3 / mtt_bile -
       kfec * c_gut_lumen * v_gut - kreab * gut_lumen
 
     # Gut tissue. Appendix eq A7: perfusion term, plus reabsorption from the gut

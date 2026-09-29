@@ -88,10 +88,9 @@ naming its source. They are collected here for review.
 | two-compartment ODEs, zero-order input | n/a | Results, "Population pharmacokinetic modeling"; Table S2 base model, "two-compartment model with a zero-order input rate"; Methods, 1 h infusion |
 | `Cc ~ prop(propSd)` | n/a | Results, "proportional residual variability"; Methods lists the three candidate log-scale error forms |
 
-The equation block is typeset as a display equation and is lost by a naive text
-extraction of the PDF (it appears as `formula-not-decoded` in the preprocessed
-markdown). It was recovered with `pdftotext -layout`, which preserves it
-verbatim.
+The equation block is typeset as a display equation and does not survive a
+naive plain-text extraction of the PDF. It was recovered with
+`pdftotext -layout`, which preserves it verbatim.
 
 Two source-internal disagreements are recorded in
 [Assumptions, deviations and errata](#assumptions-deviations-and-errata) below:
@@ -153,8 +152,11 @@ cf_ev <- data.frame(
   cmt = "central",
   CRCL = crcl_ref
 )
+# Tolerances well below the defaults: the gate below holds the ODE solution to
+# the closed form within 1e-8 relative (measured ~3e-10 at rtol 1e-10).
 cf_sim <- rxode2::rxSolve(
-  rxode2::zeroRe(mod), cf_ev, returnType = "data.frame"
+  rxode2::zeroRe(mod), cf_ev, rtol = 1e-10, atol = 1e-12,
+  returnType = "data.frame"
 )
 cf_cmp <- data.frame(
   time = cf_sim$time,

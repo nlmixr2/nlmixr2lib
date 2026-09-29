@@ -700,18 +700,40 @@ env <- nca_wide |>
   dplyr::left_join(dplyr::select(published, regimen, cav_pub = cav),
                    by = "regimen")
 
+# The regimen-to-regimen SHAPE of the offset is checked on typical-value
+# solves, which are deterministic: a 100-subject median per arm carries about
+# 4% of sampling noise, and the spread of six such ratios exceeded 15% in one
+# cohort draw. For a linear model the typical Cav is exactly F1 * dose / (CL *
+# tau), so any regimen-specific departure of the published medians from
+# proportionality shows up here undiluted.
+cav_typ <- vapply(seq_len(nrow(regimens)), function(i) {
+  ii <- regimens$ii[i]
+  addl <- as.integer(n_dose * 24 / ii) - 1L
+  ss <- addl * ii
+  ev <- build_events(
+    scenarios[1, c("WT", "SEXF", "CONMED_STATIN", "FORM_COL_LIT", "MIX_LAGGED_ABS")],
+    dose = regimens$dose[i], ii = ii, addl = addl,
+    obs_times = ss + seq(0, ii, by = 0.05)
+  )
+  s <- as.data.frame(rxode2::rxSolve(mod_typ, ev, returnType = "data.frame"))
+  s <- s[s$time >= ss & s$time <= ss + ii, ]
+  sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2) / ii
+}, numeric(1))
+env$cav_typ <- cav_typ[match(env$regimen, regimens$regimen)]
+
 stopifnot(
-  nrow(env) == nrow(regimens), !anyNA(env$cav_lo),
+  nrow(env) == nrow(regimens), !anyNA(env$cav_lo), !anyNA(env$cav_typ),
   # The simulated median for every regimen sits inside the published 5th-95th
   # prediction interval for that regimen.
   all(env$cav_med > env$cav_lo), all(env$cav_med < env$cav_hi),
   # The offset from the published median is systematic, not regimen-specific:
-  # the ratio is the same to within a few percent across all six regimens.
-  max(env$cav_pub / env$cav_med) / min(env$cav_pub / env$cav_med) < 1.15
+  # against the typical-value Cav the ratio is the same across all six
+  # regimens to within the rounding of the published values.
+  max(env$cav_pub / env$cav_typ) / min(env$cav_pub / env$cav_typ) < 1.15
 )
 
 env |>
-  dplyr::mutate(ratio = cav_pub / cav_med) |>
+  dplyr::mutate(ratio = cav_pub / cav_med, ratio_typ = cav_pub / cav_typ) |>
   dplyr::transmute(
     "Regimen"                          = regimen,
     "Cav,ss simulated median (ng/mL)"  = round(cav_med, 3),

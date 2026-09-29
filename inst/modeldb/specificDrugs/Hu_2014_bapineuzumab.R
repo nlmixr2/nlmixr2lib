@@ -45,7 +45,7 @@ Hu_2014_bapineuzumab <- function() {
     n_observations = 8040,
     n_blq_excluded = 100,
     bapineuzumab_subjects_only = TRUE,
-    notes = "n_subjects = 1458 reflects the bapineuzumab-treated subjects whose serum samples (8040 measurements) were analyzed (Hu 2014 abstract and Results). Hu 2014 Table 1 reports n = 1937 for the wider covariate-evaluation dataset that includes placebo subjects. Sex breakdown: Study 301 enrolled 69.3% male per Hu 2014 Methods; Study 302 sex split is not reported in the trimmed text but the paper's Table 1 covers continuous variables only. The 30.7% female value here is computed from the Study 301 male fraction and is documented as an approximation in the vignette."
+    notes = "n_subjects = 1458 reflects the bapineuzumab-treated subjects whose serum samples (8040 measurements) were analyzed (Hu 2014 abstract and Results). Hu 2014 Table 1 reports n = 1937 for the wider covariate-evaluation dataset that includes placebo subjects. Sex breakdown: Study 301 enrolled 69.3% male per Hu 2014 Methods; Study 302 sex split is not reported in the paper's text but its Table 1 covers continuous variables only. The 30.7% female value here is computed from the Study 301 male fraction and is documented as an approximation in the vignette."
   )
 
   ini({

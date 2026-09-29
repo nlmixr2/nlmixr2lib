@@ -104,7 +104,7 @@ the paper screened out covariate pairs with Pearson correlation above 0.5
 (Methods 2.4.2), so weak correlation is the right target.
 
 ```{r cohort}
-n_per <- 100L # participants per dose arm; the skill cap is 200
+n_per <- 100L # participants per dose arm; the cohort cap is 200
 doses <- c(100, 200, 300, 400, 500, 650, 900)
 
 # Lognormal quantile matched to a published median + IQR, clamped to the
@@ -207,7 +207,9 @@ sim_single <- rxode2::rxSolve(
 set.seed(20240304)
 sim_multi <- rxode2::rxSolve(
   mod, events = as.data.frame(events_multi),
-  keep = c("cohort", "dose_mg", "LBM", "TBILI", "LDH")
+  keep = c("cohort", "dose_mg", "LBM", "TBILI", "LDH"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 ```
@@ -540,8 +542,9 @@ ss_auc <- vapply(doses, function(d) {
   ev$TBILI <- ref_cov$TBILI
   ev$LBM <- ref_cov$LBM
   ev$LDH <- ref_cov$LDH
+  # steady-state searches for long-half-life subjects exceed the default step budget
   s <- rxode2::rxSolve(mod, ev, omega = NA, sigma = NA,
-                       returnType = "data.frame")
+                       returnType = "data.frame", maxsteps = 1e6)
   s <- s[!is.na(s$Cc) & s$time >= 0, ]
   sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
 }, numeric(1))
@@ -586,7 +589,7 @@ scenarios <- tibble::tribble(
   "TBIL 5.22 (5th pctile)", 5.22, 45.13, -37.4,
   "TBIL 22.24 (95th pctile)", 22.24, 45.13, 58.6
 )
-n_scen <- 200L # skill cap; Li 2024 used 500 per scenario
+n_scen <- 200L # cohort cap; Li 2024 used 500 per scenario
 
 events_scen <- bind_rows(lapply(seq_len(nrow(scenarios)), function(k) {
   s <- tibble(
@@ -604,8 +607,9 @@ events_scen <- bind_rows(lapply(seq_len(nrow(scenarios)), function(k) {
 stopifnot(!anyDuplicated(unique(events_scen[, c("id", "time", "evid")])))
 
 set.seed(1322557)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_scen <- rxode2::rxSolve(mod, events = as.data.frame(events_scen),
-                            keep = "scenario") |>
+                            keep = "scenario", maxsteps = 1e6) |>
   as.data.frame()
 
 per_subject <- sim_scen |>

@@ -607,8 +607,8 @@ half-life must scale *exactly* linearly with `AUCR`, so a 2.9 h half-life at
 * **No bioavailability parameter.** `F` is not reported, so `Vd` and `CL` are
   apparent (`Vd/F`, `CL/F`) throughout.
 * **Supplement not used.** "Supplementary Material 1" is the goodness-of-fit
-  figure panel; it contains no parameter values and is not on disk for this
-  extraction. Every value in the model comes from Table 3 and its footnote.
+  figure panel; it contains no parameter values and was not available when this
+  model was built. Every value in the model comes from Table 3 and its footnote.
 * **`AUCR` is a new canonical covariate.** It is registered as a general-scope
   continuous column in `inst/references/covariate-columns.md`, with reference
   value 1.0 (no interacting drug). It is deliberately distinct from the absolute

@@ -363,7 +363,7 @@ which are too dispersed for a normal distribution.
 set.seed(20260910)
 rxode2::rxSetSeed(20260910)
 
-N_PER_ARM <- 200   # skill cap: never more than 200 participants per arm
+N_PER_ARM <- 200   # cohort cap: never more than 200 participants per arm
 
 make_cohort <- function(dose, id_offset) {
   z <- matrix(rnorm(2 * N_PER_ARM), ncol = 2) %*%

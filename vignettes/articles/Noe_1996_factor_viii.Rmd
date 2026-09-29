@@ -448,4 +448,4 @@ of curves at the paper's chosen value.
 * **PKNCA not used.** This is a mechanistic endogenous physiology model;
   the paper does not report AUC / Cmax NCA parameters and the validation
   targets are steady-state, mass-balance, and figure replication (per the
-  endogenous-validation pattern).
+  validation pattern for endogenous models).

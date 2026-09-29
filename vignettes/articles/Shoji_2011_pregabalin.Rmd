@@ -234,8 +234,7 @@ events <- bind_rows(lapply(seq_len(nrow(covs_all)), function(i) {
   make_events(covs_all[i, ])
 }))
 
-# Cheap regression guard for the disjoint-id property; see
-# references/vignette-template.md Notes "Multi-cohort simulations".
+# Cheap regression guard for the disjoint-id property.
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 
@@ -358,7 +357,7 @@ sim_for_nca <- sim_stoch |>
   dplyr::select(id, time = t_tad, Cc, treatment) |>
   as.data.frame()
 
-# Defensive time-zero ensure (pknca-recipes.md "Time-zero records").
+# Defensive time-zero ensure (PKNCA's AUC interval starts at time zero).
 sim_for_nca <- dplyr::bind_rows(
   sim_for_nca,
   sim_for_nca |> dplyr::distinct(id, treatment) |>
@@ -459,7 +458,7 @@ knitr::kable(
   the PT05 patient cohort.
 - **IBW formula in the virtual cohort.** The source paper references a
   Devine-family IBW formula [12] but does not transcribe the formula
-  in the trimmed methods text. The cohort builder uses the metric-units
+  in the extracted methods text. The cohort builder uses the metric-units
   Devine variant (men 50 + 0.91 * (HT_cm - 152.4); women 45.5 + 0.91 *
   (HT_cm - 152.4)) to derive IBW from a simulated HT_cm. Per-paper IBW
   is recommended when a user has access to the source dataset.

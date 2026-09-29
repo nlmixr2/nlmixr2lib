@@ -341,8 +341,8 @@ ggplot(vpc_summary, aes(time)) +
 
 - **Eta naming -- `eta_study_<param>`.** Between-trial random effects are
   named `eta_study_pmax_f` etc. to make the MBMA scope explicit (per the
-  skill's MBMA guidance, "Encode between-study variance as a study-level eta
-  ... clearly labelled to distinguish from the popPK pattern"). The lint
+  package's MBMA guidance: encode between-study variance as a study-level eta,
+  clearly labelled to distinguish it from the popPK pattern). The lint
   flags these as "no matching fixed-effect parameter `_study_pmax_f`" -- the
   pairing is `eta_study_pmax_f` <-> `pmax_f`, but the lint's regex only
   understands the `eta<param>` pattern. The deviation is intentional.

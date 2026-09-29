@@ -188,7 +188,7 @@ GarciaHervalejo_2026_teicoplanin <- function() {
       description = "Total body weight",
       units = "kg",
       type = "continuous",
-      notes = "Median 68 kg (range 41-127) in the development cohort (Table 1). Screened as one of five anthropometric descriptors on CL and not retained: 'Among the anthropometric descriptors evaluated (total body weight, adjusted body weight, IBW, BMI, and BSA), IBW was the descriptor that best explained interindividual variability in CL' (Results). The Discussion adds that total body weight 'may overestimate the metabolically active mass contributing to drug clearance' in patients with cachexia, fluid overload or malnutrition. Per-descriptor statistics are in Supplementary Table S1, which is not on disk."
+      notes = "Median 68 kg (range 41-127) in the development cohort (Table 1). Screened as one of five anthropometric descriptors on CL and not retained: 'Among the anthropometric descriptors evaluated (total body weight, adjusted body weight, IBW, BMI, and BSA), IBW was the descriptor that best explained interindividual variability in CL' (Results). The Discussion adds that total body weight 'may overestimate the metabolically active mass contributing to drug clearance' in patients with cachexia, fluid overload or malnutrition. Per-descriptor statistics are in Supplementary Table S1, which was not available when this model was built."
     ),
     ABW = list(
       description = "Adjusted body weight, computed with a 0.4 correction factor applied to the excess of total over ideal body weight",
@@ -229,7 +229,7 @@ GarciaHervalejo_2026_teicoplanin <- function() {
       description = "Total serum protein",
       units = "g/dL",
       type = "continuous",
-      notes = "Median 5.4 g/dL (range 3.7-8.7) in the development cohort (Table 1). Screened as a biochemical covariate and not retained; per-covariate statistics are in Supplementary Table S1, which is not on disk."
+      notes = "Median 5.4 g/dL (range 3.7-8.7) in the development cohort (Table 1). Screened as a biochemical covariate and not retained; per-covariate statistics are in Supplementary Table S1, which was not available when this model was built."
     ),
     CREAT = list(
       description = "Serum creatinine",
@@ -335,7 +335,7 @@ GarciaHervalejo_2026_teicoplanin <- function() {
       "combined inclusion reduced IIV on CL from 47.8% to 34.1% and on Vd from",
       "35.8% to 31.0% (Results; the Discussion restates the CL figure as 47.7%).",
       "The per-covariate univariate statistics are in Supplementary Table S1,",
-      "which is not on disk -- see the vignette Errata."
+      "which was not available when this model was built -- see the vignette Errata."
     ),
     external_validation = paste(
       "An independent cohort of the 51 patients recruited after the development",

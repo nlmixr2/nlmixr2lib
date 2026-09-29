@@ -428,9 +428,9 @@ knitr::kable(
   (`ICU_ADM_MEDICAL`) is the implicit reference (`exp(lvp)` = theta8
   when both other indicators are 0). The reference-category indicator
   is registered as a canonical column in
-  `inst/references/covariate-columns.md` (per operator approval in
-  sidecar-001) but not declared in this model's `covariateData`
-  because it never enters the model equations.
+  `inst/references/covariate-columns.md` (maintainer-approved) but not
+  declared in this model's `covariateData` because it never enters the
+  model equations.
 * Mechanical ventilation is encoded as a single binary `MECH_VENT`
   (0/1) following Georges 2009 Table 1's no/yes column; the source
   paper does not distinguish non-invasive ventilation, tracheostomy,

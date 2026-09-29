@@ -196,7 +196,7 @@ the ratio is insensitive to whether the authors plotted a typical-value curve
 or a median across simulated subjects.
 
 ```{r figure4-digitised}
-# Operator-digitised from the Collins 2025 Figure 4 image file
+# Digitised by the maintainers from the Collins 2025 Figure 4 image file
 # (psp470116 figure g005; panel A, log axis calibrated on the 10.0 / 1.0 / 0.1
 # tick labels). Not a value published in numeric form by the authors.
 fig4_digitised <- tibble::tribble(
@@ -632,7 +632,7 @@ immaterial to exposure.
 ## 3. Values digitised from a figure
 
 The nine midazolam concentration pairs in the scoring chunk were read off the
-Collins 2025 Figure 4 image file by the extractor; they are not published in
+Collins 2025 Figure 4 image file by the maintainers; they are not published in
 numeric form. They are used only to adjudicate between two published parameter
 sets, never to fit or tune anything. The panel A log axis carries three
 evenly-spaced decade labels, giving an exact pixel-per-decade calibration.

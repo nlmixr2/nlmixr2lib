@@ -215,8 +215,13 @@ test_that("double absorption solves like the simultaneous first-order seed", {
     llagDepot2 = log(9),
     propSd = 0.5
   )
-  # dosing depot2 directly bypasses the split (it only fires on
-  # depot), so each path is solved separately and summed
+  # A dose on depot fires the split -- fDepot of it stays in depot and the
+  # rest reaches depot2 after the lag -- so the piped model dosed at depot
+  # alone must equal the seed dosed at both of its depots. A dose placed
+  # directly on depot2 bypasses the split and must equal the seed dosed at
+  # depot2 alone. (Before rxode2 issue 1381 was fixed on 2026-09-21 the split
+  # statement was dropped from the simulated model, and this test summed the
+  # two paths instead.)
   eA <- rxode2::et(time = 0, amt = 100, cmt = "depot") |>
     rxode2::et(seq(0, 48, by = 0.5))
   eB <- rxode2::et(time = 0, amt = 100, cmt = "depot2") |>
@@ -228,26 +233,27 @@ test_that("double absorption solves like the simultaneous first-order seed", {
   eRef <- rxode2::et(time = 0, amt = 100, cmt = "depot1") |>
     rxode2::et(time = 0, amt = 100, cmt = "depot2") |>
     rxode2::et(seq(0, 48, by = 0.5))
-  sRef <- as.data.frame(rxode2::rxSolve(
-    ref,
-    eRef,
-    addDosing = TRUE,
-    params = c(
-      lka1 = log(1.2),
-      lka2 = log(1.2),
-      lcl = log(0.1),
-      lvc = log(10),
-      lgfdepot1 = logit(0.7),
-      ltlag = log(9),
-      propSd = 0.5
-    )
-  ))
+  pRef <- c(
+    lka1 = log(1.2),
+    lka2 = log(1.2),
+    lcl = log(0.1),
+    lvc = log(10),
+    lgfdepot1 = logit(0.7),
+    ltlag = log(9),
+    propSd = 0.5
+  )
+  sRef <- as.data.frame(rxode2::rxSolve(ref, eRef, addDosing = TRUE, params = pRef))
+  eRefB <- rxode2::et(time = 0, amt = 100, cmt = "depot2") |>
+    rxode2::et(seq(0, 48, by = 0.5))
+  sRefB <- as.data.frame(rxode2::rxSolve(ref, eRefB, addDosing = TRUE, params = pRef))
 
   dA <- sA[sA$evid == 0 & sA$time %in% c(12, 24, 48), c("time", "central")]
   dB <- sB[sB$evid == 0 & sB$time %in% c(12, 24, 48), c("time", "central")]
   dR <- sRef[sRef$evid == 0 & sRef$time %in% c(12, 24, 48), c("time", "central")]
+  dRB <- sRefB[sRefB$evid == 0 & sRefB$time %in% c(12, 24, 48), c("time", "central")]
   expect_equal(dA$time, dR$time)
-  expect_equal(dA$central + dB$central, dR$central, tolerance = 1e-6)
+  expect_equal(dA$central, dR$central, tolerance = 1e-6)
+  expect_equal(dB$central, dRB$central, tolerance = 1e-6)
 })
 
 test_that("addSecondAbsorption resolves compartment names in all NSE forms", {

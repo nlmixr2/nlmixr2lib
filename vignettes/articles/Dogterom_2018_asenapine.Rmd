@@ -409,8 +409,8 @@ the Assumptions and deviations section below for context.
   resampling (covariance from Table 3 RSEs / bootstrap CIs), which the
   packaged model -- built from the published point estimates only --
   does not reproduce. The discrepancy is documented here rather than
-  resolved by parameter tuning, per the skill's "don't tune to match
-  validation targets" rule.
+  resolved by parameter tuning, per the package's rule not to tune
+  parameters to match validation targets.
 - **Race distribution recorded as NA in `population`.** The paper
   states that inclusion was limited to White and Black/African-American
   patients across all four studies but does not report the pooled

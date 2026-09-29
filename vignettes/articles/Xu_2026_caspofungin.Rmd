@@ -293,8 +293,14 @@ ss_interval <- function(mod, covs, amt, ndose = 60L, step = 0.002) {
                    amt = 0, evid = 0L, rate = 0, cmt = "central")
   )
   for (nm in names(covs)) ev[[nm]] <- covs[[nm]]
+  # maxsteps: rxode2 derives its automatic `hmax` from the spacing of the
+  # sampling times, so the 0.002 h observation grid caps the integrator's step
+  # size over the whole 1,440 h run-in (about 720,000 steps) and the default
+  # 70,000-step budget is exhausted ("could not solve the system"). Only the
+  # budget is raised; the tolerances are unchanged.
   s <- rxode2::rxSolve(mod, dplyr::arrange(ev, id, time, dplyr::desc(evid)),
-                       returnType = "data.frame", atol = 1e-12, rtol = 1e-12)
+                       returnType = "data.frame", atol = 1e-12, rtol = 1e-12,
+                       maxsteps = 1e6)
   s <- s[!is.na(s$Cc) & s$time >= lo, ]
   list(auc = trapz(s$time, s$Cc), cmin = s$Cc[nrow(s)], cmax = max(s$Cc), cl = s$cl[1])
 }
@@ -776,7 +782,7 @@ stopifnot(
   # NOT on the thresholded PTA percentages: at these MIC90 values both arms sit
   # at 93-100% attainment, so the two percentages differ by only 1-4 subjects
   # out of 200 and their ORDER flips with the rxode2 thread count. Measured
-  # 2026-09-13, ECMO / Non-ECMO PTA at C. parapsilosis: 95.5/97.5 at 1 thread,
+  # ECMO / Non-ECMO PTA at C. parapsilosis: 95.5/97.5 at 1 thread,
   # 97.0/96.0 at 2, 93.5/96.0 at 4, 97.5/96.0 at 8, 96.0/97.5 at 28 -- and at 4
   # threads the C. albicans and C. glabrata rows invert too (100/99.5). The
   # median ratio over that same sweep is stable at 0.83-0.96, always below 1.
@@ -927,7 +933,7 @@ samples per subject were needed before V2 could be estimated at all.
   some sixty-fold above that target -- whereas the paper reports that a
   70 mg/m^2 regimen was needed for non-ECMO children to exceed 90% PTA and that
   no simulated ECMO regimen reached it at all. The discrepancy cannot be
-  resolved from the text on disk: Figure 3 is available only as a rendered
+  resolved from the paper's text: Figure 3 is available only as a rendered
   image, the Methods say PTA was computed "across a range of MIC values" without
   stating which MIC each panel's 90% statement refers to, and the per-panel dose
   and BSA stratification is legible only in the figure itself. The assertions in

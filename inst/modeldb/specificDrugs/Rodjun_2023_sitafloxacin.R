@@ -53,7 +53,7 @@ Rodjun_2023_sitafloxacin <- function() {
     age_range = "Simulated as under 65 years. Rodjun 2023 Table 2 footnote flags the volume of distribution as the 'age < 65 years' value, so the packaged parameters apply to the under-65 stratum only. The underlying Tanigawara 2013 estimation data pooled healthy volunteers, elderly volunteers, and renally impaired patients with patients enrolled in a respiratory-tract-infection PK/PD study; Rodjun 2023 does not restate that study's demographics.",
     weight_range = "Simulated at a single body weight of 60 kg (Materials and methods, Simulated dosage regimens / Sitafloxacin).",
     sex_female_pct = NA_real_,
-    race_ethnicity = "Not reported on disk; the Tanigawara 2013 estimation studies were conducted in Japan.",
+    race_ethnicity = "Not reported in the available sources; the Tanigawara 2013 estimation studies were conducted in Japan.",
     disease_state = "Simulation target population is inpatients with carbapenem-resistant (CRAB), multidrug-resistant (MDR-AB) or colistin-resistant (CoR-AB) Acinetobacter baumannii infection. The underlying Tanigawara 2013 estimation data came from clinical pharmacology studies in healthy, elderly and renally impaired subjects plus a PK/PD study in patients with community-acquired respiratory tract infections.",
     dose_range = "Oral doses from 50 mg q48h to 1500 mg q12h according to creatinine clearance, administered in the fasted state (Materials and methods, Simulated dosage regimens / Sitafloxacin). The manufacturer-recommended regimens evaluated as comparators were 50 mg q12h, 100 mg q24h and 100 mg q12h.",
     regions = "Thailand (simulation study, Mahidol University, Bangkok); the underlying Tanigawara 2013 PK cohort was Japanese.",

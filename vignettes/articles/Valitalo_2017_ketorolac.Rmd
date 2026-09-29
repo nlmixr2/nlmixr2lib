@@ -30,11 +30,10 @@ library(ggplot2)
   pharmacokinetics. *Br J Clin Pharmacol* 83(9):1966-1975.
   doi:10.1111/bcp.13311.
 * Article: <https://doi.org/10.1111/bcp.13311>
-* Source files on disk: the published PDF
-  (`Vlitalo_2017_Body_weight_gender_and_pregnancy_affect__c9886c.pdf`).
-  No supplementary NONMEM control stream was bundled with the task; all
-  parameter values come from the paper's Table 2 final-model column and
-  the Methods (equations 1-6).
+* Source: the published article.
+  No supplementary NONMEM control stream was available when this model
+  was built; all parameter values come from the paper's Table 2
+  final-model column and the Methods (equations 1-6).
 
 ```{r load-model}
 mod_fn <- readModelDb("Valitalo_2017_ketorolac")
@@ -394,14 +393,13 @@ mdose_sim |>
 
 # PKNCA validation
 
-Single-dose, 24-hour NCA per the recipe in
-`references/pknca-recipes.md`. NCA is run separately for R-ketorolac
-(`Cc_r_enant`) and S-ketorolac (`Cc_s_enant`); the cohort label
-("Women at delivery", "Postpartum", "Nonpregnant female", "Male") is
-the treatment grouping variable. The PKNCAdose object carries the
-half-of-racemic dose (15 mg) targeted at the relevant enantiomer
-compartment, so AUC / dose has units of mg*h/L per 15 mg of
-enantiomer.
+Single-dose, 24-hour NCA per the package's standard PKNCA recipe. NCA is
+run separately for R-ketorolac (`Cc_r_enant`) and S-ketorolac
+(`Cc_s_enant`); the cohort label ("Women at delivery", "Postpartum",
+"Nonpregnant female", "Male") is the treatment grouping variable. The
+PKNCAdose object carries the half-of-racemic dose (15 mg) targeted at the
+relevant enantiomer compartment, so AUC / dose has units of mg*h/L per
+15 mg of enantiomer.
 
 ```{r pknca-r}
 sim_nca_r_enant <- sim |>
@@ -583,7 +581,7 @@ covariate effects on CL are shared between enantiomers.
   encode this as `etalvc_r_enant` and `etalvc_s_enant`, each added once to all
   three volumes (vc, vp, vp2) of the corresponding enantiomer. The
   shared-eta naming uses the canonical "central volume" eta name
-  (`etalvc_*`) per `references/naming-conventions.md`; the application
+  (`etalvc_*`) per the package's parameter-naming convention; the application
   to vp / vp2 is done in `model()`.
 
 * **WAD covariate renamed to canonical PREG.** The source NONMEM

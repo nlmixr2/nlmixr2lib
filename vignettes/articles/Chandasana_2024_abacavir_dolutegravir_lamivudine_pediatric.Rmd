@@ -47,8 +47,8 @@ Each model file also names its upstream primary source in its `reference`
 field: the abacavir and lamivudine models come from the US FDA clinical
 pharmacology review for Ziagen and Epivir (Chandasana 2024 reference 16), and
 the dolutegravir model from Chandasana et al., *Clin Pharmacokinet*
-2023;62(10):1445-1459 (reference 15). Those primary sources are not on disk for
-this extraction; see *Assumptions and deviations* below.
+2023;62(10):1445-1459 (reference 15). Those primary sources were not available
+when these models were built; see *Assumptions and deviations* below.
 
 ```{r load}
 mABC <- modellib("Chandasana_2024b_abacavir")
@@ -276,7 +276,10 @@ solve_drug <- function(mod, events, extra_cov = list()) {
   events$OCC <- 1
   s <- rxode2::rxSolve(
     rxode2::zeroRe(mod, "sigma"), events,
-    keep = c("band"), returnType = "data.frame", omega = NULL, sigma = NULL
+    keep = c("band"), returnType = "data.frame", omega = NULL, sigma = NULL,
+    # Two lamivudine weight bands lost subjects to LSODA's default step budget
+    # once the ODE was integrated rather than solved analytically.
+    maxsteps = 1e6
   )
   # rxSolve occasionally drops subjects silently; assert the count.
   stopifnot(dplyr::n_distinct(s$id) == dplyr::n_distinct(events$id))
@@ -340,8 +343,13 @@ band so the results line up with Chandasana 2024 Table 4.
 
 ```{r pknca}
 run_nca <- function(sim, events) {
+  # A few fast-eliminating subjects reach a numerically-zero trough and the ODE
+  # integrator undershoots it by ~1e-12; PKNCA's log-down trapezoid returns NaN
+  # for a negative concentration. Assert the undershoot is noise, then floor it.
+  stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE), na.rm = TRUE))
   conc <- sim |>
     dplyr::filter(!is.na(Cc)) |>
+    dplyr::mutate(Cc = pmax(Cc, 0)) |>
     dplyr::select(id, band, time, Cc)
 
   # Guarantee a time = 0 row per subject (pre-dose at steady state is the
@@ -538,8 +546,8 @@ weighing 6 to 40 kg.
   Ziagen/Epivir clinical pharmacology review (abacavir, lamivudine) and
   Chandasana et al. *Clin Pharmacokinet* 2023 (dolutegravir) -- and applies
   them without re-estimation. Every value here is traced to Chandasana 2024
-  Tables 1-3 as printed. Those primary sources were not available on disk for
-  this extraction and should be consulted if the models are re-extracted.
+  Tables 1-3 as printed. Those primary sources were not available when these
+  models were built and should be consulted if the models are re-extracted.
 
 - **Lamivudine residual error is incompletely specified.** Table 3 reports an
   additive residual error of 0.003 mg/L together with a "Weighing factor for

@@ -410,13 +410,13 @@ knitr::kable(po_nca, digits = 3,
 
 # Assumptions and deviations
 
-* **Drug field correction.** The dispatcher metadata field `drug =
-  "The AAPS Journal"` was a parser artefact (the journal name was
-  mis-extracted as the drug name). The paper is unambiguously about
-  1,4-butanediol (BD) with the metabolite GHB and the interactant
-  ethanol; the model filename, function name, vignette basename, and
-  description were silently corrected to use `butanediol` per the
-  skill's Phase 1 step 2 (paper-not-ambiguous arm).
+* **Drug field correction.** The metadata field `drug =
+  "The AAPS Journal"` supplied when this model was built was a parser
+  artefact (the journal name was mis-extracted as the drug name). The
+  paper is unambiguously about 1,4-butanediol (BD) with the metabolite
+  GHB and the interactant ethanol; the model filename, function name,
+  vignette basename, and description were silently corrected to use
+  `butanediol`.
 * **Dose-dependent fractional pre-systemic conversion.** The fraction
   of the absorbed oral BD dose entering systemic circulation as BD
   versus ALD was estimated separately for each dose level in the

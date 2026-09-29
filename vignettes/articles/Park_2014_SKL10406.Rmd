@@ -331,9 +331,8 @@ sim_to_ss |>
 # PKNCA validation
 
 PKNCA is run on the simulated plasma profiles over a single
-steady-state dosing interval (recipe 2 of `pknca-recipes.md`,
-steady-state). The 12-h tau is from the q12h dosing schedule. Per-cohort
-results are stratified by `treatment`.
+steady-state dosing interval. The 12-h tau is from the q12h dosing
+schedule. Per-cohort results are stratified by `treatment`.
 
 ```{r pknca}
 # Steady-state interval: morning dose at ss_time, tau = 12 h.

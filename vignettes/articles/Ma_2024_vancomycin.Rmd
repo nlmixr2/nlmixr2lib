@@ -218,7 +218,9 @@ sim <- rxode2::rxSolve(
 sim_typical <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = as.data.frame(events),
-  keep   = c("treatment", "CRCL")
+  keep   = c("treatment", "CRCL"),
+  # Tight solver tolerances: Gate 2 holds this solve to the closed form at 1e-8.
+  rtol   = 1e-10, atol = 1e-12
 ) |>
   as.data.frame()
 
@@ -308,10 +310,10 @@ stopifnot(
   nrow(cf_rel) >= nrow(arms) *
     length(seq(last_dose_time, last_dose_time + tau, by = 0.25))
 )
-# Realised max relative error 4.6e-15 -- machine precision, because both sides
-# evaluate the same linear solution. 1e-8 leaves seven orders of headroom over
-# any plausible solver-tolerance change while still going red on a structural
-# or unit error, which moves these by whole percent.
+# Realised max relative error 4.4e-10 with the ODE integrator at rtol 1e-10 /
+# atol 1e-12 (4.6e-15 under the analytic linCmt path). 1e-8 leaves about 20x
+# headroom over that floor while still going red on a structural or unit
+# error, which moves these by whole percent.
 stopifnot(max(cf_rel$rel) < 1e-8)
 
 cf_check |>

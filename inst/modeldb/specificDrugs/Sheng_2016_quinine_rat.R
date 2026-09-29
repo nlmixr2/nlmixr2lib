@@ -36,7 +36,7 @@ Sheng_2016_quinine_rat <- function() {
     disease_state = "(none; preclinical taste-aversion screening)",
     dose_range = "Seven concentrations of quinine HCl dihydrate: 0 (deionized water), 0.01, 0.03, 0.1, 0.3, 1, 3 mM, presented via sipper tube for 8 s with a 2 s water-rinse between trials. Each quinine concentration was presented four times and water six times per 40-minute session; experiments were repeated weekly for 8 weeks with a 1-week washout between sessions.",
     regions = "(not applicable; preclinical)",
-    notes = "5,400 lick-count records total (Table 1: water n=1,080; each quinine concentration n=718-722). The observed maximum lick number across all trials was 61, which fixes the right-truncation upper bound used by the second (high-count) generalized-Poisson distribution. Lick counts followed a bimodal distribution (Figure 1b) with one peak in 0-20 and a second peak in 40-60; the proportion in the low-count peak increased monotonically with quinine concentration (Figure 2b). The Sheng 2016 publication does not report rat strain, sex, or age, and no supplementary methods document was on disk at extraction time."
+    notes = "5,400 lick-count records total (Table 1: water n=1,080; each quinine concentration n=718-722). The observed maximum lick number across all trials was 61, which fixes the right-truncation upper bound used by the second (high-count) generalized-Poisson distribution. Lick counts followed a bimodal distribution (Figure 1b) with one peak in 0-20 and a second peak in 40-60; the proportion in the low-count peak increased monotonically with quinine concentration (Figure 2b). The Sheng 2016 publication does not report rat strain, sex, or age, and no supplementary methods document was available when this model was built."
   )
 
   ini({
@@ -46,7 +46,7 @@ Sheng_2016_quinine_rat <- function() {
     # are noted in trailing comments; 90% bootstrap confidence intervals
     # (Table 2 "2GP Bootstrap" column) are noted for parameters that
     # carry one. The source publication's NONMEM control stream was not
-    # available on disk - all values are transcribed from Table 2 of the
+    # available - all values are transcribed from Table 2 of the
     # main text.
     #
     # Model equations come from the Methods section "Models for the

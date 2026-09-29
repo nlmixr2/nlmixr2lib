@@ -23,7 +23,7 @@ ChandralayamAyyappaMenon_2026_teclistamab_qsp <- function() {
   # holds the subcutaneous dose as an AMOUNT in nmol.
   #
   # The source does not report the molecular weight of teclistamab, so a ug/kg
-  # dose cannot be converted to nmol from on-disk information alone. The vignette
+  # dose cannot be converted to nmol from the published information alone. The vignette
   # derives the dose scale from the paper's own Table 2 dose <-> nACT anchors and
   # says so explicitly; no molecular weight is used here.
   units <- list(time = "day", dosing = "nmol", concentration = "nM")

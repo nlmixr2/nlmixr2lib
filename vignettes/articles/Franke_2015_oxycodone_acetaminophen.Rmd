@@ -28,22 +28,27 @@ separate analyses on two different cohorts:
 * a **pooled fasted** analysis of 151 completers from four phase 1 studies, and
 * a **fed-vs-fasted** food-effect analysis of the 31 completers of study 4.
 
-That is four independent final models. Three of them are packaged here; the
-fourth is not, for the reason given under *Errata and known deviations*.
+That is four independent final models, and all four are packaged here. The
+fourth carries a caveat that a user must read before simulating it: Table 5
+never reports its intercompartmental clearance or peripheral volume, so those
+two parameters are carried in from the pooled fasted acetaminophen fit. See
+*Errata and known deviations*.
 
 | Packaged model | Analyte | Cohort | Structure |
 |---|---|---|---|
 | `Franke_2015_oxycodone` | oxycodone | pooled fasted, n = 151 | 1-compartment, first-order absorption |
 | `Franke_2015_acetaminophen` | acetaminophen | pooled fasted, n = 151 | 2-compartment, first-order absorption |
 | `Franke_2015_oxycodone_food` | oxycodone | food effect, n = 31 | 1-compartment, first-order absorption |
+| `Franke_2015_acetaminophen_food` | acetaminophen | food effect, n = 31 | 2-compartment, first-order absorption (`Q`, `V3/F` carried from Table 4) |
 
 * Article: <https://doi.org/10.2147/DDDT.S79499>
 * Citation: `r rxode2::rxode(readModelDb("Franke_2015_oxycodone"))$reference`
 
 ```{r models}
-mod_oc      <- readModelDb("Franke_2015_oxycodone")
-mod_apap    <- readModelDb("Franke_2015_acetaminophen")
-mod_oc_food <- readModelDb("Franke_2015_oxycodone_food")
+mod_oc        <- readModelDb("Franke_2015_oxycodone")
+mod_apap      <- readModelDb("Franke_2015_acetaminophen")
+mod_oc_food   <- readModelDb("Franke_2015_oxycodone_food")
+mod_apap_food <- readModelDb("Franke_2015_acetaminophen_food")
 ```
 
 # Population
@@ -140,6 +145,27 @@ value in `ini()`.
 | `etalka` | 0.104 | printed Ka equation, `exp(0.104)` |
 | `addSd`, `propSd` | fixed(0) | not reported; Table 5 footnote a states the structure only |
 
+## `Franke_2015_acetaminophen_food` (food effect, n = 31)
+
+| Parameter | Value | Source location |
+|---|---|---|
+| `lcl` | 22.9 L/h | Table 5, APAP `CL/F (L/hour)`, final model; printed CL/F equation |
+| `lvc` | 140 L | Table 5, APAP `V2/F (L)`, final model; printed V2/F equation |
+| `lka` | 3.17 1/h | Table 5, APAP `Ka (hour-1)`, final model; printed Ka equation |
+| `lq` | 29.9 L/h (fixed) | **not reported for this fit**; carried from Table 4, `Q (L/hour)` |
+| `lvp` | 99.7 L (fixed) | **not reported for this fit**; carried from Table 4, `V3/F (L)` |
+| `e_wt_cl` | 0.75 (fixed) | printed CL/F equation, `((WT/72.3)**0.75)` |
+| WT exponent on V2/F | 1 (structural) | printed V2/F equation, bare `(WT/72.3)` ratio |
+| `e_sexf_cl` | 0.278 | Table 5, APAP `CL/F sex`; printed CL/F equation `(1 or 0.278)` |
+| `e_sexf_vc` | 0.295 | Table 5, APAP `V/F sex`; printed V2/F equation `(1 or 0.295)` |
+| sex coding men 0 / women 1, entering as `theta^SEX` | n/a | legend beneath the food-effect equations |
+| `e_fed_lowfat_ka` | 0.802 | Table 5, APAP `Ka low fat`; printed Ka equation |
+| `e_fed_highfat_ka` | 0.825 | Table 5, APAP `Ka high fat`; printed Ka equation |
+| `etalcl` | 0.0302 | printed CL/F equation, `exp(0.0302)` |
+| `etalvc` | 0.0114 | printed V2/F equation, `exp(0.0114)` |
+| `etalka` | 0.526 | printed Ka equation, `exp(0.526)` |
+| `addSd`, `propSd` | fixed(0) | not reported; Table 5 footnote a states the structure only |
+
 # Structural parameters reproduce the published tables
 
 This first gate compares each packaged model's parameters, evaluated at the
@@ -161,26 +187,37 @@ ref_oc <- ref_grid(mod_oc,
 ref_apap <- ref_grid(mod_apap, list(WT = 73.45), amt = 650)
 ref_food <- ref_grid(mod_oc_food,
   list(HT = 168.5, WT = 72.3, FED_LOWFAT = 0, FED_HIGHFAT = 0), amt = 15)
+# Male reference (SEXF = 0), fasted: the state in which Table 5's APAP CL/F,
+# V2/F and Ka are the bare typical values.
+ref_apap_food <- ref_grid(mod_apap_food,
+  list(WT = 72.3, SEXF = 0, FED_LOWFAT = 0, FED_HIGHFAT = 0), amt = 650)
 
 structural <- tibble::tribble(
-  ~Model,                        ~Parameter, ~Published, ~Model_value,
-  "Franke_2015_oxycodone",       "CL/F (L/h)",   92.4,  ref_oc$cl[1],
-  "Franke_2015_oxycodone",       "V/F (L)",     772,    ref_oc$vc[1],
-  "Franke_2015_oxycodone",       "Ka (1/h)",      1.15, ref_oc$ka[1],
-  "Franke_2015_acetaminophen",   "CL/F (L/h)",   20.5,  ref_apap$cl[1],
-  "Franke_2015_acetaminophen",   "V2/F (L)",     58.9,  ref_apap$vc[1],
-  "Franke_2015_acetaminophen",   "Q (L/h)",      29.9,  ref_apap$q[1],
-  "Franke_2015_acetaminophen",   "V3/F (L)",     99.7,  ref_apap$vp[1],
-  "Franke_2015_acetaminophen",   "Ka (1/h)",      5.4,  ref_apap$ka[1],
-  "Franke_2015_oxycodone_food",  "CL/F (L/h)",   77.6,  ref_food$cl[1],
-  "Franke_2015_oxycodone_food",  "V/F (L)",     640,    ref_food$vc[1],
-  "Franke_2015_oxycodone_food",  "Ka (1/h)",      0.555, ref_food$ka[1]
+  ~Model,                           ~Parameter, ~Published, ~Model_value,
+  "Franke_2015_oxycodone",          "CL/F (L/h)",   92.4,  ref_oc$cl[1],
+  "Franke_2015_oxycodone",          "V/F (L)",     772,    ref_oc$vc[1],
+  "Franke_2015_oxycodone",          "Ka (1/h)",      1.15, ref_oc$ka[1],
+  "Franke_2015_acetaminophen",      "CL/F (L/h)",   20.5,  ref_apap$cl[1],
+  "Franke_2015_acetaminophen",      "V2/F (L)",     58.9,  ref_apap$vc[1],
+  "Franke_2015_acetaminophen",      "Q (L/h)",      29.9,  ref_apap$q[1],
+  "Franke_2015_acetaminophen",      "V3/F (L)",     99.7,  ref_apap$vp[1],
+  "Franke_2015_acetaminophen",      "Ka (1/h)",      5.4,  ref_apap$ka[1],
+  "Franke_2015_oxycodone_food",     "CL/F (L/h)",   77.6,  ref_food$cl[1],
+  "Franke_2015_oxycodone_food",     "V/F (L)",     640,    ref_food$vc[1],
+  "Franke_2015_oxycodone_food",     "Ka (1/h)",      0.555, ref_food$ka[1],
+  "Franke_2015_acetaminophen_food", "CL/F (L/h)",   22.9,  ref_apap_food$cl[1],
+  "Franke_2015_acetaminophen_food", "V2/F (L)",    140,    ref_apap_food$vc[1],
+  "Franke_2015_acetaminophen_food", "Ka (1/h)",      3.17, ref_apap_food$ka[1],
+  # Carried from Table 4, not reported in Table 5. Gated anyway so that a
+  # silent drift in the borrowed values still goes red.
+  "Franke_2015_acetaminophen_food", "Q (L/h)",      29.9,  ref_apap_food$q[1],
+  "Franke_2015_acetaminophen_food", "V3/F (L)",     99.7,  ref_apap_food$vp[1]
 ) |>
   mutate(pct_diff = 100 * (Model_value - Published) / Published)
 
 # Deterministic: these are the typical values with IIV suppressed, so they must
 # match the printed table to within display rounding, not to a noise tolerance.
-stopifnot(nrow(structural) == 11L)
+stopifnot(nrow(structural) == 16L)
 stopifnot(max(abs(structural$pct_diff)) < 1e-8)
 
 structural |>
@@ -254,11 +291,55 @@ cov_tab <- bind_rows(
   cov_check(mod_oc_food,
             list(HT = 168.5, WT = 72.3, FED_LOWFAT = 0, FED_HIGHFAT = 1),
             "vc", 640 * 0.648) |>
-    mutate(Effect = "OC-food V/F, high-fat meal")
+    mutate(Effect = "OC-food V/F, high-fat meal"),
+  # --- food-effect acetaminophen -----------------------------------------
+  # The sex term is written `theta**SEX` with men = 0 and women = 1, so for a
+  # binary covariate it is a plain multiplier applied to women. Expected values
+  # are written from the printed equation, independently of the model.
+  cov_check(mod_apap_food,
+            list(WT = 72.3 * 1.1, SEXF = 0, FED_LOWFAT = 0, FED_HIGHFAT = 0),
+            "cl", 22.9 * 1.1^0.75) |>
+    mutate(Effect = "APAP-food CL/F, WT +10% (power 0.75)"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3 * 1.1, SEXF = 0, FED_LOWFAT = 0, FED_HIGHFAT = 0),
+            "vc", 140 * 1.1) |>
+    mutate(Effect = "APAP-food V2/F, WT +10% (power 1)"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3, SEXF = 1, FED_LOWFAT = 0, FED_HIGHFAT = 0),
+            "cl", 22.9 * 0.278) |>
+    mutate(Effect = "APAP-food CL/F, female"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3, SEXF = 1, FED_LOWFAT = 0, FED_HIGHFAT = 0),
+            "vc", 140 * 0.295) |>
+    mutate(Effect = "APAP-food V2/F, female"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3, SEXF = 1, FED_LOWFAT = 0, FED_HIGHFAT = 0),
+            "ka", 3.17) |>
+    mutate(Effect = "APAP-food Ka, female (no sex term on Ka)"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3, SEXF = 0, FED_LOWFAT = 1, FED_HIGHFAT = 0),
+            "ka", 3.17 * 0.802) |>
+    mutate(Effect = "APAP-food Ka, low-fat meal"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3, SEXF = 0, FED_LOWFAT = 0, FED_HIGHFAT = 1),
+            "ka", 3.17 * 0.825) |>
+    mutate(Effect = "APAP-food Ka, high-fat meal"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3, SEXF = 1, FED_LOWFAT = 0, FED_HIGHFAT = 1),
+            "vc", 140 * 0.295) |>
+    mutate(Effect = "APAP-food V2/F, female + high-fat (no meal term on V2/F)"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3 * 1.1, SEXF = 1, FED_LOWFAT = 0, FED_HIGHFAT = 1),
+            "q", 29.9) |>
+    mutate(Effect = "APAP-food Q, all covariates moved (no covariate term)"),
+  cov_check(mod_apap_food,
+            list(WT = 72.3 * 1.1, SEXF = 1, FED_LOWFAT = 0, FED_HIGHFAT = 1),
+            "vp", 99.7) |>
+    mutate(Effect = "APAP-food V3/F, all covariates moved (no covariate term)")
 ) |>
   select(Effect, Expected, Model_value, pct_diff)
 
-stopifnot(nrow(cov_tab) == 15L)
+stopifnot(nrow(cov_tab) == 25L)
 stopifnot(max(abs(cov_tab$pct_diff)) < 1e-8)
 
 cov_tab |>
@@ -339,7 +420,11 @@ stopifnot(!anyDuplicated(unique(ev_oc[, c("id", "time", "evid")])))
 food_base <- tibble(
   subject = seq_len(n_arm),
   WT      = rtrunc_norm(n_arm, 74.9, 12.0, 59.1, 101.8),
-  HT      = rtrunc_norm(n_arm, 169.8, 8.5, 155.1, 185.5)
+  HT      = rtrunc_norm(n_arm, 169.8, 8.5, 155.1, 185.5),
+  # Table 2: 21 of 31 (67.7%) were men, so 32.3% are drawn female. Sex enters
+  # only the acetaminophen food-effect model; the oxycodone food-effect model
+  # screened it and did not retain it.
+  SEXF    = rbinom(n_arm, 1L, 0.323)
 )
 
 food_subj <- bind_rows(
@@ -350,11 +435,17 @@ food_subj <- bind_rows(
   food_base |> mutate(treatment = "High fat", FED_LOWFAT = 0L, FED_HIGHFAT = 1L,
                       id = subject + 2L * n_arm)
 ) |>
-  mutate(oc_mg = 15, treatment = factor(treatment,
-                                        levels = c("Fasted", "Low fat", "High fat")))
+  mutate(oc_mg = 15, apap_mg = 650,
+         treatment = factor(treatment,
+                            levels = c("Fasted", "Low fat", "High fat")))
 
-ev_food <- expand_events(food_subj, "oc_mg")
+ev_food      <- expand_events(food_subj, "oc_mg")
+ev_apap_food <- expand_events(food_subj, "apap_mg")
 stopifnot(!anyDuplicated(unique(ev_food[, c("id", "time", "evid")])))
+# Both sexes must be present or the sex-effect contrast below has nothing to
+# compare; with n = 100 per arm at p = 0.323 this is effectively certain, but a
+# gate that cannot go red is worse than none.
+stopifnot(length(unique(food_base$SEXF)) == 2L)
 ```
 
 # Simulation
@@ -378,10 +469,17 @@ sim_food <- rxode2::rxSolve(
   keep = c("treatment", "WT", "HT", "FED_LOWFAT", "FED_HIGHFAT", "oc_mg")
 ) |> as.data.frame()
 
+rxode2::rxSetSeed(20150804)
+sim_apap_food <- rxode2::rxSolve(
+  mod_apap_food, events = ev_apap_food,
+  keep = c("treatment", "WT", "SEXF", "FED_LOWFAT", "FED_HIGHFAT", "apap_mg")
+) |> as.data.frame()
+
 # Concentrations must stay non-negative for PKNCA's terminal-slope log() fit.
-stopifnot(all(sim_oc$Cc   >= 0, na.rm = TRUE))
-stopifnot(all(sim_apap$Cc >= 0, na.rm = TRUE))
-stopifnot(all(sim_food$Cc >= 0, na.rm = TRUE))
+stopifnot(all(sim_oc$Cc        >= 0, na.rm = TRUE))
+stopifnot(all(sim_apap$Cc      >= 0, na.rm = TRUE))
+stopifnot(all(sim_food$Cc      >= 0, na.rm = TRUE))
+stopifnot(all(sim_apap_food$Cc >= 0, na.rm = TRUE))
 ```
 
 # Replicate published figures
@@ -412,17 +510,73 @@ ggplot(prof, aes(time, Q50, colour = treatment, fill = treatment)) +
        caption = "Median with 5th-95th percentile band, 100 subjects per dose arm.")
 ```
 
-```{r figure-7}
-# Replicates Figure 7 of Franke 2015: interindividual Ka variability for
-# oxycodone under fasted vs low-fat vs high-fat conditions, final model.
-sim_food |>
-  distinct(id, treatment, ka) |>
+```{r figure-7-8}
+# Replicates Figures 7 and 8 of Franke 2015: interindividual Ka variability
+# under fasted vs low-fat vs high-fat conditions, final model, for oxycodone
+# (Figure 7) and acetaminophen (Figure 8).
+bind_rows(
+  sim_food      |> distinct(id, treatment, ka) |> mutate(analyte = "Oxycodone (Figure 7)"),
+  sim_apap_food |> distinct(id, treatment, ka) |> mutate(analyte = "Acetaminophen (Figure 8)")
+) |>
   ggplot(aes(treatment, ka, fill = treatment)) +
   geom_boxplot(alpha = 0.6, outlier.alpha = 0.4) +
+  facet_wrap(~analyte, scales = "free_y") +
   labs(x = NULL, y = "Individual Ka (1/h)",
-       title = "Figure 7 - interindividual Ka variability by prandial state",
-       caption = "Replicates the final-model panel of Figure 7 of Franke 2015.") +
+       title = "Figures 7 and 8 - interindividual Ka variability by prandial state",
+       caption = paste("Replicates the final-model panels of Figures 7 and 8 of",
+                       "Franke 2015. Acetaminophen's Ka variance is 0.526 against",
+                       "oxycodone's 0.104, so its spread is much wider.")) +
   theme(legend.position = "none")
+```
+
+The acetaminophen food-effect model is the only one of the four in which sex is
+retained. Its magnitude is large and is discussed under *Errata*; the figure
+below shows what it does to the simulated profile at typical values.
+
+```{r figure-apap-food-sex}
+ev_apap_food_typ <- tidyr::crossing(
+  tibble(SEXF = c(0L, 1L), sex = c("Men", "Women")),
+  tibble(treatment = c("Fasted", "Low fat", "High fat"),
+         FED_LOWFAT = c(0L, 1L, 0L), FED_HIGHFAT = c(0L, 0L, 1L))
+) |>
+  mutate(id = row_number(), WT = 72.3, apap_mg = 650,
+         treatment = factor(treatment,
+                            levels = c("Fasted", "Low fat", "High fat"))) |>
+  expand_events("apap_mg")
+
+sim_apap_food_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod_apap_food), events = ev_apap_food_typ,
+  keep = c("treatment", "sex")
+) |> as.data.frame()
+
+sim_apap_food_typ |>
+  filter(!is.na(Cc)) |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~sex) +
+  coord_cartesian(xlim = c(0, 24)) +
+  labs(x = "Time (h)", y = "Acetaminophen (ng/mL)", colour = NULL,
+       title = "Acetaminophen food-effect model at typical values",
+       caption = paste("650 mg acetaminophen at WT 72.3 kg. A meal slows",
+                       "absorption; the printed sex multipliers raise the whole",
+                       "female profile roughly 3.6-fold. See Errata."))
+```
+
+```{r apap-food-sex-gate}
+# CL/F and V2/F are cut by nearly the same factor for women (0.278 vs 0.295),
+# so the terminal rate constant barely moves while exposure rises by 1/0.278.
+# That is the signature of a bioavailability difference in an apparent-
+# parameter fit, and it is what makes the printed multipliers internally
+# coherent even though their magnitude contradicts the paper's prose.
+apap_food_sex <- sim_apap_food_typ |>
+  filter(!is.na(Cc)) |>
+  group_by(sex, treatment) |>
+  summarise(kel = first(cl) / first(vc), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = sex, values_from = kel)
+
+stopifnot(nrow(apap_food_sex) == 3L)
+# kel ratio women:men = 0.278/0.295 = 0.9424, exactly and for every arm.
+stopifnot(max(abs(apap_food_sex$Women / apap_food_sex$Men - 0.278 / 0.295)) < 1e-10)
 ```
 
 The food contrast is shown at **typical values**, not as a median across the
@@ -513,9 +667,10 @@ run_nca <- function(sim, ev, amt_col) {
   ))
 }
 
-nca_oc   <- run_nca(sim_oc,   ev_oc,   "oc_mg")
-nca_apap <- run_nca(sim_apap, ev_apap, "apap_mg")
-nca_food <- run_nca(sim_food, ev_food, "oc_mg")
+nca_oc        <- run_nca(sim_oc,        ev_oc,        "oc_mg")
+nca_apap      <- run_nca(sim_apap,      ev_apap,      "apap_mg")
+nca_food      <- run_nca(sim_food,      ev_food,      "oc_mg")
+nca_apap_food <- run_nca(sim_apap_food, ev_apap_food, "apap_mg")
 
 nca_wide <- function(res) {
   as.data.frame(res) |>
@@ -524,11 +679,12 @@ nca_wide <- function(res) {
     tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
 }
 
-nca_oc_w   <- nca_wide(nca_oc)
-nca_apap_w <- nca_wide(nca_apap)
-nca_food_w <- nca_wide(nca_food)
+nca_oc_w        <- nca_wide(nca_oc)
+nca_apap_w      <- nca_wide(nca_apap)
+nca_food_w      <- nca_wide(nca_food)
+nca_apap_food_w <- nca_wide(nca_apap_food)
 stopifnot(nrow(nca_oc_w) == 3L * n_arm, nrow(nca_apap_w) == 3L * n_arm,
-          nrow(nca_food_w) == 3L * n_arm)
+          nrow(nca_food_w) == 3L * n_arm, nrow(nca_apap_food_w) == 3L * n_arm)
 ```
 
 ```{r nca-summary}
@@ -543,9 +699,10 @@ nca_summary <- function(w, label) {
 }
 
 bind_rows(
-  nca_summary(nca_oc_w,   "Oxycodone, pooled fasted"),
-  nca_summary(nca_apap_w, "Acetaminophen, pooled fasted"),
-  nca_summary(nca_food_w, "Oxycodone, food effect (15 mg)")
+  nca_summary(nca_oc_w,        "Oxycodone, pooled fasted"),
+  nca_summary(nca_apap_w,      "Acetaminophen, pooled fasted"),
+  nca_summary(nca_food_w,      "Oxycodone, food effect (15 mg)"),
+  nca_summary(nca_apap_food_w, "Acetaminophen, food effect (650 mg)")
 ) |>
   rename("Analysis" = Analysis, "Arm" = treatment, "N" = n,
          "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
@@ -556,9 +713,10 @@ bind_rows(
 
 Franke 2015 reports **no** NCA table of its own -- it is a population-PK
 analysis whose companion NCA appears in the separate primary PK publication
-(Devarakonda 2014, *Drug Des Devel Ther* 8:1125-1134), which is not on disk
-here. In place of a published-NCA comparison the sections below use closed-form
-identities that the model must satisfy exactly.
+(Devarakonda 2014, *Drug Des Devel Ther* 8:1125-1134), which was not
+available when this model was built. In place of a published-NCA comparison
+the sections below use closed-form identities that the model must satisfy
+exactly.
 
 ## Mass balance: AUC0-inf x CL/F = dose
 
@@ -580,12 +738,13 @@ mass_balance <- function(w, sim, dose_col) {
 }
 
 mb <- bind_rows(
-  mass_balance(nca_oc_w,   sim_oc,   "oc_mg")   |> mutate(Analysis = "Oxycodone, pooled fasted"),
-  mass_balance(nca_apap_w, sim_apap, "apap_mg") |> mutate(Analysis = "Acetaminophen, pooled fasted"),
-  mass_balance(nca_food_w, sim_food, "oc_mg")   |> mutate(Analysis = "Oxycodone, food effect")
+  mass_balance(nca_oc_w,        sim_oc,        "oc_mg")   |> mutate(Analysis = "Oxycodone, pooled fasted"),
+  mass_balance(nca_apap_w,      sim_apap,      "apap_mg") |> mutate(Analysis = "Acetaminophen, pooled fasted"),
+  mass_balance(nca_food_w,      sim_food,      "oc_mg")   |> mutate(Analysis = "Oxycodone, food effect"),
+  mass_balance(nca_apap_food_w, sim_apap_food, "apap_mg") |> mutate(Analysis = "Acetaminophen, food effect")
 )
 
-stopifnot(nrow(mb) == 9L * n_arm, !anyNA(mb$pct_diff))
+stopifnot(nrow(mb) == 12L * n_arm, !anyNA(mb$pct_diff))
 
 # The two one-compartment oxycodone models integrate essentially exactly: both
 # sides use the same drawn parameters, so the gap is pure trapezoidal and
@@ -593,19 +752,29 @@ stopifnot(nrow(mb) == 9L * n_arm, !anyNA(mb$pct_diff))
 # (pooled fasted) and 0.172% (food effect) at 16 threads. A 1% bound keeps
 # headroom for a different cohort draw and still goes red on a unit-factor
 # error, which is off by 1000x.
-oc_rows <- mb$Analysis != "Acetaminophen, pooled fasted"
+oc_rows <- mb$Analysis %in% c("Oxycodone, pooled fasted", "Oxycodone, food effect")
 stopifnot(sum(oc_rows) == 6L * n_arm)
 stopifnot(max(abs(mb$pct_diff[oc_rows])) < 1)
 
-# Acetaminophen is different in kind. Its IIV on Q is CV 209% and on V3/F is
-# CV 86% (Table 4), so a minority of subjects draw a deep peripheral
-# compartment whose terminal phase the 48 h sampling window cannot resolve --
-# realised terminal half-lives ran from 5 h to over 1,700 h -- and aucinf.obs
-# then under-recovers the dose. That is a per-subject physical mechanism, not
-# numerical noise, so the centre and a robust quantile are asserted rather than
-# the extreme. Realised median -0.20%, 90th pct 0.52%, 99th pct 1.60%,
-# max 2.99%.
-ap_rows <- !oc_rows
+# The acetaminophen food-effect model is two-compartment but carries NO random
+# effect on Q or V3/F -- neither is reported for that fit -- so its terminal
+# phase is essentially fixed at a half-life near 8 h and the 48 h window
+# resolves it for every subject. A tight bound is therefore correct here, in
+# contrast to the pooled fasted acetaminophen model below. Realised median
+# -0.07% and max 0.45% at 16 threads.
+apf_rows <- mb$Analysis == "Acetaminophen, food effect"
+stopifnot(sum(apf_rows) == 3L * n_arm)
+stopifnot(max(abs(mb$pct_diff[apf_rows])) < 1)
+
+# The pooled fasted acetaminophen model is different in kind. Its IIV on Q is
+# CV 209% and on V3/F is CV 86% (Table 4), so a minority of subjects draw a
+# deep peripheral compartment whose terminal phase the 48 h sampling window
+# cannot resolve -- realised terminal half-lives ran from 5 h to over 1,700 h
+# -- and aucinf.obs then under-recovers the dose. That is a per-subject
+# physical mechanism, not numerical noise, so the centre and a robust quantile
+# are asserted rather than the extreme. Realised median -0.20%, 90th pct 0.52%,
+# 99th pct 1.60%, max 2.99%.
+ap_rows <- mb$Analysis == "Acetaminophen, pooled fasted"
 stopifnot(sum(ap_rows) == 3L * n_arm)
 stopifnot(abs(median(mb$pct_diff[ap_rows])) < 1.5)
 stopifnot(quantile(abs(mb$pct_diff[ap_rows]), 0.9) < 3)
@@ -718,6 +887,7 @@ pct_change <- function(mod, base, alt, what) {
 
 oc_base   <- list(WT = 73.45, RACE_BLACK = 0, RACE_ASIAN = 0)
 food_base_c <- list(HT = 168.5, WT = 72.3, FED_LOWFAT = 0, FED_HIGHFAT = 0)
+apap_food_base_c <- list(WT = 72.3, SEXF = 0, FED_LOWFAT = 0, FED_HIGHFAT = 0)
 
 claims <- tibble::tribble(
   ~Claim, ~Source, ~Stated, ~Achieved, ~Deviation,
@@ -738,10 +908,25 @@ claims <- tibble::tribble(
                modifyList(food_base_c, list(FED_LOWFAT = 1)), "ka"), TRUE,
   "OC: high-fat meal decreases Ka by 48%", "Discussion", -48,
     pct_change(mod_oc_food, food_base_c,
-               modifyList(food_base_c, list(FED_HIGHFAT = 1)), "ka"), TRUE
+               modifyList(food_base_c, list(FED_HIGHFAT = 1)), "ka"), TRUE,
+  "APAP: low-fat meal decreases Ka by 20%", "Results", -20,
+    pct_change(mod_apap_food, apap_food_base_c,
+               modifyList(apap_food_base_c, list(FED_LOWFAT = 1)), "ka"), FALSE,
+  "APAP: high-fat meal decreases Ka by 18%", "Results", -18,
+    pct_change(mod_apap_food, apap_food_base_c,
+               modifyList(apap_food_base_c, list(FED_HIGHFAT = 1)), "ka"), FALSE,
+  "APAP: sex effect on CL/F is 'small'", "Discussion", NA_real_,
+    pct_change(mod_apap_food, apap_food_base_c,
+               modifyList(apap_food_base_c, list(SEXF = 1)), "cl"), TRUE,
+  "APAP: sex effect on V2/F is 'small'", "Discussion", NA_real_,
+    pct_change(mod_apap_food, apap_food_base_c,
+               modifyList(apap_food_base_c, list(SEXF = 1)), "vc"), TRUE
 ) |>
+  # The paper prints these percentages to the nearest whole percent, so a gap
+  # of up to half a point is display rounding rather than disagreement: the
+  # APAP high-fat multiplier 0.825 gives -17.5%, which rounds to the stated 18.
   mutate(Gap = Achieved - Stated,
-         Pass = Deviation | abs(Gap) < 0.5)
+         Pass = Deviation | abs(Gap) <= 0.5)
 
 # A gate that cannot go red is worse than none: confirm there are non-deviation
 # rows to test before asserting on them.
@@ -757,18 +942,56 @@ claims |>
 
 # Errata and known deviations
 
-**The acetaminophen food-effect model is not packaged.** Franke 2015 states
-(Table 5 footnote a) that a *two-compartment* additive-and-proportional error
-model was used for acetaminophen in the fed-vs-fasted analysis, and Table 5
-reports its `CL/F` (22.9 L/h), `V2/F` (140 L), `Ka` (3.17 1/h), sex factors on
-`CL/F` (0.278) and `V2/F` (0.295), and meal factors on `Ka` (0.802 low fat,
-0.825 high fat). It does **not** report `Q` or `V3/F` -- neither in the base
-model column nor in the final model column, and neither appears in the printed
-equations. A two-compartment model cannot be simulated without them, and the
-values cannot be borrowed from the pooled fasted acetaminophen model because
-that fit's central volume (58.9 L) differs from this one's (140 L) by a factor
-of 2.4, so its disposition parameters are not transferable. The model is
-therefore left out rather than completed with invented or transplanted numbers.
+**`Franke_2015_acetaminophen_food` carries two parameters that the paper never
+reports for that fit. Read this before using it.** Franke 2015 states (Table 5
+footnote a) that a *two-compartment* additive-and-proportional error model was
+used for acetaminophen in the fed-vs-fasted analysis, and Table 5 reports its
+`CL/F` (22.9 L/h), `V2/F` (140 L), `Ka` (3.17 1/h), sex factors on `CL/F`
+(0.278) and `V2/F` (0.295), and meal factors on `Ka` (0.802 low fat, 0.825 high
+fat). It does **not** report `Q` or `V3/F` -- neither in the base model column
+nor in the final model column, and neither appears in the printed equations.
+A two-compartment model cannot be solved without them.
+
+The packaged model therefore carries `Q` = 29.9 L/h and `V3/F` = 99.7 L in from
+the **same paper's pooled fasted acetaminophen fit** (Table 4), both wrapped in
+`fixed()` and flagged inline at the point of use. They are *not* food-effect
+estimates. The mismatch to be aware of: the pooled fasted fit's central volume
+is 58.9 L against this fit's 140 L, a factor of 2.4, so the borrowed peripheral
+compartment is not quantitatively coherent with the rest of the model. What is
+unaffected is the early profile -- `Cmax`, `tmax` and the absorption phase,
+which is what the food-effect analysis is about -- since that is governed
+entirely by the paper-sourced `CL/F`, `V2/F` and `Ka`. Users who need the
+terminal phase of acetaminophen under fed conditions should not rely on this
+model's peripheral compartment.
+
+No variability is carried across with the point estimates: Table 5 reports none
+for this fit, and Table 4's `Q` and `V3/F` variances (CV 209% and 86%) belong
+to a different cohort and a different central volume. `Q` and `V3/F` therefore
+have no `eta` here, which is also why this model's dose recovery is tight where
+`Franke_2015_acetaminophen`'s is not.
+
+**The acetaminophen sex effect is far larger than the paper's prose says it
+is.** The Discussion states that "sex had a statistically significant effect on
+the `CL/F` and `V2/F` of APAP. However, these effects ... were small and not
+considered clinically relevant." The printed equations are not small. They give
+`CL/F = [22.9*(1 or 0.278)*...]` and `V2/F = [140*(1 or 0.295)*...]` with the
+legend "men =0; women =1", so a woman's apparent clearance is 72.2% lower and
+her apparent central volume 70.5% lower than a man's, and her `AUC` is
+consequently about 3.6-fold higher. Table 5's `CL/F sex` = 0.278 and `V/F sex`
+= 0.295 agree with the equations exactly. Two printed numeric sources agree
+against one prose adjective, so the model follows the equations, as it does for
+the other prose/table conflicts below.
+
+Two further observations, neither of which resolves the conflict but both of
+which bear on how much weight to put on this term. First, the effect is
+internally coherent as printed: `CL/F` and `V2/F` are cut by nearly the same
+factor (0.278 / 0.295 = 0.942), so the elimination rate constant barely moves
+and essentially all of the change is in `F` -- the signature of a bioavailability
+difference in a fit of apparent parameters, not of an implausible 3.6-fold
+clearance difference. That contrast is gated in the figure section above.
+Second, sex was screened and **rejected** in the 151-subject pooled fasted
+acetaminophen fit, so a term this large surviving in a 31-subject subset is
+worth treating with caution regardless of which reading is right.
 
 **The paper's prose percentages disagree with its own tables and equations in
 four places.** In each case the table and the printed equation agree with each
@@ -799,10 +1022,11 @@ other, and the packaged models follow them.
 
 **Residual error is not reported for the food-effect analysis.** Table 5 names
 the error structure but gives no magnitude, in either the base or the final
-model column. `Franke_2015_oxycodone_food` therefore declares
-`addSd <- fixed(0)` and `propSd <- fixed(0)` rather than carrying over the
-unrelated 151-subject pooled-fasted estimates. Simulations from that model are
-IPRED-only; the interindividual variability, which *is* reported, is intact.
+model column, for either analyte. `Franke_2015_oxycodone_food` and
+`Franke_2015_acetaminophen_food` therefore both declare `addSd <- fixed(0)` and
+`propSd <- fixed(0)` rather than carrying over the unrelated 151-subject
+pooled-fasted estimates. Simulations from those models are IPRED-only; the
+interindividual variability, which *is* reported, is intact.
 
 **The acetaminophen absorption rate constant is fixed, not estimated.** Methods
 state it "was fixed at 5.4 hour-1 for the single-dose population PK of APAP"
@@ -850,10 +1074,16 @@ Table 1.
   percent. The food contrast is consequently shown at typical values
   (`rxode2::zeroRe()`), and the diet effects are gated deterministically in the
   covariate-effects section rather than read off the simulated arms.
-* Sex, age and BMI were screened by the authors but retained in none of the
-  three packaged models; they are recorded in each model's
-  `covariatesDataExcluded` metadata rather than in `covariateData`, and are not
-  sampled in the virtual cohorts.
-* All parameter values come from the paper's own tables and printed equations.
-  No value was digitised from a figure, obtained by correspondence, or carried
-  from another publication.
+* Age and BMI were screened by the authors but retained in none of the four
+  packaged models; sex was retained only in `Franke_2015_acetaminophen_food`.
+  Where a covariate was screened and rejected it is recorded in that model's
+  `covariatesDataExcluded` metadata rather than in `covariateData`. Age and BMI
+  are not sampled in the virtual cohorts; sex is, in the food-effect cohort
+  only, at the Table 2 proportion of 32.3% women.
+* Every parameter value comes from the paper's own tables and printed
+  equations. None was digitised from a figure or obtained by correspondence,
+  and none was carried from another publication. **Two values are carried
+  across fits within this one paper**: `Q` and `V3/F` in
+  `Franke_2015_acetaminophen_food` come from Table 4's pooled fasted fit
+  because Table 5 reports neither, as detailed under *Errata*. Both are
+  `fixed()` and flagged inline in the model file.

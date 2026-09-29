@@ -292,7 +292,7 @@ weight-independent, with the typical value
 24-38 mg/L band, almost any draw from the BSV distribution lands in
 target -- which is what the simulation shows. The model parameters and
 structure are reproduced faithfully from the source; per the
-extraction skill's policy, parameters are not tuned to chase a
+package's policy, parameters are not tuned to chase a
 validation metric. Users who need to match the paper's Cmax-distribution
 results closely should re-derive Cmax according to the paper's exact
 sampling convention before comparing.

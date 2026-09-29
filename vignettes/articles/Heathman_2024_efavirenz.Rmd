@@ -397,11 +397,11 @@ day-21 exposure metrics by phenotype.
 
 This extraction adds the following canonical entries to the convention
 registry (`inst/references/compartment-names.md` and
-`inst/references/parameter-names.md`). They are reviewed alongside the model
-file and vignette in the same PR; the underlying mechanism -- parallel
-isoenzyme autoinduction, CYP-isoenzyme-partitioned clearance -- generalises
-to future autoinduction popPK papers (rifampicin-induced CYP3A4, ritonavir
-CYP3A4 inhibition, isoniazid NAT2 induction).
+`inst/references/parameter-names.md`). They were reviewed alongside the model
+file and vignette when this model was added; the underlying mechanism --
+parallel isoenzyme autoinduction, CYP-isoenzyme-partitioned clearance --
+generalises to future autoinduction popPK papers (rifampicin-induced CYP3A4,
+ritonavir CYP3A4 inhibition, isoniazid NAT2 induction).
 
 | Register file              | New canonical entry           | Type                | Role |
 |----------------------------|-------------------------------|---------------------|------|

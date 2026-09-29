@@ -347,13 +347,16 @@ roots  <- sort(Re(polyroot(c(-a0, a1, -a2, 1))))
 gamma  <- roots[1]                       # slowest (terminal) rate
 t_half <- log(2) / gamma
 
+# Keep Cc >= 1e-6 of Cmax (below that the ODE tail is solver noise). The floor
+# ends the window near 160 h, so it opens at 96 h, long after the beta phase.
 tail_fit <- sim_typ |>
-  dplyr::filter(cohort == "axi-cel (30 mg/m2)", time >= 150, time <= 240, Cc > 0)
+  dplyr::filter(cohort == "axi-cel (30 mg/m2)") |>
+  dplyr::filter(time >= 96, time <= 240, Cc >= 1e-6 * max(Cc))
 t_half_fitted <- -log(2) / stats::coef(stats::lm(log(Cc) ~ time, tail_fit))[[2]]
 
 tibble::tibble(
   quantity = c("alpha (1/h)", "beta (1/h)", "gamma (1/h)",
-               "terminal t-half, analytic (h)", "terminal t-half, fitted 150-240 h (h)"),
+               "terminal t-half, analytic (h)", "terminal t-half, fitted from 96 h (h)"),
   value    = c(roots[3], roots[2], gamma, t_half, t_half_fitted)
 ) |>
   dplyr::rename("Quantity" = quantity, "Value" = value) |>
@@ -498,13 +501,18 @@ percentiles, which the paper does not tabulate; see Assumptions below.
 
 # PKNCA validation
 
-NCA is run on the single-dose cohort simulation. The filter is `!is.na(Cc)`
-only -- adding `time > 0` or `Cc > 0` would drop the time-zero row that anchors
-AUC.
+NCA is run on the single-dose cohort simulation. The time-zero row that anchors
+AUC is always kept (a `time > 0` or `Cc > 0` filter would drop it); points past
+each subject's peak that fall below 1e-6 of it, where the solved profile is
+numerical noise, are dropped before the half-life fit.
 
 ```{r pknca}
 sim_nca <- sim_single |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, cohort)
 
 # Guarantee a time = 0 row per (id, cohort). For intravenous input the
@@ -582,6 +590,10 @@ distribution differs from 70 kg / 96 mL/min by construction.
 ```{r nca_compare}
 typ_nca_in <- sim_typ |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, cohort)
 
 typ_nca_in <- dplyr::bind_rows(

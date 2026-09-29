@@ -52,7 +52,7 @@ Le_2015_lampalizumab <- function() {
     regions = NULL,
     n_observations = "697 serum lampalizumab + 24 aqueous humor lampalizumab + 62 aqueous humor total CFD concentrations; ocular PK/PD subset n=21.",
     trial_identifiers = "CFD4711g (NCT00973011); CFD4870g MAHALO (NCT01229215).",
-    notes = "Detailed baseline demographics (weight, race, exact age distribution) reside in Supplemental Table 1 of the source paper, which was not on disk with the main PDF. The systemic PK dataset spans all 117 subjects; the ocular subset has 21 subjects with aqueous humor samples."
+    notes = "Detailed baseline demographics (weight, race, exact age distribution) reside in Supplemental Table 1 of the source paper, which was not available when this model was built. The systemic PK dataset spans all 117 subjects; the ocular subset has 21 subjects with aqueous humor samples."
   )
 
   ini({
@@ -81,7 +81,7 @@ Le_2015_lampalizumab <- function() {
     # approximately equal to in vitro KD value (19.7 pM), as the estimated
     # elimination rate of the drug-target complex (koutC) is much smaller
     # than dissociation rate of the drug-target complex." log() goes
-    # inside fixed() per naming-conventions.md.
+    # inside fixed() per the library's convention.
     # ------------------------------------------------------------------
     lkss   <- fixed(log(0.96e-3)); label("Quasi-steady-state binding constant Kss (mg/L = ug/mL); ~20 pM ~ in-vitro KD")        # Le 2015 Table 1, row 10 (FIXED)
 

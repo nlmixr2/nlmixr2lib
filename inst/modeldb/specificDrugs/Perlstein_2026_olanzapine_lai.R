@@ -141,8 +141,7 @@ Perlstein_2026_olanzapine_lai <- function() {
     #   r(t) = frel*exp(-(ra*t)^gam1) + (1 - frel)*exp(-(ra2*t)^gam2)
     # so ra = 1/TD and ra2 = 1/TD1 exactly. The reciprocal is spelled out in
     # each comment below because it means the ini() value is not the number
-    # printed in Table 1 (operator sidecar oare_PMC12775547 request-001,
-    # answer q1 = B).
+    # printed in Table 1.
     # ---------------------------------------------------------------------
     lra   <- log(1 / 117);  label("Weibull rate-scaling parameter of the first (rapid) release process (RA = 1/TD, 1/h)")     # Table 1: TD = 117 h (RSE 3.8%); ra = 1/117 = 0.008547 1/h
     lgam1 <- log(1.4);      label("Weibull shape / sigmoidicity of the first (rapid) release process (unitless)")       # Table 1: SS = 1.4 (RSE 1.9%)
@@ -151,8 +150,7 @@ Perlstein_2026_olanzapine_lai <- function() {
 
     # Fraction of the dose entering the first release process. Held on the
     # logit scale so it stays inside (0, 1) for every eta draw; a log-scale
-    # encoding of a bounded fraction can leak above 1 (operator sidecar
-    # oare_PMC12775547 answer q1 = B). logit(0.236) = -1.17457.
+    # encoding of a bounded fraction can leak above 1. logit(0.236) = -1.17457.
     logitfrel <- log(0.236 / (1 - 0.236)); label("Logit of the fraction of the dose entering the first (rapid) release process (unitless)")  # Table 1: FF = 0.236 (RSE 6.2%)
 
     # Disposition -- Table 1. The paper parameterises distribution by the

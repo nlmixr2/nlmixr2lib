@@ -185,8 +185,8 @@ OlssonGisleskog_2025_ibrutinib <- function() {
         "PK parameters could not be formally quantified and were assumed to",
         "be the same as in the previous analysis'. Whether a weight effect",
         "was dropped or was never in the version of the previous model that",
-        "this analysis started from cannot be settled from the sources on",
-        "disk (Marostica 2015 is not open access)."
+        "this analysis started from cannot be settled from the available",
+        "sources (Marostica 2015 is not open access)."
       ),
       source_name = "Weight"
     ),
@@ -399,7 +399,7 @@ OlssonGisleskog_2025_ibrutinib <- function() {
     # ibrutinib plasma concentrations", which is nlmixr2's lnorm() error.
     #
     # Table 2 tabulates NO residual-error row for either model, so the only
-    # RUV magnitude anywhere on disk is Results 3.1: "given the sparseness
+    # RUV magnitude in any available source is Results 3.1: "given the sparseness
     # of the PK data, a residual variability (RUV) of 81.3%, determined from
     # previous studies [15], was selected". It is entered as fixed()
     # accordingly -- it was imported from the previous analysis, not

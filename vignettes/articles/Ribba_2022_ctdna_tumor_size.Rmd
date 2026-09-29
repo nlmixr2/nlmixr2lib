@@ -540,7 +540,8 @@ paper reports no NCA of its own to compare against.
   `pubYear` all say 2022, while the Frontiers citation block on page 1
   says 2023 (the article was accepted 01 December 2022 and published
   08 March 2023). The library uses **2022** in the file stems and
-  `reference` strings, matching the DOI and the task metadata.
+  `reference` strings, matching the DOI and the metadata this model was
+  built from.
 - **Nadir statistics are stochastic, and the cycle-4 figure is the
   seed-sensitive one.** The percentages in the nadir table come from a
   200-subject simulation under `set.seed(20221208)`. The

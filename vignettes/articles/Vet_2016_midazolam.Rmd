@@ -35,10 +35,10 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Vet_2016_midazolam"))$meta
 
 This vignette validates the packaged `Vet_2016_midazolam` model against the
 DDMORE Foundation Model Repository entry **DDMODEL00000249**, the source
-from which it was extracted. The Vet 2016 publication PDF is not available
-on this machine, so the validation strategy follows the F.2 self-consistency
-recipe from the `extract-literature-model` skill: re-simulate the bundle's
-shipped event table with the typical-value model and confirm the
+from which it was extracted. The Vet 2016 publication PDF was not available
+when this model was built, so the validation strategy follows the
+self-consistency recipe from the package's validation checklist: re-simulate
+the bundle's shipped event table with the typical-value model and confirm the
 trajectories match the bundle's NONMEM listing. Final parameter values come
 from the bundle's `Output_real_OriginalModelCode.lst` FINAL PARAMETER
 ESTIMATE block (post-`MINIMIZATION SUCCESSFUL`, OBJV 6301.530).
@@ -53,8 +53,8 @@ ascertained per-day on a 0..>=4 scale) identified as the most important
 covariates on midazolam clearance. Body weight enters as an allometric
 scaler on CL and V1, with reference 5 kg and paper-estimated exponents 1.02
 and 1.34 respectively. The publication itself (DOI 10.1164/rccm.201510-2114OC)
-is not on disk in this worktree, so demographic ranges (age range, weight
-range, sex balance, region detail beyond "Netherlands SKIC network",
+was not available when this model was built, so demographic ranges (age range,
+weight range, sex balance, region detail beyond "Netherlands SKIC network",
 indication-specific subgroups) could not be cross-checked.
 
 ```{r population}
@@ -175,7 +175,7 @@ sim <- rxode2::rxSolve(
 ```
 
 ```{r simulate-typical}
-# Typical-value trajectory (no IIV, no IOV, no residual error) -- the F.2 reference.
+# Typical-value trajectory (no IIV, no IOV, no residual error) -- the self-consistency reference.
 mod_typical <- rxode2::zeroRe(mod)
 sim_typical <- rxode2::rxSolve(
   object = mod_typical,
@@ -186,7 +186,7 @@ sim_typical <- rxode2::rxSolve(
   filter(time > 0)
 ```
 
-# F.2 self-consistency: per-stratum CL contrast
+# Self-consistency: per-stratum CL contrast
 
 The Vet 2016 paper's central finding is that organ failure in critically
 ill children reduces midazolam clearance roughly stratum-by-stratum:
@@ -261,11 +261,11 @@ sim |>
 # PKNCA NCA on the simulated cohort
 
 PKNCA is run on the full stochastic simulation. Because the Vet 2016
-publication is not on disk, the simulated NCA values cannot be compared
+publication was not available, the simulated NCA values cannot be compared
 side-by-side against any per-stratum NCA tables the publication may
 report; they are reported here as a sanity check on the simulation
 pipeline and as a numerical confirmation of the per-stratum exposure
-gradient seen in the F.2 plot above.
+gradient seen in the self-consistency plot above.
 
 ```{r pknca}
 sim_for_nca <- sim |>
@@ -308,15 +308,15 @@ knitr::kable(
 
 # Assumptions and deviations
 
-- **Vet 2016 publication PDF is not on disk** under
-  `/home/bill/github/mab_human_consensus/literature/`, so demographic
-  ranges (age range, weight range, sex balance, race / ethnicity, regional
-  enrollment beyond "Netherlands SKIC network", inclusion criteria) and
-  any per-stratum NCA values the publication may report could not be
-  cross-checked against the model's `population` metadata or the F.2
-  numeric Css table. Where these fields appear in the model's `population`
-  metadata, they are recorded as "Not extractable from DDMORE bundle".
-  Operator follow-up: pull the publication PDF (DOI
+- **Vet 2016 publication PDF was not available when this model was built**,
+  so demographic ranges (age range, weight range, sex
+  balance, race / ethnicity, regional enrollment beyond "Netherlands SKIC
+  network", inclusion criteria) and any per-stratum NCA values the
+  publication may report could not be cross-checked against the model's
+  `population` metadata or the self-consistency check's numeric Css table.
+  Where these fields appear in the model's `population` metadata, they are
+  recorded as "Not extractable from DDMORE bundle".
+  Maintainer follow-up: pull the publication PDF (DOI
   10.1164/rccm.201510-2114OC) and confirm the population narrative;
   cross-check the .lst final estimates against any in-paper parameter
   table.
@@ -370,17 +370,17 @@ knitr::kable(
   fixes the remaining five at the same value (`fix(0.197)`) so the
   effective per-occasion variance matches the source.
 
-- **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` Section  "Validation strategy by model type"
-  decision tree, leaf 1: no linked publication on disk). The simulated
-  NCA table above is informational; comparison against any Vet 2016
-  per-stratum NCA was not possible.
+- **Validation strategy is self-consistency** (per the package's
+  validation strategy for DDMORE bundles whose linked publication was not
+  available when the model was built). The simulated NCA table above is
+  informational; comparison
+  against any Vet 2016 per-stratum NCA was not possible.
 
-- **Operator-confirmed organ-failure ascertainment criteria.** Vet 2016's
+- **Maintainer-confirmed organ-failure ascertainment criteria.** Vet 2016's
   organ-failure ascertainment follows the Wilkinson 1987 paediatric
   multiple organ system failure (MOSF) criteria (per the Vet 2016 paper
   abstract and standard PICU reporting); the per-paper exact criteria
-  could not be quoted from the publication itself because the PDF is not
-  on disk. Each downstream model that consumes `ORG_FAIL_COUNT` should
+  could not be quoted from the publication itself because the PDF was not
+  available. Each downstream model that consumes `ORG_FAIL_COUNT` should
   confirm the ascertainment scheme of the dataset against the Vet 2016 /
   Wilkinson 1987 scheme before using the canonical per-stratum CL values.

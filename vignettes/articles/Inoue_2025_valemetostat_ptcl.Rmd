@@ -313,7 +313,8 @@ wash <- rxode2::rxSolve(modT, buildEvents(DOSE, 1, washGrid, refCov),
                         returnType = "data.frame") |>
   dplyr::distinct(time, .keep_all = TRUE) |>
   dplyr::filter(Cu > 0)
-tailFit <- dplyr::filter(wash, time >= 400)
+# Below 1e-6 of the peak the integrator has no relative accuracy left.
+tailFit <- dplyr::filter(wash, time >= 400, Cu >= 1e-6 * max(Cu))
 tHalf <- log(2) / -stats::coef(stats::lm(log(Cu) ~ time, data = tailFit))[["time"]]
 vssU  <- 42.5 * (1 + 8280 / 221) + 3670 + 2950
 

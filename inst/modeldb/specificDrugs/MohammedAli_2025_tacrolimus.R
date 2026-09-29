@@ -360,8 +360,7 @@ MohammedAli_2025_tacrolimus <- function() {
     # Table 3 'IIV CL/F = 26.49 (RSE 29.1%)' -> omega^2 = log(1 + 0.2649^2) = 0.067819
 
     # Lower-triangle order of the block below, with the Table 3 row each entry
-    # comes from. rxode2 cannot parse a '#' comment inside the c() of an omega
-    # block, so the provenance is recorded here instead of inline.
+    # comes from.
     #   var(etalvc)                = 0.251462  <- 'IIV Vc/F = 53.47 (RSE 42%)'; log(1 + 0.5347^2)
     #   cov(etalvc,   etalka_ir)   = 0.412802  <- 'Vc/F/Ka IR-Tac Correlation = 75.63 (RSE 16%)'; 0.7563*sqrt(0.251462*1.184742)
     #   var(etalka_ir)             = 1.184742  <- 'IIV Ka IR-Tac = 150.66 (RSE 25.6%)'; log(1 + 1.5066^2)

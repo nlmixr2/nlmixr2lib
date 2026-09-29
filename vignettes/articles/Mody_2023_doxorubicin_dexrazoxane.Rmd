@@ -89,7 +89,7 @@ The table below collects the parameter and equation provenance in one place.
 | 3-transit-compartment delay chain                           | --          | Mody 2023 text ("three transit compartments ... 1/tau_DOX") |
 
 The residual error parameters (`addSd`, `addSd_dex`, `addSd_viability`) are
-operator-chosen placeholders -- Mody 2023 does not tabulate a residual SD --
+maintainer-chosen placeholders -- Mody 2023 does not tabulate a residual SD --
 and are flagged with `fixed()` so they do not contribute false precision.
 
 # Simulation setup
@@ -541,13 +541,12 @@ knitr::kable(nca_dox_df, digits = 3,
 
 # Assumptions and deviations
 
-The following are paper-vs-model gaps that the operator preserved
+The following are paper-vs-model gaps that the maintainers preserved
 deliberately rather than tuning parameters to close.
 
 * **DEX inhibition equation form is subtractive on Kmax.** The PDF's
-  formal equations for the combination model (Mody 2023 Eqs 6a-6f) came
-  through the trimmed markdown source as
-  `<!-- formula-not-decoded -->` placeholders. Table 1 gives Imax,DEXi
+  formal equations for the combination model (Mody 2023 Eqs 6a-6f) could
+  not be recovered as machine-readable text from the PDF. Table 1 gives Imax,DEXi
   units of 1/h (matching Kmax,DOX), and the text describes the DEX
   effect as "a capacity limited Hill function K_DEX ... on DOX cell-
   death stimulation." The packaged model implements the DEX inhibition
@@ -565,8 +564,8 @@ deliberately rather than tuning parameters to close.
 * **Clinical DOX PK values are reproduced by Mody 2023 from Kontny
   2013.** Mody 2023 Table 2 top row is a direct restatement of the DOX
   3-compartment PK parameters from Kontny NE et al., J Clin Oncol 2013
-  (paper ref [30]); the Kontny 2013 paper itself is not on disk in this
-  extraction. The 6 CL / V parameters (CL, Vc, Q2, Vp, Q3, Vp2) match
+  (paper ref [30]); the Kontny 2013 paper itself was not available when
+  this model was built. The 6 CL / V parameters (CL, Vc, Q2, Vp, Q3, Vp2) match
   Kontny 2013's Table 2 to the digits reported in Mody 2023.
 
 * **Clinical DEX PK values are Mody-2023-fitted to Earhart 1982.** DEX
@@ -614,9 +613,8 @@ deliberately rather than tuning parameters to close.
 
 # Errata
 
-* The trimmed-markdown source of Mody 2023 rendered the model
-  equations (Eqs 1, 2, 3, 4a-e, 5, 6a-f) as
-  `<!-- formula-not-decoded -->` placeholders in the OCR pass. The
+* The model equations (Eqs 1, 2, 3, 4a-e, 5, 6a-f) could not be
+  recovered as machine-readable text from the Mody 2023 PDF. The
   equation forms used in the packaged model were reconstructed from
   the surrounding prose, the parameter units in Tables 1 and 2, and
   the schematic in Figure 1. See the "DEX inhibition equation form"

@@ -62,7 +62,7 @@ Grasela_1985_phenobarbital <- function() {
     notes = paste(
       "Population description is reconstructed from the Grasela & Donn 1985",
       "abstract (PMID:4075936). The full publication was not consulted",
-      "(abstract-only source confirmed by the operator at extraction time);",
+      "(abstract-only source confirmed by the maintainers at extraction time);",
       "the mean serum half-life of 141 h reported in the abstract is",
       "recovered as a derived check from the typical CL and V."
     )

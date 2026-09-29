@@ -284,7 +284,7 @@ motivates the > 144 h monitoring recommendation in the paper's Conclusion).
 
 # Assumptions and deviations
 
-- **Dose unit conversion is operator-supplied.** The model uses umol
+- **Dose unit conversion is user-supplied.** The model uses umol
   (amount) and umol/L (concentration); MTX in mg and CPG2 in U have to be
   converted at the event-table boundary. The vignette's conversion factors
   use methotrexate MW = 454.44 g/mol (standard chemistry), glucarpidase
@@ -328,7 +328,7 @@ motivates the > 144 h monitoring recommendation in the paper's Conclusion).
   below 0.1 umol/L; this vignette gives ~67% (independent of N). The
   monotonic dose-response relationship, the plateau above 50 U/kg, and the
   rebound behaviour at 120 h are all reproduced; the absolute percentages
-  are not. Per the skill's no-tuning rule, no parameter values were adjusted
+  are not. Per the package's no-tuning rule, no parameter values were adjusted
   to close the gap. Plausible contributors to the residual difference --
   none of them load-bearing on the published clinical recommendation -- are
   (a) a different sampling implementation in the original deSolve runs

@@ -71,8 +71,9 @@ Abduljalil_2009_clarithromycin <- function() {
   #   in NONMEM ADVAN6.
   # * Parent disposition: one-compartment with apparent volume Vp/F and
   #   nonlinear apparent clearance CLp(t)/F. The fraction not subject
-  #   to inhibition (FCLp) is bounded in [0, 1] and is encoded with a
-  #   logit transform (logitfclp) so the parameter cannot wander
+  #   to inhibition (the paper's FCLp, carried under the canonical
+  #   register name fcl_noinh) is bounded in [0, 1] and is encoded with
+  #   a logit transform (logitfcl_noinh) so the parameter cannot wander
   #   outside the published feasible range during simulation.
   # * Inhibition compartment: modelled as an effect-compartment-style
   #   state holding the inhibition-driving concentration in the same
@@ -124,7 +125,7 @@ Abduljalil_2009_clarithromycin <- function() {
     lcl      <- log(60);    label("Apparent parent basic (uninhibited) clearance CLp/F at 70 kg (L/h)")  # Abduljalil 2009 Table 1: CLp = 60 (95% CI 40-80)
 
     # Autoinhibition mechanism.
-    logitfclp <- log(0.10 / (1 - 0.10));  label("Logit of fraction of CLp not subject to inhibition (FCLp; unitless)")  # Abduljalil 2009 Table 1: FCLp = 0.10 (95% CI 0.02-0.17)
+    logitfcl_noinh <- log(0.10 / (1 - 0.10));  label("Logit of fraction of CLp not subject to inhibition (FCLp; unitless)")  # Abduljalil 2009 Table 1: FCLp = 0.10 (95% CI 0.02-0.17)
     lki      <- log(2.01);  label("Inhibition-compartment first-order exchange rate ki (1/h)")  # Abduljalil 2009 Table 1: ki = 2.01 (95% CI 0.09-3.93); corresponds to t1/2 = ln(2)/ki ~ 0.35 h
     lic50    <- log(0.77);  label("Inhibition-compartment concentration giving 50% of maximum inhibition IC50 (ug/mL)")  # Abduljalil 2009 Table 1: IC50 = 0.77 (95% CI 0.23-1.28)
 
@@ -160,7 +161,7 @@ Abduljalil_2009_clarithromycin <- function() {
     cl      <- exp(lcl     + etalcl) * (WT / ref_wt)^e_wt_cl
     ki      <- exp(lki)
     ic50    <- exp(lic50)
-    fclp    <- expit(logitfclp)
+    fcl_noinh <- expit(logitfcl_noinh)
     cl_ohcla <- exp(lcl_ohcla + etalcl_ohcla) * (WT / ref_wt)^e_wt_cl_ohcla
     vc_ohcla <- exp(lvc_ohcla)               * (WT / ref_wt)^e_wt_vc_ohcla
 
@@ -171,10 +172,11 @@ Abduljalil_2009_clarithromycin <- function() {
     # ----- Autoinhibition factor -----
     # INH = FCLp + (1 - FCLp) / (1 + effect / IC50): equals 1 (no
     # inhibition) when effect = 0, approaches FCLp (the non-inhibitable
-    # residual fraction) as effect grows. `effect` is a concentration
-    # (ug/mL) driven by Cp via a first-order exchange with rate ki, in
-    # the Sheiner-Holford effect-compartment form.
-    inh <- fclp + (1 - fclp) / (1 + effect / ic50)
+    # residual fraction, canonical name fcl_noinh) as effect grows.
+    # `effect` is a concentration (ug/mL) driven by Cp via a first-order
+    # exchange with rate ki, in the Sheiner-Holford effect-compartment
+    # form.
+    inh <- fcl_noinh + (1 - fcl_noinh) / (1 + effect / ic50)
 
     # ----- Weibull absorption rate constant (1/h) -----
     # k_abs(tad) = lambda * kw * (kw*tad)^(lambda - 1). With lambda > 1

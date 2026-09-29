@@ -9,14 +9,14 @@ Ujihira_2025_glycochenodeoxycholicAcidSulfate <- function() {
     "doi:10.1002/cpt.70023.",
     "Structural equations from Eqs 1-4 of the main text; all parameter",
     "values from Table 2. Supplementary Material S1 (Tables S1-S7) was",
-    "also used and is on disk. The unbound fractions that convert each",
+    "also used. The unbound fractions that convert each",
     "perpetrator's modelled total plasma concentration to the unbound",
     "concentration driving inhibition are reported nowhere in the paper",
     "or its supplement; they are taken from the two upstream models the",
     "paper adopts -- rifampicin fu = 0.11 (Barnett 2018 Clin Pharmacol",
     "Ther 104:564-574 Table 1 footnote c) and probenecid fu = 0.062",
     "(Ahmad 2021 CPT Pharmacometrics Syst Pharmacol 10:467-477) -- and",
-    "each is pinned by an on-disk answer key: the Table S4 AUCR of 13",
+    "each is pinned by a published answer key: the Table S4 AUCR of 13",
     "at 600 mg rifampicin and the Table S4 renal-clearance ratio of 0.1",
     "under 500 mg QID probenecid. See the vignette Errata.",
     sep = " "
@@ -173,11 +173,11 @@ Ujihira_2025_glycochenodeoxycholicAcidSulfate <- function() {
     fu_prob <- fixed(0.062)
     label("Probenecid fraction unbound in plasma (unitless)")
     # NOT reported by Ujihira 2025 anywhere in the main text or the
-    # supplement, and NOT independently verifiable on disk: it is
+    # supplement, and NOT verifiable from the available sources: it is
     # attributed to Ahmad et al. 2021, the paper Ujihira 2025 adopts
     # its probenecid structural model from (Methods, "Structural
-    # models"; supplement reference 9), which is not among this
-    # extraction's source files. It is instead PINNED by an on-disk
+    # models"; supplement reference 9), which was not available when
+    # this model was built. It is instead PINNED by a published
     # answer key: Ujihira 2025 Table S4 reports a GCDCA-S renal-
     # clearance ratio CL_R,+inhibitor / CL_R,control of 0.1 at steady
     # state under the 500 mg QID probenecid regimen. Reproducing 0.1

@@ -348,7 +348,7 @@ of which broaden the published range).
 
 - The relative bioavailability `F1 = 0.281` that Hussein 2005 estimated for 92
   of 753 records (12 percent) classified as suspected noncompliance is NOT
-  applied in this model file. The on-disk model assumes full compliance with
+  applied in this model file. The packaged model assumes full compliance with
   `F1 = 1` (`lfdepot <- fixed(log(1))`) for simulation purposes. Users who
   want to reproduce the paper's noncompliant arm can add a per-record
   noncompliance covariate and apply the 0.281 multiplier externally; the
@@ -381,7 +381,6 @@ of which broaden the published range).
   ka behaviour is dominated by `theta_ka` for typical-value simulation.
 - Hussein 2005 was received 5 February 2004 and accepted 30 July 2004; the
   paper was published in volume 59 of the British Journal of Clinical
-  Pharmacology in 2005 (DOI 10.1111/j.1365-2125.2005.02242.x). The task
-  metadata supplied at dispatch listed year 2004 with the journal name in
-  the drug field; both fields were corrected per Phase 1 step 2 of the
-  extract-literature-model skill.
+  Pharmacology in 2005 (DOI 10.1111/j.1365-2125.2005.02242.x). The
+  metadata supplied when this model was built listed year 2004 with the
+  journal name in the drug field; both fields were corrected.

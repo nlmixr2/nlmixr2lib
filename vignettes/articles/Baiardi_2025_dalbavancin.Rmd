@@ -495,6 +495,10 @@ stopifnot(all(sim_sd$Cc[sim_sd$time > 0.5] > 0))
 ```{r pknca}
 sim_nca <- sim_sd |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, band)
 
 # Guarantee a time-zero record per subject; for an intravenous dose the

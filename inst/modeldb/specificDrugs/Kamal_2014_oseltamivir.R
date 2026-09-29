@@ -196,9 +196,7 @@ Kamal_2014_oseltamivir <- function() {
     # the base model started with "Random effects added to all
     # parameters" (Methods, "Population pharmacokinetic analysis").
     #
-    # Per-entry source trace (all from Kamal 2014 Table 3, page 383;
-    # trailing comments cannot be used inside the c() below because
-    # rxode2's comment-to-label pass fails to parse them):
+    # Per-entry source trace (all from Kamal 2014 Table 3, page 383):
     #   Omega(1,1) omega^2 CL  = 0.154  (95% CI 0.101-0.208),   17.6% RSE, printed CV = 39.5%, shrinkage 7.2%
     #   Omega(2,1) cov(CL, V2) = 0.157  (95% CI 0.0576-0.256),  32.3% RSE, printed R = 0.491
     #   Omega(2,2) omega^2 V2  = 0.662  (95% CI 0.294-1.03),    28.4% RSE, printed CV = 81.4%, shrinkage 13.3%

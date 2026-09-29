@@ -41,11 +41,11 @@ Jager_2011_gemtuzumab <- function() {
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
     disease_state = "Patients with acute myeloid leukemia (AML) receiving the CD33-directed antibody-drug conjugate gemtuzumab ozogamicin (GO; Mylotarg).",
-    dose_range = "Intravenous gemtuzumab ozogamicin. Specific clinical doses, infusion durations, and study design are reported in the original Jager 2011 publication; the DDMORE bundle does not ship a dataset and the publication itself is not on disk in this worktree, so dose-level detail could not be extracted.",
+    dose_range = "Intravenous gemtuzumab ozogamicin. Specific clinical doses, infusion durations, and study design are reported in the original Jager 2011 publication; the DDMORE bundle does not ship a dataset and the publication itself was not available when this model was built, so dose-level detail could not be extracted.",
     regions = NA_character_,
     notes = paste(
       "Demographic detail is not reproduced in the DDMORE bundle for DDMODEL00000229,",
-      "and the Jager 2011 PLoS One paper itself is not on disk under the literature tree.",
+      "and the Jager 2011 PLoS One paper itself was not available when this model was built.",
       "The DDMORE bundle's `Model_Accommodations.txt` documents that the model parameters",
       "were re-evaluated in Monolix using the same data as the original publication,",
       "with the additional change that a peripheral PK compartment was introduced and all",

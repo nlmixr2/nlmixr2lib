@@ -435,8 +435,8 @@ parameters.
 - **LDH covariate form.** The paper's narrative writes "the value for
   LDH was log-transformed due to its right-skewed distribution" and
   does not display the equation in a machine-readable form (the
-  Table 2 formula image was not OCR-decoded in the trimmed-markdown
-  source). The packaged model uses the literal log-power form
+  Table 2 formula image was not OCR-decoded in the extracted
+  text). The packaged model uses the literal log-power form
   `(log(LDH)/log(206))^CL_LDH` because (a) it is mathematically what
   "log-transformed LDH in a power covariate model" denotes, (b) the
   same Bristol-Myers Squibb modelling group wrote the equation

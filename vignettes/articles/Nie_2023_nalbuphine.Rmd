@@ -163,8 +163,12 @@ ev_typ <- as.data.frame(
 )
 ev_typ$PFA_NET_RATE <- 617.96  # the normalizing value, so Q = 245 exactly
 
+# Tight solver tolerances: this solve feeds the 1e-6 closed-form gate below,
+# and the default rtol = 1e-6 leaves about 7e-6 relative error when the model
+# is integrated numerically rather than solved via linCmt().
 sim_typ <- rxode2::rxSolve(
-  rxode2::zeroRe(mod), ev_typ, returnType = "data.frame", addDosing = FALSE
+  rxode2::zeroRe(mod), ev_typ, returnType = "data.frame", addDosing = FALSE,
+  rtol = 1e-10, atol = 1e-12
 )
 
 data.frame(
@@ -349,7 +353,12 @@ runArm <- function(amt_ug, label) {
   # Reseed inside each arm so the two arms share a common random-number
   # stream; a single seed set once would give the second arm different etas.
   rxode2::rxSetSeed(20230321)
-  out <- rxode2::rxSolve(mod, ev, returnType = "data.frame", addDosing = FALSE)
+  # Tight tolerances: the dose-linearity gate below is an exact identity to
+  # 1e-8, and under ODE integration the ratio error tracks rtol (measured
+  # 1.6e-5 at the default 1e-6, 7e-9 at 1e-10, 2e-10 at 1e-12), so 1e-12 keeps
+  # a 40x margin at no extra solve time.
+  out <- rxode2::rxSolve(mod, ev, returnType = "data.frame", addDosing = FALSE,
+                         rtol = 1e-12, atol = 1e-14)
   out$regimen <- label
   out
 }

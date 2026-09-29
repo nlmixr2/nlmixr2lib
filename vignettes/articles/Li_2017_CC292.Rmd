@@ -117,7 +117,7 @@ events <- dplyr::bind_rows(
   })
 )
 
-# Disjoint-ID assertion (vignette-template.md guidance for multi-cohort
+# Disjoint-ID assertion (the package's guidance for multi-cohort
 # bind_rows simulations).
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
@@ -174,7 +174,11 @@ Single-dose NCA over the 0-24 h interval per dose group:
 ```{r pknca}
 sim_nca <- sim_df |>
   dplyr::filter(time <= 24, !is.na(Cc)) |>
-  dplyr::select(id, time, Cc, dose_group)
+  dplyr::select(id, time, Cc, dose_group) |>
+  # Keep Cc >= 1e-6 * max(Cc) per subject after the peak: below that the ODE solution is integrator noise.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 dose_nca <- events |>
   dplyr::filter(evid == 1L) |>

@@ -67,8 +67,8 @@ encoded (a forced `eta` or residual SD here would be invented, not extracted).
 
 The testes compartment is what marks the reference individual as male, and it is
 the one organ in this model that had no canonical name in `nlmixr2lib` before this
-extraction; it is registered by this PR as a bare-organ compartment alongside
-`heart`, `skin` and `pancreas`.
+extraction; it was registered when this model was added, as a bare-organ
+compartment alongside `heart`, `skin` and `pancreas`.
 
 # Source trace
 
@@ -328,7 +328,7 @@ cmp <- nlmixr2lib::ncaComparisonTable(
 knitr::kable(cmp)
 ```
 
-The comparison table uses the skill's standard 20% flag, but the agreement here is
+The comparison table uses the standard 20% deviation flag, but the agreement here is
 far tighter than that, and the assertions below are set accordingly. Both sides of
 each comparison come from the same fixed parameter vector -- there is no cohort and
 no sampled variability -- so the only discrepancy is trapezoidal-integration error

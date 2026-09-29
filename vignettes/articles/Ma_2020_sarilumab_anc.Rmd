@@ -120,7 +120,7 @@ head(pop)
 
 Build one event table per subject (dose every 14 days for 24 weeks, with
 Cc and ANC sampled weekly) and solve each subject independently, then
-concatenate. This per-subject loop sidesteps a pre-existing rxode2 issue
+concatenate. This per-subject loop sidesteps an rxode2 defect
 in which multi-endpoint models with more than two subjects in a single
 `rxSolve` call abort in the C solver. Each call samples a fresh set of
 IIV etas from the model's omega specification, so the pooled result is

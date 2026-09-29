@@ -30,9 +30,9 @@ initial amplitude `hCG0` toward a non-zero asymptote `hCGres` (the modelled
 residual production attributable to MTX-insensitive tumour cells). Recast as an
 indirect-response / turnover model, the rate constants identify as
 `kout = K`, `kin = K * hCGres`, `rbase = hCGres`, justifying the canonical
-`lkout` / `lrbase` parameter names. Validation therefore follows the
-endogenous-validation pattern (steady-state, perturbation-recovery, analytical
-identity) rather than the standard PKNCA recipe.
+`lkout` / `lrbase` parameter names. Validation therefore follows the package's
+validation pattern for endogenous models (steady-state, perturbation-recovery,
+analytical identity) rather than the standard PKNCA recipe.
 
 # Population
 
@@ -306,9 +306,9 @@ shifted `hCGres` distributions (the model does not partition them).
   `Hansson_2013b_sunitinib` where the output is `tumor`.
 - **Upstream model.** This 2013 paper refines the mono-exponential model first
   developed by the French national centre (You et al. 2010, Ann Oncol 21:1643)
-  by adding the `hCGres` residual-production term. The 2010 paper is not on
-  disk and is not extracted as a separate nlmixr2lib model; the 2013 final-form
-  model supersedes it.
+  by adding the `hCGres` residual-production term. The 2010 paper was not
+  available when this model was built and is not extracted as a separate
+  nlmixr2lib model; the 2013 final-form model supersedes it.
 - **Median-of-individual-predictions divergence.** Table 2 reports
   `median(hCG0_i) = 16 574 IU/L` versus a population `hCG0 = 14 400 IU/L`, and
   `median(K_i) = 0.174 / day` versus `K = 0.169 / day`. These reflect the

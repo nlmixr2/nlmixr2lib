@@ -191,6 +191,11 @@ stopifnot(
   abs(thalf_lung_sim / thalf_lung_pred - 1) < 0.005,
   thalf_lung_pred / 24 > 2.0, thalf_lung_pred / 24 < 3.0
 )
+
+# Days 14-56 ELF slope quoted below; keep Celf >= 1e-6 * max(Celf) (solver noise below).
+elf_tail <- sim_inh_typ[sim_inh_typ$time >= 336 & sim_inh_typ$time <= 1344 &
+                          sim_inh_typ$Celf >= 1e-6 * max(sim_inh_typ$Celf), ]
+thalf_elf_tail <- -log(2) / stats::coef(stats::lm(log(Celf) ~ time, data = elf_tail))[["time"]]
 ```
 
 The lung effective half-life of `r round(thalf_lung_pred / 24, 2)` days matches
@@ -203,7 +208,7 @@ terminal slope. Once the lung pool has largely emptied, ELF is sustained by
 back-transfer from `central`, so the true terminal slope of `Celf` tracks the
 systemic terminal phase. Fitting the same typical-value profile over days 14-56
 instead returns
-`r round(-log(2) / stats::coef(stats::lm(log(Celf) ~ time, data = sim_inh_typ[sim_inh_typ$time >= 336 & sim_inh_typ$time <= 1344, ]))[["time"]] / 24, 1)`
+`r round(thalf_elf_tail / 24, 1)`
 days, on its way to the systemic value. This is exactly the asymmetry the
 Discussion describes: "IV administration of DZIF-10c results in ELF
 concentrations that remain relatively constant for a longer period due to the
@@ -462,7 +467,11 @@ cl_ind <- sim_long_iv |> group_by(id) |> summarise(cl_i = first(cl), .groups = "
 
 nca_long <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(sim_long_iv |> filter(!is.na(Cc)) |>
-                     select(id, time, conc = Cc, regimen),
+                     select(id, time, conc = Cc, regimen) |>
+                     # Drop the post-peak solver-noise tail (< 1e-6 * max per subject); keep time zero.
+                     group_by(id) |>
+                     filter(time <= time[which.max(conc)] | conc >= 1e-6 * max(conc) | time == 0) |>
+                     ungroup(),
                    conc ~ time | regimen + id),
   PKNCA::PKNCAdose(subj_iv |> select(id, regimen) |> mutate(time = 0, amt = 700),
                    amt ~ time | regimen + id),
@@ -627,7 +636,7 @@ deposition fraction.
 
 * **Body-weight distribution.** The paper sampled 1,000 subjects per arm from
   NHANES 2017-18 (adults at least 18 years and at least 40 kg). Those microdata
-  are not on disk, so weight here is lognormal with median 80 kg and `sdlog`
+  were not available, so weight here is lognormal with median 80 kg and `sdlog`
   0.24, floored at 40 kg, as an approximation of that frame. This is the
   dominant source of any residual difference against Table 2: because every
   volume scales with `WT^1`, the model's ELF Cmax is exactly
@@ -691,6 +700,6 @@ deposition fraction.
 * **Errata.** A search of the journal landing page, PubMed Central, and the
   publisher's correction feed on 2026-08-14 found no erratum, corrigendum, or
   correction notice for this article.
-* **No data on disk.** Individual observed concentrations are not public; every
-  figure and table here is a simulation from the packaged model compared against
-  the published summary values.
+* **No observed data available.** Individual observed concentrations are not
+  public; every figure and table here is a simulation from the packaged model
+  compared against the published summary values.
