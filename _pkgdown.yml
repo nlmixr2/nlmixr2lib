@@ -4702,6 +4702,8 @@ navbar:
         href: articles/Smythe_2012_rifampicin.html
       - text: "Rifampicin (Svensson 2016)"
         href: articles/Svensson_2016_rifampicin.html
+      - text: "Rifampicin (Svensson 2020)"
+        href: articles/Svensson_2020_rifampicin.html
       - text: "Rifampicin (Vinnard 2017)"
         href: articles/Vinnard_2017_rifampicin.html
       - text: "Rifampicin (Wicha 2018)"
@@ -4712,6 +4714,8 @@ navbar:
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Rifampicin survival (Svensson 2020)"
+        href: articles/Svensson_2020_rifampicin.html
       - text: "Rifapentine (Francis 2019)"
         href: articles/Francis_2019_rifapentine.html
       - text: "Rifapentine (Zvada 2010)"
@@ -8139,6 +8143,7 @@ articles:
   - articles/Svensson_2017_bedaquiline
   - articles/Svensson_2018_bedaquiline
   - articles/Svensson_2018_rifampicin
+  - articles/Svensson_2020_rifampicin
   - articles/Swart_2004_lorazepam_midazolam
   - articles/Sy_2018_etirinotecanPegol
   - articles/Syvanen_2011_verapamil_rat
