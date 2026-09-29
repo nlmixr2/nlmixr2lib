@@ -186,6 +186,8 @@
 
 - Add Royer 2021 palbociclib ([doi:10.3390/ph14030181](https://doi.org/10.3390/ph14030181)) -- women with metastatic breast cancer followed in routine care.
 
+- Add Mileva 2021 doxycycline ([doi:10.3390/antibiotics10030310](https://doi.org/10.3390/antibiotics10030310)) -- mature and immature rabbits given a single oral capsule dose.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
