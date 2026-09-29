@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Abd-Rahman 2020 chloroquine ([doi:10.1002/cpt.1893](https://doi.org/10.1002/cpt.1893)) -- healthy adults in a Plasmodium vivax volunteer infection study; joint chloroquine + desethylchloroquine PK and a delayed-effect parasite-killing PD model, as separate plasma and whole-blood models.
+- Chen 2020 luspatercept: the citation now carries the correct DOI ([doi:10.1002/psp4.12521](https://doi.org/10.1002/psp4.12521); it previously pointed to an unrelated article), issue number and author list, and the compartment metadata records the serum assay matrix. No model code changed.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
@@ -2857,7 +2857,7 @@
 * Fix vignettes: derive concentration units in `labs()` from model `$units` metadata; replace inline trapezoidal NCA with PKNCA; add PKNCA sections to nalmefene and clesrovimab vignettes; add PKNCA treatment grouping to benralizumab and durvalumab vignettes.
 * Add Chen 2022 guselkumab ([doi:10.1111/cts.13197](https://doi.org/10.1111/cts.13197)) -- adults with active psoriatic arthritis (DISCOVER-1 and DISCOVER-2 phase 3 trials).
 * Add `concentration` field to `units` metadata for `Wang_2017_benralizumab` and `Ogasawara_2020_durvalumab` models.
-* Add Chen 2020 luspatercept ([doi:10.1002/psp4.12515](https://doi.org/10.1002/psp4.12515)) -- adults with anemia due to lower-risk myelodysplastic syndromes.
+* Add Chen 2020 luspatercept ([doi:10.1002/psp4.12521](https://doi.org/10.1002/psp4.12521)) -- adults with anemia due to lower-risk myelodysplastic syndromes.
 * Add Martinez 2019 alirocumab ([doi:10.1007/s40262-018-0669-y](https://doi.org/10.1007/s40262-018-0669-y)) -- healthy volunteers and adults with hypercholesterolemia.
 * Add Li 2017 brentuximab vedotin ([doi:10.1002/jcph.920](https://doi.org/10.1002/jcph.920)) -- adults with relapsed/refractory CD30-expressing hematologic malignancies (Hodgkin lymphoma and systemic anaplastic large cell lymphoma).
 * Add Quartino 2019 trastuzumab ([doi:10.1007/s00280-018-3728-z](https://doi.org/10.1007/s00280-018-3728-z)) -- adults with metastatic breast cancer, early breast cancer, advanced gastric cancer, or other solid tumors.
