@@ -1878,6 +1878,8 @@ navbar:
         href: articles/Xu_2025_enrofloxacin_largemouthBass.html
       - text: "Enrofloxacin largemouthBass oral (Xu 2025)"
         href: articles/Xu_2025_enrofloxacin_largemouthBass.html
+      - text: "Enrofloxacin rainbowTrout pbpk (Yang 2020)"
+        href: articles/Yang_2020_enrofloxacin_rainbowTrout_pbpk.html
       - text: "Enrofloxacin totalFluoroquinolone cat (Foster 2023)"
         href: articles/Foster_2023_enrofloxacin_cat.html
       - text: "Ensitrelvir (Ishibashi 2024)"
@@ -8565,6 +8567,7 @@ articles:
   - articles/Yang_2016_dilmapimod
   - articles/Yang_2017_buagafuran
   - articles/Yang_2017_remifentanil
+  - articles/Yang_2020_enrofloxacin_rainbowTrout_pbpk
   - articles/Yang_2021_cemiplimab
   - articles/Yang_2023_diclazuril
   - articles/Yang_2023_ganciclovir_model_repository
