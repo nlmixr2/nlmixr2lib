@@ -278,10 +278,8 @@ navbar:
         href: articles/Tang_2019_amoxicillin.html
       - text: "Amoxicillin (Zhang 2023)"
         href: articles/Zhang_2023_aztreonam_amoxicillin_clavulanate.html
-      - text: "Amoxicillin mouse (Franck 2021)"
-        href: articles/Franck_2021_amoxicillin_mpla_pneumonia.html
-      - text: "Amoxicillin mpla mouse (Franck 2021)"
-        href: articles/Franck_2021_amoxicillin_mpla_pneumonia.html
+      - text: "Amoxicillin dog (VegasComitre 2021)"
+        href: articles/VegasComitre_2021_amoxicillin_dog.html
       - text: "Amphenmulin chicken (Wang 2024)"
         href: articles/Wang_2024_amphenmulin.html
       - text: "Amphenmulin killrate (Wang 2024)"
@@ -8734,6 +8732,7 @@ articles:
   - articles/Vasalou_2023_dendriticNanoparticle
   - articles/VasquezBahena_2009_lumiracoxib_rat
   - articles/VegaVilla_2013_sodium_nitrite_qsp
+  - articles/VegasComitre_2021_amoxicillin_dog
   - articles/Veinstein_2013_gentamicin
   - articles/VelezdeMendizabal_2012_lumiracoxib_rat
   - articles/VelezdeMendizabal_2013_multipleSclerosis
