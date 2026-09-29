@@ -1914,8 +1914,8 @@ navbar:
         href: articles/Xu_2025_enrofloxacin_largemouthBass.html
       - text: "Enrofloxacin largemouthBass oral (Xu 2025)"
         href: articles/Xu_2025_enrofloxacin_largemouthBass.html
-      - text: "Enrofloxacin pig pbpk (Zhou 2021a)"
-        href: articles/Zhou_2021a_enrofloxacin_pig_pbpk.html
+      - text: "Enrofloxacin pig pbpk (Zhou 2021b)"
+        href: articles/Zhou_2021b_enrofloxacin_pig_pbpk.html
       - text: "Enrofloxacin totalFluoroquinolone cat (Foster 2023)"
         href: articles/Foster_2023_enrofloxacin_cat.html
       - text: "Ensitrelvir (Ishibashi 2024)"
@@ -8929,7 +8929,7 @@ articles:
   - articles/Zhou_2019_vancomycin
   - articles/Zhou_2020_paclitaxel_liposomal
   - articles/Zhou_2021_belimumab
-  - articles/Zhou_2021a_enrofloxacin_pig_pbpk
+  - articles/Zhou_2021b_enrofloxacin_pig_pbpk
   - articles/Zhou_2024_HER2breastCancer_qsp
   - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab
