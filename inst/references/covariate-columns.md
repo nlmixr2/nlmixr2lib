@@ -283,7 +283,8 @@ notes: <free text>
   - `PED` -- used in the Schoemaker 2018 LEV / BRV pediatric extrapolation (DDMODEL00000239) as the pediatric-vs-adult indicator that gates the Markov-amplitude term, the overdispersion IIV, and the four pediatric offsets on log baseline rate / mixture / placebo / Emax / EC50.
   - `adult_calve` -- used in `Winter_2024_oxytetracycline_cattle.R` (and in the raw data set distributed with Winter 2024 as `code_adult_calve`) as the calf-vs-adult-cattle indicator on all three volumes and all three clearances. Same coding as the canonical: 0 = adult, 1 = calf.
   - `AGEgr` -- used in `CarlssonPetri_2015_liraglutide.R` as the paper's pediatric-vs-adult age-category contrast (ESM Table 1 row `Cov CL-AGEgr`). Same coding as the canonical: 0 = adult, 1 = pediatric.
-- **Example models:** `CarlssonPetri_2015_liraglutide.R`, `CarlssonPetri_2021_liraglutide.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239), `Winter_2024_oxytetracycline_cattle.R`.
+  - `adult` -- used in `Papathanasiou_2021_somatropin.R` (Methods section 2.6, 'adult is a discrete value taking 1 or 0'), switching the typical Emax and its weight relationship and the GH residual error between adults and children. INVERTED coding relative to the canonical: `CHILD = 1 - adult`.
+- **Example models:** `CarlssonPetri_2015_liraglutide.R`, `CarlssonPetri_2021_liraglutide.R`, `Papathanasiou_2021_somatropin.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239), `Winter_2024_oxytetracycline_cattle.R`.
 - **Notes:** Paper's age cutoffs must be captured in `covariateData[[CHILD]]$notes`. That requirement is load-bearing for veterinary and preclinical models, where the cutoff is species-specific and bears no relation to the human paediatric ranges (Winter 2024 defines a calf as under 6 months of age, or any animal the original study authors declared to be a calf). `CHILD` is often paired with `ADOLESCENT` when a paper splits the immature population into two bands (`CarlssonPetri_2021_liraglutide.R`: children 7-11 y, adolescents 12-17 y), but it is equally the right column when a paper models a *single* pediatric-vs-adult contrast and `ADOLESCENT` would have no referent -- `CarlssonPetri_2015_liraglutide.R` uses `CHILD` alone for its 10-17 y pediatric cohort against a 33-73 y adult cohort, and `Schoemaker_2018_levetiracetam.R` likewise. Record which band the indicator spans in the per-model `notes` so the two usages are never confused.
 
 ### ADOLESCENT (**canonical for adolescent age-cohort indicator**)
@@ -18009,17 +18010,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Nielsen_2015_vigabatrin.R` (shifts log overdispersion by -1.420 and the asymptotic time effect by -0.374, and raises the log SD of the baseline-rate random effect by +0.358).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family; sibling of `STUDY_118` and `STUDY_192`. Studies 192 and 221 are the two pediatric cohorts with a *larger* maximum time (placebo) effect than adults, which the paper reconciles with the Rheims meta-analysis finding that placebo responder rates are about 1.9-fold greater in children than adults.
 
-### STUDY_0059 (**canonical for Lo 2021 revefenacin phase II Study 0059 cohort indicator**)
-- **Description:** 1 = record from Theravance revefenacin Study 0059 (Lo 2021 "Study 1", NCT03064113; n = 32 patients with moderate to severe COPD, single nebulized doses of 350 and 700 ug in a four-period crossover), 0 = any other study in the pooled analysis. Per-record (study-fixed) binary indicator.
+### STUDY_NCT00936403 (**canonical for the Papathanasiou 2021 somatropin pooled analysis Trial 2 (NCT00936403) cohort indicator**)
+- **Description:** 1 = subject from Trial 2 (ClinicalTrials.gov NCT00936403; single-dose NNC126-0083 dose-escalation trial in prepubertal children with GHD, whose Norditropin comparator arm received 0.035 mg/kg/day for 7 days) of the Papathanasiou 2021 pooled Norditropin PK/PD analysis; 0 = otherwise. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (the other two phase II studies 0091 and 0117 and the two phase III studies 0126 and 0127).
+- **Reference category:** 0 (Trial 1 NCT01973244, prepubertal children; or Trial 3 NCT01706783, adults).
 - **Source aliases:**
-  - `Study 1` -- Lo 2021 Methods 2.1.1 and Table 2 row 'Study 1 effect on F1'.
-  - `Study 0059` -- FDA Clinical Pharmacology Review of NDA 210598, Table 4.1.2.4.1 row 'Effect of Study 0059 on Bioavailability'.
-- **Example models:** `Lo_2021_revefenacin.R` (multiplies the relative bioavailability of nebulized revefenacin by 0.553 in the form `F1 = TV x 0.553^STUDY_0059`, reflecting the lower exposures observed in that study; the FDA reviewer suggests a different nebulizer as a possible cause).
-- **Notes:** Member of the `STUDY_<id>` auto-approve family; the id keeps the sponsor's four-digit protocol number with its leading zero so it cannot be read as a generic cohort count. Set to 0 when simulating the marketed product; the paper does not attribute the effect to any patient characteristic.
+  - `Trial` -- the paper's trial identifier (Trial 1 / 2 / 3; Papathanasiou 2021 Table 1 and Table 3 rows 'Proportional error Trial 1/2/3 (%)').
+- **Example models:** `Papathanasiou_2021_somatropin.R` (selects the Trial 2 IGF-I proportional residual error, 8.7%, over Trial 1's 14.6% among children).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family, named by the ClinicalTrials.gov identifier because the paper gives the trials no protocol code. The per-trial IGF-I residual errors reflect the different IGF-I assays (Siemens IMMULITE in Trial 2; IDS-iSYS in Trials 1 and 3). Trial 3 is the only adult trial, so the model selects the Trial 3 residual error with `CHILD = 0` and needs this single indicator to separate the two pediatric trials.
 
 ### STUDY_016 (**canonical for Loprete 2016 safinamide phase 3 Study 016 cohort indicator**)
 - **Description:** 1 = subject enrolled in safinamide phase 3 Study 016 (Borgohain 2014; Parkinson disease with motor fluctuations on stable levodopa, dosed with tablets containing safinamide **free base** at 50 or 100 mg/day). 0 = safinamide phase 3 Study 015 (Stocchi 2012; early Parkinson disease on a single dopamine agonist, dosed with gelatin capsules containing safinamide **methanesulfonate** titrated to 100 or 200 mg/day). Time-fixed per subject.
