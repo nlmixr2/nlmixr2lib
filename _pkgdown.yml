@@ -4674,6 +4674,8 @@ navbar:
         href: articles/Ollier_2015_ropivacaine.html
       - text: "Rosuvastatin (Barnett 2018)"
         href: articles/Barnett_2018_rosuvastatin.html
+      - text: "Rosuvastatin (Hanke 2021)"
+        href: articles/Hanke_2021_rosuvastatin.html
       - text: "Rosuvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Rosuvastatin (Macpherson 2015)"
@@ -6747,6 +6749,7 @@ articles:
   - articles/Hanan_2026_peginterferon_alfa_hbsag_loss
   - articles/Hanberg_2018_meropenem
   - articles/Hand_2019_benzathine_benzylpenicillin_g
+  - articles/Hanke_2021_rosuvastatin
   - articles/Hanley_2017_bortezomib
   - articles/Hanley_2024_brigatinib
   - articles/Hansson_2013_sunitinib_dbp
