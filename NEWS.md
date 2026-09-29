@@ -551,7 +551,7 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
-- Add Jones 2019 monoclonal antibody whole-body PBPK ([doi:10.1002/psp4.12461](https://doi.org/10.1002/psp4.12461)) -- a reference human adult; predicts linear IgG1 PK from AC-SINS score and FcRn affinity. Registers the pH-resolved endothelial-transcytosis sub-compartment prefixes (`memvas_`, `endoearly_`, `endosort_`, `endorecyc_`, `memint_` and their FcRn-complex, non-specific and free-FcRn variants) and the `auc_central` accumulator.
+- Add Yuan 2021 busulfan ([doi:10.2147/PGPM.S289834](https://doi.org/10.2147/PGPM.S289834)) -- Chinese children undergoing allogeneic haematopoietic stem cell transplantation, with a GSTA1 diplotype effect on clearance.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
