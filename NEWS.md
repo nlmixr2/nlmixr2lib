@@ -6,7 +6,7 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
-- Add Sokolov 2020 dapagliflozin, empagliflozin and canagliflozin renal SGLT1/2 QSP ([doi:10.1002/psp4.12498](https://doi.org/10.1002/psp4.12498)) -- healthy adults and adults with type 2 diabetes.
+- Add Lin 2020 glasdegib ([doi:10.1002/jcph.1556](https://doi.org/10.1002/jcph.1556)) -- adults with advanced hematologic malignancies or solid tumors, plus the paper's comparison model in healthy volunteers.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
