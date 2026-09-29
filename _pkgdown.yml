@@ -1760,6 +1760,8 @@ navbar:
         href: articles/Foster_2023_enrofloxacin_cat.html
       - text: "Ensitrelvir (Ishibashi 2024)"
         href: articles/Ishibashi_2024_ensitrelvir.html
+      - text: "Epcoritamab (Li 2025)"
+        href: articles/Li_2025_epcoritamab.html
       - text: "Ephedrine caffeine (Csajka 2005)"
         href: articles/Csajka_2005_ephedrine_caffeine.html
       - text: "Epinastine (Sarashina 2005)"
@@ -7173,6 +7175,7 @@ articles:
   - articles/Li_2024_orin1001
   - articles/Li_2025_amikacin
   - articles/Li_2025_doxycycline_florfenicol_ducks
+  - articles/Li_2025_epcoritamab
   - articles/Li_2025_lacosamide
   - articles/Li_2025_modakafuspAlfa
   - articles/Li_2026_alvespimycin
