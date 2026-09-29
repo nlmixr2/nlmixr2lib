@@ -98,6 +98,8 @@
 
 - Add Chen 2020b tacrolimus ([doi:10.21037/tp-20-84](https://doi.org/10.21037/tp-20-84)) -- Chinese children after liver transplantation, with CYP3A5 genotype and Wuzhi capsule effects.
 
+- Add Li 2020 metformin ([doi:10.1097/MD.0000000000023212](https://doi.org/10.1097/MD.0000000000023212)) -- Chinese adults with type 2 diabetes mellitus across CKD-EPI eGFR 47-138 mL/min/1.73 m^2.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
