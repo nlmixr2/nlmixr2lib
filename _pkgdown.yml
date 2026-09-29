@@ -5014,6 +5014,8 @@ navbar:
         href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "Ropeginterferon (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon (Zhu 2021)"
+        href: articles/Zhu_2021_ropeginterferon.html
       - text: "Ropeginterferon alt increase (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
       - text: "Ropeginterferon anemia (Qin 2025)"
@@ -8868,6 +8870,7 @@ articles:
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2018_asunaprevir
+  - articles/Zhu_2021_ropeginterferon
   - articles/Zhu_2023_omalizumab_pediatric
   - articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer
   - articles/Zhu_2024_borneol_pbpk
