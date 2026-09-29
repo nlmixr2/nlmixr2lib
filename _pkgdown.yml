@@ -2658,6 +2658,8 @@ navbar:
         href: articles/Chen_2024_guhongInjection.html
       - text: "Kaempferol3ORutinoside rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
+      - text: "Kanamycin (Humphries 2021)"
+        href: articles/Humphries_2021_tb_lung_pbpk.html
       - text: "Ketoprofen (Park 2001)"
         href: articles/Park_2001_ketoprofen.html
       - text: "Ketorolac (Valitalo 2017)"
@@ -6849,6 +6851,7 @@ articles:
   - articles/Hughes_2022_brepocitinib
   - articles/Hughes_2024_vancomycin
   - articles/Huh_2024_ritlecitinib
+  - articles/Humphries_2021_tb_lung_pbpk
   - articles/Huo_2025_lamotrigine
   - articles/Huppe_2023_fosfomycin
   - articles/Hurtado_2014_levofloxacin_rat
