@@ -2348,6 +2348,8 @@ navbar:
         href: articles/Siebinga_2023_hadotatate.html
       - text: "Gabapentin (AlZubaydi 2024)"
         href: articles/AlZubaydi_2024_gabapentin.html
+      - text: "Gadoxetate rat pbpk (Scotcher 2021)"
+        href: articles/Scotcher_2021_gadoxetate_rat_pbpk.html
       - text: "Galcanezumab (Kielbasa 2020)"
         href: articles/Kielbasa_2020_galcanezumab.html
       - text: "Ganciclovir (Acosta 2007)"
@@ -8292,6 +8294,7 @@ articles:
   - articles/Schropp_2019_bsab_tmdd
   - articles/Schulthess_2017_frequency_domain_response_analysis
   - articles/Schutte_2018_desmopressin
+  - articles/Scotcher_2021_gadoxetate_rat_pbpk
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
   - articles/SemereGebreyesus_2024_rifabutin
   - articles/Senek_2020_levodopa
