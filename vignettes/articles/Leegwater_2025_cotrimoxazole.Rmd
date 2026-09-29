@@ -38,7 +38,7 @@ smx_mod <- rxode2::rxode(readModelDb("Leegwater_2025_sulfamethoxazole"))
 * Citation: `r tmp_mod$reference`
 * Article: <https://doi.org/10.1002/cpt.3421>
 * Supplement (NONMEM control streams, VPCs, goodness-of-fit):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11652823/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC11652823>
 
 Both models carry the same two covariates, `CRCL` (CKD-EPI eGFR, BSA-normalized)
 and `RRT_CRRT_STATUS` (continuous renal replacement therapy), and in both the

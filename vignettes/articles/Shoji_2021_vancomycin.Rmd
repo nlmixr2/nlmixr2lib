@@ -24,8 +24,8 @@ library(ggplot2)
 * Article: <https://doi.org/10.1128/Spectrum.00460-21> (open access,
   [PMC8510181](https://europepmc.org/article/PMC/PMC8510181))
 * Supplement (Fig. S1 goodness-of-fit plots, Table S1 dosing simulations by
-  creatinine clearance): `spectrum00460-21_supp_1_seq2.pdf` in the EuropePMC
-  supplementary-file bundle for PMC8510181.
+  creatinine clearance): `spectrum00460-21_supp_1_seq2.pdf`, published
+  with the open-access article (PMC8510181).
 
 Shoji 2021 is a single-center retrospective population-PK analysis of
 intravenous vancomycin in children after liver transplantation, followed by
@@ -73,8 +73,8 @@ carries an in-file comment giving its origin; the table collects them.
 | Reference sCr 0.16 mg/dL, DFLT 17 days | n/a | Table 1 cohort medians |
 
 The final-model equations are typeset as images in the article; the forms above
-were read from the publisher's equation image `spectrum.00460-21-m001.jpg` in
-the EuropePMC supplementary bundle and match Table 3 footnote b.
+were read from the publisher's equation image `spectrum.00460-21-m001.jpg`,
+deposited with the article, and match Table 3 footnote b.
 
 # Check 1 -- typical values against the published post hoc averages
 

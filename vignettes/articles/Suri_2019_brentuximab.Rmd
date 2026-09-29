@@ -33,8 +33,8 @@ ui_pk <- rxode2::rxode(mod_pk)
 * Article (open access): <https://doi.org/10.1002/cpt.1530>
 * PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6896233/>
 * Supporting Information (Figure S1, Tables S1-S4 and the Supplementary
-  Supporting Information methods) was retrieved from the Europe PMC
-  supplementary-files endpoint for PMC6896233.
+  Supporting Information methods) is published with the open-access
+  article (PMC6896233).
 
 Suri 2019 reports the population PK of brentuximab vedotin (antibody-drug
 conjugate, ADC) and its payload monomethyl auristatin E (MMAE) in the A+AVD arm

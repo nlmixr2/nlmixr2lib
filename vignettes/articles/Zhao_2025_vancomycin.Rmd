@@ -78,8 +78,8 @@ V       = 1.04 x (WT/2.12)
 ```
 
 Every parenthesised covariate ratio is missing its superscript
-exponent. This is **not** a text-extraction artifact: the EuropePMC
-open-access bundle for PMC12131725 ships equations 1-7 as publisher
+exponent. This is **not** a text-extraction artifact: the files deposited
+with PMC12131725 include equations 1-7 as publisher
 artwork (`spectrum.02274-24.m001.jpg` through `m007.jpg`), and the
 rendered images for equations 6 and 7 carry no superscripts either. The
 exponents were lost in production.

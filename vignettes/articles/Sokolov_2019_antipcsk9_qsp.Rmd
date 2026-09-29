@@ -25,7 +25,7 @@ ui <- rxode2::rxode(readModelDb("Sokolov_2019_antipcsk9_qsp"))
 * Citation: `r ui$reference`
 * Article: <https://doi.org/10.1194/jlr.M092486>
 * Supplement (Tables S1 and S2, diagnostics figures S1-S3):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6718444/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6718444>
 
 `r ui$description`
 

@@ -23,7 +23,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Ou_2021_zanubrutinib"))$description`
 * Article: <https://doi.org/10.1111/cts.12948> (open access, PMC7993273)
 * Supplement (demographics, model-development run log, diagnostic plots):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7993273/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC7993273>
 
 Zanubrutinib is an oral, irreversible, second-generation Bruton's tyrosine
 kinase (BTK) inhibitor. Ou 2021 pooled nine clinical studies -- four in

@@ -22,7 +22,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Yang_2025_iruplinalkib"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Yang_2025_iruplinalkib"))$description`
 * Article: <https://doi.org/10.1111/cts.70099>
-* Supplement (Tables S1-S2, Figures S1-S3): <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11671680/supplementaryFiles>
+* Supplement (Tables S1-S2, Figures S1-S3): <https://europepmc.org/article/PMC/PMC11671680>
 
 Iruplinalkib (WX-0593) is a selective oral ALK/ROS1 tyrosine kinase inhibitor
 approved in China for ALK-positive non-small-cell lung cancer. Yang 2025 is the

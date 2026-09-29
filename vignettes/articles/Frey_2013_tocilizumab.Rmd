@@ -225,7 +225,7 @@ tau       <- 28                          # Q4W dosing interval (days)
 week24    <- 24 * 7                      # day 168
 n_doses   <- ceiling(week24 / tau)       # 6 doses through 24 weeks
 dose_days <- seq(0, tau * (n_doses - 1), by = tau)
-# Trim observation grid to keep the vignette under the 5-min wall-time gate.
+# Trim observation grid to keep the vignette's render time under 5 min.
 obs_days  <- sort(unique(c(seq(0, week24, by = 7), dose_days, dose_days + 1)))
 infusion_dur <- 1 / 24                   # 1-hour infusion in days
 ```

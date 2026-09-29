@@ -87,7 +87,7 @@ below collects them in one place for review. Every value is taken from the
 
 Methods equations 1 and 2 are rendered as images rather than text in the
 publisher's XML and are lost by every text-extraction path. They were recovered
-from the EuropePMC `supplementaryFiles` bundle for PMC6496076 as
+from the publisher's equation images deposited with PMC6496076,
 `AAC.00055-19-m0001.jpg` and `AAC.00055-19-m0002.jpg`, and read
 
 ```
@@ -708,6 +708,6 @@ about 42 mg/L.
   available. Figures 2 and 3, which are pure model outputs, are replicated
   above.
 - **No erratum.** Crossref reports no `update-to` / `updated-by` relation for
-  doi:10.1128/AAC.00055-19 as of 2026-09-23, and the EuropePMC supplement bundle
-  contains only the goodness-of-fit and dose-stratified VPC figures described in
+  doi:10.1128/AAC.00055-19 as of 2026-09-23, and the supplementary files deposited
+  with the article contain only the goodness-of-fit and dose-stratified VPC figures described in
   Supplemental File 1.

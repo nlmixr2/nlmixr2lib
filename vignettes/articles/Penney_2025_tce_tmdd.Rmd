@@ -22,8 +22,8 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Penney_2025_tce_tmdd_qsp"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Penney_2025_tce_tmdd_qsp"))$description`
 * Article: <https://doi.org/10.1111/cts.70384>
-* Supplement: Data S1 (`CTS-18-e70384-s001.docx`), Tables S1 / S2, available from the
-  Europe PMC supplementary-files endpoint for PMC12597969.
+* Supplement: Data S1 (`CTS-18-e70384-s001.docx`), Tables S1 / S2, published with the
+  open-access article (PMC12597969).
 
 T-cell engagers (TCEs) are built on IgG-like or albumin-binding formats that
 should give them half-lives of weeks, yet most clinical-stage TCEs show

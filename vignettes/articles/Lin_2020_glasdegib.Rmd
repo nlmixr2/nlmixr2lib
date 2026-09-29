@@ -41,7 +41,7 @@ tibble::tibble(
 * Citation: `r mod_pat$reference`
 * Article: <https://doi.org/10.1002/jcph.1556> (open access, PMC7187372)
 * Supplement (Supplemental Tables S1-S5, Figures S1-S2):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7187372/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC7187372>
 
 Both models are two-compartment models with first-order absorption. The
 patient model's covariates are baseline body weight (allometric), the

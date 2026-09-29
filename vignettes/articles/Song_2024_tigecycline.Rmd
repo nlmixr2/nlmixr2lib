@@ -579,8 +579,8 @@ stopifnot(var_row[["Mean |PTA error| (points)"]] <
 - **Supplementary Tables S1-S3 are not available.** S1 (covariate screening
   progression), S2 and S3 (PTA and CFR tabulations with the EUCAST MIC
   distributions) are cited in the text but are not distributed through PubMed
-  Central; the EuropePMC supplementary-files endpoint for PMC11464410 returns
-  only the article figures. No parameter in the model file depends on them. The
+  Central (the only files deposited with PMC11464410 are the article
+  figures). No parameter in the model file depends on them. The
   consequence is that the CFR analysis of Figure 4 cannot be reproduced, since
   the pathogen-specific MIC distributions it weights by are in S3.
 - **No covariate distribution had to be assumed.** The final model retains no

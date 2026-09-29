@@ -27,7 +27,7 @@ ui <- rxode2::rxode(readModelDb("Jeong_2025_imc002"))
 * Description: `r ui$description`
 * Article: <https://doi.org/10.1111/cts.70321>
 * Supplement (Data S1, NONMEM control stream; Figure S1; Table S1):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12370379/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12370379>
 
 IMC-002 is a fully human anti-CD47 IgG4 monoclonal antibody. Jeong 2025 fitted a
 semi-mechanistic target-mediated drug disposition (TMDD) model to the phase Ia

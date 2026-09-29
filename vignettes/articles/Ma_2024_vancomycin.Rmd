@@ -646,8 +646,8 @@ consequent risk of subtherapeutic exposure.
   defect, not a rendering artefact of one PDF copy, and was confirmed
   three ways: the page rendered at 300 dpi shows the colon followed by
   white space, with no image object anywhere on that page; the publisher's
-  per-equation graphics served by the EuropePMC `supplementaryFiles`
-  endpoint contain exactly two equation assets, `Article_Equa` (the CL
+  per-equation graphics deposited with the article contain exactly two
+  equation assets, `Article_Equa` (the CL
   equation) and `Article_Equb` (the V equation), and none for
   Cockcroft-Gault; and the Supplementary Information (MOESM1) is figure
   captions S1-S4 only. Users generating a `CLcr` column for this model

@@ -318,7 +318,7 @@ pd_df |>
 
 A small virtual cohort illustrates between-subject variability of the
 triptorelin PK and HPG-axis PD response. We use 20 subjects to keep
-the vignette under the 5-minute render budget.
+the vignette's render time under 5 minutes.
 
 ```{r vpc-trip, fig.cap = "Triptorelin 3.75 mg s.c.: 5-50-95 percentiles across 20 simulated subjects."}
 set.seed(2026)

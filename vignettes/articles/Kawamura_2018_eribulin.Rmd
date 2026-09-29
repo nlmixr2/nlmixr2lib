@@ -263,7 +263,7 @@ Kawamura 2018 Figure 4 reports the simulated probabilities of grade >=3 (cycle-1
 | Biweekly  | 27%       |  3%       |
 | Triweekly | 27%       |  3%       |
 
-We reproduce these by Monte Carlo simulation with between-subject variability turned on. We use a modest virtual cohort size (n = 200 per scenario) to keep the vignette render time under the 5-minute pkgdown gate; the original paper's simulation uses the actual 401-patient covariate distribution.
+We reproduce these by Monte Carlo simulation with between-subject variability turned on. We use a modest virtual cohort size (n = 200 per scenario) to keep the vignette render time under 5 minutes; the original paper's simulation uses the actual 401-patient covariate distribution.
 
 ```{r fig4-cohort}
 n_sub <- 200L

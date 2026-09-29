@@ -589,9 +589,8 @@ knitr::kable(afe_cmp, caption = "Average fold error (eq. 11) versus Table 4 of G
   (23-42 -> 32.5) and bosentan NTCP (18 and 36 -> 27). Bosentan OATP1B1 is taken
   as the printed 18 umol/L, per Table 1's footnote a ("Not available and
   therefore assumed to be the same as NTCP").
-- **Supplemental Figure 1 was not obtainable.** EuropePMC reports this article as
-  not open access and its supplementary-files endpoint returns a gateway error;
-  the publisher's supplement URL returns HTTP 403. The figure shows a simulation
+- **Supplemental Figure 1 was not obtainable.** The article is not open access,
+  and the supplement was not available when this model was built. The figure shows a simulation
   of how telmisartan's effect grows as the uptake phase is extended, generated
   from equations and parameter values that are all in the main text, so no
   parameter is missing. The one claim that depends on it -- "After a 30-minute
