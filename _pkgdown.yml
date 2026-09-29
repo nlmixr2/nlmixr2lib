@@ -906,6 +906,10 @@ navbar:
         href: articles/Chotsiri_2024_primaquine_metabolites.html
       - text: "Carfentanil iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Cariprazine (Periclou 2021)"
+        href: articles/Periclou_2021_cariprazine.html
+      - text: "Cariprazine initial (Periclou 2021)"
+        href: articles/Periclou_2021_cariprazine.html
       - text: "Carprofen moxidectinCorrected (Munn 2024)"
         href: articles/Munn_2024_carprofen_moxidectin_internal_standard.html
       - text: "Carprofen raw (Munn 2024)"
@@ -7904,6 +7908,7 @@ articles:
   - articles/PerezRuixo_2015_oxaliplatin_platelet_dynamics
   - articles/PerezRuixo_2020_esketamine
   - articles/PerezRuixo_2025_posdinemab
+  - articles/Periclou_2021_cariprazine
   - articles/Perlstein_2025_risperidone_tv46000
   - articles/Perlstein_2026_olanzapine
   - articles/Perrottet_2009_ganciclovir
