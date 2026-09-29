@@ -214,8 +214,8 @@ navbar:
         href: articles/Thakkar_2017_amifampridine.html
       - text: "Amikacin (Delattre 2010)"
         href: articles/Delattre_2010_amikacin.html
-      - text: "Amikacin (Jin 2020)"
-        href: articles/Jin_2020_amikacin.html
+      - text: "Amikacin (Kato 2021)"
+        href: articles/Kato_2021_amikacin.html
       - text: "Amikacin (Li 2025)"
         href: articles/Li_2025_amikacin.html
       - text: "Amikacin (Lim 2025)"
@@ -7343,6 +7343,7 @@ articles:
   - articles/Kastrissios_2006_apricoxib
   - articles/Kastrissios_2012_managlinatDialanetil
   - articles/Kata_2025_ganciclovir
+  - articles/Kato_2021_amikacin
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184
   - articles/Kawaguchi_2018_cefiderocol
