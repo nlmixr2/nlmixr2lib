@@ -30,7 +30,16 @@ Nishiyama_2019_metformin_pbpk <- function() {
     "other three are tabulated in the vignette. The paper reports no",
     "between-subject variability and no residual-error model (the fit is",
     "a fixed-effects weighted least-squares fit in NAPP), so propSd is a",
-    "placeholder and there are no etas."
+    "placeholder and there are no etas.",
+    "NOTE: a 2020 erratum (doi:10.1002/psp4.12539) states that the",
+    "authors' software computed the hepatic intrinsic metabolic clearance",
+    "CLint,met without the membrane-potential-driven OCT1-mediated efflux",
+    "term, and that correcting it raised the hepatic share of total",
+    "clearance from 15% to 23% and changed the fitted ka, ktrans and",
+    "RMATE/dif. The erratum does not print the refitted values, so this",
+    "model keeps the equation as the authors ran it (erratum eq. 1),",
+    "which is the only form consistent with the published Table 1",
+    "parameters; see the vignette section 'Published erratum'."
   )
   reference <- paste(
     "Nishiyama K, Toshimoto K, Lee W, Ishiguro N, Bister B, Sugiyama Y.",
@@ -39,6 +48,8 @@ Nishiyama_2019_metformin_pbpk <- function() {
     "Between Metformin and Cimetidine.",
     "CPT Pharmacometrics Syst Pharmacol. 2019;8(6):396-406.",
     "doi:10.1002/psp4.12398.",
+    "Erratum: CPT Pharmacometrics Syst Pharmacol. 2020;9:606-608.",
+    "doi:10.1002/psp4.12539.",
     "The ODE system and the hybrid-to-elementary parameter conversions are",
     "transcribed from Supplementary Material S2 ('Model equations for",
     "metformin', file PSP4-8-396-s008.pdf) and the Supplemental Text",
@@ -367,6 +378,11 @@ Nishiyama_2019_metformin_pbpk <- function() {
     ps_h_act <- clint_all / (beta_liver * (1 + rdif))
     ps_h_difinf <- ps_h_act * rdif
     ps_h_difeff <- ps_h_difinf / gamma_h
+    # Erratum (doi:10.1002/psp4.12539) eq. 1 -- the form the authors' software
+    # actually used for every published result. The erratum's corrected eq. 2
+    # multiplies by (rdif / gamma_h + enh / r_oct1) instead of rdif / gamma_h,
+    # i.e. it adds OCT1-mediated efflux; it needs refitted ka, ktrans and
+    # r_mate_dif that the erratum does not print. See vignette "Published erratum".
     cl_met <- clint_all / (1 - beta_liver) * rdif / ((1 + rdif) * gamma_h)
     km_oct1 <- km_oct1_um * mw
     vmax_oct1 <- ps_h_act * km_oct1
