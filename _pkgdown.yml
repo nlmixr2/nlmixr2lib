@@ -2802,6 +2802,8 @@ navbar:
         href: articles/Marcantonio_2022_efa.html
       - text: "Infliximab (Song 2025)"
         href: articles/Song_2025_infliximab.html
+      - text: "Infliximab (Ternant 2021)"
+        href: articles/Ternant_2021_infliximab.html
       - text: "Infliximab (Zhao 2026)"
         href: articles/Zhao_2026_infliximab.html
       - text: "Infliximab aubourg (Kim 2025)"
@@ -8631,6 +8633,7 @@ articles:
   - articles/Teixeira_2026_meloxicam_dog
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
+  - articles/Ternant_2021_infliximab
   - articles/Terranova_2018_paclitaxel
   - articles/Terranova_2021_berzosertib
   - articles/Terranova_2022_TGD_OS_gastric
