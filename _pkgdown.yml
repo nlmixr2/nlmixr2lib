@@ -5612,6 +5612,8 @@ navbar:
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
         href: articles/Frey_2013_tocilizumab.html
+      - text: "Tofacitinib (Tse 2020)"
+        href: articles/Tse_2020_tofacitinib.html
       - text: "Tofacitinib (Tsuchiwata 2026)"
         href: articles/Tsuchiwata_2026_tofacitinib.html
       - text: "Tofacitinib (Xie 2019)"
@@ -8256,6 +8258,7 @@ articles:
   - articles/Trujillo_2025_proinsulin_qsp
   - articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor
   - articles/Tsai_2023_ceftriaxone
+  - articles/Tse_2020_tofacitinib
   - articles/Tseng_2026_piperacillin
   - articles/Tseng_2026_vancomycin
   - articles/Tsirizani_2025_ritonavir

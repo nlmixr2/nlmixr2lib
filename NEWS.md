@@ -104,6 +104,8 @@
 
 - Add Favie 2020 pooled neonatal hypothermia model of morphine, midazolam, lidocaine, phenobarbital, amoxicillin, benzylpenicillin and gentamicin with five metabolites ([doi:10.1002/cpt.1917](https://doi.org/10.1002/cpt.1917)) -- term neonates with encephalopathy after perinatal asphyxia treated with therapeutic hypothermia. Registers `midazolam`, `hmg`, `lidocaine`, `phenobarbital`, `amoxicillin`, `benzylpenicillin` and `gentamicin` as sibling-drug suffixes.
 
+- Add Tse 2020 tofacitinib ([doi:10.1002/jcph.1679](https://doi.org/10.1002/jcph.1679)) -- healthy adults; a one-compartment reduction of the published Simcyp minimal-PBPK model.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
