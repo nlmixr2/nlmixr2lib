@@ -116,8 +116,9 @@ collects them. "Code" refers to the deposited MATLAB files.
 
 # Reproduction gate: an independent implementation of the authors' code
 
-The deposited `RunModelVivo.m` is simulated here a second time with `deSolve`,
-following the MATLAB driver literally: 35 consecutive 24-hour integrations,
+The deposited `RunModelVivo.m` is simulated here a second time from a separate
+transcription of its right-hand side (compiled on its own, not read from the
+model file), following the MATLAB driver literally: 35 consecutive 24-hour integrations,
 the depot *overwritten* with the dose at the start of each dosing day, and the
 bioavailability correction `X0 <- X0 * X0 / (D50 + X0)` applied to the depot at
 the start of every 24-hour chunk (`RunDosingRegVivo.m`). The `nlmixr2lib`
@@ -136,50 +137,52 @@ k_vivo <- c(
   CLml = 117.66, fu = 0.75, MW = 230.4
 )
 
-# Right-hand side of RunModelVivo.m's createODEs(); the ROc ODE is the
-# authors' own (fac_ng2nM times dQc/dt).
-matlab_rhs <- function(t, y, k) {
-  ROc <- y[1]; LSD1B <- y[2]; GRP <- y[3]; P <- y[4]; Q <- y[5]
-  X <- y[6]; Qc <- y[7]; Qp <- y[8]
-  CL <- k[["CLml"]] / k[["V"]]
-  dX <- -k[["ka"]] * X
-  dQc <- k[["ka"]] * X - CL * Qc - k[["k12"]] * Qc + k[["k21"]] * Qp
-  dQp <- k[["k12"]] * Qc - k[["k21"]] * Qp
-  fac <- (1000 / k[["MW"]]) / k[["V"]] * k[["fu"]]
-  dROc <- dQc * fac
-  LSD1U <- k[["LSD1_0"]] - LSD1B
-  dLSD1B <- -LSD1B * (k[["vm"]] / (k[["km"]] + LSD1B)) +
-    k[["kinact"]] * ROc / (k[["Ki"]] + ROc) * LSD1U
-  TE <- LSD1B / k[["LSD1_0"]] * 100
-  m <- k[["b"]] - k[["kd"]]
-  kmax <- -m * GRP + k[["b"]]
-  dGRP <- kmax * (k[["k50"]]^k[["n"]] / (k[["k50"]]^k[["n"]] + TE^k[["n"]])) -
-    k[["kd"]] * GRP
-  vP <- k[["kP"]] * (1 - P / (k[["k50P"]] + P)) * P
-  BM <- abs(1 - GRP)
-  vPQ <- k[["kmaxPQ"]] * BM^k[["nPQ"]] / (k[["k50PQ"]]^k[["nPQ"]] + BM^k[["nPQ"]]) * P
-  BMQP <- 1 - BM
-  vQP <- k[["kmaxQP"]] *
-    (BMQP^k[["nQP"]] / (k[["k50QP"]]^k[["nQP"]] + BMQP^k[["nQP"]]) + k[["bs"]]) * Q
-  list(c(dROc, dLSD1B, dGRP, vP - vPQ + vQP, vPQ - vQP, dX, dQc, dQp))
-}
+# Right-hand side of RunModelVivo.m's createODEs(), transcribed separately from
+# the model file; the ROc ODE is the authors' own (fac_ng2nM times dQc/dt).
+# States are declared in the MATLAB order (ROc, LSD1B, GRP, P, Q, X, Qc, Qp).
+matlab_ode <- rxode2::rxode2("
+  CL = CLml / V;
+  fac = (1000 / MW) / V * fu;
+  dQc = ka * X - CL * Qc - k12 * Qc + k21 * Qp;
+  d/dt(ROc) = dQc * fac;
+  LSD1U = LSD1_0 - LSD1B;
+  d/dt(LSD1B) = -LSD1B * (vm / (km + LSD1B)) + kinact * ROc / (Ki + ROc) * LSD1U;
+  TE = LSD1B / LSD1_0 * 100;
+  m = b - kd;
+  kmax = -m * GRP + b;
+  d/dt(GRP) = kmax * (k50^n / (k50^n + TE^n)) - kd * GRP;
+  vP = kP * (1 - P / (k50P + P)) * P;
+  BM = abs(1 - GRP);
+  vPQ = kmaxPQ * BM^nPQ / (k50PQ^nPQ + BM^nPQ) * P;
+  BMQP = 1 - BM;
+  vQP = kmaxQP * (BMQP^nQP / (k50QP^nQP + BMQP^nQP) + bs) * Q;
+  d/dt(P) = vP - vPQ + vQP;
+  d/dt(Q) = vPQ - vQP;
+  d/dt(X) = -ka * X;
+  d/dt(Qc) = dQc;
+  d/dt(Qp) = k12 * Qc - k21 * Qp;
+")
 
 # RunDosingRegVivo.m: day-by-day driver; dose_ugkg converted with a 0.025 kg mouse.
 matlab_regimen <- function(dose_ugkg, dose_days, k, total_days = 35) {
-  y <- c(0, 0, 1, 70, 0, 0, 0, 0)
+  y <- c(ROc = 0, LSD1B = 0, GRP = 1, P = 70, Q = 0, X = 0, Qc = 0, Qp = 0)
+  pars <- k[setdiff(names(k), "D50")]
+  day_grid <- rxode2::et(seq(0, 24, by = 1))
   out <- list()
   for (i in seq_len(total_days)) {
-    if (i %in% dose_days) y[6] <- dose_ugkg * 1e3 * 0.025
-    y[6] <- y[6] / (k[["D50"]] + y[6]) * y[6]
-    s <- deSolve::lsoda(y, seq(0, 24, by = 1), matlab_rhs, k, rtol = 1e-10, atol = 1e-12)
+    if (i %in% dose_days) y[["X"]] <- dose_ugkg * 1e3 * 0.025
+    y[["X"]] <- y[["X"]] / (k[["D50"]] + y[["X"]]) * y[["X"]]
+    s <- as.data.frame(rxode2::rxSolve(matlab_ode, params = pars, events = day_grid,
+                                       inits = y, rtol = 1e-10, atol = 1e-12))
+    keep <- seq_len(nrow(s) - 1L)
     out[[i]] <- data.frame(
-      time = s[-nrow(s), 1] + (i - 1) * 24,
-      Cc = s[-nrow(s), 8] / k[["V"]],
-      TE = s[-nrow(s), 3] / k[["LSD1_0"]] * 100,
-      grp = s[-nrow(s), 4],
-      tumor_vol = s[-nrow(s), 5] + s[-nrow(s), 6]
+      time = s$time[keep] + (i - 1) * 24,
+      Cc = s$Qc[keep] / k[["V"]],
+      TE = s$LSD1B[keep] / k[["LSD1_0"]] * 100,
+      grp = s$GRP[keep],
+      tumor_vol = s$P[keep] + s$Q[keep]
     )
-    y <- s[nrow(s), -1]
+    y <- unlist(s[nrow(s), names(y)])
   }
   dplyr::bind_rows(out)
 }
@@ -243,7 +246,7 @@ knitr::kable(
       "Cc (max diff / Cmax)" = Cc
     ),
   digits = 8,
-  caption = "nlmixr2lib model vs an independent deSolve run of the authors' MATLAB driver."
+  caption = "nlmixr2lib model vs a separate transcription of the authors' MATLAB driver."
 )
 # Both sides solve the same deterministic ODE with the same parameters, so the
 # difference is numerical error only and a tight bound is correct (a
