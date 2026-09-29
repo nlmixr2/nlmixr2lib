@@ -2924,6 +2924,16 @@ navbar:
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Irinotecan liposomal (Adiwijaya 2017)"
         href: articles/Adiwijaya_2017_irinotecan_liposomal.html
+      - text: "Irinotecan liposomal (Brendel 2021)"
+        href: articles/Brendel_2021_irinotecan_liposomal.html
+      - text: "Irinotecan liposomal diarrhea irinotecan (Brendel 2021)"
+        href: articles/Brendel_2021_irinotecan_liposomal.html
+      - text: "Irinotecan liposomal diarrhea sn38 (Brendel 2021)"
+        href: articles/Brendel_2021_irinotecan_liposomal.html
+      - text: "Irinotecan liposomal neutropenia irinotecan (Brendel 2021)"
+        href: articles/Brendel_2021_irinotecan_liposomal.html
+      - text: "Irinotecan liposomal neutropenia sn38 (Brendel 2021)"
+        href: articles/Brendel_2021_irinotecan_liposomal.html
       - text: "Irinotecan mouse (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Irinotecan pbpk (Toshimoto 2017)"
@@ -7027,6 +7037,7 @@ articles:
   - articles/Braune_2018_meropenem
   - articles/Brekkan_2016_factorIX
   - articles/Brekkan_2018_omalizumab
+  - articles/Brendel_2021_irinotecan_liposomal
   - articles/Brenner_2016_pamrevlumab_rat
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
