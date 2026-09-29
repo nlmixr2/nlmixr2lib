@@ -206,6 +206,8 @@
 
 - Add Merino-Bohorquez 2021 piperacillin ([doi:10.3390/antibiotics10040348](https://doi.org/10.3390/antibiotics10040348)) -- non-critically ill adults with Enterobacteriaceae bacteremia.
 
+- Add Franck 2021 amoxicillin + monophosphoryl lipid A ([doi:10.3390/pharmaceutics13040469](https://doi.org/10.3390/pharmaceutics13040469)) -- mice with Streptococcus pneumoniae pneumonia; PK submodel plus lung/spleen bacterial-kill and survival model.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Luo 2021 daratumumab ([doi:10.1002/jcph.1771](https://doi.org/10.1002/jcph.1771)) -- adults with multiple myeloma receiving subcutaneous (1800 mg) or intravenous (16 mg/kg) daratumumab.
