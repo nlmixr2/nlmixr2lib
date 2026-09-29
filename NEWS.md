@@ -198,6 +198,8 @@
 
 - Add Stader 2021 bictegravir whole-body PBPK ([doi:10.1002/cpt.2178](https://doi.org/10.1002/cpt.2178)) -- healthy adults and people living with HIV aged 20-99 years, built from the authors' deposited Matlab framework.
 
+- Add Cosson 2021 linvencorvir (RO7049389) with its metabolite M5 ([doi:10.1002/cpt.2184](https://doi.org/10.1002/cpt.2184)) -- healthy volunteers and adults with chronic hepatitis B, with the liver amount driven by saturable hepatic uptake.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Luo 2021 daratumumab ([doi:10.1002/jcph.1771](https://doi.org/10.1002/jcph.1771)) -- adults with multiple myeloma receiving subcutaneous (1800 mg) or intravenous (16 mg/kg) daratumumab.

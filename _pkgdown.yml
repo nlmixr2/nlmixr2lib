@@ -3088,6 +3088,8 @@ navbar:
         href: articles/Zhang_2026_linezolid.html
       - text: "Linezolid cns pbpk (Litjens 2023)"
         href: articles/Litjens_2023_linezolid_tuberculous_meningitis.html
+      - text: "Linvencorvir (Cosson 2021)"
+        href: articles/Cosson_2021_linvencorvir.html
       - text: "Linzagolix (Pohl 2022)"
         href: articles/Pohl_2022_linzagolix.html
       - text: "Linzagolix e2 (Pohl 2022)"
@@ -6871,6 +6873,7 @@ articles:
   - articles/Cooper_2015_sertraline
   - articles/Cordes_2016_isoniazid
   - articles/Cortez_2015_nevirapine
+  - articles/Cosson_2021_linvencorvir
   - articles/Couffignal_2014_imipenem
   - articles/Courlet_2023_cabamiquine
   - articles/Crass_2024_pegcetacoplan
