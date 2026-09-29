@@ -498,12 +498,8 @@ navbar:
         href: articles/Anbari_2023_atezolizumab_cibisatamab_qsp.html
       - text: "Atezolizumab isr (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
-      - text: "Atezolizumab orr auc (Shemesh 2020)"
-        href: articles/Shemesh_2020_atezolizumab_tmb.html
-      - text: "Atezolizumab orr cmax (Shemesh 2020)"
-        href: articles/Shemesh_2020_atezolizumab_tmb.html
-      - text: "Atezolizumab orr ctrough (Shemesh 2020)"
-        href: articles/Shemesh_2020_atezolizumab_tmb.html
+      - text: "Atezolizumab nabpaclitaxel qsp (Wang 2021)"
+        href: articles/Wang_2021_atezolizumab_nabpaclitaxel_qsp.html
       - text: "Atezolizumab os (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atezolizumab pfs (Chan 2025)"
@@ -8435,7 +8431,7 @@ articles:
   - articles/Wang_2019b_tacrolimus
   - articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp
   - articles/Wang_2020_ontamalimab
-  - articles/Wang_2020_vitacoxib_cat
+  - articles/Wang_2021_atezolizumab_nabpaclitaxel_qsp
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin

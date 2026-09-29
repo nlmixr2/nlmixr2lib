@@ -156,6 +156,8 @@
 
 - Add Kassem 2021 candesartan ([doi:10.1111/cts.12842](https://doi.org/10.1111/cts.12842)) -- adults with chronic heart failure with reduced ejection fraction.
 
+- Add Wang 2021 atezolizumab + nab-paclitaxel QSP ([doi:10.1136/jitc-2020-002100](https://doi.org/10.1136/jitc-2020-002100)) -- virtual patients with metastatic triple-negative breast cancer (IMpassion130).
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
