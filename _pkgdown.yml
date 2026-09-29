@@ -5496,8 +5496,8 @@ navbar:
         href: articles/Brooks_2021_tacrolimus.html
       - text: "Tacrolimus (Chen 2017)"
         href: articles/Chen_2017_tacrolimus.html
-      - text: "Tacrolimus (Chen 2021b)"
-        href: articles/Chen_2021b_tacrolimus.html
+      - text: "Tacrolimus (Chen 2021a)"
+        href: articles/Chen_2021a_tacrolimus.html
       - text: "Tacrolimus (CirrincioneDall 2011)"
         href: articles/CirrincioneDall_2011_tacrolimus.html
       - text: "Tacrolimus (Dunlap 2025)"
@@ -6952,7 +6952,7 @@ articles:
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2021_lorlatinib
   - articles/Chen_2021_lorlatinib_exposure_response
-  - articles/Chen_2021b_tacrolimus
+  - articles/Chen_2021a_tacrolimus
   - articles/Chen_2022_guselkumab
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
