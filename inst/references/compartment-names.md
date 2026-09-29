@@ -1058,7 +1058,7 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** IGF-1 (insulin-like growth factor 1) plasma biomarker compartment used by somatropin / GH PK/PD models. Stimulated by central GH via an Emax function; drives downstream body-weight dynamics.
 - **Source aliases:** none.
-- **Example models:** `Thorsted_2016_somatropin_rat.R`, `Thorsted_2016_somatropin_human.R`.
+- **Example models:** `Thorsted_2016_somatropin_rat.R`, `Thorsted_2016_somatropin_human.R`, `Papathanasiou_2021_somatropin.R` (IGF-I carried as a serum concentration in ng/mL; GH stimulates the IGF-I production rate additively).
 
 ### BMD (**canonical bone mineral density**)
 - **Type:** compartment

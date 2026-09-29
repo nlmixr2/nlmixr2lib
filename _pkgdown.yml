@@ -4896,6 +4896,8 @@ navbar:
         href: articles/VegaVilla_2013_sodium_nitrite_qsp.html
       - text: "Somatrogon (Wang 2025)"
         href: articles/Wang_2025_somatrogon.html
+      - text: "Somatropin (Papathanasiou 2021)"
+        href: articles/Papathanasiou_2021_somatropin.html
       - text: "Somatropin human (Thorsted 2016)"
         href: articles/Thorsted_2016_somatropin_human.html
       - text: "Somatropin rat (Thorsted 2016)"
@@ -7486,6 +7488,7 @@ articles:
   - articles/Papachristos_2020_bevacizumab_pk
   - articles/Papachristos_2020_bevacizumab_pkpd
   - articles/Papachristos_2020_bevacizumab_qss
+  - articles/Papathanasiou_2021_somatropin
   - articles/Papathanasiou_2025_belantamab
   - articles/Parasrampuria_2025_temsavir
   - articles/Pardridge_2023_brain_plasma_protein_binding
