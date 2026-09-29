@@ -12,7 +12,7 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
-- Add Ozbey 2021 pazopanib ([doi:10.3390/ph14090927](https://doi.org/10.3390/ph14090927)) -- adult and paediatric sarcoma patients on routine drug monitoring, pooled with adults with glioblastoma.
+- Add Sanchez-Dengra 2021 amitriptyline, caffeine, carbamazepine, fleroxacin, pefloxacin and zolpidem ([doi:10.3390/pharmaceutics13091402](https://doi.org/10.3390/pharmaceutics13091402)) -- rats; a plasma-brain-CSF neuro-PBPK model driven by in vitro BBB permeabilities, fitted separately for each drug with MDCK, MDCK-MDR1 and hCMEC/D3 cell-line inputs (18 models).
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
