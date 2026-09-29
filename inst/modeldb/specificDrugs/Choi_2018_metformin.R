@@ -5,6 +5,8 @@ Choi_2018_metformin <- function() {
     "metformin administered as fixed-dose combination in Korean healthy",
     "adults. Transl Clin Pharmacol 26(1):25-31.",
     "doi:10.12793/tcp.2018.26.1.25.",
+    "Erratum (corrected Table 1): Transl Clin Pharmacol 26(3):143.",
+    "doi:10.12793/tcp.2018.26.3.143.",
     sep = " "
   )
   vignette <- "Choi_2018_metformin"
@@ -34,18 +36,18 @@ Choi_2018_metformin <- function() {
     species = "human",
     n_subjects = 36L,
     n_studies = 1L,
-    age_range = "20.0-42.0 years (mean 23.9, SD 5.0; Choi 2018 Table 1 + Results 'Dataset' prose)",
+    age_range = "20-42 years (mean 23.9, SD 5.0; Choi 2018 erratum Table 1 + Results 'Dataset' prose)",
     age_median = "23.9 years (mean)",
-    weight_range = "70.9 kg mean +/- 7.9 kg SD; full range not tabulated (Choi 2018 Results 'Dataset' prose -- the 'cm' unit on weight printed in the paper text 'Mean height and weight were 176.0 +/- 3.5 cm and 70.9 +/- 7.9 cm' is a typo; weight is in kg as confirmed by the Table 1 column header 'Weight (kg)')",
+    weight_range = "57.2-85.9 kg (mean 70.9, SD 7.9; range from the Choi 2018 erratum Table 1, SD from the Results 'Dataset' prose, whose 'cm' unit on weight is a typo)",
     weight_median = "70.9 kg (mean)",
-    height_range = "169.1-183.5 cm (mean 176.0, SD 3.5; Choi 2018 Table 1 + Results 'Dataset' prose)",
+    height_range = "169.1-183.5 cm (mean 176.0, SD 3.5; Choi 2018 erratum Table 1 + Results 'Dataset' prose)",
     height_median = "176.0 cm (mean)",
     sex_female_pct = 0,
     race_ethnicity = c(Korean = 100),
     disease_state = "Healthy adult Korean male volunteers recruited into a single-dose 2-way crossover bioequivalence study; no T2DM",
     dose_range = "Single oral metformin dose (specific mg amount not reported in the paper). Each subject received both a single-agent metformin tablet (reference) and a metformin-containing FDC tablet (test) across two periods of a 2-way crossover with a 1-week wash-out, administered with 150 mL water after 10 h of fasting.",
     regions = "Republic of Korea (Seoul St. Mary's Hospital, Catholic University of Korea, Seoul)",
-    notes = "IRB approval KC14MDSF0913. Sampling at 0 (predose), 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, and 24 h post-dose. Plasma metformin assayed by LC-MS/MS. Choi 2018 Table 1 contains a row-label typo: the values listed against 'Weight (kg)' (176.0; 169.1-183.5) are the height values, and the values listed against 'Height (cm)' (23.9; 20.0-42.0) are the age values; the correct mean +/- SD pairs are reproduced from the prose narrative. Covariates of age, weight, height, serum creatinine, and creatinine clearance were screened in stepwise selection but none was retained at p < 0.05; only formulation was retained as a final-model covariate (Choi 2018 Results 'Covariate Analysis and Formulation Difference')."
+    notes = "IRB approval KC14MDSF0913. Sampling at 0 (predose), 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, and 24 h post-dose. Plasma metformin assayed by LC-MS/MS. The Table 1 printed in the original article is incorrect (the values listed against 'Weight (kg)' are the height values and those against 'Height (cm)' are the age values); the erratum (Transl Clin Pharmacol 2018;26(3):143, doi:10.12793/tcp.2018.26.3.143) replaces it, and the demographics above follow the erratum. The erratum revises no parameter, equation or unit. Covariates of age, weight, height, serum creatinine, and creatinine clearance were screened in stepwise selection but none was retained at p < 0.05; only formulation was retained as a final-model covariate (Choi 2018 Results 'Covariate Analysis and Formulation Difference')."
   )
 
   ini({

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Favie 2020 lidocaine ([doi:10.1111/bcp.14136](https://doi.org/10.1111/bcp.14136)) -- preterm and term neonates with seizures, with and without therapeutic hypothermia.
+- Choi 2018 metformin: the model and article now cite the journal's erratum ([doi:10.12793/tcp.2018.26.3.143](https://doi.org/10.12793/tcp.2018.26.3.143)), which replaces the incorrect Table 1 (demographics) and supplies the body-weight range (57.2-85.9 kg). No parameter changed.
 
 - rxode2's r-universe build of 2026-09-24 made the ODE-to-`linCmt()` conversion opt-in (rxode2 issue 1389), so every ODE model is now integrated numerically by default. 61 articles asserted closed-form identities, non-negativity or PKNCA agreement at tolerances only an analytic solution meets, or exhausted the integrator's step budget on long dose-only stretches. They now integrate with `rtol = 1e-10, atol = 1e-12` (plus `ssRtol`/`ssAtol` for `ss = 1` records), floor the integrator's sub-picogram undershoot before PKNCA, raise `maxsteps` where the steady-state search needs it, and size Monte-Carlo gates for the drawn cohort. One article (Tsirizani 2025 ritonavir) requests the analytic solution explicitly, because the numeric path cannot integrate its occasion-switched absorption with lag-shifted doses; the conversion was verified against the numeric solution on the arms the integrator does handle. No model file changed and no bound was loosened beyond the measured numeric floor; eight further articles had their prose about the former default corrected. The extraction skill's failure-pattern catalogue gained the class.
 
