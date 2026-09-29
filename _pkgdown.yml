@@ -4112,6 +4112,8 @@ navbar:
         href: articles/Rodrigues_2017_oxcarbazepine.html
       - text: "Oxcarbazepine (Sinha 2026)"
         href: articles/Sinha_2026_oxcarbazepine.html
+      - text: "Oxycodone (Agema 2021)"
+        href: articles/Agema_2021_oxycodone.html
       - text: "Oxycodone (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
       - text: "Oxycodone food (Franke 2015)"
@@ -6513,6 +6515,7 @@ articles:
   - articles/Adiwijaya_2017_irinotecan_liposomal
   - articles/Admiraal_2023_iminobiotin
   - articles/Agarwal_2011_sorafenib_transporters
+  - articles/Agema_2021_oxycodone
   - articles/Agerso_2004_desmopressin
   - articles/Agoram_2006_darbepoetin_alfa
   - articles/Agoram_2006_darbepoetin_alfa_cia

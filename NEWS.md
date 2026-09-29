@@ -238,6 +238,8 @@
 
 - Add Zhu 2021 ropeginterferon alfa-2b ([doi:10.3389/fphar.2021.673492](https://doi.org/10.3389/fphar.2021.673492)) -- healthy Caucasian and Chinese adults after a single subcutaneous dose.
 
+- Add Agema 2021 oxycodone with noroxycodone and noroxymorphone ([doi:10.3390/cancers13112768](https://doi.org/10.3390/cancers13112768)) -- hospitalised adults with cancer-related pain. Registers the `noroxycod` and `noroxymor` metabolite suffixes.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Zhou 2021a enrofloxacin PBPK ([doi:10.3390/pharmaceutics13050602](https://doi.org/10.3390/pharmaceutics13050602)) -- healthy pigs given an oral solid-dispersion granule, with the small-intestinal contents as the target site.
