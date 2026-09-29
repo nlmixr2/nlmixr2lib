@@ -214,6 +214,8 @@
 
 - Add Cheng 2021 avadomide (CC-122) ([doi:10.2147/CPAA.S310604](https://doi.org/10.2147/CPAA.S310604)) -- healthy adults, adults with renal impairment, and patients with advanced solid tumors, NHL or multiple myeloma.
 
+- Add Wang 2021 sunitinib and its active metabolite SU012662 ([doi:10.1007/s13318-021-00671-7](https://doi.org/10.1007/s13318-021-00671-7)) -- children and young adults with gastrointestinal stromal tumors or other solid tumors.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Luo 2021 daratumumab ([doi:10.1002/jcph.1771](https://doi.org/10.1002/jcph.1771)) -- adults with multiple myeloma receiving subcutaneous (1800 mg) or intravenous (16 mg/kg) daratumumab.
