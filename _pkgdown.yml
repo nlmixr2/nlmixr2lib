@@ -5696,6 +5696,10 @@ navbar:
         href: articles/Zhao_2025_vancomycin.html
       - text: "Vancomycin (Zhou 2019)"
         href: articles/Zhou_2019_vancomycin.html
+      - text: "Vancomycin all (Li 2021)"
+        href: articles/Li_2021_vancomycin_renal_function.html
+      - text: "Vancomycin arc (Li 2021)"
+        href: articles/Li_2021_vancomycin_renal_function.html
       - text: "Vancomycin carreno (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
       - text: "Vancomycin full (Downes 2023)"
@@ -5710,6 +5714,8 @@ navbar:
         href: articles/Olivo_2025_vancomycin.html
       - text: "Vancomycin nonparametric (Hughes 2024)"
         href: articles/Hughes_2024_vancomycin.html
+      - text: "Vancomycin normal (Li 2021)"
+        href: articles/Li_2021_vancomycin_renal_function.html
       - text: "Vancomycin parametric (Hughes 2024)"
         href: articles/Hughes_2024_vancomycin.html
       - text: "Vancomycin schwartz (Downes 2023)"
@@ -7164,6 +7170,7 @@ articles:
   - articles/Li_2019_abatacept
   - articles/Li_2019_ceftazidime_avibactam
   - articles/Li_2021_daratumumab_qsstmdd
+  - articles/Li_2021_vancomycin_renal_function
   - articles/Li_2023_TQB3203
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
