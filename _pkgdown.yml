@@ -796,6 +796,8 @@ navbar:
         href: articles/Mahomed_2025_CAP256V2LS.html
       - text: "CC292 (Li 2017)"
         href: articles/Li_2017_CC292.html
+      - text: "CKD 519 (Kim 2020)"
+        href: articles/Kim_2020_CKD_519.html
       - text: "Cabamiquine (Courlet 2023)"
         href: articles/Courlet_2023_cabamiquine.html
       - text: "Cabamiquine pk (Courlet 2023)"
@@ -7200,7 +7202,7 @@ articles:
   - articles/Kim_2017_tegafur_rat
   - articles/Kim_2018_tacrolimus
   - articles/Kim_2019_voriconazole
-  - articles/Kim_2020_voriconazole
+  - articles/Kim_2020_CKD_519
   - articles/Kim_2023_camostat
   - articles/Kim_2023_pyrazinamide
   - articles/Kim_2024_meropenem
