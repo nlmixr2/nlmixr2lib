@@ -3172,6 +3172,8 @@ navbar:
         href: articles/Hanberg_2018_meropenem.html
       - text: "Meropenem (Kim 2024)"
         href: articles/Kim_2024_meropenem.html
+      - text: "Meropenem (Lee 2021)"
+        href: articles/Lee_2021_meropenem.html
       - text: "Meropenem (Liu 2025)"
         href: articles/Liu_2025_meropenem.html
       - text: "Meropenem (Lu 2016)"
@@ -7124,6 +7126,7 @@ articles:
   - articles/Lee_2017_doripenem
   - articles/Lee_2018_leuprolide
   - articles/Lee_2019_tramadol
+  - articles/Lee_2021_meropenem
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin
