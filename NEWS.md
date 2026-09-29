@@ -16,6 +16,8 @@
 
 - Add Freriksen 2020 dolutegravir pregnancy PBPK ([doi:10.1002/cpt.1748](https://doi.org/10.1002/cpt.1748)) -- pregnant women in the third trimester and their fetuses, with maternal plasma, fetal plasma and amniotic-fluid outputs.
 
+- Add Mian 2020 acetaminophen placental perfusion ([doi:10.1007/s40262-020-00861-7](https://doi.org/10.1007/s40262-020-00861-7)) -- ex vivo dual-perfused human term placental cotyledon.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
