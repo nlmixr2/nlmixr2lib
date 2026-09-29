@@ -3022,6 +3022,8 @@ navbar:
         href: articles/Jensen_2023_lngIus52mg.html
       - text: "Lobaplatin (Cheng 2019)"
         href: articles/Cheng_2019_lobaplatin.html
+      - text: "Lopinavir (Alvarez 2021)"
+        href: articles/Alvarez_2021_lopinavir.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
       - text: "Lopinavir (Crommentuyn 2005)"
@@ -6334,6 +6336,7 @@ articles:
   - articles/Alsultan_2023_vancomycin
   - articles/Altcheh_2023_benznidazole
   - articles/AlvarezJimenez_2016_scopolamine
+  - articles/Alvarez_2021_lopinavir
   - articles/Ambery_2015_batefenterol
   - articles/An_2012_mitoxantrone_pbpk
   - articles/An_2025_rosuvastatin_ezetimibe
