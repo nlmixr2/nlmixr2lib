@@ -5960,8 +5960,8 @@ navbar:
         href: articles/Jung_2024_vancomycin.html
       - text: "Vancomycin (Li 2018)"
         href: articles/Li_2018_vancomycin.html
-      - text: "Vancomycin (Ma 2020)"
-        href: articles/Ma_2020_vancomycin.html
+      - text: "Vancomycin (Lin 2021)"
+        href: articles/Lin_2021_vancomycin.html
       - text: "Vancomycin (Ma 2024)"
         href: articles/Ma_2024_vancomycin.html
       - text: "Vancomycin (MarquesMinana 2010)"
@@ -7569,6 +7569,7 @@ articles:
   - articles/Lin_2018_voriconazole
   - articles/Lin_2020_glasdegib
   - articles/Lin_2020_glasdegib_AML_overall_survival
+  - articles/Lin_2021_vancomycin
   - articles/Lin_2023_asparaginaseErwiniaRecombinant
   - articles/Lin_2024_TB_multistate
   - articles/Lin_2024_adverseEvent_markov
