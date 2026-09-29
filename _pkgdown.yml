@@ -1680,6 +1680,14 @@ navbar:
         href: articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer.html
       - text: "Doxorubicin dexrazoxane static mdamb468 (Mody 2023)"
         href: articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer.html
+      - text: "Doxorubicin mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
+      - text: "Doxorubicin sorafenib c1 mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
+      - text: "Doxorubicin sorafenib c2 mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
+      - text: "Doxorubicin sorafenib mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
       - text: "Doxycycline duck ff20 (Li 2025)"
@@ -5262,6 +5270,8 @@ navbar:
         href: articles/Jain_2011_sorafenib.html
       - text: "Sorafenib bcrp (Agarwal 2011)"
         href: articles/Agarwal_2011_sorafenib_transporters.html
+      - text: "Sorafenib mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Sorafenib pgp (Agarwal 2011)"
         href: articles/Agarwal_2011_sorafenib_transporters.html
       - text: "Sotalol (Yellepeddi 2025)"
@@ -6852,6 +6862,7 @@ articles:
   - articles/Choi_2011_remifentanil
   - articles/Choi_2016_gcc4401c_rivaroxaban
   - articles/Choi_2018_metformin
+  - articles/Choi_2021_doxorubicin_sorafenib_mouse
   - articles/Choi_2025_denosumab
   - articles/Choi_2025_efpeglenatide
   - articles/Choi_2026_melphalan
