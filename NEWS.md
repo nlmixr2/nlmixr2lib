@@ -8,6 +8,8 @@
 
 - Add Wang 2020 entinostat + nivolumab + ipilimumab QSP ([doi:10.3389/fbioe.2020.00141](https://doi.org/10.3389/fbioe.2020.00141)) -- virtual patients with HER2-negative breast cancer.
 
+- Add Baker 2020 eptinezumab ([doi:10.1002/prp2.567](https://doi.org/10.1002/prp2.567)) -- healthy adults and adults with episodic or chronic migraine.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
