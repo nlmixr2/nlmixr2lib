@@ -164,6 +164,8 @@
 
 - Add Ryu 2021 hyaluronic acid dermal fillers ([doi:10.3390/pharmaceutics13020133](https://doi.org/10.3390/pharmaceutics13020133)) -- filler volume after subcutaneous injection in hairless mice, five marketed fillers.
 
+- Add Sjogren 2021 malnutrition physiology ([doi:10.3390/pharmaceutics13020204](https://doi.org/10.3390/pharmaceutics13020204)) -- malnourished adults (applied to malnourished children); PBPK physiological scaling parameters for mild, intermediate and severe malnutrition.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
