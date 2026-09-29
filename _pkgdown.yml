@@ -2032,6 +2032,8 @@ navbar:
         href: articles/Momper_2016_fluconazole.html
       - text: "Fluconazole (Patel 2011)"
         href: articles/Patel_2011_fluconazole.html
+      - text: "Fluconazole (Sakamoto 2021)"
+        href: articles/Sakamoto_2021_fluconazole.html
       - text: "Fluconazole (Stott 2018)"
         href: articles/Stott_2018_fluconazole.html
       - text: "Fluconazole (Wade 2008)"
@@ -7637,6 +7639,7 @@ articles:
   - articles/Sager_2023_sotrovimab
   - articles/Sahota_2015_miridesap
   - articles/Said_2025_imatinib
+  - articles/Sakamoto_2021_fluconazole
   - articles/Sakurai_2007_lansoprazole
   - articles/Saleh_2023_leicns_pk30_mouse_brain
   - articles/Salehi_2025_nicotine_pbpk
