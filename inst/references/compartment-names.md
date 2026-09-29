@@ -4265,27 +4265,19 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Kubota_2018_naldemedine_gi_severe_phase3.R` (founding example).
 - **Notes:** See `prob_gi_mild_or_worse` for why the three severity thresholds are cumulative but independently fitted. A severe-only threshold is often unestimable in a small study because no severe event occurs -- the founding paper has no phase 2b counterpart to this model for exactly that reason -- so the absence of a severe-threshold companion alongside a mild and moderate pair is informative, not an omission.
 
-
-### prob_trae_grade34 (**canonical cohort grade 3/4 treatment-related adverse-event proportion output**)
+### prob_pasi75 (**canonical PASI75 responder-rate output**)
 - **Type:** compartment
-- **Role:** Expected proportion (0..1) of a trial cohort experiencing any CTCAE grade 3 or 4 treatment-related adverse event, output by a STUDY-LEVEL logit meta-regression. Algebraic; no ODE state.
-- **Source aliases:** `trAE Grade 3/4`, `total grade 3/4 trAE` -- Shulgin 2020.
-- **Example models:** `Shulgin_2020_ici_trae34_mbma.R`, `Shulgin_2020_ici_trae34_covariate_mbma.R` (founding examples; immune checkpoint inhibitor MBMA driven by potency-normalized anti-CTLA-4 exposure).
-- **Notes:** A cohort-level PROPORTION, not an individual-patient probability -- it is the typical rate across trials with the stated regimen and covariates. Distinct from `prob_teae_grade3`, which counts treatment-EMERGENT events regardless of attribution, is grade >= 3 rather than 3/4, and is an individual-level landmark probability. `prob_gi_imae_grade34` and `prob_hepatic_imae_grade34` are organ-class subsets of immune-mediated events and overlap with this endpoint rather than competing with it.
+- **Role:** Probability (0..1) that a patient with plaque psoriasis achieves at least a 75% reduction from their own baseline Psoriasis Area and Severity Index (PASI75). In the founding models it is a STUDY-ARM responder proportion from a longitudinal model-based meta-analysis, `prob_pasi75 <- expit(<placebo logit> + <drug logit>)`, evaluated over time since first dose.
+- **Source aliases:** `PASI75`, `P(PASI75)`, `Pr(PASI75)`, `P_response` for the PASI75 end point.
+- **Example models:** `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R`, `He_2021_psoriasis_pasi75_mbma.R`.
+- **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. The threshold is part of the endpoint: PASI75, PASI90 and PASI100 are CUMULATIVE thresholds on one scale (`prob_pasi75 >= prob_pasi90`), and a source that fits them separately (He 2021) or links them through shared terms (Checchio 2017) must still expose each under its own name. It is a time-varying arm-level trajectory, not a landmark per-subject probability, and the residual of the founding models is the binomial standard error of an arm proportion scaled by `N_ARM`.
 
-### prob_gi_imae_grade34 (**canonical cohort grade 3/4 gastrointestinal immune-mediated adverse-event proportion output**)
+### prob_pasi90 (**canonical PASI90 responder-rate output**)
 - **Type:** compartment
-- **Role:** Expected proportion (0..1) of a trial cohort experiencing a grade 3/4 immune-mediated adverse event of the gastrointestinal organ class (for example colitis and diarrhoea), output by a study-level logit meta-regression.
-- **Source aliases:** `Gastrointestinal imAE Grade 3/4` -- Shulgin 2020 Supplemental Table 1.
-- **Example models:** `Shulgin_2020_ici_gi_imae34_mbma.R` (founding example).
-- **Notes:** Immune-mediated (imAE), not merely treatment-related; distinct from the naldemedine `prob_gi_*` severity-threshold family, which are individual-level landmark probabilities of any gastrointestinal-disorder event. Subset of `prob_trae_grade34`.
-
-### prob_hepatic_imae_grade34 (**canonical cohort grade 3/4 hepatic immune-mediated adverse-event proportion output**)
-- **Type:** compartment
-- **Role:** Expected proportion (0..1) of a trial cohort experiencing a grade 3/4 immune-mediated adverse event of the hepatic organ class, output by a study-level logit meta-regression.
-- **Source aliases:** `Hepatic imAE Grade 3/4` -- Shulgin 2020 Supplemental Table 1.
-- **Example models:** `Shulgin_2020_ici_hepatic_imae34_mbma.R` (founding example).
-- **Notes:** Subset of `prob_trae_grade34`; see that entry for the cohort-proportion reading.
+- **Role:** Probability (0..1) that a patient with plaque psoriasis achieves at least a 90% reduction from their own baseline Psoriasis Area and Severity Index (PASI90). Stricter sibling of `prob_pasi75`.
+- **Source aliases:** `PASI90`, `P(PASI90)`, `Pr(PASI90)`.
+- **Example models:** `He_2021_psoriasis_pasi90_mbma.R` (fitted directly to PASI90 arm data), `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (a secondary, unfitted output that maps the PASI75 model to PASI90 with two scaling factors imported from the companion landmark model).
+- **Notes:** See `prob_pasi75`. A directly fitted PASI90 model and a PASI75 model rescaled to PASI90 are different evidence and should be distinguished in any comparison.
 
 ---
 
