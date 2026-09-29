@@ -250,6 +250,8 @@
 
 - Add Chung 2021 GC1118 ([doi:10.1111/cts.12963](https://doi.org/10.1111/cts.12963)) -- adults with advanced solid tumours; target-mediated disposition with EGFR occupancy.
 
+- Add Arshad 2021 high-dose methotrexate ([doi:10.1186/s12885-021-08443-x](https://doi.org/10.1186/s12885-021-08443-x)) -- adults with haematological malignancies or solid tumours; final linear model plus the supplementary linear + Michaelis-Menten model.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Zhou 2021a enrofloxacin PBPK ([doi:10.3390/pharmaceutics13050602](https://doi.org/10.3390/pharmaceutics13050602)) -- healthy pigs given an oral solid-dispersion granule, with the small-intestinal contents as the target site.
