@@ -1090,6 +1090,8 @@ navbar:
         href: articles/Li_2019_ceftazidime_avibactam.html
       - text: "Ceftazidime (Li 2024)"
         href: articles/Li_2024_ceftazidime.html
+      - text: "Ceftazidime (Nguyen 2021)"
+        href: articles/Nguyen_2021_ceftazidime_imipenem.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
       - text: "Ceftazidime (WerumeusBuning 2021)"
@@ -2717,15 +2719,15 @@ navbar:
       - text: "Imipenem (Lamoth 2009)"
         href: articles/Lamoth_2009_imipenem.html
       - text: "Imipenem (Nguyen 2021)"
-        href: articles/Zhang_2025_imipenem_model_review.html
+        href: articles/Nguyen_2021_ceftazidime_imipenem.html
       - text: "Imipenem (Por 2021)"
-        href: articles/Zhang_2025_imipenem_model_review.html
+        href: articles/Por_2021_imipenem.html
       - text: "Imipenem (Truong 2025)"
         href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem (Wang 2024)"
         href: articles/Wang_2024_imipenem.html
       - text: "Imipenem (deVelde 2020)"
-        href: articles/Zhang_2025_imipenem_model_review.html
+        href: articles/deVelde_2020_imipenem.html
       - text: "Imipenem amikacin PA001 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem amikacin PA088 (Yadav 2017)"
@@ -2736,6 +2738,8 @@ navbar:
         href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem neutropenia (Lafaurie 2023)"
         href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem nonparametric (deVelde 2020)"
+        href: articles/deVelde_2020_imipenem.html
       - text: "Imipenem pbpk (Feng 2026)"
         href: articles/Feng_2026_imipenem_pbpk.html
       - text: "Imipenem qsp (LopezArguello 2023)"
@@ -8142,7 +8146,7 @@ articles:
   - articles/Ngo_2020_HL2351
   - articles/Ngo_2023_rivaroxaban
   - articles/Nguyen_2019_cabozantinib
-  - articles/Nguyen_2020_myostatin_activin_dmd_qsp
+  - articles/Nguyen_2021_ceftazidime_imipenem
   - articles/Nguyen_2025_valbenazine_huntington_chorea
   - articles/Nguyen_2026_dupilumab
   - articles/Nguyen_2026_levofloxacin
@@ -8292,6 +8296,7 @@ articles:
   - articles/Pohl_2022_linzagolix
   - articles/Polaskova_2024_vancomycin
   - articles/Polito_2016_fludrocortisone
+  - articles/Por_2021_imipenem
   - articles/Pouzin_2022_tusamitamab
   - articles/Press_2010_ciclosporin
   - articles/Proctor_2026_durvalumab_cachexia
@@ -9127,6 +9132,7 @@ articles:
   - articles/deJonge_2005_paclitaxel
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/deKock_2018_sulfadoxinePyrimethamine
+  - articles/deVelde_2020_imipenem
   - articles/deVriesSchultink_2018_cardiotoxicity
   - articles/deVriesSchultink_2020_zenocutuzumab
   - articles/deVries_2025_durvalumab

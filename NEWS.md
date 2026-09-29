@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ternant 2021 infliximab ([doi:10.3390/pharmaceutics13111821](https://doi.org/10.3390/pharmaceutics13111821)) -- adults with Crohn's disease or ulcerative colitis, plus an ankylosing-spondylitis reference cohort.
+- Re-verify Por 2021 imipenem ([doi:10.1002/jcph.1865](https://doi.org/10.1002/jcph.1865)) -- adult burn patients with and without continuous venovenous haemofiltration -- against its primary publication; it was previously transcribed from the Zhang 2025 review. The IIV variances are now the printed `omega^2` (0.093 and 0.13), the CVVH clearance is the per-patient covariate `QEFF` instead of the constant 1.56 L/h, the CVVH categorical effect (-0.1) is explicit, and the model has its own article.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
@@ -12,9 +12,9 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
-- The SI-unit conversion of 2026-06-19 (vignette input values for the 21 models that convert albumin and bilirubin inline) had also multiplied numbers that were never inputs and missed others. Repaired in 19 articles: mangled prose, table references and CIs in Gatti 1996; a sex indicator and CRP scaled tenfold in Li 2018; a hand-calculation default and sensitivity rows in Garg 2014 and Quartino 2019; a log-scale SD scaled 17.1-fold in Yamada 2025; a 171-fold bilirubin slip in Kawamura 2018; albumin or bilirubin inputs still in g/dL or mg/dL in Gatti 1996, Hong 2025, Hwang 2023 and Kawamura 2018 (their simulated results change accordingly); and unit labels throughout.
+- Add de Velde 2020 imipenem nonparametric (Pmetrics) model ([doi:10.1007/s40262-020-00859-1](https://doi.org/10.1007/s40262-020-00859-1)) -- critically ill adults; `deVelde_2020_imipenem` (NONMEM arm) is re-verified against the primary publication, with the residual error corrected to log-normal and the study location corrected to Switzerland, and both arms now have their own article.
 
-- Corrected an inverted covariate clamp in the virtual cohorts of 18 articles (Chelle 2019, Eissing 2024, Frey 2013, Gandhi 2021, Kuchimanchi 2024, Li 2019, Ma 2020, Martinez 2019, Melhem 2022, Peng 2024, Pu 2021, Takeuchi 2023, Timmermann 2019, Wang 2020, Xu 2019, Zhang 2021, Zhao 2013, Zhong 2026): `pmin(pmax(x, lo, hi))` pinned every subject at the upper bound instead of truncating the draw to [lo, hi], so the documented covariate distributions were never sampled. The cohorts now follow them; every coded gate still holds, and captions or prose that quoted results from the pinned cohorts now compute their numbers from the simulation.
+- Add Nguyen 2021 ceftazidime ([doi:10.3390/pharmaceutics13040456](https://doi.org/10.3390/pharmaceutics13040456)) -- Vietnamese adults hospitalised for acute exacerbations of COPD. The same paper's `Nguyen_2021_imipenem`, previously transcribed from the Zhang 2025 review, is now re-verified against the primary: its IIV variances are the squared Monolix omegas (0.294^2 and 0.107^2) instead of `log(1 + CV^2)`, and it has its own article.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
