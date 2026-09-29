@@ -122,6 +122,8 @@
 
 - Add Gwee 2020 ivermectin ([doi:10.1371/journal.pntd.0008886](https://doi.org/10.1371/journal.pntd.0008886)) -- Indigenous Australian children aged 5 to 15 years treated for scabies; the final fixed-exponent model and the alternative estimated-exponent model.
 
+- Add Nonoshita 2020 doripenem ([doi:10.1038/s41598-020-79076-6](https://doi.org/10.1038/s41598-020-79076-6)) -- Japanese adult ICU patients with and without continuous renal replacement therapy.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
