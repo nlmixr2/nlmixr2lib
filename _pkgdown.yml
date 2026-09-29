@@ -1324,6 +1324,8 @@ navbar:
         href: articles/Yuan_2019_concizumab.html
       - text: "ConestatAlfa (Farrell 2013)"
         href: articles/Farrell_2013_conestatAlfa.html
+      - text: "Contezolid (Bulitta 2024)"
+        href: articles/Bulitta_2024_contezolid.html
       - text: "ControlQuantumDot earlyIBC mouse pbpk (Forder 2019)"
         href: articles/Forder_2019_calcitriolQuantumDots.html
       - text: "ControlQuantumDot healthy mouse pbpk (Forder 2019)"
@@ -6927,6 +6929,7 @@ articles:
   - articles/Bulitta_2010_piperacillin
   - articles/Bulitta_2011_cefpirome
   - articles/Bulitta_2019_pefloxacin
+  - articles/Bulitta_2024_contezolid
   - articles/Burns_2015_tenofovir
   - articles/Bursi_2017_lidocaine
   - articles/Bustinduy_2016_praziquantel
