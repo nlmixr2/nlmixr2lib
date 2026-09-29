@@ -653,7 +653,7 @@ parameter that can be changed.
   competes for FcRn in tissue, but its plasma pool does not respond.
 * **Tg32 mouse arm not extracted.** The deposited code is the human
   parameterisation. The mouse organ endothelial-cell (FcRn) fraction vector
-  is not in any on-disk source; it is cited to Fan et al. 2016 (MAbs
+  is not in any source available when this model was built; it is cited to Fan et al. 2016 (MAbs
   8:848-853), which is not open access. The mouse model can be added once
   that source is obtained.
 * **No variability.** The source reports neither between-subject

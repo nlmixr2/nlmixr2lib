@@ -47,7 +47,7 @@ that generated the paper's Figs 6-8.
 
 The rate constants and the genome-scale linear programme themselves are not
 part of the packaged model; see **Assumptions and deviations** for what is and
-is not reproducible from the on-disk sources.
+is not reproducible from the published sources.
 
 # Population
 
