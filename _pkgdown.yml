@@ -860,6 +860,8 @@ navbar:
         href: articles/Xu_2023_busulfan.html
       - text: "Busulfan (Yuan 2021)"
         href: articles/Yuan_2021_busulfan.html
+      - text: "Busulfan (vanHoogdalem 2020)"
+        href: articles/vanHoogdalem_2020_busulfan.html
       - text: "Butanediol rat (Fung 2008)"
         href: articles/Fung_2008_butanediol_rat.html
       - text: "C3G (Jeon 2012)"
@@ -1762,8 +1764,16 @@ navbar:
         href: articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer.html
       - text: "Doxorubicin human qsp (Sang 2021)"
         href: articles/Sang_2021_doxorubicin_cardiotoxicity.html
+      - text: "Doxorubicin mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Doxorubicin rat qsp (Sang 2021)"
         href: articles/Sang_2021_doxorubicin_cardiotoxicity.html
+      - text: "Doxorubicin sorafenib c1 mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
+      - text: "Doxorubicin sorafenib c2 mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
+      - text: "Doxorubicin sorafenib mouse (Choi 2021)"
+        href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
       - text: "Doxycycline duck ff20 (Li 2025)"
@@ -2002,6 +2012,8 @@ navbar:
         href: articles/Foster_2023_enrofloxacin_cat.html
       - text: "Ensitrelvir (Ishibashi 2024)"
         href: articles/Ishibashi_2024_ensitrelvir.html
+      - text: "Entinostat nivolumab ipilimumab qsp (Wang 2020)"
+        href: articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp.html
       - text: "Epcoritamab (Li 2025)"
         href: articles/Li_2025_epcoritamab.html
       - text: "Ephedrine caffeine (Csajka 2005)"
@@ -4714,6 +4726,8 @@ navbar:
         href: articles/Li_2021_polymyxinB.html
       - text: "PolymyxinB (Liang 2023)"
         href: articles/Liang_2023_polymyxinB.html
+      - text: "PolymyxinB (Wang 2020)"
+        href: articles/Wang_2020_polymyxinB.html
       - text: "PolymyxinB (Wang 2021)"
         href: articles/Wang_2021_polymyxinB.html
       - text: "PolymyxinB (Wang 2026)"
@@ -7613,6 +7627,8 @@ articles:
   - articles/Haynes_2025_cephalexin
   - articles/Hazendonk_2016_factor_viii
   - articles/He_2012_lamotrigine
+  - articles/He_2020_phosphocreatine
+  - articles/He_2021_psoriasis_mbma
   - articles/He_2021_tacrolimus_wuzhi_cyp3a
   - articles/He_2025_YPEGrhGH
   - articles/He_2025_lidocaine
@@ -7782,6 +7798,7 @@ articles:
   - articles/Jones_2011_PF04878691_HCV
   - articles/Jones_2013_perfusionLimited_pbpk
   - articles/Jones_2019_mab_pbpk
+  - articles/Jones_2021_buprenorphine
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
   - articles/Jonsson_2011_ethambutol_ddmore
@@ -8766,6 +8783,7 @@ articles:
   - articles/Su_2024_tigecycline
   - articles/Subrtova_2026_daptomycin
   - articles/Suda_2008_theophylline
+  - articles/Suetsugu_2021_voriconazole
   - articles/Sukeishi_2022_remdesivir
   - articles/Suksai_2026_levodopa
   - articles/Sulaiman_2026_piperacillin_tazobactam
@@ -8992,6 +9010,7 @@ articles:
   - articles/Wang_2021_mycophenolic_acid
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2021_polymyxinB
+  - articles/Wang_2021_sunitinib
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2023_methotrexate
@@ -9197,6 +9216,7 @@ articles:
   - articles/Yu_2026_tenofovir
   - articles/Yuan_2019_concizumab
   - articles/Yuan_2021_busulfan
+  - articles/Yuan_2021_lithium
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
   - articles/Zakria_2026_voriconazole
@@ -9299,6 +9319,7 @@ articles:
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2018_asunaprevir
   - articles/Zhu_2021_ethanol
+  - articles/Zhu_2021_ropeginterferon
   - articles/Zhu_2023_omalizumab_pediatric
   - articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer
   - articles/Zhu_2024_borneol_pbpk
