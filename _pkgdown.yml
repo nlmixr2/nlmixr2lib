@@ -4560,6 +4560,8 @@ navbar:
         href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
       - text: "Ramucirumab (OBrien 2017)"
         href: articles/OBrien_2017_ramucirumab.html
+      - text: "Ranibizumab (Fidler 2020)"
+        href: articles/Fidler_2020_ranibizumab.html
       - text: "Ranibizumab (HuttonSmith 2018)"
         href: articles/HuttonSmith_2018_ranibizumab.html
       - text: "Ranibizumab (Mulyukov 2018)"
@@ -6814,6 +6816,7 @@ articles:
   - articles/FernandezTeruel_2025_capivasertib
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiandaca_2025_mRNABiTE
+  - articles/Fidler_2020_ranibizumab
   - articles/FiedlerKelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
