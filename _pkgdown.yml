@@ -1286,6 +1286,8 @@ navbar:
         href: articles/Liesenfeld_2006_dabigatran.html
       - text: "Dabigatran sheep (Eaton 2025)"
         href: articles/Eaton_2025_dabigatran_sheep.html
+      - text: "Dabrafenib (Balakirouchenane 2020)"
+        href: articles/Balakirouchenane_2020_dabrafenib_trametinib.html
       - text: "Daclatasvir (Osawa 2018)"
         href: articles/Osawa_2018_daclatasvir_asunaprevir.html
       - text: "Daclizumab (Othman 2014)"
@@ -5526,6 +5528,8 @@ navbar:
         href: articles/SoriaChacartegui_2026_tramadol.html
       - text: "Tramadol tapentadol mbma (Mercier 2014)"
         href: articles/Mercier_2014_tramadol_tapentadol.html
+      - text: "Trametinib (Balakirouchenane 2020)"
+        href: articles/Balakirouchenane_2020_dabrafenib_trametinib.html
       - text: "Trametinib (Ravix 2024)"
         href: articles/Ravix_2024_trametinib.html
       - text: "TranexamicAcid (Dunn 2025)"
@@ -6276,6 +6280,7 @@ articles:
   - articles/Bajaj_2017_nivolumab_ddmore
   - articles/Baker_2020_eptinezumab
   - articles/Baklouti_2026_amoxicillin
+  - articles/Balakirouchenane_2020_dabrafenib_trametinib
   - articles/Balis_2025_busulfan
   - articles/Bamgboye_2026_topiramate
   - articles/Barau_2012_mycophenolic_acid
