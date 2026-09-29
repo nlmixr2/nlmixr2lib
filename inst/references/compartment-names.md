@@ -1844,6 +1844,14 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** direct thrombin inhibitor PD models (dabigatran, argatroban, hirudin / hirulog, melagatran).
 
+### dTT (**canonical diluted thrombin time**)
+- **Type:** compartment
+- **Role:** Diluted thrombin time coagulation-test PD output, in seconds. The patient plasma is diluted in normal pooled plasma before a standard thrombin-time reagent is added (the Hemoclot thrombin inhibitor assay), which linearises the response to direct thrombin inhibitors over the therapeutic range; used to quantify dabigatran exposure. Carried as an algebraic observable in direct-effect models.
+- **Source aliases:**
+  - `dTT` -- Fuhr 2020 ESM Equation 17 and Figure 6 axis label.
+- **Example models:** `Fuhr_2020_dabigatran.R` (linear in the unbound sum dabigatran plasma concentration, `dTT = 88.30 * CU_DABIGATRAN_UM + 31.59`).
+- **Notes:** **Mixed case is deliberate**, for the same reason as `aPTT`: the published spelling carries the lower-case `d` for *diluted*, and it is not a camelCase concatenation. Do not normalise to `DTT` or `dtt`. Distinct from `TT` (undiluted thrombin time), which saturates at much lower direct-thrombin-inhibitor concentrations and is fitted with a separate combined linear plus Emax function in the founding model; the two assays must not be pooled. Distinct from `ECT`, which is ecarin-activated rather than thrombin-activated. A member of the `PT` / `INR` / `aPTT` / `ECT` / `ACT` / `TT` clotting-time output family. Founding example: `Fuhr_2020_dabigatran.R`.
+
 ### ACT (**canonical activated clotting time**)
 - **Type:** compartment
 - **Role:** Activated clotting time coagulation-test PD output, in seconds. Whole-blood clotting time after activation with a particulate activator (celite, kaolin or glass beads), read on a point-of-care coagulometer. The standard intraprocedural monitor of HIGH-dose unfractionated heparin (cardiopulmonary bypass, percutaneous coronary intervention, catheter ablation), which is where it is not interchangeable with its sibling `aPTT`: aPTT saturates at the heparin concentrations those procedures require, whereas ACT remains responsive, and a whole-blood point-of-care assay returns a result in minutes. Carried as an algebraic observable rather than an ODE state in direct-effect heparin models, where the prediction is a subject's own pre-heparin baseline plus a linear term in the scaled heparin concentration.
