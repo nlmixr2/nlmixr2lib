@@ -6300,6 +6300,10 @@ navbar:
         href: articles/Maringwa_2025_venlafaxine_fluoxetine_mbma.html
       - text: "Verapamil rat (Syvanen 2011)"
         href: articles/Syvanen_2011_verapamil_rat.html
+      - text: "Vericiguat (Ruehs 2021)"
+        href: articles/Ruehs_2021_vericiguat.html
+      - text: "Vericiguat ntprobnp (Ruehs 2021)"
+        href: articles/Ruehs_2021_vericiguat.html
       - text: "Vernakalant (Mao 2012)"
         href: articles/Mao_2012_vernakalant.html
       - text: "VestronidaseAlfa (Qi 2019)"
@@ -8315,7 +8319,7 @@ articles:
   - articles/Royer_2021_palbociclib
   - articles/Royston_2025_letermovir
   - articles/Rozman_2017_rituximab
-  - articles/Rubino_2021_rezafungin
+  - articles/Ruehs_2021_vericiguat
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Ryu_2021_hyaluronicAcid_fillers_mouse
