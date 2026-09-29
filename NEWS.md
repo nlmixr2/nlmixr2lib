@@ -48,6 +48,8 @@
 
 - Add Martson 2020 caspofungin ([doi:10.1128/AAC.00905-20](https://doi.org/10.1128/AAC.00905-20)) -- critically ill adults in the intensive care unit with suspected invasive candidiasis.
 
+- Add Cojutti 2020 darunavir ([doi:10.1007/s40262-020-00933-8](https://doi.org/10.1007/s40262-020-00933-8)) -- hospitalised adults with SARS-CoV-2 disease (IL-6 on clearance) and adults with HIV, as two models.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
