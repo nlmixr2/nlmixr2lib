@@ -3680,6 +3680,8 @@ navbar:
         href: articles/Gibiansky_2014_obinutuzumab.html
       - text: "Octreotide (Glatard 2025)"
         href: articles/Glatard_2025_octreotide.html
+      - text: "Octreotide (Kapralos 2021)"
+        href: articles/Kapralos_2021_octreotide.html
       - text: "Ofatumumab (Yu 2022)"
         href: articles/Yu_2022_ofatumumab.html
       - text: "Ofloxacin (Chigutsa 2012)"
@@ -6955,6 +6957,7 @@ articles:
   - articles/Kapitanov_2025_dupilumab
   - articles/Kappelhoff_2005_indinavir
   - articles/Kappelhoff_2005_ritonavir
+  - articles/Kapralos_2021_octreotide
   - articles/Karaiskos_2015_colistin
   - articles/Karakitsios_2024_gevokizumab
   - articles/Karakitsios_2025_bedaquiline_lung_pbpk
