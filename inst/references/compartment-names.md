@@ -2770,6 +2770,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Sun_2025_maribavir_vomiting.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.07 per 10 ug*h/mL; reference-patient probability 0.053 at zero exposure)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. The endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a laboratory-defined or CTCAE-graded endpoint for the same toxicity and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3` or `prob_sae`. Sibling of `prob_nausea`, with which it recurs: the two are the canonical upper-gastrointestinal tolerability pair and a paper reporting one usually reports the other. They are NOT mutually exclusive and must not be modelled as competing risks -- a patient may record both.
 
+### prob_nausea_vomiting (**canonical composite nausea-or-vomiting adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient reports nausea OR vomiting (at least one of the two) as a treatment-emergent adverse event over a treatment period, in a static landmark exposure-safety logistic model with one observation per subject.
+- **Source aliases:** `AETP` -- the dependent-variable column of Fediuk 2021 Text S2 (`AETP=DV`), 1 = nausea or vomiting reported.
+- **Example models:** `Fediuk_2021_varenicline_nausea.R` (founding example; varenicline in adolescent smokers over a 12-week treatment period; demographic and nicotine-dependence covariates multiply the baseline logit and the steady-state AUC(0-24) enters additively, slope 0.00911 per ng*h/mL).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. A COMPOSITE of the upper-gastrointestinal tolerability pair, so it sits at a higher event rate than either `prob_nausea` or `prob_vomiting` alone for the same drug and must not be substituted for either of them, nor combined with them as though they were independent risks. Distinct from the legacy `p_nausea` (Ravva 2010 adult varenicline, nausea only). A paper that models the two terms separately should use `prob_nausea` and `prob_vomiting` instead.
+
 ### prob_diarrhea (**canonical diarrhea adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports diarrhea as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model.
@@ -3582,7 +3589,7 @@ Population body-composition / disease-risk PD output states from the Oniki 2018 
 - **Type:** compartment
 - **Role:** Probability of continuous smoking abstinence (continuous abstinence rate, CAR) PD output (0..1); the expit of a baseline logit that demographic and nicotine-dependence covariates multiply, plus an additive linear drug-exposure term. Sibling of `p_nafld` and `prob_roc`.
 - **Source aliases:** `CAR` -- the printed endpoint abbreviation in the smoking-cessation literature.
-- **Example models:** `Ravva_2010_varenicline_car_w9_12.R` (weeks 9-12 endpoint, full covariate model), `Ravva_2010_varenicline_car_w4_7_study1.R` and `Ravva_2010_varenicline_car_w4_7_study2.R` (weeks 4-7 endpoint, preliminary exposure-only fits).
+- **Example models:** `Ravva_2010_varenicline_car_w9_12.R` (weeks 9-12 endpoint, full covariate model), `Ravva_2010_varenicline_car_w4_7_study1.R` and `Ravva_2010_varenicline_car_w4_7_study2.R` (weeks 4-7 endpoint, preliminary exposure-only fits), `Fediuk_2021_varenicline_car_w9_12.R` (weeks 9-12 endpoint in adolescent smokers; intercept plus linear exposure term only, with no covariates because the slope was not significant, and both values digitized from the source figure because the paper prints neither).
 - **Notes:** The endpoint is defined over a stated multi-week abstinence window (Ravva 2010 uses both a weeks 4-7 and a weeks 9-12 window), and the window is a property of the model rather than of the output name -- record it in the model `description` and `units$concentration` rather than encoding it into the state name, so that models of different windows share one canonical.
 
 ### p_nausea (**canonical nausea-probability PD output**)
