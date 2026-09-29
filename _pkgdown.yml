@@ -1572,8 +1572,16 @@ navbar:
         href: articles/Zhang_2021_dupilumab.html
       - text: "Dupilumab 3cmt qsp (Kapitanov 2025)"
         href: articles/Kapitanov_2025_dupilumab.html
+      - text: "Dupilumab adolescent base (Kovalenko 2021)"
+        href: articles/Kovalenko_2021_dupilumab.html
+      - text: "Dupilumab adolescent covariate (Kovalenko 2021)"
+        href: articles/Kovalenko_2021_dupilumab.html
       - text: "Dupilumab base (Kovalenko 2020)"
         href: articles/Kovalenko_2020_dupilumab.html
+      - text: "Dupilumab children base (Kovalenko 2021)"
+        href: articles/Kovalenko_2021_dupilumab.html
+      - text: "Dupilumab children covariate (Kovalenko 2021)"
+        href: articles/Kovalenko_2021_dupilumab.html
       - text: "Dupilumab covariate (Kovalenko 2020)"
         href: articles/Kovalenko_2020_dupilumab.html
       - text: "Dupilumab fev1 (Zhang 2025)"
@@ -7054,6 +7062,7 @@ articles:
   - articles/Kovalenko_2016_dupilumab
   - articles/Kovalenko_2016_dupilumab_ddmore
   - articles/Kovalenko_2020_dupilumab
+  - articles/Kovalenko_2021_dupilumab
   - articles/Krause_2017_selexipag
   - articles/KreeftmeijerVegter_2015_levamisole
   - articles/Krekels_2015_paracetamol
