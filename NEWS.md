@@ -194,6 +194,8 @@
 
 - Add Arora 2021 letrozole ([doi:10.1371/journal.pone.0248579](https://doi.org/10.1371/journal.pone.0248579)) -- male and female Sprague-Dawley rats, plasma and brain extracellular fluid.
 
+- Add Smit 2021 vancomycin ([doi:10.1208/s12248-021-00577-x](https://doi.org/10.1208/s12248-021-00577-x)) -- normal-weight, overweight and obese children and adolescents aged 1-18 years with varying renal function.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
