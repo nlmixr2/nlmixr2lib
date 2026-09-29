@@ -24,6 +24,8 @@
 
 - Add Kim 2020 CKD-519 ([doi:10.3390/pharmaceutics12060573](https://doi.org/10.3390/pharmaceutics12060573)) -- healthy Korean men; PK with CETP activity, HDL-C and LDL-C.
 
+- Add D'Agate 2020 tamsulosin / dutasteride IPSS drug-disease model ([doi:10.1111/bcp.14268](https://doi.org/10.1111/bcp.14268)) -- men with moderate or severe benign prostatic hyperplasia symptoms.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.

@@ -13448,6 +13448,17 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Terranova_2022_TGD_OS_gastric.R` (power effect on Gompertzian `Kg`: `Kg = tvKg * (T_DIAG_CANCER / 53)^-0.00291`, reference 53 days; and additive linear-log effect on log-median OS: `log_median_OS += 0.0436 * log(T_DIAG_CANCER)`).
 - **Notes:** Sibling of `T_DIAG_DIAB` under the canonical `T_<event>` family. Auto-approved without a separate naming ruling per the T_<event> policy on 2026-07-24. For a 0-day subject (diagnosed at study entry) the power form `(0/53)^theta` evaluates to `0` when the exponent is positive, which is a boundary case; supply at least a small floor value (e.g. 1 day) for such subjects in simulation. Distinct from post-treatment intervals (`T_POST_ECMO`, etc.) which are time-since-intervention rather than time-since-diagnosis.
 
+### T_SYMPT_BPH (**canonical for duration of benign prostatic hyperplasia symptoms**)
+- **Description:** Time elapsed between the onset of the patient's BPH / lower urinary tract symptoms (as reported at the medical-history interview) and study entry. Continuous time-fixed covariate. Distinct from the time since the formal BPH DIAGNOSIS, which is typically shorter (D'Agate 2020 Table 1: median symptom duration 4 y versus median time since diagnosis 2.3 y) and should be a separate `T_DIAG_BPH` canonical if a model needs it.
+- **Units:** years
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a centred linear term `1 + e_t_sympt_bph_<param> * (T_SYMPT_BPH - <ref>)`. Reference value observed: 4 years (D'Agate 2020 pooled-population median).
+- **Source aliases:**
+  - `BPHDUR` -- the `$INPUT` column in the D'Agate 2020 Supporting Information control stream and the Table 2 row label 'BPHDUR on magnitude of placebo effect (duration of symptoms)'.
+- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; linear effect on the magnitude of the placebo effect on IPSS, `DELTA_placebo * (1 - 0.025 * (T_SYMPT_BPH - 4))`).
+- **Notes:** Member of the auto-approved `T_<event>` family (sibling of `T_DIAG_DIAB`, `T_DIAG_CANCER`, `T_MOTORCOMPL`). The D'Agate 2020 Supporting Information labels the column 'duration of BPH symptoms (months)', but its Table 1 reports the same covariate in years (median 4, range 0-54.8) and the control stream centres it at 4.00, so years is the unit of the fitted coefficient.
+
 ### T_PEGIFN (**canonical for planned pegylated-interferon-alpha treatment-course duration**)
 - **Description:** Planned (protocol-specified) duration of the pegylated-interferon-alpha (Peg-IFNalpha) treatment course, in weeks. A design characteristic of the treatment arm rather than a patient attribute: it is the length of the course the arm was assigned, which in chronic hepatitis B ranges from the standard 48 weeks up to extended 96-week regimens and down to shortened 24-week ones. Time-fixed.
 - **Units:** week
@@ -16366,6 +16377,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `Treatment with C/T` -- Dings 2026 Table A3 row label.
 - **Example models:** `Dings_2026_neonatal_acidosis.R` (+3.26 mmol/L neonatal base excess relative to untreated newborns -- the larger of the two treatment effects, which is the paper's central comparative finding).
 - **Notes:** Specific scope. A single canonical for the fixed-dose combination rather than two separate indicators, because the two components are never given apart -- cafedrine and theodrenaline are co-formulated at a fixed 20:1 ratio and doses are expressed as cafedrine equivalents. Do not split into `TRT_CAFEDRINE` and `TRT_THEODRENALINE`: no source reports them independently and the model cannot identify separate effects. Sibling of `TRT_EPHEDRINE`; mutually exclusive with it.
+
+### TRT_TAMSULOSIN, TRT_DUTASTERIDE, TRT_TAMSULOSIN_DUTASTERIDE, TRT_WATCHFUL_WAITING (**canonical for BPH treatment-arm indicators**)
+- **Description:** Four mutually exclusive binary patient-level treatment-arm indicators for benign prostatic hyperplasia trials. `TRT_TAMSULOSIN` = 1 when the patient was randomised to tamsulosin (alpha-1 blocker) monotherapy; `TRT_DUTASTERIDE` = 1 for dutasteride (5-alpha-reductase inhibitor) monotherapy; `TRT_TAMSULOSIN_DUTASTERIDE` = 1 for tamsulosin + dutasteride combination therapy, free or fixed-dose; `TRT_WATCHFUL_WAITING` = 1 for watchful waiting (conservative management, with or without protocol-defined later initiation of drug therapy). All four 0 = placebo.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0; all four 0 = the placebo arm. In `DAgate_2020_bph_ipss_mbma.R` each indicator selects its own estimated treatment effect, its own IIV and its own residual SD, and the placebo arm additionally carries IIV on the disease-progression rate and the placebo magnitude.
+- **Source aliases:**
+  - `ARM` -- the D'Agate 2020 control stream column: 0 = placebo, 1 or 2 = watchful waiting (pooled), 3 = tamsulosin, 4 = dutasteride, 5 = combination ('FDC').
+- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; constant first-order effects on IPSS of 0.015 /month for tamsulosin, 0.016 /month for dutasteride, 0.032 /month for the combination and 0.018 /month for watchful waiting, each added to the decaying placebo effect).
+- **Notes:** Follows the register's written `TRT_<INN>` rule (`TRT_EPHEDRINE`, `TRT_BENRALIZUMAB` Notes): the drug is the study treatment under investigation and the indicator is a property of an individual patient (individual-patient-data meta-analysis), not a published trial arm, so the bare-INN MBMA arm family does not apply. The combination is ONE indicator rather than `TRT_TAMSULOSIN = TRT_DUTASTERIDE = 1`, on the `TRT_CAFEDRINE_THEODRENALINE` precedent, because the source estimates a separate combination effect that is not the sum of the monotherapy effects. `TRT_WATCHFUL_WAITING` names a management strategy rather than an INN, on the `TRT_PBT` precedent.
 
 ### TRT_IPSOS_CONTROL (**canonical for IPSOS-trial control-arm indicator**)
 - **Description:** Binary trial-arm indicator: 1 = the study arm is the CONTROL arm of the phase III IPSOS trial (NCT03191786, reported as Lee 2023), in which investigators chose single-agent gemcitabine or vinorelbine for treatment-naive advanced NSCLC patients unsuitable for platinum-doublet chemotherapy; 0 = the arm is one of the historical single-agent-chemotherapy control arms drawn from the published literature.
@@ -20274,6 +20296,18 @@ sibling such as `AUC_BAST_FW`.
   - `CRTB1` -- the `$INPUT` column name in the Kim 2026 deposited NONMEM control streams, glossed there as "CRT baseline 1h" because the study's baseline battery was run at 1 h on Day -1.
 - **Example models:** `Kim_2026_zolpidem_crt.R` (founding example; retained on BOTH EC50, as the power term `(CRT_BL/438.5)^-1.28`, and HILL, as the linear term `1 + 0.00637 * (CRT_BL - 438.5)`), `Kim_2026_zolpidem.R`, `Kim_2026_zolpidem_dsst.R`, `Kim_2026_zolpidem_vas.R` (screened but not retained; declared in `covariatesDataExcluded` to preserve the screen).
 - **Notes:** Member of the `_BL` per-subject-baseline suffix family, on the `QTC_BL` precedent -- a derived per-subject instrument readout taken before dosing that enters PD parameters as a centred or ratio-normalised term. The clock time at which the baseline battery was administered is study-specific (1 h on Day -1 in the founding example) and belongs in the per-model `covariateData[[CRT_BL]]$notes`, not in the canonical name; do NOT register parallel canonicals such as `CRT_BL_1H`. The name records the instrument, not the units, so a study reporting CRT in seconds uses the same canonical with `units` documented per-model.
+
+### IPSS_BL (**canonical for per-subject baseline International Prostate Symptom Score**)
+- **Description:** Subject's observed International Prostate Symptom Score (IPSS; the sum of the seven symptom questions, 0-35, excluding the separate quality-of-life item) at the baseline / randomisation visit, carried into a model as a time-fixed per-subject covariate. Higher scores indicate more severe lower urinary tract symptoms (0-7 mild, 8-19 moderate, 20-35 severe). Used in BPH / LUTS drug-disease models both as the initial condition of the modelled `ipss` state and as a covariate on disease-progression parameters. Distinct from the screening IPSS, which precedes a placebo run-in and is a different quantity (regression to the mean between screening and baseline).
+- **Units:** IPSS points (0-35)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a centred linear term `1 + e_ipss_bl_<param> * (IPSS_BL - <ref>)`. Reference value observed: 16 points (D'Agate 2020 pooled-population median).
+- **Source aliases:**
+  - `IPSS0` -- the `$INPUT` column in the D'Agate 2020 Supporting Information control stream (`A_0(1) = obsIPSS`, `obsIPSS = IPSS0`).
+  - `IPSSb`, `B_VARIABLE` -- D'Agate 2020 Table 2 and Figure 2 labels.
+- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; initial condition `ipss(0) <- IPSS_BL`, and linear effect on the disease progression rate `DISP * (1 + 0.027 * (IPSS_BL - 16))`).
+- **Notes:** Member of the `_BL` per-subject-baseline instrument-readout family, on the `QTC_BL` / `CRT_BL` / `DSST_BL` precedent: an observed pre-treatment readout of the same instrument the model predicts, used as a data column rather than an estimated baseline parameter. A model that instead ESTIMATES the baseline IPSS should use an `lrbase`-style parameter, not this column. A screening-visit IPSS, if ever needed as a covariate, must be a separate canonical (e.g. `IPSS_SCR`), never overloaded onto this one.
 
 ### DSST_BL (**canonical for per-subject baseline digit symbol substitution test score**)
 - **Description:** Subject's pre-dose baseline score on the digit symbol substitution test (DSST), a pencil-and-paper or computerised cognitive test of motor speed, attention, working memory and visuoperceptual ability, scored as the number of correct substitutions completed in a fixed interval. Higher scores indicate better cognitive performance -- the opposite polarity to `CRT_BL`, where higher is worse. Carried into a model as a time-fixed per-subject covariate on PD parameters. Distinct from the model's own estimated `lrbase` / BASE parameter for the same endpoint.

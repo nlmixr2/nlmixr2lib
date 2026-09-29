@@ -991,6 +991,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## IPSS urological symptom score
+
+### ipss (**canonical International Prostate Symptom Score output compartment**)
+- **Type:** compartment
+- **Role:** International Prostate Symptom Score (IPSS) output compartment for benign prostatic hyperplasia / lower urinary tract symptom drug-disease models. Holds the ABSOLUTE score on the standard 0-35 scale (sum of the seven symptom questions), initialised at the observed baseline (`ipss(0) <- IPSS_BL`). A model that fits the change from baseline directly should register a companion `ipsscfb`, as `das28` and `das28cfb` are separated; do not overload this name with a change score.
+- **Source aliases:** `IPSS` -- D'Agate 2020 Equation 1 and the `$MODEL COMP=(IPSS)` state of its Supporting Information control stream.
+- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; `d/dt(ipss) <- DISP * (1 - ipss/35) - (PLACEBO + TREATMENT) * ipss`, a saturating zero-order worsening term opposed by a decaying placebo effect and constant first-order treatment effects).
+- **Notes:** Follows the lowercase run-together convention of `pasi` / `das28` / `cows`. The score is discrete but, as in the founding example, is modelled as continuous; the authors' simulation step truncated simulated observations to [0, 35].
+
+---
+
 ## Abuse-liability and opioid-withdrawal clinical scores
 
 ### druglikingvascfb (**canonical period-corrected drug liking VAS change-score output compartment**)
