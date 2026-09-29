@@ -12,6 +12,8 @@
 
 - Add Koshimichi 2020 baloxavir ([doi:10.1128/AAC.00119-20](https://doi.org/10.1128/AAC.00119-20)) -- healthy adults and otherwise healthy or high-risk adult and adolescent influenza patients.
 
+- Add Wattanakul 2020 piperaquine PK and QTc ([doi:10.1128/AAC.01848-19](https://doi.org/10.1128/AAC.01848-19)) -- African patients, mostly children, with uncomplicated falciparum malaria.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
