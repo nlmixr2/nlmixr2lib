@@ -1544,6 +1544,10 @@ navbar:
         href: articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer.html
       - text: "Doxorubicin dexrazoxane static mdamb468 (Mody 2023)"
         href: articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer.html
+      - text: "Doxorubicin human qsp (Sang 2021)"
+        href: articles/Sang_2021_doxorubicin_cardiotoxicity.html
+      - text: "Doxorubicin rat qsp (Sang 2021)"
+        href: articles/Sang_2021_doxorubicin_cardiotoxicity.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
       - text: "Doxycycline duck ff20 (Li 2025)"
@@ -7649,6 +7653,7 @@ articles:
   - articles/SanchezPena_2005_enoxaparin
   - articles/Sanchez_2011_efavirenz
   - articles/Sandra_2024_siRNA_hbsag_mouse_mbma
+  - articles/Sang_2021_doxorubicin_cardiotoxicity
   - articles/Sanghavi_2020_ipilimumab
   - articles/Sanhajariya_2018_snake_venom
   - articles/Sano_2023_fesoterodine

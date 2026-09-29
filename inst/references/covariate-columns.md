@@ -844,7 +844,7 @@ Do **not** collapse the two onto one column, and do not use a single `_PRE` suff
 - **Reference category:** n/a -- used with power scaling and as the additive baseline anchor of an Emax equation. Reference values observed: 64 mmHg (Dings 2026 population median; cohort means 64.2 and 64.5 mmHg).
 - **Source aliases:**
   - `MAP` (baseline row of Dings 2026 Table 2) -- same orientation, no value transformation.
-- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (serves two distinct roles: the additive baseline of the MAP Emax equation `map = MAP_BL + (rmax_map - MAP_BL) * ...`, **and** a power covariate on the ceiling with exponent -0.53, opposite in sign to `MAP_PRESURG`'s +0.499).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (serves two distinct roles: the additive baseline of the MAP Emax equation `map = MAP_BL + (rmax_map - MAP_BL) * ...`, **and** a power covariate on the ceiling with exponent -0.53, opposite in sign to `MAP_PRESURG`'s +0.499). `Sang_2021_doxorubicin_rat_qsp.R`, `Sang_2021_doxorubicin_human_qsp.R` (baseline MAP sets baseline TPR = MAP_BL / (HR * SV_BL) and scales the MAP feedback constant as (MAP_BL / 106.596)^-1.98).
 - **Notes:** General scope. The opposite-signed pairing with `MAP_PRESURG` on one parameter is the clearest demonstration of why the two anchors must stay separate columns -- collapsing them would cancel most of the covariate model. Sibling of `SBP_BL`, `HR_BL`, `DBP_BL`.
 
 ### SBP_PRESURG (**canonical for pre-surgery systolic blood pressure**)
@@ -888,7 +888,7 @@ Do **not** collapse the two onto one column, and do not use a single `_PRE` suff
 - **Reference category:** n/a -- additive Emax baseline anchor. Reference values observed: 84 beats/min (Dings 2026 population median; cohort means 85.4 and 87.5 beats/min).
 - **Source aliases:**
   - `HR` (baseline row of Dings 2026 Table 2) -- same orientation, no value transformation.
-- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (additive baseline of the HR Emax equation, `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + ...`; no covariate effect is estimated on it).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (additive baseline of the HR Emax equation, `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + ...`; no covariate effect is estimated on it). `Sang_2021_doxorubicin_human_qsp.R` (initial condition of the HR turnover state; 70 beats/min typical, Sang 2021 Table 1).
 - **Notes:** General scope. Completes the `_BL` anchor set with `MAP_BL`, `SBP_BL` and `DBP_BL`. `HR_BL` was not in the ratified name list of, but Dings 2026 Eq. A12 requires the at-diagnosis heart-rate anchor as the additive baseline of the HR Emax term, so it is registered here as the mechanical fourth member of the same ratified family rather than as a new concept.
 
 ### DBP_BL (**canonical for diastolic blood pressure at treatment baseline**)
@@ -901,6 +901,29 @@ Do **not** collapse the two onto one column, and do not use a single `_PRE` suff
   - `DBP` (baseline row) / `DBPBL` -- same orientation, no value transformation.
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (power effect on the K/PD apparent volume: `vc = 1 * (DBP_BL/50)^-1.49`; a lower baseline diastolic pressure -- a more profound sympathetic block -- inflates the apparent distribution volume and so blunts the effective driving concentration).
 - **Notes:** General scope. The absolute-value counterpart of the already-registered `DBP_REL` (a *relative* change from baseline, unitless), and the diastolic member of the `_BL` anchor set. Dings 2026 does not tabulate baseline DBP in Table 2, so the 50 mmHg centring value is taken from the typical-parturient definition in the paper's Section 3.4, which Section 2.3 defines as the population median covariate values; it is internally consistent with the tabulated baseline MAP and SBP via `MAP = DBP + (SBP - DBP)/3` (50 + (92 - 50)/3 = 64 mmHg, matching the reported baseline MAP of 64 mmHg).
+
+### LVEDV_BL (**canonical for left ventricular end-diastolic volume at treatment baseline**)
+- **Description:** Pre-dose left ventricular end-diastolic volume (echocardiographic), used as the initial condition and steady-state anchor of an LVEDV (preload) turnover state in cardiovascular-systems models.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as the initial condition of the `edv` state and in its steady-state production rate. Reference values observed: 0.385 mL (typical rat, Sang 2021 Table S5 from Snelder 2014); 113 mL (cardiovascular-healthy human) and 141 mL (LVEDV-enlarged human) in Sang 2021 Table 1.
+- **Source aliases:**
+  - `LVEDVbase` -- regressor name in the Sang 2021 deposited Mlxtran code.
+  - `LVEDV0` -- Sang 2021 Table 1 / Table S5 row name.
+- **Example models:** `Sang_2021_doxorubicin_rat_qsp.R`, `Sang_2021_doxorubicin_human_qsp.R` (initial condition of the LVEDV turnover state; baseline SV = `LVEDV_BL - LVESV_BL`).
+- **Notes:** General scope. Member of the `_BL` haemodynamic anchor set (`MAP_BL`, `HR_BL`, `SBP_BL`, `DBP_BL`). Units are mL even for rodents (a rat LVEDV is about 0.3 mL); convert microlitre echocardiography values (Sang 2021 Table S2 reports uL) by dividing by 1000. Distinct from the `edv` model state, which is the predicted time course.
+
+### LVESV_BL (**canonical for left ventricular end-systolic volume at treatment baseline**)
+- **Description:** Pre-dose left ventricular end-systolic volume (echocardiographic). Together with `LVEDV_BL` it fixes the baseline stroke volume (`LVEDV_BL - LVESV_BL`) and baseline ejection fraction of a cardiovascular-systems model.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used to derive baseline stroke volume and to anchor an LVESV feedback term. Reference values observed: 0.085 mL (typical rat, Sang 2021 Mlxtran `LVESV0`); 48 mL (cardiovascular-healthy human, Sang 2021 Table 1 LVEDV0 - SV0 = 113 - 65).
+- **Source aliases:**
+  - `LVESVbase` -- regressor name in the Sang 2021 deposited Mlxtran code.
+- **Example models:** `Sang_2021_doxorubicin_rat_qsp.R`, `Sang_2021_doxorubicin_human_qsp.R` (baseline SV and the steady-state production rate of LVEDV through the `(1 - FB_LVESV * LVESV)` dissipation feedback).
+- **Notes:** General scope; sibling of `LVEDV_BL`. When a source reports baseline LVEF instead, derive `LVESV_BL = LVEDV_BL * (1 - LVEF/100)`.
 
 ### DUR_MAP_BELOW_PRESURG (**canonical for cumulative duration of mean arterial pressure below the pre-surgery anchor**)
 - **Description:** Cumulative minutes for which a subject's mean arterial pressure stays below their own `MAP_PRESURG` value, over a defined window (in the founding model, from antihypotensive treatment until umbilical-cord clamping). A per-subject exposure-to-hypotension metric rather than an instantaneous measurement: it integrates both the depth-independent *time* spent hypotensive and, implicitly, the adequacy of treatment. Typically derived from a simulated or observed MAP-time profile rather than recorded directly.
@@ -4912,7 +4935,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:**
   - `Ce` (Koo 2012 Methods; the per-record propofol effect-site concentration predicted by the Schnider TCI controller, ug/mL). Not stored as a single named NONMEM column in the source $TABLE -- the TCI controller computes it and feeds the NONMEM dataset directly.
   - `Cv(t)` (Crass 2025 Data S1; the per-record individual-predicted pegcetacoplan concentration in the vitreous humour of an intravitreally dosed eye, ug/mL, generated by an external population PK model and supplied to the PD model as data).
-- **Example models:** `Koo_2012_propofol.R` (drives the sigmoid Emax probability of return of consciousness in adult eye / ENT patients during emergence from propofol-remifentanil TCI anesthesia; CEFFECT carries propofol effect-site Ce in ug/mL), `Crass_2025_pegcetacoplan_ga_exposureresponse.R` (drives the linear-in-log-concentration reduction of the geographic-atrophy lesion growth rate, `(1 + e_ceffect_slope_study * log(CEFFECT + 1))`; CEFFECT carries vitreous-humour pegcetacoplan concentration in ug/mL, computed upstream from the intravitreal dosing history and an assumed 4 mL vitreous volume).
+- **Example models:** `Koo_2012_propofol.R` (drives the sigmoid Emax probability of return of consciousness in adult eye / ENT patients during emergence from propofol-remifentanil TCI anesthesia; CEFFECT carries propofol effect-site Ce in ug/mL), `Crass_2025_pegcetacoplan_ga_exposureresponse.R` (drives the linear-in-log-concentration reduction of the geographic-atrophy lesion growth rate, `(1 + e_ceffect_slope_study * log(CEFFECT + 1))`; CEFFECT carries vitreous-humour pegcetacoplan concentration in ug/mL, computed upstream from the intravitreal dosing history and an assumed 4 mL vitreous volume). `Sang_2021_doxorubicin_human_qsp.R` (heart-tissue doxorubicin concentration in ug/mL, integrated in-model to the cumulative heart AUC that drives the bioenergy-production effect; Sang 2021 obtained it from the He 2018 PBPK model).
 - **Notes:** General-scope canonical for the abstract "effect-site PD driver" concept; the per-model `units` field tells the user which drug and which scale the trajectory must use. Distinct from `CP_*` (systemic plasma concentration, mass-balance from the modeled-drug central compartment), `CAV` (dosing-interval-averaged steady-state plasma exposure), `STIM_*` (applied in-vitro / sipper-tube stimulus concentration), `ETSEVO` / `ETISO` / `ETDES` (alveolar end-tidal volatile-anesthetic concentration in vol %), and `L_OPIOID_pM` / `L_ANTAGONIST_pM` (Mann 2022 multi-ligand competitive-binding effect-site slots in pM, where the SLOT identity is the abstraction rather than the drug identity). The CEFFECT canonical is the name the maintainers ratified for the "effect-site PD driver" family, so a new effect-site driver takes it without a fresh ruling. Future PD extractions that consume an effect-site Ce as a PD driver should reuse this canonical with the per-model `units` / `notes` recording the drug and the scale; if a future extraction requires simultaneous occupation of TWO separate effect-site slots (a competitive / interaction model akin to Mann 2022's two ligand slots), register sibling canonicals (e.g., `CEFFECT_AGONIST`, `CEFFECT_ANTAGONIST`) rather than overloading CEFFECT with both.
 
 ### FPG (**canonical for baseline fasting plasma glucose**)
@@ -19289,6 +19312,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - The `_SHR` / `_WKY` suffixes on the Snelder 2014 Table 5 baseline parameter rows (`BSL_HR_SHR` / `BSL_HR_WKY`, etc.), which is where the covariate is actually expressed in that paper.
 - **Example models:** `Snelder_2014_cardiovascular_rat.R` (selects between the two Table 5 baseline triples BSL_HR / BSL_MAP / BSL_CO -- 310 / 155 / 69.0 in SHR versus 323 / 102 / 129 in WKY rats -- with every other system parameter shared across the strains).
 - **Notes:** Member of the `STRAIN_<GROUP>` family established by `STRAIN_C57BI6`, which explicitly invites parallel canonicals for additional strains; this is the family's first **rat** member, the two existing ones (`STRAIN_C57BI6`, `STRAIN_NUDE`) being mouse strains. The family is species-agnostic by construction -- it is the within-species strain that is named, not the species -- so no species qualifier is added to the name; a future model needing to distinguish, say, a mouse SHR-analogue would register its own member. **The indicator gates baselines, not mechanism.** In the founding example the strain difference in feedback strength that the paper reports (feedback about twofold higher in WKY than in SHR) is NOT a strain term: feedback is a power function of the individual baseline MAP, so the strain effect on feedback emerges from the lower WKY baseline rather than from this column. A model that used `STRAIN_SHR` to switch a mechanism directly would be doing something the founding example deliberately avoided, and should say so in its covariate notes. Distinct from `DIS_HYPERT`, which is a human medical-history comorbidity flag: `STRAIN_SHR` identifies a genetic line whose hypertension is one of several correlated phenotypes, and it is time-fixed by genotype rather than by clinical history.
+
+### STRAIN_SD (**canonical for Sprague-Dawley rat strain indicator**)
+- **Description:** Binary within-species rat-strain indicator: 1 = subject is a Sprague-Dawley (SD) rat, 0 = subject belongs to the Wistar-Kyoto lineage (normotensive WKY, or spontaneously hypertensive SHR, which was bred from WKY).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Wistar-Kyoto / SHR in Sang 2021).
+- **Source aliases:**
+  - `Species` -- the regressor in the Sang 2021 deposited Mlxtran code, coded 1 for the Sprague-Dawley literature studies; the code comments the switched term as 'Drug Effect on MC (Wistar)'.
+- **Example models:** `Sang_2021_doxorubicin_rat_qsp.R` (multiplies the doxorubicin myocardial-compliance effect by `1 - STRAIN_SD`, so SD rats show the systolic-dysfunction phenotype -- falling LVEF, rising LVEDV -- and WKY / SHR rats the diastolic-dysfunction phenotype with falling LVEDV).
+- **Notes:** Member of the `STRAIN_<GROUP>` family (`STRAIN_C57BI6`, `STRAIN_NUDE`, `STRAIN_SHR`). In Sang 2021 the strain and the dysfunction phenotype coincide study by study (studies 11-13 SD, study 14A-C WKY / SHR), and the paper describes the switch by phenotype; the column records the strain, which is the observable data item.
 
 ### DOSE_AZD7648_MGKGD (**canonical for concomitant AZD7648 total daily dose per kg body weight**)
 - **Description:** Total daily dose of co-administered AZD7648 (a DNA-dependent protein kinase inhibitor) in mg per kg body weight per day. Carried on every record so a drug-drug-interaction equation can read the co-medication dose level without back-computing it from the AZD7648 event records. It is the total across the dosing day, so a 75 mg/kg twice-daily regimen carries the value 150. Zero for olaparib monotherapy and for vehicle controls.
