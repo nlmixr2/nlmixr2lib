@@ -3074,6 +3074,8 @@ navbar:
         href: articles/Cheng_2026_levamisole_interspecies.html
       - text: "Levamisole mpbpk (Cheng 2026)"
         href: articles/Cheng_2026_levamisole_interspecies.html
+      - text: "Levetiracetam (BilbaoMeseguer 2021)"
+        href: articles/BilbaoMeseguer_2021_levetiracetam.html
       - text: "Levetiracetam (Damnjanovic 2023)"
         href: articles/Damnjanovic_2023_pediatric_antiepileptics.html
       - text: "Levetiracetam (Shin 2017)"
@@ -6798,6 +6800,7 @@ articles:
   - articles/Bihorel_2025_evinacumab
   - articles/Bijleveld_2016_gentamicin
   - articles/Bijleveld_2017_gentamicin
+  - articles/BilbaoMeseguer_2021_levetiracetam
   - articles/Biliouris_2018_nusinersen
   - articles/Billard_1995_methoxsalen
   - articles/Birgersson_2016_artemisinin

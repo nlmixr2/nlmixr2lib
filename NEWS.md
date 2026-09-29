@@ -12,7 +12,7 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
-- Add Kapralos 2021 octreotide LAR ([doi:10.3390/pharmaceutics13101578](https://doi.org/10.3390/pharmaceutics13101578)) -- healthy adult male volunteers after a single 30 mg intramuscular injection.
+- Add Bilbao-Meseguer 2021 levetiracetam ([doi:10.3390/pharmaceutics13101690](https://doi.org/10.3390/pharmaceutics13101690)) -- critically ill adults with normal or augmented renal clearance.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
