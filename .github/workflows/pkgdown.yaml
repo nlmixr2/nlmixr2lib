@@ -23,7 +23,7 @@ name: pkgdown.yaml
 permissions: read-all
 
 # One in-flight pkgdown run per ref. A new push to a PR CANCELS the superseded
-# run -- all four render shards and the assemble job together, since the group
+# run -- every render shard and the assemble job together, since the group
 # is workflow-level. Before this, the group embedded github.run_id on pull
 # requests, which made every run its own group: superseded runs kept going and
 # several ~90 min builds ran concurrently against the same PR.
@@ -38,7 +38,11 @@ concurrency:
 env:
   # Number of runner jobs the article render fans out over. Keep the matrix
   # below in sync -- GitHub cannot compute a matrix from an expression here.
-  PKGDOWN_SHARDS: "4"
+  # Six since 2026-09: at ~2,300 articles each of four shards took 100-115
+  # min; per-shard setup is ~2 min, so rendering time falls almost in
+  # proportion. The assemble job (~30-40 min) is the floor more shards cannot
+  # lower.
+  PKGDOWN_SHARDS: "6"
 
 jobs:
   render:
@@ -50,7 +54,7 @@ jobs:
       # in large batches.
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5, 6]
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       # Parallel article rendering knob, consumed by
