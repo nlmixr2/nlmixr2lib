@@ -202,6 +202,8 @@
 
 - Add Umpierrez 2021 cyclosporine ([doi:10.1155/2021/3108749](https://doi.org/10.1155/2021/3108749)) -- Uruguayan transplant and autoimmune-disease patients on steady-state therapeutic drug monitoring.
 
+- Add Toyoshima 2021 peficitinib ([doi:10.1111/bcp.14605](https://doi.org/10.1111/bcp.14605)) -- Asian adults with rheumatoid arthritis, plus the paper's prior model in healthy Japanese volunteers.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Luo 2021 daratumumab ([doi:10.1002/jcph.1771](https://doi.org/10.1002/jcph.1771)) -- adults with multiple myeloma receiving subcutaneous (1800 mg) or intravenous (16 mg/kg) daratumumab.
