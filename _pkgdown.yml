@@ -5942,6 +5942,8 @@ navbar:
         href: articles/Landersdorfer_2012_vildagliptin.html
       - text: "Vildagliptin qsp (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_vildagliptin_qsp.html
+      - text: "Vincristine (vandeVelde 2020)"
+        href: articles/vandeVelde_2020_vincristine.html
       - text: "Vinflunine (Schmitt 2018)"
         href: articles/Schmitt_2018_vinflunine.html
       - text: "Vinpocetine (Petric 2023)"
@@ -8580,6 +8582,7 @@ articles:
   - articles/vanSchaick_2016_prucalopride_pediatric
   - articles/vanSteeg_2007_atenolol_isoprenaline_rat
   - articles/vanWijk_2019_paracetamol
+  - articles/vandeVelde_2020_vincristine
   - articles/vandenBerg_2021_finerenone
   - articles/vandenBerg_2021_uprifosbuvir
   - articles/vandenBerg_2025_genericMab
