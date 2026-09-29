@@ -158,6 +158,8 @@
 
 - Add Wang 2021 atezolizumab + nab-paclitaxel QSP ([doi:10.1136/jitc-2020-002100](https://doi.org/10.1136/jitc-2020-002100)) -- virtual patients with metastatic triple-negative breast cancer (IMpassion130).
 
+- Add Zhou 2020 paclitaxel liposome ([doi:10.3389/fonc.2020.01731](https://doi.org/10.3389/fonc.2020.01731)) -- adults with squamous non-small cell lung cancer, with a companion exposure-safety model for grade 2 or worse neutropenia.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
