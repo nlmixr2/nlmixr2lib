@@ -64,6 +64,8 @@
 
 - Add Themans 2020 hydroxychloroquine ([doi:10.1007/s13318-020-00648-y](https://doi.org/10.1007/s13318-020-00648-y)) -- hospitalised adults with COVID-19.
 
+- Add Wu 2020 fedratinib ([doi:10.1007/s00280-020-04131-y](https://doi.org/10.1007/s00280-020-04131-y)) -- healthy volunteers, single 500 mg dose (the compartmental model behind the paper's Simcyp PBPK inputs).
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
