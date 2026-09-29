@@ -1484,6 +1484,8 @@ navbar:
         href: articles/Chandasana_2024_dolutegravir_lamivudine.html
       - text: "Dolutegravir (Chandasana 2024b)"
         href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
+      - text: "Dolutegravir (Dickinson 2021)"
+        href: articles/Dickinson_2021_dolutegravir.html
       - text: "Dolutegravir (Kawuma 2023)"
         href: articles/Kawuma_2023_dolutegravir.html
       - text: "Dolutegravir (Punyawudho 2025)"
@@ -1492,6 +1494,8 @@ navbar:
         href: articles/Waalewijn_2024_dolutegravir.html
       - text: "Dolutegravir (Zhang 2015)"
         href: articles/Zhang_2015_dolutegravir.html
+      - text: "Dolutegravir motherinfant (Dickinson 2021)"
+        href: articles/Dickinson_2021_dolutegravir.html
       - text: "Domagrozumab (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_domagrozumab.html
       - text: "Donepezil im (Khwarg 2024)"
@@ -6506,6 +6510,7 @@ articles:
   - articles/Diao_2016_daclizumab_treg
   - articles/Dias_2024_quetiapine_rat
   - articles/Dickinson_2009_atazanavir
+  - articles/Dickinson_2021_dolutegravir
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
