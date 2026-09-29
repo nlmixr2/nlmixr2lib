@@ -5976,8 +5976,14 @@ navbar:
         href: articles/Bauer_2023_vonWillebrandFactor.html
       - text: "Vonoprazan (Mulford 2026)"
         href: articles/Mulford_2026_vonoprazan.html
+      - text: "Vonoprazan dog pbpk (Kong 2020)"
+        href: articles/Kong_2020_vonoprazan_pbpk.html
+      - text: "Vonoprazan human pbpk (Kong 2020)"
+        href: articles/Kong_2020_vonoprazan_pbpk.html
       - text: "Vonoprazan maturation (Mulford 2026)"
         href: articles/Mulford_2026_vonoprazan.html
+      - text: "Vonoprazan rat pbpk (Kong 2020)"
+        href: articles/Kong_2020_vonoprazan_pbpk.html
       - text: "Voriconazole (Akbar 2025)"
         href: articles/Akbar_2025_voriconazole.html
       - text: "Voriconazole (Chantharit 2019)"
@@ -7276,6 +7282,7 @@ articles:
   - articles/Kolowrat_2025_apixaban
   - articles/Komatsu_2015_digoxin
   - articles/Komatsu_2016_penicillinG
+  - articles/Kong_2020_vonoprazan_pbpk
   - articles/Kong_2025_piperacillin_tazobactam
   - articles/Kong_2025_sudapyridine
   - articles/Koo_2012_propofol
