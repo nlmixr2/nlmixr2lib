@@ -58,6 +58,8 @@
 
 - Add Li 2019 cyclosporine ([doi:10.1038/s41401-019-0277-x](https://doi.org/10.1038/s41401-019-0277-x)) -- Chinese children receiving allogeneic haematopoietic stem cell transplantation.
 
+- Add Goulooze 2020 DRL-17822 ([doi:10.1111/bcp.14297](https://doi.org/10.1111/bcp.14297)) -- healthy male volunteers, with the food-by-formulation effect on bioavailability.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
