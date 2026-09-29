@@ -3270,6 +3270,10 @@ navbar:
         href: articles/Elmokadem_2023_mavoglurant_pbpk.html
       - text: "Mavrilimumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
+      - text: "Mbq167 her2 mouse tgi (ReigLopez 2020)"
+        href: articles/ReigLopez_2020_mbq167.html
+      - text: "Mbq167 tnbc mouse tgi (ReigLopez 2020)"
+        href: articles/ReigLopez_2020_mbq167.html
       - text: "Mecillinam (Koumaki 2023)"
         href: articles/Koumaki_2023_mecillinam.html
       - text: "Medi7836 (Hood 2021)"
@@ -7870,6 +7874,7 @@ articles:
   - articles/Reddy_2015_oseltamivir_ferret
   - articles/Rees_2018_meropenem_ciprofloxacin
   - articles/Reif_2013_ethinylestradiol_drospirenone
+  - articles/ReigLopez_2020_mbq167
   - articles/Reijers_2016_trastuzumab
   - articles/Reinecke_2018_levonorgestrel_contraceptives
   - articles/Rekic_2011_atazanavir
