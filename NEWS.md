@@ -78,6 +78,8 @@
 
 - Add Cojutti 2020 meropenem ([doi:10.3390/pharmaceutics12090785](https://doi.org/10.3390/pharmaceutics12090785)) -- febrile neutropenic adults with hematologic malignancies on continuous-infusion meropenem.
 
+- Add Xiang 2020 bemarituzumab ([doi:10.1007/s00280-020-04139-4](https://doi.org/10.1007/s00280-020-04139-4)) -- adults with advanced solid tumours including gastric and gastroesophageal junction adenocarcinoma.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
