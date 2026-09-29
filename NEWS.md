@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lim 2017 ethanol ([doi:10.12793/tcp.2017.25.1.5](https://doi.org/10.12793/tcp.2017.25.1.5)) -- healthy Korean adult males.
+- Add Niu 2020 caspofungin ([doi:10.3389/fphar.2020.00184](https://doi.org/10.3389/fphar.2020.00184)) -- children undergoing allogeneic hematopoietic stem cell transplantation.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
