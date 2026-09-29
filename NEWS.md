@@ -254,6 +254,8 @@
 
 - Add Werumeus Buning 2021 ceftazidime ([doi:10.3390/antibiotics10060612](https://doi.org/10.3390/antibiotics10060612)) -- critically ill adults with a proven or suspected Pseudomonas aeruginosa infection, with and without CVVH.
 
+- Add Rao 2021 pyrazinamide and ethambutol ([doi:10.3390/antibiotics10060739](https://doi.org/10.3390/antibiotics10060739)) -- Ugandan adults living with HIV and hospitalised with sepsis, starting first-line tuberculosis treatment.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jeong 2021 fexuprazan whole-body PBPK ([doi:10.3390/pharmaceutics13060813](https://doi.org/10.3390/pharmaceutics13060813)) -- healthy adult volunteers (Korean, Caucasian and Japanese).
