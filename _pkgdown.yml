@@ -614,6 +614,8 @@ navbar:
         href: articles/Koshimichi_2020_baloxavir.html
       - text: "Baloxavir (Retout 2026)"
         href: articles/Retout_2026_baloxavir.html
+      - text: "Bamlanivimab etesevimab (Chigutsa 2021)"
+        href: articles/Chigutsa_2021_bamlanivimab_etesevimab.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "Baricitinib (Decker 2024)"
@@ -7190,6 +7192,7 @@ articles:
   - articles/Chien_2022_imatinib
   - articles/Chigutsa_2011_rifampicin
   - articles/Chigutsa_2012_ofloxacin
+  - articles/Chigutsa_2021_bamlanivimab_etesevimab
   - articles/Chigutsa_2025_tirzepatide
   - articles/Chirehwa_2017_pyrazinamide
   - articles/Choe_2012_busulfan
