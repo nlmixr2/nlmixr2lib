@@ -343,7 +343,7 @@ knitr::kable(
   digits = 2, caption = "Accumulation (Results: ADC 1.27-fold between cycles 1 and 3; MMAE exposure 49% lower at dose 5 than dose 1)."
 )
 
-# Cohort medians: centre-of-distribution gates only (CLAUDE.md, cohort assertions).
+# Cohort medians: centre-of-distribution gates only (not cohort extremes).
 stopifnot(
   abs(median(exposure$adc_d5) / 58 - 1) < 0.2,
   abs(median(exposure$mmae_d5) / 11 - 1) < 0.25,

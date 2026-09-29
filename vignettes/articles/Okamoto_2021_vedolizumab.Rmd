@@ -460,8 +460,8 @@ auc_chk |>
   summarise(`median AUCtau / (Dose / CL)` = median(ratio), .groups = "drop") |>
   knitr::kable(digits = 3)
 
-# Centre-of-distribution gate (see the package CLAUDE.md note on cohort
-# extremes): a wrong clearance, dose or unit moves the median by tens of
+# Centre-of-distribution gate (medians, not cohort extremes): a wrong
+# clearance, dose or unit moves the median by tens of
 # percent; the MM pathway alone keeps it modestly below 1.
 stopifnot(
   median(auc_chk$ratio) < 1,

@@ -67,7 +67,7 @@ deterministic (no IIV, no residual error); it was parameterised, not fitted.
 
 Concentrations are in molar units (umol/L). The chemical molecular weights,
 which the acslX code uses only to convert amounts to ng/mL for plotting against
-data, are **not reported in any on-disk source** (see Errata); because the
+data, are **not reported in the paper or its supplements** (see Errata); because the
 system is linear in dose the molar formulation reproduces every clearance and
 every cross-age ratio the paper reports without them.
 
@@ -294,10 +294,10 @@ stopifnot(abs(mb[1] - 100) < 1e-4, abs(mb[2] - 100) < 1e-4)
 
 # Assumptions and deviations (Errata)
 
-* **Molecular weights are not on disk.** The acslX/R code uses each pyrethroid's
+* **Molecular weights are not reported.** The acslX/R code uses each pyrethroid's
   molecular weight only to convert compartment amounts to ng/mL for plotting;
-  no on-disk source (main text, Supplementary 1--4) reports them. Per the strict
-  PBPK sourcing rule they are not substituted from external knowledge. Because
+  neither the main text nor Supplementary 1--4 reports them, and they are not
+  substituted from other sources. Because
   the model is linear in dose, working entirely in molar units (umol, umol/L)
   reproduces every clearance (Table 2) and every cross-age brain $C_\max$ ratio
   (Figure 7 / abstract) exactly; only an absolute ng/mL read-out would need the

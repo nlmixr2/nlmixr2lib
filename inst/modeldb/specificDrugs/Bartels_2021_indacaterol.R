@@ -41,7 +41,7 @@ Bartels_2021_indacaterol <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (Caucasian/White)",
-      notes = "Retained on Vc/F in the final IND model (Sect. 3.4: 'grouped race (Caucasian/White, Japanese, other) on Vc/F (IND)'), but Table 5 and the text report only the Japanese coefficient. With no value on disk the effect is not encoded, so subjects in this group are simulated as the Caucasian/White reference. Sect. 3.6 reports that such patients had a simulated mean Cmax only 5% above Caucasian patients, so the omission is small."
+      notes = "Retained on Vc/F in the final IND model (Sect. 3.4: 'grouped race (Caucasian/White, Japanese, other) on Vc/F (IND)'), but Table 5 and the text report only the Japanese coefficient. With no reported value the effect is not encoded, so subjects in this group are simulated as the Caucasian/White reference. Sect. 3.6 reports that such patients had a simulated mean Cmax only 5% above Caucasian patients, so the omission is small."
     )
   )
 

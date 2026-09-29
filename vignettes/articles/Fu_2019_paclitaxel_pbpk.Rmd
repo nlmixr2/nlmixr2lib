@@ -356,7 +356,7 @@ ggplot(filter(human_long, time > 0), aes(time, conc)) +
   5% for a 600-ug dose but 13% low for 500 ug. Table 1 also reproduces the Table 2
   tissue/plasma ratios for heart, gut, muscle, fat and brain; the Code S1 mouse
   block does not. The human model uses the Code S1 human block, which is the
-  only complete human parameter set on disk.
+  only complete human parameter set the paper provides.
 * **Human CLint.** The Methods say "The CL int used in the human simulation was
   set to a value of 1,410 L/hour", but Code S1 has `tvCll = 449886` mL/h
   (449.9 L/h). The Figure 3 comparison above settles it: 449.9 L/h follows the

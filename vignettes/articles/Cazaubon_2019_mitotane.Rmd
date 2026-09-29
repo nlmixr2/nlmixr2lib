@@ -348,8 +348,8 @@ stopifnot(
 * **Residual-error form.** The paper reports a combined error with a = 1.06 mg/L
   and b = 0.17 but not which Monolix combined form was used; the Monolix
   default `combined1` (SD = a + b f) is encoded (`combined1()`).
-* **Signs of the covariate exponents.** The trimmed text of the article loses
-  the minus signs; the PDF prints beta_HDL = -0.344 and beta_Tg = -0.526 with
+* **Signs of the covariate exponents.** The PDF's text layer loses
+  the minus signs; the typeset page prints beta_HDL = -0.344 and beta_Tg = -0.526 with
   negative bootstrap intervals, and the Discussion states that higher Tg and HDL
   lower clearance.
 * **Latent class in simulations.** The latent-class indicator is supplied as the
