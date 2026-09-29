@@ -1,4 +1,4 @@
-Chen_2020_tacrolimus <- function() {
+Chen_2020b_tacrolimus <- function() {
   description <- paste0(
     "One-compartment population PK model with first-order absorption and ",
     "first-order elimination for oral tacrolimus whole-blood concentrations ",
@@ -18,7 +18,7 @@ Chen_2020_tacrolimus <- function() {
     "transplant: initial dose recommendation. Transl Pediatr. ",
     "2020;9(5):576-586. doi:10.21037/tp-20-84"
   )
-  vignette <- "Chen_2020_tacrolimus"
+  vignette <- "Chen_2020b_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
