@@ -5380,6 +5380,10 @@ navbar:
         href: articles/Jonsson_2016_tanezumab.html
       - text: "Tapentadol (Watson 2019)"
         href: articles/Watson_2019_tapentadol.html
+      - text: "Tapentadol allometryEstimated (Khalil 2020)"
+        href: articles/Khalil_2020_tapentadol.html
+      - text: "Tapentadol allometryFixed (Khalil 2020)"
+        href: articles/Khalil_2020_tapentadol.html
       - text: "Taranabant (Li 2010)"
         href: articles/Li_2010_taranabant.html
       - text: "Taspoglutide mbma (Li 2015)"
@@ -7321,7 +7325,7 @@ articles:
   - articles/Kervezee_2014_quinidine_rat
   - articles/Ketharanathan_2023_pentobarbital
   - articles/Keunecke_2020_regorafenib
-  - articles/KhanAsa_2020_voriconazole
+  - articles/Khalil_2020_tapentadol
   - articles/Khan_2015_ciprofloxacin
   - articles/Khaowroongrueng_2024_sufentanil
   - articles/Khwarg_2024_donepezil
