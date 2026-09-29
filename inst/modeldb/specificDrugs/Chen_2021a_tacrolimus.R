@@ -1,4 +1,4 @@
-Chen_2021_tacrolimus <- function() {
+Chen_2021a_tacrolimus <- function() {
   description <- paste0(
     "One-compartment population PK model with first-order absorption for ",
     "oral tacrolimus whole-blood concentrations in children with chronic ",
@@ -18,7 +18,7 @@ Chen_2021_tacrolimus <- function() {
     "disease undergoing hematopoietic stem cell transplantation. Ann Transl ",
     "Med. 2021;9(18):1477. doi:10.21037/atm-21-4124."
   )
-  vignette <- "Chen_2021_tacrolimus"
+  vignette <- "Chen_2021a_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(

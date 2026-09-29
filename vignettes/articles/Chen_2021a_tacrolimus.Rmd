@@ -1,8 +1,8 @@
 ---
-title: "Tacrolimus (Chen 2021)"
+title: "Tacrolimus (Chen 2021a)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tacrolimus (Chen 2021)}
+  %\VignetteIndexEntry{Tacrolimus (Chen 2021a)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("Chen_2021_tacrolimus"))$meta$reference`
-* Description: `r rxode2::rxode(readModelDb("Chen_2021_tacrolimus"))$meta$description`
+* Citation: `r rxode2::rxode(readModelDb("Chen_2021a_tacrolimus"))$meta$reference`
+* Description: `r rxode2::rxode(readModelDb("Chen_2021a_tacrolimus"))$meta$description`
 * Article: <https://doi.org/10.21037/atm-21-4124> (open access, PMC8506700)
 
 Chen et al. (2021) fitted a one-compartment model with first-order absorption
@@ -45,7 +45,7 @@ glucocorticoids 23/34, caspofungin 21/34. Only voriconazole was retained as a
 covariate. The same information is stored in the model metadata:
 
 ```{r population}
-str(rxode2::rxode(readModelDb("Chen_2021_tacrolimus"))$population)
+str(rxode2::rxode(readModelDb("Chen_2021a_tacrolimus"))$population)
 ```
 
 # Source trace
@@ -76,7 +76,7 @@ digitised the marker centres from the figure. The model's typical-value
 should be 38.8% of the other at every weight.
 
 ```{r fig3}
-mod <- readModelDb("Chen_2021_tacrolimus")
+mod <- readModelDb("Chen_2021a_tacrolimus")
 m0 <- rxode2::zeroRe(mod)
 
 # Typical-value solves use the model with its random effects zeroed. With
