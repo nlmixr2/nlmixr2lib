@@ -6278,6 +6278,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Tchaparian_2016_lumefantrine_recurrence.R` (founding example; the exposure driver of the comparative `hr_c3` output, `e_conc_lumefantrine_72h_haz = log(0.51)` per one-unit rise in natural log concentration among children not receiving trimethoprim-sulfamethoxazole prophylaxis).
 - **Notes:** Nominal landmark counted from the first dose; Tchaparian 2016 Methods give it as "day 3 (12 hours after the last dose)" and the last dose is at 60 h. The Supplement reports the ACTUAL median recorded collection time as 2.86 days (IQR 2.80-2.93), about 69 h. Same capillary-whole-blood matrix caveat as the day 7 sibling -- see [[CONC_LUMEFANTRINE_168H]] Notes; do not substitute a plasma value. Unlike the day 7 sibling this landmark is NOT dichotomised in the founding source: the paper reports it only per one-unit change in natural log concentration, and no threshold analysis for it is published. The reason the column exists at all is the founding paper's headline comparison, that a one-log-unit rise in day 3 concentration cuts the 28-day recurrence hazard by 49% against only 20% for day 7, which the authors advance as a case for sampling at the earlier and logistically easier day. Ratified 2026-09-21 alongside the Tchaparian 2016 lumefantrine extraction.
 
+### DOSE_WUZHI_MG48H (**canonical for cumulative Wuzhi capsule dose over the preceding 48 hours**)
+- **Description:** Total Wuzhi capsule dose, in mg, taken during the 48 h before the observation (e.g. 11.25 mg twice daily -> 45). Per-record, time-varying: recomputed at each observation from the Wuzhi dosing history. 0 = no Wuzhi capsule in the window. Wuzhi capsule is the *Schisandra sphenanthera* extract described under [[CONMED_WUZHI]]; the mg figure is the capsule strength as reported by the source paper (11.25 mg per capsule in the founding example).
+- **Units:** mg per 48 h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 mg (no Wuzhi capsule). In the founding model the dose is binned rather than used continuously: CL/F multiplier 1 at 0 mg, 0.566 below 45 mg, 0.783 at exactly 45 mg, 0.598 above 45 mg.
+- **Source aliases:**
+  - `WZ` / '48h cumulative dosage of Wuzhi Capsule' -- used in `Chen_2021b_tacrolimus.R` (Chen 2021 Table 2 rows `WZ<45mg`, `WZ=45mg`, `WZ>45mg`, `WZ=0mg`).
+- **Example models:** `Chen_2021b_tacrolimus.R` (four-bin multiplier on tacrolimus CL/F in Chinese adult kidney transplant recipients).
+- **Notes:** Member of the auto-approved `DOSE_<drug>_<units>` family; the drug token is the product name, following [[CONMED_WUZHI]], because the herbal preparation has no single INN. The `MG48H` unit token records the 48-h accumulation window, which is part of the covariate's definition: the same regimen gives a different value under a 24-h window. Use [[CONMED_WUZHI]] instead when a paper models only presence / absence. The founding model's bins are non-monotone (the lowest dose gives the largest CL/F reduction), which the paper attributes to an inhibition-then-induction interplay; a simulation should use only the regimens that populate the bins in the source data (22.5, 45, 67.5, 90 and 135 mg per 48 h).
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models that
@@ -18984,6 +18995,68 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `STU in (10944, 10945, 11527)` -- study-number encoding of the VTE-prevention cohort in `Willmann_2018a_rivaroxaban.R` (ODIXa-Hip2, ODIXa-Knee and ODIXa-OD-Hip respectively).
 - **Example models:** `Willmann_2018a_rivaroxaban.R` (multiplicative study / indication effect on rivaroxaban CL/F that is **time-varying within the cohort**: 1.04 at or before 72 h after the first dose and 1.29 thereafter, both relative to the VTE-treatment reference; the paper attributes the rise to clearance increasing over the first three days after major orthopaedic surgery).
 - **Notes:** Sibling of `DIS_ACS` and `DIS_AF` within the `DIS_<indication>` family; mutually exclusive with them per record in the founding model. The founding model pairs the indicator with a time split rather than a second column -- the `<= 72 h` / `> 72 h` distinction is evaluated from the solver time inside `model()`, so an event table using this covariate must place the first dose at time 0. Note also that Willmann 2018a **excluded** the immediate postsurgical phase from its analysis dataset (patients there separate into slow and fast absorbers of rivaroxaban), so the coefficient describes the post-exclusion window only and must not be extrapolated back to the first hours after surgery.
+
+### STUDY_NAI114346 (**canonical for the GSK NAI114346 intravenous zanamivir cardiac-conduction study indicator**)
+- **Description:** 1 = subject enrolled in study NAI114346 (NCT01353729; randomized placebo-controlled four-way crossover thorough-QT study of single 600 mg and 1200 mg intravenous zanamivir doses in 39 healthy adults), 0 = other.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other seven pooled phase I-III intravenous zanamivir studies).
+- **Source aliases:** `Study (NAI114346)` / `STDY` -- Zuo 2020 Table 2 row "V1/V2 ~ Study (NAI114346)"; Figure 1 labels it STDY.
+- **Example models:** `Zuo_2020_zanamivir.R` (founding example; multiplicative effect of 0.729 on both V1 and V2).
+- **Notes:** A healthy-volunteer study, so the effect does not enter any patient simulation (Zuo 2020 Discussion); set to 0 for prospective simulations.
+
+### STUDY_SEACAT (**canonical for the SEACAT 2.4.1 / 2.4.2 artemether-lumefantrine study cohort indicator**)
+- **Description:** 1 = participant of the South African SEACAT (South East African Combination Anti-malarial Therapy) pharmacokinetic studies 2.4.1 or 2.4.2 of artemether-lumefantrine in HIV-infected and uninfected adults; 0 = participant of any other study in the pooled analysis. Per-subject (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other study of the Francis 2020 WWARN pooled set; the bioavailability reference is the InterACT and SEACAT evening doses).
+- **Source aliases:** study name `SEACAT 2.4.1` / `SEACAT 2.4.2` in Francis 2020 Tables 1-2 (both studies share the same term; no value transformation).
+- **Example models:** `Francis_2020_lumefantrine.R` (dose-occasion effects on relative bioavailability selected together with `OCC`: first (morning) dose `F x (1 - 0.486)` when `OCC = 1`, consecutive morning doses `F x (1 - 0.772)` when `OCC` is odd and > 1, evening doses at the reference).
+- **Notes:** Francis 2020 attributes the morning/evening contrast to diurnal variation and to the different fat content of the meals given with each dose. The indicator marks the study; the dose-occasion selection lives in `OCC`. Sibling of the other `STUDY_<id>` members.
+
+### STUDY_UGANDA (**canonical for the pooled Uganda artemether-lumefantrine studies 1-4 cohort indicator**)
+- **Description:** 1 = participant of any of the four Ugandan artemether-lumefantrine pharmacokinetic studies (Byakika-Kibwika et al.; Lamorde et al.; Walimbwa et al.) pooled in the Francis 2020 WWARN meta-analysis, where doses were taken with a standard Ugandan breakfast; 0 = participant of any other study in that pooled analysis. Per-subject (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other study of the Francis 2020 pooled set).
+- **Source aliases:** study names `Uganda study 1` to `Uganda study 4` in Francis 2020 Tables 1-2 (all four share one term).
+- **Example models:** `Francis_2020_lumefantrine.R` (fractional effect on relative bioavailability of every dose, `F x (1 - 0.269)`).
+- **Notes:** Four studies pooled into one level because their bioavailability estimates did not differ. Sibling of the other `STUDY_<id>` members.
+
+### STUDY_NIGERIA1 (**canonical for the Nigeria study 1 artemether-lumefantrine cohort indicator**)
+- **Description:** 1 = participant of Nigeria study 1 (Parikh et al.) in the Francis 2020 WWARN meta-analysis, a multiple-dose study sampling after the observed 6th (last) dose with the previous doses self-administered; 0 = participant of any other study in that pooled analysis. Per-subject (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other study of the Francis 2020 pooled set).
+- **Source aliases:** study name `Nigeria study 1` in Francis 2020 Tables 1-2.
+- **Example models:** `Francis_2020_lumefantrine.R` (two dose-occasion effects selected together with `OCC`: relative bioavailability of the 6th (morning) dose `F x (1 - 0.608)` when `OCC = 6`, and an estimated 4.30 h delay of the unobserved 5th dose when `OCC = 5`, shared with `STUDY_USHV`).
+- **Notes:** Distinct from Nigeria study 2 of the same analysis, which is identified by its dried-blood-spot matrix (`SAMPLE_DBS`) rather than a study term. Sibling of the other `STUDY_<id>` members.
+
+### STUDY_USHV (**canonical for the U.S. healthy-volunteer artemether-lumefantrine study cohort indicator**)
+- **Description:** 1 = participant of the U.S. healthy-volunteer artemether-lumefantrine drug-interaction study (German et al. 2009) pooled in the Francis 2020 WWARN meta-analysis; 0 = participant of any other study in that pooled analysis. Per-subject (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other study of the Francis 2020 pooled set).
+- **Source aliases:** `U.S. healthy volunteer study` in Francis 2020 Tables 1-2.
+- **Example models:** `Francis_2020_lumefantrine.R` (estimated 4.30 h delay of the unobserved 5th dose when `OCC = 5`, shared with `STUDY_NIGERIA1`; bioavailability not different from the reference).
+- **Notes:** Sibling of the other `STUDY_<id>` members.
+
+### STUDY_0059 (**canonical for Lo 2021 revefenacin phase II Study 0059 cohort indicator**)
+- **Description:** 1 = record from Theravance revefenacin Study 0059 (Lo 2021 "Study 1", NCT03064113; n = 32 patients with moderate to severe COPD, single nebulized doses of 350 and 700 ug in a four-period crossover), 0 = any other study in the pooled analysis. Per-record (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other two phase II studies 0091 and 0117 and the two phase III studies 0126 and 0127).
+- **Source aliases:**
+  - `Study 1` -- Lo 2021 Methods 2.1.1 and Table 2 row 'Study 1 effect on F1'.
+  - `Study 0059` -- FDA Clinical Pharmacology Review of NDA 210598, Table 4.1.2.4.1 row 'Effect of Study 0059 on Bioavailability'.
+- **Example models:** `Lo_2021_revefenacin.R` (multiplies the relative bioavailability of nebulized revefenacin by 0.553 in the form `F1 = TV x 0.553^STUDY_0059`, reflecting the lower exposures observed in that study; the FDA reviewer suggests a different nebulizer as a possible cause).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family; the id keeps the sponsor's four-digit protocol number with its leading zero so it cannot be read as a generic cohort count. Set to 0 when simulating the marketed product; the paper does not attribute the effect to any patient characteristic.
 
 ## Occasion / period (IOV)
 
