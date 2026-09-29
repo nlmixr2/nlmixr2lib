@@ -5368,6 +5368,10 @@ navbar:
         href: articles/Ma_2020_sarilumab_das28crp.html
       - text: "Saxagliptin rat (Wang 2024)"
         href: articles/Wang_2024_saxagliptin_dpp4_rat.html
+      - text: "SchisandrinA cyp3a (He 2021)"
+        href: articles/He_2021_tacrolimus_wuzhi_cyp3a.html
+      - text: "SchisantherinA cyp3a (He 2021)"
+        href: articles/He_2021_tacrolimus_wuzhi_cyp3a.html
       - text: "Scopolamine (AlvarezJimenez 2016)"
         href: articles/AlvarezJimenez_2016_scopolamine.html
       - text: "Scopolamine (LiemMoolenaar 2011)"
@@ -7593,8 +7597,7 @@ articles:
   - articles/Haynes_2025_cephalexin
   - articles/Hazendonk_2016_factor_viii
   - articles/He_2012_lamotrigine
-  - articles/He_2020_phosphocreatine
-  - articles/He_2021_psoriasis_mbma
+  - articles/He_2021_tacrolimus_wuzhi_cyp3a
   - articles/He_2025_YPEGrhGH
   - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz

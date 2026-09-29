@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jayachandran 2021 tenofovir ([doi:10.1002/psp4.12583](https://doi.org/10.1002/psp4.12583)) - a multicompartment plasma/tissue/cellular PK model and a coupled ex vivo HIV-1 viral-dynamics PK/PD model, in HIV-seronegative adults on rectal pre-exposure prophylaxis.
+- Add He 2021 Wuzhi-capsule lignans schisantherin A and schisandrin A ([doi:10.3390/ph14030198](https://doi.org/10.3390/ph14030198)) -- in vitro reversible and time-dependent inhibition of CYP3A4 and CYP3A5 in CYP3A5-genotyped human liver microsomes.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
