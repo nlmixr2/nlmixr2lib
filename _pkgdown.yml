@@ -5860,8 +5860,8 @@ navbar:
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
         href: articles/Frey_2013_tocilizumab.html
-      - text: "Tofacitinib (Tse 2020)"
-        href: articles/Tse_2020_tofacitinib.html
+      - text: "Tocilizumab (Moes 2022)"
+        href: articles/Moes_2022_tocilizumab.html
       - text: "Tofacitinib (Tsuchiwata 2026)"
         href: articles/Tsuchiwata_2026_tofacitinib.html
       - text: "Tofacitinib (Vong 2021)"
@@ -7981,6 +7981,7 @@ articles:
   - articles/Moein_2024_apitolisib
   - articles/Moein_2025_etrolizumab
   - articles/Moes_2016_tacrolimus
+  - articles/Moes_2022_tocilizumab
   - articles/Moffett_2017_antithrombin
   - articles/Mohamed_2012_colistin
   - articles/Mohamed_2012_gentamicin
