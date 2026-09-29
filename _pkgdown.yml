@@ -3174,6 +3174,8 @@ navbar:
         href: articles/Du_2019_magnesiumSulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
+      - text: "MagnesiumSulfate (daCosta 2020)"
+        href: articles/daCosta_2020_magnesiumSulfate.html
       - text: "MagnesiumSulfate eclampsia (Du 2019)"
         href: articles/Du_2019_magnesiumSulfate_eclampsia.html
       - text: "ManaglinatDialanetil activeMoiety (Kastrissios 2012)"
@@ -8556,6 +8558,7 @@ articles:
   - articles/Zurawska_2026_piperacillin
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
+  - articles/daCosta_2020_magnesiumSulfate
   - articles/deAlwis_1998_ondansetron
   - articles/deCastroSuarez_2020_nimotuzumab
   - articles/deHoogd_2017_morphine
