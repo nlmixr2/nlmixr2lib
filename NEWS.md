@@ -240,6 +240,8 @@
 
 - Add Agema 2021 oxycodone with noroxycodone and noroxymorphone ([doi:10.3390/cancers13112768](https://doi.org/10.3390/cancers13112768)) -- hospitalised adults with cancer-related pain. Registers the `noroxycod` and `noroxymor` metabolite suffixes.
 
+- Add Nayak 2021 rivipansel ([doi:10.1007/s40268-021-00346-3](https://doi.org/10.1007/s40268-021-00346-3)) -- healthy, renally and hepatically impaired adults and patients with sickle cell disease, with plasma and urine.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Zhou 2021a enrofloxacin PBPK ([doi:10.3390/pharmaceutics13050602](https://doi.org/10.3390/pharmaceutics13050602)) -- healthy pigs given an oral solid-dispersion granule, with the small-intestinal contents as the target site.
