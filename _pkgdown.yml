@@ -1132,6 +1132,8 @@ navbar:
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Cipargamin (Hien 2017)"
         href: articles/Hien_2017_cipargamin.html
+      - text: "Ciprofloxacin (Abdulla 2020)"
+        href: articles/Abdulla_2020_ciprofloxacin.html
       - text: "Ciprofloxacin (Schaefer 1996)"
         href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
@@ -6201,6 +6203,7 @@ articles:
   - articles/AbdulAziz_2016_doripenem
   - articles/AbdulAziz_2025_caspofungin
   - articles/Abduljalil_2009_clarithromycin
+  - articles/Abdulla_2020_ciprofloxacin
   - articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi
   - articles/Abegesah_2025_durvalumab
   - articles/AbouAuda_2024_gentamicin

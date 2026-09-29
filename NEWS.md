@@ -6,7 +6,7 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
-- Add Kim 2020 voriconazole ([doi:10.3389/fphar.2020.00894](https://doi.org/10.3389/fphar.2020.00894)) -- hospitalised patients treated for invasive aspergillosis, with paired plasma and saliva.
+- Add Abdulla 2020 ciprofloxacin ([doi:10.1007/s00228-020-02873-5](https://doi.org/10.1007/s00228-020-02873-5)) -- critically ill adult ICU patients.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
