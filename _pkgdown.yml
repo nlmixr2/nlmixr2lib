@@ -4724,6 +4724,8 @@ navbar:
         href: articles/Sharma_2018_SHetA2.html
       - text: "SKL10406 (Park 2014)"
         href: articles/Park_2014_SKL10406.html
+      - text: "SPI 62 (Wu 2021)"
+        href: articles/Wu_2021_SPI_62.html
       - text: "SPI 62 (Wu 2023)"
         href: articles/Wu_2023_SPI_62.html
       - text: "Sabirnetug (Siemers 2025)"
@@ -8094,6 +8096,7 @@ articles:
   - articles/Wu_2012_modafinil
   - articles/Wu_2012_sirolimus
   - articles/Wu_2014_FEV1_asthma
+  - articles/Wu_2021_SPI_62
   - articles/Wu_2023_SPI_62
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
