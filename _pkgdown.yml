@@ -5970,6 +5970,8 @@ navbar:
         href: articles/Moore_2016_vancomycin.html
       - text: "Vancomycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Vancomycin (Parasuraman 2021)"
+        href: articles/Parasuraman_2021_vancomycin.html
       - text: "Vancomycin (Polaskova 2024)"
         href: articles/Polaskova_2024_vancomycin.html
       - text: "Vancomycin (Revilla 2010)"
@@ -7879,6 +7881,7 @@ articles:
   - articles/Papachristos_2020_bevacizumab_qss
   - articles/Papathanasiou_2025_belantamab
   - articles/Parasrampuria_2025_temsavir
+  - articles/Parasuraman_2021_vancomycin
   - articles/Pardridge_2023_brain_plasma_protein_binding
   - articles/Parhiz_2024_mRNALNP
   - articles/Park_2001_ketoprofen

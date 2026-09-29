@@ -140,6 +140,8 @@
 
 - Add Xu 2020 clopidogrel PBPK-PD ([doi:10.3389/fphar.2020.593982](https://doi.org/10.3389/fphar.2020.593982)) -- healthy adults and coronary artery disease patients with or without diabetes, by CYP2C19 phenotype.
 
+- Add Parasuraman 2021 vancomycin ([doi:10.1016/j.ejps.2020.105643](https://doi.org/10.1016/j.ejps.2020.105643)) -- extremely preterm infants with ventriculitis given intravenous and intraventricular vancomycin, with paired plasma and CSF.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
