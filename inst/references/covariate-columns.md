@@ -14900,6 +14900,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Gaffney_2026_niraparib.R` (selects the TABLET log-scale residual SD 0.324).
 - **Notes:** One of the two intensively sampled phase 1 studies added by Gaffney 2026 to the earlier niraparib pool, contributing 6487 of the 14,106 included observations (46%) and essentially all of the fed records that identify the `FED` effects on relative bioavailability and mean transit time. See `STUDY_NOVA` for the family rationale and the five-indicator / PN001-reference convention.
 
+### STUDY_ALK3831A305 (**canonical for the olanzapine/samidorphan phase 3 study ALK3831-A305 record indicator**)
+- **Description:** 1 = record from ALK3831-A305, the phase 3 randomised double-blind placebo-controlled 4-week study of once-daily olanzapine/samidorphan (OLZ/SAM 10/10 or 20/20 mg) or olanzapine in adults with schizophrenia, with sparse PK sampling (predose on day 1, then weeks 2 and 4); 0 = record from one of the other studies pooled into the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any of the other pooled olanzapine/samidorphan studies).
+- **Source aliases:**
+  - `STUDY` -- Sun 2021 Table S1 study identifier.
+- **Example models:** `Sun_2021_samidorphan.R` (multiplicative 10.1-fold factor on the absorption lag time, Sun 2021 Table 4 'Change in ALAG').
+- **Notes:** A nuisance indicator rather than a physiological covariate: dose times were not recorded in ALK3831-A305, so Sun 2021 imputed dose timing and estimated a study-specific change in the lag time to absorb the timing error (Table 4 footnote c). Set to 0 when simulating a patient with known dose times. Auto-approved member of the `STUDY_<id>` family.
+
 ### STUDY_HEPATIC (**canonical for the HEPATIC niraparib trial cohort indicator**)
 - **Description:** 1 = record from HEPATIC (NCT03359850), the phase 1 open-label multicentre study of a single 300 mg niraparib dose in patients with advanced solid tumours and either normal hepatic function or moderate hepatic impairment; 0 = record from one of the other five studies pooled into the same analysis.
 - **Units:** (binary)
@@ -15338,6 +15349,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `FORM` -- source column in the Bhatnagar 2024 Appendix S1 NONMEM control streams, coded 1 = immediate release and 2 = extended release, i.e. `FORM_UPA_ER = FORM - 1`. Note the source coding is the OPPOSITE polarity to the canonical orientation in the sense that its low level is the extended-release-absent case only after the shift; always apply the subtraction rather than using `FORM` directly.
 - **Example models:** `Bhatnagar_2024_upadacitinib.R` (switches the entire absorption branch: extended release uses Ka = 0.0523 1/h carrying the only absorption random effect, a 0.154 h lag, 74.5% of the absorbed dose entering the central compartment by a 3.29 h zero-order input, and 76.2% relative bioavailability; immediate release uses Ka = 2.77 1/h with no random effect, a 0.200 h lag, no zero-order arm and unit relative bioavailability -- Bhatnagar 2024 Table S3), `Klunder_2019_upadacitinib.R` (the PARENT analysis from which Bhatnagar 2024 fixed those same absorption parameters; identical branch switch, with every value estimated rather than fixed -- Klunder 2019 Table 3. This is the paper that actually pooled the immediate-release and extended-release arms, so both branches of the switch are exercised by real data here, whereas in Bhatnagar 2024 every subject received the extended-release tablet).
 - **Notes:** Specific scope because the contrast and the absorption-branch switch are particular to the upadacitinib formulation pair. Unlike most `FORM_*` members, this indicator does not modify a single parameter: it selects between two complete absorption sub-models, including whether the zero-order arm exists at all and whether the absorption rate constant carries interindividual variability. Every subject in the Bhatnagar 2024 axial-spondyloarthritis analysis received the extended-release tablet, so `FORM_UPA_ER = 1` reproduces that paper; the immediate-release branch is retained because it is fully parameterized in the source and defines the bioavailability reference. Distinct from `FORM_TABLET` / `FORM_CAPSULE`, which contrast dosage forms generically without implying a release-rate difference.
+
+### FORM_SAM_TAB (**canonical for the samidorphan-alone tablet vs olanzapine/samidorphan bilayer tablet indicator**)
+- **Description:** Samidorphan (SAM) formulation indicator. 1 = the samidorphan dose was given as the samidorphan-alone immediate-release tablet; 0 = given as the olanzapine/samidorphan (OLZ/SAM) coformulated bilayer tablet (one olanzapine layer, one samidorphan layer). Per-dose indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (OLZ/SAM bilayer tablet, the marketed combination product).
+- **Source aliases:**
+  - `FORM` -- Sun 2021 formulation covariate ('OLZ/SAM bilayer tablet or tablet of olanzapine or samidorphan').
+- **Example models:** `Sun_2021_samidorphan.R` (multiplicative 1.41-fold factor on the absorption lag time, Sun 2021 Table 4 'Formulation (samidorphan tablet vs OLZ/SAM bilayer tablet) on ALAG').
+- **Notes:** Drug-specific member of the `FORM_<drug>_<formulation>` family. The contrast is a coformulated combination tablet versus the single-agent tablet of the same drug, so it is not the generic `FORM_TABLET` (tablet vs oral liquid). Sun 2021 screened the parallel olanzapine contrast and did not retain it.
 
 ### FORM_VOSO_SOLN02 (**canonical for the 0.2 mg/mL vosoritide dosing-solution indicator**)
 - **Description:** Vosoritide dosing-solution strength indicator. 1 = the subcutaneous dose was prepared from the 0.2 mg/mL vosoritide solution; 0 = prepared from the 0.8 mg/mL or 2 mg/mL solution. Per-dose-record indicator. The contrast is between reconstituted-solution *concentrations* of the same lyophilised drug product, not between dosage forms, so the covariate belongs to the `FORM_<drug>_<formulation>` drug-specific branch of the `FORM_*` family rather than to the oral solid-dosage members.

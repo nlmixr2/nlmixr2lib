@@ -3686,6 +3686,8 @@ navbar:
         href: articles/Chigutsa_2012_ofloxacin.html
       - text: "Olanzapine (Li 2018)"
         href: articles/Li_2018_olanzapine.html
+      - text: "Olanzapine (Sun 2021)"
+        href: articles/Sun_2021_olanzapine_samidorphan.html
       - text: "Olanzapine (Zhang 2024)"
         href: articles/Zhang_2024_olanzapine.html
       - text: "Olanzapine (Zhang 2025)"
@@ -4762,6 +4764,8 @@ navbar:
         href: articles/Rosenborg_2025_fluticasone_salmeterol.html
       - text: "Salmeterol (Thoueille 2026)"
         href: articles/Thoueille_2026_salmeterol.html
+      - text: "Samidorphan (Sun 2021)"
+        href: articles/Sun_2021_olanzapine_samidorphan.html
       - text: "Sapanisertib QTcF (Patel 2020)"
         href: articles/Patel_2020_sapanisertib.html
       - text: "Sapanisertib QTcI (Patel 2020)"
@@ -7812,6 +7816,7 @@ articles:
   - articles/Sulaiman_2026_piperacillin_tazobactam
   - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
+  - articles/Sun_2021_olanzapine_samidorphan
   - articles/Sun_2023_maribavir
   - articles/Sun_2025_colistinSulfate
   - articles/Sun_2025_maribavir
