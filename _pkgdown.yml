@@ -1588,6 +1588,8 @@ navbar:
         href: articles/Diep_2026_donidalorsen.html
       - text: "Donidalorsen (Singh 2025)"
         href: articles/Singh_2025_donidalorsen.html
+      - text: "Doravirine (Vaddady 2020)"
+        href: articles/Vaddady_2020_doravirine.html
       - text: "Dordaviprone (Jaiswal 2025)"
         href: articles/Jaiswal_2025_dordaviprone.html
       - text: "Doripenem (AbdulAziz 2016)"
@@ -8231,6 +8233,7 @@ articles:
   - articles/Urien_2004_cisplatin
   - articles/Urien_2005_capecitabine
   - articles/Urien_2013_anakinra
+  - articles/Vaddady_2020_doravirine
   - articles/Vaddady_2024_quizartinib
   - articles/Valade_2014_emtricitabine
   - articles/Valade_2015_emtricitabine

@@ -82,6 +82,8 @@
 
 - Add Ma 2020 vancomycin ([doi:10.3389/fphar.2020.563967](https://doi.org/10.3389/fphar.2020.563967)) -- adult kidney transplant recipients.
 
+- Add Vaddady 2020 doravirine ([doi:10.1128/AAC.00590-20](https://doi.org/10.1128/AAC.00590-20)) -- healthy participants and treatment-naive and virologically suppressed switch adults with HIV-1.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
