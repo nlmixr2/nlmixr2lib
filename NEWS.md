@@ -172,6 +172,8 @@
 
 - Add Stillemans 2021b darunavir ([doi:10.1007/s00228-020-03036-2](https://doi.org/10.1007/s00228-020-03036-2)) -- adults with HIV-1 on ritonavir- or cobicistat-boosted darunavir (reduced model without AAG, re-estimated on the merged learning and external-validation data).
 
+- Add Rubino 2021 amikacin liposome inhalation suspension ([doi:10.1007/s13318-020-00669-7](https://doi.org/10.1007/s13318-020-00669-7)) -- adults with treatment-refractory nontuberculous mycobacterial lung disease.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
