@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Olsson Gisleskog 2021 nicotine ([doi:10.1007/s40262-020-00960-5](https://doi.org/10.1007/s40262-020-00960-5)) -- healthy adult smokers; seven models for intravenous, oral, mouth spray, chewing gum, lozenge, inhaler and transdermal nicotine.
+- Correct the `population` and covariate-note metadata of `Gao_2021_methotrexate` ([doi:10.3389/fphar.2021.701452](https://doi.org/10.3389/fphar.2021.701452)) from the primary's own Table 1. The metadata had been copied from the Wang 2023 evaluation paper, whose Table 1 prints Gao's serum-creatinine row as AST. The omeprazole note also carried the NSAID co-medication rate. No `ini()` or `model()` value changed.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
