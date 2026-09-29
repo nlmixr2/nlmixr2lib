@@ -1,8 +1,8 @@
 ---
-title: "Tacrolimus with Wuzhi capsule (Chen 2021)"
+title: "Tacrolimus with Wuzhi capsule (Chen 2021b)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tacrolimus with Wuzhi capsule (Chen 2021)}
+  %\VignetteIndexEntry{Tacrolimus with Wuzhi capsule (Chen 2021b)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,7 +20,7 @@ library(ggplot2)
 # Model and source
 
 ```{r model-load}
-ui <- rxode2::rxode(readModelDb("Chen_2021_tacrolimus"))
+ui <- rxode2::rxode(readModelDb("Chen_2021b_tacrolimus"))
 # zeroRe() warns that there are no sigma parameters: the residual SDs are
 # ordinary thetas combined per centre in model(), so there is nothing to zero.
 mod_typ <- suppressWarnings(rxode2::zeroRe(ui))
@@ -55,7 +55,7 @@ str(ui$population, max.level = 1)
 # Source trace
 
 Every `ini()` value carries an in-file comment pointing to its source in
-`inst/modeldb/specificDrugs/Chen_2021_tacrolimus.R`. Collected here:
+`inst/modeldb/specificDrugs/Chen_2021b_tacrolimus.R`. Collected here:
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|

@@ -1,4 +1,4 @@
-Chen_2021_tacrolimus <- function() {
+Chen_2021b_tacrolimus <- function() {
   description <- paste(
     "One-compartment population PK model with first-order absorption and",
     "elimination for oral tacrolimus in Chinese adult kidney transplant",
@@ -21,7 +21,7 @@ Chen_2021_tacrolimus <- function() {
     "Analysis. Pharmgenomics Pers Med 14:1093-1106.",
     "doi:10.2147/PGPM.S321997."
   )
-  vignette <- "Chen_2021_tacrolimus"
+  vignette <- "Chen_2021b_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Chen 2021 Methods 'Sample Collection and Bioanalytical Assay': whole
