@@ -566,6 +566,8 @@ navbar:
         href: articles/Ambery_2015_batefenterol.html
       - text: "Batefenterol fev1 (Ambery 2015)"
         href: articles/Ambery_2015_batefenterol.html
+      - text: "Batiraxcept (Bonifacio 2020)"
+        href: articles/Bonifacio_2020_batiraxcept.html
       - text: "Bedaquiline (Shao 2023)"
         href: articles/Shao_2023_bedaquiline.html
       - text: "Bedaquiline (Svensson 2013)"
@@ -6268,6 +6270,7 @@ articles:
   - articles/Boger_2018_inhaled_pbpk
   - articles/BoivinChampeaux_2026_hepatitisB_qsp
   - articles/Bonate_2004_apomine
+  - articles/Bonifacio_2020_batiraxcept
   - articles/Bonner_2015_gastric_emptying
   - articles/Boone_2025_vinylchloride
   - articles/Borghardt_2016_olodaterol
