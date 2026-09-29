@@ -45,15 +45,15 @@ below are transcribed from the review, each carrying a
 `reference` metadata.
 
 Every model file in this family records `ALL PARAMETER VALUES ARE
-SECONDARY` in its `population$notes`, except `Nguyen_2021_imipenem`,
-which has since been re-verified against its primary publication and is
-validated in its own
-[Nguyen 2021 article](Nguyen_2021_ceftazidime_imipenem.html). Read the
+SECONDARY` in its `population$notes`, except those marked "re-verified
+against primary" in the coverage table below, which have since been
+rewritten from their primary publications and have their own articles.
+Read the
 "Assumptions and deviations" section at the foot of this page before
 using any of them; it reports a **measured** audit of how faithfully the
 review reproduces its primaries, and that audit found a real defect.
 
-One exception: `deVelde_2020_imipenem` has since been re-verified
+For example, `deVelde_2020_imipenem` has since been re-verified
 against its primary publication. It is now documented, together with
 the primary's nonparametric arm (`deVelde_2020_imipenem_nonparametric`),
 in its own [de Velde 2020 article](deVelde_2020_imipenem.html), and it
@@ -80,10 +80,10 @@ coverage <- tibble::tribble(
    6L, "Dong et al. (2019)",              "Extracted",              "Dong_2019_imipenem",
    7L, "Li et al. (2020)",                "Blocked: dialysate-compartment role + Qd units", NA_character_,
    8L, "Chen et al. (2020b)",             "Extracted",              "Chen_2020_imipenem",
-   9L, "de Velde et al. (2020)",          "Re-verified vs primary (2 files)", "deVelde_2020_imipenem / _nonparametric",
+   9L, "de Velde et al. (2020)",          "Re-verified against primary (2 files)", "deVelde_2020_imipenem / _nonparametric",
   10L, "Nguyen et al. (2021)",            "Extracted; re-verified against primary", "Nguyen_2021_imipenem",
   11L, "Jaruratanasirikul et al. (2021)", "Extracted",              "Jaruratanasirikul_2021_imipenem",
-  12L, "Por et al. (2021)",               "Extracted",              "Por_2021_imipenem",
+  12L, "Por et al. (2021)",               "Extracted; re-verified against primary", "Por_2021_imipenem",
   13L, "Dao et al. (2022)",               "Extracted",              "Dao_2022_imipenem",
   14L, "Dinh et al. (2022)",              "Extracted",              "Dinh_2022_imipenem",
   15L, "Bai et al. (2024)",               "Already in registry",    "Bai_2024_imipenem",
@@ -208,6 +208,14 @@ The covariate equations transcribed from Table 3 are:
 | `Lafaurie_2023_imipenem_*` | none reported ("NR") |
 | `Truong_2025_imipenem` | `CL = 14.6 x (CLcr CG/87.6)^0.462` |
 
+The `Por_2021_imipenem` row is the review's rendering. The primary
+publication (Por 2021 Equations 5 and 11, Table 1) shows that the
+"+ 1.56" is the **cohort-mean** haemofilter clearance, not a fitted
+constant: each patient's own measured CVVH clearance is added. The
+re-verified model file therefore takes it as the per-patient covariate
+`QEFF`, which this page sets to 0 because every solve here is off CVVH.
+See the [Por 2021 article](Por_2021_imipenem.html).
+
 # Reference subjects
 
 Each model is exercised below at its **own** reference covariates -- the
@@ -252,7 +260,8 @@ cfg <- list(
   Por_2021_imipenem = list(
     # ALB supplied in canonical SI g/L; the model converts to the g/dL the
     # source was calibrated on, so 27 g/L == the reference 2.7 g/dL.
-    cov = list(WT = 99.5, ALB = 27, CRCL = 145.83, RRT_CRRT_STATUS = 0),
+    # QEFF is the per-patient haemofilter clearance; 0 off CVVH.
+    cov = list(WT = 99.5, ALB = 27, CRCL = 145.83, RRT_CRRT_STATUS = 0, QEFF = 0),
     cl_pub = 15.31, vc_pub = 32.67, dose = 500),
   Dao_2022_imipenem = list(
     # PNA supplied in canonical months; 21 days = 21/30.4375 months.
@@ -782,9 +791,16 @@ caution as the IIV column.
   error is reported. Re-verify before using this model for ECMO dosing.
 * **`Por_2021_imipenem` -- the albumin exponent on peripheral volume is
   extreme.** `-3.68` means a halving of albumin multiplies `Vp` by 12.8.
-  For a 23-patient cohort this is almost certainly poorly identified.
   The review reports neither a standard error nor the observed albumin
-  range, so the fitted domain is unknown.
+  range. The primary, against which this model has since been
+  re-verified, reports both: RSE 17% (bootstrap 37.69%) and an observed
+  albumin range of 1.5-3.5 g/dL. The primary also shows that the
+  review's IIV entries for this study (30.5% and 36.1%) are the square
+  roots of the printed variances `omega^2` = 0.093 and 0.13, that the
+  cohort was 6 women and 17 men (the review's Table 1 has the sexes
+  reversed), and that the review's "+ 1.56" is a cohort-mean covariate
+  value (see the Source trace section). The model file now uses the
+  primary's values; see the [Por 2021 article](Por_2021_imipenem.html).
 * **`Por_2021_imipenem` -- albumin unit conversion.** The reference 2.7
   is g/dL (a US study; 2.7 g/L would be incompatible with life). The
   canonical `ALB` column is SI g/L, so `model()` converts inline with

@@ -2447,7 +2447,7 @@ navbar:
       - text: "Imipenem (Nguyen 2021)"
         href: articles/Nguyen_2021_ceftazidime_imipenem.html
       - text: "Imipenem (Por 2021)"
-        href: articles/Zhang_2025_imipenem_model_review.html
+        href: articles/Por_2021_imipenem.html
       - text: "Imipenem (Truong 2025)"
         href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem (Wang 2024)"
@@ -7554,6 +7554,7 @@ articles:
   - articles/Pohl_2022_linzagolix
   - articles/Polaskova_2024_vancomycin
   - articles/Polito_2016_fludrocortisone
+  - articles/Por_2021_imipenem
   - articles/Pouzin_2022_tusamitamab
   - articles/Press_2010_ciclosporin
   - articles/Proctor_2026_durvalumab_cachexia
