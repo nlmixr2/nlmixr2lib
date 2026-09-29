@@ -54,6 +54,8 @@
 
 - Add Kong 2020 vonoprazan ([doi:10.1038/s41401-019-0353-2](https://doi.org/10.1038/s41401-019-0353-2)) -- whole-body PBPK-PD of gastric acid inhibition in rats, beagle dogs and a 70-kg adult.
 
+- Add Guo 2020 valproic acid ([doi:10.1177/0300060520952281](https://doi.org/10.1177/0300060520952281)) -- Chinese adult inpatients with seizures, oral or intravenous.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.

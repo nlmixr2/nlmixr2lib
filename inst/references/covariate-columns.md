@@ -14379,7 +14379,8 @@ Per-model `covariateData[[CYP2C19]]$notes` must document which orientation is in
 - **Reference category:** 0 (homozygous extensive metabolizer; both *1 alleles).
 - **Source aliases:**
   - `PM` (Wahlby 2004 / Walsh 2004 voriconazole source-column convention) -- used in `Wahlby_2004_voriconazole.R`. Note that the column name `PM` in this paper denotes the composite non-EM group, not the strict CYP2C19_PM phenotype; users converting from the source paper's data should not collapse `PM` to canonical `CYP2C19_PM` without re-checking the genotype-to-indicator mapping.
-- **Example models:** `Wahlby_2004_voriconazole.R` (multiplicative effect on CL: `(1 - 0.46 * CYP2C19_NON_EM)`, so a non-EM subject has 46 percent lower CL than a homozygous-EM subject).
+  - `CYP2C19` (Guo 2020 valproic acid, Figure 4 legend) -- coded 1 = `*1/*1`, 2 = `*1/*2`, `*1/*3`, `*2/*2`, `*2/*3` or `*3/*3`; `CYP2C19_NON_EM = CYP2C19 - 1`. `*17` was genotyped but not used in the grouping.
+- **Example models:** `Wahlby_2004_voriconazole.R` (multiplicative effect on CL: `(1 - 0.46 * CYP2C19_NON_EM)`, so a non-EM subject has 46 percent lower CL than a homozygous-EM subject); `Guo_2020_valproic_acid.R` (exponential effect on CL: `exp(-0.45 * CYP2C19_NON_EM)`).
 - **Notes:** Specific scope because the PM+IM composite grouping is paper-defined; future papers that report PM and IM separately should use the strict `CYP2C19_PM` and `CYP2C19_IM` canonicals instead. The Wahlby 2004 / Walsh 2004 voriconazole encoding has been retained because the source paper does not provide separate per-genotype coefficient estimates.
 
 ### SNP_ABCB1_RS3842 (**canonical for ABCB1 rs3842 (c.4036A>G, 3' UTR) mutant allele carrier indicator**)
