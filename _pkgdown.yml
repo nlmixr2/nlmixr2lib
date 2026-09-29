@@ -5660,6 +5660,8 @@ navbar:
         href: articles/MarquesMinana_2010_vancomycin.html
       - text: "Vancomycin (Moore 2016)"
         href: articles/Moore_2016_vancomycin.html
+      - text: "Vancomycin (Munir 2021)"
+        href: articles/Munir_2021_vancomycin.html
       - text: "Vancomycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Vancomycin (Polaskova 2024)"
@@ -7372,6 +7374,7 @@ articles:
   - articles/Muller_2010_clindamycin
   - articles/Mulyukov_2018_ranibizumab
   - articles/Munana_2018_levetiracetam_dog
+  - articles/Munir_2021_vancomycin
   - articles/Munn_2024_carprofen_moxidectin_internal_standard
   - articles/Muntau_2017_sapropterin
   - articles/Muthukrishnan_2025_clazakizumab
