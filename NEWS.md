@@ -28,6 +28,8 @@
 
 - Add Cheng 2020 sirolimus ([doi:10.1177/2058738420934936](https://doi.org/10.1177/2058738420934936)) -- Chinese children with refractory immune cytopenia.
 
+- Add Chen 2020a tacrolimus ([doi:10.3892/etm.2020.8821](https://doi.org/10.3892/etm.2020.8821)) -- Chinese children and adolescents with lupus nephritis, with and without Wuzhi capsule.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
