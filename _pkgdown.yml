@@ -5692,6 +5692,8 @@ navbar:
         href: articles/Yu_2025b_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
         href: articles/Zhao_2014_vancomycin.html
+      - text: "Vancomycin (Zhao 2021)"
+        href: articles/Zhao_2021_vancomycin.html
       - text: "Vancomycin (Zhao 2025)"
         href: articles/Zhao_2025_vancomycin.html
       - text: "Vancomycin (Zhou 2019)"
@@ -8258,6 +8260,7 @@ articles:
   - articles/Zhao_2014_vancomycin
   - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
+  - articles/Zhao_2021_vancomycin
   - articles/Zhao_2024_ciprofloxacin_colistin
   - articles/Zhao_2024_tacrolimus
   - articles/Zhao_2025_methotrexate
