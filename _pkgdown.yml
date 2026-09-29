@@ -3476,6 +3476,8 @@ navbar:
         href: articles/Hornik_2019_methylprednisolone.html
       - text: "Methylprednisolone sheep (Leber 2023)"
         href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
+      - text: "Metoclopramide (Ge 2020)"
+        href: articles/Ge_2020_metoclopramide.html
       - text: "Metoprolol (Eugene 2016a)"
         href: articles/Eugene_2016a_metoprolol.html
       - text: "Metoprolol (Eugene 2016b)"
@@ -7001,6 +7003,7 @@ articles:
   - articles/Gasthuys_2023_paracetamol
   - articles/Gastonguay_2005_efaproxiral
   - articles/Gatti_1996_dapsone
+  - articles/Ge_2020_metoclopramide
   - articles/Gebhard_2023_leukemia_maintenance_therapy
   - articles/Geerts_2018_amyloidNeurotransmission_qsp
   - articles/Geldof_2008_fluvoxamine_rat
