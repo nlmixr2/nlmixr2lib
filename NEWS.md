@@ -70,6 +70,8 @@
 
 - Add Wang 2020 vitacoxib ([doi:10.3389/fvets.2020.554033](https://doi.org/10.3389/fvets.2020.554033)) -- healthy neutered domestic shorthair cats (preclinical/veterinary).
 
+- Add Danielak 2020 treosulfan ([doi:10.1007/s43440-020-00115-0](https://doi.org/10.1007/s43440-020-00115-0)) -- Wistar rats; treosulfan and its monoepoxide EBDM in plasma and brain.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.

@@ -5664,6 +5664,8 @@ navbar:
         href: articles/Danielak_2017_treosulfan.html
       - text: "Treosulfan (vanderStoep 2019)"
         href: articles/vanderStoep_2019_treosulfan.html
+      - text: "Treosulfan rat (Danielak 2020)"
+        href: articles/Danielak_2020_treosulfan_rat.html
       - text: "Triazolam (Okada 2024)"
         href: articles/Okada_2024_triazolam.html
       - text: "Tribendimidine (Meister 2019)"
@@ -6706,6 +6708,7 @@ articles:
   - articles/Damnjanovic_2023_pediatric_antiepileptics
   - articles/Danielak_2017_clopidogrel
   - articles/Danielak_2017_treosulfan
+  - articles/Danielak_2020_treosulfan_rat
   - articles/Dao_2020_sultiame
   - articles/Darpo_2014_racSotalol
   - articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder
