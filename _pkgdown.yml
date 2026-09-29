@@ -4994,6 +4994,8 @@ navbar:
         href: articles/Candelaria_2018_rituximab.html
       - text: "Rituximab (Chen 2024)"
         href: articles/Chen_2024_rituximab.html
+      - text: "Rituximab (Gibiansky 2021)"
+        href: articles/Gibiansky_2021_rituximab.html
       - text: "Rituximab (Liang 2024)"
         href: articles/Liang_2024_rituximab.html
       - text: "Rituximab (Lioger 2017)"
@@ -7220,6 +7222,7 @@ articles:
   - articles/Gibbs_2017_evolocumab
   - articles/Gibiansky_2005_fospropofol
   - articles/Gibiansky_2014_obinutuzumab
+  - articles/Gibiansky_2021_rituximab
   - articles/Gidal_2018_eslicarbazepine_exposure_response
   - articles/Gilkey_2015_DiRnanoparticle
   - articles/Girard_2012_pimasertib
