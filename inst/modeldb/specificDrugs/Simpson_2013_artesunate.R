@@ -93,7 +93,9 @@ Simpson_2013_artesunate <- function() {
     # value 2.3 nM is the Genotype 1 (WT reference) population mean from
     # the genotype-covariate model and is the right starting point here.
     # Slope from Table 1 NLME row artesunate: 5.86 (95% reference range
-    # 1.70 to 20.10). Slope covariates dropped per skill sidecar.
+    # 1.70 to 20.10). Slope covariates dropped by decision of the maintainers
+    # (File S2 was not available when this model was built; the main text
+    # describes slope effects as "minimal" / "not significant").
     # ---------------------------------------------------------------------
     lec50  <- log(2.3);  label("Population log-EC50 for the WT reference parasite (log of nM)") # Table 3 Artesunate Genotype 1 reference
     lgamma <- log(5.86); label("Population log-slope gamma of the sigmoid inhibition curve (log of unitless)") # Table 1 NLME row artesunate

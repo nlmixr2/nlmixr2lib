@@ -81,7 +81,7 @@ Rymut_2023_anti_tryptase <- function() {
     # literature and from healthy-subject visual fits; only the systemic TMDD block above
     # is re-estimated. Every value below is a structural assumption fixed by the authors,
     # hence wrapped in fixed(). For prospective simulation of adults with moderate-to-severe
-    # asthma, the operator may override bl_tryptase_isf (40 ng/mL healthy -> 140 ng/mL asthma
+    # asthma, users may override bl_tryptase_isf (40 ng/mL healthy -> 140 ng/mL asthma
     # per Figure 5b) and the systemic baseline tryptase via lbase (0.223 nM healthy -> ~0.335 nM
     # asthma, i.e. 1.5x healthy) before simulation. See the vignette for worked examples.
     kp_free          <- fixed(0.03);                       label("Biodistribution coefficient of free MTPS9579A from serum to airway ISF (fraction). Visual best fit across SAD + MAD cohorts; supported by the observed nasal-lining-fluid:serum concentration ratio (Methods, Figure 4, Figure S2)")  # Methods "biodistribution coefficient of 3 percent" + Figure S2

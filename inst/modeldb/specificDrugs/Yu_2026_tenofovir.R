@@ -191,13 +191,12 @@ Yu_2026_tenofovir <- function() {
     lq_tfv  <- log(77.9);  label("Apparent intercompartmental clearance Q/F of plasma TFV (L/h)")          # Table 2 (Q/F = 77.9 L/h, RSE 11%)
 
     # ------------------------------------------------------------------
-    # Intracellular TFV-dp biophase pools. The `_pbmc` influx / efflux
-    # family was ratified for this extraction (operator sidecar
-    # oare_PMC12783228 request-001 / response-001, q1 option A) as the
-    # PBMC parallel of the registered `lkinf_rbc` / `lkeff_rbc` family;
-    # the bare `lkinf_pbmc` is the parent-driven (plasma TAF) influx and
-    # `lkinf_pbmc_tfv` the plasma-TFV-driven influx. Response q2 option B
-    # keeps the red-cell pair on the registered bare names.
+    # Intracellular TFV-dp biophase pools. The maintainers adopted the
+    # `_pbmc` influx / efflux family for this model as the PBMC parallel
+    # of the registered `lkinf_rbc` / `lkeff_rbc` family; the bare
+    # `lkinf_pbmc` is the parent-driven (plasma TAF) influx and
+    # `lkinf_pbmc_tfv` the plasma-TFV-driven influx. The red-cell pair
+    # keeps the registered bare names.
     # ------------------------------------------------------------------
     lkinf_pbmc     <- log(1.59);   label("Influx rate constant K(TAF-TFVdp-PBMC) from plasma TAF into PBMC TFV-dp (1/h)")   # Table 2 (K_TAF-TFV-dp-PBMC = 1.59 /h, RSE 11%)
     lkinf_pbmc_tfv <- log(0.0116); label("Influx rate constant K(TFV-TFVdp-PBMC) from plasma TFV into PBMC TFV-dp (1/h)")   # Table 2 (K_TFV-TFV-dp-PBMC = 0.0116 /h, RSE 9%)

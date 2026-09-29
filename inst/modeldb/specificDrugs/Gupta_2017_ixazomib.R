@@ -173,8 +173,8 @@ Gupta_2017_ixazomib <- function() {
     # plateau" so the time-after-dose interpretation is consistent
     # with the paper's text. NONMEM additive-on-log-scale residual
     # error maps to nlmixr2 `prop()` in linear concentration space
-    # (per references/naming-conventions.md NONMEM -> nlmixr2 syntax
-    # table).
+    # (per the library's NONMEM -> nlmixr2 syntax
+    # convention).
     # ------------------------------------------------------------------
     errSd <- sd0 + (sd1 - sd0) * exp(-ksd * tad())
     Cc ~ prop(errSd)

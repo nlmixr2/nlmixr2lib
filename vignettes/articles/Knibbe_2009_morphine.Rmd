@@ -35,7 +35,7 @@ re-simulating the typical-value trajectories on the event table that
 ships with the DDMORE bundle (`Simulated_PaediatricMorphinePK.csv`)
 and visually comparing them to the bundle's stochastic-simulation
 dependent variable. This is a self-consistency check (the source
-publication PDF was not on disk during extraction, so a direct
+publication PDF was not available when this model was built, so a direct
 figure-replication check against the publication is not possible).
 
 # Population
@@ -50,8 +50,8 @@ glucuronidation pathways. The DDMORE-shipped `Output_real_run4.lst`
 listing was fit to a `Combined_InternalExternalData.csv` dataset
 covering 338 individuals / 2,809 observations / 5,302 records -- a
 post-publication re-run on an extended pooled cohort. The full Knibbe
-2009 publication PDF was not on disk during extraction; the model file's
-`population` metadata flags the demographic detail fields as TODO.
+2009 publication PDF was not available when this model was built; the model
+file's `population` metadata flags the demographic detail fields as TODO.
 
 The same metadata is available programmatically:
 
@@ -258,7 +258,7 @@ the metabolite compartment volumes via `vc_m3g = fvm * vc`.
 
 # Assumptions and deviations
 
-- **Source publication PDF was not on disk during extraction.** All
+- **Source publication PDF was not available when this model was built.** All
   parameter values come from the DDMORE-shipped
   `Output_real_run4.lst` listing (`MINIMIZATION SUCCESSFUL`, NSIG=3.0).
   The publication abstract (PubMed PMID 19650676) confirms the headline

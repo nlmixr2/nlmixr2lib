@@ -149,7 +149,9 @@ stopifnot(dplyr::n_distinct(events$id) == 3L * n_per_arm)
 
 ```{r simulate}
 mod <- readModelDb("Song_2024_tigecycline")
-sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "dose_mg")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "dose_mg"),
+                       maxsteps = 1e6) |>
   as.data.frame()
 
 # The model computes cl and vc as model variables, so rxSolve returns them per

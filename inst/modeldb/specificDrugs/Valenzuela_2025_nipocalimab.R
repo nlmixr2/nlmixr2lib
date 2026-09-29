@@ -38,7 +38,7 @@ Valenzuela_2025_nipocalimab <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (Phase 2 MOM-M281-004 / Vivacity-MG)",
-      notes = "Switches the proportional PK residual magnitude (0.0834 for Phase 1 vs 0.367 for Phase 2). Renamed from generic canonical PHASE1 to paper-specific STUDY_NIPOCALIMAB_PHASE1 on 2026-06-19 per the canonical-register standardization audit (operator decision: the generic PHASE1 token collided with Farrell 2012's PHASE2 canonical that picks the opposite reference category).",
+      notes = "Switches the proportional PK residual magnitude (0.0834 for Phase 1 vs 0.367 for Phase 2). Renamed from generic canonical PHASE1 to paper-specific STUDY_NIPOCALIMAB_PHASE1 on 2026-06-19 per the canonical-register standardization audit (the maintainers decided this because the generic PHASE1 token collided with Farrell 2012's PHASE2 canonical that picks the opposite reference category).",
       source_name = "PHASE1"
     ),
     STUDY_M281_004 = list(

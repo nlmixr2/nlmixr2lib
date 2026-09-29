@@ -181,11 +181,11 @@ Henin_2012_felodipine <- function() {
     # (Equation 1 of the paper). The paper describes SIG qualitatively
     # ('the higher the SIG, the steeper the step function') but does
     # not report a numeric typical value in the main text or tables and
-    # the NONMEM control-file supplement is not on disk. SIG = 20 is a
-    # commonly used value that yields a near-instantaneous transition
-    # (the 10-90 percentile window spans ~ 0.22 h at SIG = 20). Held
-    # FIXED to preserve the paper's mechanistic intent of a sharp
-    # step-function switch between GI regions.
+    # the NONMEM control-file supplement was not available when this model
+    # was built. SIG = 20 is a commonly used value that yields a
+    # near-instantaneous transition (the 10-90 percentile window spans
+    # ~ 0.22 h at SIG = 20). Held FIXED to preserve the paper's mechanistic
+    # intent of a sharp step-function switch between GI regions.
     # ------------------------------------------------------------------
     sig          <- fixed(20) ; label("STEP-function sigmoidicity factor SIG (unitless;; not reported in paper)") # Paper Eq 1; specific SIG value not reported in Henin 2012 (see vignette Errata) -- FIXED at 20 per common practice
 

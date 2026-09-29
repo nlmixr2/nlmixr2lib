@@ -292,8 +292,8 @@ defect -- do not tune parameters to close the gap.
 
 - **Reference weight for V/F.** The paper reports the linear body-weight
   coefficient theta_BW = 0.0183 (Table III) but the equation section of the
-  Results paragraph following Table III is rendered as an image
-  ("formula-not-decoded" in the extracted markdown) and does not print the
+  Results paragraph following Table III is rendered as an image (it does not
+  survive plain-text extraction of the PDF) and does not print the
   reference weight explicitly. This vignette (and the packaged model) uses a
   reference weight of 70 kg per the package's "sensible standard when
   unspecified" convention. Alternative reasonable choices are the cohort

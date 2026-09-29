@@ -243,14 +243,14 @@ Darpo_2014_racSotalol_QTcF <- function() {
     # 'additive between-subject variability associated with slope and
     # intercept' (option (i) of the three evaluated structures), but
     # the source paper does NOT report the variance estimates for
-    # omega_e0 or omega_slope. Per the standing operator policy on
+    # omega_e0 or omega_slope. Per the maintainers' standing policy on
     # unreported IIV, this file omits the eta declarations and ships a
     # typical-value-only model. The vignette Errata documents the gap.
     # ==================================================================
 
     # ==================================================================
     # Residual error: not reported numerically in Darpo 2014. Encoded
-    # as fixed(0) per the standing operator policy on unreported
+    # as fixed(0) per the maintainers' standing policy on unreported
     # residual error (the model returns the deterministic typical-
     # value prediction). The vignette Errata documents the gap.
     # ==================================================================

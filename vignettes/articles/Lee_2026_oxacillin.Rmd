@@ -749,7 +749,11 @@ infusion stops at 48 h.
 ```{r pknca}
 sim_nca <- sim_typ |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, cohort)
+  dplyr::select(id, time, Cc, cohort) |>
+  # Keep Cc >= 1e-6 * max(Cc) per subject after the peak (solver noise below); time zero is re-added below.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Guarantee a time = 0 record per subject; concentration before the loading
 # infusion starts is zero.

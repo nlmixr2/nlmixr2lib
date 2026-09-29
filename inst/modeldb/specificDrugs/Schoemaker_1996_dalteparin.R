@@ -76,7 +76,7 @@ Schoemaker_1996_dalteparin <- function() {
     notes = paste(
       "Baseline demographics are reported in the upstream Kroon 1993 abstract",
       "(reference [11] of Schoemaker 1996; Br J Clin Pharmacol 35:548P) which",
-      "was NOT on disk at extraction time. The Schoemaker 1996 paper itself",
+      "was not available when this model was built. The Schoemaker 1996 paper itself",
       "reports only that 12 subjects contributed to the cross-over study.",
       "The complex multi-route PK/PD fit was advanced in steps to ensure",
       "successful NONMEM convergence: first the IV data were analysed alone;",

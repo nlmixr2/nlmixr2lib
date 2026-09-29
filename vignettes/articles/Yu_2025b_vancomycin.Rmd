@@ -802,10 +802,10 @@ stopifnot(abs(auc15 - 200) / 200 < 0.35)
 - **No erratum.** The EuropePMC record for doi:10.1111/cts.70293 carries no
   `commentCorrectionList` entry as of 2026-09-08.
 
-- **The printed equations were recovered with `pdftotext -layout`.** The
-  markdown text extracted from the PDF collapses both display equations of
-  Results 3.2 to a `<!-- formula-not-decoded -->` marker; the
-  layout-preserving text extraction recovers them in full.
+- **The printed equations were recovered with `pdftotext -layout`.** Both
+  display equations of Results 3.2 do not survive an ordinary plain-text
+  extraction of the PDF; the layout-preserving text extraction recovers them in
+  full.
 
 ## Simulation assumptions
 

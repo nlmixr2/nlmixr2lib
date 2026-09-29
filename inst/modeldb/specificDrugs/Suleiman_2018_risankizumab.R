@@ -76,15 +76,14 @@ Suleiman_2018_risankizumab <- function() {
     # Suleiman 2018 Sect. 3.2 states "introducing a correlation between CL and Vc
     # reduced the OFV by 135 points" but Table 3 does NOT report the covariance
     # magnitude. The value is expected to be in the Electronic Supplementary
-    # Material (ESM), which was not on disk during extraction.
+    # Material (ESM), which was not available when this model was built.
     # Non-paper provenance: carried from sibling Suleiman_2019_risankizumab.R
     # (Suleiman AA is lead author on both; the 2018 phase I-II cohort is a
     # strict subset of the 2019 integrated phase I-III cohort). The 2019 model
     # reports a CL-Vc correlation of 39%; propagating that same correlation
     # onto the 2018 variances gives covariance = 0.39 * sqrt(0.12832 * 0.26432)
     # = 0.07182. See vignette Assumptions and deviations for the provenance
-    # rationale and the operator sidecar exchange (request-001/002) that
-    # authorised this substitution.
+    # rationale; the maintainers authorised this substitution.
     etalcl + etalvc ~ c(0.12832,
                         0.07182, 0.26432)                                              # Suleiman 2018 Table 3 (IIV CL 37%, IIV Vc 55%); CL-Vc covariance carried from Suleiman 2019
     etalvp ~ 0.11556                                                                    # Suleiman 2018 Table 3 (IIV Vp 35%)

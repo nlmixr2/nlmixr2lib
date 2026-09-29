@@ -195,7 +195,7 @@ Setiawan_2023_sulbactam <- function() {
     # Residual unexplained variability is NOT reported. Methods 2.4.1 states only
     # that "Both lambda and gamma error models were tested"; neither the selected
     # error model nor the Pmetrics assay-error polynomial coefficients (C0-C3)
-    # appear in the paper, and there is no supplement on disk carrying them.
+    # appear in the paper, and no available supplement carries them.
     # Carried as fixed(0) rather than invented -- see vignette Errata.
     # ------------------------------------------------------------------------
     propSd <- fixed(0); label("Proportional residual SD (fraction; 0 -- not reported in the source)")

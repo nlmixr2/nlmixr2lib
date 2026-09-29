@@ -265,10 +265,9 @@ Huang_2026_tiapride <- function() {
     # its median saliva prediction ~2100 ng/mL, giving
     #     A_saliva = 34.7 * 0.790 / ((0.762 + 0.790) * 6.24) = 2.83 mg
     #     vsaliva  = 1000 * 2.83 / 2100 = 1.35 L.
-    # Operator-ratified 2026-09-21 (sidecar request-001 / response-001 q1,
-    # option B) under the standing figure-digitisation policy. Rejected
-    # readings, and the roughly twofold uncertainty this value carries, are
-    # recorded in the vignette Errata.
+    # Ratified by the maintainers on 2026-09-21 under the standing
+    # figure-digitisation policy. Rejected readings, and the roughly twofold
+    # uncertainty this value carries, are recorded in the vignette Errata.
     # ------------------------------------------------------------------
     lvsaliva <- fixed(log(1.35)); label("Apparent saliva volume scaling saliva amount to concentration (L)")    # NOT REPORTED by Huang 2026; recovered from the Figure 4 VPC medians -- see the note above
 

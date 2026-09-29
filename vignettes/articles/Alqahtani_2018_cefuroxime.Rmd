@@ -469,7 +469,7 @@ against published features are available:
   log-normal IIV without explicitly stating whether the OMEGA matrix
   was diagonal or full. The packaged model uses diagonal IIV; this is
   consistent with the reported information but cannot be cross-checked
-  against the original Monolix project file (not on disk).
+  against the original Monolix project file (not available).
 
 - **`omega^2 = log(CV^2 + 1)`.** Table 2 reports IIV as CV%; the
   corresponding log-normal variance was computed via

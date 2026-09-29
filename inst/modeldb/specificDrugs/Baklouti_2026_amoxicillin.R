@@ -127,8 +127,7 @@ Baklouti_2026_amoxicillin <- function() {
     # independent eta on each. Reparameterising to lcl + lvc would force
     # etalkel = etalcl - etalvc, i.e. a correlated eta block the authors
     # did not fit, so it would change the model. lkel is therefore used
-    # alongside an explicit lvc (operator sidecar oare_PMC13206287
-    # request-001 / response-001, question q2, option A).
+    # alongside an explicit lvc (a choice confirmed by the maintainers).
     #
     # V/F is apparent: amoxicillin was given orally and F was not
     # estimated, so bioavailability is folded into the volume and no
@@ -153,11 +152,11 @@ Baklouti_2026_amoxicillin <- function() {
 
     # First-order loss out of the milk compartment. Registered as a
     # member of the lkeff_<pool> / keff_<pool> efflux family alongside
-    # lkeff_rbc and lkeff_pbmc (operator sidecar oare_PMC13206287
-    # request-001 / response-001, question q1, option A). Lumped in the
-    # same sense as its siblings: it combines removal of milk from the
-    # breast by feeding with milk turnover. Nothing returns to plasma,
-    # so this is NOT k_milk_central.
+    # lkeff_rbc and lkeff_pbmc (a placement confirmed by the
+    # maintainers). Lumped in the same sense as its siblings: it
+    # combines removal of milk from the breast by feeding with milk
+    # turnover. Nothing returns to plasma, so this is NOT
+    # k_milk_central.
     lkeff_milk <- log(0.33)
     label("First-order elimination rate constant of amoxicillin out of the milk compartment, kmilk_e (1/h)")         # Table 3 'K milk_e (h-1) 0.33, RSE 19.4%, 95%CI 0.23-0.48'
 
@@ -222,11 +221,10 @@ Baklouti_2026_amoxicillin <- function() {
 
     # ---- 2. ODE system ------------------------------------------------
     # Baklouti 2026 Results section 3.2, display equations on p. 1836,
-    # topology in Figure 1. Transcribed from the PDF with
-    # `pdftotext -layout`; the trimmed markdown renders them as
-    # <!-- formula-not-decoded -->, and the publisher's symbol font
-    # encodes the minus and multiplication operators as C0 control bytes
-    # (0x03 and 0x04), so the signs below were decoded with `cat -A`:
+    # topology in Figure 1. Transcribed from the PDF text layer with
+    # `pdftotext -layout`; the publisher's symbol font encodes the
+    # minus and multiplication operators as C0 control bytes (0x03 and
+    # 0x04), so the signs below were decoded with `cat -A`:
     #
     #   dG(t)/dt = -ka * G(t)                            G(0) = F * D
     #   dX(t)/dt =  ka * G(t) - ke * X(t) - kmilk * X(t) X(0) = 0

@@ -509,10 +509,10 @@ knitr::kable(
 - **TBW distribution**: the paper's MCS truncated TBW at 40 kg (Methods, Monte
   Carlo Simulations). This extraction reproduces that truncation via rejection
   sampling from N(70.8, 19.9^2) restricted to TBW >= 40 kg.
-- **Table S2 (`Additional parameters used in the model`) not on disk**: the
+- **Table S2 (`Additional parameters used in the model`) not available**: the
   paper references a Table S2 in the Results section. All parameter values
   needed to reproduce the model appear in the main text (Results paragraph 1
-  and Methods); the on-disk main PDF was used as the sole extraction source.
+  and Methods); the main PDF was used as the sole source.
   Table S2 is inferred from context (Methods) to consolidate MCS input choices
   (dose range 5-10 mg/kg, MIC 0.5-4 mg/L, TBW >= 40 kg, dosing interval 24 h,
   infusion time 0.5 h) that are already stated in the main text.

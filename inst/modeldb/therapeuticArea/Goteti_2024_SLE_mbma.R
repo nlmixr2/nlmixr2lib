@@ -22,7 +22,7 @@ Goteti_2024_SLE_mbma <- function() {
     "fenebrutinib, IPP-201101, the s.c. q.w. lulizumab pegol arm, lupuzor, ",
     "PF-04236921, tabalumab, ustekinumab) were modelled as discrete ",
     "per-regimen additive effects on the latent-scale delta multiplier ",
-    "(1 + xi_ij); the operator passes the reference discrete-effect ",
+    "(1 + xi_ij); the user passes the reference discrete-effect ",
     "value through the CONMED_XI_DISCRETE covariate (documented lookup ",
     "in the vignette). SRI-4/5/6 responder probabilities are modelled ",
     "as a generalized proportional-odds transform of the latent SLE ",

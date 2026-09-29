@@ -35,7 +35,7 @@ Ibrahim_2025_ibrutinib_bp <- function() {
   # names follow the paired-output suffix idiom already used for
   # `circ_<celltype>` (compartment-names.md), applied to the registered
   # `transit<n>` chain. Declared as paper-specific rather than minted as a new
-  # canonical so the operator can decide in review whether a paired-output
+  # canonical so the maintainers can decide in review whether a paired-output
   # transit suffix deserves registration; see the vignette Errata.
   paper_specific_compartments <- c("sbp_transit1", "dbp_transit1")
   units <- list(

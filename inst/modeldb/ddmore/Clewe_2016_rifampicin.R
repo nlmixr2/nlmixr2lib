@@ -58,10 +58,10 @@ Clewe_2016_rifampicin <- function() {
   ini({
     # All values are FINAL PARAMETER ESTIMATES from
     # Output_real_MTP.lst lines 386-411 (post `MINIMIZATION SUCCESSFUL`,
-    # FOCE; see ddmore-source.md "Reading final estimates from .lst").
-    # The Clewe 2016 publication is not on disk under
-    # /home/bill/github/mab_human_consensus/literature; values therefore
-    # have not been cross-checked against the paper's printed tables.
+    # FOCE; per the DDMORE-source convention final estimates are read from the .lst).
+    # The Clewe 2016 publication was not available when this model was
+    # built; values therefore have not been cross-checked against the
+    # paper's printed tables.
 
     lkg <- log(0.206)
     label("Growth rate of fast-multiplying bacteria (1/day)")
@@ -107,7 +107,7 @@ Clewe_2016_rifampicin <- function() {
 
     # Residual error: NONMEM `IPRED = LOG(F+S); Y = IPRED + EPS(1)` with
     # SIGMA = 0.160 (variance on log-scale residual). Per
-    # naming-conventions.md Section "$ERROR block patterns" this maps to a
+    # the package's NONMEM-to-nlmixr2 translation convention this maps to a
     # proportional error in linear space: cfu ~ prop(propSd) with
     # propSd = sqrt(SIGMA) = sqrt(0.160) = 0.400.
     propSd <- sqrt(0.160)

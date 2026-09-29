@@ -633,9 +633,9 @@ underlying EBE difference was zero.
   `ini(lcl = log(2.3))`.
 
 - **Exponents recovered with `pdftotext -layout`.** Both final-model equations
-  are display mathematics that the markdown preprocessing of this paper drops
-  entirely (it emits `<!-- formula-not-decoded -->` in their place), taking the
-  whole covariate model with them. They are recovered from the PDF with
+  are display mathematics that do not survive plain-text extraction of the PDF
+  (they are dropped entirely, taking the whole covariate model with them). They
+  are recovered from the PDF with
   `pdftotext -layout`, which preserves superscripts by placing them on the line
   above; the extraction is quoted verbatim in the Source trace section. The
   same extraction is what establishes that the Vd weight term carries *no*

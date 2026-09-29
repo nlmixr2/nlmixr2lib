@@ -10,9 +10,8 @@
 # (Midazolam 2-cmt popPK in critically ill children, fit to
 # Data20150701.csv). The bundle's .mod is the correct Valitalo 2017
 # IRT morphine PD model; its inline $THETA / $OMEGA / $SIGMA values
-# match Table 2 of the publication (paper PDF on disk at
-# /home/bill/gitlab/nlmixr2lib_ingestion/from_people/literature_2018_search/
-# Vlitalo_2017_Morphine_Pharmacodynamics_in_Mechanicall_966c39.pdf).
+# match Table 2 of the publication (the paper PDF was available when
+# this model was built).
 # Parameter VALUES below come from Table 2 of the paper and are
 # cross-verified against the .mod's inline initials, which equal the
 # final estimates. The mismatched .lst is documented in the vignette
@@ -122,7 +121,7 @@ Valitalo_2017_morphine <- function() {
       "Ten patients of the original 150 in Simons 2003 were excluded because they were extubated early or had other reasons for early study termination.",
       "16,257 item-level COMFORT-B / PIPP / NIPS / VAS recordings were analysed across the 140 neonates.",
       "Demographics from Valitalo 2017 Methods 'Study design' paragraph and Table 1.",
-      "Sex split not reported in the available trimmed source."
+      "Sex split not reported in the available source text."
     )
   )
 
@@ -137,7 +136,7 @@ Valitalo_2017_morphine <- function() {
     # response model for pain"; Supplementary Electronic Material S2)
     # and held fixed for the PD modelling stage. The values are not
     # individually tabulated in the paper main text -- they are in the
-    # paper's online supplement S2 which is not on disk; the .mod
+    # paper's online supplement S2, which was not available when this model was built; the .mod
     # carries them as the authoritative copy.
     #
     # Discrimination THETAs are positive (`(0,value)` in $THETA);

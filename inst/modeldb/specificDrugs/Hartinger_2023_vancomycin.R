@@ -40,7 +40,7 @@ Hartinger_2023_vancomycin <- function() {
   # the same state (also called `peritoneum`) as paper-specific for
   # intraperitoneal perioperative chemotherapy. Hartinger 2023 is the second
   # independent paper in the library to carry an intraperitoneal-cavity state,
-  # which per the operator's standing ruling is the trigger to consider
+  # which per the maintainers' standing ruling is the trigger to consider
   # promoting `peritoneum` to a canonical compartment; that promotion is a
   # register decision and is proposed in the PR rather than taken unilaterally.
   paper_specific_compartments <- c("peritoneum")

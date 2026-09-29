@@ -85,7 +85,7 @@ Mann_2022_mu_receptor_binding <- function() {
         "6 = fentanyl; 7 = fluoroisobutyryl fentanyl;",
         "8 = furanyl fentanyl; 9 = isobutyryl fentanyl;",
         "10 = naloxone; 11 = remifentanil; 12 = sufentanil;",
-        "13 = nalmefene (added by task 131 from Laffont 2024",
+        "13 = nalmefene (added from Laffont 2024",
         "Supplementary Table S3 scaling approach over Cassel 2005).",
         "Used in model() to gate which Kon_<ligand>, Koff_<ligand>,",
         "n_<ligand> values are routed into the opioid binding ODE."
@@ -278,7 +278,7 @@ Mann_2022_mu_receptor_binding <- function() {
     n_sufentanil    <- fixed(1.02)
     label("Sufentanil binding slope n (unitless,, Table S2)")         # Table S2 row 12
 
-    # 13 - nalmefene (Laffont 2024 Supplement Table S3; added by task 131
+    # 13 - nalmefene (Laffont 2024 Supplement Table S3; added
     # since Mann 2022 Table S2 did not include nalmefene). Values derived
     # by Laffont 2024 Methods 2.3 scaling approach: nalmefene-to-naloxone
     # Kon and Koff ratios from Cassel 2005 multiplied by the Mann 2022

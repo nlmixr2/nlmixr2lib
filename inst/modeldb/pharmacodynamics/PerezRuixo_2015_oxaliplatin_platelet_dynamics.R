@@ -186,8 +186,8 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
       "Age, BSA, sex, total proteins and HIO carrier solution were tested",
       "as covariates and did not reach significance. Only prior splenectomy",
       "was retained (on ks). The paper does not tabulate baseline",
-      "demographic ranges (age, weight, sex distribution) in the trimmed",
-      "text on disk; cross-cohort demographics are described in prior",
+      "demographic ranges (age, weight, sex distribution); cross-cohort",
+      "demographics are described in prior",
       "publications by the same group (Perez-Ruixo 2013 Cancer Chemother",
       "Pharmacol; Perez-Ruixo 2013 Clin Pharmacokinet; Valenzuela 2011",
       "AAPS J). Estimation was NONMEM 7.1.2 FOCE. The covariance step",
@@ -281,9 +281,9 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
     # RESIDUAL ERROR - Perez-Ruixo 2015 Methods 'Statistical Model'.
     # 'Residual variability in platelet counts was evaluated using an
     # additive error model after natural logarithmic transformation of the
-    # observations and model predictions'. Per the skill's Phase 4
-    # verification checklist ('NONMEM "additive on log-scale" is
-    # proportional in nlmixr2's linear space'), encode as prop(propSd).
+    # observations and model predictions'. Because a NONMEM additive
+    # error on the log scale is proportional in nlmixr2's linear space,
+    # this is encoded as prop(propSd).
     # Reported epsilon CV = 25.5% (Table I row 'Residual variability').
     # ------------------------------------------------------------------
 
@@ -368,9 +368,8 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
     # 2015 Eq. 6, transfusion contribution omitted in this port; see
     # description). Proportional
     # residual encodes the paper's 'additive on log-scale' error model
-    # (Methods 'Statistical Model' and skill Phase 4 verification
-    # checklist 'NONMEM additive on log-scale is proportional in
-    # nlmixr2s linear space').
+    # (Methods 'Statistical Model'; a NONMEM additive error on the
+    # log scale is proportional in nlmixr2's linear space).
     PLT <- plt_total
     PLT ~ prop(propSd)
   })

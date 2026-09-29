@@ -9,7 +9,7 @@ Liang_2024_osimertinib_qsp <- function() {
     "concentration is NOT fitted here: Liang 2024 generated it with a",
     "whole-body PK-Sim 10.0 PBPK model that is a platform port (no ODEs, no",
     "organ volumes and no blood flows are published, and no .pksim5 project",
-    "was deposited), so that layer is not reproducible from the on-disk",
+    "was deposited), so that layer is not reproducible from the available",
     "sources and is deliberately NOT extracted. The total osimertinib",
     "concentration is instead supplied per record as the canonical",
     "time-varying covariate CEFFECT and multiplied by the fraction unbound fu",
@@ -27,8 +27,7 @@ Liang_2024_osimertinib_qsp <- function() {
     "steady-state occupancy kon*Cfree / (kon*Cfree + kdeg); it uses only",
     "published values (kdeg = 0.025 /h is declared in the supplement and used",
     "on the free-target line), but it is an inferred correction rather than a",
-    "transcription. Extraction performed under operator sidecar decision",
-    "oare_PMC10946252 request-001 = option B (answered 2026-08-05). See the",
+    "transcription. The maintainers decided to encode the corrected form. See the",
     "vignette 'Assumptions and deviations' section for this and for the",
     "residual ~400-fold kon / concentration scale discrepancy against Figure",
     "1's plasma band.",
@@ -237,8 +236,7 @@ Liang_2024_osimertinib_qsp <- function() {
 
     # 3. Target-engagement ODEs, one independent pair per EGFR mutant.
     #
-    #    Liang 2024 printed Eqs 5-6 (recovered from the PDF; the trimmed
-    #    markdown dropped every display equation as `formula-not-decoded`):
+    #    Liang 2024 printed Eqs 5-6 (recovered from the PDF):
     #       dOEm/dt    = kon * Clung * Emfree - koff * OEm
     #       dEmfree/dt = (Em0 - Emfree) * kturnover - kon * Clung * Emfree
     #                    + koff * OEm
@@ -252,7 +250,7 @@ Liang_2024_osimertinib_qsp <- function() {
     #    Figure 1's flat sawtooth plateau. With the term restored, total
     #    target is conserved exactly at rbase (because kturnover = kdeg) and
     #    steady-state occupancy is kon*cfree / (kon*cfree + kdeg).
-    #    Operator sidecar oare_PMC10946252 request-001, option B.
+    #    Encoded this way by the maintainers' decision.
     d/dt(target_t790m) <-
       (rbase - target_t790m) * kturnover -
       kon_t790m * cfree * target_t790m +

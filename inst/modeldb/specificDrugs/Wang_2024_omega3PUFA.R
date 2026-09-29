@@ -83,8 +83,8 @@ Wang_2024_omega3PUFA <- function() {
     # Wang 2024 writes exp(etaKa), exp(etaV), exp(etaCL), exp(etaE0),
     # exp(etaIC50) and exp(etaImax) into the final-model equations, but never
     # reports a single omega. The eta structure is preserved so the published
-    # model form is faithful; every variance is fixed at zero because no value
-    # exists on disk to populate it. See vignette "Assumptions and deviations".
+    # model form is faithful; every variance is fixed at zero because no published
+    # value is available to populate it. See vignette "Assumptions and deviations".
     etalka   ~ fixed(0)  # Wang 2024 p. 3: exp(etaKa) printed, magnitude never reported
     etalvc   ~ fixed(0)  # Wang 2024 p. 3: exp(etaV) printed, magnitude never reported
     etalcl   ~ fixed(0)  # Wang 2024 p. 3: exp(etaCL) printed, magnitude never reported

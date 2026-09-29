@@ -20,9 +20,9 @@ Laffont_2024_naloxone <- function() {
   )
 
   population <- list(
-    n_subjects = "TODO: not reported in main text; the IN naloxone population PK dataset comes from the pharmacodynamic study by Ellison et al. 2024 (ref 23). Detail is in Supplementary Table 2 (not on disk).",
+    n_subjects = "TODO: not reported in main text; the IN naloxone population PK dataset comes from the pharmacodynamic study by Ellison et al. 2024 (ref 23). Detail is in Supplementary Table 2 (not available when this model was built).",
     n_studies = 1,
-    age_range = "Adult (healthy volunteers); detailed range in Supplementary Table 2 (not on disk).",
+    age_range = "Adult (healthy volunteers); detailed range in Supplementary Table 2 (not available when this model was built).",
     weight_median = "TODO: not reported in main text",
     sex_female_pct = "TODO: not reported in main text",
     race_ethnicity = "TODO: not reported in main text",

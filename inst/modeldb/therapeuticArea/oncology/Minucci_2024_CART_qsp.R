@@ -2,9 +2,9 @@
 # QSP model for CD19-targeted CAR T-cell therapy of B-cell non-Hodgkin
 # lymphoma, published by Minucci et al. 2024 (Frontiers in Systems
 # Biology) and calibrated to phase I IM19 CAR T-cell CK / B-cell aplasia
-# data from Ying et al. 2021. Extracted per the pbpk-qsp-mbma discipline
-# (all structural parameters on-disk in the paper's Supplementary
-# Material `Table 1 (1).XLSX`, ODEs written out in Sections 2.3-2.4).
+# data from Ying et al. 2021. All structural parameters are published in
+# the paper's Supplementary Material `Table 1 (1).XLSX`, and the ODEs are
+# written out in Sections 2.3-2.4.
 #
 # The paper's original formulation tracks free and CD19-bound CAR
 # receptors on each T-cell phenotype (infused / activated / effector /
@@ -15,7 +15,7 @@
 # creates severe numerical stiffness and 14 fast-equilibrium receptor
 # states that are algebraic functions of the cell states.
 #
-# This extraction is the mathematically-equivalent fast-binding-limit
+# This model is the mathematically-equivalent fast-binding-limit
 # and fast-T_act-limit reduction: (a) with CAR:CD19 binding on/off
 # rates ~86/day and cell rates 0.005-0.3/day, quasi-steady-state on
 # receptor binding gives f_bound = [CD19]/(K_D + [CD19]) uniformly
@@ -262,7 +262,8 @@ Minucci_2024_CART_qsp <- function() {
 
     # Endogenous lymphocyte concentration -- Methods 2.3.1. Paper text
     # says 10^9 per L but Table S1 has 5e8 per L; the Table S1 (final)
-    # value is used here per the on-disk-final rule. See vignette Errata.
+    # value is used here because the tabulated final value takes
+    # precedence over the prose. See vignette Errata.
     lEndoLympho_perL <- fixed(log(5e8))
     label("Endogenous lymphocyte concentration at steady state (cells/L)")
     # Table S1 EndoLympho_perL = 5e8

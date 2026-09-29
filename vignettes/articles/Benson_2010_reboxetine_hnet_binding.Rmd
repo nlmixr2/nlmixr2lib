@@ -344,7 +344,8 @@ sim_assoc <- solve_det(mod_qsp, ev_assoc)
 
 eq_val  <- tail(sim_assoc$complex, 1)
 # kobs read off the simulated approach to equilibrium.
-fitdat  <- dplyr::filter(sim_assoc, time > 0, time < 0.4)
+# Keep 1 - B/Beq >= 1e-6 of its maximum (1 at t = 0): below that the ODE integrator has no relative accuracy left.
+fitdat  <- dplyr::filter(sim_assoc, time > 0, time < 0.4, 1 - complex / eq_val >= 1e-6)
 kobs_sim <- unname(-coef(lm(log(1 - complex / eq_val) ~ time, data = fitdat))[2])
 kobs_theory <- 2.9e-3 * SEC_H + (2.9e-3 * SEC_H / 1.5) * tail(sim_assoc$tracer, 1)
 

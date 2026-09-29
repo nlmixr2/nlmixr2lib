@@ -128,8 +128,8 @@ SchaedeliStark_2024_balovaptan <- function() {
     label("Age at which 50 percent of adult CL/F is reached (years)")
     # Back-solved from Table 3: the paper prints the receptor-occupancy
     # equation RO = 100 * Cp * fu_plasma / (Kb + Cp * fu_plasma) but reports
-    # neither Kb nor fu_plasma anywhere on disk. Only the ratio Kb/fu_plasma is
-    # identifiable, and it is over-determined by Table 3's seven paired
+    # neither Kb nor fu_plasma in any available source. Only the ratio Kb/fu_plasma
+    # is identifiable, and it is over-determined by Table 3's seven paired
     # (concentration, occupancy) medians; the rounding-interval intersection
     # across all seven rows is [3.076, 3.446] ng/mL. Value NOT from the paper
     # text or tables -- back-solved from printed medians; see vignette Errata.

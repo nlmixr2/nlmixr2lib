@@ -288,7 +288,7 @@ Marques_2025_salbutamol <- function() {
     # READ THE VIGNETTE ERRATA BEFORE SIMULATING. Table 6's Mtt, Cl and V1
     # are each contradicted by the paper's own Table 7 EBE geometric means,
     # by its Table S3 NCA summary and by its Figure 5 VPC. They are shipped
-    # as printed on the operator's ruling; the vignette quantifies every
+    # as printed by the maintainers' decision; the vignette quantifies every
     # discrepancy.
     # ---------------------------------------------------------------------
     lmtt <- log(9.50);  label("Mean transit time Mtt (h)")                            # Table 6 Fixed effects: Mtt = 9.50 h (RSE 7.14%)

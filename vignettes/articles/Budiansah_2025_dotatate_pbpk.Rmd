@@ -109,7 +109,7 @@ mod$meta$population[c("species", "n_subjects", "disease_state", "dose_range")] |
 
 Budiansah 2025 tabulates no patient characteristics; its eight patients are a
 subset of the nine-patient cohort of the upstream Kletting 2016 framework paper,
-whose Table 1 is the only on-disk source of the body surface areas, measured
+whose Table 1 is the only available source of the body surface areas, measured
 51Cr-EDTA glomerular filtration rates, organ volumes, tumour volumes, sexes and
 disease types.
 
@@ -143,7 +143,7 @@ cohort <- cohort |>
     splenectomy   = is.na(ORGVOL_SPLEEN),
     ORGVOL_SPLEEN = ifelse(splenectomy, 1, ORGVOL_SPLEEN),
     # Body weight and hematocrit are "individually measured" per Table S1 but
-    # are tabulated nowhere on disk. See Assumptions and deviations.
+    # are tabulated in no available source. See Assumptions and deviations.
     WT            = 71,
     HCT           = ifelse(SEXF == 1, 40, 45),
     # The canonical CRCL is BSA-normalised; Kletting Table 1 reports absolute

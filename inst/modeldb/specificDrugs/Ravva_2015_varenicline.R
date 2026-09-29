@@ -65,8 +65,8 @@ Ravva_2015_varenicline <- function() {
   # renal function on clearance (CL/F) and body weight on volume of
   # distribution (V/F) ... was used to predict the individual
   # concentration-time profiles based on the subjects' characteristics in this
-  # study". Notes are carried from Ravva_2009_varenicline.R, the on-disk
-  # sibling extraction of that model.
+  # study". Notes are carried from Ravva_2009_varenicline.R, this library's
+  # encoding of that model.
   covariateData <- list(
     CRCL = list(
       description = "Estimated creatinine clearance by the Cockcroft-Gault formula (raw, NOT BSA-normalized)",
@@ -219,7 +219,7 @@ Ravva_2015_varenicline <- function() {
     # pooled analysis is reference 30, Ravva 2009, which is packaged here as
     # inst/modeldb/specificDrugs/Ravva_2009_varenicline.R. Every fixed effect
     # and the whole IIV block below are therefore transcribed verbatim from
-    # that on-disk sibling model (its own source trace points at Ravva 2009
+    # that sibling model (its own source trace points at Ravva 2009
     # Table 4) and wrapped in fixed(), because in the Ravva 2015 analysis they
     # are prior constants rather than estimated quantities.
     # ------------------------------------------------------------------

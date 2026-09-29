@@ -43,7 +43,7 @@ Feng_2023_cyclosporine <- function() {
         "constant in Eq. 8 is not the 27.0 % median printed in Table 1 for",
         "the full 251-patient cohort; Eq. 8 was fitted on the 176-patient",
         "training set, whose demographics are in the online supplemental",
-        "table S3 (not on disk). The exponent is negative: lower haematocrit",
+        "table S3 (not available when this model was built). The exponent is negative: lower haematocrit",
         "leaves less red-cell mass for this highly lipophilic,",
         "erythrocyte-partitioned drug to bind, increasing distribution into",
         "fat and hence the apparent volume (Feng 2023 Discussion)."

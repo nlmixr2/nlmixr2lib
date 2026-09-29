@@ -677,7 +677,7 @@ below.
   757 L rather than 329 L). **The base-10 reading was ratified by the
   maintainers on the strength of that notation convention; the
   base remains unresolved in the source itself and can only be settled by the
-  authors.** Nothing on disk discriminates the two
+  authors.** Nothing in the available sources discriminates the two
   readings: Table 3 reports interval-average concentrations, which are
   `dose/(CL * tau)` and therefore exactly independent of V (the residual scan in
   this vignette finds no interior optimum in V -- the fit improves monotonically

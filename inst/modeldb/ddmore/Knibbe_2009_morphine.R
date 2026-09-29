@@ -70,20 +70,20 @@ Knibbe_2009_morphine <- function() {
     n_subjects = 248,
     n_studies = "pooled (multi-study) cohort; exact study count not stated in the available abstract",
     age_range = "preterm newborns to <3 years (postnatal age range covers neonatal day 0 through ~36 months)",
-    age_median = "TODO: full Knibbe 2009 publication not on disk during DDMORE extraction",
+    age_median = "TODO: full Knibbe 2009 publication not available when this model was built",
     weight_range = "TODO: see age_median note",
     weight_median = "TODO: see age_median note",
     sex_female_pct = NULL,
     race_ethnicity = NULL,
     disease_state = "Postoperative neonates / infants / toddlers (preterm + term) receiving IV morphine for analgesia",
-    dose_range = "IV bolus + continuous infusion; doses and infusion rates not captured (full text not on disk)",
+    dose_range = "IV bolus + continuous infusion; doses and infusion rates not captured (full text not available when this model was built)",
     regions = "Pooled European paediatric cohorts (ICU and postoperative settings; original studies span the Netherlands and France per author affiliations)",
     notes = paste(
       "Per the publication abstract (PMID 19650676): 248 infants contributing 2,159 morphine concentrations.",
       "The DDMORE-shipped Output_real_run4.lst was fit to a pooled `Combined_InternalExternalData.csv` covering",
       "338 individuals / 2,809 observations / 5,302 records (likely an extended-cohort post-publication re-run).",
-      "Demographic detail fields are TODO because the full Knibbe 2009 publication PDF was not on disk during",
-      "extraction; the abstract reports only headline numbers (n = 248, BW exponent on CL = 1.44, PNA cutoff = 10 d)."
+      "Demographic detail fields are TODO because the full Knibbe 2009 publication PDF was not available when",
+      "this model was built; the abstract reports only headline numbers (n = 248, BW exponent on CL = 1.44, PNA cutoff = 10 d)."
     )
   )
 
@@ -92,7 +92,7 @@ Knibbe_2009_morphine <- function() {
     # block of the DDMORE-shipped Output_real_run4.lst (status:
     # MINIMIZATION SUCCESSFUL, NSIG=3.0). The `.mod` $THETA / $OMEGA /
     # $SIGMA blocks list the NONMEM initial values, not the final
-    # estimates; per ddmore-source.md final values come from the `.lst`.
+    # estimates; per the DDMORE-source convention final values come from the `.lst`.
 
     # Morphine central volume V1 (NONMEM CMT 1, the dosed compartment).
     lvc <- log(1.99)
@@ -167,7 +167,7 @@ Knibbe_2009_morphine <- function() {
     #   Y1 = IPRE + ERR(1)        # morphine
     #   Y2 = IPRE + ERR(2)        # M3G
     #   Y3 = IPRE + ERR(3)        # M6G
-    # Per naming-conventions.md `$ERROR block patterns`,
+    # Per the package's NONMEM-to-nlmixr2 translation convention,
     # NONMEM "additive on log-scale" maps to proportional residual error
     # in nlmixr2's linear concentration space. For small SIGMA, the
     # proportional SD equals sqrt(SIGMA). The fourth $SIGMA slot in the

@@ -85,8 +85,8 @@ Gatti_1996_dapsone <- function() {
         "0.953 1/h; the paper's simulation used Ka = 0.957 1/h",
         "(Discussion paragraph 7), with the 0.4% discrepancy attributed",
         "to rounding of theta3 from a precise estimate near 1.043 down",
-        "to 1.04 in Table 3 display. The form was confirmed by operator",
-        "sidecar response 2026-05-30 (request-001 q1=A)."
+        "to 1.04 in Table 3 display. The form was confirmed by the",
+        "maintainers on 2026-05-30."
       ),
       source_name = "Bilirubin (paper Materials and Methods Table 1)"
     )

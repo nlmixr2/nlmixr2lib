@@ -149,7 +149,7 @@ Babel_2026_telisotuzumab_mmae <- function() {
       description = "Concomitant strong CYP3A inhibitor indicator; 1 = coadministered, 0 = not.",
       units = "(binary)",
       type = "binary",
-      notes = "Screened on payload CL (Babel 2026 Table S2, 'Concomitant medications (strong CYP3A inhibitors, strong CYP3A inducers)') but not retained in the final model, so no point estimate exists anywhere on disk. MMAE is a CYP3A4 substrate, which is why the sweep included it. The sibling vedotin payload model Choules_2024_enfortumab does carry a CYP3A perpetrator effect, back-calculated from a dedicated drug-interaction simulation rather than estimated from patient data."
+      notes = "Screened on payload CL (Babel 2026 Table S2, 'Concomitant medications (strong CYP3A inhibitors, strong CYP3A inducers)') but not retained in the final model, so no point estimate is reported anywhere. MMAE is a CYP3A4 substrate, which is why the sweep included it. The sibling vedotin payload model Choules_2024_enfortumab does carry a CYP3A perpetrator effect, back-calculated from a dedicated drug-interaction simulation rather than estimated from patient data."
     ),
     CONMED_CYP3A_IND = list(
       description = "Concomitant strong CYP3A inducer indicator; 1 = coadministered, 0 = not.",

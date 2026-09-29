@@ -19,7 +19,7 @@ Chetty_2014_efalizumab_cd11a_qsp <- function() {
     "endothelial uptake and recycling rate constants and FcRn abundances are",
     "Simcyp database outputs: the paper publishes no organ ODEs and no volume",
     "term of any kind (its only disposition parameter is a systemic clearance",
-    "of 0.0227 L/h), so that layer is not reproducible from the on-disk sources",
+    "of 0.0227 L/h), so that layer is not reproducible from the published sources",
     "and is deliberately NOT extracted. The concentration is instead supplied",
     "per record as the canonical time-varying covariate CP_EFALIZUMAB_UGML and",
     "converted to umol/L inside model(), following the Zhang_2026_ribociclib_qsp",

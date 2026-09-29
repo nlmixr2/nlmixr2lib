@@ -122,8 +122,8 @@ Navid_2016_theophylline_pbpk <- function() {
         "reference value for the subject's sex (24.932 percent for men,",
         "37.5 percent for women, both derived from Supplementary Table 1)",
         "the adipose volume is exactly the tabulated one. The paper's own",
-        "per-race values come from Carpenter 2013, which is not on disk;",
-        "see the vignette Errata."
+        "per-race values come from Carpenter 2013, which was not available",
+        "when this model was built; see the vignette Errata."
       ),
       source_name = "Phi",
       units = "% (percent)",
@@ -628,9 +628,9 @@ Navid_2016_theophylline_pbpk <- function() {
     # adipose volume by Phi = (mean adipose body fraction of the group) /
     # (mean adipose body fraction of the reference group). Phi is supplied
     # here as BODYFAT_PCT relative to the reference-group percent body fat,
-    # because the per-race fractions live in Carpenter 2013, which is not
-    # on disk. BODYFAT_PCT at its reference value leaves the model at the
-    # Table 1 adipose volume.
+    # because the per-race fractions live in Carpenter 2013, which was not
+    # available when this model was built. BODYFAT_PCT at its reference
+    # value leaves the model at the Table 1 adipose volume.
     bodyfat_ref <- bodyfat_ref_male * (1 - SEXF) + bodyfat_ref_female * SEXF
     v_adipose <- v_adipose * BODYFAT_PCT / bodyfat_ref
 

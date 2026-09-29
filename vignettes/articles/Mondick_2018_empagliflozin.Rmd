@@ -1156,7 +1156,7 @@ stopifnot(tmg_mg_min > 250, tmg_mg_min < 450)
   2018 Supplementary Table 2 reproduces the complete Mondick 2016 (Diabetes Obes
   Metab 18:241-248) parameter set, including covariate effects, the IIV block and
   residual error, and the 2018 paper uses it for its own Figures 4 and 5. That
-  primary paper is not on disk for this extraction, so
+  primary paper was not available when this model was built, so
   `Mondick_2018_empagliflozin_t2dm` should be re-verified against it if it is
   acquired. The T2DM file also has no PK layer of its own: it reuses the T1DM PK
   parameters, which is the pairing the authors themselves used ("the PK

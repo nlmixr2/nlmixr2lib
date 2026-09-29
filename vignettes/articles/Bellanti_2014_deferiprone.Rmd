@@ -294,12 +294,11 @@ Assumptions and deviations so a reader can audit it.
   stream encoded the weighting factor differently (e.g. as a power weight on
   `F`), the predictive intervals would shift; the typical-value trajectory
   (which is the published Cmax and AUC) is unaffected.
-- **`Y_ij = F_ij + epsilon * W` formula not decoded in the extracted
-  text.** The PDF text extraction stored the equation as a
-  `<!-- formula-not-decoded -->` placeholder. The equation was read directly
-  from the layout-preserving PDF text dump (`pdftotext -layout`) to
-  disambiguate; the form above is verbatim from the Methods,
-  Pharmacokinetic modelling section.
+- **`Y_ij = F_ij + epsilon * W` formula lost by plain-text extraction.**
+  The equation does not survive plain-text extraction of the PDF. It was
+  read directly from the layout-preserving PDF text dump
+  (`pdftotext -layout`) to disambiguate; the form above is verbatim from the
+  Methods, Pharmacokinetic modelling section.
 - **Body weight excluded from the final model.** Bellanti 2014 Results note
   that weight was significant on CL/F and V/F in univariate analysis but was
   dropped from the final model because it destabilised the bootstrap

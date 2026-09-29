@@ -77,7 +77,7 @@ Hansson_2013c_sunitinib <- function() {
   population <- list(
     n_subjects = 303L,
     n_studies = 1L,
-    age_range = "adults with imatinib-resistant GIST (paper not on disk; Hansson 2013c CPT Pharmacometrics Syst Pharmacol 2013;2:e85 baseline-demographics table not available in the bundle)",
+    age_range = "adults with imatinib-resistant GIST (paper not available when this model was built; Hansson 2013c CPT Pharmacometrics Syst Pharmacol 2013;2:e85 baseline-demographics table not available in the bundle)",
     weight_range = "not reported in the DDMORE bundle",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
@@ -85,7 +85,7 @@ Hansson_2013c_sunitinib <- function() {
     dose_range = "Sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule (standard GIST regimen at the time of the source study). Placebo arm: no sunitinib.",
     regions = "Phase III multinational trial; specific regions not reported in the DDMORE bundle.",
     biomarkers = "Fatigue grade per NCI-CTC v3 (ordinal: 0 = none, 1 = mild, 2 = moderate, 3+ = severe or worse, with the .mod's PDV.GT.2 branch pooling grade 3 and grade 4). The upstream sVEGFR-3 biomarker dynamics are consumed as data covariates (BAS_SVEGFR3 + MRT_SVEGFR3 + EC50_SVEGFR3) rather than re-fitted.",
-    notes = "n_subjects = 303 carried over from the upstream Hansson 2013a biomarker model (same Phase III trial cohort); the AE-OS paper's fatigue analysis-set count is not derivable from the DDMORE bundle. Detailed baseline-demographics (age, weight, sex, race, prior-imatinib-duration distributions) are in the linked publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e85, doi:10.1038/psp.2013.62), which was not on disk in /home/bill/github/mab_human_consensus/literature at extraction time. The bundle's simulated dataset is intentionally minimal (three subjects, daily observations over 27 days) and is not representative of the published cohort."
+    notes = "n_subjects = 303 carried over from the upstream Hansson 2013a biomarker model (same Phase III trial cohort); the AE-OS paper's fatigue analysis-set count is not derivable from the DDMORE bundle. Detailed baseline-demographics (age, weight, sex, race, prior-imatinib-duration distributions) are in the linked publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e85, doi:10.1038/psp.2013.62), which was not available when this model was built. The bundle's simulated dataset is intentionally minimal (three subjects, daily observations over 27 days) and is not representative of the published cohort."
   )
 
   ini({

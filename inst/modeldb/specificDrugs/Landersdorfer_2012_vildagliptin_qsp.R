@@ -211,7 +211,7 @@ Landersdorfer_2012_vildagliptin_qsp <- function() {
     # paper, the companion article, or any supplement -- the Methods define
     # it ("where Vglc (dl) is the volume of distribution of glucose", p. 376)
     # and Table 1 omits it. Back-solved from the Figure 3 placebo-panel median
-    # (operator ruling 2026-09-02). Digitising that median and fitting V_glc
+    # (by the maintainers' decision). Digitising that median and fitting V_glc
     # gives 250 dL (95 combinations of the unreported meal times and food-
     # intake durations bracket it at 246-255 dL); the resulting endogenous
     # glucose production B_glc * k_out_glc * V_glc = 11.1 g/h = 2.0 mg/kg/min

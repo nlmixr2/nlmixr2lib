@@ -132,7 +132,7 @@ Shchelokov_2023_nivolumab_qsp <- function() {
     # pharmacokinetics"), whose reference weight is 80 kg (Bajaj 2017
     # Table 1 footnote a, Eqs. 7 and 10); Vc = 3.63 L and CL = 9.4 mL/h are
     # that paper's typical values AT 80 kg, so 80 kg is the only weight at
-    # which this model reproduces them. Inherited from the on-disk upstream
+    # which this model reproduces them. Inherited from the upstream
     # source, not from the lead paper.
     ref_wt <- 80 # kg
 

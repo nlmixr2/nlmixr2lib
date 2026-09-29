@@ -653,7 +653,7 @@ surface |>
 
 - **Supplemental Equations S7-S16 are not recoverable from the supplement
   file.** The supplement's ten exposure-response equations are MathType
-  (`Equation.DSMT4`) OLE objects. The `.doc` on disk retains only the field
+  (`Equation.DSMT4`) OLE objects. The `.doc` retains only the field
   results -- its `ObjectPool` storage and the rendered metafile bits are both
   absent, so the equation images cannot be extracted or rendered. The structure
   encoded here is therefore taken from main-text Equations 1-7, which *are*

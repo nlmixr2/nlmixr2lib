@@ -55,7 +55,7 @@ Girard_2012_pimasertib <- function() {
       units = "ng/mL",
       type = "continuous",
       reference_category = NULL,
-      notes = "Source column CMAXM1. Per-subject summary derived from the upstream Girard 2012 pimasertib popPK model (not in nlmixr2lib at extraction time). Acts as additive shift on logit(P(AE >= k)) centred at 0 ng/mL: source MED17 = 0 sets the reference, so the linear term is theta * (CMAX_M1 - 0) = theta * CMAX_M1 directly.",
+      notes = "Source column CMAXM1. Per-subject summary derived from the upstream Girard 2012 pimasertib popPK model (not in nlmixr2lib when this model was built). Acts as additive shift on logit(P(AE >= k)) centred at 0 ng/mL: source MED17 = 0 sets the reference, so the linear term is theta * (CMAX_M1 - 0) = theta * CMAX_M1 directly.",
       source_name = "CMAXM1"
     ),
     DOSE = list(
@@ -79,12 +79,12 @@ Girard_2012_pimasertib <- function() {
   population <- list(
     n_subjects = 199,
     n_studies = 2,
-    age_range = "(adult oncology cohort; specific range not extracted -- the linked PAGE 21 (2012) Abstr 2458 publication is conference-abstract-only and was not on disk for cross-check at extraction time)",
+    age_range = "(adult oncology cohort; specific range not extracted -- the linked PAGE 21 (2012) Abstr 2458 publication is conference-abstract-only and was not available for cross-check when this model was built)",
     weight_range = "(not extracted)",
     sex_female_pct = "(not extracted)",
     disease_state = "Advanced solid tumours and hematological malignancies (two phase I dose-escalation studies)",
     dose_range = "1-255 mg/day pimasertib (orally; QD or BID schedules pooled across the two phase I studies; observed daily-dose values in the bundled simulated dataset: 1, 1.5, 2, 2.5, 3.5, 5, 7, 14, 16, 28, 30, 45, 46, 60, 68, 84, 90, 94, 120, 150, 195, 255 mg)",
-    notes = "n_subjects = 199 and n_observations = 3655 (DVID == 2 ocular-AE-grade rows after IGNORE(DVID.EQ.3)) read from Output_real_Pimasertib_AeDropout.lst run header; the listing reports ESTIMATION-EVALUATION (MAXEVALS=0) on the original-data fit, so the THETA / OMEGA values in the .lst FINAL PARAMETER ESTIMATE block equal the .mod $THETA / $OMEGA initials and are the publication's reported final estimates. Demographic detail (age, weight, sex split, race) is not derivable from the DDMORE bundle; the linked PAGE 21 (2012) abstract (URL www.page-meeting.org/?abstract=2458) is a conference abstract not available as a downloadable PDF and was not on disk for cross-check."
+    notes = "n_subjects = 199 and n_observations = 3655 (DVID == 2 ocular-AE-grade rows after IGNORE(DVID.EQ.3)) read from Output_real_Pimasertib_AeDropout.lst run header; the listing reports ESTIMATION-EVALUATION (MAXEVALS=0) on the original-data fit, so the THETA / OMEGA values in the .lst FINAL PARAMETER ESTIMATE block equal the .mod $THETA / $OMEGA initials and are the publication's reported final estimates. Demographic detail (age, weight, sex split, race) is not derivable from the DDMORE bundle; the linked PAGE 21 (2012) abstract (URL www.page-meeting.org/?abstract=2458) is a conference abstract not available as a downloadable PDF and could not be cross-checked."
   )
 
   ini({
@@ -93,7 +93,7 @@ Girard_2012_pimasertib <- function() {
     # ESTIMATION-EVALUATION run (MAXEVALS=0): NONMEM evaluates the objective at
     # the supplied THETA / OMEGA without re-estimating, so the .mod $THETA / $OMEGA
     # blocks carry the publication's final estimates as their "initial" values
-    # and the .lst FINAL block reproduces them. See ddmore-source.md.
+    # and the .lst FINAL block reproduces them, per the DDMORE-source convention.
 
     # Cumulative-logit thresholds for P(AE >= 1) (Markov-conditioned on the
     # previous score grouping FPS0/FPS1/FPS2 = (PREV == 0) / (PREV in {1,2}) /
@@ -244,7 +244,7 @@ Girard_2012_pimasertib <- function() {
     #     natively express this multi-DVID joint likelihood, so the formal
     #     observation here is the typical-value expected ordinal AE score
     #     (0 * P0 + 1 * P1 + 2 * P2 in {0..2}) modelled as Poisson -- purely
-    #     a placeholder that lets the model parse and that drives F.3
+    #     a placeholder that lets the model parse and that drives the
     #     mechanistic-sanity simulation in the validation vignette. The full
     #     Markov / cumulative-logit / Weibull-TTE structure is encoded
     #     above and is exercised by the vignette via direct rxSolve()

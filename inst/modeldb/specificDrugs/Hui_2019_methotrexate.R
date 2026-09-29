@@ -38,7 +38,7 @@ Hui_2019_methotrexate <- function() {
   # (central) and V2 (peripheral). Amount units are umol because every
   # methotrexate concentration in Wang 2023 is reported in umol/L.
   # verified = FALSE for the specimen: the Hui 2019 primary, which would state
-  # the assayed matrix, is not on disk, and neither Wang 2023 Table 2 nor the
+  # the assayed matrix, was not available, and neither Wang 2023 Table 2 nor the
   # primary's abstract names it.
   compartmentData <- list(
     central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),

@@ -48,7 +48,7 @@ Hansson_2013a_sunitinib <- function() {
   population <- list(
     n_subjects = 303L,
     n_studies = 1L,
-    age_range = "adults with imatinib-resistant GIST (paper not on disk; Hansson 2013 main-text demographics not available in the bundle)",
+    age_range = "adults with imatinib-resistant GIST (paper not available when this model was built; Hansson 2013 main-text demographics not available in the bundle)",
     weight_range = "not reported in the DDMORE bundle",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
@@ -56,7 +56,7 @@ Hansson_2013a_sunitinib <- function() {
     dose_range = "Sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule (standard GIST regimen at the time of the source study). Placebo arm: no sunitinib.",
     regions = "Phase III multinational trial; specific regions not reported in the DDMORE bundle.",
     biomarkers = "VEGF, sVEGFR-2 (soluble VEGF receptor 2), sVEGFR-3 (soluble VEGF receptor 3), sKIT (soluble KIT receptor); plasma concentrations measured serially across treatment cycles. Source dataset reports concentrations on linear (DVX) and log-transformed (DV) scales; the model fits log(observation).",
-    notes = "n_subjects = 303 and n_observations = 5394 are reported in the .lst header (`TOT. NO. OF INDIVIDUALS: 303`, `TOT. NO. OF OBS RECS: 5394`). The detailed baseline-demographics table (age, weight, sex, race, prior-imatinib-duration distributions) is in the linked publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e84), which is not on disk; populate the missing population fields if the paper PDF becomes available. The bundle's simulated dataset is intentionally minimal (single subject) and is not representative of the published cohort."
+    notes = "n_subjects = 303 and n_observations = 5394 are reported in the .lst header (`TOT. NO. OF INDIVIDUALS: 303`, `TOT. NO. OF OBS RECS: 5394`). The detailed baseline-demographics table (age, weight, sex, race, prior-imatinib-duration distributions) is in the linked publication (CPT Pharmacometrics Syst Pharmacol 2013;2:e84), which was not available when this model was built; populate the missing population fields if the paper PDF becomes available. The bundle's simulated dataset is intentionally minimal (single subject) and is not representative of the published cohort."
   )
 
   ini({
@@ -135,7 +135,7 @@ Hansson_2013a_sunitinib <- function() {
     # Residual error — Output_real .lst FINAL THETA block, slots 14–18.
     # The .mod uses log-transform-both-sides residuals (Y = LOG(A) + W*EPS),
     # which maps to proportional residual error on the linear scale in
-    # nlmixr2 (per references/naming-conventions.md NONMEM->nlmixr2 table).
+    # nlmixr2 (per the package's NONMEM-to-nlmixr2 translation convention).
     # ----------------------------------------------------------------------
     propSd_vegf       <- 0.445;  label("Proportional residual error on VEGF (fraction)")                       # Output_real .lst TH14
     propSd_svegfr2    <- 0.12;   label("Proportional residual error on sVEGFR-2 (fraction)")                   # Output_real .lst TH15

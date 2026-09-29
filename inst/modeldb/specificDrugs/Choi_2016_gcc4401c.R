@@ -319,7 +319,7 @@ Choi_2016_gcc4401c <- function() {
 
     # ---- (f) Activated partial thromboplastin time, seconds (both studies;
     # ---- sigmoid Emax, stimulatory). No baseline aPTT is reported or
-    # ---- plotted anywhere on disk, so the output is the PROLONGATION.
+    # ---- plotted in any available source, so the output is the PROLONGATION.
     lemax_aptt_sad <- log(16.9)
     label("Maximum prolongation of aPTT in the SAD study, Emax (s)") # Table 3(f) Emax_SAD = 16.9 (RSE 13.1%; 95% CI 12.5-21.3)
     lemax_aptt_smad <- log(20.4)

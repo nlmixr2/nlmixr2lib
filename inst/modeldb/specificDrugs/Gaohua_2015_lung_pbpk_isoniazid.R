@@ -227,7 +227,7 @@ Gaohua_2015_lung_pbpk_isoniazid <- function() {
     lcl_renal   <- fixed(log(2.76));  label("Renal clearance (L/h)")                  # Table S2 "CL R" (2.76 L/h)
     # NOT PUBLISHED.  Table S2 reports the metabolic route as CLu,int = 3.125
     # uL/min/mg CYTOSOLIC protein; converting that to L/h needs CPPGL
-    # (cytosolic protein per gram liver), which appears in no on-disk source
+    # (cytosolic protein per gram liver), which appears in no available source
     # (the Jamei 2014 ESM supplies MPPGL, a microsomal factor).  The value
     # below is back-solved from the AUC of the paper's OWN predicted mean
     # plasma profile (Supplementary Figure 2C, 300 mg single dose, digitised:

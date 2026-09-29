@@ -955,10 +955,10 @@ tibble::tibble(
 - **The published OMEGA blocks are encoded as diagonal.** Results describe an
   OMEGA block on CL and Vc for cytarabine and on CL, Vc, Q and Vp for
   daunorubicin, but Tables S2 and S3 report only the diagonal variances. The
-  off-diagonal covariances are not published anywhere on disk, so the etas are
-  encoded as independent. This narrows the joint spread of derived quantities
-  such as AUC relative to the authors' model; the marginal variance of each
-  parameter is unaffected.
+  off-diagonal covariances are not published in any available source, so the
+  etas are encoded as independent. This narrows the joint spread of derived
+  quantities such as AUC relative to the authors' model; the marginal variance
+  of each parameter is unaffected.
 - **No IIV on cytarabine Q and Vp.** The Table 2 footnote states "BSV% for Q
   and Vp were not estimated due to high shrinkage on these parameters" and
   Table S2 carries no corresponding rows, so the final cytarabine model has
@@ -985,7 +985,7 @@ tibble::tibble(
   in SAS. Table 4 reports adjusted hazard ratios and the text reports adjusted
   odds ratios, but no baseline hazard function and no logistic intercept are
   published, so neither a time-to-event nor a landmark probability model can be
-  reconstructed from any on-disk source. The exposure variable itself, AUCtau
+  reconstructed from any available source. The exposure variable itself, AUCtau
   from the population PK models, is reproduced above.
 - **Renal function is not a covariate in either model,** so the Table 3 renal
   stratification is discussed rather than simulated; see the covariate-effects

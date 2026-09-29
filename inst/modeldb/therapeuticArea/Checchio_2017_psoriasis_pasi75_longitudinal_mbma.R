@@ -38,7 +38,7 @@ Checchio_2017_psoriasis_pasi75_longitudinal_mbma <- function() {
     "Covariate model: Equation 9 of Methods 'Covariate model'.",
     "Residual model: Equations 11-13 of Methods 'Residual error model'.",
     "All display equations are rasterised in the published PDF and are LOST",
-    "from the preprocessed markdown; they were recovered with",
+    "from a plain-text extraction of the PDF; they were recovered with",
     "pdftotext -layout. Drug-specific parameter values are Supplementary",
     "Table S1.1 and common parameter values are Supplementary Table S1.2, both",
     "in the Supplementary Appendix (CPT-102-1006-s001.docx), obtained from the",

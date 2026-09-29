@@ -274,7 +274,11 @@ stopifnot(max(abs(fig67_peak$pct_diff)) < 25)
 ```{r human-pknca}
 sim_nca <- human_sim |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, treatment)
+  dplyr::select(id, time, Cc, treatment) |>
+  # Cut each arm's tail once Cc is below 1e-6 * max(Cc) (solver noise); the slow rise is kept.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= max(time[Cc >= 1e-6 * max(Cc)])) |>
+  dplyr::ungroup()
 
 # Guarantee a time = 0 row per arm; pre-dose Cc = 0 is correct for an oral dose.
 sim_nca <- dplyr::bind_rows(

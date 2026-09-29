@@ -299,7 +299,7 @@ knitr::kable(data.frame(
   - `bl_methb_conc = 22 umol/L` (about 1 % of total Hb, consistent with the paper's "trace amounts (<= 1 %)" baseline description)
   - `hbt = 51,400 umol` total Hb amount in the V5 compartment, derived so that the supplement's `KMYO = kno3_r * baseline_oxyHb_amount` recovers Table 1's typical-value `kMYO = 0.234 /min` given the Table 1 `kno3_r = 5.91e-6 L/(umol*min)`.
 
-  These are not "training-data substitutions" -- they are typical-population values backed out of Table 1 parameter consistency and the paper's narrative baselines.
+  These are not substitutions from outside the paper -- they are typical-population values backed out of Table 1 parameter consistency and the paper's narrative baselines.
 
 * **Baseline plasma nitrate is model-derived, not population-mean.** The closed-form steady-state expression in supplement `$PK` (Eq. 15c) yields `[NO3-]P(0) ~ 3.27 umol/L` for the typical-value parameters used here. The paper's reported empirical baseline of `10.78 +/- 1.33 umol/L` includes dietary nitrate intake that the supplement adds as an additional `DIET` amount to plasma nitrate at `t = 0` for three identified subjects (IDs 1, 5, 6 in the supplement `$PK`). The library model does not implement the `DIET` per-subject correction; for a typical-population simulation the model-derived steady-state is what falls out of the equations.
 

@@ -622,7 +622,7 @@ tabulated baseline ratio does not match its reported one -- see Errata.
 
 # Assumptions and deviations
 
-* **`Vmax_G6P` is not reported anywhere on disk.** It is derived from the
+* **`Vmax_G6P` is not reported in any available source.** It is derived from the
   paper's own numbers as documented above (`560 mg/min`), giving exactly
   140 mg/min basal hepatic glucose release at the model's own reference point
   and reproducing VPHealthy's reported fasting glucose. It is flagged inline
