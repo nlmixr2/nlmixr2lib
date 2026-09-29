@@ -21,8 +21,7 @@ Chandorkar_2015_tazobactam <- function() {
     "with bacterial infections. J Clin Pharmacol. 2015;55(2):230-239.",
     "doi:10.1002/jcph.395.",
     "All fixed-effect, random-effect and residual-error estimates are Table 3",
-    "panel [B]. No supplement was deposited with the article (EuropePMC",
-    "hasSuppl 'N'); Table 3B, the Results narrative and Figure 1B together",
+    "panel [B]. No supplement was deposited with the article; Table 3B, the Results narrative and Figure 1B together",
     "report the complete final model.",
     sep = " "
   )

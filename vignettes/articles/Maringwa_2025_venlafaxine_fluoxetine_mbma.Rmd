@@ -529,6 +529,6 @@ stopifnot(all(enc < alt))
 * **The paper's RMSE values are reproduced only directionally**, because the
   arm set behind each published RMSE is not specified.
 * **The 43-arm dataset embedded in this vignette is transcribed from supplement
-  Table S1** (`CPT-117-153-s002.docx`), retrieved from the EuropePMC
-  supplementary-files endpoint for PMC11652818. Its per-arm counts are asserted
+  Table S1** (`CPT-117-153-s002.docx`), published with the open-access
+  article (PMC11652818). Its per-arm counts are asserted
   against the paper's Methods text in the chunk above.

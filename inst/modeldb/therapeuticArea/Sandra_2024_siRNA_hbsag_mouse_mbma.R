@@ -323,7 +323,7 @@ Sandra_2024_siRNA_hbsag_mouse_mbma <- function() {
     # BETWEEN-STUDY variability (Sandra 2024 Eq 8, Table 3 'Random
     # effects'). This is a STUDY-level random effect, NOT individual
     # between-subject variability -- one draw per published study, not
-    # per mouse (see references/pbpk-qsp-mbma.md).
+    # per mouse (the standing MBMA convention).
     #
     # Table 3 reports "CV%" = 31.4 and Table 2 the unrounded 31.39. That
     # column is the omega STANDARD DEVIATION times 100, not the

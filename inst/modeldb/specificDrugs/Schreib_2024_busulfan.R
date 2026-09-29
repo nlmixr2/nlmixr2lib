@@ -22,16 +22,13 @@ Schreib_2024_busulfan <- function() {
     "lymphoblastic leukemia indicator, and the infusion duration. Total body",
     "water and the maturation function are derived inside model() from",
     "weight, height, age, and sex, so no separate columns are required.",
-    "On rxode2 5.1.6 and earlier, simulate this model with",
-    "rxSolve(..., useLinCmt = FALSE). It is a one-compartment",
-    "linear-elimination model, so those versions' ODE-to-linCmt()",
-    "auto-conversion replaced the ODE with a closed-form solution that holds",
-    "the elimination rate constant at its t = 0 value and therefore silently",
-    "discarded the time dependence that is the entire point of this paper.",
-    "The error was large and one-sided: exposure per dosing interval",
-    "under-predicted by about 17% at steady state (45% in the HLH/XLP group).",
-    "rxode2 5.1.7 refuses the conversion (rxode2 issue 1370) and the flag is",
-    "no longer required. See the validation vignette for the demonstration."
+    "Because the elimination rate constant varies with time, the model must",
+    "be integrated as an ODE: a closed-form linCmt() solution holds the",
+    "elimination rate constant at its t = 0 value and therefore discards the",
+    "time dependence that is the entire point of this paper. The error is",
+    "large and one-sided: exposure per dosing interval is under-predicted by",
+    "about 17% at steady state (45% in the HLH/XLP group). See the validation",
+    "vignette for the demonstration."
   )
   reference <- paste(
     "Schreib KM, Braem DS, Zeilhofer UB, Mueller D, Guengoer T, Kraemer SD,",

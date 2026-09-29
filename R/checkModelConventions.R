@@ -2,8 +2,8 @@
 #'
 #' Parses a model and reports deviations from the nlmixr2lib conventions
 #' documented in `vignettes/create-model-library.Rmd` and the
-#' `extract-literature-model` skill references (especially
-#' `naming-conventions.md` and `inst/references/covariate-columns.md`). The checker inspects:
+#' `inst/references/*.md` registers (especially
+#' `inst/references/covariate-columns.md`). The checker inspects:
 #' file-level metadata (description, reference, units, covariateData);
 #' parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 #' residual error); parameter labels; covariates (canonical register, units,
@@ -1100,7 +1100,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (length(obs_vars) == 1 && obs_vars != conv$observationVar) {
     obs <- obs_vars
     # Cc is canonical for drug-concentration outputs; per the 2026-05-28
-    # naming-audit operator clarification, single-output PD models may
+    # naming-audit maintainer clarification, single-output PD models may
     # use any registered output-state name (tumor_size, das28, ANC via
     # circ_anc, etc.). Treat the observation as canonical when it
     # matches the compartment register (which now includes the PD-output
@@ -1114,7 +1114,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # probability-output family (conv$probOutputRegex). These models have no
     # ODE state and no concentration output, so neither the compartment
     # register nor the Cc/C<cmt> concentration aliases can cover them; per
-    # the 2026-09-11 operator ruling the shape itself is canonical rather
+    # the 2026-09-11 maintainer ruling the shape itself is canonical rather
     # than each endpoint needing a hand-added register entry.
     is_canon_pd <- .matchesCompartment(obs, conv) ||
       .matchesProbOutput(obs, conv) ||
@@ -2215,7 +2215,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # discarded. That is not hypothetical: `col` (twice as metabolite-suffix) and
 # `mic` (twice as paper-named-param) were each written by two extractions that
 # did not know the other existed, and `cloca` was duplicated again by a
-# consolidation merge. In every case text was being dropped and nobody noticed,
+# later merge. In every case text was being dropped and nobody noticed,
 # because nothing consumed the fact.
 .referenceHeaderPattern <- "^### ([^ (]+)\\s*(\\(\\*\\*.*\\*\\*\\))?\\s*$"
 .referenceTypePattern <- "^-\\s+\\*\\*Type:\\*\\*\\s*(.+?)\\s*$"

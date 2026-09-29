@@ -246,7 +246,7 @@ Djerada_2014_nefopam <- function() {
     label("Apparent nefopam-to-desmethyl-nefopam formation clearance K13 (L/h)")
     # Djerada 2014 Figure 1 legend + Results p 1031: K13 =
     # 0.35 +/- 0.022 L/h. Named K13 in the source; encoded here as the
-    # canonical lcl_form_<metab> pattern (see references/parameter-names.md).
+    # canonical lcl_form_<metab> pattern (see inst/references/parameter-names.md).
     # The apparent value absorbs the metabolite-formation fraction and
     # the metabolite bioavailability into a single positive coefficient
     # (typical "apparent clearance of metabolisation" parameterisation).

@@ -230,8 +230,8 @@ single_dose_arm <- function(arm) {
   ev
 }
 
-# Use 100 virtual subjects per arm (disjoint IDs, see vignette template
-# notes) so the population-mean of 1/CL is well-represented.
+# Use 100 virtual subjects per arm (disjoint IDs) so the population-mean
+# of 1/CL is well-represented.
 n_arm <- 100L
 ev_no   <- single_dose_arm("noGJ")
 ev_with <- single_dose_arm("withGJ")

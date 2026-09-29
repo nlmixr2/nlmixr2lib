@@ -132,8 +132,7 @@ Betts_2019_pf_06671008_qsp <- function() {
     # residuals from Table II p7 col a (a = 60 mm^3, b = 0.01) are documented
     # in the vignette Source Trace but not carried as ini() parameters here
     # because the model exposes tumorVol only as a derived output, not an
-    # explicit observation (single-output error model, per pattern 5b of the
-    # skill's known-vignette-failure-patterns).
+    # explicit observation (single-output error model).
     addSd  <- fixed(0.067);         label("Additive residual error on serum drug (nM)")                       # Table II p6: a = 0.067 (32%)
     propSd <- fixed(0.207);         label("Proportional residual error on serum drug (fraction)")             # Table II p6: b = 0.207 (15%)
   })

@@ -158,7 +158,7 @@ concentrations after 5, 7.5, or 10 mg/kg IV infliximab dosed every 4,
 steady state we administer 12 cycles of each regimen (16-24 weeks of
 dosing, more than 5 half-lives at typical pediatric CL) and read the
 trough immediately before the next scheduled dose. To keep the
-simulation within the 5-minute vignette gate, the simulation samples
+render time short, the simulation samples
 only the trough times rather than densely along the profile.
 
 ```{r dosing-strategies}

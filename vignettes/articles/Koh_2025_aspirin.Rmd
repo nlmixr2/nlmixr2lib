@@ -699,8 +699,8 @@ stopifnot(sweep$range[adopted] > 3)
   inhibition constant of a turnover model in which aspirin acts irreversibly on
   circulating platelets, and a very low apparent value is what that structure
   produces. Koh 2025 attributes it to reference 19 (Kimura 2014,
-  doi:10.1177/1076029613488934); that article could not be retrieved here (the
-  publisher blocks automated access), so the correction rests on the two legs
+  doi:10.1177/1076029613488934); that article was not available when this model
+  was built, so the correction rests on the two legs
   above rather than on the cited source.
 * **Errata -- the capsule arms are under-predicted by roughly 5-9 percentage
   points.** With every parameter taken verbatim from Table 1, the tablet arms

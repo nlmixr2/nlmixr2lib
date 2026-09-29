@@ -28,7 +28,7 @@ cat("* Description: ", .ui$description, "\n", sep = "")
 * Article: <https://doi.org/10.1007/s40262-021-01011-3> (open access, PMC8416863)
 * Electronic supplementary material (ESM; Tables S1-S2 with the stepwise IIV
   and covariate search, Figures S1-S5):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8416863/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC8416863>
 
 Somatropin (Norditropin, Novo Nordisk) is recombinant human growth hormone (GH)
 given as a once-daily subcutaneous injection for GH deficiency (GHD) in children

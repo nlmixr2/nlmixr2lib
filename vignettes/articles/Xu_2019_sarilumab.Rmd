@@ -394,8 +394,7 @@ knitr::kable(comparison, digits = 2,
   covariate (1 = female).
 - **Supplement not reviewed.** The Clinical Pharmacokinetics electronic
   supplementary material (NONMEM control stream and supplementary tables)
-  could not be downloaded at extraction time (the journal's CDN returned a
-  JS-gated "preparing to download" page rather than the DOCX). All
+  was not available when this model was built. All
   parameters in this model are therefore sourced from the published main
   text (Tables 2-4 and the covariate-model equations on p. 1458-1459). If
   the supplement exposes different digits of precision, an update may be

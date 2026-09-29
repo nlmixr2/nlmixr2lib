@@ -108,8 +108,8 @@ VargasChristensen_2019_rfviii_rat <- function() {
       "reported human endogenous VWF (~40 nmol/L); the paper attributes",
       "the discrepancy to the use of a human VWF preparation as",
       "calibrator in a rat assay (Discussion). All parameter estimates",
-      "come from Table 1; the NONMEM code lives in Data S1 (not on",
-      "disk)."
+      "come from Table 1; the NONMEM code lives in Data S1 (not available",
+      "when this model was built)."
     )
   )
 

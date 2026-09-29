@@ -22,7 +22,7 @@ library(ggplot2)
 * Citation: `r readModelDb("Lo_2021_revefenacin")()$reference`
 * Article (open access, CC BY-NC 4.0): <https://doi.org/10.1007/s40262-020-00938-3>
 * Electronic supplementary material (EuropePMC `PMC7932972`):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7932972/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC7932972>
 * FDA Clinical Pharmacology Review of NDA 210598 (Yupelri), used to confirm
   the variance scale, the population median weight and the form of the
   metabolite "correlation" term:

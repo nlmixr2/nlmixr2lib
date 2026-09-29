@@ -727,6 +727,6 @@ knitr::kable(claim_tbl, caption = "Checks against claims stated in the source te
   estimates exist for any of them, so nothing is encoded.
 * **No erratum.** No corrigendum or author correction for this article was found
   on the Heliyon landing page, in PubMed, or in the EuropePMC record as of the
-  extraction date. The EuropePMC supplementary-file package for PMC10861969
-  contains figure images only -- there is no NONMEM control stream or
+  extraction date. The files deposited with PMC10861969
+  are figure images only -- there is no NONMEM control stream or
   supplementary parameter table.

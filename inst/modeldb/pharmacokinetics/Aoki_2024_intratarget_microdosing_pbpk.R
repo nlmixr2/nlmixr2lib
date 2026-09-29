@@ -46,8 +46,8 @@ Aoki_2024_intratarget_microdosing_pbpk <- function() {
     "The structure originates with Koyama S, Toshimoto K, Lee W, Aoki Y,",
     "Sugiyama Y. Revisiting nonlinear bosentan pharmacokinetics by",
     "physiologically based pharmacokinetic modeling. Drug Metab Dispos.",
-    "2021;49(4):298-304. doi:10.1124/dmd.120.000023 (not open access; not on",
-    "disk -- but it is not needed here, because Aoki 2024 publishes the",
+    "2021;49(4):298-304. doi:10.1124/dmd.120.000023 (not open access, and",
+    "not needed here, because Aoki 2024 publishes the",
     "complete ODE system and every parameter value in its own supplement).",
     sep = " "
   )

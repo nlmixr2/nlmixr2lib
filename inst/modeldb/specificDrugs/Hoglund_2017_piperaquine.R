@@ -272,8 +272,7 @@ Hoglund_2017_piperaquine <- function() {
     # equivalent to an exponential error on non-transformed
     # concentrations)." This NONMEM additive-on-log-scale residual maps
     # to a proportional residual in linear concentration space (see
-    # references/parameter-names.md Residual error and the matching
-    # comment in Hoglund_2012_piperaquine.R). Table 3 reports the
+    # the matching comment in Hoglund_2012_piperaquine.R). Table 3 reports the
     # log-scale variance RUV = 0.115; the SD is sqrt(0.115) = 0.339116,
     # which equals the proportional CV to first order.
     propSd <- sqrt(0.115)

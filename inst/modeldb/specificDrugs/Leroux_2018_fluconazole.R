@@ -151,7 +151,7 @@ Leroux_2018_fluconazole <- function() {
     # 0.010-0.024 L/h/kg', Results 'Population pharmacokinetic results'),
     # but no omega magnitude is given. The fluconazole V 95% CI in Table
     # 3 is degenerate (0.913, 0.913), indicating V had no inter-individual
-    # variability or was fixed during estimation. Per the skill policy
+    # variability or was fixed during estimation. Per the standing policy
     # for 'unreported IIV/RUV (structural values present)', encode IIVs
     # as fixed(0) and document in vignette Errata.
     etalcl ~ fixed(0)                                                        # Leroux 2018: IIV magnitude on CL not reported -> (0) per policy

@@ -35,8 +35,8 @@ estimates (Table 2), the inter-individual and residual variability
 (Table 3), and the dosing and sampling protocol (Supplementary Table
 S1).
 
-The standing policy for a review is to skip it and queue its cited
-primaries. That policy carries an explicit exception for a review that
+Reviews are normally not transcribed; their primary publications are
+extracted instead. That practice has an explicit exception for a review that
 **tabulates the parameters**, and this one does: Tables 2 and 3 together
 are enough to write down every differential equation and initialise
 every `ini()` value for most of the 18 constituent models. So the models
@@ -117,10 +117,10 @@ primaries, 2 blocked.** The two blocked studies are:
   CRRT flows are prescribed in mL/h while the canonical `DFR` column is
   mL/min, and with an exponent of 1.944 a 60-fold unit error becomes a
   2800-fold clearance error. Both questions turn on what the primary
-  says, so the primary (Clin Ther 2020;42(8):1564-1577.e8,
+  says, so this study is deferred until the primary (Clin Ther
+  2020;42(8):1564-1577.e8,
   [doi:10.1016/j.clinthera.2020.06.010](https://doi.org/10.1016/j.clinthera.2020.06.010))
-  has been queued for acquisition and this study deferred until it
-  arrives, rather than shipped on a guessed unit.
+  is available, rather than shipped on a guessed unit.
 
 **Jaruratanasirikul et al. (2021) was previously blocked and is now
 included.** It needs an `ABW` (adjusted body weight) covariate column,
@@ -635,8 +635,7 @@ knitr::kable(round(t(renal_tab), 3),
 
 # Strictly increasing in every model. This is a deterministic solve of a
 # monotone algebraic expression, not a noisy cohort statistic, so exact
-# monotonicity is the right assertion here (contrast the cohort-derived
-# quantities warned about in the failure-pattern catalogue).
+# monotonicity is the right assertion here.
 stopifnot(all(apply(renal_tab, 2, function(x) all(diff(x) > 0))))
 ```
 

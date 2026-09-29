@@ -21,8 +21,8 @@ Yadav_2017_imipenem_tobramycin <- function() {
   # paper used the published murine one-compartment PK of each drug,
   # equations 1-3 with parameter values imported from references 23
   # [Katsube 2008, imipenem] and 24 [Moffie 1993, tobramycin]; those
-  # numerical PK values are not reported in the present paper on
-  # disk). Declared in `depends` so the canonical-covariate register
+  # numerical PK values are not reported in the present paper).
+  # Declared in `depends` so the canonical-covariate register
   # check does not apply (they are documented in covariateData below
   # for provenance).
   depends <- c("Cipm", "Ctob")

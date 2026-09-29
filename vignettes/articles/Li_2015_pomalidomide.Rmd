@@ -22,7 +22,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Li_2015_pomalidomide"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Li_2015_pomalidomide"))$description`
 * Article: <https://doi.org/10.1002/jcph.455>
-* Supplement (study designs, goodness-of-fit and VPC figures): <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4418344/supplementaryFiles>
+* Supplement (study designs, goodness-of-fit and VPC figures): <https://europepmc.org/article/PMC/PMC4418344>
 
 Pomalidomide is an oral immunomodulatory agent for relapsed and refractory
 multiple myeloma (RRMM). Li 2015 is the first published population PK analysis

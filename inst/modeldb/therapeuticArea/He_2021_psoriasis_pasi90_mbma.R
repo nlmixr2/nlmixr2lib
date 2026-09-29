@@ -32,7 +32,7 @@ He_2021_psoriasis_pasi90_mbma <- function() {
     "Covariate model: Equation 9. Residual model: Equations 7-8.",
     "Drug-specific estimates: Table 4. Placebo, covariate, random-effect and",
     "residual estimates: Supplementary Table S2 (Table2.docx of the",
-    "Supplementary Material, EuropePMC supplementaryFiles for PMC8281289).",
+    "Supplementary Material, PMC8281289).",
     sep = " "
   )
 

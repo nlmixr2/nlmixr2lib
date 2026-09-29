@@ -200,8 +200,8 @@ Claret_2014_DCR_OS_nsclc <- function() {
     #   S(t) = 1 - Phi((log(t) - mu) / sigma).
     #
     # SIGN RECOVERY. The minus signs on the Albumin and Log(scale) rows of
-    # Table 2 are typeset as U+2212 and are dropped by both the trimmed
-    # markdown conversion and `pdftotext -layout`. They are recovered
+    # Table 2 are typeset as U+2212 and are dropped by both markdown text
+    # extraction and `pdftotext -layout`. They are recovered
     # unambiguously from the table's own Wald statistics, since z equals
     # estimate divided by SE for every row:
     #     1.855 / 0.0613 = +30.3  vs published z = 30.2

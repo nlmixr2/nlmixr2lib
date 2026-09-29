@@ -7,7 +7,7 @@ This file is the authoritative register of compartment / state names and metabol
 1. **Before adding a compartment / state to a new model**, search this file (by canonical name and by source alias) for the concept you need.
 2. **If the canonical name exists**, use it exactly. Document the source-paper rename in a code comment if the paper used a different name.
 3. **If the source paper uses an alias listed under an existing canonical name**, prefer the canonical name. Aliases are documented for cross-reference, not as a free pass to introduce the deprecated form in new models.
-4. **If the state is not in this register at all**, propose a new entry with a canonical name, type, role, source aliases, and example models. Verify with the user before committing. The addition is part of the model's PR.
+4. **If the state is not in this register at all**, propose a new entry with a canonical name, type, role, source aliases, and example models. Verify with the maintainers before committing. The addition is part of the model's PR.
 5. **Do not modify existing model files when you discover a missing entry**; simply register the canonical here. Retrofitting existing models is a separate effort.
 6. **Never add a second entry for a name that already has one at the same `Type`.** Extend the existing block instead -- add your source alias and example model to it. A name may appear twice only when the two entries carry *different* `Type` values (`col`, `complex`, `dap`, `lzd`, `mer`, `mero`, `plasma` and `van` are each both a bare `compartment` and a `metabolite-suffix`). This register is resolved in document order, last one wins, so a same-`Type` repeat silently discards the earlier block along with any alias or example recorded only there. `buildModelDb` fails the build on one.
 
@@ -3898,7 +3898,7 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
   - `M-protein`, `M protein`, `myeloma protein`, `paraprotein` -- clinical long forms.
 - **Example models:** `Poels_2025_elranatamab_qsp.R` (Supplementary Eq 11); `Li_2025_modakafuspAlfa_mprotein.R` (Claret tumor-growth-inhibition model with exponential growth `kg`, a saturable Emax kill term driven by unbound modakafusp alfa, and an exponentially appearing resistance term).
 - **Notes:** A serum-biomarker PD output in the same family as `psa`, `crp`, `igg`, `total_igg` and `sdma`, and registered for the same reason: it is a recurring, assay-defined endpoint rather than a paper-mechanistic state. Deliberately NOT `tumor_size` / `sld`: M-protein is a serum protein concentration in g/L, not a lesion dimension, and a model can carry both if a paper reports plasmacytoma measurements alongside the paraprotein. Serum free light chain, which substitutes for M-protein in oligosecretory myeloma, is registered separately as `flc`. Units are g/L -- Poels 2025 Figure 2b labels its M-protein axis "(g/dL)" over a 0-65 range, which is a figure error (Supplementary Table 2 gives g/L over 0-70). Note `Collins_2023_belantamab_mprotein.R` carries M-protein in the generic `tumor` compartment; that predates this canonical and is a candidate for migration.
-- **Registered twice, merged 2026-08-22:** two branches independently registered this canonical (Poels 2025 elranatamab under the CD3-bispecific section, Li 2025 modakafusp alfa under lab values). Same concept, same units, same Type -- merged here under lab values, which is where the serum-biomarker family lives.
+- **Registered twice, merged 2026-08-22:** two extractions independently registered this canonical (Poels 2025 elranatamab under the CD3-bispecific section, Li 2025 modakafusp alfa under lab values). Same concept, same units, same Type -- merged here under lab values, which is where the serum-biomarker family lives.
 
 ### mbl (**canonical bare mean bacterial load**)
 - **Type:** compartment
@@ -4529,7 +4529,7 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
   - `kpdConc` -- used in `Mazzocco_2015_temozolomide.R`.
   - `depot` (when the model has no extravascular absorption depot and the lone depot serves as the K-PD virtual drug compartment) -- used in `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Xia_2024_warfarin.R`.
 - **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Xia_2024_warfarin.R`.
-- **Notes:** Drug-suffixed variants `depot_kpd_<drug>` are accepted for combination K-PD models via the metabolite-suffix mechanism, where `<drug>` is a registered drug-name suffix below (e.g., `depot_kpd_sunitinib`, `depot_kpd_irinotecan` in Wilson 2015). Canonical `depot_kpd` adopted 2026-05-30 per the K-PD canonical-name retrofit (see `memory/kpd-model-canonical-standards.md`).
+- **Notes:** Drug-suffixed variants `depot_kpd_<drug>` are accepted for combination K-PD models via the metabolite-suffix mechanism, where `<drug>` is a registered drug-name suffix below (e.g., `depot_kpd_sunitinib`, `depot_kpd_irinotecan` in Wilson 2015). Canonical `depot_kpd` adopted 2026-05-30 per the K-PD canonical-name retrofit.
 
 ### sunitinib (**canonical sunitinib K-PD drug-name suffix**)
 - **Type:** metabolite-suffix

@@ -252,8 +252,8 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
       "Parameter uncertainty was assessed by PsN sampling importance",
       "resampling (2000 samples / 1000 resamples), reported here as the SIR",
       "median and 95% CI in the ini() source-trace comments. Tables S1 and",
-      "S2 (study-population summary and baseline demographics) are NOT on",
-      "disk, so age, weight and creatinine-clearance RANGES and the",
+      "S2 (study-population summary and baseline demographics) were NOT",
+      "available when this model was built, so age, weight and creatinine-clearance RANGES and the",
       "race/ethnicity and regional breakdown cannot be recorded; only the",
       "medians named in the main text are given above."
     )

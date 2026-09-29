@@ -181,7 +181,7 @@ All ODE right-hand sides match their state's `[state]/week` requirement and the 
 # Virtual cohort: representative treatment arms
 
 The full paper analysis includes 12 treatment categories. To keep this
-vignette under the pkgdown wall-clock budget, we simulate a 5-arm
+vignette's render time short, we simulate a 5-arm
 sub-panel that spans the main mechanism classes: pembrolizumab
 monotherapy (`TRT = 1`, the canonical default and largest PD-1 cohort),
 feladilimab monotherapy (`TRT = 2`, an anti-ICOS therapy whose `kse`
@@ -631,4 +631,4 @@ knitr::kable(
   source paper analysed n = 786 across 12 arms; the smaller vignette
   cohort is a render-time concession and provides a noisy KM tail
   beyond ~78 weeks. Increase `n_per_arm` to 200 for a tighter KM
-  envelope (within the pkgdown 5-minute budget).
+  envelope (still rendering in under 5 minutes).
