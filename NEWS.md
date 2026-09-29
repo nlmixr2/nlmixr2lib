@@ -6,7 +6,7 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
-- Add Snelder 2020 finerenone PK and UACR, serum potassium and eGFR exposure-response models ([doi:10.1007/s40262-019-00820-x](https://doi.org/10.1007/s40262-019-00820-x)) -- adults with type 2 diabetes and chronic kidney disease (ARTS-DN and ARTS-DN Japan).
+- Add Wang 2020 entinostat + nivolumab + ipilimumab QSP ([doi:10.3389/fbioe.2020.00141](https://doi.org/10.3389/fbioe.2020.00141)) -- virtual patients with HER2-negative breast cancer.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
