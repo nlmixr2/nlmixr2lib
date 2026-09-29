@@ -2850,6 +2850,8 @@ navbar:
         href: articles/Kappelhoff_2005_indinavir.html
       - text: "Indisulam (Keizer 2015)"
         href: articles/Keizer_2015_indisulam.html
+      - text: "IndocyanineGreen pbpk (Koller 2021)"
+        href: articles/Koller_2021_indocyanineGreen_pbpk.html
       - text: "Infliximab (Berends 2019)"
         href: articles/Berends_2019_infliximab.html
       - text: "Infliximab (Faelens 2021)"
@@ -7889,6 +7891,7 @@ articles:
   - articles/Koenig_2025_cefiderocol
   - articles/Koh_2025_aspirin
   - articles/Kohl_2010_posaconazole
+  - articles/Koller_2021_indocyanineGreen_pbpk
   - articles/Kollo_2026_selumetinib
   - articles/Koloskoff_2025_ganciclovir
   - articles/Kolowrat_2025_apixaban
