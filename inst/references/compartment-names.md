@@ -3870,7 +3870,7 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Type:** compartment
 - **Role:** Peripheral blood mononuclear cells PD output.
 - **Source aliases:** none.
-- **Example models:** `Sampson_2014_azithromycin.R`.
+- **Example models:** `Sampson_2014_azithromycin.R`, `Gallo_2021_remdesivir_pbpk.R` (metabolite-suffixed intracellular pools `pbmc_gs704277`, `pbmc_gs441524mp`, `pbmc_gs441524`, `pbmc_gs443902`, carried as concentrations).
 
 ### pmn (**canonical polymorphonuclear leukocytes**)
 - **Type:** compartment
@@ -5597,22 +5597,29 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** GS-441524, the circulating nucleoside metabolite of remdesivir and the species that carries antiviral exposure in plasma. Remdesivir (a monophosphoramidate prodrug) is bioconverted via the alanine intermediate GS-704277 to GS-441524, which enters cells and is anabolised to the pharmacologically active triphosphate GS-443902; GS-441524 is the metabolite actually quantified in plasma, clears roughly 7-fold more slowly than the parent, and is renally eliminated, so it dominates systemic exposure. Drives `central_gs441524`, the `lcl_gs441524` / `lvc_gs441524` parameters, the `e_<cov>_<param>_gs441524` covariate effects, and the `propSd_gs441524` residual; parent-side parameters keep the canonical unsuffixed names.
 - **Source aliases:** `GS-441524`, `GS441524` (both spellings appear in the source literature). The parent's development code `GS-5734` denotes remdesivir itself, not this metabolite.
-- **Example models:** `Roberts_2025_remdesivir.R` (doi:10.1007/s40262-025-01496-2).
+- **Example models:** `Roberts_2025_remdesivir.R` (doi:10.1007/s40262-025-01496-2), `Gallo_2021_remdesivir_pbpk.R` (doi:10.1111/cts.12975; plasma forcing-function concentration `central_gs441524`, plus the `pbmc_gs441524` and per-tissue `is_<tissue>_gs441524` / `int_<tissue>_gs441524` pools of a hybrid PBPK model).
 - **Notes:** Roberts 2025 converted both analytes from ng/mL to uM before fitting specifically so that the parent-to-metabolite flux is 1:1 in molar space, because the molecular weights differ by more than a factor of two (remdesivir 602.585 g/mol, GS-441524 291.26 g/mol). Metabolite-suffixed models for this pair should therefore carry molar amounts rather than parent-mass equivalents. The fitted metabolite clearance and volume are apparent (source `CL/fm`, `V/fm`) because the fraction of metabolised remdesivir that appears as plasma GS-441524 is not identifiable from plasma data alone.
 
 ### gs704277 (**canonical GS-704277 remdesivir metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** GS-704277, the transient alanine-metabolite intermediate sitting between remdesivir and GS-441524 on the activation pathway. Remdesivir is hydrolysed by esterase / hydrolase to GS-704277, which is then cleaved by phosphoramidase to the nucleoside monophosphate GS-441524-MP and on to GS-441524. It is quantified in plasma in the Gilead phase I studies alongside the parent and GS-441524, peaks within roughly the first hour and declines biphasically. Drives `central_gs704277` / `peripheral1_gs704277`, the `lk12_gs704277` / `lkmet_gs704277_central` / `lkmet_gs704277_peripheral1` parameters, and the `propSd_gs704277` / `addSd_gs704277` residuals; parent-side parameters keep the canonical unsuffixed names.
 - **Source aliases:** `GS-704277`, `GS704277`, and the role abbreviation `IM` ("intermediate metabolite") used throughout Zhang 2025.
-- **Example models:** `Zhang_2025_remdesivir.R`, `Zhang_2025_remdesivir_esrd.R` (doi:10.3389/fphar.2025.1488961).
+- **Example models:** `Zhang_2025_remdesivir.R`, `Zhang_2025_remdesivir_esrd.R` (doi:10.3389/fphar.2025.1488961), `Gallo_2021_remdesivir_pbpk.R` (doi:10.1111/cts.12975; plasma, arterial, lung-extracellular, PBMC and per-tissue intracellular pools).
 - **Notes:** The middle member of the three-analyte remdesivir plasma cascade `remdesivir -> gs704277 -> gs441524`; a model that carries only the parent and GS-441524 (Roberts 2025) skips it. Follows the development-code precedent (`gs441524`, `su12662`, `az5104`, `cdb4453`, `cns7054`). Do not name it `im` after the source's role abbreviation: `IM` is also the standard route abbreviation for intramuscular dosing, and the ambiguity is exactly what the development-code convention exists to avoid.
 
 ### gs443902 (**canonical GS-443902 remdesivir metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** GS-443902, the pharmacologically active nucleoside triphosphate formed intracellularly from GS-441524 by nucleotide kinases; it is the moiety that inhibits the SARS-CoV-2 RNA-dependent RNA polymerase. Because it is an intracellular species measured in peripheral blood mononuclear cells rather than in plasma, plasma-fitted models generally carry it only as the terminal sink of the peripheral nucleoside pool, i.e. as the rate constant `lkmet_gs443902_peripheral1` with no corresponding state.
 - **Source aliases:** `GS-443902`, `GS443902`, and the role abbreviation `NTP` ("nucleoside triphosphate") used in Zhang 2025.
-- **Example models:** `Zhang_2025_remdesivir.R`, `Zhang_2025_remdesivir_esrd.R` (doi:10.3389/fphar.2025.1488961), where it names the NUC-to-NTP conversion rate constant only.
+- **Example models:** `Zhang_2025_remdesivir.R`, `Zhang_2025_remdesivir_esrd.R` (doi:10.3389/fphar.2025.1488961), where it names the NUC-to-NTP conversion rate constant only; `Gallo_2021_remdesivir_pbpk.R` (doi:10.1111/cts.12975), the first model to carry it as a state -- `pbmc_gs443902` in peripheral blood mononuclear cells and `int_<tissue>_gs443902` in every tissue's intracellular space, calibrated to reported PBMC triphosphate Cmax / C24 / AUC.
 - **Notes:** Registered as a suffix rather than a compartment because no available source reports a GS-443902 concentration time course to fit; Zhang 2025 explicitly flags this as a gap ("pharmacokinetic data for NTP were not reported, highlighting the need for further validation of NTP concentration profiles"). A future paper that does measure PBMC triphosphate should add `central_gs443902` under this same suffix rather than minting a new one. Follows the development-code precedent (`gs441524`, `gs704277`, `su12662`, `az5104`).
+
+### gs441524mp (**canonical GS-441524 monophosphate remdesivir metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** The nucleoside monophosphate of GS-441524 (GS-441524-MP), the intracellular branch point of remdesivir activation. It is formed from the alanine metabolite GS-704277 by phosphoramidase cleavage, is phosphorylated onward by host kinases to the active triphosphate GS-443902, and exchanges reversibly with the nucleoside GS-441524 by dephosphorylation / phosphorylation. Like the triphosphate it is charged and does not cross cell membranes, so it exists only as an intracellular pool (`pbmc_gs441524mp`, `int_<tissue>_gs441524mp`).
+- **Source aliases:** `MP`, `nucleoside monophosphate` (Gallo 2021 Figures 1 and 2 and Table S3 column tokens `amp`, `mpn`, `nmp`, `mptn`); `GS-441524-MP` (the form used in the `gs704277` entry above).
+- **Example models:** `Gallo_2021_remdesivir_pbpk.R` (doi:10.1111/cts.12975).
+- **Notes:** Named by appending the phosphorylation state to the nucleoside's development code, following the `tfvdp` / `ftctp` precedent (parent token plus `dp` / `tp`), because no development code of its own is used for this species in the remdesivir literature. Do not shorten it to `mp`: a bare `mp` would read as "monophosphate of the parent", and the parent here is remdesivir, not GS-441524.
 
 ### cns7054 (**canonical CNS 7054 remimazolam metabolite suffix**)
 - **Type:** metabolite-suffix

@@ -4798,6 +4798,8 @@ navbar:
         href: articles/Zhang_2025_remdesivir.html
       - text: "Remdesivir esrd (Zhang 2025)"
         href: articles/Zhang_2025_remdesivir.html
+      - text: "Remdesivir pbpk (Gallo 2021)"
+        href: articles/Gallo_2021_remdesivir_pbpk.html
       - text: "Remifentanil (Choi 2011)"
         href: articles/Choi_2011_remifentanil.html
       - text: "Remifentanil (Yang 2017)"
@@ -7130,6 +7132,7 @@ articles:
   - articles/Gafar_2026_rifampicin
   - articles/Gaffney_2026_niraparib
   - articles/GallegoHernandez_2026_linezolid
+  - articles/Gallo_2021_remdesivir_pbpk
   - articles/Galluppi_2016_BIIB023
   - articles/Galluppi_2021_ulotaront
   - articles/Gandhi_2021_abatacept
