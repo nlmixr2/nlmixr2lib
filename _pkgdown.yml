@@ -5022,8 +5022,8 @@ navbar:
         href: articles/Stringer_2013_sipoglitazar.html
       - text: "Siponimod (Huth 2019)"
         href: articles/Huth_2019_siponimod.html
-      - text: "Sirolimus (Cheng 2020)"
-        href: articles/Cheng_2020_sirolimus.html
+      - text: "Sirolimus (Chen 2020)"
+        href: articles/Chen_2020_sirolimus.html
       - text: "Sirolimus (Fan 2024)"
         href: articles/Fan_2024_sirolimus.html
       - text: "Sirolimus (Golubovic 2019)"
@@ -6574,7 +6574,7 @@ articles:
   - articles/Chen_2019_trastuzumab
   - articles/Chen_2020_ciclosporin
   - articles/Chen_2020_luspatercept
-  - articles/Chen_2020a_tacrolimus
+  - articles/Chen_2020_sirolimus
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2021_lorlatinib
   - articles/Chen_2021_lorlatinib_exposure_response
