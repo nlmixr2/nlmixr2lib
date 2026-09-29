@@ -4240,6 +4240,8 @@ navbar:
         href: articles/Lu_2016_pinatuzumab_polatuzumab.html
       - text: "Pioglitazone rifampicin pbpk (Asaumi 2019)"
         href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
+      - text: "Pipamperone (Kloosterboer 2020)"
+        href: articles/Kloosterboer_2020_pipamperone.html
       - text: "Piperacillin (BoerPerez 2026)"
         href: articles/BoerPerez_2026_piperacillin.html
       - text: "Piperacillin (Bulitta 2007)"
@@ -7306,6 +7308,7 @@ articles:
   - articles/Kletting_2015_antiCD66_pbpk
   - articles/Kloft_2004_sibrotuzumab
   - articles/Kloos_2021_pegasparaginase
+  - articles/Kloosterboer_2020_pipamperone
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine
   - articles/Kloprogge_2015_artesunate
