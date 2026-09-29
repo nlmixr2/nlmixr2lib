@@ -1012,6 +1012,8 @@ navbar:
         href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
       - text: "Ceftolozane (Sime 2019)"
         href: articles/Sime_2019_ceftolozane_tazobactam.html
+      - text: "Ceftolozane (Zhang 2021)"
+        href: articles/Zhang_2021_ceftolozane_tazobactam.html
       - text: "Ceftriaxone (FernandezRubio 2025)"
         href: articles/FernandezRubio_2025_ceftriaxone.html
       - text: "Ceftriaxone (Garot 2011)"
@@ -5144,6 +5146,8 @@ navbar:
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Tazobactam (Sime 2019)"
         href: articles/Sime_2019_ceftolozane_tazobactam.html
+      - text: "Tazobactam (Zhang 2021)"
+        href: articles/Zhang_2021_ceftolozane_tazobactam.html
       - text: "Tazobactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tbaj587 (Leding 2026)"
@@ -8223,6 +8227,7 @@ articles:
   - articles/Zhang_2018_sunitinib
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2019b_nivolumab
+  - articles/Zhang_2021_ceftolozane_tazobactam
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
   - articles/Zhang_2023_aztreonam_amoxicillin_clavulanate
