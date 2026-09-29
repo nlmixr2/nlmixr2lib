@@ -263,6 +263,9 @@ fitting a printed parameter to a reported simulation is not done in this
 library.
 
 ```{r ent-pk-scenario}
+# Let rxode2 print the integrator's own message if a solve fails (it is
+# silent by default outside an interactive session); no output otherwise.
+rxode2::rxSetSilentErr(0L)
 p_kcln <- mod$iniDf$est[mod$iniDf$name == "k_cln_ENT"]
 scen <- bind_rows(lapply(ent_levels, function(lv) {
   amt <- lv * 1.7 / mw[["entinostat"]] * 1e6
