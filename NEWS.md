@@ -56,6 +56,8 @@
 
 - Add Guo 2020 valproic acid ([doi:10.1177/0300060520952281](https://doi.org/10.1177/0300060520952281)) -- Chinese adult inpatients with seizures, oral or intravenous.
 
+- Add Li 2019 cyclosporine ([doi:10.1038/s41401-019-0277-x](https://doi.org/10.1038/s41401-019-0277-x)) -- Chinese children receiving allogeneic haematopoietic stem cell transplantation.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
