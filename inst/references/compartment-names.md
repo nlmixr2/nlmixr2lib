@@ -6376,6 +6376,14 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `Bertin_2026_levosimendan.R` (doi:10.1007/s40262-025-01591-4; founding example -- formation from OR-1855 is 3.7-fold slower in patients aged 1 year or younger, which is the paper's central clinical finding).
 - **Notes:** Same token-construction rule as [[or1855]]: development code lowercased, hyphen dropped. The pair is a rare case in this register of a *reversible* metabolic step between two metabolites, neither of which is the parent -- the forward acetylation is `kmet_or1896` and the reverse deacetylation is `kicv_or1855`, named for the species each one forms, so the direction of a rate constant is read off its suffix.
 
+### thrx195518 (**canonical THRX-195518 revefenacin metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** THRX-195518, the major circulating metabolite of the inhaled long-acting muscarinic antagonist revefenacin, formed by hydrolysis of the parent's primary amide to the carboxylic acid. It is roughly three- to ten-fold less potent than revefenacin at muscarinic receptors and dissociates faster from the human M3 receptor, and its systemic exposure exceeds the parent's by about three- to six-fold. Carries `central_thrx195518`, `peripheral1_thrx195518`, the `Cc_thrx195518` observation, `lcl_thrx195518` / `lvc_thrx195518` / `lq_thrx195518` / `lvp_thrx195518`, the `e_age_cl_thrx195518` covariate effect and the `propSd_thrx195518` / `addSd_thrx195518` residuals.
+- **Source aliases:**
+  - `THRX-195518`, `CLmet/F`, `V3/F`, `Qmet/F`, `V4/F` -- Lo 2021 Table 2 and Fig. 1.
+- **Example models:** `Lo_2021_revefenacin.R` (doi:10.1007/s40262-020-00938-3; founding example -- two-compartment metabolite formed from a fixed 21% of the individual revefenacin clearance, with age on metabolite clearance and body weight on the formed fraction).
+- **Notes:** Same token-construction rule as [[or1855]]: the sponsor development code lowercased and the hyphen dropped. `thrx` is the Theravance code prefix, and the digits are the compound's identity, not a chain index, so the token is not a member of the numbered `m<n>` family.
+
 ---
 
 ## PBPK organ extracellular / cellular split (Parmar 2023 mPBPK family)
