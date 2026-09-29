@@ -3654,12 +3654,16 @@ navbar:
         href: articles/Martial_2017_micafungin.html
       - text: "Micafungin (Maseda 2018)"
         href: articles/Maseda_2018_micafungin.html
+      - text: "Micafungin cancer (Alqahtani 2021)"
+        href: articles/Alqahtani_2021_micafungin.html
       - text: "Micafungin clsi (Beredaki 2023)"
         href: articles/Beredaki_2023_micafungin.html
       - text: "Micafungin eucast (Beredaki 2023)"
         href: articles/Beredaki_2023_micafungin.html
       - text: "Micafungin mouse qsp (Liu 2018)"
         href: articles/Liu_2018_pneumocystis_qsp.html
+      - text: "Micafungin noncancer (Alqahtani 2021)"
+        href: articles/Alqahtani_2021_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
       - text: "Midazolam (Collins 2025)"
@@ -6719,6 +6723,7 @@ articles:
   - articles/Almquist_2022_anifrolumab
   - articles/Alqahtani_2018_cefuroxime
   - articles/Alqahtani_2018_vancomycin
+  - articles/Alqahtani_2021_micafungin
   - articles/Alqurain_2024_vancomycin
   - articles/Alshehri_2023_ivermectin
   - articles/Alsultan_2017_pyrazinamide
