@@ -544,7 +544,7 @@ published_afe <- tibble::tribble(
 
 afe_cmp <- dplyr::inner_join(afe, published_afe,
                              by = c("Inhibitor", "Inhibitor concentration used"))
-stopifnot(nrow(afe_cmp) == 7L)                 # guard the join, per pattern 10
+stopifnot(nrow(afe_cmp) == 7L)                 # guard the join
 stopifnot(max(abs(afe_cmp$AFE - afe_cmp$`Published AFE`)) < 0.15)
 
 knitr::kable(afe_cmp, caption = "Average fold error (eq. 11) versus Table 4 of Guo 2016. The bosentan [I]u,cyt cell is not available in the source.")

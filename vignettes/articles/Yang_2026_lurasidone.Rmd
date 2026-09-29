@@ -414,7 +414,7 @@ pta_cmp <- pta |>
     deviation = window == "pta_expl"
   )
 
-# Guard against a silently empty join (pattern 10): every published row must
+# Guard against a silently empty join: every published row must
 # have matched exactly one simulated row.
 stopifnot(nrow(pta_cmp) == nrow(published_pta))
 

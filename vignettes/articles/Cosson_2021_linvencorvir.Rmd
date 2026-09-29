@@ -437,8 +437,8 @@ pct_diff <- function(cmp) {
 }
 all_pct <- c(pct_diff(cmp_parent), pct_diff(cmp_liver), pct_diff(cmp_m5))
 summary(all_pct)
-# Centre and robust envelope over all 48 cells (pattern 12 of the vignette
-# guidance): a mis-transcribed parameter or unit moves the whole set.
+# Centre and robust envelope over all 48 cells: a mis-transcribed parameter
+# or unit moves the whole set.
 stopifnot(
   length(all_pct) == 48L,
   !anyNA(all_pct),

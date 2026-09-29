@@ -710,7 +710,7 @@ first_dose <- pta$`PTA (% above total EC90)`[pta$phase == "First dose"]
 steady     <- pta$`PTA (% above total EC90)`[pta$phase == "Steady state"]
 med_ss     <- pta$`Median Ctrough (mg/L)`[pta$phase == "Steady state"]
 
-# Guard that the lookups found rows at all (pattern 10).
+# Guard that the lookups found rows at all.
 stopifnot(length(first_dose) == 2L, length(steady) == 2L, length(med_ss) == 2L)
 
 # GATE 1 -- attainment is high in both arms. Deliberately set at 85/90 rather

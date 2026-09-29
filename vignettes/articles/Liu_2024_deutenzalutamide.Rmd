@@ -133,7 +133,7 @@ four dose-escalation levels, with 100 virtual subjects per dose arm.
 # set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per
 # solver thread, so this cohort is reproducible here and different on a machine
 # with a different thread count. Every assertion below is written to hold for
-# any cohort the model can produce (see the known-failure-patterns reference).
+# any cohort the model can produce.
 set.seed(20241202)
 rxode2::rxSetSeed(20241202)
 

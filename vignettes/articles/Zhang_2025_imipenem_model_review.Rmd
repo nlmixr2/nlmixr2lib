@@ -635,8 +635,7 @@ knitr::kable(round(t(renal_tab), 3),
 
 # Strictly increasing in every model. This is a deterministic solve of a
 # monotone algebraic expression, not a noisy cohort statistic, so exact
-# monotonicity is the right assertion here (contrast the cohort-derived
-# quantities warned about in the failure-pattern catalogue).
+# monotonicity is the right assertion here.
 stopifnot(all(apply(renal_tab, 2, function(x) all(diff(x) > 0))))
 ```
 

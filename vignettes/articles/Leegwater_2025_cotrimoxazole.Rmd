@@ -257,7 +257,7 @@ paper's Monte Carlo simulations, and target attainment is read off day 5.
 # set.seed() seeds R's RNG, not rxode2's. rxode2 partitions its RNG streams per
 # solver thread, so this cohort is NOT reproducible across machines with
 # different thread counts. Every assertion downstream is written to hold for any
-# cohort the model can produce (pattern 12 of the known-failure-patterns doc).
+# cohort the model can produce.
 set.seed(20250907)
 rxode2::rxSetSeed(20250907)
 

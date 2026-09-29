@@ -388,8 +388,8 @@ anchor_cmp <- dplyr::inner_join(fig1a_digitised, model_anchors,
                                 by = c("dose_mg", "metric")) |>
   dplyr::mutate(pct_diff = 100 * (model - digitised) / digitised)
 
-# A join that matched nothing would make every assertion below vacuously true
-# (pattern 10), so assert the row count first.
+# A join that matched nothing would make every assertion below vacuously true,
+# so assert the row count first.
 stopifnot(nrow(anchor_cmp) == nrow(fig1a_digitised))
 
 anchor_cmp |>

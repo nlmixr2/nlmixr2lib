@@ -355,8 +355,8 @@ c(
 )
 
 # Deterministic: no IIV, no random draw, so this bound is reproducible on any
-# machine and thread count -- pattern 12 (cohort-dependent assertions) does not
-# apply here. Realised max 1.66 pp, median 0.18, RMSE 0.43 over all 40
+# machine and thread count -- the caveat for cohort-dependent assertions does
+# not apply here. Realised max 1.66 pp, median 0.18, RMSE 0.43 over all 40
 # comparisons; the worst entry is the inclisiran predose. 3 pp keeps a little
 # headroom for solver tolerance yet still goes red on a mis-transcribed rate
 # constant or dose, which move these by tens of percentage points.

@@ -303,7 +303,7 @@ cf_rel <- cf_check |>
   mutate(rel = abs(Cc - Cc_calc) / Cc_calc)
 
 # Coverage guard first, so the accuracy assertion cannot pass vacuously on an
-# empty or partial join (pattern 10): every arm must be present, and at least
+# empty or partial join: every arm must be present, and at least
 # the whole dense steady-state window must have been compared in each.
 stopifnot(
   setequal(unique(cf_rel$treatment), arms$treatment),
@@ -402,7 +402,7 @@ dose_nca <- events |>
   mutate(time = 0) |>
   distinct(id, treatment, time, amt)
 
-# Fail loudly rather than silently producing an empty NCA (pattern 4 / 10).
+# Fail loudly rather than silently producing an empty NCA.
 stopifnot(
   nrow(sim_nca) > 0, nrow(dose_nca) > 0,
   any(sim_nca$time == 0),

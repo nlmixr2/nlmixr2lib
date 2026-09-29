@@ -317,7 +317,7 @@ base_metrics <- metrics()
 
 # Guard: overriding params must actually change the solve, otherwise every
 # sensitivity index would come back as a meaningless zero and the gate below
-# would pass without testing anything (failure pattern 10).
+# would pass without testing anything.
 stopifnot(abs(metrics("lvc", log(1.2))[["peakCe"]] - base_metrics[["peakCe"]]) > 1e-6)
 
 sens <- lapply(seq_len(nrow(fig4_params)), function(i) {
@@ -549,8 +549,7 @@ sim_nca <- single_nca |>
   dplyr::mutate(id = 1L, treatment = "100 mg single oral dose") |>
   dplyr::select(id, time, Cc, treatment)
 
-# Fail loudly rather than handing PKNCA a short or empty frame (failure
-# patterns 4 and 10).
+# Fail loudly rather than handing PKNCA a short or empty frame.
 stopifnot(nrow(sim_nca) > 300)
 
 # Guarantee a time = 0 row; for an extravascular dose Cc = 0 pre-dose.

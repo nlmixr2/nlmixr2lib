@@ -131,8 +131,7 @@ make_cohort <- function(prof_row, n, id_offset) {
   # Dose row per subject at t = 0. `cmt = "depot"` targets the oral depot
   # (rxode2 canonical). Observation rows use `cmt = "central"` -- the ODE
   # state name -- so the algebraic observable Cc is reported without
-  # triggering the slot-renumbering bug (see references/known-vignette-
-  # failure-patterns.md pattern 2).
+  # triggering the slot-renumbering bug.
   dose_rows <- tibble(
     id       = ids,
     time     = 0,

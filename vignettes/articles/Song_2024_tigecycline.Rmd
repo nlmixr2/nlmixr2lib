@@ -287,7 +287,7 @@ stopifnot(max(abs(auc_chk$pct_diff)) < 0.5)
 # No assertion on the SIGN of the bias: trapezoidal over-reading of a convex
 # curve is one-sided in principle, but at 0.007% the residual is down in solver
 # noise, and asserting the sign of a near-zero quantity is exactly the shape
-# that passes locally and fails in CI (pattern 12).
+# that passes locally and fails in CI.
 
 sprintf("AUC0-12,ss vs dose/CL: max |%% diff| = %.3f%% over %d subjects",
         max(abs(auc_chk$pct_diff)), nrow(auc_chk))

@@ -591,7 +591,7 @@ ever_below <- function(...) any(arm_rows(...)$sTFPI < thresh)
 # Time (days) spent below 25% of baseline within the window.
 dur_below <- function(...) {
   d <- arm_rows(...)
-  # Guard against a lookup that silently matches no rows (pattern 10).
+  # Guard against a lookup that silently matches no rows.
   stopifnot(nrow(d) > 1)
   sum(diff(d$time) * utils::head(d$sTFPI < thresh, -1))
 }
