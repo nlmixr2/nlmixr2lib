@@ -216,6 +216,8 @@
 
 - Add Wang 2021 sunitinib and its active metabolite SU012662 ([doi:10.1007/s13318-021-00671-7](https://doi.org/10.1007/s13318-021-00671-7)) -- children and young adults with gastrointestinal stromal tumors or other solid tumors.
 
+- Add Cristea 2021 OAT1,3 renal secretion ontogeny popPBPK model ([doi:10.1208/s12248-021-00595-9](https://doi.org/10.1208/s12248-021-00595-9)) -- renal clearance of clavulanic acid and amoxicillin in critically ill children aged 1 month to 15 years, with piperacillin and cefazolin predictions.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Luo 2021 daratumumab ([doi:10.1002/jcph.1771](https://doi.org/10.1002/jcph.1771)) -- adults with multiple myeloma receiving subcutaneous (1800 mg) or intravenous (16 mg/kg) daratumumab.
