@@ -4212,7 +4212,7 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
   - `Xdose` -- Tsuchitani 2026 Data S1 (`d/dt(Xdose)`).
   - `In_IVDum` -- Schropp 2019 Eq 42 (the paper's own name for the device).
   - `IN` -- the hard-coded infusion-rate variable of Schropp 2019's NONMEM streams S5, S9 and S10, which mimic an i.v. bolus by a short infusion of duration `TDUR = 0.0001` day.
-- **Example models:** `Nemitz_2026_dapagliflozin_pbpk.R`, `Tsuchitani_2026_apixaban_pbpk.R`, `Schropp_2019_bsab_tmdd_qe.R`, `Schropp_2019_bsab_tmdd_qeconst.R`.
+- **Example models:** `Nemitz_2026_dapagliflozin_pbpk.R`, `Tsuchitani_2026_apixaban_pbpk.R`, `Schropp_2019_bsab_tmdd_qe.R`, `Schropp_2019_bsab_tmdd_qeconst.R`, `Bulitta_2024_contezolid.R` (holds the infused prodrug contezolid acefosamil as an amount; drains by amount-based Michaelis-Menten conversion into `central_mrx1352` plus a first-order loss, rather than the single first-order rate of the other examples).
 - **Notes:** Canonical name ratified by the maintainers on 2026-09-21 (PMC5732473) as the single named i.v. bolus input compartment, parallel to `depot_kpd`; do not mint a second name for this role. Use case (b) is needed whenever a QE/QSS reduction multiplies the input function into the right-hand side rather than leaving it additive on one state -- under rapid binding the arriving dose is instantaneously partitioned between free and bound species, so adding it to the free-drug state alone is simply the wrong model. Schropp 2019 devotes a Methods subsection to this ("Implementation of the QE approximation with an i.v. administration") and notes that NONMEM and MONOLIX cannot express it with their internal dosing mechanisms; there the drain rate is set to `1 / TDUR` to reproduce a published short-infusion duration. A model carrying this compartment MUST declare it in `dosing` and MUST NOT also accept i.v. doses into `central`; the two routes are not interchangeable. Distinct from `depot` (extravascular absorption of a real dose), from `depot_kpd` (which holds an amount of real drug in a virtual body with no measured concentration), and from `depot_placebo` (a dimensionless dummy dose driving a placebo response).
 
 ### depot_lung (**canonical pulmonary deposition depot**)
@@ -6077,6 +6077,32 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
   - `M2`, `kM2`, `keM2`, `kM2-M1`, `METABO2` -- Bertin 2026 subscript notation in Table 2, Fig. 2 and the `$MODEL` block of the control stream.
 - **Example models:** `Bertin_2026_levosimendan.R` (doi:10.1007/s40262-025-01591-4; founding example -- formation from OR-1855 is 3.7-fold slower in patients aged 1 year or younger, which is the paper's central clinical finding).
 - **Notes:** Same token-construction rule as [[or1855]]: development code lowercased, hyphen dropped. The pair is a rare case in this register of a *reversible* metabolic step between two metabolites, neither of which is the parent -- the forward acetylation is `kmet_or1896` and the reverse deacetylation is `kicv_or1855`, named for the species each one forms, so the direction of a rate constant is read off its suffix.
+
+### mrx1352 (**canonical MRX-1352 contezolid-acefosamil intermediate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** MRX-1352, the intermediate prodrug formed by rapid hydrolysis of the intravenous double prodrug contezolid acefosamil (CZA) and converted more slowly to active contezolid. It is assayed in plasma after IV CZA and carries the largest exposure of the three analytes during IV dosing. Drives `central_mrx1352` / `peripheral1_mrx1352`, the `Cc_mrx1352` observation, the `lcl_mrx1352` (conversion clearance to contezolid at time 0), `lcl_ss_mrx1352`, `lcl_t50_mrx1352`, `lcl_time_hill_mrx1352`, `lemax_mrx1352`, `lec50_mrx1352`, `lhill_mrx1352`, `lcl_loss_mrx1352`, `lemax_loss_mrx1352`, `lq_mrx1352`, `lvc_mrx1352`, `lvp_mrx1352` parameters, and the `addSd_mrx1352` / `propSd_mrx1352` residuals.
+- **Source aliases:**
+  - `1352` -- the subscript Bulitta 2024 uses throughout Table 2 (`CL_1352,0`, `V1_1352`, `CLd_1352`, `CL_Loss,1352`).
+- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
+- **Notes:** Development code lowercased with the hyphen dropped, the same construction as [[or1855]]. Contezolid keeps the bare `central` / `Cc` names in the founding model although CZA is the IV-dosed species: contezolid is itself dosed orally in two of the three pooled studies and is the active moiety the model is named for, while CZA is carried only as an unassayed amount in `depot_iv` with no volume or concentration. Pairs with [[mrx1320]] and [[cza]].
+
+### mrx1320 (**canonical MRX-1320 contezolid metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** MRX-1320 (formerly MRX445-1 or M2), the main, pharmacologically inactive oxidative metabolite of contezolid. Drives `central_mrx1320` / `peripheral1_mrx1320`, the `Cc_mrx1320` observation, the `lcl_mrx1320` / `lvmax_mrx1320` / `lkm_mrx1320` parallel linear and Michaelis-Menten elimination parameters, `lq_mrx1320` / `lvc_mrx1320` / `lvp_mrx1320`, and the `addSd_mrx1320` / `propSd_mrx1320` residuals (plus `_iv`-qualified residuals where a model carries separate IV-study terms).
+- **Source aliases:**
+  - `1320` -- Bulitta 2024 Table 2 subscript (`CL_1320`, `Vmax_1320`, `Km_1320`).
+  - `MRX445-1`, `M2` -- earlier names in the contezolid literature (e.g. the Chinese NCA and popPK studies).
+- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
+- **Notes:** Deliberately not the generic `m2`, which is a per-paper designation with no cross-paper chemical meaning; see [[or1855]] for the same rule.
+
+### cza (**canonical contezolid acefosamil prodrug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Contezolid acefosamil (CZA, MRX-4), the water-soluble O-acyl phosphoramidate double prodrug of contezolid given intravenously. Used as the suffix on parameters that describe the prodrug's own fate -- `lvmax_cza` / `lkm_cza` (amount-based Michaelis-Menten conversion to MRX-1352) and `lkel_cza` (first-order loss) -- when the prodrug amount itself sits in the named i.v. input state `depot_iv` rather than a concentration compartment.
+- **Source aliases:**
+  - `CZA` -- Bulitta 2024 Table 2 subscript (`Vmax_CZA`, `AM_50,CZA`).
+  - `CZDa`, `MRX-4` -- the 2021 IDWeek abstract abbreviation and the development code.
+- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
+- **Notes:** A model that assays CZA and gives it a volume would use `central_cza`; the founding model does not, because the conversion was too fast for most CZA concentrations to be quantifiable and the authors dropped CZA from the fitted data.
 
 ---
 

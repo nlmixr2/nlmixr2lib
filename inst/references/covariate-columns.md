@@ -3570,6 +3570,16 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Salinger_2019_pretomanid.R` (four power-function effects normalised to 200 mg: on relative bioavailability in fasted subjects only (`e_dose_fdepot` = -0.264, carrying its own random effect), on the first-order absorption rate constant for all subjects (`e_dose_ka` = -0.128), on the transit mean transit time in fasted subjects only (`e_dose_mtt` = -0.155), and on the apparent central volume (`e_dose_vc` = 0.111). A separate indicator term `e_dose_1000mg_fdepot` = -0.00302 applies only to the 1000 mg FED records, which Salinger 2019 added to keep an odd high-dose fed cohort from distorting the fit near the 200 mg clinical dose).
 - **Notes:** Well-formed member of the auto-approved `DOSE_<drug>_<units>` canonical family. The dose dependence is genuinely a bioavailability / absorption phenomenon rather than saturable elimination: Salinger 2019's model is linear in clearance at any given dose, and the dose covariate does not touch CL at all. Because several of the effects are gated on prandial state, a data set must carry `FED` alongside this column for the model to be evaluable. Keep this column consistent with the event table's `amt` on dose rows; a mismatch silently rescales bioavailability without changing the administered amount. Sibling to `DOSE_TBAJ587_MG` and `DOSE_BEDAQUILINE_MG` in the antitubercular set.
 
+### DOSE_CONTEZOLID_MG (**canonical for administered oral contezolid dose in mg**)
+- **Description:** Nominal oral contezolid dose level on the dose record, in milligrams. Selects a dose-level-specific relative bioavailability, so it is a dose-record-level covariate rather than only an event-table `amt`.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** 800 mg (the reference dose of Bulitta 2024 Table 2, relative bioavailability fixed to 1 with food).
+- **Source aliases:** none; Bulitta 2024 tabulates the relative bioavailabilities by dose level and fed state (`F_rel,400mg,fed`, `F_rel,1200mg,fasting`, ...).
+- **Example models:** `Bulitta_2024_contezolid.R` (categorical use: records below 600 mg take the 400 mg row, 600-1000 mg the 800 mg row and above 1000 mg the 1200 mg row of the dose-level x fed-state relative-bioavailability table, each with its own fixed 0.1 BSV).
+- **Notes:** Well-formed member of the auto-approved `DOSE_<drug>_<units>` canonical family. Applies to oral contezolid only; IV contezolid acefosamil doses do not read it, so an IV-only record may carry any value (800 is the neutral choice).
+
 ### DOSE_TBAJ587_MG (**canonical for administered TBAJ-587 oral dose in mg**)
 - **Description:** Administered oral dose of the second-in-class diarylquinoline antitubercular TBAJ-587, in mg, referenced to 200 mg. Used as a *continuous* covariate on absorption, clearance and metabolite-formation parameters.
 - **Units:** mg
@@ -8186,7 +8196,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** specific
 - **Reference category:** 0 (no cSSSI; in `VanWart_2025_telavancin.R` the shared all-zero reference across `DIS_CSSSI` / `DIS_HABP` / `DIS_VABP` / `DIS_BACTEREMIA` is the uninfected healthy subject).
 - **Source aliases:** none known; source NONMEM control streams normally derive the indicator from an infection-type categorical alongside the sibling `DIS_*` columns.
-- **Example models:** `VanWart_2025_telavancin.R` (proportional shifts of +0.228 on total CL, +0.313 on Vc and +0.118 on Vp; cSSSI is the largest infected stratum of the pooled analysis at 557 of 1,205 subjects, and carries its own coefficient distinct from the pooled bacteremia / HABP / VABP coefficient on the same three parameters).
+- **Example models:** `VanWart_2025_telavancin.R` (proportional shifts of +0.228 on total CL, +0.313 on Vc and +0.118 on Vp; cSSSI is the largest infected stratum of the pooled analysis at 557 of 1,205 subjects, and carries its own coefficient distinct from the pooled bacteremia / HABP / VABP coefficient on the same three parameters), `Bulitta_2024_contezolid.R` (selects the separately estimated patient contezolid total clearance, 11.3 vs 10.2 L/h in healthy volunteers, AND its own between-subject variability, 0.538 vs 0.234, by multiplexing two etas; the 74 ABSSSI patients of phase 2 study MRX-I-03 are the only infected cohort, the reference is the healthy volunteer).
 - **Notes:** Sibling to `DIS_HABP`, `DIS_VABP`, `DIS_CUTI`, `DIS_BACTEREMIA` and `DIS_AP`; adds the cSSSI member to that set using the `DIS_<infection>` pattern the maintainers ratified with the Cammarata 2024 extraction (2026-07-27), where the alternative `DIS_INFECT_<TYPE>` prefix was offered and not chosen. **Distinct from `DIS_INFECT_CSSSI_SEV`**, which is a severity-WITHIN-cohort indicator (severe vs non-severe cSSSI, `Lodise_2018_iclaprim.R`) rather than a type-of-infection cohort indicator: a model may legitimately carry both, `DIS_CSSSI` selecting the cSSSI cohort against a non-cSSSI reference and `DIS_INFECT_CSSSI_SEV` stratifying severity inside it. Covariate-effect naming drops the `DIS_` prefix: `e_csssi_<param>`. Scope `specific` until a second model ratifies it.
 
 ### DIS_GERD (**canonical for gastroesophageal-reflux-disease patient indicator**)
@@ -14715,6 +14725,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `mfg == NAPOLI` (vs `mfg == PEI`) -- Adiwijaya 2017 Tables S6 and S7 theta row labels. The source names the covariate **manufacturing site**, not study: nal-IRI used in the phase III study was manufactured at a different site from the material used in the phase I-II studies, and Table S3 gives "Potential difference in manufacturing of nal-IRI in phase 2 and phase 3 studies" as the rationale. The two levels are perfectly collinear with the study (258 of 353 subjects are NAPOLI-1), so the canonical study indicator carries the manufacturing site rather than minting a parallel `MFGSITE_*` column that could never take a different value.
 - **Example models:** `Adiwijaya_2017_irinotecan_liposomal.R` (exponential effects on four parameters at once: total-irinotecan V1 -0.172 and CL -0.189, the SN-38 formation rate constant +3.79e-05, and the encapsulated-SN-38 mass fraction -0.615 -- the last being by far the largest, a 46% lower contaminant fraction in the phase III material, which is the effect the manufacturing rationale most directly predicts).
 - **Notes:** Scope is `specific` because the indicator names one trial. A model that needs the manufacturing site to vary independently of the study -- e.g. a later analysis pooling several trials that each drew on both sites -- should propose a separate covariate rather than reusing this one; see the Source aliases note for why the two are indistinguishable in the founding analysis.
+
+### STUDY_MRX4002 (**canonical for the MRX4-002 intravenous contezolid acefosamil phase 1 study indicator**)
+- **Description:** 1 = healthy volunteer from MRX4-002, the single- and multiple-ascending-dose phase 1 study of intravenous contezolid acefosamil (150-2400 mg), 0 = subject from the oral contezolid studies MRX-I-02 (phase 1) or MRX-I-03 (phase 2 ABSSSI) pooled in Bulitta 2024. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (oral contezolid studies).
+- **Source aliases:** none; Bulitta 2024 Table 2 footnote h distinguishes the residual errors "after IV dosing of CZA in healthy volunteers" and "after oral dosing of contezolid in healthy volunteers and phase 2 patients".
+- **Example models:** `Bulitta_2024_contezolid.R` (selects the IV-study additive and proportional residual errors for contezolid, 0.0392 mg/L and 0.192, and for MRX-1320, 0.00636 mg/L and 0.117, instead of the oral-study values; acts on no structural parameter).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family. The study and the dosing route coincide in the source (MRX4-002 is the only IV study), so the indicator can equally be read as "subject received IV contezolid acefosamil".
 
 ### STUDY_MIRROR (**canonical for MIRROR dose-finding study indicator**)
 - **Description:** 1 = subject enrolled in the MIRROR dose-finding study (NCT01457924; phase 2; SC ofatumumab dose-ranging in RRMS), 0 = other study in the Yu 2022 pooled analysis.
