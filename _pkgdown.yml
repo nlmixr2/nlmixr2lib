@@ -5138,6 +5138,8 @@ navbar:
         href: articles/Lee_2015_sumatriptan.html
       - text: "Sunitinib (AitOudhia 2016)"
         href: articles/AitOudhia_2016_sunitinib.html
+      - text: "Sunitinib (Wang 2020)"
+        href: articles/Wang_2020_sunitinib.html
       - text: "Sunitinib (Yu 2015)"
         href: articles/Yu_2015_sunitinib.html
       - text: "Sunitinib (Zhang 2018)"
@@ -5146,6 +5148,8 @@ navbar:
         href: articles/vanErp_2010_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "Sunitinib su12662 (Wang 2020)"
+        href: articles/Wang_2020_sunitinib.html
       - text: "Sunitinib svegfr3 os (Hansson 2013)"
         href: articles/Hansson_2013_sunitinib_svegfr3_os.html
       - text: "Sutimlimab (Bartko 2018)"
@@ -8240,7 +8244,7 @@ articles:
   - articles/Wang_2019b_tacrolimus
   - articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp
   - articles/Wang_2020_ontamalimab
-  - articles/Wang_2020_polymyxinB
+  - articles/Wang_2020_sunitinib
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin

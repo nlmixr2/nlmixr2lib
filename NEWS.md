@@ -34,6 +34,8 @@
 
 - Add van de Velde 2020 vincristine ([doi:10.3390/cancers12071789](https://doi.org/10.3390/cancers12071789)) -- children with cancer given push injections or 1 h infusions.
 
+- Add Wang 2020 sunitinib ([doi:10.1007/s00280-020-04106-z](https://doi.org/10.1007/s00280-020-04106-z)) -- children and young adults with refractory solid tumours; sunitinib and SU012662 PK plus eight safety-endpoint PK-PD models.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
