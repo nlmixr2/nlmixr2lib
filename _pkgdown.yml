@@ -3318,6 +3318,8 @@ navbar:
         href: articles/Kastrissios_2012_managlinatDialanetil.html
       - text: "ManaglinatDialanetil linked (Kastrissios 2012)"
         href: articles/Kastrissios_2012_managlinatDialanetil.html
+      - text: "Mannac (VanWart 2021)"
+        href: articles/VanWart_2021_mannac.html
       - text: "Maraviroc (Chan 2008)"
         href: articles/Chan_2008_maraviroc.html
       - text: "Maraviroc (Davis 2008)"
@@ -8508,6 +8510,7 @@ articles:
   - articles/Valke_2024_factorviii_thrombin_plasmin
   - articles/Valle_2005_exemestane
   - articles/VanWart_2004_garenoxacin
+  - articles/VanWart_2021_mannac
   - articles/VanWart_2025_telavancin
   - articles/VanWart_2025_tobramycin
   - articles/Vanobberghen_2016_tribendimidine
