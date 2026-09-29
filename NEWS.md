@@ -20,6 +20,8 @@
 
 - Add Onichimowski 2020 meropenem ([doi:10.1007/s43440-020-00104-3](https://doi.org/10.1007/s43440-020-00104-3)) -- critically ill adults on continuous renal replacement therapy.
 
+- Add Kovar 2020 buprenorphine ([doi:10.3390/pharmaceutics12060578](https://doi.org/10.3390/pharmaceutics12060578)) -- intravenous three-compartment model in adults with allometric scaling to children and preterm neonates.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
