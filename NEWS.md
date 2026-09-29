@@ -6,7 +6,7 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
-- Add van Hoogdalem 2020 busulfan ([doi:10.1111/bcp.14202](https://doi.org/10.1111/bcp.14202)) -- paediatric Fanconi anaemia patients undergoing haematopoietic cell transplantation.
+- Add Francis 2020 lumefantrine ([doi:10.1128/AAC.02394-19](https://doi.org/10.1128/AAC.02394-19)) -- non-pregnant adults with malaria and/or HIV (and healthy volunteers) on antiretroviral or rifampicin cotreatment.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
