@@ -4432,6 +4432,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remdesivir (Roberts 2025)"
         href: articles/Roberts_2025_remdesivir.html
+      - text: "Remdesivir (Sukeishi 2022)"
+        href: articles/Sukeishi_2022_remdesivir.html
       - text: "Remdesivir (Tamura 2023)"
         href: articles/Tamura_2023_remdesivir.html
       - text: "Remdesivir (Zhang 2025)"
@@ -7808,6 +7810,7 @@ articles:
   - articles/Su_2024_tigecycline
   - articles/Subrtova_2026_daptomycin
   - articles/Suda_2008_theophylline
+  - articles/Sukeishi_2022_remdesivir
   - articles/Suksai_2026_levodopa
   - articles/Sulaiman_2026_piperacillin_tazobactam
   - articles/Suleiman_2018_risankizumab
