@@ -4402,6 +4402,14 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
 - **Notes:** A well-formed member of the `depot_<route>` family, but note that the "route" element here names the deposition SITE within the airway rather than an administration route the way `depot_sc` / `depot_ip` / `depot_im` do. An inhalation PBPK that resolves regional deposition needs one depot per region: `depot_lung`, `depot_nasal`, and `depot_brain` for the olfactory region.
 
+### depot_buccal (**canonical oromucosal (buccal-cavity) absorption depot**)
+- **Type:** compartment
+- **Role:** Drug present in the buccal cavity and available for oromucosal (buccal / sublingual) absorption, draining first-order into `central`. Used by parallel-route models of oromucosal products (sprays, chewing gum, lozenges, inhalers whose deposit is mostly in the mouth) in which part of the dose is absorbed across the oral mucosa and the rest is swallowed into `depot_oral`. For a spray or inhaler the dose lands here directly; for a gum or lozenge the dose lands in the product reservoir (`depot`) and is released into this state.
+- **Source aliases:**
+  - `ABS1` / `MOUTH` -- Olsson Gisleskog 2021 ESM NONMEM `$MODEL` compartment names (mouth spray and inhaler dose into `ABS1`/`MOUTH`; gum and lozenge release from `GUM` into `MOUTH`).
+- **Example models:** `OlssonGisleskog_2021_nicotine_mouthspray.R` (founding example), `OlssonGisleskog_2021_nicotine_gum.R`, `OlssonGisleskog_2021_nicotine_lozenge.R`, `OlssonGisleskog_2021_nicotine_inhaler.R`.
+- **Notes:** A member of the `depot_<route>` family (`depot_oral`, `depot_td`, `depot_nasal`, ...), registered for the same reason as `depot_td`: the two absorption routes of an oromucosal product are not interchangeable, carry their own rate constants and bioavailabilities, and are dosed by separate records. Distinct from the PBPK tissue `a_buccal` (perfused buccal submucosa) and from the `buccal_slab<n>` diffusion mesh: this state is unabsorbed drug in the oral cavity, with no volume and no concentration.
+
 ### depot_sc (**canonical subcutaneous depot**)
 - **Type:** compartment
 - **Role:** Subcutaneous depot used in parallel-route models where a bare `depot` would be ambiguous because a second dosing route is modelled explicitly. Pairs with the absorption rate constant `lka_sc` / `ka_sc`, which is already in use across the library.

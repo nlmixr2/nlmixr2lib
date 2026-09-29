@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chou 2021 PFOS gestational and lactational PBPK ([doi:10.1289/EHP7671](https://doi.org/10.1289/EHP7671)) — six life-stage whole-body models (prepregnant, gestational and lactational) in rats and humans and their offspring.
+- Add Olsson Gisleskog 2021 nicotine ([doi:10.1007/s40262-020-00960-5](https://doi.org/10.1007/s40262-020-00960-5)) -- healthy adult smokers; seven models for intravenous, oral, mouth spray, chewing gum, lozenge, inhaler and transdermal nicotine.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
