@@ -68,6 +68,8 @@
 
 - Add Schmidt 2020 camptothecin (NLG207, nanoparticle-bound and free) ([doi:10.1007/s00280-020-04134-9](https://doi.org/10.1007/s00280-020-04134-9)) -- adults with advanced solid tumours.
 
+- Add Wang 2020 vitacoxib ([doi:10.3389/fvets.2020.554033](https://doi.org/10.3389/fvets.2020.554033)) -- healthy neutered domestic shorthair cats (preclinical/veterinary).
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
