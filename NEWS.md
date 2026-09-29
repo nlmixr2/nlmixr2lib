@@ -12,7 +12,7 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
-- Add Moes 2022 tocilizumab ([doi:10.1007/s40262-021-01074-2](https://doi.org/10.1007/s40262-021-01074-2)) -- ICU-admitted adults with COVID-19 co-treated with dexamethasone.
+- Add Hartman 2021 ceftriaxone ([doi:10.1007/s40262-021-01035-9](https://doi.org/10.1007/s40262-021-01035-9)) -- critically ill children in paediatric intensive care, with total and unbound (saturable albumin binding) concentrations.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
