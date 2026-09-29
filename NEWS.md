@@ -226,6 +226,8 @@
 
 - Add Shimizu 2021 lusutrombopag thrombopoiesis QSP ([doi:10.1002/psp4.12623](https://doi.org/10.1002/psp4.12623)) -- healthy adults and patients with chronic liver disease and thrombocytopenia.
 
+- Add Ahmad 2021 pyridoxic acid and homovanillic acid ([doi:10.1002/psp4.12610](https://doi.org/10.1002/psp4.12610)) -- endogenous OAT1/3 biomarkers with probenecid inhibition, healthy women.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Luo 2021 daratumumab ([doi:10.1002/jcph.1771](https://doi.org/10.1002/jcph.1771)) -- adults with multiple myeloma receiving subcutaneous (1800 mg) or intravenous (16 mg/kg) daratumumab.
