@@ -214,6 +214,8 @@ navbar:
         href: articles/Thakkar_2017_amifampridine.html
       - text: "Amikacin (Delattre 2010)"
         href: articles/Delattre_2010_amikacin.html
+      - text: "Amikacin (Jin 2020)"
+        href: articles/Jin_2020_amikacin.html
       - text: "Amikacin (Li 2025)"
         href: articles/Li_2025_amikacin.html
       - text: "Amikacin (Lim 2025)"
@@ -7249,6 +7251,7 @@ articles:
   - articles/Jiao_2008_mycophenolic_acid
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
+  - articles/Jin_2020_amikacin
   - articles/Jin_2025_benralizumab
   - articles/Jin_2026_colistinSulfate
   - articles/Joerger_2006_methotrexate
