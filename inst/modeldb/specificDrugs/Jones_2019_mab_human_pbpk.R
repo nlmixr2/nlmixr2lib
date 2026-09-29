@@ -1008,7 +1008,7 @@ Jones_2019_mab_human_pbpk <- function() {
     lnode = list(analyte = "monoclonal antibody", units = "umol", specimen = "lymph", verified = TRUE),
     lnode_igg = list(analyte = "endogenous IgG", units = "umol", specimen = "lymph", verified = TRUE),
     depot_sc = list(analyte = "monoclonal antibody", units = "umol", specimen = "administration site", verified = TRUE),
-    auc_central = list(analyte = "monoclonal antibody", units = "umol", specimen = "plasma", verified = TRUE)
+    auc_central = list(analyte = "monoclonal antibody", units = "umol*h/L", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
@@ -1039,11 +1039,11 @@ Jones_2019_mab_human_pbpk <- function() {
     # ---- Calibrated parameters (Table 1 "Fitted" and Table 2) ----------
     # Left un-fixed because the source ESTIMATED them; no uncertainty is
     # reported for any of them, so they carry point estimates only.
-    lendoscale <- log(603.7)      ; label("Human endothelial-cell scale factor relative to the Tg32 mouse (-)")   # Madonna human_endo_scale_factor; 1.422e9 * 603.7 = 0.86E12 = Table 1 human N_endo
-    lkdratio   <- log(220.11)     ; label("Ratio of mAb-FcRn Kd at pH 7.4 to Kd at pH 6.0 (-)")                   # Table 1 Kd 7.4/Kd 6.0 ratio = 220; Madonna KD7_WT/KD6_WT = 154077/700 = 220.11
-    lkonratio  <- log(83.7)       ; label("Ratio of first to second mAb-FcRn association rate constant (-)")      # Table 1 k on ratio (FcRn binding #1/#2) = 83.7; gives k_on_2nd = 8.06E7/83.7 = 9.63E5 1/M/h as reported in Methods
-    lpsa       <- log(1.8051)     ; label("AC-SINS scaling parameter a (-)")                                      # Table 2 human PS_a = 1.81; Madonna PS_a = 1.8051
-    lpsb       <- log(0.2624)     ; label("AC-SINS scaling parameter b (-)")                                      # Table 2 human PS_b = -0.262 (entered here as the magnitude; the equation subtracts it); Madonna PS_b = 0.2624
+    lendoscale <- log(603.7)      ; label("Human endothelial-cell scale factor relative to the Tg32 mouse (unitless)")   # Madonna human_endo_scale_factor; 1.422e9 * 603.7 = 0.86E12 = Table 1 human N_endo
+    lkdratio   <- log(220.11)     ; label("Ratio of mAb-FcRn Kd at pH 7.4 to Kd at pH 6.0 (unitless)")                   # Table 1 Kd 7.4/Kd 6.0 ratio = 220; Madonna KD7_WT/KD6_WT = 154077/700 = 220.11
+    lkonratio  <- log(83.7)       ; label("Ratio of first to second mAb-FcRn association rate constant (unitless)")      # Table 1 k on ratio (FcRn binding #1/#2) = 83.7; gives k_on_2nd = 8.06E7/83.7 = 9.63E5 1/M/h as reported in Methods
+    lpsa       <- log(1.8051)     ; label("AC-SINS scaling parameter a (unitless)")                                      # Table 2 human PS_a = 1.81; Madonna PS_a = 1.8051
+    lpsb       <- log(0.2624)     ; label("AC-SINS scaling parameter b (unitless)")                                      # Table 2 human PS_b = -0.262 (entered here as the magnitude; the equation subtracts it); Madonna PS_b = 0.2624
     lcmem      <- log(18.5)       ; label("Cell-membrane site density available for non-specific mAb binding (uM)")  # Table 2 C mem = 18.5 uM; Methods: C mem in human was set equal to C mem in Tg32 mouse
     lkintps    <- log(0.0380)     ; label("Internalisation rate of membrane-bound mAb from non-specific binding (1/h)")  # Table 2 human k int_PS = 0.0380 1/h
 
@@ -1057,17 +1057,17 @@ Jones_2019_mab_human_pbpk <- function() {
     lkon6      <- fixed(log(80.6)); label("mAb-FcRn association rate constant at pH 6.0 (1/uM/h)")                # Methods: k on_1st = 8.06E+7 1/M/h = 80.6 1/uM/h; Madonna k_on_6_EXG
     lkon7      <- fixed(log(3.22)); label("mAb-FcRn association rate constant at pH 7.4 (1/uM/h)")                # Madonna k_on_7_EXG = 1.61E7/5 = 3.22E6 1/M/h = 3.22 1/uM/h
     probdeg    <- fixed(0.95)     ; label("Probability of mAb degradation in the absence of FcRn binding (fraction)")  # Madonna Prob_deg = 0.95. Table 1 prints 98%; the deposited executable value is used - see vignette Errata
-    fr         <- fixed(0.715)    ; label("Apical (vascular-side) fraction of pinocytosis and recycling (-)")     # Methods: apical recycling fraction set at 0.715 (Shah and Betts); basolateral = 1 - FR
-    frecycle   <- fixed(0.99)     ; label("Fraction of free FcRn returned directly to the endosomal pool (-)")    # Methods: FcRn_recycle_fraction set to 0.99
-    sigis      <- fixed(0.2)      ; label("Lymphatic (interstitial) reflection coefficient, all organs (-)")      # Madonna sigma_IS[1..N_Organs] = 0.2
-    e6apct     <- fixed(0.33)     ; label("Sorting-endosome fraction of total endosomal volume (-)")              # Madonna E6a_Vol_Pct = 0.33; early and recycling endosomes split the remainder equally
+    fr         <- fixed(0.715)    ; label("Apical (vascular-side) fraction of pinocytosis and recycling (unitless)")     # Methods: apical recycling fraction set at 0.715 (Shah and Betts); basolateral = 1 - FR
+    frecycle   <- fixed(0.99)     ; label("Fraction of free FcRn returned directly to the endosomal pool (unitless)")    # Methods: FcRn_recycle_fraction set to 0.99
+    sigis      <- fixed(0.2)      ; label("Lymphatic (interstitial) reflection coefficient, all organs (unitless)")      # Madonna sigma_IS[1..N_Organs] = 0.2
+    e6apct     <- fixed(0.33)     ; label("Sorting-endosome fraction of total endosomal volume (unitless)")              # Madonna E6a_Vol_Pct = 0.33; early and recycling endosomes split the remainder equally
     tauvm      <- fixed(0.0166666666666667) ; label("Residence time of the vascular-side membrane compartment (h)")   # Madonna tau_VM = 1/60 h
     tauism     <- fixed(0.0166666666666667) ; label("Residence time of the interstitial-side membrane compartment (h)")  # Madonna tau_ISM = 1/60 h
     cigg0      <- fixed(66.6666666666667)   ; label("Endogenous IgG plasma concentration, held constant (uM)")    # Madonna EDG_mg_ml = 10 mg/mL at MW 150000 -> 66.67 uM; d/dt(C_EDG_Plasma) = 0
     mwmab      <- fixed(150000)   ; label("Monoclonal antibody molecular weight (g/mol)")                         # Madonna MW_EDG = 150000
     lka        <- fixed(log(0.0108333333333333)) ; label("First-order subcutaneous absorption rate constant (1/h)")   # Madonna ka = 0.26/24 1/h
     fsc        <- fixed(0.60)     ; label("Subcutaneous bioavailability (fraction)")                              # Madonna F = 0.60
-    psscore    <- fixed(0)        ; label("AC-SINS polyspecificity score of the simulated antibody (-)")          # Madonna PS_Score = 0 (default: an antibody with no non-specific interaction). Assay range 0-25
+    psscore    <- fixed(0)        ; label("AC-SINS polyspecificity score of the simulated antibody (unitless)")          # Madonna PS_Score = 0 (default: an antibody with no non-specific interaction). Assay range 0-25
 
     # The source is a deterministic PBPK platform fitted to mean plasma
     # profiles. It reports neither between-subject variability nor a
