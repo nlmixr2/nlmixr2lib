@@ -207,9 +207,9 @@ cohort <- tibble::tibble(
   IL6            = pmax(rlnorm(n_subj, log(20) - 0.5 * 1.0^2, 1.0), 0.7),
   SEXF           = rbinom(n_subj, 1, 0.82),
   RACE_ASIAN_AMIND_OTH = rbinom(n_subj, 1, 0.24),
-  BLHAQ          = pmin(pmax(rnorm(n_subj, mean = 1.55, sd = 0.65), 0, 3)),
-  PAIN           = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 20),  0, 100)),
-  BLPHYVAS       = pmin(pmax(rnorm(n_subj, mean = 65,   sd = 18),  10, 100))
+  BLHAQ          = pmin(pmax(rnorm(n_subj, mean = 1.55, sd = 0.65), 0), 3),
+  PAIN           = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 20),  0), 100),
+  BLPHYVAS       = pmin(pmax(rnorm(n_subj, mean = 65,   sd = 18),  10), 100)
 )
 ```
 
