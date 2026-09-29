@@ -4474,6 +4474,8 @@ navbar:
         href: articles/Cerqueira_2025_resveratrol.html
       - text: "Rezafungin (Roepcke 2023)"
         href: articles/Roepcke_2023_rezafungin.html
+      - text: "Rezafungin (Rubino 2021)"
+        href: articles/Rubino_2021_rezafungin.html
       - text: "Rfviii rat (VargasChristensen 2019)"
         href: articles/VargasChristensen_2019_rfviii_rat.html
       - text: "Rfxiii cyno (Dodds 2005)"
@@ -7627,6 +7629,7 @@ articles:
   - articles/Royer_2011_cisplatin
   - articles/Royston_2025_letermovir
   - articles/Rozman_2017_rituximab
+  - articles/Rubino_2021_rezafungin
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadaf_2024_glutamine
