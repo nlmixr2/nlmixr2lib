@@ -5868,6 +5868,8 @@ navbar:
         href: articles/Jung_2024_vancomycin.html
       - text: "Vancomycin (Li 2018)"
         href: articles/Li_2018_vancomycin.html
+      - text: "Vancomycin (Ma 2020)"
+        href: articles/Ma_2020_vancomycin.html
       - text: "Vancomycin (Ma 2024)"
         href: articles/Ma_2024_vancomycin.html
       - text: "Vancomycin (MarquesMinana 2010)"
@@ -7525,6 +7527,7 @@ articles:
   - articles/Lyauk_2016_methylphenidate
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
+  - articles/Ma_2020_vancomycin
   - articles/Ma_2023_difloxacin_crucianCarp
   - articles/Ma_2024_vancomycin
   - articles/Ma_2026_colistinSulfate
