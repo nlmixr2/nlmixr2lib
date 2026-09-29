@@ -4118,6 +4118,8 @@ navbar:
         href: articles/Ippolito_2024_pacmilimab_qsp.html
       - text: "Palbociclib (Panetta 2024)"
         href: articles/Panetta_2024_palbociclib.html
+      - text: "Palbociclib (Royer 2021)"
+        href: articles/Royer_2021_palbociclib.html
       - text: "Palbociclib anc (Panetta 2024)"
         href: articles/Panetta_2024_palbociclib.html
       - text: "Palbociclib plt (Panetta 2024)"
@@ -8074,6 +8076,7 @@ articles:
   - articles/Roy_2023_erythropoiesis_qsp
   - articles/Royer_2010_HuHMFG1
   - articles/Royer_2011_cisplatin
+  - articles/Royer_2021_palbociclib
   - articles/Royston_2025_letermovir
   - articles/Rozman_2017_rituximab
   - articles/Rubino_2021_amikacin
