@@ -126,6 +126,8 @@
 
 - Add Zhang 2020 teicoplanin ([doi:10.3389/fphar.2020.594562](https://doi.org/10.3389/fphar.2020.594562)) -- hospitalised Chinese children aged 1 month to 14 years.
 
+- Add Takita 2020 creatinine-drug interaction PBPK models, uptake-OCT2 and bidirectional-OCT2 ([doi:10.1002/psp4.12566](https://doi.org/10.1002/psp4.12566)) -- adults with chronic kidney disease stages G3-G4 receiving trimethoprim, cimetidine or famotidine.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
