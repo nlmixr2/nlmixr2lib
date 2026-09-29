@@ -4957,6 +4957,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Joerger_2006_methotrexate.R` (3-cmt MTX parent + 2-cmt 7-OH-MTX metabolite, joint NONMEM ADVAN5 fit; metabolic fraction fixed at 10 percent per Joerger 2006 Results page 75).
 - **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `7dm` precedent.
 
+### ac886 (**canonical AC886 quizartinib-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** AC886, the pharmacologically active N-desalkyl metabolite of quizartinib formed predominantly via CYP3A4. AC886 is roughly equipotent with the parent for FLT3-ITD inhibition and circulates at comparable exposure, so it is followed as a second plasma analyte in joint parent + metabolite popPK models.
+- **Source aliases:** none (the papers, control streams and assays use the bare compound code `AC886`).
+- **Example models:** `Vaddady_2024_quizartinib.R` (doi:10.1111/cts.70074); compartments `central_ac886` / `peripheral1_ac886`, observation `Cc_ac886`, parameters `lcl_ac886` / `lvc_ac886` / `lvp_ac886` / `lq_ac886` / `etalvc_ac886` / `propSd_ac886`. `Kang_2020_quizartinib.R` (doi:10.1002/jcph.1680); same compartments and observation, residual SD `expSd_ac886` (log-scale additive error).
+- **Notes:** Suffix starts with a letter but contains digits; the convention check matches on `endsWith(name, "_<metab>")` so the mixed alphanumeric form is fine.
+
 ### sa (**canonical salicylic-acid metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Salicylic acid (SA), the deacetylation (hydrolysis) metabolite of acetylsalicylic acid. Formed both pre-systemically in the gut wall and systemically from circulating aspirin, and it is the dominant circulating salicylate species after an oral aspirin dose. Gives `central_sa` / `peripheral1_sa` compartments, `lcl_sa` / `lvc_sa` / `lvp_sa` / `lq_sa` parameters, the `Cc_sa` observation and the `propSd_sa` residual SD.
