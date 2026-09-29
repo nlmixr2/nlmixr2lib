@@ -232,6 +232,12 @@ navbar:
         href: articles/Yan_2024_amisulpride.html
       - text: "Amitriptyline RR (Tylutki 2018)"
         href: articles/Tylutki_2018_amitriptyline.html
+      - text: "Amitriptyline rat pbpk hcmec (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Amitriptyline rat pbpk mdck (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Amitriptyline rat pbpk mdckmdr1 (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Amivantamab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
       - text: "Amlitelimab (Tiraboschi 2025)"
@@ -794,6 +800,12 @@ navbar:
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cafedrine theodrenaline ephedrine (Dings 2026)"
         href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
+      - text: "Caffeine rat pbpk hcmec (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Caffeine rat pbpk mdck (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Caffeine rat pbpk mdckmdr1 (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "CalcitriolQuantumDot earlyIBC mouse pbpk (Forder 2019)"
         href: articles/Forder_2019_calcitriolQuantumDots.html
       - text: "CalcitriolQuantumDot healthy mouse pbpk (Forder 2019)"
@@ -836,6 +848,12 @@ navbar:
         href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
       - text: "Carbamazepine invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
+      - text: "Carbamazepine rat pbpk hcmec (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Carbamazepine rat pbpk mdck (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Carbamazepine rat pbpk mdckmdr1 (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Carbenicillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Carboplatin (Ekhart 2008)"
@@ -2014,6 +2032,12 @@ navbar:
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
       - text: "Finerenone uacr (Goulooze 2022)"
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
+      - text: "Fleroxacin rat pbpk hcmec (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Fleroxacin rat pbpk mdck (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Fleroxacin rat pbpk mdckmdr1 (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Flt3lfc cyno (Hosseini 2024)"
         href: articles/Hosseini_2024_flt3lfc.html
       - text: "Flt3lfc human (Hosseini 2024)"
@@ -3938,6 +3962,12 @@ navbar:
         href: articles/Bulitta_2019_pefloxacin.html
       - text: "Pefloxacin (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Pefloxacin rat pbpk hcmec (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Pefloxacin rat pbpk mdck (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Pefloxacin rat pbpk mdckmdr1 (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Pegasparaginase (Kloos 2021)"
         href: articles/Kloos_2021_pegasparaginase.html
       - text: "Pegasparaginase germanCzech (Wurthwein 2025)"
@@ -5900,6 +5930,12 @@ navbar:
         href: articles/Kim_2026_zolpidem.html
       - text: "Zolpidem dsst (Kim 2026)"
         href: articles/Kim_2026_zolpidem.html
+      - text: "Zolpidem rat pbpk hcmec (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Zolpidem rat pbpk mdck (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Zolpidem rat pbpk mdckmdr1 (SanchezDengra 2021)"
+        href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Zolpidem vas (Kim 2026)"
         href: articles/Kim_2026_zolpidem.html
       - text: "Zoniporide (Izat 2025)"
@@ -7646,6 +7682,7 @@ articles:
   - articles/Salinger_2019_pretomanid
   - articles/Sampson_2014_azithromycin
   - articles/Sampson_2014_gentamicin
+  - articles/SanchezDengra_2021_neuro_pbpk_rat
   - articles/SanchezPena_2005_enoxaparin
   - articles/Sanchez_2011_efavirenz
   - articles/Sandra_2024_siRNA_hbsag_mouse_mbma
