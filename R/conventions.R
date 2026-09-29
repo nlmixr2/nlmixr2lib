@@ -9,8 +9,8 @@
 #' (installed as `system.file("references", "<file>.md", package = "nlmixr2lib")`),
 #' so the markdown registers remain the single authoritative sources.
 #' The static list below retains only structural regex constants and the
-#' deprecation lists. Remaining fields mirror the `extract-literature-model`
-#' skill's `naming-conventions.md` and `vignettes/create-model-library.Rmd`.
+#' deprecation lists. Remaining fields mirror
+#' `vignettes/create-model-library.Rmd` and the `inst/references/*.md` registers.
 #'
 #' @keywords internal
 #' @noRd
@@ -309,7 +309,7 @@
   # `Cc` is NOT an acceptable alternative spelling here: per PR 512, `Cc`
   # names the central-compartment drug concentration, and a probability is
   # not one -- renaming would also break the units$concentration metadata
-  # these models rely on. Operator ruling 2026-09-11.
+  # these models rely on. Maintainer ruling 2026-09-11.
   # Founding example: Shin_2014_sevoflurane (prob_roc, the entry that
   # founded the shape). Documented in inst/references/compartment-names.md.
   # Each underscore must separate non-empty lowercase tokens, so a trailing
@@ -511,8 +511,8 @@
     # because `_ha` is already the hepatic-artery suffix throughout the
     # PBPK models (q_ha, fq_ha, qp_ha, qg_ha, fco_ha across 32 files);
     # adopting it would make `q_ha` ambiguous between hepatic-artery
-    # blood flow and a heptadecanoic-acid clearance. Operator-ratified
-    # 2026-08-26 (sidecar manacq_Mascarenhas_2015_jcph_484 request-001).
+    # blood flow and a heptadecanoic-acid clearance. Maintainer ruling
+    # (2026-08-26).
     # Founding example: Mascarenhas_2015_pentadecanoic_triheptadecanoic.
     "hepta",
     # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
@@ -617,8 +617,7 @@
     # AC886 is roughly equipotent with the parent for FLT3-ITD
     # inhibition and circulates at comparable exposure, so it is
     # followed as a second analyte in joint parent + metabolite popPK
-    # models (Vaddady 2024 doi:10.1111/cts.70074). Sidecar
-    # request-001 / response-001, question q1, option A.
+    # models (Vaddady 2024 doi:10.1111/cts.70074). Maintainer ruling.
     "ac886",
     # adADT (acetylated dADT), the N-acetylated and only marginally
     # anthelminthically active metabolite of dADT (deacetylated
@@ -660,11 +659,11 @@
   # extracorporeal arm specifically, gated by RRT_CRRT_ACTIVE and
   # scaled by RRT_CRRT_EFFLUENT_FLOW (e.g. Zurawska 2026 piperacillin,
   # which carries `_crrt` and `_hemodialysis` as two separate arms in
-  # one model). Sidecar request-001 / response-001, question q2,
-  # option C: `_crrt` is adopted now and the follow-up question of
-  # renaming the whole family onto the covariate register's
-  # RRT_<MODALITY>_<KIND> shape -- which would also fold the older,
-  # near-duplicate `_dialysis` suffix in -- is queued separately.
+  # one model). Maintainer ruling: `_crrt` is adopted now and the
+  # follow-up question of renaming the whole family onto the covariate
+  # register's RRT_<MODALITY>_<KIND> shape -- which would also fold the
+  # older, near-duplicate `_dialysis` suffix in -- is left for a separate
+  # decision.
   # `_ccpd` and `_capd` are the two PERITONEAL-dialysis arms: continuous
   # cycler-assisted peritoneal dialysis and continuous ambulatory
   # peritoneal dialysis respectively, gated by RRT_CCPD_ACTIVE /
@@ -673,8 +672,7 @@
   # different rates through the same membrane -- Patel 2015 estimates
   # 0.319 vs 0.170 L/h/70 kg for oseltamivir carboxylate, a 1.9-fold
   # difference -- so a single coefficient cannot stand in for both.
-  # Sidecar `oare_PMC4386947` request-001 / response-001, question q2,
-  # option A.
+  # Maintainer ruling.
   # `_hemoadsorption` the extracorporeal HEMOADSORPTION (hemoperfusion /
   # sorbent-cartridge) arm, gated by HEMOADSORB_ACTIVE (e.g. Leber 2023,
   # CL_total = CL + CLmax * (1 - adsorbed / Amax)). A distinct
@@ -763,9 +761,9 @@
     kd_LR = "kd_lr",
     kd_T1 = "kd_t1",
     kd_T2 = "kd_t2",
-    # Same case-normalisation class, found while auditing the extraction
-    # skill's own docs against this map: 89 models used `vmax`, one used
-    # `Vmax`, and the skill taught the capitalised spelling.
+    # Same case-normalisation class, found while auditing the conventions
+    # documentation against this map: 89 models used `vmax`, one used
+    # `Vmax`, and the documentation taught the capitalised spelling.
     Vmax = "vmax"
   ),
 
@@ -801,9 +799,8 @@
     "saliva",
     "milk",
     # Spent dialysate / effluent collected from a dialysis circuit. Companion
-    # to the `dialysate` compartment canonical ratified in sidecar
-    # `oare_PMC4386947` request-001 / response-001 question q1: a dialysate
-    # collection state needs a nameable matrix, and dialysate is a genuinely
+    # to the `dialysate` compartment canonical (maintainer ruling): a
+    # dialysate collection state needs a nameable matrix, and dialysate is a genuinely
     # assayed specimen (Patel 2015 measured oseltamivir and oseltamivir
     # carboxylate in plasma, dialysate and urine, each with its own validated
     # LOQ and its own residual-error term).
