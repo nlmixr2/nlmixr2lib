@@ -159,6 +159,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Luu_2017_nusinersen.R` (V_CSF = 0.433 L, intrathecal antisense oligonucleotide), `Stott_2023_flucytosine.R` (apparent Vcns/F = 41.73 L, oral flucytosine).
 - **Notes:** Member of the `lv<compartment>` family that names a volume after the canonical compartment it scales, alongside `lvelf`. Distinct from `lvc`: `lvcsf` never scales a plasma concentration. Pairs with `k_central_csf` / `k_csf_central` when the CSF leg is parameterised by rate constants rather than by an inter-compartmental clearance.
 
+### lvmilk (**canonical log-transformed breast-milk compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of the canonical `milk` compartment when it is an estimated parameter, used to convert the milk drug amount to the breast-milk concentration `Cmilk <- milk / vmilk` (volume). For an oral popPK fit the value is apparent (`Vb/F`) and has no physiologic reading as the volume of milk in the breast. When the milk volume is instead derived from infant intake and feed frequency, write it as a `model()` quantity `vmilk` rather than an `ini` parameter (`Wattanakul_2024_primaquine_motherinfant.R`).
+- **Source aliases:**
+  - `Vb`, `Vb/F` -- Bustinduy 2020 Methods output equation `Y(2) = X(4) / Vb` and Table 2.
+- **Example models:** `Bustinduy_2020_praziquantel.R` (Vb/F = 612.130 L, oral praziquantel).
+- **Notes:** Member of the `lv<compartment>` family alongside `lvelf` and `lvcsf`. Pairs with `k_central_milk` / `k_milk_central`.
+
 ### lk12, lk21, lk13, lk31 (**canonical log-transformed inter-compartmental rate constants**)
 - **Type:** log-transformed-pk
 - **Role:** The `ini` forms of the canonical bare `k12` / `k21` / `k13` / `k31` rate constants -- first-order distribution between `central` and `peripheral1` (`lk12` / `lk21`) or `peripheral2` (`lk13` / `lk31`), in 1 / time. Used as the primary estimated quantities when a source paper parameterises distribution by rate constants rather than by an inter-compartmental clearance and a peripheral volume, which is what NONMEM ADVAN4 / ADVAN11 and Pmetrics / ADAPT models typically report, and which is forced when the dependent variable is an amount so peripheral volumes are not identifiable.
@@ -923,6 +931,15 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `K23` / `K32` -- Stott 2023 Equations 2-3 and Table 1. The paper numbers its states 1 = gut, 2 = circulation, 3 = CNS, 4 = peripheral, so its `K23` / `K32` are the central-to-CSF pair and its `K24` / `K42` are the ordinary central-to-`peripheral1` pair (`k12` / `k21`).
 - **Example models:** `Stott_2023_flucytosine.R`.
 - **Notes:** Member of the established `k_<from>_<to>` directional-transfer family already used for `k_central_elf` / `k_elf_central` (`Abouelhassan_2024_sulbactam_human.R`), `k_central_milk` / `k_milk_central` (`Wattanakul_2024_primaquine.R`) and `k_csf_plasma` / `k_csf_brain` / `k_brain_csf` (`Biliouris_2018_nusinersen.R`). Use this family, not `k13` / `k31`, whenever a transfer connects `central` to a named non-numbered compartment: `k13` / `k31` are reserved for `central` <-> `peripheral2`, and a source paper's own subscripts index its own state numbering, so the digits carry no transferable meaning. Pairs with `lvcsf`. Distinct from `k_csf_plasma`, which names a one-way CSF-to-plasma efflux in a model that has no reciprocal plasma-to-CSF leg.
+
+### k_central_milk, k_milk_central (**canonical bare central-to-milk and milk-to-central rate constants**)
+- **Type:** bare-pk
+- **Role:** First-order transfer rate constants between `central` and the canonical `milk` compartment (1 / time), for a lactation model in which breast milk exchanges reversibly with plasma. The log-transformed `lk_central_milk` / `lk_milk_central` forms are used in `ini` when the pair is estimated directly. When milk has no elimination of its own, it behaves as a sampled second peripheral compartment, and `(k_central_milk / k_milk_central) * (vc / vmilk)` is exactly the model's milk:plasma AUC(0-inf) ratio.
+- **Source aliases:**
+  - `Kcb` / `Kbc` -- Bustinduy 2020 Methods equations (2) and (4) and Table 2 (c = central, b = breast milk).
+  - `K28` / `K82` -- Wattanakul 2024, where the pair is derived in `model()` from `q_milk`, `vc` and `pcmilk` rather than estimated.
+- **Example models:** `Bustinduy_2020_praziquantel.R` (estimated pair, no milk elimination), `Wattanakul_2024_primaquine.R` and `Wattanakul_2024_primaquine_motherinfant.R` (derived pair).
+- **Notes:** Member of the `k_<from>_<to>` directional-transfer family (`k_central_elf` / `k_elf_central`, `k_central_csf` / `k_csf_central`). Distinct from `keff_milk`, which removes drug from milk to a sink with no return to plasma, and from `kmilkinf`, the dyad milk-to-infant transfer. Pairs with `lvmilk`.
 
 ### fdepot (**canonical bare depot fraction**)
 - **Type:** bare-pk

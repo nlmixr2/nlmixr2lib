@@ -44,6 +44,8 @@
 
 - Add Chen 2020 sirolimus ([doi:10.1177/0300060520947627](https://doi.org/10.1177/0300060520947627)) -- Chinese children with kaposiform haemangioendothelioma; CYP3A5 genotype on clearance.
 
+- Add Bustinduy 2020 praziquantel ([doi:10.1128/AAC.00566-20](https://doi.org/10.1128/AAC.00566-20)) -- Filipino women with *Schistosoma japonicum* in early or late pregnancy or lactating, with paired plasma and breast milk.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
