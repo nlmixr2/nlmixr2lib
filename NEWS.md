@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Niu 2020 caspofungin ([doi:10.3389/fphar.2020.00184](https://doi.org/10.3389/fphar.2020.00184)) -- children undergoing allogeneic hematopoietic stem cell transplantation.
+- Apgar 2018 ALXN1540 rat and human QSP models: the citation now uses the author names as corrected by the 2020 corrigendum ([doi:10.1002/psp4.12484](https://doi.org/10.1002/psp4.12484)) -- Millard BL (not Miliard) and Burke JM. No parameter or equation changes.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
