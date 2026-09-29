@@ -3932,6 +3932,8 @@ navbar:
         href: articles/Lu_2022_patritumab.html
       - text: "Pazopanib (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib.html
+      - text: "Pazopanib (Ozbey 2021)"
+        href: articles/Ozbey_2021_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
       - text: "Pefloxacin (Bulitta 2019)"
@@ -7472,6 +7474,7 @@ articles:
   - articles/Overgaard_2016_liraglutide
   - articles/Overgaard_2019_semaglutide
   - articles/Ozawa_2007_docetaxel
+  - articles/Ozbey_2021_pazopanib
   - articles/Ozdin_2025_dexamethasone
   - articles/Padari_2012_meropenem
   - articles/Padari_2018_penicillin_G
