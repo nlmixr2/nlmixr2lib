@@ -96,6 +96,8 @@
 
 - Add Hanke 2020 cimetidine ([doi:10.1007/s40262-020-00896-w](https://doi.org/10.1007/s40262-020-00896-w)) -- adult healthy volunteers and peptic ulcer patients (published study-mean profiles, intravenous and fasted oral).
 
+- Add Chen 2020b tacrolimus ([doi:10.21037/tp-20-84](https://doi.org/10.21037/tp-20-84)) -- Chinese children after liver transplantation, with CYP3A5 genotype and Wuzhi capsule effects.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
