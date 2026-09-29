@@ -246,11 +246,15 @@ Hibma_2026_elranatamab <- function() {
     # total_target = total sBCMA amount (A4, nmol). Kd = Cf,elra * Cf,sBCMA /
     # Ccomplex with Cf,elra = (A1 - X)/Vc, Cf,sBCMA = (A4 - X)/Vc,sBCMA and
     # Ccomplex = X/Vc,complex gives the quadratic in the complex amount X
-    # whose smaller root is the printed Xcomplex equation.
+    # whose smaller root is the printed Xcomplex equation,
+    # 0.5 * (sb - sqrt(sb^2 - 4 * A1 * A4)). It is encoded in the identical
+    # rationalised form 2 * A1 * A4 / (sb + sqrt(...)), which avoids the
+    # cancellation of the printed form when drug has washed out (A1 -> 0).
     a1 <- central * mg_to_nmol
     kdv <- kd * vc * vc_target / vc_complex
     sb <- kdv + a1 + total_target
-    x_complex <- 0.5 * (sb - sqrt(sb * sb - 4 * a1 * total_target))
+    x_complex <- 2 * a1 * total_target /
+      (sb + sqrt(sb * sb - 4 * a1 * total_target))
 
     cf_elra <- (a1 - x_complex) / vc # free elranatamab (nM)
     cf_sbcma <- (total_target - x_complex) / vc_target # free sBCMA (nM)

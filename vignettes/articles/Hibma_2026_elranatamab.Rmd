@@ -87,7 +87,7 @@ str(ui_crs$population)
 | `d/dt(depot)` (A3) | `-ka*A3` | Section 2.4, dA3/dt |
 | `d/dt(total_target)` (A4, total sBCMA) | `ksyn - CLsBCMA*Cf,sBCMA - CLcomplex*Ccomplex` | Section 2.4, dA4/dt |
 | Free / complex concentrations | `Cf = (A1-X)/Vc`; `Cf,sBCMA = (A4-X)/Vc,sBCMA`; `Ccomplex = X/Vc,complex` | Section 2.4 |
-| Complex amount `X` | smaller root of the Kd quadratic | Section 2.4, Xcomplex equation |
+| Complex amount `X` | smaller root of the Kd quadratic, rationalised | Section 2.4, Xcomplex equation |
 | Total concentrations | `Ct = Cf + Ccomplex` (drug and sBCMA) | Section 2.4 |
 | `ksyn`, `total_target(0)` | `CLsBCMA * BLsBCMA`; `BLsBCMA * Vc,sBCMA` | Not printed; drug-free steady state (see Assumptions) |
 | Molecular weight | 148 kDa (sBCMA 5.4 kDa) | Section 2.2 |
@@ -900,6 +900,11 @@ stopifnot(
 - **Residual error.** Table 2 lists the four proportional residual terms among
   the fixed effects with RSEs. They are taken to be SD-scale thetas (SAEM
   Mu-referencing with SIGMA fixed to 1) and encoded as proportional SDs.
+- **Complex amount.** Section 2.4 prints the complex amount as the smaller
+  root `0.5 * (b - sqrt(b^2 - 4 * A1 * A4))`. The model uses the identical
+  rationalised form `2 * A1 * A4 / (b + sqrt(b^2 - 4 * A1 * A4))`. The
+  printed form subtracts two nearly equal numbers once the drug has washed
+  out, and loses precision there; the rationalised form does not.
 - **Units.** The model works in molar units internally, as the paper does
   (148 kDa for elranatamab). Doses are given in mg to `depot` (SC) or
   `central` (IV). The drug states are carried in mg and converted to nmol
