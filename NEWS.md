@@ -178,6 +178,8 @@
 
 - Add Jang 2021 oxcarbazepine ([doi:10.1038/s41598-021-85920-0](https://doi.org/10.1038/s41598-021-85920-0)) -- Korean adults with epilepsy (monohydroxy derivative).
 
+- Add Wang 2021 icatibant ([doi:10.1002/jcph.1768](https://doi.org/10.1002/jcph.1768)) -- healthy adults and adult and pediatric patients with hereditary angioedema.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
