@@ -6042,6 +6042,8 @@ navbar:
         href: articles/Wang_2014_vatalanib.html
       - text: "Vatiquinone (Hu 2025)"
         href: articles/Hu_2025_vatiquinone.html
+      - text: "Vedolizumab (Okamoto 2021)"
+        href: articles/Okamoto_2021_vedolizumab.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Vedolizumab (Waterhouse 2024)"
@@ -7836,6 +7838,7 @@ articles:
   - articles/Ojara_2024_lamivudine
   - articles/Okada_2024_triazolam
   - articles/Okada_2025_rocatinlimab
+  - articles/Okamoto_2021_vedolizumab
   - articles/Okumura_2025_ergothioneine_pbpk
   - articles/Olafuyi_2025_propyleneGlycol
   - articles/Olagunju_2018_efavirenz

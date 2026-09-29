@@ -148,6 +148,8 @@
 
 - Add Terranova 2021 berzosertib ([doi:10.1007/s00280-020-04184-z](https://doi.org/10.1007/s00280-020-04184-z)) -- adults with advanced solid tumors receiving intravenous berzosertib alone or with chemotherapy.
 
+- Add Okamoto 2021 vedolizumab ([doi:10.5217/ir.2019.09167](https://doi.org/10.5217/ir.2019.09167)) -- Asian and non-Asian adults with moderately-to-severely active ulcerative colitis or Crohn's disease.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
