@@ -2330,6 +2330,8 @@ navbar:
         href: articles/Willmann_2021_fxi_aso.html
       - text: "G csf (Melhem 2018)"
         href: articles/Melhem_2018_g_csf.html
+      - text: "GC1118 (Chung 2021)"
+        href: articles/Chung_2021_GC1118.html
       - text: "GNbAC1 (Cao 2013)"
         href: articles/Cao_2013_GNbAC1.html
       - text: "Ga68hadotatate (Siebinga 2023)"
@@ -6892,6 +6894,7 @@ articles:
   - articles/Chu_2024_allopurinol
   - articles/Chua_2025_mirikizumab
   - articles/Chung_2013_vancomycin
+  - articles/Chung_2021_GC1118
   - articles/Chung_2026_vancomycin
   - articles/Cirincione_2017_exenatide
   - articles/Cirincione_2017_exenatide_er

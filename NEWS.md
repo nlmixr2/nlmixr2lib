@@ -248,6 +248,8 @@
 
 - Add Gallo 2021 remdesivir hybrid PBPK model ([doi:10.1111/cts.12975](https://doi.org/10.1111/cts.12975)) -- healthy adults (phase 1 mean data), with PBMC and lung intracellular GS-443902.
 
+- Add Chung 2021 GC1118 ([doi:10.1111/cts.12963](https://doi.org/10.1111/cts.12963)) -- adults with advanced solid tumours; target-mediated disposition with EGFR occupancy.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Zhou 2021a enrofloxacin PBPK ([doi:10.3390/pharmaceutics13050602](https://doi.org/10.3390/pharmaceutics13050602)) -- healthy pigs given an oral solid-dispersion granule, with the small-intestinal contents as the target site.
