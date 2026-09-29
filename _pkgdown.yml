@@ -1156,6 +1156,8 @@ navbar:
         href: articles/AbdRahman_2020_chloroquine.html
       - text: "Cholecalciferol (Tuey 2024)"
         href: articles/Tuey_2024_cholecalciferol.html
+      - text: "Cholecalciferol pbpk (Huang 2021)"
+        href: articles/Huang_2021_cholecalciferol_pbpk.html
       - text: "Cholecalciferol pbpk (Muhamad 2025)"
         href: articles/Muhamad_2025_cholecalciferol_pbpk.html
       - text: "Ciclosporin (Chen 2020)"
@@ -7375,6 +7377,7 @@ articles:
   - articles/Hu_2026_utreloxastat
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
+  - articles/Huang_2021_cholecalciferol_pbpk
   - articles/Huang_2025_colistinSulfate
   - articles/Huang_2025_dexmedetomidine
   - articles/Huang_2026_tiapride
