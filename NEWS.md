@@ -230,6 +230,8 @@
 
 - Add Choi 2021 doxorubicin and sorafenib monotherapy and combination tumor-growth-inhibition models ([doi:10.1124/jpet.121.000584](https://doi.org/10.1124/jpet.121.000584)) -- mice bearing orthotopic human 143B osteosarcoma xenografts (registers the sibling-drug suffix `sorafenib`).
 
+- Add Lee 2021 primaquine ([doi:10.3390/pharmaceutics13050652](https://doi.org/10.3390/pharmaceutics13050652)) -- healthy Korean men of normal weight and with obesity, with the carboxyprimaquine metabolite.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Zhou 2021a enrofloxacin PBPK ([doi:10.3390/pharmaceutics13050602](https://doi.org/10.3390/pharmaceutics13050602)) -- healthy pigs given an oral solid-dispersion granule, with the small-intestinal contents as the target site.

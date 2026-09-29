@@ -4594,6 +4594,8 @@ navbar:
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Primaquine (Chotsiri 2024)"
         href: articles/Chotsiri_2024_primaquine_metabolites.html
+      - text: "Primaquine (Lee 2021)"
+        href: articles/Lee_2021_primaquine.html
       - text: "Primaquine (Sridharan 2019)"
         href: articles/Sridharan_2019_primaquine.html
       - text: "Primaquine (Wattanakul 2024)"
@@ -7621,7 +7623,7 @@ articles:
   - articles/Lee_2017_doripenem
   - articles/Lee_2018_leuprolide
   - articles/Lee_2019_tramadol
-  - articles/Lee_2021_vancomycin
+  - articles/Lee_2021_primaquine
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin
