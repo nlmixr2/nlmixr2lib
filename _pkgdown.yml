@@ -4920,6 +4920,8 @@ navbar:
         href: articles/Lo_2021_revefenacin.html
       - text: "Rezafungin (Roepcke 2023)"
         href: articles/Roepcke_2023_rezafungin.html
+      - text: "Rezafungin (Rubino 2021)"
+        href: articles/Rubino_2021_rezafungin.html
       - text: "Rfviii rat (VargasChristensen 2019)"
         href: articles/VargasChristensen_2019_rfviii_rat.html
       - text: "Rfxiii cyno (Dodds 2005)"
@@ -8299,7 +8301,7 @@ articles:
   - articles/Royer_2021_palbociclib
   - articles/Royston_2025_letermovir
   - articles/Rozman_2017_rituximab
-  - articles/Rubino_2021_amikacin
+  - articles/Rubino_2021_rezafungin
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Ryu_2021_hyaluronicAcid_fillers_mouse
