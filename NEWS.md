@@ -90,6 +90,8 @@
 
 - Add Svensson 2020 rifampicin ([doi:10.1093/cid/ciz1071](https://doi.org/10.1093/cid/ciz1071)) -- adults with tuberculous meningitis in Indonesia; plasma and CSF popPK plus a 6-month mortality model driven by day-2 rifampicin AUC.
 
+- Add Wiebe 2020 midazolam and 1'-OH-midazolam ([doi:10.1007/s10928-020-09704-1](https://doi.org/10.1007/s10928-020-09704-1)) -- healthy adults with constitutive, inhibited and induced CYP3A activity.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.
