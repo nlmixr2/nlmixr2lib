@@ -10,6 +10,8 @@
 
 - Add de Velde 2020 imipenem nonparametric (Pmetrics) model ([doi:10.1007/s40262-020-00859-1](https://doi.org/10.1007/s40262-020-00859-1)) -- critically ill adults; `deVelde_2020_imipenem` (NONMEM arm) is re-verified against the primary publication, with the residual error corrected to log-normal and the study location corrected to Switzerland, and both arms now have their own article.
 
+- Add Nguyen 2021 ceftazidime ([doi:10.3390/pharmaceutics13040456](https://doi.org/10.3390/pharmaceutics13040456)) -- Vietnamese adults hospitalised for acute exacerbations of COPD. The same paper's `Nguyen_2021_imipenem`, previously transcribed from the Zhang 2025 review, is now re-verified against the primary: its IIV variances are the squared Monolix omegas (0.294^2 and 0.107^2) instead of `log(1 + CV^2)`, and it has its own article.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.

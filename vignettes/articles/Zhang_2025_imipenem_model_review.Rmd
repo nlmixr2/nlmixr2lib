@@ -45,7 +45,10 @@ below are transcribed from the review, each carrying a
 `reference` metadata.
 
 Every model file in this family records `ALL PARAMETER VALUES ARE
-SECONDARY` in its `population$notes`. Read the
+SECONDARY` in its `population$notes`, except `Nguyen_2021_imipenem`,
+which has since been re-verified against its primary publication and is
+validated in its own
+[Nguyen 2021 article](Nguyen_2021_ceftazidime_imipenem.html). Read the
 "Assumptions and deviations" section at the foot of this page before
 using any of them; it reports a **measured** audit of how faithfully the
 review reproduces its primaries, and that audit found a real defect.
@@ -78,7 +81,7 @@ coverage <- tibble::tribble(
    7L, "Li et al. (2020)",                "Blocked: dialysate-compartment role + Qd units", NA_character_,
    8L, "Chen et al. (2020b)",             "Extracted",              "Chen_2020_imipenem",
    9L, "de Velde et al. (2020)",          "Re-verified vs primary (2 files)", "deVelde_2020_imipenem / _nonparametric",
-  10L, "Nguyen et al. (2021)",            "Extracted",              "Nguyen_2021_imipenem",
+  10L, "Nguyen et al. (2021)",            "Extracted; re-verified against primary", "Nguyen_2021_imipenem",
   11L, "Jaruratanasirikul et al. (2021)", "Extracted",              "Jaruratanasirikul_2021_imipenem",
   12L, "Por et al. (2021)",               "Extracted",              "Por_2021_imipenem",
   13L, "Dao et al. (2022)",               "Extracted",              "Dao_2022_imipenem",
@@ -731,8 +734,10 @@ an **apparent CV** of a log-normal random effect, so
 * exact for a source reporting NONMEM-style CV% (Lamoth, Bai above, and
   by inference most of the NONMEM studies in the review);
 * modestly low for a source reporting an omega SD as a percent (the
-  Monolix studies -- Couffignal, and hence probably also Dinh 2022,
-  Lafaurie 2023 and Nguyen 2021). At CV 30% the two readings differ by
+  Monolix studies -- Couffignal, and hence probably also Dinh 2022 and
+  Lafaurie 2023; confirmed for Nguyen 2021, whose Methods define omega as
+  the SD of eta, and whose model file now uses `omega^2` accordingly
+  after re-verification against the primary). At CV 30% the two readings differ by
   4% in variance; the gap widens with CV, so the largest exposure is
   `Dinh_2022_imipenem`'s 110% CV on `Q`, where the readings differ by
   more than 50%;
