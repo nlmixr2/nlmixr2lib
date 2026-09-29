@@ -5738,6 +5738,8 @@ navbar:
         href: articles/Waterhouse_2024_vedolizumab.html
       - text: "Veliparib (Niu 2017)"
         href: articles/Niu_2017_veliparib.html
+      - text: "Veliparib (Stodtmann 2021)"
+        href: articles/Stodtmann_2021_veliparib.html
       - text: "Venetoclax (Dave 2019)"
         href: articles/Dave_2019_venetoclax.html
       - text: "Venetoclax (Yang 2025)"
@@ -7788,6 +7790,7 @@ articles:
   - articles/Stitt_2026_tranexamicAcid
   - articles/Stocker_2012_oxypurinol
   - articles/Stockmann_2015_vancomycin
+  - articles/Stodtmann_2021_veliparib
   - articles/Storgaard_2026_tetrahydrocannabinol
   - articles/Storset_2014_tacrolimus
   - articles/Stoschus_2025_phenobarbital
