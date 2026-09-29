@@ -244,6 +244,8 @@
 
 - Add Van Wart 2021 N-acetylmannosamine (ManNAc) with its metabolite Neu5Ac ([doi:10.1007/s40268-021-00343-6](https://doi.org/10.1007/s40268-021-00343-6)) -- adults with GNE myopathy.
 
+- Add Jiang 2021 ivosidenib ([doi:10.1111/cts.12959](https://doi.org/10.1111/cts.12959)) -- adults with IDH1-mutant advanced hematologic malignancies; popPK plus the concentration-QTcF model.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Zhou 2021a enrofloxacin PBPK ([doi:10.3390/pharmaceutics13050602](https://doi.org/10.3390/pharmaceutics13050602)) -- healthy pigs given an oral solid-dispersion granule, with the small-intestinal contents as the target site.
