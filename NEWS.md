@@ -6,7 +6,7 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
-- Add Li 2020 bevacizumab, PF-06439535 biosimilar and Avastin ([doi:10.1007/s00280-019-03946-8](https://doi.org/10.1007/s00280-019-03946-8)) -- adults with advanced non-squamous non-small cell lung cancer.
+- Add Snelder 2020 finerenone PK and UACR, serum potassium and eGFR exposure-response models ([doi:10.1007/s40262-019-00820-x](https://doi.org/10.1007/s40262-019-00820-x)) -- adults with type 2 diabetes and chronic kidney disease (ARTS-DN and ARTS-DN Japan).
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
