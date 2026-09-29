@@ -65,7 +65,7 @@ Damnjanovic_2023_levetiracetam <- function() {
     # The off-diagonal is the covariance implied by the reported correlation:
     #   cov = corr_V_Cl * omega_V * omega_Cl = 0.86 * 0.84 * 0.59 = 0.426216
     # The resulting 2x2 block has determinance 0.7056*0.3481 - 0.426216^2 = 0.0640 > 0,
-    # so it is positive definite and needs no nudge (failure pattern 1).
+    # so it is positive definite and needs no nudge.
     etalvc + etalcl ~ c(0.7056,
                         0.426216, 0.3481)                                                 # Table 2(a): omega_V = 0.84 (RSE 19.1%), omega_Cl = 0.59 (RSE 17.2%), corr_V_Cl = 0.86 (RSE 21.4%)
 
