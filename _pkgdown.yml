@@ -716,8 +716,8 @@ navbar:
         href: articles/Chen_2024_biapenem.html
       - text: "Bictegravir (Ekobena 2025)"
         href: articles/Ekobena_2025_bictegravir.html
-      - text: "Bictegravir pbpk (Stader 2021)"
-        href: articles/Stader_2021_bictegravir_pbpk.html
+      - text: "Bictegravir ddi pbpk (Stader 2021)"
+        href: articles/Stader_2021_bictegravir_ddi_pbpk.html
       - text: "Biib107 (Toukam 2025)"
         href: articles/Toukam_2025_biib107.html
       - text: "Bilastine (Togawa 2016)"
@@ -8503,7 +8503,7 @@ articles:
   - articles/Soy_2015_benznidazole
   - articles/Sridharan_2019_primaquine
   - articles/Staatz_2005_gentamicin_vancomycin
-  - articles/Stader_2021_bictegravir_pbpk
+  - articles/Stader_2021_bictegravir_ddi_pbpk
   - articles/Standing_2008_diclofenac
   - articles/Standing_2012_oseltamivir
   - articles/Steffens_2025_amikacin

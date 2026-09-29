@@ -12,7 +12,7 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
-- Add Wu 2021 SPI-62 ([doi:10.1002/jcph.1925](https://doi.org/10.1002/jcph.1925)) -- healthy adults; the PK-only TMDD model that preceded Wu 2023.
+- Add Stader 2021 bictegravir drug-drug interaction whole-body PBPK ([doi:10.1002/cpt.2221](https://doi.org/10.1002/cpt.2221)) -- virtual adults aged 20 to 50 years given bictegravir with CYP3A and UGT1A1 inhibitors and inducers.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
