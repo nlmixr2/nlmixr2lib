@@ -3768,6 +3768,8 @@ navbar:
         href: articles/Kemal_2026_nemtabrutinib.html
       - text: "Neonatal acidosis (Dings 2026)"
         href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
+      - text: "NeonatalHypothermia (Favie 2020)"
+        href: articles/Favie_2020_neonatalHypothermia.html
       - text: "Nevirapine (Bienczak 2016)"
         href: articles/Bienczak_2016_nevirapine.html
       - text: "Nevirapine (Schipani 2011)"
@@ -6883,7 +6885,7 @@ articles:
   - articles/Fau_2020_isatuximab
   - articles/Fauchet_2013_zidovudine
   - articles/Fauchet_2015_lopinavir
-  - articles/Favie_2020_lidocaine
+  - articles/Favie_2020_neonatalHypothermia
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Feillet_2008_sapropterin
   - articles/Felmlee_2010_ghb_rat

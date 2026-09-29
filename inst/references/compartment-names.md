@@ -5079,7 +5079,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** Monoethylglycinexylidide (MEGX) lidocaine metabolite (LID -> MEGX via CYP1A2/3A4).
 - **Source aliases:** none.
-- **Example models:** `NA_NA_lidocaine.R`.
+- **Example models:** `NA_NA_lidocaine.R`, `Favie_2020_neonatalHypothermia.R`.
 
 ### gx (**canonical GX lidocaine metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -5104,13 +5104,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** Morphine-3-glucuronide, major glucuronide metabolite of morphine.
 - **Source aliases:** none.
-- **Example models:** `Knibbe_2009_morphine.R` (DDMODEL00000248).
+- **Example models:** `Knibbe_2009_morphine.R` (DDMODEL00000248), `Favie_2020_neonatalHypothermia.R`.
 
 ### m6g (**canonical morphine-6-glucuronide suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Morphine-6-glucuronide, major glucuronide metabolite of morphine.
 - **Source aliases:** none.
-- **Example models:** `Knibbe_2009_morphine.R` (DDMODEL00000248).
+- **Example models:** `Knibbe_2009_morphine.R` (DDMODEL00000248), `Favie_2020_neonatalHypothermia.R`.
 
 ### c6g (**canonical codeine-6-glucuronide suffix**)
 - **Type:** metabolite-suffix
@@ -5802,7 +5802,7 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** 1'-hydroxymidazolam metabolite of midazolam.
 - **Source aliases:** none.
-- **Example models:** `Brussee_2018_midazolam_pbpk.R`, `Franken_2017_midazolam.R`.
+- **Example models:** `Brussee_2018_midazolam_pbpk.R`, `Franken_2017_midazolam.R`, `Favie_2020_neonatalHypothermia.R`.
 
 ### 4ohctx (**canonical 4-hydroxycyclophosphamide suffix**)
 - **Type:** metabolite-suffix
@@ -6017,6 +6017,54 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Example models:** `Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.R` (doi:10.1002/psp4.13307).
 
 ---
+
+## Pooled multi-drug neonatal PK sibling-drug suffixes (Favie 2020)
+
+Favie 2020 (doi:10.1002/cpt.1917) fits seven drugs and five metabolites from the PharmaCool cohort in ONE jointly-estimated model with a shared clearance random effect. Morphine, the reference compound for that shared effect, keeps the bare canonical names; every other drug and metabolite takes a suffix. `m3g`, `m6g`, `1ohm` and `megx` were already registered; the full-INN tokens below complete the set. Full INNs are used rather than contractions because none of these drugs had a registered short form and the INN cannot collide with an existing token.
+
+### midazolam (**canonical midazolam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Midazolam as a non-parent analyte in a multi-drug model (`central_midazolam`, `lcl_midazolam`, `Cc_midazolam`, `propSd_midazolam`). Standalone midazolam models keep the bare canonical names.
+- **Source aliases:** none.
+- **Example models:** `Favie_2020_neonatalHypothermia.R`.
+
+### hmg (**canonical hydroxymidazolam glucuronide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 1'-hydroxymidazolam glucuronide (HMG), the UGT conjugate of `1ohm` and the terminal renally-cleared metabolite of midazolam. Named with the source papers' own abbreviation.
+- **Source aliases:**
+  - `HMG` -- Favie 2020 Table 3 / Table S1.
+- **Example models:** `Favie_2020_neonatalHypothermia.R`.
+- **Notes:** Unrelated to HMG-CoA; this register holds analyte suffixes only.
+
+### lidocaine (**canonical lidocaine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Lidocaine as a non-parent analyte in a multi-drug model (`central_lidocaine`, `Cc_lidocaine`). Its metabolite MEGX keeps the registered `megx` suffix.
+- **Source aliases:** none.
+- **Example models:** `Favie_2020_neonatalHypothermia.R`.
+
+### phenobarbital (**canonical phenobarbital sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Phenobarbital as a non-parent analyte in a multi-drug model (`central_phenobarbital`, `Cc_phenobarbital`).
+- **Source aliases:** none.
+- **Example models:** `Favie_2020_neonatalHypothermia.R`.
+
+### amoxicillin (**canonical amoxicillin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Amoxicillin as a non-parent analyte in a multi-drug model (`central_amoxicillin`, `peripheral1_amoxicillin`, `Cc_amoxicillin`).
+- **Source aliases:** none.
+- **Example models:** `Favie_2020_neonatalHypothermia.R`.
+
+### benzylpenicillin (**canonical benzylpenicillin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Benzylpenicillin (penicillin G) as a non-parent analyte in a multi-drug model (`central_benzylpenicillin`, `peripheral1_benzylpenicillin`, `Cc_benzylpenicillin`).
+- **Source aliases:** none.
+- **Example models:** `Favie_2020_neonatalHypothermia.R`.
+
+### gentamicin (**canonical gentamicin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Gentamicin as a non-parent analyte in a multi-drug model (`central_gentamicin`, `peripheral1_gentamicin`, `Cc_gentamicin`).
+- **Source aliases:** none.
+- **Example models:** `Favie_2020_neonatalHypothermia.R`.
 
 ## Transporter-DDI perpetrator drug suffixes
 
