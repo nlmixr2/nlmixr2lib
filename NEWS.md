@@ -6,7 +6,7 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
-- Add Sime 2019b unbound ceftolozane and unbound tazobactam ([doi:10.1128/AAC.01655-19](https://doi.org/10.1128/AAC.01655-19)) -- critically ill adults undergoing continuous venovenous hemodiafiltration.
+- Add Ahmed 2020 cyclophosphamide ([doi:10.3389/fphar.2020.00406](https://doi.org/10.3389/fphar.2020.00406)) -- Ethiopian women with breast cancer, with an AUC-driven neutrophil model.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
