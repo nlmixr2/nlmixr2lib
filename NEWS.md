@@ -192,6 +192,8 @@
 
 - Add Jones 2021 buprenorphine BUP-XR monthly depot ([doi:10.1007/s40262-020-00957-0](https://doi.org/10.1007/s40262-020-00957-0)) -- adults with opioid use disorder receiving sublingual run-in and monthly subcutaneous BUP-XR (SUBLOCADE).
 
+- Add Arora 2021 letrozole ([doi:10.1371/journal.pone.0248579](https://doi.org/10.1371/journal.pone.0248579)) -- male and female Sprague-Dawley rats, plasma and brain extracellular fluid.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
