@@ -5331,6 +5331,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (doi:10.1038/aps.2017.84).
 
+### ete (**canonical etesevimab sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Etesevimab (LY-CoV016, anti-SARS-CoV-2 spike receptor-binding-domain neutralizing IgG1), a sibling monoclonal antibody co-administered with bamlanivimab; neither is a parent or metabolite of the other. Bamlanivimab, the antibody also given alone, keeps the unsuffixed canonical names. Drives `central_ete` / `peripheral1_ete`, the `lcl_ete` / `lvc_ete` / `lq_ete` / `lvp_ete` PK parameters, the `Cc_ete` output and the `propSd_ete` residual.
+- **Source aliases:** `ETE`, `CB` (the NONMEM stream prefixes etesevimab quantities `CB`: `CBCL`, `CBV1`, `CBCONC`).
+- **Example models:** `Chigutsa_2021_bamlanivimab_etesevimab.R` (doi:10.1002/cpt.2420).
+
 ### cdb4453 (**canonical CDB-4453 monodemethylated-telapristone metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Active monodemethylated metabolite of telapristone (CDB-4124). Removal of one N-methyl group on the C-17 side chain produces CDB-4453, a more polar (smaller apparent volume of distribution) metabolite with possible equipotent antiprogestational activity in vivo (Morris 2011 Discussion). Drives `central_cdb4453` and the `propSd_cdb4453` residual; the parent-side parameters use the canonical unsuffixed names (`lcl_pop1` / `lcl_pop2` / `lvc` / `lvp` / `lq` / `lka`).
