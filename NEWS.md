@@ -6,7 +6,7 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
-- Add Gao 2020 teicoplanin ([doi:10.3389/fphar.2020.00552](https://doi.org/10.3389/fphar.2020.00552)) -- Chinese children aged 2 months to 9 years with different renal functions.
+- Add Andrews 2020 tacrolimus final and starting-dose models ([doi:10.1007/s40262-019-00831-8](https://doi.org/10.1007/s40262-019-00831-8)) -- paediatric kidney transplant recipients in the first 6 weeks post-transplant.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
