@@ -1268,6 +1268,8 @@
 
 - Add Han 2025 clozapine ([doi:10.3389/fpsyt.2025.1664678](https://doi.org/10.3389/fpsyt.2025.1664678)) -- adults with schizophrenia on routine therapeutic drug monitoring.
 
+- Add Wurthwein 2021 PEGylated asparaginase ([doi:10.1007/s13318-021-00670-8](https://doi.org/10.1007/s13318-021-00670-8)) -- children with acute lymphoblastic leukemia in the German and Czech part of the AIEOP-BFM ALL 2009 trial (induction and re-induction).
+
 - Add Wurthwein 2025 PEGylated asparaginase, four models ([doi:10.1007/s13318-025-00962-3](https://doi.org/10.1007/s13318-025-00962-3)) -- children with acute lymphoblastic leukemia in the AIEOP-BFM ALL 2009 trial (German/Czech, Italian, high-risk post-induction, and R2 experimental arm).
 
 - Add Tan 2025 cabotegravir and rilpivirine ([doi:10.1093/ofid/ofaf614](https://doi.org/10.1093/ofid/ofaf614)) -- adults with virologically suppressed HIV-1 on long-acting injectable therapy in routine outpatient care.
