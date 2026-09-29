@@ -1044,6 +1044,14 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Shigetome_2025_paroxetine_madrs.R` (Emax model in treatment duration, `EFF = Emax * Time / (ET50 + Time)`, with cumulative first-week paroxetine exposure on Emax and the week-1 MADRS score on ET50).
 - **Notes:** The state is a percentage on a roughly 0-100 scale but is not bounded by the model: a negative value is attainable when the score worsens from baseline, and the Emax term itself can exceed 100 at high exposure, so this endpoint should not be given a bounded (logit / probit) transform unless the source paper declares one. Distinct from the covariate `SCORE_MADRS` in `covariate-columns.md`, which carries an absolute MADRS reading at a stated visit; the baseline reading that defines this endpoint's denominator is part of the endpoint, not a covariate.
 
+### ppsvcfb (**canonical change from baseline in prescribed parenteral support volume output**)
+- **Type:** compartment
+- **Role:** Change from baseline in the weekly prescribed parenteral support volume (PPSV; parenteral nutrition plus intravenous fluids) of patients with intestinal failure / short bowel syndrome, in L/week. The primary efficacy endpoint of GLP-2 analog trials. **Sign convention: NEGATIVE for clinical improvement**, because treatment reduces the volume of parenteral support a patient needs. Algebraic output in the founding model (no ODE state).
+- **Source aliases:**
+  - `Delta PPSV` / `change from baseline prescribed PS volume` -- Marier 2021 paper notation and Table S10 title.
+- **Example models:** `Marier_2021_teduglutide_ppsv.R` (hyperbolic time-course Emax, `Delta PPSV(t) = Emax * t / (ET50 + t) * DrugEffect`, with ET50 fixed at 168 days, Emax -5.76 L/week scaled by the steady-state teduglutide Cmax, and an additive residual of 1.11 L/week).
+- **Notes:** The `cfb` suffix follows the `das28cfb` / `tmccfb` / `druglikingvascfb` precedent for a change-from-baseline endpoint and the lowercase run-together form of that family. A model of the ABSOLUTE prescribed volume (Marier 2021 Table S14 sensitivity analysis, which adds a baseline E0) should register a sibling `ppsv` rather than overload this name. Pediatric trials often record parenteral support as mL/kg/day; the canonical output is in L/week, so convert and say so per model.
+
 ---
 
 ## Body-weight PD output

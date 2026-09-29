@@ -5164,6 +5164,10 @@ navbar:
         href: articles/Leeds_2013_tecovirimat.html
       - text: "Teduglutide (Marier 2010)"
         href: articles/Marier_2010_teduglutide.html
+      - text: "Teduglutide (Marier 2021)"
+        href: articles/Marier_2021_teduglutide.html
+      - text: "Teduglutide ppsv (Marier 2021)"
+        href: articles/Marier_2021_teduglutide.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Tegafur rat (Kim 2017)"
@@ -7276,6 +7280,7 @@ articles:
   - articles/Marier_2010_teduglutide
   - articles/Marier_2011_cenicriviroc
   - articles/Marier_2014_dutogliptin
+  - articles/Marier_2021_teduglutide
   - articles/Maringwa_2025_venlafaxine_fluoxetine_mbma
   - articles/MarquesMinana_2010_vancomycin
   - articles/Marques_2024_salbutamol
