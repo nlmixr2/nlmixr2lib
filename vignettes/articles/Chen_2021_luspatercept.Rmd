@@ -94,10 +94,10 @@ axis_map <- function(tick_pos, tick_val) {
 # Figure 2A (page 7): x ticks 0-200, y ticks -2 to 3.
 x2a <- axis_map(c(80.74, 124.64, 168.845, 212.755, 256.225), seq(0, 200, 50))
 y2a <- axis_map(c(187.475, 166.345, 145.415, 124.565, 103.38, 82.375), -2:3)
-line2a <- data.frame(auc = x2a(c(94.13, 267.33)), dhb = y2a(c(147.925, 104.115)))
-slope2a_drawn <- diff(line2a$dhb) / diff(line2a$auc)
+line2a <- data.frame(auc = x2a(c(94.13, 267.33)), d_hb = y2a(c(147.925, 104.115)))
+slope2a_drawn <- diff(line2a$d_hb) / diff(line2a$auc)
 mid2a <- colMeans(line2a)
-int2a <- unname(mid2a["dhb"] - 0.011 * mid2a["auc"])
+int2a <- unname(mid2a["d_hb"] - 0.011 * mid2a["auc"])
 
 # Figure 2B (page 7): x ticks 0-200, y ticks 0-1. Three on-curve Bezier nodes.
 x2b <- axis_map(c(328.155, 372.06, 416.27, 460.175, 503.645), seq(0, 200, 50))
@@ -153,7 +153,7 @@ is hidden behind another) reproduce the printed slope and correlation:
 
 ```{r figure-2a-points}
 fig2a <- tibble::tribble(
-  ~auc, ~dhb, ~dose,
+  ~auc, ~d_hb, ~dose,
   15.2, -0.33, "0.2", 15.7, -0.40, "0.2", 16.9, 0.00, "0.2", 19.3, -0.19, "0.2",
   24.5, 0.72, "0.2", 26.2, 0.41, "0.2", 28.3, -0.36, "0.4", 28.9, 0.22, "0.4",
   33.8, 0.27, "0.4", 39.1, -1.34, "0.4", 39.4, 0.41, "0.6", 52.9, 0.72, "0.6",
@@ -164,17 +164,17 @@ fig2a <- tibble::tribble(
   122.8, 0.13, "1.25", 135.3, 0.97, "0.8", 163.6, 1.53, "0.8", 176.7, 1.04, "1",
   212.9, 2.51, "0.8"
 )
-refit <- stats::lm(dhb ~ auc, fig2a)
+refit <- stats::lm(d_hb ~ auc, fig2a)
 refit_tab <- tibble::tibble(
   Statistic = c("Slope (g/dL per ug*day/mL)", "Intercept (g/dL)", "Correlation R", "Residual SD (g/dL)"),
   Published = c("0.011", "not printed", "0.72", "not printed"),
   `Refit of digitized points` = c(stats::coef(refit)[[2]], stats::coef(refit)[[1]],
-                                  stats::cor(fig2a$auc, fig2a$dhb), summary(refit)$sigma)
+                                  stats::cor(fig2a$auc, fig2a$d_hb), summary(refit)$sigma)
 )
 knitr::kable(refit_tab, digits = 4)
 stopifnot(
   abs(stats::coef(refit)[[2]] - 0.011) < 0.0006,
-  abs(stats::cor(fig2a$auc, fig2a$dhb) - 0.72) < 0.01
+  abs(stats::cor(fig2a$auc, fig2a$d_hb) - 0.72) < 0.01
 )
 ```
 
@@ -208,7 +208,7 @@ cohort <- tibble::tibble(
   dose_mgkg = rep(arms, each = n_per_arm),
   WT = draw_in_range(n_per_arm * length(arms), function(n) exp(rnorm(n, log(57.1), 0.2)), 34.1, 97.0),
   ALB = draw_in_range(n_per_arm * length(arms), function(n) rnorm(n, 46, 4), 30, 56),
-  RBCT_BL = draw_in_range(n_per_arm * length(arms), function(n) rnorm(n, 14.1, 6), 0, 34)
+  TRANSF_BURDEN_BL = draw_in_range(n_per_arm * length(arms), function(n) rnorm(n, 14.1, 6), 0, 34)
 ) |>
   dplyr::mutate(
     dose_mg = dose_mgkg * WT,
@@ -216,7 +216,7 @@ cohort <- tibble::tibble(
   )
 
 cohort |>
-  dplyr::summarise(dplyr::across(c(WT, ALB, RBCT_BL), list(median = median, min = min, max = max))) |>
+  dplyr::summarise(dplyr::across(c(WT, ALB, TRANSF_BURDEN_BL), list(median = median, min = min, max = max))) |>
   tidyr::pivot_longer(dplyr::everything()) |>
   knitr::kable(digits = 1, caption = "Virtual-cohort covariate summary (Table 1: WT 57.1 [34.1-97.0] kg, ALB 46.0 [30.0-56.0] g/L, RBCT 14.1 [0-34.0] units/24 weeks).")
 ```
@@ -240,7 +240,7 @@ events <- dplyr::bind_rows(
   tidyr::expand_grid(id = cohort$id, time = obs_times) |>
     dplyr::mutate(amt = 0, evid = 0L, cmt = "central", ii = 0, addl = 0L)
 ) |>
-  dplyr::left_join(dplyr::select(cohort, id, WT, ALB, RBCT_BL, treatment), by = "id") |>
+  dplyr::left_join(dplyr::select(cohort, id, WT, ALB, TRANSF_BURDEN_BL, treatment), by = "id") |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 sim <- rxode2::rxSolve(mod, dplyr::select(events, -treatment), returnType = "data.frame") |>
@@ -403,7 +403,7 @@ predict_er <- function(ui, auc, out) {
 auc_grid <- seq(0, 300, by = 5)
 curves <- dplyr::bind_rows(
   tibble::tibble(endpoint = "Hb change, weeks 1-3 (g/dL)", auc = auc_grid,
-                 value = predict_er(er[[1]], auc_grid, "dhb")),
+                 value = predict_er(er[[1]], auc_grid, "d_hb")),
   tibble::tibble(endpoint = "P(Hb increase >= 1 g/dL, day 21)", auc = auc_grid,
                  value = predict_er(er[[2]], auc_grid, "prob_hb_increase_1g")),
   tibble::tibble(endpoint = "P(TEAE grade >= 3, cycles 1-2)", auc = auc_grid,
@@ -416,7 +416,7 @@ curves <- dplyr::bind_rows(
 ## Figure 2A -- hemoglobin change over the first cycle
 
 ```{r figure-2a}
-ggplot(fig2a, aes(auc, dhb)) +
+ggplot(fig2a, aes(auc, d_hb)) +
   geom_point(aes(colour = dose)) +
   geom_line(data = dplyr::filter(curves, endpoint == "Hb change, weeks 1-3 (g/dL)", auc <= 215),
             aes(auc, value)) +
@@ -424,12 +424,12 @@ ggplot(fig2a, aes(auc, dhb)) +
        caption = "Replicates Chen 2021 Figure 2A: digitized points and the packaged regression line.") +
   theme_minimal()
 
-dhb_129 <- predict_er(er[[1]], 129, "dhb")
-stopifnot(abs(dhb_129 - 1) < 0.15)  # Results: 'a mean increase of approximately 1 g/dL ... at 1 mg/kg (mean AUCss = 129)'
+d_hb_129 <- predict_er(er[[1]], 129, "d_hb")
+stopifnot(abs(d_hb_129 - 1) < 0.15)  # Results: 'a mean increase of approximately 1 g/dL ... at 1 mg/kg (mean AUCss = 129)'
 ```
 
 At the published mean 1 mg/kg exposure of 129 ug*day/mL the model predicts a
-`r sprintf("%.2f", dhb_129)` g/dL increase, matching the Results statement of
+`r sprintf("%.2f", d_hb_129)` g/dL increase, matching the Results statement of
 "approximately 1 g/dL".
 
 ## Figure 2B -- probability of a >= 1 g/dL hemoglobin increase

@@ -26,7 +26,7 @@ Chen_2021_luspatercept <- function() {
       notes = "Reference 46 g/L (the dataset median, Table 1) per the Chen 2021 final-model CL/F equation. Power exponent -0.881 per Table 2. Observed range 30.0-56.0 g/L.",
       source_name = "Albumin"
     ),
-    RBCT_BL = list(
+    TRANSF_BURDEN_BL = list(
       description = "Baseline red-blood-cell transfusion burden",
       units = "RBC units/24 weeks",
       type = "continuous",
@@ -96,11 +96,11 @@ Chen_2021_luspatercept <- function() {
     # equations in Results: CL/F = 0.532 * (Weight/70)^0.806 *
     # (Albumin/46)^-0.881 * e^(-0.0118 * [RBCT - 14]) and
     # V1/F = 8.39 * (Weight/70)^0.705 * e^(-0.0141 * [RBCT - 14]).
-    e_wt_cl     <-  0.806;  label("Power exponent of (WT/70 kg) on CL/F (unitless)")                          # Chen 2021 Table 2: Weight on CL/F = 0.806
-    e_alb_cl    <- -0.881;  label("Power exponent of (ALB/46 g/L) on CL/F (unitless)")                        # Chen 2021 Table 2: Albumin on CL/F = -0.881
-    e_rbct_cl   <- -0.0118; label("Exponential coefficient of (RBCT_BL - 14) on CL/F (per RBC unit/24 weeks)") # Chen 2021 Table 2: RBCT burden on CL/F = -0.0118
-    e_wt_vc     <-  0.705;  label("Power exponent of (WT/70 kg) on V1/F (unitless)")                          # Chen 2021 Table 2: Weight on V1/F = 0.705
-    e_rbct_vc   <- -0.0141; label("Exponential coefficient of (RBCT_BL - 14) on V1/F (per RBC unit/24 weeks)") # Chen 2021 Table 2: RBCT burden on V1/F = -0.0141
+    e_wt_cl               <-  0.806;  label("Power exponent of (WT/70 kg) on CL/F (unitless)")                          # Chen 2021 Table 2: Weight on CL/F = 0.806
+    e_alb_cl              <- -0.881;  label("Power exponent of (ALB/46 g/L) on CL/F (unitless)")                        # Chen 2021 Table 2: Albumin on CL/F = -0.881
+    e_transf_burden_bl_cl <- -0.0118; label("Exponential coefficient of (TRANSF_BURDEN_BL - 14) on CL/F (per RBC unit/24 weeks)") # Chen 2021 Table 2: RBCT burden on CL/F = -0.0118
+    e_wt_vc               <-  0.705;  label("Power exponent of (WT/70 kg) on V1/F (unitless)")                          # Chen 2021 Table 2: Weight on V1/F = 0.705
+    e_transf_burden_bl_vc <- -0.0141; label("Exponential coefficient of (TRANSF_BURDEN_BL - 14) on V1/F (per RBC unit/24 weeks)") # Chen 2021 Table 2: RBCT burden on V1/F = -0.0141
 
     # Inter-individual variability - Chen 2021 Table 2 reports IIV of CL/F
     # 34.7% and of V1/F 27.6% for an exponential IIV model (Methods). These
@@ -127,10 +127,10 @@ Chen_2021_luspatercept <- function() {
     cl <- exp(lcl + etalcl) *
       (WT / 70)^e_wt_cl *
       (ALB / 46)^e_alb_cl *
-      exp(e_rbct_cl * (RBCT_BL - 14))
+      exp(e_transf_burden_bl_cl * (TRANSF_BURDEN_BL - 14))
     vc <- exp(lvc + etalvc) *
       (WT / 70)^e_wt_vc *
-      exp(e_rbct_vc * (RBCT_BL - 14))
+      exp(e_transf_burden_bl_vc * (TRANSF_BURDEN_BL - 14))
     ka <- exp(lka)
 
     # One-compartment SC model with first-order absorption and elimination

@@ -3,7 +3,7 @@ Chen_2021_luspatercept_hb_change <- function() {
     "Linear exposure-response model relating the steady-state luspatercept AUC of the starting dose to the average change from baseline ",
     "in hemoglobin over the first 3-week dosing interval in adults with beta-thalassemia and a low transfusion burden ",
     "(< 12 RBC units/24 weeks) (Chen 2021, Figure 2A; n = 34 phase 2 patients with weekly hemoglobin during weeks 1-3). ",
-    "dhb = dhb_ref + e_auc_dhb * AUCss with the printed slope 0.011 g/dL per ug*day/mL (R = 0.72) and an intercept ",
+    "d_hb = d_hb_ref + e_auc_d_hb * AUCss with the printed slope 0.011 g/dL per ug*day/mL (R = 0.72) and an intercept ",
     "digitized from the fitted line in Figure 2A. There is no PK layer and no ODE: exposure is supplied as the AUC_LUSP ",
     "data column, which the source analysis derived as starting dose / individual CL/F from the companion population PK ",
     "model packaged as Chen_2021_luspatercept. One of four exposure-response models in the Chen_2021_luspatercept_* family."
@@ -20,7 +20,7 @@ Chen_2021_luspatercept_hb_change <- function() {
   units <- list(
     time = "n/a (static landmark exposure-response regression; no time dimension)",
     dosing = "n/a (no dose events; exposure enters as the AUC_LUSP covariate column)",
-    concentration = "dhb (average change from baseline in hemoglobin over weeks 1-3, g/dL)"
+    concentration = "d_hb (average change from baseline in hemoglobin over weeks 1-3, g/dL)"
   )
 
   covariateData <- list(
@@ -52,27 +52,27 @@ Chen_2021_luspatercept_hb_change <- function() {
     # Chen 2021 Figure 2A: ordinary linear regression of the average weekly
     # hemoglobin change from baseline in cycle 1 on AUCss,
     #
-    #   dhb = dhb_ref + e_auc_dhb * AUCss
+    #   d_hb = d_hb_ref + e_auc_d_hb * AUCss
     #
     # The slope is printed in the panel. The intercept is not printed; it is
     # taken from the fitted line, which is drawn as a vector path in the PDF
     # and was read exactly against the axis tick marks. The intercept below
     # makes a line of the printed slope pass through the midpoint of the
-    # drawn line (AUCss 113.8, dhb 0.924 g/dL). The drawn line alone gives
+    # drawn line (AUCss 113.8, d_hb 0.924 g/dL). The drawn line alone gives
     # slope 0.01057 and intercept -0.279, and an OLS refit of the 33
     # digitized scatter points gives 0.01069 and -0.303 with R = 0.722
     # (printed R = 0.72). See the vignette source trace.
-    dhb_ref <- -0.327; label("Average change from baseline in hemoglobin over weeks 1-3 extrapolated to zero luspatercept exposure (g/dL)")  # digitized from Figure 2A fitted line (not printed); see vignette
-    e_auc_dhb <- 0.011; label("Slope of the average hemoglobin change over weeks 1-3 on luspatercept AUCss (g/dL per ug*day/mL)")  # Figure 2A panel annotation: 'Slope = 0.011; R = 0.72; P < 0.0001'
+    d_hb_ref <- -0.327; label("Average change from baseline in hemoglobin over weeks 1-3 extrapolated to zero luspatercept exposure (g/dL)")  # digitized from Figure 2A fitted line (not printed); see vignette
+    e_auc_d_hb <- 0.011; label("Slope of the average hemoglobin change over weeks 1-3 on luspatercept AUCss (g/dL per ug*day/mL)")  # Figure 2A panel annotation: 'Slope = 0.011; R = 0.72; P < 0.0001'
 
     # Residual SD of the regression is not printed. The value below is the
     # residual standard error of an OLS refit to the 33 scatter points
     # digitized from Figure 2A (the refit reproduces the printed slope and R).
-    addSd_dhb <- 0.511; label("Residual SD of the linear regression (g/dL)")  # not printed; residual SE of an OLS refit to the digitized Figure 2A points; see vignette
+    addSd_d_hb <- 0.511; label("Residual SD of the linear regression (g/dL)")  # not printed; residual SE of an OLS refit to the digitized Figure 2A points; see vignette
   })
 
   model({
-    dhb <- dhb_ref + e_auc_dhb * AUC_LUSP
-    dhb ~ add(addSd_dhb)
+    d_hb <- d_hb_ref + e_auc_d_hb * AUC_LUSP
+    d_hb ~ add(addSd_d_hb)
   })
 }
