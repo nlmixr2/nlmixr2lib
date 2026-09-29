@@ -226,7 +226,7 @@
   # sits alongside the free pool in a tissue-binding PBPK (Campbell 2023
   # manganese). Longer organ alternatives precede their prefixes so the
   # anchored alternation matches `brain_globus_pallidus` and not `brain`.
-  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc|bound)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain_globus_pallidus|brain_olfactory_bulb|brain_cerebellum|brain|pituitary|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$", # nolint: line_length_linter.
+  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc|bound|memvas|memvasfr1|memvasfr2|memvasns|memint|memintfr1|memintfr2|memintns|endoearly|endoearlyfr1|endoearlyfr2|endosort|endosortfr1|endosortfr2|endorecyc|endorecycfr1|endorecycfr2|fcrnmemvas|fcrnmemint|fcrnendoearly|fcrnendosort|fcrnendorecyc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain_globus_pallidus|brain_olfactory_bulb|brain_cerebellum|brain|pituitary|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$", # nolint: line_length_linter.
   # DAR-numbered ADC isoform compartments (`dar0_central`,
   # `dar4_peripheral1`, ...).
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",

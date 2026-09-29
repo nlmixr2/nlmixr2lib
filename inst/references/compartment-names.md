@@ -40,7 +40,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `compartmentRegex = "^(bile_transit|transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum|hb)(_slow|_fast)?[0-9]+$"` -- numbered-chain compartments: bile-duct delay chains of enterohepatic-recycling models (`bile_transit1`, `bile_transit2`, ...), transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...), erythrocyte age-transit chains (`erythrocytes1`, ..., `erythrocytes4`), the reticulocyte age-transit chain that feeds them (`reticulocytes1`, `reticulocytes2`, ...), the paired corpuscular-hemoglobin chain (`mch1`, ..., `mch4`), Gabrielsson-Hjorth moderator / tolerance chains (`moderator1`, `moderator2`, ...), the concentric caseum rings of a tuberculosis granuloma (`caseum1`, ..., `caseum6`), and hemoglobin age-transit chains (`hb1`, ..., `hb4`) that carry hemoglobin concentration per red-cell age bin. Numeric suffix is required (a model that lumps the structure into one state uses the bare canonical `effect` / `depot` / `erythrocytes` / `reticulocytes` / `mch` / `moderator` / `caseum` / `hb` / `bile_transit`).
 - `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
 - `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
-- `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc|bound)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain_globus_pallidus|brain_olfactory_bulb|brain_cerebellum|brain|pituitary|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`), saturable bound / protein-complexed pool (`bound_`). See the "Saturable bound tissue pools" section below for `bound_`. Longer organ alternatives are listed before the prefixes they extend so the anchored alternation matches `brain_globus_pallidus` rather than stopping at `brain`.
+- `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc|bound|memvas|memvasfr1|memvasfr2|memvasns|memint|memintfr1|memintfr2|memintns|endoearly|endoearlyfr1|endoearlyfr2|endosort|endosortfr1|endosortfr2|endorecyc|endorecycfr1|endorecycfr2|fcrnmemvas|fcrnmemint|fcrnendoearly|fcrnendosort|fcrnendorecyc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain_globus_pallidus|brain_olfactory_bulb|brain_cerebellum|brain|pituitary|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`), saturable bound / protein-complexed pool (`bound_`). See the "Saturable bound tissue pools" section below for `bound_`, and the Jones 2019 pH-resolved endothelial-transcytosis family (`memvas_`, `memint_`, `endoearly_`, `endosort_`, `endorecyc_`, their `fr1` / `fr2` FcRn-complex and `ns` non-specifically bound variants, and the `fcrn<location>_` free-FcRn pools). See the "pH-resolved endothelial transcytosis sub-compartments" section below for that family. Longer organ alternatives are listed before the prefixes they extend so the anchored alternation matches `brain_globus_pallidus` rather than stopping at `brain`.
 - `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` -- intracellular drug / active-metabolite pools inside red blood cells, carried as ODE states in concentration units (`rbc_mtx`, `rbc_tgn`). Deliberately kept out of `registeredMetabolites` because the analyte is frequently the *parent* drug (methotrexate), and recording a parent drug in the metabolite register would mislead later readers of that list. See the "Intracellular red-cell analyte pools" section below for the naming rule and the per-analyte entries.
 - `slabCompartmentRegex = "^[a-z][a-z_]*_slab[0-9]+$"` -- method-of-lines spatial discretisation slabs of a single tissue (`buccal_slab1`... `buccal_slab20`). The `<tissue>_slab<n>` stem states explicitly that the numbering indexes numerical discretisation elements of one tissue, not distinct anatomical structures. See the "Method-of-lines spatial discretisation slabs" section below.
 - `compartmentRegex` and the four extension patterns above are extended only when a new paper introduces a structurally new shape. Adding a new spelled-out organ to the `pbpkSubCompartmentRegex` is a routine extension; introducing a new chain prefix is a naming-audit decision.
@@ -61,6 +61,13 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Naming rule (`Cc`):** `Cc` names the CENTRAL DRUG CONCENTRATION, whether or not it is the observed output. It is not a general-purpose name for "the model's primary observation" -- a model whose only DV is a fungal burden, a bacterial count or a body weight must name that DV by its own canonical (`log_cfu`, `cfu`, `BW`) and still call `central / vc` `Cc`. Two things legitimately differ from `Cc` and should keep their own names: a SECOND central quantity derived alongside it (unbound `Cu`/`Cunbound` where `Cc` is total, or a raw value where `Cc` is assay-calibrated), and a SCALED derivation (`* fu`, `* bp`, `/ mw`, unit conversions). In a multi-analyte model the suffix follows the state: `central_rtv / vc_rtv` is `Cc_rtv`.
 - **Source aliases:** none.
 - **Example models:** universal in popPK extractions.
+
+### auc_central (**canonical cumulative plasma-AUC accumulator**)
+- **Type:** compartment
+- **Role:** Integrator state `d/dt(auc_central) <- Cc` (or the model's central concentration in its own units) that carries the cumulative area under the central-compartment concentration curve from time zero. It is a bookkeeping output, not a drug pool: it has no volume and nothing flows out of it. Use it when a model reports or is driven by cumulative exposure (an AUC-driven PD endpoint, or AUC read directly from the solve in place of trapezoidal NCA).
+- **Source aliases:** none (the source papers integrate AUC under their own local names, or compute it outside the model).
+- **Example models:** `Beguin_2024_carboplatin_dog.R`, `Beguin_2024_carboplatin_thrombocytopenia_dog.R`, `Cantillon_2018_brilaroxazine.R`, `Assmus_2025_benznidazole_qpcr.R`, `Aoki_2024_intratarget_microdosing_pbpk.R`, `Jones_2019_mab_human_pbpk.R`.
+- **Notes:** Record the units in `compartmentData` as concentration x time (`ug*h/L`, `umol*h/L`), never the dosing amount. An accumulator over a different concentration takes that concentration's qualifier (`auc_plasma`, `auc_free`, `auc_int_tumor`); a windowed AUC (`auc_0_24`, `auc_8_16`) is not cumulative from time zero and is not this state. Several models listed above declare `auc_central` in `paper_specific_compartments`, which predates this entry.
 
 ### presystemic (**canonical pre-systemic first-pass compartment**)
 - **Type:** compartment
@@ -1477,6 +1484,45 @@ Rules for using the family:
 - **Report the equilibrium constant, not just the rates.** `KD = kd/ka` is the quantity that
   transfers across tissues and species, so state it in the model file even when the paper
   parameterises the pair.
+
+## pH-resolved endothelial transcytosis sub-compartments (Jones 2019 family)
+
+The Shah and Betts 2012 platform (`eu_` / `eb_` / `fr_`) gives each organ ONE endosomal space.
+Jones 2019 resolves the endothelial cell further: antibody taken up by pinocytosis passes a
+vascular-side membrane, three pH-specific endosomes in series (early pH 7.4, sorting pH 6.0,
+recycling pH 7.4) and an interstitial-side membrane. At each of those five locations the antibody
+is free, in a 1:1 complex with FcRn, or in a 2:1 complex, and FcRn itself is free. The two
+membranes also carry a non-specifically bound pool driven by the AC-SINS polyspecificity score.
+All members combine with the `pbpkSubCompartmentRegex` organ list (`memvas_liver`,
+`endosortfr2_skin`, `fcrnmemint_other`) and take the registered `_igg` suffix when the same
+location holds endogenous IgG (`endoearly_liver_igg`).
+
+| Location | Free antibody | 1:1 FcRn complex | 2:1 FcRn complex | Non-specifically bound | Free FcRn |
+|---|---|---|---|---|---|
+| Vascular-side membrane (paper `VM`) | `memvas_` | `memvasfr1_` | `memvasfr2_` | `memvasns_` | `fcrnmemvas_` |
+| Early endosome, pH 7.4 (paper `E7`) | `endoearly_` | `endoearlyfr1_` | `endoearlyfr2_` | -- | `fcrnendoearly_` |
+| Sorting endosome, pH 6.0 (paper `E6a`) | `endosort_` | `endosortfr1_` | `endosortfr2_` | -- | `fcrnendosort_` |
+| Recycling endosome, pH 7.4 (paper `E7b`) | `endorecyc_` | `endorecycfr1_` | `endorecycfr2_` | -- | `fcrnendorecyc_` |
+| Interstitial-side membrane (paper `ISM`) | `memint_` | `memintfr1_` | `memintfr2_` | `memintns_` | `fcrnmemint_` |
+
+- **Type:** compartment (the 22 prefixes are admitted through `pbpkSubCompartmentRegex`, not
+  enumerated as H3 entries).
+- **Source aliases:** the location indices of the deposited Jones 2019 Berkeley Madonna listing
+  (Supplementary Model Code): dosed antibody `C_EXG[1, i, loc]` with `loc` = `VM`, `E7`, `E6a`,
+  `E7b`, `ISM` (free), `Bound_VM` ... `Bound_ISM` (1:1), `Bound2_VM` ... `Bound2_ISM` (2:1) and
+  `Bound_VM_mem` / `Bound_ISM_mem` (non-specifically bound); endogenous IgG `C_EDG[i, loc]` over the
+  same free / `Bound` / `Bound2` indices; free FcRn `C_FcRn_VM`, `C_FcRn_E7`, `C_FcRn_E6a`,
+  `C_FcRn_E7b`, `C_FcRn_ISM`.
+- **Founding example:** `Jones_2019_mab_human_pbpk.R`.
+- **Notes:** Use this family only when a model resolves the endosome into pH-specific stages or
+  splits the apical and basolateral membranes; a single-endosome model keeps `eu_` / `eb_` / `fr_`.
+  The names are spelled out rather than copied from the paper's `E7` / `E6a` / `E7b` labels because
+  `e7b` (the recycling endosome) and an `e7` + `b1` stoichiometry infix read almost identically.
+  `fr1` / `fr2` count FcRn molecules per complex: a 2:1 state is one antibody carrying two FcRn
+  (formed when a 1:1 complex binds a second FcRn), so weight it by 1 when summing antibody and by 2
+  when summing FcRn. The
+  vascular and interstitial spaces of the same organs keep the existing `vp_<organ>` and
+  `is_<organ>` names.
 
 ## Method-of-lines spatial discretisation slabs (`<tissue>_slab<n>` namespace)
 
