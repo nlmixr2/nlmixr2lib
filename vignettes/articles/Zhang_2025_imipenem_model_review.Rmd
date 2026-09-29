@@ -47,8 +47,10 @@ below are transcribed from the review, each carrying a
 Every model file in this family records `ALL PARAMETER VALUES ARE
 SECONDARY` in its `population$notes`, except those marked "re-verified
 against primary" in the coverage table below, which have since been
-rewritten from their primary publications and have their own articles.
-Read the
+rewritten from their primary publications and have their own articles
+([de Velde 2020](deVelde_2020_imipenem.html),
+[Nguyen 2021](Nguyen_2021_ceftazidime_imipenem.html),
+[Por 2021](Por_2021_imipenem.html)). Read the
 "Assumptions and deviations" section at the foot of this page before
 using any of them; it reports a **measured** audit of how faithfully the
 review reproduces its primaries, and that audit found a real defect.
