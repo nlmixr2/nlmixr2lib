@@ -2890,6 +2890,20 @@ navbar:
         href: articles/Bian_2024_lefamulin.html
       - text: "Leflunomide (Hopkins 2015)"
         href: articles/Hopkins_2015_leflunomide.html
+      - text: "Lemborexant (Lalovic 2020)"
+        href: articles/Lalovic_2020_lemborexant.html
+      - text: "Lemborexant headache (Lalovic 2020)"
+        href: articles/Lalovic_2020_lemborexant.html
+      - text: "Lemborexant influenza (Lalovic 2020)"
+        href: articles/Lalovic_2020_lemborexant.html
+      - text: "Lemborexant nasopharyngitis (Lalovic 2020)"
+        href: articles/Lalovic_2020_lemborexant.html
+      - text: "Lemborexant somnolence (Lalovic 2020)"
+        href: articles/Lalovic_2020_lemborexant.html
+      - text: "Lemborexant urti (Lalovic 2020)"
+        href: articles/Lalovic_2020_lemborexant.html
+      - text: "Lemborexant uti (Lalovic 2020)"
+        href: articles/Lalovic_2020_lemborexant.html
       - text: "Lenalidomide (Liang 2024)"
         href: articles/Liang_2024_lenalidomide.html
       - text: "Lenvatinib (Gupta 2016)"
@@ -7408,6 +7422,7 @@ articles:
   - articles/Lai_2026_rivaroxaban
   - articles/Lakota_2018_ertapenem
   - articles/Lallemand_2023_benzylpenicillin_horse
+  - articles/Lalovic_2020_lemborexant
   - articles/Lam_2025_ondansetron
   - articles/Lamoth_2009_imipenem
   - articles/Landersdorfer_2007_flucloxacillin
