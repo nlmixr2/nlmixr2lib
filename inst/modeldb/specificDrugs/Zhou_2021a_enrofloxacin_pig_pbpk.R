@@ -1,4 +1,4 @@
-Zhou_2021_enrofloxacin_pig_pbpk <- function() {
+Zhou_2021a_enrofloxacin_pig_pbpk <- function() {
   description <- paste(
     "Veterinary (pig). PBPK (whole-body, flow-limited, acslXtreme 3.0) for",
     "enrofloxacin given orally to swine as an amorphous solid-dispersion",
@@ -35,7 +35,7 @@ Zhou_2021_enrofloxacin_pig_pbpk <- function() {
     "variation in food animal drug metabolism. Sci Rep. 2016;6:27907.",
     sep = " "
   )
-  vignette <- "Zhou_2021_enrofloxacin_pig_pbpk"
+  vignette <- "Zhou_2021a_enrofloxacin_pig_pbpk"
 
   # Doses in mg (the paper prescribes mg/kg; multiply by WT). States hold
   # amounts in mg and volumes are in L (tissue density 1 kg/L), so

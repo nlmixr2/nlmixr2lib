@@ -1,8 +1,8 @@
 ---
-title: "Enrofloxacin PBPK in swine (Zhou 2021)"
+title: "Enrofloxacin PBPK in swine (Zhou 2021a)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Enrofloxacin PBPK in swine (Zhou 2021)}
+  %\VignetteIndexEntry{Enrofloxacin PBPK in swine (Zhou 2021a)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,8 +22,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("Zhou_2021_enrofloxacin_pig_pbpk"))$reference`
-* Description: `r rxode2::rxode(readModelDb("Zhou_2021_enrofloxacin_pig_pbpk"))$description`
+* Citation: `r rxode2::rxode(readModelDb("Zhou_2021a_enrofloxacin_pig_pbpk"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zhou_2021a_enrofloxacin_pig_pbpk"))$description`
 * Article: <https://doi.org/10.3390/pharmaceutics13050602> (open access)
 * Supplement (Tables S1-S2 and the acslXtreme code): <https://www.mdpi.com/article/10.3390/pharmaceutics13050602/s1>
 
@@ -53,7 +53,7 @@ line by line.
   small-intestinal content concentration `Cintestine`.
 
 ```{r model}
-mod <- readModelDb("Zhou_2021_enrofloxacin_pig_pbpk")
+mod <- readModelDb("Zhou_2021a_enrofloxacin_pig_pbpk")
 ui <- rxode2::rxode(mod)
 stopifnot(is.null(ui$linCmt)) # the explicit ODEs are solved, not a linCmt()
 ```
