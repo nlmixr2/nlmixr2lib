@@ -4704,8 +4704,8 @@ navbar:
         href: articles/Li_2021_polymyxinB.html
       - text: "PolymyxinB (Liang 2023)"
         href: articles/Liang_2023_polymyxinB.html
-      - text: "PolymyxinB (Wang 2020)"
-        href: articles/Wang_2020_polymyxinB.html
+      - text: "PolymyxinB (Wang 2021)"
+        href: articles/Wang_2021_polymyxinB.html
       - text: "PolymyxinB (Wang 2026)"
         href: articles/Wang_2026_polymyxinB.html
       - text: "PolymyxinB (Yang 2025)"
@@ -8975,7 +8975,7 @@ articles:
   - articles/Wang_2021_icatibant
   - articles/Wang_2021_mycophenolic_acid
   - articles/Wang_2021_pertuzumab
-  - articles/Wang_2021_sunitinib
+  - articles/Wang_2021_polymyxinB
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2023_methotrexate
