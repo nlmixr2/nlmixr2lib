@@ -3436,6 +3436,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Wang_2019a_tacrolimus.R` (uncentered exponential effect on CL/F in Chinese children with refractory nephrotic syndrome, alongside `AGE` and `CYSC`; the only covariate the paper retains that is not a patient characteristic).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: [[DOSE_LOR_MGD]] for lorlatinib, [[DOSE_TPM_MGD]] for topiramate, [[DOSE_EMPA_MGD]] for empagliflozin). **A dose-on-clearance covariate in a therapeutic-drug-monitoring dataset must be read with care and is not by itself evidence of pharmacokinetic nonlinearity.** In a TDM cohort the dose is titrated to a trough target, so patients who clear the drug faster are prescribed more of it, and daily dose becomes a surrogate for whatever unmeasured characteristic drives the fast clearance -- the association runs from clearance to dose, not the other way around. Wang 2019 says so explicitly, attributing its positive coefficient to CYP3A5 genotype, which was not measured in that cohort ("the effect of TAMT on CL/F may be primarily derived from CYP3A5 gene polymorphisms ... at present, CYP3A5 genotyping is not routinely performed in Chinese patients with PRNS"). A future tacrolimus extraction that has genotype available should prefer `CYP3A5_EXPR` (or the paired `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` indicators) over this column. Distinct from the rxode2 / nlmixr2 event column `amt`, which carries the amount of each individual administration; `DOSE_TAC_MGD` is a per-record covariate carrying the current daily-dose LEVEL consumed by the covariate model. The two must be kept consistent when simulating: for a b.i.d. regimen `amt` is half of `DOSE_TAC_MGD`, and a simulation that varies the dose without updating this column silently loses the covariate effect. A future paediatric tacrolimus model dosing in mg/kg/day should register a sibling `DOSE_TAC_MGKGD` rather than reuse this name.
 
+### DOSE_VORI_MGD (**canonical for daily voriconazole maintenance dose**)
+- **Description:** The patient's own total daily maintenance voriconazole dose, in mg/day (the sum of all doses in a day, e.g. 200 mg twice daily -> 400). Per-record covariate, updated whenever the prescriber changes the maintenance dose.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- it is the dose-rate input of a steady-state Michaelis-Menten equation, `Css = km * F * DOSE_VORI_MGD / (vmax - F * DOSE_VORI_MGD)`, not a covariate effect on a parameter. The equation is only defined for `F * DOSE_VORI_MGD < vmax`.
+- **Source aliases:**
+  - `Daily dose` -- used in `Suetsugu_2021_voriconazole.R` (Suetsugu 2021 Eq. 1: 'daily dose is the amount of voriconazole administered daily').
+- **Example models:** `Suetsugu_2021_voriconazole.R` (algebraic steady-state trough model for adult allo-HSCT recipients; oral and intravenous doses treated alike with F fixed to 1).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings [[DOSE_TAC_MGD]], [[DOSE_LOR_MGD]], [[DOSE_TPM_MGD]]); the `VORI` abbreviation matches [[CONC_VORI_NGML]] and [[ORAL_VORI]]. Because the model has no time dimension, the column replaces dosing events entirely: a consumer simulates by putting the dose level on observation rows, not by supplying `amt`. Distinct from the event column `amt` and from [[CONMED_VORICONAZOLE]] (a perpetrator indicator in models of other drugs).
+
 ### DOSE_TPM_MGD (**canonical for daily topiramate dose**)
 - **Description:** Total daily topiramate dose, in mg/day. Usually a per-record patient-level covariate; constant within a dosing interval and updated when the prescriber alters the daily dose. For a twice-daily regimen the value is the sum across the day (89.2 mg b.i.d. -> `DOSE_TPM_MGD` = 178.4), matching the [[DOSE_LOR_MGD]] convention. Set to 0 mg/day during off-treatment periods (and in the placebo arms of a model-based meta-analysis). In an MBMA the same column carries the dose ASSIGNED TO A STUDY ARM rather than taken by an individual patient -- the quantity is identical, only the aggregation grain differs; record the grain in the model file's `covariateData[[DOSE_TPM_MGD]]$notes`.
 - **Units:** mg/day
@@ -11057,6 +11068,28 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
   - `Voriconazole` -- used in `Zhou_2025_tacrolimus.R` (Zhou 2025 Table 1 counts 741 of 988 trough records on voriconazole; the azole antifungal drug (AFD) covariate carries a separate coefficient per agent).
 - **Example models:** `Pei_2023_tacrolimus.R` (exponential effect on apparent oral clearance: `exp(e_vori_cl * CONMED_VORICONAZOLE)` with `e_vori_cl = -0.64`, i.e. a 47% reduction in tacrolimus CL/F on voriconazole; Pei 2023 Table S4), `Zhou_2025_tacrolimus.R` (exponential effect on apparent oral clearance: `exp(e_vori_cl * CONMED_VORICONAZOLE)` with `e_vori_cl = -0.48`, i.e. a 38.21% reduction in tacrolimus CL/F in Chinese lung-transplant recipients; Zhou 2025 Table 2 final model, back-transformed factor 0.62 in Eq. 4 -- closely reproducing the 36.2% reduction reported by Cai et al. in an independent lung-transplant cohort).
 - **Notes:** Auto-approved member of the `CONMED_<INN>` family (INN = voriconazole). Distinct from the class-level [[CONMED_AZOLE]] (Kirubakaran 2022 tacrolimus, which pools voriconazole with the other systemic azoles) and from [[CONMED_CYP3A4_INH_STRONG]]: register the drug-specific indicator when a paper singles voriconazole out with its own coefficient, because the magnitude of voriconazole's tacrolimus interaction is much larger than the pooled azole class effect (Pei 2023's own PBPK arm predicts a 5.80-fold rise in tacrolimus AUC). Siblings [[CONMED_ITRACONAZOLE]] and [[CONMED_POSACONAZOLE]]; use all three together when a paper resolves a separate coefficient per mould-active azole (Zhou 2025 lung-transplant tacrolimus). When a source instead supplies the perpetrator's measured concentration rather than an on/off flag, use [[CONC_VORI_NGML]].
+
+### CONMED_LETERMOVIR (**canonical for concomitant letermovir coadministration indicator**)
+- **Description:** 1 = the subject was receiving letermovir (cytomegalovirus prophylaxis after haematopoietic stem cell transplantation, typically 480 mg/day oral or intravenous) at the observation; 0 = no concomitant letermovir. Time-varying at the sample level.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant letermovir).
+- **Source aliases:**
+  - `LMV` -- used in `Suetsugu_2021_voriconazole.R` (Suetsugu 2021 Eq. 4: 'LMVi is concomitant letermovir use in subject i (used = 1, not used = 0)').
+- **Example models:** `Suetsugu_2021_voriconazole.R` (multiplicative effect on voriconazole Vmax, `e_conmed_letermovir_vmax^CONMED_LETERMOVIR` with 1.72; letermovir induces CYP2C19 / CYP2C9).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family (INN = letermovir). General scope because letermovir is routine post-HSCT prophylaxis and a known perpetrator for voriconazole, tacrolimus and ciclosporin. Distinct from [[CMV_PROPHY_PRIOR]] (prior prophylaxis with an unrecorded agent), and from [[TX_HCT]].
+
+### CONMED_METHYLPREDNISOLONE (**canonical for concomitant methylprednisolone coadministration indicator**)
+- **Description:** 1 = the subject was receiving systemic methylprednisolone at the observation; 0 = not. Time-varying at the sample level.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant methylprednisolone).
+- **Source aliases:**
+  - `mPSL` -- used in `Suetsugu_2021_voriconazole.R` (Suetsugu 2021 Eq. 4: 'mPSLi is concomitant methylprednisolone use in subject i (used = 1, not used = 0)').
+- **Example models:** `Suetsugu_2021_voriconazole.R` (multiplicative effect on voriconazole Vmax, `e_conmed_methylprednisolone_vmax^CONMED_METHYLPREDNISOLONE` with 1.30); also documented as screened-not-retained in `Xie_2025_midazolam.R` (`covariatesDataExcluded`).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family (INN = methylprednisolone). Use this drug-specific indicator when a paper singles methylprednisolone out with its own coefficient; use the class-level [[CONMED_STEROID]] when corticosteroids are pooled, and [[PRED_DOSE]] when the dose magnitude enters the model.
 
 ### CONMED_POSACONAZOLE (**canonical for concomitant posaconazole (strong CYP3A4 / P-gp inhibitor) coadministration indicator**)
 - **Description:** 1 = subject coadministered posaconazole during the observation interval (oral suspension 200 mg three times daily, or delayed-release tablet 300 mg once daily after loading); 0 = no concomitant posaconazole. Posaconazole is a strong CYP3A4 inhibitor and, with voriconazole and itraconazole, one of the three mould-active azoles routinely used for antifungal prophylaxis and treatment in solid-organ transplant and haematology care. Time-varying when the observation record spans on / off posaconazole periods (the usual case in transplant TDM datasets); time-fixed in a fixed-sequence DDI arm.
