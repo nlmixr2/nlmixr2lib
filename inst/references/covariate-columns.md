@@ -8879,7 +8879,7 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Reference category:** 0 (drug-susceptible tuberculosis; in pooled analyses that also enrol healthy subjects, the healthy cohort is additionally flagged by `DIS_HEALTHY`, so the three levels are mutually distinguishable).
 - **Source aliases:**
   - `MDR` combined with `NIXPT` -- Salinger 2019 supplemental Table S3 carries a baseline `MDR` column plus a three-level `NIXPT` column (1 = treatment-intolerant MDR, 2 = non-responsive MDR, 3 = XDR) for the Nix-TB sub-study, and reconstructs the inclusive indicator in `$PK` as the expression `(MDR - NIX + MDRIT + MDRNR + MDRXDR)`, which evaluates to 1 for every drug-resistant subject whether or not they were enrolled in Nix-TB. A data assembler derives `DIS_TB_MDR = as.integer(MDR == 1 | NIXPT %in% 1:3)`.
-- **Example models:** `Salinger_2019_pretomanid.R` (multiplicative power-form effect on apparent oral clearance, `e_dis_tb_mdr_cl^DIS_TB_MDR` with `e_dis_tb_mdr_cl = 1.15`, i.e. 15% higher CL/F in drug-resistant TB; paired with `DIS_TB_XDR_STRICT` on the apparent central volume, where the 1.44-fold MDR effect is applied to `DIS_TB_MDR * (1 - DIS_TB_XDR_STRICT)` and XDR subjects instead take a 1.75-fold effect).
+- **Example models:** `Kurosawa_2021_bedaquiline.R` (bedaquiline CL/F 37.5% higher for healthy volunteers and drug-sensitive TB patients than for MDR-TB patients, `(1 + e_nonmdr_cl)^(1 - DIS_TB_MDR)` with `e_nonmdr_cl = 0.375`; McLeay 2014 Table 3), `Salinger_2019_pretomanid.R` (multiplicative power-form effect on apparent oral clearance, `e_dis_tb_mdr_cl^DIS_TB_MDR` with `e_dis_tb_mdr_cl = 1.15`, i.e. 15% higher CL/F in drug-resistant TB; paired with `DIS_TB_XDR_STRICT` on the apparent central volume, where the 1.44-fold MDR effect is applied to `DIS_TB_MDR * (1 - DIS_TB_XDR_STRICT)` and XDR subjects instead take a 1.75-fold effect).
 - **Notes:** The inclusive sibling anticipated in the `DIS_TB_XDR` Notes, which directed future TB drug-resistance models to register siblings rather than overload that name. The three registered members now cover the usual contrasts: `DIS_TB_MDR` (any isoniazid + rifampicin resistance, XDR included), `DIS_TB_XDR` (pre-XDR + XDR pooled against MDR), and `DIS_TB_XDR_STRICT` (XDR alone, pre-XDR in the reference). Read the source's own contrast wording before choosing -- Salinger 2019 tabulates its clearance effect as "CL ~ MDR, TI/NR MDR, or XDR", which is the inclusive reading, while its volume effects separate "V2 ~ MDR or TI/NR MDR" from "V2 ~ XDR". Distinct from `TB_POS` (active tuberculosis as a *co-infection* in a non-TB primary indication) and from `HIV_POS` (a comorbidity flag, not a resistance stratum).
 
 ### DIS_TB_XDR (**canonical for (pre-)XDR vs MDR tuberculosis drug-resistance stratum indicator**)
@@ -10677,6 +10677,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
   - `AZIFL` -- used in `Dave_2019_venetoclax.R` (Dave 2019 PK control stream `IF(AZIFL.EQ.1) TVFA = THETA(11) ; Azithromycin`).
 - **Example models:** `Dave_2019_venetoclax.R` (multiplicative factor 0.65 on venetoclax relative bioavailability, i.e. 35% lower F, Dave 2019 Table 2 'Azithromycin on F1'; healthy-volunteer DDI study V, Agarwal 2018 Adv Ther 35:2015; indicator set on the venetoclax dose record).
 - **Notes:** Auto-approved member of the `CONMED_<INN>` family. Record per-model whether the effect is placed on bioavailability or on clearance, and whether it is time-varying (on the dose record only) or per-subject.
+
+### CONMED_CLARITHROMYCIN (**canonical for concomitant clarithromycin coadministration indicator**)
+- **Description:** 1 = clarithromycin coadministered with the victim drug (at the dosing regimen the source studied), 0 = no concomitant clarithromycin. Clarithromycin is a macrolide antibiotic and a strong mechanism-based CYP3A inhibitor (and P-glycoprotein inhibitor), so its DDI effects are usually placed on the apparent clearance of CYP3A substrates.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant clarithromycin).
+- **Source aliases:**
+  - `CLR` -- used in `Kurosawa_2021_bedaquiline.R` (Kurosawa 2021 Methods equation `CL/F = CLpop * (1 + theta)^CLRi`, CLRi = 0 no coadministration, 1 coadministration).
+- **Example models:** `Kurosawa_2021_bedaquiline.R` (power-form effect on bedaquiline apparent clearance, `(1 + e_conmed_clarithromycin_cl)^CONMED_CLARITHROMYCIN` with `e_conmed_clarithromycin_cl = -0.37`, i.e. 37% lower CL/F with steady-state clarithromycin 500 mg every 12 hours; Kurosawa 2021 Table S1).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family. Record per-model the clarithromycin regimen (dose, interval, whether steady state was reached before the victim dose) and whether the indicator is time-varying. Distinct from `CONMED_AZITHROMYCIN` (a macrolide with little CYP3A inhibition) and `CONMED_ERYTHROMYCIN` (a moderate CYP3A inhibitor), and from the pooled class indicators `CONMED_CYP3A4_INH*`.
 
 ### CONMED_AZOLE (**canonical for concomitant azole antifungal therapy (CYP3A4/P-gp inhibitor)**)
 - **Description:** 1 = patient coadministered an azole antifungal (itraconazole, voriconazole, fluconazole, ketoconazole, posaconazole, isavuconazole, or another systemic azole) during the observation interval, 0 = no concomitant azole antifungal. Time-varying per subject because azole exposure starts and stops during the observation period.
@@ -15489,45 +15500,27 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Ding_2026_lumefantrine.R` (proportional effect on the apparent lumefantrine central volume of distribution: `vc <- exp(lvc + etalvc) * (WT/45)^e_wt_vc * (1 + e_study_tactcv_vc * STUDY_TACTCV)` with `e_study_tactcv_vc = -0.281`, i.e. Vc/F is 28.1% lower in TACT-CV than in TRACII).
 - **Notes:** The indicator distinguishes the two **trials**, not the two treatment **arms** -- coadministration of amodiaquine was tested separately as a drug-drug-interaction covariate on every parameter and found not to affect lumefantrine PK, so `STUDY_TACTCV` and a hypothetical triple-ACT-arm indicator are different columns and must not be conflated (the abbreviation `TACT` in the source table is the trial acronym, and Ding 2026 Results describes the term in words as "a study effect on the central volume of distribution"). Ding 2026 attributes the contrast to the different fatty food given with each dose to promote lumefantrine absorption -- a fatty snack in TRACII against 80 mL of milk in TACT-CV -- and judges it not clinically meaningful, since it moves the terminal half-life from 191 h to 182 h and the Day 7 concentration from 454 to 444 ng/mL with no change in total exposure. The same two-trial pooling underlies the sibling `Ding_2026_artemether.R` and `Ding_2026_amodiaquine.R`, neither of which retains a study term; for amodiaquine a trial difference in inter-compartmental clearance *was* detected but discarded as biologically implausible, and that model records the column in `covariatesDataExcluded` instead. Sibling of the other `STUDY_<id>` members; scoped specific because the reference category is this analysis's own two-trial set.
 
-### STUDY_SEACAT (**canonical for the SEACAT 2.4.1 / 2.4.2 artemether-lumefantrine study cohort indicator**)
-- **Description:** 1 = participant of the South African SEACAT (South East African Combination Anti-malarial Therapy) pharmacokinetic studies 2.4.1 or 2.4.2 of artemether-lumefantrine in HIV-infected and uninfected adults; 0 = participant of any other study in the pooled analysis. Per-subject (study-fixed) binary indicator.
+### STUDY_BDQ_C208_C209 (**canonical for the bedaquiline phase IIb MDR-TB studies TMC207-TiDP13-C208 / C209 indicator**)
+- **Description:** 1 = subject from the bedaquiline phase IIb registration studies in patients with multidrug-resistant tuberculosis, TMC207-TiDP13-C208 (stages 1 and 2) or TMC207-TiDP13-C209; 0 = subject from any other study of the McLeay 2014 pooled bedaquiline analysis, or from a later study. Subject-level (time-fixed).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (any other study of the Francis 2020 WWARN pooled set; the bioavailability reference is the InterACT and SEACAT evening doses).
-- **Source aliases:** study name `SEACAT 2.4.1` / `SEACAT 2.4.2` in Francis 2020 Tables 1-2 (both studies share the same term; no value transformation).
-- **Example models:** `Francis_2020_lumefantrine.R` (dose-occasion effects on relative bioavailability selected together with `OCC`: first (morning) dose `F x (1 - 0.486)` when `OCC = 1`, consecutive morning doses `F x (1 - 0.772)` when `OCC` is odd and > 1, evening doses at the reference).
-- **Notes:** Francis 2020 attributes the morning/evening contrast to diurnal variation and to the different fat content of the meals given with each dose. The indicator marks the study; the dose-occasion selection lives in `OCC`. Sibling of the other `STUDY_<id>` members.
+- **Reference category:** 0 (any other study). Note that in the source parameterisation C208 / C209 is the REFERENCE group for relative bioavailability (F = 1), so the indicator selects F = 1 rather than applying a shift to a typical value.
+- **Source aliases:**
+  - `study` -- McLeay 2014 Table 3 rows 'Study R207910-CDE102 or TiDP13-C104 on F' / 'Other studies on F' (reference C208 / C209) and 'Residual unexplained variability on TiDP13-C208 or TiDP13-C209'; reprinted in Kurosawa 2021 Table S1.
+- **Example models:** `Kurosawa_2021_bedaquiline.R` (relative bioavailability 1 for C208 / C209 vs 2.03 for 'other studies' and 1.51 for `STUDY_BDQ_CDE102_C104`; log-scale residual SD 0.277 vs 0.206 elsewhere).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family, prefixed `BDQ` because the C-numbers are bedaquiline (TMC207) protocol codes. Mutually exclusive with `STUDY_BDQ_CDE102_C104`; a subject with both 0 is in McLeay 2014's 'other studies' group (C109, C110, C111, C202, TBC1003 and any later study, including the Kurosawa 2021 healthy volunteers). In McLeay 2014 every MDR-TB patient came from C208 / C209, so this indicator coincides with `DIS_TB_MDR = 1` in that dataset; they are kept separate because Kurosawa 2021 decoupled them in its nontuberculous-mycobacteria simulations (MDR-TB-like clearance with the 'other studies' bioavailability).
 
-### STUDY_UGANDA (**canonical for the pooled Uganda artemether-lumefantrine studies 1-4 cohort indicator**)
-- **Description:** 1 = participant of any of the four Ugandan artemether-lumefantrine pharmacokinetic studies (Byakika-Kibwika et al.; Lamorde et al.; Walimbwa et al.) pooled in the Francis 2020 WWARN meta-analysis, where doses were taken with a standard Ugandan breakfast; 0 = participant of any other study in that pooled analysis. Per-subject (study-fixed) binary indicator.
+### STUDY_BDQ_CDE102_C104 (**canonical for the bedaquiline phase 1 oral-solution studies R207910-CDE102 / TMC207-TiDP13-C104 indicator**)
+- **Description:** 1 = subject from the bedaquiline phase 1 healthy-volunteer multiple-dose oral-solution studies R207910-CDE102 or TMC207-TiDP13-C104; 0 = subject from any other study. Subject-level (time-fixed).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (any other study of the Francis 2020 pooled set).
-- **Source aliases:** study names `Uganda study 1` to `Uganda study 4` in Francis 2020 Tables 1-2 (all four share one term).
-- **Example models:** `Francis_2020_lumefantrine.R` (fractional effect on relative bioavailability of every dose, `F x (1 - 0.269)`).
-- **Notes:** Four studies pooled into one level because their bioavailability estimates did not differ. Sibling of the other `STUDY_<id>` members.
-
-### STUDY_NIGERIA1 (**canonical for the Nigeria study 1 artemether-lumefantrine cohort indicator**)
-- **Description:** 1 = participant of Nigeria study 1 (Parikh et al.) in the Francis 2020 WWARN meta-analysis, a multiple-dose study sampling after the observed 6th (last) dose with the previous doses self-administered; 0 = participant of any other study in that pooled analysis. Per-subject (study-fixed) binary indicator.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (any other study of the Francis 2020 pooled set).
-- **Source aliases:** study name `Nigeria study 1` in Francis 2020 Tables 1-2.
-- **Example models:** `Francis_2020_lumefantrine.R` (two dose-occasion effects selected together with `OCC`: relative bioavailability of the 6th (morning) dose `F x (1 - 0.608)` when `OCC = 6`, and an estimated 4.30 h delay of the unobserved 5th dose when `OCC = 5`, shared with `STUDY_USHV`).
-- **Notes:** Distinct from Nigeria study 2 of the same analysis, which is identified by its dried-blood-spot matrix (`SAMPLE_DBS`) rather than a study term. Sibling of the other `STUDY_<id>` members.
-
-### STUDY_USHV (**canonical for the U.S. healthy-volunteer artemether-lumefantrine study cohort indicator**)
-- **Description:** 1 = participant of the U.S. healthy-volunteer artemether-lumefantrine drug-interaction study (German et al. 2009) pooled in the Francis 2020 WWARN meta-analysis; 0 = participant of any other study in that pooled analysis. Per-subject (study-fixed) binary indicator.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (any other study of the Francis 2020 pooled set).
-- **Source aliases:** `U.S. healthy volunteer study` in Francis 2020 Tables 1-2.
-- **Example models:** `Francis_2020_lumefantrine.R` (estimated 4.30 h delay of the unobserved 5th dose when `OCC = 5`, shared with `STUDY_NIGERIA1`; bioavailability not different from the reference).
-- **Notes:** Sibling of the other `STUDY_<id>` members.
+- **Reference category:** 0 (any other study).
+- **Source aliases:**
+  - `study` -- McLeay 2014 Table 3 row 'Study R207910-CDE102 or TiDP13-C104 on F'; reprinted in Kurosawa 2021 Table S1.
+- **Example models:** `Kurosawa_2021_bedaquiline.R` (relative bioavailability 1.51 versus the C208 / C209 reference).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Sibling of `STUDY_BDQ_C208_C209` from the same McLeay 2014 pooled analysis; the two are mutually exclusive.
 
 ### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
 - **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.

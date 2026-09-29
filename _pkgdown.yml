@@ -608,8 +608,8 @@ navbar:
         href: articles/Ambery_2015_batefenterol.html
       - text: "Batefenterol fev1 (Ambery 2015)"
         href: articles/Ambery_2015_batefenterol.html
-      - text: "Batiraxcept (Bonifacio 2020)"
-        href: articles/Bonifacio_2020_batiraxcept.html
+      - text: "Bedaquiline (Kurosawa 2021)"
+        href: articles/Kurosawa_2021_bedaquiline.html
       - text: "Bedaquiline (Shao 2023)"
         href: articles/Shao_2023_bedaquiline.html
       - text: "Bedaquiline (Svensson 2013)"
@@ -7710,6 +7710,7 @@ articles:
   - articles/Kunisawa_2015_landiolol
   - articles/Kuroda_2023_cephalothin
   - articles/Kuroda_2024_quinidine_horse
+  - articles/Kurosawa_2021_bedaquiline
   - articles/Kurup_2024_DZIF10c
   - articles/Kutumova_2024_albuminNanoparticles
   - articles/Kwak_2025_mg1113
