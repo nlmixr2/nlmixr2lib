@@ -252,6 +252,8 @@
 
 - Add Arshad 2021 high-dose methotrexate ([doi:10.1186/s12885-021-08443-x](https://doi.org/10.1186/s12885-021-08443-x)) -- adults with haematological malignancies or solid tumours; final linear model plus the supplementary linear + Michaelis-Menten model.
 
+- Add Werumeus Buning 2021 ceftazidime ([doi:10.3390/antibiotics10060612](https://doi.org/10.3390/antibiotics10060612)) -- critically ill adults with a proven or suspected Pseudomonas aeruginosa infection, with and without CVVH.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Zhou 2021a enrofloxacin PBPK ([doi:10.3390/pharmaceutics13050602](https://doi.org/10.3390/pharmaceutics13050602)) -- healthy pigs given an oral solid-dispersion granule, with the small-intestinal contents as the target site.
