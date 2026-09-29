@@ -20,7 +20,7 @@
 
 - Add Palmer 2025 moxifloxacin ([doi:10.1002/bcp.70005](https://doi.org/10.1002/bcp.70005)) -- children with rifampicin-resistant tuberculosis.
 
-- Add Thorsted 2019 piperacillin ([doi:10.1093/jac/dkz270](https://doi.org/10.1093/jac/dkz270)) -- febrile children receiving cancer chemotherapy.
+- Add Smit 2020 vancomycin ([doi:10.1111/bcp.14144](https://doi.org/10.1111/bcp.14144)) -- morbidly obese adults undergoing bariatric surgery and nonobese healthy volunteers.
 
 - Add Nguyen 2026 dupilumab ([doi:10.1002/cpt.70233](https://doi.org/10.1002/cpt.70233)) -- healthy adults and adults, adolescents and children aged 1 year and older with eosinophilic esophagitis.
 
