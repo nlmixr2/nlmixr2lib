@@ -5536,6 +5536,8 @@ navbar:
         href: articles/Kirubakaran_2022_tacrolimus.html
       - text: "Tacrolimus (Lu 2015)"
         href: articles/Lu_2015_tacrolimus.html
+      - text: "Tacrolimus (Martial 2021)"
+        href: articles/Martial_2021_tacrolimus.html
       - text: "Tacrolimus (Miano 2024)"
         href: articles/Miano_2024_tacrolimus.html
       - text: "Tacrolimus (Moes 2016)"
@@ -7961,6 +7963,7 @@ articles:
   - articles/MarquezMegias_2023_adalimumab
   - articles/Marsot_2017_rifampicin
   - articles/Martial_2017_micafungin
+  - articles/Martial_2021_tacrolimus
   - articles/Martinez_2019_alirocumab
   - articles/Martson_2020_caspofungin
   - articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic
