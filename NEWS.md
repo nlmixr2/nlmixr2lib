@@ -6,6 +6,8 @@
 
 - The model-wide solve gate (`test-modeldb-solve-gate.R`) now probes models in fresh R processes of twenty, sharing one pair of solves per model between its tests. On GitHub's ubuntu R-devel and R-oldrel-1 check legs the single test process grew by about 1 GB a minute once this gate started -- 1.9 GB to 15.5 GB plus swap in 22 minutes -- and the hosted runner was shut down with exit 143 on every push to `main` since 2026-09-17; the same loop is flat on R 4.6.1 with the identical rxode2 build, and `test-stream.yaml` traces it. `callr` and `pkgload` (both already installed with testthat) are now declared in Suggests.
 
+- Add Le Marouille 2021 palbociclib PK and neutropenia ([doi:10.3390/pharmaceutics13101708](https://doi.org/10.3390/pharmaceutics13101708)) -- women with breast cancer treated in routine care.
+
 - Add Suri 2019 brentuximab vedotin ([doi:10.1002/cpt.1530](https://doi.org/10.1002/cpt.1530)) -- adults with previously untreated stage III or IV classical Hodgkin lymphoma (ECHELON-1, A+AVD).
 
 - Add Thorsted 2019 piperacillin ([doi:10.1093/jac/dkz270](https://doi.org/10.1093/jac/dkz270)) -- febrile children receiving cancer chemotherapy.
@@ -217,8 +219,6 @@
   that eq. 1 was self-consistent with `beta_liver = 0.5`. No parameter value
   changes.
 
-- Add Wang 2020 caspofungin ([doi:10.1128/AAC.00687-20](https://doi.org/10.1128/AAC.00687-20)) -- adult lung transplant recipients in the early postoperative period, with and without veno-venous ECMO. Registers the `SOFA` and `T_SURG` (operative time) covariate columns.
-
 - Add Vaddady 2020 doravirine ([doi:10.1128/AAC.00590-20](https://doi.org/10.1128/AAC.00590-20)) -- healthy participants and treatment-naive and virologically suppressed switch adults with HIV-1.
 
 - Add Senek 2020 levodopa ([doi:10.1038/s41598-020-75052-2](https://doi.org/10.1038/s41598-020-75052-2)) -- advanced Parkinson's disease on intrajejunal levodopa-carbidopa gel with and without entacapone infusion.
@@ -263,8 +263,6 @@
 
 - Add Zhang 2020 teicoplanin ([doi:10.3389/fphar.2020.594562](https://doi.org/10.3389/fphar.2020.594562)) -- hospitalised Chinese children aged 1 month to 14 years.
 
-- Add Chen 2021 luspatercept ([doi:10.1002/jcph.1696](https://doi.org/10.1002/jcph.1696)) -- adults with transfusion-dependent beta-thalassemia, with exposure-response models for hemoglobin response and adverse events.
-
 - Add Takita 2020 creatinine-drug interaction PBPK models, uptake-OCT2 and bidirectional-OCT2 ([doi:10.1002/psp4.12566](https://doi.org/10.1002/psp4.12566)) -- adults with chronic kidney disease stages G3-G4 receiving trimethoprim, cimetidine or famotidine.
 
 - Add Krzyzanski 2021 dexamethasone and betamethasone, IM and oral ([doi:10.1007/s10928-020-09730-z](https://doi.org/10.1007/s10928-020-09730-z)) -- healthy nonpregnant Indian women.
@@ -303,8 +301,6 @@
 
 - Add Zhou 2020 paclitaxel liposome ([doi:10.3389/fonc.2020.01731](https://doi.org/10.3389/fonc.2020.01731)) -- adults with squamous non-small cell lung cancer, with a companion exposure-safety model for grade 2 or worse neutropenia.
 
-- Add Yuan 2021 busulfan ([doi:10.2147/PGPM.S289834](https://doi.org/10.2147/PGPM.S289834)) -- Chinese children undergoing allogeneic haematopoietic stem cell transplantation, with a GSTA1 diplotype effect on clearance.
-
 - Add Kato 2021 amikacin ([doi:10.3390/antibiotics10020100](https://doi.org/10.3390/antibiotics10020100)) -- hospitalized Japanese patients aged 70 years and over.
 
 - Add Ryu 2021 hyaluronic acid dermal fillers ([doi:10.3390/pharmaceutics13020133](https://doi.org/10.3390/pharmaceutics13020133)) -- filler volume after subcutaneous injection in hairless mice, five marketed fillers.
@@ -312,8 +308,6 @@
 - Add Sjogren 2021 malnutrition physiology ([doi:10.3390/pharmaceutics13020204](https://doi.org/10.3390/pharmaceutics13020204)) -- malnourished adults (applied to malnourished children); PBPK physiological scaling parameters for mild, intermediate and severe malnutrition.
 
 - Add He 2020 phosphocreatine ([doi:10.3389/fphar.2020.574141](https://doi.org/10.3389/fphar.2020.574141)) -- children with acute myocarditis, with its metabolite creatine.
-
-- Add Wang 2020 delamanid ([doi:10.1128/AAC.01202-20](https://doi.org/10.1128/AAC.01202-20)) -- adults with pulmonary multidrug-resistant tuberculosis.
 
 - Add Lo 2021 revefenacin and its metabolite THRX-195518 ([doi:10.1007/s40262-020-00938-3](https://doi.org/10.1007/s40262-020-00938-3)) -- adults with COPD receiving nebulized revefenacin.
 
@@ -336,8 +330,6 @@
 - Add Ou 2021 zanubrutinib ([doi:10.1111/cts.12948](https://doi.org/10.1111/cts.12948)) -- healthy volunteers and adults with B-cell malignancies.
 
 - Add Royer 2021 palbociclib ([doi:10.3390/ph14030181](https://doi.org/10.3390/ph14030181)) -- women with metastatic breast cancer followed in routine care.
-
-- Add He 2021 Wuzhi-capsule lignans schisantherin A and schisandrin A ([doi:10.3390/ph14030198](https://doi.org/10.3390/ph14030198)) -- in vitro reversible and time-dependent inhibition of CYP3A4 and CYP3A5 in CYP3A5-genotyped human liver microsomes.
 
 - Add Mileva 2021 doxycycline ([doi:10.3390/antibiotics10030310](https://doi.org/10.3390/antibiotics10030310)) -- mature and immature rabbits given a single oral capsule dose.
 
@@ -450,8 +442,6 @@
 - Add Fediuk 2021 ertugliflozin ([doi:10.1002/cpdd.885](https://doi.org/10.1002/cpdd.885)) -- healthy adults and adults with type 2 diabetes mellitus.
 
 - Add Trang 2021 meropenem and vaborbactam ([doi:10.1128/AAC.02606-20](https://doi.org/10.1128/AAC.02606-20)) -- noninfected adults across the renal-function range and adults with complicated urinary tract or carbapenem-resistant Enterobacterales infections; separate plasma-and-urine models for each drug.
-
-- Add Zhu 2021 ethanol whole-body PBPK ([doi:10.1371/journal.pcbi.1009110](https://doi.org/10.1371/journal.pcbi.1009110)) -- ethanol and acetaldehyde disposition in adult men, PBPK coupled to a genome-scale metabolic model.
 
 - Add Gibiansky 2021 rituximab ([doi:10.1002/psp4.12665](https://doi.org/10.1002/psp4.12665)) -- adults with chronic lymphocytic leukemia given intravenous and subcutaneous rituximab.
 
