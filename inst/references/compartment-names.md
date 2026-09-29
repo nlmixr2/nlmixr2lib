@@ -4296,6 +4296,29 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 
 ---
 
+### prob_trae_grade34 (**canonical cohort grade 3/4 treatment-related adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing any CTCAE grade 3 or 4 treatment-related adverse event, output by a STUDY-LEVEL logit meta-regression. Algebraic; no ODE state.
+- **Source aliases:** `trAE Grade 3/4`, `total grade 3/4 trAE` -- Shulgin 2020.
+- **Example models:** `Shulgin_2020_ici_trae34_mbma.R`, `Shulgin_2020_ici_trae34_covariate_mbma.R` (founding examples; immune checkpoint inhibitor MBMA driven by potency-normalized anti-CTLA-4 exposure).
+- **Notes:** A cohort-level PROPORTION, not an individual-patient probability -- it is the typical rate across trials with the stated regimen and covariates. Distinct from `prob_teae_grade3`, which counts treatment-EMERGENT events regardless of attribution, is grade >= 3 rather than 3/4, and is an individual-level landmark probability. `prob_gi_imae_grade34` and `prob_hepatic_imae_grade34` are organ-class subsets of immune-mediated events and overlap with this endpoint rather than competing with it.
+
+### prob_gi_imae_grade34 (**canonical cohort grade 3/4 gastrointestinal immune-mediated adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing a grade 3/4 immune-mediated adverse event of the gastrointestinal organ class (for example colitis and diarrhoea), output by a study-level logit meta-regression.
+- **Source aliases:** `Gastrointestinal imAE Grade 3/4` -- Shulgin 2020 Supplemental Table 1.
+- **Example models:** `Shulgin_2020_ici_gi_imae34_mbma.R` (founding example).
+- **Notes:** Immune-mediated (imAE), not merely treatment-related; distinct from the naldemedine `prob_gi_*` severity-threshold family, which are individual-level landmark probabilities of any gastrointestinal-disorder event. Subset of `prob_trae_grade34`.
+
+### prob_hepatic_imae_grade34 (**canonical cohort grade 3/4 hepatic immune-mediated adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing a grade 3/4 immune-mediated adverse event of the hepatic organ class, output by a study-level logit meta-regression.
+- **Source aliases:** `Hepatic imAE Grade 3/4` -- Shulgin 2020 Supplemental Table 1.
+- **Example models:** `Shulgin_2020_ici_hepatic_imae34_mbma.R` (founding example).
+- **Notes:** Subset of `prob_trae_grade34`; see that entry for the cohort-proportion reading.
+
+---
+
 ## MBMA placebo / drug arm output compartments
 
 The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for each clinical endpoint. The placebo arm captures the background placebo response; the drug arm carries the drug-driven delta.
@@ -6456,6 +6479,27 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
   - `CZDa`, `MRX-4` -- the 2021 IDWeek abstract abbreviation and the development code.
 - **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
 - **Notes:** A model that assays CZA and gives it a volume would use `central_cza`; the founding model does not, because the conversion was too fast for most CZA concentrations to be quantifiable and the authors dropped CZA from the fitted data.
+
+---
+
+### thrx195518 (**canonical THRX-195518 revefenacin metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** THRX-195518, the major circulating metabolite of the inhaled long-acting muscarinic antagonist revefenacin, formed by hydrolysis of the parent's primary amide to the carboxylic acid. It is roughly three- to ten-fold less potent than revefenacin at muscarinic receptors and dissociates faster from the human M3 receptor, and its systemic exposure exceeds the parent's by about three- to six-fold. Carries `central_thrx195518`, `peripheral1_thrx195518`, the `Cc_thrx195518` observation, `lcl_thrx195518` / `lvc_thrx195518` / `lq_thrx195518` / `lvp_thrx195518`, the `e_age_cl_thrx195518` covariate effect and the `propSd_thrx195518` / `addSd_thrx195518` residuals.
+- **Source aliases:**
+  - `THRX-195518`, `CLmet/F`, `V3/F`, `Qmet/F`, `V4/F` -- Lo 2021 Table 2 and Fig. 1.
+- **Example models:** `Lo_2021_revefenacin.R` (doi:10.1007/s40262-020-00938-3; founding example -- two-compartment metabolite formed from a fixed 21% of the individual revefenacin clearance, with age on metabolite clearance and body weight on the formed fraction).
+- **Notes:** Same token-construction rule as [[or1855]]: the sponsor development code lowercased and the hyphen dropped. `thrx` is the Theravance code prefix, and the digits are the compound's identity, not a chain index, so the token is not a member of the numbered `m<n>` family.
+
+---
+
+### neu5ac (**canonical N-acetylneuraminic acid (sialic acid) metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Free (unbound to glycans) N-acetylneuraminic acid (Neu5Ac), the predominant mammalian sialic acid, formed intracellularly from dosed N-acetylmannosamine (ManNAc) through the sialic acid biosynthesis pathway and measured in plasma. Endogenous: the species has a non-zero pre-dose baseline, so a model carrying it initialises `central_neu5ac` at `rbase_neu5ac` rather than at zero. Carries `central_neu5ac`, the `Cc_neu5ac` observation, `lrbase_neu5ac`, `lkout_neu5ac` and `propSd_neu5ac`.
+- **Source aliases:**
+  - `Neu5Ac`, `N`, `N0`, `kout` -- Van Wart 2021 Eqs. 3-5 and Table 4.
+  - `sialic acid` -- the generic name used in the pathway description.
+- **Example models:** `VanWart_2021_mannac.R` (doi:10.1007/s40268-021-00343-6; founding example -- `central_neu5ac` holds a concentration (ng/mL) fed through a `precursor1` delay state, both draining at `kout_neu5ac`, with production stimulated linearly by plasma ManNAc).
+- **Notes:** Token is the IUPAC-style abbreviation lowercased. Distinct from the registered `sa` suffix, which in this register denotes salicylic acid; do not reuse `sa` for sialic acid. The Neu5Ac state here is a concentration with no asserted volume -- the source never defines one -- so it is carried as `central_neu5ac` in ng/mL, not as an amount.
 
 ---
 
