@@ -2,7 +2,7 @@
 
 # development version
 
-- Chen 2020 luspatercept: the citation now carries the correct DOI ([doi:10.1002/psp4.12521](https://doi.org/10.1002/psp4.12521); it previously pointed to an unrelated article), issue number and author list, and the compartment metadata records the serum assay matrix. No model code changed.
+- Add Chou 2021 PFOS gestational and lactational PBPK ([doi:10.1289/EHP7671](https://doi.org/10.1289/EHP7671)) — six life-stage whole-body models (prepregnant, gestational and lactational) in rats and humans and their offspring.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
