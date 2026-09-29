@@ -6,7 +6,7 @@
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
-- Add Pelligand 2020 torasemide ([doi:10.3389/fvets.2020.00151](https://doi.org/10.3389/fvets.2020.00151)) -- healthy male beagle dogs, with urinary-excretion-driven diuresis and natriuresis.
+- Add Gao 2020 teicoplanin ([doi:10.3389/fphar.2020.00552](https://doi.org/10.3389/fphar.2020.00552)) -- Chinese children aged 2 months to 9 years with different renal functions.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
