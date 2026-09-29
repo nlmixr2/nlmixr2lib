@@ -1,8 +1,8 @@
 ---
-title: "Tacrolimus (Chen 2020)"
+title: "Tacrolimus (Chen 2020a)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tacrolimus (Chen 2020)}
+  %\VignetteIndexEntry{Tacrolimus (Chen 2020a)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("Chen_2020_tacrolimus"))$meta$reference`
-* Description: `r rxode2::rxode(readModelDb("Chen_2020_tacrolimus"))$meta$description`
+* Citation: `r rxode2::rxode(readModelDb("Chen_2020a_tacrolimus"))$meta$reference`
+* Description: `r rxode2::rxode(readModelDb("Chen_2020a_tacrolimus"))$meta$description`
 * Article: <https://doi.org/10.3892/etm.2020.8821> (open access, PMC7388563)
 
 Chen et al. (2020) fitted a one-compartment model with first-order absorption
@@ -62,7 +62,7 @@ capsule at the six simulated body weights. The values below were digitised by
 the maintainers from Figure 3.
 
 ```{r fig3}
-mod <- readModelDb("Chen_2020_tacrolimus")
+mod <- readModelDb("Chen_2020a_tacrolimus")
 mod_typ <- rxode2::zeroRe(mod)
 
 fig3 <- tibble::tribble(

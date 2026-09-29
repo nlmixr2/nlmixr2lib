@@ -1,4 +1,4 @@
-Chen_2020_tacrolimus <- function() {
+Chen_2020a_tacrolimus <- function() {
   description <- paste0(
     "One-compartment population PK model with first-order absorption for ",
     "oral tacrolimus whole-blood concentrations in Chinese children and ",
@@ -15,7 +15,7 @@ Chen_2020_tacrolimus <- function() {
     "lupus nephritis based on real-world data. Exp Ther Med. ",
     "2020;20(2):1423-1430. doi:10.3892/etm.2020.8821."
   )
-  vignette <- "Chen_2020_tacrolimus"
+  vignette <- "Chen_2020a_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
