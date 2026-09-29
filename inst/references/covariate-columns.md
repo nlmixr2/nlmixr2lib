@@ -17267,6 +17267,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Fu_2022_atenolol_qsp.R` (switches six per-study typical values: BSL_HR = 79.4 (S1) vs 77.0 (S2) bpm, V0 = 9.92 (S1) vs 9.15 (S2) mL, BSL_CTRM = 3777 (S1) vs 2422 (S2) mmHg/s, Amp = 0.0931 (S1) vs 0.168 (S2), Hor_HR = 7.86 (S1) vs 19.4 (S2) h, Hor_CTR = 9.82 (S1) vs 21.8 (S2) h; Fu 2022 Table 2 final-model column).
 - **Notes:** Specific scope because the contrast is tied to the multi-site Servier/AstraZeneca beagle-dog telemetry pool used by Fu 2022 to develop the CVS-CTR systems model. Sibling of `STUDY_C2201` (Bienczak 2025 ligelizumab), `STUDY_ING111521` (Zhang 2015 dolutegravir), `STUDY_LBSL` (Zhou 2021 belimumab), `STUDY_M281_004` (Vivacity-MG nipocalimab), `STUDY_MD` (Cirincione 2017 ER exenatide multi-dose), `STUDY_PKU015` (Qi 2014 sapropterin pediatric), and `STUDY_RIV201` (Tammara 2017 rivipansel); member of the `STUDY_<name>` family of paper-specific study cohort indicators. Subject-level (time-fixed); set once from the trial identifier on each subject record.
 
+### STUDY_OPTICLOT_CTR45 (**canonical for Preijers 2021 perioperative FVIII Netherlands centre 4-5 residual-error stratum indicator**)
+- **Description:** 1 = FVIII sample from one of the two Dutch hemophilia treatment centres numbered 4 and 5 in the OPTI-CLOT perioperative dataset (Hazendonk 2016 / Preijers 2021); 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Netherlands centres 1, 2, 3 when `STUDY_GOSH` is also 0).
+- **Source aliases:**
+  - `Centres 4,5` -- Preijers 2021 Table 2 residual-variability row label (Hazendonk 2016 Table 4 `Center 4, 5`). The paper does not say which Dutch centres carry these numbers.
+- **Example models:** `Preijers_2021_factor_viii.R` (selects additive SD 0.06 IU/mL and proportional 21% instead of the centre 1-3 values 0.12 IU/mL and 19.7%; Preijers 2021 Table 2 final model).
+- **Notes:** Member of the auto-approved `STUDY_<id>` family, used like `STUDY_FU2022_AZ` to mark a recruiting site rather than a trial. Acts on residual error only; it does not change the typical-value prediction. Mutually exclusive with `STUDY_GOSH`. The Hazendonk 2016 model (`Hazendonk_2016_factor_viii.R`) estimated the same centre split but ships only the centre 1-3 residual error, so it does not use this column.
+
+### STUDY_GOSH (**canonical for Great Ormond Street Hospital (London) pediatric hemophilia cohort indicator**)
+- **Description:** 1 = FVIII sample from the Great Ormond Street Hospital (GOSH), London, retrospective pediatric perioperative cohort (87 children with severe hemophilia A undergoing central-venous-access-device surgery; centre 6 in Preijers 2021); 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Netherlands centres 1, 2, 3 when `STUDY_OPTICLOT_CTR45` is also 0).
+- **Source aliases:**
+  - `Centre 6` -- Preijers 2021 Table 2 residual-variability row label.
+- **Example models:** `Preijers_2021_factor_viii.R` (selects additive SD 0.17 IU/mL and proportional 22%; Preijers 2021 Table 2 final model).
+- **Notes:** Member of the auto-approved `STUDY_<id>` family, marking a recruiting site that is also a separate data source (the external-validation cohort that Preijers 2021 pooled with the Hazendonk 2016 data). Acts on residual error only. Mutually exclusive with `STUDY_OPTICLOT_CTR45`.
+
 ### STUDY_118 (**canonical for Nielsen 2015 vigabatrin pediatric Study 118 cohort indicator**)
 - **Description:** 1 = subject enrolled in pediatric Study 118 (n = 125; placebo or vigabatrin 20, 60 or 100 mg/kg/day) of the Nielsen 2015 pooled vigabatrin seizure-count analysis; 0 = otherwise. Time-fixed per subject.
 - **Units:** (binary)
