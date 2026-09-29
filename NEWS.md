@@ -256,6 +256,8 @@
 
 - Add Rao 2021 pyrazinamide and ethambutol ([doi:10.3390/antibiotics10060739](https://doi.org/10.3390/antibiotics10060739)) -- Ugandan adults living with HIV and hospitalised with sepsis, starting first-line tuberculosis treatment.
 
+- Add Tiede 2021 turoctocog alfa ([doi:10.3324/haematol.2019.241554](https://doi.org/10.3324/haematol.2019.241554)) -- children, adolescents and adults with severe hemophilia A on prophylaxis.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jeong 2021 fexuprazan whole-body PBPK ([doi:10.3390/pharmaceutics13060813](https://doi.org/10.3390/pharmaceutics13060813)) -- healthy adult volunteers (Korean, Caucasian and Japanese).
