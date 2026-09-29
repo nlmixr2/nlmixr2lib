@@ -134,6 +134,8 @@
 
 - Add Periclou 2021 cariprazine with its metabolites desmethyl- and didesmethyl-cariprazine ([doi:10.1007/s13318-020-00650-4](https://doi.org/10.1007/s13318-020-00650-4)) -- adults with schizophrenia or bipolar mania; final and initial-dataset models.
 
+- Add Damle 2021 dalteparin ([doi:10.1002/jcph.1716](https://doi.org/10.1002/jcph.1716)) -- pediatric patients (1 month to 19 years) with venous thromboembolism, with or without cancer.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Fouad 2021 diacerein ([doi:10.1371/journal.pone.0245482](https://doi.org/10.1371/journal.pone.0245482)) -- healthy adults (one-compartment reduction of a Simcyp PBPK model; plain drug vs PEG 8000 solid dispersion).
