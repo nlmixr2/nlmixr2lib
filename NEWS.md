@@ -130,6 +130,8 @@
 
 - Add Krzyzanski 2021 dexamethasone and betamethasone, IM and oral ([doi:10.1007/s10928-020-09730-z](https://doi.org/10.1007/s10928-020-09730-z)) -- healthy nonpregnant Indian women.
 
+- Add Yin 2021 mitotane ([doi:10.1007/s40262-020-00913-y](https://doi.org/10.1007/s40262-020-00913-y)) -- adults with adrenocortical carcinoma; pharmacogenetic and genotype-free variants.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Jermain 2020 ivermectin minimal PBPK ([doi:10.1016/j.xphs.2020.08.024](https://doi.org/10.1016/j.xphs.2020.08.024)) -- adults (simulated healthy-volunteer plasma profile), with lung exposure.

@@ -13668,6 +13668,39 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.268; Supplementary Table 2A).
 - **Notes:** Companion to `SNP_SLCO1B1_RS4149056_HET`; see that entry's Notes for the \*15-haplotype relationship, the linkage-disequilibrium sampling and the unpublished-ratio caveat. Activity ratio 26.8 percent of wild type.
 
+### SNP_SLCO1B1_RS4149057_CC (**canonical for SLCO1B1 c.571T>C homozygous CC genotype indicator**)
+- **Description:** Binary genotype indicator for the *SLCO1B1* (OATP1B1 hepatic uptake transporter) c.571T>C polymorphism (rs4149057, L191L synonymous): 1 = subject carries the homozygous CC genotype; 0 = otherwise. Paired with `SNP_SLCO1B1_RS4149057_TT`; both indicators are 0 for the heterozygous TC group, which the founding source uses as the reference category. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 together with `SNP_SLCO1B1_RS4149057_TT` = 0, i.e. the heterozygous TC group.
+- **Source aliases:**
+  - `SNP3 SLCO1B1 571T>C (rs4149057)`, CC genotype -- Yin 2021 Table 2 row `CL_SNP3 (CC)`.
+- **Example models:** `Yin_2021_mitotane.R` (multiplicative effect on apparent clearance of mitotane; the CC group has CL/F 0.753x the TC reference, Table 2 `CL_SNP3 (CC)` = 0.753).
+- **Notes:** rs4149057 (c.571T>C, L191L) is a synonymous *SLCO1B1* variant. Yin 2021 uses the **heterozygous TC** genotype as the reference (Eq. S5 sets the reference-category multiplier to 1) and estimates separate multipliers for the CC and TT homozygotes, hence the paired `_CC` / `_TT` indicators rather than a wild-type-anchored carrier/count column. This is distinct from the more commonly modelled reduced-function `SLCO1B1` variants c.521T>C (`SNP_SLCO1B1_RS4149056_*`, rs4149056) and c.388A>G (`SNP_SLCO1B1_RS2306283_*`, rs2306283); rs4149057 is a different locus and the two must not be conflated. In the Yin 2021 cohort the effect direction is unusual -- the CC homozygote lowers CL/F while the TT homozygote raises it 2.49-fold relative to TC -- so the TC reference and the two-indicator encoding preserve the reported non-monotone pattern exactly.
+
+### SNP_SLCO1B1_RS4149057_TT (**canonical for SLCO1B1 c.571T>C homozygous TT genotype indicator**)
+- **Description:** Binary genotype indicator for the *SLCO1B1* (OATP1B1 hepatic uptake transporter) c.571T>C polymorphism (rs4149057, L191L synonymous): 1 = subject carries the homozygous TT genotype; 0 = otherwise. Paired with `SNP_SLCO1B1_RS4149057_CC`; both indicators are 0 for the heterozygous TC reference group. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 together with `SNP_SLCO1B1_RS4149057_CC` = 0, i.e. the heterozygous TC group.
+- **Source aliases:**
+  - `SNP3 SLCO1B1 571T>C (rs4149057)`, TT genotype -- Yin 2021 Table 2 row `CL_SNP3 (TT)`.
+- **Example models:** `Yin_2021_mitotane.R` (multiplicative effect on apparent clearance of mitotane; the TT group has CL/F 2.49x the TC reference, Table 2 `CL_SNP3 (TT)` = 2.49).
+- **Notes:** Companion to `SNP_SLCO1B1_RS4149057_CC`; see that entry's Notes for the TC-reference encoding, the distinction from rs4149056 / rs2306283 and the non-monotone effect direction.
+
+### SNP_SLCO1B3_RS7311358_G_CARRIER (**canonical for SLCO1B3 699A>G G-allele carrier indicator**)
+- **Description:** Binary indicator for carriage of the *SLCO1B3* (OATP1B3 hepatic uptake transporter) c.699A>G polymorphism (rs7311358, I233M): 1 = subject carries at least one G allele (AG heterozygote or GG homozygote); 0 = AA. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (AA, no G allele).
+- **Source aliases:**
+  - `SNP2 SLCO1B3 699A>G (rs7311358)` -- Yin 2021 Table 2 row `CL_SNP2 (AG/GG)`.
+- **Example models:** `Yin_2021_mitotane.R` (multiplicative effect on apparent clearance of mitotane; G carriers have CL/F 0.601x the AA reference, i.e. 39.9% lower, Table 2 `CL_SNP2 (AG/GG)` = 0.601).
+- **Notes:** Dominant (carrier) encoding, pooling AG and GG because Yin 2021 combined the minor-homozygote group with the heterozygote group (fewer than four minor homozygotes). In the Yin 2021 cohort rs7311358 was in 100% linkage disequilibrium with `SLCO1B3` c.334G>T (rs4149117) and c.1557G>A (rs2053098); the authors retained rs7311358 as the variant with the strongest clinical annotation. Follows the `SNP_<GENE>_RS<rsid>_<allele>_CARRIER` pattern established by `SNP_CYP1A2_RS762551_C_CARRIER`. A future extraction that distinguishes AG from GG should add paired `_HET` / `_HOM` indicators.
+
 ### SNP_SLCO1B1_RS2306283_HET (**canonical for SLCO1B1 c.388A>G heterozygous (388A/G) indicator**)
 - **Description:** Binary genotype indicator for the *SLCO1B1* (OATP1B1 hepatic uptake transporter) c.388A>G polymorphism (rs2306283, N130D / p.Asn130Asp): 1 = subject carries the heterozygous (388A/G) genotype; 0 = otherwise (the paired `SNP_SLCO1B1_RS2306283_HOM` flags the other variant stratum). Time-fixed per subject (germline genotype).
 - **Units:** (binary)
@@ -14219,7 +14252,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (no *2 allele -- *1/*1, *1/*17, or *17/*17).
 - **Source aliases:**
   - `CYP2C19*2` -- Danielak 2017 (paper Methods 'Determination of genetic polymorphisms' and Table 2 final-model `Effect of CYP2C19*2 on FM (COV)` row; PCR-RFLP genotyping for rs4244285). The Danielak 2017 cohort had no *2/*2 homozygous-poor-metabolizers, so heterozygous *1/*2 carriers were pooled into the binary CYP2C19_S2_CARRIER = 1 group with no information loss.
-- **Example models:** `Danielak_2017_clopidogrel.R` (linear-deviation effect on the fraction of clopidogrel metabolised to the active thiol H4: `fm = TVFM * (1 + e_cyp2c19_s2_fm * CYP2C19_S2_CARRIER)` with `e_cyp2c19_s2_fm = -0.45`; carriers convert 45% less of the absorbed clopidogrel to the active H4 metabolite, giving a 36.7% lower predicted AUC of H4 vs non-carriers; Danielak 2017 Table 2 final-model and Results page 1628).
+- **Example models:** `Danielak_2017_clopidogrel.R` (linear-deviation effect on the fraction of clopidogrel metabolised to the active thiol H4: `fm = TVFM * (1 + e_cyp2c19_s2_fm * CYP2C19_S2_CARRIER)` with `e_cyp2c19_s2_fm = -0.45`; carriers convert 45% less of the absorbed clopidogrel to the active H4 metabolite, giving a 36.7% lower predicted AUC of H4 vs non-carriers; Danielak 2017 Table 2 final-model and Results page 1628), `Yin_2021_mitotane.R` (multiplicative effect on apparent clearance of mitotane; GA/AA carriers have CL/F 0.551x the GG reference, i.e. 44.9% lower, Yin 2021 Table 2 `CL_SNP1 (GA/AA)` = 0.551).
 - **Notes:** CYP2C19*2 is the dominant *loss-of-function* CYP2C19 allele in clopidogrel pharmacogenetics; it reduces clopidogrel's metabolic activation to the antiplatelet-active H4 thiol and is associated with elevated rates of stent thrombosis and major adverse cardiovascular events on clopidogrel therapy (FDA boxed warning, 2010). The paired *17 ultra-rapid-metabolizer allele (rs12248560) is typically registered separately when present (a `CYP2C19_S17_CARRIER` indicator following the same pattern). The continuous-individual-activity-score consolidation TODO logged on `CYP2D6` line 3321 also applies prospectively to CYP2C19, but the binary carrier indicator remains the standard discrete encoding used by most published clopidogrel popPK / PD models.
 
 ### CYP2C19_IM (**canonical for CYP2C19 intermediate-metabolizer phenotype indicator**)
