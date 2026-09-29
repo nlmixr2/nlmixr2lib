@@ -20116,7 +20116,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** general
 - **Reference category:** 0 (no concomitant ceftriaxone).
 - **Source aliases:** none.
-- **Example models:** `Shen_2024_vancomycin.R` (screened on vancomycin CL because it was coadministered in more than 10% of patients -- 25.72% of records -- and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
+- **Example models:** `Shen_2024_vancomycin.R` (screened on vancomycin CL because it was coadministered in more than 10% of patients -- 25.72% of records -- and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example); `Li_2021_vancomycin.R` (retained: multiplies vancomycin CL by 1.46 in infants with septicemia, applied as `1.46^CONMED_CEFTRIAXONE`; source column `DC`).
 - **Notes:** Named-drug member of the `CONMED_<INN>` family. Ceftriaxone's high albumin binding makes it a plausible displacement interactant as well as a coeliminated antibacterial, which is why sources screen it by name rather than pooling it into a class indicator.
 
 ### CONMED_MANNITOL (**canonical for concomitant mannitol coadministration indicator**)
