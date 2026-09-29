@@ -2228,6 +2228,8 @@ navbar:
         href: articles/MedellinGaribay_2015_gentamicin.html
       - text: "Gentamicin (Mohamed 2012)"
         href: articles/Mohamed_2012_gentamicin.html
+      - text: "Gentamicin (Paioni 2021)"
+        href: articles/Paioni_2021_gentamicin.html
       - text: "Gentamicin (Sampson 2014)"
         href: articles/Sampson_2014_gentamicin.html
       - text: "Gentamicin (Singu 2024)"
@@ -7478,6 +7480,7 @@ articles:
   - articles/Padavia_2024_paracetamol
   - articles/Padoin_1998_cephalexin_rat
   - articles/Paiboonvong_2025_sitafloxacin
+  - articles/Paioni_2021_gentamicin
   - articles/Palmer_2025_moxifloxacin
   - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma
