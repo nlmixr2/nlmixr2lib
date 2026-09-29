@@ -138,6 +138,8 @@
 
 - Add Liu 2020 hydroxychloroquine ([doi:10.3389/fphar.2020.602880](https://doi.org/10.3389/fphar.2020.602880)) -- male cynomolgus macaques, with plasma, whole-blood and lung-tissue concentrations.
 
+- Add Xu 2020 clopidogrel PBPK-PD ([doi:10.3389/fphar.2020.593982](https://doi.org/10.3389/fphar.2020.593982)) -- healthy adults and coronary artery disease patients with or without diabetes, by CYP2C19 phenotype.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Fouad 2021 diacerein ([doi:10.1371/journal.pone.0245482](https://doi.org/10.1371/journal.pone.0245482)) -- healthy adults (one-compartment reduction of a Simcyp PBPK model; plain drug vs PEG 8000 solid dispersion).

@@ -5512,7 +5512,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** H4 (active thiol) metabolite of clopidogrel: pharmacologically active species responsible for P2Y12 receptor inhibition, formed via sequential CYP-mediated oxidation (CYP2C19 dominant for second oxidation step). "H4" refers to the H4 stereoisomer specifically.
 - **Source aliases:** none.
-- **Example models:** `Danielak_2017_clopidogrel.R` (doi:10.1007/s00228-017-2334-z).
+- **Example models:** `Danielak_2017_clopidogrel.R` (doi:10.1007/s00228-017-2334-z), `Xu_2020_clopidogrel_pbpk.R` (doi:10.3389/fphar.2020.593982; CLOP-AM in every PBPK tissue and blood state, e.g. `liver_h4`, `venous_h4`).
+
+### oxoclop (**canonical 2-oxo-clopidogrel suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 2-oxo-clopidogrel, the thiolactone intermediate of clopidogrel bioactivation. It is formed from clopidogrel by the first CYP oxidation (CYP1A2, CYP2B6, CYP2C19) and is either oxidised a second time (CYP2B6, CYP2C9, CYP3A4, CYP2C19) to the active thiol (`h4`) or hydrolysed by CES1 to an inactive carboxylic acid.
+- **Source aliases:** `2-oxo-CLOP`, `oxo` (Xu 2020 subscript, e.g. `C_liv,oxo`).
+- **Example models:** `Xu_2020_clopidogrel_pbpk.R` (doi:10.3389/fphar.2020.593982; `liver_oxoclop`, `venous_oxoclop` and the other PBPK tissue states, output `Cc_oxoclop`).
+- **Notes:** Drug-qualified rather than a bare `oxo` because "2-oxo" names an intermediate of every thienopyridine (2-oxo-ticlopidine, and the prasugrel thiolactone R-95913 is the same chemical class); a bare `oxo` would be claimed by the first of them to be extracted. Distinct from `h4` (the active thiol formed from this intermediate) and from the clopidogrel carboxylic acid that `Jung_2024_clopidogrel.R` carries as `cloca`.
 
 ### mpag (**canonical mycophenolic acid glucuronide suffix**)
 - **Type:** metabolite-suffix
