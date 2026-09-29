@@ -2110,6 +2110,8 @@ navbar:
         href: articles/Hosseini_2024_flt3lfc.html
       - text: "Flt3lfc human (Hosseini 2024)"
         href: articles/Hosseini_2024_flt3lfc.html
+      - text: "Flucloxacillin (Jager 2020)"
+        href: articles/Jager_2020_flucloxacillin.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
       - text: "Fluconazole (Adamiszak 2025)"
@@ -7103,6 +7105,7 @@ articles:
   - articles/Jacobs_2016_colistin
   - articles/Jadhav_2023_bempedoicAcid
   - articles/Jager_2011_gemtuzumab
+  - articles/Jager_2020_flucloxacillin
   - articles/Jain_2011_sorafenib
   - articles/Jaiswal_2025_dordaviprone
   - articles/James_2025_fepixnebart

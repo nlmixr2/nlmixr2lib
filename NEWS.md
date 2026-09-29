@@ -40,6 +40,8 @@
 
 - Add Fidler 2020 ranibizumab ([doi:10.1167/tvst.9.8.43](https://doi.org/10.1167/tvst.9.8.43)) -- preterm infants with retinopathy of prematurity (RAINBOW trial), intravitreal dosing.
 
+- Add Jager 2020 flucloxacillin ([doi:10.1093/jac/dkaa187](https://doi.org/10.1093/jac/dkaa187)) -- critically ill adults, with total and unbound concentrations.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
