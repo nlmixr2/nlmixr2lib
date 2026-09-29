@@ -152,6 +152,8 @@
 
 - Add Yang 2020 enrofloxacin and ciprofloxacin PBPK ([doi:10.3389/fvets.2020.608348](https://doi.org/10.3389/fvets.2020.608348)) -- rainbow trout (*Oncorhynchus mykiss*) at water temperatures of 5-17 degC.
 
+- Add Guan 2021 yimitasvir ([doi:10.3389/fphar.2020.617122](https://doi.org/10.3389/fphar.2020.617122)) -- Chinese healthy volunteers and patients with chronic HCV genotype 1 infection.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Lin 2021 vancomycin ([doi:10.1038/s41598-021-82312-2](https://doi.org/10.1038/s41598-021-82312-2)) -- adult Chinese ICU patients, including patients on CRRT and burn patients.
