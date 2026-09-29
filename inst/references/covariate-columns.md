@@ -13915,7 +13915,8 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (homozygous G/G).
 - **Source aliases:**
   - `SLCO3A1 G>T` -- Stillemans 2021 (Table 3 row 'SLCO3A1 G>T on V'; the NONMEM control stream is not published).
-- **Example models:** `Stillemans_2021_darunavir.R` (categorical effect on darunavir V/F: `V * (1 + 0.81 * SNP_SLCO3A1_RS8027174)` -- carriers have 81% larger apparent volume).
+  - `SLCO3A1 g.91941607G>T` -- Stillemans 2021 Eur J Clin Pharmacol (Table 1 genotype row; Table 2 row 'theta SLCO3A1 on V').
+- **Example models:** `Stillemans_2021_darunavir.R` (categorical effect on darunavir V/F: `V * (1 + 0.81 * SNP_SLCO3A1_RS8027174)` -- carriers have 81% larger apparent volume), `Stillemans_2021b_darunavir.R` (same categorical form in the reduced no-AAG model re-estimated on the merged learning + validation data: `V * (1 + 0.697 * SNP_SLCO3A1_RS8027174)`).
 - **Notes:** In the Stillemans 2021 Belgian HIV cohort 18 of 123 genotyped subjects were G/T and none T/T (Table 2), so the indicator is effectively heterozygote-vs-G/G there. Distinct from the other *SLCO3A1* SNP genotyped in that study, rs4294800 (g.91917464G>A), which was screened on CL and V but not retained.
 
 ### SNP_SLC22A1_RS628031_HOM (**canonical for SLC22A1 (OCT1) 1222G>A (rs628031) homozygous-variant indicator**)
