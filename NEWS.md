@@ -232,7 +232,7 @@
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
-- Add Luo 2021 daratumumab ([doi:10.1002/jcph.1771](https://doi.org/10.1002/jcph.1771)) -- adults with multiple myeloma receiving subcutaneous (1800 mg) or intravenous (16 mg/kg) daratumumab.
+- Add Zhou 2021a enrofloxacin PBPK ([doi:10.3390/pharmaceutics13050602](https://doi.org/10.3390/pharmaceutics13050602)) -- healthy pigs given an oral solid-dispersion granule, with the small-intestinal contents as the target site.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
 
