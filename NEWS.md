@@ -16,7 +16,7 @@
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
-- Add Jeong 2021 fexuprazan whole-body PBPK ([doi:10.3390/pharmaceutics13060813](https://doi.org/10.3390/pharmaceutics13060813)) -- healthy adult volunteers (Korean, Caucasian and Japanese).
+- Add Kratochwil 2021 petesicatib (RO5459072) ([doi:10.1111/bcp.14771](https://doi.org/10.1111/bcp.14771)) -- healthy adults, fasted and fed.
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
 
