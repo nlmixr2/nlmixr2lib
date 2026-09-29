@@ -3228,6 +3228,8 @@ navbar:
         href: articles/Yang_2026_lurasidone.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
+      - text: "Lusutrombopag (Shimizu 2021)"
+        href: articles/Shimizu_2021_lusutrombopag.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
       - text: "M8891 human (Lignet 2023)"
@@ -8238,6 +8240,7 @@ articles:
   - articles/Shi_2018_ceftazidime
   - articles/Shiau_2026_vancomycin
   - articles/Shigetome_2025_paroxetine
+  - articles/Shimizu_2021_lusutrombopag
   - articles/Shin_2006_quinidine_QT
   - articles/Shin_2014_sevoflurane
   - articles/Shin_2017_levetiracetam
