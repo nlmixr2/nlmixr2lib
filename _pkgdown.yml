@@ -5672,6 +5672,8 @@ navbar:
         href: articles/Shen_2024_vancomycin.html
       - text: "Vancomycin (Shiau 2026)"
         href: articles/Shiau_2026_vancomycin.html
+      - text: "Vancomycin (Shoji 2021)"
+        href: articles/Shoji_2021_vancomycin.html
       - text: "Vancomycin (Song 2017)"
         href: articles/Song_2017_vancomycin.html
       - text: "Vancomycin (Staatz 2005)"
@@ -7729,6 +7731,7 @@ articles:
   - articles/Shoji_2016_cefepime
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
+  - articles/Shoji_2021_vancomycin
   - articles/Shu_2024_posaconazole
   - articles/Siccardi_2012_efavirenz
   - articles/Sidhu_1998_artemisinin
