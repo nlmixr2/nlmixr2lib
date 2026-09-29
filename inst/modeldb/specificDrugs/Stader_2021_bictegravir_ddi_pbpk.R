@@ -2662,8 +2662,10 @@ Stader_2021_bictegravir_ddi_pbpk <- function() {
     }
     fup_perpetrator2 <- 1 / (1 + (((1 / fu_perpetrator2) - 1) / protref_perpetrator2) * prot_perpetrator2)
     # Drug 1's fup, read for every drug's KaPR (as-run DRUG.fup(d) linear
-    # index). Drug 1 is the co-administered drug with the lowest index in the
-    # framework's drug library (PBPK_DefineParameters.m).
+    # index into the subject-by-drug fup array, i.e. drug 1's fup of virtual
+    # subject d; here each subject's own drug-1 fup, exact when the subjects
+    # of a run are identical). Drug 1 is the co-administered drug with the
+    # lowest index in the framework's drug library (PBPK_DefineParameters.m).
     fup_ref <- fup
     if (fupref_perpetrator == 1) {
       fup_ref <- fup_perpetrator

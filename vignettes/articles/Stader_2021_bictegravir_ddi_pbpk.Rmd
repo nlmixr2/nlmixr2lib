@@ -81,12 +81,16 @@ the model keeps all of them.
    (IC50 + C)` and are unaffected.)
 2. **Drug 1's unbound fraction enters every drug's albumin-binding term.**
    `PBPK_Drug_distribution.m` computes the Rodgers and Rowland `KaPR` of
-   drug `d` from `DRUG.fup(d)`, a linear index that reads drug 1's unbound
-   fraction (strong bases, which use `KaAP`, are unaffected). Drug 1 is the
-   run's drug with the lowest index in the framework's drug library, because
-   the drug-parameter arrays are rebuilt in library order
-   (`PBPK_Drug_PostProcessing.m`). `fupref_perpetrator` and
-   `fupref_perpetrator2` say whether a perpetrator is drug 1.
+   drug `d` from `DRUG.fup(d)`, a linear index into the subject-by-drug array
+   of albumin-adjusted unbound fractions, which reads drug 1's unbound
+   fraction of virtual subject `d` (strong bases, which use `KaAP`, are
+   unaffected). Drug 1 is the run's drug with the lowest index in the
+   framework's drug library, because the drug-parameter arrays are rebuilt in
+   library order (`PBPK_Drug_PostProcessing.m`). `fupref_perpetrator` and
+   `fupref_perpetrator2` say whether a perpetrator is drug 1. The model uses
+   each subject's own drug-1 unbound fraction, which is exact when all
+   subjects of a run are identical (as in the checks below); in a drawn
+   cohort the framework would use another subject's value.
 3. **Microsomal protein variability collapses when ritonavir is the last
    drug of the run.** `PBPK_Population_Liver.m` sets the MPPGL CV to 2.3%
    instead of 46% when the last drug of the run is ritonavir. This only
