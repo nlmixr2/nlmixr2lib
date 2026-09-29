@@ -3856,6 +3856,8 @@ navbar:
         href: articles/Sherwin_2012_mycophenolic_acid.html
       - text: "Mycophenolic acid (Suzuki 2024)"
         href: articles/Suzuki_2024_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Wang 2021)"
+        href: articles/Wang_2021_mycophenolic_acid.html
       - text: "Mycophenolic acid (Ye 2025)"
         href: articles/Ye_2025_mycophenolic_acid.html
       - text: "Mycophenolic acid (Yu 2017)"
@@ -8788,7 +8790,7 @@ articles:
   - articles/Wang_2019b_tacrolimus
   - articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp
   - articles/Wang_2020_ontamalimab
-  - articles/Wang_2021_icatibant
+  - articles/Wang_2021_mycophenolic_acid
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin
