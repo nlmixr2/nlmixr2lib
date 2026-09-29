@@ -41,7 +41,7 @@ Checchio_2017_psoriasis_pasi_landmark_mbma <- function() {
     "Covariate model: Equation 10 of Methods 'Covariate model'.",
     "Residual model: Equations 11-12 of Methods 'Residual error model'.",
     "All display equations are rasterised in the published PDF and are LOST",
-    "from the preprocessed markdown; they were recovered with",
+    "from a plain-text extraction of the PDF; they were recovered with",
     "pdftotext -layout. Parameter values are Supplementary Table 2 of the",
     "Supplementary Appendix (CPT-102-1006-s001.docx), obtained from the",
     "EuropePMC supplementaryFiles endpoint for PMC5697570.",

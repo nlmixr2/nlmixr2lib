@@ -85,7 +85,7 @@ study strata arm.
 
 # Source trace
 
-Every value in `ini()` is drawn from the on-disk paper + supplement.
+Every value in `ini()` is drawn from the paper and its supplement.
 The table below lists the source for every equation and every
 parameter estimate.
 

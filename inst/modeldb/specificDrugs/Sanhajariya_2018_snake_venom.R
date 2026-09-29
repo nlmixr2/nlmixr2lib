@@ -66,8 +66,8 @@ Sanhajariya_2018_snake_venom <- function() {
     # Interpreted as the NONMEM $SIGMA variance (standard convention --
     # the surrounding BSV rows carry explicit '%CV' formatting while
     # this row does not); the proportional SD is therefore sqrt(0.047)
-    # = 0.2168, i.e. ~21.7 % CV. This sidecar interpretation was
-    # confirmed by the operator before drafting.
+    # = 0.2168, i.e. ~21.7 % CV. This interpretation was confirmed by
+    # the maintainers.
     propSd <- sqrt(0.047); label("Proportional residual error (fraction)")                       # Table A1: SIGMA = 0.047 (variance) -> propSd = sqrt(0.047) = 0.2168
   })
 

@@ -127,8 +127,8 @@ Suyagh_2011_metronidazole <- function() {
     # Allometric exponent on CL. The abstract reports the value as 0.75 with
     # no uncertainty and the canonical 3/4-power form, consistent with a
     # theoretical (fixed) Anderson-Holford allometric exponent rather than
-    # an estimated one. Encoded as fixed() here; should the operator obtain
-    # the full text and find the exponent was actually estimated, drop the
+    # an estimated one. Encoded as fixed() here; should the full text become
+    # available and show the exponent was actually estimated, drop the
     # fixed() wrapper and supply the point estimate.
     e_wt_cl <- fixed(0.75)
     label("Allometric exponent on CL (unitless; the canonical 3/4-power value)")

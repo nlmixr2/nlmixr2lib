@@ -18,7 +18,7 @@ AitOudhia_2016_sunitinib <- function() {
     "R0 - sVEGFR2(t). The paper reports a significant covariate effect of ",
     "the DCE-MRI volume-transfer constant Ktrans on dIC50 (power coefficient ",
     "2.12) but the cohort-median Ktrans required to centre that effect is ",
-    "not reported in the paper or supplements on disk; the effect is omitted ",
+    "not reported in the paper or the available supplements; the effect is omitted ",
     "from model() and documented in the vignette. A Cox-style time-to-tumor ",
     "progression hazard h(t) = b0 * exp(b1 * dAUC24h_sVEGFR2) is described ",
     "in the paper but evaluated post-simulation in the vignette, not encoded ",
@@ -67,14 +67,14 @@ AitOudhia_2016_sunitinib <- function() {
     species = "human",
     n_subjects = 16L,
     n_studies = 1L,
-    age_range = "adults with confirmed advanced HCC; demographics reported in Supplementary Table S1 (not on disk)",
+    age_range = "adults with confirmed advanced HCC; demographics reported in Supplementary Table S1 (not available when this model was built)",
     weight_range = "not extractable from main text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
     disease_state = "Advanced hepatocellular carcinoma (HCC) with 1-4 lesions, ECOG performance status 0/1/2, life expectancy >= 12 weeks. All patients received transarterial chemoembolisation (TACE) with doxorubicin 30 mg on Day 8 of Cycle 1.",
     dose_range = "Sunitinib 37.5 mg PO QD, Days 1-7 + Days 15-35 of each 6-week cycle (4 weeks on / 2 weeks off, with a TACE-related break between Days 8 and 14). Repeat cycles until disease progression or unacceptable toxicity.",
     regions = "Single-centre phase II pilot study at Roswell Park Cancer Institute (Buffalo, NY, USA).",
-    notes = "Single-arm open-label phase II pilot (n = 16 total; n = 8 had repeated DCE-MRI). PK / sVEGFR2 sampling at 24 h post-dose on Days 8, 10, and 35. Tumor volume measured by DCE-MRI on Days 0, 8, 10, and 35. Median observed TTP 7 months (8 months per Discussion). PK model parameters ka_D, Q_D, V2_D, ka_M, Q_M, V2_M and their IIVs (where reported as fixed) were inherited from the Houk 2009 sunitinib popPK meta-analysis (Ref 30 of the paper) under a MAP-Bayesian framework, and kout was inherited from the Lindauer 2010 sVEGFR2 popPD model (Ref 33). Detailed baseline demographics (age, weight, sex, race) are in Supplementary Table S1, which is not on disk; populate when the supplement becomes available."
+    notes = "Single-arm open-label phase II pilot (n = 16 total; n = 8 had repeated DCE-MRI). PK / sVEGFR2 sampling at 24 h post-dose on Days 8, 10, and 35. Tumor volume measured by DCE-MRI on Days 0, 8, 10, and 35. Median observed TTP 7 months (8 months per Discussion). PK model parameters ka_D, Q_D, V2_D, ka_M, Q_M, V2_M and their IIVs (where reported as fixed) were inherited from the Houk 2009 sunitinib popPK meta-analysis (Ref 30 of the paper) under a MAP-Bayesian framework, and kout was inherited from the Lindauer 2010 sVEGFR2 popPD model (Ref 33). Detailed baseline demographics (age, weight, sex, race) are in Supplementary Table S1, which was not available when this model was built; populate when the supplement becomes available."
   )
 
   ini({
@@ -125,7 +125,7 @@ AitOudhia_2016_sunitinib <- function() {
     # Imax (Imax = 1 fixed). The paper reports a significant Ktrans^beta
     # covariate effect on dIC50 (beta = 2.12, Table 2) but the cohort-
     # median Ktrans needed to centre that power covariate is not reported
-    # in the paper or supplements on disk; the effect is omitted here and
+    # in the paper or the available supplements; the effect is omitted here and
     # documented in the vignette Assumptions and deviations section.
     # ----------------------------------------------------------------------
     ldic50 <- log(1.83); label("Tumor growth inhibition dIC50 (ug/L)") # Table 2

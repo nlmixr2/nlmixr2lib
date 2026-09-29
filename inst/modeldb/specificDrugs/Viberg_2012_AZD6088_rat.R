@@ -73,7 +73,7 @@ Viberg_2012_AZD6088_rat <- function() {
         "without committing to one. Threshold value 40 umol/kg =",
         "40 * 406.57 / 1000 = 16.26 mg/kg. Paper alias: the source",
         "does not name a NONMEM column for this indicator (the",
-        "supplement / control stream is not on disk)."
+        "supplement / control stream was not available when this model was built)."
       ),
       source_name = "DOSE_HIGH"
     )
@@ -218,9 +218,8 @@ Viberg_2012_AZD6088_rat <- function() {
 
   model({
     # ------------------------------------------------------------------
-    # 1. Typical-value individual PK parameters. Per the operator-
-    #    approved sidecar response (frompeople-633 request-002 q1 = B),
-    #    the model is encoded as typical-value only because the
+    # 1. Typical-value individual PK parameters. As decided by the
+    #    maintainers, the model is encoded as typical-value only because the
     #    source publication does not report the IIV magnitudes it
     #    claims to have estimated. Downstream users wanting
     #    stochastic simulations can add multiplicative log-normal

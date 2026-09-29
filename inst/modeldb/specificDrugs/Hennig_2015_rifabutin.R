@@ -70,7 +70,7 @@ Hennig_2015_rifabutin <- function() {
     height_mean = "159.6 (7.7) cm",
     bmi_mean = "22.8 (3.3) kg/m^2",
     cd4_mean = "126.1 (44.0) cells/mm^3",
-    notes = "All patients were of Black African ethnicity. Genetic samples were unavailable for 7 of 44 patients; rs4149032 genotyping was unsuccessful in 2 further patients. The full SLCO1B1 panel (rs4149032, rs2306283, rs4149056, rs11045819) was tested for covariate effects; only rs11045819 entered the final model (rs4149056 was excluded a priori because only 1 patient was a carrier). The AAC paper supplement (referenced as 'Supplementary material' for Fig. S1, S2, S3 and Table S1) was not available on disk during extraction; structural-model and parameter values were taken from the main paper Methods and Table 2."
+    notes = "All patients were of Black African ethnicity. Genetic samples were unavailable for 7 of 44 patients; rs4149032 genotyping was unsuccessful in 2 further patients. The full SLCO1B1 panel (rs4149032, rs2306283, rs4149056, rs11045819) was tested for covariate effects; only rs11045819 entered the final model (rs4149056 was excluded a priori because only 1 patient was a carrier). The AAC paper supplement (referenced as 'Supplementary material' for Fig. S1, S2, S3 and Table S1) was not available when this model was built; structural-model and parameter values were taken from the main paper Methods and Table 2."
   )
 
   ini({

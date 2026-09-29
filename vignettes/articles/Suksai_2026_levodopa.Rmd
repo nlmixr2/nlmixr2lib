@@ -492,7 +492,9 @@ lambda_z <- min(abs(Re(eigen(Amat)$values)))
 thalf_theory <- log(2) / lambda_z
 
 # Empirical terminal slope, taken well after the distribution phase.
-tail_dat <- single[single$time >= 120 & single$time <= 168, ]
+# Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+tail_dat <- single[single$time >= 120 & single$time <= 168 &
+                     single$Cc >= 1e-6 * max(single$Cc), ]
 thalf_emp <- log(2) / -coef(lm(log(tail_dat$Cc) ~ tail_dat$time))[[2]]
 
 checks <- tibble::tribble(
@@ -543,6 +545,8 @@ single_nca <- rxode2::rxSolve(
 
 sim_nca <- single_nca |>
   dplyr::filter(!is.na(Cc)) |>
+  # Keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::mutate(id = 1L, treatment = "100 mg single oral dose") |>
   dplyr::select(id, time, Cc, treatment)
 

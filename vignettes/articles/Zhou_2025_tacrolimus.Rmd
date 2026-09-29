@@ -47,7 +47,9 @@ ui <- rxode2::rxode(readModelDb("Zhou_2025_tacrolimus"))
 # quantity of interest is selected afterwards with filter(time == 12).
 solve_model <- function(model, events, ...) {
   out <- rxode2::rxSolve(model, events, method = "dop853",
-                         returnType = "data.frame", ...)
+                         returnType = "data.frame", ...,
+                         # steady-state searches for long-half-life subjects exceed the default step budget
+                         maxsteps = 1e6)
   # rxSolve omits `id` entirely for a single-subject event table.
   if (is.null(out$id)) out$id <- 1L
   out

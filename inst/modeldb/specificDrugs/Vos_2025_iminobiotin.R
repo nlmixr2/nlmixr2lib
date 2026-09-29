@@ -18,7 +18,7 @@ Vos_2025_iminobiotin <- function() {
       units = "mL/min/1.73 m^2",
       type = "continuous",
       reference_category = NULL,
-      notes = "Time-fixed per subject (admission eGFR; clinical-laboratory creatinine-based MDRD estimate per standard Dutch hospital practice). Power-form effect on CL with reference 90 mL/min/1.73 m^2: cl = exp(lcl) * (1 + e_alteplase_cl * CONMED_ALTEPLASE) * (CRCL / 90)^e_crcl_cl. Vos 2025 Supplemental Table S8 reports the covariate as 'COVeGFR0 CL' (baseline eGFR effect on CL) with estimate 0.817 (17.2% RSE). The eGFR reference value of 90 mL/min/1.73 m^2 is the canonical adult reference (sidecar Q4 operator decision; the paper does not state the reference explicitly).",
+      notes = "Time-fixed per subject (admission eGFR; clinical-laboratory creatinine-based MDRD estimate per standard Dutch hospital practice). Power-form effect on CL with reference 90 mL/min/1.73 m^2: cl = exp(lcl) * (1 + e_alteplase_cl * CONMED_ALTEPLASE) * (CRCL / 90)^e_crcl_cl. Vos 2025 Supplemental Table S8 reports the covariate as 'COVeGFR0 CL' (baseline eGFR effect on CL) with estimate 0.817 (17.2% RSE). The eGFR reference value of 90 mL/min/1.73 m^2 is the canonical adult reference (the maintainers chose this reference because the paper does not state it explicitly).",
       source_name = "eGFR0"
     ),
     CONMED_ALTEPLASE = list(
@@ -73,15 +73,15 @@ Vos_2025_iminobiotin <- function() {
 
     # Inter-individual variability on CL only (Vc, Q, Vp are fixed therefore
     # have no IIV; ETA Vcentral reported as a dash in Vos 2025 Supplemental
-    # Table S8). omega^2 = 0.046 -> ~21.7% CV. Sidecar Q1 = A; the bolded
+    # Table S8). omega^2 = 0.046 -> ~21.7% CV. The maintainers confirmed that the bolded
     # Random-effect-parameters | 0.225 (0.09) row above ETA1 CL in the
     # same table is a redundant CV / shrinkage summary, not a separate
     # estimated omega.
     etalcl ~ 0.046  # Vos 2025 Supplemental Table S8 row ETA1 CL = 0.046 (RSE 37.5 percent)
 
     # Proportional residual error: SD = 0.123 directly (12.3% CV).
-    # Sidecar Q2 = B confirms 0.123 is the residual SD, not the variance.
-    propSd <- 0.123;     label("Proportional residual SD (fraction)")                                # Vos 2025 Supplemental Table S8: "Residual error" = 0.123 (RSE 24.5%); sidecar Q2 = B (SD scale)
+    # The maintainers confirmed that 0.123 is the residual SD, not the variance.
+    propSd <- 0.123;     label("Proportional residual SD (fraction)")                                # Vos 2025 Supplemental Table S8: "Residual error" = 0.123 (RSE 24.5%); read on the SD scale
   })
 
   model({

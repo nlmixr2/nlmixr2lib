@@ -230,7 +230,7 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "separately tested as a covariate ON the clearance arm and not retained -- Methods:",
         "'The surface area and the running time of the hemofilter were the covariates",
         "investigated for CLRRT', and only surface area survived. Founding example for this",
-        "canonical column (operator ruling, sidecar request-001, answered 2026-08-28)."
+        "canonical column (approved by the maintainers)."
       ),
       source_name = "phi_Effluent"
     ),
@@ -252,8 +252,8 @@ ButraguenoLaiseca_2022_piperacillin <- function() {
         "to the paper's own expression whenever clearance and urine flow are constant across",
         "the recovery interval, which is what a single measured UVol per interval already",
         "assumes. The reuse of URINE_FLOW in this flow-denominator role rather than a new",
-        "canonical is an operator ruling (sidecar request-001, question 2, answered",
-        "2026-08-28). (2) The same zero sentinel supplies the paper's no-diuresis gate on",
+        "canonical was decided by the maintainers.",
+        "(2) The same zero sentinel supplies the paper's no-diuresis gate on",
         "the renal arm: 'CLRenal and CLRRT were absent in patients without diuresis or",
         "without hemofilter' (supplementary material). Only 3 of the 13 CKRT patients showed",
         "residual diuresis (Table 1 footnote b). Table 1 reports 24-hour urine output as",

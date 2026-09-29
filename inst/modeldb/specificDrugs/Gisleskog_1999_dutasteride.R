@@ -43,7 +43,7 @@ Gisleskog_1999_dutasteride <- function() {
     lvc    <- log(173);    label("Apparent central volume of distribution Vc (L)")                # Table 1: Vc 173 L (SE 12%)
     lq     <- log(33.5);   label("Inter-compartmental clearance Q (L/h)")                         # Table 1: Q 33.5 L/h (SE 16%)
     lvp    <- log(338);    label("Apparent peripheral volume of distribution Vp (L)")             # Table 1: Vp 338 L (SE 13%). Vss = Vc + Vp = 511 L (calculated, footnote a).
-    lvmax  <- log(5.91e-3);label("Saturable elimination capacity Vmax (mg/h)")                    # Table 1: Vmax 5.91 ug/h (SE 39%); the table's printed unit is mu-g h^-1 (micrograms/h), which pdftotext / docling render as 'mg' because pdfminer's ToUnicode CMap collapses the Symbol-font mu glyph to ASCII 'm'. The paper's prose Vmax/Km = 6.2 L/h confirms ug/h not mg/h: 5.91 ug/h / 0.957 ng/mL = 6.17 L/h. Encoded here as 0.00591 mg/h to keep the (mg) state derivative dimensionally consistent.
+    lvmax  <- log(5.91e-3);label("Saturable elimination capacity Vmax (mg/h)")                    # Table 1: Vmax 5.91 ug/h (SE 39%); the table's printed unit is mu-g h^-1 (micrograms/h), which plain-text extractors such as pdftotext render as 'mg' because pdfminer's ToUnicode CMap collapses the Symbol-font mu glyph to ASCII 'm'. The paper's prose Vmax/Km = 6.2 L/h confirms ug/h not mg/h: 5.91 ug/h / 0.957 ng/mL = 6.17 L/h. Encoded here as 0.00591 mg/h to keep the (mg) state derivative dimensionally consistent.
     lkm    <- log(0.957);  label("Michaelis-Menten constant Km (ng/mL)")                          # Table 1: Km 0.957 ng/mL (SE 47%)
 
     # IIV - Gisleskog 1999 Table 1, "Intersubject variability (CV%)" column.

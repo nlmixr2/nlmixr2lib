@@ -13,7 +13,7 @@
 #
 # No publication is linked in the DDMORE bundle (the .rdf carries no
 # `model-described-in-literature` URI and the bundle contains no
-# Model_Accommodations.txt). The on-disk listing
+# Model_Accommodations.txt). The bundle's listing
 # `Output_real_run126c.lst` (NONMEM 7.3, FOCEI with eps-eta interaction,
 # importance-sampling SE step, OBJ = -7902.844) is the authoritative source
 # for the final estimates carried into this model file. Equations come from
@@ -125,7 +125,7 @@ NA_NA_paracetamol <- function() {
       units = "pmol/L (raw); the model rescales by 1/6.945 to uU/mL",
       type = "continuous",
       reference_category = NULL,
-      notes = "New canonical column registered alongside this extraction (specific scope). Distinct from `INS` (time-varying regressor): `INS_BL` is the time-fixed baseline-state anchor used in initial conditions and the baseline-glucose-production calculation. Bundle source column is `BASI`; rename `BASI -> INS_BL` before passing to `rxSolve`.",
+      notes = "New canonical column registered alongside this model (specific scope). Distinct from `INS` (time-varying regressor): `INS_BL` is the time-fixed baseline-state anchor used in initial conditions and the baseline-glucose-production calculation. Bundle source column is `BASI`; rename `BASI -> INS_BL` before passing to `rxSolve`.",
       source_name = "BASI"
     )
   )
@@ -140,7 +140,7 @@ NA_NA_paracetamol <- function() {
     disease_state = "Mixed normal-glucose-tolerance and DIS_DIAB adults pooled from three studies of an OGTT challenge. Paracetamol (1500 mg / 25 mg infusion over 5 min at t = 15 min in the bundle's simulated dataset) is co-administered as a gastric-emptying tracer alongside an oral 75 g glucose load. Subject-level DIS_DIAB status is carried in the DIS_DIAB column (0/1); the simulated representative subject ships as DIS_DIAB = 0 (healthy control).",
     dose_range = "Paracetamol (1500 mg oral, infused as zero-order over ~5 min in the bundle's simulated dataset). Oral glucose load (~25 g into stomach compartment 5 in the bundle's simulated dataset, though clinical OGTT protocols typically use 75 g).",
     regions = NA_character_,
-    notes = "Subject count and study count from the `Output_real_run126c.lst` listing's `TOT. NO. OF INDIVIDUALS: 16` line and the three STUDY levels (1, 2, 3) referenced by the `IF(STUDY.EQ.n)` switches on APAPBL and T50 in `Executable_run126h.mod`. Demographic detail (age, sex, region, race, exact study identities) is not recoverable from the on-disk bundle; the linked publication is not on disk to consult."
+    notes = "Subject count and study count from the `Output_real_run126c.lst` listing's `TOT. NO. OF INDIVIDUALS: 16` line and the three STUDY levels (1, 2, 3) referenced by the `IF(STUDY.EQ.n)` switches on APAPBL and T50 in `Executable_run126h.mod`. Demographic detail (age, sex, region, race, exact study identities) is not recoverable from the bundle; the linked publication was not available when this model was built."
   )
 
   ini({

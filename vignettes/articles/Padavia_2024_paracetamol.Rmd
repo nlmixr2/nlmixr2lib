@@ -815,7 +815,7 @@ stopifnot(median(balance$fm_cysmer) < 0.06)
   target. The remaining seven of the eight printed range endpoints reproduce at
   the printed precision, as do all eleven typical-value quantities.
 * **No published NCA comparison table.** As described above, the source reports
-  exposures only graphically and in a supplement not available on disk, so
+  exposures only graphically and in a supplement that was not available, so
   `nlmixr2lib::ncaComparisonTable()` is not used. The closed-form mass-balance
   identities and the two printed-value tables (typical-value parameters and
   fractions; fraction ranges across gestational age) are the validation

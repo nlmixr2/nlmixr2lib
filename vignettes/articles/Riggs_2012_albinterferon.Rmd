@@ -858,12 +858,14 @@ not be over-read.
 * **The safety exposure-response is not extracted.** Riggs 2012 assessed 84
   adverse-event categories against exposure quartiles by tabulation only, with
   no fitted model (Methods p. 478), so there is nothing to encode. The
-  supporting Supplementary Tables II and III are not on disk.
+  supporting Supplementary Tables II and III were not available when this model
+  was built.
 
 **Virtual cohort**
 
-* Supplementary Table I, the baseline-demographics table, is not on disk. The
-  cohort uses the ranges and proportions stated in the main-text Results (n,
+* Supplementary Table I, the baseline-demographics table, was not available when
+  this model was built. The cohort uses the ranges and proportions stated in the
+  main-text Results (n,
   sex split, age and weight ranges, race percentages, genotype split) and
   **assumes** everything else: a log-normal weight distribution with median
   82 kg, a normal age distribution centred at 47 years, log-normal baseline

@@ -836,9 +836,10 @@ every 6 h as a continuous infusion specifically for creatinine clearances of
   reproduces the single per-parameter magnitude Table 2 reports. Loading the
   model emits a `some etas defaulted to non-mu referenced` warning; that is the
   accepted cost of the idiom and affects estimation only, not simulation.
-* **Supplementary material not on disk.** Tables S2, S6, S7, S8, S9 and Texts
+* **Supplementary material was not available when this model was built.**
+  Tables S2, S6, S7, S8, S9 and Texts
   S1, S3, S4, S5 are referenced by the paper but were not retrievable
-  (EuropePMC returns no supplementary bundle for PMC13280637 and the publisher
+  (Europe PMC holds no supplementary files for PMC13280637 and the publisher
   landing page is access-controlled). Nothing in the model depends on them: all
   fixed effects, variances and residual-error terms are in Table 2 and both
   covariate equations are printed in the Results. What is lost is the exact
@@ -873,7 +874,7 @@ every 6 h as a continuous infusion specifically for creatinine clearances of
 * **Simulated regimens.** Three of the paper's 15 regimens are reproduced
   (intermittent 4.5 g q6h over 30 min, extended 4.5 g q6h over 4 h, and 4.5 g
   loading dose followed by 4.5 g q6h as a continuous infusion). The remaining
-  twelve are enumerated only in Text S5, which is not on disk.
+  twelve are enumerated only in Text S5, which was not available.
 * **No non-paper-derived parameter values.** Every `ini()` entry comes from
   Table 2 or from one of the two printed covariate equations in the Results; no
   value was digitised from a figure, supplied by correspondence, or carried from

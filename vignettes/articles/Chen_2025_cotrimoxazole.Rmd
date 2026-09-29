@@ -35,9 +35,9 @@ ui_tmp <- rxode2::rxode(readModelDb("Chen_2025_trimethoprim"))
 
 **Trimethoprim** -- `r ui_tmp$description`
 
-The publisher PDF renders the four model equations as images, so the text
-extracted from the PDF shows them only as `formula-not-decoded`. They were
-recovered with `pdftotext -layout`:
+The publisher PDF renders the four model equations as images, so they do not
+survive plain-text extraction of the PDF. They were recovered with
+`pdftotext -layout`:
 
 ```
 (1)  V  = tvV * exp(etaV)                                                    [SMX]

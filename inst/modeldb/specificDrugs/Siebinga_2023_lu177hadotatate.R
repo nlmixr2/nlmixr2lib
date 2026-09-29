@@ -187,7 +187,7 @@ Siebinga_2023_lu177hadotatate <- function() {
     lbmax_sstr <- fixed(log(2.4)); label("Maximum SSTR-organ-group binding capacity (nmol/L)")        # Table 2: BMAX compartment 5 = 2.4
 
     fu <- fixed(0.57); label("Fraction unbound in plasma (unitless)")                                 # Table 2: fraction unbound in plasma = 0.57; Methods: "Fraction unbound in plasma was fixed to 0.57 [35]" (Lubberink 2020)
-    mw <- fixed(1628.5); label("HA-DOTATATE molar mass (g/mol)")                                      # NOT in this paper: inherited from the on-disk upstream framework paper Siebinga 2023 EJNMMI Res 13:8 (doi:10.1186/s13550-023-00958-7), its Table 3 "Molecular weight" for [68Ga]Ga-HA-DOTATATE. Needed to reconcile bmax (nmol/L) with the ug/L observation scale.
+    mw <- fixed(1628.5); label("HA-DOTATATE molar mass (g/mol)")                                      # NOT in this paper: inherited from the upstream framework paper Siebinga 2023 EJNMMI Res 13:8 (doi:10.1186/s13550-023-00958-7), its Table 3 "Molecular weight" for [68Ga]Ga-HA-DOTATATE. Needed to reconcile bmax (nmol/L) with the ug/L observation scale.
 
     # ------------------------------------------------------------------------
     # Structural (covariate) effects, Equations 4 and 5.

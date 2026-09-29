@@ -366,7 +366,7 @@ prediction-interval envelopes for the three test drinks shown.
   individualised to the simulated subject's nutrient amounts. This is
   a standard simplification when a single joint model is simulated
   forward; the typical-value predictions are unaffected.
-- **Supplementary Material S2 (parameter shrinkages) not on disk.**
+- **Supplementary Material S2 (parameter shrinkages) not available.**
   The paper's S2 reports shrinkage diagnostics for the etas; these
   are not parameter values that drive the simulation but help
   interpret the realism of the BSV distributions. They are not

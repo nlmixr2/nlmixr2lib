@@ -16,7 +16,7 @@ Zhang_2026_ribociclib_qsp <- function() {
     "distribution used the built-in Rodgers and Rowland method, and no organ",
     "ODEs, organ volumes, blood flows, per-organ partition coefficients or",
     ".pksim5 project are published -- the paper reports no volume term of any",
-    "kind), so that layer is not reproducible from the on-disk sources and is",
+    "kind), so that layer is not reproducible from the published sources and is",
     "deliberately NOT extracted. Total plasma concentration is instead supplied",
     "per record as the canonical time-varying covariate CP_RIB_NGML, and the",
     "fraction unbound and the CSF-to-plasma unbound ratio are applied inside",
@@ -48,9 +48,8 @@ Zhang_2026_ribociclib_qsp <- function() {
     "and 31). All parameter values are from main-text Table 1 except the",
     "starting CDK4/6 expression, which is given in the Methods prose beneath",
     "Eq 1, and the CSF-to-plasma unbound ratio Kp,uu, which is reported in the",
-    "Results as a predicted quantity per dose level. Note that the trimmed",
-    "markdown companion of this paper renders Eq 1 as a",
-    "'formula-not-decoded' marker, so Eq 1 was recovered from the PDF.",
+    "Results as a predicted quantity per dose level. Eq 1 was transcribed",
+    "from the PDF.",
     "The single supplementary file (MOESM1) is one figure (S1, simulated",
     "intracranial CDK4/6 occupancy by regimen) and contains no parameter",
     "table.",
@@ -257,8 +256,7 @@ Zhang_2026_ribociclib_qsp <- function() {
     free_cdk6 <- cdk0 - complex_cdk6_csf
 
     # =====================================================================
-    # 3. Target engagement. Zhang 2026 Eq 1, recovered from the PDF (the
-    #    trimmed markdown drops it as `formula-not-decoded`):
+    # 3. Target engagement. Zhang 2026 Eq 1, transcribed from the PDF:
     #        dN/dt = (koff / Ki) * CDK_unbound * C_RIB - koff * CDK_bound
     #    where N is the drug-CDK complex and koff/Ki is the association rate
     #    constant. Applied per isoform, in CSF only -- Zhang 2026 Methods:

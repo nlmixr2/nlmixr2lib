@@ -20,15 +20,14 @@ Poels_2025_elranatamab_qsp <- function() {
   # the central-compartment concentration equivalent (dose_pmol / vc) to
   # `central` for IV administration (the same convention as
   # Betts_2019_pf_06671008_qsp). Elranatamab MW = 148.5 kDa
-  # (ELREXFIO US prescribing information, Description section, on disk as
-  # PMC12402305_aux_ELREXFIO_USPI_dailymed.txt), so 76 mg = 5.1178e5 pmol.
+  # (ELREXFIO US prescribing information via DailyMed, Description
+  # section), so 76 mg = 5.1178e5 pmol.
   units <- list(time = "h", dosing = "pmol", concentration = "pM")
 
   # Every ODE state maps onto a canonical compartment name, except the
   # cumulative cytokine exposure bookkeeping state. The eleven new canonicals
-  # this model founds are registered in inst/references/compartment-names.md as
-  # part of this change; the naming was approved by the operator (task sidecar
-  # oare_PMC12402305, request-001 q1 = A and q2 = A) with the cytokine chain
+  # this model founds are registered in inst/references/compartment-names.md;
+  # the naming was approved by the maintainers, with the cytokine chain
   # deliberately kept in the generic `cytokine_*` namespace rather than `il6_*`,
   # because the paper models a generic pro-inflammatory cytokine and IL-6 is
   # only the calibration data.

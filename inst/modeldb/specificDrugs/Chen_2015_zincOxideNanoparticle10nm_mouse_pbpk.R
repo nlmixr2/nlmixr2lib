@@ -95,7 +95,7 @@ Chen_2015_zincOxideNanoparticle10nm_mouse_pbpk <- function() {
       "1, 2, 4 and 7 hours and 1, 2, 3, 7 and 28 days after injection",
       "(Study data section). The number of animals per time point is not",
       "stated in Chen 2015; it is reported in the upstream biodistribution",
-      "paper (reference 7), which is not on disk here.",
+      "paper (reference 7), which was not available when this model was built.",
       "The model was fitted by minimising the mean absolute percentage error",
       "(Equation 6) rather than by maximum likelihood, so no between-subject",
       "variance or residual error is reported. The 95% confidence intervals in",

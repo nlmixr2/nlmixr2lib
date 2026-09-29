@@ -512,5 +512,6 @@ file implements the published ODE correctly.
 
 * **VPC reference.** The stochastic-VPC chunk shows the model's
   simulated percentile bands but cannot overlay the published Figure
-  1 reference points because the original observations are not on
-  disk; the comparison is therefore qualitative.
+  1 reference points because the original observations were not
+  available when this model was built; the comparison is therefore
+  qualitative.

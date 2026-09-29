@@ -88,8 +88,8 @@ Germovsek_2016_gentamicin <- function() {
   population <- list(
     n_subjects = 205,
     n_studies = 3,
-    age_range = "Neonates and infants; postnatal age (PNA) and postmenstrual age (PMA) ranges not extractable from the DDMORE bundle (Germovsek 2016 PDF not on disk).",
-    weight_range = "Not extractable from DDMORE bundle (Germovsek 2016 PDF not on disk). The bundle's simulated dataset uses 2.12 kg as a representative weight (preterm neonate).",
+    age_range = "Neonates and infants; postnatal age (PNA) and postmenstrual age (PMA) ranges not extractable from the DDMORE bundle (Germovsek 2016 PDF not available when this model was built).",
+    weight_range = "Not extractable from DDMORE bundle (Germovsek 2016 PDF not available when this model was built). The bundle's simulated dataset uses 2.12 kg as a representative weight (preterm neonate).",
     sex_female_pct = "Not extractable from DDMORE bundle.",
     race_ethnicity = "Not extractable from DDMORE bundle.",
     disease_state = "Neonates and infants receiving gentamicin (typical clinical indication: suspected or confirmed neonatal sepsis). Pooled across three studies: Glasgow (Thomson 1988), Uppsala (Nielsen 2009), and Estonia (unpublished).",
@@ -104,7 +104,7 @@ Germovsek_2016_gentamicin <- function() {
       "Population description is reconstructed from the .mod $PROBLEM/$DATA comments",
       "(`data from Nielsen2009, Thomson1988, Estonia_unpub`) plus the PubMed abstract of",
       "Germovsek 2016 AAC (PMID 27270281), which states 1,325 concentrations from 205 patients",
-      "in the meta-analysis phase. The full PDF is not on disk under the literature tree;",
+      "in the meta-analysis phase. The full PDF was not available when this model was built;",
       "detailed demographics (age range, weight range, sex distribution, race) could not be",
       "cross-checked. The bundle's simulated dataset uses median covariates (WT = 2.12 kg,",
       "PMA = 33 weeks, PNA = 5.4 days, CREAT = 78 umol/L) from the original analysis."

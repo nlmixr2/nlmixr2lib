@@ -454,12 +454,12 @@ Any starred rows should be interpreted with two paper-specific caveats:
   per-dose-record binary indicator `DOSE_LOW_AMG221`. This preserves the
   paper's estimate exactly at both dose tiers while making the covariate role
   visible to `checkModelConventions()`.
-* **Effect-compartment volume Ve.** The paper's equation for Ve was not
-  decoded in the text extracted from the PDF ("<!-- formula-not-decoded -->"
-  markers in the extracted text). The packaged model uses the equivalent-Vc
-  parameterisation A(effect) / Vc for the effect-site plasma-equivalent
-  concentration and applies the density correction `kpp` (1.36 mL/g) at the
-  tissue-concentration observation step. This is mathematically identical to
+* **Effect-compartment volume Ve.** The paper's equation for Ve does not
+  survive plain-text extraction of the PDF. The packaged model uses the
+  equivalent-Vc parameterisation A(effect) / Vc for the effect-site
+  plasma-equivalent concentration and applies the density correction `kpp`
+  (1.36 mL/g) at the tissue-concentration observation step. This is
+  mathematically identical to
   the Ve = Vc / kpp formulation the paper describes elsewhere (kpp inverse
   approximates the density of fat, 0.735 g/mL, per Gibbs 2011 Discussion).
 * **Imax model driver.** Gibbs 2011 Table IV states that "IC50 is the plasma

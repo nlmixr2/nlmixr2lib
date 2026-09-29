@@ -50,11 +50,11 @@ Delattre_2010_amikacin <- function() {
     lq  <- log(4.38); label("Intercompartmental clearance Q (L/h)")                   # Delattre 2010 Table 2: Q = 4.38 L/h
 
     # Covariate effect: additive linear CL ~ CRCL with divisive normalization to
-    # the population median CRCL (55.5 mL/min). Per the operator-resolved sidecar
-    # (request-001 / response-001), the paper's "covariates centered to their
-    # median" wording is interpreted as divisive normalization (cov = CRCL / 55.5)
-    # because subtractive centering yields physically absurd CL values across the
-    # observed CRCL range whereas divisive normalization reconciles with the
+    # the population median CRCL (55.5 mL/min). By decision of the maintainers,
+    # the paper's "covariates centered to their median" wording is interpreted
+    # as divisive normalization (cov = CRCL / 55.5) because subtractive
+    # centering yields physically absurd CL values across the observed CRCL
+    # range whereas divisive normalization reconciles with the
     # structural-model CL of 2.21 L/h at typical patient (0.77 + 1.42 = 2.19 L/h).
     e_crcl_cl <- 1.42; label("Renal CL slope per (CRCL / 55.5) (L/h)") # Delattre 2010 Table 2: theta_CL-CLCR = 1.42 (slope of additive linear CL ~ CRCL covariate term)
 

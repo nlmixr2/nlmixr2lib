@@ -44,7 +44,7 @@ Wang_2022_aripiprazole_relapse <- function() {
     n_subjects = 615L,
     n_studies = 2L,
     n_observations = "85 impending-relapse events and 530 censored subjects (Wang 2022 Results, 'Exposure-Response Analysis of Time to Relapse').",
-    age_range = "Adults; per-study demographics are in Wang 2022 Table S1 / S2 (supplement not on disk -- see the vignette Errata).",
+    age_range = "Adults; per-study demographics are in Wang 2022 Table S1 / S2 (the supplement was not available when this model was built -- see the vignette Errata).",
     weight_range = "Not reported in the main text.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in the main text for the exposure-response analysis set.",

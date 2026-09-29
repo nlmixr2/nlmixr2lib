@@ -13,7 +13,7 @@ Hu_2025_tepotinib <- function() {
     "393 h terminal half-life where the figure shows about 29 h, and is roughly",
     "60-fold low on average over 13-199 h. The contradiction is internal to the",
     "publication and is documented in full in the validation vignette; no",
-    "extractor-fitted value has been substituted. Deterministic: the source",
+    "refitted value has been substituted. Deterministic: the source",
     "reports no between-subject or residual variability for any PK module."
   )
   reference <- paste(
@@ -29,7 +29,7 @@ Hu_2025_tepotinib <- function() {
     "The tepotinib PK parameters of Supplementary Table S1 are themselves cited",
     "to Johne A, Scheible H, Becker A, van Lier JJ, Wolna P, Meyring M.",
     "Invest New Drugs. 2020;38(5):1507-1519. doi:10.1007/s10637-020-00926-1",
-    "(PMID 32221754), which is not on disk for this extraction."
+    "(PMID 32221754), which was not available when this model was built."
   )
   vignette <- "Hu_2025_tepotinib"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
@@ -79,10 +79,10 @@ Hu_2025_tepotinib <- function() {
       "structural, not a scale factor: kcl_tepo = 1.32 1/h empties the central",
       "compartment with a 0.5 h half-life while Q/vp_tepo = 0.0018 1/h returns",
       "drug from the periphery far too slowly. No permutation of the five",
-      "printed numbers reproduces the figure. Per operator ruling for this",
-      "extraction, source fidelity was preferred over an extractor-side fit: the",
-      "printed values ship as printed and the contradiction is documented rather",
-      "than repaired. Users who need a profile matching Supplementary Figure S4F",
+      "printed numbers reproduces the figure. The maintainers preferred source",
+      "fidelity over refitting the disposition parameters: the printed values",
+      "ship as printed and the contradiction is documented rather than",
+      "repaired. Users who need a profile matching Supplementary Figure S4F",
       "must supply their own disposition parameters; see the validation vignette",
       "for the quantified comparison.",
       "ADDITIONAL TRANSCRIPTION DEFECT. Reaction v69 as printed,",
@@ -130,8 +130,8 @@ Hu_2025_tepotinib <- function() {
     # Reaction v67 is ka_tepo*tepo_dose with no bioavailability term, so the QSP
     # module absorbs the full administered amount and the disposition
     # parameters above are apparent (F = 1) parameters. Johne 2020, the cited PK
-    # source, is not on disk for this extraction, so no absolute bioavailability
-    # is applied here.
+    # source, was not available when this model was built, so no absolute
+    # bioavailability is applied here.
     lfdepot <- fixed(log(1)); label("Bioavailability of the depot compartment (fraction)")  # Supplementary Table S1 reaction v67 carries no F term
 
     # ---- Residual error ----

@@ -57,14 +57,14 @@ Chen_2025_methotrexate_das28_mbma <- function() {
     baseline = "pooled medians (Chen 2025 Table 1): DAS28 5.78 (range 3.79-6.84), HAQ 1.34 (0.67-2.59), CRP 27.82 mg/L (3.1-53.9), ESR 46.56 mm/h (23-63), RA duration 4.15 years (0.13-12.5)",
     timepoints = "arm-mean DAS28 percentage change reported at multiple follow-up times per trial; pooled median treatment duration 52.73 weeks (range 12-144)",
     regions = "not reported at arm level; the search was restricted to English-language publications",
-    notes = "MBMA at the study-arm level: each modeled data point is one trial arm's mean DAS28 percentage change at one follow-up time. n_studies = 31 is the number of trials contributing DAS28 data; n_subjects = 7999 is the pooled patient count across all 69 trials in the database, not the DAS28 subset (Chen 2025 does not report a DAS28-specific patient count). Baseline ESR was the fourth screened covariate and was likewise NOT retained; it is documented in prose rather than in covariatesDataExcluded because the covariate register has no canonical entry for erythrocyte sedimentation rate and this file introduces no new canonical for a rejected covariate. The Results text says 'Table S1 provides an overview of the 71 studies' while the Results and Abstract both state 69 included studies; the supplement is not on disk and the discrepancy is unresolved (see vignette Errata). The model simulates study-arm mean trajectories and is NOT suitable for individual-subject simulation."
+    notes = "MBMA at the study-arm level: each modeled data point is one trial arm's mean DAS28 percentage change at one follow-up time. n_studies = 31 is the number of trials contributing DAS28 data; n_subjects = 7999 is the pooled patient count across all 69 trials in the database, not the DAS28 subset (Chen 2025 does not report a DAS28-specific patient count). Baseline ESR was the fourth screened covariate and was likewise NOT retained; it is documented in prose rather than in covariatesDataExcluded because the covariate register has no canonical entry for erythrocyte sedimentation rate and this file introduces no new canonical for a rejected covariate. The Results text says 'Table S1 provides an overview of the 71 studies' while the Results and Abstract both state 69 included studies; the supplement was not available when this model was built and the discrepancy is unresolved (see vignette Errata). The model simulates study-arm mean trajectories and is NOT suitable for individual-subject simulation."
   )
 
   ini({
     # ============================================================
     # Emax-in-time model (Chen 2025 Methods, Model Developing; the
-    # equation is rendered as a display equation in the PDF and is LOST
-    # from the preprocessed markdown, recovered via pdftotext -layout):
+    # equation is rendered as a display equation in the PDF and was
+    # transcribed from the PDF text layer with pdftotext -layout):
     #
     #   E_ij = Emax * exp(eta_i) * Time_j / (ET50 + Time_j)
     #
@@ -112,7 +112,7 @@ Chen_2025_methotrexate_das28_mbma <- function() {
     # Table 2 reports eta as a percentage (37.40%), i.e. omega = 0.374
     # on the exponential scale; the ini() value is the VARIANCE.
     # Encoded as an MBMA STUDY-LEVEL eta (NOT individual between-subject
-    # variability) per the SKILL Phase-1 Step-3a MBMA guidance.
+    # variability), following the library's convention for MBMA models.
     # ============================================================
     eta_study_emax ~ 0.139876  # Chen 2025 Table 2, eta(Emax-DAS28) = 37.40% (RSE 15%, shrinkage 2%); omega = 0.374, variance = 0.374^2 = 0.139876
 

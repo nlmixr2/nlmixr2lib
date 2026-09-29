@@ -134,7 +134,7 @@ Hendriksen_2013_artesunate <- function() {
     # Residual error. The source paper modelled log-natural plasma
     # concentrations with additive residual on the log scale (NONMEM
     # "additive-on-log" = nlmixr2 proportional on linear scale per
-    # references/naming-conventions.md). Table 2 reports the variance on
+    # the library's convention). Table 2 reports the variance on
     # the log scale (sigma_ARS = 0.0942, sigma_DHA = 0.211); the propSd
     # parameters here are the corresponding SDs (sqrt of variance) on the
     # log scale, which equal the proportional CV in linear space to first

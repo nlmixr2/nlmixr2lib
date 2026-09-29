@@ -664,11 +664,12 @@ stopifnot(abs(typ$vss / f_in / 1774 - 1) < 0.03)
   canonical column are documented in the model's `covariatesDataExcluded`
   metadata; they are deliberately absent from `covariateData` because the paper
   publishes no point estimate for any of them.
-* **Supplement not on disk.** Comisar 2025 cites Table S1 (bioanalytical method
+* **Supplement not available.** Comisar 2025 cites Table S1 (bioanalytical method
   validation), Table S2 (covariates tested), Figure S1 (observed concentrations)
-  and Figure S2 (external-validation VPC). None of these is on disk. None is a
+  and Figure S2 (external-validation VPC). None of these could be obtained when
+  this model was built, and none is a
   parameter source: Table 3 is complete, and every derived quantity quoted in
-  the Discussion reproduces from it, so the extraction does not depend on the
+  the Discussion reproduces from it, so the model does not depend on the
   supplement.
 * **Virtual cohort.** Original observed data are not available. Body weight is
   drawn log-normally with median 74 kg truncated to the published 49-131 kg

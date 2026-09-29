@@ -70,8 +70,8 @@ str(readModelDb("Wang_2023_zoledronicAcid_mbma")()$population)
 ## Model equations
 
 Every equation below was read from the typeset PDF of Wang 2023 Methods 2.2
-(page 4). The `formula-not-decoded` placeholders left by automated PDF-to-text
-conversion were resolved by rendering page 4 as an image and reading the
+(page 4). The equations do not survive automated plain-text extraction of the
+PDF; they were resolved by rendering page 4 as an image and reading the
 typeset mathematics directly.
 
 | Source equation | As printed in Wang 2023 | Encoded in `model()` |

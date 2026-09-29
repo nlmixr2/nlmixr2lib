@@ -628,8 +628,9 @@ stopifnot(all(late$Cbrain_total > late$Cbrain_ecf))
 
 * **Equations 1 and 2 are not re-derived.** The molecular-weight and logP
   regressions for `Daq` and `P0` are reproduced verbatim only in references 16
-  and 17, which are not on disk. The tabulated per-drug values of Table 4 are
-  encoded directly instead. (They are self-consistent: evaluating
+  and 17, which were not available when this model was built. The tabulated
+  per-drug values of Table 4 are encoded directly instead. (They are
+  self-consistent: evaluating
   `Daq = 10^(-4.113 - 0.4609*log10(MW)) * 60` and
   `P0 = 10^(0.939*logP - 6.21) * 60`, the forms the sibling LeiCNS mouse
   papers publish, returns every tabulated value for all ten drugs.)

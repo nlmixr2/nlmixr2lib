@@ -108,11 +108,12 @@ Not included in `model()`, and why:
 * **Equations S3-S6** (Friden pH-partition correction of brain-homogenate
   `f_u,br`). The equations are printed in the supplement but the compartment
   volumes (`V_ISF`, `V_cyto`, `V_lyso`) and compartmental pH values they require
-  are not - they live in the cited Friden et al. reference, which is not among
-  the on-disk sources. The *outputs* of the correction are tabulated (Table S2,
-  parameter rows `brain fu corrected`), so the correction is an input-curation
-  step whose results the model consumes rather than a step the model performs.
-  No constant has been substituted from outside the on-disk sources.
+  are not - they live in the cited Friden et al. reference, which was not
+  available when this model was built. The *outputs* of the correction are
+  tabulated (Table S2, parameter rows `brain fu corrected`), so the correction is
+  an input-curation step whose results the model consumes rather than a step the
+  model performs. No constant has been substituted from outside the available
+  sources.
 * **Equation S7** (free-potency correction for serum-containing assays). See
   Errata - the tabulated corrected potencies could not be reproduced from the
   equation as printed, so the model consumes the already-corrected values.
@@ -122,7 +123,7 @@ Not included in `model()`, and why:
   once per moiety and add the resulting `sertcov` values to reproduce that; the
   default parameter set is the fit that *excludes* those drugs.
 * **Residual error.** Main-text Eq. 2 carries an additive noise term `eta`, but
-  no variance for it is reported anywhere on disk. Per the standing policy
+  no variance for it is reported in any available source. Per the standing policy
   against inventing variances, the model is typical-value only. There is also no
   between-study random effect in this MBMA - the study-group sizes enter as
   regression *weights*, not as a variance component.
@@ -670,7 +671,7 @@ sprintf("Predicted tremor incidence %.2f%% at a SERT target coverage of %.3f.",
   resample. `fixed()` reflects the point-estimate model as published.
 * **No residual-error variance is recoverable.** Main-text Eq. 2 includes an
   additive noise term with no reported variance. The model is typical-value only.
-* **The Friden pH-partition constants are not on disk.** See Scope above.
+* **The Friden pH-partition constants were not available.** See Scope above.
 * **Four cells of Table S5 are low by a factor of about ten.** Gate 1
   back-computes all 108 published mean / SD / median values in Tables S3 and S5
   from the log-scale estimates in Tables S2 and S4 using the transformation the

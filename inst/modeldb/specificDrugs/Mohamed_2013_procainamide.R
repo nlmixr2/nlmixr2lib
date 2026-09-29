@@ -130,7 +130,7 @@ Mohamed_2013_procainamide <- function() {
     # NAPA plasma concentrations. Table 1 does not report the estimated
     # value of the proportional-error variance; a nominal 15% CV is used
     # here as a plausible value for downstream simulations, encoded as
-    # a typical-value fallback per the operator's standing "unreported
+    # a typical-value fallback per the maintainers' standing "unreported
     # RUV -> typical-value" policy. See the vignette Assumptions and
     # deviations section.
     propSd       <- 0.15             ; label("Procainamide proportional residual SD (fraction); nominal 15% CV - value not reported in Table 1")                  # not reported in Table 1; nominal 15% CV

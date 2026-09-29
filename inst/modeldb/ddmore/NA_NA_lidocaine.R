@@ -10,7 +10,7 @@
 # in the (un-named) reference publication do not differ. The bundle's `.ctl`
 # and `.res` $PROBLEM line is `B.dat 4-cRUN249`; the License is registered to
 # BAST Inc. Ltd, suggesting the run originates from a BAST-led lidocaine
-# study, but no first-author / year is recoverable from the on-disk material.
+# study, but no first-author / year is recoverable from the bundle.
 # The model file therefore uses the a supplied placeholder filename
 # `NA_NA_lidocaine.R` and reference text "DDMORE Foundation Model Repository:
 # DDMODEL00000281. No linked publication identified."
@@ -34,7 +34,7 @@
 # This resolves two open questions recorded below and in the vignette Errata,
 # and they are left in place unedited as the record of what the bundle alone
 # could support:
-#   * UNITS. The `units$*` placeholders below are noted as operator-defaults
+#   * UNITS. The `units$*` placeholders below are noted as maintainer defaults
 #     chosen for internal consistency, with a flagged deviation that lidocaine
 #     t1/2 ~ 18.7 h is far slower than the textbook IV value of 1.5-2 h. The
 #     paper resolves both: the units are h / ug / ug/L, and the drug is a
@@ -56,7 +56,7 @@
 # DDMORE bundle as deposited. Use `Bursi_2017_lidocaine.R` for the published
 # final estimates.
 #
-# FOLLOW-UP (out of scope for the extraction that added this note, which only
+# FOLLOW-UP (out of scope for the change that added this note, which only
 # adds models): renaming this file to `Bursi_2017_lidocaine_ddmore.R` would
 # match the `_ddmore` pairing convention already used by
 # `Bajaj_2017_nivolumab_ddmore.R`, `Jonsson_2011_ethambutol_ddmore.R` and
@@ -87,7 +87,7 @@ NA_NA_lidocaine <- function() {
     "covariance step succeeded). The bundle's `.ctl` does not declare time,",
     "dose, or concentration units explicitly; `units$time = 'h'`,",
     "`units$dosing = 'mg'`, and `units$concentration = 'mg/L'` are",
-    "operator-default placeholders chosen so the values flow through unit-",
+    "placeholders chosen by the maintainers so the values flow through unit-",
     "checking consistently. See the vignette Errata for the unit ambiguity",
     "and a per-time-point self-consistency check against the bundle's",
     "Simulated_Lid_B04_ddmore.csv."
@@ -167,7 +167,7 @@ NA_NA_lidocaine <- function() {
       units = "U/L",
       type = "continuous",
       reference_category = "ALT <= 11 (additive modifiers off).",
-      notes = "Source column name `SGPT` (legacy serum glutamic-pyruvic transaminase label); canonical name `ALT` (the `inst/references/covariate-columns.md` `ALT` entry registers `SGPT` as an alias paralleling `SGOT` -> `AST`). Rename `SGPT -> ALT` before passing the dataset to `rxSolve`. Threshold 11 U/L is below the lower end of the clinical reference range (~7-56 U/L for adults), so the binarisation almost certainly reflects a paper-specific cohort split rather than a clinical hepatic-impairment cutoff; the linked publication is not on disk to confirm.",
+      notes = "Source column name `SGPT` (legacy serum glutamic-pyruvic transaminase label); canonical name `ALT` (the `inst/references/covariate-columns.md` `ALT` entry registers `SGPT` as an alias paralleling `SGOT` -> `AST`). Rename `SGPT -> ALT` before passing the dataset to `rxSolve`. Threshold 11 U/L is below the lower end of the clinical reference range (~7-56 U/L for adults), so the binarisation almost certainly reflects a paper-specific cohort split rather than a clinical hepatic-impairment cutoff; this could not be confirmed against the linked publication, which was not available when this model was built.",
       source_name = "SGPT"
     )
   )
@@ -178,10 +178,10 @@ NA_NA_lidocaine <- function() {
     age_range = NA_character_,
     weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state = "Patient population not stated in the DDMORE bundle. The `.res` listing reports 325 subjects contributing 1989 observations; the bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`) has subjects receiving repeated short IV infusions of lidocaine consistent with surgical / intensive-care or anti-arrhythmic dosing. The linked publication is not on disk to confirm the indication.",
-    dose_range = "Repeated IV infusions of approximately 12 time-units' duration (AMT 21600 / RATE 1800 in the bundle's simulated dataset). Mass and time units are not declared in the source `.ctl`; under the operator-chosen `units$time = 'h'` interpretation each infusion runs ~12 h.",
+    disease_state = "Patient population not stated in the DDMORE bundle. The `.res` listing reports 325 subjects contributing 1989 observations; the bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`) has subjects receiving repeated short IV infusions of lidocaine consistent with surgical / intensive-care or anti-arrhythmic dosing. The indication could not be confirmed against the linked publication, which was not available when this model was built.",
+    dose_range = "Repeated IV infusions of approximately 12 time-units' duration (AMT 21600 / RATE 1800 in the bundle's simulated dataset). Mass and time units are not declared in the source `.ctl`; under the maintainers' `units$time = 'h'` interpretation each infusion runs ~12 h.",
     regions = NA_character_,
-    notes = "Demographics fields marked NA because the linked publication is not on disk for this extraction. n_subjects = 325 from the `.res` listing's `TOT. NO. OF INDIVIDUALS:    325` line. The DDMORE-shipped simulated dataset (`Simulated_Lid_B04_ddmore.csv`) carries 17112 records distributed over a smaller demographic-replicated cohort and is intended only as a regression-style smoke test, not a representative clinical population."
+    notes = "Demographics fields marked NA because the linked publication was not available when this model was built. n_subjects = 325 from the `.res` listing's `TOT. NO. OF INDIVIDUALS:    325` line. The DDMORE-shipped simulated dataset (`Simulated_Lid_B04_ddmore.csv`) carries 17112 records distributed over a smaller demographic-replicated cohort and is intended only as a regression-style smoke test, not a representative clinical population."
   )
 
   ini({
@@ -193,7 +193,7 @@ NA_NA_lidocaine <- function() {
     # `units$time = "h"` choice gives lidocaine total elimination
     # k_megx + k_xyl = 0.037 1/h with apparent half-life ln(2)/0.037 ~
     # 18.7 h, slower than the textbook lidocaine IV t1/2 (~1.5-2 h), which
-    # the operator notes as a deviation pending publication recovery.
+    # the maintainers note as a deviation pending publication recovery.
     lk_megx_form <- fixed(log(0.03))
     label("Log lidocaine -> MEGX formation rate constant (1/time-unit)")  # `.ctl` $THETA TH 1 (FIX); `.res` FINAL TH 1 = 3.00E-02
     lk_xyl_form  <- fixed(log(0.007))

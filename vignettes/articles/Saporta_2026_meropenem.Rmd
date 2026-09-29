@@ -966,7 +966,8 @@ stopifnot(
   the setting the model was estimated under.
 * **Figure 6's design is recovered from the figure legend, not from the
   Methods.** The Methods cite only "a literature design (28)", and reference 28
-  is not on disk. The legend of Figure 6 states the design outright -- dosing
+  was not available when this model was built. The legend of Figure 6 states
+  the design outright -- dosing
   intervals q3h / q6h / q12h / q24h, daily doses 0 / 400 / 800 / 1,600 mg/kg --
   and that is what this vignette simulates. Two independent checks corroborate
   it: the fAUC/MIC axis maximum lands at 7,590 against the paper's roughly

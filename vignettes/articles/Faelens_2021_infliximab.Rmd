@@ -265,7 +265,7 @@ Faelens 2021 Table 1 reports per-cohort AUCd84 medians and 90%-prediction
 intervals. Compute the simulated equivalents from the cohort and compare
 side-by-side. Note that the published values are from a different virtual
 population (Faelens 2021 resampled the original Dreesen 2019 dataset, which
-is not on disk); discrepancies > ~20% are expected when our covariate
+was not available); discrepancies > ~20% are expected when our covariate
 distributions differ materially from the source dataset.
 
 ```{r compare-published}

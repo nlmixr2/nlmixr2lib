@@ -56,7 +56,7 @@ Babel_2026_telisotuzumab_corneal <- function() {
       description = "Liver metastasis at baseline; 1 = present, 0 = absent.",
       units = "(binary)",
       type = "binary",
-      notes = "Listed in Babel 2026 Table S2 as a safety covariate of interest but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate exists on disk. The remaining Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, history of peripheral neuropathy, prior therapy, number of prior systemic therapies, treatment-emergent ADA status and nAb status) were screened and dropped on the same basis."
+      notes = "Listed in Babel 2026 Table S2 as a safety covariate of interest but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate is reported. The remaining Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, history of peripheral neuropathy, prior therapy, number of prior systemic therapies, treatment-emergent ADA status and nAb status) were screened and dropped on the same basis."
     )
   )
 

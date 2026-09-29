@@ -372,7 +372,7 @@ cat("Analytic AUCinf (typical value, F = 1, no IIV):\n",
   error as straightforwardly as the THETA-on-EPS reading; the magnitudes
   (~45-65% CV under either reading) are similar enough that the typical-
   value simulation and the PKNCA comparison above are unaffected. Future
-  re-analysis with the source NONMEM control stream on disk would
+  re-analysis with the source NONMEM control stream would
   disambiguate the parameterisation.
 
 * **Continuous covariates not retained.** Danielak 2017 tested age, weight,

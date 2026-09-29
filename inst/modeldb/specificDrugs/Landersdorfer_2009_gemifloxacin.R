@@ -33,7 +33,7 @@ Landersdorfer_2009_gemifloxacin <- function() {
       units = "mg/L",
       type = "continuous",
       reference_category = NULL,
-      notes = "Set to 0 throughout the gemifloxacin-alone arm (CONMED_PROBENECID = 0) so the apparent-Km term collapses to Km. Set to the instantaneous plasma probenecid concentration during the gemifloxacin + probenecid arm. The Landersdorfer 2009 paper does NOT report a probenecid PK sub-model parameter table on disk -- the Methods describes the structural form (1-compartment + lag + parallel first-order + mixed-order elimination) but the corresponding parameter estimates are not in any on-disk table -- so users simulating the with-probenecid arm must supply CP_PRB_MGL from an external probenecid popPK source (e.g., literature digitisation of Landersdorfer 2009 Fig. 1C, or an unrelated published probenecid popPK model). Reference peak observed: ~30-60 mg/L during the gemifloxacin sampling window (Landersdorfer 2009 Fig. 1C).",
+      notes = "Set to 0 throughout the gemifloxacin-alone arm (CONMED_PROBENECID = 0) so the apparent-Km term collapses to Km. Set to the instantaneous plasma probenecid concentration during the gemifloxacin + probenecid arm. The Landersdorfer 2009 paper does NOT report a probenecid PK sub-model parameter table -- the Methods describes the structural form (1-compartment + lag + parallel first-order + mixed-order elimination) but the corresponding parameter estimates are not tabulated in any source available when this model was built -- so users simulating the with-probenecid arm must supply CP_PRB_MGL from an external probenecid popPK source (e.g., literature digitisation of Landersdorfer 2009 Fig. 1C, or an unrelated published probenecid popPK model). Reference peak observed: ~30-60 mg/L during the gemifloxacin sampling window (Landersdorfer 2009 Fig. 1C).",
       source_name = "[P]"
     )
   )
@@ -100,7 +100,7 @@ Landersdorfer_2009_gemifloxacin <- function() {
     etalki       ~ 0.06541  # Kic CV = 26%;                 log(1 + 0.26^2) = 0.06541
 
     # Residual error -- Landersdorfer 2009 does not tabulate a residual-error
-    # magnitude in Table 3 or anywhere else on disk. The bioanalytical assay
+    # magnitude in Table 3 or anywhere else in the available sources. The bioanalytical assay
     # precision is 3.7 to 7.2% interday CV for gemifloxacin in plasma
     # (Landersdorfer 2009 Methods, "Determination of plasma and urine drug
     # concentrations"), and the compartmental model in WinNonlin would have

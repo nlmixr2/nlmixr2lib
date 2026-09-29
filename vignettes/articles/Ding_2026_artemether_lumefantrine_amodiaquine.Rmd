@@ -67,7 +67,7 @@ stopifnot(
 ```
 
 Both the main article and the supplementary information (Tables S1-S3 and
-Figures S1-S12) were on disk for this extraction. The three parameter tables
+Figures S1-S12) were available when this model was built. The three parameter tables
 in the main article (Tables 2, 3 and 4) are complete; the supplement
 contributed the two dosing schedules (Tables S1 and S2), the dense-PK cohort
 demographics (Table S3) and the structural-model diagrams (Figures S1, S5
@@ -322,8 +322,9 @@ auc_trap <- function(time, conc) {
   sum(diff(time) * (utils::head(conc, -1) + utils::tail(conc, -1)) / 2)
 }
 # AUC(0-inf) = observed trapezoidal AUC + the analytic tail Clast / lambda_z.
+# lambda_z skips points below 1e-6 of the peak (no relative accuracy left there).
 auc_inf <- function(time, conc, tail_from, tail_to = Inf) {
-  keep <- time >= tail_from & time <= tail_to & conc > max(conc) * 1e-8
+  keep <- time >= tail_from & time <= tail_to & conc >= 1e-6 * max(conc)
   stopifnot(sum(keep) >= 5)
   lz <- -stats::coef(stats::lm(log(conc[keep]) ~ time[keep]))[[2]]
   list(lambda_z = lz,
@@ -871,7 +872,13 @@ conc_all <- dplyr::bind_rows(
   sim_lf |> dplyr::transmute(id, time, Cc = ifelse(Cc_desbutlum < 1.01, 0, Cc_desbutlum),
                              treatment = "Desbutyl-lumefantrine")
 ) |>
-  dplyr::filter(!is.na(Cc))
+  dplyr::filter(!is.na(Cc)) |>
+  # Per subject and analyte, keep Cc >= 1e-6 * Cmax after the peak: below that
+  # the ODE integrator has no relative accuracy left. The assay-censored zeros
+  # set above are kept.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc == 0 | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Time-zero records must survive the filter or PKNCA warns once per subject
 # that the AUC range starts before the first measurement.

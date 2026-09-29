@@ -452,8 +452,9 @@ ev_typ <- bind_rows(
 
 sim_typ <- rxode2::rxSolve(mod_typ, ev_typ) |> as.data.frame()
 
-# Fit terminal slope on the last 60 days of the typical-value profile
-late <- sim_typ |> filter(time >= 140, Cc > 0)
+# Fit terminal slope on the last 60 days of the typical-value profile, skipping
+# points below 1e-6 of the peak (no relative accuracy left there).
+late <- sim_typ |> filter(time >= 140, Cc >= 1e-6 * max(Cc))
 fit  <- lm(log(Cc) ~ time, data = late)
 lambda_z <- -coef(fit)[["time"]]
 t_half_typ <- log(2) / lambda_z

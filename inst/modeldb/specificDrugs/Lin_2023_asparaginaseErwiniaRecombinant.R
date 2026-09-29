@@ -133,7 +133,7 @@ Lin_2023_asparaginaseErwiniaRecombinant <- function() {
     # ACTIVITY in IU/mL, so central/vc is IU/mL only if the dose is entered
     # in IU. Neither publication states the mg-to-IU specific activity of
     # JZP458, so a clinical mg/m^2 dose CANNOT be converted to model units
-    # from any on-disk source -- see the vignette Errata section.
+    # from any available source -- see the vignette Errata section.
     # -----------------------------------------------------------------
     lcl <- log(146)                ; label("Clearance CL (mL/h)")                              # Lin 2023 Table 2 (CL 146 mL/h, SE 4.93, RSE 3.38%, 95% CI 136-156)
     lvc <- log(445)                ; label("Central volume of distribution V (mL)")            # Lin 2023 Table 2 (Central compartment V 445 mL, SE 34.9, RSE 7.85%, 95% CI 377-513)

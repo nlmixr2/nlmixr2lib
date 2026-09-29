@@ -22,7 +22,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Yin_2020_pexidartinib"))$meta$reference`
 * Description: `r rxode2::rxode(readModelDb("Yin_2020_pexidartinib"))$meta$description`
 * Article: <https://doi.org/10.1002/jcph.1753>
-* ACoP 2019 poster (PDF on disk for this extraction): <https://metrumrg.com/wp-content/uploads/2019/11/ACoP2019-PopK-Pexi.pdf>
+* ACoP 2019 poster (PDF): <https://metrumrg.com/wp-content/uploads/2019/11/ACoP2019-PopK-Pexi.pdf>
 
 Yin et al. (2020) developed a population pharmacokinetic model for oral
 pexidartinib (CSF1R / KIT / FLT3 inhibitor; FDA-approved as Turalio for

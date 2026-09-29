@@ -56,7 +56,7 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
       type = "binary",
       reference_category = "0 (capsule or tablet; the reference formulation in the Wang 2018 ASV PK fit).",
       notes = "Per-dose-occasion covariate in principle (a participant could in principle receive both formulations across study occasions), but in the Wang 2018 trials each subject received a single ASV formulation. Switches the structural absorption fraction-via-zero-order route FK between fk_cap_asv (0.184) and fk_sol_asv (0.334). Both values were estimated with a SHARED IAV CV of 65.0 percent (Table 3); the shared variance is encoded as a single eta `eta_study_lfk_asv` on the logit of FK so the same study-arm random effect applies regardless of formulation. Reference: Wang 2018 Table 3 footnote (FK Cap/Tab and FK Sus/Sol IAV both 65.0 percent).",
-      source_name = "Formulation column in Table 1 (values 'Suspension' / 'Solution' map to FORM_ASV_LIQUID = 1; 'Capsule' / 'Tablet' map to 0). Registered as a specific-scope canonical in inst/references/covariate-columns.md alongside this extraction."
+      source_name = "Formulation column in Table 1 (values 'Suspension' / 'Solution' map to FORM_ASV_LIQUID = 1; 'Capsule' / 'Tablet' map to 0). Registered as a specific-scope canonical in inst/references/covariate-columns.md alongside this model."
     )
   )
 
@@ -92,10 +92,10 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     # DCV PK (Wang 2018 Table 3 left columns; rates reported in /h, converted
     # to /day inside model() so the integrated PK + VD system is time-
     # consistent on a single day scale). All structural parameters log-
-    # transformed; IAV is encoded as eta_study_* per the SKILL Step 3a MBMA
-    # guidance to mark these as study-arm-level random effects, not subject-
-    # level. IAV is reported as CV percent in Table 3; the eta variance is the
-    # log-normal conversion omega^2 = log(CV^2 + 1).
+    # transformed; IAV is encoded as eta_study_* following the library's MBMA
+    # convention, which marks these as study-arm-level random effects, not
+    # subject-level. IAV is reported as CV percent in Table 3; the eta
+    # variance is the log-normal conversion omega^2 = log(CV^2 + 1).
     # =========================================================================
 
     # ---- Structural typical values ----
@@ -122,10 +122,9 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     # absorbed by the first-order mechanism"; Table 3 description column:
     # "Fraction of dose absorbed by the zero-order mechanism"). This packaged
     # model follows the Table 3 description (FK = zero-order fraction); the
-    # operator confirmed this choice in the sidecar request-001 / response-001
-    # exchange. The Figure 1 caption is treated as a transcription error and
-    # the contradiction is documented in the validation vignette's Errata
-    # section.
+    # maintainers confirmed this choice. The Figure 1 caption is treated as
+    # a transcription error and the contradiction is documented in the
+    # validation vignette's Errata section.
     # =========================================================================
 
     # ---- Structural typical values ----

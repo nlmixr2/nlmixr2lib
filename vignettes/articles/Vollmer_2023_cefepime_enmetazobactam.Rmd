@@ -327,9 +327,12 @@ sd_prof <- solve_regimen(typ, cbind(base_cov(DIS_CUTI = 1), id = 1L),
                          fep = 2000, enm = 500, ii = 1e6, dur = 2,
                          t_start = 0, t_end = 24)
 tail_w  <- sd_prof$time >= 14 & sd_prof$time <= 24
+# Per analyte, keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+w_fep <- tail_w & sd_prof$Cc >= 1e-6 * max(sd_prof$Cc)
+w_enm <- tail_w & sd_prof$Cc_enm >= 1e-6 * max(sd_prof$Cc_enm)
 
-hl <- c(cefepime       = half_life(sd_prof$time[tail_w], sd_prof$Cc[tail_w]),
-        enmetazobactam = half_life(sd_prof$time[tail_w], sd_prof$Cc_enm[tail_w]))
+hl <- c(cefepime       = half_life(sd_prof$time[w_fep], sd_prof$Cc[w_fep]),
+        enmetazobactam = half_life(sd_prof$time[w_enm], sd_prof$Cc_enm[w_enm]))
 
 knitr::kable(
   data.frame(Drug = c("Cefepime", "Enmetazobactam"),

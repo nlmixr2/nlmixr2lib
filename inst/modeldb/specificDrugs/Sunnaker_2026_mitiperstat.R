@@ -6,7 +6,7 @@ Sunnaker_2026_mitiperstat <- function() {
 
   # Sunnaker 2026 reports every mitiperstat concentration in nmol/L and every
   # dose in mg, but never states the molar mass, so no exact mg <-> nmol
-  # conversion is available from any on-disk source. The model is linear, so it
+  # conversion could be obtained from any available source. The model is linear, so it
   # is encoded in self-consistent mass units: a dose in mg gives compartment
   # amounts in mg and Cc in mg/L (= ug/mL). Dosing the same model in nmol
   # returns Cc directly in nmol/L, which is the scale the paper prints.

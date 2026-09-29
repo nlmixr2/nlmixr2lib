@@ -13,7 +13,7 @@ Chandasana_2024b_dolutegravir <- function() {
     "(Chandasana 2024 reference 15) and is reproduced in Chandasana 2024 Table 2;",
     "Chandasana 2024 applied it to IMPAACT 2019 without re-estimation",
     "(NONMEM MAXEVAL = 0 external validation).",
-    "That primary paper is now itself extracted as",
+    "That primary paper is itself available as",
     "modellib('Chandasana_2023_dolutegravir'), and the parameter values here",
     "were corrected against it: Chandasana 2024 Table 2 reproduces the",
     "formulation effects as ratios and the residual errors as variances, and",
@@ -120,8 +120,9 @@ Chandasana_2024b_dolutegravir <- function() {
     # Chandasana 2024 Table 2 reports only the CV% diagonal and defers the
     # covariance matrix to its reference [15] ("Further details about covariance
     # matrix and full model can be found in the reference [15]"). That primary
-    # source is now on disk, so the variances and covariances below are taken
-    # directly from Chandasana 2023 Table 2 rather than back-solved from the
+    # source was available when this model was built, so the variances and
+    # covariances below are taken directly from Chandasana 2023 Table 2 rather
+    # than back-solved from the
     # rounded CV% column. Every value reproduces its printed CV% and correlation.
     etalcl + etalvc + etalka ~ c(0.0863,
                                  0.0499, 0.0698,

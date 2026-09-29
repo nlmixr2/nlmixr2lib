@@ -105,7 +105,7 @@ Svensson_2012_nevirapine <- function() {
         "Users simulating a typical fed dose should set FED = 1; a typical",
         "fasted dose, FED = 0."
       ),
-      source_name = "FED (per the paper's narrative; the underlying NONMEM dataset is not on disk)"
+      source_name = "FED (per the paper's narrative; the underlying NONMEM dataset was not available when this model was built)"
     ),
     TB_POS = list(
       description = "Active tuberculosis with concomitant TB-treatment regimen indicator (rifampicin + isoniazid +/- ethambutol)",

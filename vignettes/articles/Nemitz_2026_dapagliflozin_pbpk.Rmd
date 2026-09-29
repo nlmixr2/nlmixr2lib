@@ -616,7 +616,7 @@ venous/arterial/portal/hepatic-vein/lung/rest-of-body balance equations, the
 blood-pool volume corrections, and the cirrhotic shunting terms were taken from
 the authors' archived SBML, which Methods 2.2 and Section S4 both name as the
 definitive model source. No parameter or equation here comes from a
-training-data default or a generic PBPK template.
+generic PBPK template or from any source other than the paper.
 
 **3. Two transcription errors in the Supplementary equations, corrected here.**
 
