@@ -2444,6 +2444,8 @@ navbar:
         href: articles/Lamoth_2009_imipenem.html
       - text: "Imipenem (Nguyen 2021)"
         href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem (Patel 2022)"
+        href: articles/Patel_2022_imipenem_relebactam.html
       - text: "Imipenem (Por 2021)"
         href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem (Truong 2025)"
@@ -4428,6 +4430,8 @@ navbar:
         href: articles/Keunecke_2020_regorafenib.html
       - text: "Relebactam (Bhagunde 2019)"
         href: articles/Bhagunde_2019_imipenem_relebactam.html
+      - text: "Relebactam (Patel 2022)"
+        href: articles/Patel_2022_imipenem_relebactam.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remdesivir (Roberts 2025)"
@@ -7506,6 +7510,7 @@ articles:
   - articles/Patel_2015_oseltamivir
   - articles/Patel_2017_selumetinib
   - articles/Patel_2020_sapanisertib
+  - articles/Patel_2022_imipenem_relebactam
   - articles/Patel_2025_eteplirsen
   - articles/Patel_2025_radamts13_exposure_response
   - articles/Patidar_2024_mAb_size_charge_fcrn
