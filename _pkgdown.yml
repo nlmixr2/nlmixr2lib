@@ -2954,6 +2954,8 @@ navbar:
         href: articles/Rietveld_2024_irinotecan.html
       - text: "Irinotecan (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Irinotecan invitro (Shinha 2020)"
+        href: articles/Shinha_2020_irinotecan_invitro.html
       - text: "Irinotecan liposomal (Adiwijaya 2017)"
         href: articles/Adiwijaya_2017_irinotecan_liposomal.html
       - text: "Irinotecan liposomal (Brendel 2021)"
@@ -8748,6 +8750,7 @@ articles:
   - articles/Shin_2006_quinidine_QT
   - articles/Shin_2014_sevoflurane
   - articles/Shin_2017_levetiracetam
+  - articles/Shinha_2020_irinotecan_invitro
   - articles/Shoji_2011_pregabalin
   - articles/Shoji_2016_cefepime
   - articles/Shoji_2017_fosdagrocorat_oc
