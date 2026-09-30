@@ -79,7 +79,7 @@ Padari_2012_meropenem <- function() {
     # with F_mat = PMA^Hill / (PMA^Hill + TM50^Hill), TM50 = 47.7 wk, Hill = 3.4.
     # The paper does not publish the underlying NONMEM THETA(CL_std); we
     # back-calculate it from the reported 0.061 L/h/kg using WT = 1 kg
-    # (rounded VLBW-neonate reference per the skill's "undefined
+    # (rounded VLBW-neonate reference per the standing "undefined
     # reference value -> rounded standard" rule) and PMA = 29 weeks
     # (pooled cohort mean GA + PNA at PK sampling from Table 1):
     #     F_mat(29) = 29^3.4 / (29^3.4 + 47.7^3.4) = 0.1555

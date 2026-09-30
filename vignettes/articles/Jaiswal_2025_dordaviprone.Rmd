@@ -24,7 +24,7 @@ ui <- rxode2::rxode(readModelDb("Jaiswal_2025_dordaviprone"))
 cat("* Citation: ", ui$reference, "\n", sep = "")
 cat("* Article: <https://doi.org/10.1002/psp4.70093>\n")
 cat("* Supplement (Data S1, Tables S1-S8): ",
-    "<https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12521050/supplementaryFiles>\n",
+    "published with the article, <https://europepmc.org/article/PMC/PMC12521050>\n",
     sep = "")
 ```
 

@@ -21,8 +21,8 @@ library(ggplot2)
 
 * Citation: `r readModelDb("Tsuchitani_2024_telmisartan_pbpk")()$reference`
 * Article: <https://doi.org/10.1002/psp4.13154>
-* Supporting Information (open access, retrieved from the Europe PMC
-  `supplementaryFiles` endpoint for PMC11247111): `PSP4-13-1224-s002.docx`
+* Supporting Information (open access, published with the article,
+  PMC11247111): `PSP4-13-1224-s002.docx`
   (Data S1, the authors' complete model code in `d/dt()` form) and
   `PSP4-13-1224-s001.docx` (Appendix S1, Supplementary Tables S1-S11 and
   Figures S1-S12).

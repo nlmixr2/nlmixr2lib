@@ -57,8 +57,8 @@ Gao_2021_methotrexate <- function() {
         "allometric function on all clearance and volume of distribution",
         "parameters using exponent of 0.75 and 1.0, respectively.' Both",
         "exponents are FIXED, not estimated, and are wrapped in fixed() in",
-        "ini() accordingly. The 19 kg reference is the cohort median (Wang",
-        "2023 Table 1 records median 19.0 kg, range 4.5-113.0 for this study)."
+        "ini() accordingly. The 19 kg reference is the cohort median (Gao",
+        "2021 Table 1: median 19.0 kg, range 4.5-113.0)."
       ),
       source_name = "Weight"
     ),
@@ -78,11 +78,11 @@ Gao_2021_methotrexate <- function() {
         "drops both the '1 +' and the minus sign, and would make clearance",
         "zero at the reference. The coherent form, used here and printed by",
         "Wang 2023 Table 2, is CL = CL_typical x (1 + (Scr - 26) x (-0.0097)).",
-        "The 26 umol/L centre is consistent with the cohort's median serum",
-        "creatinine of 0.3 mg/dL (= 26.5 umol/L; Wang 2023 Table 1).",
+        "The 26 umol/L centre is the cohort's median serum creatinine",
+        "(Gao 2021 Table 1: 26.0 umol/L, range 8.0-135.0).",
         "CAUTION -- this linear term is NOT bounded below: it reaches zero at",
         "SCr = 129.1 umol/L and turns NEGATIVE above it, which lies inside",
-        "Gao's own reported range (0.1-1.5 mg/dL = 8.8-132.6 umol/L). The",
+        "Gao's own reported range (Table 1: 8.0-135.0 umol/L). The",
         "published equation is reproduced as printed rather than clamped;",
         "simulations must keep CREAT below ~129 umol/L. See the vignette",
         "Errata."
@@ -99,7 +99,7 @@ Gao_2021_methotrexate <- function() {
       notes = paste(
         "Tested and not retained. Gao 2021 Results: 'Inclusion of age-related",
         "maturation effect on CL did not show a significant improvement in",
-        "model fit further.' Wang 2023 Table 1 records median 5.0 years",
+        "model fit further.' Gao 2021 Table 1 records median 5.0 years",
         "(range 0.75-15.2) for this cohort."
       )
     ),
@@ -122,9 +122,10 @@ Gao_2021_methotrexate <- function() {
       notes = paste(
         "Significant but deliberately dropped alongside TBIL. Gao 2021",
         "Results: 'albumin in the central volume of distribution",
-        "(delta OFV = -36.722) using linear function improved model fit",
+        "(delta OFV = 36.722) using linear function improved model fit",
         "significantly, with slope estimates of ... -0.070', then dropped for",
-        "the same <5% variability-reduction rule."
+        "the same <5% variability-reduction rule. Cohort median 43.4 g/L",
+        "(range 23.8-56.5; Gao 2021 Table 1)."
       )
     ),
     SEXF = list(
@@ -134,7 +135,7 @@ Gao_2021_methotrexate <- function() {
       notes = paste(
         "Tested and not retained. Gao 2021 Results: 'Other covariates (e.g.,",
         "sex, AST, and ALT) did not significantly affect MTX PK properties.'",
-        "Wang 2023 Table 1 records 197 male / 114 female for this cohort."
+        "Gao 2021 Table 1 records 197 male (63.3%) of 311."
       )
     ),
     AST = list(
@@ -158,14 +159,19 @@ Gao_2021_methotrexate <- function() {
         "inclusion on clearance improved model fit significantly",
         "(delta OFV = -64.331 and -42.874, respectively); however, the",
         "reduction in either inter-individual or residual variability was",
-        "minimal (<1.1%).' Co-medicated in 7.7% of patients."
+        "minimal (<1.1%).' Co-medicated in 19.0% of patients and 11.4% of",
+        "courses (59 patients, 142 courses; Gao 2021 Results and Table 1)."
       )
     ),
     CONMED_NSAID = list(
       description = "Concomitant non-steroidal anti-inflammatory drug indicator",
       units = "(binary)",
       type = "binary",
-      notes = "Significant but not retained, alongside omeprazole (same Gao 2021 Results sentence)."
+      notes = paste(
+        "Significant but not retained, alongside omeprazole (same Gao 2021",
+        "Results sentence). Co-medicated in 7.7% of patients and 2.0% of",
+        "courses (24 patients, 25 courses; Gao 2021 Results and Table 1)."
+      )
     )
   )
 
@@ -181,17 +187,27 @@ Gao_2021_methotrexate <- function() {
     sex_female_pct = 100 * 114 / 311,
     disease_state = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate consolidation.",
     renal_function = paste(
-      "Serum creatinine median 0.3 mg/dL (range 0.1-1.5), i.e. about",
-      "26 umol/L (range 8.8-132.6). Note the model's linear SCr term on",
-      "clearance goes negative above 129 umol/L, inside this range."
+      "Serum creatinine median 26.0 umol/L (range 8.0-135.0). Note the",
+      "model's linear SCr term on clearance goes negative above",
+      "129 umol/L, inside this range."
     ),
-    hepatic_function = "ALT median 16.0 U/L (range 2.0-390.0); AST median 26.0 U/L (range 8.0-135.0).",
-    dose_range = "1 to 5 g/m^2 intravenous high-dose methotrexate.",
+    hepatic_function = paste(
+      "ALT median 16.0 U/L (range 2.0-390); AST median 22.6 U/L",
+      "(range 7.0-319.0); total bilirubin median 5.9 umol/L (range",
+      "1.5-114.0); albumin median 43.4 g/L (range 23.8-56.5)."
+    ),
+    dose_range = paste(
+      "1 to 5 g/m^2 intravenous high-dose methotrexate over 24 h (10% as a",
+      "0.5 h loading dose, 90% over 23.5 h); 1,250 courses: 5 g/m^2 464,",
+      "4 g/m^2 84, 3 g/m^2 524, 2 g/m^2 107, 1 g/m^2 71."
+    ),
     regions = "China (Children's Hospital of Fudan University, Shanghai).",
     notes = paste(
-      "Demographics from Wang 2023 Table 1 (the external-evaluation paper that",
-      "tabulates all six evaluated cohorts side by side); model structure and",
-      "parameter values from the Gao 2021 primary, Table 2 and Results.",
+      "Demographics, model structure and parameter values from the Gao 2021",
+      "primary (Table 1, Table 2 and Results; demographics summarised over",
+      "1,250 cycles). Wang 2023 Table 1 reproduces this cohort but prints",
+      "its AST row as 26.0 (8.0-135.0), which is Gao's serum-creatinine row",
+      "in umol/L; Gao's own AST is 22.6 (7.0-319.0).",
       "4,517 concentration measurements. Wang 2023 notes this is the largest",
       "of the six evaluated datasets and that, despite that, its central",
       "volume (20.7 L) is higher than the other models', producing 'an obvious",

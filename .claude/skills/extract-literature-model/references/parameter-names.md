@@ -857,6 +857,8 @@ clearance expression references `t` / `time` without one of these.
 | Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_time_` | `cl_time_max`, `cl_t50`, `cl_time_hill` |
 | Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
 | Concentration-driven autoinduction: `cl <- cl_base * exp(max * C^g/(ec50^g + C^g) * t/(t50 + t))` | `cl_time_` + `cl_conc_` | `cl_time_max`, `cl_t50`, `cl_ec50`, `cl_conc_hill` |
+| Linear in time: `cl <- cl_base * (1 + slope * t)` | `cl_time_` | `cl_time_slope` (1/time; a percent per unit time is divided by 100). Founding example: `Cloesmeijer_2020_clonidine.R` |
+| Piecewise-constant step: `cl <- cl * (t < tclchange) + cl_late * (t >= tclchange)` | `tclchange` | `ltclchange`, `lcl_late` |
 
 The third form carries two sigmoidicities and they sit on different axes:
 `cl_conc_hill` is the Hill coefficient on CONCENTRATION (the `C^g/(ec50^g +

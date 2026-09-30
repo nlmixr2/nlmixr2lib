@@ -123,9 +123,9 @@ n_subj <- 200
 
 cohort <- tibble::tibble(
   id      = seq_len(n_subj),
-  WT      = pmin(pmax(rnorm(n_subj, mean = 80, sd = 19),  35, 180)),
-  ALB     = pmin(pmax(rnorm(n_subj, mean = 44, sd = 3.5), 30,  55)),
-  CRCL    = pmin(pmax(rnorm(n_subj, mean = 111, sd = 32), 40, 220)),
+  WT      = pmin(pmax(rnorm(n_subj, mean = 80, sd = 19),  35), 180),
+  ALB     = pmin(pmax(rnorm(n_subj, mean = 44, sd = 3.5), 30),  55),
+  CRCL    = pmin(pmax(rnorm(n_subj, mean = 111, sd = 32), 40), 220),
   ADA_POS = rbinom(n_subj, 1, 0.145)
 )
 ```

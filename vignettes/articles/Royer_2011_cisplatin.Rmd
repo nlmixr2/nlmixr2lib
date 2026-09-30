@@ -27,7 +27,7 @@ library(ggplot2)
 * Citation: `r readModelDb("Royer_2011_cisplatin")()$meta$reference`
 * Description: `r readModelDb("Royer_2011_cisplatin")()$meta$description`
 * Article: [Br J Cancer 106(3):460-467 (2012); doi:10.1038/bjc.2011.557](https://doi.org/10.1038/bjc.2011.557) (published online 15 December 2011; the file basename uses the online-first year 2011 to match the DOI stem).
-* Supplement: MOESM10 (Modeling of protein-bound platinum + auxiliary equations) obtained from the Nature Springer static-content endpoint for the DOI; used to disambiguate the Michaelis-Menten binding formula and the interstitial-penetration derivation.
+* Supplement: MOESM10 (Modeling of protein-bound platinum + auxiliary equations) published with the article; used to disambiguate the Michaelis-Menten binding formula and the interstitial-penetration derivation.
 
 # Population
 

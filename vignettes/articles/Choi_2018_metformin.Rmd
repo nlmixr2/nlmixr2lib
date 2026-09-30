@@ -22,6 +22,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Choi_2018_metformin"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Choi_2018_metformin"))$description`
 * Article (open access): <https://doi.org/10.12793/tcp.2018.26.1.25>
+* Erratum (corrected Table 1): <https://doi.org/10.12793/tcp.2018.26.3.143>
 
 # Population
 
@@ -30,7 +31,7 @@ participated in a phase I, open-label, randomized, single-dose, 2-way
 crossover bioequivalence study at Seoul St. Mary's Hospital, Catholic
 University of Korea (IRB approval KC14MDSF0913). Mean height was 176.0
 cm (SD 3.5; range 169.1-183.5) and mean body weight was 70.9 kg (SD
-7.9). Each subject received both a single-agent metformin tablet
+7.9; range 57.2-85.9). Each subject received both a single-agent metformin tablet
 (reference) and a metformin-containing fixed-dose-combination (FDC)
 tablet (test) across two periods separated by a 1-week wash-out,
 administered with 150 mL of water after 10 h of fasting. Plasma
@@ -38,15 +39,16 @@ metformin was sampled at 0 (predose), 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4,
 6, 8, 12, and 24 h after each administration, and assayed by LC-MS/MS
 (Choi 2018 Methods).
 
-The published Choi 2018 Table 1 reports the demographic summary, but
-the row labels for `Weight (kg)` and `Height (cm)` are swapped: the
-mean +/- SD pairs printed against `Weight (kg)` (176.0; range
-169.1-183.5) are actually the height values, and those printed against
-`Height (cm)` (23.9; range 20.0-42.0) are actually the age values. The
-correct pairs reproduced in the paragraph above are taken from the
-Results "Dataset" prose narrative. Additionally, the prose narrative
-prints the weight units as "cm" rather than "kg"; this is a paper typo
-since the Table 1 column header clearly states "Weight (kg)".
+The Table 1 printed in the original Choi 2018 article is incorrect:
+the values printed against `Weight (kg)` (176.0; range 169.1-183.5)
+are the height values, and those printed against `Height (cm)` (23.9;
+range 20.0-42.0) are the age values. The journal's erratum
+(Transl Clin Pharmacol 2018;26(3):143) replaces Table 1 with age 23.9
+(20-42) years, sex 36/0 male/female, weight 70.9 (57.2-85.9) kg and
+height 176.0 (169.1-183.5) cm (mean (range)); the ranges above follow
+the erratum and the SDs come from the Results "Dataset" prose. That
+prose prints the weight unit as "cm" rather than "kg", which the
+erratum's `Weight (kg)` row confirms is a typo.
 
 The same information is available programmatically via
 `rxode2::rxode(readModelDb("Choi_2018_metformin"))$population`.
@@ -390,14 +392,16 @@ knitr::kable(ratio_table,
   estimates Ka = 0.83 and F = 0.94 reflect whichever single FDC
   product was used in the Choi 2018 study and may not generalise to
   other metformin co-formulations.
-- **Table 1 typographical errors.** Choi 2018 Table 1 swaps the row
-  labels for "Weight (kg)" and "Height (cm)" (the values printed in
-  the Weight row are the height values and vice-versa). Additionally,
-  the prose narrative "Mean height and weight were 176.0 +/- 3.5 cm
-  and 70.9 +/- 7.9 cm" prints "cm" rather than "kg" for the weight
-  unit. The corrected values used in this vignette and in the
-  packaged `population` metadata are taken from the prose narrative,
-  with the units corrected to the conventional kg for weight.
+- **Table 1 corrected by erratum.** The Table 1 printed in the
+  original article is incorrect (the Weight row carries the height
+  values and the Height row the age values). The erratum
+  (doi:10.12793/tcp.2018.26.3.143) replaces it; the demographics in
+  this vignette and in the packaged `population` metadata follow the
+  erratum, which also supplies the weight range (57.2-85.9 kg) that
+  the original article did not print. The prose narrative "Mean
+  height and weight were 176.0 +/- 3.5 cm and 70.9 +/- 7.9 cm"
+  still prints "cm" for the weight unit; weight is in kg. The
+  erratum revises no parameter, equation or unit.
 - **No additive residual error.** Choi 2018 Table 3 reports only a
   proportional residual error (sigma_prop = 0.259, RSE 2.73%); no
   additive component was retained in the final model. The packaged

@@ -117,7 +117,7 @@ Two cohorts are simulated:
    oral intake was established.
 
 IDs are offset between the two cohorts so subsequent `bind_rows()`
-keeps them disjoint per the vignette-template guidance.
+keeps them disjoint.
 
 ```{r events}
 make_iv_cohort <- function(cohort, dose_mg_per_kg = 2.5,

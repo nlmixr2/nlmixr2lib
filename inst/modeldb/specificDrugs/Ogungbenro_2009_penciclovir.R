@@ -81,7 +81,7 @@ Ogungbenro_2009_penciclovir <- function() {
     # F_WT_CL = (WT/WTSTD)^(3/4) (applied to CL AND Q -- both clearance terms)
     # and F_WT_V = (WT/WTSTD)^1 (applied to V1 AND V2 -- both volume terms).
     # The shared-exponent form e_<cov>_<param1>_<param2> matches the
-    # three-token convention in references/parameter-names.md.
+    # three-token covariate-effect convention.
     e_wt_cl_q  <- fixed(0.75); label("Shared allometric WT exponent on CL and Q (unitless)")  # Methods, allometric paragraph (clearance terms, 0.75)
     e_wt_vc_vp <- fixed(1.00); label("Shared allometric WT exponent on V1 and V2 (unitless)") # Methods, allometric paragraph (volume terms, 1.0)
 

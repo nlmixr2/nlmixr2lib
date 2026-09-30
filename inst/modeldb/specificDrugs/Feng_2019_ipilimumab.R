@@ -68,8 +68,8 @@ Feng_2019_ipilimumab <- function() {
     #
     # The three subpopulations of the mixture are strata of a single joint
     # fit, so every stratum-specific quantity carries an explicit suffix
-    # (_fast / _nogrow / _inter) and none keeps the bare canonical name --
-    # see references/parameter-names.md "Stratum-suffixed parameters".
+    # (_fast / _nogrow / _inter) and none keeps the bare canonical name
+    # (the stratum-suffix convention).
     #
     # All typical values are strictly positive and enter multiplicatively
     # with exponential IIV, so they are stored on the log scale.

@@ -67,9 +67,8 @@ Chantharit_2019_voriconazole <- function() {
     # ------------------------------------------------------------------
     # Structural parameters: Chantharit 2019 Table 1, "Final model /
     # Estimate value" column. Table 1 is embedded in the abstract page as
-    # a raster image and does NOT appear in the PDF text layer, so it is
-    # absent from the preprocessed `_trimmed.md`; the values below were
-    # read from the extracted image (`pdfimages -png`). The Results prose
+    # a raster image and does NOT appear in the PDF text layer; the values
+    # below were read from the extracted image (`pdfimages -png`). The Results prose
     # independently prints the same two point estimates - "Estimated
     # clearance (CL) and volume of distribution (V) values were 7.33 L
     # hour-1 and 439.69 L, respectively" - which corroborates the table

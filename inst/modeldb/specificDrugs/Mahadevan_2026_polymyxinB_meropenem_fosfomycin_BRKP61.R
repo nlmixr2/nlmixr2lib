@@ -22,7 +22,7 @@ Mahadevan_2026_polymyxinB_meropenem_fosfomycin_BRKP61 <- function() {
   # Bulitta / Wicha life-cycle state (1 = vegetative, 2 = replicating). These
   # six files are the founding three-drug example of that scheme;
   # `bacterialSubpopRegex` in R/conventions.R was widened from at-most-two
-  # tokens to any number in the same commit, so the names are canonical and
+  # tokens to any number alongside these files, so the names are canonical and
   # need no paper-specific declaration.
   paper_specific_compartments <- c("cpmb", "cfof")
 

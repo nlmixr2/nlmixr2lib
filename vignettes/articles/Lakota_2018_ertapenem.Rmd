@@ -303,7 +303,7 @@ knitr::kable(
 Lakota 2018 Results paragraph 5 reports median simulated Cmax and
 AUC0-24 for the three representative WT / BSA combinations. The
 packaged model's typical-value Cmax and AUC0-24 reproduce all six
-published values to within ~1 % (well below the verification-checklist
+published values to within ~1 % (well below a
 ~20 % threshold), confirming the structural model, the WT-on-CL and
 BSA-on-Vc covariate forms, and the parameter encoding are all
 correctly translated.

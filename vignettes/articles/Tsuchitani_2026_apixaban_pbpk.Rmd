@@ -21,8 +21,8 @@ library(ggplot2)
 
 * Citation: `r readModelDb("Tsuchitani_2026_apixaban_pbpk")()$reference`
 * Article: <https://doi.org/10.1002/psp4.70163>
-* Supporting Information (open access, retrieved from the Europe PMC
-  `supplementaryFiles` endpoint for PMC12823302):
+* Supporting Information (open access, published with the article,
+  PMC12823302):
   `psp470163-sup-0001-supinfo.txt` (Data S1, the authors' complete model code)
   and `psp470163-sup-0002-supinfo.pdf` (Data S2, Tables S1-S4 and Figures
   S1-S4).

@@ -140,11 +140,11 @@ n_subj <- 150         # downsampled from 400 for vignette build budget; VPC band
 
 cohort <- tibble::tibble(
   id              = seq_len(n_subj),
-  WT              = pmin(pmax(rnorm(n_subj, mean = 70, sd = 18),   40, 160)),
-  AGE             = pmin(pmax(rnorm(n_subj, mean = 50, sd = 13),   18,  90)),
-  ALB             = pmin(pmax(rnorm(n_subj, mean = 40, sd =    3.5), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_subj, mean = 90, sd = 25),   30, 180)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_subj, mean = 16, sd = 6)),   0,  28)),
+  WT              = pmin(pmax(rnorm(n_subj, mean = 70, sd = 18),   40), 160),
+  AGE             = pmin(pmax(rnorm(n_subj, mean = 50, sd = 13),   18),  90),
+  ALB             = pmin(pmax(rnorm(n_subj, mean = 40, sd =    3.5), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_subj, mean = 90, sd = 25),   30), 180),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_subj, mean = 16, sd = 6)),   0),  28),
   SEXF            = rbinom(n_subj, 1, 0.78),         # RA populations are ~75-80% female
   CONMED_NSAID    = rbinom(n_subj, 1, 0.55),         # Li 2019 Methods: NSAID use common in RA cohort
   FORM_ABA_PHASE2 = 0L                               # Phase-3 commercial SC formulation for labelled regimen
@@ -423,7 +423,7 @@ knitr::kable(pct_above, digits = 1,
   demographics) is referenced in the paper but is not embedded in the
   PMC full text, so the virtual-cohort distributions are approximate:
   WT ~ N(70, 18) truncated to [40, 160]; AGE ~ N(50, 13) truncated to
-  [18, 90]; ALB ~ N(4.0, 0.35) truncated to [2.5, 5.0] g/dL;
+  [18, 90]; ALB ~ N(40, 3.5) truncated to [25, 50] g/L;
   CRCL ~ N(90, 25) truncated to [30, 180]; SWOL_28JOINT ~ rounded
   N(16, 6) truncated to [0, 28]; SEXF = 78% female; CONMED_NSAID = 55%.
   The reference values match the Li 2019 Methods narrative; the
@@ -449,8 +449,10 @@ the source alongside this model should be aware of:
   factor of 1000 too low and is physiologically impossible. This is
   treated as a publication unit typo: the model codes the ALB reference
   as **4.0 g/dL**, which is clinically sensible and matches other
-  abatacept PK reports (e.g. the Orencia label). This unit is recorded
-  in `covariateData[[ALB]]$units` as `g/dL` with an explicit note.
+  abatacept PK reports (e.g. the Orencia label). The model takes `ALB`
+  in g/L (`covariateData[[ALB]]$units` is `g/L`) and converts it to g/dL
+  inline before applying this reference; the typo is recorded in
+  `covariateData[[ALB]]$notes`.
 - **Table 1B caption vs final-model equation (Table 1 caption and
   Results p. 249).** Table 1 is captioned *"Parameter Estimates for (A)
   the Structural Part of Final PPK Model for Abatacept and (B) the
