@@ -1926,6 +1926,8 @@ navbar:
         href: articles/Ooi_2026_elafibranor.html
       - text: "Elafibranor gft1007 (Ooi 2026)"
         href: articles/Ooi_2026_elafibranor.html
+      - text: "Elagolix (Beck 2022)"
+        href: articles/Beck_2022_elagolix.html
       - text: "Elexacaftor (Truong 2025)"
         href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
       - text: "Elinzanetant (Willmann 2024)"
@@ -6990,6 +6992,7 @@ articles:
   - articles/Baverel_2015_tralokinumab
   - articles/Bayoumy_2025_thioguanine
   - articles/Beal_2001_iv1cmt_bql
+  - articles/Beck_2022_elagolix
   - articles/Beguin_2024_carboplatin_dog
   - articles/Beijer_2026_cloxacillin
   - articles/Beliveau_2026_tenofovir_alafenamide_implant
