@@ -1,0 +1,303 @@
+---
+title: "Quinine-phenobarbital drug-drug interaction PBPK (Sae-heng 2022)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quinine-phenobarbital drug-drug interaction PBPK (Sae-heng 2022)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("SaeHeng_2022_quinine_phenobarbital_pbpk"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12737> (open access, PMC8752110)
+* Supporting information: Table S6 (physicochemistry, clearances, induction
+  Emax/EC50), Table S7 (Bosgra 2012 anthropometric physiology), and the
+  deposited MATLAB SimBiology project `PSP4-11-104-s005.zip`, from which the
+  structural ODEs, rate laws, tissue-composition fractions and dosing were
+  decoded by the maintainers.
+
+Sae-heng 2022 is a whole-body physiologically based pharmacokinetic (PBPK)
+model, built in SimBiology, for the drug-drug interaction (DDI) between quinine
+and phenobarbital in adults with cerebral malaria and concurrent seizures.
+Phenobarbital induces hepatic CYP3A4, UGT1A1, CYP2C19 and CYP2C9 through
+Emax/EC50 turnover terms driven by the hepatic phenobarbital concentration.
+Quinine is cleared by CYP3A4 (fm 0.44) and UGT1A1 (fm 0.56), so phenobarbital
+co-administration roughly doubles quinine clearance; quinine in turn
+competitively inhibits CYP3A4. Both drugs are given intravenously. Organ
+weights and blood flows are Bosgra 2012 anthropometric functions of age, sex and
+body weight, and tissue partitioning uses the Poulin-Theil tissue-composition
+method.
+
+Each drug carries its own set of 23 perfusion-limited tissue states (bare names
+for quinine, the `_pb` suffix for phenobarbital), plus an i.v.-infusion holding
+depot, a urine sink and a cumulative-metabolism sink. The two subsystems are
+coupled only through the shared, phenobarbital-concentration-driven enzyme
+induction and the quinine-concentration-driven CYP3A4 inhibition.
+
+```{r load-model}
+mod <- rxode2::rxode(readModelDb("SaeHeng_2022_quinine_phenobarbital_pbpk"))
+c(states = length(mod$state), parameters = length(mod$params))
+```
+
+The model is deterministic: it carries no between-subject random effects or
+residual error (the published simulations add Bosgra inter-individual
+variability on top of the typical-value structure, which is out of scope for the
+library model). It reproduces the typical-value predictions the paper reports
+for the extensive-metabolizer (wild-type CYP2C19) sub-cohort.
+
+# Population
+
+```{r population}
+pop <- mod$meta$population
+str(pop)
+```
+
+The published virtual population is 100 adults (50 male, 50 female, 18-60 years,
+60 kg, fasting) with cerebral malaria and concurrent seizures. Body weight is
+fixed at 60 kg in the simulations (`XWeight <- 60` inside the model); age drives
+the Bosgra organ-weight and microsomal-protein (MPPGL) functions. The
+extensive-, intermediate- and poor-metabolizer CYP2C19 sub-cohorts of Tables 1
+and 2 differ in the phenobarbital intrinsic clearance; the deposited
+typical-value model carries the extensive-metabolizer (wild-type) chain, which
+is what this vignette reproduces.
+
+# Source trace
+
+Every structural equation and parameter is traced to a source location in the
+model file's in-line comments. The parameter groups are:
+
+| Group | Source |
+|---|---|
+| Quinine physicochemistry, clearance, CYP3A4 Ki | Table S6 + decoded SimBiology `Quinine` variant |
+| Phenobarbital physicochemistry, clearance | Table S6 + decoded `Phenobarbital` variant |
+| Phenobarbital induction Emax / EC50 (CYP3A4, UGT1A1, CYP2C19) | Table S6 (as-run values from the deposited model where noted) |
+| Poulin-Theil tissue-composition fractions | decoded `TestSubject:Human` variant |
+| Organ weights, blood flows, MPPGL | Bosgra 2012 anthropometry (Table S7); equations decoded from the SimBiology rules |
+| Dosing (loading / maintenance rates, infusion durations) | Methods "Quinine dose regimen" and "DDI model simulations"; decoded dose objects |
+
+# Dosing regimen
+
+The recommended coadministration regimen (Regimen 2 of Tables 1 and 2):
+phenobarbital 90 mg i.v. once daily (30-min infusion) for 17 days, with quinine
+started on day 14 (t = 336 h) at phenobarbital steady state - a 2000 mg loading
+dose infused over 8 h (250 mg/h) followed by 1200 mg maintenance doses infused
+8-hourly (150 mg/h).
+
+```{r events}
+tstart_quinine <- 336 # day 14
+tend <- 408 # 72 h of quinine
+
+age_typical <- 35 # typical adult age (cohort 18-60 y); drives the Bosgra functions
+
+mk_events <- function(with_quinine = TRUE, obs = seq(0, tend, by = 1)) {
+  ev <- data.frame(id = 1, time = obs, evid = 0, amt = 0, cmt = "venous", dur = 0)
+  # phenobarbital 90 mg i.v. daily (30-min infusion) for 17 days
+  pb <- data.frame(
+    id = 1, time = (0:16) * 24, evid = 1, amt = 90,
+    cmt = "depot_iv_pb", dur = 90 / 180
+  )
+  ev <- rbind(ev, pb)
+  if (with_quinine) {
+    # quinine 2000 mg loading over 8 h then 1200 mg 8-hourly over 8 h
+    ql <- data.frame(
+      id = 1, time = tstart_quinine, evid = 1, amt = 2000,
+      cmt = "depot_iv", dur = 2000 / 250
+    )
+    qm <- data.frame(
+      id = 1, time = tstart_quinine + 8 + (0:7) * 8, evid = 1, amt = 1200,
+      cmt = "depot_iv", dur = 1200 / 150
+    )
+    ev <- rbind(ev, ql, qm)
+  }
+  ev <- ev[order(ev$time, -ev$evid), ]
+  ev$AGE <- age_typical # age covariate (drives Bosgra organ / MPPGL functions)
+  ev
+}
+
+sim <- rxode2::rxSolve(mod, mk_events(), atol = 1e-8, rtol = 2e-6,
+  returnType = "data.frame")
+```
+
+# Replicate the published quinine profile (Figure 1 / Tables 1-2, Regimen 2)
+
+```{r fig-quinine, fig.cap = "Predicted plasma quinine (Cc) and phenobarbital (Cc_pb) during coadministration. The quinine therapeutic window (10-20 mg/L) is shaded; quinine is dosed from day 14 (336 h)."}
+qwin <- sim |>
+  dplyr::filter(time >= tstart_quinine) |>
+  dplyr::mutate(hours_since_quinine = time - tstart_quinine)
+
+ggplot(qwin, aes(hours_since_quinine)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 10, ymax = 20,
+    alpha = 0.12, fill = "forestgreen") +
+  geom_line(aes(y = Cc, colour = "Quinine"), linewidth = 0.9) +
+  geom_line(aes(y = Cc_pb, colour = "Phenobarbital"), linewidth = 0.9) +
+  scale_colour_manual(values = c(Quinine = "#1f78b4", Phenobarbital = "#e31a1c")) +
+  labs(x = "Hours since first quinine dose (day 14)", y = "Plasma concentration (mg/L)",
+    colour = NULL) +
+  theme_bw()
+```
+
+# The drug-drug interaction: phenobarbital roughly doubles quinine clearance
+
+The central finding of the paper is that phenobarbital induction of CYP3A4 and
+UGT1A1 raises quinine clearance about two-fold, which is why the recommended
+quinine regimen is doubled relative to the standard 1000/500 mg regimen. We can
+read the induced quinine clearance straight off the model (the algebraic
+`cl_blood` output) and compare it against the un-induced (quinine-alone) value.
+
+```{r ddi-clearance}
+ev_qonly <- data.frame(
+  id = 1,
+  time = c(seq(0, tend, by = 1), tstart_quinine),
+  evid = c(rep(0, tend + 1), 1),
+  amt = c(rep(0, tend + 1), 2000),
+  cmt = c(rep("venous", tend + 1), "depot_iv"),
+  dur = c(rep(0, tend + 1), 2000 / 250),
+  AGE = age_typical
+)
+ev_qonly <- ev_qonly[order(ev_qonly$time, -ev_qonly$evid), ]
+sim_qonly <- rxode2::rxSolve(mod, ev_qonly,
+  atol = 1e-8, rtol = 2e-6, returnType = "data.frame")
+
+cl_induced <- mean(sim$cl_blood[sim$time >= tstart_quinine])
+cl_baseline <- mean(sim_qonly$cl_blood[sim_qonly$time < 1]) # no phenobarbital induction at t=0
+induction_ratio <- cl_induced / cl_baseline
+c(cl_baseline_Lh = round(cl_baseline, 2),
+  cl_induced_Lh = round(cl_induced, 2),
+  induction_ratio = round(induction_ratio, 2))
+
+stopifnot(
+  # Structural: phenobarbital induction must raise quinine clearance well above
+  # baseline. A mis-transcribed induction Emax/EC50 or fm would collapse this.
+  # The paper's central finding is that phenobarbital roughly doubles quinine
+  # clearance (hence the doubled quinine regimen); the ratio should be near 2.
+  induction_ratio > 1.5,
+  induction_ratio < 2.5,
+  # Baseline (un-induced) quinine clearance is in the neighbourhood of the
+  # reported in-vivo 4.86 L/h (Table S6). The typical-value recomputation from
+  # CLint x abundance x MPPGL x liver weight lands ~16% below that back-calculation
+  # reference, so we bound it at 20%; a unit or fm error would move it far more.
+  abs(cl_baseline - 4.86) / 4.86 < 0.20
+)
+```
+
+# PKNCA validation of the quinine steady-state maintenance interval
+
+We run non-compartmental analysis on the last 8-hourly quinine maintenance
+interval (a full dosing interval near the end of the 72 h) and compare the peak
+and trough against the paper's Regimen 2 predictions.
+
+```{r pknca}
+# last full 8-h maintenance interval
+t0 <- tstart_quinine + 8 + 7 * 8 # start of the last maintenance dose
+conc_df <- sim |>
+  dplyr::filter(time >= t0, time <= t0 + 8, !is.na(Cc)) |>
+  dplyr::transmute(id = 1L, time = time - t0, Cc = Cc, treatment = "quinine")
+
+# defensive time-zero anchor
+if (!any(conc_df$time == 0)) {
+  conc_df <- dplyr::bind_rows(
+    dplyr::tibble(id = 1L, time = 0, Cc = conc_df$Cc[which.min(conc_df$time)],
+      treatment = "quinine"),
+    conc_df
+  ) |>
+    dplyr::distinct()
+}
+
+dose_df <- data.frame(id = 1L, time = 0, amt = 1200, treatment = "quinine")
+
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id,
+  concu = "mg/L", timeu = "h")
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+o_data <- PKNCA::PKNCAdata(o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 8, cmax = TRUE, cmin = TRUE, tmax = TRUE))
+res <- PKNCA::pk.nca(o_data)
+nca <- as.data.frame(res)
+knitr::kable(nca[, c("PPTESTCD", "PPORRES")], digits = 3,
+  caption = "PKNCA summary of the last quinine maintenance interval")
+```
+
+# Comparison against the published NCA (Table 1, CYP2C19 EM, Regimen 2)
+
+Table 1 (Scenario I, extensive metabolizer) reports for Regimen 2 a quinine
+Cmax of 17.33 mg/L, Cmin of 15.07 mg/L and clearance of 10.19 L/h. Our
+typical-value peak and trough are within the reported mean +/- SD envelope
+(SD ~ 3-4 mg/L), and the shape of the interval matches.
+
+```{r compare}
+cmax_sim <- nca$PPORRES[nca$PPTESTCD == "cmax"]
+cmin_sim <- nca$PPORRES[nca$PPTESTCD == "cmin"]
+
+cmp <- data.frame(
+  Parameter = c("Cmax (mg/L)", "Cmin (mg/L)"),
+  Simulated = round(c(cmax_sim, cmin_sim), 2),
+  `Published (Table 1, EM, Regimen 2)` = c(17.33, 15.07),
+  `Published SD` = c(2.99, 3.92),
+  check.names = FALSE
+)
+cmp$`Within mean +/- SD` <- with(cmp,
+  abs(Simulated - `Published (Table 1, EM, Regimen 2)`) <= `Published SD`)
+knitr::kable(cmp, caption = "Quinine Regimen 2 peak / trough vs Table 1 (EM)")
+
+stopifnot(
+  # Peak and trough within one published SD of the reported means.
+  abs(cmax_sim - 17.33) <= 2.99,
+  abs(cmin_sim - 15.07) <= 3.92,
+  # Both sit inside the therapeutic window envelope the paper targets.
+  cmin_sim >= 10, cmax_sim <= 20
+)
+```
+
+The typical-value trough (Cmin) sits above the 10 mg/L therapeutic threshold and
+the peak below 20 mg/L, reproducing the paper's central conclusion that Regimen
+2 keeps quinine inside its narrow therapeutic window when co-administered with
+phenobarbital.
+
+# Assumptions and deviations
+
+* **Deterministic typical-value model.** The published simulations draw
+  Bosgra 2012 inter-individual variability (organ weights, blood flows, enzyme
+  abundances, MPPGL) over 100 subjects; the library model fixes the variability
+  switch to zero and reproduces the typical-value (mean-parameter) prediction.
+  The peak/trough comparison above is therefore against the paper's reported
+  means, and is expected to fall within - not exactly on - the reported means.
+* **Extensive-metabolizer chain.** The deposited typical-value model carries the
+  wild-type (CYP2C19 extensive-metabolizer) intrinsic-clearance chain. The
+  intermediate- and poor-metabolizer strata of Tables 1-2 scale the
+  phenobarbital CYP2C19 clearance (a 1-27% total-clearance reduction per the
+  Discussion); those strata are documented in `covariatesDataExcluded` but are
+  not separate model files, because the phenobarbital exposure change does not
+  materially move quinine exposure (the paper's own conclusion that genotyping
+  is unnecessary).
+* **On-disk-only parameter sourcing.** Every structural parameter is from the
+  supplement Table S6/S7 or the deposited SimBiology project
+  (`PSP4-11-104-s005.zip`), decoded by the maintainers. Where a table value and
+  the deposited "as-run" value differ (e.g. CYP3A4 Ki 12.65 vs 17.84 mg/L,
+  induction Emax/EC50 for CYP3A4 and CYP2C19), the model keeps the **as-run**
+  value from the deposited project - the value that actually produced the
+  paper's simulations - and the in-file comments record both.
+* **Inert enzyme branches retained.** The deposited model also carries CYP2B6,
+  CYP2C8, CYP1A1/2, CYP2D6 and CYP3A5 abundance and induction terms. None acts
+  on the quinine (CYP3A4 + UGT1A1) or phenobarbital (CYP2C19 + CYP2C9)
+  clearance, so they are encoded as as-run defaults that do not affect either
+  drug's exposure.
+* **Diagnostic observables dropped.** The deposited project logs several
+  algebraic observables (steady-state Vss, half-life, hepatic availability
+  Fh/Fg, subcutaneous/intramuscular sub-volumes) that are not used by the
+  disposition ODEs on the i.v. route. They are not reproduced in the model; Vss
+  and half-life can be recovered from the simulation by NCA if needed.
+* **I.v.-infusion holding depot.** The deposited model administers each i.v.
+  dose into a small holding compartment that transfers to venous blood at a fast
+  first-order rate (kf 250/h quinine, 180/h phenobarbital). This is reproduced
+  faithfully; on the 8-h / 30-min infusion timescales it is indistinguishable
+  from direct venous infusion.
