@@ -1150,6 +1150,12 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Ceftiofur dog (Wang 2019)"
         href: articles/Wang_2019_ceftiofur_dog.html
+      - text: "Ceftiofur pkpd balf (Mi 2022)"
+        href: articles/Mi_2022_ceftiofur.html
+      - text: "Ceftiofur pkpd plasma (Mi 2022)"
+        href: articles/Mi_2022_ceftiofur.html
+      - text: "Ceftiofur semimech (Mi 2022)"
+        href: articles/Mi_2022_ceftiofur.html
       - text: "Ceftobiprole (Cojutti 2023)"
         href: articles/Cojutti_2023_ceftobiprole.html
       - text: "Ceftolozane (Chandorkar 2015)"
@@ -8259,6 +8265,7 @@ articles:
   - articles/Merchan_2015_azithromycin
   - articles/Mercier_2014_tramadol_tapentadol
   - articles/MerinoBohorquez_2021_piperacillin
+  - articles/Mi_2022_ceftiofur
   - articles/Mi_2023_cefquinome_pbpk
   - articles/Mi_2024_aditoprim
   - articles/Mian_2019_acetaminophen

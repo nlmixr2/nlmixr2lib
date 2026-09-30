@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Mi 2022 ceftiofur ([doi:10.3390/ijms23073722](https://doi.org/10.3390/ijms23073722)) -- *Pasteurella multocida*-infected swine, with ex vivo (plasma, BALF) and semi-mechanistic PK/PD against *P. multocida*.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
