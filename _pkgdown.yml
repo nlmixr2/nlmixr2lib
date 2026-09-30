@@ -5806,6 +5806,8 @@ navbar:
         href: articles/Sikma_2020_tacrolimus_thoracic.html
       - text: "Tacrolimus unbound plasma (Sikma 2020)"
         href: articles/Sikma_2020_tacrolimus_unbound_plasma.html
+      - text: "Tadalafil (FergusonSells 2022)"
+        href: articles/FergusonSells_2022_tadalafil.html
       - text: "Tafenoquine (Charles 2007)"
         href: articles/Charles_2007_tafenoquine.html
       - text: "Tafenoquine (Edstein 2001)"
@@ -7493,6 +7495,7 @@ articles:
   - articles/Feng_2019_ipilimumab
   - articles/Feng_2023_cyclosporine
   - articles/Feng_2026_imipenem_pbpk
+  - articles/FergusonSells_2022_tadalafil
   - articles/FernandezRubio_2025_ceftriaxone
   - articles/FernandezTeruel_2024_capivasertib
   - articles/FernandezTeruel_2025_capivasertib
