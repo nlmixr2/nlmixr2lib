@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wang 2022 L-ornithine phenylacetate ([doi:10.1007/s40262-021-01075-1](https://doi.org/10.1007/s40262-021-01075-1)) -- adults with cirrhosis or hepatic encephalopathy (phenylacetic acid, phenylacetylglutamine and L-ornithine).
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
