@@ -4820,6 +4820,8 @@ navbar:
         href: articles/Bustinduy_2020_praziquantel.html
       - text: "Prednisolone (Bouazza 2025)"
         href: articles/Bouazza_2025_prednisolone.html
+      - text: "Pregabalin (Chan 2021)"
+        href: articles/Chan_2021_pregabalin.html
       - text: "Pregabalin (Hong 2016)"
         href: articles/Hong_2016_pregabalin.html
       - text: "Pregabalin (Shoji 2011)"
@@ -4830,6 +4832,8 @@ navbar:
         href: articles/vanEsdonk_2018_pregabalin_pain_models.html
       - text: "Pregabalin electricalstim (vanEsdonk 2018)"
         href: articles/vanEsdonk_2018_pregabalin_pain_models.html
+      - text: "Pregabalin lsr28 (Chan 2021)"
+        href: articles/Chan_2021_pregabalin.html
       - text: "Pregabalin rat binary (Bender 2009)"
         href: articles/Bender_2009_pregabalin_rat.html
       - text: "Pregabalin rat smetab (Bender 2009)"
@@ -7178,7 +7182,7 @@ articles:
   - articles/Chala_2023_efavirenz
   - articles/Chan_2008_maraviroc
   - articles/Chan_2017_ipf_fvc
-  - articles/Chan_2020_fenebrutinib
+  - articles/Chan_2021_pregabalin
   - articles/Chan_2023_nirmatrelvir
   - articles/Chan_2025_atezolizumab_sc_nsclc
   - articles/Chandasana_2023_dolutegravir
