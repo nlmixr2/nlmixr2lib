@@ -2462,6 +2462,19 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Tiraboschi_2025_amlitelimab.R`, `Serrano_2026_atopicDermatitis_placebo_mbma.R` (STUDY-ARM MEAN baseline EASI in a model-based meta-analysis, centered on the across-trial mean of 29; additive -0.0486 logit-unit effect per EASI point on the maximum EASI-75 placebo response, i.e. sicker arms respond less to placebo).
 - **Notes:** When used as a time-invariant baseline covariate (`BEASI`), document in `covariateData[[SCORE_EASI]]$notes`. In MBMA models the column carries an ARM MEAN rather than a subject value; record the grain and any centering constant in the per-model notes, as `Serrano_2026_atopicDermatitis_placebo_mbma.R` does. Canonical name is `SCORE_EASI` without the `B` prefix to match the `AGE` / `WT` / `ALB` pattern where baseline vs time-varying status is recorded in notes rather than the column name.
 
+
+### SCORE_DAS28CRP (**canonical for 28-joint Disease Activity Score computed with C-reactive protein (DAS28-CRP)**)
+- **Description:** DAS28-CRP rheumatoid-arthritis disease-activity composite (28 tender and swollen joint counts, C-reactive protein and patient global health; continuous, roughly 0-10, higher = more active disease). As a covariate it is usually the BASELINE value (per-subject, or the arm mean in an MBMA).
+- **Units:** (score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. Leil 2021 centres it at 6.2.
+- **Source aliases:**
+  - `baseline DAS28` -- Leil 2021 Table 2 / Table S3 label (arm mean, DAS28-ESR values converted to the CRP scale).
+  - `DAS28-ESR` (convert, not rename) -- Leil 2021 Eq. 1 / Results give `SCORE_DAS28CRP = 0.899 * DAS28-ESR - 0.194` at the arm-mean level.
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (STUDY-ARM MEAN baseline; additive `1.60 * log(SCORE_DAS28CRP / 6.2)` on the placebo Emax and exponent `1.30` on the placebo ET50 of the DAS28 change from baseline).
+- **Notes:** Distinct from the `das28` / `das28cfb` model OUTPUTS registered in `compartment-names.md`: this column carries the observed score as an input. The ESR-based variant is a different score (on average ~0.2-0.8 units higher) and should get its own `SCORE_DAS28ESR` canonical rather than share this column. In MBMA models record the grain (arm mean) and the centring constant in the per-model notes.
+
 ### SCORE_PPNRS (**canonical for Peak Pruritus Numerical Rating Scale score**)
 - **Description:** Peak Pruritus Numerical Rating Scale score -- an 11-point (0-10) patient-reported measure of worst itch intensity over the previous 24 hours, where 0 is "no itch" and 10 is "worst itch imaginable". Recorded daily and conventionally averaged over each week before modelling ("weekly average PP-NRS"). Higher values = more severe pruritus. The near-identical Worst Itch NRS (WI-NRS) used in dupilumab trials maps to this canonical; see Source aliases.
 - **Units:** (score)
@@ -13931,16 +13944,17 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Terranova_2022_TGD_OS_gastric.R` (power effect on Gompertzian `Kg`: `Kg = tvKg * (T_DIAG_CANCER / 53)^-0.00291`, reference 53 days; and additive linear-log effect on log-median OS: `log_median_OS += 0.0436 * log(T_DIAG_CANCER)`).
 - **Notes:** Sibling of `T_DIAG_DIAB` under the canonical `T_<event>` family. Auto-approved without a separate naming ruling per the T_<event> policy on 2026-07-24. For a 0-day subject (diagnosed at study entry) the power form `(0/53)^theta` evaluates to `0` when the exponent is positive, which is a boundary case; supply at least a small floor value (e.g. 1 day) for such subjects in simulation. Distinct from post-treatment intervals (`T_POST_ECMO`, etc.) which are time-since-intervention rather than time-since-diagnosis.
 
-### T_SYMPT_BPH (**canonical for duration of benign prostatic hyperplasia symptoms**)
-- **Description:** Time elapsed between the onset of the patient's BPH / lower urinary tract symptoms (as reported at the medical-history interview) and study entry. Continuous time-fixed covariate. Distinct from the time since the formal BPH DIAGNOSIS, which is typically shorter (D'Agate 2020 Table 1: median symptom duration 4 y versus median time since diagnosis 2.3 y) and should be a separate `T_DIAG_BPH` canonical if a model needs it.
-- **Units:** years
+
+### T_DIAG_RA (**canonical for time since rheumatoid arthritis diagnosis**)
+- **Description:** Time elapsed since the clinical diagnosis of rheumatoid arthritis at study entry (RA disease duration), in years. Continuous time-fixed covariate; per-subject, or the arm mean in a model-based meta-analysis.
+- **Units:** year
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- enters as a centred linear term `1 + e_t_sympt_bph_<param> * (T_SYMPT_BPH - <ref>)`. Reference value observed: 4 years (D'Agate 2020 pooled-population median).
+- **Reference category:** n/a -- continuous. Leil 2021 centres it at 8.2 years (log-transformed, additive on the placebo Emax).
 - **Source aliases:**
-  - `BPHDUR` -- the `$INPUT` column in the D'Agate 2020 Supporting Information control stream and the Table 2 row label 'BPHDUR on magnitude of placebo effect (duration of symptoms)'.
-- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; linear effect on the magnitude of the placebo effect on IPSS, `DELTA_placebo * (1 - 0.025 * (T_SYMPT_BPH - 4))`).
-- **Notes:** Member of the auto-approved `T_<event>` family (sibling of `T_DIAG_DIAB`, `T_DIAG_CANCER`, `T_MOTORCOMPL`). The D'Agate 2020 Supporting Information labels the column 'duration of BPH symptoms (months)', but its Table 1 reports the same covariate in years (median 4, range 0-54.8) and the control stream centres it at 4.00, so years is the unit of the fitted coefficient.
+  - `disease duration (years)` -- Leil 2021 Table 2 column label (arm mean).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (additive `-0.133 * log(T_DIAG_RA / 8.2)` on the placebo Emax of the DAS28 change from baseline; longer-standing disease gives a smaller background-therapy response). Also documented (screened, not retained) in `Chen_2025_methotrexate_das28_mbma.R`, `Chen_2025_methotrexate_acr20_mbma.R` and `Chen_2025_methotrexate_acr50_mbma.R`.
+- **Notes:** Sibling of `T_DIAG_DIAB` and `T_DIAG_CANCER` under the canonical `T_<event>` family. Must be strictly positive where it enters through `log()`; supply a small floor for arms of newly diagnosed patients.
 
 ### T_PEGIFN (**canonical for planned pegylated-interferon-alpha treatment-course duration**)
 - **Description:** Planned (protocol-specified) duration of the pegylated-interferon-alpha (Peg-IFNalpha) treatment course, in weeks. A design characteristic of the treatment arm rather than a patient attribute: it is the length of the course the arm was assigned, which in chronic hepatitis B ranges from the standard 48 weeks up to extended 96-week regimens and down to shortened 24-week ones. Time-fixed.
@@ -17041,8 +17055,69 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0 (the arm received placebo or a different active treatment).
 - **Source aliases:**
   - `Etanercept treatment` -- the Chan 2017 Table 2 row label. Free-text label, not a column header; downstream data sets should use the canonical column name `ETANERCEPT`.
-- **Example models:** `Chan_2017_ipf_fvc_mbma.R` (Chan 2017 Table 1: 1 arm, 5 timepoints, 46 subjects, 25 mg (trial 0881A4-203) -- one of the eight treatments contributing longitudinal data, and the only TNF inhibitor in the dataset. Selects `emax_etanercept` = 1.47 %predicted FVC.).
+- **Example models:** `Chan_2017_ipf_fvc_mbma.R` (Chan 2017 Table 1: 1 arm, 5 timepoints, 46 subjects, 25 mg (trial 0881A4-203) -- one of the eight treatments contributing longitudinal data, and the only TNF inhibitor in the dataset. Selects `emax_etanercept` = 1.47 %predicted FVC.), `Leil_2021_rheumatoidArthritis_das28_mbma.R` (Leil 2021: 8 trials, 1,747 patients on 50 mg SC qw; selects `lemax_etanercept` / `let50_etanercept` of the DAS28 change-from-baseline Emax-in-time treatment effect).
 - **Notes:** MBMA study-arm-level treatment indicator, sibling of `NAPROXEN`, `TRAMADOL`, `TAPENTADOL`, `ACETAMINOPHEN` and `DICLOFENAC` in the per-drug MBMA arm-indicator family. Specific scope. Named under the register's explicit written rule, recorded in the `TRT_BENRALIZUMAB` entry Notes: use `TRT_<INN>` when the drug is the study treatment under investigation, `CONMED_<INN>` when it is background co-medication, and a bare INN only for MBMA trial-arm indicators. **The register carries a competing precedent that upstream has not reconciled** -- the Sandra 2024 anti-HBV siRNA batch (`Sandra_2024_siRNA_hbsag_mouse_mbma.R`) registered 13 MBMA arm indicators as `TRT_<drug>`, citing the bare-INN family and then departing from it. A ruling in favour of `TRT_<INN>` should migrate the whole bare-INN family, now 19 members, rather than leave a one-off. In the founding model all 14 Chan 2017 indicators are mutually exclusive and all are 0 on a placebo arm, which is what makes the placebo-corrected output zero there by construction.
+
+
+### ABATACEPT (**canonical for abatacept treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received abatacept, 0 = the arm received placebo or a different active treatment. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Drug class: a T-cell costimulation modulator (CTLA-4-Ig).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the arm received placebo or a different active treatment).
+- **Source aliases:** none (Leil 2021 identifies the arm's drug by name in Table 2 and Supplementary Table S1).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (Leil 2021 Table 2: 10 mg/kg IV q4w or 125 mg SC qw; 16 trials, 3,478 patients; selects `lemax_abatacept` / `let50_abatacept` of the DAS28 change-from-baseline Emax-in-time treatment effect).
+- **Notes:** MBMA study-arm-level treatment indicator in the bare-INN per-drug arm-indicator family (siblings `ETANERCEPT`, `NAPROXEN`, `TRAMADOL`, ...); see the `ETANERCEPT` entry Notes for the naming rule. Mutually exclusive with the other Leil 2021 drug indicators; all zero marks a background-therapy (placebo) arm.
+
+### ADALIMUMAB (**canonical for adalimumab treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received adalimumab, 0 = the arm received placebo or a different active treatment. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Drug class: a tumor necrosis factor inhibitor.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the arm received placebo or a different active treatment).
+- **Source aliases:** none (Leil 2021 identifies the arm's drug by name in Table 2 and Supplementary Table S1).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (Leil 2021 Table 2: 40 mg SC q2w; 15 trials, 2,802 patients; selects `lemax_adalimumab` / `let50_adalimumab` of the DAS28 change-from-baseline Emax-in-time treatment effect).
+- **Notes:** MBMA study-arm-level treatment indicator in the bare-INN per-drug arm-indicator family (siblings `ETANERCEPT`, `NAPROXEN`, `TRAMADOL`, ...); see the `ETANERCEPT` entry Notes for the naming rule. Mutually exclusive with the other Leil 2021 drug indicators; all zero marks a background-therapy (placebo) arm.
+
+### CERTOLIZUMAB (**canonical for certolizumab pegol treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received certolizumab pegol, 0 = the arm received placebo or a different active treatment. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Drug class: a tumor necrosis factor inhibitor.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the arm received placebo or a different active treatment).
+- **Source aliases:** none (Leil 2021 identifies the arm's drug by name in Table 2 and Supplementary Table S1).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (Leil 2021 Table 2: 200 mg SC q2w or 400 mg SC q4w; 10 trials, 2,654 patients; selects `lemax_certolizumab` / `let50_certolizumab` of the DAS28 change-from-baseline Emax-in-time treatment effect).
+- **Notes:** MBMA study-arm-level treatment indicator in the bare-INN per-drug arm-indicator family (siblings `ETANERCEPT`, `NAPROXEN`, `TRAMADOL`, ...); see the `ETANERCEPT` entry Notes for the naming rule. Mutually exclusive with the other Leil 2021 drug indicators; all zero marks a background-therapy (placebo) arm.
+
+### RITUXIMAB (**canonical for rituximab treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received rituximab, 0 = the arm received placebo or a different active treatment. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Drug class: an anti-CD20 B-cell-depleting antibody.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the arm received placebo or a different active treatment).
+- **Source aliases:** none (Leil 2021 identifies the arm's drug by name in Table 2 and Supplementary Table S1).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (Leil 2021 Table 2: 1,000 mg IV infusion x 2 per year; 14 trials, 1,336 patients; selects `lemax_rituximab` / `let50_rituximab` of the DAS28 change-from-baseline Emax-in-time treatment effect).
+- **Notes:** MBMA study-arm-level treatment indicator in the bare-INN per-drug arm-indicator family (siblings `ETANERCEPT`, `NAPROXEN`, `TRAMADOL`, ...); see the `ETANERCEPT` entry Notes for the naming rule. Mutually exclusive with the other Leil 2021 drug indicators; all zero marks a background-therapy (placebo) arm.
+
+### TOCILIZUMAB (**canonical for tocilizumab treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received tocilizumab, 0 = the arm received placebo or a different active treatment. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Drug class: an interleukin-6 receptor antagonist.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the arm received placebo or a different active treatment).
+- **Source aliases:** none (Leil 2021 identifies the arm's drug by name in Table 2 and Supplementary Table S1).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (Leil 2021 Table 2: 8 mg/kg IV q4w; 18 trials, 3,724 patients; selects `lemax_tocilizumab` / `let50_tocilizumab` of the DAS28 change-from-baseline Emax-in-time treatment effect).
+- **Notes:** MBMA study-arm-level treatment indicator in the bare-INN per-drug arm-indicator family (siblings `ETANERCEPT`, `NAPROXEN`, `TRAMADOL`, ...); see the `ETANERCEPT` entry Notes for the naming rule. Mutually exclusive with the other Leil 2021 drug indicators; all zero marks a background-therapy (placebo) arm.
+
+### TOFACITINIB (**canonical for tofacitinib treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received tofacitinib, 0 = the arm received placebo or a different active treatment. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Drug class: a Janus kinase inhibitor.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the arm received placebo or a different active treatment).
+- **Source aliases:** none (Leil 2021 identifies the arm's drug by name in Table 2 and Supplementary Table S1).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (Leil 2021 Table 2: 5 mg PO bid; 10 trials, 1,611 patients; selects `lemax_tofacitinib` / `let50_tofacitinib` of the DAS28 change-from-baseline Emax-in-time treatment effect).
+- **Notes:** MBMA study-arm-level treatment indicator in the bare-INN per-drug arm-indicator family (siblings `ETANERCEPT`, `NAPROXEN`, `TRAMADOL`, ...); see the `ETANERCEPT` entry Notes for the naming rule. Mutually exclusive with the other Leil 2021 drug indicators; all zero marks a background-therapy (placebo) arm.
 
 ### AZATHIOPRINE (**canonical for azathioprine treatment-arm indicator**)
 - **Description:** Binary study-arm treatment indicator: 1 = the arm received azathioprine, 0 = the arm received placebo or a different active treatment. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Drug class: an immunosuppressant.
@@ -17353,6 +17428,19 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Franzese_2026_pdl1_nsclc_mbma.R` (enters the OS ORR-slope as an interaction term `(eta_orr_os - 0.595) * (ORR/100) * (RACE_ASIAN_PCT/100)`; the paper's Discussion attributes the effect to regional trial-conduct differences rather than an inherent race effect).
 - **Notes:** MBMA study-arm-level covariate. Distinct from the per-subject binary `RACE_ASIAN` canonical (individual-level 0 or 1); here the arm's Asian fraction is a continuous proportion of participants. Also distinct from Yang 2010's use of `RACE_ASIAN` as a binary at the arm level (whole-arm-Asian vs whole-arm-Western), which is coarser than the continuous-fraction form. Family precedent: `DIS_CHD_PERCENT` (Vargo 2014).
 
+
+### SEXF_PCT (**canonical for female cohort prevalence percentage**)
+- **Description:** Study-arm-level percentage (0-100) of the enrolled cohort who are female, matching the individual-level `SEXF` canonical. Continuous covariate scaled in percent (not fraction).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; a paper that reports the percentage MALE maps as `SEXF_PCT = 100 - percent male`.
+- **Source aliases:**
+  - `% male` -- Leil 2021 Table 2 (value transformation `SEXF_PCT = 100 - % male`).
+  - `MaleP` -- Zou 2026 Monolix column (percentage male; `SEXF_PCT = 100 - MaleP`).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (the placebo Hill coefficient is shifted by `exp(-0.176)` in arms with fewer than 18.5 percent male patients, derived in `model()` as `(100 - SEXF_PCT) < 18.5`). Also documented (screened, not retained) in `Zou_2026_pembrolizumab_qol_mbma.R` and `Li_2017_nhl_pfs_mbma.R`.
+- **Notes:** MBMA study-arm-level covariate in the `<CONCEPT>_PCT` family (percent 0-100, divided by 100 inside `model()` when used as a fraction). Distinct from the per-subject binary `SEXF`. When the source dichotomises the percentage, keep the column continuous and derive the indicator in `model()` so the cut point stays visible.
+
 ### N_ARM (**canonical for the number of participants contributing to a study-arm-level aggregate observation**)
 - **Description:** The arm sample size behind one aggregate (arm-mean or arm-proportion) data point in a model-based meta-analysis: how many participants were summarised into that value. A **study-design quantity**, not a patient characteristic, and supplied per observation row rather than estimated. It is the meta-analytic weight: an arm mean computed from N participants has a standard error proportional to `1 / sqrt(N)`, so MBMA models divide the residual SD -- and sometimes a between-arm random effect -- by `sqrt(N_ARM)`. Time-varying in principle, because an arm's evaluable count can fall between visits as participants drop out.
 - **Units:** participants
@@ -17363,8 +17451,22 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `NOC` -- Zou 2026 Monolix regressor (`NOC = {use=regressor}`), the number of individuals behind each arm-level QoL mean.
   - `N_ijk` -- Zou 2026 Equations 2 and 3 symbol for the same quantity.
   - `N`, `N_arm`, `n`, `SS`, `NSUB` -- common column-name variants in MBMA datasets; all map directly with no value transformation.
-- **Example models:** `Zou_2026_pembrolizumab_qol_mbma.R` (used twice: the between-treatment-arm random effect on logit baseline QoL enters as `eta_arm_e0 / sqrt(N_ARM)`, and the residual SD is `addSd / sqrt(N_ARM)`), `Yang_2026_copd_fev1_adipd_mbma.R`, `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (both residual terms of Checchio 2017 Equation 13 are multiplied by the binomial standard error `W = sqrt(Pr*(1-Pr)/N_ARM)` of Equation 12: the independent term becomes the record's residual SD, `sdArm <- wArm * addSd_prob_pasi75`, and the arm-level correlated term is added on the probability scale as `wArm * eta_study_corr`. It is the second term that forces the column -- a per-arm RANDOM-EFFECT SD cannot be reproduced by rescaling the output of a single `rxSolve()`), `He_2021_psoriasis_pasi75_mbma.R`, `He_2021_psoriasis_pasi90_mbma.R` (the residual SD of He 2021 Equations 7-8 is `sigma * sqrt(P*(1-P)/N_ARM)`, formed in `model()` as in Checchio 2017; He 2021 has no arm-level correlated term).
+- **Example models:** `Zou_2026_pembrolizumab_qol_mbma.R` (used twice: the between-treatment-arm random effect on logit baseline QoL enters as `eta_arm_e0 / sqrt(N_ARM)`, and the residual SD is `addSd / sqrt(N_ARM)`), `Yang_2026_copd_fev1_adipd_mbma.R`, `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (both residual terms of Checchio 2017 Equation 13 are multiplied by the binomial standard error `W = sqrt(Pr*(1-Pr)/N_ARM)` of Equation 12: the independent term becomes the record's residual SD, `sdArm <- wArm * addSd_prob_pasi75`, and the arm-level correlated term is added on the probability scale as `wArm * eta_study_corr`. It is the second term that forces the column -- a per-arm RANDOM-EFFECT SD cannot be reproduced by rescaling the output of a single `rxSolve()`), `Leil_2021_rheumatoidArthritis_das28_mbma.R` (Leil 2021 Equations 7, 8 and 12 scale every between-trial and between-arm random effect and the residual by `(N / 100)^-0.5`, encoded as `wN <- sqrt(100 / N_ARM)`).
 - **Notes:** MBMA / trial-design covariate; family precedent `K_CTRL` and `LOGRR_TARGET` (Volkova 2023), which are likewise trial-design inputs rather than patient characteristics. Registered as an explicit column because a growing set of MBMA models needs the arm size INSIDE `model()`, not merely as a post-hoc scaling. Most of the library's earlier MBMA extractions (`Mercier_2014_tramadol_tapentadol_mbma`, `Chen_2025_methotrexate_acr20_mbma` / `_acr50_` / `_das28_`, `Asiimwe_2025_trastuzumab*_mbma`, `Hanan_2026_peginterferon_alfa_*_mbma`) store the residual SD UNWEIGHTED and state in `ini()` that downstream code must apply `1 / sqrt(N)`; that remains valid where the arm size touches only the residual. Use `N_ARM` instead when the arm size enters a structural or random-effect expression, where no downstream rescaling can reproduce it -- a per-arm random-effect SD cannot be varied across arms within a single `rxSolve()` without a data column. Scope `general` because arm size carries the same meaning in every MBMA, with no paper-specific semantics. Do NOT use for an individual-level covariate: a row carrying `N_ARM` is an aggregate, and a model consuming it is simulating arm means, not patients.
+
+
+### YEAR_PUB (**canonical for the calendar year of a trial in a model-based meta-analysis -- publication or conduct year, stated per model**)
+- **Description:** Calendar year of a trial (a four-digit year), a study-level characteristic in a model-based meta-analysis used as a proxy for secular change in background care. Continuous; one value per trial. Sources use either the publication year or the year the trial was conducted; each model's `covariateData` notes state which one its value is.
+- **Units:** year
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. Leil 2021 centres it (log-transformed) at 2013, the median publication year of its Supplementary Table S1 trials, because the data-set median is not printed.
+- **Source aliases:**
+  - `trial year` / `year of conduct of the trial` -- Leil 2021 Methods and Table S3 (conduct year).
+  - `YEAR_PUBLICATION` -- Chen 2026 spelling (screened, not retained, in `Chen_2026_nsclc_os_mbma.R`; publication year).
+  - `YEAR`, `PUBYEAR`, `YEAR_TRIAL` -- common dataset column variants; map directly, after confirming which year the source recorded.
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (conduct year; exponent `-397` of `YEAR_PUB / 2013` on the DAS28 progression slope; earlier trials show faster background worsening), `Zierhut_2016_hcc_antiangiogenic_os_mbma.R` (publication year; screened and not retained, in `covariatesDataExcluded`).
+- **Notes:** MBMA / trial-design covariate, sibling of `N_ARM`. Publication year lags conduct year by a few years, so do not pool values of the two kinds without checking; a model with a steep year effect is sensitive to the difference. Ratified 2026-09-29 alongside the Leil 2021 RA DAS28 extraction: the operator chose the existing Zierhut 2016 spelling over a separate `YEAR_TRIAL` canonical, with the year kind recorded per model.
 
 ### K_CTRL (**canonical for control-arm event proportion over the planned follow-up**)
 - **Description:** The proportion of control-arm participants expected to experience the endpoint of interest over a planned trial's follow-up period; a fraction in (0, 1). A **trial-design input**, not a measured patient characteristic: it is what a study-level model needs, alongside an effect size, to turn a predicted treatment effect into a required enrolment. Time-dependent in principle -- the proportion accrues with follow-up duration -- so the value supplied is always tied to a stated follow-up length.

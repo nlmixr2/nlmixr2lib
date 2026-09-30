@@ -982,7 +982,7 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** DAS28 change-from-baseline (DAS28cfb) PD output used by rheumatoid-arthritis models that fit the paper-declared change score rather than the absolute DAS28 value. Companion to `das28` (which holds the absolute score); use `das28cfb` when the paper's own equation targets `DAS28cfb = f(t, Cij)`, with the change interpretation as a negative-going quantity for treatment improvement. Same canonical-lower-case-name convention as `das28` / `d_updrs`.
 - **Source aliases:** `DAS28cfb` -- Williams 2016 paper notation.
-- **Example models:** `Williams_2016_rituximab_das28cfb.R`.
+- **Example models:** `Williams_2016_rituximab_das28cfb.R`, `Leil_2021_rheumatoidArthritis_das28_mbma.R` (study-arm-mean DAS28-CRP change from baseline in a model-based meta-analysis; additive residual scaled by `sqrt(100 / N_ARM)`).
 - **Notes:** Follows the same lowercase-name convention as `das28` / `d_updrs`.
 
 ---
