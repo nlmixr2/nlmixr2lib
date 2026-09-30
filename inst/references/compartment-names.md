@@ -1995,7 +1995,7 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Type:** compartment
 - **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect / linear concentration-QTc models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol, glasdegib, fruquintinib). `QTc` is the generic canonical; `QTcF` (Fridericia correction), `QTcP` (population-based correction) and `QTcS` (study-specific correction) are registered as canonical sibling names because the Fostvedt 2021 glasdegib, Darpo 2014 rac-sotalol and Zhou 2025 fruquintinib models use the correction-specific name directly as the observation variable.
 - **Source aliases:** `QTcB` (Bazett) -- translate to `QTc` and record the correction in the model file's description / vignette.
-- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia, as `QTcF`), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, as `QTcS`), `Darpo_2014_racSotalol_QTcI.R` (individual correction, as `QTcI`), `Zhou_2025_fruquintinib_QTcP_M11.R` and `Zhou_2025_fruquintinib_QTcP_parent.R` (population-based correction, as `QTcP`), `Sasaki_2022_delamanid_QTc_dm6705.R` and `Sasaki_2022_delamanid_QTc_parent.R` (Bazett-corrected change from baseline, DeltaQTcB, as the generic `QTc`).
+- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia, as `QTcF`), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, as `QTcS`), `Darpo_2014_racSotalol_QTcI.R` (individual correction, as `QTcI`), `Zhou_2025_fruquintinib_QTcP_M11.R`, `Zhou_2025_fruquintinib_QTcP_parent.R` (population-based correction, as `QTcP`), `Sasaki_2022_delamanid_QTc_dm6705.R`, `Sasaki_2022_delamanid_QTc_parent.R` (Bazett-corrected change from baseline, DeltaQTcB, as the generic `QTc`), `Jiang_2021_ivosidenib_QTcF.R` (Fridericia, as `QTcF`, change-from-baseline semantic; typical-value linear C-QTc model).
 - **Notes:** `QTcF` / `QTcS` promoted from translate-to-`QTc` aliases to canonical sibling names 2026-06-28 so single-output models that name the observation by its specific correction (rather than the generic `QTc`) pass the convention check. New models should still prefer the generic `QTc` where the correction is incidental; use the specific name only when the correction is the defining feature of the endpoint (as in the paired Fostvedt 2021 QTcF / QTcS glasdegib analyses). `QTcP` added 2026-08-28 as a well-formed member of the same sibling family alongside the Zhou 2025 fruquintinib extraction, which is the strongest case of the correction being the defining feature: the paper's primary endpoint is QTcP precisely BECAUSE Fridericia's formula was shown to correct the fruquintinib cohort's heart rate inadequately (baseline QTcF-RR slope 0.0493, 90% CI 0.0393-0.0592, versus QTcP-RR slope -3.73e-05, 90% CI -0.0102-0.0101), and the paper reports paired QTcP (primary) and QTcF (supportive) fits that would be indistinguishable under the generic name. QTcP is the population-based correction `QTcP = QT / RR^beta`, where `beta` is estimated per study by a log-log regression of QT on RR fitted to the cohort's pre-dose baseline replicates -- distinct from `QTcI`, whose exponent is fitted per SUBJECT, and from `QTcS`, a study-specific correction that need not be of the power-law form. Note that all five names carry either an absolute-QTc semantic (Shin 2006, Fostvedt 2021) or a change-from-baseline semantic (Darpo 2014, Zhou 2025); the per-model `units` field documents which applies.
 
 ### f_hr (**canonical fractional heart-rate response**)
@@ -6628,6 +6628,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `Chen_2025_iohexol_creatinine.R` (founding example; joint iohexol + creatinine model with plasma and urine outputs for both analytes).
 - **Notes:** Spelled out in full rather than abbreviated to `crea`, following the `sunitinib` / `irinotecan` / `ceftaroline` full-word precedent -- creatinine is an endogenous analyte with no standard abbreviation that is free of collisions (`cr` reads as chromium, `crea` is not used in the source literature). Distinct from the covariate columns `SCR` (measured serum creatinine) and `CRCL` (estimated creatinine clearance), which are *observed data inputs*; this suffix names the *modelled* creatinine species. A single-analyte creatinine model with no co-dosed probe drug would use the bare canonicals `central` / `urine` / `Cc` and need no suffix at all -- compare `Barnett_2018_coproporphyrin_I.R`, where the endogenous biomarker is the only analyte.
 
+### creatine (**canonical creatine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Creatine, the dephosphorylation product of exogenously administered phosphocreatine (creatine phosphate), in joint parent-metabolite models. Creatine is also an endogenous species, so such a model typically adds an endogenous baseline concentration to the drug-derived creatine. Used as the metabolite suffix on `central_creatine` / `peripheral1_creatine` compartments, `lcl_creatine` / `lvc_creatine` / `lq_creatine` / `lvp_creatine` / `lrbase_creatine` parameters, the `e_crcl_cl_creatine` covariate effect, and the `Cc_creatine` observation with residual SD `propSd_creatine`. The dosed phosphocreatine is the parent and keeps every bare canonical name.
+- **Source aliases:** `Cr` -- He 2020 subscript (VcCr, VpCr, CLCr, QCr, baseCr); not adopted as the token because `Cr` is equally used for creatinine and reads as chromium.
+- **Example models:** `He_2020_phosphocreatine.R` (founding example).
+- **Notes:** Spelled out in full, following the `creatinine` full-word precedent. Distinct from `creatinine` (the cyclic anhydride of creatine and the renal-function marker): the two are different chemical species with different disposition, and a model carrying both would need both suffixes.
+
 ### dm6705 (**canonical delamanid DM-6705 metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** DM-6705, the major circulating metabolite of the antituberculosis nitroimidazooxazole delamanid, formed by albumin-mediated cleavage of the nitroimidazooxazole moiety ((5R)-5-methyl-5-[[4-[4-[4-(trifluoromethoxy)phenoxy]piperidin-1-yl]phenoxy]methyl]-4H-1,3-oxazol-2-amine, C23H26F3N3O4, 465.5 g/mol). It is the most potent hERG inhibitor among delamanid and its metabolites and is the driver of delamanid-associated QT prolongation.
@@ -6650,6 +6657,55 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
   - `M2`, `kM2`, `keM2`, `kM2-M1`, `METABO2` -- Bertin 2026 subscript notation in Table 2, Fig. 2 and the `$MODEL` block of the control stream.
 - **Example models:** `Bertin_2026_levosimendan.R` (doi:10.1007/s40262-025-01591-4; founding example -- formation from OR-1855 is 3.7-fold slower in patients aged 1 year or younger, which is the paper's central clinical finding).
 - **Notes:** Same token-construction rule as [[or1855]]: development code lowercased, hyphen dropped. The pair is a rare case in this register of a *reversible* metabolic step between two metabolites, neither of which is the parent -- the forward acetylation is `kmet_or1896` and the reverse deacetylation is `kicv_or1855`, named for the species each one forms, so the direction of a rate constant is read off its suffix.
+
+### mrx1352 (**canonical MRX-1352 contezolid-acefosamil intermediate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** MRX-1352, the intermediate prodrug formed by rapid hydrolysis of the intravenous double prodrug contezolid acefosamil (CZA) and converted more slowly to active contezolid. It is assayed in plasma after IV CZA and carries the largest exposure of the three analytes during IV dosing. Drives `central_mrx1352` / `peripheral1_mrx1352`, the `Cc_mrx1352` observation, the `lcl_mrx1352` (conversion clearance to contezolid at time 0), `lcl_ss_mrx1352`, `lcl_t50_mrx1352`, `lcl_time_hill_mrx1352`, `lemax_mrx1352`, `lec50_mrx1352`, `lhill_mrx1352`, `lcl_loss_mrx1352`, `lemax_loss_mrx1352`, `lq_mrx1352`, `lvc_mrx1352`, `lvp_mrx1352` parameters, and the `addSd_mrx1352` / `propSd_mrx1352` residuals.
+- **Source aliases:**
+  - `1352` -- the subscript Bulitta 2024 uses throughout Table 2 (`CL_1352,0`, `V1_1352`, `CLd_1352`, `CL_Loss,1352`).
+- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
+- **Notes:** Development code lowercased with the hyphen dropped, the same construction as [[or1855]]. Contezolid keeps the bare `central` / `Cc` names in the founding model although CZA is the IV-dosed species: contezolid is itself dosed orally in two of the three pooled studies and is the active moiety the model is named for, while CZA is carried only as an unassayed amount in `depot_iv` with no volume or concentration. Pairs with [[mrx1320]] and [[cza]].
+
+### mrx1320 (**canonical MRX-1320 contezolid metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** MRX-1320 (formerly MRX445-1 or M2), the main, pharmacologically inactive oxidative metabolite of contezolid. Drives `central_mrx1320` / `peripheral1_mrx1320`, the `Cc_mrx1320` observation, the `lcl_mrx1320` / `lvmax_mrx1320` / `lkm_mrx1320` parallel linear and Michaelis-Menten elimination parameters, `lq_mrx1320` / `lvc_mrx1320` / `lvp_mrx1320`, and the `addSd_mrx1320` / `propSd_mrx1320` residuals (plus `_iv`-qualified residuals where a model carries separate IV-study terms).
+- **Source aliases:**
+  - `1320` -- Bulitta 2024 Table 2 subscript (`CL_1320`, `Vmax_1320`, `Km_1320`).
+  - `MRX445-1`, `M2` -- earlier names in the contezolid literature (e.g. the Chinese NCA and popPK studies).
+- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
+- **Notes:** Deliberately not the generic `m2`, which is a per-paper designation with no cross-paper chemical meaning; see [[or1855]] for the same rule.
+
+### cza (**canonical contezolid acefosamil prodrug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Contezolid acefosamil (CZA, MRX-4), the water-soluble O-acyl phosphoramidate double prodrug of contezolid given intravenously. Used as the suffix on parameters that describe the prodrug's own fate -- `lvmax_cza` / `lkm_cza` (amount-based Michaelis-Menten conversion to MRX-1352) and `lkel_cza` (first-order loss) -- when the prodrug amount itself sits in the named i.v. input state `depot_iv` rather than a concentration compartment.
+- **Source aliases:**
+  - `CZA` -- Bulitta 2024 Table 2 subscript (`Vmax_CZA`, `AM_50,CZA`).
+  - `CZDa`, `MRX-4` -- the 2021 IDWeek abstract abbreviation and the development code.
+- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
+- **Notes:** A model that assays CZA and gives it a volume would use `central_cza`; the founding model does not, because the conversion was too fast for most CZA concentrations to be quantifiable and the authors dropped CZA from the fitted data.
+
+---
+
+### thrx195518 (**canonical THRX-195518 revefenacin metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** THRX-195518, the major circulating metabolite of the inhaled long-acting muscarinic antagonist revefenacin, formed by hydrolysis of the parent's primary amide to the carboxylic acid. It is roughly three- to ten-fold less potent than revefenacin at muscarinic receptors and dissociates faster from the human M3 receptor, and its systemic exposure exceeds the parent's by about three- to six-fold. Carries `central_thrx195518`, `peripheral1_thrx195518`, the `Cc_thrx195518` observation, `lcl_thrx195518` / `lvc_thrx195518` / `lq_thrx195518` / `lvp_thrx195518`, the `e_age_cl_thrx195518` covariate effect and the `propSd_thrx195518` / `addSd_thrx195518` residuals.
+- **Source aliases:**
+  - `THRX-195518`, `CLmet/F`, `V3/F`, `Qmet/F`, `V4/F` -- Lo 2021 Table 2 and Fig. 1.
+- **Example models:** `Lo_2021_revefenacin.R` (doi:10.1007/s40262-020-00938-3; founding example -- two-compartment metabolite formed from a fixed 21% of the individual revefenacin clearance, with age on metabolite clearance and body weight on the formed fraction).
+- **Notes:** Same token-construction rule as [[or1855]]: the sponsor development code lowercased and the hyphen dropped. `thrx` is the Theravance code prefix, and the digits are the compound's identity, not a chain index, so the token is not a member of the numbered `m<n>` family.
+
+---
+
+### neu5ac (**canonical N-acetylneuraminic acid (sialic acid) metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Free (unbound to glycans) N-acetylneuraminic acid (Neu5Ac), the predominant mammalian sialic acid, formed intracellularly from dosed N-acetylmannosamine (ManNAc) through the sialic acid biosynthesis pathway and measured in plasma. Endogenous: the species has a non-zero pre-dose baseline, so a model carrying it initialises `central_neu5ac` at `rbase_neu5ac` rather than at zero. Carries `central_neu5ac`, the `Cc_neu5ac` observation, `lrbase_neu5ac`, `lkout_neu5ac` and `propSd_neu5ac`.
+- **Source aliases:**
+  - `Neu5Ac`, `N`, `N0`, `kout` -- Van Wart 2021 Eqs. 3-5 and Table 4.
+  - `sialic acid` -- the generic name used in the pathway description.
+- **Example models:** `VanWart_2021_mannac.R` (doi:10.1007/s40268-021-00343-6; founding example -- `central_neu5ac` holds a concentration (ng/mL) fed through a `precursor1` delay state, both draining at `kout_neu5ac`, with production stimulated linearly by plasma ManNAc).
+- **Notes:** Token is the IUPAC-style abbreviation lowercased. Distinct from the registered `sa` suffix, which in this register denotes salicylic acid; do not reuse `sa` for sialic acid. The Neu5Ac state here is a concentration with no asserted volume -- the source never defines one -- so it is carried as `central_neu5ac` in ng/mL, not as an amount.
+
+---
 
 ### hes (**canonical 2-hydroxyethyl succinimide suffix**)
 - **Type:** metabolite-suffix
