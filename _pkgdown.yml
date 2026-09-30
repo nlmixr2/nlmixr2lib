@@ -854,6 +854,8 @@ navbar:
         href: articles/LongBoyle_2015_busulfan.html
       - text: "Busulfan (Nava 2018)"
         href: articles/Nava_2018_busulfan.html
+      - text: "Busulfan (Neroutsos 2022)"
+        href: articles/Neroutsos_2022_busulfan.html
       - text: "Busulfan (Schreib 2024)"
         href: articles/Schreib_2024_busulfan.html
       - text: "Busulfan (Xu 2023)"
@@ -8361,6 +8363,7 @@ articles:
   - articles/Nayak_2021_rivipansel
   - articles/Nemitz_2026_dapagliflozin_pbpk
   - articles/Nemoto_2017_ethanol
+  - articles/Neroutsos_2022_busulfan
   - articles/Nestorov_2014_factorviii
   - articles/Netterberg_2017_docetaxel
   - articles/Netterberg_2018_breast_cancer_FN
