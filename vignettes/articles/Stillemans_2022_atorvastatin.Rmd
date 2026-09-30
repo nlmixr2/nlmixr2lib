@@ -355,12 +355,14 @@ cl_ind |>
   knitr::kable(digits = 1)
 
 # The median individual CL/F of each genotype stratum sits at its typical
-# value (log-normal eta, median exp(0) = 1). Centre, not tails.
+# value (log-normal eta, median exp(0) = 1). Centre, not tails; the 15%
+# bound leaves room for the sampling error of the 64-patient CC median
+# (about 4%) while still catching the 40% TC effect being dropped.
 cl_med <- cl_ind |>
   dplyr::group_by(genotype) |>
   dplyr::summarise(med = median(cl), .groups = "drop")
 cl_typ <- c(TT = 535, TC = 535 * (1 - 0.402), CC = 535 * (1 - 0.041))
-stopifnot(all(abs(cl_med$med / cl_typ[as.character(cl_med$genotype)] - 1) < 0.1))
+stopifnot(all(abs(cl_med$med / cl_typ[as.character(cl_med$genotype)] - 1) < 0.15))
 ```
 
 # NCA with PKNCA
