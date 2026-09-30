@@ -348,8 +348,8 @@ knitr::kable(comparison, digits = 3,
              caption = "Simulated NCA vs. Lon 2013 NCA / model values.")
 ```
 
-The simulated IV CL and SC F track the published NCA values within the
-~20% tolerance described in the verification checklist (differences are
+The simulated IV CL and SC F track the published NCA values within a
+~20% tolerance (differences are
 driven by two effects - the structural-model CL (21.8) and NCA CL (20.8)
 already differed by ~5% in the source paper, and the finite-sample mean
 across 5 simulated rats has its own variability under the 9.67% CV on

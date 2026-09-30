@@ -287,8 +287,8 @@ of the scope of the packaged deterministic simulator.
    17 subclones times 7 states plus the transcendental receptor-
    competition equation for `Ag_f` are not natively expressible in
    rxode2 (see item 2), and the practical simulation cost of enumerating
-   119 additional ODEs is high enough to break the 5-minute vignette
-   render budget. Downstream users who need the full affinity
+   119 additional ODEs is high enough to push the vignette's render
+   time well past 5 minutes. Downstream users who need the full affinity
    distribution can extend the shipped model by hand-authoring the
    17-clone block; the mean-field version is sufficient for the
    sensitivity-style analyses that motivated the original paper.

@@ -167,8 +167,7 @@ Kloprogge_2013_lumefantrine <- function() {
     # Residual error. Kloprogge 2013 modelled the natural logarithm of
     # the lumefantrine plasma concentration with an additive error on
     # log scale, which is equivalent to proportional error in nlmixr2's
-    # linear-concentration space (see references/parameter-names.md
-    # 'Residual error'). Table 2 reports the venous variance on the
+    # linear-concentration space (the standing convention). Table 2 reports the venous variance on the
     # log scale as sigma_venous = 0.0595; the corresponding SD is
     # sqrt(0.0595) = 0.244, encoded here as propSd. The smaller
     # capillary residual variance sigma_capillary = 0.0207 is not

@@ -139,9 +139,8 @@ Morris_2011_artesunate <- function() {
     # log scale (Methods: "Residual variability (RV) was modelled with an
     # additive model for log-transformed data"). NONMEM additive-on-log-
     # scale residual error maps to proportional residual error in
-    # nlmixr2's linear space (per references/nonmem-translation.md and the
-    # sibling Hendriksen_2013_artesunate and Birgersson_2019_artesunate
-    # models); the propSd values here are the SD on the log scale
+    # nlmixr2's linear space (per the sibling Hendriksen_2013_artesunate
+    # and Birgersson_2019_artesunate models); the propSd values here are the SD on the log scale
     # (sqrt of the variance reported in Table 2).
     propSd     <- sqrt(0.696)
     label("Proportional residual SD for artesunate plasma concentration (SD on the log scale)")  # Morris 2011 Table 2: var_RV(AS) = 0.696 (%RSE 11.6); SD = sqrt(0.696) ~= 0.834

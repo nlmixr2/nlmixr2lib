@@ -896,7 +896,7 @@ tibble::tibble(
   that contradicts the table's own footnote definitions and the Results text.
   Resolved as described under Assumptions above.
 - **The supplement contains no final-model parameter.** The supplement
-  (`474470.docx`, linked from the Dovepress article landing page; the EuropePMC
+  (`474470.docx`, linked from the Dovepress article landing page; the PMC
   deposit for PMC11561734 carries only the article's *own* figure renderings
   `DDDT-18-5073-g0001..g0004` and no supplement) holds the bioanalytical
   methods, Table S1 and Table S2. Every final estimate, covariate coefficient

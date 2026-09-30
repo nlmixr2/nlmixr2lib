@@ -175,7 +175,7 @@ Lee_2016_raltegravir <- function() {
     # an additive model on log-transformed data for both raltegravir and
     # glucuronide. A NONMEM additive-on-log-scale residual maps to an
     # nlmixr2 proportional residual on the linear-concentration scale
-    # (see references/parameter-names.md "Residual error"). Table 2 gives
+    # (the standing convention). Table 2 gives
     # SD values directly: sigma_RAL = 0.15, sigma_GLU = 0.18.
     propSd      <- 0.15; label("Proportional residual SD for raltegravir parent (fraction; SD on log scale)") # Table 2: sigma_RAL = 0.15 (RSE 3.2%); paper Methods: additive on log-transformed
     propSd_gluc <- 0.18; label("Proportional residual SD for raltegravir glucuronide (fraction; SD on log scale)") # Table 2: sigma_GLU = 0.18 (RSE 2.6%); paper Methods: additive on log-transformed

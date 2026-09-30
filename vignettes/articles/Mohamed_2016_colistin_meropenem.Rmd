@@ -145,7 +145,7 @@ print(table(raw$BACT, dnn = "BACT"))
 ```
 
 The CSV has 2,636 observation rows over 139 unique experiments. To keep
-the vignette inside the 5-minute render gate while still covering every
+the vignette's render time under 5 minutes while still covering every
 experimental condition, we subset to one representative experiment per
 (BACT × TYPE) cell with a non-trivial Ccol or Cmer.
 

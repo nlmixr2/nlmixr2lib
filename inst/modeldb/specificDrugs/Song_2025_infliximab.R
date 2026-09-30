@@ -55,8 +55,8 @@ Song_2025_infliximab <- function() {
   # covariates evaluated for F were BW, BMI and ADA). Only BMI, ALB, CRP and
   # ADA survived forward selection / backward elimination, and the paper
   # reports no point estimate for any rejected covariate (the per-step
-  # objective-function changes are in Supplementary Table 1, which is not on
-  # disk). Recorded here so the provenance of the covariate screen is not lost;
+  # objective-function changes are in Supplementary Table 1, which was not
+  # available when this model was built). Recorded here so the provenance of the covariate screen is not lost;
   # documentation only, never referenced in model().
   covariatesDataExcluded <- list(
     AGE = list(

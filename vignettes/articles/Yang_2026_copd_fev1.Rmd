@@ -31,7 +31,7 @@ packaged here separately:
 * Citation: `r rxode2::rxode(readModelDb("Yang_2026_copd_fev1_adipd_mbma"))$reference`
 * Article: <https://doi.org/10.1002/psp4.70059>
 * Supporting Information (Tables S1-S5 and both NONMEM control streams):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12896389/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12896389>
 
 ```{r load-models}
 ui_ipd   <- rxode2::rxode(readModelDb("Yang_2026_copd_fev1_ipd"))

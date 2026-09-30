@@ -588,7 +588,7 @@ b <- omega_cmp[2, ]
 # The tail percentiles are reported in the table above for the reader but are
 # too noisy at n = 150 to assert on: the 95th percentile is the eighth-largest
 # of 150 draws. n is not raised to shrink this noise because n = 600 takes
-# ~975 s solo, over the 900 s per-vignette ceiling in the merge gate.
+# ~975 s to render on its own.
 stopifnot(a$`SD of log Cmax` < 0.45)
 stopifnot(b$`SD of log Cmax` > 0.45)
 

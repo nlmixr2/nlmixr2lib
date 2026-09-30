@@ -58,7 +58,7 @@ Chetty_2014_efalizumab_cd11a_qsp <- function() {
     "binding, koff dissociation, kint complex internalisation, saturation of",
     "binding sites, Ksyn synthesis and Kdeg degradation of CD11a, with Km",
     "subsuming kon, koff and kint). Chetty 2014 has no supplementary material",
-    "(EuropePMC reports hasSuppl = N) and no erratum; the only linked item is a",
+    "and no erratum; the only linked item is a",
     "later 'Comment in' (AAPS J 2016;18:948-59).",
     "The companion efficacy model from the same paper is",
     "modellib('Chetty_2014_efalizumab_pasi').",

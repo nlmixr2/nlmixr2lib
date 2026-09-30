@@ -154,8 +154,8 @@ make_cohort <- function(cohort, site_arm, id_offset = 0L) {
     mutate(amt = 45, evid = 1L, cmt = "depot", dv = NA_real_)
 
   # Observation grid: dense in cycle 1 (catches absorption peak) and around
-  # each subsequent dose; coarser between to keep the vignette under the
-  # 5-minute render budget. Fine-grain step 0.5 h covers tmax ~ 2-3 h. A
+  # each subsequent dose; coarser between to keep the vignette's render
+  # time under 5 minutes. Fine-grain step 0.5 h covers tmax ~ 2-3 h. A
   # single grid is used for both Cc and ttr because rxode2 emits both
   # output variables on every observation row regardless of cmt label.
   obs_t <- sort(unique(c(
@@ -183,7 +183,7 @@ events <- bind_rows(
   make_cohort(cohort, site_arm = 1L, id_offset = n_subj)
 )
 
-# Disjoint-IDs guard (vignette-template Section Multi-cohort simulations).
+# Disjoint-IDs guard: cohorts built separately must not share IDs.
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
 ```
 

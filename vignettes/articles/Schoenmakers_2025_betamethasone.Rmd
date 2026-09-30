@@ -390,8 +390,8 @@ AUC0-inf vs (Dose / CL) ratio raises.
 - **Virtual cohort sized for stable medians.** The vignette uses 200
   women per stratum (400 total), substantially larger than the
   source cohort (23 + 5 = 28). The larger size gives stable NCA
-  medians while keeping the vignette under the 5-minute pkgdown
-  gate.
+  medians while keeping the vignette's render time under 5
+  minutes.
 
 - **Single-centre cohort generalisability.** All 28 women in the
   source study were enrolled at a single Dutch tertiary centre

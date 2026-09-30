@@ -965,10 +965,7 @@ diagnostic figures. Every
 parameter of all three models is in the main-text tables, so the gap costs
 demographic and per-study detail only, and it is the reason
 `population$age_range`, `weight_range`, `sex_female_pct` and `race_ethnicity`
-are absent from all three model files rather than populated. An attempt to
-retrieve it on 2026-09-03 failed: EuropePMC's supplementary-file service was
-unavailable at the time (for a control article as well, so an outage rather
-than a missing deposit), and the publisher's copy was not accessible.
+are absent from all three model files rather than populated.
 
 **The text extracted from the PDF is unusable for the equations.** None of the
 nine display equations is decoded, and the PDF's symbol font encodes
