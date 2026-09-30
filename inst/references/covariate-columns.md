@@ -4319,17 +4319,6 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Dickinson_2009_atazanavir.R` (atazanavir CL/F power-function dependence on RTVAUC0-24, centred at 7.52 mg*h/L with exponent -0.8).
 - **Notes:** Specific scope because the column meaning is tied to ritonavir as the booster drug and to the 0-24 h once-daily dosing-interval AUC convention. Sibling drug-specific AUC canonicals (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`, `AUC_PAZO`, `AUC_GCV`) follow the same `AUC_<DRUG>` naming pattern. A future PK model that uses a different ritonavir exposure metric (trough concentration, q12h-interval AUC for BID ritonavir regimens) should register a parallel canonical rather than overload `AUC_RTV`. For simulation users without observed ritonavir AUC, the Dickinson 2009 cohort median 7.52 mg*h/L reproduces typical-value behaviour (the centring point of the covariate effect).
 
-### AUC_RIF (**canonical for rifampicin plasma AUC over a 24 h dosing interval**)
-- **Description:** Per-subject (time-fixed) rifampicin plasma AUC over a 0-24 h once-daily dosing interval, used as an exposure covariate in exposure-response models. In Svensson 2020 it is the individual AUC0-24 on day 2 +/- 1 of treatment (before autoinduction is complete), predicted from the empirical Bayes estimates of the companion popPK model, and it reduces the hazard of death through an Emax function.
-- **Units:** `mg*h/L`
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- enters through an Emax function `1 - AUC_RIF / (AUC50 + AUC_RIF)` with no centring value.
-- **Source aliases:**
-  - `AUC` -- NONMEM `$INPUT` name in the Svensson 2020 survival control stream.
-- **Example models:** `Svensson_2020_rifampicin_survival.R` (Emax reduction of the tuberculous-meningitis mortality hazard with AUC50 = 171 mg*h/L; compute the value from `modellib('Svensson_2020_rifampicin')` at `OCC = 1` over the second daily dose).
-- **Notes:** Member of the `AUC_<DRUG>` family (`AUC_RTV`, `AUC_LCM`, `AUC_GCV`, ...). Specific scope because the sampling day matters for rifampicin: autoinduction raises clearance over the first 1-2 weeks, so a day-2 AUC0-24 and a steady-state AUC0-24 for the same dose differ materially. A model that uses a steady-state or induced-state rifampicin AUC should record that in `covariateData[[AUC_RIF]]$notes`, or register a sibling canonical if both appear in one model.
-
 ### AUC_VERUB (**canonical for verubecestat AUC over the 24 h dosing interval at steady state**)
 - **Description:** Time-varying verubecestat plasma AUC over the once-daily 24 h dosing interval at steady state, used as the driver of the inhibitory Emax sigmoid on the amyloid plaque formation rate Kin in the van Maanen 2025 amyloid plaque turnover model (paper Eq 4: `Inh_verub = Imax * AUC_VERUB / (AUC_VERUB + AUC50)`). The van Maanen 2025 analysis derives individual AUC_VERUB from the upstream Dockendorf 2022 verubecestat population PK model (cited in Table S1).
 - **Units:** `uM*h` (micromolar * hour). Must be in the same units as the model's AUC50 parameter (uM*h) so the sigmoid AUC/(AUC + AUC50) is dimensionless. Document per-model via `covariateData[[AUC_VERUB]]$units`.
@@ -4608,7 +4597,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Reference category:** n/a -- used as an exponential effect centred on a cohort median, `exp(theta * (AUC_RIF - median))`. Reference value observed: 35.36 umol*h/L (Kloprogge 2020 PK-cohort median 29.10 mg*h/L).
 - **Source aliases:**
   - `AUCrif` -- Kloprogge 2020 Supplementary S2 Table row `T12_AUCrif` ('effect of AUC rifampicin on start time of delayed bacillary clearance'); same orientation, no value transformation.
-- **Example models:** `Kloprogge_2020_hrze_bacterialload.R` (exponential effect on the half-time T1/2 of the fall in sputum bacterial kill rate, coefficient 0.0335 per umol*h/L).
+- **Example models:** `Kloprogge_2020_hrze_bacterialload.R` (exponential effect on the half-time T1/2 of the fall in sputum bacterial kill rate, coefficient 0.0335 per umol*h/L), `Svensson_2020_rifampicin_survival.R` (merged from a duplicate register entry during merge dedup).
 - **Notes:** Member of the `AUC_<DRUG>` family; sibling of `AUC_INH` from the same model. The upstream model that generates this column is `modellib('Kloprogge_2020_rifampicin')` (dose / CL at steady state). Distinct from `CONMED_RIFAMPICIN_SD` / `CONMED_RIFAMPICIN_MD`, which flag rifampicin co-administration as a perpetrator rather than carrying its exposure.
 
 ### AUCU_VALE (**canonical for unbound valemetostat AUC over the 24 h dosing interval at steady state**)
