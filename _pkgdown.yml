@@ -3920,6 +3920,8 @@ navbar:
         href: articles/Hwang_2023_monalizumab.html
       - text: "Moroctocog (Abrantes 2017)"
         href: articles/Abrantes_2017_moroctocog.html
+      - text: "Morphine (Duflot 2022)"
+        href: articles/Duflot_2022_morphine.html
       - text: "Morphine (Elkomy 2015)"
         href: articles/Elkomy_2015_morphine.html
       - text: "Morphine (Franken 2015)"
@@ -7423,6 +7425,7 @@ articles:
   - articles/Du_2025_repotrectinib
   - articles/Duan_2024_linezolid
   - articles/Duffull_2025_tmdd_model_instability
+  - articles/Duflot_2022_morphine
   - articles/Duke_2024_cefazolin
   - articles/Dumond_2017_unbound_antiretrovirals
   - articles/Dunlap_2025_tacrolimus
