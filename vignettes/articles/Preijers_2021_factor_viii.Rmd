@@ -97,7 +97,7 @@ The same information is available programmatically via
 | Two-compartment structure, 68 kg normalisation | -- | Results 3.3; Methods Eq. 2 |
 | Age power model | -- | Methods Eq. 5; Results 3.3 (power form performed best) |
 | Blood group O on CL | -- | Methods Eq. 3; Table 2 footnote |
-| Baseline + Refacto AF observation equation | `Cc = (central/vc/1000 + FVIII_BL) * (1 - 0.30 * FORM_FVIII_BDD)` | Methods Eq. 1 |
+| Baseline + Refacto AF observation equation | `Cc = (central/vc/1000 + FVIIIRECENT) * (1 - 0.30 * FORM_FVIII_BDD)` | Methods Eq. 1 |
 
 Covariates tested but not retained: major surgery on CL (significant in the
 multivariate step, dropped after the bootstrap because its confidence interval
@@ -126,7 +126,7 @@ chk_cov <- data.frame(
   WT = c(68, 68, 10, 30),
   AGE = c(40, 40, 1, 8),
   BLOOD_GROUP_O = c(0, 1, 0, 0),
-  FORM_FVIII_BDD = 0, FVIII_BL = 0, STUDY_OPTICLOT_CTR45 = 0, STUDY_GOSH = 0
+  FORM_FVIII_BDD = 0, FVIIIRECENT = 0, STUDY_OPTICLOT_CTR45 = 0, STUDY_GOSH = 0
 )
 ev_chk <- merge(chk_cov, data.frame(time = c(0, 1)))
 ev_chk$evid <- ifelse(ev_chk$time == 0, 1L, 0L)
@@ -206,7 +206,7 @@ cohort <- bind_rows(children, adults) |>
   mutate(
     BLOOD_GROUP_O = as.integer(runif(n()) < 0.39),
     FORM_FVIII_BDD = 0L,
-    FVIII_BL = 0,
+    FVIIIRECENT = 0,
     STUDY_OPTICLOT_CTR45 = 0L,
     STUDY_GOSH = as.integer(cohort == "Pediatric")
   )
@@ -223,7 +223,7 @@ cohort |>
   knitr::kable(caption = "Virtual cohort summary.")
 ```
 
-`FVIII_BL = 0` (severe hemophilia, drug-attributable FVIII only) and
+`FVIIIRECENT = 0` (severe hemophilia, drug-attributable FVIII only) and
 `FORM_FVIII_BDD = 0` are used throughout so the NCA below reflects the PK
 parameters; their effect on the readout is shown separately at the end.
 
@@ -299,7 +299,7 @@ adult (non-O, minor surgery, full-length product).
 ```{r compare-hazendonk, fig.width = 7, fig.height = 4}
 typ_subj <- data.frame(
   id = 1:2, WT = c(10, 68), AGE = c(1, 40), who = c("1 y, 10 kg", "40 y, 68 kg"),
-  BLOOD_GROUP_O = 0, SURG_SEV_MAJOR = 0, FORM_FVIII_BDD = 0, FVIII_BL = 0,
+  BLOOD_GROUP_O = 0, SURG_SEV_MAJOR = 0, FORM_FVIII_BDD = 0, FVIIIRECENT = 0,
   STUDY_OPTICLOT_CTR45 = 0, STUDY_GOSH = 0
 )
 ev_typ <- bind_rows(
@@ -396,7 +396,7 @@ c(`distribution t1/2 (h)` = log(2) / alpha, `terminal t1/2 (h)` = log(2) / beta)
 ```{r readout}
 ro <- data.frame(
   id = 1:3, WT = 68, AGE = 40, BLOOD_GROUP_O = 0,
-  FORM_FVIII_BDD = c(0, 0, 1), FVIII_BL = c(0, 0.03, 0.03),
+  FORM_FVIII_BDD = c(0, 0, 1), FVIIIRECENT = c(0, 0.03, 0.03),
   STUDY_OPTICLOT_CTR45 = 0, STUDY_GOSH = 0
 )
 ev_ro <- bind_rows(
@@ -405,10 +405,10 @@ ev_ro <- bind_rows(
 ) |>
   arrange(id, time, desc(evid)) |>
   as.data.frame()
-sim_ro <- as.data.frame(rxSolve(zeroRe(mod), ev_ro, keep = c("FVIII_BL", "FORM_FVIII_BDD")))
+sim_ro <- as.data.frame(rxSolve(zeroRe(mod), ev_ro, keep = c("FVIIIRECENT", "FORM_FVIII_BDD")))
 sim_ro |>
   filter(time == 24) |>
-  select(FVIII_BL, FORM_FVIII_BDD, Cc) |>
+  select(FVIIIRECENT, FORM_FVIII_BDD, Cc) |>
   knitr::kable(digits = 4, caption = "Typical FVIII 24 h after 50 IU/kg: baseline and BDD-product readout.")
 r <- sim_ro[sim_ro$time == 24, ]
 stopifnot(
@@ -433,8 +433,11 @@ stopifnot(
   uses `(C_PRED + C_base) * (1 - 0.30 * FORM_FVIII_BDD)`, which equals
   `(C_PRED + C_base) * (1 - 0.30)^FORM_FVIII_BDD` for a binary indicator.
 - **Endogenous baseline.** Eq. 1 adds the measured endogenous level `C_base`
-  to the prediction; it is carried as the covariate `FVIII_BL` (IU/mL). Set it
-  to 0 to simulate the drug-attributable FVIII only.
+  to the prediction; it is carried as the covariate `FVIIIRECENT` (IU/mL), the
+  package's canonical name for the patient's most recently measured untreated
+  FVIII:C (also used, as a power-scaled covariate, by
+  `Schutte_2018_desmopressin`). Set it to 0 to simulate the drug-attributable
+  FVIII only.
 - **Pre-dose FVIII initialisation not encoded.** When a pre-operative FVIII
   level was available without the preceding dose history, the authors
   initialised every compartment at that level times its volume (NONMEM A_0).

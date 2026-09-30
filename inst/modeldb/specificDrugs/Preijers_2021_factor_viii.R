@@ -42,8 +42,8 @@ Preijers_2021_factor_viii <- function() {
       notes = "Preijers 2021 Methods Eq. 1: measured FVIII = (predicted + endogenous baseline) reduced by the fraction theta_prod = 0.30 (Table 2 'B-domain deleted recombinant factor VIII') when the dichotomous covariate theta_Refacto AF = 1 (muroctocog alfa, i.e. Refacto AF). Per-observation indicator; a subject may have received different products across procedures.",
       source_name = "Refacto AF"
     ),
-    FVIII_BL = list(
-      description = "Measured endogenous (untreated) baseline plasma FVIII activity of the patient",
+    FVIIIRECENT = list(
+      description = "Most recently measured untreated plasma FVIII:C activity of the patient (the measured endogenous baseline FVIII level)",
       units = "IU/mL",
       type = "continuous",
       reference_category = NULL,
@@ -144,7 +144,7 @@ Preijers_2021_factor_viii <- function() {
     # Methods Eq. 1 (read as a multiplicative BDD correction; see vignette):
     #   C_FVIII = (C_PRED + C_base) * (1 - theta_prod * RefactoAF)
     # Dose in IU and vc in L give IU/L; divide by 1000 for IU/mL.
-    Cc <- (central / vc / 1000 + FVIII_BL) * (1 - theta_bdp * FORM_FVIII_BDD)
+    Cc <- (central / vc / 1000 + FVIIIRECENT) * (1 - theta_bdp * FORM_FVIII_BDD)
 
     # Centre-group residual error; the two indicators are mutually exclusive
     # and both 0 selects centres 1, 2, 3.
