@@ -1562,8 +1562,12 @@ navbar:
         href: articles/Tornoe_2006_HPG_axis.html
       - text: "Delafloxacin (Lv 2024)"
         href: articles/Lv_2024_delafloxacin.html
-      - text: "Delamanid (Wang 2020)"
-        href: articles/Wang_2020_delamanid.html
+      - text: "Delamanid (Sasaki 2022)"
+        href: articles/Sasaki_2022_delamanid.html
+      - text: "Delamanid QTc dm6705 (Sasaki 2022)"
+        href: articles/Sasaki_2022_delamanid.html
+      - text: "Delamanid QTc parent (Sasaki 2022)"
+        href: articles/Sasaki_2022_delamanid.html
       - text: "Denosumab (Choi 2025)"
         href: articles/Choi_2025_denosumab.html
       - text: "Denosumab kn012 (Zhu 2026)"
@@ -8695,6 +8699,7 @@ articles:
   - articles/Santamaria_2017_rupatadine
   - articles/Saporta_2026_meropenem
   - articles/Sarashina_2005_epinastine
+  - articles/Sasaki_2022_delamanid
   - articles/Sassen_2017_crisantaspase
   - articles/Sathe_2024_sacituzumab
   - articles/Sathe_2025_sacituzumab
