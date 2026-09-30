@@ -988,10 +988,8 @@ navbar:
         href: articles/Lin_2024_casirivimab.html
       - text: "Caspofungin (AbdulAziz 2025)"
         href: articles/AbdulAziz_2025_caspofungin.html
-      - text: "Caspofungin (Martson 2020)"
-        href: articles/Martson_2020_caspofungin.html
-      - text: "Caspofungin (Niu 2020)"
-        href: articles/Niu_2020_caspofungin.html
+      - text: "Caspofungin (Wang 2020)"
+        href: articles/Wang_2020_caspofungin.html
       - text: "Caspofungin (Wurthwein 2013)"
         href: articles/Wurthwein_2013_caspofungin.html
       - text: "Caspofungin (Xu 2026)"
@@ -9014,7 +9012,7 @@ articles:
   - articles/Wang_2019_missing_dosing_history
   - articles/Wang_2019a_tacrolimus
   - articles/Wang_2019b_tacrolimus
-  - articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp
+  - articles/Wang_2020_caspofungin
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2020_polymyxinB
   - articles/Wang_2020_sunitinib
