@@ -580,6 +580,17 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Guiastrennec_2016_gastric_emptying.R` (selects the fat-specific half-onset time T50Fat = 23.1 min for the gastric-emptying delay Hill function).
 - **Notes:** Specific scope because the fat-containing partition is tied to the Guiastrennec 2016 postprandial-challenge design. Pairs with `DRINK_OGTT`: the two indicators jointly select the appropriate gastric-emptying-delay T50 parameter (T50OGTT vs T50Fat) for the Hill onset function.
 
+### GE_T10_BL (**canonical for baseline (drug-free) gastric emptying t10**)
+- **Description:** Per-subject time, in minutes, for 10% of a standardized test meal to leave the stomach, measured before treatment (drug-free). In Kim 2021 it comes from the 13C-Spirulina gastric emptying breath test (GEBT): the baseline kPCD values are converted to gastric emptying fractions at fixed timepoints with the Szarka 2008 regressions (which also use sex and BMI), and t10 is interpolated from those fractions. A short t10 means fast early gastric emptying.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a power term normalised to a reference, `(GE_T10_BL / 30)^theta`; Kim 2021 uses 30 min. Record the per-model reference in `covariateData[[GE_T10_BL]]$notes`.
+- **Source aliases:**
+  - `HT10` -- used in `Kim_2021_YH12852.R` (supplementary NONMEM control stream, `SLP = THETA(9) * EXP(ETA(8)) * (HT10/30)**THETA(11)`); same orientation and units, no transformation.
+- **Example models:** `Kim_2021_YH12852.R` (power effect on the linear slope of plasma YH12852 on the stomach emptying rate, exponent 3.57; Kim 2021 Table 1).
+- **Notes:** Member of the `<X>_BL` baseline family (`QTC_BL`, `MAP_BL`, `OFFTIME_BL`, `HAERATE_BL`). Not `<X>_BASE`, which is reserved for a time-fixed baseline paired with a time-varying column of the same quantity; no time-varying gastric emptying column exists. A gastric emptying half-time (t50) covariate, screened but not retained in Kim 2021, would be a sibling `GE_T50_BL`. Time-fixed per subject. Distinct from the test-drink indicators `DRINK_OGTT` / `DRINK_FAT`, which describe the meal rather than the subject. Specific scope until a second gastric emptying model ratifies the name.
+
 ### D25OH_BL (**canonical for baseline (pre-supplementation) serum 25-hydroxyvitamin D concentration**)
 - **Description:** Per-subject serum concentration of 25-hydroxyvitamin D (25(OH)D, calcifediol) measured before the first vitamin D dose. 25(OH)D is the circulating storage metabolite of vitamin D and the analyte on which vitamin D status is clinically defined (deficiency below 50 nmol/L, severe deficiency below 25 nmol/L per the Institute of Medicine); every subject carries a substantial endogenous pool sustained by cutaneous synthesis and dietary intake, so a supplemental dose is superimposed on a large pre-existing baseline rather than starting from zero. In vitamin D PK models the baseline therefore plays a dual role: it is the initial condition of the 25(OH)D compartment(s), and it identifies the otherwise-unobservable per-subject endogenous vitamin D input rate, which is back-solved so that formation and elimination balance exactly at the measured baseline. Because the elimination of 25(OH)D is concentration-dependent, the baseline also sets where on the nonlinear clearance curve each subject starts and hence how much a given dose raises them.
 - **Units:** nmol/L
