@@ -1076,6 +1076,8 @@ navbar:
         href: articles/Leroux_2016_cefotaxime.html
       - text: "Cefotaxime (Roelofsen 2023)"
         href: articles/Roelofsen_2023_cefotaxime.html
+      - text: "Cefotaxime (Swartling 2022)"
+        href: articles/Swartling_2022_cefotaxime.html
       - text: "Cefotiam (Shah 2019)"
         href: articles/Shah_2019_cefotiam.html
       - text: "Cefoxitin qsp (LopezArguello 2023)"
@@ -8878,6 +8880,7 @@ articles:
   - articles/Svensson_2018_rifampicin
   - articles/Svensson_2020_rifampicin
   - articles/Swart_2004_lorazepam_midazolam
+  - articles/Swartling_2022_cefotaxime
   - articles/Sy_2018_etirinotecanPegol
   - articles/Syvanen_2011_verapamil_rat
   - articles/Syvanen_2012_quinidine_rat
