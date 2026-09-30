@@ -410,12 +410,25 @@ lnorm_sdlog <- function(median, sd) {
   stats::uniroot(function(s) median * exp(s^2 / 2) * sqrt(exp(s^2) - 1) - sd,
                  c(1e-3, 3))$root
 }
+# Truncation by rejection: values outside the Table 2 range are redrawn, not
+# clamped to the limit (clamping would pile probability mass on the limits).
+draw_truncated <- function(n, rdraw, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rdraw(n)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
 draw_lnorm <- function(n, median, sd, lo, hi) {
-  pmin(pmax(stats::rlnorm(n, log(median), lnorm_sdlog(median, sd)), lo), hi)
+  sdlog <- lnorm_sdlog(median, sd)
+  draw_truncated(n, function(m) stats::rlnorm(m, log(median), sdlog), lo, hi)
 }
 cohort <- tibble::tibble(
   pid = seq_len(n_per_arm),
-  IPSS_BL = pmin(pmax(round(stats::rnorm(n_per_arm, 16.48, 6.10)), 1), 35),
+  IPSS_BL = draw_truncated(
+    n_per_arm, function(m) round(stats::rnorm(m, 16.48, 6.10)), 1, 35
+  ),
   PSA_BL = draw_lnorm(n_per_arm, 3.4, 2.10, 0.6, 23.2),
   PROSTATE_VOL_BL = draw_lnorm(n_per_arm, 48.5, 23.0, 16.59, 296.89),
   QMAX_BL = draw_lnorm(n_per_arm, 10.2, 3.59, 2.2, 36.2)
@@ -462,10 +475,20 @@ fig3 <- tibble::tribble(
   "Dutasteride", 48,      94.3,
   "Combination", 48,      95.8
 )
-fig3 |>
+fig3_chk <- fig3 |>
   left_join(surv_arm |>
               mutate(months = round(time / 30.4375), arm = as.character(arm)),
-            by = c("arm", "months")) |>
+            by = c("arm", "months"))
+# Every arm is matched, and each model value is within 1 percentage point of
+# the Figure 3 read-off (the covariates are drawn with base R's RNG and the
+# model has no random effects, so these values do not depend on the rxode2
+# build).
+stopifnot(
+  nrow(fig3_chk) == 4,
+  !anyNA(fig3_chk$sur),
+  all(abs(100 * fig3_chk$sur - fig3_chk$figure3_observed_pct) < 1)
+)
+fig3_chk |>
   transmute(Arm = arm, Months = months,
             `Figure 3 observed (%, read off the plot)` = figure3_observed_pct,
             `Model, pooled cohort (%)` = round(100 * sur, 1)) |>
