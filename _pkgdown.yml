@@ -630,6 +630,8 @@ navbar:
         href: articles/Altcheh_2023_benznidazole.html
       - text: "Benznidazole (Assmus 2025)"
         href: articles/Assmus_2025_benznidazole.html
+      - text: "Benznidazole (Frade 2022)"
+        href: articles/Frade_2022_benznidazole.html
       - text: "Benznidazole (Soy 2015)"
         href: articles/Soy_2015_benznidazole.html
       - text: "Benznidazole mouse (Assmus 2025)"
@@ -6618,6 +6620,7 @@ articles:
   - articles/Foster_2023_enrofloxacin_cat
   - articles/Fostvedt_2021_glasdegib
   - articles/Fournier_2018_amoxicillin
+  - articles/Frade_2022_benznidazole
   - articles/Francis_2019_rifapentine
   - articles/Francke_2025_tacrolimus
   - articles/Franke_2015_oxycodone_acetaminophen
