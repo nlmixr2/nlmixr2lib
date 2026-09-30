@@ -5800,6 +5800,8 @@ navbar:
         href: articles/Karlsson_2009_voriconazole.html
       - text: "Voriconazole (Kim 2019)"
         href: articles/Kim_2019_voriconazole.html
+      - text: "Voriconazole (Li 2021)"
+        href: articles/Li_2021_voriconazole.html
       - text: "Voriconazole (Lin 2018)"
         href: articles/Lin_2018_voriconazole.html
       - text: "Voriconazole (Ling 2024)"
@@ -7164,6 +7166,7 @@ articles:
   - articles/Li_2019_abatacept
   - articles/Li_2019_ceftazidime_avibactam
   - articles/Li_2021_daratumumab_qsstmdd
+  - articles/Li_2021_voriconazole
   - articles/Li_2023_TQB3203
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
