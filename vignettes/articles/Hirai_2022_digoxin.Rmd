@@ -202,8 +202,14 @@ sim4 <- suppressWarnings(rxode2::rxSolve(
   tv, events = ev4, params = subj4 |> select(id, etalcl),
   returnType = "data.frame", maxsteps = 1e6
 )) |>
-  select(id, Cc) |>
-  left_join(subj4 |> select(id, cell, dose, CRCL, CONMED_AMIO), by = "id")
+  select(id, cl, Cc) |>
+  left_join(subj4 |> select(id, cell, dose, CRCL, CONMED_AMIO, etalcl), by = "id")
+
+# Guard: every subject's clearance must carry its own supplied eta. A harness
+# that silently drops `params` etas would solve everyone at the typical value.
+cl_expected <- with(sim4, 6.209 * (pmin(CRCL, 120) / 60)^0.409 *
+                      (1 - 0.238 * CONMED_AMIO) * exp(etalcl))
+stopifnot(nrow(sim4) == nrow(subj4), max(abs(sim4$cl / cl_expected - 1)) < 1e-8)
 
 pta <- sim4 |>
   group_by(cell, dose, CRCL, CONMED_AMIO) |>
