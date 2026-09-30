@@ -3168,6 +3168,8 @@ navbar:
         href: articles/Fukumoto_2023_meropenem.html
       - text: "Meropenem (Germovsek 2018)"
         href: articles/Germovsek_2018_meropenem.html
+      - text: "Meropenem (Gijsen 2022)"
+        href: articles/Gijsen_2022_meropenem.html
       - text: "Meropenem (Hanberg 2018)"
         href: articles/Hanberg_2018_meropenem.html
       - text: "Meropenem (Kim 2024)"
@@ -6684,6 +6686,7 @@ articles:
   - articles/Gibiansky_2005_fospropofol
   - articles/Gibiansky_2014_obinutuzumab
   - articles/Gidal_2018_eslicarbazepine_exposure_response
+  - articles/Gijsen_2022_meropenem
   - articles/Gilkey_2015_DiRnanoparticle
   - articles/Girard_2012_pimasertib
   - articles/Gisleskog_1999_dutasteride
