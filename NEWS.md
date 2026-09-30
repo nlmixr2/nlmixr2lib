@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
+- Add Mueller-Schoell 2021 axicabtagene ciloleucel QSP ([doi:10.3390/cancers13112782](https://doi.org/10.3390/cancers13112782)) -- adults with relapsed/refractory large B-cell non-Hodgkin lymphoma treated with CD19-specific CAR-T cells.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
