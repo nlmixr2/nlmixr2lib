@@ -648,8 +648,8 @@ Two rows of that table deserve comment rather than an assertion.
   10.5-16.6 kg range. Age is not simulated because it does not enter the model.
   No IIV correlation structure is reported, so the random effects are
   independent.
-* **Supplement.** The supplementary PDF (Tables S1-S3, Figures S1-S5) was
-  retrieved through the Europe PMC `supplementaryFiles` endpoint. It supplies
+* **Supplement.** The supplementary PDF (Tables S1-S3, Figures S1-S5) is
+  published with the open-access article. It supplies
   demographics (Table S1), the model-selection OFV table (Table S2) and the
   external-validation study summaries (Table S3), but no additional parameter
   values; every `ini()` entry comes from the main article's Table 2.

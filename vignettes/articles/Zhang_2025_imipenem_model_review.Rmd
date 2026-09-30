@@ -35,8 +35,8 @@ estimates (Table 2), the inter-individual and residual variability
 (Table 3), and the dosing and sampling protocol (Supplementary Table
 S1).
 
-The standing policy for a review is to skip it and queue its cited
-primaries. That policy carries an explicit exception for a review that
+Reviews are normally not transcribed; their primary publications are
+extracted instead. That practice has an explicit exception for a review that
 **tabulates the parameters**, and this one does: Tables 2 and 3 together
 are enough to write down every differential equation and initialise
 every `ini()` value for most of the 18 constituent models. So the models
@@ -45,10 +45,22 @@ below are transcribed from the review, each carrying a
 `reference` metadata.
 
 Every model file in this family records `ALL PARAMETER VALUES ARE
-SECONDARY` in its `population$notes`. Read the
+SECONDARY` in its `population$notes`, except those marked "re-verified
+against primary" in the coverage table below, which have since been
+rewritten from their primary publications and have their own articles
+([de Velde 2020](deVelde_2020_imipenem.html),
+[Nguyen 2021](Nguyen_2021_ceftazidime_imipenem.html),
+[Por 2021](Por_2021_imipenem.html)). Read the
 "Assumptions and deviations" section at the foot of this page before
 using any of them; it reports a **measured** audit of how faithfully the
 review reproduces its primaries, and that audit found a real defect.
+
+For example, `deVelde_2020_imipenem` has since been re-verified
+against its primary publication. It is now documented, together with
+the primary's nonparametric arm (`deVelde_2020_imipenem_nonparametric`),
+in its own [de Velde 2020 article](deVelde_2020_imipenem.html), and it
+no longer carries the secondary-source notes. It still appears in the
+tables below so that the review's own numbers can be checked.
 
 # Coverage of the review's 18 studies
 
@@ -70,10 +82,10 @@ coverage <- tibble::tribble(
    6L, "Dong et al. (2019)",              "Extracted",              "Dong_2019_imipenem",
    7L, "Li et al. (2020)",                "Blocked: dialysate-compartment role + Qd units", NA_character_,
    8L, "Chen et al. (2020b)",             "Extracted",              "Chen_2020_imipenem",
-   9L, "de Velde et al. (2020)",          "Extracted (NONMEM arm)", "deVelde_2020_imipenem",
-  10L, "Nguyen et al. (2021)",            "Extracted",              "Nguyen_2021_imipenem",
+   9L, "de Velde et al. (2020)",          "Re-verified against primary (2 files)", "deVelde_2020_imipenem / _nonparametric",
+  10L, "Nguyen et al. (2021)",            "Extracted; re-verified against primary", "Nguyen_2021_imipenem",
   11L, "Jaruratanasirikul et al. (2021)", "Extracted",              "Jaruratanasirikul_2021_imipenem",
-  12L, "Por et al. (2021)",               "Extracted",              "Por_2021_imipenem",
+  12L, "Por et al. (2021)",               "Extracted; re-verified against primary", "Por_2021_imipenem",
   13L, "Dao et al. (2022)",               "Extracted",              "Dao_2022_imipenem",
   14L, "Dinh et al. (2022)",              "Extracted",              "Dinh_2022_imipenem",
   15L, "Bai et al. (2024)",               "Already in registry",    "Bai_2024_imipenem",
@@ -105,10 +117,10 @@ primaries, 2 blocked.** The two blocked studies are:
   CRRT flows are prescribed in mL/h while the canonical `DFR` column is
   mL/min, and with an exponent of 1.944 a 60-fold unit error becomes a
   2800-fold clearance error. Both questions turn on what the primary
-  says, so the primary (Clin Ther 2020;42(8):1564-1577.e8,
+  says, so this study is deferred until the primary (Clin Ther
+  2020;42(8):1564-1577.e8,
   [doi:10.1016/j.clinthera.2020.06.010](https://doi.org/10.1016/j.clinthera.2020.06.010))
-  has been queued for acquisition and this study deferred until it
-  arrives, rather than shipped on a guessed unit.
+  is available, rather than shipped on a guessed unit.
 
 **Jaruratanasirikul et al. (2021) was previously blocked and is now
 included.** It needs an `ABW` (adjusted body weight) covariate column,
@@ -143,7 +155,7 @@ pop <- tibble::tribble(
   "Yoshizawa_2013_imipenem_children",    "Japan",       39L, "9.61 +/- 3.16 y",  "29.5 +/- 10.9",  "Children",
   "Dong_2019_imipenem",                  "China",       56L, "4.86 +/- 2.33 y",  "18.65 +/- 6.90", "Children, haematological malignancy",
   "Chen_2020_imipenem",                  "China",      247L, "67 (20-97) y",     "65 (37.5-110)",  "Critically ill, +/- ECMO",
-  "deVelde_2020_imipenem",               "Netherlands", 26L, "51 (39-54) y",     "75 (66-85)",     "Critically ill",
+  "deVelde_2020_imipenem",               "Switzerland", 26L, "51 (39-54) y",     "75 (66-85)",     "Critically ill",
   "Nguyen_2021_imipenem",                "Vietnam",     44L, "65 (60-72) y",     "50 (47-55)",     "AECOPD",
   "Jaruratanasirikul_2021_imipenem",     "Thailand",    50L, "56.2 (41-66.6) y", "62.9 (52.8-70)", "Critically ill, +/- ECMO",
   "Por_2021_imipenem",                 "USA",         23L, "51-55 y",          "89.6-105.1",     "Burns, +/- CVVH",
@@ -198,6 +210,14 @@ The covariate equations transcribed from Table 3 are:
 | `Lafaurie_2023_imipenem_*` | none reported ("NR") |
 | `Truong_2025_imipenem` | `CL = 14.6 x (CLcr CG/87.6)^0.462` |
 
+The `Por_2021_imipenem` row is the review's rendering. The primary
+publication (Por 2021 Equations 5 and 11, Table 1) shows that the
+"+ 1.56" is the **cohort-mean** haemofilter clearance, not a fitted
+constant: each patient's own measured CVVH clearance is added. The
+re-verified model file therefore takes it as the per-patient covariate
+`QEFF`, which this page sets to 0 because every solve here is off CVVH.
+See the [Por 2021 article](Por_2021_imipenem.html).
+
 # Reference subjects
 
 Each model is exercised below at its **own** reference covariates -- the
@@ -242,7 +262,8 @@ cfg <- list(
   Por_2021_imipenem = list(
     # ALB supplied in canonical SI g/L; the model converts to the g/dL the
     # source was calibrated on, so 27 g/L == the reference 2.7 g/dL.
-    cov = list(WT = 99.5, ALB = 27, CRCL = 145.83, RRT_CRRT_STATUS = 0),
+    # QEFF is the per-patient haemofilter clearance; 0 off CVVH.
+    cov = list(WT = 99.5, ALB = 27, CRCL = 145.83, RRT_CRRT_STATUS = 0, QEFF = 0),
     cl_pub = 15.31, vc_pub = 32.67, dose = 500),
   Dao_2022_imipenem = list(
     # PNA supplied in canonical months; 21 days = 21/30.4375 months.
@@ -614,8 +635,7 @@ knitr::kable(round(t(renal_tab), 3),
 
 # Strictly increasing in every model. This is a deterministic solve of a
 # monotone algebraic expression, not a noisy cohort statistic, so exact
-# monotonicity is the right assertion here (contrast the cohort-derived
-# quantities warned about in the failure-pattern catalogue).
+# monotonicity is the right assertion here.
 stopifnot(all(apply(renal_tab, 2, function(x) all(diff(x) > 0))))
 ```
 
@@ -724,8 +744,10 @@ an **apparent CV** of a log-normal random effect, so
 * exact for a source reporting NONMEM-style CV% (Lamoth, Bai above, and
   by inference most of the NONMEM studies in the review);
 * modestly low for a source reporting an omega SD as a percent (the
-  Monolix studies -- Couffignal, and hence probably also Dinh 2022,
-  Lafaurie 2023 and Nguyen 2021). At CV 30% the two readings differ by
+  Monolix studies -- Couffignal, and hence probably also Dinh 2022 and
+  Lafaurie 2023; confirmed for Nguyen 2021, whose Methods define omega as
+  the SD of eta, and whose model file now uses `omega^2` accordingly
+  after re-verification against the primary). At CV 30% the two readings differ by
   4% in variance; the gap widens with CV, so the largest exposure is
   `Dinh_2022_imipenem`'s 110% CV on `Q`, where the readings differ by
   more than 50%;
@@ -739,6 +761,20 @@ the primaries that the "re-verify against the primary" notes already
 flag. **Treat every IIV magnitude in this family as provisional. The
 structural parameters, covariate equations and residual errors are on
 much firmer ground.**
+
+**A fifth check, added later: de Velde 2020.** Re-verified against its
+primary, the review's de Velde row agrees exactly on every structural
+value (Ke 0.637 1/h, Kcp 0.166 1/h, Kpc 0.195 1/h, Vc 29.6 L), on the
+covariate equation `Ke = 0.637 x (CKD-EPI-abs/119)^0.655`, and on the
+IIV (`Ke: 19%` is an apparent CV; the primary gives `omega^2 = 0.0354`,
+so the uniform reading above is exact here). Two things were wrong. The
+review's residual label "Proportional = 34.8%" is really an additive
+error on log-transformed concentrations (the primary's "Exponential
+error" 0.348, Eq. 1), so the packaged model now uses `lnorm()`. The
+review's country, the Netherlands, is the authors' affiliation; the
+patients were treated in Geneva, Switzerland, which the population
+table above now shows. Residual-error labels therefore deserve the same
+caution as the IIV column.
 
 ## Per-model deviations and warnings
 
@@ -756,9 +792,16 @@ much firmer ground.**
   error is reported. Re-verify before using this model for ECMO dosing.
 * **`Por_2021_imipenem` -- the albumin exponent on peripheral volume is
   extreme.** `-3.68` means a halving of albumin multiplies `Vp` by 12.8.
-  For a 23-patient cohort this is almost certainly poorly identified.
   The review reports neither a standard error nor the observed albumin
-  range, so the fitted domain is unknown.
+  range. The primary, against which this model has since been
+  re-verified, reports both: RSE 17% (bootstrap 37.69%) and an observed
+  albumin range of 1.5-3.5 g/dL. The primary also shows that the
+  review's IIV entries for this study (30.5% and 36.1%) are the square
+  roots of the printed variances `omega^2` = 0.093 and 0.13, that the
+  cohort was 6 women and 17 men (the review's Table 1 has the sexes
+  reversed), and that the review's "+ 1.56" is a cohort-mean covariate
+  value (see the Source trace section). The model file now uses the
+  primary's values; see the [Por 2021 article](Por_2021_imipenem.html).
 * **`Por_2021_imipenem` -- albumin unit conversion.** The reference 2.7
   is g/dL (a US study; 2.7 g/L would be incompatible with life). The
   canonical `ALB` column is SI g/L, so `model()` converts inline with
@@ -802,14 +845,12 @@ much firmer ground.**
   parameters are reported per kilogram, i.e. weight exponent 1 on
   clearance as well as volume, unlike the allometric 0.75 used by the
   other paediatric models here.
-* **`deVelde_2020_imipenem` -- only the NONMEM arm is encoded.** The
-  study also fitted the data non-parametrically in Pmetrics. That arm's
-  covariate model is printed in terms of per-subject posterior medians,
-  which are not population parameters; and a non-parametric population
-  is a discrete support-point distribution, not the log-normal random
-  effect `ini()` expresses. It cannot be faithfully encoded even in
-  principle. The review's Pmetrics "Gamma: 3.4" is an error-polynomial
-  multiplier, not a residual SD.
+* **`deVelde_2020_imipenem` -- the nonparametric arm is a separate
+  model.** The study also fitted the data in Pmetrics. That arm is now
+  packaged as `deVelde_2020_imipenem_nonparametric`, from the primary's
+  Table 2. It approximates the discrete NPAG distribution with
+  log-normal marginals; see the
+  [de Velde 2020 article](deVelde_2020_imipenem.html).
 * **`deVelde_2020_imipenem` -- absolute, not BSA-normalised, eGFR.** The
   covariate is CKD-EPI **multiplied by BSA**, in mL/min. Supplying a
   standard mL/min/1.73 m^2 eGFR understates the ratio for anyone larger

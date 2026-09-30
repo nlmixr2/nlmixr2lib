@@ -107,7 +107,7 @@ set.seed(20260622)
 # Three typical male subjects across the three eGFR strata; one dose
 # level per subject pair (typical-value replication). For the
 # stochastic VPC further down, we run a wider but small (n = 30)
-# cohort to keep the render under the 5-minute pkgdown gate.
+# cohort to keep the render under 5 minutes.
 make_subject <- function(id, regimen, dose_mg, crcl) {
   tibble::tibble(
     id        = id,

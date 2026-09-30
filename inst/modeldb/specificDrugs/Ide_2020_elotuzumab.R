@@ -262,7 +262,7 @@ Ide_2020_elotuzumab <- function() {
 
     # ---- Individual structural parameters with covariate adjustments ------
     # Reference patient covariate values are listed in supplement S2; effects
-    # match the NONMEM control-stream MU equations (PMID_32656777_supplement_7).
+    # match the NONMEM control-stream MU equations (Ide 2020 supplement 7).
     cl <- exp(lcl + etalcl) *
       (WT   / 75)^e_wt_cl *
       (AGE  / 65)^e_age_cl *

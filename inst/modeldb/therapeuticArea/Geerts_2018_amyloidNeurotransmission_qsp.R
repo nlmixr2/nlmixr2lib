@@ -181,7 +181,7 @@ Geerts_2018_amyloidNeurotransmission_qsp <- function() {
   ini({
     # =================================================================
     # Every value is from the MAIN TEXT of Geerts 2018 (the paper has no
-    # supplement -- EuropePMC hasSuppl = N, and 'Availability of data and
+    # supplement, and 'Availability of data and
     # materials' states no datasets were generated or analysed).
     #
     # These are mechanistic constants of a deterministic platform,

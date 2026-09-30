@@ -101,7 +101,7 @@ Le_2015_lampalizumab_cyno <- function() {
     # observations was best described by a proportional error model,
     # and the proportional residual errors were assumed to be independent
     # and normally distributed with zero means." No numeric variance is
-    # reported for any of the seven observation streams. Per the skill
+    # reported for any of the seven observation streams. Per the standing
     # policy for unreported RUV with structural values present, encode
     # each proportional residual SD as fixed(0). Documented in vignette
     # Errata.

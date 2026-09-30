@@ -267,7 +267,7 @@ Dogra_2023_covid19vaccine <- function() {
     # * 0.2 both yield 82.3% vaccine efficacy on the Michaelis-Menten curve
     # (Methods paragraph "for the VOCs, the protective threshold was corrected
     # for by using the binding score"). See vignette Errata for the OCR
-    # ambiguity in the trimmed supplement.
+    # ambiguity in the supplement's text.
     ab_effective <- antibody * ab_escape
     vaccine_efficacy <- v_eff_max * ab_effective / (k_eff + ab_effective)
   })

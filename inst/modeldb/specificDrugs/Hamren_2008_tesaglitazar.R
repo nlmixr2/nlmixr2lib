@@ -124,7 +124,7 @@ Hamren_2008_tesaglitazar <- function() {
     lkm_gluc        <- log(0.041); label("Michaelis-Menten constant Km of acyl glucuronide renal elimination (umol/L)")                             # Table 2 Km = 0.041 (RSE 29%)
     lcl_nonren_gluc <- log(1.2);   label("Non-renal clearance CLnrm of acyl glucuronide (L/h, linear, loss from circulation)")                      # Table 2 CLnrm = 1.2 (RSE 11%)
     lkbm            <- log(11.7);  label("Biliary excretion rate constant kbm of acyl glucuronide (1/h, central_gluc -> gut_gluc)")                 # Table 2 kbm = 11.7 (RSE 5.9%)
-    lkicv           <- log(0.79);  label("Interconversion rate constant kicv (1/h, gut hydrolysis + parent reabsorption back into central)")        # Table 2 'kint = 0.79' (RSE 7.3%); paper-named 'kint' renamed to canonical kicv to disambiguate from the TMDD-canonical kint (see references/parameter-names.md)
+    lkicv           <- log(0.79);  label("Interconversion rate constant kicv (1/h, gut hydrolysis + parent reabsorption back into central)")        # Table 2 'kint = 0.79' (RSE 7.3%); paper-named 'kint' renamed to canonical kicv to disambiguate from the TMDD-canonical kint (see inst/references/parameter-names.md)
     lvc_gluc        <- log(8.5);   label("Central volume of distribution Vcm of acyl glucuronide (L)")                                              # Table 2 Vcm = 8.5 (RSE 17%)
 
     # Covariate effects (Table 2 'Significant covariate effects (multiplicative covariate models)')

@@ -29,7 +29,7 @@ isolation, and this vignette demonstrates how to couple them end-to-end
 to reproduce the paper's joint weight-status to NAFLD-risk prediction.
 
 * Article: <https://doi.org/10.1002/psp4.12292>
-* Open-access supplement (Europe PMC): <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6027732/supplementaryFiles>
+* Open-access supplement (Europe PMC): <https://europepmc.org/article/PMC/PMC6027732>
 * BMI model: `r rxode2::rxode(readModelDb("Oniki_2018_bmi"))$description`
 * NAFLD-risk model: `r rxode2::rxode(readModelDb("Oniki_2018_nafld_risk"))$description`
 

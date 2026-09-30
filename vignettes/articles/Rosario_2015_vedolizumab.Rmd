@@ -118,7 +118,7 @@ make_cohort <- function(n,
   # Baseline covariates approximating Rosario 2015 Table 1
   WT      <- pmax(30, pmin(160, rlnorm(n, log(70), 0.22)))
   AGE     <- pmax(18, pmin(80,  rnorm(n, 39, 13)))
-  ALB     <- pmax(20, pmin(55, rnorm(n, 40, 4)))        # g/dL
+  ALB     <- pmax(20, pmin(55, rnorm(n, 40, 4)))             # g/L
   SCORE_CALPRO  <- pmax(10,  exp(rnorm(n, log(700), 1.1)))         # mg/kg
   IBD_CD  <- rbinom(n, 1, ibd_cd_prob)
   # Disease-activity scores: supply SCORE_CDAI for CD, SCORE_PMAYO for UC; the gating in
@@ -482,7 +482,7 @@ terminal decline once linear-pathway clearance is no longer dominant.
 - **Virtual covariate distributions.** Exact observed covariate
   distributions are not published. The demo cohort uses log-normal WT
   (median 70 kg, CV 22%), normal AGE (39 ± 13 y), normal ALB
-  (4.0 ± 0.4 g/dL), log-normal SCORE_CALPRO (median 700 mg/kg, log-SD 1.1),
+  (40 ± 4 g/L, i.e. 4.0 ± 0.4 g/dL), log-normal SCORE_CALPRO (median 700 mg/kg, log-SD 1.1),
   55%/45% CD/UC split, and binary probabilities for the concomitant-
   medication and immunogenicity indicators approximately matching
   Rosario 2015 Table 1.

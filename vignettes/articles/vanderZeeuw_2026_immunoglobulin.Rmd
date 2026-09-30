@@ -695,8 +695,8 @@ of these twelve models is used for a decision.
     80% of the maximum predicted probability increase) do not satisfy the Emax
     relation, so EC50 cannot be back-solved from them. Only the PK layer of
     that paper is packaged.
-15. **Fokkink 2022 (GBS) is deliberately not extracted here.** Its primary is
-    already queued for extraction from its own open-access full text. The
+15. **Fokkink 2022 (GBS) is deliberately not extracted here.** Its primary
+    publication is to be extracted from its own open-access full text instead. The
     review is demonstrably unreliable for that row: it swaps the model's
     volumes between Table 4 (Vc 2.87, Vp 2.65) and section 3.2.2.3 prose
     (Vc 2.65, Vp 2.87).

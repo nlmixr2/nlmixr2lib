@@ -173,7 +173,7 @@ stopifnot(
 ```
 
 The packaged models therefore encode `omega^2 = (CV/100)^2`. This is deliberately
-*not* the default the extraction checklist warns about; it is a property of this
+*not* the usual log-normal default; it is a property of this
 research group's reporting, established from their own over-determined table.
 
 # The three final models side by side

@@ -537,7 +537,7 @@ cmp <- sim_tab |>
     in_diff    = sim_in - pub_in
   )
 
-# Guard against a join that silently matched nothing (pattern 10).
+# Guard against a join that silently matched nothing.
 stopifnot(nrow(cmp) == 36L)
 ```
 

@@ -128,7 +128,7 @@ GFR 90-120 recommendation of "15 mg/kg q12h for 5 times" resolves to doses
 at 0, 12, 24, 36 and 48 h).
 
 The vignette uses 200 virtual subjects per regimen rather than the paper's
-1,000 to stay inside the pkgdown render budget. That is enough to resolve
+1,000 to keep the render time short. That is enough to resolve
 the median and the 2.5th-97.5th percentile band; the residual Monte Carlo
 noise is quantified below.
 
@@ -875,7 +875,7 @@ eventual steady-state exposure.
   appropriate for that population.
 
 - **Virtual cohort uses n = 200 per regimen (vs n = 1,000 in the paper).**
-  The vignette has a 5-minute pkgdown render budget and simulates 13
+  The vignette keeps its render time under 5 minutes and simulates 13
   Table 3 regimens plus 30 loading-dose arms for the Figure 3 replication.
   n = 200 per arm resolves the median and 95% prediction band adequately;
   the residual Monte Carlo noise is quantified in the Table 3 replication

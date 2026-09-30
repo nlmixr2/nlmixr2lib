@@ -362,7 +362,7 @@ oral doses of 20, 40, or 60 mg cabozantinib tablet. The typical-value
 trajectories below reproduce the dose-proportional Cmax and the slow
 terminal elimination phase (paper Discussion: "cabozantinib has a relatively
 long plasma terminal half-life (HV mean: 118 h)"). The vignette shortens the
-observation window to 24 h to keep the render time within the 5-minute gate.
+observation window to 24 h to keep the render time under 5 minutes.
 
 ```{r figure-hv-dose-proportional, fig.width = 7, fig.height = 4.0}
 sim_a_typ |>

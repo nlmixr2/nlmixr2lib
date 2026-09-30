@@ -127,10 +127,10 @@ table collects them for review.
 
 Original observed data are not publicly available. The cohort below
 simulates 50 typical-value subjects at the paper's reference covariate
-values (CRCL = 50 mL/min, ALB = 0.5 mmol/L), split into a tacrolimus
-arm and a cyclosporine arm (the paper's simulation baseline; Results
-Simulations section). All subjects receive 1000 mg MMF BID for 12 days
-to reach steady state.
+values (CRCL = 50 mL/min, ALB = 0.5 mmol/L, supplied to the model as
+33.25 g/L), split into a tacrolimus arm and a cyclosporine arm (the
+paper's simulation baseline; Results Simulations section). All subjects
+receive 1000 mg MMF BID for 12 days to reach steady state.
 
 ```{r cohort}
 set.seed(20091101L) # paper Springer online publication date
@@ -332,7 +332,7 @@ sim_alb_typ |>
   dplyr::mutate(analyte = factor(analyte,
     levels = c("Cc", "fMPA", "Cc_mpag", "fMPAG"),
     labels = c("tMPA", "fMPA", "tMPAG", "fMPAG")),
-    ALB_label = sprintf("ALB = %.2f mmol/L", ALB / 66.5)) |>
+    ALB_label = sprintf("ALB = %g g/L (%.1f mmol/L)", ALB, ALB / 66.5)) |>
   ggplot(aes(tpost, conc, colour = ALB_label, group = ALB_label)) +
   geom_line(linewidth = 0.9) +
   facet_wrap(~analyte, scales = "free_y") +
@@ -414,7 +414,7 @@ sim_crcl_typ |>
   labs(x = "Time post-dose (h, last steady-state interval)",
        y = "Concentration (umol/L)",
        colour = "Creatinine clearance",
-       title = "Figure 8 replicate: CRCL sensitivity at ALB = 0.5 mmol/L",
+       title = "Figure 8 replicate: CRCL sensitivity at ALB = 33.25 g/L (0.5 mmol/L)",
        caption = "Replicates Figure 8 of de Winter 2009; typical-value steady-state.")
 ```
 

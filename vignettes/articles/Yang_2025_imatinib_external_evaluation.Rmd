@@ -36,8 +36,8 @@ real-world therapeutic-drug-monitoring (TDM) dataset of 39 adult and pediatric
 patients treated at Nordic centres. Their conclusion is negative and is stated
 in the title: the published models perform poorly, especially in children.
 
-The standing policy for a secondary source is to skip it and extract the cited
-primary papers instead. The carve-out that applies here is that Yang 2025 Table 1
+Secondary sources are normally not transcribed; the cited primary papers are
+extracted instead. The carve-out that applies here is that Yang 2025 Table 1
 **tabulates the parameters** of every one of the fifteen models to an unusually
 complete standard: structural model, typical values, covariate coefficients with
 their centring constants, between-subject variability, and residual-error

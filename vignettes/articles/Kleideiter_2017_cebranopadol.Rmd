@@ -79,7 +79,7 @@ The original NONMEM dataset is not publicly available. Below we build two cohort
 2. **Trial 4 cohort 1** - 11 chronic low back pain (cLBP) patients receiving 200 ug daily as film-coated tablets, with NCA evaluation at day 1 (single dose) and day 14 (steady state) (Kleideiter 2017 Table 1 Trial 4; Table 6 reports cohort 1 NCA).
 
 ```{r virtual-cohort}
-set.seed(20260525) # task ID
+set.seed(20260525) # fixed seed for a reproducible cohort
 
 # Helper: build a single cohort as a self-contained dosing + observation table.
 make_cohort <- function(n, dose_ug, regimen, formulation, disease,

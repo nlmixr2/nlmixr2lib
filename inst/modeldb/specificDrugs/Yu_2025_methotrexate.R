@@ -153,8 +153,8 @@ Yu_2025_methotrexate <- function() {
     #                     V2 (L)   = 7.23
     #
     # NOTE ON SOURCING: those five equations are embedded in the PDF as
-    # VECTOR GRAPHICS, not text. `pdftotext` and the preprocessed
-    # `_trimmed.md` both emit the bare stubs "If age >1 years old CL (L/h) ="
+    # VECTOR GRAPHICS, not text. `pdftotext` and other extractions of
+    # the PDF's text layer emit only the bare stubs "If age >1 years old CL (L/h) ="
     # with nothing after them, and the generic covariate forms (Eq. 1-2 on
     # p. 8477) are lost the same way. The equations above were read by
     # rendering p. 3 and p. 6 to PNG and reading them visually. Anyone

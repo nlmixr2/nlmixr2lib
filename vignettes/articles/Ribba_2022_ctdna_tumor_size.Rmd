@@ -536,12 +536,11 @@ paper reports no NCA of its own to compare against.
   associated to the two parameters." Both single-endpoint models
   therefore use diagonal omega matrices, and the joint model adds only
   the independent `etalzeta`.
-- **Publication-year skew.** The DOI, journal volume (13) and EuropePMC
-  `pubYear` all say 2022, while the Frontiers citation block on page 1
+- **Publication-year skew.** The DOI, journal volume (13) and the Europe PMC
+  record all say 2022, while the Frontiers citation block on page 1
   says 2023 (the article was accepted 01 December 2022 and published
   08 March 2023). The library uses **2022** in the file stems and
-  `reference` strings, matching the DOI and the metadata this model was
-  built from.
+  `reference` strings, matching the DOI.
 - **Nadir statistics are stochastic, and the cycle-4 figure is the
   seed-sensitive one.** The percentages in the nadir table come from a
   200-subject simulation under `set.seed(20221208)`. The
