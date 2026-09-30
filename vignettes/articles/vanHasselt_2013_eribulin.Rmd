@@ -90,7 +90,7 @@ match those in `inst/modeldb/specificDrugs/vanHasselt_2013_eribulin.R`.
 The van Hasselt 2013 raw data are not publicly available. The virtual cohort
 below approximates the Methods section 'Evaluation of the impact of covariates
 on risk for neutropenia' simulation strategy: 200 patients (a smaller cohort
-than the paper's 2000 to keep the vignette render under the 5-minute budget),
+than the paper's 2000 to keep the vignette render under 5 minutes),
 BSA sampled from N(mean = 1.57, sd = 0.22) truncated to [1, 3] m^2 per the
 paper, weight fixed at the cohort median 67.7 kg, laboratory covariates set to
 the Table 2 medians (ALB 3.90 g/dL = 39 g/L; ALP 118 U/L; TBILI 0.50 mg/dL =
@@ -426,8 +426,8 @@ nca_summary |>
   the Methods parameterisation because that is what van Hasselt 2013 used
   for its own simulation study.
 - **Cohort size (n = 200) is smaller than the paper's n = 2000.** Reduced
-  from the paper's simulation cohort size to keep the pkgdown vignette
-  render under the 5-minute wall-clock gate. Monte-Carlo error on the
+  from the paper's simulation cohort size to keep the vignette
+  render under 5 minutes. Monte-Carlo error on the
   grade-3 / grade-4 incidence estimates is proportionally larger but the
   point estimates remain within the expected range.
 - **G-CSF prevalence 22.7%** matches Table 2 (382 / 1684 subjects). The

@@ -118,8 +118,7 @@ Mercier_2014_tramadol_tapentadol_mbma <- function() {
     # Table 3 reports omega values (standard deviations, per nlme
     # reporting convention); the ini() values below are the variances
     # (omega^2). Encoded as MBMA study-level etas (NOT individual
-    # between-subject variability) per SKILL Phase-1 Step-3a MBMA
-    # guidance.
+    # between-subject variability), the standing MBMA convention.
     # ============================================================
     eta_study_e0   ~ 0.098     # Mercier 2014 Table 3 omega_Base = 0.313 (SD); variance = 0.313^2 = 0.098
     eta_study_emax ~ 0.004225  # Mercier 2014 Table 3 omega_RPla = 0.065 (SD); variance = 0.065^2 = 0.004225

@@ -94,8 +94,8 @@ source location. The table below collects them.
 
 The validation reference values below come from **S1 Table** (`Secondary
 pharmacokinetic parameter estimates, based on the final population
-pharmacokinetic model for benznidazole`), a supplementary DOCX retrieved from the
-PLoS supporting-information endpoint and stored alongside the article PDF. It
+pharmacokinetic model for benznidazole`), a supplementary DOCX published with the
+article. It
 reports median (5th-95th percentile) AUCinf, CMAX, TMAX and terminal half-life
 for each of the six active arms, separately for women, men and pooled. The
 pooled column is used here.

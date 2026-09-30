@@ -30,7 +30,7 @@ ui <- rxode2::rxode(readModelDb("Tang_2026_vixarelimab"))
 * Article: <https://doi.org/10.1002/psp4.70230> (open access)
 * Supporting Information (Tables S1-S5, Figures S1-S6 and the **full NONMEM
   control stream** for the final model): `psp470230-sup-0001-Supinfo.docx`,
-  available from the Europe PMC supplementary-files endpoint for `PMC13140993`.
+  published with the open-access article (`PMC13140993`).
 
 Vixarelimab (KPL-716) is a fully human monoclonal antibody against oncostatin M
 receptor beta (OSMR-beta). Because it binds both membrane-bound and soluble

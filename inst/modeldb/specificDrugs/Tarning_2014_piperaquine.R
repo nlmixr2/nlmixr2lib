@@ -283,8 +283,7 @@ Tarning_2014_piperaquine <- function() {
     # essentially equivalent to an exponential error model for
     # untransformed data)'. This NONMEM additive-on-log-scale residual
     # maps to a proportional residual in linear concentration space (see
-    # references/parameter-names.md Residual error and the matching
-    # comment in Hoglund_2012_piperaquine.R). Table 2 reports
+    # the matching comment in Hoglund_2012_piperaquine.R). Table 2 reports
     # sigma = 30.7% (% CV); for the log-additive parameterisation this
     # value is the SD on the log scale, which equals the proportional
     # CV to first order.

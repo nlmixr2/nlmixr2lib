@@ -180,7 +180,7 @@ Kleideiter_2018_cebranopadol <- function() {
     # swapped; the corrected mapping places F = 1.801 with bunionectomy and
     # F = 1.132 with DPN. The erratum's Table 14 (Cmax,ss +80% / AUCss +80% for
     # bunionectomy; +13% / +13% for DPN) confirms this assignment. Per the
-    # Phase 1 step 8 errata-handling convention, the erratum-corrected mapping
+    # standing errata-handling convention, the erratum-corrected mapping
     # is the source of record here.
     e_bun_f      <- 1.801;   label("Bunionectomy-vs-LBP/OA F ratio; applied as ratio^DIS_BUNIONECTOMY")                                 # Kleideiter 2018 Table 13 (erratum-corrected; original-Table-13-row-labeled 'DPN patients')
     e_dpn_f      <- 1.132;   label("DPN-vs-LBP/OA F ratio; applied as ratio^DIS_DPN")                                          # Kleideiter 2018 Table 13 (erratum-corrected; original-Table-13-row-labeled 'Bunionectomy patients')

@@ -729,5 +729,5 @@ vpc |>
   already embedded in the in vivo model packaged here.
 * **Virtual-cohort sizes are smaller than the paper's.** The paper simulates
   1000 virtual patients per scenario; this vignette uses 100 attack simulations
-  and a 60-subject VPC to stay inside the pkgdown render budget. Cohort
+  and a 60-subject VPC to keep the render time short. Cohort
   distributions match the published sampling rules (`SimInput_HAE.r`, MOESM6).

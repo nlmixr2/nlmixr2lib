@@ -390,7 +390,7 @@ t7$pct  <- as.numeric(gsub("[^0-9.-]", "", t7[["% diff"]]))
 t7$code <- ifelse(grepl("^Cmax", t7[[1]]), "cmax",
            ifelse(grepl("^Cmin", t7[[1]]), "cmin",
            ifelse(grepl("^Tmax", t7[[1]]), "tmax", "auclast")))
-# Guard against a label-mismatch silently emptying the gate (pattern 10).
+# Guard against a label-mismatch silently emptying the gate.
 stopifnot(nrow(t7) == 12L, sum(t7$code == "cmin") == 3L, !anyNA(t7$pct))
 
 # Cmin is excluded from the gate as a documented deviation (see Errata): it has

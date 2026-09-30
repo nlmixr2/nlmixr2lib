@@ -590,6 +590,6 @@ stopifnot(abs((lin_mass + mm_mass) / 500 - 1) < 0.02,
   name; a second soluble-EGFR-ligand turnover model would be the trigger to
   revisit.
 * **No non-paper-derived parameter values.** Every `ini()` entry traces to
-  James 2025 Table 3 or Sect. 2.4. No supplement was needed: the EuropePMC
-  supplementary bundle for PMC12064609 contains only the figure and equation
-  images, and EuropePMC reports no correction or erratum for this DOI.
+  James 2025 Table 3 or Sect. 2.4. No supplement was needed: the only files
+  deposited with PMC12064609 are the figure and equation images, and
+  Europe PMC lists no correction or erratum for this DOI.

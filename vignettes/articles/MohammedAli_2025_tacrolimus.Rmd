@@ -184,7 +184,7 @@ solve_typ <- function(ev, model = mod_typ) {
             "formulation", "treatment", "win_start")
   out <- rxode2::rxSolve(model, ev, keep = keep, returnType = "data.frame",
                          atol = 1e-10, rtol = 1e-10, maxsteps = 1e6)
-  # rxSolve omits `id` for a single-subject event table (failure pattern 8)
+  # rxSolve omits `id` for a single-subject event table
   if (is.null(out$id)) out$id <- 1L
   out
 }

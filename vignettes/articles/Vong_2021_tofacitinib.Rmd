@@ -1,0 +1,796 @@
+---
+title: "Tofacitinib in ulcerative colitis (Vong 2021)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tofacitinib in ulcerative colitis (Vong 2021)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Vong_2021_tofacitinib"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Vong_2021_tofacitinib"))$description`
+* Article: <https://doi.org/10.1002/cpdd.899>
+* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7986169/>
+
+Tofacitinib is an oral Janus kinase inhibitor approved for ulcerative colitis
+(UC). Vong 2021 pooled the tofacitinib UC development program -- the phase 2
+dose-ranging induction study A3921063, the two identical phase 3 induction
+studies OCTAVE Induction 1 and 2, and the 52-week phase 3 maintenance study
+OCTAVE Sustain -- and fitted a one-compartment model with lagged first-order
+absorption, parameterized in apparent oral clearance (CL/F) and apparent volume
+of distribution (V/F). Covariates were selected by stepwise covariate modeling.
+The final model keeps baseline creatinine clearance, sex and Asian race on CL/F,
+and body weight, age and sex on V/F.
+
+```{r load}
+mod <- rxode2::rxode2(readModelDb("Vong_2021_tofacitinib"))
+```
+
+# Population
+
+Baseline demographics reproduce Table 2 of Vong 2021 (n = 1096 tofacitinib-treated
+patients, 7231 plasma concentration records).
+
+| Characteristic | Value |
+|---|---|
+| Age, years | median 40, mean 41.3 (SD 13.8), range 18-80 |
+| Body weight (BWT), kg | median 72, mean 73.6 (SD 16.6), range 37-154.5 |
+| Baseline creatinine clearance (BCCL), mL/min | median 108.7, mean 112.3 (SD 30.3), range 40.8-255.2 |
+| Female | 41.5% |
+| Race | White 81.3%, Asian 10.9%, Other 4.2%, Black 1.0% |
+| Baseline total Mayo score | mean 8.9 (SD 1.5), range 3-12 |
+| Concomitant 5-ASA / oral corticosteroids | 77.7% / 42.8% |
+| Doses | 0.5, 3, 5, 10 or 15 mg twice daily (immediate release) |
+
+Sampling was sparse in the phase 3 studies (a predose sample plus one sample
+0.5 h or 2 h after an in-clinic dose, per visit) and serial in the phase 2
+study (predose and 0.25, 0.5, 1 and 2-3 h post-dose at baseline and week 8;
+Table 1). Creatinine clearance below 40 mL/min was an exclusion criterion in
+every study.
+
+The **reference patient** used throughout the paper's covariate assessment
+(Results; Figure 1 legend) is non-Asian, male, body weight 72.0 kg, age 40.0
+years, baseline creatinine clearance 108.7 mL/min -- the cohort medians.
+
+```{r refpatient}
+reference_patient <- list(
+  CRCL_BASE = 108.7, SEXF = 0, RACE_ASIAN = 0, WT = 72, AGE = 40, OCC = 1
+)
+tau <- 12 # dosing interval, h
+```
+
+# Source trace
+
+Every structural parameter, covariate effect and variance component, with the
+location it was read from. All values are from the printed paper. The
+supplement (study sites, and two diagnostic figures) carries no parameter
+values. Figure 1 was digitized from the vector graphic in the article PDF for
+the forest-plot comparison below; it does not supply any model value.
+
+| Model quantity | Source location | Value |
+|---|---|---|
+| One-compartment, first-order absorption + lag | Results, Final Model Results | structure |
+| `lka` = log(Ka) | Abstract and Results (9.85 h^-1); Table 3 (9.9, RSE 7.1%) | 9.85 |
+| `lcl` = log(CL/F) | Table 3, `CL/F, L/h` | 26.3 (RSE 1.2%) |
+| `lvc` = log(V/F) | Table 3, `V/F, L` | 115.8 (RSE 1.1%) |
+| `ltlag` = log(lag time) | Table 3, `Lag time, h` | 0.236 (RSE 0.52%) |
+| Continuous covariate form | Methods; Results; Table 3 footnote d | power of (cov / median) |
+| Categorical covariate form | Table 3 footnote d | fraction of the reference category |
+| `e_crcl_base_cl` | Table 3, CL/F ~ BCCL | 0.354 |
+| `e_sexf_cl` | Table 3, CL/F ~ Female | 0.868 |
+| `e_race_asian_cl` | Table 3, CL/F ~ Asian | 0.932 |
+| `e_wt_vc` | Table 3, V/F ~ Body weight | 0.585 |
+| `e_age_vc` | Table 3, V/F ~ Age | -0.116 |
+| `e_sexf_vc` | Table 3, V/F ~ Female | 0.845 |
+| Reference covariate values | Results, Final Model Results | 72.0 kg, 40.0 y, 108.7 mL/min |
+| `etalcl` | Table 3, `CL/F` IIV column | 22.2% |
+| `vc_eta_scale` | Table 3, `Scaling parameter`; Equation 1b | 0.392 |
+| `etaiov_lka_1` ... `etaiov_lka_6` | Table 3, `Ka` IOV column; Results (6 occasions) | 191.8% |
+| `etaruv` | Table 3, IIV column on both proportional-error rows | 58.0% |
+| `propSd_early` | Table 3, `Proportional error, TAD <= 8 h, %` | 41.6 |
+| `propSd_late` | Table 3, `Proportional error, TAD > 8 h, %` | 68.9 |
+| Residual error on log scale = proportional | Methods, Data Analysis | form |
+| Concentration units (ng/mL) | Methods (LLOQ 0.100 ng/mL); Figure 2 axis | ng/mL |
+
+Three structural points are stated in prose or equations rather than in the
+table:
+
+* **V/F carries no eta of its own.** Equation 1b is
+  `V_i = theta_TV_V * exp(eta_CL,i * theta_scale)`: the V/F deviation is a
+  fixed multiple (0.392) of the CL/F deviation, which forces the CL/F-V/F
+  random-effect correlation to exactly 1. It is implemented as
+  `vc_eta_scale * etalcl`.
+* **Ka has inter-occasion but no inter-individual variability** ("only IOV was
+  included as a random effect on Ka"). The paper reports shrinkage for "the 6
+  occasions estimated", so six occasion slots sharing one variance are carried,
+  indexed by the `OCC` column.
+* **The residual magnitude has its own inter-individual variability.** Both
+  residual-error rows of Table 3 carry the same 58.0% IIV, i.e. one eta scaling
+  the proportional SD for each subject; it is carried as `etaruv`.
+
+# Typical values for the reference patient
+
+The model must return the paper's point estimates for the reference patient,
+where every covariate term collapses to 1. The derived elimination half-life is
+checked against the paper's 3.05 h.
+
+```{r typical}
+tv <- rxode2::zeroRe(mod)
+
+with_covariates <- function(ev, overrides = list()) {
+  p <- utils::modifyList(reference_patient, overrides)
+  out <- as.data.frame(ev)
+  for (nm in names(p)) out[[nm]] <- p[[nm]]
+  out
+}
+
+single <- rxode2::et(amt = 10, cmt = "depot") |> rxode2::et(1, cmt = "central")
+param_at <- function(overrides, what) {
+  rxode2::rxSolve(tv, with_covariates(single, overrides), returnType = "data.frame")[[what]][1]
+}
+
+typical <- data.frame(
+  Parameter = c("CL/F (L/h)", "V/F (L)", "Ka (1/h)", "Lag time (h)"),
+  Model = c(param_at(list(), "cl"), param_at(list(), "vc"),
+            param_at(list(), "ka"), param_at(list(), "tlag")),
+  Paper = c(26.3, 115.8, 9.85, 0.236)
+)
+knitr::kable(typical, digits = 4)
+stopifnot(isTRUE(all.equal(typical$Model, typical$Paper, tolerance = 1e-8)))
+
+t_half <- log(2) * param_at(list(), "vc") / param_at(list(), "cl")
+cat(sprintf("Elimination half-life: %.3f h (paper: approximately 3.05 h)\n", t_half))
+stopifnot(abs(t_half - 3.05) < 0.005)
+```
+
+# Reproducing the paper's covariate-effect statements
+
+The Effect of Covariates section quantifies each covariate effect in prose.
+These are exact arithmetic checks on deterministic functions of the covariates,
+so the tolerance is set from the precision each number was printed to.
+
+```{r covariate-impacts}
+base_cl <- param_at(list(), "cl")
+base_vc <- param_at(list(), "vc")
+
+impacts <- dplyr::bind_rows(
+  data.frame(Quantity = "CL/F", Scenario = "Female vs male",
+             Model = 100 * (param_at(list(SEXF = 1), "cl") / base_cl - 1),
+             Paper = -13.2, Tolerance = 0.05),
+  data.frame(Quantity = "CL/F", Scenario = "Asian vs non-Asian",
+             Model = 100 * (param_at(list(RACE_ASIAN = 1), "cl") / base_cl - 1),
+             Paper = -6.8, Tolerance = 0.05),
+  # Quoted to the nearest whole percent.
+  data.frame(Quantity = "CL/F", Scenario = "BCCL 60 vs 108.7 mL/min",
+             Model = 100 * (param_at(list(CRCL_BASE = 60), "cl") / base_cl - 1),
+             Paper = -19, Tolerance = 0.5),
+  data.frame(Quantity = "V/F", Scenario = "BWT 53 vs 72 kg",
+             Model = 100 * (param_at(list(WT = 53), "vc") / base_vc - 1),
+             Paper = -16.4, Tolerance = 0.05),
+  data.frame(Quantity = "V/F", Scenario = "BWT 95 vs 72 kg",
+             Model = 100 * (param_at(list(WT = 95), "vc") / base_vc - 1),
+             Paper = 17.6, Tolerance = 0.05),
+  data.frame(Quantity = "V/F", Scenario = "Female vs male",
+             Model = 100 * (param_at(list(SEXF = 1), "vc") / base_vc - 1),
+             Paper = -15.5, Tolerance = 0.05),
+  data.frame(Quantity = "V/F", Scenario = "Age 80 vs 40 y",
+             Model = 100 * (param_at(list(AGE = 80), "vc") / base_vc - 1),
+             Paper = -7.7, Tolerance = 0.05)
+) |>
+  dplyr::mutate(Difference = Model - Paper, Pass = abs(Difference) < Tolerance)
+
+impacts |>
+  dplyr::rename("Change from model (%)" = Model, "Change reported by paper (%)" = Paper,
+                "Difference (pp)" = Difference, "Tolerance (pp)" = Tolerance) |>
+  knitr::kable(digits = 3)
+
+stopifnot(all(impacts$Pass))
+```
+
+Every statement reproduces to the precision the paper printed.
+
+# Steady-state solve against the closed form
+
+A one-compartment oral model with a lag has a closed-form steady-state
+solution. Both sides use the same parameter values, so they differ only by
+numerical integration error and a tight bound is appropriate.
+
+```{r closed-form}
+n_load <- 28 # 29 doses over 14 days
+t_ss <- n_load * tau
+
+# Log-spaced grid: absorption is fast (Ka 9.85 /h), so the peak needs fine early
+# resolution, while the trough needs coverage out to 12 h.
+obs_times <- sort(unique(c(0, exp(seq(log(0.01), log(tau), length.out = 300)))))
+
+ss_closed_form <- function(t, dose, ka, kel, v, tau, tlag) {
+  tt <- (t - tlag) %% tau
+  amp <- dose * ka / (v * (ka - kel))
+  1000 * amp * (exp(-kel * tt) / (1 - exp(-kel * tau)) -
+                  exp(-ka * tt) / (1 - exp(-ka * tau)))
+}
+
+ss_profile <- function(dose, overrides = list()) {
+  ev <- rxode2::et(amt = dose, cmt = "depot", ii = tau, addl = n_load) |>
+    rxode2::et(t_ss + obs_times, cmt = "central")
+  rxode2::rxSolve(tv, with_covariates(ev, overrides), returnType = "data.frame",
+                  maxsteps = 100000L)
+}
+
+cf_check <- lapply(c(5, 10), function(dose) {
+  d <- ss_profile(dose)
+  cf <- ss_closed_form(d$time - t_ss, dose, d$ka[1], d$cl[1] / d$vc[1], d$vc[1], tau, d$tlag[1])
+  data.frame(
+    Dose = paste(dose, "mg BID"),
+    `Cmax ODE` = max(d$Cc), `Cmax closed form` = max(cf),
+    `Cmin ODE` = min(d$Cc), `Cmin closed form` = min(cf),
+    `Max relative difference` = max(abs(d$Cc - cf) / cf),
+    check.names = FALSE
+  )
+}) |> dplyr::bind_rows()
+
+knitr::kable(cf_check, digits = c(0, 3, 3, 3, 3, 10))
+stopifnot(all(cf_check$`Max relative difference` < 1e-4))
+```
+
+# Mass balance: CL/F x AUC(0-tau) = Dose at steady state
+
+Because the model is parameterized in apparent clearance, the steady-state
+identity `CL/F * AUC(0-tau) = Dose` is exact. For the reference patient at
+10 mg twice daily, it gives 10 mg / 26.3 L/h = 380.2 ng*h/mL.
+
+```{r mass-balance-typical}
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+mb_typical <- lapply(c(5, 10), function(dose) {
+  d <- ss_profile(dose)
+  auc <- trap(d$time, d$Cc)
+  data.frame(
+    Dose = paste(dose, "mg BID"),
+    `AUC(0-tau) simulated (ng*h/mL)` = auc,
+    `Dose / (CL/F) (ng*h/mL)` = 1000 * dose / d$cl[1],
+    `Relative difference` = abs(auc - 1000 * dose / d$cl[1]) / (1000 * dose / d$cl[1]),
+    check.names = FALSE
+  )
+}) |> dplyr::bind_rows()
+
+knitr::kable(mb_typical, digits = c(0, 3, 3, 10))
+stopifnot(all(mb_typical$`Relative difference` < 1e-4))
+```
+
+The same computation against a deliberately broken copy of the model, whose
+concentration scale factor is 10-fold wrong, shows the gate can fail.
+
+```{r mass-balance-mutation}
+broken <- rxode2::rxode2(
+  paste(
+    "cl <- 26.3; vc <- 115.8; ka <- 9.85; tlag <- 0.236; kel <- cl / vc",
+    "d/dt(depot) <- -ka * depot",
+    "d/dt(central) <- ka * depot - kel * central",
+    "alag(depot) <- tlag",
+    "Cc <- 10000 * central / vc", # deliberately 10x wrong
+    sep = "\n"
+  )
+)
+ev_b <- rxode2::et(amt = 10, cmt = "depot", ii = tau, addl = n_load) |>
+  rxode2::et(t_ss + obs_times, cmt = "central")
+db <- rxode2::rxSolve(broken, ev_b, returnType = "data.frame", maxsteps = 100000L)
+mutation_rel_diff <- abs(trap(db$time, db$Cc) - 10000 / 26.3) / (10000 / 26.3)
+cat("Mutated model relative difference:", signif(mutation_rel_diff, 4), "\n")
+stopifnot(mutation_rel_diff > 1)
+```
+
+# Replicating Figure 1 (covariate impact on AUC and Cmax)
+
+Figure 1 of Vong 2021 is a forest plot of steady-state AUC and Cmax at 10 mg
+twice daily for each covariate scenario, relative to the reference patient. The
+point estimates below were digitized by the maintainers from the vector graphic
+in the article PDF (diamond centres mapped through the 80/100/120/140% axis
+ticks; the four AUC points that must equal 100% read back as 99.97%, so the
+reading precision is about 0.1 percentage points). The published confidence
+intervals come from 1000 nonparametric bootstrap runs and are not reproducible
+from point estimates.
+
+```{r figure1-digitized}
+fig1 <- data.frame(
+  Scenario = rep(c("Age 30 y", "Age 80 y", "BWT 53 kg", "BWT 95 kg",
+                   "BCCL 60 mL/min", "Female", "Asian"), each = 2),
+  Metric = rep(c("AUC", "Cmax"), 7),
+  Paper = c(99.97, 97.45, 99.97, 106.37, 99.97, 114.67, 99.97, 89.05,
+            123.22, 106.25, 115.08, 117.57, 107.43, 101.92)
+)
+scenarios <- list(
+  "Age 30 y" = list(AGE = 30), "Age 80 y" = list(AGE = 80),
+  "BWT 53 kg" = list(WT = 53), "BWT 95 kg" = list(WT = 95),
+  "BCCL 60 mL/min" = list(CRCL_BASE = 60), "Female" = list(SEXF = 1),
+  "Asian" = list(RACE_ASIAN = 1)
+)
+
+ss_metrics <- function(overrides) {
+  d <- ss_profile(10, overrides)
+  c(AUC = trap(d$time, d$Cc), Cmax = max(d$Cc))
+}
+ref_metrics <- ss_metrics(list())
+forest <- lapply(names(scenarios), function(nm) {
+  m <- ss_metrics(scenarios[[nm]])
+  data.frame(Scenario = nm, Metric = c("AUC", "Cmax"),
+             Model = 100 * as.numeric(m / ref_metrics))
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::left_join(fig1, by = c("Scenario", "Metric")) |>
+  dplyr::mutate(Difference = Model - Paper)
+
+forest |>
+  dplyr::rename("Model (% of reference)" = Model,
+                "Figure 1, digitized (% of reference)" = Paper,
+                "Difference (pp)" = Difference) |>
+  knitr::kable(digits = 2)
+```
+
+```{r figure1, fig.height = 5, fig.cap = "Replicates the point estimates of Figure 1 of Vong 2021: steady-state AUC and Cmax at 10 mg twice daily relative to the reference patient (non-Asian male, 72 kg, 40 years, BCCL 108.7 mL/min). Filled points: model; open points: digitized from the published figure."}
+forest_long <- forest |>
+  dplyr::select(Scenario, Metric, Model, Paper) |>
+  tidyr::pivot_longer(c(Model, Paper), names_to = "Source", values_to = "Ratio")
+forest_long$Scenario <- factor(forest_long$Scenario, levels = rev(names(scenarios)))
+
+ggplot(forest_long, aes(x = Ratio, y = Scenario, colour = Metric, shape = Source)) +
+  geom_vline(xintercept = 100, colour = "grey40") +
+  geom_vline(xintercept = c(80, 125), linetype = 3, colour = "grey60") +
+  geom_point(position = position_dodge(width = 0.6), size = 2.4) +
+  scale_shape_manual(values = c(Model = 16, Paper = 1),
+                     labels = c(Model = "Model", Paper = "Figure 1 (digitized)")) +
+  labs(x = "Change relative to the reference patient (%)", y = NULL,
+       colour = NULL, shape = NULL) +
+  theme_bw() + theme(legend.position = "top")
+```
+
+All fourteen points agree to within a quarter of a percentage point, which is
+the digitization precision plus the small offset expected from the paper having
+plotted bootstrap medians rather than the final-model point estimates. Because
+the Cmax ratios depend jointly on CL/F, V/F, Ka and the dosing interval, this
+agreement also confirms the absorption rate and the V/F covariate model, not
+just the clearance model.
+
+```{r figure1-assert}
+stopifnot(max(abs(forest$Difference)) < 0.5)
+```
+
+# Virtual cohort
+
+200 virtual subjects are drawn with covariate distributions matching Table 2,
+and **each subject is simulated at both 5 and 10 mg twice daily**, so the
+dose-proportionality check below is an exact test of model linearity.
+
+Table 2 reports mean, SD, median and range. The continuous covariates are drawn
+from normal distributions matched to the reported mean and SD, with any draw
+outside the reported range rejected and redrawn (the range is a definition of
+the population, so it is not clamped). The race and sex indicators are drawn
+independently.
+
+Every record is assigned `OCC = 1`: the simulation represents a single
+steady-state visit, so the occasion-1 Ka eta acts as that subject's absorption
+deviation for the visit.
+
+```{r cohort}
+rxode2::rxSetSeed(20210301)
+set.seed(20210301)
+n_sub <- 200
+
+rtrunc_norm <- function(n, mean, sd, lower, upper) {
+  x <- stats::rnorm(n, mean, sd)
+  while (any(bad <- x < lower | x > upper)) {
+    x[bad] <- stats::rnorm(sum(bad), mean, sd)
+  }
+  x
+}
+
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  AGE = rtrunc_norm(n_sub, 41.3, 13.8, 18, 80),
+  WT = rtrunc_norm(n_sub, 73.6, 16.6, 37, 154.5),
+  CRCL_BASE = rtrunc_norm(n_sub, 112.3, 30.3, 40.8, 255.2),
+  SEXF = stats::rbinom(n_sub, 1, 0.415),
+  RACE_ASIAN = stats::rbinom(n_sub, 1, 0.109),
+  OCC = 1L
+)
+
+cohort |>
+  dplyr::summarise(
+    `Age (y)` = sprintf("%.1f (%.1f)", mean(AGE), sd(AGE)),
+    `Weight (kg)` = sprintf("%.1f (%.1f)", mean(WT), sd(WT)),
+    `BCCL (mL/min)` = sprintf("%.1f (%.1f)", mean(CRCL_BASE), sd(CRCL_BASE)),
+    `Female (%)` = sprintf("%.1f", 100 * mean(SEXF)),
+    `Asian (%)` = sprintf("%.1f", 100 * mean(RACE_ASIAN))
+  ) |>
+  tidyr::pivot_longer(dplyr::everything(), names_to = "Characteristic",
+                      values_to = "Simulated cohort, mean (SD) or %") |>
+  knitr::kable()
+```
+
+The Ka inter-occasion variability is very large (191.8%), so a subject two SDs
+into the slow tail absorbs with a rate constant of about 0.2 1/h (half-life of
+absorption about 3.5 h) rather than the typical 4 minutes. The 14-day loading
+period is sized from that tail, not from the 3-hour elimination half-life, so
+every subject is at steady state when the NCA interval opens.
+
+Each arm is solved in its own `rxSolve()` call with the rxode2 seed reset
+identically, so subject `i` receives the same random-effect draw at both dose
+levels; the chunk asserts that.
+
+```{r cohort-sim}
+simulate_arm <- function(dose) {
+  rxode2::rxSetSeed(20210301)
+  events <- do.call(rbind, lapply(cohort$id, function(i) {
+    rbind(
+      data.frame(id = i, time = 0, amt = dose, evid = 1L,
+                 cmt = "depot", ii = tau, addl = n_load),
+      data.frame(id = i, time = t_ss + obs_times, amt = NA_real_, evid = 0L,
+                 cmt = "central", ii = 0, addl = 0L)
+    )
+  }))
+  events <- dplyr::left_join(events, cohort, by = "id")
+  rxode2::rxSolve(mod, events, returnType = "data.frame", maxsteps = 100000L) |>
+    dplyr::mutate(dose = dose, treatment = paste(dose, "mg BID"), tad = time - t_ss)
+}
+
+sim <- dplyr::bind_rows(simulate_arm(5), simulate_arm(10))
+sim$treatment <- factor(sim$treatment, levels = c("5 mg BID", "10 mg BID"))
+
+individual_params <- sim |>
+  dplyr::group_by(treatment, id) |>
+  dplyr::summarise(cl = dplyr::first(cl), vc = dplyr::first(vc),
+                   ka = dplyr::first(ka), .groups = "drop")
+
+p5 <- dplyr::filter(individual_params, treatment == "5 mg BID")
+p10 <- dplyr::filter(individual_params, treatment == "10 mg BID")
+stopifnot(
+  identical(p5$id, p10$id),
+  isTRUE(all.equal(p5[, c("cl", "vc", "ka")], p10[, c("cl", "vc", "ka")]))
+)
+```
+
+# Replicating Figure 2 (visual predictive check by dose)
+
+Figure 2B of Vong 2021 is a prediction-corrected VPC stratified by dose. The
+panel below is the simulated counterpart for the two approved doses over one
+steady-state dosing interval, using the concentrations with residual error
+(`sim`), whose magnitude switches at 8 h after dose.
+
+```{r figure2, fig.cap = "Replicates Figure 2B of Vong 2021 (5 and 10 mg twice-daily strata): simulated 5th, 50th and 95th percentiles of tofacitinib concentration, with residual error, over a steady-state dosing interval."}
+pct <- sim |>
+  dplyr::filter(tad > 0) |>
+  dplyr::group_by(treatment, tad) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(pct, aes(x = tad)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "steelblue") +
+  geom_line(aes(y = p50), linewidth = 0.8) +
+  facet_wrap(~treatment) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(0, 12, 2)) +
+  labs(x = "Time after dose (hours)", y = "Plasma concentration (ng/mL)") +
+  theme_bw()
+```
+
+# PKNCA validation at steady state
+
+NCA is run on the structural prediction `Cc` (no residual error).
+
+```{r pknca}
+conc_data <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, treatment, time, Cc)
+
+anchor_count <- conc_data |>
+  dplyr::filter(time == t_ss) |>
+  dplyr::count(treatment, id)
+stopifnot(nrow(anchor_count) == 2 * n_sub, all(anchor_count$n == 1))
+
+dose_data <- sim |>
+  dplyr::distinct(treatment, id, dose) |>
+  dplyr::mutate(time = t_ss)
+
+conc_obj <- PKNCA::PKNCAconc(
+  conc_data, Cc ~ time | treatment + id, concu = "ng/mL", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_data, dose ~ time | treatment + id, route = "extravascular", duration = 0
+)
+
+intervals <- data.frame(
+  start = t_ss, end = t_ss + tau,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+```
+
+## Simulated steady-state exposure
+
+```{r nca-summary}
+nca_summary <- nca_res |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast", "cav")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(
+    Median = median(PPORRES), P10 = quantile(PPORRES, 0.1),
+    P90 = quantile(PPORRES, 0.9), .groups = "drop"
+  ) |>
+  dplyr::mutate(PPTESTCD = factor(
+    PPTESTCD,
+    levels = c("cmax", "tmax", "cmin", "cav", "auclast"),
+    labels = c("Cmax,ss (ng/mL)", "Tmax (h)", "Cmin,ss (ng/mL)",
+               "Cavg,ss (ng/mL)", "AUC(0-tau) (ng*h/mL)")
+  )) |>
+  dplyr::arrange(treatment, PPTESTCD)
+
+nca_summary |>
+  dplyr::rename("Dose group" = treatment, "NCA parameter" = PPTESTCD,
+                "10th percentile" = P10, "90th percentile" = P90) |>
+  knitr::kable(digits = 2)
+```
+
+## Comparison against the published exposure summary
+
+The Effect of Covariates section reports geometric-mean (%CV) steady-state AUC
+of 211.3 ng\*h/mL (22.6%) at 5 mg and 403.8 ng\*h/mL (24.6%) at 10 mg twice
+daily. It then reports geometric-mean "Cmax" of 3.6 ng/mL (47.4%) and 6.7 ng/mL
+(51.2%). Those two values cannot be peak concentrations. At 10 mg, Dose/V alone
+is 10 mg / 115.8 L = 86 ng/mL, the reference-patient steady-state Cmax is
+85 ng/mL (closed form, above), and the Figure 1 Cmax ratios reproduce to
+0.2 percentage points, so the model's Cmax is the paper's Cmax. The Methods list
+four derived exposure metrics: AUC, average concentration, Cmax and trough
+concentration. The table below compares the printed values with the simulated
+geometric mean of each candidate quantity.
+
+```{r nca-elimination}
+geo <- function(x) exp(mean(log(x)))
+geo_cv <- function(x) 100 * sqrt(exp(stats::var(log(x))) - 1)
+
+simulated_geo <- nca_res |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "cav", "cmin")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(value = geo(PPORRES), gcv = geo_cv(PPORRES), .groups = "drop") |>
+  dplyr::mutate(treatment = as.character(treatment))
+sim_value <- function(trt, what) {
+  simulated_geo$value[simulated_geo$treatment == trt & simulated_geo$PPTESTCD == what]
+}
+
+printed_c <- c("5 mg BID" = 3.6, "10 mg BID" = 6.7)
+elimination <- lapply(names(printed_c), function(trt) {
+  data.frame(
+    Dose = trt,
+    Printed = printed_c[[trt]],
+    `Cmax / 10` = sim_value(trt, "cmax") / 10,
+    Cavg = sim_value(trt, "cav"),
+    Ctrough = sim_value(trt, "cmin"),
+    check.names = FALSE
+  )
+}) |> dplyr::bind_rows()
+
+elimination |>
+  dplyr::rename("Printed 'Cmax' (ng/mL)" = Printed,
+                "Simulated Cmax / 10 (ng/mL)" = `Cmax / 10`,
+                "Simulated Cavg (ng/mL)" = Cavg,
+                "Simulated Ctrough (ng/mL)" = Ctrough) |>
+  knitr::kable(digits = 2)
+```
+
+Only the steady-state trough reproduces both printed values. A dropped decimal
+(Cmax / 10) is `r sprintf("%.0f", 100 * (elimination[["Cmax / 10"]][1] / 3.6 - 1))`%
+and `r sprintf("%.0f", 100 * (elimination[["Cmax / 10"]][2] / 6.7 - 1))`% too high,
+and Cavg is several-fold too high. The trough is also the only candidate whose
+between-subject spread is as large as the printed %CV of about 50%; simulated
+Cmax, Cavg and AUC all vary by 25-30%. The printed "Cmax" is therefore read as
+the steady-state trough concentration, and it is compared as such below.
+
+```{r nca-comparison}
+simulated_wide <- simulated_geo |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmin")) |>
+  dplyr::select(treatment, PPTESTCD, value) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+published <- data.frame(
+  treatment = c("5 mg BID", "10 mg BID"),
+  auclast = c(211.3, 403.8),
+  cmin = c(3.6, 6.7) # printed as geometric-mean 'Cmax'; see above and Assumptions
+)
+
+nca_compare <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_wide,
+  reference = published,
+  by = "treatment",
+  params = c("auclast", "cmin"),
+  tolerance_pct = 20,
+  label_first_column = "NCA parameter"
+)
+knitr::kable(nca_compare)
+```
+
+The AUC geometric means reproduce the published values. Exposure is set by
+CL/F, and the cohort's CL/F distribution follows from the covariates and the
+22.2% IIV. (The 5 mg value comes from the maintenance cohort, whose covariate mix
+is not reported separately.) The simulated between-subject spread is wider than
+the published one: AUC geometric CV
+`r sprintf("%.0f", simulated_geo$gcv[simulated_geo$PPTESTCD == "auclast"][1])`%
+against 22.6-24.6%, and trough
+`r sprintf("%.0f", simulated_geo$gcv[simulated_geo$PPTESTCD == "cmin"][1])`%
+against 47.4-51.2%. That is the expected pattern if the published summaries were
+computed from individual empirical Bayes estimates, which shrinkage pulls toward
+the typical value. The paper does not state how they were derived.
+
+The checks are asserted on geometric means, i.e. on the centre of the
+distribution. Over 200 subjects the standard error of the geometric mean is
+about 2% for AUC and about 5% for the trough, so the 10% and 20% bounds are
+robust to which subjects are drawn.
+
+```{r nca-comparison-assert}
+auc10 <- sim_value("10 mg BID", "auclast")
+cat(sprintf("10 mg BID geometric-mean AUC: %.1f ng*h/mL (paper: 403.8)\n", auc10))
+stopifnot(
+  abs(auc10 / 403.8 - 1) < 0.10,
+  abs(sim_value("5 mg BID", "cmin") / 3.6 - 1) < 0.20,
+  abs(sim_value("10 mg BID", "cmin") / 6.7 - 1) < 0.20
+)
+```
+
+The Ka inter-occasion variance depends on the percent-to-variance convention
+for the 191.8% IOV (see Assumptions). The sensitivity below re-solves the same
+10 mg cohort with the smaller of the two readings,
+`log(1 + 1.918^2) = 1.543`. The same subjects and seed are used, so the
+difference is purely the effect of the variance. At this elimination rate,
+steady-state Cmax and trough are insensitive to the Ka tail: both move by only
+a few percent, and the published trough of 6.7 ng/mL lies within about 5% (the
+standard error of the simulated geometric mean) of either reading. The
+published exposure summary therefore cannot settle the convention.
+
+```{r iov-sensitivity}
+mod_alt <- mod |>
+  rxode2::ini(etaiov_lka_1 ~ 1.543)
+rxode2::rxSetSeed(20210301)
+ev10 <- do.call(rbind, lapply(cohort$id, function(i) {
+  rbind(
+    data.frame(id = i, time = 0, amt = 10, evid = 1L, cmt = "depot", ii = tau, addl = n_load),
+    data.frame(id = i, time = t_ss + obs_times, amt = NA_real_, evid = 0L,
+               cmt = "central", ii = 0, addl = 0L)
+  )
+})) |>
+  dplyr::left_join(cohort, by = "id")
+sim_alt <- rxode2::rxSolve(mod_alt, ev10, returnType = "data.frame", maxsteps = 100000L)
+alt <- sim_alt |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cmax = max(Cc), cmin = min(Cc), .groups = "drop")
+
+data.frame(
+  `Ka IOV variance` = c("3.679 (packaged)", "1.543 (exact-CV reading)", "Published"),
+  `Geometric mean Cmax (ng/mL)` = c(sim_value("10 mg BID", "cmax"), geo(alt$cmax), NA),
+  `Geometric mean Ctrough (ng/mL)` = c(sim_value("10 mg BID", "cmin"), geo(alt$cmin), 6.7),
+  check.names = FALSE
+) |>
+  knitr::kable(digits = 2)
+```
+
+## Per-subject mass balance across the cohort
+
+The `CL/F * AUC(0-tau) = Dose` identity holds for every individual. The
+residual spread is trapezoidal-integration error on the absorption peak.
+
+```{r mass-balance-cohort}
+mass_balance <- nca_res |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::left_join(individual_params, by = c("treatment", "id")) |>
+  dplyr::left_join(dplyr::distinct(sim, treatment, id, dose), by = c("treatment", "id")) |>
+  dplyr::mutate(pct_diff = 100 * (cl * PPORRES / 1000 / dose - 1))
+
+cat(sprintf(
+  "CL/F * AUC(0-tau) / Dose - 1: median %.4f%%, 90th percentile of |.| %.4f%%\n",
+  median(mass_balance$pct_diff), quantile(abs(mass_balance$pct_diff), 0.9)
+))
+
+# Asserted on the centre and a robust quantile rather than the maximum: the
+# worst subject is whichever one drew the most extreme absorption, which is not
+# reproducible across rxode2 builds or thread counts.
+stopifnot(
+  abs(median(mass_balance$pct_diff)) < 0.1,
+  quantile(abs(mass_balance$pct_diff), 0.9) < 0.5
+)
+```
+
+## Dose proportionality
+
+The model is linear, and the two arms share identical individual parameters, so
+the 10 mg / 5 mg exposure ratio must be 2 for every subject up to solver
+tolerance. The paper likewise reports "a dose-proportional increase in
+tofacitinib exposure" over 0.5-15 mg twice daily.
+
+```{r dose-proportionality}
+ratios <- nca_res |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "cmin", "auclast", "cav")) |>
+  dplyr::left_join(dplyr::distinct(sim, treatment, id, dose), by = c("treatment", "id")) |>
+  dplyr::select(id, dose, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = dose, values_from = PPORRES, names_prefix = "d") |>
+  dplyr::mutate(ratio = d10 / d5)
+
+ratios |>
+  dplyr::group_by(PPTESTCD) |>
+  dplyr::summarise(`Median 10 mg / 5 mg ratio` = median(ratio),
+                   `Max deviation from 2` = max(abs(ratio - 2)), .groups = "drop") |>
+  dplyr::rename("NCA parameter" = PPTESTCD) |>
+  knitr::kable(digits = 8)
+
+stopifnot(abs(median(ratios$ratio) - 2) < 1e-4, quantile(abs(ratios$ratio - 2), 0.9) < 1e-3)
+```
+
+# Assumptions and deviations
+
+1. **IIV / IOV percent-to-variance convention (material for Ka).** Table 3
+   reports the random effects as percentages without stating whether they are
+   `100 * sqrt(omega^2)` or the exact log-normal CV
+   `100 * sqrt(exp(omega^2) - 1)`. The model uses the first, so
+   `omega^2 = (percent / 100)^2`, which is the convention adopted for the
+   `Xie_2019_tofacitinib` model from the same sponsor. It is immaterial for CL/F
+   (22.2%: 0.0493 vs 0.0481) and for the residual-magnitude IIV (58.0%), but
+   material for the Ka IOV (191.8%: 3.679 vs 1.543). No printed quantity settles
+   it: steady-state Cmax and trough are insensitive to the Ka tail at this
+   elimination rate (see the sensitivity table).
+   Users who need the absorption-variability tail should know that the packaged
+   value is the wider of the two readings.
+2. **Ka value.** The Abstract and Results give Ka = 9.85 h^-1; Table 3 prints
+   the same estimate rounded to 9.9. The model uses 9.85.
+3. **Mislabelled exposure metric.** The Effect of Covariates section prints
+   geometric-mean "Cmax" of 3.6 and 6.7 ng/mL at 5 and 10 mg twice daily. That
+   is more than ten-fold below Dose/V for this model, whose Cmax is confirmed
+   independently by the Figure 1 ratios. Of the four exposure metrics the
+   Methods list, only the steady-state trough reproduces both values and their
+   roughly 50% CV. The printed values are therefore compared as troughs. This
+   is an inference from arithmetic; the paper does not publish a correction.
+4. **Occasion definition.** The paper estimated Ka IOV over six occasions but
+   does not list the visit-to-occasion mapping. Six `OCC` slots with a shared
+   variance (occasions 2-6 fixed to the occasion-1 value) are carried. A user
+   should assign one occasion per PK visit. `OCC` values outside 1-6 switch the
+   IOV off, leaving Ka at its typical value.
+5. **Residual error on the log scale is encoded as proportional.** The paper
+   log-transformed the data and used an additive error on the log scale, which
+   is proportional on the linear scale. The two magnitudes switch at 8 h after
+   dose, and a single 58.0% IIV scales both (`etaruv`). That eta has no paired
+   fixed-effect parameter, so `checkModelConventions()` emits one warning for
+   it, as it does for the `Xie_2019_tofacitinib` model.
+6. **Time-dependent clearance is not included.** Equation 2 tested a power
+   function of occasion week on CL/F. The exponent was statistically significant
+   but negligible (-8.9e-4), and the authors dropped it from subsequent model
+   development. It is not part of the final model.
+7. **Creatinine clearance estimating equation.** The paper reports BCCL in
+   mL/min without naming the equation. It is carried as the unnormalized
+   `CRCL_BASE`; patients below 40 mL/min were excluded, so the power function
+   should not be extrapolated into moderate or severe renal impairment.
+8. **Cohort covariate distributions are assumed.** Table 2 gives mean, SD,
+   median and range only. The virtual cohort uses range-truncated normals drawn
+   independently, whereas weight, sex and creatinine clearance are correlated in
+   the real cohort. 2.6% of patients have unreported race; the Asian indicator
+   is drawn at the reported 10.9%.
+9. **No bioavailability parameter.** The model is parameterized in apparent
+   clearance and volume, so `F` is folded into both. Absolute exposures are only
+   meaningful for oral dosing of the immediate-release formulation.
+10. **Bootstrap confidence intervals are not reproduced.** Only point estimates
+    of Figure 1 are compared.
+
+# Session info
+
+```{r session}
+sessionInfo()
+```

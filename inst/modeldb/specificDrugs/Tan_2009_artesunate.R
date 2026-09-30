@@ -172,7 +172,7 @@ Tan_2009_artesunate <- function() {
     # p.4: "C_ij = C_pred,ij + eps_ij" where C_ij is the log-transformed
     # observation per the preceding paragraph "concentrations were then
     # natural log-transformed before the analysis"). By the standing
-    # convention in references/parameter-names.md, NONMEM additive-on-
+    # convention, NONMEM additive-on-
     # log-scale residual maps to nlmixr2 proportional residual in linear
     # space, with propSd = SD on the log scale ~= CV in linear space to
     # first order. Table 2 reports RV as %CV (37.5% AS, 28.2% DHA), with

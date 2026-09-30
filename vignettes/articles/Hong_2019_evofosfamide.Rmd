@@ -21,7 +21,7 @@ library(ggplot2)
 * Citation: `r readModelDb("Hong_2019_evofosfamide_cellular")()$reference`
 * Article: <https://doi.org/10.1016/j.neo.2018.11.009>
 * Supplement (Methods and Figures, `mmc1`; Tables, `mmc2`):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6314220/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6314220>
 
 Evofosfamide (TH-302) is a hypoxia-activated prodrug: a 2-nitroimidazole
 trigger attached to the DNA-crosslinking mustard bromo-isophosphoramide mustard

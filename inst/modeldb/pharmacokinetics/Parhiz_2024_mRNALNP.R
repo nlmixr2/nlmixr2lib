@@ -214,8 +214,7 @@ Parhiz_2024_mRNALNP <- function() {
     pid_g_liver  <- 100 * (vp_liver + int_liver)  / (8 * v_li)
 
     # Luciferase signal per tissue -- ADAPT 5 OUTPUT block Y(7)-Y(11).
-    # The state names already match the desired output names since the
-    # 2026-05-28 PBPK rename to spelled-out organs; no further aliasing
-    # needed.
+    # The state names (spelled-out organs) already match the desired
+    # output names; no further aliasing needed.
   })
 }

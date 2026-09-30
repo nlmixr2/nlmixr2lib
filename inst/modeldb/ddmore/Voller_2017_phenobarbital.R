@@ -1,6 +1,6 @@
 Voller_2017_phenobarbital <- function() {
   description <- "One-compartment first-order-absorption population PK model for phenobarbital in preterm and term newborns (Voller 2017), as packaged in DDMORE Foundation Model Repository entry DDMODEL00000256."
-  # Citation corrected 2026-09-22. The prior reference field named
+  # An earlier version of this file cited
   # 'Voller S, Pichlmeier U, Bauer-Brandl A, Kloft C, Pharmacokinetics of
   # phenobarbital in newborns: Towards model-based optimisation of the loading
   # dose' against this same DOI/journal/volume/page range, which cannot be

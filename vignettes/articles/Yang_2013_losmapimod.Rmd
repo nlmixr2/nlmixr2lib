@@ -131,8 +131,7 @@ make_cohort <- function(prof_row, n, id_offset) {
   # Dose row per subject at t = 0. `cmt = "depot"` targets the oral depot
   # (rxode2 canonical). Observation rows use `cmt = "central"` -- the ODE
   # state name -- so the algebraic observable Cc is reported without
-  # triggering the slot-renumbering bug (see references/known-vignette-
-  # failure-patterns.md pattern 2).
+  # triggering the slot-renumbering bug.
   dose_rows <- tibble(
     id       = ids,
     time     = 0,
@@ -422,7 +421,7 @@ males).
   Table 4 reference-subject grid (12 combinations of sex, age, weight).
   Each profile is populated with 100 stochastic replicates for the VPC
   panel; this is well under the 200-per-arm ceiling and comfortably
-  renders under the 5-minute vignette time budget.
+  renders in under 5 minutes.
 * **Table 3 IIV encoding** -- Yang 2013 reports IIV as omega^2 directly
   (the "%CV" column reads as 100 * sqrt(omega^2), e.g. sqrt(0.131) = 0.362
   for CL/F, so 36.2%). The model file uses the omega^2 values verbatim as

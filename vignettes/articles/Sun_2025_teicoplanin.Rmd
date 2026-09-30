@@ -460,8 +460,8 @@ pta_det <- function(ld, n_ld, md, crrt, sexf) {
     # the etas are zero either way -- but on rxode2 5.1.6 (the version CI
     # installs) passing `omega = NA` ALONGSIDE a multi-subject solve reads
     # out of bounds and returns NA for some subjects. Locally on 5.1.7 it is
-    # silent, which is how this reached CI. Same defect as PR #501 (Yoon 2023
-    # vancomycin, Lin 2026 coxTte).
+    # silent, which is how this reached CI. The same defect affected Yoon 2023
+    # vancomycin and Lin 2026 coxTte.
   s <- solve_fixed(mod_fixed, dat, params = as.data.frame(lattice),
                    returnType = "data.frame", addDosing = FALSE) |>
     mutate(time = round(time, 3))

@@ -653,12 +653,17 @@ errors in Wang's rendering:
 evidence that Wang's Table 2 is not a reliable transcription source, and is why
 the other four models carry re-extraction notes.
 
+Wang's Table 1 has a similar slip in the Gao column. It prints AST as
+26.0 (8.0-135.0) U/L, which is Gao's serum-creatinine row in umol/L. Gao's own
+Table 1 gives AST 22.6 (7.0-319.0) U/L. The `population` metadata of
+`Gao_2021_methotrexate.R` is therefore taken from Gao's Table 1, not Wang's.
+
 ## Gao 2021: the serum-creatinine term is unbounded
 
 Gao's creatinine effect is linear, not a power term:
 `CL = CL_typical * (1 + (Scr - 26) * (-0.0097))`. It reaches zero at
 Scr = 129.1 umol/L and goes **negative** above that -- inside Gao's own
-reported creatinine range (0.1-1.5 mg/dL = 8.8-132.6 umol/L). The published
+reported creatinine range (Gao Table 1: 8.0-135.0 umol/L). The published
 equation is reproduced as printed rather than clamped. Simulations must keep
 `CREAT` below about 129 umol/L; the cohort here has a maximum well below it.
 

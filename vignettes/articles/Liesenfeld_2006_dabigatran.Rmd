@@ -378,8 +378,8 @@ ggplot(sim_panel, aes(time / 24, value)) +
   ASCII spellings to match `R CMD check`'s non-ASCII string discipline.
 * **Single-output PD compartments.** `aPTT` and `ECT` are paper-named
   PD-output compartments. `aPTT` was previously registered in
-  `inst/references/compartment-names.md` (with `INR` and `PT`); this
-  PR adds `ECT` to that register with the same role (coagulation-test
+  `inst/references/compartment-names.md` (with `INR` and `PT`); `ECT`
+  was added to that register alongside this model with the same role (coagulation-test
   PD output) so `checkModelConventions()` recognises both as canonical.
 
 # Validation

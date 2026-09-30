@@ -368,8 +368,8 @@ Tchaparian_2016_lumefantrine_recurrence <- function() {
     # (P = .0005 adjusted, P = .001 unadjusted). Carrying the two
     # stratum-specific coefficients directly, rather than a main effect
     # plus an interaction offset, reproduces both printed numbers with
-    # no algebra and is the encoding the stratum-suffix grammar of
-    # references/parameter-names.md prescribes.
+    # no algebra and is the encoding the stratum-suffix convention
+    # prescribes.
     e_conc_lumefantrine_168h_low_haz_nots <- log(2.97)
     label("Log hazard ratio for 28-day recurrent parasitaemia, day 7 lumefantrine below 200 ng/mL vs at or above it, among children NOT receiving trimethoprim-sulfamethoxazole prophylaxis (log scale; HR 2.97)")
     # Table 3, 'Without TMP-SMZ use' block: adjusted HR 2.97

@@ -157,9 +157,8 @@ Kashihara_2026_rsvVaccine_snaCmi_mbma <- function() {
   # available data using MI without altering the model structure.' The
   # paper's Figure 3, which is the published simulation of this model, is
   # likewise 'based on the MI model'; the CCA simulation is relegated to
-  # supplementary Figure S9. Per
-  # references/replicate-author-structure.md a base-plus-final pair is one
-  # file holding the final. The CCA estimates are recorded in the vignette's
+  # supplementary Figure S9. By the standing convention a base-plus-final
+  # pair is one file holding the final. The CCA estimates are recorded in the vignette's
   # source-trace table for reference.
   #
   # STRUCTURE (Kashihara 2026 Results 3.3): 'The final model included the

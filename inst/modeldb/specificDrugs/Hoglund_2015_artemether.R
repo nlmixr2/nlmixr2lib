@@ -285,8 +285,7 @@ Hoglund_2015_artemether <- function() {
     # equivalent to an exponential error on normal scale data) was
     # used." This NONMEM additive-on-log-scale residual maps to a
     # nlmixr2 proportional residual in linear concentration space (see
-    # references/parameter-names.md Residual error and the matching
-    # comment in the companion Hoglund_2015_lumefantrine.R). Table 3
+    # the matching comment in the companion Hoglund_2015_lumefantrine.R). Table 3
     # reports the log-scale variance as "RUV"; the SD is sqrt(RUV),
     # which equals the proportional CV to first order.
     #   Artemether         RUV = 0.724 -> SD = sqrt(0.724) = 0.8509
