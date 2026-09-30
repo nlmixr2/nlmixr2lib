@@ -606,6 +606,14 @@ navbar:
         href: articles/Michelet_2025_BI754111_mpbpk.html
       - text: "BIIB023 (Galluppi 2016)"
         href: articles/Galluppi_2016_BIIB023.html
+      - text: "BMS986166 (Bihorel 2021)"
+        href: articles/Bihorel_2021_BMS986166.html
+      - text: "BMS986166 nalc md (Bihorel 2021)"
+        href: articles/Bihorel_2021_BMS986166.html
+      - text: "BMS986166 nalc sd (Bihorel 2021)"
+        href: articles/Bihorel_2021_BMS986166.html
+      - text: "BMS986166 nddhr (Bihorel 2021)"
+        href: articles/Bihorel_2021_BMS986166.html
       - text: "Balcinrenone (Parkinson 2025)"
         href: articles/Parkinson_2025_balcinrenone.html
       - text: "Balovaptan (SchaedeliStark 2024)"
@@ -7031,6 +7039,7 @@ articles:
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
   - articles/Bihorel_2017_LY2510924
+  - articles/Bihorel_2021_BMS986166
   - articles/Bihorel_2023_molnupiravir
   - articles/Bihorel_2025_evinacumab
   - articles/Bijleveld_2016_gentamicin
