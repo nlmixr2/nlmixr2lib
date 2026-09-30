@@ -5040,6 +5040,8 @@ navbar:
         href: articles/Benson_2010_reboxetine_hnet_binding.html
       - text: "Reboxetine qsp (Benson 2010)"
         href: articles/Benson_2010_reboxetine_hnet_binding.html
+      - text: "Rec2282 (Liva 2021)"
+        href: articles/Liva_2021_rec2282.html
       - text: "Regorafenib phase1 (Keunecke 2020)"
         href: articles/Keunecke_2020_regorafenib.html
       - text: "Regorafenib phase3 (Keunecke 2020)"
@@ -8172,6 +8174,7 @@ articles:
   - articles/Liu_2025_selpercatinib
   - articles/Liu_2025_tranexamicAcid
   - articles/Liu_2025_voriconazole
+  - articles/Liva_2021_rec2282
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin
   - articles/LlanosPaez_2020_gentamicin
