@@ -870,6 +870,8 @@ navbar:
         href: articles/Mahomed_2025_CAP256V2LS.html
       - text: "CC292 (Li 2017)"
         href: articles/Li_2017_CC292.html
+      - text: "CKD 519 (Kim 2020)"
+        href: articles/Kim_2020_CKD_519.html
       - text: "CNTO5048 mouse mpbpk (Zheng 2020)"
         href: articles/Zheng_2020_CNTO5048_mouse_mpbpk.html
       - text: "Cabamiquine (Courlet 2023)"
@@ -988,6 +990,10 @@ navbar:
         href: articles/Lin_2024_casirivimab.html
       - text: "Caspofungin (AbdulAziz 2025)"
         href: articles/AbdulAziz_2025_caspofungin.html
+      - text: "Caspofungin (Martson 2020)"
+        href: articles/Martson_2020_caspofungin.html
+      - text: "Caspofungin (Niu 2020)"
+        href: articles/Niu_2020_caspofungin.html
       - text: "Caspofungin (Wang 2020)"
         href: articles/Wang_2020_caspofungin.html
       - text: "Caspofungin (Wurthwein 2013)"
@@ -1150,6 +1156,8 @@ navbar:
         href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
       - text: "Ceftolozane (Sime 2019)"
         href: articles/Sime_2019_ceftolozane_tazobactam.html
+      - text: "Ceftolozane (Sime 2019b)"
+        href: articles/Sime_2019b_ceftolozane_tazobactam.html
       - text: "Ceftolozane (Zhang 2021)"
         href: articles/Zhang_2021_ceftolozane_tazobactam.html
       - text: "Ceftriaxone (FernandezRubio 2025)"
@@ -3418,6 +3426,8 @@ navbar:
         href: articles/Chen_2021_luspatercept.html
       - text: "Luspatercept teae grade3 (Chen 2021)"
         href: articles/Chen_2021_luspatercept.html
+      - text: "Lusutrombopag (Shimizu 2021)"
+        href: articles/Shimizu_2021_lusutrombopag.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
       - text: "M8891 human (Lignet 2023)"
@@ -5820,6 +5830,8 @@ navbar:
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Tazobactam (Sime 2019)"
         href: articles/Sime_2019_ceftolozane_tazobactam.html
+      - text: "Tazobactam (Sime 2019b)"
+        href: articles/Sime_2019b_ceftolozane_tazobactam.html
       - text: "Tazobactam (Zhang 2021)"
         href: articles/Zhang_2021_ceftolozane_tazobactam.html
       - text: "Tazobactam qsp (LopezArguello 2023)"
@@ -7194,6 +7206,9 @@ articles:
   - articles/Chen_2021_lorlatinib
   - articles/Chen_2021_lorlatinib_exposure_response
   - articles/Chen_2021_luspatercept
+  - articles/Chen_2021_sirolimus
+  - articles/Chen_2021a_tacrolimus
+  - articles/Chen_2021b_tacrolimus
   - articles/Chen_2022_guselkumab
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
@@ -9019,6 +9034,7 @@ articles:
   - articles/Wang_2019a_tacrolimus
   - articles/Wang_2019b_tacrolimus
   - articles/Wang_2020_caspofungin
+  - articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2020_polymyxinB
   - articles/Wang_2020_sunitinib
@@ -9260,6 +9276,7 @@ articles:
   - articles/Zhang_2018_sunitinib
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2019b_nivolumab
+  - articles/Zhang_2020_teicoplanin
   - articles/Zhang_2021_ceftolozane_tazobactam
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2021_realgar_indigo
