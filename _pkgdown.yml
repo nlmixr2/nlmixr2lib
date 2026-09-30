@@ -4326,6 +4326,8 @@ navbar:
         href: articles/Zhang_2022_ormutivimab.html
       - text: "Ornidazole (Li 2023)"
         href: articles/Li_2023_ornidazole.html
+      - text: "OrnithinePhenylacetate (Wang 2022)"
+        href: articles/Wang_2022_ornithinePhenylacetate.html
       - text: "Oseltamivir (Chairat 2016)"
         href: articles/Chairat_2016_oseltamivir.html
       - text: "Oseltamivir (Kamal 2013)"
@@ -9134,7 +9136,7 @@ articles:
   - articles/Wang_2021_polymyxinB
   - articles/Wang_2021_sunitinib
   - articles/Wang_2022_aripiprazole
-  - articles/Wang_2022_daidzein_equol
+  - articles/Wang_2022_ornithinePhenylacetate
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2023_methotrexate
   - articles/Wang_2023_teicoplanin

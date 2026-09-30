@@ -6652,6 +6652,22 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `Kuchimanchi_2022_diroximelFumarate.R` (founding example -- joint MMF + HES popPK after oral DRF with a shared central volume, HES bioavailability fixed at 0.6 from the mass-balance study, and eGFR on HES clearance).
 - **Notes:** In the founding model MMF is the active moiety and takes the bare canonical names (`depot`, `central`, `Cc`, `lcl`); only HES is suffixed. A model of DRF that also tracked the parent prodrug would give the parent the bare names and would then need a separate `mmf` suffix. Not to be confused with hydroxyethyl starch (also abbreviated HES), a plasma expander; register a different token if a model ever needs that.
 
+### pagn (**canonical phenylacetylglutamine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Phenylacetylglutamine (PAGN), the glutamine conjugate of phenylacetic acid (PAA) formed in the liver and excreted in urine. It is the ammonia-removing product of the nitrogen-scavenger drugs (L-ornithine phenylacetate, sodium phenylbutyrate, glycerol phenylbutyrate): one mole of PAGN carries two moles of waste nitrogen. Carries `central_pagn`, `lcl_pagn`, `lvc_pagn`, the `Cc_pagn` observation and `propSd_pagn` / `addSd_pagn`.
+- **Source aliases:**
+  - `PAGN`, `A3`, `CLPAGN`, `VPAGN` -- Wang 2022 Section 3.1 and the ESM control streams.
+- **Example models:** `Wang_2022_ornithinePhenylacetate.R` (founding example; PAGN formed from PAA by Michaelis-Menten conversion and cleared first-order with a creatinine-clearance power term).
+- **Notes:** The literature abbreviation is used because it is universal across the phenylbutyrate / phenylacetate labels and publications. PAA itself carries the bare canonical names in a model where it is the primary active moiety.
+
+### ornithine (**canonical L-ornithine co-administered analyte suffix**)
+- **Type:** metabolite-suffix
+- **Role:** L-ornithine (ORN), the counter-ion of L-ornithine phenylacetate that is released 1:1 with phenylacetic acid after intravenous administration and measured in plasma as a separate analyte. Endogenous: plasma ORN has a non-zero baseline, which the founding model adds to the prediction (`c0_ornithine`) rather than carrying as a state. Carries `central_ornithine`, `lcl_ornithine`, `lvc_ornithine`, `lc0_ornithine`, the `Cc_ornithine` observation and `propSd_ornithine`.
+- **Source aliases:**
+  - `ORN`, `A1`, `CLORN`, `VORN`, `BASE` -- Wang 2022 Section 3.1, ESM Table S2 and the ESM control streams.
+- **Example models:** `Wang_2022_ornithinePhenylacetate.R` (founding example).
+- **Notes:** The full name is used rather than `orn`, which is short enough to be ambiguous. It names a co-administered moiety rather than a metabolite, so it is not a precursor of `pagn`; the two species share no mass flow in the founding model.
+
 ---
 
 ## PBPK organ extracellular / cellular split (Parmar 2023 mPBPK family)
