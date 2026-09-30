@@ -13452,7 +13452,8 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS4149056_HOM` = 0).
 - **Source aliases:**
   - `SLCO1B1 c.521T>C` -- Toshimoto 2017 Supplementary Table 2A.
-- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.634; Supplementary Table 2A).
+  - `SLCO1B1 521TC` -- Stillemans 2022 Table 3 covariate row.
+- **Example models:** `Stillemans_2022_atorvastatin.R` (atorvastatin CL/F = theta_CL * (1 + theta), theta = -0.402 for 521T/C; Table 3), `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.634; Supplementary Table 2A).
 - **Notes:** Paired with `SNP_SLCO1B1_RS4149056_HOM`. c.521T>C is the classical **reduced-function** OATP1B1 variant (the defining SNP of the \*5 allele and, in cis with c.388A>G, of the \*15 / \*17 haplotypes). **Relationship to `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM`:** those canonicals encode the phased \*15 HAPLOTYPE (388G and 521C together); this column encodes the single c.521T>C SNP on its own. Use the haplotype canonicals when the source phases the two loci into \*15, and this pair plus `SNP_SLCO1B1_RS2306283_*` when the source models the two SNPs as separate covariates -- as Toshimoto 2017 does, combining their activities multiplicatively on the same transporter. The two encodings must not be mixed in one model. Toshimoto 2017 draws the joint genotype from the linkage-disequilibrium frequency table of its Supplementary Table 2B (Pasanen 2008) rather than treating the two loci as independent. Activity ratio 63.4 percent, from the authors' unpublished in-house data (Supplementary Table 2A footnote b) -- not from a citable source, so a future extraction should prefer its own published ratio.
 
 ### SNP_SLCO1B1_RS4149056_HOM (**canonical for SLCO1B1 c.521T>C homozygous-variant (521C/C) indicator**)
@@ -13463,7 +13464,8 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS4149056_HET` = 0).
 - **Source aliases:**
   - `SLCO1B1 c.521T>C` -- Toshimoto 2017 Supplementary Table 2A.
-- **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.268; Supplementary Table 2A).
+  - `SLCO1B1 521CC` -- Stillemans 2022 Table 3 covariate row.
+- **Example models:** `Stillemans_2022_atorvastatin.R` (atorvastatin CL/F = theta_CL * (1 + theta), theta = -0.041 for 521C/C; Table 3), `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.268; Supplementary Table 2A).
 - **Notes:** Companion to `SNP_SLCO1B1_RS4149056_HET`; see that entry's Notes for the \*15-haplotype relationship, the linkage-disequilibrium sampling and the unpublished-ratio caveat. Activity ratio 26.8 percent of wild type.
 
 ### SNP_SLCO1B1_RS2306283_HET (**canonical for SLCO1B1 c.388A>G heterozygous (388A/G) indicator**)
@@ -20506,6 +20508,17 @@ is the experimental condition itself, held constant for the whole solve.
   - `FCXAC` -- Bihorel 2017 Eq. 5, "set to 1 after the first dose for patients enrolled in Study CXAC and zero otherwise".
 - **Example models:** `Bihorel_2017_LY2510924.R` (gates the empirical `signal` state, whose build-up drives an LY2510924-independent stimulation of CD34+ cell mobilisation).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family. Unusually for a study indicator this is a STRUCTURAL covariate, not a variance stratum: it switches on an entire ODE state. The authors are explicit that it is a composite and largely empirical stand-in -- the CD34+ rise in the CXAC control arm could be due to the etoposide/carboplatin regimen, to concomitant G-CSF (used by 25-39% of CXAC patients versus none in CXAA or CXAB) or to erythropoietin, and "due to the differences in population and design across studies, the effects of SoC, cancer type, and study could not be distinguished" (Methods). Do not read it as a pure study effect, and do not reuse this canonical to carry a G-CSF or chemotherapy effect in another model -- `CONMED_<INN>` is the family for a named co-medication. Paired with `STUDY_CXAA` in the same model. Because the indicator is described as taking effect "after the first dose" and the model's `signal` state starts at zero at the time origin, the plain indicator reproduces `FCXAC` exactly when time is measured from the first dose.
+
+### STUDY_ATORVA_SUPPORT (**canonical for the Stillemans 2022 atorvastatin support-dataset indicator**)
+- **Description:** 1 = subject from one of the two richly sampled support datasets pooled into the Stillemans 2022 atorvastatin popPK fit (Lemahieu 2005 healthy volunteers, control phase; Hermann 2006 patients with statin-induced myopathy and healthy controls); 0 = subject from the sparsely sampled real-life investigation cohort (ambulatory patients, NCT03604471). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (investigation cohort).
+- **Source aliases:**
+  - `investigation` / `support` -- Stillemans 2022 Table 3 row labels (`theta CL investigation`, `theta CL support`).
+- **Example models:** `Stillemans_2022_atorvastatin.R` (selects between two separately estimated CL/F typical values, 535 vs 400 L/h, AND two separate CL/F random effects; the SLCO1B1 c.521T>C effect applies only in the investigation cohort).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family. The authors split CL/F into one fixed/random-effect pair per cohort because only the investigation cohort had covariate data, so that covariate effects could be estimated without shifting the support-dataset estimates (Stillemans 2022 Results, Covariate analysis). The indicator therefore carries dataset-level differences (design, assay, population) rather than a single physiological factor; set it to 0 to simulate the real-life ambulatory population the paper is about.
 
 ### FORM_OLZ_F0 (**canonical for the olanzapine 'formulation #0' product indicator**)
 - **Description:** 1 = the dose was given as the olanzapine product Li 2018 labels "formulation #0", 0 = any other olanzapine product. Per-dose-record indicator: the founding study's healthy-volunteer cohort received formulations #0 and #1 in a two-period crossover with a 3-week washout, so one subject contributes records under both. The three products are oral tablets from three different manufacturers, anonymised by the paper as "formulation #0", "#1" and "#2".
