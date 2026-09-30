@@ -1494,6 +1494,8 @@ navbar:
         href: articles/Zhang_2015_dolutegravir.html
       - text: "Domagrozumab (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_domagrozumab.html
+      - text: "Donepezil (Jung 2022)"
+        href: articles/Jung_2022_donepezil.html
       - text: "Donepezil im (Khwarg 2024)"
         href: articles/Khwarg_2024_donepezil.html
       - text: "Donepezil im (Park 2025)"
@@ -6936,6 +6938,7 @@ articles:
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
   - articles/Juma_2026_lumefantrine
+  - articles/Jung_2022_donepezil
   - articles/Jung_2023_fractal_kinetics
   - articles/Jung_2024_clopidogrel
   - articles/Jung_2024_vancomycin
