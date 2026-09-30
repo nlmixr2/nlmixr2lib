@@ -14248,6 +14248,17 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Knebel_2012_istradefylline_offtime.R` (power effect on the baseline percentage OFF time E0, on the maximum disease-progression/placebo-response effect EmaxP, and on the maximum istradefylline effect EmaxI; Knebel 2012 Table II thetas 7, 14 and 21).
 - **Notes:** Specific scope. Member of the `T_<EVENT>` elapsed-time family (`T_DIAG_CANCER`, `T_DIAG_DIAB`, `T_ENTRY`, `T_FIRSTDOSE`, `T_CPB`, `T_ECMO`, `T_NUT_SUPP`, `T_POST_ECMO`, `T_POST_HEMODIAL`, `T_PUMP`); `T_DIAG_DIAB` is the closest analogue, being likewise a disease-duration covariate in years. Units are years here rather than the days used by `T_DIAG_CANCER`, because the founding model's normalising constant (2.8) and its published cohort statistics are all in years and rewriting them in days would misstate the source; record the unit per model via `covariateData[[T_MOTORCOMPL]]$units`. Knebel 2012 retained this covariate in preference to two collinear alternatives -- time since diagnosis of Parkinson disease (`TPD`) and time since start of levodopa therapy (`LYRS`), which had pairwise correlations of at least 0.64 with it and gave similar estimates but a higher objective function. Those two are documented in the founding model's `covariatesDataExcluded` rather than registered here, because Knebel 2012 publishes no effect estimate for either; a future Parkinson model that does estimate them should register `T_DIAG_PD` and `T_LEVODOPA` as siblings at that point.
 
+### T_DIAG_RA (**canonical for time since rheumatoid arthritis diagnosis**)
+- **Description:** Time elapsed since the clinical diagnosis of rheumatoid arthritis at study entry (RA disease duration), in years. Continuous time-fixed covariate; per-subject, or the arm mean in a model-based meta-analysis.
+- **Units:** year
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. Leil 2021 centres it at 8.2 years (log-transformed, additive on the placebo Emax).
+- **Source aliases:**
+  - `disease duration (years)` -- Leil 2021 Table 2 column label (arm mean).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (additive `-0.133 * log(T_DIAG_RA / 8.2)` on the placebo Emax of the DAS28 change from baseline; longer-standing disease gives a smaller background-therapy response). Also documented (screened, not retained) in `Chen_2025_methotrexate_das28_mbma.R`, `Chen_2025_methotrexate_acr20_mbma.R` and `Chen_2025_methotrexate_acr50_mbma.R`.
+- **Notes:** Sibling of `T_DIAG_DIAB` and `T_DIAG_CANCER` under the canonical `T_<event>` family. Must be strictly positive where it enters through `log()`; supply a small floor for arms of newly diagnosed patients.
+
 ## Hypercholesterolemia biomarkers
 
 ### PCSK9 (**canonical for baseline unbound serum PCSK9 concentration**)
@@ -19672,6 +19683,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `Study 0059` -- FDA Clinical Pharmacology Review of NDA 210598, Table 4.1.2.4.1 row 'Effect of Study 0059 on Bioavailability'.
 - **Example models:** `Lo_2021_revefenacin.R` (multiplies the relative bioavailability of nebulized revefenacin by 0.553 in the form `F1 = TV x 0.553^STUDY_0059`, reflecting the lower exposures observed in that study; the FDA reviewer suggests a different nebulizer as a possible cause).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family; the id keeps the sponsor's four-digit protocol number with its leading zero so it cannot be read as a generic cohort count. Set to 0 when simulating the marketed product; the paper does not attribute the effect to any patient characteristic.
+
+### STUDY_242_07_208 (**canonical for delamanid trial 242-07-208 indicator**)
+- **Description:** 1 = the record comes from Otsuka trial 242-07-208 (NCT02573350), the open-label phase II extension of trial 242-07-204 in which MDR-TB patients received delamanid plus an optimized background regimen for up to 26 more weeks; 0 = any other trial in the pooled analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (trials 242-07-204, 242-08-210 and 242-09-213).
+- **Source aliases:**
+  - `trial 208` -- Wang 2020 Table 1 and Table 4 row `sigma pr,7208`.
+- **Example models:** `Wang_2020_delamanid.R` (selects the trial-208 proportional residual SD, 41.8% vs 26.7% in the other trials).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family, named with the full Otsuka protocol number because the short form `208` is not unique across sponsors.
+
+### STUDY_242_09_213 (**canonical for delamanid phase III trial 242-09-213 indicator**)
+- **Description:** 1 = the record comes from Otsuka phase III trial 242-09-213 (NCT01424670; delamanid 100 mg BID for 8 weeks then 200 mg QD for 18 weeks plus an optimized background regimen in MDR-TB); 0 = any other trial in the pooled analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (trials 242-07-204, 242-07-208 and 242-08-210).
+- **Source aliases:**
+  - `trial 213` -- Wang 2020 Table 1 and Table 4 row `sigma add,9213`.
+- **Example models:** `Wang_2020_delamanid.R` (selects the trial-213 additive residual SD, 44.2 ng/mL vs 1.55 ng/mL in the other trials).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family, named with the full Otsuka protocol number because the short form `213` is not unique across sponsors.
 
 ## Occasion / period (IOV)
 
