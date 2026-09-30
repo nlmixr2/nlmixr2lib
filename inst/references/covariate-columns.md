@@ -9571,16 +9571,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Akbar_2025_voriconazole.R`.
 - **Notes:** Distinct from the more specific `DIS_AML`, `DIS_BCPALL`, `DIS_CMML`, `DIS_MDS_AML` entries -- those are for leukemia-only or leukemia-vs-leukemia contrasts; `TUMTP_LEUK` is for heterogeneous-cancer pooled cohorts where leukemia is one of several tumor types and the analysis treats `cancer type` as a many-level categorical. Akbar 2025 had leukemia as 56.8% of the cohort and used it as the reference category. Scope: specific because the reference category in any source paper is paper-defined.
 
-### TUMTP_HEME (**canonical for haematologic-malignancy vs solid-tumour indicator**)
-- **Description:** 1 = haematologic malignancy (any leukaemia, lymphoma or myeloma), 0 = solid tumour. Time-fixed per subject. Use when the source analysis pools haematologic and solid-tumour patients and tests tumour type only as a two-level heme-vs-solid contrast.
+### TUMTP_SOLID (**canonical for solid-tumor (vs hematologic malignancy) tumor-type indicator**)
+- **Description:** 1 = patient with a solid-tumor malignancy, 0 = patient with a hematologic malignancy. Time-fixed per subject. For pooled oncology analyses that combine hematologic-malignancy and solid-tumor cohorts and treat tumor type as a two-level contrast.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (solid tumour), per source paper.
+- **Reference category:** 0 = hematologic malignancy (in `Lin_2020_glasdegib.R`, the pooled AML / MDS / other hematologic-malignancy patients of studies B1371001 and B1371003).
 - **Source aliases:**
-  - `TMR` ("tumor type", "solid vs. heme tumor") -- used in `Liva_2021_rec2282.R`. The paper does not state which level is coded 1; the maintainers read the first-named level (solid) as the reference.
-- **Example models:** `Liva_2021_rec2282.R` (linear fractional effect on the absorption lag time, `ALAG = TV * (1 + 0.942 * TUMTP_HEME)`, Liva 2021 Table 3 'TMR'; haematologic = multiple myeloma, lymphoma and AML, 40 of 56 patients; all patients of the OSU11130 trial had AML, so the authors note the effect may be a study effect).
-- **Notes:** Follows the `TUMTP_<type>` decomposition pattern (auto-approved family). Distinct from `TUMTP_LEUK`, `TUMTP_LYMPH` and `TUMTP_MYELO`, which name single haematologic histologies in many-level tumour-type categoricals; `TUMTP_HEME` pools all haematologic histologies against a solid-tumour reference. Distinct from `DIS_CANCER` (oncology vs non-oncology cohort).
+  - `Solid` -- the indicator name in the Lin 2020 glasdegib final-model equations (`Vp/F = 279.21 x (BWT/70) x (1 - 0.825 x Solid)`); used in `Lin_2020_glasdegib.R`.
+  - `TMR` ("tumor type", "solid vs. heme tumor") -- used in `Liva_2021_rec2282.R` with the OPPOSITE orientation (haematologic = 1), applied as `(1 - TUMTP_SOLID)`. The paper does not state which level is coded 1; the maintainers read the first-named level (solid) as the reference.
+- **Example models:** `Lin_2020_glasdegib.R` (linear effects `(1 + e x TUMTP_SOLID)` on apparent peripheral volume, -0.825, and apparent intercompartmental clearance, -0.653; also selects the solid-tumor residual-error SD), `Liva_2021_rec2282.R` (linear fractional effect on the absorption lag time for haematologic malignancy, `ALAG = TV * (1 + 0.942 * (1 - TUMTP_SOLID))`, Liva 2021 Table 3 'TMR'; haematologic = multiple myeloma, lymphoma and AML, 40 of 56 patients; every patient of the OSU11130 trial had AML, so the authors note the effect may be a study effect).
+- **Notes:** Distinct from `DIS_CANCER`, whose contrast is oncology vs NON-oncology (healthy volunteers or a non-oncology disease cohort); `TUMTP_SOLID` contrasts two oncology cohorts with each other. Member of the `TUMTP_<type>` family. Scope: specific because the complement group (which hematologic malignancies are pooled into the reference) is paper-defined.
 
 ### TUMTP_BCL (**canonical for B-cell lymphoma (pooled residual) tumor-type indicator**)
 - **Description:** 1 = B-cell lymphoma (BCL), 0 = other tumor types. Time-fixed per subject. In Gibiansky 2014 the BCL category is a pooled residual indolent-B-cell-lymphoma group that includes follicular lymphoma (FL was the primary indication in GAUDI; the four-level DIS column in the NONMEM control stream splits B-cell histologies into CLL = 1, BCL = 2 (residual indolent B-cell-lymphoma pool including FL), DLBCL = 3, MCL = 4).

@@ -112,7 +112,7 @@ make_cohort <- function(n, dose, id_offset) {
     SEXF = rbinom(n, 1, 0.518),
     WT = pmin(pmax(exp(rnorm(n, log(76.1), 0.23)), 42.9), 122.4),
     BMI = pmin(pmax(rnorm(n, 26.7, 5.4), 18.5), 43.6),
-    TUMTP_HEME = rbinom(n, 1, 40 / 56),
+    TUMTP_SOLID = 1L - rbinom(n, 1, 40 / 56),
     FORM_CAPSULE = rbinom(n, 1, 0.5),
     treatment = paste(dose, "mg")
   ) |>
@@ -130,7 +130,7 @@ events <- bind_rows(lapply(seq_along(dose_levels), function(i) {
 }))
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
-cohort <- distinct(events, id, treatment, SEXF, WT, BMI, FFM, TUMTP_HEME)
+cohort <- distinct(events, id, treatment, SEXF, WT, BMI, FFM, TUMTP_SOLID)
 summary(cohort$FFM)
 ```
 
@@ -145,7 +145,7 @@ mod <- readModelDb("Liva_2021_rec2282")
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("treatment", "FFM", "TUMTP_HEME", "FORM_CAPSULE")
+  keep = c("treatment", "FFM", "TUMTP_SOLID", "FORM_CAPSULE")
 ) |>
   as.data.frame() |>
   mutate(
@@ -227,7 +227,7 @@ mod_typ <- rxode2::zeroRe(mod)
 ev_typ <- rxode2::et(amt = 40, cmt = "depot") |>
   rxode2::et(seq(0, 480, by = 0.05), cmt = "central") |>
   as.data.frame() |>
-  mutate(FFM = 50.8, TUMTP_HEME = 0, FORM_CAPSULE = 1)
+  mutate(FFM = 50.8, TUMTP_SOLID = 1, FORM_CAPSULE = 1)
 typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev_typ))
 trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
 auc_window <- function(end) {
@@ -367,10 +367,10 @@ tibble(
     "Solid tumour, capsule", "Solid tumour, tablet",
     "Haematologic, capsule", "Haematologic, tablet"
   ),
-  TUMTP_HEME = c(0, 0, 1, 1),
+  TUMTP_SOLID = c(1, 1, 0, 0),
   FORM_CAPSULE = c(1, 0, 1, 0)
 ) |>
-  mutate(alag_min = 60 * 0.0453 * (1 + 0.942 * TUMTP_HEME) * (1 + 0.74 * (1 - FORM_CAPSULE))) |>
+  mutate(alag_min = 60 * 0.0453 * (1 + 0.942 * (1 - TUMTP_SOLID)) * (1 + 0.74 * (1 - FORM_CAPSULE))) |>
   select(group, alag_min) |>
   rename("Group" = group, "Typical lag time (min)" = alag_min) |>
   knitr::kable(digits = 1)
@@ -389,8 +389,11 @@ the simulated profiles.
   coded 1. It has no reference-subject statement, no control stream, and no supplement
   table that settles it. The maintainers took the first-named level as the
   reference (0): solid tumour for tumour type and capsule for formulation. So
-  `TUMTP_HEME = 1` (haematologic malignancy) and the tablet carry the
-  fractional increases of 0.942 and 0.74 on ALAG. With the opposite coding, the
+  haematologic malignancy and the tablet carry the fractional increases of
+  0.942 and 0.74 on ALAG. The model expresses both through the existing
+  canonical indicators, whose value 1 marks the reference level here:
+  `ALAG = 0.0453 * (1 + 0.942 * (1 - TUMTP_SOLID)) * (1 + 0.74 * (1 - FORM_CAPSULE))`.
+  With the opposite coding, the
   typical lag would sit with haematologic patients on tablets instead. The
   practical effect is small because every group's typical lag is under 10
   minutes.

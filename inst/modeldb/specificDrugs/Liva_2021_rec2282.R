@@ -43,11 +43,11 @@ Liva_2021_rec2282 <- function() {
       ),
       source_name = "FFM (Liva 2021 Table 3 'Covariates FFM'; Table 2; Section 2.4)"
     ),
-    TUMTP_HEME = list(
-      description = "Haematologic-malignancy tumour-type indicator; 1 = haematologic malignancy, 0 = solid tumour",
+    TUMTP_SOLID = list(
+      description = "Solid-tumour tumour-type indicator; 1 = solid tumour, 0 = haematologic malignancy",
       units = "(binary)",
       type = "binary",
-      reference_category = "0 (solid tumour)",
+      reference_category = "1 (solid tumour) carries the typical lag time",
       notes = paste(
         "Time-fixed. Liva 2021 Section 2.3 evaluates tumour type 'as dichotomous variables for",
         "solid vs. heme tumor'. Supplemental Table 2 lists the malignancies: haematologic =",
@@ -57,7 +57,8 @@ Liva_2021_rec2282 <- function() {
         "primary (1). All OSU11130 patients have AML, so the authors note that tumour type 'may",
         "be attributed to a study effect between these two trials' (Discussion). The paper does",
         "not state which level is coded 1; see the vignette Assumptions and deviations section.",
-        "Applied as ALAG = TV * (1 + 0.942 * TUMTP_HEME) (Equation 2).",
+        "Applied as ALAG = TV * (1 + 0.942 * (1 - TUMTP_SOLID)) (Equation 2), i.e. the",
+        "haematologic malignancies carry the 0.942 fractional increase in the lag time.",
         sep = " "
       ),
       source_name = "TMR (Liva 2021 Table 3 'Covariates TMR')"
@@ -188,7 +189,7 @@ Liva_2021_rec2282 <- function() {
     q <- exp(lq)
     vp <- exp(lvp)
     ka <- exp(lka + etalka)
-    tlag <- exp(ltlag) * (1 + e_heme_tlag * TUMTP_HEME) * (1 + e_tablet_tlag * (1 - FORM_CAPSULE))
+    tlag <- exp(ltlag) * (1 + e_heme_tlag * (1 - TUMTP_SOLID)) * (1 + e_tablet_tlag * (1 - FORM_CAPSULE))
 
     kel <- cl / vc
     k12 <- q / vc
