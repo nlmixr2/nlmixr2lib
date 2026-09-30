@@ -12,7 +12,7 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
-- Add Hirai 2022 digoxin ([doi:10.1186/s40360-022-00552-y](https://doi.org/10.1186/s40360-022-00552-y)) -- Japanese adults with atrial fibrillation and heart failure.
+- Add Patel 2022 imipenem and relebactam ([doi:10.1111/cts.13158](https://doi.org/10.1111/cts.13158)) -- healthy adults and adults with complicated intra-abdominal infection, complicated urinary tract infection, or hospital-acquired/ventilator-associated bacterial pneumonia, updating Bhagunde 2019 with the RESTORE-IMI 2 data.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
