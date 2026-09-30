@@ -14706,7 +14706,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Salinger_2019_pretomanid.R` (the most structurally load-bearing `STUDY_` member in the registry: it supplies a 1.54-fold relative-bioavailability effect, inflates the bioavailability random effect via `exp(0.919 * STUDY_NIXTB)`, selects between two pairs of Box-Cox shape parameters for the clearance and central-volume random effects, and gates a SECOND piecewise-constant clearance breakpoint at week 6 through `clStep2 <- STUDY_NIXTB * (tafdNow >= tclchange2)`).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family. Nix-TB was added at the final stage of Salinger 2019's staged model build, after a visual predictive check showed the pre-Nix model could not describe it, so the study indicator carries structure rather than only a nuisance offset -- in particular it is the only condition under which the model's `lcl_late2` / `ltclchange2` second clearance step is active, and it changes the SHAPE of two random-effect distributions rather than just their location. The step-up in clearance from week 6 was retained after the alternative explanation (rising body weight as patients recovered) was tested and rejected. Sibling to `STUDY_NC003` and `STUDY_NC005`.
 
-### SL_CONTACT_TIME_MIN (**canonical for contact time of a sublingual dosage form under the tongue**)
+### DUR_SL_CONTACT (**canonical for contact time of a sublingual dosage form under the tongue**)
 - **Description:** Time, in minutes, that a sublingual dosage form (film or tablet) remained in contact with the sublingual mucosa under the tongue before it had dissolved or was removed, as recorded at each sublingual administration. Per-dose-record covariate.
 - **Units:** min
 - **Type:** continuous
@@ -14714,7 +14714,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** n/a -- continuous; the founding model uses power scaling normalised to 2 min.
 - **Source aliases:** "contact time under the tongue", "contact time for sublingual administration" (Agbo 2021 Table 1 and Table 3 row "Contact time under the tongue for sublingual film on ka for sublingual administration").
 - **Example models:** `Agbo_2021_apomorphine.R` (power effect -0.194 on the sublingual absorption rate constant, reference 2 min; Figure 2's typical patient uses 3 min).
-- **Notes:** A dosing-procedure covariate rather than a formulation indicator: distinct from `FORM_ODT` and the other `FORM_*` columns, which name the dosage form, and from `NTIME` / `TAD`, which are times since dose. General scope because sublingual residence time is a recurring determinant of sublingual absorption across drugs.
+- **Notes:** A dosing-procedure covariate rather than a formulation indicator: distinct from `FORM_ODT` and the other `FORM_*` columns, which name the dosage form, and from `NTIME` / `TAD`, which are times since dose. General scope because sublingual residence time is a recurring determinant of sublingual absorption across drugs. Named in the `DUR_<event>` duration family (sibling of `DUR_MAP_BELOW_PRESURG`); the units live in the Units field, not the name, so the column is `DUR_SL_CONTACT` rather than a `_MIN`-suffixed form.
 
 ### STUDY_APLIOS (**canonical for APLIOS bioequivalence study indicator**)
 - **Description:** 1 = subject enrolled in the APLIOS bioequivalence study (NCT03560739; phase 2; ofatumumab AI vs PFS in RMS), 0 = other study in the Yu 2022 pooled analysis.

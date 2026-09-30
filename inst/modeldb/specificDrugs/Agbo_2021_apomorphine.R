@@ -37,7 +37,7 @@ Agbo_2021_apomorphine <- function() {
       notes = "Power effect on the sublingual bioavailability F1, reference 20 mg (Table 3 'Dose of sublingual apomorphine on F1' = -0.206; Results: 'the power to which the ratio of the covariate value to the reference value (20 mg ...) is raised'). Supplied as a data column because model code cannot read the dose record's amt. Only scales f(depot), so its value on subcutaneous records has no effect; set it to the sublingual film dose on sublingual records.",
       source_name = "DOSE"
     ),
-    SL_CONTACT_TIME_MIN = list(
+    DUR_SL_CONTACT = list(
       description = "Contact time of the apomorphine sublingual film under the tongue (min)",
       units = "min",
       type = "continuous",
@@ -131,7 +131,7 @@ Agbo_2021_apomorphine <- function() {
     vc <- exp(lvc + etalvc) *
       (WT / 69.3)^e_wt_vc *
       (1 + e_study_cth103_vc * STUDY_CTH103)
-    ka <- exp(lka + etalka) * (SL_CONTACT_TIME_MIN / 2)^e_slct_ka
+    ka <- exp(lka + etalka) * (DUR_SL_CONTACT / 2)^e_slct_ka
     ka2 <- exp(lka2)
     vc_sulf <- exp(lvc_sulf + etalvc_sulf) * (1 + e_sexf_vc_sulf * SEXF)
     kel_sulf <- exp(lkel_sulf)

@@ -140,7 +140,7 @@ make_events <- function(id, route, dose, wt, ct = 3, sexf = 0, n_dose = 1,
       # Only f(depot) reads this column, so its value on subcutaneous
       # records is irrelevant; the reference 20 mg is used there.
       DOSE_APOMORPHINE_SL_MG = if (route == "SL") dose else 20,
-      SL_CONTACT_TIME_MIN = ct,
+      DUR_SL_CONTACT = ct,
       treatment = treatment
     ) |>
     dplyr::relocate(id, time, amt, evid, cmt, dvid) |>
@@ -536,7 +536,7 @@ w_t4
   access deposit. The published SC/sublingual sulfate Cmax ratio (about 35%)
   is reproduced.
 - **Contact time and dose covariates are per administration.** The
-  sublingual-only covariates `SL_CONTACT_TIME_MIN` and
+  sublingual-only covariates `DUR_SL_CONTACT` and
   `DOSE_APOMORPHINE_SL_MG` must be present on every row but only affect the
   sublingual chain. Their value on subcutaneous records is irrelevant.
 - **Virtual cohort.** The PD weight distribution (log-normal, mean 80 kg, 20%
