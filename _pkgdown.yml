@@ -3432,6 +3432,8 @@ navbar:
         href: articles/Bender_2024_mosunetuzumab.html
       - text: "Motesanib (Gosselin 2015)"
         href: articles/Gosselin_2015_motesanib.html
+      - text: "Moxidectin (Smit 2022)"
+        href: articles/Smit_2022_moxidectin.html
       - text: "Moxifloxacin (Colin 2014)"
         href: articles/Colin_2014_moxifloxacin.html
       - text: "Moxifloxacin (Hong 2015)"
@@ -7752,6 +7754,7 @@ articles:
   - articles/Singu_2024_gentamicin
   - articles/Sinha_2026_oxcarbazepine
   - articles/Sloan_2017_rifampicin
+  - articles/Smit_2022_moxidectin
   - articles/Smith_2017_clindamycin
   - articles/Smuszkiewicz_2017_dexmedetomidine
   - articles/Smythe_2012_rifampicin
