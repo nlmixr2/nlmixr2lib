@@ -107,7 +107,7 @@
 
 - Add Snelder 2020 finerenone PK and UACR, serum potassium and eGFR exposure-response models ([doi:10.1007/s40262-019-00820-x](https://doi.org/10.1007/s40262-019-00820-x)) -- adults with type 2 diabetes and chronic kidney disease (ARTS-DN and ARTS-DN Japan).
 
-- Add Wang 2020 entinostat + nivolumab + ipilimumab QSP ([doi:10.3389/fbioe.2020.00141](https://doi.org/10.3389/fbioe.2020.00141)) -- virtual patients with HER2-negative breast cancer.
+- Add Wang 2020 entinostat + nivolumab + ipilimumab QSP ([doi:10.3389/fbioe.2020.00141](https://doi.org/10.3389/fbioe.2020.00141)) -- virtual patients with HER2-negative breast cancer. Solve it with `method = "cvode"`: with `lsoda`, about 1.5% of the entinostat solves fail ("could not solve the system") after perturbing two parameters by one part in 10^12, so a solve that works on one machine can fail on another. The article uses `cvode`, which solved every such case.
 
 - Add Niu 2020 caspofungin ([doi:10.3389/fphar.2020.00184](https://doi.org/10.3389/fphar.2020.00184)) -- children undergoing allogeneic hematopoietic stem cell transplantation.
 
