@@ -2175,7 +2175,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(HGB / ref)^exponent`.
 - **Source aliases:** none; `HGB` is the common NONMEM / clinical-PK abbreviation.
-- **Example models:** `Yamada_2025_zolbetuximab.R` (g/L, reference 118; exponent -0.374 on V1).
+- **Example models:** `Yamada_2025_zolbetuximab.R` (g/L, reference 118; exponent -0.374 on V1), `Zou_2020_leuprorelin.R` (g/dL, reference 13.6; exponent 2.30 on the resistant-fraction parameter `rp` of a PSA disease-progression model).
 - **Notes:** Unit varies by paper (SI g/L, US g/dL; 1 g/dL = 10 g/L). The per-model `covariateData[[HGB]]$units` field is load-bearing.
 
 ### HGB_BL (**canonical for per-subject baseline hemoglobin concentration (initial-condition use)**)
@@ -9402,6 +9402,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Ribba_2022_ctdna.R` (Stein bi-exponential on log10 ctDNA; `growth_ctdna(0) <- log10(CTDNA)`), `Ribba_2022_ctdna_sld_joint.R` (joint ctDNA / SLD model; same initial-condition use alongside `TUM_SLD`).
 - **Notes:** Deliberately NOT pooled with variant-allele-frequency (VAF) or ctDNA-tumor-fraction (cTF) readouts: MMPM is an absolute concentration of mutant molecules whereas VAF and cTF are dimensionless ratios of mutant to wild-type (or aneuploidy-derived) signal, so the two are not interconvertible without the wild-type denominator. A future VAF / cTF canonical should be registered separately (e.g. `CTDNA_VAF`) rather than aliased onto `CTDNA`. The assay platform matters for cross-study pooling -- Ribba 2022 used the Roche AVENIO panel for the MMPM cohorts (Weber 2021 and OAK) and the FMI panel for the cTF cohort (IMspire170) -- so record the panel in the per-model `covariateData[[CTDNA]]$notes`.
 
+### PSA_BL (**canonical for observed baseline serum prostate-specific antigen**)
+- **Description:** Observed per-subject baseline serum prostate-specific antigen (PSA) concentration, time-fixed per subject -- the last PSA measured before treatment start. Used both as a per-subject regressor that seeds a PSA disease-progression state (initial condition) and as a covariate on a disease-progression parameter.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(PSA_BL / ref)^exponent` when it enters a parameter; the observed value itself when it seeds a state.
+- **Source aliases:**
+  - `BAS` -- used in `Zou_2020_leuprorelin.R` (Zou 2020 Eqs 2-3 and 17, 'BAS is the baseline PSA').
+- **Example models:** `Zou_2020_leuprorelin.R` (seeds the Stein-type sub-states `growth(0) = R * PSA_BL`, `shrink(0) = (1 - R) * PSA_BL`, and is a power covariate on the kill rate `kse`, centered at the cohort median 8.5 ng/mL with exponent 0.174).
+- **Notes:** Follows the majority `<X>_BL` baseline-analyte pattern (`HGB_BL`, `INS_BL`, `FERRITIN_BL`). Named `PSA_BL` rather than `PSA_BASE` because the `<X>_BASE` pattern is reserved for a baseline paired with a same-analyte time-varying covariate column, whereas here PSA is the model's observable, not a covariate. A future time-varying PSA covariate (e.g. PSA as a driver in a survival model) should be registered separately as `PSA`.
+
 ### TUMTP_HODGKIN_CLASSICAL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 <!-- AUDIT 2026-06-19: renamed from `TUMTP_CHL` to `TUMTP_HODGKIN_CLASSICAL`. The prior name `TUMTP_CHL` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
 - **Description:** 1 = classical Hodgkin lymphoma (cHL) or Hodgkin lymphoma generally, 0 = other tumor types.
@@ -12793,6 +12804,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
   - `ANTIPLT`, `ASA` -- common clinical-dataset abbreviations; use the aspirin-specific `CONMED_ASA` form only if a future source restricts the indicator to aspirin monotherapy while also carrying a separate broader antiplatelet column.
 - **Example models:** `Elhefnawy_2023_recurrent_ischemic_stroke.R` (log-linear effect on the recurrent-ischemic-stroke hazard: `exp(-0.514 * CONMED_ANTIPLATELET)`, i.e. an adjusted hazard ratio of 0.59 -- about a 40 percent reduction in recurrence hazard; Elhefnawy 2023 Table 3 theta8).
 - **Notes:** Composite indicator with paper-specific class membership; users simulating across models that share this column but differ in class membership MUST populate it according to each paper's own definition. Distinct from `CONMED_ANTICOAG`-style anticoagulant indicators (different mechanism and different bleeding profile) -- register those separately rather than pooling them here, even though registry datasets sometimes combine the two under an "antithrombotic" heading. When a paper requires drug-resolved encoding, register sibling `CONMED_<INN>` canonicals (e.g. `CONMED_CLOPIDOGREL`) rather than overloading this one. Related but distinct from the pharmacogenetic canonical `CYP2C19_S2_CARRIER`, which modulates the *activation* of clopidogrel rather than recording whether an antiplatelet is being taken.
+
+### CONMED_ANTIANDROGEN (**canonical for concomitant antiandrogen indicator; class composition is paper-specific**)
+- **Description:** 1 = subject received an antiandrogen (androgen-receptor antagonist) in the paper-defined window, 0 = not. Used in prostate-cancer disease-progression models of androgen-deprivation therapy, where a short antiandrogen course around LHRH-agonist initiation (to block the testosterone flare) or combined androgen blockade can deepen the PSA response. **The class membership and the time window pooled into the indicator are paper-specific and MUST be enumerated in `covariateData[[CONMED_ANTIANDROGEN]]$notes` per model.** Composite class indicator following the `CONMED_DIURETIC` / `CONMED_ANTIPLATELET` pattern rather than the `CONMED_<INN>` per-drug pattern.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no antiandrogen of the paper-specific class set in the paper-specific window).
+- **Source aliases:**
+  - `AND` / `IND_AND` -- used in `Zou_2020_leuprorelin.R` (bicalutamide, enzalutamide, flutamide or nilutamide dispensed within 30 days of leuprorelin initiation; 33 of 264 subjects).
+- **Example models:** `Zou_2020_leuprorelin.R` (exponential effect on the PSA kill rate: `kse * exp(0.677 * CONMED_ANTIANDROGEN)`, a 96.8 percent higher kill rate; Zou 2020 Eq 17, Table 2).
+- **Notes:** Spelled out rather than `CONMED_NSAA` (nonsteroidal antiandrogen); a paper whose class set is restricted to nonsteroidal agents still uses this canonical with the composition in the notes. Distinct from `CONMED_CYPROTERONE` (steroidal antiandrogen, per-drug indicator) and from `CONMED_ABI` (abiraterone, an androgen-synthesis inhibitor rather than a receptor antagonist); when a paper requires drug-resolved encoding, register sibling `CONMED_<INN>` canonicals (e.g. `CONMED_BICALUTAMIDE`) rather than overloading this one.
 
 ### RHEUMATOID_FACTOR (**canonical for serum rheumatoid factor concentration**)
 - **Description:** Serum rheumatoid factor (an autoantibody, predominantly IgM, directed against the Fc portion of IgG) concentration. Baseline value typical; document time-varying use in per-model `notes`.
@@ -19397,8 +19419,9 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** general
 - **Reference category:** n/a -- a per-subject time offset, not a covariate effect coefficient. `T_SCAN_TO_DOSE = 0` recovers the no-delay case (dosing on the day of the baseline assessment) and is the sensible default for a typical-value simulation when the source paper does not report the distribution.
 - **Source aliases:**
+  - `t1` -- Zou 2020 Methods Eq 3 (time of the first leuprorelin dose on an axis anchored at the baseline PSA draw).
   - `delay` -- Chatterjee 2016 main-article Methods, tumor size NLME model structure ("'delay' the delay between baseline and the first dose").
-- **Example models:** `Chatterjee_2016_pembrolizumab.R` (gates the first-order decay of the treatment-sensitive tumour sub-state: `d/dt(shrink) <- -kdeath * shrink * (t >= T_SCAN_TO_DOSE)`, reproducing the published `exp(-kdeath * max(0, time - delay))` term, while the resistant sub-state grows from `t = 0`).
+- **Example models:** `Chatterjee_2016_pembrolizumab.R` (gates the first-order decay of the treatment-sensitive tumour sub-state: `d/dt(shrink) <- -kdeath * shrink * (t >= T_SCAN_TO_DOSE)`, reproducing the published `exp(-kdeath * max(0, time - delay))` term, while the resistant sub-state grows from `t = 0`), `Zou_2020_leuprorelin.R` (switches the drug-sensitive PSA sub-state from pre-treatment growth `kge_sens` to leuprorelin kill `kse` at `time >= T_SCAN_TO_DOSE`, reproducing Zou 2020's `t_s = min(t, t1)`, `t_k = max(0, t - t1)`; source symbol `t1`, time of the first leuprorelin dose, measured from the baseline PSA draw).
 - **Notes:** Well-formed member of the auto-approved `T_<event>` canonical family. Distinct from `T_FIRSTDOSE`, which is a time-VARYING treatment-duration clock measured forward from the first dose; `T_SCAN_TO_DOSE` is a time-FIXED scalar offset locating the first dose on an axis whose origin is the baseline assessment. Also distinct from `T_ENTRY`, which locates a subject's study entry on a shared global disease-time axis. A source paper may report this quantity as an estimated population parameter (a pharmacologic onset delay) rather than as data; that is a different construct and belongs in `ini()`, not here -- Chatterjee 2016 tested exactly such an estimated onset delay, dropped it for high shrinkage, and retained only the data-derived scan-to-dose offset that this column carries.
 
 ### TCLOCK (**canonical for wall-clock time-of-day covariate feeding a 24-hour periodic (circadian) function**)

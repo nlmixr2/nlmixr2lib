@@ -427,6 +427,9 @@ by tens of percent between Monte Carlo cohorts of 1000.
 * **Covariate cohort.** Table 1 gives medians and ranges only; the log-normal
   baseline-PSA and normal hemoglobin distributions are built from the 5th and
   95th percentiles quoted in the Results.
-* **Screened but not retained covariates** (age, AST, ALT, serum creatinine,
-  alkaline phosphatase, albumin, race and region) are documented in the model
-  file's `covariatesDataExcluded`, not used.
+* **Screened but not retained covariates.** The continuous candidates (age,
+  AST, ALT, serum creatinine, alkaline phosphatase, albumin) are documented in
+  the model file's `covariatesDataExcluded`, not used. Race and region were
+  collected (Methods; Table 1) and are not in the final model; the paper does not
+  give their indicator coding, so they are recorded only in the model's
+  `population` metadata.

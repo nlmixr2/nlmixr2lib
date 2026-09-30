@@ -1898,6 +1898,22 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Ribba_2022_ctdna.R` (founding example; freely estimated, `kse_ctdna = 0.0081` 1/day, RSE 27.4%), `Ribba_2022_ctdna_sld_joint.R` (derived as `kse_ctdna <- zeta * kse`, not estimated).
 - **Notes:** See `kse` for the underlying Stein decomposition and the `ks` name-collision warning.
 
+### kge_sens (**canonical pre-treatment growth-rate constant of the drug-sensitive fraction**)
+- **Type:** paper-named-param
+- **Role:** First-order growth-rate constant of the drug-SENSITIVE sub-population before treatment starts, in a Stein-type clonal-selection model whose sensitive fraction grows until a per-subject treatment start time and is then killed at `kse` (1 / time). Drives `d/dt(shrink) = (kge_sens * (1 - dosed) - kse * dosed) * shrink`, where `dosed` switches from 0 to 1 at the first dose. Inside `model` the bare name is `kge_sens`; the log-transformed `lkge_sens` form is used in `ini`, with IIV `etalkge_sens`.
+- **Source aliases:**
+  - `GS` -- Zou 2020 notation (growth rate of the sensitive PSA fraction, Methods Eq 3).
+- **Example models:** `Zou_2020_leuprorelin.R` (founding example; `kge_sens = 1.96e-3` 1/day, omega^2 2.59; Zou 2020 Table 2).
+- **Notes:** A qualifier-suffixed member of the `kge` family (compare the arm suffixes `lkge_<arm>` and the endpoint suffix `kge_ctdna`). Plain `kge` stays the growth rate of the drug-RESISTANT fraction (`growth` state) in the same model; the `_sens` suffix is what distinguishes the two growth rates. Only needed when the data window includes pre-treatment observations of the sensitive clone -- the classic Stein model starts at treatment start and has no such term.
+
+### rp (**canonical negative-log resistant fraction**)
+- **Type:** paper-named-param
+- **Role:** Positive unitless parameter giving the drug-resistant fraction of a clonal-selection model's baseline as `R = exp(-rp)`, so the resistant fraction is bounded in `(0, 1)` for any positive `rp` and a log-normal IIV on `rp` keeps it there. Inside `model` the bare name is `rp`; the log-transformed `lrp` form is used in `ini`, with IIV `etalrp`. The resistant and sensitive sub-states are seeded as `growth(0) = exp(-rp) * y0` and `shrink(0) = (1 - exp(-rp)) * y0`.
+- **Source aliases:**
+  - `RP` -- Zou 2020 notation (Methods, 'R = exp(-RP)').
+- **Example models:** `Zou_2020_leuprorelin.R` (founding example; `rp = 3.94`, i.e. `R = 1.94%` resistant PSA fraction at the median hemoglobin, omega^2 0.944, power covariate hemoglobin with exponent 2.30; Zou 2020 Table 2).
+- **Notes:** Kept as the paper's own symbol. Distinct from `fsen`, which is the sensitive fraction itself (bounded in `[0, 1]` and log-transformed directly): `rp` is the negative logarithm of the complementary (resistant) fraction, so `fsen = 1 - exp(-rp)`. Convert between them only by that identity; the IIV on one is not the IIV on the other.
+
 ### zeta (**canonical cross-endpoint decay-rate link**)
 - **Type:** paper-named-param
 - **Role:** Dimensionless multiplier that ties one endpoint's Stein decay-rate constant to a second, jointly-modeled endpoint's decay-rate constant, so the two biomarkers share a single underlying treatment-response process rather than decaying independently. Founding use: `kse_ctdna = zeta * kse` in Ribba 2022 Eq. 2, coupling the ctDNA decay rate to the tumor-size (sum-of-longest-diameters) decay rate. `zeta > 1` means the ctDNA signal falls faster than tumor size. Inside `model` the bare name is `zeta`; the log-transformed `lzeta` form is used in `ini` because the multiplier is strictly positive, with IIV `etalzeta`.
