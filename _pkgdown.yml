@@ -5866,8 +5866,8 @@ navbar:
         href: articles/Leeds_2013_tecovirimat.html
       - text: "Tecovirimat human (Leeds 2013)"
         href: articles/Leeds_2013_tecovirimat.html
-      - text: "Tedizolid (Li 2021)"
-        href: articles/Li_2021_tedizolid.html
+      - text: "Tedatioxetine (Frederiksen 2021)"
+        href: articles/Frederiksen_2021_tedatioxetine.html
       - text: "Teduglutide (Marier 2010)"
         href: articles/Marier_2010_teduglutide.html
       - text: "Teduglutide (Marier 2021)"
@@ -7506,6 +7506,7 @@ articles:
   - articles/Franken_2017_haloperidol
   - articles/Franken_2017_midazolam
   - articles/Franzese_2026_pdl1_nsclc_mbma
+  - articles/Frederiksen_2021_tedatioxetine
   - articles/Frederiksen_2023_brexpiprazole
   - articles/Freriksen_2020_dolutegravir_pregnancy_pbpk
   - articles/Frey_2010_tocilizumab
