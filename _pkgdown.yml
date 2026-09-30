@@ -3266,6 +3266,8 @@ navbar:
         href: articles/GallegoHernandez_2026_linezolid.html
       - text: "Linezolid (Milakovic 2024)"
         href: articles/Milakovic_2024_linezolid.html
+      - text: "Linezolid (Mockeliunas 2022)"
+        href: articles/Mockeliunas_2022_linezolid.html
       - text: "Linezolid (Nguyen 2026)"
         href: articles/Nguyen_2026_linezolid.html
       - text: "Linezolid (Schmidt 2009)"
@@ -8280,6 +8282,7 @@ articles:
   - articles/Mo_2024_shikimicAcid
   - articles/Mo_2025_everolimus
   - articles/MocWilleford_2024_rlyb212
+  - articles/Mockeliunas_2022_linezolid
   - articles/Mody_2023_doxorubicin_dexrazoxane
   - articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer
   - articles/Moein_2022_etrolizumab
