@@ -2,6 +2,20 @@
 
 # development version
 
+- Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
+
+- `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
+
+- Add Kloprogge 2020 isoniazid, rifampicin, pyrazinamide and ethambutol PK and sputum bacillary-load PKPD ([doi:10.1093/ofid/ofaa218](https://doi.org/10.1093/ofid/ofaa218)) -- Malawian adults with drug-sensitive pulmonary tuberculosis.
+
+- Add Zheng 2020 CNTO 5048 ([doi:10.1080/19420862.2020.1813962](https://doi.org/10.1080/19420862.2020.1813962)) -- SCID mice with CD45RB-high T-cell-transfer colitis and non-colitic controls (anti-murine-TNF mAb, mPBPK with serum and colon TNF target engagement); ratifies the new `DIS_TCT_COLITIS` covariate canonical.
+
+- Add Wang 2020 caspofungin ([doi:10.1128/AAC.00687-20](https://doi.org/10.1128/AAC.00687-20)) -- adult lung transplant recipients in the early postoperative period, with and without veno-venous ECMO. Registers the `SOFA` and `T_SURG` (operative time) covariate columns.
+
+- Add Chen 2021 luspatercept ([doi:10.1002/jcph.1696](https://doi.org/10.1002/jcph.1696)) -- adults with transfusion-dependent beta-thalassemia, with exposure-response models for hemoglobin response and adverse events.
+
+- Add Zhang 2021 ceftolozane and tazobactam ([doi:10.1002/jcph.1733](https://doi.org/10.1002/jcph.1733)) -- adults pooled across 16 studies, including ventilated patients with nosocomial pneumonia, with plasma and epithelial lining fluid.
+
 - Add Hibma 2026 elranatamab ([doi:10.1007/s40262-026-01663-z](https://doi.org/10.1007/s40262-026-01663-z)) -- adults with relapsed or refractory multiple myeloma; target-binding population PK of free and total drug and soluble BCMA, plus the exposure-response model for cytokine release syndrome after the first step-up dose.
 
 - Add Li 2025 epcoritamab ([doi:10.1007/s40262-024-01464-2](https://doi.org/10.1007/s40262-024-01464-2)) -- adults with relapsed or refractory B cell non-Hodgkin lymphoma given subcutaneous step-up dosing.
@@ -579,8 +593,6 @@
 - Sweep of two numeric-integration fragilities across 169 articles: every solve fed `ss = 1` records now passes `maxsteps = 1e6` (liblsoda's step budget is charged cumulatively across the steady-state search, so long-half-life subjects could come back `NA`), and terminal-slope regressions or PKNCA half-life inputs whose fitted window reached the numerically-zero tail keep only points above 1e-6 of Cmax past the peak, leaving absorption phases intact. No bound, seed or cohort changed; every article re-rendered.
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
-
-- Add Zhang 2021 ceftolozane and tazobactam ([doi:10.1002/jcph.1733](https://doi.org/10.1002/jcph.1733)) -- adults pooled across 16 studies, including ventilated patients with nosocomial pneumonia, with plasma and epithelial lining fluid.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
