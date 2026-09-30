@@ -6900,6 +6900,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Dings_2026_neonatal_acidosis.R` (+0.708 mg/dL lactate per minute of delay -- the largest single term in the lactate regression, and a confounder for the between-treatment lactate comparison precisely because the delay itself differed by arm).
 - **Notes:** Specific scope -- an obstetric / neonatal blood-gas pre-analytical covariate. Worth carrying even when not significant, because it is a measurement artefact that can otherwise be mistaken for a treatment effect.
 
+### T_INFUSION_LAG (**canonical for a data-supplied infusion-delivery lag time**)
+- **Description:** Delay between starting an infusion device (typically a syringe pump driving a low-volume infusion through a line whose dead space is comparable to the infused volume) and the drug actually entering the circulation. Supplied per subject (or per dose record) as a known value, NOT estimated, and applied as an absorption lag on the infusion into the central compartment (`alag(central) <- T_INFUSION_LAG`, NONMEM `ALAG1 = TLAG`). The lag shifts the whole infusion later; it does not change the infusion duration. Member of the auto-approved `T_<event>` family.
+- **Units:** h
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters the model as the lag itself. Reference values observed: 5-40 min (0.083-0.667 h) by body-weight dosing band in Neroutsos 2022 (40 min below 16 kg, 5 or 10 min above 34 kg).
+- **Source aliases:**
+  - `TLAG` -- Neroutsos 2022 supplement NONMEM `$INPUT` column; same meaning, carried in hours on the NONMEM time axis.
+- **Example models:** `Neroutsos_2022_busulfan.R` (paediatric intravenous busulfan by syringe pump; the per-band values were determined in an in-vitro simulation of the infusion set-up and entered in the dataset from Neroutsos 2022 Table 2).
+- **Notes:** General scope: any low-rate paediatric or neonatal infusion model that corrects for line dead space can reuse it. Distinct from an ESTIMATED absorption lag (`ltlag` / `tlag` parameters in `ini()`), which is a model parameter rather than a data column, and from `MIX_LAGGED_ABS`, a mixture-class indicator for oral absorption. Carry it in the model's time units (hours) even when the source tabulates minutes.
+
 ### POD (**canonical for post-operative day**)
 - **Description:** Days elapsed since the qualifying surgical event (e.g., solid-organ transplantation, major resection). Time-varying within subject; integer- or fractional-day valued; rises monotonically from 0 at the day of surgery. Captures time-since-surgery effects on PK that are not explained by other covariates -- e.g., post-transplant clearance of immunosuppressants typically declines toward a steady value over the first weeks-to-months as graft function, fluid status, hematocrit, and corticosteroid taper stabilise.
 - **Units:** days
