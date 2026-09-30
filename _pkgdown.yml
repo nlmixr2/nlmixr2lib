@@ -2322,6 +2322,8 @@ navbar:
         href: articles/Royer_2010_HuHMFG1.html
       - text: "Hydrochlorothiazide (Song 2013)"
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
+      - text: "Hydroxychloroquine (Alvarez 2022)"
+        href: articles/Alvarez_2022_hydroxychloroquine.html
       - text: "Hydroxychloroquine (Carmichael 2003)"
         href: articles/Carmichael_2003_hydroxychloroquine.html
       - text: "HydroxyprogesteroneCaproate (Sharma 2016)"
@@ -6108,6 +6110,7 @@ articles:
   - articles/Alsultan_2023_vancomycin
   - articles/Altcheh_2023_benznidazole
   - articles/AlvarezJimenez_2016_scopolamine
+  - articles/Alvarez_2022_hydroxychloroquine
   - articles/Ambery_2015_batefenterol
   - articles/An_2012_mitoxantrone_pbpk
   - articles/An_2025_rosuvastatin_ezetimibe
