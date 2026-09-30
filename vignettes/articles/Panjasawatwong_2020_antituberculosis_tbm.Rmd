@@ -31,13 +31,15 @@ set.seed(20201216)
 Panjasawatwong et al. (2020) described the plasma and cerebrospinal fluid (CSF)
 pharmacokinetics of the four first-line antituberculosis drugs in 100
 Vietnamese children with tuberculous meningitis (TBM). Each drug was modelled
-separately, so the package ships four model files that share this vignette:
+separately, and the time to death was modelled with its own time-to-event
+model, so the package ships five model files that share this vignette:
 
 ```{r load_models}
 inh <- nlmixr2lib::readModelDb("Panjasawatwong_2020_isoniazid")
 rif <- nlmixr2lib::readModelDb("Panjasawatwong_2020_rifampicin")
 pza <- nlmixr2lib::readModelDb("Panjasawatwong_2020_pyrazinamide")
 emb <- nlmixr2lib::readModelDb("Panjasawatwong_2020_ethambutol")
+tte <- nlmixr2lib::readModelDb("Panjasawatwong_2020_tbm_mortality")
 ```
 
 Reference: Panjasawatwong N, Wattanakul T, Hoglund RM, Bang ND, Pouplin T,
@@ -106,6 +108,16 @@ Drug-specific terms:
 Residual error is additive on log-transformed concentrations for every matrix
 (`lnorm()`).
 
+The time-to-death model (supplemental Table S3) has a Weibull hazard,
+`h(t) = lambda * alpha * (lambda * t)^(alpha - 1)`, with time in hours from the
+start of treatment. The shape factor `alpha` is shared across the cohort, and
+the scale factor `lambda` is estimated separately for each baseline TBM grade.
+The grade is supplied as two indicators, `TBM_GRADE_II` and `TBM_GRADE_III`,
+with grade I as the reference. The model has no drug input: the first-day
+plasma and CSF exposures of all four drugs were tested and none improved the
+fit. It returns the cumulative hazard `(lambda * t)^alpha` and the survival
+probability `sur = exp(-cumhaz)` in closed form.
+
 ## Source trace
 
 | Quantity | Isoniazid | Rifampicin | Pyrazinamide | Ethambutol | Source |
@@ -130,6 +142,18 @@ Residual error is additive on log-transformed concentrations for every matrix
 | Maturation function | Eq 4 | Eq 4 | Eq 4 | Eq 4 | Methods |
 | CSF volume | Eq 1 | Eq 1 | Eq 1 | - | Methods |
 | Enzyme pool | - | Eqs 2-3 | - | - | Methods |
+
+Time-to-death model:
+
+| Quantity | Value | Source |
+|---|---|---|
+| Weibull scale `lambda`, grade I (1/h) | 5.74e-9 | Table S3 'Baseline (hr-1)' |
+| Weibull scale `lambda`, grade II (1/h) | 2.35e-6 | Table S3 |
+| Weibull scale `lambda`, grade III (1/h) | 7.94e-5 | Table S3 |
+| Weibull shape `alpha` | 0.391 | Table S3 'Slope' |
+| Hazard `lambda * alpha * (lambda * t)^(alpha - 1)` | - | Table S3 equation |
+| Grade-specific `lambda` | - | Table S3 equation; Results (dOFV -19.0) |
+| Grade definition (BCS below 5 years, GCS from 5 years) | - | Table 1 footnote b |
 
 ## Structural verification
 
@@ -582,6 +606,170 @@ they are reported here rather than tuned:
   absorption rather than on the CSF volume (varying the volume 4-fold moves
   it by under 0.5 h). The simulated CSF Cmax and AUC agree with the table.
 
+## Time to death (Figure 7)
+
+The survival model is solved for one typical child in each TBM grade over the
+240-day follow-up. It is algebraic, so the solve is compared against the Table
+S3 closed form, and the hazard against the numerical derivative of the
+cumulative hazard. Both sides use the same parameters, so the bounds are tight.
+
+```{r tte_solve}
+tte_grid <- sort(unique(c(seq(0, 24, by = 1), seq(0, 240 * 24, by = 24))))
+tte_events <- data.frame(
+  id = rep(1:3, each = length(tte_grid)),
+  time = rep(tte_grid, times = 3),
+  evid = 0
+)
+tte_events$TBM_GRADE_II <- as.integer(tte_events$id == 2)
+tte_events$TBM_GRADE_III <- as.integer(tte_events$id == 3)
+
+tte_sim <- rxode2::rxSolve(tte, tte_events, returnType = "data.frame") |>
+  dplyr::mutate(grade = c("Grade I", "Grade II", "Grade III")[id])
+
+closed_form <- exp(-(tte_sim$lam * tte_sim$time)^tte_sim$alfa)
+stopifnot(max(abs(tte_sim$sur - closed_form)) < 1e-12)
+
+# Hazard against the central-difference derivative of the cumulative hazard,
+# with a step of 0.1% of t, away from t = 0 where the alpha < 1 hazard is
+# unbounded.
+check_t <- c(1, 24, 168, 960, 5760)
+deriv_events <- expand.grid(
+  step = c(-1, 0, 1),
+  check_t = check_t,
+  id = 1:3
+) |>
+  dplyr::mutate(
+    time = check_t * (1 + 1e-3 * step),
+    evid = 0,
+    TBM_GRADE_II = as.integer(id == 2),
+    TBM_GRADE_III = as.integer(id == 3)
+  ) |>
+  dplyr::arrange(id, time)
+deriv_check <- rxode2::rxSolve(
+  tte,
+  deriv_events,
+  returnType = "data.frame",
+  keep = c("step", "check_t")
+) |>
+  dplyr::group_by(id, check_t) |>
+  dplyr::summarise(
+    dh = (cumhaz[step == 1] - cumhaz[step == -1]) /
+      (time[step == 1] - time[step == -1]),
+    hazard = hazard[step == 0],
+    .groups = "drop"
+  )
+stopifnot(
+  nrow(deriv_check) == 15,
+  max(abs(deriv_check$dh / deriv_check$hazard - 1)) < 1e-4
+)
+```
+
+Figure 7 of the paper is a visual predictive check of the Kaplan-Meier curve in
+each grade, with a 95% prediction interval from 1,000 simulated trials. Here
+200 trials of the Table 1 grade sizes (58, 24 and 18 children) are drawn by
+inverting the survival function, `T = (-log(U))^(1 / alpha) / lambda`, with
+censoring at 240 days. The points are the observed survival at 240 days read
+from Figure 7.
+
+```{r tte_fig7, fig.height = 3.5}
+grade_n <- c("Grade I" = 58, "Grade II" = 24, "Grade III" = 18)
+tte_par <- tte_sim |>
+  dplyr::distinct(grade, lam, alfa)
+day_grid <- 0:240
+n_trials <- 200
+
+km_trials <- lapply(seq_len(nrow(tte_par)), function(i) {
+  g <- tte_par$grade[i]
+  n <- grade_n[[g]]
+  surv_mat <- vapply(
+    seq_len(n_trials),
+    function(r) {
+      event_h <- (-log(stats::runif(n)))^(1 / tte_par$alfa[i]) / tte_par$lam[i]
+      vapply(day_grid, function(d) mean(event_h > d * 24), numeric(1))
+    },
+    numeric(length(day_grid))
+  )
+  data.frame(
+    grade = g,
+    day = day_grid,
+    lo = apply(surv_mat, 1, stats::quantile, probs = 0.025),
+    hi = apply(surv_mat, 1, stats::quantile, probs = 0.975)
+  )
+}) |>
+  dplyr::bind_rows()
+
+fig7_observed <- data.frame(
+  grade = c("Grade I", "Grade II", "Grade III"),
+  day = 240,
+  sur = c(0.98, 0.83, 0.50)
+)
+
+ggplot() +
+  geom_ribbon(
+    data = km_trials,
+    aes(x = day, ymin = lo, ymax = hi),
+    fill = "grey75"
+  ) +
+  geom_line(
+    data = tte_sim,
+    aes(x = time / 24, y = sur),
+    linewidth = 0.8
+  ) +
+  geom_point(data = fig7_observed, aes(x = day, y = sur), shape = 1, size = 2.5) +
+  facet_wrap(~grade) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Time (days)",
+    y = "Survival",
+    caption = "Replicates Figure 7 of Panjasawatwong 2020 (line: model survival; band: 95% PI of simulated Kaplan-Meier curves)."
+  )
+```
+
+Expected deaths follow from the model survival and the grade sizes. The
+observed counts are 1, 4 and 10 deaths in grades I, II and III (15 in total;
+Table 1 and Discussion), with 8 of the 15 in the first week (Results).
+
+```{r tte_deaths}
+expected_deaths <- tte_sim |>
+  dplyr::filter(time %in% c(7 * 24, 240 * 24)) |>
+  dplyr::mutate(
+    n = grade_n[grade],
+    deaths = n * (1 - sur),
+    window = ifelse(time == 7 * 24, "first_week", "day_240")
+  ) |>
+  dplyr::select(grade, n, window, deaths) |>
+  tidyr::pivot_wider(names_from = window, values_from = deaths) |>
+  dplyr::mutate(
+    observed = c("Grade I" = 1, "Grade II" = 4, "Grade III" = 10)[grade]
+  )
+
+expected_deaths |>
+  dplyr::rename(
+    "TBM grade" = grade,
+    "Children" = n,
+    "Model deaths, first week" = first_week,
+    "Model deaths, 240 days" = day_240,
+    "Observed deaths" = observed
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  # Each grade's 240-day expected deaths lie within 1.5 of the observed count,
+  # and the total within 1 of the observed 15. Deterministic (no sampling).
+  all(abs(expected_deaths$day_240 - expected_deaths$observed) < 1.5),
+  abs(sum(expected_deaths$day_240) - 15) < 1
+)
+```
+
+The model reproduces the observed 240-day survival in every grade (Figure 7)
+and the number of deaths per grade. It places fewer deaths early than were
+observed, though: about `r round(sum(expected_deaths$first_week), 1)` in the
+first week against the 8 reported. The fitted shape factor of 0.391 spreads
+the deaths over the whole follow-up. Figure 7's observed grade III curve falls
+below the model line during the first 2 months and stays inside the paper's
+prediction band. This is reported as a property of the published estimates and
+has not been tuned.
+
 ## Assumptions and deviations
 
 * **CSF volume equation (Methods Eq 1).** As typeset, Eq 1 reads
@@ -630,9 +818,24 @@ they are reported here rather than tuned:
   values of Smythe et al. (2012), as in the paper; EC50 is converted from
   70.5 ug/L to 0.0705 mg/L. The enzyme pool starts at 1 with production equal
   to kENZ.
-* **Pharmacodynamic model.** The paper also reports a Weibull time-to-death
-  model stratified by baseline TBM grade (Table S3). It is not part of these
-  four PK model files.
+* **Time-to-death scale factors.** Table S3 writes
+  `lambda = (10^theta)(TBM Severity)` and prints, under 'Baseline (hr-1)', one
+  value per grade. These printed values are taken to be `lambda` itself, the
+  estimate back-transformed from the `10^theta` form used in NONMEM. With time
+  in hours this reading reproduces the observed 240-day survival of each grade
+  in Figure 7 (0.98, 0.83 and 0.50 against 0.982, 0.830 and 0.479 in the
+  model). Reading the time axis in days instead would predict about 5 deaths
+  in total rather than 15.
+* **TBM grade encoding.** The paper uses one three-level severity column. It
+  is supplied here as two mutually exclusive indicators, `TBM_GRADE_II` and
+  `TBM_GRADE_III`, with grade I as the reference, following the package's
+  convention for multi-level categories.
+* **No variability in the time-to-death model.** Table S3 reports only the four
+  fixed effects, so the model has no random effects and no residual error.
+  Simulated event times come from the survival function, as in the Figure 7
+  check above. The four children lost to follow-up are not treated as
+  censored in the expected-death table, which slightly overstates the expected
+  counts.
 * **Virtual cohort.** Age, weight, WAZ and CSF protein are drawn independently
   around the Table 1 medians, and weight follows the Table S5 growth curve. The
   study's individual covariates are not published.
