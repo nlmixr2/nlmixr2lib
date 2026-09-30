@@ -3290,6 +3290,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Singh_2025_donidalorsen.R` (per-subject baseline attack rate reference 3 attacks/4W; power exponent `e_haerate_bl_emax = 1.03` on Emax of the sigmoidal Emax attack-rate model).
 - **Notes:** Specific scope because the variable is HAE-domain-bound. Time-fixed per subject (baseline-only). Conceptually a specific-domain analogue of `ACUTE_MED_DAYS` (baseline migraine acute-medication days per month, migraine E-R models); both encode a baseline symptom / event rate as a power-law scaling covariate on the on-treatment response. If future HAE E-R models use a different screening window or normalisation window (e.g., per-day, per-month), document the per-model window in `covariateData[[HAERATE_BL]]$notes`.
 
+### LSR28_BL (**canonical for observed baseline natural log-transformed 28-day seizure rate**)
+- **Description:** Per-subject observed seizure rate during the baseline (pre-randomisation) period, normalised to a 28-day window and natural log-transformed with no offset: `LSR28_BL = log(28 * seizures / baseline days)`. Time-fixed per subject. Used as a linear covariate on the on-treatment log seizure rate in antiepileptic exposure-response models.
+- **Units:** log(seizures per 28 days) (natural log; document per-model via `covariateData[[LSR28_BL]]$units`).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters linearly without centring in the founding model (`slope * LSR28_BL`). Observed medians 3.00 (children 4-16 years) and 2.40 (adults) in Chan 2021 Table 3 footnote a.
+- **Source aliases:**
+  - `Baseline`, `Baseline_i` -- Chan 2021 Appendix Equations II ("the observed log-transformed baseline 28-day seizure rate for the ith individual").
+- **Example models:** `Chan_2021_pregabalin_lsr28.R` (population-specific slopes 0.945 (adults) and 1.03 (children) on the on-treatment LSR28 of an Emax exposure-response model).
+- **Notes:** The seizure type counted (all focal onset seizures in the founding model) is part of the endpoint definition; record it in `covariateData[[LSR28_BL]]$notes`. Not interchangeable with a transform that adds an offset before the log -- `Gidal_2018_eslicarbazepine_ssf.R` works on `ln(SSF + 0.33)` and estimates its baseline rather than reading it as a covariate -- so a model on an offset transform needs its own column. `LSR28` is an abbreviation (log seizure rate per 28 days) kept because it is the endpoint name used across the pregabalin program.
+
 ## Drug exposure metrics
 
 ### CAV (**canonical for average drug plasma concentration over a dosing interval**)
