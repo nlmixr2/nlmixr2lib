@@ -6078,6 +6078,14 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `Bertin_2026_levosimendan.R` (doi:10.1007/s40262-025-01591-4; founding example -- formation from OR-1855 is 3.7-fold slower in patients aged 1 year or younger, which is the paper's central clinical finding).
 - **Notes:** Same token-construction rule as [[or1855]]: development code lowercased, hyphen dropped. The pair is a rare case in this register of a *reversible* metabolic step between two metabolites, neither of which is the parent -- the forward acetylation is `kmet_or1896` and the reverse deacetylation is `kicv_or1855`, named for the species each one forms, so the direction of a rate constant is read off its suffix.
 
+### hes (**canonical 2-hydroxyethyl succinimide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 2-Hydroxyethyl succinimide (HES), the major inactive metabolite of the oral fumarate prodrug diroximel fumarate (DRF). Esterases in the gastrointestinal tract split DRF presystemically into monomethyl fumarate (MMF, the active moiety) and HES, so DRF itself is not measurable in plasma and both metabolites are modelled as if dosed directly. HES is eliminated mainly by renal excretion, which is why its clearance, unlike MMF's, depends on eGFR. Carries `depot_hes`, the `transit1_hes` ... `transit8_hes` absorption chain, `central_hes`, the `Cc_hes` observation, `lka_hes`, `lcl_hes`, `lfdepot_hes`, the `etalka_hes` / `etalcl_hes` IIV and the `expSd_hes` residual.
+- **Source aliases:**
+  - `HES`, `KaHES`, `CLHES`, `F4`, `ALAG4` -- Kuchimanchi 2022 Table 2 and Fig. 1a; `PLHES`, `HESABS`, `HESTABS<n>`, `KAH`, `CLH` in the ESM control stream `$MODEL` / `$PK` blocks.
+- **Example models:** `Kuchimanchi_2022_diroximelFumarate.R` (founding example -- joint MMF + HES popPK after oral DRF with a shared central volume, HES bioavailability fixed at 0.6 from the mass-balance study, and eGFR on HES clearance).
+- **Notes:** In the founding model MMF is the active moiety and takes the bare canonical names (`depot`, `central`, `Cc`, `lcl`); only HES is suffixed. A model of DRF that also tracked the parent prodrug would give the parent the bare names and would then need a separate `mmf` suffix. Not to be confused with hydroxyethyl starch (also abbreviated HES), a plasma expander; register a different token if a model ever needs that.
+
 ---
 
 ## PBPK organ extracellular / cellular split (Parmar 2023 mPBPK family)

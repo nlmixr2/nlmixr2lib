@@ -1462,6 +1462,8 @@ navbar:
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine betaPower (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
+      - text: "DiroximelFumarate (Kuchimanchi 2022)"
+        href: articles/Kuchimanchi_2022_diroximelFumarate.html
       - text: "Dndi6148 (Assmus 2026)"
         href: articles/Assmus_2026_dndi6148.html
       - text: "Dndi6148 human (Henninger 2026)"
@@ -7064,6 +7066,7 @@ articles:
   - articles/Kuan_2023_flipflop
   - articles/Kubota_2018_naldemedine
   - articles/Kuchimanchi_2018_evolocumab
+  - articles/Kuchimanchi_2022_diroximelFumarate
   - articles/Kuchimanchi_2024_dostarlimab
   - articles/Kuester_2008_matuzumab
   - articles/Kumar_2024_mAb_popPBPK
