@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Teixeira-da-Silva 2022 valproic acid ([doi:10.3390/pharmaceutics14040811](https://doi.org/10.3390/pharmaceutics14040811)) -- Spanish (Caucasian) paediatric and adult outpatients on valproic acid mono- or dual antiepileptic therapy, aged 0.1-89 years.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
