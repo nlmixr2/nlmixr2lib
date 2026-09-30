@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2022 L-ornithine phenylacetate ([doi:10.1007/s40262-021-01075-1](https://doi.org/10.1007/s40262-021-01075-1)) -- adults with cirrhosis or hepatic encephalopathy (phenylacetic acid, phenylacetylglutamine and L-ornithine).
+- Add Beck 2022 elagolix ([doi:10.1007/s40262-021-01096-w](https://doi.org/10.1007/s40262-021-01096-w)) -- premenopausal healthy women and women with endometriosis or uterine fibroids (elagolix alone or with estradiol/norethindrone acetate add-back); ratifies the new `SNP_SLCO1B1_RS4149056_MISSING` covariate canonical.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
