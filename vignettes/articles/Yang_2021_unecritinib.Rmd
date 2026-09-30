@@ -1,8 +1,8 @@
 ---
-title: "TQ-B3101 and TQ-B3101M (Yang 2021)"
+title: "Unecritinib and crizotinib (Yang 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{TQ-B3101 and TQ-B3101M (Yang 2021)}
+  %\VignetteIndexEntry{Unecritinib and crizotinib (Yang 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,27 +19,45 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("Yang_2021_TQB3101"))$reference`
-* Description: `r rxode2::rxode(readModelDb("Yang_2021_TQB3101"))$description`
+* Citation: `r rxode2::rxode(readModelDb("Yang_2021_unecritinib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yang_2021_unecritinib"))$description`
 * Article: <https://doi.org/10.3389/fphar.2021.782518> (open access)
 
-TQ-B3101 is an oral ALK/ROS1 kinase inhibitor that is rapidly converted by
-amide hydrolysis to its active metabolite TQ-B3101M. Yang 2021 fitted the two
-analytes sequentially in NONMEM 7.4 (FOCE-I): a one-compartment model with
-first-order absorption for the parent was fitted first and fixed, then a
-two-compartment model for the metabolite was added. All of the parent's
-clearance forms the metabolite (the fraction metabolised, FM, was fixed to 1
-for identifiability), and the metabolite's apparent clearance falls
-exponentially with time since the first dose, by 41% at its asymptote (Table
-3, footnote a). No covariate was retained.
+Unecritinib (development code TQ-B3101) is an oral ALK/ROS1/MET kinase inhibitor
+that is rapidly converted by amide hydrolysis to its active metabolite
+(TQ-B3101M). Yang 2021 fitted the two analytes sequentially in NONMEM 7.4
+(FOCE-I): a one-compartment model with first-order absorption for the parent was
+fitted first and fixed, then a two-compartment model for the metabolite was
+added. All of the parent's clearance forms the metabolite (the fraction
+metabolised, FM, was fixed to 1 for identifiability), and the metabolite's
+apparent clearance falls exponentially with time since the first dose, by 41%
+at its asymptote (Table 3, footnote a). No covariate was retained.
 
-The structures and molecular weights of both analytes are proprietary (Methods,
-Analytical Methods). The packaged model therefore reports TQ-B3101M in
-**TQ-B3101 mass equivalents**: `Cc_tqb3101m` is the concentration the metabolite
-would have if each molecule weighed as much as a parent molecule. Multiplying by
-the unpublished ratio MW(TQ-B3101M) / MW(TQ-B3101) gives the metabolite's own
-mass concentration. The validation below keeps that unknown ratio visible
-rather than guessing it.
+## Identity of the analytes
+
+The paper refers to the two analytes only as TQ-B3101 and TQ-B3101M and states
+that "the information of TQ-B3101 and TQ-B3101M including structure, molecular
+formular and molecular weight cannot be provided due to a proprietary issue"
+(Methods, Analytical Methods). The identities are now public:
+
+* PubChem CID 71506874, **unecritinib**, lists TQ-B3101 as a synonym:
+  C23H24Cl2FN5O2, 492.4 g/mol, the N-acetyl amide of crizotinib.
+* Hydrolysis of that amide gives **crizotinib** (PubChem CID 11626560,
+  C21H22Cl2FN5O, 450.3 g/mol). Later bioanalytical work names crizotinib as
+  the active metabolite of unecritinib
+  ([doi:10.1016/j.jpba.2024.116199](https://doi.org/10.1016/j.jpba.2024.116199)).
+* The paper's own numbers agree. The Discussion equates 300 mg TQ-B3101 with
+  275 mg crizotinib, and its Eq. 4 converts crizotinib doses to TQ-B3101 doses
+  by the molecular-weight ratio of the two. 275 / 300 = 0.917, and
+  450.3 / 492.4 = 0.914.
+
+The data were fitted as molar concentrations: the LLOQ was 1 nmol/L for both
+analytes and the goodness-of-fit plots are in molar units. With FM fixed to 1,
+one mole of crizotinib therefore forms per mole of unecritinib cleared. The
+packaged model applies the molecular-weight ratio to the formation flux, so the
+metabolite states hold mg of crizotinib and `Cc_crizotinib` is in ng/mL of
+crizotinib. The paper's paediatric Table 6 and adult exposures are in those
+units, and the comparisons below are direct.
 
 # Population
 
@@ -52,16 +70,16 @@ mg twice daily for 28 days). All doses were taken fasting. Table 2: 34 adults
 (median age 51.5 years, range 28-73; median weight 59.0 kg, range 42.0-87.7) and
 6 adolescents (median age 13.0 years, range 11-14; median weight 41.8 kg, range
 32.9-68.0); 21 of 40 (52.5%) were male. The dataset held 375 quantifiable
-TQ-B3101 and 658 quantifiable TQ-B3101M concentrations; the 340 and 42
+unecritinib and 658 quantifiable crizotinib concentrations; the 340 and 42
 below-quantitation samples were discarded.
 
 The same information is available programmatically via
-`readModelDb("Yang_2021_TQB3101")()$population`.
+`readModelDb("Yang_2021_unecritinib")()$population`.
 
 # Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each `ini()`
-entry in `inst/modeldb/specificDrugs/Yang_2021_TQB3101.R`.
+entry in `inst/modeldb/specificDrugs/Yang_2021_unecritinib.R`.
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
@@ -69,36 +87,37 @@ entry in `inst/modeldb/specificDrugs/Yang_2021_TQB3101.R`.
 | `lvc` (V/F) | log(4200) L | Table 3 |
 | `lka` (Ka) | log(51.9) 1/h | Table 3 |
 | `fm` (FM) | fixed(1) | Methods, Pharmacokinetic Modeling; Figure 1 caption |
-| `lcl_tqb3101m` (CLm0/Fm) | log(126) L/h | Table 3 |
-| `lvc_tqb3101m` (Vcm/Fm) | log(2300) L | Table 3 |
-| `lq_tqb3101m` (Qm/Fm) | log(113) L/h | Table 3 |
-| `lvp_tqb3101m` (Vpm/Fm) | log(1480) L | Table 3 |
+| `lcl_crizotinib` (CLm0/Fm) | log(126) L/h | Table 3 |
+| `lvc_crizotinib` (Vcm/Fm) | log(2300) L | Table 3 |
+| `lq_crizotinib` (Qm/Fm) | log(113) L/h | Table 3 |
+| `lvp_crizotinib` (Vpm/Fm) | log(1480) L | Table 3 |
 | `cl_exp_famp` (-TDPK) | -0.41 | Table 3 (TDPK = 0.41) |
 | `lcl_exp_kdes` (KTDPK) | log(0.0363) 1/h | Table 3 |
 | `etalcl`, `etalvc` | 0.0760, 0.1010 | Table 3 (28.1, 32.6 %CV); omega^2 = log(1 + CV^2) |
-| `etalcl_tqb3101m`, `etalvc_tqb3101m`, `etalvp_tqb3101m` | 0.1100, 0.2484, 0.5300 | Table 3 (34.1, 53.1, 83.6 %CV) |
-| `propSd`, `propSd_tqb3101m` | 0.711, 0.319 | Table 3 (sigma 71.1, 31.9 %CV) |
+| `etalcl_crizotinib`, `etalvc_crizotinib`, `etalvp_crizotinib` | 0.1100, 0.2484, 0.5300 | Table 3 (34.1, 53.1, 83.6 %CV) |
+| `propSd`, `propSd_crizotinib` | 0.711, 0.319 | Table 3 (sigma 71.1, 31.9 %CV) |
+| `mw_unecritinib`, `mw_crizotinib` | 492.4, 450.3 g/mol | PubChem CIDs 71506874 and 11626560 (not in the paper) |
 | `theta_i = theta_TV * exp(eta_i)` | n/a | Methods, Eq. 1 |
 | `CLm(t) = CLm0 * [1 - TDPK * (1 - exp(-KTDPK * t))]` | n/a | Table 3, footnote a |
 | Parent -> metabolite -> two-compartment ODEs | n/a | Figure 1 |
 
 # Structural checks against the published half-lives
 
-The Abstract and Results quote an elimination half-life of 1.0 h for TQ-B3101
-and, for TQ-B3101M at steady state, distribution and elimination half-lives of
-4.9 and 39.4 h. These follow in closed form from the typical values, using the
-asymptotic metabolite clearance `CLm0 * (1 + cl_exp_famp)`.
+The Abstract and Results quote an elimination half-life of 1.0 h for unecritinib
+and, for the metabolite at steady state, distribution and elimination
+half-lives of 4.9 and 39.4 h. These follow in closed form from the typical
+values, using the asymptotic metabolite clearance `CLm0 * (1 + cl_exp_famp)`.
 
 ```{r half-lives}
-mod <- readModelDb("Yang_2021_TQB3101")
+mod <- readModelDb("Yang_2021_unecritinib")
 th <- rxode2::rxode2(mod)$theta
 
 cl_p <- exp(th[["lcl"]])
 vc_p <- exp(th[["lvc"]])
-cl_m_inf <- exp(th[["lcl_tqb3101m"]]) * (1 + th[["cl_exp_famp"]])
-vc_m <- exp(th[["lvc_tqb3101m"]])
-q_m <- exp(th[["lq_tqb3101m"]])
-vp_m <- exp(th[["lvp_tqb3101m"]])
+cl_m_inf <- exp(th[["lcl_crizotinib"]]) * (1 + th[["cl_exp_famp"]])
+vc_m <- exp(th[["lvc_crizotinib"]])
+q_m <- exp(th[["lq_crizotinib"]])
+vp_m <- exp(th[["lvp_crizotinib"]])
 
 k10 <- cl_m_inf / vc_m
 k12 <- q_m / vc_m
@@ -108,10 +127,10 @@ root <- sqrt(sum_k^2 - 4 * k10 * k21)
 
 hl <- tibble::tibble(
   Quantity = c(
-    "TQ-B3101 elimination half-life (h)",
-    "TQ-B3101M distribution half-life at steady state (h)",
-    "TQ-B3101M elimination half-life at steady state (h)",
-    "TQ-B3101M apparent clearance at steady state (L/h)"
+    "Unecritinib elimination half-life (h)",
+    "Crizotinib distribution half-life at steady state (h)",
+    "Crizotinib elimination half-life at steady state (h)",
+    "Crizotinib apparent clearance at steady state (L/h)"
   ),
   Model = c(
     log(2) * vc_p / cl_p,
@@ -134,44 +153,47 @@ stopifnot(all(abs(hl$`Difference (%)`) < 3))
 
 ```{r clearance-time}
 tc <- tibble::tibble(time = seq(0, 240, by = 1)) |>
-  mutate(cl_tqb3101m = exp(th[["lcl_tqb3101m"]]) *
+  mutate(cl_crizotinib = exp(th[["lcl_crizotinib"]]) *
     (1 + th[["cl_exp_famp"]] * (1 - exp(-exp(th[["lcl_exp_kdes"]]) * time))))
 
-ggplot(tc, aes(time / 24, cl_tqb3101m)) +
+ggplot(tc, aes(time / 24, cl_crizotinib)) +
   geom_line() +
   geom_hline(yintercept = cl_m_inf, linetype = "dashed") +
   labs(
     x = "Time since first dose (days)", y = "CLm/Fm (L/h)",
-    title = "Typical TQ-B3101M apparent clearance",
+    title = "Typical crizotinib apparent clearance after unecritinib dosing",
     caption = "Table 3 footnote a of Yang 2021; dashed line = asymptote 74.3 L/h."
   )
 ```
 
 The half-time of the decline is `log(2) / 0.0363` = 19.1 h, so the clearance is
 within 1% of its asymptote after about 5.3 days. The authors attribute the
-decline to auto-inhibition of CYP3A4 by the metabolite, as reported for
-crizotinib (Discussion).
+decline to auto-inhibition of CYP3A4, as reported for crizotinib given as
+crizotinib, whose mean CL/F falls from 100 L/h after a single dose to 60 L/h at
+steady state (Discussion).
 
 # Typical-value simulation and a steady-state identity
 
 ```{r typical}
 mod_typ <- rxode2::zeroRe(mod)
+mw_ratio <- 450.3 / 492.4
 
 ev_typ <- rxode2::et(amt = 300, cmt = "depot", ii = 12, addl = 55) |>
   rxode2::et(sort(unique(c(seq(0, 48, by = 0.1), seq(648, 672, by = 0.05)))), cmt = "central") |>
   as.data.frame() |>
   # Two residual-error endpoints: observation rows carry dvid = 1; a forward
-  # solve still returns both Cc and Cc_tqb3101m on every row.
+  # solve still returns both Cc and Cc_crizotinib on every row.
   mutate(dvid = ifelse(evid == 0, 1L, NA_integer_))
 sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 
-# At true steady state AUC0-tau of the metabolite equals fm * dose / CLm(inf)
-# (the clearance has relaxed to within 1e-10 of its asymptote by day 28).
+# At true steady state AUC0-tau of the metabolite equals
+# fm * dose * MW ratio / CLm(inf) (the clearance has relaxed to within 1e-10 of
+# its asymptote by day 28).
 last <- sim_typ |> filter(time >= 660, time <= 672)
 auc_num <- sum(diff(last$time) *
-  (head(last$Cc_tqb3101m, -1) + tail(last$Cc_tqb3101m, -1)) / 2)
-auc_closed <- 1000 * 300 / cl_m_inf
+  (head(last$Cc_crizotinib, -1) + tail(last$Cc_crizotinib, -1)) / 2)
+auc_closed <- 1000 * 300 * mw_ratio / cl_m_inf
 c(numeric = auc_num, closed_form = auc_closed)
 # Solve against its own closed form: a pure numerical-error comparison.
 # Trapezoidal error on the 0.05 h grid is ~1e-5 relative.
@@ -180,7 +202,7 @@ stopifnot(abs(auc_num / auc_closed - 1) < 1e-3)
 sim_typ |>
   filter(time <= 48 | time >= 648) |>
   mutate(window = ifelse(time <= 48, "First two days", "Day 28 (steady state)")) |>
-  select(time, window, `TQ-B3101` = Cc, `TQ-B3101M (TQ-B3101 mass eq.)` = Cc_tqb3101m) |>
+  select(time, window, Unecritinib = Cc, Crizotinib = Cc_crizotinib) |>
   pivot_longer(-c(time, window), names_to = "analyte", values_to = "conc") |>
   filter(conc > 0) |>
   ggplot(aes(time, conc, colour = analyte)) +
@@ -189,15 +211,15 @@ sim_typ |>
   scale_y_log10() +
   labs(
     x = "Time (h)", y = "Concentration (ng/mL)", colour = NULL,
-    title = "Typical profiles, 300 mg TQ-B3101 twice daily"
+    title = "Typical profiles, 300 mg unecritinib twice daily"
   ) +
   theme(legend.position = "bottom")
 ```
 
 The parent peaks within an hour and is essentially gone before the next dose
-(half-life 1 h), while the metabolite peaks 1-3 h after the dose and
-accumulates, consistent with the times to peak of 0.5-1 h and 1-3 h quoted in
-the Discussion.
+(half-life 1 h), while crizotinib peaks 1-3 h after the dose and accumulates,
+consistent with the times to peak of 0.5-1 h and 1-3 h quoted in the
+Discussion.
 
 # Virtual adult cohorts
 
@@ -238,7 +260,7 @@ sim <- rxode2::rxSolve(mod, events = events, keep = "regimen") |>
   as.data.frame()
 ```
 
-# PKNCA: accumulation of TQ-B3101M
+# PKNCA: accumulation of crizotinib
 
 The Methods report that in the Phase 1 study "the average AUC0-tau,ss of
 TQ-B3101M after repeated dosing was 20-40% higher than the average AUC0-inf of
@@ -267,8 +289,10 @@ dose_df <- events |>
   select(id, time, amt, regimen)
 
 intervals <- data.frame(
-  regimen = c("100 mg single dose", "200 mg single dose", "100 mg QD, day 28",
-              "200 mg QD, day 28", "300 mg BID, day 28"),
+  regimen = c(
+    "100 mg single dose", "200 mg single dose", "100 mg QD, day 28",
+    "200 mg QD, day 28", "300 mg BID, day 28"
+  ),
   start = c(0, 0, 648, 648, 660),
   end = c(Inf, Inf, 672, 672, 672),
   cmax = TRUE,
@@ -283,11 +307,10 @@ run_nca <- function(analyte) {
   PKNCA::pk.nca(PKNCA::PKNCAdata(conc, dose, intervals = intervals))
 }
 
-nca_m <- run_nca("Cc_tqb3101m")
+nca_m <- run_nca("Cc_crizotinib")
 nca_p <- run_nca("Cc")
 
-nca_m_df <- as.data.frame(nca_m$result)
-auc_by_subject <- nca_m_df |>
+auc_by_subject <- as.data.frame(nca_m$result) |>
   filter(PPTESTCD %in% c("aucinf.obs", "auclast")) |>
   select(regimen, id, PPORRES)
 ```
@@ -306,23 +329,22 @@ acc <- auc_by_subject |>
 
 acc |>
   rename(
-    "Dose" = dose,
-    "Mean single-dose AUC0-inf (ng*h/mL, mass eq.)" = single,
-    "Mean day-28 AUC0-24 (ng*h/mL, mass eq.)" = repeated,
+    "Unecritinib dose" = dose,
+    "Mean single-dose crizotinib AUC0-inf (ng*h/mL)" = single,
+    "Mean day-28 crizotinib AUC0-24 (ng*h/mL)" = repeated,
     "Excess (%)" = excess
   ) |>
-  knitr::kable(digits = 1, caption = "Repeated-dose versus single-dose TQ-B3101M exposure (published: 20-40% higher).")
+  knitr::kable(digits = 1, caption = "Repeated-dose versus single-dose crizotinib exposure (published: 20-40% higher).")
 
-# The two AUCs share the unknown molecular-weight ratio, so the ratio is free of
-# it. Each per-dose excess compares two independent 100-subject means and
-# carries ~7 percentage points of cohort noise, so only the pooled excess is
-# gated here, with a bound a constant clearance (0%) or a mis-signed amplitude
+# Each per-dose excess compares two independent 100-subject means and carries
+# ~7 percentage points of cohort noise, so only the pooled excess is gated
+# here, with a bound a constant clearance (0%) or a mis-signed amplitude
 # (negative) fails by several standard errors. The tight check is the
 # deterministic typical-value excess below.
 stopifnot(mean(acc$excess) > 0, mean(acc$excess) < 60)
 
-# Typical-value excess: day-28 AUC0-24 = dose / CLm(inf) against the
-# single-dose AUC0-inf of the typical subject (dense grid, numeric solve).
+# Typical-value excess: day-28 AUC0-24 = dose * MW ratio / CLm(inf) against
+# the single-dose AUC0-inf of the typical subject (dense grid, numeric solve).
 ev_sd <- rxode2::et(amt = 100, cmt = "depot") |>
   rxode2::et(c(seq(0, 24, by = 0.05), seq(24.5, 2000, by = 0.5)), cmt = "central") |>
   as.data.frame() |>
@@ -330,27 +352,26 @@ ev_sd <- rxode2::et(amt = 100, cmt = "depot") |>
 sd_typ <- rxode2::rxSolve(mod_typ, ev_sd, rtol = 1e-10, atol = 1e-12) |>
   as.data.frame()
 auc_sd_typ <- sum(diff(sd_typ$time) *
-  (head(sd_typ$Cc_tqb3101m, -1) + tail(sd_typ$Cc_tqb3101m, -1)) / 2)
-typ_excess <- 100 * ((1000 * 100 / cl_m_inf) / auc_sd_typ - 1)
+  (head(sd_typ$Cc_crizotinib, -1) + tail(sd_typ$Cc_crizotinib, -1)) / 2)
+typ_excess <- 100 * ((1000 * 100 * mw_ratio / cl_m_inf) / auc_sd_typ - 1)
 typ_excess
 # Deterministic: must fall in the 20-40% the Methods report.
 stopifnot(typ_excess > 20, typ_excess < 40)
 ```
 
-The simulated excess of repeated-dose over single-dose metabolite exposure is
+The simulated excess of repeated-dose over single-dose crizotinib exposure is
 `r paste(round(acc$excess), collapse = "% and ")`% at 100 and 200 mg, against
-the 20-40% the paper reports from the Phase 1 non-compartmental analysis. The typical-value excess, free of cohort noise, is
-`r round(typ_excess)`%, inside the published range; the per-dose cohort
-values scatter around it by the sampling noise of two independent 100-subject
-arms.
+the 20-40% the paper reports from the Phase 1 non-compartmental analysis. The
+typical-value excess, free of cohort noise, is `r round(typ_excess)`%, inside
+the published range; the per-dose cohort values scatter around it by the
+sampling noise of two independent 100-subject arms.
 
 ## Adult steady-state exposure
 
-The Discussion quotes a TQ-B3101M AUC0-12h,ss of 4,251 ng*h/mL after 300 mg
-TQ-B3101 twice daily. That number is in metabolite mass units, whereas the
-packaged model is in parent mass equivalents, so the comparison below is
-expected to differ by the unpublished factor MW(TQ-B3101M) / MW(TQ-B3101); the
-paper does not say whether 4,251 is an observed or a simulated mean.
+The Discussion quotes a crizotinib (TQ-B3101M) AUC0-12h,ss of 4,251 ng*h/mL
+after 300 mg unecritinib twice daily, against 3,880 ng*h/mL after 250 mg
+crizotinib twice daily. The paper does not say whether 4,251 ng*h/mL is an
+observed mean from the Phase 2 patients or a model prediction, nor on which day.
 
 ```{r adult-ss}
 published_adult <- tibble::tibble(regimen = "300 mg BID, day 28", auclast = 4251)
@@ -366,18 +387,20 @@ cmp_adult <- nlmixr2lib::ncaComparisonTable(
   units = c(auclast = "ng*h/mL"),
   tolerance_pct = 20
 )
-knitr::kable(cmp_adult, caption = "TQ-B3101M AUC0-12h,ss after 300 mg BID: simulated (TQ-B3101 mass equivalents) versus the Discussion value (metabolite mass units).")
+knitr::kable(cmp_adult, caption = "Crizotinib AUC0-12h,ss after 300 mg unecritinib BID: simulated median versus the Discussion value. * differs by >20%.")
 
-adult_ratio <- 4251 / median(auc_by_subject$PPORRES[auc_by_subject$regimen == "300 mg BID, day 28"])
-adult_ratio
+adult_sim_auc <- auc_by_subject$PPORRES[auc_by_subject$regimen == "300 mg BID, day 28"]
+c(median = median(adult_sim_auc), mean = mean(adult_sim_auc))
 ```
 
-The published-to-simulated ratio of about `r signif(adult_ratio, 2)` is the
-factor that the missing molecular-weight ratio would have to supply, together
-with any difference between the paper's summary statistic and the median used
-here.
+The simulated median is `r round(100 * (1 - median(adult_sim_auc) / 4251))`%
+and the simulated mean `r round(100 * (1 - mean(adult_sim_auc) / 4251))`% below
+the quoted value; the typical-value steady-state AUC, from the closed form
+above, is `r round(auc_closed)` ng*h/mL. The paper gives neither the source nor
+the sample size behind 4,251 ng*h/mL, so the difference is recorded here rather
+than investigated further; it is not used to adjust the model.
 
-## TQ-B3101 (parent) NCA
+## Unecritinib (parent) NCA
 
 ```{r parent-nca}
 as.data.frame(nca_p$result) |>
@@ -385,7 +408,7 @@ as.data.frame(nca_p$result) |>
   group_by(regimen, PPTESTCD) |>
   summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
   pivot_wider(names_from = PPTESTCD, values_from = median) |>
-  knitr::kable(digits = 2, caption = "Median simulated TQ-B3101 NCA parameters by regimen (no published NCA values to compare).")
+  knitr::kable(digits = 2, caption = "Median simulated unecritinib NCA parameters by regimen (the paper reports no parent NCA values to compare).")
 ```
 
 # Replicates Table 6 and Figure 4: paediatric BSA-tiered dosing
@@ -402,10 +425,10 @@ mod_ped <- mod |>
   rxode2::model({
     cl <- exp(lcl + etalcl) * (WT / 59)^0.75
     vc <- exp(lvc + etalvc) * (WT / 59)
-    cl_tqb3101m0 <- exp(lcl_tqb3101m + etalcl_tqb3101m) * (WT / 59)^0.75
-    vc_tqb3101m <- exp(lvc_tqb3101m + etalvc_tqb3101m) * (WT / 59)
-    q_tqb3101m <- exp(lq_tqb3101m) * (WT / 59)^0.75
-    vp_tqb3101m <- exp(lvp_tqb3101m + etalvp_tqb3101m) * (WT / 59)
+    cl_crizotinib0 <- exp(lcl_crizotinib + etalcl_crizotinib) * (WT / 59)^0.75
+    vc_crizotinib <- exp(lvc_crizotinib + etalvc_crizotinib) * (WT / 59)
+    q_crizotinib <- exp(lq_crizotinib) * (WT / 59)^0.75
+    vp_crizotinib <- exp(lvp_crizotinib + etalvp_crizotinib) * (WT / 59)
   })
 ```
 
@@ -416,19 +439,17 @@ Instead, BSA was drawn from a normal distribution with mean 1.3 m^2 and SD 0.3
 m^2 truncated to 0.74-2.2 m^2 (the Table 4 median, and a spread whose +/-3 SD
 spans the Table 4 range), the first 100 children falling in each BSA tier of
 Table 5 were kept, and body weight was obtained by inverting the weight-only
-paediatric BSA formula of Costeff (1966), `BSA = (4 WT + 7) / (WT + 90)`. That formula maps Table 4's
-median weight of 42.3 kg to 1.33 m^2 and its weight range to 0.66-2.16 m^2,
-close to the tabulated BSA summary.
+paediatric BSA formula of Costeff (1966), `BSA = (4 WT + 7) / (WT + 90)`. That
+formula maps Table 4's median weight of 42.3 kg to 1.33 m^2 and its weight
+range to 0.66-2.16 m^2, close to the tabulated BSA summary.
 
 ```{r ped-cohort}
 tiers <- tibble::tibble(
   tier = c("0.74-0.89", "0.90-1.22", "1.23-1.38", "1.39-1.59", ">1.6"),
-  bsa_lo = c(0.74, 0.90, 1.23, 1.39, 1.60),
-  bsa_hi = c(0.89, 1.22, 1.38, 1.59, 2.20),
   dose = c(250, 350, 400, 450, 550)
 )
 
-obs_ped <- 13 * 24 + c(0, 0.5, 1, 2, 4, 6, 10, 12)  # Methods sampling grid, day 14
+obs_ped <- 13 * 24 + c(0, 0.5, 1, 2, 4, 6, 10, 12) # Methods sampling grid, day 14
 
 set.seed(20212)
 bsa_pool <- rnorm(20000, mean = 1.3, sd = 0.3)
@@ -444,7 +465,7 @@ ped_subjects <- tibble::tibble(
   group_by(tier) |>
   slice_head(n = 100) |>
   ungroup() |>
-  left_join(select(tiers, tier, dose), by = "tier") |>
+  left_join(tiers, by = "tier") |>
   mutate(
     id = seq_len(n()),
     WT = (90 * BSA - 7) / (4 - BSA)
@@ -467,8 +488,8 @@ ped_sim <- rxode2::rxSolve(mod_ped, events = ped_events, keep = c("tier", "BSA")
 
 ```{r ped-nca}
 ped_conc <- ped_sim |>
-  filter(!is.na(Cc_tqb3101m)) |>
-  transmute(id, tier, time, Cc = pmax(Cc_tqb3101m, 0))
+  filter(!is.na(Cc_crizotinib)) |>
+  transmute(id, tier, time, Cc = pmax(Cc_crizotinib, 0))
 ped_dose <- ped_events |>
   filter(evid == 1) |>
   select(id, tier, time, amt)
@@ -478,52 +499,52 @@ ped_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   intervals = data.frame(start = 13 * 24, end = 13 * 24 + 12, cmax = TRUE, auclast = TRUE)
 ))
 
+# Table 6 medians (the comparison table pools the simulation by median).
+table6_median <- tibble::tibble(
+  tier = tiers$tier,
+  cmax = c(631.1, 620.8, 586.0, 597.7, 589.6),
+  auclast = c(6583.9, 6507.4, 6259.7, 6376.8, 6379.0)
+)
+
+cmp_ped <- nlmixr2lib::ncaComparisonTable(
+  simulated = ped_nca,
+  reference = table6_median,
+  by = "tier",
+  params = c("cmax", "auclast"),
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_ped, caption = "Replicates Table 6 of Yang 2021: median crizotinib Cmax,ss and AUC0-12h,ss by BSA tier after BSA-tiered unecritinib dosing. * differs by >20%.")
+
 ped_ind <- as.data.frame(ped_nca$result) |>
   filter(PPTESTCD %in% c("cmax", "auclast")) |>
   select(id, tier, PPTESTCD, PPORRES) |>
   pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
 
-table6 <- tibble::tibble(
-  tier = tiers$tier,
-  pub_cmax_gm = c(629.5, 637.1, 575.4, 581.7, 578.8),
-  pub_auc_gm = c(6431.7, 6614.4, 6118.1, 6272.9, 6229.2)
-)
-
-geomean <- function(x) exp(mean(log(x)))
-ped_summary <- ped_ind |>
+ped_check <- ped_ind |>
   group_by(tier) |>
-  summarise(sim_cmax_gm = geomean(cmax), sim_auc_gm = geomean(auclast), .groups = "drop") |>
-  left_join(table6, by = "tier") |>
+  summarise(sim_auc = median(auclast), sim_cmax = median(cmax), .groups = "drop") |>
+  left_join(rename(table6_median, pub_auc = auclast, pub_cmax = cmax), by = "tier") |>
   mutate(
-    tier = factor(tier, levels = tiers$tier),
-    ratio_auc = pub_auc_gm / sim_auc_gm,
-    ratio_cmax = pub_cmax_gm / sim_cmax_gm
-  ) |>
-  arrange(tier)
-stopifnot(nrow(ped_summary) == 5L, !anyNA(ped_summary$pub_auc_gm))
+    pct_auc = 100 * (sim_auc / pub_auc - 1),
+    pct_cmax = 100 * (sim_cmax / pub_cmax - 1)
+  )
+stopifnot(nrow(ped_check) == 5L, !anyNA(ped_check$pub_auc))
+ped_check
 
-ped_summary |>
-  rename(
-    "BSA tier (m^2)" = tier,
-    "Sim. Cmax,ss GM (mass eq.)" = sim_cmax_gm,
-    "Table 6 Cmax,ss GM" = pub_cmax_gm,
-    "Sim. AUC0-12h,ss GM (mass eq.)" = sim_auc_gm,
-    "Table 6 AUC0-12h,ss GM" = pub_auc_gm,
-    "Table 6 / sim. (AUC)" = ratio_auc,
-    "Table 6 / sim. (Cmax)" = ratio_cmax
-  ) |>
-  knitr::kable(digits = 2, caption = "Replicates Table 6 of Yang 2021: TQ-B3101M geometric-mean exposure by BSA tier (ng/mL, ng*h/mL). Simulated values are in TQ-B3101 mass equivalents; Table 6 is in metabolite mass units.")
-
-# Structural check, independent of the unknown molecular-weight ratio: the
-# BSA-tiered doses were chosen to give flat exposure across tiers, and with
-# allometric scaling the published geometric means span only 8%. Without the
-# weight scaling the tiers would span 2.2-fold (250 to 550 mg). The simulated
-# tiers carry ~3.5% sampling error each, so a 25% band leaves ample headroom.
-stopifnot(max(ped_summary$ratio_auc) / min(ped_summary$ratio_auc) < 1.25)
-# Units check: the published-to-simulated factor is a molecular-weight ratio of
-# a hydrolysis product to its parent, so it must be of order 1; a mg/ng or
-# nmol slip would move it by orders of magnitude.
-stopifnot(median(ped_summary$ratio_auc) > 0.5, median(ped_summary$ratio_auc) < 1.5)
+# Structural: the BSA-tiered doses were chosen to give flat exposure, and the
+# published tier medians span only 5%. Without the weight scaling the tiers
+# would span 2.2-fold (250 to 550 mg). The simulated span is wider than the
+# published one (realised 1.26 here, and 1.33 with a uniform-in-tier BSA draw)
+# because weight is derived from BSA by the Costeff formula rather than drawn
+# with height from PK-Sim, which shifts the within-tier weights; each tier
+# median also carries ~4% sampling error. 1.5 sits outside that range and
+# still fails a model without the allometric scaling.
+stopifnot(max(ped_check$sim_auc) / min(ped_check$sim_auc) < 1.5)
+# Level: a mis-transcribed clearance, a dropped molecular-weight ratio (-9%
+# is inside the noise, but a mg/ng or molar slip is orders of magnitude) or a
+# wrong reference weight moves every tier together.
+stopifnot(abs(median(ped_check$pct_auc)) < 12, abs(median(ped_check$pct_cmax)) < 15)
 ```
 
 ```{r figure-4}
@@ -533,62 +554,70 @@ ped_ind |>
   mutate(metric = ifelse(metric == "cmax", "Cmax,ss (ng/mL)", "AUC0-12h,ss (ng*h/mL)")) |>
   ggplot(aes(tier, value)) +
   geom_boxplot(outlier.size = 0.5) +
+  geom_hline(
+    data = tibble::tibble(
+      metric = c("Cmax,ss (ng/mL)", "AUC0-12h,ss (ng*h/mL)"),
+      ref = c(621, 6530)
+    ),
+    aes(yintercept = ref), linetype = "dashed"
+  ) +
   facet_wrap(~metric, scales = "free_y") +
   labs(
-    x = "BSA tier (m^2)", y = "TQ-B3101M (TQ-B3101 mass equivalents)",
-    title = "Paediatric TQ-B3101M exposure after BSA-tiered dosing",
-    caption = "Replicates Figure 4 of Yang 2021 (simulated cohort described above)."
+    x = "BSA tier (m^2)", y = "Crizotinib",
+    title = "Paediatric crizotinib exposure after BSA-tiered unecritinib dosing",
+    caption = paste(
+      "Replicates Figure 4 of Yang 2021. Dashed lines: crizotinib target",
+      "exposure after the paediatric crizotinib label dose (Table 6)."
+    )
   )
 ```
 
-Across the five tiers the ratio of the Table 6 geometric means to the simulated
-ones is nearly constant (AUC ratios
-`r paste(signif(ped_summary$ratio_auc, 3), collapse = ", ")`), so the
-allometric bridge and the BSA-tiered doses reproduce the paper's flat exposure
-profile. The common factor (median `r signif(median(ped_summary$ratio_auc), 3)`)
-is below 1, as expected for a molecular-weight ratio of a hydrolysis product to
-its parent. It is close to 275 / 300 = 0.917, the TQ-B3101-to-crizotinib dose
-equivalence the Discussion quotes (the paper's Eq. 4 converts crizotinib doses
-by the molecular-weight ratio of the two drugs), which is consistent with, but
-does not establish, a metabolite of similar molecular weight to crizotinib.
-
-The adult factor above (`r signif(adult_ratio, 3)`) is larger than the
-paediatric one. The paediatric comparison is simulation against simulation
-from the same model, whereas the paper does not say how the adult 4,251
-ng*h/mL was obtained; if it is an observed mean from the few Phase 2 patients
-on 300 mg BID, a difference of this size is within what a small sample and a
-mean-versus-median comparison produce. Neither factor is folded into the model.
+The simulated tier medians agree with the Table 6 medians to within
+`r round(max(abs(c(ped_check$pct_auc, ped_check$pct_cmax))))`%, with a median
+difference across tiers of `r round(median(ped_check$pct_auc), 1)`% for AUC,
+and sit near the crizotinib target exposure the tiered regimen was designed to
+match (geometric-mean Cmax,ss 621 ng/mL, AUC0-12h,ss 6,530 ng*h/mL). The
+allometric bridge, the tiered doses and the molecular-weight conversion
+therefore reproduce the paper's dosing simulation. The tier-to-tier pattern is
+less flat than in Table 6. The virtual children here get their weights from
+BSA through the Costeff formula, not from the PK-Sim population the paper
+used, and that moves the within-tier weights, most visibly in the wide 0.90-1.22
+m^2 tier.
 
 # Assumptions and deviations
 
-- **Metabolite concentration units.** The molecular weights of TQ-B3101 and
-  TQ-B3101M are proprietary. With the fraction metabolised fixed to 1, the
-  packaged model yields TQ-B3101M in TQ-B3101 mass equivalents. The maintainers
-  did not back-solve a molecular-weight ratio from Table 6 or from the adult
-  AUC, because either would tune the model to a validation target; the implied
-  factor is reported above instead.
+- **Analyte identity and units.** The paper withholds the structures and
+  molecular weights. The maintainers identified TQ-B3101 as unecritinib and
+  TQ-B3101M as crizotinib from PubChem and later literature, and took the
+  molecular weights (492.4 and 450.3 g/mol) from PubChem. The model applies
+  their ratio to the formation flux because the source fitted molar data with
+  a molar fraction metabolised of 1. That choice is supported by the paper's own
+  300 mg ~ 275 mg dose equivalence and by the Table 6 replication above. It is
+  not a fitted value.
 - **Time-dependent clearance sign convention.** The paper's TDPK = 0.41 is a
   positive "maximum fraction reduction". The model encodes it as the signed
   fractional amplitude `cl_exp_famp = -0.41` in
   `CLm(t) = CLm0 * (1 + cl_exp_famp * (1 - exp(-KTDPK * t)))`, which is
   algebraically identical and follows the sign convention of `kel_exp_famp`
   (negative = decline). Time `t` is time since the first dose, so simulations
-  must start at the first dose; a washout between a single-dose and a
+  must start at the first dose. A washout between a single-dose and a
   repeated-dose period, as in the Phase 1 design, is not modelled as a reset of
   the clearance.
 - **IIV conversion.** Table 3 reports IIV as %CV; variances were computed as
   `omega^2 = log(1 + CV^2)`. No correlations are reported, so the etas are
   independent. Ka and Qm/Fm carry no IIV.
 - **BQL handling.** The final model used the M1 method (below-quantitation
-  samples discarded) for both analytes; the paper also evaluated M3 for the
+  samples discarded) for both analytes. The paper also evaluated M3 for the
   parent but reports only one set of estimates.
-- **Paediatric simulation.** The allometric exponents (0.75 / 1), reference
-  weight (59.0 kg, the adult median of Table 2) and BSA-tiered doses come from
-  the paper's simulation, not from the fitted model, which retained no
-  covariate. The virtual children were drawn uniformly within each BSA tier and
-  their weights derived from the Costeff (1966) BSA formula because the PK-Sim
-  population the paper used is not available; steady state was taken on day 14,
-  after the clearance has settled, because the paper does not state the day.
+- **Paediatric simulation.** The allometric exponents (0.75 / 1), the
+  reference weight (59.0 kg, the adult median of Table 2) and the BSA-tiered
+  doses come from the paper's simulation, not from the fitted model, which
+  retained no covariate. The PK-Sim population the paper used is not
+  available. The virtual children were therefore drawn from a truncated normal
+  BSA distribution matching Table 4, and their weights derived from the Costeff
+  (1966) BSA formula. Steady state was taken on day 14, after the clearance has
+  settled, because the paper does not state the day.
 - **Adult cohort.** The accumulation check uses separate virtual arms for the
   single-dose and repeated-dose regimens, each starting at its own first dose.
-- No erratum or correction notice for Yang 2021 was found as of 2026-09-30.
+- No erratum or correction notice for Yang 2021 was found in Crossref or
+  Europe PMC as of 2026-09-30.

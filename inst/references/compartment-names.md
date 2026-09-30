@@ -5237,12 +5237,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Mitra_2026_ziftomenib.R` (sequential two-stage popPK; KO-516 central + one peripheral compartment; 1:1 in-vitro-anchored KO-739:KO-516 metabolic split; Table 1).
 - **Notes:** Follows the paper-named metabolite suffix convention established by `m1` / `m2` / `m3` / `m8`. Kura development-code compound designation retained instead of a chemical-name shorthand because the paper does not disclose the chemical identity of the metabolite.
 
-### tqb3101m (**canonical TQ-B3101M active metabolite suffix**)
+### crizotinib (**canonical crizotinib suffix**)
 - **Type:** metabolite-suffix
-- **Role:** TQ-B3101M, the active metabolite of the ALK/ROS1 kinase inhibitor TQ-B3101 (Chia Tai Tianqing development-code compound designation). Formed from TQ-B3101 with the fraction metabolised fixed to 1 in the founding model, so it carries the parent's clearance flux in full. Used in parent + metabolite joint popPK extractions of TQ-B3101.
-- **Source aliases:** `TQ-B3101M` (Yang 2021 throughout; subscript `m` on the metabolite parameters, e.g. `CLm/Fm`, `Vcm/Fm`).
-- **Example models:** `Yang_2021_TQB3101.R` (founding example; `central_tqb3101m` + `peripheral1_tqb3101m`, `Cc_tqb3101m` in TQ-B3101 mass equivalents because neither molecular weight is published; Table 3).
-- **Notes:** Development-code suffix chosen over the generic numbered `m1` family and the template-only `metab` suffix because the paper names the metabolite only by its development code and discloses no structure, following the `ko739` / `ko516` precedent. Every clearance and volume carrying this suffix is apparent in the compound sense `X/Fm`.
+- **Role:** Crizotinib, the ALK/ROS1/MET kinase inhibitor, when it enters a model as the active metabolite of a prodrug rather than as the dosed drug. Founding case: unecritinib (TQ-B3101), the N-acetyl amide of crizotinib, is converted to crizotinib by amide hydrolysis. Used in parent + metabolite joint popPK extractions of unecritinib.
+- **Source aliases:** `TQ-B3101M` (Yang 2021 throughout, which names the analytes only by development code; subscript `m` on the metabolite parameters, e.g. `CLm/Fm`, `Vcm/Fm`). The identity is from PubChem (unecritinib CID 71506874, synonym TQ-B3101) and from later bioanalytical work naming crizotinib as the active metabolite of unecritinib (doi:10.1016/j.jpba.2024.116199).
+- **Example models:** `Yang_2021_unecritinib.R` (founding example; `central_crizotinib` + `peripheral1_crizotinib`, `Cc_crizotinib` in crizotinib mass units via the PubChem molecular-weight ratio applied to the formation flux; Table 3).
+- **Notes:** Spelled out, following the drug-name suffixes `sunitinib` / `osimertinib` / `rosuvastatin`, because the metabolite is itself a marketed drug with an INN; the development code `TQ-B3101M` is recorded as the source alias instead. A model in which crizotinib is the DOSED drug uses the bare canonical names (`central`, `Cc`) and needs no suffix. Every clearance and volume carrying this suffix in the founding model is apparent in the compound sense `X/Fm`.
 
 ### endox (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix

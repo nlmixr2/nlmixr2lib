@@ -5662,8 +5662,6 @@ navbar:
         href: articles/Ji_2025_TDI01.html
       - text: "TF 505 (Matsumoto 2005)"
         href: articles/Matsumoto_2005_TF_505.html
-      - text: "TQB3101 (Yang 2021)"
-        href: articles/Yang_2021_TQB3101.html
       - text: "TQB3203 (Li 2023)"
         href: articles/Li_2023_TQB3203.html
       - text: "Tacrine (Holford 1992)"
@@ -6242,6 +6240,8 @@ navbar:
         href: articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol.html
       - text: "Umeclidinium (Mehta 2020)"
         href: articles/Mehta_2020_fluticasoneFuroate_umeclidinium_vilanterol.html
+      - text: "Unecritinib (Yang 2021)"
+        href: articles/Yang_2021_unecritinib.html
       - text: "UnfractionatedHeparin (AlSallami 2016)"
         href: articles/AlSallami_2016_unfractionatedHeparin.html
       - text: "UnfractionatedHeparin (Jia 2015)"
@@ -9188,8 +9188,8 @@ articles:
   - articles/Yang_2017_buagafuran
   - articles/Yang_2017_remifentanil
   - articles/Yang_2020_enrofloxacin_rainbowTrout_pbpk
-  - articles/Yang_2021_TQB3101
   - articles/Yang_2021_cemiplimab
+  - articles/Yang_2021_unecritinib
   - articles/Yang_2023_diclazuril
   - articles/Yang_2023_ganciclovir_model_repository
   - articles/Yang_2024_axatilimab
