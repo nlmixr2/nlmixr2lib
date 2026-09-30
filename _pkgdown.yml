@@ -3808,6 +3808,8 @@ navbar:
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Oxaliplatin organoid (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Oxaliplatin rat (Kobuchi 2021)"
+        href: articles/Kobuchi_2021_oxaliplatin_rat.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
         href: articles/Rodrigues_2017_oxcarbazepine.html
       - text: "Oxcarbazepine (Sinha 2026)"
@@ -7033,6 +7035,7 @@ articles:
   - articles/Knibbe_2005_propofol
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
+  - articles/Kobuchi_2021_oxaliplatin_rat
   - articles/Kobuchi_2025_dapagliflozin
   - articles/Koele_2025_btz043
   - articles/Koenig_2025_cefiderocol
