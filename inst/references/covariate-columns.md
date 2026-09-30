@@ -2935,6 +2935,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Gebhard_2023_methotrexate.R`.
 - **Notes:** Distinct from `CONMED_MTX`, which is a concomitant-methotrexate-medication FLAG, not a measured red-cell concentration. Note that the red-cell methotrexate half-life is long (30-40 days in the literature Gebhard 2023 cites), so this initial condition remains influential over a much longer horizon than a typical plasma baseline.
 
+### BL_PRU (**canonical for observed baseline platelet reactivity in P2Y12 reaction units**)
+- **Description:** Subject-specific observed baseline platelet reactivity measured with the VerifyNow P2Y12 assay, in P2Y12 reaction units (PRU), drawn before the first dose of a P2Y12 inhibitor. Carried as a time-fixed covariate that sets the individual PRU baseline of an antiplatelet PK-PD model in place of an estimated baseline.
+- **Units:** PRU (device-standardised VerifyNow P2Y12 reaction units).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the individual baseline, `rbase = exp(log(BL_PRU) + etalrbase)`, not as a scaling covariate. The cohort distribution is not reported by Kathman 2022; the `PRU` register entry quotes a normal baseline range of 180-376 PRU.
+- **Source aliases:**
+  - `BPRU` -- Kathman 2022 control stream (Supplementary Material S1 `Base=EXP(LOG(BPRU) + ETA(14))`) and Table 3 ('Base = Log(BPRU) baseline PRU').
+- **Example models:** `Kathman_2022_bentracimab.R` (ticagrelor + bentracimab PK-PD; baseline 'fixed in model to observed baseline values' with a 10% fixed IIV to absorb measurement error).
+- **Notes:** Member of the existing `BL_<biomarker>` family (`BL_E2`, `BL_PARP_PBL`, `BL_TGN_RBC`, `BL_MTX_RBC`): the observed baseline of a measured analyte carried as a covariate. The `BL_` prefix is load-bearing here rather than cosmetic, because the same models predict PRU as their observation output (`PRU` / `pru` in `compartment-names.md`); a bare `PRU` covariate column would collide with the endpoint. Distinct from a model-estimated baseline such as `PRU(0) = kin / kout` in `Jung_2024_clopidogrel.R`. Record the timing of the baseline draw in the per-model notes -- a sample drawn on P2Y12-inhibitor maintenance therapy is not a baseline in this sense.
+
 ### DOSE_MTX_MGM2 (**canonical for administered methotrexate dose per body-surface area**)
 - **Description:** The methotrexate dose administered on the current dose record, normalised to body-surface area and expressed in mg/m^2. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the dose.
 - **Units:** mg/m^2
