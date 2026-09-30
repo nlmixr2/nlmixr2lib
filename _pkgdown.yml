@@ -4128,18 +4128,8 @@ navbar:
         href: articles/Iida_2008_nicorandil.html
       - text: "Nicotine (Marchand 2017)"
         href: articles/Marchand_2017_nicotine.html
-      - text: "Nicotine gum (OlssonGisleskog 2021)"
-        href: articles/OlssonGisleskog_2021_nicotine.html
-      - text: "Nicotine inhaler (OlssonGisleskog 2021)"
-        href: articles/OlssonGisleskog_2021_nicotine.html
-      - text: "Nicotine iv (OlssonGisleskog 2021)"
-        href: articles/OlssonGisleskog_2021_nicotine.html
-      - text: "Nicotine lozenge (OlssonGisleskog 2021)"
-        href: articles/OlssonGisleskog_2021_nicotine.html
-      - text: "Nicotine mouthspray (OlssonGisleskog 2021)"
-        href: articles/OlssonGisleskog_2021_nicotine.html
-      - text: "Nicotine oral (OlssonGisleskog 2021)"
-        href: articles/OlssonGisleskog_2021_nicotine.html
+      - text: "Nicotine pbpk (Rostami 2022)"
+        href: articles/Rostami_2022_nicotine_pbpk.html
       - text: "Nicotine pbpk (Salehi 2025)"
         href: articles/Salehi_2025_nicotine_pbpk.html
       - text: "Nicotine transdermal (OlssonGisleskog 2021)"
@@ -8646,6 +8636,7 @@ articles:
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
   - articles/Rosenborg_2025_fluticasone_salmeterol
+  - articles/Rostami_2022_nicotine_pbpk
   - articles/Rovei_1982_theophylline
   - articles/Rower_2017_tacrolimus
   - articles/Roy_2023_erythropoiesis_qsp
