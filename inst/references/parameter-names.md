@@ -141,6 +141,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
 - **Notes:** Pairs with `peripheral3` compartment and inter-compartmental clearance `lq3`.
 
+### lvparea (**canonical log-transformed apparent peripheral volume, V_area minus Vc**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent peripheral volume in a two-compartment model parameterised by (CL, Vc, alpha, V_area - Vc): the volume that, added to the central volume, gives the terminal-phase volume `V_area = V_z = CL / lambda_z`, so `lambda_z = cl / (vc + vparea)` (volume). Bare form inside `model()` is `vparea`. It is **not** the micro-constant peripheral volume `vp = vc * k12 / k21`; the two differ whenever distribution is not instantaneous (Paioni 2021 typical 4-kg patient: `vparea` = 0.840 L vs derived `vp` = 0.667 L).
+- **Source aliases:**
+  - `V2'` -- Paioni 2021 Section 2.3 and Table 3 ("apparent peripheral volume of distribution"), defined through `lambda_z = CL / (V1 + V2')`.
+- **Example models:** `Paioni_2021_gentamicin.R` (founding example; `V2'` = exp(-0.174) = 0.840 L at 4 kg, with its own IIV `etalvparea` and weight exponent `e_wt_vparea`).
+- **Notes:** Ratified 2026-09-29 with the Paioni 2021 extraction (PMC8541459). Use `lvparea` only when the source fits this apparent volume as a parameter (it carries its own IIV and covariates, so re-expressing it as `lvp` would change the model); derive `vp`, `q`, `k12` and `k21` from it inside `model()` via `k21 = alpha * lambda_z / kel` (Paioni 2021 Equation 3) and `k12 = alpha + lambda_z - kel - k21`. Pairs with `lalpha` for the distribution-phase rate constant.
+
 ### lvelf (**canonical log-transformed epithelial-lining-fluid compartment volume**)
 - **Type:** log-transformed-pk
 - **Role:** Apparent volume of the canonical `elf` compartment, used to convert the ELF drug amount to the ELF concentration `Celf <- elf / velf` (volume). Applies both to a plasma-plus-ELF popPK model in which `elf` is a distribution compartment sampled by bronchoalveolar lavage, and to a single-compartment model fitted directly to ELF concentrations, where the value is an apparent volume that also absorbs bioavailability (the paper's `Vc/F`).
@@ -167,6 +175,15 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `K24` / `K42` -- Stott 2023 Table 1, under the gut = 1, central = 2, CNS = 3, peripheral = 4 numbering.
 - **Example models:** `Marier_2002_tobramycin_rat_liposomal.R`, `Marier_2002_tobramycin_rat_conventional.R`, `Stott_2023_flucytosine.R`, `Blair_2004_raltitrexed.R`, `Ekhart_2008_carboplatin.R`.
 - **Notes:** Bare counterparts of `k12` / `k21` / `k13` / `k31`; see those entries for the topology each index is bound to. The canonical nlmixr2 numbering treats `central` as 1 and the peripherals as 2 / 3 after the depot is split out, so a source paper's own subscripts must be re-mapped rather than transcribed -- `k_23` and `K24` both become `lk12` in the example models above. Prefer a role-based `k_<from>_<to>` name (or `kin_<tissue>` / `kout_<tissue>`) whenever the compartment at the far end is anatomically named rather than a generic `peripheral<n>`.
+
+### lalpha (**canonical log-transformed distribution-phase hybrid disposition rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the fast (distribution-phase) hybrid rate constant `alpha` / `lambda1` of a two-compartment disposition, i.e. the larger eigenvalue satisfying `alpha + beta = kel + k12 + k21` and `alpha * beta = kel * k21` (1 / time). Bare form inside `model()` is `alpha`. Used when a source estimates the model on its macro (biexponential) scale rather than by `cl` / `vc` / `q` / `vp`; the micro-constants are then derived inside `model()`.
+- **Source aliases:**
+  - `Alpha` -- Zhang 2025 Supplementary Table S2.
+  - `lambda1` / `l1` -- Paioni 2021 Section 2.3 and Table 3 ("apparent rate constant of distribution").
+- **Example models:** `Zhang_2025_cefiderocol.R` (alpha = 0.845 1/h, with the terminal sibling `lbeta` = log(0.271 1/h)), `Paioni_2021_gentamicin.R` (lambda1 = exp(3.644) 1/d = 1.59 1/h, paired with `lvparea`).
+- **Notes:** Ratified 2026-09-29 with the Paioni 2021 extraction (PMC8541459); `Zhang_2025_cefiderocol.R` shipped the same name and meaning earlier without an entry. The terminal-phase sibling is `lbeta` (Zhang 2025), which is distinct from the registered `lbeta_cl` (exponential-nonlinear-clearance slope). Distinct from `lkdist` (Braem 2026), which is numerically the same fast exponent but decays an additive distribution-phase flux in a model with no peripheral state.
 
 ### lq (**canonical log-transformed first inter-compartmental clearance**)
 - **Type:** log-transformed-pk
