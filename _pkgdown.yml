@@ -4532,8 +4532,8 @@ navbar:
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Pegasparaginase (Kloos 2021)"
         href: articles/Kloos_2021_pegasparaginase.html
-      - text: "Pegasparaginase (Wurthwein 2021)"
-        href: articles/Wurthwein_2021_pegasparaginase.html
+      - text: "Pegasparaginase (Siebel 2022)"
+        href: articles/Siebel_2022_pegasparaginase.html
       - text: "Pegasparaginase germanCzech (Wurthwein 2025)"
         href: articles/Wurthwein_2025_pegasparaginase.html
       - text: "Pegasparaginase hrPostinduction (Wurthwein 2025)"
@@ -8806,6 +8806,7 @@ articles:
   - articles/Shulgin_2020_ici_adverse_events_mbma
   - articles/Siccardi_2012_efavirenz
   - articles/Sidhu_1998_artemisinin
+  - articles/Siebel_2022_pegasparaginase
   - articles/Siebinga_2023_hadotatate
   - articles/Siebinga_2023_lu177psma617
   - articles/Siebinga_2024_lu177psmaIT
