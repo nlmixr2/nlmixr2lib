@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hosey 2022 type 2 diabetes growth curves ([doi:10.1111/cts.13207](https://doi.org/10.1111/cts.13207)) -- sex-specific height and weight versus age (2 to 18 years) for PBPK scaling in youth who develop type 2 diabetes.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
