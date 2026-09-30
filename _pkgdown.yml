@@ -2598,6 +2598,8 @@ navbar:
         href: articles/Brillac_2025_isatuximab.html
       - text: "Isatuximab (Fau 2020)"
         href: articles/Fau_2020_isatuximab.html
+      - text: "Isavuconazole (Cojutti 2021)"
+        href: articles/Cojutti_2021_isavuconazole.html
       - text: "Isavuconazole (Desai 2016)"
         href: articles/Desai_2016_isavuconazole.html
       - text: "Isavuconazole secure (Desai 2016)"
@@ -6440,6 +6442,7 @@ articles:
   - articles/Codaccioni_2024_cyp3a4_hepatic_ontogeny
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
+  - articles/Cojutti_2021_isavuconazole
   - articles/Cojutti_2023_ceftobiprole
   - articles/Cojutti_2024_dalbavancin
   - articles/Colin_2014_moxifloxacin
