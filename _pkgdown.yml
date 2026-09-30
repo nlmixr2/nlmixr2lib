@@ -1684,6 +1684,8 @@ navbar:
         href: articles/Willmann_2024_elinzanetant.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
+      - text: "Elotuzumab (Ide 2022)"
+        href: articles/Ide_2022_elotuzumab.html
       - text: "Elranatamab qsp (Poels 2025)"
         href: articles/Poels_2025_elranatamab.html
       - text: "Eltrombopag (Farrell 2014)"
@@ -6867,6 +6869,7 @@ articles:
   - articles/Ibrahim_2025_ibrutinib
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
+  - articles/Ide_2022_elotuzumab
   - articles/Idkaidek_2011_ibuprofen
   - articles/Iida_2008_nicorandil
   - articles/Inoue_2025_valemetostat_ptcl
