@@ -5838,6 +5838,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Bulitta_2019_pefloxacin.R` (founding example; doi:10.3390/pharmaceutics11070323).
 - **Notes:** A parent-qualified name is required because the bare `noxide` is already registered, scoped to **roflumilast** N-oxide. An N-oxide suffix is only interpretable when it names the moiety that was oxidised, so this family takes the `<modifier><parent-stem>` shape already used by `ohcla` (14-(R)-hydroxy-clarithromycin) and `norfluox` (norfluoxetine) rather than extending `noxide` with a second meaning. As with the sibling `norflox`, plasma concentrations of this metabolite were not measured in the founding example, so the suffix appears only on urinary-excretion states and the formation fraction.
 
+### noxvori (**canonical voriconazole N-oxide metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Voriconazole N-oxide (UK-121,265), the major circulating metabolite of voriconazole, formed mainly by CYP2C19 with CYP3A4 and flavin-containing monooxygenase contributions; pharmacologically inactive against fungi but reported as an inhibitor of voriconazole's own metabolism. Drives `central_noxvori`, `Cc_noxvori`, `lvc_noxvori`, `lcl_noxvori`, `etalcl_noxvori` and `propSd_noxvori` in joint parent + metabolite voriconazole popPK models.
+- **Source aliases:**
+  - `VNO` -- Li 2021 abbreviation throughout the text, Table 1 and Table 2 ('VNO-sigma').
+  - `A2` / `C2` / `V2` / `CL2` -- Li 2021 Equations 10-13 and Table 2 metabolite-compartment amount, concentration, volume and clearance symbols.
+- **Example models:** `Li_2021_voriconazole.R` (founding example; doi:10.3389/fphar.2021.730826).
+- **Notes:** Parent-qualified on the `noxpeflox` precedent because the bare `noxide` is registered to roflumilast N-oxide. The parent stem `vori` is the shortest unambiguous voriconazole stem; a later hydroxy-voriconazole metabolite should follow the same shape (`ohvori`).
+
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
 
