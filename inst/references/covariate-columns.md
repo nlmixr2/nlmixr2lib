@@ -15935,27 +15935,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Ding_2026_lumefantrine.R` (proportional effect on the apparent lumefantrine central volume of distribution: `vc <- exp(lvc + etalvc) * (WT/45)^e_wt_vc * (1 + e_study_tactcv_vc * STUDY_TACTCV)` with `e_study_tactcv_vc = -0.281`, i.e. Vc/F is 28.1% lower in TACT-CV than in TRACII).
 - **Notes:** The indicator distinguishes the two **trials**, not the two treatment **arms** -- coadministration of amodiaquine was tested separately as a drug-drug-interaction covariate on every parameter and found not to affect lumefantrine PK, so `STUDY_TACTCV` and a hypothetical triple-ACT-arm indicator are different columns and must not be conflated (the abbreviation `TACT` in the source table is the trial acronym, and Ding 2026 Results describes the term in words as "a study effect on the central volume of distribution"). Ding 2026 attributes the contrast to the different fatty food given with each dose to promote lumefantrine absorption -- a fatty snack in TRACII against 80 mL of milk in TACT-CV -- and judges it not clinically meaningful, since it moves the terminal half-life from 191 h to 182 h and the Day 7 concentration from 454 to 444 ng/mL with no change in total exposure. The same two-trial pooling underlies the sibling `Ding_2026_artemether.R` and `Ding_2026_amodiaquine.R`, neither of which retains a study term; for amodiaquine a trial difference in inter-compartmental clearance *was* detected but discarded as biologically implausible, and that model records the column in `covariatesDataExcluded` instead. Sibling of the other `STUDY_<id>` members; scoped specific because the reference category is this analysis's own two-trial set.
 
-### STUDY_BDQ_C208_C209 (**canonical for the bedaquiline phase IIb MDR-TB studies TMC207-TiDP13-C208 / C209 indicator**)
-- **Description:** 1 = subject from the bedaquiline phase IIb registration studies in patients with multidrug-resistant tuberculosis, TMC207-TiDP13-C208 (stages 1 and 2) or TMC207-TiDP13-C209; 0 = subject from any other study of the McLeay 2014 pooled bedaquiline analysis, or from a later study. Subject-level (time-fixed).
+### STUDY_DINO (**canonical for the DINO neonatal dosing study cohort indicator**)
+- **Description:** 1 = record from the DINO study (Drug dosage Improvement in NeOnates; NCT02421068, MEC-2014-067, NL47409.078.14), the prospective multicentre study of preterm neonates in four Dutch level III NICUs (Erasmus MC-Sophia, Maxima Medical Center, Maastricht UMC, Radboud UMC) with opportunistic scavenge sampling and LC-MS/MS bioanalysis; 0 = record from the other dataset pooled into the same analysis. Per-record (study-fixed) binary indicator.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (any other study). Note that in the source parameterisation C208 / C209 is the REFERENCE group for relative bioavailability (F = 1), so the indicator selects F = 1 rather than applying a shift to a typical value.
+- **Reference category:** 0 (the non-DINO dataset of the pooled analysis; for `Wu_2022_fentanyl.R` the Helsinki continuous-infusion dataset of Saarenmaa 2000).
 - **Source aliases:**
-  - `study` -- McLeay 2014 Table 3 rows 'Study R207910-CDE102 or TiDP13-C104 on F' / 'Other studies on F' (reference C208 / C209) and 'Residual unexplained variability on TiDP13-C208 or TiDP13-C209'; reprinted in Kurosawa 2021 Table S1.
-- **Example models:** `Kurosawa_2021_bedaquiline.R` (relative bioavailability 1 for C208 / C209 vs 2.03 for 'other studies' and 1.51 for `STUDY_BDQ_CDE102_C104`; log-scale residual SD 0.277 vs 0.206 elsewhere).
-- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family, prefixed `BDQ` because the C-numbers are bedaquiline (TMC207) protocol codes. Mutually exclusive with `STUDY_BDQ_CDE102_C104`; a subject with both 0 is in McLeay 2014's 'other studies' group (C109, C110, C111, C202, TBC1003 and any later study, including the Kurosawa 2021 healthy volunteers). In McLeay 2014 every MDR-TB patient came from C208 / C209, so this indicator coincides with `DIS_TB_MDR = 1` in that dataset; they are kept separate because Kurosawa 2021 decoupled them in its nontuberculous-mycobacteria simulations (MDR-TB-like clearance with the 'other studies' bioavailability).
-
-### STUDY_BDQ_CDE102_C104 (**canonical for the bedaquiline phase 1 oral-solution studies R207910-CDE102 / TMC207-TiDP13-C104 indicator**)
-- **Description:** 1 = subject from the bedaquiline phase 1 healthy-volunteer multiple-dose oral-solution studies R207910-CDE102 or TMC207-TiDP13-C104; 0 = subject from any other study. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (any other study).
-- **Source aliases:**
-  - `study` -- McLeay 2014 Table 3 row 'Study R207910-CDE102 or TiDP13-C104 on F'; reprinted in Kurosawa 2021 Table S1.
-- **Example models:** `Kurosawa_2021_bedaquiline.R` (relative bioavailability 1.51 versus the C208 / C209 reference).
-- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Sibling of `STUDY_BDQ_C208_C209` from the same McLeay 2014 pooled analysis; the two are mutually exclusive.
+  - `ASY` -- the Wu 2022 ESM control stream column "Dataset identification. 0 for dataset 1 and 1 for dataset 2", where dataset 2 is DINO. Same orientation as the canonical, no value transformation.
+- **Example models:** `Wu_2022_fentanyl.R` (selects the residual-error magnitudes only: additive 0.0297 ug/L and proportional 0.361 for DINO against 0.246 ug/L and 0.23 for the Helsinki dataset).
+- **Notes:** The indicator identifies the study, not the assay: in `Wu_2022_fentanyl.R` the two datasets also differ in bioanalysis (DINO LC-MS/MS vs Helsinki radioimmunoassay), sampling route and BLOQ handling, and the paper attributes the residual split to the dataset. Use `RIA_ASSAY` / `IMMUNOASSAY` instead when a paper attributes a residual split specifically to the analytical method. The DINO cohort also underlies `Voller_2019_midazolam.R`, which retains no study term.
 
 ### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
 - **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.

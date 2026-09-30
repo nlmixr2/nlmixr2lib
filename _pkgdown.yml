@@ -2288,6 +2288,8 @@ navbar:
         href: articles/Bista_2015_fentanyl.html
       - text: "Fentanyl (Oosten 2016)"
         href: articles/Oosten_2016_fentanyl.html
+      - text: "Fentanyl (Wu 2022)"
+        href: articles/Wu_2022_fentanyl.html
       - text: "Fentanyl iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Fentanyl pbpk (Han 2025)"
@@ -9202,8 +9204,7 @@ articles:
   - articles/Wu_2012_modafinil
   - articles/Wu_2012_sirolimus
   - articles/Wu_2014_FEV1_asthma
-  - articles/Wu_2020_fedratinib
-  - articles/Wu_2021_SPI_62
+  - articles/Wu_2022_fentanyl
   - articles/Wu_2023_SPI_62
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
