@@ -2608,6 +2608,8 @@ navbar:
         href: articles/Bosch_2024_glp1ra_bodyweight.html
       - text: "Glp1ra hba1c (Bosch 2025)"
         href: articles/Bosch_2025_glp1ra_hba1c.html
+      - text: "Glpg1690 (Taneja 2019)"
+        href: articles/Taneja_2019_glpg1690.html
       - text: "Glucarpidase (Kimura 2023)"
         href: articles/Kimura_2023_glucarpidase.html
       - text: "Glutamine (Sadaf 2024)"
@@ -8866,6 +8868,7 @@ articles:
   - articles/Tan_2024_cabozantinib
   - articles/Tan_2025_cabotegravir_rilpivirine
   - articles/Tanaka_2012_phenytoin
+  - articles/Taneja_2019_glpg1690
   - articles/Tang_2019_amoxicillin
   - articles/Tang_2023_tenecteplase
   - articles/Tang_2026_vixarelimab

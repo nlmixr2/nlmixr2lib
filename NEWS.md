@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Taneja 2019 GLPG1690 (ziritaxestat) PK and plasma LPA C18:2 PK/PD ([doi:10.1007/s40262-019-00755-3](https://doi.org/10.1007/s40262-019-00755-3)) -- healthy volunteers and patients with idiopathic pulmonary fibrosis.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
