@@ -692,6 +692,10 @@ navbar:
         href: articles/Jin_2025_benralizumab.html
       - text: "Benralizumab fev1 (Jin 2025)"
         href: articles/Jin_2025_benralizumab.html
+      - text: "Bentracimab (Kathman 2022)"
+        href: articles/Kathman_2022_bentracimab.html
+      - text: "Bentracimab pk (Kathman 2022)"
+        href: articles/Kathman_2022_bentracimab.html
       - text: "Benzathine benzylpenicillin g (Hand 2019)"
         href: articles/Hand_2019_benzathine_benzylpenicillin_g.html
       - text: "Benzathine benzylpenicillin g (Kado 2020)"
@@ -7908,7 +7912,7 @@ articles:
   - articles/Kastrissios_2006_apricoxib
   - articles/Kastrissios_2012_managlinatDialanetil
   - articles/Kata_2025_ganciclovir
-  - articles/Kato_2021_amikacin
+  - articles/Kathman_2022_bentracimab
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184
   - articles/Kawaguchi_2018_cefiderocol

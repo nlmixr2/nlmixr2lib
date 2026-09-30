@@ -16,7 +16,7 @@
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
-- Add He 2022 gentamicin ([doi:10.2147/DDDT.S343385](https://doi.org/10.2147/DDDT.S343385)) -- critically ill adults on continuous renal replacement therapy.
+- Add Kathman 2022 bentracimab (PB2452) ([doi:10.1002/psp4.12734](https://doi.org/10.1002/psp4.12734)) -- healthy volunteers, alone and after ticagrelor pretreatment (ticagrelor reversal PK-PD).
 
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
 
