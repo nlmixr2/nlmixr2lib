@@ -20,8 +20,8 @@ library(ggplot2)
 # Model and source
 
 * Article: [Pharmaceuticals 2024;17(12):1621](https://doi.org/10.3390/ph17121621)
-* Supplement: `pharmaceuticals-17-01621-s001.zip` (open access, via the
-  EuropePMC `supplementaryFiles` endpoint for `PMC11677527`)
+* Supplement: `pharmaceuticals-17-01621-s001.zip` (open access, published with
+  the article, `PMC11677527`)
 
 Liu 2024 studies four active constituents of *Spatholobi Caulis* (SPC), a
 traditional Chinese medicine derived from the dried tuber of *Spatholobus

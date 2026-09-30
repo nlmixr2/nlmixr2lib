@@ -746,8 +746,8 @@ tibble::tibble(
 - **Table 1 validation-cohort sex percentages are transposed** (printed as
   Male 84 (27.0%) / Female 31 (73.0%), but 84/115 = 73.0%). This affects only
   the held-out external-validation cohort description, not the model.
-- **Supplement.** Data S1-S3 were retrieved from the Europe PMC
-  `supplementaryFiles` endpoint for PMC12706394 and are the source of the
+- **Supplement.** Data S1-S3 are published with the open-access article
+  (PMC12706394) and are the source of the
   three corrections above. Data S3 (`PSP4-14-2014-s003.csv`) is a
   single-subject example dataset, not the analysis dataset, so no
   subject-level distribution could be recovered from it; the virtual cohorts

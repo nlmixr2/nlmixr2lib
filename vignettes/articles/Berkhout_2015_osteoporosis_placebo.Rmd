@@ -181,7 +181,7 @@ change vs. TH-BMD post-menopause).
 
 # Small-cohort simulation with IIV
 
-Cohort size **200 subjects total** (per the vignette-template cap). BMI
+Cohort size **200 subjects total** (capped to keep the render time short). BMI
 sampled from a Normal(25.2, 3.6) centred on the EPIC 2 median with the
 Table 1 SD; T_ENTRY sampled from the empirical YSM distribution mean 5.7
 yr, SD 5.4 yr, truncated to the paper's [0.5, 27] year range:
@@ -248,7 +248,7 @@ not identical with the source figures because (i) the paper's Figure 3
 plots relative-to-baseline change (not absolute values), (ii) the source
 extreme-quantile residual-error switch (SW4 / SW5 in the NONMEM $ERROR
 block) is not encoded here, and (iii) the source VPC uses n = 500 simulations
-while the cohort here is capped at 200 per the vignette-template convention.
+while the cohort here is capped at 200 to keep the render time short.
 
 # Placebo (calcium) function
 

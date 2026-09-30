@@ -79,7 +79,7 @@ The virtual cohort matches the published study design: weekly 250 mg IM
 injection) through 35 weeks gestation -- 19 weekly doses -- followed by a
 28-day post-last-dose observation window during which the extended-sampling
 sub-cohort was sampled in the source study. We use 100 virtual subjects per
-arm (well under the 200/arm pkgdown render-budget cap) and stratify on body
+arm (well under the 200/arm cap) and stratify on body
 weight (one cohort at the cohort median 68 kg; second cohort at the upper
 4th-quartile median 97 kg per Discussion 'Effect of body weight') to
 visualise the allometric covariate effect.

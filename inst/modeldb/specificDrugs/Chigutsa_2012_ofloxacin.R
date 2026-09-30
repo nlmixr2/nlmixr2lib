@@ -266,7 +266,7 @@ Chigutsa_2012_ofloxacin <- function() {
     # etas (the most common alternative reporting convention). The off-
     # diagonal covariance is then
     #   cov = r * sqrt(var_CL * var_Vc) = 0.56 * sqrt(0.0654 * 0.0862) = 0.0421
-    # matching verification-checklist.md item C 'Correlated IIV'.
+    # which is the standard conversion for correlated IIV.
     # var(eta_CL)   = log(1 + 0.26^2)  -- Table 3 PPV CL = 26% CV (footnote b: variance on overall clearance)
     # cov(eta_CL, eta_Vc) = 0.56 * sqrt(0.06539 * 0.08618)  -- Table 3 'Covariance ... = 0.56' interpreted as correlation r
     # var(eta_Vc)   = log(1 + 0.30^2)  -- Table 3 PPV Vc = 30% CV

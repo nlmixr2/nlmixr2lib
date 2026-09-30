@@ -164,9 +164,8 @@ Gupta_2015_ixazomib <- function() {
     # (Mean)" is interpreted as the variance of EPS(1) on the
     # log-concentration scale; the corresponding SD is sqrt(0.3)
     # which is passed to nlmixr2 `prop()` (additive-on-log maps to
-    # proportional in linear space; see references/nonmem-translation.md
-    # and the Assumptions section of the validation vignette for the
-    # variance-vs-SD reading).
+    # proportional in linear space; see the Assumptions section of the
+    # validation vignette for the variance-vs-SD reading).
     # ------------------------------------------------------------------
     propSd     <- sqrt(0.3); label("Proportional residual error SD (additive on log-concentration; ~CV in linear space)") # Gupta 2015 Table 3 Additive variance = 0.3 (RSE 6.1%) -> SD = sqrt(0.3) ~ 0.5477
   })
@@ -222,7 +221,7 @@ Gupta_2015_ixazomib <- function() {
     # ------------------------------------------------------------------
     # 5. Proportional residual error. NONMEM additive-on-log-scale
     # error (Y = LOG(F) + ERR(1)) maps to nlmixr2 prop() in linear
-    # concentration space (per references/nonmem-translation.md).
+    # concentration space.
     # ------------------------------------------------------------------
     Cc ~ prop(propSd)
   })

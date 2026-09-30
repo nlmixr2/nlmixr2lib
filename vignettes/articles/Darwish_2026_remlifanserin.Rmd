@@ -23,7 +23,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Darwish_2026_remlifanserin"))$description`
 * Article: <https://doi.org/10.1002/trc2.70254>
 * Supplement (Supplemental Tables 1-6 and the NONMEM control stream):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13133547/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC13133547>
 
 Remlifanserin (ACP-204) is a selective serotonin 2A (5-HT~2A~) receptor inverse
 agonist in development for Alzheimer's disease psychosis and Lewy body dementia

@@ -437,7 +437,7 @@ because `kel = TVCL / TVV` does not depend on weight or dose.
 * **Data S1 supplement.** The paper's Supporting Information Data S1
   link in the main text promised "Pharmacokinetic modelling: method,
   final population pharmacokinetic models and model validation". The
-  PMC-hosted PDF (PMC6089805 bin/BCP-84-1989-s001.pdf, 4 pages, 226 KB)
+  PMC-hosted PDF (PMC6089805, `BCP-84-1989-s001.pdf`, 4 pages, 226 KB)
   contains only the goodness-of-fit plots and a one-line caption
   listing the four diagnostic types. No final parameter table, NONMEM
   control stream, or covariate-equation expression appears in the

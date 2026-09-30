@@ -591,7 +591,7 @@ ever_below <- function(...) any(arm_rows(...)$sTFPI < thresh)
 # Time (days) spent below 25% of baseline within the window.
 dur_below <- function(...) {
   d <- arm_rows(...)
-  # Guard against a lookup that silently matches no rows (pattern 10).
+  # Guard against a lookup that silently matches no rows.
   stopifnot(nrow(d) > 1)
   sum(diff(d$time) * utils::head(d$sTFPI < thresh, -1))
 }
@@ -678,6 +678,5 @@ stopifnot(all(claims$Pass))
   covariate; it is recorded in the human file's `covariatesDataExcluded` metadata.
   To reproduce Figure 5, set `stfpi_b` and rescale `mtfpi_b = 12.7 * stfpi_b`.
 * **Supplement provenance.** The model equations are in the Supplementary
-  Material (`DataSheet1.pdf`), retrieved from the EuropePMC supplementary-files
-  endpoint for PMC12819659 and stored alongside the lead PDF. They are not in the
-  main article text.
+  Material (`DataSheet1.pdf`) published with the open-access article
+  (PMC12819659). They are not in the main article text.

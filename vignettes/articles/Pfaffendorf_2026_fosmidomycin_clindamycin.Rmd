@@ -444,7 +444,7 @@ mCli <- medBy(auctauCli)
 
 # Ratio of the oldest to the youngest age-group median. Asserted as a
 # magnitude with generous headroom rather than as an ordering of two noisy
-# statistics, so it holds for any cohort the model can draw (pattern 12).
+# statistics, so it holds for any cohort the model can draw.
 ratFos <- unname(mFos["18-65 years"] / mFos["3-6 years"])
 ratCli <- unname(mCli["18-65 years"] / mCli["3-6 years"])
 

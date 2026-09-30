@@ -43,8 +43,8 @@ Checchio_2017_psoriasis_pasi_landmark_mbma <- function() {
     "All display equations are rasterised in the published PDF and are LOST",
     "from a plain-text extraction of the PDF; they were recovered with",
     "pdftotext -layout. Parameter values are Supplementary Table 2 of the",
-    "Supplementary Appendix (CPT-102-1006-s001.docx), obtained from the",
-    "EuropePMC supplementaryFiles endpoint for PMC5697570.",
+    "Supplementary Appendix (CPT-102-1006-s001.docx) published with the",
+    "open-access article (PMC5697570).",
     sep = " "
   )
 
@@ -238,7 +238,7 @@ Checchio_2017_psoriasis_pasi_landmark_mbma <- function() {
     #
     # Structural model, Checchio 2017 Methods 'Landmark model', Equations 5-8.
     # Every display equation in this paper is RASTERISED and is dropped by the
-    # markdown preprocessor; the forms below were recovered with
+    # markdown text extraction; the forms below were recovered with
     # `pdftotext -layout`:
     #
     #   (5)  P(event)_ijk = g{E0_i + Edrug + eta_i,k}

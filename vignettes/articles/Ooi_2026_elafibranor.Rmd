@@ -37,7 +37,7 @@ paper's final PD model.
 * Citation: `r rxode2::rxode(readModelDb("Ooi_2026_elafibranor"))$reference`
 * Article: <https://doi.org/10.1002/psp4.70247>
 * Supplement (parameter tables and all six final NONMEM control streams):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13274737/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC13274737>
 
 ```{r models}
 mod_ela  <- readModelDb("Ooi_2026_elafibranor")

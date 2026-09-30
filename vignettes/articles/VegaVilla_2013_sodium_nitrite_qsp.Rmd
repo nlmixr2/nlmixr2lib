@@ -21,7 +21,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode2(readModelDb("VegaVilla_2013_sodium_nitrite_qsp"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("VegaVilla_2013_sodium_nitrite_qsp"))$description`
 * Article: <https://doi.org/10.1038/psp.2013.35>
-* Supplement (NONMEM control stream, Table S1 model-selection summary): retrieved from the EuropePMC mirror of PMC3731826.
+* Supplement (NONMEM control stream, Table S1 model-selection summary): published with the open-access article (PMC3731826).
 
 # Population
 

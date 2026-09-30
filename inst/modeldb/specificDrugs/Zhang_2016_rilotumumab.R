@@ -58,8 +58,8 @@ Zhang_2016_rilotumumab <- function() {
     # omega^2 = log(CV^2 + 1). No off-diagonal correlations are reported in
     # Zhang 2016, so the etas are encoded as independent diagonal terms;
     # if the upstream Zhu 2014 model reports a CL-Vc correlation block,
-    # the Zhu_2014_rilotumumab extraction (task 127) is the place to encode
-    # it. CV values are taken verbatim from Zhang 2016 p1053:
+    # the Zhu 2014 rilotumumab model (`Zhu_2014_rilotumumab`) is the place
+    # to encode it. CV values are taken verbatim from Zhang 2016 p1053:
     # "interindividual variabilities were 29.8%, 19.8%, 71.0% and 37.3% for
     # the model parameters CL, Vc, Q and V2, respectively" (V2 here is a
     # notation slip for Vp; see vignette Errata).
@@ -72,8 +72,8 @@ Zhang_2016_rilotumumab <- function() {
     # (form or magnitude) for rilotumumab. Population predictions in
     # Figure 5 of the paper were generated with the Zhu 2014 residual
     # error model but Zhang 2016 does not reproduce those values. The
-    # Zhu_2014_rilotumumab extraction (task 127) is the canonical source
-    # for the residual error structure; this Zhang 2016 model file
+    # Zhu 2014 rilotumumab model (`Zhu_2014_rilotumumab`) is the canonical
+    # source for the residual error structure; this Zhang 2016 model file
     # therefore omits a residual error declaration so the gap is visible
     # rather than papered over with a guess. See vignette Errata.
   })
@@ -88,8 +88,8 @@ Zhang_2016_rilotumumab <- function() {
     # compartment (Q)"). Zhang 2016 reports body weight and age as
     # retained covariates in the Zhu 2014 final model but does not
     # publish the covariate equations or coefficients, so no covariate
-    # effects are encoded here; the Zhu_2014_rilotumumab extraction
-    # (task 127) is the canonical source.
+    # effects are encoded here; the Zhu 2014 rilotumumab model
+    # (`Zhu_2014_rilotumumab`) is the canonical source.
     cl <- exp(lcl + etalcl)
     vc <- exp(lvc + etalvc)
     q  <- exp(lq  + etalq)

@@ -246,11 +246,10 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     # consistent with the reported number; the proportional reading is
     # used here, documented in the vignette Errata).
     # PK residual: NOT reported in Perez-Ruixo 2008. The PK residual
-    # lives in Olsson-Gisleskog 2007 (the upstream popPK paper, not on
-    # disk for this extraction). Encoded as fixed(0) per the task hard
-    # constraint ("If a needed value is unreported, encode fixed(0) +
-    # an erratum rather than a class-typical placeholder"); documented
-    # in the vignette Errata.
+    # lives in Olsson-Gisleskog 2007 (the upstream popPK paper, which was
+    # not available when this model was built). Encoded as fixed(0) per the
+    # standing policy for unreported values (fixed(0) plus an erratum rather
+    # than a class-typical placeholder); documented in the vignette Errata.
     # =================================================================
     propSd     <- fixed(0); label("Proportional residual error on Cc (placeholder; not reported in Perez-Ruixo 2008)")
     propSd_RET <- 0.631;    label("Proportional residual error on RET (fraction)")  # Table II Model D, sigma = 63.1%

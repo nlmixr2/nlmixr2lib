@@ -116,8 +116,8 @@ Knebel_2012_istradefylline_dyskinesia <- function() {
   ini({
     # ================================================================
     # All values are Knebel 2012 Table IV, "Dyskinesia" block. The model
-    # form is given in Knebel 2012 Supplemental Table S2, which is not on
-    # disk; the form encoded here is the one the paper's own text
+    # form is given in Knebel 2012 Supplemental Table S2, which was not
+    # available when this model was built; the form encoded here is the one the paper's own text
     # specifies ("The relationship between istradefylline AUCss and the
     # probability of experiencing dyskinesia as an AE was best described
     # by a sigmoid Emax model. The logit model is described in

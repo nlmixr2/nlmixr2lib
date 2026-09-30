@@ -162,8 +162,8 @@ sim_typ <- rxode2::rxSolve(
   rxode2::zeroRe(mod), events = ev_typ,
   keep = c("WT", "CREAT", "regimen"), returnType = "data.frame"
 )
-# rxSolve drops `id` entirely for a single subject (see the vignette failure
-# patterns reference); restore it so the PKNCA grouping formula works.
+# rxSolve drops `id` entirely for a single subject; restore it so the PKNCA
+# grouping formula works.
 if (is.null(sim_typ$id)) sim_typ$id <- 1L
 
 cl_typ <- unique(round(sim_typ$cl, 10))

@@ -133,7 +133,7 @@ occ_bid7   <- function(t) {
 }
 
 # Sparser observation grid keeps the multi-cohort stochastic simulation
-# within the pkgdown / CI 5-minute wall-clock budget.
+# under 5 minutes of wall-clock time.
 obs_single <- sort(unique(c(0, 0.5, 1, 2, 3, 4, 6, 8, 12, 18, 24)))
 bid_times  <- as.numeric(outer(c(0, 12), seq(0, 6), `+`))
 obs_bid    <- sort(unique(c(bid_times, bid_times + 1, bid_times + 4, 168)))
@@ -368,8 +368,7 @@ cohort-median WT of 62 kg. Larger WT or extreme percentiles will shift these.
   screened as univariate covariates but not retained (Methods Step 3,
   Table 3). The packaged model exposes only `WT`, `DIS_HEALTHY`, and `OCC`.
 - **DOI.** The DOI in the `reference` field
-  (`10.1111/j.1365-2125.2003.02064.x`) was supplied with the bibliographic
-  record from which this model was built. The DOI string is not visible in
+  (`10.1111/j.1365-2125.2003.02064.x`) is not visible in
   the article text that was available when this model was built (the
   copyright header where Wiley typically prints the DOI was not included).
   It is presented here unverified against the publisher's landing page; users

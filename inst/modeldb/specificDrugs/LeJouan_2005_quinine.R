@@ -159,8 +159,8 @@ LeJouan_2005_quinine <- function() {
     # that maps to proportional error in nlmixr2's linear-concentration
     # space, with propSd = sqrt(0.048) = 0.219 (matching the paper's
     # narrative "CV of the residual error was 22%"). The convention
-    # follows references/parameter-names.md 'Residual error' and is
-    # consistent with the Kloprogge_2014_quinine model in this package.
+    # is the standing one and is consistent with the Kloprogge_2014_quinine
+    # model in this package.
     propSd <- sqrt(0.048) ; label("Proportional residual SD on linear concentration scale") # Le Jouan 2005 Table 2: Variance(epsilon) = 0.048 (SE 0.011)
   })
 

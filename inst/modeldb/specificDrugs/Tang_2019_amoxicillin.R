@@ -80,7 +80,7 @@ Tang_2019_amoxicillin <- function() {
     #   Q  = theta3 * (CW / 3210)^0.75
     #   CL = theta4 * (CW / 3210)^0.75 * F_age
     #   F_age = (GA / 38.14)^theta5 * (PNA / 7)^theta6
-    # (CW in grams, GA in weeks, PNA in days; this skill reparameterises
+    # (CW in grams, GA in weeks, PNA in days; this model reparameterises
     # CW to kg and PNA to months -- see covariateData notes.)
 
     # Structural PK parameters (reference 3.21 kg, GA = 38.14 weeks, PNA = 7 days).
