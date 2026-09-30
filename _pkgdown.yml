@@ -2904,8 +2904,8 @@ navbar:
         href: articles/Kappelhoff_2005_indinavir.html
       - text: "Indisulam (Keizer 2015)"
         href: articles/Keizer_2015_indisulam.html
-      - text: "IndocyanineGreen pbpk (Koller 2021)"
-        href: articles/Koller_2021_indocyanineGreen_pbpk.html
+      - text: "Inebilizumab (Yan 2022)"
+        href: articles/Yan_2022_inebilizumab.html
       - text: "Infliximab (Berends 2019)"
         href: articles/Berends_2019_infliximab.html
       - text: "Infliximab (Faelens 2021)"
@@ -9246,6 +9246,7 @@ articles:
   - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
   - articles/Yan_2019_benralizumab
+  - articles/Yan_2022_inebilizumab
   - articles/Yan_2024_amisulpride
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2013_losmapimod
