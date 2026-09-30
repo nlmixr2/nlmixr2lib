@@ -269,7 +269,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
         "info",
         "population",
         "Optional `population` metadata block not present.",
-        "Consider adding a `population` list (n_subjects, age_range, weight_range, ...) describing the source study's population."
+        "Consider adding a `population` list (n_subjects, age_range, weight_range, ...) for the studied population."
       )
     )
   }
