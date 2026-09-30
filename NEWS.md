@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yu 2022 Crohn's disease CDAI150, CDAI-100, CDAI-70, CDAI, CRP and IBDQ model-based meta-analysis ([doi:10.3389/fimmu.2022.828219](https://doi.org/10.3389/fimmu.2022.828219)) -- trial arms of adults with moderate-to-severe Crohn's disease treated with 17 biologics and 7 small targeted molecules.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.

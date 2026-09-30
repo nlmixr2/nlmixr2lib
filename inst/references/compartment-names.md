@@ -2142,6 +2142,27 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `Delta UPDRS`, the Lee 2011 paper's `Delta_UPDRS_it` notation.
 - **Example models:** `Lee_2011_parkinson_progression.R`.
 
+
+### d_cdai (**canonical change-from-baseline Crohn's Disease Activity Index output**)
+- **Type:** compartment
+- **Role:** Change from baseline in the Crohn's Disease Activity Index score (`d_cdai = CDAI(t) - CDAI_baseline`), a signed quantity in points; negative values are improvement. In the founding model it is the STUDY-ARM mean change from a model-based meta-analysis.
+- **Source aliases:** `Delta CDAI`, `change from baseline in CDAI`, `cdai` (Yu 2022 dataset column of the 'CDAI' sheet).
+- **Example models:** `Yu_2022_crohns_dcdai_mbma.R` (founding example).
+- **Notes:** Registered under the `d_<name>` change-from-baseline family. The baseline score is a separate covariate, `SCORE_CDAI`, so naming the output `d_cdai` rather than the bare score avoids shadowing it inside `model()` -- the same reason given for `d_hr`. Residual follows the standard per-output rule (`addSd` for a single-output model).
+
+### d_crp (**canonical change-from-baseline C-reactive protein output**)
+- **Type:** compartment
+- **Role:** Change from baseline in C-reactive protein concentration (`d_crp = CRP(t) - CRP_baseline`), a signed quantity; negative values are improvement. In the founding model it is the STUDY-ARM mean change from a model-based meta-analysis, on the mg/dL scale.
+- **Source aliases:** `Delta CRP`, `change from baseline in CRP`, `crp` (Yu 2022 dataset column of the 'CRP' sheet).
+- **Example models:** `Yu_2022_crohns_dcrp_mbma.R` (founding example).
+- **Notes:** Registered under the `d_<name>` family; the baseline is the covariate `CRP`, which the `d_` prefix keeps from being shadowed. The unit is per model and must match the baseline covariate's unit; see the founding model's `units`.
+
+### d_ibdq (**canonical change-from-baseline Inflammatory Bowel Disease Questionnaire output**)
+- **Type:** compartment
+- **Role:** Change from baseline in the Inflammatory Bowel Disease Questionnaire total score (`d_ibdq = IBDQ(t) - IBDQ_baseline`), a signed quantity in points; POSITIVE values are improvement (the opposite sign convention to `d_cdai`). In the founding model it is the STUDY-ARM mean change from a model-based meta-analysis.
+- **Source aliases:** `Delta IBDQ`, `change from baseline in IBDQ`, `ibdq` (Yu 2022 dataset column of the 'IBDQ' sheet).
+- **Example models:** `Yu_2022_crohns_dibdq_mbma.R` (founding example).
+- **Notes:** Registered under the `d_<name>` family. The questionnaire's 32 items give a total of 32-224, so a change is bounded by the baseline; the founding MBMA does not enforce that bound.
 ### tumor_vol (**canonical TGI tumour-volume output state**)
 - **Type:** compartment
 - **Role:** Tumour volume output state in TGI models.
@@ -4353,6 +4374,27 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Source aliases:** `PASI90`, `P(PASI90)`, `Pr(PASI90)`.
 - **Example models:** `He_2021_psoriasis_pasi90_mbma.R` (fitted directly to PASI90 arm data), `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (a secondary, unfitted output that maps the PASI75 model to PASI90 with two scaling factors imported from the companion landmark model).
 - **Notes:** See `prob_pasi75`. A directly fitted PASI90 model and a PASI75 model rescaled to PASI90 are different evidence and should be distinguished in any comparison.
+
+### prob_cdai150 (**canonical CDAI150 clinical-remission rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with Crohn's disease is in clinical remission, defined as an absolute Crohn's Disease Activity Index score below 150 (CDAI150). In the founding model it is a STUDY-ARM proportion from a model-based meta-analysis, `prob_cdai150 <- expit(<placebo logit> + <drug logit>)`.
+- **Source aliases:** `CDAI150`, `cdai150` (Yu 2022 dataset column), `clinical remission`.
+- **Example models:** `Yu_2022_crohns_cdai150_mbma.R` (founding example).
+- **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. Unlike the response endpoints `prob_cdai100` and `prob_cdai70` it is an ABSOLUTE threshold, so it is not a reduction from each arm's own baseline and is not zero at randomisation. Residual is the binomial standard error of the arm proportion scaled by `N_ARM`.
+
+### prob_cdai100 (**canonical CDAI-100 clinical-response rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with Crohn's disease has a clinical response defined as a reduction of at least 100 points from baseline in the Crohn's Disease Activity Index (CDAI-100). STUDY-ARM proportion in the founding model.
+- **Source aliases:** `CDAI-100`, `CDAI100`, `cdai100` (Yu 2022 dataset column).
+- **Example models:** `Yu_2022_crohns_cdai100_mbma.R` (founding example).
+- **Notes:** See `prob_cdai150`. CDAI-100 and CDAI-70 are CUMULATIVE thresholds on one change scale (`prob_cdai70 >= prob_cdai100` within an arm), but the founding paper fits them to different trial sets as independent models, so nothing in the models enforces the ordering.
+
+### prob_cdai70 (**canonical CDAI-70 clinical-response rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with Crohn's disease has a clinical response defined as a reduction of at least 70 points from baseline in the Crohn's Disease Activity Index (CDAI-70). Less strict sibling of `prob_cdai100`.
+- **Source aliases:** `CDAI-70`, `CDAI70`, `cdai70` (Yu 2022 dataset column).
+- **Example models:** `Yu_2022_crohns_cdai70_mbma.R` (founding example).
+- **Notes:** See `prob_cdai100`.
 
 ---
 
