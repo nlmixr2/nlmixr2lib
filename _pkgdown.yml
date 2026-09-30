@@ -142,8 +142,8 @@ navbar:
         href: articles/Mi_2024_aditoprim.html
       - text: "Aditoprim pbpkpd (Mi 2024)"
         href: articles/Mi_2024_aditoprim.html
-      - text: "Aducanumab (KandadiMuralidharan 2022)"
-        href: articles/KandadiMuralidharan_2022_aducanumab.html
+      - text: "Aducanumab qsp (Lin 2022)"
+        href: articles/Lin_2022_aducanumab_qsp.html
       - text: "Afatinib (Nakao 2019)"
         href: articles/Nakao_2019_afatinib.html
       - text: "Aficamten (Xu 2025)"
@@ -8197,7 +8197,7 @@ articles:
   - articles/Lin_2018_voriconazole
   - articles/Lin_2020_glasdegib
   - articles/Lin_2020_glasdegib_AML_overall_survival
-  - articles/Lin_2021_vancomycin
+  - articles/Lin_2022_aducanumab_qsp
   - articles/Lin_2023_asparaginaseErwiniaRecombinant
   - articles/Lin_2024_TB_multistate
   - articles/Lin_2024_adverseEvent_markov
