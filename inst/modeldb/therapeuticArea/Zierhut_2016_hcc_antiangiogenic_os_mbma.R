@@ -274,7 +274,7 @@ Zierhut_2016_hcc_antiangiogenic_os_mbma <- function() {
       description = "Publication year of the source study.",
       units = "year",
       type = "continuous",
-      notes = "Zierhut 2016 Table 2: 2010.6 (SD 1.70), median 2011 [2005, 2012]. Tested prospectively as a proxy for improving best supportive care over time and not significant (delta MOF = -0.449). The Discussion argues this is the most likely explanation for the phase II trial's higher observed mOS in BOTH arms, while noting the dataset shows no evidence of the trend."
+      notes = "The value is the PUBLICATION year, not the trial-conduct year. Zierhut 2016 Table 2: 2010.6 (SD 1.70), median 2011 [2005, 2012]. Tested prospectively as a proxy for improving best supportive care over time and not significant (delta MOF = -0.449). The Discussion argues this is the most likely explanation for the phase II trial's higher observed mOS in BOTH arms, while noting the dataset shows no evidence of the trend."
     )
   )
 

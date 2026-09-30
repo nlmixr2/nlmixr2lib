@@ -16551,17 +16551,18 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Notes:** MBMA / trial-design covariate; family precedent `K_CTRL` and `LOGRR_TARGET` (Volkova 2023), which are likewise trial-design inputs rather than patient characteristics. Registered as an explicit column because a growing set of MBMA models needs the arm size INSIDE `model()`, not merely as a post-hoc scaling. Most of the library's earlier MBMA extractions (`Mercier_2014_tramadol_tapentadol_mbma`, `Chen_2025_methotrexate_acr20_mbma` / `_acr50_` / `_das28_`, `Asiimwe_2025_trastuzumab*_mbma`, `Hanan_2026_peginterferon_alfa_*_mbma`) store the residual SD UNWEIGHTED and state in `ini()` that downstream code must apply `1 / sqrt(N)`; that remains valid where the arm size touches only the residual. Use `N_ARM` instead when the arm size enters a structural or random-effect expression, where no downstream rescaling can reproduce it -- a per-arm random-effect SD cannot be varied across arms within a single `rxSolve()` without a data column. Scope `general` because arm size carries the same meaning in every MBMA, with no paper-specific semantics. Do NOT use for an individual-level covariate: a row carrying `N_ARM` is an aggregate, and a model consuming it is simulating arm means, not patients.
 
 
-### YEAR_TRIAL (**canonical for the calendar year in which a trial was conducted**)
-- **Description:** Calendar year of trial conduct (a four-digit year), a study-level characteristic in a model-based meta-analysis used as a proxy for secular change in background care. Continuous; one value per trial.
+### YEAR_PUB (**canonical for the calendar year of a trial in a model-based meta-analysis -- publication or conduct year, stated per model**)
+- **Description:** Calendar year of a trial (a four-digit year), a study-level characteristic in a model-based meta-analysis used as a proxy for secular change in background care. Continuous; one value per trial. Sources use either the publication year or the year the trial was conducted; each model's `covariateData` notes state which one its value is.
 - **Units:** year
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- continuous. Leil 2021 centres it (log-transformed) at 2013, the median publication year of its Supplementary Table S1 trials, because the data-set median is not printed.
 - **Source aliases:**
-  - `trial year` / `year of conduct of the trial` -- Leil 2021 Methods and Table S3.
-  - `YEAR_PUB`, `YEAR_PUBLICATION` -- publication-year variants documented (screened, not retained) in `Zierhut_2016_hcc_antiangiogenic_os_mbma.R` and `Chen_2026_nsclc_os_mbma.R`; publication year lags conduct year by a few years, so map with care.
-- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (exponent `-397` of `YEAR_TRIAL / 2013` on the DAS28 progression slope; earlier trials show faster background worsening).
-- **Notes:** MBMA / trial-design covariate, sibling of `N_ARM`. When a paper uses publication year instead, record that in the per-model notes.
+  - `trial year` / `year of conduct of the trial` -- Leil 2021 Methods and Table S3 (conduct year).
+  - `YEAR_PUBLICATION` -- Chen 2026 spelling (screened, not retained, in `Chen_2026_nsclc_os_mbma.R`; publication year).
+  - `YEAR`, `PUBYEAR`, `YEAR_TRIAL` -- common dataset column variants; map directly, after confirming which year the source recorded.
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (conduct year; exponent `-397` of `YEAR_PUB / 2013` on the DAS28 progression slope; earlier trials show faster background worsening), `Zierhut_2016_hcc_antiangiogenic_os_mbma.R` (publication year; screened and not retained, in `covariatesDataExcluded`).
+- **Notes:** MBMA / trial-design covariate, sibling of `N_ARM`. Publication year lags conduct year by a few years, so do not pool values of the two kinds without checking; a model with a steep year effect is sensitive to the difference. Ratified 2026-09-29 alongside the Leil 2021 RA DAS28 extraction: the operator chose the existing Zierhut 2016 spelling over a separate `YEAR_TRIAL` canonical, with the year kind recorded per model.
 
 ### K_CTRL (**canonical for control-arm event proportion over the planned follow-up**)
 - **Description:** The proportion of control-arm participants expected to experience the endpoint of interest over a planned trial's follow-up period; a fraction in (0, 1). A **trial-design input**, not a measured patient characteristic: it is what a study-level model needs, alongside an effect size, to turn a predicted treatment effect into a required enrolment. Time-dependent in principle -- the proportion accrues with follow-up duration -- so the value supplied is always tied to a stated follow-up length.

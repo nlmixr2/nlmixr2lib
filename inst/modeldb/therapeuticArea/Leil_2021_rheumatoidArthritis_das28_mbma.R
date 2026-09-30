@@ -132,13 +132,13 @@ Leil_2021_rheumatoidArthritis_das28_mbma <- function() {
       notes = "The paper's covariate is the percentage of MALE participants, dichotomised at the 18.5 percent data-set median; the retained effect acts on the placebo Hill coefficient for arms with male < 18.5 percent. Derived in model() as lowMale = (100 - SEXF_PCT) < 18.5. The Table S3 label ('gamma_placebo ~ male participants < 18.5%') and the Table 3 typical trial (19 percent male, reproduced with the unmodified gamma_placebo) fix the indicator to 1 for the LOW-male category; the Methods parenthetical coding ('< 18.5% = 0; >= 18.5% = 1') is the reverse and is not used. Reference value 81 = 100 - 19 percent male (Table 3 footnote b).",
       source_name = "% male (Leil 2021 Table 2, Methods, Table S3); SEXF_PCT = 100 - % male"
     ),
-    YEAR_TRIAL = list(
-      description = "Calendar year in which the trial was conducted.",
+    YEAR_PUB = list(
+      description = "Calendar year of the trial; in this model the value is the year the trial was CONDUCTED, not the publication year.",
       units = "year",
       type = "continuous",
       reference_category = NULL,
       reference_value = 2013,
-      notes = "Enters the disease-progression slope as exp(-397 * log(YEAR_TRIAL / 2013)) (Leil 2021 Equation 9, Table S3). The centring year is NOT printed; 2013 is the median publication year of the 130 trials listed in Supplementary Table S1 (range 2002-2017). The effect is extremely steep (a trial 5 years before the centre has a ~2.7-fold faster progression) and does not reproduce the Discussion's '~0.31 DAS28 units/year in 2000 vs ~0.0025 in 2016' under any centring year; see the vignette Errata.",
+      notes = "Leil 2021 Methods describe the covariate as 'the year of conduct of the trial', so supply the trial-conduct year; if only the publication year is known, it lags the conduct year by a few years and the steep exponent makes that lag matter. Enters the disease-progression slope as exp(-397 * log(YEAR_PUB / 2013)) (Leil 2021 Equation 9, Table S3). The centring year is NOT printed; 2013 is the median publication year of the 130 trials listed in Supplementary Table S1 (range 2002-2017). The effect is extremely steep (a trial 5 years before the centre has a ~2.7-fold faster progression) and does not reproduce the Discussion's '~0.31 DAS28 units/year in 2000 vs ~0.0025 in 2016' under any centring year; see the vignette Errata.",
       source_name = "year of trial conduct (Leil 2021 Methods, Table S3 'Slope of DAS28 progression ~ trial year')"
     )
   )
@@ -298,7 +298,7 @@ Leil_2021_rheumatoidArthritis_das28_mbma <- function() {
   model({
     # Per-row arm inputs: the seven drug indicators (all 0 = placebo /
     # background-therapy arm), N_ARM, and the trial-level covariates
-    # SCORE_DAS28CRP, T_DIAG_RA, SEXF_PCT and YEAR_TRIAL. The model is
+    # SCORE_DAS28CRP, T_DIAG_RA, SEXF_PCT and YEAR_PUB. The model is
     # algebraic in time, so all arms of one trial can share one ID
     # (and therefore one set of between-trial etas) as separate rows.
     wN <- sqrt(100 / N_ARM)
@@ -334,7 +334,7 @@ Leil_2021_rheumatoidArthritis_das28_mbma <- function() {
     hillDrug <- exp(lhill_drug + eta_study_hill_drug * wN)
 
     # ---- Progression (Eq. 12); PROG is per year, time in weeks ----
-    slopeProg <- exp(lslope + e_year_slope * log(YEAR_TRIAL / 2013) + eta_study_slope * wN)
+    slopeProg <- exp(lslope + e_year_slope * log(YEAR_PUB / 2013) + eta_study_slope * wN)
 
     effPbo <- emaxPbo * time^hillPbo / (et50Pbo^hillPbo + time^hillPbo)
     effDrug <- emaxDrug * time^hillDrug / (et50Drug^hillDrug + time^hillDrug)

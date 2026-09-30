@@ -125,7 +125,7 @@ make_trials <- function(times, drug_set, n_arm = 100) {
       SCORE_DAS28CRP = 6.2,
       T_DIAG_RA = 8.2,
       SEXF_PCT = 81,
-      YEAR_TRIAL = 2013
+      YEAR_PUB = 2013
     ) |>
     arrange(id, time, arm)
 }
