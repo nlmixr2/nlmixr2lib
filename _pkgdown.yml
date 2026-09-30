@@ -142,6 +142,8 @@ navbar:
         href: articles/Mi_2024_aditoprim.html
       - text: "Aditoprim pbpkpd (Mi 2024)"
         href: articles/Mi_2024_aditoprim.html
+      - text: "Aducanumab (KandadiMuralidharan 2022)"
+        href: articles/KandadiMuralidharan_2022_aducanumab.html
       - text: "Afatinib (Nakao 2019)"
         href: articles/Nakao_2019_afatinib.html
       - text: "Aficamten (Xu 2025)"
@@ -7881,6 +7883,7 @@ articles:
   - articles/Kamal_2015_oseltamivir
   - articles/Kamal_2017_oseltamivir
   - articles/Kamp_2023_tacrolimus
+  - articles/KandadiMuralidharan_2022_aducanumab
   - articles/Kang_2020_adalimumab
   - articles/Kang_2020_cefpirome
   - articles/Kang_2020_quizartinib
