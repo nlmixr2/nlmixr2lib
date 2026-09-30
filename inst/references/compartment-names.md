@@ -5237,6 +5237,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Mitra_2026_ziftomenib.R` (sequential two-stage popPK; KO-516 central + one peripheral compartment; 1:1 in-vitro-anchored KO-739:KO-516 metabolic split; Table 1).
 - **Notes:** Follows the paper-named metabolite suffix convention established by `m1` / `m2` / `m3` / `m8`. Kura development-code compound designation retained instead of a chemical-name shorthand because the paper does not disclose the chemical identity of the metabolite.
 
+### tqb3101m (**canonical TQ-B3101M active metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** TQ-B3101M, the active metabolite of the ALK/ROS1 kinase inhibitor TQ-B3101 (Chia Tai Tianqing development-code compound designation). Formed from TQ-B3101 with the fraction metabolised fixed to 1 in the founding model, so it carries the parent's clearance flux in full. Used in parent + metabolite joint popPK extractions of TQ-B3101.
+- **Source aliases:** `TQ-B3101M` (Yang 2021 throughout; subscript `m` on the metabolite parameters, e.g. `CLm/Fm`, `Vcm/Fm`).
+- **Example models:** `Yang_2021_TQB3101.R` (founding example; `central_tqb3101m` + `peripheral1_tqb3101m`, `Cc_tqb3101m` in TQ-B3101 mass equivalents because neither molecular weight is published; Table 3).
+- **Notes:** Development-code suffix chosen over the generic numbered `m1` family and the template-only `metab` suffix because the paper names the metabolite only by its development code and discloses no structure, following the `ko739` / `ko516` precedent. Every clearance and volume carrying this suffix is apparent in the compound sense `X/Fm`.
+
 ### endox (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Endoxifen (4-hydroxy-N-desmethyltamoxifen), major active metabolite of tamoxifen.

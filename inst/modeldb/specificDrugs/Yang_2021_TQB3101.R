@@ -8,8 +8,9 @@ Yang_2021_TQB3101 <- function() {
     "first-order elimination; all of its clearance forms TQ-B3101M (fraction",
     "metabolised fixed to 1 for identifiability), which is described by a",
     "two-compartment model whose apparent clearance decreases exponentially",
-    "with time since the first dose, CLm(t) = CLm0 * (1 - fmax * (1 -",
-    "exp(-k * t))), to a steady-state value 41 percent below the first-dose",
+    "with time since the first dose, CLm(t) = CLm0 * (1 + famp * (1 -",
+    "exp(-k * t))) with famp = -0.41, to a steady-state value 41 percent",
+    "below the first-dose",
     "value. All clearances and volumes are apparent (X/F for the parent,",
     "X/Fm for the metabolite, i.e. proportional to the true metabolite values",
     "by the unknown fraction metabolised). No covariate was retained. The",
@@ -248,8 +249,9 @@ Yang_2021_TQB3101 <- function() {
     lvp_tqb3101m <- log(1480); label("TQ-B3101M apparent peripheral volume Vpm/Fm (L)")                # Yang 2021 Table 3: Vpm/Fm = 1,480 L (RSE 25%; bootstrap median 1498.0, 95% CI 564.2-2447.4)
 
     # Time-dependent clearance of TQ-B3101M (Yang 2021 Table 3 footnote a):
-    # CLm/Fm = CLm0/Fm * [1 - TDPK * (1 - exp(-KTDPK * T))].
-    cl_exp_fmax <- 0.41;       label("Maximum fractional reduction of TQ-B3101M clearance, TDPK (unitless)")  # Yang 2021 Table 3: TDPK on CLm/Fm = 0.41 (RSE 16%; bootstrap median 0.43, 95% CI 0.28-0.65)
+    # CLm/Fm = CLm0/Fm * [1 - TDPK * (1 - exp(-KTDPK * T))]. Encoded with the
+    # signed fractional-amplitude token, cl_exp_famp = -TDPK (negative = decline).
+    cl_exp_famp <- -0.41;      label("Fractional amplitude of the TQ-B3101M clearance change, -TDPK (unitless)")  # Yang 2021 Table 3: TDPK on CLm/Fm = 0.41 (RSE 16%; bootstrap median 0.43, 95% CI 0.28-0.65); cl_exp_famp = -TDPK
     lcl_exp_kdes <- log(0.0363); label("First-order rate constant of the TQ-B3101M clearance decrease, KTDPK (1/h)")  # Yang 2021 Table 3: KTDPK = 0.0363 1/h (RSE 26%; bootstrap median 0.037, 95% CI 0.024-0.12)
 
     # -----------------------------------------------------------------
@@ -285,11 +287,11 @@ Yang_2021_TQB3101 <- function() {
 
     # 2. Time-dependent TQ-B3101M clearance (Yang 2021 Table 3 footnote a).
     #    T is time since the first dose; here t, so simulations must start at
-    #    the first dose. CLm falls from CLm0 at t = 0 to CLm0 * (1 - fmax) =
-    #    74.3 L/h (typical) as t -> infinity, with half-time ln(2) / 0.0363 =
-    #    19.1 h.
+    #    the first dose. CLm falls from CLm0 at t = 0 to CLm0 * (1 +
+    #    cl_exp_famp) = 74.3 L/h (typical) as t -> infinity, with half-time
+    #    ln(2) / 0.0363 = 19.1 h.
     cl_exp_kdes <- exp(lcl_exp_kdes)
-    cl_tqb3101m <- cl_tqb3101m0 * (1 - cl_exp_fmax * (1 - exp(-cl_exp_kdes * t)))
+    cl_tqb3101m <- cl_tqb3101m0 * (1 + cl_exp_famp * (1 - exp(-cl_exp_kdes * t)))
 
     # 3. Micro-constants. All TQ-B3101 clearance forms TQ-B3101M (fm = 1;
     #    Figure 1 draws the (1 - FM) * CL/F elimination arm, which is zero).
