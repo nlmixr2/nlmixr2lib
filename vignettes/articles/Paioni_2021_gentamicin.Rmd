@@ -521,6 +521,22 @@ rows differ only through the dose-proportional grid. The residual difference
 from 3.53 h reflects the virtual cohort's covariate mix (Table 4 median weight
 and creatinine are those of the study patients).
 
+# Errata in the source
+
+**The paper's simulated concentration intervals are inconsistent with its own
+Table 3 random-effect variances.** Table 3 labels the random effects "Variance
+of the random effects (inter-individual variance)", and the Table 4
+individual-level extremes confirm that scale (see "Scale of the Table 3 random
+effects"). The 95% intervals of C(30 min') printed in Section 3.7, the abstract
+and the Discussion (3 mg/kg 5.2-8.4, 4 mg/kg 6.9-11.3, 7.5 mg/kg
+13.0-21.2 mg/L) are, however, reproduced only when the printed values are used
+as standard deviations; with the printed variances the intervals are wider.
+The medians agree under either reading. The packaged model encodes Table 3
+verbatim as variances, because the printed estimates take precedence over the
+paper's derived simulations. Its C(30 min') and C(24 h') intervals are
+therefore wider than those published. The SD-scale sensitivity run above shows
+the published intervals are recovered under the alternative reading.
+
 # Assumptions and deviations
 
 - **Parameter names.** The paper's apparent peripheral volume V2' is carried as
@@ -540,13 +556,9 @@ and creatinine are those of the study patients).
   the eight urea values below 1.8 mmol/L is also not stated.
 - **Missing covariates** were entered at the reference value in the fit
   (Section 2.3); do the same when simulating a patient with a missing value.
-- **Scale of the random effects.** Table 3 values are variances (Table 3
-  heading; confirmed by the Table 4 individual-level extremes). The paper's
-  simulated C(30 min') intervals (Section 3.7, abstract, Discussion) are
-  reproduced in their centre but are narrower than the packaged model's; they
-  match a simulation that uses the printed values as SDs, which suggests the
-  published simulations used that scale. The model is not adjusted to match
-  them.
+- **Scale of the random effects.** Table 3 values are encoded as variances,
+  and the model is not adjusted to reproduce the narrower published simulation
+  intervals; see "Errata in the source".
 - **Structural constraint.** The fit rejected parameter sets with CL >
   lambda1 * V1 (Section 2.3). For such a set the derived k12 is negative; the
   ODE still reproduces the paper's bi-exponential Equation (1) but the

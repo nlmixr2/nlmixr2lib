@@ -168,7 +168,9 @@ Paioni_2021_gentamicin <- function() {
     # population-level extremes, i.e. 1.5 and 2.3 SDs under this reading but
     # more than 7 SDs if the printed values were SDs. The paper's own
     # Section 3.7 simulated C(30 min') intervals are narrower and match the
-    # printed values used as SDs; see the vignette.
+    # printed values used as SDs (ERRATUM in the source: its simulations
+    # disagree with its own Table 3 scale); Table 3 is encoded verbatim as
+    # variances. See the vignette section 'Errata in the source'.
     etalcl ~ 0.107 # Paioni 2021 Table 3 variance of random effects ln(CL) = 0.107
     etalvparea ~ 0.291 # Paioni 2021 Table 3 variance of random effects ln(V2') = 0.291
     etalvc ~ 0.0391 # Paioni 2021 Table 3 variance of random effects ln(V1) = 0.0391
