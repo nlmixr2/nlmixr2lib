@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mi 2022 ceftiofur ([doi:10.3390/ijms23073722](https://doi.org/10.3390/ijms23073722)) -- *Pasteurella multocida*-infected swine, with ex vivo (plasma, BALF) and semi-mechanistic PK/PD against *P. multocida*.
+- Add Yu 2022 IgA nephropathy drug-class proteinuria MBMA ([doi:10.3389/fimmu.2022.825677](https://doi.org/10.3389/fimmu.2022.825677)) -- adults with IgA nephropathy in 40 trials of placebo and six drug classes. Registers the `UPRO_BL` covariate, the six IgA-nephropathy `TRT_*` drug-class indicators, and the `uprocfb` output.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
