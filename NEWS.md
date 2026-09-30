@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sae-heng 2022 quinine-phenobarbital PBPK ([doi:10.1002/psp4.12737](https://doi.org/10.1002/psp4.12737)) — whole-body drug-drug-interaction model in adults with cerebral malaria and seizures.
+- Add Wang 2022 daidzein/S-equol PBPK ([doi:10.1021/acs.jafc.1c03950](https://doi.org/10.1021/acs.jafc.1c03950)) -- whole-body human gut-microbial PBPK for the dietary isoflavone daidzein and its metabolite S-equol.
 
 - Articles no longer cite internal workflow details: rxode2 issue numbers, dates of toolchain changes or of model corrections, and maintainer-review identifiers are replaced by the mechanism or decision they stood for (40 articles). `figure/` directories that knitr writes beside an article rendered outside pkgdown are now ignored by git.
 
