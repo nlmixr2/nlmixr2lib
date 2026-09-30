@@ -23,7 +23,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Darwish_2026_remlifanserin"))$description`
 * Article: <https://doi.org/10.1002/trc2.70254>
 * Supplement (Supplemental Tables 1-6 and the NONMEM control stream):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13133547/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC13133547>
 
 Remlifanserin (ACP-204) is a selective serotonin 2A (5-HT~2A~) receptor inverse
 agonist in development for Alzheimer's disease psychosis and Lewy body dementia
@@ -586,6 +586,10 @@ corrupted by simulated assay noise.
 ```{r pknca}
 sim_nca <- sim_analysis |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, arm)
 
 # Guarantee a time = 0 row per subject; pre-dose Cc = 0 is correct for an

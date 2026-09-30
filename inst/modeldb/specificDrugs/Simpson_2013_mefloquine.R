@@ -92,8 +92,9 @@ Simpson_2013_mefloquine <- function() {
     # WT 86N/1042N). EC50 from Table 3 row "Mefloquine" Genotype 1 column:
     # 53.0 nM (95% CI 48.0, 58.1). Slope from Table 1 NLME row mefloquine:
     # 3.10 (95% reference range 1.39 to 6.92). Slope-covariate effects
-    # (theta_5..theta_8) dropped per skill sidecar (File S2 not on disk;
-    # main text describes slope effects as "minimal" / "not significant").
+    # (theta_5..theta_8) dropped by decision of the maintainers (File S2 was
+    # not available when this model was built; main text describes slope
+    # effects as "minimal" / "not significant").
     # ---------------------------------------------------------------------
     lec50  <- log(53.0); label("Population log-EC50 for the WT reference parasite (log of nM)") # Table 3 Mefloquine Genotype 1 reference
     lgamma <- log(3.10); label("Population log-slope gamma of the sigmoid inhibition curve (log of unitless)") # Table 1 NLME row mefloquine

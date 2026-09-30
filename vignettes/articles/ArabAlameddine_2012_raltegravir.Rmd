@@ -370,7 +370,7 @@ The 800 mg QD simulated Cmin median matches the published value to within
 1% (52.5 vs 52 ng/mL). The 400 mg BID simulated Cmin median is ~22% higher
 than the published 124 ng/mL (152 vs 124). The most plausible drivers of
 the BID discrepancy are: (i) the published simulation used 1000 individuals
-and we use 200 here to keep the vignette under the 5-minute render budget;
+and we use 200 here to keep the vignette's render time under 5 minutes;
 (ii) the published cohort's covariate distributions are only partly
 tabulated in Arab-Alameddine 2012 Table 1 (median TBILI 12 umol/L is given;
 the exact joint distribution of SEXF / ATV / RACE_WHITE / TBILI across the
@@ -396,7 +396,7 @@ or the covariate effects.
   yields ~36% increase in F, consistent with the paper's "approximately
   30% increase in drug levels in case of grade 1 hyperbilirubinaemia").
   A NONMEM `.lst` listing or the source authors' control stream would
-  disambiguate, but neither is on disk for this paper.
+  disambiguate, but neither was available for this paper.
 - **HIV-negative cohort demographics.** Arab-Alameddine 2012 does not
   tabulate full demographics for the 19 healthy volunteers (Methods
   notes the population by reference to Neely et al. 2010). The virtual
@@ -427,5 +427,5 @@ or the covariate effects.
   the `CONMED_<drug>_DOSE` family (now also spelled out as
   `CONMED_ATORVASTATIN_DOSE` for the same reason). The renaming was
   applied to `Vargo_2014_statins_ezetimibe_mbma.R` and its vignette
-  in the same commit; downstream users referencing the legacy column
+  at the same time; downstream users referencing the legacy column
   name should update to the new canonical.

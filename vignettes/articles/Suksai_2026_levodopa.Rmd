@@ -63,10 +63,9 @@ Five defects block implementation:
    mention of the sensitivity analysis -- never with a number. It is absent from
    the baseline configuration, from Table 1 (demographics), Table 2 (PD
    parameters only) and Table 3 (per-case `ka` and `CL` only). Both Equation 1
-   and Equation 2 depend on it. No supplement exists to supply it: the EuropePMC
-   `fullTextXML` for PMC13259810 (HTTP 200, 158 kB) contains no
-   `<supplementary-material>` element and no `suppdata` processing instruction,
-   and the word "supplementary" does not appear anywhere in the article.
+   and Equation 2 depend on it. No supplement exists to supply it: the full text of PMC13259810 has no
+   supplementary material, and the word "supplementary" does not appear
+   anywhere in the article.
 2. **Equations 1 and 2 do not conserve mass.** The flux
    `(CLint/Vperipheral) * Aperipheral` is subtracted from the peripheral
    compartment once in Equation 1 (returning to plasma) and simultaneously
@@ -318,7 +317,7 @@ base_metrics <- metrics()
 
 # Guard: overriding params must actually change the solve, otherwise every
 # sensitivity index would come back as a meaningless zero and the gate below
-# would pass without testing anything (failure pattern 10).
+# would pass without testing anything.
 stopifnot(abs(metrics("lvc", log(1.2))[["peakCe"]] - base_metrics[["peakCe"]]) > 1e-6)
 
 sens <- lapply(seq_len(nrow(fig4_params)), function(i) {
@@ -492,7 +491,9 @@ lambda_z <- min(abs(Re(eigen(Amat)$values)))
 thalf_theory <- log(2) / lambda_z
 
 # Empirical terminal slope, taken well after the distribution phase.
-tail_dat <- single[single$time >= 120 & single$time <= 168, ]
+# Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+tail_dat <- single[single$time >= 120 & single$time <= 168 &
+                     single$Cc >= 1e-6 * max(single$Cc), ]
 thalf_emp <- log(2) / -coef(lm(log(tail_dat$Cc) ~ tail_dat$time))[[2]]
 
 checks <- tibble::tribble(
@@ -543,11 +544,12 @@ single_nca <- rxode2::rxSolve(
 
 sim_nca <- single_nca |>
   dplyr::filter(!is.na(Cc)) |>
+  # Keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
   dplyr::mutate(id = 1L, treatment = "100 mg single oral dose") |>
   dplyr::select(id, time, Cc, treatment)
 
-# Fail loudly rather than handing PKNCA a short or empty frame (failure
-# patterns 4 and 10).
+# Fail loudly rather than handing PKNCA a short or empty frame.
 stopifnot(nrow(sim_nca) > 300)
 
 # Guarantee a time = 0 row; for an extravascular dose Cc = 0 pre-dose.
@@ -736,13 +738,9 @@ No erratum, corrigendum or author correction was found for
 doi:10.3389/fphar.2026.1817435. The paper carries a generative-AI-use disclosure
 (language editing only).
 
-No supplementary material is deposited for PMC13259810. The EuropePMC
-`supplementaryFiles` endpoint was returning the generic 10,135-byte EBI error
-page (HTTP 500) when this was checked, which is an endpoint outage signature and
-is **not** evidence of a missing deposit; the question is instead settled by
-`fullTextXML`, which returned HTTP 200 with the complete 158 kB article and
-contains no `<supplementary-material>` element, no `suppdata` processing
-instruction, and no occurrence of the word "supplementary". The Data Availability
+No supplementary material is deposited for PMC13259810: the full text
+contains no supplementary-material section and no occurrence of the word
+"supplementary". The Data Availability
 Statement says only that raw data "will be made available by the authors,
 without undue reservation" -- there is no deposited file and no repository
-accession. `CLint` is therefore unobtainable from any source on or off disk.
+accession. `CLint` is therefore unobtainable from any available source.

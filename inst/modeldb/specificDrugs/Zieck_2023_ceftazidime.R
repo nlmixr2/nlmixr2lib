@@ -151,8 +151,8 @@ Zieck_2023_ceftazidime <- function() {
     # initial estimates, and this block also carries a leftover editing
     # comment. By contrast $OMEGA(1) = 0.0936 for CL reproduces Table 3
     # exactly, so it is used verbatim (one more significant digit than the
-    # rounded table value). Operator-confirmed: sidecar oare_PMC10044023
-    # request-001 q2. See the vignette Errata.
+    # rounded table value). The maintainers confirmed this choice; see the
+    # vignette Errata.
     etalcl ~ 0.0936  # File S1 $OMEGA(1) = 0.0936 -> CV = sqrt(exp(0.0936) - 1) = 31.3%, matching Table 3 Final Model IIV CL 31.3% CV (RSE 29.6%, shrinkage 7%)
     etalvc ~ 0.1498  # Table 3 Final Model IIV V = 40.2% CV (RSE 61.8%, shrinkage 18%) -> omega^2 = log(1 + 0.402^2) = 0.1498
 

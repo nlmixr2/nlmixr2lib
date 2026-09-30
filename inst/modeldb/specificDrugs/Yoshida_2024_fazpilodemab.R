@@ -53,7 +53,7 @@ Yoshida_2024_fazpilodemab <- function() {
     notes = paste(
       "Multiple ascending dose (MAD) study GC39547 (NCT03060538). 121 patients with T2DM or NAFLD received fazpilodemab and 32 patients received placebo (n = 153 total).",
       "Fazpilodemab was administered subcutaneously in the abdomen or thigh at 10-250 mg with intervals of q1w, q2w, or q4w.",
-      "Detailed demographic breakdown (age / weight / sex / race) is not reported in the main text or in the available supplements; the available trimmed-markdown copies of Supplements 1 (figures) and 2 (model code) contain neither a Table 1 baseline-demographics summary nor an extended-text demographics paragraph.",
+      "Detailed demographic breakdown (age / weight / sex / race) is not reported in the main text or in the available supplements; the available Supplements 1 (figures) and 2 (model code) contain neither a Table 1 baseline-demographics summary nor an extended-text demographics paragraph.",
       "Phase I/II population characterisation; full popPK described as 'unpublished data' in the main text, with the typical-value parameter set and IIV/IOV/residual error provided in full as the mrgsolve [PARAM] / [OMEGA] / [SIGMA] block of Supplement S2.3.1.",
       sep = " "
     )

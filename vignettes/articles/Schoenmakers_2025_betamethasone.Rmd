@@ -372,7 +372,7 @@ AUC0-inf vs (Dose / CL) ratio raises.
 - **Metabolites not modelled.** Schoenmakers 2025 reports half-lives
   of 0.5 h for 11-keto-betamethasone and 2.4 h for
   6-beta-hydroxybetamethasone (Table S3 in the supplementary
-  information). The supplement is not on disk for this extraction;
+  information). The supplement was not available when this model was built;
   the metabolite parameters are therefore not represented in the
   model. Adding the metabolite compartments would require the
   supplement's Tables S2/S3 plus the figure-S5 metabolite VPC for
@@ -390,8 +390,8 @@ AUC0-inf vs (Dose / CL) ratio raises.
 - **Virtual cohort sized for stable medians.** The vignette uses 200
   women per stratum (400 total), substantially larger than the
   source cohort (23 + 5 = 28). The larger size gives stable NCA
-  medians while keeping the vignette under the 5-minute pkgdown
-  gate.
+  medians while keeping the vignette's render time under 5
+  minutes.
 
 - **Single-centre cohort generalisability.** All 28 women in the
   source study were enrolled at a single Dutch tertiary centre

@@ -21,11 +21,11 @@ library(ggplot2)
 * Citation: `r rxode2::rxode2(readModelDb("Schindler_2016_sunitinib"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Schindler_2016_sunitinib"))$description`
 * Article: <https://doi.org/10.1002/psp4.12057>
-* DDMORE Foundation Model Repository entry: `DDMODEL00000221` -- bundle directory in the maintainers' `ddmore_scraping` mirror at `221/`, containing `Executable_SLD_SUV_OS_GIST.mod`, `Output_real_SLD_SUV_OS_GIST.lst`, `Output_simulated_SLD_SUV_OS_GIST.lst`, `Simulated_SLD_SUV_OS_GIST.csv`, `DDMODEL00000221.rdf`, `Command.txt`, and `221.json`. The linked publication itself (Schindler 2016, CPT:PSP) was not on disk when this model was built; parameter values, structural equations, and maintainer decisions in this vignette and the model file are sourced from the bundle's `.mod` (structural equations + initial values) and `.lst` (final estimates).
+* DDMORE Foundation Model Repository entry: `DDMODEL00000221` -- bundle directory `ddmore_scraping/221/`, containing `Executable_SLD_SUV_OS_GIST.mod`, `Output_real_SLD_SUV_OS_GIST.lst`, `Output_simulated_SLD_SUV_OS_GIST.lst`, `Simulated_SLD_SUV_OS_GIST.csv`, `DDMODEL00000221.rdf`, `Command.txt`, and `221.json`. The linked publication itself (Schindler 2016, CPT:PSP) was not available when this model was built; parameter values, structural equations, and maintainer decisions in this vignette and the model file are sourced from the bundle's `.mod` (structural equations + initial values) and `.lst` (final estimates).
 
 # Population
 
-The Schindler 2016 model was developed on a 66-patient pooled cohort of imatinib-resistant or imatinib-intolerant advanced gastrointestinal stromal tumor (GIST) patients on second-line oral sunitinib at the standard 50 mg/day, 4-weeks-on / 2-weeks-off regimen. Each patient had serial [18F]FDG-PET SUVmax assessments on up to five target lesions, target-lesion sum-of-longest-diameters (SLD) measurements, and overall survival follow-up to event or right-censoring. Detailed baseline demographics (age, weight, sex, race / ethnicity distribution, prior-line distribution) live in Table 1 of the linked publication, which was not on disk when this model was built; those fields are recorded as `NA` in the model's `population` metadata to make the gap explicit, with a notes string pointing to Schindler 2016 Table 1 as the source.
+The Schindler 2016 model was developed on a 66-patient pooled cohort of imatinib-resistant or imatinib-intolerant advanced gastrointestinal stromal tumor (GIST) patients on second-line oral sunitinib at the standard 50 mg/day, 4-weeks-on / 2-weeks-off regimen. Each patient had serial [18F]FDG-PET SUVmax assessments on up to five target lesions, target-lesion sum-of-longest-diameters (SLD) measurements, and overall survival follow-up to event or right-censoring. Detailed baseline demographics (age, weight, sex, race / ethnicity distribution, prior-line distribution) live in Table 1 of the linked publication, which was not available when this model was built; those fields are recorded as `NA` in the model's `population` metadata to make the gap explicit, with a notes string pointing to Schindler 2016 Table 1 as the source.
 
 The same information is available programmatically via the model's `population` metadata (`rxode2::rxode2(readModelDb("Schindler_2016_sunitinib"))$population` after the model is loaded).
 
@@ -65,7 +65,7 @@ The MINIMIZATION line in `Output_real_*.lst` (line 795) reads `MINIMIZATION SUCC
 
 # Virtual cohort
 
-The original observed dataset is not publicly available and is not in the DDMODEL00000221 bundle. The bundle's `Simulated_SLD_SUV_OS_GIST.csv` ships a single virtual subject with the standard 50 mg/day 4-weeks-on / 2-weeks-off-style schedule as a regression-style smoke test. For the F.2 self-consistency check below the vignette uses a virtual cohort that mirrors that single-subject layout for the SUVmax + SLD + cumulative-hazard arms; the OS / dropout TTE arms are evaluated at typical-value parameters with `RCFB1MAX` derived from the simulated week-1 SUVmax trajectory.
+The original observed dataset is not publicly available and is not in the DDMODEL00000221 bundle. The bundle's `Simulated_SLD_SUV_OS_GIST.csv` ships a single virtual subject with the standard 50 mg/day 4-weeks-on / 2-weeks-off-style schedule as a regression-style smoke test. For the self-consistency check below the vignette uses a virtual cohort that mirrors that single-subject layout for the SUVmax + SLD + cumulative-hazard arms; the OS / dropout TTE arms are evaluated at typical-value parameters with `RCFB1MAX` derived from the simulated week-1 SUVmax trajectory.
 
 ```{r cohort}
 set.seed(20260506)
@@ -226,7 +226,7 @@ print(p_sld)
 print(p_haz)
 ```
 
-# F.2 self-consistency check (typical-value re-simulation of the bundle dataset)
+# Self-consistency check (typical-value re-simulation of the bundle dataset)
 
 The bundle's `Output_simulated_*.lst` reproduces a one-subject MAXEVAL = 0 simulation of the source `.mod` on `Simulated_SLD_SUV_OS_GIST.csv`. The check below runs a typical-value (zero-IIV) simulation through the packaged nlmixr2 model on a comparable layout and verifies that the SUVmax / SLD trajectories settle at the .mod's typical-baseline (`IBASE_SUV` ~= 7.59 for the SUVmax compartments and `IBASE_SLD` ~= 263 mm for SLD) at t = 0 and that the post-cycle SLD trajectory falls within an order of magnitude of those baselines -- the bundle's Output_simulated `.lst` does not embed a parsable `$TABLE` block for direct numerical comparison, so this check is structural rather than per-time-point.
 
@@ -282,7 +282,7 @@ structural_summary <- tibble(
 )
 
 knitr::kable(structural_summary,
-             caption = "F.2 self-consistency: typical-value baselines vs. .mod THETA values.")
+             caption = "Self-consistency: typical-value baselines vs. .mod THETA values.")
 ```
 
 # Assumptions and deviations
@@ -291,6 +291,6 @@ knitr::kable(structural_summary,
 - **`RCFB1MAX` consumed as an input covariate, not an in-model state-snapshot.** In the source NONMEM `.mod` `RCFB1MAX` is computed inline at FLAG = 1 / TIME = 168 h via record-loop persistent state (see `.mod` `$ERROR` block lines 282-302). rxode2 does not have an idiomatic equivalent, so the model file consumes `RCFB1MAX` as a per-subject input covariate; the vignette implements the two-stage simulation (Stage 1 -> compute RCFB1MAX -> Stage 2) that emulates the NONMEM behavior.
 - **Sunitinib clearance is a required upstream-popPK input.** The source `.mod` `$INPUT` line declares `CL` as "post-hoc clearance from previously-developed PK model". The upstream sunitinib popPK model is not part of the DDMODEL00000221 bundle and is not currently in `nlmixr2lib`. The model file therefore requires `CLI` (per-subject CL/F, L/h) as an input covariate; the vignette virtual cohort uses 50 L/h as a literature-typical adult sunitinib clearance, consistent with Houk et al. (2010) `J Clin Pharmacol` 50:843-858, but does not reproduce Houk's popPK structure inline.
 - **`MINIMIZATION SUCCESSFUL` carried a NONMEM caveat.** `Output_real_*.lst` line 795 reports `MINIMIZATION SUCCESSFUL` immediately followed by `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY ...`. Under the package's convention for reading final estimates from a DDMORE `.lst`, `MINIMIZATION SUCCESSFUL` (with caveat) is acceptable but flagged here.
-- **Linked publication not on disk.** The Schindler 2016 publication is not on disk in the maintainers' literature mirror; an external check of parameter values against the publication's tables was not performed. Final estimates were taken from the `.lst` only.
+- **Linked publication not available.** The Schindler 2016 publication was not available when this model was built; an external check of parameter values against the publication's tables was not performed. Final estimates were taken from the `.lst` only.
 - **Iteration-log precision used for estimated THETAs.** THETA(12), THETA(14), and THETA(16) (the only THETAs that moved during minimization) are reported in the `FINAL PARAMETER ESTIMATE` block at 3-significant-digit precision (`1.90E-02`, `1.99E-02`, `5.36E+00`); the model file uses the higher-precision values from iteration 8 of the iteration-log `NPARAMETR` row (`1.9030E-02`, `1.9924E-02`, `5.3558E+00`).
-- **Bundle simulated dataset is a 1-subject smoke test, not a representative cohort.** `Simulated_SLD_SUV_OS_GIST.csv` ships 315 records for a single virtual subject on a single dosing schedule, which is consistent with NONMEM regression-test usage but is not reflective of the 66-patient pooled GIST cohort that the model was built on. The vignette's virtual cohort is a deliberately small (n = 5) extension of the bundle's per-subject schedule to make the F.2 self-consistency and qualitative-VPC checks tractable; reproducing the publication's per-figure quantitative numbers would require the original observed dataset, which is not in the bundle.
+- **Bundle simulated dataset is a 1-subject smoke test, not a representative cohort.** `Simulated_SLD_SUV_OS_GIST.csv` ships 315 records for a single virtual subject on a single dosing schedule, which is consistent with NONMEM regression-test usage but is not reflective of the 66-patient pooled GIST cohort that the model was built on. The vignette's virtual cohort is a deliberately small (n = 5) extension of the bundle's per-subject schedule to make the self-consistency and qualitative-VPC checks tractable; reproducing the publication's per-figure quantitative numbers would require the original observed dataset, which is not in the bundle.

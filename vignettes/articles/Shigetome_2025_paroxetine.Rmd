@@ -31,7 +31,7 @@ pd_ui <- rxode2::rxode(readModelDb("Shigetome_2025_paroxetine_madrs"))
 * Article: <https://doi.org/10.1002/psp4.70032>
 * Supplementary Information (Tables S1-S5, Figures S1-S6, Texts S1-S4 including
   both NONMEM control streams):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12167921/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12167921>
 
 **`Shigetome_2025_paroxetine`** -- population PK, 329 steady-state
 concentrations from 179 patients.

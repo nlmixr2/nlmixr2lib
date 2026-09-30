@@ -619,7 +619,7 @@ knitr::kable(
 
 # The claim under test is that the racial difference is SMALL. Assert on
 # magnitude, not on sign: the trough difference is near zero, so its sign is
-# not a meaningful quantity (failure pattern 12).
+# not a meaningful quantity.
 stopifnot(
   all(abs(race_delta$`Typical % higher in Chinese`) < 25),
   # Cmax and Cavg must both be higher in Chinese participants, which IS a
@@ -954,8 +954,8 @@ FEV1 in the pivotal trials -- so omitting the centred terms leaves a coherent
 typical-subject model, which is what the FEV1 section above validates.
 
 This is a reporting gap in the literature rather than a missing file: the
-relevant table is on disk, and the upstream source was acquired and does not
-resolve it.
+relevant table was available, and the upstream source was obtained and does
+not resolve it.
 
 ## The Chinese AAER ratio is lower than published
 

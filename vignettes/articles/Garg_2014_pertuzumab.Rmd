@@ -82,7 +82,7 @@ table below collects the mapping in one place for reviewer audit.
 | Source column | Canonical column used here | Notes |
 | --- | --- | --- |
 | `LBW` | `LBM` (kg) | Lean body weight; same biological quantity as canonical lean body mass. Reference 48 kg (cohort median). |
-| `ALBU` | `ALB` (g/dL) | Baseline serum albumin in US conventional units. Reference 3.9 g/dL. |
+| `ALBU` | `ALB` (g/L) | Baseline serum albumin. The paper's `ALBU` is in US conventional units (g/dL; reference 3.9 g/dL); the model converts the g/L input to g/dL internally. |
 
 ## Population
 
@@ -124,7 +124,7 @@ make_cohort <- function(n, regimen, id_offset = 0L) {
     id      = id_offset + seq_len(n),
     regimen = regimen,
     LBM     = pmin(pmax(rnorm(n, 48, 9),  30), 80),    # kg; centred at 48 kg (reference)
-    ALB     = pmin(pmax(rnorm(n, 39,    4.5), 25), 52) # g/dL; centred at 39 g/dL (reference)
+    ALB     = pmin(pmax(rnorm(n, 39, 4.5), 25), 52)    # g/L; centred at 39 g/L (reference 3.9 g/dL)
   )
 }
 
@@ -377,7 +377,7 @@ q <- list(
   e_lbw_vc = 0.747, e_lbw_vp = 0.83
 )
 
-cl_typ <- function(LBW = 48, ALB = 39) {
+cl_typ <- function(LBW = 48, ALB = 3.9) {
   q$cl * (LBW / 48)^q$e_lbw_cl * (ALB / 3.9)^q$e_alb_cl
 }
 vc_typ <- function(LBW = 48) q$vc * (LBW / 48)^q$e_lbw_vc
@@ -386,8 +386,8 @@ vp_typ <- function(LBW = 48) q$vp * (LBW / 48)^q$e_lbw_vp
 sensitivity <- tibble::tribble(
   ~Scenario,                              ~`Simulated CL (L/day)`, ~`Paper target`,
   "Reference (48 kg LBW, 3.9 g/dL ALB)",  cl_typ(),                "0.235 L/day (Table 1, theta1)",
-  "Low ALB (29 g/dL, 5th percentile)",   cl_typ(ALB = 29),       "Cmin,SS -39.1% (Figure 3a)",
-  "High ALB (46 g/dL, 95th percentile)", cl_typ(ALB = 46),       "Cmin,SS +30.8% (Figure 3a)",
+  "Low ALB (2.9 g/dL, 5th percentile)",   cl_typ(ALB = 2.9),       "Cmin,SS -39.1% (Figure 3a)",
+  "High ALB (4.6 g/dL, 95th percentile)", cl_typ(ALB = 4.6),       "Cmin,SS +30.8% (Figure 3a)",
   "Low LBW (39 kg, 5th percentile)",      cl_typ(LBW = 39),        "Cmin,SS  +9.3% (Figure 3a)",
   "High LBW (69 kg, 95th percentile)",    cl_typ(LBW = 69),        "Cmin,SS -15.6% (Figure 3a)"
 ) |>
@@ -417,10 +417,10 @@ approximates the source cohort as follows:
   matches the reference 48 kg; spread chosen so the 5th-95th percentile
   range approximately brackets the Figure 3 5th/95th-percentile labels
   (39 kg, 69 kg).
-- **Serum albumin** ~ Normal(3.9, 0.45) g/dL clipped to 2.5-5.2 g/dL.
-  Median matches the reference 3.9 g/dL; spread chosen so the 5th-95th
-  percentile range approximately brackets the Figure 3 labels
-  (2.9 g/dL, 4.6 g/dL).
+- **Serum albumin** ~ Normal(39, 4.5) g/L clipped to 25-52 g/L
+  (Normal(3.9, 0.45) g/dL clipped to 2.5-5.2 g/dL). Median matches the
+  reference 3.9 g/dL; spread chosen so the 5th-95th percentile range
+  approximately brackets the Figure 3 labels (2.9 g/dL, 4.6 g/dL).
 - **Sex, race (Japanese vs non-Japanese), age, hepatic function (ALT/AST/
   TBIL), renal function, ECOG performance status, tumor type (MBC vs
   others), number of metastatic sites, presence/absence of liver

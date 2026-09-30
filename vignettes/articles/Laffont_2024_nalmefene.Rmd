@@ -36,7 +36,7 @@ ref 23 in Laffont 2024) under a hypercapnic gas mixture. The pooled cohort is
 adult healthy volunteers with median body weight 74.7 kg (the value used as the
 reference for allometric scaling on apparent clearance in Table 1). Detailed
 baseline demographics (N, age, sex, race) are given in Supplementary Table 1
-of Laffont 2024, which is not on disk for this extraction.
+of Laffont 2024, which was not available when this model was built.
 
 The same information is available programmatically via
 `readModelDb("Laffont_2024_nalmefene")$population`.
@@ -237,8 +237,8 @@ extracted correctly.
 - **Detailed baseline demographics deferred to Supplementary Table 1.** The
   main text gives only the median body weight (74.7 kg) used as the
   allometric reference. N, age range, sex balance, and race distribution are
-  in Supplementary Table 1, which is not on disk; the `population` metadata
-  carries TODO markers for those fields.
+  in Supplementary Table 1, which was not available when this model was
+  built; the `population` metadata carries TODO markers for those fields.
 - **No native PD layer in this model file.** Laffont 2024 expands the Mann
   et al. 2022 translational model (mu-opioid receptor competitive binding,
   ventilatory drives, gas exchange, blood-flow control) using the IN

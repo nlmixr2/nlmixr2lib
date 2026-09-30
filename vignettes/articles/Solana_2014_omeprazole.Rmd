@@ -38,7 +38,7 @@ developed in NONMEM 7.2 from 186 omeprazole concentration-time observations in
 0.5 or 1 mg/kg twice daily.
 
 > **Abstract-only extraction.** The full-text Therapeutic Drug Monitoring
-> article was not available on disk for this extraction; all structural and
+> article was not available when this model was built; all structural and
 > parameter information was taken from the PubMed abstract (PMID 24365987).
 > The maintainers confirmed that the abstract contains the full set of values
 > required to construct the structural model (typical CL, Q, Vc, Vp at the
@@ -338,8 +338,8 @@ knitr::kable(
 # Assumptions and deviations
 
 - **Abstract-only source.** The full-text Therapeutic Drug Monitoring article
-  (DOI 10.1097/FTD.0000000000000033) was not available on disk for this
-  extraction. All structural and parameter information was transcribed from
+  (DOI 10.1097/FTD.0000000000000033) was not available when this model was
+  built. All structural and parameter information was transcribed from
   the PubMed abstract (PMID 24365987). The maintainers confirmed that the
   abstract contains the modelling-required information and instructed
   extraction to proceed; downstream users who obtain the full text are
@@ -407,8 +407,8 @@ knitr::kable(
   to confirm that the relative exposure is in the right neighbourhood;
   exact agreement is not expected because the abstract does not specify
   which adult comparator value was used.
-- **Errata.** No erratum or corrigendum to Solana 2014 was located on
-  disk for this extraction. A search of PubMed and the Wolters Kluwer /
+- **Errata.** No erratum or corrigendum to Solana 2014 was located when
+  this model was built. A search of PubMed and the Wolters Kluwer /
   Therapeutic Drug Monitoring corrections feed for `"Solana" + "omeprazole"
   + 2014 + erratum` returned no hits; the maintainers should reconfirm against
   the journal's corrections listing if a re-extraction is undertaken with

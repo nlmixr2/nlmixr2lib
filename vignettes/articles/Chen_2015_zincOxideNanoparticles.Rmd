@@ -636,8 +636,9 @@ the curve rise well ahead of the tabulated ratios. See the Errata below.
   to the earlier window (`t <= 7`, `t <= 72`), which matches the 7 h value of
   64.00 tabulated in Table S1.
 * **The number of animals per time point is not recorded.** Chen 2015 does not
-  state it; it lives in the upstream biodistribution paper, which is not on
-  disk. `population$n_subjects` is therefore `NA`.
+  state it; it lives in the upstream biodistribution paper, which was not
+  available when this model was built. `population$n_subjects` is therefore
+  `NA`.
 
 # Errata
 

@@ -23,7 +23,7 @@ Zhang_2023_valproic_acid_ddemax <- function() {
       units = "mg/d",
       type = "continuous",
       reference_category = NULL,
-      notes = "Drives the sigmoid-Emax term on apparent clearance (Zhang 2023 Eq. 5): cl = CLp/F * (1 + Emax * DOSE_VPA_MGD^gamma / (DD50^gamma + DOSE_VPA_MGD^gamma)). Per-dose-record covariate, constant within an inter-dose interval and updated when the prescriber alters the daily dose. Observed range 60-1250 mg/day (median 480, mean 513.04; Zhang 2023 Table 2). Must be strictly positive. Eq. 5's text defines DD in mg/kg/day, but DD50 is only reconcilable with the paper's reported clearance and predictive metrics on the mg/day scale - operator-ratified reading, see the model file comment on dd_50 and the vignette Errata.",
+      notes = "Drives the sigmoid-Emax term on apparent clearance (Zhang 2023 Eq. 5): cl = CLp/F * (1 + Emax * DOSE_VPA_MGD^gamma / (DD50^gamma + DOSE_VPA_MGD^gamma)). Per-dose-record covariate, constant within an inter-dose interval and updated when the prescriber alters the daily dose. Observed range 60-1250 mg/day (median 480, mean 513.04; Zhang 2023 Table 2). Must be strictly positive. Eq. 5's text defines DD in mg/kg/day, but DD50 is only reconcilable with the paper's reported clearance and predictive metrics on the mg/day scale - the reading adopted by the maintainers; see the model file comment on dd_50 and the vignette Errata.",
       source_name = "DD"
     ),
     FORM_TABLET = list(
@@ -49,7 +49,7 @@ Zhang_2023_valproic_acid_ddemax <- function() {
       description = "Body weight",
       units = "kg",
       type = "continuous",
-      notes = "Collected in the evaluation cohort (median 19.00 kg, range 4.00-70.00; Zhang 2023 Table 2) but NOT retained on CL/F or V/F in any of the authors' own six models. Zhang 2023 Supplementary Table S3 reports no weight term, and on the ratified mg/day reading of Eq. 5 weight does not enter this model even indirectly."
+      notes = "Collected in the evaluation cohort (median 19.00 kg, range 4.00-70.00; Zhang 2023 Table 2) but NOT retained on CL/F or V/F in any of the authors' own six models. Zhang 2023 Supplementary Table S3 reports no weight term, and on the adopted mg/day reading of Eq. 5 weight does not enter this model even indirectly."
     ),
     ALB = list(
       description = "Serum albumin",
@@ -109,7 +109,7 @@ Zhang_2023_valproic_acid_ddemax <- function() {
     # from the body text. It is carried over from the same Ding 2015
     # source as Emax and gamma, where Zhang's own Table 1 tabulates
     # Ding's CL/F term as (1 + 2.8 * DDW^1.68 / (37.4^1.68 + DDW^1.68)).
-    # ratified READING:
+    # ADOPTED READING:
     # DD50 = 37.4 evaluated on the mg/DAY scale, even though Ding
     # tabulates it against DDW in mg/kg/day. Rationale: only the mg/day
     # reading reproduces Zhang's own numbers - typical CL/F comes out at

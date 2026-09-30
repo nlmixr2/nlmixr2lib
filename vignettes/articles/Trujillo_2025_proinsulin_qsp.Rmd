@@ -24,8 +24,7 @@ ui <- rxode2::rxode(readModelDb("Trujillo_2025_proinsulin_qsp"))
 
 * Citation: `r ui$reference`
 * Article: <https://doi.org/10.3390/pharmaceutics17121522> (open access, PMC12736522)
-* Supplement: `pharmaceutics-17-01522-s001.zip`, published with the article and
-  recovered from the Europe PMC `supplementaryFiles` endpoint. It holds
+* Supplement: `pharmaceutics-17-01522-s001.zip`, published with the article. It holds
   Table S1 (the 15 ODEs), Table S2 (the 42 flux and rule expressions) and
   Table S3 (the parameter values for all four virtual patients). **The main
   text prints Equations 1-6 only and contains no parameter values at all**, so
@@ -622,7 +621,7 @@ tabulated baseline ratio does not match its reported one -- see Errata.
 
 # Assumptions and deviations
 
-* **`Vmax_G6P` is not reported anywhere on disk.** It is derived from the
+* **`Vmax_G6P` is not reported in any available source.** It is derived from the
   paper's own numbers as documented above (`560 mg/min`), giving exactly
   140 mg/min basal hepatic glucose release at the model's own reference point
   and reproducing VPHealthy's reported fasting glucose. It is flagged inline

@@ -181,11 +181,11 @@ Taubert_2016_linezolid <- function() {
     #   sigma^2_proportional = 0.115 (95 % CI 0.073-0.182)
     #   sigma^2_additive     = 0.005 (95 % CI 0.001-0.008) in (mg/L)^2
     # nlmixr2 ini() uses SDs, so propSd = sqrt(0.115) ~ 0.339 and
-    # addSd = sqrt(0.005) ~ 0.0707 mg/L. The supplement was acquired
-    # post-hoc via the PMC proof-of-work supplement route after the
-    # initial extraction sidecar resolved with a missing-RUV fall-back
-    # (fixed(0)); the published Table S3 values are used here because the
-    # supplement is now on disk.
+    # addSd = sqrt(0.005) ~ 0.0707 mg/L. The supplement was obtained from
+    # PMC after this model was first built; the first version of this
+    # file shipped the missing-RUV fall-back (fixed(0)) because the
+    # supplement was not then available, and the published Table S3
+    # values are used here now that it is.
     propSd <- 0.339;  label("Proportional residual SD (fraction)")           # Suppl Table S3 (sigma^2_prop = 0.115; SD = sqrt(0.115))
     addSd  <- 0.0707; label("Additive residual SD (mg/L)")                   # Suppl Table S3 (sigma^2_add  = 0.005; SD = sqrt(0.005))
   })

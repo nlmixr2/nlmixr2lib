@@ -398,8 +398,8 @@ below.
 - **Dose-by-weight scheme.** Willmann 2018 reports only the
   "10 mg-equivalent" / "20 mg-equivalent" target labels; the per-weight
   rivaroxaban mg amounts assigned in EINSTEIN-Jr phase I appear in the
-  accompanying clinical publication (reference 18 of Willmann 2018), which is
-  not on disk for this extraction. The vignette uses
+  accompanying clinical publication (reference 18 of Willmann 2018), which was
+  not available when this model was built. The vignette uses
   `dose = nominal_eq_mg * (WT / 70)^0.323` to approximate the dosing-design
   intent under the estimated allometric CL exponent; this matches the popPK
   exposures asymptotically but may diverge by ~10-20% from the actual study

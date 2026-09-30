@@ -95,7 +95,7 @@ entry in `inst/modeldb/specificDrugs/Sunnaker_2026_mitiperstat.R`.
 ## A note on concentration units
 
 Sunnaker 2026 reports every mitiperstat concentration in **nmol/L** and every
-dose in **mg**, but never states the molar mass, and no supplement on disk
+dose in **mg**, but never states the molar mass, and no available supplement
 supplies it. The packaged model is therefore encoded in self-consistent **mass**
 units: dosing in mg gives compartment amounts in mg and `Cc` in mg/L
 (= ug/mL). Because the model is entirely linear, dosing it in nmol instead
@@ -188,7 +188,9 @@ ss_metrics <- function(sim) {
 
 ss_typical <- function(dose, cov) {
   ss_metrics(rxode2::rxSolve(mod_typ, events = ss_events(dose, cov),
-                             returnType = "data.frame"))
+                             returnType = "data.frame",
+                             # steady-state searches for long-half-life subjects exceed the default step budget
+                             maxsteps = 1e6))
 }
 ```
 
@@ -260,8 +262,9 @@ for (nm in names(pop_median_cov)) ev_single[[nm]] <- pop_median_cov[[nm]]
 sim_single <- rxode2::rxSolve(mod_typ, events = ev_single, returnType = "data.frame")
 
 # Fit the terminal slope well after the distribution phase has resolved
-# (pattern 11: a slope taken too early reads the distribution phase).
-term <- dplyr::filter(sim_single, time >= 400, time <= 800, Cc > 0)
+# (a slope taken too early reads the distribution phase).
+# Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
+term <- dplyr::filter(sim_single, time >= 400, time <= 800, Cc >= 1e-6 * max(Cc))
 lambda_z <- -stats::coef(stats::lm(log(Cc) ~ time, data = term))[["time"]]
 t_half <- log(2) / lambda_z
 
@@ -358,7 +361,7 @@ forest_cmp <- forest |>
   dplyr::inner_join(published_forest, by = c("label", "metric")) |>
   dplyr::mutate(difference = simulated - published)
 
-# Guard against a silently empty join (pattern 10): every published row must
+# Guard against a silently empty join: every published row must
 # have found a simulated partner.
 stopifnot(nrow(forest_cmp) == nrow(published_forest))
 
@@ -476,7 +479,7 @@ day90 <- fig3_sim |>
   dplyr::summarise(md = median(Cc), .groups = "drop")
 
 # Confirm the cohort actually produced all six arms before anything is read
-# off it (pattern 10: a gate with no rows cannot go red).
+# off it (a gate with no rows cannot go red).
 stopifnot(nrow(day90) == 6, all(day90$md > 0))
 
 # The eGFR and dose contrasts are gated on TYPICAL-VALUE solves rather than on
@@ -536,7 +539,9 @@ stopifnot(!anyDuplicated(unique(nca_events[, c("id", "time", "evid")])))
 
 rxode2::rxSetSeed(20260913)
 nca_sim <- rxode2::rxSolve(mod, events = nca_events, keep = "treatment",
-                           returnType = "data.frame")
+                           returnType = "data.frame",
+                           # steady-state searches for long-half-life subjects exceed the default step budget
+                           maxsteps = 1e6)
 ```
 
 ```{r pknca}
@@ -656,7 +661,7 @@ stopifnot(nrow(gate) == 9)
 gate <- dplyr::mutate(gate, pct = 100 * (sim / pub - 1))
 
 # Fail loudly on a missing parameter rather than letting an NA slip through the
-# comparison as a silently-passing gate (pattern 10).
+# comparison as a silently-passing gate.
 stopifnot(!anyNA(gate$sim), !anyNA(gate$pub))
 
 # Largest observed gap is ~11%, on Cmax, where the paper's simulated peak is
@@ -698,8 +703,8 @@ dp |>
 # Assumptions and deviations
 
 * **Concentration units.** Sunnaker 2026 reports concentrations in nmol/L and
-  doses in mg but never states mitiperstat's molar mass, and no supplement on
-  disk supplies it. The model is encoded in self-consistent mass units (mg dose
+  doses in mg but never states mitiperstat's molar mass, and no available
+  supplement supplies it. The model is encoded in self-consistent mass units (mg dose
   gives `Cc` in mg/L); because the model is linear, dosing in nmol returns `Cc`
   in nmol/L. The Table 4 comparison calibrates one conversion factor
   (`r sprintf("%.0f", 343)` g/mol, computed in the chunk above from the AUC
@@ -731,7 +736,8 @@ dp |>
   computes typical-value contrasts. The AUCss and Ctrough contrasts agree to
   within about 2 percentage points and the Cmax contrasts to within about 3.
 
-* **Supplementary material not on disk.** Tables S1 (stepwise covariate
+* **Supplementary material was not available when this model was built.**
+  Tables S1 (stepwise covariate
   modelling), S2 (the rejected fixed-allometric variant) and S3 (highest- and
   lowest-exposure cases), and Figures S1-S7 (goodness of fit, VPCs, random-effect
   correlations) were not available. None contains a final-model parameter: the

@@ -339,7 +339,7 @@ slightly below the AUC target on the median.
   (`zeroRe`) this is exact; for stochastic VPCs the simulated between-
   individual spread on CL is narrower than the published model by
   approximately `sqrt(0.16^2 + 0.207^2) - 0.16 = 0.10` (a 10 percentage-
-  point CV under-coverage on CL). Document this deviation in the PR.
+  point CV under-coverage on CL).
 - **Postmenstrual age unit conversion.** The Llanos 2017 paper uses PMA
   in weeks in its Rhodin et al. 2009 maturation function. The canonical
   `PAGE` covariate in nlmixr2lib is in months; the model converts as

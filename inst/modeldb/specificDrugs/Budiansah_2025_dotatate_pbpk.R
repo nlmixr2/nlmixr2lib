@@ -86,7 +86,7 @@ Budiansah_2025_dotatate_pbpk <- function() {
         "Table S1 lists hematocrit as 'individually measured' and carries it as",
         "a fraction ('unity'); it is stored here in the canonical percent and",
         "divided by 100 inside model(). Per-patient values are not tabulated in",
-        "any on-disk source, so downstream users must supply it. Baseline value,",
+        "any of the available sources, so downstream users must supply it. Baseline value,",
         "held constant per subject.",
         sep = " "
       ),
@@ -218,10 +218,10 @@ Budiansah_2025_dotatate_pbpk <- function() {
     notes = paste(
       "The eight patients are a subset of the nine-patient cohort of the",
       "upstream Kletting 2016 framework paper, whose Table 1 is the only",
-      "on-disk source of the per-patient body surface areas, measured GFRs,",
+      "available source of the per-patient body surface areas, measured GFRs,",
       "organ volumes, tumour volumes and sexes. Body weight and hematocrit are",
-      "described as individually measured but are not tabulated anywhere on",
-      "disk. [111In]In-DOTA-TATE biokinetics were used as a surrogate for",
+      "described as individually measured but are not tabulated in any of the",
+      "available sources. [111In]In-DOTA-TATE biokinetics were used as a surrogate for",
       "[90Y]Y-DOTA-TATE, so the model is fitted on 111In decay and simulated on",
       "90Y decay by changing lambda_phy.",
       sep = " "

@@ -483,7 +483,7 @@ knitr::kable(
   approximately 17 %, not 40 %. The published 40 % claim requires either
   a different functional form (a steeper power scaling, a log-transformed
   CSF_TPRO entering the logit, or a substantially larger coefficient)
-  not deducible from the on-disk source text and parameter table. Per
+  not deducible from the published text and parameter table. Per
   the package's rule never to tune parameters to make a validation output
   match a target, the packaged model uses the Table 2 reported
   coefficient and the deviation is recorded here rather than reconciled
@@ -540,8 +540,8 @@ knitr::kable(
 - **Virtual cohort uses 80 subjects per stratum / CSF protein level.**
   The vignette uses typical-value (no IIV) simulations, so the
   per-subject count is purely for averaging over the dosing-interval
-  sampling grid; the size keeps the render within the 5-minute pkgdown
-  budget while still producing smooth time-averaged penetration
+  sampling grid; the size keeps the render under 5
+  minutes while still producing smooth time-averaged penetration
   estimates.
 
 - **PK parameter standardisation by PMA.** The paper's "standardised

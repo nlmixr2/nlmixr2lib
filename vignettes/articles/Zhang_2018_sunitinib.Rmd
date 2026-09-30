@@ -638,11 +638,11 @@ Both starred rows are recorded as known deviations and are not tuned away.
 
 - No erratum or corrigendum for this article was located.
 - **The supplementary material is not obtainable and is a publisher
-  mis-attachment.** The EuropePMC supplementary-files endpoint for PMC5865657
-  returns a supplement belonging to an entirely different article ("Cystatin A
+  mis-attachment.** The supplement attached to the PMC record (PMC5865657)
+  belongs to an entirely different article ("Cystatin A
   suppresses tumor cell growth through inhibiting epithelial to mesenchymal
-  transition in human lung cancer"), and the publisher's own article and
-  supplement URLs return HTTP 403. The material referenced by the main text --
+  transition in human lung cancer"), and the publisher's own supplement was not
+  available when this model was built. The material referenced by the main text --
   Supplementary Figure 1 (the model schematic and a visual predictive check),
   Supplementary Figure 2 (a further visual predictive check), Supplementary
   Table 1 (individual trough levels), Supplementary Table 2 (assay precision

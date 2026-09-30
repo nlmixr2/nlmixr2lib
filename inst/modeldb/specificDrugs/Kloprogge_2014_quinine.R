@@ -226,8 +226,8 @@ Kloprogge_2014_quinine <- function() {
     # Residual error. Kloprogge 2014 modelled the natural logarithm of
     # the quinine plasma concentration with an additive error on log
     # scale, which is equivalent to proportional error in nlmixr2's
-    # linear-concentration space (see references/parameter-names.md
-    # 'Residual error' and the Table 2 footnote "The additive error
+    # linear-concentration space (the standing convention; see the Table 2
+    # footnote "The additive error
     # variance will essentially be exponential on normal scale data").
     # Table 2 reports the additive variance on the log scale as 0.0158;
     # the corresponding SD is sqrt(0.0158) = 0.1257, encoded here as

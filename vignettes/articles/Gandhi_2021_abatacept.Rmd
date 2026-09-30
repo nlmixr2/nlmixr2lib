@@ -133,11 +133,11 @@ set.seed(20260425)
 n_ra <- 100  # downsampled from 300 for vignette build budget; VPC band shape preserved
 ra <- tibble::tibble(
   id              = seq_len(n_ra),
-  WT              = pmin(pmax(rnorm(n_ra, mean = 70, sd = 18),  40, 160)),
-  AGE             = pmin(pmax(rnorm(n_ra, mean = 49, sd = 13),  18,  90)),
-  ALB             = pmin(pmax(rnorm(n_ra, mean = 41, sd =    3.5), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_ra, mean = 99,  sd = 25), 30, 180)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_ra, mean = 15, sd = 6)), 0, 28)),
+  WT              = pmin(pmax(rnorm(n_ra, mean = 70, sd = 18),  40), 160),
+  AGE             = pmin(pmax(rnorm(n_ra, mean = 49, sd = 13),  18),  90),
+  ALB             = pmin(pmax(rnorm(n_ra, mean = 41, sd = 3.5), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_ra, mean = 99,  sd = 25), 30), 180),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_ra, mean = 15, sd = 6)), 0), 28),
   SEXF            = rbinom(n_ra, 1, 0.78),       # RA cohorts ~75-80% female
   CONMED_NSAID    = rbinom(n_ra, 1, 0.55),
   DIS_PJIA        = 0L,
@@ -150,9 +150,9 @@ pjia <- tibble::tibble(
   id              = seq.int(from = n_ra + 1, length.out = n_pjia),
   AGE             = runif(n_pjia, 2, 17),
   WT              = pmax(pmin(8 + (AGE - 2) * 4 + rnorm(n_pjia, 0, 6), 100), 8),
-  ALB             = pmin(pmax(rnorm(n_pjia, mean = 41, sd = 4), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 110, sd = 25), 60, 200)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_pjia, mean = 6, sd = 4)), 0, 28)),
+  ALB             = pmin(pmax(rnorm(n_pjia, mean = 41, sd = 4), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 110, sd = 25), 60), 200),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_pjia, mean = 6, sd = 4)), 0), 28),
   SEXF            = rbinom(n_pjia, 1, 0.70),     # pJIA cohorts skew female
   CONMED_NSAID    = rbinom(n_pjia, 1, 0.40),
   DIS_PJIA        = 1L,
@@ -350,7 +350,7 @@ ggplot(vpc_ra, aes(time, Q50, colour = regimen, fill = regimen)) +
     x = "Time (days)",
     y = "Abatacept Cc (mg/L)",
     title = "Simulated 5-50-95 percentile profiles in adult RA: SC vs IV",
-    caption = "Virtual RA cohort (N = 300); first 12 weeks."
+    caption = sprintf("Virtual RA cohort (N = %d); first 12 weeks.", n_ra)
   ) +
   theme_minimal()
 ```
@@ -481,7 +481,8 @@ knitr::kable(pct_above_ra, digits = 1,
 - **Virtual-cohort covariate distributions.** Table S1 (the per-study
   demographic summary) is referenced in the paper but is not embedded in
   the PMC full text, so the virtual-cohort distributions are approximate.
-  Adult RA: WT ~ N(70, 18), AGE ~ N(49, 13), ALB ~ N(4.1, 0.35),
+  Adult RA: WT ~ N(70, 18), AGE ~ N(49, 13), ALB ~ N(41, 3.5) g/L
+  (N(4.1, 0.35) g/dL),
   CRCL ~ N(99, 25), SWOL_28JOINT ~ rounded N(15, 6), SEXF = 78 % female,
   CONMED_NSAID = 55 %. pJIA: AGE uniform on [2, 17], WT linearly scaled
   with age plus noise (8 + 4·(AGE-2) ± 6 kg), SEXF = 70 % female. The
@@ -518,7 +519,7 @@ re-reading the source alongside this model should be aware of:
   which is unusually tight for a biologic but plausible given Gandhi
   2021's larger and more richly-covariated dataset. The paper does not
   explicitly label the residual-error column as variance vs SD; without
-  the supplement (control stream) on disk this cannot be disambiguated
+  the supplement (control stream) this cannot be disambiguated
   beyond the column-symmetry argument used here. If a future reader
   obtains the supplement and the residual-error parameterisation
   conflicts with this interpretation, the `propSd` / `addSd` lines in

@@ -1,0 +1,573 @@
+---
+title: "Pyridoxic acid and homovanillic acid, OAT1/3 biomarkers (Ahmad 2021)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pyridoxic acid and homovanillic acid, OAT1/3 biomarkers (Ahmad 2021)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ahmad_2021_pyridoxicAcid"))$reference`
+* Article: <https://doi.org/10.1002/psp4.12610>
+
+Pyridoxic acid (PDA, the end product of vitamin B6 metabolism) and homovanillic
+acid (HVA, a dopamine metabolite) are organic anions that the kidney secretes
+through the basolateral uptake transporters OAT1 and OAT3. Ahmad 2021 built the
+first population models of their synthesis and elimination, fitting plasma
+concentrations and urinary amounts simultaneously from a two-phase crossover in
+which six healthy women received a victim compound alone (control phase) and
+then with 500 mg probenecid every 6 h (interaction phase).
+
+Both biomarkers use the same structure (Figure 1, Eqs 2-3): a zero-order
+synthesis rate `ksyn` into a one-compartment plasma pool, renal clearance `CLr`
+into a urine compartment, and nonrenal clearance `CLnr`. Probenecid inhibits
+`CLr` competitively, `CLr / (1 + C_probenecid / Ki)`, with its concentration
+coming from a one-compartment first-order-absorption PK model fit in a first
+stage. PDA and HVA were fit separately, each with its own `Ki` against the same
+probenecid PK, so the package carries two model files that share the probenecid
+block:
+
+* `Ahmad_2021_pyridoxicAcid` -- PDA, the biomarker the paper recommends.
+* `Ahmad_2021_homovanillicAcid` -- HVA.
+
+```{r model}
+mod_pda <- rxode2::rxode(readModelDb("Ahmad_2021_pyridoxicAcid"))
+mod_hva <- rxode2::rxode(readModelDb("Ahmad_2021_homovanillicAcid"))
+mod_pda
+```
+
+Each model declares three endpoints (biomarker plasma `Cc`, cumulative urinary
+amount `Upda` / `Uhva`, probenecid plasma `Cc_prob`), so rxode2 places their
+slots after the four ODE states. Observation records below therefore name the
+endpoint (`cmt = "Cc"`): with more than one declared endpoint, an observation
+on `cmt = "central"` is rejected. `Cc` already has an endpoint slot from the
+model definition, so naming it injects no new compartment and renumbers
+nothing, and `rxSolve()` returns every model variable as a column regardless.
+
+```{r endpoint-map}
+mod_pda$predDf[, c("var", "cmt", "dvid")]
+stopifnot(identical(mod_pda$state, c("central", "urine", "depot_prob", "central_prob")))
+stopifnot(identical(mod_hva$state, c("central", "urine", "depot_prob", "central_prob")))
+```
+
+# Population
+
+The model-development data (Supplementary Material, "Clinical study design")
+came from six healthy Caucasian women aged 48-58 years (BMI 22-28 kg/m^2,
+CKD-EPI GFR 3.04-4.59 mL/min/kg) enrolled in EudraCT 2016-003923-49 (Willemin
+et al. 2021). Phase I was a single dose of a Janssen victim compound alone and
+served as the biomarker baseline; after a 21-day washout, phase II gave
+probenecid 500 mg at 18:00 and 23:00 on the preceding day, then 500 mg at 07:00,
+13:00, 18:00 and 23:00 for 7 days, with the victim compound co-administered at
+07:00 on day 1. Plasma was sampled at 0, 0.25, 1, 2, 4, 6, 8, 12, 24, 72 and
+168 h and urine collected over 0-6, 6-12, 12-24 h and then 24-h intervals to
+168 h in each phase: 132 plasma and 108 urine samples per biomarker, plus 36
+probenecid trough concentrations. The PDA model was verified externally against
+the single-dose 1000 mg probenecid study of Shen et al. 2019 (14 healthy
+volunteers).
+
+```{r population}
+str(mod_pda$population)
+```
+
+# Source trace
+
+| Quantity | Value (PDA / HVA) | Source |
+|---|---|---|
+| Plasma turnover `dC/dt = (ksyn - CLr C / (1 + Cprob/Ki) - CLnr C) / V` | -- | Eq. 2 |
+| Urine `dU/dt = CLr C / (1 + Cprob/Ki)` | -- | Eq. 3 |
+| Probenecid one-compartment first-order absorption | -- | Figure 1; Supplementary Material |
+| `ksyn` (ug/h) | 58.6 / 212 | Table 1 |
+| `V` (L) | 9.34 / 105 | Table 1 |
+| `CLr` (L/h) | 15.2 / 20.4 | Table 1 |
+| `CLnr` (L/h) | 3.23 / 1.29 | Table 1 |
+| Probenecid total `Ki` (uM) | 54.5 / 137 | Table 1 (note: total Ki) |
+| Probenecid `CL` (L/h), `V` (L), `ka` (1/h) | 0.82, 15, 0.74 | Table 1 |
+| IIV `ksyn` | 32% / 27% | Table 1 |
+| IIV `CLr` | 27% / 23% | Table 1 |
+| IOV | `ksyn` 22% / `CLr` 5% | Table 1 |
+| IIV probenecid `CL`, `V` | 23%, 40% | Table 1 |
+| Plasma residual prop / add | 12.7%, 0.213 ng/mL / 17.3%, 0.001 ng/mL (fixed) | Table 1 |
+| Urine residual prop / add | 32.1%, 58 ug / 26.9%, 373 ug | Table 1 |
+| Probenecid residual prop / add | 18.8%, 0.001 uM (fixed) | Table 1 |
+| Initial condition `C(0) = ksyn / (CLr + CLnr)` | -- | Eq. 2 at steady state (baseline assumption) |
+
+Units: biomarker amounts are in ug and concentrations in ug/L (= ng/mL), as
+implied by `ksyn` in ug/h and the plasma additive error in ng/mL. Probenecid is
+in umol and umol/L, as implied by `Ki` and the probenecid additive error in uM;
+published mg doses are converted with the molecular weight below.
+
+```{r helpers}
+# Probenecid molecular weight, only to convert mg doses into the umol the model
+# consumes; the same value carried by the nlmixr2lib compartment register and
+# the Ujihira 2025 GCDCA-S model (PubChem CID 4911 agrees to 4 significant
+# figures).
+MW_PROB <- 285.34
+dose_umol <- function(mg) mg * 1000 / MW_PROB
+
+# Probenecid dosing of Willemin et al. (Supplementary Material). The control
+# phase starts at t = 0 (07:00); the interaction phase starts 21 days later at
+# t = 504 h. Loading doses at 18:00 and 23:00 the day before, then 07:00,
+# 13:00, 18:00, 23:00 for 7 days.
+T2 <- 504
+md_times <- c(T2 - 13, T2 - 8, as.vector(outer(c(0, 6, 11, 16), 24 * (0:6), "+")) + T2)
+
+# One subject's event table for a two-phase crossover. OCC switches at 480 h,
+# 24 h before the interaction phase: the biomarker re-equilibrates to the
+# occasion-2 parameters within hours (PDA half-life ~0.35 h, HVA ~3.4 h).
+design_events <- function(design = c("MD", "SD1000", "SD2000"), tobs, id = 1L) {
+  design <- match.arg(design)
+  dose_t <- if (design == "MD") md_times else T2
+  amt <- dose_umol(c(MD = 500, SD1000 = 1000, SD2000 = 2000)[[design]])
+  ev <- dplyr::bind_rows(
+    data.frame(time = dose_t, amt = amt, evid = 1L, cmt = "depot_prob"),
+    data.frame(time = c(tobs, T2 + tobs), amt = 0, evid = 0L, cmt = "Cc")
+  )
+  ev$id <- id
+  ev$OCC <- ifelse(ev$time >= 480, 2L, 1L)
+  dplyr::arrange(ev, time, dplyr::desc(evid))
+}
+cohort_events <- function(design, tobs, n) {
+  dplyr::bind_rows(lapply(seq_len(n), function(i) design_events(design, tobs, i)))
+}
+add_phase <- function(sim) {
+  sim |>
+    dplyr::mutate(
+      phase = ifelse(time >= 480, "Probenecid", "Control"),
+      tphase = ifelse(phase == "Probenecid", time - T2, time)
+    )
+}
+auc_trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+```
+
+# Steady-state baseline and mass balance
+
+Without probenecid the models must hold at the analytic baseline
+`Css = ksyn / (CLr + CLnr)` and excrete `fe * ksyn` per hour into urine, with
+`fe = CLr / (CLr + CLnr)` equal to the 82% (PDA) and 94% (HVA) renal fractions
+stated in the Results.
+
+```{r steady-state}
+mod_pda0 <- rxode2::zeroRe(mod_pda)
+mod_hva0 <- rxode2::zeroRe(mod_hva)
+
+ev_base <- data.frame(id = 1L, time = seq(0, 168, by = 1), amt = 0, evid = 0L, cmt = "Cc", OCC = 1L)
+
+bl <- function(m, ksyn, clr, clnr) {
+  s <- rxode2::rxSolve(m, ev_base, returnType = "data.frame")
+  css <- ksyn / (clr + clnr)
+  fe <- clr / (clr + clnr)
+  urine_col <- intersect(c("Upda", "Uhva"), names(s))
+  data.frame(
+    css_analytic = css,
+    css_min = min(s$Cc), css_max = max(s$Cc),
+    fe = fe,
+    urine_168_sim = s[[urine_col]][s$time == 168],
+    urine_168_analytic = 168 * ksyn * fe
+  )
+}
+bl_tab <- dplyr::bind_rows(
+  PDA = bl(mod_pda0, 58.6, 15.2, 3.23),
+  HVA = bl(mod_hva0, 212, 20.4, 1.29),
+  .id = "Biomarker"
+)
+knitr::kable(bl_tab, digits = 4)
+
+stopifnot(
+  # Baseline holds flat at the analytic value (numeric ODE path, rtol 1e-6).
+  all(abs(bl_tab$css_min / bl_tab$css_analytic - 1) < 1e-4),
+  all(abs(bl_tab$css_max / bl_tab$css_analytic - 1) < 1e-4),
+  # Renal fractions stated in the Results (82% and 94%).
+  abs(bl_tab$fe[1] - 0.82) < 0.005,
+  abs(bl_tab$fe[2] - 0.94) < 0.005,
+  # Urinary mass balance over 168 h.
+  all(abs(bl_tab$urine_168_sim / bl_tab$urine_168_analytic - 1) < 1e-3)
+)
+```
+
+The typical PDA baseline is `r signif(bl_tab$css_analytic[1], 3)` ng/mL and the
+typical HVA baseline `r signif(bl_tab$css_analytic[2], 3)` ng/mL.
+
+# Probenecid PK
+
+The first-stage probenecid model: 500 mg every 6 h accumulates to an average
+steady-state concentration of `Dose / (CL * tau)`, about 356 uM (total), which
+with the PDA `Ki` of 54.5 uM reduces PDA renal clearance about 7.5-fold. The
+single-dose 1000 mg and 2000 mg profiles correspond to Figure S2B.
+
+```{r probenecid-pk}
+tgrid <- seq(0, 168, by = 0.25)
+prob_typ <- dplyr::bind_rows(lapply(c("MD", "SD1000", "SD2000"), function(d) {
+  rxode2::rxSolve(mod_pda0, design_events(d, tgrid), returnType = "data.frame") |>
+    add_phase() |>
+    dplyr::filter(phase == "Probenecid") |>
+    dplyr::mutate(design = d)
+}))
+
+ggplot(prob_typ, aes(tphase, Cc_prob, colour = design)) +
+  geom_line() +
+  labs(x = "Time after first interaction-phase dose (h)", y = "Probenecid (uM, total)",
+       colour = "Regimen", title = "Typical probenecid profiles (cf. Figure S2B)") +
+  theme_bw()
+
+# Steady state on day 7 (144-168 h after the first 07:00 dose).
+md_ss <- prob_typ |> dplyr::filter(design == "MD", tphase >= 144, tphase <= 168)
+cavg_ss <- auc_trap(md_ss$tphase, md_ss$Cc_prob) / 24
+cavg_analytic <- dose_umol(500) / (0.82 * 6)
+c(cavg_simulated = cavg_ss, cavg_analytic = cavg_analytic)
+# The day-7 dosing is 6/5/5/8 h rather than a strict 6 h, so the 24-h average
+# over a whole day (4 doses) must equal Dose/(CL*6 h) once at steady state.
+stopifnot(abs(cavg_ss / cavg_analytic - 1) < 0.01)
+```
+
+# Interaction study (Figure 2)
+
+A virtual cohort of 200 subjects goes through the two-phase crossover with
+multiple-dose probenecid; plasma is sampled densely and urine is summarised on
+the study's collection intervals. Each subject's between-occasion eta on `ksyn`
+(PDA) or `CLr` (HVA) switches between the phases.
+
+```{r md-sim}
+rxode2::rxSetSeed(2021)
+tdense <- sort(unique(c(seq(0, 12, by = 0.25), seq(12, 168, by = 2))))
+n_sub <- 200
+ev_md <- cohort_events("MD", tdense, n_sub)
+sim_pda <- rxode2::rxSolve(mod_pda, ev_md, returnType = "data.frame") |> add_phase()
+sim_hva <- rxode2::rxSolve(mod_hva, ev_md, returnType = "data.frame") |> add_phase()
+stopifnot(!anyNA(sim_pda$Cc), !anyNA(sim_hva$Cc))
+```
+
+```{r fig2-plasma, fig.height = 4}
+vpc_plasma <- dplyr::bind_rows(PDA = sim_pda, HVA = sim_hva, .id = "Biomarker") |>
+  dplyr::group_by(Biomarker, phase, tphase) |>
+  dplyr::summarise(
+    lo = quantile(Cc, 0.05), med = median(Cc), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc_plasma, aes(tphase, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line() +
+  facet_grid(Biomarker ~ phase, scales = "free_y") +
+  labs(x = "Time after victim-drug dose (h)", y = "Plasma concentration (ng/mL)",
+       title = "Simulated median and 90% PI (replicates Figure 2a-b and Figure S8a-b)") +
+  theme_bw()
+```
+
+```{r fig2-urine, fig.height = 4}
+ubounds <- c(0, 6, 12, 24, 48, 72, 96, 120, 144, 168)
+urine_int <- function(sim, ucol) {
+  sim |>
+    dplyr::filter(tphase %in% ubounds) |>
+    dplyr::arrange(id, phase, tphase) |>
+    dplyr::group_by(id, phase) |>
+    dplyr::mutate(amount = .data[[ucol]] - dplyr::lag(.data[[ucol]]),
+                  interval = paste0(dplyr::lag(tphase), "-", tphase)) |>
+    dplyr::filter(!is.na(amount)) |>
+    dplyr::ungroup()
+}
+uint <- dplyr::bind_rows(
+  PDA = urine_int(sim_pda, "Upda"),
+  HVA = urine_int(sim_hva, "Uhva"),
+  .id = "Biomarker"
+)
+# 9 collection intervals per phase per subject.
+stopifnot(nrow(uint) == 2 * 2 * n_sub * 9)
+uint |>
+  dplyr::group_by(Biomarker, phase, tphase) |>
+  dplyr::summarise(lo = quantile(amount, 0.05), med = median(amount),
+                   hi = quantile(amount, 0.95), .groups = "drop") |>
+  ggplot(aes(tphase, med)) +
+  geom_errorbar(aes(ymin = lo, ymax = hi), width = 3) +
+  geom_point() +
+  facet_grid(Biomarker ~ phase, scales = "free_y") +
+  labs(x = "End of urine collection interval (h)", y = "Amount excreted in interval (ug)",
+       title = "Simulated urinary amounts per interval (replicates Figure 2c-d and Figure S8c-d)") +
+  theme_bw()
+```
+
+## AUC ratio and fraction transported (PKNCA)
+
+The paper computed individual plasma `AUC0-168` in each phase and reported
+interaction ratios of 2.5-5.1 (PDA) and 2.1-3.7 (HVA), with the fraction
+eliminated by the inhibited transporters `fT = 1 - AUC(control) / AUC(interaction)`
+(Eq. 1) of 0.59-0.81 (PDA) and 0.53-0.73 (HVA) across the six subjects.
+
+```{r pknca}
+nca_one <- function(sim, biomarker) {
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, phase, time = tphase, Cc) |>
+    dplyr::mutate(biomarker = biomarker)
+  conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | biomarker + phase + id)
+  data_obj <- PKNCA::PKNCAdata(
+    conc_obj,
+    intervals = data.frame(start = 0, end = 168, auclast = TRUE)
+  )
+  as.data.frame(PKNCA::pk.nca(data_obj)) |>
+    dplyr::filter(PPTESTCD == "auclast") |>
+    dplyr::select(biomarker, id, phase, PPORRES) |>
+    tidyr::pivot_wider(names_from = phase, values_from = PPORRES) |>
+    dplyr::mutate(ratio = Probenecid / Control, fT = 1 - Control / Probenecid)
+}
+nca <- dplyr::bind_rows(nca_one(sim_pda, "PDA"), nca_one(sim_hva, "HVA"))
+stopifnot(nrow(nca) == 2 * n_sub, !anyNA(nca$ratio))
+
+# Deterministic typical-value ratio on the same design.
+typ_ratio <- function(m) {
+  s <- rxode2::rxSolve(rxode2::zeroRe(m), design_events("MD", tdense), returnType = "data.frame") |>
+    add_phase()
+  ctl <- s[s$phase == "Control", ]
+  int <- s[s$phase == "Probenecid", ]
+  auc_trap(int$tphase, int$Cc) / auc_trap(ctl$tphase, ctl$Cc)
+}
+typ <- c(PDA = typ_ratio(mod_pda), HVA = typ_ratio(mod_hva))
+
+observed <- data.frame(
+  biomarker = c("PDA", "HVA"),
+  obs_ratio = c("2.5-5.1", "2.1-3.7"),
+  obs_fT = c("0.59-0.81", "0.53-0.73"),
+  ratio_lo = c(2.5, 2.1), ratio_hi = c(5.1, 3.7)
+)
+nca_summary <- nca |>
+  dplyr::group_by(biomarker) |>
+  dplyr::summarise(
+    sim_median_ratio = median(ratio),
+    sim_ratio_5_95 = sprintf("%.2f-%.2f", quantile(ratio, 0.05), quantile(ratio, 0.95)),
+    sim_median_fT = median(fT),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(typical_ratio = typ[biomarker]) |>
+  dplyr::left_join(observed, by = "biomarker")
+
+nca_summary |>
+  dplyr::select(
+    "Biomarker" = biomarker,
+    "Typical AUC0-168 ratio" = typical_ratio,
+    "Simulated median ratio" = sim_median_ratio,
+    "Simulated 5-95% ratio" = sim_ratio_5_95,
+    "Observed individual ratios" = obs_ratio,
+    "Simulated median fT" = sim_median_fT,
+    "Observed individual fT" = obs_fT
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  # Deterministic: the typical subject sits inside the observed range.
+  all(nca_summary$typical_ratio > nca_summary$ratio_lo),
+  all(nca_summary$typical_ratio < nca_summary$ratio_hi),
+  # Cohort centre (robust to which subjects land in the tails).
+  all(nca_summary$sim_median_ratio > nca_summary$ratio_lo),
+  all(nca_summary$sim_median_ratio < nca_summary$ratio_hi)
+)
+```
+
+PDA is the more sensitive probe: the same probenecid exposure raises its plasma
+AUC more than HVA's because its `Ki` is 2.5-fold lower, matching the paper's
+conclusion.
+
+# External verification (Figure 3)
+
+The PDA model was verified against Shen et al. 2019: a single oral 1000 mg
+probenecid dose with PDA sampled over 24 h. The paper reports a simulated mean
+PDA `AUC0-tlast` ratio of 2.29 (observed 1.95). The deterministic typical-value
+ratio from this model is the gate.
+
+```{r verification}
+t24 <- sort(unique(c(seq(0, 4, by = 0.1), seq(4, 24, by = 0.5))))
+s_sd <- rxode2::rxSolve(mod_pda0, design_events("SD1000", t24), returnType = "data.frame") |>
+  add_phase()
+ratio_sd <- with(s_sd, auc_trap(tphase[phase == "Probenecid"], Cc[phase == "Probenecid"]) /
+  auc_trap(tphase[phase == "Control"], Cc[phase == "Control"]))
+c(typical_ratio = ratio_sd, paper_simulated_mean = 2.29, paper_observed_mean = 1.95)
+stopifnot(abs(ratio_sd / 2.29 - 1) < 0.03)
+
+rxode2::rxSetSeed(2019)
+sim_sd <- rxode2::rxSolve(mod_pda, cohort_events("SD1000", t24, n_sub), returnType = "data.frame") |>
+  add_phase()
+sim_sd |>
+  dplyr::group_by(phase, tphase) |>
+  dplyr::summarise(lo = quantile(Cc, 0.05), med = median(Cc), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(tphase, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line() +
+  facet_wrap(~phase) +
+  labs(x = "Time after probenecid 1000 mg (h)", y = "PDA plasma (ng/mL)",
+       title = "Simulated PDA, single 1000 mg probenecid (replicates Figure 3)") +
+  theme_bw()
+```
+
+# Power calculations (Figure 4)
+
+The paper scaled the probenecid `C/Ki` ratio by a factor from 0.025 to 5 to
+mimic weaker or stronger OAT1/3 inhibitors, simulated each study design, and
+computed the power of a paired t-test on log-transformed plasma AUCs. The paper
+reports that detecting a weak inhibitor (`I/Ki` = 0.1 relative to probenecid)
+needs 9, 25 and 10 subjects for the multiple-dose (500 mg every 6 h, sampling
+over 168 h), single 1000 mg and single 2000 mg (sampling over 24 h) designs, and
+that a moderate inhibitor (`I/Ki` = 0.25) in a single-dose design needs 9
+subjects with PDA and 17 with HVA.
+
+Here each scenario is simulated once for 200 subjects on the study sampling
+times, and the sample size for 80% power at alpha = 0.05 is computed
+analytically from the mean and SD of the individual log AUC ratios
+(`power.t.test(type = "paired")`) rather than by the paper's 1000 repeated
+t-tests per sample size. The inhibitor-potency factor is applied by dividing
+`Ki` by it, which scales `C_probenecid / Ki` exactly as in the paper. The paper
+does not say whether its simulated AUCs carried residual error, so the sample
+size is shown both from the model-predicted concentrations (`Cc`) and from the
+simulated observations with residual error (`sim`), taken from the same solve.
+
+```{r power}
+t_md <- c(0, 0.25, 1, 2, 4, 6, 8, 12, 24, 72, 168)
+t_sd <- c(0, 0.25, 1, 2, 4, 6, 8, 12, 24)
+n80_paired <- function(lr) {
+  ceiling(stats::power.t.test(delta = mean(lr), sd = sd(lr), power = 0.8,
+                              sig.level = 0.05, type = "paired")$n)
+}
+n_power <- function(m, ki, design, f, seed) {
+  rxode2::rxSetSeed(seed)
+  m_f <- m |> rxode2::ini(lki_oat13 = log(ki / f))
+  tobs <- if (design == "MD") t_md else t_sd
+  s <- rxode2::rxSolve(m_f, cohort_events(design, tobs, n_sub), returnType = "data.frame") |>
+    add_phase()
+  auc <- s |>
+    dplyr::arrange(id, phase, tphase) |>
+    dplyr::group_by(id, phase) |>
+    dplyr::summarise(pred = auc_trap(tphase, Cc), obs = auc_trap(tphase, sim), .groups = "drop") |>
+    tidyr::pivot_wider(names_from = phase, values_from = c(pred, obs))
+  lr_pred <- log(auc$pred_Probenecid / auc$pred_Control)
+  lr_obs <- log(auc$obs_Probenecid / auc$obs_Control)
+  stopifnot(length(lr_pred) == n_sub, !anyNA(lr_pred), !anyNA(lr_obs))
+  data.frame(
+    design = design, f = f, gmr = exp(mean(lr_pred)),
+    n80_pred = n80_paired(lr_pred), n80_obs = n80_paired(lr_obs)
+  )
+}
+pow <- dplyr::bind_rows(
+  PDA_MD_0.1 = n_power(mod_pda, 54.5, "MD", 0.1, 11),
+  PDA_SD1000_0.1 = n_power(mod_pda, 54.5, "SD1000", 0.1, 12),
+  PDA_SD2000_0.1 = n_power(mod_pda, 54.5, "SD2000", 0.1, 13),
+  PDA_SD1000_0.25 = n_power(mod_pda, 54.5, "SD1000", 0.25, 14),
+  HVA_SD1000_0.25 = n_power(mod_hva, 137, "SD1000", 0.25, 15),
+  .id = "scenario"
+)
+pow$paper_n <- c(9, 25, 10, 9, 17)
+pow$deviation <- pow$scenario == "HVA_SD1000_0.25"
+pow |>
+  dplyr::select(
+    "Scenario" = scenario,
+    "Geometric mean AUC ratio" = gmr,
+    "n, predicted Cc" = n80_pred,
+    "n, with residual error" = n80_obs,
+    "Paper n" = paper_n,
+    "Known deviation" = deviation
+  ) |>
+  knitr::kable(digits = 2)
+
+# The required n depends on the SD of the log ratio estimated from 200 draws,
+# so it carries ~10% Monte-Carlo noise (n scales with the variance). Measured
+# relative differences for the PDA rows were at most 0.22 (predicted Cc) and
+# 0.44 (with residual error); the gate is on the predicted-Cc column with a
+# 0.5 bound, which still fails on a structural error (a mis-scaled Ki or a mg
+# vs umol dose moves n several-fold). The HVA row is a documented deviation.
+chk <- pow[!pow$deviation, ]
+stopifnot(nrow(chk) == 4, all(abs(chk$n80_pred / chk$paper_n - 1) < 0.5))
+```
+
+The PDA sample sizes are reproduced. The HVA figure is not: the model needs
+about `r pow$n80_pred[5]` subjects (`r pow$n80_obs[5]` with residual error)
+where the paper reports 17. In the HVA model the only variability that differs
+between the two phases of a subject is the 5% between-occasion variability on
+`CLr` plus probenecid exposure, so the paired log-ratio is much tighter than for
+PDA, whose 22% between-occasion variability on `ksyn` dominates. The paper does
+not describe its HVA power simulation in more detail (Figure S13), so the source
+of the difference could not be identified; the model parameters themselves are
+as printed in Table 1.
+
+# Hypothetical inhibition of synthesis (Figure 5)
+
+Eq. 4 of the paper explores what would happen if the inhibitor also reduced
+`ksyn`, by a factor `(C_probenecid / Ki)'` equal to 0, 0.1 or 10 times the
+effect on renal clearance. This is a what-if scenario, not part of the fitted
+model, so it is built here by replacing the plasma ODE and supplying the
+relative factor as a data column `RKSYN`.
+
+```{r fig5}
+mod_pda_ksyn <- mod_pda0 |>
+  rxode2::model(d/dt(central) <- ksyn / (1 + RKSYN * Cc_prob / ki_oat13) - (cl_renal_eff + cl_nonren) * Cc)
+stopifnot(identical(mod_pda_ksyn$state, mod_pda$state))
+
+fig5 <- dplyr::bind_rows(lapply(c("MD", "SD1000"), function(d) {
+  dplyr::bind_rows(lapply(c(0, 0.1, 10), function(r) {
+    ev <- design_events(d, seq(0, 168, by = 0.5))
+    ev$RKSYN <- r
+    rxode2::rxSolve(mod_pda_ksyn, ev, returnType = "data.frame") |>
+      add_phase() |>
+      dplyr::filter(phase == "Probenecid") |>
+      dplyr::mutate(design = d, RKSYN = r)
+  }))
+}))
+ggplot(fig5, aes(tphase, Cc, linetype = factor(RKSYN))) +
+  geom_line() +
+  facet_wrap(~design, scales = "free_x") +
+  labs(x = "Time (h)", y = "PDA plasma (ng/mL)", linetype = "(C/Ki)' on ksyn",
+       title = "Typical PDA with inhibition also on synthesis (replicates Figure 5)") +
+  theme_bw()
+
+# RKSYN = 0 must reproduce the fitted model exactly.
+base_md <- rxode2::rxSolve(mod_pda0, design_events("MD", seq(0, 168, by = 0.5)), returnType = "data.frame") |>
+  add_phase() |>
+  dplyr::filter(phase == "Probenecid")
+f0 <- fig5 |> dplyr::filter(design == "MD", RKSYN == 0)
+stopifnot(max(abs(f0$Cc / base_md$Cc - 1)) < 1e-6)
+```
+
+# Assumptions and deviations
+
+* **IIV and IOV scale.** Table 1 reports IIV and IOV as percentages of
+  exponential random effects; they are read as CV% and converted with
+  `omega^2 = log(1 + CV^2)`.
+* **IOV encoding.** The between-occasion variability (PDA on `ksyn`, HVA on
+  `CLr`) spans the two crossover phases. It is encoded with an `OCC` column
+  (1 = control, 2 = probenecid) and one eta per occasion, the occasion-2 eta
+  fixed to the occasion-1 variance. Set `OCC = 1` for single-occasion work.
+* **Total Ki.** The model uses the total-plasma `Ki` of Table 1 (54.5 and
+  137 uM) against total probenecid concentration. The unbound values (3.4 and
+  8.5 uM, fraction unbound 0.062) are reported only for comparison with in vitro
+  data.
+* **Probenecid units.** The probenecid block runs in umol and umol/L, implied
+  by `Ki` and the additive error in uM; mg doses are converted with a molecular
+  weight of 285.34 g/mol, which is not printed in the paper. The model's
+  `units$dosing` is therefore umol (probenecid is the only dosed compound),
+  while `units$concentration` is ug/L for the biomarker `Cc`.
+* **Baseline.** The biomarker starts at its inhibitor-free steady state
+  `ksyn / (CLr + CLnr)`; the paper does not state its initial condition, but
+  its control phase was used as the steady-state baseline and it reports no
+  circadian variation.
+* **Urine.** `Upda` / `Uhva` is the cumulative amount excreted since time 0; the
+  study's collection-interval amounts are differences of it between interval
+  end points, as done above.
+* **Residual-error form.** The paper states only "combined proportional and
+  additive"; the nlmixr2 default combined form is used.
+* **Probenecid bioavailability.** Probenecid was dosed orally only, so its `CL`
+  and `V` are apparent (`CL/F`, `V/F`) and bioavailability is 1 in the model.
+* **Power calculation.** The sample sizes are computed analytically from one
+  simulated cohort per scenario rather than from the paper's repeated t-tests.
+  They reproduce the paper's PDA sample sizes to within Monte-Carlo noise; the
+  HVA single-dose figure (17 subjects in the paper) is not reproduced, as
+  discussed in that section.
+* **Data not reproduced.** The individual observed data (Figure 2, Figure S1)
+  are not available, so the figures above show simulated prediction intervals
+  only.

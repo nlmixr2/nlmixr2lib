@@ -160,8 +160,7 @@ Hoglund_2018_mefloquine <- function() {
     # logarithm of quantified mefloquine concentrations was analysed".
     # The NONMEM additive-on-log-scale residual maps to a nlmixr2
     # proportional residual in linear concentration space (see
-    # references/parameter-names.md Residual error and the matching
-    # comment in Hoglund_2012_piperaquine.R / Hoglund_2017_piperaquine.R).
+    # the matching comment in Hoglund_2012_piperaquine.R / Hoglund_2017_piperaquine.R).
     # Table 2 reports the log-scale variance sigma^2 = 0.0902; the SD
     # is sqrt(0.0902) = 0.300333, which equals the proportional CV to
     # first order.

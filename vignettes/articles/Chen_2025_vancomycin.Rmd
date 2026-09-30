@@ -23,7 +23,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Chen_2025_vancomycin"))$description`
 * Article: <https://doi.org/10.1128/spectrum.00499-25>
 * Supplement (Fig. S1-S3, Tables S1-S3): `spectrum.00499-25-s0001.pdf`, available
-  from the EuropePMC supplementary-file bundle for
+  with the open-access article,
   [PMC12054080](https://europepmc.org/article/MED/40162779)
 
 Chen 2025 is primarily a methods-comparison paper: it builds four predictors of
@@ -87,8 +87,8 @@ Equations 15 and 16 are typeset as images in the published article, and
 `pdftotext` flattens their superscripts, which makes the nesting of the Charlson
 term ambiguous in extracted text. The encoding used here -- the whole product
 `-0.151 * (CCI/5.62)` inside the exponential -- was confirmed against the
-publisher's own equation image `spectrum.00499-25.m015.jpg` in the EuropePMC
-supplementary bundle.
+publisher's own equation image `spectrum.00499-25.m015.jpg` deposited with the
+article.
 
 # Virtual cohort
 
@@ -193,7 +193,9 @@ mod <- readModelDb("Chen_2025_vancomycin") |> rxode2::zeroRe()
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("regimen", "tau", "tinf", "n_doses", "CRCL", "SCORE_CCI", "WT")
+  keep   = c("regimen", "tau", "tinf", "n_doses", "CRCL", "SCORE_CCI", "WT"),
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 

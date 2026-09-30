@@ -166,7 +166,7 @@ Wallender_2021_piperaquine <- function() {
     # three first-order steps between the dose record and the central
     # compartment, giving ktr = 3 / 0.045 = 66.7 /day. The paper never
     # writes the absorption ODEs; this reading was ratified by the
-    # operator and the sensitivity of the alternative reading is recorded
+    # maintainers and the sensitivity of the alternative reading is recorded
     # in the vignette.
     lmtt <- log(0.045) ; label("Mean transit time of the absorption chain (day)")                                                      # Table 2 Absorption transit time 0.045 d (9.1% RSE, 95% CI 0.034-0.048)
 

@@ -454,12 +454,13 @@ Steady-state NCA over the final dosing interval, grouped by simulation arm.
 # The ODE integrator leaves a numerically-zero tail once a fast-clearing
 # subject is eight or more half-lives past the dose (|Cc| ~ 1e-9 ug/mL, some
 # of it slightly negative), and PKNCA's log-down trapezoid cannot take the
-# log of a negative value. Rows below 1e-6 of the subject's own peak are
-# dropped before NCA, except the interval's time-zero anchor, which PKNCA
-# needs and which is set to zero when it sits in that band.
+# log of a negative value. Past the subject's own peak, rows below 1e-6 of
+# that peak are dropped before NCA; rows up to the peak (including the
+# interval's time-zero anchor, which PKNCA needs) are kept, and set to zero
+# when they sit in that band.
 sim_nca <- sim |>
   group_by(id) |>
-  filter(Cc >= 1e-6 * max(Cc) | tad == 0) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc) | tad == 0) |>
   mutate(Cc = ifelse(Cc < 1e-6 * max(Cc), 0, Cc)) |>
   ungroup() |>
   select(id, arm, time = tad, Cc) |>

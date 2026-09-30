@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode2(readModelDb("Chen_2020_luspatercept"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Chen_2020_luspatercept"))$description`
-* Article: [CPT Pharmacometrics Syst Pharmacol. 2020;9(10):395-404](https://doi.org/10.1002/psp4.12515)
+* Article: [CPT Pharmacometrics Syst Pharmacol. 2020;9(7):395-404](https://doi.org/10.1002/psp4.12521)
 
 # Population
 
@@ -171,7 +171,7 @@ sim_typical <- rxode2::rxSolve(
 
 # Replicate published figures
 
-## Figure 1a — visual predictive check by dose group
+## Figure 1a - visual predictive check by dose group
 
 Chen 2020 Figure 1a is a population VPC of luspatercept serum
 concentration over time. The simulated cohort below summarises the 5th,
@@ -199,7 +199,7 @@ sim |>
   theme_minimal()
 ```
 
-## Figure 1b — clinical relevance of covariates on AUC_ss
+## Figure 1b - clinical relevance of covariates on AUC_ss
 
 Chen 2020 Figure 1b reports the percentage difference in AUC_ss / Cmax_ss
 at extreme covariate values relative to "normal" (10th-90th percentile)
@@ -336,3 +336,16 @@ dplyr::left_join(published, nca_tbl, by = "treatment") |>
   sensitivity analysis but without the additional sources of variability
   (IIV, residual error, random sampling) that contribute to the
   published Figure 1b error bars.
+- The exposure-response analyses of Chen 2020 (logistic regressions of
+  RBC transfusion independence, mHI-E and grade 3 or higher TEAEs on
+  AUC_avg, AUC_TEAE or CL/F) are not encoded. Table 3 reports only the
+  odds ratio of the PK measure, without the intercepts, the coefficients
+  of the adjusting baseline covariates (transfusion burden, EPO,
+  bilirubin, age) or the exposure increment the odds ratio refers to, so
+  the fitted probability curves cannot be reconstructed from the paper.
+- Earlier releases cited this model with an incorrect DOI
+  (10.1002/psp4.12515, an unrelated fenebrutinib PBPK article), an
+  incorrect issue number and an incorrect author list. The citation now
+  matches the published article (CPT Pharmacometrics Syst Pharmacol
+  2020;9(7):395-404, doi:10.1002/psp4.12521). The serum assay matrix is
+  recorded in the compartment metadata.

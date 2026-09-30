@@ -1,19 +1,17 @@
 Por_2021_imipenem <- function() {
   description <- paste(
-    "Two-compartment IV population PK model for imipenem in 23 US burn",
-    "patients with and without continuous venovenous haemofiltration",
-    "(Por 2021). Clearance is described by two separate branches: patients",
+    "Two-compartment IV population PK model for imipenem in 23 US adult",
+    "burn patients with (n = 12) and without (n = 11) continuous venovenous",
+    "haemofiltration (Por 2021). Body clearance has two branches: patients",
     "not on CVVH carry power effects of Cockcroft-Gault creatinine",
-    "clearance and body weight, while patients on CVVH carry an allometric",
-    "body-weight effect plus an additive filter clearance. Both volumes",
-    "carry a strong inverse power effect of serum albumin, and the central",
-    "volume additionally scales with body weight. Inter-individual",
-    "variability is exponential on clearance and the central volume, and",
-    "residual error is proportional.",
-    "Parameters transcribed from the Zhang 2025 imipenem population-PK",
-    "systematic review (Tables 1-3 and Supplementary Table S1), not from the",
-    "primary publication; re-verify against Por 2021 when the primary is",
-    "obtained.",
+    "clearance and body weight, while patients on CVVH carry a 10% lower",
+    "clearance (categorical CVVH effect) with a body-weight effect only,",
+    "plus their individual measured haemofilter clearance supplied as a",
+    "covariate. Both volumes carry an inverse power effect of serum albumin",
+    "and the central volume also scales with body weight. The creatinine",
+    "clearance and weight exponents, Q and the peripheral volume were fixed",
+    "from the literature. Inter-individual variability is exponential on",
+    "clearance and the central volume, and residual error is proportional.",
     sep = " "
   )
   reference <- paste(
@@ -22,22 +20,18 @@ Por_2021_imipenem <- function() {
     "burn patients with and without continuous venovenous hemofiltration",
     "in the military health system.",
     "J Clin Pharmacol. 2021;61(9):1182-1194. doi:10.1002/jcph.1865.",
-    "Parameters transcribed from Zhang P, Zhao Y, Zhu J, Yang Y, Liang G,",
-    "Wang X, Yu Z. Population pharmacokinetics of imipenem in different",
-    "populations for individualized dosing: a systematic review.",
-    "Front Pharmacol. 2025;16:1738055. doi:10.3389/fphar.2025.1738055",
-    "(Tables 1-3, Supplementary Table S1).",
+    "This model is also catalogued (as study 12) by Zhang P, Zhao Y, Zhu J,",
+    "Yang Y, Liang G, Wang X, Yu Z. Population pharmacokinetics of imipenem",
+    "in different populations for individualized dosing: a systematic",
+    "review. Front Pharmacol. 2025;16:1738055. doi:10.3389/fphar.2025.1738055.",
     sep = " "
   )
-  vignette <- "Zhang_2025_imipenem_model_review"
+  vignette <- "Por_2021_imipenem"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
-  # Issue #482: what each ODE state holds, in what amount units, in what
-  # biological matrix. verified = FALSE because the primary publication is
-  # not on disk.
   compartmentData <- list(
-    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
@@ -47,17 +41,15 @@ Por_2021_imipenem <- function() {
       type = "continuous",
       reference_category = NULL,
       notes = paste(
-        "Reference 99.5 kg. The cohort is heavy, as burn cohorts often are",
-        "-- mean 89.6 +/- 22.38 kg with CVVH and 105.06 +/- 28.66 kg",
-        "without (Zhang 2025 Table 1) -- and 99.5 sits between the two arm",
-        "means. Enters the central volume with exponent 0.74, the non-CVVH",
-        "clearance branch with exponent 0.33, and the CVVH clearance branch",
-        "with the theory-based allometric exponent 0.75 (Zhang 2025 Table",
-        "3). Note that the two clearance branches use DIFFERENT weight",
-        "exponents; this is what the review prints and is reproduced",
-        "verbatim."
+        "Reference 99.5 kg, the cohort median (range 57.9-150.8 kg; Por",
+        "2021 Results, Patient Demographics). Enters the central volume",
+        "with exponent 0.74, the no-CVVH clearance branch with exponent",
+        "0.33 (both fixed from Bhagunde 2019, Table 2 footnote c), and the",
+        "CVVH clearance branch with exponent 0.75 (fixed; Table 2).",
+        "Mean weight 105.06 +/- 28.66 kg without CVVH and 89.6 +/- 22.38 kg",
+        "with CVVH (Table 1)."
       ),
-      source_name = "BW"
+      source_name = "WT"
     ),
     ALB = list(
       description = "Serum albumin",
@@ -65,48 +57,40 @@ Por_2021_imipenem <- function() {
       type = "continuous",
       reference_category = NULL,
       notes = paste(
-        "UNIT CONVERSION. The source reference value is 2.7, which is",
-        "serum albumin in g/dL -- the US convention, consistent with a US",
-        "study, and the only reading on which 2.7 is a physiological",
-        "albumin for a burn patient (2.7 g/dL = 27 g/L, markedly",
-        "hypoalbuminaemic, as expected after major burns; 2.7 g/L would be",
-        "incompatible with life). The canonical ALB column carries SI g/L",
-        "per inst/references/covariate-columns.md, so model() converts",
-        "inline with alb_gdL <- ALB * 0.1 before forming the covariate",
-        "ratio, exactly as that register entry prescribes for models",
-        "calibrated on g/dL.",
-        "MAGNITUDE WARNING: the peripheral-volume exponent is -3.68, an",
-        "extraordinarily steep dependence -- a halving of albumin would",
-        "multiply the peripheral volume by 2^3.68 = 12.8. The review",
-        "reports no standard error for it and the cohort is only 23",
-        "patients, so the exponent is very likely poorly identified. It is",
-        "transcribed verbatim but should be treated as unreliable outside",
-        "the narrow albumin range actually observed; the review does not",
-        "report that range. Recorded in the vignette Errata."
+        "UNIT CONVERSION. Por 2021 models albumin in g/dL (Table 1 'Albumin",
+        "(g/dL)'; reference 2.7 g/dL, the cohort median, range 1.5-3.5",
+        "g/dL; Results, Patient Demographics). The canonical ALB column is",
+        "SI g/L per inst/references/covariate-columns.md, so model()",
+        "converts with alb_gdL <- ALB * 0.1 before forming the ratio.",
+        "Enters Vc with exponent -1.17 and Vp with exponent -3.68 (Table",
+        "2). The Vp exponent is steep: halving albumin multiplies Vp by",
+        "2^3.68 = 12.8. The paper uses albumin as a surrogate for burn",
+        "severity (Figure 1: albumin = 3.68 - 0.021 * TBSA%), and the",
+        "observed albumin range was only 1.5-3.5 g/dL, so predictions for",
+        "healthy albumin (4 g/dL, Table 3) are extrapolations."
       ),
-      source_name = "ALB"
+      source_name = "ALBUM"
     ),
     CRCL = list(
       description = paste(
-        "Creatinine clearance calculated by the Cockcroft-Gault equation.",
-        "The review's abbreviation list glosses 'CLcrCG' with no",
-        "normalisation mentioned, so raw mL/min is used here."
+        "Creatinine clearance by the Cockcroft-Gault equation (Por 2021",
+        "Methods, Covariate Model), raw mL/min, not normalised to body",
+        "surface area."
       ),
       units = "mL/min",
       type = "continuous",
       reference_category = NULL,
       notes = paste(
-        "Reference 145.83 mL/min -- markedly supranormal, consistent with",
-        "the augmented renal clearance characteristic of the hyperdynamic",
-        "circulatory state after major burns, which Zhang 2025's Discussion",
-        "invokes to explain why this study reports the highest clearance",
-        "(15.31 L/h) of any two-compartment model in the review. Enters the",
-        "NON-CVVH clearance branch only, as the power term",
-        "(CLcr/145.83)^0.46; the CVVH branch carries no renal-function term",
-        "at all (Zhang 2025 Table 3). Stored under the canonical CRCL",
-        "column per inst/references/covariate-columns.md."
+        "Reference 145.83 mL/min, the median in the no-CVVH patients only",
+        "(range 88.08-253.95 mL/min; Results, Patient Demographics). Enters",
+        "the NO-CVVH clearance branch only, as (CRCL/145.83)^0.46 with the",
+        "exponent fixed from Bhagunde 2019 (Table 2 footnote c, Equation",
+        "10). It is multiplied by (1 - RRT_CRRT_STATUS) in model(), so its",
+        "value is ignored for a patient on CVVH -- but it must still be a",
+        "finite positive number there, because a missing value would",
+        "propagate through the product."
       ),
-      source_name = "CLcr"
+      source_name = "CRCL"
     ),
     RRT_CRRT_STATUS = list(
       description = "Continuous venovenous haemofiltration during imipenem therapy",
@@ -114,171 +98,175 @@ Por_2021_imipenem <- function() {
       type = "binary",
       reference_category = "0 = not receiving CVVH",
       notes = paste(
-        "Zhang 2025 Table 3 prints two entirely separate clearance",
-        "equations for this study rather than a single equation with a",
-        "CVVH coefficient:",
-        "without CVVH, CL = 15.31 * (CLcr/145.83)^0.46 * (BW/99.5)^0.33 *",
-        "e^eta_CL; with CVVH, CL = 13.78 * (BW/99.5)^0.75 * e^eta_CL +",
-        "1.56. The two branches differ in intercept, in weight exponent,",
-        "in whether creatinine clearance enters at all, and in carrying an",
-        "additive term. They are therefore encoded as a hard switch on this",
-        "indicator rather than as a multiplicative covariate effect. CVVH",
-        "is a continuous renal replacement modality, so the canonical",
-        "RRT_CRRT_STATUS column applies per",
-        "inst/references/covariate-columns.md, whose definition explicitly",
-        "names 'continuous venovenous hemofiltration CVVH / CVVHF'."
+        "Selects between the two published clearance equations (Equations",
+        "10 and 11). It also carries the categorical CVVH effect of Table",
+        "2, -0.1 in the form tvCL * (1 + theta * CVVH) of Equation 7, which",
+        "is why the CVVH-branch intercept printed in Equation 11 is 13.78 =",
+        "15.31 * 0.9 L/h. The effect was not statistically significant",
+        "(RSE 130.86%, 95% CI -0.36 to 0.16) and was retained on",
+        "physiological grounds (Discussion; Table S1 run 18). CVVH is a",
+        "continuous renal replacement modality, so the canonical",
+        "RRT_CRRT_STATUS column applies. It does NOT gate QEFF (see there)."
       ),
       source_name = "CVVH"
+    ),
+    QEFF = list(
+      description = paste(
+        "Individual imipenem clearance by the CVVH haemofilter (L/h),",
+        "CL_CVVH = Qf * Sc * CF (Por 2021 Equations 1-3): ultrafiltrate",
+        "flow rate times the measured sieving coefficient",
+        "Sc = C_filter / ((C_pre + C_post) / 2), times the prefilter",
+        "replacement-fluid correction CF = Qb / (Qb + Qrep)."
+      ),
+      units = "L/h",
+      type = "continuous",
+      reference_category = NULL,
+      notes = paste(
+        "A per-patient data column, not an estimated parameter: it is added",
+        "to the eta-bearing body clearance after the random effect",
+        "(Equations 5 and 11). Mean 1.56 +/- 0.7 L/h in the 12 CVVH",
+        "patients, with sieving coefficient 0.67 +/- 0.33, correction factor",
+        "0.86 +/- 0.04 and effluent flow 30.13 +/- 6.45 mL/kg/h (Table 1).",
+        "The paper's simulations use 3 and 5 L/h (Figure 5) and 3.27 L/h",
+        "(Figure 3, the Boucher 2016 cohort). NOT gated by RRT_CRRT_STATUS:",
+        "Equation 5 adds CL_CVVH unconditionally, so QEFF must be 0 for a",
+        "patient not on CVVH. Leaving it ungated also expresses the paper's",
+        "Figure 5 scenario, in which a patient with preserved renal function",
+        "is placed on CVVH: RRT_CRRT_STATUS = 0 (the CrCl-driven branch) with",
+        "QEFF = 3 or 5 L/h reproduces that figure, whereas the CVVH branch,",
+        "which has no CrCl term, cannot separate its NRF and ARC curves."
+      ),
+      source_name = "CLCVVH"
     )
   )
 
-  # Screened during covariate model building and not retained (Zhang 2025
-  # Table 3, 'Covariates screened' column). The review prints no
-  # coefficient for any of them, so none can be reconstructed.
+  # Screened in the internal covariate search and not retained (Por 2021
+  # Methods, Covariate Model; Table S1 runs 5-16). Lean body weight on CL
+  # was significant (P = .01) but weight was preferred for comparability
+  # with the literature (Table S1 footnote 3).
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
       units = "years",
       type = "continuous",
-      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort mean 55 +/- 19.99 years with CVVH, 51.09 +/- 19.03 without (Table 1)."
+      notes = "Screened, not retained. Mean 51.09 +/- 19.03 years without CVVH, 55 +/- 19.99 with CVVH (Table 1)."
+    ),
+    LBW = list(
+      description = "Lean body weight by the Janmahasatian formula",
+      units = "kg",
+      type = "continuous",
+      notes = "Significant on CL alone (Table S1 run 13, P = .01) and screened on Vc (run 6); not retained, total weight preferred."
     ),
     URINE_VOL_24H = list(
       description = "Urine output",
       units = "mL/24h",
       type = "continuous",
-      notes = "Screened, not retained (Zhang 2025 Table 3)."
+      notes = "Screened on CL (Table S1 run 14), not retained. Mean 3144 mL without CVVH, 949 mL with CVVH (Table 1)."
     ),
     TBSA = list(
-      description = "Total burned body surface area",
+      description = "Total burned body surface area, with total second- and third-degree burn areas screened separately",
       units = "%",
       type = "continuous",
-      notes = "Screened, not retained (Zhang 2025 Table 3), along with the separately-screened total second-degree and total third-degree burn surface areas. Not a registered canonical in inst/references/covariate-columns.md; recorded here as documentation only, since it is never referenced in model() and no coefficient is reported."
+      notes = "Screened on Vc, Vp and CL (Table S1 runs 7, 8, 15, 16), not retained; albumin was preferred as the physiological surrogate (Figure 1 relates the two). Documentation only, never referenced in model()."
     )
   )
 
   population <- list(
     species = "human",
-    n_subjects = 23L,
+    n_subjects = 22L,
     n_studies = 1L,
-    age_mean = "55 +/- 19.99 years with CVVH; 51.09 +/- 19.03 years without CVVH (mean +/- SD)",
-    weight_mean = "89.6 +/- 22.38 kg with CVVH; 105.06 +/- 28.66 kg without CVVH (mean +/- SD)",
-    sex_female_pct = 73.9,
+    age_mean = "51.09 +/- 19.03 years without CVVH; 55 +/- 19.99 years with CVVH (mean +/- SD)",
+    weight_mean = "105.06 +/- 28.66 kg without CVVH; 89.6 +/- 22.38 kg with CVVH (mean +/- SD)",
+    weight_range = "57.9-150.8 kg (median 99.5 kg)",
+    sex_female_pct = 26.1,
     race_ethnicity = NULL,
     disease_state = paste(
-      "Adult burn patients receiving imipenem-cilastatin, some on",
-      "continuous venovenous haemofiltration. This is the only burn cohort",
-      "among the 18 studies in the Zhang 2025 review, and the only one in",
-      "which women are the majority (17 of 23)."
+      "Adult patients with severe burns (mean total burn surface area 40%",
+      "without and 45% with CVVH) at the US Army Institute of Surgical",
+      "Research Burn Center, 12 of them on continuous venovenous",
+      "haemofiltration."
     ),
     dose_range = paste(
-      "250 mg, 500 mg or 1000 mg imipenem intravenously every 6 h (Zhang",
-      "2025 Supplementary Table S1). The infusion duration is not reported",
-      "by the review."
+      "500 mg imipenem every 6 h infused over 30 min or 1 h in 21 patients;",
+      "one patient 1000 mg every 6 h over 1 h and one 250 mg every 6 h over",
+      "30 min. Sampled at steady state."
     ),
     regions = "United States of America",
     n_concentrations = 81L,
     notes = paste(
-      "Prospective study (Zhang 2025 Table 1, study 12); 23 patients, 81",
-      "samples, sex split 6 male / 17 female. Blood was sampled at trough",
-      "and 0.5-8 h after administration, and assayed by HPLC-UV (Zhang",
-      "2025 Supplementary Table S1). Covariates were selected by forward",
-      "inclusion (dOFV > 3.84, p < 0.05) with no backward-elimination step",
-      "reported. Fitted in Pumas -- the only study in the review to use it",
-      "-- and evaluated by NPDE, bootstrap, VPC and, unusually for this",
-      "review, external validation; only three of the 18 studies performed",
-      "external validation (Zhang 2025 Table 2, Results).",
-      "The review does not report how many of the 23 patients were on",
-      "CVVH, only that both arms are present and that arm-specific",
-      "demographics differ (Table 1). With 23 patients split across two",
-      "clearance branches, every coefficient in this model rests on a very",
-      "small sample; see the albumin magnitude warning in",
-      "covariateData$ALB.",
-      "ALL PARAMETER VALUES ARE SECONDARY. They come from the Zhang 2025",
-      "review's summary tables, not from Por 2021 itself."
+      "23 patients enrolled (11 without and 12 with CVVH; 1 woman and 10",
+      "men without, 5 women and 7 men with); one had no post-dose sample",
+      "and was excluded, leaving 22 in the analysis. 81 prefilter plasma concentrations: a",
+      "pre-dose trough plus up to four samples 0.5-8 h post-dose, assayed",
+      "by HPLC-UV (linear 0.5-25 ug/mL). Median albumin 2.7 g/dL (range",
+      "1.5-3.5) and median CrCl 145.83 mL/min in the no-CVVH group (range",
+      "88.08-253.95). Mean CVVH clearance 1.56 +/- 0.7 L/h (Table 1).",
+      "Fitted by FOCEI in Pumas 1.0.5 (Table S1 run 21)."
     )
   )
 
   ini({
-    # ===== Structural PK -- Zhang 2025 Table 2 and Table 3, Por et al.
-    # (2021) row. Reference subject: 99.5 kg, albumin 2.7 g/dL (27 g/L),
-    # Cockcroft-Gault CLcr 145.83 mL/min. =====
-    #
-    # Clearance has TWO branches. The names below follow the split-clearance
-    # idiom already used in this package (Lamoth 2009 imipenem's
-    # lcl_renal / lcl_nonren; Shekar 2014 meropenem's piecewise RRT switch):
-    #   lcl      -- typical clearance of a patient NOT on CVVH
-    #   lcl_cvvh -- endogenous clearance intercept of a patient ON CVVH
-    #   lcl_crrt -- the additive filter clearance contributed by CVVH
-    lcl      <- log(15.31); label("Clearance at the reference subject, no CVVH (L/h)")   # Zhang 2025 Table 3 (Por 2021): leading coefficient of the 'Without CVVH' CL formula; matches the Table 2 CL of 15.31 L/h
-    lcl_cvvh <- log(13.78); label("Endogenous clearance intercept on CVVH at 99.5 kg (L/h)")  # Zhang 2025 Table 3 (Por 2021): leading coefficient of the 'With CVVH' CL formula
-    lcl_crrt <- log(1.56);  label("Additive CVVH filter clearance (L/h)")                # Zhang 2025 Table 3 (Por 2021): the '+ 1.56' term of the 'With CVVH' CL formula
-    lvc      <- log(32.67); label("Central volume of distribution at the reference subject (L)")     # Zhang 2025 Table 2 (Por 2021): V1 = 32.67 L; leading coefficient of the Table 3 Vc formula
-    lvp      <- log(41.23); label("Peripheral volume of distribution at albumin 2.7 g/dL (L)")       # Zhang 2025 Table 2 (Por 2021): V2 = 41.23 L; leading coefficient of the Table 3 Vp formula
-    lq       <- log(11);    label("Intercompartmental clearance Q (L/h)")                            # Zhang 2025 Table 2 (Por 2021): Q = 11 L/h
+    # ===== Structural PK -- Por 2021 Table 2 (final model) and Equations
+    # 10-13. Reference subject: 99.5 kg, albumin 2.7 g/dL (27 g/L),
+    # Cockcroft-Gault CrCl 145.83 mL/min, not on CVVH. =====
+    lcl <- log(15.31); label("Body clearance at the reference subject, not on CVVH (L/h)") # Table 2 'CL (L/h)' 15.31 (RSE 13%); Equation 10 intercept
+    lvc <- log(32.67); label("Central volume of distribution at the reference subject (L)") # Table 2 'Vc (L)' 32.67 (RSE 27.18%); Equation 12 intercept
+    lq <- fixed(log(11)); label("Intercompartmental clearance (L/h)") # Table 2 'Q (L/h)' 11 fixed (footnote a, literature)
+    lvp <- fixed(log(41.23)); label("Peripheral volume of distribution at albumin 2.7 g/dL (L)") # Table 2 'Vp (L)' 41.23 fixed (footnote b, literature); Equation 13 intercept
 
-    # ===== Covariate effects -- Zhang 2025 Table 3, Por et al. (2021) =====
-    #   Vc = 32.67 * (BW/99.5)^0.74 * (ALB/2.7)^(-1.17) * e^eta_Vc
-    #   Vp = 41.23 * (ALB/2.7)^(-3.68)
-    #   Without CVVH: CL = 15.31 * (CLcr/145.83)^0.46 * (BW/99.5)^0.33 * e^eta_CL
-    #   With CVVH:    CL = 13.78 * (BW/99.5)^0.75 * e^eta_CL + 1.56
-    e_crcl_cl     <- 0.46;  label("Power exponent on (CRCL/145.83) for CL, no-CVVH branch (unitless)")  # Zhang 2025 Table 3 (Por 2021): (CLcr/145.83)^0.46
-    e_wt_cl       <- 0.33;  label("Power exponent on (WT/99.5) for CL, no-CVVH branch (unitless)")      # Zhang 2025 Table 3 (Por 2021): (BW/99.5)^0.33 in the 'Without CVVH' formula
-    e_wt_cl_cvvh  <- 0.75;  label("Power exponent on (WT/99.5) for CL, CVVH branch (unitless)")         # Zhang 2025 Table 3 (Por 2021): (BW/99.5)^0.75 in the 'With CVVH' formula
-    e_wt_vc       <- 0.74;  label("Power exponent on (WT/99.5) for Vc (unitless)")                      # Zhang 2025 Table 3 (Por 2021): (BW/99.5)^0.74
-    e_alb_vc      <- -1.17; label("Power exponent on (ALB/2.7 g/dL) for Vc (unitless)")                 # Zhang 2025 Table 3 (Por 2021): (ALB/2.7)^(-1.17)
-    e_alb_vp      <- -3.68; label("Power exponent on (ALB/2.7 g/dL) for Vp (unitless)")                 # Zhang 2025 Table 3 (Por 2021): (ALB/2.7)^(-3.68)
+    # ===== Covariate effects on CL -- Table 2 =====
+    e_rrt_crrt_status_cl <- -0.1; label("Fractional change in body clearance on CVVH (unitless)") # Table 2 'CVVH (categorical)' -0.1 (RSE 130.86%); Equation 7 form; 15.31 * 0.9 = 13.78, the Equation 11 intercept
+    e_crcl_cl <- fixed(0.46); label("Power exponent on CRCL/145.83 for CL, no-CVVH branch (unitless)") # Table 2 'CrCL (power)' 0.46 fixed (footnote c, Bhagunde 2019); Equation 10
+    e_wt_cl <- fixed(0.33); label("Power exponent on WT/99.5 for CL, no-CVVH branch (unitless)") # Table 2 'Weight no CVVH (power)' 0.33 fixed (footnote c); Equation 10
+    e_wt_cl_cvvh <- fixed(0.75); label("Power exponent on WT/99.5 for CL, CVVH branch (unitless)") # Table 2 'Weight CVVH (power)' 0.75 fixed; Equation 11
 
-    # ===== Inter-individual variability =====
-    # SCALE CONVENTION. Zhang 2025 Table 2 prints IIV as a bare percentage
-    # per parameter without stating the convention, and the column mixes at
-    # least three conventions across the review's constituent studies (the
-    # audit against the four already-extracted primaries is in the
-    # vignette's 'Assumptions and deviations' section). Every model
-    # transcribed from this review uses the same documented reading: the
-    # printed percentage is an apparent CV of a log-normal random effect,
-    # so omega^2 = log(1 + CV^2).
-    #
-    # IIV is reported on CL and V1 only; no omega is given for V2 or Q.
-    etalcl ~ log(1 + 0.305^2)  # Zhang 2025 Table 2 (Por 2021): IIV CL = 30.5%, read as an apparent CV
-    etalvc ~ log(1 + 0.361^2)  # Zhang 2025 Table 2 (Por 2021): IIV V1 = 36.1%, read as an apparent CV
+    # ===== Covariate effects on volumes -- Table 2 =====
+    e_wt_vc <- fixed(0.74); label("Power exponent on WT/99.5 for Vc (unitless)") # Table 2 'Covariates on Vc, Weight (power)' 0.74 fixed (footnote c); Equation 12
+    e_alb_vc <- -1.17; label("Power exponent on albumin/2.7 g/dL for Vc (unitless)") # Table 2 'Covariates on Vc, Albumin (power)' -1.17 (RSE 42.84%); Equation 12
+    e_alb_vp <- -3.68; label("Power exponent on albumin/2.7 g/dL for Vp (unitless)") # Table 2 'Covariates on Vp, Albumin (power)' -3.68 (RSE 17%); Equation 13
+
+    # ===== Inter-individual variability -- Table 2 prints the VARIANCES
+    # omega^2 directly (eta ~ N(0, omega^2), Equation 4). No IIV on Q or
+    # Vp. Pearson correlation between the two etas was 0.05, so no
+    # covariance is estimated. =====
+    etalcl ~ 0.093 # Table 2 'omega2 CL' 0.093 (RSE 28.18%); eta-shrinkage 8.6%
+    etalvc ~ 0.13 # Table 2 'omega2 Vc' 0.13 (RSE 36.45%); eta-shrinkage 45.41%
 
     # ===== Residual error =====
-    propSd <- 0.30; label("Proportional residual error (fraction)")  # Zhang 2025 Table 2 (Por 2021): Proportional = 30%
+    propSd <- 0.3; label("Proportional residual error (fraction)") # Table 2 'Proportional error' 0.3 (RSE 22%), read as an SD; see the vignette's Assumptions section
   })
 
   model({
-    # ----- Unit conversion -----
-    # The albumin covariate was calibrated on g/dL (reference 2.7); the
-    # canonical ALB column carries SI g/L. See covariateData$ALB.
-    alb_gdL <- ALB * 0.1  # SI g/L -> US-convention g/dL
+    # The albumin effects were fitted in g/dL; the canonical ALB column is
+    # SI g/L.
+    alb_gdL <- ALB * 0.1
 
-    # ----- Individual PK parameters -----
-    # Clearance switches hard between the two branches printed in Zhang
-    # 2025 Table 3. The exponential eta multiplies the endogenous arm of
-    # whichever branch applies; in the CVVH branch the additive filter
-    # clearance of 1.56 L/h is added AFTER the eta, exactly as printed.
-    cl <- ((1 - RRT_CRRT_STATUS) * exp(lcl)      * (CRCL / 145.83)^e_crcl_cl * (WT / 99.5)^e_wt_cl +
-                RRT_CRRT_STATUS  * exp(lcl_cvvh) *                             (WT / 99.5)^e_wt_cl_cvvh) *
-          exp(etalcl) +
-          RRT_CRRT_STATUS * exp(lcl_crrt)
+    # ----- Body clearance (Equations 10 and 11) -----
+    # No CVVH: 15.31 * (CRCL/145.83)^0.46 * (WT/99.5)^0.33 * exp(eta)
+    # CVVH:    15.31 * (1 - 0.1) * (WT/99.5)^0.75 * exp(eta) + CL_CVVH
+    cl_body <- exp(lcl + etalcl) * (1 + e_rrt_crrt_status_cl * RRT_CRRT_STATUS) *
+      ((1 - RRT_CRRT_STATUS) * (CRCL / 145.83)^e_crcl_cl * (WT / 99.5)^e_wt_cl +
+        RRT_CRRT_STATUS * (WT / 99.5)^e_wt_cl_cvvh)
+    # Haemofilter clearance is a per-patient data column (0 off CVVH),
+    # added after the random effect (Equation 5).
+    cl_crrt <- QEFF
+    # 'cl' must be the TOTAL clearance: rxode2 can solve analytically from
+    # a cl/vc pair.
+    cl <- cl_body + cl_crrt
 
     vc <- exp(lvc + etalvc) * (WT / 99.5)^e_wt_vc * (alb_gdL / 2.7)^e_alb_vc
-    vp <- exp(lvp)                                * (alb_gdL / 2.7)^e_alb_vp
-    q  <- exp(lq)
+    vp <- exp(lvp) * (alb_gdL / 2.7)^e_alb_vp
+    q <- exp(lq)
 
-    # ----- Micro-constants -----
     kel <- cl / vc
-    k12 <- q  / vc
-    k21 <- q  / vp
+    k12 <- q / vc
+    k21 <- q / vp
 
-    # ----- ODE system -----
-    # Imipenem-cilastatin given as an IV infusion into the central
-    # compartment; the infusion duration comes from the event table's
-    # rate / dur column.
-    d/dt(central)     <- -kel * central - k12 * central + k21 * peripheral1
-    d/dt(peripheral1) <-                   k12 * central - k21 * peripheral1
+    # Imipenem-cilastatin IV infusion into central; infusion duration comes
+    # from the event table.
+    d/dt(central) <- -kel * central - k12 * central + k21 * peripheral1
+    d/dt(peripheral1) <- k12 * central - k21 * peripheral1
 
-    # ----- Output -----
     Cc <- central / vc
     Cc ~ prop(propSd)
   })

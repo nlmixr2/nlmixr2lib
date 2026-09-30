@@ -40,7 +40,8 @@ All six models are packaged, one file each:
 | `Zhang_2023_valproic_acid_exponent` | Model V | power function of daily dose on `CL/F` (Eq. 7) |
 
 The ten *reviewed* literature models are other authors' work and are not part of
-this extraction; they are queued as primary papers separately. One of them
+this extraction; they are to be extracted separately from their primary
+papers. One of them
 (Williams 2012) is already in the library as
 `Williams_2012_valproic_acid_pediatric`.
 
@@ -267,7 +268,9 @@ keep_cols <- c("arm", "WT", "ALB", "DOSE_VPA_MGKGD", "DOSE_VPA_MGD", "FORM_VPA_S
 
 solve_one <- function(label, zero_re) {
   mod <- readModelDb(model_names[[label]])
-  args <- list(object = mod, events = events, keep = keep_cols)
+  args <- list(object = mod, events = events, keep = keep_cols,
+               # steady-state searches for long-half-life subjects exceed the default step budget
+               maxsteps = 1e6)
   # omega = NA zeroes the random effects for THIS call only, without mutating
   # the shared model object (and without inheriting a previous solve's omega).
   if (zero_re) args$omega <- NA

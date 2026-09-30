@@ -219,7 +219,7 @@ Xie_2025_midazolam <- function() {
       "evaluated by goodness-of-fit plots, a 1000-replicate non-parametric",
       "bootstrap and a 1000-replicate VPC. All 22 evaluable SNP genotypes",
       "except NR1I2 rs1464603 satisfied Hardy-Weinberg equilibrium",
-      "(Supplementary Table 1, not on disk)."
+      "(Supplementary Table 1, which was not available when this model was built)."
     )
   )
 
@@ -268,7 +268,7 @@ Xie_2025_midazolam <- function() {
     # COVARIATE EFFECTS -- Xie 2025 Table 2, "Final Model" column.
     #
     # Xie 2025 does not print the covariate equations anywhere in the
-    # article, and no supplement carrying them is on disk. All three
+    # article, and no available supplement carries them. All three
     # functional forms and both reference values were recovered by
     # back-solving the paper's own reported simulation clearances
     # (Results "Simulations") and are exact to the reported precision:

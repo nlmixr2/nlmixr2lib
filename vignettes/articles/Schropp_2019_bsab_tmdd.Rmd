@@ -20,8 +20,8 @@ library(ggplot2)
 # Model and source
 
 * Article: <https://doi.org/10.1002/psp4.12369> (CPT Pharmacometrics Syst Pharmacol. 2019;8(3):177-187, PMC6430159)
-* Supplement: S1-S10, retrieved from the Europe PMC supplementary-files endpoint
-  for PMC6430159. S4/S6 are the authors' MONOLIX/NONMEM code for the full model,
+* Supplement: S1-S10, published with the open-access article
+  (PMC6430159). S4/S6 are the authors' MONOLIX/NONMEM code for the full model,
   S3/S5 for the quasi-equilibrium (QE) approximation with non-constant total
   receptors, and S8/S10 (with S7/S9 as the alternative representation) for the QE
   approximation with constant total receptors.

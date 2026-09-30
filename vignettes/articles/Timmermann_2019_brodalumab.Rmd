@@ -118,7 +118,7 @@ n_subj <- 400
 
 cohort <- tibble::tibble(
   id = seq_len(n_subj),
-  WT = pmin(pmax(rnorm(n_subj, mean = 87.8, sd = 20), 43, 186))
+  WT = pmin(pmax(rnorm(n_subj, mean = 87.8, sd = 20), 43), 186)
 )
 ```
 

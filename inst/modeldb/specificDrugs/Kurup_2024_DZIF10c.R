@@ -169,8 +169,8 @@ Kurup_2024_DZIF10c <- function() {
     # seven '0.0225 FIX' rows of the supplement $OMEGA block.
     #
     # The two estimated IIVs are reported in Table 1 as percentages; they are
-    # converted here with omega^2 = log(CV^2 + 1), the log-normal convention in
-    # the skill's verification checklist. See vignette Errata for the
+    # converted here with omega^2 = log(CV^2 + 1), the standing log-normal
+    # convention. See vignette Errata for the
     # alternative reading (omega = CV/100), which the paper does not state.
     etalogitfdepot         ~ fixed(0.0225)  # $OMEGA 2 'F1H'   (additive on the logit scale, supplement eq. 13)
     etalogitfdepot_macaque ~ fixed(0.0225)  # $OMEGA 1 'F1M'   (additive on the logit scale, supplement eq. 13)

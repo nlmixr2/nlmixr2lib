@@ -38,7 +38,7 @@ Hui_2019_methotrexate <- function() {
   # (central) and V2 (peripheral). Amount units are umol because every
   # methotrexate concentration in Wang 2023 is reported in umol/L.
   # verified = FALSE for the specimen: the Hui 2019 primary, which would state
-  # the assayed matrix, is not on disk, and neither Wang 2023 Table 2 nor the
+  # the assayed matrix, was not available, and neither Wang 2023 Table 2 nor the
   # primary's abstract names it.
   compartmentData <- list(
     central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
@@ -86,8 +86,7 @@ Hui_2019_methotrexate <- function() {
         "be. The alternative grouping (eGFR x 1.73)/(192 x BSA) -- which would",
         "read eGFR as an absolute mL/min value and 192 as a reference",
         "normalised eGFR -- cannot be excluded without the primary, and would",
-        "raise typical clearance by about 17%. Flagged in the vignette Errata;",
-        "the primary is queued for re-extraction."
+        "raise typical clearance by about 17%. Flagged in the vignette Errata."
       ),
       source_name = "eGFR"
     ),

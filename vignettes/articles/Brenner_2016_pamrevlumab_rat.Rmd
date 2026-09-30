@@ -305,7 +305,8 @@ log-linear terminal phase.
 
 ```{r ctgf-halflife}
 tail_slope <- function(df, conc, lo, hi) {
-  d <- df[df$time >= lo & df$time <= hi & df[[conc]] > 0, ]
+  # Keep conc >= 1e-6 * Cmax: below that the ODE integrator has no relative accuracy left.
+  d <- df[df$time >= lo & df$time <= hi & df[[conc]] >= 1e-6 * max(df[[conc]], na.rm = TRUE), ]
   unname(coef(lm(log(d[[conc]]) ~ d$time))[2])
 }
 sN <- solve_ctgf(20 * wt_kg, "target_ctgfn")
@@ -434,7 +435,11 @@ nca_sim <- lapply(doses, function(d) solve_fg(d, sample_h)) |>
   )
 
 # Only !is.na(); dropping time == 0 would remove PKNCA's AUC anchor.
-nca_sim <- nca_sim |> filter(!is.na(Cc))
+nca_sim <- nca_sim |> filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup()
 stopifnot(nrow(nca_sim) > 0, any(nca_sim$time == 0))
 
 dose_df <- tibble(

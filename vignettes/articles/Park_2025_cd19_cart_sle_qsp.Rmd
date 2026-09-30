@@ -95,7 +95,7 @@ tibble::tibble(
 Individual body weights are reported nowhere in Park 2025 or in either
 appendix, and the clinical study that supplied the cellular-kinetic data
 (Mackensen 2022, *Nat Med* 28:2124-2132) is not open access, so none could be
-verified from the sources on disk. `WT` is a user-supplied covariate and every
+verified from the available sources. `WT` is a user-supplied covariate and every
 allometric term in the model is normalized to 70 kg, which is the reference
 used throughout this vignette. Supply a different weight through the `WT`
 column to scale `Vb`, `Vbm`, the administered cell number, the C3 synthesis
@@ -837,7 +837,7 @@ stream (Appendix S2), which is the code that produced the published figures.**
     Figure 4A3 axis. The red regression line drawn in Figure 4A3 has a visual
     intercept near 4.3 and a slope near 4.8 per axis unit, roughly a hundredfold
     steeper, so the units of the predictor in that panel cannot be reconciled
-    with the printed coefficients from the sources on disk. The tabulated
+    with the printed coefficients from the available sources. The tabulated
     coefficients are used because they are the numeric source; the resulting
     day-0 score of about 30 is above the range plotted in Figure 4B3. The C3 and
     interferon-alpha panels have no such discrepancy - their printed

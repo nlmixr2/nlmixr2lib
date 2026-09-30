@@ -163,7 +163,7 @@ Shoji_2016_cefepime <- function() {
 
     # Combined residual error -- Shoji 2016 Table 3 "Residual variability (%) = 66.3"
     # and Table 5 theta_5 = 0.705 ("fraction of additive and proportional error").
-    # Per sidecar request-001 / response-001 (operator chose Option B), encoded
+    # As decided by the maintainers, encoded
     # as a standard combined error model with sigma = 66.3% as the proportional
     # CV and theta_5 = 0.705 as the additive SD in mg/L (the source paper
     # reports plasma concentrations in ug/mL = mg/L). This matches the

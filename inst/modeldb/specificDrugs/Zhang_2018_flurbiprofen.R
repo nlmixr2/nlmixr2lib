@@ -1,5 +1,5 @@
 Zhang_2018_flurbiprofen <- function() {
-  description <- "One-compartment IV population PK plus Holford-Sheiner effect-compartment for cerebrospinal fluid (CSF) disposition of flurbiprofen, the active metabolite of flurbiprofen axetil, in Chinese adults with postoperative pain receiving 1 mg/kg IV flurbiprofen axetil (Zhang 2018, Tables 1-2, Eq. 3 covariate form). Final-model typical values CL = 1.55 L/h, Vd = 7.91 L, plasma-CSF equilibration rate Ke = 0.0015/h; linear-multiplicative covariate effects of weight and height on Ke centered on the population medians (68.5 kg, 165 cm). NOTE: the source article is subject to a Journal of Pain Research Expression of Concern (2019;12:2799) that questions the validity of the underlying data -- three authors are alleged to have previously published the same results elsewhere, and the clinical trial registration number given in the article belongs to an unrelated study. The authors did not respond to the journal's request for the raw data. This is NOT a funding-disclosure notice and NOT a retraction, but it does bear on the data the model was fit to; treat the parameter values as unverified and see the reference field and the vignette Errata."
+  description <- "One-compartment IV population PK plus Holford-Sheiner effect-compartment for cerebrospinal fluid (CSF) disposition of flurbiprofen, the active metabolite of flurbiprofen axetil, in Chinese adults with postoperative pain receiving 1 mg/kg IV flurbiprofen axetil (Zhang 2018, Tables 1-2, Eq. 3 covariate form). Final-model typical values CL = 1.55 L/h, Vd = 7.91 L, plasma-CSF equilibration rate Ke = 0.0015/h; linear-multiplicative covariate effects of weight and height on Ke centered on the population medians (68.5 kg, 165 cm). NOTE: the source article was the subject of a Journal of Pain Research Expression of Concern (2019;12:2799) over data integrity, overlap with an earlier Chinese-language report, and a clinical trial registration number wrongly given as the ethics approval number. The journal's 2020 Corrigendum (J Pain Res. 2020;13:553) closed that investigation: the study was not a clinical trial, the correct ethics approval is Peking University People's Hospital No. 2010-30, the study data and ethics documents were reviewed and verified by the authors' institution, and all concerns raised in the Expression of Concern were stated to be resolved. No parameter, equation, table or unit was changed; see the reference field and the vignette."
   reference <- paste(
     "Zhang J, Zhang H, Zhao L, Gu J, Feng Y, An H.",
     "Population pharmacokinetic modeling of flurbiprofen, the active",
@@ -26,6 +26,19 @@ Zhang_2018_flurbiprofen <- function() {
     "request for an explanation and the raw data. The notice is not a",
     "retraction; the Editor-in-Chief alerts readers to reach their own",
     "conclusions.",
+    "CORRIGENDUM: Population Pharmacokinetic Modeling of Flurbiprofen, the",
+    "Active Metabolite of Flurbiprofen Axetil, in Chinese Patients with",
+    "Postoperative Pain [Corrigendum].",
+    "J Pain Res. 2020;13:553. doi:10.2147/JPR.S251590.",
+    "The journal's investigation determined that the study was not a",
+    "clinical trial and that the CTR number ChiCTR-TRC-11001791 was used in",
+    "error; the Methods sentence on ethics approval is corrected to read",
+    "Ethics Approval No. 2010-30 (Medical Ethics Committee of Peking",
+    "University People's Hospital). All relevant study data and ethical",
+    "approval documents were reviewed and verified by the authors'",
+    "institution, the data-integrity and prior-publication issues were",
+    "resolved, and the journal notes that all concerns raised in the",
+    "Expression of Concern have been resolved.",
     sep = " "
   )
   vignette <- "Zhang_2018_flurbiprofen"
@@ -73,11 +86,11 @@ Zhang_2018_flurbiprofen <- function() {
     bmi_median = "24.33 kg/m^2 (mean 24.89, SD 3.49)",
     sex_female_pct = 62.5,
     race_ethnicity = c(Asian = 100),
-    disease_state = "Adults undergoing surgery under subarachnoid anesthesia with postoperative pain, reported as enrolled at Peking University People's Hospital. The published article's Methods gave 'ChiCTR-TRC-11001791' as the Medical Ethics Committee approval number; the 2019 Expression of Concern establishes that this is a clinical trial REGISTRATION number, that it was wrongly ascribed as an ethics approval number, and that the registered trial is an unrelated study (cognitive dysfunction in the elderly, ages 60-120, n = 100). No verified ethics approval identifier is available for this study.",
+    disease_state = "Adults undergoing surgery under subarachnoid anesthesia with postoperative pain, enrolled at Peking University People's Hospital. The study was approved by the Medical Ethics Committee of Peking University People's Hospital, Ethics Approval No. 2010-30 (2020 Corrigendum, J Pain Res. 2020;13:553). The published article's Methods had instead given 'ChiCTR-TRC-11001791', a clinical trial registration number belonging to an unrelated study; the Corrigendum states the study was not a clinical trial and that the number was used in error.",
     dose_range = "Single IV injection of 1 mg/kg flurbiprofen axetil (5050E; Tide Pharmaceutical) -- observed dose range 45-96 mg.",
     regions = "China (single centre, Peking University People's Hospital, Beijing).",
     n_observations = "144 therapeutic drug-monitoring samples (72 plasma + 72 CSF) from the same 72 patients; each subject contributed one plasma sample and one CSF sample drawn simultaneously at a single time point. Patients were randomised into nine groups of 8 patients, and each group sampled at a fixed nominal time (5, 10, 15, 20, 25, 30, 35, 40, or 45 minutes after dose). Plasma concentrations 3.48-14.56 ug/mL; CSF concentrations 0-20.80 ng/mL.",
-    notes = "Sparse single-time-point joint plasma+CSF sampling design with stratified allocation across nine post-dose times. Sex 45 female / 27 male. CYP2C9 genotype was not collected; the authors note *1/*1 is the dominant Chinese genotype with *1/*3 and *1/*13 each <10%. DATA PROVENANCE UNVERIFIED: the 2019 Expression of Concern (J Pain Res. 2019;12:2799) alleges that this cohort's results were previously published by three of the same authors in Chin J Anaesthesiol. 2011;31(04):432-434, and the authors did not supply the raw data when the journal requested it. All population figures above are as reported in the 2018 article and could not be independently confirmed."
+    notes = "Sparse single-time-point joint plasma+CSF sampling design with stratified allocation across nine post-dose times. Sex 45 female / 27 male. CYP2C9 genotype was not collected; the authors note *1/*1 is the dominant Chinese genotype with *1/*3 and *1/*13 each <10%. DATA PROVENANCE: the 2019 Expression of Concern (J Pain Res. 2019;12:2799) raised data-integrity concerns and alleged overlap with Chin J Anaesthesiol. 2011;31(04):432-434; the 2020 Corrigendum (J Pain Res. 2020;13:553) reports that the study data and ethics documents were reviewed and verified by the authors' institution and that these issues were resolved. All population figures above are as reported in the 2018 article (unchanged by the Corrigendum)."
   )
 
   ini({

@@ -43,7 +43,7 @@ Boucher_2018_naproxen_mbma <- function() {
     design = "18 randomized double-blind placebo-controlled parallel-group trials, each with both a naproxen and a placebo arm; 12 trials used a flare design (washout plus required pain flare-up for eligibility) and 6 did not. Source: internal clinical study reports plus publicly available literature.",
     treatments = "naproxen vs placebo (per-arm naproxen dose was not modeled; the model characterizes the time-course of response pooled across the naproxen doses studied)",
     timepoints = "WOMAC pain reported over a time-course up to about 13 weeks; the number of trials reporting at weeks 2, 6, and 12 was 13, 9, and 7 respectively (Boucher 2018 Results)",
-    notes = "MBMA at the study-arm level: each modeled data point is the mean WOMAC pain in one trial arm at one timepoint, weighted by its observed standard error (variance SD^2/n). The model is intended for simulating study-arm-mean WOMAC pain time-courses and is NOT suitable for individual-subject simulation. Total patient count is reported only in Supplementary Table S2, which is not on disk; n_subjects is left NA. See Boucher 2018 'Example dataset' section and Figure 1 for the design and time-course."
+    notes = "MBMA at the study-arm level: each modeled data point is the mean WOMAC pain in one trial arm at one timepoint, weighted by its observed standard error (variance SD^2/n). The model is intended for simulating study-arm-mean WOMAC pain time-courses and is NOT suitable for individual-subject simulation. Total patient count is reported only in Supplementary Table S2, which was not available when this model was built; n_subjects is left NA. See Boucher 2018 'Example dataset' section and Figure 1 for the design and time-course."
   )
 
   ini({
@@ -89,8 +89,8 @@ Boucher_2018_naproxen_mbma <- function() {
     # Between-study (study-arm-level) random effects on E0 and Emax
     # (Boucher 2018 Eq 1: eta1 on E0, eta2 on Emax; both ~ N(0, tau^2)).
     # Encoded as MBMA study-level etas (NOT individual between-subject
-    # variability) per the SKILL Phase-1 Step-3a MBMA guidance. The
-    # ini() value is the VARIANCE = tau^2; Table 2 reports tau (the SD).
+    # variability), following the library's convention for MBMA models.
+    # The ini() value is the VARIANCE = tau^2; Table 2 reports tau (the SD).
     # ============================================================
     eta_study_e0   ~ 0.3844   # Boucher 2018 Table 2 NONMEM, s1 = 0.62 (SD of eta1 on E0); variance = 0.62^2 = 0.3844
     eta_study_emax ~ 0.5476   # Boucher 2018 Table 2 NONMEM, s2 = 0.74 (SD of eta2 on Emax); variance = 0.74^2 = 0.5476

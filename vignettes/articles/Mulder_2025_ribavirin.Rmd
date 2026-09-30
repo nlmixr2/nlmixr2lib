@@ -107,7 +107,7 @@ set.seed(20260622)
 # Three typical male subjects across the three eGFR strata; one dose
 # level per subject pair (typical-value replication). For the
 # stochastic VPC further down, we run a wider but small (n = 30)
-# cohort to keep the render under the 5-minute pkgdown gate.
+# cohort to keep the render under 5 minutes.
 make_subject <- function(id, regimen, dose_mg, crcl) {
   tibble::tibble(
     id        = id,
@@ -372,8 +372,8 @@ knitr::kable(
 - **Healthy-hepatocyte half-life (TDEG = 6398 h) and the
   infected:healthy hepatocyte decay ratio (Factor = 100) come from
   Dahari 2007 (reference 20).** They are not re-estimated by
-  Mulder 2025 and the on-disk source has no other estimate to
-  reconcile.
+  Mulder 2025, and the source material available when this model was
+  built has no other estimate to reconcile.
 
 - **HEV viral-load residual error model.** The source paper reports
   the residual error as "additive function on the log scale" with

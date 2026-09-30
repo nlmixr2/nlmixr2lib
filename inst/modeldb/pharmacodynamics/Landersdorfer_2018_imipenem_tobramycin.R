@@ -225,8 +225,9 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # CFUmax = 10^logcfumax (with k21*S2 the only growth term, the
     # system stops growing when k12_eff -> 0 i.e. cfu_total ->
     # CFUmax). The exact attenuation site is not stated in the
-    # paper main text and the Fig S2 schematic was not on disk --
-    # see the vignette Assumptions and deviations section.
+    # paper main text and the Fig S2 schematic was not available
+    # when this model was built -- see the vignette Assumptions and
+    # deviations section.
     cfu_total <- bact_susceptible_susceptible1 + bact_susceptible_susceptible2 + bact_resistant_intermediate1 + bact_resistant_intermediate2 + bact_intermediate_resistant1 + bact_intermediate_resistant2
     growth_attn <- 1 - cfu_total / (10 ^ logcfumax)
     k12_ss <- k12_ss_base * growth_attn
@@ -276,8 +277,8 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # where k12_p_eff = k12_p_base * growth_attn carries the
     # carrying-capacity logistic limit. Killing acts on both states
     # (standard assumption; the supplement Fig. S2 / S4 schematic
-    # was not on disk -- see the vignette Assumptions and
-    # deviations section).
+    # was not available when this model was built -- see the
+    # vignette Assumptions and deviations section).
 
     d/dt(bact_susceptible_susceptible1) <- -k12_ss * bact_susceptible_susceptible1 + 2 * k21 * bact_susceptible_susceptible2 - kill_ss * bact_susceptible_susceptible1
     d/dt(bact_susceptible_susceptible2) <-  k12_ss * bact_susceptible_susceptible1 - k21 * bact_susceptible_susceptible2 - kill_ss * bact_susceptible_susceptible2

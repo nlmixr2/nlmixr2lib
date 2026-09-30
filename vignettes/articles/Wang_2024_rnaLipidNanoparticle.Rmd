@@ -804,8 +804,8 @@ model, so it is recorded here rather than packaged.
   SimBiology export additionally carries a receptor-turnover ODE with a
   synthesis / degradation rate `kel_receptor` and a consumption term
   `kin / MW x Cinter x Creceptor x Vinter`; neither `kel_receptor` nor the drug
-  molecular weight `MW` is reported anywhere on disk. The consumption term is
-  negligible regardless: with the rat parameters it never exceeds about
+  molecular weight `MW` is reported in any available source. The consumption
+  term is negligible regardless: with the rat parameters it never exceeds about
   5e-4 per hour, so the receptor pool stays within about 2% of its initial value
   over a 48 h simulation even if `kel_receptor` were zero. Omitting it therefore
   changes nothing that the paper reports.

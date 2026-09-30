@@ -166,7 +166,7 @@ Diep_2026_donidalorsen <- function() {
     # component of the residual error on log-transformed plasma donidalorsen
     # concentrations. NONMEM/Phoenix "additive on log scale" maps to a
     # proportional residual in nlmixr2's linear space (see
-    # references/naming-conventions.md NONMEM error-block table:
+    # the library's NONMEM error-block translation:
     # Y = LOG(F) + EPS(1) -> Cc ~ prop(propSd)).
     # PD: Diep 2026 Table 2 reports sigma_prop = 0.159 as the proportional
     # component on linear PKK concentrations.

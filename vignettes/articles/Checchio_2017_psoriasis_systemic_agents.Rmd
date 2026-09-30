@@ -31,8 +31,8 @@ separately, on different datasets, in different software:
   (PASI50/75/90/100) for 16 drug arms (S-PLUS 8.0.4, 71 studies).
 
 * Article: <https://doi.org/10.1002/cpt.732> (PMC5697570)
-* Supplement: `CPT-102-1006-s001.docx`, retrieved from the EuropePMC
-  `supplementaryFiles` endpoint for PMC5697570. It carries Supplementary
+* Supplement: `CPT-102-1006-s001.docx`, published with the open-access
+  article (PMC5697570). It carries Supplementary
   Tables S1.1, S1.2 and 2, which hold **every** parameter estimate; none is in
   the main text.
 
@@ -44,9 +44,9 @@ uiLand <- rxode2::rxode2(modLand)
 ```
 
 **A note on reading the source.** Every display equation in the published PDF
-is a rasterised image. The markdown preprocessor renders all thirteen of them
-as `<!-- formula-not-decoded -->`, and any extraction working from that file
-alone would have no structural model at all. All thirteen were recovered with
+is a rasterised image. None of the thirteen survives plain-text extraction of
+the PDF, and a reading that worked from such an extraction alone would have no
+structural model at all. All thirteen were recovered with
 `pdftotext -layout`, which reproduces the mathematical text (mangled in
 places, but unambiguously) directly from the PDF's font layer.
 
@@ -682,9 +682,9 @@ stopifnot(
 
 ## Equation recovery
 
-Every display equation is rasterised in the published PDF. The preprocessed
-markdown contains thirteen `<!-- formula-not-decoded -->` placeholders and no
-mathematics at all. All thirteen equations were recovered with
+Every display equation is rasterised in the published PDF. Plain-text
+extraction of the PDF loses all thirteen and yields no mathematics at all. All
+thirteen equations were recovered with
 `pdftotext -layout`. Wherever the recovered text was ambiguous, the reading was
 settled by whether it reproduces the source's own published predictions, not by
 plausibility -- the Table 1 and Table 2 comparisons above are that test.

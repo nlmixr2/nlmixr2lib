@@ -359,13 +359,13 @@ typical 33 kg child).
   in the model file uses N = 95 from the Methods narrative, with the
   discrepancy noted in `population$notes`.
 - **Errata search.** A scan of the journal landing page DOI listing and a
-  search of the on-disk source-paper directory turned up no
+  search of the source paper itself turned up no
   erratum/corrigendum/correction notice. The model parameters reflect the
   values reported in the original Br J Clin Pharmacol 2014;78(2):343-352
   publication.
 - **Vignette uses 200 subjects per cohort.** This is enough to produce
-  stable percentile envelopes and PKNCA summaries without exceeding the
-  pkgdown 5-minute render budget. The Vezina 2014 study itself analysed
+  stable percentile envelopes and PKNCA summaries while keeping the
+  render time under 5 minutes. The Vezina 2014 study itself analysed
   N = 95 plasma profiles (sparse sampling, mean ~3 samples per subject).
 - **Single-dose simulation for AUC(0,inf).** The PKNCA comparison uses a
   single-dose simulation rather than a multi-dose steady-state simulation

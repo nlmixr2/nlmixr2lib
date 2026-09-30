@@ -49,8 +49,8 @@ Lai_2026_rivaroxaban <- function() {
         "mass, LBM) ... The former is considered the contemporary standard in PPK",
         "studies'. The James-formula LBM is the distinct canonical LBM and was screened",
         "as an alternative and rejected (Results 3.3.1). Requires body weight, height",
-        "and sex to compute; the source's Table S2 holds the printed equations and is",
-        "not on disk, but the Janmahasatian form is fixed by the cited reference",
+        "and sex to compute; the source's Table S2 holds the printed equations and was",
+        "not available when this model was built, but the Janmahasatian form is fixed by the cited reference",
         "(Janmahasatian et al., Clin Pharmacokinet 2005;44:1051-1065). Enters V/F as an",
         "exponential (Monolix log-linear 'proportional shift') deviation from the cohort",
         "median 48 kg, which the Discussion names ('Increasing LBW from the median",
@@ -80,7 +80,7 @@ Lai_2026_rivaroxaban <- function() {
         "and dronedarone, diltiazem and verapamil are additionally moderate CYP3A4",
         "inhibitors while amiodarone is a weak one, so in THIS cohort the two mechanisms",
         "coincide for every positive patient. The full classification list is the",
-        "source's Table S1, which is not on disk. The Discussion attributes most of the",
+        "source's Table S1, which was not available when this model was built. The Discussion attributes most of the",
         "effect to the two antiarrhythmics: 'these effects were primarily driven by",
         "amiodarone and dronedarone, which accounted for 82.6% of co-medication cases'.",
         "Concomitant BCRP inhibitors (benzbromarone, febuxostat, sulfasalazine; 22",
@@ -95,8 +95,8 @@ Lai_2026_rivaroxaban <- function() {
 
   # Screened in the covariate analysis but NOT retained in the final model.
   # Results 3.3.1 (on V/F) and 3.3.2 (on CL/F) name each one; the paper reports
-  # only OFV drops for these (Tables S4 and S5, which are not on disk) and no
-  # point estimate, so none can be encoded.
+  # only OFV drops for these (Tables S4 and S5, which were not available when
+  # this model was built) and no point estimate, so none can be encoded.
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
@@ -173,7 +173,7 @@ Lai_2026_rivaroxaban <- function() {
         "then removed in backward elimination -- only CrCL and CYP3A4/P-gp-inhibitor use",
         "survived on CL/F (Results 3.3.2). The final model therefore carries no body-size",
         "term on clearance at all. No distribution tabulated, and the IBW formula variant",
-        "is in the source's Table S2, which is not on disk."
+        "is in the source's Table S2, which was not available when this model was built."
       )
     ),
     LBM = list(

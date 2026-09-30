@@ -514,7 +514,7 @@ agree at this cohort size.
   provenance of the covariate screen is preserved without implying an effect the
   paper did not estimate.
 
-- **Supplementary material was not available on disk.** Tables S1 and S2 (study
+- **Supplementary material was not available.** Tables S1 and S2 (study
   designs and sampling schemes; the Erlang compartment-count comparison) and
   Figures S1 and S2 (CYP2C19 phenotype and *H. pylori* diagnostics) were not
   obtainable. Every final parameter estimate is in main-text Table 2 and every

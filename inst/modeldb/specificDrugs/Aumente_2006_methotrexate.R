@@ -42,7 +42,7 @@ Aumente_2006_methotrexate <- function() {
   # Wang 2023 Methods 2.2 describes plasma sampling for the evaluation cohort
   # and Table 2 lists 'V1: central volume of distribution'. verified = FALSE
   # for the specimen because the Aumente 2006 primary, which would state the
-  # assayed matrix for THIS cohort, is not on disk.
+  # assayed matrix for THIS cohort, was not available when this model was built.
   compartmentData <- list(
     central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE)
@@ -104,8 +104,8 @@ Aumente_2006_methotrexate <- function() {
     regions = "Spain (Reina Sofia University Hospital, Cordoba).",
     notes = paste(
       "All demographics are from Wang 2023 Table 1, which tabulates the six",
-      "evaluated cohorts side by side; the Aumente 2006 primary is not on",
-      "disk. Wang 2023 Results reports that this model, together with the",
+      "evaluated cohorts side by side; the Aumente 2006 primary was not",
+      "available when this model was built. Wang 2023 Results reports that this model, together with the",
       "Medellin-Garibay and Zhang models, 'showed the best predictive",
       "performance across all the different tests', while Figure 2 panel A",
       "shows it is the one model whose individual predictions retain a",

@@ -119,8 +119,8 @@ Knebel_2012_istradefylline_nausea <- function() {
   ini({
     # ================================================================
     # All values are Knebel 2012 Table IV, "Nausea" block. The model form
-    # is given in Knebel 2012 Supplemental Table S2, which is not on
-    # disk; the form encoded here is the one the paper's own text
+    # is given in Knebel 2012 Supplemental Table S2, which was not
+    # available when this model was built; the form encoded here is the one the paper's own text
     # specifies ("The relationship between istradefylline AUCss and the
     # probability of experiencing nausea as an AE was best described by a
     # power model. The power model was characterized by a baseline

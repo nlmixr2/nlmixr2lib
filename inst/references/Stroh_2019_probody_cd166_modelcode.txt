@@ -1,8 +1,8 @@
 # Extracted text of the Supporting Information 'Model code' (PSP4-8-676-s003.pdf)
 # accompanying Stroh M et al., Quantitative systems pharmacology model of a masked,
 # tumor-activated antibody. CPT Pharmacometrics Syst Pharmacol. 2019;8(9):676-684.
-# doi:10.1002/psp4.12448 (PMC6765697, CC BY-NC-ND).  Obtained from the EuropePMC
-# supplementaryFiles endpoint and converted with pdftotext -layout.
+# doi:10.1002/psp4.12448 (PMC6765697, CC BY-NC-ND).  Obtained from the article's
+# supplementary material and converted with pdftotext -layout.
 # Read by vignettes/articles/Stroh_2019_probody_cd166_qsp.Rmd, which parses the
 # '(row,column) value' entries of the A1 and A2 matrices.
 #

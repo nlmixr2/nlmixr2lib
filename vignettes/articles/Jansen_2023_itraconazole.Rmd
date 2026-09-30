@@ -23,7 +23,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Jansen_2023_itraconazole"))$description`
 * Article: <https://doi.org/10.1093/jac/dkad072>
 * Supplement (figures S1-S5 and the final model NONMEM control stream):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10154123/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC10154123>
 
 # Population
 

@@ -326,8 +326,8 @@ knitr::kable(
   / 0.0862 (covariance bounded by sqrt(0.0654 * 0.0862) ~= 0.075), so 0.56
   is interpreted here as the correlation coefficient r between eta_CL and
   eta_Vc, and the off-diagonal covariance is computed as
-  r * sqrt(var_CL * var_Vc) = 0.0421. This is the convention recommended
-  in the verification-checklist for correlated IIV.
+  r * sqrt(var_CL * var_Vc) = 0.0421. This is the standard convention for
+  correlated IIV.
 
 - **Food-vs-site confounding.** The two study sites differed in both
   ofloxacin sampling schedule (Cape Town 0.5 / 3.5 / 5.5 / 7.5 / 12 h;

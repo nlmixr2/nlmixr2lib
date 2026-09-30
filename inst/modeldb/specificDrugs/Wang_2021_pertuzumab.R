@@ -53,7 +53,7 @@ Wang_2021_pertuzumab <- function() {
     n_observations = 5180L,
     n_studies = 1L,
     study = "FeDeriCa (NCT03493854); randomized, open-label, international, multicenter, phase III non-inferiority trial of PH FDC SC vs P + H IV in the neoadjuvant-adjuvant early breast cancer setting (500 patients randomized; 489 contributed pertuzumab PK to the popPK analysis).",
-    age_median = "Median age not reproduced in the main paper text (Online Resource 1 supplement is not on disk); 43 of 489 patients (8.8%) were >65 years old per Wang 2021 Results.",
+    age_median = "Median age not reproduced in the main paper text (the Online Resource 1 supplement was not available when this model was built); 43 of 489 patients (8.8%) were >65 years old per Wang 2021 Results.",
     weight_range = "Lean body weight 5th-95th percentiles 38-53 kg (median 45.09 kg); total body weight not separately tabulated in the main paper text.",
     sex_female_pct = 100,
     race_ethnicity = c(Asian = 20.4, `non-Asian` = 79.6),
@@ -62,7 +62,7 @@ Wang_2021_pertuzumab <- function() {
     regions = "International, 19 countries / 106 centers; ~20% Asian-region enrollment.",
     sampling = "Sparse sampling cycles 5 through day 1 of cycle 8. P + H IV arm: pre- and post-dose day 1 of cycles 5, 6, 7, 8, day 15 of cycle 5. PH FDC SC arm: pre-dose day 1 of cycles 5, 6, 7, 8; days 2 and 15 of cycle 5; days 2, 4, 8, and 15 of cycle 7. 5180 evaluable pertuzumab samples (2093 SC + 3087 IV), assayed by validated duplex hybrid immunoaffinity capture LC-MS/MS with LLOQ 100 ng/mL.",
     reference_subject = "Median LBW = 45.09 kg, median albumin = 43.25 g/L, non-Asian region; the typical patient against which Wang 2021 forest plots and exposure ratios are computed.",
-    notes = "Demographics from Wang 2021 Results 'Patients and samples' and Online Resource 1 (not on disk in this worktree); Online Resource 1 covariate-distribution figures (LBW Q1 <42.0, Q4 >48.8 kg) are summarized in Wang 2021 Figs 1-2. The dataset pools P + H IV (intravenous pertuzumab + trastuzumab) and PH FDC SC (subcutaneous fixed-dose combination of pertuzumab + trastuzumab + recombinant human hyaluronidase) cohorts; the same model is fit jointly with route-specific proportional residual error. ER analyses (logistic regression of tpCR / safety endpoints versus model-predicted exposure) are not reproduced in the model file; the popPK structural model and parameter estimates are."
+    notes = "Demographics from Wang 2021 Results 'Patients and samples' and Online Resource 1 (not available when this model was built); Online Resource 1 covariate-distribution figures (LBW Q1 <42.0, Q4 >48.8 kg) are summarized in Wang 2021 Figs 1-2. The dataset pools P + H IV (intravenous pertuzumab + trastuzumab) and PH FDC SC (subcutaneous fixed-dose combination of pertuzumab + trastuzumab + recombinant human hyaluronidase) cohorts; the same model is fit jointly with route-specific proportional residual error. ER analyses (logistic regression of tpCR / safety endpoints versus model-predicted exposure) are not reproduced in the model file; the popPK structural model and parameter estimates are."
   )
 
   ini({

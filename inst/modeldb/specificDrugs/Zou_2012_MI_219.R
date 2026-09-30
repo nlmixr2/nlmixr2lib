@@ -32,7 +32,7 @@ Zou_2012_MI_219 <- function() {
     disease_state = "Predicted first-in-human PK for the HDM2 / p53 small-molecule inhibitor MI-219; no human subjects were dosed in Zou 2012.",
     dose_range = "5 mg/kg IV bolus (Zou 2012 Figure 5 and Figure 7 simulation dose used for the human-PK projection).",
     regions = NA_character_,
-    notes = "Predicted human PK parameters were obtained by joint NONMEM (Version VII) allometric fit of single-dose IV plasma profiles in rat (Sprague-Dawley, n = 3, 5 mg/kg, 195 +/- 15 g), beagle dog (n = 3, 2 mg/kg, 8.0 +/- 1.1 kg), and cynomolgus monkey (n = 6, 10 mg/kg, 2.5 +/- 0.26 kg). The structural model is two-compartment with linear elimination from the central compartment and body-weight allometry P = PTV * WT^b applied to every PK parameter. Per-species PTV and exponent b are reported in Zou 2012 Table S1 of the supplement; the supplement is not on disk for this extraction. Mouse data (CD-1, n = 33, 10 mg/kg, 18 +/- 1.7 g) were collected but excluded from the joint NONMEM fit because the mouse plasma profile was not superimposable on rat / dog / monkey curves under Wajima or Dedrick normalisation (Zou 2012 Results, page 274). The parameter encoding below is the predicted human PK at 70 kg from Zou 2012 Table 5, NONMEM column."
+    notes = "Predicted human PK parameters were obtained by joint NONMEM (Version VII) allometric fit of single-dose IV plasma profiles in rat (Sprague-Dawley, n = 3, 5 mg/kg, 195 +/- 15 g), beagle dog (n = 3, 2 mg/kg, 8.0 +/- 1.1 kg), and cynomolgus monkey (n = 6, 10 mg/kg, 2.5 +/- 0.26 kg). The structural model is two-compartment with linear elimination from the central compartment and body-weight allometry P = PTV * WT^b applied to every PK parameter. Per-species PTV and exponent b are reported in Zou 2012 Table S1 of the supplement; the supplement was not available when this model was built. Mouse data (CD-1, n = 33, 10 mg/kg, 18 +/- 1.7 g) were collected but excluded from the joint NONMEM fit because the mouse plasma profile was not superimposable on rat / dog / monkey curves under Wajima or Dedrick normalisation (Zou 2012 Results, page 274). The parameter encoding below is the predicted human PK at 70 kg from Zou 2012 Table 5, NONMEM column."
   )
 
   ini({
@@ -64,8 +64,9 @@ Zou_2012_MI_219 <- function() {
     #
     # No IIV or residual variability is encoded because the NONMEM Omega and
     # Sigma estimates are reported only in Zou 2012 Table S1 of the
-    # supplement, which is not on disk for this extraction. The model is a
-    # typical-value forward-prediction; see vignette Assumptions and deviations.
+    # supplement, which was not available when this model was built. The
+    # model is a typical-value forward-prediction; see vignette Assumptions
+    # and deviations.
     lcl <- log(12.98)   ; label("Predicted human clearance (L/h) at 70 kg")                       # derived from Zou 2012 Table 5 (NONMEM column): alpha = 2.839, beta = 0.161, A = 21714, B = 3109, dose 5 mg/kg
     lvc <- log(14.10)   ; label("Predicted human central volume (L) at 70 kg")                    # derived from Zou 2012 Table 5: Vc = Dose / (A + B), Dose = 5 mg/kg * 70 kg = 350 mg
     lq  <- log(22.32)   ; label("Predicted human intercompartmental clearance Q (L/h) at 70 kg")  # derived from Zou 2012 Table 5: Q  = k12 * Vc, k12 = 1.583 /h

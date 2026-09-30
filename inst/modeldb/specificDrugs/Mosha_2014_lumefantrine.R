@@ -84,9 +84,8 @@ Mosha_2014_lumefantrine <- function() {
         "significant (Delta-OFV = -15, p = 1.1e-4) but rests on a very",
         "small subsample. The canonical covariate-column register",
         "(inst/references/covariate-columns.md) does not currently",
-        "list DIARR, and the operator stop-and-ask gate prevents this",
-        "skill from introducing a new canonical without prior",
-        "registration. The diarrhoea effect is therefore not encoded",
+        "list DIARR, and a new canonical is not introduced without prior",
+        "registration by the maintainers. The diarrhoea effect is therefore not encoded",
         "in the model file; it is documented here in",
         "covariatesDataExcluded so the paper's covariate-screen",
         "provenance is preserved.",
@@ -128,7 +127,7 @@ Mosha_2014_lumefantrine <- function() {
       "lumefantrine carry-over from prior antimalarial use and is not",
       "encoded in this forward-simulation model; users who wish to",
       "reproduce the published baseline-positive cohort should pre-load",
-      "the depot. Companion artemether extraction from the same cohort:",
+      "the depot. Companion artemether model from the same cohort:",
       "modellib('Mosha_2014_artemether')."
     )
   )

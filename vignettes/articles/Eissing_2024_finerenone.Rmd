@@ -121,8 +121,8 @@ make_cohort <- function(n, dose_mg, id_offset = 0L) {
   wt_kg   <- pmin(pmax(rnorm(n, mean = 87,   sd = 18),    45),  150)
   egfr    <- pmin(pmax(rnorm(n, mean = 60.6, sd = 22),    20),  110)
   alp_UL  <- pmin(pmax(rnorm(n, mean = 73,   sd = 20),    35),  150)
-  bsa_m2  <- pmin(pmax(rnorm(n, mean = 1.97, sd = 0.22),  1.40, 2.55))
-  tpro_gL <- pmin(pmax(rnorm(n, mean = 71,   sd = 4.5),   55,   85))
+  bsa_m2  <- pmin(pmax(rnorm(n, mean = 1.97, sd = 0.22),  1.40), 2.55)
+  tpro_gL <- pmin(pmax(rnorm(n, mean = 71,   sd = 4.5),   55),  85)
 
   # Dosing schedule: 8 days of once-daily dosing -> steady state within 1-2 days
   # (half-life 2-3 h), final dosing interval sampled densely for NCA.
@@ -461,14 +461,14 @@ knitr::kable(cmp,
   from this PK fit as fixed inputs, with progression-time structures,
   Box-Cox-transformed random effects, Student t-distribution residual
   errors, and a hazard-function endpoint. They do not fit the compact
-  popPK/PD format and would each require their own dedicated extraction
-  task; only the upstream FIGARO-DKD PK model is packaged here.
+  popPK/PD format and would each need to be built as a separate model;
+  only the upstream FIGARO-DKD PK model is packaged here.
 * **FIGARO-DKD only, FIDELIO-DKD upstream not packaged.** The paper
   compares FIGARO-DKD against the earlier FIDELIO-DKD PK model (van den
   Berg et al. 2022, also Bayer / LAP&P) but the FIDELIO-DKD NONMEM code is
-  not in the on-disk supplement, only the FIGARO-DKD code. Packaging the
-  FIDELIO-DKD upstream model would require fetching that publication
-  separately and is left for a follow-up extraction.
+  not in the supplement, only the FIGARO-DKD code. Packaging the
+  FIDELIO-DKD upstream model would require that publication separately
+  and is left for future work.
 * **Categorical covariate effects fixed at 1.0 in the FIGARO-DKD final
   model.** Supplement `$THETA` TH14-TH18 (SGLT2-inhibitor and CYP3A4-
   inhibitor effects on CL/F, F1, and Vc/F) are reported with a final

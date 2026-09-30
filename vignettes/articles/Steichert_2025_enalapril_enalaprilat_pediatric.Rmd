@@ -269,7 +269,11 @@ PKNCA is run once per output. Two grouping variables carry: `cohort`
 sim_nca_enaat <- sim_ref |>
   filter(!is.na(Cc_enaat)) |>
   select(id, time, Cc_enaat, cohort) |>
-  rename(Cc = Cc_enaat)
+  rename(Cc = Cc_enaat) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup()
 
 # Guarantee a time=0 row per (id, cohort); pre-dose Cc = 0 for extravascular.
 sim_nca_enaat <- bind_rows(
@@ -303,6 +307,10 @@ nca_res_enaat  <- suppressWarnings(PKNCA::pk.nca(nca_data_enaat))
 ```{r pknca-ena-ref}
 sim_nca_ena <- sim_ref |>
   filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 of Cmax after the peak: below that the ODE tail is solver noise.
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  ungroup() |>
   select(id, time, Cc, cohort)
 
 sim_nca_ena <- bind_rows(

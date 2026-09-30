@@ -317,7 +317,7 @@ Asaumi_2019_coproporphyrin_I_rifampicin_pbpk <- function() {
     # column; values are the beta = 0.2 set (Table 1 lists FaFg and
     # fB CLint,all as 0.318/0.309/0.256 and 0.453/0.402/0.369 for
     # beta = 0.2/0.5/0.8). All were optimised in Yoshikado 2018 (ref. 29,
-    # Table 2, on disk) and are held fixed here.
+    # Table 2) and are held fixed here.
     # ------------------------------------------------------------------
     lka <- fixed(log(3.0))
     label("CP-I reabsorption rate constant from the gut lumen (1/h)") # Table 1 Coproporphyrin I ka 3.0

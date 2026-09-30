@@ -77,8 +77,8 @@ vanRongen_2018_midazolam <- function() {
     notes = paste(
       "Demographic detail summarized from the linked publication's PubMed abstract",
       "(PMID 28785981, doi:10.1007/s40262-017-0579-4) and the DDMORE Foundation Model",
-      "Repository bundle (DDMODEL00000250). The full publication PDF is not on disk",
-      "in this worktree; numeric age range, sex distribution, and per-region",
+      "Repository bundle (DDMODEL00000250). The full publication PDF was not available",
+      "when this model was built; numeric age range, sex distribution, and per-region",
       "breakdown are not in the abstract and are recorded as NA. The simulated dataset",
       "shipped with the bundle has 9 representative subjects (4 adults, 5 adolescents)",
       "and is intended as a regression-test cohort, not a representative population."

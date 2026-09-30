@@ -546,7 +546,7 @@ Benson_2014_PF04457845_qsp <- function() {
 
     # ---------- Residual error (FIXED at 0 -- paper reports no RUV) -----
     # Paper is a deterministic mechanistic model with no residual error
-    # component; per operator policy for unreported RUV, encoded as
+    # component; per the maintainers' policy for unreported RUV, encoded as
     # fixed(0). All ~ prop() / add() forms below use these zero SDs.
     propSd            <- fixed(0)        ; label("Proportional residual SD on PF-04457845 plasma Cc (not fitted)")
     propSd_Cc_AEA     <- fixed(0)        ; label("Proportional residual SD on AEA plasma Cc_AEA (not fitted)")

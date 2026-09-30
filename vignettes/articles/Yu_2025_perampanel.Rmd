@@ -62,7 +62,7 @@ entry in `inst/modeldb/specificDrugs/Yu_2025_perampanel.R`. The table below
 collects them in one place for review. Equations (1) and (2) are set as vector
 graphics in the PDF and are dropped by text extraction; they were read from the
 publisher's rendered equation images (`DDDT-19-3119-e0001.jpg` and
-`-e0002.jpg`, distributed in the Europe PMC file bundle for PMC12034272).
+`-e0002.jpg`, deposited with PMC12034272).
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
@@ -677,7 +677,7 @@ below.
   757 L rather than 329 L). **The base-10 reading was ratified by the
   maintainers on the strength of that notation convention; the
   base remains unresolved in the source itself and can only be settled by the
-  authors.** Nothing on disk discriminates the two
+  authors.** Nothing in the available sources discriminates the two
   readings: Table 3 reports interval-average concentrations, which are
   `dose/(CL * tau)` and therefore exactly independent of V (the residual scan in
   this vignette finds no interior optimum in V -- the fit improves monotonically

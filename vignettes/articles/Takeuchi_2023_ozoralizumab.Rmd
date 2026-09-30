@@ -114,9 +114,9 @@ n_subj <- 150
 
 cohort <- tibble::tibble(
   id         = seq_len(n_subj),
-  WT         = pmin(pmax(rlnorm(n_subj, log(56.65), 0.20), 35, 112)),
+  WT         = pmin(pmax(rlnorm(n_subj, log(56.65), 0.20), 35), 112),
   SEXF       = rbinom(n_subj, 1, 0.76),
-  CRCL       = pmin(pmax(rnorm(n_subj, mean = 88, sd = 20), 35, 174)),
+  CRCL       = pmin(pmax(rnorm(n_subj, mean = 88, sd = 20), 35), 174),
   CONMED_MTX = rbinom(n_subj, 1, 0.74),
   ADA_POS    = rbinom(n_subj, 1, 0.37)
 )

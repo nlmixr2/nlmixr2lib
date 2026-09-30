@@ -13,7 +13,7 @@ LohyDas_2018_artesunate <- function() {
     "model file omits the published time-varying parasite-density covariates",
     "on MTT and on F (Eqs. 3 and 4) and the entire PD layer (mixture-Emax",
     "parasite-killing model with effect compartment); both depend on the",
-    "upstream Lohy Das 2017 AAPS J paper (ref [36]) which is not on disk.",
+    "upstream Lohy Das 2017 AAPS J paper (ref [36]), which was not available when this model was built.",
     "See the vignette's Assumptions and deviations section for the rationale."
   )
   reference <- paste(
@@ -171,8 +171,8 @@ LohyDas_2018_artesunate <- function() {
     # variability (RUV) was estimated by separate additive error models
     # for log-transformed ARS and DHA concentrations (i.e. equal to
     # exponential error models on an arithmetic scale).' By the standing
-    # nlmixr2lib convention (see references/parameter-names.md and the
-    # sibling Tan_2009_artesunate, Birgersson_2019_artesunate models),
+    # nlmixr2lib convention (see the sibling Tan_2009_artesunate,
+    # Birgersson_2019_artesunate models),
     # NONMEM additive-on-log-scale residual maps to nlmixr2 proportional
     # residual in linear space, with propSd = SD on the log scale ~= CV
     # in linear space to first order. Table 2 reports RUV as a CV%; the

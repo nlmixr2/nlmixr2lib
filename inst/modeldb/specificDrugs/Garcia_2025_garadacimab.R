@@ -78,7 +78,7 @@ Garcia_2025_garadacimab <- function() {
   )
 
   # Covariates that the source screened, and in one case RETAINED in the final
-  # model, but for which no usable point estimate is reported anywhere on disk.
+  # model, but for which no usable point estimate is reported in any available source.
   # Documentation only -- checkModelConventions() does not require these to be
   # referenced in model().
   covariatesDataExcluded <- list(
@@ -87,7 +87,7 @@ Garcia_2025_garadacimab <- function() {
       units = "POB (proportion of baseline, chromogenic S-2302 assay)",
       type = "continuous",
       reference_category = NULL,
-      notes = "RETAINED in the source's final PopPK/PD model as a power covariate on BOTH E0 and EC50, centred at 0.134 (Methods S1 PopPK/PD code: LE0PD = THETA(5)*LOG(BLPD2/0.134); LEC50PD = THETA(6)*LOG(BLPD2/0.134); missing values imputed to the 0.134 median). However, THETA(5) and THETA(6) are NOT reported: Table S6 tabulates only the four structural PD parameters, and the only rendering of the effect is the Figure S6 forest plot (EC50 only, no E0 panel), which is an image with no accompanying data table and whose x-axis anchors -- the 10th and 90th percentiles of baseline kallikrein activity -- are not tabulated in Table S3 or anywhere else on disk. The coefficients are therefore not digitisable. This model file is accordingly the REFERENCE-SUBJECT PopPK/PD model at baseline kallikrein activity = 0.134 POB, where both covariate terms are exactly zero by construction and the Table S6 structural estimates apply directly. The source's own conclusion is that this covariate is not clinically meaningful: the EC50 point estimates and 95% CIs normalised to the reference subject were almost fully contained within the 80-125% reference range (Results Section 3.4; Discussion). No canonical covariate column is proposed because the coefficient cannot be populated; note that the existing register entry PKK_BL is a DIFFERENT concept (baseline plasma prekallikrein CONCENTRATION in mg/L), not an enzymatic activity readout."
+      notes = "RETAINED in the source's final PopPK/PD model as a power covariate on BOTH E0 and EC50, centred at 0.134 (Methods S1 PopPK/PD code: LE0PD = THETA(5)*LOG(BLPD2/0.134); LEC50PD = THETA(6)*LOG(BLPD2/0.134); missing values imputed to the 0.134 median). However, THETA(5) and THETA(6) are NOT reported: Table S6 tabulates only the four structural PD parameters, and the only rendering of the effect is the Figure S6 forest plot (EC50 only, no E0 panel), which is an image with no accompanying data table and whose x-axis anchors -- the 10th and 90th percentiles of baseline kallikrein activity -- are not tabulated in Table S3 or in any other available source. The coefficients are therefore not digitisable. This model file is accordingly the REFERENCE-SUBJECT PopPK/PD model at baseline kallikrein activity = 0.134 POB, where both covariate terms are exactly zero by construction and the Table S6 structural estimates apply directly. The source's own conclusion is that this covariate is not clinically meaningful: the EC50 point estimates and 95% CIs normalised to the reference subject were almost fully contained within the 80-125% reference range (Results Section 3.4; Discussion). No canonical covariate column is proposed because the coefficient cannot be populated; note that the existing register entry PKK_BL is a DIFFERENT concept (baseline plasma prekallikrein CONCENTRATION in mg/L), not an enzymatic activity readout."
     )
   )
 

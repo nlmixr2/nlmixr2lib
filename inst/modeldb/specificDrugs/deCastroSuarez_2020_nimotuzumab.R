@@ -62,7 +62,7 @@ deCastroSuarez_2020_nimotuzumab <- function() {
 
     # Mediator turnover parameters - sigmoid Emax stimulation of non-specific CL by free central nimotuzumab.
     # Hill coefficient gamma is fixed at 1 (it appears in equation (3) of the paper but is absent from
-    # Table 2; operator confirmed gamma = 1, reducing the sigmoid to a hyperbolic Emax). With A3(0) = 1,
+    # Table 2; the maintainers confirmed gamma = 1, reducing the sigmoid to a hyperbolic Emax). With A3(0) = 1,
     # ksyn = kout * A3(0) = kout so kin and kout share the same value.
     lkout  <- log(1.33e-2); label("First-order degradation rate of mediator, kout (1/h); kin = kout x A3(0) = kout") # Castro-Suarez 2020 Table 2: kout = 1.33e-2 1/h
     lsmax  <- log(3.18);    label("Maximal stimulation of non-specific CL by mediator, Smax (unitless)")          # Castro-Suarez 2020 Table 2: Smax = 3.18
@@ -84,7 +84,7 @@ deCastroSuarez_2020_nimotuzumab <- function() {
     # Individual PK parameters. Only Rtotp and Kout carry IIV per the published final model.
     cl    <- exp(lcl)
     # Dose-dependent V1 shift for the 50 mg cohort - Castro-Suarez 2020 Table 2 row
-    # "V1 change (D = 50 mg) [%] = 53". Direction (decrease) is the operator's
+    # "V1 change (D = 50 mg) [%] = 53". Direction (decrease) is the maintainers'
     # interpretation of Figure 4A (faster early decline at 50 mg); see vignette Errata.
     vc    <- exp(lvc) * (1 - 0.53 * (DOSE == 50))
     q     <- exp(lq)

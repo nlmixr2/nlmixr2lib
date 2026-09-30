@@ -362,7 +362,7 @@ oral doses of 20, 40, or 60 mg cabozantinib tablet. The typical-value
 trajectories below reproduce the dose-proportional Cmax and the slow
 terminal elimination phase (paper Discussion: "cabozantinib has a relatively
 long plasma terminal half-life (HV mean: 118 h)"). The vignette shortens the
-observation window to 24 h to keep the render time within the 5-minute gate.
+observation window to 24 h to keep the render time under 5 minutes.
 
 ```{r figure-hv-dose-proportional, fig.width = 7, fig.height = 4.0}
 sim_a_typ |>
@@ -504,7 +504,7 @@ because they are computed directly from the in-file `ini()` coefficients.
   magnitude is `sqrt(0.202 * 0.233) = 0.217`; the published 2.475 implies a
   correlation of 11.4, which is impossible). The same value 2.475 reproduces
   in `pdftotext` extraction directly from the published PDF, so it is the
-  paper's printed value, not a docling / OCR artifact. We treat this as a
+  paper's printed value, not an extraction or OCR artifact. We treat this as a
   publication transcription error of uninterpretable kind: the off-diagonal
   is dropped and the IIV is encoded as a diagonal Omega with the marginal
   variances. The packaged model therefore simulates `etalcl` and `etalvc`

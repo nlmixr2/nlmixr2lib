@@ -83,7 +83,7 @@ Birgersson_2019_artesunate <- function() {
     dose_range = "Oral artesunate (fixed-dose combination with mefloquine) once daily for three days at the standard adult dose. The DDMORE-shipped Simulated_run1.csv encodes a 520264 nmol single oral dose, equivalent to ~200 mg artesunate using the 384.42 g/mol molar mass.",
     regions = "Burkina Faso (Bobo-Dioulasso and Nanoro)",
     trial_registration = "ClinicalTrials.gov NCT00701961",
-    notes = "Demographics summarized from the publication abstract (PMID 32025570) and the DDMORE bundle metadata (DDMODEL00000297). The publication PDF was not on disk during this extraction; the DDMORE bundle ships only Executable_run1.mod (a MAXEVAL=0 posthoc run with the published final estimates fixed as $THETA / $OMEGA / $SIGMA inputs), Output_simulated_run1.lst (a one-subject re-evaluation), Simulated_run1.csv, and DDMODEL00000297.rdf. No Output_real_*.lst or Model_Accomodations.text is included; final estimates were taken from the .mod file, which under MAXEVAL=0 functions as the authoritative source for the published estimates."
+    notes = "Demographics summarized from the publication abstract (PMID 32025570) and the DDMORE bundle metadata (DDMODEL00000297). The publication PDF was not available when this model was built; the DDMORE bundle ships only Executable_run1.mod (a MAXEVAL=0 posthoc run with the published final estimates fixed as $THETA / $OMEGA / $SIGMA inputs), Output_simulated_run1.lst (a one-subject re-evaluation), Simulated_run1.csv, and DDMODEL00000297.rdf. No Output_real_*.lst or Model_Accomodations.text is included; final estimates were taken from the .mod file, which under MAXEVAL=0 functions as the authoritative source for the published estimates."
   )
 
   ini({
@@ -118,7 +118,7 @@ Birgersson_2019_artesunate <- function() {
     # Residual error. The source $ERROR block evaluates the M3 BQL
     # likelihood on the log-transformed observation: when not BQL,
     # Y = log(IPRED) + ERR(i), i.e., additive on the log scale. By the
-    # convention documented in references/naming-conventions.md, NONMEM
+    # package's NONMEM-to-nlmixr2 translation convention, NONMEM
     # additive-on-log-scale residual error maps to proportional residual
     # error in nlmixr2's linear space. The propSd value is the SD on log
     # scale, sqrt(variance). The M3 likelihood for BQL data is not
@@ -185,7 +185,7 @@ Birgersson_2019_artesunate <- function() {
     Cc_dihydroart <- central_dihydroart / vc_dihydroart
 
     # Residual error. NONMEM "additive on log scale" maps to proportional
-    # error in linear space (see references/naming-conventions.md).
+    # error in linear space (the package's NONMEM-to-nlmixr2 translation convention).
     Cc     ~ prop(propSd)
     Cc_dihydroart ~ prop(propSd_dihydroart)
   })

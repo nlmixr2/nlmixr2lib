@@ -23,8 +23,8 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Willmann_2019_moxifloxacin"))$description`
 * Article: <https://doi.org/10.1002/psp4.12446>
 * Supplement (Supplementary Methods, Tables S1-S2, Figures S1-S6):
-  `PSP4-8-654-s001.pdf`, retrieved from the EuropePMC open-access supplementary
-  archive for PMC6765696.
+  `PSP4-8-654-s001.pdf`, published with the open-access article
+  (PMC6765696).
 * Supplement (final NONMEM control stream, run `O6/run021`):
   `PSP4-8-654-s002.txt`, same archive.
 
@@ -34,7 +34,7 @@ its two metabolites, built in PK-Sim and MoBi and scaled from adults to
 children; the **confirmation** step is the pediatric population PK model fitted
 in NONMEM to the pooled phase I and phase III data. Only the popPK model is
 packaged here -- see *Assumptions and deviations* for why the PBPK layer is not
-reproducible from the material on disk.
+reproducible from the material available when this model was built.
 
 # Population
 
@@ -852,7 +852,8 @@ sprintf("Oral / intravenous median AUC ratio in the 400 mg band: %.3f (F = 0.866
   the deposited model code, and several of the physicochemical inputs
   themselves come from a Bayer in-house cheminformatics tool ("Pythia"). The
   PBPK model therefore cannot be reconstructed as an rxode2 model from any
-  material on disk, and no attempt was made to substitute platform defaults.
+  material available when this model was built, and no attempt was made to
+  substitute platform defaults.
   The popPK model, which is fully specified by Table S2 plus the deposited
   control stream, is packaged in full.
 

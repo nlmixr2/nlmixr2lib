@@ -286,6 +286,10 @@ sim_sd <- rxode2::rxSolve(mod, events = events_sd, keep = "dose") |>
 
 sim_nca <- sim_sd |>
   dplyr::filter(!is.na(Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup() |>
   dplyr::transmute(id, time, Cc, treatment = paste0(dose, " mg PO"), dose)
 
 dose_nca <- events_sd |>

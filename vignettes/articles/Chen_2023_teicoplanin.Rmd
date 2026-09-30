@@ -128,7 +128,7 @@ GFR 90-120 recommendation of "15 mg/kg q12h for 5 times" resolves to doses
 at 0, 12, 24, 36 and 48 h).
 
 The vignette uses 200 virtual subjects per regimen rather than the paper's
-1,000 to stay inside the pkgdown render budget. That is enough to resolve
+1,000 to keep the render time short. That is enough to resolve
 the median and the 2.5th-97.5th percentile band; the residual Monte Carlo
 noise is quantified below.
 
@@ -830,7 +830,7 @@ eventual steady-state exposure.
 
 - **Independent (diagonal) IIV on CL, V1, Q and V2.** Chen 2023 Table 2
   reports four diagonal IIV terms and no off-diagonal covariances, and no
-  supplement containing the NONMEM control stream is on disk. The packaged
+  supplement containing the NONMEM control stream was available. The packaged
   model therefore uses independent etas. If the original model estimated an
   OMEGA block, the reproduced prediction intervals would be somewhat
   mis-shaped even though the medians match; the close agreement of the
@@ -842,7 +842,8 @@ eventual steady-state exposure.
   distribution. The paper states only that "most MRSA had an MIC
   distribution for teicoplanin of 0.5-1 mg/L" and does not tabulate the
   per-MIC isolate fractions `p(MIC_i)` used in its Equation 4, and the
-  EUCAST distribution is not on disk. Reproducing Figure 5 would require
+  EUCAST distribution was not available when this model was built. Reproducing
+  Figure 5 would require
   inventing those weights, so it is omitted. The PTA values that feed the
   CFR calculation are reproduced above.
 
@@ -874,7 +875,7 @@ eventual steady-state exposure.
   appropriate for that population.
 
 - **Virtual cohort uses n = 200 per regimen (vs n = 1,000 in the paper).**
-  The vignette has a 5-minute pkgdown render budget and simulates 13
+  The vignette keeps its render time under 5 minutes and simulates 13
   Table 3 regimens plus 30 loading-dose arms for the Figure 3 replication.
   n = 200 per arm resolves the median and 95% prediction band adequately;
   the residual Monte Carlo noise is quantified in the Table 3 replication

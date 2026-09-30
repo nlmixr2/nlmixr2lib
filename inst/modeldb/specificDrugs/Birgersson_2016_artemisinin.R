@@ -96,7 +96,7 @@ Birgersson_2016_artemisinin <- function() {
     # error model on the log-transformed drug concentrations, being
     # essentially equivalent to an exponential residual error on an
     # arithmetic scale' and reports sigma = 51.6 % (CV) in Table 2, i.e.,
-    # the SD on the log scale is 0.516. Per the verification-checklist
+    # the SD on the log scale is 0.516. Per the standing
     # convention 'NONMEM additive-on-log-scale == proportional in nlmixr2
     # linear space', propSd carries the SD on the log scale directly.
     propSd <- 0.516 ; label("Proportional residual error SD (on log scale)")                                  # Birgersson 2016 Table 2: sigma = 51.6 % (RSE 5.84 %, 95 % CI 44.9-58.1)
@@ -147,8 +147,8 @@ Birgersson_2016_artemisinin <- function() {
     Cc <- central / vc * 1000
 
     # Residual error. NONMEM 'additive on log scale' maps to proportional
-    # error in nlmixr2's linear space (see references/verification-checklist.md
-    # and Birgersson 2019 artesunate for the sibling convention).
+    # error in nlmixr2's linear space (see Birgersson 2019 artesunate for the
+    # sibling convention).
     Cc ~ prop(propSd)
   })
 }

@@ -69,10 +69,10 @@ Wang_2013_morphine <- function() {
 
   population <- list(
     n_subjects = 475L,
-    n_studies = "Pooled across multiple paediatric and adult studies (full study list reported in the publication; original Wang 2013 PDF is not on disk under literature/).",
+    n_studies = "Pooled across multiple paediatric and adult studies (full study list reported in the publication; original Wang 2013 PDF was not available when this model was built).",
     age_range = "0-3 years (newborns / infants / young children stratum, POP = 1), 6-15 years (children-adolescents stratum, POP = 2), 18-36 years (adults stratum, POP = 3) per the .mod $INPUT comments.",
     weight_range = "0.6-85 kg in the bundle's simulated dataset (across the three POP strata).",
-    sex_female_pct = "Not extractable from DDMORE bundle (Wang 2013 PDF not on disk under literature/).",
+    sex_female_pct = "Not extractable from DDMORE bundle (Wang 2013 PDF not available when this model was built).",
     race_ethnicity = "Not extractable from DDMORE bundle.",
     disease_state = "Mixed paediatric and adult cohorts receiving morphine. Specific clinical indication not extractable from DDMORE bundle alone; the publication abstract describes 358 neonates / infants / children / adults plus 117 adolescents.",
     dose_range = "Variable by study; doses in the bundle's simulated dataset are in micrograms with infusion rates ranging from short bolus-equivalent infusions (~10 s) to 60-min infusions (e.g., 1850 ug at 30.83 ug/min in adults; 53 ug at 265 ug/min in 0.6-kg neonates).",
@@ -80,7 +80,7 @@ Wang_2013_morphine <- function() {
     notes = paste(
       "Demographic counts are summarised from the publication abstract (358 neonates / infants / children / adults + 117 adolescents = 475)",
       "and the .mod $INPUT comments (POP age-stratum definitions).",
-      "Original Wang 2013 PDF is not on disk under the literature tree at extraction time;",
+      "Original Wang 2013 PDF was not available when this model was built;",
       "see the vignette's 'Assumptions and deviations' section for the items that could not be cross-checked against the publication."
     )
   )
@@ -121,7 +121,7 @@ Wang_2013_morphine <- function() {
     # The .mod $ERROR uses NONMEM log-transform-both-sides:
     #   IPRED = LOG(F); W = THETA(9); Y = IPRED + ERR(1)*W with $SIGMA EPS1 FIXED at 1.
     # NONMEM "additive on log-scale" with SIGMA fixed at 1 maps to proportional residual error
-    # in linear nlmixr2 space with propSd = THETA(9). See naming-conventions.md NONMEM-syntax-translation table.
+    # in linear nlmixr2 space with propSd = THETA(9) (the package's NONMEM-to-nlmixr2 translation convention).
     propSd <- 0.432; label("Proportional residual error (fraction)")  # Output_real_ModelI_Morphine.lst TH 9 (THETA-encoded log-transform-both-sides residual SD)
   })
 

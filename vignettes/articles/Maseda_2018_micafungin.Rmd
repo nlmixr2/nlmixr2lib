@@ -25,7 +25,7 @@ mod <- readModelDb("Maseda_2018_micafungin")
 
 * Citation: `r mod()$reference`
 * Article: <https://doi.org/10.1186/s13054-018-2019-8>
-* Supplement: none (EuropePMC reports `hasSuppl: N` for PMC5899833).
+* Supplement: none (PMC5899833).
 
 Two commentary letters were published on this article
 ([doi:10.1186/s13054-018-2068-z](https://doi.org/10.1186/s13054-018-2068-z) and
@@ -626,7 +626,7 @@ tibble(
 8. **Table 4 (fractional target attainment) is not reproduced.** FTA weights the
    attainment at each MIC by the fraction of isolates at that MIC, taken from
    the SENTRY surveillance programme. Those MIC distributions are cited but not
-   printed in the article, so the weights are not available on disk and the
+   printed in the article, so the weights are not available and the
    calculation cannot be reproduced without fabricating them.
 
 **Assumptions made because the source does not say.**

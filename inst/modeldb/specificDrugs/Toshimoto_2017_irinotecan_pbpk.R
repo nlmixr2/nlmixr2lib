@@ -56,7 +56,7 @@ Toshimoto_2017_irinotecan_pbpk <- function() {
   # `gut_lumen`, `a_feces` and `a_urine` are canonical
   # (inst/references/compartment-names.md); `sn38` is the registered
   # metabolite suffix and `sn38g`, `npc` and `apc` are registered alongside
-  # it by this extraction. The remaining stems follow the two registered
+  # it for this model. The remaining stems follow the two registered
   # models of this same laboratory and model family,
   # Aoki_2024_bosentan_pbpk.R and Tsuchitani_2024_telmisartan_pbpk.R:
   # `is_liver<n>` is the hepatic extracellular (sinusoidal) space,
@@ -1103,7 +1103,7 @@ Toshimoto_2017_irinotecan_pbpk <- function() {
     #    active efflux in the enterocytes") both give
     #    Rdif,ent = AR * PSdif,eff,ent / PSact,eff,ent, but the
     #    Supplementary Text "Optional equation" block gives the reciprocal,
-    #    Rdif,ent = PSact,eff,ent / (AR * PSdif,eff,ent). The two on-disk
+    #    Rdif,ent = PSact,eff,ent / (AR * PSdif,eff,ent). The two published
     #    sources contradict each other and the choice changes enterocyte
     #    SN-38 exposure 2.4-fold, so it is settled against two quantities
     #    the authors themselves published:
@@ -1315,7 +1315,7 @@ Toshimoto_2017_irinotecan_pbpk <- function() {
     #    reports is on CLint,sec (Supplementary Table 3B, CV 34.2 percent),
     #    and mapping that intrinsic quantity onto CLr needs the renal
     #    dispersion model of Equations 12-16, whose Qrtb and ERPF inputs
-    #    are not tabulated anywhere on disk. See the vignette Errata.
+    #    are not tabulated in the article or its Supplement. See the vignette Errata.
     cl_renal_i <- cl_renal * WT
     cl_renal_sn38_i <- cl_renal_sn38 * WT
     cl_renal_sn38g_i <- cl_renal_sn38g * WT

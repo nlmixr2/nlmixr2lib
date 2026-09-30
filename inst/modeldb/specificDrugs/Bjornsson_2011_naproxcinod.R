@@ -186,8 +186,8 @@ Bjornsson_2011_naproxcinod <- function() {
     label("Relative bioavailability of naproxen from naproxcinod vs naproxen (fraction)")
     # Table 2 F_rel = 59.7% (RSE 14.6%); no IIV.
 
-    # PK IIV. Lognormal: omega^2 = log(1 + CV^2) per the convention noted
-    # in references/parameter-names.md (Section "IIV").
+    # PK IIV. Lognormal: omega^2 = log(1 + CV^2) per the standing
+    # convention.
     etalcl ~ log(1 + 0.25^2)
     # Table 2 IIV CL_u/F = 25% CV (RSE 37%).
 

@@ -29,8 +29,8 @@ Ikawa_2008_imipenem <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
-  # biological matrix. verified = FALSE because the primary publication is
-  # not on disk; the review does not describe the assayed matrix beyond
+  # biological matrix. verified = FALSE because the primary publication was
+  # not available; the review does not describe the assayed matrix beyond
   # "blood samples" and HPLC-UV (Supplementary Table S1).
   compartmentData <- list(
     central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),

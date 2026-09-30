@@ -269,7 +269,7 @@ Huth_2019_siponimod <- function() {
     age_range = paste(
       "Healthy adult volunteers; individual ages are not tabulated in",
       "the source. Simulation trial designs matched each clinical",
-      "study's age range and female proportion (Table S3, not on disk)."
+      "study's age range and female proportion (Table S3, not available when this model was built)."
     ),
     weight_median = "80.08 kg (mean body weight of the study subjects, Table 5 footnote f)",
     disease_state = paste(

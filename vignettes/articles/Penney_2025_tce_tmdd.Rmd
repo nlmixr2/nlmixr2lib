@@ -22,8 +22,8 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Penney_2025_tce_tmdd_qsp"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Penney_2025_tce_tmdd_qsp"))$description`
 * Article: <https://doi.org/10.1111/cts.70384>
-* Supplement: Data S1 (`CTS-18-e70384-s001.docx`), Tables S1 / S2, available from the
-  Europe PMC supplementary-files endpoint for PMC12597969.
+* Supplement: Data S1 (`CTS-18-e70384-s001.docx`), Tables S1 / S2, published with the
+  open-access article (PMC12597969).
 
 T-cell engagers (TCEs) are built on IgG-like or albumin-binding formats that
 should give them half-lives of weeks, yet most clinical-stage TCEs show
@@ -113,7 +113,7 @@ solve_scenario <- function(label, dose_nmol_kg, ...) {
   out <- rxode2::rxSolve(mod, ev, c(...),
                          atol = 1e-12, rtol = 1e-10, maxsteps = 1e6)
   out <- as.data.frame(out)
-  # rxSolve omits `id` for a single subject (pattern 8).
+  # rxSolve omits `id` for a single subject.
   out$id <- 1L
   out$treatment <- label
   out
@@ -123,7 +123,8 @@ solve_scenario <- function(label, dose_nmol_kg, ...) {
 # profile -- well clear of the distribution and TMDD transients. The paper
 # computes ln(2) / (-dD_Free/dt / D_Free); on the terminal phase the two agree.
 terminal_half_life <- function(df) {
-  d <- df[df$time > 0 & df$Cc > 0, ]
+  # Keep Cc >= 1e-6 * Cmax before taking the last quarter: below that the ODE integrator has no relative accuracy left.
+  d <- df[df$time > 0 & df$Cc >= 1e-6 * max(df$Cc), ]
   d <- d[d$time >= 0.75 * max(d$time), ]
   as.numeric(log(2) / -coef(stats::lm(log(Cc) ~ time, data = d))[2])
 }
@@ -344,7 +345,11 @@ used above, and supplies Cmax and AUC for the Figure 2a scenarios.
 ```{r pknca}
 sim_nca <- sim_2a |>
   dplyr::filter(!is.na(Cc)) |>
-  dplyr::select(id, time, Cc, treatment)
+  dplyr::select(id, time, Cc, treatment) |>
+  # Per scenario, keep Cc >= 1e-6 * Cmax after the peak (and time zero): below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time == 0 | time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
 
 # Guarantee a time = 0 row per (id, treatment). For an IV bolus into a
 # concentration state the t = 0 record is already present, but the bind/distinct
@@ -407,7 +412,7 @@ hl <- hl[hl$PPTESTCD == "half.life", ]
 hl_1000 <- hl$PPORRES[hl$treatment == "1000 nM"]
 hl_10 <- hl$PPORRES[hl$treatment == "10 nM"]
 
-# Guard against a lookup that silently matched nothing (pattern 10).
+# Guard against a lookup that silently matched nothing.
 stopifnot(length(hl_1000) == 1L, length(hl_10) == 1L)
 
 # PKNCA's terminal-slope selection must agree with the regression above.

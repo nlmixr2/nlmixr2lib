@@ -441,7 +441,7 @@ t3_at_paper_dose <- published_t3 |>
   ) |>
   dplyr::mutate(in_range = INR >= 2 & INR <= 3)
 # Guard against a silent join miss (a lookup that matches no rows would make
-# the assertion below vacuously true -- pattern 10).
+# the assertion below vacuously true).
 stopifnot(nrow(t3_at_paper_dose) == 24L, !anyNA(t3_at_paper_dose$INR))
 
 # DETERMINISTIC (typical-value) check: at every one of the 24 dose selections
@@ -540,7 +540,7 @@ prob_tab |>
 # patients" (Discussion), with a Table 3 range of 60.6-69.2%. With 200 subjects
 # per arm the Monte Carlo standard error on a ~65% proportion is ~3.4 pp, so
 # individual arms will scatter; assert on the CENTRE of the 24 arms, not on
-# any single arm and not on the extremes (pattern 12).
+# any single arm and not on the extremes.
 stopifnot(
   # Structural: a mis-transcribed IC50, dose or IIV moves every arm's
   # probability by tens of points and breaks this instantly.
@@ -638,10 +638,10 @@ steady-state INR.
   none reached the p < 0.01 / 6.63-unit dOFV threshold. No point estimates are
   published for them, so they are recorded in the model file's
   `covariatesDataExcluded` list as documentation only.
-- **Supplementary material not on disk.** Supplementary Table S1 holds the
+- **Supplementary material not available.** Supplementary Table S1 holds the
   *base* (pre-covariate) PK/PD parameter estimates, which are superseded by the
-  final estimates in Table 2 used here; the supplement is a Word document behind
-  a PMC bot challenge and could not be retrieved. Nothing in the final model
+  final estimates in Table 2 used here; the supplement is a Word document that
+  was not available when this model was built. Nothing in the final model
   depends on it. Supplementary Figures S1-S5 are diagnostic plots (covariate
   distributions, GOF, NPDE, eta distributions) and carry no parameter values.
 - **Virtual cohorts use the cohort median weight (83 kg).** The paper's

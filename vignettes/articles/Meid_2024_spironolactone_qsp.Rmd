@@ -692,7 +692,7 @@ wraps around it (Section 4.5, prior updating twice daily at midnight and 11 am
 using `posologyr`) is an analysis workflow, not part of the model, and is not
 reproduced here.
 
-**Upstream paper not on disk.** Maddah and Hallow (2022) is not open access and
+**Upstream paper not available.** Maddah and Hallow (2022) is not open access and
 was not obtained. No value in this extraction comes from it -- everything is
 transcribed from the Meid 2024 Appendix C listing, which reprints the model in
 full. The upstream paper would be worth consulting to confirm the physiological

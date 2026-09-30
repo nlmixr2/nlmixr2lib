@@ -51,13 +51,13 @@ TerHeine_2014_tamoxifen <- function() {
   population <- list(
     n_subjects = 40,
     n_studies = 1,
-    age_range = "TODO: full Ter Heine 2014 publication not on disk during extraction; the DDMORE bundle ships only the Table 2 of final estimates as a one-page PDF",
+    age_range = "TODO: full Ter Heine 2014 publication not available when this model was built; the DDMORE bundle ships only the Table 2 of final estimates as a one-page PDF",
     weight_range = "TODO: see age_range note",
     sex_female_pct = 100,
     disease_state = "Hormone-receptor-positive breast cancer on chronic oral tamoxifen at steady state",
-    dose_range = "20 mg PO QD at steady state (the dose used in the DDMORE-shipped simulated dataset; the source publication may include other regimens that were not captured because the full PDF was not on disk)",
+    dose_range = "20 mg PO QD at steady state (the dose used in the DDMORE-shipped simulated dataset; the source publication may include other regimens that were not captured because the full PDF was not available when this model was built)",
     regions = "Netherlands (Erasmus MC), single-center",
-    notes = "Demographics fields marked TODO because the source publication PDF was not on disk during the DDMORE extraction; only the Table 2 final-estimates summary was available. Cohort sex is encoded as 100% female because the indication (breast cancer on tamoxifen) was overwhelmingly female in the published cohort. n_subjects = 40 is the published Ter Heine 2014 cohort size; the DDMORE simulated dataset re-simulates 100 hypothetical subjects."
+    notes = "Demographics fields marked TODO because the source publication PDF was not available when this model was built; only the Table 2 final-estimates summary was available. Cohort sex is encoded as 100% female because the indication (breast cancer on tamoxifen) was overwhelmingly female in the published cohort. n_subjects = 40 is the published Ter Heine 2014 cohort size; the DDMORE simulated dataset re-simulates 100 hypothetical subjects."
   )
 
   ini({

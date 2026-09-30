@@ -189,8 +189,8 @@ Krishna_2011_anacetrapib <- function() {
     prandial_states = "Four prandial strata: overnight fasted; standard low-fat breakfast (373 kcal, 20% fat); standard high-fat breakfast (827 kcal, 57% fat); and a patient-selected meal conforming to the American Heart Association TLC diet, used in the phase Ib and phase IIb trials.",
     notes = paste0(
       "Per-study designs, doses, formulations and sampling schedules are in ",
-      "Table IA of the Electronic Supplementary Material, which is not on ",
-      "disk (see the vignette Errata). Every parameter of all three models ",
+      "Table IA of the Electronic Supplementary Material, which was not ",
+      "available when this model was built (see the vignette Errata). Every parameter of all three models ",
       "is in the main-text tables, so the missing supplement costs only ",
       "demographic detail: Krishna 2011 publishes no age, weight, sex or ",
       "race distribution for the popPK analysis set in the main text, and ",

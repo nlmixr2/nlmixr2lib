@@ -149,7 +149,9 @@ stopifnot(dplyr::n_distinct(events$id) == 3L * n_per_arm)
 
 ```{r simulate}
 mod <- readModelDb("Song_2024_tigecycline")
-sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "dose_mg")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "dose_mg"),
+                       maxsteps = 1e6) |>
   as.data.frame()
 
 # The model computes cl and vc as model variables, so rxSolve returns them per
@@ -285,7 +287,7 @@ stopifnot(max(abs(auc_chk$pct_diff)) < 0.5)
 # No assertion on the SIGN of the bias: trapezoidal over-reading of a convex
 # curve is one-sided in principle, but at 0.007% the residual is down in solver
 # noise, and asserting the sign of a near-zero quantity is exactly the shape
-# that passes locally and fails in CI (pattern 12).
+# that passes locally and fails in CI.
 
 sprintf("AUC0-12,ss vs dose/CL: max |%% diff| = %.3f%% over %d subjects",
         max(abs(auc_chk$pct_diff)), nrow(auc_chk))
@@ -577,8 +579,8 @@ stopifnot(var_row[["Mean |PTA error| (points)"]] <
 - **Supplementary Tables S1-S3 are not available.** S1 (covariate screening
   progression), S2 and S3 (PTA and CFR tabulations with the EUCAST MIC
   distributions) are cited in the text but are not distributed through PubMed
-  Central; the EuropePMC supplementary-files endpoint for PMC11464410 returns
-  only the article figures. No parameter in the model file depends on them. The
+  Central (the only files deposited with PMC11464410 are the article
+  figures). No parameter in the model file depends on them. The
   consequence is that the CFR analysis of Figure 4 cannot be reproduced, since
   the pathogen-specific MIC distributions it weights by are in S3.
 - **No covariate distribution had to be assumed.** The final model retains no

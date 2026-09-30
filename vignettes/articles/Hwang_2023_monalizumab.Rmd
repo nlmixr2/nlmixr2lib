@@ -298,13 +298,13 @@ ref <- eval_steady_state(WT = 70.6, ALB = 38, SEXF = 0,
 
 scenarios <- tibble::tribble(
   ~scenario,                  ~WT,   ~ALB, ~SEXF, ~SMOKE_CURRENT, ~SMOKE_NEVER,
-  "WT = 49.1 kg (5th pctl)",  49.1,  3.80, 0,     0,              0,
-  "WT = 108 kg (95th pctl)",  108,   3.80, 0,     0,              0,
-  "ALB = 28 g/dL (5th pctl)",70.6,  28,  0,     0,              0,
-  "ALB = 46 g/dL (95th pctl)",70.6, 46,  0,     0,              0,
-  "Female",                   70.6,  3.80, 1,     0,              0,
-  "Current smoker",           70.6,  3.80, 0,     1,              0,
-  "Never smoker",             70.6,  3.80, 0,     0,              1
+  "WT = 49.1 kg (5th pctl)",  49.1,  38,   0,     0,              0,
+  "WT = 108 kg (95th pctl)",  108,   38,   0,     0,              0,
+  "ALB = 28 g/L (5th pctl)",  70.6,  28,   0,     0,              0,
+  "ALB = 46 g/L (95th pctl)", 70.6,  46,   0,     0,              0,
+  "Female",                   70.6,  38,   1,     0,              0,
+  "Current smoker",           70.6,  38,   0,     1,              0,
+  "Never smoker",             70.6,  38,   0,     0,              1
 ) |>
   rowwise() |>
   mutate(
@@ -319,7 +319,7 @@ scenarios <- tibble::tribble(
 
 scenarios |>
   dplyr::rename(
-    "Scenario vs. typical (70.6 kg, 3.80 g/dL, male, former smoker)" = scenario,
+    "Scenario vs. typical (70.6 kg, 38 g/L, male, former smoker)" = scenario,
     "AUC change (%)"  = auc_pct,
     "Cmax change (%)" = cmax_pct
   ) |>
@@ -329,8 +329,8 @@ scenarios |>
 )
 ```
 
-The 95th-percentile WT (108 kg) result of approximately -24% AUC and the
-5th-percentile ALB (2.8 g/dL) result of approximately -27% AUC reproduce
+The 95th-percentile WT (108 kg) result of approximately -22% AUC and the
+5th-percentile ALB (28 g/L, 2.8 g/dL) result of approximately -28% AUC reproduce
 the magnitudes reported in Hwang 2023 Discussion (p. 826: "with a maximum
 change of -24% and -27% on monalizumab AUC at steady state for the 95th
 percentile of observed body weight (108 kg) and the 5th percentile of
@@ -438,11 +438,12 @@ final model" (Discussion, p. 826).
   category is male, which matches the canonical convention; no
   value transformation or coefficient sign-flip is needed.
 - **Albumin units.** Hwang 2023 reports albumin in g/dL throughout
-  Table 1 (range 1.80-4.90 g/dL). The packaged model uses g/dL with
-  reference 3.80 g/dL. Other nlmixr2lib models that use albumin
-  store it in either g/dL or g/L; the per-model
+  Table 1 (range 1.80-4.90 g/dL). The packaged model takes `ALB` in
+  g/L and converts it to g/dL inline, so the published reference
+  3.80 g/dL applies unchanged. Other nlmixr2lib models that use
+  albumin store it in either g/dL or g/L; the per-model
   `covariateData[[ALB]]$units` field is load-bearing and is set to
-  `"g/dL"` here.
+  `"g/L"` here.
 - **Residual error storage.** Hwang 2023 Table 2 reports residual-error
   variances (`Variance of proportional error = 0.0772`,
   `Variance of additive error = 0.00766`); the packaged model uses

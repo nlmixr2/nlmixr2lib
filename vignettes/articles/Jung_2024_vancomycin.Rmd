@@ -260,7 +260,9 @@ sim <- rxode2::rxSolve(
   events = events,
   keep   = c("treatment", "WT", "CRCL"),
   omega  = NA,
-  returnType = "data.frame"
+  returnType = "data.frame",
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  maxsteps = 1e6
 )
 
 stopifnot(!anyNA(sim$Cc), all(sim$Cc >= 0))
@@ -758,5 +760,5 @@ this extraction:
 * **No non-paper-derived parameter values.** Every value in `ini()` comes from
   Jung 2024 Table 2 or the supplement's eMethods; nothing was digitised from a
   figure, obtained by correspondence, or carried from another model. The
-  supplement was retrieved from the publisher's own permalink
-  (<http://links.lww.com/CCX/B406>) and is archived alongside the lead PDF.
+  supplement is available from the publisher's own permalink
+  (<http://links.lww.com/CCX/B406>).

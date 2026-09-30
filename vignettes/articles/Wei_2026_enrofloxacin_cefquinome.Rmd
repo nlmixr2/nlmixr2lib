@@ -519,7 +519,8 @@ stopifnot(gof$index[gof$matrix == "plasma"][which.max(gof$r2_recomputed[gof$matr
   same arm reconstructs exactly, so the discrepancy is confined to one lung
   entry -- either the lung Cmax for that arm differs from the single-dose
   10 mg/kg value of 15.53 ug/mL used here, or Table 5 contains a typographical
-  error. There is not enough information on disk to distinguish the two.
+  error. There is not enough information in the available sources to
+  distinguish the two.
 * **Which ENR regimen maps to which lung MIC(combine) is ambiguous in the
   text.** The paper writes that enrofloxacin "at the same doses revealed average
   concentrations in lung within 72 h of 1.47 and 1.71 ug/mL, respectively, with
@@ -538,7 +539,7 @@ stopifnot(gof$index[gof$matrix == "plasma"][which.max(gof$r2_recomputed[gof$matr
   correctly. The most likely explanation is that the fits were run against more
   data than the seven summary rows of Table 5 -- for example the per-replicate
   counts, or the 24 and 48 h time points visible in Figure 2A -- but Wei 2026
-  does not state the fitted dataset, and the underlying counts are not on disk.
+  does not state the fitted dataset, and the underlying counts are not available.
   This is recorded rather than resolved.
 * **Table 6's title names the wrong drug.** It reads "PK/PD analysis of
   Enrofloxacin derived from the inhibitory sigmoid Emax model", but every index
@@ -548,6 +549,7 @@ stopifnot(gof$index[gof$matrix == "plasma"][which.max(gof$r2_recomputed[gof$matr
   20 mg/kg background that lowers the cefquinome MIC.
 * **The three-fold `Emax`/`E0` naming inversion** is documented in full above; it
   is a naming convention, not an error, and no value is altered by the remapping.
-* **Supplementary Materials 1-6 were not on disk** for this extraction. The main
-  text contains the complete model equation, all six parameter sets, and the
-  index and effect data for every arm, so no packaged value depends on them.
+* **Supplementary Materials 1-6 were not available** when this model was built.
+  The main text contains the complete model equation, all six parameter sets,
+  and the index and effect data for every arm, so no packaged value depends on
+  them.

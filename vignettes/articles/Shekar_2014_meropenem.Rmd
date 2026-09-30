@@ -104,13 +104,13 @@ regimens (500 mg, 1 g, 2 g IV q8h, each over 30 minutes). All five CrCL
 simulations correspond to non-RRT patients (`RRT_CRRT_STATUS = 0`); the model's
 RRT branch uses the fixed `TVCL = 5.1 L/h` and so is simulated separately
 below. The published simulations used n = 1,000 per condition; the vignette
-uses n = 100 per condition to stay inside the 5-minute pkgdown render
-budget while still resolving the median and 10th-percentile reliably.
+uses n = 100 per condition to keep the render time under 5
+minutes while still resolving the median and 10th-percentile reliably.
 
 ```{r cohort}
 set.seed(20260518)
 
-# downsampled from 200 for pkgdown vignette build budget (Monte-Carlo
+# downsampled from 200 to keep the render time short (Monte-Carlo
 # percentiles remain stable; see Assumptions note)
 n_per_combo  <- 100L
 crcl_levels  <- c(20, 50, 80, 120, 180)  # mL/min
@@ -478,7 +478,7 @@ Cmin of 4.9 mg/L.
   * 60 / 1000) is applied inside `model()` so that the dimensionless
   published `CL_CRCL = 1.89` produces CL in L/h.
 
-  No NONMEM control stream is available on disk to cross-check the
+  No NONMEM control stream was available to cross-check the
   equation form, so this resolution depends on the only reading that
   reconciles the parameter table, the observed mean CL by subgroup, and
   the published Monte-Carlo simulation table.
@@ -516,7 +516,7 @@ Cmin of 4.9 mg/L.
   OMEGA, and the packaged model uses diagonal IIV. No IIV is included on
   Q because no Q variability is reported. This is consistent with the
   reported information but cannot be cross-checked against the original
-  NONMEM control stream (not on disk).
+  NONMEM control stream, which was not available when this model was built.
 
 - **`omega^2 = log(CV^2 + 1)`.** Table 2 reports inter-individual
   variability as CV%; the corresponding log-normal variance was computed
@@ -539,9 +539,9 @@ Cmin of 4.9 mg/L.
   no scale factor is applied.
 
 - **Virtual cohort uses n = 100 per CrCL / dose condition (vs n = 1,000
-  in the paper).** The vignette has a 5-minute pkgdown render budget;
-  n = 100 per condition with 21 doses per subject and 17 sampling points
-  per dosing interval keeps the render under that budget while still
+  in the paper).** n = 100 per condition with 21 doses per subject and
+  17 sampling points per dosing interval keeps the render time under
+  5 minutes while still
   resolving the median and 10th-percentile trough comparison to within
   Monte-Carlo noise.
 

@@ -33,9 +33,9 @@ estimates presented as medians", NONMEM Estimate column). The companion
 upstream NONMEM control stream + listing (DDMODEL00000220) and therefore
 carries slightly more decimal-precision on the IIV / IOV variances
 (the paper rounds those to integer % CV). The two entries are
-intentionally redundant under the standing convention that DDMoRE-source
-and paper-source extractions are tracked separately because the
-extraction-route fingerprints differ.
+intentionally redundant under the package's convention that DDMoRE-source
+and paper-source encodings are kept as separate entries because they are
+built from different source material.
 
 # Population
 
@@ -114,8 +114,8 @@ on apparent oral clearance.
 set.seed(20260609L)
 
 n_subjects     <- 60L                 # condensed from the 189-subject paper cohort
-                                      # to keep the vignette wall-clock under the
-                                      # 5-minute pkgdown gate while preserving
+                                      # to keep the vignette wall-clock under
+                                      # 5 minutes while preserving
                                       # 5-95 percentile envelope shape
 dose_amt_mg    <- 1000                # representative middle dose level (17% of cohort)
 dose_interval  <- 24                  # hours between QD doses
@@ -393,7 +393,7 @@ ggplot(iov_summary, aes(tad, Q50, colour = factor(OCC))) +
 
 # Assumptions and deviations
 
-- **No observed data on disk.** Direct overlay against the paper's
+- **No observed data available.** Direct overlay against the paper's
   Figure 1 (raw concentrations) or Figure 3 (VPC) is not part of
   this vignette -- the paper's observed dataset is not redistributable.
   Validation is by closed-form CL/F vs. AUCss check + PKNCA roundtrip
@@ -443,7 +443,7 @@ ggplot(iov_summary, aes(tad, Q50, colour = factor(OCC))) +
 - **Cohort condensed from 189 to 60.** The full 189-subject paper
   cohort would double the vignette wall-clock under `rxode2::rxSolve`
   with IIV / IOV / EPS layered on; the condensed 60-subject cohort
-  keeps the vignette under the 5-minute pkgdown gate without
+  keeps the vignette's render time under 5 minutes without
   materially changing the per-time-point median / 5-95% spread.
   Consumers who need the full 189-subject reproduction can re-run
   with `n_subjects <- 189L` locally.

@@ -782,12 +782,12 @@ balance exactly 1 as intended.
   is identically zero. It is omitted; the bile *concentration* output it was
   presumably meant to support is retained as `Cbile` in the monkey file.
 
-## Parameters not reported anywhere on disk
+## Parameters not reported in any available source
 
 Five constants sit in the supplement's `# Dosing Controls` block, which the
 supplement introduces with "Note: parameters are set in simulation scripts" --
 they are scenario inputs, not fitted parameters -- and no value for any of them
-appears in the paper, its supplement, or any other on-disk source. **No value
+appears in the paper, its supplement, or any other available source. **No value
 has been invented for any of them.**
 
 ```{r unreported, echo = FALSE}
@@ -814,7 +814,8 @@ Consequences for validation scope:
   labelled as a calibrated scenario input.
 * The monkey **intraperitoneal, subcutaneous and ppm-diet** tracer routes
   (Figures 4A and 5) are implemented structurally but are **not validated here**.
-  Schroeter et al. (2011), the upstream source of `INFAC`, is not on disk.
+  Schroeter et al. (2011), the upstream source of `INFAC`, was not available
+  when this model was built.
 
 ## Other assumptions
 

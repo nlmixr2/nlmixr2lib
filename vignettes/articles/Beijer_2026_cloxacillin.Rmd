@@ -27,7 +27,7 @@ cat("* Description: ", ui$description, "\n", sep = "")
 
 * Article: <https://doi.org/10.1093/jac/dkag116>
 * Supplement (Figures S1-S4, Tables S1-S2, appendices, open access via EuropePMC):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13049546/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC13049546>
 
 Every parameter value in this model comes from **Table S2 of the Supplementary
 Material**; the main article prints no parameter estimates at all. The

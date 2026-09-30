@@ -22,8 +22,8 @@ library(ggplot2)
 * Article: [mAbs 2025;17(1):2512217](https://doi.org/10.1080/19420862.2025.2512217)
 * Supplement: Supplementary Sections M1-M5, Figures S1-S7 and Table S1
   (`KMAB_A_2512217_SM8525.docx`), plus the full 160-model dataset
-  (`KMAB_A_2512217_SM8524.xlsx`), both retrievable from the Europe PMC
-  `supplementaryFiles` endpoint for PMC12128664.
+  (`KMAB_A_2512217_SM8524.xlsx`), both published with the open-access
+  article (PMC12128664).
 
 This paper is a systematic meta-analysis of **160 published two-compartment
 population PK models covering 69 marketed canonical IgG monoclonal antibodies**.
@@ -644,7 +644,7 @@ tibble::tribble(
 * **The third common covariate configuration is not extracted.** The paper
   identifies "weight and sex on CL and Vc" (19 models) as the third most common
   combination but neither simulates it nor reports the median coefficients for
-  that subset, so it cannot be parameterised from on-disk sources.
+  that subset, so it cannot be parameterised from the available sources.
 * **Screened but unused covariates.** Median effects for body weight, albumin,
   sex and ADA status across the 160 models are recorded in the generic model's
   `covariatesDataExcluded` metadata (allometric exponents 0.62 on CL and 0.56 on

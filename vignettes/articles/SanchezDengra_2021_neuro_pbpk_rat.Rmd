@@ -1,0 +1,727 @@
+---
+title: "Rat neuro-PBPK for six drugs from three BBB cell lines (Sanchez-Dengra 2021)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rat neuro-PBPK for six drugs from three BBB cell lines (Sanchez-Dengra 2021)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+## The paper
+
+Sanchez-Dengra and colleagues coupled a single in vitro blood-brain barrier
+(BBB) assay to a small semi-physiological PBPK model to predict drug
+concentrations in the rat brain. Three cell lines were used for the in vitro
+assay -- MDCK, MDCK-MDR1 (MDCK transfected with human P-glycoprotein) and the
+human brain endothelial line hCMEC/D3 -- and six model drugs were studied:
+amitriptyline, caffeine, carbamazepine, fleroxacin, pefloxacin and zolpidem.
+
+> Sanchez-Dengra B, Gonzalez-Alvarez I, Bermejo M, Gonzalez-Alvarez M.
+> Physiologically Based Pharmacokinetic (PBPK) Modeling for Predicting Brain
+> Levels of Drug in Rat. *Pharmaceutics.* 2021;13(9):1402.
+> [doi:10.3390/pharmaceutics13091402](https://doi.org/10.3390/pharmaceutics13091402)
+
+* Article (open access): <https://doi.org/10.3390/pharmaceutics13091402>
+* Supplement (Tables S1-S2): <https://www.mdpi.com/article/10.3390/pharmaceutics13091402/s1>
+
+For every drug and every cell line the authors fitted the model to published
+mean plasma and brain profiles in Berkeley Madonna, estimating the plasma
+volume of distribution `Vd`, the elimination rate constant `kel`, the
+absorption rate constant `ka` (extravascular doses only) and three scaling
+factors that carry the in vitro inputs over to the rat (Table 3). The paper
+therefore reports **18 fitted parameterisations** (six drugs times three cell
+lines) of one shared structure. Each is a separate model in this package:
+
+```{r models}
+drugs <- c("amitriptyline", "caffeine", "carbamazepine", "fleroxacin", "pefloxacin", "zolpidem")
+cells <- c(mdck = "MDCK", mdckmdr1 = "MDCK-MDR1", hcmec = "hCMEC/D3")
+grid <- expand.grid(cell = names(cells), drug = drugs, stringsAsFactors = FALSE)
+grid$model <- sprintf("SanchezDengra_2021_%s_rat_pbpk_%s", grid$drug, grid$cell)
+grid$cell_label <- factor(unname(cells[grid$cell]), levels = cells)
+stopifnot(nrow(grid) == 18L, all(grid$model %in% modeldb$name))
+mods <- lapply(setNames(grid$model, grid$model), function(m) rxode2::rxode(readModelDb(m)))
+grid[, c("model", "drug", "cell_label")]
+```
+
+The models are deterministic: the paper fitted mean profiles and estimated no
+between-animal variability and no residual error, so there are no `eta` or
+residual-error terms, and every simulation below is a single typical-value
+solve.
+
+## Model structure
+
+Figure 1 of the paper has one plasma compartment (`central`, volume `Vd`) and
+two CNS compartments: brain tissue (`brain`, volume `Vb`) and cerebrospinal
+fluid (`csf`, volume `VCSF`). Only unbound drug crosses a barrier. For total
+concentrations `Cp` (plasma) and `Cb` (brain) and the CSF concentration
+`CCSF`, Equations 4-6 are
+
+```
+Vd   dCp/dt   = - PS_BBB,in Cu,p + PS_BBB,out Cu,b - PS_BCSFB,in Cu,p
+                + PS_BCSFB,out CCSF + Qsink CCSF - kel Cp Vd
+Vb   dCb/dt   =   PS_BBB,in Cu,p - PS_BBB,out Cu,b - Qbulk Cu,b
+VCSF dCCSF/dt =   PS_BCSFB,in Cu,p - PS_BCSFB,out CCSF - Qsink CCSF + Qbulk Cu,b
+```
+
+with the unbound concentrations `Cu,p = fu,plasma Cp` (Figure 1) and
+`Cu,b = SC3 fu,brain Cb` (Equation 14), all CSF drug unbound, and the barrier
+permeability-surface-area products built from the in vitro apparent
+permeabilities (Equations 10-13):
+
+```
+PS_BBB,in    = SC1 Papp,A-B S_BBB      PS_BCSFB,in  = SC1 Papp,A-B S_BCSFB
+PS_BBB,out   = SC2 Papp,B-A S_BBB      PS_BCSFB,out = SC2 Papp,B-A S_BCSFB
+```
+
+An extravascular dose adds a depot `dA/dt = -ka A` feeding plasma at `ka A`
+(Equations 7-8); an intravenous infusion adds the zero-order input `k0`
+(Equation 9), which the package models supply as an infusion event rather
+than as a term in the ODE. Nothing is eliminated from the brain or the CSF:
+every molecule that enters the CNS returns to plasma, and `kel` is the only
+exit from the system.
+
+## Population
+
+The in vivo data are **literature mean profiles** (Methods 2.4, references
+16-20), one rat study per drug, so the paper reports no number of animals. The
+rat weights of the source studies were 190-300 g (Table 1). The brain data are
+total brain concentrations for amitriptyline and zolpidem and unbound brain
+(or brain extracellular fluid) concentrations for the other four drugs; the
+plasma data are total plasma concentrations except for carbamazepine, whose
+plasma profile is unbound (Figure 2 legends). The same information is in each
+model's `population` metadata:
+
+```{r population}
+str(readModelDb("SanchezDengra_2021_caffeine_rat_pbpk_mdck")()$population)
+```
+
+## Source trace
+
+Every `ini()` value carries an in-file comment naming its source. They are
+collected here.
+
+| Quantity | Symbol in model | Source |
+|---|---|---|
+| Model structure | `d/dt(central)`, `d/dt(brain)`, `d/dt(csf)` | Figure 1; Equations 4-6 |
+| Extravascular input | `d/dt(depot)`, `ka` | Equations 7-8 |
+| Infusion input | infusion event into `central` | Equation 9 |
+| Barrier PS products | `ps_bbb_in`, `ps_bbb_out`, `ps_bcsfb_in`, `ps_bcsfb_out` | Equations 10-13 |
+| Unbound brain concentration | `Cu_brain <- sc3 * fu_brain * Cbrain` | Equation 14 |
+| Unbound plasma concentration | `Cu <- fu * Cc` | Figure 1 |
+| `Vd`, `kel`, `ka` (fitted) | `lvc`, `lkel`, `lka` | Table 3 (Table 1 holds the initial estimates) |
+| `SC1`, `SC2`, `SC3` per cell line (fitted) | `sc1`, `sc2`, `sc3` | Table 3 |
+| `Papp,A-B`, `Papp,B-A`, `fu,brain` per cell line (fixed) | `papp_ab`, `papp_ba`, `fu_brain` | Table 2 |
+| `fu,plasma` (fixed) | `fu` | Table 1 |
+| `Vb` = 1.28 cm^3, `VCSF` = 0.25 cm^3 | `lvbrain`, `lvcsf` | Methods 2.4 (Ball et al., ref 14) |
+| `Qbulk` = 0.012 cm^3/s, `Qsink` = 0.132 cm^3/s | `qbulk`, `qsink` | Methods 2.4 (Ball et al., ref 14) |
+| `S_BBB` = 187.5 cm^2, `S_BCSFB` = 0.0375 cm^2 | `s_bbb`, `s_bcsfb` | Methods 2.4 (ref 14; Engelhard et al., ref 15) |
+| Doses `D`, infusion rates `k0`, rat weights | event tables below | Table 1 |
+| QSPR polynomials `lnSC = f(logP)` | vignette only | Figure 3 (printed equations) |
+| logP of each drug | vignette only | Supplementary Table S2 |
+
+The eighteen files differ only in the Table 1-3 values. The parameter values
+of all eighteen, read back out of the packaged models:
+
+```{r param-table}
+param_row <- function(m) {
+  ini <- mods[[m]]$iniDf
+  v <- setNames(ini$est, ini$name)
+  data.frame(
+    model = m,
+    Vd_mL = exp(v[["lvc"]]),
+    kel_per_s = signif(exp(v[["lkel"]]), 3),
+    ka_per_s = if ("lka" %in% names(v)) signif(exp(v[["lka"]]), 3) else NA_real_,
+    fu_plasma = v[["fu"]],
+    Papp_AB = v[["papp_ab"]],
+    Papp_BA = v[["papp_ba"]],
+    fu_brain = v[["fu_brain"]],
+    SC1 = v[["sc1"]],
+    SC2 = v[["sc2"]],
+    SC3 = v[["sc3"]]
+  )
+}
+params <- do.call(rbind, lapply(grid$model, param_row))
+knitr::kable(params, row.names = FALSE)
+```
+
+## Dosing designs (Table 1)
+
+Table 1 gives, per drug, a dose `D` and/or an infusion rate `k0`. Read
+together with Figure 2 the designs are:
+
+* **Amitriptyline** and **carbamazepine** -- a single extravascular dose `D`
+  (5,000,000 ng and 3,600,000 ng) with first-order absorption `ka`.
+* **Zolpidem** -- a single intravenous bolus `D` = 499,700 ng; `D / Vd` =
+  2688 ng/mL is the fitted plasma line's value at time zero in Figure 2F.
+* **Fleroxacin** and **pefloxacin** -- an intravenous loading bolus `D`
+  followed by a constant infusion `k0` for the whole 14,400 s record. Both
+  `D` and `k0` are printed; that `D` is a bolus at time zero is confirmed by
+  `D / Vd` = 3405 and 7012 ng/mL, the fitted plasma lines' starting values in
+  Figure 2D and 2E.
+* **Caffeine** -- a constant infusion `k0` = 833.333 ng/s with no bolus. The
+  paper does not print the infusion duration; it is taken as 14,400 s (4 h),
+  where the fitted plasma and brain lines of Figure 2B peak.
+
+```{r designs}
+design <- data.frame(
+  drug = drugs,
+  bolus_amt = c(5e6, 0, 3.6e6, 1114350, 3676500, 499700),
+  bolus_cmt = c("depot", "central", "depot", "central", "central", "central"),
+  inf_rate = c(0, 833.333, 0, 83.125, 214.542, 0),
+  inf_dur = c(0, 14400, 0, 14400, 14400, 0),
+  t_end = c(86400, 28800, 50400, 14400, 14400, 21600),
+  stringsAsFactors = FALSE
+)
+# Which concentrations Figure 2 plots for each drug (legends of Figure 2)
+design$plasma_var <- c("Cc", "Cc", "Cu", "Cc", "Cc", "Cc")
+design$brain_var <- c("Cbrain", "Cu_brain", "Cu_brain", "Cu_brain", "Cu_brain", "Cbrain")
+knitr::kable(design)
+
+make_events <- function(drug, obs_times) {
+  d <- design[design$drug == drug, ]
+  ev <- rxode2::et(obs_times, cmt = "central")
+  if (d$bolus_amt > 0) {
+    ev <- rxode2::et(ev, amt = d$bolus_amt, cmt = d$bolus_cmt, time = 0)
+  }
+  if (d$inf_rate > 0) {
+    ev <- rxode2::et(ev, amt = d$inf_rate * d$inf_dur, rate = d$inf_rate, cmt = "central", time = 0)
+  }
+  ev
+}
+
+solve_one <- function(m, drug, obs_times, ...) {
+  s <- as.data.frame(rxode2::rxSolve(mods[[m]], make_events(drug, obs_times), ...))
+  s$model <- m
+  s
+}
+```
+
+## Replicating Figure 2: the fitted profiles
+
+Each fitted parameterisation is solved on the design of its source study. The
+panels plot the same quantities as Figure 2 of the paper (total or unbound, as
+in its legends).
+
+```{r fig2-sim}
+fig2 <- lapply(seq_len(nrow(grid)), function(i) {
+  d <- design[design$drug == grid$drug[i], ]
+  obs <- sort(unique(c(seq(0, d$t_end, length.out = 401), 1:120)))
+  obs <- obs[obs <= d$t_end]
+  s <- solve_one(grid$model[i], grid$drug[i], obs)
+  data.frame(
+    drug = grid$drug[i], cell = grid$cell_label[i], time = s$time,
+    plasma = s[[d$plasma_var]], brain = s[[d$brain_var]]
+  )
+})
+fig2 <- do.call(rbind, fig2)
+fig2_long <- fig2 |>
+  pivot_longer(c(plasma, brain), names_to = "matrix", values_to = "conc") |>
+  mutate(matrix = factor(matrix, levels = c("plasma", "brain")))
+```
+
+```{r fig2-plot, fig.height = 9, fig.cap = "Replicates Figure 2 of Sanchez-Dengra 2021: fitted plasma and brain profiles for each drug and cell line (the three cell-line fits overlap, as in the paper)."}
+ggplot(fig2_long, aes(time, conc, colour = cell)) +
+  geom_line() +
+  facet_wrap(drug ~ matrix, scales = "free", ncol = 4) +
+  labs(x = "t (s)", y = "C (ng/mL)", colour = "Cell line") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The fitted lines of Figure 2 were read by eye at the points below (fitted-line
+peaks, or the start and end of the constant-infusion records). They are
+visual reads of a printed figure, so the check allows 15 percent -- enough for
+the reading error, and far too little for a wrong dose, volume or unit, which
+move these values several-fold. The check uses the MDCK fit, the cell line the
+paper recommends; the next check covers the other two.
+
+```{r fig2-anchors}
+anchor <- data.frame(
+  drug = c(
+    "amitriptyline", "amitriptyline", "caffeine", "caffeine", "carbamazepine",
+    "carbamazepine", "fleroxacin", "fleroxacin", "pefloxacin", "pefloxacin",
+    "zolpidem", "zolpidem"
+  ),
+  matrix = c(
+    "plasma", "brain", "plasma", "brain", "plasma", "brain",
+    "plasma", "brain", "plasma", "brain", "plasma", "brain"
+  ),
+  what = c(
+    "peak", "peak", "peak", "peak", "peak", "peak",
+    "end", "end", "end", "end", "start", "peak"
+  ),
+  figure2 = c(310, 6000, 34000, 30500, 1050, 490, 5400, 1380, 6400, 2000, 2700, 880)
+)
+sim_at <- function(drug, matrix, what) {
+  x <- fig2_long[fig2_long$drug == drug & fig2_long$matrix == matrix & fig2_long$cell == "MDCK", ]
+  if (nrow(x) == 0L) stop("no simulated rows for ", drug, " ", matrix)
+  switch(what,
+    peak = max(x$conc),
+    start = x$conc[which.min(x$time)],
+    end = x$conc[which.max(x$time)]
+  )
+}
+anchor$simulated <- mapply(sim_at, anchor$drug, anchor$matrix, anchor$what)
+anchor$pct_diff <- round(100 * (anchor$simulated / anchor$figure2 - 1), 1)
+anchor$simulated <- signif(anchor$simulated, 4)
+knitr::kable(anchor)
+stopifnot(nrow(anchor) == 12L, all(abs(anchor$pct_diff) < 15))
+```
+
+The paper states that the three cell-line fits overlap in both plasma and brain
+(Figure 2 and Discussion). Brain exposure of the MDCK-MDR1 and hCMEC/D3 fits,
+relative to the MDCK fit of the same drug:
+
+```{r fig2-overlap}
+overlap <- fig2 |>
+  group_by(drug, cell) |>
+  summarise(
+    brain_auc = sum(diff(time) * (head(brain, -1) + tail(brain, -1)) / 2),
+    brain_cmax = max(brain),
+    .groups = "drop"
+  ) |>
+  group_by(drug) |>
+  mutate(
+    auc_vs_mdck_pct = round(100 * (brain_auc / brain_auc[cell == "MDCK"] - 1), 1),
+    cmax_vs_mdck_pct = round(100 * (brain_cmax / brain_cmax[cell == "MDCK"] - 1), 1)
+  ) |>
+  ungroup()
+overlap$deviation <- overlap$drug == "amitriptyline" & overlap$cell != "MDCK"
+knitr::kable(overlap |> select(drug, cell, auc_vs_mdck_pct, cmax_vs_mdck_pct, deviation))
+# Measured within 2.0 percent for every row not flagged as a deviation.
+stopifnot(nrow(overlap) == 18L, sum(overlap$deviation) == 2L, all(abs(overlap$auc_vs_mdck_pct[!overlap$deviation]) < 5))
+```
+
+The fits overlap for five of the six drugs. For **amitriptyline** the
+MDCK-MDR1 and hCMEC/D3 total brain profiles lie 11 and 27 percent below the
+MDCK one, whereas all three overlap in Figure 2A. This is a known deviation,
+and it comes from rounding in Table 3. Amitriptyline is extensively bound in
+brain, and the fitted `SC3` values are printed to two decimals as 0.05, 0.02
+and 0.01. The unbound brain concentration is fixed by the barrier
+permeabilities, so the three fits agree on it (checked below). The total
+concentration is the unbound one divided by `SC3 * fu,brain`, which as printed
+is 0.00185, 0.00208 and 0.00252 for the three cell lines. For the total
+profiles to overlap as they do in the paper, the unrounded hCMEC/D3 `SC3` must
+be about 0.0073, not 0.01. The Figure 3C point for amitriptyline sits at
+`ln SC3` of about -4.9 (`SC3` of about 0.0075), which agrees. The packaged
+models keep the printed 0.02 and 0.01. The check below confirms that this is
+the whole explanation: the unbound profiles overlap, and the ratio of the
+total-brain AUCs equals the ratio of the printed `SC3 * fu,brain` products.
+
+```{r fig2-amitriptyline}
+ami <- lapply(grid$model[grid$drug == "amitriptyline"], function(m) {
+  s <- solve_one(m, "amitriptyline", seq(0, 86400, by = 60))
+  v <- params[params$model == m, ]
+  data.frame(
+    model = m,
+    auc_unbound = sum(diff(s$time) * (head(s$Cu_brain, -1) + tail(s$Cu_brain, -1)) / 2),
+    auc_total = sum(diff(s$time) * (head(s$Cbrain, -1) + tail(s$Cbrain, -1)) / 2),
+    binding = v$SC3 * v$fu_brain
+  )
+})
+ami <- do.call(rbind, ami)
+ami$unbound_vs_mdck <- ami$auc_unbound / ami$auc_unbound[1]
+ami$total_vs_mdck <- ami$auc_total / ami$auc_total[1]
+ami$binding_ratio <- ami$binding[1] / ami$binding
+knitr::kable(ami, digits = 4)
+stopifnot(
+  nrow(ami) == 3L, grepl("_mdck$", ami$model[1]),
+  all(abs(ami$unbound_vs_mdck - 1) < 0.02),
+  all(abs(ami$total_vs_mdck / ami$binding_ratio - 1) < 0.02)
+)
+```
+
+## Structural identities
+
+Two properties of the structure hold exactly for every parameterisation, and
+test the ODEs and the unit handling independently of any figure.
+
+### Plasma AUC and the dose
+
+Because the CNS returns everything to plasma, the total dose leaves the system
+only through `kel`, so `kel * Vd * AUC(0-inf, total plasma) = total dose`
+whatever the CNS parameters are. A mis-signed exchange term or a
+mis-scaled permeability would break it. The AUC is computed with PKNCA on a
+long, dense grid of each drug's Table 1 design, grouped by drug and cell line.
+
+```{r auc-identity}
+ident <- lapply(seq_len(nrow(grid)), function(i) {
+  ini <- mods[[grid$model[i]]]$iniDf
+  kel <- exp(ini$est[ini$name == "lkel"])
+  obs <- sort(unique(c(0, 10^seq(0, log10(40 * log(2) / kel), length.out = 800))))
+  s <- solve_one(grid$model[i], grid$drug[i], obs, rtol = 1e-10, atol = 1e-10, maxsteps = 1e6)
+  data.frame(treatment = paste(grid$drug[i], grid$cell[i], sep = "_"), id = 1L, time = s$time, Cc = s$Cc)
+})
+ident <- do.call(rbind, ident)
+stopifnot(all(ident$Cc >= -1e-6 * max(ident$Cc)))
+conc_ident <- ident |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(treatment, id, time, Cc)
+dose_ident <- design |>
+  mutate(total_dose = bolus_amt + inf_rate * inf_dur) |>
+  select(drug, total_dose) |>
+  right_join(grid |> select(drug, cell), by = "drug") |>
+  mutate(treatment = paste(drug, cell, sep = "_"), id = 1L, time = 0)
+o_conc <- PKNCAconc(conc_ident, Cc ~ time | treatment + id)
+o_dose <- PKNCAdose(dose_ident, total_dose ~ time | treatment + id)
+o_data <- PKNCAdata(o_conc, o_dose,
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE),
+  options = list(auc.method = "lin up/log down")
+)
+nca_ident <- as.data.frame(pk.nca(o_data))
+auc_check <- nca_ident |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(dose_ident |> select(treatment, total_dose, drug, cell), by = "treatment") |>
+  left_join(params |> mutate(treatment = sub("^SanchezDengra_2021_(.*)_rat_pbpk_(.*)$", "\\1_\\2", model)),
+    by = "treatment"
+  ) |>
+  mutate(ratio = kel_per_s * Vd_mL * PPORRES / total_dose)
+knitr::kable(auc_check |> select(treatment, total_dose, aucinf = PPORRES, ratio), digits = 4)
+# The ratio is 1 up to the trapezoid and extrapolation error of the NCA
+# (measured at most 1.1e-5 on this grid); a sign error in any exchange term
+# or a 1e-6 unit slip moves it by far more than 0.5 percent.
+stopifnot(nrow(auc_check) == 18L, all(abs(auc_check$ratio - 1) < 0.005))
+```
+
+`kel_per_s` above comes from `signif(..., 3)`, which equals the printed Table 3
+value exactly.
+
+### Steady-state brain partitioning
+
+At steady state Equation 5 gives the unbound brain-to-plasma ratio directly:
+`Kp,uu,brain = Cu,b / Cu,p = PS_BBB,in / (PS_BBB,out + Qbulk)`, and Equation 6
+then gives `CCSF / Cu,p = (PS_BCSFB,in + Qbulk Kp,uu) / (PS_BCSFB,out + Qsink)`.
+A long constant infusion drives each parameterisation to steady state, and the
+simulated ratios are compared with the closed forms.
+
+```{r kpuu}
+kp <- lapply(seq_len(nrow(grid)), function(i) {
+  v <- params[params$model == grid$model[i], ]
+  kel <- v$kel_per_s
+  t_ss <- 60 * log(2) / kel
+  ev <- rxode2::et(amt = t_ss, rate = 1, cmt = "central", time = 0)
+  ev <- rxode2::et(ev, t_ss * (1 - 1e-6), cmt = "central")
+  s <- as.data.frame(rxode2::rxSolve(mods[[grid$model[i]]], ev, rtol = 1e-10, atol = 1e-12, maxsteps = 1e6))
+  s <- s[nrow(s), ]
+  ps_in <- v$SC1 * v$Papp_AB * 1e-6 * 187.5
+  ps_out <- v$SC2 * v$Papp_BA * 1e-6 * 187.5
+  kpuu <- ps_in / (ps_out + 0.012)
+  csf_ratio <- (v$SC1 * v$Papp_AB * 1e-6 * 0.0375 + 0.012 * kpuu) /
+    (v$SC2 * v$Papp_BA * 1e-6 * 0.0375 + 0.132)
+  data.frame(
+    model = grid$model[i],
+    kpuu_closed = kpuu, kpuu_sim = s$Cu_brain / s$Cu,
+    csf_closed = csf_ratio, csf_sim = s$Ccsf / s$Cu
+  )
+})
+kp <- do.call(rbind, kp)
+kp$kpuu_relerr <- kp$kpuu_sim / kp$kpuu_closed - 1
+kp$csf_relerr <- kp$csf_sim / kp$csf_closed - 1
+knitr::kable(kp, digits = 5)
+# Measured at most 4e-13 with rtol = 1e-10; 1e-5 leaves headroom for the
+# numeric integrator while still failing on any structural or unit error.
+stopifnot(nrow(kp) == 18L, all(abs(kp$kpuu_relerr) < 1e-5), all(abs(kp$csf_relerr) < 1e-5))
+```
+
+The steady-state `Kp,uu,brain` values sit near or below 1 for every drug. This
+is a property of the fitted parameters, not a structural constraint; `Qbulk`
+enters the denominator, so the packaged structure can in principle produce
+`Kp,uu` above 1 when `PS_BBB,in` is large.
+
+## Replicating Figure 3: the QSPR sub-model
+
+To predict brain levels for a new drug, the authors regressed the natural
+logarithm of each fitted scaling factor on the drug's lipophilicity (logP):
+a cubic for `SC1` and `SC2` and a parabola for `SC3`, separately for each cell
+line (Figure 3). The polynomial coefficients are printed under each panel of
+Figure 3 and the logP values are in Supplementary Table S2.
+
+```{r qspr}
+logp <- c(
+  amitriptyline = 4.81, caffeine = -0.55, carbamazepine = 2.77,
+  fleroxacin = 0.98, pefloxacin = 0.75, zolpidem = 3.02
+)
+# Coefficients (x^3, x^2, x, intercept) of Figure 3, one row per cell line and
+# scaling factor, with the printed R^2.
+qspr <- data.frame(
+  cell = rep(c("mdck", "mdckmdr1", "hcmec"), each = 3),
+  sc = rep(c("sc1", "sc2", "sc3"), times = 3),
+  a3 = c(-0.019, 0.080, 0, -0.044, 0.083, 0, -0.055, 0.020, 0),
+  a2 = c(0.284, -0.63, -0.291, 0.470, -0.488, -0.308, 0.380, -0.275, -0.247),
+  a1 = c(-0.048, 2.016, 0.967, -0.020, 1.794, 0.844, 0.184, 1.946, 0.180),
+  a0 = c(1.237, 1.300, -0.888, 0.903, 1.116, -0.779, 1.358, 1.125, 0.394),
+  r2_printed = c(0.969, 0.955, 0.854, 0.894, 0.831, 0.959, 0.643, 0.855, 0.895),
+  stringsAsFactors = FALSE
+)
+qspr_predict <- function(row, x) exp(row$a3 * x^3 + row$a2 * x^2 + row$a1 * x + row$a0)
+
+qspr_check <- lapply(seq_len(nrow(qspr)), function(k) {
+  q <- qspr[k, ]
+  fitted_sc <- vapply(drugs, function(dr) {
+    params[[toupper(q$sc)]][params$model == sprintf("SanchezDengra_2021_%s_rat_pbpk_%s", dr, q$cell)]
+  }, numeric(1))
+  y <- log(fitted_sc)
+  yhat <- log(qspr_predict(q, logp[drugs]))
+  refit <- lm(y ~ poly(logp[drugs], if (q$sc == "sc3") 2 else 3, raw = TRUE))
+  data.frame(
+    cell = q$cell, sc = q$sc, r2_printed = q$r2_printed,
+    r2_printed_coefs = 1 - sum((y - yhat)^2) / sum((y - mean(y))^2),
+    r2_refit = summary(refit)$r.squared,
+    max_coef_diff = max(abs(rev(coef(refit)) - c(q$a3, q$a2, q$a1, q$a0)[if (q$sc == "sc3") 2:4 else 1:4]))
+  )
+})
+qspr_check <- do.call(rbind, qspr_check)
+knitr::kable(qspr_check, digits = 3)
+stopifnot(
+  nrow(qspr_check) == 9L,
+  # The printed polynomials, evaluated at the Table S2 logP values, reproduce
+  # the printed R^2 of every panel against the Table 3 scaling factors.
+  all(abs(qspr_check$r2_printed_coefs - qspr_check$r2_printed) < 0.01),
+  # A least-squares refit recovers the printed coefficients (rounded to
+  # 3 decimals) of every SC1 and SC2 panel (measured max 0.001); the SC3
+  # panels carry the rounding of amitriptyline's SC3, see below.
+  all(qspr_check$max_coef_diff[qspr_check$sc != "sc3"] < 0.01)
+)
+```
+
+The three data sets that enter each regression -- the Table 3 scaling
+factors, the Table S2 logP values and the Figure 3 coefficients -- are
+therefore mutually consistent. The refit coefficients of the three `SC3`
+panels differ slightly from the printed ones (by 0.013, 0.006 and 0.044 for
+MDCK, MDCK-MDR1 and hCMEC/D3), although all three still reproduce the printed
+R^2 to within 0.006. The cause is the same Table 3 rounding found above:
+amitriptyline's `SC3` is printed as 0.05, 0.02 and 0.01, and at the extreme
+logP of 4.81 its point has the most leverage in a six-point parabola. The
+effect is largest for hCMEC/D3, where the Figure 3C point sits near
+`ln SC3` = -4.9 (`SC3` of about 0.0075) rather than at ln 0.01 = -4.6. The
+printed Figure 3 coefficients are used below.
+
+```{r fig3-plot, fig.height = 6, fig.cap = "Replicates Figure 3 of Sanchez-Dengra 2021: ln(scaling factor) against logP with the printed QSPR polynomials."}
+curve_x <- seq(-0.8, 5, by = 0.05)
+qspr_curves <- do.call(rbind, lapply(seq_len(nrow(qspr)), function(k) {
+  data.frame(cell = qspr$cell[k], sc = qspr$sc[k], logp = curve_x, lnsc = log(qspr_predict(qspr[k, ], curve_x)))
+}))
+qspr_points <- params |>
+  mutate(
+    drug = sub("^SanchezDengra_2021_(.*)_rat_pbpk_.*$", "\\1", model),
+    cell = sub("^.*_rat_pbpk_", "", model)
+  ) |>
+  pivot_longer(c(SC1, SC2, SC3), names_to = "sc", values_to = "value") |>
+  mutate(sc = tolower(sc), logp = logp[drug], lnsc = log(value))
+lab <- function(x) unname(c(cells, sc1 = "ln SC1", sc2 = "ln SC2", sc3 = "ln SC3")[x])
+ggplot(mapping = aes(logp, lnsc)) +
+  geom_line(data = qspr_curves) +
+  geom_point(data = qspr_points, aes(colour = drug)) +
+  facet_grid(sc ~ factor(cell, levels = names(cells)), scales = "free_y", labeller = as_labeller(lab)) +
+  labs(x = "logP", y = NULL, colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+## Replicating Figure 4: brain profiles predicted from logP
+
+In the paper's internal validation, the fitted scaling factors of each model
+were replaced by those predicted from logP by the QSPR, and the brain profiles
+re-simulated (Figure 4). The packaged models do this with `ini()`:
+
+```{r fig4-sim}
+fig4 <- lapply(seq_len(nrow(grid)), function(i) {
+  d <- design[design$drug == grid$drug[i], ]
+  rows <- qspr[qspr$cell == grid$cell[i], ]
+  sc_pred <- vapply(split(rows, rows$sc), function(r) qspr_predict(r, logp[[grid$drug[i]]]), numeric(1))
+  m_qspr <- rxode2::ini(mods[[grid$model[i]]], sc1 = sc_pred[["sc1"]], sc2 = sc_pred[["sc2"]], sc3 = sc_pred[["sc3"]])
+  obs <- sort(unique(c(seq(0, d$t_end, length.out = 401), 1:120)))
+  obs <- obs[obs <= d$t_end]
+  s_fit <- solve_one(grid$model[i], grid$drug[i], obs)
+  s_qspr <- as.data.frame(rxode2::rxSolve(m_qspr, make_events(grid$drug[i], obs)))
+  rbind(
+    data.frame(drug = grid$drug[i], cell = grid$cell_label[i], scaling = "fitted (Table 3)", time = s_fit$time, brain = s_fit[[d$brain_var]]),
+    data.frame(drug = grid$drug[i], cell = grid$cell_label[i], scaling = "QSPR (Figure 3)", time = s_qspr$time, brain = s_qspr[[d$brain_var]])
+  )
+})
+fig4 <- do.call(rbind, fig4)
+```
+
+```{r fig4-plot, fig.height = 8, fig.cap = "Replicates Figure 4 of Sanchez-Dengra 2021: brain profiles simulated with QSPR-predicted scaling factors (solid) against the fitted profiles (dashed)."}
+ggplot(fig4, aes(time, brain, colour = cell, linetype = scaling)) +
+  geom_line() +
+  scale_linetype_manual(values = c("fitted (Table 3)" = "dashed", "QSPR (Figure 3)" = "solid")) +
+  facet_wrap(~drug, scales = "free", ncol = 2) +
+  labs(x = "t (s)", y = "Brain C (ng/mL)", colour = "Cell line", linetype = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom", legend.box = "vertical")
+```
+
+The QSPR-predicted lines of Figure 4 were read by eye at their peaks (at the
+end of the record for fleroxacin, whose brain concentration rises throughout):
+
+```{r fig4-anchors}
+fig4_anchor <- data.frame(
+  drug = rep(drugs, each = 3),
+  cell = rep(unname(cells), times = 6),
+  what = rep(c("peak", "peak", "peak", "end", "peak", "peak"), each = 3),
+  figure4 = c(6300, 5500, 4000, 31000, 31000, 31000, 610, 1090, 410, 1500, 1800, 1680, 1850, 1480, 1840, 400, 380, 2550)
+)
+fig4_at <- function(drug, cell, what) {
+  x <- fig4[fig4$drug == drug & fig4$cell == cell & fig4$scaling == "QSPR (Figure 3)", ]
+  if (nrow(x) == 0L) stop("no simulated rows for ", drug, " ", cell)
+  if (what == "peak") max(x$brain) else x$brain[which.max(x$time)]
+}
+fig4_anchor$simulated <- signif(mapply(fig4_at, fig4_anchor$drug, fig4_anchor$cell, fig4_anchor$what), 4)
+fig4_anchor$pct_diff <- round(100 * (fig4_anchor$simulated / fig4_anchor$figure4 - 1), 1)
+knitr::kable(fig4_anchor)
+# Measured within 8 percent everywhere except amitriptyline/MDCK (+13
+# percent, discussed below). A wrong QSPR coefficient or logP moves these
+# predictions by tens of percent or more (compare the cell lines).
+stopifnot(nrow(fig4_anchor) == 18L, all(abs(fig4_anchor$pct_diff) < 15))
+```
+
+The QSPR predictions reproduce Figure 4, including the two failures the paper
+discusses: carbamazepine is over-predicted with MDCK-MDR1 inputs and zolpidem
+with hCMEC/D3 inputs. The largest difference is the amitriptyline MDCK peak,
+13 percent above the paper's line. Two things plausibly contribute. The
+paper's simulated lines are drawn through a few time points (the kinks in
+Figure 2A), which cuts off the top of a peak that lasts only minutes. And at
+logP = 4.81 the cubic term multiplies coefficient rounding by more than 100.
+
+## Brain exposure with PKNCA
+
+Brain `Cmax` and `AUC(0-tlast)` of the fitted and QSPR-predicted profiles, by
+drug, cell line and scaling source:
+
+```{r nca-brain}
+conc_brain <- fig4 |>
+  filter(!is.na(brain)) |>
+  mutate(
+    treatment = paste(drug, cell, scaling, sep = " | "),
+    id = 1L,
+    brain = pmax(brain, 0)
+  )
+dose_brain <- conc_brain |>
+  distinct(treatment, id, drug) |>
+  left_join(design |> mutate(total_dose = bolus_amt + inf_rate * inf_dur) |> select(drug, total_dose), by = "drug") |>
+  mutate(time = 0)
+o_conc_b <- PKNCAconc(conc_brain, brain ~ time | treatment + id)
+o_dose_b <- PKNCAdose(dose_brain, total_dose ~ time | treatment + id)
+o_data_b <- PKNCAdata(o_conc_b, o_dose_b,
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, auclast = TRUE)
+)
+nca_brain <- as.data.frame(pk.nca(o_data_b)) |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  tidyr::separate(treatment, into = c("drug", "cell", "scaling"), sep = " \\| ")
+stopifnot(nrow(nca_brain) == 36L, all(is.finite(nca_brain$cmax)), all(is.finite(nca_brain$auclast)))
+knitr::kable(
+  nca_brain |>
+    dplyr::rename("Brain Cmax (ng/mL)" = cmax, "Brain AUC0-tlast (ng*s/mL)" = auclast),
+  digits = 1
+)
+```
+
+The paper does not tabulate brain `Cmax` or AUC. Its Table 4 gives the mean
+prediction error of the QSPR-simulated brain `Cmax` and AUC against the
+**experimental** data; those data are not published in tabular form, so Table 4
+cannot be recomputed here. As a proxy, the prediction error of the
+QSPR-simulated profile against the fitted profile (which tracked the data
+with a mean AUC error near 5 percent, Table 4 first row) is:
+
+```{r pe-proxy}
+pe <- nca_brain |>
+  pivot_wider(names_from = scaling, values_from = c(cmax, auclast)) |>
+  mutate(
+    pe_cmax = 100 * abs(`cmax_fitted (Table 3)` - `cmax_QSPR (Figure 3)`) / `cmax_fitted (Table 3)`,
+    pe_auc = 100 * abs(`auclast_fitted (Table 3)` - `auclast_QSPR (Figure 3)`) / `auclast_fitted (Table 3)`
+  )
+pe_summary <- pe |>
+  group_by(cell) |>
+  summarise(mean_pe_cmax = mean(pe_cmax), mean_pe_auc = mean(pe_auc), .groups = "drop") |>
+  mutate(cell = factor(cell, levels = cells)) |>
+  arrange(cell) |>
+  mutate(
+    paper_pe_cmax = c(19.23, 35.71, 49.77),
+    paper_pe_auc = c(22.34, 48.21, 46.69)
+  )
+knitr::kable(
+  pe_summary |>
+    dplyr::rename(
+      "Cell line" = cell,
+      "Mean PE% Cmax (QSPR vs fitted)" = mean_pe_cmax,
+      "Mean PE% AUC (QSPR vs fitted)" = mean_pe_auc,
+      "Table 4 PE% Cmax (vs data)" = paper_pe_cmax,
+      "Table 4 PE% AUC (vs data)" = paper_pe_auc
+    ),
+  digits = 1
+)
+```
+
+```{r pe-proxy-check}
+# The paper's conclusion (MDCK predicts best) holds for the proxy too:
+# measured 21.5 percent AUC error for MDCK against 42.5 and 41.1.
+stopifnot(nrow(pe_summary) == 3L, which.min(pe_summary$mean_pe_auc) == 1L, which.min(pe_summary$mean_pe_cmax) == 1L)
+```
+
+The proxy and Table 4 measure different things -- the proxy excludes the
+fitting error and the paper's PE% is taken as a signed per-drug value before
+averaging (Equation 15) -- so the numbers are shown side by side rather than
+compared. The paper's conclusion that the MDCK-based QSPR gives the best
+predictions is visible in both.
+
+## Assumptions and deviations
+
+* **Eighteen files for one structure.** The paper fitted each drug separately
+  for each of the three cell lines (Table 3), so each drug-cell-line
+  combination is its own model, named
+  `SanchezDengra_2021_<drug>_rat_pbpk_<cellline>`. The in vivo parameters
+  `Vd`, `kel` and `ka` are the same in the three files of a drug because
+  Table 3 reports a single value per drug.
+* **Deterministic model.** No between-animal variability or residual error
+  was estimated (mean profiles fitted in Berkeley Madonna), so the models have
+  no `eta` or residual-error terms.
+* **Time in seconds.** All rate constants, flows and infusion rates are
+  printed per second; the models keep the paper's units (time s, dose ng,
+  concentration ng/mL, volume cm^3 = mL).
+* **Physiological flows used as printed.** `Qbulk` = 0.012 cm^3/s and `Qsink`
+  = 0.132 cm^3/s (Methods 2.4, citing Ball et al.) are large compared with
+  the rat brain interstitial and CSF flows used elsewhere in this package
+  (0.2 and 2.2 uL/min in `Yamamoto_2017_quinidine_rat_pbpk`, Table 3 of that
+  paper). They are used exactly as printed, because the
+  fitted scaling factors were estimated with them and the Figure 2 fits are
+  reproduced with them (see the anchor check above); any unit inconsistency
+  in the physiological constants is absorbed by the fitted `SC1`-`SC3`.
+* **Rounded amitriptyline `SC3`.** Table 3 prints amitriptyline's `SC3` as
+  0.05 (MDCK), 0.02 (MDCK-MDR1) and 0.01 (hCMEC/D3). The models use these
+  printed values. As a result the MDCK-MDR1 and hCMEC/D3 total brain
+  concentrations of amitriptyline are 11 and 27 percent lower than the MDCK
+  ones, whereas the paper's fits overlap. Unbound brain concentrations are not
+  affected. The unrounded values implied by the overlap and by Figure 3 are
+  about 0.018 and 0.0073.
+* **Caffeine infusion duration.** Table 1 gives the caffeine infusion rate
+  (833.333 ng/s) but not its duration; 14,400 s (4 h) was taken from the
+  peak of the fitted lines in Figure 2B.
+* **Fleroxacin and pefloxacin dosing.** Table 1 gives both `D` and `k0`; `D`
+  is modelled as an intravenous bolus at time zero followed by the infusion
+  for the whole record, which reproduces the non-zero starting plasma
+  concentrations of Figure 2D-E.
+* **Extravascular route and bioavailability.** Equations 7-8 feed the whole
+  dose through `ka` into plasma; bioavailability is not a parameter, so any
+  incomplete absorption is absorbed into the fitted `Vd`.
+* **`kel` and `ka` source trace.** The values are copied from Table 3, where
+  they are printed in `x 10^-n` notation (for example amitriptyline
+  `kel` = 1.17 x 10^-4 s^-1).
+* **Errata.** No erratum or correction was found for this article (Crossref
+  update metadata, checked 2026-09-29).

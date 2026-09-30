@@ -24,7 +24,7 @@ Fauchet et al. fit two parallel non-hierarchical popPK submodels for total and u
 * an **unbound submodel** (Table 2) that ties total to unbound LPV via a linear human-serum-albumin (HSA / ALB) binding term plus a saturable single-site alpha-1 acid glycoprotein (AAG) binding term;
 * a **maternal-fetal-amniotic (MFLA) submodel** (Table 4) that adds a placental-transfer effect compartment for cord-blood LPV and a downstream amniotic-fluid compartment, with a 39% multiplicative pregnancy effect on apparent maternal clearance.
 
-Both submodels share a one-compartment first-order-absorption disposition for maternal LPV. Per the standing extract-literature-model policy of replicating the author's structure, the two are packaged as two separate model files (`Fauchet_2015_lopinavir_unbound`, `Fauchet_2015_lopinavir_placental`) under one vignette.
+Both submodels share a one-compartment first-order-absorption disposition for maternal LPV. Following the library's convention of replicating the author's structure, the two are packaged as two separate model files (`Fauchet_2015_lopinavir_unbound`, `Fauchet_2015_lopinavir_placental`) under one vignette.
 
 * Citation: Fauchet F, Treluyer JM, Illamola SM, Pressiat C, Lui G, Valade E, Mandelbrot L, Lechedanec J, Delmas S, Blanche S, Warszawski J, Urien S, Tubiana R, Hirt D, for the ANRS 135 PRIMEVA Study Group. Population approach to analyze the pharmacokinetics of free and total lopinavir in HIV-infected pregnant women and consequences for dose adjustment. Antimicrob Agents Chemother. 2015;59(9):5727-5735.
 * Article: <https://doi.org/10.1128/AAC.00863-15>

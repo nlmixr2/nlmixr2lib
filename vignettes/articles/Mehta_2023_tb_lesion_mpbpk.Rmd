@@ -579,5 +579,5 @@ conclusions rest on) as reproducible and `Cmax` / `Cmin` as not.
 * **Mouse models not extracted.** Table 1 also reports the mouse parameter
   estimates that the human models were translated from. The mouse models are
   not packaged separately because the mouse lung-volume fraction needed to
-  compute the lesion and uninvolved-lung volumes is not reported in any on-disk
+  compute the lesion and uninvolved-lung volumes is not reported in any available
   source.

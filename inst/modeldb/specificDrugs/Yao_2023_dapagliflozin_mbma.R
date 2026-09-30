@@ -134,7 +134,7 @@ Yao_2023_dapagliflozin_mbma <- function() {
     # size). The values below are the reported sigma^2 back-transformed to SD
     # at W = 1; a downstream user simulating an N-subject study arm must apply
     # the paper's weight. The DIRECTION of the weight is not resolvable from
-    # on-disk sources -- see the vignette Assumptions and deviations section.
+    # the published sources -- see the vignette Assumptions and deviations section.
     propSd <- 0.676018
     label("Proportional residual SD at unit study weight (fraction)")  # Yao 2023 Table 1; sqrt(0.457)
 

@@ -403,7 +403,7 @@ Dias_2024_quetiapine_rat <- function() {
     # Ce/Cu,brain equals Keo in every panel (0.450 -> ~0.40, 0.500 -> ~0.39,
     # 0.568 -> ~0.56, 1.01 -> ~1.02, with QLNC-SPR crossing above Cu,brain),
     # which only this form reproduces; under printed Eq (3) the ratio would
-    # approach 1.0 in every panel. Resolved with the operator 2026-08-05.
+    # approach 1.0 in every panel. Resolved by the maintainers 2026-08-05.
     # See the vignette Errata for the full argument.
     d/dt(effect) <- ke0 * CU_QTP_BRAIN - effect
     # Eq (5) / DADT(6)

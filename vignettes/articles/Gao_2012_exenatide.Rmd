@@ -374,13 +374,19 @@ a 100-fold dose range, with the two lower arms inside 5%.
 ## Rat: PKNCA on the intravenous-bolus arms
 
 ```{r rat-pknca}
-# Filter with `!is.na(Cc)` ONLY: adding `time > 0` or `Cc > 0` would drop the
-# time-zero row PKNCA needs to anchor AUC. The observation grid already starts
-# at time 0 and the dose record sorts ahead of it, so for this IV bolus the
-# time-zero concentration is the model's own dose/Vc -- exactly what PKNCA
-# wants. Assert that rather than patching a row in blind.
+# Filter with `!is.na(Cc)` and the noise floor ONLY: adding `time > 0` or
+# `Cc > 0` would drop the time-zero row PKNCA needs to anchor AUC. The
+# observation grid already starts at time 0 and the dose record sorts ahead of
+# it, so for this IV bolus the time-zero concentration is the model's own
+# dose/Vc -- exactly what PKNCA wants. Assert that rather than patching a row
+# in blind.
 nca_in <- sim_rat_iv |>
   dplyr::filter(!is.na(.data$Cc)) |>
+  # Per subject, keep Cc >= 1e-6 * Cmax after the peak: below that the ODE integrator has no relative accuracy left.
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(.data$time <= .data$time[which.max(.data$Cc)] |
+                  .data$Cc >= 1e-6 * max(.data$Cc)) |>
+  dplyr::ungroup() |>
   dplyr::select(id, time, Cc, treatment) |>
   dplyr::arrange(id, treatment, time)
 

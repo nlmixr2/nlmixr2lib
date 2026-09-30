@@ -88,7 +88,7 @@ Adams_1998_zalcitabine <- function() {
     # Absorption rate constant ka was NOT estimable in Adams 1998 ('The absorption rate
     # constant could not be modeled because of the paucity of blood samples collected
     # early in a dosing interval.' -- Results p. 411 col 2; reiterated in Discussion
-    # p. 412 col 1). Per operator guidance (2026-06-07 sidecar response), ka is fixed
+    # p. 412 col 1). By the maintainers' decision, ka is fixed
     # in this model to a primary-PK literature value; see vignette Assumptions and
     # deviations for the substitution rationale.
 
@@ -97,8 +97,8 @@ Adams_1998_zalcitabine <- function() {
     #  Pharmacokinetics of 2',3'-dideoxycytidine in patients with AIDS and related
     #  disorders. J Clin Pharmacol 1988;28(9):837-842,
     #  doi:10.1002/j.1552-4604.1988.tb03225.x), an early dedicated single-dose PK
-    #  study of oral zalcitabine in AIDS patients. Operator-named candidate primary
-    #  source. The substitution is documented in the validation vignette.
+    #  study of oral zalcitabine in AIDS patients, chosen by the maintainers as the
+    #  candidate primary source. The substitution is documented in the validation vignette.
     lka <- fixed(log(2.5)); label("First-order absorption rate constant (1/h,; non-paper provenance per Klecker 1988)")
 
     lcl <- log(14.8); label("Apparent clearance CL/F (L/h)")                     # Adams 1998 Table 3 / Results p. 412 col 2: CL/F = 14.8 L/h (0.19 L/h/kg; 95% CI 0.18-0.21 L/h/kg)

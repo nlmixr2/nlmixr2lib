@@ -295,7 +295,9 @@ solve_arm <- function(i) {
   out <- rxode2::rxSolve(
     mod, events = build_events(arm_row, arm_cohort),
     keep = c("regimen", "stratum", "arm", "WT", "PAGE", "CREAT"),
-    returnType = "data.frame"
+    returnType = "data.frame",
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6
   )
   out$ii_h <- arm_row$ii
   out$mgkg <- arm_row$mgkg
@@ -344,7 +346,9 @@ tau_chk   <- 18
 runin_end <- 21 * 24
 
 ev_ss <- build_events(tibble::tibble(mgkg = 15, ii = tau_chk), ss_grid)
-sim_ss <- rxode2::rxSolve(mod_typ, events = ev_ss, returnType = "data.frame")
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod_typ, events = ev_ss, returnType = "data.frame",
+                          maxsteps = 1e6)
 
 ev_long <- bind_rows(
   # Doses must continue THROUGH the observation window, not stop at its start --
@@ -380,7 +384,7 @@ cat(sprintf("ss = 1 vs 21-day run-in, AUC over one interval: max |%% diff| = %.4
             max(abs(ss_pct)), length(ss_pct)))
 
 # Deterministic comparison of two solves of the SAME system (no random effects),
-# so a tight bound is correct here (pattern 11): the only difference is the
+# so a tight bound is correct here: the only difference is the
 # residual approach to the asymptote, which after 21 days is far below 0.1% even
 # at the slowest corner of the covariate domain.
 stopifnot(max(abs(ss_pct)) < 0.5)
@@ -621,7 +625,7 @@ cat(sprintf("PKNCA AUC0-24 vs dose/CL: max |%% diff| = %.4f%% over %d subject-ar
 
 # Deterministic: both sides describe the SAME solved system, so the residual is
 # pure trapezoidal error on the 0.25 h grid plus the ss = 1 asymptote. A tight
-# bound is correct here (pattern 11); it goes red on a mis-built event table, a
+# bound is correct here; it goes red on a mis-built event table, a
 # lost dose, a non-steady-state solve or a grid too coarse to integrate.
 stopifnot(max(abs(closed$pct)) < 0.5)
 ```

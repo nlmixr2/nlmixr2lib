@@ -164,7 +164,7 @@ Cantillon_2018_brilaroxazine <- function() {
         "covariates; no influence detected. Concomitant drugs were mainly",
         "benzodiazepines (lorazepam 24 patients, zolpidem 22 patients) plus",
         "occasional antihypertensives, antiepileptics and antibiotics",
-        "(Supplemental data Appendix D, not on disk). Cantillon 2018 Sect. 4",
+        "(Supplemental data Appendix D, which was not available when this model was built). Cantillon 2018 Sect. 4",
         "treats the null covariate result as its drug-drug interaction",
         "assessment."
       ),
