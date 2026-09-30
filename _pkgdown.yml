@@ -5652,6 +5652,8 @@ navbar:
         href: articles/Ji_2017_vancomycin.html
       - text: "Vancomycin (Jung 2024)"
         href: articles/Jung_2024_vancomycin.html
+      - text: "Vancomycin (Kirwan 2021)"
+        href: articles/Kirwan_2021_vancomycin.html
       - text: "Vancomycin (Li 2018)"
         href: articles/Li_2018_vancomycin.html
       - text: "Vancomycin (Ma 2024)"
@@ -7011,6 +7013,7 @@ articles:
   - articles/Kir_2025_atenolol_metoprolol_malnutrition
   - articles/Kiriyama_2024_nifedipine_captopril_rat
   - articles/Kirubakaran_2022_tacrolimus
+  - articles/Kirwan_2021_vancomycin
   - articles/Kleiber_2017_clonidine
   - articles/Kleideiter_2017_cebranopadol
   - articles/Kleideiter_2018_cebranopadol
