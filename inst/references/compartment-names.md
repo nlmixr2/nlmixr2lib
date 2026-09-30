@@ -2619,6 +2619,34 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Knebel_2012_istradefylline_dizziness.R` (sigmoid Emax in steady-state istradefylline exposure, additive on the logit scale; `logit(p) = BDZ0 + EmaxPDZ * AUC^gamma / (EC50DZ^gamma + AUC^gamma)`, with an estimated Hill coefficient of 10 that makes the curve effectively a step at the EC50), `Gidal_2018_eslicarbazepine_dizziness.R` (adjunctive eslicarbazepine acetate in focal-onset seizures; linear rather than sigmoid in exposure, and the exposure coefficient is NEGATIVE -- the dominant predictor is the first-week starting dose, and because only the FIRST occurrence of the event was modelled the events cluster in the low-exposure titration period).
 - **Notes:** A probability output in `[0, 1]`. Sibling of `prob_dyskinesia`, registered alongside it from the same source paper, and following the `prob_<endpoint>` shape founded by `prob_roc`. Constant in `time` for a given exposure, as for `prob_dyskinesia`. The founding model exposes it with a small placeholder additive residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises a Bernoulli likelihood on the observed 0/1 indicator.
 
+### prob_teae_interest (**canonical drug-related eye-or-nervous-system TEAE probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences a drug-related treatment-emergent adverse event (TEAE) "of interest", defined by the source as any event in the MedDRA eye disorders or nervous system disorders system organ classes judged drug-related by the investigator, at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none ("drug-related TEAE of interest" in Assmus 2022).
+- **Example models:** `Assmus_2022_emodepside_teae_interest.R` (oral emodepside in healthy men; linear uncentred individual Cmax on the logit, `logit(p) = -2.87 + 0.0077 * CMAX`, S6 Table -- founding example; this endpoint set the 50% tolerability threshold used to choose the phase II regimens).
+- **Notes:** A probability output in `[0, 1]`. The "of interest" set is paper-specific (the two system organ classes that exceeded placebo frequency for emodepside), so reuse this name only for the same union definition. It is the union of `prob_eye_disorder` and `prob_nervous_system_disorder`, which the founding paper modelled separately on the same subjects; 11 of its 27 cases had both, so the three are not competing risks. Distinct from `prob_teae_drug_related` (any drug-related TEAE of any system organ class). The founding model exposes it with a small placeholder additive residual; the source likelihood is Bernoulli.
+
+### prob_eye_disorder (**canonical drug-related eye-disorder TEAE probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences a drug-related treatment-emergent adverse event in the MedDRA eye disorders system organ class (for emodepside predominantly visual impairment and blurred vision) at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none.
+- **Example models:** `Assmus_2022_emodepside_eye_disorder.R` (oral emodepside; `logit(p) = -3.59 + 0.0085 * CMAX`, S6 Table -- founding example).
+- **Notes:** A probability output in `[0, 1]`, at system-organ-class level rather than a single preferred term. Subset of `prob_teae_interest` and of `prob_teae_drug_related`. Distinct from `prob_corneal_epitheliopathy_grade2`, which is a single graded ocular finding.
+
+### prob_nervous_system_disorder (**canonical drug-related nervous-system-disorder TEAE probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences a drug-related treatment-emergent adverse event in the MedDRA nervous system disorders system organ class (for emodepside predominantly dizziness and headache) at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none.
+- **Example models:** `Assmus_2022_emodepside_nervous_system_disorder.R` (oral emodepside; `logit(p) = -3.20 + 0.0063 * CMAX`, S6 Table -- founding example).
+- **Notes:** A probability output in `[0, 1]`, at system-organ-class level. Subset of `prob_teae_interest` and of `prob_teae_drug_related`. Distinct from the preferred-term endpoints `prob_dizziness`, `prob_headache` and `prob_somnolence`, which it can contain.
+
+### prob_teae_drug_related (**canonical any-drug-related-TEAE probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences any treatment-emergent adverse event judged drug-related by the investigator, of any system organ class and any severity, at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none.
+- **Example models:** `Assmus_2022_emodepside_teae_drug_related.R` (oral emodepside; `logit(p) = -2.38 + 0.0064 * CMAX`, S7 Table -- founding example).
+- **Notes:** A probability output in `[0, 1]`. Composite over every system organ class, so it contains `prob_teae_interest`, `prob_eye_disorder` and `prob_nervous_system_disorder`. Distinct from `prob_teae_grade3` (any severe TEAE regardless of causality) and `prob_adr`.
+
 ### prob_nausea (**canonical nausea adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability that a patient reports nausea as a treatment-emergent adverse event at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
