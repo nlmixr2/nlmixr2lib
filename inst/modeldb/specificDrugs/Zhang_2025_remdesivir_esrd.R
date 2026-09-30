@@ -110,9 +110,8 @@ Zhang_2025_remdesivir_esrd <- function() {
     # this fit has a single subject. Zhang 2025 Methods 2.3 declares
     # lognormal random effects on all parameters for the mixed-effects
     # analysis, but reports no variance, SD or CV% for any parameter in
-    # either fit, and there is no supplement (the EuropePMC
-    # supplementaryFiles bundle for PMC11982744 contains only the six
-    # publisher figure files). Etas are OMITTED rather than written as
+    # either fit, and there is no supplement (the only files deposited
+    # with PMC11982744 are the six publisher figure files). Etas are OMITTED rather than written as
     # `~ fixed(0)` because a zero-variance diagonal makes OMEGA singular
     # and breaks the Cholesky sampler used by rxSolve. Recorded in the
     # vignette Errata.

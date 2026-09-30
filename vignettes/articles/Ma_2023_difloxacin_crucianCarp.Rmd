@@ -156,7 +156,7 @@ values against three published numbers.
 mod <- readModelDb("Ma_2023_difloxacin_crucianCarp")
 mod_typical <- rxode2::zeroRe(mod)
 
-# Fine early grid to resolve Tmax (pattern 11: a coarse grid understates AUC),
+# Fine early grid to resolve Tmax (a coarse grid understates AUC),
 # then out to 480 h -- nearly 10 elimination half-lives -- so the aucinf
 # extrapolation is a small correction rather than the bulk of the estimate.
 grid_typical <- sort(unique(c(seq(0, 24, by = 0.05), seq(24, 480, by = 1))))

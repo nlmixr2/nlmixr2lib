@@ -637,8 +637,8 @@ stopifnot(
   additive value appears in Table 2, elsewhere in the text, or in any figure
   panel (Figures 2 and 3 were both inspected). Rather than invent a number, the
   additive term is retained at `fixed(0)` so the stated combined structure is
-  visible in the model. The paper has no supplement (Europe PMC reports
-  `hasSuppl = N`) and no erratum (`commentCorrectionList` is empty).
+  visible in the model. The paper has no supplement and no erratum (the Europe PMC
+  `commentCorrectionList` is empty).
 
 - **Cipred is approximated without a re-estimation step.** Feng 2011 obtains
   `Cipred` by re-running a NONMEM first-order post hoc estimation against the

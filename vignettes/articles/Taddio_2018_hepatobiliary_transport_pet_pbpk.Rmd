@@ -23,8 +23,8 @@ library(ggplot2)
 * Article: <https://doi.org/10.1155/2018/5849047>
 * Supplement (Supplementary Figures 1-4 and Supplementary Table 1):
   <https://doi.org/10.1155/2018/5849047> (Supplementary Materials link on the
-  article page; also retrievable as `5849047.f1.pdf` from the EuropePMC
-  supplementary-files endpoint for PMC6008768)
+  article page; also available as `5849047.f1.pdf` with the open-access
+  record, PMC6008768)
 
 Taddio and colleagues repurposed dynamic whole-body mouse PET data acquired with
 two investigational carbon-11 CD80 tracers and asked whether the images alone

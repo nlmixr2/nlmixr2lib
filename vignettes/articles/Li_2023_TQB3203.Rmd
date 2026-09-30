@@ -915,8 +915,7 @@ describe. That is recorded rather than smoothed over.
   expression of concern or retraction is registered against this article by
   either index.
 * **Supplement: retrieved and confirmed parameter-free.** The single
-  supplementary file (`DataSheet1.DOCX`, via the EuropePMC
-  `supplementaryFiles?includeInlineImage=false` route) contains exactly three
+  supplementary file (`DataSheet1.DOCX`) contains exactly three
   figures and no tables: S1, liposome size stability over 3 months at 4 C and
   over 7 days in PBS, plasma and fetal bovine serum; S2, whole-body
   near-infrared biodistribution imaging of probe-embedded TLI in HT-29

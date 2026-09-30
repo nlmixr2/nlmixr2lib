@@ -151,8 +151,8 @@ Patel_2011_fluconazole <- function() {
     # Methods state "Between-subject variability (BSV) was calculated using
     # an exponential variability model and was assumed to follow a lognormal
     # distribution." Under the lognormal interpretation, %CV relates to the
-    # log-scale variance as omega^2 = log(1 + CV^2) (see
-    # references/verification-checklist.md and parameter-names.md).
+    # log-scale variance as omega^2 = log(1 + CV^2) (the standing
+    # convention).
     #
     #   BSV CL_CVVHDF  = 19.8 % CV -> omega^2 = log(1 + 0.198^2)
     #   BSV CL_NCVVHDF = 77.1 % CV -> omega^2 = log(1 + 0.771^2)
@@ -180,7 +180,7 @@ Patel_2011_fluconazole <- function() {
     # exponential and additive random error"). NONMEM's "exponential
     # random error" is log-additive on the observation, which maps to a
     # proportional residual on the linear concentration scale in nlmixr2
-    # (see references/parameter-names.md residual-error section).
+    # (the standing residual-error convention).
     #   addSd  = 0.239 mg/L  (RUVSDP, Table 2)
     #   propSd = 0.0367      (RUVCVP = 3.67 % CV, Table 2; fraction units)
     #

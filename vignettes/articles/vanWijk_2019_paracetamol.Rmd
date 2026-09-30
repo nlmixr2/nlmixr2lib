@@ -21,7 +21,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode2(readModelDb("vanWijk_2019_paracetamol"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("vanWijk_2019_paracetamol"))$description`
 * DDMORE Foundation Model Repository entry: `DDMODEL00000294`
-* Article (per the metadata this model was built from):
+* Article:
   <https://doi.org/10.1038/s41598-019-38530-w>
 
 This is a PRECLINICAL (zebrafish) DDMORE entry. nlmixr2lib is primarily a

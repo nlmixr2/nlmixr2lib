@@ -602,8 +602,8 @@ bp_cmp <- published |>
                                log2(sim_mic) - log2(pub_mic))
   )
 
-# Guard against a silently empty join (pattern 10: a check with no rows to test
-# would pass vacuously).
+# Guard against a silently empty join (a check with no rows to test would
+# pass vacuously).
 stopifnot(nrow(bp_cmp) == 24L, !anyNA(bp_cmp$sim_mic))
 
 bp_cmp |>

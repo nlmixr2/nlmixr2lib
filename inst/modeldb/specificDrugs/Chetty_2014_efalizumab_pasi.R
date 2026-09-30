@@ -51,8 +51,7 @@ Chetty_2014_efalizumab_pasi <- function() {
     "NH, Chan PL, Nutt JG, Kieburtz K, Shoulson I. Disease progression and",
     "pharmacodynamics in Parkinson disease. J Pharmacokinet Pharmacodyn",
     "2006;33:281-311 (Chetty 2014 reference 24).",
-    "Chetty 2014 has no supplementary material (EuropePMC reports",
-    "hasSuppl = N) and no erratum.",
+    "Chetty 2014 has no supplementary material and no erratum.",
     sep = " "
   )
   vignette <- "Chetty_2014_efalizumab_cd11a_pasi"

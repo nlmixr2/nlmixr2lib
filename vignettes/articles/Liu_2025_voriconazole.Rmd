@@ -88,7 +88,7 @@ The three structural equations are **display equations on page 4024** of the
 article. They are worth calling out because they are vector-drawn and therefore
 invisible to text extraction -- even `pdftotext` renders them as a blank gap.
 They were recovered by rasterising the page and cross-checked against the
-publisher's own equation images in the Europe PMC supplementary-file bundle
+publisher's own equation images deposited with the article
 (`DDDT-19-4021-e0006.jpg` through `e0008.jpg`):
 
 $$\mathrm{CL/F\ (L/h)} = 4.35 \times \left(\frac{\mathrm{PCT}}{0.19}\right)^{-0.209} \times \left(\frac{\mathrm{TBA}}{3.95}\right)^{-0.158} \times e^{[-0.017 \times (\mathrm{AGE} - 72.0)]} \times e^{\eta_{\mathrm{CL}}}$$
@@ -716,7 +716,7 @@ on the interval end, which the 0.05 h grid above guarantees.
   vector-drawn display equations on p. 4024; even `pdftotext` yields only a
   blank gap where they should be. They were recovered by
   rasterising the page at 400 dpi and independently confirmed against the
-  publisher's equation images in the Europe PMC supplementary bundle
+  publisher's equation images deposited with the article
   (`DDDT-19-4021-e0006.jpg` to `e0008.jpg`). Any future re-extraction that
   works only from extracted text will miss the covariate functional forms, the
   three centring constants, and the fact that age enters exponentially while

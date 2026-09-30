@@ -148,7 +148,7 @@ Leroux_2018_micafungin <- function() {
     # the study population, with respective ranges of 0.008-0.042 L/h/kg
     # and 0.010-0.024 L/h/kg', Results 'Population pharmacokinetic
     # results') and individual V ranged 0.225-0.482 L/kg, but no omega
-    # magnitudes are given. Per the skill policy for 'unreported IIV/RUV
+    # magnitudes are given. Per the standing policy for 'unreported IIV/RUV
     # (structural values present)', encode IIVs as fixed(0) and document
     # in vignette Errata.
     etalcl ~ fixed(0)                                                        # Leroux 2018: IIV magnitude on CL not reported -> (0) per policy

@@ -7,8 +7,8 @@
 # Hardiansyah_2019_CART_upn1_qsp.R carries UPN1. Table S2 of the
 # supplement reports a complete, independent set of seven estimated
 # parameters per subject, so the two subjects are extracted as two files
-# per references/replicate-author-structure.md ("per subpopulation ->
-# Author_Year_<drug>_<population>.R"). Both point at one vignette.
+# (the standing "per subpopulation -> Author_Year_<drug>_<population>.R"
+# convention). Both point at one vignette.
 #
 # UPN3 is the low-burden / low-dose contrast to UPN1: a 4.5-fold lower
 # baseline disease burden and a 79-fold lower CART dose, which the paper
@@ -17,8 +17,8 @@
 #
 # SOURCES. The main article is a Brief Report and contains no equations
 # and no parameter values. Every structural equation (Eqs. 1-9) and both
-# parameter tables live in the Supplementary File, distributed in the
-# EuropePMC open-access package for PMC6662387 as CTS-12-343-s001.docx.
+# parameter tables live in the Supplementary File, published with the
+# open-access article (PMC6662387) as CTS-12-343-s001.docx.
 # Table S1 holds the literature-sourced (fixed) parameters, Table S2 the
 # estimated ones. The cytokine baselines are in neither table and were
 # digitized from Figure 1b; see the vignette Errata. The three
@@ -45,7 +45,8 @@ Hardiansyah_2019_CART_upn3_qsp <- function() {
   # inst/references/compartment-names.md; see that file's
   # "Paper-specific compartments" section. The three cytokine states are
   # canonical members of the inflammatory-mediator family (`il6` was
-  # already registered; `il10` and `ifng` are registered in this PR).
+  # already registered; `il10` and `ifng` were registered alongside this
+  # model).
   paper_specific_compartments <- c(
     "b_pb",
     "carte_pb",

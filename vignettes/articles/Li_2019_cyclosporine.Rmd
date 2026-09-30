@@ -1,0 +1,389 @@
+---
+title: "Cyclosporine (Li 2019)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cyclosporine (Li 2019)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("Li_2019_cyclosporine"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Description: ", ui$description, "\n", sep = "")
+cat("* Article: <https://doi.org/10.1038/s41401-019-0277-x>\n")
+```
+
+Li and colleagues fitted a one-compartment model with first-order elimination
+to 1010 whole-blood cyclosporine A (CsA) trough concentrations from 86 Chinese
+children who received intravenous CsA (2 h infusion every 12 h) around
+allogeneic haematopoietic stem cell transplantation (allo-HSCT). Clearance
+carries allometric weight scaling, a linear post-operative-day (POD) effect,
+a power effect of eGFR, a fractional reduction with concomitant triazole
+antifungals (TAF), and CYP3A4\*1G (rs2242480) genotype multipliers; volume
+carries allometric weight scaling and a linear POD effect.
+
+```{r model-print}
+mod <- readModelDb("Li_2019_cyclosporine")
+mod
+```
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- ui$population
+tibble::tibble(
+  Field = names(pop),
+  Value = vapply(pop, function(x) paste(as.character(x), collapse = "; "), character(1))
+) |>
+  knitr::kable(caption = "Population metadata carried on the model (Li 2019 Table 1, Table 2 and Methods).")
+```
+
+The cohort was 86 children (56 boys, 30 girls) aged 1.1-16.8 years (mean
+8.38) at Peking University People's Hospital, transplanted for acute
+lymphocytic leukaemia (33.7 %), aplastic anaemia (26.7 %), acute myeloid
+leukaemia (25.6 %) and other haematological disorders. Median body weight
+was 28.8 kg and median eGFR 172.46 mL/min/1.73 m^2. Almost every child
+received a triazole antifungal at some point (voriconazole 61, itraconazole
+19, posaconazole 6, fluconazole 1; none in 4). CYP3A4\*1G genotypes among the
+82 genotyped children were CC 50, CT 26 and TT 6 (Li 2019 Tables 1-2).
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` | 42.3 L/h | Table 3 'CL (L/h)' (RSE 10.6 %) |
+| `lvc` | 3100 L | Table 3 'V (L)' (RSE 13.1 %) |
+| `e_wt_cl` | 0.75 (fixed) | Methods 'Covariate analysis', Eq. 3 |
+| `e_wt_vc` | 1 (fixed) | Methods 'Covariate analysis', Eq. 3 |
+| `e_azole_cl` | 0.36 | Table 3 'theta TAF-CL' (RSE 16.3 %); Eq. 4 |
+| `e_pod_cl` | 0.00703 /day | Table 3 'theta POD-CL' (RSE 21.5 %); Eq. 4 |
+| `e_pod_vc` | 0.0197 /day | Table 3 'theta POD-V' (RSE 29.8 %); Eq. 5 |
+| `e_crcl_cl` | 0.545 | Table 3 'theta eGFR-CL' (RSE 29.9 %); Eq. 4 |
+| `e_cyp3a4_wild_cl` | 0.984 | Table 3 'Gene-1 ON CL' (RSE 8.1 %); Gene 1 = CC (Table 3 footnote) |
+| `e_cyp3a4_varhom_cl` | 1.22 | Table 3 'Gene-2 ON CL' (RSE 10.1 %); Gene 2 = TT |
+| `e_cyp3a4_het_cl` | 1.22 | Table 3 'Gene-3 ON CL' (RSE 8.9 %); Gene 3 = CT |
+| `etalcl` | 0.0744 | Table 3 'omega^2 CL' (shrinkage 8.4 %) |
+| `etalvc` | 0.454 | Table 3 'omega^2 V' (shrinkage 27.2 %) |
+| `propSd` | 0.154 | Table 3 'sigma^2 1 (%)' (see Assumptions) |
+| `addSd` | 30.3 ng/mL | Table 3 'sigma^2 2 (ng/mL)'; Results 'the additive error was 30.3 ng/mL' |
+| `cl <- ...` | n/a | Eq. 4 and the genotype sentence below Eq. 5 |
+| `vc <- ...` | n/a | Eq. 5 |
+| Exponential IIV | n/a | Eq. 1 |
+| `Cc ~ add(addSd) + prop(propSd)` | n/a | Eq. 2, `Cobs = Cpred * (1 + eps1) + eps2` |
+| One compartment, IV dosing into `central` | n/a | Results; Methods 'CsA administration' |
+| `Cc <- 1000 * central / vc` | n/a | Unit conversion mg/L to ng/mL |
+
+Equations 4 and 5 are typeset as display maths; they read
+
+```
+CL_i = CL_pop * (WT_i/70)^0.75 * (1 - theta_TAF-CL * TAF)
+       * (1 - (POD - 9) * theta_POD-CL) * (eGFR/172.46)^theta_eGFR-CL * exp(eta_i)
+V_i  = V_pop * (WT_i/70) * (1 - (POD - 9) * theta_POD-V) * exp(eta_i)
+```
+
+followed by "If the gene is 1, CL_i = CL_i\*0.984; If the gene is 2 or 3,
+CL_i = CL_i\*1.22".
+
+# Structural checks
+
+These checks use typical values only (`zeroRe()`), so they are deterministic.
+
+```{r structural}
+mod_typ <- rxode2::zeroRe(mod)
+
+probe_params <- function(WT, POD, CRCL, AZOLE, GENO) {
+  d <- data.frame(
+    id = 1L, time = c(0, 1), evid = c(1L, 0L), amt = c(1, NA_real_),
+    cmt = "central", WT = WT, POD = POD, CRCL = CRCL,
+    CONMED_AZOLE = AZOLE, SNP_CYP3A4_RS2242480_VAR_COUNT = GENO
+  )
+  out <- as.data.frame(rxode2::rxSolve(mod_typ, d))
+  c(cl = out$cl[1], vc = out$vc[1])
+}
+
+# 1. At the Eq. 4/5 reference (70 kg, POD 9, eGFR 172.46, no TAF) the model
+#    returns the printed CL times the genotype multiplier, and the printed V.
+ref_cc <- probe_params(70, 9, 172.46, 0, 0)
+ref_ct <- probe_params(70, 9, 172.46, 0, 1)
+ref_tt <- probe_params(70, 9, 172.46, 0, 2)
+stopifnot(
+  abs(ref_cc[["cl"]] - 42.3 * 0.984) < 1e-8,
+  abs(ref_ct[["cl"]] - 42.3 * 1.22) < 1e-8,
+  abs(ref_tt[["cl"]] - 42.3 * 1.22) < 1e-8,
+  abs(ref_cc[["vc"]] - 3100) < 1e-8
+)
+
+# 2. Discussion: CL in T-allele carriers 'increased by 24.5% compared with
+#    that in CYP3A4*1G CC carriers'. The rounded Table 3 multipliers give
+#    1.22 / 0.984 = 1.240.
+t_vs_cc <- ref_ct[["cl"]] / ref_cc[["cl"]]
+stopifnot(abs(t_vs_cc - 1.245) < 0.01)
+
+# 3. Results: 'The weight-normalized clearance was 0.75 L/h/kg'. Evaluated at
+#    the Table 1 median weight (28.8 kg) and the Eq. 4 reference covariates.
+med_cc <- probe_params(28.8, 9, 172.46, 0, 0)
+cl_per_kg <- c(
+  `no genotype factor` = 42.3 * (28.8 / 70)^0.75 / 28.8,
+  `CC (model)` = med_cc[["cl"]] / 28.8
+)
+stopifnot(all(abs(cl_per_kg / 0.75 - 1) < 0.02))
+round(c(t_vs_cc = t_vs_cc, cl_per_kg), 4)
+```
+
+The printed weight-normalised clearance (0.75 L/h/kg) is reproduced at the
+median body weight, which confirms that the allometric reference is 70 kg with
+the 0.75 exponent and that CL is in L/h (not L/h per kg).
+
+```{r pod-effect}
+pod_grid <- data.frame(POD = c(0, 9, 25, 40, 55))
+pod_grid$cl_factor <- 1 - (pod_grid$POD - 9) * 0.00703
+pod_grid$v_factor <- 1 - (pod_grid$POD - 9) * 0.0197
+pod_grid$cl_model <- vapply(pod_grid$POD, function(p) probe_params(70, p, 172.46, 0, 0)[["cl"]], 0) / (42.3 * 0.984)
+pod_grid$v_model <- vapply(pod_grid$POD, function(p) probe_params(70, p, 172.46, 0, 0)[["vc"]], 0) / 3100
+stopifnot(
+  all(abs(pod_grid$cl_model - pod_grid$cl_factor) < 1e-10),
+  all(abs(pod_grid$v_model - pod_grid$v_factor) < 1e-10)
+)
+pod_grid |>
+  dplyr::select(POD, cl_model, v_model) |>
+  dplyr::rename(
+    "POD (days)" = POD,
+    "CL / CL(POD 9)" = cl_model,
+    "V / V(POD 9)" = v_model
+  ) |>
+  knitr::kable(digits = 3, caption = "Post-operative-day factors on CL and V (Li 2019 Eq. 4 and Eq. 5).")
+```
+
+Both factors decline linearly with POD. The V factor falls to 0.19 by POD 50
+and would reach zero at POD 59.8, so the published equation should not be
+used beyond about POD 50 (see Assumptions).
+
+# Virtual cohort
+
+The cohort reproduces the Table 1 and Table 2 marginals. Body weight is drawn
+log-normally around the 28.8 kg median and redrawn (not clamped) outside the
+Table 1 range; eGFR is drawn log-normally around its 172.46 median. The paper
+reports no joint distribution, so covariates are drawn independently.
+
+```{r cohort}
+set.seed(2019)
+n_sub <- 200L
+
+draw_in_range <- function(n, med, sdlog, lo, hi) {
+  x <- med * exp(stats::rnorm(n, 0, sdlog))
+  bad <- x < lo | x > hi
+  while (any(bad)) {
+    x[bad] <- med * exp(stats::rnorm(sum(bad), 0, sdlog))
+    bad <- x < lo | x > hi
+  }
+  x
+}
+
+subj <- tibble::tibble(
+  id = seq_len(n_sub),
+  WT = draw_in_range(n_sub, 28.8, 0.5, 9.4, 78.5),
+  CRCL = draw_in_range(n_sub, 172.46, 0.2, 24.93, 377.54),
+  # 82 of 86 children received a triazole antifungal (Table 1)
+  CONMED_AZOLE = stats::rbinom(n_sub, 1, 82 / 86),
+  # Table 2 genotype frequencies: CC 50, CT 26, TT 6 of 82
+  SNP_CYP3A4_RS2242480_VAR_COUNT = sample(0:2, n_sub, replace = TRUE, prob = c(50, 26, 6) / 82)
+)
+summary(subj[, -1])
+```
+
+# Simulation
+
+Dosing follows the Methods: a 2 h intravenous infusion every 12 h, started
+nine days before transplantation (the paper gives Day -7 or -10). The per-dose
+amount is 0.9 mg/kg, i.e. the Table 1 mean dose (28.6 mg) divided by the mean
+body weight (31.93 kg); in the study the dose was titrated to troughs of
+150-250 ng/mL, which a fixed-dose simulation does not reproduce subject by
+subject. POD is time-varying: pre-transplant records carry POD = 0.
+
+```{r events}
+start_day <- -9
+n_days <- 45
+dose_times <- seq(0, 24 * n_days - 12, by = 12)
+trough_times <- dose_times[-1] - 0.01 # immediately before each morning/evening dose
+obs_grid <- sort(unique(c(0, trough_times, seq(0, 24 * n_days, by = 2))))
+
+pod_at <- function(time) pmax(0, floor(time / 24) + start_day)
+
+dose_rows <- tidyr::expand_grid(subj, time = dose_times) |>
+  dplyr::mutate(evid = 1L, amt = 0.9 * WT, rate = amt / 2, cmt = "central")
+obs_rows <- tidyr::expand_grid(subj, time = obs_grid) |>
+  dplyr::mutate(evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central")
+events <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::mutate(POD = pod_at(time)) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+```
+
+```{r simulate}
+rxode2::rxSetSeed(20190277)
+sim <- rxode2::rxSolve(
+  mod, events,
+  keep = c("WT", "CRCL", "CONMED_AZOLE", "SNP_CYP3A4_RS2242480_VAR_COUNT", "POD")
+) |>
+  as.data.frame()
+
+troughs <- sim |>
+  dplyr::filter(round(time %% 12, 2) == 11.99) |>
+  dplyr::mutate(day_post_tx = floor(time / 24) + start_day)
+```
+
+## Trough concentrations over time (cf. Figures 2 and 3)
+
+Figure 2 of Li 2019 shows observed troughs mostly between about 50 and
+400 ng/mL (bulk 100-300 ng/mL) over 0-1800 h from the first dose.
+
+```{r trough-plot}
+troughs |>
+  dplyr::group_by(day_post_tx) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(day_post_tx, p50)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 150, ymax = 250, fill = "gold", alpha = 0.25) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  labs(
+    x = "Day relative to transplantation", y = "Trough CsA (ng/mL)",
+    title = "Simulated troughs, 0.9 mg/kg every 12 h (median and 90% interval)",
+    caption = "Shaded band: 150-250 ng/mL target (Li 2019 Methods)."
+  )
+```
+
+```{r trough-check}
+# Trough over the bulk of the observation window (POD 10-40; Table 1 median
+# POD 25). A mis-transcribed CL, V or unit moves the median by a factor of
+# several; the window is the observed bulk in Figure 2, not a tuned target.
+window <- troughs |> dplyr::filter(day_post_tx >= 10, day_post_tx <= 40)
+trough_median <- median(window$sim)
+trough_median_ipred <- median(window$Cc)
+c(median_DV = trough_median, median_IPRED = trough_median_ipred)
+stopifnot(trough_median > 100, trough_median < 300)
+```
+
+With the cohort-mean dose the typical trough lands inside the 150-250 ng/mL
+target the clinicians titrated to, consistent with the Figure 2 scatter.
+
+# PKNCA: steady-state dosing interval
+
+The paper reports no NCA; PKNCA is used here to characterise a steady-state
+interval (day 20 post-transplant, POD 20) by CYP3A4\*1G group, and to confirm
+that the long half-life makes the trough close to the interval average.
+
+```{r pknca}
+tau_start <- 24 * (20 - start_day)
+conc_nca <- sim |>
+  dplyr::filter(time >= tau_start, time <= tau_start + 12, !is.na(Cc)) |>
+  dplyr::mutate(
+    time = time - tau_start,
+    treatment = ifelse(SNP_CYP3A4_RS2242480_VAR_COUNT == 0, "CYP3A4*1G CC", "CYP3A4*1G T carrier")
+  ) |>
+  dplyr::select(id, time, Cc, treatment)
+# Guarantee an exact time-zero row per subject (pre-dose trough)
+stopifnot(all(tapply(conc_nca$time, conc_nca$id, min) == 0))
+
+dose_nca <- conc_nca |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::left_join(dplyr::select(subj, id, WT), by = "id") |>
+  dplyr::mutate(time = 0, amt = 0.9 * WT)
+
+conc_obj <- PKNCA::PKNCAconc(conc_nca, Cc ~ time | treatment + id, concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = 12, cmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+nca_tab |>
+  dplyr::rename(
+    "Group" = treatment,
+    "AUC0-12 (ng*h/mL)" = auclast,
+    "Cavg (ng/mL)" = cav,
+    "Cmax (ng/mL)" = cmax,
+    "Cmin (ng/mL)" = cmin
+  ) |>
+  knitr::kable(digits = 1, caption = "Median steady-state NCA on POD 20 (simulated, 0.9 mg/kg every 12 h).")
+
+# The T-carrier group has the 1.24-fold higher CL, so a lower exposure. The
+# genotype is the only systematic difference between groups; the median
+# ratio is a centre statistic (not an extreme), with wide headroom.
+ratio <- nca_tab$auclast[nca_tab$treatment == "CYP3A4*1G CC"] /
+  nca_tab$auclast[nca_tab$treatment == "CYP3A4*1G T carrier"]
+stopifnot(ratio > 1)
+ratio
+```
+
+# Residual error scale
+
+Table 3 heads the residual rows `sigma^2 1 (%)` = 0.154 and
+`sigma^2 2 (ng/mL)` = 30.3, while the Results text says "the proportional
+error was 22.9 %, and the additive error was 30.3 ng/mL". 22.9 % is the RSE
+printed next to 0.154, so the text quotes the RSE column for the proportional
+term; its additive figure, and the ng/mL unit (not (ng/mL)^2), treat the
+Table 3 estimates as standard deviations. The two readings imply very
+different residual spreads:
+
+```{r ruv-scale}
+ipred <- c(50, 200, 350)
+ruv <- tibble::tibble(
+  `IPRED (ng/mL)` = ipred,
+  `SD, as SDs (0.154, 30.3)` = sqrt((0.154 * ipred)^2 + 30.3^2),
+  `SD, as variances (0.392, 5.5)` = sqrt((sqrt(0.154) * ipred)^2 + 30.3)
+)
+knitr::kable(ruv, digits = 1)
+```
+
+In Figure 2b (DV vs IPRED) the bulk of the observations at IPRED = 200 ng/mL
+lie within roughly 120-290 ng/mL, a residual SD of about 40-50 ng/mL, which
+agrees with the standard-deviation reading (43 ng/mL) and not the variance
+reading (78 ng/mL). The model therefore uses `propSd = 0.154` and
+`addSd = 30.3` ng/mL.
+
+# Assumptions and deviations
+
+- **Residual error scale.** Table 3 labels the residual rows `sigma^2`; they
+  are encoded as standard deviations for the reasons given above.
+- **POD centring and range.** Eq. 4 and 5 centre POD at 9 days and apply a
+  linear decline. The V factor becomes zero at POD 59.8 and negative beyond,
+  inside the observed POD range (0-67); the model reproduces the equation as
+  printed and does not truncate it, so it should not be simulated past about
+  POD 50. The Discussion describes CL rising over the first 9 days and then
+  falling, but the printed linear form is monotonically decreasing; the
+  equation is implemented as printed.
+- **Pre-transplant records.** CsA started on Day -7 or -10 while Table 1
+  reports POD 0-67; the simulations here code pre-transplant days as POD = 0.
+- **Genotype coding.** Gene 1 = CC, 2 = TT, 3 = CT (Table 3 footnote) is
+  mapped to the canonical variant-allele count (CC 0, CT 1, TT 2). The printed
+  CL is multiplied by 0.984 or 1.22 for every genotype, so no genotype has
+  exactly CL = 42.3 L/h. Handling of the 4 ungenotyped children is not
+  reported, and no missing-genotype term is included.
+- **eGFR equation.** Not stated in the paper; the model expects the same
+  BSA-normalised units (mL/min/1.73 m^2) with the cohort median 172.46.
+- **Triazole indicator.** Voriconazole, itraconazole, posaconazole and
+  fluconazole are pooled into one indicator with one effect, as in the paper.
+- **Body weight range.** The Results text gives 6.5-69.0 kg and Table 1 gives
+  9.4-78.5 kg; the virtual cohort uses the Table 1 range.
+- **Dosing in the simulations.** A fixed 0.9 mg/kg per dose (Table 1 mean
+  dose over mean weight) replaces the paper's trough-guided titration, so the
+  simulated trough distribution is wider than the titrated clinical data.
+- **Covariate independence.** The paper reports only marginals; covariates
+  are drawn independently.

@@ -104,7 +104,7 @@ so the vignette's ANC and Cc trajectories reproduce the paper's mean
 predictions. The full-IIV cohort is used for the PKNCA validation
 tables below. All cohorts use 60 virtual adults at 70 kg body weight,
 which is ample for a validation display while keeping the render time
-well under the 5-minute gate.
+well under 5 minutes.
 
 * **Scenario A** -- healthy volunteer + filgrastim 300 ug SC once
   daily for 10 days (no chemotherapy, no corticosteroid). Reproduces

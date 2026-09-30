@@ -28,7 +28,7 @@ ui <- rxode2::rxode(readModelDb("vanderStoep_2019_treosulfan"))
 * Article: <https://doi.org/10.1111/bcp.13995>
 * Supporting information (open access, incl. the final NONMEM control stream as
   Supporting Information 4):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6710524/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6710524>
 
 Treosulfan is an alkylating prodrug used in myeloablative conditioning regimens
 prior to haematopoietic stem cell transplantation (HSCT). van der Stoep 2019

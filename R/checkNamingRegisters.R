@@ -7,8 +7,8 @@
 # (42 distinct, 22 of which had never existed at any commit, i.e. filenames an
 # extraction invented rather than the file it actually wrote).
 #
-# Ported from _scripts/audit_naming_registers.py in the ingestion repo so the
-# invariants run in package CI instead of by hand.
+# Ported from a standalone audit script so the invariants run in package CI
+# instead of by hand.
 
 .registerFiles <- function() {
   c("covariate-columns.md", "parameter-names.md", "compartment-names.md")
@@ -16,7 +16,7 @@
 
 # Canonicals that legitimately carry no `Example models:` line. The structural
 # PK parameters are universal: every model uses them, so listing examples would
-# be noise rather than provenance. Kept as an explicit list (operator ruling
+# be noise rather than provenance. Kept as an explicit list (maintainer ruling
 # 2026-09-01) so that a NEW example-less entry still fails the check.
 .exampleExempt <- c(
   "lka",
