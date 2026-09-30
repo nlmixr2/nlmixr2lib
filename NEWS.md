@@ -12,7 +12,7 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
-- Add Frade 2022 benznidazole ([doi:10.1590/S1678-9946202264004](https://doi.org/10.1590/S1678-9946202264004)) -- Brazilian adults with chronic Chagas disease (whole-blood dried blood spots).
+- Add Hirai 2022 digoxin ([doi:10.1186/s40360-022-00552-y](https://doi.org/10.1186/s40360-022-00552-y)) -- Japanese adults with atrial fibrillation and heart failure.
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 

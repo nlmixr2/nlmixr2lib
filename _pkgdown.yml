@@ -1656,6 +1656,8 @@ navbar:
         href: articles/Hirt_2009_didanosine.html
       - text: "Difloxacin crucianCarp (Ma 2023)"
         href: articles/Ma_2023_difloxacin_crucianCarp.html
+      - text: "Digoxin (Hirai 2022)"
+        href: articles/Hirai_2022_digoxin.html
       - text: "Digoxin (Jelliffe 2014)"
         href: articles/Jelliffe_2014_digoxin.html
       - text: "Digoxin (Komatsu 2015)"
@@ -7725,6 +7727,7 @@ articles:
   - articles/Hietala_2010_artemether_lumefantrine_malaria
   - articles/HillMcManus_2017_febuxostat_lesinurad
   - articles/Hirai_2016_febuxostat
+  - articles/Hirai_2022_digoxin
   - articles/Hirt_2006_nelfinavir
   - articles/Hirt_2007_nelfinavir
   - articles/Hirt_2008_ibuprofen
