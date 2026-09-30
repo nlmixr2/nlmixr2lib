@@ -14741,6 +14741,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `Yan_2019_benralizumab.R` (the legacy nine-study analysis that Jin 2025 updates: selects an absolute subcutaneous bioavailability of 0.490, with its own lognormal IIV of omega 0.350, in place of the reference 0.589; the same study likewise has its own residual error of 0.545 versus 0.250 for the other early studies, encoded as the separate `Cc_micp220` endpoint).
 - **Notes:** Sibling of `STUDY_AMES`, the other study-specific bioavailability stratum in the Jin 2025 model; the two are mutually exclusive per subject and a subject in neither takes the reference bioavailability. Distinct from a bare between-study shift on a disposition parameter -- here the study effect is on bioavailability, which is why the strata are estimated as separate absolute fractions rather than as relative multipliers. That reading is what lets the two analyses be compared directly: Yan 2019 Table 5 labels the row "Change in F with study CP220" but tabulates an absolute fraction, and the resulting MI-CP220-to-reference bioavailability ratio is 0.569 / 0.671 = 0.848 in the Yan 2019 base model and 0.457 / 0.539 = 0.848 in the Jin 2025 final model -- an agreement the relative-multiplier reading of the Yan 2019 row could not produce.
 
+### STUDY_MICP200 (**canonical for inebilizumab phase I systemic-sclerosis study MI-CP200 indicator**)
+- **Description:** 1 = subject enrolled in the phase I single-ascending-dose inebilizumab study MI-CP200 (NCT00946699; single IV doses of 0.1-10 mg/kg in adults with systemic sclerosis), 0 = subject enrolled in either of the other two studies of the pooled analysis (CD-IA-MEDI-551-1102 in relapsing MS, CD-IA-MEDI-551-1155 in NMOSD). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (studies 1102 and 1155; the most common realisation per Yan 2022 Eq. 4).
+- **Source aliases:**
+  - `Study CP200`, `CP200` -- Yan 2022 Table 6 row label 'Study CP200 on Vmax (%)' and Table 4 model 5 'SSc Study on Vmax'.
+- **Example models:** `Yan_2022_inebilizumab.R` (fractional-change effect on the baseline Michaelis-Menten Vmax, `vmax * (1 + 2.10 * STUDY_MICP200)`, so the typical MI-CP200 subject has a 3.1-fold higher Vmax than subjects in the other two studies).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family, spelled like its `STUDY_MICP220` sibling. The indicator is a STUDY effect, and all MI-CP200 subjects had systemic sclerosis, so study and disease are confounded (Yan 2022 Section 3.3). Do not reinterpret it as a systemic-sclerosis disease indicator. The Discussion's "2.1-fold higher" paraphrases the tabulated 210% fractional change. Eq. 4 (`P = theta1 * (1 + theta2 * Factor)`) with theta2 = 2.10 gives a 3.1-fold ratio.
+
 ### STUDY_AMES (**canonical for the benralizumab AMES autoinjector-versus-prefilled-syringe study indicator**)
 - **Description:** 1 = subject enrolled in the phase I AMES study (NCT02968914), which compared benralizumab PK exposure after administration by accessorized prefilled syringe versus autoinjector in 180 healthy volunteers given a single 30 mg subcutaneous dose, 0 = subject enrolled in any of the other studies of the pooled analysis.
 - **Units:** (binary)
