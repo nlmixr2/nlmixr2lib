@@ -1828,6 +1828,8 @@ navbar:
         href: articles/Ling_2024_tnfi_biosimilars.html
       - text: "Eteplirsen (Patel 2025)"
         href: articles/Patel_2025_eteplirsen.html
+      - text: "Ethambutol (BeraldiMagalhaes 2021)"
+        href: articles/BeraldiMagalhaes_2021_ethambutol.html
       - text: "Ethambutol (Horita 2018)"
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethambutol (Jonsson 2011)"
@@ -6187,6 +6189,7 @@ articles:
   - articles/Benson_2010_bhma_mouse
   - articles/Benson_2010_reboxetine_hnet_binding
   - articles/Benson_2014_PF04457845_qsp
+  - articles/BeraldiMagalhaes_2021_ethambutol
   - articles/Beredaki_2023_micafungin
   - articles/Beredaki_2024_amphotericinB_liposomal
   - articles/Berends_2019_infliximab
