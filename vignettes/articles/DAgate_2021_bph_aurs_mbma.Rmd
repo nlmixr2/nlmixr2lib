@@ -31,7 +31,8 @@ to the first episode of acute urinary retention or BPH-related surgery (AUR/S)
 in men with moderate or severe lower urinary tract symptoms due to benign
 prostatic hyperplasia. The data are the same six phase III/IV dutasteride trials
 (ARIA3001, ARIA3002, ARI40002, CombAT, CONDUCT, ARIB3003) that D'Agate 2020 used
-for its IPSS drug-disease model (`modellib("DAgate_2020_bph_ipss_mbma")`).
+for its IPSS drug-disease model (Br J Clin Pharmacol 2020;86:1585-1599,
+doi:10.1111/bcp.14268).
 
 Exponential, Gompertz and Weibull densities were compared and the exponential
 (constant) hazard was retained (Methods 2.3, Results 3.3). Baseline covariates

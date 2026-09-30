@@ -16223,10 +16223,10 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0; all four 0 = the placebo arm. In `DAgate_2020_bph_ipss_mbma.R` each indicator selects its own estimated treatment effect, its own IIV and its own residual SD, and the placebo arm additionally carries IIV on the disease-progression rate and the placebo magnitude.
+- **Reference category:** 0; all four 0 = the placebo arm. In `DAgate_2021_bph_aurs_mbma.R` each drug indicator selects its own log hazard ratio on the placebo hazard; watchful waiting has no estimate there, so a watchful-waiting patient carries the placebo hazard.
 - **Source aliases:**
   - `ARM` -- the D'Agate 2020 control stream column: 0 = placebo, 1 or 2 = watchful waiting (pooled), 3 = tamsulosin, 4 = dutasteride, 5 = combination ('FDC').
-- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; constant first-order effects on IPSS of 0.015 /month for tamsulosin, 0.016 /month for dutasteride, 0.032 /month for the combination and 0.018 /month for watchful waiting, each added to the decaying placebo effect). `DAgate_2021_bph_aurs_mbma.R` (log hazard ratios on the time to first acute urinary retention or BPH-related surgery: dutasteride 0.432, combination 0.336, tamsulosin fixed to 1; watchful waiting had no estimate and is listed under `covariatesDataExcluded`).
+- **Example models:** `DAgate_2021_bph_aurs_mbma.R` (founding example; log hazard ratios on the time to first acute urinary retention or BPH-related surgery: dutasteride 0.432, combination 0.336, tamsulosin fixed to 1; watchful waiting had no estimate and is listed under `covariatesDataExcluded`).
 - **Notes:** Follows the register's written `TRT_<INN>` rule (`TRT_EPHEDRINE`, `TRT_BENRALIZUMAB` Notes): the drug is the study treatment under investigation and the indicator is a property of an individual patient (individual-patient-data meta-analysis), not a published trial arm, so the bare-INN MBMA arm family does not apply. The combination is ONE indicator rather than `TRT_TAMSULOSIN = TRT_DUTASTERIDE = 1`, on the `TRT_CAFEDRINE_THEODRENALINE` precedent, because the source estimates a separate combination effect that is not the sum of the monotherapy effects. `TRT_WATCHFUL_WAITING` names a management strategy rather than an INN, on the `TRT_PBT` precedent.
 
 ### TRT_IPSOS_CONTROL (**canonical for IPSOS-trial control-arm indicator**)
@@ -20121,11 +20121,11 @@ sibling such as `AUC_BAST_FW`.
 - **Units:** IPSS points (0-35)
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- enters as a centred linear term `1 + e_ipss_bl_<param> * (IPSS_BL - <ref>)`. Reference value observed: 16 points (D'Agate 2020 pooled-population median).
+- **Reference category:** n/a -- enters as a centred linear term `1 + e_ipss_bl_<param> * (IPSS_BL - <ref>)`. Reference value observed: 16 points (D'Agate 2020 and D'Agate 2021 pooled-population median).
 - **Source aliases:**
   - `IPSS0` -- the `$INPUT` column in the D'Agate 2020 Supporting Information control stream (`A_0(1) = obsIPSS`, `obsIPSS = IPSS0`).
   - `IPSSb`, `B_VARIABLE` -- D'Agate 2020 Table 2 and Figure 2 labels.
-- **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; initial condition `ipss(0) <- IPSS_BL`, and linear effect on the disease progression rate `DISP * (1 + 0.027 * (IPSS_BL - 16))`). `DAgate_2021_bph_aurs_mbma.R` (log-linear effect on the AUR/S hazard, `exp(log(1.04) * (IPSS_BL - 16))`).
+- **Example models:** `DAgate_2021_bph_aurs_mbma.R` (founding example; log-linear effect on the AUR/S hazard, `exp(log(1.04) * (IPSS_BL - 16))`).
 - **Notes:** Member of the `_BL` per-subject-baseline instrument-readout family, on the `QTC_BL` / `CRT_BL` / `DSST_BL` precedent: an observed pre-treatment readout of the same instrument the model predicts, used as a data column rather than an estimated baseline parameter. A model that instead ESTIMATES the baseline IPSS should use an `lrbase`-style parameter, not this column. A screening-visit IPSS, if ever needed as a covariate, must be a separate canonical (e.g. `IPSS_SCR`), never overloaded onto this one.
 
 ### DSST_BL (**canonical for per-subject baseline digit symbol substitution test score**)

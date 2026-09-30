@@ -17,9 +17,9 @@ DAgate_2021_bph_aurs_mbma <- function() {
     "therapy (HR 0.336) reduce the hazard; tamsulosin monotherapy was not",
     "different from placebo and its hazard ratio is fixed to 1. The model",
     "exposes the hazard `hazard` (1/day), the cumulative hazard `cumhaz` and",
-    "the AUR/S-free survival probability `sur`. Sister IPSS drug-disease",
-    "model fitted to the same pooled data: DAgate_2020_bph_ipss_mbma. Time",
-    "in days.",
+    "the AUR/S-free survival probability `sur`. The sister IPSS drug-disease",
+    "model fitted to the same pooled data is D'Agate 2020",
+    "(doi:10.1111/bcp.14268). Time in days.",
     sep = " "
   )
   reference <- paste(
