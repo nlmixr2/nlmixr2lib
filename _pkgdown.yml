@@ -218,6 +218,8 @@ navbar:
         href: articles/Lim_2025_amikacin.html
       - text: "Amikacin (Matcha 2025)"
         href: articles/Matcha_2025_amikacin.html
+      - text: "Amikacin (Pressiat 2022)"
+        href: articles/Pressiat_2022_amikacin.html
       - text: "Amikacin (Steffens 2025)"
         href: articles/Steffens_2025_amikacin.html
       - text: "Amikacin (Tod 1998)"
@@ -7551,6 +7553,7 @@ articles:
   - articles/Polito_2016_fludrocortisone
   - articles/Pouzin_2022_tusamitamab
   - articles/Press_2010_ciclosporin
+  - articles/Pressiat_2022_amikacin
   - articles/Proctor_2026_durvalumab_cachexia
   - articles/Prohn_2021_letermovir
   - articles/Prytula_2016_tacrolimus
