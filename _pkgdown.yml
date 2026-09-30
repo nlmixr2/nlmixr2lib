@@ -2094,6 +2094,8 @@ navbar:
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethambutol (Jonsson 2011)"
         href: articles/Jonsson_2011_ethambutol.html
+      - text: "Ethambutol (Kloprogge 2020)"
+        href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Ethambutol (Maranchick 2026)"
         href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
       - text: "Ethambutol (Rao 2021)"
@@ -2644,6 +2646,8 @@ navbar:
         href: articles/Na_2025_hosu53.html
       - text: "Hosu53 mouse (Na 2025)"
         href: articles/Na_2025_hosu53.html
+      - text: "Hrze bacterialload (Kloprogge 2020)"
+        href: articles/Kloprogge_2020_tuberculosis.html
       - text: "HuHMFG1 (Royer 2010)"
         href: articles/Royer_2010_HuHMFG1.html
       - text: "HyaluronicAcid 99fill mouse (Ryu 2021)"
@@ -2982,6 +2986,8 @@ navbar:
         href: articles/Calderin_2025_pyrazinamide_isoniazid_tbm.html
       - text: "Isoniazid (Horita 2018)"
         href: articles/Horita_2018_isoniazid.html
+      - text: "Isoniazid (Kloprogge 2020)"
+        href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Isoniazid (Seng 2015)"
         href: articles/Seng_2015_isoniazid.html
       - text: "Isoniazid (Vinnard 2017)"
@@ -4894,6 +4900,8 @@ navbar:
         href: articles/Jayanti_2026_pyrazinamide.html
       - text: "Pyrazinamide (Kim 2023)"
         href: articles/Kim_2023_pyrazinamide.html
+      - text: "Pyrazinamide (Kloprogge 2020)"
+        href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Pyrazinamide (Maranchick 2026)"
         href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
       - text: "Pyrazinamide (Rao 2021)"
@@ -5098,6 +5106,8 @@ navbar:
         href: articles/Gafar_2026_rifampicin.html
       - text: "Rifampicin (Horita 2018)"
         href: articles/Horita_2018_rifampicin.html
+      - text: "Rifampicin (Kloprogge 2020)"
+        href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Rifampicin (Marsot 2017)"
         href: articles/Marsot_2017_rifampicin.html
       - text: "Rifampicin (Schipani 2016)"
@@ -7909,6 +7919,7 @@ articles:
   - articles/Kloprogge_2015_artesunate
   - articles/Kloprogge_2015_lumefantrine
   - articles/Kloprogge_2018_lumefantrine
+  - articles/Kloprogge_2020_tuberculosis
   - articles/Klunder_2017_upadacitinib
   - articles/Klunder_2019_upadacitinib
   - articles/Knebel_2008_epoetinDelta
