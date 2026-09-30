@@ -2104,8 +2104,8 @@ navbar:
         href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Ethambutol (Maranchick 2026)"
         href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
-      - text: "Ethambutol (Rao 2021)"
-        href: articles/Rao_2021_antituberculosis_critical_illness.html
+      - text: "Ethambutol (Panjasawatwong 2020)"
+        href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
       - text: "Ethambutol pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Ethanol (Lim 2017)"
@@ -2992,8 +2992,8 @@ navbar:
         href: articles/Calderin_2025_pyrazinamide_isoniazid_tbm.html
       - text: "Isoniazid (Horita 2018)"
         href: articles/Horita_2018_isoniazid.html
-      - text: "Isoniazid (Kloprogge 2020)"
-        href: articles/Kloprogge_2020_tuberculosis.html
+      - text: "Isoniazid (Panjasawatwong 2020)"
+        href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
       - text: "Isoniazid (Seng 2015)"
         href: articles/Seng_2015_isoniazid.html
       - text: "Isoniazid (Vinnard 2017)"
@@ -4920,8 +4920,8 @@ navbar:
         href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Pyrazinamide (Maranchick 2026)"
         href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
-      - text: "Pyrazinamide (Rao 2021)"
-        href: articles/Rao_2021_antituberculosis_critical_illness.html
+      - text: "Pyrazinamide (Panjasawatwong 2020)"
+        href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
       - text: "Pyrazinamide mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Pyrazinamide pbpk (Ramachandran 2023)"
@@ -5128,6 +5128,8 @@ navbar:
         href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Rifampicin (Marsot 2017)"
         href: articles/Marsot_2017_rifampicin.html
+      - text: "Rifampicin (Panjasawatwong 2020)"
+        href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
       - text: "Rifampicin (Schipani 2016)"
         href: articles/Schipani_2016_rifampicin.html
       - text: "Rifampicin (Sloan 2017)"
@@ -5840,6 +5842,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tbaj587 (Leding 2026)"
         href: articles/Leding_2026_tbaj587.html
+      - text: "Tbm mortality (Panjasawatwong 2020)"
+        href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
       - text: "Tebipenem (Ebihara 2025)"
         href: articles/Ebihara_2025_tebipenem.html
       - text: "Tebipenem (Ganesan 2023)"
@@ -8454,6 +8458,7 @@ articles:
   - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma
   - articles/Panetta_2024_palbociclib
+  - articles/Panjasawatwong_2020_antituberculosis_tbm
   - articles/Panoilia_2015_bevacizumab
   - articles/Papachristos_2020_bevacizumab_pk
   - articles/Papachristos_2020_bevacizumab_pkpd
