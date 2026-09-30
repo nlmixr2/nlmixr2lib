@@ -10,6 +10,8 @@
 
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
+- Add Siebel 2022 PEGylated asparaginase with the pre-existing anti-PEG IgM effect ([doi:10.1007/s13318-021-00741-w](https://doi.org/10.1007/s13318-021-00741-w)) -- children with acute lymphoblastic leukaemia in the AIEOP-BFM ALL 2009 trial.
+
 - Add Edrich 2015 heparin ([doi:10.2147/CPAA.S72185](https://doi.org/10.2147/CPAA.S72185)) -- adults on chronic warfarin, dabigatran or no anticoagulant undergoing catheter-based atrial fibrillation ablation.
 
 - Add van Hasselt 2014 cefazolin ([doi:10.1155/2014/897216](https://doi.org/10.1155/2014/897216)) -- pregnant women undergoing in utero surgery, caesarean delivery or fetal intervention; empirical and semiphysiological gestational models plus the underlying creatinine-clearance trajectory.
