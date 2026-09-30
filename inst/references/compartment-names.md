@@ -6558,52 +6558,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `Bertin_2026_levosimendan.R` (doi:10.1007/s40262-025-01591-4; founding example -- formation from OR-1855 is 3.7-fold slower in patients aged 1 year or younger, which is the paper's central clinical finding).
 - **Notes:** Same token-construction rule as [[or1855]]: development code lowercased, hyphen dropped. The pair is a rare case in this register of a *reversible* metabolic step between two metabolites, neither of which is the parent -- the forward acetylation is `kmet_or1896` and the reverse deacetylation is `kicv_or1855`, named for the species each one forms, so the direction of a rate constant is read off its suffix.
 
-### mrx1352 (**canonical MRX-1352 contezolid-acefosamil intermediate suffix**)
+### hes (**canonical 2-hydroxyethyl succinimide suffix**)
 - **Type:** metabolite-suffix
-- **Role:** MRX-1352, the intermediate prodrug formed by rapid hydrolysis of the intravenous double prodrug contezolid acefosamil (CZA) and converted more slowly to active contezolid. It is assayed in plasma after IV CZA and carries the largest exposure of the three analytes during IV dosing. Drives `central_mrx1352` / `peripheral1_mrx1352`, the `Cc_mrx1352` observation, the `lcl_mrx1352` (conversion clearance to contezolid at time 0), `lcl_ss_mrx1352`, `lcl_t50_mrx1352`, `lcl_time_hill_mrx1352`, `lemax_mrx1352`, `lec50_mrx1352`, `lhill_mrx1352`, `lcl_loss_mrx1352`, `lemax_loss_mrx1352`, `lq_mrx1352`, `lvc_mrx1352`, `lvp_mrx1352` parameters, and the `addSd_mrx1352` / `propSd_mrx1352` residuals.
+- **Role:** 2-Hydroxyethyl succinimide (HES), the major inactive metabolite of the oral fumarate prodrug diroximel fumarate (DRF). Esterases in the gastrointestinal tract split DRF presystemically into monomethyl fumarate (MMF, the active moiety) and HES, so DRF itself is not measurable in plasma and both metabolites are modelled as if dosed directly. HES is eliminated mainly by renal excretion, which is why its clearance, unlike MMF's, depends on eGFR. Carries `depot_hes`, the `transit1_hes` ... `transit8_hes` absorption chain, `central_hes`, the `Cc_hes` observation, `lka_hes`, `lcl_hes`, `lfdepot_hes`, the `etalka_hes` / `etalcl_hes` IIV and the `expSd_hes` residual.
 - **Source aliases:**
-  - `1352` -- the subscript Bulitta 2024 uses throughout Table 2 (`CL_1352,0`, `V1_1352`, `CLd_1352`, `CL_Loss,1352`).
-- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
-- **Notes:** Development code lowercased with the hyphen dropped, the same construction as [[or1855]]. Contezolid keeps the bare `central` / `Cc` names in the founding model although CZA is the IV-dosed species: contezolid is itself dosed orally in two of the three pooled studies and is the active moiety the model is named for, while CZA is carried only as an unassayed amount in `depot_iv` with no volume or concentration. Pairs with [[mrx1320]] and [[cza]].
-
-### mrx1320 (**canonical MRX-1320 contezolid metabolite suffix**)
-- **Type:** metabolite-suffix
-- **Role:** MRX-1320 (formerly MRX445-1 or M2), the main, pharmacologically inactive oxidative metabolite of contezolid. Drives `central_mrx1320` / `peripheral1_mrx1320`, the `Cc_mrx1320` observation, the `lcl_mrx1320` / `lvmax_mrx1320` / `lkm_mrx1320` parallel linear and Michaelis-Menten elimination parameters, `lq_mrx1320` / `lvc_mrx1320` / `lvp_mrx1320`, and the `addSd_mrx1320` / `propSd_mrx1320` residuals (plus `_iv`-qualified residuals where a model carries separate IV-study terms).
-- **Source aliases:**
-  - `1320` -- Bulitta 2024 Table 2 subscript (`CL_1320`, `Vmax_1320`, `Km_1320`).
-  - `MRX445-1`, `M2` -- earlier names in the contezolid literature (e.g. the Chinese NCA and popPK studies).
-- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
-- **Notes:** Deliberately not the generic `m2`, which is a per-paper designation with no cross-paper chemical meaning; see [[or1855]] for the same rule.
-
-### cza (**canonical contezolid acefosamil prodrug suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Contezolid acefosamil (CZA, MRX-4), the water-soluble O-acyl phosphoramidate double prodrug of contezolid given intravenously. Used as the suffix on parameters that describe the prodrug's own fate -- `lvmax_cza` / `lkm_cza` (amount-based Michaelis-Menten conversion to MRX-1352) and `lkel_cza` (first-order loss) -- when the prodrug amount itself sits in the named i.v. input state `depot_iv` rather than a concentration compartment.
-- **Source aliases:**
-  - `CZA` -- Bulitta 2024 Table 2 subscript (`Vmax_CZA`, `AM_50,CZA`).
-  - `CZDa`, `MRX-4` -- the 2021 IDWeek abstract abbreviation and the development code.
-- **Example models:** `Bulitta_2024_contezolid.R` (doi:10.1128/aac.01400-23; founding example).
-- **Notes:** A model that assays CZA and gives it a volume would use `central_cza`; the founding model does not, because the conversion was too fast for most CZA concentrations to be quantifiable and the authors dropped CZA from the fitted data.
-
----
-
-### thrx195518 (**canonical THRX-195518 revefenacin metabolite suffix**)
-- **Type:** metabolite-suffix
-- **Role:** THRX-195518, the major circulating metabolite of the inhaled long-acting muscarinic antagonist revefenacin, formed by hydrolysis of the parent's primary amide to the carboxylic acid. It is roughly three- to ten-fold less potent than revefenacin at muscarinic receptors and dissociates faster from the human M3 receptor, and its systemic exposure exceeds the parent's by about three- to six-fold. Carries `central_thrx195518`, `peripheral1_thrx195518`, the `Cc_thrx195518` observation, `lcl_thrx195518` / `lvc_thrx195518` / `lq_thrx195518` / `lvp_thrx195518`, the `e_age_cl_thrx195518` covariate effect and the `propSd_thrx195518` / `addSd_thrx195518` residuals.
-- **Source aliases:**
-  - `THRX-195518`, `CLmet/F`, `V3/F`, `Qmet/F`, `V4/F` -- Lo 2021 Table 2 and Fig. 1.
-- **Example models:** `Lo_2021_revefenacin.R` (doi:10.1007/s40262-020-00938-3; founding example -- two-compartment metabolite formed from a fixed 21% of the individual revefenacin clearance, with age on metabolite clearance and body weight on the formed fraction).
-- **Notes:** Same token-construction rule as [[or1855]]: the sponsor development code lowercased and the hyphen dropped. `thrx` is the Theravance code prefix, and the digits are the compound's identity, not a chain index, so the token is not a member of the numbered `m<n>` family.
-
----
-
-### neu5ac (**canonical N-acetylneuraminic acid (sialic acid) metabolite suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Free (unbound to glycans) N-acetylneuraminic acid (Neu5Ac), the predominant mammalian sialic acid, formed intracellularly from dosed N-acetylmannosamine (ManNAc) through the sialic acid biosynthesis pathway and measured in plasma. Endogenous: the species has a non-zero pre-dose baseline, so a model carrying it initialises `central_neu5ac` at `rbase_neu5ac` rather than at zero. Carries `central_neu5ac`, the `Cc_neu5ac` observation, `lrbase_neu5ac`, `lkout_neu5ac` and `propSd_neu5ac`.
-- **Source aliases:**
-  - `Neu5Ac`, `N`, `N0`, `kout` -- Van Wart 2021 Eqs. 3-5 and Table 4.
-  - `sialic acid` -- the generic name used in the pathway description.
-- **Example models:** `VanWart_2021_mannac.R` (doi:10.1007/s40268-021-00343-6; founding example -- `central_neu5ac` holds a concentration (ng/mL) fed through a `precursor1` delay state, both draining at `kout_neu5ac`, with production stimulated linearly by plasma ManNAc).
-- **Notes:** Token is the IUPAC-style abbreviation lowercased. Distinct from the registered `sa` suffix, which in this register denotes salicylic acid; do not reuse `sa` for sialic acid. The Neu5Ac state here is a concentration with no asserted volume -- the source never defines one -- so it is carried as `central_neu5ac` in ng/mL, not as an amount.
+  - `HES`, `KaHES`, `CLHES`, `F4`, `ALAG4` -- Kuchimanchi 2022 Table 2 and Fig. 1a; `PLHES`, `HESABS`, `HESTABS<n>`, `KAH`, `CLH` in the ESM control stream `$MODEL` / `$PK` blocks.
+- **Example models:** `Kuchimanchi_2022_diroximelFumarate.R` (founding example -- joint MMF + HES popPK after oral DRF with a shared central volume, HES bioavailability fixed at 0.6 from the mass-balance study, and eGFR on HES clearance).
+- **Notes:** In the founding model MMF is the active moiety and takes the bare canonical names (`depot`, `central`, `Cc`, `lcl`); only HES is suffixed. A model of DRF that also tracked the parent prodrug would give the parent the bare names and would then need a separate `mmf` suffix. Not to be confused with hydroxyethyl starch (also abbreviated HES), a plasma expander; register a different token if a model ever needs that.
 
 ---
 
