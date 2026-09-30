@@ -2546,6 +2546,8 @@ navbar:
         href: articles/Frymoyer_2013_gentamicin.html
       - text: "Gentamicin (Fuchs 2014)"
         href: articles/Fuchs_2014_gentamicin.html
+      - text: "Gentamicin (He 2022)"
+        href: articles/He_2022_gentamicin.html
       - text: "Gentamicin (Hodiamont 2017)"
         href: articles/Hodiamont_2017_gentamicin.html
       - text: "Gentamicin (Llanos 2017)"
@@ -7683,9 +7685,7 @@ articles:
   - articles/Haynes_2025_cephalexin
   - articles/Hazendonk_2016_factor_viii
   - articles/He_2012_lamotrigine
-  - articles/He_2020_phosphocreatine
-  - articles/He_2021_psoriasis_mbma
-  - articles/He_2021_tacrolimus_wuzhi_cyp3a
+  - articles/He_2022_gentamicin
   - articles/He_2025_YPEGrhGH
   - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz
