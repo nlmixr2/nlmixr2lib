@@ -3698,6 +3698,8 @@ navbar:
         href: articles/Joerger_2006_methotrexate.html
       - text: "Methotrexate (Jonsson 2011)"
         href: articles/Wang_2023_methotrexate.html
+      - text: "Methotrexate (Mao 2022)"
+        href: articles/Mao_2022_methotrexate.html
       - text: "Methotrexate (MedellinGaribay 2020)"
         href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Olivo 2024)"
@@ -8210,6 +8212,7 @@ articles:
   - articles/Mandema_2011_biologicDMARDs_mbma
   - articles/MangasSanjuan_2016_axomadol
   - articles/Mao_2012_vernakalant
+  - articles/Mao_2022_methotrexate
   - articles/Mao_2024_sirolimus
   - articles/Maranchick_2026_pyrazinamide_ethambutol
   - articles/Marathe_2023_belzutifan
