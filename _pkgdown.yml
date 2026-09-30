@@ -372,6 +372,8 @@ navbar:
         href: articles/Tsuchitani_2026_apixaban_pbpk.html
       - text: "Apomine (Bonate 2004)"
         href: articles/Bonate_2004_apomine.html
+      - text: "Apomorphine (Agbo 2021)"
+        href: articles/Agbo_2021_apomorphine.html
       - text: "Apramycin human (HernandezLozano 2025)"
         href: articles/HernandezLozano_2025_apramycin.html
       - text: "Apramycin invitro (HernandezLozano 2025)"
@@ -6881,7 +6883,7 @@ articles:
   - articles/Adiwijaya_2017_irinotecan_liposomal
   - articles/Admiraal_2023_iminobiotin
   - articles/Agarwal_2011_sorafenib_transporters
-  - articles/Agema_2021_oxycodone
+  - articles/Agbo_2021_apomorphine
   - articles/Agerso_2004_desmopressin
   - articles/Agoram_2006_darbepoetin_alfa
   - articles/Agoram_2006_darbepoetin_alfa_cia
