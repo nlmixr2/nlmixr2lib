@@ -2542,6 +2542,8 @@ navbar:
         href: articles/Frymoyer_2013_gentamicin.html
       - text: "Gentamicin (Fuchs 2014)"
         href: articles/Fuchs_2014_gentamicin.html
+      - text: "Gentamicin (Ghoneim 2021)"
+        href: articles/Ghoneim_2021_gentamicin.html
       - text: "Gentamicin (Hodiamont 2017)"
         href: articles/Hodiamont_2017_gentamicin.html
       - text: "Gentamicin (Llanos 2017)"
@@ -7550,6 +7552,7 @@ articles:
   - articles/Georges_2009_ceftazidime
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
+  - articles/Ghoneim_2021_gentamicin
   - articles/Giacometti_2025_dalbavancin
   - articles/Gibbs_2011_amg221
   - articles/Gibbs_2017_evolocumab
