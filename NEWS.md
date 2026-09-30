@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yu 2022 IgA nephropathy drug-class proteinuria MBMA ([doi:10.3389/fimmu.2022.825677](https://doi.org/10.3389/fimmu.2022.825677)) -- adults with IgA nephropathy in 40 trials of placebo and six drug classes. Registers the `UPRO_BL` covariate, the six IgA-nephropathy `TRT_*` drug-class indicators, and the `uprocfb` output.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
