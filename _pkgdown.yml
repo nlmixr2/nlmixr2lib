@@ -6492,6 +6492,8 @@ navbar:
         href: articles/Garreau_2021_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
         href: articles/Goti_2018_vancomycin.html
+      - text: "Vancomycin (Goyal 2022)"
+        href: articles/Goyal_2022_vancomycin.html
       - text: "Vancomycin (Grimsley 1999)"
         href: articles/Grimsley_1999_vancomycin.html
       - text: "Vancomycin (Hartinger 2023)"
@@ -7716,6 +7718,7 @@ articles:
   - articles/Goulooze_2020_DRL17822
   - articles/Goulooze_2022_finerenone
   - articles/Goulooze_2022_finerenone_uacr_egfr
+  - articles/Goyal_2022_vancomycin
   - articles/Gracia_2025_cr51edta_tc99mdtpa
   - articles/Granda_2024_kidney_pbpk
   - articles/Grasela_1985_phenobarbital
