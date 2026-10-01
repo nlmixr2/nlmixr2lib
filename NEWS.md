@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Geers 2022 clozapine ([doi:10.1177/20451253211065857](https://doi.org/10.1177/20451253211065857)) -- Dutch adults with schizophrenia on stable clozapine, from plasma and dried-blood-spot samples.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
