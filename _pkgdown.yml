@@ -6492,6 +6492,8 @@ navbar:
         href: articles/Wang_2014_vatalanib.html
       - text: "Vatiquinone (Hu 2025)"
         href: articles/Hu_2025_vatiquinone.html
+      - text: "Vedolizumab (Hanzel 2022)"
+        href: articles/Hanzel_2022_vedolizumab.html
       - text: "Vedolizumab (Okamoto 2021)"
         href: articles/Okamoto_2021_vedolizumab.html
       - text: "Vedolizumab (Rosario 2015)"
@@ -7639,6 +7641,7 @@ articles:
   - articles/Hansson_2013b_sunitinib
   - articles/Hansson_2013c_sunitinib
   - articles/Hanzel_2021_infliximab
+  - articles/Hanzel_2022_vedolizumab
   - articles/Hao_2018_tacrolimus
   - articles/Harada_2025_cyanide_pbpk
   - articles/Hard_2017_aripiprazole_lauroxil
