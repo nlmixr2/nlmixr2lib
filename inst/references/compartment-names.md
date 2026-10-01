@@ -2434,7 +2434,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an overall response (complete response, including uncertified CR, or partial response) as adjudicated by **independent central review**, in a static landmark exposure-response logistic model. The central-vs-investigator distinction is load-bearing and is why this is a separate canonical from `prob_orr_investigator`: the two adjudications are separate endpoints fit as separate models on different analysis sets, and central review is the regulatory-grade assessment.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual), `Liu_2024_saf189s_orr.R` (binomial logistic exposure-efficacy model for INDEPENDENT-REVIEW-COMMITTEE-assessed ORR in ALK+/ROS1+ non-small cell lung cancer; an IRC is an independent central review, so the central-assessment canonical is the right one even though that paper fits no investigator-assessed counterpart), `Babel_2026_telisotuzumab_orr.R` (binomial logistic exposure-efficacy model for telisotuzumab vedotin, ORR per INDEPENDENT CENTRAL REVIEW -- the same adjudication route as an IRC -- in c-Met overexpressing EGFR wild-type non-squamous NSCLC; the conjugate average serum concentration enters on the natural-log scale with a log-odds of 2.45 per e-fold).
+- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual), `Liu_2024_saf189s_orr.R` (binomial logistic exposure-efficacy model for INDEPENDENT-REVIEW-COMMITTEE-assessed ORR in ALK+/ROS1+ non-small cell lung cancer; an IRC is an independent central review, so the central-assessment canonical is the right one even though that paper fits no investigator-assessed counterpart), `Babel_2026_telisotuzumab_orr.R` (binomial logistic exposure-efficacy model for telisotuzumab vedotin, ORR per INDEPENDENT CENTRAL REVIEW -- the same adjudication route as an IRC -- in c-Met overexpressing EGFR wild-type non-squamous NSCLC; the conjugate average serum concentration enters on the natural-log scale with a log-odds of 2.45 per e-fold), `Gupta_2022_brigatinib_orr.R` (binomial logistic exposure-efficacy model for BLINDED-INDEPENDENT-REVIEW-COMMITTEE-confirmed ORR in first-line ALK-positive NSCLC; brigatinib scan-interval daily AUC enters linearly with odds ratio 0.97, p = 0.108).
 - **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc`. Static (no time dimension): unlike `prob_scc`, which is a state-occupancy probability evolving under a multistate ODE, this is a landmark probability evaluated once per subject from baseline covariates and a scalar exposure metric. Founding models expose it with a small placeholder residual so the nlmixr2 observation machinery accepts the model; the source analysis uses an exact Bernoulli likelihood and estimates no residual error.
 
 ### prob_orr_investigator (**canonical investigator-assessment overall-response probability output**)
@@ -2532,7 +2532,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a hyperglycemia adverse event of CTCAE grade 2 or worse, in a static landmark exposure-safety logistic model. The severity-qualified sibling of `prob_hyperglycemia`.
 - **Source aliases:** none.
-- **Example models:** `Liu_2024_saf189s_hyperglycemia_grade2.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 7.662 per e-fold; observed incidence 82 of 296 patients, 27.70%).
+- **Example models:** `Liu_2024_saf189s_hyperglycemia_grade2.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 7.662 per e-fold; observed incidence 82 of 296 patients, 27.70%), `Gupta_2022_brigatinib_hyperglycemia_grade2.R` (brigatinib; time-averaged daily AUC to the event enters linearly; 2 events in 123 patients, P = 0.192).
 - **Notes:** A probability output in `[0, 1]`. Kept as its own canonical rather than folded into `prob_hyperglycemia` for the same reason `prob_teae_grade3` is distinct from an any-grade TEAE endpoint: the grade threshold is a different endpoint fit as a separate model, and in the founding paper the exposure slope on the logit is roughly twice as steep for the graded endpoint (2.036 versus 1.259 per natural-log unit of AUC). The `_grade2` suffix means "grade 2 or worse", matching the source convention "grade >= 2"; use `_grade3` for a grade-3-or-worse threshold, as `prob_teae_grade3` does.
 
 ### prob_proteinuria (**canonical proteinuria adverse-event probability output**)
@@ -2603,7 +2603,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an intracranial objective response -- a complete or partial response of central-nervous-system lesions, scored by independent central review -- in a static landmark exposure-efficacy logistic model.
 - **Source aliases:** none.
-- **Example models:** `Chen_2021_lorlatinib_icorr.R` (binomial logistic efficacy model in the CNS-metastatic subset; no exposure term was retained, so the endpoint is driven by baseline alkaline phosphatase on the natural-log scale and baseline amylase -- founding example).
+- **Example models:** `Chen_2021_lorlatinib_icorr.R` (binomial logistic efficacy model in the CNS-metastatic subset; no exposure term was retained, so the endpoint is driven by baseline alkaline phosphatase on the natural-log scale and baseline amylase -- founding example), `Gupta_2022_brigatinib_iorr.R` (binomial logistic exposure-efficacy model for BIRC-confirmed intracranial ORR in the 42 first-line ALK-positive NSCLC patients with baseline CNS metastases; brigatinib scan-interval daily AUC enters linearly with odds ratio 1.13, p = 0.049).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Distinct from `prob_orr_central` and `prob_orr_investigator`**, which score whole-body RECIST response: intracranial response is assessed on CNS lesions only, in the subset of patients with baseline brain metastasis, and can dissociate from the systemic response for a drug selected for blood-brain-barrier penetration -- which is exactly why the founding paper models it separately. The canonical carries no commitment to which assessor scored the response; the founding model uses independent central review, and a paper reporting both central and investigator intracranial assessments should follow the `prob_orr_central` / `prob_orr_investigator` precedent and suffix accordingly.
 
 ### prob_hivrna_lt50 (**canonical HIV-1 virologic-suppression probability output**)
@@ -3049,6 +3049,97 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none. Source papers describe it as "TEAE leading to study drug withdrawal or dose reduction" or "dose reduction or discontinuation".
 - **Example models:** `Tamai_2017_lenvatinib_teae_dosemod.R` (founding example; frequentist logistic regression in 45 subjects with advanced hepatocellular carcinoma Child-Pugh class A, window = cycle 1 of 4 weeks, `logit = -4.71 + 1.82 * AUC_LEN / 1000` with lenvatinib steady-state 24 h AUC entering linearly and uncentred, and no covariate retained).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Record the window and the action set per model** -- they are the whole definition. The action-defined endpoint is a different construct from the severity-defined `prob_teae_grade3`: it is driven by what the treating physician did, so it is sensitive to the trial's dose-modification guidance and to how much headroom the starting dose leaves, and a drug studied at its maximum tolerated dose will show a high rate of it regardless of grade distribution. That sensitivity is the point rather than a defect -- in the founding paper the endpoint exists precisely to choose a STARTING DOSE, 74% of the phase 2 cohort having required reduction from 12 mg to 8 mg. Exposure for this endpoint must be frozen at the starting dose: because the modelled event IS the first dose change, an exposure column that tracks the current dose would be contaminated by the outcome. Do not treat it as a competing risk against grade-based or preferred-term endpoints, which it overlaps.
+
+### prob_cpk_increase_grade3 (**canonical grade >= 3 creatine-phosphokinase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased blood creatine phosphokinase (CPK) under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_cpk_grade3.R` (`logit = -1.485 + 0.02106 * AUC_BRIG_EVT`, observed 32/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Increased CPK is among the most common adverse events of brigatinib; in Gupta 2022 it was not exposure-related (P = 0.255).
+
+### prob_ast_increase_grade3 (**canonical grade >= 3 aspartate-aminotransferase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased ASPARTATE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_ast_grade3.R` (`logit = -3.178 + 0.004452 * AUC_BRIG_EVT`, observed 5/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_ast_increase` (treatment-related, any grade) and of `prob_ast_increase_grade2`; the thresholds are cumulative on one ordinal scale, so the grade 3 endpoint is a subset of the grade 2 endpoint and the two must not be treated as competing risks.
+
+### prob_alt_increase_grade3 (**canonical grade >= 3 alanine-aminotransferase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased ALANINE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_alt_grade3.R` (`logit = -3.234 + 0.01397 * AUC_BRIG_EVT`, observed 6/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_alt_increase` (treatment-related, any grade) and of `prob_alt_increase_grade2`; cumulative thresholds on one ordinal scale, not competing risks.
+
+### prob_amylase_increase_grade3 (**canonical grade >= 3 amylase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased serum AMYLASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_amylase_grade3.R` (`logit = -3.029 + 0.0282 * AUC_BRIG_EVT`, observed 10/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Severity-qualified sibling of `prob_amylase_increase_grade2`; cumulative thresholds on one ordinal scale, not competing risks.
+
+### prob_lipase_increase_grade3 (**canonical grade >= 3 lipase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased serum LIPASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_lipase_grade3.R` (`logit = -2.151 + 0.02956 * AUC_BRIG_EVT`, observed 22/123), `Gupta_2022_brigatinib_lipase_grade3_d8_14.R` (`logit = -2.552 + 0.04879 * AUC_BRIG_D8_14`, observed 22/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The same endpoint is fit twice in Gupta 2022 against two different exposure metrics (time-averaged to the event, and days 8-14 of cycle 1); only the early-exposure fit is significant, so check which exposure column a model consumes before comparing slopes.
+
+### prob_aesi_grade3 (**canonical grade >= 3 adverse-event-of-interest composite probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences ANY of a sponsor-defined list of adverse events of interest at CTCAE grade >= 3, in a static landmark exposure-safety logistic model. In the founding model the list is grade >= 3 CPK, AST, ALT, amylase or lipase elevation, hyperglycemia, hypertension, bradycardia, rash and pulmonary events.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_aesi_grade3.R` (`logit = -0.175 + 0.01248 * AUC_BRIG_EVT`, observed 64/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_aesi` (any grade). Distinct from `prob_teae_grade3`, which pools ALL preferred terms: this composite is restricted to the listed events of interest. It overlaps every listed single-event endpoint, so it must not be combined with them as competing risks.
+
+### prob_hypertension_grade2 (**canonical grade >= 2 hypertension probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 hypertension adverse event under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_hypertension_grade2.R` (`logit = -0.881 + 0.003742 * AUC_BRIG_EVT`, observed 38/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. A probability of crossing a categorical toxicity threshold, not a blood-pressure value; distinct from a modelled systolic or diastolic pressure state.
+
+### prob_bradycardia_grade2 (**canonical grade >= 2 bradycardia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 bradycardia adverse event under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_bradycardia_grade2.R` (`logit = -2.807 + -0.05964 * AUC_BRIG_EVT`, observed 2/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. A probability of crossing a categorical toxicity threshold, not a heart-rate value. The founding model rests on 2 events in 123 patients, so its coefficients are poorly determined.
+
+### prob_rash_grade2 (**canonical grade >= 2 rash probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 rash adverse event under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_rash_grade2.R` (`logit = -1.987 + 0.000845 * AUC_BRIG_EVT`, observed 15/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Any rash preferred term reported at grade >= 2; not restricted to acneiform rash.
+
+### prob_ast_increase_grade2 (**canonical grade >= 2 aspartate-aminotransferase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 adverse event of increased ASPARTATE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_ast_grade2.R` (`logit = -2.568 + 0.008864 * AUC_BRIG_EVT`, observed 10/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Severity-qualified sibling of `prob_ast_increase` (treatment-related, any grade). Cumulative with `prob_ast_increase_grade3`.
+
+### prob_alt_increase_grade2 (**canonical grade >= 2 alanine-aminotransferase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 adverse event of increased ALANINE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_alt_grade2.R` (`logit = -1.559 + -0.0111 * AUC_BRIG_EVT`, observed 18/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Severity-qualified sibling of `prob_alt_increase` (treatment-related, any grade). Cumulative with `prob_alt_increase_grade3`.
+
+### prob_amylase_increase_grade2 (**canonical grade >= 2 amylase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 adverse event of increased serum AMYLASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_amylase_grade2.R` (`logit = -2.225 + 0.03922 * AUC_BRIG_EVT`, observed 24/123), `Gupta_2022_brigatinib_amylase_grade2_d8_14.R` (`logit = -2.660 + 0.05827 * AUC_BRIG_D8_14`, observed 24/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Fit twice in Gupta 2022 against two exposure metrics (time-averaged to the event, and days 8-14 of cycle 1); only the early-exposure fit is significant. Cumulative with `prob_amylase_increase_grade3`.
+
+### prob_pulmonary_ae_grade2 (**canonical grade >= 2 pulmonary-adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 pulmonary adverse event -- pneumonitis or interstitial lung disease -- under CTCAE v4.03, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_pulmonary_grade2.R` (`logit = -4.257 + 0.01355 * AUC_BRIG_EVT`, observed 2/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The founding definition pools pneumonitis and interstitial lung disease (Gupta 2022 Table 3 footnote b); record the pooled terms per model. Brigatinib early-onset pulmonary events (within days of starting) are a distinct clinical syndrome that this landmark endpoint does not separate. The founding model rests on 2 events in 123 patients.
 
 ### venous (**canonical bare venous-blood compartment**)
 - **Type:** compartment

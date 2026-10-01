@@ -6235,6 +6235,52 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Suri_2019_brentuximab_fn_mmae.R` (febrile neutropenia), `Suri_2019_brentuximab_neutropenia.R` (grade 4 or worse neutropenia), `Suri_2019_brentuximab_teae.R` (any grade 3 or worse TEAE), `Suri_2019_brentuximab.R`.
 - **Notes:** Member of the `AUC_<drug>` exposure-metric family; the ADC counterpart is `AUC_BV_ADC`. Scoped to brentuximab vedotin rather than to MMAE generally because MMAE exposure per unit of conjugate differs between vedotin ADCs (different drug-antibody ratios, targets and formation kinetics); another vedotin should register its own `AUC_<drug>_MMAE` column. MMAE exposure falls by about half from the first to later dosing intervals (Suri 2019), so the time-averaged value depends on how long the averaging window runs.
 
+### AUC_BRIG_SCAN (**canonical for brigatinib daily AUC averaged over a disease-assessment scan interval**)
+- **Description:** Per-subject brigatinib daily AUC averaged over a disease-assessment (CT / MRI) scan interval, used as the exposure driver of exposure-efficacy models. Gupta 2022 (Methods S1) defines the daily AUC on day i as the increment of the cumulative AUC, `AUCD(i) = CAUC(i + 1) - CAUC(i)` with `CAUC(i)` = cumulative dose to day i divided by the individual Bayesian CL/F of the Gupta 2021 population PK model, over the **actually administered** doses; this column is the mean of `AUCD` over one scan interval. In the STATIC models it is the interval between the last two scans preceding the event (progression), the best confirmed response, or censoring -- one value per subject. In the time-varying Cox model `Gupta_2022_brigatinib_pfs_scan_tv.R` it is supplied as a piecewise-constant column holding each successive interval's mean.
+- **Units:** `ug*h/mL/day`
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters LINEARLY and uncentred (`logit_ref + slope * AUC_BRIG_SCAN` for the logistic models; `log(HR) * AUC_BRIG_SCAN` for the Cox relative hazards). Calibration: Gupta 2022 Figure 2a gives the PFS analysis-set median (range) as 15.2 (0, 77.0) `ug*h/mL/day` and the quartile medians as 9.7, 13.0, 17.1 and 28.3. For an uninterrupted 180 mg once-daily course the value equals 180 mg / CL/F, whose ALTA-1L geometric mean (5th, 95th percentile) is 21.3 (10.1, 44.6) (Gupta 2022 Results).
+- **Source aliases:**
+  - `Time-averaged AUC between last two scans (ug.h/mL/day)` -- Gupta 2022 Figure 2b / 2c x-axis label.
+  - `Daily time-averaged AUC between successive disease assessments` -- Gupta 2022 Results, time-varying PFS analysis.
+- **Example models:** `Gupta_2022_brigatinib_orr.R`, `Gupta_2022_brigatinib_iorr.R`, `Gupta_2022_brigatinib_pfs.R` (static), `Gupta_2022_brigatinib_pfs_scan_tv.R` (time-varying).
+- **Notes:** Member of the `AUC_<DRUG>` exposure-metric family with a metric qualifier, following `AUC_MBV_SS` / `AUC_MBV_DAY`: Gupta 2022 uses four brigatinib exposure definitions in one paper (`AUC_BRIG_SCAN`, `AUC_BRIG_EVT`, `AUC_BRIG_D8_14`, `AUC_BRIG_DAY`) and they are not interchangeable. A scan-interval mean absorbs dose reductions and interruptions within that interval, which is why the static PFS model shows a counter-intuitive positive hazard ratio (patients with long PFS accumulate dose reductions and so carry a lower last-interval exposure).
+
+### AUC_BRIG_EVT (**canonical for brigatinib daily AUC time-averaged from the first dose to an adverse event**)
+- **Description:** Per-subject brigatinib daily AUC time-averaged from the first dose to the first occurrence of the adverse event of interest, or to the end of treatment for a subject without the event: cumulative dose over that window divided by the individual Bayesian CL/F of the Gupta 2021 population PK model and by the number of days (Gupta 2022 Methods, Exposure-safety analyses, and Methods S1). Used as the exposure driver of landmark exposure-safety logistic regressions.
+- **Units:** `ug*h/mL/day`
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters LINEARLY and uncentred on the logit (`logit_ref + slope * AUC_BRIG_EVT`). Gupta 2022 Supporting Figures S6 and S7 plot the observed values over roughly 6 to 70 `ug*h/mL/day`.
+- **Source aliases:**
+  - `Time-Averaged Exposure (ug.h/mL/day)` -- Gupta 2022 Supporting Figures S6 and S7 x-axis label.
+  - `time-averaged AUC to the first occurrence of an event (or to the end of treatment if no event)` -- Gupta 2022 Methods.
+- **Example models:** `Gupta_2022_brigatinib_cpk_grade3.R`, `Gupta_2022_brigatinib_ast_grade3.R`, `Gupta_2022_brigatinib_alt_grade3.R`, `Gupta_2022_brigatinib_amylase_grade3.R`, `Gupta_2022_brigatinib_lipase_grade3.R`, `Gupta_2022_brigatinib_aesi_grade3.R`, `Gupta_2022_brigatinib_hyperglycemia_grade2.R`, `Gupta_2022_brigatinib_hypertension_grade2.R`, `Gupta_2022_brigatinib_bradycardia_grade2.R`, `Gupta_2022_brigatinib_rash_grade2.R`, `Gupta_2022_brigatinib_ast_grade2.R`, `Gupta_2022_brigatinib_alt_grade2.R`, `Gupta_2022_brigatinib_amylase_grade2.R`, `Gupta_2022_brigatinib_pulmonary_grade2.R`.
+- **Notes:** Member of the `AUC_<DRUG>` family; see `AUC_BRIG_SCAN` for the four sibling brigatinib metrics. The averaging window is endpoint- AND subject-specific, so the same patient carries a different value in each adverse-event model, and because the window includes the 7-day 90 mg lead-in an early event is attached to a lower exposure than the 180 mg maintenance AUC. The closest analogues are `AUC_ALIS` and `AUC_BV_ADC` (treatment-course averages up to an event). Do not substitute a steady-state AUC(0-24).
+
+### AUC_BRIG_D8_14 (**canonical for brigatinib daily AUC time-averaged over days 8 to 14 of cycle 1**)
+- **Description:** Per-subject brigatinib daily AUC time-averaged over days 8 to 14 of cycle 1 -- the first week after the dose increase from the 7-day 90 mg once-daily lead-in to 180 mg once daily -- computed over actual doses from the individual Bayesian CL/F of the Gupta 2021 population PK model. Gupta 2022 introduced it to represent exposure early after the step-up, when pancreatic-enzyme elevations cluster.
+- **Units:** `ug*h/mL/day`
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters LINEARLY and uncentred on the logit. Gupta 2022 Figure 3 plots the observed values over roughly 6 to 54 `ug*h/mL/day`.
+- **Source aliases:**
+  - `Averaged Daily AUC Day 8-14 (ug.h/mL/day)` -- Gupta 2022 Figure 3 x-axis label.
+- **Example models:** `Gupta_2022_brigatinib_lipase_grade3_d8_14.R` (odds ratio 1.05 per `ug*h/mL/day`, p = 0.039), `Gupta_2022_brigatinib_amylase_grade2_d8_14.R` (odds ratio 1.06, p = 0.016).
+- **Notes:** Member of the `AUC_<DRUG>` family; see `AUC_BRIG_SCAN` for the sibling metrics. Unlike `AUC_BRIG_EVT` the window is fixed by protocol day, so one patient has one value shared by both models that use it.
+
+### AUC_BRIG_DAY (**canonical for brigatinib daily AUC on each treatment day, time-varying**)
+- **Description:** Brigatinib AUC over each treatment day, `AUCD(i) = CAUC(i + 1) - CAUC(i)` with `CAUC(i)` = cumulative dose to day i divided by the individual Bayesian CL/F of the Gupta 2021 population PK model (Gupta 2022 Methods S1). A TIME-VARYING covariate, one value per day, that changes at every dose change or interruption.
+- **Units:** `ug*h/mL/day`
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters LINEARLY and uncentred as the time-dependent covariate of a Cox model (`log(HR) * AUC_BRIG_DAY`). For an uninterrupted 180 mg day it equals 180 mg / CL/F.
+- **Source aliases:**
+  - `daily time-varying AUC` -- Gupta 2022 Results, Exposure-efficacy analysis.
+- **Example models:** `Gupta_2022_brigatinib_pfs_daily_tv.R` (hazard ratio 1.01 per `ug*h/mL/day`, p = 0.69).
+- **Notes:** Member of the `AUC_<DRUG>` family; see `AUC_BRIG_SCAN` for the sibling metrics. Distinct from `AUC_MBV_DAY`, which is a single per-subject value on the calendar day of an event rather than a daily time series.
+
 ### DOSE_VGB_MGD (**canonical for total daily vigabatrin dose**)
 - **Description:** Patient's total daily vigabatrin dosage (mg/day), summed across the twice-daily administrations and NOT normalised by body weight. Per-record (time-varying) covariate: dosage was titrated in every contributing study, so the column is updated as the patient escalates. Set to 0 mg/day during a baseline run-in and for placebo subjects.
 - **Units:** mg/day

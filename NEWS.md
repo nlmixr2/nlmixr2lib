@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Gupta 2022 brigatinib exposure-response ([doi:10.1111/cts.13231](https://doi.org/10.1111/cts.13231)) -- adults with ALK-inhibitor-naive ALK-positive advanced NSCLC on first-line brigatinib in ALTA-1L; 18 logistic efficacy and safety models and 3 Cox PFS relative-hazard models.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.

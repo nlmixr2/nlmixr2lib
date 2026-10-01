@@ -820,6 +820,48 @@ navbar:
         href: articles/Gupta_2021_brigatinib.html
       - text: "Brigatinib (Hanley 2024)"
         href: articles/Hanley_2024_brigatinib.html
+      - text: "Brigatinib aesi grade3 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib alt grade2 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib alt grade3 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib amylase grade2 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib amylase grade2 d8 14 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib amylase grade3 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib ast grade2 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib ast grade3 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib bradycardia grade2 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib cpk grade3 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib hyperglycemia grade2 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib hypertension grade2 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib iorr (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib lipase grade3 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib lipase grade3 d8 14 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib orr (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib pfs (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib pfs daily tv (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib pfs scan tv (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib pulmonary grade2 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
+      - text: "Brigatinib rash grade2 (Gupta 2022)"
+        href: articles/Gupta_2022_brigatinib_exposure_response.html
       - text: "Brilaroxazine (Cantillon 2018)"
         href: articles/Cantillon_2018_brilaroxazine.html
       - text: "Brivaracetam (Schoemaker 2017)"
@@ -7602,6 +7644,7 @@ articles:
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
   - articles/Gupta_2021_brigatinib
+  - articles/Gupta_2022_brigatinib_exposure_response
   - articles/Gwee_2020_ivermectin
   - articles/Hadigol_2026_talazoparib_enzalutamide
   - articles/Hahn_2019_sufentanil
