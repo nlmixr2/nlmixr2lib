@@ -329,11 +329,12 @@ of the scope of the packaged deterministic simulator.
     17 subclones times 7 states plus the transcendental receptor-
     competition equation for `Ag_f` are not natively expressible in
     rxode2 (see item 2), and the practical simulation cost of
-    enumerating 119 additional ODEs is high enough to break the 5-minute
-    vignette render budget. Downstream users who need the full affinity
-    distribution can extend the shipped model by hand-authoring the
-    17-clone block; the mean-field version is sufficient for the
-    sensitivity-style analyses that motivated the original paper.
+    enumerating 119 additional ODEs is high enough to push the
+    vignette’s render time well past 5 minutes. Downstream users who
+    need the full affinity distribution can extend the shipped model by
+    hand-authoring the 17-clone block; the mean-field version is
+    sufficient for the sensitivity-style analyses that motivated the
+    original paper.
 2.  **Explicit `Ag_f` closure.** The paper’s receptor-competition
     equation
     `Ag = Ag_f * [1 + 2 * sum_i(K_a_i * Ab_i / (1 + K_a_i * Ag_f)) + sum_i(K_a_i * BCR_i / (1 + K_a_i * Ag_f))]`

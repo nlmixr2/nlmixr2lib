@@ -839,9 +839,8 @@ governed by the trough rather than by the bulk of the interval.
 
 - **Every parameter comes from the supplement.** The main article prints
   no parameter values. Supplemental Table 6 (in
-  `jiae451_supplementary_data.zip`, retrieved via the EuropePMC
-  `supplementaryFiles` endpoint for PMC11841632) is the sole source for
-  all four models.
+  `jiae451_supplementary_data.zip`, published with the open-access
+  article, PMC11841632) is the sole source for all four models.
 
 - **The covariate equations are read out of the Unit column.**
   Supplemental Table 6 never writes a covariate equation. The forms

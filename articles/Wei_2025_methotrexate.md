@@ -349,7 +349,7 @@ Check 3: model covariate terms against Equations 12-15. {.table}
 
 
 stopifnot(max(covErr) < 1e-10)
-# Confirm the grid actually exercised both genotype strata (pattern 10 guard).
+# Confirm the grid actually exercised both genotype strata.
 stopifnot(any(carrierG), any(!carrierG))
 ```
 
@@ -651,7 +651,7 @@ c(analytic_bolus_cmax = typicalCmax, simulated_median_cmax = medCmax,
 
 stopifnot(cmaxRatio > 0.3, cmaxRatio < 1.1)
 
-# Every subject must have produced a finite Cmax (pattern 10 guard).
+# Every subject must have produced a finite Cmax.
 stopifnot(
   sum(ncaSum$PPTESTCD == "cmax") == 2 * nSub,
   all(is.finite(ncaSum$PPORRES[ncaSum$PPTESTCD == "cmax"]))

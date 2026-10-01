@@ -336,11 +336,11 @@ caption); the vignette’s 50-per-arm point estimate is illustrative.
   combinations of these fractions (Miyano’s Figure 6 explores this space
   to identify simultaneous IL-13 + IL-22 inhibition as the
   best-performing bispecific candidate for dupilumab poor responders).
-- **Vignette cohort size.** The vignette uses n = 50 per arm to stay
-  inside the pkgdown render time budget. The paper’s Figure 3 uses 1000
-  virtual patients per arm and 1000 repeated simulated trials for 95%
-  CIs. The qualitative shape (drug ordering, response-rate direction)
-  reproduces at n = 50; the exact numerical Figure-3 CIs do not.
+- **Vignette cohort size.** The vignette uses n = 50 per arm to keep the
+  render time short. The paper’s Figure 3 uses 1000 virtual patients per
+  arm and 1000 repeated simulated trials for 95% CIs. The qualitative
+  shape (drug ordering, response-rate direction) reproduces at n = 50;
+  the exact numerical Figure-3 CIs do not.
 - **Vignette skips PKNCA.** The paper’s efficacy endpoint (EASI-75 at 24
   weeks) is not an NCA quantity; there is no dose-and-eliminate PK
   profile to integrate. Following the endogenous / mechanistic

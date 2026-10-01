@@ -26,7 +26,7 @@
 - Article: <https://doi.org/10.1002/bcp.70005>
 - Supplement (Supplementary Material 1-9, including the final NONMEM
   control stream in Supplementary Material 9):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12122143/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12122143>
 
 ## Population
 

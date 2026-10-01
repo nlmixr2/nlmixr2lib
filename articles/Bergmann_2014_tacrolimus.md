@@ -431,7 +431,6 @@ multiplier of 1.60 on CL/F.
   users who want to separate absolute disposition from F must scale
   externally.
 - **Vignette uses 200 subjects per CYP3A5 stratum.** This is small
-  enough to render the vignette in well under 5 minutes (the pkgdown
-  gate) but large enough to give stable percentiles for the dose-band
-  fractions in Figure 3. The Bergmann 2014 simulations used n = 100 per
-  scenario.
+  enough to render the vignette in well under 5 minutes but large enough
+  to give stable percentiles for the dose-band fractions in Figure 3.
+  The Bergmann 2014 simulations used n = 100 per scenario.

@@ -118,9 +118,9 @@ n_subj <- 200
 
 cohort <- tibble::tibble(
   id      = seq_len(n_subj),
-  WT      = pmin(pmax(rnorm(n_subj, mean = 80, sd = 19),  35, 180)),
-  ALB     = pmin(pmax(rnorm(n_subj, mean = 44, sd = 3.5), 30,  55)),
-  CRCL    = pmin(pmax(rnorm(n_subj, mean = 111, sd = 32), 40, 220)),
+  WT      = pmin(pmax(rnorm(n_subj, mean = 80, sd = 19),  35), 180),
+  ALB     = pmin(pmax(rnorm(n_subj, mean = 44, sd = 3.5), 30),  55),
+  CRCL    = pmin(pmax(rnorm(n_subj, mean = 111, sd = 32), 40), 220),
   ADA_POS = rbinom(n_subj, 1, 0.145)
 )
 ```
@@ -301,11 +301,11 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
-#>               0           14 200mg_Q2W 200          149 [105] 15.1 [84.2]
-#>               0           14 300mg_Q2W 200         286 [84.6] 26.9 [70.1]
+#>               0           14 200mg_Q2W 200          559 [108] 47.2 [94.2]
+#>               0           14 300mg_Q2W 200         957 [75.7] 78.4 [69.3]
 #>  Cmin (mg/L)        Tmax (day)  Cav (mg/L)
-#>   4.22 [259] 4.00 [2.00, 5.00]  10.7 [105]
-#>   10.8 [166] 4.00 [2.00, 5.00] 20.4 [84.6]
+#>   28.1 [163] 4.00 [2.00, 5.50]  39.9 [108]
+#>  53.1 [92.9] 4.00 [2.00, 5.50] 68.4 [75.7]
 #> 
 #> Caption: AUClast, Cmax, Cmin, Cav: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```

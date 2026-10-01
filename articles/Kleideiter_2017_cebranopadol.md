@@ -91,7 +91,7 @@ two cohorts mirroring published descriptive trials:
 
 ``` r
 
-set.seed(20260525) # task ID
+set.seed(20260525) # fixed seed for a reproducible cohort
 
 # Helper: build a single cohort as a self-contained dosing + observation table.
 make_cohort <- function(n, dose_ug, regimen, formulation, disease,

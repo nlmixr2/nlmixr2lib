@@ -621,15 +621,15 @@ the 36 reproducible cells of Table 3.
   two-week half-life the choice is immaterial to exposure beyond the
   first day.
 - **Supplementary material was not retrievable.** Tables S1-S3 and
-  Figures S1-S2 (file `AAC00773-25-S0001.docx`) could not be fetched
-  from the EuropePMC supplementary-files endpoint, the publisher, or
-  PMC. None of them carries a model parameter: the complete final model
-  is Table 2 of the main text, which is reproduced in full in the source
-  trace above. The consequences are that the exact observation count is
-  unknown (18 patients contributing 1-3 samples each, so between 18 and
-  54), the goodness-of-fit and VPC panels could not be inspected, and
-  the secondary target-attainment table for the bacteriostatic criterion
-  (fAUC/MIC \>= 25, Table S3) is not reproduced here.
+  Figures S1-S2 (file `AAC00773-25-S0001.docx`) were not available when
+  this model was built. None of them carries a model parameter: the
+  complete final model is Table 2 of the main text, which is reproduced
+  in full in the source trace above. The consequences are that the exact
+  observation count is unknown (18 patients contributing 1-3 samples
+  each, so between 18 and 54), the goodness-of-fit and VPC panels could
+  not be inspected, and the secondary target-attainment table for the
+  bacteriostatic criterion (fAUC/MIC \>= 25, Table S3) is not reproduced
+  here.
 - **No covariates.** The paper screened age, sex, height, body weight,
   body mass index, glomerular filtration rate, baseline creatinine
   clearance and same-day serum albumin, and retained none. All eight are

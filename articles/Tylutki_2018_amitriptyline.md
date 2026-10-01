@@ -340,7 +340,7 @@ mod
 #>     rr ~ add(addSd)
 #>   })
 #> }
-#> <environment: 0x55ea0dbaf310>
+#> <environment: 0x56289d00cf30>
 ```
 
 ## Population
@@ -754,14 +754,11 @@ comparison against the published fitted curve (both above).
   paper.** The amitriptyline full-PBPK and nortriptyline minimal-PBPK
   models are imported unchanged from Tylutki 2018 *J Pharm Sci*
   107:1167-1177 (`doi:10.1016/j.xphs.2017.11.012`), and this publication
-  restates none of their parameters. The upstream article is listed by
-  Unpaywall as green open access via the Jagiellonian University
-  Repository, but the repository record (`item/142030`) carries metadata
-  only, with no deposited file; the publisher version is paywalled. The
-  upstream source has therefore been registered for acquisition, and the
-  PBPK layer is deferred rather than approximated. No organ volume,
-  blood flow, partition coefficient or clearance has been substituted
-  from any other source.
+  restates none of their parameters. The upstream article was not
+  available when this model was built (the publisher version is
+  paywalled), so the PBPK layer is deferred rather than approximated. No
+  organ volume, blood flow, partition coefficient or clearance has been
+  substituted from any other source.
 - **The oral-absorption layer is recorded but not encoded.** This
   paper’s own new PK contribution is an absorption input function for
   that imported PBPK model: `ka` = 0.24 1/h and a mean lag time of 1.33

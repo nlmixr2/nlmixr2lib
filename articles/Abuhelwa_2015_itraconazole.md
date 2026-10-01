@@ -29,8 +29,8 @@ meta <- rxode2::rxode(mod)
 - Article: [Antimicrob Agents Chemother.
   2015;59(9):5681-5696](https://doi.org/10.1128/AAC.00973-15)
 - Supplement (NONMEM control streams for the final itraconazole and
-  metabolite models): [AAC.00973-15 supplemental
-  material](https://pmc.ncbi.nlm.nih.gov/articles/instance/4538523/bin/AAC.00973-15_zac009154345so1.pdf)
+  metabolite models): AAC.00973-15 supplemental material
+  (`AAC.00973-15_zac009154345so1.pdf`), published with the article
 
 ## Population
 

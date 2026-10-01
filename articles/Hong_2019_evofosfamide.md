@@ -12,7 +12,7 @@
   intermediate and IPM formation’.
 - Article: <https://doi.org/10.1016/j.neo.2018.11.009>
 - Supplement (Methods and Figures, `mmc1`; Tables, `mmc2`):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6314220/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6314220>
 
 Evofosfamide (TH-302) is a hypoxia-activated prodrug: a 2-nitroimidazole
 trigger attached to the DNA-crosslinking mustard bromo-isophosphoramide
@@ -490,7 +490,7 @@ mod
 #>     # any output; the only uncertainties reported are SEs across 3 MCLs.
 #>   })
 #> }
-#> <environment: 0x55d5b8bb99c8>
+#> <environment: 0x55e769861ce8>
 ```
 
 ``` r

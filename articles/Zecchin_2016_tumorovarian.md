@@ -365,7 +365,7 @@ was not available when this model was built.
   this model was built. Parameter values come exclusively from
   `Output_real_SLD.lst`; the `Model_Accomodations.text` file that DDMORE
   bundles usually ship was also not present in this bundle. Citation
-  metadata was confirmed via PubMed E-utilities (PMID 27136318).
+  metadata was confirmed via PubMed (PMID 27136318).
 - **No in-bundle `Model_Accomodations.text`.** The DDMORE bundle for
   `DDMODEL00000217` does not ship a `Model_Accomodations` reference file
   (one of the optional bundle artefacts). The publication mapping used

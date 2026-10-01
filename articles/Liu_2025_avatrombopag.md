@@ -681,11 +681,12 @@ state. Replicates the PK panels of Figure 4 of Liu 2025.
   without creating unused covariate declarations. Notably the 1.70-fold
   *CYP2C9* intermediate-metabolizer exposure increase reported in the
   abstract is an NCA finding, not a model covariate.
-- **The supplement was not obtainable.** MDPI’s supplementary endpoint
-  (`https://www.mdpi.com/article/10.3390/ph18060903/s1`) returns HTTP
-  403 to automated requests. Tables S1-S7 contain only the statistical
-  comparisons behind Results 2.2; every model parameter is in the
-  main-text Table 3, so nothing needed for this extraction is missing.
+- **The supplement was not obtainable.** The MDPI supplement
+  (`https://www.mdpi.com/article/10.3390/ph18060903/s1`) was not
+  available when this model was built. Tables S1-S7 contain only the
+  statistical comparisons behind Results 2.2; every model parameter is
+  in the main-text Table 3, so nothing needed for this extraction is
+  missing.
 - **Study design in the cohort.** The four crossover periods are
   simulated as four independent single-dose occasions. With a 14-day
   washout and a 17.6 h terminal half-life there is no measurable

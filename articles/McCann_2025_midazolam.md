@@ -30,9 +30,8 @@
   publishes none of its equations or parameters, so it is not
   represented here (see vignette Assumptions and deviations).
 - Article: <https://doi.org/10.1111/cts.70247>
-- Supplement (Equations S1-S10, Tables S1-S8, Figures S1-S17): retrieved
-  from the Europe PMC supplementary-files endpoint for PMC12075740
-  (`CTS-18-e70247-s001.docx`).
+- Supplement (Equations S1-S10, Tables S1-S8, Figures S1-S17): published
+  with the open-access article, PMC12075740 (`CTS-18-e70247-s001.docx`).
 
 McCann 2025 reports two analyses of the same real-world pediatric
 midazolam dataset:

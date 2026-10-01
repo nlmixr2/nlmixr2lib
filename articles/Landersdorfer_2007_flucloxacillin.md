@@ -364,10 +364,10 @@ simulated NCA above uses 200 virtual subjects per dose arm and dense
 sampling, so the simulated CV% is expected to be somewhat tighter than
 the observed CV% (the observed CV% includes assay and within-subject
 variability that the typical-value simulation does not). Geometric means
-should agree closely (target \<= 20% difference per the verification
-checklist). The half-life and MRT comparisons exercise the late-phase
-mixing among the three disposition compartments, which is the hardest
-part of the model to reproduce from a Table-2 / Table-3 read.
+should agree closely (target \<= 20% difference). The half-life and MRT
+comparisons exercise the late-phase mixing among the three disposition
+compartments, which is the hardest part of the model to reproduce from a
+Table-2 / Table-3 read.
 
 ## Assumptions and deviations
 

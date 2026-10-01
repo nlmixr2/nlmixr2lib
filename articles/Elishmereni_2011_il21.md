@@ -371,8 +371,8 @@ self-consistency). {.table style="width:100%;"}
   the publication.
 - **Covariates.** None. The .mdl explicitly states “Covariate model: no
   covariate model” in its header comment.
-- **Validation strategy.** Per the package’s validation checklist, the
-  usual PKNCA / publication-figure replication is replaced here by (a) a
+- **Validation strategy.** As for other models of this kind, the usual
+  PKNCA / publication-figure replication is replaced here by (a) a
   typical-value concentration-time figure, (b) a stochastic VPC by
   route,
   3.  a per-compartment trace audit, and (d) a PKNCA self-consistency

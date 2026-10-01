@@ -456,9 +456,8 @@ median, matching the inverse of the published CL multipliers of 1.33 /
 
 - **Vignette uses 200 subjects per CYP3A5 combination stratum.** This is
   large enough to stabilise the percentile envelopes used in Figures 4
-  and 5 and small enough to render the vignette under the pkgdown
-  5-minute gate. The Moes 2016 visual predictive check used 500
-  simulated datasets.
+  and 5 and small enough to render the vignette in under 5 minutes. The
+  Moes 2016 visual predictive check used 500 simulated datasets.
 
 - **Simulated apparent CL/F via Dose / AUC inversion.** The cohort-level
   apparent CL/F plotted against the CYP3A5 combinations (Figure 3

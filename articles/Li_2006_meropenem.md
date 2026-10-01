@@ -99,9 +99,9 @@ The DDMORE bundle ships a 79-subject simulated event table at
 `Simulated_DatasetMeropenem.csv`, with covariates drawn from the Li 2006
 demographic medians. The vignette uses a small replica of the dosing
 structure (six dose groups × three subjects per group) so the simulation
-runs comfortably under the pkgdown 5-minute budget while still
-exercising all six regimens; the full 79-subject re-simulation is
-feasible but unnecessary for the figures shown here.
+runs comfortably under 5 minutes while still exercising all six
+regimens; the full 79-subject re-simulation is feasible but unnecessary
+for the figures shown here.
 
 ``` r
 

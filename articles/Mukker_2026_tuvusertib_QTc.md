@@ -764,9 +764,8 @@ In vitro hERG concentration-response (Mukker 2026 Results 3.1).
   revisiting together.
 - **Equation 1 was read from an image.** The article text renders the
   model equation as an undecodable display equation. It was read from
-  `CTS-19-e70496-e001.jpg`, obtained from the Europe PMC
-  supplementary-file bundle for PMC12890571, and is transcribed verbatim
-  in the Source trace section above.
+  `CTS-19-e70496-e001.jpg`, deposited with the article (PMC12890571),
+  and is transcribed verbatim in the Source trace section above.
 - **The C-DeltaHR model parameters come from the supplement.** Table S1
   and Table S2 are in `Data S1` (`cts70496-sup-0001-DataS1.docx`), not
   the main article.

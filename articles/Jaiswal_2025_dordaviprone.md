@@ -8,8 +8,8 @@
   CPT Pharmacometrics Syst Pharmacol 14(10):1695-1704.
   <doi:10.1002/psp4.70093>.
 - Article: <https://doi.org/10.1002/psp4.70093>
-- Supplement (Data S1, Tables S1-S8):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12521050/supplementaryFiles>
+- Supplement (Data S1, Tables S1-S8): published with the article,
+  <https://europepmc.org/article/PMC/PMC12521050>
 
 Dordaviprone (ONC201) is a brain-penetrant imipridone developed for H3
 K27M-mutant glioma. Jaiswal 2025 built a **minimal distribution PBPK

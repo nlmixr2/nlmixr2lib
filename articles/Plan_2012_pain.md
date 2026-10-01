@@ -253,10 +253,9 @@ Effect of CONMED_PARA = 1 on the typical pain score lambda. {.table}
   the simplified Poisson reproduces exactly). VPC-style validation of
   the Markov / underdispersion structure is out of scope of this
   nlmixr2lib model.
-- **`score` observation name (vs. `Cc` convention).** The
-  naming-conventions register reserves `Cc` for concentration outputs;
-  this is a 0-10 Likert pain score, not a concentration, so `score` is
-  used.
+- **`score` observation name (vs. `Cc` convention).** The naming
+  conventions reserve `Cc` for concentration outputs; this is a 0-10
+  Likert pain score, not a concentration, so `score` is used.
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags this as a warning; it is a justified deviation for a non-PK
   model.

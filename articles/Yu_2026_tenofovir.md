@@ -869,8 +869,7 @@ c(`TAF-driven fraction of PBMC influx after TAF` =
 ### Plasma TFV and PBMC TFV-dp over 14 days (Fig. 5)
 
 A stochastic cohort of 100 virtual women per arm (Yu 2026 used 1000; 100
-is ample for the shape and keeps this vignette inside the pkgdown time
-budget).
+is ample for the shape and keeps this vignette’s render time short).
 
 ``` r
 

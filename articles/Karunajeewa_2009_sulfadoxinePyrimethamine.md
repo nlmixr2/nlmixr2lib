@@ -581,13 +581,13 @@ which is a reasonable comparator for the published medians.
 | PYR AUC0-inf (ug\*h/L) | see PKNCA table above | 106,065 \[85,693-131,350\] | see PKNCA table above | 72,115 \[54,250-83,229\] |
 
 A trapezoidal sanity check against the published Table 3 / Table 5 AUC
-values shows ~9-16% agreement – well within the verification-checklist
-20% threshold. Differences are attributable to (a) finite simulation
-horizon (0-42 days versus the paper’s `aucinf` extrapolation to
-infinity), and (b) the slight discrepancy in the published structural
-CL_NASDOX = 10 \* CL_SDOX relationship versus the post-hoc-summarised
-median ratio of ~11.3 (the post-hoc median includes individual SDOX-CL
-etas which carry into the metabolite CL through the structural 10x).
+values shows ~9-16% agreement – well within a 20% threshold. Differences
+are attributable to (a) finite simulation horizon (0-42 days versus the
+paper’s `aucinf` extrapolation to infinity), and (b) the slight
+discrepancy in the published structural CL_NASDOX = 10 \* CL_SDOX
+relationship versus the post-hoc-summarised median ratio of ~11.3 (the
+post-hoc median includes individual SDOX-CL etas which carry into the
+metabolite CL through the structural 10x).
 
 ## Assumptions and deviations
 

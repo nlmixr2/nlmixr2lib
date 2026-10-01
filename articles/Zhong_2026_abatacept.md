@@ -166,10 +166,10 @@ set.seed(20260429)
 n_ra <- 200
 ra <- tibble::tibble(
   id              = seq_len(n_ra),
-  AGE             = pmin(pmax(rnorm(n_ra, mean = 53, sd = 12), 20, 85)),
-  WT              = pmin(pmax(rnorm(n_ra, mean = 78, sd = 20), 40, 187)),
-  AST             = pmin(pmax(rnorm(n_ra, mean = 21, sd = 9),   7,  85)),
-  CRCL            = pmin(pmax(rnorm(n_ra, mean = 90, sd = 28), 37, 250)),
+  AGE             = pmin(pmax(rnorm(n_ra, mean = 53, sd = 12), 20), 85),
+  WT              = pmin(pmax(rnorm(n_ra, mean = 78, sd = 20), 40), 187),
+  AST             = pmin(pmax(rnorm(n_ra, mean = 21, sd = 9),   7),  85),
+  CRCL            = pmin(pmax(rnorm(n_ra, mean = 90, sd = 28), 37), 250),
   SEXF            = rbinom(n_ra, 1, 0.71),       # RA cohorts ~70-77 % female
   DIS_PJIA        = 0L,
   HSCT_URD_7OF8   = 0L,
@@ -183,8 +183,8 @@ pjia <- tibble::tibble(
   id              = seq.int(from = n_ra + 1, length.out = n_pjia),
   AGE             = runif(n_pjia, 2, 17),
   WT              = pmax(pmin(8 + (AGE - 2) * 4 + rnorm(n_pjia, 0, 6), 100), 8),
-  AST             = pmin(pmax(rnorm(n_pjia, mean = 23, sd = 12),  9, 180)),
-  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 160, sd = 50), 65, 580)),
+  AST             = pmin(pmax(rnorm(n_pjia, mean = 23, sd = 12),  9), 180),
+  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 160, sd = 50), 65), 580),
   SEXF            = rbinom(n_pjia, 1, 0.74),     # pJIA cohorts skew female
   DIS_PJIA        = 1L,
   HSCT_URD_7OF8   = 0L,
@@ -204,10 +204,10 @@ pjia <- tibble::tibble(
 n_hm8 <- 100
 hm8 <- tibble::tibble(
   id              = seq.int(from = n_ra + n_pjia + 1, length.out = n_hm8),
-  AGE             = pmin(pmax(rnorm(n_hm8, mean = 39, sd = 21), 6, 76)),
-  WT              = pmin(pmax(rnorm(n_hm8, mean = 73, sd = 25), 22, 143)),
-  AST             = pmin(pmax(rnorm(n_hm8, mean = 28, sd = 15), 8, 85)),
-  CRCL            = pmin(pmax(rnorm(n_hm8, mean = 125, sd = 49), 51, 315)),
+  AGE             = pmin(pmax(rnorm(n_hm8, mean = 39, sd = 21), 6), 76),
+  WT              = pmin(pmax(rnorm(n_hm8, mean = 73, sd = 25), 22), 143),
+  AST             = pmin(pmax(rnorm(n_hm8, mean = 28, sd = 15), 8), 85),
+  CRCL            = pmin(pmax(rnorm(n_hm8, mean = 125, sd = 49), 51), 315),
   SEXF            = rbinom(n_hm8, 1, 0.42),
   DIS_PJIA        = 0L,
   HSCT_URD_7OF8   = 0L,
@@ -219,10 +219,10 @@ hm8 <- tibble::tibble(
 n_hm7 <- 60
 hm7 <- tibble::tibble(
   id              = seq.int(from = n_ra + n_pjia + n_hm8 + 1, length.out = n_hm7),
-  AGE             = pmin(pmax(rnorm(n_hm7, mean = 39, sd = 21), 6, 76)),
-  WT              = pmin(pmax(rnorm(n_hm7, mean = 73, sd = 25), 22, 143)),
-  AST             = pmin(pmax(rnorm(n_hm7, mean = 28, sd = 15), 8, 85)),
-  CRCL            = pmin(pmax(rnorm(n_hm7, mean = 125, sd = 49), 51, 315)),
+  AGE             = pmin(pmax(rnorm(n_hm7, mean = 39, sd = 21), 6), 76),
+  WT              = pmin(pmax(rnorm(n_hm7, mean = 73, sd = 25), 22), 143),
+  AST             = pmin(pmax(rnorm(n_hm7, mean = 28, sd = 15), 8), 85),
+  CRCL            = pmin(pmax(rnorm(n_hm7, mean = 125, sd = 49), 51), 315),
   SEXF            = rbinom(n_hm7, 1, 0.42),
   DIS_PJIA        = 0L,
   HSCT_URD_7OF8   = 1L,
@@ -457,17 +457,9 @@ ped_first_15 <- per_subject_first_dose(sim_ped_iv15, "ped 15 mg/kg")
 hm_first_812 <- per_subject_first_dose(sim_hm8_iv10  |>
                                        dplyr::filter(AGE >= 6, AGE <= 12),
                                        "IM101311 6-12 y (10 mg/kg)")
-#> Warning: There was 1 warning in `dplyr::summarise()`.
-#> ℹ In argument: `Cmax1 = max(Cc, na.rm = TRUE)`.
-#> Caused by warning in `max()`:
-#> ! no non-missing arguments to max; returning -Inf
 hm_first_1317 <- per_subject_first_dose(sim_hm8_iv10 |>
                                         dplyr::filter(AGE > 12, AGE <= 17),
                                         "IM101311 13-17 y (10 mg/kg)")
-#> Warning: There was 1 warning in `dplyr::summarise()`.
-#> ℹ In argument: `Cmax1 = max(Cc, na.rm = TRUE)`.
-#> Caused by warning in `max()`:
-#> ! no non-missing arguments to max; returning -Inf
 hm_first_adult <- per_subject_first_dose(sim_hm8_iv10 |>
                                          dplyr::filter(AGE >= 18),
                                          "IM101311 >=18 y (10 mg/kg)")
@@ -576,9 +568,9 @@ nca_hm8 <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_hm8, dose_obj_hm8,
                                           intervals = intervals_iv))
 summary(nca_hm8)
 #>  start end         treatment   N    auclast       cmax cmin
-#>      0   6 HM_8of8_IV_10mgkg 100 643 [14.3] 208 [18.4]   NC
-#>                  tmax        cav
-#>  0.100 [0.100, 0.100] 107 [14.3]
+#>      0   6 HM_8of8_IV_10mgkg 100 522 [20.3] 168 [21.2]   NC
+#>                  tmax         cav
+#>  0.100 [0.100, 0.100] 87.0 [20.3]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -626,7 +618,7 @@ knitr::kable(frac_table, digits = 1,
 | ped_HM_IV_15mgkg fixed | 300 | 55.7 | 92.7 | 68.7 |
 | ped_HM_IV_12mgkg fixed | 300 | 44.4 | 73.3 | 34.3 |
 | ped_HM_IV_10mgkg fixed | 300 | 38.2 | 47.0 | 8.7 |
-| HM_8of8_IV_10mgkg (adult/older-ped reference) | 100 | 49.0 | 81.0 | 48.0 |
+| HM_8of8_IV_10mgkg (adult/older-ped reference) | 100 | 46.5 | 76.0 | 42.0 |
 
 Cmin1 (Day 5, just before second dose) by regimen. Zhong 2026 references
 Cmin1 \>= 39 ug/mL as the favorable-aGvHD threshold; the recommended

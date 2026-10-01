@@ -79,8 +79,8 @@ Zhao 2025 prints its final model as equations 6 and 7:
     V       = 1.04 x (WT/2.12)
 
 Every parenthesised covariate ratio is missing its superscript exponent.
-This is **not** a text-extraction artifact: the EuropePMC open-access
-bundle for PMC12131725 ships equations 1-7 as publisher artwork
+This is **not** a text-extraction artifact: the files deposited with
+PMC12131725 include equations 1-7 as publisher artwork
 (`spectrum.02274-24.m001.jpg` through `m007.jpg`), and the rendered
 images for equations 6 and 7 carry no superscripts either. The exponents
 were lost in production.
@@ -335,7 +335,7 @@ sim <- rxode2::rxSolve(
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
 stopifnot(
-  # Fail loudly rather than silently validating nothing (failure pattern 10).
+  # Fail loudly rather than silently validating nothing.
   nrow(sim) > 0,
   all(c("Cc", "cl", "vc") %in% names(sim)),
   !anyNA(sim$Cc),
@@ -567,7 +567,7 @@ closed_form <- sim |>
 
 stopifnot(
   # Every subject was matched -- a silently empty join would make the
-  # assertions below vacuously true (failure pattern 10).
+  # assertions below vacuously true.
   nrow(closed_form) == nrow(subj),
   # Both sides use the SAME drawn per-subject clearance, so the only
   # difference is trapezoidal integration error on a 0.25 h grid. This is

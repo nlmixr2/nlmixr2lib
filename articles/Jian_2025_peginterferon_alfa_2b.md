@@ -920,12 +920,12 @@ CL/V. {.table}
   affects only the held-out external-validation cohort description, not
   the model.
 
-- **Supplement.** Data S1-S3 were retrieved from the Europe PMC
-  `supplementaryFiles` endpoint for PMC12706394 and are the source of
-  the three corrections above. Data S3 (`PSP4-14-2014-s003.csv`) is a
-  single-subject example dataset, not the analysis dataset, so no
-  subject-level distribution could be recovered from it; the virtual
-  cohorts below use the Table 1 summaries instead.
+- **Supplement.** Data S1-S3 are published with the open-access article
+  (PMC12706394) and are the source of the three corrections above. Data
+  S3 (`PSP4-14-2014-s003.csv`) is a single-subject example dataset, not
+  the analysis dataset, so no subject-level distribution could be
+  recovered from it; the virtual cohorts below use the Table 1 summaries
+  instead.
 
 - **Virtual cohorts.** Covariates are fixed per arm at the values Jian
   2025 uses for its own covariate simulations (Section 2.4), with

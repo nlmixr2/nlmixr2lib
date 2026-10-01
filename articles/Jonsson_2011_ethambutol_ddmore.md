@@ -137,7 +137,7 @@ subsections that follow.
 set.seed(20260506L)
 
 n_subjects     <- 60L           # condensed from the bundle's 189 to keep
-                                # vignette wall-clock under the 5-min gate
+                                # vignette wall-clock under 5 min
 dose_amt_mg    <- 1000          # bundle's dominant dose level
 dose_interval  <- 24            # hours between QD doses
 n_doses        <- 21            # 21 daily doses to comfortably reach steady state
@@ -505,7 +505,7 @@ ggplot(iov_summary, aes(tad, Q50, colour = factor(OCC))) +
   the wall-clock budget in
   [`rxode2::rxSolve`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
   once IIV / IOV / EPS are layered in. The condensed cohort keeps the
-  vignette under the 5-minute pkgdown gate without changing the
+  vignette’s render time under 5 minutes without changing the
   per-time-point median or 5-95% spread shape; consumers who need the
   full 189- subject reproduction can re-run with `n_subjects <- 189L`
   locally.

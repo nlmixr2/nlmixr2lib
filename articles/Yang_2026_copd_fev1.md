@@ -29,7 +29,7 @@ two models that are packaged here separately:
 - Article: <https://doi.org/10.1002/psp4.70059>
 
 - Supporting Information (Tables S1-S5 and both NONMEM control streams):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12896389/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12896389>
 
 ``` r
 

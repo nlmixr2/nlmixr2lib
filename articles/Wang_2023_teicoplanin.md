@@ -89,9 +89,9 @@ Two transcription points are worth recording explicitly.
 
 **The minus sign in `(eGFR - 50)` is not text-extractable.** The Table 2
 notes are typeset in a symbol font whose minus glyph is dropped by
-`pdftotext` and by the markdown preprocessor, so the equation extracts
-as `0:838 * (1 + (eGFR 50) * 0:0082)` with a bare gap. Rendering page 6
-of the PDF to an image resolves it as a subtraction, and the generic
+`pdftotext` and by markdown text extraction, so the equation extracts as
+`0:838 * (1 + (eGFR 50) * 0:0082)` with a bare gap. Rendering page 6 of
+the PDF to an image resolves it as a subtraction, and the generic
 covariate form printed in the Supplementary Table S1 notes,
 `P_ij = P_tv,j * [1 + theta_j * (COV - COV_ave)] * e^eta_i`,
 corroborates it. The reproduction of 64 published simulation outputs

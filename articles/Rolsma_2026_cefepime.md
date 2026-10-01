@@ -25,9 +25,9 @@
   proportional residual error. ECMO, CRRT, sex, race, ethnicity and
   gestational age were screened and not retained.
 - Article: <https://doi.org/10.1093/ofid/ofag069>
-- Supplement: `ofag069_supplementary_data.docx`, retrieved from the
-  Europe PMC `supplementaryFiles` endpoint for PMC12947848. Supplemental
-  Table 3 is the source of every final parameter estimate.
+- Supplement: `ofag069_supplementary_data.docx`, published with the
+  open-access article (PMC12947848). Supplemental Table 3 is the source
+  of every final parameter estimate.
 
 Rolsma 2026 developed a two-compartment population PK model for
 intravenous cefepime in critically ill children, then used it to compare

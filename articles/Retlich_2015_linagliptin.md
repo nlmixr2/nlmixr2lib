@@ -141,7 +141,7 @@ cov_df <- bind_rows(
 # Build a dosing + observation event table per subject (chronic 14-day QD).
 # Cc is collected at 0, 1, 2, 4, 8, 12, 16, 24 h after each daily dose, with
 # additional dense sampling on day 14 (steady-state profile) -- keeps the
-# render time well under the 5-minute pkgdown gate.
+# render time well under 5 minutes.
 make_events <- function(cov_row) {
   dose_times <- seq(0, by = 24, length.out = 14)
   obs_times  <- sort(unique(c(
@@ -170,7 +170,7 @@ events <- cov_df |>
   arrange(id, time, dplyr::desc(evid))
 
 # Regression guard against duplicate id/time/evid combinations that would
-# silently merge across cohorts (see vignette-template notes).
+# silently merge across cohorts.
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 

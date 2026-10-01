@@ -511,10 +511,10 @@ of the simulated medians depart from the published median by more than
   rather than ln(PARA) (matching the prose). At median admission
   parasitaemia (PARA = 15,800), both interpretations collapse to F_para
   = 1; the difference arises only off-median. This interpretation choice
-  is documented per the verification-checklist ‘ambiguous terminology’
-  pattern. Users with access to the source NONMEM control stream are
-  encouraged to confirm and file an erratum to the package if the
-  natural-log interpretation is correct.
+  is documented as an ambiguous-terminology reading. Users with access
+  to the source NONMEM control stream are encouraged to confirm and file
+  an erratum to the package if the natural-log interpretation is
+  correct.
 - **PARA gated at PARA \>= 1.** Consistent with the same lab’s Kloprogge
   2014 quinine convention, the model gates PARA values below 1
   parasite/uL (effectively zero) to PARA = 1 inside `model()` via

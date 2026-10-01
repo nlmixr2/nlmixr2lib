@@ -337,14 +337,6 @@ a fully specified equation set (Eqs 1-7) and a complete typical-value
 parameter table (Table 1), but several encoding decisions in the package
 require attention.
 
-- **Drug field corrected.** The bibliographic metadata this model was
-  built from listed the drug as “Frontiers in Pharmacology” (the journal
-  name) – a metadata error also seen for several other papers. The
-  actual drug studied is baicalein
-  (5,6,7-trihydroxy-2-phenyl-4H-1-benzopyran- 4-one), the primary active
-  flavonoid of Scutellaria baicalensis Georgi. Filename and vignette
-  title corrected accordingly.
-
 - **Species and model class.** The model was fit to an in-vitro
   experiment in the RAW264.7 mouse macrophage cell line, not to in-vivo
   human or animal data. `population$species` is set to “in vitro

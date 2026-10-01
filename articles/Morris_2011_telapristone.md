@@ -263,9 +263,8 @@ and runs PKNCA on the simulated total concentration.
 ``` r
 
 # Population simulation. The full Morris 2011 simulation used 500 subjects per
-# mixture class; this vignette uses 50 per group to keep the pkgdown render
-# under the 10-min per-vignette ceiling even under heavy parallel build
-# contention. Sample-size noise relative to the published medians is
+# mixture class; this vignette uses 50 per group to keep the render time
+# short even under heavy parallel build contention. Sample-size noise relative to the published medians is
 # expected at this scale and discussed below.
 n_per_group <- 50L
 tau         <- 24

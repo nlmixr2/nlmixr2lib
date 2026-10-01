@@ -468,5 +468,4 @@ estimate 12.7 L/h.
   AUC0-12 / Cmin / Ctrough metrics for downstream user comparison.
 - **Vignette uses 200 subjects per post-transplant-period stratum.**
   This is large enough to give stable 10-90 percentile bands in Figure 1
-  but small enough to render the vignette in well under 5 minutes (the
-  pkgdown gate).
+  but small enough to render the vignette in well under 5 minutes.

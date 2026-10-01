@@ -455,10 +455,9 @@ probability of NOT recovering consciousness is ~ 0.95. {.table}
   an external effect-site link at the Schnider Keo = 0.459 /min
   mentioned in Koo 2012’s Discussion, or from observed plasma
   concentrations equilibrated with an effect-site rate constant.
-- **`prob_roc` observation name (vs `Cc` convention).** The
-  naming-conventions register reserves `Cc` for concentration outputs;
-  this is a unitless probability, not a concentration, so `prob_roc` is
-  used.
+- **`prob_roc` observation name (vs `Cc` convention).** The naming
+  conventions reserve `Cc` for concentration outputs; this is a unitless
+  probability, not a concentration, so `prob_roc` is used.
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags this as a warning; it is a justified deviation for a non-PK
   probability-output model. The same deviation is present in the

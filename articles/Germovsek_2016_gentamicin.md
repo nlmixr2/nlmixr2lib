@@ -105,8 +105,8 @@ The DDMORE bundle ships a 205-subject simulated event table at
 covariates from the original analysis. The vignette uses a small
 representative cohort (one subject at the bundle’s median covariate
 values and a few sensitivity variants on PMA / PNA / WT) so the
-simulation runs under the pkgdown five-minute budget while still
-exercising every covariate effect of interest.
+simulation runs in under five minutes while still exercising every
+covariate effect of interest.
 
 Canonical units are used on input: `WT` in kg (the source data column
 was in grams), `PAGE` in months (the source used PMA in weeks), `PNA` in

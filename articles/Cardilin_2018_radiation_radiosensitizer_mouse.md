@@ -14,7 +14,7 @@
   radiosensitizer PK).
 - Article (open access): <https://doi.org/10.1002/psp4.12268>
 - Supplement (Europe PMC, PMC5784742):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5784742/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC5784742>
 
 This is a preclinical tumor-growth-inhibition (TGI) model for
 combination therapy with ionizing radiation and a radiosensitizing
@@ -298,15 +298,12 @@ multiplied by the LQ surviving fraction
 
 ## Assumptions and deviations
 
-- **Metadata correction (year and name).** The provisional metadata
-  named the model `Cardilin_2017_CPT_Pharmacometrics_amp_Sys` (an
-  automated-naming artifact in which the journal name was placed in the
-  drug slot, and the online-first year 2017 was used). The article’s
-  formal citation is *CPT Pharmacometrics Syst Pharmacol*
-  **2018**;7(1):51-58 (published online 14 December 2017); 2018 is the
-  volume/citation year used by PubMed (PMID 29218836). The compound is
-  anonymized as “RS1” in the source, so the descriptive slot
-  `radiation_radiosensitizer` and the `_mouse` species suffix are used.
+- **Year and name.** The article’s formal citation is *CPT
+  Pharmacometrics Syst Pharmacol* **2018**;7(1):51-58 (published online
+  14 December 2017); 2018 is the volume/citation year used by PubMed
+  (PMID 29218836). The compound is anonymized as “RS1” in the source, so
+  the descriptive slot `radiation_radiosensitizer` and the `_mouse`
+  species suffix are used.
 - **Coefficient placement (paper “a” vs “b”).** Table 1 of the source
   and the code variables in the Mathematica supplement label the two
   radiosensitizer coefficients oppositely. The placement here

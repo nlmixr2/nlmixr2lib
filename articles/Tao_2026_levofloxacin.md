@@ -450,7 +450,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x564d8f6d9960>
+#> <environment: 0x55e7679f04d8>
 ```
 
 Dosing is intravenous into `central`; there is no depot. The infusion
@@ -516,8 +516,8 @@ sim_typ <- rxode2::rxSolve(
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalcl'
-# rxSolve drops `id` entirely for a single subject (see the vignette failure
-# patterns reference); restore it so the PKNCA grouping formula works.
+# rxSolve drops `id` entirely for a single subject; restore it so the PKNCA
+# grouping formula works.
 if (is.null(sim_typ$id)) sim_typ$id <- 1L
 
 cl_typ <- unique(round(sim_typ$cl, 10))

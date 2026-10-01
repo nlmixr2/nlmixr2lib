@@ -29,8 +29,7 @@ mod <- rxode2::rxode(readModelDb("Gafar_2026_rifampicin"))
   2026;233(4):e999-e1010](https://doi.org/10.1093/infdis/jiag052)
 - Supplement: `jiag052_supplementary_data.pdf` (Tables S1-S7, Figures
   S1-S2 and **Appendix 1, the complete NONMEM control stream of the
-  final model**), retrieved from the Europe PMC `supplementaryFiles`
-  endpoint for PMC13127750.
+  final model**), published with the open-access article (PMC13127750).
 
 Rifampicin is cleared almost entirely by the liver, and at the doses
 used for tuberculosis preventive therapy that clearance saturates. Gafar

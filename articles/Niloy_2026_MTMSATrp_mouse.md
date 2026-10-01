@@ -117,7 +117,7 @@ events <- purrr::map_dfr(
 )
 
 # Disjoint-ID assertion -- guards against the silent multi-cohort
-# Frankenstein-subject bug in rxSolve (see vignette-template Notes).
+# Frankenstein-subject bug in rxSolve.
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 

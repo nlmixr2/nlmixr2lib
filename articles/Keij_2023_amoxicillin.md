@@ -23,8 +23,8 @@
   plus proportional (Keij 2023).
 - Article: <https://doi.org/10.1093/cid/ciad432>
 - Supplement (Appendices A-D, Figures S1-S11, Tables S1-S9): available
-  from the Clinical Infectious Diseases article page and via the Europe
-  PMC open-access supplementary-files endpoint for PMC10686957.
+  from the Clinical Infectious Diseases article page and from the
+  open-access record (PMC10686957).
 
 Keij and colleagues pooled three neonatal datasets to describe
 amoxicillin disposition after **both** oral and intravenous

@@ -17,7 +17,7 @@ mod <- rxode2::rxode2(readModelDb("Lu_2016_pinatuzumab_polatuzumab"))
 - Article: <https://doi.org/10.1002/psp4.12137>
 - Supplement S1 (NONMEM control stream of Model 1), Supplemental Table 1
   (study designs and sampling schemes): distributed with the article on
-  the CPT:PSP site and mirrored in the EuropePMC open-access package for
+  the CPT:PSP site and with the open-access record
   [PMC5192970](https://europepmc.org/article/PMC/PMC5192970).
 
 Lu 2016 develops a single integrated population PK model that describes

@@ -606,9 +606,8 @@ protein 1.2 g/L). {.table style="width:100%;"}
 - **Virtual cohort uses 80 subjects per stratum / CSF protein level.**
   The vignette uses typical-value (no IIV) simulations, so the
   per-subject count is purely for averaging over the dosing-interval
-  sampling grid; the size keeps the render within the 5-minute pkgdown
-  budget while still producing smooth time-averaged penetration
-  estimates.
+  sampling grid; the size keeps the render under 5 minutes while still
+  producing smooth time-averaged penetration estimates.
 
 - **PK parameter standardisation by PMA.** The paper’s “standardised
   SCR” of 60 umol/L for the typical infant (PMA 37.4 weeks, raw SCR 32

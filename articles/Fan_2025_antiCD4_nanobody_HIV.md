@@ -28,11 +28,10 @@ four files and this single vignette.
 - Article: <https://doi.org/10.1128/spectrum.00805-25> (PMC12584636,
   open access)
 - Supplement: `spectrum.00805-25-s0001.docx` (Tables S1-S2, Figures
-  S1-S8), retrieved from the EuropePMC `supplementaryFiles` endpoint. It
-  contributes no parameter values; Table S1 gives the murine dosing and
-  sampling schedule, Table S2 the clinical ibalizumab regimen used for
-  the human validation, and Figure S7 the only human-PK answer key in
-  the paper.
+  S1-S8), published with the open-access article. It contributes no
+  parameter values; Table S1 gives the murine dosing and sampling
+  schedule, Table S2 the clinical ibalizumab regimen used for the human
+  validation, and Figure S7 the only human-PK answer key in the paper.
 
 ``` r
 

@@ -15,7 +15,7 @@
   female sex lowers the apparent central volume.
 - Article: <https://doi.org/10.1002/trc2.70254>
 - Supplement (Supplemental Tables 1-6 and the NONMEM control stream):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13133547/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC13133547>
 
 Remlifanserin (ACP-204) is a selective serotonin 2A (5-HT_(2A)) receptor
 inverse agonist in development for Alzheimer’s disease psychosis and

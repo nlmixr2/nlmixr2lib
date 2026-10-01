@@ -1,0 +1,484 @@
+# PFOS gestational and lactational PBPK in rats and humans (Chou and Lin 2021)
+
+``` r
+
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+## Model and source
+
+Chou and Lin (2021, *Environ Health Perspect* 129:037004,
+[doi:10.1289/EHP7671](https://doi.org/10.1289/EHP7671)) developed a
+life-stage physiologically based pharmacokinetic (PBPK) model for
+**perfluorooctane sulfonate (PFOS)** spanning the pre-pregnant, pregnant
+and lactating female, in both the Sprague-Dawley rat and the human. The
+distinctive feature relative to earlier PFOS models is an explicit,
+physiologically based description of transporter-mediated renal
+reabsorption (saturable basolateral Oat1/Oat3 and apical Oatp1a1 uptake
+in the proximal tubule cells) carried through gestation and lactation.
+The rat model was calibrated against toxicokinetic studies (Thibodeaux
+et al. 2003; Chang et al. 2009; Luebker et al. 2005a, 2005b) and the
+human model against worldwide maternal-plasma, cord-blood, placental and
+breast-milk biomonitoring data.
+
+The paper contributes **six** models, extracted here as six files, all
+sharing the same maternal core structure:
+
+| Model file | Role |
+|----|----|
+| `Chou_2021_pfos_rat_prepregnant_pbpk` | Non-pregnant female rat; seeds the gestational run |
+| `Chou_2021_pfos_rat_gestational_pbpk` | Pregnant rat + litter (placenta, fetus, amniotic fluid) |
+| `Chou_2021_pfos_rat_lactational_pbpk` | Lactating dam + nursing pups (milk transfer, coprophagy) |
+| `Chou_2021_pfos_human_prepregnant_pbpk` | Non-pregnant woman; 30-year pre-conception burn-in |
+| `Chou_2021_pfos_human_gestational_pbpk` | Pregnant woman + fetus |
+| `Chou_2021_pfos_human_lactational_pbpk` | Lactating woman + breastfed neonate |
+
+The maternal core is a two-compartment gastrointestinal tract (stomach,
+small intestine) feeding the liver by the portal vein; flow-limited
+plasma, liver, fat, mammary gland and rest-of-body compartments in which
+only the plasma-unbound fraction exchanges; and a three-subcompartment
+kidney (kidney blood, proximal tubule cells, filtrate) combining
+glomerular filtration with saturable basolateral and apical
+reabsorption, passive diffusion and first-order efflux back to plasma.
+PFOS is not metabolised; elimination is urinary and faecal (biliary plus
+unabsorbed). The gestational models add a placenta and a physically
+separate fetal circulation (fetal plasma, liver, rest of body) linked to
+the mother only by bidirectional placental diffusion, plus exchange with
+amniotic fluid. The lactational models replace the fetus with a milk
+compartment and a nursing pup/neonate submodel fed by suckled milk.
+
+**Model time is not time since dose.** Every maternal, fetal and
+neonatal volume and blood flow in the gestational and lactational models
+is an explicit function of gestational or postnatal age, so time is
+measured from GD0 / conception (gestation: GD = time/24 days, GA =
+time/168 weeks) or from delivery (lactation: PND = time/24 days). Body
+weight enters as the covariate `WT`, interpreted as the pre-pregnancy
+maternal weight BW0 (gestation) or the delivery weight (lactation) that
+anchors the growth equations.
+
+### Provenance
+
+The paper prints the chemical parameters (Table 2) and describes the
+growth equations in prose, but the polynomial coefficients live in
+Supplemental Tables S1-S6 and the executable model is the authors’
+openly published mrgsolve code
+(<https://github.com/KSUICCM/PFOS-Ges-Lac>, also deposited as the EHP
+supplemental zip). The maintainers took the model structure, the
+physiological growth equations and the **as-run** calibrated parameters
+directly from that code and its fit objects (`GFit_R.rds`, `LFit_R.rds`,
+`GFit_H.rds`, `LFit_H.rds`). Where a fit object and the printed Table 2
+disagree, the code is treated as the source of record because it is what
+generated the published simulations (see Assumptions and deviations).
+
+``` r
+
+rat_pre  <- rxode2::rxode2(readModelDb("Chou_2021_pfos_rat_prepregnant_pbpk"))
+rat_gest <- rxode2::rxode2(readModelDb("Chou_2021_pfos_rat_gestational_pbpk"))
+rat_lact <- rxode2::rxode2(readModelDb("Chou_2021_pfos_rat_lactational_pbpk"))
+hum_pre  <- rxode2::rxode2(readModelDb("Chou_2021_pfos_human_prepregnant_pbpk"))
+hum_gest <- rxode2::rxode2(readModelDb("Chou_2021_pfos_human_gestational_pbpk"))
+hum_lact <- rxode2::rxode2(readModelDb("Chou_2021_pfos_human_lactational_pbpk"))
+c(rat_pre = length(rat_pre$state), rat_gest = length(rat_gest$state),
+  rat_lact = length(rat_lact$state), hum_pre = length(hum_pre$state),
+  hum_gest = length(hum_gest$state), hum_lact = length(hum_lact$state))
+#>  rat_pre rat_gest rat_lact  hum_pre hum_gest hum_lact 
+#>       12       19       24       12       19       24
+```
+
+The models are stiff at early gestation and lactation, where the growth
+equations make several fetal / neonatal volumes vanishingly small. The
+default `liblsoda` solver with tightened tolerances is used throughout;
+it is the most robust here (the single-threaded `lsoda` and `dop853`
+fail on the rat gestational model).
+
+``` r
+
+SOLVER <- list(method = "liblsoda", atol = 1e-10, rtol = 1e-8)
+solve_model <- function(model, events, ...) {
+  do.call(
+    rxode2::rxSolve,
+    c(list(object = model, events = events, returnType = "data.frame"), SOLVER, list(...))
+  )
+}
+```
+
+## Population
+
+**Rat (Chou and Lin 2021 Table 1).** Sprague-Dawley rats from four
+toxicokinetic studies were dosed by oral gavage at 0.1-10 mg/kg per day
+before, during and after gestation; maternal plasma and liver, and
+fetal/pup plasma and liver, were sampled from GD7 through PND21. The
+reference pre-pregnant weight is 0.185 kg, the gestational dosing weight
+0.225 kg, the lactational dosing weight 0.242 kg, and the litter is
+eight fetuses/pups.
+
+**Human (Chou and Lin 2021 Table 1).** More than twenty human
+biomonitoring cohorts contributed maternal plasma, cord blood, placenta,
+fetal tissue and breast-milk PFOS concentrations across gestation and
+lactation. Exposure is chronic dietary intake; population-specific daily
+intakes of 0.19-4.4 ng/kg per day (Loccisano et al. 2013) were used. The
+reference pre-pregnant weight is 60 kg and the delivery weight excluding
+the fetus is 68.05 kg.
+
+## Source trace
+
+| Component | Source |
+|----|----|
+| Oral uptake (stomach, small intestine) | Eqs 1-3 |
+| Urinary and faecal elimination | Eqs 4-5 |
+| Kidney: filtration, MM reabsorption, diffusion, efflux | Eqs 6-12 |
+| Placental and amniotic-fluid transfer | Eqs 13-20 |
+| Milk transfer and suckling | Eqs 21-23 |
+| Chemical parameters, rat and human, per life stage | Table 2, Tables S1-S6 |
+| Rat gestational calibrated set | `GFit_R.rds` |
+| Rat lactational calibrated set | `LFit_R.rds` |
+| Human gestational calibrated set | `GFit_H.rds` |
+| Human lactational calibrated set | `LFit_H.rds` |
+| Physiological growth equations | Kapraun et al. 2019; Loccisano et al. 2012, 2013; Yang et al. 2019 |
+
+## Mass-balance gate
+
+Each model conserves mass: the administered PFOS equals the sum of drug
+in every tissue and excretion compartment (the AUC accumulators are not
+mass and are excluded). This is a numerical check on the ODE encoding,
+so a tight bound is used.
+
+``` r
+
+mass_states <- function(model) {
+  st <- model$state
+  st[!grepl("^auc_", st)]
+}
+mass_balance_err <- function(model, events, dose_mg, drop = character(0)) {
+  s <- solve_model(model, events)
+  last <- s[nrow(s), ]
+  states <- setdiff(mass_states(model), drop)
+  tot <- sum(vapply(states, function(v) last[[v]], numeric(1)))
+  (dose_mg - tot) / dose_mg
+}
+
+# Rat prepregnant: single 1 mg/kg oral dose
+ev_rp <- rxode2::et(amt = 0.185, cmt = "stomach") %>% rxode2::et(seq(0, 720, by = 24))
+ev_rp$WT <- 0.185
+err_rp <- mass_balance_err(rat_pre, ev_rp, 0.185)
+
+# Rat gestational: 1 mg/kg/day GD2-GD20 (Thibodeaux 2003), dose ref 0.225 kg
+ev_rg <- rxode2::et(amt = 0.225, cmt = "stomach", time = 48, ii = 24, addl = 18) %>%
+  rxode2::et(seq(0, 504, by = 12))
+ev_rg$WT <- 0.185
+err_rg <- mass_balance_err(rat_gest, ev_rg, 19 * 0.225)
+
+# Rat lactational: 1 mg/kg/day PND0-PND21, dose ref 0.242 kg. Pup urine is
+# returned to the dam gut (coprophagy), so `urine_pup` is a throughput tracker
+# whose mass has already re-entered the dam system; it is excluded from the
+# closed-system total to avoid double counting.
+ev_rl <- rxode2::et(amt = 0.242, cmt = "stomach", time = 0, ii = 24, addl = 21) %>%
+  rxode2::et(seq(0, 504, by = 12))
+ev_rl$WT <- 0.247
+err_rl <- mass_balance_err(rat_lact, ev_rl, 22 * 0.242, drop = "urine_pup")
+
+# Human prepregnant: single dietary dose
+ev_hp <- rxode2::et(amt = 1e-4, cmt = "stomach") %>% rxode2::et(seq(0, 8760, by = 168))
+ev_hp$WT <- 60
+err_hp <- mass_balance_err(hum_pre, ev_hp, 1e-4)
+
+# Human gestational: 2 ng/kg/day for 40 weeks
+ev_hg <- rxode2::et(amt = 1.2e-4, cmt = "stomach", time = 0, ii = 24, addl = 279) %>%
+  rxode2::et(seq(0, 280 * 24, by = 168))
+ev_hg$WT <- 60
+err_hg <- mass_balance_err(hum_gest, ev_hg, 280 * 1.2e-4)
+
+# Human lactational: 2 ng/kg/day for 6 months. The output grid runs past the
+# last dose (day 179) so every administered dose is inside the closed system.
+ev_hl <- rxode2::et(amt = 1.36e-4, cmt = "stomach", time = 0, ii = 24, addl = 179) %>%
+  rxode2::et(seq(0, 180 * 24, by = 24))
+ev_hl$WT <- 68.05
+err_hl <- mass_balance_err(hum_lact, ev_hl, 180 * 1.36e-4)
+
+mb <- data.frame(
+  model = c("rat prepregnant", "rat gestational", "rat lactational",
+            "human prepregnant", "human gestational", "human lactational"),
+  rel_err = c(err_rp, err_rg, err_rl, err_hp, err_hg, err_hl)
+)
+knitr::kable(mb, digits = 12, caption = "Relative mass-balance error, all six models.")
+```
+
+| model             |  rel_err |
+|:------------------|---------:|
+| rat prepregnant   |  0.0e+00 |
+| rat gestational   |  0.0e+00 |
+| rat lactational   |  0.0e+00 |
+| human prepregnant |  8.6e-11 |
+| human gestational |  0.0e+00 |
+| human lactational | -1.0e-12 |
+
+Relative mass-balance error, all six models. {.table}
+
+``` r
+
+stopifnot(all(abs(mb$rel_err) < 1e-6))
+```
+
+## Rat gestational model versus observed maternal plasma
+
+The rat gestational model is checked against the maternal-plasma PFOS
+concentrations of Thibodeaux et al. (2003), in which dams were dosed
+1-10 mg/kg per day from GD2 through GD20 (Chou and Lin 2021 Figure 3,
+calibration data in the authors’ repository). We simulate each dose and
+compare the predicted maternal plasma at GD7, GD14 and GD21 with the
+observed values.
+
+``` r
+
+# Observed maternal plasma (mg/L) from Thibodeaux 2003 (Study 1), as used in
+# the authors' calibration (Data_R.csv). Rows: GD7, GD14, GD21.
+obs_rat <- tibble::tribble(
+  ~Dose, ~GD, ~Conc,
+  1,  7, 14.82, 1, 14, 27.53, 1, 21, 20.65,
+  2,  7, 25.94, 2, 14, 53.48, 2, 21, 45.53,
+  3,  7, 53.47, 3, 14, 94.25, 3, 21, 70.42,
+  5,  7, 76.25, 5, 14, 146.67, 5, 21, 81.54,
+  10, 7, 154.82, 10, 14, 285.29, 10, 21, 188.59
+)
+
+pred_rat_gest <- function(dose_mgkg) {
+  ev <- rxode2::et(amt = dose_mgkg * 0.225, cmt = "stomach", time = 48, ii = 24, addl = 18) %>%
+    rxode2::et(c(7, 14, 21) * 24)
+  ev$WT <- 0.185
+  s <- solve_model(rat_gest, ev)
+  s <- s[s$time %in% (c(7, 14, 21) * 24), ]
+  data.frame(Dose = dose_mgkg, GD = s$time / 24, pred = s$Cc)
+}
+pred_rat <- do.call(rbind, lapply(c(1, 2, 3, 5, 10), pred_rat_gest))
+
+gof_rat <- merge(obs_rat, pred_rat, by = c("Dose", "GD"))
+gof_rat$ratio <- gof_rat$pred / gof_rat$Conc
+knitr::kable(gof_rat, digits = 2,
+  caption = "Rat gestational: predicted vs observed maternal plasma PFOS (mg/L), Thibodeaux 2003.")
+```
+
+| Dose |  GD |   Conc |   pred | ratio |
+|-----:|----:|-------:|-------:|------:|
+|    1 |  14 |  27.53 |  28.31 |  1.03 |
+|    1 |  21 |  20.65 |  22.38 |  1.08 |
+|    1 |   7 |  14.82 |  15.18 |  1.02 |
+|   10 |  14 | 285.29 | 285.73 |  1.00 |
+|   10 |  21 | 188.59 | 222.18 |  1.18 |
+|   10 |   7 | 154.82 | 152.66 |  0.99 |
+|    2 |  14 |  53.48 |  56.65 |  1.06 |
+|    2 |  21 |  45.53 |  44.75 |  0.98 |
+|    2 |   7 |  25.94 |  30.38 |  1.17 |
+|    3 |  14 |  94.25 |  85.03 |  0.90 |
+|    3 |  21 |  70.42 |  67.09 |  0.95 |
+|    3 |   7 |  53.47 |  45.58 |  0.85 |
+|    5 |  14 | 146.67 | 141.96 |  0.97 |
+|    5 |  21 |  81.54 | 111.67 |  1.37 |
+|    5 |   7 |  76.25 |  76.05 |  1.00 |
+
+Rat gestational: predicted vs observed maternal plasma PFOS (mg/L),
+Thibodeaux 2003. {.table}
+
+``` r
+
+
+within2 <- mean(gof_rat$ratio > 0.5 & gof_rat$ratio < 2)
+cat(sprintf("Within 2-fold: %.0f%% (%d of %d points); median pred/obs = %.2f\n",
+            100 * within2, sum(gof_rat$ratio > 0.5 & gof_rat$ratio < 2),
+            nrow(gof_rat), stats::median(gof_rat$ratio)))
+#> Within 2-fold: 100% (15 of 15 points); median pred/obs = 1.00
+# The paper's acceptance criterion is prediction within a factor of 2.
+stopifnot(within2 >= 0.8)
+```
+
+``` r
+
+ggplot2::ggplot(gof_rat, ggplot2::aes(Conc, pred, colour = factor(Dose))) +
+  ggplot2::geom_abline(slope = 1, intercept = 0) +
+  ggplot2::geom_abline(slope = 2, intercept = 0, linetype = 2) +
+  ggplot2::geom_abline(slope = 0.5, intercept = 0, linetype = 2) +
+  ggplot2::geom_point(size = 2) +
+  ggplot2::scale_x_log10() + ggplot2::scale_y_log10() +
+  ggplot2::labs(x = "Observed maternal plasma PFOS (mg/L)",
+                y = "Predicted (mg/L)", colour = "Dose (mg/kg/d)") +
+  ggplot2::theme_bw()
+```
+
+![Rat gestational maternal-plasma PFOS: predicted (line of identity)
+versus observed (Thibodeaux 2003). Dashed lines bound the 2-fold
+envelope.](Chou_2021_pfos_pbpk_files/figure-html/rat-gof-plot-1.png)
+
+Rat gestational maternal-plasma PFOS: predicted (line of identity)
+versus observed (Thibodeaux 2003). Dashed lines bound the 2-fold
+envelope.
+
+## Rat lactational model: dam, milk and pups
+
+The lactational dam is dosed 1 mg/kg per day PND0-PND21; PFOS reaches
+the nursing pups only through milk. The dam plasma stays near its
+gestational end value while pup plasma and liver accumulate over
+lactation.
+
+``` r
+
+ev_rl2 <- rxode2::et(amt = 0.242, cmt = "stomach", time = 0, ii = 24, addl = 21) %>%
+  rxode2::et(seq(0, 504, by = 12))
+ev_rl2$WT <- 0.247
+s_rl <- solve_model(rat_lact, ev_rl2)
+end_rl <- s_rl[nrow(s_rl), ]
+cat(sprintf("PND21: dam plasma %.2f, milk %.4f, pup plasma %.2f, pup liver %.2f mg/L\n",
+            end_rl$Cc, end_rl$Cmilk, end_rl$Cc_pup, end_rl$Cliver_pup))
+#> PND21: dam plasma 22.91, milk 0.0945, pup plasma 15.38, pup liver 39.48 mg/L
+# Pups accumulate PFOS from milk; pup liver exceeds pup plasma (PL_pup > 1).
+stopifnot(end_rl$Cc_pup > 0, end_rl$Cliver_pup > end_rl$Cc_pup)
+```
+
+``` r
+
+s_rl %>%
+  dplyr::transmute(PND = time / 24, `Dam plasma` = Cc, `Pup plasma` = Cc_pup) %>%
+  tidyr::pivot_longer(-PND) %>%
+  ggplot2::ggplot(ggplot2::aes(PND, value, colour = name)) +
+  ggplot2::geom_line() +
+  ggplot2::labs(x = "Postnatal day", y = "PFOS (mg/L)", colour = NULL) +
+  ggplot2::theme_bw()
+```
+
+![Rat lactational PFOS: dam plasma and nursing-pup plasma over PND0-21
+at 1
+mg/kg/day.](Chou_2021_pfos_pbpk_files/figure-html/rat-lact-plot-1.png)
+
+Rat lactational PFOS: dam plasma and nursing-pup plasma over PND0-21 at
+1 mg/kg/day.
+
+## Human gestational model: cord-to-maternal ratio
+
+The central quantitative feature of the human gestational model is
+transplacental transfer. The paper’s calibration cohorts report cord
+blood (fetal plasma) at roughly 0.3-0.4 times maternal plasma at term
+(e.g. Inoue 2004 CB/MP = 2.9/8.9 = 0.33; Fei 2007 = 11/29.2 = 0.38; Kato
+2014 = 3.5/8.5 = 0.41). We reproduce a chronic dietary exposure over 40
+weeks and read the term ratio, which is independent of the absolute
+intake.
+
+``` r
+
+ev_hg2 <- rxode2::et(amt = 1.2e-4, cmt = "stomach", time = 0, ii = 24, addl = 279) %>%
+  rxode2::et(seq(0, 280 * 24, by = 168))
+ev_hg2$WT <- 60
+s_hg <- solve_model(hum_gest, ev_hg2)
+term <- s_hg[nrow(s_hg), ]
+cbmp <- term$Cc_fet / term$Cc
+cat(sprintf("Term (GA 40 wk) cord:maternal plasma ratio = %.3f\n", cbmp))
+#> Term (GA 40 wk) cord:maternal plasma ratio = 0.389
+# Observed CB/MP across the calibration cohorts is ~0.33-0.41.
+stopifnot(cbmp > 0.2, cbmp < 0.6)
+```
+
+``` r
+
+s_hg %>%
+  dplyr::transmute(GA = time / 168, `Maternal plasma` = Cc, `Fetal plasma` = Cc_fet) %>%
+  ggplot2::ggplot(ggplot2::aes(GA)) +
+  ggplot2::geom_line(ggplot2::aes(y = `Maternal plasma`, colour = "Maternal")) +
+  ggplot2::geom_line(ggplot2::aes(y = `Fetal plasma`, colour = "Fetal")) +
+  ggplot2::labs(x = "Gestational age (weeks)", y = "PFOS (mg/L)", colour = NULL) +
+  ggplot2::theme_bw()
+```
+
+![Human gestational PFOS: maternal and fetal (cord) plasma over 40 weeks
+of constant dietary
+intake.](Chou_2021_pfos_pbpk_files/figure-html/human-gest-plot-1.png)
+
+Human gestational PFOS: maternal and fetal (cord) plasma over 40 weeks
+of constant dietary intake.
+
+## Human pre-pregnant burn-in
+
+The pre-pregnant model is run with constant dietary intake to steady
+state; the paper simulates birth to 30 years to seed the gestational
+run. Chronic dietary intake is represented as a continuous zero-order
+input into the stomach (smoother, and more faithful to a diet than daily
+boluses). A 20-year run reaches steady state.
+
+``` r
+
+years <- 20
+Tend  <- years * 365 * 24
+rate  <- 1.2e-4 / 24 # 1.2 ng/kg/day * 60 kg as a per-hour intake
+ev_hp2 <- rxode2::et(amt = rate * Tend, rate = rate, cmt = "stomach") %>%
+  rxode2::et(seq(0, Tend, by = 24 * 90))
+ev_hp2$WT <- 60
+s_hp <- solve_model(hum_pre, ev_hp2)
+last2 <- tail(s_hp$Cc, 2)
+cat(sprintf("Plasma at year %d = %.4f mg/L; change over last quarter = %.2f%%\n",
+            years, tail(s_hp$Cc, 1), 100 * (last2[2] - last2[1]) / last2[2]))
+#> Plasma at year 20 = 0.0064 mg/L; change over last quarter = 0.00%
+# Approaching steady state: the last quarterly change is small, and PFOS has
+# accumulated relative to early exposure.
+stopifnot(abs((last2[2] - last2[1]) / last2[2]) < 0.02, tail(s_hp$Cc, 1) > s_hp$Cc[2])
+```
+
+## Human lactational model: milk and neonate
+
+The lactating mother transfers PFOS to the breastfed neonate through
+milk; milk feeding stops after month 6 in the model.
+
+``` r
+
+ev_hl2 <- rxode2::et(amt = 1.36e-4, cmt = "stomach", time = 0, ii = 24, addl = 179) %>%
+  rxode2::et(seq(0, 180 * 24, by = 168))
+ev_hl2$WT <- 68.05
+s_hl <- solve_model(hum_lact, ev_hl2)
+end_hl <- s_hl[nrow(s_hl), ]
+cat(sprintf("Month 6: maternal plasma %.5f, milk %.6f, neonate plasma %.5f mg/L; milk:plasma = %.3f\n",
+            end_hl$Cc, end_hl$Cmilk, end_hl$Cc_neo, end_hl$Cmilk / end_hl$Cc))
+#> Month 6: maternal plasma 0.00071, milk 0.000009, neonate plasma 0.00015 mg/L; milk:plasma = 0.013
+# Milk:plasma partitioning is of order PMilkP (~0.01); the neonate takes up PFOS.
+stopifnot(end_hl$Cc_neo > 0, end_hl$Cmilk > 0)
+```
+
+## Assumptions and deviations
+
+- **Source of record.** Structure, growth equations and calibrated
+  parameters were taken from the authors’ openly published mrgsolve code
+  and fit objects, not the paper text alone, because the polynomial
+  growth coefficients are in Supplemental Tables S1-S6 and the
+  executable model is the code. The calibrated values applied are the
+  sensitivity-selected subsets stored in `GFit_R/LFit_R/GFit_H/LFit_H`;
+  all other parameters keep the code’s `$PARAM` defaults.
+- **Table 2 versus code Km labelling.** In the rat and human gestational
+  fits the calibrated Michaelis constant is stored under the code
+  parameter named `Km_apical` (rat 19.89 mg/L; human 247.8 mg/L),
+  whereas Table 2 labels the calibrated value `Km_baso`. The as-run code
+  is reproduced faithfully (calibrated `Km_apical`, default `Km_baso`),
+  which is what produced the published simulations; the labelling
+  discrepancy is noted here rather than silently reconciled.
+- **Deterministic.** The published Monte Carlo analysis draws
+  physiological and chemical parameters from external distributions
+  (typically 20-30% CV, truncated) around these point estimates; the
+  model files carry the point estimates only, with no random effects. A
+  `propSd` residual-error placeholder is fixed and carries no
+  information from the paper.
+- **Body weight.** `WT` is the single covariate. In the gestational
+  models it is the pre-pregnancy weight BW0 that anchors the growth
+  equations (gestational weight BW_P is computed internally); the
+  authors dose against a separate gestational/lactational reference
+  weight when converting a mg/kg dose to a mg amount, which the
+  simulations above reproduce. The published human pre-pregnant model
+  holds body weight constant rather than using the age-dependent
+  equation described in the text.
+- **Litter.** The rat litter is modelled as a single fetal/pup
+  compartment scaled by N = 8, and pup urine is returned to the dam gut
+  (coprophagy), both as in the authors’ code.
+- **Specimen metadata.** Amniotic fluid and the AUC accumulator
+  compartments have no matching entry in the package specimen vocabulary
+  and are recorded as `not applicable`; placental, fetal, pup and
+  neonatal solid compartments are recorded as `tissue`.
+- **Absolute human concentrations** depend on the assumed dietary
+  intake, which is uncertain; the human checks above therefore assert on
+  the intake-independent cord-to-maternal ratio and on approach to
+  steady state rather than on absolute plasma levels.

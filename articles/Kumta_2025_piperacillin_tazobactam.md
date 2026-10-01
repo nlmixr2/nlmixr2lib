@@ -652,6 +652,5 @@ stopifnot(median(sim_pip$Ccsf[sim_pip$time == end_h]) < 7.5)
   omission from this extraction.
 - **All parameter values come from the paper’s Table 3.** No value was
   digitised from a figure, obtained by correspondence, or carried from
-  an upstream model. There is no supplement for this article (EuropePMC
-  reports `hasSuppl: N` for PMC11823673 with `isOpenAccess: Y`), and no
-  erratum or corrigendum was found.
+  an upstream model. There is no supplement for this article
+  (PMC11823673, open access), and no erratum or corrigendum was found.

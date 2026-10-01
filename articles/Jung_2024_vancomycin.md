@@ -888,6 +888,5 @@ than of this extraction:
 - **No non-paper-derived parameter values.** Every value in `ini()`
   comes from Jung 2024 Table 2 or the supplement’s eMethods; nothing was
   digitised from a figure, obtained by correspondence, or carried from
-  another model. The supplement was retrieved from the publisher’s own
-  permalink (<http://links.lww.com/CCX/B406>) and is archived alongside
-  the lead PDF.
+  another model. The supplement is available from the publisher’s own
+  permalink (<http://links.lww.com/CCX/B406>).

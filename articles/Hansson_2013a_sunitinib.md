@@ -346,7 +346,7 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
   parameters use the underscored form `propSd_<output>` /
   `addSd_<output>` (e.g. `propSd_vegf`, `addSd_svegfr2`) to match the
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
-  canonical pattern. The naming-conventions reference describes both
+  canonical pattern. The naming conventions describe both
   `<output>propSd` (concatenated, e.g. `CcpropSd`) and `propSd_<output>`
   (underscored, e.g. `propSd_PLT`) forms; the underscored form is what
   the convention checker expects and is used throughout this file.

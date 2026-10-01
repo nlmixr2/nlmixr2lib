@@ -214,7 +214,7 @@ qi_obs_rows <- function(id, times, wt) {
 qi_solve <- function(events, ..., typical = TRUE) {
   args <- list(mod, as.data.frame(events), returnType = "data.frame",
                # rxode2's ODE->linCmt auto-conversion corrupts the dvid->cmt
-               # mapping for multi-endpoint models (known failure pattern 5b).
+               # mapping for multi-endpoint models.
                useLinCmt = FALSE, ...)
   if (typical) { args$omega <- NA; args$sigma <- NA }
   do.call(rxode2::rxSolve, args)

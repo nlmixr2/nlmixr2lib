@@ -19,8 +19,7 @@
 - PubMed Central:
   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6790709/>
 - Supporting Information (Figures S1-S6, Tables S1-S5): distributed with
-  the article and retrieved from the Europe PMC supplementary-files
-  endpoint for PMC6790709.
+  the open-access article (PMC6790709).
 
 Magnesium sulfate is the anticonvulsant of choice for preventing and
 treating eclampsia, but the two standard regimens – the intravenous

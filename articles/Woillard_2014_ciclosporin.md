@@ -67,11 +67,11 @@ comment. The table below collects them in one place for review.
 ## Virtual cohort
 
 The published dataset is not openly available. The virtual cohort below
-is sized to give stable visualisations within the pkgdown render budget
-and uses the median body weight (71 kg) from Woillard 2014 Table 1.
-Because no covariate was retained in the final NONMEM model, the body
-weight is carried only for dose calculation (3 mg/kg) and not as a model
-covariate.
+is sized to give stable visualisations while keeping the render time
+short, and uses the median body weight (71 kg) from Woillard 2014
+Table 1. Because no covariate was retained in the final NONMEM model,
+the body weight is carried only for dose calculation (3 mg/kg) and not
+as a model covariate.
 
 ``` r
 
@@ -396,5 +396,5 @@ point.
   Woillard 2014 BJCP DOI `10.1111/bcp.12394` at the time of extraction.
   Any later correction should be folded in as a separate update.
 - **Vignette uses 200 subjects.** This is small enough to render in well
-  under the 5-minute pkgdown gate but large enough to give stable VPC
-  percentiles. The published VPC used 1000 simulated profiles.
+  under 5 minutes but large enough to give stable VPC percentiles. The
+  published VPC used 1000 simulated profiles.

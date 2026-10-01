@@ -207,7 +207,7 @@ ato_doses <- c(5, 10, 15, 20)
 pit_doses <- c(1, 2, 3, 4)
 ros_doses <- c(2.5, 5, 7.5, 10)
 # Paper used n=5000 per dose cell. This vignette uses a smaller n to keep
-# the pkgdown render under the 5-minute wall-clock budget; the median
+# the render under 5 minutes of wall-clock time; the median
 # endpoints stabilise well below 5000.
 n_per <- 100L
 
@@ -592,6 +592,5 @@ cat(sprintf("Max absolute drift of LDL-C from t=0 baseline at DOSE = 0: %.2e mg/
   form is equivalent.
 - The pkgdown vignette renders at the per-cell simulation sizes shown
   above (5000 per dose for Table 3, 2000 per cell for Figure 7) to keep
-  total wall-clock under the 5-minute build-gate budget. Users
-  reproducing the paper exactly can re-run the simulations with the
-  paper’s n = 5000 per cell.
+  total wall-clock under 5 minutes. Users reproducing the paper exactly
+  can re-run the simulations with the paper’s n = 5000 per cell.

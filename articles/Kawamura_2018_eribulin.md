@@ -220,7 +220,7 @@ ss_events <- data.frame(
   evid  = 0L,
   amt   = 0,
   cmt   = NA_character_,
-  WT    = 60, ALB = 39, ALP = 132, TBILI =   85.5, NEUT = 3200
+  WT    = 60, ALB = 39, ALP = 132, TBILI = 8.55, NEUT = 3200
 )
 ss_sim <- as.data.frame(rxode2::rxSolve(mod_typical, events = ss_events))
 #> ℹ omega/sigma items treated as zero: 'etalkprol', 'etalkout', 'etalslope'
@@ -236,7 +236,7 @@ ggplot(ss_sim, aes(time / 24, ANC)) +
   geom_line() +
   scale_x_continuous("Time (days)", breaks = c(0, 7, 14, 21)) +
   scale_y_continuous("ANC (cells/uL)") +
-  labs(title = "No-drug ANC trajectory at NEUT = 3200, ALB = 39 (typical)",
+  labs(title = "No-drug ANC trajectory at NEUT = 3200, ALB = 39 g/L (typical)",
        caption = "Dotted line: target baseline NEUT = 3200. Drift reflects the published Kprol != Ktr != Kout parameterisation; not a transcription error.") +
   theme_minimal(base_size = 11)
 ```
@@ -261,7 +261,7 @@ scenarios <- list(
   Triweekly = c(0)                # day 1 in a 21-day cycle 1
 )
 
-albumin_levels <- c(`3.9 (normal)` = 3.9, `3.0 (low)` = 3.0, `1.5 (severe)` = 1.5)
+albumin_levels <- c(`39 (normal)` = 39, `30 (low)` = 30, `15 (severe)` = 15)
 
 fig3a <- purrr::map_dfr(seq_along(scenarios), function(i_scen) {
   sc_name <- names(scenarios)[i_scen]
@@ -269,7 +269,7 @@ fig3a <- purrr::map_dfr(seq_along(scenarios), function(i_scen) {
   purrr::map_dfr(seq_along(albumin_levels), function(i_alb) {
     alb_label <- names(albumin_levels)[i_alb]
     alb_val   <- albumin_levels[i_alb]
-    cov_df <- tibble(WT = 60, ALB = alb_val, ALP = 132, TBILI =   85.5, NEUT = 3200)
+    cov_df <- tibble(WT = 60, ALB = alb_val, ALP = 132, TBILI = 8.55, NEUT = 3200)
     evt <- make_cohort_events(cov_df,
                               dose_times_h = d_times,
                               dose_mg      = dose_mg_free_base(1.4, bsa),
@@ -296,11 +296,11 @@ ggplot(fig3a, aes(time / 24, ANC, colour = albumin, linetype = albumin)) +
   facet_wrap(~ scenario, nrow = 1) +
   scale_x_continuous("Time (days)", breaks = c(0, 7, 14, 21)) +
   scale_y_continuous("ANC (cells/uL)", limits = c(0, 5500)) +
-  labs(colour = "Albumin (g/dL)", linetype = "Albumin (g/dL)",
+  labs(colour = "Albumin (g/L)", linetype = "Albumin (g/L)",
        title = "Figure 3A replication: effect of serum albumin on typical-value ANC",
        caption = "Replicates Figure 3A of Kawamura 2018. Dotted horizontal lines = grade 3 (1000) and grade 4 (500) thresholds.") +
   theme_minimal(base_size = 11)
-#> Warning: Removed 26 rows containing missing values or values outside the scale range
+#> Warning: Removed 110 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```
 
@@ -322,7 +322,7 @@ fig3b <- purrr::map_dfr(seq_along(scenarios), function(i_scen) {
   purrr::map_dfr(seq_along(bneu_levels), function(i_b) {
     b_label <- names(bneu_levels)[i_b]
     b_val   <- bneu_levels[i_b]
-    cov_df <- tibble(WT = 60, ALB = 39, ALP = 132, TBILI =   85.5, NEUT = b_val)
+    cov_df <- tibble(WT = 60, ALB = 39, ALP = 132, TBILI = 8.55, NEUT = b_val)
     evt <- make_cohort_events(cov_df,
                               dose_times_h = d_times,
                               dose_mg      = dose_mg_free_base(1.4, bsa),
@@ -368,9 +368,8 @@ neutropenia across the three treatment scenarios. Published values:
 
 We reproduce these by Monte Carlo simulation with between-subject
 variability turned on. We use a modest virtual cohort size (n = 200 per
-scenario) to keep the vignette render time under the 5-minute pkgdown
-gate; the original paper’s simulation uses the actual 401-patient
-covariate distribution.
+scenario) to keep the vignette render time under 5 minutes; the original
+paper’s simulation uses the actual 401-patient covariate distribution.
 
 ``` r
 
@@ -379,9 +378,9 @@ n_sub <- 200L
 # Approximate the Kawamura 2018 Table 1 covariate distributions with simple
 # parametric samplers tuned to the reported median + range.
 sample_cohort <- function(n, id_offset = 0L) {
-  # ALB: median 3.9 g/dL, range 1.3-5.1.  Use a log-normal sampler.
-  alb <- exp(rnorm(n, mean = log(3.9), sd = 0.18))
-  alb <- pmin(pmax(alb, 1.3), 5.1)
+  # ALB: median 39 g/L, range 13-51 g/L (Table 1: 3.9 g/dL, 1.3-5.1).  Use a log-normal sampler.
+  alb <- exp(rnorm(n, mean = log(39), sd = 0.18))
+  alb <- pmin(pmax(alb, 13), 51)
   # NEUT: median 3200 cells/uL, range 943-15000.  Log-normal.
   neut <- exp(rnorm(n, mean = log(3200), sd = 0.40))
   neut <- pmin(pmax(neut, 943), 15000)
@@ -453,9 +452,9 @@ knitr::kable(severity, caption = "Simulated probability of grade >=3 and >=4 neu
 
 | scenario  | Grade \>=3 (%) | Grade \>=4 (%) |   n |
 |:----------|---------------:|---------------:|----:|
-| Biweekly  |           78.0 |           67.5 | 200 |
-| Standard  |           89.0 |           81.5 | 200 |
-| Triweekly |           73.5 |           61.0 | 200 |
+| Biweekly  |           26.5 |            4.0 | 200 |
+| Standard  |           54.0 |           18.5 | 200 |
+| Triweekly |           23.0 |            5.0 | 200 |
 
 Simulated probability of grade \>=3 and \>=4 neutropenia by treatment
 scenario. {.table}
@@ -512,9 +511,9 @@ knitr::kable(comparison,
 
 | scenario | n | Grade \>=3 (%) | Grade \>=3 (%) paper | Grade \>=3 delta | Grade \>=4 (%) | Grade \>=4 (%) paper | Grade \>=4 delta |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| Biweekly | 200 | 78.0 | 27 | 51.0 | 67.5 | 3 | 64.5 |
-| Standard | 200 | 89.0 | 69 | 20.0 | 81.5 | 23 | 58.5 |
-| Triweekly | 200 | 73.5 | 27 | 46.5 | 61.0 | 3 | 58.0 |
+| Biweekly | 200 | 26.5 | 27 | -0.5 | 4.0 | 3 | 1.0 |
+| Standard | 200 | 54.0 | 69 | -15.0 | 18.5 | 23 | -4.5 |
+| Triweekly | 200 | 23.0 | 27 | -4.0 | 5.0 | 3 | 2.0 |
 
 Simulated vs paper-published probabilities of cycle-1 grade \>=3 / \>=4
 neutropenia. {.table style="width:100%;"}
@@ -529,7 +528,7 @@ event and read off the implied Cmax, AUCinf, and half-life.
 
 ``` r
 
-nca_cov <- tibble(id = 1L, WT = 68.7, ALB = 40, ALP = 132, TBILI =   85.5, NEUT = 3200)
+nca_cov <- tibble(id = 1L, WT = 68.7, ALB = 40, ALP = 132, TBILI = 8.55, NEUT = 3200)
 nca_evt <- make_cohort_events(
   cov_df       = nca_cov,
   dose_times_h = 0,
@@ -568,19 +567,19 @@ knitr::kable(nca_summary[, c("PPTESTCD", "PPORRES")],
 
 | PPTESTCD            |     PPORRES |
 |:--------------------|------------:|
-| cmax                |   0.3685697 |
+| cmax                |   0.3591272 |
 | tmax                |   0.1000000 |
 | tlast               | 500.0000000 |
-| clast.obs           |   0.0000176 |
-| lambda.z            |   0.0125809 |
-| r.squared           |   0.9999058 |
-| adj.r.squared       |   0.9999052 |
-| lambda.z.time.first |   5.4000000 |
+| clast.obs           |   0.0000015 |
+| lambda.z            |   0.0170812 |
+| r.squared           |   0.9999134 |
+| adj.r.squared       |   0.9999128 |
+| lambda.z.time.first |   5.0000000 |
 | lambda.z.time.last  | 500.0000000 |
-| lambda.z.n.points   | 167.0000000 |
-| clast.pred          |   0.0000175 |
-| half.life           |  55.0951565 |
-| span.ratio          |   8.9771957 |
+| lambda.z.n.points   | 171.0000000 |
+| clast.pred          |   0.0000015 |
+| half.life           |  40.5796159 |
+| span.ratio          |  12.1982426 |
 | aucinf.obs          |          NA |
 
 PKNCA single-dose summary, typical 68.7 kg subject, 1.97 mg eribulin
@@ -598,7 +597,8 @@ free base IV (~1.4 mg/m^2 mesilate, 1.6 m^2 BSA). {.table}
   BILI were collected and that 182 of 608 surveyed patients were
   excluded for missing any of {ALB, ALP, BILI}, but the cohort
   distributions for ALP and BILI are not tabulated. The figures here use
-  the Majid 2014 reference values (ALP = 132 U/L, BILI = 0.5 mg/dL).
+  the Majid 2014 reference values (ALP = 132 U/L, BILI = 0.5 mg/dL,
+  supplied to the model as `TBILI = 8.55` umol/L).
 - **Body surface area not in the paper.** Dose-per-body-surface-area is
   reported in mg/m^2 but BSA is not tabulated; we use 1.6 m^2 as a
   typical Japanese RBC/MBC value. The model itself takes dose in mg of

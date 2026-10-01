@@ -22,10 +22,10 @@ ui_pasi  <- rxode2::rxode(readModelDb("Chetty_2014_efalizumab_pasi"))
   explicitly in the Methods bullet list (kon binding, koff dissociation,
   kint complex internalisation, saturation of binding sites, Ksyn
   synthesis and Kdeg degradation of CD11a, with Km subsuming kon, koff
-  and kint). Chetty 2014 has no supplementary material (EuropePMC
-  reports hasSuppl = N) and no erratum; the only linked item is a later
-  ‘Comment in’ (AAPS J 2016;18:948-59). The companion efficacy model
-  from the same paper is modellib(‘Chetty_2014_efalizumab_pasi’).
+  and kint). Chetty 2014 has no supplementary material and no erratum;
+  the only linked item is a later ‘Comment in’ (AAPS J 2016;18:948-59).
+  The companion efficacy model from the same paper is
+  modellib(‘Chetty_2014_efalizumab_pasi’).
 - Article: <https://doi.org/10.3389/fimmu.2014.00670> (open access;
   PMCID PMC4283607)
 
@@ -146,7 +146,7 @@ tibble::tribble(
   "Tp", "397 h", "Results, 'PBPK LINKED PD MODEL'; the paper's only fitted parameter",
   "d/dt(pasi)", "n/a", "Methods, printed closed form Y(t) = Yss + (Y(0) - Yss) * exp(-ln(2)/Tp * t); form attributed to the paper's ref 24 (Holford 2006)"
 ) |>
-  knitr::kable(caption = "Per-parameter source trace. All values are from Chetty 2014; the paper has no supplement (EuropePMC reports hasSuppl = N) and no erratum.")
+  knitr::kable(caption = "Per-parameter source trace. All values are from Chetty 2014; the paper has no supplement and no erratum.")
 ```
 
 | Parameter | Value | Source location |
@@ -164,8 +164,7 @@ tibble::tribble(
 | d/dt(pasi) | n/a | Methods, printed closed form Y(t) = Yss + (Y(0) - Yss) \* exp(-ln(2)/Tp \* t); form attributed to the paper’s ref 24 (Holford 2006) |
 
 Per-parameter source trace. All values are from Chetty 2014; the paper
-has no supplement (EuropePMC reports hasSuppl = N) and no erratum.
-{.table}
+has no supplement and no erratum. {.table}
 
 ### Dimensional analysis
 

@@ -7,10 +7,9 @@
   in prurigo nodularis: a population pharmacokinetics and model-based
   meta-analysis approach.* Dermatol Ther (Heidelb) 15(12):3615-3632.
 - Article: <https://doi.org/10.1007/s13555-025-01554-4>
-- Supplement (Figs. S1-S10, Table S1) retrieved from the EuropePMC
-  supplementary-file endpoint for PMC12619860. It contains figures and
-  the study-design table only – **no NONMEM control stream and no
-  additional parameter table**.
+- Supplement (Figs. S1-S10, Table S1), published with the open-access
+  article (PMC12619860). It contains figures and the study-design table
+  only – **no NONMEM control stream and no additional parameter table**.
 
 Nemolizumab is a humanized monoclonal antibody against interleukin-31
 receptor A (IL-31RA). IL-31 signalling on sensory neurons and immune
@@ -1184,8 +1183,8 @@ here – `PP-NRS = baseline - placebo response - drug response` – follows
 from the paper’s own definition of `Pmax` and `Edrug` as *“the maximum
 effects, defined as the reduction in PP-NRS scores”* and is what
 reproduces Fig. 2. This is a genuine reporting gap in the source, not a
-converter loss: the PDF, the PMC full-text XML and the supplement all
-contain only the two component equations.
+text-extraction loss: the PDF, the PMC full-text XML and the supplement
+all contain only the two component equations.
 
 **3. Variance-vs-SD reading of the variability rows.** Table 2’s IIV
 rows are variances, proved above from the CL/F-V/F covariance row. The

@@ -20,9 +20,9 @@ mod <- rxode2::rxode2(readModelDb("Li_2017_nhl_pfs_mbma"))
 - Article: <https://doi.org/10.1097/MD.0000000000007988>
 
 - Supplemental Content (Model Description, Figure S1, Table S1):
-  <http://links.lww.com/MD/B853>, also retrievable as
+  <http://links.lww.com/MD/B853>, also available as
   `medi-96-e7988-s001.docx` from
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5585532/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC5585532>
 
 - Description: MBMA. Model-based meta-analysis of PROGRESSION-FREE
   SURVIVAL (PFS) in non-Hodgkin lymphoma (NHL), fitted to

@@ -1037,8 +1037,8 @@ itself flags the end-of-study estimate as possibly biased.
 The main article prints the differential equations but not the covariate
 functional forms, their reference and centring constants, or the
 residual-error parameterisation. All of these come from the NONMEM
-control streams in Supplementary Material S6, which were retrieved from
-the EuropePMC supplementary-file endpoint for PMC5915615. In particular:
+control streams in Supplementary Material S6, which were published with
+the open-access article (PMC5915615). In particular:
 
 - The **residual-error scale differs between layers, and the tables’
   labels are wrong in one direction**. The PK stream builds

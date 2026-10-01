@@ -37,7 +37,7 @@ smx_mod <- rxode2::rxode(readModelDb("Leegwater_2025_sulfamethoxazole"))
   Supplement (‘Supplement NONMEM code’, ADVAN2 TRANS2).
 - Article: <https://doi.org/10.1002/cpt.3421>
 - Supplement (NONMEM control streams, VPCs, goodness-of-fit):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11652823/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC11652823>
 
 Both models carry the same two covariates, `CRCL` (CKD-EPI eGFR,
 BSA-normalized) and `RRT_CRRT_STATUS` (continuous renal replacement
@@ -311,7 +311,7 @@ off day 5.
 # set.seed() seeds R's RNG, not rxode2's. rxode2 partitions its RNG streams per
 # solver thread, so this cohort is NOT reproducible across machines with
 # different thread counts. Every assertion downstream is written to hold for any
-# cohort the model can produce (pattern 12 of the known-failure-patterns doc).
+# cohort the model can produce.
 set.seed(20250907)
 rxode2::rxSetSeed(20250907)
 

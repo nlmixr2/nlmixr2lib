@@ -41,8 +41,7 @@
 - Article: <https://doi.org/10.1111/epi.18643>
 
 - Supporting Information (Tables S1-S3, Figures S1-S5): distributed with
-  the article; retrieved from the Europe PMC supplementary-file archive
-  for PMC12893244.
+  the open-access article (PMC12893244).
 
 Staccato alprazolam is a hand-held, breath-actuated thermal-aerosol
 device that vaporises alprazolam and delivers it to the deep lung, where

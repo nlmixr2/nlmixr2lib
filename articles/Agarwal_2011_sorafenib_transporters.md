@@ -608,7 +608,7 @@ the accumulation of a *different* drug, vinblastine), and a search of
 the 658-entry observation register for permeability / flux / efflux /
 accumulation / fold / transport / uptake turned up nothing either name
 could alias. Both names were therefore ratified by the maintainers
-before this model file was committed, and are registered in
+before this model file was added, and are registered in
 `inst/references/compartment-names.md`:
 
 - **`papp_ba`** – apparent basolateral-to-apical permeability, with

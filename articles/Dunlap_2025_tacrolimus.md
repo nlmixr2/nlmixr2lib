@@ -456,6 +456,6 @@ against the Dunlap 2025 Methods 2.6 safety constraint of 24.2 ng/mL.
   from F. The model file does not parameterise `lfdepot`.
 - **Simulated cohort size.** The vignette uses 100 subjects per (CYP3A5
   phenotype) x (conditioning intensity) sub-group (400 total), small
-  enough to render the vignette in well under 5 minutes (the pkgdown
-  gate) but large enough to give stable percentiles for the
-  per-sub-group trough distributions in Figures 3, 5, and 6.
+  enough to render the vignette in well under 5 minutes but large enough
+  to give stable percentiles for the per-sub-group trough distributions
+  in Figures 3, 5, and 6.

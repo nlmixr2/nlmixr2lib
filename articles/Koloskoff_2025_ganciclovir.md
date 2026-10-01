@@ -201,10 +201,9 @@ AUC_0-24 levels (10, 20, 30, 40, 50, 60, 70, 80 mg\*h/L) and reports:
 
 The source assumes `AUC_0-24 = 2 * AUC_0-12` at steady state, so each
 AUC_0-24 level corresponds to a q12h-interval `AUC_GCV` of
-`AUC_0-24 / 2`. To keep the vignette wall-time under the 5-minute
-pkgdown gate, we use 300 virtual subjects per AUC level (rather than the
-paper’s 1000); the qualitative pattern and the AUC ordering are robust
-to this reduction.
+`AUC_0-24 / 2`. To keep the vignette wall-time under 5 minutes, we use
+300 virtual subjects per AUC level (rather than the paper’s 1000); the
+qualitative pattern and the AUC ordering are robust to this reduction.
 
 ``` r
 
@@ -458,14 +457,14 @@ units field as “log10 copies/mL”.
 
 - **Monte Carlo n-subjects reduced for vignette wall-time.** The
   published simulations used 1000 subjects per AUC level; the vignette
-  uses 300 to keep wall-time under the 5-minute pkgdown gate. The
-  simulated probabilities track the published Tables 3 and 4 in shape
-  (monotonic increase with AUC, monotonic increase with time, plateau
-  past `AUC_0-24 ~ 60` mg\*h/L), but they do not reproduce them
-  numerically: the day-7 column reads roughly **twice** the published
-  value, while the day-14 / 21 / 28 columns read 5-15 percentage points
-  **below** it. The published curve is therefore steeper in time than
-  the one this parameter set produces.
+  uses 300 to keep wall-time under 5 minutes. The simulated
+  probabilities track the published Tables 3 and 4 in shape (monotonic
+  increase with AUC, monotonic increase with time, plateau past
+  `AUC_0-24 ~ 60` mg\*h/L), but they do not reproduce them numerically:
+  the day-7 column reads roughly **twice** the published value, while
+  the day-14 / 21 / 28 columns read 5-15 percentage points **below** it.
+  The published curve is therefore steeper in time than the one this
+  parameter set produces.
 
   Two candidate explanations were tested off-vignette at the paper’s own
   `n_sub = 1000` (so Monte-Carlo noise is not a confounder),

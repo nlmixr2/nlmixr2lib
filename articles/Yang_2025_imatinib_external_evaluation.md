@@ -21,16 +21,16 @@ of 39 adult and pediatric patients treated at Nordic centres. Their
 conclusion is negative and is stated in the title: the published models
 perform poorly, especially in children.
 
-The standing policy for a secondary source is to skip it and extract the
-cited primary papers instead. The carve-out that applies here is that
-Yang 2025 Table 1 **tabulates the parameters** of every one of the
-fifteen models to an unusually complete standard: structural model,
-typical values, covariate coefficients with their centring constants,
-between-subject variability, and residual-error magnitudes, with table
-footnotes that resolve every categorical coefficient. Fourteen of those
-fifteen models are therefore transcribed into this package; the
-fifteenth, Jiang 2023, was already in the library, extracted directly
-from its primary publication.
+Secondary sources are normally not transcribed; the cited primary papers
+are extracted instead. The carve-out that applies here is that Yang 2025
+Table 1 **tabulates the parameters** of every one of the fifteen models
+to an unusually complete standard: structural model, typical values,
+covariate coefficients with their centring constants, between-subject
+variability, and residual-error magnitudes, with table footnotes that
+resolve every categorical coefficient. Fourteen of those fifteen models
+are therefore transcribed into this package; the fifteenth, Jiang 2023,
+was already in the library, extracted directly from its primary
+publication.
 
 Consequences you must keep in mind:
 

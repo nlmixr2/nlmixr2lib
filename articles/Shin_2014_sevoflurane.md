@@ -406,10 +406,9 @@ within the 95% CI (3.0-8.1).
   `time` in any event table is set to 0 (or any value – it does not
   matter). Doses are not used. The per-record end-tidal concentration is
   supplied via the `ETSEVO` covariate.
-- **`prob_roc` observation name (vs `Cc` convention).** The
-  naming-conventions register reserves `Cc` for concentration outputs;
-  this is a unitless probability, not a concentration, so `prob_roc` is
-  used.
+- **`prob_roc` observation name (vs `Cc` convention).** The naming
+  conventions reserve `Cc` for concentration outputs; this is a unitless
+  probability, not a concentration, so `prob_roc` is used.
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags this as a warning; it is a justified deviation for a non-PK
   probability-output model. The same deviation is present in

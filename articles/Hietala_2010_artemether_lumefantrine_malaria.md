@@ -148,7 +148,7 @@ tablet_count <- function(wt) {
 
 # Observation grid: dense over the dosing window so peak / trough features
 # resolve, sparse-but-regular over the 60-72 h post-last-dose tail. Kept
-# coarse (every 1 h) to keep the vignette under the 5-minute render budget.
+# coarse (every 1 h) to keep the vignette's render time under 5 minutes.
 obs_times <- sort(unique(c(
   seq(0, 60, by = 1),
   seq(60.5, 72, by = 0.5)
@@ -627,9 +627,9 @@ pulse train). {.table style="width:100%;"}
   user-supplied dataset record where `OCC` is missing or set to 1.
 - **Small virtual cohort (n = 40).** The vignette uses 40 simulated
   children rather than the 50 reported in the paper, to keep the render
-  time under the 5-minute pkgdown gate. Population-level summaries
-  (median, 5th-95th percentile bands) are stable at this size for the
-  level of detail shown in the figures.
+  time under 5 minutes. Population-level summaries (median, 5th-95th
+  percentile bands) are stable at this size for the level of detail
+  shown in the figures.
 - **Typical-subject PCT differs from the paper’s stochastic median
   PCT.** The typical-subject simulation (no IIV) gives a
   parasite-clearance time of about 22 h, whereas Hietala 2010 reports a

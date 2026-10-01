@@ -450,13 +450,12 @@ arm here should sit slightly above that value. {.table}
 
 ## Assumptions and deviations
 
-- **Year on the citation.** The metadata this model was built from named
-  the paper “Wright 2015” because the publisher posted the
-  accepted-article PDF online on 9 October 2015. The final, citeable
-  BJCP volume issue (81:2, 277-289) is dated February 2016 with the same
-  DOI (10.1111/bcp.12799); we use the 2016 year throughout the model
-  file, vignette, and filename for the canonical citation, matching how
-  the paper is indexed in PubMed.
+- **Year on the citation.** The paper is sometimes cited as “Wright
+  2015” because the publisher posted the accepted-article PDF online on
+  9 October 2015. The final, citeable BJCP volume issue (81:2, 277-289)
+  is dated February 2016 with the same DOI (10.1111/bcp.12799); we use
+  the 2016 year throughout the model file, vignette, and filename for
+  the canonical citation, matching how the paper is indexed in PubMed.
 - **Per-study urate residual error.** Wright 2016 reports five different
   urate additive residual SDs across the five pooled studies (0.021,
   0.022, 0.037, 0.037, 0.054 mmol/L). The model file retains a single

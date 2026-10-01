@@ -349,7 +349,7 @@ s <- sim_six$symptomscore
 # the strain effect, so it must be identical in both strata.
 # mean(), never unique(): these are floating-point values that agree to
 # machine precision but not necessarily bit-for-bit, and unique() on a float
-# silently returns more than one row (failure pattern 3).
+# silently returns more than one row.
 contrast <- s |>
   dplyr::group_by(exposure) |>
   dplyr::summarise(
@@ -676,8 +676,8 @@ sim_typ <- lapply(seq_len(nrow(regimens)), function(i) {
   ev <- pk_events(regimens$dose[i], regimens$ii[i],
                   wt = 70.6, age = 23.4, crcl = 114)
   s <- rxode2::rxSolve(pk_typical, ev, returnType = "data.frame")
-  # rxSolve omits the id column entirely for a single-subject event table
-  # (known failure pattern 8), and PKNCA needs it, so restore it explicitly.
+  # rxSolve omits the id column entirely for a single-subject event table,
+  # and PKNCA needs it, so restore it explicitly.
   if (is.null(s$id)) s$id <- 1L
   dplyr::mutate(s, treatment = regimens$treatment[i])
 }) |>

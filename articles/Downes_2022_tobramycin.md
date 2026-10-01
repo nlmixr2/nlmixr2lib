@@ -500,7 +500,7 @@ stopifnot(best_dose %in% 12:14)
 
 # Published claim: every simulated patient met the Cmin target at every dose.
 # Asserted with headroom rather than as an exact 100%, since "no subject in the
-# cohort" is a one-draw statement (pattern 12).
+# cohort" is a one-draw statement.
 stopifnot(all(attain$`Cmin < 0.6` > 98))
 ```
 

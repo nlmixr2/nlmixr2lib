@@ -380,7 +380,7 @@ dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | permutation + id)
 # lambda.z window opening just after Tmax still contains the fast exponential
 # and biases the estimate (0.0997 rather than 0.1000, so half-life reads 6.95
 # instead of 6.93). By t = 40 the fast term has decayed to ~1e-6 of the slow
-# one. See failure pattern 11: fit the terminal slope well clear of the
+# one. Fit the terminal slope well clear of the
 # distribution phase.
 intervals <- data.frame(
   start      = c(0, 40),
@@ -406,7 +406,7 @@ nca_tidy <- as.data.frame(nca_res) |>
   ) |>
   dplyr::select(permutation, PPTESTCD, PPORRES)
 
-stopifnot(nrow(nca_tidy) == 12L)   # 6 parameters x 2 permutations; guard pattern 10
+stopifnot(nrow(nca_tidy) == 12L)   # 6 parameters x 2 permutations; guards against a vacuous pass
 ```
 
 ### NCA is invariant to the permutation
@@ -562,9 +562,8 @@ stopifnot(
 
 - **Observation grid.** Appendix S1 Table S1 specifies `t = 0:100`. A
   step of 0.1 rather than 1 is used so trapezoidal NCA resolves
-  `Tmax = 4.02`; on a unit grid the AUC is understated (failure pattern
-  11). The plotted profile is unchanged, and the closed-form gates hold
-  on either grid.
+  `Tmax = 4.02`; on a unit grid the AUC is understated. The plotted
+  profile is unchanged, and the closed-form gates hold on either grid.
 - **Clearance is derived, not printed.** Table S1 reports `k` and `V`;
   the model files store the canonical `(CL, V, ka)` parameterization
   with `CL = V * k = 1`. Both permutations therefore carry

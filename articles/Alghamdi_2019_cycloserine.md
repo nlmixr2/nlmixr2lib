@@ -88,8 +88,9 @@ extracted.
 
 Methods equations 1 and 2 are rendered as images rather than text in the
 publisher’s XML and are lost by every text-extraction path. They were
-recovered from the EuropePMC `supplementaryFiles` bundle for PMC6496076
-as `AAC.00055-19-m0001.jpg` and `AAC.00055-19-m0002.jpg`, and read
+recovered from the publisher’s equation images deposited with
+PMC6496076, `AAC.00055-19-m0001.jpg` and `AAC.00055-19-m0002.jpg`, and
+read
 
     equation 1:  CL = CL_POP * [if sex = male,  e^(beta_male)]
     equation 2:  CL = CL_POP * (age / age_median)^(beta_age)
@@ -806,5 +807,6 @@ the mean Cmax from about 50 mg/L to about 42 mg/L.
   outputs, are replicated above.
 - **No erratum.** Crossref reports no `update-to` / `updated-by`
   relation for <doi:10.1128/AAC.00055-19> as of 2026-09-23, and the
-  EuropePMC supplement bundle contains only the goodness-of-fit and
-  dose-stratified VPC figures described in Supplemental File 1.
+  supplementary files deposited with the article contain only the
+  goodness-of-fit and dose-stratified VPC figures described in
+  Supplemental File 1.

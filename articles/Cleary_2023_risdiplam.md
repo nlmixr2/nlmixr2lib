@@ -318,7 +318,7 @@ ev_single <- build_events(subjects, dose_times = 0, obs_grid = grid_single)
 ev_multi <- build_events(subjects, dose_times = seq(0, 41 * 24, by = 24),
                          obs_grid = grid_multi)
 
-# Disjoint-ID regression guard (see vignette-template Notes).
+# Disjoint-ID regression guard: separately built cohorts must not share IDs.
 stopifnot(!anyDuplicated(unique(ev_single[, c("id", "time", "evid")])))
 stopifnot(!anyDuplicated(unique(ev_multi[, c("id", "time", "evid")])))
 
@@ -1038,9 +1038,9 @@ stopifnot(round(mppgl(2 / 12)) == 26, round(mppgl(18)) == 38)
   (23.4% CV) and capillary (34.2% CV) samples, with capillary samples 3%
   of the dataset. No register entry covered blood sampling site, so
   `SAMPLE_CAPILLARY` was added to `inst/references/covariate-columns.md`
-  in the same pull request (maintainer ratification). Both matrices used
-  the same validated LC-MS/MS assay, so the contrast is the collection
-  site rather than the assay. In this vignette roughly 3% of observation
+  alongside this model (maintainer ratification). Both matrices used the
+  same validated LC-MS/MS assay, so the contrast is the collection site
+  rather than the assay. In this vignette roughly 3% of observation
   records are flagged capillary, concentrated in the youngest arm.
 - **Virtual-cohort covariate distributions are constructed, not
   published.** Individual demographics are not available. Ages were

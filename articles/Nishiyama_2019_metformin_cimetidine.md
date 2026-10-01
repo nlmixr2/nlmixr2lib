@@ -18,17 +18,25 @@ transporters.
   Sugiyama Y. Physiologically-Based Pharmacokinetic Modeling Analysis
   for Quantitative Prediction of Renal Transporter-Mediated Interactions
   Between Metformin and Cimetidine. CPT Pharmacometrics Syst Pharmacol.
-  2019;8(6):396-406. <doi:10.1002/psp4.12398>. The ODE system and the
-  hybrid-to-elementary parameter conversions are transcribed from
-  Supplementary Material S2 (‘Model equations for metformin’, file
-  PSP4-8-396-s008.pdf) and the Supplemental Text (PSP4-8-396-s007.pdf).
-  Drug parameters are Table S1 (PSP4-8-396-s003.pdf), body physiology is
-  Table S2 (PSP4-8-396-s004.pdf) and kidney physiology is Table S3
+  2019;8(6):396-406. <doi:10.1002/psp4.12398>. Erratum: CPT
+  Pharmacometrics Syst Pharmacol. 2020;9:606-608.
+  <doi:10.1002/psp4.12539>. The ODE system and the hybrid-to-elementary
+  parameter conversions are transcribed from Supplementary Material S2
+  (‘Model equations for metformin’, file PSP4-8-396-s008.pdf) and the
+  Supplemental Text (PSP4-8-396-s007.pdf). Drug parameters are Table S1
+  (PSP4-8-396-s003.pdf), body physiology is Table S2
+  (PSP4-8-396-s004.pdf) and kidney physiology is Table S3
   (PSP4-8-396-s005.pdf). Fitted ka, ktrans and RMATE/dif are Table 1 of
   the article. See the vignette Errata for the transcription corrections
   applied to the published equation list.
 
 - Article: <https://doi.org/10.1002/psp4.12398>
+
+- Erratum: Nishiyama K et al. CPT Pharmacometrics Syst Pharmacol.
+  2020;9:606-608, <https://doi.org/10.1002/psp4.12539> (PMC7577014). It
+  changes one equation of the metformin liver and corrects the
+  Supplementary Material S2 equation list; see [Published
+  erratum](#published-erratum) for what it means for these models.
 
 - Supplements (open access, same DOI): Tables S1-S4 and the two
   supplemental model documents `PSP4-8-396-s003.pdf` through
@@ -119,6 +127,7 @@ equations and the parameters that are not simply physiology.
 | `CL_int,sec = PS_r,inf * beta_kidney` | – | Methods eqs. 7-14 |
 | Competitive inhibition `PS_act(+I) = PS_act / (1 + I/Ki)` | – | Methods eq. 15 |
 | Hepatic hybrid-to-elementary conversion | `PS_h,act = CL_int,all / (beta_liver (1 + R_dif))` | Supplemental Text eqs. 1-5; Suppl. S2 “Other equations” |
+| Hepatic `CL_int,met` | `CL_int,all / ((1 - beta_liver)(1 + R_dif)) * R_dif / gamma_h` | Erratum eq. 1 – the form the authors ran; see Published erratum |
 | Nernst ratio `gamma_h` | 4.46 | Supplemental Text eq. 7 |
 | Metformin `ka` | 0.21 /h | Table 1 (both dose panels) |
 | Metformin `ktrans` | 2.4 /h (1,500 mg); 0.61 /h (250 mg) | Table 1 |
@@ -132,7 +141,7 @@ equations and the parameters that are not simply physiology.
 | Kidney flows, areas, potentials, pH | – | Table S3 |
 | Cimetidine compound layer | – | Table S4 |
 | Cimetidine `Ki` OCT1 / OCT2 / MATEs | 104 / 159 / 3.93 umol/L | Table 2 footnote |
-| Fitted in vivo `Ki` for MATEs | 1.71 / 1.34 / 0.64 / 0.23 umol/L | Table 3 |
+| Fitted in vivo `Ki` for MATEs | 1.71 / 1.34 / 0.64 / 0.23 umol/L | Table 3 (pre-erratum; the erratum’s recalculated range is 0.25-1.2 umol/L, not printed per `beta_kidney`) |
 
 ## Structural check: mass balance
 
@@ -795,6 +804,126 @@ below even the lowest reported OCT2 Ki of 72.6 umol/L but above the MATE
 Ki, so OCT2 is simply never meaningfully occupied. This is the paper’s
 conclusion reproduced as an assertion rather than a narrative claim.
 
+## Published erratum
+
+In 2020 the authors published an erratum (<doi:10.1002/psp4.12539>). It
+reports two errors:
+
+> 1.  incorrect equations used for the calculation of intrinsic
+>     metabolic clearance in the liver compartments in the modeling
+>     software;
+> 2.  typographical errors and character corruptions in the model
+>     equations in Supplementary Material S2.
+
+**The liver equation.** The software computed the hepatic intrinsic
+metabolic clearance with erratum eq. 1,
+
+`CL_int,met = CL_h,int,all / ((1 - beta_liver) (1 + R_dif)) * R_dif / gamma`,
+
+where the correct form, erratum eq. 2, is
+
+`CL_int,met = CL_h,int,all / ((1 - beta_liver) (1 + R_dif)) * (R_dif / gamma + exp(N) / R_OCT1,inf/eff)`.
+
+Eq. 1 leaves out the OCT1-mediated efflux from the hepatocyte. The
+erratum states that correcting it raised the hepatic share of total
+metformin clearance from 15% to 23%, changed the fitted `ka`, `ktrans`
+and `RMATE/dif`, and moved the fitted in vivo MATE `Ki` range from
+0.23-1.7 to 0.25-1.2 umol/L. The recalculated `ka`, `ktrans` and
+`RMATE/dif` are **not printed** in the erratum, and the open-access
+article still carries the original Table 1 and Table 3. The erratum says
+the DDI conclusion is unchanged: the interaction is mediated by MATEs,
+not OCT2.
+
+**What these models ship.** Both metformin-containing models keep eq. 1.
+It is the form the authors actually ran for every published number, and
+so the only form consistent with the Table 1 parameters, which are the
+only fitted values available. The chunk below shows why swapping in eq.
+2 alone would be wrong. Eq. 1 reproduces the erratum’s pre-correction
+15% hepatic share. Eq. 2 is the form that satisfies Table S1’s
+`beta_liver = 0.5` exactly, but without the refitted absorption and MATE
+parameters it overshoots the corrected 23% and no longer reproduces the
+paper’s simulated 1,500 mg AUC0-24 of 20.1 mg\*h/L.
+
+``` r
+
+met_eq2 <- rxode2::model(
+  met,
+  cl_met <- clint_all / ((1 - beta_liver) * (1 + rdif)) * (rdif / gamma_h + enh / r_oct1)
+)
+erratum_run <- function(mod) {
+  # beta_liver = CLint,met / (total hepatocyte efflux + CLint,met), counting
+  # the OCT1-mediated efflux that the model's jo1_* terms carry.
+  mod <- rxode2::model(
+    mod,
+    beta_liver_implied <- cl_met / (ps_h_difeff + ps_h_act * enh / r_oct1 + cl_met),
+    append = TRUE
+  )
+  s <- as.data.frame(rxode2::rxSolve(
+    mod,
+    rxode2::et(amt = 1500 * 1000, cmt = "transit1") |>
+      rxode2::et(c(seq(0, 24, by = 0.05), 240)),
+    atol = 1e-9, rtol = 1e-9, addDosing = FALSE
+  ))
+  stopifnot(all(c("cl_met", "beta_liver_implied", "a_metab", "urine") %in% names(s)))
+  s24 <- s[s$time <= 24, ]
+  last <- s[nrow(s), ]
+  c(
+    cl_met = last$cl_met,
+    beta_liver_implied = last$beta_liver_implied,
+    hepatic_fraction = last$a_metab / (last$a_metab + last$urine),
+    auc0_24 = sum(diff(s24$time) * (head(s24$Cc, -1) + tail(s24$Cc, -1)) / 2) / 1000
+  )
+}
+erratum_cmp <- rbind(
+  "Eq. 1 (shipped; as the authors ran it)" = erratum_run(met),
+  "Eq. 2 (erratum) with the original Table 1 fit" = erratum_run(met_eq2)
+)
+knitr::kable(erratum_cmp, digits = 3)
+```
+
+|  | cl_met | beta_liver_implied | hepatic_fraction | auc0_24 |
+|:---|---:|---:|---:|---:|
+| Eq. 1 (shipped; as the authors ran it) | 0.751 | 0.165 | 0.166 | 21.924 |
+| Eq. 2 (erratum) with the original Table 1 fit | 3.809 | 0.500 | 0.378 | 16.373 |
+
+``` r
+
+# Deterministic model, so the bounds are tight. The shipped eq. 1 must
+# reproduce the erratum's pre-correction 15% hepatic share and the paper's
+# simulated AUC (20.1 mg*h/L, within the residual tabulated under
+# Assumptions and deviations).
+stopifnot(
+  abs(erratum_cmp[1, "hepatic_fraction"] - 0.15) < 0.025,
+  abs(erratum_cmp[1, "auc0_24"] / 20.1 - 1) < 0.10,
+  # Eq. 2 is the form that makes Table S1's beta_liver = 0.5 hold exactly ...
+  abs(erratum_cmp[2, "beta_liver_implied"] - 0.5) < 1e-6,
+  # ... and eq. 1 is not.
+  erratum_cmp[1, "beta_liver_implied"] < 0.2,
+  # Eq. 2 alone, without the unprinted refit, overshoots the corrected 23%
+  # hepatic share and moves off the published AUC. It is not a usable model.
+  erratum_cmp[2, "hepatic_fraction"] > 0.30,
+  erratum_cmp[2, "auc0_24"] / 20.1 - 1 < -0.15
+)
+```
+
+Users who want the corrected liver should take eq. 2 together with
+refitted `ka`, `ktrans` and `RMATE/dif`, which would have to come from
+the authors or from a refit to the clinical data in the original
+references. Neither is reproduced here.
+
+**The equation-list corrections.** The erratum’s table of corrections to
+Supplementary Material S2 was checked line by line against these models.
+Every row that touches a modelled equation already matches the
+implementation. These include several reconstructions the Errata list
+below had to argue from mass balance, which the erratum now confirms:
+the per-unit `CL_int,met / 5` (item 7), the luminal inflow chain
+`Qu,i * (C_G,u` for segment 1, else `C_PT,u,(i-1))` (item 3), the
+Cyrillic-corrupted collecting-duct erythrocyte equation (item 6), the
+distal-tubule cell equation without an `fu` factor on luminal influx,
+the tandem hepatic-erythrocyte chain, and the central-blood return
+`Qr6 * C_CD`. The erratum’s corrected `CLmet` line (S2 p. 11 line 7) is
+eq. 2, which is discussed above.
+
 ## Assumptions and deviations
 
 ### Errata and transcription corrections
@@ -811,13 +940,18 @@ verifies them collectively.
     with unbalanced parentheses. Two readings are possible. The one used
     here,
     `CL_met = CL_int,all / (1 - beta_liver) * R_dif / ((1 + R_dif) * gamma_h)`,
-    is the algebraic identity that follows from Supplemental Text eq. 1
-    (`beta_liver = CL_met / (PS_h,eff + CL_met)`) and returns
-    `CL_met = PS_h,dif,eff = 0.751 L/h`, which is exactly
-    self-consistent with `beta_liver = 0.5`. The other reading gives
+    returns `CL_met = 0.751 L/h`. The other reading gives
     `CL_met = 10.9 L/h` and a simulated 1,500 mg AUC0-24 of 13.7 mg\*h/L
-    against the paper’s 20.1 – it is decisively excluded by the paper’s
-    own number.
+    against the paper’s 20.1, so the paper’s own number excludes it. The
+    2020 erratum settles the reading: it is erratum eq. 1, the equation
+    the authors’ software used. This item originally also described that
+    reading as exactly self-consistent with `beta_liver = 0.5`. That
+    claim is **withdrawn**. It holds only if the hepatocyte’s
+    OCT1-mediated efflux is left out of the efflux clearance. With that
+    efflux counted, as the model’s `jo1_*` terms do, eq. 1 implies
+    `beta_liver` of about 0.17, and the erratum’s corrected eq. 2 is the
+    form that gives 0.5. The shipped model keeps eq. 1 for the reason
+    given in [Published erratum](#published-erratum).
 2.  **Central erythrocyte compartment.** The printed equation uses
     `Cplasma` where the skin and adipose erythrocyte exchange terms need
     `Cerythro`, and subtracts `Qh,e * CEH,e,1` where it needs

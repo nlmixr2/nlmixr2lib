@@ -38,8 +38,8 @@
   CC-BY 4.0)
 - Supplement: Electronic Supplementary Material
   `10928_2016_9486_MOESM1_ESM.pdf`, “NONMEM code WB-PBPK-PD
-  ciprofloxacin.mod”, retrieved from the EuropePMC `supplementaryFiles`
-  endpoint for PMC5376394.
+  ciprofloxacin.mod”, published with the open-access article
+  (PMC5376394).
 
 Sadiq et al. built a whole-body PBPK model for ciprofloxacin in
 intensive-care patients and fitted it **to plasma concentrations

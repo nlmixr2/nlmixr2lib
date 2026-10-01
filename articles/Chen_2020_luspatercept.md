@@ -2,12 +2,12 @@
 
 ## Model and source
 
-- Citation: Chen N, Kassir N, Laadem A, Giuseppi AC, Shetty JK, Maxwell
-  SE, Sriraman P, Ritland S, Linde PG, Budda B, Reynolds J, Ramji P,
-  Palmisano M, Zhou S. Population Pharmacokinetics and Exposure-Response
-  of Luspatercept, an Erythroid Maturation Agent, in Anemic Patients
-  With Myelodysplastic Syndromes. CPT Pharmacometrics Syst Pharmacol.
-  2020 Oct;9(10):395-404. <doi:10.1002/psp4.12515>
+- Citation: Chen N, Kassir N, Laadem A, Maxwell SE, Sriraman P, Giuseppi
+  AC, Ritland S, Linde PG, Budda B, Reynolds JG, Zhou S, Palmisano M.
+  Population Pharmacokinetics and Exposure-Response of Luspatercept, an
+  Erythroid Maturation Agent, in Anemic Patients With Myelodysplastic
+  Syndromes. CPT Pharmacometrics Syst Pharmacol. 2020;9(7):395-404.
+  <doi:10.1002/psp4.12521>
 - Description: One-compartment population PK model for luspatercept
   (activin receptor type IIB / IgG1 Fc-fusion) in adults with anemia due
   to myelodysplastic syndromes (Chen 2020), with first-order
@@ -16,7 +16,7 @@
   covariates on CL/F, and body weight + baseline albumin power
   covariates on V1/F.
 - Article: [CPT Pharmacometrics Syst Pharmacol.
-  2020;9(10):395-404](https://doi.org/10.1002/psp4.12515)
+  2020;9(7):395-404](https://doi.org/10.1002/psp4.12521)
 
 ## Population
 
@@ -171,7 +171,7 @@ sim_typical <- rxode2::rxSolve(
 
 ## Replicate published figures
 
-### Figure 1a — visual predictive check by dose group
+### Figure 1a - visual predictive check by dose group
 
 Chen 2020 Figure 1a is a population VPC of luspatercept serum
 concentration over time. The simulated cohort below summarises the 5th,
@@ -202,7 +202,7 @@ sim |>
 
 ![](Chen_2020_luspatercept_files/figure-html/figure-1a-1.png)
 
-### Figure 1b — clinical relevance of covariates on AUC_ss
+### Figure 1b - clinical relevance of covariates on AUC_ss
 
 Chen 2020 Figure 1b reports the percentage difference in AUC_ss /
 Cmax_ss at extreme covariate values relative to “normal” (10th-90th
@@ -373,3 +373,16 @@ Simulated steady-state AUC and terminal t1/2 vs. Chen 2020 Results.
   analysis but without the additional sources of variability (IIV,
   residual error, random sampling) that contribute to the published
   Figure 1b error bars.
+- The exposure-response analyses of Chen 2020 (logistic regressions of
+  RBC transfusion independence, mHI-E and grade 3 or higher TEAEs on
+  AUC_avg, AUC_TEAE or CL/F) are not encoded. Table 3 reports only the
+  odds ratio of the PK measure, without the intercepts, the coefficients
+  of the adjusting baseline covariates (transfusion burden, EPO,
+  bilirubin, age) or the exposure increment the odds ratio refers to, so
+  the fitted probability curves cannot be reconstructed from the paper.
+- Earlier releases cited this model with an incorrect DOI
+  (10.1002/psp4.12515, an unrelated fenebrutinib PBPK article), an
+  incorrect issue number and an incorrect author list. The citation now
+  matches the published article (CPT Pharmacometrics Syst Pharmacol
+  2020;9(7):395-404, <doi:10.1002/psp4.12521>). The serum assay matrix
+  is recorded in the compartment metadata.

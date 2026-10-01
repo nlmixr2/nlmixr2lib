@@ -30,8 +30,8 @@
   SAEM.
 - Article: <https://doi.org/10.1128/aac.00451-25>
 - Supplement (Tables S1 and S2): `AAC00451-25-S0001.docx`, distributed
-  with the open-access article and retrievable from
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12587577/supplementaryFiles>
+  with the open-access article:
+  <https://europepmc.org/article/PMC/PMC12587577>
 
 ``` r
 

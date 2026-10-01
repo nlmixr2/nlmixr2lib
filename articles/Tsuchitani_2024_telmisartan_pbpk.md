@@ -14,11 +14,10 @@
   main-text Table 1; the fixed physiological and compound constants are
   Supplementary Tables S3-S7 in Appendix S1 (PSP4-13-1224-s001.docx).
 - Article: <https://doi.org/10.1002/psp4.13154>
-- Supporting Information (open access, retrieved from the Europe PMC
-  `supplementaryFiles` endpoint for PMC11247111):
-  `PSP4-13-1224-s002.docx` (Data S1, the authors’ complete model code in
-  `d/dt()` form) and `PSP4-13-1224-s001.docx` (Appendix S1,
-  Supplementary Tables S1-S11 and Figures S1-S12).
+- Supporting Information (open access, published with the article,
+  PMC11247111): `PSP4-13-1224-s002.docx` (Data S1, the authors’ complete
+  model code in `d/dt()` form) and `PSP4-13-1224-s001.docx` (Appendix
+  S1, Supplementary Tables S1-S11 and Figures S1-S12).
 
 Telmisartan is an angiotensin II type 1 (AT1) receptor blocker whose
 exposure rises markedly faster than dose over the therapeutic range, and

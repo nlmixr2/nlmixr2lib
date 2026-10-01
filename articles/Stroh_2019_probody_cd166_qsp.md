@@ -960,9 +960,9 @@ stopifnot(all(conclusions$Pass[!conclusions$Deviation]))
 
 **Source of the ODE system.** The article body contains no equations
 beyond the generic KroneckerBio form. The entire structure is taken from
-Supporting Information `PSP4-8-676-s003` (“Model code”), obtained from
-the EuropePMC supplementary-files endpoint for PMC6765697. A copy of its
-extracted text ships with the package as
+Supporting Information `PSP4-8-676-s003` (“Model code”), published with
+the open-access article (PMC6765697). A copy of its extracted text ships
+with the package as
 `inst/references/Stroh_2019_probody_cd166_modelcode.txt` so the
 structural gate above is reproducible.
 

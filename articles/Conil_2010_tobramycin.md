@@ -513,9 +513,9 @@ patient. \* = differs from reference by more than +/- 20%. {.table}
 
 - **Number of Monte Carlo replicates.** Conil 2010 performed 1000
   replicates per dose. The vignette uses 200 replicates per dose to keep
-  the render time well under the 5-minute pkgdown budget. The reduced
-  sample size widens the simulated SD but does not bias the simulated
-  mean; mean comparisons should track Table 3 closely.
+  the render time well under 5 minutes. The reduced sample size widens
+  the simulated SD but does not bias the simulated mean; mean
+  comparisons should track Table 3 closely.
 
 - **Race / ethnicity not modeled.** Conil 2010 does not report race
   composition. The single-centre French ICU cohort is presumed

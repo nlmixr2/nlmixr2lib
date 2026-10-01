@@ -963,14 +963,14 @@ clearances of 50-130 mL/min, rather than for everyone.
   simulation.
 - **Supplementary material was not available when this model was
   built.** Tables S2, S6, S7, S8, S9 and Texts S1, S3, S4, S5 are
-  referenced by the paper but were not retrievable (Europe PMC holds no
-  supplementary files for PMC13280637 and the publisher landing page is
-  access-controlled). Nothing in the model depends on them: all fixed
-  effects, variances and residual-error terms are in Table 2 and both
-  covariate equations are printed in the Results. What is lost is the
-  exact combined-error form (above), the model-building trace of Table
-  S6, and the full list of 15 simulated regimens in Text S5 – of which
-  three representative ones are reproduced here.
+  referenced by the paper but were not retrievable (no supplementary
+  files are deposited with PMC13280637, and the publisher’s copy was not
+  available). Nothing in the model depends on them: all fixed effects,
+  variances and residual-error terms are in Table 2 and both covariate
+  equations are printed in the Results. What is lost is the exact
+  combined-error form (above), the model-building trace of Table S6, and
+  the full list of 15 simulated regimens in Text S5 – of which three
+  representative ones are reproduced here.
 - **Covariates screened but not retained.** Body weight, serum albumin
   and age are recorded in Table 1 and discussed, but creatinine
   clearance on clearance was the only effect retained in the final

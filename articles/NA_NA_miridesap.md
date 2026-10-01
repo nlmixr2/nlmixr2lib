@@ -72,8 +72,7 @@ bundle for `DDMODEL00000262`. The bundle contains:
   studies CPH113776 and CPH114527).
 - `262.json`, `Command.txt` – scraper metadata and NONMEM run command.
 
-The linked Sahota 2015 paper was available in the maintainers’
-literature mirror and provides the external cross-check for every
+The linked Sahota 2015 paper provides the external cross-check for every
 parameter value (Sahota 2015 Table 2 vs Output_real_CPHPC.lst FINAL
 PARAMETER ESTIMATE block; agreement to within the paper’s rounding
 precision is documented in the source-trace table below).

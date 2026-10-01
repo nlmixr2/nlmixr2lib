@@ -10,7 +10,7 @@
   Int J Mol Sci. 2023;24(22):16224. <doi:10.3390/ijms242216224>.
 - Article: [Int J Mol Sci
   2023;24(22):16224](https://doi.org/10.3390/ijms242216224)
-- Supplement (via the EuropePMC open-access package for PMC10671645):
+- Supplement (published with the open-access article, PMC10671645):
   `BasePBPK.sbproj`, the authors’ MATLAB/SimBiology 2022a base model,
   and `SimcypKp=1withClearance.xlsx`, a Simcyp perfusion-limited
   comparison run.

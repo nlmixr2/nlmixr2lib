@@ -33,15 +33,14 @@ inter-individual variability (IIV) model on all five PK parameters (ka,
 CL/F, V1/F, V2/F, Q/F): `theta_i = tvtheta * exp(eta_i)`. However, the
 paper does NOT report any per-parameter omega magnitudes - Table 4 lists
 only the fixed-effect THETAs and the single 42.4% residual variability
-number - and no supplement exists (Europe PMC: `hasSuppl = N` for
-PMC11592880). Per the maintainers’ decision, the packaged model encodes
-all five eta terms as `fixed(0)` so the published structural IIV
-declaration is preserved while remaining faithful to the absence of
-reported variance values. The model is therefore a deterministic
-typical-value forward predictor; between-subject variability seen in the
-simulations below arises only from the cohort’s BSA distribution, not
-from random eta draws. See the [Assumptions and
-deviations](#assumptions-and-deviations) section.
+number - and no supplement exists for the article (PMC11592880). Per the
+maintainers’ decision, the packaged model encodes all five eta terms as
+`fixed(0)` so the published structural IIV declaration is preserved
+while remaining faithful to the absence of reported variance values. The
+model is therefore a deterministic typical-value forward predictor;
+between-subject variability seen in the simulations below arises only
+from the cohort’s BSA distribution, not from random eta draws. See the
+[Assumptions and deviations](#assumptions-and-deviations) section.
 
 ## Population
 
@@ -387,16 +386,16 @@ above. {.table}
   CL/F, V1/F, V2/F, Q/F) as `theta_i = tvtheta * exp(eta_i)`. The paper,
   however, does NOT tabulate any per-parameter omega magnitudes - Table
   4 lists only the fixed-effect THETAs and the single 42.4% residual
-  variability number - and no supplement exists (Europe PMC:
-  `hasSuppl = N` for PMC11592880). Per the maintainers’ decision, the
-  packaged model encodes `etalka ~ fixed(0)`, `etalcl ~ fixed(0)`,
-  `etalvc ~ fixed(0)`, `etalvp ~ fixed(0)`, and `etalq ~ fixed(0)` so
-  the published structural IIV declaration is preserved while remaining
-  faithful to the absence of reported variance values. Any stochastic
-  VPC built from this model will show no between-subject variability
-  around the typical-value predictions; users wishing to run a
-  stochastic VPC must supply their own omega magnitudes for the five PK
-  parameters. Precedent for the `~ fixed(0)` pattern:
+  variability number - and no supplement exists for the article
+  (PMC11592880). Per the maintainers’ decision, the packaged model
+  encodes `etalka ~ fixed(0)`, `etalcl ~ fixed(0)`, `etalvc ~ fixed(0)`,
+  `etalvp ~ fixed(0)`, and `etalq ~ fixed(0)` so the published
+  structural IIV declaration is preserved while remaining faithful to
+  the absence of reported variance values. Any stochastic VPC built from
+  this model will show no between-subject variability around the
+  typical-value predictions; users wishing to run a stochastic VPC must
+  supply their own omega magnitudes for the five PK parameters.
+  Precedent for the `~ fixed(0)` pattern:
   `inst/modeldb/specificDrugs/Chi_2018_propofol.R` (paper reports only
   final-model THETAs without OMEGAs) and
   `inst/modeldb/specificDrugs/Taylor_2020_methotrexate.R` (paper reports

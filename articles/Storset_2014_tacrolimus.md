@@ -152,7 +152,7 @@ events <- dplyr::bind_rows(dosing, obs) |>
     PRED_DOSE    = 20
   )
 
-# Disjoint-id assertion (multi-cohort guard from the vignette template).
+# Disjoint-id assertion (multi-cohort guard).
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 # Quick covariate sanity-check.
@@ -502,9 +502,8 @@ cat("Storset 2014 Figure 4A reports 32% (95% CI 29-35%) for the same regimen.\n"
   CYP3A5 *3/*3 frequency of 84.7% is consistent with a predominantly
   Caucasian cohort; the cohort is not stratified by ancestry in the
   source paper.
-- **Year mismatch with the source metadata.** The metadata this model
-  was built from named the paper Storset 2013, but the source
-  publication appeared in Br J Clin Pharmacol 78(3) (2014; accepted 16
-  February 2014, published online 20 February 2014, in print September
-  2014). The model file and vignette use `Storset_2014_tacrolimus` as
-  the canonical name to match the published year.
+- **Publication year.** The source publication appeared in Br J Clin
+  Pharmacol 78(3) (2014; accepted 16 February 2014, published online 20
+  February 2014, in print September 2014). The model file and vignette
+  use `Storset_2014_tacrolimus` as the canonical name to match the
+  published year.

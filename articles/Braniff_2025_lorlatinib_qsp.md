@@ -61,8 +61,8 @@ ui  <- rxode2::rxode(mod)
 
 Every model equation and every `ini()` parameter, with its location in
 the source. “Supplement” refers to the Supporting Information of Braniff
-2025 (`PSP4-14-268-s001.docx`, retrieved from the Europe PMC open-access
-supplementary-file endpoint for PMC11812934).
+2025 (`PSP4-14-268-s001.docx`, published with the open-access article,
+PMC11812934).
 
 | Component | Source |
 |:---|:---|

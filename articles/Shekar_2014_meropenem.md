@@ -111,15 +111,15 @@ regimens (500 mg, 1 g, 2 g IV q8h, each over 30 minutes). All five CrCL
 simulations correspond to non-RRT patients (`RRT_CRRT_STATUS = 0`); the
 model’s RRT branch uses the fixed `TVCL = 5.1 L/h` and so is simulated
 separately below. The published simulations used n = 1,000 per
-condition; the vignette uses n = 100 per condition to stay inside the
-5-minute pkgdown render budget while still resolving the median and
+condition; the vignette uses n = 100 per condition to keep the render
+time under 5 minutes while still resolving the median and
 10th-percentile reliably.
 
 ``` r
 
 set.seed(20260518)
 
-# downsampled from 200 for pkgdown vignette build budget (Monte-Carlo
+# downsampled from 200 to keep the render time short (Monte-Carlo
 # percentiles remain stable; see Assumptions note)
 n_per_combo  <- 100L
 crcl_levels  <- c(20, 50, 80, 120, 180)  # mL/min
@@ -605,11 +605,10 @@ observed Cmin of 4.9 mg/L.
   `mg/L`; no scale factor is applied.
 
 - **Virtual cohort uses n = 100 per CrCL / dose condition (vs n = 1,000
-  in the paper).** The vignette has a 5-minute pkgdown render budget; n
-  = 100 per condition with 21 doses per subject and 17 sampling points
-  per dosing interval keeps the render under that budget while still
-  resolving the median and 10th-percentile trough comparison to within
-  Monte-Carlo noise.
+  in the paper).** n = 100 per condition with 21 doses per subject and
+  17 sampling points per dosing interval keeps the render time under 5
+  minutes while still resolving the median and 10th-percentile trough
+  comparison to within Monte-Carlo noise.
 
 - **Table 3 reproduction – absolute magnitudes diverge from the paper at
   higher CrCL; the packaged model reproduces the observed Table 1 Cmin

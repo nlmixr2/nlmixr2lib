@@ -1672,17 +1672,14 @@ residual difference).
 
 ## Assumptions and deviations
 
-- **Supplement could not be downloaded during extraction.** The
-  PMC-hosted supplementary file (Word document `clpt201326x1.doc`) sits
-  behind a JavaScript proof-of-work challenge that could not be solved
-  when this model was built, and the Europe PMC mirror returned HTTP/2
-  stream errors for the same file. The main paper Table 2 (Population
-  estimate column), Methods (p.447), and Results (p.444-445) contain the
-  full parameter list, model-structure narrative, and covariate
-  equation, so the extraction proceeds from the main publication. Should
-  the supplement become accessible, a reviewer should confirm the
-  off-diagonal IIV interpretation (correlation vs. covariance, see
-  below).
+- **Supplement not available.** The PMC-hosted supplementary file (Word
+  document `clpt201326x1.doc`) was not available when this model was
+  built. The main paper Table 2 (Population estimate column), Methods
+  (p.447), and Results (p.444-445) contain the full parameter list,
+  model-structure narrative, and covariate equation, so the extraction
+  proceeds from the main publication. Should the supplement become
+  accessible, a reviewer should confirm the off-diagonal IIV
+  interpretation (correlation vs. covariance, see below).
 
 - **IIV off-diagonal interpretation.** Hendriksen 2013 Table 2 reports
   the off-diagonal entry between `etalcl` and `etalvc` as

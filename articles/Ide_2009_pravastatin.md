@@ -400,6 +400,6 @@ structural mismatch and are worth investigating rather than tuning.
   haplotype frequencies and the underlying enterohepatic-circulation
   parameters generalise.
 - **Vignette uses 50 subjects per stratum.** Small enough to render the
-  vignette in well under the 5-minute pkgdown gate, large enough to give
-  stable VPC percentiles and pooled NCA summaries. Ide 2009 used a
-  200-replicate bootstrap of the original 57-subject dataset.
+  vignette in well under 5 minutes, large enough to give stable VPC
+  percentiles and pooled NCA summaries. Ide 2009 used a 200-replicate
+  bootstrap of the original 57-subject dataset.

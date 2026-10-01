@@ -16,7 +16,7 @@
 - Article: <https://doi.org/10.1002/jcph.461> (PMC5008110, open access)
 - Supplement: Supplementary Table S1 (demographics) and Supplementary
   Figures S2-S6, available from the article’s landing page and from
-  EuropePMC’s `supplementaryFiles` endpoint for PMC5008110.
+  Europe PMC (PMC5008110).
 
 Burns 2015 is the first tenofovir / tenofovir-diphosphate population PK
 model developed **solely from healthy participants** – the

@@ -581,12 +581,11 @@ Which comparisons are gated, and which are recorded as known deviations.
 
 - **No inter-individual variability is carried.** Methods 2.3 declares
   lognormal random effects on all parameters, but no variance, SD or CV%
-  is reported for any parameter, and the EuropePMC supplementary bundle
-  for PMC11982744 contains only the six publisher figure files.
-  Inventing variances is not permitted, so both models are typical-value
-  only. The etas are omitted rather than written as `~ fixed(0)`,
-  because a zero-variance diagonal makes OMEGA singular and breaks
-  rxSolve’s Cholesky sampler.
+  is reported for any parameter, and the only files deposited with
+  PMC11982744 are the six publisher figure files. Inventing variances is
+  not permitted, so both models are typical-value only. The etas are
+  omitted rather than written as `~ fixed(0)`, because a zero-variance
+  diagonal makes OMEGA singular and breaks rxSolve’s Cholesky sampler.
 
 - **Residual error structure is carried but its magnitude is not.**
   Equation 7 declares a combined additive-plus-proportional model;
@@ -630,11 +629,10 @@ Which comparisons are gated, and which are recorded as known deviations.
 
 - **Digitised comparison values.** Every “published” number compared
   against in this vignette was read on-screen from the publisher’s
-  native-resolution figure files (obtained from the EuropePMC
-  `supplementaryFiles` bundle for PMC11982744), because Zhang 2025
-  tabulates no NCA or peak values. Peak times carry roughly +/- 15%
-  uncertainty from gridline resolution and peak heights somewhat more;
-  the assertion tolerances are sized accordingly.
+  native-resolution figure files (deposited with PMC11982744), because
+  Zhang 2025 tabulates no NCA or peak values. Peak times carry roughly
+  +/- 15% uncertainty from gridline resolution and peak heights somewhat
+  more; the assertion tolerances are sized accordingly.
 
 ## Errata and inconsistencies in the source
 

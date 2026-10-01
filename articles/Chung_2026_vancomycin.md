@@ -746,18 +746,17 @@ trough of the virtual validation cohort.
   target-attainment split above is not reproduced.
 - **The upstream paper was not available.** Chung E, Seto W,
   *Pharmacotherapy* 2023;43:1262-1276 (<doi:10.1002/phar.2865>) is the
-  model-development publication. Unpaywall reports it as open access but
-  the Wiley PDF endpoint returns HTTP 403 to automated retrieval, so it
-  was not available when this model was built; when it is, the IIV and
-  residual error should be added to this model file.
+  model-development publication. It was not available when this model
+  was built; when it is, the IIV and residual error should be added to
+  this model file.
 - **The Chung 2026 supplement was not available.** Supplementary Table
   S2 (“Equations of population pharmacokinetic models of vancomycin in
-  neonates”) is behind the MDPI supplement endpoint, which returns
-  HTTP 403. It tabulates the CL and V equations of all 33 compared
-  models; the Chung 2023 equations reproduced here are printed in full
-  in the main text, so nothing needed for this extraction is missing.
-  The other 32 models in that table are other authors’ work and are out
-  of scope for this extraction (several are already in `nlmixr2lib`,
+  neonates”) was not available when this model was built. It tabulates
+  the CL and V equations of all 33 compared models; the Chung 2023
+  equations reproduced here are printed in full in the main text, so
+  nothing needed for this extraction is missing. The other 32 models in
+  that table are other authors’ work and are out of scope for this
+  extraction (several are already in `nlmixr2lib`,
   e.g. `MarquesMinana_2010_vancomycin`).
 - **The units of the two leading coefficients are inferred, not
   printed.** Chung 2026 gives the units of WT, PMA and SCr but not of CL

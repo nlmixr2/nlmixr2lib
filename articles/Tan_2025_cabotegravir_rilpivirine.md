@@ -60,8 +60,7 @@ mod_rpv <- readModelDb("Tan_2025_rilpivirine")
   inter-occasion variability across the three study injections.
 - Article: <https://doi.org/10.1093/ofid/ofaf614>
 - Supplement (Supplementary Figures 1-4 only; no control stream was
-  deposited):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12547498/supplementaryFiles>
+  deposited): <https://europepmc.org/article/PMC/PMC12547498>
 
 ### What the paper is about
 

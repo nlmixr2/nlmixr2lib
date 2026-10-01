@@ -965,17 +965,15 @@ stopifnot(
   particular there is **no allometric weight scaling** in this model,
   which is why the `Horita_2018_isoniazid` cross-check above has to
   supply the 0.75 exponent externally.
-- **The supplement is not obtainable and is not needed.** Europe PMC
-  reports `Article with id PMC5346858 is not open access one` for the
-  supplementary-file endpoint (a control PMCID returned a valid archive
-  from the same endpoint, so this is a missing deposit rather than a
-  service outage). The supplement holds Table S1 (per-participant `NAT2`
-  alleles), Table S2 (`NAT2` gene positions), Figure S1 (goodness-of-fit
-  plots) and Figure S2 (visual predictive checks) – no parameter
-  estimates. Every `ini()` value comes from Table 2 of the main article,
-  so no parameter is missing. The absent Figure S2 is the one validation
-  target that could not be reproduced directly; the simulated profiles
-  above stand in for it.
+- **The supplement is not obtainable and is not needed.** The supplement
+  is not deposited with the PMC record (PMC5346858) and was not
+  available when this model was built. It holds Table S1
+  (per-participant `NAT2` alleles), Table S2 (`NAT2` gene positions),
+  Figure S1 (goodness-of-fit plots) and Figure S2 (visual predictive
+  checks) – no parameter estimates. Every `ini()` value comes from Table
+  2 of the main article, so no parameter is missing. The absent Figure
+  S2 is the one validation target that could not be reproduced directly;
+  the simulated profiles above stand in for it.
 - **V/F is weakly identified in the source.** Table 2 reports V = 5.55 L
   with 48% RSE, a bootstrap 95% CI of 2.01 to 12.31 L, and 139.3% BSV.
   Reproduced faithfully, this makes the simulated peak concentration

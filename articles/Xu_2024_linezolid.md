@@ -1061,24 +1061,23 @@ table closely; no alternative reading of the printed model does.
   Results text. Resolved as described under Assumptions above.
 - **The supplement contains no final-model parameter.** The supplement
   (`474470.docx`, linked from the Dovepress article landing page; the
-  EuropePMC deposit for PMC11561734 carries only the article’s *own*
-  figure renderings `DDDT-18-5073-g0001..g0004` and no supplement) holds
-  the bioanalytical methods, Table S1 and Table S2. Every final
-  estimate, covariate coefficient and centering value remains in Table 3
-  or the p. 5078 equation. Table S1 supplies the PPK cohort’s own
-  baseline characteristics, used throughout above. Table S2 is the
-  covariate hypothesis-testing path, and it is **narrower than the
-  Methods describe**: the Methods specify stepwise forward inclusion
-  followed by backward elimination over a set of “potential covariates”,
-  but Table S2 tabulates only a basic model (OFV 1327.8), a full
-  covariate model carrying CL-CrCL and CL-age (1266.5), and the two
-  backward-elimination steps (+6.9 removing CL-age, +50.7 removing
-  CL-CrCL, both P \< 0.01). No forward-inclusion step and no rejected
-  candidate is tabulated, so the rejection of body weight – the one
-  screened covariate the paper names – rests on the Discussion prose
-  alone and cannot be checked against an OFV. The covariates that were
-  screened and rejected besides weight are not recoverable from any
-  available source.
+  PMC deposit for PMC11561734 carries only the article’s *own* figure
+  renderings `DDDT-18-5073-g0001..g0004` and no supplement) holds the
+  bioanalytical methods, Table S1 and Table S2. Every final estimate,
+  covariate coefficient and centering value remains in Table 3 or the
+  p. 5078 equation. Table S1 supplies the PPK cohort’s own baseline
+  characteristics, used throughout above. Table S2 is the covariate
+  hypothesis-testing path, and it is **narrower than the Methods
+  describe**: the Methods specify stepwise forward inclusion followed by
+  backward elimination over a set of “potential covariates”, but Table
+  S2 tabulates only a basic model (OFV 1327.8), a full covariate model
+  carrying CL-CrCL and CL-age (1266.5), and the two backward-elimination
+  steps (+6.9 removing CL-age, +50.7 removing CL-CrCL, both P \< 0.01).
+  No forward-inclusion step and no rejected candidate is tabulated, so
+  the rejection of body weight – the one screened covariate the paper
+  names – rests on the Discussion prose alone and cannot be checked
+  against an OFV. The covariates that were screened and rejected besides
+  weight are not recoverable from any available source.
 - **The paper’s Discussion misstates the clearance unit** as “The
   estimated linezolid clearance was 2.7 L” (p. 5082); Table 3 and the
   final-model equation both give L/h. Read as a typographical slip.

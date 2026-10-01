@@ -241,10 +241,6 @@ AUCinf ~= 49 mg.h/L).
 
 ## Assumptions and deviations
 
-- **Drug-name correction**: the metadata this model was built from
-  reported `drug: "CPT: Pharmacometrics & Sys"`, which is the journal
-  name. The paper’s title and Abstract identify dapsone as the modeled
-  drug; the file is named `Hall_2017_dapsone.R` accordingly.
 - **MARS-style covariate model**: Hall 2017 fit individual posthoc PK
   estimates with MLEM in ADAPT 5 and then applied a MARS regression to
   express Ka, CL, and Vc as additive linear combinations of hinge basis

@@ -22,8 +22,7 @@
 - Supplement (`DataSheet1.docx`: Supplementary Tables S1-S5 and Figures
   S1-S3), which holds the final-model parameter table:
   <https://www.frontiersin.org/articles/10.3389/fphar.2025.1671652/full#supplementary-material>.
-  It is also served as part of the open-access supplementary bundle at
-  `https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12477134/supplementaryFiles`.
+  It is also published with the open-access article (PMC12477134).
 
 Shen 2025 is a two-layer paper. The **first** layer, extracted here, is
 a conventional NONMEM population pharmacokinetic model of oral

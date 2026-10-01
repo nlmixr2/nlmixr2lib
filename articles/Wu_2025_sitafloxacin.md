@@ -230,10 +230,9 @@ mod
 #>     # i.e. an inter-occasion variability term. The paper never states which
 #>     # structural parameter carries it, and never defines what an occasion is.
 #>     # The Section 2.2 display equations account for eta1, eta2 and eta3 only;
-#>     # eta4 appears nowhere in them. No supplement or control stream is
-#>     # available (EuropePMC returns HTTP 500 for this PMCID's
-#>     # supplementaryFiles endpoint and the Frontiers file endpoints 404), and
-#>     # the supplement's documented contents are a study-design table and mean
+#>     # eta4 appears nowhere in them. No supplement or control stream was
+#>     # available when this model was built, and the supplement's documented
+#>     # contents are a study-design table and mean
 #>     # concentration-time figures, neither of which would place an eta.
 #>     # Assigning it to CL, D1 or F would be inventing model structure, so the
 #>     # term is omitted and its reported value preserved here instead. See the
@@ -321,7 +320,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x564d8d27db38>
+#> <environment: 0x55e764e4cdf0>
 ```
 
 ## Population

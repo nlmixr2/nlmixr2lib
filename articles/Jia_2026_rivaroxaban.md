@@ -201,7 +201,7 @@ single observed dose, these are single-dose observations at nominal 2,
 # format(c(5, 7.5), trim = TRUE) gives "5.0" "7.5" while format(5, trim = TRUE)
 # gives "5". Every dose label in this vignette therefore goes through this
 # elementwise helper, so labels built from a vector and from a scalar agree.
-# (Failure pattern 10: a silent label mismatch NAs out every per-arm statistic.)
+# (A silent label mismatch NAs out every per-arm statistic.)
 mg_label <- function(d, suffix) {
   paste0(vapply(d, format, character(1), trim = TRUE), suffix)
 }
@@ -413,7 +413,7 @@ coverage <- observed |>
   ) |>
   ungroup()
 
-# Guard against a vacuous pass (pattern 10): confirm the lookup found rows.
+# Guard against a vacuous pass: confirm the lookup found rows.
 stopifnot(nrow(coverage) == 8L, !anyNA(coverage$sim_q05), !anyNA(coverage$sim_q95))
 
 coverage |>
@@ -595,7 +595,7 @@ sim_ss <- rxode2::rxSolve(mod, events = events_ss,
                           keep = c("arm", "dose_mg")) |> as.data.frame()
 
 # Guard the label agreement explicitly: a mismatch would silently NA out `arm`
-# and every downstream per-arm statistic (failure pattern 10).
+# and every downstream per-arm statistic.
 stopifnot(setequal(unique(as.character(sim_ss$arm)), arm_levels))
 ```
 

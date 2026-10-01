@@ -24,8 +24,8 @@
 - Article: <https://doi.org/10.1089/nat.2022.0036>
 - PMC supplements:
   - Supplementary Table S1 (model equations):
-    <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10066765/supplementaryFiles>
-  - Supplementary Figures S1-S3 (individual fits): same archive
+    <https://europepmc.org/article/PMC/PMC10066765>
+  - Supplementary Figures S1-S3 (individual fits): same page
 
 `mRNA-3927` is an investigational lipid-nanoparticle (LNP) drug product
 containing two messenger RNAs that encode the PCCA and PCCB subunits of

@@ -14,8 +14,7 @@
 - Article: <https://doi.org/10.3390/pharmaceutics17121522> (open access,
   PMC12736522)
 - Supplement: `pharmaceutics-17-01522-s001.zip`, published with the
-  article and recovered from the Europe PMC `supplementaryFiles`
-  endpoint. It holds Table S1 (the 15 ODEs), Table S2 (the 42 flux and
+  article. It holds Table S1 (the 15 ODEs), Table S2 (the 42 flux and
   rule expressions) and Table S3 (the parameter values for all four
   virtual patients). **The main text prints Equations 1-6 only and
   contains no parameter values at all**, so the supplement is the model.

@@ -120,7 +120,7 @@ regimen is given its own disjoint `id` block (per the package’s
 multi-cohort guidance) so `rxSolve` does not silently merge subjects
 across regimens. The observation grid is dense in the first week (where
 vitreous-to-serum egress dominates) and coarse afterward to keep the
-simulation under the pkgdown vignette time budget.
+simulation’s render time short.
 
 ``` r
 
@@ -430,8 +430,8 @@ terminal half-life per subject.
 
 suppressPackageStartupMessages(library(PKNCA))
 
-# Use a smaller PKNCA cohort to keep the vignette inside the pkgdown
-# 5-minute time budget; 30 subjects is sufficient for the apparent
+# Use a smaller PKNCA cohort to keep the vignette's render time under
+# 5 minutes; 30 subjects is sufficient for the apparent
 # terminal-half-life check that is the headline NCA result.
 pknca_cohort <- cohort |>
   dplyr::slice(seq_len(30L)) |>

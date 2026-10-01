@@ -134,10 +134,10 @@ n_subj <- 100  # downsampled from 300 for vignette build budget; VPC bands stay 
 
 cohort <- tibble::tibble(
   id     = seq_len(n_subj),
-  WT     = pmin(pmax(rnorm(n_subj, mean = 82.9, sd = 18),  45, 150)),
-  AGE    = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 12),  18,  90)),
+  WT     = pmin(pmax(rnorm(n_subj, mean = 82.9, sd = 18),  45), 150),
+  AGE    = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 12),  18),  90),
   CONMED_STATIN = rbinom(n_subj, size = 1, prob = 0.80),
-  FPCSK9 = pmin(pmax(rnorm(n_subj, mean = 72.9, sd = 120), 0,  400))
+  FPCSK9 = pmin(pmax(rnorm(n_subj, mean = 72.9, sd = 120), 0),  400)
 )
 ```
 
@@ -234,7 +234,7 @@ ggplot(vpc, aes(time, Q50, colour = treatment, fill = treatment)) +
     x = "Time (days)",
     y = "Alirocumab Cc (mg/L)",
     title = "Simulated 2.5-50-97.5 percentile profiles: 75 vs 150 mg SC Q2W",
-    caption = "Virtual hypercholesterolemic cohort (N = 300 per arm); first 8 Q2W cycles."
+    caption = paste0("Virtual hypercholesterolemic cohort (N = ", n_subj, " per arm); first 8 Q2W cycles.")
   ) +
   theme_minimal()
 ```
@@ -404,11 +404,11 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
-#>               0           14 150mg_Q2W 100        97.6 [54.5] 10.6 [47.0]
-#>               0           14  75mg_Q2W 100        41.8 [47.6] 4.64 [40.1]
+#>               0           14 150mg_Q2W 100         216 [69.2] 20.0 [57.7]
+#>               0           14  75mg_Q2W 100        86.2 [59.9] 8.17 [50.0]
 #>  Cmin (mg/L)        Tmax (day)  Cav (mg/L)
-#>  3.13 [84.5] 3.00 [1.00, 6.00] 6.97 [54.5]
-#>  1.28 [76.2] 3.00 [1.00, 6.00] 2.98 [47.6]
+#>   9.55 [104] 4.00 [1.00, 6.00] 15.4 [69.2]
+#>  3.56 [90.8] 4.00 [1.00, 6.00] 6.15 [59.9]
 #> 
 #> Caption: AUClast, Cmax, Cmin, Cav: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
 ```

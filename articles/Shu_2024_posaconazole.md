@@ -448,7 +448,7 @@ set.seed(20240824)
 sim_pta <- rxode2::rxSolve(mod, events = events_pta, omega = mod$omega,
                            keep = c("arm"), returnType = "data.frame",
                            maxsteps = 1e6)
-#> [====|====|====|====|====|====|====|====|====|====] 0:16:28
+#> [====|====|====|====|====|====|====|====|====|====] 0:15:53
 stopifnot(dplyr::n_distinct(round(sim_pta$cl, 8)) > 1L)
 
 pta <- sim_pta |>
@@ -612,7 +612,7 @@ set.seed(20240824)
 sim_alt <- rxode2::rxSolve(mod_alt, events = events_pta, omega = mod_alt$omega,
                            keep = c("arm"), returnType = "data.frame",
                            maxsteps = 1e6)
-#> [====|====|====|====|====|====|====|====|====|====] 0:06:39
+#> [====|====|====|====|====|====|====|====|====|====] 0:06:16
 stopifnot(dplyr::n_distinct(round(sim_alt$cl, 8)) > 1L)
 
 alt_rec <- sim_alt |>

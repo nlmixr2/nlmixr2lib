@@ -16,7 +16,7 @@
 
 - Supplement (Data S1-S9, including the Stan model files and the NONMEM
   control stream used below to resolve the allometric normalizer):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11812939/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC11812939>
 
 Somatrogon (NGENLA) is a recombinant long-acting growth hormone given as
 a once-weekly subcutaneous injection for growth hormone deficiency (GHD)
@@ -365,7 +365,7 @@ readModelDb("Wang_2025_somatrogon")
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x55d5b9d594d0>
+#> <environment: 0x55aa0f45f468>
 ```
 
 ## Source trace

@@ -455,9 +455,9 @@ ggplot(sim_stoch_q, aes(day, p50)) +
 
 - **Residual error encoding.** The source paper reports the residual
   error as “additive on log-scale (natural log)” with CV = 25.5%. Per
-  the package’s validation checklist (NONMEM “additive on log-scale” is
-  equivalent to proportional on the linear scale), the packaged model
-  encodes this as `PLT ~ prop(propSd)` with `propSd = 0.255`.
+  the standing convention (NONMEM “additive on log-scale” is equivalent
+  to proportional on the linear scale), the packaged model encodes this
+  as `PLT ~ prop(propSd)` with `propSd = 0.255`.
 
 - **Power-function drug effect is unbounded.**
   `E_drug = alpha * CP_OXA_MGL^beta` with alpha = 0.881 and beta = 2.63

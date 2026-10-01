@@ -116,9 +116,8 @@ below collects the whole model in one place.
 by every text converter (it does not survive plain-text extraction of
 the PDF and is absent from `pdftotext` output). It was recovered from
 the publisher’s equation graphic (`40262_2016_422_Article_Equ1.gif`,
-retrieved from the EuropePMC `supplementaryFiles` endpoint for
-PMC5107207) and confirmed by rendering page 8 of the PDF at 400 dpi. As
-printed:
+deposited with the article, PMC5107207) and confirmed by rendering page
+8 of the PDF at 400 dpi. As printed:
 
 ``` math
 \mathrm{Specific\ GFR}_{30-100y} =

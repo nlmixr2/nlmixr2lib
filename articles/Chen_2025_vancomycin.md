@@ -21,7 +21,7 @@
   supplement and are encoded as zero.
 - Article: <https://doi.org/10.1128/spectrum.00499-25>
 - Supplement (Fig. S1-S3, Tables S1-S3): `spectrum.00499-25-s0001.pdf`,
-  available from the EuropePMC supplementary-file bundle for
+  available with the open-access article,
   [PMC12054080](https://europepmc.org/article/MED/40162779)
 
 Chen 2025 is primarily a methods-comparison paper: it builds four
@@ -90,7 +90,7 @@ Equations 15 and 16 are typeset as images in the published article, and
 Charlson term ambiguous in extracted text. The encoding used here – the
 whole product `-0.151 * (CCI/5.62)` inside the exponential – was
 confirmed against the publisher’s own equation image
-`spectrum.00499-25.m015.jpg` in the EuropePMC supplementary bundle.
+`spectrum.00499-25.m015.jpg` deposited with the article.
 
 ## Virtual cohort
 

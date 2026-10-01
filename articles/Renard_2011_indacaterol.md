@@ -456,11 +456,6 @@ of the curve below the MCID.
 
 ## Assumptions and deviations
 
-- **Drug name correction.** The metadata this model was built from names
-  drug = “Respiratory Research”, which is the journal name. The paper’s
-  title is unambiguous: the modelled drug is indacaterol. The model file
-  uses the corrected name throughout.
-
 - **MBMA scope, not patient-level NLME.** The source paper reports two
   separate analyses (study-level Bayesian Emax meta-analysis across 11
   trials, and patient-level NLME on a 1,835-patient subset of two

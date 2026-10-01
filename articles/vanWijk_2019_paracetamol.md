@@ -19,8 +19,7 @@
   paracetamol absorption and elimination capacity across the 3-5 dpf
   window.
 - DDMORE Foundation Model Repository entry: `DDMODEL00000294`
-- Article (per the metadata this model was built from):
-  <https://doi.org/10.1038/s41598-019-38530-w>
+- Article: <https://doi.org/10.1038/s41598-019-38530-w>
 
 This is a PRECLINICAL (zebrafish) DDMORE entry. nlmixr2lib is primarily
 a library of human population-PK models; the maintainers confirmed the

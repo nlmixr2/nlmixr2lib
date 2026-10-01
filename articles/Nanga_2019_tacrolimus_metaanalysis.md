@@ -385,10 +385,9 @@ Simulated day-5 trough at 5 mg BID, POD 14, by cohort. {.table}
   text value (0.33 h) and the Table 3 value (0.32 h) for ALAG1 is
   resolved in favour of Table 3 (the actual parameter table).
 - **Vignette uses 100 subjects per cohort.** This is small enough to
-  render the vignette in well under the 5 minute pkgdown gate but large
-  enough to give stable percentiles for the cohort summary statistics.
-  The Nanga 2019 simulations used the actual model-building dataset (n =
-  281).
+  render the vignette in well under 5 minutes but large enough to give
+  stable percentiles for the cohort summary statistics. The Nanga 2019
+  simulations used the actual model-building dataset (n = 281).
 - **POD = 14 chosen for the simulation.** Two weeks post-transplant
   places the time-varying CL/F factor essentially at its asymptotic
   value of 2 (the sigmoid is 99.9% recovered at POD = 14 given Hill

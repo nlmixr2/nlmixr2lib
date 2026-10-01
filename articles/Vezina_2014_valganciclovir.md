@@ -410,9 +410,9 @@ ratio acting on a typical 33 kg child).
   the values reported in the original Br J Clin Pharmacol
   2014;78(2):343-352 publication.
 - **Vignette uses 200 subjects per cohort.** This is enough to produce
-  stable percentile envelopes and PKNCA summaries without exceeding the
-  pkgdown 5-minute render budget. The Vezina 2014 study itself analysed
-  N = 95 plasma profiles (sparse sampling, mean ~3 samples per subject).
+  stable percentile envelopes and PKNCA summaries while keeping the
+  render time under 5 minutes. The Vezina 2014 study itself analysed N =
+  95 plasma profiles (sparse sampling, mean ~3 samples per subject).
 - **Single-dose simulation for AUC(0,inf).** The PKNCA comparison uses a
   single-dose simulation rather than a multi-dose steady-state
   simulation because the published AUC(0,inf) was derived per-subject

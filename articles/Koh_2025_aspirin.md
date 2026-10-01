@@ -829,33 +829,33 @@ Note that this IC50 is not an in-vitro potency constant. It is the fixed
 inhibition constant of a turnover model in which aspirin acts
 irreversibly on circulating platelets, and a very low apparent value is
 what that structure produces. Koh 2025 attributes it to reference 19
-(Kimura 2014, <doi:10.1177/1076029613488934>); that article could not be
-retrieved here (the publisher blocks automated access), so the
-correction rests on the two legs above rather than on the cited source.
-\* **Errata – the capsule arms are under-predicted by roughly 5-9
-percentage points.** With every parameter taken verbatim from Table 1,
-the tablet arms reproduce Figure 3D closely (within about 3 pp) but the
-capsule arms fall short, most visibly at 80 mg. This implementation
-therefore exaggerates the capsule-versus-tablet gap relative to the
-published simulation while preserving its direction. The formulation
-enters only through `ka`, which acts on the first-order arm carrying
-just 1 - fr = 31% of the dose, so the published gap is the more
-surprising of the two; the likely cause is a difference between Simulx’s
-and rxode2’s handling of the parallel zero-order plus first-order input
-rather than a transcription error, but the paper does not publish enough
-detail to settle it. No parameter was tuned to close the gap. \*
-**Errata – the Discussion’s per-formulation steady-state values are
-internally inconsistent with Figure 3D.** The Discussion states 87.7%
-(capsule) and 89.3% (tablet) at 160 mg, and 84.9% (capsule) and 91.1%
-(tablet) at 80 mg. Only three of those four are Figure 3D values: 87.74
-is capsule/160, 84.87 is capsule/80 and 91.11 is tablet/**160** (not
-tablet/80, which is 90.53), while 89.3 matches the formulation-pooled
-Figure 3C value for 160 mg rather than any tablet cell. Figure 3D, which
-labels every cell explicitly, is used as the answer key here. \* **The
-zero-order absorbed fraction is stored as its complement.** Koh 2025
-reports `fr` = 0.69 as the fraction absorbed by the **zero-order** arm.
-The library canonical `fdepot` is the fraction absorbed via the depot,
-i.e. the **first-order** arm, so the model file stores
+(Kimura 2014, <doi:10.1177/1076029613488934>); that article was not
+available when this model was built, so the correction rests on the two
+legs above rather than on the cited source. \* **Errata – the capsule
+arms are under-predicted by roughly 5-9 percentage points.** With every
+parameter taken verbatim from Table 1, the tablet arms reproduce Figure
+3D closely (within about 3 pp) but the capsule arms fall short, most
+visibly at 80 mg. This implementation therefore exaggerates the
+capsule-versus-tablet gap relative to the published simulation while
+preserving its direction. The formulation enters only through `ka`,
+which acts on the first-order arm carrying just 1 - fr = 31% of the
+dose, so the published gap is the more surprising of the two; the likely
+cause is a difference between Simulx’s and rxode2’s handling of the
+parallel zero-order plus first-order input rather than a transcription
+error, but the paper does not publish enough detail to settle it. No
+parameter was tuned to close the gap. \* **Errata – the Discussion’s
+per-formulation steady-state values are internally inconsistent with
+Figure 3D.** The Discussion states 87.7% (capsule) and 89.3% (tablet) at
+160 mg, and 84.9% (capsule) and 91.1% (tablet) at 80 mg. Only three of
+those four are Figure 3D values: 87.74 is capsule/160, 84.87 is
+capsule/80 and 91.11 is tablet/**160** (not tablet/80, which is 90.53),
+while 89.3 matches the formulation-pooled Figure 3C value for 160 mg
+rather than any tablet cell. Figure 3D, which labels every cell
+explicitly, is used as the answer key here. \* **The zero-order absorbed
+fraction is stored as its complement.** Koh 2025 reports `fr` = 0.69 as
+the fraction absorbed by the **zero-order** arm. The library canonical
+`fdepot` is the fraction absorbed via the depot, i.e. the
+**first-order** arm, so the model file stores
 `logitfdepot = logit(1 - 0.69)` and the zero-order arm takes
 `1 - fdepot`. Because `logit(1 - p) = -logit(p)`, the logit-normal IIV
 variance carries over unchanged. \* **IIV variances are the published

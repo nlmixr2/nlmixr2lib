@@ -4,9 +4,8 @@
 
 - Article: <https://doi.org/10.1111/cts.13894> (PMC11283281)
 - Supporting Information (Table S1 model equations, Figure S1 individual
-  profiles):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11283281/supplementaryFiles>
-  (file `CTS-17-e13894-s001.pdf`)
+  profiles): <https://europepmc.org/article/PMC/PMC11283281> (file
+  `CTS-17-e13894-s001.pdf`)
 
 Two model files come out of this paper:
 

@@ -56,7 +56,7 @@ The six packaged fits and their ODE states. {.table}
   2005;96:182-192.
 - Article: <https://doi.org/10.1002/psp4.70048>
 - Supplement (Data S1: derivations, Table S1, Figures S1-S3):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12256580/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12256580>
 
 ## Population
 

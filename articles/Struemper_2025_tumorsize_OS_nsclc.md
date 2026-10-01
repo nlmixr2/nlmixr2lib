@@ -198,16 +198,16 @@ and the OS hazard returns 1/week with `t` in weeks.
 ## Virtual cohort: representative treatment arms
 
 The full paper analysis includes 12 treatment categories. To keep this
-vignette under the pkgdown wall-clock budget, we simulate a 5-arm
-sub-panel that spans the main mechanism classes: pembrolizumab
-monotherapy (`TRT = 1`, the canonical default and largest PD-1 cohort),
-feladilimab monotherapy (`TRT = 2`, an anti-ICOS therapy whose `kse` is
-essentially zero so the Stein model collapses to monotonic growth),
-docetaxel chemotherapy (`TRT = 3`), dostarlimab + chemotherapy
-(`TRT = 7`, a PD-1 + chemo combination), and pembrolizumab +
-chemotherapy (`TRT = 8`, a second PD-1 + chemo combination). All 12 arms
-are reachable by passing the corresponding `TRT` integer in the event
-table; no parameter override is required.
+vignette’s render time short, we simulate a 5-arm sub-panel that spans
+the main mechanism classes: pembrolizumab monotherapy (`TRT = 1`, the
+canonical default and largest PD-1 cohort), feladilimab monotherapy
+(`TRT = 2`, an anti-ICOS therapy whose `kse` is essentially zero so the
+Stein model collapses to monotonic growth), docetaxel chemotherapy
+(`TRT = 3`), dostarlimab + chemotherapy (`TRT = 7`, a PD-1 + chemo
+combination), and pembrolizumab + chemotherapy (`TRT = 8`, a second
+PD-1 + chemo combination). All 12 arms are reachable by passing the
+corresponding `TRT` integer in the event table; no parameter override is
+required.
 
 We use a baseline-covariate distribution loosely mirroring the Struemper
 2025 pooled cohort (Table S3): NTARGET_GE3 ~ 25 % (since the population
@@ -763,5 +763,5 @@ flowing through the TS-OS link. {.table}
   representative arms (400 simulated subjects total). The source paper
   analysed n = 786 across 12 arms; the smaller vignette cohort is a
   render-time concession and provides a noisy KM tail beyond ~78 weeks.
-  Increase `n_per_arm` to 200 for a tighter KM envelope (within the
-  pkgdown 5-minute budget).
+  Increase `n_per_arm` to 200 for a tighter KM envelope (still rendering
+  in under 5 minutes).

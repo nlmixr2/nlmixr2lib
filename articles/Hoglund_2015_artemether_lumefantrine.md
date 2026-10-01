@@ -158,8 +158,8 @@ Build a per-arm event table. AM/DHA observations are needed only for the
 first 72 h; LF observations are needed all the way to ~37 days (894 h)
 to compute the terminal LF AUC72-894 that Hoglund 2015 uses as the
 lumefantrine dose-optimisation endpoint. The grid is dense around dose
-times and progressively sparser later, keeping the vignette under the
-5-minute render budget.
+times and progressively sparser later, keeping the vignette’s render
+time under 5 minutes.
 
 ``` r
 

@@ -331,7 +331,7 @@ in the published figure.
 
 A small virtual cohort illustrates between-subject variability of the
 triptorelin PK and HPG-axis PD response. We use 20 subjects to keep the
-vignette under the 5-minute render budget.
+vignette’s render time under 5 minutes.
 
 ``` r
 

@@ -130,10 +130,10 @@ print(cohort_typical)
 
 For the stochastic VPC-style simulation used to replicate Figure 4 we
 use a virtual cohort of 200 subjects per group (Smythe 2012 used 1000;
-we down-sample to fit the pkgdown wall-clock budget and note the
-down-sampling in the Assumptions and deviations section). FFM is held at
-the population median (45 kg) and WT at the cohort median (55 kg); the
-IIV / IOV in the model generates the spread.
+we down-sample to keep the render time short and note the down-sampling
+in the Assumptions and deviations section). FFM is held at the
+population median (45 kg) and WT at the cohort median (55 kg); the IIV /
+IOV in the model generates the spread.
 
 ``` r
 
@@ -508,11 +508,10 @@ Simulated AUC0-24 and CL/F vs Smythe 2012 Table 4. {.table}
   for consistency with the family; the paper’s USAN spelling is
   preserved in the reference field.
 - **Stochastic-cohort size.** Smythe 2012 Figure 4 used 1000 subjects
-  per group; the vignette uses 200 subjects per group to keep the
-  pkgdown render under the 5-minute wall-clock budget. The
-  Cmax-above-8-mg/L percentages will track the published values to
-  within Monte Carlo error at this cohort size, but the box-plot tails
-  will be slightly tighter than the published figure.
+  per group; the vignette uses 200 subjects per group to keep the render
+  under 5 minutes. The Cmax-above-8-mg/L percentages will track the
+  published values to within Monte Carlo error at this cohort size, but
+  the box-plot tails will be slightly tighter than the published figure.
 - **Dosing schedule.** The trial dosed 6 days per week (Smythe 2012
   Methods “Patients” paragraph 1); the published Figures 3 and 4
   simulations used 7 days per week (Figure 3 caption, “rifampin was

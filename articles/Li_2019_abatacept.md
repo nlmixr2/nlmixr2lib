@@ -137,11 +137,11 @@ n_subj <- 150         # downsampled from 400 for vignette build budget; VPC band
 
 cohort <- tibble::tibble(
   id              = seq_len(n_subj),
-  WT              = pmin(pmax(rnorm(n_subj, mean = 70, sd = 18),   40, 160)),
-  AGE             = pmin(pmax(rnorm(n_subj, mean = 50, sd = 13),   18,  90)),
-  ALB             = pmin(pmax(rnorm(n_subj, mean = 40, sd =    3.5), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_subj, mean = 90, sd = 25),   30, 180)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_subj, mean = 16, sd = 6)),   0,  28)),
+  WT              = pmin(pmax(rnorm(n_subj, mean = 70, sd = 18),   40), 160),
+  AGE             = pmin(pmax(rnorm(n_subj, mean = 50, sd = 13),   18),  90),
+  ALB             = pmin(pmax(rnorm(n_subj, mean = 40, sd =    3.5), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_subj, mean = 90, sd = 25),   30), 180),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_subj, mean = 16, sd = 6)),   0),  28),
   SEXF            = rbinom(n_subj, 1, 0.78),         # RA populations are ~75-80% female
   CONMED_NSAID    = rbinom(n_subj, 1, 0.55),         # Li 2019 Methods: NSAID use common in RA cohort
   FORM_ABA_PHASE2 = 0L                               # Phase-3 commercial SC formulation for labelled regimen
@@ -518,7 +518,7 @@ nca_sc <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_sc, dose_obj_sc, intervals = i
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 summary(nca_sc)
 #>  start end treatment   N auclast        cmax        cmin              tmax cav
-#>      0   7 SC_125_QW 150      NC 20.0 [38.3] 15.5 [45.1] 3.00 [1.00, 3.00]  NC
+#>      0   7 SC_125_QW 150      NC 31.9 [42.2] 25.7 [47.5] 3.00 [1.00, 3.00]  NC
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -543,9 +543,9 @@ intervals_iv <- data.frame(start = 0, end = tau_iv,
 nca_iv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_iv, dose_obj_iv, intervals = intervals_iv))
 summary(nca_iv)
 #>  start end            treatment   N     auclast       cmax        cmin
-#>      0  28 IV_weight_tiered_Q4W 150 1350 [33.2] 226 [25.6] 14.5 [55.0]
+#>      0  28 IV_weight_tiered_Q4W 150 1480 [36.1] 230 [28.4] 18.2 [57.0]
 #>                  tmax         cav
-#>  0.000 [0.000, 0.000] 48.4 [33.2]
+#>  0.000 [0.000, 0.000] 52.8 [36.1]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -572,10 +572,14 @@ knitr::kable(pct_above, digits = 1,
   caption = "Fraction of virtual subjects with steady-state trough Cc >= 10 mg/L by regimen and weight group (Li 2019: ~90% across all groups).")
 ```
 
-| regimen              | wt_group |   N | pct_ge_10_mgL | median_Cmin |
-|:---------------------|:---------|----:|--------------:|------------:|
-| IV weight-tiered Q4W | \>100 kg | 150 |          77.3 |        14.9 |
-| SC 125 mg QW         | \>100 kg | 150 |          86.0 |        15.5 |
+| regimen              | wt_group  |   N | pct_ge_10_mgL | median_Cmin |
+|:---------------------|:----------|----:|--------------:|------------:|
+| IV weight-tiered Q4W | \<60 kg   |  44 |          84.1 |        16.2 |
+| IV weight-tiered Q4W | 60-100 kg |  99 |          82.8 |        18.2 |
+| IV weight-tiered Q4W | \>100 kg  |   7 |         100.0 |        25.5 |
+| SC 125 mg QW         | \<60 kg   |  44 |          97.7 |        32.0 |
+| SC 125 mg QW         | 60-100 kg |  99 |          96.0 |        25.3 |
+| SC 125 mg QW         | \>100 kg  |   7 |          85.7 |        20.6 |
 
 Fraction of virtual subjects with steady-state trough Cc \>= 10 mg/L by
 regimen and weight group (Li 2019: ~90% across all groups). {.table}
@@ -605,7 +609,7 @@ regimen and weight group (Li 2019: ~90% across all groups). {.table}
   demographics) is referenced in the paper but is not embedded in the
   PMC full text, so the virtual-cohort distributions are approximate: WT
   ~ N(70, 18) truncated to \[40, 160\]; AGE ~ N(50, 13) truncated to
-  \[18, 90\]; ALB ~ N(4.0, 0.35) truncated to \[2.5, 5.0\] g/dL; CRCL ~
+  \[18, 90\]; ALB ~ N(40, 3.5) truncated to \[25, 50\] g/L; CRCL ~
   N(90, 25) truncated to \[30, 180\]; SWOL_28JOINT ~ rounded N(16, 6)
   truncated to \[0, 28\]; SEXF = 78% female; CONMED_NSAID = 55%. The
   reference values match the Li 2019 Methods narrative; the dispersions
@@ -632,8 +636,10 @@ re-reading the source alongside this model should be aware of:
   factor of 1000 too low and is physiologically impossible. This is
   treated as a publication unit typo: the model codes the ALB reference
   as **4.0 g/dL**, which is clinically sensible and matches other
-  abatacept PK reports (e.g. the Orencia label). This unit is recorded
-  in `covariateData[[ALB]]$units` as `g/dL` with an explicit note.
+  abatacept PK reports (e.g. the Orencia label). The model takes `ALB`
+  in g/L (`covariateData[[ALB]]$units` is `g/L`) and converts it to g/dL
+  inline before applying this reference; the typo is recorded in
+  `covariateData[[ALB]]$notes`.
 - **Table 1B caption vs final-model equation (Table 1 caption and
   Results p. 249).** Table 1 is captioned *“Parameter Estimates for (A)
   the Structural Part of Final PPK Model for Abatacept and (B) the

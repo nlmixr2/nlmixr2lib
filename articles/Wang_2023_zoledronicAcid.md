@@ -346,7 +346,7 @@ recover <- function(delta) {
     dplyr::mutate(id = 1L, BMD_BL = BMD_BL_REF) |>
     dplyr::arrange(time, dplyr::desc(evid))
   s <- rxode2::rxSolve(mod_notol, events = ev) |> as.data.frame()
-  # Guard against a silently-ignored perturbation (pattern 10): if the bolus
+  # Guard against a silently-ignored perturbation: if the bolus
   # did not land, the first observation would already sit at BMD_BL and the
   # recovery assertion below would pass without testing anything.
   stopifnot(abs(s$BMD_LS[1] - (BMD_BL_REF + delta)) < 1e-9)
@@ -820,7 +820,7 @@ stopifnot(all(diff(annual_peaks$pct_peak_model) > 0))
 ``` r
 
 pk <- function(r) peaks$pct_peak_model[peaks$regimen == r]
-stopifnot(length(pk("5 mg single")) == 1L)   # guard the lookup (pattern 10)
+stopifnot(length(pk("5 mg single")) == 1L)   # guard the lookup
 
 claim <- function(text, achieved, pass, deviation = FALSE) {
   tibble::tibble(Claim = text, Achieved = achieved, Pass = pass, Deviation = deviation)
@@ -954,8 +954,8 @@ c(model_width_pp = band_width, paper_width_pp = band_width_paper)
 #> model_width_pp paper_width_pp 
 #>       3.891726       4.050000
 
-# Cohort-derived, so this is a loose MAGNITUDE bound, not a tight one
-# (pattern 12). It can still go red where it matters: reading omega^2 = 0.4541
+# Cohort-derived, so this is a loose MAGNITUDE bound, not a tight one.
+# It can still go red where it matters: reading omega^2 = 0.4541
 # additively rather than exponentially (omega = 0.674 ng/month on an EDK50 of
 # 41300 ng/month) collapses the width to ~0, and a factor-of-two error in
 # omega^2 moves it outside this range.

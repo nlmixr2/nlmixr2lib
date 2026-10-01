@@ -866,9 +866,8 @@ the last dose). {.table}
 
 - **Every parameter value comes from the Online Resource (ESM) Table 1,
   not the main article.** The main article prints no parameter estimates
-  at all. The ESM was retrieved from Springer’s static-content endpoint
-  and cross-checked against the EuropePMC `supplementaryFiles` copy for
-  PMC4449373; the two files are byte-identical.
+  at all. The ESM published by Springer and the copy deposited with
+  PMC4449373 are byte-identical.
 - **`etalvc` is encoded as `fixed(0)`.** Methods Sect. 2.2 states that
   “between-subject variability parameters were included for CL/F and
   Vd/F (data not shown)”, but ESM Table 1 reports a BSV estimate for

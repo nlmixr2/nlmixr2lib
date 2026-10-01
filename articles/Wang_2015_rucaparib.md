@@ -421,4 +421,4 @@ mg/m^2 range.
   multi-day trajectories shown alongside Day -7 in Figure 1 of Wang 2015
   requires setting up a 5-day daily dosing event table; this is
   straightforward but is not exercised in this vignette to keep the
-  render time well under the 5-minute pkgdown gate.
+  render time well under 5 minutes.

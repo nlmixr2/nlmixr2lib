@@ -445,7 +445,7 @@ mod
 #>     sur ~ add(addSd)
 #>   })
 #> }
-#> <environment: 0x557be953f1a0>
+#> <environment: 0x55aa0e645e60>
 ```
 
 ## Population
@@ -1163,17 +1163,17 @@ baseline-hazard scale with the authors.
 
 **The supplementary material was retrieved and does not settle the scale
 question.** The Frontiers supplementary-material link referenced in the
-article resolves to a single file in the EuropePMC open-access deposit
-(`supplementaryFiles` for PMC10176964), Supplementary Table 1_S,
-“Univariate and multivariate analysis of covariate effects on the hazard
-of recurrent IS after index IS”. It is a covariate model-building table
-only: univariate screening, forward inclusion and backward elimination,
-each reported as a change in objective function value with a p-value. It
-contains **no NONMEM control stream, no baseline-hazard parameter
-values, and no between-subject-variability estimate**, so it can neither
-confirm nor correct `theta1`, and it does not supply the missing BSV
-magnitude either. The two open questions above therefore remain open
-with every available source in hand.
+article resolves to a single file in the open-access deposit
+(PMC10176964), Supplementary Table 1_S, “Univariate and multivariate
+analysis of covariate effects on the hazard of recurrent IS after index
+IS”. It is a covariate model-building table only: univariate screening,
+forward inclusion and backward elimination, each reported as a change in
+objective function value with a p-value. It contains **no NONMEM control
+stream, no baseline-hazard parameter values, and no
+between-subject-variability estimate**, so it can neither confirm nor
+correct `theta1`, and it does not supply the missing BSV magnitude
+either. The two open questions above therefore remain open with every
+available source in hand.
 
 What the supplement does settle is the covariate screen. Fifteen
 candidates were tested univariately against a base objective function

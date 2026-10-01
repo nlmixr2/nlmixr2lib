@@ -360,8 +360,8 @@ cat("Expected active-arm sCr at t = 0: baseline * (1 + Emax) =",
   constant Cu = 125.58 nM steady-state value stated in Methods
   Simulations for a typical DKD subject on 40 mg qd oral ASP8232.
   Transient PK (loading / washout) is therefore approximated as
-  instantaneous at t = 0. A separate future task will register the
-  companion PK model so users can supply Cu(t) directly via
+  instantaneous at t = 0. The companion PK model is not yet in the
+  library; once it is, users can supply Cu(t) directly via
   [`modellib()`](https://nlmixr2.github.io/nlmixr2lib/reference/modellib.md).
 - **Chronic-eGFR-slope functional form**. Table 1 prints the
   chronic-effect implementation as a multiplicative factor

@@ -125,7 +125,7 @@ cov_tab <- tibble::tibble(
 infusion_h <- 20 / 60
 
 # Sampling grid: enough density to characterize the post-infusion decline
-# without exceeding the 5-minute vignette render budget.
+# while keeping the vignette's render time under 5 minutes.
 sample_times <- c(0,
                   seq(0.25, 1, by = 0.25),
                   seq(1.5, 6,  by = 0.5),

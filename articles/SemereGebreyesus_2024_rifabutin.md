@@ -778,8 +778,8 @@ stopifnot(all(maxb$achieved <= maxb$paper + 5))
 
 # The 2.5 mg/kg/day LPV/r dose is the one the paper concludes "resulted in
 # simulated exposures in line with those of adults". A cohort MEDIAN is not the
-# typical-value prediction under this model's large bioavailability BOV
-# (pattern 11), so the check is made on the typical value, which is also
+# typical-value prediction under this model's large bioavailability BOV,
+# so the check is made on the typical value, which is also
 # deterministic and therefore reproducible across thread counts.
 auc_2_5_typ <- check_identity(1, 2.5)$auc_parent_sim
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_desacetylrbn', 'etaiov_fdepot_1', 'etaiov_fdepot_2', 'etaiov_fdepot_3', 'etaiov_fdepot_4', 'etaiov_ka_1', 'etaiov_ka_2', 'etaiov_ka_3', 'etaiov_ka_4', 'etaiov_tlag_1', 'etaiov_tlag_2', 'etaiov_tlag_3', 'etaiov_tlag_4'

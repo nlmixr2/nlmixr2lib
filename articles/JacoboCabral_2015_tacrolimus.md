@@ -87,7 +87,7 @@ per-dose amount unless a specific dose level is being studied.
 
 set.seed(20150101)
 
-# Subjects per stratum -- small enough for the pkgdown 5-minute render gate.
+# Subjects per stratum -- small enough to render in under 5 minutes.
 n_per_stratum <- 75L
 
 # Build a single CYP3A5 x formulation stratum.
@@ -579,6 +579,6 @@ publication.
   dose-normalised CV% comparison in the validation section uses only the
   headline values quoted in the main text.
 - **Virtual cohort size n =75 per stratum.** Small enough to render the
-  vignette inside the pkgdown 5-minute gate, large enough to give stable
-  percentiles for the dose-normalised CV% comparison. The Jacobo-Cabral
-  2015 simulations used n = 1000.
+  vignette in under 5 minutes, large enough to give stable percentiles
+  for the dose-normalised CV% comparison. The Jacobo-Cabral 2015
+  simulations used n = 1000.

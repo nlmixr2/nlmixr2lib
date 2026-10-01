@@ -862,7 +862,7 @@ figure.
   starting at positive values. The two are reconciled by reading `E` as
   the reduction relative to the drug-free control (see above); no
   equation was modified.
-- No erratum or correction is recorded for this article. The EuropePMC
-  supplementary-file package for PMC10873176 contains the six article
-  figures as images only – there is no text supplement, no parameter
-  table and no control stream.
+- No erratum or correction is recorded for this article. The files
+  deposited with PMC10873176 are the six article figures as images only
+  – there is no text supplement, no parameter table and no control
+  stream.

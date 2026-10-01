@@ -733,7 +733,7 @@ differs from reference by \>20%. {.table}
 pct <- function(tbl) {
   v <- suppressWarnings(abs(as.numeric(gsub("[^0-9.eE+-]", "", tbl$`% diff`))))
   # A table whose every row is NA would make max(..., na.rm = TRUE) return -Inf
-  # and turn the gate below into one that cannot go red (pattern 10).
+  # and turn the gate below into one that cannot go red.
   stopifnot(nrow(tbl) > 0, sum(!is.na(v)) == nrow(tbl))
   v
 }

@@ -17,8 +17,8 @@ calls this a *sequential* E-R analysis; the two fits do not share random
 effects.
 
 - Article: <https://doi.org/10.1002/jcph.70092>
-- Supplement: retrieved from the Europe PMC open-access package for
-  PMC12649288 (`JCPH-65-1777-s001.pdf`)
+- Supplement: published with the open-access article, PMC12649288
+  (`JCPH-65-1777-s001.pdf`)
 
 &nbsp;
 

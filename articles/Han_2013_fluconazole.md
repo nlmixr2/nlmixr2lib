@@ -128,12 +128,12 @@ below reproduces the steady-state VPC design described in Han 2013
 Methods (1,000 virtual patients with the covariate composition of the
 original data set; concentrations simulated at the seven sampling time
 points 3, 5, 9, 24, 27, 48, and 51 h after the start of infusion). The
-vignette uses n = 200 per dose regimen (reduced from 1,000 to stay
-inside the 5-minute pkgdown render budget; the median, 5th, and 95th
-percentiles remain stable). The covariate composition is sampled to
-match the Han 2013 Table 1 marginal distributions: CRRT 25%, sepsis 48%,
-edema 33%, recent-postburn (\< 30 days) approximately 65% (consistent
-with mean postburn time 23 days and majority of subjects in the acute
+vignette uses n = 200 per dose regimen (reduced from 1,000 to keep the
+render time under 5 minutes; the median, 5th, and 95th percentiles
+remain stable). The covariate composition is sampled to match the Han
+2013 Table 1 marginal distributions: CRRT 25%, sepsis 48%, edema 33%,
+recent-postburn (\< 30 days) approximately 65% (consistent with mean
+postburn time 23 days and majority of subjects in the acute
 hypermetabolic window), weight log-normally distributed around mean 65.6
 kg, and CLCR log-normally distributed around mean 123.5 mL/min
 (truncated at the Table 1 range 21.6-282.7).

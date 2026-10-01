@@ -85,12 +85,12 @@ age is supplied at every observation row so it advances correctly over
 the 7-day simulation window (the paper computes PMA as the sum of GA
 days and PNA days, and CL scales with PMA via the power exponent 1.89).
 
-The paper used 1,000 patients per arm; the vignette uses 300 to stay
-inside the pkgdown build time budget while keeping Monte Carlo noise
-below ~3 percentage points on each target-attainment statistic. The
-canonical covariate names in the model are `WT` (kg) and `PAGE`
-(postmenstrual age in months); the cohort table below applies the
-required day-to-month conversion (`PAGE = PMA_days / 30.4375`).
+The paper used 1,000 patients per arm; the vignette uses 300 to keep the
+render time short while keeping Monte Carlo noise below ~3 percentage
+points on each target-attainment statistic. The canonical covariate
+names in the model are `WT` (kg) and `PAGE` (postmenstrual age in
+months); the cohort table below applies the required day-to-month
+conversion (`PAGE = PMA_days / 30.4375`).
 
 ``` r
 

@@ -16,11 +16,10 @@
 - Article: [CPT Pharmacometrics Syst Pharmacol
   2013;2(8):e63](https://doi.org/10.1038/psp.2013.41) (PMC3828005, CC
   BY-NC-ND).
-- Supplement: `psp201341x1.doc`, retrieved from the EuropePMC
-  open-access supplementary-files package for PMC3828005. It contains
-  one Berkeley Madonna listing headed `{HUMAN PBPK MODEL}` followed by
-  `{SPECIES SPECIFIC PARAMETERS}`, `{COMPOUND SPECIFIC PARAMETERS}` and
-  `{DOSING}`.
+- Supplement: `psp201341x1.doc`, published with the open-access article
+  (PMC3828005). It contains one Berkeley Madonna listing headed
+  `{HUMAN PBPK MODEL}` followed by `{SPECIES SPECIFIC PARAMETERS}`,
+  `{COMPOUND SPECIFIC PARAMETERS}` and `{DOSING}`.
 
 This is a **tutorial** paper, and the model extracted here is the one
 the authors deposited rather than either of the two worked examples in

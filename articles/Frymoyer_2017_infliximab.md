@@ -124,7 +124,7 @@ collects them in one place for review.
 | Source column | Canonical column used here |
 |----|----|
 | `WT` | `WT` |
-| `ALB` (g/dL) | `ALB` |
+| `ALB` (g/dL) | `ALB` (g/L) |
 | `ATI` (binary anti-drug antibody indicator) | `ADA_POS` |
 | `IMM` (binary “concomitant immunomodulator” indicator pooling purine analogue + methotrexate) | `CONMED_IMMUNOMOD` |
 
@@ -152,7 +152,7 @@ n_sub <- 200L
 cohort <- tibble(
   ID      = seq_len(n_sub),
   WT      = pmax(22, pmin(rlnorm(n_sub, log(53), 0.30), 120)),
-  ALB     = pmax(34, pmin(rnorm(n_sub, 43,    3.5), 48)),
+  ALB     = pmax(34, pmin(rnorm(n_sub, 43, 3.5), 48)),
   ADA_POS = rbinom(n_sub, 1, 0.12),
   CONMED_IMMUNOMOD = rbinom(n_sub, 1, 0.44)
 )
@@ -165,9 +165,9 @@ concentrations after 5, 7.5, or 10 mg/kg IV infliximab dosed every 4, 6,
 or 8 weeks. We simulate the same nine maintenance regimens. To reach
 steady state we administer 12 cycles of each regimen (16-24 weeks of
 dosing, more than 5 half-lives at typical pediatric CL) and read the
-trough immediately before the next scheduled dose. To keep the
-simulation within the 5-minute vignette gate, the simulation samples
-only the trough times rather than densely along the profile.
+trough immediately before the next scheduled dose. To keep the render
+time short, the simulation samples only the trough times rather than
+densely along the profile.
 
 ``` r
 
@@ -337,7 +337,7 @@ ggplot(fig2a, aes(x = ALB, y = Cc)) +
   geom_hline(yintercept = 3, linetype = "dotted", colour = "grey40") +
   scale_y_log10() +
   labs(
-    x = "Serum albumin (g/dL)",
+    x = "Serum albumin (g/L)",
     y = "Predicted trough at steady state (ug/mL)",
     title = "Replicates Frymoyer 2017 Figure 2A",
     subtitle = "5 mg/kg q8w; dotted line at 3 ug/mL trough target.",
@@ -367,7 +367,7 @@ alb_quartile <- function(alb) cut(alb, breaks = quantile(alb, c(0, 0.25, 0.50, 0
 pop_pknca <- tibble(
   ID      = 9000L + seq_len(n_pknca),
   WT      = pmax(22, pmin(rlnorm(n_pknca, log(53), 0.30), 120)),
-  ALB     = pmax(34, pmin(rnorm(n_pknca, 43,    3.5), 48)),
+  ALB     = pmax(34, pmin(rnorm(n_pknca, 43, 3.5), 48)),
   ADA_POS = 0L,
   CONMED_IMMUNOMOD = 0L
 ) |>

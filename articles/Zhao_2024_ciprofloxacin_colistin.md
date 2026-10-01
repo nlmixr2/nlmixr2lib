@@ -692,6 +692,5 @@ in the kidney. {.table}
 - **The extracted text lost every equation.** A plain-text extraction of
   the PDF preserves none of the equations (14 equation blocks are
   reduced to placeholders). All 18 equations were recovered from the
-  publisher’s rendered equation images in the EuropePMC
-  `supplementaryFiles` payload and cross-checked against the deposited
-  NONMEM control stream.
+  publisher’s rendered equation images deposited with the article and
+  cross-checked against the deposited NONMEM control stream.

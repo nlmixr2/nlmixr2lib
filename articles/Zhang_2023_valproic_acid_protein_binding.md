@@ -23,8 +23,8 @@ All six models are packaged, one file each:
 | `Zhang_2023_valproic_acid_exponent` | Model V | power function of daily dose on `CL/F` (Eq. 7) |
 
 The ten *reviewed* literature models are other authors’ work and are not
-part of this extraction; they are queued as primary papers separately.
-One of them (Williams 2012) is already in the library as
+part of this extraction; they are to be extracted separately from their
+primary papers. One of them (Williams 2012) is already in the library as
 `Williams_2012_valproic_acid_pediatric`.
 
 **Two families of strategy.** Models I, II and IV are mechanistic: they

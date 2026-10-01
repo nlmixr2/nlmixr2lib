@@ -14,7 +14,7 @@ reproduce the paper’s joint weight-status to NAFLD-risk prediction.
 
 - Article: <https://doi.org/10.1002/psp4.12292>
 - Open-access supplement (Europe PMC):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6027732/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6027732>
 - BMI model: Population prediction model for body mass index (BMI,
   kg/m^2) in 341 elderly Japanese health-screening participants (Oniki
   2018). BMI is parameterised as the typical value at age 70.8 years for

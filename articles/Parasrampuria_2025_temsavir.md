@@ -49,7 +49,7 @@ The four models contributed by Parasrampuria 2025. {.table}
   (NCT01384734) and AI438047 / BRIGHTE (NCT02362503).
 - Article: <https://doi.org/10.1002/prp2.70023>
 - Supplement (Tables S1, S2 and Figures S1-S3):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12050361/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12050361>
 
 Fostemsavir is a methyl-phosphate prodrug hydrolysed by gastrointestinal
 alkaline phosphatase to the active moiety temsavir, an HIV-1 attachment

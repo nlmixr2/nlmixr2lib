@@ -89,7 +89,7 @@ design (twice- daily sublingual asenapine for 10 days; steady state was
 attained within 8 days in Study 1 per the paper). Dose groups are 1 / 3
 / 5 / 10 mg BID, the same fixed doses studied in Phase I Study 1. The
 cohort uses 100 subjects per dose group for stable VPC percentiles while
-staying inside the 5-minute pkgdown render budget.
+keeping the render time under 5 minutes.
 
 ``` r
 
@@ -451,8 +451,8 @@ the Assumptions and deviations section below for context.
   `SAMPLE_INTENSIVE = 0` and use their own visit schedule.
 - **Vignette uses 100 subjects per dose group.** Phase I Study 1 had 8
   subjects per dose cohort, Study 2 had 6 per cohort; we scale up to 100
-  for stable simulated percentiles while keeping the vignette inside the
-  5-minute pkgdown render budget.
+  for stable simulated percentiles while keeping the vignette’s render
+  time under 5 minutes.
 - **Discrepancy with Table 4 simulated median Cmax.** The vignette’s
   median simulated Cmax at 5 mg BID is below the published median in
   Dogterom 2018 Table 4 (paper median = 4.56 ng/mL vs. simulated median

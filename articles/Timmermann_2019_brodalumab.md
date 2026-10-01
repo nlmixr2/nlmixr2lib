@@ -115,7 +115,7 @@ n_subj <- 400
 
 cohort <- tibble::tibble(
   id = seq_len(n_subj),
-  WT = pmin(pmax(rnorm(n_subj, mean = 87.8, sd = 20), 43, 186))
+  WT = pmin(pmax(rnorm(n_subj, mean = 87.8, sd = 20), 43), 186)
 )
 ```
 
@@ -324,10 +324,10 @@ intervals <- data.frame(
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
 summary(nca_res)
-#>  start end treatment   N    auclast        cmax          cmin              tmax
-#>      0  14 210mg_Q2W 400 19.2 [125] 3.24 [94.3] 0.00269 [764] 3.00 [1.00, 6.00]
+#>  start end treatment   N   auclast        cmax         cmin              tmax
+#>      0  14 210mg_Q2W 400 176 [124] 17.4 [92.3] 1.66 [57500] 4.00 [2.00, 6.00]
 #>         cav
-#>  1.37 [125]
+#>  12.6 [124]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```

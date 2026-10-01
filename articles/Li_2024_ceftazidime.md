@@ -897,15 +897,14 @@ elevated dose.
   Supplementary Table S1 (per-covariate hypothesis-test results) and
   Supplementary Table S2 (the full PTA grid across all evaluated
   regimens). The Frontiers supplementary bundle is not part of the PMC
-  open-access deposit (`PMC11631598/supplementaryFiles` returns only the
-  article figures and the main-text Table 1), and the publisher’s
-  supplementary endpoints did not resolve. Neither table contains model
-  parameters: every value in the model file comes from main-text Table 3
-  and Equations 5-6, and Table 4 supplies the recommended-regimen grid
-  used for validation above. The covariates listed in
-  `covariatesDataExcluded` are therefore documented from the Methods
-  candidate list and the Section 3.2 narrative rather than from S1’s
-  statistics.
+  open-access deposit (PMC11631598 holds only the article figures and
+  the main-text Table 1), and it was not available when this model was
+  built. Neither table contains model parameters: every value in the
+  model file comes from main-text Table 3 and Equations 5-6, and Table 4
+  supplies the recommended-regimen grid used for validation above. The
+  covariates listed in `covariatesDataExcluded` are therefore documented
+  from the Methods candidate list and the Section 3.2 narrative rather
+  than from S1’s statistics.
 - **Equations 5 and 6 are vector-typeset.** Both are stacked fractions
   in the published PDF and do not survive naive plain-text extraction;
   `pdftotext -layout` recovers them intact and was the source used.

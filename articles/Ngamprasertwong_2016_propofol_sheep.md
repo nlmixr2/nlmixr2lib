@@ -241,8 +241,8 @@ values.
 ``` r
 
 # Simulate a stochastic cohort for the NCA. Use 50 virtual ewes at the
-# cohort-mean weight and heart rate to keep the vignette under the
-# 5-minute pkgdown render budget.
+# cohort-mean weight and heart rate to keep the vignette's render
+# time under 5 minutes.
 set.seed(295L)
 n_sim <- 50L
 events_cohort <- purrr::map_dfr(seq_len(n_sim), function(i) {

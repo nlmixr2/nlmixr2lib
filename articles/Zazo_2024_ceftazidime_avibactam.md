@@ -824,9 +824,9 @@ mL/min and the strata are defined by raw creatinine clearance. The paper
 does not state which creatinine-clearance formula was used.
 
 **8. The Zenodo dataset is unavailable.** The Data Availability
-Statement cites DOI 10.5281/zenodo.13731674, which is unregistered (HTTP
-404 as of the date of this extraction). Every parameter and equation
-above comes from the article itself.
+Statement cites DOI 10.5281/zenodo.13731674, which is unregistered (as
+of the date of this extraction). Every parameter and equation above
+comes from the article itself.
 
 **9. Quantities the paper does not fully specify.** Table 3 does not
 state the averaging window for `T > MIC` or which dosing interval `Cmin`

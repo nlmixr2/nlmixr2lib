@@ -159,11 +159,11 @@ n_subj <- 50  # downsampled from 200 for vignette build budget; VPC band shape p
 
 cohort <- tibble::tibble(
   id          = seq_len(n_subj),
-  WT          = pmin(pmax(rnorm(n_subj, mean = 71, sd = 18),  42, 152)),
+  WT          = pmin(pmax(rnorm(n_subj, mean = 71, sd = 18),  42), 152),
   ANGPTL3     = pmin(pmax(rlnorm(n_subj, meanlog = log(0.08), sdlog = 0.5),
-                          0.0204, 0.287)),
+                          0.0204), 0.287),
   DIS_HOFH    = 1L,                             # PD analysis is HoFH-only
-  LDLC        = pmin(pmax(rnorm(n_subj, mean = 211, sd = 90), 70, 600)),
+  LDLC        = pmin(pmax(rnorm(n_subj, mean = 211, sd = 90), 70), 600),
   RACE_WHITE  = rbinom(n_subj, size = 1, prob = 0.85)
 )
 ```
@@ -450,10 +450,10 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 nca_summary <- summary(nca_res)
 nca_summary
-#>  start end       treatment  N      auclast       cmax       cmin
-#>      0  28 15 mg/kg IV Q4W 50 11700 [32.4] 731 [21.3] 286 [45.9]
+#>  start end       treatment  N     auclast       cmax       cmin
+#>      0  28 15 mg/kg IV Q4W 50 9330 [34.2] 620 [22.1] 216 [50.2]
 #>                  tmax        cav
-#>  0.000 [0.000, 0.000] 416 [32.4]
+#>  0.000 [0.000, 0.000] 333 [34.2]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -500,9 +500,9 @@ knitr::kable(trough_compare, digits = 1,
 
 | WT_bin    |   n | mean_Cc | sd_Cc | mean_Cc_paper | sd_Cc_paper | pct_diff_mean |
 |:----------|----:|--------:|------:|--------------:|------------:|--------------:|
-| \> 80 kg  | 100 |   312.8 | 133.3 |         275.8 |        91.9 |          13.4 |
-| \<= 60 kg |  NA |      NA |    NA |         171.8 |        40.1 |            NA |
-| 60-80 kg  |  NA |      NA |    NA |         245.6 |       102.7 |            NA |
+| 60-80 kg  |  34 |   235.8 | 122.7 |         245.6 |       102.7 |          -4.0 |
+| \<= 60 kg |  40 |   229.5 | 104.0 |         171.8 |        40.1 |          33.6 |
+| \> 80 kg  |  26 |   263.9 | 113.6 |         275.8 |        91.9 |          -4.3 |
 
 Simulated vs Pu 2021 Results Section3.1 steady-state evinacumab trough
 concentrations (mg/L) by body-weight bin, 15 mg/kg IV q4w (HoFH cohort).
@@ -543,10 +543,10 @@ knitr::kable(target_summary, digits = 1,
 
 | target             | pct_paper | pct_sim | abs_diff_pp |
 |:-------------------|----------:|--------:|------------:|
-| \>= 30% reduction  |      86.3 |     100 |        13.7 |
-| \>= 50% reduction  |      56.8 |      86 |        29.2 |
-| \>= 70% reduction  |       8.4 |       0 |        -8.4 |
-| LDL-C \< 100 mg/dL |      52.6 |       0 |       -52.6 |
+| \>= 30% reduction  |      86.3 |      92 |         5.7 |
+| \>= 50% reduction  |      56.8 |      68 |        11.2 |
+| \>= 70% reduction  |       8.4 |      32 |        23.6 |
+| LDL-C \< 100 mg/dL |      52.6 |      72 |        19.4 |
 
 Simulated vs Pu 2021 Table 3 percentage of HoFH patients achieving LDL-C
 goals at week 24 with 15 mg/kg IV q4w. Absolute differences are in
@@ -595,7 +595,7 @@ percentage points. {.table}
   HoFH-only). The model file therefore does not declare a
   `DIS_HOFH`-on-PD parameter – covariate coverage matches the source.
 - **Virtual-cohort covariate distributions.** Body weight is drawn from
-  `N(71, 18)` kg truncated to \[42.4, 152\]; baseline ANGPTL3 from
+  `N(71, 18)` kg truncated to \[42, 152\]; baseline ANGPTL3 from
   `lognormal(meanlog = log(0.08), sdlog = 0.5)` truncated to \[0.0204,
   0.287\]; baseline LDL-C from `N(211, 90)` truncated to \[70, 600\];
   RACE_WHITE = Bernoulli(0.85) (Pu 2021 does not publish per-subject

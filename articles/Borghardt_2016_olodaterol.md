@@ -570,8 +570,8 @@ finite observation window of this validation cohort.
   and does not include a sex effect on PBIO; the unbalanced sex ratio
   (15 females out of 148 volunteers) is the proximate reason this
   covariate failed the stricter backward-elimination significance gate.
-- **Erratum search.** The text extracted from the lead PDF does not flag
-  an erratum or corrigendum for Borghardt 2016. No published correction
-  has been incorporated; users are encouraged to check the journal’s
-  landing page for any post-publication notices before relying on the
+- **Erratum search.** The text of the article PDF does not flag an
+  erratum or corrigendum for Borghardt 2016. No published correction has
+  been incorporated; users are encouraged to check the journal’s landing
+  page for any post-publication notices before relying on the
   typical-value estimates for new analyses.

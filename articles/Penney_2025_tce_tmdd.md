@@ -27,8 +27,7 @@
   TAA arm on, and thalf_intrinsic to 9 days for the cynomolgus monkey.
 - Article: <https://doi.org/10.1111/cts.70384>
 - Supplement: Data S1 (`CTS-18-e70384-s001.docx`), Tables S1 / S2,
-  available from the Europe PMC supplementary-files endpoint for
-  PMC12597969.
+  published with the open-access article (PMC12597969).
 
 T-cell engagers (TCEs) are built on IgG-like or albumin-binding formats
 that should give them half-lives of weeks, yet most clinical-stage TCEs
@@ -122,7 +121,7 @@ solve_scenario <- function(label, dose_nmol_kg, ...) {
   out <- rxode2::rxSolve(mod, ev, c(...),
                          atol = 1e-12, rtol = 1e-10, maxsteps = 1e6)
   out <- as.data.frame(out)
-  # rxSolve omits `id` for a single subject (pattern 8).
+  # rxSolve omits `id` for a single subject.
   out$id <- 1L
   out$treatment <- label
   out
@@ -510,7 +509,7 @@ hl <- hl[hl$PPTESTCD == "half.life", ]
 hl_1000 <- hl$PPORRES[hl$treatment == "1000 nM"]
 hl_10 <- hl$PPORRES[hl$treatment == "10 nM"]
 
-# Guard against a lookup that silently matched nothing (pattern 10).
+# Guard against a lookup that silently matched nothing.
 stopifnot(length(hl_1000) == 1L, length(hl_10) == 1L)
 
 # PKNCA's terminal-slope selection must agree with the regression above.

@@ -166,7 +166,7 @@ induction).
 set.seed(20260506L)
 
 n_subjects     <- 60L           # condensed from HIGHRIF1's 83 to keep the
-                                # vignette wall-clock under the 5-min gate
+                                # vignette wall-clock under 5 min
 dose_amt_mg    <- 600           # bundle's single dose level (10 mg/kg HIGHRIF1)
 dose_interval  <- 24            # hours between QD doses
 n_doses        <- 8             # 8 QD doses -> sample around dose 8 ~= day 7

@@ -30,9 +30,9 @@ validated in this single vignette.
 - Open-access record:
   [PMC5034953](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5034953/)
 
-- Supplement: retrieved from the EuropePMC supplementary-files endpoint
-  for PMC5034953 (`supp_jiw338_jiw338supp.docx`). It is load-bearing for
-  this extraction – see “The supplement settles the omega scale” below.
+- Supplement: published with the open-access article, PMC5034953
+  (`supp_jiw338_jiw338supp.docx`). It is load-bearing for this
+  extraction – see “The supplement settles the omega scale” below.
 
 ``` r
 

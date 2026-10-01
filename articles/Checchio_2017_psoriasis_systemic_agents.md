@@ -18,10 +18,9 @@ different software:
 
 - Article: <https://doi.org/10.1002/cpt.732> (PMC5697570)
 
-- Supplement: `CPT-102-1006-s001.docx`, retrieved from the EuropePMC
-  `supplementaryFiles` endpoint for PMC5697570. It carries Supplementary
-  Tables S1.1, S1.2 and 2, which hold **every** parameter estimate; none
-  is in the main text.
+- Supplement: `CPT-102-1006-s001.docx`, published with the open-access
+  article (PMC5697570). It carries Supplementary Tables S1.1, S1.2 and
+  2, which hold **every** parameter estimate; none is in the main text.
 
 ``` r
 

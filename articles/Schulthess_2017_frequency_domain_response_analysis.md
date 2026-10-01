@@ -256,7 +256,7 @@ readModelDb("Schulthess_2017_moderator_stim")
 #>     d/dt(moderator1) <- ktol * (effect - moderator1)
 #>   })
 #> }
-#> <environment: 0x55d5c024eb18>
+#> <environment: 0x55aa113ea470>
 ```
 
 The published illustrative parameter set, shared by every model:

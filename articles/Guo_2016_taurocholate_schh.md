@@ -932,7 +932,7 @@ published_afe <- tibble::tribble(
 
 afe_cmp <- dplyr::inner_join(afe, published_afe,
                              by = c("Inhibitor", "Inhibitor concentration used"))
-stopifnot(nrow(afe_cmp) == 7L)                 # guard the join, per pattern 10
+stopifnot(nrow(afe_cmp) == 7L)                 # guard the join
 stopifnot(max(abs(afe_cmp$AFE - afe_cmp$`Published AFE`)) < 0.15)
 
 knitr::kable(afe_cmp, caption = "Average fold error (eq. 11) versus Table 4 of Guo 2016. The bosentan [I]u,cyt cell is not available in the source.")
@@ -995,11 +995,10 @@ Average fold error (eq. 11) versus Table 4 of Guo 2016. The bosentan
   (18 and 36 -\> 27). Bosentan OATP1B1 is taken as the printed 18
   umol/L, per Table 1’s footnote a (“Not available and therefore assumed
   to be the same as NTCP”).
-- **Supplemental Figure 1 was not obtainable.** EuropePMC reports this
-  article as not open access and its supplementary-files endpoint
-  returns a gateway error; the publisher’s supplement URL returns
-  HTTP 403. The figure shows a simulation of how telmisartan’s effect
-  grows as the uptake phase is extended, generated from equations and
+- **Supplemental Figure 1 was not obtainable.** The article is not open
+  access, and the supplement was not available when this model was
+  built. The figure shows a simulation of how telmisartan’s effect grows
+  as the uptake phase is extended, generated from equations and
   parameter values that are all in the main text, so no parameter is
   missing. The one claim that depends on it – “After a 30-minute uptake
   phase, the simulated TCA Ct,Cells for telmisartan based on \[I\]t,cell

@@ -474,10 +474,10 @@ Simulated log10 viable counts at sampling time-points used by Yadav 2017
   `maxsteps = 1e6` with tight tolerances (`atol = rtol = 1e-10`) is used
   because the rapid kill at high IPM near MIC makes the system stiff
   during the kill transient.
-- **Erratum check.** Web access for an erratum / corrigendum search is
-  not available in this offline build. No erratum is referenced in the
-  lead PDF. Any later correction in PubMed or the AAC journal page
-  should be checked before deploying the model in a regulatory context.
+- **Erratum check.** An erratum / corrigendum search was not performed
+  when this model was built. No erratum is referenced in the article
+  PDF. Any later correction in PubMed or the AAC journal page should be
+  checked before deploying the model in a regulatory context.
 - **Convention check.**
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   returns clean (no warnings, no errors) for all five model files. The

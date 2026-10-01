@@ -36,9 +36,9 @@ every previously published lenalidomide popPK model had retained. Liang
 2024 attributes this to its small sample size and sparse opportunistic
 sampling.
 
-There is no supplementary material for this article (EuropePMC
-`hasSuppl = N` for an open-access record, and the PDF references none),
-and no erratum or correction is indexed against the DOI.
+There is no supplementary material for this article (the open-access
+record has none, and the PDF references none), and no erratum or
+correction is indexed against the DOI.
 
 ## Population
 

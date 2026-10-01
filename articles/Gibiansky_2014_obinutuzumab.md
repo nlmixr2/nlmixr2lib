@@ -18,8 +18,7 @@
 - Article: [CPT Pharmacometrics Syst Pharmacol.
   2014;3:e144](https://doi.org/10.1038/psp.2014.42)
 - Supplement: open-access; Supplementary Table S1 (NONMEM control
-  stream) obtained via Europe PMC supplementary-files API for
-  PMC4474170.
+  stream) published with the article (PMC4474170).
 
 ## Population
 

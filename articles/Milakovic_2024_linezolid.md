@@ -311,7 +311,7 @@ solve_once <- function() {
     # `omega = NA` omitted deliberately. The model is already `zeroRe()`d, so
     # the etas are zero either way -- but on rxode2 5.1.6 (the version CI
     # installs) passing it alongside a multi-subject `params` reads out of
-    # bounds and returns NA for some subjects. Same defect as PR #501.
+    # bounds and returns NA for some subjects.
 
     keep = c("treatment"),
     addDosing = FALSE,
@@ -340,8 +340,8 @@ worst_deviation <- function(sim) {
 
 # The retry budget is 40, not 8. The correctness gate below is sound -- a
 # solve is only accepted when every subject matches the closed form -- so the
-# only thing at risk is TERMINATION. Under the merge gate's 30-way parallel
-# render the corruption rate rises with CPU contention and 8 attempts proved
+# only thing at risk is TERMINATION. Under a heavily parallel render the
+# corruption rate rises with CPU contention and 8 attempts proved
 # insufficient (this vignette passed a serial-ish run at 52.4 s and failed a
 # loaded one). Raising the budget costs nothing when the first attempt
 # succeeds, which is the usual case.

@@ -116,8 +116,8 @@ apparent oral clearance.
 set.seed(20260609L)
 
 n_subjects     <- 60L                 # condensed from the 189-subject paper cohort
-                                      # to keep the vignette wall-clock under the
-                                      # 5-minute pkgdown gate while preserving
+                                      # to keep the vignette wall-clock under
+                                      # 5 minutes while preserving
                                       # 5-95 percentile envelope shape
 dose_amt_mg    <- 1000                # representative middle dose level (17% of cohort)
 dose_interval  <- 24                  # hours between QD doses
@@ -473,10 +473,9 @@ ggplot(iov_summary, aes(tad, Q50, colour = factor(OCC))) +
   would double the vignette wall-clock under
   [`rxode2::rxSolve`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
   with IIV / IOV / EPS layered on; the condensed 60-subject cohort keeps
-  the vignette under the 5-minute pkgdown gate without materially
-  changing the per-time-point median / 5-95% spread. Consumers who need
-  the full 189-subject reproduction can re-run with `n_subjects <- 189L`
-  locally.
+  the vignette’s render time under 5 minutes without materially changing
+  the per-time-point median / 5-95% spread. Consumers who need the full
+  189-subject reproduction can re-run with `n_subjects <- 189L` locally.
 - **DDMoRE replicate carries higher decimal precision on IIV / IOV.**
   See `Jonsson_2011_ethambutol_ddmore` for the .lst-sourced encoding
   (`OMEGA(1,1) = 0.0381`, `OMEGA(3,3) = 0.153`, `OMEGA(6,6) = 0.862`,

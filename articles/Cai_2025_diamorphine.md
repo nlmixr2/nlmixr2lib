@@ -30,10 +30,10 @@
   extrapolation from the adult fit to children.
 - Article: <https://doi.org/10.1002/psp4.13186>
 - Supplement (Mlxtran source of the final model, Supplementary Material
-  S1, and the covariate equations, Supplementary Material S2): served
+  S1, and the covariate equations, Supplementary Material S2): published
   with the open-access record as `PSP4-14-435-s001.txt` and
-  `PSP4-14-435-s003.docx` via
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11919270/supplementaryFiles>
+  `PSP4-14-435-s003.docx`:
+  <https://europepmc.org/article/PMC/PMC11919270>
 
 Cai 2025 pools published diamorphine, 6-monoacetylmorphine (6-MAM) and
 morphine concentrations from two adult studies into a single integrated

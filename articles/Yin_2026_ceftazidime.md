@@ -577,7 +577,7 @@ pta_max <- pta_at(ss, kappa = bp) |>
     agrees    = simulated == attains
   )
 
-# Guard against a silently empty comparison (pattern 10): every published claim
+# Guard against a silently empty comparison: every published claim
 # must have found a matching simulated arm.
 stopifnot(nrow(pta_max) == nrow(published_claim))
 

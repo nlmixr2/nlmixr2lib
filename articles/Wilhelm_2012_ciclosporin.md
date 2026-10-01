@@ -118,7 +118,7 @@ Two cohorts are simulated:
     was established.
 
 IDs are offset between the two cohorts so subsequent `bind_rows()` keeps
-them disjoint per the vignette-template guidance.
+them disjoint.
 
 ``` r
 

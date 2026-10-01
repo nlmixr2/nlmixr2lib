@@ -120,12 +120,12 @@ n_subj <- 200
 
 cohort <- tibble::tibble(
   id       = seq_len(n_subj),
-  WT       = pmin(pmax(rnorm(n_subj, mean = 71, sd = 17),   40, 165)),
+  WT       = pmin(pmax(rnorm(n_subj, mean = 71, sd = 17),   40), 165),
   SEXF     = rbinom(n_subj, 1, 0.83),
   ADA_POS  = rbinom(n_subj, 1, 0.18),
   FORM_SAR_DP2 = 0L,                          # commercial DP3 formulation for labelled regimen
-  ALBR     = pmin(pmax(rnorm(n_subj, mean = 0.78, sd = 0.08), 0.50, 1.05)),
-  CRCL = pmin(pmax(rnorm(n_subj, mean = 100,  sd = 25),   40,  200)),
+  ALBR     = pmin(pmax(rnorm(n_subj, mean = 0.78, sd = 0.08), 0.50), 1.05),
+  CRCL = pmin(pmax(rnorm(n_subj, mean = 100,  sd = 25),   40),  200),
   CRP    = pmax(rlnorm(n_subj, log(14.2) - 0.5 * 0.9^2, 0.9), 0.5)
 )
 ```
@@ -306,12 +306,12 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
-#>  start end treatment   N     auclast        cmax         cmin              tmax
-#>      0  14 150mg_Q2W 200 61.4 [49.0] 9.00 [42.8] 0.583 [91.6] 2.50 [1.50, 5.00]
-#>      0  14 200mg_Q2W 200  108 [55.3] 14.0 [46.9]   1.16 [139] 3.50 [1.00, 5.50]
+#>  start end treatment   N    auclast        cmax       cmin              tmax
+#>      0  14 150mg_Q2W 200 175 [66.8] 18.9 [50.4] 3.26 [237] 4.00 [2.00, 5.50]
+#>      0  14 200mg_Q2W 200 311 [67.1] 29.9 [53.4] 9.11 [182] 4.50 [1.00, 6.00]
 #>          cav
-#>  4.39 [49.0]
-#>  7.74 [55.3]
+#>  12.5 [66.8]
+#>  22.2 [67.1]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -387,9 +387,17 @@ comparison <- published |>
     AUC_pct_diff     = 100 * (AUC_sim - AUC_pub) / AUC_pub
   )
 
+worst <- comparison |>
+  tidyr::pivot_longer(c(Cmax_pct_diff, Ctrough_pct_diff, AUC_pct_diff),
+                      names_to = "metric", values_to = "pct_diff") |>
+  dplyr::slice_max(abs(pct_diff), n = 1, with_ties = FALSE)
+
 knitr::kable(comparison, digits = 2,
-  caption = paste("Typical-patient steady-state exposures (IIV zeroed) vs.",
-                  "Xu 2019 Table 4 mean values. All differences within ~10%."))
+  caption = paste0("Typical-patient steady-state exposures (IIV zeroed) vs. ",
+                   "Xu 2019 Table 4 mean values. All differences within ",
+                   sprintf("%.0f%%", ceiling(abs(worst$pct_diff))),
+                   " (largest: ", sub("_pct_diff$", "", worst$metric),
+                   ", ", worst$treatment, ")."))
 ```
 
 | treatment | Cmax_pub | Ctrough_pub | AUC_pub | Cmax_sim | Ctrough_sim | AUC_sim | Cmax_pct_diff | Ctrough_pct_diff | AUC_pct_diff |
@@ -398,7 +406,8 @@ knitr::kable(comparison, digits = 2,
 | 150 mg Q2W | 20.0 | 6.35 | 202 | 19.68 | 5.46 | 198.61 | -1.60 | -14.09 | -1.68 |
 
 Typical-patient steady-state exposures (IIV zeroed) vs. Xu 2019 Table 4
-mean values. All differences within ~10%. {.table style="width:100%;"}
+mean values. All differences within 15% (largest: Ctrough, 150 mg Q2W).
+{.table style="width:100%;"}
 
 ## Assumptions and deviations
 
@@ -411,12 +420,11 @@ mean values. All differences within ~10%. {.table style="width:100%;"}
   is applied via the canonical `SEXF` covariate (1 = female).
 - **Supplement not reviewed.** The Clinical Pharmacokinetics electronic
   supplementary material (NONMEM control stream and supplementary
-  tables) could not be downloaded at extraction time (the journal’s CDN
-  returned a JS-gated “preparing to download” page rather than the
-  DOCX). All parameters in this model are therefore sourced from the
-  published main text (Tables 2-4 and the covariate-model equations on
-  p. 1458-1459). If the supplement exposes different digits of
-  precision, an update may be warranted.
+  tables) was not available when this model was built. All parameters in
+  this model are therefore sourced from the published main text (Tables
+  2-4 and the covariate-model equations on p. 1458-1459). If the
+  supplement exposes different digits of precision, an update may be
+  warranted.
 - **CRCL pre-computation.** Xu 2019 writes the renal covariate term as
   `(1.73 * CrCl / BSA / 100)^theta13`. The canonical `CRCL` column in
   nlmixr2lib carries the pre-computed `1.73 * CrCl / BSA` value in

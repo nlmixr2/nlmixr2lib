@@ -16,7 +16,7 @@ mod <- readModelDb("Maseda_2018_micafungin")
   Structural model and covariate equation from Results/‘Pharmacokinetic
   model’; parameter estimates from Table 2; demographics from Table 1.
 - Article: <https://doi.org/10.1186/s13054-018-2019-8>
-- Supplement: none (EuropePMC reports `hasSuppl: N` for PMC5899833).
+- Supplement: none (PMC5899833).
 
 Two commentary letters were published on this article
 ([doi:10.1186/s13054-018-2068-z](https://doi.org/10.1186/s13054-018-2068-z)

@@ -8,8 +8,8 @@
   breast cancer cells. *Clin Transl Sci* 12(6):617-624.
 - Article: <https://doi.org/10.1111/cts.12664> (open access, PMC6853145)
 - Supplement: Figures S1-S3, Tables S1-S2 and the authors’ complete
-  MATLAB model code (`CTS-12-617-s006.docx`), from the EuropePMC
-  supplementary-file bundle for PMC6853145.
+  MATLAB model code (`CTS-12-617-s006.docx`), published with the
+  open-access article (PMC6853145).
 
 Forder 2019 builds a small flow-limited PBPK model for the distribution
 of fluorescent quantum dots (QDs) after one intravenous injection in

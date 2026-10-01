@@ -448,6 +448,6 @@ h.ug/L (IQR 80-120) for trough levels in the 4-8 ug/L target range.
   but race was not retained as a covariate; the model has no race
   effect.
 - **Vignette uses 200 subjects per CYP3A5 x weight stratum.** This is
-  small enough to render under the 5-minute pkgdown gate but large
-  enough to give stable percentile bands for the Figure 4 reproduction.
-  The Prytula 2016 simulations used 1000 subjects per scenario.
+  small enough to render in under 5 minutes but large enough to give
+  stable percentile bands for the Figure 4 reproduction. The Prytula
+  2016 simulations used 1000 subjects per scenario.

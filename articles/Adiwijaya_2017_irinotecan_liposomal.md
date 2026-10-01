@@ -16,10 +16,10 @@ mod <- rxode2::rxode2(readModelDb("Adiwijaya_2017_irinotecan_liposomal"))
 - Article: <https://doi.org/10.1002/cpt.720>
 - PubMed Central (open access):
   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5697569/>
-- Supplement: available from the Europe PMC supplementary-files endpoint
-  for PMC5697569 (file `CPT-102-997-s001.docx`), which carries Equation
-  S1, the model diagram (Figure S1) and the two final-parameter tables
-  S6 and S7 used throughout this vignette.
+- Supplement: published with the open-access article (PMC5697569; file
+  `CPT-102-997-s001.docx`), which carries Equation S1, the model diagram
+  (Figure S1) and the two final-parameter tables S6 and S7 used
+  throughout this vignette.
 
 Nanoliposomal irinotecan (nal-IRI; MM-398, PEP02, marketed as Onivyde)
 is a liposomal formulation of irinotecan. Encapsulation slows release,

@@ -66,11 +66,9 @@ bundle for `DDMODEL00000285` (scraped to
 The bundle does **not** ship a `Model_Accomodations.text|.txt` file.
 Authorship and journal mapping (Laouenan C et al. 2015, CPT
 Pharmacometrics Syst Pharmacol 4(1):e00008, <doi:10.1002/psp4.8>, PMID
-26225222) was confirmed via a PubMed E-utilities lookup against the
-publication metadata this model was built from. The publication PDF /
-PMC full text was not accessible when this model was built, so
-publication-figure replication is out of scope (see “Validation
-strategy” below).
+26225222) was confirmed via PubMed. The publication PDF / PMC full text
+was not accessible when this model was built, so publication-figure
+replication is out of scope (see “Validation strategy” below).
 
 ## Population
 

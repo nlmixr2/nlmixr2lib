@@ -20,7 +20,7 @@ mod <- rxode2::rxode(readModelDb("Boulanger_2025_trimethoprim_sulfonamides_pig")
   Results ‘Protein binding experiment’ section.
 - Article: <https://doi.org/10.1080/01652176.2025.2565351>
 - Supplement (Tables S1-S6):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12481524/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12481524>
 
 Sulfonamides are combined with trimethoprim (TMP) in a fixed 1:5
 TMP:sulfonamide *dose* ratio in essentially every veterinary

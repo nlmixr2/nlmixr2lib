@@ -361,7 +361,7 @@ typical-value trajectories below reproduce the dose-proportional Cmax
 and the slow terminal elimination phase (paper Discussion: “cabozantinib
 has a relatively long plasma terminal half-life (HV mean: 118 h)”). The
 vignette shortens the observation window to 24 h to keep the render time
-within the 5-minute gate.
+under 5 minutes.
 
 ``` r
 

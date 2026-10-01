@@ -643,11 +643,11 @@ the simplified albumin distribution; the qualitative ordering (50 kg \>
 - **Race / ethnicity not reported.** The source paper does not provide
   race / ethnicity demographics, so the `population` metadata records
   this as “Not reported.”
-- **PKNCA half-life vs typical-value half-life.** Per the vignette
-  template guidance, the PKNCA half-life from the 14-day IV phase
-  reflects whatever sampling window is given; the analytic typical-value
-  half-life of 10.8 days from CL/Vc/Vp/Q is what the model parameters
-  are meant to reproduce, which they do exactly.
+- **PKNCA half-life vs typical-value half-life.** The PKNCA half-life
+  from the 14-day IV phase reflects whatever sampling window is given;
+  the analytic typical-value half-life of 10.8 days from CL/Vc/Vp/Q is
+  what the model parameters are meant to reproduce, which they do
+  exactly.
 - **Off-diagonal IIV interpretation.** Table 3 reports the off-diagonal
   IIV elements with the column header “Correlation between …”; we take
   these at face value as correlation coefficients in \[-1, 1\] and

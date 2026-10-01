@@ -156,7 +156,7 @@ make_cohort <- function(n, dose_per_m2, prior_carbo, regimen, id_offset) {
 
   # Time grid: combine the paper's sampling times with a moderate
   # supplementary grid for smooth post-dose curves. Kept coarse to
-  # keep the PKNCA chunk inside the 5-minute render budget.
+  # keep the PKNCA chunk's render time short.
   paper_t <- c(0, 5, 10, 15, 20, 30, 40, 50) / 60 + infusion_h   # 0-50 min post EOI
   paper_t <- c(0, paper_t, infusion_h + c(1, 2, 3, 4, 6, 12, 24))  # +1..24 h post EOI
   dense_t <- seq(0, infusion_h + 24, by = 0.25)

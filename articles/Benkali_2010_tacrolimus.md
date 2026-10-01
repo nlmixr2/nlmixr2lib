@@ -351,7 +351,6 @@ ratio reported in the Abstract and Discussion).
   `Bista_2015_fentanyl` (cited by manuscript because the journal / DOI
   metadata was unavailable).
 - **Vignette uses 200 subjects per CYP3A5 stratum.** This is small
-  enough to render the vignette in well under 5 minutes (the pkgdown
-  gate) but large enough to give stable percentiles for the VPC and
-  pooled %CV statistics. Benkali 2010 used 1000 simulated populations of
-  41 subjects.
+  enough to render the vignette in well under 5 minutes but large enough
+  to give stable percentiles for the VPC and pooled %CV statistics.
+  Benkali 2010 used 1000 simulated populations of 41 subjects.

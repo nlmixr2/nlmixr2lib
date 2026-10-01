@@ -468,7 +468,7 @@ categorical postoperative-time bins in Lin 2018.
   these.
 - **Vignette uses 60 subjects per phenotype.** Total cohort 180
   subjects, large enough to give reasonable per-phenotype distributions
-  while keeping the vignette under the 5-minute pkgdown gate. Users
+  while keeping the vignette’s render time under 5 minutes. Users
   running their own simulations should scale the cohort up.
 - **Single-cohort, single-centre, Chinese ethnicity.** The CYP2C19
   allele frequencies in Lin 2018 (`*2` 29.2%, `*3` 5.2%, `*17` 0.5%) are

@@ -32,10 +32,10 @@ publications already in nlmixr2lib:
   packaged as `Laffont_2024_naloxone` and `Laffont_2024_nalmefene`.
 
 The vignette’s job is to put these layers together, run a coarse
-simulation grid (small N for the pkgdown 5-minute time budget), and
-verify that the chain reproduces the headline cardiac-arrest /
-brain-hypoxia numbers Laffont 2025 reports in Table 1 and Figs 2-7. It
-is NOT a 2000-subject reproduction of the published study.
+simulation grid (small N to keep the render time short), and verify that
+the chain reproduces the headline cardiac-arrest / brain-hypoxia numbers
+Laffont 2025 reports in Table 1 and Figs 2-7. It is NOT a 2000-subject
+reproduction of the published study.
 
 ## Layer-to-paper mapping
 
@@ -68,8 +68,8 @@ users (P1 = 4.226, P3 = 1.323). Body weight is fixed at 70 kg for the
 opioid PK (Mann 2022 convention) and 74.7 kg for the nalmefene PK
 (Laffont 2024 allometric reference).
 
-The grid below uses N = 30 virtual chronic opioid users (small N for the
-5-minute pkgdown time budget; the headline Laffont 2025 N is 2000). The
+The grid below uses N = 30 virtual chronic opioid users (small N to keep
+the render time short; the headline Laffont 2025 N is 2000). The
 cardiac-arrest endpoint produced by this small-N chain will land within
 sampling-noise distance of the Laffont 2025 / Mann 2022 published values
 without ever being tuned to match.
@@ -718,7 +718,7 @@ rescue is administered 1 min after the trigger. {.table}
 ``` r
 
 # Build per-subject parameter draws representing PK + binding variability.
-# To stay inside the 5-minute pkgdown gate, we use a small N and seed
+# To keep the render time short, we use a small N and seed
 # variability around the typical-value parameters. The Laffont 2025
 # published values use N = 2000 with the full Mann 2022 / Laffont 2024
 # parameter-uncertainty distributions; the small-N variant here gives a
@@ -1070,11 +1070,11 @@ threshold (Laffont 2025 citing Lund 2024).
 - **Small-N virtual cohort.** Laffont 2025 simulates 2000 subjects per
   arm with 2500 bootstrap resamples; this vignette uses N = 30 per
   cardiac-arrest arm and a typical-subject single-trajectory for the
-  brain hypoxia panel, because the pkgdown render gate caps total build
-  time at 5 minutes. The smaller N inflates sampling noise on the
-  cardiac-arrest incidence (~9-10 percentage-point sampling SD at the
-  published medians); direction, rank order and order-of-magnitude
-  reproducibility against Laffont 2025 Table 1 are preserved.
+  brain hypoxia panel, to keep the total render time under 5 minutes.
+  The smaller N inflates sampling noise on the cardiac-arrest incidence
+  (~9-10 percentage-point sampling SD at the published medians);
+  direction, rank order and order-of-magnitude reproducibility against
+  Laffont 2025 Table 1 are preserved.
 
 - **Per-subject parameter draws are a small approximation of the full
   variance.** Laffont 2025 / Mann 2022 sample the full Mann 2022 Kon /

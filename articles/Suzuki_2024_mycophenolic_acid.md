@@ -37,8 +37,7 @@
   proportional (28.3%) plus additive (0.0634 mg/L).
 - Article: <https://doi.org/10.1111/cts.70097>
 - Supplement (Table S1, Figures S1-S2, Appendix S1 NM-TRAN control
-  stream): available from the Europe PMC open-access supplementary-file
-  record for PMC11615510.
+  stream): published with the open-access article (PMC11615510).
 
 Suzuki 2024 asks a specific question: does the well-known “second peak”
 in mycophenolic acid (MPA) profiles require an explicit

@@ -16,8 +16,8 @@
   platinum-based chemotherapy (Zhao 2026)
 - Article: <https://doi.org/10.1002/bcp.70287>
 - Supplement (Tables S1-S9, Figs. S1-S4): Supporting Information
-  `BCP-92-980-s001.docx`, retrieved from the EuropePMC open-access
-  package for PMC12930014.
+  `BCP-92-980-s001.docx`, published with the open-access article
+  (PMC12930014).
 
 Zhao 2026 updates the pooled durvalumab population PK model by adding
 the phase III AEGEAN cohort – patients with resectable stage II to IIIB

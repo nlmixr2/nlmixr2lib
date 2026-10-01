@@ -549,8 +549,8 @@ population value.
   studies from other authors; no original animal popPK model is fit. The
   extraction here covers only the original human meta-analysis popPK
   model (Section 2.2 and Appendix Table A1). At the maintainers’
-  direction, the 12 cited primary animal studies were not queued for
-  separate extraction.
+  direction, the 12 cited primary animal studies are not extracted
+  separately.
 - **No errata identified.** A search of the journal’s article landing
   page and PubMed for `Sanhajariya 2018 snake venom erratum` returned no
   corrigendum.

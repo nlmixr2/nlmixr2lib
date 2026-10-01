@@ -499,8 +499,8 @@ concentration. \* differs by \> 20%. {.table}
 
 # The percent differences are recomputed here from the raw medians rather than
 # parsed back out of the formatted table, and the gate asserts it actually had
-# all eight comparisons to test (pattern 10: a lookup that matches nothing
-# passes vacuously).
+# all eight comparisons to test (a lookup that matches nothing passes
+# vacuously).
 gate <- sim_for_cmp |>
   group_by(treatment, PPTESTCD) |>
   summarise(simulated = median(PPORRES), .groups = "drop") |>

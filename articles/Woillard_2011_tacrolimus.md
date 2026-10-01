@@ -452,6 +452,5 @@ target as the QD Advagraf).
   packages only the popPK structural / variability model; the
   limited-sampling Bayesian estimator is out of scope.
 - **Vignette uses 150 subjects per formulation.** This is small enough
-  to render in well under the 5-minute pkgdown gate but large enough to
-  give stable VPC percentiles. The published VPC used 1000 simulated
-  profiles.
+  to render in well under 5 minutes but large enough to give stable VPC
+  percentiles. The published VPC used 1000 simulated profiles.

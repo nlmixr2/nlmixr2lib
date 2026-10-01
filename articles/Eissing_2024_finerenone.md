@@ -106,8 +106,8 @@ make_cohort <- function(n, dose_mg, id_offset = 0L) {
   wt_kg   <- pmin(pmax(rnorm(n, mean = 87,   sd = 18),    45),  150)
   egfr    <- pmin(pmax(rnorm(n, mean = 60.6, sd = 22),    20),  110)
   alp_UL  <- pmin(pmax(rnorm(n, mean = 73,   sd = 20),    35),  150)
-  bsa_m2  <- pmin(pmax(rnorm(n, mean = 1.97, sd = 0.22),  1.40, 2.55))
-  tpro_gL <- pmin(pmax(rnorm(n, mean = 71,   sd = 4.5),   55,   85))
+  bsa_m2  <- pmin(pmax(rnorm(n, mean = 1.97, sd = 0.22),  1.40), 2.55)
+  tpro_gL <- pmin(pmax(rnorm(n, mean = 71,   sd = 4.5),   55),  85)
 
   # Dosing schedule: 8 days of once-daily dosing -> steady state within 1-2 days
   # (half-life 2-3 h), final dosing interval sampled densely for NCA.
@@ -440,8 +440,8 @@ knitr::kable(nca_tbl, digits = 2,
 
 | treatment | AUCss (ug\*h/L) | Cmax,ss (ug/L) | Ctrough,ss (ug/L) | t1/2 (h) | Tmax,ss (h) |
 |:---|---:|---:|---:|---:|---:|
-| 10 mg OD | 234.51 | 67.58 | 0.09 | 2.43 | 0.75 |
-| 20 mg OD | 485.52 | 131.36 | 0.23 | 2.54 | 0.75 |
+| 10 mg OD | 282.13 | 75.03 | 0.14 | 2.60 | 0.75 |
+| 20 mg OD | 574.75 | 144.44 | 0.36 | 2.72 | 0.75 |
 
 Simulated steady-state NCA, FIGARO-DKD virtual cohort (no dose
 titration). {.table}
@@ -481,9 +481,9 @@ knitr::kable(cmp,
 
 | Metric | Simulated | Published | Source |
 |:---|---:|:---|:---|
-| Half-life t1/2 (h) | 2.540 | 2-3 | Eissing 2024 Results, Pharmacokinetics paragraph 1 |
-| Dose-proportional AUC ratio (20 mg / 10 mg) | 2.070 | 2.00 (linear PK) | Linear PK structure (Discussion paragraph 1) |
-| Dose-proportional Cmax ratio (20 mg / 10 mg) | 1.944 | 2.00 (linear PK) | Linear PK structure (Discussion paragraph 1) |
+| Half-life t1/2 (h) | 2.720 | 2-3 | Eissing 2024 Results, Pharmacokinetics paragraph 1 |
+| Dose-proportional AUC ratio (20 mg / 10 mg) | 2.037 | 2.00 (linear PK) | Linear PK structure (Discussion paragraph 1) |
+| Dose-proportional Cmax ratio (20 mg / 10 mg) | 1.925 | 2.00 (linear PK) | Linear PK structure (Discussion paragraph 1) |
 
 Simulated vs published key PK anchors (FIGARO-DKD). {.table}
 

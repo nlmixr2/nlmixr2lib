@@ -994,10 +994,9 @@ stopifnot(all(tert$apoc3_avg_pct < -80), all(tert$tg_avg_pct < -40))
 
 - **PKNCA is not used.** The model has no plasma concentration output –
   it is a K-PD turnover model of two serum biomarkers – and Ousey 2026
-  reports no NCA analysis. The PKNCA section of the standard vignette
-  template is replaced by the steady-state / perturbation-recovery /
-  flux-balance checks above, per the package’s endogenous-model
-  validation guidance.
+  reports no NCA analysis. The usual PKNCA section is replaced by the
+  steady-state / perturbation-recovery / flux-balance checks above, as
+  for other endogenous models.
 
 - **Two rate constants are derived, not published.** Table 2 fixes
   `ksyn_apoc3` and `kdeg_tg` and estimates both baselines, but reports

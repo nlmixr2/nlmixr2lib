@@ -94,10 +94,10 @@ scope here. What is in scope:
 1.  The packaged model parameter values match the `Output_real_*`
     DDMORE-curated summary (which carries the published Wilkins 2008
     final estimates with their published RSEs).
-2.  Validation here is the self-consistency check from the package’s
-    validation checklist, plus mechanistic spot-checks on the FDC
-    formulation effect and the structural absorption shape implied by
-    `MTT = 0.424 h` and `NN = 7.13` transit compartments.
+2.  Validation here is a self-consistency check, plus mechanistic
+    spot-checks on the FDC formulation effect and the structural
+    absorption shape implied by `MTT = 0.424 h` and `NN = 7.13` transit
+    compartments.
 
 ## Population
 
@@ -167,8 +167,8 @@ schedule covers the 0-12 h dose interval at steady state.
 set.seed(20260506L)
 
 n_subjects     <- 60L           # 20 per dose group; condensed from the bundle's
-                                # 250 to keep vignette wall-clock under the
-                                # 5-minute pkgdown gate
+                                # 250 to keep vignette wall-clock under
+                                # 5 minutes
 dose_levels    <- c(450, 480, 600)  # bundle's three dose levels (mg)
 dose_interval  <- 24L           # hours between QD doses
 n_doses        <- 14L           # daily doses to comfortably reach steady state
@@ -564,9 +564,9 @@ the substitute validation for the absent self-consistency overlay.
   [`rxode2::rxSolve`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
   with stochastic IIV / IOV more than triples the wall-clock budget for
   the vignette. The condensed 60-subject cohort (20 per dose group)
-  keeps the vignette under the 5-minute pkgdown gate without changing
-  the per-time-point median or 5-95% spread shape; consumers who need
-  the full 250-subject reproduction can re-run with `n_subjects <- 250L`
+  keeps the vignette’s render time under 5 minutes without changing the
+  per-time-point median or 5-95% spread shape; consumers who need the
+  full 250-subject reproduction can re-run with `n_subjects <- 250L`
   locally.
 - **Mu-referenced parsing warning is expected.** Loading the model emits
   *“some etas defaulted to non-mu referenced, possible parsing error:

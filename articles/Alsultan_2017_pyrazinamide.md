@@ -434,5 +434,5 @@ Table 4. {.table}
     0.148 as printed.
 - **Vignette uses 100 subjects per weight band (300 total).** Cohort
   size is large enough to give a stable cohort histogram for the Figure
-  1 replication while keeping the vignette under the 5-minute pkgdown
-  gate.
+  1 replication while keeping the vignette’s render time under 5
+  minutes.

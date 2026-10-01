@@ -34,12 +34,11 @@ do not survive text extraction: in the publisher PDF they are typeset
 images, and both the markdown text extraction and `pdftotext` in default
 mode drop them. They were recovered with `pdftotext -layout` and
 cross-read against the equation images
-`41598_2025_3503_Article_Equ1-5.gif`, which EuropePMC serves from
-`https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12106615/supplementaryFiles`.
-Second, the centring constants of the covariate model (71.40 mL/min and
-67.89 kg) appear **only** inside those equation images – they are in no
-table – so a text-only extraction of this paper silently loses the
-covariate model.
+`41598_2025_3503_Article_Equ1-5.gif` deposited with the article
+(PMC12106615). Second, the centring constants of the covariate model
+(71.40 mL/min and 67.89 kg) appear **only** inside those equation images
+– they are in no table – so a text-only extraction of this paper
+silently loses the covariate model.
 
 Colistin sulfate is the **active** polymyxin E salt, given intravenously
 as such. It is not colistimethate sodium (CMS), the inactive prodrug
@@ -1138,8 +1137,8 @@ setting out plainly:
   The centring constants 71.40 mL/min and 67.89 kg appear only inside
   the typeset Eq. 1 and Eq. 2 and are in no table. They were recovered
   with `pdftotext -layout` and confirmed against the publisher’s
-  equation GIFs from the EuropePMC supplementary-files endpoint. A
-  text-only extraction of this paper loses the covariate model entirely.
+  equation GIFs deposited with the article. A text-only extraction of
+  this paper loses the covariate model entirely.
 - **Eq. 1 mis-typesets the clearance as “266”.** Table 2’s 2.66 L/h is
   used, on the strength of its RSE, confidence interval and bootstrap
   interval, and because 266 L/h would place every prediction below the

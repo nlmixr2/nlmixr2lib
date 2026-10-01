@@ -19,9 +19,9 @@
   is assumed to be cleared solely via urine.
 - Article: <https://doi.org/10.1093/annonc/mdv369> (Open Access,
   CC-BY-NC; PMC4621032)
-- Supplementary materials (Tables S1-S6 and Figures S1-S2): obtained via
-  the Europe PMC supplementary-files endpoint
-  `https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4621032/supplementaryFiles`.
+- Supplementary materials (Tables S1-S6 and Figures S1-S2): published
+  with the open-access article,
+  <https://europepmc.org/article/PMC/PMC4621032>.
 
 Boer et al. modelled the slow decay of circulating platinum (Pt) in
 serum of 96-99 testicular-cancer survivors followed 1-13 years after

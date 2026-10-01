@@ -16,8 +16,7 @@ ui <- rxode2::rxode(mod)
 - Article: <https://doi.org/10.1128/aac.01568-24> (PMC12135518, open
   access)
 - Supplement: `aac.01568-24-s0001.docx` (Tables S1-S2, Figures S1-S2),
-  retrieved from the EuropePMC supplementary-files endpoint for
-  PMC12135518.
+  published with the open-access article (PMC12135518).
 
 Teicoplanin disposition in 79 adult renal transplant recipients was
 described by a two-compartment model with first-order elimination and a

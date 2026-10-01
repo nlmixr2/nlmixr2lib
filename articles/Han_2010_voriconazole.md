@@ -507,8 +507,8 @@ ggplot(wt_grid, aes(WT, Vp_model3)) +
 - **Cohort defined at 200 subjects.** The virtual cohort uses 200
   subjects (versus the source paper’s 13) so the per-time-point
   percentiles in the Figure 1 reproduction and the NCA summary tables
-  are smooth. The vignette renders within the 5-minute pkgdown gate at
-  this cohort size.
+  are smooth. The vignette renders in under 5 minutes at this cohort
+  size.
 
 - **Covariate-distribution assumptions.** The virtual cohort samples
   body weight, age, and postoperative-time-on-day-of-oral-study from

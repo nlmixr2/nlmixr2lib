@@ -162,7 +162,7 @@ sim_typical <- rxode2::rxSolve(
 ``` r
 
 # Stochastic VPC with the full IIV structure. Keep nSub small so the
-# vignette renders under the 5-minute pkgdown gate.
+# vignette renders in under 5 minutes.
 ev_one <- events |>
   dplyr::filter(id == 1L) |>
   dplyr::select(time, amt, dur, evid, cmt) |>

@@ -396,5 +396,5 @@ reproduced to within rounding.
   labels are equivalent for small variances, and the model file uses
   `prop(propSd)` with `propSd = 0.259`.
 - **Vignette uses 200 subjects per CYP3A5 stratum.** Small enough to
-  render the vignette in well under 5 minutes (the pkgdown gate) but
-  large enough to give stable percentiles for Figure 4.
+  render the vignette in well under 5 minutes but large enough to give
+  stable percentiles for Figure 4.

@@ -688,7 +688,7 @@ produce.
 
 ``` r
 
-# Cohort statistics (pattern 12 of the known-failure catalogue), and the
+# Cohort statistics, and the
 # percent scale has a heavy left tail: a subject whose log reduction is drawn
 # near or below zero maps to a large negative percent improvement, so at
 # n = 200 the 90 mg SD ranged from 16 to 39 points across seeds and the trend

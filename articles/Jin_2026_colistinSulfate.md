@@ -862,9 +862,8 @@ stopifnot(
   coefficient in the recovered equations matches Table 3 independently,
   so the equations contribute only the covariate *form* (a power
   function on CrCL centred at 116.3 mL/min) and the IIV *form*
-  (exponential on all four parameters). Source:
-  `https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13281950/fullTextXML`,
-  `disp-formula` ids `um0004`-`um0007`.
+  (exponential on all four parameters). Source: the article’s JATS full
+  text (PMC13281950), `disp-formula` ids `um0004`-`um0007`.
 
 - **The MIU-to-mg conversion is back-solved, not published.** 44.6
   mg/MIU is derived above from the Table 4 row at CrCL 120 mL/min. It is

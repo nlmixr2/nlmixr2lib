@@ -780,17 +780,16 @@ doses to reach the stricter target.
   band-level dosing recommendation must hold across the whole band.
   Under this mapping all 54 published cells replicate to within Monte
   Carlo error, which is itself strong corroboration.
-- **200 virtual patients per arm instead of 10,000.** The nlmixr2lib
-  vignette standard caps simulated cohorts at 200 per arm to keep the
-  pkgdown build within its time budget. At 200 subjects the binomial
-  standard error of a PTA near 50% is about 3.5 pp and near 90% about
-  2.1 pp. Most Table 3 cells land well inside that, but one (`CCr 50-84`
-  at MIC 8) is off by 8 pp, roughly 2.5 standard errors; with 54 cells
-  compared, an excursion of that size is expected by chance. PTA values
-  in this vignette should therefore be read as reproducing the published
-  ones to within a few percentage points, not as independently precise
-  to the percentage point. Raising the cohort size would narrow the
-  scatter but is deliberately not done here.
+- **200 virtual patients per arm instead of 10,000.** The vignette caps
+  simulated cohorts at 200 per arm to keep the render time short. At 200
+  subjects the binomial standard error of a PTA near 50% is about 3.5 pp
+  and near 90% about 2.1 pp. Most Table 3 cells land well inside that,
+  but one (`CCr 50-84` at MIC 8) is off by 8 pp, roughly 2.5 standard
+  errors; with 54 cells compared, an excursion of that size is expected
+  by chance. PTA values in this vignette should therefore be read as
+  reproducing the published ones to within a few percentage points, not
+  as independently precise to the percentage point. Raising the cohort
+  size would narrow the scatter but is deliberately not done here.
 - **Evaluation window, and the 100% T \> MIC discrepancy.** The paper
   never states which dosing interval its `T > MIC` calculation used.
   This vignette uses the 32-40 h interval, after five q8h doses, which

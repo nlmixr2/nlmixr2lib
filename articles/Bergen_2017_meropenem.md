@@ -450,10 +450,6 @@ half-life. {.table}
   (carrying-capacity hold, Figure 2 replication, Table 4 exposure
   comparison) replace it, per the package’s validation strategy for
   endogenous/mechanistic models.
-- **File naming.** The drug was initially recorded as “Antimicrobial
-  Agents and Chemo”, which is the journal name (Antimicrobial Agents and
-  Chemotherapy), not a drug. The paper unambiguously models meropenem,
-  so the model file and this vignette use `Bergen_2017_meropenem`.
 - **Meropenem disposition.** The simulated meropenem half-life in the
   HFIM (0.6 / 1.1 / 4.0 h for ARC / normal / impaired renal function) is
   a fixed input taken from the upstream Mattioli 2016 popPK in

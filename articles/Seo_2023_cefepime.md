@@ -22,13 +22,8 @@
   and 100% fT\>4xMIC): `ic-55-29-s004.xls`
 
 The two supplementary tables supply the 216 published probabilities this
-vignette is gated against. The journal’s own supplement endpoint
-(`icjournal.org/DownloadSupplMaterial.php`) currently fails TLS
-verification with an expired certificate; the files were instead taken
-from the EuropePMC supplementary-file archive for PMC10079447, which
-serves the identical publisher-deposited workbooks:
-
-    https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10079447/supplementaryFiles
+vignette is gated against. They are the publisher-deposited workbooks
+published with the open-access article (PMC10079447).
 
 Every published value hardcoded below was read back out of those
 workbooks programmatically and matched cell for cell (192

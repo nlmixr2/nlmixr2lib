@@ -26,11 +26,10 @@ This vignette validates the packaged `Voller_2017_phenobarbital` model
 against the DDMORE Foundation Model Repository entry
 **DDMODEL00000256**, the source from which it was extracted. The Voller
 2017 publication PDF was not available when this model was built, so the
-validation strategy follows the self-consistency recipe from the
-package’s validation checklist: re-simulate the bundle’s shipped event
-table with typical-value parameters and confirm the trajectory is in the
-expected clinical range for phenobarbital in newborns receiving a
-loading dose followed by oral maintenance.
+validation strategy is a self-consistency check: re-simulate the
+bundle’s shipped event table with typical-value parameters and confirm
+the trajectory is in the expected clinical range for phenobarbital in
+newborns receiving a loading dose followed by oral maintenance.
 
 ## Population
 
@@ -98,11 +97,11 @@ equation forms come from `Executable_OriginalModelCode.mod` `$PK` /
 The DDMORE bundle ships a 5-subject simulated event table at
 `Simulated_PhenobarbitalNewbornsPK.csv`. The vignette’s virtual cohort
 covers four representative newborn phenotypes (extreme preterm, preterm,
-late-preterm, term) so the simulation runs under the pkgdown five-minute
-budget while exercising every covariate effect of interest. Each subject
-receives a 15 mg/kg IV loading dose at TIME = 0 (delivered as a 30-min
-infusion to the central compartment) followed by oral maintenance doses
-of 3 mg/kg every 24 h on days 1-7.
+late-preterm, term) so the simulation runs in under five minutes while
+exercising every covariate effect of interest. Each subject receives a
+15 mg/kg IV loading dose at TIME = 0 (delivered as a 30-min infusion to
+the central compartment) followed by oral maintenance doses of 3 mg/kg
+every 24 h on days 1-7.
 
 Canonical units are used on input: `WT` and `WT_BIRTH` in kg, `PNA` in
 months. The model converts `PNA` back to days at use site

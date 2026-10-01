@@ -486,8 +486,7 @@ sim_s2 |>
   circadian phase.
 - **Cohort size**. Simulations use n = 25 virtual dogs per dose group
   vs. n = 4 real dogs per dose in the paper. This gives smooth
-  prediction intervals without inflating render time; the 200-per-arm
-  cap in the vignette gate is well respected.
+  prediction intervals without inflating render time.
 - **CO / MAP residual error**. The source CTL propagates the HR and
   dP/dtmax residuals through the algebraic PV-loop identities to compute
   residuals on CO and MAP; TPR residual is FIXED at 0. The packaged

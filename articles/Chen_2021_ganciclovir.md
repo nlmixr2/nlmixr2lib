@@ -362,6 +362,6 @@ clearance). Any larger discrepancy points to a misinterpreted parameter
   replication, while the IIV-included simulation reproduces the breadth
   of the VPC envelope.
 - **Vignette uses 60 subjects per dose group.** This keeps the vignette
-  render comfortably under the 5-minute pkgdown gate while giving stable
-  means for the NCA comparison. The original cohort had 41 (450 mg) and
-  29 (900 mg) patients.
+  render comfortably under 5 minutes while giving stable means for the
+  NCA comparison. The original cohort had 41 (450 mg) and 29 (900 mg)
+  patients.

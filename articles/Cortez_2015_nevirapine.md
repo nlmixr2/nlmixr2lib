@@ -976,14 +976,12 @@ sim |>
   against a digitised point.
 - **The supplement was not obtained.** Cortez 2015 cites Figures S1 and
   S2 in supplemental material as goodness-of-fit diagnostics for the two
-  fits. The ASM supplement endpoint returns HTTP 403, and the EuropePMC
-  supplementary-file service reports “Article with id PMC4291403 is not
-  open access one”; the EuropePMC `fullTextXML` endpoint returns no
-  `supplementary-material` element for this article. Nothing in the main
-  text indicates that the supplement holds parameter values beyond Table
-  2 – it is referenced twice, both times for graphical diagnostics – so
-  the gap does not affect the transcribed parameters. If it turns out to
-  contain `Vm` and `Km`, the LA-2 models should be revisited.
+  fits. The supplement is not open access and was not available when
+  this model was built. Nothing in the main text indicates that the
+  supplement holds parameter values beyond Table 2 – it is referenced
+  twice, both times for graphical diagnostics – so the gap does not
+  affect the transcribed parameters. If it turns out to contain `Vm` and
+  `Km`, the LA-2 models should be revisited.
 - **The simulation grid extends past the observation windows.** Figures
   are drawn over the published windows (28 days for the rats, 90 days
   for the infants), but the NCA runs on the same solve extended to

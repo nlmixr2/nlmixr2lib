@@ -16,8 +16,7 @@ mod <- rxode2::rxode2(nlmixr2lib::readModelDb("Winchell_2024_posaconazole"))
 - Article: <https://doi.org/10.1128/aac.01197-23>
 - Supplement (Tables S1-S3, Fig. S1-S4):
   <https://doi.org/10.1128/aac.01197-23> (file `aac.01197-23-s0001.pdf`;
-  also retrievable from the EuropePMC `supplementaryFiles` endpoint for
-  PMC10994819)
+  also available with the open-access record, PMC10994819)
 
 Winchell 2024 is the pediatric companion to the adult posaconazole
 tablet population PK analysis of the same group, which is also packaged

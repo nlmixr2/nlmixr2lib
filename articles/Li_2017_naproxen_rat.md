@@ -929,11 +929,11 @@ stopifnot(
   page-1 dagger declares Supplemental Table S1 (percent bound by
   concentration) and ADAPT 5 model code for the protein-binding,
   PK-estimation and PK-simulation steps. The material is
-  publisher-hosted only: EuropePMC reports no supplementary files
-  deposited in PMC, and the ASPET `DC1` link returns HTTP 403. Nothing
-  in it is needed – equations 1-8 and Tables 1 and 4 carry every
-  equation and every value, the ADAPT code would restate equations 5-7,
-  and Supplemental Table S1 is a percent-bound validation dataset rather
+  publisher-hosted only (no supplementary files are deposited in PMC)
+  and was not available when this model was built. Nothing in it is
+  needed – equations 1-8 and Tables 1 and 4 carry every equation and
+  every value, the ADAPT code would restate equations 5-7, and
+  Supplemental Table S1 is a percent-bound validation dataset rather
   than a source of parameters. The unbound anchors reproduced above are
   the independent confirmation that the reconstruction is right.
 - **`s1` and `s2` of equation 8 are not reported.** See the first bullet

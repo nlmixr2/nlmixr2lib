@@ -392,5 +392,5 @@ packaged model where needed.
 - **CONMED_IFNB1A canonical covariate.** Adding this model also
   introduces the new canonical column CONMED_IFNB1A (concomitant
   subcutaneous IFN beta-1a coadministration; binary, general scope,
-  reference 0 = no concomitant IFN). The register entry is committed
+  reference 0 = no concomitant IFN). The register entry is added
   alongside this model in `inst/references/covariate-columns.md`.

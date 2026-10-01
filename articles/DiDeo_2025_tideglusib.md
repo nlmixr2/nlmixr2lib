@@ -658,8 +658,8 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
 
-# Guard: NCA must have produced rows for all four arms (pattern 10 -- a
-# lookup that matches nothing makes every downstream all() vacuously TRUE).
+# Guard: NCA must have produced rows for all four arms (a lookup that
+# matches nothing makes every downstream all() vacuously TRUE).
 stopifnot(n_distinct(as.data.frame(nca_res)$treatment) == 4L)
 ```
 

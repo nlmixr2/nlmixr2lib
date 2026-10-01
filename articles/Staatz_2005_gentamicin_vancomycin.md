@@ -534,11 +534,10 @@ duration and are the primary structural checks. {.table}
   low-Cr subjects would receive falsely high CRCL estimates and falsely
   high CL.
 
-- **Errata not searched.** The extraction checklist asks for an errata
-  search on the publisher landing page; the deep web search was not
-  available when this model was built and no maintainer was asked to
-  verify. If a subsequent erratum revises any Table 4 estimate the
-  packaged values should be refreshed accordingly.
+- **Errata not searched.** An errata search on the publisher landing
+  page was not performed when this model was built. If a subsequent
+  erratum revises any Table 4 estimate the packaged values should be
+  refreshed accordingly.
 
 - **Multi-cohort vignette safety.** The gentamicin and vancomycin
   simulations use disjoint ID ranges (`id_offset = 0L` and

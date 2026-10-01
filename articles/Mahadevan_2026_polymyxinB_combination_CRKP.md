@@ -842,10 +842,9 @@ reported. {.table}
   unreliable for this model family near the stationary plateau (the same
   setting is used by the sibling Yadav and Landersdorfer vignettes).
 - **Erratum check.** No erratum, corrigendum or author correction is
-  referenced in the lead PDF or its supplement. Web search was not
-  available when this model was built; any later correction on the AAC
-  journal page should be checked before using these models in a
-  regulatory context.
+  referenced in the article PDF or its supplement. Any later correction
+  on the AAC journal page should be checked before using these models in
+  a regulatory context.
 - **Convention check.**
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   is clean for all six files. Of the three bath-concentration states,

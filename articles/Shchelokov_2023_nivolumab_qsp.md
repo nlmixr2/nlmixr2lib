@@ -216,8 +216,8 @@ solve_typical <- function(dose_mg, wt, tobs, ...) {
   ev <- make_events(dose_mg, wt, tobs, ...)
   out <- rxode2::rxSolve(rxode2::zeroRe(mod), ev, returnType = "data.frame",
                          useLinCmt = FALSE)
-  # rxSolve omits `id` entirely for a single subject (known-vignette-failure
-  # pattern 8); restore it so downstream joins and lookups behave.
+  # rxSolve omits `id` entirely for a single subject; restore it so
+  # downstream joins and lookups behave.
   if (is.null(out[["id"]])) out$id <- 1L
   out
 }

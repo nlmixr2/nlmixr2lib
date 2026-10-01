@@ -95,7 +95,7 @@ below collects the mapping in one place for reviewer audit.
 |----|----|----|
 | `Wt` | `WT` (kg) | Baseline body weight; reference 66 kg. |
 | `SGOT` | `AST` (IU/L) | Serum glutamic-oxaloacetic transaminase is the legacy name for aspartate aminotransferase; identical values and units. Reference 24 IU/L. |
-| `ALBU` | `ALB` (g/dL) | Baseline serum albumin in US conventional units (g/dL, not g/L). Reference 4 g/dL. |
+| `ALBU` | `ALB` (g/L) | Baseline serum albumin. The source reports US conventional units (g/dL); the model converts the g/L input to g/dL internally (ALB x 0.1). Reference 4 g/dL (= 40 g/L). |
 | `LMET` | `LMET` (binary) | Baseline presence of liver metastases (new canonical entry in the covariate register). |
 | `TTYPE` | `TUMTP_GASTRIC` / `TUMTP_OTHER` (binary) | Categorical primary tumor type with levels `MBC`, `EBC`, `HV`, `AGC`, `Others` is decomposed into two binary indicators: `TUMTP_GASTRIC = as.integer(TTYPE == "AGC")` and `TUMTP_OTHER = as.integer(TTYPE == "Others")`. Both zero = MBC / EBC / HV reference group. |
 
@@ -144,7 +144,7 @@ make_cohort <- function(n, tumor_type, id_offset = 0L) {
     TUMTP_OTHER  = as.integer(tumor_type == "Others"),
     WT         = pmin(pmax(rnorm(n, 66, 13), 40), 120),          # kg; centred at 66 kg (reference)
     AST        = pmin(pmax(rlnorm(n, log(24), 0.5), 8), 200),    # IU/L
-    ALB        = pmin(pmax(rnorm(n, 40, 4), 25), 55),       # g/dL
+    ALB        = pmin(pmax(rnorm(n, 40, 4), 25), 55),            # g/L
     LMET       = rbinom(n, 1, 0.30)                              # prevalence approx per MBC cohorts
   )
 }
@@ -287,7 +287,7 @@ ggplot(sim_ref |> dplyr::filter(time > 0),
   labs(x = "Time (days)",
        y = "Trastuzumab Cc (ug/mL)",
        title = "Typical-subject trastuzumab profile, 8 mg/kg + 6 mg/kg q3w",
-       subtitle = "Reference subject: 66 kg, AST 24 IU/L, ALB 4 g/dL, no liver metastases",
+       subtitle = "Reference subject: 66 kg, AST 24 IU/L, ALB 40 g/L, no liver metastases",
        caption = "Replicates Figure 4 of Quartino 2019 (typical-subject Cc vs time by tumor type).") +
   theme_bw()
 ```
@@ -636,7 +636,7 @@ q <- list(
   vc_bc = 2.62, vc_agc = 3.63
 )
 
-cl_typ <- function(tumor = "BC", WT = 66, AST = 24, ALB = 40, LMET = 0) {
+cl_typ <- function(tumor = "BC", WT = 66, AST = 24, ALB = 4, LMET = 0) {
   cl0 <- switch(tumor, BC = q$cl_bc, AGC = q$cl_agc, Others = q$cl_oth)
   cl0 *
     (WT / 66)^q$e_wt_cl *
@@ -651,7 +651,7 @@ sensitivity <- tibble::tribble(
   "BC, WT = 46 kg",                        cl_typ(WT = 46),         "27% decrease",
   "BC, WT = 98 kg",                        cl_typ(WT = 98),         "43% increase",
   "BC, SGOT = 50 IU/L",                    cl_typ(AST = 50),        "elevated (CL increases with SGOT)",
-  "BC, ALB = 30 g/dL",                      cl_typ(ALB = 30),         "elevated (CL scales as ~10/ALB)",
+  "BC, ALB = 3 g/dL",                      cl_typ(ALB = 3),         "elevated (CL scales as ~1/ALB)",
   "BC, LMET = 1",                          cl_typ(LMET = 1),        "+16% (exp(0.152))",
   "AGC, reference",                        cl_typ(tumor = "AGC"),   "0.176",
   "Others, reference",                     cl_typ(tumor = "Others"),"0.148"
@@ -666,14 +666,14 @@ knitr::kable(sensitivity, digits = 3,
 
 | Scenario | Simulated CL (L/day) | Paper target | Ratio to BC reference |
 |:---|---:|:---|---:|
-| BC, reference (66 kg) | 0.013 | 0.127 | 1.000 |
-| BC, WT = 46 kg | 0.009 | 27% decrease | 0.705 |
-| BC, WT = 98 kg | 0.019 | 43% increase | 1.466 |
-| BC, SGOT = 50 IU/L | 0.015 | elevated (CL increases with SGOT) | 1.162 |
-| BC, ALB = 30 g/dL | 0.017 | elevated (CL scales as ~10/ALB) | 1.333 |
-| BC, LMET = 1 | 0.015 | +16% (exp(0.152)) | 1.164 |
-| AGC, reference | 0.018 | 0.176 | 1.386 |
-| Others, reference | 0.015 | 0.148 | 1.165 |
+| BC, reference (66 kg) | 0.127 | 0.127 | 1.000 |
+| BC, WT = 46 kg | 0.090 | 27% decrease | 0.705 |
+| BC, WT = 98 kg | 0.186 | 43% increase | 1.466 |
+| BC, SGOT = 50 IU/L | 0.148 | elevated (CL increases with SGOT) | 1.162 |
+| BC, ALB = 3 g/dL | 0.169 | elevated (CL scales as ~1/ALB) | 1.333 |
+| BC, LMET = 1 | 0.148 | +16% (exp(0.152)) | 1.164 |
+| AGC, reference | 0.176 | 0.176 | 1.386 |
+| Others, reference | 0.148 | 0.148 | 1.165 |
 
 Typical linear CL sensitivities reproduced from the packaged parameters.
 {.table}
@@ -695,8 +695,8 @@ cohort above approximates the source cohort as follows:
   range approximately brackets the Table 1 reference subject.
 - **AST (SGOT)** ~ log-Normal(log 24, 0.5) IU/L clipped to 8-200. Median
   matches the reference 24 IU/L.
-- **ALB** ~ Normal(4.0, 0.4) g/dL clipped to 2.5-5.5. Centred at the
-  reference.
+- **ALB** ~ Normal(40, 4) g/L clipped to 25-55 g/L (Normal(4.0, 0.4)
+  g/dL clipped to 2.5-5.5 g/dL). Centred at the reference.
 - **LMET** ~ Bernoulli(0.30). The paper does not publish a
   per-tumor-type liver-metastasis prevalence; 30% is a pragmatic value
   consistent with published prevalence in the MBC literature.

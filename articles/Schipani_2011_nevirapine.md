@@ -503,11 +503,10 @@ literature; the simulated 29-30 h matches the typical-value prediction.
   the published final model and omits IOV.
 - **Cohort N for Figure 3 reproduction.** Schipani 2011 simulated 1000
   datasets per cell for Figure 3; the packaged vignette uses 50 subjects
-  per cell to stay within the pkgdown per-vignette wall-time budget. The
-  smaller N gives slightly more Monte Carlo noise on the tail
-  percentages but preserves the qualitative finding (higher sub-MEC risk
-  on QD vs BID; protective effect of 516TT / 983TC variants; weight-dose
-  dependence).
+  per cell to keep the render time short. The smaller N gives slightly
+  more Monte Carlo noise on the tail percentages but preserves the
+  qualitative finding (higher sub-MEC risk on QD vs BID; protective
+  effect of 516TT / 983TC variants; weight-dose dependence).
 - **Race / ethnicity not modelled.** Schipani 2011 Methods report
   ethnicity (66.5% Caucasian, 33.5% Black) as a tested covariate; the
   Results note that “no other demographic covariates proved to be

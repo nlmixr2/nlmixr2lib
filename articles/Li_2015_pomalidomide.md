@@ -16,7 +16,7 @@
   residual error is population-specific.
 - Article: <https://doi.org/10.1002/jcph.455>
 - Supplement (study designs, goodness-of-fit and VPC figures):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4418344/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC4418344>
 
 Pomalidomide is an oral immunomodulatory agent for relapsed and
 refractory multiple myeloma (RRMM). Li 2015 is the first published

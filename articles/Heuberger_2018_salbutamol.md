@@ -45,8 +45,8 @@ inhalation data to better describe the dual-absorption profile.
 
 The simulation cohorts in Heuberger 2018 used N = 1000 virtual subjects
 with body weight drawn from Normal(mean = 84 kg, SD = 17 kg). The
-vignette uses N = 500 to keep render time inside the pkgdown five-minute
-budget while preserving the published percentile geometry.
+vignette uses N = 500 to keep render time under five minutes while
+preserving the published percentile geometry.
 
 The full population metadata is available programmatically:
 

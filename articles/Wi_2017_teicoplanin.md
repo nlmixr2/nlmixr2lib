@@ -118,9 +118,9 @@ CRRT scenarios (on-ECMO vs after-ECMO, with vs without CRRT) crossed
 with the standard dosing regimen A (LD 400 mg q12h x 3 doses, then MD
 400 mg q24h) reported in Table 3. The published simulations used n =
 5,000 virtual patients per regimen / covariate combination; the vignette
-uses n = 100 per scenario to stay inside the 5-minute pkgdown render
-budget while still resolving the median, 5th-95th percentile band, and
-PTA fraction reliably.
+uses n = 100 per scenario to keep the render time under 5 minutes while
+still resolving the median, 5th-95th percentile band, and PTA fraction
+reliably.
 
 ``` r
 
@@ -505,11 +505,10 @@ teicoplanin reported in the literature for adult ICU patients (typically
   warning).
 
 - **Virtual cohort uses n = 100 per ECMO x CRRT scenario (vs n = 5,000
-  in the paper’s Table 3 simulation).** The vignette has a 5-minute
-  pkgdown render budget; n = 100 per scenario with one steady-state
-  dosing interval and a sparse observation grid keeps the render under
-  that budget while still resolving the median, 5th-95th percentile
-  band, and PTA fraction reliably for visualisation.
+  in the paper’s Table 3 simulation).** n = 100 per scenario with one
+  steady-state dosing interval and a sparse observation grid keeps the
+  render time under 5 minutes while still resolving the median, 5th-95th
+  percentile band, and PTA fraction reliably for visualisation.
 
 - **First MD dose at t = 48 h.** Wi 2017 Methods specifies “LD of 400 mg
   q12h for the first three doses followed by the MD of 400 mg q24h” but

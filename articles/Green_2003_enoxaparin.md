@@ -154,7 +154,7 @@ events <- dplyr::bind_rows(
               dose_iu_per_kg = 100, regimen_h = 8,
               id_offset = n_per_arm, label = "100 IU/kg LBW q8h")
 )
-# Sanity guard: cohort IDs must be disjoint per vignette-template guidance.
+# Sanity guard: cohort IDs must be disjoint.
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 # For the LBW-based regimen we want the per-kg dose driven by LBM, not WT.

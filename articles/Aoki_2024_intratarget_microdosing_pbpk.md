@@ -19,9 +19,9 @@
   structure originates with Koyama S, Toshimoto K, Lee W, Aoki Y,
   Sugiyama Y. Revisiting nonlinear bosentan pharmacokinetics by
   physiologically based pharmacokinetic modeling. Drug Metab Dispos.
-  2021;49(4):298-304. <doi:10.1124/dmd.120.000023> (not open access; not
-  on disk – but it is not needed here, because Aoki 2024 publishes the
-  complete ODE system and every parameter value in its own supplement).
+  2021;49(4):298-304. <doi:10.1124/dmd.120.000023> (not open access, and
+  not needed here, because Aoki 2024 publishes the complete ODE system
+  and every parameter value in its own supplement).
 - Description: PBPK-PKRO (simplified whole-body, permeability-limited
   target tissue). Drug-agnostic small-molecule model used by Aoki,
   Rowland & Sugiyama (2024) to ask when Intra-Target Microdosing (ITM) –

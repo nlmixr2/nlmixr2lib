@@ -552,14 +552,14 @@ provide.
   line, particularly in the dense low-concentration column, so real
   between-subject and residual variability is clearly non-zero – it is
   simply not quantified in the source.
-- **Supplementary Table S3 was retrieved separately from the lead PDF.**
+- **Supplementary Table S3 is a separate file from the article PDF.**
   The four parameter values are not printed in the main text as a set;
   the main text quotes Imax (90.2%), IC50 (6.2 ug/mL), the Hill
   coefficient (2.4) and the IC90 (15.5 ug/mL) in prose, but the baseline
   `E0 = 94.8%` and all four RSE% figures appear only in Supplementary
-  Table S3. That file (`CPT-104-655-s003.docx`) was obtained from the
-  PMC supplementary-file endpoint for PMC6175298 and its byte size and
-  MD5 match the manifest in the Europe PMC full-text XML.
+  Table S3. That file (`CPT-104-655-s003.docx`) is part of the
+  supplementary material published with the open-access article
+  (PMC6175298).
 - **Direct effect, no hysteresis.** Bartko 2018 states that exploratory
   analysis found “no delay … in CP activity” and that individual
   concentrations and CP activities were therefore time-matched (Results,

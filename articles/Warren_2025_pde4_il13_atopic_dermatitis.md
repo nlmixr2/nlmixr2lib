@@ -700,7 +700,7 @@ numerically in the apremilast section above.
   model appears in the paper, its reference list (references 6-8 are
   pharmacology and phase 2b efficacy reports, not popPK analyses), or
   any supplement; the analysis is company-internal and unpublished, so
-  there is no source to acquire. Reconstructing a five-parameter
+  there is no source to consult. Reconstructing a five-parameter
   two-compartment-with-lag model by fitting the digitised Figure 1A / 1B
   curves would fabricate parameters the authors never reported and is
   not done here. `Warren_2025_orismilast` therefore packages only the

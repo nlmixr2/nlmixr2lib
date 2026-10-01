@@ -480,10 +480,10 @@ documented here so a future user can audit:
   program. Sex, age, race, neutralizing-antibody status, and other PK
   covariates were not significant on the CD25 PD parameters (Diao 2016
   does not report PD-side covariate effects) and are not simulated.
-- **Prior packaged form.** An earlier merged version of this model
-  (commit 9717b4fe5, PR \#467) encoded Equation (1) using only the
-  desaturation-phase parameter set (IC50 = 2.07 mg/L, gamma = 4.44).
-  That single-equilibrium form reproduced Figure 1B qualitatively but
-  under-predicted the rapid initial saturation shown in Figure 1A. The
-  current kinetic-binding form supersedes it and reproduces both figures
-  within their reported qualitative timescales.
+- **Prior packaged form.** An earlier version of this model encoded
+  Equation (1) using only the desaturation-phase parameter set (IC50 =
+  2.07 mg/L, gamma = 4.44). That single-equilibrium form reproduced
+  Figure 1B qualitatively but under-predicted the rapid initial
+  saturation shown in Figure 1A. The current kinetic-binding form
+  supersedes it and reproduces both figures within their reported
+  qualitative timescales.

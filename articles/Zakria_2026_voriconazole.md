@@ -812,8 +812,7 @@ single-dose exposure.
   split 183 / 117 to reproduce Table 1’s 61% / 39% age-group
   proportions. That is large enough to resolve the clearance
   distributions and the trough envelope while keeping every arm under
-  the 200-per-arm simulation cap and the vignette well inside the
-  pkgdown time budget.
+  the 200-per-arm simulation cap and the vignette’s render time short.
 - **`Cc` versus `sim`.** The structural-identity checks read `Cc`, the
   individual prediction, because they compare against noise-free
   algebraic consequences of the published parameters. The comparison

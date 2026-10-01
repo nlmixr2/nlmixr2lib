@@ -424,7 +424,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x557bee0f97e0>
+#> <environment: 0x55bd55972bb0>
 ```
 
 ## Population
@@ -485,8 +485,8 @@ str(readModelDb("Tsirizani_2025_ritonavir")()$population)
 Every `ini()` value and every non-obvious `model()` construct, with the
 place it came from. Table 3 typical values apply to the darunavir arm at
 FFM 21.0 kg on a witnessed morning dose. “Data S1” is the supplemental
-NONMEM control stream (`AAC00771-25-s0001.docx`), retrieved from the
-Europe PMC supplementary-files endpoint for PMC12587601.
+NONMEM control stream (`AAC00771-25-s0001.docx`), published with the
+open-access article (PMC12587601).
 
 | Quantity | Value | Source |
 |:---|:---|:---|

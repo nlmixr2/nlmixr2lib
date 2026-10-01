@@ -810,7 +810,7 @@ sim_sd <- rxode2::rxSolve(mod_t, ev_sd, keep = c("treatment"),
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etalvp', 'etalmtt', 'etalogitffo'
 #> Warning: multi-subject simulation without without 'omega'
 # rxSolve omits `id` for a single-subject event table; restore it defensively
-# so the PKNCA grouping below cannot silently collapse (failure pattern 8).
+# so the PKNCA grouping below cannot silently collapse.
 if (is.null(sim_sd$id)) sim_sd$id <- 1L
 stopifnot(all(sim_sd$Cc >= 0))
 

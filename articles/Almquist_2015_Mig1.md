@@ -417,9 +417,8 @@ added conversion.
 
 Because there is no dose and no absorption profile, the validations that
 catch translation errors here are the steady-state,
-perturbation-recovery and flux-balance checks described in the package’s
-endogenous-model validation guidance – not NCA. PKNCA is deliberately
-not used in this vignette.
+perturbation-recovery and flux-balance checks used for endogenous models
+– not NCA. PKNCA is deliberately not used in this vignette.
 
 ### Symbolic check
 

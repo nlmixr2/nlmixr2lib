@@ -17,7 +17,7 @@ ui <- rxode2::rxode(readModelDb("Sokolov_2019_antipcsk9_qsp"))
   Methods ‘Structure of the mathematical model’ narrative.
 - Article: <https://doi.org/10.1194/jlr.M092486>
 - Supplement (Tables S1 and S2, diagnostics figures S1-S3):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6718444/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6718444>
 
 QSP. Sokolov 2019 lipoprotein-homeostasis model benchmarking two
 anti-PCSK9 modalities, monoclonal antibodies and small interfering RNA,
@@ -473,8 +473,8 @@ c(
 #>    40.0000000     1.6571874     0.1768428     0.4326427
 
 # Deterministic: no IIV, no random draw, so this bound is reproducible on any
-# machine and thread count -- pattern 12 (cohort-dependent assertions) does not
-# apply here. Realised max 1.66 pp, median 0.18, RMSE 0.43 over all 40
+# machine and thread count -- the caveat for cohort-dependent assertions does
+# not apply here. Realised max 1.66 pp, median 0.18, RMSE 0.43 over all 40
 # comparisons; the worst entry is the inclisiran predose. 3 pp keeps a little
 # headroom for solver tolerance yet still goes red on a mis-transcribed rate
 # constant or dose, which move these by tens of percentage points.

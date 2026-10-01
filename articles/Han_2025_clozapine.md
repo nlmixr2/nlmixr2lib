@@ -567,7 +567,7 @@ is numerical and a tight bound is correct.
 # Single 300 mg oral dose to a lattice of 200 subjects at 70 kg, no zopiclone.
 # The absorption phase is sampled at 0.05 h so that Tmax (~1.6-2.8 h across the
 # lattice) is resolved to well under a percent; a coarse grid would otherwise
-# both blur Tmax and bias AUC low (failure pattern 11).
+# both blur Tmax and bias AUC low.
 nca_events <- tidyr::expand_grid(
   k    = seq_len(n_lattice),
   time = sort(unique(c(seq(0, 6, by = 0.05), seq(6.5, 72, by = 0.5))))

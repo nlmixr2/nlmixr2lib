@@ -11,8 +11,7 @@
 - PMC open-access copy:
   <https://pmc.ncbi.nlm.nih.gov/articles/PMC12035414/>
 - Supplementary Appendix (covariate equations 2.1 and 2.2, Tables S1 and
-  S2) retrieved from the EuropePMC supplementary-file bundle for
-  PMC12035414.
+  S2) published with the open-access article (PMC12035414).
 
 The packaged model is `Johnson_2025_osimertinib`, a joint
 one-compartment population PK model for osimertinib and its active

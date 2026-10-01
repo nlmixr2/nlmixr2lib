@@ -550,9 +550,9 @@ model integrates without error; not a full self-consistency simulation.
   obtain the PDF, a follow-up audit of TH 1..14 against the
   publication’s tables is recommended.
 - **`count_responder` / `count_nonresponder` observation names (vs. `Cc`
-  convention).** The naming-conventions register reserves `Cc` for
-  concentration outputs; this model emits seizure counts rather than
-  concentrations, so `count_<branch>` is used.
+  convention).** The naming conventions reserve `Cc` for concentration
+  outputs; this model emits seizure counts rather than concentrations,
+  so `count_<branch>` is used.
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   does not flag these; the precedent is `score` in `Plan_2012_pain.R`.
 - **No published NCA / VPC comparison.** Count-likelihood seizure models

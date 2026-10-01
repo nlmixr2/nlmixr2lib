@@ -437,9 +437,9 @@ resistance accumulation under the cell-line-specific REG50 = 2.08 mm.
 - **Cohort sizes in the vignette.** The source authors simulated 1000
   populations per study design (Methods ‘Model Evaluation and
   Validation’, p. 800); the vignette uses 200 per arm to keep the render
-  time within the pkgdown CI budget (5 minutes). The qualitative shape
-  of the VPC envelope is preserved; tighter percentile bands can be
-  obtained by raising `n` in the `sim_one_day()` calls above.
+  time under 5 minutes. The qualitative shape of the VPC envelope is
+  preserved; tighter percentile bands can be obtained by raising `n` in
+  the `sim_one_day()` calls above.
 - **Validation dataset.** The 34-mouse external-validation cohort (PBS
   day 4, CyaA-E7 day 25) is described in the source but is not
   separately reproduced here because it shares the structural model with

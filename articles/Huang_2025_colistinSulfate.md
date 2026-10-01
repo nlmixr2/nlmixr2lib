@@ -30,7 +30,7 @@
 - Article: <https://doi.org/10.1177/00368504251325334>
 - Supplement (Table S1, Figures S1-S2) and the publisher’s native
   equation / table renderings: EuropePMC
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11877486/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC11877486>
 
 Huang 2025 is, by the authors’ account, the first population PK analysis
 of **colistin sulfate** in patients receiving continuous renal
@@ -882,9 +882,8 @@ a deviation, not gated.
   `CL = 3.69 * (CYSC/2.31)^-0.626 * (WT/65)^1.03`, with WT unambiguously
   raised to a power. The equation was confirmed character-for-character
   against the publisher’s native rendering of the equation block
-  (`10.1177_00368504251325334-eq2.jpg` from the EuropePMC
-  `supplementaryFiles` endpoint), so this is a printed value and not a
-  digitisation. The exponential reading is also arithmetically
+  (`10.1177_00368504251325334-eq2.jpg`), so this is a printed value and
+  not a digitisation. The exponential reading is also arithmetically
   impossible: `exp(1.03 * WT/65)` would multiply CL by 2.80 at the
   reference weight rather than 1, contradicting the tabulated typical CL
   of 3.69 L/h, and `exp(1.03 * (WT - 65))` would inflate CL about

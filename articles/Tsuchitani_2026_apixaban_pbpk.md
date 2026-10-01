@@ -15,11 +15,10 @@
   and every one of them agrees with the code. The eleven estimated
   parameters are the ‘Median’ column of main-text Table 1.
 - Article: <https://doi.org/10.1002/psp4.70163>
-- Supporting Information (open access, retrieved from the Europe PMC
-  `supplementaryFiles` endpoint for PMC12823302):
-  `psp470163-sup-0001-supinfo.txt` (Data S1, the authors’ complete model
-  code) and `psp470163-sup-0002-supinfo.pdf` (Data S2, Tables S1-S4 and
-  Figures S1-S4).
+- Supporting Information (open access, published with the article,
+  PMC12823302): `psp470163-sup-0001-supinfo.txt` (Data S1, the authors’
+  complete model code) and `psp470163-sup-0002-supinfo.pdf` (Data S2,
+  Tables S1-S4 and Figures S1-S4).
 
 Apixaban is a direct oral factor Xa inhibitor with a famously
 well-balanced elimination: after a 20 mg oral dose roughly 30% of

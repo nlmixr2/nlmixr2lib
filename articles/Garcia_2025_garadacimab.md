@@ -34,8 +34,8 @@ sharing them.
   the same paper: modellib(‘Garcia_2025_garadacimab_hae_attack’).
 - Article: <https://doi.org/10.1002/psp4.70009>
 - Supplement (Methods S1/S2 control streams and Tables S1-S12): Wiley
-  file `PSP4-14-954-s001.docx`, retrieved from the Europe PMC
-  `fulltextRepo` endpoint for PMC12072213.
+  file `PSP4-14-954-s001.docx`, published with the open-access article
+  (PMC12072213).
 
 ``` r
 

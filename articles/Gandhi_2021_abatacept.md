@@ -130,11 +130,11 @@ set.seed(20260425)
 n_ra <- 100  # downsampled from 300 for vignette build budget; VPC band shape preserved
 ra <- tibble::tibble(
   id              = seq_len(n_ra),
-  WT              = pmin(pmax(rnorm(n_ra, mean = 70, sd = 18),  40, 160)),
-  AGE             = pmin(pmax(rnorm(n_ra, mean = 49, sd = 13),  18,  90)),
-  ALB             = pmin(pmax(rnorm(n_ra, mean = 41, sd =    3.5), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_ra, mean = 99,  sd = 25), 30, 180)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_ra, mean = 15, sd = 6)), 0, 28)),
+  WT              = pmin(pmax(rnorm(n_ra, mean = 70, sd = 18),  40), 160),
+  AGE             = pmin(pmax(rnorm(n_ra, mean = 49, sd = 13),  18),  90),
+  ALB             = pmin(pmax(rnorm(n_ra, mean = 41, sd = 3.5), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_ra, mean = 99,  sd = 25), 30), 180),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_ra, mean = 15, sd = 6)), 0), 28),
   SEXF            = rbinom(n_ra, 1, 0.78),       # RA cohorts ~75-80% female
   CONMED_NSAID    = rbinom(n_ra, 1, 0.55),
   DIS_PJIA        = 0L,
@@ -147,9 +147,9 @@ pjia <- tibble::tibble(
   id              = seq.int(from = n_ra + 1, length.out = n_pjia),
   AGE             = runif(n_pjia, 2, 17),
   WT              = pmax(pmin(8 + (AGE - 2) * 4 + rnorm(n_pjia, 0, 6), 100), 8),
-  ALB             = pmin(pmax(rnorm(n_pjia, mean = 41, sd = 4), 25, 50)),
-  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 110, sd = 25), 60, 200)),
-  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_pjia, mean = 6, sd = 4)), 0, 28)),
+  ALB             = pmin(pmax(rnorm(n_pjia, mean = 41, sd = 4), 25), 50),
+  CRCL            = pmin(pmax(rnorm(n_pjia, mean = 110, sd = 25), 60), 200),
+  SWOL_28JOINT    = pmin(pmax(round(rnorm(n_pjia, mean = 6, sd = 4)), 0), 28),
   SEXF            = rbinom(n_pjia, 1, 0.70),     # pJIA cohorts skew female
   CONMED_NSAID    = rbinom(n_pjia, 1, 0.40),
   DIS_PJIA        = 1L,
@@ -358,7 +358,7 @@ ggplot(vpc_ra, aes(time, Q50, colour = regimen, fill = regimen)) +
     x = "Time (days)",
     y = "Abatacept Cc (mg/L)",
     title = "Simulated 5-50-95 percentile profiles in adult RA: SC vs IV",
-    caption = "Virtual RA cohort (N = 300); first 12 weeks."
+    caption = sprintf("Virtual RA cohort (N = %d); first 12 weeks.", n_ra)
   ) +
   theme_minimal()
 ```
@@ -493,7 +493,7 @@ nca_pjia <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_pjia, dose_obj_pjia,
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 summary(nca_pjia)
 #>  start end             treatment   N auclast        cmax        cmin
-#>      0   7 pJIA_SC_weight_tiered 100      NC 43.8 [32.2] 33.9 [43.1]
+#>      0   7 pJIA_SC_weight_tiered 100      NC 49.9 [34.4] 40.2 [45.6]
 #>               tmax cav
 #>  3.00 [1.00, 3.00]  NC
 #> 
@@ -618,7 +618,7 @@ nca_ra <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_ra, dose_obj_ra,
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 summary(nca_ra)
 #>  start end    treatment   N auclast        cmax        cmin              tmax
-#>      0   7 RA_SC_125_QW 100      NC 14.0 [32.9] 10.2 [41.4] 3.00 [1.00, 3.00]
+#>      0   7 RA_SC_125_QW 100      NC 28.0 [42.9] 21.5 [49.3] 3.00 [1.00, 3.00]
 #>  cav
 #>   NC
 #> 
@@ -650,9 +650,9 @@ knitr::kable(pct_above_pjia, digits = 1,
 
 | age_grp   |   N | pct_ge_10_mgL | median_Cmin |
 |:----------|----:|--------------:|------------:|
-| 2 to \<6  |  32 |          96.9 |        46.4 |
-| 6 to \<12 |  34 |         100.0 |        32.0 |
-| 12-17     |  34 |         100.0 |        28.8 |
+| 2 to \<6  |  32 |          96.9 |        52.9 |
+| 6 to \<12 |  34 |         100.0 |        39.6 |
+| 12-17     |  34 |         100.0 |        37.0 |
 
 Fraction of virtual pJIA subjects achieving steady-state Cmin \>= 10
 mg/L on the weight-tiered SC regimen (Gandhi 2021: 130/131 = 99.2%).
@@ -679,9 +679,11 @@ knitr::kable(pct_above_ra, digits = 1,
   caption = "Fraction of virtual adult RA subjects achieving steady-state Cmin >= 10 mg/L on 125 mg SC QW (Gandhi 2021: comparable to IV ~10 mg/kg Q4W).")
 ```
 
-| wt_grp   |   N | pct_ge_10_mgL | median_Cmin |
-|:---------|----:|--------------:|------------:|
-| \>100 kg | 100 |            56 |        10.7 |
+| wt_grp    |   N | pct_ge_10_mgL | median_Cmin |
+|:----------|----:|--------------:|------------:|
+| \<60 kg   |  30 |          96.7 |        29.0 |
+| 60-100 kg |  67 |          94.0 |        20.3 |
+| \>100 kg  |   3 |          66.7 |        13.1 |
 
 Fraction of virtual adult RA subjects achieving steady-state Cmin \>= 10
 mg/L on 125 mg SC QW (Gandhi 2021: comparable to IV ~10 mg/kg Q4W).
@@ -728,13 +730,13 @@ mg/L on 125 mg SC QW (Gandhi 2021: comparable to IV ~10 mg/kg Q4W).
 - **Virtual-cohort covariate distributions.** Table S1 (the per-study
   demographic summary) is referenced in the paper but is not embedded in
   the PMC full text, so the virtual-cohort distributions are
-  approximate. Adult RA: WT ~ N(70, 18), AGE ~ N(49, 13), ALB ~ N(4.1,
-  0.35), CRCL ~ N(99, 25), SWOL_28JOINT ~ rounded N(15, 6), SEXF = 78 %
-  female, CONMED_NSAID = 55 %. pJIA: AGE uniform on \[2, 17\], WT
-  linearly scaled with age plus noise (8 + 4·(AGE-2) ± 6 kg), SEXF = 70
-  % female. The reference covariate values match the Gandhi 2021 Figure
-  1 caption; the dispersions approximate a typical phase 3 RA / pJIA
-  cohort.
+  approximate. Adult RA: WT ~ N(70, 18), AGE ~ N(49, 13), ALB ~ N(41,
+  3.5) g/L (N(4.1, 0.35) g/dL), CRCL ~ N(99, 25), SWOL_28JOINT ~ rounded
+  N(15, 6), SEXF = 78 % female, CONMED_NSAID = 55 %. pJIA: AGE uniform
+  on \[2, 17\], WT linearly scaled with age plus noise (8 + 4·(AGE-2) ±
+  6 kg), SEXF = 70 % female. The reference covariate values match the
+  Gandhi 2021 Figure 1 caption; the dispersions approximate a typical
+  phase 3 RA / pJIA cohort.
 - **IV as instantaneous bolus.** Gandhi 2021 administers IV abatacept as
   a 30-minute infusion. This simulation treats IV doses as an
   instantaneous bolus to `central`, which slightly overstates the early

@@ -30,11 +30,11 @@ directly. That composition is exercised throughout this vignette.
 - Article: <https://doi.org/10.2147/IDR.S471918> (open access; PMCID
   PMC11416114)
 
-No data supplement accompanies the article. The EuropePMC
-supplementary-file bundle for PMC11416114 contains only the publisher’s
-figure and equation images; Equations 1 and 2 were read from those
-equation images (`IDR-17-4055-e0001`, `IDR-17-4055-e0002`) because both
-are vector graphics that no text extraction of the PDF recovers.
+No data supplement accompanies the article. The only files deposited
+with PMC11416114 are the publisher’s figure and equation images;
+Equations 1 and 2 were read from those equation images
+(`IDR-17-4055-e0001`, `IDR-17-4055-e0002`) because both are vector
+graphics that no text extraction of the PDF recovers.
 
 ## Population
 
@@ -804,7 +804,7 @@ first_dose <- pta$`PTA (% above total EC90)`[pta$phase == "First dose"]
 steady     <- pta$`PTA (% above total EC90)`[pta$phase == "Steady state"]
 med_ss     <- pta$`Median Ctrough (mg/L)`[pta$phase == "Steady state"]
 
-# Guard that the lookups found rows at all (pattern 10).
+# Guard that the lookups found rows at all.
 stopifnot(length(first_dose) == 2L, length(steady) == 2L, length(med_ss) == 2L)
 
 # GATE 1 -- attainment is high in both arms. Deliberately set at 85/90 rather
@@ -842,14 +842,14 @@ halved.
 
 - **Equations 1 and 2 are vector images in the source PDF.** Neither
   `pdftotext` nor the PDF-to-markdown extraction recovers them. They
-  were read from the publisher’s own equation images in the EuropePMC
-  supplementary bundle for PMC11416114 (`IDR-17-4055-e0001` and
-  `IDR-17-4055-e0002`) and cross-checked against a 300 dpi render of
-  page 4 of the PDF. The centring constants 80 mL/min/1.73 m^2 and 12.2
-  mg\*h/L appear **only** inside Equation 1 – they are in no table – so
-  the structural check at the top of this vignette, which requires `cl`
-  to equal the Table 3 value of 3.6 L/h at the centring point, is the
-  guard against a mis-read constant.
+  were read from the publisher’s own equation images deposited with
+  PMC11416114 (`IDR-17-4055-e0001` and `IDR-17-4055-e0002`) and
+  cross-checked against a 300 dpi render of page 4 of the PDF. The
+  centring constants 80 mL/min/1.73 m^2 and 12.2 mg\*h/L appear **only**
+  inside Equation 1 – they are in no table – so the structural check at
+  the top of this vignette, which requires `cl` to equal the Table 3
+  value of 3.6 L/h at the centring point, is the guard against a
+  mis-read constant.
 
 - **The exponent is named twice.** Equation 1 writes the ritonavir-AUC
   exponent as `dCLdRIT`; Table 3 writes it as `dCLdAUCRIT`. They are the

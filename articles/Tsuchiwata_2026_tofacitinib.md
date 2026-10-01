@@ -11,7 +11,7 @@
   spondylitis
 - Article: <https://doi.org/10.5414/CP204781>
 - Supplement (goodness-of-fit plots only):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12825014/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12825014>
 
 Tofacitinib is an oral Janus kinase inhibitor. Tsuchiwata 2026 pooled
 the tofacitinib arms of a phase 2 dose-ranging study (NCT01786668) and a

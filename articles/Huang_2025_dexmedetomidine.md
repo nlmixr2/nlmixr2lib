@@ -1085,9 +1085,9 @@ value well inside the 20% tolerance.
   weight), and the replication table should be read with the
   graphical-read uncertainty in mind.
 - **Cohort sizes.** The paper simulated 1,000 virtual subjects per
-  group; this vignette uses 150 per arm to stay within the pkgdown
-  render budget, which is ample for group means but produces slightly
-  noisier tail percentages in the Figure 5 target-attainment columns.
+  group; this vignette uses 150 per arm to keep the render time short,
+  which is ample for group means but produces slightly noisier tail
+  percentages in the Figure 5 target-attainment columns.
 - **Exposure-response model placement.** The logistic regression of
   sedation success on Cmax is a non-ODE statistical regression fitted in
   R on a derived exposure metric, not an ODE-linked PD model. Following

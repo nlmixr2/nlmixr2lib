@@ -67,8 +67,8 @@ place.
 
 Martial 2017 generated 1000 hypothetical individuals per regimen with a
 mean body weight of 70 kg and 20% coefficient of variation (CV). To keep
-this vignette’s wall-clock under the 5 min pkgdown build budget the
-simulation here uses 100 subjects per regimen.
+this vignette’s wall-clock under 5 min the simulation here uses 100
+subjects per regimen.
 
 ``` r
 
@@ -319,9 +319,9 @@ terms (see Assumptions and deviations below) are taken into account.
   parametric bootstrap.
 - **Simulation cohort size.** The published Monte Carlo simulations used
   1000 individuals per regimen; this vignette uses 100 per regimen to
-  fit within the 5-minute pkgdown wall-time budget. Median AUC estimates
-  are robust at this sample size; tail-percentile estimates (e.g., 95th
-  / fifth) are noisier than the published values.
+  keep the render time under 5 minutes. Median AUC estimates are robust
+  at this sample size; tail-percentile estimates (e.g., 95th / fifth)
+  are noisier than the published values.
 - **No supplements available.** Martial 2017 references electronic
   supplementary material at <doi:10.1007/s40262-017-0509-5> (Figs. S1-S3
   and Supplementary Tables 1-2). The supplement was not available; the

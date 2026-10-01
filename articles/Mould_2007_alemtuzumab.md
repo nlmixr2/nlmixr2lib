@@ -788,12 +788,11 @@ threshold.
   regimen.
 - **IIV**. Block covariance was not reported; the model uses the paper’s
   diagonal Ω on V_(max), K_(m), V₁, V₂.
-- **Publisher restriction on full-text XML.** The PMC XML for PMID
-  17506867 contained front matter only (the publisher blocks full-text
-  XML download). Parameter values, equations, and population
-  demographics were verified against the PMC-rendered full-text page
-  (`https://pmc.ncbi.nlm.nih.gov/articles/PMC2000651/`). No errata were
-  found on PubMed or Wiley Online Library.
+- **PMC full-text XML incomplete.** The PMC XML for PMID 17506867
+  contains front matter only. Parameter values, equations, and
+  population demographics were verified against the PMC-rendered
+  full-text page (`https://pmc.ncbi.nlm.nih.gov/articles/PMC2000651/`).
+  No errata were found on PubMed or Wiley Online Library.
 
 ### Reference
 

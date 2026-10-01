@@ -417,7 +417,7 @@ match.
 - **Vignette uses 60 subjects per cancer-type stratum.** Total cohort is
   360 subjects, large enough to give reasonable per-cancer CL
   distributions in Figure 1 and the steady-state trough comparison,
-  while keeping the vignette under the 5-minute pkgdown gate. Users
+  while keeping the vignette’s render time under 5 minutes. Users
   running their own simulations should scale the cohort up.
 - **CYP2C19 genotype not modelled.** The Discussion notes that CYP2C19
   genotype is a known driver of voriconazole PK variability but the

@@ -138,9 +138,9 @@ approximate baseline demographics from Lowe 2009 Table 2:
     cell). Bodyweight 70 kg (reference), baseline IgE 365 ng/mL
     (reference).
 
-Subject counts are deliberately small to keep the pkgdown vignette
-render time under the 5-minute budget; users running their own analyses
-can scale `n_per_cohort` up.
+Subject counts are deliberately small to keep the vignette render time
+under 5 minutes; users running their own analyses can scale
+`n_per_cohort` up.
 
 ``` r
 
@@ -519,8 +519,8 @@ single 150 mg SC dose; free IgE suppressed to ~10 ng/mL) are reproduced.
   statistics) and not embedded in an ODE/PD layer.
 - **Cohort size for the vignette.** 30 subjects per cohort is below the
   1781 + 152 = 1933 of the source dataset; this is a deliberate
-  trade-off to keep the pkgdown render time under the 5-minute gate.
-  Users can scale `n_per_cohort` up in their own analyses.
+  trade-off to keep the render time under 5 minutes. Users can scale
+  `n_per_cohort` up in their own analyses.
 
 ## Reproducibility
 

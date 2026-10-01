@@ -333,9 +333,8 @@ difference from the HGC model.
 Hong 2013 Figures 5 and 6 present visual predictive checks based on 1000
 simulated datasets. Here we replicate the spirit of those VPCs with a
 more modest population size (100 subjects) to keep the vignette render
-under the 5-minute pkgdown gate. Glucose and insulin baselines vary
-across subjects to match the reported clinical range (FPG 110-180 mg/dL;
-ICss 6-25 mU/L).
+under 5 minutes. Glucose and insulin baselines vary across subjects to
+match the reported clinical range (FPG 110-180 mg/dL; ICss 6-25 mU/L).
 
 ``` r
 
@@ -527,10 +526,9 @@ ggplot(mtt_pop_summary, aes(time)) +
   under no perturbation.
 - **VPC populations downscaled (n = 100 vs. paper n = 1000).** Hong 2013
   Figures 5 and 6 used 1000 simulated datasets; this vignette uses 100
-  subjects to keep the render under the 5-minute pkgdown gate. The
-  qualitative shape and the 10th / 50th / 90th percentile bands are
-  preserved; downstream users seeking publication-quality VPCs should
-  re-run with n = 1000.
+  subjects to keep the render under 5 minutes. The qualitative shape and
+  the 10th / 50th / 90th percentile bands are preserved; downstream
+  users seeking publication-quality VPCs should re-run with n = 1000.
 - **Inter-occasion variability (IOV) is encoded via occasion
   indicators.** Hong 2013 Tables I and II report IOV on CLG (31.8% CV
   HGC, 65.7% CV MTT) and VG (9.22% HGC, 19.5% MTT), and both model files

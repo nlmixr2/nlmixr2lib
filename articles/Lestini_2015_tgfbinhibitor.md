@@ -403,11 +403,11 @@ this sampling grid.
 - **Source publication unavailable at extraction time.** Lestini 2015
   (DOI 10.1007/s11095-015-1693-3, PMID 26123680) is published in
   *Pharmaceutical Research* and was paywalled at extraction time. The
-  PubMed E-utilities abstract was retrievable; the body of the paper,
-  including the precise demographics, units conventions, and “true”
-  parameter values used to seed the simulation in scenario 4, was not.
-  Per-cohort population details that would normally populate the
-  `population` metadata are therefore not captured.
+  PubMed abstract was available; the body of the paper, including the
+  precise demographics, units conventions, and “true” parameter values
+  used to seed the simulation in scenario 4, was not. Per-cohort
+  population details that would normally populate the `population`
+  metadata are therefore not captured.
 - **No real-data `Output_real_*.lst`.** The DDMORE bundle ships only an
   MLXTRAN executable and a Monolix MLE re-fit on the bundled
   `Simulated_PKPD.txt`. Population-parameter values come from

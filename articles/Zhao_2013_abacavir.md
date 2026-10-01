@@ -97,8 +97,8 @@ draw_wt_mix <- function(n) {
   # Children subgroup is a mixture of ARROW (n = 37) and PENTA 13 (n = 14)
   # demographics; 37 / (37 + 14) = 72.5 % ARROW, 27.5 % PENTA 13.
   is_penta13 <- stats::runif(n) < (14 / (14 + 37))
-  arrow      <- pmin(pmax(stats::rnorm(n, 20.3,  4.0), 14, 29.8))
-  penta13    <- pmin(pmax(stats::rnorm(n, 23.9, 13.2), 14, 60.9))
+  arrow      <- pmin(pmax(stats::rnorm(n, 20.3,  4.0), 14), 29.8)
+  penta13    <- pmin(pmax(stats::rnorm(n, 23.9, 13.2), 14), 60.9)
   ifelse(is_penta13, penta13, arrow)
 }
 
@@ -135,7 +135,7 @@ make_cohort <- function(n, wt_draw, cohort_label, id_offset) {
 events <- dplyr::bind_rows(
   make_cohort(
     n_per_group,
-    wt_draw = function(n) pmin(pmax(stats::rnorm(n, 11.5, 2.3), 7.6, 15.8)),
+    wt_draw = function(n) pmin(pmax(stats::rnorm(n, 11.5, 2.3), 7.6), 15.8),
     cohort_label = "Infants and toddlers",
     id_offset = 0L
   ),
@@ -316,10 +316,10 @@ knitr::kable(
 
 | NCA parameter     | treatment            | Reference | Simulated | % diff |
 |:------------------|:---------------------|:----------|:----------|:-------|
-| Cmax (mg/L)       | Infants and toddlers | 2.5       | 2.77      | +11.0% |
-| Cmax (mg/L)       | Children             | 3.6       | 3.39      | -5.9%  |
-| AUClast (mg\*h/L) | Infants and toddlers | 6.1       | 7.12      | +16.8% |
-| AUClast (mg\*h/L) | Children             | 8.7       | 8.41      | -3.4%  |
+| Cmax (mg/L)       | Infants and toddlers | 2.5       | 2.57      | +3.0%  |
+| Cmax (mg/L)       | Children             | 3.6       | 3.01      | -16.5% |
+| AUClast (mg\*h/L) | Infants and toddlers | 6.1       | 6.7       | +9.9%  |
+| AUClast (mg\*h/L) | Children             | 8.7       | 7.56      | -13.1% |
 
 Simulated steady-state geometric-mean Cmax and AUC0-12 (8 mg/kg BID, n =
 100 per cohort) vs published values in Zhao 2013 Results section. \*

@@ -30,8 +30,7 @@
 - Article: <https://doi.org/10.1093/jpids/piaf043>
 - Supplementary Table S1 (all parameter estimates) and Supplementary
   Figure S1 (goodness-of-fit plots) are distributed with the open-access
-  article and were retrieved from the Europe PMC supplementary-files
-  endpoint for PMC12123189.
+  article (PMC12123189).
 
 Onita and colleagues pooled individual plasma concentration-time data
 from 23 previously published pediatric sulbactam studies identified by a

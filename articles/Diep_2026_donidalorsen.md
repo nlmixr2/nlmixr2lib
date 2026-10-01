@@ -191,8 +191,8 @@ make_cohort <- function(cohort, id_offset = 0L) {
     mutate(amt = 80, evid = 1L, cmt = "depot", dv = NA_real_)
 
   # Dense observations early (tmax ~ 3 h per the paper) plus around each
-  # subsequent dose; coarser between to keep the vignette under the
-  # 5-minute render budget. A single grid is used for both Cc and pkk
+  # subsequent dose; coarser between to keep the vignette's render
+  # time under 5 minutes. A single grid is used for both Cc and pkk
   # because rxode2 emits both output variables on every observation row.
   # Grid coarsened from by=0.5/by=4 for vignette build budget; profiles
   # are smooth enough that the visual shape is unchanged.
@@ -219,7 +219,7 @@ make_cohort <- function(cohort, id_offset = 0L) {
 
 events <- make_cohort(cohort)
 
-# Disjoint-IDs guard (verification checklist Section F).
+# Disjoint-IDs guard: cohorts built separately must not share IDs.
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
 ```
 

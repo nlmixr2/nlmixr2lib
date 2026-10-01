@@ -925,12 +925,12 @@ V1/F covariate equation is *not* published: Equation (1) covers CL/F
 only, and Table 2 gives the lean-body-mass exponent (1.52) with no
 centring value. The centring value used here, **58.94 kg**, is read from
 the Supporting Information Data S1 NONMEM control stream
-(`V2LBW = ((LBW/58.94)**THETA(15))`), obtained via the EuropePMC
-supplementary-files endpoint for PMC6379219. The same control stream
-supplies the unrounded age and creatinine centring values (55.72 years,
-134.98 umol/L) where Equation (1) prints them rounded to 56 and 135; the
-unrounded values are used here because they are what the model was
-fitted with. The difference is under 0.3% on CL/F.
+(`V2LBW = ((LBW/58.94)**THETA(15))`), published with the open-access
+article (PMC6379219). The same control stream supplies the unrounded age
+and creatinine centring values (55.72 years, 134.98 umol/L) where
+Equation (1) prints them rounded to 56 and 135; the unrounded values are
+used here because they are what the model was fitted with. The
+difference is under 0.3% on CL/F.
 
 **Parameter values are Table 2, not the control stream.** The `$THETA`
 and `$OMEGA` entries in Data S1 are *initial* estimates, not final ones

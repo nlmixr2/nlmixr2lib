@@ -189,7 +189,7 @@ rounding of the reference-patient covariate effects.
 
 Build a 200-subject virtual TGCT cohort with covariates drawn to match
 the pooled longitudinal-RECIST analysis population demographics (Table
-S1). Cohort size = 200/arm per the vignette-template cap.
+S1). Cohort size = 200/arm, capped to keep the render time short.
 
 ``` r
 

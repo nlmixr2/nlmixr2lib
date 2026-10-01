@@ -1004,11 +1004,10 @@ not in any figure caption, and not in the Methods. In NONMEM this would
 have been a `$SCALE`/`S3` statement rather than a `$THETA`, which is
 very likely why it never reached the parameter table.
 
-There is nothing to acquire: the EuropePMC `supplementaryFiles` endpoint
-returns HTTP 404 for `PMC13111164`, the core record reports
-`hasSuppl: N`, and the article carries no data-availability or
-supplementary-material statement. This is a reporting gap, not an
-acquisition gap.
+No other source holds it: the article (`PMC13111164`) has no
+supplementary material and carries no data-availability or
+supplementary-material statement. This is a reporting gap in the
+publication itself.
 
 Writing the quasi-steady-state form
 `Csaliva = Vmax * Cc / ((Km + Cc) * K30 * Vsaliva)`, `Vsaliva` is the

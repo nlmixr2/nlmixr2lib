@@ -21,7 +21,7 @@
   as the source data were converted to molar equivalents before fitting.
 - Article: <https://doi.org/10.1093/jac/dkad072>
 - Supplement (figures S1-S5 and the final model NONMEM control stream):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10154123/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC10154123>
 
 ## Population
 

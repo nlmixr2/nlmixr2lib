@@ -9,7 +9,7 @@
   <doi:%5B10.1002/jcph.1432>\](<https://doi.org/10.1002/jcph.1432>)
 - Article: <https://doi.org/10.1002/jcph.1432>
 - Supporting information (Tables S1-S7):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6767401/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6767401>
 - Description: Two-compartment population PK model with sigmoidal
   time-varying clearance for intravenous nivolumab (anti-PD-1 IgG4) in
   Chinese and global patients with previously treated advanced solid
@@ -798,8 +798,8 @@ stopifnot(all(abs(ratio_tbl$`Simulated % higher` - 26.5) < 12))
 
 - **Parameter source.** Every `ini()` value comes from Table S7 of the
   supporting information; the main text of Zhang 2019 contains no
-  parameter table. The supplement was retrieved from EuropePMC
-  (`PMC6767401/supplementaryFiles`, file `JCPH-59-1415-s001.docx`).
+  parameter table. The supplement is published with the open-access
+  article (PMC6767401, file `JCPH-59-1415-s001.docx`).
 - **Residual error scale.** Table S7 reports a single residual-error
   row, `PEER (theta6) = 0.224`, carried as a THETA rather than a SIGMA,
   with the Methods stating a proportional residual error model. It is

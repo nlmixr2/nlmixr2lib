@@ -10,8 +10,8 @@
 - Article (open access): <https://doi.org/10.1002/jcph.1253>
   (PMC6175098)
 - Supplement: `JCPH-58-1461-s001.docx`, “Supplementary Tables 1-3”, the
-  three NONMEM control files. Retrieved from the EuropePMC
-  supplementary-files endpoint for PMC6175098.
+  three NONMEM control files. Published with the open-access article
+  (PMC6175098).
 
 FULFIL (CTT116853, NCT02345161) compared 24 weeks of once-daily
 single-inhaler triple therapy – fluticasone furoate / umeclidinium /

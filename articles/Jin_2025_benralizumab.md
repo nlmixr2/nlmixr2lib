@@ -731,7 +731,7 @@ Chinese versus non-Asian typical-value steady-state exposure. {.table}
 
 # The claim under test is that the racial difference is SMALL. Assert on
 # magnitude, not on sign: the trough difference is near zero, so its sign is
-# not a meaningful quantity (failure pattern 12).
+# not a meaningful quantity.
 stopifnot(
   all(abs(race_delta$`Typical % higher in Chinese`) < 25),
   # Cmax and Cavg must both be higher in Chinese participants, which IS a

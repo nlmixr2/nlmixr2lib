@@ -24,7 +24,7 @@
 - Article: <https://doi.org/10.1002/cpt.70076>
 - Supplement (open access, EuropePMC `PMC12882756`, file
   `CPT-119-629-s001.docx`):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12882756/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC12882756>
 
 Momelotinib is an oral JAK1 / JAK2 / ACVR1 inhibitor approved for
 myelofibrosis with anemia. Rich 2026 describes the population

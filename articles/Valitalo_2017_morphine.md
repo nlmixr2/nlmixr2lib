@@ -386,10 +386,9 @@ suctioning differs by observer. {.table}
   validation is restricted to the latent-pain trajectory and the
   typical-value VAS prediction; categorical-item-grade VPC validation
   against Figure 3 / Figure 4 is out of scope.
-- **`vas_pred` observation name (vs. `Cc` convention).** The
-  naming-conventions register reserves `Cc` for concentration outputs;
-  this is a 0-10 cm VAS pain score, not a concentration, so `vas_pred`
-  is used.
+- **`vas_pred` observation name (vs. `Cc` convention).** The naming
+  conventions reserve `Cc` for concentration outputs; this is a 0-10 cm
+  VAS pain score, not a concentration, so `vas_pred` is used.
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   may flag this as a warning; it is a justified deviation for a non-PK
   observation.

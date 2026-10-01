@@ -25,8 +25,7 @@ extracted; the joint model is the paper’s final PD model.
   Syst Pharmacol. 2026;15(0):e70247. <doi:10.1002/psp4.70247>.
 - Article: <https://doi.org/10.1002/psp4.70247>
 - Supplement (parameter tables and all six final NONMEM control
-  streams):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13274737/supplementaryFiles>
+  streams): <https://europepmc.org/article/PMC/PMC13274737>
 
 ``` r
 

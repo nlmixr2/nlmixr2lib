@@ -377,5 +377,4 @@ Assumptions and deviations so a reader can audit it.
   dose).** The paper reports simulations of 1000 trials of 30 patients
   each (Methods, Simulation scenarios). A smaller single-shot cohort
   produces stable percentiles for the Cmax / AUC summaries reported here
-  while keeping the vignette render time well under the pkgdown 5-minute
-  gate.
+  while keeping the vignette render time well under 5 minutes.

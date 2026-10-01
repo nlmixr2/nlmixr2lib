@@ -1400,13 +1400,12 @@ on:
   them as variances is not tenable: an omega^2 of 34.1 would place
   individual clearance across five orders of magnitude.
 - **Supplementary Table S1 not obtained.** The paper cites a supplement
-  holding the univariate covariate-screening statistics. The MDPI
-  supplement endpoint returns HTTP 403 to programmatic requests and the
-  EuropePMC supplementary-file endpoint times out. This is not a gap in
-  the model: every final-model parameter is in Table 2 and Equation 1,
-  and Table S1 contains only the screening statistics for covariates
-  that were *not* retained. Those covariates are documented from the
-  main text in the model file’s `covariatesDataExcluded`.
+  holding the univariate covariate-screening statistics. It was not
+  available when this model was built. This is not a gap in the model:
+  every final-model parameter is in Table 2 and Equation 1, and Table S1
+  contains only the screening statistics for covariates that were *not*
+  retained. Those covariates are documented from the main text in the
+  model file’s `covariatesDataExcluded`.
 - **No erratum.** A EuropePMC search returns only the article itself; no
   correction or corrigendum has been published as of this extraction.
 - **No published NCA to compare against.** The paper reports no Cmax,

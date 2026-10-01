@@ -258,8 +258,8 @@ text states, an inclusion of IIV (a higher percentile of the
 predicted-Cmax distribution), or a transcription error in the paper. The
 model file in this package faithfully reproduces Table 3, so the
 simulated Cmax below matches the parameters as published (~51 ng/mL).
-This is flagged as a \> 20% discrepancy with the paper’s narrative; see
-the verification-checklist policy of “flag, do not tune.”
+This is flagged as a \> 20% discrepancy with the paper’s narrative,
+following the standing policy of “flag, do not tune.”
 
 ``` r
 

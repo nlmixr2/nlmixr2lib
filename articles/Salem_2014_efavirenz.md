@@ -647,11 +647,10 @@ to maintain target exposure. {.table}
 - **Cohort N for the validation vignette.** Salem 2014 used 1000
   simulated subjects per cell for its prediction-corrected VPC (Methods
   ‘Model qualification’); the packaged vignette uses 60 per cell across
-  6 capsule bands and 2 liquid bands (480 subjects total) to fit inside
-  the pkgdown 5-minute per-vignette wall-time budget. The smaller N adds
-  some Monte Carlo noise to the percentile bands but preserves the
-  qualitative shape of the per-age steady-state profile and per-cell NCA
-  summaries.
+  6 capsule bands and 2 liquid bands (480 subjects total) to keep the
+  render time under 5 minutes. The smaller N adds some Monte Carlo noise
+  to the percentile bands but preserves the qualitative shape of the
+  per-age steady-state profile and per-cell NCA summaries.
 
 - **No paper-published per-band NCA reference table.** Salem 2014
   reports model qualification via a prediction-corrected VPC (Figure 4)

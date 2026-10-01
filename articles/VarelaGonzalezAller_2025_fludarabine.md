@@ -885,11 +885,11 @@ Cohort clearance distribution vs. the published typical value at 70 kg /
   Discussion independently confirms it: `(4.4 + 1.7) x 1 = 6.1` L/h and
   `(3.9 + 1.7) x 1 = 5.6` L/h reproduce its quoted clearances exactly
   for “a typical 70 kg patient”, which is only true when `f(70) = 1`.
-- **`theta_CRCL` is absent from the preprocessed text but present in the
-  PDF.** The value 1.7 L/h (RSE 1.0%) is read from the Table 2 `CL` row
-  of the source PDF. The mass-balance gate above re-derives it
-  independently from the Discussion’s typical clearances, so it is not
-  taken on trust from a single reading.
+- **`theta_CRCL` is lost in text extraction but present in the PDF.**
+  The value 1.7 L/h (RSE 1.0%) is read from the Table 2 `CL` row of the
+  source PDF. The mass-balance gate above re-derives it independently
+  from the Discussion’s typical clearances, so it is not taken on trust
+  from a single reading.
 - **Renal function is recorded as the canonical raw-mL/min `CRCL`
   column.** The paper labels it “eGFR” with units mL/min/1.73 m^2 in
   Table 1, but Methods 2.1.2 states it was computed with the

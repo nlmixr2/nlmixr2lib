@@ -18,10 +18,10 @@ ui$state
   H (2012) Alzheimers Res Ther 4(6):50 (reference \[16\] of the 2018
   paper) and is NOT encoded in this file.
 - Article (open access): <https://doi.org/10.1186/s13195-018-0343-5>
-- PMCID: PMC5797372. The paper has no supplementary information
-  (EuropePMC `hasSuppl = N`), and “Availability of data and materials”
-  states that no datasets were generated or analysed. Every value below
-  is therefore from the main text.
+- PMCID: PMC5797372. The paper has no supplementary information, and
+  “Availability of data and materials” states that no datasets were
+  generated or analysed. Every value below is therefore from the main
+  text.
 
 Geerts, Spiros and Roberts asked why amyloid-lowering trials in
 Alzheimer’s disease keep failing. Their answer is a quantitative systems

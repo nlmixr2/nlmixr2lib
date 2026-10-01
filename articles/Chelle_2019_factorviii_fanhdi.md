@@ -140,8 +140,8 @@ n_subj <- 100
 cohort <- tibble(
   id  = seq_len(n_subj),
   AGE = pmin(pmax(rnorm(n_subj, mean = 26.1, sd = 18.3),  1),  72),
-  FFM = pmin(pmax(rnorm(n_subj, mean = 45.3, sd = 18.0),  7.5, 73.0)),
-  WT  = pmin(pmax(rnorm(n_subj, mean = 59.9, sd = 25.9),  9.7, 119))
+  FFM = pmin(pmax(rnorm(n_subj, mean = 45.3, sd = 18.0),  7.5), 73.0),
+  WT  = pmin(pmax(rnorm(n_subj, mean = 59.9, sd = 25.9),  9.7), 119)
 )
 ```
 
@@ -287,11 +287,12 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | Cmax (IU/mL) | Tmax (h) | Clast (IU/mL) | Half-life (h) | AUCinf,obs (h\*IU/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 25 IU/kg single dose | 100 | 0.983 \[54.6\] | 0.000 \[0.000, 0.000\] | 9.52e-7 \[26100\] | 13.4 \[4.34\] | 13.0 \[47.8\] |
-| 0 | Inf | 50 IU/kg single dose | 100 | 2.03 \[54.7\] | 0.000 \[0.000, 0.000\] | 0.00000189 \[17400\] | 13.2 \[3.71\] | 26.6 \[49.3\] |
-| 0 | Inf | 65 IU/kg single dose | 100 | 2.74 \[53.4\] | 0.000 \[0.000, 0.000\] | 0.00000207 \[86600\] | 13.2 \[3.90\] | 35.0 \[50.1\] |
+| 0 | Inf | 25 IU/kg single dose | 100 | 0.673 \[91.6\] | 0.000 \[0.000, 0.000\] | 1.95e-7 \[697000\] | 12.3 \[4.32\] | 8.76 \[90.3\] |
+| 0 | Inf | 50 IU/kg single dose | 100 | 1.39 \[108\] | 0.000 \[0.000, 0.000\] | 3.74e-7 \[256000\] | 12.1 \[3.77\] | 17.9 \[108\] |
+| 0 | Inf | 65 IU/kg single dose | 100 | 1.87 \[107\] | 0.000 \[0.000, 0.000\] | 3.68e-7 \[3.37e6\] | 12.1 \[3.93\] | 23.5 \[105\] |
 
-Simulated single-dose NCA parameters, Chelle 2019 final model. {.table}
+Simulated single-dose NCA parameters, Chelle 2019 final model. {.table
+style="width:100%;"}
 
 ## Comparison against published values
 

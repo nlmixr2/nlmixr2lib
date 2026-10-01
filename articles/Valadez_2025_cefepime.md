@@ -822,6 +822,6 @@ is asserted, not merely displayed. {.table}
   instead.
 - **Equations 1 and 2 were read from the published equation images.**
   Text extraction of the PDF drops them; they were transcribed from
-  `aac.00102-25.m001.jpg` and `aac.00102-25.m002.jpg` in the EuropePMC
-  supplementary bundle and cross-checked against the Table 2 footnote
-  and Table S1 run 8.
+  `aac.00102-25.m001.jpg` and `aac.00102-25.m002.jpg`, deposited with
+  the article, and cross-checked against the Table 2 footnote and Table
+  S1 run 8.

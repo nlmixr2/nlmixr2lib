@@ -124,8 +124,8 @@ location; the table below collects them for review.
 
 Equations (1)-(4) are vector graphics in the published PDF and are
 invisible to text extraction; they were read from a 200 dpi
-rasterisation of page 3003 and from the publisher’s equation images in
-the EuropePMC bundle (`DDDT-19-3001-e0001.jpg` .. `e0004.jpg`).
+rasterisation of page 3003 and from the publisher’s equation images
+deposited with the article (`DDDT-19-3001-e0001.jpg` .. `e0004.jpg`).
 
 ## Setup: dosing conventions
 
@@ -1150,11 +1150,10 @@ advice is therefore to skip and resume.
   reasoning; they carry no encoded effect.
 - **Supplement not available.** Xia 2025 cites Tables S1 (drug
   information) and S2 (theoretical remedial doses). Neither is in the
-  PMC deposit (the EuropePMC supplementary bundle contains only the
-  figure and equation images). No parameter depends on them: every
-  remedial dose used above is stated in the Results text, and Table S2’s
-  content is reconstructed in the remedial table. Recorded as a
-  documentation gap only.
+  PMC deposit (the only files deposited are the figure and equation
+  images). No parameter depends on them: every remedial dose used above
+  is stated in the Results text, and Table S2’s content is reconstructed
+  in the remedial table. Recorded as a documentation gap only.
 - **Cohort simulation.** The 200-subject-per-arm cohort is not a
   replication of any published figure – Xia 2025 simulated only typical
   values – and its assertions are written on medians, never on extremes.

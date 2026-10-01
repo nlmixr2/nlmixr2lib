@@ -387,9 +387,9 @@ CRP effect. {.table style="width:100%;"}
 - **Virtual-cohort weight distribution.** The vignette uses 200 subjects
   per dose arm with `WT ~ Uniform(40, 120)`, matching the Bastida 2018
   Monte Carlo simulation design (p718) but with smaller `n` (the paper
-  used n = 1000 per arm) to keep the vignette under the 5-minute pkgdown
-  render budget. Per-arm percentages of subjects reaching the cAUC = 100
-  x 10^3 ug\*h/mL efficacy target are therefore noisier than the paper’s
+  used n = 1000 per arm) to keep the vignette’s render time under 5
+  minutes. Per-arm percentages of subjects reaching the cAUC = 100 x
+  10^3 ug\*h/mL efficacy target are therefore noisier than the paper’s
   values by a factor of `sqrt(1000/200) ~ 2.2`.
 - **CRP held at the reference (0.484 mg/dL).** The primary comparison
   reproduces Bastida 2018 Table 3 (“without considering the influence of

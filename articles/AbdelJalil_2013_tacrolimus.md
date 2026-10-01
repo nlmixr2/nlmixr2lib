@@ -443,6 +443,5 @@ CYP3A5*1-carrier multiplier on CL/F.
   compare against an LC-MS/MS-measured dataset should expect a small
   positive bias from the immunoassay-trained typical-value estimate.
 - **Vignette uses 100 subjects per CYP3A5 stratum.** This is small
-  enough to render the vignette well under 5 minutes (the pkgdown gate)
-  but large enough to give stable percentiles for the steady-state
-  trough comparison.
+  enough to render the vignette well under 5 minutes but large enough to
+  give stable percentiles for the steady-state trough comparison.

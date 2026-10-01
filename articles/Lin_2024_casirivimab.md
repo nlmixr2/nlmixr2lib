@@ -358,8 +358,7 @@ narrative). Adult-typical analytical AUC_inf is computed as
 ```
 
 The simulated medians from the NCA above are within ~10% of these
-analytical expectations, well below the 20% deviation threshold of the
-package’s validation checklist.
+analytical expectations, well below a 20% deviation threshold.
 
 ## Assumptions and deviations
 

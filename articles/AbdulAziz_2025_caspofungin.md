@@ -1032,15 +1032,15 @@ recomputed from the available source and is not attempted here.
   an unwarranted addition to the register.
 - **Supplementary material not obtainable.** The paper states that “the
   pharmacokinetic model-building process is further detailed in
-  Supplementary materials”. The ASM supplement endpoint returns HTTP
-  403, and the EuropePMC `supplementaryFiles` archive for PMC11823646
-  contains only per-figure and per-equation raster images, not the
-  supplement document. Nothing in the model depends on it: all six final
-  parameter estimates are in Table 2, and the covariate equation was
-  recovered from the typeset equation image (`aac.01435-24.m002.jpg`)
-  and confirmed against the PDF’s text layer. The unobtainable content
-  is the model-building progression (OFV / BICc step table), which is
-  provenance for model *selection* rather than any value used here.
+  Supplementary materials”. The supplement document was not available
+  when this model was built (the files deposited with PMC11823646 are
+  only per-figure and per-equation raster images). Nothing in the model
+  depends on it: all six final parameter estimates are in Table 2, and
+  the covariate equation was recovered from the typeset equation image
+  (`aac.01435-24.m002.jpg`) and confirmed against the PDF’s text layer.
+  The unobtainable content is the model-building progression (OFV / BICc
+  step table), which is provenance for model *selection* rather than any
+  value used here.
 - **Fractional target attainment is not reproduced**, because the
   *Candida* MIC distributions it weights by are cited rather than
   printed. See the end of the dosing-simulation section.

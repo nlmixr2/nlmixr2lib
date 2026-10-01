@@ -38,12 +38,12 @@
 - Article: <https://doi.org/10.1128/aac.01532-25> (Antimicrob Agents
   Chemother 2026;70(3):e01532-25, open access CC-BY)
 
-- Supplement (Table S1, Fig S1-S5): `aac.01532-25-s0001.docx`, retrieved
-  from the EuropePMC supplementary-files endpoint for PMC12959151. Table
-  S1 is the model-building OFV trail and independently confirms the
-  structural, error and covariate model selections used here; Figures
-  S1-S5 are diagnostic plots. The supplement carries no parameter value
-  that is absent from the main text.
+- Supplement (Table S1, Fig S1-S5): `aac.01532-25-s0001.docx`, published
+  with the open-access article (PMC12959151). Table S1 is the
+  model-building OFV trail and independently confirms the structural,
+  error and covariate model selections used here; Figures S1-S5 are
+  diagnostic plots. The supplement carries no parameter value that is
+  absent from the main text.
 
 Subrtova and colleagues fitted a one-compartment model with linear
 elimination to 143 routine therapeutic-drug-monitoring serum

@@ -20,8 +20,8 @@
   PMC10431037)
 - Supplement: `PSP4-12-1157-s001.txt` (the final NONMEM control stream)
   and `PSP4-12-1157-s002.docx` (Table S1 demographics, Figure S1
-  schematic and differential equations, Figure S2 CIVPCs), retrieved
-  from the EuropePMC supplementary-files endpoint for PMC10431037.
+  schematic and differential equations, Figure S2 CIVPCs), published
+  with the open-access article (PMC10431037).
 
 Atacicept is a recombinant soluble fusion protein that blocks both BLyS
 (B lymphocyte stimulator, also called BAFF) and APRIL. Because both

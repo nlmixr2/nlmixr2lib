@@ -1073,15 +1073,13 @@ stopifnot(p_trig_asian > p_trig_nonasian)
     the nine screened metrics, which is the likely origin of the slip.
 7.  **The supplement was not obtainable.** `CPT-110-1273-s001.docx`
     holds Tables S1-S4 (cohort definitions, the PK sampling schedule,
-    observed endpoint incidences, and the candidate-covariate list).
-    Every open route failed on 2026-09-02: the EuropePMC
-    `supplementaryFiles` endpoint returned HTTP 500, the PMC `bin/` path
-    returned an HTML stub, and the NCBI FTP path returned 404. It
-    contains **no parameter values** – all final estimates are in
-    main-text Tables 3 and 4, both fully transcribed here. The one real
-    loss is Table S3, whose observed endpoint incidences would have
-    given an independent cohort-level calibration gate per safety model;
-    the two printed narrative anchors are used instead.
+    observed endpoint incidences, and the candidate-covariate list) and
+    was not available when this model was built. It contains **no
+    parameter values** – all final estimates are in main-text Tables 3
+    and 4, both fully transcribed here. The one real loss is Table S3,
+    whose observed endpoint incidences would have given an independent
+    cohort-level calibration gate per safety model; the two printed
+    narrative anchors are used instead.
 8.  **No erratum exists.** The EuropePMC record carries two linked
     items, both of type “Comment in” rather than “Erratum in”:
     <doi:10.1002/cpt.2579> (Strohbehn & Ratain, *“Lorlatinib Exposed: A

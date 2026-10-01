@@ -335,9 +335,9 @@ observed but did not incorporate into the final model.
   values reported in the original Clin Pharmacol Adv Appl 2010;2:1-7
   publication.
 - **Vignette uses 200 subjects per cohort.** This produces stable
-  percentile envelopes and PKNCA summaries without exceeding the pkgdown
-  5-minute render budget. The Vezina 2010 study itself analyzed 43
-  plasma profiles from 8 subjects.
+  percentile envelopes and PKNCA summaries while keeping the render time
+  under 5 minutes. The Vezina 2010 study itself analyzed 43 plasma
+  profiles from 8 subjects.
 - **Single-dose simulation for AUC(0,inf).** The PKNCA comparison uses a
   single-dose simulation rather than a multi-dose steady-state
   simulation because the published AUC(0,inf) was derived per-subject

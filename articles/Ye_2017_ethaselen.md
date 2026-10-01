@@ -468,5 +468,5 @@ exp(-(14-10)*kout) = exp(-4* 0.2083) = 0.435. {.table}
 
 - **Non-paper provenance: none.** Every numeric value in `ini()` is
   sourced directly from the source paper’s Table 1. No values were taken
-  from author correspondence, figure digitisation, or upstream-task
-  model files.
+  from author correspondence, figure digitisation, or other models’
+  files.

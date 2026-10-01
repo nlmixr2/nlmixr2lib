@@ -150,11 +150,11 @@ str(readModelDb("Gao_2021_methotrexate")()$population, max.level = 1)
 #>  $ height_range    : chr "67 to 175 cm (median 112)"
 #>  $ sex_female_pct  : num 36.7
 #>  $ disease_state   : chr "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate consolidation."
-#>  $ renal_function  : chr "Serum creatinine median 0.3 mg/dL (range 0.1-1.5), i.e. about 26 umol/L (range 8.8-132.6). Note the model's lin"| __truncated__
-#>  $ hepatic_function: chr "ALT median 16.0 U/L (range 2.0-390.0); AST median 26.0 U/L (range 8.0-135.0)."
-#>  $ dose_range      : chr "1 to 5 g/m^2 intravenous high-dose methotrexate."
+#>  $ renal_function  : chr "Serum creatinine median 26.0 umol/L (range 8.0-135.0). Note the model's linear SCr term on clearance goes negat"| __truncated__
+#>  $ hepatic_function: chr "ALT median 16.0 U/L (range 2.0-390); AST median 22.6 U/L (range 7.0-319.0); total bilirubin median 5.9 umol/L ("| __truncated__
+#>  $ dose_range      : chr "1 to 5 g/m^2 intravenous high-dose methotrexate over 24 h (10% as a 0.5 h loading dose, 90% over 23.5 h); 1,250"| __truncated__
 #>  $ regions         : chr "China (Children's Hospital of Fudan University, Shanghai)."
-#>  $ notes           : chr "Demographics from Wang 2023 Table 1 (the external-evaluation paper that tabulates all six evaluated cohorts sid"| __truncated__
+#>  $ notes           : chr "Demographics, model structure and parameter values from the Gao 2021 primary (Table 1, Table 2 and Results; dem"| __truncated__
 ```
 
 ## Source trace
@@ -850,15 +850,21 @@ found two errors in Wang’s rendering:
 direct evidence that Wang’s Table 2 is not a reliable transcription
 source, and is why the other four models carry re-extraction notes.
 
+Wang’s Table 1 has a similar slip in the Gao column. It prints AST as
+26.0 (8.0-135.0) U/L, which is Gao’s serum-creatinine row in umol/L.
+Gao’s own Table 1 gives AST 22.6 (7.0-319.0) U/L. The `population`
+metadata of `Gao_2021_methotrexate.R` is therefore taken from Gao’s
+Table 1, not Wang’s.
+
 ### Gao 2021: the serum-creatinine term is unbounded
 
 Gao’s creatinine effect is linear, not a power term:
 `CL = CL_typical * (1 + (Scr - 26) * (-0.0097))`. It reaches zero at Scr
 = 129.1 umol/L and goes **negative** above that – inside Gao’s own
-reported creatinine range (0.1-1.5 mg/dL = 8.8-132.6 umol/L). The
-published equation is reproduced as printed rather than clamped.
-Simulations must keep `CREAT` below about 129 umol/L; the cohort here
-has a maximum well below it.
+reported creatinine range (Gao Table 1: 8.0-135.0 umol/L). The published
+equation is reproduced as printed rather than clamped. Simulations must
+keep `CREAT` below about 129 umol/L; the cohort here has a maximum well
+below it.
 
 Gao’s own Table 2 footnote writes the equation as
 `[CL = CL_typical x ((SCr-26) x 0.0097)]`, which is garbled – it drops

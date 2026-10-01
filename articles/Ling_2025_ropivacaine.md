@@ -38,9 +38,8 @@
 - Article: <https://doi.org/10.3389/fphar.2025.1540606>
 
 - No supplementary material accompanies this article (confirmed against
-  the EuropePMC record for PMC11978648, `isOpenAccess = Y` with
-  `hasSuppl = N`, and against the article’s own back matter, which
-  carries no Supplementary Material section).
+  the open-access record, PMC11978648, and against the article’s own
+  back matter, which carries no Supplementary Material section).
 
 Ling 2025 is the first population PK analysis of ropivacaine given as a
 *superficial* serratus anterior plane block (SAPB). Its two questions

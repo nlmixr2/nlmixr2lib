@@ -579,14 +579,13 @@ available against the printed paper are:
 
 - **Supplemental Table S1 (individual NCA) not available.** The paper
   references S1 for per-patient half-life, Cmax, and Tmax. The
-  supplement could not be obtained from EuropePMC, PMC or the ASM
-  journal site when this model was built (those sources provided the
-  main PDF only). The packaged model’s parameters all come from
-  main-text Table 2 and the printed equations in Results; the missing
-  supplement contains derived NCA-type values rather than estimated
-  model parameters, so the absence does not affect the model. The
-  simulated NCA values in the PKNCA section are internal sanity checks;
-  no per-patient comparison against the published S1 is performed.
+  supplement was not available when this model was built. The packaged
+  model’s parameters all come from main-text Table 2 and the printed
+  equations in Results; the missing supplement contains derived NCA-type
+  values rather than estimated model parameters, so the absence does not
+  affect the model. The simulated NCA values in the PKNCA section are
+  internal sanity checks; no per-patient comparison against the
+  published S1 is performed.
 
 - **Time-varying CREAT and ECMO_STATUS.** Kang 2020 Methods (Covariate
   model development): *“All data were recorded during sampling and

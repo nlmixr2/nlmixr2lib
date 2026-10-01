@@ -17,8 +17,7 @@ mod <- rxode2::rxode2(readModelDb("Zou_2026_pembrolizumab_qol_mbma"))
 - Article: <https://doi.org/10.1002/psp4.70106>
 
 - Supplement (Data S1: Table S1, Figure S1, and the Monolix control
-  stream):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12896370/supplementaryFiles>
+  stream): <https://europepmc.org/article/PMC/PMC12896370>
 
 - Description: MBMA. Longitudinal model-based meta-analysis of
   patient-reported quality of life (EORTC QLQ-C30 Global Health Status /

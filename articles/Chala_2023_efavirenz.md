@@ -30,8 +30,7 @@
 - Article: <https://doi.org/10.1002/psp4.12951>
 
 - Supplement (Appendix S1, the NONMEM control stream; Tables S1-S3;
-  Figures S1-S3):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10272302/supplementaryFiles>
+  Figures S1-S3): <https://europepmc.org/article/PMC/PMC10272302>
 
 Chala 2023 developed a one-compartment population pharmacokinetic model
 with first-order absorption for oral efavirenz in

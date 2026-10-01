@@ -15,8 +15,7 @@
 - PubMed Central:
   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12945708/>
 - Supporting Information (Data S1; Tables S1-S7 and Figures S1-S5):
-  distributed with the article and retrieved from the Europe PMC
-  supplementary-files endpoint for PMC12945708.
+  distributed with the open-access article (PMC12945708).
 
 Babel 2026 reports **six** models, and this package carries all six as
 separate files because the authors fitted them separately:

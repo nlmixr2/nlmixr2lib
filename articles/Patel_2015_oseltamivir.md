@@ -942,8 +942,8 @@ factor, so `F_met` transfers mass 1:1 as printed.
 
 **The supplement is subscription-blocked.** Supplementary Methods S1
 holds the differential equations and Table S1 the noncompartmental
-summary. EuropePMC reports the article as not open access for
-supplementary files and the Wiley endpoint returns HTTP 403. Neither is
-load-bearing: Figure 1 labels every flux in the system, which determines
-the ODEs uniquely, and the Results text gives the noncompartmental
-geometric means used in the comparison above.
+summary. The supplementary files are not open access and were not
+available when this model was built. Neither is load-bearing: Figure 1
+labels every flux in the system, which determines the ODEs uniquely, and
+the Results text gives the noncompartmental geometric means used in the
+comparison above.

@@ -18,17 +18,20 @@ rat <- rxode2::rxode(readModelDb("Apgar_2018_ALXN1540_rat_qsp"))
 human <- rxode2::rxode(readModelDb("Apgar_2018_ALXN1540_human_qsp"))
 ```
 
-- Citation: Apgar JF, Tang JP, Singh P, Balasubramanian N, Burke J,
-  Hodges MR, Lasaro MA, Lin L, Miliard BL, Moore K, Jun LS, Sobolov S,
+- Citation: Apgar JF, Tang JP, Singh P, Balasubramanian N, Burke JM,
+  Hodges MR, Lasaro MA, Lin L, Millard BL, Moore K, Jun LS, Sobolov S,
   Wilkins AK, Gao X. Quantitative Systems Pharmacology Model of
   hUGT1A1-modRNA Encoding for the UGT1A1 Enzyme to Treat Crigler-Najjar
   Syndrome Type 1. CPT Pharmacometrics Syst Pharmacol.
-  2018;7(6):404-412. <doi:10.1002/psp4.12301>. Rate constants and plasma
-  volume from Table 1 (Gunn rat column); reaction network from
-  Supplementary Model S1 (Gunn Rat KroneckerBio Model File).
+  2018;7(6):404-412. <doi:10.1002/psp4.12301>. Author names as corrected
+  by the Corrigendum, CPT Pharmacometrics Syst Pharmacol. 2020;9:185,
+  <doi:10.1002/psp4.12484> (author-name corrections only; no parameter,
+  equation or unit is revised). Rate constants and plasma volume from
+  Table 1 (Gunn rat column); reaction network from Supplementary Model
+  S1 (Gunn Rat KroneckerBio Model File).
 - Article: <https://doi.org/10.1002/psp4.12301>
 - Supplementary material (reaction networks, Table S1):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6391595/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6391595>
 
 The two files are not a base/final pair: they differ in structure as
 well as in parameter values, so each is extracted as published (see

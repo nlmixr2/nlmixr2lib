@@ -8,8 +8,8 @@
   Pharmacol Ther 104(6):1229-1239. <doi:10.1002/cpt.1085>. Includes the
   publisher’s correction of 11 May 2018 to Table 2.
 - Article: <https://doi.org/10.1002/cpt.1085> (PMC6282492, open access)
-- Supplement (Tables S1-S2, Figures S1-S2):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6282492/supplementaryFiles>
+- Supplement (Tables S1-S2, Figures S1-S2): published with the article,
+  <https://europepmc.org/article/PMC/PMC6282492>
 
 Ethinylestradiol (EE) is the estrogen component of almost every combined
 oral contraceptive. Ezuruike 2018 built a **minimal distribution PBPK

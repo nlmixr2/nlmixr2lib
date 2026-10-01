@@ -196,7 +196,7 @@ mod
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x557bec89bdf8>
+#> <environment: 0x55e767fa05a0>
 ```
 
 ## Population
@@ -460,7 +460,7 @@ sim_single <- rxode2::rxSolve(mod_typ, events = ev_single, returnType = "data.fr
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka'
 
 # Fit the terminal slope well after the distribution phase has resolved
-# (pattern 11: a slope taken too early reads the distribution phase).
+# (a slope taken too early reads the distribution phase).
 # Keep Cc >= 1e-6 of Cmax: below that the ODE tail is solver noise.
 term <- dplyr::filter(sim_single, time >= 400, time <= 800, Cc >= 1e-6 * max(Cc))
 lambda_z <- -stats::coef(stats::lm(log(Cc) ~ time, data = term))[["time"]]
@@ -587,7 +587,7 @@ forest_cmp <- forest |>
   dplyr::inner_join(published_forest, by = c("label", "metric")) |>
   dplyr::mutate(difference = simulated - published)
 
-# Guard against a silently empty join (pattern 10): every published row must
+# Guard against a silently empty join: every published row must
 # have found a simulated partner.
 stopifnot(nrow(forest_cmp) == nrow(published_forest))
 
@@ -754,7 +754,7 @@ day90 <- fig3_sim |>
   dplyr::summarise(md = median(Cc), .groups = "drop")
 
 # Confirm the cohort actually produced all six arms before anything is read
-# off it (pattern 10: a gate with no rows cannot go red).
+# off it (a gate with no rows cannot go red).
 stopifnot(nrow(day90) == 6, all(day90$md > 0))
 
 # The eGFR and dose contrasts are gated on TYPICAL-VALUE solves rather than on
@@ -981,7 +981,7 @@ stopifnot(nrow(gate) == 9)
 gate <- dplyr::mutate(gate, pct = 100 * (sim / pub - 1))
 
 # Fail loudly on a missing parameter rather than letting an NA slip through the
-# comparison as a silently-passing gate (pattern 10).
+# comparison as a silently-passing gate.
 stopifnot(!anyNA(gate$sim), !anyNA(gate$pub))
 
 # Largest observed gap is ~11%, on Cmax, where the paper's simulated peak is

@@ -380,8 +380,8 @@ Omicron protection threshold sooner.
   immediately before each dose, or (c) modifying Eq S4/S6/S8 to include
   an explicit zero-order production term. None of these are done here
   because they deviate from Table 1 / Supp Methods.
-- **`ab_escape` OCR ambiguity.** The trimmed supplement rendering of
-  Methods Eq 2 renders as
+- **`ab_escape` OCR ambiguity.** A text rendering of the supplement’s
+  Methods Eq 2 reads
   `V_eff = V_eff_max * (Ab / Ab_escape) / (K_eff + Ab / Ab_escape)`,
   which would give higher efficacy for Omicron (`Ab_escape = 0.2`) than
   for WT (`Ab_escape = 1`) at the same absolute antibody titer –

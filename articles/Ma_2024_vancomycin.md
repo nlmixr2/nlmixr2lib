@@ -317,7 +317,7 @@ cf_rel <- cf_check |>
   mutate(rel = abs(Cc - Cc_calc) / Cc_calc)
 
 # Coverage guard first, so the accuracy assertion cannot pass vacuously on an
-# empty or partial join (pattern 10): every arm must be present, and at least
+# empty or partial join: every arm must be present, and at least
 # the whole dense steady-state window must have been compared in each.
 stopifnot(
   setequal(unique(cf_rel$treatment), arms$treatment),
@@ -434,7 +434,7 @@ dose_nca <- events |>
   mutate(time = 0) |>
   distinct(id, treatment, time, amt)
 
-# Fail loudly rather than silently producing an empty NCA (pattern 4 / 10).
+# Fail loudly rather than silently producing an empty NCA.
 stopifnot(
   nrow(sim_nca) > 0, nrow(dose_nca) > 0,
   any(sim_nca$time == 0),
@@ -746,16 +746,16 @@ exposure.
   is a production defect, not a rendering artefact of one PDF copy, and
   was confirmed three ways: the page rendered at 300 dpi shows the colon
   followed by white space, with no image object anywhere on that page;
-  the publisher’s per-equation graphics served by the EuropePMC
-  `supplementaryFiles` endpoint contain exactly two equation assets,
-  `Article_Equa` (the CL equation) and `Article_Equb` (the V equation),
-  and none for Cockcroft-Gault; and the Supplementary Information
-  (MOESM1) is figure captions S1-S4 only. Users generating a `CLcr`
-  column for this model must assume the standard Cockcroft-Gault form
-  cited as the paper’s reference 24, including whichever sex correction
-  and weight descriptor their data support – the paper does not disclose
-  which it used. This vignette avoids the issue entirely by working in
-  `CLcr` directly rather than deriving it.
+  the publisher’s per-equation graphics deposited with the article
+  contain exactly two equation assets, `Article_Equa` (the CL equation)
+  and `Article_Equb` (the V equation), and none for Cockcroft-Gault; and
+  the Supplementary Information (MOESM1) is figure captions S1-S4 only.
+  Users generating a `CLcr` column for this model must assume the
+  standard Cockcroft-Gault form cited as the paper’s reference 24,
+  including whichever sex correction and weight descriptor their data
+  support – the paper does not disclose which it used. This vignette
+  avoids the issue entirely by working in `CLcr` directly rather than
+  deriving it.
 
 - **The CLcr distribution of the cohort is not published.** Table 1
   tabulates eGFR (median 86.85 mL/min/1.73 m^2), which is BSA-normalized

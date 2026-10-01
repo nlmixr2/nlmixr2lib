@@ -23,7 +23,7 @@
   -003 and -004 (35.7%).
 - Article: <https://doi.org/10.1111/cts.70099>
 - Supplement (Tables S1-S2, Figures S1-S3):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11671680/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC11671680>
 
 Iruplinalkib (WX-0593) is a selective oral ALK/ROS1 tyrosine kinase
 inhibitor approved in China for ALK-positive non-small-cell lung cancer.
@@ -555,7 +555,7 @@ style="width:100%;"}
 ``` r
 
 
-# Cohort-derived, so bounds are loose by construction (pattern 12). The
+# Cohort-derived, so bounds are loose by construction. The
 # published 95th/5th spread ratios are 2.7, 2.4 and 3.9; realised 2.50 / 2.76 /
 # 4.05 at 2 threads and 2.57 / 2.75 / 4.62 at 16. A mis-transcribed IIV or
 # covariate exponent moves these well outside 2-6.

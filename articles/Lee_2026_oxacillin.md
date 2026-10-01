@@ -39,8 +39,8 @@
   4.0)
 
 - Supplement: Table S1 (adverse events), Table S2 (raw per-patient
-  data), Table S3 (raw concentrations), served by EuropePMC under
-  PMC13231926.
+  data), Table S3 (raw concentrations), published with the open-access
+  article (PMC13231926).
 
 Oxacillin is the standard-of-care antistaphylococcal penicillin for
 methicillin-susceptible *Staphylococcus aureus*, but before this study

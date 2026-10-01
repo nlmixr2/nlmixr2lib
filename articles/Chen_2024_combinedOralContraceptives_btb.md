@@ -29,12 +29,12 @@ components of a COC.
 
 The Methods describe a systematic literature search (PubMed, Cochrane,
 EMBASE, run with Excelra Knowledge Solutions) that returned 1147 papers,
-so the systematic-review skip pathway applies to the *data collection*
-step only. The model itself is original: the authors fit it in NONMEM
-7.5.0 with FOCEI, report their own structural-model selection (mono- vs
-bi- vs tri-exponential), their own stepwise covariate analysis, their
-own bootstrap (1000 resamples), and their own VPC. Table 2 is their
-parameter table, not a catalogue of other authors’ models.
+so the usual exclusion of systematic reviews applies to the *data
+collection* step only. The model itself is original: the authors fit it
+in NONMEM 7.5.0 with FOCEI, report their own structural-model selection
+(mono- vs bi- vs tri-exponential), their own stepwise covariate
+analysis, their own bootstrap (1000 resamples), and their own VPC. Table
+2 is their parameter table, not a catalogue of other authors’ models.
 
 ## Population
 

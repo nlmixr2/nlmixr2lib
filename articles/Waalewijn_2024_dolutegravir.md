@@ -9,8 +9,7 @@
   <doi:10.1093/jpids/piae076>.
 - Article: <https://doi.org/10.1093/jpids/piae076>
 - Supplement (Tables S1-S5, Figure S1 and the complete NONMEM control
-  stream):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11424990/supplementaryFiles>
+  stream): <https://europepmc.org/article/PMC/PMC11424990>
 
 CHAPAS-4 (ISRCTN22964075) randomised African children living with HIV to
 second-line antiretroviral therapy. This secondary analysis

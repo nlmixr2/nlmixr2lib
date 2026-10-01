@@ -80,9 +80,9 @@ mirror the simulation scenarios reported by Hodiamont 2017 (Results
 vignette draws virtual cohorts of identical 70 kg patients and gives
 each subject either a 5 mg/kg (350 mg) or a 6 mg/kg (420 mg) first dose
 infused over 30 minutes. The paper used 1000 subjects per arm; the
-vignette uses 300 per arm to stay inside the pkgdown build time budget
-while keeping Monte Carlo noise below ~3 percentage points on each
-target-attainment statistic.
+vignette uses 300 per arm to keep the render time short while keeping
+Monte Carlo noise below ~3 percentage points on each target-attainment
+statistic.
 
 ``` r
 
@@ -351,8 +351,7 @@ paper.
   `dur(central)`, so users specify infusion duration per dose via the
   `rate` (or `dur`) column on the event-table dose rows; the vignette
   uses `rate = amt / 0.5` to deliver each dose over 30 minutes.
-- **Errata not searched.** The package’s validation checklist asks for
-  an errata search on the publisher landing page; for this 2017 article
-  the search was not performed during extraction. If a subsequent
-  erratum revises a Table 2 estimate, the packaged values should be
-  refreshed accordingly.
+- **Errata not searched.** An errata search on the publisher landing
+  page was not performed for this 2017 article during extraction. If a
+  subsequent erratum revises a Table 2 estimate, the packaged values
+  should be refreshed accordingly.

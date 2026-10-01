@@ -27,8 +27,8 @@
   improve the fit, so the base model is also the final irreducible
   model.
 - Article: <https://doi.org/10.1002/jcph.70143>
-- Supplement (Tables S1-S2, Figures S1-S6): retrieved from the Europe
-  PMC open-access supplementary-file endpoint for `PMC12755061`.
+- Supplement (Tables S1-S2, Figures S1-S6): published with the
+  open-access article (`PMC12755061`).
 
 Methadone concentrations in this vignette are reported in **ng/mL** to
 match the paper. The packaged model works in mg and L, so `Cc` is in

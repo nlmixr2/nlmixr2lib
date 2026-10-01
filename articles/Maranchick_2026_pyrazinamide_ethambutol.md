@@ -40,9 +40,9 @@ emb_ui <- rxode2::rxode(emb)
   scaling on CL/F (exponent 0.70) and V1/F (exponent 0.62) normalised to
   15.1 kg, and an exponential HIV-positive effect raising CL/F by 24.6%.
 
-No supplementary parameter tables accompany the article; the EuropePMC
-supplementary-file endpoint for PMC13041307 returns only the four figure
-images. All values below come from the main text and Table 2.
+No supplementary parameter tables accompany the article; the only files
+deposited with PMC13041307 are the four figure images. All values below
+come from the main text and Table 2.
 
 ## Population
 
@@ -962,6 +962,6 @@ each band attains less often.
   effects** were tested by the authors and not retained, so none is
   encoded.
 - **No non-paper-derived parameter values.** Every `ini()` entry comes
-  from Table 2 or the Results text of the main article. The EuropePMC
-  supplementary endpoint for PMC13041307 returns only figure images, and
+  from Table 2 or the Results text of the main article. The only
+  supplementary files deposited with PMC13041307 are figure images, and
   no erratum was found.

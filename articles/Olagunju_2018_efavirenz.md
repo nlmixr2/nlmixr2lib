@@ -73,10 +73,10 @@ simulations below reproduce the Olagunju 2018 Figure 3 design: a 3
 (dose: 200 / 400 / 600 mg once daily) x 3 (CYP2B6 metaboliser status:
 fast / intermediate / slow) factorial at the cohort median body weight
 of 57 kg, with 200 subjects per cell. The paper used 1000 simulated
-subjects per cell; 200 keeps the vignette inside the pkgdown 5-minute
-per-vignette wall-time budget while preserving the qualitative features
-(rank ordering of mid-dose concentrations across groups, proportions
-below the 0.47 and 1.0 ug/mL efficacy cut-offs).
+subjects per cell; 200 keeps the vignette’s render time under 5 minutes
+while preserving the qualitative features (rank ordering of mid-dose
+concentrations across groups, proportions below the 0.47 and 1.0 ug/mL
+efficacy cut-offs).
 
 ``` r
 
@@ -513,10 +513,10 @@ and intermediate strata anchor the central tendency near 1.2-1.4 ug/mL.
   across weights.
 - **Cohort N for Figure 3 reproduction.** Olagunju 2018 used 1000
   simulated subjects per dose x metaboliser cell; the packaged vignette
-  uses 200 per cell to fit inside the pkgdown 5-minute per-vignette
-  wall-time budget. The smaller N adds some Monte Carlo noise to the
-  percentile bands but preserves the qualitative rank ordering of
-  mid-dose concentrations (slow \>\> intermediate ~ fast).
+  uses 200 per cell to keep the render time under 5 minutes. The smaller
+  N adds some Monte Carlo noise to the percentile bands but preserves
+  the qualitative rank ordering of mid-dose concentrations (slow \>\>
+  intermediate ~ fast).
 - **Systematic ~30-50% offset between simulated and published Table 3
   mean C12.** The packaged-model simulated mean C12 runs consistently
   ~30-50% higher than the Olagunju 2018 Table 3 published mean across

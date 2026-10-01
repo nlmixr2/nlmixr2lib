@@ -1225,16 +1225,15 @@ ggplot(nca_cmp, aes(CRCL, half.life)) +
 ## Assumptions and deviations
 
 - **Supplement not available.** Tseng 2026 cites Supplementary Tables
-  1-3 and Supplementary Figures 1-3. Neither the Dovepress supplementary
-  endpoints nor the Europe PMC supplementary-files archive serves them
-  (the latter returns only the three main-article figures). Nothing in
-  the supplement is needed to build the model: every final parameter
-  estimate is in Table 2, and the structural- and covariate-model
-  comparisons in Supplementary Tables 1-2 are objective-function
-  summaries reported in the Results narrative as well. The one
-  validation that could not be attempted is the uncertainty-propagation
-  analysis of Supplementary Table 3, whose confidence intervals on PTA
-  are not reproduced here.
+  1-3 and Supplementary Figures 1-3. They were not available when this
+  model was built (the only files deposited with the PMC record are the
+  three main-article figures). Nothing in the supplement is needed to
+  build the model: every final parameter estimate is in Table 2, and the
+  structural- and covariate-model comparisons in Supplementary Tables
+  1-2 are objective-function summaries reported in the Results narrative
+  as well. The one validation that could not be attempted is the
+  uncertainty-propagation analysis of Supplementary Table 3, whose
+  confidence intervals on PTA are not reproduced here.
 
 - **The eGFR reference constant is the printed one, not the reported
   median.** The Table 2 formula divides eGFR by 104.368, while the prose

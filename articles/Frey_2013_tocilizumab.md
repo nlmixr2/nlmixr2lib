@@ -192,9 +192,9 @@ cohort <- tibble::tibble(
   IL6            = pmax(rlnorm(n_subj, log(20) - 0.5 * 1.0^2, 1.0), 0.7),
   SEXF           = rbinom(n_subj, 1, 0.82),
   RACE_ASIAN_AMIND_OTH = rbinom(n_subj, 1, 0.24),
-  BLHAQ          = pmin(pmax(rnorm(n_subj, mean = 1.55, sd = 0.65), 0, 3)),
-  PAIN           = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 20),  0, 100)),
-  BLPHYVAS       = pmin(pmax(rnorm(n_subj, mean = 65,   sd = 18),  10, 100))
+  BLHAQ          = pmin(pmax(rnorm(n_subj, mean = 1.55, sd = 0.65), 0), 3),
+  PAIN           = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 20),  0), 100),
+  BLPHYVAS       = pmin(pmax(rnorm(n_subj, mean = 65,   sd = 18),  10), 100)
 )
 ```
 
@@ -211,7 +211,7 @@ tau       <- 28                          # Q4W dosing interval (days)
 week24    <- 24 * 7                      # day 168
 n_doses   <- ceiling(week24 / tau)       # 6 doses through 24 weeks
 dose_days <- seq(0, tau * (n_doses - 1), by = tau)
-# Trim observation grid to keep the vignette under the 5-min wall-time gate.
+# Trim observation grid to keep the vignette's render time under 5 min.
 obs_days  <- sort(unique(c(seq(0, week24, by = 7), dose_days, dose_days + 1)))
 infusion_dur <- 1 / 24                   # 1-hour infusion in days
 ```
@@ -470,9 +470,9 @@ knitr::kable(comparison, digits = 2,
 
 | treatment | paper_remission_pct | paper_eular_good_pct | das28_typ | cohort_remission_pct | cohort_median_das28 |
 |:---|---:|---:|---:|---:|---:|
-| Placebo | NA | NA | 5.97 | 0.0 | 6.16 |
-| TCZ_4mgkg_q4w | 24 | 32 | 4.13 | 0.0 | 4.47 |
-| TCZ_8mgkg_q4w | 38 | 48 | 3.11 | 12.5 | 3.43 |
+| Placebo | NA | NA | 5.97 | 0.0 | 5.55 |
+| TCZ_4mgkg_q4w | 24 | 32 | 4.13 | 2.5 | 3.91 |
+| TCZ_8mgkg_q4w | 38 | 48 | 3.11 | 25.0 | 2.98 |
 
 Week-24 DAS28 summary. Typical-patient column is IIV-zeroed;
 cohort_remission_pct uses the small N = 40 virtual cohort.

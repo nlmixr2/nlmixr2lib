@@ -129,9 +129,9 @@ n_subj <- 200
 # CRP median 0.837 mg/dL, 95% CI 0.030-8.83).
 cohort <- tibble::tibble(
   id  = seq_len(n_subj),
-  WT  = pmin(pmax(rlnorm(n_subj, log(68.8), 0.24),  35,  155)),
-  ALB = pmin(pmax(rlnorm(n_subj, log(39),  0.12),   23,  49)),
-  CRP = pmin(pmax(rlnorm(n_subj, log(0.837), 1.18), 0.01, 18))
+  WT  = pmin(pmax(rlnorm(n_subj, log(68.8), 0.24),  35),  155),
+  ALB = pmin(pmax(rlnorm(n_subj, log(39),  0.12),   23),  49),
+  CRP = pmin(pmax(rlnorm(n_subj, log(0.837), 1.18), 0.01), 18)
 )
 ```
 
@@ -270,18 +270,18 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
-#>  start end  treatment   N       auclast         cmax           cmin
-#>      0  28  150mg_Q4W 200 293000 [43.7] 15100 [33.6]     4360 [164]
-#>      0  28  225mg_Q4W 200 481000 [45.8] 24500 [34.4]     6680 [402]
-#>      0  28 22p5mg_Q4W 200  18400 [34.3]  1380 [36.9] 0.806 [132000]
-#>      0  28   75mg_Q4W 200 126000 [42.0]  6850 [32.4]    1100 [1470]
-#>      0  28  7p5mg_Q4W 200   2160 [40.3]   315 [53.1]  0.00399 [748]
+#>  start end  treatment   N       auclast         cmax          cmin
+#>      0  28  150mg_Q4W 200 432000 [50.7] 23500 [35.8]    5880 [197]
+#>      0  28  225mg_Q4W 200 688000 [53.3] 37200 [39.1]    9330 [249]
+#>      0  28 22p5mg_Q4W 200  55600 [52.8]  3220 [36.8]    325 [4710]
+#>      0  28   75mg_Q4W 200 206000 [48.7] 11400 [37.0]    2310 [527]
+#>      0  28  7p5mg_Q4W 200  11600 [58.2]   836 [46.7] 3.56 [982000]
 #>               tmax          cav
-#>  5.00 [2.00, 12.0] 10500 [43.7]
-#>  5.00 [2.00, 14.0] 17200 [45.8]
-#>  5.00 [2.00, 10.0]   656 [34.3]
-#>  5.00 [2.00, 10.0]  4510 [42.0]
-#>  4.00 [2.00, 5.00]  77.0 [40.3]
+#>  5.00 [2.00, 12.0] 15400 [50.7]
+#>  5.00 [2.00, 14.0] 24600 [53.3]
+#>  5.00 [2.00, 11.0]  1980 [52.8]
+#>  5.00 [2.00, 11.0]  7360 [48.7]
+#>  5.00 [2.00, 11.0]   415 [58.2]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -338,27 +338,36 @@ comparison <- published |>
                 Cmax_pub, Cmax_sim, Cmax_pct_diff,
                 Cmin_pub, Cmin_sim, Cmin_pct_diff)
 
+arms_over_20 <- function(pct_diff) {
+  d <- comparison$Dose[abs(pct_diff) > 20]
+  if (length(d) == 0) "none" else paste0(paste(d, collapse = ", "), " mg")
+}
+
 knitr::kable(comparison, digits = c(0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1),
-  caption = paste("Geometric-mean exposures at week 12 (dose-3 cycle, ng/mL)",
-                  "vs. Wang 2020 Table 3. Differences > ~20% are expected for",
-                  "the 7.5 and 22.5 mg arms, where MM elimination dominates",
-                  "and Cmin is highly sensitive to virtual-cohort covariate",
-                  "distributions; see Assumptions and deviations."))
+  caption = paste0("Geometric-mean exposures at week 12 (dose-3 cycle, ng/mL) ",
+                   "vs. Wang 2020 Table 3. Arms differing from the published ",
+                   "value by more than 20%: Cave ",
+                   arms_over_20(comparison$Cave_pct_diff), "; Cmax ",
+                   arms_over_20(comparison$Cmax_pct_diff), "; Cmin ",
+                   arms_over_20(comparison$Cmin_pct_diff), ". Cmin is the ",
+                   "most sensitive metric because the week-12 trough is ",
+                   "governed by the saturable elimination; see Assumptions ",
+                   "and deviations."))
 ```
 
 | treatment | Dose | Cave_pub | Cave_sim | Cave_pct_diff | Cmax_pub | Cmax_sim | Cmax_pct_diff | Cmin_pub | Cmin_sim | Cmin_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 7p5mg_Q4W | 7.5 | 461 | 77 | -83.2 | 986 | 315 | -68.1 | 2.1 | 0.0 | -99.8 |
-| 22p5mg_Q4W | 22.5 | 1930 | 657 | -66.0 | 3300 | 1376 | -58.3 | 304.0 | 0.8 | -99.7 |
-| 75mg_Q4W | 75.0 | 8160 | 4511 | -44.7 | 12000 | 6849 | -42.9 | 3670.0 | 1207.8 | -67.1 |
-| 150mg_Q4W | 150.0 | 11500 | 10477 | -8.9 | 17400 | 15090 | -13.3 | 5190.0 | 4835.3 | -6.8 |
-| 225mg_Q4W | 225.0 | 27700 | 17174 | -38.0 | 38100 | 24511 | -35.7 | 14600.0 | 7441.2 | -49.0 |
+| 7p5mg_Q4W | 7.5 | 461 | 415 | -10.0 | 986 | 836 | -15.2 | 2.1 | 3.8 | 76.8 |
+| 22p5mg_Q4W | 22.5 | 1930 | 1985 | 2.9 | 3300 | 3224 | -2.3 | 304.0 | 353.6 | 16.3 |
+| 75mg_Q4W | 75.0 | 8160 | 7360 | -9.8 | 12000 | 11394 | -5.0 | 3670.0 | 2484.8 | -32.3 |
+| 150mg_Q4W | 150.0 | 11500 | 15446 | 34.3 | 17400 | 23547 | 35.3 | 5190.0 | 6375.6 | 22.8 |
+| 225mg_Q4W | 225.0 | 27700 | 24567 | -11.3 | 38100 | 37183 | -2.4 | 14600.0 | 10107.2 | -30.8 |
 
 Geometric-mean exposures at week 12 (dose-3 cycle, ng/mL) vs. Wang 2020
-Table 3. Differences \> ~20% are expected for the 7.5 and 22.5 mg arms,
-where MM elimination dominates and Cmin is highly sensitive to
-virtual-cohort covariate distributions; see Assumptions and deviations.
-{.table}
+Table 3. Arms differing from the published value by more than 20%: Cave
+150 mg; Cmax 150 mg; Cmin 7.5, 75, 150, 225 mg. Cmin is the most
+sensitive metric because the week-12 trough is governed by the saturable
+elimination; see Assumptions and deviations. {.table}
 
 ## Assumptions and deviations
 
@@ -393,13 +402,23 @@ virtual-cohort covariate distributions; see Assumptions and deviations.
   is taken as mg/dL with reference 0.837 mg/dL. If a user has CRP in
   mg/L (the canonical nlmixr2lib unit), they must divide by 10 before
   passing it to this model.
-- **Cmin sensitivity at low dose.** At 7.5 and 22.5 mg the trough at
-  week 12 is dominated by the saturable MM elimination at low
-  concentrations. Simulated Cmin in this regime is highly sensitive to
-  the cohort albumin / CRP distributions and to small differences
-  between the geometric-mean vs typical-patient ratio. Differences \>
-  20% from Table 3 in these arms reflect those uncertainties rather than
-  a structural problem with the model.
+- **Cmin sensitivity.** The week-12 trough is governed by the saturable
+  MM elimination, so simulated Cmin is highly sensitive to the cohort
+  weight, albumin, and CRP distributions (Vmax/F scales with
+  `(WT/70)^1.89`) and to the difference between a geometric mean over a
+  heterogeneous cohort and a typical-patient value. Cmin differs from
+  Table 3 by more than 20% in the 7.5, 75, 150, 225 mg arms, whereas
+  Cave and Cmax exceed a 20% difference only in the 150 mg (Cave) and
+  150 mg (Cmax) arms (see the next bullet). These differences reflect
+  the cohort approximation rather than a structural problem with the
+  model.
+- **Published 150 mg row.** Wang 2020 Table 3 reports Cave 11500 / Cmax
+  17400 / Cmin 5190 ng/mL at 150 mg Q4W, which is lower per mg of dose
+  than both the 75 mg row (8160 / 12000 / 3670) and the 225 mg row
+  (27700 / 38100 / 14600). With saturable elimination, dose-normalized
+  exposure rises monotonically with dose, so the model cannot reproduce
+  that dip: the simulated 150 mg exposures sit 34% (Cave) and 35% (Cmax)
+  above the published values.
 - **No PK/PD model.** Wang 2020 also fits a linear PK/PD model linking
   log-ontamalimab to log-MAdCAM-1 concentration. This nlmixr2lib model
   is PK only; the PK/PD parameters (E0 = 5.48, Slope = -0.375 on log

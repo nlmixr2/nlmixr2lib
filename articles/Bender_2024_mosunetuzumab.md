@@ -9,13 +9,13 @@
   2024;17(5):e13825. <doi:10.1111/cts.13825>
 - Article: <https://doi.org/10.1111/cts.13825> (open access;
   PMC11134317)
-- Supplement: `CTS-17-e13825-s001.docx`, retrieved from the EuropePMC
-  supplementary-files endpoint for PMC11134317. **Table S3 of that
-  supplement is the full NONMEM control stream and is load-bearing for
-  this extraction** – the main article renders every governing equation
-  as an undecodable formula image, so the covariate functional forms,
-  the competing-drug ODEs and the receptor-occupancy expression are
-  recoverable only from the control stream.
+- Supplement: `CTS-17-e13825-s001.docx`, published with the open-access
+  article (PMC11134317). **Table S3 of that supplement is the full
+  NONMEM control stream and is load-bearing for this extraction** – the
+  main article renders every governing equation as an undecodable
+  formula image, so the covariate functional forms, the competing-drug
+  ODEs and the receptor-occupancy expression are recoverable only from
+  the control stream.
 
 Mosunetuzumab is a CD20xCD3 T-cell engaging bispecific antibody. Bender
 2024 describes a two-compartment IV disposition model with
@@ -321,7 +321,7 @@ mod
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x563d1392d168>
+#> <environment: 0x55aa0ca93e38>
 ```
 
 ## Population

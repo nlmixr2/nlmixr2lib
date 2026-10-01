@@ -794,6 +794,6 @@ predictions without residual noise, exactly as in the source paper.
   table, so the PKNCA section is validated against the model-implied
   identity AUC(0-tau) = Dose/CL rather than against published Cmax / AUC
   values.
-- **No supplement or erratum.** EuropePMC reports `hasSuppl = N` and no
-  correction notice for PMC13102762; every value above comes from the
+- **No supplement or erratum.** The article (PMC13102762) has no
+  supplement and no correction notice; every value above comes from the
   main article.

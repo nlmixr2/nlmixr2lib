@@ -402,9 +402,9 @@ Original patient data are not publicly available. Following the paper’s
 patient with median characteristics – creatinine clearance 87.9 mL/min
 and total tumor volume 1.73 mL (1730 mm^3) – dosed once at 3 GBq
 (occasion 1) and once at 6 GBq (occasion 2). The paper simulated 1000
-subjects per dose level; this vignette uses 100 per arm to stay inside
-the pkgdown render budget, which is ample because the comparison
-statistic is a central tendency.
+subjects per dose level; this vignette uses 100 per arm to keep the
+render time short, which is ample because the comparison statistic is a
+central tendency.
 
 The observation grid is dense over the first 12 h (the salivary-gland
 peak is near 7 h) and hourly thereafter, so the trapezoidal

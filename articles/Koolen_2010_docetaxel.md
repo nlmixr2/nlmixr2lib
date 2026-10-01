@@ -453,7 +453,6 @@ Table 3 (1000 simulated patients per arm; 1 mg/L*h = 1000 ng*h/mL).
   2.
 - **Vignette uses 200 simulated subjects per arm, not 1000.** Koolen
   2010 Table 3 was generated from 1000 simulated subjects per arm; the
-  validation vignette here uses 200 to keep render time under the 5
-  minute pkgdown gate. The geometric-mean point estimates remain a
-  reasonable check; the paper’s 90% confidence intervals would tighten
-  on larger N.
+  validation vignette here uses 200 to keep render time under 5 minutes.
+  The geometric-mean point estimates remain a reasonable check; the
+  paper’s 90% confidence intervals would tighten on larger N.

@@ -480,10 +480,10 @@ weight of 73 kg. {.table}
   elimination). They are recorded as metadata-only so the screening
   provenance is preserved without producing convention warnings.
 - **Vignette uses 200 subjects per weight or AAG band.** This is small
-  enough for the rendered vignette to finish well under the pkgdown
-  5-minute gate but large enough for stable median exposures. The
-  reported ratios in the comparison table use the simulated cohort
-  medians (the same statistic Tsuda 2010 reports).
+  enough for the rendered vignette to finish well under 5 minutes but
+  large enough for stable median exposures. The reported ratios in the
+  comparison table use the simulated cohort medians (the same statistic
+  Tsuda 2010 reports).
 - **Bioavailability not parameterised.** Tsuda 2010 only reports
   apparent parameters CL/F and V/F because no intravenous data were
   available. The model file follows the paper and does not include an

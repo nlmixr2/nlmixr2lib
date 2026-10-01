@@ -121,9 +121,9 @@ page 9.
 
 The original observed dataset is not publicly available. The cohort
 below mirrors the Table 1 demographics for the oncology and nononcology
-arms separately. To keep within the pkgdown five-minute render budget
-the cohort is sized at 200 simulated subjects per arm (vs the paper’s
-1,000 at each dose level).
+arms separately. To keep the render time under five minutes the cohort
+is sized at 200 simulated subjects per arm (vs the paper’s 1,000 at each
+dose level).
 
 For the Ceriotti reference SCR (`CREAT_REF`), the vignette uses a simple
 piecewise age-banded approximation based on the published age-decade

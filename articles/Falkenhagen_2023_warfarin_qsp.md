@@ -958,7 +958,7 @@ pharmacodynamic parameter and has no effect on warfarin exposure.
   `Wajima2009BloodCoagulation_parameters.m` and
   `Wajima2009BloodCoagulation_initialvalues.m`, with the parameter set
   selected by the archive’s active `pk_pars = "Wajima_wildtype"` branch.
-  No value was taken from training-data knowledge or from a “typical”
+  No value was supplied from general knowledge or from a “typical”
   literature value.
 - Three of these values are **independently corroborated by the main
   text**: the factor degradation rates imply half-lives of 69.3 h, 5.8 h

@@ -93,8 +93,7 @@ typical-value `S(t)` per arm; per the Lin 2020 source NONMEM fit, no
 subject-level IIV is added, so all subjects in an arm follow the same
 `S(t)` trajectory.
 
-Per the vignette template’s cohort-size cap, each arm uses \<= 200
-subjects.
+Per the library’s cohort-size cap, each arm uses \<= 200 subjects.
 
 ``` r
 

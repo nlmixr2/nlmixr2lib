@@ -34,7 +34,7 @@ names(uis) <- model_names
   Pharmacol 13(12):2111-2123. <doi:10.1002/psp4.13224>.
 - Article: <https://doi.org/10.1002/trc2.70246>
 - Supplement (Appendix A, Tables S1-S5, Figures S1-S7):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13095857/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC13095857>
 - Upstream lecanemab population PK (Majid 2024):
   <https://doi.org/10.1002/psp4.13224>
 - Upstream amyloid-PET plaque model (Bhagunde 2026, CPT:PSP):

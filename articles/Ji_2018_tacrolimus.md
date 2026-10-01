@@ -486,5 +486,5 @@ the published dose-recommendation surface within rounding error.
   concentrations.
 
 - **Vignette uses 200 subjects per CYP3A5 stratum.** Small enough to
-  render in well under 5 minutes (pkgdown gate) and large enough to
-  stabilise the trough-distribution percentiles in Figure 4.
+  render in well under 5 minutes and large enough to stabilise the
+  trough-distribution percentiles in Figure 4.

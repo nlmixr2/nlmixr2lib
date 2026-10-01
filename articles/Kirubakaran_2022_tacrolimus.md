@@ -452,16 +452,16 @@ per mg). No tuning was performed.
 - **LTBS proportional residual error.** Kirubakaran 2022 reports a
   log-transform-both-sides proportional RUV of 41% (Methods 2.5.1 “log
   transformation both sides proportional”; Table 3 column 3). Per the
-  nlmixr2lib NONMEM-translation rules, NONMEM `Y = LOG(F) + EPS(1)` maps
-  to `Cc ~ prop(propSd)` with `propSd` numerically equal to the reported
+  nlmixr2lib convention, NONMEM `Y = LOG(F) + EPS(1)` maps to
+  `Cc ~ prop(propSd)` with `propSd` numerically equal to the reported
   CV, hence `propSd = 0.41`.
 - **Bioavailability fixed.** F = 1 was fixed by the source paper
   (Methods 2.5.1) because almost all observed concentrations were
   pre-dose troughs (Section 3.2), which cannot identify F separately
   from CL/F.
-- **No upstream-task dependency.** Kirubakaran 2022 used the published
-  Sikma 2017 thoracic-transplant tacrolimus popPK as a NONMEM PRIOR
-  (NWPRI subroutine) to support but not fix the estimation of Ka, V2/F,
-  Q/F, and V3/F. The final estimates reported in Table 3 (column 3) are
-  the values implemented here; no Sikma model is loaded at simulation
-  time.
+- **No dependency on another model.** Kirubakaran 2022 used the
+  published Sikma 2017 thoracic-transplant tacrolimus popPK as a NONMEM
+  PRIOR (NWPRI subroutine) to support but not fix the estimation of Ka,
+  V2/F, Q/F, and V3/F. The final estimates reported in Table 3
+  (column 3) are the values implemented here; no Sikma model is loaded
+  at simulation time.

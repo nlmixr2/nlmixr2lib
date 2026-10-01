@@ -117,14 +117,14 @@ The van Hasselt 2013 raw data are not publicly available. The virtual
 cohort below approximates the Methods section ‘Evaluation of the impact
 of covariates on risk for neutropenia’ simulation strategy: 200 patients
 (a smaller cohort than the paper’s 2000 to keep the vignette render
-under the 5-minute budget), BSA sampled from N(mean = 1.57, sd = 0.22)
-truncated to \[1, 3\] m^2 per the paper, weight fixed at the cohort
-median 67.7 kg, laboratory covariates set to the Table 2 medians (ALB
-3.90 g/dL = 39 g/L; ALP 118 U/L; TBILI 0.50 mg/dL = 8.55 umol/L; AST 30
-U/L; LDH 328 U/L), and G-CSF-receival at 22.7% prevalence. Approved
-eribulin dosing schedule: 1.4 mg/m^2 mesilate (= 1.23 mg/m^2 free base
-via the Majid 2014 / Kawamura 2018 conversion factor 1.23/1.4) on day 1
-and day 8 of a 21-day cycle.
+under 5 minutes), BSA sampled from N(mean = 1.57, sd = 0.22) truncated
+to \[1, 3\] m^2 per the paper, weight fixed at the cohort median 67.7
+kg, laboratory covariates set to the Table 2 medians (ALB 3.90 g/dL = 39
+g/L; ALP 118 U/L; TBILI 0.50 mg/dL = 8.55 umol/L; AST 30 U/L; LDH 328
+U/L), and G-CSF-receival at 22.7% prevalence. Approved eribulin dosing
+schedule: 1.4 mg/m^2 mesilate (= 1.23 mg/m^2 free base via the Majid
+2014 / Kawamura 2018 conversion factor 1.23/1.4) on day 1 and day 8 of a
+21-day cycle.
 
 ``` r
 
@@ -498,10 +498,10 @@ report per-subject NCA. {.table}
   vignette follows the Methods parameterisation because that is what van
   Hasselt 2013 used for its own simulation study.
 - **Cohort size (n = 200) is smaller than the paper’s n = 2000.**
-  Reduced from the paper’s simulation cohort size to keep the pkgdown
-  vignette render under the 5-minute wall-clock gate. Monte-Carlo error
-  on the grade-3 / grade-4 incidence estimates is proportionally larger
-  but the point estimates remain within the expected range.
+  Reduced from the paper’s simulation cohort size to keep the vignette
+  render under 5 minutes. Monte-Carlo error on the grade-3 / grade-4
+  incidence estimates is proportionally larger but the point estimates
+  remain within the expected range.
 - **G-CSF prevalence 22.7%** matches Table 2 (382 / 1684 subjects). The
   paper does not describe temporal G-CSF administration patterns; the
   vignette assigns CONMED_GCSF as a per-subject baseline indicator,

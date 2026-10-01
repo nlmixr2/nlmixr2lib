@@ -389,4 +389,4 @@ driven by the 25.5% / 18.8% IIV.
   included in the model file.
 - **Vignette uses 100 stochastic subjects for the VPC.** Cohort size is
   large enough to give a stable steady-state profile envelope while
-  keeping the vignette under the 5-minute pkgdown gate.
+  keeping the vignette’s render time under 5 minutes.

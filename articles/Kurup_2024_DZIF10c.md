@@ -769,12 +769,12 @@ against reading it as a physiological deposition fraction.
 - **IIV convention.** Table 1 reports the two estimated IIVs as bare
   percentages (26.7% on Vc, 67.1% on Q2) without stating the convention.
   They are encoded here as `omega^2 = log(CV^2 + 1)`, the log-normal
-  convention this package’s verification checklist prescribes, giving
-  variances of 0.0689 and 0.3717. The alternative reading
-  (`omega = CV / 100`, i.e. variances 0.0713 and 0.4502) is not
-  distinguishable from anything printed in the paper; it changes the Vc
-  variability by under 2% and the Q2 variability by about 10%, and
-  neither materially moves the exposure metrics reproduced above.
+  convention this package uses by default, giving variances of 0.0689
+  and 0.3717. The alternative reading (`omega = CV / 100`,
+  i.e. variances 0.0713 and 0.4502) is not distinguishable from anything
+  printed in the paper; it changes the Vc variability by under 2% and
+  the Q2 variability by about 10%, and neither materially moves the
+  exposure metrics reproduced above.
 - **Residual error form.** Supplement equation 14 describes a combined
   additive plus proportional error model, but the text says that is what
   was “initially modelled”, and the final control stream’s `$ERROR`

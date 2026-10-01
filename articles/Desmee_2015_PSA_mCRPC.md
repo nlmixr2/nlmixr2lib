@@ -247,8 +247,7 @@ patient dies considerably earlier, so `sur_t735` is much lower.
 
 Figure 3 of the source paper shows spaghetti plots of N = 500 simulated
 PSA trajectories per scenario. We replicate the structure with a much
-smaller cohort (N = 60 per scenario) to keep the vignette under the
-pkgdown wall-clock budget.
+smaller cohort (N = 60 per scenario) to keep the render time short.
 
 ``` r
 
@@ -282,11 +281,10 @@ vpc <- scenarios |>
   }) |>
   ungroup() |>
   mutate(scenario = factor(scenario, levels = scenarios$scenario))
-#> [intdy -- t = 4.66283e-310 illegal]: 8 warning(s) for subject(s): 1 (sim 5)
-#> [intdy -- t = 4.66282e-310 illegal]: 2 warning(s) for subject(s): 1 (sim 19)
-#> [intdy -- t = 6.91514e-310 illegal]: 5 warning(s) for subject(s): 1 (sim 42), 1 (sim 56)
-#> [intdy -- t = 4.66282e-310 illegal]: 1 warning(s) for subject(s): 1 (sim 35)
-#> [intdy -- t = 6.91514e-310 illegal]: 14 warning(s) for subject(s): 1 (sim 31), 1 (sim 40)
+#> [intdy -- t = 4.66657e-310 illegal]: 8 warning(s) for subject(s): 1 (sim 5)
+#> [intdy -- t = 4.66657e-310 illegal]: 7 warning(s) for subject(s): 1 (sim 19), 1 (sim 42), 1 (sim 56)
+#> [intdy -- t = 4.66657e-310 illegal]: 10 warning(s) for subject(s): 1 (sim 35), 1 (sim 40)
+#> [intdy -- t = 6.90679e-310 illegal]: 5 warning(s) for subject(s): 1 (sim 31)
 
 vpc_median <- vpc |>
   group_by(scenario, time) |>
@@ -390,9 +388,9 @@ preceding table to within Monte Carlo noise at N = 60.
   library (e.g., `tumor_vol` in the Cardilin 2018 and Simeoni 2004
   oncology models).
 - **Smaller stochastic cohort.** The source paper simulated N = 500 per
-  scenario; this vignette uses N = 60 per scenario to keep the pkgdown
-  render under the 5-minute wall-clock budget. The qualitative spaghetti
-  pattern and the median trajectories are unchanged.
+  scenario; this vignette uses N = 60 per scenario to keep the render
+  time under 5 minutes. The qualitative spaghetti pattern and the median
+  trajectories are unchanged.
 - **A tiny epsilon `del_t = 1e-6` is added inside the Weibull baseline
   hazard** to keep the `(t / lambda)^(k - 1)` factor well-defined at
   `t = 0`. With `k = 1.5 > 1` the baseline hazard is zero at `t = 0`

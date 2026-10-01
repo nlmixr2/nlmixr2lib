@@ -11,7 +11,7 @@
 - Open-access full text:
   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11992657/>
 - Supplement (Tables S1-S4, Figures S1-S2): `BCP-91-1233-s003.docx`,
-  retrieved through the EuropePMC full-text repository
+  published with the article
 
 Single-patient pharmacokinetic-pharmacodynamic model for recombinant
 human parathyroid hormone rhPTH(1-84) (Natpar) in chronic postsurgical

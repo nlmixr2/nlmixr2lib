@@ -74,9 +74,8 @@ infants at the D28 median weight (5.6 kg) and 12 Group 2 infants at the
 D84 median weight (7.65 kg). Each infant is replicated 50 times by Monte
 Carlo to give 1100 simulated trajectories per dosing regimen (the source
 paper replicated the n = 22 cohort 1000 times to derive Table 6
-percentiles; 50 replicates keeps the vignette inside the pkgdown
-5-minute per-vignette wall-time budget while preserving the qualitative
-Cmin / Cmax features).
+percentiles; 50 replicates keeps the vignette’s render time under 5
+minutes while preserving the qualitative Cmin / Cmax features).
 
 ``` r
 
@@ -547,11 +546,11 @@ medians from Group 1 (D28) and Group 2 (D84). All values in ng/mL.
 - **Cohort N for Figure 7 reproduction.** Del Frari 2018 used 1000
   replicates of the n = 22 cohort (~22,000 trajectories per regimen);
   the packaged vignette uses 50 replicates (1100 trajectories per
-  regimen) to fit inside the pkgdown 5-minute per-vignette wall-time
-  budget. The smaller N adds some Monte Carlo noise to the percentile
-  bands but preserves the qualitative findings (Cmin / Cmax differ by
-  less than 20% / 10% across regimens; the BID-regular and TID-regular
-  envelopes overlap substantially).
+  regimen) to keep the render time under 5 minutes. The smaller N adds
+  some Monte Carlo noise to the percentile bands but preserves the
+  qualitative findings (Cmin / Cmax differ by less than 20% / 10% across
+  regimens; the BID-regular and TID-regular envelopes overlap
+  substantially).
 - **Day 7 used as the steady-state day.** The source paper simulated one
   week of repeated dosing at the target 3 mg/kg/day dose to reach steady
   state before recording Cmin / Cmax; with a terminal-phase half-life of

@@ -550,13 +550,6 @@ HFIM findings (Figure 4, Table 1). {.table}
   aeruginosa* strains. No PKNCA validation is performed (there is no
   drug NCA to compute); the mechanistic checks above replace it, per the
   endogenous / mechanistic validation strategy.
-- **File naming.** The metadata this model was built from listed the
-  drug as “Antimicrobial Agents and Chemo”, which is the journal name
-  (Antimicrobial Agents and Chemotherapy), not a drug. The paper
-  unambiguously models meropenem plus tobramycin against two strains, so
-  the model files and this vignette use
-  `Landersdorfer_2018_meropenem_tobramycin_PAO1` and
-  `Landersdorfer_2018_meropenem_tobramycin_PAOmutS`.
 - **Two files, one vignette.** Replicating the author’s structure: the
   published MBM was co-fit to both strains with shared and
   strain-specific parameters (Table S3). Splitting into two `.R` files

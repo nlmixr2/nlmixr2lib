@@ -16,7 +16,7 @@
   in minutes; amounts in umol; concentrations in umol/L.
 - Article: <https://doi.org/10.1038/psp.2013.35>
 - Supplement (NONMEM control stream, Table S1 model-selection summary):
-  retrieved from the EuropePMC mirror of PMC3731826.
+  published with the open-access article (PMC3731826).
 
 ## Population
 

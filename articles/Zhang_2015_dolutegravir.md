@@ -71,11 +71,10 @@ treatment-naive population (Zhang 2015 Table 2) at the median / modal
 covariate values, with three dose-arm strata (10 mg, 25 mg, 50 mg once
 daily) that mirror the actual arms enrolled in SPRING-1. 150 virtual
 subjects per arm is well above the ~46 per arm at the 50 mg SPRING-1
-cohort (Zhang 2015 Table 4) yet stays within the pkgdown vignette time
-budget. Covariate distributions are pinned at Table 2 medians rather
-than random-sampled so the point estimates below reflect Zhang’s own
-“reference subject” (40 y male, 70 kg, 9 umol/L bilirubin, non-current
-smoker).
+cohort (Zhang 2015 Table 4) yet keeps the render time short. Covariate
+distributions are pinned at Table 2 medians rather than random-sampled
+so the point estimates below reflect Zhang’s own “reference subject” (40
+y male, 70 kg, 9 umol/L bilirubin, non-current smoker).
 
 ``` r
 

@@ -492,7 +492,7 @@ their physical units, as required by Johnston 2019 Equation 1.
   static covariate. This nlmixr2lib model implements only the PD layer.
   Users who want a coupled PK + PD simulation must either pre-compute
   AUC values from any empagliflozin popPK source or wait for a future
-  task that bundles the Mondick 2018 PK model with this PD model.
+  addition that bundles the Mondick 2018 PK model with this PD model.
 - **Dose-to-AUC mapping is approximate.** The poster does not publish
   dose-specific AUCss values for empagliflozin 2.5 / 10 / 25 mg QD. The
   vignette anchors the 2.5 mg arm at AUCss = 498 nmol*h/L (= AUC50)
@@ -514,7 +514,7 @@ their physical units, as required by Johnston 2019 Equation 1.
   simulations used 500 Monte Carlo replicates of 239 subjects each
   (Johnston 2019 Methods: “Simulations” -\> 500 replicates with 239
   patients = 119,500 subject-trials). The vignette uses 200 subjects per
-  arm in a single replicate to stay under the 5-minute pkgdown gate; the
+  arm in a single replicate to keep the render time under 5 minutes; the
   central tendency is robust to this reduction, though the 95% CI band
   on the placebo-adjusted delta is wider than the poster’s because we do
   not pool 500 replicates.

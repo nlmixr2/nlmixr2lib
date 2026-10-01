@@ -367,8 +367,7 @@ size rather than a structural mismatch.
 
 - **Parameter values are paper-derived.** Every entry in `ini()` carries
   its Table 3 page-3 source-location comment. No parameter value was
-  carried in from an upstream task, an author email, or a digitised
-  figure.
+  carried in from another model, an author email, or a digitised figure.
 - **Body weight is the only retained covariate.** Sex, BSA, age, serum
   albumin, ALT, creatinine clearance, and the four genotype indicators
   (CYP3A4\*1B, CYP3A5\*3C, UGT1A9\*3, UGT1A9\*5) were screened during
@@ -430,8 +429,8 @@ size rather than a structural mismatch.
   transformation was a numerical convenience during estimation, not a
   structural feature of the model.
 - **Vignette uses 50 subjects per dose group.** Small enough to render
-  the vignette in well under the 5-minute pkgdown gate, large enough to
-  give stable VPC percentiles and PKNCA summaries. Jain 2011 used a 10
+  the vignette in well under 5 minutes, large enough to give stable VPC
+  percentiles and PKNCA summaries. Jain 2011 used a 10
   000-virtual-patient simulation for the published VPC (Results,
   p. 298).
 - **NCA reference values not tabulated in the source.** Jain 2011 does

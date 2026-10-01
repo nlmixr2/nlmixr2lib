@@ -832,14 +832,13 @@ The six cytokine baselines (`bl_il6`, `bl_il10`, `bl_ifng` for each
 subject) appear in **neither** Table S1 nor Table S2 nor the main text.
 The supplement defines `P_endo = d * Baseline Cytokine`, with the
 baseline taken from the source data of Kalos et al. 2011, whose
-supplementary tables are not open access (PMC3393096 is captcha-gated
-and the publisher returns 403). They were therefore digitized from the
-post-therapy plateau of the fitted line in each panel of Figure 1b,
-which by the supplement’s own definition equals `P_endo / d`. Read off a
-six-decade log axis, they are worth roughly +/- 30%. They set the pre-
-and post-treatment floor of each cytokine curve; the CRS-relevant peak
-is two to three orders of magnitude above the floor and is essentially
-insensitive to them.
+supplementary tables are not open access (PMC3393096). They were
+therefore digitized from the post-therapy plateau of the fitted line in
+each panel of Figure 1b, which by the supplement’s own definition equals
+`P_endo / d`. Read off a six-decade log axis, they are worth roughly +/-
+30%. They set the pre- and post-treatment floor of each cytokine curve;
+the CRS-relevant peak is two to three orders of magnitude above the
+floor and is essentially insensitive to them.
 
 The supplement also distinguishes `P_endo` at `t = 0` (from the baseline
 at time zero) from `P_endo` at `t > 0` (from the mean post-therapy

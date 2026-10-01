@@ -435,6 +435,6 @@ reason to tune the model.
   range in healthy young males (Section 3.5 third paragraph). The model
   therefore carries no continuous covariates.
 - **Vignette uses 200 subjects per phenotype stratum.** Small enough to
-  render the vignette in under the 5-minute pkgdown gate, large enough
-  to give stable VPC percentiles and pooled NCA summaries across the six
-  CYP2C9 x OATP1B1 phenotype combinations.
+  render the vignette in under 5 minutes, large enough to give stable
+  VPC percentiles and pooled NCA summaries across the six CYP2C9 x
+  OATP1B1 phenotype combinations.

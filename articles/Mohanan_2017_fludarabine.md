@@ -558,7 +558,7 @@ sim_single <- rxode2::rxSolve(
 #> as a work-around try putting the mu-referenced expression on a simple line
 
 # Guard against solver noise driving the far tail negative, which would make
-# PKNCA's log-linear half-life fit return NaN (failure pattern 11).
+# PKNCA's log-linear half-life fit return NaN.
 stopifnot(all(sim_single$Cc >= 0, na.rm = TRUE))
 ```
 

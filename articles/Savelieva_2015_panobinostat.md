@@ -29,7 +29,7 @@ mod2 <- rxode2::rxode(readModelDb("Savelieva_2015_panobinostat_allometric"))
   Supplementary Table S2a.
 - Article: <https://doi.org/10.1007/s00228-015-1846-7>
 - Supplement (EuropePMC, open access):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4430599/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC4430599>
 
 The supplement is where the numbers live. The main text quotes only four
 values (bioavailability 21.4 percent, median clearance 33.1 L/h,
@@ -867,9 +867,9 @@ stopifnot(
   (74 percent) and the terminal half-life (approximately 37 h). Every
   `ini()` value is transcribed from Supplementary Tables S2b and S3b,
   and every structural equation from the `$PK` and `$ERROR` blocks in
-  Supplementary Tables S2a and S3a. Those files were retrieved from the
-  EuropePMC open-access supplementary-files endpoint for PMC4430599 and
-  are distributed by the publisher under the article’s CC-BY licence.
+  Supplementary Tables S2a and S3a. Those files are published with the
+  open-access article (PMC4430599) and are distributed by the publisher
+  under the article’s CC-BY licence.
 
 - **OMEGA and SIGMA entries are read as variances.** The supplement
   labels the SIGMA rows `VAR.PROP` and `VAR.ADD`, and the OMEGA reading

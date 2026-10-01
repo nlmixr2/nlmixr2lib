@@ -368,5 +368,5 @@ deviations).
   the ini() block uses independent univariate variances.
 - **Vignette uses 200 subjects per POD stratum.** This is large enough
   to give stable percentiles and small enough to render the vignette in
-  well under 5 minutes (the pkgdown gate). The Zhu 2014 paper reports a
-  500-fit bootstrap; we do not reproduce that bootstrap here.
+  well under 5 minutes. The Zhu 2014 paper reports a 500-fit bootstrap;
+  we do not reproduce that bootstrap here.

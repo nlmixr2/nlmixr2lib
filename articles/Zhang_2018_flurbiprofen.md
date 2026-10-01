@@ -25,6 +25,18 @@
   study. The authors and their institution did not respond to a request
   for an explanation and the raw data. The notice is not a retraction;
   the Editor-in-Chief alerts readers to reach their own conclusions.
+  CORRIGENDUM: Population Pharmacokinetic Modeling of Flurbiprofen, the
+  Active Metabolite of Flurbiprofen Axetil, in Chinese Patients with
+  Postoperative Pain \[Corrigendum\]. J Pain Res. 2020;13:553.
+  <doi:10.2147/JPR.S251590>. The journal’s investigation determined that
+  the study was not a clinical trial and that the CTR number
+  ChiCTR-TRC-11001791 was used in error; the Methods sentence on ethics
+  approval is corrected to read Ethics Approval No. 2010-30 (Medical
+  Ethics Committee of Peking University People’s Hospital). All relevant
+  study data and ethical approval documents were reviewed and verified
+  by the authors’ institution, the data-integrity and prior-publication
+  issues were resolved, and the journal notes that all concerns raised
+  in the Expression of Concern have been resolved.
 - Description: One-compartment IV population PK plus Holford-Sheiner
   effect-compartment for cerebrospinal fluid (CSF) disposition of
   flurbiprofen, the active metabolite of flurbiprofen axetil, in Chinese
@@ -33,40 +45,46 @@
   typical values CL = 1.55 L/h, Vd = 7.91 L, plasma-CSF equilibration
   rate Ke = 0.0015/h; linear-multiplicative covariate effects of weight
   and height on Ke centered on the population medians (68.5 kg, 165 cm).
-  NOTE: the source article is subject to a Journal of Pain Research
-  Expression of Concern (2019;12:2799) that questions the validity of
-  the underlying data – three authors are alleged to have previously
-  published the same results elsewhere, and the clinical trial
-  registration number given in the article belongs to an unrelated
-  study. The authors did not respond to the journal’s request for the
-  raw data. This is NOT a funding-disclosure notice and NOT a
-  retraction, but it does bear on the data the model was fit to; treat
-  the parameter values as unverified and see the reference field and the
-  vignette Errata.
+  NOTE: the source article was the subject of a Journal of Pain Research
+  Expression of Concern (2019;12:2799) over data integrity, overlap with
+  an earlier Chinese-language report, and a clinical trial registration
+  number wrongly given as the ethics approval number. The journal’s 2020
+  Corrigendum (J Pain Res. 2020;13:553) closed that investigation: the
+  study was not a clinical trial, the correct ethics approval is Peking
+  University People’s Hospital No. 2010-30, the study data and ethics
+  documents were reviewed and verified by the authors’ institution, and
+  all concerns raised in the Expression of Concern were stated to be
+  resolved. No parameter, equation, table or unit was changed; see the
+  reference field and the vignette.
 - Article: <https://doi.org/10.2147/JPR.S176475>
 - Expression of Concern: <https://doi.org/10.2147/JPR.S231531>
+- Corrigendum (resolves the Expression of Concern):
+  <https://doi.org/10.2147/JPR.S251590>
 
-> **Expression of Concern – data validity.** The source article is
-> subject to a Journal of Pain Research Expression of Concern
-> (2019;12:2799). Unlike a funding-disclosure notice, this one goes to
-> **the validity of the data**. A reader alleged that three of the
-> authors (Zhang H, Feng Y, Gu J) had already published the same results
-> in *Chin J Anaesthesiol.* 2011;31(04):432-434, and that the clinical
-> trial registration number cited in the article (ChiCTR-TRC-11001791)
-> was taken from an unrelated study. On review, the journal confirmed
-> the registered trial differs from the published study in age range
-> (60-120 vs 18-72 years), indication (cognitive dysfunction in the
-> elderly vs postoperative pain) and size (100 vs 72 participants), and
-> that the number had been wrongly ascribed in the Methods as an ethics
-> approval number. Two editorial board members compared the two articles
-> but could not conclude with certainty that the data came from the same
-> study. The authors and their institution did not respond to a request
-> for an explanation and for the raw data. **It is not a retraction**,
-> and the Editor-in-Chief explicitly leaves readers to draw their own
-> conclusions – but the parameter values in this model should be treated
-> as unverified. The notice is recorded here and in the model file’s
-> `reference` metadata so that it travels with the model. See
-> “Assumptions and deviations” below.
+> **Expression of Concern (2019), resolved by Corrigendum (2020).** The
+> source article was the subject of a Journal of Pain Research
+> Expression of Concern (2019;12:2799). A reader alleged that three of
+> the authors (Zhang H, Feng Y, Gu J) had already published the same
+> results in *Chin J Anaesthesiol.* 2011;31(04):432-434, and that the
+> clinical trial registration number cited in the article
+> (ChiCTR-TRC-11001791) was taken from an unrelated study (cognitive
+> dysfunction in the elderly, ages 60-120, n = 100) and wrongly given in
+> the Methods as an ethics approval number. At that point the authors
+> had not supplied the raw data.
+>
+> The journal’s Corrigendum (J Pain Res. 2020;13:553) closed the
+> investigation. It found that the study was **not a clinical trial**
+> and that the CTR number was used in error. It corrects the Methods to
+> give the ethics approval as **Peking University People’s Hospital
+> Medical Ethics Committee, Ethics Approval No. 2010-30**. It also
+> states that all relevant study data and ethical approval documents
+> were **reviewed and verified by the authors’ institution**, that the
+> data-integrity and prior-publication issues were resolved, and that
+> **all concerns raised in the Expression of Concern have been
+> resolved**. The Corrigendum changes no parameter, equation, table or
+> unit, so the model below is unaffected. Both notices are recorded in
+> the model file’s `reference` metadata so they travel with the model.
+> See “Assumptions and deviations” below.
 
 ## Population
 
@@ -503,36 +521,32 @@ the available samples.
 
 ## Assumptions and deviations
 
-- **Expression of Concern: the data underlying this model are
-  unverified.** The source article carries a Journal of Pain Research
-  Expression of Concern (2019;12:2799, <doi:10.2147/JPR.S231531>)
-  questioning the validity of the data – see the quoted notice under
-  “Model and source” above. The practical consequences for a user of
-  this model are: (1) the cohort may be the same one reported in *Chin J
-  Anaesthesiol.* 2011;31(04):432-434, so it should not be pooled with
-  that report as if the two were independent studies; (2) the raw data
-  were requested by the journal and never supplied, so none of the
-  reported estimates can be independently reproduced; (3) the study has
-  no verified ethics approval identifier. The model is retained in the
-  library because the Expression of Concern is not a retraction and the
-  published model is internally consistent – the NCA checks below
-  recover the paper’s own typical-value CL and Vd from the simulated
-  profiles – but note that this is a self-consistency check on the
-  published estimates and is not independent evidence about the data
-  they were fit to. The model should not be used as a sole basis for
-  dosing decisions. The two other flurbiprofen entries in this library –
-  `Kumpulainen_2010_flurbiprofen` and the `Yao_2025_flurbiprofen_r` /
-  `Yao_2025_flurbiprofen_s` enantiomer pair, the latter also with paired
-  plasma/CSF sampling – carry no such notice and are the better
-  comparators.
-- **The article’s stated ethics approval number is a mis-ascribed trial
-  registration.** Zhang 2018 Methods gives “ChiCTR-TRC-11001791” as the
-  Peking University People’s Hospital Medical Ethics Committee approval
-  number. The Expression of Concern establishes that this is a *clinical
-  trial registration* number belonging to an unrelated study of
-  cognitive dysfunction in patients aged 60-120 (n = 100). Earlier
-  revisions of this model file reproduced the article’s claim verbatim;
-  `population$disease_state` now records the correction instead.
+- **Expression of Concern and its resolution.** The source article
+  carried a Journal of Pain Research Expression of Concern
+  (2019;12:2799, <doi:10.2147/JPR.S231531>) about data validity, which
+  the 2020 Corrigendum (2020;13:553, <doi:10.2147/JPR.S251590>) resolved
+  – see the quoted notices under “Model and source” above. The
+  Corrigendum revises only the ethics approval sentence in the Methods;
+  every value used in this model comes from the original 2018 article
+  and is unchanged. The NCA checks below recover the paper’s own
+  typical-value CL and Vd from the simulated profiles. That is a
+  self-consistency check on the published estimates, not independent
+  evidence about the data they were fitted to. The journal did not state
+  whether the cohort overlaps with the *Chin J Anaesthesiol.* 2011
+  report; it said only that the issue was resolved. As a precaution, do
+  not pool the two reports as independent studies. The two other
+  flurbiprofen entries in this library – `Kumpulainen_2010_flurbiprofen`
+  and the `Yao_2025_flurbiprofen_r` / `Yao_2025_flurbiprofen_s`
+  enantiomer pair, the latter also with paired plasma/CSF sampling – are
+  useful comparators.
+- **Ethics approval number corrected by the 2020 Corrigendum.** Zhang
+  2018 Methods (p. 3062) gives “ChiCTR-TRC-11001791” as the Peking
+  University People’s Hospital Medical Ethics Committee approval number.
+  The Expression of Concern established that this is a *clinical trial
+  registration* number belonging to an unrelated study. The Corrigendum
+  states the study was not a clinical trial and corrects the sentence to
+  “Ethics Approval No. 2010-30”. `population$disease_state` records the
+  corrected identifier.
 - **Covariate model form: paper text contradicts the equation, the
   equation wins.** Zhang 2018 Methods (p. 3063) introduces continuous
   covariates with both ‘a power function after normalization to the

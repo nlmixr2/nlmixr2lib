@@ -67,8 +67,7 @@ The per-parameter origin is recorded as an in-file comment next to each
 table below collects them in one place for review. Equations (1) and (2)
 are set as vector graphics in the PDF and are dropped by text
 extraction; they were read from the publisher’s rendered equation images
-(`DDDT-19-3119-e0001.jpg` and `-e0002.jpg`, distributed in the Europe
-PMC file bundle for PMC12034272).
+(`DDDT-19-3119-e0001.jpg` and `-e0002.jpg`, deposited with PMC12034272).
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

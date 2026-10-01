@@ -470,5 +470,5 @@ published cohort.
   reference 15 in the present paper). The current paper re-fits a
   unified model on the combined infant + adolescent dataset and reports
   the combined-model parameters; it does NOT inherit fixed parameters
-  from the Stricker 2013 publication. No upstream-task dependency is
+  from the Stricker 2013 publication. No dependency on another model is
   therefore required.

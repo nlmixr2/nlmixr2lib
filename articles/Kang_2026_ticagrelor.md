@@ -24,8 +24,7 @@
   applies only while on ECMO.
 - Article: <https://doi.org/10.1002/cpt.70282>
 - Supplement (Figures S1-S4, Table S1, Appendices S1-S3, including the
-  NONMEM control file):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13264463/supplementaryFiles>
+  NONMEM control file): <https://europepmc.org/article/PMC/PMC13264463>
 
 Kang 2026 is the first clinical study of ticagrelor and its active
 metabolite AR-C124910XX (TAM) in patients supported by veno-arterial

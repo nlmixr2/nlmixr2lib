@@ -358,8 +358,8 @@ would warrant investigation rather than parameter tuning.
   and simulate pre-dose troughs at their own visit schedule.
 - **Vignette uses 80 subjects per dose group.** The source paper had 6
   subjects per dose group in Study 4522IL/0086 (Methods); we scale up to
-  80 for stable VPC percentiles while keeping the vignette inside the
-  5-minute pkgdown render budget.
+  80 for stable VPC percentiles while keeping the vignette’s render time
+  under 5 minutes.
 - **Year 2015 in the filename / function name.** Published online 21
   September 2015 (DOI 10.1007/s00228-015-1946-4); print issue is Eur J
   Clin Pharmacol 72(1):19-27 (January 2016). The filename and

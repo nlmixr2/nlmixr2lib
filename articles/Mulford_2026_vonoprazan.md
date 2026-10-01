@@ -12,7 +12,7 @@
   PSP4-15-e70291-s001.docx).
 - Article: <https://doi.org/10.1002/psp4.70291>
 - Supporting Information (Model Code, Tables S1-S4, Figures S1-S3):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13316124/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC13316124>
 
 Mulford 2026 develops a population pharmacokinetic model for vonoprazan,
 a potassium-competitive acid blocker approved in adults but not, as of

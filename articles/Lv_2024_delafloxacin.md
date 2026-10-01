@@ -753,7 +753,7 @@ Figure 4 - effect of body weight on typical AUCss,24h at 300 mg q12h.
 
 lo <- forest$pct_change[forest$WT == 47]
 hi <- forest$pct_change[forest$WT == 78]
-# Deterministic quantities, so tight bounds are correct here (pattern 11).
+# Deterministic quantities, so tight bounds are correct here.
 # Measured: +20.9% at 47 kg and -15.7% at 78 kg against the paper's
 # "approximately 20%" in both directions; the asymmetry is intrinsic to the
 # model (the saturable arm carries no weight effect and so dilutes the power

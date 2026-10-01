@@ -481,7 +481,7 @@ pta_cmp <- pta |>
     deviation = window == "pta_expl"
   )
 
-# Guard against a silently empty join (pattern 10): every published row must
+# Guard against a silently empty join: every published row must
 # have matched exactly one simulated row.
 stopifnot(nrow(pta_cmp) == nrow(published_pta))
 
@@ -861,8 +861,7 @@ the trough-based checks above reproduce the published results closely.
 - **The supplement could not be retrieved.** Supplementary Tables S1-S4
   and Figures S1-S2 (a Ka sensitivity analysis, demographics and doses
   by age group, a PTA table, and the valproate-concentration/ETA
-  correlation) are not available from EuropePMC’s supplementary-files
-  endpoint and the Frontiers landing page is JavaScript-rendered. No
+  correlation) were not available when this model was built. No
   parameter used by this model comes from the supplement: every final
   estimate is in main-text Table 3 and the final model equation printed
   in Section 3.3, and the PTA values compared above are quoted in the

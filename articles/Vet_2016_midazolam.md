@@ -32,11 +32,10 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Vet_2016_midazolam"))$meta
 This vignette validates the packaged `Vet_2016_midazolam` model against
 the DDMORE Foundation Model Repository entry **DDMODEL00000249**, the
 source from which it was extracted. The Vet 2016 publication PDF was not
-available when this model was built, so the validation strategy follows
-the self-consistency recipe from the package’s validation checklist:
-re-simulate the bundle’s shipped event table with the typical-value
-model and confirm the trajectories match the bundle’s NONMEM listing.
-Final parameter values come from the bundle’s
+available when this model was built, so the validation strategy is a
+self-consistency check: re-simulate the bundle’s shipped event table
+with the typical-value model and confirm the trajectories match the
+bundle’s NONMEM listing. Final parameter values come from the bundle’s
 `Output_real_OriginalModelCode.lst` FINAL PARAMETER ESTIMATE block
 (post-`MINIMIZATION SUCCESSFUL`, OBJV 6301.530).
 
@@ -111,8 +110,8 @@ The DDMORE bundle ships a small simulated event table at
 organ-failure-count strata, 3 kg WT, 58 mg/L starting CRP that decays
 over the ICU stay). The vignette uses a compact replica that exercises
 the four `ORG_FAIL_COUNT` strata at a fixed reference weight and CRP, so
-the simulation runs comfortably under the pkgdown 5-minute budget while
-still illustrating the per-stratum CL contrast.
+the simulation runs comfortably under 5 minutes while still illustrating
+the per-stratum CL contrast.
 
 ``` r
 

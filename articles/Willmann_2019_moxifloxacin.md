@@ -34,8 +34,8 @@
   therefore not reproducible as an rxode2 model and is not encoded here.
 - Article: <https://doi.org/10.1002/psp4.12446>
 - Supplement (Supplementary Methods, Tables S1-S2, Figures S1-S6):
-  `PSP4-8-654-s001.pdf`, retrieved from the EuropePMC open-access
-  supplementary archive for PMC6765696.
+  `PSP4-8-654-s001.pdf`, published with the open-access article
+  (PMC6765696).
 - Supplement (final NONMEM control stream, run `O6/run021`):
   `PSP4-8-654-s002.txt`, same archive.
 

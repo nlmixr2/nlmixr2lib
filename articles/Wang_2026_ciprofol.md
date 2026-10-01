@@ -34,9 +34,8 @@
 - Trial registration: Chinese Clinical Trial Registry
   [ChiCTR2200058405](https://www.chictr.org.cn/)
 
-No supplementary material accompanies this article (EuropePMC reports
-`hasSuppl = "N"` for an open-access record, so the field is
-informative), and no erratum or correction notice was found.
+No supplementary material accompanies this article (the open-access
+record has none), and no erratum or correction notice was found.
 
 ## Population
 
@@ -664,7 +663,7 @@ discrepancy between its own Table 2 and Table 3.
   11% high. For one simulated subject in 300 the lambda_z fit failed
   outright, which propagates to `aucinf.obs`, `half.life` and `cl.obs`;
   the gate bounds that failure rate at 5% rather than forbidding it.
-- **No supplement and no erratum.** EuropePMC reports `hasSuppl = "N"`
-  on an open-access record, and no correction notice was found. Every
+- **No supplement and no erratum.** The open-access record has no
+  supplementary material, and no correction notice was found. Every
   value above comes from the main article’s text, Table 1, Table 2,
   Table 3 or Table 4.

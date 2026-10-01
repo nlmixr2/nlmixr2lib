@@ -9,9 +9,9 @@
   calibration (Table 2 right column) was fit to the Liu et al. 2018
   plasma CPI profile cohort using portal-vein GDC-0810 concentrations
   from an in-house Y. Chen et al. PBPK model (cited as personal
-  communication; not on disk), so users must supply CP_GDC_UM
-  externally. The companion rifampin calibration is parameterised in
-  modellib(‘Yoshida_2018_coproporphyrin_I_rifampin’).
+  communication; not available when this model was built), so users must
+  supply CP_GDC_UM externally. The companion rifampin calibration is
+  parameterised in modellib(‘Yoshida_2018_coproporphyrin_I_rifampin’).
 - Description: One-compartment endogenous turnover model for the
   OATP1B-substrate biomarker coproporphyrin I (CPI) in healthy adults
   (Yoshida 2018, GDC-0810-CPI calibration). CPI is produced at a

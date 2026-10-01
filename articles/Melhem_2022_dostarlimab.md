@@ -114,7 +114,7 @@ cohort <- tibble(
   ID   = seq_len(n_subj),
   WT   = pmin(pmax(rlnorm(n_subj, log(71.4), 0.27), 34),  182),  # Table 2: median 71.4 kg, range 34-182
   AGE  = pmin(pmax(rnorm(n_subj,  62.5, 11.0),       24),  86),  # Table 2: mean 62.5, range 24-86
-  ALB  = pmin(pmax(rnorm(n_subj,  38.2, 5.1),        19,        51)),  # Table 2: mean 38.2 g/L, range 19-51
+  ALB  = pmin(pmax(rnorm(n_subj,  38.2, 5.1),        19),  51),  # Table 2: mean 38.2 g/L, range 19-51
   ALT  = pmin(pmax(rlnorm(n_subj, log(17), 0.5),     2.9),      120),  # Table 2: median 17, range 2.9-120
   SEXF = rbinom(n_subj, 1, 0.773)                                       # Table 2: 77.3% female
 )
@@ -282,7 +282,7 @@ knitr::kable(summary(nca_res),
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | RTD 500 mg Q3W x4 -\> 1000 mg Q6W | 200 | 2310 \[19.9\] | 186 \[17.7\] | 1.00 \[1.00, 1.00\] | 25.8 \[5.12\] |
+| 0 | 21 | RTD 500 mg Q3W x4 -\> 1000 mg Q6W | 200 | 1920 \[23.3\] | 169 \[18.5\] | 1.00 \[1.00, 1.00\] | 20.1 \[4.69\] |
 
 Simulated NCA parameters (3rd dosing interval, days 21-42 after first
 dose) {.table}
@@ -303,9 +303,24 @@ Note the published AUC is reported in **mg*h/L **but is computed over
 the 21-day cycle 1 interval; the simulated `auclast` from PKNCA in the
 table above is in** mg*day/L** because the simulation time variable is
 in days. Multiplying simulated `auclast` by 24 converts to mg\*h/L for
-comparison. Simulated cycle-1 Cmax in the 150-200 mg/L range (single 500
-mg dose into ~3 L Vc, with a small fraction redistributed peripherally
-by day 1) is consistent with the published Table 4 mean of 177 mg/L.
+comparison.
+
+``` r
+
+cmax_c1 <- sim |>
+  dplyr::filter(!is.na(Cc), time <= 21) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cmax = max(Cc), .groups = "drop")
+```
+
+The simulated cycle-1 Cmax across the cohort is 132 mg/L on average
+(range 79-199 mg/L). It is sampled on the daily observation grid, one
+day after the 30-minute infusion, by which time part of the 500 mg dose
+has redistributed from the ~3 L central volume into the peripheral
+compartment, so it sits below the published Table 4 mean of 177 mg/L,
+which is a model-predicted cycle-1 peak from individual post-hoc
+parameters (500 mg into ~3 L gives about 170 mg/L at the end of the
+infusion).
 
 ## Assumptions and deviations
 

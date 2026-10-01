@@ -237,11 +237,10 @@ dataset is outside this package and not redistributed.
   (`Output_simulated_runCOMPEV2_005.res`) is consistent with the
   log-logistic `.mod`. We follow the executable that produced the
   shipped final estimates (the `.lst` is the source of truth for
-  parameter VALUES per the package’s validation checklist). The packaged
-  nlmixr2lib model is therefore log-logistic, matching the bundle’s
-  executable rather than the guiding-document narrative. A log-normal
-  alternative is already provided in `NA_NA_tte_lognormal.R` (Competing
-  Event 1).
+  parameter VALUES). The packaged nlmixr2lib model is therefore
+  log-logistic, matching the bundle’s executable rather than the
+  guiding-document narrative. A log-normal alternative is already
+  provided in `NA_NA_tte_lognormal.R` (Competing Event 1).
 
 - **Numerical rescalings preserved.** The .mod uses a /1000 rescaling on
   lambda only; alpha is not rescaled. The biologically meaningful values

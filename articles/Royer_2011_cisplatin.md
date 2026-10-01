@@ -33,9 +33,9 @@
   (published online 15 December 2011; the file basename uses the
   online-first year 2011 to match the DOI stem).
 - Supplement: MOESM10 (Modeling of protein-bound platinum + auxiliary
-  equations) obtained from the Nature Springer static-content endpoint
-  for the DOI; used to disambiguate the Michaelis-Menten binding formula
-  and the interstitial-penetration derivation.
+  equations) published with the article; used to disambiguate the
+  Michaelis-Menten binding formula and the interstitial-penetration
+  derivation.
 
 ## Population
 

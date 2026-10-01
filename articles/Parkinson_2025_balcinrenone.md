@@ -877,9 +877,9 @@ reported rather than resolved.
   mg. Converting the published mg doses needs the balcinrenone molar
   mass, which Parkinson 2025 never states. This vignette and the
   `DOSE_BALCINRENONE_MG` register entry use **399.4 g/mol**
-  (C20H18FN3O5) from PubChem CID 118599727, retrieved 2026-08-19 and
-  stored alongside the source PDF. Every ratio scored above is invariant
-  to this constant; only absolute concentrations depend on it.
+  (C20H18FN3O5) from PubChem CID 118599727 (accessed 2026-08-19). Every
+  ratio scored above is invariant to this constant; only absolute
+  concentrations depend on it.
 - **Covariate polarity was inverted to reach the canonical columns, with
   the reference category preserved.** The paper’s `FOOD` column codes 1
   = fasted and the canonical `FED` codes 1 = fed, so `FED = 1 - FOOD`;

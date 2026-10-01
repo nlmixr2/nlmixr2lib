@@ -235,10 +235,10 @@ covariate’s range.
 # model can produce.
 set.seed(20231001)
 
-# 50 per arm across 15 arms (750 subjects). Sized against the render budget:
-# the vignette must stay well inside the 5-minute ceiling because the
-# pre-merge check re-renders every vignette in parallel, where CPU
-# contention multiplies wall-clock time. Measured single-threaded here at
+# 50 per arm across 15 arms (750 subjects). Sized against the render time:
+# the vignette must stay well under 5 minutes even when rendered in
+# parallel with other vignettes, where CPU contention multiplies
+# wall-clock time. Measured single-threaded here at
 # 40 / 75 / 100 per arm: 54 / 168 / 203 s (the PKNCA step scales worse than
 # linearly), so this sits at roughly 80 s with ample headroom. The only gates
 # that depend on cohort size are the Table 3 medians, which are checked on
