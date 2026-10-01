@@ -420,6 +420,8 @@ navbar:
         href: articles/Tarning_2012_artemether.html
       - text: "Artemether parasitemia (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
+      - text: "Artemisinin (Ali 2022)"
+        href: articles/Ali_2022_artemisinin_naphthoquine.html
       - text: "Artemisinin (Asimus 2007)"
         href: articles/Asimus_2007_artemisinin.html
       - text: "Artemisinin (Birgersson 2016)"
@@ -4038,6 +4040,8 @@ navbar:
         href: articles/Yang_2024_naloxone_opioid_reversal.html
       - text: "Naltrexone bupropion (Sharma 2018)"
         href: articles/Sharma_2018_naltrexone_bupropion.html
+      - text: "Naphthoquine (Ali 2022)"
+        href: articles/Ali_2022_artemisinin_naphthoquine.html
       - text: "Naproxcinod (Bjornsson 2011)"
         href: articles/Bjornsson_2011_naproxcinod.html
       - text: "Naproxen mbma (Boucher 2016)"
@@ -6900,6 +6904,7 @@ articles:
   - articles/AlfoseaCuadrado_2024_reserpine_rat
   - articles/Alghamdi_2019_cycloserine
   - articles/Ali_2018_amodiaquine
+  - articles/Ali_2022_artemisinin_naphthoquine
   - articles/Allard_2020_factorviii
   - articles/Allegaert_2015_paracetamol
   - articles/Almond_2016_cyp3a4_induction
