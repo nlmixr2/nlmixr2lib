@@ -5237,6 +5237,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Mitra_2026_ziftomenib.R` (sequential two-stage popPK; KO-516 central + one peripheral compartment; 1:1 in-vitro-anchored KO-739:KO-516 metabolic split; Table 1).
 - **Notes:** Follows the paper-named metabolite suffix convention established by `m1` / `m2` / `m3` / `m8`. Kura development-code compound designation retained instead of a chemical-name shorthand because the paper does not disclose the chemical identity of the metabolite.
 
+### msc2571109a (**canonical MSC2571109A tepotinib metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** MSC2571109A, the major circulating metabolite of the MET kinase inhibitor tepotinib (Merck KGaA development-code compound designation), discovered in the human mass balance study. Pharmacologically considered to contribute negligibly to efficacy. Carries `central_msc2571109a`, `peripheral1_msc2571109a`, the `Cc_msc2571109a` observation, `lcl_msc2571109a` / `lvc_msc2571109a` / `lq_msc2571109a` / `lvp_msc2571109a` and `propSd_msc2571109a`.
+- **Source aliases:**
+  - `met` -- Xiong 2022 subscript notation (`CLmet`, `Vc,met`, `Qmet`, `Vp,met`) in Table 3 and Figure 1.
+- **Example models:** `Xiong_2022_tepotinib.R` (doi:10.1007/s00280-022-04423-5; founding example -- sequential parent-then-metabolite popPK, two-compartment metabolite formed from tepotinib clearance with fraction metabolised fixed to 1).
+- **Notes:** Follows the paper-named development-code convention of `ko516` / `or1855`: the code is lowercased and kept whole because the paper does not disclose a chemical-name shorthand. Not a member of the generic `m<n>` family.
+
 ### endox (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Endoxifen (4-hydroxy-N-desmethyltamoxifen), major active metabolite of tamoxifen.

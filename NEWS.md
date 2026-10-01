@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Xiong 2022 tepotinib and its metabolite MSC2571109A ([doi:10.1007/s00280-022-04423-5](https://doi.org/10.1007/s00280-022-04423-5)) -- adults with cancer (including MET exon 14 skipping NSCLC) and healthy participants.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
