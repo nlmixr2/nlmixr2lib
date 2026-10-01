@@ -3835,6 +3835,28 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Gastonguay_2005_efaproxiral.R` (efaproxiral; theta_SLPRBC~MDOS = -0.125, 95% CI -0.220 to -0.0222, classified NCI = not clinically important).
 - **Notes:** Specific scope because the absolute reference value (6800 mg) is tied to the efaproxiral cohort and the per-administration MDOS abstraction is uncommon outside hemoglobin-modifier infusion programs. Follows the `DOSE_<DRUG>_<MODIFIER>_<UNITS>` auto-approve family (e.g., `DOSE_PHT_MGKGD` for phenytoin, `DOSE_EMPA_MGD` for empagliflozin) -- the `_MAX_` token disambiguates from a per-administration `DOSE_EFP_MG` column that a future extraction may need.
 
+### DOSE_SECUKINUMAB_MGWK (**canonical for study-arm average weekly secukinumab dose**)
+- **Description:** Average weekly secukinumab dose of a study arm over the first 12 weeks of treatment, in mg/week: the total dose given during the 12 weeks divided by 12 weeks. Trial-arm-level regressor of a dose-based MBMA; one value per arm. Set to 0 for placebo arms.
+- **Units:** mg/week
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- the regressor `x` of the sigmoid Emax trend line `E0 + x^hill * (Emax - E0) / (x^hill + E50^hill)` for the week-12 placebo-adjusted PASI75 / PASI90 responder rate (Ayyar 2022 Eq. 1, Figure 2).
+- **Source aliases:**
+  - `x`, `Dose (mg/week)` -- Ayyar 2022 Eq. 1 and the Figure 2 x-axis.
+- **Example models:** `Ayyar_2022_secukinumab_mbma.R` (founding example; E50 about 17 mg/week for PASI75 and 37 mg/week for PASI90).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, with `MGWK` for mg/week by analogy with `MGD` for mg/day. Differs from the per-administration `CONMED_SECUKINUMAB_DOSE` of the He 2021 and Checchio 2017 MBMAs, which is the maintenance dose per injection: the loading phase changes this average but not the per-injection dose. In the founding paper the arm x-positions plotted in Figure 2 sit about 25% below the stated definition, so recompute the regressor from the regimen rather than reading it off that figure.
+
+### DOSE_IXEKIZUMAB_MGWK (**canonical for study-arm average weekly ixekizumab dose**)
+- **Description:** Average weekly ixekizumab dose of a study arm over the first 12 weeks of treatment, in mg/week: the total dose given during the 12 weeks divided by 12 weeks. Trial-arm-level regressor of a dose-based MBMA; one value per arm. Set to 0 for placebo arms.
+- **Units:** mg/week
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- the regressor `x` of the sigmoid Emax trend line for the week-12 placebo-adjusted PASI75 / PASI90 responder rate (Ayyar 2022 Eq. 1, Figure 2).
+- **Source aliases:**
+  - `x`, `Dose (mg/week)` -- Ayyar 2022 Eq. 1 and the Figure 2 x-axis.
+- **Example models:** `Ayyar_2022_ixekizumab_mbma.R` (founding example; E50 about 2.6 mg/week for PASI75 and 2.9 mg/week for PASI90).
+- **Notes:** Sibling of `DOSE_SECUKINUMAB_MGWK`; see that entry for how it differs from the per-administration `CONMED_IXEKIZUMAB_DOSE`. The founding paper's Figure 2 plots the arms about 20% below the stated definition.
+
 ### DOSE_CIPARGAMIN_MG (**canonical for administered cipargamin single-dose amount**)
 - **Description:** Administered single oral dose of the spiroindolone antimalarial cipargamin (formerly KAE609), in mg. Time-fixed per subject in the founding single-dose study (each patient receives one dose on day 1); a per-dose-record covariate in principle if the design ever ran a multi-dose regimen. Not a PK covariate -- the amount already appears on the dose record via `amt`. Used inside `model` as the regressor in the dose-dependent Emax equation `Emax_i = TVEmax * (DOSE_CIPARGAMIN_MG / 10)^COVdose_Emax` (Hien 2017 equation 7 in the supplemental text).
 - **Units:** mg

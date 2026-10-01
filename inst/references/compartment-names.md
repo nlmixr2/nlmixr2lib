@@ -4354,6 +4354,13 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `He_2021_psoriasis_pasi90_mbma.R` (fitted directly to PASI90 arm data), `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (a secondary, unfitted output that maps the PASI75 model to PASI90 with two scaling factors imported from the companion landmark model).
 - **Notes:** See `prob_pasi75`. A directly fitted PASI90 model and a PASI75 model rescaled to PASI90 are different evidence and should be distinguished in any comparison.
 
+### prob_pasi75_pbo_adj, prob_pasi90_pbo_adj (**canonical placebo-adjusted PASI75 / PASI90 responder-fraction outputs**)
+- **Type:** compartment
+- **Role:** Study-arm PASI75 (or PASI90) responder fraction MINUS the placebo-arm fraction of the same trial, on a 0-1 scale, at a single landmark read-out. In the founding models it is a sigmoid Emax trend line of a dose-based or a target-engagement-based MBMA.
+- **Source aliases:** `Placebo-adjusted response (%)` -- Ayyar 2022 Figures 2 and 6 (in percent; the models divide by 100).
+- **Example models:** `Ayyar_2022_secukinumab_mbma.R`, `Ayyar_2022_ixekizumab_mbma.R` (functions of the average weekly dose `DOSE_<drug>_MGWK`), `Ayyar_2022_secukinumab_mpbpk.R`, `Ayyar_2022_ixekizumab_mpbpk.R` (functions of the running-average free skin IL-17A, meaningful at the week-12 read-out).
+- **Notes:** Not a probability: it is a DIFFERENCE of two arm proportions, so it can be slightly negative where the source's trend line extrapolates (near zero dose, or beyond the plotted exposure range), and it is not comparable with the absolute `prob_pasi75` / `prob_pasi90` outputs without adding a placebo rate. The `_pbo_adj` suffix keeps it from being read as one. Follows the `prob_<endpoint>` shape.
+
 ---
 
 ### prob_trae_grade34 (**canonical cohort grade 3/4 treatment-related adverse-event proportion output**)
