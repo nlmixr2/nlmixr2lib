@@ -6734,6 +6734,8 @@ navbar:
         href: articles/Naik_2016_vortioxetine.html
       - text: "Vosoritide (Qi 2024)"
         href: articles/Qi_2024_vosoritide.html
+      - text: "Voxelotor (Savic 2022)"
+        href: articles/Savic_2022_voxelotor.html
       - text: "Vrc01 (Huang 2017)"
         href: articles/Huang_2017_vrc01.html
       - text: "Vupanorsen (Ahn 2023)"
@@ -8815,6 +8817,7 @@ articles:
   - articles/Savelieva_2015_panobinostat
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
+  - articles/Savic_2022_voxelotor
   - articles/Sawe_2025_levofloxacin
   - articles/SchaedeliStark_2024_balovaptan
   - articles/Schaefer_1996_ciprofloxacin
