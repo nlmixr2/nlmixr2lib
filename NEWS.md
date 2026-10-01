@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Araki 2022 TAS-114 with autoinduction and uracil PD ([doi:10.1002/psp4.12747](https://doi.org/10.1002/psp4.12747)) -- healthy adult men and adults with advanced solid tumours.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.

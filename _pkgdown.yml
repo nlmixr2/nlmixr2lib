@@ -5770,6 +5770,8 @@ navbar:
         href: articles/Hansson_2013_sunitinib_svegfr3_os.html
       - text: "Sutimlimab (Bartko 2018)"
         href: articles/Bartko_2018_sutimlimab.html
+      - text: "TAS114 (Araki 2022)"
+        href: articles/Araki_2022_TAS114.html
       - text: "TDI01 (Ji 2025)"
         href: articles/Ji_2025_TDI01.html
       - text: "TF 505 (Matsumoto 2005)"
@@ -7061,6 +7063,7 @@ articles:
   - articles/Aoyama_2012_sepantronium
   - articles/Apgar_2018_ALXN1540
   - articles/ArabAlameddine_2012_raltegravir
+  - articles/Araki_2022_TAS114
   - articles/Archary_2018_lopinavir
   - articles/Archary_2019_abacavir
   - articles/Archary_2019_lamivudine
