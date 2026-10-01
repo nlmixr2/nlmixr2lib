@@ -864,6 +864,8 @@ navbar:
         href: articles/Cao_2025_busulfan.html
       - text: "Busulfan (Choe 2012)"
         href: articles/Choe_2012_busulfan.html
+      - text: "Busulfan (Dadkhah 2022)"
+        href: articles/Dadkhah_2022_busulfan.html
       - text: "Busulfan (Lawson 2022)"
         href: articles/Lawson_2022_busulfan.html
       - text: "Busulfan (LongBoyle 2015)"
@@ -7450,6 +7452,7 @@ articles:
   - articles/DAgate_2020_bph_ipss_mbma
   - articles/DAgate_2021_bph_aurs_mbma
   - articles/DAgate_2024_aciclovir
+  - articles/Dadkhah_2022_busulfan
   - articles/Damle_2021_dalteparin
   - articles/Damnjanovic_2023_pediatric_antiepileptics
   - articles/Danielak_2017_clopidogrel

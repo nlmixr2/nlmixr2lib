@@ -5694,6 +5694,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Leegwater_2025_sulfamethoxazole.R` (founding example; doi:10.1002/cpt.3421 -- integrated one-compartment sulfamethoxazole plus one-compartment metabolite model in hospitalized adults, with the formation clearance fixed at 0.4 times the parent elimination clearance and opposite-signed CRRT effects on the two clearances).
 - **Notes:** The `na` + parent-stem construction follows `napa` (N-acetylprocainamide), and the `smx` stem is the sulfamethoxazole sibling-drug suffix already registered for `Boulanger_2025_trimethoprim_sulfonamides_pig.R`; a bare `smx` cannot serve the metabolite because that model already uses it for the parent drug itself. Distinct from the sulfonamide sibling-drug suffixes `sdz` (sulfadiazine) and `sdmx` (sulfadimethoxine), which are separately administered drugs rather than metabolites.
 
+### sulfolane (**canonical sulfolane (busulfan metabolite) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulfolane (tetramethylene sulfone), a downstream metabolite of busulfan formed after glutathione-S-transferase conjugation via tetrahydrothiophene and tetrahydrothiophene-1-oxide. Drives `central_sulfolane`, the `lcl_sulfolane` / `lvc_sulfolane` parameters (the metabolite's own elimination clearance and volume), the `e_<cov>_cl_sulfolane` covariate effects, the `etalcl_sulfolane` / `etalvc_sulfolane` random effects, the `propSd_sulfolane` residual SD and the `Cc_sulfolane` observable.
+- **Source aliases:**
+  - `Su` -- the subscript in Dadkhah 2022 (`CLSu`, `VSu`, `Prop. sigma Su`; Figure 1, Table 2).
+- **Example models:** `Dadkhah_2022_busulfan.R` (founding example; doi:10.3390/pharmaceutics14061145 -- one-compartment busulfan plus one-compartment sulfolane, formation as a fixed metabolic fraction 0.0704 of total busulfan clearance, in adults with myelofibrosis).
+- **Notes:** Spelled out in full because the short forms are taken: `sulf` is the registered phase-II sulphate-conjugate suffix (`Allegaert_2015_paracetamol.R`), and `su` / `sul` would read as sulfonamide or sulfate stems. Distinct from the sulfonamide sibling-drug suffixes `sdz` and `sdmx`.
+
 ### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Norclozapine (N-desmethylclozapine), the primary pharmacologically active metabolite of clozapine formed predominantly by CYP1A2 (with secondary contributions from CYP2C19, CYP3A4, CYP2C9, and CYP2D6). Norclozapine retains receptor affinity at multiple monoaminergic and muscarinic targets and is routinely measured alongside clozapine in therapeutic-drug-monitoring (TDM) practice; the parent-to-metabolite ratio is itself a clinical descriptor of CYP1A2 activity.
