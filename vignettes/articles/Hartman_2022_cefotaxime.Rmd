@@ -513,7 +513,9 @@ stopifnot(
   maintainers read 0.307 as the raw `$SIGMA` variance (the IIV rows of the same
   table are raw omega-squared values, and the `$SIGMA` initial estimate 0.311
   sits beside it) and encode `Cc ~ lnorm(expSd)` with `expSd = sqrt(0.307) =
-  0.554`. Under FOCE-I on untransformed data this is equivalent to a
+  0.554`. The authors' companion ceftriaxone analysis of the same study
+  (`Hartman_2021_ceftriaxone`) uses the same table layout, and there the
+  tabulated proportional error equals the published `$SIGMA`. Under FOCE-I on untransformed data this is equivalent to a
   proportional error of the same SD during estimation; `lnorm()` follows the
   authors' stated intent and keeps simulated observations positive.
 - **Bootstrap bias column.** The '% bias' entries of Table 2 cannot all be

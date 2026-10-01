@@ -152,7 +152,9 @@ Hartman_2022_cefotaxime <- function() {
     # below 0 mg/L'. The tabulated 0.307 is the raw $SIGMA, a variance, on
     # the same raw scale as the omega-squared rows of the same table (the
     # initial estimate 0.311 in $SIGMA sits beside it), so the log-scale SD
-    # is sqrt(0.307) = 0.554.
+    # is sqrt(0.307) = 0.554. The same group's ceftriaxone paper from the
+    # same study (Hartman_2021_ceftriaxone) uses the same table layout, and
+    # its 'proportional error 0.0596' equals that control stream's $SIGMA.
   })
 
   model({
