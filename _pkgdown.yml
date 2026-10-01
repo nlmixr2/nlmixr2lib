@@ -1088,6 +1088,8 @@ navbar:
         href: articles/Kawaguchi_2018_cefiderocol.html
       - text: "Cefotaxime (Ahsman 2010)"
         href: articles/Ahsman_2010_cefotaxime.html
+      - text: "Cefotaxime (Hartman 2022)"
+        href: articles/Hartman_2022_cefotaxime.html
       - text: "Cefotaxime (Leroux 2016)"
         href: articles/Leroux_2016_cefotaxime.html
       - text: "Cefotaxime (Roelofsen 2023)"
@@ -7789,6 +7791,7 @@ articles:
   - articles/Harrold_2020_radiation_neutropenia
   - articles/Hartinger_2023_vancomycin
   - articles/Hartman_2021_ceftriaxone
+  - articles/Hartman_2022_cefotaxime
   - articles/Hartmann_2026_nintedanib
   - articles/Harun_2019_cysticFibrosis
   - articles/Hashimoto_1994_zonisamide
