@@ -110,6 +110,8 @@ navbar:
         href: articles/DAgate_2024_aciclovir.html
       - text: "Acotiamide rat pbpk (Yoshii 2016)"
         href: articles/Yoshii_2016_acotiamide_rat_pbpk.html
+      - text: "Acyclovir (Maximova 2022)"
+        href: articles/Maximova_2022_acyclovir.html
       - text: "Acyclovir (Zeng 2009)"
         href: articles/Zeng_2009_acyclovir.html
       - text: "Adalimumab (Drweesh 2026)"
@@ -8239,6 +8241,7 @@ articles:
   - articles/Matcha_2025_amikacin
   - articles/Matsumoto_2005_TF_505
   - articles/Mauro_2025_nilotinib
+  - articles/Maximova_2022_acyclovir
   - articles/Mazzocco_2015_temozolomide
   - articles/McBride_2025_radamts13_qsp
   - articles/McCann_2025_midazolam

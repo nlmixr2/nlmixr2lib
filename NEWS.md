@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Maximova 2022 acyclovir ([doi:10.3389/fphar.2022.865871](https://doi.org/10.3389/fphar.2022.865871)) -- children with haematological malignancies receiving IV acyclovir during HSCT or chemotherapy.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.
