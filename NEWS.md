@@ -2,6 +2,8 @@
 
 # development version
 
+- Fix the inter-individual variability scale of Wang 2024 sugemalimab ([doi:10.1111/bcp.16276](https://doi.org/10.1111/bcp.16276)): the Table 3 percentages are omega x 100, not CV%, so the CL, Vc, Vp, Emax and T50 variances are now `(P/100)^2` (Vp +22 %, T50 +19 %, Emax 3.6-fold larger than previously shipped), and simulated between-subject spread widens accordingly.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
