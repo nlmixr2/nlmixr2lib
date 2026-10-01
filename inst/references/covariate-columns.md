@@ -12501,6 +12501,28 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Narwal_2013_sifalimumab.R` (time-fixed multiplicative on CL: `CL * (1 + 0.195 * CONMED_STEROID)`), `Zheng_2016_sifalimumab.R` (time-fixed multiplicative on CL `(1 + 0.11 * CONMED_STEROID)` and on V1 `(1 - 0.09 * CONMED_STEROID)` in the SLE phase IIb cohort, which was ~85% conmed_steroid-treated at baseline), `VelezdeMendizabal_2013_multipleSclerosis.R` (time-varying per-monthly-record switch of the first-order Markov coefficient from theta_pdv to theta_pdv_s when a corticosteroid course was given for a clinical MS relapse that month).
 - **Notes:** Distinct from `PRICORT`, which is strictly a prior (pre-study) indicator. `CONMED_STEROID` covers both concurrent chronic corticosteroid use at / from study baseline and per-record acute corticosteroid pulses; the per-model `covariateData[[CONMED_STEROID]]$notes` field documents the temporal grain (time-fixed vs time-varying) the source paper used. When a future paper needs `CONMED_STEROID` and `PRICORT` jointly, both can coexist on the same subject. The name `STEROID_BL` was used as an alias in earlier register drafts and is retired; use `CONMED_STEROID` for all future models.
 
+### CONMED_DEXAMETHASONE (**canonical for dexamethasone co-medication indicator**)
+- **Description:** 1 = subject received dexamethasone as co-medication in the window the source paper defines, 0 = not. In the founding model the window is CRS prophylaxis with the first four epcoritamab doses in Cycle 1 (premedication before each dose and on the following days), and the indicator is time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no dexamethasone in the defined window). In Li 2026, patients premedicated with prednisolone and not dexamethasone are 0.
+- **Source aliases:**
+  - `CRS prophylaxis (dexamethasone/IV fluids)` -- Li 2026 Table 1 four-level category; the dexamethasone half is this column, the IV-fluids half is `CONMED_IV_FLUIDS`.
+- **Example models:** `Li_2026_epcoritamab.R` (with `CONMED_IV_FLUIDS`, forms the paper's three-level Cycle 1 prophylaxis covariate on S50 of the Grade >= 2 CRS hazard: exactly one of the two raises S50 3.28-fold, both 5.10-fold).
+- **Notes:** Member of the `CONMED_<INN>` family. Narrower than `CONMED_STEROID` (any systemic corticosteroid): use this column when a source distinguishes dexamethasone from other corticosteroids, as Li 2026 does (prednisolone users are not counted). Record the exposure window (prophylaxis vs treatment, which cycle) in `covariateData[[CONMED_DEXAMETHASONE]]$notes`. Distinct from `COMBO_LEN_DEX` / `COMBO_POM_DEX`, which name dexamethasone as part of an anti-myeloma combination regimen.
+
+### CONMED_IV_FLUIDS (**canonical for prophylactic intravenous fluid hydration indicator**)
+- **Description:** 1 = subject received intravenous fluid hydration as co-medication in the window the source paper defines, 0 = not. In the founding model the window is CRS prophylaxis with the first four epcoritamab doses in Cycle 1; time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no IV fluids in the defined window).
+- **Source aliases:**
+  - `CRS prophylaxis (dexamethasone/IV fluids)` -- Li 2026 Table 1 four-level category (see `CONMED_DEXAMETHASONE`).
+- **Example models:** `Li_2026_epcoritamab.R` (combined with `CONMED_DEXAMETHASONE` into the three-level Cycle 1 prophylaxis covariate on S50 of the Grade >= 2 CRS hazard).
+- **Notes:** Class-level member of the `CONMED_` family (like `CONMED_STEROID`): the source does not specify the fluid, volume or rate. A binary indicator, distinct from the volume canonicals `FLUID_IN_24H`, `PFA` and `CUM_FLUID_BAL_PCT`; register a volume- or rate-valued sibling if a paper models the amount of fluid given. IV fluids given to manage (rather than prevent) an adverse event were not counted in Li 2026.
+
 ### CONMED_THEOPHYLLINE (**canonical for concomitant theophylline / aminophylline coadministration indicator**)
 - **Description:** 1 = subject was taking theophylline or aminophylline as background co-medication, 0 = not taking either. Aminophylline is a theophylline-ethylenediamine salt that dissociates to theophylline in vivo, so source papers that record the two together are recording one exposure and a single indicator is correct. Time-fixed per subject when the source captures baseline background therapy (the usual case in asthma / COPD trials, where the drug is a maintenance controller).
 - **Units:** (binary)
@@ -12766,6 +12788,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
   - `IPI` (Ahamadi 2017; categorical with levels `IPI-naive`, `IPI-treated`, `missing`) -- decompose into `PRIOR_IPI = as.integer(IPI == "IPI-treated")` and treat the missing category like naive unless the source paper retains a separate "missing" coefficient.
 - **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional changes on CL of +14.0% and on Vc of +7.36% for IPI-treated relative to IPI-naive; "missing" 26.4% of cohort is pooled with naive in the canonical encoding because Table 3 reports only the naive-vs-treated coefficient).
 - **Notes:** Distinct from `PRIOR_ANTICANCER` (any modality), `PRIOR_BIO` (any biologic), `PRIOR_TNF` (anti-TNF biologic). Use `PRIOR_IPI` when the source paper specifically tested prior ipilimumab exposure as a covariate; this is a common covariate in advanced-melanoma popPK analyses where ipilimumab was the standard-of-care immune-checkpoint inhibitor preceding PD-1 / PD-L1 entrants.
+
+### PRIOR_CART (**canonical for prior chimeric antigen receptor (CAR) T cell therapy indicator**)
+- **Description:** 1 = subject received CAR T cell therapy (any autologous or allogeneic CAR T product) before the start of the current treatment, 0 = CAR-T-naive. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no prior CAR T cell therapy).
+- **Source aliases:**
+  - `prior CAR T cell therapy (yes/no)` -- Li 2026 Table 1 and Table 2 ('Effect of prior CAR T cell therapy = yes'); no data-column name is printed.
+- **Example models:** `Li_2026_epcoritamab.R` (multiplies the maximum stimulated Grade >= 2 cytokine-release-syndrome hazard SMAX by exp(-0.964) = 0.382 in the epcoritamab repeated time-to-event model; 125 of 600 patients, 20.8%).
+- **Notes:** Member of the `PRIOR_<drug or class>` prior-therapy family (`PRIOR_IPI`, `PRIOR_TNF`, `PRIOR_BIO`, `PRIOR_SYSTEMIC`, ...). Common in models of T-cell-engaging bispecific antibodies and later-line lymphoma / myeloma therapies, where prior CAR T cell therapy marks a heavily pretreated population with altered T-cell fitness. Note the direction in the founding model: prior CAR T cell therapy LOWERED the CRS risk on epcoritamab, which the source describes as consistent with clinical observation, so do not assume a sign. Distinct from `PRIOR_ANTICANCER` (any modality) and `PRIOR_SYSTEMIC` (any systemic therapy); a patient with `PRIOR_CART = 1` is also 1 on both of those.
 
 ### PRIOR_STATIN (**canonical for prior (pre-study) statin therapy indicator**)
 - **Description:** 1 = patient was on established statin (HMG-CoA reductase inhibitor) therapy before entering the study, 0 = statin-naive at study entry. Time-fixed per subject. Captures the pharmacological history that shapes the observed baseline lipid panel and the residual room for further LDL-C lowering, independent of whether a statin continues to be taken during the study.
