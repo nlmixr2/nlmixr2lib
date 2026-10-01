@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Kosinsky 2022 camostat / FOY-251 ([doi:10.1128/spectrum.02167-21](https://doi.org/10.1128/spectrum.02167-21)) -- semi-mechanistic PK/PD of TMPRSS2 covalent inhibition and SARS-CoV-2 viral entry (human PK fit; in-vitro PD). Registers the `CONC_FOY251_NM` covariate column.
+
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
 - `checkModelConventions()` accepts `cl_time_slope`, the new canonical name for a clearance that changes linearly with time, `cl * (1 + cl_time_slope * t)`.

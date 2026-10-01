@@ -5557,6 +5557,16 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Zhu_2023_sn38_organoid.R` (96 h static SN-38 exposure of colorectal-cancer PDTOs; cell viability read as the treated-to-vehicle-control organoid volume ratio).
 - **Notes:** Specific scope because the value is bound to SN-38 and to the in-vitro organoid assay design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family; `SN38` matches the registered metabolite suffix `sn38` used for the paired compartment and parameter names.
 
+### CONC_FOY251_NM (**canonical for static in-vitro FOY-251 concentration driving a TMPRSS2 covalent-inhibition PD model**)
+- **Description:** Applied (time-invariant during incubation) FOY-251 concentration in the well of an in-vitro TMPRSS2-inhibition / SARS-CoV-2 viral-entry assay, supplied as an exogenous covariate that drives the reversible covalent inhibition of TMPRSS2. FOY-251 is the active metabolite of camostat mesylate. Applied experimental concentration in the in-vitro matrix; distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<drug>` plasma-PD-driver family.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the covalent-binding rate `kcat * SP * C / (C + ki)`; set to 0 for the drug-free control well.
+- **Source aliases:** none -- Kosinsky 2022 writes `C` in Equation (3); the model column is the canonical `CONC_FOY251_NM`.
+- **Example models:** `Kosinsky_2022_camostat_invitro.R` (recombinant TMPRSS2 activity after 1 h incubation and SARS-2-S pseudovirus entry after 2 h incubation; data of Hoffmann et al. 2020 digitised in Kosinsky 2022 Figure 2).
+- **Notes:** Specific scope because the value is bound to FOY-251 and to the in-vitro TMPRSS2 assay design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family; the unit suffix is load-bearing because sibling entries such as `CONC_RIF_MGL` are reported in mg/L while this assay is reported in nM.
+
 ### CONC_IPM_MGL (**canonical for in-vitro imipenem concentration driving an antibacterial PD or receptor-binding model**)
 - **Description:** Unbound imipenem concentration applied to an in-vitro bacterial system, supplied externally as an exogenous covariate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family. Used both time-varying (hollow-fiber infection model growth medium, driving the bacterial-kill PD effect) and static (60-min whole-cell penicillin-binding-protein binding assay, scaling the rate of net influx and PBP access).
 - **Units:** mg/L
