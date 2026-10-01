@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Gadkar 2022 PI3K-inhibitor colitis QSP ([doi:10.1002/psp4.12749](https://doi.org/10.1002/psp4.12749)) -- virtual patients with cancer on taselisib, idelalisib, duvelisib, umbralisib, alpelisib, pictilisib or copanlisib; diarrhea and colitis risk.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
