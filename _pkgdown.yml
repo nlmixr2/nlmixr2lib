@@ -5146,6 +5146,8 @@ navbar:
         href: articles/Patel_2022_imipenem_relebactam.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Remdesivir (Leegwater 2022)"
+        href: articles/Leegwater_2022_remdesivir.html
       - text: "Remdesivir (Roberts 2025)"
         href: articles/Roberts_2025_remdesivir.html
       - text: "Remdesivir (Sukeishi 2022)"
@@ -8215,6 +8217,7 @@ articles:
   - articles/Lee_2025_piperacillin_tazobactam
   - articles/Lee_2026_oxacillin
   - articles/Leeds_2013_tecovirimat
+  - articles/Leegwater_2022_remdesivir
   - articles/Leegwater_2025_cotrimoxazole
   - articles/Leger_2004_topotecan
   - articles/Lehr_2010_tesofensine
