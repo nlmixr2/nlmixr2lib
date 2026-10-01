@@ -1014,6 +1014,8 @@ navbar:
         href: articles/Niu_2020_caspofungin.html
       - text: "Caspofungin (Wang 2020)"
         href: articles/Wang_2020_caspofungin.html
+      - text: "Caspofungin (Wu 2022)"
+        href: articles/Wu_2022_caspofungin.html
       - text: "Caspofungin (Wurthwein 2013)"
         href: articles/Wurthwein_2013_caspofungin.html
       - text: "Caspofungin (Xu 2026)"
@@ -9312,6 +9314,7 @@ articles:
   - articles/Wu_2014_FEV1_asthma
   - articles/Wu_2020_fedratinib
   - articles/Wu_2021_SPI_62
+  - articles/Wu_2022_caspofungin
   - articles/Wu_2022_fentanyl
   - articles/Wu_2023_SPI_62
   - articles/Wu_2024_daptomycin
