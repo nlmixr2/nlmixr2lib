@@ -150,12 +150,18 @@ nivo_nmol <- 3 * wt_kg / mw[["nivolumab"]] * 1e6
 ipi_nmol <- 1 * wt_kg / mw[["ipilimumab"]] * 1e6
 ent_nmol <- 5 / mw[["entinostat"]] * 1e6
 
-# Default tolerances reproduce an rtol = 1e-8 solve of the 4000-day untreated
-# run to about 1e-4 (relative) in every reported quantity, at about one-tenth
-# of the cost. method = "lsoda": the default liblsoda solver took ~55 s on the
-# 4 mg/m^2 entinostat profile (identical result, 0.1 s with lsoda).
+# method = "cvode", the SUNDIALS BDF integrator. With lsoda these solves sit on
+# a numerical knife-edge: perturbing k_cln_ENT and F_ENT_buccal by one part in
+# 1e12 made about 1.5% of the entinostat profiles fail with repeated corrector
+# convergence failures, so the same code could fail on one machine and pass on
+# another. Tightening the tolerances made it worse. cvode solved all 1200 such
+# perturbed entinostat solves, and all 1800 solves of this article's full set
+# with every non-integer parameter perturbed the same way, at a similar total
+# cost. At the default tolerances it reproduces an rtol = 1e-8 solve to within
+# about 5e-4 (relative) in every reported quantity. The default liblsoda
+# solver took ~55 s on the 4 mg/m^2 entinostat profile.
 SOLVE <- function(ev, params = NULL) {
-  rxode2::rxSolve(mod, ev, params = params, method = "lsoda", maxsteps = 1e6, returnType = "data.frame")
+  rxode2::rxSolve(mod, ev, params = params, method = "cvode", maxsteps = 1e6, returnType = "data.frame")
 }
 
 # entinostat dose records: the same amount into both depots
@@ -263,9 +269,6 @@ fitting a printed parameter to a reported simulation is not done in this
 library.
 
 ```{r ent-pk-scenario}
-# Let rxode2 print the integrator's own message if a solve fails (it is
-# silent by default outside an interactive session); no output otherwise.
-rxode2::rxSetSilentErr(0L)
 p_kcln <- mod$iniDf$est[mod$iniDf$name == "k_cln_ENT"]
 scen <- bind_rows(lapply(ent_levels, function(lv) {
   amt <- lv * 1.7 / mw[["entinostat"]] * 1e6
