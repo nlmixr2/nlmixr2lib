@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Okubo 2021 apremilast PK and PASI-75 / PASI-50 / sPGA exposure-response ([doi:10.1111/1346-8138.16068](https://doi.org/10.1111/1346-8138.16068)) -- Japanese and non-Japanese adults with moderate to severe plaque psoriasis, plus non-Japanese healthy adults in the PK model.
+- Add Wu 2022 treprostinil ([doi:10.1111/bcp.14966](https://doi.org/10.1111/bcp.14966)) -- healthy adult volunteers, intravenous.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

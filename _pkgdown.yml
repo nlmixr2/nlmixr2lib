@@ -6468,6 +6468,8 @@ navbar:
         href: articles/vanderStoep_2019_treosulfan.html
       - text: "Treosulfan rat (Danielak 2020)"
         href: articles/Danielak_2020_treosulfan_rat.html
+      - text: "Treprostinil (Wu 2022)"
+        href: articles/Wu_2022_treprostinil.html
       - text: "Triazolam (Okada 2024)"
         href: articles/Okada_2024_triazolam.html
       - text: "Tribendimidine (Meister 2019)"
@@ -9528,6 +9530,7 @@ articles:
   - articles/Wu_2021_SPI_62
   - articles/Wu_2022_caspofungin
   - articles/Wu_2022_fentanyl
+  - articles/Wu_2022_treprostinil
   - articles/Wu_2023_SPI_62
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
