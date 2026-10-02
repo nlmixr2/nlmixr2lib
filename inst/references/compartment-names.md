@@ -4548,6 +4548,15 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 
 ---
 
+### prob_pasi75_pbo_adj, prob_pasi90_pbo_adj (**canonical placebo-adjusted PASI75 / PASI90 responder-fraction outputs**)
+- **Type:** compartment
+- **Role:** Study-arm PASI75 (or PASI90) responder fraction MINUS the placebo-arm fraction of the same trial, on a 0-1 scale, at a single landmark read-out. In the founding models it is a sigmoid Emax trend line of a dose-based or a target-engagement-based MBMA.
+- **Source aliases:** `Placebo-adjusted response (%)` -- Ayyar 2022 Figures 2 and 6 (in percent; the models divide by 100).
+- **Example models:** `Ayyar_2022_secukinumab_mbma.R`, `Ayyar_2022_ixekizumab_mbma.R` (functions of the average weekly dose `DOSE_<drug>_MGWK`), `Ayyar_2022_secukinumab_mpbpk.R`, `Ayyar_2022_ixekizumab_mpbpk.R` (functions of the running-average free skin IL-17A, meaningful at the week-12 read-out).
+- **Notes:** Not a probability: it is a DIFFERENCE of two arm proportions, so it can be slightly negative where the source's trend line extrapolates (near zero dose, or beyond the plotted exposure range), and it is not comparable with the absolute `prob_pasi75` / `prob_pasi90` outputs without adding a placebo rate. The `_pbo_adj` suffix keeps it from being read as one. Follows the `prob_<endpoint>` shape.
+
+---
+
 ## MBMA placebo / drug arm output compartments
 
 The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for each clinical endpoint. The placebo arm captures the background placebo response; the drug arm carries the drug-driven delta.
@@ -6068,6 +6077,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `A2` / `C2` / `V2` / `CL2` -- Li 2021 Equations 10-13 and Table 2 metabolite-compartment amount, concentration, volume and clearance symbols.
 - **Example models:** `Li_2021_voriconazole.R` (founding example; doi:10.3389/fphar.2021.730826).
 - **Notes:** Parent-qualified on the `noxpeflox` precedent because the bare `noxide` is registered to roflumilast N-oxide. The parent stem `vori` is the shortest unambiguous voriconazole stem; a later hydroxy-voriconazole metabolite should follow the same shape (`ohvori`).
+
+### crizotinib (**canonical crizotinib suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Crizotinib, the ALK/ROS1/MET kinase inhibitor, when it enters a model as the active metabolite of a prodrug rather than as the dosed drug. Founding case: unecritinib (TQ-B3101), the N-acetyl amide of crizotinib, is converted to crizotinib by amide hydrolysis. Used in parent + metabolite joint popPK extractions of unecritinib.
+- **Source aliases:** `TQ-B3101M` (Yang 2021 throughout, which names the analytes only by development code; subscript `m` on the metabolite parameters, e.g. `CLm/Fm`, `Vcm/Fm`). The identity is from PubChem (unecritinib CID 71506874, synonym TQ-B3101) and from later bioanalytical work naming crizotinib as the active metabolite of unecritinib (doi:10.1016/j.jpba.2024.116199).
+- **Example models:** `Yang_2021_unecritinib.R` (founding example; `central_crizotinib` + `peripheral1_crizotinib`, `Cc_crizotinib` in crizotinib mass units via the PubChem molecular-weight ratio applied to the formation flux; Table 3).
+- **Notes:** Spelled out, following the drug-name suffixes `sunitinib` / `osimertinib` / `rosuvastatin`, because the metabolite is itself a marketed drug with an INN; the development code `TQ-B3101M` is recorded as the source alias instead. A model in which crizotinib is the DOSED drug uses the bare canonical names (`central`, `Cc`) and needs no suffix. Every clearance and volume carrying this suffix in the founding model is apparent in the compound sense `X/Fm`.
 
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
