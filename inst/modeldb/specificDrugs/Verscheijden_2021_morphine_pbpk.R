@@ -664,17 +664,22 @@ Verscheijden_2021_morphine_pbpk <- function() {
     # =====================================================================
     # Morphine ODEs (S1 File lines 91-109, multiplied through by the
     # compartment volume so the states are amounts in mg). IV doses enter
-    # venous blood. Clearance acts on the venous concentration and is
-    # removed from the arterial compartment, exactly as coded.
+    # venous blood. Clearance acts on the venous concentration and removes
+    # mass from venous blood, as in the Verscheijden 2019 framework code
+    # (2019 S1 File line 81). The 2021 S1 File instead subtracts CL x
+    # C_venous from the ARTERIAL compartment (S1 File line 97); that form
+    # falls below the paper's own Fig 2D adult ECF profile by 41-68% and
+    # its Fig 2A paediatric ECF:plasma ratio by about 20%, and turns
+    # arterial blood negative when CL nears cardiac output. The venous form
+    # reproduces both figures and is used here (see the vignette).
     # =====================================================================
     d/dt(venous) <- q_adipose * c_ad / kp_adipose * bp + q_bone * c_bo / kp_bone * bp +
       q_heart * c_he / kp_heart * bp + q_kidney * c_ki / kp_kidney * bp +
       q_muscle * c_mu / kp_muscle * bp + q_skin * c_sk / kp_skin * bp +
       q_liver * c_li / kp_liver * bp + q_brain * c_bb + q_rest * c_ot * bp -
-      q_lung * c_ven
+      q_lung * c_ven - cl * c_ven
     d/dt(arterial) <- q_lung * c_lung / kp_lung * bp -
-      (q_rest + q_brain + q_adipose + q_bone + q_heart + q_kidney + q_muscle + q_skin + q_spleen + q_gut + q_ha) * c_art -
-      cl * c_ven
+      (q_rest + q_brain + q_adipose + q_bone + q_heart + q_kidney + q_muscle + q_skin + q_spleen + q_gut + q_ha) * c_art
     d/dt(lung) <- q_lung * (c_ven - c_lung / kp_lung * bp)
     d/dt(adipose) <- q_adipose * (c_art - c_ad / kp_adipose * bp)
     d/dt(bone) <- q_bone * (c_art - c_bo / kp_bone * bp)
@@ -700,17 +705,17 @@ Verscheijden_2021_morphine_pbpk <- function() {
 
     # =====================================================================
     # M6G ODEs (S1 File lines 111-128). Formed in venous blood from the
-    # cleared morphine mass; no Pgp transport.
+    # cleared morphine mass and cleared from venous blood (same placement
+    # as morphine, see above); no Pgp transport.
     # =====================================================================
     d/dt(venous_m6g) <- cl * c_ven * f_form +
       q_adipose * m_ad / kp_adipose_m6g * bp_m6g + q_bone * m_bo / kp_bone_m6g * bp_m6g +
       q_heart * m_he / kp_heart_m6g * bp_m6g + q_kidney * m_ki / kp_kidney_m6g * bp_m6g +
       q_muscle * m_mu / kp_muscle_m6g * bp_m6g + q_skin * m_sk / kp_skin_m6g * bp_m6g +
       q_liver * m_li / kp_liver_m6g * bp_m6g + q_brain * m_bb + q_rest * m_ot / kp_other_m6g * bp_m6g -
-      q_lung * m_ven
+      q_lung * m_ven - cl_m6g * m_ven
     d/dt(arterial_m6g) <- q_lung * m_lung / kp_lung_m6g * bp_m6g -
-      (q_rest + q_brain + q_adipose + q_bone + q_heart + q_kidney + q_muscle + q_skin + q_spleen + q_gut + q_ha) * m_art -
-      cl_m6g * m_ven
+      (q_rest + q_brain + q_adipose + q_bone + q_heart + q_kidney + q_muscle + q_skin + q_spleen + q_gut + q_ha) * m_art
     d/dt(lung_m6g) <- q_lung * (m_ven - m_lung / kp_lung_m6g * bp_m6g)
     d/dt(adipose_m6g) <- q_adipose * (m_art - m_ad / kp_adipose_m6g * bp_m6g)
     d/dt(bone_m6g) <- q_bone * (m_art - m_bo / kp_bone_m6g * bp_m6g)
