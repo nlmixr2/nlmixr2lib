@@ -6658,6 +6658,8 @@ navbar:
         href: articles/Landersdorfer_2012_vildagliptin.html
       - text: "Vildagliptin qsp (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_vildagliptin_qsp.html
+      - text: "Viloxazine (Nasser 2021)"
+        href: articles/Nasser_2021_viloxazine.html
       - text: "Vincristine (vandeVelde 2020)"
         href: articles/vandeVelde_2020_vincristine.html
       - text: "Vinflunine (Schmitt 2018)"
@@ -8512,6 +8514,7 @@ articles:
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
   - articles/NassarSheikhRashid_2024_adalimumab
+  - articles/Nasser_2021_viloxazine
   - articles/Nath_2007_melphalan
   - articles/Nath_2010_melphalan
   - articles/Nava_2018_busulfan
