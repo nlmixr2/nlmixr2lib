@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yu 2022 colistin sulfate ([doi:10.3389/fphar.2022.915958](https://doi.org/10.3389/fphar.2022.915958)) -- critically ill Chinese adults with carbapenem-resistant organism infections.
+- Add Guo 2022 ciprofloxacin ([doi:10.1007/s40262-022-01114-5](https://doi.org/10.1007/s40262-022-01114-5)) -- critically ill adult ICU patients pooled from three Dutch studies.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
