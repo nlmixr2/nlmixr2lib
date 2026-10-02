@@ -29,7 +29,7 @@ Ma_2024_vancomycin <- function() {
         "Cockroft-Gault Equations24:' followed by NO equation -- the display equation is absent from the",
         "typeset article. Confirmed three ways: rendered at 300 dpi, page 5 shows the colon followed by",
         "white space and the PDF carries no image object on that page; the publisher's per-equation asset",
-        "set served by the EuropePMC supplementaryFiles endpoint contains exactly two equation graphics",
+        "set deposited with the article contains exactly two equation graphics",
         "(Article_Equa = the CL equation, Article_Equb = the V equation) and none for Cockcroft-Gault; and",
         "the Supplementary Information (MOESM1) is figure captions S1-S4 only. The standard Cockcroft-Gault",
         "form cited as reference 24 must therefore be assumed when generating CLcr for this model."

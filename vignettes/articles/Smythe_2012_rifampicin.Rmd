@@ -89,7 +89,7 @@ cohort_typical <- tibble(
 print(cohort_typical)
 ```
 
-For the stochastic VPC-style simulation used to replicate Figure 4 we use a virtual cohort of 200 subjects per group (Smythe 2012 used 1000; we down-sample to fit the pkgdown wall-clock budget and note the down-sampling in the Assumptions and deviations section). FFM is held at the population median (45 kg) and WT at the cohort median (55 kg); the IIV / IOV in the model generates the spread.
+For the stochastic VPC-style simulation used to replicate Figure 4 we use a virtual cohort of 200 subjects per group (Smythe 2012 used 1000; we down-sample to keep the render time short and note the down-sampling in the Assumptions and deviations section). FFM is held at the population median (45 kg) and WT at the cohort median (55 kg); the IIV / IOV in the model generates the spread.
 
 ```{r stochastic-cohort}
 set.seed(20260601L)
@@ -363,7 +363,7 @@ knitr::kable(compare, digits = 2,
 # Assumptions and deviations
 
 - **Drug-name spelling.** The Smythe 2012 paper uses the USAN form `rifampin`. nlmixr2lib's existing rifampicin-family models (`Clewe_2015_rifampicin`, `Svensson_2016_rifampicin`, `Barnett_2018_rifampicin`, `Horita_2018_rifampicin`, `Vinnard_2017_rifampicin`, `Wicha_2018_rifampicin`) all use the INN form `rifampicin`. The model file is named `Smythe_2012_rifampicin.R` for consistency with the family; the paper's USAN spelling is preserved in the reference field.
-- **Stochastic-cohort size.** Smythe 2012 Figure 4 used 1000 subjects per group; the vignette uses 200 subjects per group to keep the pkgdown render under the 5-minute wall-clock budget. The Cmax-above-8-mg/L percentages will track the published values to within Monte Carlo error at this cohort size, but the box-plot tails will be slightly tighter than the published figure.
+- **Stochastic-cohort size.** Smythe 2012 Figure 4 used 1000 subjects per group; the vignette uses 200 subjects per group to keep the render under 5 minutes. The Cmax-above-8-mg/L percentages will track the published values to within Monte Carlo error at this cohort size, but the box-plot tails will be slightly tighter than the published figure.
 - **Dosing schedule.** The trial dosed 6 days per week (Smythe 2012 Methods "Patients" paragraph 1); the published Figures 3 and 4 simulations used 7 days per week (Figure 3 caption, "rifampin was given 7 days/week"). The vignette follows the published simulation convention (continuous daily dosing without weekend gaps).
 - **Induction time horizon.** Smythe 2012 reports a kENZ half-life of approximately 7.83 days; 5 half-lives (about 40 days) reach the asymptotic induced state. The vignette simulates 60 days (about 7.7 half-lives), which puts the day-60 effective clearance at approximately 99% of the asymptotic induced value. The residual 1-2% gap against Smythe 2012 Table 4 values reflects this finite horizon -- it does not indicate a parameter discrepancy and the gap closes if the simulation is extended.
 - **Typical-patient covariate values.** Smythe 2012 Table 4 simulations used WT = 55 kg with FFM = 47.67 kg (Methods "Simulations" paragraph 1); the vignette uses the same fixed typical values rather than sampling from a virtual covariate distribution, matching the source paper's typical-patient design.

@@ -1368,6 +1368,58 @@ test_that("a step clearance without the tclchange breakpoint name is still flagg
   expect_match(hit$suggestion, "tclchange", fixed = TRUE)
 })
 
+test_that("the linear-in-time clearance form is accepted with cl_time_slope", {
+  # Founding example: Cloesmeijer_2020_clonidine, CL = CL0 * (1 + slope * t).
+  linearStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "ug", concentration = "ug/L")
+    ini({
+      lcl <- 1;               label("Clearance at the start of treatment (CL, L/h)")
+      lvc <- 1;               label("Central volume (Vc, L)")
+      cl_time_slope <- 0.002; label("Fractional increase in CL per hour (1/h)")
+      propSd <- 0.1;          label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (1 + cl_time_slope * t)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(linearStyle, verbose = FALSE))
+  expect_equal(sum(res$category == "time_varying_clearance"), 0L)
+})
+
+test_that("a linear-in-time clearance with a covariate-style slope name is flagged", {
+  # `e_t_cl` reads as a covariate effect of a column named `t`; the linear form
+  # must use `cl_time_slope` so it can be found by name.
+  covariateStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "ug", concentration = "ug/L")
+    ini({
+      lcl <- 1;        label("Clearance at the start of treatment (CL, L/h)")
+      lvc <- 1;        label("Central volume (Vc, L)")
+      e_t_cl <- 0.002; label("Fractional increase in CL per hour (1/h)")
+      propSd <- 0.1;   label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (1 + e_t_cl * t)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(covariateStyle, verbose = FALSE))
+  hit <- res[res$category == "time_varying_clearance", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "cl")
+  expect_match(hit$suggestion, "cl_time_slope", fixed = TRUE)
+})
+
 test_that("no model in the database still uses a pre-#481 time-varying clearance name", {
   # Enumerating rather than spot-checking: a newly added model that reuses the
   # old spellings fails here until it is migrated.

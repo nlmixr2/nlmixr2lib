@@ -26,8 +26,8 @@ cat("* Description: ", ui$description, "\n", sep = "")
 ```
 
 * Article: <https://doi.org/10.1002/jcph.70189>
-* Supplement (Supplementary Table 1, Supplementary Figure 1): retrieved from the
-  Europe PMC open-access supplementary-files endpoint for `PMC13084164`.
+* Supplement (Supplementary Table 1, Supplementary Figure 1): published with the
+  open-access article (`PMC13084164`).
 
 MIT-001 is a mitochondria-targeting antioxidant and ferroptosis inhibitor. Bae
 2026 pooled three phase 1 trials in healthy Korean adults to build a population

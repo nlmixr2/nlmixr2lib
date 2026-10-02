@@ -146,7 +146,7 @@ Geldof_2008_fluvoxamine_rat <- function() {
     # NstarMax is the lumped Pgp / MRP active-removal-flux saturation
     # parameter N***max from paper Appendix Eq 56 -- formally
     #   N***max = Nmax * VSP / (kdiff * VT)
-    # with [conc] units (this skill's interpretation; see Errata block in
+    # with [conc] units (the interpretation adopted here; see Errata block in
     # the validation vignette regarding the 'ng/h' units printed in
     # Table II, which is inconsistent with the appearance of N***max as
     # an additive term against CT and C50 in the partition-coefficient

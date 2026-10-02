@@ -17,7 +17,7 @@ Barras_2009_enoxaparin <- function() {
     "dose to event. The proportional-odds PD layer is NOT encoded",
     "in this model file -- it requires canonical parameter names",
     "for cumulative-logit / proportional-odds PD models that are",
-    "not yet registered in references/parameter-names.md. The PD",
+    "not yet registered in inst/references/parameter-names.md. The PD",
     "equation is reproduced in the validation vignette, where it",
     "is applied deterministically to cAUC values derived from the",
     "simulated PK profile (see vignette Source trace and",

@@ -379,7 +379,7 @@ knitr::kable(cmp, caption = paste(
 # "*" on out-of-tolerance rows, so both must be stripped before a numeric comparison --
 # as.numeric("-0.3%") is NA, and all(NA) is NA, which would make this gate un-red-able.
 pct <- as.numeric(sub("%$", "", sub("\\*$", "", cmp$`% diff`)))
-stopifnot(nrow(cmp) == 4L, !anyNA(pct))   # the gate must have rows to test (pattern 10)
+stopifnot(nrow(cmp) == 4L, !anyNA(pct))   # the gate must have rows to test
 
 # Deterministic quantities: no IIV, no residual error, one fixed covariate profile.
 # The only error sources are trapezoidal integration on a 0.25 h grid and PKNCA's

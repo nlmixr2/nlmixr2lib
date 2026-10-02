@@ -23,8 +23,8 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Burns_2015_tenofovir"))$description`
 * Article: <https://doi.org/10.1002/jcph.461> (PMC5008110, open access)
 * Supplement: Supplementary Table S1 (demographics) and Supplementary Figures
-  S2-S6, available from the article's landing page and from EuropePMC's
-  `supplementaryFiles` endpoint for PMC5008110.
+  S2-S6, available from the article's landing page and from Europe PMC
+  (PMC5008110).
 
 Burns 2015 is the first tenofovir / tenofovir-diphosphate population PK model
 developed **solely from healthy participants** -- the pre-exposure-prophylaxis

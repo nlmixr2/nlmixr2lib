@@ -145,8 +145,8 @@ Tarning_2012_artemether <- function() {
     # metabolite was sufficient to describe the random residual
     # variability in the data", Results, p.8; Table 2 footnote c). NONMEM
     # "additive on log scale" maps to proportional residual error in
-    # nlmixr2's linear-concentration space (see
-    # references/parameter-names.md "Residual error"). Table 2 reports
+    # nlmixr2's linear-concentration space (the standing convention).
+    # Table 2 reports
     # the variance on the log scale as sigma = 0.166; the corresponding
     # SD is sqrt(0.166) = 0.4074. The source paper uses a single combined
     # sigma for both observations, but nlmixr2 requires a distinct

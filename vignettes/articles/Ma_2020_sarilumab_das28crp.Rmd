@@ -160,10 +160,10 @@ n_subj <- 60
 
 cohort <- tibble::tibble(
   id       = seq_len(n_subj),
-  WT       = pmin(pmax(rnorm(n_subj, mean = 74.6, sd = 18.8), 40, 170)),
+  WT       = pmin(pmax(rnorm(n_subj, mean = 74.6, sd = 18.8), 40), 170),
   CRP    = pmax(rlnorm(n_subj, log(15.7) - 0.5 * 1.0^2, 1.0), 0.5),
-  BLPHYVAS = pmin(pmax(rnorm(n_subj, mean = 64.6, sd = 16.8), 10, 100)),
-  BLHAQ    = pmin(pmax(rnorm(n_subj, mean = 1.68, sd = 0.640), 0, 3)),
+  BLPHYVAS = pmin(pmax(rnorm(n_subj, mean = 64.6, sd = 16.8), 10), 100),
+  BLHAQ    = pmin(pmax(rnorm(n_subj, mean = 1.68, sd = 0.640), 0), 3),
   PRICORT  = rbinom(n_subj, 1, 0.646)
 )
 ```

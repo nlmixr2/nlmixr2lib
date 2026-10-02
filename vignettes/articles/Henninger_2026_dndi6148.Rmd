@@ -32,7 +32,7 @@ human_ui <- rxode2::rxode(human)
 * Citation: `r mouse_ui$reference`
 * Article: <https://doi.org/10.1111/cts.70535>
 * Supplement: `CTS-19-e70535-s001.docx` (Supplementary methods S1, Figures S1-S13, Table S1),
-  retrieved from the Europe PMC supplementary-files endpoint for PMC13077782.
+  published with the open-access article (PMC13077782).
 
 DNDI-6148 is a benzoxaborole drug candidate for cutaneous leishmaniasis. The
 paper characterises plasma and skin target-site PK together with longitudinal

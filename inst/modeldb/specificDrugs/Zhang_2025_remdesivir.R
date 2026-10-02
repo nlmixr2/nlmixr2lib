@@ -197,8 +197,8 @@ Zhang_2025_remdesivir <- function() {
     # Zhang 2025 Methods 2.3 states "Random effects were assigned to all
     # parameters with lognormal distributions", but no omega, variance, SD
     # or CV% is reported for any parameter anywhere in the paper, and there
-    # is no supplement (the EuropePMC supplementaryFiles bundle for
-    # PMC11982744 contains only the six publisher figure files). Inventing
+    # is no supplement (the only files deposited with PMC11982744 are
+    # the six publisher figure files). Inventing
     # variances is not permitted, so this model is typical-value only.
     # The etas are OMITTED rather than written as `~ fixed(0)` because a
     # zero-variance diagonal makes OMEGA singular and breaks the Cholesky

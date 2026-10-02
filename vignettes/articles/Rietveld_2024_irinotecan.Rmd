@@ -489,8 +489,8 @@ round(pct, 1)
   states are depot states and carry the vocabulary's designated depot
   label "administration site"; the assayed matrix is recorded in the
   model file comments and here.
-* **Supplement not available.** The EuropePMC supplementary-files
-  endpoint for PMC11179701 returned HTTP 503/500 at extraction time. The
+* **Supplement not available.** The supplement for PMC11179701 was not
+  available when this model was built. The
   supplement contains Figures S1-S9 (concentration-time data, goodness-of-fit
   panels and the ex-vivo carboxylesterase experiments) and no parameter
   values; every value in the model file comes from the main-text Table 2

@@ -22,7 +22,16 @@ Nishiyama_2019_metformin_cimetidine_ddi_pbpk <- function() {
     "carried are tabulated in the vignette. The Ki values shipped are the",
     "in vitro geometric means; the vignette also runs the fitted in vivo",
     "MATE Ki of Table 3. No between-subject variability or residual-error",
-    "model is reported, so propSd is a placeholder and there are no etas."
+    "model is reported, so propSd is a placeholder and there are no etas.",
+    "NOTE: a 2020 erratum (doi:10.1002/psp4.12539) states that the",
+    "authors' software computed the hepatic intrinsic metabolic clearance",
+    "CLint,met without the membrane-potential-driven OCT1-mediated efflux",
+    "term, and that correcting it raised the hepatic share of total",
+    "clearance from 15% to 23% and changed the fitted ka, ktrans and",
+    "RMATE/dif. The erratum does not print the refitted values, so this",
+    "model keeps the equation as the authors ran it (erratum eq. 1),",
+    "which is the only form consistent with the published Table 1 and Table 3",
+    "parameters; see the vignette section 'Published erratum'."
   )
   reference <- paste(
     "Nishiyama K, Toshimoto K, Lee W, Ishiguro N, Bister B, Sugiyama Y.",
@@ -31,6 +40,8 @@ Nishiyama_2019_metformin_cimetidine_ddi_pbpk <- function() {
     "Between Metformin and Cimetidine.",
     "CPT Pharmacometrics Syst Pharmacol. 2019;8(6):396-406.",
     "doi:10.1002/psp4.12398.",
+    "Erratum: CPT Pharmacometrics Syst Pharmacol. 2020;9:606-608.",
+    "doi:10.1002/psp4.12539.",
     "The two ODE systems are transcribed from Supplementary Material S2",
     "(PSP4-8-396-s008.pdf) and the Supplemental Text (PSP4-8-396-s007.pdf);",
     "the competitive-inhibition term is Methods eq. 15. Metformin",
@@ -708,6 +719,7 @@ Nishiyama_2019_metformin_cimetidine_ddi_pbpk <- function() {
     ps_h_act_met <- clint_all_met / (beta_liver_met * (1 + rdif_met))
     ps_h_difinf_met <- ps_h_act_met * rdif_met
     ps_h_difeff_met <- ps_h_difinf_met / gamma_h_met
+    # Erratum eq. 1, as the authors ran it; see the metformin model file.
     cl_met_met <- clint_all_met / (1 - beta_liver_met) * rdif_met / ((1 + rdif_met) * gamma_h_met)
     km_oct1_met <- km_oct1_um_met * mw_met
     vmax_oct1_met <- ps_h_act_met * km_oct1_met
