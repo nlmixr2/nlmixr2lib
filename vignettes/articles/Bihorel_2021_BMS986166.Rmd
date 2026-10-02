@@ -380,8 +380,8 @@ er_typical <- function(mod_er, cav, outcome) {
     as.data.frame() |>
     pull(outcome)
 }
-nddhr_05 <- er_typical(mod_hr, c(0, cav_05[["day1"]]), "nadir_d_hr")
-nalc_05 <- er_typical(mod_md, c(0, cav_05[["day28"]]), "nadir_alc")
+nddhr_05 <- er_typical(mod_hr, c(0, cav_05[["day1"]]), "nadir_hr_change")
+nalc_05 <- er_typical(mod_md, c(0, cav_05[["day28"]]), "nadir_lymphocyte_count")
 
 checks <- tibble(
   Quantity = c(
@@ -447,7 +447,7 @@ sim_md <- solve_er(mod_md, "day28", filter(er_subj, study == "IM018003"))
 ```{r figure-4}
 # Replicates Figure 4 of Bihorel 2021: nDDHR vs model-predicted Cavg,Day1.
 curve_c <- seq(0, 8, by = 0.05)
-curve_hr <- tibble(CAV = curve_c, pred = er_typical(mod_hr, curve_c, "nadir_d_hr"))
+curve_hr <- tibble(CAV = curve_c, pred = er_typical(mod_hr, curve_c, "nadir_hr_change"))
 ggplot(sim_hr, aes(CAV, sim)) +
   geom_point(alpha = 0.3) +
   geom_line(data = curve_hr, aes(CAV, pred), colour = "red", linewidth = 1) +
@@ -462,8 +462,8 @@ ggplot(sim_hr, aes(CAV, sim)) +
 # repeated (bottom) dosing.
 curve_c2 <- seq(0, 20, by = 0.05)
 curves <- bind_rows(
-  tibble(model = "Single dose (Cavg,Day1)", CAV = curve_c2, pred = er_typical(mod_sd, curve_c2, "nadir_alc")),
-  tibble(model = "Repeated dosing (Cavg,Day28)", CAV = curve_c2, pred = er_typical(mod_md, curve_c2, "nadir_alc"))
+  tibble(model = "Single dose (Cavg,Day1)", CAV = curve_c2, pred = er_typical(mod_sd, curve_c2, "nadir_lymphocyte_count")),
+  tibble(model = "Repeated dosing (Cavg,Day28)", CAV = curve_c2, pred = er_typical(mod_md, curve_c2, "nadir_lymphocyte_count"))
 )
 pts <- bind_rows(
   sim_sd |> mutate(model = "Single dose (Cavg,Day1)"),
@@ -496,10 +496,10 @@ limits <- tibble(
   ),
   Paper = c(-9, -10, 20, 80),
   Model = c(
-    er_typical(mod_hr, 0, "nadir_d_hr"),
-    er_typical(mod_hr, 1e4, "nadir_d_hr") - er_typical(mod_hr, 0, "nadir_d_hr"),
-    100 * (1 - er_typical(mod_sd, 0, "nadir_alc") / 2.061),
-    100 * (1 - er_typical(mod_md, 1e4, "nadir_alc") / 1.95)
+    er_typical(mod_hr, 0, "nadir_hr_change"),
+    er_typical(mod_hr, 1e4, "nadir_hr_change") - er_typical(mod_hr, 0, "nadir_hr_change"),
+    100 * (1 - er_typical(mod_sd, 0, "nadir_lymphocyte_count") / 2.061),
+    100 * (1 - er_typical(mod_md, 1e4, "nadir_lymphocyte_count") / 1.95)
   )
 )
 knitr::kable(limits, digits = 1, caption = "Rounded E-R summaries in the Bihorel 2021 abstract.")
@@ -521,12 +521,12 @@ dr$cav <- lapply(seq_len(nrow(dr)), function(i) cavg_typical(dr$dose[i], low = d
 dr <- dr |>
   mutate(day1 = vapply(cav, `[[`, numeric(1), "day1"), day28 = vapply(cav, `[[`, numeric(1), "day28")) |>
   select(-cav)
-hr_pbo <- er_typical(mod_hr, 0, "nadir_d_hr")
-alc_pbo <- er_typical(mod_md, 0, "nadir_alc")
+hr_pbo <- er_typical(mod_hr, 0, "nadir_hr_change")
+alc_pbo <- er_typical(mod_md, 0, "nadir_lymphocyte_count")
 dr <- dr |>
   mutate(
-    `Change in nDDHR vs placebo (bpm)` = er_typical(mod_hr, day1, "nadir_d_hr") - hr_pbo,
-    `Change in nALC vs placebo (%)` = 100 * (er_typical(mod_md, day28, "nadir_alc") / alc_pbo - 1),
+    `Change in nDDHR vs placebo (bpm)` = er_typical(mod_hr, day1, "nadir_hr_change") - hr_pbo,
+    `Change in nALC vs placebo (%)` = 100 * (er_typical(mod_md, day28, "nadir_lymphocyte_count") / alc_pbo - 1),
     exposure = if_else(low == 1L, "Low exposure", "Normal exposure")
   )
 dr |>

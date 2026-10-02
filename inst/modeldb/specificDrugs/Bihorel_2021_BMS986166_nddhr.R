@@ -50,8 +50,8 @@ Bihorel_2021_BMS986166_nddhr <- function() {
     hill <- exp(lhill)
 
     # Inhibitory sigmoid Emax (Bihorel 2021 Results display equation)
-    nadir_d_hr <- rbase + (nadir_max - rbase) * CAV^hill / (ic50^hill + CAV^hill)
+    nadir_hr_change <- rbase + (nadir_max - rbase) * CAV^hill / (ic50^hill + CAV^hill)
 
-    nadir_d_hr ~ prop(propSd)
+    nadir_hr_change ~ prop(propSd)
   })
 }

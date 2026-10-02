@@ -54,8 +54,8 @@ Bihorel_2021_BMS986166_nalc_sd <- function() {
     ic50 <- exp(lic50)
     hill <- exp(lhill)
 
-    nadir_alc <- rbase * (1 - placebo_effect) * (1 - imax * CAV^hill / (ic50^hill + CAV^hill))
+    nadir_lymphocyte_count <- rbase * (1 - placebo_effect) * (1 - imax * CAV^hill / (ic50^hill + CAV^hill))
 
-    nadir_alc ~ prop(propSd)
+    nadir_lymphocyte_count ~ prop(propSd)
   })
 }
