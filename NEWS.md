@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Du 2022 busulfan ([doi:10.3389/fphar.2022.905879](https://doi.org/10.3389/fphar.2022.905879)) -- Chinese children receiving IV busulfan conditioning before hematopoietic stem cell transplantation.
+- Add Yu 2022 colistin sulfate ([doi:10.3389/fphar.2022.915958](https://doi.org/10.3389/fphar.2022.915958)) -- critically ill Chinese adults with carbapenem-resistant organism infections.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
