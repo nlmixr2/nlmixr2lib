@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zou 2020 leuprorelin PSA disease progression ([doi:10.1371/journal.pone.0230571](https://doi.org/10.1371/journal.pone.0230571)) -- US men with hormone-sensitive prostate cancer from a medical claims database; ratifies the new `PSA_BL` and `CONMED_ANTIANDROGEN` covariate canonicals and the `kge_sens` / `rp` parameter names.
+- Add Yang 2021 unecritinib (TQ-B3101) and its active metabolite crizotinib ([doi:10.3389/fphar.2021.782518](https://doi.org/10.3389/fphar.2021.782518)) -- Chinese adults with advanced solid tumours or ALK-positive anaplastic large cell lymphoma, and adolescents with ALK-positive ALCL.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 

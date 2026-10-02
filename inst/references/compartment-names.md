@@ -5315,6 +5315,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Mitra_2026_ziftomenib.R` (sequential two-stage popPK; KO-516 central + one peripheral compartment; 1:1 in-vitro-anchored KO-739:KO-516 metabolic split; Table 1).
 - **Notes:** Follows the paper-named metabolite suffix convention established by `m1` / `m2` / `m3` / `m8`. Kura development-code compound designation retained instead of a chemical-name shorthand because the paper does not disclose the chemical identity of the metabolite.
 
+### crizotinib (**canonical crizotinib suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Crizotinib, the ALK/ROS1/MET kinase inhibitor, when it enters a model as the active metabolite of a prodrug rather than as the dosed drug. Founding case: unecritinib (TQ-B3101), the N-acetyl amide of crizotinib, is converted to crizotinib by amide hydrolysis. Used in parent + metabolite joint popPK extractions of unecritinib.
+- **Source aliases:** `TQ-B3101M` (Yang 2021 throughout, which names the analytes only by development code; subscript `m` on the metabolite parameters, e.g. `CLm/Fm`, `Vcm/Fm`). The identity is from PubChem (unecritinib CID 71506874, synonym TQ-B3101) and from later bioanalytical work naming crizotinib as the active metabolite of unecritinib (doi:10.1016/j.jpba.2024.116199).
+- **Example models:** `Yang_2021_unecritinib.R` (founding example; `central_crizotinib` + `peripheral1_crizotinib`, `Cc_crizotinib` in crizotinib mass units via the PubChem molecular-weight ratio applied to the formation flux; Table 3).
+- **Notes:** Spelled out, following the drug-name suffixes `sunitinib` / `osimertinib` / `rosuvastatin`, because the metabolite is itself a marketed drug with an INN; the development code `TQ-B3101M` is recorded as the source alias instead. A model in which crizotinib is the DOSED drug uses the bare canonical names (`central`, `Cc`) and needs no suffix. Every clearance and volume carrying this suffix in the founding model is apparent in the compound sense `X/Fm`.
+
 ### endox (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Endoxifen (4-hydroxy-N-desmethyltamoxifen), major active metabolite of tamoxifen.
