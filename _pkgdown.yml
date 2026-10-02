@@ -386,8 +386,16 @@ navbar:
         href: articles/HernandezLozano_2025_apramycin.html
       - text: "Apramycin mouse (HernandezLozano 2025)"
         href: articles/HernandezLozano_2025_apramycin.html
+      - text: "Apremilast (Okubo 2021)"
+        href: articles/Okubo_2021_apremilast.html
       - text: "Apremilast (Warren 2025)"
         href: articles/Warren_2025_pde4_il13_atopic_dermatitis.html
+      - text: "Apremilast pasi50 (Okubo 2021)"
+        href: articles/Okubo_2021_apremilast.html
+      - text: "Apremilast pasi75 (Okubo 2021)"
+        href: articles/Okubo_2021_apremilast.html
+      - text: "Apremilast spga (Okubo 2021)"
+        href: articles/Okubo_2021_apremilast.html
       - text: "Apricoxib (Kastrissios 2006)"
         href: articles/Kastrissios_2006_apricoxib.html
       - text: "Apricoxib (Rohatagi 2008)"
@@ -8567,6 +8575,7 @@ articles:
   - articles/Okada_2024_triazolam
   - articles/Okada_2025_rocatinlimab
   - articles/Okamoto_2021_vedolizumab
+  - articles/Okubo_2021_apremilast
   - articles/Okumura_2025_ergothioneine_pbpk
   - articles/Olafuyi_2025_propyleneGlycol
   - articles/Olagunju_2018_efavirenz
