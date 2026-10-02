@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kosinsky 2022 camostat / FOY-251 ([doi:10.1128/spectrum.02167-21](https://doi.org/10.1128/spectrum.02167-21)) -- semi-mechanistic PK/PD of TMPRSS2 covalent inhibition and SARS-CoV-2 viral entry (human PK fit; in-vitro PD). Registers the `CONC_FOY251_NM` covariate column.
+- Add Kim 2022 piperacillin and tazobactam ([doi:10.1093/jac/dkac059](https://doi.org/10.1093/jac/dkac059)) -- critically ill Korean adults with and without ECMO.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
