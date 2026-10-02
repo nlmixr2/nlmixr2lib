@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2022 latamoxef, total and R- and S-epimer models ([doi:10.3390/pharmaceutics14051033](https://doi.org/10.3390/pharmaceutics14051033)) -- Chinese children aged 0.08-10.58 years with bacterial infection.
+- Add Hartman 2022 cefotaxime ([doi:10.1093/jac/dkac095](https://doi.org/10.1093/jac/dkac095)) -- critically ill children (0-18 years) in a paediatric intensive care unit.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
