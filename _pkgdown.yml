@@ -864,6 +864,8 @@ navbar:
         href: articles/Cao_2025_busulfan.html
       - text: "Busulfan (Choe 2012)"
         href: articles/Choe_2012_busulfan.html
+      - text: "Busulfan (Du 2022)"
+        href: articles/Du_2022_busulfan.html
       - text: "Busulfan (Lawson 2022)"
         href: articles/Lawson_2022_busulfan.html
       - text: "Busulfan (LongBoyle 2015)"
@@ -7529,6 +7531,7 @@ articles:
   - articles/Du_2019_magnesiumSulfate
   - articles/Du_2019_magnesiumSulfate_eclampsia
   - articles/Du_2021_cefathiamidine
+  - articles/Du_2022_busulfan
   - articles/Du_2025_repotrectinib
   - articles/Duan_2024_linezolid
   - articles/Duffull_2025_tmdd_model_instability
