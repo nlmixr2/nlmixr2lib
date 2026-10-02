@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gupta 2022 mobocertinib with active metabolites AP32960 and AP32914 ([doi:10.1002/psp4.12785](https://doi.org/10.1002/psp4.12785)) -- healthy volunteers and adults with metastatic non-small cell lung cancer (registers the new `ap32960` / `ap32914` metabolite suffixes).
+- Add Goyal 2022 vancomycin ([doi:10.3389/fphar.2022.873439](https://doi.org/10.3389/fphar.2022.873439)) -- hospitalized pregnant women.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
