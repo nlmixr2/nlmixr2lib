@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jin 2022 lithium ([doi:10.3389/fphar.2022.913935](https://doi.org/10.3389/fphar.2022.913935)) -- Chinese adults and adolescents with bipolar disorder on lithium carbonate maintenance therapy (registers the `DOSE_LITHIUM_CARBONATE_MGD` covariate).
+- Add Edlund 2022 acalabrutinib and ACP-5862 ([doi:10.1111/bcp.14988](https://doi.org/10.1111/bcp.14988)) -- adults with B-cell malignancies and healthy subjects.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

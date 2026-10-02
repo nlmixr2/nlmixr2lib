@@ -84,6 +84,8 @@ navbar:
         href: articles/Wickramasinghe_2025_spatial_cns_pbpk.html
       - text: "Abemaciclib qsp (Zhang 2025)"
         href: articles/Zhang_2025_abemaciclib.html
+      - text: "Acalabrutinib (Edlund 2022)"
+        href: articles/Edlund_2022_acalabrutinib.html
       - text: "Acalabrutinib (Zhou 2019)"
         href: articles/Zhou_2019_acalabrutinib.html
       - text: "Acetaminophen (Franke 2015)"
@@ -7721,6 +7723,7 @@ articles:
   - articles/Ebihara_2025_tebipenem
   - articles/Echterhof_2026_phage_pbpk
   - articles/Eckernas_2023_dimethyltryptamine_EEG
+  - articles/Edlund_2022_acalabrutinib
   - articles/Edrich_2015_heparin
   - articles/Edstein_2001_tafenoquine
   - articles/Edwards_2016_obeticholicAcid
