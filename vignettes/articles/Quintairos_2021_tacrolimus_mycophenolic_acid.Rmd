@@ -21,19 +21,21 @@ library(ggplot2)
 
 Quintairos 2021 built two population PK models, one for tacrolimus and one for
 mycophenolic acid (MPA), in the same cohort of adult de novo kidney transplant
-recipients. The two models were fitted separately, so they are packaged as two
-model files:
+recipients. It then used the individual exposures predicted by these models,
+together with two urinary biomarkers, as candidate predictors in a logistic
+regression of acute rejection. The three models were fitted separately, so they
+are packaged as three model files:
 
 * `Quintairos_2021_tacrolimus`: `r rxode2::rxode(readModelDb("Quintairos_2021_tacrolimus"))$description`
 * `Quintairos_2021_mycophenolic_acid`: `r rxode2::rxode(readModelDb("Quintairos_2021_mycophenolic_acid"))$description`
+* `Quintairos_2021_kidneyTransplantRejection`: `r rxode2::rxode(readModelDb("Quintairos_2021_kidneyTransplantRejection"))$description`
 * Citation: `r rxode2::rxode(readModelDb("Quintairos_2021_tacrolimus"))$reference`
 * Article: <https://doi.org/10.1371/journal.pone.0245880> (open access). The
   supporting information includes the NONMEM control streams (S1 Appendix) and
   the analysis datasets (S1-S3 Tables).
 
-The paper then used the individual exposures predicted by these models, together
-with two urinary biomarkers, as candidate predictors in a logistic regression of
-acute rejection.
+The PK models are validated first. The logistic regression is covered in its
+own section at the end.
 
 # Population
 
@@ -58,8 +60,9 @@ element of each model, for example
 
 # Source trace
 
-Parameter values come from Table 4. The model structure comes from the S1
-Appendix NONMEM control streams. These are ADVAN4/TRANS4 two-compartment models
+PK parameter values come from Table 4 and the logistic-regression values from
+Table 5. The model structure comes from the S1 Appendix NONMEM control streams.
+The PK streams are ADVAN4/TRANS4 two-compartment models
 with first-order absorption and `ALAG1`, MU-referenced exponential random
 effects, and the error models transcribed below. The stream `$THETA` records
 are initial estimates (for example, the MPA V2 initial value is 46 L against the
@@ -87,6 +90,10 @@ final 106 L), so no value is taken from them.
 | MPA | ka multiplied by `WT/70` | exponent 1, fixed | control stream `KA = EXP(MU_5+ETA(5)) * DCOV` |
 | Both | Allometry `(WT/70)^0.75` on CL/F and Q/F, `(WT/70)^1` on Vc/F and Vp/F | fixed | Methods, Pharmacokinetic models; MPA control stream `ECOV`, `DCOV` |
 | Both | Fixed random effects `omega = 0.01` (tacrolimus ka, Vp, tlag; MPA Q, ka, tlag) | fixed | control stream `$OMEGA 0.01 FIX` |
+| Acute rejection | Intercept (`logit_ref`) | -5.89 | Table 5, beta0 |
+| Acute rejection | miR155-5p slope (`e_mir155_urine_logit`) | 3.51 per 2^-dCq unit | Table 5, beta1 |
+| Acute rejection | `logit = logit_ref + e_mir155_urine_logit * MIR155_URINE`; `prob = expit(logit)` | n/a | Table 5 equation; control stream `$PRED` |
+| Acute rejection | No between-subject variability | omega 0 | control stream `$OMEGA 0 FIX` |
 
 ## Reading of the BSV column
 
@@ -360,6 +367,164 @@ med_auc_mpa
 stopifnot(med_auc_mpa > 20, med_auc_mpa < 80)
 ```
 
+# Acute-rejection logistic regression
+
+The paper's final logistic model links a single predictor, the urinary-pellet
+miR155-5p relative expression measured at a visit (`MIR155_URINE`, 2^-dCq), to
+the probability of biopsy-proven acute rejection (AR):
+
+logit(P) = -5.89 + 3.51 x `MIR155_URINE` (Table 5).
+
+Each rejection was attributed to the visit *before* it occurred, so P is the
+probability that AR is diagnosed before the next visit. The predicted
+tacrolimus and MPA exposures (cumulative AUC and mean troughs from the two PK
+models above) and urinary CXCL-10 were tested and not retained. The model
+therefore has no drug input, and the PK models are not needed to use it.
+
+## Refit of the deposited dataset
+
+The S3 Table dataset holds the analysis data for this model. After the control
+stream's `IGNORE` filters (visits with a missing or zero miR155-5p value are
+dropped), 183 visit records from 58 patients remain, with 8 AR events, matching
+the Results text. The miR155-5p values of those 183 records, in dataset order,
+and the positions of the 8 AR records are reproduced below. An ordinary
+maximum-likelihood logistic regression on them (`glm`) is equivalent to the
+NONMEM Laplacian fit with its only omega fixed at 0, so it should return the
+Table 5 estimates.
+
+```{r ar-data}
+# S3 Table (Quintairos 2021), column M155, after the control stream filters
+# IGNORE = (M155.EQ.9999) and IGNORE = (M155.EQ.0).
+mir155 <- c(
+  0.08, 0.32, 0.63, 0.11, 0.24, 0.36, 0.40, 0.66, 0.01, 0.03, 0.26, 0.03, 0.03, 0.24,
+  0.44, 0.21, 0.33, 0.03, 0.03, 0.16, 0.18, 0.22, 0.06, 1.03, 0.22, 0.09, 0.03, 0.02,
+  0.04, 0.97, 0.17, 0.05, 0.57, 1.09, 0.07, 0.24, 0.08, 0.04, 0.19, 0.29, 0.94, 0.16,
+  0.23, 0.35, 0.19, 0.05, 0.03, 0.01, 0.10, 0.02, 0.01, 0.01, 0.01, 0.06, 0.06, 0.01,
+  0.26, 0.03, 0.04, 0.02, 0.07, 0.03, 0.09, 1.13, 0.01, 0.50, 0.07, 0.52, 0.20, 0.20,
+  0.23, 0.20, 0.36, 0.03, 0.05, 0.05, 0.52, 0.06, 0.08, 0.04, 0.02, 0.02, 0.01, 0.45,
+  0.12, 0.06, 1.54, 0.02, 0.19, 0.08, 1.27, 0.04, 0.04, 0.01, 0.01, 0.19, 0.40, 1.85,
+  0.02, 0.22, 1.25, 0.33, 0.96, 0.02, 0.03, 0.03, 0.04, 0.04, 0.85, 1.05, 1.27, 0.01,
+  0.03, 0.44, 0.23, 1.24, 0.04, 0.08, 0.12, 0.08, 0.03, 0.01, 1.26, 0.83, 0.02, 0.08,
+  0.03, 0.19, 0.13, 0.26, 0.03, 0.07, 0.63, 0.06, 0.07, 0.01, 2.23, 0.40, 0.66, 0.60,
+  1.82, 0.05, 0.02, 0.39, 0.21, 0.02, 0.04, 0.01, 0.36, 0.40, 0.24, 0.01, 0.01, 0.05,
+  0.01, 0.01, 0.02, 0.03, 0.03, 0.85, 0.01, 0.01, 0.01, 1.04, 1.06, 0.94, 1.63, 0.84,
+  0.10, 0.77, 1.22, 1.45, 0.08, 0.06, 0.03, 0.02, 2.80, 1.84, 0.06, 0.15, 0.05, 0.10,
+  0.08
+)
+ar_rows <- c(98, 116, 165, 167, 168, 172, 177, 178)
+ar_data <- data.frame(mir155 = mir155, ar = 0L)
+ar_data$ar[ar_rows] <- 1L
+c(records = nrow(ar_data), events = sum(ar_data$ar))
+stopifnot(nrow(ar_data) == 183, sum(ar_data$ar) == 8)
+```
+
+```{r ar-refit}
+refit <- glm(ar ~ mir155, family = binomial(), data = ar_data)
+refit_tab <- data.frame(
+  parameter = c("beta0 (logit_ref)", "beta1 (e_mir155_urine_logit)"),
+  table5 = c(-5.89, 3.51),
+  table5_rse_pct = c(15, 24),
+  refit = unname(coef(refit)),
+  refit_rse_pct = unname(100 * sqrt(diag(vcov(refit))) / abs(coef(refit)))
+)
+knitr::kable(refit_tab, digits = c(0, 2, 0, 3, 1), row.names = FALSE)
+# glm is deterministic, so a tight bound holds on every platform: a misread
+# coefficient or a wrong data filter moves the refit by far more than 0.01.
+stopifnot(all(abs(refit_tab$refit - refit_tab$table5) < 0.01))
+```
+
+The refit reproduces both coefficients to the printed precision, and the slope
+RSE (24.5% against the printed 24%). The intercept RSE is about 19% against the
+printed 15%. That difference most likely comes from the two covariance
+estimators (the `glm` Wald standard error against the NONMEM covariance step),
+and it does not affect the point estimates.
+
+## Packaged model against the deposited data
+
+The packaged model is solved at the 183 observed miR155-5p values. Its
+probabilities must equal the closed form `expit(-5.89 + 3.51 x MIR155_URINE)`.
+A maximum-likelihood logistic fit with an intercept also has the property that
+its fitted probabilities sum to the observed number of events, so the packaged
+(rounded) coefficients should predict very nearly 8 events over these visits.
+
+```{r ar-solve}
+mod_ar <- readModelDb("Quintairos_2021_kidneyTransplantRejection")
+ev_ar <- data.frame(
+  id = seq_len(nrow(ar_data)), time = 0, amt = 0, evid = 0L,
+  MIR155_URINE = ar_data$mir155
+)
+sim_ar <- as.data.frame(rxode2::rxSolve(mod_ar, events = ev_ar, returnType = "data.frame"))
+ar_data$prob <- sim_ar$prob_acute_rejection
+closed_form <- plogis(-5.89 + 3.51 * ar_data$mir155)
+expected_events <- sum(ar_data$prob)
+expected_events
+stopifnot(
+  # Same parameters on both sides: the difference is numerical only.
+  all(abs(ar_data$prob - closed_form) < 1e-8),
+  abs(expected_events - 8) < 0.25
+)
+```
+
+## Predicted risk against miR155-5p (Figures 3 and 4)
+
+```{r ar-curve, fig.width = 7, fig.height = 4}
+grid_ar <- data.frame(
+  id = 1L, time = seq_len(141), amt = 0, evid = 0L,
+  MIR155_URINE = seq(0, 2.8, by = 0.02)
+)
+curve_ar <- as.data.frame(rxode2::rxSolve(mod_ar, events = grid_ar, returnType = "data.frame"))
+curve_ar$MIR155_URINE <- grid_ar$MIR155_URINE
+ggplot(curve_ar, aes(MIR155_URINE, prob_acute_rejection)) +
+  geom_line(linewidth = 1) +
+  geom_rug(data = filter(ar_data, ar == 0), aes(x = mir155), inherit.aes = FALSE,
+           sides = "b", alpha = 0.4) +
+  geom_rug(data = filter(ar_data, ar == 1), aes(x = mir155), inherit.aes = FALSE,
+           sides = "t", colour = "firebrick") +
+  labs(
+    x = "Urinary miR155-5p relative expression (2^-dCq)",
+    y = "P(acute rejection before next visit)",
+    caption = "Rugs: deposited visit records without (bottom) and with (top, red) a subsequent AR."
+  ) +
+  theme_bw()
+```
+
+The probability stays below 1% up to an expression of about 0.37 (75% of the
+visits), rises to 8.5% at 1.0 and passes 50% at 1.68.
+
+Figure 4 of the paper compares observed and predicted AR proportions across 10
+bins of miR155-5p expression. The same comparison is made below with 10
+equal-count bins of the deposited records. The predicted column is the mean
+probability from the packaged model, and the interval is the 2.5th to 97.5th
+percentile of the number of events in 1000 Bernoulli replicates of each bin.
+
+```{r ar-bins}
+set.seed(20210122)
+reps <- matrix(rbinom(1000 * nrow(ar_data), 1, rep(ar_data$prob, 1000)), nrow = nrow(ar_data))
+bins <- ar_data |>
+  mutate(bin = dplyr::ntile(mir155, 10), row = dplyr::row_number()) |>
+  group_by(bin) |>
+  summarise(
+    mir155_range = sprintf("%.2f-%.2f", min(mir155), max(mir155)),
+    n = n(),
+    observed_events = sum(ar),
+    predicted_events = sum(prob),
+    pi_low = unname(quantile(colSums(reps[row, , drop = FALSE]), 0.025)),
+    pi_high = unname(quantile(colSums(reps[row, , drop = FALSE]), 0.975)),
+    .groups = "drop"
+  )
+bins |>
+  dplyr::rename(
+    "Bin" = bin, "miR155-5p range" = mir155_range, "Visits" = n,
+    "Observed AR" = observed_events, "Predicted AR" = predicted_events,
+    "95% PI low" = pi_low, "95% PI high" = pi_high
+  ) |>
+  knitr::kable(digits = 2)
+# Seven of the eight events fall in the top bin, where the model also places
+# most of its predicted events; every bin's observed count lies inside its
+# replicate interval.
+stopifnot(all(bins$observed_events >= bins$pi_low & bins$observed_events <= bins$pi_high))
+```
+
 # Assumptions and deviations
 
 * **Weight scaling on tacrolimus.** The S1 Appendix tacrolimus control stream
@@ -395,3 +560,22 @@ stopifnot(med_auc_mpa > 20, med_auc_mpa < 80)
 * **Virtual dose schedule.** Real doses were individualised by therapeutic
   drug monitoring. The simulation gives the Table 2 mean dose for each visit
   over the period leading up to that visit, at the nominal visit days.
+* **Logistic model: miR155-5p scale.** Table 2 and Figures 3 and 4 label the
+  miR155-5p unit 'dCt'. The Methods define the reported value as the relative
+  expression 2^-dCq, and the deposited values (all positive, 0.01-2.80) are on
+  that scale, so `MIR155_URINE` holds 2^-dCq. A user with raw dCq values must
+  convert them with `2^(-dCq)` first.
+* **Logistic model: random effect and residual error.** The control stream
+  carries `ETA(1)` on the logit with `$OMEGA 0 FIX`, so the model has no
+  between-subject variability and the zero-variance eta is omitted. A
+  Bernoulli outcome has no residual error. The packaged model returns the
+  probability and attaches a placeholder additive error (SD 0.001, fixed) only
+  so that rxode2 has an observation model. To simulate events, draw
+  `rbinom(n, 1, prob_acute_rejection)` from the solved probabilities.
+* **Logistic model: prediction window.** Because each rejection was attributed
+  to the preceding visit, the probability refers to the interval up to the next
+  scheduled visit (about 3 weeks after week 1, 1 month after months 1 and 2, and
+  3 months after month 3). It is not a probability over a fixed duration.
+  In the deposited dataset seven of the eight events are recorded on the
+  first-occasion (week-1) record, so most of the information behind the slope
+  comes from the first post-transplant month.

@@ -4489,6 +4489,13 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Example models:** `Chen_2021_luspatercept_bone_pain.R` (founding example; luspatercept in beta-thalassemia, window = treatment cycles 1-2; both logistic coefficients digitized from the fitted line in Figure 4B, slope -0.00219 per ug*day/mL of starting-dose AUCss -- a flat, non-significant relationship).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex`; this entry documents what the endpoint means. Any grade, so it sits at a much higher event rate than a grade >= 3 endpoint and is not a subset of `prob_teae_grade3`. The founding source also reports a separate "bone pain-like events" grouping (a broader cluster of preferred terms); that grouping is a different endpoint and must not be packaged under this name.
 
+### prob_acute_rejection (**canonical probability of acute allograft rejection before the next visit**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a kidney transplant recipient is diagnosed with acute rejection between the current study visit and the next one, in a per-visit landmark logistic model. The founding paper counted biopsy-proven (Banff 2011) cellular rejection, and attributed each event to the visit BEFORE it occurred so that the predictor is measured ahead of the event.
+- **Source aliases:** none.
+- **Example models:** `Quintairos_2021_kidneyTransplantRejection.R` (founding example; logit = -5.89 + 3.51 * `MIR155_URINE`, urinary-pellet miR155-5p relative expression; adult de novo kidney recipients, visits at week 1 and months 1, 2, 3 and 6; 8 events in 183 visit records from 58 patients).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex`; this entry documents what the endpoint means. The window is the interval to the next scheduled visit, so it is not a fixed duration: in the founding study it runs from about 3 weeks (week 1 to month 1) to 3 months (month 3 to month 6). A probability over a fixed landmark (for example "rejection by month 12") or a time-to-rejection hazard is a different quantity and needs its own name. The founding model has no drug-exposure term: tacrolimus and mycophenolic acid exposures were tested and not retained, which the authors attribute to concentration-guided dosing. Antibody-mediated rejection, or a rejection diagnosed clinically without biopsy, is a different endpoint (append a qualifier such as `_abmr` or `_clinical`).
+
 ### fpg_placebo (**canonical fasting plasma glucose placebo arm**)
 - **Type:** compartment
 - **Role:** Fasting plasma glucose placebo-arm output state.

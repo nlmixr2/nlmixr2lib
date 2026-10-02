@@ -3036,6 +3036,22 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Almquist_2022_anifrolumab.R` (binary high-IFN indicator on CL).
 - **Notes:** Pair with continuous `BGENE21` when the paper reports both. The high/low cut-off is paper-specific (commonly the population median) and must be documented in `covariateData[[BGENE21_HIGH]]$notes` for every model that uses this covariate. The maintainers chose `BGENE21_HIGH` (not `IFNGS_HIGH`) so the link to the existing `BGENE21` register entry is explicit while the binary nature stays visible in the column name.
 
+## MicroRNA / gene-expression biomarkers
+
+Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or sequencing. Name an entry `<ANALYTE>_<MATRIX>` (analyte first, then the specimen it was measured in), because expression of the same microRNA in urine, plasma and tissue is not interchangeable. Composite multi-gene signature scores belong in the Interferon / biomarker panels section above (for example [[BGENE21]]), not here.
+
+### MIR155_URINE (**canonical for urinary-pellet miR155-5p relative expression**)
+- **Description:** Relative expression of microRNA miR155-5p in the cell pellet of a first-morning urine sample, quantified by qPCR and expressed as 2^-dCq, where dCq is the target Cq minus the reference-control Cq of the same sample. Higher values mean higher expression. miR155 is an inflammatory microRNA expressed by activated T cells and macrophages; in kidney transplantation its urinary expression rises with T-cell-mediated (cellular) rejection.
+- **Units:** (relative expression, 2^-dCq). Dimensionless. Document the reference control in `covariateData[[MIR155_URINE]]$notes`, because a different normaliser changes the scale.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a. Quintairos 2021 enters it linearly and untransformed on the logit, so no reference value applies and the intercept is the logit at zero expression.
+- **Source aliases:**
+  - `M155` -- Quintairos 2021 control stream and S3 Table dataset column.
+  - `miR155-5p` -- Quintairos 2021 Table 2 and Table 5. Table 2 labels the unit 'dCt', but the printed values are on the 2^-dCq scale that the Methods define.
+- **Example models:** `Quintairos_2021_kidneyTransplantRejection.R` (founding example; time-varying, measured at week 1 and months 1, 2, 3 and 6 post-transplant; logit of acute rejection before the next visit = -5.89 + 3.51 * MIR155_URINE; observed range 0.01-2.80 and median 0.08 over the 183 modelled visits).
+- **Notes:** The value spans more than two orders of magnitude and is strongly right-skewed (week-1 median 0.08 against a global mean of 0.39 in Quintairos 2021 Table 2), so a simulated cohort should draw it on the log scale or resample observed values. Store a value on the 2^-dCq scale. If a paper reports dCq itself (a log2-scale quantity where higher means LOWER expression), convert it with `2^(-dCq)` rather than storing it here unchanged. Expression of the same microRNA in plasma or serum, or of a different microRNA, needs its own entry (`MIR155_PLASMA`, `MIR142_URINE`, ...).
+
 ## Inflammation markers
 
 ### EOS (**canonical for blood eosinophil count**)
