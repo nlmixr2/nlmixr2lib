@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gupta 2022 brigatinib exposure-response ([doi:10.1111/cts.13231](https://doi.org/10.1111/cts.13231)) -- adults with ALK-inhibitor-naive ALK-positive advanced NSCLC on first-line brigatinib in ALTA-1L; 18 logistic efficacy and safety models and 3 Cox PFS relative-hazard models.
+- Add He 2022 schizandrol A and schizandrol B ([doi:10.3390/ijms23094485](https://doi.org/10.3390/ijms23094485)) -- in vitro CYP3A4/CYP3A5 reversible and time-dependent inhibition by two Wuzhi-capsule lignans (CYP3A5-genotyped human liver microsomes); registers the `CP_SZA_UM` and `CP_SZB_UM` covariate columns.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 

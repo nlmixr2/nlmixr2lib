@@ -5630,6 +5630,10 @@ navbar:
         href: articles/He_2021_tacrolimus_wuzhi_cyp3a.html
       - text: "SchisantherinA cyp3a (He 2021)"
         href: articles/He_2021_tacrolimus_wuzhi_cyp3a.html
+      - text: "SchizandrolA cyp3a (He 2022)"
+        href: articles/He_2022_tacrolimus_wuzhi_schizandrol_cyp3a.html
+      - text: "SchizandrolB cyp3a (He 2022)"
+        href: articles/He_2022_tacrolimus_wuzhi_schizandrol_cyp3a.html
       - text: "Scopolamine (AlvarezJimenez 2016)"
         href: articles/AlvarezJimenez_2016_scopolamine.html
       - text: "Scopolamine (LiemMoolenaar 2011)"
@@ -7921,7 +7925,7 @@ articles:
   - articles/He_2020_phosphocreatine
   - articles/He_2021_psoriasis_mbma
   - articles/He_2021_tacrolimus_wuzhi_cyp3a
-  - articles/He_2022_gentamicin
+  - articles/He_2022_tacrolimus_wuzhi_schizandrol_cyp3a
   - articles/He_2025_YPEGrhGH
   - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz
