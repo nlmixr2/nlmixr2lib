@@ -1462,6 +1462,8 @@ navbar:
         href: articles/Wright_2025_colchicine.html
       - text: "Colchicine mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Colecalciferol (Wan 2022)"
+        href: articles/Wan_2022_colecalciferol.html
       - text: "Colistin (Jacobs 2016)"
         href: articles/Jacobs_2016_colistin.html
       - text: "Colistin (Karaiskos 2015)"
@@ -9404,6 +9406,7 @@ articles:
   - articles/Wahlquist_2024_propofol
   - articles/Wallender_2021_piperaquine
   - articles/Walsh_2024_buprenorphine_opioidBlockade
+  - articles/Wan_2022_colecalciferol
   - articles/Wang_2010_romiplostim
   - articles/Wang_2011_raltegravir
   - articles/Wang_2012_levetiracetam

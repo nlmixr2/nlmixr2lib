@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fukushima 2022 soybean oil-based lipid emulsion triglyceride kinetics ([doi:10.1002/jpen.2111](https://doi.org/10.1002/jpen.2111)) -- adult Japanese inpatients receiving parenteral nutrition.
+- Add Wan 2022 colecalciferol ([doi:10.1111/bcp.15064](https://doi.org/10.1111/bcp.15064)) -- children aged 1-18 years with chronic kidney disease stages 2-4.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
