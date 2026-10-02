@@ -92,6 +92,8 @@ navbar:
         href: articles/Hammer_2020_acetaminophen.html
       - text: "Acetaminophen (Mian 2019)"
         href: articles/Mian_2019_acetaminophen.html
+      - text: "Acetaminophen (Morse 2022)"
+        href: articles/Morse_2022_acetaminophen_ibuprofen.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen diclofenac mbma (Sethi 2024)"
@@ -2778,6 +2780,8 @@ navbar:
         href: articles/Ibrahim_2025_ibrutinib.html
       - text: "Ibuprofen (Hirt 2008)"
         href: articles/Hirt_2008_ibuprofen.html
+      - text: "Ibuprofen (Morse 2022)"
+        href: articles/Morse_2022_acetaminophen_ibuprofen.html
       - text: "Ibuprofen microgravity (Idkaidek 2011)"
         href: articles/Idkaidek_2011_ibuprofen.html
       - text: "Ibuprofen normalGravity (Idkaidek 2011)"
@@ -8466,6 +8470,7 @@ articles:
   - articles/Morris_2011_artesunate
   - articles/Morris_2011_telapristone
   - articles/Morse_2012_ghb_rbc_invitro
+  - articles/Morse_2022_acetaminophen_ibuprofen
   - articles/Mosha_2014_artemether_lumefantrine
   - articles/Mouksassi_2015_thrombomodulinAlfa
   - articles/Mould_2007_alemtuzumab
