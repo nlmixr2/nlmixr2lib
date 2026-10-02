@@ -732,10 +732,7 @@ stopifnot(nrow(half_dose) >= 3L, all(half_dose$rel_pct > 0), all(half_dose$rel_p
 
 - Neither **Rong 2019** (doi:10.1007/s40262-019-00771-3, PMID 31055791) nor
   **van Hest 2005** (doi:10.2165/00003088-200544100-00006, PMID 16176120) is open
-  access. Unpaywall reports `is_oa = False` with zero OA locations for Rong; for
-  van Hest both listed OA locations are metadata-only Erasmus repository records
-  with no retrievable PDF. Europe PMC has no PMCID, no full text, and no PDF for
-  either. Neither was available when this model was built.
+  access, and neither was available when this model was built.
 - Every parameter value therefore comes from the **Maizaud 2025 S1 File**
   `mrgsolve` source plus Maizaud 2025 Table 1. The two are independent
   transcriptions of the same models and cross-check on all 13 random-effect

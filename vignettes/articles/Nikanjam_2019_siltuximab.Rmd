@@ -103,7 +103,7 @@ the reference values used in the parameterization.
 | Source column | Canonical column used here |
 | --- | --- |
 | `WT` | `WT` |
-| `ALB` (g/dL) | `ALB` |
+| `ALB` (g/dL) | `ALB` (g/L; the model converts to g/dL internally) |
 | `ALT` (U/L) | `ALT` (newly registered; see `inst/references/covariate-columns.md`) |
 | `SCR` (mg/dL) | `CREAT` (canonical for serum creatinine) |
 | `HV` (healthy-volunteer indicator) | `DIS_HEALTHY` (newly registered) |
@@ -128,7 +128,7 @@ make_cohort <- function(n, hv = 0L, cd = 0L, smm = 0L,
     id  = id_offset + seq_len(n),
     cohort = cohort_label,
     WT  = rlnorm(n, meanlog = log(73), sdlog = 0.20),       # ~73 kg, range ~40-170
-    ALB = pmax(20, pmin(rnorm(n, 41, 4), 52)),         # 41 g/dL, clip to study range
+    ALB = pmax(20, pmin(rnorm(n, 41, 4), 52)),              # 41 g/L, clip to study range
     ALT = pmax(4,   pmin(rlnorm(n, log(19), 0.45), 96)),    # 19 U/L, log-normal in study range
     CREAT = pmax(0.4, pmin(rlnorm(n, log(0.9), 0.20), 2.4)),# 0.9 mg/dL, log-normal in study range
     DIS_HEALTHY        = hv,
@@ -353,8 +353,8 @@ distributions:
 
 - **Weight** sampled log-normal around 73 kg with sdlog = 0.20,
   truncated to the study range (40-170 kg).
-- **Albumin** sampled normal around 4.1 g/dL with SD 0.4 g/dL, clipped
-  to [2.0, 5.2] g/dL.
+- **Albumin** sampled normal around 41 g/L (4.1 g/dL) with SD 4 g/L,
+  clipped to [20, 52] g/L.
 - **ALT** sampled log-normal around 19 U/L with sdlog = 0.45, clipped
   to [4, 96] U/L.
 - **Serum creatinine** sampled log-normal around 0.9 mg/dL with sdlog

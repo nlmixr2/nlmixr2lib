@@ -406,9 +406,8 @@ deserve to be called out explicitly.
   ≈ 150 kDa per Hood 2021 Methods).
 
 * **No erratum located.** A focused search of the open-access *Pharmaceutics*
-  paper landing page surfaced no published correction. The runner has
-  no live web access; if a downstream user identifies a correction,
-  the model file's `reference` and source-trace comments should be
+  paper landing page surfaced no published correction. If a downstream
+  user identifies a correction, the model file's `reference` and source-trace comments should be
   updated to point to it.
 
 * **Excluded subjects.** Hood 2021 excluded two subjects with apparently

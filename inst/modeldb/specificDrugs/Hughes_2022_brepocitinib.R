@@ -340,8 +340,8 @@ Hughes_2022_brepocitinib <- function() {
     # SIGMA that Equation 2 fixes to 1 and has no nlmixr2 counterpart.
     #
     # Two magnitudes are estimated, one per study phase (Base Model
-    # section); the stratum suffixes follow the pattern registered in
-    # references/parameter-names.md and used by Friberg_2012_voriconazole.R.
+    # section); the stratum suffixes follow the stratum-suffix convention
+    # used by Friberg_2012_voriconazole.R.
     # ==================================================================
     expSdHv  <- 0.527 ; label("Log-scale residual SD in the phase 1 healthy-volunteer studies")  # Table 3 'Proportional RUV (phase 1;CV)' = 0.527 (0.444 to 0.610); Abstract: '52.7% CV in healthy volunteers'
     expSdPat <- 0.875 ; label("Log-scale residual SD in the phase 2 patient studies")            # Table 3 'Proportional RUV (phase 2;CV)' = 0.875 (0.812 to 0.938); Abstract: '87.5% CV in patients'

@@ -26,7 +26,7 @@ cat("* Description: ", ui$description, "\n", sep = "")
 ```
 
 * Article: <https://doi.org/10.1002/cpdd.1477>
-* Supplement (Tables S1-S4, Figures S1-S3): <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11609056/supplementaryFiles>
+* Supplement (Tables S1-S4, Figures S1-S3): <https://europepmc.org/article/PMC/PMC11609056>
 
 Deutenzalutamide (development code HC-1119) is a deuterated analogue of
 enzalutamide, a second-generation androgen receptor antagonist. Liu 2024
@@ -133,7 +133,7 @@ four dose-escalation levels, with 100 virtual subjects per dose arm.
 # set.seed() seeds R's RNG only. rxode2's simulation RNG is partitioned per
 # solver thread, so this cohort is reproducible here and different on a machine
 # with a different thread count. Every assertion below is written to hold for
-# any cohort the model can produce (see the known-failure-patterns reference).
+# any cohort the model can produce.
 set.seed(20241202)
 rxode2::rxSetSeed(20241202)
 

@@ -21,8 +21,8 @@ library(ggplot2)
 
 * Citation: `r readModelDb("Bender_2024_mosunetuzumab")()$reference`
 * Article: <https://doi.org/10.1111/cts.13825> (open access; PMC11134317)
-* Supplement: `CTS-17-e13825-s001.docx`, retrieved from the EuropePMC
-  supplementary-files endpoint for PMC11134317. **Table S3 of that supplement
+* Supplement: `CTS-17-e13825-s001.docx`, published with the open-access
+  article (PMC11134317). **Table S3 of that supplement
   is the full NONMEM control stream and is load-bearing for this extraction** --
   the main article renders every governing equation as an undecodable formula
   image, so the covariate functional forms, the competing-drug ODEs and the

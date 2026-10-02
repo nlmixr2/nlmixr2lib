@@ -384,7 +384,7 @@ cat(sprintf("ss = 1 vs 21-day run-in, AUC over one interval: max |%% diff| = %.4
             max(abs(ss_pct)), length(ss_pct)))
 
 # Deterministic comparison of two solves of the SAME system (no random effects),
-# so a tight bound is correct here (pattern 11): the only difference is the
+# so a tight bound is correct here: the only difference is the
 # residual approach to the asymptote, which after 21 days is far below 0.1% even
 # at the slowest corner of the covariate domain.
 stopifnot(max(abs(ss_pct)) < 0.5)
@@ -625,7 +625,7 @@ cat(sprintf("PKNCA AUC0-24 vs dose/CL: max |%% diff| = %.4f%% over %d subject-ar
 
 # Deterministic: both sides describe the SAME solved system, so the residual is
 # pure trapezoidal error on the 0.25 h grid plus the ss = 1 asymptote. A tight
-# bound is correct here (pattern 11); it goes red on a mis-built event table, a
+# bound is correct here; it goes red on a mis-built event table, a
 # lost dose, a non-steady-state solve or a grid too coarse to integrate.
 stopifnot(max(abs(closed$pct)) < 0.5)
 ```

@@ -91,7 +91,7 @@ Janssen_2017_cabazitaxel <- function() {
     # linear covariate on cabazitaxel CL). The "Base model" column in the
     # same table is the development-stage model without the covariate and
     # is not extracted here (default policy: extract the final/headline
-    # model per references/replicate-author-structure.md).
+    # model).
     lcl <- log(119.0)
     label("Cabazitaxel clearance baseline CLbase at population midazolam CL of 26 L/h (L/h)")  # Table 2B metab-phenotype: CLbase = 119 L/h, RSE 29.6%
     lvc <- log(142.0)

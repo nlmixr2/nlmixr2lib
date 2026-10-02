@@ -191,8 +191,8 @@ Huang_2025_colistinSulfate <- function() {
     #     CL(L/h) = 3.69 * (CYSC/2.31)^-0.626 * (WT/65)^1.03
     # in which WT is unambiguously a POWER term, not an exponential one.
     # The equation is confirmed character-for-character from the publisher's
-    # native equation rendering (EuropePMC supplementaryFiles
-    # `10.1177_00368504251325334-eq2.jpg`), so this is a printed value and
+    # native equation rendering
+    # (`10.1177_00368504251325334-eq2.jpg`), so this is a printed value and
     # not a digitisation. An exponential reading is also arithmetically
     # impossible: exp(1.03 * WT/65) would multiply CL by 2.80 at the
     # reference weight instead of 1, contradicting the stated typical CL of

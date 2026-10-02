@@ -42,7 +42,8 @@ Hartinger_2023_vancomycin <- function() {
   # independent paper in the library to carry an intraperitoneal-cavity state,
   # which per the maintainers' standing ruling is the trigger to consider
   # promoting `peritoneum` to a canonical compartment; that promotion is a
-  # register decision and is proposed in the PR rather than taken unilaterally.
+  # register decision and is left to the maintainers rather than taken
+  # unilaterally.
   paper_specific_compartments <- c("peritoneum")
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

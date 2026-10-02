@@ -31,6 +31,8 @@ Nishiyama_2019_cimetidine_pbpk <- function() {
     "Between Metformin and Cimetidine.",
     "CPT Pharmacometrics Syst Pharmacol. 2019;8(6):396-406.",
     "doi:10.1002/psp4.12398.",
+    "Erratum: CPT Pharmacometrics Syst Pharmacol. 2020;9:606-608.",
+    "doi:10.1002/psp4.12539.",
     "The ODE system is transcribed from the 'Model equations for",
     "cimetidine' section of Supplementary Material S2",
     "(PSP4-8-396-s008.pdf) and the 'Development of the cimetidine PBPK",

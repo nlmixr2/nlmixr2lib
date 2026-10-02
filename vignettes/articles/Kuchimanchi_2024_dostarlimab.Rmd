@@ -153,8 +153,8 @@ cohort <- tibble(
   ID            = seq_len(n_subj),
   WT            = pmin(pmax(rlnorm(n_subj, log(73), 0.27), 34), 182),  # Table 1: median 73 kg, range 34-182
   AGE           = pmin(pmax(rnorm(n_subj, 62.7, 11),       24),  86),  # Table 1: mean 62.7 yr (overall), range 24-86
-  ALB           = pmin(pmax(rnorm(n_subj, 38.5, 5.2),      19,   51)), # Table 1: mean 38.5 g/L, range 19-51
-  ALT           = pmin(pmax(rlnorm(n_subj, log(17), 0.5),  2.9, 243)), # Table 1: median 17, range 2.9-243
+  ALB           = pmin(pmax(rnorm(n_subj, 38.5, 5.2),      19),   51), # Table 1: mean 38.5 g/L, range 19-51
+  ALT           = pmin(pmax(rlnorm(n_subj, log(17), 0.5),  2.9), 243), # Table 1: median 17, range 2.9-243
   SEXF          = rbinom(n_subj, 1, 0.820),                            # Table 1: 82.0% female
   CONMED_CHEMO = 0L                                                   # default: monotherapy
 )

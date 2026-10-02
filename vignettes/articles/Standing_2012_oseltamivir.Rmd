@@ -89,7 +89,7 @@ to make their dosing recommendation (Table 3 and Figure 5).
 set.seed(20260601)
 
 # Standing 2012 simulated 10,000 individuals; for vignette tractability
-# (5-min pkgdown render budget) we use a smaller per-group cohort and rely
+# (render time under 5 min) we use a smaller per-group cohort and rely
 # on the median statistic being reasonably stable. Median Cmax / AUC at
 # n = 200 typically lands within ~3% of the n = 10,000 median for log-normal
 # IIV at the magnitudes Standing 2012 reports.

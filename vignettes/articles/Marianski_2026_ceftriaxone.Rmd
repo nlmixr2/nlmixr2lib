@@ -22,8 +22,8 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Marianski_2026_ceftriaxone"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Marianski_2026_ceftriaxone"))$description`
 * Article: <https://doi.org/10.1093/ofid/ofaf695.1445>
-* Supplement: none. Europe PMC reports `hasSuppl = N` for PMC12792806 and the
-  abstract cites no supplementary material.
+* Supplement: none. The record (PMC12792806) has no supplementary material and
+  the abstract cites none.
 
 Marianski 2026 is an IDWeek 2025 **poster abstract** (P-1254, Session 148,
 PK/PD Studies) reporting a two-compartment population PK model for intravenous

@@ -166,8 +166,8 @@ Zhao_2025_vancomycin <- function() {
     #   CL(L/h) = 0.14 x (WT/2.12) x (Scr/30.52) x (DFI/367.18) x e^A x exp(etaCL)
     #   V       = 1.04 x (WT/2.12)
     # with NO superscript on any of the parenthesised ratios. The omission is
-    # in the publisher's own equation artwork (the EuropePMC image bundle for
-    # PMC12131725 ships equations 1-7 as spectrum.02274-24.m001-m007.jpg, and
+    # in the publisher's own equation artwork (the files deposited with
+    # PMC12131725 include equations 1-7 as spectrum.02274-24.m001-m007.jpg, and
     # m006/m007 are missing the superscripts too), so it is a production error
     # rather than a text-extraction artifact. The exponents are the Table 3
     # covariate rows, and they are confirmed numerically by back-calculating

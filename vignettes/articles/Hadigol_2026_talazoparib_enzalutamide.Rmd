@@ -428,7 +428,7 @@ gate_t5 <- published_t5 |>
   )
 
 # Guard the join first: an empty or short join would make every all() below
-# pass vacuously (pattern 10 of the known-failure catalogue).
+# pass vacuously.
 stopifnot(nrow(gate_t5) == nrow(published_t5))
 
 # Deterministic typical-value comparison -- both sides evaluate the same
@@ -542,7 +542,7 @@ VPC, since Figure 3's underlying data are not available.
 # NOT seed rxode2's simulation RNG, and rxode2 partitions its streams per
 # solver thread, so the eta draws differ on a machine with a different thread
 # count. Every assertion below is therefore written to hold for any cohort the
-# model can produce (pattern 12 of the known-failure catalogue).
+# model can produce.
 set.seed(20260912)
 
 n_per_arm <- 100L   # cap is 200 per arm; 100 is ample here

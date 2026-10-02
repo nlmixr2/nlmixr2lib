@@ -37,7 +37,7 @@ ui_riv <- rxode2::rxode(mod_riv)
 * Article: <https://doi.org/10.1002/psp4.12103>
 * Supplementary data (open access, includes the plasma/urine and
   coagulation-factor-X NONMEM control streams and the simulation figures used
-  below): <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5080649/supplementaryFiles>
+  below): <https://europepmc.org/article/PMC/PMC5080649>
 
 # Population
 

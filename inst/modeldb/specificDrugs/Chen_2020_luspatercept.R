@@ -1,15 +1,17 @@
 Chen_2020_luspatercept <- function() {
   description <- "One-compartment population PK model for luspatercept (activin receptor type IIB / IgG1 Fc-fusion) in adults with anemia due to myelodysplastic syndromes (Chen 2020), with first-order subcutaneous absorption, first-order linear elimination parameterised in CL/F and V1/F, body weight + age + baseline albumin power covariates on CL/F, and body weight + baseline albumin power covariates on V1/F."
-  reference <- "Chen N, Kassir N, Laadem A, Giuseppi AC, Shetty JK, Maxwell SE, Sriraman P, Ritland S, Linde PG, Budda B, Reynolds J, Ramji P, Palmisano M, Zhou S. Population Pharmacokinetics and Exposure-Response of Luspatercept, an Erythroid Maturation Agent, in Anemic Patients With Myelodysplastic Syndromes. CPT Pharmacometrics Syst Pharmacol. 2020 Oct;9(10):395-404. doi:10.1002/psp4.12515"
+  reference <- "Chen N, Kassir N, Laadem A, Maxwell SE, Sriraman P, Giuseppi AC, Ritland S, Linde PG, Budda B, Reynolds JG, Zhou S, Palmisano M. Population Pharmacokinetics and Exposure-Response of Luspatercept, an Erythroid Maturation Agent, in Anemic Patients With Myelodysplastic Syndromes. CPT Pharmacometrics Syst Pharmacol. 2020;9(7):395-404. doi:10.1002/psp4.12521"
   vignette <- "Chen_2020_luspatercept"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
-  # biological matrix. Derived mechanically; verified = FALSE means it has
-  # NOT been checked against the source paper.
+  # biological matrix. Luspatercept was assayed in SERUM by a validated ELISA
+  # (Methods, 'Population PK analysis': 'A fully validated enzyme-linked
+  # immunosorbent assay was used to quantify luspatercept concentration in
+  # serum'), hence specimen = 'serum' rather than 'plasma'.
   compartmentData <- list(
-    depot = list(analyte = "luspatercept", units = "mg", specimen = "administration site", verified = FALSE),
-    central = list(analyte = "luspatercept", units = "mg", specimen = "plasma", verified = FALSE)
+    depot = list(analyte = "luspatercept", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "luspatercept", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(

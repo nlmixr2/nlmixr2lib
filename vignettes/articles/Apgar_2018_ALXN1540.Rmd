@@ -36,7 +36,7 @@ human <- rxode2::rxode(readModelDb("Apgar_2018_ALXN1540_human_qsp"))
 * Citation: `r rat$reference`
 * Article: <https://doi.org/10.1002/psp4.12301>
 * Supplementary material (reaction networks, Table S1):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6391595/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC6391595>
 
 The two files are not a base/final pair: they differ in structure as well as in
 parameter values, so each is extracted as published (see *Structural

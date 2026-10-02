@@ -22,7 +22,7 @@ set.seed(1234)
 * Citation: `r rxode2::rxode(readModelDb("Cardilin_2018_radiation_radiosensitizer_mouse"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Cardilin_2018_radiation_radiosensitizer_mouse"))$description`
 * Article (open access): <https://doi.org/10.1002/psp4.12268>
-* Supplement (Europe PMC, PMC5784742): <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5784742/supplementaryFiles>
+* Supplement (Europe PMC, PMC5784742): <https://europepmc.org/article/PMC/PMC5784742>
 
 This is a preclinical tumor-growth-inhibition (TGI) model for combination
 therapy with ionizing radiation and a radiosensitizing compound (anonymized
@@ -261,10 +261,7 @@ fraction `exp(-lethal) = exp(-(1 + bRad*Cc)(alpha*D + beta*D^2))`.
 
 # Assumptions and deviations
 
-- **Metadata correction (year and name).** The provisional metadata named the model
-  `Cardilin_2017_CPT_Pharmacometrics_amp_Sys` (an automated-naming artifact in
-  which the journal name was placed in the drug slot, and the online-first year
-  2017 was used). The article's formal citation is *CPT Pharmacometrics Syst
+- **Year and name.** The article's formal citation is *CPT Pharmacometrics Syst
   Pharmacol* **2018**;7(1):51-58 (published online 14 December 2017); 2018 is
   the volume/citation year used by PubMed (PMID 29218836). The compound is
   anonymized as "RS1" in the source, so

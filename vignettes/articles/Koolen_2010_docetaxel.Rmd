@@ -387,6 +387,6 @@ cmp |>
   IV-only column of Table 2.
 - **Vignette uses 200 simulated subjects per arm, not 1000.** Koolen 2010
   Table 3 was generated from 1000 simulated subjects per arm; the validation
-  vignette here uses 200 to keep render time under the 5 minute pkgdown gate.
+  vignette here uses 200 to keep render time under 5 minutes.
   The geometric-mean point estimates remain a reasonable check; the
   paper's 90% confidence intervals would tighten on larger N.

@@ -526,8 +526,8 @@ FGA and FPNA factors.
 
 - **Target attainment uses 200 virtual subjects per stratum.** Leroux
   2016 ran 1,000 Monte Carlo simulations per condition. The vignette
-  uses 200 subjects per stratum to keep the render within the pkgdown
-  5-minute budget; with only one source of IIV (21 % CV on CL), the
+  uses 200 subjects per stratum to keep the render under
+  5 minutes; with only one source of IIV (21 % CV on CL), the
   binomial uncertainty on the per-stratum target-attainment fraction
   at n = 200 is ~3 percentage points (95 % CI half-width for a 95 %
   attainment rate), well within the discrepancy band the comparison

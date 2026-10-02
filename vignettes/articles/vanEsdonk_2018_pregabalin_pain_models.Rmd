@@ -664,10 +664,9 @@ knitr::kable(peaks, digits = 2, caption = "Peak of the cohort median by endpoint
 
 - **Appendix S3 (NONMEM control streams) is not recoverable.** The paper states
   "All NONMEM model codes have been added in Appendix S3", but the file
-  deposited in that slot by the publisher (`PSP4-7-573-s003.pdf`, retrieved from
-  the EuropePMC supplementary-files endpoint for PMC6157667) is a duplicate of
-  Appendix S2 ("Model variance correlations"); the Wiley supplement endpoint is
-  behind a challenge page. The structural readings below were therefore resolved
+  deposited in that slot by the publisher (`PSP4-7-573-s003.pdf`, PMC6157667) is a
+  duplicate of Appendix S2 ("Model variance correlations"). The structural
+  readings below were therefore resolved
   from the paper text, Figure 1b and dimensional analysis, and each is confirmed
   against the published visual predictive checks in Figure 3 by Gates 2-5.
 

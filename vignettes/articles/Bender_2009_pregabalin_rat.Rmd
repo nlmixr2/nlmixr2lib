@@ -588,7 +588,3 @@ driven inhibition is independent of the pregabalin dose).
 - **Errata search.** A targeted PubMed query
   (`19672669[UID] AND erratum`) returned no results as of the
   date this model was built; no published correction was found.
-- **Drug field corrected.** The drug was initially recorded as
-  "Pharmaceutical Research" -- that is the journal name. The actual
-  drug studied is pregabalin (with sildenafil as the DDI perpetrator).
-  The model file names reflect this correction.

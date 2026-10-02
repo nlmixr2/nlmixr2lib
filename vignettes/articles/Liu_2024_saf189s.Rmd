@@ -142,8 +142,8 @@ ev_sd <- rxode2::et(amt = 160, cmt = "depot") |>
   rxode2::et(seq(0, 336, by = 0.25))
 sd <- rxode2::rxSolve(pk_typ, ev_sd, ref_cov, returnType = "data.frame")
 
-# Half-life from a log-linear slope well after Tmax (pattern 11: a
-# time-to-50% read includes the absorption transient and reads long).
+# Half-life from a log-linear slope well after Tmax (a time-to-50% read
+# includes the absorption transient and reads long).
 half_life <- function(d) {
   fit <- stats::lm(log(Cc) ~ time, data = d)
   log(2) / (-stats::coef(fit)[["time"]])

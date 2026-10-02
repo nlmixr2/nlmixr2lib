@@ -131,9 +131,9 @@ n_subj <- 200
 # CRP median 0.837 mg/dL, 95% CI 0.030-8.83).
 cohort <- tibble::tibble(
   id  = seq_len(n_subj),
-  WT  = pmin(pmax(rlnorm(n_subj, log(68.8), 0.24),  35,  155)),
-  ALB = pmin(pmax(rlnorm(n_subj, log(39),  0.12),   23,  49)),
-  CRP = pmin(pmax(rlnorm(n_subj, log(0.837), 1.18), 0.01, 18))
+  WT  = pmin(pmax(rlnorm(n_subj, log(68.8), 0.24),  35),  155),
+  ALB = pmin(pmax(rlnorm(n_subj, log(39),  0.12),   23),  49),
+  CRP = pmin(pmax(rlnorm(n_subj, log(0.837), 1.18), 0.01), 18)
 )
 ```
 
@@ -318,12 +318,21 @@ comparison <- published |>
                 Cmax_pub, Cmax_sim, Cmax_pct_diff,
                 Cmin_pub, Cmin_sim, Cmin_pct_diff)
 
+arms_over_20 <- function(pct_diff) {
+  d <- comparison$Dose[abs(pct_diff) > 20]
+  if (length(d) == 0) "none" else paste0(paste(d, collapse = ", "), " mg")
+}
+
 knitr::kable(comparison, digits = c(0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1),
-  caption = paste("Geometric-mean exposures at week 12 (dose-3 cycle, ng/mL)",
-                  "vs. Wang 2020 Table 3. Differences > ~20% are expected for",
-                  "the 7.5 and 22.5 mg arms, where MM elimination dominates",
-                  "and Cmin is highly sensitive to virtual-cohort covariate",
-                  "distributions; see Assumptions and deviations."))
+  caption = paste0("Geometric-mean exposures at week 12 (dose-3 cycle, ng/mL) ",
+                   "vs. Wang 2020 Table 3. Arms differing from the published ",
+                   "value by more than 20%: Cave ",
+                   arms_over_20(comparison$Cave_pct_diff), "; Cmax ",
+                   arms_over_20(comparison$Cmax_pct_diff), "; Cmin ",
+                   arms_over_20(comparison$Cmin_pct_diff), ". Cmin is the ",
+                   "most sensitive metric because the week-12 trough is ",
+                   "governed by the saturable elimination; see Assumptions ",
+                   "and deviations."))
 ```
 
 # Assumptions and deviations
@@ -358,13 +367,27 @@ knitr::kable(comparison, digits = c(0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1),
   is taken as mg/dL with reference 0.837 mg/dL. If a user has CRP in mg/L
   (the canonical nlmixr2lib unit), they must divide by 10 before passing it
   to this model.
-- **Cmin sensitivity at low dose.** At 7.5 and 22.5 mg the trough at week
-  12 is dominated by the saturable MM elimination at low concentrations.
-  Simulated Cmin in this regime is highly sensitive to the cohort albumin
-  / CRP distributions and to small differences between the geometric-mean
-  vs typical-patient ratio. Differences > 20% from Table 3 in these arms
-  reflect those uncertainties rather than a structural problem with the
-  model.
+- **Cmin sensitivity.** The week-12 trough is governed by the saturable MM
+  elimination, so simulated Cmin is highly sensitive to the cohort weight,
+  albumin, and CRP distributions (Vmax/F scales with `(WT/70)^1.89`) and to
+  the difference between a geometric mean over a heterogeneous cohort and a
+  typical-patient value. Cmin differs from Table 3 by more than 20% in the
+  `r arms_over_20(comparison$Cmin_pct_diff)` arms, whereas Cave and Cmax
+  exceed a 20% difference only in the
+  `r arms_over_20(comparison$Cave_pct_diff)` (Cave) and
+  `r arms_over_20(comparison$Cmax_pct_diff)` (Cmax) arms (see the next
+  bullet). These differences reflect the cohort approximation rather than
+  a structural problem with the model.
+- **Published 150 mg row.** Wang 2020 Table 3 reports Cave 11500 / Cmax
+  17400 / Cmin 5190 ng/mL at 150 mg Q4W, which is lower per mg of dose than
+  both the 75 mg row (8160 / 12000 / 3670) and the 225 mg row (27700 /
+  38100 / 14600). With saturable elimination, dose-normalized exposure
+  rises monotonically with dose, so the model cannot reproduce that dip:
+  the simulated 150 mg exposures sit
+  `r sprintf("%.0f%%", comparison$Cave_pct_diff[comparison$Dose == 150])`
+  (Cave) and
+  `r sprintf("%.0f%%", comparison$Cmax_pct_diff[comparison$Dose == 150])`
+  (Cmax) above the published values.
 - **No PK/PD model.** Wang 2020 also fits a linear PK/PD model linking
   log-ontamalimab to log-MAdCAM-1 concentration. This nlmixr2lib model is
   PK only; the PK/PD parameters (E0 = 5.48, Slope = -0.375 on log scale,
