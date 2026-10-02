@@ -942,6 +942,8 @@ navbar:
         href: articles/Cao_2025_busulfan.html
       - text: "Busulfan (Choe 2012)"
         href: articles/Choe_2012_busulfan.html
+      - text: "Busulfan (Dadkhah 2022)"
+        href: articles/Dadkhah_2022_busulfan.html
       - text: "Busulfan (Du 2022)"
         href: articles/Du_2022_busulfan.html
       - text: "Busulfan (Lawson 2022)"
@@ -2712,6 +2714,8 @@ navbar:
         href: articles/Fuchs_2014_gentamicin.html
       - text: "Gentamicin (Ghoneim 2021)"
         href: articles/Ghoneim_2021_gentamicin.html
+      - text: "Gentamicin (He 2022)"
+        href: articles/He_2022_gentamicin.html
       - text: "Gentamicin (Hodiamont 2017)"
         href: articles/Hodiamont_2017_gentamicin.html
       - text: "Gentamicin (Llanos 2017)"
@@ -7948,6 +7952,7 @@ articles:
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
   - articles/Gupta_2021_brigatinib
+  - articles/Gupta_2022_brigatinib_exposure_response
   - articles/Gupta_2022_mobocertinib
   - articles/Gwee_2020_ivermectin
   - articles/Hadigol_2026_talazoparib_enzalutamide
@@ -8014,6 +8019,7 @@ articles:
   - articles/He_2021_tacrolimus_wuzhi_cyp3a
   - articles/He_2022_gentamicin
   - articles/He_2022_paclitaxel
+  - articles/He_2022_tacrolimus_wuzhi_schizandrol_cyp3a
   - articles/He_2025_YPEGrhGH
   - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz
@@ -8271,6 +8277,7 @@ articles:
   - articles/Kim_2019_voriconazole
   - articles/Kim_2020_CKD_519
   - articles/Kim_2020_voriconazole
+  - articles/Kim_2021_YH12852
   - articles/Kim_2022_piperacillin_tazobactam
   - articles/Kim_2023_camostat
   - articles/Kim_2023_pyrazinamide
@@ -8328,6 +8335,7 @@ articles:
   - articles/Koolen_2010_docetaxel
   - articles/Koopman_2023_factorix
   - articles/Koshimichi_2020_baloxavir
+  - articles/Kosinsky_2022_camostat
   - articles/Kotani_2022_astegolimab
   - articles/Koue_2007_aripiprazole
   - articles/Koumaki_2023_mecillinam
@@ -9014,6 +9022,7 @@ articles:
   - articles/Salehi_2025_nicotine_pbpk
   - articles/Salem_2013_cyp_ontogeny
   - articles/Salem_2014_efavirenz
+  - articles/Salgado_2022_antibody_tumor_lymph_node_pbpk
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Salinger_2019_pretomanid
   - articles/Sampson_2014_azithromycin
