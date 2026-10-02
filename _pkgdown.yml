@@ -3382,6 +3382,8 @@ navbar:
         href: articles/Bosch_2022_liraglutide_qsp.html
       - text: "Lisinopril (Thomson 1989)"
         href: articles/Thomson_1989_lisinopril.html
+      - text: "Lithium (Jin 2022)"
+        href: articles/Jin_2022_lithium.html
       - text: "Lithium (Yuan 2021)"
         href: articles/Yuan_2021_lithium.html
       - text: "LngIus52mg (Jensen 2023)"
@@ -7963,6 +7965,7 @@ articles:
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
   - articles/Jin_2020_amikacin
+  - articles/Jin_2022_lithium
   - articles/Jin_2025_benralizumab
   - articles/Jin_2026_colistinSulfate
   - articles/Joerger_2006_methotrexate

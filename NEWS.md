@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Jin 2022 lithium ([doi:10.3389/fphar.2022.913935](https://doi.org/10.3389/fphar.2022.913935)) -- Chinese adults and adolescents with bipolar disorder on lithium carbonate maintenance therapy (registers the `DOSE_LITHIUM_CARBONATE_MGD` covariate).
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
