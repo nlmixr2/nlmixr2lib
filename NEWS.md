@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Abrams 2022 SAR442257 (CD38xCD28xCD3 trispecific T-cell engager) QSP ([doi:10.1038/s41598-022-14726-5](https://doi.org/10.1038/s41598-022-14726-5)) -- in vitro model of human peripheral-blood T cells, CD38+ PBMCs and multiple myeloma cells.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.

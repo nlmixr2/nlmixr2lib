@@ -5528,6 +5528,8 @@ navbar:
         href: articles/Qi_2014_sapropterin.html
       - text: "Saquinavir (vonHentig 2009)"
         href: articles/vonHentig_2009_saquinavir.html
+      - text: "Sar442257 qsp (Abrams 2022)"
+        href: articles/Abrams_2022_sar442257_qsp.html
       - text: "Sarilumab (Xu 2019)"
         href: articles/Xu_2019_sarilumab.html
       - text: "Sarilumab anc (Ma 2020)"
@@ -6989,6 +6991,7 @@ articles:
   - articles/Abegesah_2025_durvalumab
   - articles/AbouAuda_2024_gentamicin
   - articles/Abouelhassan_2024_sulbactam_elf_pneumonia
+  - articles/Abrams_2022_sar442257_qsp
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abulfathi_2021_meropenem
