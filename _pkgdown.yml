@@ -4068,6 +4068,8 @@ navbar:
         href: articles/Suzuki_2024_mycophenolic_acid.html
       - text: "Mycophenolic acid (Wang 2021)"
         href: articles/Wang_2021_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Wang 2022)"
+        href: articles/Wang_2022_mycophenolic_acid.html
       - text: "Mycophenolic acid (Ye 2025)"
         href: articles/Ye_2025_mycophenolic_acid.html
       - text: "Mycophenolic acid (Yu 2017)"
@@ -9219,6 +9221,7 @@ articles:
   - articles/Wang_2021_sunitinib
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2022_daidzein_equol
+  - articles/Wang_2022_mycophenolic_acid
   - articles/Wang_2022_ornithinePhenylacetate
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2023_methotrexate
