@@ -982,7 +982,7 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** DAS28 change-from-baseline (DAS28cfb) PD output used by rheumatoid-arthritis models that fit the paper-declared change score rather than the absolute DAS28 value. Companion to `das28` (which holds the absolute score); use `das28cfb` when the paper's own equation targets `DAS28cfb = f(t, Cij)`, with the change interpretation as a negative-going quantity for treatment improvement. Same canonical-lower-case-name convention as `das28` / `d_updrs`.
 - **Source aliases:** `DAS28cfb` -- Williams 2016 paper notation.
-- **Example models:** `Williams_2016_rituximab_das28cfb.R`.
+- **Example models:** `Williams_2016_rituximab_das28cfb.R`, `Leil_2021_rheumatoidArthritis_das28_mbma.R` (study-arm-mean DAS28-CRP change from baseline in a model-based meta-analysis; additive residual scaled by `sqrt(100 / N_ARM)`).
 - **Notes:** Follows the same lowercase-name convention as `das28` / `d_updrs`.
 
 ---
@@ -1995,7 +1995,7 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Type:** compartment
 - **Role:** Heart-rate-corrected QT interval (electrocardiographic PD endpoint), typically expressed in ms. Used as the observation variable in direct-effect / linear concentration-QTc models of drug-induced QT prolongation (cardiac-safety / thorough-QT studies, e.g. quinidine, moxifloxacin, sotalol, glasdegib, fruquintinib). `QTc` is the generic canonical; `QTcF` (Fridericia correction), `QTcP` (population-based correction) and `QTcS` (study-specific correction) are registered as canonical sibling names because the Fostvedt 2021 glasdegib, Darpo 2014 rac-sotalol and Zhou 2025 fruquintinib models use the correction-specific name directly as the observation variable.
 - **Source aliases:** `QTcB` (Bazett) -- translate to `QTc` and record the correction in the model file's description / vignette.
-- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia, as `QTcF`), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, as `QTcS`), `Darpo_2014_racSotalol_QTcI.R` (individual correction, as `QTcI`), `Zhou_2025_fruquintinib_QTcP_M11.R` and `Zhou_2025_fruquintinib_QTcP_parent.R` (population-based correction, as `QTcP`), `Jiang_2021_ivosidenib_QTcF.R` (Fridericia, as `QTcF`, change-from-baseline semantic; typical-value linear C-QTc model).
+- **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia, as `QTcF`), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, as `QTcS`), `Darpo_2014_racSotalol_QTcI.R` (individual correction, as `QTcI`), `Zhou_2025_fruquintinib_QTcP_M11.R`, `Zhou_2025_fruquintinib_QTcP_parent.R` (population-based correction, as `QTcP`), `Sasaki_2022_delamanid_QTc_dm6705.R`, `Sasaki_2022_delamanid_QTc_parent.R` (Bazett-corrected change from baseline, DeltaQTcB, as the generic `QTc`), `Jiang_2021_ivosidenib_QTcF.R` (Fridericia, as `QTcF`, change-from-baseline semantic; typical-value linear C-QTc model).
 - **Notes:** `QTcF` / `QTcS` promoted from translate-to-`QTc` aliases to canonical sibling names 2026-06-28 so single-output models that name the observation by its specific correction (rather than the generic `QTc`) pass the convention check. New models should still prefer the generic `QTc` where the correction is incidental; use the specific name only when the correction is the defining feature of the endpoint (as in the paired Fostvedt 2021 QTcF / QTcS glasdegib analyses). `QTcP` added 2026-08-28 as a well-formed member of the same sibling family alongside the Zhou 2025 fruquintinib extraction, which is the strongest case of the correction being the defining feature: the paper's primary endpoint is QTcP precisely BECAUSE Fridericia's formula was shown to correct the fruquintinib cohort's heart rate inadequately (baseline QTcF-RR slope 0.0493, 90% CI 0.0393-0.0592, versus QTcP-RR slope -3.73e-05, 90% CI -0.0102-0.0101), and the paper reports paired QTcP (primary) and QTcF (supportive) fits that would be indistinguishable under the generic name. QTcP is the population-based correction `QTcP = QT / RR^beta`, where `beta` is estimated per study by a log-log regression of QT on RR fitted to the cohort's pre-dose baseline replicates -- distinct from `QTcI`, whose exponent is fitted per SUBJECT, and from `QTcS`, a study-specific correction that need not be of the power-law form. Note that all five names carry either an absolute-QTc semantic (Shin 2006, Fostvedt 2021) or a change-from-baseline semantic (Darpo 2014, Zhou 2025); the per-model `units` field documents which applies.
 
 ### f_hr (**canonical fractional heart-rate response**)
@@ -2156,6 +2156,27 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `Delta UPDRS`, the Lee 2011 paper's `Delta_UPDRS_it` notation.
 - **Example models:** `Lee_2011_parkinson_progression.R`.
 
+
+### d_cdai (**canonical change-from-baseline Crohn's Disease Activity Index output**)
+- **Type:** compartment
+- **Role:** Change from baseline in the Crohn's Disease Activity Index score (`d_cdai = CDAI(t) - CDAI_baseline`), a signed quantity in points; negative values are improvement. In the founding model it is the STUDY-ARM mean change from a model-based meta-analysis.
+- **Source aliases:** `Delta CDAI`, `change from baseline in CDAI`, `cdai` (Yu 2022 dataset column of the 'CDAI' sheet).
+- **Example models:** `Yu_2022_crohns_dcdai_mbma.R` (founding example).
+- **Notes:** Registered under the `d_<name>` change-from-baseline family. The baseline score is a separate covariate, `SCORE_CDAI`, so naming the output `d_cdai` rather than the bare score avoids shadowing it inside `model()` -- the same reason given for `d_hr`. Residual follows the standard per-output rule (`addSd` for a single-output model).
+
+### d_crp (**canonical change-from-baseline C-reactive protein output**)
+- **Type:** compartment
+- **Role:** Change from baseline in C-reactive protein concentration (`d_crp = CRP(t) - CRP_baseline`), a signed quantity; negative values are improvement. In the founding model it is the STUDY-ARM mean change from a model-based meta-analysis, on the mg/dL scale.
+- **Source aliases:** `Delta CRP`, `change from baseline in CRP`, `crp` (Yu 2022 dataset column of the 'CRP' sheet).
+- **Example models:** `Yu_2022_crohns_dcrp_mbma.R` (founding example).
+- **Notes:** Registered under the `d_<name>` family; the baseline is the covariate `CRP`, which the `d_` prefix keeps from being shadowed. The unit is per model and must match the baseline covariate's unit; see the founding model's `units`.
+
+### d_ibdq (**canonical change-from-baseline Inflammatory Bowel Disease Questionnaire output**)
+- **Type:** compartment
+- **Role:** Change from baseline in the Inflammatory Bowel Disease Questionnaire total score (`d_ibdq = IBDQ(t) - IBDQ_baseline`), a signed quantity in points; POSITIVE values are improvement (the opposite sign convention to `d_cdai`). In the founding model it is the STUDY-ARM mean change from a model-based meta-analysis.
+- **Source aliases:** `Delta IBDQ`, `change from baseline in IBDQ`, `ibdq` (Yu 2022 dataset column of the 'IBDQ' sheet).
+- **Example models:** `Yu_2022_crohns_dibdq_mbma.R` (founding example).
+- **Notes:** Registered under the `d_<name>` family. The questionnaire's 32 items give a total of 32-224, so a change is bounded by the baseline; the founding MBMA does not enforce that bound.
 ### tumor_vol (**canonical TGI tumour-volume output state**)
 - **Type:** compartment
 - **Role:** Tumour volume output state in TGI models.
@@ -2321,6 +2342,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `FVC%pred`, `FVCpp`, `FVC (% predicted)`.
 - **Example models:** `Hartmann_2026_nintedanib_fvcpp.R` (single `fvcpp` output; linear annual decline with a concentration-driven slope effect; FVC percent predicted is dimensionless).
 - **Notes:** The direct FVC sibling of `fev1pp` -- same percent-of-predicted construct, different spirometric volume (vital capacity rather than one-second expiratory volume). Dimensionless, and **not** interconvertible with an absolute FVC volume without the reference equation, for the same reason `fev1pp` is not interconvertible with `FEV1`. Registered lowercase to match `fev1pp` rather than the uppercase `FEV1` form, because the percent-predicted endpoints are written lowercase throughout the register. Distinct from `fvcz`, which standardises the same measurement for age, sex and height as a Z-score.
+
+### uprocfb (**canonical change-from-baseline daily urinary protein excretion**)
+- **Type:** compartment
+- **Role:** Change from baseline in total daily (24-hour) urinary protein excretion, in g/day, used as the modelled endpoint by glomerular-disease models whose structural equation targets the change score directly. Signed: a NEGATIVE value is a reduction in proteinuria, i.e. treatment benefit. Not placebo-corrected by default; whether a given model's output is the plain or the placebo-corrected change must be stated in that model's `description`.
+- **Source aliases:** `E`, `efficacy`, `change in daily urinary protein excretion from baseline` -- Yu 2022 Equation 1 and Methods.
+- **Example models:** `Yu_2022_igaNephropathy_mbma.R` (study-arm-mean change from baseline under placebo and six IgA-nephropathy drug classes; plain, not placebo-corrected).
+- **Notes:** Formed by the library-wide `<state>cfb` change-from-baseline convention (see `bcvacfb`); lowercase run-together, following `fvcppcfb`. A future model of the ABSOLUTE daily urinary protein excretion should register a sibling `upro`. Distinct from the `uacr` state (urine albumin-to-creatinine ratio, mg/g): a ratio and a daily excretion rate are not interchangeable. The baseline itself is the covariate `UPRO_BL`.
 
 ### fvcppcfb (**canonical change-from-baseline FVC percent predicted**)
 - **Type:** compartment
@@ -2793,6 +2821,34 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none.
 - **Example models:** `Knebel_2012_istradefylline_dizziness.R` (sigmoid Emax in steady-state istradefylline exposure, additive on the logit scale; `logit(p) = BDZ0 + EmaxPDZ * AUC^gamma / (EC50DZ^gamma + AUC^gamma)`, with an estimated Hill coefficient of 10 that makes the curve effectively a step at the EC50), `Gidal_2018_eslicarbazepine_dizziness.R` (adjunctive eslicarbazepine acetate in focal-onset seizures; linear rather than sigmoid in exposure, and the exposure coefficient is NEGATIVE -- the dominant predictor is the first-week starting dose, and because only the FIRST occurrence of the event was modelled the events cluster in the low-exposure titration period).
 - **Notes:** A probability output in `[0, 1]`. Sibling of `prob_dyskinesia`, registered alongside it from the same source paper, and following the `prob_<endpoint>` shape founded by `prob_roc`. Constant in `time` for a given exposure, as for `prob_dyskinesia`. The founding model exposes it with a small placeholder additive residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises a Bernoulli likelihood on the observed 0/1 indicator.
+
+### prob_teae_interest (**canonical drug-related eye-or-nervous-system TEAE probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences a drug-related treatment-emergent adverse event (TEAE) "of interest", defined by the source as any event in the MedDRA eye disorders or nervous system disorders system organ classes judged drug-related by the investigator, at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none ("drug-related TEAE of interest" in Assmus 2022).
+- **Example models:** `Assmus_2022_emodepside_teae_interest.R` (oral emodepside in healthy men; linear uncentred individual Cmax on the logit, `logit(p) = -2.87 + 0.0077 * CMAX`, S6 Table -- founding example; this endpoint set the 50% tolerability threshold used to choose the phase II regimens).
+- **Notes:** A probability output in `[0, 1]`. The "of interest" set is paper-specific (the two system organ classes that exceeded placebo frequency for emodepside), so reuse this name only for the same union definition. It is the union of `prob_eye_disorder` and `prob_nervous_system_disorder`, which the founding paper modelled separately on the same subjects; 11 of its 27 cases had both, so the three are not competing risks. Distinct from `prob_teae_drug_related` (any drug-related TEAE of any system organ class). The founding model exposes it with a small placeholder additive residual; the source likelihood is Bernoulli.
+
+### prob_eye_disorder (**canonical drug-related eye-disorder TEAE probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences a drug-related treatment-emergent adverse event in the MedDRA eye disorders system organ class (for emodepside predominantly visual impairment and blurred vision) at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none.
+- **Example models:** `Assmus_2022_emodepside_eye_disorder.R` (oral emodepside; `logit(p) = -3.59 + 0.0085 * CMAX`, S6 Table -- founding example).
+- **Notes:** A probability output in `[0, 1]`, at system-organ-class level rather than a single preferred term. Subset of `prob_teae_interest` and of `prob_teae_drug_related`. Distinct from `prob_corneal_epitheliopathy_grade2`, which is a single graded ocular finding.
+
+### prob_nervous_system_disorder (**canonical drug-related nervous-system-disorder TEAE probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences a drug-related treatment-emergent adverse event in the MedDRA nervous system disorders system organ class (for emodepside predominantly dizziness and headache) at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none.
+- **Example models:** `Assmus_2022_emodepside_nervous_system_disorder.R` (oral emodepside; `logit(p) = -3.20 + 0.0063 * CMAX`, S6 Table -- founding example).
+- **Notes:** A probability output in `[0, 1]`, at system-organ-class level. Subset of `prob_teae_interest` and of `prob_teae_drug_related`. Distinct from the preferred-term endpoints `prob_dizziness`, `prob_headache` and `prob_somnolence`, which it can contain.
+
+### prob_teae_drug_related (**canonical any-drug-related-TEAE probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences any treatment-emergent adverse event judged drug-related by the investigator, of any system organ class and any severity, at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none.
+- **Example models:** `Assmus_2022_emodepside_teae_drug_related.R` (oral emodepside; `logit(p) = -2.38 + 0.0064 * CMAX`, S7 Table -- founding example).
+- **Notes:** A probability output in `[0, 1]`. Composite over every system organ class, so it contains `prob_teae_interest`, `prob_eye_disorder` and `prob_nervous_system_disorder`. Distinct from `prob_teae_grade3` (any severe TEAE regardless of causality) and `prob_adr`.
 
 ### prob_nausea (**canonical nausea adverse-event probability output**)
 - **Type:** compartment
@@ -4098,7 +4154,8 @@ Two distinct decompositions of the reticulocyte pool are registered, and a model
 - **Role:** Percent cell viability of an in-vitro cytotoxicity assay, normalised to the untreated vehicle control, carried as a dynamic PD state (`d/dt(viability)`). Its baseline is the fixed or fitted `rbase` (typically 100%). Used for colorimetric / metabolic viability readouts (CCK-8, MTT, resazurin) where the measurement is an absorbance ratio and no absolute cell number is observed.
 - **Source aliases:**
   - `R` -- Mody 2023 notation, `dR/dt = kg*R - K3*R`.
-- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane.R`.
+  - `Cell density / Control cell density` -- Shinha 2020 Eq. 7 notation (a fraction; carried in percent, as in its Figs. 3-4).
+- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane.R`, `Shinha_2020_irinotecan_invitro.R` (algebraic form: an empirical log-linear function of the cumulative SN-38 AUC, `viability = 100 * (viability_ref + e_auc_sn38 * log(auc_sn38))`, for A549 nuclear density (Hoechst 33342) relative to drug-free control chips).
 - **Notes:** Distinct from `cells`, which holds an absolute cell count or number. `cells` was explicitly considered and rejected for this role: a percentage normalised to a control is not a count, and conflating the two would make the units of a `cells` state unknowable from its name. Because the state IS the observed quantity, `viability` is also canonical as a single-output observation variable (`viability ~ add(addSd_viability)`).
 
 ### lactotroph (**canonical anterior-pituitary lactotroph cells**)
@@ -4367,6 +4424,27 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Source aliases:** `PASI90`, `P(PASI90)`, `Pr(PASI90)`.
 - **Example models:** `He_2021_psoriasis_pasi90_mbma.R` (fitted directly to PASI90 arm data), `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (a secondary, unfitted output that maps the PASI75 model to PASI90 with two scaling factors imported from the companion landmark model).
 - **Notes:** See `prob_pasi75`. A directly fitted PASI90 model and a PASI75 model rescaled to PASI90 are different evidence and should be distinguished in any comparison.
+
+### prob_cdai150 (**canonical CDAI150 clinical-remission rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with Crohn's disease is in clinical remission, defined as an absolute Crohn's Disease Activity Index score below 150 (CDAI150). In the founding model it is a STUDY-ARM proportion from a model-based meta-analysis, `prob_cdai150 <- expit(<placebo logit> + <drug logit>)`.
+- **Source aliases:** `CDAI150`, `cdai150` (Yu 2022 dataset column), `clinical remission`.
+- **Example models:** `Yu_2022_crohns_cdai150_mbma.R` (founding example).
+- **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. Unlike the response endpoints `prob_cdai100` and `prob_cdai70` it is an ABSOLUTE threshold, so it is not a reduction from each arm's own baseline and is not zero at randomisation. Residual is the binomial standard error of the arm proportion scaled by `N_ARM`.
+
+### prob_cdai100 (**canonical CDAI-100 clinical-response rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with Crohn's disease has a clinical response defined as a reduction of at least 100 points from baseline in the Crohn's Disease Activity Index (CDAI-100). STUDY-ARM proportion in the founding model.
+- **Source aliases:** `CDAI-100`, `CDAI100`, `cdai100` (Yu 2022 dataset column).
+- **Example models:** `Yu_2022_crohns_cdai100_mbma.R` (founding example).
+- **Notes:** See `prob_cdai150`. CDAI-100 and CDAI-70 are CUMULATIVE thresholds on one change scale (`prob_cdai70 >= prob_cdai100` within an arm), but the founding paper fits them to different trial sets as independent models, so nothing in the models enforces the ordering.
+
+### prob_cdai70 (**canonical CDAI-70 clinical-response rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with Crohn's disease has a clinical response defined as a reduction of at least 70 points from baseline in the Crohn's Disease Activity Index (CDAI-70). Less strict sibling of `prob_cdai100`.
+- **Source aliases:** `CDAI-70`, `CDAI70`, `cdai70` (Yu 2022 dataset column).
+- **Example models:** `Yu_2022_crohns_cdai70_mbma.R` (founding example).
+- **Notes:** See `prob_cdai100`.
 
 ---
 
@@ -5364,8 +5442,24 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** Desethylchloroquine (also mono-desethylchloroquine), the principal circulating and pharmacologically active metabolite of chloroquine, formed by CYP-mediated N-deethylation of the tertiary amine side chain. It carries antimalarial activity in its own right, which is why joint chloroquine + desethylchloroquine popPK models are fitted to both analytes and why the combined chloroquine-plus-desethylchloroquine whole-blood concentration is the quantity compared against resistance thresholds. Conversion is 1:1 molar; joint models apply a molar correction of `MW_DCQ / MW_CQ = 291.82 / 319.87 = 0.9123` to the mass flux leaving the chloroquine central compartment (desethylchloroquine is chloroquine less an ethyl group, C2H4, 28.05 g/mol). Unlike the `deaq` amodiaquine family, bioconversion is NOT assumed complete: chloroquine is only partly metabolised to desethylchloroquine, so the formed fraction enters as a separate `fm` term and the remainder of parent clearance leaves as other elimination.
 - **Source aliases:**
   - `DCQ`, `desethylchloroquine`, `mono-desethylchloroquine`, `N-desethylchloroquine` -- publication spellings; same species, no transformation.
-- **Example models:** `Hoglund_2016_chloroquine.R` (adults with Plasmodium vivax mono-infection on the Thai-Myanmar border; two-compartment desethylchloroquine disposition fed by a fixed `fm = 0.18` fraction of systemic chloroquine clearance, the fraction being taken from urinary recovery data rather than estimated).
-- **Notes:** Founding example `Hoglund_2016_chloroquine.R`. Registered as a family-conforming metabolite suffix. Do not confuse with `deaq` (desethylamodiaquine) -- both are 4-aminoquinoline desethyl metabolites and both appear in antimalarial extractions, but they are different species with different parents. Note also that the parent of this suffix is chloroquine, not hydroxychloroquine; a hydroxychloroquine extraction whose metabolite is desethylhydroxychloroquine needs its own suffix rather than reuse of this one.
+- **Example models:** `Hoglund_2016_chloroquine.R` (adults with Plasmodium vivax mono-infection on the Thai-Myanmar border; two-compartment desethylchloroquine disposition fed by a fixed `fm = 0.18` fraction of systemic chloroquine clearance, the fraction being taken from urinary recovery data rather than estimated); `Alvarez_2022_hydroxychloroquine.R` (adults hospitalised with COVID-19; one-compartment desethylchloroquine disposition formed directly from hydroxychloroquine by a formation clearance, molar correction `MW_DCQ / MW_HCQ = 291.82 / 335.87 = 0.8689`).
+- **Notes:** Founding example `Hoglund_2016_chloroquine.R`. Registered as a family-conforming metabolite suffix. Do not confuse with `deaq` (desethylamodiaquine) -- both are 4-aminoquinoline desethyl metabolites and both appear in antimalarial extractions, but they are different species with different parents. Note also that the parent of this suffix is chloroquine, not hydroxychloroquine; a hydroxychloroquine extraction whose metabolite is desethylhydroxychloroquine needs its own suffix rather than reuse of this one. Desethylchloroquine formed from hydroxychloroquine (by loss of the side-chain hydroxyethyl group) is the SAME species and does reuse this suffix; its desethylhydroxychloroquine sibling is `dhcq` and the didesethyl product is `bdcq`.
+
+### dhcq (**canonical desethylhydroxychloroquine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desethylhydroxychloroquine (N-desethylhydroxychloroquine), the major circulating metabolite of hydroxychloroquine, formed by CYP-mediated N-deethylation of the ethyl group on the side-chain tertiary amine (the hydroxyethyl group is retained). It is the metabolite reported as active in rheumatic disease and reaches whole-blood concentrations of the same order as the parent at steady state. Conversion is 1:1 molar; joint models apply `MW_DHCQ / MW_HCQ = 307.82 / 335.87 = 0.9165` to the mass flux leaving the hydroxychloroquine central compartment.
+- **Source aliases:**
+  - `DHCQ`, `DesHCQ`, `DesOHCQ`, `desethylhydroxychloroquine` -- publication spellings (Alvarez 2022 uses both `DesHCQ` and `DesOHCQ`); same species, no transformation.
+- **Example models:** `Alvarez_2022_hydroxychloroquine.R` (founding example; adults hospitalised with COVID-19; one-compartment desethylhydroxychloroquine disposition formed from hydroxychloroquine by a formation clearance, volume fixed to the individual parent volume).
+- **Notes:** Distinct from `dcq` (desethylchloroquine), which is the product of losing the hydroxyethyl group instead of the ethyl group and so carries no hydroxyl; both are formed from hydroxychloroquine and appear together in joint models.
+
+### bdcq (**canonical bisdesethylchloroquine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Bisdesethylchloroquine (didesethylchloroquine), the fully N-dealkylated primary-amine metabolite of both chloroquine and hydroxychloroquine, formed by sequential dealkylation through desethylchloroquine or desethylhydroxychloroquine. Conversion is 1:1 molar; from hydroxychloroquine the molar correction is `MW_BDCQ / MW_HCQ = 263.77 / 335.87 = 0.7853` (from chloroquine, `263.77 / 319.87 = 0.8246`).
+- **Source aliases:**
+  - `BDCQ`, `DiDesCQ`, `didesethylchloroquine`, `bisdesethylchloroquine` -- publication spellings; same species, no transformation.
+- **Example models:** `Alvarez_2022_hydroxychloroquine.R` (founding example; one-compartment bisdesethylchloroquine disposition formed directly from hydroxychloroquine by a formation clearance -- the source links it to the parent rather than to the intermediate desethyl metabolites, a sequential structure having proved unstable).
+- **Notes:** The canonical abbreviation follows the dominant literature form `BDCQ`; the paper-local `DiDesCQ` is an alias. The same suffix serves a chloroquine parent.
 
 ### deaq (**canonical desethylamodiaquine suffix**)
 - **Type:** metabolite-suffix
@@ -5663,6 +5757,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none. The source paper's clearance symbols are `CL_M1` (brexpiprazole-to-DM-3412 formation) and `CL_MET1` (DM-3412 elimination), which map onto `lcl_form_dm3412` and `lcl_dm3412` respectively; the volume and inter-compartmental symbols `V4`, `V5`, and `Q_MET` map onto `lvc_dm3412`, `lvp_dm3412`, and `lq_dm3412`.
 - **Example models:** `Frederiksen_2023_brexpiprazole.R` (doi:10.1002/cpt.2791).
 
+### luaa37208 (**canonical Lu AA37208 tedatioxetine-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Lu AA37208, the major CYP2D6-dependent oxidative metabolite of tedatioxetine (Lu AA24530), formed via the intermediate Lu AA37209. In the joint parent + metabolite popPK model of Frederiksen 2021 the metabolite is followed in plasma alongside the parent and its systemic exposure (through the CYP2D6-mediated formation clearance) is the basis for the in vivo CYP2D6 activity-score estimation. Drives `central_luaa37208` / `peripheral1_luaa37208`, the amount-only precursor pool `precursor_luaa37208` (which holds the intermediate Lu AA37209 and converts INTO Lu AA37208), the `lcl_luaa37208` / `lvc_luaa37208` / `lvp_luaa37208` / `lq_luaa37208` parameters, the presystemic-formation rate constant `k_precursor_luaa37208_form` and the precursor-to-metabolite conversion rate constant `k_luaa37208_form`, the `e_age_cl_luaa37208` covariate effect, the `etalcl_luaa37208` / `etalvc_luaa37208` random effects, and the `Cc_luaa37208` observation; parent-side parameters keep the canonical unsuffixed names.
+- **Source aliases:** `Lu AA37208`, `LuAA37208` (the compound code used throughout Frederiksen 2021); the paper's own supplementary NONMEM control stream calls the metabolite disposition symbols `KAMET`, `V5`, `V6`, `CLMET`, `QMET` and the precursor pool `COMP=(DEPOT)` (the second depot compartment).
+- **Example models:** `Frederiksen_2021_tedatioxetine.R` (founding example; doi:10.1002/psp4.12635).
+- **Notes:** The control stream carries no molecular-weight conversion on the parent-to-metabolite flux (`CL/V3*A(3)` transfers a parent-mass amount directly into `central_luaa37208`), so the fitted metabolite volumes and clearance are apparent values in tedatioxetine-mass equivalents. The precursor pool `precursor_luaa37208` is the Kim-2017 `precursor_<metab>` construct: an amount-only kinetic intermediate (no volume, no assay) that here holds Lu AA37209. NOTE for readers cross-referencing Table 2 of the paper: Table 2 labels the food-affected depot-branching rate constant (11.1 /h fasted, 0.0286 /h fed) as `ka,met` and the precursor-to-metabolite conversion rate (0.0972 /h) as `kg,met`, whereas the executable supplementary control stream applies its `KGMET` (with the food effect) to the depot-to-precursor branch and its `KAMET` to the precursor-to-central conversion -- i.e. the two labels are swapped between the printed table and the code. This model follows the executable control stream (operator policy: trust the equation over the table text).
+
 ### cysmer (**canonical APAP cysteine+mercapturate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Combined acetaminophen cysteine + mercapturate compartment used by CYP2E1-oxidation popPK models that lump the two oxidation metabolites (the species are in rapid equilibrium with overlapping disposition).
@@ -5843,6 +5944,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `pefloxacin N-oxide` -- the paper's prose and table spelling.
 - **Example models:** `Bulitta_2019_pefloxacin.R` (founding example; doi:10.3390/pharmaceutics11070323).
 - **Notes:** A parent-qualified name is required because the bare `noxide` is already registered, scoped to **roflumilast** N-oxide. An N-oxide suffix is only interpretable when it names the moiety that was oxidised, so this family takes the `<modifier><parent-stem>` shape already used by `ohcla` (14-(R)-hydroxy-clarithromycin) and `norfluox` (norfluoxetine) rather than extending `noxide` with a second meaning. As with the sibling `norflox`, plasma concentrations of this metabolite were not measured in the founding example, so the suffix appears only on urinary-excretion states and the formation fraction.
+
+### noxvori (**canonical voriconazole N-oxide metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Voriconazole N-oxide (UK-121,265), the major circulating metabolite of voriconazole, formed mainly by CYP2C19 with CYP3A4 and flavin-containing monooxygenase contributions; pharmacologically inactive against fungi but reported as an inhibitor of voriconazole's own metabolism. Drives `central_noxvori`, `Cc_noxvori`, `lvc_noxvori`, `lcl_noxvori`, `etalcl_noxvori` and `propSd_noxvori` in joint parent + metabolite voriconazole popPK models.
+- **Source aliases:**
+  - `VNO` -- Li 2021 abbreviation throughout the text, Table 1 and Table 2 ('VNO-sigma').
+  - `A2` / `C2` / `V2` / `CL2` -- Li 2021 Equations 10-13 and Table 2 metabolite-compartment amount, concentration, volume and clearance symbols.
+- **Example models:** `Li_2021_voriconazole.R` (founding example; doi:10.3389/fphar.2021.730826).
+- **Notes:** Parent-qualified on the `noxpeflox` precedent because the bare `noxide` is registered to roflumilast N-oxide. The parent stem `vori` is the shortest unambiguous voriconazole stem; a later hydroxy-voriconazole metabolite should follow the same shape (`ohvori`).
 
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
@@ -6539,6 +6649,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `He_2020_phosphocreatine.R` (founding example).
 - **Notes:** Spelled out in full, following the `creatinine` full-word precedent. Distinct from `creatinine` (the cyclic anhydride of creatine and the renal-function marker): the two are different chemical species with different disposition, and a model carrying both would need both suffixes.
 
+### dm6705 (**canonical delamanid DM-6705 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** DM-6705, the major circulating metabolite of the antituberculosis nitroimidazooxazole delamanid, formed by albumin-mediated cleavage of the nitroimidazooxazole moiety ((5R)-5-methyl-5-[[4-[4-[4-(trifluoromethoxy)phenoxy]piperidin-1-yl]phenoxy]methyl]-4H-1,3-oxazol-2-amine, C23H26F3N3O4, 465.5 g/mol). It is the most potent hERG inhibitor among delamanid and its metabolites and is the driver of delamanid-associated QT prolongation.
+- **Source aliases:** `DM-6705` -- Sasaki 2022 throughout (hyphen dropped).
+- **Example models:** `Sasaki_2022_delamanid.R` (founding example; two-compartment DM-6705 formed from eliminated delamanid in proportion to the fraction metabolised, `central_dm6705` / `peripheral1_dm6705`, output `Cc_dm6705`).
+- **Notes:** Distinct from the ADC payload suffix `dm4`; the suffix matcher uses `endsWith(name, "_dm6705")`, which does not collide with it. The same token is used in the covariate canonical `CP_DM6705_NGML`.
+
 ### or1855 (**canonical OR-1855 levosimendan metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** OR-1855, the pharmacologically inactive proximate metabolite of levosimendan. It is formed when gut microbiota reduce levosimendan -- a minor route, about 5% of the dose, the other 95% being conjugated via the glutathione pathway -- and it is the obligate precursor of the active metabolite OR-1896, which polymorphic N-acetyltransferase-2 makes from it. Unlike the parent, whose elimination half-life is about 1 hour, OR-1855 is produced slowly and cleared slowly, with a half-life of 70-80 hours. Carries `central_or1855`, the `Cc_or1855` observation, the `kel_or1855` elimination rate constant, the `kicv_or1855` back-conversion rate constant, the `e_wt_kel_or1855` covariate exponent and the `expSd_or1855` residual.
@@ -6601,6 +6718,32 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
   - `sialic acid` -- the generic name used in the pathway description.
 - **Example models:** `VanWart_2021_mannac.R` (doi:10.1007/s40268-021-00343-6; founding example -- `central_neu5ac` holds a concentration (ng/mL) fed through a `precursor1` delay state, both draining at `kout_neu5ac`, with production stimulated linearly by plasma ManNAc).
 - **Notes:** Token is the IUPAC-style abbreviation lowercased. Distinct from the registered `sa` suffix, which in this register denotes salicylic acid; do not reuse `sa` for sialic acid. The Neu5Ac state here is a concentration with no asserted volume -- the source never defines one -- so it is carried as `central_neu5ac` in ng/mL, not as an amount.
+
+---
+
+### hes (**canonical 2-hydroxyethyl succinimide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 2-Hydroxyethyl succinimide (HES), the major inactive metabolite of the oral fumarate prodrug diroximel fumarate (DRF). Esterases in the gastrointestinal tract split DRF presystemically into monomethyl fumarate (MMF, the active moiety) and HES, so DRF itself is not measurable in plasma and both metabolites are modelled as if dosed directly. HES is eliminated mainly by renal excretion, which is why its clearance, unlike MMF's, depends on eGFR. Carries `depot_hes`, the `transit1_hes` ... `transit8_hes` absorption chain, `central_hes`, the `Cc_hes` observation, `lka_hes`, `lcl_hes`, `lfdepot_hes`, the `etalka_hes` / `etalcl_hes` IIV and the `expSd_hes` residual.
+- **Source aliases:**
+  - `HES`, `KaHES`, `CLHES`, `F4`, `ALAG4` -- Kuchimanchi 2022 Table 2 and Fig. 1a; `PLHES`, `HESABS`, `HESTABS<n>`, `KAH`, `CLH` in the ESM control stream `$MODEL` / `$PK` blocks.
+- **Example models:** `Kuchimanchi_2022_diroximelFumarate.R` (founding example -- joint MMF + HES popPK after oral DRF with a shared central volume, HES bioavailability fixed at 0.6 from the mass-balance study, and eGFR on HES clearance).
+- **Notes:** In the founding model MMF is the active moiety and takes the bare canonical names (`depot`, `central`, `Cc`, `lcl`); only HES is suffixed. A model of DRF that also tracked the parent prodrug would give the parent the bare names and would then need a separate `mmf` suffix. Not to be confused with hydroxyethyl starch (also abbreviated HES), a plasma expander; register a different token if a model ever needs that.
+
+### pagn (**canonical phenylacetylglutamine metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Phenylacetylglutamine (PAGN), the glutamine conjugate of phenylacetic acid (PAA) formed in the liver and excreted in urine. It is the ammonia-removing product of the nitrogen-scavenger drugs (L-ornithine phenylacetate, sodium phenylbutyrate, glycerol phenylbutyrate): one mole of PAGN carries two moles of waste nitrogen. Carries `central_pagn`, `lcl_pagn`, `lvc_pagn`, the `Cc_pagn` observation and `propSd_pagn` / `addSd_pagn`.
+- **Source aliases:**
+  - `PAGN`, `A3`, `CLPAGN`, `VPAGN` -- Wang 2022 Section 3.1 and the ESM control streams.
+- **Example models:** `Wang_2022_ornithinePhenylacetate.R` (founding example; PAGN formed from PAA by Michaelis-Menten conversion and cleared first-order with a creatinine-clearance power term).
+- **Notes:** The literature abbreviation is used because it is universal across the phenylbutyrate / phenylacetate labels and publications. PAA itself carries the bare canonical names in a model where it is the primary active moiety.
+
+### ornithine (**canonical L-ornithine co-administered analyte suffix**)
+- **Type:** metabolite-suffix
+- **Role:** L-ornithine (ORN), the counter-ion of L-ornithine phenylacetate that is released 1:1 with phenylacetic acid after intravenous administration and measured in plasma as a separate analyte. Endogenous: plasma ORN has a non-zero baseline, which the founding model adds to the prediction (`c0_ornithine`) rather than carrying as a state. Carries `central_ornithine`, `lcl_ornithine`, `lvc_ornithine`, `lc0_ornithine`, the `Cc_ornithine` observation and `propSd_ornithine`.
+- **Source aliases:**
+  - `ORN`, `A1`, `CLORN`, `VORN`, `BASE` -- Wang 2022 Section 3.1, ESM Table S2 and the ESM control streams.
+- **Example models:** `Wang_2022_ornithinePhenylacetate.R` (founding example).
+- **Notes:** The full name is used rather than `orn`, which is short enough to be ambiguous. It names a co-administered moiety rather than a metabolite, so it is not a precursor of `pagn`; the two species share no mass flow in the founding model.
 
 ---
 

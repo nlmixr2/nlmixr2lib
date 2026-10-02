@@ -141,6 +141,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
 - **Notes:** Pairs with `peripheral3` compartment and inter-compartmental clearance `lq3`.
 
+### lvparea (**canonical log-transformed apparent peripheral volume, V_area minus Vc**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent peripheral volume in a two-compartment model parameterised by (CL, Vc, alpha, V_area - Vc): the volume that, added to the central volume, gives the terminal-phase volume `V_area = V_z = CL / lambda_z`, so `lambda_z = cl / (vc + vparea)` (volume). Bare form inside `model()` is `vparea`. It is **not** the micro-constant peripheral volume `vp = vc * k12 / k21`; the two differ whenever distribution is not instantaneous (Paioni 2021 typical 4-kg patient: `vparea` = 0.840 L vs derived `vp` = 0.667 L).
+- **Source aliases:**
+  - `V2'` -- Paioni 2021 Section 2.3 and Table 3 ("apparent peripheral volume of distribution"), defined through `lambda_z = CL / (V1 + V2')`.
+- **Example models:** `Paioni_2021_gentamicin.R` (founding example; `V2'` = exp(-0.174) = 0.840 L at 4 kg, with its own IIV `etalvparea` and weight exponent `e_wt_vparea`).
+- **Notes:** Ratified 2026-09-29 with the Paioni 2021 extraction (PMC8541459). Use `lvparea` only when the source fits this apparent volume as a parameter (it carries its own IIV and covariates, so re-expressing it as `lvp` would change the model); derive `vp`, `q`, `k12` and `k21` from it inside `model()` via `k21 = alpha * lambda_z / kel` (Paioni 2021 Equation 3) and `k12 = alpha + lambda_z - kel - k21`. Pairs with `lalpha` for the distribution-phase rate constant.
+
 ### lvelf (**canonical log-transformed epithelial-lining-fluid compartment volume**)
 - **Type:** log-transformed-pk
 - **Role:** Apparent volume of the canonical `elf` compartment, used to convert the ELF drug amount to the ELF concentration `Celf <- elf / velf` (volume). Applies both to a plasma-plus-ELF popPK model in which `elf` is a distribution compartment sampled by bronchoalveolar lavage, and to a single-compartment model fitted directly to ELF concentrations, where the value is an apparent volume that also absorbs bioavailability (the paper's `Vc/F`).
@@ -175,6 +183,15 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `K24` / `K42` -- Stott 2023 Table 1, under the gut = 1, central = 2, CNS = 3, peripheral = 4 numbering.
 - **Example models:** `Marier_2002_tobramycin_rat_liposomal.R`, `Marier_2002_tobramycin_rat_conventional.R`, `Stott_2023_flucytosine.R`, `Blair_2004_raltitrexed.R`, `Ekhart_2008_carboplatin.R`.
 - **Notes:** Bare counterparts of `k12` / `k21` / `k13` / `k31`; see those entries for the topology each index is bound to. The canonical nlmixr2 numbering treats `central` as 1 and the peripherals as 2 / 3 after the depot is split out, so a source paper's own subscripts must be re-mapped rather than transcribed -- `k_23` and `K24` both become `lk12` in the example models above. Prefer a role-based `k_<from>_<to>` name (or `kin_<tissue>` / `kout_<tissue>`) whenever the compartment at the far end is anatomically named rather than a generic `peripheral<n>`.
+
+### lalpha (**canonical log-transformed distribution-phase hybrid disposition rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the fast (distribution-phase) hybrid rate constant `alpha` / `lambda1` of a two-compartment disposition, i.e. the larger eigenvalue satisfying `alpha + beta = kel + k12 + k21` and `alpha * beta = kel * k21` (1 / time). Bare form inside `model()` is `alpha`. Used when a source estimates the model on its macro (biexponential) scale rather than by `cl` / `vc` / `q` / `vp`; the micro-constants are then derived inside `model()`.
+- **Source aliases:**
+  - `Alpha` -- Zhang 2025 Supplementary Table S2.
+  - `lambda1` / `l1` -- Paioni 2021 Section 2.3 and Table 3 ("apparent rate constant of distribution").
+- **Example models:** `Zhang_2025_cefiderocol.R` (alpha = 0.845 1/h, with the terminal sibling `lbeta` = log(0.271 1/h)), `Paioni_2021_gentamicin.R` (lambda1 = exp(3.644) 1/d = 1.59 1/h, paired with `lvparea`).
+- **Notes:** Ratified 2026-09-29 with the Paioni 2021 extraction (PMC8541459); `Zhang_2025_cefiderocol.R` shipped the same name and meaning earlier without an entry. The terminal-phase sibling is `lbeta` (Zhang 2025), which is distinct from the registered `lbeta_cl` (exponential-nonlinear-clearance slope). Distinct from `lkdist` (Braem 2026), which is numerically the same fast exponent but decays an additive distribution-phase flux in a model with no peripheral state.
 
 ### lq (**canonical log-transformed first inter-compartmental clearance**)
 - **Type:** log-transformed-pk
@@ -1428,6 +1445,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`rmax_hr` = 77.8 beats/min, `rmax_map` = 119 mmHg, `rmax_sbp` = 169 mmHg; each enters `endpoint = BL + (rmax - BL) * conc/(conc + ec50) + ...`).
 - **Notes:** The plateau-level sibling of `lrbase`; `lemax` is explicitly **not** a substitute because it denotes an increment, so a model that reported `lemax = log(77.8)` for a 77.8 beats/min ceiling above an 84 beats/min baseline would predict a rise where the paper predicts a fall. A signed consequence worth noting: because the ceiling can sit *below* the baseline, the recovered `emax` may be negative (in the founding model `rmax_hr - HR_BL` = 77.8 - 84 = -6.2 beats/min for cafedrine/theodrenaline, and +5.5 for ephedrine after its +15% effect) -- which is exactly the paper's finding that one drug is heart-rate-neutral. Register additional `lrmax_<output>` members as new endpoints appear rather than reusing an existing one.
 
+### rmax_lsr28 (**canonical bare maximum attainable level of the log 28-day seizure rate intercept**)
+- **Type:** paper-named-param
+- **Role:** Bare (untransformed) member of the `lrmax_<output>` plateau-level family for the natural log-transformed 28-day seizure rate `lsr28`: the level the intercept term reaches under maximal drug effect, in log(seizures per 28 days). The drug increment is recovered as a difference, `lsr28 = int - (int - rmax_lsr28) * CAV / (ec50 + CAV) + ...`. Bare because the value is signed (negative in the founding model), following the positivity condition of the "Transform prefixes" rule.
+- **Source aliases:**
+  - `Emax` -- Chan 2021 Table 3 and Appendix Equations II, defined there as "the estimated maximum treatment effect (Intercept + maximum drug effect)", i.e. a level, not an increment.
+- **Example models:** `Chan_2021_pregabalin_lsr28.R` (`rmax_lsr28` = -0.924, common to children and adults, with population-specific intercepts 0.110 (adults) and -0.409 (children)).
+- **Notes:** Do not use `emax` here. Because the level is shared while the intercepts differ, the implied increment `int - rmax_lsr28` is 1.034 for adults and 0.515 for children; encoding the paper's value as an increment would give both populations the same drug effect, which is not the fitted model.
+
 ### lktr, lktr_slow, lktr_fast (**canonical log-transformed first-order transit / effect-delay rate constant**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed first-order rate constant of a transit or effect-delay cascade (1/time). Inside `model()` the bare names are `ktr`, `ktr_slow`, `ktr_fast`. For a chain of `n` stages the mean transit time is `n / ktr`. `lktr` is the single-chain form; `lktr_slow` / `lktr_fast` are the qualified forms used when a model carries two parallel cascades of different speed, and they pair one-to-one with the `effect_slow<n>` / `effect_fast<n>` compartment families.
@@ -2294,6 +2319,13 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
 - **Source aliases:** none.
 - **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`CF_PQ = 0.898`, `CF_CPQ = 1.06` per Wattanakul 2024 Table 2; the associated observation variables are `Ccap` and `Ccap_cpq`).
 - **Notes:** Capillary sampling is standard in field malaria and paediatric pharmacokinetics, so this is expected to recur. Do NOT reuse `cfcap` for a plasma:whole-blood or plasma:serum conversion; those are different matrices and should get their own canonical.
+
+### cfven, cfven_max, cfven_t50 (**canonical venous:arterial concentration-ratio parameters**)
+- **Type:** paper-named-param
+- **Role:** Scale a model's ARTERIAL concentration prediction `Cc` to the venous-plasma prediction `Cvenous = Cc * ratio_ven` when a pooled dataset mixes arterial and venous samples and the source accounts for the arterio-venous difference empirically, in the observation model, rather than with a physiological mixing model. `cfven` is the constant venous:arterial ratio applied after the end of an infusion or bolus (unitless). `cfven_max` and `cfven_t50` parameterise the during-infusion branch, an Emax function of the time since the start of the infusion, `ratio_ven = cfven_max * tslc / (tslc + cfven_t50)`, where `cfven_max` is the maximum ratio (unitless) and `cfven_t50` the time to half of it (model time units). Arterial samples take a ratio of 1, i.e. they are observed through `Cc` itself.
+- **Source aliases:** `RATIO2`, `RMAX`, `T50` (Zhou 2021 Figure S3 `$ERROR`).
+- **Example models:** `Zhou_2021_remimazolam.R` (founding example; `cfven` = 1.28, `cfven_max` = 1, `cfven_t50` = 1.63 min, all fixed from a pilot fit of two infusion studies; one proportional sigma is shared by `Cc` and `Cvenous`).
+- **Notes:** The venous counterpart of `cfcap`, with the opposite reference: `cfcap` scales a VENOUS `Cc` to a capillary `Ccap`, whereas `cfven` scales an ARTERIAL `Cc` to a venous `Cvenous`. Do not use `cfcap` for this -- the reference matrix differs and so does the sign of any deviation from 1. A source that estimates a single constant ratio at all times needs only `cfven`; the `_max` / `_t50` pair is needed only when the ratio is time-dependent during administration. The during-infusion flag needs the infusion duration as the `TINF` covariate column, because rxode2 does not expose a dose record's duration to `model()`.
 
 ### kmilkinf (**canonical breast-milk-to-infant transfer rate constant**)
 - **Type:** paper-named-param
