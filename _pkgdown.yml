@@ -550,6 +550,8 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Atorvastatin (Knebel 2013)"
         href: articles/Knebel_2013_atorvastatin.html
+      - text: "Atorvastatin (Langeskov 2022)"
+        href: articles/Langeskov_2022_semaglutide_ddi.html
       - text: "Atorvastatin (Stillemans 2022)"
         href: articles/Stillemans_2022_atorvastatin.html
       - text: "AtractylodesLancea group1day1 (Saeheng 2024)"
@@ -4530,6 +4532,8 @@ navbar:
         href: articles/Anderson_1998_paracetamol.html
       - text: "Paracetamol (Krekels 2015)"
         href: articles/Krekels_2015_paracetamol.html
+      - text: "Paracetamol (Langeskov 2022)"
+        href: articles/Langeskov_2022_semaglutide_ddi.html
       - text: "Paracetamol (Lau 2026)"
         href: articles/Lau_2026_paracetamol.html
       - text: "Paracetamol (Padavia 2024)"
@@ -8178,6 +8182,7 @@ articles:
   - articles/Lane_2011_warfarin
   - articles/Langdon_2010_PF00821385
   - articles/Langenhorst_2019_fludarabine
+  - articles/Langeskov_2022_semaglutide_ddi
   - articles/Lanoiselee_2021_cefazolin
   - articles/Laouenan_2015_ribavirin
   - articles/LaporteAmargos_2026_piperacillin
