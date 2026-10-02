@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Guo 2022 ciprofloxacin ([doi:10.1007/s40262-022-01114-5](https://doi.org/10.1007/s40262-022-01114-5)) -- critically ill adult ICU patients pooled from three Dutch studies.
+- Add Langeskov 2022 paracetamol and atorvastatin with semaglutide ([doi:10.1002/prp2.962](https://doi.org/10.1002/prp2.962)) -- healthy obese adults (paracetamol) and healthy adults (atorvastatin) with and without steady-state semaglutide (adds the `CONMED_SEMAGLUTIDE` covariate).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

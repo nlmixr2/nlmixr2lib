@@ -13197,6 +13197,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Knebel_2012_istradefylline_offtime.R` (multiplicative effect `e_conmed_selegiline_<param>^CONMED_SELEGILINE` on the baseline percentage OFF time E0, on EmaxP and on EmaxI; Knebel 2012 Table II thetas 10, 17 and 24).
 - **Notes:** Specific scope. Member of the `CONMED_<INN>` single-agent family (`CONMED_ATORVASTATIN`, `CONMED_KETOCONAZOLE`, `CONMED_METFORMIN`, `CONMED_QUETIAPINE`, `CONMED_SILDENAFIL`, `CONMED_VENLAFAXINE`,...). Present in only 13 percent of the founding cohort, the least prevalent of that model's four concomitant-medication indicators and correspondingly the least precisely estimated -- the EmaxP bootstrap interval runs from 8.60e-11 to 1.72, i.e. essentially uninformative. A future model pooling MAO-B inhibitors as a class (selegiline plus rasagiline plus safinamide) should register a `CONMED_MAOBI` class sibling rather than overload this single-agent name.
 
+### CONMED_SEMAGLUTIDE (**canonical for concomitant semaglutide (GLP-1 receptor agonist) coadministration indicator**)
+- **Description:** 1 = the victim drug is dosed while the subject is on semaglutide (at the regimen the source studied, typically once-weekly SC semaglutide at steady state); 0 = no semaglutide. Semaglutide is a long-acting GLP-1 receptor agonist that delays gastric emptying, so its DDI effects on orally co-administered drugs are usually placed on the absorption parameters (ka, ktr, lag time) rather than on clearance.
+- **Units:** `(binary)`
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant semaglutide).
+- **Source aliases:**
+  - `placebo` -- used in `Langeskov_2022_paracetamol.R` and `Langeskov_2022_atorvastatin.R` (Langeskov 2022 Phoenix PML `ka = tvka * (1 - dKadplacebo1 * (placebo == 1))`). Despite its name the source column was coded 1 for semaglutide co-administration and 0 without (Section 3.2), so no transformation is needed.
+- **Example models:** `Langeskov_2022_paracetamol.R` (fractional reduction `ka * (1 - 0.525 * CONMED_SEMAGLUTIDE)`, Table 2), `Langeskov_2022_atorvastatin.R` (fractional reductions of ka by 0.829 and of ktr by 0.791, Table 3); both at steady-state once-weekly SC semaglutide 1.0 mg, per-occasion indicator in a crossover.
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family. Distinct from the semaglutide dose covariates `DOSE_SEMAGLUTIDE_MG`, `DOSE_SEMAGLUTIDE_INJ_MG` and `DOSE_SEMAGLUTIDE_PO_MG`, which carry an assigned semaglutide dose for models of semaglutide itself; this column flags semaglutide as the perpetrator in a DDI analysis of another drug. Record per-model the semaglutide regimen and whether steady state was reached before the victim dose. A future model pooling GLP-1 receptor agonists as a class should register a class sibling rather than overload this single-agent name.
+
 ### CONMED_AMANTADINE (**canonical for concomitant amantadine coadministration indicator**)
 - **Description:** 1 = the subject is receiving amantadine (an NMDA-receptor antagonist with weak dopaminergic activity, used as an anti-Parkinson adjunct and in particular against levodopa-induced dyskinesia) as a concomitant medication; 0 = not.
 - **Units:** `(binary)`
