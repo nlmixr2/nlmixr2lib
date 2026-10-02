@@ -2,7 +2,115 @@
 
 # development version
 
-- Add He 2022 schizandrol A and schizandrol B ([doi:10.3390/ijms23094485](https://doi.org/10.3390/ijms23094485)) -- in vitro CYP3A4/CYP3A5 reversible and time-dependent inhibition by two Wuzhi-capsule lignans (CYP3A5-genotyped human liver microsomes); registers the `CP_SZA_UM` and `CP_SZB_UM` covariate columns.
+- Add Ali 2022 artemisinin and naphthoquine ([doi:10.1128/aac.01696-21](https://doi.org/10.1128/aac.01696-21)) -- Tanzanian children (6 years and older) and adults with uncomplicated falciparum malaria.
+
+- Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
+
+- Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
+
+- Add Panjasawatwong 2020 isoniazid, rifampicin, pyrazinamide and ethambutol PK, and time to death by TBM grade ([doi:10.1128/AAC.00487-20](https://doi.org/10.1128/AAC.00487-20)) -- Vietnamese children with tuberculous meningitis, plasma and CSF.
+
+- Add Wang 2020 delamanid ([doi:10.1128/AAC.01202-20](https://doi.org/10.1128/AAC.01202-20)) -- adults with pulmonary multidrug-resistant tuberculosis (ratifies the new `OUTPATIENT` treatment-setting covariate canonical).
+
+- Add Mueller-Schoell 2021 axicabtagene ciloleucel QSP ([doi:10.3390/cancers13112782](https://doi.org/10.3390/cancers13112782)) -- adults with relapsed/refractory large B-cell non-Hodgkin lymphoma treated with CD19-specific CAR-T cells.
+
+- Add Agbo 2021 apomorphine ([doi:10.1111/cts.13008](https://doi.org/10.1111/cts.13008)) -- healthy adults and patients with Parkinson's disease and OFF episodes given apomorphine sublingual film or subcutaneous apomorphine; parent and apomorphine sulfate.
+
+- Add Chan 2021 pregabalin ([doi:10.1002/cpt.2132](https://doi.org/10.1002/cpt.2132)) -- children aged 3 months to 16 years and adults (healthy, renally impaired, and with focal onset seizures); population PK plus an exposure-response model for the 28-day seizure rate.
+
+- Add D'Agate 2021 tamsulosin / dutasteride time to acute urinary retention or BPH-related surgery ([doi:10.1111/bcp.14682](https://doi.org/10.1111/bcp.14682)) -- men with moderate or severe benign prostatic hyperplasia symptoms.
+
+- Add Kim 2021 YH12852 ([doi:10.1002/psp4.12664](https://doi.org/10.1002/psp4.12664)) -- healthy adults and adults with functional constipation, with the 13C gastric emptying breath test as the PD endpoint.
+
+- Add Frederiksen 2021 tedatioxetine ([doi:10.1002/psp4.12635](https://doi.org/10.1002/psp4.12635)) -- healthy subjects and patients with major depressive disorder; joint parent + CYP2D6 metabolite (Lu AA37208) model with a pre-systemic formation pathway.
+
+- Add Paioni 2021 gentamicin ([doi:10.3390/pharmaceutics13101596](https://doi.org/10.3390/pharmaceutics13101596)) -- hospitalised children aged 1 day to 14 years (median 29 days). Registers the canonical parameter names `lvparea` (apparent peripheral volume, V_area - Vc) and `lalpha` (distribution-phase hybrid rate constant).
+
+- Add Liva 2021 REC-2282 (AR-42) ([doi:10.1007/s13318-021-00722-z](https://doi.org/10.1007/s13318-021-00722-z)) -- adults with relapsed or refractory haematologic malignancies and solid tumours.
+
+- Add Kirwan 2021 vancomycin ([doi:10.1186/s13054-021-03863-4](https://doi.org/10.1186/s13054-021-03863-4)) -- critically ill adults receiving continuous venovenous haemodiafiltration.
+
+- Add Hahn 2021 piperacillin and tazobactam ([doi:10.1128/spectrum.00633-21](https://doi.org/10.1128/spectrum.00633-21)) -- critically ill adults on venoarterial ECMO, half with concomitant CVVHDF.
+
+- Add Cojutti 2021 meropenem ([doi:10.3389/fphar.2021.781892](https://doi.org/10.3389/fphar.2021.781892)) -- critically ill adults receiving continuous-infusion meropenem for Gram-negative infections.
+
+- Add Beraldi-Magalhaes 2021 ethambutol ([doi:10.3390/antibiotics10121559](https://doi.org/10.3390/antibiotics10121559)) -- Brazilian adults with tuberculosis, mechanically ventilated ICU patients and outpatients, given a fixed-dose-combination tablet.
+
+- Add Kobuchi 2021 oxaliplatin ([doi:10.3390/cancers13246382](https://doi.org/10.3390/cancers13246382)) -- male Wistar rats with normal renal function or ischemia-reperfusion acute kidney injury.
+
+- Add Cojutti 2021 isavuconazole ([doi:10.3390/pharmaceutics13122099](https://doi.org/10.3390/pharmaceutics13122099)) -- hospitalized adults with invasive fungal disease.
+
+- Add Shinha 2020 irinotecan ([doi:10.1063/5.0011545](https://doi.org/10.1063/5.0011545)) -- in vitro, HepG2 liver + A549 lung-cancer multi-organ-on-a-chip, with a simvastatin DDI.
+
+- Add Ide 2022 elotuzumab ([doi:10.1007/s00280-021-04365-4](https://doi.org/10.1007/s00280-021-04365-4)) -- multiple myeloma treated with elotuzumab alone, with lenalidomide/dexamethasone, or with pomalidomide/dexamethasone.
+
+- Add He 2022 gentamicin ([doi:10.2147/DDDT.S343385](https://doi.org/10.2147/DDDT.S343385)) -- critically ill adults on continuous renal replacement therapy.
+
+- Add Swartling 2022 cefotaxime ([doi:10.1007/s00228-021-03218-6](https://doi.org/10.1007/s00228-021-03218-6)) -- critically ill adults in the ICU not on renal replacement therapy.
+
+- Add Duflot 2022 morphine, M3G and M6G ([doi:10.1002/psp4.12735](https://doi.org/10.1002/psp4.12735)) -- healthy adults given intravenous or nebulized morphine.
+
+- Add Kandadi Muralidharan 2022 aducanumab ([doi:10.1002/psp4.12728](https://doi.org/10.1002/psp4.12728)) -- patients with early Alzheimer's disease; serum PK linked to amyloid PET SUVR.
+
+- Add Sae-heng 2022 quinine-phenobarbital PBPK ([doi:10.1002/psp4.12737](https://doi.org/10.1002/psp4.12737)) — whole-body drug-drug-interaction model in adults with cerebral malaria and seizures.
+
+- Add Kathman 2022 bentracimab (PB2452) ([doi:10.1002/psp4.12734](https://doi.org/10.1002/psp4.12734)) -- healthy volunteers, alone and after ticagrelor pretreatment (ticagrelor reversal PK-PD).
+
+- Add Gijsen 2022 meropenem ([doi:10.2147/IDR.S343264](https://doi.org/10.2147/IDR.S343264)) -- critically ill septic adults with preserved or increased renal function.
+
+- Add Wang 2022 daidzein/S-equol PBPK ([doi:10.1021/acs.jafc.1c03950](https://doi.org/10.1021/acs.jafc.1c03950)) -- whole-body human gut-microbial PBPK for the dietary isoflavone daidzein and its metabolite S-equol.
+
+- Add Smit 2022 moxidectin ([doi:10.1007/s40262-021-01048-4](https://doi.org/10.1007/s40262-021-01048-4)) -- adults with *Strongyloides stercoralis* infection in Laos.
+
+- Add Li 2021 voriconazole and voriconazole N-oxide ([doi:10.3389/fphar.2021.730826](https://doi.org/10.3389/fphar.2021.730826)) -- Chinese immunocompromised patients genotyped for CYP2C19.
+
+- Add Rostami 2022 nicotine whole-body PBPK ([doi:10.1038/s41598-022-05108-y](https://doi.org/10.1038/s41598-022-05108-y)) -- healthy adults; nicotine, cotinine and nicotine-glucuronide disposition with intravenous and oral routes.
+
+- Add Ferguson-Sells 2022 tadalafil ([doi:10.1007/s40262-021-01052-8](https://doi.org/10.1007/s40262-021-01052-8)) -- adults and children aged 2 to < 18 years with pulmonary arterial hypertension.
+
+- Add Frade 2022 benznidazole ([doi:10.1590/S1678-9946202264004](https://doi.org/10.1590/S1678-9946202264004)) -- Brazilian adults with chronic Chagas disease (whole-blood dried blood spots).
+
+- Add Hirai 2022 digoxin ([doi:10.1186/s40360-022-00552-y](https://doi.org/10.1186/s40360-022-00552-y)) -- Japanese adults with atrial fibrillation and heart failure.
+
+- Add Patel 2022 imipenem and relebactam ([doi:10.1111/cts.13158](https://doi.org/10.1111/cts.13158)) -- healthy adults and adults with complicated intra-abdominal infection, complicated urinary tract infection, or hospital-acquired/ventilator-associated bacterial pneumonia, updating Bhagunde 2019 with the RESTORE-IMI 2 data.
+
+- Add Sasaki 2022 delamanid ([doi:10.1128/aac.01608-21](https://doi.org/10.1128/aac.01608-21)) -- children and adolescents with MDR-TB; joint delamanid / DM-6705 PK model plus concentration-QTc models for each analyte.
+
+- Add Kuchimanchi 2022 diroximel fumarate metabolites MMF and HES ([doi:10.1007/s40120-021-00316-6](https://doi.org/10.1007/s40120-021-00316-6)) -- healthy volunteers and patients with relapsing-remitting multiple sclerosis.
+
+- Add Alvarez 2022 hydroxychloroquine and three metabolites ([doi:10.3390/ph15020256](https://doi.org/10.3390/ph15020256)) -- adults hospitalised with COVID-19. Registers the `dhcq` (desethylhydroxychloroquine) and `bdcq` (bisdesethylchloroquine) metabolite suffixes.
+
+- Add Pressiat 2022 amikacin ([doi:10.3390/pharmaceutics14020289](https://doi.org/10.3390/pharmaceutics14020289)) -- critically ill adults with nosocomial sepsis, with and without veno-arterial ECMO.
+
+- Add Jung 2022 donepezil ([doi:10.3390/pharmaceutics14020244](https://doi.org/10.3390/pharmaceutics14020244)) -- healthy adult men given oral tablets or a once-weekly transdermal patch.
+
+- Add Wu 2022 fentanyl ([doi:10.1007/s40262-021-01076-0](https://doi.org/10.1007/s40262-021-01076-0)) -- preterm and term newborns.
+
+- Add Yan 2022 inebilizumab ([doi:10.1007/s40262-021-01071-5](https://doi.org/10.1007/s40262-021-01071-5)) -- adults with neuromyelitis optica spectrum disorder, systemic sclerosis or relapsing multiple sclerosis.
+
+- Add Assmus 2022 emodepside ([doi:10.1371/journal.pntd.0010219](https://doi.org/10.1371/journal.pntd.0010219)) -- healthy male volunteers in three phase I studies; population PK plus four Cmax-driven adverse-event logistic models.
+
+- Add Siebel 2022 PEGylated asparaginase with the pre-existing anti-PEG IgM effect ([doi:10.1007/s13318-021-00741-w](https://doi.org/10.1007/s13318-021-00741-w)) -- children with acute lymphoblastic leukaemia in the AIEOP-BFM ALL 2009 trial.
+
+- Add Lin 2022 aducanumab amyloid-beta QSP ([doi:10.1002/psp4.12759](https://doi.org/10.1002/psp4.12759)) -- patients with early Alzheimer's disease (SAD 0.3-60 mg/kg and phase Ib PRIME 1-10 mg/kg q4w).
+
+- Add Stillemans 2022 atorvastatin ([doi:10.1111/cts.13185](https://doi.org/10.1111/cts.13185)) -- ambulatory adults at cardiovascular risk in a real-life setting, with SLCO1B1 c.521T>C genotype.
+
+- Add Neroutsos 2022 busulfan ([doi:10.3390/pharmaceutics14030647](https://doi.org/10.3390/pharmaceutics14030647)) -- children undergoing haematopoietic stem cell transplantation, with a syringe-pump infusion lag.
+
+- Add Mao 2022 methotrexate ([doi:10.3389/fphar.2022.817673](https://doi.org/10.3389/fphar.2022.817673)) -- adults with primary central nervous system lymphoma on high-dose methotrexate.
+
+- Add Yu 2022 Crohn's disease CDAI150, CDAI-100, CDAI-70, CDAI, CRP and IBDQ model-based meta-analysis ([doi:10.3389/fimmu.2022.828219](https://doi.org/10.3389/fimmu.2022.828219)) -- trial arms of adults with moderate-to-severe Crohn's disease treated with 17 biologics and 7 small targeted molecules.
+
+- Add Wang 2022 L-ornithine phenylacetate ([doi:10.1007/s40262-021-01075-1](https://doi.org/10.1007/s40262-021-01075-1)) -- adults with cirrhosis or hepatic encephalopathy (phenylacetic acid, phenylacetylglutamine and L-ornithine).
+
+- Add Beck 2022 elagolix ([doi:10.1007/s40262-021-01096-w](https://doi.org/10.1007/s40262-021-01096-w)) -- premenopausal healthy women and women with endometriosis or uterine fibroids (elagolix alone or with estradiol/norethindrone acetate add-back); ratifies the new `SNP_SLCO1B1_RS4149056_MISSING` covariate canonical.
+
+- Add Mi 2022 ceftiofur ([doi:10.3390/ijms23073722](https://doi.org/10.3390/ijms23073722)) -- *Pasteurella multocida*-infected swine, with ex vivo (plasma, BALF) and semi-mechanistic PK/PD against *P. multocida*.
+
+- Add Yu 2022 IgA nephropathy drug-class proteinuria MBMA ([doi:10.3389/fimmu.2022.825677](https://doi.org/10.3389/fimmu.2022.825677)) -- adults with IgA nephropathy in 40 trials of placebo and six drug classes. Registers the `UPRO_BL` covariate, the six IgA-nephropathy `TRT_*` drug-class indicators, and the `uprocfb` output.
+
+- Add Wang 2020 entinostat + nivolumab + ipilimumab QSP ([doi:10.3389/fbioe.2020.00141](https://doi.org/10.3389/fbioe.2020.00141)) -- virtual patients with HER2-negative breast cancer. Solve it with `method = "cvode"`: with `lsoda`, about 1.5% of the entinostat solves fail ("could not solve the system") after perturbing two parameters by one part in 10^12, so a solve that works on one machine can fail on another. The article uses `cvode`, which solved every such case.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
