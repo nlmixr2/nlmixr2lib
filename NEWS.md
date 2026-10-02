@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gadkar 2022 PI3K-inhibitor colitis QSP ([doi:10.1002/psp4.12749](https://doi.org/10.1002/psp4.12749)) -- virtual patients with cancer on taselisib, idelalisib, duvelisib, umbralisib, alpelisib, pictilisib or copanlisib; diarrhea and colitis risk.
+- Add Araki 2022 TAS-114 with autoinduction and uracil PD ([doi:10.1002/psp4.12747](https://doi.org/10.1002/psp4.12747)) -- healthy adult men and adults with advanced solid tumours.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
