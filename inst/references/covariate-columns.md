@@ -22711,3 +22711,14 @@ is the experimental condition itself, held constant for the whole solve.
   - `DRUG1` -- Li 2018 Table 2 rows "DRUG1 ON Vc/F" and "DRUG1 ON CL/F".
 - **Example models:** `Li_2018_olanzapine.R` (multiplicative effects on the apparent central volume and the apparent oral clearance only: `Vc/F * 0.207`, `CL/F * 0.610`).
 - **Notes:** Member of the `FORM_<drug>_<formulation>` family; sibling of `FORM_OLZ_F0`, whose Notes carry the confounding caveat that applies equally here. Asymmetric with `FORM_OLZ_F0` in one respect worth preserving when re-using the column: Table 2 has no "DRUG1 ON Ka" row, because the final model lets formulation #1 share the reference absorption rate constant while giving formulation #0 its own. The Discussion justifies that choice on an objective-function comparison (4126.82 vs 4133.16) and notes that the sparse, mostly post-absorption sampling of the patient cohort could not support a separate ka for formulation #2 either.
+
+### STUDY_FIH_MAD (**canonical for the GLPG1690 first-in-human multiple-ascending-dose study-part indicator**)
+- **Description:** 1 = record from the multiple-ascending-dose (MAD) part of the GLPG1690 first-in-human study NCT02179502 (healthy male volunteers; 150 mg twice daily, 600 mg or 1000 mg once daily for 14 days), 0 = any other study or study part. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (single-ascending-dose part, drug-drug-interaction study and proof-of-concept study in Taneja 2019).
+- **Source aliases:**
+  - `FIH study, MAD part` -- Taneja 2019 Table 3 row 'Imax at day 14 and later of the FIH study, MAD part'. Free-text label, not a column header.
+- **Example models:** `Taneja_2019_glpg1690.R` (founding example; enters only in the product `STUDY_FIH_MAD * DAY14`, which adds 0.2043 to the probit of Imax from day 14 of the MAD part, 90.8% -> 93.7%).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family. The study gate is needed because the 12-week proof-of-concept study also samples past day 14 without carrying the effect.
