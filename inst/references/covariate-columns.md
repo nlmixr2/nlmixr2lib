@@ -13622,6 +13622,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Nava_2018_busulfan.R` (multiplicative factor on busulfan clearance with `e_gsta1_pm_cl = 0.88`; poor metabolizers clear busulfan 12% more slowly than normal metabolizers, and are the group the paper flags as being at higher risk of toxic busulfan exposure).
 - **Notes:** See the `GSTA1_RM` entry above for the family pattern, the choice of the `_RM` suffix for the rapid stratum, why no `GSTA1_NM` companion is registered, and the distinction from the measured-activity canonical `GST_BL_NMOL_MIN_ML`. A source that genotypes only the -69C/T locus (rs3957357) resolves *GSTA1\*B* homozygotes but cannot distinguish the `*B1b` haplotype or separate `*A2` / `*A3` from `*A1` (Nava 2018 Discussion), so it cannot populate the rapid stratum; such a source should use `GSTA1_PM` alone, or the SNP-level `SNP_GSTA1_RS3957357` canonical if one is registered for it in future.
 
+### SNP_GSTA1_RS3957356 (**canonical for GSTA1 -52G>A (rs3957356) variant-carrier indicator**)
+- **Description:** Binary genotype indicator for the *GSTA1* promoter single-nucleotide polymorphism -52G>A (rs3957356), the marker of the reduced-promoter-activity *GSTA1\*B* haplotype. 1 = the variant was detected (at least one A allele); 0 = not detected. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (variant not detected).
+- **Source aliases:**
+  - `GSTA1` / "GSTA1 SNP" / "GSTA1 52G>A" -- Dadkhah 2022 (Section 2.3 genotyping by the Ansari et al. method; Section 2.5 categorical covariates coded 0/1; Table 1 row 'GSTA1 52G>A' 28 of 37 = 75.7%; Section 3.3 equation (2) 'for GSTA1' / 'for non-GSTA1'). The paper does not separate heterozygous from homozygous carriers. No value transformation is needed.
+- **Example models:** `Dadkhah_2022_busulfan.R` (exponential effect on the clearance of the busulfan metabolite sulfolane: `CLSu = 1.61 * exp(1.43 * SNP_GSTA1_RS3957356)` L/h, i.e. carriers clear sulfolane 4.18-fold faster; the paper notes the direction is counterintuitive and attributes it to intermediate steps of the busulfan metabolic pathway).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family. Distinct from `GSTA1_RM` / `GSTA1_PM`, which classify a four-locus promoter diplotype into metabolizer groups (Nava 2018) and cannot be derived from this single locus; and from the -69C>T locus rs3957357, which is in strong linkage with rs3957356 but is a different SNP and needs its own entry if a source uses it. Distinct from `GST_BL_NMOL_MIN_ML`, the measured glutathione-S-transferase activity phenotype.
+
 ### SNP_ORM1_RS17650 (**canonical for ORM1 rs17650 active-allele count**)
 - **Description:** Continuous individual-level *ORM1* rs17650 active-allele count: 0, 1, or 2 copies. The rs17650 SNP distinguishes the "F" (fast-migrating) and "S" (slow-migrating) allozymes of alpha-1 acid glycoprotein (AAG) encoded by *ORM1*. The variant F-phenotype allele binds methadone with lower affinity than the reference S phenotype (Aruldhas 2021 Discussion). Time-invariant (germline genotype). The paper uses the standard centered-additive form `V2 = V2_ref * (1 + Theta_rs17650 * (n_active - 1))` with `n_active` = number of active alleles at rs17650.
 - **Units:** (count, 0/1/2 alleles per subject)

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Leegwater 2022 remdesivir with GS-441524 ([doi:10.1128/aac.00254-22](https://doi.org/10.1128/aac.00254-22)) -- non-critically ill hospitalized adults with COVID-19 needing supplemental oxygen.
+- Add Dadkhah 2022 busulfan and sulfolane ([doi:10.3390/pharmaceutics14061145](https://doi.org/10.3390/pharmaceutics14061145)) -- adults with myelofibrosis undergoing allogeneic haematopoietic stem cell transplantation.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
