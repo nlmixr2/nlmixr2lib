@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ali 2022 artemisinin and naphthoquine ([doi:10.1128/aac.01696-21](https://doi.org/10.1128/aac.01696-21)) -- Tanzanian children (6 years and older) and adults with uncomplicated falciparum malaria.
+- Add Wu 2022 caspofungin ([doi:10.1128/aac.02249-21](https://doi.org/10.1128/aac.02249-21)) -- critically ill adults after cardiac surgery, heart transplant recipients and non-transplant controls.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
