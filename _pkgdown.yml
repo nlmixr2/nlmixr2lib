@@ -522,6 +522,10 @@ navbar:
         href: articles/Shemesh_2020_atezolizumab_tmb.html
       - text: "Atezolizumab aesi ctrough (Shemesh 2020)"
         href: articles/Shemesh_2020_atezolizumab_tmb.html
+      - text: "Atezolizumab bladder pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
+      - text: "Atezolizumab breast pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Atezolizumab carboplatin nabpaclitaxel qsp (Wang 2024)"
         href: articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp.html
       - text: "Atezolizumab cibisatamab qsp (Anbari 2023)"
@@ -530,6 +534,8 @@ navbar:
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atezolizumab nabpaclitaxel qsp (Wang 2021)"
         href: articles/Wang_2021_atezolizumab_nabpaclitaxel_qsp.html
+      - text: "Atezolizumab nsclc pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Atezolizumab orr auc (Shemesh 2020)"
         href: articles/Shemesh_2020_atezolizumab_tmb.html
       - text: "Atezolizumab orr cmax (Shemesh 2020)"
@@ -742,14 +748,20 @@ navbar:
         href: articles/Li_2020_bevacizumab.html
       - text: "Bevacizumab (Panoilia 2015)"
         href: articles/Panoilia_2015_bevacizumab.html
+      - text: "Bevacizumab breast pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Bevacizumab mouse (Wu 2012)"
         href: articles/Wu_2012_bevacizumab_mouse.html
+      - text: "Bevacizumab nsclc pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Bevacizumab pk (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_pk.html
       - text: "Bevacizumab pkpd (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_pkpd.html
       - text: "Bevacizumab qss (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_qss.html
+      - text: "Bevacizumab renal pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Bhma mouse (Benson 2010)"
         href: articles/Benson_2010_bhma_mouse.html
       - text: "Biapenem (Chen 2024)"
@@ -2498,6 +2510,8 @@ navbar:
         href: articles/FiedlerKelly_2020_fremanezumab_cm.html
       - text: "Fremanezumab em (FiedlerKelly 2020)"
         href: articles/FiedlerKelly_2020_fremanezumab_em.html
+      - text: "Fresolimumab glioblastoma pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Fruquintinib QTcF M11 (Zhou 2025)"
         href: articles/Zhou_2025_fruquintinib.html
       - text: "Fruquintinib QTcP M11 (Zhou 2025)"
@@ -3564,6 +3578,10 @@ navbar:
         href: articles/Peng_2014_MK3577.html
       - text: "MK3577 t2dm (Peng 2014)"
         href: articles/Peng_2014_MK3577.html
+      - text: "MMOT0530A ovarian pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
+      - text: "MMOT0530A pancreatic pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "MRNA0184 cyno (Kaushal 2024)"
         href: articles/Kaushal_2024_mRNA0184.html
       - text: "MRNA0184 human (Kaushal 2024)"
@@ -6284,6 +6302,10 @@ navbar:
         href: articles/Reijers_2016_trastuzumab.html
       - text: "Trastuzumab LVEF (deVriesSchultink 2018)"
         href: articles/deVriesSchultink_2018_cardiotoxicity.html
+      - text: "Trastuzumab breast pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
+      - text: "Trastuzumab esophagogastric pbpk (Salgado 2022)"
+        href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Trastuzumab pf05280014 (Chen 2019)"
         href: articles/Chen_2019_trastuzumab.html
       - text: "Trastuzumab reference (Chen 2019)"
