@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wan 2022 colecalciferol ([doi:10.1111/bcp.15064](https://doi.org/10.1111/bcp.15064)) -- children aged 1-18 years with chronic kidney disease stages 2-4.
+- Add Fediuk 2021b ertugliflozin ethnic-population models ([doi:10.1002/cpdd.970](https://doi.org/10.1002/cpdd.970)) -- healthy adults and adults with type 2 diabetes, comparing East/Southeast Asian, mainland-China Asian and rest-of-world Asian with non-Asian subjects.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
