@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Abrams 2022 SAR442257 (CD38xCD28xCD3 trispecific T-cell engager) QSP ([doi:10.1038/s41598-022-14726-5](https://doi.org/10.1038/s41598-022-14726-5)) -- in vitro model of human peripheral-blood T cells, CD38+ PBMCs and multiple myeloma cells.
+- Add Du 2022 busulfan ([doi:10.3389/fphar.2022.905879](https://doi.org/10.3389/fphar.2022.905879)) -- Chinese children receiving IV busulfan conditioning before hematopoietic stem cell transplantation.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
