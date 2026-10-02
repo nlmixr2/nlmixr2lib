@@ -2256,6 +2256,8 @@ navbar:
         href: articles/Hazendonk_2016_factor_viii.html
       - text: "Factor viii (Noe 1996)"
         href: articles/Noe_1996_factor_viii.html
+      - text: "Factor viii (Preijers 2021)"
+        href: articles/Preijers_2021_factor_viii.html
       - text: "FactorIX (Brekkan 2016)"
         href: articles/Brekkan_2016_factorIX.html
       - text: "Factorix (Koopman 2023)"
@@ -8696,6 +8698,7 @@ articles:
   - articles/Polito_2016_fludrocortisone
   - articles/Por_2021_imipenem
   - articles/Pouzin_2022_tusamitamab
+  - articles/Preijers_2021_factor_viii
   - articles/Press_2010_ciclosporin
   - articles/Pressiat_2022_amikacin
   - articles/Proctor_2026_durvalumab_cachexia
