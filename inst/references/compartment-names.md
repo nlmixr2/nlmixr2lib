@@ -4411,26 +4411,12 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `He_2021_psoriasis_pasi90_mbma.R` (fitted directly to PASI90 arm data), `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (a secondary, unfitted output that maps the PASI75 model to PASI90 with two scaling factors imported from the companion landmark model).
 - **Notes:** See `prob_pasi75`. A directly fitted PASI90 model and a PASI75 model rescaled to PASI90 are different evidence and should be distinguished in any comparison.
 
-### prob_cdai150 (**canonical CDAI150 clinical-remission rate output**)
+### prob_pasi75_pbo_adj, prob_pasi90_pbo_adj (**canonical placebo-adjusted PASI75 / PASI90 responder-fraction outputs**)
 - **Type:** compartment
-- **Role:** Probability (0..1) that a patient with Crohn's disease is in clinical remission, defined as an absolute Crohn's Disease Activity Index score below 150 (CDAI150). In the founding model it is a STUDY-ARM proportion from a model-based meta-analysis, `prob_cdai150 <- expit(<placebo logit> + <drug logit>)`.
-- **Source aliases:** `CDAI150`, `cdai150` (Yu 2022 dataset column), `clinical remission`.
-- **Example models:** `Yu_2022_crohns_cdai150_mbma.R` (founding example).
-- **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. Unlike the response endpoints `prob_cdai100` and `prob_cdai70` it is an ABSOLUTE threshold, so it is not a reduction from each arm's own baseline and is not zero at randomisation. Residual is the binomial standard error of the arm proportion scaled by `N_ARM`.
-
-### prob_cdai100 (**canonical CDAI-100 clinical-response rate output**)
-- **Type:** compartment
-- **Role:** Probability (0..1) that a patient with Crohn's disease has a clinical response defined as a reduction of at least 100 points from baseline in the Crohn's Disease Activity Index (CDAI-100). STUDY-ARM proportion in the founding model.
-- **Source aliases:** `CDAI-100`, `CDAI100`, `cdai100` (Yu 2022 dataset column).
-- **Example models:** `Yu_2022_crohns_cdai100_mbma.R` (founding example).
-- **Notes:** See `prob_cdai150`. CDAI-100 and CDAI-70 are CUMULATIVE thresholds on one change scale (`prob_cdai70 >= prob_cdai100` within an arm), but the founding paper fits them to different trial sets as independent models, so nothing in the models enforces the ordering.
-
-### prob_cdai70 (**canonical CDAI-70 clinical-response rate output**)
-- **Type:** compartment
-- **Role:** Probability (0..1) that a patient with Crohn's disease has a clinical response defined as a reduction of at least 70 points from baseline in the Crohn's Disease Activity Index (CDAI-70). Less strict sibling of `prob_cdai100`.
-- **Source aliases:** `CDAI-70`, `CDAI70`, `cdai70` (Yu 2022 dataset column).
-- **Example models:** `Yu_2022_crohns_cdai70_mbma.R` (founding example).
-- **Notes:** See `prob_cdai100`.
+- **Role:** Study-arm PASI75 (or PASI90) responder fraction MINUS the placebo-arm fraction of the same trial, on a 0-1 scale, at a single landmark read-out. In the founding models it is a sigmoid Emax trend line of a dose-based or a target-engagement-based MBMA.
+- **Source aliases:** `Placebo-adjusted response (%)` -- Ayyar 2022 Figures 2 and 6 (in percent; the models divide by 100).
+- **Example models:** `Ayyar_2022_secukinumab_mbma.R`, `Ayyar_2022_ixekizumab_mbma.R` (functions of the average weekly dose `DOSE_<drug>_MGWK`), `Ayyar_2022_secukinumab_mpbpk.R`, `Ayyar_2022_ixekizumab_mpbpk.R` (functions of the running-average free skin IL-17A, meaningful at the week-12 read-out).
+- **Notes:** Not a probability: it is a DIFFERENCE of two arm proportions, so it can be slightly negative where the source's trend line extrapolates (near zero dose, or beyond the plotted exposure range), and it is not comparable with the absolute `prob_pasi75` / `prob_pasi90` outputs without adding a placebo rate. The `_pbo_adj` suffix keeps it from being read as one. Follows the `prob_<endpoint>` shape.
 
 ---
 

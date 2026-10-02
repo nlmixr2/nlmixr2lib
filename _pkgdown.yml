@@ -3156,6 +3156,10 @@ navbar:
         href: articles/Gupta_2017_ixazomib.html
       - text: "Ixekizumab (Jackson 2022)"
         href: articles/Jackson_2022_ixekizumab.html
+      - text: "Ixekizumab mbma (Ayyar 2022)"
+        href: articles/Ayyar_2022_il17a_target_engagement.html
+      - text: "Ixekizumab mpbpk (Ayyar 2022)"
+        href: articles/Ayyar_2022_il17a_target_engagement.html
       - text: "Kaempferol3OGlucoside rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
       - text: "Kaempferol3ORutinoside rat (Chen 2024)"
@@ -5588,6 +5592,10 @@ navbar:
         href: articles/AlvarezJimenez_2016_scopolamine.html
       - text: "Scopolamine (LiemMoolenaar 2011)"
         href: articles/LiemMoolenaar_2011_scopolamine.html
+      - text: "Secukinumab mbma (Ayyar 2022)"
+        href: articles/Ayyar_2022_il17a_target_engagement.html
+      - text: "Secukinumab mpbpk (Ayyar 2022)"
+        href: articles/Ayyar_2022_il17a_target_engagement.html
       - text: "Selexipag (Krause 2017)"
         href: articles/Krause_2017_selexipag.html
       - text: "Selexipag adult (Axelsen 2024)"
@@ -7147,6 +7155,7 @@ articles:
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
   - articles/Axelsen_2024_selexipag
+  - articles/Ayyar_2022_il17a_target_engagement
   - articles/Ayyar_2024_givosiran
   - articles/Ayyoub_2016_pyronaridine
   - articles/Azechi_2024_tamibarotene_pediatric

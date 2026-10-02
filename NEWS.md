@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rhee 2022 sildenafil and N-desmethyl sildenafil ([doi:10.1038/s41598-022-11038-6](https://doi.org/10.1038/s41598-022-11038-6)) -- term and preterm infants with pulmonary arterial hypertension. Registers the `ndmsil` metabolite suffix.
+- Add Ayyar 2022 secukinumab and ixekizumab ([doi:10.3389/fphar.2022.862291](https://doi.org/10.3389/fphar.2022.862291)) -- adults with moderate-to-severe plaque psoriasis (mPBPK with serum and skin IL-17A target engagement, and the target-engagement- and dose-based PASI75 / PASI90 MBMAs).
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
