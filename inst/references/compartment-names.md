@@ -5582,6 +5582,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Hadigol_2026_talazoparib_enzalutamide.R` (two-compartment metabolite formed directly into plasma with no depot; `central_ndmenz`, `peripheral1_ndmenz`, `lcl_ndmenz` / `lvc_ndmenz` / `lq_ndmenz` / `lvp_ndmenz`, `e_wt_cl_ndmenz` / `e_wt_vc_ndmenz`, `expSd_ndmenz`; doi:10.1002/jcph.70125).
 - **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib), `ndmima` (N-desmethyl-imatinib) and `ndmclb` (N-desmethylclobazam), so the suffix reads as `n-desmethyl-enz`, and pairs with the `enz` sibling-drug suffix for the parent. Unlike `ndmima` and `ndmclb`, the founding model's metabolite clearance and volume are NOT scaled by an unidentifiable fraction metabolised: Hadigol 2026 resolves the same Fmet-versus-Vcn unidentifiability the other way round, by FIXING `fm` to 0.634 from a published enzalutamide PBPK model and estimating `Vcn` freely, so `central_ndmenz` holds a true amount. Whichever way a source resolves it, only one of the pair can be estimated -- see the `fm` entry in `parameter-names.md`. Note also that in the founding model the parent itself carries a suffix (`enz`) rather than the bare canonical names, because the substrate of interest in that paper is a third drug (talazoparib); a metabolite suffix does not imply that its parent is unsuffixed.
 
+### ndmsil (**canonical N-desmethyl-sildenafil suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desmethyl sildenafil (UK-103,320), the principal circulating metabolite of the PDE5 inhibitor sildenafil, formed by CYP3A4 (about 79%) and CYP2C9 (about 20%) N-demethylation. It retains roughly 50% of the parent's in-vitro PDE5 potency, so exposure targets for sildenafil in infants are often stated as sildenafil AUC plus half the metabolite AUC.
+- **Source aliases:**
+  - `DMS` -- the abbreviation used throughout Rhee 2022 (`V_DMS/F'`, `CL_DMS/F'`).
+- **Example models:** `Rhee_2022_sildenafil.R` (one-compartment metabolite formed by complete conversion of the parent's apparent clearance; `central_ndmsil`, `lcl_ndmsil` / `lvc_ndmsil`, `e_wt_cl_ndmsil`, `etalcl_ndmsil`, `Cc_ndmsil`, `expSd_ndmsil`; doi:10.1038/s41598-022-11038-6).
+- **Notes:** Follows the `ndm<drug>` contraction of `ndmsel`, `ndmima`, `ndmclb` and `ndmenz`, so the suffix reads as `n-desmethyl-sil`. The founding model assumes every sildenafil molecule eliminated forms the metabolite, on a molar basis; the metabolite volume and clearance are apparent with respect to that assumption (the paper's `F'`), so the predicted concentration is the measured one even if the true fraction metabolised is lower.
+
 ### dfcr (**canonical 5'-DFCR capecitabine metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5'-deoxy-5-fluorocytidine (5'-DFCR), formed in the liver by carboxylesterase from capecitabine.

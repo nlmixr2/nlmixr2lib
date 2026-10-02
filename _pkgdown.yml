@@ -5646,6 +5646,8 @@ navbar:
         href: articles/Narwal_2013_sifalimumab.html
       - text: "Sifalimumab (Zheng 2016)"
         href: articles/Zheng_2016_sifalimumab.html
+      - text: "Sildenafil (Rhee 2022)"
+        href: articles/Rhee_2022_sildenafil.html
       - text: "Sildenafil dog (Yata 2026)"
         href: articles/Yata_2026_sildenafil_dog.html
       - text: "Siltuximab (Cao 2013)"
@@ -8797,6 +8799,7 @@ articles:
   - articles/Retout_2020_emicizumab
   - articles/Retout_2026_baloxavir
   - articles/Revilla_2010_vancomycin
+  - articles/Rhee_2022_sildenafil
   - articles/Ribba_2022_ctdna_tumor_size
   - articles/Riccobene_2016_ceftaroline
   - articles/Riccobene_2017_ceftaroline
