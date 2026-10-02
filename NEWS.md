@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wu 2022 caspofungin ([doi:10.1128/aac.02249-21](https://doi.org/10.1128/aac.02249-21)) -- critically ill adults after cardiac surgery, heart transplant recipients and non-transplant controls.
+- Add Gadkar 2022 PI3K-inhibitor colitis QSP ([doi:10.1002/psp4.12749](https://doi.org/10.1002/psp4.12749)) -- virtual patients with cancer on taselisib, idelalisib, duvelisib, umbralisib, alpelisib, pictilisib or copanlisib; diarrhea and colitis risk.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
