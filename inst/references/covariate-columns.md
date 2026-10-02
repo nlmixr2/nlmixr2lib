@@ -5454,7 +5454,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Reference category:** n/a -- enters as a centred term. Reference value observed: 3.4 ng/mL (D'Agate 2021 pooled-population median).
 - **Source aliases:**
   - `B_PSA` -- D'Agate 2021 Supporting Information Figure S3 label ('PSA concentration at baseline').
-- **Example models:** `DAgate_2021_bph_aurs_mbma.R` (founding example; log-linear effect on the hazard of first acute urinary retention or BPH-related surgery, `exp(log(1.08) * (PSA_BL - 3.4))`).
+- **Example models:** `DAgate_2021_bph_aurs_mbma.R` (founding example; log-linear effect on the hazard of first acute urinary retention or BPH-related surgery, `exp(log(1.08) * (PSA_BL - 3.4))`), `Zou_2020_leuprorelin.R` (merged from a duplicate register entry during merge dedup).
 - **Notes:** Member of the `<X>_BL` per-subject-baseline family (`INS_BL`, `FERRITIN_BL`, `D25OH_BL`). The measured, unadjusted pre-treatment value: 5-alpha-reductase inhibitors such as dutasteride roughly halve PSA on treatment, and a model of on-treatment PSA as a time course must use a separate time-varying column or an output state, never this one. Distinct from PSA as a modelled tumour-marker output in prostate-cancer models (e.g. the `PSA` state of `vanHasselt_2015_eribulin.R`).
 
 ### PROSTATE_VOL_BL (**canonical for baseline prostate volume**)
@@ -9805,17 +9805,6 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
   - `ctDNA0` (Ribba 2022 Eq. 2 symbol for the same quantity in the joint ctDNA / SLD model).
 - **Example models:** `Ribba_2022_ctdna.R` (Stein bi-exponential on log10 ctDNA; `growth_ctdna(0) <- log10(CTDNA)`), `Ribba_2022_ctdna_sld_joint.R` (joint ctDNA / SLD model; same initial-condition use alongside `TUM_SLD`).
 - **Notes:** Deliberately NOT pooled with variant-allele-frequency (VAF) or ctDNA-tumor-fraction (cTF) readouts: MMPM is an absolute concentration of mutant molecules whereas VAF and cTF are dimensionless ratios of mutant to wild-type (or aneuploidy-derived) signal, so the two are not interconvertible without the wild-type denominator. A future VAF / cTF canonical should be registered separately (e.g. `CTDNA_VAF`) rather than aliased onto `CTDNA`. The assay platform matters for cross-study pooling -- Ribba 2022 used the Roche AVENIO panel for the MMPM cohorts (Weber 2021 and OAK) and the FMI panel for the cTF cohort (IMspire170) -- so record the panel in the per-model `covariateData[[CTDNA]]$notes`.
-
-### PSA_BL (**canonical for observed baseline serum prostate-specific antigen**)
-- **Description:** Observed per-subject baseline serum prostate-specific antigen (PSA) concentration, time-fixed per subject -- the last PSA measured before treatment start. Used both as a per-subject regressor that seeds a PSA disease-progression state (initial condition) and as a covariate on a disease-progression parameter.
-- **Units:** ng/mL
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(PSA_BL / ref)^exponent` when it enters a parameter; the observed value itself when it seeds a state.
-- **Source aliases:**
-  - `BAS` -- used in `Zou_2020_leuprorelin.R` (Zou 2020 Eqs 2-3 and 17, 'BAS is the baseline PSA').
-- **Example models:** `Zou_2020_leuprorelin.R` (seeds the Stein-type sub-states `growth(0) = R * PSA_BL`, `shrink(0) = (1 - R) * PSA_BL`, and is a power covariate on the kill rate `kse`, centered at the cohort median 8.5 ng/mL with exponent 0.174).
-- **Notes:** Follows the majority `<X>_BL` baseline-analyte pattern (`HGB_BL`, `INS_BL`, `FERRITIN_BL`). Named `PSA_BL` rather than `PSA_BASE` because the `<X>_BASE` pattern is reserved for a baseline paired with a same-analyte time-varying covariate column, whereas here PSA is the model's observable, not a covariate. A future time-varying PSA covariate (e.g. PSA as a driver in a survival model) should be registered separately as `PSA`.
 
 ### TUMTP_HODGKIN_CLASSICAL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 <!-- AUDIT 2026-06-19: renamed from `TUMTP_CHL` to `TUMTP_HODGKIN_CLASSICAL`. The prior name `TUMTP_CHL` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
