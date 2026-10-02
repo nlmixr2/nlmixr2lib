@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Teixeira-da-Silva 2022 valproic acid ([doi:10.3390/pharmaceutics14040811](https://doi.org/10.3390/pharmaceutics14040811)) -- Spanish (Caucasian) paediatric and adult outpatients on valproic acid mono- or dual antiepileptic therapy, aged 0.1-89 years.
+- Add Mockeliunas 2022 linezolid ([doi:10.3390/pharmaceutics14040753](https://doi.org/10.3390/pharmaceutics14040753)) -- adults with multidrug- and extensively drug-resistant tuberculosis.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
