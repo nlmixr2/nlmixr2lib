@@ -58,11 +58,11 @@ Leven_2020_roscovitine <- function() {
 
     # Sum-of-inverse-Gaussian absorption input, Equations 4-6 and Appendix A.
     logitfrel <- log(0.285 / (1 - 0.285)); label("Logit of the weight pi1 of the first roscovitine inverse-Gaussian input (unitless)") # Table 3 'pi1 0.285' (logit-normal, Section 2.5; no IIV estimated)
-    ltpeak_ig1 <- log(0.676); label("Time of the peak of the first roscovitine inverse-Gaussian input density, T1max (h)") # Table 3 'T1max (h) 0.676'
-    e_conmed_ppi_tpeak_ig1 <- 0.680; label("Log-scale shift in T1max with concomitant proton-pump inhibitor, beta (unitless)") # Table 3 'beta (PPI = 1) on T1max 0.680'
-    ldtpeak_ig2 <- log(1.04); label("Delay of the second roscovitine inverse-Gaussian input peak after the first, dT2max (h)") # Table 3 'dT2max (h) 1.04'; T2max = T1max + dT2max (Section 3.2)
-    lcv_ig1 <- log(0.542); label("Coefficient of variation of the first inverse-Gaussian input density, CV1 (unitless)") # Table 3 'CV1 0.542'
-    lcv_ig2 <- log(0.354); label("Coefficient of variation of the second inverse-Gaussian input density, CV2 (unitless)") # Table 3 'CV2 0.354'
+    ltpeak_invgauss1 <- log(0.676); label("Time of the peak of the first roscovitine inverse-Gaussian input density, T1max (h)") # Table 3 'T1max (h) 0.676'
+    e_conmed_ppi_tpeak_invgauss1 <- 0.680; label("Log-scale shift in T1max with concomitant proton-pump inhibitor, beta (unitless)") # Table 3 'beta (PPI = 1) on T1max 0.680'
+    ldtpeak_invgauss2 <- log(1.04); label("Delay of the second roscovitine inverse-Gaussian input peak after the first, dT2max (h)") # Table 3 'dT2max (h) 1.04'; T2max = T1max + dT2max (Section 3.2)
+    lcv_invgauss1 <- log(0.542); label("Coefficient of variation of the first inverse-Gaussian input density, CV1 (unitless)") # Table 3 'CV1 0.542'
+    lcv_invgauss2 <- log(0.354); label("Coefficient of variation of the second inverse-Gaussian input density, CV2 (unitless)") # Table 3 'CV2 0.354'
 
     # Disposition
     lvc <- log(62.2); label("Apparent central volume V/F shared by roscovitine and M3 at 170 cm height (L)") # Table 3 'V/F (liters) 62.2'
@@ -75,8 +75,8 @@ Leven_2020_roscovitine <- function() {
     # IIV: Table 3 reports standard deviations of log-normal random effects;
     # variances are omega^2, covariances corr * omega_a * omega_b.
     etaled50 ~ 0.474721 # Table 3 'omega D50 0.689' -> 0.689^2
-    etaltpeak_ig1 + etalcv_ig2 ~ c(0.204304, -0.207438, 0.299209) # Table 3 'omega T1max 0.452', 'omega CV2 0.547', 'Corr. T1max CV2 -0.839' -> -0.839 * 0.452 * 0.547
-    etaldtpeak_ig2 + etalcv_ig1 ~ c(0.418609, 0.171988, 0.181476) # Table 3 'omega dT2max 0.647', 'omega CV1 0.426', 'Corr. dT2max CV1 0.624' -> 0.624 * 0.647 * 0.426
+    etaltpeak_invgauss1 + etalcv_invgauss2 ~ c(0.204304, -0.207438, 0.299209) # Table 3 'omega T1max 0.452', 'omega CV2 0.547', 'Corr. T1max CV2 -0.839' -> -0.839 * 0.452 * 0.547
+    etaldtpeak_invgauss2 + etalcv_invgauss1 ~ c(0.418609, 0.171988, 0.181476) # Table 3 'omega dT2max 0.647', 'omega CV1 0.426', 'Corr. dT2max CV1 0.624' -> 0.624 * 0.647 * 0.426
     etalvc ~ 0.459684 # Table 3 'omega V/F 0.678' -> 0.678^2
     etalkel_m3 ~ 0.154449 # Table 3 'omega ke 0.393' -> 0.393^2
 
@@ -91,10 +91,10 @@ Leven_2020_roscovitine <- function() {
     # Individual parameters
     ed50 <- exp(led50 + etaled50)
     frel <- expit(logitfrel)
-    tpeak_ig1 <- exp(ltpeak_ig1 + e_conmed_ppi_tpeak_ig1 * CONMED_PPI + etaltpeak_ig1)
-    dtpeak_ig2 <- exp(ldtpeak_ig2 + etaldtpeak_ig2)
-    cv_ig1 <- exp(lcv_ig1 + etalcv_ig1)
-    cv_ig2 <- exp(lcv_ig2 + etalcv_ig2)
+    tpeak_invgauss1 <- exp(ltpeak_invgauss1 + e_conmed_ppi_tpeak_invgauss1 * CONMED_PPI + etaltpeak_invgauss1)
+    dtpeak_invgauss2 <- exp(ldtpeak_invgauss2 + etaldtpeak_invgauss2)
+    cv_invgauss1 <- exp(lcv_invgauss1 + etalcv_invgauss1)
+    cv_invgauss2 <- exp(lcv_invgauss2 + etalcv_invgauss2)
     vc <- exp(lvc + etalvc) * (HT / 170)^e_ht_vc
     k12 <- exp(lk12)
     k21 <- exp(lk21)
@@ -104,9 +104,9 @@ Leven_2020_roscovitine <- function() {
     # Mean absorption times from the peak time and CV (Equation 6; Appendix A
     # MAT_1 and MAT_2). The M3 input shares T1max and CV1 (TM3max = T1max,
     # CVM3 = CV1, Section 3.2), so its density is the first roscovitine one.
-    tpeak_ig2 <- tpeak_ig1 + dtpeak_ig2
-    mat_ig1 <- tpeak_ig1 / (sqrt(1 + 9 / 4 * cv_ig1^4) - 3 / 2 * cv_ig1^2)
-    mat_ig2 <- tpeak_ig2 / (sqrt(1 + 9 / 4 * cv_ig2^4) - 3 / 2 * cv_ig2^2)
+    tpeak_invgauss2 <- tpeak_invgauss1 + dtpeak_invgauss2
+    mat_invgauss1 <- tpeak_invgauss1 / (sqrt(1 + 9 / 4 * cv_invgauss1^4) - 3 / 2 * cv_invgauss1^2)
+    mat_invgauss2 <- tpeak_invgauss2 / (sqrt(1 + 9 / 4 * cv_invgauss2^4) - 3 / 2 * cv_invgauss2^2)
 
     # Dose amount (umol) and time since the dose: Monolix amtDose and t in
     # Appendix A. The whole dose lands in depot and depot empties at exactly the
@@ -117,14 +117,14 @@ Leven_2020_roscovitine <- function() {
 
     # Inverse-Gaussian input densities (Equation 5; Appendix A inv_gauss_1..3),
     # zero at and before the dose time where the density's limit is 0.
-    ig1 <- 0
-    ig2 <- 0
+    invgauss1 <- 0
+    invgauss2 <- 0
     if (tdose > 0) {
-      ig1 <- sqrt(mat_ig1 / (2 * pi * cv_ig1^2 * tdose^3)) * exp(-(tdose - mat_ig1)^2 / (2 * cv_ig1^2 * mat_ig1 * tdose))
-      ig2 <- sqrt(mat_ig2 / (2 * pi * cv_ig2^2 * tdose^3)) * exp(-(tdose - mat_ig2)^2 / (2 * cv_ig2^2 * mat_ig2 * tdose))
+      invgauss1 <- sqrt(mat_invgauss1 / (2 * pi * cv_invgauss1^2 * tdose^3)) * exp(-(tdose - mat_invgauss1)^2 / (2 * cv_invgauss1^2 * mat_invgauss1 * tdose))
+      invgauss2 <- sqrt(mat_invgauss2 / (2 * pi * cv_invgauss2^2 * tdose^3)) * exp(-(tdose - mat_invgauss2)^2 / (2 * cv_invgauss2^2 * mat_invgauss2 * tdose))
     }
-    input_parent <- fdose * dose_umol * (frel * ig1 + (1 - frel) * ig2)
-    input_m3 <- (1 - fdose) * dose_umol * ig1
+    input_parent <- fdose * dose_umol * (frel * invgauss1 + (1 - frel) * invgauss2)
+    input_m3 <- (1 - fdose) * dose_umol * invgauss1
 
     d/dt(depot) <- -input_parent - input_m3
     d/dt(central) <- input_parent - kmet * central - k12 * central + k21 * peripheral1

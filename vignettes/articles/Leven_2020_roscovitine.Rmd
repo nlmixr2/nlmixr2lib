@@ -67,10 +67,10 @@ The same information is available programmatically via
 |----------------------|-------|-----------------|
 | `led50` (D50) | log(1190 umol) | Table 3 |
 | `logitfrel` (pi1) | logit(0.285) | Table 3; logit-normal, Section 2.5 |
-| `ltpeak_ig1` (T1max) | log(0.676 h) | Table 3 |
-| `e_conmed_ppi_tpeak_ig1` | 0.680 | Table 3, 'beta (PPI = 1) on T1max'; Equation 9 |
-| `ldtpeak_ig2` (dT2max) | log(1.04 h) | Table 3; T2max = T1max + dT2max, Section 3.2 |
-| `lcv_ig1`, `lcv_ig2` (CV1, CV2) | log(0.542), log(0.354) | Table 3 |
+| `ltpeak_invgauss1` (T1max) | log(0.676 h) | Table 3 |
+| `e_conmed_ppi_tpeak_invgauss1` | 0.680 | Table 3, 'beta (PPI = 1) on T1max'; Equation 9 |
+| `ldtpeak_invgauss2` (dT2max) | log(1.04 h) | Table 3; T2max = T1max + dT2max, Section 3.2 |
+| `lcv_invgauss1`, `lcv_invgauss2` (CV1, CV2) | log(0.542), log(0.354) | Table 3 |
 | `lvc` (V/F) | log(62.2 L) | Table 3 |
 | `e_ht_vc` | 6.47 | Table 3; Equation 10 with reference height 170 cm (Section 3.2) |
 | `lk12`, `lk21` | log(1.82), log(0.768) 1/h | Table 3 |
