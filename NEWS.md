@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hartman 2022 cefotaxime ([doi:10.1093/jac/dkac095](https://doi.org/10.1093/jac/dkac095)) -- critically ill children (0-18 years) in a paediatric intensive care unit.
+- Add Gupta 2022 mobocertinib with active metabolites AP32960 and AP32914 ([doi:10.1002/psp4.12785](https://doi.org/10.1002/psp4.12785)) -- healthy volunteers and adults with metastatic non-small cell lung cancer (registers the new `ap32960` / `ap32914` metabolite suffixes).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

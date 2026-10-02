@@ -5625,6 +5625,20 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Krishnatry_2021_molibresib.R` (doi:10.1002/psp4.12639; formed on a 1:1 molar basis from molibresib extracted by a physiologic liver compartment whose enzyme is auto-induced; two-compartment disposition).
 - **Notes:** Development-code suffix, following the `az5104` / `ast5902` / `thrx195518` pattern. Kept as the full code rather than a chemical abbreviation such as `desethyl`, because the measured quantity is a two-species composite and a chemical name would describe only one of them.
 
+### ap32960 (**canonical AP32960 mobocertinib active-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** AP32960, the major active metabolite of mobocertinib (an irreversible EGFR exon 20 insertion tyrosine kinase inhibitor), formed by CYP3A-mediated dealkylation and roughly equipotent to the parent for EGFR inhibition. Used on the `central_ap32960` / `peripheral1_ap32960` compartments, the `fm_ap32960` formation fraction, the `lcl_ap32960` / `lvc_ap32960` / `lq_ap32960` / `lvp_ap32960` parameters, the `e_healthy_cl_ap32960` covariate effect, the `Cc_ap32960` output and the `expSd_ap32960` residual SD.
+- **Source aliases:** `M60` / `M1` in the final NONMEM control stream (`CLM60`, `VM60`, `FM60`, `QM1`, `VMP1`) -- Gupta 2022 Supporting Information.
+- **Example models:** `Gupta_2022_mobocertinib.R` (doi:10.1002/psp4.12785; formed from a fixed 62% molar fraction of mobocertinib clearance; two-compartment disposition; clearance scaled by an auto-induced enzyme pool).
+- **Notes:** Development-code suffix, following the `az5104` / `gsk3529246` pattern. The source names the metabolite only by its development code.
+
+### ap32914 (**canonical AP32914 mobocertinib active-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** AP32914, the minor active metabolite of mobocertinib, formed by CYP3A-mediated dealkylation and roughly equipotent to the parent for EGFR inhibition. Used on the `central_ap32914` compartment, the `fm_ap32914` formation fraction, the `lcl_ap32914` / `lvc_ap32914` parameters, the `e_healthy_cl_ap32914` covariate effect, the `Cc_ap32914` output and the `expSd_ap32914` residual SD.
+- **Source aliases:** `M14` / `M2` in the final NONMEM control stream (`CLM14`, `VM14`, `FM14`) -- Gupta 2022 Supporting Information.
+- **Example models:** `Gupta_2022_mobocertinib.R` (doi:10.1002/psp4.12785; formed from a fixed 8% molar fraction of mobocertinib clearance; one-compartment disposition; clearance scaled by an auto-induced enzyme pool).
+- **Notes:** Development-code suffix, following the `az5104` / `gsk3529246` pattern. The source names the metabolite only by its development code.
+
 ### ndmsel (**canonical N-desmethyl-selumetinib suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-selumetinib, active selumetinib metabolite (~3-5-fold more potent for MEK1 inhibition than parent), formed by oxidative N-demethylation.

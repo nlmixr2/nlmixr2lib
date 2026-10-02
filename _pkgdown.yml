@@ -4068,6 +4068,8 @@ navbar:
         href: articles/Bai_2021_mkAsodnLiposome_pbpk.html
       - text: "MkAsodnLiposome monkey pbpk (Bai 2021)"
         href: articles/Bai_2021_mkAsodnLiposome_pbpk.html
+      - text: "Mobocertinib (Gupta 2022)"
+        href: articles/Gupta_2022_mobocertinib.html
       - text: "Modafinil (Darwish 2012)"
         href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
       - text: "Modafinil (Wu 2012)"
@@ -7883,7 +7885,7 @@ articles:
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
   - articles/Gupta_2021_brigatinib
-  - articles/Gupta_2022_brigatinib_exposure_response
+  - articles/Gupta_2022_mobocertinib
   - articles/Gwee_2020_ivermectin
   - articles/Hadigol_2026_talazoparib_enzalutamide
   - articles/Hahn_2019_sufentanil
