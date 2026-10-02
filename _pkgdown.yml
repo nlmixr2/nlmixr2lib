@@ -2120,6 +2120,10 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Ertugliflozin (Fediuk 2021)"
         href: articles/Fediuk_2021_ertugliflozin.html
+      - text: "Ertugliflozin china (Fediuk 2021b)"
+        href: articles/Fediuk_2021b_ertugliflozin_ethnicity.html
+      - text: "Ertugliflozin esea (Fediuk 2021b)"
+        href: articles/Fediuk_2021b_ertugliflozin_ethnicity.html
       - text: "Erythromycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Escitalopram (Areberg 2006)"
@@ -7587,6 +7591,7 @@ articles:
   - articles/Favie_2020_neonatalHypothermia
   - articles/Fediuk_2021_ertugliflozin
   - articles/Fediuk_2021_varenicline
+  - articles/Fediuk_2021b_ertugliflozin_ethnicity
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Feillet_2008_sapropterin
   - articles/Felmlee_2010_ghb_rat
