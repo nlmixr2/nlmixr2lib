@@ -4476,6 +4476,8 @@ navbar:
         href: articles/Jones_2011_PF04878691_HCV.html
       - text: "PRO95780 (Cao 2013)"
         href: articles/Cao_2013_PRO95780.html
+      - text: "Paclitaxel (He 2022)"
+        href: articles/He_2022_paclitaxel.html
       - text: "Paclitaxel (Janssen 2023)"
         href: articles/Janssen_2023_pregnancy_cytotoxics.html
       - text: "Paclitaxel (Sun 2025)"
@@ -7804,6 +7806,7 @@ articles:
   - articles/He_2021_psoriasis_mbma
   - articles/He_2021_tacrolimus_wuzhi_cyp3a
   - articles/He_2022_gentamicin
+  - articles/He_2022_paclitaxel
   - articles/He_2025_YPEGrhGH
   - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz
