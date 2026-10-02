@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Setiawan 2022 levofloxacin ([doi:10.1038/s41598-022-12627-1](https://doi.org/10.1038/s41598-022-12627-1)) -- hospitalised Indonesian adults (ICU and non-ICU), mostly with pneumonia.
+- Add Wang 2022 latamoxef, total and R- and S-epimer models ([doi:10.3390/pharmaceutics14051033](https://doi.org/10.3390/pharmaceutics14051033)) -- Chinese children aged 0.08-10.58 years with bacterial infection.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

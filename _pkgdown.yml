@@ -3268,6 +3268,12 @@ navbar:
         href: articles/BuilBruna_2015_lanreotide.html
       - text: "Lansoprazole (Sakurai 2007)"
         href: articles/Sakurai_2007_lansoprazole.html
+      - text: "Latamoxef (Wang 2022)"
+        href: articles/Wang_2022_latamoxef.html
+      - text: "Latamoxef r (Wang 2022)"
+        href: articles/Wang_2022_latamoxef.html
+      - text: "Latamoxef s (Wang 2022)"
+        href: articles/Wang_2022_latamoxef.html
       - text: "Lebrikizumab (Zhu 2017)"
         href: articles/Zhu_2017_lebrikizumab.html
       - text: "Lecanemab (Cao 2026)"
@@ -9366,6 +9372,7 @@ articles:
   - articles/Wang_2021_sunitinib
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2022_daidzein_equol
+  - articles/Wang_2022_latamoxef
   - articles/Wang_2022_ornithinePhenylacetate
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2023_methotrexate
