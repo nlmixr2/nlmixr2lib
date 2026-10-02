@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhou 2022 alisertib ([doi:10.1002/jcph.1958](https://doi.org/10.1002/jcph.1958)) -- children and adolescents aged 2-21 years with advanced malignancies; population PK plus two exposure-safety logistic regressions (registers `CSS_ALIS` and `FORM_ALISERTIB_ECT`).
+- Add He 2022 oral paclitaxel with encequidar ([doi:10.1002/psp4.12799](https://doi.org/10.1002/psp4.12799)) -- adults with advanced or metastatic solid tumors.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
