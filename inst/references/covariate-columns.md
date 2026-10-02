@@ -3617,6 +3617,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Ooi_2026_elafibranor.R` (doses 5-360 mg pooled over 17 studies, Table S1).
 - **Notes:** Member of the `DOSE_<drug>_<units>` family. MUST carry the MILLIGRAM dose even when event-table amounts are in umol, because ED50 is reported on the milligram scale. Only the parent model carries this covariate; the GFT1007 model has no dose effect on bioavailability.
 
+### DOSE_BEROTRALSTAT_MG (**canonical for the administered berotralstat oral dose in milligrams**)
+- **Description:** Milligram berotralstat dose on the dose record, carried as a covariate because relative bioavailability rises with dose as a power function of the dose itself. Set it to the dose record's `amt`; time-varying across study periods in dose-escalation designs.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 300 mg (the median dose in the pooled analysis), where relative bioavailability is 1. Enters as `(DOSE_BEROTRALSTAT_MG / 300)^0.497` (Mathis 2022 Equation 1), so the factor is 0.709 at the commercial 150 mg dose and 1.29 at 500 mg.
+- **Source aliases:**
+  - `DOSE` -- the NONMEM `$INPUT` column in Mathis 2022 Supporting Information Text S2, used in `$PK` as `F1=1*(DOSE/CDOSE)**THETA(11)*(1+FOODONF)` with `CDOSE = 300`.
+- **Example models:** `Mathis_2022_berotralstat.R` (single doses 10-900 mg and once-daily doses 110-450 mg pooled over 13 studies).
+- **Notes:** Member of the `DOSE_<drug>_<units>` family. In the source studies API-in-capsule doses are expressed as the HCl salt and blend-in-capsule (commercial) doses as the free base (Mathis 2022 Supporting Information Table S1 note); the two formulations were bioequivalent at those nominal doses.
+
 ### DOSE_PROGESTIN_UMOL (**canonical for daily progestin dose on a molar basis**)
 - **Description:** Daily dose of the progestin component of a combined oral contraceptive expressed on a MOLAR basis, in umol. Constant within a treatment arm / subject for a conventional 21/7 monophasic regimen. The molar scale is what makes a single column meaningful across chemically distinct progestins: it is the column that carries progestin identity in models that do not fit a separate per-progestin effect.
 - **Units:** umol (per day)

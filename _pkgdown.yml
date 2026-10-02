@@ -728,6 +728,8 @@ navbar:
         href: articles/Lallemand_2023_benzylpenicillin_horse.html
       - text: "Bepirovirsen (Youssef 2024)"
         href: articles/Youssef_2024_bepirovirsen.html
+      - text: "Berotralstat (Mathis 2022)"
+        href: articles/Mathis_2022_berotralstat.html
       - text: "Berzosertib (Terranova 2021)"
         href: articles/Terranova_2021_berzosertib.html
       - text: "Betamethasone (Krzyzanski 2021)"
@@ -8393,6 +8395,7 @@ articles:
   - articles/Maseda_2018_micafungin
   - articles/Masters_2022_avelumab
   - articles/Matcha_2025_amikacin
+  - articles/Mathis_2022_berotralstat
   - articles/Matsumoto_2005_TF_505
   - articles/Mauro_2025_nilotinib
   - articles/Mazzocco_2015_temozolomide
