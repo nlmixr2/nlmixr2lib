@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tanzawa 2022 fluconazole after intravenous fosfluconazole ([doi:10.1128/spectrum.01952-21](https://doi.org/10.1128/spectrum.01952-21)) -- Japanese extremely low-birth-weight infants receiving antifungal prophylaxis.
+- Add Kosinsky 2022 camostat / FOY-251 ([doi:10.1128/spectrum.02167-21](https://doi.org/10.1128/spectrum.02167-21)) -- semi-mechanistic PK/PD of TMPRSS2 covalent inhibition and SARS-CoV-2 viral entry (human PK fit; in-vitro PD). Registers the `CONC_FOY251_NM` covariate column.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 

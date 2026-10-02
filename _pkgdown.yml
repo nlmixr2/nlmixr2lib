@@ -946,6 +946,10 @@ navbar:
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Camostat (Kim 2023)"
         href: articles/Kim_2023_camostat.html
+      - text: "Camostat invitro (Kosinsky 2022)"
+        href: articles/Kosinsky_2022_camostat.html
+      - text: "Camostat pkpd (Kosinsky 2022)"
+        href: articles/Kosinsky_2022_camostat.html
       - text: "Camptothecin (Schmidt 2020)"
         href: articles/Schmidt_2020_camptothecin.html
       - text: "Canagliflozin mbma (Yao 2023)"
