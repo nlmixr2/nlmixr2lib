@@ -1288,6 +1288,8 @@ navbar:
         href: articles/Hien_2017_cipargamin.html
       - text: "Ciprofloxacin (Abdulla 2020)"
         href: articles/Abdulla_2020_ciprofloxacin.html
+      - text: "Ciprofloxacin (Guo 2022)"
+        href: articles/Guo_2022_ciprofloxacin.html
       - text: "Ciprofloxacin (Schaefer 1996)"
         href: articles/Schaefer_1996_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
@@ -7735,6 +7737,7 @@ articles:
   - articles/Guo_2016_taurocholate_schh
   - articles/Guo_2020_valproic_acid
   - articles/Guo_2022_PF_06939999
+  - articles/Guo_2022_ciprofloxacin
   - articles/Guo_2025_glp1ReceptorAgonists_mbma
   - articles/Gupta_2006_peginterferon_alfa_2b
   - articles/Gupta_2015_ixazomib

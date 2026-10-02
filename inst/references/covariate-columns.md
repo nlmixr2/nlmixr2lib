@@ -22315,6 +22315,28 @@ is the experimental condition itself, held constant for the whole solve.
 - **Example models:** `Gibiansky_2021_rituximab.R` (founding example; multiplies the concentration-dependent log-scale residual SD by 0.568).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family. A residual-error stratum only in the founding model. Part 2 records (the randomised i.v.-versus-s.c. comparison) take 0 and are the reference. Set 0 when simulating new subjects.
 
+### STUDY_EXPAT (**canonical for the EXPAT ciprofloxacin ICU study indicator**)
+- **Description:** 1 = record from the EXPAT study (Erasmus University Medical Center and Maasstad Hospital, Rotterdam; published as Abdulla 2020, doi:10.1007/s00228-020-02873-5), the "study 1" of the three-study pooled ciprofloxacin ICU analysis of Guo 2022; 0 = record from one of the other two pooled studies. Per-subject (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with `STUDY_RDRN` also 0, which selects study 2 of Guo 2022 (Radboud University Medical Center, Nijmegen; Gieling 2020), the reference stratum.
+- **Source aliases:**
+  - `Study 1` -- Guo 2022 Table 1 and Table 2 ('Add Study1', 'Prop Study1').
+- **Example models:** `Guo_2022_ciprofloxacin.R` (founding example; selects the combined residual error, additive 0.151 mg/L + proportional 17.5%, in place of the study 2 proportional 13.7%).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family, named for the trial rather than the paper's positional "study 1" because the positional label is meaningless outside that paper. A residual-error stratum only: Guo 2022 deliberately did not test study as a covariate on any structural parameter. Mutually exclusive with `STUDY_RDRN`. The same cohort is the sole data set of `Abdulla_2020_ciprofloxacin.R`, which does not need the indicator.
+
+### STUDY_RDRN (**canonical for the Right Dose Right Now ICU study indicator**)
+- **Description:** 1 = record from the Right Dose Right Now study (Amsterdam UMC location VU University Medical Center; model-based bedside antibiotic dosing in severe sepsis and septic shock, Roggeveen 2019), the "study 3" of the three-study pooled ciprofloxacin ICU analysis of Guo 2022; 0 = record from one of the other two pooled studies. Per-subject (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with `STUDY_EXPAT` also 0, which selects study 2 of Guo 2022 (Radboud University Medical Center, Nijmegen; Gieling 2020), the reference stratum.
+- **Source aliases:**
+  - `Study 3` -- Guo 2022 Table 1 and Table 2 ('Prop Study3').
+- **Example models:** `Guo_2022_ciprofloxacin.R` (founding example; selects the proportional residual error 24.5% in place of the study 2 value 13.7%).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family. A residual-error stratum only, like `STUDY_EXPAT`. Mutually exclusive with `STUDY_EXPAT`.
+
 ### FORM_OLZ_F0 (**canonical for the olanzapine 'formulation #0' product indicator**)
 - **Description:** 1 = the dose was given as the olanzapine product Li 2018 labels "formulation #0", 0 = any other olanzapine product. Per-dose-record indicator: the founding study's healthy-volunteer cohort received formulations #0 and #1 in a two-period crossover with a 3-week washout, so one subject contributes records under both. The three products are oral tablets from three different manufacturers, anonymised by the paper as "formulation #0", "#1" and "#2".
 - **Units:** (binary)
