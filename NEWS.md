@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Franken 2022 tacrolimus whole-blood and intracellular PBMC ([doi:10.1007/s13318-022-00767-8](https://doi.org/10.1007/s13318-022-00767-8)) -- adult kidney transplant recipients 3 months after transplantation.
+- Add Morse 2022 acetaminophen and ibuprofen ([doi:10.1007/s13318-022-00766-9](https://doi.org/10.1007/s13318-022-00766-9)) -- healthy adults given intravenous, tablet, oral-suspension and sachet formulations, fasted and fed.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
