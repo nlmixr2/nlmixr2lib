@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sanches 2022 piperacillin ([doi:10.3390/antibiotics11040434](https://doi.org/10.3390/antibiotics11040434)) -- critically ill Brazilian adults in the intensive care unit.
+- Add Teixeira-da-Silva 2022 valproic acid ([doi:10.3390/pharmaceutics14040811](https://doi.org/10.3390/pharmaceutics14040811)) -- Spanish (Caucasian) paediatric and adult outpatients on valproic acid mono- or dual antiepileptic therapy, aged 0.1-89 years.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 

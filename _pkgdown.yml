@@ -6454,6 +6454,8 @@ navbar:
         href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid (Ogusu 2014)"
         href: articles/Ogusu_2014_valproic_acid.html
+      - text: "Valproic acid (TeixeiradaSilva 2022)"
+        href: articles/TeixeiradaSilva_2022_valproic_acid.html
       - text: "Valproic acid (Wang 2024)"
         href: articles/Wang_2024_valproic_acid.html
       - text: "Valproic acid (Zhang 2024)"
@@ -9073,6 +9075,7 @@ articles:
   - articles/Taylor_2026_methotrexate
   - articles/Tchaparian_2016_lumefantrine
   - articles/Teixeira_2026_meloxicam_dog
+  - articles/TeixeiradaSilva_2022_valproic_acid
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
   - articles/Ternant_2021_infliximab
