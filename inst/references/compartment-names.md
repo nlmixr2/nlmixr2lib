@@ -4492,7 +4492,7 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient with plaque psoriasis achieves at least a 75% reduction from their own baseline Psoriasis Area and Severity Index (PASI75). In the founding models it is a STUDY-ARM responder proportion from a longitudinal model-based meta-analysis, `prob_pasi75 <- expit(<placebo logit> + <drug logit>)`, evaluated over time since first dose.
 - **Source aliases:** `PASI75`, `P(PASI75)`, `Pr(PASI75)`, `P_response` for the PASI75 end point.
-- **Example models:** `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R`, `He_2021_psoriasis_pasi75_mbma.R`.
+- **Example models:** `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R`, `He_2021_psoriasis_pasi75_mbma.R`, `Okubo_2021_apremilast_pasi75.R` (a PER-SUBJECT longitudinal logistic exposure-response model rather than an arm-level MBMA: the probability is evaluated from the subject's own steady-state apremilast AUC and weeks on treatment, with a placeholder residual because the source likelihood is Bernoulli).
 - **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. The threshold is part of the endpoint: PASI75, PASI90 and PASI100 are CUMULATIVE thresholds on one scale (`prob_pasi75 >= prob_pasi90`), and a source that fits them separately (He 2021) or links them through shared terms (Checchio 2017) must still expose each under its own name. It is a time-varying arm-level trajectory, not a landmark per-subject probability, and the residual of the founding models is the binomial standard error of an arm proportion scaled by `N_ARM`.
 
 ### prob_pasi90 (**canonical PASI90 responder-rate output**)
@@ -4502,7 +4502,21 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `He_2021_psoriasis_pasi90_mbma.R` (fitted directly to PASI90 arm data), `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (a secondary, unfitted output that maps the PASI75 model to PASI90 with two scaling factors imported from the companion landmark model).
 - **Notes:** See `prob_pasi75`. A directly fitted PASI90 model and a PASI75 model rescaled to PASI90 are different evidence and should be distinguished in any comparison.
 
-### prob_pasi75_pbo_adj, prob_pasi90_pbo_adj (**canonical placebo-adjusted PASI75 / PASI90 responder-fraction outputs**)
+### prob_pasi50 (**canonical PASI50 responder-rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with plaque psoriasis achieves at least a 50% reduction from their own baseline Psoriasis Area and Severity Index (PASI50). Laxer sibling of `prob_pasi75` on the same cumulative scale (`prob_pasi50 >= prob_pasi75`).
+- **Source aliases:** `PASI-50`, `PASI50`, `P(PASI50)`.
+- **Example models:** `Okubo_2021_apremilast_pasi50.R` (per-subject longitudinal logistic exposure-response model for apremilast: baseline intercept, placebo effect with first-order onset in weeks, Emax on the individual steady-state AUC; fitted separately from the PASI-75 model).
+- **Notes:** See `prob_pasi75`. A probability output in `[0, 1]`, not a PASI score; carries a placeholder additive residual because the source likelihood is Bernoulli.
+
+### prob_spga01 (**canonical static Physician Global Assessment 0/1 responder-probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with plaque psoriasis achieves a static Physician Global Assessment score of 0 ('clear') or 1 ('almost clear'), the usual sPGA responder definition in psoriasis trials.
+- **Source aliases:** `sPGA response`, `sPGA (0 or 1)`, `sPGA 0/1`.
+- **Example models:** `Okubo_2021_apremilast_spga.R` (per-subject longitudinal logistic exposure-response model for apremilast: placebo and drug effects each with a first-order onset in weeks, and Japanese-race multipliers on the intercept, the placebo effect and Emax).
+- **Notes:** The `01` suffix records the responder threshold (score 0 or 1); a source that defines response as sPGA 0 only, or that additionally requires a 2-point improvement from baseline, is a different endpoint and should take its own name. Distinct from the Investigator Global Assessment (IGA) outputs used in atopic dermatitis. A probability output in `[0, 1]`, not a score; carries a placeholder additive residual because the source likelihood is Bernoulli.
+
+### prob_cdai150 (**canonical CDAI150 clinical-remission rate output**)
 - **Type:** compartment
 - **Role:** Study-arm PASI75 (or PASI90) responder fraction MINUS the placebo-arm fraction of the same trial, on a 0-1 scale, at a single landmark read-out. In the founding models it is a sigmoid Emax trend line of a dose-based or a target-engagement-based MBMA.
 - **Source aliases:** `Placebo-adjusted response (%)` -- Ayyar 2022 Figures 2 and 6 (in percent; the models divide by 100).

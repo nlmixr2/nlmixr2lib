@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Edlund 2022 acalabrutinib and ACP-5862 ([doi:10.1111/bcp.14988](https://doi.org/10.1111/bcp.14988)) -- adults with B-cell malignancies and healthy subjects.
+- Add Okubo 2021 apremilast PK and PASI-75 / PASI-50 / sPGA exposure-response ([doi:10.1111/1346-8138.16068](https://doi.org/10.1111/1346-8138.16068)) -- Japanese and non-Japanese adults with moderate to severe plaque psoriasis, plus non-Japanese healthy adults in the PK model.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
