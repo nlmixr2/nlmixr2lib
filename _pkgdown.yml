@@ -4786,6 +4786,8 @@ navbar:
         href: articles/ObrinkHansen_2015_piperacillin.html
       - text: "Piperacillin (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
+      - text: "Piperacillin (Sanches 2022)"
+        href: articles/Sanches_2022_piperacillin.html
       - text: "Piperacillin (Thorsted 2019)"
         href: articles/Thorsted_2019_piperacillin.html
       - text: "Piperacillin (Tseng 2026)"
@@ -8812,6 +8814,7 @@ articles:
   - articles/Salinger_2019_pretomanid
   - articles/Sampson_2014_azithromycin
   - articles/Sampson_2014_gentamicin
+  - articles/Sanches_2022_piperacillin
   - articles/SanchezDengra_2021_neuro_pbpk_rat
   - articles/SanchezPena_2005_enoxaparin
   - articles/Sanchez_2011_efavirenz

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hosey 2022 type 2 diabetes growth curves ([doi:10.1111/cts.13207](https://doi.org/10.1111/cts.13207)) -- sex-specific height and weight versus age (2 to 18 years) for PBPK scaling in youth who develop type 2 diabetes.
+- Add Sanches 2022 piperacillin ([doi:10.3390/antibiotics11040434](https://doi.org/10.3390/antibiotics11040434)) -- critically ill Brazilian adults in the intensive care unit.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
