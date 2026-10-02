@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2022 tacrolimus with posaconazole ([doi:10.3389/fphar.2022.758524](https://doi.org/10.3389/fphar.2022.758524)) -- children with Crohn's disease undergoing haematopoietic stem cell transplantation.
+- Add Tanzawa 2022 fluconazole after intravenous fosfluconazole ([doi:10.1128/spectrum.01952-21](https://doi.org/10.1128/spectrum.01952-21)) -- Japanese extremely low-birth-weight infants receiving antifungal prophylaxis.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 

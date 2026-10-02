@@ -2420,6 +2420,8 @@ navbar:
         href: articles/Sakamoto_2021_fluconazole.html
       - text: "Fluconazole (Stott 2018)"
         href: articles/Stott_2018_fluconazole.html
+      - text: "Fluconazole (Tanzawa 2022)"
+        href: articles/Tanzawa_2022_fluconazole.html
       - text: "Fluconazole (Wade 2008)"
         href: articles/Wade_2008_fluconazole.html
       - text: "Fluconazole (Watt 2015)"
@@ -9091,6 +9093,7 @@ articles:
   - articles/Tang_2019_amoxicillin
   - articles/Tang_2023_tenecteplase
   - articles/Tang_2026_vixarelimab
+  - articles/Tanzawa_2022_fluconazole
   - articles/Tao_2025_meropenem
   - articles/Tao_2026_levofloxacin
   - articles/Tarning_2008_piperaquine
