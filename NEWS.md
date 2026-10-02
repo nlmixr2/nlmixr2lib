@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Taneja 2019 GLPG1690 (ziritaxestat) PK and plasma LPA C18:2 PK/PD ([doi:10.1007/s40262-019-00755-3](https://doi.org/10.1007/s40262-019-00755-3)) -- healthy volunteers and patients with idiopathic pulmonary fibrosis.
+- Add Zou 2020 leuprorelin PSA disease progression ([doi:10.1371/journal.pone.0230571](https://doi.org/10.1371/journal.pone.0230571)) -- US men with hormone-sensitive prostate cancer from a medical claims database; ratifies the new `PSA_BL` and `CONMED_ANTIANDROGEN` covariate canonicals and the `kge_sens` / `rp` parameter names.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 

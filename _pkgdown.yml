@@ -3260,6 +3260,8 @@ navbar:
         href: articles/Lee_2018_leuprolide.html
       - text: "Leuprorelin (Snelder 2019)"
         href: articles/Snelder_2019_leuprorelin.html
+      - text: "Leuprorelin (Zou 2020)"
+        href: articles/Zou_2020_leuprorelin.html
       - text: "Leuprorelin 1m (Snelder 2019)"
         href: articles/Snelder_2019_leuprorelin.html
       - text: "Leuprorelin 4m (Snelder 2019)"
@@ -9551,6 +9553,7 @@ articles:
   - articles/Zierhut_2016_hcc_antiangiogenic_os_mbma
   - articles/Zingmark_2003_clomethiazole
   - articles/Zou_2012_MI_219
+  - articles/Zou_2020_leuprorelin
   - articles/Zou_2022_furmonertinib
   - articles/Zou_2025_edoxaban
   - articles/Zou_2026_meropenem
