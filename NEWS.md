@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Langeskov 2022 paracetamol and atorvastatin with semaglutide ([doi:10.1002/prp2.962](https://doi.org/10.1002/prp2.962)) -- healthy obese adults (paracetamol) and healthy adults (atorvastatin) with and without steady-state semaglutide (adds the `CONMED_SEMAGLUTIDE` covariate).
+- Add Zhou 2022 alisertib ([doi:10.1002/jcph.1958](https://doi.org/10.1002/jcph.1958)) -- children and adolescents aged 2-21 years with advanced malignancies; population PK plus two exposure-safety logistic regressions (registers `CSS_ALIS` and `FORM_ALISERTIB_ECT`).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

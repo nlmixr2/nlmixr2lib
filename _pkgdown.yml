@@ -192,12 +192,18 @@ navbar:
         href: articles/Nicolas_2019_alirocumab.html
       - text: "Alisertib (Zhou 2018)"
         href: articles/Zhou_2018_alisertib.html
+      - text: "Alisertib (Zhou 2022)"
+        href: articles/Zhou_2022_alisertib.html
       - text: "Alisertib diarrhea (Zhou 2018)"
         href: articles/Zhou_2018_alisertib.html
+      - text: "Alisertib febrile neutropenia (Zhou 2022)"
+        href: articles/Zhou_2022_alisertib.html
       - text: "Alisertib neutropenia (Zhou 2018)"
         href: articles/Zhou_2018_alisertib.html
       - text: "Alisertib stomatitis (Zhou 2018)"
         href: articles/Zhou_2018_alisertib.html
+      - text: "Alisertib stomatitis (Zhou 2022)"
+        href: articles/Zhou_2022_alisertib.html
       - text: "Allopurinol (Chu 2024)"
         href: articles/Chu_2024_allopurinol.html
       - text: "Allopurinol (Wright 2013)"
@@ -9715,6 +9721,7 @@ articles:
   - articles/Zhou_2021_remimazolam
   - articles/Zhou_2021a_enrofloxacin_pig_pbpk
   - articles/Zhou_2021b_enrofloxacin_pig_pbpk
+  - articles/Zhou_2022_alisertib
   - articles/Zhou_2024_HER2breastCancer_qsp
   - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab
