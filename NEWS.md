@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Araki 2022 TAS-114 with autoinduction and uracil PD ([doi:10.1002/psp4.12747](https://doi.org/10.1002/psp4.12747)) -- healthy adult men and adults with advanced solid tumours.
+- Add Setiawan 2022 levofloxacin ([doi:10.1038/s41598-022-12627-1](https://doi.org/10.1038/s41598-022-12627-1)) -- hospitalised Indonesian adults (ICU and non-ICU), mostly with pneumonia.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

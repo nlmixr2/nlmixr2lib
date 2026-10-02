@@ -3376,6 +3376,8 @@ navbar:
         href: articles/Nguyen_2026_levofloxacin.html
       - text: "Levofloxacin (Sawe 2025)"
         href: articles/Sawe_2025_levofloxacin.html
+      - text: "Levofloxacin (Setiawan 2022)"
+        href: articles/Setiawan_2022_levofloxacin.html
       - text: "Levofloxacin (Tao 2026)"
         href: articles/Tao_2026_levofloxacin.html
       - text: "Levofloxacin rat (Hurtado 2014)"
@@ -8991,6 +8993,7 @@ articles:
   - articles/Seo_2023_cefepime
   - articles/Serrano_2026_atopicDermatitis_placebo_mbma
   - articles/Sethi_2024_acetaminophen_diclofenac_mbma
+  - articles/Setiawan_2022_levofloxacin
   - articles/Setiawan_2023_ampicillin_sulbactam
   - articles/Sexton_2024_lanadelumab_qsp
   - articles/Shah_2012_mAb_PBPK
