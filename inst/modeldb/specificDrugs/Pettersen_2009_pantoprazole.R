@@ -179,15 +179,20 @@ Pettersen_2009_pantoprazole <- function() {
     e_hepimp_cl             <- 0.495; label("Multiplicative factor on CL for clinical hepatic dysfunction (unitless)")             # Pettersen 2009 Table 3: Hepatic dysfunction covariate effect = 0.495, RSE 20.9%; HEP decreases CL by 50.5%
 
     # ===== Inter-individual variability (Pettersen 2009 Table 3 final model) =====
-    # Exponential IIV reported as approximate CV% (square root of variance,
-    # Table 3 footnote). Conversion to log-normal variance for nlmixr2:
-    # omega^2 = log(1 + CV^2). Independent etas (no correlation block in
-    # the final model; full-block correlations were tested per Methods but
-    # not retained).
-    etalcl ~ 0.10043  # Pettersen 2009 Table 3: IIV CL = 32.5%; log(1 + 0.325^2) = 0.10043
-    etalvc ~ 0.15267  # Pettersen 2009 Table 3: IIV Vc = 40.6%; log(1 + 0.406^2) = 0.15267
-    etalq  ~ 0.05924  # Pettersen 2009 Table 3: IIV Q  = 24.7%; log(1 + 0.247^2) = 0.05924
-    etalvp ~ 0.67413  # Pettersen 2009 Table 3: IIV V2 = 98.1%; log(1 + 0.981^2) = 0.67413
+    # Exponential IIV, theta_i = theta * exp(eta_i) with eta variance
+    # omega^2 (Methods). The Table 3 footnote defines the printed numbers:
+    # "Interindividual variability (IIV) and residual proportional error
+    # are given as an approximate CV (square root of the variance)". The
+    # printed % is therefore omega x 100, and omega^2 = (CV/100)^2. (The
+    # bootstrap percentile CIs cannot discriminate scales; the footnote is
+    # the evidence.) Before 2026-10 this file used log(1 + CV^2) (CL
+    # 0.10043, Vc 0.15267, Q 0.05924, V2 0.67413); see the vignette Errata.
+    # Independent etas (no correlation block in the final model; full-block
+    # correlations were tested per Methods but not retained).
+    etalcl ~ 0.105625  # Pettersen 2009 Table 3: IIV CL = 32.5%; 0.325^2 = 0.105625
+    etalvc ~ 0.164836  # Pettersen 2009 Table 3: IIV Vc = 40.6%; 0.406^2 = 0.164836
+    etalq  ~ 0.061009  # Pettersen 2009 Table 3: IIV Q  = 24.7%; 0.247^2 = 0.061009
+    etalvp ~ 0.962361  # Pettersen 2009 Table 3: IIV V2 = 98.1%; 0.981^2 = 0.962361
 
     # ===== Residual error (Pettersen 2009 Table 3 final model) =====
     # Combined additive + proportional. The additive SD was fixed in the

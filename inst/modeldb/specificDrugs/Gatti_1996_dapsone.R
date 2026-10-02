@@ -174,17 +174,25 @@ Gatti_1996_dapsone <- function() {
     # ============================================================
     # Inter-individual variability -- Gatti 1996 Table 3 ('Mean' CV row)
     # and Results paragraph 1 ('interpatient variability was modeled
-    # with a constant coefficient of variation' -- standard log-normal /
-    # exponential form, so omega^2 = log(1 + CV^2)).
+    # with a constant coefficient of variation').
+    # The printed CV% is omega x 100, so omega^2 = (CV/100)^2. Table 3
+    # gives 95% CIs; the theta rows are symmetric (Wald), so the CV rows
+    # are a Wald CI on omega^2 shown on the % scale, and squared back their
+    # endpoints are symmetric about omega^2. The wide Ka row decides:
+    #   Ka 85% (45, 111): squared-CI midpoint -0.7% from 0.85^2 (inside
+    #   its rounding interval); log(1 + CV^2) gives -9.2% (outside).
+    #   CL/F 35% (20, 46): +2.7% vs 0.0%; both inside rounding.
+    # Before 2026-10 this file used log(1 + CV^2) (CL/F 0.1156, Ka
+    # 0.5438); see the vignette Errata.
     #
     # V/F IIV was significant in the basic model (19% CV) but became
     # non-significant after covariate inclusion and was dropped from
     # the final model (Results paragraph 4). No etalvc here.
     # ============================================================
-    etalcl ~ log(1 + 0.35^2)
-    # Table 3 CV(CL/F) = 35% (95% CI 20, 46); omega^2 = log(1 + 0.35^2)
-    etalka ~ log(1 + 0.85^2)
-    # Table 3 CV(Ka) = 85% (95% CI 45, 111); omega^2 = log(1 + 0.85^2)
+    etalcl ~ 0.1225
+    # Table 3 CV(CL/F) = 35% (95% CI 20, 46); omega^2 = 0.35^2
+    etalka ~ 0.7225
+    # Table 3 CV(Ka) = 85% (95% CI 45, 111); omega^2 = 0.85^2
 
     # ============================================================
     # Residual error -- form is reported (Results paragraph 1:
