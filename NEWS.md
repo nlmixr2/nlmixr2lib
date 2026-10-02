@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ayyar 2022 secukinumab and ixekizumab ([doi:10.3389/fphar.2022.862291](https://doi.org/10.3389/fphar.2022.862291)) -- adults with moderate-to-severe plaque psoriasis (mPBPK with serum and skin IL-17A target engagement, and the target-engagement- and dose-based PASI75 / PASI90 MBMAs).
+- Add Gupta 2022 brigatinib exposure-response ([doi:10.1111/cts.13231](https://doi.org/10.1111/cts.13231)) -- adults with ALK-inhibitor-naive ALK-positive advanced NSCLC on first-line brigatinib in ALTA-1L; 18 logistic efficacy and safety models and 3 Cox PFS relative-hazard models.
 
 - Add Cloesmeijer 2020 clonidine ([doi:10.1111/bcp.14273](https://doi.org/10.1111/bcp.14273)) -- intubated, sedated adults in the intensive care unit.
 
