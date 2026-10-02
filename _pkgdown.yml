@@ -1374,6 +1374,8 @@ navbar:
         href: articles/Xu_2020_clopidogrel_pbpk.html
       - text: "Cloxacillin (Beijer 2026)"
         href: articles/Beijer_2026_cloxacillin.html
+      - text: "Clozapine (Geers 2022)"
+        href: articles/Geers_2022_clozapine.html
       - text: "Clozapine (Han 2025)"
         href: articles/Han_2025_clozapine.html
       - text: "Clozapine (Li 2012)"
@@ -7740,6 +7742,7 @@ articles:
   - articles/Gatti_1996_dapsone
   - articles/Ge_2020_metoclopramide
   - articles/Gebhard_2023_leukemia_maintenance_therapy
+  - articles/Geers_2022_clozapine
   - articles/Geerts_2018_amyloidNeurotransmission_qsp
   - articles/Geldof_2008_fluvoxamine_rat
   - articles/Geldof_2008_fluvoxamine_sert_occupancy
