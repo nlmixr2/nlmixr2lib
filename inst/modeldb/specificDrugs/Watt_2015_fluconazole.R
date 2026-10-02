@@ -214,8 +214,8 @@ Watt_2015_fluconazole <- function() {
     # INTER-INDIVIDUAL VARIABILITY -- Watt 2015 Table 3 (Random effects, CV%
     # column). Methods state: 'An exponential model for interindividual
     # variance was used.' Under the lognormal exponential interpretation,
-    # %CV maps to log-scale variance as omega^2 = log(1 + CV^2). See
-    # references/verification-checklist.md item A 'CV% vs. variance'.
+    # %CV maps to log-scale variance as omega^2 = log(1 + CV^2) (the
+    # standing 'CV% vs. variance' convention).
     #
     #     IIV V  = 22.2 % CV -> omega^2 = log(1 + 0.222^2)
     #     IIV CL = 33.2 % CV -> omega^2 = log(1 + 0.332^2)

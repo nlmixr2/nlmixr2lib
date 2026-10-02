@@ -152,8 +152,8 @@ percentile envelope of F(t) = 1 - sur across the cohort.
 
 ```{r figure-4, fig.height = 4}
 # 1.0 mg/kg q12h for 6 months. Use 6-hourly sampling for the long
-# horizon so the simulation finishes well under the 5-minute vignette
-# gate while still resolving the survival curve and the interface
+# horizon so the simulation finishes well under 5 minutes
+# while still resolving the survival curve and the interface
 # dynamics (alpha = 0.028 1/day -> 25-day half-life).
 ev_pop <- cohort |>
   rowwise() |>

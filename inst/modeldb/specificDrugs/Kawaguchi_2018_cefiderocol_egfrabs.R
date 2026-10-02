@@ -274,8 +274,8 @@ Kawaguchi_2018_cefiderocol_egfrabs <- function() {
 
     # Interindividual variability. Table 2 reports IIV as a percent CV. For
     # THIS research group the percent CV is the omega standard deviation
-    # times 100 -- NOT the log-normal sqrt(exp(omega^2)-1) form that the
-    # skill's verification checklist warns about as the usual default. The
+    # times 100 -- NOT the log-normal sqrt(exp(omega^2)-1) form that is the
+    # usual default. The
     # companion analysis by the same authors (Katsube/Wajima, AAC 2021,
     # doi:10.1128/AAC.01437-20) settles this by printing CV%, the omega
     # covariances AND the implied correlations: all three covariance pairs

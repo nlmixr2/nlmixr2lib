@@ -655,8 +655,8 @@ without resolving the baseline-hazard scale with the authors.
 
 **The supplementary material was retrieved and does not settle the scale
 question.** The Frontiers supplementary-material link referenced in the article
-resolves to a single file in the EuropePMC open-access deposit
-(`supplementaryFiles` for PMC10176964), Supplementary Table 1_S, "Univariate and
+resolves to a single file in the open-access deposit (PMC10176964),
+Supplementary Table 1_S, "Univariate and
 multivariate analysis of covariate effects on the hazard of recurrent IS after
 index IS". It is a covariate model-building table only: univariate screening,
 forward inclusion and backward elimination, each reported as a change in

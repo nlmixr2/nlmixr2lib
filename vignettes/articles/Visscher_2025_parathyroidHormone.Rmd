@@ -24,7 +24,7 @@ ui <- rxode2::rxode(readModelDb("Visscher_2025_parathyroidHormone"))
 cat("* Citation: ", ui$reference, "\n", sep = "")
 cat("* Article: <https://doi.org/10.1111/bcp.16342>\n")
 cat("* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11992657/>\n")
-cat("* Supplement (Tables S1-S4, Figures S1-S2): `BCP-91-1233-s003.docx`, retrieved through the EuropePMC full-text repository\n")
+cat("* Supplement (Tables S1-S4, Figures S1-S2): `BCP-91-1233-s003.docx`, published with the article\n")
 ```
 
 `r ui$description`

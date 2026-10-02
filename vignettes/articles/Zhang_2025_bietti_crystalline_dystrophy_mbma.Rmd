@@ -464,7 +464,7 @@ coverage <- observed |>
   dplyr::left_join(vpc_band, by = "time") |>
   dplyr::mutate(inside = median >= Q05 & median <= Q95)
 
-# Guard against a check that cannot go red (pattern 10): confirm rows exist and
+# Guard against a check that cannot go red: confirm rows exist and
 # that every observed time matched a simulated time.
 stopifnot(nrow(coverage) >= 15, !anyNA(coverage$Q50))
 

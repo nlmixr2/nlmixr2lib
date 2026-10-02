@@ -316,7 +316,7 @@ ug/mL.
 - **Cohort defined at 200 subjects.** The virtual cohort uses 200 subjects
   (versus the source paper's 62) so the per-time-point percentiles in the
   Figure 1B reproduction and the Cmin / AUC summary tables are smooth. The
-  vignette runs within the 5-minute pkgdown gate at this cohort size.
+  vignette renders in under 5 minutes at this cohort size.
 - **DBIL distribution assumed log-normal.** The source paper reports DBIL
   mean 3.16 +/- 2.21 umol/L (range 0.2-10.3) but does not publish a
   histogram. The virtual cohort samples DBIL from a log-normal distribution

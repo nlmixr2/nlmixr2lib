@@ -44,8 +44,8 @@ Lee_2011_parkinson_progression <- function() {
   # symeff are not log-transformed primary parameters (beta0/beta1
   # and gamma0/gamma1 are signed linear-scale fixed effects), the
   # canonical eta + l<param> pairing does not apply; declare the
-  # eta names as paper-specific so checkModelConventions() accepts
-  # them. See references/parameter-names.md "Paper-specific etas".
+  # eta names as paper-specific (the `paper_specific_etas` metadata)
+  # so checkModelConventions() accepts them.
   paper_specific_etas <- c("etaslope", "etasymeff")
 
   units <- list(

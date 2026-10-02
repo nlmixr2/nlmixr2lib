@@ -117,7 +117,7 @@ tibble::tribble(
   "Tp", "397 h", "Results, 'PBPK LINKED PD MODEL'; the paper's only fitted parameter",
   "d/dt(pasi)", "n/a", "Methods, printed closed form Y(t) = Yss + (Y(0) - Yss) * exp(-ln(2)/Tp * t); form attributed to the paper's ref 24 (Holford 2006)"
 ) |>
-  knitr::kable(caption = "Per-parameter source trace. All values are from Chetty 2014; the paper has no supplement (EuropePMC reports hasSuppl = N) and no erratum.")
+  knitr::kable(caption = "Per-parameter source trace. All values are from Chetty 2014; the paper has no supplement and no erratum.")
 ```
 
 ## Dimensional analysis

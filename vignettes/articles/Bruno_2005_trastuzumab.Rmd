@@ -526,8 +526,8 @@ all reproduce the paper's covariate-impact narrative within rounding.
   Cancer Chemotherapy and Pharmacology landing page, PubMed, or Google
   Scholar for DOI 10.1007/s00280-005-1026-z at the time of extraction.
   The `reference` field will be amended if a later correction surfaces.
-- **Observation-grid simplification** to keep the vignette under the
-  pkgdown 5-minute build budget: 30 points over the first dosing interval
+- **Observation-grid simplification** to keep the vignette's render
+  time under 5 minutes: 30 points over the first dosing interval
   and 120 points over the remaining cycles. Visual fidelity of Figure 4 is
   preserved; PKNCA NCA values are unaffected because the final dosing
   interval is sampled densely.

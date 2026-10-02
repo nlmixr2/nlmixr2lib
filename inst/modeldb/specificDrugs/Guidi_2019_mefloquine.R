@@ -190,8 +190,8 @@ Guidi_2019_mefloquine <- function() {
     # The authors estimated Ka SEPARATELY in each of two treatment-day
     # strata within the single joint fit rather than estimating a
     # reference value plus a multiplicative offset, so both strata carry an
-    # explicit suffix and neither keeps the bare canonical `lka` (see
-    # references/parameter-names.md, 'Stratum-suffixed parameters').
+    # explicit suffix and neither keeps the bare canonical `lka` (the
+    # stratum-suffix convention).
     lka_day1 <- log(0.17)
     label("Mefloquine absorption rate constant on the first treatment day, Ka (1/h)") # Guidi 2019 Table 3: Ka DAY = 1 -> 0.17 /h (RSE 17%)
     lka_day2 <- log(0.40)

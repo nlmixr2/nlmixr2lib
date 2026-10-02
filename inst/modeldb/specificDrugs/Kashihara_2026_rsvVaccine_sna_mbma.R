@@ -156,7 +156,7 @@ Kashihara_2026_rsvVaccine_sna_mbma <- function() {
   # The columns headed 'Sensitivity analysis based on MI approach' with
   # RSV-B SNA are a sensitivity analysis, not a final model, and are
   # therefore NOT extracted (see the vignette's Assumptions and deviations
-  # section, and references/replicate-author-structure.md).
+  # section).
   #
   # Scale: every parameter below lives on the paper's negative-effect-size
   # scale, -log(1 - VE/100), and NONE is log-transformed. The intercepts are

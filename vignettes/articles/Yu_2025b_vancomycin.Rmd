@@ -796,7 +796,7 @@ stopifnot(abs(auc15 - 200) / 200 < 0.35)
   the covariate-selection steps and Table S3 the machine-learning hyperparameter
   grid; none contains a final-model value. Every parameter in this model file
   comes from Table 2 or the printed Results 3.2 equations of the main text. The
-  EuropePMC supplementary-files endpoint for PMC12228420 returns only figure
+  only files deposited with PMC12228420 are figure
   images (`CTS-18-e70293-g001.jpg`, `-g004.jpg`).
 
 - **No erratum.** The EuropePMC record for doi:10.1111/cts.70293 carries no

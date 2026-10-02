@@ -51,15 +51,15 @@ Knebel_2012_istradefylline_offtime <- function() {
   # EmaxI are negative, so they cannot be log-transformed at all. The
   # canonical eta + l<param> pairing therefore does not apply; declare the
   # eta names as paper-specific so checkModelConventions() accepts them.
-  # Same shape as Lee_2011_parkinson_progression.R (etaslope / etasymeff).
-  # See references/parameter-names.md "Paper-specific etas".
+  # Same shape as Lee_2011_parkinson_progression.R (etaslope / etasymeff),
+  # declared through the `paper_specific_etas` metadata.
   #
   # NOTE the Methods text says "All interindividual error terms were
   # described by an exponential error model, or log-normal parameter
   # distribution, unless otherwise indicated." The printed equations ARE the
   # indication otherwise, and the reported variance magnitudes agree with
-  # them; per skill policy a text-versus-printed-equation conflict is
-  # resolved in favour of the equation.
+  # them; per the standing policy a text-versus-printed-equation conflict
+  # is resolved in favour of the equation.
   paper_specific_etas <- c("etae0", "etaemax_dppr", "etaemax_drug")
 
   units <- list(
@@ -187,7 +187,7 @@ Knebel_2012_istradefylline_offtime <- function() {
     # All values are Knebel 2012 Table II, "Final Model / Fixed effect
     # Parameter estimate" column (the full covariate model, which is the
     # paper's final percentage OFF time model). The base-model column of
-    # the same table is NOT used here; per skill policy a
+    # the same table is NOT used here; per the standing policy a
     # base-plus-final model-development paper contributes the final model
     # only. The base-model values (E0 37.9, EmaxP -0.152, ET50 19.3 d,
     # EmaxI -5.79, EC50 1690 ng*hr/mL) are the ones quoted in the

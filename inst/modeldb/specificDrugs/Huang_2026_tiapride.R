@@ -252,9 +252,9 @@ Huang_2026_tiapride <- function() {
     # (all rendered from the PDF's vector graphics and read) introduce none,
     # so the scale converting the saliva compartment AMOUNT to the observed
     # ng/mL saliva CONCENTRATION is not reported anywhere in the paper. There
-    # is no supplement to consult: the EuropePMC supplementaryFiles endpoint
-    # returns HTTP 404 for PMC13111164 and the core record reports
-    # hasSuppl 'N', so this is a reporting gap, not an acquisition gap.
+    # is no supplement to consult: the article (PMC13111164) has no
+    # supplementary material, so this is a reporting gap in the publication
+    # itself.
     #
     # PROVENANCE: recovered by digitising Figure 4 (visual predictive check)
     # at 500 dpi, via the saliva quasi-steady state. K30 = 6.24 1/h is a

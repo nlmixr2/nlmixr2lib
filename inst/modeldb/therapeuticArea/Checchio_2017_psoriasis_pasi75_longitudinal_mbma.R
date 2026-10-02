@@ -41,8 +41,8 @@ Checchio_2017_psoriasis_pasi75_longitudinal_mbma <- function() {
     "from a plain-text extraction of the PDF; they were recovered with",
     "pdftotext -layout. Drug-specific parameter values are Supplementary",
     "Table S1.1 and common parameter values are Supplementary Table S1.2, both",
-    "in the Supplementary Appendix (CPT-102-1006-s001.docx), obtained from the",
-    "EuropePMC supplementaryFiles endpoint for PMC5697570.",
+    "in the Supplementary Appendix (CPT-102-1006-s001.docx) published with the",
+    "open-access article (PMC5697570).",
     sep = " "
   )
 
@@ -215,7 +215,7 @@ Checchio_2017_psoriasis_pasi75_longitudinal_mbma <- function() {
     #
     # Structural model, Checchio 2017 Methods 'Longitudinal model',
     # Equations 1-4. Every display equation in this paper is RASTERISED and is
-    # dropped by the markdown preprocessor; the forms below were recovered
+    # dropped by markdown text extraction; the forms below were recovered
     # with `pdftotext -layout`:
     #
     #   (1)  Pr(PASI75) = g{f0 + fdrug}

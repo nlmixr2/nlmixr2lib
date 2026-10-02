@@ -25,8 +25,8 @@ set.seed(20250909)
 * Description: `r rxode2::rxode(readModelDb("Berthaud_2025_cefazolin"))$description`
 * Article: <https://doi.org/10.1128/aac.00451-25>
 * Supplement (Tables S1 and S2): `AAC00451-25-S0001.docx`, distributed with the
-  open-access article and retrievable from
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12587577/supplementaryFiles>
+  open-access article:
+  <https://europepmc.org/article/PMC/PMC12587577>
 
 ```{r model}
 mod <- readModelDb("Berthaud_2025_cefazolin")

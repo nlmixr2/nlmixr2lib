@@ -165,8 +165,7 @@ Leegwater_2025_trimethoprim <- function() {
     # the clearance for patients treated with CRRT and patients without
     # CRRT"; the control stream implements this as ETA(1) in the rel==0
     # branch and ETA(3) in the rel==1 branch. Both strata therefore carry an
-    # explicit suffix (references/parameter-names.md "Stratum-suffixed
-    # parameters"): a bare etalcl silently meaning "the non-CRRT value" is
+    # explicit suffix (the stratum-suffix convention): a bare etalcl silently meaning "the non-CRRT value" is
     # exactly the ambiguity the suffix removes.
     etalcl_nocrrt ~ 0.161                                                                                           # control stream $OMEGA(1) '0.161 FIX'; Table 2 'IIV CL (%)' 40.1, RSE 12%, bootstrap 95% CI 26.9-48.5
     etalcl_crrt   ~ 0.108                                                                                           # control stream $OMEGA(3) '0.108 FIX'; Table 2 'IIV CL patients on CRRT (%)' 32.9, RSE 32%, bootstrap 95% CI 7.54-48.7

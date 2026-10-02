@@ -21,8 +21,8 @@ Edstein_2001_tafenoquine <- function() {
 
   covariateData <- list()
 
-  # Screened-but-not-retained covariates documented in covariatesDataExcluded
-  # per references/parameter-names.md. WT and AGE (centred at the population
+  # Screened-but-not-retained covariates documented in covariatesDataExcluded.
+  # WT and AGE (centred at the population
   # means 60.3 kg and 28.9 y) reduced the OFV when added to V/F (Table 2 model
   # numbers 4 and 5) and the malaria-status indicator MAL reduced the OFV when
   # added to CL/F (model number 6); the authors concluded "in view of the

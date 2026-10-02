@@ -359,8 +359,9 @@ message of Marquez-Megias 2023 motivating MIPD.
 
 - **Albumin distribution.** The paper reports only median 3.86 g/dL and
   range 1.97-4.96 g/dL (Table 1) for the IBD cohort. The virtual cohort
-  uses a rescaled Beta(5,2) on this support, which produces a median
-  near 3.85 g/dL and a slight left tail consistent with active IBD.
+  uses a rescaled Beta(5,2) on this support, supplied to the model in
+  g/L (19.7-49.6 g/L), which produces a median near 38.5 g/L
+  (3.85 g/dL) and a slight left tail consistent with active IBD.
 
 - **AAA prevalence.** Set at 16.7% to match the Final Model cohort
   (9/54 patients). The simulated AAA status is held fixed per subject

@@ -86,8 +86,7 @@ Hui_2019_methotrexate <- function() {
         "be. The alternative grouping (eGFR x 1.73)/(192 x BSA) -- which would",
         "read eGFR as an absolute mL/min value and 192 as a reference",
         "normalised eGFR -- cannot be excluded without the primary, and would",
-        "raise typical clearance by about 17%. Flagged in the vignette Errata;",
-        "the primary is queued for re-extraction."
+        "raise typical clearance by about 17%. Flagged in the vignette Errata."
       ),
       source_name = "eGFR"
     ),

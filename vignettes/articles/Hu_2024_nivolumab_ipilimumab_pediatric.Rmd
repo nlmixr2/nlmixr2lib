@@ -40,7 +40,7 @@ ipi  <- rxode2::rxode(readModelDb("Hu_2024_ipilimumab"))
 * Article: <https://doi.org/10.1002/psp4.13098>
 * Supplement (Appendix S1 supplementary results and tables, Appendix File S2
   and S3 NONMEM control streams):
-  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10941504/supplementaryFiles>
+  <https://europepmc.org/article/PMC/PMC10941504>
 
 # Population
 

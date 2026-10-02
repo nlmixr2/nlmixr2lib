@@ -935,9 +935,9 @@ ggplot(nca_cmp, aes(CRCL, half.life)) +
 # Assumptions and deviations
 
 * **Supplement not available.** Tseng 2026 cites Supplementary Tables 1-3 and
-  Supplementary Figures 1-3. Neither the Dovepress supplementary endpoints nor
-  the Europe PMC supplementary-files archive serves them (the latter returns
-  only the three main-article figures). Nothing in the supplement is needed to
+  Supplementary Figures 1-3. They were not available when this model was
+  built (the only files deposited with the PMC record are the three
+  main-article figures). Nothing in the supplement is needed to
   build the model: every final parameter estimate is in Table 2, and the
   structural- and covariate-model comparisons in Supplementary Tables 1-2 are
   objective-function summaries reported in the Results narrative as well. The
