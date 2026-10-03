@@ -4482,6 +4482,8 @@ navbar:
         href: articles/Sun_2025_paclitaxel.html
       - text: "Paclitaxel (deJonge 2005)"
         href: articles/deJonge_2005_paclitaxel.html
+      - text: "Paclitaxel (vanEijk 2022)"
+        href: articles/vanEijk_2022_paclitaxel.html
       - text: "Paclitaxel human pbpk (Fu 2019)"
         href: articles/Fu_2019_paclitaxel_pbpk.html
       - text: "Paclitaxel liposomal (Zhou 2020)"
@@ -9570,6 +9572,7 @@ articles:
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
+  - articles/vanEijk_2022_paclitaxel
   - articles/vanErp_2010_sunitinib
   - articles/vanEsdonk_2018_pregabalin_pain_models
   - articles/vanHasselt_2013_eribulin
