@@ -4494,12 +4494,16 @@ navbar:
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pacmilimab qsp (Ippolito 2024)"
         href: articles/Ippolito_2024_pacmilimab_qsp.html
+      - text: "Palbociclib (Courlet 2022)"
+        href: articles/Courlet_2022_palbociclib.html
       - text: "Palbociclib (Marouille 2021)"
         href: articles/Marouille_2021_palbociclib.html
       - text: "Palbociclib (Panetta 2024)"
         href: articles/Panetta_2024_palbociclib.html
       - text: "Palbociclib (Royer 2021)"
         href: articles/Royer_2021_palbociclib.html
+      - text: "Palbociclib anc (Courlet 2022)"
+        href: articles/Courlet_2022_palbociclib.html
       - text: "Palbociclib anc (Panetta 2024)"
         href: articles/Panetta_2024_palbociclib.html
       - text: "Palbociclib plt (Panetta 2024)"
@@ -7440,6 +7444,7 @@ articles:
   - articles/Cosson_2021_linvencorvir
   - articles/Couffignal_2014_imipenem
   - articles/Courlet_2021_amlodipine
+  - articles/Courlet_2022_palbociclib
   - articles/Courlet_2023_cabamiquine
   - articles/Crass_2024_pegcetacoplan
   - articles/Crass_2025_pegcetacoplan_geographic_atrophy
