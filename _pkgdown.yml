@@ -1516,6 +1516,8 @@ navbar:
         href: articles/Gatti_1996_dapsone.html
       - text: "Dapsone (Hall 2017)"
         href: articles/Hall_2017_dapsone.html
+      - text: "Daptomycin (Balice 2022)"
+        href: articles/Balice_2022_daptomycin.html
       - text: "Daptomycin (Garonzik 2016)"
         href: articles/Garonzik_2016_daptomycin.html
       - text: "Daptomycin (Subrtova 2026)"
@@ -7102,6 +7104,7 @@ articles:
   - articles/Baklouti_2021_iohexol_dog
   - articles/Baklouti_2026_amoxicillin
   - articles/Balakirouchenane_2020_dabrafenib_trametinib
+  - articles/Balice_2022_daptomycin
   - articles/Balis_2025_busulfan
   - articles/Bamgboye_2026_topiramate
   - articles/Barau_2012_mycophenolic_acid
