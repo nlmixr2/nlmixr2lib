@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Duong 2022 gentamicin, four re-estimated models (Rea 2008, Bos 2019, and both Hodiamont 2017 structures) ([doi:10.3390/pharmaceutics14071426](https://doi.org/10.3390/pharmaceutics14071426)) -- critically ill adult ICU patients in Quebec.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
