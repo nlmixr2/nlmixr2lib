@@ -578,6 +578,8 @@ navbar:
         href: articles/Chen_2025_ceftazidime_avibactam.html
       - text: "Avibactam (Dimelow 2018)"
         href: articles/Dimelow_2018_ceftazidime_avibactam_elf.html
+      - text: "Avibactam (Franzese 2022)"
+        href: articles/Franzese_2022_ceftazidime_avibactam.html
       - text: "Avibactam (Li 2019)"
         href: articles/Li_2019_ceftazidime_avibactam.html
       - text: "Avibactam qsp (LopezArguello 2023)"
@@ -1140,6 +1142,8 @@ navbar:
         href: articles/Conil_2007_ceftazidime.html
       - text: "Ceftazidime (Dimelow 2018)"
         href: articles/Dimelow_2018_ceftazidime_avibactam_elf.html
+      - text: "Ceftazidime (Franzese 2022)"
+        href: articles/Franzese_2022_ceftazidime_avibactam.html
       - text: "Ceftazidime (Georges 2009)"
         href: articles/Georges_2009_ceftazidime.html
       - text: "Ceftazidime (Launay 2024)"
@@ -7627,6 +7631,7 @@ articles:
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
   - articles/Franken_2017_midazolam
+  - articles/Franzese_2022_ceftazidime_avibactam
   - articles/Franzese_2026_pdl1_nsclc_mbma
   - articles/Frederiksen_2021_tedatioxetine
   - articles/Frederiksen_2023_brexpiprazole
