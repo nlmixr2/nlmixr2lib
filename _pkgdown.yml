@@ -5608,6 +5608,8 @@ navbar:
         href: articles/Cao_2013_siltuximab.html
       - text: "Siltuximab (Nikanjam 2019)"
         href: articles/Nikanjam_2019_siltuximab.html
+      - text: "Simurosertib (Zhou 2022)"
+        href: articles/Zhou_2022_simurosertib.html
       - text: "Simvastatin (Jin 2014)"
         href: articles/Jin_2014_simvastatin.html
       - text: "Simvastatin qsp (PichardoAlmarza 2017)"
@@ -9521,6 +9523,7 @@ articles:
   - articles/Zhou_2021_remimazolam
   - articles/Zhou_2021a_enrofloxacin_pig_pbpk
   - articles/Zhou_2021b_enrofloxacin_pig_pbpk
+  - articles/Zhou_2022_simurosertib
   - articles/Zhou_2024_HER2breastCancer_qsp
   - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab
