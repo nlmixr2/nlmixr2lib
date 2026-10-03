@@ -6488,6 +6488,8 @@ navbar:
         href: articles/Ding_2026_vancomycin.html
       - text: "Vancomycin (Dorajoo 2019)"
         href: articles/Dorajoo_2019_vancomycin.html
+      - text: "Vancomycin (Fu 2021)"
+        href: articles/Fu_2021_vancomycin.html
       - text: "Vancomycin (Garreau 2021)"
         href: articles/Garreau_2021_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
@@ -7643,6 +7645,7 @@ articles:
   - articles/Frymoyer_2013_mycophenolic_acid
   - articles/Frymoyer_2017_infliximab
   - articles/Fu_2019_paclitaxel_pbpk
+  - articles/Fu_2021_vancomycin
   - articles/Fu_2022_atenolol_qsp
   - articles/Fu_2023_cardiovascular
   - articles/Fuchs_2014_gentamicin
