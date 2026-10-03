@@ -5748,6 +5748,8 @@ navbar:
         href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Sumatriptan (Lee 2015)"
         href: articles/Lee_2015_sumatriptan.html
+      - text: "Sumatriptan (Ohk 2022)"
+        href: articles/Ohk_2022_sumatriptan.html
       - text: "Sunitinib (AitOudhia 2016)"
         href: articles/AitOudhia_2016_sunitinib.html
       - text: "Sunitinib (Wang 2020)"
@@ -8562,6 +8564,7 @@ articles:
   - articles/Ogungbenro_2009_penciclovir
   - articles/Ogusu_2014_valproic_acid
   - articles/Ohara_2014_warfarin_s
+  - articles/Ohk_2022_sumatriptan
   - articles/Oishi_2014_fesoterodine
   - articles/Ojara_2024_lamivudine
   - articles/Okada_2024_triazolam
