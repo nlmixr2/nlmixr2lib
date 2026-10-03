@@ -6028,6 +6028,8 @@ navbar:
         href: articles/Tsuchitani_2024_telmisartan_pbpk.html
       - text: "Temocapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Temocillin (NgougniPokem 2022)"
+        href: articles/NgougniPokem_2022_temocillin.html
       - text: "Temocillin atcc25922 (vanOs 2024)"
         href: articles/vanOs_2024_temocillin.html
       - text: "Temocillin isolmic16 (vanOs 2024)"
@@ -8527,6 +8529,7 @@ articles:
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngo_2020_HL2351
   - articles/Ngo_2023_rivaroxaban
+  - articles/NgougniPokem_2022_temocillin
   - articles/Nguyen_2019_cabozantinib
   - articles/Nguyen_2020_myostatin_activin_dmd_qsp
   - articles/Nguyen_2021_ceftazidime_imipenem
