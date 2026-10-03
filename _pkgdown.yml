@@ -2380,6 +2380,10 @@ navbar:
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Fleroxacin rat pbpk mdckmdr1 (SanchezDengra 2021)"
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Florfenicol cattle pbpk (Chou 2022)"
+        href: articles/Chou_2022_igpbpk.html
+      - text: "Florfenicol swine pbpk (Chou 2022)"
+        href: articles/Chou_2022_igpbpk.html
       - text: "Flt3lfc cyno (Hosseini 2024)"
         href: articles/Hosseini_2024_flt3lfc.html
       - text: "Flt3lfc human (Hosseini 2024)"
@@ -2422,6 +2426,10 @@ navbar:
         href: articles/Polito_2016_fludrocortisone.html
       - text: "Flumazenil pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Flunixin cattle pbpk (Chou 2022)"
+        href: articles/Chou_2022_igpbpk.html
+      - text: "Flunixin swine pbpk (Chou 2022)"
+        href: articles/Chou_2022_igpbpk.html
       - text: "Fluorouracil (Arshad 2020)"
         href: articles/Arshad_2020_fluorouracil.html
       - text: "Fluorouracil (Yamada 2025)"
@@ -4656,10 +4664,14 @@ navbar:
         href: articles/Komatsu_2016_penicillinG.html
       - text: "PenicillinG cattle (Li 2014)"
         href: articles/Li_2014_penicillinG.html
+      - text: "PenicillinG cattle pbpk (Chou 2022)"
+        href: articles/Chou_2022_igpbpk.html
       - text: "PenicillinG clinical success (Komatsu 2016)"
         href: articles/Komatsu_2016_penicillinG.html
       - text: "PenicillinG swine (Li 2014)"
         href: articles/Li_2014_penicillinG.html
+      - text: "PenicillinG swine pbpk (Chou 2022)"
+        href: articles/Chou_2022_igpbpk.html
       - text: "Pentadecanoic triheptadecanoic (Mascarenhas 2015)"
         href: articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic.html
       - text: "Pentobarbital (Helfer 2026)"
@@ -7392,6 +7404,7 @@ articles:
   - articles/Chotsiri_2019_piperaquine
   - articles/Chotsiri_2024_primaquine_metabolites
   - articles/Chou_2021_pfos_pbpk
+  - articles/Chou_2022_igpbpk
   - articles/Choules_2024_vedotin_ddi
   - articles/Choy_2016_T2DM_WHIG
   - articles/Chu_2024_allopurinol
