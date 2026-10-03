@@ -2618,6 +2618,8 @@ navbar:
         href: articles/Mohamed_2012_gentamicin.html
       - text: "Gentamicin (Paioni 2021)"
         href: articles/Paioni_2021_gentamicin.html
+      - text: "Gentamicin (Samb 2022)"
+        href: articles/Samb_2022_gentamicin.html
       - text: "Gentamicin (Sampson 2014)"
         href: articles/Sampson_2014_gentamicin.html
       - text: "Gentamicin (Singu 2024)"
@@ -8794,6 +8796,7 @@ articles:
   - articles/Salem_2014_efavirenz
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Salinger_2019_pretomanid
+  - articles/Samb_2022_gentamicin
   - articles/Sampson_2014_azithromycin
   - articles/Sampson_2014_gentamicin
   - articles/SanchezDengra_2021_neuro_pbpk_rat
