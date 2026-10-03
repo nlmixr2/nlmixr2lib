@@ -132,10 +132,10 @@ Dias_2022_tobramycin_rat <- function() {
     fu <- fixed(0.89); label("Unbound fraction of tobramycin in rat plasma (fraction)") # Results after Eq 3: estimates divided by 0.89, the unbound fraction; Methods 2.5: protein binding 11%
 
     # IIV: Table 1 reports %CV for exponential IIV; omega^2 = log(CV^2 + 1).
-    etalcl ~ 0.5295 # Table 1: omega CL = 84 %CV -> log(0.84^2 + 1)
+    etalcl ~ 0.5339 # Table 1: omega CL = 84 %CV -> log(0.84^2 + 1)
     etalvc ~ 0.3075 # Table 1: omega V1 = 60 %CV -> log(0.60^2 + 1)
-    etalv_lung ~ 1.0279 # Table 1: omega V3 = 134 %CV -> log(1.34^2 + 1)
-    etalr_elf_lung ~ 0.1694 # Table 1: omega Dfactor = 43 %CV -> log(0.43^2 + 1)
+    etalv_lung ~ 1.0280 # Table 1: omega V3 = 134 %CV -> log(1.34^2 + 1)
+    etalr_elf_lung ~ 0.1697 # Table 1: omega Dfactor = 43 %CV -> log(0.43^2 + 1)
 
     # Residual error: log-additive, "described separately for plasma and
     # microdialysate data" (Methods 2.5). The paper estimated ONE

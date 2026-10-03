@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Dias 2022 tobramycin ([doi:10.3390/pharmaceutics14061237](https://doi.org/10.3390/pharmaceutics14061237)) -- male Wistar rats, healthy or with acute or chronic (alginate-bead) Pseudomonas aeruginosa lung infection, plasma plus microdialysis lung and ELF (ratifies the `DIS_PSEUDOMONAS_LUNG_ACUTE`, `DIS_PSEUDOMONAS_LUNG_CHRONIC` and `ALGINATE_BEAD_BLANK` covariate canonicals and the `lr_elf_lung` parameter).
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.

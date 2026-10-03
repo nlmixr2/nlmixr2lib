@@ -6182,6 +6182,8 @@ navbar:
         href: articles/VanWart_2025_tobramycin.html
       - text: "Tobramycin inhaled (Ting 2014)"
         href: articles/Ting_2014_tobramycin_inhaled.html
+      - text: "Tobramycin rat (Dias 2022)"
+        href: articles/Dias_2022_tobramycin_rat.html
       - text: "Tobramycin rat conventional (Marier 2002)"
         href: articles/Marier_2002_tobramycin_rat_conventional.html
       - text: "Tobramycin rat liposomal (Marier 2002)"
@@ -7493,6 +7495,7 @@ articles:
   - articles/Diao_2016_daclizumab_cd25
   - articles/Diao_2016_daclizumab_cd56bright
   - articles/Diao_2016_daclizumab_treg
+  - articles/Dias_2022_tobramycin_rat
   - articles/Dias_2024_quetiapine_rat
   - articles/Dickinson_2009_atazanavir
   - articles/Dickinson_2021_dolutegravir
