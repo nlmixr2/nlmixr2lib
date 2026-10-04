@@ -13654,6 +13654,7 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:**
   - `Vinnard_2017_isoniazid.R` (three-level phenotype with the **slow** acetylator as the source paper's reference; `nat2_int <- (1 - NAT2_SLOW) * (1 - NAT2_RAPID)` derives the intermediate indicator and CL/F is scaled by `1 + 0.63 * nat2_int + 1.65 * NAT2_RAPID`, i.e. rapid acetylators clear isoniazid 2.65-fold faster than slow acetylators).
   - `Seng_2015_isoniazid.R` (three-level phenotype with the **intermediate** acetylator as the joint reference; selects between three typical-value clearances).
+  - `Chen_2022_isoniazid_nat2class.R` (genotype-class form with the **rapid** (`*4/*4`, the paper's wt/wt) group as the reference; `nat2_score <- (1 - NAT2_RAPID) * (1 + NAT2_SLOW)` rebuilds the paper's 0 / 1 / 2 score for wt/wt, m/wt and m/m, which enters as `exp(-0.55 * score)` on CL/F and `exp(-0.47 * score)` on the fraction of CL/F forming acetylisoniazid). Only the `*5`, `*6` and `*7` SNPs were typed, so the paper's wt/wt is `*4/*4` by construction.
 - **Notes:** Pre-named by the `NAT2_SLOW` register entry, whose Notes block reserved this name for "future papers that distinguish rapid from intermediate (separately from slow)" so the three-level phenotype can be encoded with two binary indicators on the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` and `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` pattern. Do **not** use this canonical alone as a slow-versus-nonslow proxy -- `NAT2_RAPID = 0` pools intermediate with slow, which is the opposite pooling from the `NAT2_SLOW`-only convention (where `0` pools intermediate with rapid), and the two pool the clinically distinct group in each case. A model that carries only one of the pair is asserting that its cohort could not resolve the third level; a model that carries both must derive the intermediate indicator in `model()` rather than registering a third column. Distinct from any raw genotype-string column, which carries allele information rather than the derived metabolic phenotype. Rapid acetylators are the under-exposed group at standard isoniazid doses (the treatment-failure risk), mirroring `CYP2D6_UM` at the ultrarapid end of the CYP2D6 spectrum, whereas `NAT2_SLOW = 1` marks the over-exposed hepatotoxicity-risk group.
 
 ### NAT2_SLOW (**canonical for NAT2 slow-acetylator phenotype indicator**)
@@ -13666,8 +13667,44 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
   - `NAT2` (categorical with values `"slow"` / `"intermediate"` / `"rapid"` or `0` / `1` / `2`): derive `NAT2_SLOW = as.integer(NAT2 == "slow")` (or `as.integer(NAT2 == 0)` depending on the source's level coding); the intermediate and rapid levels collapse to NAT2_SLOW = 0.
   - `NAT2_SS` (slow-vs-not-slow indicator already in source datasets) -- same orientation as the canonical, no transformation.
   - `ACETYL_SLOW` (slow-acetylator indicator) -- same orientation as the canonical, no transformation.
-- **Example models:** `Horita_2018_isoniazid.R` (selects between two typical-value clearances via `lcl_slow * NAT2_SLOW + lcl_nonslow * (1 - NAT2_SLOW)` and pairs each typical value with its own IIV variance; reproduces the source paper's separate `CL/F slow = 4.44 L/h` and `CL/F nonslow = 8.08 L/h` typical-value estimates with separate omegas 0.105 and 0.230 respectively).
+- **Example models:** `Horita_2018_isoniazid.R` (selects between two typical-value clearances via `lcl_slow * NAT2_SLOW + lcl_nonslow * (1 - NAT2_SLOW)` and pairs each typical value with its own IIV variance; reproduces the source paper's separate `CL/F slow = 4.44 L/h` and `CL/F nonslow = 8.08 L/h` typical-value estimates with separate omegas 0.105 and 0.230 respectively); `Chen_2022_isoniazid_nat2class.R` (with `NAT2_RAPID`; `NAT2_SLOW = 1` marks the paper's m/m group, two of the `*5` / `*6` / `*7` alleles, score 2 in `exp(-0.55 * score)` on CL/F).
 - **Notes:** The NAT2 (rs1208 / rs1041983 / rs1801279 / rs1801280 / rs1799929 / rs1799930 / rs1799931 / rs1208) gene encodes the cytosolic arylamine N-acetyltransferase 2 enzyme responsible for the major isoniazid metabolic pathway (acetylation to acetyl-isoniazid); slow acetylators have substantially reduced isoniazid clearance, higher Cmax, and higher AUC than intermediate or rapid acetylators, with documented impact on both efficacy (treatment failure in rapid acetylators given standard doses) and toxicity (hepatotoxicity in slow acetylators given high doses). The slow / intermediate / rapid trimodal phenotype is conventionally collapsed to slow vs nonslow in popPK models when the cohort lacks enough rapid acetylators to identify a distinct rapid typical value, OR when the rapid and intermediate phenotypes are statistically indistinguishable in the data (Horita 2018 cohort: 51 slow / 50 intermediate / 12 fast). Papers that distinguish rapid from intermediate (separately from slow) pair this indicator with the companion canonical `NAT2_RAPID` so the three-level phenotype is encoded with two binary indicators on the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` and `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` patterns; in that pairing the joint state (both = 0) denotes an intermediate acetylator, and the intermediate indicator is derived inside `model()` rather than registered as a third column (see `Vinnard_2017_isoniazid.R` and `Seng_2015_isoniazid.R`). The `_SLOW` orientation (slow = 1) follows the clinically meaningful axis (slow acetylators are the at-risk group for isoniazid hepatotoxicity and the higher-AUC group for treatment outcomes), paralleling the `CYP2D6_PM = 1` orientation for the poor-metabolizer end of the CYP2D6 phenotype spectrum. Distinct from any genotype-string column (which carries the raw allele information); `NAT2_SLOW` captures the derived metabolic phenotype only. Ratified canonically on 2026-05-26 alongside the Horita 2018 isoniazid extraction.
+
+### SNP_NAT2_RS1801280_C_COUNT (**canonical for NAT2*5 (341T>C, rs1801280) variant C-allele count**)
+- **Description:** Individual-level count of *NAT2* rs1801280 variant alleles (c.341T>C, I114T), the defining SNP of the `NAT2*5` slow-acetylator allele family: 0 = 341T/T, 1 = T/C, 2 = C/C. Time-invariant (germline genotype). Where a study types only the `*5`-, `*6`- and `*7`-defining SNPs, this count equals the number of `*5` alleles.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). A count of 0 is the natural reference.
+- **Source aliases:**
+  - `M341` / `*5 allele score` -- Chen 2022 Table 3 and Methods 'Covariates' method 3 (0 / 1 / 2 for w/w, m/w, m/m at the *5 allele). The paper writes the change as 'C341 -> T'; the variant allele of `*5` is 341C. Same orientation as the canonical, no value transformation.
+  - NAT2 diplotype string (`"*4/*5"`, `"*5/*7"`, ...): count the `*5` alleles.
+- **Example models:** `Chen_2022_isoniazid.R` (exponential per-allele effects `exp(-0.77 * count)` on isoniazid CL/F and `exp(-0.72 * count)` on the fraction of CL/F forming acetylisoniazid).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>_<allele>_COUNT` family, alongside `SNP_NAT2_RS1799930_A_COUNT` (`*6`) and `SNP_NAT2_RS1799931_A_COUNT` (`*7`). Use the per-SNP counts when a paper gives each slow allele its own effect; when it pools them into an acetylator phenotype use `NAT2_SLOW` / `NAT2_RAPID` instead. The three counts are not independent of those phenotypes: their sum is the number of slow alleles (0 rapid, 1 intermediate, 2 slow) under the usual assumption that each allele carries one defining SNP.
+
+### SNP_NAT2_RS1799930_A_COUNT (**canonical for NAT2*6 (590G>A, rs1799930) variant A-allele count**)
+- **Description:** Individual-level count of *NAT2* rs1799930 variant alleles (c.590G>A, R197Q), the defining SNP of the `NAT2*6` slow-acetylator allele family: 0 = 590G/G, 1 = G/A, 2 = A/A. Time-invariant (germline genotype). Where a study types only the `*5`-, `*6`- and `*7`-defining SNPs, this count equals the number of `*6` alleles.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). A count of 0 is the natural reference.
+- **Source aliases:**
+  - `M590` / `*6 allele score` -- Chen 2022 Table 3 and Methods 'Covariates' method 3. Same orientation as the canonical, no value transformation.
+  - NAT2 diplotype string: count the `*6` alleles.
+- **Example models:** `Chen_2022_isoniazid.R` (`exp(-0.60 * count)` on isoniazid CL/F, `exp(-0.45 * count)` on the fraction forming acetylisoniazid).
+- **Notes:** See `SNP_NAT2_RS1801280_C_COUNT` for the relationship to the NAT2 phenotype indicators.
+
+### SNP_NAT2_RS1799931_A_COUNT (**canonical for NAT2*7 (857G>A, rs1799931) variant A-allele count**)
+- **Description:** Individual-level count of *NAT2* rs1799931 variant alleles (c.857G>A, G286E), the defining SNP of the `NAT2*7` slow-acetylator allele family: 0 = 857G/G, 1 = G/A, 2 = A/A. Time-invariant (germline genotype). Where a study types only the `*5`-, `*6`- and `*7`-defining SNPs, this count equals the number of `*7` alleles.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). A count of 0 is the natural reference.
+- **Source aliases:**
+  - `M870` / `M803` / `*7 allele score` -- Chen 2022 Table 3 row and footnote respectively; both misprint the 857 position given in the paper's Methods. Same orientation as the canonical, no value transformation.
+  - NAT2 diplotype string: count the `*7` alleles.
+- **Example models:** `Chen_2022_isoniazid.R` (`exp(-0.29 * count)` on isoniazid CL/F, `exp(-0.14 * count)` on the fraction forming acetylisoniazid).
+- **Notes:** Chen 2022 estimates the smallest per-allele effect for `*7` (one copy leaves CL/F at 74.8 percent of `*4/*4`, against 46.3 and 54.9 for `*5` and `*6`). See `SNP_NAT2_RS1801280_C_COUNT` for the relationship to the NAT2 phenotype indicators.
 
 ### FCGR3A_VV (**canonical for FCGR3A 158 V/V homozygote indicator**)
 - **Description:** 1 = subject is homozygous for valine at amino-acid position 158 of the FcgammaRIIIa receptor (V/V), encoded by the rs396991 polymorphism in the FCGR3A gene; 0 = otherwise (heterozygote V/F or homozygote F/F pooled). The dominant V/V vs (V/F + F/F) grouping is the encoding used in the Aguiar 2021 source paper after testing dominant and recessive groupings during covariate model building.
