@@ -68,7 +68,7 @@ table below collects them in one place.
 | `lvp` (Vp/F) | log(72.3) L | Table 2 'Vp/F (L)' |
 | `lke0` (Kbp) | log(0.43) 1/h | Table 2 'Kbp (1/h)' |
 | `lbpr` (Rbp) | log(16.6) | Table 2 'Rbp' |
-| `e_blood_vol_vc` | 0.74 | Table 2 'Blood volume on Vc/F, (BLV/3.89)^TH'; footnote c (reference 3.89 L) |
+| `e_blood_volume_vc` | 0.74 | Table 2 'Blood volume on Vc/F, (BLV/3.89)^TH'; footnote c (reference 3.89 L) |
 | `e_hct_bpr` | 0.77 | Table 2 'Hematocrit on Rbp, (HCT/27.8)^TH' |
 | `e_cyp3a4_ind_weak_cl` | 0.39 | Table 2 'CYP3A4 inducer on CL/F, exp TH' |
 | `e_dose_bpr` | -0.37 | Table 2 'Nominal dose on Rbp, (dose/900)^TH' |
@@ -94,7 +94,7 @@ and the random effects removed returns the individual `vc`, `bpr` and `cl`.
 mod <- readModelDb("Savic_2022_voxelotor")
 
 typ_grid <- tibble::tribble(
-  ~check,                          ~BLOOD_VOL, ~HCT, ~DOSE_VOXELOTOR_MG, ~CONMED_CYP3A4_IND_WEAK, ~quantity, ~paper,
+  ~check,                          ~BLOOD_VOLUME, ~HCT, ~DOSE_VOXELOTOR_MG, ~CONMED_CYP3A4_IND_WEAK, ~quantity, ~paper,
   "Vc/F, blood volume 2.9 L",      2.9,        27.8, 900,                0,                       "vc",      269,
   "Vc/F, blood volume 3.9 L",      3.9,        27.8, 900,                0,                       "vc",      334,
   "Vc/F, blood volume 5.2 L",      5.2,        27.8, 900,                0,                       "vc",      413,
@@ -111,7 +111,7 @@ typ_grid <- tibble::tribble(
   mutate(id = row_number())
 
 typ_events <- typ_grid |>
-  select(id, BLOOD_VOL, HCT, DOSE_VOXELOTOR_MG, CONMED_CYP3A4_IND_WEAK) |>
+  select(id, BLOOD_VOLUME, HCT, DOSE_VOXELOTOR_MG, CONMED_CYP3A4_IND_WEAK) |>
   mutate(OCC = 0L) |>
   tidyr::crossing(time = c(0, 1)) |>
   mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L) |>
@@ -193,7 +193,7 @@ make_cohort <- function(n, dose, id_offset) {
     treatment = paste(dose, "mg QD"),
     DOSE_VOXELOTOR_MG = dose,
     # 10th-90th percentile 2.9-5.2 L around 3.9 L: log-SD = log(5.2/2.9)/(2*1.2816)
-    BLOOD_VOL = 3.9 * exp(rnorm(n, 0, log(5.2 / 2.9) / (2 * qnorm(0.9)))),
+    BLOOD_VOLUME = 3.9 * exp(rnorm(n, 0, log(5.2 / 2.9) / (2 * qnorm(0.9)))),
     # 10th-90th percentile 24.3-37.7% around 30.5%: same log-SD, centred on 27%
     HCT = 27 * exp(rnorm(n, 0, log(37.7 / 24.3) / (2 * qnorm(0.9)))),
     CONMED_CYP3A4_IND_WEAK = 0L,
@@ -488,7 +488,7 @@ stopifnot(abs(hl_summary$`Dominant-phase t1/2 (h)` / hl_summary$`Table 3 t1/2 (h
   880 ng/mL is converted to 0.88 ug/mL to match the model's concentration
   units.
 - **Blood volume.** The paper says blood volume was "calculated based on
-  body weight and sex" but does not give the formula, so `BLOOD_VOL` is a
+  body weight and sex" but does not give the formula, so `BLOOD_VOLUME` is a
   user-supplied column. The virtual cohort draws it directly from the
   published percentiles rather than from body weight.
 - **Nominal dose.** `DOSE_VOXELOTOR_MG` is the nominal dose of the regimen

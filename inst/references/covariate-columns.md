@@ -204,16 +204,16 @@ notes: <free text>
 - **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m^2; linear-deviation effect on logit of bioavailability), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 27.93 kg/m^2 adding +0.939 to the GX rate constant K30 in the BMI > 27.93 cohort), `Struemper_2017_belimumab.R` (kg/m^2, reference 24.7; power exponent -0.610 on Vc; baseline-only, source column BBMI), `Lalovic_2020_lemborexant.R` (power exponent -0.428 on CL/F; reference 25 kg/m^2, unprinted and back-solved from the paper's quoted BMI effect sizes).
 - **Notes:** Universal clinical-trial demographic. Derived as `WT / (height_m)^2`; assume time-fixed at baseline unless the source paper states otherwise.
 
-### BLOOD_VOL (**canonical for estimated total blood volume**)
+### BLOOD_VOLUME (**canonical for estimated total blood volume**)
 - **Description:** Subject's estimated total circulating blood volume (plasma plus red-cell volume), in litres, derived from body size and sex rather than measured. A body-size descriptor in the same family as `BSA` and `LBM`; baseline unless a model's notes say otherwise.
 - **Units:** L
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(BLOOD_VOL / ref)^exponent`. Reference values observed: 3.89 L (Savic 2022, close to the 3.9 L cohort median of adults and adolescents with sickle cell disease).
+- **Reference category:** n/a -- used with power scaling `(BLOOD_VOLUME / ref)^exponent`. Reference values observed: 3.89 L (Savic 2022, close to the 3.9 L cohort median of adults and adolescents with sickle cell disease).
 - **Source aliases:**
   - `BLV` -- Savic 2022 Table 2 row label 'Blood volume on Vc/F, (BLV/3.89)^TH' (`Savic_2022_voxelotor.R`).
 - **Example models:** `Savic_2022_voxelotor.R` (baseline blood volume, reference 3.89 L, power exponent 0.74 on voxelotor apparent central volume; Vc/F 269 L at the 10th-percentile 2.9 L and 413 L at the 90th-percentile 5.2 L).
-- **Notes:** Several formulas are in use (Nadler from height, weight and sex; weight-and-sex-only mL/kg rules; Lemmens for obesity) and they differ by several hundred mL at a given body size, so record the formula in `covariateData[[BLOOD_VOL]]$notes`. When the source does not print it -- Savic 2022 says only 'calculated based on body weight and sex' -- say so, and record the cohort median and range so a user can check that the formula they apply reproduces the source distribution. Distinct from organ or tissue blood-volume fractions inside a PBPK model (`frb_<organ>` in `parameter-names.md`), which are model parameters, not subject covariates.
+- **Notes:** Several formulas are in use (Nadler from height, weight and sex; weight-and-sex-only mL/kg rules; Lemmens for obesity) and they differ by several hundred mL at a given body size, so record the formula in `covariateData[[BLOOD_VOLUME]]$notes`. When the source does not print it -- Savic 2022 says only 'calculated based on body weight and sex' -- say so, and record the cohort median and range so a user can check that the formula they apply reproduces the source distribution. Distinct from organ or tissue blood-volume fractions inside a PBPK model (`frb_<organ>` in `parameter-names.md`), which are model parameters, not subject covariates.
 
 ### BMIZ (**canonical for body-mass-index z-score (age- and sex-standardised)**)
 - **Description:** Age- and sex-standardised body-mass-index z-score (number of standard deviations above or below the reference-population mean BMI for the subject's age and sex). Distinct from raw `BMI` (kg/m^2): `BMIZ` is unitless and centred at 0 in the reference population, so the reference value used in linear-deviation effects is 0 (not a population BMI in kg/m^2). Time-varying when the source paper carries a per-visit z-score; document baseline-vs-time-varying status in `covariateData[[BMIZ]]$notes`.

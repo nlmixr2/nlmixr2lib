@@ -21,7 +21,7 @@ Savic_2022_voxelotor <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
-    BLOOD_VOL = list(
+    BLOOD_VOLUME = list(
       description = "Baseline total blood volume",
       units = "L",
       type = "continuous",
@@ -137,7 +137,7 @@ Savic_2022_voxelotor <- function() {
     lbpr <- log(16.6); label("Whole-blood-to-plasma concentration ratio Rbp at HCT 27.8 and 900 mg (unitless)") # Table 2 'Rbp' 16.6 (RSE 0.5%)
 
     # Covariate effects (Table 2)
-    e_blood_vol_vc <- 0.74; label("Power exponent of baseline blood volume (BLOOD_VOL/3.89) on Vc/F (unitless)") # Table 2 'Blood volume on Vc/F, (BLV/3.89)^TH' 0.74 (RSE 14.1%)
+    e_blood_volume_vc <- 0.74; label("Power exponent of baseline blood volume (BLOOD_VOLUME/3.89) on Vc/F (unitless)") # Table 2 'Blood volume on Vc/F, (BLV/3.89)^TH' 0.74 (RSE 14.1%)
     e_hct_bpr <- 0.77; label("Power exponent of time-varying hematocrit (HCT/27.8) on Rbp (unitless)") # Table 2 'Hematocrit on Rbp, (HCT/27.8)^TH' 0.77 (RSE 8.6%)
     e_cyp3a4_ind_weak_cl <- 0.39; label("Log-scale effect of a concomitant weak CYP3A4 inducer on CL/F, exp(TH) (unitless)") # Table 2 'CYP3A4 inducer on CL/F, exp TH' 0.39 (RSE 4.9%)
     e_dose_bpr <- -0.37; label("Power exponent of nominal dose (DOSE_VOXELOTOR_MG/900) on Rbp (unitless)") # Table 2 'Nominal dose on Rbp, (dose/900)^TH' -0.37 (RSE 10.8%)
@@ -197,7 +197,7 @@ Savic_2022_voxelotor <- function() {
     # the Table 2 note (continuous covariates as power functions).
     ka <- exp(lka)
     cl <- exp(lcl + etalcl + iov_cl + e_cyp3a4_ind_weak_cl * CONMED_CYP3A4_IND_WEAK)
-    vc <- exp(lvc + etalvc) * (BLOOD_VOL / 3.89)^e_blood_vol_vc
+    vc <- exp(lvc + etalvc) * (BLOOD_VOLUME / 3.89)^e_blood_volume_vc
     q <- exp(lq)
     vp <- exp(lvp)
     ke0 <- exp(lke0 + etalke0)
