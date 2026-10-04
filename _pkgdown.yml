@@ -2126,6 +2126,8 @@ navbar:
         href: articles/Areberg_2006_escitalopram.html
       - text: "Escitalopram (Feng 2011)"
         href: articles/Feng_2011_escitalopram.html
+      - text: "Escitalopram (Liu 2022)"
+        href: articles/Liu_2022_escitalopram.html
       - text: "Esketamine (PerezRuixo 2020)"
         href: articles/PerezRuixo_2020_esketamine.html
       - text: "Eslicarbazepine (Gidal 2018)"
@@ -8298,6 +8300,7 @@ articles:
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
   - articles/Liu_2020_hydroxychloroquine_monkey
+  - articles/Liu_2022_escitalopram
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s
