@@ -4055,6 +4055,28 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Hu_2026_utreloxastat.R` (power effect on relative bioavailability applied at `f(depot)`: `Frel = (1 + 0.36 * FED_LOWFAT + 0.57 * FED_HIGHFAT) * (DOSE_UTRELOXASTAT_MG / 250)^0.21`. The positive exponent makes absorption more-than-dose-proportional -- total exposure scales as `Dose^1.21` -- which reproduces the paper's Table 5 steady-state exposure ratios of 0.53 at 150 mg and 2.28 at 500 mg relative to 250 mg).
 - **Notes:** A drug-specific member of the auto-approved `DOSE_<drug>_<units>` family, required here rather than the general `DOSE` canonical for the same solve-path reason as `DOSE_TBPPI_MG` and `DOSE_TAK071_MG`: rxode2's event-table translator (`etTrans`) consumes a column literally named `DOSE` and never exposes it to `model`. Note the direction is opposite to `DOSE_TAK071_MG`, whose exponent is negative (less-than-dose-proportional); Hu 2026 attributes the positive exponent to gut-level saturation of efflux transport or intestinal metabolism at higher doses (Discussion), explicitly not to saturable systemic elimination, which the semi-logarithmic terminal-phase parallelism across dose levels rules out.
 
+### DOSE_ABROCITINIB_MG (**canonical for the administered abrocitinib amount per administration**)
+- **Description:** Amount of abrocitinib given at one administration, in mg. Per-dose-record covariate that must equal the `amt` of the dose records it accompanies.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a. Observed range 3-800 mg.
+- **Source aliases:**
+  - `DOSE` -- Wojciechowski 2022 Online Resource 2 (`Dose amount associated with record (mg)`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; sets the first-order fraction `min(1, amt_fo / DOSE_ABROCITINIB_MG)` of the parallel zero-/first-order absorption, and switches on a -0.778 logit-bioavailability shift at exactly 800 mg).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Needed as a column, not read from `amt`, because the model splits each administration into two dose records and evaluates the split at the dose. Distinct from [[DOSE_ABROCITINIB_MGD]], the daily total.
+
+### DOSE_ABROCITINIB_MGD (**canonical for the randomized total daily abrocitinib dose**)
+- **Description:** Total daily abrocitinib dose of the subject's regimen, in mg/day (for example 400 for 200 mg twice daily). Constant within a regimen.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 200 mg/day, the reference of the clearance power term.
+- **Source aliases:**
+  - `DOSR` -- Wojciechowski 2022 Online Resource 2 (`Randomized total daily dose (mg)`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; clearance scales as `(F * DOSE_ABROCITINIB_MGD / 200)^-0.169`, with `F` the individual absolute bioavailability, so the dose term acts on the effective amount reaching the circulation).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (sibling of `DOSE_LOR_MGD`). Distinct from [[DOSE_ABROCITINIB_MG]], the per-administration amount.
+
 ### DOSE_MANNAC_MG (**canonical for administered N-acetylmannosamine (ManNAc) dose level**)
 - **Description:** Administered oral dose of N-acetylmannosamine (ManNAc, an orphan-drug substrate-replacement therapy for GNE myopathy) carried on each dose record, in milligrams of a single administration (not the daily total: a 4 g TID subject carries 4000, a 6 g BID subject 6000). Time-varying within subject in the Van Wart 2021 analysis, where the same participants received 3 g or 6 g BID, then 6 g BID, then 4 g TID.
 - **Units:** mg
@@ -8408,8 +8430,19 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** specific
 - **Reference category:** 0 (non-psoriasis subject; the complement group is paper-defined -- the union of other disease cohorts pooled in the source analysis).
 - **Source aliases:** none known; source NONMEM control streams typically use a categorical `DIS` indicator (e.g., Okada 2025: `DIS=1` for psoriasis, `DIS=0` for healthy, `DIS=2` for UC, `DIS=3` for AD), decomposed into a binary `DIS_PSORIASIS` indicator at ingestion.
-- **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort), `Warren_2025_apremilast.R` (multiplicative factor `1.09` on CL/F when 0; reference complement is "other disease or missing", i.e. the FDA Otezla popPK model treats unknown disease status the same as a non-psoriasis indication, and Warren 2025 simulates atopic dermatitis patients at `DIS_PSORIASIS = 0`).
+- **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort), `Warren_2025_apremilast.R` (multiplicative factor `1.09` on CL/F when 0; reference complement is "other disease or missing", i.e. the FDA Otezla popPK model treats unknown disease status the same as a non-psoriasis indication, and Warren 2025 simulates atopic dermatitis patients at `DIS_PSORIASIS = 0`), `Wojciechowski_2022_abrocitinib.R` (shares one additive +0.489 shift on logit absolute bioavailability with [[DIS_ATOPIC_DERMATITIS]]; reference complement is healthy volunteers, with mild and moderate hepatic impairment carried by `HEPIMP_MILD` / `HEPIMP_MOD`).
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined -- the two registered models differ in it (Okada 2025 pools three named non-psoriasis cohorts; the FDA Otezla model behind Warren 2025 pools every non-psoriasis indication together with subjects whose disease status is missing), so the `1`-side is transferable across papers but the `0`-side is not.
+
+### DIS_ATOPIC_DERMATITIS (**canonical for atopic dermatitis disease-state indicator**)
+- **Description:** 1 = patient with atopic dermatitis (atopic eczema), 0 = not (healthy volunteer or another disease cohort). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the paper-defined non-atopic-dermatitis complement; healthy volunteers in the founding model).
+- **Source aliases:**
+  - `PTST = 2` -- Wojciechowski 2022 Online Resource 2 patient-type column (0 = healthy, 1 = psoriasis, 2 = atopic dermatitis, 3 = mild and 4 = moderate hepatic impairment), decomposed into binary indicators at ingestion.
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; shares one additive shift of +0.489 on logit absolute bioavailability with [[DIS_PSORIASIS]], `e_dis_f * (DIS_PSORIASIS + DIS_ATOPIC_DERMATITIS)`, because the paper could not distinguish the two inflammatory skin diseases; reference is healthy volunteers).
+- **Notes:** Spelled out because `DIS_AD` is already the Alzheimer's-disease indicator. Scope specific because the 0 side is the union of whatever other cohorts a source pools.
 
 ### DIS_RA (**canonical for rheumatoid arthritis disease-state indicator**)
 - **Description:** 1 = adult rheumatoid arthritis patient, 0 = non-RA subject (e.g., healthy volunteer, Crohn's disease, systemic lupus erythematosus, or other indication). Time-fixed per subject.
@@ -16032,6 +16065,53 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Kawuma_2023_dolutegravir.R` (selects the study-specific additive residual standard deviation, 0.0485 mg/L for RADIO against 0.036 mg/L for NCT01231542, via `addSd * (1 - STUDY_RADIO) + addSd_radio * STUDY_RADIO`).
 - **Notes:** In the founding model the indicator carries a purely **bioanalytical** contrast: RADIO quantified dolutegravir by UHPLC-UV validated over 0.050-10 mg/L and NCT01231542 by LC-MS/MS validated over 0.020-20 mg/L, and the additive residual error was constrained to be at least 20% of each study's LLOQ (Kawuma 2022 Methods and 'Analytical assay'), so the two estimates differ mainly through their 0.2 x LLOQ floors. The two studies are also perfectly confounded with the fed / fasted prandial contrast that drives the absorption lag time in the same model, but that effect is carried by the general [[FED]] indicator rather than by this one, because the authors themselves index the lag time by prandial state when simulating and attribute it mechanistically to food. Keep the two separate: a downstream user simulating a fed dose analysed on the LC-MS/MS assay is a coherent combination that a single study indicator could not express. Sibling of the other `STUDY_<id>` members; scoped specific because the reference category is this analysis's own two-study set.
 
+### STUDY_B7451005 (**canonical for the abrocitinib phase II psoriasis study B7451005 (NCT02201524) indicator**)
+- **Description:** 1 = record from the abrocitinib phase II psoriasis study B7451005 (NCT02201524), 0 = record from any other study in the pooled analysis. Per-record (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the reference studies B7451001, B7451004, B7451013, B7451017, B7451019, B7451020 and B7451027).
+- **Source aliases:**
+  - `PROT = 1005` -- Wojciechowski 2022 Online Resource 2 protocol column (`IF (PROT.EQ.1005) COVPROTRUV = ...`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family; affects only the residual error.
+
+
+### STUDY_B7451006 (**canonical for the abrocitinib phase IIb atopic-dermatitis dose-ranging study B7451006 (NCT02780167) indicator**)
+- **Description:** 1 = record from the abrocitinib phase IIb atopic-dermatitis dose-ranging study B7451006 (NCT02780167), 0 = record from any other study in the pooled analysis. Per-record (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the reference studies B7451001, B7451004, B7451013, B7451017, B7451019, B7451020 and B7451027).
+- **Source aliases:**
+  - `PROT = 1006` -- Wojciechowski 2022 Online Resource 2 protocol column (`IF (PROT.EQ.1006) COVPROTRUV = ...`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; high-variability study, proportional residual SD multiplied by `1 + 1.16`).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family; affects only the residual error.
+
+
+### STUDY_B7451012 (**canonical for the abrocitinib phase III atopic-dermatitis study B7451012 (JADE MONO-1, NCT03349060) indicator**)
+- **Description:** 1 = record from the abrocitinib phase III atopic-dermatitis study B7451012 (JADE MONO-1, NCT03349060), 0 = record from any other study in the pooled analysis. Per-record (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the reference studies B7451001, B7451004, B7451013, B7451017, B7451019, B7451020 and B7451027).
+- **Source aliases:**
+  - `PROT = 1012` -- Wojciechowski 2022 Online Resource 2 protocol column (`IF (PROT.EQ.1012) COVPROTRUV = ...`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family; affects only the residual error.
+
+
+### STUDY_B7451043 (**canonical for the abrocitinib phase I probenecid drug-interaction study B7451043 (NCT03937258) indicator**)
+- **Description:** 1 = record from the abrocitinib phase I probenecid drug-interaction study B7451043 (NCT03937258), 0 = record from any other study in the pooled analysis. Per-record (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the reference studies B7451001, B7451004, B7451013, B7451017, B7451019, B7451020 and B7451027).
+- **Source aliases:**
+  - `PROT = 1043` -- Wojciechowski 2022 Online Resource 2 protocol column (`IF (PROT.EQ.1043) COVPROTRUV = ...`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family; affects only the residual error.
+
 ### STUDY_DAILY_RPE (**canonical for the Daily RPE rifapentine trial cohort indicator**)
 - **Description:** 1 = record from the Daily RPE study (NCT00814671), the open-label two-stage activity-safety trial in which 450 or 600 mg rifapentine daily replaced 600 mg rifampin during the intensive phase of standard tuberculosis therapy in the Western Cape, South Africa; 0 = record from RIFAQUIN (ISRCTN44153044), the phase III trial whose continuation-phase arms gave 1,200 mg rifapentine once weekly or 900 mg twice weekly at sites in the Western Cape, Gauteng and Harare, and which is the other trial pooled into the same analysis. Per-record (study-fixed) binary indicator.
 - **Units:** (binary)
@@ -16304,6 +16384,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `FMDD` -- used in `Goel_2016_Sonidegib.R` (Goel 2016 covariate on F).
 - **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on F: `1.16^MULTI_DOSE_PT` -- ~16% higher apparent F during the multiple-dose phase relative to first dose, attributed in the paper to occasional non-fasting compliance), `Fang_2010_etanercept.R` (multiplicative effect on F: `0.674^MULTI_DOSE_PT` -- ~33% lower apparent F during the multiple-dose phase relative to the single-dose reference; Fang 2010 attributes the reduction to partitioning of the rhTNFR-Fc fusion protein into local subcutaneous adipose tissue with repeated injection. In Fang 2010 the multi-dose cohort is the AS-patient arm and the single-dose cohort is the healthy-volunteer arm, so MULTI_DOSE_PT is effectively subject-level: source column `M`), `vanIersel_2018_posaconazole.R` (multiplicative effect on apparent clearance: `cl *= (1 + 0.750 * MULTI_DOSE_PT)` -- 75% higher CL in multiple-dose records relative to the single-dose reference; van Iersel 2018 Table 2 final-model 'Dosing regimen on CL' = 0.750), `Han_2024_ainuovirine.R` (multiplicative effect on apparent clearance: `cl *= (1 + 1.47 * MULTI_DOSE_PT)` -- 147% higher CL/F at steady state than after the first dose, i.e. the 2.47-fold multiplier Han 2024 states in its Table 3 footnote, from the row labelled 'Drugno on CL'. The source column name is `Drugno` (dose number). Han 2024 attributes the step chiefly to auto-induction of CYP3A4 by ainuovirine itself and estimates **no time course** for it, because the phase 1 design samples only two occasions -- after the first dose on day 1 and after the last dose on day 10 -- so records between those landmarks are uninformed. Record-level: a phase 1 subject contributes both levels, and every phase 3 sample (weeks 12-48) is a steady-state record), `Jiang_2021_ivosidenib.R` (per-record step between the first ivosidenib dose and repeated dosing, on BOTH relative bioavailability (`0.50^(MULTI_DOSE_PT - 1)`) and clearance (`1.66^(MULTI_DOSE_PT - 1)`); the steady-state state is the reference, and the indicator switches at the second dose, so the escalation cohort's day -3 single dose and the expansion cohort's cycle 1 day 1 dose both take 0).
 - **Notes:** Specific scope because the indicator's exact definition (dose-record level vs subject level, run-in inclusion, occasion boundary) is paper-specific. In Goel 2016, the dataset distinguishes the run-in single dose from the daily multiple-dose phase; the indicator switches at the start of the multiple-dose phase for cancer patients. In Fang 2010, the indicator is subject-level (all dose records of a multi-dose AS subject carry MULTI_DOSE_PT = 1; all dose records of a healthy-volunteer subject carry MULTI_DOSE_PT = 0). Distinct from `FED` and `FED_HIGHFAT` (which are per-record meal-state indicators) and from `REGI_BID` (regimen indicator). Future models that need a generic "occasion boundary" effect should consider the existing `ooc<n>` IOV pattern instead.
+
+### MULTI_DOSE (**canonical for repeated-dosing indicator**)
+- **Description:** 1 = record within a repeated-dose regimen after its first dose, 0 = record from a single-dose administration or from the first dose of a regimen. Applies whatever the population (healthy volunteers in multiple-ascending-dose studies as well as patients). Per-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (single or first dose).
+- **Source aliases:**
+  - `MULTI` -- Wojciechowski 2022 Online Resource 2 (`Single or multiple dosing (0 = single dose, 1 = repeated dose)`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; additive shift of +0.241 on logit absolute bioavailability, which also raises clearance through the effective-daily-dose term, so a single-dose subject keeps `MULTI_DOSE = 0` after the dose).
+- **Notes:** The population-independent form of [[MULTI_DOSE_PT]], whose 0 side explicitly includes healthy-volunteer records. Use `MULTI_DOSE_PT` only when a source restricts the contrast to the multiple-dose phase in patients. Carry it as a data column rather than deriving it from time when the source does: a time-derived flag cannot tell a single-dose subject's post-dose records from a repeated-dose subject's.
 
 ### FORM_TABLET (**canonical for tablet vs non-tablet oral liquid formulation indicator**)
 - **Description:** 1 = tablet formulation, 0 = the per-paper non-tablet oral liquid comparator (solution or suspension). Document the reference oral liquid form per-model in `covariateData[[FORM_TABLET]]$notes`.
@@ -21867,6 +21958,39 @@ sibling such as `AUC_BAST_FW`.
   - `Formulation` -- the Schlachter 2026 Table S3 covariate row and the Table 2 row "Formulation 2 tablet effect on ka/formulation 4 tablet effect on ka".
 - **Example models:** `Schlachter_2026_atogepant.R` (founding example; single multiplicative fractional effect of -0.353 on the zero-order absorption duration per the Schlachter 2026 Section 3.1 display equation, a 35% shorter Tk0, which propagates into the derived `ka` and is therefore labelled an effect "on ka" in Table 2).
 - **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family. Registered as a single aggregate early-tablet indicator rather than as per-prototype indicators (the [[FORM_SEP4199_IR]] shape) because the source is internally inconsistent about *which* early formulations carry the effect: the Section 3.1 display equation says "phase 1 / formulations 3 and 4", the Section 3.1 prose says "the formulation 1 tablet used in early phase 1 studies", and the Table 2 row alias says "Formulation 2 tablet / formulation 4 tablet" -- a label carried over from the Phase 1 Model column, where two separate estimates of -0.44 and -0.42 sat directly on ka. All three statements agree the effect belongs to the early phase 1 tablets and not to Formulation 5, and Formulations 1 to 4 together are only 82 of 1356 subjects, so the aggregate indicator is the only reading the source supports unambiguously. Register per-prototype siblings if a future source resolves the enumeration.
+
+### FORM_ABROCITINIB_SUSP (**canonical for the abrocitinib oral suspension formulation indicator**)
+- **Description:** 1 = dose given as the abrocitinib oral suspension (drug substance in 0.5% w/v methylcellulose), 0 = a tablet formulation. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. With all three `FORM_ABROCITINIB_*` indicators at 0 the dose is the phase II 100 mg tablet (D1400040).
+- **Source aliases:**
+  - `FORMS = 1` -- Wojciechowski 2022 Online Resource 2 formulation column (1 = suspension, 2 = phase II 100 mg tablet, 3 = phase II 10 and 50 mg tablets, 4 = phase III 100 mg tablet); the companion column `FORM` (2 = tablet, 3 = suspension) selects the tablet-only absorption lag.
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; multiplies the first-order absorbed-amount cap `amt_fo` by `1 + 1.17` and removes the 0.183 h tablet lag).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family. Kept drug-specific rather than reusing [[FORM_SUSPENSION]] (an extemporaneously prepared suspension of a solid form) because here it is a manufactured development formulation contrasted against three tablet generations.
+
+### FORM_ABROCITINIB_TAB_PH2B (**canonical for the abrocitinib phase IIb 10 mg and 50 mg tablet formulation indicator**)
+- **Description:** 1 = dose given as the abrocitinib 10 mg (D1500091) or 50 mg (D1500093) round film-coated tablets used in the phase IIb atopic-dermatitis study B7451006, 0 = any other formulation. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (see [[FORM_ABROCITINIB_SUSP]] for the all-zero reference).
+- **Source aliases:**
+  - `FORMS = 3` -- Wojciechowski 2022 Online Resource 2; Table 2 rows 'Effect of phase IIb tablets on F' and '... on Ak1'.
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; additive shift of -1.02 on logit absolute bioavailability and the first-order amount cap multiplied by `1 - 0.68`).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family.
+
+### FORM_ABROCITINIB_TAB_PH3 (**canonical for the abrocitinib phase III 100 mg film-coated tablet formulation indicator**)
+- **Description:** 1 = dose given as the abrocitinib 100 mg round film-coated tablet (D1700147) used in the phase III programme and later phase I studies, 0 = any other formulation. Per-dose-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (see [[FORM_ABROCITINIB_SUSP]] for the all-zero reference). The source paper's simulation reference scenario uses this tablet, so set it to 1 to reproduce that scenario.
+- **Source aliases:**
+  - `FORMS = 4` -- Wojciechowski 2022 Online Resource 2; Table 2 row 'Effect of phase III tablet on F'.
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; additive shift of -0.766 on logit absolute bioavailability).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family.
 
 ### STUDY_CGP_PK_02, STUDY_CGP_MD_01, STUDY_ATOGEPANT_PHASE3 (**canonical for the three non-reference residual-error study strata of the atogepant population PK analysis**)
 - **Description:** Mutually exclusive per-record study indicators selecting among the four study-specific proportional residual error magnitudes of the Schlachter 2026 atogepant Phase 3 Model. `STUDY_CGP_PK_02` = the 40-subject phase 1 single-dose itraconazole DDI study, the only contributing study providing both plasma and dried-blood-sample concentrations. `STUDY_CGP_MD_01` = the 463-subject phase 2b/3 dose-ranging efficacy study in patients with episodic migraine, which contributed 1431 sparsely sampled dried-blood-sample observations. `STUDY_ATOGEPANT_PHASE3` = either pivotal phase 3 study, ADVANCE (3101-301-002, episodic migraine, in the development dataset) or PROGRESS (3101-303-002, chronic migraine, in the external-validation dataset); one indicator covers both because the source reports a single shared estimate for them. When all three are 0 the record falls in the reference stratum, "all phase 1 studies except CGP-PK-02".
