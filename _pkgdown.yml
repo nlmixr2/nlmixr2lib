@@ -6092,6 +6092,8 @@ navbar:
         href: articles/Bi_2018_testosteroneCypionate.html
       - text: "TestosteroneCypionate sperm (Bi 2018)"
         href: articles/Bi_2018_testosteroneCypionate.html
+      - text: "TestosteroneUndecanoate (Pastuszak 2021)"
+        href: articles/Pastuszak_2021_testosteroneUndecanoate.html
       - text: "Tetrahydrocannabinol (Henthorn 2024)"
         href: articles/Henthorn_2024_tetrahydrocannabinol.html
       - text: "Tetrahydrocannabinol (Storgaard 2026)"
@@ -8634,6 +8636,7 @@ articles:
   - articles/Parmar_2023_spectinamides_pbpk
   - articles/ParraGuillen_2013_tumor_immunotherapy
   - articles/Passey_2011_tacrolimus
+  - articles/Pastuszak_2021_testosteroneUndecanoate
   - articles/Patel_2011_fluconazole
   - articles/Patel_2015_oseltamivir
   - articles/Patel_2017_selumetinib
