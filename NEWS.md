@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ruiz-Martinez 2022 nivolumab triple-negative breast cancer QSP ([doi:10.1371/journal.pcbi.1010254](https://doi.org/10.1371/journal.pcbi.1010254)) -- in silico virtual TNBC patients; the whole-patient QSP layer of a spatial QSP-agent-based model, recalibrated from Wang 2020.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
