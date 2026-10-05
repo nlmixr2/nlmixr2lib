@@ -5350,6 +5350,8 @@ navbar:
         href: articles/Lai_2026_rivaroxaban.html
       - text: "Rivaroxaban (Ren 2026)"
         href: articles/Ren_2026_rivaroxaban.html
+      - text: "Rivaroxaban (Singkham 2022)"
+        href: articles/Singkham_2022_rivaroxaban.html
       - text: "Rivaroxaban (Wang 2025)"
         href: articles/Wang_2025_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2018a)"
@@ -8913,6 +8915,7 @@ articles:
   - articles/Simpson_2013_lumefantrine
   - articles/Simpson_2013_mefloquine
   - articles/Singh_2025_donidalorsen
+  - articles/Singkham_2022_rivaroxaban
   - articles/Singu_2024_gentamicin
   - articles/Sinha_2026_oxcarbazepine
   - articles/Sjogren_2021_malnutrition_physiology
