@@ -6440,6 +6440,8 @@ navbar:
         href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid (Ogusu 2014)"
         href: articles/Ogusu_2014_valproic_acid.html
+      - text: "Valproic acid (Usman 2022)"
+        href: articles/Usman_2022_valproic_acid.html
       - text: "Valproic acid (Wang 2024)"
         href: articles/Wang_2024_valproic_acid.html
       - text: "Valproic acid (Zhang 2024)"
@@ -9127,6 +9129,7 @@ articles:
   - articles/Urien_2004_cisplatin
   - articles/Urien_2005_capecitabine
   - articles/Urien_2013_anakinra
+  - articles/Usman_2022_valproic_acid
   - articles/Vaddady_2020_doravirine
   - articles/Vaddady_2024_quizartinib
   - articles/Valade_2014_emtricitabine
