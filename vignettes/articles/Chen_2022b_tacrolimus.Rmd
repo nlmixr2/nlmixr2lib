@@ -1,8 +1,8 @@
 ---
-title: "Tacrolimus (Chen 2022)"
+title: "Tacrolimus (Chen 2022b)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tacrolimus (Chen 2022)}
+  %\VignetteIndexEntry{Tacrolimus (Chen 2022b)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("Chen_2022_tacrolimus"))$meta$reference`
-* Description: `r rxode2::rxode(readModelDb("Chen_2022_tacrolimus"))$meta$description`
+* Citation: `r rxode2::rxode(readModelDb("Chen_2022b_tacrolimus"))$meta$reference`
+* Description: `r rxode2::rxode(readModelDb("Chen_2022b_tacrolimus"))$meta$description`
 * Article: <https://doi.org/10.3389/fphar.2022.869939> (open access, PMC9354257)
 
 Chen et al. (2022) fitted a one-compartment model with first-order absorption
@@ -73,7 +73,7 @@ The Abstract and Results state that the typical CL/F falls from 0.36 to
 from Eq. 6 alone.
 
 ```{r cl-per-kg}
-mod <- readModelDb("Chen_2022_tacrolimus")
+mod <- readModelDb("Chen_2022b_tacrolimus")
 mod_typ <- rxode2::zeroRe(mod)
 
 ev_cl <- tibble(id = 1:16, WT = 5:20, time = 1, amt = 0, evid = 0L, cmt = "central")
