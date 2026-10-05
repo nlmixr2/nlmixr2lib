@@ -3122,6 +3122,14 @@ navbar:
         href: articles/Gupta_2015_ixazomib.html
       - text: "Ixazomib (Gupta 2017)"
         href: articles/Gupta_2017_ixazomib.html
+      - text: "Ixazomib diarrhea (Srimani 2022)"
+        href: articles/Srimani_2022_ixazomib.html
+      - text: "Ixazomib mprotein (Srimani 2022)"
+        href: articles/Srimani_2022_ixazomib.html
+      - text: "Ixazomib platelets (Srimani 2022)"
+        href: articles/Srimani_2022_ixazomib.html
+      - text: "Ixazomib rash (Srimani 2022)"
+        href: articles/Srimani_2022_ixazomib.html
       - text: "Ixekizumab (Jackson 2022)"
         href: articles/Jackson_2022_ixekizumab.html
       - text: "Kaempferol3OGlucoside rat (Chen 2024)"
@@ -8947,6 +8955,7 @@ articles:
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
   - articles/Sridharan_2019_primaquine
+  - articles/Srimani_2022_ixazomib
   - articles/Staatz_2005_gentamicin_vancomycin
   - articles/Stader_2021_bictegravir_ddi_pbpk
   - articles/Stader_2021_bictegravir_pbpk
