@@ -4455,6 +4455,20 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Shulgin_2020_ici_hepatic_imae34_mbma.R` (founding example).
 - **Notes:** Subset of `prob_trae_grade34`; see that entry for the cohort-proportion reading.
 
+### prob_irae (**canonical cohort any-grade immune-related adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing an immune-related adverse event of any CTCAE grade, output by a study-level logit meta-regression. Algebraic; no ODE state.
+- **Source aliases:** `any grade irAE`, `Pr_Any grade irAE` -- Zhang 2022 (Equation 4, Table 3); `NirAE / N` in the authors' supplementary dataset.
+- **Example models:** `Zhang_2022_ici_irae_mbma.R` (founding example; immune checkpoint inhibitor MBMA in non-small cell lung cancer driven by potency-normalized anti-CTLA-4 exposure, anti-PD-L1 class, line of therapy and chemotherapy / targeted-therapy combination).
+- **Notes:** A cohort-level PROPORTION, not an individual-patient probability; see `prob_trae_grade34` for that reading. "Immune-related" is the source's attribution: a cohort contributed the rate of events reported as 'irAE', 'selected treatment-related AE' or 'AE of special interest', and the highest single potential irAE incidence when no overall rate was given, so the endpoint is narrower than all treatment-related AEs and is likely an underestimate. `prob_irae_grade3` is its grade >= 3 subset.
+
+### prob_irae_grade3 (**canonical cohort grade >= 3 immune-related adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing an immune-related adverse event of CTCAE grade 3 or higher, output by a study-level logit meta-regression. Algebraic; no ODE state.
+- **Source aliases:** `grade >= 3 irAE`, `Pr_Grade>=3 irAE` -- Zhang 2022 (Equation 5, Table 3); `NSirAE / N` in the authors' supplementary dataset.
+- **Example models:** `Zhang_2022_ici_irae_grade3_mbma.R` (founding example).
+- **Notes:** Subset of `prob_irae`. Grade >= 3 includes grade 5, unlike the grade 3/4 `prob_trae_grade34`, and counts immune-related rather than all treatment-related events, so the two are not interchangeable even for the same regimen.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
