@@ -1,0 +1,344 @@
+---
+title: "Doravirine placental cotyledon perfusion (Bukkems 2022)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Doravirine placental cotyledon perfusion (Bukkems 2022)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+mod <- readModelDb("Bukkems_2022_doravirine_placentaperfusion")
+ui <- rxode2::rxode(mod)
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Description: ", ui$description, "\n", sep = "")
+```
+
+* Article: <https://doi.org/10.1007/s40262-022-01127-0>
+* Open-access full text: <https://europepmc.org/article/MED/PMC9349081>
+
+# What this file is, and what it is not
+
+Bukkems and colleagues built two kinds of model:
+
+| # | Model | Implementation | In this file? |
+|---|-------|----------------|---------------|
+| 1 | **Ex vivo cotyledon perfusion model** (Section 2.2, Figure 1A, Equations 1-7, Tables 1-2) | NONMEM 7.4 | **yes** |
+| 2 | Whole-body maternal-fetal pregnancy PBPK model with a permeability-limited placenta (ESM Online Resource 10) | Simcyp V20 | no |
+
+Model 2 is a Simcyp platform model: its organ volumes and blood flows,
+tissue partition coefficients and CYP3A4 reference concentrations are computed
+inside the Simcyp pregnancy population database and are not printed in the
+paper, so it cannot be reconstructed from the publication. What transfers
+between the two is a pair of numbers: the fitted maternal- and fetal-facing
+transfer clearances, `CLpdm` and `CLpdf`, which the authors converted to
+0.0507 and 0.0075 L/h/mL placenta and imputed into the placenta sub-model of
+the Simcyp model (Section 3.3).
+
+Model 1 is self-contained. It is five ODEs whose rate laws are printed as
+Equations 1-7, whose volumes, flows and fractions unbound are in Table 1, and
+whose two fitted clearances and the residual error are in Table 2. The
+diffusion-only structure (Figure 1A) was selected over the diffusion +
+P-glycoprotein structure (Figure 1B) because adding active transport did not
+improve the fit (dOFV 0.007) and the transport clearance was tiny and
+imprecise (Section 3.2).
+
+# Population
+
+The model describes an isolated human term placenta, not a patient
+population. One intact cotyledon per placenta was perfused in a recirculating
+(closed-closed) dual circuit, with maternal and fetal circulations both
+closed. Doravirine was added to the maternal circulation in four experiments
+(maternal-to-fetal direction) and to the fetal circulation in four
+(fetal-to-maternal direction), at a nominal 0.96 mg/L to mimic the Cmax in
+nonpregnant adults. Maternal and fetal flows were 12 and 6 mL/min, each
+reservoir 200 mL, and samples were drawn over 180 min. The eight placentas
+were from deliveries at 37-40 weeks (seven by caesarean section) with
+cotyledon weights 18.9-64.4 g (ESM Online Resource 4).
+
+# Source trace
+
+| Quantity | Value | Source |
+|----------|-------|--------|
+| Maternal flow `Q_M` (`q_mat`) | 12 mL/min | Table 1 |
+| Fetal flow `Q_F` (`q_fet`) | 6 mL/min | Table 1 |
+| Maternal reservoir `V_MR` (`v_mres`) | 200 mL | Table 1 |
+| Fetal reservoir `V_FR` (`v_fres`) | 200 mL | Table 1 |
+| Maternal placenta `V_MP` (`v_mp`) | 5.08 mL (11.55% of 44.02) | Table 1 |
+| Placental barrier `V_PB` (`v_pb`) | 4.86 mL (11.05% of 44.02) | Table 1 |
+| Fetal placenta `V_FP` (`v_fp`) | 3.63 mL (8.25% of 44.02) | Table 1 |
+| Ex vivo fraction unbound `FU` (`fu`) | 0.529 | Table 1 |
+| Barrier fraction unbound `FUp` (`fu_pb`) | 0.01 | Table 1 |
+| `CLpdm` (`lcl_pdm`) | 37.2 mL/min (95% CI 19.8-73.7) | Table 2 |
+| `CLpdf` (`lcl_pdf`) | 5.5 mL/min (95% CI 3.1-9.8) | Table 2 |
+| IIV `CLpdm`, `CLpdf` | fixed 100% CV | Table 2 |
+| Additive residual error | 0.000007 ug/mL | Table 2 |
+| Proportional residual error | 7.5% (maternal dosing), 12.6% (fetal dosing) | Table 2 |
+| Maternal reservoir balance | Equation 1 | Section 2.2 |
+| Maternal placenta balance | Equation 2 | Section 2.2 |
+| Placental barrier balance | Equation 4 | Section 2.2 |
+| Fetal placenta balance | Equation 6 | Section 2.2 |
+| Fetal reservoir balance | Equation 7 | Section 2.2 |
+| Observed reservoir curves | Figure 3 | Results 3.1 |
+| Reservoir concentrations at 180 min | see below | Results 3.1 |
+
+The two P-gp equations (3 and 5) replace equations 2 and 4 in the rejected
+transport model; this file uses the diffusion-only equations 1, 2, 4, 6, 7.
+
+# Simulation
+
+Each experiment is one bolus of doravirine into the dosed reservoir, followed
+for 180 min. The typical cotyledon (42 g) is simulated in both directions with
+the random effects set to zero (the fixed 100% CV between-placenta variability
+is exercised separately below).
+
+```{r simulate}
+modT <- rxode2::zeroRe(ui)
+tgrid <- c(0, 5, 10, 15, 20, 25, 30, 45, 60, 90, 120, 150, 180)
+
+solve_dir <- function(dose_cmt, dose_ug) {
+  ev <- rxode2::et(amt = dose_ug, cmt = dose_cmt)
+  for (tt in tgrid) ev <- rxode2::et(ev, tt, cmt = "maternal_reservoir")
+  d <- as.data.frame(ev)
+  d$dvid <- ifelse(d$evid == 0L, 1L, NA_integer_)
+  as.data.frame(rxode2::rxSolve(modT, d))[, c("time", "Cmaternal", "Cfetal")]
+}
+
+# The observed curves start near 1.1 mg/L rather than the nominal 0.96; the
+# model is linear, so dose to the observed starting concentration (220 ug in
+# 200 mL) to compare the transfer shape directly.
+mtf <- solve_dir("maternal_reservoir", 220)
+ftm <- solve_dir("fetal_reservoir", 220)
+head(mtf)
+```
+
+# Replicate published figures
+
+Figure 3 shows the mean maternal- and fetal-reservoir doravirine curves for
+each perfusion direction. The points were read off the figure by the
+maintainers at the plotted time points (reading precision about 0.02 mg/L).
+
+```{r fig3-digitised}
+fig3 <- tibble::tribble(
+  ~direction, ~time, ~maternal, ~fetal,
+  "MTF",   0, 1.10, 0.00,
+  "MTF",   5, 0.88, 0.01,
+  "MTF",  10, 0.76, 0.02,
+  "MTF",  15, 0.70, 0.04,
+  "MTF",  20, 0.63, 0.05,
+  "MTF",  25, 0.57, 0.07,
+  "MTF",  30, 0.56, 0.08,
+  "MTF",  45, 0.49, 0.12,
+  "MTF",  60, 0.44, 0.16,
+  "MTF",  90, 0.40, 0.20,
+  "MTF", 120, 0.38, 0.23,
+  "MTF", 150, 0.36, 0.26,
+  "MTF", 180, 0.34, 0.28,
+  "FTM",   0, 0.00, 1.10,
+  "FTM",   5, 0.01, 1.00,
+  "FTM",  10, 0.01, 1.00,
+  "FTM",  15, 0.02, 0.95,
+  "FTM",  20, 0.03, 0.92,
+  "FTM",  25, 0.04, 0.90,
+  "FTM",  30, 0.06, 0.88,
+  "FTM",  45, 0.10, 0.83,
+  "FTM",  60, 0.14, 0.75,
+  "FTM",  90, 0.20, 0.64,
+  "FTM", 120, 0.22, 0.57,
+  "FTM", 150, 0.24, 0.50,
+  "FTM", 180, 0.26, 0.45
+)
+
+sim_long <- bind_rows(
+  mtf |> mutate(direction = "MTF"),
+  ftm |> mutate(direction = "FTM")
+) |>
+  pivot_longer(c(Cmaternal, Cfetal), names_to = "reservoir", values_to = "sim") |>
+  mutate(reservoir = recode(reservoir, Cmaternal = "maternal", Cfetal = "fetal"))
+
+obs_long <- fig3 |>
+  pivot_longer(c(maternal, fetal), names_to = "reservoir", values_to = "obs")
+```
+
+```{r fig3-plot, fig.width = 7.5, fig.height = 4}
+ggplot(sim_long, aes(time, sim, colour = reservoir)) +
+  geom_line() +
+  geom_point(
+    data = obs_long, aes(time, obs, colour = reservoir),
+    inherit.aes = FALSE, shape = 1
+  ) +
+  facet_wrap(~ factor(direction, c("MTF", "FTM")),
+    labeller = as_labeller(c(MTF = "Maternal-to-fetal", FTM = "Fetal-to-maternal"))
+  ) +
+  labs(
+    x = "Time (min)", y = "Doravirine (mg/L)", colour = "Reservoir",
+    caption = "Replicates Figure 3 of Bukkems 2022. Lines: this model (42 g cotyledon); circles: the paper's means read off the figure."
+  ) +
+  theme_bw()
+```
+
+The transfer shape is reproduced in both directions. The model is for the
+typical 42 g cotyledon, whereas the observed curves are means over placentas
+of 18.9-64.4 g (median 32.55 g); a smaller-than-typical cotyledon transfers
+slightly less, which is why the dosed reservoir in the model sits a little
+below the observed mean late in the fetal-to-maternal experiment.
+
+```{r fig3-gates}
+cmp <- sim_long |>
+  inner_join(obs_long, by = c("direction", "time", "reservoir")) |>
+  filter(time > 0)
+cmp_dosed <- cmp |>
+  filter((direction == "MTF" & reservoir == "maternal") |
+    (direction == "FTM" & reservoir == "fetal"))
+stopifnot(
+  # Dosed-reservoir decline: a wrong flow, volume or clearance moves the
+  # whole curve by tens of percent.
+  median(abs(cmp_dosed$sim - cmp_dosed$obs) / cmp_dosed$obs) < 0.12,
+  # Whole-figure envelope, both reservoirs, both directions.
+  quantile(abs(cmp$sim - cmp$obs), 0.9) < 0.1
+)
+```
+
+# Transfer ratios reported in the text
+
+The reservoir concentrations at 180 min are reported in Results 3.1.
+Because the model is linear in dose, the fetal:maternal reservoir ratios at
+the end of the experiment are independent of the starting concentration, so
+they are a clean check on the transfer clearances alone.
+
+```{r ratios}
+end_mtf <- mtf[mtf$time == 180, ]
+end_ftm <- ftm[ftm$time == 180, ]
+ratios <- tibble::tibble(
+  Direction = c("Maternal-to-fetal", "Fetal-to-maternal"),
+  `Ratio (into:out of)` = c("fetal:maternal", "maternal:fetal"),
+  `Reported (Results 3.1)` = c(0.28 / 0.34, 0.28 / 0.42),
+  `Model` = c(
+    end_mtf$Cfetal / end_mtf$Cmaternal,
+    end_ftm$Cmaternal / end_ftm$Cfetal
+  )
+)
+knitr::kable(ratios, digits = 3)
+
+stopifnot(
+  # Maternal-to-fetal transfer ratio at 180 min: text 0.82, model within 10%.
+  abs(ratios$Model[1] - 0.28 / 0.34) < 0.10,
+  # Fetal-to-maternal transfer ratio at 180 min: text ~0.67, model within 15%.
+  abs(ratios$Model[2] - 0.28 / 0.42) < 0.15
+)
+```
+
+The maternal-to-fetal ratio of `r round(ratios$Model[1], 2)` matches the
+reported 0.82; doravirine crosses the placenta almost completely over the
+experiment, consistent with the paper's conclusion that it is a
+blood-flow-limited, extensively transferred compound.
+
+# Between-placenta variability
+
+The fit carried a between-placenta variability fixed at 100% CV on both
+transfer clearances (Table 2). Simulating a cohort of 200 cotyledons in the
+maternal-to-fetal direction shows the spread this produces in the fetal
+reservoir at 180 min.
+
+```{r vpc}
+set.seed(74)
+n_cot <- 200
+ev <- rxode2::et(amt = 220, cmt = "maternal_reservoir")
+for (tt in c(60, 120, 180)) ev <- rxode2::et(ev, tt, cmt = "maternal_reservoir")
+d <- do.call(rbind, lapply(seq_len(n_cot), function(i) {
+  x <- as.data.frame(ev)
+  x$id <- i
+  x
+}))
+d$dvid <- ifelse(d$evid == 0L, 1L, NA_integer_)
+sim_pop <- as.data.frame(rxode2::rxSolve(ui, d))
+f180 <- sim_pop$Cfetal[sim_pop$time == 180]
+summary(f180)
+stopifnot(
+  # The typical-value fetal reservoir at 180 min (~0.26) sits inside the
+  # cohort, and the 100% CV spread is wide.
+  median(f180) > 0.15, median(f180) < 0.40,
+  stats::IQR(f180) > 0.02
+)
+```
+
+# NCA
+
+The paper reports no non-compartmental parameters for the ex vivo experiment,
+so there is no published NCA to compare with. For reference, PKNCA summarises
+the simulated dosed- and receiving-reservoir exposures over the 180-min
+maternal-to-fetal experiment.
+
+```{r pknca}
+conc <- mtf |>
+  pivot_longer(c(Cmaternal, Cfetal), names_to = "reservoir", values_to = "conc") |>
+  mutate(id = 1L, reservoir = recode(reservoir, Cmaternal = "maternal", Cfetal = "fetal")) |>
+  filter(!is.na(conc))
+dose_df <- tibble::tibble(
+  id = 1L, time = 0,
+  amt = c(220, 0),
+  reservoir = c("maternal", "fetal")
+)
+conc_obj <- PKNCAconc(conc, conc ~ time | reservoir + id)
+dose_obj <- PKNCAdose(dose_df, amt ~ time | reservoir + id)
+intervals <- data.frame(start = 0, end = 180, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+as.data.frame(nca$result) |>
+  select(reservoir, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::rename(
+    "Reservoir" = reservoir,
+    "Cmax (mg/L)" = cmax,
+    "Tmax (min)" = tmax,
+    "AUC0-180 (min*mg/L)" = auclast
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+# Assumptions and deviations
+
+* **Only the ex vivo model is packaged.** The whole-body maternal-fetal
+  pregnancy PBPK model is a Simcyp platform model whose physiological
+  parameters are database outputs not printed in the paper, so it is out of
+  scope. The two quantities that bridge the two models, `CLpdm` and `CLpdf`,
+  are in this file.
+* **Typical 42 g cotyledon.** Table 1 standardises the placental sub-volumes
+  to a 42 g (44.02 mL) cotyledon and Table 2 reports `CLpdm` / `CLpdf` for
+  that typical cotyledon (footnote a). The paper scaled volumes and clearances
+  by each placenta's individual cotyledon weight when fitting; this packaged
+  typical-value model fixes them at the 42 g reference, so the simulated
+  curves track the typical rather than a weight-specific cotyledon.
+* **Single proportional residual error.** Table 2 reports a proportional
+  residual error of 7.5% CV after dosing in the maternal compartment and
+  12.6% after dosing in the fetal compartment. The model carries one
+  proportional residual (`propSd`), set to the maternal-dosing value
+  (7.5% CV, back-transformed SD 0.0749); the fetal-dosing value
+  (12.6% CV, SD 0.1255) is recorded here and in the model-file comment. The
+  additive residual error (0.000007 ug/mL) is negligible.
+* **Diffusion-only structure.** The P-glycoprotein transport model (Figure 1B,
+  Equations 3 and 5) was rejected by the authors and is not implemented.
+* **Observed starting concentration.** The simulation doses to the observed
+  starting concentration of about 1.1 mg/L (220 ug in 200 mL) rather than the
+  nominal 0.96 mg/L, so the linear model's transfer shape overlays the figure
+  directly. The transfer ratios checked above are dose-independent.
+* **Closed-open sensitivity analysis not packaged.** A sensitivity analysis
+  re-fit the same structure to closed-open perfusions (dosed circulation
+  recirculating, other single-pass) and estimated `CLpdm` 11.0 mL/min
+  (95% CI 5.6-22.7) and `CLpdf` 4.3 mL/min (95% CI 2.3-8.3) (ESM Online
+  Resource 19). These configuration-specific estimates are reported here for
+  completeness; the closed-closed fit used for the primary PBPK predictions is
+  the one packaged.
+* **Figure 3 values were read off the figure** and carry about 0.02 mg/L of
+  reading error; the observed means in that figure are not otherwise used.
