@@ -1,6 +1,6 @@
 Hood_2021_medi7836 <- function() {
   description <- "Population PK-PD binding model for MEDI7836 (anti-IL13 IgG1 lambda-YTE mAb) in healthy adult males (Hood 2021): two-compartment SC PK with first-order absorption, ADA-on-CL covariate, plus IL13 turnover, fixed Kon/Koff binding to MEDI7836:IL13 complex, complex distribution sharing CL/Q/V3 with parent drug, and a serum PD observation modelled as the molar sum of free IL13 and a small fraction of complex."
-  reference <- "Hood T, Slob CJ, Slager J, Yates JWT, Bouzom F, Mistry HB. Pharmacokinetic-Pharmacodynamic Modelling of Systemic IL13 Blockade by Monoclonal Antibody Therapy: A Free Assay Disguised as Total. Pharmaceutics. 2021;13(5):613. doi:10.3390/pharmaceutics13050613"
+  reference <- "Hood T, Slob CJ, Slager J, Yates JWT, Bouzom F, Mistry HB. Pharmacokinetic-Pharmacodynamic Modelling of Systemic IL13 Blockade by Monoclonal Antibody Therapy: A Free Assay Disguised as Total. Pharmaceutics. 2021;13(4):519. doi:10.3390/pharmaceutics13040519"
   vignette <- "Hood_2021_medi7836"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 

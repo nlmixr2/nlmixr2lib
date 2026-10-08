@@ -2,6 +2,10 @@
 
 # development version
 
+- Correct the cited DOIs of `Bienczak_2025_ligelizumab` (was 10.1002/psp4.70090, a different paper; now 10.1002/psp4.70098) and `Hood_2021_medi7836` (was 10.3390/pharmaceutics13050613, a different paper; now 10.3390/pharmaceutics13040519, volume 13 issue 4 page 519).
+
+- Add Bienczak 2025 ligelizumab ([doi:10.1002/psp4.70098](https://doi.org/10.1002/psp4.70098)) -- adolescents and adults with chronic spontaneous urticaria and adult healthy volunteers.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
@@ -3512,7 +3516,7 @@
 * Add Le Tilly 2021 trastuzumab ([doi:10.1002/cpt.2188](https://doi.org/10.1002/cpt.2188)) -- adults with HER2+ breast cancer leptomeningeal carcinomatosis receiving intrathecal and intravenous trastuzumab.
 * Add Wang 2024 sugemalimab ([doi:10.1111/bcp.16276](https://doi.org/10.1111/bcp.16276)) -- adults with advanced solid tumours or lymphomas across nine Phase I-III sugemalimab trials.
 * Add Yang 2024 axatilimab ([doi:10.1002/cpt.3503](https://doi.org/10.1002/cpt.3503)) -- pooled healthy adults, adults with advanced solid tumors, and adults / children with chronic graft-versus-host disease.
-* Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)) -- healthy adult males in a first-in-human single-ascending-dose trial.
+* Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13040519](https://doi.org/10.3390/pharmaceutics13040519)) -- healthy adult males in a first-in-human single-ascending-dose trial.
 * Amend Castro-Suarez 2020 nimotuzumab: V1 decreased 53% for 50 mg cohort per Figure 4 visual inspection (direction not stated in paper text; corresponding author contacted).
 * Add Castro-Suarez 2020 nimotuzumab ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)) -- adults with autosomal dominant polycystic kidney disease.
 * Add Yang 2021 cemiplimab ([doi:10.1007/s10928-021-09739-y](https://doi.org/10.1007/s10928-021-09739-y)) -- adults with advanced solid tumors including cutaneous squamous cell carcinoma.
