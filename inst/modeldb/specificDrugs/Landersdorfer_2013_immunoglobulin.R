@@ -1,6 +1,6 @@
 Landersdorfer_2013_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G (IVIg and SCIg) in primary immunodeficiency (Landersdorfer 2013)"
-  reference <- "Landersdorfer CB, Bexon M, Edelman J, Rojavin M, Kirkpatrick CM, Lu J, et al. Pharmacokinetic modeling and simulation of biweekly subcutaneous immunoglobulin dosing in primary immunodeficiency. Postgrad Med. 2013;125(6):53-61. doi:10.3810/pgm.2013.11.2712 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 40)"
+  reference <- "Landersdorfer CB, Bexon M, Edelman J, Rojavin M, Kirkpatrick CM, Lu J, et al. Pharmacokinetic modeling and simulation of biweekly subcutaneous immunoglobulin dosing in primary immunodeficiency. Postgrad Med. 2013;125(6):53-61. doi:10.3810/pgm.2013.11.2712 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4 (reference 40)"
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
 

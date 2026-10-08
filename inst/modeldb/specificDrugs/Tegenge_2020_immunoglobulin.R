@@ -1,6 +1,6 @@
 Tegenge_2020_immunoglobulin <- function() {
   description <- "Two-compartment population PK model for intravenous polyclonal immunoglobulin G in very low birth-weight neonates (Tegenge 2020)"
-  reference <- "Tegenge MA, Mahmood I. Population pharmacokinetics of immunoglobulin intravenous preparation in very low birth weight neonates. Int Immunopharmacol. 2020;80:106192. doi:10.1016/j.intimp.2020.106192 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 35)"
+  reference <- "Tegenge MA, Mahmood I. Population pharmacokinetics of immunoglobulin intravenous preparation in very low birth weight neonates. Int Immunopharmacol. 2020;80:106192. doi:10.1016/j.intimp.2020.106192 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4 (reference 35)"
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
 
