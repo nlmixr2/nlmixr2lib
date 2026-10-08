@@ -3910,12 +3910,12 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:** none.
 - **Example models:** `Ahn_2014_parathyroidHormone.R`.
 
-### phos (**canonical serum phosphorus PD output**)
+### serum_phosphorus (**canonical serum phosphorus PD output**)
 - **Type:** compartment
-- **Role:** Absolute serum inorganic phosphate concentration, reported clinically as elemental phosphorus (mg/dL in US-convention papers), used as a PD output. The output-name sibling of the `PHOS` covariate column in `covariate-columns.md`, and the serum-electrolyte sibling of `ca`. A change-from-baseline phosphorus endpoint is a different quantity and takes the `d_<name>` form (`d_phos`), not this name.
+- **Role:** Absolute serum inorganic phosphate concentration, reported clinically as elemental phosphorus (mg/dL in US-convention papers), used as a PD output. The output-name sibling of the `PHOS` covariate column in `covariate-columns.md`, and the serum-electrolyte sibling of `ca`. A change-from-baseline phosphorus endpoint is a different quantity and takes the `d_<name>` form (`d_serum_phosphorus`), not this name. Spelled out rather than the short `phos` per the 2026-10-08 maintainer ruling.
 - **Source aliases:**
   - `E` / `EObs` -- the Phoenix NLME effect variable in Lee 2022 Supplemental Information 3 (`E = E0 + Emax * C^Gam / (EC50^Gam + C^Gam)`).
-  - `PHOS`, `PO4`, `Pi`, `serum phosphorus` -- common clinical-laboratory and figure-axis names.
+  - `phos`, `PHOS`, `PO4`, `Pi`, `serum phosphorus` -- common clinical-laboratory and figure-axis names.
 - **Example models:** `Lee_2022_burosumab.R` (direct Emax model of absolute serum phosphorus driven by the burosumab concentration, mg/dL; founding example).
 
 ### ca_unobs (**canonical unobserved calcium pool**)

@@ -182,7 +182,7 @@ Lee_2022_burosumab <- function() {
     etalemax ~ 0.249220 # Table 4: BSV Emax = 53.2% (shrinkage 36.6%) -> log(0.532^2 + 1)
 
     # ---- PK-PD residual error ----
-    propSd_phos <- 0.132
+    propSd_serum_phosphorus <- 0.132
     label("Proportional residual error on serum phosphorus (fraction)") # Table 4: proportional error = 13.2% (RSE 1.82%); Supplemental Information 3 observe(EObs = E * (1 + EEps))
   })
 
@@ -218,10 +218,10 @@ Lee_2022_burosumab <- function() {
     emax <- exp(lemax + etalemax) * (WT / 70)^e_wt_emax
     hill <- exp(lhill)
 
-    phos <- e0 + emax * Cc^hill / (ec50^hill + Cc^hill)
+    serum_phosphorus <- e0 + emax * Cc^hill / (ec50^hill + Cc^hill)
 
     # ---- 5. Observations ----
     Cc ~ add(addSd) + prop(propSd) + combined1()
-    phos ~ prop(propSd_phos)
+    serum_phosphorus ~ prop(propSd_serum_phosphorus)
   })
 }

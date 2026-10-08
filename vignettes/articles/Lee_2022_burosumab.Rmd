@@ -28,7 +28,7 @@ hypophosphatemia (XLH) and fits two models in sequence: a one-compartment
 population PK model for serum burosumab, then a direct sigmoid Emax model that
 links the burosumab concentration to the absolute serum phosphorus. This
 package encodes both as one model with two outputs: `Cc` (serum burosumab,
-ng/mL) and `phos` (serum phosphorus, mg/dL). The paper's Supplemental
+ng/mL) and `serum_phosphorus` (serum phosphorus, mg/dL). The paper's Supplemental
 Information 3 gives the Phoenix NLME code of both models, which fixes the
 equation forms and the residual-error structure.
 
@@ -78,9 +78,9 @@ The same information is available programmatically via the model's
 | `etale0` | 0.014297 (12.0% CV) | Table 4 |
 | `etalec50` | 0.989541 (130% CV) | Table 4 |
 | `etalemax` | 0.249220 (53.2% CV) | Table 4 |
-| `propSd_phos` | 0.132 | Table 4; Supplemental Information 3 PK-PD code `observe(EObs = E * (1 + EEps))` |
+| `propSd_serum_phosphorus` | 0.132 | Table 4; Supplemental Information 3 PK-PD code `observe(EObs = E * (1 + EEps))` |
 | `d/dt(depot)`, `d/dt(central)` | first-order absorption, linear elimination | Results 'Population PK Modeling'; Supplemental Information 3 `deriv()` lines |
-| `phos <- e0 + emax * Cc^hill / (ec50^hill + Cc^hill)` | n/a | Supplemental Information 3 PK-PD code, `E = E0 + Emax * C^Gam / (EC50^Gam + C^Gam)` |
+| `serum_phosphorus <- e0 + emax * Cc^hill / (ec50^hill + Cc^hill)` | n/a | Supplemental Information 3 PK-PD code, `E = E0 + Emax * C^Gam / (EC50^Gam + C^Gam)` |
 | `(WT / 70)` power terms on CL/F, V/F, E0, Emax | time-varying WT, reference 70 kg | Table 3 and Table 4 footnotes |
 
 # Typical-value checks
@@ -220,13 +220,13 @@ cohort |>
   knitr::kable(digits = 1, caption = "Virtual cohorts.")
 ```
 
-The model has two outputs (`Cc` and `phos`), so observation rows carry
+The model has two outputs (`Cc` and `serum_phosphorus`), so observation rows carry
 `dvid = 1` and no `cmt`; the solve still returns both outputs on every
 observation row.
 
 ```{r simulate}
 sim <- rxode2::rxSolve(mod, events, keep = c("arm", "WT"), returnType = "data.frame")
-stopifnot(!anyNA(sim$Cc), !anyNA(sim$phos))
+stopifnot(!anyNA(sim$Cc), !anyNA(sim$serum_phosphorus))
 ```
 
 # Steady-state PK: PKNCA
@@ -341,9 +341,9 @@ pd_ss <- sim |>
   dplyr::filter(time >= start) |>
   dplyr::group_by(arm, id) |>
   dplyr::summarise(
-    phos_min = min(phos),
-    phos_max = max(phos),
-    phos_avg = sum(diff(time) * (head(phos, -1) + tail(phos, -1)) / 2) / tau[1],
+    phos_min = min(serum_phosphorus),
+    phos_max = max(serum_phosphorus),
+    phos_avg = sum(diff(time) * (head(serum_phosphorus, -1) + tail(serum_phosphorus, -1)) / 2) / tau[1],
     .groups = "drop"
   ) |>
   tidyr::pivot_longer(dplyr::starts_with("phos_"), names_to = "metric", values_to = "value") |>
@@ -395,14 +395,14 @@ esc <- sim |>
   dplyr::filter(grepl("escalation", arm)) |>
   dplyr::group_by(arm, time) |>
   dplyr::summarise(
-    dplyr::across(c(Cc, phos), list(
+    dplyr::across(c(Cc, serum_phosphorus), list(
       p05 = ~ quantile(.x, 0.05), p25 = ~ quantile(.x, 0.25),
       p50 = median, p75 = ~ quantile(.x, 0.75), p95 = ~ quantile(.x, 0.95)
     )),
     .groups = "drop"
   ) |>
-  tidyr::pivot_longer(-c(arm, time), names_to = c("output", ".value"), names_pattern = "(Cc|phos)_(p..)") |>
-  dplyr::mutate(output = dplyr::recode(output, Cc = "Burosumab (ng/mL)", phos = "Serum phosphorus (mg/dL)"))
+  tidyr::pivot_longer(-c(arm, time), names_to = c("output", ".value"), names_pattern = "(Cc|serum_phosphorus)_(p..)") |>
+  dplyr::mutate(output = dplyr::recode(output, Cc = "Burosumab (ng/mL)", serum_phosphorus = "Serum phosphorus (mg/dL)"))
 
 lln <- data.frame(
   arm = c("Adult escalation Q4W", "Pediatric escalation Q2W"),
@@ -440,12 +440,12 @@ esc_pub <- dplyr::bind_rows(
              lln = 3.2, published = c(16.7, 39.7, 60.3, 67.8))
 )
 # The observation grid lands exactly on each trough time. A dose given at the
-# same time enters the depot, so it does not change Cc or phos at that instant.
+# same time enters the depot, so it does not change Cc or serum_phosphorus at that instant.
 esc_sim <- sim |>
   dplyr::inner_join(esc_pub, by = c("arm", "time")) |>
   dplyr::group_by(arm, time, dose, published) |>
   dplyr::summarise(
-    simulated = 100 * mean(phos > lln),
+    simulated = 100 * mean(serum_phosphorus > lln),
     median_trough_Cc = median(Cc),
     .groups = "drop"
   ) |>
