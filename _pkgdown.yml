@@ -830,6 +830,8 @@ navbar:
         href: articles/Hughes_2022_brepocitinib.html
       - text: "Brepocitinib (Maleki 2024)"
         href: articles/Maleki_2024_brepocitinib.html
+      - text: "Brexanolone (Wald 2022)"
+        href: articles/Wald_2022_brexanolone.html
       - text: "Brexpiprazole (Frederiksen 2023)"
         href: articles/Frederiksen_2023_brexpiprazole.html
       - text: "Brigatinib (Gupta 2021)"
@@ -9184,6 +9186,7 @@ articles:
   - articles/Wagh_2021_spectinamide_1810_mouse
   - articles/Wahlby_2004_time_varying_covariates
   - articles/Wahlquist_2024_propofol
+  - articles/Wald_2022_brexanolone
   - articles/Wallender_2021_piperaquine
   - articles/Walsh_2024_buprenorphine_opioidBlockade
   - articles/Wang_2010_romiplostim
