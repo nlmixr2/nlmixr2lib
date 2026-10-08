@@ -1340,6 +1340,8 @@ navbar:
         href: articles/Nijstad_2021_clofarabine.html
       - text: "Clomethiazole (Zingmark 2003)"
         href: articles/Zingmark_2003_clomethiazole.html
+      - text: "Clonazepam (Kruizinga 2022)"
+        href: articles/Kruizinga_2022_clonazepam.html
       - text: "Clonazepam pediatric (Yukawa 2002)"
         href: articles/Yukawa_2002_clonazepam_pediatric.html
       - text: "Clonidine (Cloesmeijer 2020)"
@@ -8132,6 +8134,7 @@ articles:
   - articles/Krishna_2011_anacetrapib
   - articles/Krishnatry_2021_molibresib
   - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin
+  - articles/Kruizinga_2022_clonazepam
   - articles/Krzyzanski_2021_corticosteroids
   - articles/Ku_2018_diazepam
   - articles/Kuan_2023_flipflop
