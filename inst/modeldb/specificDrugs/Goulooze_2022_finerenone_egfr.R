@@ -11,7 +11,7 @@ Goulooze_2022_finerenone_egfr <- function() {
     "model equations are the final eGFR NONMEM control stream in the same",
     "supplement. The exposure metric AUCtau,md is computed from the upstream",
     "FIDELIO-DKD population PK analysis (van den Berg P et al.,",
-    "Clin Pharmacokinet. 2022;61(7):1005-1021; doi:10.1007/s40262-021-01082-2);",
+    "Clin Pharmacokinet. 2022;61(3):439-450; doi:10.1007/s40262-021-01082-2);",
     "see modellib('vandenBerg_2021_finerenone'). The UACR sub-model is the",
     "companion model in the same paper; see",
     "modellib('Goulooze_2022_finerenone_uacr').",

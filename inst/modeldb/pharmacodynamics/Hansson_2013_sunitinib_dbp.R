@@ -14,7 +14,7 @@ Hansson_2013_sunitinib_dbp <- function() {
     "modellib('Hansson_2013_sunitinib_os').",
     "Indirect-response form adapted from Keizer RJ et al.",
     "J Pharmacokinet Pharmacodyn 2010;37(4):347-363,",
-    "doi:10.1007/s10928-010-9163-3.",
+    "doi:10.1007/s10928-010-9164-2.",
     sep = " "
   )
   vignette <- "Hansson_2013_sunitinib_dbp"

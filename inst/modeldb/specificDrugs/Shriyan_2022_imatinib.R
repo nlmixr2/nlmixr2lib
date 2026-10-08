@@ -17,7 +17,7 @@ Shriyan_2022_imatinib <- function() {
     "Sengar M, Khattry N, Gota V. Role of ADME gene polymorphisms on ",
     "imatinib disposition: results from a population pharmacokinetic study ",
     "in chronic myeloid leukaemia. Eur J Clin Pharmacol. ",
-    "2022;78(8):1321-1330. doi:10.1007/s00228-022-03334-x. ",
+    "2022;78(8):1321-1330. doi:10.1007/s00228-022-03345-8. ",
     "PARAMETER SOURCE (secondary): Yang T, Rasmussen ASB, Weimann A, ",
     "Thastrup M, Rank CU, Als-Nielsen B, Malmros J, Wik HS, Lohi O, ",
     "Overgaard U, Johannsdottir IMR, Vaitkeviciene G, Dalhoff K, ",

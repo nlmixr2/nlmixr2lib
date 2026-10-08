@@ -25,7 +25,7 @@ Mann_2022_fentanyl_iv <- function() {
     "Tolerance to opioid-induced respiratory depression in chronic",
     "high-dose opioid users: a model-based comparison with opioid-naive",
     "individuals. Clin Pharmacol Ther. 2021;109(3):637-645.",
-    "doi:10.1002/cpt.1972 (re-tabulated in Mann 2022 Table S1).",
+    "doi:10.1002/cpt.2027 (re-tabulated in Mann 2022 Table S1).",
     "FDA code repository for the integrated model:",
     "https://github.com/FDA/Mechanistic-PK-PD-Model-to-Rescue-Opioid-Overdose"
   )
@@ -120,7 +120,7 @@ Mann_2022_fentanyl_iv <- function() {
       "Effect-site concentration Ce_pM is the downstream input to",
       "Mann_2022_mu_receptor_binding (L_op slot)."
     ),
-    upstream_model = "Algera MH et al. Clin Pharmacol Ther. 2021;109(3):637-645 (doi:10.1002/cpt.1972)."
+    upstream_model = "Algera MH et al. Clin Pharmacol Ther. 2021;109(3):637-645 (doi:10.1002/cpt.2027)."
   )
 
   ini({

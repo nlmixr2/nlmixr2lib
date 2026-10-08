@@ -29,7 +29,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode2(readModelDb("Wojciechowski_2022_domagrozumab"))$meta$reference`
 * Description: `r rxode2::rxode2(readModelDb("Wojciechowski_2022_domagrozumab"))$meta$description`
-* Article: <https://doi.org/10.1111/cts.13418>
+* Article: <https://doi.org/10.1002/cpt.2747>
 
 Domagrozumab is a humanized IgG1 monoclonal antibody that binds and neutralizes
 myostatin, a negative regulator of skeletal muscle growth. Wojciechowski 2022

@@ -24,7 +24,7 @@ library(ggplot2)
 * Article: [doi:10.1038/psp.2013.62](https://doi.org/10.1038/psp.2013.62)
 * Indirect-response form adapted from
   Keizer RJ et al. *J Pharmacokinet Pharmacodyn* 2010;37(4):347-363,
-  [doi:10.1007/s10928-010-9163-3](https://doi.org/10.1007/s10928-010-9163-3).
+  [doi:10.1007/s10928-010-9164-2](https://doi.org/10.1007/s10928-010-9164-2).
 
 This vignette extracts the **diastolic blood pressure (dBP)**
 sub-model from the Hansson 2013 e85 framework.

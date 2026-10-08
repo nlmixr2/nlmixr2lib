@@ -6,8 +6,8 @@ Salehi_2025_nicotine_pbpk <- function() {
     "J Clin Pharmacol 65(10):1297-1309. doi:10.1002/jcph.70038. PMCID PMC12484417.",
     "Correction added 2025-06-27 (final sentence of Methods; prose only, no parameter impact).",
     "Whole-body disposition structure and physiological / chemical parameters inherited from",
-    "Rostami AA, Campbell JL, Pithawalla YB, et al. (2022) Sci Rep 12:2436, doi:10.1038/s41598-022-06209-4",
-    "(with Author Correction, Sci Rep 12:2966, doi:10.1038/s41598-022-07016-7 -- bibliography fix only).",
+    "Rostami AA, Campbell JL, Pithawalla YB, et al. (2022) Sci Rep 12:1091, doi:10.1038/s41598-022-05108-y",
+    "(with Author Correction, Sci Rep 12:2436, doi:10.1038/s41598-022-06693-8 -- bibliography fix only).",
     sep = " "
   )
   vignette <- "Salehi_2025_nicotine_pbpk"

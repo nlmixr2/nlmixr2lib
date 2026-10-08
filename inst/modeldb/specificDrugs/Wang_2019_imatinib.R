@@ -18,7 +18,7 @@ Wang_2019_imatinib <- function() {
     "Wang Q, Jiang ZP, Yu EQ, Zeng J, Zhu Y, Cai HL, Zhang M, Zhang BK, ",
     "Xiang DX. Population pharmacokinetic and pharmacogenetics of imatinib ",
     "in Chinese patients with chronic myeloid leukemia. Pharmacogenomics. ",
-    "2019;20(4):251-260. doi:10.2217/pgs-2018-0173. ",
+    "2019;20(4):251-260. doi:10.2217/pgs-2018-0139. ",
     "PARAMETER SOURCE (secondary): Yang T, Rasmussen ASB, Weimann A, ",
     "Thastrup M, Rank CU, Als-Nielsen B, Malmros J, Wik HS, Lohi O, ",
     "Overgaard U, Johannsdottir IMR, Vaitkeviciene G, Dalhoff K, ",

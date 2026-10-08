@@ -10,7 +10,7 @@ Goulooze_2022_finerenone_uacr <- function() {
     "Supplementary Material; the model equations are the final UACR NONMEM",
     "control stream in the same supplement. The exposure metric AUCtau,md is",
     "computed from the upstream FIDELIO-DKD population PK analysis",
-    "(van den Berg P et al., Clin Pharmacokinet. 2022;61(7):1005-1021;",
+    "(van den Berg P et al., Clin Pharmacokinet. 2022;61(3):439-450;",
     "doi:10.1007/s40262-021-01082-2); see modellib('vandenBerg_2021_finerenone').",
     sep = " "
   )

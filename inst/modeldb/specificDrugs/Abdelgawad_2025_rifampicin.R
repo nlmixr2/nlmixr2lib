@@ -42,7 +42,7 @@ Abdelgawad_2025_rifampicin <- function() {
     "supplementary material.",
     "The saturable-hepatic-extraction structure was adapted from",
     "Chirehwa et al. (2016) Antimicrob Agents Chemother 60(1):487-494",
-    "doi:10.1128/AAC.01084-15, which also supplied the informative prior on",
+    "doi:10.1128/AAC.01830-15, which also supplied the informative prior on",
     "the Michaelis-Menten constant.",
     "The CSF effect compartment follows Sheiner et al. (1979)",
     "Clin Pharmacol Ther 25(3):358-371 and Savic et al. (2015)",

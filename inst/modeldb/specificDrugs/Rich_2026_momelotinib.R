@@ -42,7 +42,7 @@ Rich_2026_momelotinib <- function() {
     "(supplement file CPT-119-629-s001).",
     "The fraction metabolised fm = 0.640 originates in the human",
     "mass-balance study Zheng J et al. Drug Metab Dispos. 2018;46:237-247,",
-    "doi:10.1124/dmd.117.078030, which also reports the M21 relative potency",
+    "doi:10.1124/dmd.117.078899, which also reports the M21 relative potency",
     "of approximately 0.4 used to form the total active moiety.",
     "The nine exposure-response regressions the same paper reports are NOT",
     "extracted: Tables S9 and S10 print no intercept for any of the seven",
@@ -459,7 +459,7 @@ Rich_2026_momelotinib <- function() {
     ref_crcl <- 72      # mL/min
     # Relative potency of M21 versus momelotinib used to form the total
     # active moiety. Not estimated by Rich 2026 -- carried from the Zheng
-    # 2018 human mass-balance / activity-index work (doi:10.1124/dmd.117.078030)
+    # 2018 human mass-balance / activity-index work (doi:10.1124/dmd.117.078899)
     # and stated in Rich 2026 Simulations as 'R_p ... estimated to be ~0.4'.
     rp_m21 <- 0.4       # unitless
 

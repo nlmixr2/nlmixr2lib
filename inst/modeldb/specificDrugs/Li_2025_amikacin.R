@@ -18,7 +18,7 @@ Li_2025_amikacin <- function() {
     "Allegaert K, Scheers I, Cossey V, Anderson BJ.",
     "Covariates of amikacin clearance in neonates: the impact of postnatal",
     "age on predictability.",
-    "Drug Metab Lett. 2008;2:286-289. doi:10.2174/187231208786734120.",
+    "Drug Metab Lett. 2008;2:286-289. doi:10.2174/187231208786734157.",
     sep = " "
   )
   vignette <- "Li_2025_amikacin"

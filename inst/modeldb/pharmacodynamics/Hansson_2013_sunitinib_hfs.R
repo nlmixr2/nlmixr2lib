@@ -20,7 +20,7 @@ Hansson_2013_sunitinib_hfs <- function() {
     "Henin E et al. Clin Pharmacol Ther 2009;85(4):418-425,",
     "doi:10.1038/clpt.2008.220 and Zingmark PH, Kagedal M, Karlsson MO,",
     "J Pharmacokinet Pharmacodyn 2005;32(2):261-281,",
-    "doi:10.1007/s10928-005-0034-2.",
+    "doi:10.1007/s10928-005-0021-7.",
     sep = " "
   )
   vignette <- "Hansson_2013_sunitinib_hfs"

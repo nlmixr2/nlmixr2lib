@@ -8,7 +8,7 @@ Hard_2017_aripiprazole_lauroxil <- function() {
     "Parameter estimates from Supplemental Table 7 of the Electronic Supplementary Material.",
     "Vp/F, Q/F and the 70 kg weight-centering constant are carried from the earlier",
     "aripiprazole lauroxil PopPK model of Hard ML, Mills RJ, Sadler BM, Turncliff RZ,",
-    "Citrome L (2017) J Clin Psychopharmacol 37(3):289-295, doi:10.1097/JCP.0000000000000685",
+    "Citrome L (2017) J Clin Psychopharmacol 37(3):289-295, doi:10.1097/JCP.0000000000000691",
     "(not currently in nlmixr2lib).",
     sep = " "
   )

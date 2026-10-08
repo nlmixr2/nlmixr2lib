@@ -121,7 +121,7 @@ naming its source location. Collected here for review:
 | `propSdPh3_m21`, `propSdPh12_m21`, `addSdPh12_m21` | 0.517, 0.337, 1.86 ng/mL | Table 1 (Continued), M21 "Residual error" |
 | Six-transit + k~a~ absorption topology | n/a | Supplemental Table S3, run `mmb-2cmt-erlang6-ka-altv` |
 | Phase III vs phase I/II residual split | n/a | Supplemental Table S3, run `...-errph3`; Table 1 residual rows |
-| `tam = Cc + 0.4 * Cc_m21` | R~p~ = 0.4 | Simulations; potency from Zheng 2018 (doi:10.1124/dmd.117.078030) |
+| `tam = Cc + 0.4 * Cc_m21` | R~p~ = 0.4 | Simulations; potency from Zheng 2018 (doi:10.1124/dmd.117.078899) |
 
 # Reference regimen and covariate helper
 
