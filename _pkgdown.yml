@@ -6238,6 +6238,8 @@ navbar:
         href: articles/Baverel_2015_tralokinumab.html
       - text: "Tralokinumab (Soehoel 2022)"
         href: articles/Soehoel_2022_tralokinumab.html
+      - text: "Tramadol (AlQurain 2022)"
+        href: articles/AlQurain_2022_tramadol.html
       - text: "Tramadol (Lee 2019)"
         href: articles/Lee_2019_tramadol.html
       - text: "Tramadol (SoriaChacartegui 2026)"
@@ -7022,6 +7024,7 @@ articles:
   - articles/Akbar_2025_voriconazole
   - articles/Akil_2016_citalopram
   - articles/Aksenov_2018_uricAcid
+  - articles/AlQurain_2022_tramadol
   - articles/AlSallami_2016_unfractionatedHeparin
   - articles/AlZubaydi_2024_gabapentin
   - articles/AlfoseaCuadrado_2024_reserpine_rat
