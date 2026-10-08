@@ -351,7 +351,7 @@ knitr::kable(
   peripheral volume is roughly 160-fold larger than the central volume
   (4.23 L/70 kg), which is unusually large for omeprazole (typical adult
   total volume of distribution is ~0.35 L/kg, i.e. ~25 L for a 70 kg
-  adult; see Andersson 1991, doi:10.1007/BF03259353). The encoded value
+  adult). The encoded value
   reproduces the abstract verbatim and is not silently "corrected"; the
   large Vp drives a long terminal phase in the simulated VPC that is not
   consistent with the omeprazole-class half-life of 0.5-1 h reported for

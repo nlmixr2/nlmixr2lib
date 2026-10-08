@@ -4,7 +4,7 @@ Goulooze_2022_finerenone_egfr <- function() {
     "Goulooze SC, Heerspink HJL, van Noort M, Snelder N, Brinker M, Lippert J,",
     "Eissing T. Dose-Exposure-Response Analysis of the Nonsteroidal",
     "Mineralocorticoid Receptor Antagonist Finerenone on UACR and eGFR:",
-    "An Analysis from FIDELIO-DKD. Clin Pharmacokinet. 2022;61(7):1023-1037.",
+    "An Analysis from FIDELIO-DKD. Clin Pharmacokinet. 2022;61(7):1013-1025.",
     "doi:10.1007/s40262-022-01124-3.",
     "Parameter values are the final estimates in Tables S2 (eGFR) and S1",
     "(embedded UACR sub-model) of the Electronic Supplementary Material; the",

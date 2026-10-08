@@ -13,8 +13,8 @@ Shriyan_2022_imatinib <- function() {
     "from Shriyan 2022 when that paper is obtained."
   )
   reference <- paste0(
-    "Shriyan B, Mehta P, Patil A, Jadhav S, Kumar S, Puri AS, Bagal B, ",
-    "Sengar M, Khattry N, Gota V. Role of ADME gene polymorphisms on ",
+    "Shriyan B, Mehta P, Patil A, Jadhav S, Kumar S, Puri AS, Govalkar R, ",
+    "Krishnamurthy MN, Punatar S, Gokarn A, Khattry N, Gota V. Role of ADME gene polymorphisms on ",
     "imatinib disposition: results from a population pharmacokinetic study ",
     "in chronic myeloid leukaemia. Eur J Clin Pharmacol. ",
     "2022;78(8):1321-1330. doi:10.1007/s00228-022-03345-8. ",

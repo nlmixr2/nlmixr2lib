@@ -132,7 +132,7 @@ TerHeine_2014_tamoxifen <- function() {
                           e_cyp3a4_cl_endox * log_pheno_cyp3a4)
 
     # Fixed literature constants for endoxifen disposition. Source: Ahmad et
-    # al. (2010) Clin Pharmacol Ther 88(6):814-817, doi:10.1038/clpt.2010.222
+    # al. (2010) Clin Pharmacol Ther 88(6):814-817, doi:10.1038/clpt.2010.196
     # — cited in the .mdl GROUP_VARIABLES block as `Ahmad et al, CPT Vol 88,
     # 2010`.
     cl_endx_elim <- 5.1

@@ -1,6 +1,6 @@
 Luo_2020_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G (IgPro10) in Japanese and non-Japanese patients with primary immunodeficiency (Luo 2020)"
-  reference <- "Luo D, Baheti G, Tortorici MA, Hofmann J, Rojavin MA. Pharmacometric analysis of IgPro10 in Japanese and non-Japanese patients with primary immunodeficiency. Clin Ther. 2020;42(1):196-209.e195. doi:10.1016/j.clinthera.2019.11.013 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 41)"
+  reference <- "Luo D, Baheti G, Tortorici MA, Hofmann J, Rojavin MA. Pharmacometric analysis of IgPro10 in Japanese and non-Japanese patients with primary immunodeficiency. Clin Ther. 2020;42(1):196-209.e5. doi:10.1016/j.clinthera.2019.11.013 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 41)"
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
 

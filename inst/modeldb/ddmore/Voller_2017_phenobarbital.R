@@ -7,7 +7,7 @@ Voller_2017_phenobarbital <- function() {
   # right -- one page range holds one article. The authoritative citation below
   # is confirmed twice over: (a) Crossref for doi:10.1016/j.ejps.2017.05.026,
   # and (b) reference [18] of Goulooze SC et al., Clin Pharmacokinet
-  # 2019;58:127-135 (doi:10.1007/s40262-018-0652-7, PMC6325985), which re-fits
+  # 2019;58:131-138 (doi:10.1007/s40262-018-0652-7, PMC6325985), which re-fits
   # this very dataset as its case study.
   reference <- paste(
     "Voller S, Flint RB, Stolk LM, Degraeuwe PLJ, Simons SHP, Pokorna P,",
@@ -88,7 +88,7 @@ Voller_2017_phenobarbital <- function() {
     age_range = "Preterm and term newborns; postnatal age (PNA) range not extractable from the DDMORE bundle (Voller 2017 PDF not available when this model was built). The bundle's simulated dataset spans PNA 0-58 days across 5 representative subjects.",
     weight_range = paste(
       "Body weight 0.45-4.5 kg, median 2.7 kg (n = 53). Source: Goulooze SC et al.,",
-      "Clin Pharmacokinet 2019;58:127-135 (doi:10.1007/s40262-018-0652-7), Sect. 2.1,",
+      "Clin Pharmacokinet 2019;58:131-138 (doi:10.1007/s40262-018-0652-7), Sect. 2.1,",
       "which re-fits this same 53-neonate dataset as its case study and cites Voller",
       "2017 as its origin. Goulooze reports a single 'weight' covariate and does not",
       "state whether the range is current or birth weight; the reported median of",
@@ -128,7 +128,7 @@ Voller_2017_phenobarbital <- function() {
       "RDF metadata describes the purpose as 'The PK of phenobarbital was quantified in",
       "preterm and term newborns, to optimize drug dosing.'",
       "Partially cross-checked 2026-09-22 against a secondary source that has since become available:",
-      "Goulooze SC et al., Clin Pharmacokinet 2019;58:127-135",
+      "Goulooze SC et al., Clin Pharmacokinet 2019;58:131-138",
       "(doi:10.1007/s40262-018-0652-7, PMC6325985) re-fits this dataset as its case",
       "study and reports n = 53 neonates (matching the .lst subject count), body weight",
       "0.45-4.5 kg with median 2.7 kg (matching this model's 2.70 kg WT reference), TDM",

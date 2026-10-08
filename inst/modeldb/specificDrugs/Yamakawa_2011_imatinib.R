@@ -13,6 +13,8 @@ Yamakawa_2011_imatinib <- function() {
     "population PK models, not from the primary publication. Re-extract ",
     "from Yamakawa 2011 when that paper is obtained."
   )
+  # Cited by PMID: the DOI PubMed lists for this paper is registered with
+  # Crossref to a different article.
   reference <- paste0(
     "Yamakawa Y, Hamada A, Nakashima R, Yuki M, Hirayama C, Kawaguchi T, ",
     "Saito H. Association of genetic polymorphisms in the influx ",

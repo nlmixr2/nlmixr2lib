@@ -15,8 +15,8 @@ Wang_2019_imatinib <- function() {
     "secondary source's covariate cell ('TBW') does not carry."
   )
   reference <- paste0(
-    "Wang Q, Jiang ZP, Yu EQ, Zeng J, Zhu Y, Cai HL, Zhang M, Zhang BK, ",
-    "Xiang DX. Population pharmacokinetic and pharmacogenetics of imatinib ",
+    "Wang Q, Jiang ZP, Yu EQ, Zeng J, Zhu Y, Cai HL, Yan M, Xiang DX, ",
+    "Zhao XL, Xu P, Jiao Z, Banh HL. Population pharmacokinetic and pharmacogenetics of imatinib ",
     "in Chinese patients with chronic myeloid leukemia. Pharmacogenomics. ",
     "2019;20(4):251-260. doi:10.2217/pgs-2018-0139. ",
     "PARAMETER SOURCE (secondary): Yang T, Rasmussen ASB, Weimann A, ",

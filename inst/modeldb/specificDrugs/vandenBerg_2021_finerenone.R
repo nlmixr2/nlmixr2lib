@@ -33,7 +33,7 @@ vandenBerg_2021_finerenone <- function() {
     "Finerenone Dose-Exposure-Response for the Primary Kidney Outcome in",
     "FIDELIO-DKD Phase III: Population Pharmacokinetic and Time-to-Event",
     "Analysis.",
-    "Clin Pharmacokinet 61(7):943-955.",
+    "Clin Pharmacokinet 61(3):439-450.",
     "doi:10.1007/s40262-021-01082-2",
     sep = " "
   )

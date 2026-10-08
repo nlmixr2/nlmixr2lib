@@ -155,7 +155,7 @@ Kawaguchi_2018_cefiderocol_egfradj <- function() {
       notes = paste(
         "Screened on both CL and V1 and not retained. Overall median 4.2",
         "g/dL, range 2.5-5.3 (Table 1). The later, larger analysis by the",
-        "same group (Katsube/Wajima, AAC 2021, doi:10.1128/AAC.01437-20)",
+        "same group (Kawaguchi 2021, AAC, doi:10.1128/AAC.01437-20)",
         "DID retain albumin on V1 with an exponent of -0.617 in a cohort",
         "including pneumonia and bloodstream-infection patients whose",
         "albumin ran much lower (mean 2.8 g/dL); this cohort simply did not",
@@ -285,7 +285,7 @@ Kawaguchi_2018_cefiderocol_egfradj <- function() {
     # THIS research group the percent CV is the omega standard deviation
     # times 100 -- NOT the log-normal sqrt(exp(omega^2)-1) form that is the
     # usual default. The
-    # companion analysis by the same authors (Katsube/Wajima, AAC 2021,
+    # companion analysis by the same authors (Kawaguchi 2021, AAC,
     # doi:10.1128/AAC.01437-20) settles this by printing CV%, the omega
     # covariances AND the implied correlations: all three covariance pairs
     # agree with omega = CV/100 to within 0.1% and reject the log-normal
