@@ -6698,6 +6698,8 @@ navbar:
         href: articles/Han_2010_voriconazole.html
       - text: "Voriconazole (Hu 2023)"
         href: articles/Hu_2023_voriconazole.html
+      - text: "Voriconazole (Jiang 2022)"
+        href: articles/Jiang_2022_voriconazole.html
       - text: "Voriconazole (Karlsson 2009)"
         href: articles/Karlsson_2009_voriconazole.html
       - text: "Voriconazole (KhanAsa 2020)"
@@ -7956,6 +7958,7 @@ articles:
   - articles/Jiang_2008_gemcitabine
   - articles/Jiang_2016_harmaline_meodmt_mouse
   - articles/Jiang_2021_ivosidenib
+  - articles/Jiang_2022_voriconazole
   - articles/Jiang_2023_imatinib
   - articles/Jiang_2024_empagliflozin
   - articles/Jiang_2025_filgrastim
