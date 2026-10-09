@@ -5146,6 +5146,8 @@ navbar:
         href: articles/Patel_2022_imipenem_relebactam.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Remdesivir (Abouellil 2023)"
+        href: articles/Abouellil_2023_remdesivir.html
       - text: "Remdesivir (Roberts 2025)"
         href: articles/Roberts_2025_remdesivir.html
       - text: "Remdesivir (Sukeishi 2022)"
@@ -6989,6 +6991,7 @@ articles:
   - articles/Abegesah_2025_durvalumab
   - articles/AbouAuda_2024_gentamicin
   - articles/Abouelhassan_2024_sulbactam_elf_pneumonia
+  - articles/Abouellil_2023_remdesivir
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abulfathi_2021_meropenem

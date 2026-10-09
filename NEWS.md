@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Abouellil 2023 remdesivir with its GS-704277 and GS-441524 metabolites ([doi:10.1007/s00210-022-02292-6](https://doi.org/10.1007/s00210-022-02292-6)) -- healthy adults (phase 1 single-ascending-dose mean data).
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
