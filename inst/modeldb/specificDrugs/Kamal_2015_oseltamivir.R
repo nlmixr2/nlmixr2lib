@@ -28,12 +28,11 @@ Kamal_2015_oseltamivir <- function() {
     "(see paper_specific_compartments)."
   )
   reference <- paste(
-    "Kamal MA, Gieschke R, Lemenuel-Diot A, Beauchemin CAA, Smith PF,",
-    "Rayner CR. (2015).",
-    "A drug-disease model describing the effect of oseltamivir",
-    "neuraminidase inhibition on influenza virus progression.",
-    "Antimicrob Agents Chemother 59(9):5388-5395.",
-    "doi:10.1128/AAC.00069-15. PMID 26100711; PMCID PMC4538529.",
+    "Kamal MA, Gieschke R, Lemenuel-Diot A, Beauchemin CA, Smith PF, Rayner",
+    "CR. A drug-disease model describing the effect of oseltamivir",
+    "neuraminidase inhibition on influenza virus progression. Antimicrob",
+    "Agents Chemother. 2015;59(9):5388-5395. doi:10.1128/AAC.00069-15 PMID",
+    "26100715; PMCID PMC4538552.",
     sep = " "
   )
   vignette <- "Kamal_2015_oseltamivir"

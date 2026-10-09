@@ -2,10 +2,9 @@ Maringwa_2025_venlafaxine_fluoxetine_mbma <- function() {
   description <- "MBMA. Model-based meta-analysis dose-response model for the mean change from baseline in the Hamilton Depression Rating (HAMD) scale in adults with major depressive disorder, fit jointly to venlafaxine and fluoxetine study-arm summary means from 16 placebo-controlled trials published 1987-2014 (43 arms, 3,432 patients) by weighted nonlinear regression (R gnls). Venlafaxine follows an Emax relationship in total daily dose; fluoxetine was not shown to have a dose-response over the studied 20-60 mg/day range and instead carries a single constant shift versus placebo applied to every active fluoxetine arm. Both drug effects are multiplied by the shared term 1 + 0.0986 * (SCORE_HAMD - 25), so the larger the arm's mean baseline HAMD score, the larger the expected drug effect. Placebo response is UNSTRUCTURED: a separate fixed effect was estimated for each of the 16 trials (mean -8.0, range -12.0 to -3.0) and this file encodes the typical value of -8 that the paper used for every published model prediction. Per-arm reported standard errors of the change were used as fixed weights and the estimation-scale sigma was held at 1, so no residual variance was estimated and no between-trial random effect exists. IMPORTANT: the two drug-effect values in the source's Table 2 are printed against TRANSPOSED row labels and the source's displayed final equation prints the baseline centring as (B - 23) rather than the fitted (B - 25); this file encodes the parameterisation that reproduces the paper's own Figures 2-4 and its own published predicted differences from placebo, which the table and equation as printed do not (see the vignette Errata for the full arithmetic). Suitable simulation scope is the study-arm mean HAMD change from baseline at a trial's primary analysis timepoint, NOT individual-patient responses; there is no PK layer and no time course."
 
   reference <- paste(
-    "Maringwa J, Diderichsen PM, Valiathan C.",
-    "Partial Residual Plots as an Integrated Model Diagnostic Tool in",
-    "Model-Based Meta-Analysis.",
-    "Clin Pharmacol Ther. 2025 Jan;117(1):153-159.",
+    "Maringwa J, Diderichsen PM, Valiathan C. Partial Residual Plots as an",
+    "Integrated Model Diagnostic Tool in Model-Based Meta-Analysis. Clin",
+    "Pharmacol Ther. 2025;117(1):153-161.",
     "doi:10.1002/cpt.3418.",
     "Model structure is Equations 1 and 2 (Methods, Model formulation) and the",
     "gnls fitting script in Table S1 of the supplement; parameter estimates are",

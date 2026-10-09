@@ -25,12 +25,10 @@ Oosten_2017_morphine <- function() {
     "each glucuronide needs no molecular-weight factor."
   )
   reference <- paste(
-    "Oosten AW, Abrantes JA, Jonsson S, Matic M, van Schaik RHN,",
-    "de Bruijn P, van der Rijt CCD, Mathijssen RHJ.",
-    "A Prospective Population Pharmacokinetic Study on Morphine Metabolism",
-    "in Cancer Patients.",
-    "Clin Pharmacokinet. 2017;56(6):649-659",
-    "(published online 5 November 2016).",
+    "Oosten AW, Abrantes JA, Jonsson S, Matic M, van Schaik RHN, de Bruijn P,",
+    "van der Rijt CCD, Mathijssen RHJ. A Prospective Population",
+    "Pharmacokinetic Study on Morphine Metabolism in Cancer Patients. Clin",
+    "Pharmacokinet. 2017;56(7):733-746.",
     "doi:10.1007/s40262-016-0471-7.",
     sep = " "
   )

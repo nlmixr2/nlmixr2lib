@@ -19,10 +19,10 @@ Zhou_2018_remimazolam <- function() {
     sep = " "
   )
   reference <- paste(
-    "Zhou Y, Hu P, Huang Y, Sang N, Song K, Wang H, Wen J, Jiang J, Chen X.",
+    "Zhou Y, Hu P, Huang Y, Nuoer S, Song K, Wang H, Wen J, Jiang J, Chen X.",
     "Population Pharmacokinetic/Pharmacodynamic Model-Guided Dosing",
     "Optimization of a Novel Sedative HR7056 in Chinese Healthy Subjects.",
-    "Front Pharmacol. 2018;9:1316. doi:10.3389/fphar.2018.01316. PMC6252322.",
+    "Front Pharmacol. 2018;9:1316. doi:10.3389/fphar.2018.01316 PMC6252322.",
     sep = " "
   )
   vignette <- "Zhou_2018_remimazolam"

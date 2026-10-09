@@ -6,8 +6,8 @@ Kado_2020_benzathine_benzylpenicillin_g <- function() {
     "benzylpenicillin G has favourable pharmacokinetic characteristics for the",
     "prevention of rheumatic heart disease compared with intramuscular",
     "injection: a randomized, crossover, population pharmacokinetic study in",
-    "healthy adult volunteers. J Antimicrob Chemother. 2020;75(10):2986-2993.",
-    "doi:10.1093/jac/dkaa282",
+    "healthy adult volunteers. J Antimicrob Chemother. 2020;75(10):2951-2959.",
+    "doi:10.1093/jac/dkaa282.",
     sep = " "
   )
   vignette <- "Kado_2020_benzathine_benzylpenicillin_g"

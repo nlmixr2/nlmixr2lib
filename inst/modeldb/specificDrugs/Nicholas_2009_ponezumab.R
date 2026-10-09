@@ -1,6 +1,14 @@
 Nicholas_2009_ponezumab <- function() {
   description <- "Two-compartment intravenous population PK model for PF-04360365 (ponezumab), a humanized anti-amyloid IgG2 delta-a monoclonal antibody, in adults with mild-to-moderate Alzheimer's disease; allometric body-weight scaling with estimated exponents on every disposition parameter and a full 4x4 inter-individual block on (CL, V1, V2, Q) (Nicholas 2009 preliminary popPK)"
-  reference <- "Nicholas T, Knebel W, Gastonguay MR, Bednar MM, Billing B, Landen JW, Kupiec JW, Corrigan B, Laurencot R, Zhao Q. Preliminary population pharmacokinetic modeling of PF-04360365, a humanized anti-amyloid monoclonal antibody, in patients with mild-to-moderate alzheimer's disease. Alzheimers Dement. 2009;5(4 Suppl):P425. doi:10.1016/j.jalz.2009.04.270"
+  reference <- paste(
+    "Nicholas T, Knebel W, Gastonguay MR, Bednar MM, Billing CB, Landen JW,",
+    "Kupiec JW, Corrigan B, Laurencot R, Zhao Q. P1-262: Preliminary",
+    "population pharmacokinetic modeling of PF-04360365, a humanized",
+    "anti-amyloid monoclonal antibody, in patients with mild-to-moderate",
+    "Alzheimer's disease. Alzheimer's & Dementia. 2009;5(4S_Part_8).",
+    "doi:10.1016/j.jalz.2009.04.270.",
+    sep = " "
+  )
   vignette <- "Nicholas_2009_ponezumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

@@ -1,6 +1,15 @@
 Kuchimanchi_2024_dostarlimab <- function() {
   description <- "Two-compartment population PK model for dostarlimab (anti-PD-1 IgG4) with sigmoid I_max time-dependent clearance, fitted to GARNET (advanced solid tumours) plus RUBY Part 1 (primary advanced or recurrent endometrial cancer with carboplatin-paclitaxel) data (Kuchimanchi 2024)"
-  reference <- "Kuchimanchi M, Jorgensen TL, Hanze E, et al. Population pharmacokinetics and exposure-response relationships of dostarlimab in primary advanced or recurrent endometrial cancer in part 1 of RUBY. Br J Clin Pharmacol. 2025;91(3):841-855. doi:10.1111/bcp.16325"
+  reference <- paste(
+    "Kuchimanchi M, Jorgensen TL, Hanze E, Andre T, Jain A, Berton D, Alskar",
+    "O, Zub O, Oaknin A, Shahin MS, Koliadi A, Pothuri B, Krivak T, Pishchyk",
+    "M, Segev Y, Backes FJ, Gennigens C, Bouberhan S, Zajic S, Melhem M,",
+    "Buscema J. Population pharmacokinetics and exposure-response",
+    "relationships of dostarlimab in primary advanced or recurrent endometrial",
+    "cancer in part 1 of RUBY. Br J Clin Pharmacol. 2025;91(3):841-855.",
+    "doi:10.1111/bcp.16325.",
+    sep = " "
+  )
   vignette <- "Kuchimanchi_2024_dostarlimab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

@@ -1,6 +1,17 @@
 Tortorici_2019_immunoglobulin <- function() {
   description <- "Two-compartment population PK model for intravenous polyclonal immunoglobulin G (Privigen) in primary and secondary immunodeficiency, with a disease-type effect on central volume (Tortorici 2019)"
-  reference <- "Tortorici MA, Lawo JP, Weide R, Jochems J, Puli S, Hofmann J, et al. Privigen has similar pharmacokinetic properties in primary and secondary immune deficiency. Int Immunopharmacol. 2019;66:119-26. doi:10.1016/j.intimp.2018.11.008 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4 (reference 54)"
+  reference <- paste(
+    "Tortorici MA, Lawo JP, Weide R, Jochems J, Puli S, Hofmann J, Pfruender",
+    "D, Rojavin MA. Privigen has similar pharmacokinetic properties in primary",
+    "and secondary immune deficiency. Int Immunopharmacol. 2019;66:119-126.",
+    "doi:10.1016/j.intimp.2018.11.008. -- parameter values transcribed from",
+    "the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch",
+    "BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and",
+    "pharmacodynamics of immunoglobulins: a systematic review. Clin",
+    "Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4",
+    "(reference 54)",
+    sep = " "
+  )
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
 

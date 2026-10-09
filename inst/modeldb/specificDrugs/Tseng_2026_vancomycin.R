@@ -15,12 +15,13 @@ Tseng_2026_vancomycin <- function() {
     "population PK model, which is plasma-only and has no CSF compartment."
   )
   reference <- paste(
-    "Tseng YJ, Juan L, Wu CC, Lan YX, Chen GY, Huang APH, Chen KW, Wang KC,",
-    "Luh HT, Lin SW. Population pharmacokinetics and cerebrospinal fluid",
-    "penetration of intravenous vancomycin in intracranial hemorrhage patients",
-    "with external ventricular drains: implications for dosing and therapeutic",
-    "drug monitoring. Drug Des Devel Ther. 2026;20:1-14.",
-    "doi:10.2147/DDDT.S574548. PMCID: PMC12965103."
+    "Tseng YJ, Juan L, Wu CC, Lan YX, Chen GY, Huang AP, Chen KW, Wang KC, Luh",
+    "HT, Lin SW. Population Pharmacokinetics and Cerebrospinal Fluid",
+    "Penetration of Intravenous Vancomycin in Intracranial Hemorrhage Patients",
+    "with External Ventricular Drains: Implications for Dosing and Therapeutic",
+    "Drug Monitoring. Drug Des Devel Ther. 2026;20:574548.",
+    "doi:10.2147/DDDT.S574548 PMCID: PMC12965103.",
+    sep = " "
   )
   vignette <- "Tseng_2026_vancomycin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")

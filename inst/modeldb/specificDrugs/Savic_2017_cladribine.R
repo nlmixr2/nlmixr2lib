@@ -1,6 +1,12 @@
 Savic_2017_cladribine <- function() {
   description <- "Population PK model for cladribine (CdA) in patients with relapsing-remitting multiple sclerosis (Savic 2017): three-compartment disposition with first-order oral absorption, separate fasted vs fed (or unknown food-state) absorption parameters, renal clearance proportional to Cockcroft-Gault creatinine clearance, and a multiplicative non-renal-clearance effect of concomitant subcutaneous interferon beta-1a coadministration."
-  reference <- "Savic RM, Novakovic AM, Ekblom M, Munafo A, Karlsson MO. Population Pharmacokinetics of Cladribine in Patients with Multiple Sclerosis. Clin Pharmacokinet. 2017 Oct;56(10):1245-1253. doi:10.1007/s40262-017-0516-6. PMID: 28255848; PMCID: PMC5591346."
+  reference <- paste(
+    "Savic RM, Novakovic AM, Ekblom M, Munafo A, Karlsson MO. Population",
+    "Pharmacokinetics of Cladribine in Patients with Multiple Sclerosis. Clin",
+    "Pharmacokinet. 2017;56(10):1245-1253. doi:10.1007/s40262-017-0516-6 PMID:",
+    "28255849; PMCID: PMC5591805.",
+    sep = " "
+  )
   vignette <- "Savic_2017_cladribine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

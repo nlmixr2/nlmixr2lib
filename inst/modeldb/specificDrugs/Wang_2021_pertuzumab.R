@@ -1,6 +1,14 @@
 Wang_2021_pertuzumab <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption and bioavailability for pertuzumab (Perjeta) administered either intravenously or as the fixed-dose combination subcutaneous formulation with trastuzumab (PH FDC SC) in patients with HER2-positive early breast cancer in the FeDeriCa study (Wang 2021)"
-  reference <- "Wang B, Deng R, Hennig S, Badovinac Crnjevic T, Kaewphluk M, Kagedal M, Quartino AL, Girish S, Li C, Kirschbrown WP. Population pharmacokinetic and exploratory exposure-response analysis of the fixed-dose combination of pertuzumab and trastuzumab for subcutaneous injection in patients with HER2-positive early breast cancer in the FeDeriCa study. Cancer Chemother Pharmacol. 2021;88(3):439-451. doi:10.1007/s00280-021-04296-0"
+  reference <- paste(
+    "Wang B, Deng R, Hennig S, Badovinac Crnjevic T, Kaewphluk M, Kagedal M,",
+    "Quartino AL, Girish S, Li C, Kirschbrown WP. Population pharmacokinetic",
+    "and exploratory exposure-response analysis of the fixed-dose combination",
+    "of pertuzumab and trastuzumab for subcutaneous injection in patients with",
+    "HER2-positive early breast cancer in the FeDeriCa study. Cancer Chemother",
+    "Pharmacol. 2021;88(3):499-512. doi:10.1007/s00280-021-04296-0.",
+    sep = " "
+  )
   vignette <- "Wang_2021_pertuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

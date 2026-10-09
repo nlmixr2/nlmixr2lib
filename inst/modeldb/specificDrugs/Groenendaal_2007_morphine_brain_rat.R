@@ -23,11 +23,10 @@ Groenendaal_2007_morphine_brain_rat <- function() {
     sep = " "
   )
   reference <- paste(
-    "Groenendaal D, Freijer J, de Mik D, Bouw MR, Danhof M, de Lange ECM.",
-    "Population pharmacokinetic modelling of non-linear brain distribution",
-    "of morphine: influence of active saturable influx and P-glycoprotein",
-    "mediated efflux.",
-    "Br J Pharmacol. 2007;151(4):701-712.",
+    "Groenendaal D, Freijer J, de Mik D, Bouw MR, Danhof M, de Lange EC.",
+    "Population pharmacokinetic modelling of non-linear brain distribution of",
+    "morphine: influence of active saturable influx and P-glycoprotein",
+    "mediated efflux. Br J Pharmacol. 2007;151(5):701-712.",
     "doi:10.1038/sj.bjp.0707257.",
     sep = " "
   )

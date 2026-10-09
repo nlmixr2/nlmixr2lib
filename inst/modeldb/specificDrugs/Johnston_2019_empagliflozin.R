@@ -12,18 +12,17 @@ Johnston_2019_empagliflozin <- function() {
     "insulin daily dose, and -- on Emax only -- baseline HbA1c)."
   )
   reference <- paste(
-    "Johnston CK, Riggs MM, Marquard J, Soleymanlou N, Nock V,",
-    "Liesenfeld K-H. M-EASE-2: A Modelling and Simulation Study",
-    "Conducted to Further Characterise the Efficacy of Low-dose",
-    "Empagliflozin as Adjunctive to InSulin ThErapy (M-EASE) in Type 1",
-    "Diabetes Mellitus. American Diabetes Association 79th Scientific",
-    "Sessions, 2019; poster 1198-P.",
-    "doi:10.2337/db19-1198-p.",
-    "PDF: https://metrumrg.com/wp-content/uploads/Pubs/M-EASE-2-page2019-johnston.pdf.",
-    "Upstream popPK structure cited by the source authors:",
-    "Mondick J et al. J Clin Pharmacol. 2018;58:640-649",
-    "(updated internally with EASE-2 / EASE-3 data on file to compute",
-    "the individual AUCss inputs to this PD model)."
+    "PERKINS BA, SOLEYMANLOU N, ROSENSTOCK J, SKYLER JS, LAFFEL LM, LIESENFELD",
+    "KH, NEUBACHER D, RIGGS M, JOHNSTON CK, EUDY-BYRNE RJ, ELMOKADEM A, GEORGE",
+    "J, MARQUARD J, NOCK VC. 1198-P: The M-EASE Studies: A Modeling and",
+    "Simulation Approach to Further Characterize the Efficacy of Low-Dose",
+    "Empagliflozin as Adjunctive to Insulin Therapy in Type 1 Diabetes (T1DM).",
+    "Diabetes. 2019;68(Supplement_1):1198-P. doi:10.2337/db19-1198-p. PDF:",
+    "https://metrumrg.com/wp-content/uploads/Pubs/M-EASE-2-page2019-johnston.pdf.",
+    "Upstream popPK structure cited by the source authors: Mondick J et al. J",
+    "Clin Pharmacol. 2018;58:640-649 (updated internally with EASE-2 / EASE-3",
+    "data on file to compute the individual AUCss inputs to this PD model).",
+    sep = " "
   )
   vignette <- "Johnston_2019_empagliflozin"
   units <- list(

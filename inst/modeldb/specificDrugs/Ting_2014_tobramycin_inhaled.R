@@ -1,9 +1,11 @@
 Ting_2014_tobramycin_inhaled <- function() {
   description <- "Two-compartment population PK model for inhaled tobramycin powder (TIP / TOBI Podhaler) in cystic fibrosis patients (Ting 2014), with first-order absorption from a depot compartment and apparent (post-bioavailability) clearance and volumes. Body mass index (BMI) and baseline FEV1 percent-predicted are power-form covariates on apparent central volume of distribution (reference 18.8 kg/m^2 and 62.1 % respectively)."
   reference <- paste(
-    "Ting L, Aksenov S, Bhansali SG, Ramakrishna R, Tang P, Geller DE. (2014).",
-    "Population pharmacokinetics of inhaled tobramycin powder in cystic fibrosis patients.",
-    "CPT Pharmacometrics Syst Pharmacol 3(9):e99. doi:10.1038/psp.2013.76"
+    "Ting L, Aksenov S, Bhansali SG, Ramakrishna R, Tang P, Geller DE.",
+    "Population pharmacokinetics of inhaled tobramycin powder in cystic",
+    "fibrosis patients. CPT Pharmacometrics Syst Pharmacol. 2014;3(2):e99.",
+    "doi:10.1038/psp.2013.76.",
+    sep = " "
   )
   vignette <- "Ting_2014_tobramycin_inhaled"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

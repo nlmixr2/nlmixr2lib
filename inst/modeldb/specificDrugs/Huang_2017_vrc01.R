@@ -1,6 +1,13 @@
 Huang_2017_vrc01 <- function() {
   description <- "Two-compartment population PK model for VRC01 (HIV-1 broadly neutralizing IgG1 monoclonal antibody) in healthy adults after IV or SC administration (Huang 2017)"
-  reference <- "Huang Y, Zhang L, Ledgerwood J, et al. Population pharmacokinetics analysis of VRC01, an HIV-1 broadly neutralizing monoclonal antibody, in healthy adults. MAbs. 2017;9(5):792-800. doi:10.1080/19420862.2017.1311435"
+  reference <- paste(
+    "Huang Y, Zhang L, Ledgerwood J, Grunenberg N, Bailer R, Isaacs A, Seaton",
+    "K, Mayer KH, Capparelli E, Corey L, Gilbert PB. Population",
+    "pharmacokinetics analysis of VRC01, an HIV-1 broadly neutralizing",
+    "monoclonal antibody, in healthy adults. MAbs. 2017;9(5):792-800.",
+    "doi:10.1080/19420862.2017.1311435.",
+    sep = " "
+  )
   vignette <- "Huang_2017_vrc01"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

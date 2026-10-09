@@ -1,6 +1,18 @@
 NavarroMora_2022_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G given subcutaneously or intravenously in primary immunodeficiency (Navarro-Mora 2022)"
-  reference <- "Navarro-Mora G, Alberti JJ, Mondou E, Vilardell D, Vicente Torres J, Ayguasanosa J, et al. Pharmacokinetic modeling and simulation of subcutaneous and intravenous IgG dosing in patients with primary immunodeficiency diseases. Int Immunopharmacol. 2022;104:108472. doi:10.1016/j.intimp.2021.108472 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4 (reference 37)"
+  reference <- paste(
+    "Navarro-Mora G, Alberti JJ, Mondou E, Vilardell D, Vicente Torres J,",
+    "Ayguasanosa J, Paez A. Pharmacokinetic modeling and simulation of",
+    "subcutaneous and intravenous IgG dosing in patients with primary",
+    "immunodeficiency diseases. Int Immunopharmacol. 2022;104:108472.",
+    "doi:10.1016/j.intimp.2021.108472. -- parameter values transcribed from",
+    "the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch",
+    "BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and",
+    "pharmacodynamics of immunoglobulins: a systematic review. Clin",
+    "Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4",
+    "(reference 37)",
+    sep = " "
+  )
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
 

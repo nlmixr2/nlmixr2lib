@@ -2,10 +2,10 @@ Yang_2026_copd_fev1_adipd_mbma <- function() {
   description <- "MBMA. Combined aggregated-data + individual-patient-data (ADIPD) longitudinal model of morning trough forced expiratory volume in 1 second (FEV1) in chronic obstructive pulmonary disease, fit by NONMEM 7.5.1 to 4,137 arm-mean FEV1 observations from 296 published randomized trials (250,543 patients) jointly with individual FEV1 records from 2,241 patients in two fluticasone furoate / vilanterol trials (Yang 2026). FEV1 = baseline - linear disease progression + immediate placebo effect + drug effect + a post-bronchodilator reconciliation term. Twenty-three compounds are carried, each with an Emax or a constant effect in per-arm total daily dose, four class-level effect-onset time courses, a LABA-LAAC power interaction, and background-therapy contributions proportional to the fraction of the arm on each drug class. Random effects are declared at THREE levels -- between-study (eta_study_*), between-arm for aggregated records (eta_arm_base), and between-subject for individual records -- because the source used NONMEM $LEVEL with an interoccasion-like arm random effect; rxode2 draws one level per solve, so see the vignette for how to simulate each level. Aggregated baselines use a normal approximation to the mean of a log-normal to avoid aggregation bias. There is no PK layer: drug effects are driven by per-arm total daily dose supplied as covariate columns."
 
   reference <- paste(
-    "Yang L, Llanos-Paez C, Yang S, Ambery C, Berges A, Kjellsson MC,",
-    "Karlsson MO. A Combined Model-Based Meta-Analysis of Aggregated and",
-    "Individual FEV1 Data From Randomized COPD Trials.",
-    "CPT Pharmacometrics Syst Pharmacol. 2026;15(1):e70059.",
+    "Yang L, Llanos-Paez C, Yang S, Ambery C, Berges A, Kjellsson MC, Karlsson",
+    "MO. A Combined Model-Based Meta-Analysis of Aggregated and Individual",
+    "FEV1 Data From Randomized COPD Trials. CPT Pharmacometrics Syst",
+    "Pharmacol. 2026;15(2):e70059.",
     "doi:10.1002/psp4.70059.",
     "Final parameter estimates are in Supporting Information Table S3;",
     "the model equations are in the Supporting Information section",

@@ -1,6 +1,12 @@
 Wang_2017_benralizumab <- function() {
   description <- "Two compartment PK model of benralizumab (anti-IL-5Ralpha) in healthy volunteers and patients with asthma (Wang 2017)"
-  reference <- "Wang B, Lau YY, Liang M, et al. Population Pharmacokinetics and Pharmacodynamics of Benralizumab in Healthy Volunteers and Patients With Asthma. CPT Pharmacometrics Syst Pharmacol. 2017;6(4):249-257. doi:10.1002/psp4.12160"
+  reference <- paste(
+    "Wang B, Yan L, Yao Z, Roskos LK. Population Pharmacokinetics and",
+    "Pharmacodynamics of Benralizumab in Healthy Volunteers and Patients With",
+    "Asthma. CPT Pharmacometrics Syst Pharmacol. 2017;6(4):249-257.",
+    "doi:10.1002/psp4.12160.",
+    sep = " "
+  )
   vignette <- "Wang_2017_benralizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
   # Issue #482: what each ODE state holds, in what amount units, in what

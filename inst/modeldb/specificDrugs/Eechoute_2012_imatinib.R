@@ -19,19 +19,20 @@ Eechoute_2012_imatinib <- function() {
     "from Eechoute 2012 when that paper is obtained; the topology of the ",
     "transit chain in particular is an inference, flagged below."
   )
-  reference <- paste0(
-    "Eechoute K, Fransson MN, Reyners AK, de Jong FA, Sparreboom A, van ",
-    "der Graaf WTA, Verweij J, Wiemer EAC, Steeghs N, Mathijssen RHJ, ",
-    "Friberg LE. A long-term prospective population pharmacokinetic study ",
-    "on imatinib plasma concentrations in GIST patients. Clin Cancer Res. ",
-    "2012;18(20):5780-5787. doi:10.1158/1078-0432.CCR-12-0490. ",
-    "PARAMETER SOURCE (secondary): Yang T, Rasmussen ASB, Weimann A, ",
-    "Thastrup M, Rank CU, Als-Nielsen B, Malmros J, Wik HS, Lohi O, ",
-    "Overgaard U, Johannsdottir IMR, Vaitkeviciene G, Dalhoff K, ",
-    "Schmiegelow K, Lund TM. Published population pharmacokinetic models ",
-    "of imatinib perform poorly on TDM data from pediatric patients. ",
-    "Target Oncol. 2025;20(5):871-886. Table 1, row 'Eechoute et al. ",
-    "(2012)'. doi:10.1007/s11523-025-01172-2."
+  reference <- paste(
+    "Eechoute K, Fransson MN, Reyners AK, de Jong FA, Sparreboom A, van der",
+    "Graaf WT, Friberg LE, Schiavon G, Wiemer EA, Verweij J, Loos WJ,",
+    "Mathijssen RH, De Giorgi U. A long-term prospective population",
+    "pharmacokinetic study on imatinib plasma concentrations in GIST patients.",
+    "Clin Cancer Res. 2012;18(20):5780-5787.",
+    "doi:10.1158/1078-0432.CCR-12-0490. PARAMETER SOURCE (secondary): Yang T,",
+    "Rasmussen ASB, Weimann A, Thastrup M, Rank CU, Als-Nielsen B, Malmros J,",
+    "Wik HS, Lohi O, Overgaard U, Johannsdottir IMR, Vaitkeviciene G, Dalhoff",
+    "K, Schmiegelow K, Lund TM. Published population pharmacokinetic models of",
+    "imatinib perform poorly on TDM data from pediatric patients. Target",
+    "Oncol. 2025;20(5):871-886. Table 1, row 'Eechoute et al. (2012)'.",
+    "doi:10.1007/s11523-025-01172-2.",
+    sep = " "
   )
   vignette <- "Yang_2025_imatinib_external_evaluation"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")

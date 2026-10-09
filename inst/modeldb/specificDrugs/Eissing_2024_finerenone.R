@@ -1,11 +1,12 @@
 Eissing_2024_finerenone <- function() {
   description <- "Two-compartment population PK model with a 4-transit-compartment delayed first-order absorption for finerenone in adults with chronic kidney disease and type 2 diabetes (FIGARO-DKD final PK model; Eissing 2024)"
   reference <- paste(
-    "Eissing T, Goulooze SC, van den Berg P, et al. Pharmacokinetics and",
-    "pharmacodynamics of finerenone in patients with chronic kidney",
-    "disease and type 2 diabetes: Insights based on FIGARO-DKD and",
-    "FIDELIO-DKD. Diabetes Obes Metab. 2024;26(3):924-936.",
-    "doi:10.1111/dom.15387",
+    "Eissing T, Goulooze SC, van den Berg P, van Noort M, Ruppert M, Snelder",
+    "N, Garmann D, Lippert J, Heinig R, Brinker M, Heerspink HJL.",
+    "Pharmacokinetics and pharmacodynamics of finerenone in patients with",
+    "chronic kidney disease and type 2 diabetes: Insights based on FIGARO-DKD",
+    "and FIDELIO-DKD. Diabetes Obes Metab. 2024;26(3):924-936.",
+    "doi:10.1111/dom.15387.",
     sep = " "
   )
   vignette <- "Eissing_2024_finerenone"

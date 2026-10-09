@@ -1,6 +1,22 @@
 Hyland_2008_maraviroc_rcyp3a4 <- function() {
   description <- "In vitro (recombinant human CYP3A4 Supersomes). Michaelis-Menten enzyme-kinetic model of the CYP3A4-mediated N-dealkylation of maraviroc to its secondary-amine metabolite UK-408,027 in heterologously expressed CYP3A4, plus the parallel CYP3A4-mediated oxidative routes that make up the remainder of maraviroc's intrinsic clearance in the same system. The UK-408,027 route accounts for Vmax/Km = 0.23 uL/min/pmol CYP3A4 of the 1.7 uL/min/pmol CYP3A4 total depletion intrinsic clearance; the balance is assigned to the other oxidative pathways as a first-order route, because substrate depletion was measured only at 1 uM, far below Km, and so characterises a linear clearance. The model also carries the intersystem extrapolation factor of 0.2 with which the paper scales the recombinant intrinsic clearance to a human liver microsome basis, reproducing the 0.34 uL/min/pmol and 40.8 uL/min/mg values that were the CLint input to the maraviroc Simcyp model. No impurity term is carried, because in the recombinant system the substrate contaminant was subtracted by comparison against control Supersomes rather than fitted. Sibling model: Hyland_2008_maraviroc_hlm, the same reaction characterised in pooled human liver microsomes."
-  reference <- "Hyland R, Dickins M, Collins C, Jones H, Jones B. Maraviroc: in vitro assessment of drug-drug interaction potential. Br J Clin Pharmacol. 2008 Oct;66(4):498-507. doi:10.1111/j.1365-2125.2008.03198.x. PMID: 18492127. PMCID: PMC2561101. Km and Vmax estimates: Results, 'Kinetics of maraviroc N-dealkylation by rCYP3A4', and Figure 4. Substrate-depletion intrinsic clearance, the intersystem extrapolation factor, the CYP3A4 content of the human liver microsome batch and the fraction unbound in microsomes: Results, 'CLint estimates from HLM and rCYP', and Table 1. Incubation design and the control-Supersome contaminant subtraction: Materials and methods, 'Metabolism of maraviroc by expressed recombinant CYPs', and Results, 'Metabolism of maraviroc in expressed recombinant CYPs'. The intersystem extrapolation factor is taken from Proctor NJ, Tucker GT, Rostami-Hodjegan A. Xenobiotica 2004;34:151-78, reference 13 of the source paper."
+  reference <- paste(
+    "Hyland R, Dickins M, Collins C, Jones H, Jones B. Maraviroc: in vitro",
+    "assessment of drug-drug interaction potential. Br J Clin Pharmacol.",
+    "2008;66(4):498-507. doi:10.1111/j.1365-2125.2008.03198.x PMID: 18647303.",
+    "PMCID: PMC2561101. Km and Vmax estimates: Results, 'Kinetics of maraviroc",
+    "N-dealkylation by rCYP3A4', and Figure 4. Substrate-depletion intrinsic",
+    "clearance, the intersystem extrapolation factor, the CYP3A4 content of",
+    "the human liver microsome batch and the fraction unbound in microsomes:",
+    "Results, 'CLint estimates from HLM and rCYP', and Table 1. Incubation",
+    "design and the control-Supersome contaminant subtraction: Materials and",
+    "methods, 'Metabolism of maraviroc by expressed recombinant CYPs', and",
+    "Results, 'Metabolism of maraviroc in expressed recombinant CYPs'. The",
+    "intersystem extrapolation factor is taken from Proctor NJ, Tucker GT,",
+    "Rostami-Hodjegan A. Xenobiotica 2004;34:151-78, reference 13 of the",
+    "source paper.",
+    sep = " "
+  )
   vignette <- "Hyland_2008_maraviroc_invitro"
   units <- list(time = "min", dosing = "uM (incubation concentration)", concentration = "uM")
 

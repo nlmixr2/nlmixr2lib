@@ -25,7 +25,15 @@ Tamura_2023_remdesivir <- function() {
     "error is proportional. The paper found no relationship between",
     "GS-441524 exposure and either recovery rate or transaminase elevation."
   )
-  reference <- "Tamura R, Irie K, Nakagawa A, Muroi H, Eto M, Ikesue H, et al. Population pharmacokinetics and exposure-clinical outcome relationship of remdesivir major metabolite GS-441524 in patients with moderate and severe COVID-19. CPT Pharmacometrics Syst Pharmacol. 2023;12(4):513-521. doi:10.1002/psp4.12936"
+  reference <- paste(
+    "Tamura R, Irie K, Nakagawa A, Muroi H, Eto M, Ikesue H, Muroi N,",
+    "Fukushima S, Tomii K, Hashida T. Population pharmacokinetics and",
+    "exposure-clinical outcome relationship of remdesivir major metabolite",
+    "GS-441524 in patients with moderate and severe COVID-19. CPT",
+    "Pharmacometrics Syst Pharmacol. 2023;12(4):513-521.",
+    "doi:10.1002/psp4.12936.",
+    sep = " "
+  )
   vignette <- "Tamura_2023_remdesivir"
 
   # The source NONMEM control stream (Supporting Information, "NONMEM model

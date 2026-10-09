@@ -1,6 +1,13 @@
 Chelle_2019_factorviii_fanhdi <- function() {
   description <- "Two-compartment population PK model for Fanhdi/Alphanate (plasma-derived factor VIII concentrate, Grifols) in hemophilia A patients pooled from 12 hemophilia centers in the WAPPS-Hemo platform (Chelle 2019). Final model has fat-free mass (FFM) as a power-form covariate on CL, V1, and V2, and a piecewise-linear age effect on CL above the median age of 25 years; between-subject variability is a BLOCK(2) on CL and V1 with correlation 0.797; residual error is proportional only."
-  reference <- "Chelle P, Yeung CHT, Bonanad S, Morales Munoz JC, Ozelo MC, Megias Vericat JE, Iorio A, Spears J, Mir R, Edginton A. Routine clinical care data for population pharmacokinetic modeling: the case for Fanhdi/Alphanate in hemophilia A patients. J Pharmacokinet Pharmacodyn. 2019 Oct;46(5):427-438. doi:10.1007/s10928-019-09637-4. PMID:31115793."
+  reference <- paste(
+    "Chelle P, Yeung CHT, Bonanad S, Morales Munoz JC, Ozelo MC, Megias",
+    "Vericat JE, Iorio A, Spears J, Mir R, Edginton A. Routine clinical care",
+    "data for population pharmacokinetic modeling: the case for",
+    "Fanhdi/Alphanate in hemophilia A patients. J Pharmacokinet Pharmacodyn.",
+    "2019;46(5):427-438. doi:10.1007/s10928-019-09637-4 PMID:31115857.",
+    sep = " "
+  )
   vignette <- "Chelle_2019_factorviii_fanhdi"
   units <- list(time = "h", dosing = "IU", concentration = "IU/mL")
 

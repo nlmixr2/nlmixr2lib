@@ -1,7 +1,7 @@
 Kawuma_2023_dolutegravir <- function() {
   description <- "Two-compartment population PK model for dolutegravir with lagged first-order absorption in healthy volunteers, quantifying the drug-drug interaction with rifabutin (-33.1% on central volume) alongside the previously reported rifampicin interaction (+143% on clearance)"
   reference <- paste(
-    "Kawuma AN, Wasmann RE, Dooley KE, Boffito M, Maartens G, Denti P.",
+    "Kawuma AN, Wasmann RE, Dooley KE, Maartens G, Denti P.",
     "Drug-drug interaction between rifabutin and dolutegravir: A population",
     "pharmacokinetic model. Br J Clin Pharmacol. 2023;89(3):1216-1221.",
     "doi:10.1111/bcp.15604.",

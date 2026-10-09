@@ -1,11 +1,10 @@
 Gastonguay_2005_efaproxiral <- function() {
   description <- "Linear 2-compartment IV popPK model for efaproxiral (RSR13) with an algebraic linear RBC:plasma proportionality (Crbc = SLPRBC * Cc) and a linear PD model relating partial pressure of oxygen at 50% hemoglobin saturation (p50, mmHg) to RBC efaproxiral concentration (p50 = INTp50 + SLPp50 * Crbc). Population of 451 cancer patients receiving radiation therapy pooled across six phase I-III trials. Full covariate model: BSA and AGE on CL; BSA, AGE and baseline albumin (BALB) on V1 and V2; BSA on Q; max administered dose (MDOS), AGE and BALB on SLPRBC; primary cancer type indicators (breast, glioma, other; reference = lung) on SLPp50. Three-way correlated IIV block on CL, V1, V2 plus diagonal IIV on Q, SLPRBC, INTp50 and SLPp50."
   reference <- paste(
-    "Gastonguay MR, Venitz J, Steffen RP, Hackman J.",
-    "Population pharmacokinetic-pharmacodynamic modeling of",
-    "efaproxiral in cancer patients receiving radiation therapy.",
-    "Clin Pharmacol Ther. 2005;77(2):P55 (PII-101).",
-    "ASCPT 2005 annual meeting poster.",
+    "GASTONGUAY M, VENITZ J, STEFFEN R, HACKMAN J. Population",
+    "pharmacokinetic-pharmacodynamic modeling of efaproxiral in cancer",
+    "patients receiving radiation therapy. Clinical Pharmacology &",
+    "Therapeutics. 2005;77(2):P89-P89.",
     "doi:10.1016/j.clpt.2004.12.233.",
     sep = " "
   )

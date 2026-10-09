@@ -11,10 +11,10 @@ Voller_2017_phenobarbital <- function() {
   # this very dataset as its case study.
   reference <- paste(
     "Voller S, Flint RB, Stolk LM, Degraeuwe PLJ, Simons SHP, Pokorna P,",
-    "Burger DM, de Groot R, Tibboel D, Knibbe CAJ (2017).",
-    "Model-based clinical dose optimization for phenobarbital in neonates:",
-    "an illustration of the importance of data sharing and external validation.",
-    "European Journal of Pharmaceutical Sciences 109S:S90-S97.",
+    "Burger DM, de Groot R, Tibboel D, Knibbe CAJ. Model-based clinical dose",
+    "optimization for phenobarbital in neonates: An illustration of the",
+    "importance of data sharing and external validation. Eur J Pharm Sci.",
+    "2017;109:S90-S97.",
     "doi:10.1016/j.ejps.2017.05.026.",
     "DDMORE Foundation Model Repository: DDMODEL00000256.",
     sep = " "

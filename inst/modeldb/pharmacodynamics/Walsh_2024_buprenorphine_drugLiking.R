@@ -25,12 +25,11 @@ Walsh_2024_buprenorphine_drugLiking <- function() {
     sep = " "
   )
   reference <- paste(
-    "Walsh SL, Comer SD, Aguiar Zdovc J, Sarr C, Bjornsson M,",
-    "Strandgarden K, Hjelmstrom P, Tiberg F.",
-    "Pharmacokinetic-pharmacodynamic analysis of drug liking blockade by",
-    "buprenorphine subcutaneous depot (CAM2038) in participants with opioid",
-    "use disorder.",
-    "Neuropsychopharmacology. 2024;49(7):1050-1057.",
+    "Walsh SL, Comer SD, Zdovc JA, Sarr C, Bjornsson M, Strandgarden K,",
+    "Hjelmstrom P, Tiberg F. Pharmacokinetic-pharmacodynamic analysis of drug",
+    "liking blockade by buprenorphine subcutaneous depot (CAM2038) in",
+    "participants with opioid use disorder. Neuropsychopharmacology.",
+    "2024;49(6):1050-1057.",
     "doi:10.1038/s41386-023-01793-z.",
     "Parameter estimates from Table 1; structural equation and the logit",
     "residual-error transformation from the Supplementary Appendix",

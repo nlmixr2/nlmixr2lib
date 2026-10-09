@@ -1,13 +1,12 @@
 Wallender_2021_piperaquine_malaria <- function() {
   description <- "Repeated-time-to-event exposure-response model for incident Plasmodium falciparum malaria in Ugandan children receiving intermittent preventive treatment with dihydroartemisinin-piperaquine, from Wallender 2021. The hazard of incident malaria is a constant (exponential) baseline hazard multiplied by a calendar high-transmission-period factor and by a sigmoidal inhibitory effect of the time-varying plasma piperaquine concentration with a maximum effect of complete hazard suppression: h(t) = h0 * transmission * (1 - Cc^gamma / (EC50^gamma + Cc^gamma)) * exp(eta). The three-compartment piperaquine population PK model of the same paper is embedded so the hazard is driven by simulated concentration, matching the source's sequential fit in which the exposure-response model used model-derived individual PK parameters. The cumulative hazard is carried as an ODE state and exposed alongside the survivor function and the fractional protective efficacy that Figure 5B plots. A piperaquine concentration of 15.4 ng/mL reduces the malaria hazard by 95% and was the target concentration for the paper's dosing-regimen simulations. Sister model files from the same paper: modellib('Wallender_2021_piperaquine') (population PK) and modellib('Wallender_2021_piperaquine_qtc') (Bazett-corrected QT interval)."
   reference <- paste(
-    "Wallender E, Ali AM, Hughes E, Kakuru A, Jagannathan P, Muhindo MK,",
-    "Opira B, Whalen M, Huang L, Duvalsaint M, Legac J, Kajubi R, Aweeka F,",
-    "Dorsey G, Kamya MR, Rosenthal PJ, Savic RM.",
-    "Identifying an optimal dihydroartemisinin-piperaquine dosing regimen",
-    "for malaria prevention in young Ugandan children.",
-    "Nat Commun. 2021;12(1):6714.",
-    "doi:10.1038/s41467-021-27051-8. PMC8602248.",
+    "Wallender E, Ali AM, Hughes E, Kakuru A, Jagannathan P, Muhindo MK, Opira",
+    "B, Whalen M, Huang L, Duvalsaint M, Legac J, Kamya MR, Dorsey G, Aweeka",
+    "F, Rosenthal PJ, Savic RM. Identifying an optimal",
+    "dihydroartemisinin-piperaquine dosing regimen for malaria prevention in",
+    "young Ugandan children. Nat Commun. 2021;12(1):6714.",
+    "doi:10.1038/s41467-021-27051-8 PMC8602248.",
     "Open Access under CC BY 4.0.",
     "The hazard equation is Eq. 3 and the final estimates are in Table 2",
     "under 'Pharmacodynamic parameters'; the embedded PK parameters are the",

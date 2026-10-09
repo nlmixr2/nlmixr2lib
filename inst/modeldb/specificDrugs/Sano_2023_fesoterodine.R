@@ -1,6 +1,13 @@
 Sano_2023_fesoterodine <- function() {
   description <- "Population pharmacokinetic model for 5-hydroxymethyl tolterodine (5-HMT), the active metabolite of fesoterodine, in pediatric patients aged 6-17 years with overactive bladder or neurogenic detrusor overactivity. One-compartment disposition with first-order absorption, a first-order absorption lag and first-order elimination, fitted to 428 5-HMT concentrations from 142 patients pooled across the phase II study 1066 (NCT00857896) and the phase III study 1047 (NCT01557244). Body weight is allometrically scaled onto CL/F (exponent 0.75 FIXED) and Vd/F (exponent 1 FIXED) referenced to 35 kg; CYP2D6 poor metabolizers carry 0.546-fold CL/F, female patients 0.862-fold CL/F and 0.634-fold Vd/F, and the beads-in-capsule (BIC) formulation carries 0.648-fold bioavailability relative to the tablet reference. Absorption is flip-flop (ka 0.0897 1/h is far slower than kel = CL/Vd = 1.05 1/h), so the reported 7.73 h terminal half-life is absorption-rate-limited. Inter-individual variability on CL/F, Vd/F and ka is a full 3x3 covariance block and residual error is additive on the log-transformed concentration scale (i.e. log-normal). Doses are supplied in micrograms so that amount/volume yields ng/mL, matching the source NM-TRAN dataset."
-  reference <- "Sano Y, Shoji S, Shahin M, Sweeney K, Darekar A, Malhotra BK. Population Pharmacokinetic and Pharmacodynamic Modeling of Fesoterodine in Pediatric Patients with Neurogenic Detrusor Overactivity. Eur J Drug Metab Pharmacokinet. 2023 May;48(3):257-269. doi:10.1007/s13318-023-00818-8. PMID: 36892805. PMCID: PMC10175358."
+  reference <- paste(
+    "Sano Y, Shoji S, Shahin M, Sweeney K, Darekar A, Malhotra BK. Population",
+    "Pharmacokinetic and Pharmacodynamic Modeling of Fesoterodine in Pediatric",
+    "Patients with Neurogenic Detrusor Overactivity. Eur J Drug Metab",
+    "Pharmacokinet. 2023;48(3):257-269. doi:10.1007/s13318-023-00818-8 PMID:",
+    "36892754. PMCID: PMC10175358.",
+    sep = " "
+  )
   vignette <- "Sano_2023_fesoterodine"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 

@@ -1,6 +1,16 @@
 Diao_2016_daclizumab_cd56bright <- function() {
   description <- "Indirect-response PK/PD model of CD56 bright natural killer (NK) cell expansion following subcutaneous daclizumab high-yield process (HYP) in adults with relapsing-remitting multiple sclerosis (Diao 2016). Daclizumab HYP serum concentration stimulates the zero-order production rate (Kin) of CD56 bright NK cells (% of all lymphocytes) via a saturable Smax function; first-order elimination rate Kout is fixed by the median baseline. The PK backbone is the two-compartment, first-order SC absorption + lag model from Othman 2014 (file inst/modeldb/specificDrugs/Othman_2014_daclizumab.R), copied verbatim with weight-based allometric scaling."
-  reference <- "Diao L, Hang Y, Othman AA, Nestorov I, Tran JQ, Mehta D, Amaravadi L. Population PK/PD analyses of CD25 occupancy, CD56 bright NK cell expansion and regulatory T cell reduction by daclizumab HYP in subjects with multiple sclerosis. Br J Clin Pharmacol. 2016;82(5):1333-1342. doi:10.1111/bcp.13051 (PMID 27333593). PK backbone: Othman AA, Tran JQ, Tang MT, Dutta S. Population Pharmacokinetics of Daclizumab High-Yield Process in Healthy Volunteers. Clin Pharmacokinet. 2014;53(10):907-918. doi:10.1007/s40262-014-0159-9."
+  reference <- paste(
+    "Diao L, Hang Y, Othman AA, Mehta D, Amaravadi L, Nestorov I, Tran JQ.",
+    "Population PK-PD analyses of CD25 occupancy, CD56(bright) NK cell",
+    "expansion, and regulatory T cell reduction by daclizumab HYP in subjects",
+    "with multiple sclerosis. Br J Clin Pharmacol. 2016;82(5):1333-1342.",
+    "doi:10.1111/bcp.13051 (PMID 27333593). PK backbone: Othman AA, Tran JQ,",
+    "Tang MT, Dutta S. Population Pharmacokinetics of Daclizumab High-Yield",
+    "Process in Healthy Volunteers. Clin Pharmacokinet. 2014;53(10):907-918.",
+    "doi:10.1007/s40262-014-0159-9.",
+    sep = " "
+  )
   vignette <- "Diao_2016_daclizumab_cd56bright"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "% of total lymphocytes (T + B + NK)")
 

@@ -1,6 +1,17 @@
 Zhang_2020_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G (IgPro20, Hizentra) given weekly or biweekly in primary immunodeficiency (Zhang 2020)"
-  reference <- "Zhang Y, Baheti G, Chapdelaine H, Hofmann J, Rojavin M, Tortorici M, et al. Population pharmacokinetic analysis of weekly and biweekly IgPro20 (Hizentra) dosing in patients with primary immunodeficiency. Int Immunopharmacol. 2020;81:106005. doi:10.1016/j.intimp.2019.106005 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4 (reference 44)"
+  reference <- paste(
+    "Zhang Y, Baheti G, Chapdelaine H, Hofmann J, Rojavin M, Tortorici M,",
+    "Haddad E. Population pharmacokinetic analysis of weekly and biweekly",
+    "IgPro20 (Hizentra) dosing in patients with primary immunodeficiency. Int",
+    "Immunopharmacol. 2020;81:106005. doi:10.1016/j.intimp.2019.106005. --",
+    "parameter values transcribed from the secondary source: van der Zeeuw SL,",
+    "van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T.",
+    "Population pharmacokinetics and pharmacodynamics of immunoglobulins: a",
+    "systematic review. Clin Pharmacokinet. 2026;65(6):811-36.",
+    "doi:10.1007/s40262-026-01641-5, Table 4 (reference 44)",
+    sep = " "
+  )
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
 

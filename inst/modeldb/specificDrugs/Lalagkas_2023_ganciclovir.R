@@ -12,7 +12,8 @@ Lalagkas_2023_ganciclovir <- function() {
   )
   reference <- paste(
     "Lalagkas PN, Iliou J, Rigo R, Miarons M, Fernandez-Alarcon B, Bestard O,",
-    "Cruzado JM, Melilli E, Torras J, Grinyo JM, et al. Comparison of Three Renal",
+    "Cruzado JM, Melilli E, Torras J, Grinyo JM, Lloberas N, Colom H.",
+    "Comparison of Three Renal",
     "Function Formulas for Ganciclovir/Valganciclovir Dose Individualization in",
     "CMV-Infected Solid Organ Transplantation Patients Using a Population Approach.",
     "Clin Pharmacokinet. 2023;62(6):861-880. doi:10.1007/s40262-023-01237-3.",

@@ -1,6 +1,13 @@
 Yoneyama_2017_emicizumab <- function() {
   description <- "One-compartment population PK model with first-order subcutaneous absorption and elimination for emicizumab (ACE910), a bispecific anti-FIXa/FX humanized monoclonal antibody mimicking the cofactor function of activated factor VIII, in healthy male adult volunteers (Japanese and Caucasian) and Japanese male adult/adolescent patients with severe hemophilia A with or without factor VIII inhibitors (Yoneyama 2017). Body-weight allometric exponents are fixed (0.75 on CL/F, 1 on Vd/F) per Yoneyama 2017 Methods. Anti-emicizumab neutralizing antibody (ADA_POS) increases CL/F by a factor of exp(2.01) and the effect onsets 33.4 days post the first SC dose (NONMEM MTIME parameterisation). The companion repeated time-to-event (RTTE) bleeding-hazard model from Yoneyama 2017 Section 2.4 is not included here; nlmixr2lib does not currently support TTE models."
-  reference <- "Yoneyama K, Schmitt C, Kotani N, Levy GG, Kasai R, Iida S, Shima M, Kawanishi T. A Pharmacometric Approach to Substitute for a Conventional Dose-Finding Study in Rare Diseases: Example of Phase III Dose Selection for Emicizumab in Hemophilia A. Clin Pharmacokinet. 2018 May;57(5):613-619. doi:10.1007/s40262-017-0616-3 (online 6 December 2017; PMID 29209893)."
+  reference <- paste(
+    "Yoneyama K, Schmitt C, Kotani N, Levy GG, Kasai R, Iida S, Shima M,",
+    "Kawanishi T. A Pharmacometric Approach to Substitute for a Conventional",
+    "Dose-Finding Study in Rare Diseases: Example of Phase III Dose Selection",
+    "for Emicizumab in Hemophilia A. Clin Pharmacokinet. 2018;57(9):1123-1134.",
+    "doi:10.1007/s40262-017-0616-3. (online 6 December 2017; PMID 29209893).",
+    sep = " "
+  )
   vignette <- "Yoneyama_2017_emicizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

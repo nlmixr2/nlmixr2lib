@@ -17,11 +17,12 @@ Ousey_2026_plozasiran <- function() {
     "mg/dL."
   )
   reference <- paste(
-    "Ousey J, Gosselin NH, Ta A, Shi J. Population Pharmacodynamic Modeling",
-    "of Plozasiran for Treatment of Familial Chylomicronemia Syndrome.",
-    "J Clin Pharmacol. 2026;66(4). doi:10.1002/jcph.70190.",
-    "Model equations from the Supporting Information (Supplementary",
-    "Equations); parameter estimates from Table 2."
+    "Ousey J, Gosselin NH, Ta A, Shi J. Population Pharmacodynamic Modeling of",
+    "Plozasiran for Treatment of Familial Chylomicronemia Syndrome. J Clin",
+    "Pharmacol. 2026;66(4):e70190. doi:10.1002/jcph.70190. Model equations",
+    "from the Supporting Information (Supplementary Equations); parameter",
+    "estimates from Table 2.",
+    sep = " "
   )
   vignette <- "Ousey_2026_plozasiran"
   units <- list(time = "day", dosing = "mg", concentration = "mg/dL")

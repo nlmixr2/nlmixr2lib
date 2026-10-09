@@ -1,11 +1,10 @@
 Lin_2026_sc1cmt_coxTte <- function() {
   description <- "Methodology reference. Data-generating time-to-event model from Lin 2026, the paper that shows how to compute a time-varying Cox partial likelihood inside NONMEM. There is no molecule and there are no patients: a hypothetical subcutaneous drug follows a one-compartment model with first-order absorption and elimination, and the event hazard is the product of a two-exponential bathtub-like baseline hazard and a hazard ratio driven by a time-invariant covariate, a time-varying covariate transform, and an Imax inhibitory effect of the simulated concentration. The Imax term sits on the LOG-hazard scale, so Imax = 2 is not bounded by 1 and saturating drug effect multiplies the hazard by exp(-2) = 0.135. Cumulative event hazard and cumulative censoring hazard are carried as ODE states and the survivor functions are exposed as derived outputs. All parameter values are author-chosen simulation constants, not estimates, and are therefore fixed()."
   reference <- paste(
-    "Lin CW, Chen PW, Doshi S, Dutta S.",
-    "Integration of Time-Varying Pharmacometric Modeling With Cox Regression",
-    "for Time-to-Event Analysis in NONMEM.",
-    "CPT Pharmacometrics Syst Pharmacol. 2026;15(6):e70253.",
-    "doi:10.1002/psp4.70253. PMCID PMC13106229. Open Access under CC BY-NC-ND.",
+    "Lin CW, Chen PW, Doshi S, Dutta S. Integration of Time-Varying",
+    "Pharmacometric Modeling With Cox Regression for Time-to-Event Analysis in",
+    "NONMEM. CPT Pharmacometrics Syst Pharmacol. 2026;15(5):e70253.",
+    "doi:10.1002/psp4.70253 PMCID PMC13106229. Open Access under CC BY-NC-ND.",
     "Equations 1-8 and the simulation parameter values are in Methods section 2.1",
     "(pages 2-3); the data-generating model is deposited verbatim as the",
     "$DES/$THETA blocks of Data S2 (psp470253-sup-0002-DataS2.mod), and an N = 20",

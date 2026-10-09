@@ -17,11 +17,11 @@ Marianski_2026_ceftriaxone <- function() {
   )
   reference <- paste(
     "Marianski S, Amajor V, Shiau J, Bwint A, Sharova A, Hall M, Rhodes NJ,",
-    "Downes KJ, Scheetz MH; PALISI study investigators (2026). P-1254.",
-    "Evaluation of Ceftriaxone Population Pharmacokinetics (PK) and",
-    "Pharmacodynamics (PD) in Critically Ill Pediatric Population. Open Forum",
-    "Infectious Diseases 13(Suppl 1):S818-S819, abstract citation ID",
-    "ofaf695.1445. doi:10.1093/ofid/ofaf695.1445. PMC12792806. IDWeek 2025",
+    "Downes KJ, Scheetz MH. P-1254. Evaluation of Ceftriaxone Population",
+    "Pharmacokinetics (PK) and Pharmacodynamics (PD) in Critically Ill",
+    "Pediatric Population. Open Forum Infectious Diseases.",
+    "2026;13(Supplement_1):ofaf695.1445. doi:10.1093/ofid/ofaf695.1445",
+    "PMC12792806. IDWeek 2025",
     "poster abstract, Session 148 (PK/PD Studies), 21 October 2025. All final",
     "estimates and the covariate parameterisation come from Table 1, which is",
     "published as an EMBEDDED RASTER IMAGE that no text extraction recovers;",

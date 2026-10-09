@@ -1,16 +1,16 @@
 Zhang_2016_rilotumumab <- function() {
   description <- "Two-compartment IV population PK model for rilotumumab (fully human anti-HGF IgG2 monoclonal antibody) in patients with MET-positive gastric or gastroesophageal-junction adenocarcinoma receiving rilotumumab in combination with epirubicin / cisplatin / capecitabine (ECX). The structural model and parameter values were inherited from the previously developed population PK analysis of rilotumumab (Zhu et al. 2014, J Pharm Sci 103:328-336); Zhang 2016 reports the typical-value point estimates and IIV %CV from that prior model and uses it as the reference for an external visual predictive check assessing whether ECX co-administration alters rilotumumab PK."
   reference <- paste(
-    "Zhang Y, Kondragunta V, Han T-H, et al.",
+    "Zhang Y, Kuchimanchi M, Zhu M, Doshi S, Hoang T, Kasichayanula S.",
     "Assessment of pharmacokinetic interaction between rilotumumab and",
     "epirubicin, cisplatin and capecitabine (ECX) in a Phase 3 study in",
     "gastric cancer. Br J Clin Pharmacol. 2017;83(5):1048-1055.",
-    "doi:10.1111/bcp.13179.",
-    "Structural PK model and parameter values inherited from",
-    "Zhu M, Doshi S, Gisleskog PO, et al.",
-    "Population pharmacokinetics of rilotumumab, a fully human monoclonal",
-    "antibody against hepatocyte growth factor, in cancer patients.",
-    "J Pharm Sci. 2014;103(1):328-336. doi:10.1002/jps.23763."
+    "doi:10.1111/bcp.13179. Structural PK model and parameter values inherited",
+    "from Zhu M, Doshi S, Gisleskog PO, et al. Population pharmacokinetics of",
+    "rilotumumab, a fully human monoclonal antibody against hepatocyte growth",
+    "factor, in cancer patients. J Pharm Sci. 2014;103(1):328-336.",
+    "doi:10.1002/jps.23763.",
+    sep = " "
   )
   vignette <- "Zhang_2016_rilotumumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")

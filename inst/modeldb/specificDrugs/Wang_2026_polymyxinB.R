@@ -1,12 +1,10 @@
 Wang_2026_polymyxinB <- function() {
   description <- "Two-compartment intravenous population PK model for polymyxin B in critically ill adults, developed from a two-center Chinese ICU cohort sampled after at least the third dose (Wang 2026). CKD-EPI estimated glomerular filtration rate is the sole retained covariate, entering clearance as a power term normalized to the cohort median 42.88 mL/min/1.73 m^2 with exponent 0.43. Inter-individual variability on CL, V1 and Q; peripheral volume variability was fixed to zero. Combined proportional plus additive residual error."
   reference <- paste(
-    "Wang Y, Wang X, Lei L, Sun W, Wu Z, Lan J, Chen J, Wang Y, Yao F,",
-    "Hu L, Bai Y, Chen C.",
-    "A multi-center study of population pharmacokinetics of polymyxin B",
-    "in critically ill patients.",
-    "Drug Des Devel Ther. 2026;20.",
-    "doi:10.2147/DDDT.S521070. PMCID PMC13012298.",
+    "Wang Y, Wang X, Lei L, Sun W, Wu Z, Lan J, Chen J, Wang Y, Yao F, Hu L,",
+    "Bai Y, Chen C. A Multi-Center Study of Population Pharmacokinetics of",
+    "Polymyxin B in Critically Ill Patients. Drug Des Devel Ther.",
+    "2026;20:521070. doi:10.2147/DDDT.S521070 PMCID PMC13012298.",
     sep = " "
   )
   vignette <- "Wang_2026_polymyxinB"

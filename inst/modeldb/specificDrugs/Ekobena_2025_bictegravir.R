@@ -2,9 +2,9 @@ Ekobena_2025_bictegravir <- function() {
   description <- "One-compartment population PK model for bictegravir in real-world people with HIV followed by therapeutic drug monitoring, with first-order absorption fixed at 0.64 1/h, apparent oral clearance and volume, a power body-weight effect and a median-centred exponential-linear age effect on apparent clearance, between-subject variability on clearance only, and a proportional residual error"
   reference <- paste(
     "Ekobena P, Briki M, Dao K, Marzolini C, Andre P, Buclin T, Cavassini M,",
-    "Guidi M, Thoueille P; Swiss HIV Cohort Study. Population pharmacokinetics",
-    "of bictegravir in real-world people with HIV. J Antimicrob Chemother.",
-    "2025;80(11):2782-2789. doi:10.1093/jac/dkaf297.",
+    "Guidi M, Thoueille P. Population pharmacokinetics of bictegravir in",
+    "real-world people with HIV. J Antimicrob Chemother.",
+    "2025;80(10):2782-2789. doi:10.1093/jac/dkaf297.",
     sep = " "
   )
   vignette <- "Ekobena_2025_bictegravir"

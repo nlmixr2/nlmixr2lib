@@ -32,7 +32,7 @@ Golzaryan_2025_lu177psmaIT_pbpk <- function() {
     "Golzaryan A, Soltani M, Moradi Kashkooli F, Saboury B, Rahmim A.",
     "Personalized metronomic radiopharmaceutical therapy through injection",
     "profile optimization via physiologically based pharmacokinetic (PBPK)",
-    "modeling. Sci Rep. 2025;15(1):4046. doi:10.1038/s41598-025-86159-9.",
+    "modeling. Sci Rep. 2025;15(1):4052. doi:10.1038/s41598-025-86159-9.",
     "Patient measurements, the gamma-camera time-activity curves the model",
     "was fitted to, and the k_off model selection are from the upstream",
     "primary Kletting P, Thieme A, Eberhardt N, et al. Modeling and",

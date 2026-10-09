@@ -1,10 +1,11 @@
 Hopkins_2017_doxycycline <- function() {
   description <- "Two-compartment oral population PK model for doxycycline with two transit absorption compartments, fat-free-mass allometric scaling (CL exponent 0.75, V exponent 1.0, reference 70 kg FFM), and Doryx tablet (reference) / Doryx MPC delayed-release tablet / Doryx capsule formulation effects on relative bioavailability and absorption rate, plus a food (fed-status) effect on relative bioavailability and a formulation-dependent food effect on transit rate, plus a 14.4% increase in CL for female sex. Pooled from eight phase 1 healthy-volunteer trials (n = 178)."
   reference <- paste(
-    "Hopkins AM, Wojciechowski J, Abuhelwa AY, Mudge S, Upton RN, Foster DJR (2017).",
-    "Population pharmacokinetic model of doxycycline plasma concentrations using pooled study data.",
-    "Antimicrobial Agents and Chemotherapy 61(5):e02401-16.",
-    "doi:10.1128/AAC.02401-16."
+    "Hopkins AM, Wojciechowski J, Abuhelwa AY, Mudge S, Upton RN, Foster DJ.",
+    "Population Pharmacokinetic Model of Doxycycline Plasma Concentrations",
+    "Using Pooled Study Data. Antimicrob Agents Chemother.",
+    "2017;61(3):e02401-16. doi:10.1128/AAC.02401-16.",
+    sep = " "
   )
   vignette <- "Hopkins_2017_doxycycline"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")

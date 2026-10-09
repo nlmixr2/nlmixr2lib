@@ -1,14 +1,15 @@
 Jayanti_2026_pyrazinamide <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order absorption and first-order elimination for oral pyrazinamide in Korean and Indonesian adults with drug-susceptible tuberculosis (Jayanti 2026); lean body weight is an allometric covariate on CL/F and Vd/F (fixed exponents 0.75 and 1), apparent clearance carries a separate typical value and a separate interindividual variance for each ethnicity, and diabetes mellitus raises CL/F by 23% in Indonesian patients and by 26% in Korean patients aged 60 years or older"
   reference <- paste(
-    "Jayanti RP, Cho Y-S, Soedarsono S, Kim H-J, Kang J, Kim J, Oh JY, Kang BH,",
-    "Ha JH, Kim J-W, Mertaniasih NM, Kusmiati T, Permatasari A, Yuliwulandari R,",
-    "Kim R, Seong H-J, Ghim J-L, Kim D-H, Shin J-G; on behalf of the cPMTb.",
-    "Population pharmacokinetics model of pyrazinamide to optimize tuberculosis",
-    "treatment: An interethnic cohort study of diabetes mellitus effect on drug",
-    "exposure. PLoS One. 2026;21(1):e0340133. doi:10.1371/journal.pone.0340133.",
-    "Correction: PLoS One. 2026;21(4):e0347490. doi:10.1371/journal.pone.0347490",
-    "(corrects the funding statement only; no model parameter is affected)."
+    "Jayanti RP, Cho YS, Soedarsono S, Kim HJ, Kang J, Kim J, Oh JY, Kang BH,",
+    "Ha JH, Kim JW, Mertaniasih NM, Kusmiati T, Permatasari A, Yuliwulandari",
+    "R, Kim R, Seong HJ, Ghim JL, Kim DH, Shin JG. Population pharmacokinetics",
+    "model of pyrazinamide to optimize tuberculosis treatment: An interethnic",
+    "cohort study of diabetes mellitus effect on drug exposure. PLoS One.",
+    "2026;21(1):e0340133. doi:10.1371/journal.pone.0340133. Correction: PLoS",
+    "One. 2026;21(4):e0347490. doi:10.1371/journal.pone.0347490 (corrects the",
+    "funding statement only; no model parameter is affected).",
+    sep = " "
   )
   vignette <- "Jayanti_2026_pyrazinamide"
 

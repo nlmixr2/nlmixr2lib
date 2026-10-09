@@ -14,13 +14,13 @@ Han_2015_decitabine <- function() {
     "10^9 cells/L."
   )
   reference <- paste(
-    "Han S, Kim Y-J, Lee J, Jeon S, Hong T, Park G-J, Yoon J-H, Yahng S-A,",
-    "Shin S-H, Lee S-E, Eom K-S, Kim H-J, Min C-K, Lee S, Yim D-S. (2015).",
-    "Model-based adaptive phase I trial design of post-transplant",
-    "decitabine maintenance in myelodysplastic syndrome.",
-    "Journal of Hematology & Oncology 8:118.",
-    "doi:10.1186/s13045-015-0208-3 (PMID 26482429).",
-    "ClinicalTrials.gov NCT01277484."
+    "Han S, Kim YJ, Lee J, Jeon S, Hong T, Park GJ, Yoon JH, Yahng SA, Shin",
+    "SH, Lee SE, Eom KS, Kim HJ, Min CK, Lee S, Yim DS. Model-based adaptive",
+    "phase I trial design of post-transplant decitabine maintenance in",
+    "myelodysplastic syndrome. J Hematol Oncol. 2015;8(1):118.",
+    "doi:10.1186/s13045-015-0208-3 (PMID 26497198). ClinicalTrials.gov",
+    "NCT01277484.",
+    sep = " "
   )
   vignette <- "Han_2015_decitabine"
   units <- list(

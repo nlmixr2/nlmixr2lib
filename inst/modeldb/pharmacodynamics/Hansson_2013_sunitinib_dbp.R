@@ -1,11 +1,10 @@
 Hansson_2013_sunitinib_dbp <- function() {
   description <- "Indirect-response model of sunitinib-induced increase in diastolic blood pressure (dBP) in adults with imatinib-resistant gastrointestinal stromal tumours (GIST). The dBP state turns over via a stimulated zero-order production rate Kin and a first-order removal rate Kout (= 1 / MRT), where the per-cycle drug-exposure summary AUC = DOSE / CLI linearly stimulates Kin via a slope factor dBP_slope. Kin is parameterised as dBP0 * Kout so the dBP steady state without drug equals dBP0. A separate higher baseline dBP0_placebo is recorded as a placebo-arm typical value (Results: 'this group had a significantly higher baseline dBP (dBP0) when estimated separately'). The PD model has no PK ODE; sunitinib exposure enters as the AUC summary computed from time-varying DOSE and per-subject CLI."
   reference <- paste(
-    "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE,",
-    "Karlsson MO.",
-    "PKPD modeling of predictors for adverse effects and overall survival",
-    "in sunitinib-treated patients with GIST.",
-    "CPT Pharmacometrics Syst Pharmacol. 2013;2(11):e85.",
+    "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE, Karlsson",
+    "MO. PKPD Modeling of Predictors for Adverse Effects and Overall Survival",
+    "in Sunitinib-Treated Patients With GIST. CPT Pharmacometrics Syst",
+    "Pharmacol. 2013;2(12):e85.",
     "doi:10.1038/psp.2013.62.",
     "Sister model files from the same paper:",
     "modellib('Hansson_2013_sunitinib_myelosuppression'),",

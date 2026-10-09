@@ -31,8 +31,8 @@ Karlsson_2010_acute_stroke_bi <- function() {
   )
   reference <- paste(
     "Karlsson KE, Wilkins JJ, Jonsson F, Zingmark PH, Karlsson MO, Jonsson EN.",
-    "Modeling disease progression in acute stroke using clinical assessment scales.",
-    "AAPS J. 2010;12(4):683-692. doi:10.1208/s12248-010-9230-0.",
+    "Modeling disease progression in acute stroke using clinical assessment",
+    "scales. AAPS J. 2010;12(4):683-691. doi:10.1208/s12248-010-9230-0.",
     "Final parameter estimates from Supplement A (BI table);",
     "model structure from the Supplement B NONMEM control stream",
     "for the Barthel Index model.",

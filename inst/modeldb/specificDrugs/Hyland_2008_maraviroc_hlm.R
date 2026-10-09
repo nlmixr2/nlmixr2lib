@@ -1,6 +1,20 @@
 Hyland_2008_maraviroc_hlm <- function() {
   description <- "In vitro (pooled human liver microsomes, 60 donors). Michaelis-Menten enzyme-kinetic model of the CYP3A4-mediated N-dealkylation of maraviroc to its secondary-amine metabolite UK-408,027, plus the parallel oxidative routes that make up the remainder of maraviroc's microsomal intrinsic clearance. The published fit is a standard Michaelis-Menten velocity with an additive impurity term, v = Vmax * [S] / (Km + [S]) + C * [S], where C absorbs a concentration-dependent UK-408,027 contaminant present in the maraviroc substrate; the authors report that fitting impurity-corrected data to a plain Michaelis-Menten equation gave similar Km and Vmax, and C itself is not published, so it is carried here fixed at zero. The UK-408,027 route accounts for Vmax/Km = 0.0214 uL/min/pmol CYP, which is 20% of the 0.106 uL/min/pmol total depletion intrinsic clearance measured by substrate loss; the balance is assigned to the other CYP3A4-mediated oxidative pathways as a first-order route, because substrate depletion was measured only at 1 uM, far below Km, and so characterises a linear clearance. Sibling model: Hyland_2008_maraviroc_rcyp3a4, the same reaction characterised in recombinant CYP3A4 Supersomes."
-  reference <- "Hyland R, Dickins M, Collins C, Jones H, Jones B. Maraviroc: in vitro assessment of drug-drug interaction potential. Br J Clin Pharmacol. 2008 Oct;66(4):498-507. doi:10.1111/j.1365-2125.2008.03198.x. PMID: 18492127. PMCID: PMC2561101. Michaelis-Menten equation with the impurity term and the Km / Vmax estimates: Results, 'Kinetics of maraviroc N-dealkylation in human liver microsomes', and Figure 2. Substrate-depletion intrinsic clearance, microsomal CYP content and fraction unbound in microsomes: Results, 'CLint estimates from HLM and rCYP'. Incubation design and bioanalytical precision: Materials and methods, 'Assays for maraviroc metabolism'. The statement that UK-408,027 formation is approximately 20% of the depletion intrinsic clearance is in the Discussion, second paragraph."
+  reference <- paste(
+    "Hyland R, Dickins M, Collins C, Jones H, Jones B. Maraviroc: in vitro",
+    "assessment of drug-drug interaction potential. Br J Clin Pharmacol.",
+    "2008;66(4):498-507. doi:10.1111/j.1365-2125.2008.03198.x PMID: 18647303.",
+    "PMCID: PMC2561101. Michaelis-Menten equation with the impurity term and",
+    "the Km / Vmax estimates: Results, 'Kinetics of maraviroc N-dealkylation",
+    "in human liver microsomes', and Figure 2. Substrate-depletion intrinsic",
+    "clearance, microsomal CYP content and fraction unbound in microsomes:",
+    "Results, 'CLint estimates from HLM and rCYP'. Incubation design and",
+    "bioanalytical precision: Materials and methods, 'Assays for maraviroc",
+    "metabolism'. The statement that UK-408,027 formation is approximately 20%",
+    "of the depletion intrinsic clearance is in the Discussion, second",
+    "paragraph.",
+    sep = " "
+  )
   vignette <- "Hyland_2008_maraviroc_invitro"
   units <- list(time = "min", dosing = "uM (incubation concentration)", concentration = "uM")
 

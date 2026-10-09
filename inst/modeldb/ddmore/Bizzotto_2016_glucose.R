@@ -1,9 +1,10 @@
 Bizzotto_2016_glucose <- function() {
   description <- "Mechanistic model of glucose tracer kinetics in humans driven by time-varying plasma insulin and glucose regressors (Bizzotto 2016). Glucose uptake is a Michaelis-Menten function of glucose at the site of action whose maximum rate Vmax is itself a Hill (sigmoidal) function of insulin at the site of action; this captures the observation that hyperglycemia suppresses the glucose-clearance response to hyperinsulinemia. Two-compartment delays smooth plasma insulin and glucose into their site-of-action analogues, and a heart-lung block plus a three-channel periphery block give the tracer disposition. Distributed in the DDMORE Foundation Model Repository (DDMODEL00000227) as a simulation-only implementation; the linked publication fits the same equations to real data from 123 subjects spanning normal-tolerant, impaired-glucose-tolerance, and type 2 diabetic adults."
   reference <- paste(
-    "Bizzotto R, Natali A, Gastaldelli A, Muscelli E, Brehm A, Roden M, Ferrannini E, Mari A. (2016).",
-    "Glucose uptake saturation explains glucose kinetics profiles measured by different tests.",
-    "Am J Physiol Endocrinol Metab 311(2):E346-E357.",
+    "Bizzotto R, Natali A, Gastaldelli A, Muscelli E, Krssak M, Brehm A, Roden",
+    "M, Ferrannini E, Mari A. Glucose uptake saturation explains glucose",
+    "kinetics profiles measured by different tests. Am J Physiol Endocrinol",
+    "Metab. 2016;311(2):E346-E357.",
     "doi:10.1152/ajpendo.00045.2016.",
     "DDMORE Foundation Model Repository: DDMODEL00000227.",
     sep = " "

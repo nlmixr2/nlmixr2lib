@@ -2,10 +2,9 @@ Li_2025_lacosamide <- function() {
   description <- "One-compartment population PK model with first-order absorption for oral lacosamide in Chinese children with epilepsy, with a body-weight power function on apparent clearance; Model I of Li 2025, for the clinical scenario in which CYP2C19 genotype is unavailable"
   reference <- paste(
     "Li Y, Guo HL, Fan L, Wang J, Hu YH, Zhang YY, Qiu JC, Chen J, Wu CF,",
-    "Zhang G, Lu XP, Chen F (2025).",
-    "PopPK modeling supports BW band dosing of lacosamide for pediatric epilepsy.",
-    "npj Genomic Medicine 10:80.",
-    "doi:10.1038/s41525-025-00519-y. PMCID: PMC12394691.",
+    "Zhang G, Lu XP, Chen F. PopPK modeling supports BW band dosing of",
+    "lacosamide for pediatric epilepsy. NPJ Genom Med. 2025;10(1):61.",
+    "doi:10.1038/s41525-025-00519-y PMCID: PMC12394691.",
     sep = " "
   )
   vignette <- "Li_2025_lacosamide"

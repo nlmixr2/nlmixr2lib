@@ -1,10 +1,10 @@
 Bram_2026_biexponential <- function() {
   description <- "One-state (no latent compartment) intravenous-bolus model that reproduces bi-exponential plasma kinetics, proposed automatically by the NODE-LASSO workflow of Braem 2026 (Equation 20). Elimination from the single central state is the sum of a conventional first-order term and a transient, dose-proportional flux that decays exponentially with time after dose: dA/dt = -kel * A - D * wdist * exp(-kdist * (t - tD)). The authors prove (Equation 21 and Supporting Information) that its explicit solution is algebraically IDENTICAL to the central compartment of a standard two-compartment model, so the transient flux stands in for the distribution phase without carrying a peripheral state. The data were SIMULATED from a two-compartment model for 50 subjects with 7 concentration measurements over 24 h; no drug, no dose and no units are reported, and the fit identifies the model only up to the ratio D/Vc = 10.1. A nominal unit dose is therefore fixed here (vc = 1/10.1), so a dose of 1 arbitrary unit reproduces the published macro-parameters exactly and any other dose scales the profile linearly, which is exact for this linear model. The companion model Bram_2026_biexponential_2cmt is the two-compartment reference fit to the same data. Because it has no memory of prior doses, this parameterisation is valid for multiple dosing ONLY when each dose falls after the previous distribution phase has completed; Braem 2026 Figure S1 shows the structural misspecification that appears otherwise, and Figure S2 gives an equivalent pseudo-compartment form that repairs it."
   reference <- paste(
-    "Braem DS, Steiert B, Steffens B, Pfister M, Koch G.",
-    "Automated pharmacometric model development by leveraging",
-    "low-dimensional neural ODEs and LASSO regression.",
-    "CPT Pharmacometrics Syst Pharmacol. 2026.",
+    "Bram DS, Steiert B, Steffens B, Pfister M, Koch G. Automated",
+    "Pharmacometric Model Development by Leveraging Low-Dimensional Neural",
+    "ODEs and LASSO Regression. CPT Pharmacometrics Syst Pharmacol.",
+    "2026;15(7):e70285.",
     "doi:10.1002/psp4.70285.",
     "Structure from Equation 20; parameter values from Table S2 of the",
     "Supporting Information (A' = 5.1, p = 0.46, B' = 5.0, k = 0.12)",

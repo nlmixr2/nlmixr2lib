@@ -1,13 +1,12 @@
 Kawaguchi_2018_cefiderocol_egfrabs <- function() {
   description <- "Three-compartment population PK model for intravenous cefiderocol in healthy subjects, subjects spanning normal renal function to end-stage renal disease, and patients with complicated urinary tract infection or acute uncomplicated pyelonephritis, with absolute (non-BSA-normalized) estimated glomerular filtration rate on CL, body weight on V1 and V2, and an infected-versus-uninfected disease-status factor on CL and V1"
   reference <- paste(
-    "Kawaguchi N, Katsube T, Echols R, Wajima T.",
-    "Population pharmacokinetic analysis of cefiderocol, a parenteral",
-    "siderophore cephalosporin, in healthy subjects, subjects with various",
-    "degrees of renal function, and patients with complicated urinary tract",
-    "infection or acute uncomplicated pyelonephritis.",
-    "Antimicrob Agents Chemother. 2018;62(1):e01391-17.",
-    "doi:10.1128/AAC.01391-17",
+    "Kawaguchi N, Katsube T, Echols R, Wajima T. Population Pharmacokinetic",
+    "Analysis of Cefiderocol, a Parenteral Siderophore Cephalosporin, in",
+    "Healthy Subjects, Subjects with Various Degrees of Renal Function, and",
+    "Patients with Complicated Urinary Tract Infection or Acute Uncomplicated",
+    "Pyelonephritis. Antimicrob Agents Chemother. 2018;62(2):e01391-17.",
+    "doi:10.1128/AAC.01391-17.",
     sep = " "
   )
   vignette <- "Kawaguchi_2018_cefiderocol"

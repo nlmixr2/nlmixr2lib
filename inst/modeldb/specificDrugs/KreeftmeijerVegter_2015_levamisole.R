@@ -14,11 +14,10 @@ KreeftmeijerVegter_2015_levamisole <- function() {
     sep = " "
   )
   reference <- paste(
-    "Kreeftmeijer-Vegter AR, Dorlo TPC, Gruppen MP, de Boer A,",
-    "de Vries PJ (2015).",
+    "Kreeftmeijer-Vegter AR, Dorlo TP, Gruppen MP, de Boer A, de Vries PJ.",
     "Population pharmacokinetics of levamisole in children with",
-    "steroid-sensitive nephrotic syndrome.",
-    "British Journal of Clinical Pharmacology 79(6):970-977.",
+    "steroid-sensitive nephrotic syndrome. Br J Clin Pharmacol.",
+    "2015;80(2):242-252.",
     "doi:10.1111/bcp.12607.",
     sep = " "
   )

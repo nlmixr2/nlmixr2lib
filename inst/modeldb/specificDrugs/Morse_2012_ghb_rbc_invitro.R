@@ -36,11 +36,10 @@ Morse_2012_ghb_rbc_invitro <- function() {
     sep = " "
   )
   reference <- paste(
-    "Morse BL, Felmlee MA, Morris ME.",
-    "gamma-Hydroxybutyrate blood/plasma partitioning: effect of physiologic",
-    "pH on transport by monocarboxylate transporters.",
-    "Drug Metab Dispos. 2012;40(1):64-69.",
-    "doi:10.1124/dmd.111.041285. PMID: 21976621. PMCID: PMC3250051.",
+    "Morse BL, Felmlee MA, Morris ME. gamma-Hydroxybutyrate blood/plasma",
+    "partitioning: effect of physiologic pH on transport by monocarboxylate",
+    "transporters. Drug Metab Dispos. 2012;40(1):64-69.",
+    "doi:10.1124/dmd.111.041285 PMID: 21976619. PMCID: PMC3250051.",
     "Structural equations: eq. 1 (saturable plus linear uptake) and eq. 2",
     "(sigmoidal Imax inhibition by L-lactate), Materials and Methods,",
     "'Data and Statistical Analysis', p. 66.",

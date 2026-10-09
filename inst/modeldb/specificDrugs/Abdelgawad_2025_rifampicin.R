@@ -32,11 +32,10 @@ Abdelgawad_2025_rifampicin <- function() {
     "plasma (25.2%, 0.0234 mg/L) and CSF (98.4%, 0.0231 mg/L)."
   )
   reference <- paste(
-    "Abdelgawad N, Wasserman S, Gausi K, Davis A, Stek C, Wiesner L,",
-    "Meintjes G, Wilkinson RJ, Denti P (2025).",
-    "Population Pharmacokinetics of Rifampicin in Plasma and Cerebrospinal",
-    "Fluid in Adults With Tuberculosis Meningitis.",
-    "J Infect Dis 232(4):e234-e241. doi:10.1093/infdis/jiaf178.",
+    "Abdelgawad N, Wasserman S, Gausi K, Davis A, Stek C, Wiesner L, Meintjes",
+    "G, Wilkinson RJ, Denti P. Population Pharmacokinetics of Rifampicin in",
+    "Plasma and Cerebrospinal Fluid in Adults With Tuberculosis Meningitis. J",
+    "Infect Dis. 2025;232(2):jiaf178. doi:10.1093/infdis/jiaf178.",
     "Parameter estimates from Table 2; model equations from the Figure 1",
     "caption and from the NONMEM control stream reproduced verbatim in the",
     "supplementary material.",

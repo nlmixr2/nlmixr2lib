@@ -25,8 +25,8 @@ Schoning_2026_oral1cmt_combinedlow <- function() {
   reference <- paste(
     "Schoning V, Hammann F. Improving Population Pharmacokinetic Modelling",
     "with Artificial Patients using Generative Artificial Intelligence.",
-    "Pharmacol Res Perspect. 2026;14(3):e70241.",
-    "doi:10.1002/prp2.70241. PMCID PMC13052321.",
+    "Pharmacol Res Perspect. 2026;14(2):e70241. doi:10.1002/prp2.70241 PMCID",
+    "PMC13052321.",
     "Parameter estimates from Table 1, column 'Combined-low'.",
     "The structural form and the 70 kg weight reference are taken from the",
     "authors' deposited RsSimulx model at",

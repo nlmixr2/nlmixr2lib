@@ -24,11 +24,10 @@ Heo_2016_amlodipine_valsartan <- function() {
     "Keqs are fixed at their monotherapy point estimates (Tables 1 and 2)."
   )
   reference <- paste(
-    "Heo YA, Holford N, Kim Y, Son M, Park K.",
-    "Quantitative model for the blood pressure-lowering interaction of",
-    "valsartan and amlodipine.",
-    "Br J Clin Pharmacol. 2017 Jul;83(7):1502-1514.",
-    "doi:10.1111/bcp.13082."
+    "Heo YA, Holford N, Kim Y, Son M, Park K. Quantitative model for the blood",
+    "pressure-lowering interaction of valsartan and amlodipine. Br J Clin",
+    "Pharmacol. 2016;82(6):1557-1567. doi:10.1111/bcp.13082.",
+    sep = " "
   )
   vignette <- "Heo_2016_amlodipine_valsartan"
 

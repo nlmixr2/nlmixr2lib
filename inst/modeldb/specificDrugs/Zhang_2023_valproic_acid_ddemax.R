@@ -1,6 +1,18 @@
 Zhang_2023_valproic_acid_ddemax <- function() {
   description <- "One-compartment population PK model with first-order absorption for total plasma valproic acid in Chinese children with epilepsy (Zhang 2023 Model III, the dose-dependent maximum effect model). Apparent clearance rises with the patient's own total daily dose through a sigmoid-Emax term, CL/F = CLp/F * (1 + Emax * DD^gamma / (DD50^gamma + DD^gamma)), with Emax, gamma and DD50 all FIXED to the values of Ding 2015. Formulation-specific absorption rate constants FIXED from the literature (syrup 2.64 1/h reference, conventional tablet 1.57 1/h, sustained-release tablet 0.46 1/h). The weakest of the five non-linearity strategies the authors compare - its objective function value is worse than the linear base model's - and it is packaged for fidelity to the published comparison; see modellib('Zhang_2023_valproic_acid_nonsaturable') for the strategy the authors recommend. DD50 is not reported by Zhang 2023 and is carried over from Ding 2015; see the vignette Errata."
-  reference <- "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding non-linearity in population pharmacokinetic model of valproic acid in children with epilepsy: a systematic evaluation study. Front Pharmacol. 2023;14:1228641. doi:10.3389/fphar.2023.1228641. PMID 37860114. Model III structure from Eq. 5; Emax, gamma and DD50 quoted from Ding J, Wang Y, Lin W, et al. A population pharmacokinetic model of valproic acid in pediatric patients with epilepsy: a non-linear pharmacokinetic model based on protein-binding saturation. Clin Pharmacokinet. 2015;54(3):305-17. doi:10.1007/s40262-014-0212-8 (tabulated in Zhang 2023 Table 1); CLp/F, V/F, BSV and residual error from Supplementary Table S3."
+  reference <- paste(
+    "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding",
+    "non-linearity in population pharmacokinetic model of valproic acid in",
+    "children with epilepsy: a systematic evaluation study. Front Pharmacol.",
+    "2023;14:1228641. doi:10.3389/fphar.2023.1228641 PMID 37869748. Model III",
+    "structure from Eq. 5; Emax, gamma and DD50 quoted from Ding J, Wang Y,",
+    "Lin W, et al. A population pharmacokinetic model of valproic acid in",
+    "pediatric patients with epilepsy: a non-linear pharmacokinetic model",
+    "based on protein-binding saturation. Clin Pharmacokinet.",
+    "2015;54(3):305-17. doi:10.1007/s40262-014-0212-8 (tabulated in Zhang 2023",
+    "Table 1); CLp/F, V/F, BSV and residual error from Supplementary Table S3.",
+    sep = " "
+  )
   vignette <- "Zhang_2023_valproic_acid_protein_binding"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

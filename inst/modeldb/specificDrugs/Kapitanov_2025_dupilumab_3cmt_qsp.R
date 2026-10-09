@@ -29,10 +29,10 @@ Kapitanov_2025_dupilumab_3cmt_qsp <- function() {
     sep = " "
   )
   reference <- paste(
-    "Kapitanov GI, Flowers D, Marcantonio DH, Lezon TR, Apgar JF, Hua F.",
-    "A Tutorial on the Development of a Physiologically Inspired PKRO",
-    "Model for Monoclonal Antibodies. CPT: Pharmacometrics & Systems",
-    "Pharmacology. 2025. doi:10.1002/psp4.70160.",
+    "Kapitanov GI, Flowers D, Marcantonio DH, Lezon TR, Apgar JF, Hua F. A",
+    "Tutorial on the Development of a Physiologically Inspired PKRO Model for",
+    "Monoclonal Antibodies. CPT Pharmacometrics Syst Pharmacol.",
+    "2026;15(2):e70160. doi:10.1002/psp4.70160.",
     "Case Study 3 Approach 2 (3-compartment piPKRO with fixed P_dist and",
     "t_dist to a skin site-of-action compartment).",
     "See modellib('Kapitanov_2025_dupilumab_qsp') for the parent 2-",

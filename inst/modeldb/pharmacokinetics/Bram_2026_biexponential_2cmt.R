@@ -1,10 +1,10 @@
 Bram_2026_biexponential_2cmt <- function() {
   description <- "Two-compartment intravenous-bolus reference model of Braem 2026 (Equation 14), fitted to the same simulated bi-exponential dataset as the automatically-proposed one-state model Bram_2026_biexponential and reported alongside it as the conventional-pharmacometrics benchmark (MARE(PMX) in Table 1). The data were SIMULATED for 50 subjects with 7 concentration measurements over 24 h; no drug, no dose and no units are reported. Braem 2026 prints only the macro-parameters of the explicit solution (Table S2: A = 5.1, alpha = 0.46, B = 5.0, beta = 0.12), so the micro-constants here are the standard macro-to-micro inversion of those four values, and the fit identifies the model only up to D/Vc = 10.1. A nominal unit dose is therefore fixed (vc = 1/10.1) so that a dose of 1 arbitrary unit reproduces the published macro-parameters exactly. The point of the pair is that the two models have IDENTICAL explicit solutions for the central compartment despite one of them having no peripheral state."
   reference <- paste(
-    "Braem DS, Steiert B, Steffens B, Pfister M, Koch G.",
-    "Automated pharmacometric model development by leveraging",
-    "low-dimensional neural ODEs and LASSO regression.",
-    "CPT Pharmacometrics Syst Pharmacol. 2026.",
+    "Bram DS, Steiert B, Steffens B, Pfister M, Koch G. Automated",
+    "Pharmacometric Model Development by Leveraging Low-Dimensional Neural",
+    "ODEs and LASSO Regression. CPT Pharmacometrics Syst Pharmacol.",
+    "2026;15(7):e70285.",
     "doi:10.1002/psp4.70285.",
     "Structure from Equation 14; parameter values are the macro-to-micro",
     "inversion of Table S2 of the Supporting Information",

@@ -1,13 +1,12 @@
 Wallender_2021_piperaquine_qtc <- function() {
   description <- "Concentration-QTc model for piperaquine in Ugandan children, from Wallender 2021. The Bazett-corrected QT interval is a linear function of the time-varying plasma piperaquine concentration on top of an individual pre-dose baseline: QTcB = baseline * exp(eta) + 0.0463 * Cc, so each 100 ng/mL of piperaquine adds 4.6 msec. Fit simultaneously with the pharmacokinetics on the intensive-PK substudy of 32 children with paired electrocardiograms before dosing and 2 to 3 h after the third daily dihydroartemisinin-piperaquine dose at 32 and 104 weeks of age; age, sex and weight were screened as covariates on the QTc parameters and none was retained. The three-compartment piperaquine population PK model of the same paper is embedded so the QTc prediction is driven by simulated concentration. The authors caution that peak concentrations under the WHO 2015 and proposed age-based regimens exceed those used to build this model, so extrapolation to those regimens overpredicts the risk. Sister model files from the same paper: modellib('Wallender_2021_piperaquine') (population PK) and modellib('Wallender_2021_piperaquine_malaria') (incident-malaria hazard)."
   reference <- paste(
-    "Wallender E, Ali AM, Hughes E, Kakuru A, Jagannathan P, Muhindo MK,",
-    "Opira B, Whalen M, Huang L, Duvalsaint M, Legac J, Kajubi R, Aweeka F,",
-    "Dorsey G, Kamya MR, Rosenthal PJ, Savic RM.",
-    "Identifying an optimal dihydroartemisinin-piperaquine dosing regimen",
-    "for malaria prevention in young Ugandan children.",
-    "Nat Commun. 2021;12(1):6714.",
-    "doi:10.1038/s41467-021-27051-8. PMC8602248.",
+    "Wallender E, Ali AM, Hughes E, Kakuru A, Jagannathan P, Muhindo MK, Opira",
+    "B, Whalen M, Huang L, Duvalsaint M, Legac J, Kamya MR, Dorsey G, Aweeka",
+    "F, Rosenthal PJ, Savic RM. Identifying an optimal",
+    "dihydroartemisinin-piperaquine dosing regimen for malaria prevention in",
+    "young Ugandan children. Nat Commun. 2021;12(1):6714.",
+    "doi:10.1038/s41467-021-27051-8 PMC8602248.",
     "Open Access under CC BY 4.0.",
     "The QTc parameters are in Supplementary Table 2 of",
     "41467_2021_27051_MOESM1_ESM.pdf and the equation is in the Results",

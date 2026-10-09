@@ -1,6 +1,17 @@
 Roiko_2012_ghb_hcmecd3 <- function() {
   description <- "In vitro (hCMEC/D3 human brain capillary endothelial cell line). Michaelis-Menten model of the carrier-mediated uptake of the drug of abuse gamma-hydroxybutyric acid (GHB) across an in vitro model of the human blood-brain barrier. The published fit is the single-transporter Michaelis-Menten velocity v = Vmax * C / (Km + C) (equation 2 of the source), where C is the GHB concentration in the uptake buffer and v the uptake rate normalised to cell protein; a Michaelis-Menten route plus a parallel diffusional clearance (equation 3) and a two-transporter model (equation 4) were both fitted and rejected on Akaike information criterion, coefficient of variation and residual plots, so no passive-diffusion term is carried here. Uptake was linear through 30 s, and the concentration-response was measured at a 15 s incubation, so the buffer concentration is held static and the model describes initial-rate conditions. GHB is a substrate of the proton-dependent monocarboxylate transporters MCT1, MCT2 and MCT4, of which MCT1 and MCT4 messenger RNA have been detected in hCMEC/D3 cells; the human Km of 18.1 mM is slightly lower and the human Vmax slightly lower than the rat estimates, so the two cell lines describe near-identical uptake kinetics. Sibling model: Roiko_2012_ghb_rbe4, the same uptake reaction characterised in the rat brain capillary endothelial cell line RBE4."
-  reference <- "Roiko SA, Felmlee MA, Morris ME. Brain uptake of the drug of abuse gamma-hydroxybutyric acid in rats. Drug Metab Dispos. 2012 Jan;40(1):212-218. doi:10.1124/dmd.111.041749. PMID: 22031624. PMCID: PMC3250048. Michaelis-Menten equation and the two rejected alternatives: Materials and Methods, 'Data and Statistical Analysis', equations 2, 3 and 4. Km and Vmax estimates for hCMEC/D3 cells: Results, 'GHB Uptake in Brain Endothelial Cells', and the Abstract; the fitted curve is Figure 6D. Uptake time course and incubation design: Materials and Methods, 'GHB Cell Uptake Studies', and Figure 6C."
+  reference <- paste(
+    "Roiko SA, Felmlee MA, Morris ME. Brain uptake of the drug of abuse",
+    "gamma-hydroxybutyric acid in rats. Drug Metab Dispos. 2012;40(1):212-218.",
+    "doi:10.1124/dmd.111.041749 PMID: 22019629. PMCID: PMC3250048.",
+    "Michaelis-Menten equation and the two rejected alternatives: Materials",
+    "and Methods, 'Data and Statistical Analysis', equations 2, 3 and 4. Km",
+    "and Vmax estimates for hCMEC/D3 cells: Results, 'GHB Uptake in Brain",
+    "Endothelial Cells', and the Abstract; the fitted curve is Figure 6D.",
+    "Uptake time course and incubation design: Materials and Methods, 'GHB",
+    "Cell Uptake Studies', and Figure 6C.",
+    sep = " "
+  )
   vignette <- "Roiko_2012_ghb_brain_uptake"
   units <- list(time = "min", dosing = "mM (incubation concentration)", concentration = "mM")
 

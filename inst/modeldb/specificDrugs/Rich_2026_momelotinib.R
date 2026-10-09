@@ -31,25 +31,24 @@ Rich_2026_momelotinib <- function() {
   )
   reference <- paste(
     "Rich B, Srinivasan M, Ho YL, Visser SAG, Ferron-Brady G, Vlasakakis G.",
-    "Population pharmacokinetics and exposure-response analyses of",
-    "momelotinib, its active metabolite (M21), and total active moiety in",
-    "myelofibrosis.",
-    "Clin Pharmacol Ther. 2026;119(3):629-641. doi:10.1002/cpt.70076.",
-    "Structural and covariate parameter estimates are from Table 1 and its",
-    "PK-parameter-equations footnote; the residual-error stratification, the",
-    "absorption-chain topology and the simulated exposure metrics used to",
-    "validate this implementation are from Supplemental Tables S3, S5 and S6",
-    "(supplement file CPT-119-629-s001).",
-    "The fraction metabolised fm = 0.640 originates in the human",
-    "mass-balance study Zheng J et al. Drug Metab Dispos. 2018;46:237-247,",
-    "doi:10.1124/dmd.117.078899, which also reports the M21 relative potency",
-    "of approximately 0.4 used to form the total active moiety.",
-    "The nine exposure-response regressions the same paper reports are NOT",
-    "extracted: Tables S9 and S10 print no intercept for any of the seven",
-    "logistic models, and neither table nor the main text reports the",
-    "centering constant of the log2-transformed exposure metric, so the",
-    "absolute level of every one of those regressions is unidentified from",
-    "the published record. See the vignette Errata."
+    "Population Pharmacokinetics and Exposure-Response Analyses of",
+    "Momelotinib, Its Active Metabolite (M21), and Total Active Moiety in",
+    "Myelofibrosis. Clin Pharmacol Ther. 2026;119(3):629-640.",
+    "doi:10.1002/cpt.70076. Structural and covariate parameter estimates are",
+    "from Table 1 and its PK-parameter-equations footnote; the residual-error",
+    "stratification, the absorption-chain topology and the simulated exposure",
+    "metrics used to validate this implementation are from Supplemental Tables",
+    "S3, S5 and S6 (supplement file CPT-119-629-s001). The fraction",
+    "metabolised fm = 0.640 originates in the human mass-balance study Zheng J",
+    "et al. Drug Metab Dispos. 2018;46:237-247, doi:10.1124/dmd.117.078899,",
+    "which also reports the M21 relative potency of approximately 0.4 used to",
+    "form the total active moiety. The nine exposure-response regressions the",
+    "same paper reports are NOT extracted: Tables S9 and S10 print no",
+    "intercept for any of the seven logistic models, and neither table nor the",
+    "main text reports the centering constant of the log2-transformed exposure",
+    "metric, so the absolute level of every one of those regressions is",
+    "unidentified from the published record. See the vignette Errata.",
+    sep = " "
   )
   vignette <- "Rich_2026_momelotinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")

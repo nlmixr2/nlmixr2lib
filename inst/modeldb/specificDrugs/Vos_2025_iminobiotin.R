@@ -1,6 +1,18 @@
 Vos_2025_iminobiotin <- function() {
   description <- "Two-compartment intravenous population PK model for the selective neuronal and inducible nitric oxide synthase inhibitor 2-iminobiotin (2-IB) in adults with acute large-vessel-occlusion (LVO) ischemic stroke treated with endovascular thrombectomy (Vos 2025). Central, peripheral, and inter-compartmental clearance are fixed at the upstream TIBOHCA-trial values (Vc = 10.2 L, Q = 15.0 L/h, Vp = 10.4 L); clearance is the only estimated structural parameter. Two typical clearance values are reported, one for patients who did not receive concomitant intravenous thrombolysis (alteplase) (9.29 L/h) and one for patients who did (15.3 L/h, a +65% increase). Baseline estimated glomerular filtration rate enters as an allometric power-form covariate on CL with exponent 0.817 and reference 90 mL/min/1.73 m^2. IIV is estimated on CL only (omega^2 = 0.046, ~22% CV); Vc had no IIV because the volume was fixed. Residual error is a single proportional component with SD 12.3%. The 24-hour continuous infusion uses an eGFR-stratified pump-speed table (Supplemental Table S2) so that all subjects regardless of renal function target the same average exposure (AUC_avg_4h ~ 365 ng*h/mL)."
-  reference <- "Vos EM, Peeters-Scholte CMPCD, Boiten J, Hund HM, Jellema K, Kloppenborg RP, et al. Safety, Tolerability, and Pharmacokinetics of the Neuroprotectant 2-Iminobiotin in Patients With Large-Vessel Occlusion Ischemic Stroke Treated With Endovascular Thrombectomy. Stroke. 2025;56(8):1991-1999. doi:10.1161/STROKEAHA.125.050560. PMID:40270284. Structural Vc / Q / Vp inherited from the upstream TIBOHCA out-of-hospital cardiac arrest analysis (van den Heuvel 2024 / earlier Peeters-Scholte work referenced as Vos 2025 reference 11)."
+  reference <- paste(
+    "Vos EM, Peeters-Scholte CMPCD, Boiten J, Hund HM, Jellema K, Kloppenborg",
+    "RP, Ghariq E, van Es ACGM, Venema E, Lingsma HF, van der Hoeven AES, Vis",
+    "PW, Dippel DWJ, Roozenbeek B, van den Wijngaard IR. Safety, Tolerability,",
+    "and Pharmacokinetics of the Neuroprotectant 2-Iminobiotin in Patients",
+    "With Large-Vessel Occlusion Ischemic Stroke Treated With Endovascular",
+    "Thrombectomy. Stroke. 2025;56(8):1991-1999.",
+    "doi:10.1161/STROKEAHA.125.050560 PMID:40270284. Structural Vc / Q / Vp",
+    "inherited from the upstream TIBOHCA out-of-hospital cardiac arrest",
+    "analysis (van den Heuvel 2024 / earlier Peeters-Scholte work referenced",
+    "as Vos 2025 reference 11).",
+    sep = " "
+  )
   vignette <- "Vos_2025_iminobiotin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

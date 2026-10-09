@@ -21,15 +21,15 @@ Moein_2024_apitolisib_human <- function() {
     "Companion preclinical model: modellib('Moein_2024_apitolisib_mouse')."
   )
   reference <- paste(
-    "Moein A, Jin JY, Wright MR, Alicke B, Wong H. Retrospective Assessment",
-    "of Translational Pharmacokinetic-Pharmacodynamic Modeling Performance:",
-    "A Case Study with Apitolisib, a Dual PI3K/mTOR Inhibitor.",
-    "Drugs R D. 2024;24(2):157-166. doi:10.1007/s40268-024-00459-5.",
-    "PMCID PMC11315854. Structural equations from Methods Eqs. 2-5;",
-    "parameter values from Results Sect. 3.1.2 and Tables 2 and 4; NONMEM",
-    "control stream from Supplementary Information Online Resource 2",
-    "(part II). Underlying phase 1 clinical data reported by Dolly SO et al.",
-    "Clin Cancer Res. 2016;22(12):2874-2884."
+    "Moein A, Jin JY, Wright MR, Alicke B, Wong H. Retrospective Assessment of",
+    "Translational Pharmacokinetic-Pharmacodynamic Modeling Performance: A",
+    "Case Study with Apitolisib, a Dual PI3K/mTOR Inhibitor. Drugs R D.",
+    "2024;24(2):155-167. doi:10.1007/s40268-024-00459-5 PMCID PMC11315854.",
+    "Structural equations from Methods Eqs. 2-5; parameter values from Results",
+    "Sect. 3.1.2 and Tables 2 and 4; NONMEM control stream from Supplementary",
+    "Information Online Resource 2 (part II). Underlying phase 1 clinical data",
+    "reported by Dolly SO et al. Clin Cancer Res. 2016;22(12):2874-2884.",
+    sep = " "
   )
   vignette <- "Moein_2024_apitolisib"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")

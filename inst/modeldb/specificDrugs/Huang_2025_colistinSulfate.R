@@ -23,11 +23,10 @@ Huang_2025_colistinSulfate <- function() {
     "(MU) = 44 mg."
   )
   reference <- paste(
-    "Huang T, Luo Y, Wu Y, Niu L, Xiao Y, Wu T, Chen X, Liu Y, Lu J,",
-    "Zhu D, Liu T (2025).",
-    "Population pharmacokinetics of colistin sulfate in patients on",
-    "continuous veno-venous hemodiafiltration.",
-    "Science Progress 108(1):1-20.",
+    "Huang T, Luo Y, Wu Y, Niu L, Xiao Y, Wu T, Chen X, Liu Y, Lu J, Zhu D,",
+    "Liu T. Population pharmacokinetics of colistin sulfate in patients on",
+    "continuous veno-venous hemodiafiltration. Sci Prog.",
+    "2025;108(1):00368504251325334.",
     "doi:10.1177/00368504251325334.",
     sep = " "
   )

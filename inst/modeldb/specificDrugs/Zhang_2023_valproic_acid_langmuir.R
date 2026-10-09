@@ -1,6 +1,14 @@
 Zhang_2023_valproic_acid_langmuir <- function() {
   description <- "One-compartment population PK model with first-order absorption for valproic acid in Chinese children with epilepsy (Zhang 2023 Model II, the Langmuir protein-binding model). The disposition is carried on the UNBOUND concentration Cu = central/(V/F) with linear unbound clearance; the observed TOTAL plasma concentration is reconstructed as Cc = Cu + Cb, where the bound concentration follows the single-site Langmuir isotherm Cb = Bm * Cu / (Kd + Cu) with Bm and Kd FIXED to the literature values of Ueshima 2008. Formulation-specific absorption rate constants FIXED from the literature (syrup 2.64 1/h reference, conventional tablet 1.57 1/h, sustained-release tablet 0.46 1/h). One of five protein-binding non-linearity strategies the authors compare; see modellib('Zhang_2023_valproic_acid_nonsaturable') for the linear non-saturable extension the authors ultimately preferred."
-  reference <- "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding non-linearity in population pharmacokinetic model of valproic acid in children with epilepsy: a systematic evaluation study. Front Pharmacol. 2023;14:1228641. doi:10.3389/fphar.2023.1228641. PMID 37860114. Model II binding isotherm from Eq. 4 with Kd and Bm quoted from Ueshima S, et al. (2008); parameter estimates from Supplementary Table S3."
+  reference <- paste(
+    "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding",
+    "non-linearity in population pharmacokinetic model of valproic acid in",
+    "children with epilepsy: a systematic evaluation study. Front Pharmacol.",
+    "2023;14:1228641. doi:10.3389/fphar.2023.1228641 PMID 37869748. Model II",
+    "binding isotherm from Eq. 4 with Kd and Bm quoted from Ueshima S, et al.",
+    "(2008); parameter estimates from Supplementary Table S3.",
+    sep = " "
+  )
   vignette <- "Zhang_2023_valproic_acid_protein_binding"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

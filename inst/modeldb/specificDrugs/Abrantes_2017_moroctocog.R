@@ -1,6 +1,12 @@
 Abrantes_2017_moroctocog <- function() {
   description <- "Two-compartment population PK model for factor VIII activity (IU/dL) following intravenous administration of moroctocog alfa (B-domain-deleted recombinant FVIII, marketed as ReFacto, ReFacto AF and Xyntha) in patients with moderate to severe hemophilia A; pooled analysis of 754 patients across 13 clinical trials over 20 years (Abrantes 2017). The exogenous-drug component is added to a constant endogenous-baseline FVIII activity (severe-subpopulation typical value, 0.474 IU/dL; the paper's full model is a two-class mixture, see vignette deviations). Clearance and inter-compartmental clearance scale allometrically with body weight at theory-based exponent 0.75; central and peripheral volumes share an estimated allometric exponent 0.812. Clearance has a piecewise-linear age effect (increasing from birth to 1 year of age, then decreasing into adulthood; centered at 20 years), a +166% inhibitor (ADA_POS) effect, and a -34.7% study B1831090 effect. The peripheral volume is +88.4% larger in Black subjects. Bioavailability F carries multiplicative covariate effects for product (1.38x for Xyntha vs ReFacto), assay (-39.0% for OSA central, -14.6% for OSA local laboratory) following Abrantes 2017 Table 2 footnote g. Proportional residual error is 19.2% (CSA reference) and switches to 26.9% (+40.3%) for OSA-assayed samples."
-  reference <- "Abrantes JA, Nielsen EI, Korth-Bradley J, Harnisch L, Jonsson S. Elucidation of Factor VIII Activity Pharmacokinetics: A Pooled Population Analysis in Patients With Hemophilia A Treated With Moroctocog Alfa. Clin Pharmacol Ther. 2017 Jul;102(1):113-121. doi:10.1002/cpt.716. PMID:28437834."
+  reference <- paste(
+    "Abrantes JA, Nielsen EI, Korth-Bradley J, Harnisch L, Jonsson S.",
+    "Elucidation of Factor VIII Activity Pharmacokinetics: A Pooled Population",
+    "Analysis in Patients With Hemophilia A Treated With Moroctocog Alfa. Clin",
+    "Pharmacol Ther. 2017;102(6):977-988. doi:10.1002/cpt.716 PMID:28437834.",
+    sep = " "
+  )
   vignette <- "Abrantes_2017_moroctocog"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
 

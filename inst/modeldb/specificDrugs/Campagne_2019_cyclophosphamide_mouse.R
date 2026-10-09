@@ -1,6 +1,12 @@
 Campagne_2019_cyclophosphamide_mouse <- function() {
   description <- "Preclinical (mouse). Plasma and brain/tumor extracellular-fluid (ECF) population PK model for cyclophosphamide (CTX) and its sequential metabolites 4-hydroxy-cyclophosphamide (4OH-CTX) and carboxyethylphosphoramide mustard (CEPM) in female CD-1 nude mice (non-tumor-bearing and orthotopic Group 3 medulloblastoma G3MB), following a single 130 mg/kg intraperitoneal dose of cyclophosphamide (Campagne 2019). Three sequential two-compartment plasma sub-models are linked by full (Fm = 1) conversion CTX -> 4OH-CTX -> CEPM (so reported CL and V for the two metabolites are apparent CL/F and V/F); each compound additionally has a one-compartment brain/tumor ECF sub-model linked to its plasma central via influx (CLin) and efflux (CLef) clearances driven by the unbound plasma concentration FU x Cp. ECF volume fixed at 0.001 L/kg (Stewart 2010, ref 26 of source). No covariate effects retained; pooled fit across non-tumor-bearing and G3MB mice."
-  reference <- "Campagne O, Davis A, Zhong B, Nair S, Haberman V, Patel YT, Janke L, Roussel MF, Stewart CF. CNS Penetration of Cyclophosphamide and Metabolites in Mice Bearing Group 3 Medulloblastoma and Non-Tumor Bearing Mice. J Pharm Pharm Sci. 2019;22(1):553-568. doi:10.18433/jpps30608"
+  reference <- paste(
+    "Campagne O, Davis A, Zhong B, Nair S, Haberman V, T Patel Y, Janke L, F",
+    "Roussel M, Stewart C. CNS Penetration of Cyclophosphamide and Metabolites",
+    "in Mice Bearing Group 3 Medulloblastoma and Non-Tumor Bearing Mice. J",
+    "Pharm Pharm Sci. 2019;22(1):612-629. doi:10.18433/jpps30608.",
+    sep = " "
+  )
   vignette <- "Campagne_2019_cyclophosphamide_mouse"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
   # The model is body-weight-normalised: structural clearances/volumes

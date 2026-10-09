@@ -1,6 +1,12 @@
 Lu_2022_patritumab <- function() {
   description <- "Joint two-analyte population PK model for patritumab deruxtecan (HER3-DXd, an anti-HER3 antibody-drug conjugate) in adults with HER3-expressing solid tumors (Lu 2022). DXd-conjugated antibody (intact ADC) is described by a 2-compartment model with parallel linear and Michaelis-Menten clearance. Released unconjugated DXd (MAAA-1181a, exatecan-derivative payload) is described by a 1-compartment model with linear clearance and a first-order, time-dependent release rate driven by the level of DXd-conjugated antibody in the central compartment, scaled by the molecular-weight ratio MW_DXd/MW_DXdAb and a payload-to-intact-drug ratio PIR modulated by a cycle-1-vs-later (factor1) and a within-cycle exponential (factor2) modifier."
-  reference <- "Lu Y, Tang N, Hayashi L, Lin Z, Sasaki R, Asakawa M, Liu X, Sahasranaman S, Yamamoto N, Nakagawa K, Janne PA, Schmid P. Population Pharmacokinetics of Patritumab Deruxtecan in Patients With Solid Tumors. J Clin Pharmacol. 2023;63(1):77-88. doi:10.1002/jcph.2137. PMID 36053771."
+  reference <- paste(
+    "Lu Y, Shimizu S, Sawamura R, Tajima N, He L, Lee M, Abutarif M, Shi R.",
+    "Population Pharmacokinetics of Patritumab Deruxtecan in Patients With",
+    "Solid Tumors. J Clin Pharmacol. 2023;63(1):77-90. doi:10.1002/jcph.2137",
+    "PMID 36053771.",
+    sep = " "
+  )
   vignette <- "Lu_2022_patritumab"
   units <- list(
     time = "day",

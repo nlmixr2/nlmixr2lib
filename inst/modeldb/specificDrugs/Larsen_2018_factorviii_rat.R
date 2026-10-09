@@ -18,12 +18,11 @@ Larsen_2018_factorviii_rat <- function() {
     "Parameter values from Larsen 2018 Table 3 (Rat column)."
   )
   reference <- paste(
-    "Larsen MS, Juul RV, Groth AV, Simonsson USH, Kristensen AT,",
-    "Knudsen T, Agerso H, Kreilgaard M. (2018).",
-    "Prediction of human pharmacokinetics of activated recombinant",
-    "factor VII and B-domain truncated factor VIII from animal",
-    "population pharmacokinetic models of haemophilia.",
-    "European Journal of Pharmaceutical Sciences 119, 265-273.",
+    "Larsen MS, Juul RV, Groth AV, Simonsson USH, Kristensen AT, Knudsen T,",
+    "Agerso H, Kreilgaard M. Prediction of human pharmacokinetics of activated",
+    "recombinant factor VII and B-domain truncated factor VIII from animal",
+    "population pharmacokinetic models of haemophilia. Eur J Pharm Sci.",
+    "2018;115:196-203.",
     "doi:10.1016/j.ejps.2018.01.035.",
     sep = " "
   )

@@ -21,10 +21,10 @@ Edrich_2015_heparin <- function() {
     sep = " "
   )
   reference <- paste(
-    "Edrich T, Frendl G, Michaud G, Paschalidis ICh.",
-    "Heparin requirements for full anticoagulation are higher for patients on",
-    "dabigatran than for those on warfarin - a model-based study.",
-    "Clin Pharmacol Adv Appl. 2015;7:19-25. doi:10.2147/CPAA.S72185.",
+    "Edrich T, Frendl G, Michaud G, Paschalidis ICh. Heparin requirements for",
+    "full anticoagulation are higher for patients on dabigatran than for those",
+    "on warfarin - a model-based study. Clin Pharmacol. 2015;7:19-27.",
+    "doi:10.2147/CPAA.S72185.",
     sep = " "
   )
   vignette <- "Edrich_2015_heparin"

@@ -1,6 +1,12 @@
 PerezRuixo_2025_posdinemab <- function() {
   description <- "Mechanism-based population PK-PD model with full TMDD for the anti-tau monoclonal antibody posdinemab in serum, CSF, and ISF (Perez-Ruixo 2025): two-compartment serum disposition with linear elimination, distribution into a CSF compartment and a downstream ISF compartment, explicit second-order binding of free posdinemab to free p217+tau in CSF and to tau seeds in ISF, internalization of free target and drug-target complex, and Alzheimer's-disease-vs-healthy effect on baseline p217+tau."
-  reference <- "Perez-Ruixo C, Liu L, Galpern WR, Perez-Ruixo JJ. Mechanistic Population Pharmacokinetic-Pharmacodynamic Model of the Tau-Targeted Antibody Posdinemab in Healthy Participants and Participants with Alzheimer's Disease. Clin Pharmacol Ther. 2026;119(4):979-990. doi:10.1002/cpt.70173"
+  reference <- paste(
+    "Perez-Ruixo C, Li L, Galpern WR, Perez-Ruixo JJ. Mechanistic Population",
+    "Pharmacokinetic-Pharmacodynamic Model of the Tau-Targeted Antibody",
+    "Posdinemab in Healthy Participants and Participants with Alzheimer's",
+    "Disease. Clin Pharmacol Ther. 2026;119(4):979-989. doi:10.1002/cpt.70173.",
+    sep = " "
+  )
   vignette <- "PerezRuixo_2025_posdinemab"
   units <- list(
     time = "h",

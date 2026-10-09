@@ -1,6 +1,12 @@
 FehlingKaschek_2019_trastuzumab_skbr3 <- function() {
   description <- "In vitro (SKBR3 cell line). Mechanistic ODE model of trastuzumab-induced HER2 receptor internalization with two cell-membrane phenotypes (ruffled vs flat); Model B of Fehling-Kaschek 2019, no recycling or degradation."
-  reference <- "Fehling-Kaschek M, Peckys DB, Kaschek D, Timmer J, de Jonge N. Mathematical modeling of drug-induced receptor internalization in the HER2-positive SKBR3 breast cancer cell-line. Sci Rep. 2019 Sep 5;9(1):12709. doi:10.1038/s41598-019-49019-x. PMID: 31488874; PMCID: PMC6728336."
+  reference <- paste(
+    "Fehling-Kaschek M, Peckys DB, Kaschek D, Timmer J, Jonge N. Mathematical",
+    "modeling of drug-induced receptor internalization in the HER2-positive",
+    "SKBR3 breast cancer cell-line. Sci Rep. 2019;9(1):12709.",
+    "doi:10.1038/s41598-019-49019-x PMID: 31481718; PMCID: PMC6722142.",
+    sep = " "
+  )
   vignette <- "FehlingKaschek_2019_trastuzumab_skbr3"
   paper_specific_compartments <- c(
     "nm_r",

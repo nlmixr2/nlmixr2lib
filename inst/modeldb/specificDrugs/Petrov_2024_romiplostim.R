@@ -1,9 +1,18 @@
 Petrov_2024_romiplostim <- function() {
   description <- "Population PK/PD model for romiplostim in adults with chronic immune thrombocytopenia (ITP). One-compartment first-order subcutaneous PK plus an Emax stimulation of platelet precursor production into a 4-transit-compartment Friberg-style chain feeding circulating platelets, with first-order platelet degradation. PK/PD backbone is the healthy-volunteer population PK/PD model (Makarenko 2024); ITP-specific platelet production (kin) and degradation (kdeg) constants and IIV(kdeg) come from Petrov 2024 supplement Table S1. Default parameters are non-splenectomized ITP patients with mechanism 1 (increased platelet degradation, normal precursor production); see vignette for the other 3 subpopulation variants (non-splenectomized mechanism 2; splenectomized mechanism 1; splenectomized mechanism 2)."
   reference <- paste(
-    "Petrov A, Makarenko I, Sokolov V, Drai R, Bondareva I, Sigaev V, Stuchkov M, Galustyan A, Stepanenko I, Lebedev V, Mishchenko A. Optimization of Romiplostim Biosimilar Efficacy Trial Using In Silico Clinical Trial Approach for Patients With Immune Thrombocytopenia. Clin Pharmacol Drug Dev. 2025 Feb;14(2):116-126. doi:10.1002/cpdd.1494 (PMID 39702972).",
-    "PK/PD backbone (healthy volunteers):",
-    "Makarenko I, Petrov A, Sokolov V, Drai R, Mishchenko A, Bondareva I, Galustyan A, Sigaev V. Population Pharmacokinetic and Pharmacodynamic Modeling of Romiplostim Biosimilar GP40141 and Reference Product in Healthy Volunteers to Evaluate Biosimilarity. Clin Pharmacol Drug Dev. 2024. doi:10.1002/cpdd.1367 (PMID 38168134; reference 20 in Petrov 2024)."
+    "Petrov A, Makarenko I, Belova B, Melikyan A, Saparova V, Peskov K,",
+    "Kudryashova N, Kovalik V, Gefen M, Khokhlov A, Drai R. Optimization of",
+    "Romiplostim Biosimilar Efficacy Trial Using In Silico Clinical Trial",
+    "Approach for Patients With Immune Thrombocytopenia. Clin Pharmacol Drug",
+    "Dev. 2025;14(2):116-126. doi:10.1002/cpdd.1494 (PMID 39702972). PK/PD",
+    "backbone (healthy volunteers): Makarenko I, Petrov A, Sokolov V, Drai R,",
+    "Mishchenko A, Bondareva I, Galustyan A, Sigaev V. Population",
+    "Pharmacokinetic and Pharmacodynamic Modeling of Romiplostim Biosimilar",
+    "GP40141 and Reference Product in Healthy Volunteers to Evaluate",
+    "Biosimilarity. Clin Pharmacol Drug Dev. 2024. doi:10.1002/cpdd.1367 (PMID",
+    "38168134; reference 20 in Petrov 2024).",
+    sep = " "
   )
   vignette <- "Petrov_2024_romiplostim"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL", platelet = "10^9/L")

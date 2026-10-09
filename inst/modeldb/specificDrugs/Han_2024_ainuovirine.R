@@ -26,11 +26,10 @@ Han_2024_ainuovirine <- function() {
     "family cover the virologic and adverse-drug-reaction endpoints."
   )
   reference <- paste(
-    "Han X, Sun J, Zhang Y, Jiang T, Zheng Q, Peng H, Wang Y, Xia W,",
-    "Zhang T, Sun L, Yun X, Qin H, Wu H, Su B.",
-    "Population pharmacokinetics of Ainuovirine and exposure-response",
-    "analysis in human immunodeficiency virus-infected individuals.",
-    "Chin Med J (Engl). 2024;137(20):2474-2482.",
+    "Han X, Sun J, Zhang Y, Jiang T, Zheng Q, Peng H, Wang Y, Xia W, Zhang T,",
+    "Sun L, Yun X, Qin H, Wu H, Su B. Population pharmacokinetics of",
+    "Ainuovirine and exposure-response analysis in human immunodeficiency",
+    "virus-infected individuals. Chin Med J (Engl). 2024;137(20):2473-2482.",
     "doi:10.1097/CM9.0000000000002917.",
     sep = " "
   )

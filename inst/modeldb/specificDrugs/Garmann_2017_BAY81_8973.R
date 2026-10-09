@@ -1,6 +1,13 @@
 Garmann_2017_BAY81_8973 <- function() {
   description <- "Two-compartment population PK model for BAY 81-8973 (Kovaltry, full-length unmodified recombinant human factor VIII) in patients with severe haemophilia A aged 1-61 years pooled from the LEOPOLD I, II and Kids trials (Garmann 2017). Final model uses NONMEM M3 likelihood for samples below the chromogenic-assay limit of quantitation (1.5 IU/dL)."
-  reference <- "Garmann D, McLeay S, Shah A, Vis P, Maas Enriquez M, Ploeger BA. Population pharmacokinetic characterization of BAY 81-8973, a full-length recombinant factor VIII: lessons learned -- importance of including samples with factor VIII levels below the quantitation limit. Haemophilia. 2017 Jul;23(4):528-537. doi:10.1111/hae.13192. PMID:28419647."
+  reference <- paste(
+    "Garmann D, McLeay S, Shah A, Vis P, Maas Enriquez M, Ploeger BA.",
+    "Population pharmacokinetic characterization of BAY 81-8973, a full-length",
+    "recombinant factor VIII: lessons learned - importance of including",
+    "samples with factor VIII levels below the quantitation limit.",
+    "Haemophilia. 2017;23(4):528-537. doi:10.1111/hae.13192 PMID:28220555.",
+    sep = " "
+  )
   vignette <- "Garmann_2017_BAY81_8973"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
 

@@ -1,6 +1,17 @@
 Zhang_2023_valproic_acid_nonsaturable <- function() {
   description <- "One-compartment population PK model with first-order absorption for valproic acid in Chinese children with epilepsy (Zhang 2023 Model IV, the linear non-saturable binding model - the strategy the authors conclude is best suited to valproate protein-binding non-linearity). The disposition is carried on the UNBOUND concentration Cu = central/(V/F) with linear unbound clearance; the observed TOTAL plasma concentration is reconstructed as Cc = Cu + Cb, where the bound concentration adds a linear non-saturable term to the Langmuir isotherm, Cb = Bm * Cu / (Kd + Cu) + NS * Cu, with Bm, Kd and NS FIXED to the values of Gu 2021. Formulation-specific absorption rate constants FIXED from the literature (syrup 2.64 1/h reference, conventional tablet 1.57 1/h, sustained-release tablet 0.46 1/h). Best simulation-based behaviour of the five strategies compared; see modellib('Zhang_2023_valproic_acid_langmuir') for the pure Langmuir form it extends."
-  reference <- "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding non-linearity in population pharmacokinetic model of valproic acid in children with epilepsy: a systematic evaluation study. Front Pharmacol. 2023;14:1228641. doi:10.3389/fphar.2023.1228641. PMID 37860114. Model IV binding isotherm from Eq. 6 with Kd, Bm and NS quoted from Gu X, Zhu M, Sheng C, et al. Population pharmacokinetics of unbound valproic acid in pediatric epilepsy patients in China: a protein binding model. Eur J Clin Pharmacol. 2021;77(7):999-1009. doi:10.1007/s00228-020-03080-y; parameter estimates from Supplementary Table S3."
+  reference <- paste(
+    "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding",
+    "non-linearity in population pharmacokinetic model of valproic acid in",
+    "children with epilepsy: a systematic evaluation study. Front Pharmacol.",
+    "2023;14:1228641. doi:10.3389/fphar.2023.1228641 PMID 37869748. Model IV",
+    "binding isotherm from Eq. 6 with Kd, Bm and NS quoted from Gu X, Zhu M,",
+    "Sheng C, et al. Population pharmacokinetics of unbound valproic acid in",
+    "pediatric epilepsy patients in China: a protein binding model. Eur J Clin",
+    "Pharmacol. 2021;77(7):999-1009. doi:10.1007/s00228-020-03080-y; parameter",
+    "estimates from Supplementary Table S3.",
+    sep = " "
+  )
   vignette <- "Zhang_2023_valproic_acid_protein_binding"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

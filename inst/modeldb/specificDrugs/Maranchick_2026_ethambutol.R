@@ -1,6 +1,14 @@
 Maranchick_2026_ethambutol <- function() {
   description <- "Two-compartment population pharmacokinetic model with first-order absorption, an absorption lag time and linear elimination for oral ethambutol in Ghanaian children with tuberculosis with or without HIV coinfection (Maranchick 2026); estimated allometric weight scaling on CL/F (exponent 0.70) and V1/F (exponent 0.62) normalised to 15.1 kg, and an exponential HIV-positive effect raising CL/F by 24.6%."
-  reference <- "Maranchick NF, Martyn-Dickens C, Enimil A, Yang H, Amissah AK, Dompreh A, Bosomtwe D, Sly-Moore E, Opoku T, Appiah AF, Asiedu P, Antwi S, Scheetz MH, Peloquin CA, Kwara A. Population pharmacokinetics of pyrazinamide and ethambutol in children with tuberculosis with or without HIV. Antimicrob Agents Chemother. 2026. doi:10.1128/aac.00909-25"
+  reference <- paste(
+    "Maranchick NF, Martyn-Dickens C, Enimil A, Yang H, Amissah AK, Dompreh A,",
+    "Bosomtwe D, Sly-Moore E, Opoku T, Frimpong Appiah A, Asiedu P, Antwi S,",
+    "Scheetz MH, Peloquin CA, Kwara A. Population pharmacokinetics of",
+    "pyrazinamide and ethambutol in children with tuberculosis with or without",
+    "HIV. Antimicrob Agents Chemother. 2026;70(4):e00909-25.",
+    "doi:10.1128/aac.00909-25.",
+    sep = " "
+  )
   vignette <- "Maranchick_2026_pyrazinamide_ethambutol"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

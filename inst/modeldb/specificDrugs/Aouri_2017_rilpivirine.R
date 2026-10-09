@@ -1,12 +1,11 @@
 Aouri_2017_rilpivirine <- function() {
   description <- "One-compartment population PK model for oral rilpivirine in HIV-1-infected adults (Aouri 2017), with zero-order absorption from the gastrointestinal tract directly into the central compartment (duration D1 = 4 h; derived mean absorption time D1/2 = 2 h), apparent clearance CL/F = 11.7 L/h, apparent volume of distribution V/F = 401 L, combined proportional plus additive residual error (21.6% and 9.8 ng/mL), and inter-individual variability on CL/F only (33% CV). No demographic, clinical, or genetic covariates (sex, body weight, height, age, race, AST, ALT, HCV, HBV, comedications, CYP3A4*22, CYP3A5*3, CYP2C19*2, CYP2C19*17, UGT1A1*28, UGT1A4*2) were retained in the final covariate model."
   reference <- paste(
-    "Aouri M, Barcelo C, Guidi M, Rotger M, Cavassini M, Hizrel C,",
-    "Buclin T, Decosterd LA, Csajka C, the Swiss HIV Cohort Study. (2017).",
-    "Population pharmacokinetics and pharmacogenetics analysis of",
-    "rilpivirine in HIV-1-infected individuals.",
-    "Antimicrob Agents Chemother 61(1):e00899-16.",
-    "doi:10.1128/AAC.00899-16"
+    "Aouri M, Barcelo C, Guidi M, Rotger M, Cavassini M, Hizrel C, Buclin T,",
+    "Decosterd LA, Csajka C. Population Pharmacokinetics and Pharmacogenetics",
+    "Analysis of Rilpivirine in HIV-1-Infected Individuals. Antimicrob Agents",
+    "Chemother. 2017;61(1):e00899-16. doi:10.1128/AAC.00899-16.",
+    sep = " "
   )
   vignette <- "Aouri_2017_rilpivirine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")

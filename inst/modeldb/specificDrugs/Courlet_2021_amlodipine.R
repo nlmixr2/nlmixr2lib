@@ -1,6 +1,13 @@
 Courlet_2021_amlodipine <- function() {
   description <- "One-compartment population PK model for oral amlodipine in adults living with HIV (Courlet 2021), with first-order absorption after a lag time, between-subject variability on apparent clearance only, an additive residual error, and two antiretroviral drug-drug-interaction effects on CL/F: a -49% linear effect of strong CYP3A4-inhibiting ARVs (boosted darunavir, boosted atazanavir, cobicistat-boosted elvitegravir) and a +140% linear effect of efavirenz."
-  reference <- "Courlet P, Guidi M, Alves Saldanha S, Cavassini M, Stoeckle M, Buclin T, Marzolini C, Decosterd LA, Csajka C; Swiss HIV Cohort Study. Population pharmacokinetic modelling to quantify the magnitude of drug-drug interactions between amlodipine and antiretroviral drugs. Eur J Clin Pharmacol. 2021;77:979-987. doi:10.1007/s00228-020-03060-2"
+  reference <- paste(
+    "Courlet P, Guidi M, Alves Saldanha S, Cavassini M, Stoeckle M, Buclin T,",
+    "Marzolini C, Decosterd LA, Csajka C. Population pharmacokinetic modelling",
+    "to quantify the magnitude of drug-drug interactions between amlodipine",
+    "and antiretroviral drugs. Eur J Clin Pharmacol. 2021;77(7):979-987.",
+    "doi:10.1007/s00228-020-03060-2.",
+    sep = " "
+  )
   vignette <- "Courlet_2021_amlodipine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

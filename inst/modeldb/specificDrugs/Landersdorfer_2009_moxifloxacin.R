@@ -1,12 +1,10 @@
 Landersdorfer_2009_moxifloxacin <- function() {
   description <- "Population PK model for oral moxifloxacin bone penetration (Landersdorfer 2009): two-compartment plasma disposition with first-order absorption from a gut depot, plus two paper-mechanistic bone matrix compartments (cortical and cancellous bone) connected to the central compartment by fixed transfer rate constants. The bone tissue:serum equilibrium concentration ratio is captured by the multiplicative scale terms fcortical and fcancellous on the cortical and cancellous bone observations. Disposition parameters were MAP-Bayesian estimated against Simon 1997 priors; bone-penetration scale terms used noninformative priors. Single 400 mg oral dose in 24 adults undergoing total hip replacement; serum and femoral bone samples (cortical + cancellous, head + neck) collected 2 to 7 hours post-dose."
   reference <- paste(
-    "Landersdorfer CB, Kinzig M, Hennig FF, Bulitta JB,",
-    "Holzgrabe U, Drusano GL, Sorgel F, Gusinde J.",
-    "Penetration of moxifloxacin into bone evaluated by Monte Carlo",
-    "simulation.",
-    "Antimicrob Agents Chemother. 2009 May;53(5):2074-81.",
-    "doi:10.1128/AAC.01056-08. PMID 19237653.",
+    "Landersdorfer CB, Kinzig M, Hennig FF, Bulitta JB, Holzgrabe U, Drusano",
+    "GL, Sorgel F, Gusinde J. Penetration of moxifloxacin into bone evaluated",
+    "by Monte Carlo simulation. Antimicrob Agents Chemother.",
+    "2009;53(5):2074-2081. doi:10.1128/AAC.01056-08 PMID 19223648.",
     sep = " "
   )
   vignette <- "Landersdorfer_2009_moxifloxacin"

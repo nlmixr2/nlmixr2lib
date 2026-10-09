@@ -1,6 +1,13 @@
 Sano_2023_fesoterodine_mcc <- function() {
   description <- "Population pharmacokinetic/pharmacodynamic exposure-response model relating 5-hydroxymethyl tolterodine (5-HMT, the active metabolite of fesoterodine) average steady-state plasma concentration to maximum cystometric capacity (MCC) in pediatric patients aged 6-16 years with neurogenic detrusor overactivity. An Emax model in which the maximum attainable MCC is the age-based expected bladder capacity (EBC) rather than an estimated parameter: MCC = BASE + (Emax - BASE) * Cavg,ss / (EC50 + Cavg,ss), with Emax = 30 * (AGE + 1) mL up to age 12 and a 390 mL plateau thereafter (FIXED, not estimated), and typical baseline MCC scaling with age by the same (AGE + 1)/13 factor from a 190 mL plateau. Fitted to 242 MCC observations (baseline and week 12) from 121 patients in the phase III study 1047 (NCT01557244); EC50 is 6.22 ng/mL. This is the pharmacodynamic half of a sequential PK-then-PD analysis: Cavg,ss is supplied as the CAV covariate from individual empirical-Bayes estimates of the companion population PK model, available in this library as modellib('Sano_2023_fesoterodine'). This is a PD-only model with no dose events and no ODE states; correlated inter-individual variability is carried on baseline MCC and Emax, and residual error is combined proportional plus additive."
-  reference <- "Sano Y, Shoji S, Shahin M, Sweeney K, Darekar A, Malhotra BK. Population Pharmacokinetic and Pharmacodynamic Modeling of Fesoterodine in Pediatric Patients with Neurogenic Detrusor Overactivity. Eur J Drug Metab Pharmacokinet. 2023 May;48(3):257-269. doi:10.1007/s13318-023-00818-8. PMID: 36892805. PMCID: PMC10175358."
+  reference <- paste(
+    "Sano Y, Shoji S, Shahin M, Sweeney K, Darekar A, Malhotra BK. Population",
+    "Pharmacokinetic and Pharmacodynamic Modeling of Fesoterodine in Pediatric",
+    "Patients with Neurogenic Detrusor Overactivity. Eur J Drug Metab",
+    "Pharmacokinet. 2023;48(3):257-269. doi:10.1007/s13318-023-00818-8 PMID:",
+    "36892754. PMCID: PMC10175358.",
+    sep = " "
+  )
   vignette <- "Sano_2023_fesoterodine"
   units <- list(time = "week", dosing = "n/a (PD-only model; no dose events)", concentration = "ng/mL", response = "mL")
 

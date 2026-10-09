@@ -21,10 +21,9 @@ Waalewijn_2024_dolutegravir <- function() {
   )
   reference <- paste(
     "Waalewijn H, Wasmann RE, Bamford A, Gibb DM, McIlleron HM, Colbers A,",
-    "Burger DM, Denti P, and the CHAPAS-4 trial team.",
-    "Population Pharmacokinetics of Dolutegravir in African Children:",
-    "Results From the CHAPAS-4 Trial.",
-    "J Pediatric Infect Dis Soc. 2024;13(10):533-536.",
+    "Burger DM, Denti P. Population Pharmacokinetics of Dolutegravir in",
+    "African Children: Results From the CHAPAS-4 Trial. J Pediatric Infect Dis",
+    "Soc. 2024;13(9):496-500.",
     "doi:10.1093/jpids/piae076.",
     sep = " "
   )

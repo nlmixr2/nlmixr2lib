@@ -1,11 +1,10 @@
 Hansson_2013_sunitinib_hfs <- function() {
   description <- "Population PD model of hand-foot syndrome (HFS; NCI-CTC grades 0 / 1 / 2 / 3+) in adults with imatinib-resistant gastrointestinal stromal tumours (GIST) on sunitinib. A first-order Markov + proportional-odds (PO) likelihood describes the per-visit HFS-grade transition probabilities conditional on the previous grade. The cumulative-logit baselines per starting state are shifted by a starting-state-specific slope on a delayed sVEGFR-3 relative-change signal (effect-compartment-smoothed by ke0 = 0.347/h per Hansson 2013 e85). sVEGFR-3 itself is simulated in-model as a one-compartment indirect-response turnover driven by the per-cycle drug-exposure summary AUC = DOSE / CLI. The PD model has no PK ODE and consumes individual posthoc upstream-PD parameters (BAS_SVEGFR3, MRT_SVEGFR3, EC50_SVEGFR3) and posthoc upstream-PK clearance (CLI) as data covariates. Random effects are diagonal across the four per-state baseline logits; the >=3 state IIV is fixed to zero (NE in Hansson 2013 Table 3)."
   reference <- paste(
-    "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE,",
-    "Karlsson MO.",
-    "PKPD modeling of predictors for adverse effects and overall survival",
-    "in sunitinib-treated patients with GIST.",
-    "CPT Pharmacometrics Syst Pharmacol. 2013;2(11):e85.",
+    "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE, Karlsson",
+    "MO. PKPD Modeling of Predictors for Adverse Effects and Overall Survival",
+    "in Sunitinib-Treated Patients With GIST. CPT Pharmacometrics Syst",
+    "Pharmacol. 2013;2(12):e85.",
     "doi:10.1038/psp.2013.62.",
     "Sister model files from the same paper:",
     "modellib('Hansson_2013_sunitinib_myelosuppression'),",

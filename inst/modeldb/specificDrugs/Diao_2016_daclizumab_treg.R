@@ -1,6 +1,16 @@
 Diao_2016_daclizumab_treg <- function() {
   description <- "Sigmoidal Emax PK/PD model of regulatory T cell (Treg) reduction following subcutaneous daclizumab high-yield process (HYP) in adults with relapsing-remitting multiple sclerosis (Diao 2016). The PD output is the percentage of Treg (CD4+ CD127low/- Foxp3+) among all CD4+ T cells; daclizumab HYP serum concentration drives a maximum 60% reduction via a sigmoidal Emax function. The PK backbone is the two-compartment, first-order SC absorption + lag model from Othman 2014 (file inst/modeldb/specificDrugs/Othman_2014_daclizumab.R), copied verbatim with weight-based allometric scaling."
-  reference <- "Diao L, Hang Y, Othman AA, Nestorov I, Tran JQ, Mehta D, Amaravadi L. Population PK/PD analyses of CD25 occupancy, CD56 bright NK cell expansion and regulatory T cell reduction by daclizumab HYP in subjects with multiple sclerosis. Br J Clin Pharmacol. 2016;82(5):1333-1342. doi:10.1111/bcp.13051 (PMID 27333593). PK backbone: Othman AA, Tran JQ, Tang MT, Dutta S. Population Pharmacokinetics of Daclizumab High-Yield Process in Healthy Volunteers. Clin Pharmacokinet. 2014;53(10):907-918. doi:10.1007/s40262-014-0159-9."
+  reference <- paste(
+    "Diao L, Hang Y, Othman AA, Mehta D, Amaravadi L, Nestorov I, Tran JQ.",
+    "Population PK-PD analyses of CD25 occupancy, CD56(bright) NK cell",
+    "expansion, and regulatory T cell reduction by daclizumab HYP in subjects",
+    "with multiple sclerosis. Br J Clin Pharmacol. 2016;82(5):1333-1342.",
+    "doi:10.1111/bcp.13051 (PMID 27333593). PK backbone: Othman AA, Tran JQ,",
+    "Tang MT, Dutta S. Population Pharmacokinetics of Daclizumab High-Yield",
+    "Process in Healthy Volunteers. Clin Pharmacokinet. 2014;53(10):907-918.",
+    "doi:10.1007/s40262-014-0159-9.",
+    sep = " "
+  )
   vignette <- "Diao_2016_daclizumab_treg"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "% of CD4+ T cells")
 

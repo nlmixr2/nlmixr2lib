@@ -1,11 +1,10 @@
 Kir_2025_metoprolol_rat_pbpk <- function() {
   description <- "Preclinical (rat, Sprague-Dawley). mPBPK (minimal physiologically-based, Monolix 2023R1 population fit). Metoprolol (MET) oral absorption in non-malnourished (control) and malnourished rats. Sister model to modellib('Kir_2025_atenolol_rat_pbpk') from the same paper, and deliberately contrasted with it: metoprolol is lipophilic (logP 1.76, BCS Class I) and hepatically extracted, so the eliminating organ is the LIVER rather than the kidney, distribution is PERFUSION-limited (fd1 + fd2 = 1 exactly, versus 0.268 for atenolol), and Tissue 1 is kidney + lung rather than liver + lung. Four mass-balance states: a well-mixed blood pool, two lumped tissue groups (Tissue 1 rapidly perfused, high Kp; Tissue 2 slowly perfused remainder) and the liver. Crucially the oral zero-order input is delivered INTO THE LIVER, so hepatic first-pass extraction is structural rather than a fitted F -- roughly 50% of an oral dose is lost on first pass. Absorption is two SEQUENTIAL ZERO-ORDER processes with author-fixed windows (0-60 min, then 60-135 min in controls and 60-110 min in the malnourished group). Malnutrition raises both absorption rates and shortens the second window, taking apparent bioavailability from 0.42 to 0.84. The oral arms also carry an estimated FRACTION of the IV intrinsic clearance (fr = 0.336 control, 0.256 malnourished) rather than the full CLint, which is how the published fit reconciles the oral decline phases with the literature IV data. Blood-to-plasma ratio differs by group (1.508 vs 1.607). The model as shipped simulates the ORAL arms; the literature IV reference profile is reproduced by setting k01/k02 to 0, fr to 1 and bpr to 1.70, and giving a bolus into a_blood (see the vignette). IIV is on intrinsic clearance only. NOTE: the absorption-rate scale in Tables 2/3 required reconciliation against the deposited Monolix code -- see the vignette Errata."
   reference <- paste(
-    "Kir F, Sahin S, Jusko WJ. (2025).",
-    "Minimal Physiologically-Based Pharmacokinetic Modeling of Atenolol and",
-    "Metoprolol Absorption in Malnourished Rats.",
-    "Eur J Drug Metab Pharmacokinet 50:243-255.",
-    "doi:10.1007/s13318-025-00943-6. PMCID PMC12081501.",
+    "Kir F, Sahin S, Jusko WJ. Minimal Physiologically-Based Pharmacokinetic",
+    "Modeling of Atenolol and Metoprolol Absorption in Malnourished Rats. Eur",
+    "J Drug Metab Pharmacokinet. 2025;50(3):251-263.",
+    "doi:10.1007/s13318-025-00943-6 PMCID PMC12081501.",
     "Population parameter estimates: Table 3 (Monolix). Naive-pooled (ADAPT 5)",
     "estimates for the same model: Supplementary Table S4.",
     "Rat physiology (tissue volumes and blood flows): Supplementary Table S2.",

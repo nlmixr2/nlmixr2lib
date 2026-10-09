@@ -1,17 +1,16 @@
 Lane_2011_warfarin_s <- function() {
   description <- "S-warfarin population PK (1-compartment, first-order absorption) in adults on long-term warfarin therapy (Lane 2011). Bodyweight, age, sex, and CYP2C9 diplotype influence apparent clearance; volume of distribution carries no covariates. Block correlation between random effects on CL and V. R-warfarin is reported separately in the same paper (modellib('Lane_2011_warfarin_r'))."
   reference <- paste(
-    "Lane S, Al-Zubiedi S, Hatch E, Matthews I, Jorgensen AL, Deloukas P, Daly AK,",
-    "Park BK, Aarons L, Ogungbenro K, Kamali F, Hughes D, Pirmohamed M.",
-    "The population pharmacokinetics of R- and S-warfarin: effect of genetic and",
-    "clinical factors.",
-    "Br J Clin Pharmacol. 2012;73(1):66-76.",
-    "doi:10.1111/j.1365-2125.2011.04051.x.",
-    "PMID: 21692829.",
-    "PK parameters and CYP2C9 / age / sex / weight effects from Table 3 (final",
-    "covariate model); structural-equation form (CL_i = theta_CL * (WT/70)^theta_wgt",
-    "* (1 + theta_age*(AGE-69.8)) * theta_CYP2C9 * theta_gender * exp(eta_CL)) from",
-    "the Results paragraph following Tables 2 and 3."
+    "Lane S, Al-Zubiedi S, Hatch E, Matthews I, Jorgensen AL, Deloukas P, Daly",
+    "AK, Park BK, Aarons L, Ogungbenro K, Kamali F, Hughes D, Pirmohamed M.",
+    "The population pharmacokinetics of R- and S-warfarin: effect of genetic",
+    "and clinical factors. Br J Clin Pharmacol. 2012;73(1):66-76.",
+    "doi:10.1111/j.1365-2125.2011.04051.x PMID: 21692828. PK parameters and",
+    "CYP2C9 / age / sex / weight effects from Table 3 (final covariate model);",
+    "structural-equation form (CL_i = theta_CL * (WT/70)^theta_wgt * (1 +",
+    "theta_age*(AGE-69.8)) * theta_CYP2C9 * theta_gender * exp(eta_CL)) from",
+    "the Results paragraph following Tables 2 and 3.",
+    sep = " "
   )
   vignette <- "Lane_2011_warfarin"
 

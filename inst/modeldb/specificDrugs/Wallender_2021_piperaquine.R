@@ -1,13 +1,12 @@
 Wallender_2021_piperaquine <- function() {
   description <- "Population pharmacokinetic model for piperaquine (PPQ) given as intermittent preventive treatment with dihydroartemisinin-piperaquine (DP) to Ugandan children from 2 to 36 months of age, from Wallender 2021. Three-compartment disposition fed by a pre-specified transit absorption chain of two transit compartments. Clearances are allometrically scaled with a fixed exponent of 0.75 and volumes with a fixed exponent of 1, both normalised to the study-median body weight of 8.6 kg, and clearance additionally carries an Emax maturation function of postmenstrual age representing CYP3A4 ontogeny. Relative oral bioavailability falls linearly with weight-for-age z-score (11.3% per z-score unit, centred on the cohort median of -0.5), is multiplied by 0.397 on self-administered rather than directly observed dosing occasions, and carries between-occasion variability of 66.9%. Venous and capillary finger-prick samples were pooled into one joint fit: capillary concentrations are predicted from the venous prediction through the published log-linear conversion Ccap = Cven^0.922 and selected per record by SAMPLE_CAPILLARY, so a single pooled proportional residual serves both matrices exactly as fitted. Sister model files from the same paper: modellib('Wallender_2021_piperaquine_malaria') (incident-malaria repeated-time-to-event hazard) and modellib('Wallender_2021_piperaquine_qtc') (Bazett-corrected QT interval)."
   reference <- paste(
-    "Wallender E, Ali AM, Hughes E, Kakuru A, Jagannathan P, Muhindo MK,",
-    "Opira B, Whalen M, Huang L, Duvalsaint M, Legac J, Kajubi R, Aweeka F,",
-    "Dorsey G, Kamya MR, Rosenthal PJ, Savic RM.",
-    "Identifying an optimal dihydroartemisinin-piperaquine dosing regimen",
-    "for malaria prevention in young Ugandan children.",
-    "Nat Commun. 2021;12(1):6714.",
-    "doi:10.1038/s41467-021-27051-8. PMC8602248.",
+    "Wallender E, Ali AM, Hughes E, Kakuru A, Jagannathan P, Muhindo MK, Opira",
+    "B, Whalen M, Huang L, Duvalsaint M, Legac J, Kamya MR, Dorsey G, Aweeka",
+    "F, Rosenthal PJ, Savic RM. Identifying an optimal",
+    "dihydroartemisinin-piperaquine dosing regimen for malaria prevention in",
+    "young Ugandan children. Nat Commun. 2021;12(1):6714.",
+    "doi:10.1038/s41467-021-27051-8 PMC8602248.",
     "Open Access under CC BY 4.0.",
     "Final parameter estimates are in Table 2; the structural equations are",
     "Eq. 1 (clearance) and Eq. 2 (bioavailability) with the capillary-to-venous",
