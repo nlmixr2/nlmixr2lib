@@ -19,10 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Pouzin C, Gibiansky L, Fagniez N, Tod M, Chadjaa M, Nguyen L.
-  *Integrated multiple analytes and semi-mechanistic population
-  pharmacokinetic model of tusamitamab ravtansine, a DM4 anti-CEACAM5
-  antibody-drug conjugate.* J Pharmacokinet Pharmacodyn. 2022;49(4):381–394.
+* Citation: Pouzin C, Gibiansky L, Fagniez N, Chadjaa M, Tod M, Nguyen L.
+  Integrated multiple analytes and semi-mechanistic population pharmacokinetic
+  model of tusamitamab ravtansine, a DM4 anti-CEACAM5 antibody-drug conjugate. J
+  Pharmacokinet Pharmacodyn. 2022;49(3):381-394. doi:10.1007/s10928-021-09799-0.
 * Article: <https://doi.org/10.1007/s10928-021-09799-0>
 * Online Resource 1 (Monolix `.mlxtran`): supplementary material to the article.
 * First-in-human study: TED13751 (NCT02187848).

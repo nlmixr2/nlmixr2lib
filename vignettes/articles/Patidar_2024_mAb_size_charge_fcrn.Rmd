@@ -19,7 +19,11 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Patidar K, Pillai N, Dhakal S, Avery LB, Mavroudis PD. A minimal physiologically based pharmacokinetic model to study the combined effect of antibody size, charge, and binding affinity to FcRn/antigen on antibody pharmacokinetics. *J Pharmacokinet Pharmacodyn.* 2024;51(6):477-492.
+* Citation: Patidar K, Pillai N, Dhakal S, Avery LB, Mavroudis PD. A minimal
+  physiologically based pharmacokinetic model to study the combined effect of
+  antibody size, charge, and binding affinity to FcRn/antigen on antibody
+  pharmacokinetics. J Pharmacokinet Pharmacodyn. 2024;51(5):477-492.
+  doi:10.1007/s10928-023-09899-z.
 * DOI: <https://doi.org/10.1007/s10928-023-09899-z>; PMID 38386198; PMCID PMC11576895 (open access, CC BY 4.0).
 * Model equations A1-A48, the physiology / kinetic parameter table (Table 1, mouse and human columns), the two-pore constant table (Table 2), the assumption table (Table 3) and Figs. A1-A8 are all in the Supplementary Information (`10928_2023_9899_MOESM1_ESM.docx`).
 * Upstream framework for the two-pore permeability-surface-area (PS) and Peclet-number (Pe) derivations: Li Z, Shah DK. *J Pharmacokinet Pharmacodyn.* 2019;46(3):305-318, <https://doi.org/10.1007/s10928-019-09639-2>, Supplementary Material Eqs. 13-30.

@@ -19,7 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Shin TJ, Noh GJ, Koo YS, Han DW. (2014). Modeling of Recovery Profiles in Mentally Disabled and Intact Patients after Sevoflurane Anesthesia; A Pharmacodynamic Analysis. *Yonsei Med J* 55(6):1624-1629.
+* Citation: Shin TJ, Noh GJ, Koo YS, Han DW. Modeling of recovery profiles in
+  mentally disabled and intact patients after sevoflurane anesthesia; a
+  pharmacodynamic analysis. Yonsei Med J. 2014;55(6):1624-1630.
+  doi:10.3349/ymj.2014.55.6.1624.
 * Article: <https://doi.org/10.3349/ymj.2014.55.6.1624>
 
 This is a sigmoid Emax pharmacodynamic (PD) model for the probability of return of consciousness (ROC) during emergence from sevoflurane / 50% nitrous-oxide general anesthesia in pediatric patients undergoing dental treatment. The model has no PK component (no dose, no ODE) -- the end-tidal sevoflurane concentration (ETSEVO, vol %) is recorded continuously during emergence and supplied as a per-record covariate, and the model returns the typical-value probability of ROC at that concentration. Mentality (mentally intact vs severely mentally disabled, MENT_DISABLED) is a categorical covariate that stratifies both the concentration at 50% probability of ROC (C50) and the Hill coefficient.

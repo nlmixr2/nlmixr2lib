@@ -19,7 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Hopkins AM, Wojciechowski J, Abuhelwa AY, Mudge S, Upton RN, Foster DJR (2017). Population pharmacokinetic model of doxycycline plasma concentrations using pooled study data. Antimicrobial Agents and Chemotherapy 61(5):e02401-16. doi:10.1128/AAC.02401-16.
+* Citation: Hopkins AM, Wojciechowski J, Abuhelwa AY, Mudge S, Upton RN, Foster
+  DJ. Population Pharmacokinetic Model of Doxycycline Plasma Concentrations
+  Using Pooled Study Data. Antimicrob Agents Chemother. 2017;61(3):e02401-16.
+  doi:10.1128/AAC.02401-16.
 * Article: <https://doi.org/10.1128/AAC.02401-16>
 * Shiny application accompanying the paper: <https://isop.shinyapps.io/DoxycyclineSimulation/>
 

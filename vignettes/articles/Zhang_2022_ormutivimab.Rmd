@@ -19,9 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Zhang J, Hao Y, Liu L, et al. Population Pharmacodynamic
-  Analyses of Human Anti-Rabies Virus Monoclonal Antibody (Ormutivimab) in
-  Healthy Adult Subjects. *Vaccines (Basel)* 2022;10(8):1218.
+* Citation: Zhang J, Shi N, Li G, Li L, Bai Y, Yang L, Zhao W, Gao J, Wei J,
+  Zhao W, Zhai L, Huo P, Ren L, Yu L, Li Y. Population Pharmacodynamic Analyses
+  of Human Anti-Rabies Virus Monoclonal Antibody (Ormutivimab) in Healthy Adult
+  Subjects. Vaccines (Basel). 2022;10(8):1218. doi:10.3390/vaccines10081218.
 * Article: <https://doi.org/10.3390/vaccines10081218> (PMID 36016106; open
   access; CC BY 4.0)
 

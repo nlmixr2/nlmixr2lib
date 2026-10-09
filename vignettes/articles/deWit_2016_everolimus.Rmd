@@ -19,9 +19,11 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: de Wit D et al. Everolimus pharmacokinetics and its exposure-toxicity
-  relationship in patients with thyroid cancer. Cancer Chemother Pharmacol
-  78(1):63-71, 2016. doi:10.1007/s00280-016-3050-6.
+* Citation: de Wit D, Schneider TC, Moes DJ, Roozen CF, den Hartigh J,
+  Gelderblom H, Guchelaar HJ, van der Hoeven JJ, Links TP, Kapiteijn E, van Erp
+  NP. Everolimus pharmacokinetics and its exposure-toxicity relationship in
+  patients with thyroid cancer. Cancer Chemother Pharmacol. 2016;78(1):63-71.
+  doi:10.1007/s00280-016-3050-6.
 * Indication: advanced thyroid carcinoma (differentiated / undifferentiated /
   medullary), phase II study NCT01118065.
 * Article: <https://doi.org/10.1007/s00280-016-3050-6> (open access)

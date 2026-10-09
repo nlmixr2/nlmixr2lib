@@ -22,10 +22,9 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Lu Y, Tang N, Hayashi L, Lin Z, Sasaki R, Asakawa M, Liu X,
-  Sahasranaman S, Yamamoto N, Nakagawa K, Janne PA, Schmid P. *Population
-  Pharmacokinetics of Patritumab Deruxtecan in Patients With Solid Tumors.*
-  J Clin Pharmacol. 2023;63(1):77-88.
+* Citation: Lu Y, Shimizu S, Sawamura R, Tajima N, He L, Lee M, Abutarif M, Shi
+  R. Population Pharmacokinetics of Patritumab Deruxtecan in Patients With Solid
+  Tumors. J Clin Pharmacol. 2023;63(1):77-90. doi:10.1002/jcph.2137.
 * Article: <https://doi.org/10.1002/jcph.2137> (PMID 36053771).
 * Open-access supplement: Tables S1-S8, Figures S1-S10 (single PDF, available
   with the article).

@@ -19,7 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Zou P, Zheng N, Yu Y, Yu S, Sun W, McEachern D, Yang Y, Yu LX, Wang S, Sun D. Preclinical pharmacokinetics of MI-219, a novel human double minute 2 (HDM2) inhibitor and prediction of human pharmacokinetics. *J Pharm Pharm Sci.* 2012;15(2):265-280.
+* Citation: Zou P, Zheng N, Yu Y, Yu S, Sun W, McEachem D, Yang Y, Yu LX, Wang
+  S, Sun D. Preclinical pharmacokinetics of MI-219, a novel human double minute
+  2 (HDM2) inhibitor and prediction of human pharmacokinetics. J Pharm Pharm
+  Sci. 2012;15(2):265-280. doi:10.18433/j34s4n.
 * Article: <https://doi.org/10.18433/j34s4n>
 
 MI-219 is a small-molecule inhibitor of the human double minute 2 (HDM2) / p53 interaction in development for p53-wild-type cancer therapy. Zou et al. characterised single-dose IV plasma PK in CD-1 mice (10 mg/kg, n = 33), Sprague-Dawley rats (5 mg/kg, n = 3), beagle dogs (2 mg/kg, n = 3), and cynomolgus monkeys (10 mg/kg, n = 6), then predicted human PK with several scaling approaches (simple allometry, multi-exponential allometry, two-term power equation, single-species scaling, fu-corrected intercept, IVIVE, Oie-Tozer, Dedrick plots, Wajima normalisation, and NONMEM-based joint interspecies allometric scaling). The packaged model corresponds to the **NONMEM-based interspecies allometric scaling** prediction (Zou 2012 Table 5, NONMEM column, and Figure 7), which is described in the Methods (page 270) as a two-compartment model with linear elimination from the central compartment and body-weight allometry `P = PTV * WT^b` applied to every PK parameter, fit jointly to rat, dog, and monkey plasma concentration profiles. Mouse data were collected but excluded from the joint NONMEM fit because the mouse profile was not superimposable on the other species under Wajima or Dedrick normalisation (Zou 2012 Results, page 274).
