@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Abuhelwa 2022 ketamine and norketamine PK with MADRS, mean arterial pressure and heart rate PD ([doi:10.1002/cpt.2640](https://doi.org/10.1002/cpt.2640)) -- adults with treatment-refractory depression given i.v., s.c. or i.m. ketamine (registers the `madrs` PD state and the `nk` racemic norketamine suffix).
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
