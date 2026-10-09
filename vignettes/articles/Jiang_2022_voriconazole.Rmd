@@ -755,7 +755,11 @@ published_t4 |>
   published.
 - **IIV variances are read from the equations.** Eqs. 6-7 print
   `e^1.01` and `e^0.0973`; their square roots are exactly the Table 2
-  percentages (100.5% and 31.2%), so `omega^2 = 1.01` and `0.0973`.
+  percentages (100.5% and 31.2%), so `omega^2 = 1.01` and `0.0973`. They are
+  not also literal multipliers on the typical values: `e^1.01` would raise the
+  typical clearance 2.7-fold, and a two-fold clearance change already moves the
+  Figure 4 percentages by more than 10 points, whereas the model without such a
+  factor reproduces them to about 3 points (Gate 2).
 - **Residual error.** Table 2's "RSV_CV" (7.1%) and "RSV_SD" (0.373 mg/L) are
   encoded as the proportional and additive standard deviations of the combined
   model `Y = F * (1 + eps1) + eps2`. The bootstrap column of Table 2 reports a
