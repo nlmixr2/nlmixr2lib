@@ -161,6 +161,11 @@ sd_grid <- sort(unique(c(seq(0, 1, by = 0.005), seq(1, 150, by = 0.05))))
 sd_events <- make_events(150, 1, sd_grid) |> mutate(id = 1L)
 sd_sim <- rxode2::rxSolve(mod_typ, sd_events, params = ref_cov,
                           returnType = "data.frame", useLinCmt = FALSE)
+# The drug-to-antibody ratio must follow 1 + 3 exp(-beta * tad); a time after
+# dose that silently evaluated to 0 would hold it at 4.
+day20 <- sd_sim[which.min(abs(sd_sim$time - 20)), ]
+stopifnot(abs(day20$dar - (1 + 3 * exp(-0.0189 * day20$time))) < 1e-4)
+
 trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
 mm_amount <- trap(sd_sim$time, sd_sim$mm_flux)
 lin_amount <- trap(sd_sim$time, sd_sim$kel * sd_sim$central)
@@ -537,7 +542,7 @@ steady-state ADC Cmax of 40.3 ug/mL and the Figure S12 MMAE medians.
   algebraically identical. `STUDY_INNOVATV202` affects only this residual SD;
   set it to 0 when simulating a new population.
 - **Time after dose before the first dose.** The drug-to-antibody ratio uses
-  rxode2's `tad()`, which is undefined before the first dose; it is set to 0
+  rxode2's `tad(central)`, which is undefined before the first dose; it is set to 0
   there, where no ADC is present.
 - **Infusion duration.** The article does not state it; 30 minutes is used,
   as in the US prescribing information and the review's description of the

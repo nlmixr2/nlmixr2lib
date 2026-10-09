@@ -252,9 +252,9 @@ Gibiansky_2022_tisotumab <- function() {
     k12 <- q / vc
     k21 <- q / vp
     kel_mmae <- cl_mmae / vc_mmae
-    # tad() is NA before the first dose, when no ADC is present; 0 keeps the
+    # tad(central) is NA before the first dose, when no ADC is present; 0 keeps the
     # ODE right-hand side finite there
-    tad_dar <- tad()
+    tad_dar <- tad(central)
     if (is.na(tad_dar)) {
       tad_dar <- 0
     }
