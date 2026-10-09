@@ -4782,6 +4782,8 @@ navbar:
         href: articles/Tseng_2026_piperacillin.html
       - text: "Piperacillin (Zurawska 2026)"
         href: articles/Zurawska_2026_piperacillin.html
+      - text: "Piperacillin mbma (Selig 2022)"
+        href: articles/Selig_2022_piperacillin_tazobactam.html
       - text: "Piperacillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Piperacillin tazobactam (Kong 2025)"
@@ -5950,6 +5952,8 @@ navbar:
         href: articles/Sime_2019b_ceftolozane_tazobactam.html
       - text: "Tazobactam (Zhang 2021)"
         href: articles/Zhang_2021_ceftolozane_tazobactam.html
+      - text: "Tazobactam mbma (Selig 2022)"
+        href: articles/Selig_2022_piperacillin_tazobactam.html
       - text: "Tazobactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tbaj587 (Leding 2026)"
@@ -8844,6 +8848,7 @@ articles:
   - articles/Schulthess_2017_frequency_domain_response_analysis
   - articles/Schutte_2018_desmopressin
   - articles/Scotcher_2021_gadoxetate_rat_pbpk
+  - articles/Selig_2022_piperacillin_tazobactam
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
   - articles/SemereGebreyesus_2024_rifabutin
   - articles/Senek_2020_levodopa
