@@ -4474,6 +4474,10 @@ navbar:
         href: articles/Jones_2011_PF04878691_HCV.html
       - text: "PF04878691 viralLoad (Jones 2011)"
         href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF05251749 400mg (Lin 2022)"
+        href: articles/Lin_2022_PF05251749.html
+      - text: "PF05251749 750mg (Lin 2022)"
+        href: articles/Lin_2022_PF05251749.html
       - text: "PRO95780 (Cao 2013)"
         href: articles/Cao_2013_PRO95780.html
       - text: "Paclitaxel (Janssen 2023)"
@@ -8282,6 +8286,7 @@ articles:
   - articles/Lin_2020_glasdegib
   - articles/Lin_2020_glasdegib_AML_overall_survival
   - articles/Lin_2021_vancomycin
+  - articles/Lin_2022_PF05251749
   - articles/Lin_2022_aducanumab_qsp
   - articles/Lin_2023_asparaginaseErwiniaRecombinant
   - articles/Lin_2024_TB_multistate

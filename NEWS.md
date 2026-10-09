@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lin 2022 PF-05251749 ([doi:10.1111/cts.13352](https://doi.org/10.1111/cts.13352)) -- healthy adults given 400 or 750 mg once daily (two-compartment reductions of the dose-specific Simcyp minimal-PBPK base models).
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
