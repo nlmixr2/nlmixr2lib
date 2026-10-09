@@ -35,7 +35,7 @@ Srimani_2022_ixazomib_diarrhea <- function() {
       notes = "Used only by the Gupta 2017 ixazomib PK layer: power covariate on the second peripheral volume, reference 1.87 m^2, exponent 2.06.",
       source_name = "BSA"
     ),
-    PRIOR_IMID = list(
+    PRIOR_IMMUNOMODULATORY_DRUG = list(
       description = "Prior immunomodulatory-drug (IMiD: thalidomide, lenalidomide, pomalidomide) therapy indicator (1 = exposed, 0 = IMiD-naive).",
       units = "(binary)",
       type = "binary",
@@ -167,7 +167,7 @@ Srimani_2022_ixazomib_diarrhea <- function() {
     lg2_ge2 <- lg2 - exp(b22)
     lg2_ge3 <- lg2_ge2 - exp(b23)
 
-    lg3 <- b31 + etab31 + e_imidnaive_b3 * (1 - PRIOR_IMID)
+    lg3 <- b31 + etab31 + e_imidnaive_b3 * (1 - PRIOR_IMMUNOMODULATORY_DRUG)
     lg3_ge2 <- lg3 - exp(b32)
     lg3_ge3 <- lg3_ge2 - exp(b33)
 

@@ -69,18 +69,18 @@ Srimani_2022_ixazomib_mprotein <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (standard cytogenetic risk or risk unavailable; Srimani 2022 Equation 6).",
-      notes = "Linear multiplicative effect on the M-protein response rate constant kR: kR_i = theta_kR * (1 + 0.590 * TUM_CYTOGENETIC_HIGH_RISK) (Equation 6; Table 2 row 'kR (BCYABCAT)'). 20.8% of the efficacy dataset was high risk (Table 1). TOURMALINE-MM1 defined high risk as del(17p), t(4;14) or t(14;16).",
+      notes = "Linear multiplicative effect on the M-protein response rate constant kR: kR_i = theta_kR * (1 + 0.590 * TUM_CYTOGENETIC_HIGH_RISK) (Equation 6; Table 2 row 'kR (BCYABCAT)'). 20.8% of the efficacy dataset was high risk (Table 1). The TOURMALINE-MM1 trial publication (Moreau 2016, N Engl J Med 374:1621) defined high risk as del(17p), t(4;14) or t(14;16); Srimani 2022 prints only the categories.",
       source_name = "BCYABCAT"
     ),
-    PRIOR_IMID = list(
+    PRIOR_IMMUNOMODULATORY_DRUG = list(
       description = "Prior immunomodulatory-drug (IMiD: thalidomide, lenalidomide, pomalidomide) therapy indicator (1 = exposed, 0 = IMiD-naive).",
       units = "(binary)",
       type = "binary",
       reference_category = "1 (IMiD-exposed); the paper's effect is on the naive group.",
-      notes = "Linear multiplicative effect on the relative steady-state M-protein nadir: Yss_i = theta_Yss * (1 - 0.427 * (1 - PRIOR_IMID)), i.e. 42.7% lower in IMiD-naive patients (Equation 7; Table 2 row 'Yss (PIMID)'). 55.9% of the efficacy dataset was IMiD-exposed (Table 1).",
+      notes = "Linear multiplicative effect on the relative steady-state M-protein nadir: Yss_i = theta_Yss * (1 - 0.427 * (1 - PRIOR_IMMUNOMODULATORY_DRUG)), i.e. 42.7% lower in IMiD-naive patients (Equation 7; Table 2 row 'Yss (PIMID)'). 55.9% of the efficacy dataset was IMiD-exposed (Table 1).",
       source_name = "PIMID"
     ),
-    T_NADIR = list(
+    T_MPROTEIN_NADIR = list(
       description = "Individual time of the serum M-protein nadir after the first dose; the resistant M-protein population grows from this time.",
       units = "h",
       type = "continuous",
@@ -203,7 +203,7 @@ Srimani_2022_ixazomib_mprotein <- function() {
 
     # M-protein (Equations 1-7)
     kr <- exp(lkr + etalkr) * (1 + e_cytohr_kr * TUM_CYTOGENETIC_HIGH_RISK)
-    yss <- exp(lyss + etalyss) * (1 + e_imidnaive_yss * (1 - PRIOR_IMID))
+    yss <- exp(lyss + etalyss) * (1 + e_imidnaive_yss * (1 - PRIOR_IMMUNOMODULATORY_DRUG))
     kl <- exp(lkl + etalkl)
     ic50 <- exp(lic50)
     rss <- yss * (1 - imax * Cc / (ic50 + Cc))
@@ -211,7 +211,7 @@ Srimani_2022_ixazomib_mprotein <- function() {
     mprotein_rel(0) <- 1
     d/dt(mprotein_rel) <- kr * (rss - mprotein_rel)
 
-    tpost <- (t - T_NADIR) * (t > T_NADIR)
+    tpost <- (t - T_MPROTEIN_NADIR) * (t > T_MPROTEIN_NADIR)
     rplus <- exp(kl * tpost) - 1
     mprotein <- MCPROT * (mprotein_rel + rplus)
 

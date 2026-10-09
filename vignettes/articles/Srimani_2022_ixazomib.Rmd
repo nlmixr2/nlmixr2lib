@@ -69,7 +69,7 @@ table collects the equations and the parameters.
 |-----------------|-------|-----------------|
 | Ixazomib PK (all files) | Gupta 2017 Table 3, fixed | Methods "Pharmacokinetic/pharmacodynamic modeling" (individual PK by Bayesian estimation from the published model) |
 | M-protein `mprotein <- MCPROT * (mprotein_rel + rplus)` | n/a | Equations 1-2 |
-| Resistant growth `rplus <- exp(kl * (t - T_NADIR)) - 1` after the nadir | n/a | Equation 3 |
+| Resistant growth `rplus <- exp(kl * (t - T_MPROTEIN_NADIR)) - 1` after the nadir | n/a | Equation 3 |
 | `d/dt(mprotein_rel) <- kr * (rss - mprotein_rel)`, `rss <- yss * (1 - imax*C/(ic50 + C))` | n/a | Equations 4-5 |
 | `lkr`, `lyss`, `lkl` | -6.70, -1.95, -9.78 | Table 2 |
 | `imax`, `lic50` | 0.758, 1.19 | Table 2 |
@@ -211,8 +211,8 @@ pk_ev <- rbind(
 pk_ev$BSA <- 1.87
 pk_ev$MCPROT <- 23
 pk_ev$TUM_CYTOGENETIC_HIGH_RISK <- 0
-pk_ev$PRIOR_IMID <- 1
-pk_ev$T_NADIR <- 1e9
+pk_ev$PRIOR_IMMUNOMODULATORY_DRUG <- 1
+pk_ev$T_MPROTEIN_NADIR <- 1e9
 pk_ev$treatment <- "Ixazomib 4 mg single dose"
 pk_sim <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_mp), pk_ev,
   atol = 1e-6, rtol = 1e-6, returnType = "data.frame"
@@ -265,7 +265,7 @@ cohort <- tibble(
   BSA = pmin(pmax(stats::rnorm(2 * n_arm, 1.87, 0.2), 1.4), 2.4),
   MCPROT = pmin(pmax(exp(stats::rnorm(2 * n_arm, log(23), 0.55)), 10), 102),
   TUM_CYTOGENETIC_HIGH_RISK = stats::rbinom(2 * n_arm, 1, 0.208),
-  PRIOR_IMID = stats::rbinom(2 * n_arm, 1, 0.56),
+  PRIOR_IMMUNOMODULATORY_DRUG = stats::rbinom(2 * n_arm, 1, 0.56),
   RACE_ASIAN = stats::rbinom(2 * n_arm, 1, 0.089),
   PLT_BASE = pmin(pmax(exp(stats::rnorm(2 * n_arm, log(197), 0.33)), 35), 666)
 )
@@ -274,7 +274,7 @@ cohort |>
   summarise(
     n = n(), `median BSA` = median(BSA), `median M-protein (g/L)` = median(MCPROT),
     `high-risk cytogenetics (%)` = 100 * mean(TUM_CYTOGENETIC_HIGH_RISK),
-    `IMiD-exposed (%)` = 100 * mean(PRIOR_IMID), `Asian (%)` = 100 * mean(RACE_ASIAN),
+    `IMiD-exposed (%)` = 100 * mean(PRIOR_IMMUNOMODULATORY_DRUG), `Asian (%)` = 100 * mean(RACE_ASIAN),
     `median platelets (10^9/L)` = median(PLT_BASE)
   ) |>
   knitr::kable(digits = 1)
@@ -284,14 +284,14 @@ cohort |>
 
 ## Drawing the nadir time from the relapse model
 
-The M-protein model needs each patient's time of nadir, `T_NADIR`, after which
+The M-protein model needs each patient's time of nadir, `T_MPROTEIN_NADIR`, after which
 the resistant population grows. The paper derived it from the observed data;
 its relapse time-to-event model stands in for that time ("time to relapse ...
 was not included directly as a random parameter in the M-protein PK/PD model.
 Instead, a log-logistic accelerated failure time TTE model described relapse").
 The simulation therefore runs twice with the same random effects: the first
 pass gives each patient's relapse survival curve, a relapse time is drawn from
-it, and the second pass uses that time as `T_NADIR`. Dropout times are drawn
+it, and the second pass uses that time as `T_MPROTEIN_NADIR`. Dropout times are drawn
 from the dropout survival in the same way and end each patient's on-study
 M-protein record.
 
@@ -299,7 +299,7 @@ M-protein record.
 ncycle_eff <- 40
 eff_times <- seq(0, 160, by = 2) * hr_per_week
 eff_ev <- build_events(cohort, eff_times, "mprotein_rel", ncycle_eff) |>
-  mutate(T_NADIR = 1e9)
+  mutate(T_MPROTEIN_NADIR = 1e9)
 eta_mp <- draw_etas(mod_mp, nrow(cohort), seed = 101)
 pass1 <- solve_ind(mod_mp, eff_ev, eta_mp)
 
@@ -312,10 +312,10 @@ event_time <- function(time, surv, u) {
 nadir_drawn <- pass1 |>
   left_join(draws, by = "id") |>
   group_by(id) |>
-  summarise(T_NADIR = event_time(time, surv_relapse, u_rel[1]))
+  summarise(T_MPROTEIN_NADIR = event_time(time, surv_relapse, u_rel[1]))
 
 eff_ev2 <- eff_ev |>
-  select(-T_NADIR) |>
+  select(-T_MPROTEIN_NADIR) |>
   left_join(nadir_drawn, by = "id")
 pass2 <- solve_ind(mod_mp, eff_ev2, eta_mp)
 # Dropout is drawn from the second pass, whose dropout hazard sees the
@@ -529,7 +529,7 @@ for rash, non-Asian). The printed matrices list the destination grade by row
 ```{r matrices}
 mod_dia <- readModelDb("Srimani_2022_ixazomib_diarrhea")
 mod_rash <- readModelDb("Srimani_2022_ixazomib_rash")
-base_ev <- data.frame(id = 1L, time = 1000, amt = 0, evid = 0L, cmt = "central", BSA = 1.87, PRIOR_IMID = 1, RACE_ASIAN = 0)
+base_ev <- data.frame(id = 1L, time = 1000, amt = 0, evid = 0L, cmt = "central", BSA = 1.87, PRIOR_IMMUNOMODULATORY_DRUG = 1, RACE_ASIAN = 0)
 pnames <- paste0("p", rep(0:3, each = 4), rep(0:3, 4))
 to_matrix <- function(s) matrix(unlist(s[1, pnames]), 4, 4, byrow = TRUE)
 dia_base <- to_matrix(rxode2::rxSolve(rxode2::zeroRe(mod_dia), base_ev,
@@ -576,7 +576,7 @@ of Supplementary Figures S10 and S12.
 
 ```{r auc-curves}
 auc_grid <- seq(0, 2500, by = 250)
-grid_ev <- data.frame(id = seq_along(auc_grid), time = 1000, amt = 0, evid = 0L, cmt = "central", BSA = 1.87, PRIOR_IMID = 1, RACE_ASIAN = 0)
+grid_ev <- data.frame(id = seq_along(auc_grid), time = 1000, amt = 0, evid = 0L, cmt = "central", BSA = 1.87, PRIOR_IMMUNOMODULATORY_DRUG = 1, RACE_ASIAN = 0)
 curve_one <- function(mod, b01, slp, label, asian = 0) {
   ev <- grid_ev
   ev$RACE_ASIAN <- asian
@@ -629,7 +629,7 @@ transition probabilities of a typical patient on that continuous schedule.
 
 ```{r one-year}
 week_times <- seq(1, 52) * hr_per_week
-typ_cohort <- tidyr::expand_grid(arm = c("Ixazomib", "Placebo"), PRIOR_IMID = c(1, 0), RACE_ASIAN = c(0, 1)) |>
+typ_cohort <- tidyr::expand_grid(arm = c("Ixazomib", "Placebo"), PRIOR_IMMUNOMODULATORY_DRUG = c(1, 0), RACE_ASIAN = c(0, 1)) |>
   mutate(id = row_number(), BSA = 1.87, MCPROT = 23, TUM_CYTOGENETIC_HIGH_RISK = 0, PLT_BASE = 197)
 # 4 mg every week (no rest week) for 53 weeks.
 typ_ev <- bind_rows(
@@ -648,14 +648,14 @@ one_year <- function(mod, label) {
       tibble(G0 = x[52, 1], G1 = x[52, 2], G2 = x[52, 3], G3 = x[52, 4])
     }) |>
     ungroup() |>
-    left_join(typ_cohort |> select(id, arm, PRIOR_IMID, RACE_ASIAN), by = "id") |>
+    left_join(typ_cohort |> select(id, arm, PRIOR_IMMUNOMODULATORY_DRUG, RACE_ASIAN), by = "id") |>
     mutate(model = label)
 }
 dia_1y <- one_year(mod_dia, "Diarrhea") |> filter(RACE_ASIAN == 0)
-rash_1y <- one_year(mod_rash, "Rash") |> filter(PRIOR_IMID == 1)
+rash_1y <- one_year(mod_rash, "Rash") |> filter(PRIOR_IMMUNOMODULATORY_DRUG == 1)
 
 dia_tab <- dia_1y |>
-  transmute(arm, IMiD = ifelse(PRIOR_IMID == 1, "exposed", "naive"), sim_G3 = 100 * G3) |>
+  transmute(arm, IMiD = ifelse(PRIOR_IMMUNOMODULATORY_DRUG == 1, "exposed", "naive"), sim_G3 = 100 * G3) |>
   mutate(paper_G3 = c(1.2, 0.1, 0.5, 0.1)[match(paste(arm, IMiD), c("Ixazomib exposed", "Ixazomib naive", "Placebo exposed", "Placebo naive"))])
 dia_tab |>
   dplyr::rename("Arm" = arm, "Prior IMiD" = IMiD, "Simulated grade 3 (%)" = sim_G3, "Paper grade 3 (%)" = paper_G3) |>
@@ -754,7 +754,7 @@ stopifnot(
   Supplementary Figures S10 and S12 plot AUC in ng*h/mL. All AUC coefficients
   are therefore read per ng*h/mL. On a per-ug reading the PFS model would carry
   no ixazomib effect, against the trial's PFS difference.
-* **Nadir time.** `T_NADIR` is a covariate, because the paper derived it from
+* **Nadir time.** `T_MPROTEIN_NADIR` is a covariate, because the paper derived it from
   each patient's observed profile. The vignette draws it from the relapse
   hazard. The 4.71% of patients without an estimable nadir (`p_tnadir0`) were
   excluded from the paper's PK/PD fit; the vignette does not simulate them
@@ -791,7 +791,7 @@ stopifnot(
   (weekly AUC 1247 ng*h/mL), not with the 3-of-4-week trial schedule.
 * **Covariate reference groups.** The printed diarrhea matrix is the
   IMiD-exposed one, so the IMiD shift applies to naive patients
-  (`1 - PRIOR_IMID`); the M-protein `Yss` effect is coded the same way.
+  (`1 - PRIOR_IMMUNOMODULATORY_DRUG`); the M-protein `Yss` effect is coded the same way.
 * **Likelihood.** The Markov models emit transition probabilities only; their
   categorical likelihood conditioned on the previous grade cannot be written as
   an nlmixr2 observation, so these files are for simulation.
