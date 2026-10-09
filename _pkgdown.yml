@@ -6162,6 +6162,8 @@ navbar:
         href: articles/Stein_2019_Tisagenlecleucel.html
       - text: "Tislelizumab (Budha 2023)"
         href: articles/Budha_2023_tislelizumab.html
+      - text: "Tisotumab (Gibiansky 2022)"
+        href: articles/Gibiansky_2022_tisotumab.html
       - text: "Tixagevimab (Clegg 2024)"
         href: articles/Clegg_2024_tixagevimab_cilgavimab.html
       - text: "Tixagevimab cilgavimab (Clegg 2024)"
@@ -7695,6 +7697,7 @@ articles:
   - articles/Gibiansky_2005_fospropofol
   - articles/Gibiansky_2014_obinutuzumab
   - articles/Gibiansky_2021_rituximab
+  - articles/Gibiansky_2022_tisotumab
   - articles/Gidal_2018_eslicarbazepine_exposure_response
   - articles/Gijsen_2022_meropenem
   - articles/Gilkey_2015_DiRnanoparticle
