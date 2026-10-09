@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hirasawa 2022 LeiCNS-PK3.1 rat CNS PBPK models with bidirectional CSF movement for sucrose, inulin, morphine, morphine-6-glucuronide, atenolol, acetaminophen, antipyrine, cefodizime, guanidinosuccinic acid and ziconotide ([doi:10.3390/pharmaceutics14091764](https://doi.org/10.3390/pharmaceutics14091764)) -- healthy rats after intracerebroventricular, intracisternal, intrathecal and IV dosing.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.

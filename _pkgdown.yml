@@ -98,10 +98,16 @@ navbar:
         href: articles/Sethi_2024_acetaminophen_diclofenac_mbma.html
       - text: "Acetaminophen food (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "Acetaminophen microdialysis rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
+      - text: "Acetaminophen periventricular rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Acetaminophen placentaperfusion (Mian 2020)"
         href: articles/Mian_2020_acetaminophen_placentaperfusion.html
       - text: "Acetaminophen placentaperfusion (Mian 2021)"
         href: articles/Mian_2021_acetaminophen_placentaperfusion.html
+      - text: "Acetaminophen rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
         href: articles/Westerhout_2012_acetaminophen_rat_pbpk.html
       - text: "Acetaminophen rat pbpk (Yamamoto 2017)"
@@ -352,6 +358,10 @@ navbar:
         href: articles/Kletting_2015_antiCD66_pbpk.html
       - text: "Antipcsk9 qsp (Sokolov 2019)"
         href: articles/Sokolov_2019_antipcsk9_qsp.html
+      - text: "Antipyrine periventricular rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
+      - text: "Antipyrine rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Antithrombin (DeJongh 2014)"
         href: articles/DeJongh_2014_antithrombin.html
       - text: "Antithrombin (Moffett 2017)"
@@ -494,10 +504,14 @@ navbar:
         href: articles/Schipani_2013_atazanavir_ritonavir.html
       - text: "Atenolol iso rat (vanSteeg 2007)"
         href: articles/vanSteeg_2007_atenolol_isoprenaline_rat.html
+      - text: "Atenolol microdialysis rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Atenolol noniso rat (vanSteeg 2007)"
         href: articles/vanSteeg_2007_atenolol_isoprenaline_rat.html
       - text: "Atenolol qsp (Fu 2022)"
         href: articles/Fu_2022_atenolol_qsp.html
+      - text: "Atenolol rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Atenolol rat pbpk (Kir 2025)"
         href: articles/Kir_2025_atenolol_metoprolol_malnutrition.html
       - text: "Atenolol rat pbpk (Yamamoto 2017)"
@@ -1086,6 +1100,8 @@ navbar:
         href: articles/Kawaguchi_2018_cefiderocol.html
       - text: "Cefiderocol egfradj (Kawaguchi 2018)"
         href: articles/Kawaguchi_2018_cefiderocol.html
+      - text: "Cefodizime rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Cefotaxime (Ahsman 2010)"
         href: articles/Ahsman_2010_cefotaxime.html
       - text: "Cefotaxime (Leroux 2016)"
@@ -2682,6 +2698,8 @@ navbar:
         href: articles/Li_2023_granisetron.html
       - text: "Guanfacine (Li 2018)"
         href: articles/Li_2018_guanfacine.html
+      - text: "GuanidinosuccinicAcid rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Guselkumab (Chen 2022)"
         href: articles/Chen_2022_guselkumab.html
       - text: "Guselkumab (Yao 2018)"
@@ -2988,6 +3006,8 @@ navbar:
         href: articles/Chatelut_1999_interferon_alfa_2b.html
       - text: "InterferonAlfa2a (Jeon 2013)"
         href: articles/Jeon_2013_interferonAlfa2a.html
+      - text: "Inulin rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Iohexol (Asberg 2020)"
         href: articles/Asberg_2020_iohexol.html
       - text: "Iohexol creatinine (Chen 2025)"
@@ -4004,10 +4024,16 @@ navbar:
         href: articles/deHoogd_2017_morphine.html
       - text: "Morphine brain rat (Groenendaal 2007)"
         href: articles/Groenendaal_2007_morphine_brain_rat.html
+      - text: "Morphine bsc rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Morphine rat eeg (Groenendaal 2007)"
         href: articles/Groenendaal_2007_morphine_rat_eeg.html
+      - text: "Morphine rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Morphine rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
+      - text: "Morphine6Glucuronide rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Mosunetuzumab (Bender 2024)"
         href: articles/Bender_2024_mosunetuzumab.html
       - text: "Motesanib (Gosselin 2015)"
@@ -5702,6 +5728,8 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
+      - text: "Sucrose rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Sudapyridine (Kong 2025)"
         href: articles/Kong_2025_sudapyridine.html
       - text: "Sufentanil (Hahn 2019)"
@@ -6788,6 +6816,8 @@ navbar:
         href: articles/Comisar_2025_zavegepant.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
+      - text: "Ziconotide rat pbpk (Hirasawa 2022)"
+        href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Zidovudine (Fauchet 2013)"
         href: articles/Fauchet_2013_zidovudine.html
       - text: "Ziftomenib (Mitra 2026)"
@@ -7830,6 +7860,7 @@ articles:
   - articles/HillMcManus_2017_febuxostat_lesinurad
   - articles/Hirai_2016_febuxostat
   - articles/Hirai_2022_digoxin
+  - articles/Hirasawa_2022_leicns_pk31_csf_flow
   - articles/Hirt_2006_nelfinavir
   - articles/Hirt_2007_nelfinavir
   - articles/Hirt_2008_ibuprofen
