@@ -325,7 +325,7 @@ Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp <- function() {
     TGF_50_ctl <- fixed(0.28); label("Half-Maximal TGFb level for CD8 T cell inhibition (Robertson-Tessi 2012, PMID: 22051568) [nmol/dm^3]")  # Table S4 (TGF_50_ctl = 2.8e-10 molarity)
     Kc_rec <- fixed(20200000); label("Half-Maximal cancer cell number for T cell recruitment (Phillis 2006, PMID: 16153659) [cell^2]")  # Table S4 (Kc_rec = 2.02e+07 cell^2)
     TGFbase <- fixed(0.08); label("Baseline TGFb level in breast tumor (Panis 2013, PMID: 23393376) [nmol/dm^3]")  # Table S4 (TGFbase = 8e-11 molarity)
-    k_IFNg_sec <- fixed(4e-13); label("IFNg secretion rate by T helper cell (Borj 2017, doi:10.15171/ijbms.2017.05) [nmol/day*cell]")  # Table S4 (k_IFNg_sec = 4e-13 nanomole/cell/day)
+    k_IFNg_sec <- fixed(4e-13); label("IFNg secretion rate by T helper cell (Borj 2017, doi:10.15171/ijbsm.2017.05) [nmol/day*cell]")  # Table S4 (k_IFNg_sec = 4e-13 nanomole/cell/day)
     k_IFNg_deg <- fixed(11); label("IFNg degradation rate (Hofstra 1998, PMID: 9806748) [1/day]")  # Table S4 (k_IFNg_deg = 11 1/day)
     IFNg_50_ind <- fixed(0.00296); label("Half-Maximal IFNg level for PD-L1 induction (Shin 2017, PMID: 27903500) [nmol/dm^3]")  # Table S4 (IFNg_50_ind = 2.96e-12 molarity)
     r_carb <- fixed(1); label("Tumour to plasma concentration ratio of carboplatin (Konings 2009, PMID: 19096847) [1]")  # Table S4 (r_carb = 1 dimensionless)
