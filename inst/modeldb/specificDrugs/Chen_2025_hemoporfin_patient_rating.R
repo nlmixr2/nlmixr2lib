@@ -24,7 +24,7 @@ Chen_2025_hemoporfin_patient_rating <- function() {
     "Chen R, Zhang B, Tao J, Yao Q, Zhou T, Ma L, Xu Z. Population",
     "Pharmacokinetics and Exposure-Response Relationship of Hemoporfin in",
     "Pediatric Patients With Port-Wine Stain. CPT Pharmacometrics Syst",
-    "Pharmacol. 2025;14(9):1449-1458. doi:10.1002/psp4.70050 PMCID:",
+    "Pharmacol. 2025;14(9):1449-1458. doi:10.1002/psp4.70050. PMCID:",
     "PMC12439283.",
     "Coefficients from Table S1 (Data S1); model form from Equation 3.",
     "Exposure driver supplied by modellib('Chen_2025_hemoporfin').",

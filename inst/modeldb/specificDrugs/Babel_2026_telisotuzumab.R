@@ -25,7 +25,7 @@ Babel_2026_telisotuzumab <- function() {
     "Menon RM, Parikh A. Population Pharmacokinetics and Exposure-Response",
     "Analyses for Telisotuzumab Vedotin in Patients With c-Met Protein",
     "Overexpressing Tumors. CPT Pharmacometrics Syst Pharmacol.",
-    "2026;15(3):e70219. doi:10.1002/psp4.70219 PMCID PMC12945708.",
+    "2026;15(3):e70219. doi:10.1002/psp4.70219. PMCID PMC12945708.",
     "All parameter values are from Data S1 (Supporting Information) Table S7,",
     "'Final Model Parameter Estimates and Variability of Teliso-V Conjugate",
     "and Unconjugated MMAE Payload Pharmacokinetics', Teliso-V Conjugate block.",

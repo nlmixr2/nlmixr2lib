@@ -25,12 +25,11 @@ Heathman_2024_efavirenz <- function() {
     "CV)."
   )
   reference <- paste(
-    "Heathman M, Aruldhas B, Desta Z, Gufford B, Lu J, Metzger I. The effect",
-    "of CYP2B6 genotype on the clearance and autoinduction of efavirenz in",
-    "healthy subjects and the subsequent impact on efavirenz exposure. The",
-    "effect of CYP2B6 genotype on the clearance and autoinduction of efavirenz",
-    "in healthy subjects and the subsequent impact on efavirenz exposure..",
-    "2024. doi:10.70534/pgia9927.",
+    "Heathman MA, Metzger IF, Lu J, Gufford BT, Desta Z, Aruldhas BW. (2024).",
+    "The Effect of CYP2B6 Genotype on the Clearance and Autoinduction of",
+    "Efavirenz in Healthy Subjects and the Subsequent Impact on Efavirenz",
+    "Exposure. Conference poster, Metrum Research Group and Indiana University",
+    "School of Medicine. doi:10.70534/pgia9927",
     sep = " "
   )
   vignette <- "Heathman_2024_efavirenz"

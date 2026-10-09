@@ -5,7 +5,7 @@ Schmid_2017_nintedanib <- function() {
     "pharmacokinetics of nintedanib, an inhibitor of tyrosine kinases, in",
     "patients with non-small cell lung cancer or idiopathic pulmonary",
     "fibrosis. Cancer Chemother Pharmacol. 2018;81(1):89-101.",
-    "doi:10.1007/s00280-017-3452-0 PMID 29119292.",
+    "doi:10.1007/s00280-017-3452-0. PMID 29119292.",
     sep = " "
   )
   vignette <- "Schmid_2017_nintedanib"

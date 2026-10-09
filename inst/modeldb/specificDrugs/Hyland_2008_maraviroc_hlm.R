@@ -3,7 +3,7 @@ Hyland_2008_maraviroc_hlm <- function() {
   reference <- paste(
     "Hyland R, Dickins M, Collins C, Jones H, Jones B. Maraviroc: in vitro",
     "assessment of drug-drug interaction potential. Br J Clin Pharmacol.",
-    "2008;66(4):498-507. doi:10.1111/j.1365-2125.2008.03198.x PMID: 18647303.",
+    "2008;66(4):498-507. doi:10.1111/j.1365-2125.2008.03198.x. PMID: 18647303.",
     "PMCID: PMC2561101. Michaelis-Menten equation with the impurity term and",
     "the Km / Vmax estimates: Results, 'Kinetics of maraviroc N-dealkylation",
     "in human liver microsomes', and Figure 2. Substrate-depletion intrinsic",

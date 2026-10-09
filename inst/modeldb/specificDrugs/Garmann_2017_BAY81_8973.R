@@ -5,7 +5,7 @@ Garmann_2017_BAY81_8973 <- function() {
     "Population pharmacokinetic characterization of BAY 81-8973, a full-length",
     "recombinant factor VIII: lessons learned - importance of including",
     "samples with factor VIII levels below the quantitation limit.",
-    "Haemophilia. 2017;23(4):528-537. doi:10.1111/hae.13192 PMID:28220555.",
+    "Haemophilia. 2017;23(4):528-537. doi:10.1111/hae.13192. PMID:28220555.",
     sep = " "
   )
   vignette <- "Garmann_2017_BAY81_8973"

@@ -5,7 +5,7 @@ Lioger_2017_rituximab <- function() {
     "Bejan-Angoulvant T, Thibault G, Gouilleux-Gruart V, Melet J, Paintaud G,",
     "Ternant D. Antigenic burden and serum IgG concentrations influence",
     "rituximab pharmacokinetics in rheumatoid arthritis patients. Br J Clin",
-    "Pharmacol. 2017;83(8):1773-1781. doi:10.1111/bcp.13270 PMID:28230269.",
+    "Pharmacol. 2017;83(8):1773-1781. doi:10.1111/bcp.13270. PMID:28230269.",
     sep = " "
   )
   vignette <- "Lioger_2017_rituximab"

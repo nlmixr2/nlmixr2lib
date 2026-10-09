@@ -34,7 +34,7 @@ Wu_2023_SPI_62 <- function() {
     "Pharmacokinetic/Pharmacodynamic Modeling to Evaluate SPI-62 Exposure and",
     "Hepatic 11beta-Hydroxysteroid Dehydrogenase Type 1 (HSD-1) Inhibition in",
     "Healthy Adults. Clin Pharmacokinet. 2023;62(9):1275-1288.",
-    "doi:10.1007/s40262-023-01278-8 PMID:37452998. PMCID:PMC10449972.",
+    "doi:10.1007/s40262-023-01278-8. PMID:37452998. PMCID:PMC10449972.",
     sep = " "
   )
   vignette <- "Wu_2023_SPI_62"

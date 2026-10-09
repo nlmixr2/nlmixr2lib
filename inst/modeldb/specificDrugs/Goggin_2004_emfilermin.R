@@ -20,7 +20,7 @@ Goggin_2004_emfilermin <- function() {
     "below ~27 kg where the typical V/F would become negative."
   )
   reference <- paste(
-    "Goggin T, Nguyen QT, Munafo A. Population pharmacokinetic modelling of",
+    "Goggin T, Nguyen QTX, Munafo A. Population pharmacokinetic modelling of",
     "Emfilermin (recombinant human leukaemia inhibitory factor, r-hLIF) in",
     "healthy postmenopausal women and in infertile patients undergoing in",
     "vitro fertilization and embryo transfer. Br J Clin Pharmacol.",

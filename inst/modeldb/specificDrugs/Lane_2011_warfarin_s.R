@@ -5,7 +5,7 @@ Lane_2011_warfarin_s <- function() {
     "AK, Park BK, Aarons L, Ogungbenro K, Kamali F, Hughes D, Pirmohamed M.",
     "The population pharmacokinetics of R- and S-warfarin: effect of genetic",
     "and clinical factors. Br J Clin Pharmacol. 2012;73(1):66-76.",
-    "doi:10.1111/j.1365-2125.2011.04051.x PMID: 21692828. PK parameters and",
+    "doi:10.1111/j.1365-2125.2011.04051.x. PMID: 21692828. PK parameters and",
     "CYP2C9 / age / sex / weight effects from Table 3 (final covariate model);",
     "structural-equation form (CL_i = theta_CL * (WT/70)^theta_wgt * (1 +",
     "theta_age*(AGE-69.8)) * theta_CYP2C9 * theta_gender * exp(eta_CL)) from",

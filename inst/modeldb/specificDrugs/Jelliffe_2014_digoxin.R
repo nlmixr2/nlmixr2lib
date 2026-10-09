@@ -4,7 +4,7 @@ Jelliffe_2014_digoxin <- function() {
     "Jelliffe RW, Milman M, Schumitzky A, Bayard D, Van Guilder M. A",
     "two-compartment population pharmacokinetic-pharmacodynamic model of",
     "digoxin in adults, with implications for dosage. Ther Drug Monit.",
-    "2014;36(3):387-393. doi:10.1097/FTD.0000000000000023 PMCID: PMC4286255.",
+    "2014;36(3):387-393. doi:10.1097/FTD.0000000000000023. PMCID: PMC4286255.",
     sep = " "
   )
   vignette <- "Jelliffe_2014_digoxin"

@@ -1,10 +1,10 @@
 Colin_2014_moxifloxacin <- function() {
   description <- "Three-compartment population PK model for moxifloxacin in post-bariatric (roux-en-y gastric bypass) volunteers (Colin 2014): linear first-order absorption (no lag, no transit) into a central compartment with two peripheral compartments, allometric scaling on lean body mass (exponent 0.75 on all CL terms and 1 on all volumes, reference LBM 60 kg), and inter-individual variability on ka, central volume, and clearance. Single 400 mg oral and 400 mg 1-h IV infusion doses are fit simultaneously with an implicit bioavailability of 1."
   reference <- paste(
-    "Colin P, Eleveld DJ, Struys MM, T'Jollyn H, Bortel LM, Ruige J, De Waele",
-    "J, Van Bocxlaer J, Boussery K. Moxifloxacin dosing in post-bariatric",
-    "surgery patients. Br J Clin Pharmacol. 2014;78(1):84-93.",
-    "doi:10.1111/bcp.12302 PMID 24313873; PMCID PMC4168383.",
+    "Colin P, Eleveld DJ, Struys MMRF, T'Jollyn H, Van Bortel LM, Ruige J, De",
+    "Waele J, Van Bocxlaer J, Boussery K. Moxifloxacin dosing in",
+    "post-bariatric surgery patients. Br J Clin Pharmacol. 2014;78(1):84-93.",
+    "doi:10.1111/bcp.12302. PMID 24313873; PMCID PMC4168383.",
     sep = " "
   )
   vignette <- "Colin_2014_moxifloxacin"

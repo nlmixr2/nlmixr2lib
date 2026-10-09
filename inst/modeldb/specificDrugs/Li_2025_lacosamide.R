@@ -4,7 +4,7 @@ Li_2025_lacosamide <- function() {
     "Li Y, Guo HL, Fan L, Wang J, Hu YH, Zhang YY, Qiu JC, Chen J, Wu CF,",
     "Zhang G, Lu XP, Chen F. PopPK modeling supports BW band dosing of",
     "lacosamide for pediatric epilepsy. NPJ Genom Med. 2025;10(1):61.",
-    "doi:10.1038/s41525-025-00519-y PMCID: PMC12394691.",
+    "doi:10.1038/s41525-025-00519-y. PMCID: PMC12394691.",
     sep = " "
   )
   vignette <- "Li_2025_lacosamide"

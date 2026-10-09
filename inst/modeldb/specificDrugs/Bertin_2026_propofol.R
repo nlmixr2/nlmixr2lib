@@ -5,9 +5,9 @@ Bertin_2026_propofol <- function() {
     "Schneider A, Buclin T, Guidi M, Livio F. Population Pharmacokinetics of",
     "Propofol in Critically Ill Patients with and Without Extracorporeal",
     "Membrane Oxygenation. Clin Pharmacokinet. 2026;65(2):229-240.",
-    "doi:10.1007/s40262-025-01585-2 PMCID: PMC12881008.",
+    "doi:10.1007/s40262-025-01585-2. PMCID: PMC12881008.",
     sep = " "
-  ) # nolint: line_length_linter.
+  )
   vignette <- "Bertin_2026_propofol"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   # CL and Q are published in L/h and V1/V2 in L, so time is hours. Doses are

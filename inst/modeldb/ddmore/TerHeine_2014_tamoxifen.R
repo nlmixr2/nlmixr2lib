@@ -5,7 +5,7 @@
 TerHeine_2014_tamoxifen <- function() {
   description <- "Joint parent-metabolite population PK model for tamoxifen and endoxifen at steady state in adult breast-cancer patients, with CYP2D6 and CYP3A4/5 individual-activity covariates on the endoxifen-formation clearance"
   reference <- paste(
-    "ter Heine R, Binkhorst L, de Graan AJ, de Bruijn P, Beijnen JH,",
+    "Ter Heine R, Binkhorst L, de Graan AJM, de Bruijn P, Beijnen JH,",
     "Mathijssen RH, Huitema AD. Population pharmacokinetic modelling to assess",
     "the impact of CYP2D6 and CYP3A metabolic phenotypes on the",
     "pharmacokinetics of tamoxifen and endoxifen. Br J Clin Pharmacol.",

@@ -1,7 +1,8 @@
 Harrold_2020_radiation_neutropenia <- function() {
   description <- "Preclinical (rhesus macaque). Semi-mechanistic ANC response model linking acute radiation injury to neutropenia, with a coupled time-to-event survival sub-model linking the ANC time course to overall survival in nonhuman primates exposed to 750 cGy whole-body irradiation on day 0 and treated with placebo or G-CSF (filgrastim or pegfilgrastim). Three components: (a) a K-PD radiation injury compartment (depot_kpd) that decays exponentially at k_PD,e and drives mitotic-cell killing via a power-law sensitivity coefficient k_kill = k_PD,kill * RAD^gamma (Eq. 2); (b) a Friberg-style granulopoiesis chain (precursor1 = N_SM stem cell -> precursor2 = N_MT mitotic -> precursor3 = N_PM1 -> precursor4 = N_PM2 -> circ = ANC) where the radiation kill effect operates on the mitotic compartment via the additive loss term -k_kill * precursor2 (Eqs. 3-7); and (c) a Box-Cox-transformed-ANCe-driven time-varying hazard model for overall survival (Eqs. 9-11), with study-specific parameter sets (Table III) selected by the binary indicator STUDY_HARROLD_PEG (0 = filgrastim pivotal study, 1 = pegfilgrastim pivotal study). The ANC response parameters (Table II) were jointly fit on the combined placebo cohorts (n = 45 NHPs); the OS sub-model parameters (Table III) were fit separately to each study because an unexplained study effect remained after covariate screening (Discussion p. 7)."
   reference <- paste(
-    "Harrold J, Gisleskog PO, Delor I, Jacqmin P, Perez-Ruixo JJ, Narayanan A,",
+    "Harrold JM, Olsson Gisleskog P, Delor I, Jacqmin P, Perez-Ruixo JJ,",
+    "Narayanan A,",
     "Doshi S, Chow A, Yang BB, Melhem M. Quantification of Radiation Injury on",
     "Neutropenia and the Link between Absolute Neutrophil Count Time Course",
     "and Overall Survival in Nonhuman Primates Treated with G-CSF. Pharm Res.",

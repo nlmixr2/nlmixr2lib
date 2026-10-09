@@ -26,7 +26,7 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
     sep = " "
   )
   reference <- paste(
-    "Groenendaal D, Freijer J, de Mik D, Bouw MR, Danhof M, de Lange EC.",
+    "Groenendaal D, Freijer J, de Mik D, Bouw MR, Danhof M, de Lange ECM.",
     "Influence of biophase distribution and P-glycoprotein interaction on",
     "pharmacokinetic-pharmacodynamic modelling of the effects of morphine on",
     "the EEG. Br J Pharmacol. 2007;151(5):713-720.",

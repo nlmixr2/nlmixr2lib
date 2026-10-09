@@ -1,12 +1,12 @@
 HernandezLozano_2025_apramycin_invitro <- function() {
   description <- "In vitro (Escherichia coli EN591 and ATCC 700336). Semi-mechanistic time-kill pharmacodynamic model of the aminoglycoside apramycin against two Escherichia coli urinary isolates at pH 7.4 and pH 6. Two bacterial subpopulations (1 = main, apramycin-susceptible; 2 = a subpopulation with decreased susceptibility) each carry two states: a growing, drug-susceptible state S and a dormant, drug-insusceptible state D that bacteria enter as a response to high population densities at rate ksr = (kg - kd) * Btot / Bmax. Apramycin adds to the death rate of the S states through a power model normalized to the strain-and-pH-specific MIC, kdrug = Slope * (Cu/MIC)^gamma with gamma fixed to 1, and simultaneously drives the transfer of bacteria from subpopulation 1 to subpopulation 2 at rate kada * (Cu/MIC), so no pre-existing resistant fraction is assumed in the inoculum. MIC-normalization makes one parameter set describe ATCC 700336 at both pH levels; EN591 needs separate drug-effect parameters at pH 6 and pH 7.4. Sibling models: HernandezLozano_2025_apramycin_mouse (the same PD structure re-estimated on mouse kidney and bladder cfu data and driven by a mouse subcutaneous PK model) and HernandezLozano_2025_apramycin_human (the in vivo PD component driven by the human population PK model of Zhao 2022)."
   reference <- paste(
-    "Hernandez-Lozano I, Aranzana-Climent V, Cao S, Matias C, Ulf Hansen J,",
+    "Hernandez-Lozano I, Aranzana-Climent V, Cao S, Matias C, Hansen JU,",
     "Liepinsh E, Hughes D, Hobbie SN, Vingsbo Lundberg C, Friberg LE.",
     "Model-informed drug development for antimicrobials: translational",
     "pharmacokinetic-pharmacodynamic modelling of apramycin to facilitate",
     "prediction of efficacious dose in complicated urinary tract infections. J",
-    "Antimicrob Chemother. 2025;80(1):301-310. doi:10.1093/jac/dkae409 PMID:",
+    "Antimicrob Chemother. 2025;80(1):301-310. doi:10.1093/jac/dkae409. PMID:",
     "39548844. PMCID: PMC11695905. In vitro PD structure: Materials and",
     "methods, 'PKPD modelling', plus the schematic in Figure 1. Parameter",
     "estimates and 95% CIs: Table 1, section 'In vitro PD parameters'. MIC",

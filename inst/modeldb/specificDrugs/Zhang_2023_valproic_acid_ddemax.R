@@ -4,7 +4,7 @@ Zhang_2023_valproic_acid_ddemax <- function() {
     "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding",
     "non-linearity in population pharmacokinetic model of valproic acid in",
     "children with epilepsy: a systematic evaluation study. Front Pharmacol.",
-    "2023;14:1228641. doi:10.3389/fphar.2023.1228641 PMID 37869748. Model III",
+    "2023;14:1228641. doi:10.3389/fphar.2023.1228641. PMID 37869748. Model III",
     "structure from Eq. 5; Emax, gamma and DD50 quoted from Ding J, Wang Y,",
     "Lin W, et al. A population pharmacokinetic model of valproic acid in",
     "pediatric patients with epilepsy: a non-linear pharmacokinetic model",

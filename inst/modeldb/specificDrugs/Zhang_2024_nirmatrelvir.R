@@ -20,7 +20,7 @@ Zhang_2024_nirmatrelvir <- function() {
     "Zhang R, Fan J, Han L, Mao J, Sun L, Yu Y, Fan W, Xie J, Lin B, Lin N.",
     "Population Pharmacokinetics and Dosing Regimen Analysis of Nirmatrelvir",
     "in Chinese Patients with COVID-19 Infection. Drug Des Devel Ther.",
-    "2024;18:5517-5527. doi:10.2147/DDDT.S479561 PMCID PMC11622681.",
+    "2024;18:5517-5527. doi:10.2147/DDDT.S479561. PMCID PMC11622681.",
     sep = " "
   )
   vignette <- "Zhang_2024_nirmatrelvir"

@@ -21,8 +21,8 @@ Eechoute_2012_imatinib <- function() {
   )
   reference <- paste(
     "Eechoute K, Fransson MN, Reyners AK, de Jong FA, Sparreboom A, van der",
-    "Graaf WT, Friberg LE, Schiavon G, Wiemer EA, Verweij J, Loos WJ,",
-    "Mathijssen RH, De Giorgi U. A long-term prospective population",
+    "Graaf WTA, Friberg LE, Schiavon G, Wiemer EAC, Verweij J, Loos WJ,",
+    "Mathijssen RHJ, De Giorgi U. A long-term prospective population",
     "pharmacokinetic study on imatinib plasma concentrations in GIST patients.",
     "Clin Cancer Res. 2012;18(20):5780-5787.",
     "doi:10.1158/1078-0432.CCR-12-0490. PARAMETER SOURCE (secondary): Yang T,",

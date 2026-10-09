@@ -4,7 +4,7 @@ Gao_2026_trastuzumabRezetecan <- function() {
     "Gao X, Zhao K, Zhao Y, Zhang Y, Zhao J, Zhao C, Djebli N. Population",
     "Pharmacokinetics of Trastuzumab Rezetecan in Patients With",
     "HER2-Expressing or Mutated Advanced Solid Tumors. CPT Pharmacometrics",
-    "Syst Pharmacol. 2026;15(5):e70259. doi:10.1002/psp4.70259 PMCID",
+    "Syst Pharmacol. 2026;15(5):e70259. doi:10.1002/psp4.70259. PMCID",
     "PMC13274680.",
     sep = " "
   )

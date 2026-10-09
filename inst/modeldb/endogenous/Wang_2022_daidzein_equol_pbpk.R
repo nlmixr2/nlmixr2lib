@@ -26,7 +26,7 @@ Wang_2022_daidzein_equol_pbpk <- function() {
     "Wang Q, Spenkelink B, Boonpawa R, Rietjens IMCM. Use of Physiologically",
     "Based Pharmacokinetic Modeling to Predict Human Gut Microbial Conversion",
     "of Daidzein to S-Equol. J Agric Food Chem. 2022;70(1):343-352.",
-    "doi:10.1021/acs.jafc.1c03950 PMCID: PMC8759082. Microbial kinetic",
+    "doi:10.1021/acs.jafc.1c03950. PMCID: PMC8759082. Microbial kinetic",
     "constants Table 2; S-equol conjugation kinetics Table 3; the complete",
     "Berkeley Madonna ODE listing with all physiological, partition and",
     "scaling parameters is Supporting Information 2 (PBPK model code).",

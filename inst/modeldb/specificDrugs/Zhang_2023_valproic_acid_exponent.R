@@ -4,7 +4,7 @@ Zhang_2023_valproic_acid_exponent <- function() {
     "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding",
     "non-linearity in population pharmacokinetic model of valproic acid in",
     "children with epilepsy: a systematic evaluation study. Front Pharmacol.",
-    "2023;14:1228641. doi:10.3389/fphar.2023.1228641 PMID 37869748. Model V",
+    "2023;14:1228641. doi:10.3389/fphar.2023.1228641. PMID 37869748. Model V",
     "structure from Eq. 7; parameter estimates from Supplementary Table S3.",
     sep = " "
   )

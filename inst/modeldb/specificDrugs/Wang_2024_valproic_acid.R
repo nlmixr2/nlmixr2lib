@@ -5,7 +5,7 @@ Wang_2024_valproic_acid <- function() {
     "Chen F. Population pharmacokinetics of valproic acid in children with",
     "epilepsy: Implications for dose tailoring when switching from oral syrup",
     "to sustained-release tablets. CPT Pharmacometrics Syst Pharmacol.",
-    "2024;13(9):1554-1569. doi:10.1002/psp4.13191 PMCID PMC11533106.",
+    "2024;13(9):1554-1569. doi:10.1002/psp4.13191. PMCID PMC11533106.",
     "Final-model parameter estimates from Table 3; covariate equations from",
     "Equations 34 and 35.",
     sep = " "

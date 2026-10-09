@@ -31,7 +31,7 @@ Yellepeddi_2025_sotalol <- function() {
     "B, Watt K. Population Pharmacokinetics and Pharmacodynamics of Sotalol",
     "Following Expedited Intravenous Loading in Patients With Atrial",
     "Arrhythmias. CPT Pharmacometrics Syst Pharmacol. 2025;14(4):658-667.",
-    "doi:10.1002/psp4.13302 PMCID PMC12001255.",
+    "doi:10.1002/psp4.13302. PMCID PMC12001255.",
     "Final NONMEM control stream: Supplementary Datafile S1",
     "(file PSP4-14-658-s004.docx of the publisher supplementary bundle).",
     sep = " "

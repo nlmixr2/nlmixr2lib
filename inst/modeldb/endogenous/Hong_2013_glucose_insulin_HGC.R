@@ -28,7 +28,7 @@ Hong_2013_glucose_insulin_HGC <- function() {
     "Hong Y, Dingemanse J, Sidharta P, Mager DE. Population pharmacodynamic",
     "modeling of hyperglycemic clamp and meal tolerance tests in patients with",
     "type 2 diabetes mellitus. AAPS J. 2013;15(4):1051-1063.",
-    "doi:10.1208/s12248-013-9512-4 PMID 23904152; PMCID PMC3787242.",
+    "doi:10.1208/s12248-013-9512-4. PMID 23904152; PMCID PMC3787242.",
     sep = " "
   )
   vignette <- "Hong_2013_glucose_insulin"

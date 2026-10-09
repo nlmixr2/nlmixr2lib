@@ -6,7 +6,7 @@ Wallender_2021_piperaquine_qtc <- function() {
     "F, Rosenthal PJ, Savic RM. Identifying an optimal",
     "dihydroartemisinin-piperaquine dosing regimen for malaria prevention in",
     "young Ugandan children. Nat Commun. 2021;12(1):6714.",
-    "doi:10.1038/s41467-021-27051-8 PMC8602248.",
+    "doi:10.1038/s41467-021-27051-8. PMC8602248.",
     "Open Access under CC BY 4.0.",
     "The QTc parameters are in Supplementary Table 2 of",
     "41467_2021_27051_MOESM1_ESM.pdf and the equation is in the Results",

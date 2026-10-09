@@ -28,7 +28,7 @@ OlssonGisleskog_2025_ibrutinib <- function() {
     sep = " "
   )
   reference <- paste(
-    "Gisleskog PO, Valenzuela B, Treijtel N, Deshpande S, Henninger T,",
+    "Olsson Gisleskog P, Valenzuela B, Treijtel N, Deshpande S, Henninger T,",
     "Perez-Ruixo JJ. Population Pharmacokinetic and Exposure-Response Analyses",
     "of Ibrutinib Combined With Bendamustine and Rituximab in Patients With",
     "Mantle Cell Lymphoma. CPT Pharmacometrics Syst Pharmacol.",

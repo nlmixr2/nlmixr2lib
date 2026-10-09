@@ -4,7 +4,7 @@ Zhang_2023_valproic_acid_nonsaturable <- function() {
     "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding",
     "non-linearity in population pharmacokinetic model of valproic acid in",
     "children with epilepsy: a systematic evaluation study. Front Pharmacol.",
-    "2023;14:1228641. doi:10.3389/fphar.2023.1228641 PMID 37869748. Model IV",
+    "2023;14:1228641. doi:10.3389/fphar.2023.1228641. PMID 37869748. Model IV",
     "binding isotherm from Eq. 6 with Kd, Bm and NS quoted from Gu X, Zhu M,",
     "Sheng C, et al. Population pharmacokinetics of unbound valproic acid in",
     "pediatric epilepsy patients in China: a protein binding model. Eur J Clin",

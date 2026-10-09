@@ -32,7 +32,8 @@ Ooi_2026_elafibranor <- function() {
   )
 
   reference <- paste(
-    "Ooi QX, Brendel K, van Beek S, Zdovc JA, Bardol M, Dehez M. Population",
+    "Ooi QX, Brendel K, van Beek S, Aguiar Zdovc J, Bardol M, Dehez M.",
+    "Population",
     "Pharmacokinetics and Pharmacokinetics-Pharmacodynamics Analyses of",
     "Elafibranor to Support Dose Selection in Primary Biliary Cholangitis. CPT",
     "Pharmacometrics Syst Pharmacol. 2026;15(5):e70247.",

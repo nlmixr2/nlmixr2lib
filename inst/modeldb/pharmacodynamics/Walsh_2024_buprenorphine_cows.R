@@ -31,7 +31,7 @@ Walsh_2024_buprenorphine_cows <- function() {
     sep = " "
   )
   reference <- paste(
-    "Walsh SL, Comer SD, Zdovc JA, Sarr C, Bjornsson M, Strandgarden K,",
+    "Walsh SL, Comer SD, Aguiar Zdovc J, Sarr C, Bjornsson M, Strandgarden K,",
     "Hjelmstrom P, Tiberg F. Pharmacokinetic-pharmacodynamic analysis of drug",
     "liking blockade by buprenorphine subcutaneous depot (CAM2038) in",
     "participants with opioid use disorder. Neuropsychopharmacology.",

@@ -3,7 +3,8 @@ Savic_2017_cladribine <- function() {
   reference <- paste(
     "Savic RM, Novakovic AM, Ekblom M, Munafo A, Karlsson MO. Population",
     "Pharmacokinetics of Cladribine in Patients with Multiple Sclerosis. Clin",
-    "Pharmacokinet. 2017;56(10):1245-1253. doi:10.1007/s40262-017-0516-6 PMID:",
+    "Pharmacokinet. 2017;56(10):1245-1253. doi:10.1007/s40262-017-0516-6.",
+    "PMID:",
     "28255849; PMCID: PMC5591805.",
     sep = " "
   )

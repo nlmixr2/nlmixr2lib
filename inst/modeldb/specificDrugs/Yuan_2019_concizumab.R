@@ -4,7 +4,7 @@ Yuan_2019_concizumab <- function() {
     "Yuan D, Rode F, Cao Y. A systems pharmacokinetic/pharmacodynamic model",
     "for concizumab to explore the potential of anti-TFPI recycling",
     "antibodies. Eur J Pharm Sci. 2019;138:105032.",
-    "doi:10.1016/j.ejps.2019.105032 PMID 31394258. mTFPI baseline, kdegm =",
+    "doi:10.1016/j.ejps.2019.105032. PMID 31394258. mTFPI baseline, kdegm =",
     "kint, and koff optimized in the reduced PK/PD model using human PK/PD",
     "data digitized from Chowdary 2015 (J Thromb Haemost 13:743-754).",
     "Linear-clearance endosome parameters (CLup, CLe, krec, k1on, k1off,",

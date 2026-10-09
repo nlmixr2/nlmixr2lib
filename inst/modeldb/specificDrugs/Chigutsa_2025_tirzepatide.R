@@ -22,7 +22,7 @@ Chigutsa_2025_tirzepatide <- function() {
     "Quantitative Determination of Improvement in Body Composition and",
     "Characterization of the Exposure-Response Relationship during Treatment",
     "of Obesity with Tirzepatide. Clin Pharmacol Ther. 2025;118(6):1489-1498.",
-    "doi:10.1002/cpt.3750 PMCID PMC12641085. Model structure and the fixed",
+    "doi:10.1002/cpt.3750. PMCID PMC12641085. Model structure and the fixed",
     "random-effect component for placebo waning are taken from the NONMEM",
     "control stream in Supplementary Material S1 (file CPT-118-1489-s001.txt).",
     "PK layer reproduced from the upstream population PK model: Schneck K,",

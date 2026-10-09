@@ -17,7 +17,7 @@ Wang_2019_linezolid <- function() {
   reference <- paste(
     "Wang D, Zheng X, Yang Y, Chen X. Population pharmacokinetic analysis of",
     "linezolid in patients with different types of shock: Effect of platelet",
-    "count. Exp Ther Med. 2019;18(3):1786-1792. doi:10.3892/etm.2019.7747",
+    "count. Exp Ther Med. 2019;18(3):1786-1792. doi:10.3892/etm.2019.7747.",
     "PMCID: PMC6676194.",
     sep = " "
   )

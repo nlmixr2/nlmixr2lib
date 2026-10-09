@@ -4,7 +4,7 @@ Landersdorfer_2009_moxifloxacin <- function() {
     "Landersdorfer CB, Kinzig M, Hennig FF, Bulitta JB, Holzgrabe U, Drusano",
     "GL, Sorgel F, Gusinde J. Penetration of moxifloxacin into bone evaluated",
     "by Monte Carlo simulation. Antimicrob Agents Chemother.",
-    "2009;53(5):2074-2081. doi:10.1128/AAC.01056-08 PMID 19223648.",
+    "2009;53(5):2074-2081. doi:10.1128/AAC.01056-08. PMID 19223648.",
     sep = " "
   )
   vignette <- "Landersdorfer_2009_moxifloxacin"

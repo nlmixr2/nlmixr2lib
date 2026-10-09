@@ -22,7 +22,7 @@ Ibrahim_2019_oral2cmt_zeroorder_mm <- function() {
   reference <- paste(
     "Ibrahim MMA, Ueckert S, Freiberga S, Kjellsson MC, Karlsson MO.",
     "Model-Based Conditional Weighted Residuals Analysis for Structural Model",
-    "Assessment. AAPS J. 2019;21(3):34. doi:10.1208/s12248-019-0305-2 PMCID",
+    "Assessment. AAPS J. 2019;21(3):34. doi:10.1208/s12248-019-0305-2. PMCID",
     "PMC6394649.",
     "Structure and all six parameter values transcribed from Supplementary",
     "Material 1 (12248_2019_305_MOESM1_ESM.docx), section 'Simple PK example',",

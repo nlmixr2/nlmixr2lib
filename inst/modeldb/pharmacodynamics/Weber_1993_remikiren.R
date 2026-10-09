@@ -7,7 +7,7 @@ Weber_1993_remikiren <- function() {
     "Population: 144 patients with mild-to-moderate essential hypertension across three multi-dose clinical pharmacology studies (oral solution or 100 mg capsules; 100-800 mg po qd for 8 days)."
   )
   reference <- paste(
-    "Weber C, Birnbock H, Leube J, Kobrin I, Kleinbloesem CH, Van Brummelen P.",
+    "Weber C, Birnbock H, Leube J, Kobrin I, Kleinbloesem CH, van Brummelen P.",
     "Multiple dose pharmacokinetics and concentration effect relationship of",
     "the orally active renin inhibitor remikiren (Ro 42-5892) in hypertensive",
     "patients. Br J Clin Pharmacol. 1993;36(6):547-554.",

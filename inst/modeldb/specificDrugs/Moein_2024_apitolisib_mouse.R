@@ -21,7 +21,7 @@ Moein_2024_apitolisib_mouse <- function() {
     "Moein A, Jin JY, Wright MR, Alicke B, Wong H. Retrospective Assessment of",
     "Translational Pharmacokinetic-Pharmacodynamic Modeling Performance: A",
     "Case Study with Apitolisib, a Dual PI3K/mTOR Inhibitor. Drugs R D.",
-    "2024;24(2):155-167. doi:10.1007/s40268-024-00459-5 PMCID PMC11315854.",
+    "2024;24(2):155-167. doi:10.1007/s40268-024-00459-5. PMCID PMC11315854.",
     "Structural equations from Methods Eqs. 2-5; parameter values from Tables",
     "1 and 3; NONMEM control stream from Supplementary Information Online",
     "Resource 2 (part I). Companion human model:",

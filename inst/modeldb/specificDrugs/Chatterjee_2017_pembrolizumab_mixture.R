@@ -32,7 +32,7 @@ Chatterjee_2017_pembrolizumab_mixture <- function() {
     "Freshwater T, Mayawala K, Ahamadi M, Stone JA, de Greef R, Kondic AG, de",
     "Alwis DP. Population Pharmacokinetic/Pharmacodynamic Modeling of Tumor",
     "Size Dynamics in Pembrolizumab-Treated Advanced Melanoma. CPT",
-    "Pharmacometrics Syst Pharmacol. 2017;6(1):29-39. doi:10.1002/psp4.12140",
+    "Pharmacometrics Syst Pharmacol. 2017;6(1):29-39. doi:10.1002/psp4.12140.",
     "PMID: 27896938. PMCID: PMC5270297.",
     "Structural equation from the main-article Methods ('Initial",
     "exposure-response tumor size (mixture) model'); per-class",

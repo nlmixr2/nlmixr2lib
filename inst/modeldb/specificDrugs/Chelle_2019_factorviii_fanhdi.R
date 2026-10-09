@@ -5,7 +5,7 @@ Chelle_2019_factorviii_fanhdi <- function() {
     "Vericat JE, Iorio A, Spears J, Mir R, Edginton A. Routine clinical care",
     "data for population pharmacokinetic modeling: the case for",
     "Fanhdi/Alphanate in hemophilia A patients. J Pharmacokinet Pharmacodyn.",
-    "2019;46(5):427-438. doi:10.1007/s10928-019-09637-4 PMID:31115857.",
+    "2019;46(5):427-438. doi:10.1007/s10928-019-09637-4. PMID:31115857.",
     sep = " "
   )
   vignette <- "Chelle_2019_factorviii_fanhdi"

@@ -5,7 +5,7 @@ Wittau_2015_meropenem <- function() {
     "Henne-Bruns D, Bulitta JB. Population Pharmacokinetics and Target",
     "Attainment of Meropenem in Plasma and Tissue of Morbidly Obese Patients",
     "after Laparoscopic Intraperitoneal Surgery. Antimicrob Agents Chemother.",
-    "2015;59(10):6241-6247. doi:10.1128/AAC.00259-15 PMID 26248353.",
+    "2015;59(10):6241-6247. doi:10.1128/AAC.00259-15. PMID 26248353.",
     sep = " "
   )
   vignette <- "Wittau_2015_meropenem"

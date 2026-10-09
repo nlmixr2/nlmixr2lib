@@ -4,7 +4,7 @@ Sano_2023_fesoterodine_mcc <- function() {
     "Sano Y, Shoji S, Shahin M, Sweeney K, Darekar A, Malhotra BK. Population",
     "Pharmacokinetic and Pharmacodynamic Modeling of Fesoterodine in Pediatric",
     "Patients with Neurogenic Detrusor Overactivity. Eur J Drug Metab",
-    "Pharmacokinet. 2023;48(3):257-269. doi:10.1007/s13318-023-00818-8 PMID:",
+    "Pharmacokinet. 2023;48(3):257-269. doi:10.1007/s13318-023-00818-8. PMID:",
     "36892754. PMCID: PMC10175358.",
     sep = " "
   )

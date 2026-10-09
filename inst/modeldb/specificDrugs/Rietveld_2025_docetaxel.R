@@ -41,7 +41,8 @@ Rietveld_2025_docetaxel <- function() {
   )
   reference <- paste(
     "Rietveld PCS, Koolen SLW, Zeiser S, Rijcken CJF, van Noort M, van Eerden",
-    "RAG, Atrafi F, Miedema IHC, van Oordt CWMH, Koch BCP, Mathijssen RHJ,",
+    "RAG, Atrafi F, Miedema IHC, Menke-van der Houven van Oordt CW, Koch BCP,",
+    "Mathijssen RHJ,",
     "Snelder N, Sassen SDT. Drug release from docetaxel-entrapped",
     "core-crosslinked polymeric micelles: A population pharmacokinetic",
     "modelling approach based on clinical data. Biomed Pharmacother.",

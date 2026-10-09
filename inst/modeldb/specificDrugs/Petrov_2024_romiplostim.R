@@ -7,10 +7,11 @@ Petrov_2024_romiplostim <- function() {
     "Approach for Patients With Immune Thrombocytopenia. Clin Pharmacol Drug",
     "Dev. 2025;14(2):116-126. doi:10.1002/cpdd.1494 (PMID 39702972). PK/PD",
     "backbone (healthy volunteers): Makarenko I, Petrov A, Belova B, Saparova",
-    "V, Arefeva A, Peskov K, Kudryashova N, Khokhlov A. Population",
+    "V, Arefeva A, Peskov K, Kudryashova N, Khokhlov A, Drai R. Population",
     "Pharmacokinetic and Pharmacodynamic Modeling of Romiplostim Biosimilar",
     "GP40141 and Reference Product in Healthy Volunteers to Evaluate",
-    "Biosimilarity. Clin Pharmacol Drug Dev. 2024. doi:10.1002/cpdd.1367 (PMID",
+    "Biosimilarity. Clin Pharmacol Drug Dev. 2024;13(4):419-431.",
+    "doi:10.1002/cpdd.1367 (PMID",
     "38168134; reference 20 in Petrov 2024).",
     sep = " "
   )

@@ -15,7 +15,8 @@ Schouwenburg_2026_cefuroxime <- function() {
     "(Schouwenburg 2026)."
   )
   reference <- paste(
-    "Schouwenburg S, Preijers T, Asperen RMW, Hartman SJF, de Wildt SN, de",
+    "Schouwenburg S, Preijers T, Wosten-van Asperen RM, Hartman SJF, de Wildt",
+    "SN, de",
     "Hoog M, Koch BCP, Abdulla A, Wildschut ED. Low Target Attainment of",
     "Intravenous Cefuroxime in Critically Ill Term Neonates and Children: A",
     "Pooled Population Pharmacokinetics Study. Clin Pharmacokinet.",

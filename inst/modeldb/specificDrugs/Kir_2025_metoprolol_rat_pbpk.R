@@ -4,7 +4,7 @@ Kir_2025_metoprolol_rat_pbpk <- function() {
     "Kir F, Sahin S, Jusko WJ. Minimal Physiologically-Based Pharmacokinetic",
     "Modeling of Atenolol and Metoprolol Absorption in Malnourished Rats. Eur",
     "J Drug Metab Pharmacokinet. 2025;50(3):251-263.",
-    "doi:10.1007/s13318-025-00943-6 PMCID PMC12081501.",
+    "doi:10.1007/s13318-025-00943-6. PMCID PMC12081501.",
     "Population parameter estimates: Table 3 (Monolix). Naive-pooled (ADAPT 5)",
     "estimates for the same model: Supplementary Table S4.",
     "Rat physiology (tissue volumes and blood flows): Supplementary Table S2.",

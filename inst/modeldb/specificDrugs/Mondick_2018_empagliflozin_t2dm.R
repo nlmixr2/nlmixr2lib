@@ -10,10 +10,12 @@ Mondick_2018_empagliflozin_t2dm <- function() {
     sep = " "
   )
   reference <- paste(
-    "Mondick J, Riggs M, Kaspers S, Soleymanlou N, Marquard J, Nock V.",
-    "Population Pharmacokinetic- Pharmacodynamic Analysis to Characterize the",
-    "Effect of Empagliflozin on Renal Glucose Threshold in Patients With Type",
-    "1 Diabetes Mellitus. J Clin Pharmacol. 2018;58(5):640-649.",
+    "PD parameters: Mondick J, Riggs M, Sasaki T, Sarashina A, Broedl UC,",
+    "Retlich S. Mixed-effects modelling to quantify the effect of",
+    "empagliflozin on renal glucose reabsorption in patients with type 2",
+    "diabetes. Diabetes Obes Metab. 2016;18:241-248, as tabulated in Mondick",
+    "J, Riggs M, Kaspers S, Soleymanlou N, Marquard J, Nock V. J Clin",
+    "Pharmacol. 2018;58(5):640-649 Supplementary Table 2,",
     "doi:10.1002/jcph.1051.",
     "PK parameters: Mondick 2018 Supplementary Table 1; see",
     "modellib('Mondick_2018_empagliflozin_t1dm').",

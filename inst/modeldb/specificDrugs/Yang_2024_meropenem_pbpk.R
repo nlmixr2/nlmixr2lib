@@ -26,7 +26,7 @@ Yang_2024_meropenem_pbpk <- function() {
     "Yang Y, Wang Y, Zeng W, Zhou J, Xu M, Lan Y, Liu L, Shen J, Zhang C, He",
     "Q. Physiologically-based pharmacokinetic/pharmacodynamic modeling of",
     "meropenem in critically ill patients. Sci Rep. 2024;14(1):19269.",
-    "doi:10.1038/s41598-024-64223-0 PMCID PMC11335869.",
+    "doi:10.1038/s41598-024-64223-0. PMCID PMC11335869.",
     "The reduced disposition parameters encoded here (Vd 23.21 L, CL 12.07 L/h,",
     "f 0.98 in Asians with severe infection) are stated in the Results section",
     "'Monte carlo simulations'; Vd 23.21 L also appears in Table 1 as the",

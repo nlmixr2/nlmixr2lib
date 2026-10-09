@@ -5,7 +5,7 @@ Patidar_2024_mAb_human <- function() {
     "physiologically based pharmacokinetic model to study the combined effect",
     "of antibody size, charge, and binding affinity to FcRn/antigen on",
     "antibody pharmacokinetics. J Pharmacokinet Pharmacodyn.",
-    "2024;51(5):477-492. doi:10.1007/s10928-023-09899-z PMID 38400996. PMCID",
+    "2024;51(5):477-492. doi:10.1007/s10928-023-09899-z. PMID 38400996. PMCID",
     "PMC11576895. Model equations A1-A48 and the human parameter column of",
     "Table 1 are in the Supplementary Information",
     "(10928_2023_9899_MOESM1_ESM.docx). Human physiology is from Shah & Betts",

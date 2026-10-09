@@ -24,7 +24,7 @@ Tobin_2026_atomoxetine <- function() {
     "between-subject and between-occasion variability."
   )
   reference <- paste(
-    "Tobin KV, Pritchett A, Leeder JS, Gobburu J, Dunn A. Understanding",
+    "Tobin KVT, Pritchett A, Leeder JS, Gobburu J, Dunn A. Understanding",
     "Atomoxetine Exposure Variability in Children and Adolescents With ADHD",
     "Through Population Pharmacokinetics. J Clin Pharmacol. 2026;66(4):e70168.",
     "doi:10.1002/jcph.70168.",

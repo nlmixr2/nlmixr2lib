@@ -22,9 +22,10 @@ Yin_2024_soticlestat <- function() {
     "Clin Transl Sci. 2024;17(3):e13722. doi:10.1111/cts.13722.",
     "The CH24H enzyme-occupancy sub-model (ke0, Emax, EC50, gamma) is carried forward",
     "unchanged and FIXED from the healthy-volunteer model of Yin W, Facius A,",
-    "Wagner T, Tsai M, Asgharnejad M, Lahu G, Vakilynejad M. Modeling and",
-    "simulation of soticlestat pharmacokinetics, brain enzyme occupancy, and",
-    "pharmacodynamics in healthy volunteers. Clin Transl Sci.",
+    "Wagner T, Tsai M, Asgharnejad M, Lahu G, Vakilynejad M. Population",
+    "pharmacokinetics, enzyme occupancy, and 24S-hydroxycholesterol modeling of",
+    "soticlestat, a novel cholesterol 24-hydroxylase inhibitor, in healthy",
+    "adults. Clin Transl Sci.",
     "2023;16(7):1149-1162.",
     "doi:10.1111/cts.13517.",
     sep = " "

@@ -3,7 +3,7 @@ Hyland_2008_maraviroc_rcyp3a4 <- function() {
   reference <- paste(
     "Hyland R, Dickins M, Collins C, Jones H, Jones B. Maraviroc: in vitro",
     "assessment of drug-drug interaction potential. Br J Clin Pharmacol.",
-    "2008;66(4):498-507. doi:10.1111/j.1365-2125.2008.03198.x PMID: 18647303.",
+    "2008;66(4):498-507. doi:10.1111/j.1365-2125.2008.03198.x. PMID: 18647303.",
     "PMCID: PMC2561101. Km and Vmax estimates: Results, 'Kinetics of maraviroc",
     "N-dealkylation by rCYP3A4', and Figure 4. Substrate-depletion intrinsic",
     "clearance, the intersystem extrapolation factor, the CYP3A4 content of",

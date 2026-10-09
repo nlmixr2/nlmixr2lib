@@ -4,7 +4,8 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     "Nielsen EI, Viberg A, Lowdin E, Cars O, Karlsson MO, Sandstrom M.",
     "Semimechanistic pharmacokinetic/pharmacodynamic model for assessment of",
     "activity of antibacterial agents from time-kill curve experiments.",
-    "Antimicrob Agents Chemother. 2007;51(1):128-136. doi:10.1128/AAC.00604-06",
+    "Antimicrob Agents Chemother. 2007;51(1):128-136.",
+    "doi:10.1128/AAC.00604-06.",
     "PMID: 17060524.",
     sep = " "
   )

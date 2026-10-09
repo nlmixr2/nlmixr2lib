@@ -23,7 +23,7 @@ Schoning_2026_oral1cmt_groundtruth <- function() {
   reference <- paste(
     "Schoning V, Hammann F. Improving Population Pharmacokinetic Modelling",
     "with Artificial Patients using Generative Artificial Intelligence.",
-    "Pharmacol Res Perspect. 2026;14(2):e70241. doi:10.1002/prp2.70241 PMCID",
+    "Pharmacol Res Perspect. 2026;14(2):e70241. doi:10.1002/prp2.70241. PMCID",
     "PMC13052321.",
     "Ground-truth structure and parameter values transcribed from the authors'",
     "own RsSimulx inlineModel and parameter data frame in the deposited code",

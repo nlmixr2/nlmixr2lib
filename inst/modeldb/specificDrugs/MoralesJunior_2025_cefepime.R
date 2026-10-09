@@ -26,7 +26,7 @@ MoralesJunior_2025_cefepime <- function() {
     "in Critically Ill Children and Young Adults: Model Development and",
     "External Validation for Monte Carlo Simulations and Model-Informed",
     "Precision Dosing. Clin Pharmacokinet. 2025;64(4):553-564.",
-    "doi:10.1007/s40262-025-01485-5 PMID 39988706; PMC12041147. Final",
+    "doi:10.1007/s40262-025-01485-5. PMID 39988706; PMC12041147. Final",
     "parameter estimates and the printed",
     "model equations are from Table 2.",
     sep = " "

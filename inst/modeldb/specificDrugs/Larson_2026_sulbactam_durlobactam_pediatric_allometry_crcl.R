@@ -27,7 +27,7 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
     "to Support Dose Selection for Evaluation in a Clinical Trial in Pediatric",
     "Patients with Acinetobacter Baumannii-Calcoaceticus Complex (ABC)",
     "Infections. Open Forum Infectious Diseases.",
-    "2026;13(Supplement_1):ofaf695.659. doi:10.1093/ofid/ofaf695.659 PMCID:",
+    "2026;13(Supplement_1):ofaf695.659. doi:10.1093/ofid/ofaf695.659. PMCID:",
     "PMC12792777.",
     "The model specification is taken from the corresponding IDWeek 2025",
     "poster, which carries a different author order: Cammarata A, Larson KB,",

@@ -1,7 +1,8 @@
 Sassen_2017_crisantaspase <- function() {
   description <- "Two-compartment population PK model for intravenous Erwinia asparaginase (crisantaspase; Erwinase) in pediatric acute lymphoblastic leukemia patients, with allometric scaling on clearance and volumes and a higher first-month clearance (Sassen 2017)."
   reference <- paste(
-    "Sassen SD, Mathot RA, Pieters R, Kloos RQ, de Haas V, Kaspers GJ, van den",
+    "Sassen SDT, Mathot RAA, Pieters R, Kloos RQH, de Haas V, Kaspers GJL, van",
+    "den",
     "Bos C, Tissing WJ, Te Loo M, Bierings MB, Kollen WJ, Zwaan CM, van der",
     "Sluis IM. Population pharmacokinetics of intravenous Erwinia asparaginase",
     "in pediatric acute lymphoblastic leukemia patients. Haematologica.",

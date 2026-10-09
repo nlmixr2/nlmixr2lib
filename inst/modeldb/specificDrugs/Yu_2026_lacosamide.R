@@ -4,7 +4,7 @@ Yu_2026_lacosamide <- function() {
     "Yu L, Mao F, Chen S, Yu K, Hu Y, Chen J, Hu W, Yu Z, Dai H. Development",
     "and validation of a population pharmacokinetic model for lacosamide in",
     "adult patients with epilepsy to inform precision dosing. BMC Pharmacol",
-    "Toxicol. 2026;27(1):61. doi:10.1186/s40360-026-01114-2 PMCID:",
+    "Toxicol. 2026;27(1):61. doi:10.1186/s40360-026-01114-2. PMCID:",
     "PMC13067655.",
     sep = " "
   )

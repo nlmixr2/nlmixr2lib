@@ -4,7 +4,7 @@ Choules_2024_enfortumab <- function() {
     "Choules MP, Zuo P, Otsuka Y, Garg A, Tang M, Bonate P. Physiologically",
     "based pharmacokinetic model to predict drug-drug interactions with the",
     "antibody-drug conjugate enfortumab vedotin. J Pharmacokinet Pharmacodyn.",
-    "2024;51(5):417-428. doi:10.1007/s10928-023-09877-5 PMID 37632598; PMCID",
+    "2024;51(5):417-428. doi:10.1007/s10928-023-09877-5. PMID 37632598; PMCID",
     "PMC11576838.",
     sep = " "
   )

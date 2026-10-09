@@ -24,7 +24,7 @@ TerHeine_2018_everolimus <- function() {
     "targets."
   )
   reference <- paste(
-    "Ter Heine R, van Erp NP, Guchelaar HJ, de Fijter JW, Reinders MEJ, van",
+    "ter Heine R, van Erp NP, Guchelaar HJ, de Fijter JW, Reinders MEJ, van",
     "Herpen CM, Burger DM, Moes DJAR. A pharmacological rationale for improved",
     "everolimus dosing in oncology and transplant patients. Br J Clin",
     "Pharmacol. 2018;84(7):1575-1586.",

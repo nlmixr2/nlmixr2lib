@@ -5,7 +5,7 @@ Zhang_2022_ormutivimab <- function() {
     "Zhai L, Huo P, Ren L, Yu L, Li Y. Population Pharmacodynamic Analyses of",
     "Human Anti-Rabies Virus Monoclonal Antibody (Ormutivimab) in Healthy",
     "Adult Subjects. Vaccines (Basel). 2022;10(8):1218.",
-    "doi:10.3390/vaccines10081218 PMID: 36016106.",
+    "doi:10.3390/vaccines10081218. PMID: 36016106.",
     sep = " "
   )
   vignette <- "Zhang_2022_ormutivimab"

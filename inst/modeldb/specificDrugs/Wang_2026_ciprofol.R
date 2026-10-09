@@ -3,7 +3,8 @@ Wang_2026_ciprofol <- function() {
   reference <- paste(
     "Wang S, Li Y, Hu Z, Du L, Wang Y, Jiang X, Li L, Shangguan W. Population",
     "pharmacokinetics of a single bolus of ciprofol in Chinese pediatric",
-    "patients. BMC Anesthesiol. 2026;26(1):141. doi:10.1186/s12871-026-03647-9",
+    "patients. BMC Anesthesiol. 2026;26(1):141.",
+    "doi:10.1186/s12871-026-03647-9.",
     "PMCID: PMC12930602.",
     "Chinese Clinical Trial Registry ChiCTR2200058405.",
     sep = " "

@@ -29,7 +29,8 @@ BoivinChampeaux_2026_hepatitisB_qsp <- function() {
     sep = " "
   )
   reference <- paste(
-    "Boivin-Champeaux C, Schmidt S, Balsitis S, Azeredo FJ, Feigelman JS. A",
+    "Boivin-Champeaux C, Schmidt S, Balsitis S, Johansson Azeredo F, Feigelman",
+    "JS. A",
     "Quantitative Systems Pharmacology (QSP) Model of Acute Hepatitis B Virus",
     "Infection: Mechanistic Insights and Foundations for Future Extensions.",
     "CPT Pharmacometrics Syst Pharmacol. 2026;15(2):e70172.",

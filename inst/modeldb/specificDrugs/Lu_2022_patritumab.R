@@ -3,7 +3,7 @@ Lu_2022_patritumab <- function() {
   reference <- paste(
     "Lu Y, Shimizu S, Sawamura R, Tajima N, He L, Lee M, Abutarif M, Shi R.",
     "Population Pharmacokinetics of Patritumab Deruxtecan in Patients With",
-    "Solid Tumors. J Clin Pharmacol. 2023;63(1):77-90. doi:10.1002/jcph.2137",
+    "Solid Tumors. J Clin Pharmacol. 2023;63(1):77-90. doi:10.1002/jcph.2137.",
     "PMID 36053771.",
     sep = " "
   )

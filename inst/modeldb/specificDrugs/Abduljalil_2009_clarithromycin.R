@@ -4,7 +4,7 @@ Abduljalil_2009_clarithromycin <- function() {
     "Abduljalil K, Kinzig M, Bulitta J, Horkovics-Kovats S, Sorgel F, Rodamer",
     "M, Fuhr U. Modeling the autoinhibition of clarithromycin metabolism",
     "during repeated oral administration. Antimicrob Agents Chemother.",
-    "2009;53(7):2892-2901. doi:10.1128/AAC.01193-08 PMID 19414584.",
+    "2009;53(7):2892-2901. doi:10.1128/AAC.01193-08. PMID 19414584.",
     sep = " "
   )
   vignette <- "Abduljalil_2009_clarithromycin"
