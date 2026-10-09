@@ -23,7 +23,7 @@ suppressPackageStartupMessages({
 
 * Citation: `r rxode2::rxode2(readModelDb("Benkali_2010_tacrolimus"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Benkali_2010_tacrolimus"))$description`
-* Article: Clin Pharmacokinet 2010;49(10):683-692 (Adis Data; DOI not printed in the PDF).
+* Article: Clin Pharmacokinet 2010;49(10):683-692, doi:10.2165/11535950-000000000-00000 (Adis Data; the DOI is not printed in the PDF).
 
 # Population
 
@@ -301,9 +301,8 @@ and Discussion).
   parameterisation that the source paper used in NONMEM and gives the same
   three-stage convolution.
 - **DOI not printed in the PDF.** The article PDF does not
-  print a DOI; the citation in the model file is by journal / volume / issue /
-  page number only. NEWS.md follows the precedent set by `Bista_2015_fentanyl`
-  (cited by manuscript because the journal / DOI metadata was unavailable).
+  print a DOI; the DOI in the model file's citation is the one Crossref and
+  PubMed register for the article.
 - **Vignette uses 200 subjects per CYP3A5 stratum.** This is small enough to
   render the vignette in well under 5 minutes but large
   enough to give stable percentiles for the VPC and pooled %CV statistics.
