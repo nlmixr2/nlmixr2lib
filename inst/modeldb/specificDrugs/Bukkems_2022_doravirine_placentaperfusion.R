@@ -49,12 +49,12 @@ Bukkems_2022_doravirine_placentaperfusion <- function() {
       notes = "Scales the volumes of the maternal part of the placenta, the placental barrier and the fetal part of the placenta (11.55%, 11.05% and 8.25% of the cotyledon volume; Table 1), with 42 g taken as 44.02 mL (Section 2.2: 'Absolute volumes of MP, PB, and FP were scaled with the individual cotyledon weight of each perfusion experiment and were standarized to a typical cotyledon volume of 44.02 mL'). CLpdm and CLpdf are reported 'For the typical cotyledon weighing 42 g' (Table 2 footnote a) and were imputed into the PBPK model per mL of placenta (37.2 mL/min / 44.02 mL = 0.0507 L/h/mL; Section 3.3), so they are scaled linearly with cotyledon weight as well. Closed-closed cotyledon weights were 18.9-64.4 g (median 32.55 g; Online Resource 4).",
       source_name = "cotyledon weight"
     ),
-    PERF_DIR_FTM = list(
+    PERFUSION_FETAL_TO_MATERNAL = list(
       description = "Perfusion direction: 1 = doravirine added to the fetal circulation (fetal-to-maternal experiment); 0 = added to the maternal circulation (maternal-to-fetal experiment)",
       units = "(binary)",
       type = "binary",
       reference_category = 0,
-      notes = "Selects the proportional residual error: 7.5% CV after dosing in the maternal compartment (PERF_DIR_FTM = 0) and 12.6% CV after dosing in the fetal compartment (PERF_DIR_FTM = 1) (Table 2). The structural model is the same in both directions; the dose record goes to maternal_reservoir or fetal_reservoir accordingly.",
+      notes = "Selects the proportional residual error: 7.5% CV after dosing in the maternal compartment (PERFUSION_FETAL_TO_MATERNAL = 0) and 12.6% CV after dosing in the fetal compartment (PERFUSION_FETAL_TO_MATERNAL = 1) (Table 2). The structural model is the same in both directions; the dose record goes to maternal_reservoir or fetal_reservoir accordingly.",
       source_name = "dosing compartment"
     )
   )
@@ -124,8 +124,8 @@ Bukkems_2022_doravirine_placentaperfusion <- function() {
     label("Passive diffusion clearance over the fetal-facing barrier, CLpdf (mL/min)") # Table 2: 'CL pdf, mL/min 5.5 (3.1-9.8)'
 
     # Between-placenta variability fixed at 100% CV; variance = log(1 + 1^2).
-    etalcl_pdm ~ fixed(0.6931472) # Table 2: 'IIV CL pdm, % Fixed to 100', footnote b: CV = sqrt(exp(variance) - 1)
-    etalcl_pdf ~ fixed(0.6931472) # Table 2: 'IIV CL pdf, % Fixed to 100', footnote b: CV = sqrt(exp(variance) - 1)
+    etalcl_pdm ~ fixed(0.6931472) # Table 2 'IIV CL pdm' held at 100% CV by the authors; variance = log(1 + 1^2), footnote b CV = sqrt(exp(variance) - 1)
+    etalcl_pdf ~ fixed(0.6931472) # Table 2 'IIV CL pdf' held at 100% CV by the authors; variance = log(1 + 1^2), footnote b CV = sqrt(exp(variance) - 1)
 
     # ------------------------------------------------------------------
     # Residual error (Table 2). Proportional SDs back-transformed from the
@@ -179,7 +179,7 @@ Bukkems_2022_doravirine_placentaperfusion <- function() {
     Cfetal <- c_fr
     addSd_maternal <- addSd
     addSd_fetal <- addSd
-    propSd_dir <- propSd_mtf * (1 - PERF_DIR_FTM) + propSd_ftm * PERF_DIR_FTM
+    propSd_dir <- propSd_mtf * (1 - PERFUSION_FETAL_TO_MATERNAL) + propSd_ftm * PERFUSION_FETAL_TO_MATERNAL
     propSd_maternal <- propSd_dir
     propSd_fetal <- propSd_dir
     Cmaternal ~ add(addSd_maternal) + prop(propSd_maternal)

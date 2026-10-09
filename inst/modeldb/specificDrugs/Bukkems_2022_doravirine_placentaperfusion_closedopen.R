@@ -47,12 +47,12 @@ Bukkems_2022_doravirine_placentaperfusion_closedopen <- function() {
       notes = "Scales the volumes of the maternal part of the placenta, the placental barrier and the fetal part of the placenta (11.55%, 11.05% and 8.25% of the cotyledon volume, standardised to 42 g = 44.02 mL; Online Resource 17) and, per Online Resource 19 footnote a ('A typical cotyledon weighs 42g, assuming to be equal to 44.02 mL'), the transfer clearances. Closed-open cotyledon weights were 22.5-41.4 g (median 33.15 g; Online Resource 14).",
       source_name = "cotyledon weight"
     ),
-    PERF_DIR_FTM = list(
+    PERFUSION_FETAL_TO_MATERNAL = list(
       description = "Perfusion direction: 1 = doravirine added to the fetal circulation (fetal-to-maternal experiment); 0 = added to the maternal circulation (maternal-to-fetal experiment)",
       units = "(binary)",
       type = "binary",
       reference_category = 0,
-      notes = "In the closed-open configuration the dosed circulation is the closed one, so the indicator also selects the open side: PERF_DIR_FTM = 0 closes the maternal circulation (200 mL maternal reservoir) and opens the fetal one (3 mL fetal collecting reservoir); PERF_DIR_FTM = 1 the reverse (Online Resource 16: 'these models were run simultaneously while the relevant compartments were turned on based on the dosing compartment covariate'; Online Resource 17: 'VMR, mL 200 or 3 ... based on dosing compartment'). Also selects the additive and proportional residual errors (Online Resource 19).",
+      notes = "In the closed-open configuration the dosed circulation is the closed one, so the indicator also selects the open side: PERFUSION_FETAL_TO_MATERNAL = 0 closes the maternal circulation (200 mL maternal reservoir) and opens the fetal one (3 mL fetal collecting reservoir); PERFUSION_FETAL_TO_MATERNAL = 1 the reverse (Online Resource 16: 'these models were run simultaneously while the relevant compartments were turned on based on the dosing compartment covariate'; Online Resource 17: 'VMR, mL 200 or 3 ... based on dosing compartment'). Also selects the additive and proportional residual errors (Online Resource 19).",
       source_name = "dosing compartment"
     )
   )
@@ -118,8 +118,8 @@ Bukkems_2022_doravirine_placentaperfusion_closedopen <- function() {
     label("Passive diffusion clearance over the fetal-facing barrier, CLpdf (mL/min)") # Online Resource 19: 'CLpdf, mL/min 4.3 (2.3 - 8.3)'; Section 3.5
 
     # Between-placenta variability fixed at 100% CV; variance = log(1 + 1^2).
-    etalcl_pdm ~ fixed(0.6931472) # Online Resource 19: 'IIV CLpdm, % Fixed op 100', footnote b: CV = sqrt(exp(variance) - 1)
-    etalcl_pdf ~ fixed(0.6931472) # Online Resource 19: 'IIV CLpdf, % Fixed op 100', footnote b: CV = sqrt(exp(variance) - 1)
+    etalcl_pdm ~ fixed(0.6931472) # Online Resource 19 'IIV CLpdm' held at 100% CV by the authors; variance = log(1 + 1^2), footnote b CV = sqrt(exp(variance) - 1)
+    etalcl_pdf ~ fixed(0.6931472) # Online Resource 19 'IIV CLpdf' held at 100% CV by the authors; variance = log(1 + 1^2), footnote b CV = sqrt(exp(variance) - 1)
 
     # ------------------------------------------------------------------
     # Residual error (Online Resource 19). Proportional SDs back-transformed
@@ -137,8 +137,8 @@ Bukkems_2022_doravirine_placentaperfusion_closedopen <- function() {
 
   model({
     # Which circulation is single-pass: the one that was not dosed.
-    open_mat <- PERF_DIR_FTM
-    open_fet <- 1 - PERF_DIR_FTM
+    open_mat <- PERFUSION_FETAL_TO_MATERNAL
+    open_fet <- 1 - PERFUSION_FETAL_TO_MATERNAL
     v_mres <- v_res_closed * (1 - open_mat) + v_res_open * open_mat
     v_fres <- v_res_closed * (1 - open_fet) + v_res_open * open_fet
 
@@ -181,8 +181,8 @@ Bukkems_2022_doravirine_placentaperfusion_closedopen <- function() {
     # its own error variables, so the shared values are copied to both.
     Cmaternal <- c_mr
     Cfetal <- c_fr
-    addSd_dir <- addSd_mtf * (1 - PERF_DIR_FTM) + addSd_ftm * PERF_DIR_FTM
-    propSd_dir <- propSd_mtf * (1 - PERF_DIR_FTM) + propSd_ftm * PERF_DIR_FTM
+    addSd_dir <- addSd_mtf * (1 - PERFUSION_FETAL_TO_MATERNAL) + addSd_ftm * PERFUSION_FETAL_TO_MATERNAL
+    propSd_dir <- propSd_mtf * (1 - PERFUSION_FETAL_TO_MATERNAL) + propSd_ftm * PERFUSION_FETAL_TO_MATERNAL
     addSd_maternal <- addSd_dir
     addSd_fetal <- addSd_dir
     propSd_maternal <- propSd_dir
