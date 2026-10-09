@@ -14417,6 +14417,17 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Yin_2021_mitotane.R` (multiplicative effect on apparent clearance of mitotane; the TT group has CL/F 2.49x the TC reference, Table 2 `CL_SNP3 (TT)` = 2.49).
 - **Notes:** Companion to `SNP_SLCO1B1_RS4149057_CC`; see that entry's Notes for the TC-reference encoding, the distinction from rs4149056 / rs2306283 and the non-monotone effect direction.
 
+### SNP_ERCC1_RS3212986_CC (**canonical for ERCC1 rs3212986 (C8092A) homozygous wild-type C/C genotype indicator**)
+- **Description:** Binary genotype indicator for the *ERCC1* (excision repair cross-complementation group 1, nucleotide-excision-repair DNA-repair gene) rs3212986 (C8092A, 3'-UTR) polymorphism: 1 = subject carries the homozygous wild-type C/C genotype; 0 = otherwise (A/C heterozygote or A/A homozygote). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0, i.e. the A/C + A/A (variant-A-carrier) group.
+- **Source aliases:**
+  - `ERCC1 (rs3212986) C/C` -- Cao 2022 final-model equation (`If ERCC1 phenotype (rs3212986) = C/C, theta_ERCC1 = theta_2 (0.83); else 0`).
+- **Example models:** `Cao_2022_pemetrexed.R` (exponential effect on intercompartmental clearance Q of intravenous pemetrexed; `exp(e_ercc1_q * SNP_ERCC1_RS3212986_CC)` with `e_ercc1_q = 0.83`, so C/C homozygotes have about 2.3-fold higher Q than the A-carrier reference; Figure 2B).
+- **Notes:** The variant allele at rs3212986 is A (the common / wild-type allele is C), so the covariate effect attaches to the **wild-type C/C homozygote** rather than to variant-allele carriage. A generic mutant-allele-presence indicator (`SNP_ERCC1_RS3212986`, 1 = any A allele) would group the A/C heterozygotes with the A/A homozygotes and flag exactly the reference stratum -- the inverse of the reported effect -- so the homozygote-specific `_CC` indicator is used (same wild-type-homozygote-anchored pattern as `SNP_SLCO1B1_RS4149057_CC`). Cao 2022 reports rs3212986 C/C homozygotes as having higher pemetrexed intercompartmental clearance than the two variant genotypes and speculates (Discussion) that ERCC1 genotype may modulate pemetrexed plasma-protein binding or tissue distribution; the mechanism is not established. Genotype counts in the cohort were A/A:A/C:C/C = 15:56:45 (Supplementary Table S2). Distinct from the other commonly investigated *ERCC1* variant rs11615 (T19007C / N118N), which Cao 2022 genotyped but did not retain.
+
 ### SNP_SLCO1B3_RS7311358_G_CARRIER (**canonical for SLCO1B3 699A>G G-allele carrier indicator**)
 - **Description:** Binary indicator for carriage of the *SLCO1B3* (OATP1B3 hepatic uptake transporter) c.699A>G polymorphism (rs7311358, I233M): 1 = subject carries at least one G allele (AG heterozygote or GG homozygote); 0 = AA. Time-fixed per subject (germline genotype).
 - **Units:** (binary)
