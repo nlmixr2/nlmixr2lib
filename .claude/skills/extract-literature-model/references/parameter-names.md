@@ -258,6 +258,22 @@ Source-paper aliases that translate to `fzo` without sidecar: `Fk0`, `FR`,
 `FRAC0`, `F_ZERO`. Bare rather than log-transformed because it is bounded in
 (0, 1); use `logitfzo` when the source estimates a logit.
 
+### Parallel zero- and first-order absorption with an amount cap
+
+Canonical first-order absorbed-amount cap: **`lamt_fo`** (bare `amt_fo`, dose
+units). Up to `amt_fo` of each dose is absorbed first-order from `depot`; the
+first-order fraction is `ffo = min(1, amt_fo / dose)` and the remaining
+`1 - ffo` of the bioavailable dose enters `central` zero-order, usually at a
+modelled rate `r1` (`rate(central) <- r1`, dose records `rate = -1`). Each
+administration is then two dose records (depot and central) with the same
+`amt`, and the per-administration dose must be a covariate column because the
+split is evaluated at the dose. Distinct from `logitffo` (a dose-independent
+fraction), `ld1` / `ld2` (durations) and `lr1` (the zero-order rate). Source
+alias `AK1`. Founding example: `Wojciechowski_2022_abrocitinib.R`
+(`amt_fo = 121 mg`). When `ffo = 1` the central record carries no drug: drop
+its lag (`alag(central) <- tlag * (ffo < 1)`), because a lagged zero-amount
+`rate = -1` record makes rxode2 5.1.8 fail with 'Rate is zero/negative'.
+
 ### Blood-to-plasma concentration ratio
 
 Canonical: **`bpr`** (blood:plasma concentration ratio, unitless). Used both as
@@ -859,6 +875,7 @@ clearance expression references `t` / `time` without one of these.
 | Concentration-driven autoinduction: `cl <- cl_base * exp(max * C^g/(ec50^g + C^g) * t/(t50 + t))` | `cl_time_` + `cl_conc_` | `cl_time_max`, `cl_t50`, `cl_ec50`, `cl_conc_hill` |
 | Linear in time: `cl <- cl_base * (1 + slope * t)` | `cl_time_` | `cl_time_slope` (1/time; a percent per unit time is divided by 100). Founding example: `Cloesmeijer_2020_clonidine.R` |
 | Piecewise-constant step: `cl <- cl * (t < tclchange) + cl_late * (t >= tclchange)` | `tclchange` | `ltclchange`, `lcl_late` |
+| Fractional exponential change: `cl <- cl_base * (1 + cl_exp_famp * (1 - exp(-cl_exp_kdes * t)))` | `cl_exp_` | `cl_exp_famp` (signed fraction, linear scale), `lcl_exp_kdes`. Founding example: `Wojciechowski_2022_abrocitinib.R` |
 
 The third form carries two sigmoidicities and they sit on different axes:
 `cl_conc_hill` is the Hill coefficient on CONCENTRATION (the `C^g/(ec50^g +
