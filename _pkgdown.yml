@@ -4210,6 +4210,8 @@ navbar:
         href: articles/OlssonGisleskog_2021_nicotine.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
+      - text: "Nifedipine (Liu 2022)"
+        href: articles/Liu_2022_nifedipine.html
       - text: "Nifedipine invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Nifedipine rat (Kiriyama 2024)"
@@ -8298,6 +8300,7 @@ articles:
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
   - articles/Liu_2020_hydroxychloroquine_monkey
+  - articles/Liu_2022_nifedipine
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s

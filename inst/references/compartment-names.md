@@ -6942,8 +6942,8 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 - **Type:** compartment
 - **Role:** Change from baseline in seated trough systolic blood pressure (mmHg), used as the observation variable of a direct (algebraic, non-ODE) steady-state exposure-response model; the systolic sibling of `ddbp`. Negative values are blood-pressure lowering; add the subject's baseline `SBP` to recover an absolute pressure.
 - **Source aliases:** `dSeSBP`, `dSBP`, `change from baseline in SeSBP`.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (founding example).
-- **Notes:** Not an ODE state, so no `compartmentData` entry is required. As with the `dbp` / `sbp` turnover pair, systolic and diastolic responses are fitted as separate models with different retained covariate sets, so keep them as two outputs in two files rather than collapsing them into one multi-output model. Diastolic sibling: `ddbp`.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (founding example), `Liu_2022_nifedipine.R` (direct ordinary Emax on the nifedipine plasma concentration supplied as `CEFFECT`; a time course of the drug-induced change in SBP from pre-dose rather than a seated trough).
+- **Notes:** Not an ODE state, so no `compartmentData` entry is required. Used for any directly modelled drug-induced change in SBP in mmHg, whether a steady-state trough delta or a concentration-driven time course; the sign convention (negative = lowering) is the same. As with the `dbp` / `sbp` turnover pair, systolic and diastolic responses are fitted as separate models with different retained covariate sets, so keep them as two outputs in two files rather than collapsing them into one multi-output model. Diastolic sibling: `ddbp`.
 
 ## Implant-adjacent local tissue
 
