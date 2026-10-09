@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Agyeman 2022 SARS-CoV-2 viral dynamic models (SI, rTCL, TCL and TCLE, each fitted to two datasets) ([doi:10.1111/bcp.15518](https://doi.org/10.1111/bcp.15518)) -- untreated patients with mostly mild COVID-19 (Gastine 2021 meta-analysis) and hospitalised COVID-19 patients (French COVID cohort).
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
