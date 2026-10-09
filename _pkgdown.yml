@@ -1290,6 +1290,8 @@ navbar:
         href: articles/Abdulla_2020_ciprofloxacin.html
       - text: "Ciprofloxacin (Schaefer 1996)"
         href: articles/Schaefer_1996_ciprofloxacin.html
+      - text: "Ciprofloxacin (Sima 2022)"
+        href: articles/Sima_2022_ciprofloxacin.html
       - text: "Ciprofloxacin (Thuo 2011)"
         href: articles/Thuo_2011_ciprofloxacin.html
       - text: "Ciprofloxacin (Zhao 2014)"
@@ -8904,6 +8906,7 @@ articles:
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
   - articles/Silva_2024_apx3330
+  - articles/Sima_2022_ciprofloxacin
   - articles/Sime_2019_ceftolozane_tazobactam
   - articles/Sime_2019_posaconazole
   - articles/Sime_2019b_ceftolozane_tazobactam
