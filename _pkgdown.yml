@@ -650,6 +650,8 @@ navbar:
         href: articles/Svensson_2017_bedaquiline.html
       - text: "Bedaquiline (Svensson 2018)"
         href: articles/Svensson_2018_bedaquiline.html
+      - text: "Bedaquiline (Zou 2022)"
+        href: articles/Zou_2022_bedaquiline.html
       - text: "Bedaquiline dog pbpk (Karakitsios 2025)"
         href: articles/Karakitsios_2025_bedaquiline_lung_pbpk.html
       - text: "Bedaquiline human pbpk (Karakitsios 2025)"
@@ -9545,6 +9547,7 @@ articles:
   - articles/Zierhut_2016_hcc_antiangiogenic_os_mbma
   - articles/Zingmark_2003_clomethiazole
   - articles/Zou_2012_MI_219
+  - articles/Zou_2022_bedaquiline
   - articles/Zou_2022_furmonertinib
   - articles/Zou_2025_edoxaban
   - articles/Zou_2026_meropenem

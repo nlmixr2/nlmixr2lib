@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zou 2022 bedaquiline ([doi:10.1128/aac.00811-22](https://doi.org/10.1128/aac.00811-22)) -- Chinese adults with multidrug-resistant pulmonary tuberculosis (ratifies the new `SNP_AGBL4_RS319952_GG` genotype covariate canonical).
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
