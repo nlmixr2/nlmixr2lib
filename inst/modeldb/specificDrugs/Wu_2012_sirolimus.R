@@ -1,7 +1,7 @@
 Wu_2012_sirolimus <- function() {
   description <- "Two-compartment population PK model for oral sirolimus with saturable Michaelis-Menten absorption in patients with advanced cancer (Wu 2012). Hematocrit power covariate on apparent oral clearance."
   reference <- paste(
-    "Wu K, Cohen EEW, House LK, Ramirez J, Zhang W, Ratain MJ, Bies RR.",
+    "Wu K, Cohen EE, House LK, Ramirez J, Zhang W, Ratain MJ, Bies RR.",
     "Nonlinear population pharmacokinetics of sirolimus in patients with",
     "advanced cancer. CPT Pharmacometrics Syst Pharmacol. 2012;1(12):e17.",
     "doi:10.1038/psp.2012.18.",

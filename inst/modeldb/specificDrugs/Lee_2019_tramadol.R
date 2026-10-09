@@ -1,7 +1,7 @@
 Lee_2019_tramadol <- function() {
   description <- "Joint parent-and-metabolite population PK model for sustained-release oral tramadol and its active CYP2D6-derived metabolite O-desmethyltramadol (M1) in healthy Korean male volunteers (Lee 2019). One-compartment disposition for tramadol with two PARALLEL absorption inputs that together deliver one dose: a fraction Fr enters a depot and is absorbed first-order at ka, and the complementary fraction 1 - Fr enters the central compartment as a lagged zero-order input of duration D2, which is how the authors captured the bimodal absorption phase of the extended-release formulation. Tramadol leaves the central compartment by two parallel first-order routes -- a non-M1 elimination clearance CL/F and a formation clearance CLPM/F into a one-compartment M1 pool that is itself eliminated by CLM/F. The CYP2D6*10/*10 genotype lowers both the tramadol elimination clearance (by 35.1 percent) and the M1 formation clearance (by 52.8 percent) relative to the wild-type reference group."
   reference <- paste(
-    "Lee J, Yoo HD, Bae JW, Lee SY, Shin KH. Population pharmacokinetic",
+    "Lee J, Yoo HD, Bae JW, Lee S, Shin KH. Population pharmacokinetic",
     "analysis of tramadol and O-desmethyltramadol with genetic polymorphism of",
     "CYP2D6. Drug Des Devel Ther. 2019;13:1751-1761. doi:10.2147/DDDT.S199574.",
     sep = " "

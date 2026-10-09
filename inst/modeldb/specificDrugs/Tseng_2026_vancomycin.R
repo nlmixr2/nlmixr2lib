@@ -15,7 +15,7 @@ Tseng_2026_vancomycin <- function() {
     "population PK model, which is plasma-only and has no CSF compartment."
   )
   reference <- paste(
-    "Tseng YJ, Juan L, Wu CC, Lan YX, Chen GY, Huang APH, Chen KW, Wang KC,",
+    "Tseng YJ, Juan L, Wu CC, Lan YX, Chen GY, Huang AP, Chen KW, Wang KC,",
     "Luh HT, Lin SW. Population Pharmacokinetics and Cerebrospinal Fluid",
     "Penetration of Intravenous Vancomycin in Intracranial Hemorrhage Patients",
     "with External Ventricular Drains: Implications for Dosing and Therapeutic",

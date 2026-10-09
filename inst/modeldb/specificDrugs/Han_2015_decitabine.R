@@ -15,7 +15,7 @@ Han_2015_decitabine <- function() {
   )
   reference <- paste(
     "Han S, Kim YJ, Lee J, Jeon S, Hong T, Park GJ, Yoon JH, Yahng SA, Shin",
-    "SH, Lee SE, Eom KS, Kim HJ, Min CK, Lee S-E, Yim DS. Model-based adaptive",
+    "SH, Lee SE, Eom KS, Kim HJ, Min CK, Lee S, Yim DS. Model-based adaptive",
     "phase I trial design of post-transplant decitabine maintenance in",
     "myelodysplastic syndrome. J Hematol Oncol. 2015;8(1):118.",
     "doi:10.1186/s13045-015-0208-3 (PMID 26497198). ClinicalTrials.gov",

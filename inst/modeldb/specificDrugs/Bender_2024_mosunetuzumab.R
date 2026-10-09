@@ -2,7 +2,7 @@ Bender_2024_mosunetuzumab <- function() {
   description <- "Two-compartment population PK model of mosunetuzumab (CD20xCD3 T-cell engaging bispecific antibody) in adults with relapsed/refractory B-cell non-Hodgkin lymphoma, with time-dependent clearance transitioning from a baseline clearance CLbase to a steady-state clearance CLss with a transition half-life HLtrans. Body weight, sex and tumor SPD act on CLss; albumin and the composite baseline anti-CD20 drug concentration act on CLbase; body weight, albumin and sex act on V1. Residual predose rituximab and obinutuzumab from prior therapy are carried as states decaying at fixed literature terminal half-lives and drive a competitive equilibrium-binding CD20 receptor-occupancy percentage (RO%) observable (Bender 2024)."
   reference <- paste(
     "Bender B, Li CC, Marchand M, Turner DC, Li F, Vadhavkar S, Wang B, Deng",
-    "R, Lu J, Jin J, Li C-C, Yin S, Wei M, Chanu P. Population",
+    "R, Lu J, Jin J, Li C, Yin S, Wei M, Chanu P. Population",
     "pharmacokinetics",
     "and CD20 binding dynamics for mosunetuzumab in relapsed/refractory B-cell",
     "non-Hodgkin lymphoma. Clin Transl Sci. 2024;17(6):e13825.",

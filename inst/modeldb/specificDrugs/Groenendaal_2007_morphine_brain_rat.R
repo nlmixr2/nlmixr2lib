@@ -2,7 +2,7 @@ Groenendaal_2007_morphine_brain_rat <- function() {
   description <- paste(
     "Preclinical (rat, male Wistar). Non-linear blood-brain barrier (BBB)",
     "distribution model for morphine published by Groenendaal et al. (2007,",
-    "Br J Pharmacol 151(4):701-712). A three-compartment blood disposition",
+    "Br J Pharmacol 151(5):701-712). A three-compartment blood disposition",
     "model (paper Table 2, NONMEM ADVAN11 TRANS4; linear body-weight effects",
     "on CL and on the first peripheral volume V2) drives a single brain",
     "extracellular-fluid (ECF) compartment sampled by intracerebral",
