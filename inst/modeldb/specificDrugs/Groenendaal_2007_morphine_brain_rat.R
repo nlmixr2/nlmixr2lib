@@ -165,7 +165,7 @@ Groenendaal_2007_morphine_brain_rat <- function() {
       "AUC(0-165 min) fell from 6810 +/- 1890 (4 mg/kg) and 8460 +/- 2790",
       "(4 mg/kg + GF120918) to 3990 +/- 2180 ng.h/mL (40 mg/kg), the",
       "non-linearity this model was built to explain. The companion",
-      "publication (Groenendaal et al. 2007, Br J Pharmacol 151(4):713-720,",
+      "publication (Groenendaal et al. 2007, Br J Pharmacol 151(5):713-720,",
       "doi:10.1038/sj.bjp.0707258) reports the EEG PK-PD biophase model from",
       "the same experiments and is a separate model."
     )

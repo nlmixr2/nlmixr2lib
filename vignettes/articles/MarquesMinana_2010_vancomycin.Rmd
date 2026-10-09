@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("MarquesMinana_2010_vancomycin"))$reference`
 * Description: `r rxode2::rxode(readModelDb("MarquesMinana_2010_vancomycin"))$description`
-* Article: [Br J Clin Pharmacol 2010;70(5):713-722](https://doi.org/10.1111/j.1365-2125.2010.03736.x)
+* Article: [Br J Clin Pharmacol 2010;70(5):713-720](https://doi.org/10.1111/j.1365-2125.2010.03736.x)
 
 # Population
 

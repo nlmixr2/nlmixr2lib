@@ -4,7 +4,7 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
     "morphine on the amplitude of the delta frequency band (0.5-4.5 Hz) of the",
     "rat EEG, with an extended catenary biophase distribution model and a",
     "P-glycoprotein (Pgp) interaction at the blood-brain barrier (Groenendaal",
-    "2007, Br J Pharmacol 151(6):713-720). Blood disposition is a",
+    "2007, Br J Pharmacol 151(5):713-720). Blood disposition is a",
     "three-compartment model that serves purely as the input function; its",
     "parameters were not re-estimated here and are fixed from the companion",
     "paper (Groenendaal 2007, Br J Pharmacol 151(5):701-712, Table 2), which",

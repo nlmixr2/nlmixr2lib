@@ -22,7 +22,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("MangasSanjuan_2016_axomadol"))$reference`
 * Description: `r rxode2::rxode(readModelDb("MangasSanjuan_2016_axomadol"))$description`
-* Article: [Br J Clin Pharmacol 82(1):112-128 (2016)](https://doi.org/10.1111/bcp.12921)
+* Article: [Br J Clin Pharmacol 82(1):92-107 (2016)](https://doi.org/10.1111/bcp.12921)
 
 Mangas-Sanjuan et al. characterised the pharmacokinetics and the
 pharmacodynamic effects of the racemic analgesic axomadol and its

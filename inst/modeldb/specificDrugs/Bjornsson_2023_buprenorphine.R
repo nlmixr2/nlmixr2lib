@@ -1,7 +1,7 @@
 # Population PK model for buprenorphine (BPN) after intravenous, sublingual,
 # and subcutaneous CAM2038 weekly / monthly depot administration in healthy
 # participants and participants with opioid use disorder (Bjornsson 2023,
-# Clin Pharmacokinet 62(9):1429-1443; doi:10.1007/s40262-023-01288-6).
+# Clin Pharmacokinet 62(10):1427-1443; doi:10.1007/s40262-023-01288-6).
 
 Bjornsson_2023_buprenorphine <- function() {
   description <- paste(
