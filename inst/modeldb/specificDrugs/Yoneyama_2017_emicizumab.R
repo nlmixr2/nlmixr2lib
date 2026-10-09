@@ -5,7 +5,7 @@ Yoneyama_2017_emicizumab <- function() {
     "Kawanishi T. A Pharmacometric Approach to Substitute for a Conventional",
     "Dose-Finding Study in Rare Diseases: Example of Phase III Dose Selection",
     "for Emicizumab in Hemophilia A. Clin Pharmacokinet. 2018;57(9):1123-1134.",
-    "doi:10.1007/s40262-017-0616-3. (online 6 December 2017; PMID 29209893).",
+    "doi:10.1007/s40262-017-0616-3. (online 6 December 2017; PMID 29214439).",
     sep = " "
   )
   vignette <- "Yoneyama_2017_emicizumab"
