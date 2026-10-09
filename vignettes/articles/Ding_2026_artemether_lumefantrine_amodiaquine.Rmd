@@ -24,7 +24,7 @@ library(ggplot2)
   Anvikar AR, Mayxay M, Smithuis F, von Seidlein L, Dhorda M, Amaratunga C, Faiz
   MA, Nghia HDT, White NJ, Day NPJ, Dondorp AM, Tarning J. Population
   pharmacokinetics of artemether-lumefantrine plus amodiaquine in patients with
-  uncomplicated Plasmodium falciparum malaria. Br J Clin Pharmacol.
+  uncomplicated *Plasmodium falciparum* malaria. *Br J Clin Pharmacol*.
   2026;92(2):589-605. doi:10.1002/bcp.70301.
 * Article: <https://doi.org/10.1002/bcp.70301>
 * Europe PMC: PMC12850606 (open access, CC-BY).

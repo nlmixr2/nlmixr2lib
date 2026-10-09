@@ -19,8 +19,8 @@ library(ggplot2)
 
 * Citation: Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE,
   Karlsson MO. PKPD Modeling of Predictors for Adverse Effects and Overall
-  Survival in Sunitinib-Treated Patients With GIST. CPT Pharmacometrics Syst
-  Pharmacol. 2013;2(12):e85. doi:10.1038/psp.2013.62.
+  Survival in Sunitinib-Treated Patients With GIST. *CPT Pharmacometrics Syst
+  Pharmacol*. 2013;2(12):e85. doi:10.1038/psp.2013.62.
 * Article: [doi:10.1038/psp.2013.62](https://doi.org/10.1038/psp.2013.62)
 * Indirect-response form adapted from
   Keizer RJ et al. *J Pharmacokinet Pharmacodyn* 2010;37(4):347-363,

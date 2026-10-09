@@ -25,7 +25,7 @@ library(ggplot2)
   Putnam WS, Qiu ZJ, Ruppel J, Singer T, Stauch O, Theil FP, Visich J, Yang J,
   Ying Y, Khawli LA, et al. Minipig as a potential translatable model for
   monoclonal antibody pharmacokinetics after intravenous and subcutaneous
-  administration. MAbs. 2012;4(2):243-255. doi:10.4161/mabs.4.2.19387.
+  administration. *MAbs*. 2012;4(2):243-255. doi:10.4161/mabs.4.2.19387.
 * Article: <https://doi.org/10.4161/mabs.4.2.19387>
 * PMID: 22453096
 

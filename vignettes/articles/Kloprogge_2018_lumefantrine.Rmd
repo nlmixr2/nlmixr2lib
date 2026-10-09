@@ -25,7 +25,7 @@ library(ggplot2)
   Salman S, Checchi F, Fogg C, Newton PN, Mayxay M, Deloron P, Faucher JF,
   Nosten F, Ashley EA, McGready R, van Vugt M, et al. Artemether-lumefantrine
   dosing for malaria treatment in young children and pregnant women: A
-  pharmacokinetic-pharmacodynamic meta-analysis. PLoS Med. 2018;15(6):e1002579.
+  pharmacokinetic-pharmacodynamic meta-analysis. *PLoS Med*. 2018;15(6):e1002579.
   doi:10.1371/journal.pmed.1002579.
 * Article: <https://doi.org/10.1371/journal.pmed.1002579>
 * Data repository: WWARN pharmacology repository (<https://www.wwarn.org/accessing-data>)

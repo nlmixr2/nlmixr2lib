@@ -21,8 +21,8 @@ library(ggplot2)
 * Citation: Stein AM, Grupp SA, Levine JE, Laetsch TW, Pulsipher MA, Boyer MW,
   August KJ, Levine BL, Tomassian L, Shah S, Leung M, Huang PH, Awasthi R,
   Mueller KT, Wood PA, June CH. Tisagenlecleucel Model-Based Cellular Kinetic
-  Analysis of Chimeric Antigen Receptor-T Cells. CPT Pharmacometrics Syst
-  Pharmacol. 2019;8(5):285-295. doi:10.1002/psp4.12388.
+  Analysis of Chimeric Antigen Receptor-T Cells. *CPT Pharmacometrics Syst
+  Pharmacol*. 2019;8(5):285-295. doi:10.1002/psp4.12388.
 * Article: <https://doi.org/10.1002/psp4.12388> (open access; CC BY-NC-ND 4.0)
 
 This is a cellular kinetic model for tisagenlecleucel CAR-T cells, not a

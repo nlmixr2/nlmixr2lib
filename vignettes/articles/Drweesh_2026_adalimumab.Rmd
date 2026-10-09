@@ -23,7 +23,7 @@ library(ggplot2)
   Higazy AS, Alturaiki A, Almutairi F, Alhussain A, Assiri A, Alkofide H,
   Alruthia Y, Albassam A, Alsultan A. Comparing the pharmacokinetics of
   adalimumab originator and biosimilar product in patients with Inflammatory
-  bowel disease or autoimmune disease. Saudi Pharm J. 2026;34(2):14.
+  bowel disease or autoimmune disease. *Saudi Pharm J*. 2026;34(2):14.
   doi:10.1007/s44446-026-00063-5.
 * Article: <https://doi.org/10.1007/s44446-026-00063-5>
 * PubMed: <https://pubmed.ncbi.nlm.nih.gov/41843306/>

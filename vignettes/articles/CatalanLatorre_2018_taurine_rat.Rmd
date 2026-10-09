@@ -20,7 +20,7 @@ library(ggplot2)
 
 * Citation: Catalan-Latorre A, Nacher A, Merino V, Diez O, Merino Sanjuan M. A
   preclinical study to model taurine pharmokinetics in the undernourished rat.
-  Br J Nutr. 2018;119(7):826-835. doi:10.1017/S0007114518000156.
+  *Br J Nutr*. 2018;119(7):826-835. doi:10.1017/S0007114518000156.
 * Article: [doi:10.1017/S0007114518000156](https://doi.org/10.1017/S0007114518000156)
 
 # Population

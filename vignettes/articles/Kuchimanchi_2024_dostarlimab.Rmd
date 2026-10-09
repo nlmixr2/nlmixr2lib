@@ -23,8 +23,8 @@ library(ggplot2)
   Alskar O, Zub O, Oaknin A, Shahin MS, Koliadi A, Pothuri B, Krivak T, Pishchyk
   M, Segev Y, Backes FJ, Gennigens C, Bouberhan S, Zajic S, Melhem M, Buscema J.
   Population pharmacokinetics and exposure-response relationships of dostarlimab
-  in primary advanced or recurrent endometrial cancer in part 1 of RUBY. Br J
-  Clin Pharmacol. 2025;91(3):841-855.
+  in primary advanced or recurrent endometrial cancer in part 1 of RUBY. *Br J
+  Clin Pharmacol*. 2025;91(3):841-855.
   doi:[10.1111/bcp.16325](https://doi.org/10.1111/bcp.16325)
 * Description: Two-compartment population PK model for dostarlimab
   (anti-PD-1 IgG4) with sigmoid I_max time-dependent clearance. The

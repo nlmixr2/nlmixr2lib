@@ -22,7 +22,7 @@ library(PKNCA)
 * Citation: Gilkey MJ, Krishnan V, Scheetz L, Jia X, Rajasekaran AK, Dhurjati
   PS. Physiologically Based Pharmacokinetic Modeling of Fluorescently Labeled
   Block Copolymer Nanoparticles for Controlled Drug Delivery in Leukemia
-  Therapy. CPT Pharmacometrics Syst Pharmacol. 2015;4(3):167-174.
+  Therapy. *CPT Pharmacometrics Syst Pharmacol*. 2015;4(3):167-174.
   doi:10.1002/psp4.13. Open access (CC BY-NC-ND).
 * Article: <https://doi.org/10.1002/psp4.13>
 * Supplement (Table S1, paper-reported simulated-vs-experimental Cmax
