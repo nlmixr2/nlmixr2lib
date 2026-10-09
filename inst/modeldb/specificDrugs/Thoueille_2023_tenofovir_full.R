@@ -6,12 +6,12 @@ Thoueille_2023_tenofovir_full <- function() {
     "clearance (full final covariate model)."
   )
   reference <- paste(
-    "Thoueille P, Alves Saldanha S, Desfontaine V, Kusejko K, Courlet P, Andre",
-    "P, Cavassini M, Decosterd LA, Buclin T, Guidi M. Population",
-    "pharmacokinetic modelling to characterize the effect of chronic kidney",
-    "disease on tenofovir exposure after tenofovir alafenamide administration.",
-    "J Antimicrob Chemother. 2023;78(6):1433-1443. doi:10.1093/jac/dkad103.",
-    sep = " "
+    "Thoueille P, Alves Saldanha S, Desfontaine V, Kusejko K, Courlet P,",
+    "Andre P, Cavassini M, Decosterd LA, Buclin T, Guidi M, and the Swiss HIV",
+    "Cohort Study. Population pharmacokinetic modelling to characterize the",
+    "effect of chronic kidney disease on tenofovir exposure after tenofovir",
+    "alafenamide administration. J Antimicrob Chemother. 2023;78:1433-1443.",
+    "doi:10.1093/jac/dkad103"
   )
   vignette <- "Thoueille_2023_tenofovir_ckd"
   # Doses were converted to nmol of tenofovir alafenamide and concentrations to

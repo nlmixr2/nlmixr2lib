@@ -1,11 +1,11 @@
 Dao_2020_sultiame <- function() {
   description <- "Population PK model for sultiame in healthy adult volunteers with non-linear distribution into erythrocytes (saturable binding to a putative red-blood-cell carrier). Four-compartment structure: depot (oral absorption, KA fixed at 1/h), central (plasma), erythrocytes (drug bound to a saturable carrier in red blood cells parameterised by KON, KOFF, BTOT), and urine (cumulative urinary excretion as a fraction QREN of total elimination). Drug binding to erythrocytes is written in mass-action form on amounts (KON in 1/(h*mg)). DDMORE Foundation Model Repository entry DDMODEL00000298, fit on 4 healthy volunteers (433 observations) by NONMEM ADVAN13 FOCEI."
   reference <- paste(
-    "Dao K, Thoueille P, Decosterd LA, Mercier T, Guidi M, Bardinet C,",
-    "Lebon S, Choong E, Castang A, Guittet C, Granier LA, Buclin T (2020).",
-    "Pharmacokinetic profile of sultiame in healthy volunteers with in vitro",
-    "characterization of its uptake by red blood cells.",
-    "Pharmacology Research & Perspectives 8(2):e00558.",
+    "Dao K, Thoueille P, Decosterd LA, Mercier T, Guidi M, Bardinet C, Lebon",
+    "S, Choong E, Castang A, Guittet C, Granier LA, Buclin T. Sultiame",
+    "pharmacokinetic profile in plasma and erythrocytes after single oral",
+    "doses: A pilot study in healthy volunteers. Pharmacol Res Perspect.",
+    "2020;8(1):e00558.",
     "doi:10.1002/prp2.558.",
     "DDMORE Foundation Model Repository: DDMODEL00000298.",
     sep = " "
