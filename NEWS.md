@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zou 2022 bedaquiline ([doi:10.1128/aac.00811-22](https://doi.org/10.1128/aac.00811-22)) -- Chinese adults with multidrug-resistant pulmonary tuberculosis (ratifies the new `SNP_AGBL4_RS319952_GG` genotype covariate canonical).
+- Add Gurjar 2023 raltegravir ([doi:10.1038/s41397-022-00293-5](https://doi.org/10.1038/s41397-022-00293-5)) -- treatment-naive adults with HIV-1 on raltegravir 400 mg twice daily plus darunavir/ritonavir (NEAT001/ANRS143).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
