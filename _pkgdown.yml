@@ -4464,6 +4464,8 @@ navbar:
         href: articles/Zhang_2019b_nivolumab.html
       - text: "Nivolumab (Zhao 2025)"
         href: articles/Zhao_2025_nivolumab.html
+      - text: "Nivolumab qsp (RuizMartinez 2022)"
+        href: articles/RuizMartinez_2022_nivolumab_qsp.html
       - text: "Nivolumab qsp (Shchelokov 2023)"
         href: articles/Shchelokov_2023_nivolumab_qsp.html
       - text: "Norepinephrine (Li 2024)"
@@ -9134,6 +9136,7 @@ articles:
   - articles/Rubino_2021_rezafungin
   - articles/Ruehs_2021_vericiguat
   - articles/Ruhs_2012_methotrexate
+  - articles/RuizMartinez_2022_nivolumab_qsp
   - articles/Rymut_2023_anti_tryptase
   - articles/Ryu_2021_hyaluronicAcid_fillers_mouse
   - articles/Sadaf_2024_glutamine
