@@ -6306,6 +6306,8 @@ navbar:
         href: articles/Vanobberghen_2016_tribendimidine.html
       - text: "Triflusal (Park 2014)"
         href: articles/Park_2014_triflusal.html
+      - text: "Triheptanoin (Lee 2022)"
+        href: articles/Lee_2022_triheptanoin.html
       - text: "Trimethoprim (Chen 2025)"
         href: articles/Chen_2025_cotrimoxazole.html
       - text: "Trimethoprim (Leegwater 2025)"
@@ -8204,6 +8206,7 @@ articles:
   - articles/Lee_2021_meropenem
   - articles/Lee_2021_primaquine
   - articles/Lee_2021_vancomycin
+  - articles/Lee_2022_triheptanoin
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin
