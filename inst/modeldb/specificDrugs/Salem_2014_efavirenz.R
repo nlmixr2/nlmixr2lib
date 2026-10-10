@@ -115,11 +115,23 @@ Salem_2014_efavirenz <- function() {
     # ---- IIV (diagonal omega; exponential errors, log-normal per Methods paragraph 2 of Development) ----
     # Salem 2014 Methods 'Development of the population pharmacokinetic base model' paragraph 2:
     # CL/F = TVCL * EXP(ETA); individual PK parameters log-normally distributed.
-    # CV-to-variance conversion: omega^2 = log(CV^2 + 1).
-    etalcl      ~ 0.189669 # 45.7% CV CL/F (Salem 2014 Table 2 final, RSE 28.4%, 90% CI 35.0-56.4); log(1 + 0.457^2) = 0.189669
-    etalvc      ~ 0.174034 # 43.6% CV V/F (Salem 2014 Table 2 final, RSE 30.5%, 90% CI 32.5-54.7); log(1 + 0.436^2) = 0.174034
-    etaltvf_liq ~ 0.147731 # 39.9% CV liquid TVF (Salem 2014 Table 2 final, RSE 32.8%, 90% CI 29.1-50.7); log(1 + 0.399^2) = 0.147731
-    # Note: Salem 2014 also reports inter-occasion variability on CL/F of 30.0% CV (Salem 2014 Table 2;
+    # The Table 2 "CV [%]" is omega x 100, so omega^2 = (CV/100)^2. The
+    # final-model 90% CIs are asymptotic: the theta rows are exactly
+    # est +/- 1.645 x est x RSE (TVCL 11.2 (6.8%) -> 9.95-12.45, printed
+    # 9.9-12.5). On the IIV rows the CI is symmetric on the % scale but its
+    # half-width is half of 1.645 x CV x RSE, i.e. the printed RSE is that
+    # of omega^2 and the CI was carried to the % scale by the delta method.
+    # d log(CV) / d log(omega^2) is exactly 1/2 when CV = 100 x omega, and
+    # w2 (1 + c^2) / (2 c^2) when CV = 100 x sqrt(exp(w2) - 1). Printed
+    # ratios vs (omega x 100, log(1 + CV^2)):
+    #   IIV CL/F 0.501 vs (0.500, 0.549); IIV V/F 0.507 vs (0.500, 0.545);
+    #   IOV CL/F 0.503 vs (0.500, 0.522); IIV TVF 0.502 vs (0.500, 0.538).
+    # Before 2026-10 this file used log(1 + CV^2) (CL/F 0.189669, V/F
+    # 0.174034, TVF 0.147731); see the vignette Errata.
+    etalcl      ~ 0.208849 # 45.7% CV CL/F (Salem 2014 Table 2 final, RSE 28.4%, 90% CI 35.0-56.4); 0.457^2 = 0.208849
+    etalvc      ~ 0.190096 # 43.6% CV V/F (Salem 2014 Table 2 final, RSE 30.5%, 90% CI 32.5-54.7); 0.436^2 = 0.190096
+    etaltvf_liq ~ 0.159201 # 39.9% CV liquid TVF (Salem 2014 Table 2 final, RSE 32.8%, 90% CI 29.1-50.7); 0.399^2 = 0.159201
+    # Note: Salem 2014 also reports inter-occasion variability on CL/F of 30.0% CV (omega x 100, so 0.09 if encoded) (Salem 2014 Table 2;
     # IOV CL/F RSE 13.7%, 90% CI 26.6-33.4) in addition to the diagonal IIV. The packaged model does NOT
     # encode IOV structurally -- the source paper does not define an operational occasion column for the
     # model-library use case, and the nlmixr2lib convention (Andrews 2017 / Brooks 2021 tacrolimus

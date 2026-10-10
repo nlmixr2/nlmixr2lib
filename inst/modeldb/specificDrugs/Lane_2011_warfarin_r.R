@@ -155,14 +155,21 @@ Lane_2011_warfarin_r <- function() {
 
     # ============================================================
     # IIV: block correlation between random effects on log(CL) and log(V)
-    #   omega^2 on log scale: omega2 = log(1 + CV^2)
-    #     CV(CL) = 43.0% -> omega2_cl = log(1 + 0.430^2) = 0.16975
-    #     CV(V)  = 38.3% -> omega2_v  = log(1 + 0.383^2) = 0.13692
+    #   Table 2/3 footnote: IIV is "expressed as an approximate coefficient
+    #   of variation (square root of the variance)", so the printed % is
+    #   omega x 100 and omega2 = (CV/100)^2. The Wald 95% CIs agree: on the
+    #   widest rows the squared CI midpoint lies inside the rounding interval
+    #   of (CV/100)^2 and outside that of log(1 + CV^2) (S final V 35.8%
+    #   (18.0, 47.3%): -0.1% vs -3.1%; R final V 38.3% (20.2, 50.3%): +0.2%
+    #   vs -3.0%; S base V 38.6% (5.46, 54.3%): -0.1% vs -5.9%).
+    #   Before 2026-10 this file used log(1 + CV^2); see the vignette Errata.
+    #     CV(CL) = 43.0% -> omega2_cl = 0.430^2 = 0.184900
+    #     CV(V)  = 38.3% -> omega2_v  = 0.383^2 = 0.146689
     #   Correlation(CL,V) = 0.352 (Lane 2011 Table 3 footnote: "Covariance is expressed as a correlation coefficient")
-    #     cov_cl_v = 0.352 * sqrt(0.16975 * 0.13692) = 0.053666
+    #     cov_cl_v = 0.352 * 0.430 * 0.383 = 0.057971
     # ============================================================
-    etalcl + etalvc ~ c(0.16975,
-                        0.053666, 0.13692)                                                                # Lane 2011 Table 3 (IIV CL 43.0%, IIV V 38.3%, correlation 0.352)
+    etalcl + etalvc ~ c(0.184900,
+                        0.057971, 0.146689)                                                                # Lane 2011 Table 3 (IIV CL 43.0%, IIV V 38.3%, correlation 0.352)
 
     # ============================================================
     # Residual error
