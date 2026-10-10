@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gao 2022 cyclosporine ([doi:10.3389/fphar.2022.933739](https://doi.org/10.3389/fphar.2022.933739)) -- Chinese children with acquired aplastic anemia.
+- Add Zhang 2022 immune checkpoint inhibitor irAE MBMA ([doi:10.1002/psp4.12834](https://doi.org/10.1002/psp4.12834)) -- trial cohorts of patients with non-small cell lung cancer treated with anti-PD-1, anti-PD-L1 and/or anti-CTLA-4 antibodies (any-grade and grade >= 3 immune-related adverse events; registers `TRT_ANTIPDL1`).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
