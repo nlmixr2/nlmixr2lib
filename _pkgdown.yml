@@ -1664,8 +1664,8 @@ navbar:
         href: articles/Gatti_1996_dapsone.html
       - text: "Dapsone (Hall 2017)"
         href: articles/Hall_2017_dapsone.html
-      - text: "Daptomycin (Balice 2022)"
-        href: articles/Balice_2022_daptomycin.html
+      - text: "Daptomycin (GarciaMartinez 2022)"
+        href: articles/GarciaMartinez_2022_daptomycin.html
       - text: "Daptomycin (Garonzik 2016)"
         href: articles/Garonzik_2016_daptomycin.html
       - text: "Daptomycin (Subrtova 2026)"
@@ -8082,6 +8082,7 @@ articles:
   - articles/Gaohua_2015_lung_pbpk
   - articles/Gaohua_2023_permeabilityLimited_pbpk
   - articles/GarciaHervalejo_2026_teicoplanin
+  - articles/GarciaMartinez_2022_daptomycin
   - articles/Garcia_2025_garadacimab
   - articles/Garessus_2019_isoniazid_breast_milk
   - articles/Garg_2014_pertuzumab

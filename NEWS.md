@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chauzy 2022 metronidazole CNS minimal PBPK ([doi:10.3390/antibiotics11101293](https://doi.org/10.3390/antibiotics11101293)) -- brain-injured neuro-ICU adults with brain microdialysis or an external ventricular drain (promotes `CSF_DRAIN_VOL_24H` to general scope).
+- Add Garcia-Martinez 2022 daptomycin ([doi:10.3390/pharmaceutics14102226](https://doi.org/10.3390/pharmaceutics14102226)) -- hospitalised adults with normal renal function or renal impairment.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
