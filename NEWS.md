@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nguyen 2022 gepotidacin ([doi:10.1111/bcp.14996](https://doi.org/10.1111/bcp.14996)) -- healthy adults and adults with acute bacterial skin and skin structure infections, with a paediatric maturation function on clearance for dose selection in plague.
+- Add Zhou 2022 simurosertib (TAK-931) ([doi:10.1002/jcph.1974](https://doi.org/10.1002/jcph.1974)) -- adults with advanced solid tumors.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
