@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zou 2022 pretomanid ([doi:10.1007/s40262-022-01163-w](https://doi.org/10.1007/s40262-022-01163-w)) -- healthy adults given dispersible (pediatric) and marketed tablets with a high-fat meal (registers `FORM_PRETOMANID_DT`).
+- Add Agyeman 2022 SARS-CoV-2 viral dynamic models (SI, rTCL, TCL and TCLE, each fitted to two datasets) ([doi:10.1111/bcp.15518](https://doi.org/10.1111/bcp.15518)) -- untreated patients with mostly mild COVID-19 (Gastine 2021 meta-analysis) and hospitalised COVID-19 patients (French COVID cohort).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
