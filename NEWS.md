@@ -198,20 +198,6 @@
 
 - Add Bienczak 2025 ligelizumab ([doi:10.1002/psp4.70098](https://doi.org/10.1002/psp4.70098)) -- adolescents and adults with chronic spontaneous urticaria and adult healthy volunteers.
 
-* Add Benkali 2010 tacrolimus (Clin Pharmacokinet 2010;49(10):683-92; doi:10.2165/11535950-000000000-00000) -- stable adult renal transplant recipients switched to once-daily extended-release tacrolimus (Advagraf).
-
-* Add Bista 2015 fentanyl (J Clin Pharmacol 2016;56(6):705-713, doi:10.1002/jcph.641; extracted from the 2015 manuscript) -- adults with advanced cancer receiving Durogesic transdermal fentanyl matrix patches.
-
-* Add Fiedler-Kelly 2020 fremanezumab exposure-response ([doi:10.1111/head.13845](https://doi.org/10.1111/head.13845)) -- adults with episodic migraine and adults with chronic migraine (two PD-only models: `FiedlerKelly_2020_fremanezumab_em` and `FiedlerKelly_2020_fremanezumab_cm`).
-
-* Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13040519](https://doi.org/10.3390/pharmaceutics13040519)) -- healthy adult males in a first-in-human single-ascending-dose trial.
-
-* Add Ngo 2020 HL2351 ([doi:10.1002/psp4.12555](https://doi.org/10.1002/psp4.12555)) -- healthy adult Korean men.
-
-* Add Wojciechowski 2022 domagrozumab ([doi:10.1002/cpt.2747](https://doi.org/10.1002/cpt.2747)) -- healthy adult volunteers and pediatric patients with Duchenne muscular dystrophy.
-
-* Add Gandhi 2021 abatacept ([doi:10.1002/jcph.1797](https://doi.org/10.1002/jcph.1797)) -- pooled adults with rheumatoid arthritis and patients aged 2-17 years with polyarticular juvenile idiopathic arthritis.
-
 - Fix the inter-individual variability scale of Wang 2024 sugemalimab ([doi:10.1111/bcp.16276](https://doi.org/10.1111/bcp.16276)): the Table 3 percentages are omega x 100, not CV%, so the CL, Vc, Vp, Emax and T50 variances are now `(P/100)^2` (Vp +22 %, T50 +19 %, Emax 3.6-fold larger than previously shipped), and simulated between-subject spread widens accordingly.
 
 - Add Li 2026 epcoritamab Grade >= 2 cytokine release syndrome repeated time-to-event model ([doi:10.1002/cpt.70362](https://doi.org/10.1002/cpt.70362)) -- adults with relapsed or refractory aggressive or indolent B cell non-Hodgkin lymphoma (registers the `PRIOR_CART`, `CONMED_DEXAMETHASONE` and `CONMED_IV_FLUIDS` covariate canonicals).
@@ -3670,7 +3656,7 @@
 * Add Overgaard 2019 semaglutide ([doi:10.1007/s13300-019-0581-y](https://doi.org/10.1007/s13300-019-0581-y)) -- pooled clinical pharmacology cohort of healthy volunteers and adults with type 2 diabetes.
 * Add Rovei 1982 theophylline ([doi:10.1111/j.1365-2125.1982.tb02035.x](https://doi.org/10.1111/j.1365-2125.1982.tb02035.x)) -- healthy adult volunteers receiving single oral 125-500 mg theophylline tablets.
 * Add Dunlap 2025 tacrolimus ([doi:10.1007/s40262-025-01529-w](https://doi.org/10.1007/s40262-025-01529-w)) -- adult allogeneic hematopoietic cell transplant recipients (CYP3A5 metabolizer phenotype and reduced-intensity conditioning effects on apparent clearance; ratifies new `HCT_COND_RIC` covariate canonical).
-* Add Benkali 2010 tacrolimus (Clin Pharmacokinet 2010;49(10):683-92; DOI not recorded) -- stable adult renal transplant recipients switched to once-daily extended-release tacrolimus (Advagraf).
+* Add Benkali 2010 tacrolimus (Clin Pharmacokinet 2010;49(10):683-92; doi:10.2165/11535950-000000000-00000) -- stable adult renal transplant recipients switched to once-daily extended-release tacrolimus (Advagraf).
 * Add Boer-Perez 2026 piperacillin ([doi:10.1128/aac.00998-25](https://doi.org/10.1128/aac.00998-25)) -- preterm and term neonates with severe infections.
 * Add Jonckheere 2019 cefepime ([doi:10.1128/AAC.01552-19](https://doi.org/10.1128/AAC.01552-19)) -- critically ill ICU adults on continuous-infusion cefepime via target-controlled infusion.
 * Add Wang 2015 rucaparib ([doi:10.1002/cpdd.176](https://doi.org/10.1002/cpdd.176)) -- adults with advanced solid tumors (Phase 1 first-in-patient study A4991002).
@@ -3712,7 +3698,7 @@
 * Add Hennig 2006 itraconazole ([doi:10.2165/00003088-200645110-00004](https://doi.org/10.2165/00003088-200645110-00004)) -- paediatric cystic-fibrosis and bone-marrow-transplant patients (parent + active metabolite popPK for oral itraconazole and hydroxy-itraconazole).
 * Add Lawson 2022 busulfan ([doi:10.1002/psp4.12809](https://doi.org/10.1002/psp4.12809)) -- pediatric hematopoietic stem cell transplant recipients receiving once-daily IV busulfan.
 * Add Archary 2019 abacavir ([doi:10.1111/bcp.13998](https://doi.org/10.1111/bcp.13998)) -- severely malnourished HIV-infected children.
-* Add Bista 2015 fentanyl (manuscript; journal and DOI not recorded) -- adults with advanced cancer receiving Durogesic transdermal fentanyl matrix patches.
+* Add Bista 2015 fentanyl (J Clin Pharmacol 2016;56(6):705-713, doi:10.1002/jcph.641; extracted from the 2015 manuscript) -- adults with advanced cancer receiving Durogesic transdermal fentanyl matrix patches.
 * Add Archary 2018 lopinavir ([doi:10.1097/INF.0000000000001867](https://doi.org/10.1097/INF.0000000000001867)) -- severely malnourished HIV-infected children (1-month to 12-year-olds) on twice-daily oral LPV/rtv with FFM allometric scaling and a total-cholesterol covariate effect on apparent clearance.
 * Add Xu 2023 sabatolimab MBG453 ([doi:10.1002/psp4.12962](https://doi.org/10.1002/psp4.12962)) -- adults with advanced solid tumors or hematologic malignancies (AML, MDS, CMML).
 * Add Goel 2016 sonidegib ([doi:10.1007/s00280-016-2982-1](https://doi.org/10.1007/s00280-016-2982-1)) -- healthy subjects and adults with advanced solid tumors or basal cell carcinoma.
@@ -3823,18 +3809,18 @@
 * Rewrite Diao 2016 daclizumab CD25 occupancy ([doi:10.1111/bcp.13051](https://doi.org/10.1111/bcp.13051)) as a kinetic-binding kon/koff ODE (replacing the previous sigmoidal-Emax-with-desaturation-only form that under-predicted Figure 1A saturation onset); kon and koff calibrated to reproduce both Figure 1A (~7 h saturation) and Figure 1B (~24-week baseline return).
 * Add Diao 2016 daclizumab CD56 bright NK expansion ([doi:10.1111/bcp.13051](https://doi.org/10.1111/bcp.13051)) -- adults with relapsing-remitting multiple sclerosis (PD model with Othman 2014 PK backbone).
 * Add Diao 2016 daclizumab Treg reduction ([doi:10.1111/bcp.13051](https://doi.org/10.1111/bcp.13051)) -- adults with relapsing-remitting multiple sclerosis (PD model with Othman 2014 PK backbone).
-* Add Fiedler-Kelly 2020 fremanezumab exposure-response ([doi:10.1111/head.13855](https://doi.org/10.1111/head.13855)) -- adults with episodic migraine and adults with chronic migraine (two PD-only models: `FiedlerKelly_2020_fremanezumab_em` and `FiedlerKelly_2020_fremanezumab_cm`).
+* Add Fiedler-Kelly 2020 fremanezumab exposure-response ([doi:10.1111/head.13845](https://doi.org/10.1111/head.13845)) -- adults with episodic migraine and adults with chronic migraine (two PD-only models: `FiedlerKelly_2020_fremanezumab_em` and `FiedlerKelly_2020_fremanezumab_cm`).
 * Add Koopman 2023 factor IX-Fc ([doi:10.1111/bcp.15881](https://doi.org/10.1111/bcp.15881)) -- children, adolescents, and adults with haemophilia B (real-world data including patients aged < 12 years).
 * Add Le Tilly 2021 trastuzumab ([doi:10.1002/cpt.2188](https://doi.org/10.1002/cpt.2188)) -- adults with HER2+ breast cancer leptomeningeal carcinomatosis receiving intrathecal and intravenous trastuzumab.
 * Add Wang 2024 sugemalimab ([doi:10.1111/bcp.16276](https://doi.org/10.1111/bcp.16276)) -- adults with advanced solid tumours or lymphomas across nine Phase I-III sugemalimab trials.
 * Add Yang 2024 axatilimab ([doi:10.1002/cpt.3503](https://doi.org/10.1002/cpt.3503)) -- pooled healthy adults, adults with advanced solid tumors, and adults / children with chronic graft-versus-host disease.
-* Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)) -- healthy adult males in a first-in-human single-ascending-dose trial.
+* Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13040519](https://doi.org/10.3390/pharmaceutics13040519)) -- healthy adult males in a first-in-human single-ascending-dose trial.
 * Amend Castro-Suarez 2020 nimotuzumab: V1 decreased 53% for 50 mg cohort per Figure 4 visual inspection (direction not stated in paper text; corresponding author contacted).
 * Add Castro-Suarez 2020 nimotuzumab ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)) -- adults with autosomal dominant polycystic kidney disease.
 * Add Yang 2021 cemiplimab ([doi:10.1007/s10928-021-09739-y](https://doi.org/10.1007/s10928-021-09739-y)) -- adults with advanced solid tumors including cutaneous squamous cell carcinoma.
 * Add Papachristos 2020 bevacizumab ([doi:10.3390/ijms21113753](https://doi.org/10.3390/ijms21113753)) -- adults with metastatic colorectal cancer (three co-equal final models: descriptive PK, binding QSS TMDD, and PK/PD Imax inhibition of free VEGF-A).
-* Add Ngo 2020 HL2351 ([doi:10.1002/psp4.12552](https://doi.org/10.1002/psp4.12552)) -- healthy adult Korean men.
-* Add Wojciechowski 2022 domagrozumab ([doi:10.1111/cts.13418](https://doi.org/10.1111/cts.13418)) -- healthy adult volunteers and pediatric patients with Duchenne muscular dystrophy.
+* Add Ngo 2020 HL2351 ([doi:10.1002/psp4.12555](https://doi.org/10.1002/psp4.12555)) -- healthy adult Korean men.
+* Add Wojciechowski 2022 domagrozumab ([doi:10.1002/cpt.2747](https://doi.org/10.1002/cpt.2747)) -- healthy adult volunteers and pediatric patients with Duchenne muscular dystrophy.
 * Add Yu 2022 ofatumumab ([doi:10.1007/s40263-021-00895-w](https://doi.org/10.1007/s40263-021-00895-w)) -- adults with relapsing multiple sclerosis.
 * Add Melhem 2022 dostarlimab ([doi:10.1111/bcp.15339](https://doi.org/10.1111/bcp.15339)) -- adults with advanced solid tumours.
 * Add Brillac 2025 isatuximab ([doi:10.1007/s00280-025-04832-2](https://doi.org/10.1007/s00280-025-04832-2)) -- pediatric and adult patients with relapsed/refractory acute leukemias.
@@ -3856,7 +3842,7 @@
 * Add Zhou 2021 belimumab ([doi:10.1007/s40268-021-00363-2](https://doi.org/10.1007/s40268-021-00363-2)) -- adult and pediatric patients with systemic lupus erythematosus (Chinese and non-Chinese).
 * Add Aguiar 2021 ustekinumab ([doi:10.3390/pharmaceutics13101587](https://doi.org/10.3390/pharmaceutics13101587)) -- adults with active Crohn's disease.
 * Add Li 2019 abatacept ([doi:10.1002/jcph.1308](https://doi.org/10.1002/jcph.1308)) -- adults with rheumatoid arthritis.
-* Add Gandhi 2021 abatacept ([doi:10.1002/jcph.1781](https://doi.org/10.1002/jcph.1781)) -- pooled adults with rheumatoid arthritis and patients aged 2-17 years with polyarticular juvenile idiopathic arthritis.
+* Add Gandhi 2021 abatacept ([doi:10.1002/jcph.1797](https://doi.org/10.1002/jcph.1797)) -- pooled adults with rheumatoid arthritis and patients aged 2-17 years with polyarticular juvenile idiopathic arthritis.
 * Add Mulyukov 2018 ranibizumab ([doi:10.1002/psp4.12322](https://doi.org/10.1002/psp4.12322)) -- anti-VEGF-naive adults with neovascular age-related macular degeneration.
 * Add Bajaj 2017 nivolumab ([doi:10.1002/psp4.12143](https://doi.org/10.1002/psp4.12143)) -- patients with advanced solid tumors (melanoma, NSCLC, RCC, other).
 * Add Kielbasa 2020 galcanezumab ([doi:10.1002/jcph.1511](https://doi.org/10.1002/jcph.1511)) -- healthy adults and adults with episodic or chronic migraine.
