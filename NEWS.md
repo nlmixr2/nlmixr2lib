@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Al-Qurain 2022 tramadol and O-desmethyltramadol ([doi:10.1007/s13318-022-00756-x](https://doi.org/10.1007/s13318-022-00756-x)) -- older hospital inpatients (registers the `SCORE_ISAR` frailty-score covariate).
+- Add Wojciechowski 2022 abrocitinib ([doi:10.1007/s40262-021-01104-z](https://doi.org/10.1007/s40262-021-01104-z)) -- healthy adults, adults with psoriasis, adolescents and adults with atopic dermatitis, and adults with hepatic impairment.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

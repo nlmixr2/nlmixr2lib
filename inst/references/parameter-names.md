@@ -455,6 +455,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Gasthuys_2023_paracetamol_human.R` (dual input function: `frel` of the dose released over `d1 = 0.22 h` into `depot`, the remaining `1 - frel` released over `d2 = 2.73 h` into a lagged `depot2`), `Jin_2014_simvastatin.R` (the same dual-depot `dur(depot2) <- d2` idiom), `Jeon_2013_interferonAlfa2a.R` (D2 = 20.2 h, with IIV `etald2`), `Kim_2017_fimasartan.R` (virtual duration of the zero-order arm of a parallel mixed input, D2 = 0.583 h), `Wang_2024_risperidone_consta.R` (immediate-release zero-order duration into central, D2 = 0.0467 day), `Laffont_2024_nalmefene.R` (D2 = 0.302 h), `Choi_2018_metformin.R` (D2 = 4.49 h).
 - **Notes:** Registered here to document a spelling that thirteen shipped models already use for exactly this role; per the register's standing rule those files are not modified. Follows the same maintainers' ruling recorded under `lra2` / `lgam2`: a two-process release input is the existing single-process machinery applied twice, so it takes the registered stem plus a numbered second-process partner rather than a parallel family. A third process would continue the numbering (`ld3`). This numbered form is confined to the *parallel multi-phase release* case and is not a licence for bare ordinals generally -- see the `lka_early` / `lka_late` entry, which deliberately rejects `lka1` / `lka2` because a bare ordinal there would encode only sequence and not which time window the rate belongs to. Distinct from `dge` (duration of a post-prandial gallbladder-emptying gate), which is not an absorption input.
 
+### lamt_fo (**canonical log-transformed first-order absorbed-amount cap**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the maximum amount of a dose (dose units) absorbed by the first-order arm of a parallel zero-/first-order absorption model. Inside `model` the bare `amt_fo` sets the first-order fraction `ffo = min(1, amt_fo / dose)`; the remaining `1 - ffo` of the bioavailable dose enters central zero-order (usually at a rate `r1`). Small doses are therefore absorbed entirely first-order and only the excess over `amt_fo` is zero-order.
+- **Source aliases:**
+  - `AK1` -- Wojciechowski 2022 Table 2 ('AK1, mg') and Online Resource 2 (`POPAK1`, `POPFK1 = POPAK1/DOSE`, capped at 1).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; `amt_fo = 121 mg` for tablets, scaled by formulation and high-fat-meal effects).
+- **Notes:** An amount, not a fraction: distinct from `logitffo` / `lffo` (a dose-independent fraction to the first-order site), `ld1` / `ld2` (zero-order durations) and `lr1` (zero-order rate). Needs the per-administration dose as a covariate column because the split is evaluated at the dose.
+
 ### lkel (**canonical log-transformed elimination rate constant (K-PD)**)
 - **Type:** log-transformed-pk
 - **Role:** First-order elimination rate constant, in either of two settings: (a) K-PD or single-rate-constant elimination forms where no explicit `vc` is estimated, and (b) rate-constant-parameterised disposition models that DO estimate an explicit `lvc` alongside it, i.e. the source paper fits `ke` and `V/F` as two separate parameters rather than fitting a clearance. Case (b) must not be silently reparameterised to `lcl` + `lvc`: when the paper places independent random effects on `ke` and on `V`, the algebraically equivalent clearance form would require `etalcl = etalkel + etalvc`, a correlated eta block the authors did not fit, so the reparameterisation would change the model. This mirrors the register's existing acceptance of rate-constant parameterisations at `k12` / `k21`.
@@ -1251,6 +1259,13 @@ units rather than a dimensionless-per-time rate.
   - `dT2` -- Gasthuys 2023 paper notation.
 - **Example models:** `Gasthuys_2023_paracetamol_human.R`, `Jeon_2013_interferonAlfa2a.R`, `Kim_2017_fimasartan.R`, `Wang_2024_risperidone_consta.R`, `Laffont_2024_nalmefene.R`.
 
+### amt_fo (**canonical bare first-order absorbed-amount cap**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lamt_fo`: the maximum amount of a dose absorbed by the first-order arm of a parallel zero-/first-order absorption model, giving `ffo = min(1, amt_fo / dose)`.
+- **Source aliases:**
+  - `AK1` -- Wojciechowski 2022 notation.
+- **Example models:** `Wojciechowski_2022_abrocitinib.R`.
+
 ### tlag (**canonical bare absorption lag time**)
 - **Type:** bare-pk
 - **Role:** Bare counterpart of `ltlag`. Absorption lag time before drug enters the depot (time).
@@ -1513,9 +1528,9 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Type:** paper-named-param
 - **Role:** Dimensionless *signed* fractional amplitude of an exponential change in a clearance over a course of therapy: `cl(t) = cl * (1 + cl_exp_famp * (1 - exp(-cl_exp_kdes * t)))`, so `cl(0) = cl`, `cl(inf) = cl * (1 + cl_exp_famp)`, and a negative value means clearance falls over time. The decay rate is the registered `cl_exp_kdes` (log scale `lcl_exp_kdes`).
 - **Source aliases:**
-  - `TDPK` -- Yang 2021 Table 3 ("time-dependent PK, maximum fraction reduction of CLm/Fm"), printed as a positive fraction of reduction in `CLm/Fm = CLm0/Fm * [1 - TDPK * (1 - exp(-KTDPK * T))]`; `cl_exp_famp = -TDPK`.
-- **Example models:** `Yang_2021_unecritinib.R` (founding example; `cl_exp_famp = -0.41`, a 41% fall in the apparent clearance of the active metabolite crizotinib from its first-dose value, with `KTDPK = 0.0363 1/h` as `lcl_exp_kdes`).
-- **Notes:** The clearance counterpart of [[kel_exp_famp]]; same sign convention (negative = decline) and same reason for existing: the `cl_exp_` family otherwise parameterises by an absolute decaying component (`cl_exp_inf` + `cl_exp_component`), and a source that estimates a fraction of the baseline should keep that parameterisation so its estimate and RSE map one-to-one onto an `ini()` value. Linear (never log-transformed) because it is signed. In the founding model it acts on the metabolite clearance `cl_crizotinib`; the bare name is kept because the model carries only one such amplitude.
+  - `TAFOCLDELTA` -- Wojciechowski 2022 Online Resource 2 (`COVTAFOCL = 1+TAFOCLDELTA*(1-EXP(-1*(LOG(2)/TAFOCLHL)*TAFO))`); Table 2 'Maximum change in CL with respect to time (TAFO)' = -0.186, already signed, with the rate given as a half-life `TAFOCLHL` = 21.6 h, so `lcl_exp_kdes = log(log(2) / 21.6)`.
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (`cl_exp_famp = -0.186`, an 18.6% fall in abrocitinib clearance over a treatment period, with a 21.6 h half-life).
+- **Notes:** The clearance counterpart of [[kel_exp_famp]]; same sign convention (negative = decline) and same reason for existing: the `cl_exp_` family otherwise parameterises by an absolute decaying component (`cl_exp_inf` + `cl_exp_component`), and a source that estimates a fraction of the baseline should keep that parameterisation so its estimate and RSE map one-to-one onto an `ini()` value. Linear (never log-transformed) because it is signed.
 
 ### cl_circ_famp_day (**canonical daytime circadian fractional amplitude on clearance**)
 - **Type:** paper-named-param
