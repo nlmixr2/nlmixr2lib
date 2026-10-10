@@ -1698,6 +1698,8 @@ navbar:
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine betaPower (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
+      - text: "Dioxin mixture pbpk (Liu 2022)"
+        href: articles/Liu_2022_dioxin_mixture_pbpk.html
       - text: "DiroximelFumarate (Kuchimanchi 2022)"
         href: articles/Kuchimanchi_2022_diroximelFumarate.html
       - text: "Dndi6148 (Assmus 2026)"
@@ -5956,6 +5958,8 @@ navbar:
         href: articles/Leding_2026_tbaj587.html
       - text: "Tbm mortality (Panjasawatwong 2020)"
         href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
+      - text: "Tcdd pbpk (Liu 2022)"
+        href: articles/Liu_2022_dioxin_mixture_pbpk.html
       - text: "Tebipenem (Ebihara 2025)"
         href: articles/Ebihara_2025_tebipenem.html
       - text: "Tebipenem (Ganesan 2023)"
