@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Abouellil 2023 remdesivir with its GS-704277 and GS-441524 metabolites ([doi:10.1007/s00210-022-02292-6](https://doi.org/10.1007/s00210-022-02292-6)) -- healthy adults (phase 1 single-ascending-dose mean data).
+- Add Hirasawa 2022 LeiCNS-PK3.1 rat CNS PBPK models with bidirectional CSF movement for sucrose, inulin, morphine, morphine-6-glucuronide, atenolol, acetaminophen, antipyrine, cefodizime, guanidinosuccinic acid and ziconotide ([doi:10.3390/pharmaceutics14091764](https://doi.org/10.3390/pharmaceutics14091764)) -- healthy rats after intracerebroventricular, intracisternal, intrathecal and IV dosing.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
