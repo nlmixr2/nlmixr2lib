@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fu 2021 vancomycin ([doi:10.1002/bdd.2303](https://doi.org/10.1002/bdd.2303)) -- Chinese adolescents and adults with haematological diseases and neutropenia.
+- Add Samb 2022 gentamicin plasma and saliva ([doi:10.1111/bcp.15105](https://doi.org/10.1111/bcp.15105)) -- preterm and term neonates, saliva sampling for therapeutic drug monitoring.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
