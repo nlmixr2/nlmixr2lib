@@ -946,6 +946,8 @@ navbar:
         href: articles/Jones_2021_buprenorphine.html
       - text: "Buprenorphine (Kovar 2020)"
         href: articles/Kovar_2020_buprenorphine.html
+      - text: "Burosumab (Lee 2022)"
+        href: articles/Lee_2022_burosumab.html
       - text: "Burosumab (Zhang 2016)"
         href: articles/Zhang_2016_burosumab.html
       - text: "Busulfan (Balis 2025)"
@@ -8465,6 +8467,7 @@ articles:
   - articles/Lee_2021_meropenem
   - articles/Lee_2021_primaquine
   - articles/Lee_2021_vancomycin
+  - articles/Lee_2022_burosumab
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin

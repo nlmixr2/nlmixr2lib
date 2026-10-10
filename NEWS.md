@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lin 2021 recombinant Erwinia chrysanthemi asparaginase (JZP-458) ([doi:10.1002/cpdd.1002](https://doi.org/10.1002/cpdd.1002)) -- healthy adults given single intramuscular or intravenous doses.
+- Add Lee 2022 burosumab PK and serum phosphorus ([doi:10.1002/jcph.1950](https://doi.org/10.1002/jcph.1950)) -- adults and children aged 1-12 years with X-linked hypophosphatemia (ratifies the new `serum_phosphorus` PD output).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
