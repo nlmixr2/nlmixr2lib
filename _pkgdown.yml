@@ -1558,6 +1558,8 @@ navbar:
         href: articles/Wang_2019_cyclosporin.html
       - text: "Cyclosporine (Feng 2023)"
         href: articles/Feng_2023_cyclosporine.html
+      - text: "Cyclosporine (Gao 2022)"
+        href: articles/Gao_2022_cyclosporine.html
       - text: "Cyclosporine (Li 2019)"
         href: articles/Li_2019_cyclosporine.html
       - text: "Cyclosporine (Philippe 2015)"
@@ -7994,6 +7996,7 @@ articles:
   - articles/Ganesan_2023_tebipenem
   - articles/Gao_2012_exenatide
   - articles/Gao_2020_teicoplanin
+  - articles/Gao_2022_cyclosporine
   - articles/Gao_2025_cefquinome
   - articles/Gao_2026_trastuzumabRezetecan
   - articles/Gaohua_2012_pregnancy_pbpk

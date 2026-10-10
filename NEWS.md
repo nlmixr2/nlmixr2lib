@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2022 ferric pyrophosphate citrate ([doi:10.1007/s00228-022-03328-9](https://doi.org/10.1007/s00228-022-03328-9)) -- healthy Asian and non-Asian adults (IV) and haemodialysis-dependent CKD-5 patients (dialysate and pre-dialyzer) (ratifies the new `IRON_BL` baseline serum-iron covariate canonical).
+- Add Gao 2022 cyclosporine ([doi:10.3389/fphar.2022.933739](https://doi.org/10.3389/fphar.2022.933739)) -- Chinese children with acquired aplastic anemia.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
