@@ -2,19 +2,7 @@
 
 # development version
 
-- Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
-
-- Fix the inter-individual variability scale of Foo 2016 droperidol ([doi:10.1111/bcp.13093](https://doi.org/10.1111/bcp.13093)): the Table 2 percentages are omega x 100, as the paper states for its fixed ka variance ("variance of 1 ... CV% of 100%"), so the shared CL/Vc variance is now 0.51^2 = 0.2601 (was log(1 + 0.51^2) = 0.2312, +12.5 %).
-
-- Fix the inter-individual variability scale of Gatti 1996 dapsone ([doi:10.1128/aac.40.12.2743](https://doi.org/10.1128/aac.40.12.2743)): the Table 3 CV% values are omega x 100, as the Wald CI on the Ka row shows, so the CL/F and Ka variances are now `(P/100)^2` (Ka 0.5438 -> 0.7225, +33 %; CL/F +6 %).
-
-- Fix the inter-individual variability scale of Salem 2014 efavirenz ([doi:10.1128/AAC.01738-13](https://doi.org/10.1128/AAC.01738-13)): the Table 2 "CV [%]" values are omega x 100, as the asymptotic 90% CI half-widths show (each is exactly half of 1.645 x CV x RSE), so the CL/F, V/F and liquid-bioavailability variances are now `(P/100)^2` (+8-10 %).
-
-- Fix the inter-individual variability scale of Pettersen 2009 pantoprazole ([doi:10.1111/j.1365-2125.2008.03328.x](https://doi.org/10.1111/j.1365-2125.2008.03328.x)): the Table 3 footnote defines IIV as "an approximate CV (square root of the variance)", so the CL, Vc, Q and V2 variances are now `(P/100)^2` (V2 0.674 -> 0.962, +43 %; others +3-8 %).
-
-- Fix the inter-individual variability scale of Lane 2011 R- and S-warfarin ([doi:10.1111/j.1365-2125.2011.04051.x](https://doi.org/10.1111/j.1365-2125.2011.04051.x)): the Table 3 footnote defines IIV as "an approximate coefficient of variation (square root of the variance)", and the Wald CIs on the V rows agree, so both CL/V blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (+6-9 %).
-
-- Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
+- Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

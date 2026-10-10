@@ -4972,6 +4972,8 @@ navbar:
         href: articles/Wallender_2021_piperaquine.html
       - text: "Piperaquine qtc (Wattanakul 2020)"
         href: articles/Wattanakul_2020_piperaquine.html
+      - text: "Pirtobrutinib (Bell 2026)"
+        href: articles/Bell_2026_pirtobrutinib.html
       - text: "Pirtobrutinib (Tian 2025)"
         href: articles/Tian_2025_pirtobrutinib.html
       - text: "Pitavastatin (Kakara 2014)"
@@ -7321,6 +7323,7 @@ articles:
   - articles/Beguin_2024_carboplatin_dog
   - articles/Beijer_2026_cloxacillin
   - articles/Beliveau_2026_tenofovir_alafenamide_implant
+  - articles/Bell_2026_pirtobrutinib
   - articles/Bellanti_2014_deferiprone
   - articles/Bellanti_2015_deferoxamine
   - articles/Bellanti_2017_deferiprone
