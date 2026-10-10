@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tsai 2022 CAR T cell local-delivery mPBPK-PD ([doi:10.1007/s10928-022-09818-8](https://doi.org/10.1007/s10928-022-09818-8)) -- anti-mesothelin CAR T cells in a mouse pleural tumor and a theoretical mouse liver tumor, comparing intravenous, intrapleural, portal vein and local hepatic artery delivery.
+- Add Li 2022 paroxetine ([doi:10.3389/fphar.2022.966622](https://doi.org/10.3389/fphar.2022.966622)) -- Chinese psychiatric inpatients on immediate- or sustained-release tablets (ratifies the new `FORM_PAROXETINE_IR` formulation indicator).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
