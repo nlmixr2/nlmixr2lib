@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cojutti 2022 dalbavancin ([doi:10.3390/antibiotics11080996](https://doi.org/10.3390/antibiotics11080996)) -- adults on long-term TDM-guided dalbavancin for subacute or chronic Gram-positive infections, mostly bone and joint.
+- Add Chou 2022 flunixin, florfenicol and penicillin G PBPK ([doi:10.1093/toxsci/kfac056](https://doi.org/10.1093/toxsci/kfac056)) -- cattle and swine (igPBPK withdrawal-interval platform).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

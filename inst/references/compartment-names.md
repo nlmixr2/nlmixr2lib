@@ -466,9 +466,9 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 
 ### plasma (**canonical mPBPK plasma compartment**)
 - **Type:** compartment
-- **Role:** Plasma compartment in the Cao 2013 mAb mPBPK family.
-- **Source aliases:** none.
-- **Example models:** `Cao_2013_MEDI528.R` (and 11 sibling Cao 2013 mAb mPBPK models) (and Cao_2013_* variants), `Yuan_2019_concizumab.R`.
+- **Role:** Plasma compartment in the Cao 2013 mAb mPBPK family; also the single plasma pool of whole-body flow-limited PBPK models that carry no separate arterial and venous blood.
+- **Source aliases:** `APlas_free` (Chou 2022 deposited mrgsolve code).
+- **Example models:** `Cao_2013_MEDI528.R` (and 11 sibling Cao 2013 mAb mPBPK models) (and Cao_2013_* variants), `Yuan_2019_concizumab.R`, `Chou_2022_flunixin_cattle_pbpk.R` (and the five sibling Chou 2022 igPBPK drug-species models; `plasma_<metab>` is the metabolite plasma pool).
 
 ### tight (**canonical mPBPK tight-tissue compartment**)
 - **Type:** compartment
@@ -6445,11 +6445,11 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Pei_2016_iloperidone.R`.
 
-### 5oh (**canonical 5-hydroxyomeprazole suffix**)
+### 5oh (**canonical 5-hydroxy metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** 5-hydroxyomeprazole metabolite of omeprazole.
-- **Source aliases:** none.
-- **Example models:** `Zhao_2018_omeprazole.R`.
+- **Role:** 5-hydroxy metabolite of the parent drug: 5-hydroxyomeprazole for omeprazole, 5-hydroxyflunixin for flunixin. Member of the positional-hydroxy family (`3oh` / `5oh` / `7oh` / ...); the parent drug of the model disambiguates.
+- **Source aliases:** `5OH-FLU` (Chou 2022 Table 1).
+- **Example models:** `Zhao_2018_omeprazole.R`, `Chou_2022_flunixin_cattle_pbpk.R`, `Chou_2022_flunixin_swine_pbpk.R` (5-hydroxyflunixin, the flunixin metabolite measured in plasma and edible tissues, formed mole-for-mole in the liver of a whole-body PBPK model).
 
 ### sfn (**canonical omeprazole sulfone suffix**)
 - **Type:** metabolite-suffix
@@ -6676,6 +6676,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `Foster_2023_enrofloxacin_ciprofloxacin_cat.R` (founding example; enrofloxacin -> ciprofloxacin formation clearance in cats with reduced kidney function).
 - **Notes:** Spelled `cipro` rather than `cip` to stay unambiguous against the covariate register's `CONMED_CIP` and against the `ccip` bath-concentration compartment of the Rees 2018 hollow-fiber meropenem + ciprofloxacin model, which is a distinct state (a dosed medium concentration in a time-kill experiment), not a metabolite species suffix.
 
+### floa (**canonical florfenicol amine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Florfenicol amine, the major metabolite of florfenicol and its regulatory marker residue in cattle and swine edible tissues (tolerances are set on florfenicol amine). Formed mole-for-mole from florfenicol in the liver in parent + metabolite PBPK models.
+- **Source aliases:** `FLOA` (Chou 2022 Table 1), `FFA`.
+- **Example models:** `Chou_2022_florfenicol_cattle_pbpk.R`, `Chou_2022_florfenicol_swine_pbpk.R`.
+- **Notes:** Spelled `floa` after the founding paper's own abbreviation rather than the also-common `ffa`, which reads as free fatty acids.
+
 ---
 
 ## Miscellaneous metabolite suffixes
@@ -6721,8 +6728,8 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Type:** metabolite-suffix
 - **Role:** Generic metabolite suffix used by template / placeholder models that track an unnamed metabolite.
 - **Source aliases:** none.
-- **Example models:** `NA_NA_sunitinib.R`.
-- **Notes:** Documented as "the active metabolite of the parent drug" without naming a specific INN.
+- **Example models:** `NA_NA_sunitinib.R`, `Chou_2022_penicillinG_cattle_pbpk.R`, `Chou_2022_penicillinG_swine_pbpk.R` (the pooled, unnamed penicillin G metabolites of a whole-body PBPK model whose metabolite submodel only matters because its biliary excretion re-enters the gut as parent).
+- **Notes:** Documented as "the active metabolite of the parent drug" without naming a specific INN. Use it only when the source does not name the metabolite; a named metabolite takes its own suffix.
 
 ### udca (**canonical ursodeoxycholic acid suffix**)
 - **Type:** metabolite-suffix
