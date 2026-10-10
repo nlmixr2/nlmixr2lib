@@ -6036,6 +6036,8 @@ navbar:
         href: articles/Kim_2018_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
+      - text: "Tacrolimus (Liu 2022)"
+        href: articles/Liu_2022_tacrolimus.html
       - text: "Tacrolimus (Lu 2015)"
         href: articles/Lu_2015_tacrolimus.html
       - text: "Tacrolimus (Martial 2021)"
@@ -6080,6 +6082,8 @@ navbar:
         href: articles/Zhou_2026_tacrolimus.html
       - text: "Tacrolimus (Zhu 2014)"
         href: articles/Zhu_2014_tacrolimus.html
+      - text: "Tacrolimus cyp3a5 (Liu 2022)"
+        href: articles/Liu_2022_tacrolimus.html
       - text: "Tacrolimus egfr (Xiang 2025)"
         href: articles/Xiang_2025_tacrolimus.html
       - text: "Tacrolimus fpg (Xiang 2025)"
@@ -8575,6 +8579,7 @@ articles:
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
   - articles/Liu_2020_hydroxychloroquine_monkey
+  - articles/Liu_2022_tacrolimus
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s
