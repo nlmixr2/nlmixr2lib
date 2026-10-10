@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wei 2022 mycophenolic acid ([doi:10.3389/fphar.2022.1002628](https://doi.org/10.3389/fphar.2022.1002628)) -- Chinese children early after liver transplantation taking mycophenolate mofetil dispersible tablets (registers `DOSE_MMF_MGKG`).
+- Add Chauzy 2022 ceftaroline fosamil, ceftaroline and ceftaroline M-1 ([doi:10.1093/jac/dkac299](https://doi.org/10.1093/jac/dkac299)) -- ventilated ICU adults with early-onset pneumonia and augmented renal clearance.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
