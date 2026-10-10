@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chou 2022 flunixin, florfenicol and penicillin G PBPK ([doi:10.1093/toxsci/kfac056](https://doi.org/10.1093/toxsci/kfac056)) -- cattle and swine (igPBPK withdrawal-interval platform).
+- Add Liu 2022 escitalopram ([doi:10.3389/fphar.2022.964758](https://doi.org/10.3389/fphar.2022.964758)) -- Chinese psychiatric inpatients aged 12-83 years, with CYP2C19 phenotype and age effects on clearance.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
