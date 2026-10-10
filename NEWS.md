@@ -2,7 +2,7 @@
 
 # development version
 
-- Add White 2022 alfaxalone ([doi:10.1002/prp2.1031](https://doi.org/10.1002/prp2.1031)) -- adult male and female Lewis and Sprague-Dawley rats (two population fits).
+- Add Mimram 2022 clindamycin ([doi:10.3390/antibiotics11111462](https://doi.org/10.3390/antibiotics11111462)) -- adults taking oral clindamycin for chronic prosthetic joint infection.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

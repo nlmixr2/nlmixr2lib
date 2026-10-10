@@ -1474,6 +1474,8 @@ navbar:
         href: articles/Hu_2026_clesrovimab.html
       - text: "Clindamycin (Bouazza 2012)"
         href: articles/Bouazza_2012_clindamycin.html
+      - text: "Clindamycin (Mimram 2022)"
+        href: articles/Mimram_2022_clindamycin.html
       - text: "Clindamycin (Muller 2010)"
         href: articles/Muller_2010_clindamycin.html
       - text: "Clindamycin (Pfaffendorf 2026)"
@@ -8896,6 +8898,7 @@ articles:
   - articles/Milakovic_2024_linezolid
   - articles/Mileva_2021_doxycycline_rabbit
   - articles/Milosheska_2016_lamotrigine
+  - articles/Mimram_2022_clindamycin
   - articles/Minichmayr_2024_ceftaroline
   - articles/Minucci_2024_CART_qsp
   - articles/Mitra_2026_ziftomenib
