@@ -703,6 +703,8 @@
 
 - The remaining pipeline vocabulary was removed from everything the package ships: "on disk" phrasing (about 900 places across 535 articles), internal checklist labels F.1/F.2/F.3, text-converter placeholders and tool names, and the maintainers' task, request and decision identifiers in the comments and metadata of 446 model files and about 210 register lines. The three internal follow-up notes that lived in `inst/references/` moved to `data-raw/`, which is not part of the built package. No model code changed (every `ini()` and `model()` block parses identically before and after); every touched article was re-rendered.
 
+- Add Quintairos 2021 tacrolimus and mycophenolic acid PK and urinary miR155-5p acute-rejection risk ([doi:10.1371/journal.pone.0245880](https://doi.org/10.1371/journal.pone.0245880)) -- adult de novo kidney transplant recipients in the first 6 months post-transplant.
+
 - Add Huang 2026 tiapride ([doi:10.2147/DDDT.S587387](https://doi.org/10.2147/DDDT.S587387)) -- children and adolescents with tic disorders, with paired plasma and saliva.
 
 - Add Leven 2020 roscovitine (seliciclib) and its carboxylate metabolite M3 ([doi:10.3390/pharmaceutics12111087](https://doi.org/10.3390/pharmaceutics12111087)) -- adults with cystic fibrosis chronically infected with Pseudomonas aeruginosa.
