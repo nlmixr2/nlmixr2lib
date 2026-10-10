@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wojciechowski 2022 abrocitinib ([doi:10.1007/s40262-021-01104-z](https://doi.org/10.1007/s40262-021-01104-z)) -- healthy adults, adults with psoriasis, adolescents and adults with atopic dermatitis, and adults with hepatic impairment.
+- Add Wang 2022 mycophenolic acid ([doi:10.3389/fphar.2022.859351](https://doi.org/10.3389/fphar.2022.859351)) -- Chinese adult renal transplant recipients in the early (first week) and stable (5.5-10 years) post-transplant stages (ratifies the new `POSTTX_STABLE` covariate canonical).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
