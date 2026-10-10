@@ -1010,6 +1010,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## WOMAC osteoarthritis subscale scores
+
+### womacpain, womacstiffness, womacfunction (**canonical WOMAC subscale score output compartments**)
+- **Type:** compartment
+- **Role:** Western Ontario and McMaster Universities Osteoarthritis Index (WOMAC) subscale outputs: `womacpain` (5 items), `womacstiffness` (2 items) and `womacfunction` (17 items, physical function). Each holds the ABSOLUTE subscale score, not a change from baseline. A model that fits the change from baseline directly should register a `cfb` companion (`womacpaincfb`), as `das28` and `das28cfb` are separated. WOMAC is published in Likert (0-4 per item), VAS (0-100 mm per item) and NRS (0-10 per item) versions, so the item scale is not fixed by the name: every consuming model must state in its `units` which scale the output is on. The founding models use the 0-10-per-item standardization (pain 0-50, stiffness 0-20, function 0-170).
+- **Source aliases:** `EFT` / `IPRED` -- Wen 2022 eMethods 5 NONMEM `$PRED` (one control stream per subscale); `WOMAC pain`, `WOMAC stiffness`, `WOMAC function` -- paper notation.
+- **Example models:** `Wen_2022_osteoarthritis_womacpain_placebo_mbma.R`, `Wen_2022_osteoarthritis_womacstiffness_placebo_mbma.R`, `Wen_2022_osteoarthritis_womacfunction_placebo_mbma.R` (founding examples; study-arm-mean placebo response `womac<sub> = BASE - Emax * (1 - exp(-k * t))` with the arm baseline in the `SCORE_WOMAC_<SUBSCALE>` covariate).
+- **Notes:** Follows the lowercase run-together instrument convention of `pasi` / `ipss` / `das28`. Distinct from the generic pain-score canonical `score` (`Plan_2012_pain.R`): the WOMAC outputs name a specific instrument and subscale, and two of the three are not pain measures. The earlier WOMAC pain MBMAs `Boucher_2016_naproxen_mbma.R` and `Boucher_2018_naproxen_mbma.R` predate this entry and observe `Cc`, on a 0-10 average-per-item scale.
+
+---
+
 ## Abuse-liability and opioid-withdrawal clinical scores
 
 ### druglikingvascfb (**canonical period-corrected drug liking VAS change-score output compartment**)

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jiang 2022 voriconazole ([doi:10.3389/fphar.2022.982981](https://doi.org/10.3389/fphar.2022.982981)) -- Chinese adults with talaromycosis, about half with newly diagnosed HIV.
+- Add Wen 2022 osteoarthritis WOMAC pain, stiffness and function placebo response MBMA ([doi:10.1001/jamanetworkopen.2022.35060](https://doi.org/10.1001/jamanetworkopen.2022.35060)) -- placebo arms of 130 oral-treatment osteoarthritis trials. Registers the `SCORE_WOMAC_PAIN` / `_STIFFNESS` / `_FUNCTION` covariates and the `womacpain` / `womacstiffness` / `womacfunction` outputs.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

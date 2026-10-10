@@ -2580,6 +2580,20 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Takechi_2025_nemolizumab_ppnrs.R` (per-subject observed baseline, used as the initial value of the weekly average PP-NRS response; median 8.6, range 6.4-10).
 - **Notes:** Member of the `SCORE_<instrument>` family (`SCORE_EASI`, `SCORE_MADRS`, `SCORE_HAMD`, `SCORE_NIHSS`, ...), registered on the same family-conforming basis. Baseline-vs-time-varying status is recorded in the per-model `notes` rather than in the column name, matching the `SCORE_EASI` decision. When a model consumes the score as a per-subject baseline anchor there is deliberately no corresponding estimated baseline parameter in `ini()`.
 
+### SCORE_WOMAC_PAIN, SCORE_WOMAC_STIFFNESS, SCORE_WOMAC_FUNCTION (**canonical for WOMAC osteoarthritis subscale scores on the 0-10-per-item scale**)
+- **Description:** Western Ontario and McMaster Universities Osteoarthritis Index (WOMAC) subscale totals: pain (5 items), stiffness (2 items) and physical function (17 items). Each item is expressed on a 0-10 scale (0 = none, 10 = extreme), so the subscale ranges are pain 0-50, stiffness 0-20 and function 0-170. Higher values = worse symptoms. As a covariate it is usually the BASELINE value (per subject, or the arm mean in an MBMA).
+- **Units:** (score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. Wen 2022 centres each subscale at the median arm baseline (pain 25, stiffness 10.23, function 83.75).
+- **Source aliases:**
+  - `BASE` -- Wen 2022 eMethods 5 NONMEM column (one control stream per subscale).
+  - WOMAC Likert 3.1 version (0-4 per item; pain 0-20, stiffness 0-8, function 0-68) -- **convert, not rename**: multiply by 2.5.
+  - WOMAC VAS 3.1 version (0-100 mm per item; pain 0-500, stiffness 0-200, function 0-1700) -- **convert, not rename**: divide by 10.
+  - A subscale reported as the AVERAGE per item on 0-10 (as in `Boucher_2018_naproxen_mbma.R`, where WOMAC pain is on a 0-10 scale) -- **convert**: multiply by the item count (5 / 2 / 17).
+- **Example models:** `Wen_2022_osteoarthritis_womacpain_placebo_mbma.R`, `Wen_2022_osteoarthritis_womacstiffness_placebo_mbma.R`, `Wen_2022_osteoarthritis_womacfunction_placebo_mbma.R` (STUDY-ARM MEAN baseline; the starting value of the arm-mean placebo trajectory and a linear covariate on the placebo Emax, `Emax * (1 + theta * (SCORE_WOMAC_<SUBSCALE> - median))`).
+- **Notes:** Member of the `SCORE_<instrument>` family; the subscale is a suffix because the three subscales are separate instruments in practice (trials report them separately, and a model uses one at a time). Unlike `SCORE_EASI`, the instrument has several published item scales, so the canonical FIXES the 0-10-per-item standardization and a dataset on another version must be converted with the factors above. In MBMA models record the grain (arm mean) and the centring constant in the per-model notes. The matching model outputs are `womacpain` / `womacstiffness` / `womacfunction` in `compartment-names.md`.
+
 ### SCORE_MGADL (**canonical for Myasthenia Gravis Activities of Daily Living score**)
 <!-- AUDIT 2026-06-19: renamed from `MGADL` to `SCORE_MGADL`. The prior name `MGADL` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
 - **Description:** Myasthenia Gravis Activities of Daily Living score -- eight-item patient-reported outcome measure (each item 0-3), total 0-24, higher values = greater symptom severity and functional limitation.
