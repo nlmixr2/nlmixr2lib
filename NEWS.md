@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2022 tacrolimus, full-cohort and CYP3A5-subpopulation models ([doi:10.3389/fphar.2022.891648](https://doi.org/10.3389/fphar.2022.891648)) -- Chinese children after haematopoietic stem cell transplantation, IV and oral (registers the `CONMED_CASPOFUNGIN` covariate).
+- Add Franzese 2022 ceftazidime and avibactam ([doi:10.1002/cpt.2460](https://doi.org/10.1002/cpt.2460)) -- children aged 3 months to < 18 years pooled with adults with cIAI, cUTI or HAP/VAP.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
