@@ -6634,6 +6634,8 @@ navbar:
         href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
       - text: "Venetoclax mouse (Derippe 2024)"
         href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
+      - text: "Venlafaxine (Wang 2022)"
+        href: articles/Wang_2022_venlafaxine.html
       - text: "Venlafaxine fluoxetine mbma (Maringwa 2025)"
         href: articles/Maringwa_2025_venlafaxine_fluoxetine_mbma.html
       - text: "Verapamil rat (Syvanen 2011)"
@@ -9220,6 +9222,7 @@ articles:
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2022_daidzein_equol
   - articles/Wang_2022_ornithinePhenylacetate
+  - articles/Wang_2022_venlafaxine
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2023_methotrexate
   - articles/Wang_2023_teicoplanin

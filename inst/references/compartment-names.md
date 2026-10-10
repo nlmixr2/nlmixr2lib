@@ -5716,6 +5716,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Agema_2021_oxycodone.R` (doi:10.3390/cancers13112768).
 - **Notes:** Follows the `norcloz` / `norfluox` construction (`nor` + truncated parent stem). Truncated to `noroxycod` rather than `norox` so that it stays distinct from `noroxymor`.
 
+### odv (**canonical O-desmethylvenlafaxine (desvenlafaxine) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** O-desmethylvenlafaxine (ODV; desvenlafaxine), the major CYP2D6-formed active metabolite of venlafaxine, with serotonin/noradrenaline reuptake-inhibitor activity comparable to the parent, so venlafaxine TDM targets the summed active moiety (VEN + ODV, 100-400 ng/mL). Used on `central_odv`, `lcl_odv` / `lvc_odv`, `fm_odv`, `Cc_odv` and `propSd_odv`.
+- **Source aliases:**
+  - `ODV` -- Wang 2022 (and the venlafaxine TDM literature generally).
+  - `M` subscript (`CLM/F`, `VM/F`) -- Wang 2022 Table 2 parameter notation.
+- **Example models:** `Wang_2022_venlafaxine.R` (doi:10.3389/fphar.2022.978202).
+- **Notes:** Named on the universal TDM abbreviation rather than the INN `desvenlafaxine`. A model in which desvenlafaxine itself is the administered drug uses bare canonical names, as any parent does; the suffix is only for ODV formed from venlafaxine.
+
 ### noroxymor (**canonical noroxymorphone (N-desmethyloxymorphone) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Noroxymorphone (N-desmethyloxymorphone), the secondary oxycodone metabolite formed from noroxycodone (CYP2D6) and from oxymorphone (CYP3A4). A mu-opioid agonist with poor blood-brain-barrier penetration. Used on `central_noroxymor`, `lkmet_noroxymor` / `lkel_noroxymor` / `lvc_noroxymor`, `Cc_noroxymor` and `propSd_noroxymor` / `addSd_noroxymor`; `kmet_noroxymor` names the formation step from its precursor `noroxycod`.
