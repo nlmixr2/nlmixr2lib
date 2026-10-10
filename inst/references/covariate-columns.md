@@ -204,6 +204,17 @@ notes: <free text>
 - **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m^2; linear-deviation effect on logit of bioavailability), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 27.93 kg/m^2 adding +0.939 to the GX rate constant K30 in the BMI > 27.93 cohort), `Struemper_2017_belimumab.R` (kg/m^2, reference 24.7; power exponent -0.610 on Vc; baseline-only, source column BBMI), `Lalovic_2020_lemborexant.R` (power exponent -0.428 on CL/F; reference 25 kg/m^2, unprinted and back-solved from the paper's quoted BMI effect sizes).
 - **Notes:** Universal clinical-trial demographic. Derived as `WT / (height_m)^2`; assume time-fixed at baseline unless the source paper states otherwise.
 
+### BLOOD_VOLUME (**canonical for estimated total blood volume**)
+- **Description:** Subject's estimated total circulating blood volume (plasma plus red-cell volume), in litres, derived from body size and sex rather than measured. A body-size descriptor in the same family as `BSA` and `LBM`; baseline unless a model's notes say otherwise.
+- **Units:** L
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(BLOOD_VOLUME / ref)^exponent`. Reference values observed: 3.89 L (Savic 2022, close to the 3.9 L cohort median of adults and adolescents with sickle cell disease).
+- **Source aliases:**
+  - `BLV` -- Savic 2022 Table 2 row label 'Blood volume on Vc/F, (BLV/3.89)^TH' (`Savic_2022_voxelotor.R`).
+- **Example models:** `Savic_2022_voxelotor.R` (baseline blood volume, reference 3.89 L, power exponent 0.74 on voxelotor apparent central volume; Vc/F 269 L at the 10th-percentile 2.9 L and 413 L at the 90th-percentile 5.2 L).
+- **Notes:** Several formulas are in use (Nadler from height, weight and sex; weight-and-sex-only mL/kg rules; Lemmens for obesity) and they differ by several hundred mL at a given body size, so record the formula in `covariateData[[BLOOD_VOLUME]]$notes`. When the source does not print it -- Savic 2022 says only 'calculated based on body weight and sex' -- say so, and record the cohort median and range so a user can check that the formula they apply reproduces the source distribution. Distinct from organ or tissue blood-volume fractions inside a PBPK model (`frb_<organ>` in `parameter-names.md`), which are model parameters, not subject covariates.
+
 ### BMIZ (**canonical for body-mass-index z-score (age- and sex-standardised)**)
 - **Description:** Age- and sex-standardised body-mass-index z-score (number of standard deviations above or below the reference-population mean BMI for the subject's age and sex). Distinct from raw `BMI` (kg/m^2): `BMIZ` is unitless and centred at 0 in the reference population, so the reference value used in linear-deviation effects is 0 (not a population BMI in kg/m^2). Time-varying when the source paper carries a per-visit z-score; document baseline-vs-time-varying status in `covariateData[[BMIZ]]$notes`.
 - **Units:** unitless (z-score; standard-deviation units)
@@ -3906,6 +3917,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
   - `DOSE` -- Leding 2026 Supporting Information Code S1 `$INPUT` (`DOSE ; dose in mg`), kept distinct there from `AMT ; dose in nmol`.
 - **Example models:** `Leding_2026_tbaj587.R` (founding example; five retained effects, all referenced to 200 mg -- a power function on apparent parent clearance (exponent 0.298), on both relative fractions metabolised (`fm_m3` -0.418, `fm_m2` -0.373) and on apparent M2 clearance (0.146), plus an *exponential* function on the absorption rate constant, `ka * exp(-0.000462 * (DOSE - 200))`. Studied levels 25, 50, 100, 200, 400 and 800 mg).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. **This column is not the dosing amount and cannot be derived from it.** Leding 2026 fitted natural-log-transformed *molar* concentrations and dosed `AMT` in nmol, while the dose covariates act on the mg dose, so a model carrying them needs both quantities on the record; the paper reports no molecular weight, so neither can be computed from the other. Set it on every record of a subject to that subject's assigned mg dose level. For the multiple-dose simulations of Leding 2026 Methods 2.4 it is the daily mg dose, taking the loading-dose value during a loading period and the maintenance value thereafter -- which is what makes the dose dependence of apparent clearance change partway through a loading regimen. The dose non-linearity is real but mechanistically unexplained (Leding 2026 Discussion: "The mechanism of the dose non-linearity is not known but describes likely multiple different processes"); note it raises apparent oral clearance with increasing dose, and the authors report that omitting it or replacing it with a dose-dependent relative bioavailability worsened the fit.
+
+### DOSE_VOXELOTOR_MG (**canonical for the nominal voxelotor dose of the subject's regimen**)
+- **Description:** Nominal oral voxelotor dose level of the subject's treatment arm, in mg, carried as a covariate because the whole-blood-to-plasma concentration ratio falls with dose. Constant within an arm.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as `(DOSE_VOXELOTOR_MG / 900)^e_dose_bpr` on the whole-blood-to-plasma ratio Rbp, with exponent -0.37 in the founding model, so Rbp is 17.2% lower at 1500 mg than at 900 mg at the same hematocrit.
+- **Source aliases:**
+  - `dose` -- Savic 2022 Table 2 row label 'Nominal dose on Rbp, (dose/900)^TH'.
+- **Example models:** `Savic_2022_voxelotor.R` (nominal doses 500-1500 mg once daily in sickle cell disease; Figure 2c).
+- **Notes:** Member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. A dedicated column rather than `podo()` because the source uses the NOMINAL dose of the regimen, not the amount of the most recent dose record. Savic 2022 does not say how its 500 mg twice-daily arm was coded (per administration or per day); every other arm was once daily, so the two readings coincide for them.
 
 ### DOSE_TAF_MG (**canonical for total tenofovir alafenamide dose delivered in vivo by a subdermal implant**)
 - **Description:** Total mass of tenofovir alafenamide actually released in vivo by the subdermal implant(s) over the whole insertion period, in mg, estimated from the residual drug assayed in the used implants after removal. A per-subject constant describing the entire implant course, referenced to 17.3 mg.
@@ -13897,6 +13919,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
   - `Strong CYP3A4 inducer` -- Rich 2026 Table 1 row label (`Rich_2026_momelotinib.R`); the source dataset column name is not published.
 - **Example models:** `Rich_2026_momelotinib.R` (log-additive effect on apparent momelotinib clearance: `exp(log(2.01) * CONMED_CYP3A4_IND_STRONG)`, i.e. a 2.01-fold rise in CL/F and therefore a 50% fall in Cavg,ss, paired with the sibling `CONMED_CYP3A4_IND_MOD` at 1.39. Rich 2026 attributes the effect to joint induction of CYP3A / 2C8 / 2C19 rather than CYP3A4 alone, consistent with the 46% fall in momelotinib AUCinf seen in the dedicated rifampin drug-drug-interaction study).
 - **Notes:** Reserved by name in the `CONMED_CYP3A4_IND` and `CONMED_CYP3A4_IND_MOD` register entries before this first use, so the name is not a fresh coinage. Per-model `covariateData[[CONMED_CYP3A4_IND_STRONG]]$notes` must document which specific inducers the source classified as strong (typically per FDA guidance: rifampicin, carbamazepine, phenytoin, St John's wort, enzalutamide, mitotane) and the fraction of the cohort exposed; when the paper does not say, record that gap explicitly (Rich 2026 does not). Prefer the drug-specific `CONMED_RIFAMPICIN` when a study's strong-inducer arm is a single named agent given as a probe; use this class indicator when the source pools whatever strong inducers patients happened to be taking.
+
+### CONMED_CYP3A4_IND_WEAK (**canonical for concomitant weak CYP3A4 inducer coadministration indicator**)
+- **Description:** 1 = subject / record with concomitant coadministration of a weak CYP3A4 inducer (FDA / EMA classification: an inducer that reduces the AUC of a sensitive CYP3A4 substrate by >= 20% and < 50%), 0 = no concomitant weak CYP3A4 inducer. Strength-stratified companion to `CONMED_CYP3A4_IND` (pooled any-inducer indicator) and sibling of `CONMED_CYP3A4_IND_MOD` and `CONMED_CYP3A4_IND_STRONG`; the inducer-side counterpart of `CONMED_CYP3A4_INH_WEAK`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant weak CYP3A4 inducer; subjects on moderate or strong inducers, or on no inducer, all fall here when using this indicator alone).
+- **Source aliases:**
+  - `time-varying weak CYP3A4 inducer` -- Savic 2022 Results wording (`Savic_2022_voxelotor.R`); Table 2 row 'CYP3A4 inducer on CL/F, exp TH'. The source dataset column name is not published.
+- **Example models:** `Savic_2022_voxelotor.R` (time-varying; exponential effect on voxelotor CL/F, `exp(0.39 * CONMED_CYP3A4_IND_WEAK)`, i.e. 47% higher apparent clearance, 6.1 to 9.1 L/h; 14 of 264 PK-evaluable patients exposed, no moderate-inducer users, strong inducers prohibited by protocol).
+- **Notes:** Reserved by name in the `CONMED_CYP3A4_IND` and `CONMED_CYP3A4_IND_MOD` register entries before this first use, so the name is not a fresh coinage. Per-model `covariateData[[CONMED_CYP3A4_IND_WEAK]]$notes` must document which agents the source classified as weak and the fraction exposed; record the gap when the paper does not name them (Savic 2022 does not). Do not reuse a weak-stratum coefficient for moderate or strong inducers: Savic 2022's Discussion expects strong inducers to reduce voxelotor exposure substantially, an effect its data could not estimate.
 
 ### CONMED_OATP1B_INH (**canonical for concomitant OATP1B1 / OATP1B3 inhibitor coadministration indicator**)
 - **Description:** 1 = subject coadministered an inhibitor of the hepatic uptake transporters OATP1B1 (SLCO1B1) and/or OATP1B3 (SLCO1B3) during the observation interval, 0 = no concomitant OATP1B1/1B3 inhibitor. Inhibiting OATP1B-mediated hepatic uptake raises the systemic exposure of OATP1B substrates by reducing first-pass hepatic extraction and hepatic clearance; depending on how the source paper parameterises it the effect may land on apparent clearance or on relative bioavailability. Use this canonical when the source enters OATP1B-inhibitor coadministration as a binary indicator, regardless of which inhibitor potencies it pools into the `1` category.

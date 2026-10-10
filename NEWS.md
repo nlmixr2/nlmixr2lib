@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2022 mycophenolic acid ([doi:10.3389/fphar.2022.859351](https://doi.org/10.3389/fphar.2022.859351)) -- Chinese adult renal transplant recipients in the early (first week) and stable (5.5-10 years) post-transplant stages (ratifies the new `POSTTX_STABLE` covariate canonical).
+- Add Savic 2022 voxelotor ([doi:10.1002/psp4.12731](https://doi.org/10.1002/psp4.12731)) -- adults and adolescents with sickle cell disease, joint plasma and whole-blood model.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
