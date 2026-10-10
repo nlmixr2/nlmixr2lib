@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tomita 2022 imeglimin ([doi:10.1111/cts.13221](https://doi.org/10.1111/cts.13221)) -- Japanese and Western healthy volunteers and patients with type 2 diabetes, including chronic kidney disease (ratifies the new `SAMPLE_PREDOSE` residual-stratum covariate).
+- Add Al-Qurain 2022 tramadol and O-desmethyltramadol ([doi:10.1007/s13318-022-00756-x](https://doi.org/10.1007/s13318-022-00756-x)) -- older hospital inpatients (registers the `SCORE_ISAR` frailty-score covariate).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
