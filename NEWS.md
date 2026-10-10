@@ -2,8 +2,7 @@
 
 # development version
 
-- Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
-
+- Add Bihorel 2021 BMS-986166 parent + BMS-986166-P metabolite PK and heart-rate and lymphocyte-count nadir exposure-response models ([doi:10.1002/cpdd.878](https://doi.org/10.1002/cpdd.878)) -- healthy adults.
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
