@@ -1116,6 +1116,10 @@ navbar:
         href: articles/Munn_2024_carprofen_moxidectin_internal_standard.html
       - text: "Carprofen raw (Munn 2024)"
         href: articles/Munn_2024_carprofen_moxidectin_internal_standard.html
+      - text: "Cart liver tumor mouse (Tsai 2022)"
+        href: articles/Tsai_2022_cart_local_delivery.html
+      - text: "Cart pleural tumor mouse (Tsai 2022)"
+        href: articles/Tsai_2022_cart_local_delivery.html
       - text: "Carvedilol (Honda 2005)"
         href: articles/Honda_2005_carvedilol.html
       - text: "Carvedilol (Hwang 2023)"
@@ -9552,6 +9556,7 @@ articles:
   - articles/Troy_2020_arylsulfataseA
   - articles/Trujillo_2025_proinsulin_qsp
   - articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor
+  - articles/Tsai_2022_cart_local_delivery
   - articles/Tsai_2023_ceftriaxone
   - articles/Tse_2020_tofacitinib
   - articles/Tseng_2026_piperacillin
