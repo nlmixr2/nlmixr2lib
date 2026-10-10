@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lin 2022 PF-05251749 ([doi:10.1111/cts.13352](https://doi.org/10.1111/cts.13352)) -- healthy adults given 400 or 750 mg once daily (two-compartment reductions of the dose-specific Simcyp minimal-PBPK base models).
+- Add Abouellil 2023 remdesivir with its GS-704277 and GS-441524 metabolites ([doi:10.1007/s00210-022-02292-6](https://doi.org/10.1007/s00210-022-02292-6)) -- healthy adults (phase 1 single-ascending-dose mean data).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
