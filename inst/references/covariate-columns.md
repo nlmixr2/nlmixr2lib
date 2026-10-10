@@ -362,6 +362,18 @@ notes: <free text>
 - **Example models:** `Wahlby_2004_gentamicin.R` (replaces time-varying BSA in the final-model V1 equation V1 = 8.63 * BSA_BASE * (ALB/34)^-0.41 because BBSA was the better predictor than time-varying BSA, RSE 2.5% vs 110% on delta-BSA), `Garrett_2019_inotuzumab.R` (power exponents 1.54 on `cl_exp_inf` and 1.64 on `cl_exp_component`, both centered on the 1.84 m^2 population median, plus a LINEAR effect on `vc` in the centered deviation, `1 + 0.774 * (BSA_BASE - 1.84)`; baseline BSA displaced body weight in that paper's covariate screen and, because InO is dosed per m^2, the retained effect supports BSA-based dosing).
 - **Notes:** Specific scope because the BCOV/DCOV split is a paper-defined modelling choice (Wahlby 2004 demonstrated that BBSA was the relevant predictor for gentamicin V1 because delta-BSA was uninformative). Garrett 2019 ratifies the same baseline-BSA column with consistent semantics in a second, unrelated therapeutic area (oncology ADC popPK), and is a reminder that the functional form attached to this covariate is not always a power model -- read the source equation rather than assuming `(BSA_BASE / ref)^theta`. Promote to `general` if a third paper ratifies it.
 
+### BSA_AFFECTED_PCT (**canonical for baseline percentage of body surface area affected by a skin disease**)
+- **Description:** Per-subject baseline percentage of total body surface area affected by a skin disease (psoriatic plaque, atopic-dermatitis lesion, vitiligo, burn). Time-fixed baseline value from the screening / baseline skin assessment. An extent-of-disease measure, not a body-size measure.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(BSA_AFFECTED_PCT / <ref>)^exponent`. Reference value observed: 31% (`Li_2022_gumokimab.R`, Li 2022 Eq 7).
+- **Source aliases:**
+  - `BSA` / `BSA (%)` / "body surface area (BSA) involvement" -- Li 2022 gumokimab (AK111) population PK/PD; used in `Li_2022_gumokimab.R`.
+  - `TBSA` (total body surface area burned) -- the burn-literature form of the same quantity.
+- **Example models:** `Li_2022_gumokimab.R` (power exponent -0.572 on kout, the first-order rate of psoriatic plaque loss in the PASI indirect-response model, normalized to 31%; cohort mean 33.3%, SD 14.7%, in Chinese adults with moderate-to-severe plaque psoriasis).
+- **Notes:** NOT body surface area in m^2: papers in dermatology routinely abbreviate the affected percentage as "BSA", which collides with the canonical `BSA` (m^2) and `BSA_BASE`. Read the units in the source's demographics table before mapping a "BSA" column. Named without a `_BL` suffix by analogy with `BMBLAST_PCT` (a per-subject baseline percentage); a model needing a time-varying affected percentage should propose a separate column. Scope general because the same quantity recurs across skin diseases and burns.
+
 ### BLOOD_GROUP_O (**canonical for ABO blood group O indicator**)
 - **Description:** 1 = subject has ABO blood group O (either O-positive or O-negative Rh subtype); 0 = subject has ABO blood group A, B, or AB (non-O). Time-fixed per subject. Enters factor VIII (FVIII) and von Willebrand factor (VWF) population PK models as a surrogate for baseline VWF plasma concentration: blood group O individuals have ~25% lower circulating VWF than non-O individuals due to accelerated VWF clearance by the ASGR / CLEC4M receptor system (VWF's ABH glycan antigens are recognized differently by clearance receptors depending on the ABO glycosyltransferase phenotype). Because VWF binds and stabilizes circulating FVIII, lower VWF in blood group O individuals translates to faster FVIII clearance.
 - **Units:** (binary)

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Singkham 2022 rivaroxaban ([doi:10.3390/pharmaceutics14081744](https://doi.org/10.3390/pharmaceutics14081744)) -- Thai adults with non-valvular atrial fibrillation.
+- Add Li 2022 gumokimab (AK111) PK/PASI ([doi:10.3389/fphar.2022.966176](https://doi.org/10.3389/fphar.2022.966176)) -- Chinese adults with moderate-to-severe plaque psoriasis (ratifies the new `BSA_AFFECTED_PCT` covariate canonical).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

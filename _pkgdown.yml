@@ -2858,6 +2858,8 @@ navbar:
         href: articles/Li_2023_granisetron.html
       - text: "Guanfacine (Li 2018)"
         href: articles/Li_2018_guanfacine.html
+      - text: "Gumokimab (Li 2022)"
+        href: articles/Li_2022_gumokimab.html
       - text: "Guselkumab (Chen 2022)"
         href: articles/Chen_2022_guselkumab.html
       - text: "Guselkumab (Yao 2018)"
@@ -8624,6 +8626,7 @@ articles:
   - articles/Li_2021_vancomycin
   - articles/Li_2021_vancomycin_renal_function
   - articles/Li_2021_voriconazole
+  - articles/Li_2022_gumokimab
   - articles/Li_2023_TQB3203
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
