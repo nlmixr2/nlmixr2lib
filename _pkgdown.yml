@@ -186,6 +186,8 @@ navbar:
         href: articles/Martinez_2019_alirocumab.html
       - text: "Alirocumab (Nicolas 2019)"
         href: articles/Nicolas_2019_alirocumab.html
+      - text: "Alirocumab (Nolain 2022)"
+        href: articles/Nolain_2022_alirocumab.html
       - text: "Alisertib (Zhou 2018)"
         href: articles/Zhou_2018_alisertib.html
       - text: "Alisertib diarrhea (Zhou 2018)"
@@ -8551,6 +8553,7 @@ articles:
   - articles/Niu_2017_veliparib
   - articles/Niu_2020_caspofungin
   - articles/Noe_1996_factor_viii
+  - articles/Nolain_2022_alirocumab
   - articles/Nonoshita_2020_doripenem
   - articles/Novakovic_2017_cladribine
   - articles/Nyangwa_2026_pretomanid

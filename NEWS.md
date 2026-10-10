@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Nolain 2022 alirocumab, PCSK9 and LDL-C TMDD-QSS PK/PD ([doi:10.1007/s13318-022-00787-4](https://doi.org/10.1007/s13318-022-00787-4)) -- healthy volunteers and adults with hypercholesterolaemia.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.
