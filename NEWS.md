@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van Eijk 2022 oral paclitaxel with ritonavir and thrombospondin-1 ([doi:10.1007/s00280-022-04445-z](https://doi.org/10.1007/s00280-022-04445-z)) -- adult cancer patients taking oral paclitaxel drinking solution, ModraPac capsule or tablet boosted with ritonavir (adds the `FORM_RTV_TABLET` covariate canonical).
+- Add Ji 2022 pemigatinib ([doi:10.1002/cpdd.1038](https://doi.org/10.1002/cpdd.1038)) -- adults with advanced malignancies including cholangiocarcinoma.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

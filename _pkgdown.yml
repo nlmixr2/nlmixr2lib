@@ -4824,6 +4824,8 @@ navbar:
         href: articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp.html
       - text: "Pemigatinib (Gong 2023)"
         href: articles/Gong_2023_pemigatinib.html
+      - text: "Pemigatinib (Ji 2022)"
+        href: articles/Ji_2022_pemigatinib.html
       - text: "Pemigatinib creatinine (Gong 2023)"
         href: articles/Gong_2023_pemigatinib.html
       - text: "Pemigatinib phosphate (Gong 2023)"
@@ -8228,6 +8230,7 @@ articles:
   - articles/Jermain_2020_ivermectin_pbpk
   - articles/Ji_2017_vancomycin
   - articles/Ji_2018_tacrolimus
+  - articles/Ji_2022_pemigatinib
   - articles/Ji_2025_TDI01
   - articles/Jia_2015_unfractionatedHeparin
   - articles/Jia_2025_tak_071
