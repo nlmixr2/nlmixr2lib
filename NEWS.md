@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chauzy 2022 ceftaroline fosamil, ceftaroline and ceftaroline M-1 ([doi:10.1093/jac/dkac299](https://doi.org/10.1093/jac/dkac299)) -- ventilated ICU adults with early-onset pneumonia and augmented renal clearance.
+- Add Nolain 2022 alirocumab, PCSK9 and LDL-C TMDD-QSS PK/PD ([doi:10.1007/s13318-022-00787-4](https://doi.org/10.1007/s13318-022-00787-4)) -- healthy volunteers and adults with hypercholesterolaemia.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
