@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Selig 2022 piperacillin and tazobactam aggregate-data PK ([doi:10.1111/jcpt.13657](https://doi.org/10.1111/jcpt.13657)) -- critically ill adults on continuous kidney replacement therapy (published study arms plus Military Health System CVVH patients).
+- Add Wei 2022 vancomycin ([doi:10.3389/fphar.2022.1005791](https://doi.org/10.3389/fphar.2022.1005791)) -- Chinese adults after neurosurgery.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

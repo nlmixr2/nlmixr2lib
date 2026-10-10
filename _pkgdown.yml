@@ -6918,6 +6918,8 @@ navbar:
         href: articles/Takada_2025_vancomycin.html
       - text: "Vancomycin (Tseng 2026)"
         href: articles/Tseng_2026_vancomycin.html
+      - text: "Vancomycin (Wei 2022)"
+        href: articles/Wei_2022_vancomycin.html
       - text: "Vancomycin (Yoon 2023)"
         href: articles/Yoon_2023_vancomycin.html
       - text: "Vancomycin (Yu 2023)"
@@ -9726,6 +9728,7 @@ articles:
   - articles/Weatherley_2018_fosdagrocorat
   - articles/Weber_1993_remikiren
   - articles/Weber_2015_fluticasone_inhaled
+  - articles/Wei_2022_vancomycin
   - articles/Wei_2025_methotrexate
   - articles/Wei_2026_enrofloxacin_cefquinome
   - articles/Wen_2016_enrofloxacin_Pmultocida
