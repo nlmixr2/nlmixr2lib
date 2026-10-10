@@ -306,6 +306,8 @@ navbar:
         href: articles/Stott_2018_amphotericinB_deoxycholate.html
       - text: "AmphotericinB liposomal (Hong 2006)"
         href: articles/Hong_2006_amphotericinB_liposomal.html
+      - text: "AmphotericinB liposomal (Stott 2022)"
+        href: articles/Stott_2022_amphotericinB_liposomal.html
       - text: "AmphotericinB liposomal calbicans (Beredaki 2024)"
         href: articles/Beredaki_2024_amphotericinB_liposomal.html
       - text: "AmphotericinB liposomal cauris24h (Beredaki 2024)"
@@ -8971,6 +8973,7 @@ articles:
   - articles/Stoschus_2025_phenobarbital
   - articles/Stott_2018_amphotericinB_deoxycholate
   - articles/Stott_2018_fluconazole
+  - articles/Stott_2022_amphotericinB_liposomal
   - articles/Stott_2023_flucytosine
   - articles/Straube_2025_TMDD_high_vs_low_affinity
   - articles/Stricker_2013_aminocaproicAcid
