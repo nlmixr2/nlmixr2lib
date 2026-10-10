@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sima 2022 ciprofloxacin and desethylene ciprofloxacin ([doi:10.3390/pharmaceutics14081627](https://doi.org/10.3390/pharmaceutics14081627)) -- critically ill adults on intravenous ciprofloxacin.
+- Add Singkham 2022 rivaroxaban ([doi:10.3390/pharmaceutics14081744](https://doi.org/10.3390/pharmaceutics14081744)) -- Thai adults with non-valvular atrial fibrillation.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
