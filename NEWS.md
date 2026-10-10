@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Courlet 2022 palbociclib PK and neutropenia ([doi:10.3390/pharmaceutics14071317](https://doi.org/10.3390/pharmaceutics14071317)) -- women with advanced breast cancer treated in routine care.
+- Add Smith 2022 benzo[a]pyrene and dibenzo[def,p]chrysene competitive in vitro metabolism ([doi:10.3390/ijerph19148266](https://doi.org/10.3390/ijerph19148266)) -- pooled human liver microsomes.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
