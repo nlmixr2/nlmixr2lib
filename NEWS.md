@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hayato 2022 lecanemab population PK and amyloid PET SUVr, plasma Abeta42/40 and p-tau181 PK/PD models ([doi:10.1002/psp4.12862](https://doi.org/10.1002/psp4.12862)) -- adults with early Alzheimer's disease.
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.

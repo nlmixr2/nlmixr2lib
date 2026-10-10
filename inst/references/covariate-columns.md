@@ -17014,7 +17014,8 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0 (Process A; relative bioavailability fixed at 1).
 - **Source aliases:**
   - `FORM` -- used in `Majid_2024_lecanemab.R` (Majid 2024 supplement Text S1 `$INPUT`; the footnote under the printed covariate equations defines it as "FORM, 0 (Process A) or 1 (Process B)").
-- **Example models:** `Majid_2024_lecanemab.R` (relative bioavailability ratio 0.904 on the intravenous dose, i.e. 9.6% lower exposure under Process B, applied as `ratio^FORM_LEC_PROCESSB`).
+  - `FORM` -- used in `Hayato_2022_lecanemab.R` (Hayato 2022 supplement Model S1 `$INPUT`; Table 1 footnote "FORM, 0 (Process A) or 1 (Process B)").
+- **Example models:** `Majid_2024_lecanemab.R` (relative bioavailability ratio 0.904 on the intravenous dose, i.e. 9.6% lower exposure under Process B, applied as `ratio^FORM_LEC_PROCESSB`); `Hayato_2022_lecanemab.R` and its PK/PD companions `Hayato_2022_lecanemab_suvr.R`, `Hayato_2022_lecanemab_abeta4240.R`, `Hayato_2022_lecanemab_ptau181.R` (ratio 0.998 with 34.2% IIV on Process B doses only, from the study 201 OLE; Hayato 2022 Table 1 and supplement Model S1 `$PK` `F1=1; IF (FORM.EQ.1) F1=THETA(11)*EXP(ETA(4))`).
 - **Notes:** The `LEC` drug abbreviation matches the existing `CSS_LEC` and `AUC_LEC` entries. This is a manufacturing-process comparability indicator in the sense of ICH Q5E, so it sits in the same family as `FORM_LEB_NS0` / `FORM_LEB_CHO_PHASE2` (lebrikizumab cell line) and `FORM_SAR_DP2` (sarilumab drug-product version) rather than describing a dosage form. One structural caution for anyone re-using this column: in the founding model the between-subject variability on relative bioavailability applies to Process B records **only** -- Majid 2024 supplement Text S1 `$PK` codes `F1=1; IF (FORM.EQ.1) F1=THETA(5)*EXP(ETA(4))`, so Process A bioavailability is exactly 1 with no variability, and putting the eta on a shared anchor instead would change the model. Set to 0 to simulate the earlier drug product and to 1 for the commercial material used in Clarity AD.
 
 ### FORM_NALIRI_PREVSITE (**canonical for the liposomal irinotecan previous-manufacturing-site drug-product indicator**)
@@ -18693,6 +18694,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `Study` -- the covariate label used in Bhagunde 2026 Table 1 and Table S5; the source encodes the phase 2 cohort as the 1-level ("Study 201 on baseline GFAP").
 - **Example models:** `Bhagunde_2026_lecanemab_gfap.R` (log-linear effect `exp(0.388 * STUDY_LEC201)` on baseline plasma GFAP).
 - **Notes:** In the founding model the effect is an assay batch effect rather than a biological one -- Bhagunde 2026 Section 3.2.3 states "The significance of the study effect was likely due to the assay batch effect since GFAP samples from Study 201 and Clarity AD were analyzed at different times." Named `STUDY_LEC201` rather than a bare `STUDY_201` because "Study 201" is a generic sponsor-internal protocol number that would collide across drug programmes; the `LEC` token pins it to the lecanemab programme, following the drug-token convention of `STUDY_DORZA_EARLY`, `STUDY_SULDUR_PHASE2` and `STUDY_PEGCET_PHASE3`. The companion Bhagunde 2026 Abeta42/40 and p-tau181 models pool the same two studies but did not retain a study effect, so they do not carry this covariate.
+
+### STUDY_LEC101 (**canonical for lecanemab phase 1 Study 101 cohort indicator**)
+- **Description:** 1 = subject enrolled in the lecanemab phase 1 Study 101 (NCT01230853; single ascending doses 0.1-15 mg/kg and multiple ascending doses 0.3-10 mg/kg intravenously in mild-to-moderate Alzheimer's disease); 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. In the founding model the reference is lecanemab Study 201 (both `STUDY_LEC101` and `STUDY_LEC104` = 0).
+- **Source aliases:**
+  - `STUD` -- the study column in Hayato 2022 supplement Model S1 (`$ERROR` selects `ERR(1)` when neither `STUD.EQ.104` nor `STUD.EQ.201`).
+- **Example models:** `Hayato_2022_lecanemab.R` (selects the study 101 proportional residual SD 14.0% instead of the study 201 value 30.3%; Hayato 2022 Table 1).
+- **Notes:** Sibling of `STUDY_LEC104` and `STUDY_LEC201`; the `LEC` token pins the generic sponsor protocol number to the lecanemab programme (see `STUDY_LEC201`). Note the different reference category from `STUDY_LEC201`, whose 0-level is Clarity AD / Study 301: the Hayato 2022 PK pool contains studies 101, 104 and 201 only, so there Study 201 is the reference and is encoded by both 101/104 indicators being 0.
+
+### STUDY_LEC104 (**canonical for lecanemab phase 1 Study 104 cohort indicator**)
+- **Description:** 1 = subject enrolled in the lecanemab phase 1 Study 104 (NCT02094729; 2.5, 5 and 10 mg/kg intravenously every 4 weeks for 5 doses in MCI due to AD or mild AD); 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. In the founding model the reference is lecanemab Study 201 (both `STUDY_LEC101` and `STUDY_LEC104` = 0).
+- **Source aliases:**
+  - `STUD` -- the study column in Hayato 2022 supplement Model S1 (`$ERROR`: `IF (STUD.EQ.104) Y = W + W*ERR(2)`).
+- **Example models:** `Hayato_2022_lecanemab.R` (selects the study 104 proportional residual SD 19.7% instead of the study 201 value 30.3%; Hayato 2022 Table 1).
+- **Notes:** Sibling of `STUDY_LEC101` and `STUDY_LEC201`; see `STUDY_LEC101` for the reference-category caution.
 
 ### STUDY_ASP8232_PHASE2 (**canonical for Snelder 2020 ASP8232 phase 2 study cohort indicator in the pooled TMDD PK-PD analysis**)
 - **Description:** 1 = subject enrolled in one of the two phase 2 studies of the Snelder 2020 pooled ASP8232 TMDD PK-PD analysis (VIDI study, NCT02302079, diabetic macular edema; or ALBUM study 8232-CL-0004, NCT02358096, diabetic kidney disease); 0 = subject enrolled in one of the two phase 1 studies (8232-CL-0001 first-in-human healthy volunteers; 8232-CL-0002 renal impairment / T2DM-CKD, NCT02218099). Used to switch the log-additive residual-error magnitude on ASP8232 plasma concentrations and on VAP-1 plasma activity between the phase 1 studies (reference) and the phase 2 studies (paper's estimated multiplicative factor 1.88 relative to phase 1).

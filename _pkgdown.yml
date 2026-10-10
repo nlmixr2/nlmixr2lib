@@ -3190,16 +3190,24 @@ navbar:
         href: articles/Zhu_2017_lebrikizumab.html
       - text: "Lecanemab (Cao 2026)"
         href: articles/Cao_2026_lecanemab.html
+      - text: "Lecanemab (Hayato 2022)"
+        href: articles/Hayato_2022_lecanemab.html
       - text: "Lecanemab (Majid 2024)"
         href: articles/Majid_2024_lecanemab.html
       - text: "Lecanemab abeta4240 (Bhagunde 2026)"
         href: articles/Bhagunde_2026_lecanemab_biomarkers.html
+      - text: "Lecanemab abeta4240 (Hayato 2022)"
+        href: articles/Hayato_2022_lecanemab.html
       - text: "Lecanemab ariae (Majid 2024)"
         href: articles/Majid_2024_lecanemab.html
       - text: "Lecanemab gfap (Bhagunde 2026)"
         href: articles/Bhagunde_2026_lecanemab_biomarkers.html
       - text: "Lecanemab ptau181 (Bhagunde 2026)"
         href: articles/Bhagunde_2026_lecanemab_biomarkers.html
+      - text: "Lecanemab ptau181 (Hayato 2022)"
+        href: articles/Hayato_2022_lecanemab.html
+      - text: "Lecanemab suvr (Hayato 2022)"
+        href: articles/Hayato_2022_lecanemab.html
       - text: "Lefamulin higher ppb (Bian 2024)"
         href: articles/Bian_2024_lefamulin.html
       - text: "Lefamulin original ppb (Bian 2024)"
@@ -7797,6 +7805,7 @@ articles:
   - articles/Hawwa_2013_ranitidine
   - articles/Hayashi_1998_epoetinBeta
   - articles/Hayashi_2007_omalizumab
+  - articles/Hayato_2022_lecanemab
   - articles/Haynes_2025_cephalexin
   - articles/Hazendonk_2016_factor_viii
   - articles/He_2012_lamotrigine
