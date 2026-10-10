@@ -1606,6 +1606,8 @@ navbar:
         href: articles/Benavent_2025_dalbavancin.html
       - text: "Dalbavancin (Carrothers 2020)"
         href: articles/Carrothers_2020_dalbavancin.html
+      - text: "Dalbavancin (Cojutti 2022)"
+        href: articles/Cojutti_2022_dalbavancin.html
       - text: "Dalbavancin (Cojutti 2024)"
         href: articles/Cojutti_2024_dalbavancin.html
       - text: "Dalbavancin nlls (Giacometti 2025)"
@@ -7709,6 +7711,7 @@ articles:
   - articles/Cojutti_2020_meropenem
   - articles/Cojutti_2021_isavuconazole
   - articles/Cojutti_2021_meropenem
+  - articles/Cojutti_2022_dalbavancin
   - articles/Cojutti_2023_ceftobiprole
   - articles/Cojutti_2024_dalbavancin
   - articles/Colin_2014_moxifloxacin
