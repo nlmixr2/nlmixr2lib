@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cai 2022 polymyxin B ([doi:10.3389/fphar.2022.1019411](https://doi.org/10.3389/fphar.2022.1019411)) -- Chinese adult lung transplant recipients with carbapenem-resistant Gram-negative pneumonia.
+- Add Wei 2022 mycophenolic acid ([doi:10.3389/fphar.2022.1002628](https://doi.org/10.3389/fphar.2022.1002628)) -- Chinese children early after liver transplantation taking mycophenolate mofetil dispersible tablets (registers `DOSE_MMF_MGKG`).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
