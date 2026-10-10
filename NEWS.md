@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nguyen 2022 cemiplimab ([doi:10.1002/psp4.12855](https://doi.org/10.1002/psp4.12855)) -- adults with CSCC, BCC, NSCLC and other advanced solid tumors, externally validated in recurrent or metastatic cervical cancer (registers `TUMTP_CSCC` and `TUMTP_BCC`).
+- Add White 2022 alfaxalone ([doi:10.1002/prp2.1031](https://doi.org/10.1002/prp2.1031)) -- adult male and female Lewis and Sprague-Dawley rats (two population fits).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
