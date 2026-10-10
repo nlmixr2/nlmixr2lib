@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Duong 2022 gentamicin, four re-estimated models (Rea 2008, Bos 2019, and both Hodiamont 2017 structures) ([doi:10.3390/pharmaceutics14071426](https://doi.org/10.3390/pharmaceutics14071426)) -- critically ill adult ICU patients in Quebec.
+- Add Fuhr 2022 felodipine diastolic blood pressure and heart rate PD ([doi:10.3390/pharmaceutics14071474](https://doi.org/10.3390/pharmaceutics14071474)) -- healthy volunteers and hypertensive patients.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
