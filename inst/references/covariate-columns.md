@@ -20654,6 +20654,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Wang_2020_delamanid.R` (selects the trial-213 additive residual SD, 44.2 ng/mL vs 1.55 ng/mL in the other trials).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family, named with the full Otsuka protocol number because the short form `213` is not unique across sponsors.
 
+### FORM_IMEGLIMIN_CONVENTIONAL_TABLET (**canonical for imeglimin conventional (non-optimised) tablet formulation indicator**)
+- **Description:** 1 = imeglimin conventional tablet; 0 = capsule or optimised tablet. Used with `FORM_CAPSULE`; the reference formulation (both indicators 0) is the optimised tablet of the Japanese phase IIb / III studies.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (capsule or optimised tablet).
+- **Source aliases:** derived from the study formulation in Tomita 2022 Table 1 (conventional tablet: single/multiple ascending dose study and Western phase IIb).
+- **Example models:** `Tomita_2022_imeglimin.R` (fractional effects on lag time, +0.719, and, shared with the capsule, on ka, +0.298).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. Mutually exclusive with `FORM_CAPSULE` in the Tomita 2022 dataset.
+
 ## Occasion / period (IOV)
 
 ### OCC (**canonical for the integer-valued occasion / period column**)
