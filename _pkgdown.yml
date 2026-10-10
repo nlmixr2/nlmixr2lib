@@ -4138,6 +4138,8 @@ navbar:
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Midazolam (McCann 2025)"
         href: articles/McCann_2025_midazolam.html
+      - text: "Midazolam (Nassar 2022)"
+        href: articles/Nassar_2022_midazolam.html
       - text: "Midazolam (Swart 2004)"
         href: articles/Swart_2004_lorazepam_midazolam.html
       - text: "Midazolam (Voller 2019)"
@@ -8974,7 +8976,7 @@ articles:
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
   - articles/NassarSheikhRashid_2024_adalimumab
-  - articles/Nasser_2021_viloxazine
+  - articles/Nassar_2022_midazolam
   - articles/Nath_2007_melphalan
   - articles/Nath_2010_melphalan
   - articles/Nava_2018_busulfan
