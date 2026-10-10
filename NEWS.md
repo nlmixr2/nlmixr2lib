@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Shen 2022 valproic acid ([doi:10.3389/fphar.2022.1037239](https://doi.org/10.3389/fphar.2022.1037239)) -- Chinese children with epilepsy, with an ABCB1 rs3789243 genotype effect on clearance (registers `SNP_ABCB1_RS3789243_AG` / `_GG`).
+
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
 - Add Leil 2021 rheumatoid arthritis DAS28 MBMA ([doi:10.1002/cpt.2023](https://doi.org/10.1002/cpt.2023)) -- trial-arm means from 130 randomized trials of seven approved RA drugs in adults with active RA on background csDMARDs.

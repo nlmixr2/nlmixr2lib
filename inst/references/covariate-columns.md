@@ -14676,6 +14676,30 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Yao_2025_flurbiprofen_s.R` (exponential effect on apparent plasma clearance of S(+)-flurbiprofen with `e_snp_abcb1_rs1045642_gg_cl = 0.19`, i.e. GG subjects have about 21% higher apparent CL than the AA reference group).
 - **Notes:** Always used together with `SNP_ABCB1_RS1045642_GA`; a model that references one without the other has mis-specified the reference category. See the `SNP_ABCB1_RS1045642_GA` Notes for the unresolved wild-type / variant orientation and for why this pair must not be pooled with the carrier indicator `SNP_ABCB1_RS1045642`. In Yao 2025 the genotype effects are non-monotonic (GA markedly reduces apparent CL, GG slightly increases it, relative to AA); the source reports this without mechanistic explanation beyond noting that P-glycoprotein polymorphisms modulate transport, and the AA reference group contained only 12 subjects.
 
+### SNP_ABCB1_RS3789243_AG (**canonical for ABCB1 rs3789243 heterozygous AG genotype indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* rs3789243 single-nucleotide polymorphism (intronic; *ABCB1* encodes P-glycoprotein / MDR1). 1 = subject's reported genotype is AG (heterozygous); 0 = otherwise. Paired with `SNP_ABCB1_RS3789243_GG`; both indicators are 0 for the AA reference group. Time-fixed per subject (germline genotype). Named by the reported genotype letters, following the `SNP_ABCB1_RS1045642_GA` / `_GG` pattern.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with `SNP_ABCB1_RS3789243_GG` = 0, i.e. the AA genotype group (n = 14 of 103 in Shen 2022), which the founding source explicitly calls the wild type.
+- **Source aliases:**
+  - `ABCB1 AG` -- the Shen 2022 equation 1 indicator name ("ABCB1 AG = 1, GG = 0 for patients with heterozygous AG genotype").
+  - `ABCB1 rs3789243 AG` -- the Shen 2022 Table 4 row label.
+- **Example models:** `Shen_2022_valproic_acid.R` (multiplicative factor on apparent clearance of valproic acid: `cl = exp(lcl + etalcl) * (AGE/5)^e_age_cl * e_snp_abcb1_rs3789243_ag_cl^SNP_ABCB1_RS3789243_AG * e_snp_abcb1_rs3789243_gg_cl^SNP_ABCB1_RS3789243_GG` with `e_snp_abcb1_rs3789243_ag_cl = 0.953`, i.e. AG subjects have 4.7% lower CL/F than the AA reference group).
+- **Notes:** Always used together with `SNP_ABCB1_RS3789243_GG`; a model that references one without the other has mis-specified the reference category. The genotype-letter suffix (rather than `_HET` / `_HOM`) keeps the encoding identical to the source's coding and makes the reference group explicit. In Shen 2022 the genotype effects are non-monotonic (AG slightly lower, GG higher apparent CL than AA); the authors note the opposite directions without a mechanistic explanation.
+
+### SNP_ABCB1_RS3789243_GG (**canonical for ABCB1 rs3789243 homozygous GG genotype indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* rs3789243 single-nucleotide polymorphism. 1 = subject's reported genotype is GG (homozygous for the G allele); 0 = otherwise. Paired with `SNP_ABCB1_RS3789243_AG`; both indicators are 0 for the AA reference (wild-type) group. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with `SNP_ABCB1_RS3789243_AG` = 0, i.e. the AA genotype group (n = 14 of 103 in Shen 2022).
+- **Source aliases:**
+  - `ABCB1 GG` -- the Shen 2022 equation 1 indicator name ("ABCB1 GG = 1, AG = 0 for patients with homozygous GG genotype").
+  - `ABCB1 rs3789243 GG` -- the Shen 2022 Table 4 row label.
+- **Example models:** `Shen_2022_valproic_acid.R` (multiplicative factor on apparent clearance of valproic acid with `e_snp_abcb1_rs3789243_gg_cl = 1.08`, i.e. GG subjects have 8% higher CL/F than the AA reference group).
+- **Notes:** See the `SNP_ABCB1_RS3789243_AG` Notes. GG was the second most common genotype in the founding cohort (39 of 103; AG 50), so the "wild-type" AA reference is the minority homozygote.
+
 ### SNP_POR_RS1057868_GA (**canonical for POR rs1057868 (POR*28) heterozygous GA genotype indicator**)
 - **Description:** Binary genotype indicator for the *POR* rs1057868 single-nucleotide polymorphism (POR*28; conventionally written c.1508C>T, p.Ala503Val; encodes cytochrome P450 oxidoreductase, the flavoprotein that supplies electrons to microsomal CYP enzymes). 1 = subject's reported genotype is GA (heterozygous); 0 = otherwise. Paired with `SNP_POR_RS1057868_GG`; both indicators are 0 for the AA reference group. Time-fixed per subject (germline genotype). Named by the reported genotype letters rather than by wild-type / variant status (see Notes).
 - **Units:** (binary)

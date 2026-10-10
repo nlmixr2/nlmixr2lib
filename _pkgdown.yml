@@ -6440,6 +6440,8 @@ navbar:
         href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid (Ogusu 2014)"
         href: articles/Ogusu_2014_valproic_acid.html
+      - text: "Valproic acid (Shen 2022)"
+        href: articles/Shen_2022_valproic_acid.html
       - text: "Valproic acid (Wang 2024)"
         href: articles/Wang_2024_valproic_acid.html
       - text: "Valproic acid (Zhang 2024)"
@@ -8868,6 +8870,7 @@ articles:
   - articles/Shemesh_2019_atezolizumab
   - articles/Shemesh_2020_atezolizumab_tmb
   - articles/Shen_2013_belatacept
+  - articles/Shen_2022_valproic_acid
   - articles/Shen_2024_vancomycin
   - articles/Shen_2025_voriconazole
   - articles/Shen_2026_shikimicAcid
