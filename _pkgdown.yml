@@ -2764,6 +2764,8 @@ navbar:
         href: articles/Kelman_1984_gentamicin.html
       - text: "Gentamicin teigen (Lee 2024)"
         href: articles/Lee_2024_gentamicin.html
+      - text: "Gepotidacin (Nguyen 2022)"
+        href: articles/Nguyen_2022_gepotidacin.html
       - text: "Gevokizumab (Cao 2013)"
         href: articles/Cao_2013_gevokizumab.html
       - text: "Gevokizumab (Karakitsios 2024)"
@@ -8803,6 +8805,7 @@ articles:
   - articles/Nguyen_2019_cabozantinib
   - articles/Nguyen_2020_myostatin_activin_dmd_qsp
   - articles/Nguyen_2021_ceftazidime_imipenem
+  - articles/Nguyen_2022_gepotidacin
   - articles/Nguyen_2025_valbenazine_huntington_chorea
   - articles/Nguyen_2026_dupilumab
   - articles/Nguyen_2026_levofloxacin

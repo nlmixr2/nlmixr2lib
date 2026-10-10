@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2022 burosumab PK and serum phosphorus ([doi:10.1002/jcph.1950](https://doi.org/10.1002/jcph.1950)) -- adults and children aged 1-12 years with X-linked hypophosphatemia (ratifies the new `serum_phosphorus` PD output).
+- Add Nguyen 2022 gepotidacin ([doi:10.1111/bcp.14996](https://doi.org/10.1111/bcp.14996)) -- healthy adults and adults with acute bacterial skin and skin structure infections, with a paediatric maturation function on clearance for dose selection in plague.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
