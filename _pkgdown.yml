@@ -4376,6 +4376,8 @@ navbar:
         href: articles/Chen_2014_nab_paclitaxel.html
       - text: "Nadroparin (Chen 2024)"
         href: articles/Chen_2024_nadroparin.html
+      - text: "Nafamostat (Jeong 2022)"
+        href: articles/Jeong_2022_nafamostat.html
       - text: "Nalbuphine (Nie 2023)"
         href: articles/Nie_2023_nalbuphine.html
       - text: "Naldemedine (Kubota 2018)"
@@ -8421,6 +8423,7 @@ articles:
   - articles/Jeong_2021_cefaclor
   - articles/Jeong_2021_fexuprazan
   - articles/Jeong_2021_methotrexate_nanoformulations
+  - articles/Jeong_2022_nafamostat
   - articles/Jeong_2022_torsemide
   - articles/Jeong_2023_rabeprazole
   - articles/Jeong_2025_imc002
