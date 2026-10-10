@@ -3632,6 +3632,8 @@ navbar:
         href: articles/Sun_2025_maribavir.html
       - text: "Maribavir vomiting (Sun 2025)"
         href: articles/Sun_2025_maribavir.html
+      - text: "MarzeptacogAlfa (Faraj 2022)"
+        href: articles/Faraj_2022_marzeptacogAlfa.html
       - text: "Matrine pig pbpk (Yang 2025)"
         href: articles/Yang_2025_matrine_pig_pbpk.html
       - text: "Matuzumab (Kuester 2008)"
@@ -7575,6 +7577,7 @@ articles:
   - articles/Fang_2010_etanercept
   - articles/Fang_2013_pramlintide
   - articles/Fanta_2007_ciclosporin
+  - articles/Faraj_2022_marzeptacogAlfa
   - articles/Farrell_2012_farletuzumab
   - articles/Farrell_2013_conestatAlfa
   - articles/Farrell_2014_eltrombopag
