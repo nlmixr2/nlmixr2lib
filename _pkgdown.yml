@@ -2426,6 +2426,24 @@ navbar:
         href: articles/Arshad_2020_fluorouracil.html
       - text: "Fluorouracil (Yamada 2025)"
         href: articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab.html
+      - text: "Fluorouracil colon26 daily mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
+      - text: "Fluorouracil colon38 weekly mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
+      - text: "Fluorouracil ht29 biw mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
+      - text: "Fluorouracil ht29 tiw mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
+      - text: "Fluorouracil ls174t resistant mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
+      - text: "Fluorouracil ls174t sensitive mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
+      - text: "Fluorouracil sw620 biw mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
+      - text: "Fluorouracil sw620 daily mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
+      - text: "Fluorouracil sw620 qod mouse qsp (Ma 2022)"
+        href: articles/Ma_2022_fluorouracil_qsp.html
       - text: "Fluoxetine (Han 2025)"
         href: articles/Han_2025_fluoxetine.html
       - text: "Flurbiprofen (Kumpulainen 2010)"
@@ -8347,6 +8365,7 @@ articles:
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Ma_2020_vancomycin
+  - articles/Ma_2022_fluorouracil_qsp
   - articles/Ma_2023_difloxacin_crucianCarp
   - articles/Ma_2024_vancomycin
   - articles/Ma_2026_colistinSulfate

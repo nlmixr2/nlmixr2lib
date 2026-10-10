@@ -1,0 +1,676 @@
+---
+title: "5-Fluorouracil colon-cancer QSP model (Ma 2022)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{5-Fluorouracil colon-cancer QSP model (Ma 2022)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Ma, Almasan and Gurkan-Cavusoglu (2022) built an integrated mechanistic
+PK / PD model of 5-fluorouracil (5-FU) in colon cancer from three sub-models
+fitted in sequence by Bayesian MCMC to published mean data:
+
+1. a two-compartment plasma **PK** model with Michaelis-Menten elimination;
+2. a **cellular** model of 5-FU in tumour interstitial fluid, uptake into and
+   efflux out of tumour cells, anabolism to fluoronucleotides, incorporation
+   into RNA and DNA with delayed excision, FdUMP binding to thymidylate
+   synthase (TS) in competition with dUMP, the resulting dNTP-pool imbalance
+   with salvage feedback, and delayed DNA double-strand-break (DSB) induction;
+3. a **tumour growth inhibition (TGI)** model in which the anabolites slow
+   logistic growth and the DSB excess over a drug-free baseline turns
+   proliferating cells into damaged cells that die after a fixed life span.
+
+The PK and cellular parameters (Table 1) are shared, and the TGI layer was
+re-estimated for each of nine xenograft datasets (Table 3 and Table 4). The
+library therefore carries **nine model files**, one per TGI model, each with
+the full shared PK and cellular layers.
+
+```{r models}
+models <- tibble::tribble(
+  ~n, ~file,                                             ~cell,                 ~regimen,                                  ~mgkg, ~ii_day, ~ndose, ~dur_day, ~tv0,
+  1L, "Ma_2022_fluorouracil_colon38_weekly_mouse_qsp",   "Colon 38",            "100 mg/kg weekly x 4",                    100,   7,       4L,     45,       125,
+  2L, "Ma_2022_fluorouracil_colon26_daily_mouse_qsp",    "Colon 26",            "50 mg/kg daily x 4",                      50,    1,       4L,     7,        125,
+  3L, "Ma_2022_fluorouracil_ht29_biw_mouse_qsp",         "HT29",                "20 mg/kg twice a week x 3 weeks",         20,    3.5,     6L,     21,       100,
+  4L, "Ma_2022_fluorouracil_ht29_tiw_mouse_qsp",         "HT29",                "20 mg/kg three times a week x 3 weeks",   20,    7 / 3,   9L,     24,       100,
+  5L, "Ma_2022_fluorouracil_sw620_daily_mouse_qsp",      "SW620",               "5 mg/kg daily x 9",                       5,     1,       9L,     9,        56.76,
+  6L, "Ma_2022_fluorouracil_sw620_biw_mouse_qsp",        "SW620",               "20 mg/kg twice a week x 3 weeks",         20,    3.5,     6L,     26,       56.5,
+  7L, "Ma_2022_fluorouracil_sw620_qod_mouse_qsp",        "SW620",               "20 mg/kg every other day x 2 weeks",      20,    2,       7L,     14,       71.3,
+  8L, "Ma_2022_fluorouracil_ls174t_sensitive_mouse_qsp", "LS174T (sensitive)",  "50 mg/kg every other day x 6",            50,    2,       6L,     15,       125,
+  9L, "Ma_2022_fluorouracil_ls174t_resistant_mouse_qsp", "LS174T (resistant)",  "50 mg/kg every other day x 6",            50,    2,       6L,     15,       125
+)
+
+# readModelDb() returns the model FUNCTION; rxode2::rxode() resolves it to
+# the rxUi whose metadata and parameter values are readable.
+ui <- lapply(setNames(models$file, models$n), \(f) rxode2::rxode(readModelDb(f)))
+```
+
+* Citation: Ma C, Almasan A, Gurkan-Cavusoglu E. Computational analysis of
+  5-fluorouracil anti-tumor activity in colon cancer using a mechanistic
+  pharmacokinetic/pharmacodynamic model. *PLoS Comput Biol*
+  2022;18(11):e1010685.
+* Article: <https://doi.org/10.1371/journal.pcbi.1010685>
+* Code and MCMC chains deposited by the authors:
+  <https://github.com/Chenhui88569/Computational-analysis-of-5-fluorouracil-anti-tumor-activity>
+  (Zenodo <https://doi.org/10.5281/zenodo.7267874>).
+
+```{r model-table, echo = FALSE}
+models |>
+  dplyr::transmute(
+    "TGI model" = n, "nlmixr2lib model" = file, "Cell line" = cell,
+    Regimen = regimen, "Initial tumour volume (mm^3)" = tv0
+  ) |>
+  knitr::kable(caption = "The nine model files contributed by Ma 2022 (Table 3).")
+```
+
+## Units and dosing
+
+Time is in **minutes** throughout, as in the paper. The plasma, interstitial
+and cellular states are concentrations, so a dose is entered as the plasma
+concentration increment it produces. The authors map 100 mg/kg to the first
+measured plasma concentration, 92.9936 ug/mL, and scale it linearly with dose
+(46.5 ug/mL at 50 mg/kg, 18.6 ug/mL at 20 mg/kg); this vignette uses
+`0.929936 * dose (mg/kg)`. The `delay()` terms need a dense ODE solver and the
+interstitial-fluid exchange is fast (k03 = 136/min), so every solve below uses
+`method = "dop853"` with a large `maxsteps`.
+
+```{r helpers}
+mgkg_to_conc <- function(mgkg) 0.929936306 * mgkg
+
+# One treated or control animal on a regimen. Observation rows use the
+# `anabolites` state as their compartment: it is one of the model's declared
+# endpoints, and every other output is returned on the same rows.
+sim_regimen <- function(file, mgkg, ii_day, ndose, tv0, times, params = NULL) {
+  ev <- rxode2::et(times)
+  if (mgkg > 0 && ndose > 1) {
+    ev <- rxode2::et(
+      amt = mgkg_to_conc(mgkg), cmt = "central",
+      ii = ii_day * 1440, addl = ndose - 1
+    ) |> rxode2::et(times)
+  } else if (mgkg > 0) {
+    ev <- rxode2::et(amt = mgkg_to_conc(mgkg), cmt = "central") |> rxode2::et(times)
+  }
+  ev <- as.data.frame(ev)
+  ev$TUM_VOL <- tv0
+  ev$cmt[ev$evid == 0] <- "anabolites"
+  rxode2::rxSolve(
+    readModelDb(file), ev,
+    params = params, method = "dop853", maxsteps = 1e7,
+    returnType = "data.frame"
+  )
+}
+```
+
+# Population
+
+There are no individual animals: every sub-model was fitted to group means
+taken from the literature (Ma 2022 Table 2 for the PK and cellular data,
+Table 3 for the tumour-volume data), so the model has no between-animal
+variability and every simulation below is deterministic.
+
+* **PK** -- C57BL/6 mice bearing Colon 38 tumours, 100 mg/kg intraperitoneal.
+* **Cellular layer** -- intracellular 5-FU and anabolites in C57BL/6 mice with
+  C38 tumours (115 mg/kg); FU-RNA and FU-DNA in BALB/c mice with Colon 26-B
+  tumours (80 mg/kg); TS-FdUMP complex and total TS in Wistar rats with
+  dimethylhydrazine-induced colon carcinoma (100 mg/kg); dUMP in BALB/c mice
+  with colon tumour 06/A (80 mg/kg); dNTP pools in L5178 lymphoma cells in
+  vitro (1 uM); DSBs in OCI-AML2 leukaemia cells in vitro (3 umol/L).
+* **TGI layer** -- nine published xenograft or syngeneic colon-tumour
+  datasets (Colon 38, Colon 26, HT29, SW620 and 5-FU-sensitive and -resistant
+  LS174T), normalised to the starting tumour volume.
+
+# Source trace
+
+| Quantity | Model variable / parameter | Source |
+|---|---|---|
+| Plasma PK (Eqs 1-3) | `central`, `peripheral1`; `lvmax`, `lkm`, `lq`, `lvc`, `lvp` | Methods 'PK model'; Table 1 'PK model' |
+| Interstitial 5-FU, uptake, efflux, anabolism (Eqs 4-6) | `isf`, `intracellular`, `anabolites`; `q_isf`, `vmax_influx`, `km_influx`, `vmax_efflux`, `km_efflux`, `k03`, `vmax_anab`, `km_anab` | Eqs 4-6; Table 1 |
+| FU-RNA, FU-DNA with delayed excision (Eqs 7-8) | `fu_rna`, `fu_dna`; `k65`, `k56`, `k06`, `gamma_rna`, `vmax_dna_in`, `km_dna_in`, `vmax_dna_out`, `km_dna_out`, `k07`, `gamma_dna`, `td_rna`, `td_dna` | Eqs 7-8; Table 1 |
+| TS-FdUMP complex, total TS, TS-dUMP, dUMP (Eqs 9-15) | `ts_fdump`, `dump`; `k95`, `k59`, `k09`, `kd_dump`, `g0_dump`, `kcat`, `k08`, `alpha_ts`, `kd_ts`, `ts0` | Eqs 9-15; Table 1 |
+| dNTP-pool imbalance and salvage (Eqs 17-19) | `nucp`, `salvage`; `k1_dntp` ... `k10_dntp`, `kb_dntp`, `ka_dntp`, `gamma_dntp` | Eqs 17-19; Table 1 |
+| DSB induction and drug-free baseline (Eqs 20-22) | `dsb`, `dsb_baseline`; `vmax_dntp`, `km_dntp`, `vmax_hr`, `km_hr`, `ki_hr`, `k0_dsb`, `gamma_dsb`, `td_dsb` | Eqs 20-22; Table 1; `km_dntp` from the deposited MCMC chain |
+| TGI (Eqs 23-28) | `cycling_cells`, `damaged_cells1`, `tumor_vol`; `td_tv`, `ic50`, `emax_damage`, `ec50_damage`, `lambda_g`, `pmax`, `lambda_d`, `gamma_tv` | Eqs 23-28; Table 4 (per model) |
+| Initial dUMP 3.878 and DSB 42.755 pmol/mg / thousand breaks | `dump(0)`, `dsb(0)`, `dsb_baseline(0)` | first (0 h) literature data points, as coded in the deposit |
+| Initial tumour volume | `TUM_VOL` covariate | deposited code (`CollectDataIntoNestedStructure.m`) |
+| Residual SDs (sqrt of the reported variances) | `addSd`, `addSd_<endpoint>` | Table 1 and Table 4; PK and FU-RNA variances from the deposited MCMC chains |
+| Dose-to-concentration mapping | `0.929936 * mg/kg` | deposited code |
+
+# Single 100 mg/kg dose: PK and cellular layers (Figures 2 and 3)
+
+The PK and cellular parameters were fitted to a single intraperitoneal dose of
+100 mg/kg (115 mg/kg and 80 mg/kg for some cellular data sets). The
+literature means the authors fitted are embedded in their deposited code and
+are overlaid here.
+
+```{r single-dose}
+t_sd <- sort(unique(c(0, 2, 5, 10, 20, 30, 45, seq(60, 4320, by = 30))))
+sd1 <- sim_regimen(models$file[1], 100, 7, 1L, 125, t_sd) |>
+  mutate(pct_free_ts = 100 * ts_free / ts_total)
+
+obs_sd <- dplyr::bind_rows(
+  tibble::tibble(var = "Plasma 5-FU (ug/mL)", time = c(0, 10, 20, 30, 60, 90, 120, 240),
+                 value = c(92.99, 70.25, 67.09, 48.33, 26.12, 11.39, 5.574, 1.753)),
+  tibble::tibble(var = "Intracellular 5-FU (pmol/mg)", time = c(15, 30, 40, 50, 60, 70, 80, 90, 105, 120),
+                 value = c(159.96, 133.32, 110.81, 39.86, 86.68, 62.38, 11.88, 46.23, 6.244, 8.477)),
+  tibble::tibble(var = "Anabolites (pmol/mg)", time = c(15, 30, 40, 50, 60, 70, 80, 90, 105, 120),
+                 value = c(29.34, 50.22, 42.82, 49.19, 43.57, 75.71, 67.86, 63.12, 73.78, 61.79)),
+  tibble::tibble(var = "FU-RNA (pmol/mg)", time = c(2, 8, 24, 48, 72) * 60,
+                 value = c(9.617, 6.488, 9.155, 2.366, 2.881) * 2),
+  tibble::tibble(var = "FU-DNA (pmol/mg)", time = c(2, 8, 24, 48, 72) * 60,
+                 value = c(15.53, 13.61, 15.76, 9.854, 14.43) * 2e-4),
+  tibble::tibble(var = "TS-FdUMP complex (pmol/mg)", time = c(2, 6, 24, 32, 48) * 60,
+                 value = c(0.0355, 0.0307, 0.0272, 0.0217, 0.0180)),
+  tibble::tibble(var = "dUMP (pmol/mg)", time = c(3, 12, 24, 48) * 60,
+                 value = c(5.770, 4.974, 5.552, 3.528)),
+  tibble::tibble(var = "dNTP-pool imbalance", time = c(0.5, 1, 2, 4, 6, 8, 9, 12) * 60,
+                 value = c(0.1532, 0.7109, 0.7337, 0.8817, 1.1337, 0.8240, 0.7070, 0.3747)),
+  tibble::tibble(var = "DSB (thousands)", time = c(8, 24, 32, 48, 64, 72) * 60,
+                 value = c(74.76, 74.28, 113.82, 226.81, 189.08, 132.25))
+)
+
+sim_sd <- sd1 |>
+  transmute(
+    time,
+    "Plasma 5-FU (ug/mL)" = Cc,
+    "Intracellular 5-FU (pmol/mg)" = intracellular,
+    "Anabolites (pmol/mg)" = anabolites,
+    "FU-RNA (pmol/mg)" = fu_rna,
+    "FU-DNA (pmol/mg)" = fu_dna,
+    "TS-FdUMP complex (pmol/mg)" = ts_fdump,
+    "dUMP (pmol/mg)" = dump,
+    "dNTP-pool imbalance" = nucp,
+    "DSB (thousands)" = dsb
+  ) |>
+  pivot_longer(-time, names_to = "var")
+```
+
+```{r fig-single-dose, fig.height = 7, fig.cap = "Replicates Figures 2 and 3 of Ma 2022: the shared PK and cellular layers after a single 100 mg/kg dose (line) against the literature means the authors fitted (points). The DSB data extend to 72 h, so the x-axis is cut at 3 days."}
+ggplot(sim_sd, aes(time / 60, value)) +
+  geom_line(colour = "firebrick") +
+  geom_point(data = obs_sd, colour = "steelblue") +
+  facet_wrap(~var, scales = "free_y", ncol = 3) +
+  labs(x = "Time after dose (h)", y = NULL) +
+  theme_bw()
+```
+
+The free-TS fraction falls to its minimum about 5 h after the dose and dUMP
+peaks at the same time, as described in the Results ('Cellular model'). The
+DSB count rises through the first hours toward the drug-free baseline and
+only climbs above it after the 1.8-day delay `Td,DSB`.
+
+```{r single-dose-checks}
+peak_dump_h <- sd1$time[which.max(sd1$dump)] / 60
+min_free_h <- sd1$time[which.min(sd1$pct_free_ts)] / 60
+stopifnot(
+  abs(peak_dump_h - min_free_h) < 1.5,
+  peak_dump_h > 3, peak_dump_h < 8
+)
+c(dUMP_peak_h = peak_dump_h, free_TS_minimum_h = min_free_h)
+```
+
+## Plasma NCA
+
+Ma 2022 reports no NCA for 5-FU. The table compares the PKNCA summary of the
+simulated plasma profile with that of the literature means the PK model was
+fitted to (Table 2, reference 65).
+
+```{r pknca}
+pk_sim <- sd1 |>
+  filter(!is.na(Cc), time <= 240) |>
+  transmute(id = 1L, treatment = "100 mg/kg", time, Cc)
+pk_obs <- obs_sd |>
+  filter(var == "Plasma 5-FU (ug/mL)") |>
+  transmute(id = 1L, treatment = "100 mg/kg", time, Cc = value)
+dose_df <- tibble::tibble(id = 1L, treatment = "100 mg/kg", time = 0, amt = mgkg_to_conc(100))
+
+nca_fun <- function(conc_df) {
+  conc <- PKNCAconc(conc_df, Cc ~ time | treatment + id)
+  dose <- PKNCAdose(dose_df, amt ~ time | treatment + id)
+  intervals <- data.frame(start = 0, end = 240, cmax = TRUE, auclast = TRUE, half.life = TRUE)
+  pk.nca(PKNCAdata(conc, dose, intervals = intervals))
+}
+nca_sim <- nca_fun(pk_sim)
+nca_obs <- nca_fun(pk_obs)
+nlmixr2lib::ncaComparisonTable(nca_sim, nca_obs, by = "treatment",
+  params = c("cmax", "auclast", "half.life"))
+```
+
+```{r pknca-check}
+auc_ratio <- as.data.frame(nca_sim) |> filter(PPTESTCD == "auclast") |> pull(PPORRES) /
+  (as.data.frame(nca_obs) |> filter(PPTESTCD == "auclast") |> pull(PPORRES))
+stopifnot(abs(auc_ratio - 1) < 0.15)
+auc_ratio
+```
+
+# Reproducing the authors' multi-dose drivers
+
+The authors pre-computed the anabolite and DSB time courses that drive each
+TGI fit and deposited them with their code. Their multi-dose simulation code
+enters the two excision delays `Td,RNA` and `Td,DNA` in **minutes** (0.396 and
+4.360 min), whereas Table 1 reports them in **days** and their single-dose
+fitting code converts days to minutes. The library models carry the Table 1
+values in days. Overriding the two delays with the deposit's minute values
+reproduces the deposited time courses, which tests every other equation of
+the PK, cellular, dNTP and DSB layers against the authors' own numbers.
+
+```{r deposit-check}
+deposit_ref <- tibble::tribble(
+  ~n, ~time,      ~a5,       ~dsb,
+  1L, 62.0530,    58.415,    69.323,
+  1L, 123.6431,   79.014,    73.709,
+  1L, 278.9780,   87.803,    74.707,
+  1L, 606.4480,   82.461,    74.724,
+  1L, 1425.1276,  66.774,    74.724,
+  1L, 2721.6811,  43.016,    164.59,
+  1L, 4425.2147,  13.699,    127.96,
+  1L, 7316.3939,  NA,        107.81,
+  5L, 11629.6815, 3.0782,    90.682,
+  8L, 1454.5650,  24.781,    74.724,
+  8L, 3001.9917,  43.143,    166.46,
+  8L, 14643.3688, 50.280,    145.58
+)
+deposit_lags <- c(td_rna = 0.39587 / 1440, td_dna = 4.35978 / 1440)
+
+deposit_cmp <- deposit_ref |>
+  group_by(n) |>
+  group_modify(\(d, k) {
+    m <- models[models$n == k$n, ]
+    s <- sim_regimen(m$file, m$mgkg, m$ii_day, m$ndose, m$tv0,
+      sort(unique(c(0, d$time))), params = deposit_lags)
+    s <- s[match(d$time, s$time), ]
+    mutate(d, a5_sim = s$anabolites, dsb_sim = s$dsb)
+  }) |>
+  ungroup() |>
+  mutate(
+    pct_a5 = 100 * (a5_sim - a5) / a5,
+    pct_dsb = 100 * (dsb_sim - dsb) / dsb
+  )
+
+deposit_cmp |>
+  mutate(across(c(a5_sim, dsb_sim, pct_a5, pct_dsb), \(x) signif(x, 4))) |>
+  dplyr::rename(
+    "TGI model" = n, "Time (min)" = time,
+    "Anabolites, deposit" = a5, "Anabolites, model" = a5_sim, "Anabolites diff (%)" = pct_a5,
+    "DSB, deposit" = dsb, "DSB, model" = dsb_sim, "DSB diff (%)" = pct_dsb
+  ) |>
+  knitr::kable(caption = "Deposited anabolite and DSB time courses versus the library model with the deposit's minute-valued excision delays.")
+```
+
+Both sides are deterministic solves of the same equations, so the remaining
+differences are the rounding of the Table 1 values (printed to three or four
+significant figures) and solver error.
+
+```{r deposit-check-assert}
+stopifnot(
+  max(abs(deposit_cmp$pct_a5), na.rm = TRUE) < 3,
+  max(abs(deposit_cmp$pct_dsb)) < 3
+)
+```
+
+The two readings of the delays differ only in how long the excision of
+FU-RNA and FU-DNA runs at its pre-dose rate, so they diverge after a dose:
+
+```{r delay-units}
+sd_dep <- sim_regimen(models$file[1], 100, 7, 1L, 125, t_sd, params = deposit_lags)
+delay_units <- tibble::tibble(
+  quantity = c("Peak anabolites (pmol/mg)", "Peak DSB (thousands)"),
+  table1_days = c(max(sd1$anabolites), max(sd1$dsb)),
+  deposit_minutes = c(max(sd_dep$anabolites), max(sd_dep$dsb))
+) |>
+  mutate(pct_diff = 100 * (table1_days - deposit_minutes) / deposit_minutes)
+delay_units |>
+  mutate(across(where(is.double), \(x) signif(x, 4))) |>
+  dplyr::rename(
+    Quantity = quantity, "Table 1 delays (days)" = table1_days,
+    "Deposit delays (minutes)" = deposit_minutes, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Single 100 mg/kg dose: effect of the excision-delay units.")
+```
+
+With the delays in days, the delayed-excision factor stays at its pre-dose
+value for longer, so more fluoronucleotide returns from RNA to the anabolite
+pool. The tumour-volume predictions are insensitive to this because the
+anabolites act through `A5^0.2` (the Table 5 comparison below shows the
+first-week exposure metrics agree to a few per cent).
+
+# Tumour growth inhibition (Figure 4)
+
+```{r tgi-data, echo = FALSE}
+tgi_obs <- read.csv(text = "
+model,time_min,rtv_treated,rtv_control
+1,0,1,1
+1,5947.2,1,1.4
+1,9864,1.34,1.91
+1,16128,1.14,3.12
+1,20664,1.69,4.11
+1,26611.2,1.21,5.48
+1,32558.4,1.44,6.24
+1,36777.6,1.64,9.34
+1,41472,2.3,13.44
+1,53222.4,6.27,16.96
+1,62769.6,11.55,NA
+2,0,1,1
+2,1440,1.4182,2.0727
+2,2880,1.3091,3
+2,4320,0.8909,3.8364
+2,5760,0.6545,5.7455
+2,7200,0.6364,5.7818
+2,8640,0.5818,6.6909
+2,10080,0.7455,9.4364
+3,0,1,1
+3,2880,1.0258,1.8537
+3,5760,1.3416,2.6587
+3,8640,1.6833,4.0494
+3,11520,2.1301,4.4397
+3,14400,2.6038,5.3908
+3,17280,3.366,5.8547
+3,20160,3.4455,6.489
+3,23040,3.9976,7.2699
+3,25920,4.5234,8.0747
+3,30240,5.4048,9.7943
+4,0,1,1
+4,4320,1.12,1.44
+4,8640,2,2.8
+4,12960,2.92,4.56
+4,17280,4.2,6.48
+4,21600,6.64,9.76
+4,25920,8.28,13.28
+4,30240,11.72,16.16
+4,34560,13.64,18.3599
+5,0,1,1
+5,1440,0.7937,1.4423
+5,2880,1.7142,2.1537
+5,4320,1.9998,2.7691
+5,5760,2.5714,3.3268
+5,7200,3.2378,4.5189
+5,8640,4.2378,5.5765
+5,10080,5.0315,7.8073
+5,11520,5.1742,8.9994
+6,0,1,1
+6,4320,1.1337,1.4225
+6,8640,2.4199,4.9754
+6,12960,5.887,15.8
+6,17280,12.6302,40.0378
+6,21600,24.5446,81.6907
+7,0,1,1
+7,2880,1.1464,1.3171
+7,5760,1.2683,2.0734
+7,8640,1.6342,2.9513
+7,11520,1.9513,4.293
+7,14400,2.2079,5.2198
+7,17280,2.3896,7.5126
+7,20160,2.9976,9.464
+8,0,1,1
+8,1440,1.375,1.625
+8,2880,1.5,1.75
+8,4320,1.625,3.125
+8,5760,2.375,5.375
+8,7200,3.875,7.5
+8,8640,3.5,8.75
+8,10080,3.375,11.25
+8,11520,4,11.75
+8,12960,6.125,14.375
+8,14400,6.25,19.25
+8,15840,8,25.25
+8,17280,8.5,27.5
+9,0,1,1
+9,1440,1.375,1.625
+9,2880,1.5,1.875
+9,4320,1.625,3.125
+9,5760,2.375,5.125
+9,7200,3.875,5.5
+9,8640,3.875,7
+9,10080,4.5,9.375
+9,11520,4.875,12.875
+9,12960,7,17.5
+9,14400,8,23.375
+9,15840,10.125,28
+9,17280,11.75,32.375
+")
+```
+
+The literature tumour volumes (normalised to the first measurement) are the
+values the authors digitised into their deposit. TGI model 2 is simulated only
+through day 3: the published cellular layer becomes singular during the fourth
+daily 50 mg/kg dose (see 'Assumptions and deviations').
+
+```{r tgi-sim}
+tgi_end_day <- ifelse(models$n == 2L, 3, models$dur_day)
+tgi_ndose <- ifelse(models$n == 2L, 3L, models$ndose)
+
+tgi_sim <- lapply(seq_len(nrow(models)), \(i) {
+  m <- models[i, ]
+  end_min <- tgi_end_day[i] * 1440
+  obs_t <- tgi_obs$time_min[tgi_obs$model == m$n]
+  times <- sort(unique(c(0, seq(0, 7 * 1440, by = 30), seq(0, end_min, by = 360),
+    obs_t[obs_t <= end_min])))
+  times <- times[times <= end_min]
+  sim_regimen(m$file, m$mgkg, m$ii_day, tgi_ndose[i], m$tv0, times) |>
+    mutate(n = m$n, rtv = tumor_vol / (m$tv0 / 1000))
+}) |> bind_rows()
+
+# The drug-free arm reduces to logistic growth with net rate lambda_g -
+# lambda_d and ceiling Pmax * (1 - lambda_d / lambda_g); see the identity
+# check below.
+control_closed <- function(time, n, tv0) {
+  th <- ui[[as.character(n)]]$theta
+  p0 <- tv0 / 1000
+  r <- th[["lambda_g"]] - th[["lambda_d"]]
+  k <- th[["pmax"]] * (1 - th[["lambda_d"]] / th[["lambda_g"]])
+  k / (1 + (k / p0 - 1) * exp(-r * time)) / p0
+}
+tgi_ctl <- models |>
+  group_by(n) |>
+  reframe(time = seq(0, dur_day * 1440, by = 360), rtv = control_closed(time, n, tv0))
+```
+
+```{r fig-tgi, fig.height = 8, fig.cap = "Replicates Figure 4 of Ma 2022: relative tumour volume of the treated (blue) and drug-free control (red) groups for the nine TGI models; points are the literature data the authors fitted."}
+short_reg <- c("100 mg/kg qw x4", "50 mg/kg qd x4", "20 mg/kg biw x3 wk", "20 mg/kg tiw x3 wk",
+  "5 mg/kg qd x9", "20 mg/kg biw x3 wk", "20 mg/kg q2d x2 wk", "50 mg/kg q2d x6", "50 mg/kg q2d x6")
+panel_lab <- setNames(paste0("(", models$n, ") ", models$cell, "\n", short_reg), models$n)
+obs_long <- tgi_obs |>
+  pivot_longer(c(rtv_treated, rtv_control), names_to = "arm", values_to = "rtv") |>
+  filter(!is.na(rtv)) |>
+  mutate(arm = ifelse(arm == "rtv_treated", "treated", "control"), n = model)
+ggplot() +
+  geom_line(data = tgi_sim, aes(time / 1440, rtv, colour = "treated")) +
+  geom_line(data = tgi_ctl, aes(time / 1440, rtv, colour = "control"), linetype = 2) +
+  geom_point(data = obs_long, aes(time_min / 1440, rtv, colour = arm, shape = arm)) +
+  facet_wrap(~n, scales = "free", labeller = labeller(n = panel_lab)) +
+  scale_colour_manual(values = c(treated = "steelblue", control = "firebrick")) +
+  labs(x = "Time (days)", y = "Relative tumour volume", colour = NULL, shape = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom", strip.text = element_text(size = 7))
+```
+
+```{r tgi-fit}
+tgi_fit <- tgi_obs |>
+  rename(n = model) |>
+  inner_join(tgi_sim |> select(n, time, rtv), by = c("n", "time_min" = "time")) |>
+  group_by(n) |>
+  summarise(
+    n_obs = n(),
+    median_abs_log_ratio = median(abs(log(rtv / rtv_treated))),
+    final_sim = last(rtv), final_obs = last(rtv_treated)
+  )
+tgi_fit |>
+  mutate(across(where(is.double), \(x) signif(x, 3))) |>
+  dplyr::rename(
+    "TGI model" = n, "Treated data points" = n_obs,
+    "Median |log(sim/obs)|" = median_abs_log_ratio,
+    "Final simulated" = final_sim, "Final observed" = final_obs
+  ) |>
+  knitr::kable(caption = "Treated-group relative tumour volume, model versus literature data.")
+```
+
+The treated-group fits match the quality shown in Figure 4, including the
+authors' own remarks: model 4 (HT29, three times weekly), which reuses the
+model 3 efficacy parameters, fits only moderately, and model 1 over-predicts
+the Colon 38 tumours between weeks 2 and 6.
+
+```{r tgi-fit-assert}
+stopifnot(
+  median(tgi_fit$median_abs_log_ratio) < 0.15,
+  max(tgi_fit$median_abs_log_ratio) < 0.4
+)
+```
+
+## Drug-free arm identity
+
+With no dose the anabolites and the DSB excess stay at zero, so Eq 23
+reduces to `dP/dt = lambda_g P (1 - P/Pmax) - lambda_d P` with a closed-form
+logistic solution. Solving the model for an untreated TGI model 7 animal
+checks the TGI code path against it.
+
+```{r control-identity}
+m7 <- models[models$n == 7L, ]
+ctl7 <- sim_regimen(m7$file, 0, 1, 1L, m7$tv0, seq(0, m7$dur_day * 1440, by = 720)) |>
+  mutate(closed = control_closed(time, 7L, m7$tv0), rtv = tumor_vol / (m7$tv0 / 1000))
+stopifnot(
+  max(abs(ctl7$rtv - ctl7$closed) / ctl7$closed) < 1e-4,
+  all(ctl7$anabolites == 0), all(ctl7$damaged_cells1 == 0)
+)
+max(abs(ctl7$rtv - ctl7$closed) / ctl7$closed)
+```
+
+# Exposure metrics over the first week (Table 5)
+
+Table 5 integrates, over the first week of each regimen, the anabolite
+amount (`AUC_a`), the relative DSB excess (`AUC_DSB`) and the two effect
+functions `Ea(t)` and `EDSB(t)` (`AUC_e,a`, `AUC_e,DSB`), all with time in
+days. The authors' values come from their minute-delay drivers; the library
+values use the Table 1 delays in days. Model 2 is omitted because its
+published driver is singular after day 3.
+
+```{r table5}
+trapz <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
+table5 <- tibble::tribble(
+  ~n, ~auc_ea, ~auc_edsb, ~auc_a,   ~auc_dsb,
+  1L, 4.7900,  1.2874,    162.4190, 2.8343,
+  3L, 4.9206,  0.3889,    17.2567,  0.9044,
+  4L, 3.8823,  0.4494,    25.8850,  1.1920,
+  5L, 5.0412,  1.7674,    4.2039,   0.6292,
+  6L, 4.9206,  0.3895,    17.2567,  0.9044,
+  7L, 3.1336,  0.4631,    34.5052,  1.3578,
+  8L, 3.9429,  0.7832,    194.0453, 3.6296,
+  9L, 3.8757,  2.4385,    194.0453, 3.6296
+)
+week <- tgi_sim |>
+  filter(n %in% table5$n, time <= 7 * 1440) |>
+  group_by(n) |>
+  summarise(
+    sim_auc_ea = trapz(time / 1440, e_a),
+    sim_auc_edsb = trapz(time / 1440, e_dsb),
+    sim_auc_a = trapz(time / 1440, anabolites),
+    sim_auc_dsb = trapz(time / 1440, dsb_deviation)
+  ) |>
+  inner_join(table5, by = "n")
+```
+
+```{r table5-tidy}
+cmp5 <- week |>
+  transmute(
+    n,
+    AUC_e_a = 100 * (sim_auc_ea - auc_ea) / auc_ea,
+    AUC_e_DSB = 100 * (sim_auc_edsb - auc_edsb) / auc_edsb,
+    AUC_a = 100 * (sim_auc_a - auc_a) / auc_a,
+    AUC_DSB = 100 * (sim_auc_dsb - auc_dsb) / auc_dsb
+  )
+week |>
+  transmute(
+    n,
+    "AUC_e,a (paper / model)" = paste(signif(auc_ea, 4), signif(sim_auc_ea, 4), sep = " / "),
+    "AUC_e,DSB (paper / model)" = paste(signif(auc_edsb, 4), signif(sim_auc_edsb, 4), sep = " / "),
+    "AUC_a (paper / model)" = paste(signif(auc_a, 4), signif(sim_auc_a, 4), sep = " / "),
+    "AUC_DSB (paper / model)" = paste(signif(auc_dsb, 4), signif(sim_auc_dsb, 4), sep = " / ")
+  ) |>
+  dplyr::rename("TGI model" = n) |>
+  knitr::kable(caption = "Ma 2022 Table 5 versus the library models (first week, time in days).")
+```
+
+```{r table5-assert}
+cmp5
+stopifnot(
+  max(abs(cmp5$AUC_a)) < 5,
+  max(abs(cmp5$AUC_DSB)) < 5,
+  max(abs(cmp5$AUC_e_a)) < 5,
+  max(abs(cmp5$AUC_e_DSB)) < 20
+)
+```
+
+The anabolite and DSB exposures agree within a few per cent despite the
+different delay units. `AUC_e,DSB` runs 4-12% below Table 5 for a reason
+outside the model: the authors align their control DSB curve to the treated
+time grid by interpolation, which leaves a relative DSB excess of up to
+1.3e-3 during the first 1.8 days, when the true excess is exactly zero.
+`EDSB` raises that excess to the power 0.2, so the artefact adds about 0.033
+to every `AUC_e,DSB` in Table 5 (recomputing Table 5 from the deposited time
+courses reproduces the printed values, and the first 1.8 days contribute
+0.0333 for both model 3 and model 8). Without it the library values agree
+to within about 2%.
+
+# Assumptions and deviations
+
+* **Excision delays in days.** Table 1 lists `Td,RNA = 0.396` and
+  `Td,DNA = 4.360` in days, and the authors' single-dose fitting code
+  converts them from days to minutes; their multi-dose code (which generated
+  the TGI drivers behind Table 4 and Figure 4) uses the same numbers as
+  minutes. The library follows Table 1. The deposit's behaviour is recovered
+  with `params = c(td_rna = 0.39587 / 1440, td_dna = 4.35978 / 1440)`, as
+  shown above; tumour-volume predictions differ by well under 1%.
+* **Values not printed in the paper.** `K_dNTP` appears in Eq 21 but not in
+  Table 1, and the residual variances of plasma 5-FU and FU-RNA are not
+  printed. All three are the posterior means of the authors' deposited MCMC
+  chains (`Para_dNTP_DSB_col_2.mat`, `Para_PK_col.mat`,
+  `Para_Cellular_col.mat`) over the authors' own burn-in, which reproduces
+  every printed Table 1 value: `K_dNTP = 151.918`, plasma variance 52.112
+  (ug/mL)^2, FU-RNA variance 4.991 (pmol/mg)^2. The initial dUMP (3.878
+  pmol/mg) and DSB (42.755 thousand) levels and the initial tumour volumes
+  of the nine datasets are also taken from the deposited code.
+* **Total TS resets at each dose.** Eq 10 is a function of `t`; the
+  authors restart the integration clock at every dose, so `t` is the time
+  since the most recent dose (`tad()`). An undosed animal uses the time since
+  the start of the simulation, as the authors' control runs do.
+* **Model 2 is singular after its third dose.** Under daily 50 mg/kg the
+  TS-FdUMP complex comes to exceed the total TS of Eq 10 after the fourth
+  dose, so the free TS of Eq 11 turns negative. Once it falls below
+  `-K_dUMP * k08 / kcat` (about -0.04 pmol/mg) the dUMP equation has a
+  positive linear coefficient and grows exponentially toward the pole of
+  Eq 13 at `TSf = -K_dUMP`; the solver stops shortly after 4500 min. The
+  authors' deposited model 2 driver is complex-valued over the same window.
+  The model is encoded as published; only model 2's regimen reaches this
+  regime among the nine.
+* **Fractional powers guarded at zero.** `(1 - TSf/TStotal)^gamma_dNTP`,
+  `Nucp(t - Td,DSB)^gamma_DSB`, `A5^gamma_Tv` and the relative DSB excess are
+  evaluated on `max(x, 0)`. These quantities are non-negative in exact
+  arithmetic; the guard only stops round-off below zero from producing `NaN`
+  (the authors' MATLAB code returns complex numbers there and keeps the real
+  part).
+* **Doses as plasma-concentration increments.** The PK states are
+  concentrations (Table 1 gives `Vmax` in ug/mL/min and `Km` in ug/mL), and the
+  authors start each dose at the first measured plasma concentration (92.9936
+  ug/mL for 100 mg/kg), scaled linearly with dose.
+* **Units printed in Table 1.** `k06` and `k07` (min^-1 in Table 1) multiply
+  an amount inside `(1 + k * A)^gamma` and therefore carry mg/pmol; `k95`
+  multiplies TS and A5 and carries mg/pmol/min; `G0` is printed as mg/min but
+  is a zero-order synthesis rate in pmol/mg/min; the dNTP-layer constants are
+  printed as unitless although `k1`, `k3`, `k5`, `k9` and `k10` act as rates per
+  minute. The parameter labels state the dimensionally consistent unit.
+* **Control and treated residual variances.** Table 4 reports separate
+  noise variances for the control and treated tumour volumes. Both arms use
+  the same equations, so the model exposes the tumour volume twice:
+  `tumor_vol` (treated variance) and `tumor_vol_control` (control variance).
+* **Plasma PK with no drug loss to the tumour.** Eq 4 adds `Q31 * Cp` to the
+  interstitial fluid without removing it from plasma, as published.
