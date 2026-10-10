@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pastuszak 2021 intramuscular testosterone undecanoate ([doi:10.1002/jcph.1939](https://doi.org/10.1002/jcph.1939)) -- adult men with hypogonadism (ratifies the new `SEX_HORMONE_BINDING_GLOBULIN` covariate canonical).
+- Add Takada 2022 roxadustat ([doi:10.1111/bcp.15023](https://doi.org/10.1111/bcp.15023)) -- Japanese dialysis-dependent chronic kidney disease patients with anaemia on haemodialysis or peritoneal dialysis.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
