@@ -1350,6 +1350,8 @@ navbar:
         href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Celecoxib cockatiel oral std (Dhondt 2017)"
         href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
+      - text: "Cemiplimab (Nguyen 2022)"
+        href: articles/Nguyen_2022_cemiplimab.html
       - text: "Cemiplimab (Yang 2021)"
         href: articles/Yang_2021_cemiplimab.html
       - text: "Cenicriviroc hiv1rna (Marier 2011)"
@@ -8996,7 +8998,7 @@ articles:
   - articles/Nguyen_2019_cabozantinib
   - articles/Nguyen_2020_myostatin_activin_dmd_qsp
   - articles/Nguyen_2021_ceftazidime_imipenem
-  - articles/Nguyen_2022_gepotidacin
+  - articles/Nguyen_2022_cemiplimab
   - articles/Nguyen_2025_valbenazine_huntington_chorea
   - articles/Nguyen_2026_dupilumab
   - articles/Nguyen_2026_levofloxacin

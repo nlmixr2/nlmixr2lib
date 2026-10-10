@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nassar 2022 midazolam with time-resolved CYP3A perpetrator effects ([doi:10.1007/s40262-022-01175-6](https://doi.org/10.1007/s40262-022-01175-6)) -- healthy adults on microdosed intravenous midazolam with voriconazole, efavirenz or rifampicin (registers `CONMED_VORICONAZOLE_ORAL`, `CONMED_VORICONAZOLE_IV` and `T_CONMED`).
+- Add Nguyen 2022 cemiplimab ([doi:10.1002/psp4.12855](https://doi.org/10.1002/psp4.12855)) -- adults with CSCC, BCC, NSCLC and other advanced solid tumors, externally validated in recurrent or metastatic cervical cancer (registers `TUMTP_CSCC` and `TUMTP_BCC`).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
