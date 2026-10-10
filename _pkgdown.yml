@@ -480,6 +480,8 @@ navbar:
         href: articles/Lv_2025_asc10a.html
       - text: "Asenapine (Dogterom 2018)"
         href: articles/Dogterom_2018_asenapine.html
+      - text: "AsparaginaseErwiniaRecombinant (Lin 2021)"
+        href: articles/Lin_2021_asparaginaseErwiniaRecombinant.html
       - text: "AsparaginaseErwiniaRecombinant (Lin 2023)"
         href: articles/Lin_2023_asparaginaseErwiniaRecombinant.html
       - text: "Aspirin (Koh 2025)"
@@ -8543,6 +8545,7 @@ articles:
   - articles/Lin_2018_voriconazole
   - articles/Lin_2020_glasdegib
   - articles/Lin_2020_glasdegib_AML_overall_survival
+  - articles/Lin_2021_asparaginaseErwiniaRecombinant
   - articles/Lin_2021_vancomycin
   - articles/Lin_2022_aducanumab_qsp
   - articles/Lin_2023_asparaginaseErwiniaRecombinant

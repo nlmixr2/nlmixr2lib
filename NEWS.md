@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Takada 2022 roxadustat ([doi:10.1111/bcp.15023](https://doi.org/10.1111/bcp.15023)) -- Japanese dialysis-dependent chronic kidney disease patients with anaemia on haemodialysis or peritoneal dialysis.
+- Add Lin 2021 recombinant Erwinia chrysanthemi asparaginase (JZP-458) ([doi:10.1002/cpdd.1002](https://doi.org/10.1002/cpdd.1002)) -- healthy adults given single intramuscular or intravenous doses.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
