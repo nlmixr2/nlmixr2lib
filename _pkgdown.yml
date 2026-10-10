@@ -5232,6 +5232,8 @@ navbar:
         href: articles/Nyangwa_2026_pretomanid.html
       - text: "Pretomanid (Salinger 2019)"
         href: articles/Salinger_2019_pretomanid.html
+      - text: "Pretomanid (Zou 2022)"
+        href: articles/Zou_2022_pretomanid.html
       - text: "Pretomanid mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Prexasertib mouse pbpk (Saleh 2023)"
@@ -10017,6 +10019,7 @@ articles:
   - articles/Zou_2012_MI_219
   - articles/Zou_2020_leuprorelin
   - articles/Zou_2022_furmonertinib
+  - articles/Zou_2022_pretomanid
   - articles/Zou_2025_edoxaban
   - articles/Zou_2026_meropenem
   - articles/Zou_2026_pembrolizumab_qol

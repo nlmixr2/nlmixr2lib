@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2022 paroxetine ([doi:10.3389/fphar.2022.966622](https://doi.org/10.3389/fphar.2022.966622)) -- Chinese psychiatric inpatients on immediate- or sustained-release tablets (ratifies the new `FORM_PAROXETINE_IR` formulation indicator).
+- Add Zou 2022 pretomanid ([doi:10.1007/s40262-022-01163-w](https://doi.org/10.1007/s40262-022-01163-w)) -- healthy adults given dispersible (pediatric) and marketed tablets with a high-fat meal (registers `FORM_PRETOMANID_DT`).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
