@@ -5816,6 +5816,8 @@ navbar:
         href: articles/Grover_2011_tacrolimus.html
       - text: "Tacrolimus (Hao 2018)"
         href: articles/Hao_2018_tacrolimus.html
+      - text: "Tacrolimus (Huang 2022)"
+        href: articles/Huang_2022_tacrolimus.html
       - text: "Tacrolimus (JacoboCabral 2015)"
         href: articles/JacoboCabral_2015_tacrolimus.html
       - text: "Tacrolimus (Ji 2018)"
@@ -7875,6 +7877,7 @@ articles:
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
   - articles/Huang_2021_cholecalciferol_pbpk
+  - articles/Huang_2022_tacrolimus
   - articles/Huang_2025_colistinSulfate
   - articles/Huang_2025_dexmedetomidine
   - articles/Huang_2026_tiapride
