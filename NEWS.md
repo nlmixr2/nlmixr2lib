@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bukkems 2022 doravirine ([doi:10.1007/s40262-022-01127-0](https://doi.org/10.1007/s40262-022-01127-0)) -- ex vivo human term placenta cotyledon perfusion (closed-closed and closed-open configurations; ratifies the new `WT_COTYLEDON` and `PERFUSION_FETAL_TO_MATERNAL` covariate canonicals).
+- Add de Bruijn 2022 bile-acid homeostasis and bosentan-induced cholestasis PBK ([doi:10.1007/s00204-022-03345-8](https://doi.org/10.1007/s00204-022-03345-8)) -- reference healthy adult (70 kg), with bosentan 500 mg twice daily.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
