@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Balice 2022 daptomycin ([doi:10.3390/antibiotics11070914](https://doi.org/10.3390/antibiotics11070914)) -- hospitalised adults with severe Gram-positive infections under routine therapeutic drug monitoring.
+- Add Ngougni Pokem 2022 temocillin ([doi:10.3390/antibiotics11070898](https://doi.org/10.3390/antibiotics11070898)) -- critically ill adults in septic shock with intra-abdominal infection and ascitic fluid effusion; unbound plasma and ascitic fluid.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
