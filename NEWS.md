@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ngougni Pokem 2022 temocillin ([doi:10.3390/antibiotics11070898](https://doi.org/10.3390/antibiotics11070898)) -- critically ill adults in septic shock with intra-abdominal infection and ascitic fluid effusion; unbound plasma and ascitic fluid.
+- Add Perlstein 2022 TV-46000 long-acting subcutaneous risperidone total active moiety ([doi:10.1002/cpdd.1078](https://doi.org/10.1002/cpdd.1078)) -- adults with schizophrenia or schizoaffective disorder.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

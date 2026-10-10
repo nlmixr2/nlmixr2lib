@@ -5494,6 +5494,8 @@ navbar:
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Risperidone rykindo (Wang 2024)"
         href: articles/Wang_2024_risperidone_lai_switching.html
+      - text: "Risperidone tv46000 (Perlstein 2022)"
+        href: articles/Perlstein_2022_risperidone_tv46000.html
       - text: "Risperidone tv46000 (Perlstein 2025)"
         href: articles/Perlstein_2025_risperidone_tv46000.html
       - text: "Ritlecitinib (Huh 2024)"
@@ -8973,6 +8975,7 @@ articles:
   - articles/PerezRuixo_2020_esketamine
   - articles/PerezRuixo_2025_posdinemab
   - articles/Periclou_2021_cariprazine
+  - articles/Perlstein_2022_risperidone_tv46000
   - articles/Perlstein_2025_risperidone_tv46000
   - articles/Perlstein_2026_olanzapine
   - articles/Perrottet_2009_ganciclovir
