@@ -2,7 +2,7 @@
 
 # development version
 
-- Add de Bruijn 2022 bile-acid homeostasis and bosentan-induced cholestasis PBK ([doi:10.1007/s00204-022-03345-8](https://doi.org/10.1007/s00204-022-03345-8)) -- reference healthy adult (70 kg), with bosentan 500 mg twice daily.
+- Add Chen 2022b tacrolimus ([doi:10.3389/fphar.2022.869939](https://doi.org/10.3389/fphar.2022.869939)) -- Chinese children with severe combined immunodeficiency undergoing haematopoietic stem cell transplantation.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
