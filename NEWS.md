@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Franzese 2022 ceftazidime and avibactam ([doi:10.1002/cpt.2460](https://doi.org/10.1002/cpt.2460)) -- children aged 3 months to < 18 years pooled with adults with cIAI, cUTI or HAP/VAP.
+- Add Kruizinga 2022 clonazepam in plasma and saliva ([doi:10.1111/bcp.15152](https://doi.org/10.1111/bcp.15152)) -- healthy adults aged 18-30 years (ratifies the `MIX_FAST_ABS` covariate and the `lka_fastabs`, `lfcontam_saliva`, `lfsaliva_max` and `lkm_fsaliva` parameters).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
