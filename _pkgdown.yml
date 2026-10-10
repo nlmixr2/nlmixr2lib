@@ -5462,6 +5462,10 @@ navbar:
         href: articles/Bertrand_2011_S33138.html
       - text: "SAL003 (Peng 2024)"
         href: articles/Peng_2024_SAL003.html
+      - text: "SCR430 rat control pbpk (Kim 2022)"
+        href: articles/Kim_2022_SCR430_rat_pbpk.html
+      - text: "SCR430 rat repeatedDosing pbpk (Kim 2022)"
+        href: articles/Kim_2022_SCR430_rat_pbpk.html
       - text: "SHetA2 dog (Sharma 2018)"
         href: articles/Sharma_2018_SHetA2.html
       - text: "SHetA2 human (Sharma 2018)"
@@ -8060,6 +8064,7 @@ articles:
   - articles/Kim_2020_CKD_519
   - articles/Kim_2020_voriconazole
   - articles/Kim_2021_YH12852
+  - articles/Kim_2022_SCR430_rat_pbpk
   - articles/Kim_2023_camostat
   - articles/Kim_2023_pyrazinamide
   - articles/Kim_2024_meropenem
