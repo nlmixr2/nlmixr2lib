@@ -4414,6 +4414,8 @@ navbar:
         href: articles/Liang_2024_osimertinib.html
       - text: "Oxacillin (Lee 2026)"
         href: articles/Lee_2026_oxacillin.html
+      - text: "Oxacillin (Murinova 2022)"
+        href: articles/Murinova_2022_oxacillin.html
       - text: "Oxaliplatin (Valenzuela 2011)"
         href: articles/Valenzuela_2011_oxaliplatin.html
       - text: "Oxaliplatin (Yamada 2025)"
@@ -8489,6 +8491,7 @@ articles:
   - articles/Munir_2021_vancomycin
   - articles/Munn_2024_carprofen_moxidectin_internal_standard
   - articles/Muntau_2017_sapropterin
+  - articles/Murinova_2022_oxacillin
   - articles/Muthukrishnan_2025_clazakizumab
   - articles/Muto_2015_voriconazole
   - articles/NA_NA_lidocaine
