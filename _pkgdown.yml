@@ -4154,6 +4154,8 @@ navbar:
         href: articles/deHoogd_2017_morphine.html
       - text: "Morphine brain rat (Groenendaal 2007)"
         href: articles/Groenendaal_2007_morphine_brain_rat.html
+      - text: "Morphine pbpk (Verscheijden 2021)"
+        href: articles/Verscheijden_2021_morphine.html
       - text: "Morphine rat eeg (Groenendaal 2007)"
         href: articles/Groenendaal_2007_morphine_rat_eeg.html
       - text: "Morphine rat pbpk (Yamamoto 2017)"
@@ -9415,6 +9417,7 @@ articles:
   - articles/Verner_2015_pfas_birthweight
   - articles/Verrest_2023_miltefosine_paromomycin
   - articles/Verrest_2024_leishmania
+  - articles/Verscheijden_2021_morphine
   - articles/Vet_2016_midazolam
   - articles/Vezina_2010_valganciclovir
   - articles/Vezina_2014_valganciclovir
