@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2022 nifedipine SBP Emax ([doi:10.3389/fphar.2022.970539](https://doi.org/10.3389/fphar.2022.970539)) -- PD layer of a nifedipine-apatinib PBPK/PD DDI analysis in hypertensive and cancer patients.
+- Add Xie 2022 colistin sulfate ([doi:10.3389/fphar.2022.967412](https://doi.org/10.3389/fphar.2022.967412)) -- critically ill Chinese ICU adults.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
