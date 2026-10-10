@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nolain 2022 alirocumab, PCSK9 and LDL-C TMDD-QSS PK/PD ([doi:10.1007/s13318-022-00787-4](https://doi.org/10.1007/s13318-022-00787-4)) -- healthy volunteers and adults with hypercholesterolaemia.
+- Add Tikiso 2022 ethambutol ([doi:10.1093/jac/dkac127](https://doi.org/10.1093/jac/dkac127)) -- African children with tuberculosis, with and without HIV and lopinavir/ritonavir.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
