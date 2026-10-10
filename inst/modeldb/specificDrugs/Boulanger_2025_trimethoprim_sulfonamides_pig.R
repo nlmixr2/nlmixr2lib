@@ -24,7 +24,7 @@ Boulanger_2025_trimethoprim_sulfonamides_pig <- function() {
     "Boulanger M, Taillandier JF, Henri J, Devreese M, De Baere S, Lacroix M,",
     "Ferran AA, Viel A. Population pharmacokinetic modeling of",
     "sulfadimethoxine, sulfadiazine and sulfamethoxazole combined to",
-    "trimethoprim in pigs. Vet Q. 2025;45(1):1-17.",
+    "trimethoprim in pigs. Vet Q. 2025;45(1):2565351.",
     "doi:10.1080/01652176.2025.2565351.",
     "Fixed effects, random-effect standard deviations and residual error from",
     "Table 2; random-effect correlations from Supplementary Table S6;",

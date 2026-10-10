@@ -13,11 +13,11 @@ Hurtado_2014_levofloxacin_rat <- function() {
     "macro-constants CL, Q, Vc, Vp (Hurtado 2014)."
   )
   reference <- paste(
-    "Hurtado FK, Weber B, Derendorf H, Hochhaus G, Dalla Costa T. (2014).",
-    "Population pharmacokinetic modeling of the unbound levofloxacin",
-    "concentrations in rat plasma and prostate tissue measured by",
-    "microdialysis. Antimicrob Agents Chemother 58(2):678-685.",
-    "doi:10.1128/AAC.01884-13"
+    "Hurtado FK, Weber B, Derendorf H, Hochhaus G, Dalla Costa T. Population",
+    "pharmacokinetic modeling of the unbound levofloxacin concentrations in",
+    "rat plasma and prostate tissue measured by microdialysis. Antimicrob",
+    "Agents Chemother. 2014;58(2):678-686. doi:10.1128/AAC.01884-13.",
+    sep = " "
   )
   vignette <- "Hurtado_2014_levofloxacin_rat"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")

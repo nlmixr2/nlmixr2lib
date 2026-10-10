@@ -1,6 +1,12 @@
 Park_2001_ketoprofen <- function() {
   description <- "One-compartment oral PK plus Holford-Sheiner effect-compartment for synovial fluid disposition of ketoprofen in adults with arthritis at steady state on 100 mg oral twice-daily dosing (Park 2001 Tables 2-3, Eq. 1; effect-compartment elimination rate keo = 0.16 1/h, peak synovial:plasma ratio 0.77 with 3.1 h time lag)."
-  reference <- "Park JY, Sohn JH, Yoon YR, Shon JH, Cha IJ, Seo SS, Choi JS, Shin JG. Disposition Kinetics of Ketoprofen into Synovial Fluid Following Systemic Administration: Population Pharmacokinetic Analysis. Kor J Clin Pharmacol Ther. 2001;9(1):97-107. doi:10.12793/jkscpt.2001.9.1.97"
+  reference <- paste(
+    "Park JY, Sohn JH, Yoon YR, Shon JH, Cha IJ, Seo SS, Choi JS, Shin JG.",
+    "Disposition Kinetics of Ketoprofen into Synovial Fluid Following Systemic",
+    "Administration: Population Pharmacokinetic Analysis. J Korean Soc Clin",
+    "Pharmacol Ther. 2001;9(1):97. doi:10.12793/jkscpt.2001.9.1.97.",
+    sep = " "
+  )
   vignette <- "Park_2001_ketoprofen"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

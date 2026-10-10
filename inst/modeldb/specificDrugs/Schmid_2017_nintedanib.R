@@ -1,11 +1,11 @@
 Schmid_2017_nintedanib <- function() {
   description <- "Population pharmacokinetic model of nintedanib and its main hydrolytic metabolite BIBF 1202 (Schmid 2017): a one-compartment first-order absorption + lag parent (nintedanib) jointly fit with a one-compartment first-order absorption + lag metabolite (BIBF 1202) coupled to the parent via a fixed fractional formation-during-elimination term (kmet = CL/V2 * ffM) and a fixed V3/V2 volume ratio inherited from rat IV data. The 1191-patient pooled data set spans four trials in NSCLC (Reck 2011 NSCLC phase II, LUME-Lung 1, LUME-Lung 2) and IPF (TOMORROW). Covariates include allometric body weight on CL, linear age on F1, smoking-status on F1, ethnic-origin composite (Indian/Chinese/Taiwanese vs Korean vs reference) on F1, study-group effects on F1 and ka, and on the metabolite side body weight on F2 with ethnic-origin (Indian alone, non-Indian Asian) on F2, ECOG status, LDH (hockey-stick), study-group effect on ka2, and NSCLC histology on ka2."
   reference <- paste(
-    "Schmid U, Liesenfeld KH, Fleury A, Dallinger C, Freiwald M.",
-    "Population pharmacokinetics of nintedanib, an inhibitor of tyrosine",
-    "kinases, in patients with non-small cell lung cancer or idiopathic",
-    "pulmonary fibrosis. Cancer Chemotherapy and Pharmacology.",
-    "2018 Jan;81(1):89-101. doi:10.1007/s00280-017-3452-0. PMID 29127500.",
+    "Schmid U, Liesenfeld KH, Fleury A, Dallinger C, Freiwald M. Population",
+    "pharmacokinetics of nintedanib, an inhibitor of tyrosine kinases, in",
+    "patients with non-small cell lung cancer or idiopathic pulmonary",
+    "fibrosis. Cancer Chemother Pharmacol. 2018;81(1):89-101.",
+    "doi:10.1007/s00280-017-3452-0. PMID 29119292.",
     sep = " "
   )
   vignette <- "Schmid_2017_nintedanib"

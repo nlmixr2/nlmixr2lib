@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("Athanassa_2025_minocycline"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Athanassa_2025_minocycline"))$description`
-* Article: [J Antimicrob Chemother 2025;80(6):1420-1426](https://doi.org/10.1093/jac/dkaf090)
+* Article: [J Antimicrob Chemother 2025;80(5):1420-1426](https://doi.org/10.1093/jac/dkaf090)
 
 Athanassa and colleagues ran a prospective, open-label study of *orally*
 administered minocycline in critically ill ICU adults with

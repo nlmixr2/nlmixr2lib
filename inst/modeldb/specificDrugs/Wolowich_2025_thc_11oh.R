@@ -26,9 +26,9 @@ Wolowich_2025_thc_11oh <- function() {
     "Wolowich WR, Greif R, Theiler L, Kleine-Brueggeney M.",
     "Pharmacokinetic/Pharmacodynamic Modeling of the Acute Heart Rate Effects",
     "of Delta-9 Tetrahydrocannabinol and Its Major Metabolites After",
-    "Intravenous Injection in Healthy Volunteers.",
-    "Eur J Drug Metab Pharmacokinet. 2025;50(3):229-241.",
-    "doi:10.1007/s13318-025-00941-8"
+    "Intravenous Injection in Healthy Volunteers. Eur J Drug Metab",
+    "Pharmacokinet. 2025;50(3):229-242. doi:10.1007/s13318-025-00941-8.",
+    sep = " "
   )
   vignette <- "Wolowich_2025_thc_heart_rate"
 

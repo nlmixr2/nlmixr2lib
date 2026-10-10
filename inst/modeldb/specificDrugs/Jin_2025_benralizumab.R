@@ -5,7 +5,7 @@ Jin_2025_benralizumab <- function() {
     "Penland RC, Ding J, Lukka PB.",
     "Population pharmacokinetics and exposure-response analysis of benralizumab in",
     "Chinese adults, adolescents, and pediatric participants with severe eosinophilic asthma.",
-    "Clin Pharmacokinet. 2025;64:1233-1245. doi:10.1007/s40262-025-01538-9.",
+    "Clin Pharmacokinet. 2025;64(8):1231-1243. doi:10.1007/s40262-025-01538-9.",
     "Parameter values are the final-model estimates in Resource 10 of the electronic",
     "supplementary material. Updates the legacy model of Yan L, Wang B, Chia YL, Roskos LK.",
     "Clin Pharmacokinet. 2019;58:943-58; doi:10.1007/s40262-019-00738-4.",

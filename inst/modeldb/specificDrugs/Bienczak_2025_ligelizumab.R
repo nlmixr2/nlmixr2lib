@@ -1,6 +1,6 @@
 Bienczak_2025_ligelizumab <- function() {
   description <- "Two-compartment population PK model for ligelizumab in adolescent and adult patients with chronic spontaneous urticaria and healthy adult volunteers (Bienczak 2025)"
-  reference <- "Bienczak A, Gautier A, Hua E, Ji Y, Scosyrev E, Smeets S, Severin T, Drollmann A, Patekar M, Savelieva M. Model-Informed Drug Development for Ligelizumab in Patients With Chronic Spontaneous Urticaria. CPT Pharmacometrics Syst Pharmacol. 2025. doi:10.1002/psp4.70090"
+  reference <- "Bienczak A, Gautier A, Hua E, Ji Y, Scosyrev E, Smeets S, Severin T, Drollmann A, Patekar M, Savelieva M. Model-Informed Drug Development for Ligelizumab in Patients With Chronic Spontaneous Urticaria. CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2040-2051. doi:10.1002/psp4.70098"
   vignette <- "Bienczak_2025_ligelizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

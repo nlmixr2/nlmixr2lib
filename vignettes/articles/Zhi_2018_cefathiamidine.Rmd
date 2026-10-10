@@ -19,7 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Zhi LJ, Wang L, Chen XK, Zhai XY, Wen L, Dong L, Jacqz-Aigrain E, Shi ZR, Zhao W. (2018). Population pharmacokinetics and dosing optimization of cefathiamidine in children with hematologic infection. Drug Des Devel Ther 12:1845-1853.
+* Citation: Zhi LJ, Wang L, Chen XK, Zhai XY, Wen L, Dong L, Jacqz-Aigrain E,
+  Shi ZR, Zhao W. Population pharmacokinetics and dosing optimization of
+  cefathiamidine in children with hematologic infection. Drug Des Devel Ther.
+  2018;12:855-862. doi:10.2147/DDDT.S160329.
 * Article: <https://doi.org/10.2147/DDDT.S160329>
 
 ```{r model-meta}

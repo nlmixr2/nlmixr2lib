@@ -2,11 +2,11 @@ Asiimwe_2025_trastuzumabDeruxtecan_mbma <- function() {
   description <- "MBMA. Two-compartment linear population PK model of trastuzumab deruxtecan (T-DXd, DS-8201, Enhertu, anti-HER2 antibody-drug conjugate) fitted by model-based meta-analysis to summary-level concentration-time data digitised from 4 published clinical trials in patients with HER2-positive breast, non-small-cell lung, gastric/GEJ, colorectal and other solid tumors. Between-study variability (BSV) is a study-level random effect on CL and Vc (block correlation 0.915) representing differences in inclusion criteria across trials and dose-escalation arms treated as separate studies. Residual error is proportional + additive on serum concentration (ng/mL) and was weighted by the square root of each trial's sample size during fitting; the tabulated parameter estimates are the unweighted values and simulation of a study of N subjects should scale the residual SD by 1/sqrt(N). Suitable simulation scope is study-arm-mean cycle-1 concentration-time profiles, NOT individual-patient concentrations. Parameter values are the T-DXd column of Asiimwe 2025 Table 1 (Monolix 2024R1)."
 
   reference <- paste(
-    "Asiimwe IG, Chtiba N, Mouksassi S, Pillai G(C), Peter RM, Yuen E, Pilla Reddy V.",
-    "Postmarketing Assessment of Antibody-Drug Conjugates:",
-    "Proof-of-Concept Using Model-Based Meta-Analysis and a Clinical Utility Index Approach.",
-    "CPT Pharmacometrics Syst Pharmacol. 2025;14(11):1957-1970.",
-    "doi:10.1002/psp4.70013",
+    "Asiimwe IG, Chtiba N, Mouksassi S, Pillai GC, Peter RM, Yuen E, Pilla",
+    "Reddy V. Postmarketing Assessment of Antibody-Drug Conjugates:",
+    "Proof-of-Concept Using Model-Based Meta-Analysis and a Clinical Utility",
+    "Index Approach. CPT Pharmacometrics Syst Pharmacol.",
+    "2025;14(11):1810-1822. doi:10.1002/psp4.70013.",
     sep = " "
   )
   vignette <- "Asiimwe_2025_trastuzumab_ADCs_mbma"

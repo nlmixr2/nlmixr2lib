@@ -1,6 +1,14 @@
 Scheuher_2023_ADC_mouse_qsp <- function() {
   description <- "QSP. Mouse in vivo platform model for HER2-targeting antibody-drug conjugates (T-DM1 default, N87 tumor xenograft; T-DXd variant supported via parameter overrides). Combines: (i) mouse plasma PK for ADC / naked antibody / free payload in central + peripheral compartments; (ii) mechanistic tumor uptake via a Krogh cylinder + surface exchange model; (iii) intracellular ADC processing (HER2 binding, endocytosis, recycling, degradation, endosomal payload release, cytosol transport, tubulin binding); and (iv) tumor growth inhibition via a Simeoni-style 4-stage transit-chain cascade with Hill-type kill on the proliferating stage. Amounts in nmol; concentrations amount/volume."
-  reference <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. Mouse in vivo model = Tables S1b, S2b-c, S3c-d."
+  reference <- paste(
+    "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J,",
+    "Subramanian K, Betts A. Towards a platform quantitative systems",
+    "pharmacology (QSP) model for preclinical to clinical translation of",
+    "antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn.",
+    "2024;51(5):429-447. doi:10.1007/s10928-023-09884-6. Mouse in vivo model =",
+    "Tables S1b, S2b-c, S3c-d.",
+    sep = " "
+  )
   vignette <- "Scheuher_2023_ADC_platform_qsp"
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
 

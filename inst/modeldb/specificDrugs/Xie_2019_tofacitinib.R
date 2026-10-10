@@ -30,10 +30,10 @@ Xie_2019_tofacitinib <- function() {
     sep = " "
   )
   reference <- paste(
-    "Xie R, Deng C, Wang Q, Kanik KS, Nicholas T, Menon S.",
-    "Population pharmacokinetics of tofacitinib in patients with psoriatic",
-    "arthritis. Int J Clin Pharmacol Ther. 2019; 57(9): 464-473.",
-    "doi:10.5414/CP203516. PMID: 31319909. PMCID: PMC6704728.",
+    "Xie R, Deng C, Wang Q, Kanik KS, Nicholas T, Menon S. Population",
+    "pharmacokinetics of tofacitinib in patients with psoriatic arthritis. Int",
+    "J Clin Pharmacol Ther. 2019;57(09):464-473. doi:10.5414/CP203516. PMID:",
+    "31319908. PMCID: PMC6704728.",
     sep = " "
   )
   vignette <- "Xie_2019_tofacitinib"

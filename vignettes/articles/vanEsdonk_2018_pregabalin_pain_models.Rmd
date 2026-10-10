@@ -30,7 +30,7 @@ result, so this paper contributes three model files to `nlmixr2lib`:
 
 * Citation: `r rxode2::rxode(readModelDb("vanEsdonk_2018_pregabalin"))$reference`
 * Article: <https://doi.org/10.1002/psp4.12318>
-* Study design: Okkerse 2017, Br J Clin Pharmacol 83:976-990, <https://doi.org/10.1111/bcp.13204>
+* Study design: Okkerse 2017, Br J Clin Pharmacol 83:976-990, <https://doi.org/10.1111/bcp.13183>
 
 ```{r load-models}
 mod_pk <- readModelDb("vanEsdonk_2018_pregabalin")

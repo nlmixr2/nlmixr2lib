@@ -20,10 +20,11 @@ Schlachter_2026_atogepant <- function() {
     "the plasma prediction to the dried-blood-sample matrix."
   )
   reference <- paste(
-    "Schlachter L, Stodtmann S, Voelkner A, Jonsson F, Lagraauw HM,",
-    "Boinpally RR. Population Pharmacokinetics of Atogepant for the",
-    "Prevention of Migraine. Clin Pharmacokinet. 2026;65(2):151-166.",
-    "doi:10.1007/s40262-025-01566-5."
+    "Schlachter L, Stodtmann S, Voelkner A, Jonsson F, Lagraauw HM, Boinpally",
+    "RR. Population Pharmacokinetics of Atogepant for the Prevention of",
+    "Migraine. Clin Pharmacokinet. 2026;65(1):149-164.",
+    "doi:10.1007/s40262-025-01566-5.",
+    sep = " "
   )
   vignette <- "Schlachter_2026_atogepant"
 

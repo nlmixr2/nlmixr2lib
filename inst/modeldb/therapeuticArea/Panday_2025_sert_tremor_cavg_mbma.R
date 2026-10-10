@@ -1,6 +1,13 @@
 Panday_2025_sert_tremor_cavg_mbma <- function() {
   description <- "MBMA. Translational Emax model-based meta-analysis relating the incidence proportion of tremor (a characteristic manifestation of serotonin syndrome) to predicted brain serotonin-reuptake-transporter (SERT) target coverage, pooled across 20 SERT inhibitors from five drug classes (SSRI, SNRI, SMS, TCA, opioid). Consumes drug-level literature inputs supplied as data columns (steady-state AVERAGE total plasma concentration, plasma fraction unbound, molecular weight, unbound brain-to-unbound-plasma partition coefficient and free-corrected SERT IC50) and returns a per-arm tremor incidence in percent. Suitable for simulating study-arm-level summary outcomes only; there is no PK time course, no dosing event and no individual-level prediction. This file carries the Cavg-based fit; see Panday_2025_sert_tremor_cmax_mbma for the Cmax-based fit."
-  reference <- "Panday SK, Lang BJ, Kapitanov GI, Subramanian K, Klopp-Schulze L, Venkatakrishnan K, Zutshi A, Alnaif AE. A Translational Model-Based Meta-Analysis to Predict Tremor Incidence Associated with Serotonin Reuptake Transporter Inhibition. Clin Pharmacol Ther. 2025. doi:10.1002/cpt.3696."
+  reference <- paste(
+    "Panday SK, Lang BJ, Kapitanov GI, Subramanian K, Klopp-Schulze L,",
+    "Venkatakrishnan K, Zutshi A, Alnaif AE. A Translational Model-Based",
+    "Meta-Analysis to Predict Tremor Incidence Associated with Serotonin",
+    "Reuptake Transporter Inhibition. Clin Pharmacol Ther.",
+    "2025;118(3):588-592. doi:10.1002/cpt.3696.",
+    sep = " "
+  )
   vignette <- "Panday_2025_sert_tremor_mbma"
 
   # Algebraic MBMA: no rxode2 dose events are consumed (every input arrives as a

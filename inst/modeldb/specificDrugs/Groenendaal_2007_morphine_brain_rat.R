@@ -2,7 +2,7 @@ Groenendaal_2007_morphine_brain_rat <- function() {
   description <- paste(
     "Preclinical (rat, male Wistar). Non-linear blood-brain barrier (BBB)",
     "distribution model for morphine published by Groenendaal et al. (2007,",
-    "Br J Pharmacol 151(4):701-712). A three-compartment blood disposition",
+    "Br J Pharmacol 151(5):701-712). A three-compartment blood disposition",
     "model (paper Table 2, NONMEM ADVAN11 TRANS4; linear body-weight effects",
     "on CL and on the first peripheral volume V2) drives a single brain",
     "extracellular-fluid (ECF) compartment sampled by intracerebral",
@@ -24,10 +24,9 @@ Groenendaal_2007_morphine_brain_rat <- function() {
   )
   reference <- paste(
     "Groenendaal D, Freijer J, de Mik D, Bouw MR, Danhof M, de Lange ECM.",
-    "Population pharmacokinetic modelling of non-linear brain distribution",
-    "of morphine: influence of active saturable influx and P-glycoprotein",
-    "mediated efflux.",
-    "Br J Pharmacol. 2007;151(4):701-712.",
+    "Population pharmacokinetic modelling of non-linear brain distribution of",
+    "morphine: influence of active saturable influx and P-glycoprotein",
+    "mediated efflux. Br J Pharmacol. 2007;151(5):701-712.",
     "doi:10.1038/sj.bjp.0707257.",
     sep = " "
   )
@@ -166,7 +165,7 @@ Groenendaal_2007_morphine_brain_rat <- function() {
       "AUC(0-165 min) fell from 6810 +/- 1890 (4 mg/kg) and 8460 +/- 2790",
       "(4 mg/kg + GF120918) to 3990 +/- 2180 ng.h/mL (40 mg/kg), the",
       "non-linearity this model was built to explain. The companion",
-      "publication (Groenendaal et al. 2007, Br J Pharmacol 151(4):713-720,",
+      "publication (Groenendaal et al. 2007, Br J Pharmacol 151(5):713-720,",
       "doi:10.1038/sj.bjp.0707258) reports the EEG PK-PD biophase model from",
       "the same experiments and is a separate model."
     )

@@ -27,12 +27,13 @@ Zhang_2024_f53b_mouse_pbpk <- function() {
     "between-subject random effects."
   )
   reference <- paste(
-    "Zhang J, Li SP, Li QQ, Zhang YT, Dong GH, Canchola A, Zeng X, Chou",
-    "WC. Development of a Physiologically Based Pharmacokinetic (PBPK)",
-    "Model for F-53B in Pregnant Mice and Its Extrapolation to Humans.",
-    "Environ Sci Technol. 2024;58(43):18928-18939.",
-    "doi:10.1021/acs.est.4c05405. Model equations and parameters from",
-    "Supporting Information Sections S4-S5 and Tables S3-S5, S7."
+    "Zhang J, Li SP, Li QQ, Zhang YT, Dong GH, Canchola A, Zeng X, Chou WC.",
+    "Development of a Physiologically Based Pharmacokinetic (PBPK) Model for",
+    "F-53B in Pregnant Mice and Its Extrapolation to Humans. Environ Sci",
+    "Technol. 2024;58(42):18928-18939. doi:10.1021/acs.est.4c05405. Model",
+    "equations and parameters from Supporting Information Sections S4-S5 and",
+    "Tables S3-S5, S7.",
+    sep = " "
   )
   vignette <- "Zhang_2024_f53b_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

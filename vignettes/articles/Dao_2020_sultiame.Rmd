@@ -387,7 +387,7 @@ knitr::kable(
   fraction of total elimination that goes to urine versus non-renal
   routes.
 - **Source publication not available.** The Dao 2020 paper
-  (Pharmacology Research & Perspectives 8(2):e00558,
+  (Pharmacology Research & Perspectives 8(1):e00558,
   doi:10.1002/prp2.558) was not available when this model was
   built; the DDMORE bundle's `Model_Accomodations.txt` describes the
   paper as "under submission" relative to the bundle's 2018-2019

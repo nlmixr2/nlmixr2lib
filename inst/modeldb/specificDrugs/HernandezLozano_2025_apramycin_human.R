@@ -1,6 +1,25 @@
 HernandezLozano_2025_apramycin_human <- function() {
   description <- "Translational prediction of apramycin efficacy against Escherichia coli in human complicated urinary tract infection. The published human population PK model of Zhao 2022 (mammillary four-compartment model with linear elimination, absolute eGFR proportional on clearance, allometric total body weight on all fixed effects, and 90% renal fractional excretion into a urine compartment) drives the unbound plasma concentration into the mouse-derived pharmacodynamic component of Hernandez-Lozano 2025. Kidneys and bladder are modelled as two independent organ systems, each with two bacterial subpopulations (1 = main, apramycin-susceptible; 2 = decreased susceptibility) and, within each, a growing drug-susceptible state S and a dormant drug-insusceptible state D entered at rate ksr = (kg - kd) * Btot / Bmax. Apramycin adds to the death rate of the S states through a power model normalized to the in vitro MIC, kdrug = Slope * (Cu/MIC)^gamma with gamma fixed to 1, and drives transfer from subpopulation 1 to subpopulation 2 at rate kada * (Cu/MIC). The kidney is assumed to be at pH 7.4 and the bladder at pH 6, so each organ normalizes by the MIC measured at its own pH. Initial bacterial densities default to 10^6 and 10^5 CFU per organ for kidneys and bladder as used in the paper's human simulations, in which a single 10.8 mg/kg 30 min intravenous infusion produced stasis in both organs for both strains. Sibling models: HernandezLozano_2025_apramycin_invitro (the underlying time-kill fit) and HernandezLozano_2025_apramycin_mouse (the same PD component driven by a mouse subcutaneous PK model)."
-  reference <- "Hernandez-Lozano I, Aranzana-Climent V, Cao S, Matias C, Hansen JU, Liepinsh E, Hughes D, Hobbie SN, Vingsbo Lundberg C, Friberg LE. Model-informed drug development for antimicrobials: translational pharmacokinetic-pharmacodynamic modelling of apramycin to facilitate prediction of efficacious dose in complicated urinary tract infections. J Antimicrob Chemother. 2025 Feb 3;80(2):302-311. doi:10.1093/jac/dkae409. PMID: 39545353. PMCID: PMC11695905. Human simulation design (75 kg adult, creatinine clearance 120 mL/min, 30 min intravenous infusions of 0.3-30 mg/kg, initial densities 10^6 and 10^5 CFU per organ, pH 7.4 in kidney and pH 6 in bladder, unbound fraction 92.9%): Materials and methods, 'Prediction of human efficacy', and Figure 5. PD estimates: Table 1, section 'In vivo PD parameters'. Human PK parameters are NOT re-estimated here; they are taken from Zhao C, Chirkova A, Rosenborg S, et al. Population pharmacokinetics of apramycin from first-in-human plasma and urine data to support prediction of efficacious dose. J Antimicrob Chemother 2022;77:2718-28. doi:10.1093/jac/dkac225, Table 2 (the final 'Plasma+urine data' column) and its footnote a."
+  reference <- paste(
+    "Hernandez-Lozano I, Aranzana-Climent V, Cao S, Matias C, Hansen JU,",
+    "Liepinsh E, Hughes D, Hobbie SN, Vingsbo Lundberg C, Friberg LE.",
+    "Model-informed drug development for antimicrobials: translational",
+    "pharmacokinetic-pharmacodynamic modelling of apramycin to facilitate",
+    "prediction of efficacious dose in complicated urinary tract infections. J",
+    "Antimicrob Chemother. 2025;80(1):301-310. doi:10.1093/jac/dkae409. PMID:",
+    "39548844. PMCID: PMC11695905. Human simulation design (75 kg adult,",
+    "creatinine clearance 120 mL/min, 30 min intravenous infusions of 0.3-30",
+    "mg/kg, initial densities 10^6 and 10^5 CFU per organ, pH 7.4 in kidney",
+    "and pH 6 in bladder, unbound fraction 92.9%): Materials and methods,",
+    "'Prediction of human efficacy', and Figure 5. PD estimates: Table 1,",
+    "section 'In vivo PD parameters'. Human PK parameters are NOT re-estimated",
+    "here; they are taken from Zhao C, Chirkova A, Rosenborg S, et al.",
+    "Population pharmacokinetics of apramycin from first-in-human plasma and",
+    "urine data to support prediction of efficacious dose. J Antimicrob",
+    "Chemother 2022;77:2718-28. doi:10.1093/jac/dkac225, Table 2 (the final",
+    "'Plasma+urine data' column) and its footnote a.",
+    sep = " "
+  )
   vignette <- "HernandezLozano_2025_apramycin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

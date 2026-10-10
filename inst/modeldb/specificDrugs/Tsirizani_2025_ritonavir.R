@@ -27,12 +27,12 @@ Tsirizani_2025_ritonavir <- function() {
   )
   reference <- paste(
     "Tsirizani L, Waalewijn H, Szubert A, Mulenga V, Chabala C,",
-    "Bwakura-Dangarembizi M, Chitsamatanga M, Rutebarika DA, Musiime V,",
-    "Kasozi M, Lugemwa A, McIlleron HM, Burger DM, Gibb DM, Colbers A,",
-    "Denti P, Wasmann RE, the CHAPAS-4 trial team (2025).",
-    "Population pharmacokinetics of ritonavir as a booster of lopinavir,",
-    "atazanavir, or darunavir in African children with HIV.",
-    "Antimicrob Agents Chemother. doi:10.1128/aac.00771-25.",
+    "Bwakura-Dangarembizi M, Chitsamatanga M, Rutebarika DA, Musiime V, Kasozi",
+    "M, Lugemwa A, McIlleron HM, Burger DM, Gibb DM, Colbers A, Denti P,",
+    "Wasmann RE; the CHAPAS-4 trial team. Population pharmacokinetics of",
+    "ritonavir as a booster of lopinavir, atazanavir, or darunavir in African",
+    "children with HIV. Antimicrob Agents Chemother. 2025;69(11):e00771-25.",
+    "doi:10.1128/aac.00771-25.",
     "Parameter values from Table 3; model structure and the fat-free-mass",
     "reference value from the NONMEM control stream in supplemental Data S1",
     "(AAC00771-25-s0001.docx).",

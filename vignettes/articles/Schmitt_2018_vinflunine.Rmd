@@ -24,7 +24,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Schmitt_2018_vinflunine"))$description`
 * Article: <https://doi.org/10.1111/bcp.13518>
 
-Schmitt et al. 2018 (Br J Clin Pharmacol 84(7):1506-1517) pooled data from 18
+Schmitt et al. 2018 (Br J Clin Pharmacol 84(5):900-910) pooled data from 18
 phase I / phase II vinflunine trials (372 patients, 4154 retained plasma
 concentrations) and fit two coupled models in NONMEM: a four-compartment popPK
 model for IV vinflunine and a semi-mechanistic Friberg-style myelosuppression

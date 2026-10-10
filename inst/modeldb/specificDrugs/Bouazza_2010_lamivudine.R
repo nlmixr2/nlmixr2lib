@@ -1,6 +1,13 @@
 Bouazza_2010_lamivudine <- function() {
   description <- "Two-compartment population PK model for once-daily oral lamivudine in HIV-infected West African children (Bouazza 2010); allometric weight scaling on CL/F, Q/F, Vc/F, and Vp/F with reference body weight 16.8 kg, and absorption rate constant Ka structurally fixed to the disposition distribution-phase eigenvalue (Ka = alpha = 0.71 1/h) from the literature"
-  reference <- "Bouazza N, Hirt D, Bardin C, Diagbouga S, Nacro B, Hien H, Zoure E, Rouet F, Ouiminga A, Blanche S, Van De Perre P, Treluyer J-M, Msellati P, Urien S. Is the recommended once-daily dose of lamivudine optimal in West African HIV-infected children? Antimicrob Agents Chemother. 2010;54(9):3938-3943. doi:10.1128/AAC.00306-10"
+  reference <- paste(
+    "Bouazza N, Hirt D, Bardin C, Diagbouga S, Nacro B, Hien H, Zoure E, Rouet",
+    "F, Ouiminga A, Blanche S, Van De Perre P, Treluyer JM, Msellati P, Urien",
+    "S. Is the recommended once-daily dose of lamivudine optimal in West",
+    "African HIV-infected children? Antimicrob Agents Chemother.",
+    "2010;54(8):3280-3286. doi:10.1128/AAC.00306-10.",
+    sep = " "
+  )
   vignette <- "Bouazza_2010_lamivudine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

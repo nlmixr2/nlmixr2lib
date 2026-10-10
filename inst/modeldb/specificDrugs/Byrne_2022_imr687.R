@@ -7,7 +7,6 @@ Byrne_2022_imr687 <- function() {
     "with Sickle Cell Disease.",
     "American Conference on Pharmacometrics (ACoP) 2022;",
     "Metrum Research Group / Imara Inc.",
-    "doi:10.70534/zdmj9414.",
     sep = " "
   )
   vignette <- "Byrne_2022_imr687"

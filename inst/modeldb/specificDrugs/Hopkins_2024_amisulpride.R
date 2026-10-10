@@ -21,11 +21,14 @@ Hopkins_2024_amisulpride <- function() {
     "prolongation while brain occupancy is preserved."
   )
   reference <- paste(
-    "Hopkins SC, Toongsuwan S, Corriveau TJ, Watanabe T, Tsushima Y, Asada T, Lew R, Shi L, Zann V,",
-    "Snowden TJ, van der Graaf PH, Darpo B, Searle GE, Rabiner EA, Wilding I, Szabo ST, Galluppi GR,",
-    "Koblan KS. Discovery and Model-Informed Drug Development of a Controlled-Release Formulation of",
-    "Nonracemic Amisulpride that Reduces Plasma Exposure but Achieves Pharmacodynamic Bioequivalence in",
-    "the Brain. Clin Pharmacol Ther. 2024;116(6):1553-1562. doi:10.1002/cpt.3311."
+    "Hopkins SC, Toongsuwan S, Corriveau TJ, Watanabe T, Tsushima Y, Asada T,",
+    "Lew R, Shi L, Zann V, Snowden TJ, van der Graaf PH, Darpo B, Searle GE,",
+    "Rabiner EA, Wilding I, Szabo ST, Galluppi GR, Koblan KS. Discovery and",
+    "Model-Informed Drug Development of a Controlled-Release Formulation of",
+    "Nonracemic Amisulpride that Reduces Plasma Exposure but Achieves",
+    "Pharmacodynamic Bioequivalence in the Brain. Clin Pharmacol Ther.",
+    "2024;116(2):460-470. doi:10.1002/cpt.3311.",
+    sep = " "
   )
   vignette <- "Hopkins_2024_amisulpride"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")

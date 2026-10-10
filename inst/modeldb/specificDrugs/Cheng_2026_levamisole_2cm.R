@@ -13,10 +13,9 @@ Cheng_2026_levamisole_2cm <- function() {
     sep = " "
   )
   reference <- paste(
-    "Cheng C, Jeong YS, Jusko WJ.",
-    "Meta-analysis of levamisole absorption and disposition across diverse species using a",
-    "minimal physiologically-based pharmacokinetic model.",
-    "J Pharm Investig. 2026;56(2):171-183.",
+    "Cheng C, Jeong YS, Jusko WJ. Meta-analysis of levamisole absorption and",
+    "disposition across diverse species using a minimal physiologically-based",
+    "pharmacokinetic model. J Pharm Investig. 2026;56(1):171-183.",
     "doi:10.1007/s40005-025-00770-6.",
     sep = " "
   )

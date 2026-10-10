@@ -2,7 +2,10 @@ Kleideiter_2018_cebranopadol <- function() {
   description <- "Two-compartment population PK model for cebranopadol, a NOP / opioid receptor agonist, in healthy adults and adult chronic-pain patients (low back pain or osteoarthritis, diabetic polyneuropathy, post-bunionectomy), with two transit absorption compartments before central, first-order elimination, and covariate effects from sex, CYP2C9 phenotype, ALT, CrCl, age, body weight, formulation, and disease status (Kleideiter 2018)"
   reference <- paste(
     "Kleideiter E, Piana C, Wang S, Nemeth R, Gautrois M. Clinical pharmacokinetic characteristics of cebranopadol, a novel first-in-class analgesic. Clin Pharmacokinet. 2018;57(1):31-50. doi:10.1007/s40262-017-0545-1.",
-    "Erratum in: Kleideiter E, Piana C, Wang S, Nemeth R, Gautrois M. Correction to: clinical pharmacokinetic characteristics of cebranopadol, a novel first-in-class analgesic. Clin Pharmacokinet. 2018;57(11):1467-1469. doi:10.1007/s40262-018-0686-x.",
+    "Erratum in: Kleideiter E, Piana C, Wang S, Nemeth R, Gautrois M.",
+    "Correction to: clinical pharmacokinetic characteristics of cebranopadol,",
+    "a novel first-in-class analgesic. Clin Pharmacokinet.",
+    "2018;57(8):1057-1058. doi:10.1007/s40262-018-0686-x.",
     sep = " "
   )
   vignette <- "Kleideiter_2018_cebranopadol"

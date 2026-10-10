@@ -1,6 +1,18 @@
 Zhao_2024_ciprofloxacin_colistin_invitro <- function() {
   description <- "In vitro (Escherichia coli; one clinical urinary isolate C47 plus MG1655 wild type LM347 and its isogenic gyrA1/marR mutants LM378 and LM421). Semi-mechanistic PK/PD model of static-concentration time-kill for ciprofloxacin and colistin alone and in combination. Five pre-existing subpopulations (the 2x2 ciprofloxacin/colistin susceptible-resistant grid plus a pre-existing resting subpopulation present only in C47), each cycling between a growing S state, a density-driven resting R state and a transient ciprofloxacin-induced non-colony-forming Nc state. Killing is additive across drugs (subpopulation synergy) with concentration-independent interaction factors shifting the ciprofloxacin and colistin EC50 in combination. Colistin loss to labware is described by an Emax free-fraction model at time zero plus saturable binding kinetics during the experiment; ciprofloxacin is held at its nominal concentration. Sibling models: Zhao_2024_ciprofloxacin_colistin_plasma, Zhao_2024_ciprofloxacin_colistin_kidney."
-  reference <- "Zhao C, Kristoffersson AN, Khan DD, Lagerback P, Lustig U, Cao S, Annerstedt C, Cars O, Andersson DI, Hughes D, Nielsen EI, Friberg LE. Quantifying combined effects of colistin and ciprofloxacin against Escherichia coli in an in silico pharmacokinetic-pharmacodynamic model. Sci Rep. 2024 May 22;14(1):11603. doi:10.1038/s41598-024-61518-0. Structural equations: main text Eqs 1-17. Parameter estimates: main text Table 1 (PK/PD model) and Supplementary Table S1 (colistin binding model). Every value here was cross-checked against the authors' deposited final NONMEM control stream (Supplementary zip, Supplementary/run422b_clean.mod), which carries the final estimates in its $THETA/$SIGMA records."
+  reference <- paste(
+    "Zhao C, Kristoffersson AN, Khan DD, Lagerback P, Lustig U, Cao S,",
+    "Annerstedt C, Cars O, Andersson DI, Hughes D, Nielsen EI, Friberg LE.",
+    "Quantifying combined effects of colistin and ciprofloxacin against",
+    "Escherichia coli in an in silico pharmacokinetic-pharmacodynamic model.",
+    "Sci Rep. 2024;14(1):11706. doi:10.1038/s41598-024-61518-0. Structural",
+    "equations: main text Eqs 1-17. Parameter estimates: main text Table 1",
+    "(PK/PD model) and Supplementary Table S1 (colistin binding model). Every",
+    "value here was cross-checked against the authors' deposited final NONMEM",
+    "control stream (Supplementary zip, Supplementary/run422b_clean.mod),",
+    "which carries the final estimates in its $THETA/$SIGMA records.",
+    sep = " "
+  )
   vignette <- "Zhao_2024_ciprofloxacin_colistin"
   units <- list(time = "h", dosing = "CFU/mL", concentration = "mg/L")
 

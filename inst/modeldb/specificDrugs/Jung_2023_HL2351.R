@@ -20,10 +20,10 @@ Jung_2023_HL2351 <- function() {
     "doi:10.3390/pharmaceutics15010304. Model Case 4 (fractal model):",
     "Supplementary Table S4 (estimates) and Code S9 (NONMEM control stream).",
     "The base (non-fractal) model and the clinical study are reported in",
-    "Ngo L, Lee J, Lim L, Lim H, Bae KS, Hong T, Bae S, Hong Y. Development of a",
+    "Ngo L, Oh J, Kim A, Back H-m, Kang W-h, Chae J-w, Yun H-y, Lee H. Development of a",
     "Pharmacokinetic Model Describing Neonatal Fc Receptor-Mediated Recycling of HL2351,",
     "a Novel Hybrid Fc-Fused Interleukin-1 Receptor Antagonist, to Optimize Dosage Regimen.",
-    "CPT Pharmacometrics Syst Pharmacol. 2020;9(10):584-595. doi:10.1002/psp4.12552;",
+    "CPT Pharmacometrics Syst Pharmacol. 2020;9(10):584-595. doi:10.1002/psp4.12555;",
     "see modellib('Ngo_2020_HL2351') for the upstream model."
   )
   vignette <- "Jung_2023_fractal_kinetics"

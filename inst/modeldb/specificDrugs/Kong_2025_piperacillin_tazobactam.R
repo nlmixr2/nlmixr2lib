@@ -20,11 +20,11 @@ Kong_2025_piperacillin_tazobactam <- function() {
     "the sibling-drug suffix _taz throughout."
   )
   reference <- paste(
-    "Kong D, Koomen JV, Vanommeslaeghe F, Delanghe S, Van Biesen W,",
-    "Colin PJ, Eloot S. A Population Pharmacokinetic Analysis for",
+    "Kong D, Koomen JV, Vanommeslaeghe F, Delanghe S, Van Biesen W, Colin PJ,",
+    "Eloot S. A Population Pharmacokinetic Analysis for",
     "Piperacillin/Tazobactam in Patients with End-Stage Kidney Disease",
-    "Undergoing Intermittent Haemodialysis: Extension of a",
-    "General-Purpose Model. Clin Pharmacokinet. 2025.",
+    "Undergoing Intermittent Haemodialysis: Extension of a General-Purpose",
+    "Model. Clin Pharmacokinet. 2025;64(8):1165-1178.",
     "doi:10.1007/s40262-025-01527-y.",
     "Structural parameters, maturation / decline functions,",
     "serum-creatinine effect and inter-individual variances are fixed to",

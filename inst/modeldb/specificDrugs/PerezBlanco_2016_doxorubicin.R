@@ -9,7 +9,7 @@ PerezBlanco_2016_doxorubicin <- function() {
     "(1 - Fm) fraction represents non-DOXol elimination pathways. The five",
     "volumes of distribution (V1/V2/V3 for DOX and V4/V5 for DOXol) were",
     "held fixed during estimation: the DOX volumes to the Kontny 2013",
-    "(doi:10.1007/s00280-013-2261-3) adult-reference values, and the DOXol",
+    "(doi:10.1007/s00280-013-2069-1) adult-reference values, and the DOXol",
     "volumes to the values obtained from a sensitivity analysis carried out",
     "for that purpose. No covariates were retained in the final model;",
     "bilirubin and AST showed an influence on CL and CLm but the OFV",
@@ -169,7 +169,7 @@ PerezBlanco_2016_doxorubicin <- function() {
     # below are the back-transformed point estimates.
     #
     # Five of the eleven PK fixed-effects are FIXED:
-    #   V1, V2, V3 -- carried from Kontny 2013 [doi:10.1007/s00280-013-2261-3]
+    #   V1, V2, V3 -- carried from Kontny 2013 [doi:10.1007/s00280-013-2069-1]
     #     adult-reference DOX volumes (paper Results 'Final popPK model').
     #   V4, V5     -- fixed to the values obtained in a sensitivity analysis
     #     carried out on the DOXol volumes for this purpose (same paragraph).

@@ -1,6 +1,18 @@
 Wright_2025_colchicine <- function() {
   description <- "Two-compartment population pharmacokinetic model for oral colchicine in people with gout (Wright 2025). Absorption is zero-order into the central compartment over a duration D1 = 0.99 h, preceded by an absorption lag that is fixed to 1.3 h in the subpopulation showing delayed absorption (Cmax,ss at or below Cmin,ss) and to 0 h otherwise; oral bioavailability F1 is fixed at 0.469 and is multiplied by (1 + theta_FORM) for the tablet formulations used in the literature-extracted studies. Clearance and inter-compartmental clearance are allometrically scaled on total body weight with a fixed exponent of 0.75; the central and peripheral volumes are scaled with a fixed exponent of 1. Concomitant statin use multiplies clearance by 0.66 (a ~30% reduction) and female sex multiplies both volumes by 0.53 (a ~50% reduction). Between-subject variability is estimated on clearance and fixed from Karatza 2021 on both volumes; residual error is combined proportional plus a small fixed additive term."
-  reference <- "Wright DFB, Hishe HZ, Dalbeth N, Horne A, Drake J, Haslett J, Stamp LK. The Influence of Patient Factors on the Population Pharmacokinetics of Colchicine: Implications for Safe and Effective Dosing. Clin Pharmacokinet. 2025;64(10):1519-1531. doi:10.1007/s40262-025-01551-y. Structure and fixed values taken from the final NONMEM control stream ($PROBLEM 66_FINAL_colchicine) reproduced in the Electronic Supplementary Information; final estimates from Table 2. Between-subject variances on V1 and V2 and the structural starting values are inherited from Karatza E, Ismailos G, Karalis V. Xenobiotica. 2021;51:643-656, doi:10.1080/00498254.2021.1909782 (ESI Table S1)."
+  reference <- paste(
+    "Wright DFB, Hishe HZ, Dalbeth N, Horne A, Drake J, Haslett J, Stamp LK.",
+    "The Influence of Patient Factors on the Population Pharmacokinetics of",
+    "Colchicine: Implications for Safe and Effective Dosing. Clin",
+    "Pharmacokinet. 2025;64(10):1517-1529. doi:10.1007/s40262-025-01551-y.",
+    "Structure and fixed values taken from the final NONMEM control stream",
+    "($PROBLEM 66_FINAL_colchicine) reproduced in the Electronic Supplementary",
+    "Information; final estimates from Table 2. Between-subject variances on",
+    "V1 and V2 and the structural starting values are inherited from Karatza",
+    "E, Ismailos G, Karalis V. Xenobiotica. 2021;51:643-656,",
+    "doi:10.1080/00498254.2021.1909782 (ESI Table S1).",
+    sep = " "
+  )
   vignette <- "Wright_2025_colchicine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

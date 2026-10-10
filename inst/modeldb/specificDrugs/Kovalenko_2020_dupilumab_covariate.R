@@ -1,6 +1,12 @@
 Kovalenko_2020_dupilumab_covariate <- function() {
   description <- "Dupilumab primary covariate population PK model from Kovalenko 2020 (Model 4): 2-compartment with parallel linear + Michaelis-Menten elimination and a 3-transit-compartment SC absorption chain; fit to Phase 3 atopic-dermatitis data with body weight + albumin on Vc and BMI + EASI + race (White) on the linear elimination rate."
-  reference <- "Kovalenko P, Davis JD, Li M, et al. Base and Covariate Population Pharmacokinetic Analyses of Dupilumab Using Phase 3 Data. Clinical Pharmacology in Drug Development. 2020;9(6):756-767. doi:10.1002/cpdd.780"
+  reference <- paste(
+    "Kovalenko P, Davis JD, Li M, Rippley R, Ardeleanu M, Shumel B, Graham",
+    "NMH, Pirozzi G, Kamal MA, DiCioccio AT. Base and Covariate Population",
+    "Pharmacokinetic Analyses of Dupilumab Using Phase 3 Data. Clin Pharmacol",
+    "Drug Dev. 2020;9(6):756-767. doi:10.1002/cpdd.780.",
+    sep = " "
+  )
   vignette <- "Kovalenko_2020_dupilumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
   # Model 4 (primary COVARIATE model) from Kovalenko 2020 Table 1, Table 3,

@@ -23,12 +23,11 @@ MangasSanjuan_2016_axomadol <- function() {
     "et al. 2016 Tables 2, 4, and 5."
   )
   reference <- paste(
-    "Mangas-Sanjuan V, Pastor JM, Rengelshausen J, Bursi R,",
-    "Troconiz IF. (2016). Population",
-    "pharmacokinetic/pharmacodynamic modelling of the effects of",
-    "axomadol and its O-demethyl metabolite on pupil diameter and",
-    "nociception in healthy subjects. Br J Clin Pharmacol",
-    "82(1):112-128. doi:10.1111/bcp.12921.",
+    "Mangas-Sanjuan V, Pastor JM, Rengelshausen J, Bursi R, Troconiz IF.",
+    "Population pharmacokinetic/pharmacodynamic modelling of the effects of",
+    "axomadol and its O-demethyl metabolite on pupil diameter and nociception",
+    "in healthy subjects. Br J Clin Pharmacol. 2016;82(1):92-107.",
+    "doi:10.1111/bcp.12921.",
     sep = " "
   )
   vignette <- "MangasSanjuan_2016_axomadol"

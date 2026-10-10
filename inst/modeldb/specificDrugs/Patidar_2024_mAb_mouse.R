@@ -1,6 +1,23 @@
 Patidar_2024_mAb_mouse <- function() {
   description <- "PBPK (minimal, mPBPK; 39 ODEs). Preclinical (mouse). Platform minimal-PBPK model relating monoclonal-antibody physicochemical properties (molecular weight, Stoke's radius, net surface charge, FcRn affinity, antigen affinity) to plasma and tissue disposition. Plasma and lymph compartments plus lumped tight-tissue and leaky-tissue compartments, each split into vascular, endosomal and interstitial sub-spaces; plasma carries a nested endothelial endosome. Includes explicit FcRn binding and recycling at endosomal pH 6, two-pore size-based transcapillary transport, size-based renal clearance, charge-dependent pinocytosis / non-specific membrane binding / interstitial volume, and TMDD against both soluble and membrane-bound antigen. Defaults reproduce Case 1: non-specific FcRn-binding IgG1 (150 kDa, neutral charge, no target) in wild-type mice."
-  reference <- "Patidar K, Pillai N, Dhakal S, Avery LB, Mavroudis PD. A minimal physiologically based pharmacokinetic model to study the combined effect of antibody size, charge, and binding affinity to FcRn/antigen on antibody pharmacokinetics. J Pharmacokinet Pharmacodyn. 2024;51(6):477-492. doi:10.1007/s10928-023-09899-z. PMID 38386198. PMCID PMC11576895. Model equations A1-A48, physiology/kinetic parameter Table 1 (mouse column) and two-pore Table 2 are in the Supplementary Information (10928_2023_9899_MOESM1_ESM.docx). Two-pore permeability-surface-area (PS) and Peclet-number (Pe) derivations are inherited from the cited upstream framework: Li Z, Shah DK. Two-pore physiologically based pharmacokinetic model with de novo derived parameters for predicting plasma PK of different size protein therapeutics. J Pharmacokinet Pharmacodyn. 2019;46(3):305-318. doi:10.1007/s10928-019-09639-2 (Supplementary Material Eqs. 13-30, file 10928_2019_9639_MOESM1_ESM.docx)."
+  reference <- paste(
+    "Patidar K, Pillai N, Dhakal S, Avery LB, Mavroudis PD. A minimal",
+    "physiologically based pharmacokinetic model to study the combined effect",
+    "of antibody size, charge, and binding affinity to FcRn/antigen on",
+    "antibody pharmacokinetics. J Pharmacokinet Pharmacodyn.",
+    "2024;51(5):477-492. doi:10.1007/s10928-023-09899-z. PMID 38400996. PMCID",
+    "PMC11576895. Model equations A1-A48, physiology/kinetic parameter Table 1",
+    "(mouse column) and two-pore Table 2 are in the Supplementary Information",
+    "(10928_2023_9899_MOESM1_ESM.docx). Two-pore permeability-surface-area",
+    "(PS) and Peclet-number (Pe) derivations are inherited from the cited",
+    "upstream framework: Li Z, Shah DK. Two-pore physiologically based",
+    "pharmacokinetic model with de novo derived parameters for predicting",
+    "plasma PK of different size protein therapeutics. J Pharmacokinet",
+    "Pharmacodyn. 2019;46(3):305-318. doi:10.1007/s10928-019-09639-2",
+    "(Supplementary Material Eqs. 13-30, file",
+    "10928_2019_9639_MOESM1_ESM.docx).",
+    sep = " "
+  )
   vignette <- "Patidar_2024_mAb_size_charge_fcrn"
 
   # All 39 states are paper-mechanistic sub-space / binding species of the

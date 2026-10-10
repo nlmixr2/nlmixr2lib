@@ -51,7 +51,7 @@ Stevens_2012_remoxipride <- function() {
     sex_female_pct = NA_real_,
     disease_state = "healthy male Wistar rats; chronic intracerebral microdialysis cannulae for brain extracellular-fluid (ECF) sampling and femoral-vein cannulae for systemic dosing and plasma sampling",
     dose_range = "Single intravenous remoxipride 4, 8, or 16 mg/kg (dose-response study); double intravenous remoxipride 3.8 mg/kg pulses with varying inter-dose intervals (double-dosing study); a separate baseline-variation study without drug administration. External validation cohort (not contained in the DDMORE bundle's simulated dataset) received 4 / 8 / 16 mg/kg intranasally.",
-    notes = "Final estimates from `Output_real_PK_rats.lst` (NONMEM 7.3 FOCEI INTERACTION, OFV 2021.454, MINIMIZATION SUCCESSFUL with a problem-occurred warning, ETAshrinkage 5.3% on the BSL eta with the STDM and K67 etas FIX 0). The PK structural model is fixed from a previously published rat remoxipride PK study (Westerhout et al. 2011, doi:10.1007/s11095-011-0395-8) and reproduced here verbatim from THETA(3..13) FIX in the DDMORE control stream. The PD parameters (TH1, TH2, TH14-TH19) are estimated under an NWPRI prior on TH1/TH2. The model is preclinical (rat-only); no human PK or human PD parameters are encoded in this implementation."
+    notes = "Final estimates from `Output_real_PK_rats.lst` (NONMEM 7.3 FOCEI INTERACTION, OFV 2021.454, MINIMIZATION SUCCESSFUL with a problem-occurred warning, ETAshrinkage 5.3% on the BSL eta with the STDM and K67 etas FIX 0). The PK structural model is fixed from a previously published rat remoxipride PK study (Stevens et al. 2011, Drug Metab Dispos 39(12):2275-2282, doi:10.1124/dmd.111.040782) and reproduced here verbatim from THETA(3..13) FIX in the DDMORE control stream. The PD parameters (TH1, TH2, TH14-TH19) are estimated under an NWPRI prior on TH1/TH2. The model is preclinical (rat-only); no human PK or human PD parameters are encoded in this implementation."
   )
 
   ini({
@@ -62,7 +62,7 @@ Stevens_2012_remoxipride <- function() {
     #
     # PK structural parameters (THETA(3)..THETA(13), all FIX in the .mod
     # because they were carried in from the upstream rat PK paper
-    # Westerhout 2011). Final-estimate values match the FIX initial values.
+    # Stevens 2011). Final-estimate values match the FIX initial values.
 
     lcl       <- fixed(log(1.12));      label("Plasma clearance CL3 (L/h)")                                 # TH3 FIX, .lst L1283
     lvc       <- fixed(log(0.0881));    label("Central (plasma) volume V3 (L/kg)")                          # TH4 FIX

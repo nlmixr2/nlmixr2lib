@@ -1,6 +1,13 @@
 Paule_2011_hydroxyurea <- function() {
   description <- "Two-compartment population PK + indirect-response PD models for hydroxyurea (HU) in adults with sickle cell anemia (Paule 2011): bicompartmental oral PK with first-order absorption and elimination, allometric scaling on CL/F and Vc/F; turnover models for HbF percentage and mean corpuscular volume (MCV) where HU inhibits the elimination rate of each PD response."
-  reference <- "Paule I, Sassi H, Habibi A, Pham KPD, Bachir D, Galacteros F, Girard P, Hulin A, Tod M. Population pharmacokinetics and pharmacodynamics of hydroxyurea in sickle cell anemia patients, a basis for optimizing the dosing regimen. Orphanet J Rare Dis. 2011;6:30. doi:10.1186/1750-1172-6-30 (PMID 21595938)."
+  reference <- paste(
+    "Paule I, Sassi H, Habibi A, Pham KP, Bachir D, Galacteros F, Girard P,",
+    "Hulin A, Tod M. Population pharmacokinetics and pharmacodynamics of",
+    "hydroxyurea in sickle cell anemia patients, a basis for optimizing the",
+    "dosing regimen. Orphanet J Rare Dis. 2011;6(1):30.",
+    "doi:10.1186/1750-1172-6-30 (PMID 21619673).",
+    sep = " "
+  )
   vignette <- "Paule_2011_hydroxyurea"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L", HbF = "%", MCV = "fL")
 

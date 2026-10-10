@@ -1,6 +1,12 @@
 Zhong_2026_abatacept <- function() {
   description <- "Two-compartment population PK model for abatacept (CTLA4-Ig Fc-fusion) pooled across 9 phase 2/3 studies (Zhong 2026): adults with rheumatoid arthritis, patients aged 2-17 years with polyarticular juvenile idiopathic arthritis, and patients aged 6+ years with hematologic malignancies receiving HLA-matched unrelated-donor HSCT (the ABA2 trial). Final model has zero-order IV infusion, first-order SC absorption, first-order linear elimination, additive plus proportional residual error, allometric weight on CL/VC/VP, hepatic (AST) and renal (cGFR) markers on CL, sex on CL and VC, two HSCT cohort indicators (7-of-8 and 8-of-8 HLA-matched URD) on CL/VC, and a logit-scale SC bioavailability sub-model with weight, age, and pJIA-disease covariates fixed to a previously developed internal JIA PPK model (values match Gandhi 2021)."
-  reference <- "Zhong R, Maxwell K, Passarell J, Murthy B, Aras U, Williams D. Model-Informed Abatacept Dose Recommendation in Pediatric Patients With Acute Graft-Versus-Host Disease. J Clin Pharmacol. 2026;66(2):[in-issue]. doi:10.1002/jcph.70156"
+  reference <- paste(
+    "Zhong R, Maxwell K, Passarell J, Murthy B, Aras U, Williams D.",
+    "Model-Informed Abatacept Dose Recommendation in Pediatric Patients With",
+    "Acute Graft Versus Host Disease. J Clin Pharmacol. 2026;66(2):e70156.",
+    "doi:10.1002/jcph.70156.",
+    sep = " "
+  )
   vignette <- "Zhong_2026_abatacept"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

@@ -14,8 +14,10 @@ Ohara_2014_warfarin_s <- function() {
     "Shi K, Deng J. Comparative performance of pharmacogenetics-based warfarin dosing",
     "algorithms in Chinese population: use of a pharmacokinetic/pharmacodynamic model to",
     "explore dosing regimen through clinical trial simulation.",
-    "Pharmacogenet Genomics. 2024;34(8):275-284. doi:10.1097/FPC.0000000000000545.",
-    "PMCID: PMC11424055 (Table 3 and its footnotes a-d)."
+    "Pharmacogenet Genomics. 2024;34(9):275-284.",
+    "doi:10.1097/FPC.0000000000000545.",
+    "PMCID: PMC11424055 (Table 3 and its footnotes a-d).",
+    sep = " "
   )
   vignette <- "Ohara_2014_warfarin_s"
 

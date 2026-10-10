@@ -1,6 +1,12 @@
 Na_2024_tovecimig <- function() {
   description <- "Two-compartment population PK model for tovecimig (ABL001/CTX-009), a bispecific antibody targeting DLL4 and VEGF-A, in adult patients with relapsed or refractory solid tumors, with parallel linear and Michaelis-Menten elimination from the central compartment and a power body-weight effect on the central volume."
-  reference <- "Na JY, Jeon J, Huh KY, Eom J, Ahn J, You WK, Oh J. Population pharmacokinetic model of ABL001/CTX-009 (anti-VEGF/DLL4) in adult cancer patients with solid tumor. Cancer Sci. 2024;115(12):3943-3951. doi:10.1111/cas.16363"
+  reference <- paste(
+    "Na JY, Jeon J, Huh KY, Yu KS, Lee S, Eom J, Ahn J, You WK, Oh J.",
+    "Population pharmacokinetic model of ABL001/CTX-009 (anti-VEGF/DLL4) in",
+    "adult cancer patients with solid tumor. Cancer Sci.",
+    "2024;115(12):3943-3951. doi:10.1111/cas.16363.",
+    sep = " "
+  )
   vignette <- "Na_2024_tovecimig"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

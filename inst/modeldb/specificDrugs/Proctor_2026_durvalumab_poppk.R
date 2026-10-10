@@ -1,6 +1,16 @@
 Proctor_2026_durvalumab_poppk <- function() {
   description <- "Empirical two-compartment popPK model of durvalumab (anti-PD-L1) with parallel linear and Michaelis-Menten clearance and sigmoidal time-dependent decline in linear clearance. This is the comparator model that Proctor 2026 rebuilt in RxODE and simulated against its own two-pore PBPK model (Figures 4 and 5); the parameter values originate in the Baverel 2018 durvalumab popPK analysis and are transcribed from Proctor 2026 Table S3."
-  reference <- "Proctor JR, Wong H. Albumin Levels Are Predictive of Cachexia-Induced Time-Dependent Clearance of Therapeutic Antibodies: A Physiologically Based Pharmacokinetic Model of Durvalumab. CPT Pharmacometrics Syst Pharmacol. 2026;15(1):e70185. doi:10.1002/psp4.70185 (Table S3, row 'Durvalumab'; parameters originally reported by Baverel PG, Dubois VFS, Jin CY, et al. Population Pharmacokinetics of Durvalumab in Cancer Patients and Association With Longitudinal Biomarkers of Disease Status. Clin Pharmacol Ther. 2018;103(4):631-642. doi:10.1002/cpt.982)"
+  reference <- paste(
+    "Proctor JR, Wong H. Albumin Levels Are Predictive of Cachexia-Induced",
+    "Time-Dependent Clearance of Therapeutic Antibodies: A Physiologically",
+    "Based Pharmacokinetic Model of Durvalumab. CPT Pharmacometrics Syst",
+    "Pharmacol. 2026;15(2):e70185. doi:10.1002/psp4.70185. (Table S3, row",
+    "'Durvalumab'; parameters originally reported by Baverel PG, Dubois VFS,",
+    "Jin CY, et al. Population Pharmacokinetics of Durvalumab in Cancer",
+    "Patients and Association With Longitudinal Biomarkers of Disease Status.",
+    "Clin Pharmacol Ther. 2018;103(4):631-642. doi:10.1002/cpt.982)",
+    sep = " "
+  )
   vignette <- "Proctor_2026_durvalumab_cachexia"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

@@ -1,12 +1,11 @@
 Koloskoff_2025_ganciclovir <- function() {
   description <- "Indirect-response viral turnover PD model for cytomegalovirus (CMV) viral load decline in pediatric solid-organ and hematopoietic-stem-cell transplant recipients receiving (val)ganciclovir (Koloskoff 2025). The model treats the q12h-interval ganciclovir AUC (AUC_0-12) as a time-varying covariate input AUC_GCV that stimulates first-order viral degradation through an Emax-EC50 relationship. The upstream popPK that produces AUC_0-12 (Franck 2021 Bayesian estimator) is NOT included here; AUC_GCV must be supplied per record by the user, either from the Franck 2021 model or any other AUC source."
   reference <- paste(
-    "Koloskoff K, Franck B, Benito S, Welzel J, Autmizguine J, Theoret Y, Briand A,",
-    "Ovetchkine P, Woillard J-B.",
-    "Pharmacokinetic/Pharmacodynamic Modelling and Monte Carlo Simulations to Predict",
-    "Cytomegalovirus Viral Load in Pediatric Transplant Recipients Treated with",
-    "(val)Ganciclovir.",
-    "Clin Pharmacokinet. 2025.",
+    "Koloskoff K, Franck B, Benito S, Welzel J, Autmizguine J, Theoret Y,",
+    "Briand A, Ovetchkine P, Woillard JB. Pharmacokinetic/Pharmacodynamic",
+    "Modelling and Monte Carlo Simulations to Predict Cytomegalovirus Viral",
+    "Load in Pediatric Transplant Recipients Treated with (val)Ganciclovir.",
+    "Clin Pharmacokinet. 2025;64(7):1061-1069.",
     "doi:10.1007/s40262-025-01526-z.",
     "Upstream popPK used by the source authors to compute AUC_0-12 inputs:",
     "Franck B, Autmizguine J, Asberg A, Theoret Y, Marquet P, Ovetchkine P, et al.",

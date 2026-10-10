@@ -1,10 +1,10 @@
 Themans_2019_meropenem <- function() {
   description <- "Three-compartment population PK model for meropenem in adults with severe pneumonia, with parallel ELF (epithelial lining fluid) sampling (Themans 2019), as packaged in DDMORE Foundation Model Repository entry DDMODEL00000301."
   reference <- paste(
-    "Themans P, Winkin J J, Musuamba F T (2019).",
-    "Towards a generic tool for prediction of meropenem systemic and infection-site exposure:",
-    "a physiologically based pharmacokinetic model for adult patients with pneumonia.",
-    "Drugs R D 19(4):339-355.",
+    "Themans P, Marquet P, Winkin JJ, Musuamba FT. Towards a Generic Tool for",
+    "Prediction of Meropenem Systemic and Infection-Site Exposure: A",
+    "Physiologically Based Pharmacokinetic Model for Adult Patients with",
+    "Pneumonia. Drugs R D. 2019;19(2):177-189.",
     "doi:10.1007/s40268-019-0268-x.",
     "DDMORE Foundation Model Repository: DDMODEL00000301.",
     sep = " "

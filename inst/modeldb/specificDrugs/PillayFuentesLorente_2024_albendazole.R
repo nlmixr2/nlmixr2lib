@@ -2,11 +2,10 @@ PillayFuentesLorente_2024_albendazole <- function() {
   description <- "Joint population PK model for the two main albendazole metabolites after a single oral 400 mg albendazole dose (with or without co-administered ivermectin) in adolescents infected with Trichuris trichiura in Tanzania and Cote d'Ivoire: Savic transit-compartment absorption feeding a two-compartment albendazole sulfoxide disposition that converts quantitatively to a one-compartment albendazole sulfone, with a study-population (country) effect on both apparent clearances"
   reference <- paste(
     "Pillay-Fuentes Lorente V, Nwogu-Attah JN, Steffens B, Bram D, Sprecher V,",
-    "Hofmann D, Buettcher M, Pillai G, Mouksassi S, Coulibaly J, Pfister M, Keiser J.",
-    "Understanding Drug Exposure and Trichuris trichiura Cure Rates:",
-    "A Pharmacometric Approach for Albendazole-Ivermectin Co-medication",
-    "in Tanzania and Cote d'Ivoire.",
-    "Drugs R D. 2024;24(2):205-215.",
+    "Hofmann D, Buettcher M, Pillai G, Mouksassi S, Coulibaly J, Pfister M,",
+    "Keiser J. Understanding Drug Exposure and Trichuris trichiura Cure Rates:",
+    "A Pharmacometric Approach for Albendazole-Ivermectin Co-medication in",
+    "Tanzania and Cote d'Ivoire. Drugs R D. 2024;24(2):331-340.",
     "doi:10.1007/s40268-024-00476-4.",
     sep = " "
   )

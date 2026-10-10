@@ -32,11 +32,12 @@ Mohamed_2013_procainamide <- function() {
     "specific patient's disposition on CRRT."
   )
   reference <- paste(
-    "Mohamed AN, Abdelhady AM, Spencer D, Sowinski KM, Tisdale JE,",
-    "Overholser BR. Pharmacokinetic modeling and simulation of",
-    "procainamide and N-acetylprocainamide during continuous renal",
-    "replacement therapy. Am J Kidney Dis. 2013 Jun;61(6):1046-1048.",
-    "doi:10.1053/j.ajkd.2013.02.358."
+    "Mohamed AN, Abdelhady AM, Spencer D, Sowinski KM, Tisdale JE, Overholser",
+    "BR. Pharmacokinetic modeling and simulation of procainamide and",
+    "N-acetylprocainamide in a patient receiving continuous renal replacement",
+    "therapy: a novel approach to guide renal dose adjustments. Am J Kidney",
+    "Dis. 2013;61(6):1046-1048. doi:10.1053/j.ajkd.2013.02.358.",
+    sep = " "
   )
   vignette <- "Mohamed_2013_procainamide"
   units <- list(

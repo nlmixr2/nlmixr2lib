@@ -1,6 +1,13 @@
 Ogasawara_2020_durvalumab <- function() {
   description <- "Two compartment PK model of durvalumab (anti-PD-L1) in patients with hematologic malignancies (Ogasawara 2020)"
-  reference <- "Ogasawara K, Newhall K, Maxwell SE, et al. Population Pharmacokinetics of an Anti-PD-L1 Antibody, Durvalumab in Patients with Hematologic Malignancies. Clin Pharmacokinet. 2020;59(2):217-227. doi:10.1007/s40262-019-00804-x"
+  reference <- paste(
+    "Ogasawara K, Newhall K, Maxwell SE, Dell'Aringa J, Komashko V, Kilavuz N,",
+    "Delarue R, Czuczman M, Sternas L, Rose S, Beach CL, Novick S, Zhou S,",
+    "Palmisano M, Li Y. Population Pharmacokinetics of an Anti-PD-L1 Antibody,",
+    "Durvalumab in Patients with Hematologic Malignancies. Clin Pharmacokinet.",
+    "2020;59(2):217-227. doi:10.1007/s40262-019-00804-x.",
+    sep = " "
+  )
   vignette <- "Ogasawara_2020_durvalumab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   # Issue #482: what each ODE state holds, in what amount units, in what

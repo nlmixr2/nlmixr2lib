@@ -1,6 +1,12 @@
 Feillet_2008_sapropterin <- function() {
   description <- "Two-compartment population PK model with first-order oral absorption, an absorption lag, linear elimination, and an additive endogenous BH4 baseline for sapropterin dihydrochloride in adolescent and adult patients with BH4-responsive phenylketonuria (Feillet 2008)."
-  reference <- "Feillet F, Clarke L, Meli C, et al. Pharmacokinetics of sapropterin in patients with phenylketonuria. Clinical Pharmacokinetics. 2008;47(12):817-825. doi:10.2165/0003088-200847120-00006"
+  reference <- paste(
+    "Feillet F, Clarke L, Meli C, Lipson M, Morris AA, Harmatz P, Mould DR,",
+    "Green B, Dorenbaum A, Giovannini M, Foehr E. Pharmacokinetics of",
+    "sapropterin in patients with phenylketonuria. Clin Pharmacokinet.",
+    "2008;47(12):817-825. doi:10.2165/0003088-200847120-00006.",
+    sep = " "
+  )
   vignette <- "Feillet_2008_sapropterin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

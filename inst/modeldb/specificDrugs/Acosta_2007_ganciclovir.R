@@ -12,7 +12,8 @@ Acosta_2007_ganciclovir <- function() {
   )
   reference <- paste(
     "Acosta EP, Brundage RC, King JR, Sanchez PJ, Sood S, Agrawal V, Homans J,",
-    "Jacobs RF, Lang D, Romero JR, et al. Ganciclovir population pharmacokinetics",
+    "Jacobs RF, Lang D, Romero JR, Griffin J, Cloud G, Whitley R, Kimberlin",
+    "DW. Ganciclovir population pharmacokinetics",
     "in neonates following intravenous administration of ganciclovir and oral",
     "administration of a liquid valganciclovir formulation.",
     "Clin Pharmacol Ther. 2007;81(6):867-872. doi:10.1038/sj.clpt.6100150.",

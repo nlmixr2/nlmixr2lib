@@ -30,12 +30,10 @@ Liu_2025_selpercatinib <- function() {
     sep = " "
   )
   reference <- paste(
-    "Liu D, van der Walt JS. (2025).",
-    "Population pharmacokinetics modeling of selpercatinib to support",
-    "posology in pediatric patients with RET-altered metastatic thyroid",
-    "cancer or solid tumors.",
-    "CPT Pharmacometrics Syst Pharmacol 14(11):1848-1857.",
-    "doi:10.1002/psp4.70042",
+    "Liu D, van der Walt JS. Population Pharmacokinetics Modeling of",
+    "Selpercatinib to Support Posology in Pediatric Patients With RET-Altered",
+    "Metastatic Thyroid Cancer or Solid Tumors. CPT Pharmacometrics Syst",
+    "Pharmacol. 2025;14(11):1848-1856. doi:10.1002/psp4.70042.",
     sep = " "
   )
   vignette <- "Liu_2025_selpercatinib"

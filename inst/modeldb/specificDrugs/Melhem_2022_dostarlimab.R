@@ -1,6 +1,12 @@
 Melhem_2022_dostarlimab <- function() {
   description <- "Two-compartment population PK model for dostarlimab (anti-PD-1 IgG4) with time-dependent (sigmoid I_max) clearance in adults with advanced solid tumours (Melhem 2022)"
-  reference <- "Melhem M, Hanze E, Lu Z, Venkatakrishnan K, Gupta N, Vugmeyster Y. Population pharmacokinetics and exposure-response of anti-programmed cell death protein-1 monoclonal antibody dostarlimab in advanced solid tumours. Br J Clin Pharmacol. 2022;88(9):4142-4154. doi:10.1111/bcp.15339"
+  reference <- paste(
+    "Melhem M, Hanze E, Lu S, Alskar O, Visser S, Gandhi Y. Population",
+    "pharmacokinetics and exposure-response of anti-programmed cell death",
+    "protein-1 monoclonal antibody dostarlimab in advanced solid tumours. Br J",
+    "Clin Pharmacol. 2022;88(9):4142-4154. doi:10.1111/bcp.15339.",
+    sep = " "
+  )
   vignette <- "Melhem_2022_dostarlimab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

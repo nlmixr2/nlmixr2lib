@@ -1,6 +1,13 @@
 Yukawa_2002_clonazepam_pediatric <- function() {
   description <- "Steady-state population PK model for clonazepam relative clearance (CL/F) in 137 Japanese pediatric and adult epileptic patients (Yukawa 2002 Table III row 4). CL/F is a body-weight power function with a 3-tier drug-interaction factor for concomitant antiepileptic drugs (monotherapy, +1 AED (CBZ or VPA), +>=2 AEDs)."
-  reference <- "Yukawa E, Satou M, Nonaka T, Yukawa M, Ohdo S, Higuchi S, Kuroda T, Goto Y. Pharmacoepidemiologic investigation of clonazepam relative clearance by mixed-effect modeling using routine clinical pharmacokinetic data in Japanese patients. J Clin Pharmacol. 2002;42(1):81-88."
+  reference <- paste(
+    "Yukawa E, Satou M, Nonaka T, Yukawa M, Ohdo S, Higuchi S, Kuroda T, Goto",
+    "Y. Pharmacoepidemiologic investigation of clonazepam relative clearance",
+    "by mixed-effect modeling using routine clinical pharmacokinetic data in",
+    "Japanese patients. J Clin Pharmacol. 2002;42(1):81-88.",
+    "doi:10.1177/0091270002042001009.",
+    sep = " "
+  )
   vignette <- "Yukawa_2002_clonazepam_pediatric"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

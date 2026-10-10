@@ -1,13 +1,11 @@
 Wittau_2015_meropenem <- function() {
   description <- "Two-compartment intravenous population PK model for meropenem in morbidly obese adults (Wittau 2015). Allometric scaling on fat-free mass with a reference FFM of 53 kg. Unbound meropenem concentrations in subcutaneous tissue and peritoneal fluid are described as the plasma concentration multiplied by the site-to-plasma AUC ratios FSC and FPF (the final model assumed very rapid equilibration with plasma, so SC and PF are not carried as separate ODE states)."
   reference <- paste(
-    "Wittau M, Scheele J, Kurlbaum M, Brockschmidt C, Wolf AM,",
-    "Hemper E, Henne-Bruns D, Bulitta JB.",
-    "Population pharmacokinetics and target attainment of meropenem",
-    "in plasma and tissue of morbidly obese patients after laparoscopic",
-    "intraperitoneal surgery.",
-    "Antimicrob Agents Chemother. 2015;59(10):6241-6247.",
-    "doi:10.1128/AAC.00259-15. PMID 26248373.",
+    "Wittau M, Scheele J, Kurlbaum M, Brockschmidt C, Wolf AM, Hemper E,",
+    "Henne-Bruns D, Bulitta JB. Population Pharmacokinetics and Target",
+    "Attainment of Meropenem in Plasma and Tissue of Morbidly Obese Patients",
+    "after Laparoscopic Intraperitoneal Surgery. Antimicrob Agents Chemother.",
+    "2015;59(10):6241-6247. doi:10.1128/AAC.00259-15. PMID 26248353.",
     sep = " "
   )
   vignette <- "Wittau_2015_meropenem"

@@ -123,7 +123,7 @@ footnote. Two readings are possible -- `omega = CV` or the log-normal
 `omega^2 = log(CV^2 + 1)` -- and they differ by 6-10% on these values, which is
 enough to matter.
 
-The companion analysis by the same authors (Katsube and Wajima,
+The companion analysis by the same group (Kawaguchi, Katsube, Echols and Wajima,
 *Antimicrob Agents Chemother* 2021, [doi:10.1128/AAC.01437-20](https://doi.org/10.1128/AAC.01437-20))
 settles it, because its Table 2 prints the percent CVs, the omega **covariances**
 and the implied **correlation coefficients** -- three numbers for two unknowns
@@ -131,7 +131,7 @@ per pair, which over-determines the scale. The table below reconstructs
 `omega_a * omega_b = covariance / correlation` under both readings.
 
 ```{r omega-scale}
-# Katsube/Wajima 2021 Table 2: CV% for CL / V1 / V2, and the three
+# Kawaguchi 2021 Table 2: CV% for CL / V1 / V2, and the three
 # covariance rows with their footnoted correlation coefficients R.
 cv_2021 <- c(CL = 0.375, V1 = 0.569, V2 = 0.336)
 pairs_2021 <- tibble::tribble(
@@ -159,7 +159,7 @@ omega_check |>
   knitr::kable(
     digits = 4,
     caption = paste(
-      "Discriminating the omega scale using Katsube/Wajima 2021, which prints",
+      "Discriminating the omega scale using Kawaguchi 2021, which prints",
       "CV%, covariances AND correlations. `omega = CV` matches all three pairs;",
       "the log-normal reading is rejected by 6-10%."
     )

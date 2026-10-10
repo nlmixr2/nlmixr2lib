@@ -32,7 +32,7 @@ Mann_2022_respiratory_physiology <- function() {
     "Magosso E, Ursino M, van Oostrom JH. Opioid-induced respiratory",
     "depression: a mathematical model for fentanyl.",
     "IEEE Trans Biomed Eng. 2004;51(7):1115-1128.",
-    "doi:10.1109/TBME.2004.827330. Plus Ursino M, Magosso E,",
+    "doi:10.1109/TBME.2004.827344. Plus Ursino M, Magosso E,",
     "Avanzolini G. An integrated model of the human ventilatory control",
     "system: the response to hypercapnia / hypoxia. Clin Physiol.",
     "2001;21(4):447-477.",

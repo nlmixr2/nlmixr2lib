@@ -20,10 +20,11 @@ Sun_2025_maribavir_cmv_clearance_wk16 <- function() {
     "Sun_2025_maribavir_* family."
   )
   reference <- paste(
-    "Sun K, Jomphe C, Gosselin NH, Pheng L, Durairaj C, Hang Y, Bhattacharya I.",
-    "Population Pharmacokinetics and Exposure-Response Relationships of Maribavir",
-    "in Transplant Recipients With First Episode or Refractory Cytomegalovirus.",
-    "CPT Pharmacometrics Syst Pharmacol. 2025;14(8):1346-1356.",
+    "Sun K, Jomphe C, Gosselin NH, Pheng L, Durairaj C, Hang Y, Bhattacharya",
+    "I. Population Pharmacokinetics and Exposure-Response Relationships of",
+    "Maribavir in Transplant Recipients With First Episode or Refractory",
+    "Cytomegalovirus. CPT Pharmacometrics Syst Pharmacol.",
+    "2025;14(8):1346-1358.",
     "doi:10.1002/psp4.70054.",
     "Logistic-regression coefficients in Supporting Information file s001, Table S3.",
     sep = " "

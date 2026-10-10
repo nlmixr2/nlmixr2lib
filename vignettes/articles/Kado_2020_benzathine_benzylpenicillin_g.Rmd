@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r readModelDb("Kado_2020_benzathine_benzylpenicillin_g")()$reference`
 * Description: `r readModelDb("Kado_2020_benzathine_benzylpenicillin_g")()$description`
-* Article: [J Antimicrob Chemother 75(10):2986-2993 (2020)](https://doi.org/10.1093/jac/dkaa282)
+* Article: [J Antimicrob Chemother 75(10):2951-2959 (2020)](https://doi.org/10.1093/jac/dkaa282)
 
 Kado 2020 is a randomized crossover PK study in 15 healthy adult males comparing
 intramuscular (IM) and subcutaneous (SC) administration of a single 1.2 MIU dose

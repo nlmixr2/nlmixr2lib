@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("Yang_2017_remifentanil"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Yang_2017_remifentanil"))$description`
-* Article: <https://doi.org/10.1038/s41598-017-16358-6> (open access in Scientific Reports 2017;7:16275)
+* Article: <https://doi.org/10.1038/s41598-017-16358-6> (open access in Scientific Reports 2017;7:16276)
 
 # Population
 

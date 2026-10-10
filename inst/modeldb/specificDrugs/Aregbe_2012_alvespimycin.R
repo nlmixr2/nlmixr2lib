@@ -2,10 +2,10 @@ Aregbe_2012_alvespimycin <- function() {
   description <- "Three-compartment population PK model for the heat shock protein 90 inhibitor 17-DMAG (alvespimycin, NSC 707545) given as a 1 h IV infusion to adult patients with advanced solid tumors (Aregbe 2012), with first-order elimination, log-normal IIV on CL/Q3/V1/V2/V3, and between-occasion variability on Q2 and V1 multiplexed by an OCC indicator across up to five daily dosing occasions."
   reference <- paste(
     "Aregbe AO, Sherer EA, Egorin MJ, Scher HI, Solit DB, Ramanathan RK,",
-    "Ramalingam S, Belani CP, Ivy PS, Bies RR. (2012). Population",
-    "pharmacokinetic analysis of 17-dimethylaminoethylamino-17-",
-    "demethoxygeldanamycin (17-DMAG) in adult patients with solid tumors.",
-    "Cancer Chemother Pharmacol 70(2):201-205.",
+    "Ramalingam S, Belani CP, Ivy PS, Bies RR. Population pharmacokinetic",
+    "analysis of 17-dimethylaminoethylamino-17-demethoxygeldanamycin (17-DMAG)",
+    "in adult patients with solid tumors. Cancer Chemother Pharmacol.",
+    "2012;70(1):201-205.",
     "doi:10.1007/s00280-012-1859-1.",
     sep = " "
   )

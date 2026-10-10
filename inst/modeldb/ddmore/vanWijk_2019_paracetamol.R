@@ -1,9 +1,9 @@
 vanWijk_2019_paracetamol <- function() {
   description <- "PRECLINICAL (zebrafish): two-compartment paracetamol PK model fit to zebrafish (Danio rerio) larvae continuously exposed to a 1 mM paracetamol bath at 3, 4, or 5 days post-fertilization (van Wijk 2019, DDMODEL00000294). The medium reservoir (compartment 1) is held at constant amount, so K12 acts as a zero-order absorption rate from the bath into the larva; elimination from the larva (compartment 2) is first-order with rate K25. Larval age in dpf enters as a step factor on K12 (~2.06x at >= 4 dpf vs 3 dpf) and a per-day power factor on K25 (+17.4% per day post-fertilization), consistent with maturation of paracetamol absorption and elimination capacity across the 3-5 dpf window."
   reference <- paste(
-    "van Wijk RC, Krekels EHJ, Hankemeier T, Spaink HP, van der Graaf PH (2019).",
-    "Impact of post-hatching maturation on the pharmacokinetics of paracetamol in zebrafish larvae.",
-    "Sci Rep 9(1):2149.",
+    "van Wijk RC, Krekels EHJ, Kantae V, Harms AC, Hankemeier T, van der Graaf",
+    "PH, Spaink HP. Impact of post-hatching maturation on the pharmacokinetics",
+    "of paracetamol in zebrafish larvae. Sci Rep. 2019;9(1):2149.",
     "doi:10.1038/s41598-019-38530-w.",
     "DDMORE Foundation Model Repository: DDMODEL00000294.",
     sep = " "
