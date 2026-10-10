@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mathis 2022 berotralstat ([doi:10.1111/cts.13233](https://doi.org/10.1111/cts.13233)) -- healthy adults and adults and adolescents with hereditary angioedema (ratifies the new `DOSE_BEROTRALSTAT_MG` dose-on-bioavailability covariate).
+- Add Tomita 2022 imeglimin ([doi:10.1111/cts.13221](https://doi.org/10.1111/cts.13221)) -- Japanese and Western healthy volunteers and patients with type 2 diabetes, including chronic kidney disease (ratifies the new `SAMPLE_PREDOSE` residual-stratum covariate).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
