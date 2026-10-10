@@ -7030,8 +7030,8 @@ navbar:
         href: articles/Landersdorfer_2012_vildagliptin.html
       - text: "Vildagliptin qsp (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_vildagliptin_qsp.html
-      - text: "Viloxazine (Nasser 2021)"
-        href: articles/Nasser_2021_viloxazine.html
+      - text: "Vincristine (Nijstad 2022)"
+        href: articles/Nijstad_2022_vincristine.html
       - text: "Vincristine (vandeVelde 2020)"
         href: articles/vandeVelde_2020_vincristine.html
       - text: "Vinflunine (Schmitt 2018)"
@@ -8987,6 +8987,7 @@ articles:
   - articles/Nielsen_2011_antibacterial_efficacy
   - articles/Nielsen_2015_vigabatrin
   - articles/Nijstad_2021_clofarabine
+  - articles/Nijstad_2022_vincristine
   - articles/Nikanjam_2019_siltuximab
   - articles/Niloy_2026_MTMSATrp_mouse
   - articles/Nishiyama_2019_metformin_cimetidine

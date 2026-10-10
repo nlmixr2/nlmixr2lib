@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wen 2022 osteoarthritis WOMAC pain, stiffness and function placebo response MBMA ([doi:10.1001/jamanetworkopen.2022.35060](https://doi.org/10.1001/jamanetworkopen.2022.35060)) -- placebo arms of 130 oral-treatment osteoarthritis trials. Registers the `SCORE_WOMAC_PAIN` / `_STIFFNESS` / `_FUNCTION` covariates and the `womacpain` / `womacstiffness` / `womacfunction` outputs.
+- Add Nijstad 2022 vincristine ([doi:10.1007/s11095-022-03364-1](https://doi.org/10.1007/s11095-022-03364-1)) -- children, adolescents and young adults (0.04-33.9 years) with cancer, with saturable beta-tubulin binding.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
