@@ -2472,6 +2472,12 @@ navbar:
         href: articles/James_2025_fepixnebart.html
       - text: "FerricCarboxymaltose rat (Cao 2025)"
         href: articles/Cao_2025_ferricCarboxymaltose.html
+      - text: "FerricPyrophosphateCitrate dialysate (Zhang 2022)"
+        href: articles/Zhang_2022_ferricPyrophosphateCitrate.html
+      - text: "FerricPyrophosphateCitrate iv (Zhang 2022)"
+        href: articles/Zhang_2022_ferricPyrophosphateCitrate.html
+      - text: "FerricPyrophosphateCitrate predialyzer (Zhang 2022)"
+        href: articles/Zhang_2022_ferricPyrophosphateCitrate.html
       - text: "Ferumoxytol (Plock 2014)"
         href: articles/Plock_2014_ferumoxytol.html
       - text: "Fesoterodine (Oishi 2014)"
@@ -9847,6 +9853,7 @@ articles:
   - articles/Zhang_2021_ceftolozane_tazobactam
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2021_realgar_indigo
+  - articles/Zhang_2022_ferricPyrophosphateCitrate
   - articles/Zhang_2022_ormutivimab
   - articles/Zhang_2023_aztreonam_amoxicillin_clavulanate
   - articles/Zhang_2023_brazikumab
