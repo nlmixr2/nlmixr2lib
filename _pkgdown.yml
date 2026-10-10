@@ -2078,6 +2078,8 @@ navbar:
         href: articles/Wang_2020_entinostat_nivolumab_ipilimumab_qsp.html
       - text: "Epcoritamab (Li 2025)"
         href: articles/Li_2025_epcoritamab.html
+      - text: "Epetraborole (Ganesan 2022)"
+        href: articles/Ganesan_2022_epetraborole.html
       - text: "Ephedrine caffeine (Csajka 2005)"
         href: articles/Csajka_2005_ephedrine_caffeine.html
       - text: "Epinastine (Sarashina 2005)"
@@ -7657,6 +7659,7 @@ articles:
   - articles/Galluppi_2016_BIIB023
   - articles/Galluppi_2021_ulotaront
   - articles/Gandhi_2021_abatacept
+  - articles/Ganesan_2022_epetraborole
   - articles/Ganesan_2023_tebipenem
   - articles/Gao_2012_exenatide
   - articles/Gao_2020_teicoplanin
