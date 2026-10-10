@@ -5650,6 +5650,8 @@ navbar:
         href: articles/Flint_2017_s_ketamine.html
       - text: "S ketamine (Otto 2021)"
         href: articles/Otto_2021_s_ketamine.html
+      - text: "S ketamine (Simons 2022)"
+        href: articles/Simons_2022_s_ketamine.html
       - text: "S ketamine ticlopidine (Ashraf 2018)"
         href: articles/Ashraf_2018_s_ketamine_ticlopidine.html
       - text: "S methadone (Aruldhas 2021)"
@@ -9220,6 +9222,7 @@ articles:
   - articles/Sime_2019_ceftolozane_tazobactam
   - articles/Sime_2019_posaconazole
   - articles/Sime_2019b_ceftolozane_tazobactam
+  - articles/Simons_2022_s_ketamine
   - articles/Simpson_2006_artesunate
   - articles/Simpson_2013_artesunate
   - articles/Simpson_2013_chloroquine

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ohk 2022 sumatriptan ([doi:10.1002/bdd.2307](https://doi.org/10.1002/bdd.2307)) -- healthy Korean adult males and females.
+- Add Simons 2022 S-ketamine oral thin film with S-norketamine and S-hydroxynorketamine ([doi:10.3389/fpain.2022.946486](https://doi.org/10.3389/fpain.2022.946486)) -- healthy adult volunteers, sublingual/buccal film then intravenous S-ketamine (registers the `shnk` metabolite suffix).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

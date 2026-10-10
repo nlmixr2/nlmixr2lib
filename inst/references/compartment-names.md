@@ -6374,7 +6374,15 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** S-norketamine metabolite of S-ketamine.
 - **Source aliases:** none.
-- **Example models:** `Flint_2017_s_ketamine.R`.
+- **Example models:** `Flint_2017_s_ketamine.R`, `Simons_2022_s_ketamine.R` (`central_snk` / `peripheral1_snk`, fed by the two-compartment S-ketamine metabolism delay chain `transit1_snk` / `transit2_snk`).
+
+### shnk (**canonical S-hydroxynorketamine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** S-hydroxynorketamine, the hydroxylated metabolite of S-norketamine (and so a secondary metabolite of S-ketamine). The `s` prefix follows `snk`: the enantiomer is part of the analyte's identity because the S- and R-enantiomers of ketamine and its metabolites have different kinetics.
+- **Source aliases:**
+  - `HNK`, `H` -- Simons 2022 (Figure 2 compartments `H1` / `H2`, Table 4 `VH1`, `CLH1`, 'MTT NK -> HNK').
+- **Example models:** `Simons_2022_s_ketamine.R` (`central_shnk` / `peripheral1_shnk`, fed by the two-compartment S-norketamine metabolism delay chain `transit1_shnk` / `transit2_shnk`; `Cc_shnk`, `lcl_shnk`, `lvc_shnk`, `fm_shnk`).
+- **Notes:** Simons 2022 measured total S-hydroxynorketamine without resolving the 4-, 5- and 6-hydroxy positional isomers (the assay standard is cis-6-hydroxynorketamine). A model that resolves a positional isomer should register its own suffix rather than reuse this one.
 
 ### acid (**canonical simvastatin acid suffix**)
 - **Type:** metabolite-suffix
