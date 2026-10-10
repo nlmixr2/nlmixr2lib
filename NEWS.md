@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Savic 2022 voxelotor ([doi:10.1002/psp4.12731](https://doi.org/10.1002/psp4.12731)) -- adults and adolescents with sickle cell disease, joint plasma and whole-blood model.
+- Add Dias 2022 tobramycin ([doi:10.3390/pharmaceutics14061237](https://doi.org/10.3390/pharmaceutics14061237)) -- male Wistar rats, healthy or with acute or chronic (alginate-bead) Pseudomonas aeruginosa lung infection, plasma plus microdialysis lung and ELF (ratifies the `DIS_PSEUDOMONAS_LUNG_ACUTE`, `DIS_PSEUDOMONAS_LUNG_CHRONIC` and `ALGINATE_BEAD_BLANK` covariate canonicals and the `lr_elf_lung` parameter).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

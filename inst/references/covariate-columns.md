@@ -9685,6 +9685,39 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Saporta_2026_meropenem.R` (three states induced by intraperitoneal cyclophosphamide at 4 and 1 days before infection -- 200 + 150 mg/kg neutropenic, 75 + 50 mg/kg intermediate, none immunocompetent -- selecting the apparent central volume 2.19 / 2.46 / 3.40 L/kg, the phagocytosis rate `kphag` 0 / 0.185 / 0.318 1/h, and the initial susceptible bacterial count 7.56 / 7.80 / 7.52 log10 CFU/lung).
 - **Notes:** Kept as a single ordered column rather than a `RACE_<GROUP>`-style binary-indicator family because the levels are monotone and the founding paper's immune-response parameterization is cumulative across them, so mutually-exclusive indicators would have to be kept consistent by the user for no gain. Named for the resulting immune STATE rather than for the immunosuppressive intervention (the rejected `IMMUNOSUPP_LEVEL`, which would also reverse the level ordering) because the state is what the model's parameters are indexed by, and because a study could reach the same state by a non-pharmacological route (SCID / NOD / gamma-c knockout strains, which Saporta 2026 names as the natural extension of this design). **Distinct from a measured immune biomarker.** `WBC`, `NEUT` and the granulocyte counts quantify the realised immune status on a continuous scale; this column carries the assigned experimental arm. The two are not interchangeable and a paper may report both -- Saporta 2026 measured blood granulocyte counts (0.2, 0.4 and 1.9 x 10^3 /mm3 across the three arms) and found that scaling the immune-response parameters by them fitted *worse* than the categorical arm. Distinct also from `DIS_` disease-state indicators (which disease a subject has) and from the immunosuppressant co-medication flags of the `CONMED_` family (the cyclophosphamide here is a design intervention that has washed out of the PK-relevant window, not a co-administered perpetrator drug).
 
+### DIS_PSEUDOMONAS_LUNG_ACUTE (**canonical for acute Pseudomonas aeruginosa lung infection (preclinical) indicator**)
+- **Description:** 1 = animal with an acute *Pseudomonas aeruginosa* lung infection established by intratracheal inoculation of a planktonic (free, non-embedded) bacterial suspension and studied a few days later; 0 = otherwise. Time-fixed per animal. One arm of a mutually exclusive group set with `DIS_PSEUDOMONAS_LUNG_CHRONIC` and `ALGINATE_BEAD_BLANK`; a healthy, non-inoculated animal has all three at 0.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (healthy, non-inoculated control animal from the same study; the control cohort is paper-defined).
+- **Source aliases:**
+  - `acute infection`, `acutely infected group` -- Dias 2022 Sections 2.3-2.4 and Table S2.
+- **Example models:** `Dias_2022_tobramycin_rat.R` (male Wistar rats 7 days after intratracheal inoculation of 100 uL of 10^9 CFU/mL *P. aeruginosa* PA14; enters only through the inoculated-lung volume `lv_lung_inoc` (V3infected = 0.130 L vs 0.083 L healthy), clearance and central volume being those of healthy rats).
+- **Notes:** Ratified 2026-10-02 alongside the Dias 2022 tobramycin extraction (PMC9228144), as a preclinical `DIS_<disease>` sibling of `DIS_CIA` and `DIS_TCT_COLITIS`. The species name is spelled out (`PSEUDOMONAS`, not `PSAE`) per the register's preference for spelled-out new canonicals. Deliberately distinct from `DIS_INFECT_ACTIVE`, which is a time-varying clinical-episode flag and cannot separate an acute from a chronic model, and from `IMMUNE_STATE`, which carries the host's immune arm rather than the infection. The species of host is recorded in `population$species` and the model file stem, not here. A planktonic infection with a different organism should register its own `DIS_<ORGANISM>_LUNG_ACUTE` sibling.
+
+### DIS_PSEUDOMONAS_LUNG_CHRONIC (**canonical for chronic (alginate-bead) Pseudomonas aeruginosa lung infection (preclinical) indicator**)
+- **Description:** 1 = animal with a chronic *Pseudomonas aeruginosa* lung infection established by intratracheal inoculation of bacteria embedded in alginate (or agar) beads, the standard rodent model of the mucoid chronic infection of cystic-fibrosis airways, studied about two weeks later; 0 = otherwise. Time-fixed per animal. Mutually exclusive with `DIS_PSEUDOMONAS_LUNG_ACUTE` and `ALGINATE_BEAD_BLANK`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not chronically infected; in the founding example this pools healthy, acutely infected and blank-bead animals for the plasma parameters).
+- **Source aliases:**
+  - `chronic infection`, `chronically infected group`, subscript `chronic` on `CLchronic` / `V1chronic` -- Dias 2022 Table 1 and Results.
+- **Example models:** `Dias_2022_tobramycin_rat.R` (male Wistar rats 14 days after intratracheal inoculation of 50 uL of alginate beads carrying *P. aeruginosa* ATCC 27853; selects the chronic-infection clearance and central volume `lcl_chronic` / `lvc_chronic` (0.085 L/h, 0.323 L vs 0.047 L/h, 0.055 L) and the inoculated-lung volume `lv_lung_inoc`).
+- **Notes:** Ratified 2026-10-02 with `DIS_PSEUDOMONAS_LUNG_ACUTE`. Distinct from the human cystic-fibrosis indicators (`DIS_CF` and the cystic-fibrosis lung-disease section), which describe a patient population rather than an induced animal infection: a covariate query pooling them would return preclinical arms to a user asking for CF patient models. The sterile-bead control of the same protocol is `ALGINATE_BEAD_BLANK`, not 0 on this column alone.
+
+### ALGINATE_BEAD_BLANK (**canonical for sterile alginate-bead intratracheal control (preclinical) indicator**)
+- **Description:** 1 = animal inoculated intratracheally with sterile alginate beads carrying no bacteria, prepared exactly as the beads of a chronic bead-embedded lung-infection model; 0 = otherwise. Time-fixed per animal. The control that separates the effect of the alginate matrix itself from the effect of infection. Mutually exclusive with `DIS_PSEUDOMONAS_LUNG_ACUTE` and `DIS_PSEUDOMONAS_LUNG_CHRONIC`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no blank-bead inoculation).
+- **Source aliases:**
+  - `blank bead`, `blank-bead group` -- Dias 2022 Sections 2.3-2.4 and Table S2.
+- **Example models:** `Dias_2022_tobramycin_rat.R` (male Wistar rats inoculated with 50 uL of sterile alginate beads; enters only through the inoculated-lung volume `lv_lung_inoc`, plasma PK being that of healthy rats).
+- **Notes:** Ratified 2026-10-02 with the `DIS_PSEUDOMONAS_LUNG_*` pair. Deliberately not prefixed `DIS_`: a sterile-bead animal has no disease, and naming it as one would mislabel the control arm. Named for the material rather than for the route so that an agar-bead control (the other common bead matrix) registers an `AGAR_BEAD_BLANK` sibling instead of overloading this column.
+
 ### TE_RESIST_MBV (**canonical for treatment-emergent maribavir-resistant CMV mutation indicator**)
 - **Description:** 1 = a treatment-emergent cytomegalovirus mutation conferring resistance to maribavir was detected in the subject during the treatment course, 0 = no such mutation detected. Maribavir resistance arises principally through mutations in the viral UL97 kinase (the drug's target) and, less commonly, UL27. The indicator is treatment-EMERGENT: every subject in the founding cohort was maribavir-susceptible at baseline, so the column records an on-treatment event rather than a baseline characteristic.
 - **Units:** (binary)
