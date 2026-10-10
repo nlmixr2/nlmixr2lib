@@ -1458,12 +1458,16 @@ navbar:
         href: articles/Fuhr_2020_dabigatran.html
       - text: "Dabigatran (Liesenfeld 2013)"
         href: articles/Liesenfeld_2013_dabigatran.html
+      - text: "Dabigatran (Liu 2022)"
+        href: articles/Liu_2022_dabigatran.html
       - text: "Dabigatran (Yang 2024)"
         href: articles/Yang_2024_dabigatran.html
       - text: "Dabigatran ECT (Liesenfeld 2006)"
         href: articles/Liesenfeld_2006_dabigatran.html
       - text: "Dabigatran aPTT (Liesenfeld 2006)"
         href: articles/Liesenfeld_2006_dabigatran.html
+      - text: "Dabigatran healthy (Liu 2022)"
+        href: articles/Liu_2022_dabigatran.html
       - text: "Dabigatran sheep (Eaton 2025)"
         href: articles/Eaton_2025_dabigatran_sheep.html
       - text: "Dabrafenib (Balakirouchenane 2020)"
@@ -8298,6 +8302,7 @@ articles:
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
   - articles/Liu_2020_hydroxychloroquine_monkey
+  - articles/Liu_2022_dabigatran
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s
