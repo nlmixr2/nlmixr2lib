@@ -2463,6 +2463,23 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
   - `k f,off` -- Lee 2018 Table 4 and Equation (15), the offset rate constant of the testosterone feedback pool (`kout_moderator1`).
 - **Example models:** indirect-response PD models; `Lee_2018_leuprolide_iv_rat.R` and siblings (`kin_moderator1` / `kout_moderator1`, the moderator-pool form); `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form), `Nguyen_2026_linezolid.R` (`kin_saliva` / `kout_saliva`, the central-to-saliva secretion and saliva-to-central reabsorption legs of a saliva-TDM model).
 
+### lkin_te, kin_te, lkin_te_ss, kin_te_ss (**canonical endogenous testosterone production rates: baseline and steady-state**)
+- **Type:** paper-named-param
+- **Role:** Zero-order endogenous testosterone input into the central compartment (amount / time). `kin_te` is the basal (predose, or drug-independent) rate and `kin_te_ss` the steady-state rate that production returns to during chronic exogenous testosterone. `lkin_te` / `lkin_te_ss` are the log-transformed `ini()` primaries.
+- **Source aliases:**
+  - `b base` -- Bi 2018 Table 2, basal LH-independent secretion rate (`kin_te`).
+  - `Rb`, `Rss` -- Pastuszak 2021 Table 2 and the Results equation `R = Rb*exp(-K1*TIME) + Rss*(1 - exp(-K2*TIME))` (`kin_te`, `kin_te_ss`).
+- **Example models:** `Bi_2018_testosteroneCypionate.R` (`kin_te` = 6.24 mg/day, plus an LH-driven Emax increment); `Pastuszak_2021_testosteroneUndecanoate.R` (founding example for `kin_te_ss`; `kin_te` = 0.445 mg/h also sets the predose initial condition `central(0) = kin_te / kel`, and `kin_te_ss` = 0.572 mg/h).
+- **Notes:** A testosterone-suffixed member of the `kin` production-rate family (`_te` as in Bi 2018). The `_ss` token means "steady-state", as in `lcl_ss`. Pairs with `lk_suppression_te` / `lk_recovery_te` (next entry) when production is switched between the two rates over time.
+
+### lk_suppression_te, k_suppression_te, lk_recovery_te, k_recovery_te (**canonical rate constants for suppression and recovery of endogenous testosterone production**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constants (1 / time) of a time-varying endogenous production rate: `k_suppression_te` is how fast the baseline rate `kin_te` falls after exogenous testosterone starts, and `k_recovery_te` how fast production rises to `kin_te_ss`. Together: `R(t) = kin_te * exp(-k_suppression_te * t) + kin_te_ss * (1 - exp(-k_recovery_te * t))`, with `t` the time since the first dose. Log-transformed `ini()` primaries are `lk_suppression_te` / `lk_recovery_te`.
+- **Source aliases:**
+  - `K1`, `K2` -- Pastuszak 2021 Table 2 (units misprinted 'L/h'; they are 1/h) and the Results equation.
+- **Example models:** `Pastuszak_2021_testosteroneUndecanoate.R` (founding example; `k_suppression_te` = 10 1/h FIXED, effectively an immediate switch-off; `k_recovery_te` = 0.000727 1/h, a recovery half-life of about 40 days).
+- **Notes:** Spelled-out stems, per the maintainers' ruling. These describe an empirical change over time in a production rate, not a drug-concentration-driven feedback loop: no state carries the suppression. Distinct from `lkrec` / `lthalfrec` (recovery of an effect-compartment or indirect-response pool) and from the `_kdes` decay rate of a time-varying clearance (`cl_exp_kdes`). For another hormone, swap the analyte suffix (e.g. `lk_recovery_<analyte>`).
+
 ### lkin_stomach_deep, lkout_stomach_deep, kin_stomach_deep, kout_stomach_deep (**canonical stomach deep-pool exchange rate constants**)
 - **Type:** paper-named-param
 - **Role:** First-order rate constants (1 / time) for reversible, LINEAR partitioning of drug between a stomach precursor pool and a stomach deep pool in which it interacts non-specifically with cellular components. Members of the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family: `kin_` names the leg INTO the suffixed compartment and `kout_` the leg back out, exactly as for `kin_tumor` / `kout_tumor`. The family entry's instruction to "prefer these role-based names over the source paper's numeric micro-constants" is what selects them over the source's `kass` / `kdis`, which say only that the process is an association / dissociation and not which compartment it fills.

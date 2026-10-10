@@ -776,6 +776,17 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Hirt_2007_nelfinavir.R` (multiplicative effect `1 + 1.92 * DAY_DELIVERY` applied to both maternal nelfinavir clearance `CL_Nm_No` and distribution volume `V`; gates a body-weight power effect `(WT/73)^2.81` on `CL_Nm_No` within the delivery cohort only).
 - **Notes:** Distinct from `PREG` (pregnant non-delivery, 1 = pregnant; see entry above), `TPP` (time postpartum, a continuous time-since-delivery covariate for postpartum recovery), and `TERM_BIRTH` (term-vs-preterm birth at any postnatal time). Use `DAY_DELIVERY` when the source paper carries a contrasted day-of-delivery cohort against pregnant non-delivery women in the same PK analysis (placental-transfer / labour-PK studies). Specific scope until a second model ratifies the name; promote to general when a future placental-transfer or labour-PK paper uses the same indicator.
 
+### SEX_HORMONE_BINDING_GLOBULIN (**canonical for serum sex hormone-binding globulin**)
+- **Description:** Serum sex hormone-binding globulin (SHBG) concentration, the high-affinity binding protein for testosterone and estradiol (baseline or time-varying). Higher SHBG restricts the unbound sex-steroid fraction available for hepatic extraction, so it typically enters a sex-steroid clearance with a negative power exponent.
+- **Units:** nmol/L. Document per-model via `covariateData[[SEX_HORMONE_BINDING_GLOBULIN]]$units`; papers reporting ug/dL or mg/L must be converted on data ingestion.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(SEX_HORMONE_BINDING_GLOBULIN / ref)^exponent`. Reference values observed: 20 nmol/L (Pastuszak 2021, hypogonadal men; Table 1 mean 20.8 nmol/L).
+- **Source aliases:**
+  - `SHBG` -- Pastuszak 2021 Table 1 and Table 2 ('SHBG, CL/F (power)'); baseline value, no value transformation.
+- **Example models:** `Pastuszak_2021_testosteroneUndecanoate.R` (baseline-only; power exponent -0.219 on the apparent clearance of total testosterone, referenced to 20 nmol/L; effect parameter `e_sex_hormone_binding_globulin_cl`).
+- **Notes:** Spelled out rather than abbreviated, per the maintainers' policy for new canonicals. A plain analyte name like `ALB`, used for both baseline and time-varying values; each model's `covariateData` notes say which one it uses. Distinct from the `shbg` turnover-STATE compartment in `compartment-names.md` (Jensen 2023, Reinecke 2018), which is a simulated amount, not a data column.
+
 ## Vital signs
 
 ### HR (**canonical for heart rate**)
