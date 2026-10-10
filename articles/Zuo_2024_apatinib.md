@@ -2,10 +2,9 @@
 
 ## Model and source
 
-- Citation: Zuo L, Ling J, Hu N, Chen R. (2024). Establishment and
-  validation of a population pharmacokinetic model for apatinib in
-  patients with tumors. BMC Cancer 24:1338.
-  <doi:10.1186/s12885-024-13118-4>
+- Citation: Zuo L, Ling J, Hu N, Chen R. Establishment and validation of
+  a population pharmacokinetic model for apatinib in patients with
+  tumors. BMC Cancer. 2024;24(1):1346. <doi:10.1186/s12885-024-13118-4>.
 - Description: One-compartment population PK model for oral apatinib in
   Chinese adult patients with solid tumours (Zuo 2024), developed from
   steady-state trough therapeutic-drug-monitoring samples. First-order
@@ -17,7 +16,7 @@
   paclitaxel 0.58, other cytotoxic agents 1.60, apatinib monotherapy
   1.38). Inter-individual variability is estimated on CL/F only;
   residual error is combined additive plus proportional.
-- Article: [BMC Cancer 24:1338
+- Article: [BMC Cancer 24:1346
   (2024)](https://doi.org/10.1186/s12885-024-13118-4)
 
 Apatinib is an orally administered small-molecule VEGFR-2

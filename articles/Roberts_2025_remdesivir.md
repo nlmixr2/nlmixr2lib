@@ -3,9 +3,11 @@
 ## Model and source
 
 - Citation: Roberts DM, Liu X, Parker SL, Burke A, Peek J, Carland JE,
-  et al. Population Pharmacokinetic Modelling of Remdesivir and Its
-  Metabolite GS-441524 in Hospitalised Patients with COVID-19. Clin
-  Pharmacokinet. 2025;64(5):723-735. <doi:10.1007/s40262-025-01496-2>
+  Murnion B, Seah V, Wallis SC, Sumi CD, Pandey S, Buscher H, Byrne A,
+  Sandaradura I, Bowen D, Holz S, Stewart AG, Hajkowicz KM, Roberts JA.
+  Population Pharmacokinetic Modelling of Remdesivir and Its Metabolite
+  GS-441524 in Hospitalised Patients with COVID-19. Clin Pharmacokinet.
+  2025;64(5):743-756. <doi:10.1007/s40262-025-01496-2>.
 - Description: Joint parent-metabolite population PK model for
   intravenous remdesivir and its circulating nucleoside metabolite
   GS-441524 in hospitalised adults with COVID-19 (Roberts 2025). Each
@@ -190,7 +192,7 @@ ui
 #>         dose_range = "Licensed regimen only: remdesivir 200 mg intravenously on day 1 followed by 100 mg once daily from day 2 up to day 5 or day 10, each administered as a 60-minute infusion. No alternative regimen was studied clinically; the alternative regimens explored in the paper are simulation only.", 
 #>         regions = "Four hospitals in Australia (St Vincent's Hospital Sydney, The University of Queensland, Royal Brisbane and Women's Hospital and one further site), July 2021 to August 2022.", 
 #>         notes = "Prospective, open-label, multi-centre, observational study. Covariates tested but not retained: gender, height, body weight, BMI, SOFA score, serum albumin, bilirubin, ALT, AST, ALP and GGT (Roberts 2025 Methods 2.4). Baseline demographics are in Roberts 2025 Table 1. Estimation was by SAEM in Monolix 2021R2; the final model was checked by a 1000-run bootstrap (Rsmlx 4.0.2) and externally validated against the held-out 8 patients (median prediction error -15.2%, mean -19.5%, RMSE 30.5%).")
-#>     reference <- "Roberts DM, Liu X, Parker SL, Burke A, Peek J, Carland JE, et al. Population Pharmacokinetic Modelling of Remdesivir and Its Metabolite GS-441524 in Hospitalised Patients with COVID-19. Clin Pharmacokinet. 2025;64(5):723-735. doi:10.1007/s40262-025-01496-2"
+#>     reference <- "Roberts DM, Liu X, Parker SL, Burke A, Peek J, Carland JE, Murnion B, Seah V, Wallis SC, Sumi CD, Pandey S, Buscher H, Byrne A, Sandaradura I, Bowen D, Holz S, Stewart AG, Hajkowicz KM, Roberts JA. Population Pharmacokinetic Modelling of Remdesivir and Its Metabolite GS-441524 in Hospitalised Patients with COVID-19. Clin Pharmacokinet. 2025;64(5):743-756. doi:10.1007/s40262-025-01496-2."
 #>     units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 #>     vignette <- "Roberts_2025_remdesivir"
 #>     ini({

@@ -2,12 +2,14 @@
 
 ## Model and source
 
-- Citation: Wattanakul T, Ogutu B, Kabanywanyi AM, et al., Tarning J.
-  (2020). Pooled multicenter analysis of cardiovascular safety and
-  population pharmacokinetic properties of piperaquine in African
-  patients with uncomplicated falciparum malaria. *Antimicrobial Agents
-  and Chemotherapy* **64**(7):e01848-19. <doi:10.1128/AAC.01848-19>
-  (PMC7318010).
+- Citation: Wattanakul T, Ogutu B, Kabanywanyi AM, Asante KP, Oduro A,
+  Adjei A, Sie A, Sevene E, Macete E, Compaore G, Valea I, Osei I,
+  Winterberg M, Gyapong M, Adjuik M, Abdulla S, Owusu-Agyei S, White NJ,
+  Day NPJ, Tinto H, Baiden R, Binka F, Tarning J. Pooled Multicenter
+  Analysis of Cardiovascular Safety and Population Pharmacokinetic
+  Properties of Piperaquine in African Patients with Uncomplicated
+  Falciparum Malaria. *Antimicrob Agents Chemother*.
+  2020;64(7):e01848-19. <doi:10.1128/AAC.01848-19> (PMC7318010).
 - Article: <https://doi.org/10.1128/AAC.01848-19>
 - Supplement: AAC.01848-19-s0001.pdf (supplementary Equations 1-2,
   Tables S1-S3).

@@ -4,8 +4,8 @@
 
 - Citation: Zhong R, Maxwell K, Passarell J, Murthy B, Aras U,
   Williams D. Model-Informed Abatacept Dose Recommendation in Pediatric
-  Patients With Acute Graft-Versus-Host Disease. J Clin Pharmacol.
-  2026;66(2):\[in-issue\]. <doi:10.1002/jcph.70156>
+  Patients With Acute Graft Versus Host Disease. J Clin Pharmacol.
+  2026;66(2):e70156. <doi:10.1002/jcph.70156>.
 - Description: Two-compartment population PK model for abatacept
   (CTLA4-Ig Fc-fusion) pooled across 9 phase 2/3 studies (Zhong 2026):
   adults with rheumatoid arthritis, patients aged 2-17 years with

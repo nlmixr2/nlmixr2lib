@@ -29,11 +29,13 @@ library(ggplot2)
 
     #> ℹ parameter labels from comments will be replaced by 'label()'
 
-- **Citation:** Muntau AC, Burlina A, Eyskens F, et al. Efficacy, safety
-  and population pharmacokinetics of sapropterin in PKU patients \<4
-  years: results from the SPARK open-label, multicentre, randomized
-  phase IIIb trial. Orphanet Journal of Rare Diseases. 2017;12:47.
-  <doi:10.1186/s13023-017-0600-x>
+- **Citation:** Muntau AC, Burlina A, Eyskens F, Freisinger P, De Laet
+  C, Leuzzi V, Rutsch F, Sivri HS, Vijay S, Bal MO, Gramer G, Pazdirkova
+  R, Cleary M, Lotz-Havla AS, Munafo A, Mould DR, Moreau-Stucker F,
+  Rogoff D. Efficacy, safety and population pharmacokinetics of
+  sapropterin in PKU patients \<4 years: results from the SPARK
+  open-label, multicentre, randomized phase IIIb trial. Orphanet J Rare
+  Dis. 2017;12(1):47. <doi:10.1186/s13023-017-0600-x>.
 
 - **Description:** One-compartment population PK model with first-order
   oral absorption, an absorption lag, linear elimination, and an
@@ -634,8 +636,10 @@ This is the expected behavior the paper explicitly describes.
 
 ## Reference
 
-- Muntau AC, Burlina A, Eyskens F, et al. Efficacy, safety and
-  population pharmacokinetics of sapropterin in PKU patients \<4 years:
-  results from the SPARK open-label, multicentre, randomized phase IIIb
-  trial. Orphanet Journal of Rare Diseases. 2017;12:47.
-  <doi:10.1186/s13023-017-0600-x>
+- Muntau AC, Burlina A, Eyskens F, Freisinger P, De Laet C, Leuzzi V,
+  Rutsch F, Sivri HS, Vijay S, Bal MO, Gramer G, Pazdirkova R, Cleary M,
+  Lotz-Havla AS, Munafo A, Mould DR, Moreau-Stucker F, Rogoff D.
+  Efficacy, safety and population pharmacokinetics of sapropterin in PKU
+  patients \<4 years: results from the SPARK open-label, multicentre,
+  randomized phase IIIb trial. Orphanet J Rare Dis. 2017;12(1):47.
+  <doi:10.1186/s13023-017-0600-x>.

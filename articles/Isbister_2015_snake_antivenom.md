@@ -3,10 +3,11 @@
 ## Model and source
 
 - Citation: Isbister GK, Maduwage K, Saiao A, Buckley NA, Jayamanne SF,
-  Seyed S, et al. Population pharmacokinetics of an Indian F(ab’)2 snake
-  antivenom in patients with Russell’s viper (Daboia russelii) bites.
-  PLoS Negl Trop Dis. 2015;9(7):e0003873.
-  <doi:10.1371/journal.pntd.0003873>
+  Seyed S, Mohamed F, Chathuranga U, Mendes A, Abeysinghe C,
+  Karunathilake H, Gawarammana I, Lalloo DG, de Silva HJ. Population
+  Pharmacokinetics of an Indian F(ab’)2 Snake Antivenom in Patients with
+  Russell’s Viper (Daboia russelii) Bites. PLoS Negl Trop Dis.
+  2015;9(7):e0003873. <doi:10.1371/journal.pntd.0003873>.
 - Description: Two-compartment population PK model for Indian polyvalent
   F(ab’)2 snake antivenom (VINS Bioproducts Ltd) in adults with
   Russell’s viper (Daboia russelii) envenoming (Isbister 2015):

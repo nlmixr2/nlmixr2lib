@@ -8,7 +8,7 @@
   characteristics for the prevention of rheumatic heart disease compared
   with intramuscular injection: a randomized, crossover, population
   pharmacokinetic study in healthy adult volunteers. J Antimicrob
-  Chemother. 2020;75(10):2986-2993. <doi:10.1093/jac/dkaa282>
+  Chemother. 2020;75(10):2951-2959. <doi:10.1093/jac/dkaa282>.
 - Description: One-compartment population PK model for penicillin
   released from benzathine benzylpenicillin G (Bicillin L-A) with three
   parallel absorption pathways (slow and fast via a transit compartment,
@@ -18,7 +18,7 @@
   penicillin concentrations in a randomized crossover of 15 healthy
   adult male volunteers each receiving 1.2 MIU IM and 1.2 MIU SC into
   the dorsogluteal region (Kado 2020).
-- Article: [J Antimicrob Chemother 75(10):2986-2993
+- Article: [J Antimicrob Chemother 75(10):2951-2959
   (2020)](https://doi.org/10.1093/jac/dkaa282)
 
 Kado 2020 is a randomized crossover PK study in 15 healthy adult males

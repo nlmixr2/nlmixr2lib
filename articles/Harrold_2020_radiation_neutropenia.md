@@ -31,12 +31,12 @@ drives mitotic-cell killing via a power-law sensitivity coefficient, and
 by coupling the circulating ANC to a time-to-event hazard model through
 an effect compartment.
 
-- Citation: Harrold JM, Olsson Gisleskog P, Delor I, Jacqmin P,
-  Perez-Ruixo JJ, Narayanan A, Doshi S, Chow A, Yang B-B, Melhem M.
+- Citation: Harrold J, Olsson Gisleskog P, Delor I, Jacqmin P,
+  Perez-Ruixo JJ, Narayanan A, Doshi S, Chow A, Yang BB, Melhem M.
   Quantification of Radiation Injury on Neutropenia and the Link between
   Absolute Neutrophil Count Time Course and Overall Survival in Nonhuman
-  Primates Treated with G-CSF. Pharm Res. 2020;37(7):102.
-  <doi:10.1007/s11095-020-02839-3> (PMID: 32440783; PMC: PMC7242243).
+  Primates Treated with G-CSF. Pharm Res. 2020;37(6):102.
+  <doi:10.1007/s11095-020-02839-3> (PMID: 32440783. PMC: PMC7242243).
 - Article: <https://doi.org/10.1007/s11095-020-02839-3>
 
 The packaged model produces three outputs:

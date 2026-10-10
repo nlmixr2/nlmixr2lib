@@ -22,7 +22,7 @@ mod_efa <- readModelDb("Aston_2017_efalizumab_qsp")
 
 - Citation: Aston PJ, Derks G, Agoram BM, van der Graaf PH. A
   mathematical analysis of rebound in a target-mediated drug disposition
-  model: II. With feedback. J Math Biol. 2017;75(1):39-73.
+  model: II. With feedback. J Math Biol. 2017;75(1):33-84.
   <doi:10.1007/s00285-016-1073-6>. Companion model from the same paper:
   modellib(‘Aston_2017_efalizumab_qsp’). The omalizumab parameter values
   are attributed by Aston et al. to Sun T (2001), poster, Advanced

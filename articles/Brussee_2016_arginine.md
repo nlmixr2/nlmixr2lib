@@ -6,11 +6,11 @@
   Pharmacokinetic-Pharmacodynamic Model for the Effect of L-Arginine on
   Endothelial Function in Patients with Moderately Severe Falciparum
   Malaria. Antimicrob Agents Chemother 60(1):198-205.
-  <doi:10.1128/AAC.01479-15>. PK structure adapted from Yeo TW, Lampah
-  DA, Gitawati R, Tjitra E, Kenangalem E, Price RN, Anstey NM, Duffull
-  SB (2008). Pharmacokinetics of L-arginine in adults with moderately
-  severe malaria. Antimicrob Agents Chemother 52(12):4381-4387.
-  <doi:10.1128/AAC.00421-08>.
+  <doi:10.1128/AAC.01479-15>. PK structure adapted from Yeo TW,
+  Rooslamiati I, Gitawati R, Tjitra E, Lampah DA, Kenangalem E, McNeil
+  YR, Price RN, Anstey NM, Duffull SB (2008). Pharmacokinetics of
+  L-arginine in adults with moderately severe malaria. Antimicrob Agents
+  Chemother 52(12):4381-4387. <doi:10.1128/AAC.00421-08>.
 - Description: Two-compartment population PKPD model for intravenous
   L-arginine adjunctive therapy in 73 adults with moderately severe
   falciparum malaria. Exogenous L-arginine PK is two-compartment IV with

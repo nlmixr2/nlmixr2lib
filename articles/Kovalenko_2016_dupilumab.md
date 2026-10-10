@@ -2,11 +2,11 @@
 
 ## Model and source
 
-- Citation: Kovalenko P, DiCioccio AT, Davis JD, et al. Exploratory
-  Population PK Analysis of Dupilumab, a Fully Human Monoclonal Antibody
-  Against IL-4Ralpha, in Atopic Dermatitis Patients and Normal
-  Volunteers. CPT Pharmacometrics Syst Pharmacol. 2016;5(11):617-624.
-  <doi:10.1002/psp4.12136>
+- Citation: Kovalenko P, DiCioccio AT, Davis JD, Li M, Ardeleanu M,
+  Graham N, Soltys R. Exploratory Population PK Analysis of Dupilumab, a
+  Fully Human Monoclonal Antibody Against IL-4Ralpha, in Atopic
+  Dermatitis Patients and Normal Volunteers. CPT Pharmacometrics Syst
+  Pharmacol. 2016;5(11):617-624. <doi:10.1002/psp4.12136>.
 - Description: Dupilumab exploratory population PK model (Kovalenko
   2016; 2-cmt with parallel linear + Michaelis-Menten elimination)
 - Article: [CPT Pharmacometrics Syst Pharmacol.

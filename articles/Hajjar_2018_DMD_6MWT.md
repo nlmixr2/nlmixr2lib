@@ -6,7 +6,6 @@
   Disease Progression Model for Duchenne Muscular Dystrophy. Poster
   T-011 presented at the American Conference on Pharmacometrics (ACoP9),
   Oct 7-10 2018, San Diego, CA.
-  <doi:10.36255/duchenne-muscular-dystrophy-public-education>.
 - Description: Latent variable disease-progression model for the
   six-minute walk test (6MWT, meters) in healthy boys and boys with
   Duchenne muscular dystrophy (DMD), fit by Hajjar et al. (ACoP9 2018

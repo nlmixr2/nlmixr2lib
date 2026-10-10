@@ -4,9 +4,9 @@
 
 - Citation: Han K, Capitano B, Bies R, Potoski BA, Husain S, Gilbert S,
   Paterson DL, McCurry K, Venkataramanan R. Bioavailability and
-  Population Pharmacokinetics of Voriconazole in Lung Transplant
-  Recipients. Antimicrob Agents Chemother. 2010.
-  <doi:10.1128/AAC.00504-10>
+  population pharmacokinetics of voriconazole in lung transplant
+  recipients. Antimicrob Agents Chemother. 2010;54(10):4424-4431.
+  <doi:10.1128/AAC.00504-10>.
 - Description: Two-compartment population pharmacokinetic model with
   first-order absorption and first-order elimination for intravenous and
   oral voriconazole in adult lung transplant recipients during the early

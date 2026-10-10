@@ -602,7 +602,7 @@ mod
 #>     Crbc ~ prop(propSd_Crbc)
 #>   })
 #> }
-#> <environment: 0x56289b7b5b20>
+#> <environment: 0x55679da89d18>
 ```
 
 ## Population
@@ -1094,7 +1094,7 @@ c(
   mean_pct_diff = mean(table2_cmp$pct_diff)
 )
 #>          n_cells max_abs_pct_diff    mean_pct_diff 
-#>       48.0000000        1.1103160       -0.7858274
+#>       48.0000000        1.1103161       -0.7858274
 ```
 
 Every one of the 48 published cells is reproduced to within 1.2%, with a
@@ -1487,7 +1487,7 @@ c(
   drift_fraction_pct = 100 * rise_diet / rise_total
 )
 #>      total_rise_umol_L diet_only_drift_umol_L     drift_fraction_pct 
-#>               6.783074               2.887496              42.569131
+#>               6.783074               2.887496              42.569133
 ```
 
 About 43% of the modelled 16-week rise at 8 mg/day is baseline drift
@@ -1713,7 +1713,7 @@ sessionInfo()
 #>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
 #>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
 #>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
-#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [10] tibble_3.3.1        symengine_0.2.14    pkgconfig_2.0.3    
 #> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
 #> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
@@ -1724,7 +1724,7 @@ sessionInfo()
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
-#> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
+#> [43] cli_3.6.6           dparser_1.3.1-14    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      
 #> [52] ragg_1.5.2          memoise_2.0.1       evaluate_1.0.5     

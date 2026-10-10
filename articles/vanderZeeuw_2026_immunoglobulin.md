@@ -8,7 +8,7 @@ which also carries a pharmacodynamic layer. They were extracted together
 because they come from a single secondary source.
 
 - Article: [van der Zeeuw et al., *Clinical Pharmacokinetics*
-  2026;65(6):813-30](https://doi.org/10.1007/s40262-026-01641-5)
+  2026;65(6):811-36](https://doi.org/10.1007/s40262-026-01641-5)
 - Supplement: <https://doi.org/10.1007/s40262-026-01641-5>
   (Supplementary Equations S1-S4)
 

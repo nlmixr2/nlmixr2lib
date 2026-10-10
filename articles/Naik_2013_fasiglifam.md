@@ -4,8 +4,8 @@
 
 - Citation: Naik H, Lu J, Cao C, Pfister M, Vakilynejad M, Leifke E.
   Pharmacometric Approaches to Guide Dose Selection of the Novel GPR40
-  Agonist TAK-875 in Subjects With Type 2 Diabetes Mellitus. CPT:
-  Pharmacometrics & Systems Pharmacology (2013) 2, e22;
+  Agonist TAK-875 in Subjects With Type 2 Diabetes Mellitus. CPT
+  Pharmacometrics Syst Pharmacol. 2013;2(1):e22.
   <doi:10.1038/psp.2012.23>. Supplement PSP-2012-0026-T contains the
   three NONMEM control streams reproduced here (s07 PK, s06 FPG, s05
   HbA1c). Q/F, V2/F, and ka were FIXED per the phase-2 sparse-sampling

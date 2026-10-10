@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Allegaert K, van der Marel CD, Debeer A, Pluim MAL, Van
-  Lingen RA, Vanhole C, Tibboel D, Devlieger H. (2015). Pharmacokinetics
-  of single-dose intravenous propacetamol in young women. BMC
-  Anesthesiol 15:151. <doi:10.1186/s12871-015-0144-3>. DDMORE Foundation
+- Citation: Allegaert K, Peeters MY, Beleyn B, Smits A, Kulo A, van
+  Calsteren K, Deprest J, de Hoon J, Knibbe CA. Paracetamol
+  pharmacokinetics and metabolism in young women. BMC Anesthesiol.
+  2015;15(1):163. <doi:10.1186/s12871-015-0144-3>. DDMORE Foundation
   Model Repository: DDMODEL00000267.
 - Description: Eight-compartment population PK model for IV
   propacetamol/paracetamol (APAP) and its glucuronide and sulphate
@@ -393,7 +393,7 @@ covariate-effect implementation are coherent.
 ## Assumptions and deviations
 
 - **Publication PDF not available.** The Allegaert 2015 paper (BMC
-  Anesthesiol 15:151;
+  Anesthesiol 15:163;
   [doi:10.1186/s12871-015-0144-3](https://doi.org/10.1186/s12871-015-0144-3))
   was not available when this model was built. Parameter point values
   are taken verbatim from `Output_real_OriginalModelCode.lst` after

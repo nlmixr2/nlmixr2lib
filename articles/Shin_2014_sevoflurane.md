@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Shin TJ, Noh GJ, Koo YS, Han DW. (2014). Modeling of
-  Recovery Profiles in Mentally Disabled and Intact Patients after
-  Sevoflurane Anesthesia; A Pharmacodynamic Analysis. *Yonsei Med J*
-  55(6):1624-1629.
+- Citation: Shin TJ, Noh GJ, Koo YS, Han DW. Modeling of recovery
+  profiles in mentally disabled and intact patients after sevoflurane
+  anesthesia; a pharmacodynamic analysis. *Yonsei Med J*.
+  2014;55(6):1624-1630. <doi:10.3349/ymj.2014.55.6.1624>.
 - Article: <https://doi.org/10.3349/ymj.2014.55.6.1624>
 
 This is a sigmoid Emax pharmacodynamic (PD) model for the probability of

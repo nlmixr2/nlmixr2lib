@@ -41,8 +41,8 @@ and ship as three files that share this article:
 - Citation: Bartels C, Jain M, Yu J, Tillmann HC, Vaidya S. Population
   Pharmacokinetic Analysis of Indacaterol/Glycopyrronium/Mometasone
   Furoate After Administration of Combination Therapies Using the
-  Breezhaler Device in Patients with Asthma. Eur J Drug Metab
-  Pharmacokinet. 2021;46(4):489-506. <doi:10.1007/s13318-021-00689-x>
+  Breezhaler() Device in Patients with Asthma. Eur J Drug Metab
+  Pharmacokinet. 2021;46(4):487-504. <doi:10.1007/s13318-021-00689-x>.
 - Article (open access): <https://doi.org/10.1007/s13318-021-00689-x>
 - Supplement (Online Resources 1-4):
   <https://static-content.springer.com/esm/art%3A10.1007%2Fs13318-021-00689-x/MediaObjects/13318_2021_689_MOESM1_ESM.pdf>

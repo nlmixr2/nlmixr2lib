@@ -4,11 +4,10 @@
 
 - Citation: Dao K, Thoueille P, Decosterd LA, Mercier T, Guidi M,
   Bardinet C, Lebon S, Choong E, Castang A, Guittet C, Granier LA,
-  Buclin T (2020). Pharmacokinetic profile of sultiame in healthy
-  volunteers with in vitro characterization of its uptake by red blood
-  cells. Pharmacology Research & Perspectives 8(2):e00558.
-  <doi:10.1002/prp2.558>. DDMORE Foundation Model Repository:
-  DDMODEL00000298.
+  Buclin T. Sultiame pharmacokinetic profile in plasma and erythrocytes
+  after single oral doses: A pilot study in healthy volunteers.
+  Pharmacol Res Perspect. 2020;8(1):e00558. <doi:10.1002/prp2.558>.
+  DDMORE Foundation Model Repository: DDMODEL00000298.
 - Description: Population PK model for sultiame in healthy adult
   volunteers with non-linear distribution into erythrocytes (saturable
   binding to a putative red-blood-cell carrier). Four-compartment
@@ -446,7 +445,7 @@ extra 1-3 h while RBCs absorb the early bolus. {.table}
   fraction of total elimination that goes to urine versus non-renal
   routes.
 - **Source publication not available.** The Dao 2020 paper (Pharmacology
-  Research & Perspectives 8(2):e00558, <doi:10.1002/prp2.558>) was not
+  Research & Perspectives 8(1):e00558, <doi:10.1002/prp2.558>) was not
   available when this model was built; the DDMORE bundle’s
   `Model_Accomodations.txt` describes the paper as “under submission”
   relative to the bundle’s 2018-2019 vintage. A side-by-side comparison

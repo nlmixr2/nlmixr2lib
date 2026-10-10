@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Mangas-Sanjuan V, Pastor JM, Rengelshausen J, Bursi R,
-  Troconiz IF. (2016). Population pharmacokinetic/pharmacodynamic
-  modelling of the effects of axomadol and its O-demethyl metabolite on
-  pupil diameter and nociception in healthy subjects. Br J Clin
-  Pharmacol 82(1):112-128. <doi:10.1111/bcp.12921>.
+  Troconiz IF. Population pharmacokinetic/pharmacodynamic modelling of
+  the effects of axomadol and its O-demethyl metabolite on pupil
+  diameter and nociception in healthy subjects. Br J Clin Pharmacol.
+  2016;82(1):92-107. <doi:10.1111/bcp.12921>.
 - Description: Semi-physiological population pharmacokinetic and joint
   pharmacodynamic model of axomadol (a racemic analgesic with opioid
   agonistic and monoamine-reuptake-inhibitor activity) and its
@@ -26,7 +26,7 @@
   function of the parent and metabolite contributions to pupil diameter.
   Parameter values are from Mangas-Sanjuan et al. 2016 Tables 2, 4, and
   5.
-- Article: [Br J Clin Pharmacol 82(1):112-128
+- Article: [Br J Clin Pharmacol 82(1):92-107
   (2016)](https://doi.org/10.1111/bcp.12921)
 
 Mangas-Sanjuan et al. characterised the pharmacokinetics and the

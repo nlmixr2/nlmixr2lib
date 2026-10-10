@@ -5,7 +5,7 @@
 - Citation: Yoshioka H, Sato H, Hatakeyama H, Hisaka A. Model-based
   meta-analysis to evaluate optimal doses of direct oral factor Xa
   inhibitors in atrial fibrillation patients. Blood Adv.
-  2018;2(10):1066-1076. <doi:10.1182/bloodadvances.2017013805>.
+  2018;2(10):1066-1075. <doi:10.1182/bloodadvances.2017013805>.
 - Description: MBMA. PT-ratio-driven logistic event-rate model for
   direct oral factor Xa inhibitors (rivaroxaban, apixaban, edoxaban) in
   non-valvular atrial fibrillation. Inputs a population-mean

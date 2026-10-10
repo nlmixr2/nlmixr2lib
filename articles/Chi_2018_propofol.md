@@ -405,7 +405,7 @@ CTP class. {.table}
   author (Xinjin Chi) co-authored a multicenter Chinese-cohort propofol
   popPK paper that DOES report a full OMEGA / SIGMA structure: Ye HB, Li
   JH, Rui JZ et al, “Propofol pharmacokinetics in China: A multicentric
-  study”, Indian J Pharmacol 2012; 44(3):393-7 (PMID 22701253). Ye 2012
+  study”, Indian J Pharmacol 2012; 44(3):393-7 (PMID 22701254). Ye 2012
   uses a 3-compartment model with age and sex on V1 and body weight on
   Q3 (n = 220 across four hospitals) and is therefore structurally
   distinct from Chi 2018’s 2-compartment model with body weight on CL

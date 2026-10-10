@@ -9,8 +9,8 @@
   updated model (Model 9)’ column of Table 5, the model refitted to all
   nine studies after ZONDA was appended to the analysis dataset.
   Superseded for the Asian and paediatric populations by Jin Y,
-  Guiastrennec B, Stuke M, et al. Clin Pharmacokinet. 2025;64:1233-1245;
-  <doi:10.1007/s40262-025-01538-9> – see
+  Guiastrennec B, Stuke M, et al. Clin Pharmacokinet.
+  2025;64(8):1231-1243; <doi:10.1007/s40262-025-01538-9> – see
   modellib(‘Jin_2025_benralizumab’).
 - Description: Two-compartment population PK model of benralizumab
   (anti-IL-5R alpha) with first-order subcutaneous absorption and

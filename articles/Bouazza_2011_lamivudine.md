@@ -4,8 +4,8 @@
 
 - Citation: Bouazza N, Hirt D, Blanche S, Frange P, Rey E, Treluyer JM,
   Urien S. Developmental pharmacokinetics of lamivudine in 580 pediatric
-  patients ranging from neonates to adolescents. Antimicrobial Agents
-  and Chemotherapy. 2011;55(8):3498-3504. <doi:10.1128/AAC.01622-10>
+  patients ranging from neonates to adolescents. Antimicrob Agents
+  Chemother. 2011;55(7):3498-3504. <doi:10.1128/AAC.01622-10>.
 - Description: Two-compartment oral popPK model for lamivudine in
   HIV-infected children from neonates to adolescents (Bouazza 2011)
 - Article: <https://doi.org/10.1128/AAC.01622-10>

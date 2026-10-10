@@ -130,7 +130,7 @@ residual-error discrepancy noted under Errata.
 | NA | Subject and observation counts | Jung 2023 main text Table 2 |
 | NA | Fit statistics (OFV / AIC / AICc) | Jung 2023 main text Table 2 |
 | NA | Case 1 study design and demographics | Jung 2022, <doi:10.3390/pharmaceutics14020244> (ref \[3\]) |
-| NA | Case 4 / 5 study design and demographics | Ngo 2020, <doi:10.1002/psp4.12552> (ref \[16\]) |
+| NA | Case 4 / 5 study design and demographics | Ngo 2020, <doi:10.1002/psp4.12555> (ref \[16\]) |
 
 Where each model quantity comes from. {.table}
 

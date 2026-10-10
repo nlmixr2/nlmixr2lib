@@ -3,10 +3,11 @@
 ## Model and source
 
 - Citation: Chotsiri P, Denoeud-Ndam L, Baudin E, Guindo O, Diawara H,
-  Attaher O, et al. (2019). Severe acute malnutrition results in lower
-  lumefantrine exposure in children treated with artemether-lumefantrine
-  for uncomplicated malaria. *Clinical Pharmacology and Therapeutics*
-  **106**(6):1299-1309. <doi:10.1002/cpt.1531>.
+  Attaher O, Smit M, Guerin PJ, Doumbo OK, Wiesner L, Barnes KI, Hoglund
+  RM, Dicko A, Etard JF, Tarning J. Severe Acute Malnutrition Results in
+  Lower Lumefantrine Exposure in Children Treated With
+  Artemether-Lumefantrine for Uncomplicated Malaria. *Clin Pharmacol
+  Ther*. 2019;106(6):1299-1309. <doi:10.1002/cpt.1531>.
 - Article: <https://doi.org/10.1002/cpt.1531>
 - Trial: MAL-NUT, ClinicalTrials.gov
   <https://clinicaltrials.gov/study/NCT01958905>

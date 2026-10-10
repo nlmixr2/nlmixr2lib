@@ -8,9 +8,9 @@ ui <- rxode2::rxode(readModelDb("Dong_2026_piperacillin"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
-- Citation: Dong Z, Shi H, Yang Y, Yi Q, Jiang Z, Li Y (2026).
-  Population pharmacokinetics and dosing regimen optimization of
-  piperacillin in critically ill patients. Drug Des Devel Ther 20.
+- Citation: Dong Z, Shi H, Yang Y, Yi Q, Jiang Z, Li Y. Population
+  Pharmacokinetics and Dosing Regimen Optimization of Piperacillin in
+  Critically Ill Patients. Drug Des Devel Ther. 2026;20:551307.
   <doi:10.2147/DDDT.S551307>.
 - Description: One-compartment population PK model for intravenous
   piperacillin in critically ill adults (Dong 2026; n = 42 Chinese ICU

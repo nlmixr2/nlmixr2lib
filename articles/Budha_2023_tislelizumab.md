@@ -378,7 +378,7 @@ virtual population approximates Table 2 medians and ranges:
 
 ### Reference
 
-- Budha N, Wu CY, Tang Z, et al. Model-based population pharmacokinetic
-  analysis of tislelizumab in patients with advanced tumors. CPT
-  Pharmacometrics Syst Pharmacol. 2023;12(1):95-109.
-  <doi:10.1002/psp4.12880>
+- Budha N, Wu CY, Tang Z, Yu T, Liu L, Xu F, Gao Y, Li R, Zhang Q, Wan
+  Y, Sahasranaman S. Model-based population pharmacokinetic analysis of
+  tislelizumab in patients with advanced tumors. CPT Pharmacometrics
+  Syst Pharmacol. 2023;12(1):95-109. <doi:10.1002/psp4.12880>.

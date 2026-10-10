@@ -5,12 +5,12 @@
 - Citation: Sarashina A, Tatami S, Yamamura N, Tsuda Y, Igarashi T.
   Population pharmacokinetics of epinastine, a histamine H1 receptor
   antagonist, in adults and children. Br J Clin Pharmacol.
-  2005;59(1):43-53. <doi:10.1111/j.1365-2125.2005.02250.x>
+  2005;59(1):43-53. <doi:10.1111/j.1365-2125.2005.2250>
 - Description: Two-compartment population PK model with first-order
   absorption for oral epinastine in healthy adults and paediatric atopic
   dermatitis patients (Sarashina 2005), with linear-in-WT CL/F and V1/F
   plus food-status and formulation covariate effects
-- Article: <https://doi.org/10.1111/j.1365-2125.2005.02250.x>
+- Article: <https://doi.org/10.1111/j.1365-2125.2005.2250>
 
 Epinastine is a non-sedating histamine H1 receptor antagonist used for
 allergic rhinitis and atopic dermatitis. Sarashina 2005 pooled 1510

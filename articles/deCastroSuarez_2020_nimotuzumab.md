@@ -570,9 +570,9 @@ to argue that 100 mg is the maximum effective single dose.
 
 ### Reference
 
-- de Castro-Suarez N, Trame MN, Mangas-Sanjuan V, Garcia-Cremades M,
-  Boix-Montanes A, Fernandez-Teruel C, Munoz-Camara A, Martin-Suarez A,
-  Rebollo-Fernandez G, Lleonart-Vidal R. Semi-Mechanistic
+- de Castro-Suarez N, Trame MN, Ramos-Suzarte M, Davalos JM,
+  Bacallao-Mendez RA, Maceo-Sinabele AR, Mangas-Sanjuan V,
+  Reynaldo-Fernandez G, Rodriguez-Vera L. Semi-Mechanistic
   Pharmacokinetic Model to Guide the Dose Selection of Nimotuzumab in
   Patients with Autosomal Dominant Polycystic Kidney Disease.
-  Pharmaceutics. 2020;12(12):1147. <doi:10.3390/pharmaceutics12121147>
+  Pharmaceutics. 2020;12(12):1147. <doi:10.3390/pharmaceutics12121147>.

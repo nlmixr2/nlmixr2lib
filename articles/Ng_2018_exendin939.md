@@ -5,7 +5,7 @@
 - Citation: Ng CM, Tang F, Seeholzer SH, Zou Y, De Leon DD. Population
   pharmacokinetics of exendin-(9-39) and clinical dose selection in
   patients with congenital hyperinsulinism. Br J Clin Pharmacol.
-  2018;84(3):520-528. <doi:10.1111/bcp.13463>
+  2018;84(3):520-532. <doi:10.1111/bcp.13463>.
 - Description: Two-compartment intravenous-infusion population PK model
   for exendin-(9-39) in patients with congenital hyperinsulinism (Ng
   2018). Pooled paediatric (neonates and children) and adult cohort with
@@ -15,7 +15,7 @@
   (Var(Y\|F) = F \* sigma^2), encoded as a power-error with fixed
   exponent 0.5.
 - Article: [Br J Clin Pharmacol
-  2018;84(3):520-528](https://doi.org/10.1111/bcp.13463)
+  2018;84(3):520-532](https://doi.org/10.1111/bcp.13463)
 
 ## Population
 

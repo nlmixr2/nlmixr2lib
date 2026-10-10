@@ -16,7 +16,7 @@ two models that are packaged here separately:
 - Citation: Yang L, Llanos-Paez C, Yang S, Ambery C, Berges A, Kjellsson
   MC, Karlsson MO. A Combined Model-Based Meta-Analysis of Aggregated
   and Individual FEV1 Data From Randomized COPD Trials. CPT
-  Pharmacometrics Syst Pharmacol. 2026;15(1):e70059.
+  Pharmacometrics Syst Pharmacol. 2026;15(2):e70059.
   <doi:10.1002/psp4.70059>. Final parameter estimates are in Supporting
   Information Table S3; the model equations are in the Supporting
   Information section ‘NONMEM control stream for the combined ADIPD

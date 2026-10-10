@@ -5,7 +5,8 @@
 - Citation: Schutte LM, van Hest RM, Stoof SCM, Leebeek FWG, Cnossen MH,
   Kruip MJHA, Mathot RAA. Pharmacokinetic Modelling to Predict FVIII:C
   Response to Desmopressin and Its Reproducibility in Nonsevere
-  Haemophilia A Patients. Thromb Haemost 2018;118(3):621-629.
+  Haemophilia A Patients. Thromb Haemost. 2018;47(04):621-629.
+  <doi:10.1160/TH17-06-0390>.
 - Article: <https://doi.org/10.1160/TH17-06-0390>
 - Description: Two-compartment apparent population PK model of
   endogenous factor VIII coagulant activity (FVIII:C) following a

@@ -24,7 +24,7 @@ library(ggplot2)
 - Citation: Fiedler-Kelly JB, Passarell J, Ludwig E, Levi M,
   Cohen-Barak O. Effect of Fremanezumab Monthly and Quarterly Doses on
   Efficacy Responses. Headache. 2020 Jul;60(7):1376-1391.
-  <doi:10.1111/head.13855>. PMID: 32445498.
+  <doi:10.1111/head.13845>. PMID: 32445498.
 - Description: Population PD exposure-response model relating
   fremanezumab average plasma concentration (Cav) to monthly migraine
   days in adults with episodic migraine. Placebo time-course is an
@@ -33,7 +33,7 @@ library(ggplot2)
   baseline migraine days. Fitted to 4444 monthly observations from 1142
   episodic-migraine patients pooled across the LBR-101-022 phase 2b and
   TV48125-CNS-30050 phase 3 studies (Fiedler-Kelly 2020).
-- Article: <https://doi.org/10.1111/head.13855>
+- Article: <https://doi.org/10.1111/head.13845>
 
 Fiedler-Kelly 2020 develops two exposure-response (E-R) models for
 fremanezumab, one in episodic migraine (EM, this vignette) and one in

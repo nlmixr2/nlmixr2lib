@@ -4,7 +4,7 @@
 
 - Citation: Heo YA, Holford N, Kim Y, Son M, Park K. Quantitative model
   for the blood pressure-lowering interaction of valsartan and
-  amlodipine. Br J Clin Pharmacol. 2017 Jul;83(7):1502-1514.
+  amlodipine. Br J Clin Pharmacol. 2016;82(6):1557-1567.
   <doi:10.1111/bcp.13082>.
 - Description: Joint two-drug population PK/PD model for the
   antihypertensive interaction of amlodipine (calcium-channel blocker,

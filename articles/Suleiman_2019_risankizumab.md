@@ -44,11 +44,11 @@ is body weight on CL, Vc, and Vp; baseline serum albumin, serum
 creatinine, and hs-CRP on CL; and a time-varying ADA titer threshold
 effect on CL (+43% once titer ≥ 128).
 
-- Citation: Suleiman AA, Khatri A, Minocha M, Othman AA. Population
-  Pharmacokinetics of Risankizumab in Healthy Volunteers and Subjects
-  with Moderate to Severe Plaque Psoriasis: Integrated Analyses of Phase
-  I-III Clinical Trials. Clin Pharmacokinet. 2019;58(10):1309-1321.
-  <doi:10.1007/s40262-019-00759-z>
+- Citation: Suleiman AA, Minocha M, Khatri A, Pang Y, Othman AA.
+  Population Pharmacokinetics of Risankizumab in Healthy Volunteers and
+  Subjects with Moderate to Severe Plaque Psoriasis: Integrated Analyses
+  of Phase I-III Clinical Trials. Clin Pharmacokinet.
+  2019;58(10):1309-1321. <doi:10.1007/s40262-019-00759-z>.
 - Article: <https://doi.org/10.1007/s40262-019-00759-z>
 
 ### Source trace
@@ -473,8 +473,8 @@ all-subject demographics in Table 2 rather than reproducing them:
 
 ### Reference
 
-- Suleiman AA, Khatri A, Minocha M, Othman AA. Population
+- Suleiman AA, Minocha M, Khatri A, Pang Y, Othman AA. Population
   Pharmacokinetics of Risankizumab in Healthy Volunteers and Subjects
   with Moderate to Severe Plaque Psoriasis: Integrated Analyses of Phase
   I-III Clinical Trials. Clin Pharmacokinet. 2019;58(10):1309-1321.
-  <doi:10.1007/s40262-019-00759-z>
+  <doi:10.1007/s40262-019-00759-z>.

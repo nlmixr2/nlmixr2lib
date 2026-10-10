@@ -36,10 +36,10 @@ as_sim_df <- function(x) {
 ```
 
 - Citation: Wallender E, Ali AM, Hughes E, Kakuru A, Jagannathan P,
-  Muhindo MK, Opira B, Whalen M, Huang L, Duvalsaint M, Legac J, Kajubi
-  R, Aweeka F, Dorsey G, Kamya MR, Rosenthal PJ, Savic RM. Identifying
-  an optimal dihydroartemisinin-piperaquine dosing regimen for malaria
-  prevention in young Ugandan children. Nat Commun. 2021;12(1):6714.
+  Muhindo MK, Opira B, Whalen M, Huang L, Duvalsaint M, Legac J, Kamya
+  MR, Dorsey G, Aweeka F, Rosenthal PJ, Savic RM. Identifying an optimal
+  dihydroartemisinin-piperaquine dosing regimen for malaria prevention
+  in young Ugandan children. Nat Commun. 2021;12(1):6714.
   <doi:10.1038/s41467-021-27051-8>. PMC8602248. Open Access under CC BY
   4.0. Final parameter estimates are in Table 2; the structural
   equations are Eq. 1 (clearance) and Eq. 2 (bioavailability) with the

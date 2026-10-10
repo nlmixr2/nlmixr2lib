@@ -2,13 +2,13 @@
 
 ## Model and source
 
-- Citation: Wang C, Sadhasivam S, Krekels EHJ, Dahan A, Tibboel D,
-  Danhof M, Vinks AA, Knibbe CAJ (2013). Developmental changes in
-  morphine clearance across the entire paediatric age range are best
-  described by a bodyweight-dependent exponent model. Clinical Drug
-  Investigation 33(7):523-534. <doi:10.1007/s40261-013-0097-6>.
-  <PMID:23754691>. DDMORE Foundation Model Repository: DDMODEL00000269
-  (Model I, morphine alone).
+- Citation: Wang C, Sadhavisvam S, Krekels EHJ, Dahan A, Tibboel D,
+  Danhof M, Vinks AA, Knibbe CAJ. Developmental changes in morphine
+  clearance across the entire paediatric age range are best described by
+  a bodyweight-dependent exponent model. Clin Drug Investig.
+  2013;33(7):523-534. <doi:10.1007/s40261-013-0097-6>. <PMID:23754691>.
+  DDMORE Foundation Model Repository: DDMODEL00000269 (Model I, morphine
+  alone).
 - Description: Two-compartment population PK model for morphine across
   the entire paediatric age range and adults using a
   bodyweight-dependent allometric exponent (BDE) on clearance, with

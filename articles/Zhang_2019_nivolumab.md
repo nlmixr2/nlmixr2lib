@@ -27,10 +27,11 @@ library(PKNCA)
 
 ## Model and source
 
-- Citation: Zhang J, Sanghavi K, Shen J, et al. Population
-  Pharmacokinetics of Nivolumab in Combination With Ipilimumab in
-  Patients With Advanced Malignancies. CPT Pharmacometrics Syst
-  Pharmacol. 2019;8(12):962-970. <doi:10.1002/psp4.12476>
+- Citation: Zhang J, Sanghavi K, Shen J, Zhao X, Feng Y, Statkevich P,
+  Sheng J, Roy A, Zhu L. Population Pharmacokinetics of Nivolumab in
+  Combination With Ipilimumab in Patients With Advanced Malignancies.
+  CPT Pharmacometrics Syst Pharmacol. 2019;8(12):962-970.
+  <doi:10.1002/psp4.12476>.
 - Description: Two-compartment population PK model with time-varying
   clearance for intravenous nivolumab (anti-PD-1 IgG4) in adults with
   advanced solid tumors, alone or in combination with ipilimumab or

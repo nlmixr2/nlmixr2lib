@@ -2,10 +2,11 @@
 
 ## Model and source
 
-- Citation: Cao P, Klonis N, Zaloumis S, et al. A dynamic stress model
-  explains the delayed drug effect in artemisinin treatment of
-  *Plasmodium falciparum*. Antimicrob Agents Chemother.
-  2017;61(12):e00618-17.
+- Citation: Cao P, Klonis N, Zaloumis S, Dogovski C, Xie SC, Saralamba
+  S, White LJ, Fowkes FJI, Tilley L, Simpson JA, McCaw JM. A Dynamic
+  Stress Model Explains the Delayed Drug Effect in Artemisinin Treatment
+  of *Plasmodium falciparum*. *Antimicrob Agents Chemother*.
+  2017;61(12):e00618-17. <doi:10.1128/AAC.00618-17>.
 - Description: In vitro (P. falciparum 3D7 laboratory strain) dynamic
   stress PD model in which the dihydroartemisinin (DHA) parasite killing
   rate `k = kmax(S) * C^hill / (Kc(S)^hill + C^hill)` is modulated by a

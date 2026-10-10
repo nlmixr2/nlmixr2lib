@@ -7,7 +7,7 @@
 mod <- readModelDb("Lawson_2022_busulfan")
 cat(rxode2::rxode(mod)$reference)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Lawson R, Staatz CE, Fraser CJ, et al. Population pharmacokinetic model for once-daily intravenous busulfan in pediatric subjects describing time-associated clearance. CPT Pharmacometrics Syst Pharmacol. 2022;11(8):1002-1017. doi:10.1002/psp4.12809
+#> Lawson R, Staatz CE, Fraser CJ, Ramachandran S, Teague L, Mitchell R, O'Brien T, Hennig S. Population pharmacokinetic model for once-daily intravenous busulfan in pediatric subjects describing time-associated clearance. CPT Pharmacometrics Syst Pharmacol. 2022;11(8):1002-1017. doi:10.1002/psp4.12809.
 ```
 
 - Article: <https://doi.org/10.1002/psp4.12809>

@@ -1042,10 +1042,10 @@ paper’s mouse layer reuses.
 ## Reference
 
 Chandralayam Ayyappa Menon V, Matsuura T, Holkova B, Gudi GS, Drake A,
-Pihlgren M, van der Graaf PH, Sunitha GN, Garton A, Perro M, Konto C,
-Pacaud L. Clinical validation of a QSP model for ISB 2001, a trispecific
-T cell engager to support optimal FIH study design in RRMM patients.
-Clin Pharmacol Ther. 2026;120(2):452-464. <doi:10.1002/cpt.70319>. The
+Pihlgren M, van der Graaf PH, Gn S, Garton A, Perro M, Konto C, Pacaud
+L. Clinical Validation of a QSP Model for ISB 2001, a Trispecific T Cell
+Engager to Support Optimal FIH Study Design in RRMM Patients. Clin
+Pharmacol Ther. 2026;120(2):452-464. <doi:10.1002/cpt.70319>. The
 minimal-PBPK backbone follows Cao & Jusko (2014) / Shah & Betts (2012)
 (references 15-17 of the source); the CD3-bispecific target-engagement
 and trimer framework follows Betts et al. (2019) AAPS J 21:66 (reference

@@ -11,7 +11,7 @@ mod <- rxode2::rxode(readModelDb("Groenendaal_2007_morphine_brain_rat"))
 - Citation: Groenendaal D, Freijer J, de Mik D, Bouw MR, Danhof M, de
   Lange ECM. Population pharmacokinetic modelling of non-linear brain
   distribution of morphine: influence of active saturable influx and
-  P-glycoprotein mediated efflux. Br J Pharmacol. 2007;151(4):701-712.
+  P-glycoprotein mediated efflux. Br J Pharmacol. 2007;151(5):701-712.
   <doi:10.1038/sj.bjp.0707257>.
 - Article: <https://doi.org/10.1038/sj.bjp.0707257>
 - PubMed Central:
@@ -24,7 +24,7 @@ mod <- rxode2::rxode(readModelDb("Groenendaal_2007_morphine_brain_rat"))
 
 Preclinical (rat, male Wistar). Non-linear blood-brain barrier (BBB)
 distribution model for morphine published by Groenendaal et al. (2007,
-Br J Pharmacol 151(4):701-712). A three-compartment blood disposition
+Br J Pharmacol 151(5):701-712). A three-compartment blood disposition
 model (paper Table 2, NONMEM ADVAN11 TRANS4; linear body-weight effects
 on CL and on the first peripheral volume V2) drives a single brain
 extracellular-fluid (ECF) compartment sampled by intracerebral striatal
@@ -887,7 +887,7 @@ sessionInfo()
 #>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
 #>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
 #>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
-#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [10] tibble_3.3.1        symengine_0.2.14    pkgconfig_2.0.3    
 #> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
 #> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
@@ -898,7 +898,7 @@ sessionInfo()
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
-#> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
+#> [43] cli_3.6.6           dparser_1.3.1-14    magrittr_2.0.5     
 #> [46] utf8_1.2.6          withr_3.0.3         scales_1.4.0       
 #> [49] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         
 #> [52] askpass_1.2.1       ragg_1.5.2          memoise_2.0.1      

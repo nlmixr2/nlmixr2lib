@@ -2,12 +2,11 @@
 
 ## Model and source
 
-- Citation: Le Tilly O, Azzopardi N, Bonneau C, Ohresser M, Ternant D,
-  Thomas K, Olivier F, Trouillas I, Etcheverry M, Demarquay C, Garcia M,
-  Paintaud G, Goupille O. Antigen Mass May Influence Trastuzumab
-  Concentrations in Cerebrospinal Fluid After Intrathecal
-  Administration. Clin Pharmacol Ther. 2021;110(1):210-219.
-  <doi:10.1002/cpt.2188>
+- Citation: Le Tilly O, Azzopardi N, Bonneau C, Desvignes C, Oberkampf
+  F, Ezzalfani M, Ternant D, Turbiez I, Gutierrez M, Paintaud G. Antigen
+  Mass May Influence Trastuzumab Concentrations in Cerebrospinal Fluid
+  After Intrathecal Administration. Clin Pharmacol Ther.
+  2021;110(1):210-219. <doi:10.1002/cpt.2188>.
 - Description: Two-compartment serum/CSF population PK model for
   trastuzumab after intrathecal and intravenous administration in adults
   with HER2+ breast cancer leptomeningeal metastases (Le Tilly 2021);

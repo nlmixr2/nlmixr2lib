@@ -4,8 +4,8 @@
 
 - Citation: Nemoto A, Masaaki M, Yamaoka K. A Bayesian Approach for
   Population Pharmacokinetic Modeling of Alcohol in Japanese
-  Individuals. Curr Ther Res Clin Exp. 2017;85:1-7.
-  <doi:10.1016/j.curtheres.2017.04.001>
+  Individuals. Curr Ther Res Clin Exp. 2017;84:42-49.
+  <doi:10.1016/j.curtheres.2017.04.001>.
 - Description: Bayesian population PK model for orally ingested ethanol
   (alcohol) in 34 healthy Japanese adults (Nemoto 2017). One-compartment
   model with first-order absorption and Michaelis-Menten elimination;

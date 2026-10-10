@@ -10,8 +10,8 @@
   2025-06-27 (final sentence of Methods; prose only, no parameter
   impact). Whole-body disposition structure and physiological / chemical
   parameters inherited from Rostami AA, Campbell JL, Pithawalla YB, et
-  al. (2022) Sci Rep 12:2436, <doi:10.1038/s41598-022-06209-4> (with
-  Author Correction, Sci Rep 12:2966, <doi:10.1038/s41598-022-07016-7> –
+  al. (2022) Sci Rep 12:1091, <doi:10.1038/s41598-022-05108-y> (with
+  Author Correction, Sci Rep 12:2436, <doi:10.1038/s41598-022-06693-8> –
   bibliography fix only).
 
 - Description: PBPK (whole-body, MCSim/deSolve). Nicotine, cotinine and
@@ -38,7 +38,7 @@
 - Article: <https://doi.org/10.1002/jcph.70038>
 
 - Upstream framework paper (Rostami 2022):
-  <https://doi.org/10.1038/s41598-022-06209-4>
+  <https://doi.org/10.1038/s41598-022-05108-y>
 
 Salehi 2025 couples a fit-for-purpose buccal-cavity (BC) tissue
 permeation model to the whole-body nicotine PBPK model of Rostami 2022,

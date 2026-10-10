@@ -4,19 +4,19 @@
 
 - Citation: Bista SR, Haywood A, Hardy J, Norris R, Hennig S. Exposure
   to fentanyl after transdermal patch administration for cancer pain
-  management. Manuscript dated 2015 provided by the senior author (S.
-  Hennig); published-journal citation / DOI not on the manuscript copy
-  used for extraction.
+  management. J Clin Pharmacol. 2016;56(6):705-713.
+  <doi:10.1002/jcph.641>. Parameter values were taken from the 2015
+  manuscript provided by the senior author (S. Hennig).
 - Description: One-compartment population PK model for transdermal
   fentanyl (Durogesic patch) in adult cancer patients with first-order
   absorption from the patch and allometric body-weight scaling on CL/F
   and V/F (Bista 2015)
 - Source: manuscript “Exposure to fentanyl after transdermal patch
   administration for cancer pain management” provided by senior
-  author S. Hennig (file `Bista_Fentanyl_TDM.pdf`, dated 2015-10-19);
-  the manuscript copy used for extraction does not carry final-typeset
-  journal / DOI metadata. Final published citation should be substituted
-  into the model file’s `reference` field once located.
+  author S. Hennig (file `Bista_Fentanyl_TDM.pdf`, dated 2015-10-19),
+  published as J Clin Pharmacol 2016;56(6):705-713
+  (<doi:10.1002/jcph.641>). Parameter values, table numbers and page
+  references in this article are those of the manuscript.
 
 ## Population
 
@@ -366,9 +366,8 @@ steady state.
   individual prescribed regimens.
 - **Race / ethnicity.** Not reported in Bista 2015 Table 1 and not a
   model covariate; the cohort is therefore neutral on race.
-- **Full publication metadata not available.** The PDF is a manuscript
-  form without journal / DOI metadata. The model file’s `reference`
-  field flags the missing publication citation explicitly; the title,
-  author list and study design are taken verbatim from the manuscript
-  copy. Any future update should populate the published-form citation
-  and DOI.
+- **Extracted from the manuscript.** The PDF is the authors’ manuscript,
+  without journal or DOI metadata. The citation in the model file is the
+  published article (J Clin Pharmacol 2016;56(6):705-713), whose title
+  and author list match the manuscript; the parameter values were not
+  re-checked against the typeset article.

@@ -43,7 +43,7 @@ models <- list(
   Pharmacokinetic/Pharmacodynamic Modeling of the Acute Heart Rate
   Effects of Delta-9 Tetrahydrocannabinol and Its Major Metabolites
   After Intravenous Injection in Healthy Volunteers. Eur J Drug Metab
-  Pharmacokinet. 2025;50(3):229-241. <doi:10.1007/s13318-025-00941-8>
+  Pharmacokinet. 2025;50(3):229-242. <doi:10.1007/s13318-025-00941-8>.
 - Article: <https://doi.org/10.1007/s13318-025-00941-8>
 - Supplement (rejected models):
   <https://doi.org/10.1007/s13318-025-00941-8> (online supplementary

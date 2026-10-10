@@ -40,8 +40,8 @@ contains busulfan.
 - Citation: Choi JY, Kim B, Park HJ, Kim BK, Hong KT, Lee S, Lee S, Kang
   HJ. Population Pharmacokinetics of Melphalan in Pediatric Patients
   Undergoing Autologous Hematopoietic Stem Cell Transplantation with
-  Various Conditioning Regimens. Eur J Drug Metab Pharmacokinet. 2026.
-  <doi:10.1007/s13318-026-01000-6>
+  Various Conditioning Regimens. Eur J Drug Metab Pharmacokinet.
+  2026;51(4):391-400. <doi:10.1007/s13318-026-01000-6>.
 - Article: <https://doi.org/10.1007/s13318-026-01000-6>
 - Supplement: <https://doi.org/10.1007/s13318-026-01000-6>
   (Supplementary Information; Tables S1-S6 and Figures S1-S4)

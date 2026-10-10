@@ -7,8 +7,8 @@
   SC, Xie J, Roberts JA, Abdul-Aziz MH. A multicentre evaluation of
   pharmacokinetic/pharmacodynamic target attainment of piperacillin and
   tazobactam and the association with clinical outcomes in critically
-  ill patients with sepsis and septic shock. J Antimicrob
-  Chemother. 2026. <doi:10.1093/jac/dkag199>.
+  ill patients with sepsis and septic shock. J Antimicrob Chemother.
+  2026;81(7):dkag199. <doi:10.1093/jac/dkag199>.
 - Description: Joint one-compartment population PK model for
   piperacillin and tazobactam in 45 critically ill adults with sepsis or
   septic shock in three Malaysian intensive care units (Sulaiman 2026).

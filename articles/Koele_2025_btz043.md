@@ -11,16 +11,15 @@ runs the paper reports:
   time-to-positivity exposure-response model, driven by the individual
   BTZ-043total AUC(0-24) that the PK model produces.
 
-- Citation: Koele S. E., Heinrich N., De Jager V. R., Dreisbach J.,
-  Phillips P. P. J., Gross-Demel P., Dawson R., Narunsky K., Wildner L.
-  M., Mchugh T. D., Te Brake L. H. M., Diacon A. H., Aarnoutse R. E.,
-  Hoelscher M., Svensson E. M. (2025). Population pharmacokinetics and
-  exposure-response relationship of the antituberculosis drug BTZ-043.
-  Journal of Antimicrobial Chemotherapy 80(5):1319-1327.
-  <doi:10.1093/jac/dkaf076>. Structural equations and random-effect
-  variances transcribed from the final NONMEM control stream in the
-  Supplementary data (‘Pharmacokinetic model code’); typical values and
-  residual errors from Table 2.
+- Citation: Koele SE, Heinrich N, De Jager VR, Dreisbach J, Phillips
+  PPJ, Gross-Demel P, Dawson R, Narunsky K, Wildner LM, Mchugh TD, Te
+  Brake LHM, Diacon AH, Aarnoutse RE, Hoelscher M, Svensson EM.
+  Population pharmacokinetics and exposure-response relationship of the
+  antituberculosis drug BTZ-043. J Antimicrob Chemother.
+  2025;80(5):1315-1323. <doi:10.1093/jac/dkaf076>. Structural equations
+  and random-effect variances transcribed from the final NONMEM control
+  stream in the Supplementary data (‘Pharmacokinetic model code’);
+  typical values and residual errors from Table 2.
 
 - Article: <https://doi.org/10.1093/jac/dkaf076>
 
@@ -1270,7 +1269,7 @@ sessionInfo()
 #>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
 #>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
 #>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
-#> [10] symengine_0.2.13    pkgconfig_2.0.3     data.table_1.18.6.1
+#> [10] symengine_0.2.14    pkgconfig_2.0.3     data.table_1.18.6.1
 #> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
 #> [16] desc_1.4.3          lifecycle_1.0.5     compiler_4.6.1     
 #> [19] farver_2.1.2        textshaping_1.0.5   fontawesome_0.5.3  
@@ -1281,7 +1280,7 @@ sessionInfo()
 #> [34] tidyselect_1.2.1    digest_0.6.39       lotri_1.0.5        
 #> [37] purrr_1.2.2         labeling_0.4.3      rxode2ll_2.0.18    
 #> [40] fastmap_1.2.0       grid_4.6.1          cli_3.6.6          
-#> [43] dparser_1.3.1-13    magrittr_2.0.5      withr_3.0.3        
+#> [43] dparser_1.3.1-14    magrittr_2.0.5      withr_3.0.3        
 #> [46] scales_1.4.0        backports_1.5.1     rmarkdown_2.32     
 #> [49] otel_0.2.0          askpass_1.2.1       ragg_1.5.2         
 #> [52] memoise_2.0.1       evaluate_1.0.5      knitr_1.52         

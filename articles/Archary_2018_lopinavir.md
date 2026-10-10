@@ -416,8 +416,8 @@ documented here so reviewers can reconcile the model with the source.
 
 ### Reference
 
-- Archary M, McIlleron H, Bobat R, La Russa P, Sibaya T, Wiesner L,
+- Archary M, Mcllleron H, Bobat R, La Russa P, Sibaya T, Wiesner L,
   Hennig S. Population Pharmacokinetics of Lopinavir in Severely
-  Malnourished HIV Infected Children and the Effect on Treatment
+  Malnourished HIV-infected Children and the Effect on Treatment
   Outcomes. Pediatr Infect Dis J. 2018;37(4):349-355.
-  <doi:10.1097/INF.0000000000001867>
+  <doi:10.1097/INF.0000000000001867>.

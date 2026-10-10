@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Lu D, Gillespie WR, Girish S, Agarwal P, Li C, Hirata J, Chu
-  Y-W, Kagedal M, Leon L, Maiya V, Jin JY. Time-to-event analysis of
-  polatuzumab vedotin-induced peripheral neuropathy to assist in the
-  comparison of clinical dosing regimens. CPT Pharmacometrics Syst
-  Pharmacol. 2017;6(6):401-408. <doi:10.1002/psp4.12192>. PMID 28294568.
+  YW, Kagedal M, Leon L, Maiya V, Jin JY. Time-to-Event Analysis of
+  Polatuzumab Vedotin-Induced Peripheral Neuropathy to Assist in the
+  Comparison of Clinical Dosing Regimens. CPT Pharmacometrics Syst
+  Pharmacol. 2017;6(6):401-408. <doi:10.1002/psp4.12192>. PMID 28544534.
   Upstream PK driver (acMMAE side only) from: Lu D, Lu T, Gibiansky L,
   Li X, Li C, Agarwal P, Shemesh CS, Shi R, Dere RC, Hirata J, Miles D,
   Chanu P, Girish S, Jin JY. Integrated Two-Analyte Population

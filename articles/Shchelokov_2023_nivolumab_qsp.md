@@ -12,8 +12,8 @@ mod <- readModelDb(modelName)
 
 - Citation: Shchelokov D, Demin O Jr. Receptor occupancy assessment and
   interpretation in terms of quantitative systems pharmacology:
-  nivolumab case study. MAbs. 2023;15(1):e2156317.
-  <doi:10.1080/19420862.2022.2156317>
+  nivolumab case study. MAbs. 2023;15(1):2156317.
+  <doi:10.1080/19420862.2022.2156317>.
 - Description: QSP. Nivolumab PK linked to single-cell PD-1 receptor
   occupancy: two-compartment IV PK drives a receptor module with PD-1
   synthesis, degradation, two-step bivalent antibody binding and

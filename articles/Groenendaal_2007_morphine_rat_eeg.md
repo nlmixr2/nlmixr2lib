@@ -5,7 +5,7 @@
 - Citation: Groenendaal D, Freijer J, de Mik D, Bouw MR, Danhof M, de
   Lange ECM. Influence of biophase distribution and P-glycoprotein
   interaction on pharmacokinetic-pharmacodynamic modelling of the
-  effects of morphine on the EEG. Br J Pharmacol. 2007;151(6):713-720.
+  effects of morphine on the EEG. Br J Pharmacol. 2007;151(5):713-720.
   <doi:10.1038/sj.bjp.0707258>. Blood pharmacokinetic parameters fixed
   from the companion paper: Groenendaal D, Freijer J, de Mik D, Bouw MR,
   Danhof M, de Lange ECM. Population pharmacokinetic modelling of
@@ -16,7 +16,7 @@
   for the effect of morphine on the amplitude of the delta frequency
   band (0.5-4.5 Hz) of the rat EEG, with an extended catenary biophase
   distribution model and a P-glycoprotein (Pgp) interaction at the
-  blood-brain barrier (Groenendaal 2007, Br J Pharmacol 151(6):713-720).
+  blood-brain barrier (Groenendaal 2007, Br J Pharmacol 151(5):713-720).
   Blood disposition is a three-compartment model that serves purely as
   the input function; its parameters were not re-estimated here and are
   fixed from the companion paper (Groenendaal 2007, Br J Pharmacol
@@ -81,7 +81,7 @@ Per-parameter origin is recorded as an in-file comment next to each
 `ini()` entry in
 `inst/modeldb/specificDrugs/Groenendaal_2007_morphine_rat_eeg.R`. The
 table below collects them in one place. “Lead” is Groenendaal 2007 Br J
-Pharmacol 151(6):713-720 (<doi:10.1038/sj.bjp.0707258>); “Companion” is
+Pharmacol 151(5):713-720 (<doi:10.1038/sj.bjp.0707258>); “Companion” is
 Groenendaal 2007 Br J Pharmacol 151(5):701-712
 (<doi:10.1038/sj.bjp.0707257>).
 

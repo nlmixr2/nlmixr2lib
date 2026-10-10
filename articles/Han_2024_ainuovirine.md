@@ -53,7 +53,7 @@ The five models Han 2024 reports. {.table}
   W, Zhang T, Sun L, Yun X, Qin H, Wu H, Su B. Population
   pharmacokinetics of Ainuovirine and exposure-response analysis in
   human immunodeficiency virus-infected individuals. Chin Med J (Engl).
-  2024;137(20):2474-2482. <doi:10.1097/CM9.0000000000002917>.
+  2024;137(20):2473-2482. <doi:10.1097/CM9.0000000000002917>.
 - Article: <https://doi.org/10.1097/CM9.0000000000002917>
 - PubMed Central:
   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11479413/>

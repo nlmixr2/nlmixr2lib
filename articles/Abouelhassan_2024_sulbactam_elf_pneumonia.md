@@ -78,7 +78,7 @@ Full citations:
   MH, Isaacs RD et al. Plasma and intrapulmonary concentrations of
   ETX2514 and sulbactam following intravenous administration of
   ETX2514SUL to healthy adult subjects. Antimicrob Agents Chemother.
-  2018;62(10):e01089-18. <doi:10.1128/AAC.01089-18>.
+  2018;62(11):e01089-18. <doi:10.1128/AAC.01089-18>.
 
 ## Population
 

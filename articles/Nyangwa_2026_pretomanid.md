@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Nyang’wa BT, Motta I, Moodliar R, Solodovnikova V, Rajaram
-  S, Rasool M, Berry C, Huang Z, Davies G, Moore DAJ, Kloprogge F
-  (2026). Population pharmacokinetics and target attainment of
-  pretomanid in rifampicin-resistant tuberculosis patients. Sci Rep
-  16:46217. <doi:10.1038/s41598-026-46217-2>
+  S, Rasool M, Berry C, Huang Z, Davies G, Moore DAJ, Kloprogge F.
+  Population pharmacokinetics and target attainment of pretomanid in
+  rifampicin-resistant tuberculosis patients. Sci Rep. 2026;16(1):15255.
+  <doi:10.1038/s41598-026-46217-2>.
 - Description: One-compartment population PK model for oral pretomanid
   200 mg once daily in adults with rifampicin-resistant tuberculosis
   (RR-TB) treated with the BPaL, BPaLM, or BPaLC regimen in the

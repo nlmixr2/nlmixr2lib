@@ -2,11 +2,11 @@
 
 ## Model and source
 
-- Citation: van Wijk RC, Krekels EHJ, Hankemeier T, Spaink HP, van der
-  Graaf PH (2019). Impact of post-hatching maturation on the
-  pharmacokinetics of paracetamol in zebrafish larvae. Sci Rep
-  9(1):2149. <doi:10.1038/s41598-019-38530-w>. DDMORE Foundation Model
-  Repository: DDMODEL00000294.
+- Citation: van Wijk RC, Krekels EHJ, Kantae V, Harms AC, Hankemeier T,
+  van der Graaf PH, Spaink HP. Impact of post-hatching maturation on the
+  pharmacokinetics of paracetamol in zebrafish larvae. Sci
+  Rep. 2019;9(1):2149. <doi:10.1038/s41598-019-38530-w>. DDMORE
+  Foundation Model Repository: DDMODEL00000294.
 - Description: PRECLINICAL (zebrafish): two-compartment paracetamol PK
   model fit to zebrafish (Danio rerio) larvae continuously exposed to a
   1 mM paracetamol bath at 3, 4, or 5 days post-fertilization (van Wijk

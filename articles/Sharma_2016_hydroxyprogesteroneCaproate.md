@@ -5,7 +5,7 @@
 - Citation: Sharma S, Caritis S, Hankins G, Miodovnik M, Hebert MF,
   Mattison D, Venkataramanan R. Population pharmacokinetics of
   17alpha-hydroxyprogesterone caproate in singleton gestation. Br J Clin
-  Pharmacol. 2016 Nov;82(5):1084-1093. <doi:10.1111/bcp.12990>.
+  Pharmacol. 2016;82(4):1084-1093. <doi:10.1111/bcp.12990>.
   ClinicalTrials.gov NCT00409825.
 - Description: Population PK model for 17alpha-hydroxyprogesterone
   caproate (17-OHPC) in pregnant women with singleton gestation

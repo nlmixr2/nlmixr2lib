@@ -3,9 +3,9 @@
 ## Model and source
 
 - Citation: Waalewijn H, Wasmann RE, Bamford A, Gibb DM, McIlleron HM,
-  Colbers A, Burger DM, Denti P, and the CHAPAS-4 trial team. Population
+  Colbers A, Burger DM, Denti P; the CHAPAS-4 trial team. Population
   Pharmacokinetics of Dolutegravir in African Children: Results From the
-  CHAPAS-4 Trial. J Pediatric Infect Dis Soc. 2024;13(10):533-536.
+  CHAPAS-4 Trial. J Pediatric Infect Dis Soc. 2024;13(9):496-500.
   <doi:10.1093/jpids/piae076>.
 - Article: <https://doi.org/10.1093/jpids/piae076>
 - Supplement (Tables S1-S5, Figure S1 and the complete NONMEM control

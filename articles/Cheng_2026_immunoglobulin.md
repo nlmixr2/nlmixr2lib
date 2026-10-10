@@ -5,7 +5,7 @@
 - Citation: Cheng IL, Huang ZH, Worth A, Booth C, Standing JF.
   Pharmacokinetic modelling of intravenous immunoglobulin in children
   with primary immunodeficiencies and secondary antibody deficiencies.
-  Br J Clin Pharmacol. 2025;1-11. <doi:10.1002/bcp.70420>
+  Br J Clin Pharmacol. 2026;92(6):1641-1651. <doi:10.1002/bcp.70420>.
 - Description: Two-compartment population PK model for intravenous
   immunoglobulin (IVIG) replacement therapy in pediatric
   primary-immunodeficiency and secondary-antibody-deficiency patients

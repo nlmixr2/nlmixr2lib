@@ -2,9 +2,12 @@
 
 ## Model and source
 
-- Citation: Stein AM, Grupp SA, Levine JE, et al. Tisagenlecleucel
+- Citation: Stein AM, Grupp SA, Levine JE, Laetsch TW, Pulsipher MA,
+  Boyer MW, August KJ, Levine BL, Tomassian L, Shah S, Leung M, Huang
+  PH, Awasthi R, Mueller KT, Wood PA, June CH. Tisagenlecleucel
   Model-Based Cellular Kinetic Analysis of Chimeric Antigen Receptor-T
-  Cells. *CPT Pharmacometrics Syst Pharmacol* 2019;8(5):285-295.
+  Cells. *CPT Pharmacometrics Syst Pharmacol*. 2019;8(5):285-295.
+  <doi:10.1002/psp4.12388>.
 - Article: <https://doi.org/10.1002/psp4.12388> (open access; CC
   BY-NC-ND 4.0)
 
@@ -314,7 +317,9 @@ PKNCA recovers the analytical typical Cmax (24,000 copies/ug at Tmax =
 
 ## Reference
 
-- Stein AM, Grupp SA, Levine JE, et al. Tisagenlecleucel Model-Based
-  Cellular Kinetic Analysis of Chimeric Antigen Receptor-T Cells. CPT
+- Stein AM, Grupp SA, Levine JE, Laetsch TW, Pulsipher MA, Boyer MW,
+  August KJ, Levine BL, Tomassian L, Shah S, Leung M, Huang PH, Awasthi
+  R, Mueller KT, Wood PA, June CH. Tisagenlecleucel Model-Based Cellular
+  Kinetic Analysis of Chimeric Antigen Receptor-T Cells. CPT
   Pharmacometrics Syst Pharmacol. 2019;8(5):285-295.
-  <doi:10.1002/psp4.12388>
+  <doi:10.1002/psp4.12388>.

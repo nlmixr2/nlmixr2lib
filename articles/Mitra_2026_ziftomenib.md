@@ -5,8 +5,8 @@
 - Citation: Mitra A, Yang X, Ortiz RH, Jomphe C, Leoni M, Gosselin NH.
   Population Pharmacokinetics and Exposure-Response Analysis of
   Ziftomenib in Relapsed or Refractory Acute Myeloid Leukemia Patients
-  With NPM1 Mutation. CPT Pharmacometrics Syst Pharmacol. 2026.
-  <doi:10.1002/psp4.70244>.
+  With NPM1 Mutation. CPT Pharmacometrics Syst Pharmacol.
+  2026;15(5):e70244. <doi:10.1002/psp4.70244>.
 - Description: Sequential two-stage population PK model for oral
   ziftomenib (a potent, selective, oral menin inhibitor for R/R
   NPM1-mutated acute myeloid leukemia) and its two active metabolites

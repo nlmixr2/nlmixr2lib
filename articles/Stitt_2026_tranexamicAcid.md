@@ -7,7 +7,7 @@
   population pharmacokinetic modeling in adult trauma patients.
   Transfusion. 2026;66(Suppl. 1):S257-S265. <doi:10.1111/trf.70047>. The
   adult structural, covariate, IIV and residual-error estimates encoded
-  here were first published in Stitt G, Spinella PC, Bocchicchio GV,
+  here were first published in Stitt G, Spinella PC, Bochicchio GV,
   Roberts I, Downes KJ, Zuppa AF. Population pharmacokinetic modelling
   and simulation of tranexamic acid in adult trauma patients. Br J Clin
   Pharmacol. 2024;90:1932-1941. <doi:10.1111/bcp.16075> (Stitt 2026

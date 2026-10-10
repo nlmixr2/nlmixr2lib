@@ -1098,7 +1098,7 @@ sessionInfo()
 #> [10] lotri_1.0.5         jsonlite_2.0.0      whisker_0.4.1      
 #> [13] rxode2ll_2.0.18     backports_1.5.1     purrr_1.2.2        
 #> [16] scales_1.4.0        textshaping_1.0.5   jquerylib_0.1.4    
-#> [19] cli_3.6.6           crayon_1.5.3        symengine_0.2.13   
+#> [19] cli_3.6.6           crayon_1.5.3        symengine_0.2.14   
 #> [22] rlang_1.3.0         withr_3.0.3         cachem_1.1.0       
 #> [25] yaml_2.3.12         otel_0.2.0          tools_4.6.1        
 #> [28] parallel_4.6.1      memoise_2.0.1       checkmate_2.3.4    
@@ -1110,7 +1110,7 @@ sessionInfo()
 #> [46] glue_1.8.1          data.table_1.18.6.1 Rcpp_1.1.2         
 #> [49] systemfonts_1.3.2   tidyselect_1.2.1    xfun_0.61          
 #> [52] tibble_3.3.1        sys_3.4.3           knitr_1.52         
-#> [55] farver_2.1.2        dparser_1.3.1-13    htmltools_0.5.9    
+#> [55] farver_2.1.2        dparser_1.3.1-14    htmltools_0.5.9    
 #> [58] labeling_0.4.3      rmarkdown_2.32      compiler_4.6.1     
 #> [61] S7_0.2.2            downlit_0.4.5       askpass_1.2.1      
 #> [64] openssl_2.4.2

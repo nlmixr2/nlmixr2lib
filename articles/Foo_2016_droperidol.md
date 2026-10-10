@@ -58,11 +58,15 @@ the central compartment of, 73.6 l”), so the 73.6 L row is Vc and the
 | `lq` (Q) | 71.5 L/h | Table 2 (95% CI 42.3-100.7) |
 | `lvp` (Vp) | 79.8 L | Table 2 (95% CI 58.8-100.8) |
 | `etalka` (omega_ka^2, FIXED) | 1 (~100% CV) | Table 2 (F = fixed); Results paragraph |
-| `etalcl` (shared IIV on CL and Vc) | 51% CV (95% CI 31.2-64.4%) | Table 2 + footnote a (“the same random effect was used for both Vc and CL”) |
+| `etalcl` (shared IIV on CL and Vc) | 0.2601 = 0.51^2 (Table 2: 51%, 95% CI 31.2-64.4%) | Table 2 + footnote a (“the same random effect was used for both Vc and CL”); the % is omega x 100 (see Errata) |
 | `propSd` (proportional residual) | 22% CV | Table 2 (95% CI 8.5-30.3%) |
 | `addSd` (additive residual, FIXED) | 0.0001 ug/L | Table 2 (F = fixed) |
 | Equation: 2-compartment first-order input, first-order output | n/a | Results paragraph 2; Methods “Model building” |
 | BLQ handling: M6 method | n/a | Methods “Handling data below the limit of quantitation” |
+
+The Table 2 “CV%” values are read as omega x 100, the convention the
+paper states for ka (“variance of 1 (approximately equivalent to a
+between subject CV% of 100%)”). The Errata section gives the evidence.
 
 ## Virtual cohort
 
@@ -150,6 +154,66 @@ sim_typical <- rxode2::rxSolve(mod_typical, events = events_typical,
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
+```
+
+## Variability scale check
+
+Foo 2016 Table 2 prints each IIV term as omega x 100 (see the Errata
+section). The first check confirms that the packaged omega matrix holds
+exactly 0.51^2 for the shared CL/Vc eta and 1 for ka. It compares the
+file with the table, so the bound is tight.
+
+The second check confirms that the etas reach the parameters on that
+scale. It solves 10000 subjects at a single time point; CL, Vc and ka
+have no covariates, so the per-subject SD of log(CL), log(Vc) and
+log(ka) estimates omega directly. The SD of a sample of 10000 has about
+0.7% sampling error, so the +/-4% band is about six standard errors wide
+and holds for any random-number stream. The bound is on the sample SD, a
+centre statistic, not on any per-subject extreme. It fails on the
+originally shipped CL/Vc variance, whose SD of 0.481 is 0.943 times the
+printed 0.51.
+
+``` r
+
+omega <- rxode2::rxode(mod)$omega
+#> ℹ parameter labels from comments will be replaced by 'label()'
+stopifnot(
+  isTRUE(all.equal(omega["etalcl", "etalcl"], 0.51^2, tolerance = 1e-12)),
+  isTRUE(all.equal(omega["etalka", "etalka"], 1, tolerance = 1e-12))
+)
+
+ev_spread <- tibble::tibble(
+  id = seq_len(10000L), time = 0, amt = NA_real_, evid = 0L,
+  cmt = "central"
+)
+per_subject <- rxode2::rxSolve(mod, events = ev_spread) |>
+  as.data.frame() |>
+  dplyr::distinct(id, cl, vc, ka)
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
+spread <- tibble::tibble(
+  quantity      = c("log(CL)", "log(Vc)", "log(ka)"),
+  printed_omega = c(0.51, 0.51, 1),
+  simulated_sd  = c(stats::sd(log(per_subject$cl)),
+                    stats::sd(log(per_subject$vc)),
+                    stats::sd(log(per_subject$ka)))
+) |>
+  dplyr::mutate(ratio = simulated_sd / printed_omega)
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega (N = ",
+                              nrow(per_subject), ")."))
+```
+
+| quantity | printed_omega | simulated_sd | ratio |
+|:---------|--------------:|-------------:|------:|
+| log(CL)  |          0.51 |        0.508 | 0.996 |
+| log(Vc)  |          0.51 |        0.508 | 0.996 |
+| log(ka)  |          1.00 |        0.991 | 0.991 |
+
+Per-subject spread vs. printed omega (N = 10000). {.table}
+
+``` r
+
+stopifnot(all(spread$ratio > 0.96 & spread$ratio < 1.04))
 ```
 
 ## Replicate published figures
@@ -264,12 +328,28 @@ duration_80 |>
 
 | Treatment              | Last time P(Cc \> LLOQ) \>= 80% (h) |
 |:-----------------------|------------------------------------:|
-| 10 mg + 10 mg @ 15 min |                                10.5 |
-| 10 mg single           |                                 7.2 |
-| 5 mg single            |                                 4.8 |
+| 10 mg + 10 mg @ 15 min |                                10.4 |
+| 10 mg single           |                                 7.1 |
+| 5 mg single            |                                 4.7 |
 
 Duration above the 80% probability of exceeding LLOQ. Paper Results: 5
 mg ~5 h, 10 mg ~7 h, 10+10 mg ~10 h. {.table}
+
+``` r
+
+
+# The 80%-probability duration is where the 20th percentile of the
+# concentration crosses the LLOQ: a robust quantile, not an extreme. With
+# 200 subjects per arm its sampling error is about 0.2 h, so +/-1 h is a
+# wide envelope. The paper rounds to whole hours ("about 7 h").
+paper_duration <- c("5 mg single" = 5, "10 mg single" = 7,
+                    "10 mg + 10 mg @ 15 min" = 10)
+stopifnot(
+  setequal(duration_80$treatment, names(paper_duration)),
+  all(abs(duration_80$time_above_80 -
+            paper_duration[duration_80$treatment]) < 1)
+)
+```
 
 ### Initial (alpha) and terminal (beta) half-lives
 
@@ -402,36 +482,45 @@ nca_tbl |>
 | Treatment    | NCA parameter       | Median |    P05 |    P95 |
 |:-------------|:--------------------|-------:|-------:|-------:|
 | 10 mg single | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 10 mg single | aucinf.obs          | 237.33 | 110.24 | 469.51 |
-| 10 mg single | clast.obs           |   2.95 |   0.65 |   9.93 |
-| 10 mg single | clast.pred          |   2.94 |   0.65 |   9.91 |
-| 10 mg single | cmax                |  92.06 |  40.81 | 194.36 |
-| 10 mg single | half.life           |   2.97 |   2.15 |   4.37 |
-| 10 mg single | lambda.z            |   0.23 |   0.16 |   0.32 |
+| 10 mg single | aucinf.obs          | 237.27 | 105.20 | 489.34 |
+| 10 mg single | clast.obs           |   2.95 |   0.59 |  10.61 |
+| 10 mg single | clast.pred          |   2.94 |   0.59 |  10.58 |
+| 10 mg single | cmax                |  92.47 |  39.81 | 201.77 |
+| 10 mg single | half.life           |   2.97 |   2.11 |   4.48 |
+| 10 mg single | lambda.z            |   0.23 |   0.15 |   0.33 |
 | 10 mg single | lambda.z.n.points   | 100.00 |  90.00 | 106.00 |
 | 10 mg single | lambda.z.time.first |   2.10 |   1.50 |   3.10 |
 | 10 mg single | lambda.z.time.last  |  12.00 |  12.00 |  12.00 |
 | 10 mg single | r.squared           |   1.00 |   1.00 |   1.00 |
-| 10 mg single | span.ratio          |   3.31 |   2.32 |   4.32 |
+| 10 mg single | span.ratio          |   3.31 |   2.27 |   4.38 |
 | 10 mg single | tlast               |  12.00 |  12.00 |  12.00 |
 | 10 mg single | tmax                |   0.25 |   0.10 |   0.75 |
 | 5 mg single  | adj.r.squared       |   1.00 |   1.00 |   1.00 |
-| 5 mg single  | aucinf.obs          | 123.34 |  60.71 | 247.84 |
-| 5 mg single  | clast.obs           |   1.60 |   0.38 |   5.46 |
-| 5 mg single  | clast.pred          |   1.60 |   0.38 |   5.44 |
-| 5 mg single  | cmax                |  45.77 |  20.94 |  97.36 |
-| 5 mg single  | half.life           |   3.03 |   2.23 |   4.51 |
-| 5 mg single  | lambda.z            |   0.23 |   0.15 |   0.31 |
-| 5 mg single  | lambda.z.n.points   | 100.00 |  91.00 | 105.00 |
+| 5 mg single  | aucinf.obs          | 123.59 |  58.27 | 259.11 |
+| 5 mg single  | clast.obs           |   1.61 |   0.35 |   5.83 |
+| 5 mg single  | clast.pred          |   1.60 |   0.35 |   5.82 |
+| 5 mg single  | cmax                |  45.18 |  20.18 | 100.92 |
+| 5 mg single  | half.life           |   3.03 |   2.19 |   4.64 |
+| 5 mg single  | lambda.z            |   0.23 |   0.15 |   0.32 |
+| 5 mg single  | lambda.z.n.points   | 100.00 |  91.00 | 105.05 |
 | 5 mg single  | lambda.z.time.first |   2.10 |   1.60 |   3.00 |
 | 5 mg single  | lambda.z.time.last  |  12.00 |  12.00 |  12.00 |
 | 5 mg single  | r.squared           |   1.00 |   1.00 |   1.00 |
-| 5 mg single  | span.ratio          |   3.24 |   2.26 |   4.31 |
+| 5 mg single  | span.ratio          |   3.23 |   2.20 |   4.35 |
 | 5 mg single  | tlast               |  12.00 |  12.00 |  12.00 |
 | 5 mg single  | tmax                |   0.25 |   0.05 |   0.65 |
 
 Simulated NCA values across the two single-dose arms (per-subject
 medians and 5-95% range). {.table}
+
+``` r
+
+
+# Centre gate: the median terminal half-life against the paper's median
+# beta half-life of 3.0 h (Results).
+median_hl <- nca_tbl$median[nca_tbl$PPTESTCD == "half.life"]
+stopifnot(length(median_hl) == 2L, all(abs(median_hl / 3.0 - 1) < 0.15))
+```
 
 The qualitative checkpoints from the paper are:
 
@@ -459,8 +548,8 @@ the paper’s own VPC, so an exact numeric match is the right reference.
 - **Shared random effect on CL and Vc.** Table 2 footnote a states that
   the same random effect was used for both Vc and CL after the authors
   observed a 100% correlation between independent etas. The packaged
-  model encodes this directly: a single `etalcl` (variance log(1 +
-  0.51^2) = 0.231) is referenced from both `cl <- exp(lcl + etalcl)` and
+  model encodes this directly: a single `etalcl` (variance 0.51^2 =
+  0.2601) is referenced from both `cl <- exp(lcl + etalcl)` and
   `vc <- exp(lvc + etalcl)`. This is the mathematically-honest
   representation of “one shared eta” and avoids the singular-OMEGA /
   chol() failure mode that a rank-1 block matrix encoding would create.
@@ -489,3 +578,39 @@ the paper’s own VPC, so an exact numeric match is the right reference.
   inadvertently recruited because their age was unknown at the time of
   sedation. The fit therefore is for adults plus one adolescent rather
   than strictly adults; the model is otherwise applied as fit.
+
+## Errata
+
+### Correction to the packaged IIV value (2026-10)
+
+The model as first released in nlmixr2lib put the shared CL/Vc
+inter-individual variance on the wrong scale. It read the Table 2 “51%”
+as a coefficient of variation and converted it with omega^2 = log(1 +
+CV^2) = 0.2312. The printed percentages are in fact omega x 100, the
+standard deviation of the eta on the log scale, so omega^2 = 0.51^2 =
+0.2601.
+
+Two pieces of evidence in the paper settle this:
+
+- **The paper states the convention.** The Results describe the fixed ka
+  random effect as “a value of between subject variance of 1
+  (approximately equivalent to a between subject CV% of 100%)”. That is
+  sqrt(1) x 100. Read as log(1 + CV^2), a variance of 1 would correspond
+  to a CV of 131%.
+- **The CL confidence interval agrees.** Table 2 prints 51%
+  (31.2-64.4%). If the interval is a Wald interval on omega^2, the
+  squared endpoints are symmetric about the squared point estimate.
+  Under the omega x 100 reading the squared-CI midpoint is (0.312^2 +
+  0.644^2) / 2 = 0.2560, inside the rounding interval of 0.51^2
+  (0.2550-0.2652). Under the log(1 + CV^2) reading it is 0.2199, outside
+  that reading’s rounding interval (0.2271-0.2352). The residual-error
+  row, 22% (8.5-30.3%), is too narrow to tell the readings apart.
+
+| eta                         | Shipped before 2026-10 | Corrected | Ratio |
+|-----------------------------|------------------------|-----------|-------|
+| `etalcl` (shared CL and Vc) | 0.2312                 | 0.2601    | 1.125 |
+| `etalka` (fixed)            | 1                      | 1         | 1     |
+
+The proportional residual error `propSd = 0.22` already matched the
+omega x 100 reading and is unchanged. Typical values and the model
+structure are unchanged.

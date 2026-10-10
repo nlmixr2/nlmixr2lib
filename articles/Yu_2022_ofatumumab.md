@@ -28,10 +28,10 @@ library(ggplot2)
 ## Model and source
 
 - Citation: Yu H, Graham G, David OJ, Kahn JM, Savelieva M, Pigeolet E,
-  Das Gupta A, Pingili R, Willi R, Ramanathan K, Kieseier BC, Hach T,
-  Aslanis V, Bagger Y, Ravenstijn P. Population Pharmacokinetic-B Cell
+  Das Gupta A, Pingili R, Willi R, Ramanathan K, Kieseier BC, Haring DA,
+  Bagger M, Soelberg Sorensen P. Population Pharmacokinetic-B Cell
   Modeling for Ofatumumab in Patients with Relapsing Multiple Sclerosis.
-  CNS Drugs. 2022;36(3):283-300. <doi:10.1007/s40263-021-00895-w>
+  CNS Drugs. 2022;36(3):283-300. <doi:10.1007/s40263-021-00895-w>.
 - Description: Population PK / B-cell-count model for subcutaneous
   ofatumumab in adults with relapsing multiple sclerosis (Yu 2022)
 - Article: <https://doi.org/10.1007/s40263-021-00895-w>
@@ -592,7 +592,7 @@ if (nrow(hl_row) >= 1) {
 ## Reference
 
 - Yu H, Graham G, David OJ, Kahn JM, Savelieva M, Pigeolet E, Das Gupta
-  A, Pingili R, Willi R, Ramanathan K, Kieseier BC, Hach T, Aslanis V,
-  Bagger Y, Ravenstijn P. Population Pharmacokinetic-B Cell Modeling for
+  A, Pingili R, Willi R, Ramanathan K, Kieseier BC, Haring DA, Bagger M,
+  Soelberg Sorensen P. Population Pharmacokinetic-B Cell Modeling for
   Ofatumumab in Patients with Relapsing Multiple Sclerosis. CNS Drugs.
-  2022;36(3):283-300. <doi:10.1007/s40263-021-00895-w>
+  2022;36(3):283-300. <doi:10.1007/s40263-021-00895-w>.

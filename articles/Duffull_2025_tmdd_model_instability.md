@@ -13,9 +13,9 @@ simplification are packaged here, because the pair is what makes the
 tutorial’s argument reproducible.
 
 - Citation: Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H.
-  A pharmacometric workflow for resolving model instability in model
-  use-reuse settings. CPT Pharmacometrics Syst Pharmacol.
-  2025;14(10):1547-1556. <doi:10.1002/psp4.70049>
+  A Pharmacometric Workflow for Resolving Model Instability in Model
+  Use-Reuse Settings. CPT Pharmacometrics Syst Pharmacol.
+  2025;14(10):1544-1555. <doi:10.1002/psp4.70049>.
 - Article: <https://doi.org/10.1002/psp4.70049>
 
 **Full model** (`Duffull_2025_mab_tmdd_qss`) – Two-compartment

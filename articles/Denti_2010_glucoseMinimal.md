@@ -100,10 +100,10 @@ The table below collects them in one place for review.
 | `e_insbl_si` | -0.0282 | Denti 2010, Table 5 (theta_SI~IBSL) |
 | `e_age_p2` | -0.0110 | Denti 2010, Table 5 (theta_P2~AGE) |
 | `e_insbl_p2` | -0.0150 | Denti 2010, Table 5 (theta_P2~IBSL) |
-| `omega_SG` -\> `var_sg` | 21.0 % CV -\> 0.04313 | Denti 2010, Table 5 (omega_SG) |
-| `omega_VOL` -\> `var_vd` | 10.4 % CV -\> 0.01075 | Denti 2010, Table 5 (omega_VOL) |
-| `omega_SI` -\> `var_si` | 47.5 % CV -\> 0.20337 | Denti 2010, Table 5 (omega_SI) |
-| `omega_P2` -\> `var_p2` | 37.9 % CV -\> 0.13399 | Denti 2010, Table 5 (omega_P2) |
+| `omega_SG` -\> `var_sg` | 21.0 % = omega x 100 -\> 0.0441 | Denti 2010, Table 5 (omega_SG); Results text (see Errata) |
+| `omega_VOL` -\> `var_vd` | 10.4 % = omega x 100 -\> 0.010816 | Denti 2010, Table 5 (omega_VOL) |
+| `omega_SI` -\> `var_si` | 47.5 % = omega x 100 -\> 0.225625 | Denti 2010, Table 5 (omega_SI) |
+| `omega_P2` -\> `var_p2` | 37.9 % = omega x 100 -\> 0.143641 | Denti 2010, Table 5 (omega_P2) |
 | `rho_SG_VOL` | -0.779 -\> cov -0.01666 | Denti 2010, Table 5 (off-diagonal in covariance matrix) |
 | `rho_SI_P2` | 0.876 -\> cov 0.14458 | Denti 2010, Table 5 (off-diagonal in covariance matrix) |
 | `propSd` | 0.0227 (2.27 %) | Denti 2010, Table 5 (sigma_prop) |
@@ -331,11 +331,100 @@ The older subject’s glucose returns less completely toward baseline
 within 240 min, consistent with the published age effects on `SI` and
 `P2`.
 
+## Variability scale check
+
+Denti 2010 reports each IIV term as omega x 100 and each off-diagonal
+term as a correlation (see the Errata section). The first check confirms
+that the packaged omega blocks hold exactly (P/100)^2 on the diagonal
+and rho x omega_1 x omega_2 off the diagonal. It compares the file with
+Table 5, so the bound is tight.
+
+The second check confirms that the etas reach the parameters on that
+scale. It solves 40000 reference subjects (male, all covariates at the
+pooled means) at a single time point, so the per-subject SD of log(SG),
+log(VOL), log(SI) and log(P2) estimates omega directly and the two
+within-block correlations estimate rho. The SD of a sample of 40000 has
+about 0.35% sampling error, so the +/-2% band is about six standard
+errors wide and holds for any random-number stream; the correlation band
+of +/-0.03 is wider still. The bounds are on centre statistics, not on
+any per-subject extreme. They fail on the originally shipped SI and P2
+variances, whose SDs are 0.949 and 0.966 times the printed values.
+
+``` r
+
+omega <- rxode2::rxode(mod)$omega
+#> ℹ parameter labels from comments will be replaced by 'label()'
+printed_omega <- c(etalsg = 0.210, etalvd = 0.104, etalsi = 0.475, etalp2 = 0.379)
+expected <- diag(printed_omega^2)
+dimnames(expected) <- list(names(printed_omega), names(printed_omega))
+expected["etalsg", "etalvd"] <- expected["etalvd", "etalsg"] <- -0.779 * 0.210 * 0.104
+expected["etalsi", "etalp2"] <- expected["etalp2", "etalsi"] <- 0.876 * 0.475 * 0.379
+stopifnot(isTRUE(all.equal(omega[names(printed_omega), names(printed_omega)],
+                           expected, tolerance = 1e-5)))
+
+n_spread <- 40000L
+ev_spread <- data.frame(
+  id = seq_len(n_spread), time = 0, evid = 0L, amt = NA_real_,
+  cmt = NA_character_, AGE = 55.53, SEXF = 0, VISCERAL_ABDOMINAL_FAT = 141.8,
+  BODYFAT_PCT = 32.39, FPG = 91.34, INS_BL = 26.98, INS = 26.98
+)
+per_subject <- as.data.frame(rxode2::rxSolve(mod, ev_spread)) |>
+  dplyr::distinct(id, sg, vd, si, p2)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
+spread <- data.frame(
+  quantity      = c("log(SG)", "log(VOL)", "log(SI)", "log(P2)"),
+  printed_omega = unname(printed_omega),
+  simulated_sd  = c(stats::sd(log(per_subject$sg)), stats::sd(log(per_subject$vd)),
+                    stats::sd(log(per_subject$si)), stats::sd(log(per_subject$p2)))
+)
+spread$ratio <- spread$simulated_sd / spread$printed_omega
+cors <- data.frame(
+  pair      = c("SG-VOL", "SI-P2"),
+  printed   = c(-0.779, 0.876),
+  simulated = c(stats::cor(log(per_subject$sg), log(per_subject$vd)),
+                stats::cor(log(per_subject$si), log(per_subject$p2)))
+)
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega (N = ", n_spread,
+                              ", reference subject)."))
+```
+
+| quantity | printed_omega | simulated_sd | ratio |
+|:---------|--------------:|-------------:|------:|
+| log(SG)  |         0.210 |        0.210 | 1.001 |
+| log(VOL) |         0.104 |        0.104 | 1.000 |
+| log(SI)  |         0.475 |        0.475 | 1.000 |
+| log(P2)  |         0.379 |        0.378 | 0.997 |
+
+Per-subject spread vs. printed omega (N = 40000, reference subject).
+{.table}
+
+``` r
+
+knitr::kable(cors, digits = 3, caption = "Within-block correlations vs. Table 5.")
+```
+
+| pair   | printed | simulated |
+|:-------|--------:|----------:|
+| SG-VOL |  -0.779 |    -0.780 |
+| SI-P2  |   0.876 |     0.876 |
+
+Within-block correlations vs. Table 5. {.table}
+
+``` r
+
+stopifnot(
+  all(spread$ratio > 0.98 & spread$ratio < 1.02),
+  all(abs(cors$simulated - cors$printed) < 0.03)
+)
+```
+
 ## Population virtual predictive check (200 stochastic subjects)
 
 Sample 200 virtual subjects from the published covariate-model IIV
-(`etalsg + etalvd ~ c(0.04313, -0.01666, 0.01075)` and
-`etalsi + etalp2 ~ c(0.20337, 0.14458, 0.13399)`; residuals
+(`etalsg + etalvd ~ c(0.0441, -0.017013, 0.010816)` and
+`etalsi + etalp2 ~ c(0.225625, 0.157702, 0.143641)`; residuals
 `propSd = 0.0227` and `addSd = 4.28 mg/dL`) and overlay percentiles.
 This is the closest simulation analogue of Denti 2010 Fig. 5 (the
 bundled VPC); we cannot reproduce the exact figure because the
@@ -369,7 +458,6 @@ ev_one <- function(i) {
 events_pop <- do.call(rbind, lapply(seq_len(n_subj), ev_one))
 
 sim_pop <- as.data.frame(rxode2::rxSolve(mod, events_pop))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 vpc_df <- sim_pop |>
   dplyr::filter(!is.na(Cc)) |>
@@ -484,6 +572,34 @@ deviations zero).
 - **Inter-occasion variability.** Denti 2010 used a single-occasion
   dataset (one IVGTT per subject) and did not estimate IOV. The model
   exposes only between-subject variability.
+
+## Errata
+
+### Correction to the packaged IIV values (2026-10)
+
+The model as first released in nlmixr2lib put the inter-individual
+variances on the wrong scale. It read each Table 5 omega percentage as a
+coefficient of variation and converted it with omega^2 = log(1 + CV^2).
+The paper states what it printed (Results, paragraph introducing Table
+5): “we reported the values of the square root of the elements on the
+diagonal of Omega, which can be interpreted in first approximation as
+%CV values, while the off-diagonal elements were reported as the
+corresponding correlations rather than covariances”. The printed
+percentage is therefore omega x 100, the standard deviation of the eta
+on the log scale, and omega^2 = (P/100)^2. The covariances follow from
+the printed correlations as rho x omega_1 x omega_2.
+
+| Term                    | Shipped before 2026-10 | Corrected | Ratio |
+|-------------------------|------------------------|-----------|-------|
+| var(`etalsg`)           | 0.04313                | 0.0441    | 1.022 |
+| cov(`etalsg`, `etalvd`) | -0.01666               | -0.017013 | 1.021 |
+| var(`etalvd`)           | 0.01075                | 0.010816  | 1.006 |
+| var(`etalsi`)           | 0.20337                | 0.225625  | 1.109 |
+| cov(`etalsi`, `etalp2`) | 0.14458                | 0.157702  | 1.091 |
+| var(`etalp2`)           | 0.13399                | 0.143641  | 1.072 |
+
+The correlations (-0.779 and 0.876), the residual error terms, typical
+values, covariate effects and the model structure are unchanged.
 
 ## References
 

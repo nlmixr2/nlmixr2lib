@@ -5,8 +5,8 @@
 - Citation: Nielsen EI, Viberg A, Lowdin E, Cars O, Karlsson MO,
   Sandstrom M. Semimechanistic pharmacokinetic/pharmacodynamic model for
   assessment of activity of antibacterial agents from time-kill curve
-  experiments. Antimicrob Agents Chemother. 2007 Jan;51(1):128-136.
-  <doi:10.1128/AAC.00604-06>. PMID: 17060527.
+  experiments. Antimicrob Agents Chemother. 2007;51(1):128-136.
+  <doi:10.1128/AAC.00604-06>. PMID: 17060524.
 - Article: <https://doi.org/10.1128/AAC.00604-06>
 
 Nielsen and colleagues developed a semi-mechanistic PK/PD model that

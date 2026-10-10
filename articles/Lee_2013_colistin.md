@@ -8,10 +8,10 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Lee_2013_colistin"))$meta
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
-- Citation: Lee J, Han S, Jeon S, Hong T, Song W, Woo H, Yim D-S.
+- Citation: Lee J, Han S, Jeon S, Hong T, Song W, Woo H, Yim DS.
   Population pharmacokinetic analysis of colistin in burn patients.
-  Antimicrob Agents Chemother. 2013;57(5):2421-2427.
-  <doi:10.1128/AAC.00271-13>
+  Antimicrob Agents Chemother. 2013;57(5):2141-2146.
+  <doi:10.1128/AAC.00271-13>.
 - Description: One-compartment population PK model of colistin in adult
   burn-ICU patients receiving colistimethate sodium (CMS) as a 30-minute
   IV infusion every 12 hours, with first-order CMS-to-colistin

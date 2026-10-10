@@ -34,7 +34,7 @@ library(ggplot2)
   pharmacokinetics-pharmacodynamics of vedolizumab in patients with
   ulcerative colitis and Crohn’s disease. Aliment Pharmacol Ther.
   2015;42(2):188-202. <doi:10.1111/apt.13243> (PMID 25996351). A
-  corrigendum (<doi:10.1111/apt.15571>; PMC6885991) corrects a unit typo
+  corrigendum (<doi:10.1111/apt.13365>; PMC6885991) corrects a unit typo
   in the text (ng/mL -\> ug/mL) and does not change any parameter value.
 
 - **Description:** Two-compartment population PK model for vedolizumab
@@ -45,7 +45,7 @@ library(ggplot2)
 
 - **Article:** <https://doi.org/10.1111/apt.13243>
 
-- **Corrigendum:** <https://doi.org/10.1111/apt.15571> — a text-only
+- **Corrigendum:** <https://doi.org/10.1111/apt.13365> — a text-only
   unit-typo fix (ng/mL → µg/mL) with no parameter-value changes.
 
 ## Population
@@ -572,5 +572,5 @@ longer dominant.
   pharmacokinetics-pharmacodynamics of vedolizumab in patients with
   ulcerative colitis and Crohn’s disease. Aliment Pharmacol Ther.
   2015;42(2):188-202. <doi:10.1111/apt.13243> (PMID 25996351). A
-  corrigendum (<doi:10.1111/apt.15571>; PMC6885991) corrects a unit typo
+  corrigendum (<doi:10.1111/apt.13365>; PMC6885991) corrects a unit typo
   in the text (ng/mL -\> ug/mL) and does not change any parameter value.

@@ -2,11 +2,11 @@
 
 ## Model and source
 
-- Citation: Fromage Y, Sayadi H, Koloskoff K, Labriffe M, Monchaud C,
-  Marquet P, Woillard JB. Killing several birds with one stone: A
+- Citation: Fromage Y, Sayadi H, Koloskoff K, Marquet P, Labriffe M,
+  Monchaud C, Woillard JB. Killing several birds with one stone: A
   multi-indication population pharmacokinetic model and Bayesian
   estimator for enteric-coated mycophenolate sodium. Br J Clin
-  Pharmacol. 2025;91(5):1396-1408. <doi:10.1111/bcp.16374>
+  Pharmacol. 2025;91(5):1396-1408. <doi:10.1111/bcp.16374>.
 - Description: One-compartment population PK model for mycophenolic acid
   (MPA) after oral enteric-coated mycophenolate sodium (EC-MPS,
   Myfortic) in a multi-indication cohort of solid-organ transplant,

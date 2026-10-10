@@ -6,10 +6,10 @@
 
 - Citation: Lau C, van Kesteren C, Smeenk RM, Beex-Oosterhuis MM, Koch
   BCP, Chan LN, Lin YS, van Rongen A, Knibbe CAJ, Huitema ADR,
-  Huisman-Siebinga H (2026). Semi-physiological population
-  pharmacokinetic modeling of oral and intravenous paracetamol to
-  quantify presystemic metabolism and enterohepatic recirculation. CPT
-  Pharmacometrics Syst Pharmacol 15(1):e70168. <doi:10.1002/psp4.70168>.
+  Huisman-Siebinga H. Semi-Physiological Population Pharmacokinetic
+  Modeling of Oral and Intravenous Paracetamol to Quantify Presystemic
+  Metabolism and Enterohepatic Recirculation. CPT Pharmacometrics Syst
+  Pharmacol. 2026;15(3):e70168. <doi:10.1002/psp4.70168>.
 - Article: <https://doi.org/10.1002/psp4.70168>
 - Supplementary Materials 1 (Table S1, drug- and system-specific
   parameters and equations) and Supplementary Materials 3 (Data S1, the

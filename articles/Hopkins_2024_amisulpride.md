@@ -16,7 +16,7 @@ ui <- rxode2::rxode(readModelDb("Hopkins_2024_amisulpride"))
   Discovery and Model-Informed Drug Development of a Controlled-Release
   Formulation of Nonracemic Amisulpride that Reduces Plasma Exposure but
   Achieves Pharmacodynamic Bioequivalence in the Brain. Clin Pharmacol
-  Ther. 2024;116(6):1553-1562. <doi:10.1002/cpt.3311>.
+  Ther. 2024;116(2):460-470. <doi:10.1002/cpt.3311>.
 - Article: <https://doi.org/10.1002/cpt.3311>
 
 Joint PK/PD ‘Distribution Model’ for nonracemic amisulpride (SEP-4199, a

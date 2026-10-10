@@ -3,10 +3,9 @@
 ## Model and source
 
 - Citation: van Maanen E, Robey S, Bennacef I, Duffull S, Egan MF,
-  Kennedy ME, Stone JA (2025). Modeling amyloid plaque turnover dynamics
-  improves characterization of drug effects. Alzheimer’s & Dementia:
-  Translational Research & Clinical Interventions 11(3):e70169.
-  <doi:10.1002/trc2.70169>.
+  Kennedy ME, Stone JA. Modeling amyloid plaque turnover dynamics
+  improves characterization of drug effects. Alzheimers Dement (N Y).
+  2025;11(4):e70169. <doi:10.1002/trc2.70169>.
 - Article: <https://doi.org/10.1002/trc2.70169>
 
 Population exposure-response model of brain amyloid plaque burden

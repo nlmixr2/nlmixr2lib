@@ -6,7 +6,7 @@
   Myers A, Meille C, Gu Y. Integration of Pharmacokinetics,
   Pharmacodynamics, Safety, and Efficacy into Model-Informed Dose
   Selection in Oncology First-in-Human Study: A Case of Roblitinib
-  (FGF401). Clin Pharmacol Ther. 2022;112(6):1330-1339.
+  (FGF401). Clin Pharmacol Ther. 2022;112(6):1329-1339.
   <doi:10.1002/cpt.2752>. PMID 36131557.
 - Description: Two-compartment population PK model for oral roblitinib
   (FGF401), a selective FGFR4 inhibitor, in adults with hepatocellular

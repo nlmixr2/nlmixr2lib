@@ -15,9 +15,9 @@ mod <- readModelDb("Thoueille_2026_salmeterol")
   Buclin T, Girardin FR, Mazzoni I, Rabin O, Guidi M.
   Pharmacometric-Based Evaluation of Salmeterol and Its Metabolite
   alpha-Hydroxysalmeterol in Plasma and Urine: Practical Implications
-  for Doping Control. CPT Pharmacometrics Syst Pharmacol. 2026.
-  <doi:10.1002/psp4.70187>. Final NONMEM control stream and
-  data-formatting description in Data S1.
+  for Doping Control. CPT Pharmacometrics Syst Pharmacol.
+  2026;15(2):e70187. <doi:10.1002/psp4.70187>. Final NONMEM control
+  stream and data-formatting description in Data S1.
 - Description: Joint plasma and urine population PK model for inhaled
   salmeterol and its major metabolite alpha-hydroxysalmeterol in healthy
   participants, chronic asthmatics and athletes / endurance-trained

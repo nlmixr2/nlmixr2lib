@@ -14,8 +14,8 @@ ui <- rxode2::rxode2(mod_fun)
   acetaldehyde metabolism. PLoS Comput Biol 17(8):e1009110.
   <doi:10.1371/journal.pcbi.1009110>. Model code:
   <https://github.com/LMSE/HH-PBPK-Ethanol> (commit b14305a).
-  Michaelis-Menten constants from Umulis DM, Guerdjikov NM, Kuchler T,
-  et al. (2005) Alcohol 35(1):3-12, <doi:10.1016/j.alcohol.2004.11.004>.
+  Michaelis-Menten constants from Umulis DM, Gurmen NM, Singh P, et
+  al. (2005) Alcohol 35(1):3-12, <doi:10.1016/j.alcohol.2004.11.004>.
 - Description: PBPK (whole-body, hand-written MATLAB; dynamic
   flux-balance coupling to the Harvey genome-scale model reduced to its
   continuous limit). Ethanol and acetaldehyde disposition after an oral

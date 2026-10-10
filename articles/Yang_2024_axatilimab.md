@@ -2,12 +2,13 @@
 
 ## Model and source
 
-- Citation: Yang Y, Sokolov V, Volkova A, et al. Semimechanistic
+- Citation: Yang YO, Sokolov V, Volkova A, Liu X, Leon C, Kosinsky Y,
+  Barker B, Zhang X, Ordentlich P, Sheng J, Chen X. Semimechanistic
   Population PK/PD Modeling of Axatilimab in Healthy Participants and
   Patients With Solid Tumors or Chronic Graft-Versus-Host Disease. Clin
-  Pharmacol Ther. 2025;117(3):704-714. <doi:10.1002/cpt.3503>
+  Pharmacol Ther. 2025;117(3):704-715. <doi:10.1002/cpt.3503>.
 - Article: <https://doi.org/10.1002/cpt.3503> — Yang et al., *Clin
-  Pharmacol Ther* 117(3):704-714, 2025 (PubMed PMID 39704205).
+  Pharmacol Ther* 117(3):704-715, 2025 (PubMed PMID 39704205).
 - Supplemental MLXTRAN code: open-access supplement bundled with the
   article.
 

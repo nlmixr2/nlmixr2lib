@@ -2,10 +2,11 @@
 
 ## Model and source
 
-- Citation: Schmitt A, Nguyen L, Zorza G, Ferre P, Petain A (2018).
-  Better characterization of vinflunine pharmacokinetics variability and
+- Citation: Schmitt A, Nguyen L, Zorza G, Ferre P, Petain A. Better
+  characterization of vinflunine pharmacokinetics variability and
   exposure/toxicity relationship to improve its use: Analyses from 18
-  trials. Br J Clin Pharmacol 84(7):1506-1517. <doi:10.1111/bcp.13518>.
+  trials. Br J Clin Pharmacol. 2018;84(5):900-910.
+  <doi:10.1111/bcp.13518>.
 - Description: Combined population PK / PD model for IV vinflunine in
   adult cancer patients (Schmitt 2018, 18 phase I/II trials, n=372).
   Four-compartment IV-infusion popPK with creatinine clearance, body
@@ -16,9 +17,9 @@
   slope\*Cc on proliferation; (circ0/circ)^gamma feedback).
 - Article: <https://doi.org/10.1111/bcp.13518>
 
-Schmitt et al. 2018 (Br J Clin Pharmacol 84(7):1506-1517) pooled data
-from 18 phase I / phase II vinflunine trials (372 patients, 4154
-retained plasma concentrations) and fit two coupled models in NONMEM: a
+Schmitt et al. 2018 (Br J Clin Pharmacol 84(5):900-910) pooled data from
+18 phase I / phase II vinflunine trials (372 patients, 4154 retained
+plasma concentrations) and fit two coupled models in NONMEM: a
 four-compartment popPK model for IV vinflunine and a semi-mechanistic
 Friberg-style myelosuppression PK/PD model for absolute neutrophil count
 (ANC) after vinflunine administration. This vignette reproduces both

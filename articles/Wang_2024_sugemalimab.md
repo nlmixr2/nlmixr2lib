@@ -75,12 +75,12 @@ patients** contributing **11,040 PK observations** across nine trials
 cohort). Tumour-type mix: lung cancer 614 (37.7 %; primarily NSCLC),
 ESCC 401 (24.6 %), GCGEJ 275 (16.9 %), “Other” 174 (10.7 %), lymphoma
 164 (10.1 %; mix of extranodal NK/T-cell lymphoma and classical Hodgkin
-lymphoma). Baseline body weight: 60.0 kg median (36.0–141.0 kg range).
-Baseline albumin: 41.3 g/L median (26.1–96.0 g/L). Baseline tumour
-burden: 47 mm median (10–343 mm; 14.7 % missing). Sex: 1,276 male / 352
+lymphoma). Baseline body weight: 60.0 kg median (36.0-141.0 kg range).
+Baseline albumin: 41.3 g/L median (26.1-96.0 g/L). Baseline tumour
+burden: 47 mm median (10-343 mm; 14.7 % missing). Sex: 1,276 male / 352
 female (21.6 % female). Race: 1,589 Asian, 35 White, 4 Other (97.6 %
-Asian). ADA-positive: 143 / 1,628 (8.8 %). ECOG PS 0 in 414, ECOG ≥ 1 in
-1,213 (74.5 %).
+Asian). ADA-positive: 143 / 1,628 (8.8 %). ECOG PS 0 in 414, ECOG \>= 1
+in 1,213 (74.5 %).
 
 The same metadata is available programmatically via
 `readModelDb("Wang_2024_sugemalimab")$population`.
@@ -117,14 +117,22 @@ collects them in one place for review.
 | `e_gc_vc` (TUMTP_GASTRIC on Vc) | log(1.14) = 0.1310 | Wang 2024 Table 3: exp(theta21) = 1.14 |
 | `e_escc_vc` (TUMTP_ESCC on Vc) | log(1.08) = 0.0770 | Wang 2024 Table 3: exp(theta22) = 1.08 |
 | `e_tumsz_cl` (tumour-burden on CL) | 0.0421 | Wang 2024 Table 3: theta23 = 0.0421 |
-| IIV CL (`etalcl`) | omega^2 = log(1 + 0.195^2) = 0.0373 | Wang 2024 Table 3: IIV CL 19.5 % CV |
-| IIV Vc (`etalvc`) | omega^2 = log(1 + 0.155^2) = 0.0237 | Wang 2024 Table 3: IIV Vc 15.5 % CV |
-| Cov(CL, Vc) | 0.0161 | Wang 2024 Table 3: Cov CL_Vc = 0.0161 |
-| IIV Vp (`etalvp`) | omega^2 = log(1 + 0.685^2) = 0.3847 | Wang 2024 Table 3: IIV Vp 68.5 % CV |
-| IIV Emax (`etaEmax`) | (0.185 \* 0.528)^2 = 0.00955 | Wang 2024 Table 3: IIV Emax 18.5 % CV (additive on linear scale; ‘approximate CV%’ = SD / abs(Emax)) |
-| IIV T50 (`etalcl_t50`) | omega^2 = log(1 + 0.642^2) = 0.3451 | Wang 2024 Table 3: IIV T50 64.2 % CV |
+| IIV CL (`etalcl`) | omega^2 = 0.195^2 = 0.038025 | Wang 2024 Table 3: IIV CL 19.5 % (= omega x 100) |
+| IIV Vc (`etalvc`) | omega^2 = 0.155^2 = 0.024025 | Wang 2024 Table 3: IIV Vc 15.5 % (= omega x 100) |
+| Cov(CL, Vc) | 0.0161 (correlation 0.533) | Wang 2024 Table 3: Cov CL_Vc = 0.0161 (raw covariance) |
+| IIV Vp (`etalvp`) | omega^2 = 0.685^2 = 0.469225 | Wang 2024 Table 3: IIV Vp 68.5 % (= omega x 100) |
+| IIV Emax (`etacl_time_max`) | omega^2 = 0.185^2 = 0.034225 | Wang 2024 Table 3: IIV Emax 18.5 % (= omega x 100; additive eta on the log-scale Emax) |
+| IIV T50 (`etalcl_t50`) | omega^2 = 0.642^2 = 0.412164 | Wang 2024 Table 3: IIV T50 64.2 % (= omega x 100) |
 | Residual error | propSd = 0.179 | Wang 2024 Table 3: residual error 17.9 % (log-additive sigma; equivalent to nlmixr2 prop()) |
-| Reference covariates | WT 61 kg, ALB 41.5 g/L, TUMSZ 47 mm, male (SEXF=0), ADA-negative (ADA_POS=0), all TUMTP\_\*=0 (NSCLC) | Wang 2024 Table 3 footnote (typical lung cancer male patient) |
+
+The Table 3 variability percentages are labelled “approximate CV%”, but
+each one is the estimated standard deviation $`\omega`$ times 100, so
+$`\omega^2 = (P/100)^2`$. See the Errata section below for the
+confidence-interval arithmetic that settles this, and for the correction
+to the originally shipped values. \| Reference covariates \| WT 61 kg,
+ALB 41.5 g/L, TUMSZ 47 mm, male (SEXF=0), ADA-negative (ADA_POS=0), all
+TUMTP\_\*=0 (NSCLC) \| Wang 2024 Table 3 footnote (typical lung cancer
+male patient) \|
 
 Equation forms (Wang 2024 Table 3 footnote):
 
@@ -153,7 +161,7 @@ Equation forms (Wang 2024 Table 3 footnote):
 
 The canonical names follow the `TUMTP_<GROUP>` indicator-decomposition
 pattern documented in `inst/references/covariate-columns.md`. Lung
-cancer is the implicit reference category — when all four tumour-type
+cancer is the implicit reference category – when all four tumour-type
 indicators are zero, the subject is treated as NSCLC.
 
 ## Virtual cohort
@@ -208,7 +216,7 @@ pop <- data.frame(
 )
 ```
 
-## Dosing dataset — sugemalimab 1200 mg IV Q3W
+## Dosing dataset – sugemalimab 1200 mg IV Q3W
 
 Most subjects in the Wang 2024 dataset received the approved adult dose
 of sugemalimab 1200 mg IV every three weeks (Q3W); the simulation here
@@ -227,6 +235,7 @@ dose_times  <- seq(0, (n_cycles - 1) * cycle_days, by = cycle_days)
 
 obs_times <- sort(unique(c(
   seq(0, cycle_days, by = 1),                           # cycle-1 daily
+  dose_times + infusion_h / 24,                         # end of each infusion (Cmax)
   seq(cycle_days, n_cycles * cycle_days, by = 7),       # weekly across cycles
   seq(n_cycles * cycle_days, 365, by = 14)              # post-treatment biweekly
 )))
@@ -268,6 +277,66 @@ sim <- rxSolve(mod, events, returnType = "data.frame", keep = "ttype")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
+## Variability scale check
+
+Wang 2024 Table 3 prints each IIV term as $`\omega \times 100`$ (see the
+Errata section). The first check below confirms that the packaged
+$`\Omega`$ matrix holds exactly $`(P/100)^2`$ for each printed
+percentage $`P`$. It compares the file against the table, so the bound
+is tight. The second check uses the simulated cohort: Vp, T50 and Emax
+carry no covariates, so the per-subject spread of $`\log V_p`$,
+$`\log T_{50}`$ and $`E_{\max,i}`$ estimates $`\omega`$ directly. The
+bound is on the sample SD, a centre statistic with about 7 % sampling
+error for 100 subjects, not on any per-subject extreme. The +/-30 % band
+is about four standard errors wide, so it holds for any random-number
+stream. It would still fail on the originally shipped Emax variance,
+whose SD of 0.098 is about half the printed 0.185.
+
+``` r
+
+omega <- rxode2::rxode(mod)$omega
+#> ℹ parameter labels from comments will be replaced by 'label()'
+printed_pct <- c(etalcl = 19.5, etalvc = 15.5, etalvp = 68.5,
+                 etacl_time_max = 18.5, etalcl_t50 = 64.2)
+stopifnot(
+  isTRUE(all.equal(unname(diag(omega)[names(printed_pct)]),
+                   unname((printed_pct / 100)^2), tolerance = 1e-12)),
+  isTRUE(all.equal(omega["etalcl", "etalvc"], 0.0161, tolerance = 1e-12))
+)
+corr_cl_vc <- omega["etalcl", "etalvc"] /
+  sqrt(omega["etalcl", "etalcl"] * omega["etalvc", "etalvc"])
+stopifnot(abs(corr_cl_vc) < 1)
+
+per_subject <- sim |>
+  dplyr::distinct(id, vp, cl_t50, cl_time_max_i)
+spread <- tibble::tibble(
+  quantity = c("log(Vp)", "log(T50)", "Emax_i"),
+  printed_omega = c(0.685, 0.642, 0.185),
+  simulated_sd  = c(stats::sd(log(per_subject$vp)),
+                    stats::sd(log(per_subject$cl_t50)),
+                    stats::sd(per_subject$cl_time_max_i))
+) |>
+  dplyr::mutate(ratio = simulated_sd / printed_omega)
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega (N = ",
+                              nrow(per_subject), "); CL-Vc correlation = ",
+                              round(corr_cl_vc, 3), "."))
+```
+
+| quantity | printed_omega | simulated_sd | ratio |
+|:---------|--------------:|-------------:|------:|
+| log(Vp)  |         0.685 |        0.819 | 1.196 |
+| log(T50) |         0.642 |        0.657 | 1.023 |
+| Emax_i   |         0.185 |        0.196 | 1.059 |
+
+Per-subject spread vs. printed omega (N = 100); CL-Vc correlation =
+0.533. {.table}
+
+``` r
+
+stopifnot(all(spread$ratio > 0.7 & spread$ratio < 1.3))
+```
+
 ## Concentration-time profile
 
 ``` r
@@ -288,7 +357,7 @@ ggplot(sim_summary, aes(x = time / 7)) +
   scale_y_log10() +
   labs(
     x = "Time (weeks)",
-    y = "Sugemalimab concentration (μg/mL)",
+    y = "Sugemalimab concentration (ug/mL)",
     title = "Simulated sugemalimab PK at 1200 mg IV Q3W",
     subtitle = paste0("Median and 90% prediction interval (N = ", n_subj,
                       " virtual subjects)"),
@@ -340,8 +409,8 @@ ggplot(cl_traj, aes(time, cl)) +
 
 ## PKNCA validation
 
-NCA on the cycle-1 dosing interval (day 0–21; “cycle 1”) and the cycle-8
-steady-state interval (days 147–168; the dosing interval after the
+NCA on the cycle-1 dosing interval (day 0-21; “cycle 1”) and the cycle-8
+steady-state interval (days 147-168; the dosing interval after the
 eighth Q3W dose) confirms that the simulated steady-state Cmax / Cmin /
 AUC match published expectations.
 
@@ -379,10 +448,9 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 21 | 1200 mg Q3W | 100 | 2960 \[20.0\] | 301 \[18.0\] | NC | 1.00 \[1.00, 1.00\] |
+| 0 | 21 | 1200 mg Q3W | 100 | 3120 \[20.4\] | 363 \[21.4\] | NC | 0.0625 \[0.0625, 0.0625\] |
 
-Cycle 1 NCA summary (days 0-21, 1200 mg Q3W). {.table
-style="width:100%;"}
+Cycle 1 NCA summary (days 0-21, 1200 mg Q3W). {.table}
 
 ``` r
 
@@ -424,7 +492,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 21 | 1200 mg Q3W | 100 | 6380 \[27.0\] | 377 \[23.8\] | 232 \[32.3\] |
+| 0 | 21 | 1200 mg Q3W | 100 | 7570 \[27.0\] | 601 \[21.4\] | 228 \[36.9\] |
 
 Cycle 8 NCA summary (days 147-168, 1200 mg Q3W) - approaching steady
 state. {.table style="width:100%;"}
@@ -432,7 +500,7 @@ state. {.table style="width:100%;"}
 ### Comparison against the literature
 
 Wang 2024 does not tabulate Cmax / Cmin / AUC values directly, but
-Supplementary Tables S1–S4 report **steady-state geometric-mean exposure
+Supplementary Tables S1-S4 report **steady-state geometric-mean exposure
 metrics after six 1200 mg Q3W doses** for various covariate subgroups.
 The simulated cycle-8 NCA values can be cross-checked against the
 overall-population row of Wang 2024 Table S1 (the row labelled
@@ -441,13 +509,22 @@ overall-population row of Wang 2024 Table S1 (the row labelled
 
 | Metric | Wang 2024 Table S1 (Age \<= 65, n = 1165, 1200 mg Q3W) | Simulated cycle-8 (1200 mg Q3W, n = 100) |
 |----|----|----|
-| AUCss (μg \* day / mL) | 6,951 (geometric mean; %CV 19.6) | (see NCA table above; AUC over a single 21-day interval — multiply x 1 for AUC0-tau) |
-| Cmax,ss (μg/mL) | 571 (geometric mean; %CV 16.6) | (see NCA table above) |
-| Cmin,ss (μg/mL) | 221 (geometric mean; %CV 26.2) | (see NCA table above) |
+| AUCss (ug \* day / mL) | 6,951 (geometric mean; %CV 19.6) | (see NCA table above; AUC over a single 21-day interval – multiply x 1 for AUC0-tau) |
+| Cmax,ss (ug/mL) | 571 (geometric mean; %CV 16.6) | (see NCA table above) |
+| Cmin,ss (ug/mL) | 221 (geometric mean; %CV 26.2) | (see NCA table above) |
 
-If the simulated cycle-8 metrics differ from Wang 2024 Table S1 by more
-than ~20 %, the model file should be re-checked against Wang 2024 Table
-3 rather than tuned.
+If the simulated cycle-8 geometric means differ from Wang 2024 Table S1
+by more than 20 %, the model file should be re-checked against Wang 2024
+Table 3 rather than tuned; the chunk below stops on that condition. The
+geometric means are centre statistics, so the gate does not depend on
+which virtual subjects land in the tails.
+
+The %CV columns are shown for information and are not gated. The
+published values are summaries of empirical-Bayes (post hoc) exposures
+in the real cohort, which shrinkage pulls toward the typical value (Wang
+2024 reports 35-47 % shrinkage for Emax, Vp and T50). They are therefore
+lower bounds on the spread of a cohort simulated from the full
+$`\Omega`$.
 
 A side-by-side numerical comparison is computed below.
 
@@ -460,15 +537,18 @@ simulated_summary <- nca_df |>
   dplyr::group_by(PPTESTCD) |>
   dplyr::summarise(
     geomean = exp(mean(log(PPORRES[PPORRES > 0]), na.rm = TRUE)),
+    sim_cv_pct = 100 * sqrt(exp(stats::var(log(PPORRES[PPORRES > 0]),
+                                           na.rm = TRUE)) - 1),
     .groups = "drop"
   )
 
 published <- tibble::tibble(
   PPTESTCD     = c("auclast", "cmax", "cmin"),
-  metric       = c("AUCss (μg*day/mL)",
-                   "Cmax,ss (μg/mL)",
-                   "Cmin,ss (μg/mL)"),
-  published_gm = c(6951, 571, 221)
+  metric       = c("AUCss (ug*day/mL)",
+                   "Cmax,ss (ug/mL)",
+                   "Cmin,ss (ug/mL)"),
+  published_gm = c(6951, 571, 221),
+  published_cv_pct = c(19.6, 16.6, 26.2)
 )
 
 comparison <- dplyr::left_join(published, simulated_summary, by = "PPTESTCD") |>
@@ -481,14 +561,19 @@ knitr::kable(
 )
 ```
 
-| PPTESTCD | metric             | published_gm | geomean | diff_pct |
-|:---------|:-------------------|-------------:|--------:|---------:|
-| auclast  | AUCss (μg\*day/mL) |         6951 |  6380.2 |     -8.2 |
-| cmax     | Cmax,ss (μg/mL)    |          571 |   377.5 |    -33.9 |
-| cmin     | Cmin,ss (μg/mL)    |          221 |   231.5 |      4.8 |
+| PPTESTCD | metric | published_gm | published_cv_pct | geomean | sim_cv_pct | diff_pct |
+|:---|:---|---:|---:|---:|---:|---:|
+| auclast | AUCss (ug\*day/mL) | 6951 | 19.6 | 7565.1 | 27.0 | 8.8 |
+| cmax | Cmax,ss (ug/mL) | 571 | 16.6 | 600.9 | 21.4 | 5.2 |
+| cmin | Cmin,ss (ug/mL) | 221 | 26.2 | 228.4 | 36.9 | 3.3 |
 
 Cycle-8 simulated geometric-mean NCA vs. Wang 2024 Table S1 (Age \<= 65
 subgroup, 1200 mg Q3W). {.table}
+
+``` r
+
+stopifnot(all(abs(comparison$diff_pct) < 20))
+```
 
 ## Assumptions and deviations
 
@@ -508,13 +593,17 @@ distributions.
   model fitting.
 - **Cycle-8 vs. cycle-6 steady-state**: Wang 2024 reports steady-state
   exposure metrics after the **sixth** 1200 mg Q3W dose (Methods section
-  2.4 and Supplementary Tables S1–S4); the simulation in this vignette
+  2.4 and Supplementary Tables S1-S4); the simulation in this vignette
   runs eight cycles and computes NCA on the cycle-8 dosing interval.
   With $`T_{50} = 53.6`$ days and $`\lambda = 2.60`$, the CL trajectory
   has reached ~92 % of $`E_{\max}`$ by day 105 (start of cycle 6) and
   ~96 % by day 147 (start of cycle 8); the cycle-8 metrics are therefore
-  slightly larger than cycle-6 in the source paper. The comparison table
-  flags any differences \> 20 %.
+  slightly larger than cycle-6 in the source paper. The comparison chunk
+  stops on any geometric-mean difference \> 20 %.
+- **Sampling grid**: observations are taken at the end of every 1.5-hour
+  infusion as well as on the daily / weekly / biweekly grid, so the NCA
+  Cmax is the post-infusion peak rather than the first scheduled sample
+  after the dose.
 - **Albumin SD**: Wang 2024 does not publish the SD of baseline albumin.
   3.5 g/L is used here, consistent with typical oncology cohorts.
 - **Race / ECOG**: not included in the final Wang 2024 model, so they
@@ -524,13 +613,15 @@ distributions.
   only.
 - **Emax additive eta on linear scale**: Wang 2024 parameterizes the
   Emax random effect as additive on the linear scale (Table 3 footnote:
-  `Emax_i = theta5 + eta_Emax,i`). With variance ~0.00955 (SD ~0.098)
-  and a typical Emax of -0.528, this allows individual Emax values to
-  range over roughly $`-0.72`$ to $`-0.34`$ at the 95 % level (so the
-  asymptotic CL ratio ranges over $`\sim 0.49`$ to $`\sim 0.71`$ of
-  baseline). No subject in this parameterization is expected to exhibit
-  $`E_{\max} > 0`$ (CL increase), unlike the Zhang 2019 nivolumab
-  parameterization where the IIV is broader.
+  `Emax_i = theta5 + eta_Emax,i`). Because Emax is itself the log of the
+  asymptotic CL ratio, this is a log-normal random effect on that ratio.
+  With variance 0.034225 (SD 0.185) and a typical Emax of -0.528,
+  individual Emax values range over roughly $`-0.89`$ to $`-0.17`$ at
+  the 95 % level, so the asymptotic CL ratio ranges over $`\sim 0.41`$
+  to $`\sim 0.85`$ of baseline. About 0.2 % of subjects
+  ($`\Phi(-0.528/0.185)`$, roughly 1 in 460) draw $`E_{\max,i} > 0`$,
+  i.e. a CL that rises over time; the source model imposes no bound, and
+  none is added here.
 - **PKNCA reporting unit**: AUC is computed as `auclast` over the 21-day
   dosing interval and is reported in $`\mu`$g$`\cdot`$day/mL (matching
   Wang 2024 Table S1’s units of $`\mu`$g$`\cdot`$day/mL).
@@ -538,7 +629,77 @@ distributions.
 ## Errata
 
 No errata or corrigenda were located for Wang K, Pan C, Xu F, Tse AN,
-Sheng Y. Br J Clin Pharmacol. 2025;91(3):748–760 at the time of
+Sheng Y. Br J Clin Pharmacol. 2025;91(3):748-760 at the time of
 extraction. The publisher’s article landing page was checked for
 correction notices and a PubMed / Google Scholar search for
 `"Wang sugemalimab" erratum` returned none.
+
+### Correction to the packaged IIV values (2026-10)
+
+The model as first released in nlmixr2lib put the inter-individual
+variances on the wrong scale. It read each Table 3 “approximate CV%” as
+a coefficient of variation and converted it with
+$`\omega^2 = \log(1 + \mathrm{CV}^2)`$. For the additive Emax random
+effect it read the percentage as $`\mathrm{SD} / |E_{\max}|`$. The
+printed percentages are in fact $`\omega \times 100`$, the standard
+deviation on the estimation scale, so $`\omega^2 = (P/100)^2`$ for every
+row, including Emax.
+
+The paper’s own “(%RSE, 95% CI)” column settles this. The confidence
+interval is computed on $`\omega^2`$, so the squared CI endpoints must
+be symmetric about the squared point estimate, and the printed RSE
+(which refers to $`\omega`$, i.e. half the RSE of $`\omega^2`$) must
+equal
+$`(\mathrm{hi}^2 - \mathrm{lo}^2) / (2 \times 1.96) / \omega^2 / 2`$.
+The two readings agree for small percentages because
+$`\log(1 + x) \approx x`$; the wide Vp and T50 rows tell them apart:
+
+| Row | Printed (RSE, 95% CI) | RSE implied, $`\omega \times 100`$ reading | RSE implied, $`\log(1 + \mathrm{CV}^2)`$ reading |
+|----|----|----|----|
+| CL | 19.5 (2.91 %, 18.3-20.6) | 3.00 % | 2.95 % |
+| Vc | 15.5 (2.56 %, 14.7-16.3) | 2.63 % | 2.60 % |
+| Vp | 68.5 (5.23 %, 61.1-75.2) | **5.22 %** | 4.34 % |
+| Emax | 18.5 (3.94 %, 17.1-19.9) | 3.86 % | 3.80 % |
+| T50 | 64.2 (3.98 %, 59-69.1) | **4.00 %** | 3.39 % |
+| Residual | 17.9 (0.5 %, 17.7-18.1) | 0.57 % | 0.56 % |
+
+The $`\omega \times 100`$ reading reproduces the printed RSE on both
+discriminating rows; the CV reading misses by 15-17 %. The squared CIs
+are also more symmetric under it (Vp: midpoint 0.04 % from the point
+estimate, against 0.52 %). The covariance row confirms the RSE
+convention: Cov(CL, Vc) = 0.0161 with CI 0.0135-0.0186 implies an RSE of
+8.08 %, exactly as printed. The same arithmetic holds row by row for the
+companion Wang 2025 serplulimab analysis by the same group
+(`Wang_2025_serplulimab`).
+
+For Emax, rescaling by $`|E_{\max}|`$ is a constant factor and cannot be
+ruled out by the CI test alone. The $`\omega \times 100`$ reading holds
+because the same routine produced every row, and because Emax is the
+“change of CL (Emax) in log scale”: an additive random effect on Emax is
+a log-normal random effect on the asymptotic CL ratio, whose approximate
+CV is $`\omega`$ itself.
+
+| Random effect | Originally shipped variance | Corrected variance | Change |
+|----|----|----|----|
+| `etalcl` | 0.0373 | 0.038025 | +1.9 % |
+| `etalvc` | 0.0237 | 0.024025 | +1.4 % |
+| `etalvp` | 0.3847 | 0.469225 | +22 % |
+| `etacl_time_max` (Emax) | 0.00955 | 0.034225 | +258 % (3.6-fold) |
+| `etalcl_t50` | 0.3451 | 0.412164 | +19 % |
+
+Cov(CL, Vc) = 0.0161 was already a raw covariance and is unchanged (the
+CL-Vc correlation moves from 0.541 to 0.533). The residual SD of 17.9 %
+follows the same convention and was already encoded correctly as
+`propSd = 0.179`. In the simulated cohort above, the cycle-8
+steady-state geometric means move by less than 4 % under the corrected
+variances. The spread widens, most visibly for Cmin, which depends on
+the time-varying clearance.
+
+### Correction to the vignette sampling grid (2026-10)
+
+The first release of this vignette had no observation at the end of any
+infusion, so the NCA Cmax was the first scheduled sample after each dose
+(one day after the cycle-1 dose, one week after the cycle-8 dose). The
+cycle-8 geometric-mean Cmax came out 34 % below Wang 2024 Table S1. With
+end-of-infusion samples added, it is within about 5 % of the published
+value. The model file was not involved.

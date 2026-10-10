@@ -6,8 +6,8 @@
   Lallemant M, Cotton MF, Archary M, Hennig S, Denti P. Abacavir
   pharmacokinetics in African children living with HIV: A pooled
   analysis describing the effects of age, malnutrition and common
-  concomitant medications. Br J Clin Pharmacol. 2021;1-13.
-  <doi:10.1111/bcp.14984>
+  concomitant medications. Br J Clin Pharmacol. 2022;88(2):403-415.
+  <doi:10.1111/bcp.14984>.
 - Description: Two-compartment population PK model for oral abacavir in
   HIV-infected African children (Tikiso 2021), with a Savic 2007-style
   analytical transit-compartment chain feeding a first-order absorption
@@ -537,4 +537,4 @@ bioavailability.
   Cotton MF, Archary M, Hennig S, Denti P. Abacavir pharmacokinetics in
   African children living with HIV: A pooled analysis describing the
   effects of age, malnutrition and common concomitant medications. Br J
-  Clin Pharmacol. 2021;1-13. <doi:10.1111/bcp.14984>
+  Clin Pharmacol. 2022;88(2):403-415. <doi:10.1111/bcp.14984>.

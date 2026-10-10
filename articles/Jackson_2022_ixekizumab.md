@@ -35,11 +35,12 @@ model with first-order subcutaneous absorption, an allometric
 body-weight effect on CL, Q, V2, and V3, and a log-linear ADA-titre
 effect on CL.
 
-- Citation: Jackson K, Chua L, Velez de Mendizabal N, et al. Population
+- Citation: Jackson K, Chua L, Velez de Mendizabal N, Pitou C, Rodriguez
+  Capriles C, Paller AS, Lansang P, Seyger MMB, Papp K. Population
   pharmacokinetic and exposure-efficacy analysis of ixekizumab in
   paediatric patients with moderate-to-severe plaque psoriasis
   (IXORA-PEDS). Br J Clin Pharmacol. 2022;88(3):1074-1086.
-  <doi:10.1111/bcp.15034>
+  <doi:10.1111/bcp.15034>.
 - Article: <https://doi.org/10.1111/bcp.15034>
 
 ## Population
@@ -497,8 +498,9 @@ actual IXORA-PEDS cohort.
 
 ## Reference
 
-- Jackson K, Chua L, Velez de Mendizabal N, et al. Population
+- Jackson K, Chua L, Velez de Mendizabal N, Pitou C, Rodriguez Capriles
+  C, Paller AS, Lansang P, Seyger MMB, Papp K. Population
   pharmacokinetic and exposure-efficacy analysis of ixekizumab in
   paediatric patients with moderate-to-severe plaque psoriasis
   (IXORA-PEDS). Br J Clin Pharmacol. 2022;88(3):1074-1086.
-  <doi:10.1111/bcp.15034>
+  <doi:10.1111/bcp.15034>.

@@ -4,9 +4,8 @@
 
 - Citation: Darwish M, Lin N, Dirks B, Jaworowicz D, Maxwell K,
   Pathak S. Population pharmacokinetics of remlifanserin (ACP-204), a
-  serotonin 2A receptor inverse agonist. Alzheimer’s & Dementia:
-  Translational Research & Clinical Interventions. 2026;12(1):e70254.
-  <doi:10.1002/trc2.70254>
+  serotonin 2A receptor inverse agonist. Alzheimers Dement (N Y).
+  2026;12(2):e70254. <doi:10.1002/trc2.70254>.
 - Description: Population PK model for oral remlifanserin (ACP-204), a
   selective 5-HT2A receptor inverse agonist (Darwish 2026):
   one-compartment with first-order absorption, an absorption lag time

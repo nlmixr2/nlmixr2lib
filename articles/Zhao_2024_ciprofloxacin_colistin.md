@@ -19,14 +19,13 @@ This paper contributes three models to the library.
   Cao S, Annerstedt C, Cars O, Andersson DI, Hughes D, Nielsen EI,
   Friberg LE. Quantifying combined effects of colistin and ciprofloxacin
   against Escherichia coli in an in silico
-  pharmacokinetic-pharmacodynamic model. Sci Rep. 2024 May
-  22;14(1):11603. <doi:10.1038/s41598-024-61518-0>. Structural
-  equations: main text Eqs 1-17. Parameter estimates: main text Table 1
-  (PK/PD model) and Supplementary Table S1 (colistin binding model).
-  Every value here was cross-checked against the authors’ deposited
-  final NONMEM control stream (Supplementary zip,
-  Supplementary/run422b_clean.mod), which carries the final estimates in
-  its $`THETA/`$SIGMA records.
+  pharmacokinetic-pharmacodynamic model. Sci Rep. 2024;14(1):11706.
+  <doi:10.1038/s41598-024-61518-0>. Structural equations: main text Eqs
+  1-17. Parameter estimates: main text Table 1 (PK/PD model) and
+  Supplementary Table S1 (colistin binding model). Every value here was
+  cross-checked against the authors’ deposited final NONMEM control
+  stream (Supplementary zip, Supplementary/run422b_clean.mod), which
+  carries the final estimates in its $`THETA/`$SIGMA records.
 
 - Article: <https://doi.org/10.1038/s41598-024-61518-0>
 

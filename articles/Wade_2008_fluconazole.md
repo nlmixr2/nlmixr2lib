@@ -5,7 +5,8 @@
 - Citation: Wade KC, Wu D, Kaufman DA, Ward RM, Benjamin DK Jr, Sullivan
   JE, Ramey N, Jayaraman B, Hoppu K, Adamson PC, Gastonguay MR, Barrett
   JS. Population pharmacokinetics of fluconazole in young infants.
-  Antimicrob Agents Chemother. 2008. <doi:10.1128/AAC.00569-08>
+  Antimicrob Agents Chemother. 2008;52(11):4043-4049.
+  <doi:10.1128/AAC.00569-08>.
 - Description: One-compartment intravenous population PK model for
   fluconazole in preterm and term infants (gestational age 23-40 weeks,
   postnatal age \<120 days) with allometric body weight on CL and V

@@ -8,7 +8,7 @@ packaged as two model files, and this single vignette walks both.
 
 - NIHSS model: Karlsson KE, Wilkins JJ, Jonsson F, Zingmark PH, Karlsson
   MO, Jonsson EN. Modeling disease progression in acute stroke using
-  clinical assessment scales. AAPS J. 2010;12(4):683-692.
+  clinical assessment scales. AAPS J. 2010;12(4):683-691.
   <doi:10.1208/s12248-010-9230-0>. Final parameter estimates from
   Supplement A (NIHSS table); model structure from the Supplement B
   NONMEM control stream for the NIH Stroke Scale model.

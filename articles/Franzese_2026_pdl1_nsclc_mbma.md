@@ -5,8 +5,8 @@
 - Citation: Franzese RC, Qin L, Fu S, Rich B, Zografos E, Zierhut ML,
   Visser SAG. Model-Based Meta-Analysis of Objective Response Rate and
   Survival Endpoints to Compare PD-1 and PD-L1 Treatment Outcomes in
-  Non-Small Cell Lung Cancer. CPT Pharmacometrics Syst Pharmacol. 2026.
-  <doi:10.1002/psp4.70196>.
+  Non-Small Cell Lung Cancer. CPT Pharmacometrics Syst Pharmacol.
+  2026;15(3):e70196. <doi:10.1002/psp4.70196>.
 - Description: MBMA. Sequential two-stage model-based meta-analysis
   (MBMA) of Objective Response Rate (ORR), Overall Survival (OS), and
   Progression-Free Survival (PFS) for programmed cell death protein 1

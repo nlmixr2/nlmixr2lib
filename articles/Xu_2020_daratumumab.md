@@ -2,11 +2,12 @@
 
 ## Model and source
 
-- Citation: Xu XS, Moreau P, Usmani SZ, et al. Split First Dose
-  Administration of Intravenous Daratumumab for the Treatment of
-  Multiple Myeloma (MM): Clinical and Population Pharmacokinetic
-  Analyses. Adv Ther. 2020;37(4):1464-1478.
-  <doi:10.1007/s12325-020-01247-8>
+- Citation: Xu XS, Moreau P, Usmani SZ, Lonial S, Jakubowiak A, Oriol A,
+  Krishnan A, Blade J, Luo M, Sun YN, Zhou H, Nnane I, Deraedt W, Qi M,
+  Ukropec J, Clemens PL. Split First Dose Administration of Intravenous
+  Daratumumab for the Treatment of Multiple Myeloma (MM): Clinical and
+  Population Pharmacokinetic Analyses. Adv Ther. 2020;37(4):1464-1478.
+  <doi:10.1007/s12325-020-01247-8>.
 - Description: Two-compartment population PK model for intravenous
   daratumumab (anti-CD38 IgG1k) in adults with multiple myeloma, with
   parallel linear and Michaelis-Menten eliminations from the central

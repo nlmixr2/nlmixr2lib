@@ -3,9 +3,10 @@
 ## Model and source
 
 - Citation: Wang K, Feng L, Zhang J, Zou Q, Xu F, Sun Z, Tang F, Chen L.
-  (2023). Population pharmacokinetic analysis of dorzagliatin in healthy
-  subjects and patients with type 2 diabetes mellitus. Clin
-  Pharmacokinet 62(10):1419-1430. <doi:10.1007/s40262-023-01286-8>
+  Population Pharmacokinetic Analysis of Dorzagliatin in Healthy
+  Subjects and Patients with Type 2 Diabetes Mellitus. Clin
+  Pharmacokinet. 2023;62(10):1413-1425.
+  <doi:10.1007/s40262-023-01286-8>.
 - Article: <https://doi.org/10.1007/s40262-023-01286-8>
 - Supplement (Tables S1-S4):
   <https://static-content.springer.com/esm/art%3A10.1007%2Fs40262-023-01286-8/MediaObjects/40262_2023_1286_MOESM1_ESM.docx>
@@ -61,11 +62,10 @@ mod
 #>     sep = " "
 #>   )
 #>   reference <- paste(
-#>     "Wang K, Feng L, Zhang J, Zou Q, Xu F, Sun Z, Tang F, Chen L. (2023).",
-#>     "Population pharmacokinetic analysis of dorzagliatin in healthy",
-#>     "subjects and patients with type 2 diabetes mellitus.",
-#>     "Clin Pharmacokinet 62(10):1419-1430.",
-#>     "doi:10.1007/s40262-023-01286-8",
+#>     "Wang K, Feng L, Zhang J, Zou Q, Xu F, Sun Z, Tang F, Chen L. Population",
+#>     "Pharmacokinetic Analysis of Dorzagliatin in Healthy Subjects and Patients",
+#>     "with Type 2 Diabetes Mellitus. Clin Pharmacokinet. 2023;62(10):1413-1425.",
+#>     "doi:10.1007/s40262-023-01286-8.",
 #>     sep = " "
 #>   )
 #>   vignette <- "Wang_2023_dorzagliatin"
@@ -531,7 +531,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55aa1226c670>
+#> <environment: 0x5613dd077148>
 ```
 
 ## Population

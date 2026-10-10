@@ -5,7 +5,7 @@
 - Citation: Angeli A, Laine F, Lavenu A, Ropert M, Lacut K, Gissot V,
   Sacher-Huvelin S, Jezequel C, Moignet A, Laviolle B, Comets E. Joint
   Model of Iron and Hepcidin During the Menstrual Cycle in Healthy
-  Women. AAPS J. 2016 May;18(3):490-504. <doi:10.1208/s12248-016-9875-4>
+  Women. AAPS J. 2016;18(2):490-504. <doi:10.1208/s12248-016-9875-4>.
 - Description: Joint turnover model of serum iron and serum hepcidin
   during the menstrual cycle in healthy non-menopausal women; both
   molecules follow first-order turnover with a menses-induced increase
@@ -14,7 +14,7 @@
   the cycle, with serum iron multiplicatively modulating hepcidin
   synthesis around the iron baseline.
 - Article: [AAPS J. 2016
-  May;18(3):490-504](https://doi.org/10.1208/s12248-016-9875-4)
+  Mar;18(2):490-504](https://doi.org/10.1208/s12248-016-9875-4)
 - PubMed: <https://pubmed.ncbi.nlm.nih.gov/26832813/>
 
 ## Population

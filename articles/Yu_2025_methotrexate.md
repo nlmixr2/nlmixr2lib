@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Yu B, Wan Y, Mei K, Zhan D, Tang Q, Hu X, Ji W, Cai H
-  (2025). Population Pharmacokinetics and Covariate Analysis of
-  Methotrexate in Pediatric Acute Lymphoblastic Leukemia. Drug Des Devel
-  Ther 19:8473-8486. <doi:10.2147/DDDT.S545368>.
+- Citation: Yu B, Wan Y, Mei K, Zhan D, Tang Q, Hu X, Ji W, Cai H.
+  Population Pharmacokinetics and Covariate Analysis of Methotrexate in
+  Pediatric Acute Lymphoblastic Leukemia. Drug Des Devel Ther.
+  2025;19:8475-8488. <doi:10.2147/DDDT.S545368>.
 - Description: Two-compartment IV-infusion population PK model for
   high-dose methotrexate (3 or 5 g/m^2 over 24 h) in 214 Chinese
   children with acute lymphoblastic leukaemia (Yu 2025; 1,672 plasma

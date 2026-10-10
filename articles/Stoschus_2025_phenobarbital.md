@@ -3,11 +3,10 @@
 ## Model and source
 
 - Citation: Stoschus M, Schmidbauer ML, Starp J, Kunst S, Gakis G, Paal
-  M, Vogeser M, Scharf-Janssen C, Liebchen U, Dimitriadis K (2025).
-  Optimizing phenobarbital dosing in critically ill patients with
-  refractory and superrefractory status epilepticus using a population
-  pharmacokinetic model. Epilepsia 66(11):3757-3768.
-  <doi:10.1111/epi.18517>.
+  M, Vogeser M, Scharf-Janssen C, Liebchen U, Dimitriadis K. Optimizing
+  phenobarbital dosing in critically ill patients with refractory and
+  superrefractory status epilepticus using a population pharmacokinetic
+  model. Epilepsia. 2025;66(10):3757-3768. <doi:10.1111/epi.18517>.
 - Description: One-compartment population PK model for oral and
   intravenous phenobarbital in critically ill adults with refractory and
   superrefractory status epilepticus (Stoschus 2025), with first-order

@@ -10,7 +10,7 @@ ui <- rxode2::rxode(readModelDb("Zhang_2025_drugA"))
 - Citation: Zhang X, Xiao Y, Wu J, Marshall S, Zhou X. Pharmacometric
   Model-Based Sample Size Allocation for a Region of Interest in a
   Multi-Regional Phase 2 Trial: A Case Study of an Anti-Psoriatic Drug.
-  CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1673-1682.
+  CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1673-1681.
   <doi:10.1002/psp4.70090>. Parameter values from Table S1; structural
   equations and variance terms from the Data S4 NONMEM control streams.
 - Article: <https://doi.org/10.1002/psp4.70090>

@@ -11,7 +11,7 @@ ui <- rxode2::rxode(readModelDb("Zhou_2026_tacrolimus"))
 - Citation: Zhou Y, Zhou Z, Chen S, Zhu L, Yun Y, Yuan Y, Chen C, Zou J,
   Zhao J. An Integrated Population Pharmacokinetic and Machine Learning
   Model for Predicting Tacrolimus Exposure in Adult Patients with
-  Nephrotic Syndrome. Drug Des Devel Ther. 2026;20.
+  Nephrotic Syndrome. Drug Des Devel Ther. 2026;20:576598.
   <doi:10.2147/DDDT.S576598>. Parameter values are the ‘Final model’
   Estimate column of Supplementary Table S1; the structural covariate
   equation is the displayed equation in Results, ‘Population

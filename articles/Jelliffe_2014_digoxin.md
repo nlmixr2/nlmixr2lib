@@ -2,11 +2,11 @@
 
 ## Model and source
 
-- Citation: Jelliffe R, Milman M, Schumitzky A, Bayard D, Van Guilder M.
-  A Two-Compartment Population Pharmacokinetic-Pharmacodynamic Model of
-  Digoxin in Adults, with Implications for Dosage. Ther Drug Monit. 2014
-  June;36(3):387-393. <doi:10.1097/FTD.0000000000000023>. PMCID:
-  PMC4040260.
+- Citation: Jelliffe RW, Milman M, Schumitzky A, Bayard D, Van
+  Guilder M. A two-compartment population
+  pharmacokinetic-pharmacodynamic model of digoxin in adults, with
+  implications for dosage. Ther Drug Monit. 2014;36(3):387-393.
+  <doi:10.1097/FTD.0000000000000023>. PMCID: PMC4286255.
 - Description: Two-compartment population PK/PD model of digoxin in
   adults with first-order oral absorption,
   creatinine-clearance-dependent renal elimination, and a peripheral

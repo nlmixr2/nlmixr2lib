@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Sanchez A, Cabrera S, Santos D, Valverde MP, Fuertes A,
-  Dominguez-Gil A, Garcia MJ, and the Tormes Group. Population
+  Dominguez-Gil A, Garcia MJ; the Tormes Group. Population
   pharmacokinetic/pharmacogenetic model for optimization of efavirenz
   therapy in Caucasian HIV-infected patients. Antimicrob Agents
-  Chemother. 2011;55(11):5616-5623. <doi:10.1128/AAC.00194-11>.
+  Chemother. 2011;55(11):5314-5324. <doi:10.1128/AAC.00194-11>.
 - Description: One-compartment population PK/pharmacogenetic model for
   oral efavirenz in Caucasian HIV-infected adults (Sanchez 2011), with
   GGT, CYP2B6\*6 genotype (linked 516G\>T + 785A\>G), and ABCC4 (MRP4)

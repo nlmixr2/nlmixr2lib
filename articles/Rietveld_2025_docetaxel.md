@@ -7,7 +7,7 @@
   Oordt CW, Koch BCP, Mathijssen RHJ, Snelder N, Sassen SDT. Drug
   release from docetaxel-entrapped core-crosslinked polymeric micelles:
   A population pharmacokinetic modelling approach based on clinical
-  data. Biomed Pharmacother. 2025;185:118028.
+  data. Biomed Pharmacother. 2025;186:118028.
   <doi:10.1016/j.biopha.2025.118028>.
 - Article (open access): <https://doi.org/10.1016/j.biopha.2025.118028>
 - PubMed: <https://pubmed.ncbi.nlm.nih.gov/40179732/>

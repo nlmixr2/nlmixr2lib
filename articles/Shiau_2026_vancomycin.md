@@ -5,9 +5,10 @@
 - Citation: Shiau J, Amajor V, Marianski S, Rhodes NJ, Bwint A, Sharova
   A, Hall M, Pai MP, Wen B, Downes KJ, Scheetz MH. P-1237. Vancomycin
   Population Pharmacokinetics and Toxicity-Exposure Relationships in
-  Children with Multiple Organ Dysfunction Syndrome. Open Forum Infect
-  Dis. 2026;13(Suppl 1):S810. <doi:10.1093/ofid/ofaf695.1429>. IDWeek
-  2025 poster abstract (Session 148, PK/PD Studies); PMCID PMC12791793.
+  Children with Multiple Organ Dysfunction Syndrome. Open Forum
+  Infectious Diseases. 2026;13(Supplement_1):ofaf695.1429.
+  <doi:10.1093/ofid/ofaf695.1429>. IDWeek 2025 poster abstract (Session
+  148, PK/PD Studies); PMCID PMC12791793.
 - Description: Two-compartment IV population PK model for vancomycin in
   critically ill children with multiple organ dysfunction syndrome
   (MODS), 1 month to 17 years (Shiau 2026). Clearance and

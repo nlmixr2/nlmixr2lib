@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Niloy KK, Horn J, Bhuiyan NH, Shaaban KA, Bhosale SS,
-  Prisinzano T, Thorson JS, Rohr J, Leggas M. (2026). Nonlinear
-  Mixed-Effects Modeling to Characterize the Pharmacokinetics of a Novel
-  Mithramycin Analogue for Ewing Sarcoma in Mice. Research Square
-  preprint. <doi:10.21203/rs.3.rs-9035594/v1>.
+  Prisinzano T, Thorson JS, Rohr J, Leggas M. Nonlinear Mixed-Effects
+  Modeling to Characterize the Pharmacokinetics of a Novel Mithramycin
+  Analogue for Ewing Sarcoma in Mice. Res Sq. 2026.
+  <doi:10.21203/rs.3.rs-9035594/v1>.
 - Description: Preclinical (mouse). One-compartment population PK model
   for MTMSA-Trp, a novel mithramycin analogue investigated for Ewing
   sarcoma, in female athymic nu/nu mice following single IV bolus doses

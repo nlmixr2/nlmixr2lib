@@ -50,8 +50,8 @@ The four models contributed by Valke 2024. {.table}
   Pharmacokinetic-Pharmacodynamic Modelling in Hemophilia A: Relating
   Thrombin and Plasmin Generation to Factor VIII Activity After
   Administration of a VWF/FVIII Concentrate. Eur J Drug Metab
-  Pharmacokinet. 2024 Mar;49(2):191-205.
-  <doi:10.1007/s13318-024-00876-6>. <PMID:38367174>. PMCID:PMC10904421.
+  Pharmacokinet. 2024;49(2):191-205. <doi:10.1007/s13318-024-00876-6>.
+  <PMID:38367175>. PMCID:PMC10904421.
 
 ## Population
 

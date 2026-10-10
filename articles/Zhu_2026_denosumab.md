@@ -6,7 +6,7 @@
   KN012, a denosumab biosimilar, versus reference denosumab in Chinese
   postmenopausal women with osteoporosis: efficacy, safety, and
   population pharmacokinetics in a 12-month phase III study. Bone
-  Rep. 2026;101916. <doi:10.1016/j.bonr.2026.101916>
+  Rep. 2026;29:101916. <doi:10.1016/j.bonr.2026.101916>.
 - Article: <https://doi.org/10.1016/j.bonr.2026.101916>
 - Supplement (Fig. S1 model schema, Tables S3-S6 demographics,
   parameters and simulated exposures):

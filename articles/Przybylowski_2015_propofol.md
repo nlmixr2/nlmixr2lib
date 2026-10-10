@@ -5,7 +5,7 @@
 - Citation: Przybylowski K, Tyczka J, Szczesny D, Bienert A, Wiczling P,
   Kut K, Plenzler E, Kaliszan R, Grzeskowiak E. Pharmacokinetics and
   pharmacodynamics of propofol in cancer patients undergoing major lung
-  surgery. J Pharmacokinet Pharmacodyn. 2015;42(3):111-122.
+  surgery. J Pharmacokinet Pharmacodyn. 2015;42(2):111-122.
   <doi:10.1007/s10928-015-9404-6>.
 - Description: Three-compartment IV population PK plus
   effect-compartment sigmoidal Emax PD model for propofol in adult ASA

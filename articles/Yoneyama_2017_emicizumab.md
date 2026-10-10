@@ -16,7 +16,7 @@ library(PKNCA)
   Shima M, Kawanishi T. A Pharmacometric Approach to Substitute for a
   Conventional Dose-Finding Study in Rare Diseases: Example of Phase III
   Dose Selection for Emicizumab in Hemophilia A. *Clin Pharmacokinet*.
-  2018 May;57(5):613-619.
+  2018;57(9):1123-1134. <doi:10.1007/s40262-017-0616-3>.
 - Article:
   [doi:10.1007/s40262-017-0616-3](https://doi.org/10.1007/s40262-017-0616-3)
 - Trial registries:

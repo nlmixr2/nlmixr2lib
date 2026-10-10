@@ -609,6 +609,8 @@ virtual population approximates the paper’s reported medians and ranges:
 ### Reference
 
 - Sassen SDT, Mathot RAA, Pieters R, Kloos RQH, de Haas V, Kaspers GJL,
-  et al. Population pharmacokinetics of intravenous Erwinia asparaginase
-  in pediatric acute lymphoblastic leukemia patients. Haematologica.
-  2017;102(3):552-561. <doi:10.3324/haematol.2016.149195>
+  van den Bos C, Tissing WJ, Te Loo M, Bierings MB, Kollen WJ, Zwaan CM,
+  van der Sluis IM. Population pharmacokinetics of intravenous Erwinia
+  asparaginase in pediatric acute lymphoblastic leukemia patients.
+  Haematologica. 2017;102(3):552-561.
+  <doi:10.3324/haematol.2016.149195>.

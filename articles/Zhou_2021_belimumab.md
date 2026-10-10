@@ -33,10 +33,10 @@ mod <- readModelDb("Zhou_2021_belimumab")
 mod_meta <- rxode2::rxode(mod)
 ```
 
-- Citation: Zhou L, Lee S, Zhu L, Roy A, Zhou H, Yang H. Prediction of
-  Belimumab Pharmacokinetics in Chinese Pediatric Patients with Systemic
-  Lupus Erythematosus. Drugs R D. 2021;21(4):407-417.
-  <doi:10.1007/s40268-021-00363-2>
+- Citation: Zhou X, Lee TI, Zhu M, Ma P. Prediction of Belimumab
+  Pharmacokinetics in Chinese Pediatric Patients with Systemic Lupus
+  Erythematosus. Drugs R D. 2021;21(4):407-417.
+  <doi:10.1007/s40268-021-00363-2>.
 - Description: Linear two-compartment IV population PK model for
   belimumab in Chinese and non-Chinese adult and pediatric patients with
   systemic lupus erythematosus (Zhou 2021)

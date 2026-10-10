@@ -162,7 +162,7 @@ sim4 <- rxode2::rxSolve(mod, events = ev4, keep = "arm") |>
   as.data.frame() |>
   filter(time == tobs)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:21
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:11
 
 pta <- sim4 |>
   group_by(arm) |>

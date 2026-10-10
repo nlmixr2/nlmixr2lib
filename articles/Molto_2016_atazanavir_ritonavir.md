@@ -5,7 +5,8 @@
 - Citation: Molto J, Estevez JA, Miranda C, Cedeno S, Clotet B, Valle M.
   Population pharmacokinetic modelling of the changes in atazanavir
   plasma clearance caused by ritonavir plasma concentrations in HIV-1
-  infected patients. Br J Clin Pharmacol. <doi:10.1111/bcp.13072>.
+  infected patients. Br J Clin Pharmacol. 2016;82(6):1528-1538.
+  <doi:10.1111/bcp.13072>.
 - Description: Simultaneous one-compartment popPK model for oral
   atazanavir (ATV, parent / substrate) and ritonavir (RTV, sibling-drug
   suffix \_rtv) in 83 HIV-1-infected Caucasian adults receiving either

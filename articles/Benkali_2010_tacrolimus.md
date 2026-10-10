@@ -7,6 +7,7 @@
   pharmacokinetics and Bayesian estimation of tacrolimus exposure in
   renal transplant recipients on a new once-daily formulation. Clin
   Pharmacokinet. 2010;49(10):683-692.
+  <doi:10.2165/11535950-000000000-00000>.
 - Description: Two-compartment population PK model with
   Erlang-distributed transit absorption (3 transit compartments) for
   once-daily extended-release oral tacrolimus (Advagraf) in stable adult
@@ -14,7 +15,8 @@
   were switched from twice-daily ciclosporin (Benkali 2010), with a
   multiplicative CYP3A5\*1-carrier (expresser) effect on apparent
   clearance and combined additive + proportional residual error.
-- Article: Clin Pharmacokinet 2010;49(10):683-692 (Adis Data; DOI not
+- Article: Clin Pharmacokinet 2010;49(10):683-692,
+  <doi:10.2165/11535950-000000000-00000> (Adis Data; the DOI is not
   printed in the PDF).
 
 ## Population
@@ -346,10 +348,8 @@ ratio reported in the Abstract and Discussion).
   ADVAN5 SS5 parameterisation that the source paper used in NONMEM and
   gives the same three-stage convolution.
 - **DOI not printed in the PDF.** The article PDF does not print a DOI;
-  the citation in the model file is by journal / volume / issue / page
-  number only. NEWS.md follows the precedent set by
-  `Bista_2015_fentanyl` (cited by manuscript because the journal / DOI
-  metadata was unavailable).
+  the DOI in the model file’s citation is the one Crossref and PubMed
+  register for the article.
 - **Vignette uses 200 subjects per CYP3A5 stratum.** This is small
   enough to render the vignette in well under 5 minutes but large enough
   to give stable percentiles for the VPC and pooled %CV statistics.

@@ -8,7 +8,7 @@
   Grabnar I. Pharmacokinetics of lamotrigine and its metabolite
   N-2-glucuronide: Influence of polymorphism of
   UDP-glucuronosyltransferases and drug transporters. Br J Clin
-  Pharmacol. 2016 Sep;82(3):399-411. <doi:10.1111/bcp.12984>.
+  Pharmacol. 2016;82(2):399-411. <doi:10.1111/bcp.12984>.
 - Description: One-compartment first-order-absorption parent +
   one-compartment metabolite population pharmacokinetic model for oral
   lamotrigine (LTG) and its N-2-glucuronide (LTG-glu) in 100 adult

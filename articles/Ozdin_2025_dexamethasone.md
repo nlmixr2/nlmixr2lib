@@ -12,7 +12,7 @@ mod <- rxode2::rxode(readModelDb("Ozdin_2025_dexamethasone"))
   Dexamethasone Sodium Phosphate Encapsulated in Erythrocytes (eDSP)
   Administered Monthly for Treatment of Neurological Symptoms of
   Patients With Ataxia Telangiectasia. CPT Pharmacometrics Syst
-  Pharmacol. 2025;14(11):1882-1893. <doi:10.1002/psp4.70103>
+  Pharmacol. 2025;14(11):1882-1892. <doi:10.1002/psp4.70103>.
 - Description: Two-compartment population PK model with linear
   elimination for dexamethasone released from dexamethasone sodium
   phosphate (DSP) encapsulated in autologous erythrocytes (eDSP, the

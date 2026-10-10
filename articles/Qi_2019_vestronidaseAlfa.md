@@ -9,11 +9,11 @@ ui <- rxode2::rxode(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
-- Citation: Qi Y, Mc Namara MP, Haller C, Song W, Gutierrez F, Kolodny
-  E, Ma J. Pharmacokinetic and pharmacodynamic modeling to optimize the
-  dose of vestronidase alfa, an enzyme replacement therapy for treatment
-  of patients with mucopolysaccharidosis type VII: results from three
-  trials. Clin Pharmacokinet. 2019;58(5):673-683.
+- Citation: Qi Y, McKeever K, Taylor J, Haller C, Song W, Jones SA,
+  Shi J. Pharmacokinetic and Pharmacodynamic Modeling to Optimize the
+  Dose of Vestronidase Alfa, an Enzyme Replacement Therapy for Treatment
+  of Patients with Mucopolysaccharidosis Type VII: Results from Three
+  Trials. Clin Pharmacokinet. 2019;58(5):673-683.
   <doi:10.1007/s40262-018-0721-y>. Erratum: Clin Pharmacokinet.
   2019;58(5):685. <doi:10.1007/s40262-018-0726-6> (corrects a
   ClinicalTrials.gov identifier in the Introduction; no parameter value

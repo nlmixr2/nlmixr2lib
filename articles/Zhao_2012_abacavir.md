@@ -2,12 +2,12 @@
 
 ## Model and source
 
-- Citation: Zhao W, Cella M, Della Pasqua O, Burger D, Jacqz-Aigrain E,
+- Citation: Zhao W, Cella M, Della Pasqua O, Burger D, Jacqz-Aigrain E;
   on behalf of Pediatric European Network for Treatment of AIDS (PENTA)
   15 study group. Population pharmacokinetics and maximum a posteriori
   probability Bayesian estimator of abacavir: application of
   individualized therapy in HIV-infected infants and toddlers. Br J Clin
-  Pharmacol. 2012;73(4):641-648. <doi:10.1111/j.1365-2125.2011.04121.x>
+  Pharmacol. 2012;73(4):641-650. <doi:10.1111/j.1365-2125.2011.04121.x>.
 - Description: Two-compartment population PK model for oral abacavir in
   HIV-infected infants and toddlers (Zhao 2012) developed on the PENTA
   15 crossover trial of 8 mg/kg twice-daily vs 16 mg/kg once-daily
@@ -425,7 +425,7 @@ Simulated abacavir steady-state NCA per crossover phase (WT = 12 kg, n =
 - **Print-year vs online-year discrepancy on the file name.** The source
   PDF masthead is Accepted 26 September 2011 / Accepted Article Online
   12 October 2011, and the article appears in print as *Br J Clin
-  Pharmacol.* 2012;73(4):641-648. The model file uses the 2012 print
+  Pharmacol.* 2012;73(4):641-650. The model file uses the 2012 print
   year, which matches the journal volume citation rather than the online
   publication year (2011). Following the package’s file-naming
   convention, the file is named `Zhao_2012_abacavir.R` to align with the

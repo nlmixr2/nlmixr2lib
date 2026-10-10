@@ -22,7 +22,7 @@ Two model files come out of the paper, one per ADC:
   Physiologically based pharmacokinetic model to predict drug-drug
   interactions with the antibody-drug conjugate enfortumab vedotin. J
   Pharmacokinet Pharmacodyn. 2024;51(5):417-428.
-  <doi:10.1007/s10928-023-09877-5>. PMID 37624557; PMCID PMC11576838.
+  <doi:10.1007/s10928-023-09877-5>. PMID 37632598; PMCID PMC11576838.
 
 - Article: <https://doi.org/10.1007/s10928-023-09877-5>
 

@@ -22,9 +22,9 @@ ui_post <- rxode2::rxode(mod_post)
 ```
 
 - Citation: Kim H, Jin BH, Yang S, Hahn J, Kang S, Kim D, Lee H, Kwack
-  H, Chae SU, Bae SK, Wi J, Chang MJ. Effect of extracorporeal membrane
-  oxygenation flow rate on midazolam clearance: a population
-  pharmacokinetic study. Anesthesiology. 2026;144(3):485-488.
+  H, Chae SU, Bae SK, Wi J, Chang MJ. Effect of Extracorporeal Membrane
+  Oxygenation Flow Rate on Midazolam Clearance: A Population
+  Pharmacokinetic Study. Anesthesiology. 2026;144(2):485-488.
   <doi:10.1097/ALN.0000000000005811>.
 - Article: <https://doi.org/10.1097/ALN.0000000000005811>
 - Supplemental methods: <https://links.lww.com/ALN/E277>

@@ -5,8 +5,8 @@
 - Citation: Kleijn HJ, Zollinger DP, van den Heuvel MW, Kerbusch T.
   Population pharmacokinetic-pharmacodynamic analysis for
   sugammadex-mediated reversal of rocuronium-induced neuromuscular
-  blockade. Br J Clin Pharmacol. 2011 Sep;72(3):415-433.
-  <doi:10.1111/j.1365-2125.2011.04000.x>. PMID: 21501216.
+  blockade. Br J Clin Pharmacol. 2011;72(3):415-433.
+  <doi:10.1111/j.1365-2125.2011.04000.x>. PMID: 21535448.
   Complex-formation framework from Bom AHJ, Bradley M, Cameron K, Clark
   JK, Van Egmond J, Feilden H, MacLean EJ, Muir AW, Palin R, Rees DC,
   Zhang MQ. A novel concept of reversing neuromuscular block: chemical

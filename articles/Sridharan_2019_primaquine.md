@@ -6,7 +6,7 @@
   Kadam P, Hase N, Shukla A, Gogtay N, Thatte U. Population
   pharmacokinetics of primaquine and the effect of hepatic and renal
   dysfunction: An exploratory approach. Indian J Pharmacol.
-  2019;51(1):17-23. <doi:10.4103/ijp.ijp_230_16>. Structural model from
+  2019;51(1):17-24. <doi:10.4103/ijp.ijp_230_16>. Structural model from
   Methods, ‘Population pharmacokinetic modeling’, and Results, ‘Model
   development and evaluation’; parameter values from Table 2
   (‘Population estimates’ column); covariate function from the Methods
@@ -26,7 +26,7 @@
   variability on CL/F, V/F and Ka, with combined
   proportional-plus-additive residual error.
 - Article: [Indian J Pharmacol.
-  2019;51(1):17-23](https://doi.org/10.4103/ijp.ijp_230_16) (open
+  2019;51(1):17-24](https://doi.org/10.4103/ijp.ijp_230_16) (open
   access; PMC6444836)
 
 ``` r
@@ -96,7 +96,7 @@ mod
 #>         dose_range = "Single oral 15-mg primaquine phosphate tablet (Bharat Parenterals, India) given post-breakfast with 200 mL water after an overnight fast; liquids restricted 2 h and food 4 h post-dose.", 
 #>         regions = "India (Seth GS Medical College and KEM Hospital, Mumbai); retrospective pooling of three single-centre studies registered as CTRI/2011/06/001803 (healthy), CTRI/2011/06/001794 (hepatic dysfunction) and CTRI/2010/091/000356 (renal dysfunction), conducted April-December 2013.", 
 #>         notes = "Baseline demographics from Table 1; 458 concentration records across the 53 participants. Sampling: 0 h (pre-dose) and 0.5, 1.0, 1.5, 2, 3, 4, 6, 8, 12 and 24 h post-dose, assayed by reversed-phase HPLC. Sex is reported only as per-group male:female ratios (5:1, 5:1, all male, 2:1), which do not resolve to exact counts for the 12- and 22-subject groups, so sex_female_pct is left NA. Model qualification used a hepatic-dysfunction-stratified VPC (n = 1000 simulations) and a nonparametric bootstrap (n = 2000 resamples, 98% minimizing successfully); condition number 10.83.")
-#>     reference <- "Sridharan K, Sannala CKR, Mallayasamy S, Chaturvedula A, Kadam P, Hase N, Shukla A, Gogtay N, Thatte U. Population pharmacokinetics of primaquine and the effect of hepatic and renal dysfunction: An exploratory approach. Indian J Pharmacol. 2019;51(1):17-23. doi:10.4103/ijp.ijp_230_16. Structural model from Methods, 'Population pharmacokinetic modeling', and Results, 'Model development and evaluation'; parameter values from Table 2 ('Population estimates' column); covariate function from the Methods equation 'TVP = P x (1 + theta_mild x FLAG) x (1 + theta_mod x FLAG1)'."
+#>     reference <- "Sridharan K, Sannala CKR, Mallayasamy S, Chaturvedula A, Kadam P, Hase N, Shukla A, Gogtay N, Thatte U. Population pharmacokinetics of primaquine and the effect of hepatic and renal dysfunction: An exploratory approach. Indian J Pharmacol. 2019;51(1):17-24. doi:10.4103/ijp.ijp_230_16. Structural model from Methods, 'Population pharmacokinetic modeling', and Results, 'Model development and evaluation'; parameter values from Table 2 ('Population estimates' column); covariate function from the Methods equation 'TVP = P x (1 + theta_mild x FLAG) x (1 + theta_mod x FLAG1)'."
 #>     units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 #>     vignette <- "Sridharan_2019_primaquine"
 #>     ini({
@@ -1046,7 +1046,7 @@ sessionInfo()
 #>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
 #>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
 #>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
-#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [10] tibble_3.3.1        symengine_0.2.14    pkgconfig_2.0.3    
 #> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
 #> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
@@ -1057,7 +1057,7 @@ sessionInfo()
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
-#> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
+#> [43] cli_3.6.6           dparser_1.3.1-14    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      
 #> [52] ragg_1.5.2          memoise_2.0.1       evaluate_1.0.5     

@@ -5,7 +5,7 @@
 - Citation: Wright DFB, Hishe HZ, Dalbeth N, Horne A, Drake J, Haslett
   J, Stamp LK. The Influence of Patient Factors on the Population
   Pharmacokinetics of Colchicine: Implications for Safe and Effective
-  Dosing. Clin Pharmacokinet. 2025;64(10):1519-1531.
+  Dosing. Clin Pharmacokinet. 2025;64(10):1517-1529.
   <doi:10.1007/s40262-025-01551-y>. Structure and fixed values taken
   from the final NONMEM control stream (\$PROBLEM 66_FINAL_colchicine)
   reproduced in the Electronic Supplementary Information; final

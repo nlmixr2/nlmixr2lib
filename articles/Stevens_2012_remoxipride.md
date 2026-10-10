@@ -68,11 +68,12 @@ body weight 0.252 kg. Three experimental cohorts feed the joint fit:
     `1 + e_studydd_bsl = 1 - 0.290 = 0.710` for this group).
 
 The PK structural parameters are fixed from a previously published rat
-remoxipride PK study (Westerhout et al. 2011,
-<doi:10.1007/s11095-011-0395-8>) and reproduced here verbatim from
-`THETA(3)..THETA(13)` `FIX` in the DDMORE control stream. The PD
-parameters (TH1, TH2, TH14-TH19) are estimated under an NWPRI prior on
-TH1 (prolactin elimination rate) and TH2 (remoxipride brain-ECF EC50).
+remoxipride PK study (Stevens et al. 2011, Drug Metab Dispos
+39(12):2275-2282, <doi:10.1124/dmd.111.040782>) and reproduced here
+verbatim from `THETA(3)..THETA(13)` `FIX` in the DDMORE control stream.
+The PD parameters (TH1, TH2, TH14-TH19) are estimated under an NWPRI
+prior on TH1 (prolactin elimination rate) and TH2 (remoxipride brain-ECF
+EC50).
 
 The model is preclinical (rat-only). Stevens et al. 2012 separately
 extrapolated the model to humans by allometric scaling of the prolactin
@@ -418,9 +419,9 @@ noise model.
 - **Preclinical (rat-only) implementation.** Stevens et al. 2012 also
   developed an allometrically scaled human projection of the prolactin
   pool model. Only the rat-fitted parameters (with PK fixed from
-  Westerhout 2011) are encoded here; the human-scaled parameters are
-  not. Users wanting to simulate the human projection should not load
-  this model.
+  Stevens 2011) are encoded here; the human-scaled parameters are not.
+  Users wanting to simulate the human projection should not load this
+  model.
 - **Non-canonical compartment names.** `depot_brain`, `brain_csf`,
   `lactotroph`, and `prolactin` are paper-meaningful names (the source
   biology distinguishes a systemic-absorption depot from a direct

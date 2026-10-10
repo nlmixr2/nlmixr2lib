@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Nguyen TA, Nguyen TP, Nguyen AT, Dinh LV, Nguyen HB, Vu HD,
-  Nguyen TNB, Vu D, Fox GJ, Alffenaar JWC, Stocker SL. Single Saliva
+  Nguyen TNB, Vu D, Fox GJ, Alffenaar JC, Stocker SL. Single Saliva
   Sample Linezolid Dosing for Multidrug-Resistant Tuberculosis: A
   Population Pharmacokinetic Modelling of Plasma and Saliva. Clin
-  Pharmacokinet. 2026. <doi:10.1007/s40262-026-01626-4>
+  Pharmacokinet. 2026;65(5):719-730. <doi:10.1007/s40262-026-01626-4>.
 - Description: One-compartment oral population PK model for linezolid in
   Vietnamese adults treated for multidrug-resistant tuberculosis (Nguyen
   2026), fitted jointly to paired plasma and saliva concentrations.

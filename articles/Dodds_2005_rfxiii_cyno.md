@@ -2,9 +2,9 @@
 
 ## Model and source
 
-- Citation: Dodds MG, Visich JE, Vicini P. Population Pharmacokinetics
-  of Recombinant Factor XIII in Cynomolgus Monkeys. AAPS J.
-  2005;7(3):Article 70 (E693-E702).
+- Citation: Dodds MG, Visich JE, Vicini P. Population pharmacokinetics
+  of recombinant factor XIII in cynomolgus monkeys. AAPS J.
+  2005;7(3):E693-E703.
   [doi:10.1208/aapsj070370](https://doi.org/10.1208/aapsj070370).
 - Description: Mechanistic three-state preclinical popPK of recombinant
   FXIII A2 dimer (rA2) in cynomolgus monkeys, with endogenous production

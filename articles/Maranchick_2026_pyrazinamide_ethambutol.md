@@ -24,8 +24,8 @@ emb_ui <- rxode2::rxode(emb)
   AK, Dompreh A, Bosomtwe D, Sly-Moore E, Opoku T, Appiah AF, Asiedu P,
   Antwi S, Scheetz MH, Peloquin CA, Kwara A. Population pharmacokinetics
   of pyrazinamide and ethambutol in children with tuberculosis with or
-  without HIV. Antimicrob Agents Chemother. 2026.
-  <doi:10.1128/aac.00909-25>
+  without HIV. Antimicrob Agents Chemother. 2026;70(4):e00909-25.
+  <doi:10.1128/aac.00909-25>.
 - Article: <https://doi.org/10.1128/aac.00909-25>
 - Pyrazinamide: One-compartment population pharmacokinetic model with
   first-order absorption, an absorption lag time and linear elimination

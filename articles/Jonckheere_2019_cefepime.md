@@ -8,13 +8,19 @@
   Antimicrob Agents Chemother 64(1):e01552-19.
 - Article: <https://doi.org/10.1128/AAC.01552-19>
 - ClinicalTrials.gov: <https://clinicaltrials.gov/ct2/show/NCT02688582>
+- Pilot study (STDY1) and the PopPK model embedded in the TCI system
+  (the article’s reference 18): Jonckheere S, De Neve N, De Beenhouwer
+  H, Berth M, Vermeulen A, Van Bocxlaer J, Colin P. A model-based
+  analysis of the predictive performance of different renal function
+  markers for cefepime clearance in the ICU. J Antimicrob Chemother.
+  2016;71(9):2538-2546. <doi:10.1093/jac/dkw171>.
 
 ``` r
 
 mod_meta <- rxode2::rxode(readModelDb("Jonckheere_2019_cefepime"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 mod_meta$description
-#> [1] "Two-compartment population PK model for IV cefepime in critically ill ICU patients (Jonckheere 2019), updated by simultaneously fitting plasma + urine PK from the original Jonckheere 2017 pilot (STDY1) and the Jonckheere 2019 target-controlled-infusion cohort (STDY2). Total clearance is the sum of an estimated-creatinine-clearance-driven renal arm (CL_renal = 2.29 * (eCrCL/60)^0.943 L/h per 70 kg) and a covariate-free non-renal arm (CL_nonren = 0.795 L/h per 70 kg); all PK parameters are scaled allometrically with body weight (reference 70 kg, exponent 3/4 for clearances, 1 for volumes). The structural form encodes the non-dialysis patient (paper Equations 1-4); a separate CL_dialysis = 4.48 L/h applied during intermittent hemodialysis sessions in the source dataset is documented in the vignette but not enabled in this model file."
+#> [1] "Two-compartment population PK model for IV cefepime in critically ill ICU patients (Jonckheere 2019), updated by simultaneously fitting plasma + urine PK from the original Jonckheere 2016 pilot (STDY1) and the Jonckheere 2019 target-controlled-infusion cohort (STDY2). Total clearance is the sum of an estimated-creatinine-clearance-driven renal arm (CL_renal = 2.29 * (eCrCL/60)^0.943 L/h per 70 kg) and a covariate-free non-renal arm (CL_nonren = 0.795 L/h per 70 kg); all PK parameters are scaled allometrically with body weight (reference 70 kg, exponent 3/4 for clearances, 1 for volumes). The structural form encodes the non-dialysis patient (paper Equations 1-4); a separate CL_dialysis = 4.48 L/h applied during intermittent hemodialysis sessions in the source dataset is documented in the vignette but not enabled in this model file."
 mod_meta$reference
 #> [1] "Jonckheere S, De Neve N, Verbeke J, De Decker K, Brandt I, Boel A, Van Bocxlaer J, Struys MMRF, Colin PJ. (2020). Target-Controlled Infusion of Cefepime in Critically Ill Patients. Antimicrob Agents Chemother 64(1):e01552-19. doi:10.1128/AAC.01552-19"
 mod_meta$units
@@ -79,7 +85,7 @@ collects them in one place for review.
 | eCrCL covariate definition (Cockcroft-Gault, raw mL/min, NOT BSA-normalised) | n/a | Jonckheere 2019 Table 2 footnote a and Discussion paragraph 4 |
 
 The plasma residual error reported for the earlier study STDY1 (31.8%
-CV, the Jonckheere 2017 pilot) and the urine residual errors for both
+CV, the Jonckheere 2016 pilot) and the urine residual errors for both
 studies (32.5% / 33.3% CV) are also available in Table 2; only the
 plasma STDY2 magnitude is propagated into the packaged model – see
 Assumptions and deviations.
@@ -367,7 +373,7 @@ continuous-infusion regimen versus the values reported by Jonckheere
 2019 for the actual TCI cohort. {.table}
 
 The published Varvel metrics characterise the prediction error of the
-*original* TCI system (which embedded the earlier Jonckheere 2017 PopPK
+*original* TCI system (which embedded the earlier Jonckheere 2016 PopPK
 model with study-specific dose adjustments per patient), so an exact
 match against the simulation is not expected – the simulation here
 delivers a single fixed 1.5 g/day infusion rate to all subjects and

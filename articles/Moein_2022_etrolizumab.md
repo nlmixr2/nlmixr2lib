@@ -29,10 +29,11 @@ library(ggplot2)
 
     #> ℹ parameter labels from comments will be replaced by 'label()'
 
-- **Citation:** Moein A, Lu T, Jonsson S, et al. Population
+- **Citation:** Moein A, Lu T, Jonsson S, Ribbing J, Kassir N, Zhang W,
+  Sperinde G, Zhang R, Tang M, Oh YS, Bruno R, Zhu R. Population
   pharmacokinetic analysis of etrolizumab in patients with
   moderately-to-severely active ulcerative colitis. CPT Pharmacometrics
-  Syst Pharmacol. 2022;11(9):1244-1255. <doi:10.1002/psp4.12846>
+  Syst Pharmacol. 2022;11(9):1244-1255. <doi:10.1002/psp4.12846>.
 
 - **Description:** Two-compartment population PK model for etrolizumab
   with first-order SC absorption and time-decreasing clearance in adults
@@ -493,7 +494,8 @@ at steady state, lengthening t1/2 proportionally.
 
 ## Reference
 
-- Moein A, Lu T, Jonsson S, et al. Population pharmacokinetic analysis
-  of etrolizumab in patients with moderately-to-severely active
+- Moein A, Lu T, Jonsson S, Ribbing J, Kassir N, Zhang W, Sperinde G,
+  Zhang R, Tang M, Oh YS, Bruno R, Zhu R. Population pharmacokinetic
+  analysis of etrolizumab in patients with moderately-to-severely active
   ulcerative colitis. CPT Pharmacometrics Syst Pharmacol.
-  2022;11(9):1244-1255. <doi:10.1002/psp4.12846>
+  2022;11(9):1244-1255. <doi:10.1002/psp4.12846>.

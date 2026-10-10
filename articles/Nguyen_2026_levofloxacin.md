@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Nguyen TA, Nguyen TP, Nguyen AT, Dinh LV, Nguyen HB, Vu HD,
-  Nguyen TNB, Vu D, Fox GJ, Alffenaar JWC, Stocker SL. Single Saliva
+  Nguyen TNB, Vu D, Fox GJ, Alffenaar JC, Stocker SL. Single Saliva
   Sample Model-Informed Precision Dosing of Levofloxacin for
-  Multidrug-Resistant Tuberculosis. Clin Pharmacokinet. 2026.
-  <doi:10.1007/s40262-026-01619-3>
+  Multidrug-Resistant Tuberculosis. Clin Pharmacokinet.
+  2026;65(4):583-594. <doi:10.1007/s40262-026-01619-3>.
 - Description: One-compartment oral population PK model for levofloxacin
   in Vietnamese adults treated for multidrug-resistant tuberculosis
   (Nguyen 2026), fitted jointly to paired plasma and saliva

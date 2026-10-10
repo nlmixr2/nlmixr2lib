@@ -4,7 +4,7 @@
 
 - Citation: Talke P, Anderson BJ. Pharmacokinetics and pharmacodynamics
   of dexmedetomidine-induced vasoconstriction in healthy volunteers. Br
-  J Clin Pharmacol. 2018;84(7):1364-1372. <doi:10.1111/bcp.13571>
+  J Clin Pharmacol. 2018;84(6):1364-1372. <doi:10.1111/bcp.13571>.
 - Description: Three-compartment IV population PK plus
   effect-compartment sigmoid Emax PD model for dexmedetomidine-induced
   peripheral vasoconstriction (ADC units from finger

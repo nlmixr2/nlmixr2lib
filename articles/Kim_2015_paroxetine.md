@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Kim J-R, Woo HI, Chun M-R, Lim S-W, Kim HD, Na HS, Chung MW,
-  Myung W, Lee S-Y, Kim DK. Exposure-outcome analysis in depressed
+- Citation: Kim JR, Woo HI, Chun MR, Lim SW, Kim HD, Na HS, Chung MW,
+  Myung W, Lee SY, Kim DK. Exposure-outcome analysis in depressed
   patients treated with paroxetine using population pharmacokinetics.
-  Drug Des Devel Ther. 2015;9:5247-5255. <doi:10.2147/DDDT.S84718>
+  Drug Des Devel Ther. 2015;9:5247-5254. <doi:10.2147/DDDT.S84718>.
 - Description: One-compartment population PK model with first-order
   absorption for paroxetine (SSRI antidepressant) in Korean adults with
   major depressive disorder or anxiety disorder receiving therapeutic

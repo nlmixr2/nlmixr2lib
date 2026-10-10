@@ -10,10 +10,10 @@ ui <- rxode2::rxode(readModelDb("Isla_2024_fosfomycinCalcium"))
 #> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
-- Citation: Isla A, Alarcia-Lacalle A, Solinis MA, del Pozo-Rodriguez A,
+- Citation: Isla A, Alarcia-Lacalle A, Solinis MA, Del Pozo-Rodriguez A,
   Abajo Z, Cabero M, Canut-Blasco A, Rodriguez-Gascon A. Population
   pharmacokinetics of oral fosfomycin calcium in healthy women. J
-  Antimicrob Chemother. 2024;79(11):2891-2898.
+  Antimicrob Chemother. 2024;79(11):2837-2845.
   <doi:10.1093/jac/dkae295>.
 - Article: <https://doi.org/10.1093/jac/dkae295>
 - PubMed Central:

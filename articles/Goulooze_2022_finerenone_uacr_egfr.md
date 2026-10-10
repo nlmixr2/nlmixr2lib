@@ -15,12 +15,12 @@ egfrMod <- readModelDb("Goulooze_2022_finerenone_egfr")
   M, Lippert J, Eissing T. Dose-Exposure-Response Analysis of the
   Nonsteroidal Mineralocorticoid Receptor Antagonist Finerenone on UACR
   and eGFR: An Analysis from FIDELIO-DKD. Clin Pharmacokinet.
-  2022;61(7):1023-1037. <doi:10.1007/s40262-022-01124-3>. Parameter
+  2022;61(7):1013-1025. <doi:10.1007/s40262-022-01124-3>. Parameter
   values are the final estimates in Table S1 of the Electronic
   Supplementary Material; the model equations are the final UACR NONMEM
   control stream in the same supplement. The exposure metric AUCtau,md
   is computed from the upstream FIDELIO-DKD population PK analysis (van
-  den Berg P et al., Clin Pharmacokinet. 2022;61(7):1005-1021;
+  den Berg P et al., Clin Pharmacokinet. 2022;61(3):439-450;
   <doi:10.1007/s40262-021-01082-2>); see
   modellib(‘vandenBerg_2021_finerenone’).
 - UACR model: Population PKPD disease-progression model for the urine

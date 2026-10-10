@@ -10,7 +10,7 @@ ui <- rxode2::rxode(readModelDb("Edrich_2015_heparin"))
 - Citation: Edrich T, Frendl G, Michaud G, Paschalidis ICh. Heparin
   requirements for full anticoagulation are higher for patients on
   dabigatran than for those on warfarin - a model-based study. Clin
-  Pharmacol Adv Appl. 2015;7:19-25. <doi:10.2147/CPAA.S72185>.
+  Pharmacol. 2015;7:19-27. <doi:10.2147/CPAA.S72185>.
 - Article: <https://doi.org/10.2147/CPAA.S72185> (open access;
   PMC4327399)
 - Description: One-compartment population PK + linear direct-effect PD

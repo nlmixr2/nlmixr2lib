@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Bizzotto R, Natali A, Gastaldelli A, Muscelli E, Brehm A,
-  Roden M, Ferrannini E, Mari A. (2016). Glucose uptake saturation
+- Citation: Bizzotto R, Natali A, Gastaldelli A, Muscelli E, Krssak M,
+  Brehm A, Roden M, Ferrannini E, Mari A. Glucose uptake saturation
   explains glucose kinetics profiles measured by different tests. Am J
-  Physiol Endocrinol Metab 311(2):E346-E357.
+  Physiol Endocrinol Metab. 2016;311(2):E346-E357.
   <doi:10.1152/ajpendo.00045.2016>. DDMORE Foundation Model Repository:
   DDMODEL00000227.
 - Description: Mechanistic model of glucose tracer kinetics in humans

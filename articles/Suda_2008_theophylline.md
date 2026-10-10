@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Suda Y, Hanada K, Tsuchiwata S, Saito M, Nakamura T, Ito Y,
-  Ishikawa Y, Kushida K, Ogata H. Population pharmacokinetic analysis of
-  two theophylline formulations in premature neonates and infants with
-  apnea. Yakugaku Zasshi. 2008;128(4):635-641.
-  <doi:10.1248/yakushi.128.635>
+  Ishikawa Y, Kushida K, Ogata H. \[Population pharmacokinetic analysis
+  of two theophylline formulations in premature neonates and infants
+  with apnea\]. Yakugaku Zasshi. 2008;128(4):635-640.
+  <doi:10.1248/yakushi.128.635>.
 - Description: Steady-state population PK model for oral theophylline in
   52 Japanese premature neonates and infants with apnea (Suda 2008).
   One-compartment first-order absorption structure; oral clearance CL/F

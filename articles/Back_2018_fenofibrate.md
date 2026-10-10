@@ -2,11 +2,11 @@
 
 ## Model and source
 
-- Citation: Back H, Song B, Pradhan S, Chae J, Han N, Kang W, Chang MJ,
-  Zheng J, Kwon K, Karlsson MO, Yun H. A mechanism-based pharmacokinetic
-  model of fenofibrate for explaining increased drug absorption after
-  food consumption. BMC Pharmacology and Toxicology. 2018;19:5.
-  <doi:10.1186/s40360-018-0194-5>
+- Citation: Back HM, Song B, Pradhan S, Chae JW, Han N, Kang W, Chang
+  MJ, Zheng J, Kwon KI, Karlsson MO, Yun HY. A mechanism-based
+  pharmacokinetic model of fenofibrate for explaining increased drug
+  absorption after food consumption. BMC Pharmacol Toxicol.
+  2018;19(1):4. <doi:10.1186/s40360-018-0194-5>.
 - Description: Mechanism-based oral absorption / disposition model for
   fenofibrate (parent) and fenofibric acid (active form, measured
   analyte) in healthy Korean adults under fasted, standard-meal, and

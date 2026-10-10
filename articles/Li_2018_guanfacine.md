@@ -2,12 +2,11 @@
 
 ## Model and source
 
-- Citation: Li A, Yeo K, Welty D, Rong H. (2018). Development of
-  Guanfacine Extended-Release Dosing Strategies in Children and
-  Adolescents with ADHD Using a Physiologically Based Pharmacokinetic
-  Model to Predict Drug-Drug Interactions with Moderate CYP3A4
-  Inhibitors or Inducers. Paediatr Drugs 20(1):19-28.
-  <doi:10.1007/s40272-017-0270-0>.
+- Citation: Li A, Yeo K, Welty D, Rong H. Development of Guanfacine
+  Extended-Release Dosing Strategies in Children and Adolescents with
+  ADHD Using a Physiologically Based Pharmacokinetic Model to Predict
+  Drug-Drug Interactions with Moderate CYP3A4 Inhibitors or Inducers.
+  Paediatr Drugs. 2018;20(2):181-194. <doi:10.1007/s40272-017-0270-0>.
 - Article: <https://doi.org/10.1007/s40272-017-0270-0>
 - Open access via Europe PMC:
   <https://europepmc.org/article/MED/29098657>

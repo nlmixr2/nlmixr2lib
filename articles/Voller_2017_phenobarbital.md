@@ -9,10 +9,10 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Voller_2017_phenobarbital"))$meta
 ```
 
 - Citation: Voller S, Flint RB, Stolk LM, Degraeuwe PLJ, Simons SHP,
-  Pokorna P, Burger DM, de Groot R, Tibboel D, Knibbe CAJ (2017).
-  Model-based clinical dose optimization for phenobarbital in neonates:
-  an illustration of the importance of data sharing and external
-  validation. European Journal of Pharmaceutical Sciences 109S:S90-S97.
+  Pokorna P, Burger DM, de Groot R, Tibboel D, Knibbe CAJ. Model-based
+  clinical dose optimization for phenobarbital in neonates: An
+  illustration of the importance of data sharing and external
+  validation. Eur J Pharm Sci. 2017;109:S90-S97.
   <doi:10.1016/j.ejps.2017.05.026>. DDMORE Foundation Model Repository:
   DDMODEL00000256.
 - Description: One-compartment first-order-absorption population PK
@@ -52,7 +52,7 @@ str(mod_meta$population)
 #>  $ n_subjects    : num 53
 #>  $ n_studies     : num 1
 #>  $ age_range     : chr "Preterm and term newborns; postnatal age (PNA) range not extractable from the DDMORE bundle (Voller 2017 PDF no"| __truncated__
-#>  $ weight_range  : chr "Body weight 0.45-4.5 kg, median 2.7 kg (n = 53). Source: Goulooze SC et al., Clin Pharmacokinet 2019;58:127-135"| __truncated__
+#>  $ weight_range  : chr "Body weight 0.45-4.5 kg, median 2.7 kg (n = 53). Source: Goulooze SC et al., Clin Pharmacokinet 2019;58:131-138"| __truncated__
 #>  $ sex_female_pct: chr "Not extractable from DDMORE bundle."
 #>  $ race_ethnicity: chr "Not extractable from DDMORE bundle."
 #>  $ disease_state : chr "Preterm and term newborns receiving phenobarbital (typical clinical indication: prevention or treatment of neon"| __truncated__

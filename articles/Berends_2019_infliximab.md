@@ -27,10 +27,10 @@ library(ggplot2)
 
 ## Model and source
 
-- Citation: Berends SE, Strik AS, Van Selm S, Lowenberg M, Ponsioen CY,
-  D’Haens GR, Mathot RAA. Tumor necrosis factor-mediated disposition of
-  infliximab in ulcerative colitis patients. J Pharmacokinet
-  Pharmacodyn. 2019;46(6):543-551. <doi:10.1007/s10928-019-09652-5>
+- Citation: Berends SE, van Steeg TJ, Ahsman MJ, Singh S, Brandse JF,
+  D’Haens GRAM, Mathot RAA. Tumor necrosis factor-mediated disposition
+  of infliximab in ulcerative colitis patients. J Pharmacokinet
+  Pharmacodyn. 2019;46(6):543-551. <doi:10.1007/s10928-019-09652-5>.
 - Description: Two-compartment TMDD-QSS population PK/target-dynamics
   model of infliximab and free TNF in adults with moderate-to-severe
   ulcerative colitis (Berends 2019)
@@ -456,7 +456,7 @@ cat(sprintf("Bmax check: %.4e ug/mL x 52/149 x 1e6 = %.2f pg/mL (paper 19.8)\n",
 
 ## Reference
 
-- Berends SE, Strik AS, Van Selm S, Lowenberg M, Ponsioen CY, D’Haens
-  GR, Mathot RAA. Tumor necrosis factor-mediated disposition of
+- Berends SE, van Steeg TJ, Ahsman MJ, Singh S, Brandse JF, D’Haens
+  GRAM, Mathot RAA. Tumor necrosis factor-mediated disposition of
   infliximab in ulcerative colitis patients. J Pharmacokinet
-  Pharmacodyn. 2019;46(6):543-551. <doi:10.1007/s10928-019-09652-5>
+  Pharmacodyn. 2019;46(6):543-551. <doi:10.1007/s10928-019-09652-5>.

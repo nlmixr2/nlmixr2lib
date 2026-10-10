@@ -5,7 +5,7 @@
 - Citation: Ye C, Liu B, Chen L, Zhang L, Zheng Y, Tang K, Jiang X,
   Chen P. Impact of body weight on mycophenolic acid population
   pharmacokinetics in paediatric lupus nephritis: a pharmacogenomic
-  integration study. Lupus Science & Medicine. 2025;12(1):e001535.
+  integration study. Lupus Sci Med. 2025;12(2):e001535.
   <doi:10.1136/lupus-2025-001535>.
 - Description: Population PK model for total mycophenolic acid (MPA, the
   active moiety of mycophenolate mofetil MMF) in paediatric patients

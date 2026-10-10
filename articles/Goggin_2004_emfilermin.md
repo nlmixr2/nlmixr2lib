@@ -6,8 +6,8 @@
   modelling of Emfilermin (recombinant human leukaemia inhibitory
   factor, r-hLIF) in healthy postmenopausal women and in infertile
   patients undergoing in vitro fertilization and embryo transfer. Br J
-  Clin Pharmacol. 2004;57(4):412-418.
-  <doi:10.1111/j.1365-2125.2003.02064.x>
+  Clin Pharmacol. 2004;57(5):576-585.
+  <doi:10.1111/j.1365-2125.2003.02064.x>.
 - Description: One-compartment population PK model for subcutaneous
   emfilermin (recombinant human leukaemia inhibitory factor, r-hLIF) in
   healthy postmenopausal women and in infertile women undergoing in

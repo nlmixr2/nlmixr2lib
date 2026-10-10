@@ -18,8 +18,8 @@ mod_pd <- readModelDb("Zhang_2025_nedosiran_uoxcr")
 - Citation: Zhang S, Gamallo P, Rawson V. Population Pharmacokinetic and
   Pharmacodynamic Modelling and Simulation for Nedosiran Clinical
   Development and Dose Guidance in Pediatric Patients with Primary
-  Hyperoxaluria Type 1. Clin Pharmacokinet. 2025;64(8):1213-1227.
-  <doi:10.1007/s40262-025-01540-1>
+  Hyperoxaluria Type 1. Clin Pharmacokinet. 2025;64(9):1395-1411.
+  <doi:10.1007/s40262-025-01540-1>.
 - Article: <https://doi.org/10.1007/s40262-025-01540-1>
 - Supplement 1 (Tables S1-S4, demographics and eGFR formulas):
   <https://doi.org/10.1007/s40262-025-01540-1>

@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Hurtado FK, Weber B, Derendorf H, Hochhaus G, Dalla Costa T.
-  (2014). Population pharmacokinetic modeling of the unbound
-  levofloxacin concentrations in rat plasma and prostate tissue measured
-  by microdialysis. Antimicrob Agents Chemother 58(2):678-685.
-  <doi:10.1128/AAC.01884-13>
+  Population pharmacokinetic modeling of the unbound levofloxacin
+  concentrations in rat plasma and prostate tissue measured by
+  microdialysis. Antimicrob Agents Chemother. 2014;58(2):678-686.
+  <doi:10.1128/AAC.01884-13>.
 - Description: Preclinical (rat). Three-compartment population PK model
   for unbound levofloxacin in plasma and prostate interstitial fluid in
   male Wistar rats after a single 7 mg/kg IV bolus, with simultaneous

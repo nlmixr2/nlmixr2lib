@@ -5,7 +5,7 @@
 - Citation: Gastonguay MR, Venitz J, Steffen RP, Hackman J. Population
   pharmacokinetic-pharmacodynamic modeling of efaproxiral in cancer
   patients receiving radiation therapy. Clin Pharmacol Ther.
-  2005;77(2):P55 (PII-101). ASCPT 2005 annual meeting poster.
+  2005;77(2):P89 (PII-101). ASCPT 2005 annual meeting poster.
   <doi:10.1016/j.clpt.2004.12.233>.
 - Description: Linear 2-compartment IV popPK model for efaproxiral
   (RSR13) with an algebraic linear RBC:plasma proportionality (Crbc =
@@ -21,7 +21,7 @@
   INTp50 and SLPp50.
 - Article (open-access poster PDF):
   <https://metrumrg.com/wp-content/uploads/2018/08/ascpt_2005_efapoxiral.pdf>
-- Conference abstract: Clin Pharmacol Ther 2005;77(2):P55,
+- Conference abstract: Clin Pharmacol Ther 2005;77(2):P89,
   <doi:10.1016/j.clpt.2004.12.233>.
 
 Efaproxiral (EFP, RSR13) is a synthetic allosteric modifier of

@@ -19,8 +19,8 @@ as its own model file. This vignette walks the paper as a unit.
   CE, Matteo C, Rizzari C, Schrappe M, Boos J. PEGylated Asparaginase in
   Children with Acute Lymphoblastic Leukemia Treated within the
   AIEOP-BFM ALL 2009 Trial: Population Pharmacokinetics and Drug
-  Exposure. Eur J Drug Metab Pharmacokinet. 2025;50(6):683-696.
-  <doi:10.1007/s13318-025-00962-3>
+  Exposure. Eur J Drug Metab Pharmacokinet. 2025;50(6):501-514.
+  <doi:10.1007/s13318-025-00962-3>.
 - Article: <https://doi.org/10.1007/s13318-025-00962-3>
 - Supplement (parameter tables S4-S15):
   <https://doi.org/10.1007/s13318-025-00962-3> (Electronic Supplementary
@@ -1152,5 +1152,5 @@ Wurthwein G, Siebel C, Lanvers-Kaminsky C, Smisek P, Nath CE, Matteo C,
 Rizzari C, Schrappe M, Boos J. PEGylated Asparaginase in Children with
 Acute Lymphoblastic Leukemia Treated within the AIEOP-BFM ALL 2009
 Trial: Population Pharmacokinetics and Drug Exposure. *Eur J Drug Metab
-Pharmacokinet*. 2025;50(6):683-696.
+Pharmacokinet*. 2025;50(6):501-514.
 <https://doi.org/10.1007/s13318-025-00962-3>

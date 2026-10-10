@@ -6,11 +6,11 @@
   Extended use of levonorgestrel-releasing intrauterine system (LNG-IUS)
   52 mg: A population pharmacokinetic approach to estimate in vivo
   levonorgestrel release rates and systemic exposure including
-  comparison with two other LNG-IUSs. Contraception. 2023
-  May;121:109954. <doi:10.1016/j.contraception.2023.109954>. Upstream
-  5-year integrated LNG contraceptive popPK meta-analysis: Reinecke I,
-  Hofmann B, Mesic E, Drenth HJ, Garmann D. J Clin Pharmacol. 2018
-  Dec;58(12):1639-1654. <doi:10.1002/jcph.1288>.
+  comparison with two other LNG-IUSs. Contraception. 2023;120:109954.
+  <doi:10.1016/j.contraception.2023.109954>. Upstream 5-year integrated
+  LNG contraceptive popPK meta-analysis: Reinecke I, Hofmann B, Mesic E,
+  Drenth HJ, Garmann D. J Clin Pharmacol. 2018 Dec;58(12):1639-1654.
+  <doi:10.1002/jcph.1288>.
 - Description: Eight-year population PK / SHBG-turnover model for
   levonorgestrel (LNG) released from the LNG-releasing intrauterine
   system (LNG-IUS) 52 mg (Mirena). In-vivo release from the reservoir is

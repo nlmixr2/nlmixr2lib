@@ -7,9 +7,9 @@
 ui <- rxode2::rxode(readModelDb("An_2025_rosuvastatin_ezetimibe"))
 ```
 
-- Citation: An H, Shin D. Population pharmacokinetics and
-  pharmacodynamics with enterohepatic recirculation of co-medication of
-  rosuvastatin and ezetimibe. Drug Des Devel Ther. 2025;19:4775-4787.
+- Citation: An H, Shin D. Population Pharmacokinetics and
+  Pharmacodynamics with Enterohepatic Recirculation of Co-Medication of
+  Rosuvastatin and Ezetimibe. Drug Des Devel Ther. 2025;19:4777-4787.
   <doi:10.2147/DDDT.S522863>.
 - Article: <https://doi.org/10.2147/DDDT.S522863>
 - Description: Joint population PK/PD model of co-administered

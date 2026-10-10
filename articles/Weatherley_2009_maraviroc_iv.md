@@ -2,9 +2,9 @@
 
 ## Model and source
 
-- Citation: Weatherley B, McFadyen L (2009). Maraviroc modelling
-  strategy: use of early phase 1 data to support a semi-mechanistic
-  population pharmacokinetic model. Br J Clin Pharmacol 68(5):648-657.
+- Citation: Weatherley B, McFadyen L. Maraviroc modelling strategy: use
+  of early phase 1 data to support a semi-mechanistic population
+  pharmacokinetic model. Br J Clin Pharmacol. 2009;68(3):355-369.
   <doi:10.1111/j.1365-2125.2009.03455.x>.
 - Description: Four-compartment IV maraviroc population PK in 20 healthy
   young adult males receiving 3, 10, or 30 mg as a 1-hour IV infusion
@@ -20,7 +20,7 @@
   implemented here.
 - Article: <https://doi.org/10.1111/j.1365-2125.2009.03455.x>
 
-Weatherley & McFadyen 2009 (Br J Clin Pharmacol 68(5):648-657) report a
+Weatherley & McFadyen 2009 (Br J Clin Pharmacol 68(3):355-369) report a
 three-part modelling strategy for the CCR5 entry inhibitor maraviroc:
 (1) a four-compartment population PK model of intravenous maraviroc fit
 to data from 20 healthy males in study A4001009; (2) a sigmoid Emax

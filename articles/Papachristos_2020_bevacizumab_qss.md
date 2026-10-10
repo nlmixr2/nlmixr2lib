@@ -2,9 +2,9 @@
 
 ## Model and source
 
-- Citation: Papachristos A, Karatza E, Kalofonos H, Karalis V.
+- Citation: Papachristos A, Karatza E, Kalofonos H, Sivolapenko G.
   Pharmacogenetics in Model-Based Optimization of Bevacizumab Therapy
-  for Metastatic Colorectal Cancer. *Int J Mol Sci.* 2020;21(11):3753.
+  for Metastatic Colorectal Cancer. *Int J Mol Sci*. 2020;21(11):3753.
   <doi:%5B10.3390/ijms21113753>\](<https://doi.org/10.3390/ijms21113753>).
 - Description: Two-compartment quasi-steady-state target-mediated drug
   disposition (TMDD QSS) model for IV bevacizumab and free VEGF-A in

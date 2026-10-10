@@ -316,6 +316,7 @@ NCA summary by baseline weight group (single 105 mg IM dose) {.table}
 
 ### Reference
 
-- Hu Z, Hellmann F, Zang X, et al. Population Pharmacokinetics of
-  Clesrovimab in Preterm and Full-Term Infants. Clin Pharmacol Ther.
-  2026;119(4):1036-1046. <doi:10.1002/cpt.70199>
+- Hu Z, Hellmann F, Zang X, Plock N, Parmar K, Railkar RA, Cheung SYA,
+  Maas BM, Gheyas F. Population Pharmacokinetics of Clesrovimab in
+  Preterm and Full-Term Infants. Clin Pharmacol Ther.
+  2026;119(4):1036-1046. <doi:10.1002/cpt.70199>.

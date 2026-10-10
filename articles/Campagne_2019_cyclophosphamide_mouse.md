@@ -3,9 +3,10 @@
 ## Model and source
 
 - Citation: Campagne O, Davis A, Zhong B, Nair S, Haberman V, Patel YT,
-  Janke L, Roussel MF, Stewart CF. CNS Penetration of Cyclophosphamide
+  Janke L, Roussel MF, Stewart C. CNS Penetration of Cyclophosphamide
   and Metabolites in Mice Bearing Group 3 Medulloblastoma and Non-Tumor
-  Bearing Mice. J Pharm Pharm Sci. 2019;22(1):553-568.
+  Bearing Mice. J Pharm Pharm Sci. 2019;22(1):612-629.
+  <doi:10.18433/jpps30608>.
 - Article (open access): <https://doi.org/10.18433/jpps30608>
 
 Cyclophosphamide (CTX) is an alkylating prodrug widely used for

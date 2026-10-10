@@ -5,8 +5,8 @@
 - Citation: Jia M, Chai Y, Gao Y, Jing C, Zhu K, Zhu T, Wang L, Sun A,
   Yang J, Zhu Y, Feng Y, Cao Y, Li J. Population pharmacokinetics of
   rivaroxaban after transjugular intrahepatic portosystemic shunt. Eur J
-  Clin Pharmacol. 2026. <doi:10.1007/s00228-026-04034-6>. De-identified
-  concentration-time data deposited by the authors at
+  Clin Pharmacol. 2026;82(4):102. <doi:10.1007/s00228-026-04034-6>.
+  De-identified concentration-time data deposited by the authors at
   <doi:10.5281/zenodo.17035573>.
 - Description: One-compartment population PK model for rivaroxaban in 38
   adults after transjugular intrahepatic portosystemic shunt (TIPS)

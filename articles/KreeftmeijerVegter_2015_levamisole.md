@@ -3,9 +3,9 @@
 ## Model and source
 
 - Citation: Kreeftmeijer-Vegter AR, Dorlo TPC, Gruppen MP, de Boer A, de
-  Vries PJ (2015). Population pharmacokinetics of levamisole in children
-  with steroid-sensitive nephrotic syndrome. British Journal of Clinical
-  Pharmacology 79(6):970-977. <doi:10.1111/bcp.12607>.
+  Vries PJ. Population pharmacokinetics of levamisole in children with
+  steroid-sensitive nephrotic syndrome. Br J Clin Pharmacol.
+  2015;80(2):242-252. <doi:10.1111/bcp.12607>.
 - Description: One-compartment oral PK model for levamisole in 38
   children with steroid-sensitive nephrotic syndrome
   (Kreeftmeijer-Vegter 2015, EudraCT 2005-005745-18). First-order

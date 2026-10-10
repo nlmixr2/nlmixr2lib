@@ -2,9 +2,11 @@
 
 ## Model and source
 
-- Citation: ter Heine R et al. A pharmacological rationale for improved
-  everolimus dosing in oncology and transplant patients. Br J Clin
-  Pharmacol 84(9):1575-1586, 2018. <doi:10.1111/bcp.13591>.
+- Citation: ter Heine R, van Erp NP, Guchelaar HJ, de Fijter JW,
+  Reinders MEJ, van Herpen CM, Burger DM, Moes DJAR. A pharmacological
+  rationale for improved everolimus dosing in oncology and transplant
+  patients. Br J Clin Pharmacol. 2018;84(7):1575-1586.
+  <doi:10.1111/bcp.13591>.
 - Indication: pooled adult oncology (metastatic thyroid or breast
   cancer) + renal transplantation (calcineurin-free immunosuppressive
   regimens).

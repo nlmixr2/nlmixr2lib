@@ -2,12 +2,12 @@
 
 ## Model and source
 
-- Citation: Bellon A, Fuseau E, Roumanie O, Stevens W, Henriet C,
-  Dahmane A, Lamazure J, Barthez-Toullec M, Golly D, Bridey F (2020).
-  Population pharmacokinetics of a triple-secured fibrinogen concentrate
+- Citation: Bellon A, Fuseau E, Roumanie O, Lamazure J, Stevens W,
+  Dahmane A, Barthez-Toullec M, Golly D, Henriet C, Bridey F. Population
+  pharmacokinetics of a triple-secured fibrinogen concentrate
   administered to afibrinogenaemic patients: Observed age- and body
   weight-related differences and consequences for dose adjustment in
-  children. British Journal of Clinical Pharmacology 86(2):329-337.
+  children. Br J Clin Pharmacol. 2020;86(2):329-337.
   <doi:10.1111/bcp.14147>.
 - Article: <https://doi.org/10.1111/bcp.14147>
 

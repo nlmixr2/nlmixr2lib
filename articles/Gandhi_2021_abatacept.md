@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Gandhi V, Sun H, Subramanian K, Lon HK, Roy A. Model-Based
+- Citation: Gandhi Y, Passarell JA, Roy A, Murthy B. Model-Based
   Selection and Recommendation for Subcutaneous Abatacept Dose in
   Patients With Polyarticular Juvenile Idiopathic Arthritis. J Clin
-  Pharmacol. 2021 May;61(5):651-661. <doi:10.1002/jcph.1781>
+  Pharmacol. 2021 May;61(5):688-699. <doi:10.1002/jcph.1797>
 - Description: Two-compartment population PK model for abatacept
   (CTLA4-Ig Fc-fusion) pooled across adults with rheumatoid arthritis
   and patients aged 2-17 years with polyarticular juvenile idiopathic
@@ -14,8 +14,8 @@
   bioavailability with disease/age/weight covariates, and a KA
   parameterisation that enforces KA \> k_el.
 - Article: [J Clin Pharmacol.
-  2021;61(5):651-661](https://doi.org/10.1002/jcph.1781) (open access
-  via [PMC8359474](https://pmc.ncbi.nlm.nih.gov/articles/PMC8359474/))
+  2021;61(5):688-699](https://doi.org/10.1002/jcph.1797) (open access
+  via [PMC8048692](https://pmc.ncbi.nlm.nih.gov/articles/PMC8048692/))
 
 ## Population
 

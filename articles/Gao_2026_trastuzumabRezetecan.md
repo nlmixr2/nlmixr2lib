@@ -22,7 +22,14 @@ mod <- modellib("Gao_2026_trastuzumabRezetecan")
 mod
 #> function() {
 #>   description <- "Sequential two-analyte population PK model for trastuzumab rezetecan (SHR-A1811, a HER2-targeting antibody-drug conjugate with a drug-to-antibody ratio of approximately 6.0; output Cc) and its released topoisomerase-I-inhibitor payload rezetecan (output Cc_rez) in adults with HER2-expressing or HER2-mutated advanced solid tumors (Gao 2026). The intact ADC is a two-compartment model with linear elimination after IV infusion. The released payload is a one-compartment model whose formation is a first-order release from the intact ADC in the central compartment and whose elimination is linear; the payload compartment does not feed back on the ADC, matching the paper's sequential two-step estimation. The release-rate constant Krel equals RAT during Cycle 1 and RAT * ALPHA (ALPHA = 0.693) from Cycle 2 onward. Covariates are body weight and baseline tumor size on ADC clearance; body weight, age and baseline albumin on ADC central volume; baseline albumin on ADC peripheral volume; body weight, baseline tumor size and cancer type on the release rate; age on payload volume; and aspartate aminotransferase on payload clearance."
-#>   reference <- "Gao X, Zhao K, Zhao Y, Zhang Y, Zhao J, Zhao C, Djebli N. Population Pharmacokinetics of Trastuzumab Rezetecan in Patients With HER2-Expressing or Mutated Advanced Solid Tumors. CPT Pharmacometrics Syst Pharmacol. 2026. doi:10.1002/psp4.70259. PMCID PMC13274680."
+#>   reference <- paste(
+#>     "Gao X, Zhao K, Zhao Y, Zhang Y, Zhao J, Zhao C, Djebli N. Population",
+#>     "Pharmacokinetics of Trastuzumab Rezetecan in Patients With",
+#>     "HER2-Expressing or Mutated Advanced Solid Tumors. CPT Pharmacometrics",
+#>     "Syst Pharmacol. 2026;15(5):e70259. doi:10.1002/psp4.70259. PMCID",
+#>     "PMC13274680.",
+#>     sep = " "
+#>   )
 #>   vignette <- "Gao_2026_trastuzumabRezetecan"
 #> 
 #>   # Gao 2026 reports intact-ADC concentrations in ug/mL (assay LLOQ 1.00
@@ -366,7 +373,7 @@ mod
 #>     Cc_rez ~ prop(propSd_rez)
 #>   })
 #> }
-#> <environment: 0x557863ca08e8>
+#> <environment: 0x56005513eb20>
 ```
 
 ## Population

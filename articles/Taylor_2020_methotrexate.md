@@ -16,8 +16,8 @@
   umol/L) implemented as the default population PK model behind the
   MTXPK.org clinical decision support tool (Taylor 2020)
 - Article: <https://doi.org/10.1002/cpt.1957>
-- Supplement (Wiley):
-  <https://doi.org/10.1002/cpt.1957-sup-0001-supinfo>
+- Supplement (Wiley): Supporting Information of the article above (no
+  DOI of its own)
 - Companion clinical decision support tool: <https://mtxpk.org/>
 
 Taylor 2020 develops a three-compartment population PK model for

@@ -4,8 +4,8 @@
 
 - Citation: Cooper JM, Duffull SB, Saiao AS, Isbister GK. The
   pharmacokinetics of sertraline in overdose and the effect of activated
-  charcoal. Br J Clin Pharmacol. 2015 May;79(5):307-15.
-  <doi:10.1111/bcp.12500>
+  charcoal. Br J Clin Pharmacol. 2015;79(2):307-315.
+  <doi:10.1111/bcp.12500>.
 - Description: One-compartment first-order absorption population PK
   model for sertraline in overdose (Cooper 2015). Apparent clearance is
   increased 1.92-fold in subjects who received single-dose activated
@@ -14,7 +14,7 @@
   ts_lag, ka, Vc, and CL absorbing the overdose-specific dose-amount and
   dose-time uncertainty.
 - Article: [Br J Clin Pharmacol
-  2015;79(5):307-15](https://doi.org/10.1111/bcp.12500)
+  2015;79(2):307-315](https://doi.org/10.1111/bcp.12500)
 
 ## Population
 

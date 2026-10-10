@@ -6,7 +6,7 @@
   Pharmacokinetic Model and Exposure-Response Model of Repeated Time
   Event (RTTE) to Justify a Dose Increase in Patients with Sickle Cell
   Disease. American Conference on Pharmacometrics (ACoP) 2022; Metrum
-  Research Group / Imara Inc. <doi:10.70534/zdmj9414>.
+  Research Group / Imara Inc.
 - Description: One-compartment population PK model with first-order
   absorption for IMR-687 (a selective PDE9 inhibitor) in healthy
   subjects and patients with sickle cell disease (SCD), coupled with a
@@ -21,7 +21,6 @@
   without the functional forms or reference values needed to apply them.
 - Poster (PDF):
   <https://metrumrg.com/wp-content/uploads/2022/10/FINALPOSTER_BYRNE2022.pdf>
-- DOI: <https://doi.org/10.70534/zdmj9414>
 
 The packaged model implements the published one-compartment population
 PK + repeated time-to-event (RTTE) exposure-response model for IMR-687

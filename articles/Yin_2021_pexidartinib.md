@@ -2,14 +2,16 @@
 
 ## Model and source
 
-- Citation: Yin O, Zahir H, French J, et al. Exposure-response analysis
-  of efficacy and safety for pexidartinib in patients with tenosynovial
-  giant cell tumor. CPT Pharmacometrics Syst Pharmacol.
-  2021;10(11):1422-1432. <doi:10.1002/psp4.12712>. PK backbone (Cavg
-  input) adapted from Yin O, Wagner AJ, Kang J, et al. Population
-  pharmacokinetic analysis of pexidartinib in healthy subjects and
-  patients with tenosynovial giant cell tumor or other solid tumors. J
-  Clin Pharmacol. 2020;61(4):480-492. <doi:10.1002/jcph.1753>; see
+- Citation: Yin O, Zahir H, French J, Polhamus D, Wang X, van de Sande
+  M, Tap WD, Gelderblom H, Wagner AJ, Healey JH, Greenberg J, Shuster D,
+  Stacchiotti S. Exposure-response analysis of efficacy and safety for
+  pexidartinib in patients with tenosynovial giant cell tumor. CPT
+  Pharmacometrics Syst Pharmacol. 2021;10(11):1422-1432.
+  <doi:10.1002/psp4.12712>. PK backbone (Cavg input) adapted from Yin O,
+  Wagner AJ, Kang J, et al. Population pharmacokinetic analysis of
+  pexidartinib in healthy subjects and patients with tenosynovial giant
+  cell tumor or other solid tumors. J Clin Pharmacol.
+  2020;61(4):480-492. <doi:10.1002/jcph.1753>; see
   modellib(‘Yin_2020_pexidartinib’).
 - Description: Semi-mechanistic longitudinal tumor-size (RECIST)
   exposure-response PD model for pexidartinib in adult patients with

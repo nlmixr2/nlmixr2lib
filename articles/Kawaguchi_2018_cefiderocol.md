@@ -32,7 +32,7 @@ uis <- lapply(model_names, function(n) rxode2::rxode(readModelDb(n)))
 names(uis) <- c("CLCR", "eGFRabs", "eGFRadj")
 
 cat(uis[["CLCR"]]$reference)
-#> Kawaguchi N, Katsube T, Echols R, Wajima T. Population pharmacokinetic analysis of cefiderocol, a parenteral siderophore cephalosporin, in healthy subjects, subjects with various degrees of renal function, and patients with complicated urinary tract infection or acute uncomplicated pyelonephritis. Antimicrob Agents Chemother. 2018;62(1):e01391-17. doi:10.1128/AAC.01391-17
+#> Kawaguchi N, Katsube T, Echols R, Wajima T. Population Pharmacokinetic Analysis of Cefiderocol, a Parenteral Siderophore Cephalosporin, in Healthy Subjects, Subjects with Various Degrees of Renal Function, and Patients with Complicated Urinary Tract Infection or Acute Uncomplicated Pyelonephritis. Antimicrob Agents Chemother. 2018;62(2):e01391-17. doi:10.1128/AAC.01391-17.
 ```
 
 - Article: <https://doi.org/10.1128/AAC.01391-17>
@@ -124,8 +124,8 @@ formula footnote. Two readings are possible – `omega = CV` or the
 log-normal `omega^2 = log(CV^2 + 1)` – and they differ by 6-10% on these
 values, which is enough to matter.
 
-The companion analysis by the same authors (Katsube and Wajima,
-*Antimicrob Agents Chemother* 2021,
+The companion analysis by the same group (Kawaguchi, Katsube, Echols and
+Wajima, *Antimicrob Agents Chemother* 2021,
 [doi:10.1128/AAC.01437-20](https://doi.org/10.1128/AAC.01437-20))
 settles it, because its Table 2 prints the percent CVs, the omega
 **covariances** and the implied **correlation coefficients** – three
@@ -135,7 +135,7 @@ under both readings.
 
 ``` r
 
-# Katsube/Wajima 2021 Table 2: CV% for CL / V1 / V2, and the three
+# Kawaguchi 2021 Table 2: CV% for CL / V1 / V2, and the three
 # covariance rows with their footnoted correlation coefficients R.
 cv_2021 <- c(CL = 0.375, V1 = 0.569, V2 = 0.336)
 pairs_2021 <- tibble::tribble(
@@ -163,7 +163,7 @@ omega_check |>
   knitr::kable(
     digits = 4,
     caption = paste(
-      "Discriminating the omega scale using Katsube/Wajima 2021, which prints",
+      "Discriminating the omega scale using Kawaguchi 2021, which prints",
       "CV%, covariances AND correlations. `omega = CV` matches all three pairs;",
       "the log-normal reading is rejected by 6-10%."
     )
@@ -176,9 +176,9 @@ omega_check |>
 | CL  | V2  |   0.1259 |     0.1260 |    0.0682 |                0.1186 |   -5.7814 |
 | V1  | V2  |   0.1913 |     0.1912 |   -0.0745 |                0.1732 |   -9.4694 |
 
-Discriminating the omega scale using Katsube/Wajima 2021, which prints
-CV%, covariances AND correlations. `omega = CV` matches all three pairs;
-the log-normal reading is rejected by 6-10%. {.table}
+Discriminating the omega scale using Kawaguchi 2021, which prints CV%,
+covariances AND correlations. `omega = CV` matches all three pairs; the
+log-normal reading is rejected by 6-10%. {.table}
 
 ``` r
 

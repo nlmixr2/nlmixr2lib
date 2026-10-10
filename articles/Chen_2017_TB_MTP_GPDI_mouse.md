@@ -12,7 +12,7 @@
   Antimicrob Chemother 71(4):964-974 (2016) <doi:10.1093/jac/dkv416>;
   INH/EMB/PZA absorption rate constants fixed from Chen C, Ortega F,
   Alameda L, Ferrer S, Simonsson US. Eur J Pharm Sci 93:319-333 (2016)
-  <doi:10.1016/j.ejps.2016.07.014>.
+  <doi:10.1016/j.ejps.2016.07.017>.
 - Description: Preclinical (BALB/c mouse). Multistate Tuberculosis
   Pharmacometric (MTP) model linked to General Pharmacodynamic
   Interaction (GPDI) model describing CFU/lungs dynamics in M.

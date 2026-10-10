@@ -6,7 +6,7 @@
   Kuroda T, Goto Y. Pharmacoepidemiologic investigation of clonazepam
   relative clearance by mixed-effect modeling using routine clinical
   pharmacokinetic data in Japanese patients. J Clin Pharmacol.
-  2002;42(1):81-88.
+  2002;42(1):81-88. <doi:10.1177/0091270002042001009>.
 - Description: Steady-state population PK model for clonazepam relative
   clearance (CL/F) in 137 Japanese pediatric and adult epileptic
   patients (Yukawa 2002 Table III row 4). CL/F is a body-weight power

@@ -2,19 +2,18 @@
 
 ## Model and source
 
-- Citation: Kawuma AN, Wasmann RE, Dooley KE, Boffito M, Maartens G,
-  Denti P. Drug-drug interaction between rifabutin and dolutegravir: A
-  population pharmacokinetic model. Br J Clin Pharmacol.
-  2023;89(3):1216-1221. <doi:10.1111/bcp.15604>. Extends the
-  dolutegravir-rifampicin model of Kawuma AN, Wasmann RE, Dooley KE,
-  Boffito M, Maartens G, Denti P. Population pharmacokinetic model and
-  alternative dosing regimens for dolutegravir coadministered with
-  rifampicin. Antimicrob Agents Chemother. 2022;66(6):e00215-22.
-  <doi:10.1128/aac.00215-22>, which is the source for the fixed
-  allometric exponents, the log-normal BSV/BOV random-effect structure,
-  the combined residual-error form and the study-specific assay LLOQ
-  values; every parameter VALUE below is from the 2023 paper’s own Table
-  1.
+- Citation: Kawuma AN, Wasmann RE, Dooley KE, Maartens G, Denti P.
+  Drug-drug interaction between rifabutin and dolutegravir: A population
+  pharmacokinetic model. Br J Clin Pharmacol. 2023;89(3):1216-1221.
+  <doi:10.1111/bcp.15604>. Extends the dolutegravir-rifampicin model of
+  Kawuma AN, Wasmann RE, Dooley KE, Boffito M, Maartens G, Denti P.
+  Population pharmacokinetic model and alternative dosing regimens for
+  dolutegravir coadministered with rifampicin. Antimicrob Agents
+  Chemother. 2022;66(6):e00215-22. <doi:10.1128/aac.00215-22>, which is
+  the source for the fixed allometric exponents, the log-normal BSV/BOV
+  random-effect structure, the combined residual-error form and the
+  study-specific assay LLOQ values; every parameter VALUE below is from
+  the 2023 paper’s own Table 1.
 - Description: Two-compartment population PK model for dolutegravir with
   lagged first-order absorption in healthy volunteers, quantifying the
   drug-drug interaction with rifabutin (-33.1% on central volume)

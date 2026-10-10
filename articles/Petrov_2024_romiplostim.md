@@ -20,14 +20,15 @@ trial (Kuter 2008, reference 13).
 - Petrov 2024 (this paper): [Clin Pharmacol Drug Dev
   14(2):116–126](https://doi.org/10.1002/cpdd.1494) (PMID 39702972).
 - PK/PD backbone (healthy volunteers): Makarenko 2024, [Clin Pharmacol
-  Drug Dev](https://doi.org/10.1002/cpdd.1367) (PMID 38168134).
+  Drug Dev 13(4):419-431](https://doi.org/10.1002/cpdd.1367) (PMID
+  38168134).
 
 ``` r
 
 mod <- readModelDb("Petrov_2024_romiplostim")
 ui  <- rxode2::rxode(mod)
 cat(ui$reference, sep = "\n")
-#> Petrov A, Makarenko I, Sokolov V, Drai R, Bondareva I, Sigaev V, Stuchkov M, Galustyan A, Stepanenko I, Lebedev V, Mishchenko A. Optimization of Romiplostim Biosimilar Efficacy Trial Using In Silico Clinical Trial Approach for Patients With Immune Thrombocytopenia. Clin Pharmacol Drug Dev. 2025 Feb;14(2):116-126. doi:10.1002/cpdd.1494 (PMID 39702972). PK/PD backbone (healthy volunteers): Makarenko I, Petrov A, Sokolov V, Drai R, Mishchenko A, Bondareva I, Galustyan A, Sigaev V. Population Pharmacokinetic and Pharmacodynamic Modeling of Romiplostim Biosimilar GP40141 and Reference Product in Healthy Volunteers to Evaluate Biosimilarity. Clin Pharmacol Drug Dev. 2024. doi:10.1002/cpdd.1367 (PMID 38168134; reference 20 in Petrov 2024).
+#> Petrov A, Makarenko I, Belova B, Melikyan A, Saparova V, Peskov K, Kudryashova N, Kovalik V, Gefen M, Khokhlov A, Drai R. Optimization of Romiplostim Biosimilar Efficacy Trial Using In Silico Clinical Trial Approach for Patients With Immune Thrombocytopenia. Clin Pharmacol Drug Dev. 2025;14(2):116-126. doi:10.1002/cpdd.1494 (PMID 39702972). PK/PD backbone (healthy volunteers): Makarenko I, Petrov A, Belova B, Saparova V, Arefeva A, Peskov K, Kudryashova N, Khokhlov A, Drai R. Population Pharmacokinetic and Pharmacodynamic Modeling of Romiplostim Biosimilar GP40141 and Reference Product in Healthy Volunteers to Evaluate Biosimilarity. Clin Pharmacol Drug Dev. 2024;13(4):419-431. doi:10.1002/cpdd.1367 (PMID 38168134; reference 20 in Petrov 2024).
 ```
 
 ## Population

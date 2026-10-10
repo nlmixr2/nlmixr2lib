@@ -37,7 +37,7 @@
 - Article: [J Equine Sci
   34(4):111-114](https://doi.org/10.1294/jes.34.111)
 - Companion intravenous study (pooled into the fit): [Kuroda 2021,
-  Equine Vet J 53:1239-1249](https://doi.org/10.1111/evj.13399)
+  Equine Vet J 53:1239-1249](https://doi.org/10.1111/evj.13406)
 
 Cephalothin (CET) is a first-generation cephalosporin used as first-line
 treatment for equine gram-positive infections. Kuroda and colleagues

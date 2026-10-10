@@ -3,9 +3,10 @@
 ## Model and source
 
 - Citation: Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg
-  LE, Karlsson MO. PKPD modeling of predictors for adverse effects and
-  overall survival in sunitinib-treated patients with GIST. *CPT
-  Pharmacometrics Syst Pharmacol* 2013;2(11):e85.
+  LE, Karlsson MO. PKPD Modeling of Predictors for Adverse Effects and
+  Overall Survival in Sunitinib-Treated Patients With GIST. *CPT
+  Pharmacometrics Syst Pharmacol*. 2013;2(12):e85.
+  <doi:10.1038/psp.2013.62>.
 - Article:
   [doi:10.1038/psp.2013.62](https://doi.org/10.1038/psp.2013.62)
 - Upstream sVEGFR-3 biomarker dynamics: `Hansson_2013a_sunitinib`

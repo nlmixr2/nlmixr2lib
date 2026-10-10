@@ -446,7 +446,8 @@ tables, so the virtual population approximates Table 2 marginals:
 
 ### Reference
 
-- Mo G, Baldwin JR, Luffer-Atlas D, et al. Population Pharmacokinetic
-  Modeling of Olaratumab, an Anti-PDGFRα Human Monoclonal Antibody, in
-  Patients with Advanced and/or Metastatic Cancer. Clin Pharmacokinet.
-  2018;57(3):355-365. <doi:10.1007/s40262-017-0562-0>
+- Mo G, Baldwin JR, Luffer-Atlas D, Ilaria RL Jr, Conti I, Heathman M,
+  Cronier DM. Population Pharmacokinetic Modeling of Olaratumab, an
+  Anti-PDGFRalpha Human Monoclonal Antibody, in Patients with Advanced
+  and/or Metastatic Cancer. Clin Pharmacokinet. 2018;57(3):355-365.
+  <doi:10.1007/s40262-017-0562-0>.

@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Yang S, Pene Dumitrescu T. Population pharmacokinetics and
-  pharmacodynamics modelling of dilmapimod in severe trauma subjects at
-  risk for acute respiratory distress syndrome. Drugs R D.
-  2017;17(1):145-156. <doi:10.1007/s40268-016-0161-9>
+- Citation: Yang S, Pene Dumitrescu T. Population Pharmacokinetics and
+  Pharmacodynamics Modelling of Dilmapimod in Severe Trauma Subjects at
+  Risk for Acute Respiratory Distress Syndrome. Drugs R D.
+  2017;17(1):145-158. <doi:10.1007/s40268-016-0161-9>.
 - Description: Three-compartment IV population PK model for dilmapimod
   (SB-681323, a p38 MAPK inhibitor) coupled with an empirical
   indirect-response model for the inflammatory biomarker C-reactive

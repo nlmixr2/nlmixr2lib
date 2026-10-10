@@ -3,11 +3,11 @@
 ## Model and source
 
 - Citation: Ogusu N, Saruwatari J, Nakashima H, Noai M, Nishimura M,
-  Deguchi M, Oniki K, Yasui-Furukori N, Kaneko S, Ishitsu T, Nakagawa K.
-  Impact of the superoxide dismutase 2 Val16Ala polymorphism on the
-  relationship between valproic acid exposure and elevation of
-  gamma-glutamyltransferase in patients with epilepsy: a population
-  pharmacokinetic-pharmacodynamic analysis. PLoS One.
+  Deguchi M, Oniki K, Yasui-Furukori N, Kaneko S, Ishitsu T,
+  Nakagaswa K. Impact of the superoxide dismutase 2 Val16Ala
+  polymorphism on the relationship between valproic acid exposure and
+  elevation of gamma-glutamyltransferase in patients with epilepsy: a
+  population pharmacokinetic-pharmacodynamic analysis. PLoS One.
   2014;9(11):e111066. <doi:10.1371/journal.pone.0111066>. EXPRESSION OF
   CONCERN: The PLOS ONE Editors. Expression of Concern: Impact of the
   Superoxide Dismutase 2 Val16Ala Polymorphism on the Relationship

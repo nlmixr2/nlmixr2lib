@@ -616,7 +616,7 @@ checkpoints against analytic equations.
   therefore set to NA. The RAPID-RCT primary publication (Chapman 2015,
   Lancet 386:360-368, <doi:10.1016/S0140-6736(15)60860-1>) and RAPID-OLE
   (McElvaney 2017, Lancet Respir Med 5:51-60,
-  <doi:10.1016/S2213-2600(16)> 30311-1) report these breakdowns and can
+  <doi:10.1016/S2213-2600(16)30430-1>) report these breakdowns and can
   be consulted directly.
 
 - **Phase-2 IIV (omega4).** The omega4 = 0.23 g/L/year point estimate

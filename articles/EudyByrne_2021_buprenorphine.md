@@ -2,12 +2,12 @@
 
 ## Model and source
 
-- Citation: Eudy-Byrne R, Zane N, Adeniyi-Jones SC, Kaushal G,
-  Ruiz-Garcia A, Gastonguay MR, Kraft WK. Pharmacometric dose
-  optimization of buprenorphine in neonatal opioid withdrawal syndrome.
-  Clin Transl Sci. 2021;14(6):2171-2183. <doi:10.1111/cts.13074>. PD
-  model builds on the upstream buprenorphine PK model from Moore JN,
-  Gastonguay MR, Ng CM, et al. Clin Pharmacol Ther 2018;103(6):1029-1037
+- Citation: Eudy-Byrne R, Zane N, Adeniyi-Jones SC, Gastonguay MR,
+  Ruiz-Garcia A, Kaushal G, Kraft WK. Pharmacometric dose optimization
+  of buprenorphine in neonatal opioid withdrawal syndrome. Clin Transl
+  Sci. 2021;14(6):2171-2183. <doi:10.1111/cts.13074>. PD model builds on
+  the upstream buprenorphine PK model from Moore JN, Gastonguay MR, Ng
+  CM, et al. Clin Pharmacol Ther 2018;103(6):1029-1037
   (<doi:10.1002/cpt.1064>), which is not packaged in nlmixr2lib at
   extraction time; the paper’s NAS-score simulations reused BBORN
   observed buprenorphine exposures.

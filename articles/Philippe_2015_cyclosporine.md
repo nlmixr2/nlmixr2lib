@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Philippe M, Henin E, Bertrand Y, Plantaz D, Goutelle S,
-  Bleyzac N. Model-based determination of effective blood concentrations
-  of cyclosporine for neutrophil response in the treatment of severe
-  aplastic anemia in children. AAPS J. 2015;17(5):1157-1166.
-  <doi:10.1208/s12248-015-9779-8>
+  Bleyzac N. Model-Based Determination of Effective Blood Concentrations
+  of Cyclosporine for Neutrophil Response in the Treatment of Severe
+  Aplastic Anemia in Children. AAPS J. 2015;17(5):1157-1167.
+  <doi:10.1208/s12248-015-9779-8>.
 - Description: Pediatric PK-PD-time-to-event model for oral cyclosporine
   in children with severe aplastic anemia (Philippe 2015). PK is a
   two-compartment model with first-order absorption, lag time, and

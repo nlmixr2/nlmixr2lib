@@ -8,11 +8,11 @@ mod <- readModelDb("James_2025_fepixnebart")
 ui  <- rxode2::rxode(mod)
 ```
 
-- Citation: James DE, Bailey J, van der Walt J-S, Winkler J,
-  Schoemaker R. Population pharmacokinetics and pharmacodynamics of
-  fepixnebart (LY3016859) and epiregulin in patients with chronic pain.
-  Clin Pharmacokinet. 2025;64(5):757-766.
-  <doi:10.1007/s40262-025-01506-3>
+- Citation: James DE, Bailey J, van der Walt JS, Winkler J,
+  Schoemaker R. Population Pharmacokinetics and Pharmacodynamics of
+  Fepixnebart (LY3016859) and Epiregulin in Patients with Chronic Pain.
+  Clin Pharmacokinet. 2025;64(5):757-767.
+  <doi:10.1007/s40262-025-01506-3>.
 - Description: Simultaneous population PK/PD model for fepixnebart
   (LY3016859, a humanized IgG4 monoclonal antibody against epiregulin
   and TGF-alpha) and its soluble target epiregulin in adults with

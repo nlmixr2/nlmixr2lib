@@ -4,10 +4,10 @@
 
     #> ℹ parameter labels from comments will be replaced by 'label()'
 
-- Citation: Lee HM, Kim SH, Kwon KH, Kim SJ, Cho CK, Bae JW, Jang CG,
-  Lee SY. Population pharmacokinetic analysis of tramadol and
-  O-desmethyltramadol with genetic polymorphism of CYP2D6. Drug Des
-  Devel Ther. 2019;13:1751-1761. <doi:10.2147/DDDT.S199574>
+- Citation: Lee J, Yoo HD, Bae JW, Lee S, Shin KH. Population
+  pharmacokinetic analysis of tramadol and O-desmethyltramadol with
+  genetic polymorphism of CYP2D6. Drug Des Devel Ther.
+  2019;13:1751-1761. <doi:10.2147/DDDT.S199574>.
 - Description: Joint parent-and-metabolite population PK model for
   sustained-release oral tramadol and its active CYP2D6-derived
   metabolite O-desmethyltramadol (M1) in healthy Korean male volunteers

@@ -4,17 +4,16 @@
 
 - Citation: Hyland R, Dickins M, Collins C, Jones H, Jones B. Maraviroc:
   in vitro assessment of drug-drug interaction potential. Br J Clin
-  Pharmacol. 2008 Oct;66(4):498-507.
-  <doi:10.1111/j.1365-2125.2008.03198.x>. PMID: 18492127. PMCID:
-  PMC2561101. Michaelis-Menten equation with the impurity term and the
-  Km / Vmax estimates: Results, ‘Kinetics of maraviroc N-dealkylation in
-  human liver microsomes’, and Figure 2. Substrate-depletion intrinsic
-  clearance, microsomal CYP content and fraction unbound in microsomes:
-  Results, ‘CLint estimates from HLM and rCYP’. Incubation design and
-  bioanalytical precision: Materials and methods, ‘Assays for maraviroc
-  metabolism’. The statement that UK-408,027 formation is approximately
-  20% of the depletion intrinsic clearance is in the Discussion, second
-  paragraph.
+  Pharmacol. 2008;66(4):498-507. <doi:10.1111/j.1365-2125.2008.03198.x>.
+  PMID: 18647303. PMCID: PMC2561101. Michaelis-Menten equation with the
+  impurity term and the Km / Vmax estimates: Results, ‘Kinetics of
+  maraviroc N-dealkylation in human liver microsomes’, and Figure 2.
+  Substrate-depletion intrinsic clearance, microsomal CYP content and
+  fraction unbound in microsomes: Results, ‘CLint estimates from HLM and
+  rCYP’. Incubation design and bioanalytical precision: Materials and
+  methods, ‘Assays for maraviroc metabolism’. The statement that
+  UK-408,027 formation is approximately 20% of the depletion intrinsic
+  clearance is in the Discussion, second paragraph.
 - Article: <https://doi.org/10.1111/j.1365-2125.2008.03198.x>
 - PubMed Central open-access copy:
   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2561101/>

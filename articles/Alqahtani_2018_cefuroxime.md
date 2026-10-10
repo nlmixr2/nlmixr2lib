@@ -9,10 +9,10 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Alqahtani_2018_cefuroxime"))$meta
 ```
 
 - Citation: Alqahtani SA, Alsultan AS, Alqattan HM, Eldemerdash A,
-  Albacker TB. Population pharmacokinetic model-based evaluation of
-  standard dosing regimens for cefuroxime used in coronary artery bypass
-  graft surgery with cardiopulmonary bypass. Antimicrob Agents
-  Chemother. 2018;62(6):e02241-17. <doi:10.1128/AAC.02241-17>.
+  Albacker TB. Population Pharmacokinetic Model-Based Evaluation of
+  Standard Dosing Regimens for Cefuroxime Used in Coronary Artery Bypass
+  Graft Surgery with Cardiopulmonary Bypass. Antimicrob Agents
+  Chemother. 2018;62(4):e02241-17. <doi:10.1128/AAC.02241-17>.
 - Description: Two-compartment IV population PK model for cefuroxime in
   adults undergoing coronary artery bypass graft (CABG) surgery with
   cardiopulmonary bypass (Alqahtani 2018), with a power-form

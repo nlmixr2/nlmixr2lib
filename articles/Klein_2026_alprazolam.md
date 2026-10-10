@@ -5,11 +5,12 @@
     #> ℹ parameter labels from comments will be replaced by 'label()'
 
 - Citation: Klein P, Aungaroon G, Biton V, Liow KK, Phillips S,
-  Wychowski T, et al. Pharmacokinetics and tolerability of single-dose
-  Staccato(R) alprazolam in adolescents with epilepsy, and population
-  pharmacokinetic analysis to support dose selection in adolescents.
-  Epilepsia. 2026;67(1):109-119. <doi:10.1111/epi.18643>. Population PK
-  parameters are from Supporting Information Table S3.
+  Wychowski T, Sadek A, Elshoff JP, Roebling R, King A, Rospo CC,
+  Schoemaker R, Chanteux H. Pharmacokinetics and tolerability of
+  single-dose Staccato alprazolam in adolescents with epilepsy, and
+  population pharmacokinetic analysis to support dose selection in
+  adolescents. Epilepsia. 2026;67(1):109-119. <doi:10.1111/epi.18643>.
+  Population PK parameters are from Supporting Information Table S3.
 
 - Description: Two-compartment population pharmacokinetic model for
   inhaled alprazolam delivered by the Staccato(R) hand-held

@@ -27,10 +27,10 @@ library(PKNCA)
 
 ## Model and source
 
-- Citation: Wang B, Lau YY, Liang M, et al. Population Pharmacokinetics
+- Citation: Wang B, Yan L, Yao Z, Roskos LK. Population Pharmacokinetics
   and Pharmacodynamics of Benralizumab in Healthy Volunteers and
   Patients With Asthma. CPT Pharmacometrics Syst Pharmacol.
-  2017;6(4):249-257. <doi:10.1002/psp4.12160>
+  2017;6(4):249-257. <doi:10.1002/psp4.12160>.
 - Description: Two compartment PK model of benralizumab
   (anti-IL-5Ralpha) in healthy volunteers and patients with asthma (Wang
   2017)

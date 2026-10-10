@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Cao Y, Willis BA, Horie K, Wildsmith KR, Koyama A, Sachdev
-  P, Penner N, Charil A, Irizarry M, Reyderman L (2026). Neuro-Dynamic
+  P, Penner N, Charil A, Irizarry M, Reyderman L. Neuro-Dynamic
   Quantitative Systems Pharmacology (QSP) model describing Alzheimer’s
-  disease pathophysiology and treatment effects. npj Systems Biology and
-  Applications. <doi:10.1038/s41540-026-00677-4>.
+  disease pathophysiology and treatment effects. NPJ Syst Biol Appl.
+  2026;12(1):55. <doi:10.1038/s41540-026-00677-4>.
 - Description: QSP. Neuro-Dynamic quantitative systems pharmacology
   model of Alzheimer’s disease pathophysiology and anti-amyloid
   treatment effects, with lecanemab as the reference drug. Eleven ODEs
@@ -281,7 +281,7 @@ relErr <- abs(neuronTotal - N0) / N0
 
 cat(sprintf("max |relative deviation from N0| over %.0f years: %.3g\n",
             max(natural$time), max(relErr)))
-#> max |relative deviation from N0| over 45 years: 3.53e-14
+#> max |relative deviation from N0| over 45 years: 3.51e-14
 
 stopifnot(max(relErr) < 1e-6)
 ```

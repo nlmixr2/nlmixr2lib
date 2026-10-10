@@ -21,7 +21,7 @@ uiAvi <- rxode2::rxode(readModelDb("Chen_2025_avibactam"))
   Qiu H, Cheng Y. Population Pharmacokinetics-Based Evaluation of
   Ceftazidime-Avibactam Dosing Regimens in Critically and Non-Critically
   Ill Patients With Carbapenem-Resistant Klebsiella pneumoniae. Infect
-  Drug Resist. 2025;18:941-953. <doi:10.2147/IDR.S495279>.
+  Drug Resist. 2025;18:941-955. <doi:10.2147/IDR.S495279>.
 - Ceftazidime: One-compartment IV population PK model for the
   ceftazidime component of ceftazidime-avibactam in critically and
   non-critically ill Chinese adults with carbapenem-resistant Klebsiella

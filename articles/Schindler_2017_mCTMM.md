@@ -52,7 +52,7 @@ rescue-acetaminophen use enter the cumulative-logit predictor directly.
 - Companion Schindler-lab / Karlsson-lab papers reproduced here:
   - Hansson EK et al. (2013) CPT PSP 2:e85 (fatigue / HFS DTMM
     comparators).
-  - Plan EL et al. (2012) CPT 91(4):820-828 (Likert pain count-model
+  - Plan EL et al. (2012) CPT 91(5):820-828 (Likert pain count-model
     comparator; DDMODEL00000194).
 
 ## Model file structure

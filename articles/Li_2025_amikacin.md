@@ -16,7 +16,7 @@
   renal-function form (Eqs. 4 and 5) is cited by Li 2025 to Allegaert K,
   Scheers I, Cossey V, Anderson BJ. Covariates of amikacin clearance in
   neonates: the impact of postnatal age on predictability. Drug Metab
-  Lett. 2008;2:286-289. <doi:10.2174/187231208786734120>.
+  Lett. 2008;2:286-289. <doi:10.2174/187231208786734157>.
 - Description: One-compartment population PK model for amikacin in
   Chinese premature infants receiving therapeutic drug monitoring (Li
   2025); body-weight allometric scaling on CL and V, a linear

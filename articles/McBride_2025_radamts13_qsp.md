@@ -11,8 +11,8 @@ ui <- rxode2::rxode(readModelDb("McBride_2025_radamts13_qsp"))
   B, Vakilynejad M, Bhattacharya I, Zhu AZX. Quantitative Systems
   Pharmacology Modeling of Platelet Responses to Recombinant ADAMTS13 in
   Patients With Congenital Thrombotic Thrombocytopenic Purpura. CPT
-  Pharmacometrics Syst Pharmacol. 2025;14(9):1575-1585.
-  <doi:10.1002/psp4.70063>
+  Pharmacometrics Syst Pharmacol. 2025;14(10):1575-1586.
+  <doi:10.1002/psp4.70063>.
 - Article: <https://doi.org/10.1002/psp4.70063>
 - Supplement (Methods S1 equations, Table S1 parameters, Figures S1-S5):
   <https://doi.org/10.1002/psp4.70063> Supporting Information S1

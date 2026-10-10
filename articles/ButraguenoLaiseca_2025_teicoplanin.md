@@ -13,7 +13,7 @@ ui <- rxode2::rxode(readModelDb("ButraguenoLaiseca_2025_teicoplanin"))
   Population pharmacokinetic analysis of teicoplanin in paediatric
   patients, including those receiving continuous kidney replacement
   therapy: a prospective cohort study. J Antimicrob Chemother.
-  2025;80(3):868-876. <doi:10.1093/jac/dkaf012>
+  2025;80(3):868-875. <doi:10.1093/jac/dkaf012>.
 - Description: Two-compartment population PK model for intravenous
   teicoplanin in 26 critically ill children in a paediatric ICU, 12 of
   whom were receiving continuous kidney replacement therapy (CKRT) in

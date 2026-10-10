@@ -7,8 +7,8 @@
   T, Tomizawa A, Takuma A, Chiba H, Yagi Y, Nishi Y, Enoki Y, Taguchi K,
   Tanikawa K, Kunishima H, Matsumoto K. Development and validation of a
   population pharmacokinetic model of vancomycin for patients of
-  advanced age. J Pharm Health Care Sci. 2025;11:22.
-  <doi:10.1186/s40780-025-00423-8>
+  advanced age. J Pharm Health Care Sci. 2025;11(1):18.
+  <doi:10.1186/s40780-025-00423-8>.
 - Description: Two-compartment IV population PK model for vancomycin in
   Japanese patients of advanced age (aged 75 years and older, body mass
   index below 25 kg/m^2) receiving therapeutic drug monitoring (Takada

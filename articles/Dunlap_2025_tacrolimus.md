@@ -2,8 +2,11 @@
 
 ## Model and source
 
-- Citation: Dunlap TC, Zhu J, Weiner DL, Kemper RM, DeVane SC, Ma F, et
-  al. A Tacrolimus Population Pharmacokinetic Model for Adult Allogeneic
+- Citation: Dunlap TC, Zhu J, Weiner DL, Kemper RM, DeVane SC, Ma F,
+  Nguyen V, Coghill JM, Dang V, Grgic T, Jamieson K, Miller J, Myers J,
+  Patel T, Riches M, Serody JS, Trepte M, Vincent BG, Wood WA,
+  Ptachcinski JR, Shaw JR, Weimer E, Armistead PM, Crona DJ. A
+  Tacrolimus Population Pharmacokinetic Model for Adult Allogeneic
   Hematopoietic Cell Transplant Recipients Provides Clinical
   Opportunities for Precision Dosing. Clin Pharmacokinet.
   2025;64(11):1621-1637. <doi:10.1007/s40262-025-01529-w>.

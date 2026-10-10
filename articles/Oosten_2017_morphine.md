@@ -5,8 +5,8 @@
 - Citation: Oosten AW, Abrantes JA, Jonsson S, Matic M, van Schaik RHN,
   de Bruijn P, van der Rijt CCD, Mathijssen RHJ. A Prospective
   Population Pharmacokinetic Study on Morphine Metabolism in Cancer
-  Patients. Clin Pharmacokinet. 2017;56(6):649-659 (published online 5
-  November 2016). <doi:10.1007/s40262-016-0471-7>.
+  Patients. Clin Pharmacokinet. 2017;56(7):733-746.
+  <doi:10.1007/s40262-016-0471-7>.
 - Description: Joint parent-metabolite population PK model for morphine
   and its two glucuronide metabolites (M3G, M6G) in 49 adult cancer
   patients treated for nociceptive cancer pain (Oosten 2017). Morphine:

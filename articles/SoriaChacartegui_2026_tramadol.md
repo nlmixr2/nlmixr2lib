@@ -3,9 +3,9 @@
 ## Model and source
 
 - Citation: Soria-Chacartegui P, Wurthwein G, Zubiaur P, Almenara S,
-  Ochoa D, Abad-Santos F, Hempel G. Role of pharmacogenetics on tramadol
-  pharmacokinetics: a population pharmacokinetic model. Eur J Drug Metab
-  Pharmacokinet. 2026. <doi:10.1007/s13318-026-00986-3>
+  Ochoa D, Abad-Santos F, Hempel G. Role of Pharmacogenetics on Tramadol
+  Pharmacokinetics: A Population Pharmacokinetic Model. Eur J Drug Metab
+  Pharmacokinet. 2026;51(2):205-216. <doi:10.1007/s13318-026-00986-3>.
 - Description: Two-compartment population PK model for oral tramadol in
   European healthy volunteers (Soria-Chacartegui 2026), with a Savic
   transit-compartment chain delivering the dose into a depot

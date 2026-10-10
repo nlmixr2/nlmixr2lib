@@ -3,9 +3,9 @@
 ## Model and source
 
 - Citation: Rich B, Srinivasan M, Ho YL, Visser SAG, Ferron-Brady G,
-  Vlasakakis G. Population pharmacokinetics and exposure-response
-  analyses of momelotinib, its active metabolite (M21), and total active
-  moiety in myelofibrosis. Clin Pharmacol Ther. 2026;119(3):629-641.
+  Vlasakakis G. Population Pharmacokinetics and Exposure-Response
+  Analyses of Momelotinib, Its Active Metabolite (M21), and Total Active
+  Moiety in Myelofibrosis. Clin Pharmacol Ther. 2026;119(3):629-640.
   <doi:10.1002/cpt.70076>. Structural and covariate parameter estimates
   are from Table 1 and its PK-parameter-equations footnote; the
   residual-error stratification, the absorption-chain topology and the
@@ -13,7 +13,7 @@
   from Supplemental Tables S3, S5 and S6 (supplement file
   CPT-119-629-s001). The fraction metabolised fm = 0.640 originates in
   the human mass-balance study Zheng J et al. Drug Metab Dispos.
-  2018;46:237-247, <doi:10.1124/dmd.117.078030>, which also reports the
+  2018;46:237-247, <doi:10.1124/dmd.117.078899>, which also reports the
   M21 relative potency of approximately 0.4 used to form the total
   active moiety. The nine exposure-response regressions the same paper
   reports are NOT extracted: Tables S9 and S10 print no intercept for
@@ -128,7 +128,7 @@ comment naming its source location. Collected here for review:
 | `propSdPh3_m21`, `propSdPh12_m21`, `addSdPh12_m21` | 0.517, 0.337, 1.86 ng/mL | Table 1 (Continued), M21 “Residual error” |
 | Six-transit + k_(a) absorption topology | n/a | Supplemental Table S3, run `mmb-2cmt-erlang6-ka-altv` |
 | Phase III vs phase I/II residual split | n/a | Supplemental Table S3, run `...-errph3`; Table 1 residual rows |
-| `tam = Cc + 0.4 * Cc_m21` | R_(p) = 0.4 | Simulations; potency from Zheng 2018 (<doi:10.1124/dmd.117.078030>) |
+| `tam = Cc + 0.4 * Cc_m21` | R_(p) = 0.4 | Simulations; potency from Zheng 2018 (<doi:10.1124/dmd.117.078899>) |
 
 ## Reference regimen and covariate helper
 

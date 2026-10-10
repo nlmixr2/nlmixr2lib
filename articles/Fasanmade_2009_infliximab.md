@@ -270,7 +270,7 @@ distributions rather than reproducing them:
 
 ### Reference
 
-- Fasanmade AA, Adedokun OJ, Blank M, Zhou H, Davis HM. Population
-  pharmacokinetic analysis of infliximab in patients with ulcerative
-  colitis. Eur J Clin Pharmacol. 2009;65(12):1211-1228.
-  <doi:10.1007/s00228-009-0718-4>
+- Fasanmade AA, Adedokun OJ, Ford J, Hernandez D, Johanns J, Hu C, Davis
+  HM, Zhou H. Population pharmacokinetic analysis of infliximab in
+  patients with ulcerative colitis. Eur J Clin Pharmacol.
+  2009;65(12):1211-1228. <doi:10.1007/s00228-009-0718-4>.

@@ -4,7 +4,7 @@
 
 - Citation: de Alwis DP, Aarons L, Palmer JL. Population
   pharmacokinetics of ondansetron: a covariate analysis. Br J Clin
-  Pharmacol. 1998. <doi:10.1046/j.1365-2125.1998.00756.x>
+  Pharmacol. 1998;46(2):117-125. <doi:10.1046/j.1365-2125.1998.00756.x>.
 - Description: Two-compartment population PK model with zero-order
   intravenous-infusion input for ondansetron in pooled paediatric,
   young-adult, elderly, and aged subjects (de Alwis 1998). The paper

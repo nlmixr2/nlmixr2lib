@@ -3,15 +3,15 @@
 ## Model and source
 
 - Citation: Abdelgawad N, Wasserman S, Gausi K, Davis A, Stek C, Wiesner
-  L, Meintjes G, Wilkinson RJ, Denti P (2025). Population
-  Pharmacokinetics of Rifampicin in Plasma and Cerebrospinal Fluid in
-  Adults With Tuberculosis Meningitis. J Infect Dis 232(4):e234-e241.
+  L, Meintjes G, Wilkinson RJ, Denti P. Population Pharmacokinetics of
+  Rifampicin in Plasma and Cerebrospinal Fluid in Adults With
+  Tuberculosis Meningitis. J Infect Dis. 2025;232(2):jiaf178.
   <doi:10.1093/infdis/jiaf178>. Parameter estimates from Table 2; model
   equations from the Figure 1 caption and from the NONMEM control stream
   reproduced verbatim in the supplementary material. The
   saturable-hepatic-extraction structure was adapted from Chirehwa et
   al. (2016) Antimicrob Agents Chemother 60(1):487-494
-  <doi:10.1128/AAC.01084-15>, which also supplied the informative prior
+  <doi:10.1128/AAC.01830-15>, which also supplied the informative prior
   on the Michaelis-Menten constant. The CSF effect compartment follows
   Sheiner et al. (1979) Clin Pharmacol Ther 25(3):358-371 and Savic et
   al. (2015) Clin Pharmacol Ther 98(6):622-629 <doi:10.1002/cpt.202>.
@@ -409,7 +409,7 @@ eval(body(pop), envir = pop_env)
 #>         disease_state = "HIV-associated tuberculous meningitis (TBM). All participants were living with HIV: 14 of 49 (28.6%) had previously taken antiretroviral therapy, 20 (40.8%) were antiretroviral-naive and 15 (30.6%) were on treatment at the day-3 visit. Median CSF total protein 1.16 g/L, albumin 387 mg/L and glucose 3.05 mmol/L at the day-3 visit. All participants received adjunctive corticosteroids.", 
 #>         dose_range = "Control arm: standard-of-care oral rifampicin 10 mg/kg once daily by World Health Organization weight bands, as fixed-dose-combination tablets with isoniazid 5 mg/kg, pyrazinamide 25 mg/kg and ethambutol 15 mg/kg. Experimental arms: high-dose rifampicin plus oral linezolid 1200 mg daily, with or without aspirin, randomised for the first 3 days to either oral 35 mg/kg (fixed-dose-combination tablets topped up with individual rifampicin tablets by bespoke weight bands) or intravenous 20 mg/kg given as a 1 h infusion; from day 3 onward all experimental-arm participants took oral 35 mg/kg once daily.", 
 #>         regions = "South Africa (four hospitals)", notes = "Pharmacokinetic substudy of LASER-TBM, a phase 2A trial of intensified antibiotic therapy in adults with HIV-associated TBM (ClinicalTrials.gov NCT03927313). Forty-nine participants underwent PK sampling on day 3 and 34 on day 28, providing 411 plasma samples (56 below the limit of quantification) and 46 CSF samples (13 below the limit of quantification); rifampicin concentrations from one participant were excluded after intravenous catheter dislocation and tissue extravasation (control stream IGNORE(ID.EQ.4019)), leaving the 400 plasma and 44 CSF concentrations from 48 participants quoted in the abstract. Plasma sampling was predose and 0.5, 1, 2, 3, 6, 8-10 and 24 h postdose on day 3 and predose and 2 and 4 h postdose on day 28. One lumbar CSF sample was taken per visit, with the sampling time randomised across the 1-3, 3-6, 6-10 and 24 h postdose windows. Concentrations below the limit of quantification were handled by Beal's M6 method. Free plasma rifampicin was measured in a subset of participants; Deming regression through the origin gave a fraction unbound of 0.172, i.e. 82.8% plasma protein binding, with no trend of fraction unbound against total concentration (Results; supplementary Figure S2). Baseline characteristics are Table 1.")
-#>     reference <- "Abdelgawad N, Wasserman S, Gausi K, Davis A, Stek C, Wiesner L, Meintjes G, Wilkinson RJ, Denti P (2025). Population Pharmacokinetics of Rifampicin in Plasma and Cerebrospinal Fluid in Adults With Tuberculosis Meningitis. J Infect Dis 232(4):e234-e241. doi:10.1093/infdis/jiaf178. Parameter estimates from Table 2; model equations from the Figure 1 caption and from the NONMEM control stream reproduced verbatim in the supplementary material. The saturable-hepatic-extraction structure was adapted from Chirehwa et al. (2016) Antimicrob Agents Chemother 60(1):487-494 doi:10.1128/AAC.01084-15, which also supplied the informative prior on the Michaelis-Menten constant. The CSF effect compartment follows Sheiner et al. (1979) Clin Pharmacol Ther 25(3):358-371 and Savic et al. (2015) Clin Pharmacol Ther 98(6):622-629 doi:10.1002/cpt.202. Fat-free mass follows Janmahasatian et al. (2005) Clin Pharmacokinet 44(10):1051-1065 doi:10.2165/00003088-200544100-00004."
+#>     reference <- "Abdelgawad N, Wasserman S, Gausi K, Davis A, Stek C, Wiesner L, Meintjes G, Wilkinson RJ, Denti P. Population Pharmacokinetics of Rifampicin in Plasma and Cerebrospinal Fluid in Adults With Tuberculosis Meningitis. J Infect Dis. 2025;232(2):jiaf178. doi:10.1093/infdis/jiaf178. Parameter estimates from Table 2; model equations from the Figure 1 caption and from the NONMEM control stream reproduced verbatim in the supplementary material. The saturable-hepatic-extraction structure was adapted from Chirehwa et al. (2016) Antimicrob Agents Chemother 60(1):487-494 doi:10.1128/AAC.01830-15, which also supplied the informative prior on the Michaelis-Menten constant. The CSF effect compartment follows Sheiner et al. (1979) Clin Pharmacol Ther 25(3):358-371 and Savic et al. (2015) Clin Pharmacol Ther 98(6):622-629 doi:10.1002/cpt.202. Fat-free mass follows Janmahasatian et al. (2005) Clin Pharmacokinet 44(10):1051-1065 doi:10.2165/00003088-200544100-00004."
 #>     units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 #>     vignette <- "Abdelgawad_2025_rifampicin"
 #>     ini({

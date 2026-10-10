@@ -4,7 +4,7 @@
 
 - Citation: Schoning V, Hammann F. Improving Population Pharmacokinetic
   Modelling with Artificial Patients using Generative Artificial
-  Intelligence. Pharmacol Res Perspect. 2026;14(3):e70241.
+  Intelligence. Pharmacol Res Perspect. 2026;14(2):e70241.
   <doi:10.1002/prp2.70241>. PMCID PMC13052321. Ground-truth structure
   and parameter values transcribed from the authors’ own RsSimulx
   inlineModel and parameter data frame in the deposited code base at
@@ -139,7 +139,7 @@ uis[["Ground truth"]]
 #>         dose_range = "Single 300 mg extravascular dose at time 0 (section 2.2).", 
 #>         regions = "N/A", scope_note = "Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/ because there is no drug: this follows the precedent set by Beal_2001_iv1cmt_bql, the other methodology-reference toy model in the library. The file stem uses the structural descriptor oral1cmt in the slot where a drug name would normally go, again as Beal_2001 does with iv1cmt.", 
 #>         notes = "Sampling times 0.5, 1, 1.5, 2, 4, 6, 8 and 12 h after the dose; concentrations below 0.5 mg/L were censored as BLQ (section 2.2). The first author's surname is published with an o-diaeresis; the diaeresis is stripped for the ASCII file stem, following the existing Muller_2007_penicillin_G convention.")
-#>     reference <- "Schoning V, Hammann F. Improving Population Pharmacokinetic Modelling with Artificial Patients using Generative Artificial Intelligence. Pharmacol Res Perspect. 2026;14(3):e70241. doi:10.1002/prp2.70241. PMCID PMC13052321. Ground-truth structure and parameter values transcribed from the authors' own RsSimulx inlineModel and parameter data frame in the deposited code base at https://github.com/cptbern/WGAN_PopPK (Scripts/WGAN_R.Rmd), which the paper cites as its supplementary source; the same values appear in the paper's Table 1 'Ground truth' column."
+#>     reference <- "Schoning V, Hammann F. Improving Population Pharmacokinetic Modelling with Artificial Patients using Generative Artificial Intelligence. Pharmacol Res Perspect. 2026;14(2):e70241. doi:10.1002/prp2.70241. PMCID PMC13052321. Ground-truth structure and parameter values transcribed from the authors' own RsSimulx inlineModel and parameter data frame in the deposited code base at https://github.com/cptbern/WGAN_PopPK (Scripts/WGAN_R.Rmd), which the paper cites as its supplementary source; the same values appear in the paper's Table 1 'Ground truth' column."
 #>     units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 #>     vignette <- "Schoning_2026_oral1cmt_wgan"
 #>     ini({

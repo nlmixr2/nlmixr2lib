@@ -2,11 +2,11 @@
 
 ## Model and source
 
-- Citation: Chigutsa E, Her L, Ma X, Urva S, Schneck K. A pharmacometric
-  method for quantitative determination of improvement in body
-  composition and characterization of the exposure-response relationship
-  during treatment of obesity with tirzepatide. Clin Pharmacol Ther.
-  2025;118(6):1489-1497. <doi:10.1002/cpt.3750>. PMCID PMC12641085.
+- Citation: Chigutsa E, Her L, Ma X, Urva S, Schneck K. A Pharmacometric
+  Method for Quantitative Determination of Improvement in Body
+  Composition and Characterization of the Exposure-Response Relationship
+  during Treatment of Obesity with Tirzepatide. Clin Pharmacol Ther.
+  2025;118(6):1489-1498. <doi:10.1002/cpt.3750>. PMCID PMC12641085.
   Model structure and the fixed random-effect component for placebo
   waning are taken from the NONMEM control stream in Supplementary
   Material S1 (file CPT-118-1489-s001.txt). PK layer reproduced from the

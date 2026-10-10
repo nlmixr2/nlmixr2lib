@@ -2,13 +2,17 @@
 
 ## Model and source
 
-- Citation: Bouazza N, Semeraro M, Lui G, et al. Population
-  pharmacokinetic modelling of prednisolone in systemic lupus
-  erythematosus patients: Analysis of exposure and disease activity. Br
-  J Clin Pharmacol. 2025;91(10):2854-2864. <doi:10.1002/bcp.70103>.
-  Protein-binding constants (Bmax, K1, Kns) fixed from Petersen HH,
-  Andreassen TK, Breiderhoff T, et al., as cited by Bouazza 2025 Methods
-  section 2.3 (reference 14).
+- Citation: Bouazza N, Semeraro M, Lui G, Froelicher-Bournaud L,
+  Choupeaux L, Treluyer JM, Benaboud S, Terzic J, Hachulla E, Remy P,
+  Harambat J, Karras A, Rousset-Rouviere C, Jolivot A, Amoura Z, Daugas
+  E, Hummel A, Salomon R, Lega JC, Decramer S, Belot A, Gobert D,
+  Costedoat-Chalumeau N, Faguer S, Melki I, Jourde-Chiche N,
+  Bader-Meunier B. Population pharmacokinetic modelling of prednisolone
+  in systemic lupus erythematosus patients: Analysis of exposure and
+  disease activity. Br J Clin Pharmacol. 2025;91(10):2854-2864.
+  <doi:10.1002/bcp.70103>. Protein-binding constants (Bmax, K1, Kns)
+  fixed from Petersen HH, Andreassen TK, Breiderhoff T, et al., as cited
+  by Bouazza 2025 Methods section 2.3 (reference 14).
 - Description: One-compartment population PK model for prednisolone (the
   active metabolite of orally administered prednisone) in 66 paediatric
   and adult patients with active systemic lupus erythematosus (Bouazza

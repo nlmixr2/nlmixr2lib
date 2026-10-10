@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Na JY, Jeon J, Huh KY, Eom J, Ahn J, You WK, Oh J.
-  Population pharmacokinetic model of ABL001/CTX-009 (anti-VEGF/DLL4) in
-  adult cancer patients with solid tumor. Cancer Sci.
-  2024;115(12):3943-3951. <doi:10.1111/cas.16363>
+- Citation: Na JY, Jeon J, Huh KY, Yu KS, Lee S, Eom J, Ahn J, You WK,
+  Oh J. Population pharmacokinetic model of ABL001/CTX-009
+  (anti-VEGF/DLL4) in adult cancer patients with solid tumor. Cancer
+  Sci. 2024;115(12):3943-3951. <doi:10.1111/cas.16363>.
 - Description: Two-compartment population PK model for tovecimig
   (ABL001/CTX-009), a bispecific antibody targeting DLL4 and VEGF-A, in
   adult patients with relapsed or refractory solid tumors, with parallel

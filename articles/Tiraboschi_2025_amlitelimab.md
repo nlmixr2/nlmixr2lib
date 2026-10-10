@@ -390,8 +390,9 @@ cat(sprintf("Typical terminal half-life (linear range) = %.1f days\n", t_half_da
 
 ### Reference
 
-- Tiraboschi JM, Zohar S, Quartino AL, Monnier R, Coulette V, Bizot JL,
-  Jamois C. Population Pharmacokinetic and Pharmacodynamic Modeling for
-  the Prediction of the Extended Amlitelimab Phase 3 Dosing Regimen in
-  Atopic Dermatitis. CPT Pharmacometrics Syst Pharmacol.
-  2025;14(12):2161-2173. <doi:10.1002/psp4.70121>
+- Tiraboschi G, Papp K, Bieber T, Weidinger S, Beck L, Lee CH, O’Malley
+  JT, Yen K, Bernigaud C, Fabre D, Hurbin F. Population Pharmacokinetic
+  and Pharmacodynamic Modeling for the Prediction of the Extended
+  Amlitelimab Phase 3 Dosing Regimen in Atopic Dermatitis. CPT
+  Pharmacometrics Syst Pharmacol. 2025;14(12):2161-2172.
+  <doi:10.1002/psp4.70121>.

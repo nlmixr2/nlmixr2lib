@@ -3,12 +3,12 @@
 ## Model and source
 
 - Citation: Gaspar F, Jacost-Descombes C, Gosselin P, Reny JL, Guidi M,
-  Csajka C, Samer C, Daali Y, Terrier J. (2025). Improving Understanding
-  of Fexofenadine Pharmacokinetics to Assess Pgp Phenotypic Activity in
+  Csajka C, Samer C, Daali Y, Terrier J. Improving Understanding of
+  Fexofenadine Pharmacokinetics to Assess Pgp Phenotypic Activity in
   Older Adult Patients Using Population Pharmacokinetic Modeling. Clin
-  Pharmacokinet 64:275-284. <doi:10.1007/s40262-024-01470-4>. The
-  sequential zero-order / first-order absorption parameters D1 and ka2
-  were held at the literature values of Piscitelli J, Nikanjam M,
+  Pharmacokinet. 2025;64(2):275-283. <doi:10.1007/s40262-024-01470-4>.
+  The sequential zero-order / first-order absorption parameters D1 and
+  ka2 were held at the literature values of Piscitelli J, Nikanjam M,
   Capparelli EV, Blaquera CL, Penzak SR, Nolin TD, et al. (2023) Ther
   Drug Monit 45(4):539-545 (Gaspar 2025 reference 12).
 - Description: Population pharmacokinetic model for low-dose (25 mg)

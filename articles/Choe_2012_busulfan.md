@@ -7,7 +7,7 @@
 mod <- readModelDb("Choe_2012_busulfan")
 cat(rxode2::rxode(mod)$reference)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Choe S, Kim G, Lim H-S, et al. A simple dosing scheme for intravenous busulfan based on retrospective population pharmacokinetic analysis in Korean patients. Korean J Physiol Pharmacol. 2012;16(4):273-280. doi:10.4196/kjpp.2012.16.4.273
+#> Choe S, Kim G, Lim HS, Cho SH, Ghim JL, Jung JA, Kim UJ, Noh G, Bae KS, Lee D. A simple dosing scheme for intravenous busulfan based on retrospective population pharmacokinetic analysis in korean patients. Korean J Physiol Pharmacol. 2012;16(4):273-280. doi:10.4196/kjpp.2012.16.4.273.
 ```
 
 - Article: <https://doi.org/10.4196/kjpp.2012.16.4.273>

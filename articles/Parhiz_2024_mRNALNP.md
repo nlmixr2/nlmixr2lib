@@ -2,10 +2,12 @@
 
 ## Model and source
 
-- Citation: Parhiz H, Shuvaev VV, Li Q, et al. Physiologically based
-  modeling of LNP-mediated delivery of mRNA in the vascular system.
-  *Molecular Therapy: Nucleic Acids*. 2024;35(2):102175.
-  <doi:10.1016/j.omtn.2024.102175>. Open access (CC BY-NC-ND).
+- Citation: Parhiz H, Shuvaev VV, Li Q, Papp TE, Akyianu AA, Shi R,
+  Yadegari A, Shahnawaz H, Semple SC, Mui BL, Weissman D, Muzykantov VR,
+  Glassman PM. Physiologically based modeling of LNP-mediated delivery
+  of mRNA in the vascular system. *Mol Ther Nucleic Acids*.
+  2024;35(2):102175. <doi:10.1016/j.omtn.2024.102175>. Open access (CC
+  BY-NC-ND).
 - Article: <https://doi.org/10.1016/j.omtn.2024.102175>
 - Supplemental information (Document S1, Figures S1-S3 + Tables S1-S4)
   and the ADAPT 5 source code (Data S1, mmc2.zip) are archived with the

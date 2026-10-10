@@ -5,7 +5,7 @@
 - Citation: Ekobena P, Briki M, Dao K, Marzolini C, Andre P, Buclin T,
   Cavassini M, Guidi M, Thoueille P; Swiss HIV Cohort Study. Population
   pharmacokinetics of bictegravir in real-world people with HIV. J
-  Antimicrob Chemother. 2025;80(11):2782-2789.
+  Antimicrob Chemother. 2025;80(10):2782-2789.
   <doi:10.1093/jac/dkaf297>.
 - Description: One-compartment population PK model for bictegravir in
   real-world people with HIV followed by therapeutic drug monitoring,

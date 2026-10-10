@@ -4,11 +4,11 @@
 
     #> ℹ parameter labels from comments will be replaced by 'label()'
 
-- Citation: Chae H, Cha HJ, Kang M, Han S, Lee DG. Pharmacokinetic model
-  based on stochastic simulation and estimation for therapeutic drug
-  monitoring of teicoplanin in Korean neutropenic hematopoietic stem
-  cell transplant recipients. Drug Des Devel Ther. 2026.
-  <doi:10.2147/DDDT.S550736>
+- Citation: Chae H, Cha HJ, Kang M, Han S, Lee DG. Pharmacokinetic Model
+  Based on Stochastic Simulation and Estimation for Therapeutic Drug
+  Monitoring of Teicoplanin in Korean Neutropenic Hematopoietic Stem
+  Cell Transplant Recipients. Drug Des Devel Ther. 2026;20:550736.
+  <doi:10.2147/DDDT.S550736>.
 
 - Description: Two-compartment IV population PK model for teicoplanin in
   405 Korean neutropenic adults after haematopoietic stem cell

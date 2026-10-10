@@ -1,0 +1,1107 @@
+# Ceftazidime-avibactam in children (Franzese 2022)
+
+## Model and source
+
+Franzese 2022 extended the adult ceftazidime-avibactam population PK
+models of Li 2019 (see `vignette("Li_2019_ceftazidime_avibactam")` on
+the package site) to children aged 3 months to \< 18 years by adding PK
+data from one single-dose phase I study and two multiple-dose phase II
+studies (complicated intra-abdominal infection, cIAI, and complicated
+urinary tract infection, cUTI). As in Li 2019, the two analytes were
+modelled separately – two NONMEM control streams, two data sets (9,628
+observations from 2,130 subjects for ceftazidime, 14,223 from 2,403 for
+avibactam) and two parameter tables – so the extraction is two model
+files sharing this vignette.
+
+``` r
+
+uiCaz <- rxode2::rxode(readModelDb("Franzese_2022_ceftazidime"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+uiAvi <- rxode2::rxode(readModelDb("Franzese_2022_avibactam"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+Both are two-compartment models with first-order elimination after IV
+infusion. The pediatric adaptations shared by both analytes are
+body-weight scaling of all four disposition parameters, BSA-normalized
+creatinine clearance (NCrCL; bedside Schwartz in children,
+Cockcroft-Gault x 1.73 / BSA in adults) for subjects older than 2 years,
+and a Rhodin renal-maturation function of postmenstrual age that
+replaces NCrCL at 2 years and younger. The ceftazidime weight effect on
+clearance is a normalized Emax function rather than a power law.
+
+Sources: the main text (Tables 1-4), the supplementary material
+(CPT-111-635-s001: both final NONMEM control streams, the derivation of
+the ceftazidime weight function, Tables S1-S3), and the 2024 erratum
+(<doi:10.1002/cpt.3143>), which corrects the Table 2 column headings –
+in the original the ceftazidime and avibactam headings were transposed.
+No parameter value is affected by the erratum.
+
+## Population
+
+| Characteristic | Phase I (any infection) | Phase II cIAI | Phase II cUTI | Overall |
+|:---|:---|:---|:---|:---|
+| N | 32 | 58 | 63 | 153 |
+| Female, n (%) | 17 (53.1) | 16 (27.6) | 52 (82.5) | 85 (55.6) |
+| Age, years, median (range) | 5.7 (0.33-17.3) | 10.5 (3.00-17.0) | 3.8 (0.25-17.7) | 7.57 (0.25-17.7) |
+| Weight, kg, median (range) | 20.6 (5.4-60.5) | 37.9 (15.4-80.0) | 15.3 (4.1-71.0) | 25.0 (4.1-80.0) |
+| NCrCL, mL/min/1.73 m^2, median (range) | 130 (85.5-489) | 107 (59-271) | 89 (43-158) | 104 (43-489) |
+| Chinese, n (%) | 0 | 6 (10.3) | 12 (19.0) | 18 (11.8) |
+
+Pediatric baseline characteristics (Franzese 2022 Table 1). {.table}
+
+The 153 children were added to the adult data sets of Li 2019 (adults
+with cIAI, cUTI or nosocomial pneumonia including ventilator-associated
+pneumonia, subjects with renal impairment, and healthy volunteers). No
+child with HAP/VAP was studied, and no child younger than 2 years was
+enrolled in the cIAI trial. Pediatric doses (2-hour infusions, Table S1)
+were 50-12.5 mg/kg q8h (maximum 2,000-500 mg) for children 6 months and
+older and 40-10 mg/kg q8h for 3 to \< 6 months, halved for CrCL 30 to \<
+50 mL/min.
+
+## Source trace
+
+| Quantity | Analyte | Value | Source |
+|:---|:---|:---|:---|
+| CL, Vc, Q, Vp | Ceftazidime | 7.75 L/h, 11.2 L, 5.33 L/h, 6.52 L | Table S2 theta1-theta4 |
+| NCrCL slopes on CL (hinge 100, cap 150) | Ceftazidime | 0.0103036 / 0.00125182 | Table S2 ‘Slope 1’ / ‘Slope 2’; control stream SLOPE1, SLOPE2, NCLCR cap |
+| Emax weight effect on CL | Ceftazidime | WT50 = 53.5 kg, Hill 1, intercept 0 | Table S2 theta14, theta15; Supplementary Methods derivation; control stream TH13 |
+| Weight exponents Q / Vc / Vp | Ceftazidime | 0.67 / 1 / 1 | Results ‘Ceftazidime’; control stream TH12, TH5 |
+| cIAI and HAP/VAP on CL (bare multipliers) | Ceftazidime | 1.33 / 1.10 | Table S2 theta16, theta17 |
+| cUTI and cIAI-or-HAP/VAP on Vc (bare multipliers) | Ceftazidime | 1.49 / 1.83 | Table S2 theta20, theta21 |
+| Ventilator on Vc; Asian race on CL and Vc | Ceftazidime | +0.202; -0.136 (ASN), -0.0844 (CHN); -0.135 (Vc) | Table S2 theta22, theta18, theta19, theta23 |
+| IIV variances CL, Vc, Q, Vp | Ceftazidime | 0.154, 0.108, 0.203, 0.0236 | Table S2 eta rows; control stream \$OMEGA |
+| Residual SDs phase I / phase II-III | Ceftazidime | 0.172 + 125 ng/mL / 0.374 + 2,560 ng/mL | Table S2 theta8-theta11 |
+| CL, Vc, Vp, Q | Avibactam | 10.7 L/h, 11.5 L, 7.56 L, 6.94 L/h | Table S3 theta1-theta4 |
+| ESRD factor; dialysis CL | Avibactam | 0.0674; 21.1 L/h | Table S3 theta5, theta6 |
+| NCrCL power below 80 / slope at or above 80 (cap 150) | Avibactam | 0.986 / 0.00344 | Table S3 theta7, theta8; control stream CLCLCR |
+| Weight exponents CL, Q / Vc, Vp | Avibactam | 0.67 / 1 | Results ‘Avibactam’; control stream TH30, TH14 |
+| Adult phase II cIAI on Vc and CL | Avibactam | +2.17 / +0.431 | Table S3 theta9, theta10 |
+| cUTI on Vc; phase III cIAI, HAP/VAP, pediatric cIAI on Vc | Avibactam | +0.412; +0.214 | Table S3 theta11, theta12; control stream V1POP |
+| APACHE II on CL; ventilator on Vc | Avibactam | -0.192; +0.267 | Table S3 theta15, theta28 |
+| IIV 4x4 block CL, Vc, Vp, Q | Avibactam | variances 0.3453, 1.139, 1.156, 5.487 | Table S3 eta rows |
+| Residual SDs phase I / II / III | Avibactam | 0.174 + 43.8 ng/mL / 0.498 / 0.364 | Table S3 theta17-theta20 |
+| Renal maturation (AGE \<= 2 y) | Both | TM50 47.7 weeks, Hill 3.4 | Methods ‘Model development’; control streams |
+| Unbound fractions | Both | 0.85 ceftazidime, 0.92 avibactam | Methods ‘Simulations and PK/PD targets’ |
+
+Where every parameter and equation comes from. {.table}
+
+## Covariate-effect reproduction
+
+Each model is solved for one typical subject (no IIV) at a reference
+covariate setting and at a perturbed one; the ratio of the `cl` or `vc`
+the model computes is compared with the value implied by the source.
+This has no Monte Carlo component and is asserted tightly.
+
+``` r
+
+baseCov <- data.frame(
+  AGE = 30, PAGE = 30 * 52.18 + 40, WT = 70, CRCL = 80,
+  DIS_CIAI = 0, DIS_CUTI = 0, DIS_HABP = 0, DIS_VABP = 0, MECH_VENT = 0,
+  RACE_ASIAN_OTH = 0, RACE_CHINESE = 0, RACE_JAPANESE = 0,
+  APACHE_II_SEV = 0, RENALIMP_ESRD = 0, RRT_HEMODIAL_STATUS = 0,
+  STUDY_CIAI_PH2 = 0, STUDY_CAZAVI_PHASE2 = 0, STUDY_CAZAVI_PHASE3 = 1,
+  STUDY_CAZAVI_PED_PHASE2 = 0
+)
+
+typicalParams <- function(ui, ...) {
+  cov <- baseCov
+  ch <- list(...)
+  for (nm in names(ch)) cov[[nm]] <- ch[[nm]]
+  cov <- cov[, intersect(names(cov), ui$all.covs), drop = FALSE]
+  ev <- data.frame(
+    id = 1L, time = c(0, 1), amt = c(1000, 0), evid = c(1L, 0L),
+    dur = c(2, 0), cmt = "central"
+  )
+  ev <- cbind(ev, cov[rep(1L, 2L), , drop = FALSE])
+  s <- rxode2::rxSolve(rxode2::zeroRe(ui), ev, returnType = "data.frame")
+  c(cl = s$cl[1], vc = s$vc[1], q = s$q[1], vp = s$vp[1])
+}
+
+crefCaz <- 1 / 0.0103036 # CRCL where the ceftazidime spline equals 1
+refCaz <- typicalParams(uiCaz, CRCL = crefCaz)
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+refAvi <- typicalParams(uiAvi)
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+emaxWt <- function(wt) wt / (53.5 + wt) * (53.5 + 70) / 70
+
+checks <- tribble(
+  ~Check, ~Analyte, ~Model, ~Expected,
+  "CL at reference (L/h)", "Ceftazidime", unname(refCaz["cl"]), 7.75,
+  "CL, CRCL 300 / CRCL 150 (cap)", "Ceftazidime",
+  unname(typicalParams(uiCaz, CRCL = 300)["cl"] / typicalParams(uiCaz, CRCL = 150)["cl"]), 1,
+  "CL, CRCL 150 / reference", "Ceftazidime",
+  unname(typicalParams(uiCaz, CRCL = 150)["cl"] / refCaz["cl"]), 0.0103036 * 100 + 0.00125182 * 50,
+  "CL, WT 53.5 / 70 kg (Emax at WT50)", "Ceftazidime",
+  unname(typicalParams(uiCaz, CRCL = crefCaz, WT = 53.5)["cl"] / refCaz["cl"]), 0.5 * (1 + 53.5 / 70),
+  "CL, WT 15 / 70 kg", "Ceftazidime",
+  unname(typicalParams(uiCaz, CRCL = crefCaz, WT = 15)["cl"] / refCaz["cl"]), emaxWt(15),
+  "CL, AGE 1 y at PMA 47.7 wk / reference", "Ceftazidime",
+  unname(typicalParams(uiCaz, CRCL = crefCaz, AGE = 1, PAGE = 47.7)["cl"] / refCaz["cl"]), 0.5,
+  "Q, WT 35 / 70 kg", "Ceftazidime",
+  unname(typicalParams(uiCaz, CRCL = crefCaz, WT = 35)["q"] / refCaz["q"]), 0.5^0.67,
+  "CL, cIAI", "Ceftazidime", unname(typicalParams(uiCaz, CRCL = crefCaz, DIS_CIAI = 1)["cl"] / refCaz["cl"]), 1.33,
+  "CL, HAP", "Ceftazidime", unname(typicalParams(uiCaz, CRCL = crefCaz, DIS_HABP = 1)["cl"] / refCaz["cl"]), 1.1,
+  "Vc, cUTI", "Ceftazidime", unname(typicalParams(uiCaz, CRCL = crefCaz, DIS_CUTI = 1)["vc"] / refCaz["vc"]), 1.49,
+  "Vc, VAP + ventilator", "Ceftazidime",
+  unname(typicalParams(uiCaz, CRCL = crefCaz, DIS_VABP = 1, MECH_VENT = 1)["vc"] / refCaz["vc"]), 1.83 * 1.202,
+  "CL, Chinese", "Ceftazidime", unname(typicalParams(uiCaz, CRCL = crefCaz, RACE_CHINESE = 1)["cl"] / refCaz["cl"]), 1 - 0.0844,
+  "CL, Japanese", "Ceftazidime", unname(typicalParams(uiCaz, CRCL = crefCaz, RACE_JAPANESE = 1)["cl"] / refCaz["cl"]), 1,
+  "Vc, Japanese", "Ceftazidime", unname(typicalParams(uiCaz, CRCL = crefCaz, RACE_JAPANESE = 1)["vc"] / refCaz["vc"]), 1 - 0.135,
+  "CL at reference (L/h)", "Avibactam", unname(refAvi["cl"]), 10.7,
+  "CL, CRCL 150 / 80", "Avibactam", unname(typicalParams(uiAvi, CRCL = 150)["cl"] / refAvi["cl"]), 1 + 0.00344 * 70,
+  "CL, CRCL 250 / 80 (cap)", "Avibactam", unname(typicalParams(uiAvi, CRCL = 250)["cl"] / refAvi["cl"]), 1 + 0.00344 * 70,
+  "CL, CRCL 40 / 80", "Avibactam", unname(typicalParams(uiAvi, CRCL = 40)["cl"] / refAvi["cl"]), 0.5^0.986,
+  "CL, ESRD (any CRCL)", "Avibactam", unname(typicalParams(uiAvi, CRCL = 5, RENALIMP_ESRD = 1)["cl"] / refAvi["cl"]), 0.0674,
+  "CL, ESRD on hemodialysis (L/h)", "Avibactam",
+  unname(typicalParams(uiAvi, CRCL = 5, RENALIMP_ESRD = 1, RRT_HEMODIAL_STATUS = 1)["cl"]), 21.1,
+  "CL, WT 35 / 70 kg", "Avibactam", unname(typicalParams(uiAvi, WT = 35)["cl"] / refAvi["cl"]), 0.5^0.67,
+  "Vp, WT 35 / 70 kg", "Avibactam", unname(typicalParams(uiAvi, WT = 35)["vp"] / refAvi["vp"]), 0.5,
+  "CL, AGE 1 y at PMA 47.7 wk", "Avibactam",
+  unname(typicalParams(uiAvi, AGE = 1, PAGE = 47.7, CRCL = 150)["cl"] / refAvi["cl"]), 0.5,
+  "CL, APACHE II elevated", "Avibactam", unname(typicalParams(uiAvi, APACHE_II_SEV = 1)["cl"] / refAvi["cl"]), 1 - 0.192,
+  "CL, adult phase II cIAI study", "Avibactam",
+  unname(typicalParams(uiAvi, DIS_CIAI = 1, STUDY_CIAI_PH2 = 1)["cl"] / refAvi["cl"]), 1.431,
+  "Vc, adult phase II cIAI study", "Avibactam",
+  unname(typicalParams(uiAvi, DIS_CIAI = 1, STUDY_CIAI_PH2 = 1)["vc"] / refAvi["vc"]), 1 + 2.17,
+  "Vc, phase III or pediatric cIAI", "Avibactam", unname(typicalParams(uiAvi, DIS_CIAI = 1)["vc"] / refAvi["vc"]), 1.214,
+  "Vc, cUTI", "Avibactam", unname(typicalParams(uiAvi, DIS_CUTI = 1)["vc"] / refAvi["vc"]), 1.412,
+  "Vc, HAP + ventilator", "Avibactam",
+  unname(typicalParams(uiAvi, DIS_HABP = 1, MECH_VENT = 1)["vc"] / refAvi["vc"]), 1.214 * 1.267
+) |>
+  mutate(`Rel. diff` = Model / Expected - 1)
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+
+checks |>
+  mutate(across(c(Model, Expected), \(x) signif(x, 5)), `Rel. diff` = signif(`Rel. diff`, 2)) |>
+  knitr::kable(caption = "Typical-value covariate effects computed by the models against the source values.")
+```
+
+| Check | Analyte | Model | Expected | Rel. diff |
+|:---|:---|---:|---:|---:|
+| CL at reference (L/h) | Ceftazidime | 7.75000 | 7.75000 | 0 |
+| CL, CRCL 300 / CRCL 150 (cap) | Ceftazidime | 1.00000 | 1.00000 | 0 |
+| CL, CRCL 150 / reference | Ceftazidime | 1.09300 | 1.09300 | 0 |
+| CL, WT 53.5 / 70 kg (Emax at WT50) | Ceftazidime | 0.88214 | 0.88214 | 0 |
+| CL, WT 15 / 70 kg | Ceftazidime | 0.38634 | 0.38634 | 0 |
+| CL, AGE 1 y at PMA 47.7 wk / reference | Ceftazidime | 0.50000 | 0.50000 | 0 |
+| Q, WT 35 / 70 kg | Ceftazidime | 0.62851 | 0.62851 | 0 |
+| CL, cIAI | Ceftazidime | 1.33000 | 1.33000 | 0 |
+| CL, HAP | Ceftazidime | 1.10000 | 1.10000 | 0 |
+| Vc, cUTI | Ceftazidime | 1.49000 | 1.49000 | 0 |
+| Vc, VAP + ventilator | Ceftazidime | 2.19970 | 2.19970 | 0 |
+| CL, Chinese | Ceftazidime | 0.91560 | 0.91560 | 0 |
+| CL, Japanese | Ceftazidime | 1.00000 | 1.00000 | 0 |
+| Vc, Japanese | Ceftazidime | 0.86500 | 0.86500 | 0 |
+| CL at reference (L/h) | Avibactam | 10.70000 | 10.70000 | 0 |
+| CL, CRCL 150 / 80 | Avibactam | 1.24080 | 1.24080 | 0 |
+| CL, CRCL 250 / 80 (cap) | Avibactam | 1.24080 | 1.24080 | 0 |
+| CL, CRCL 40 / 80 | Avibactam | 0.50488 | 0.50488 | 0 |
+| CL, ESRD (any CRCL) | Avibactam | 0.06740 | 0.06740 | 0 |
+| CL, ESRD on hemodialysis (L/h) | Avibactam | 21.10000 | 21.10000 | 0 |
+| CL, WT 35 / 70 kg | Avibactam | 0.62851 | 0.62851 | 0 |
+| Vp, WT 35 / 70 kg | Avibactam | 0.50000 | 0.50000 | 0 |
+| CL, AGE 1 y at PMA 47.7 wk | Avibactam | 0.50000 | 0.50000 | 0 |
+| CL, APACHE II elevated | Avibactam | 0.80800 | 0.80800 | 0 |
+| CL, adult phase II cIAI study | Avibactam | 1.43100 | 1.43100 | 0 |
+| Vc, adult phase II cIAI study | Avibactam | 3.17000 | 3.17000 | 0 |
+| Vc, phase III or pediatric cIAI | Avibactam | 1.21400 | 1.21400 | 0 |
+| Vc, cUTI | Avibactam | 1.41200 | 1.41200 | 0 |
+| Vc, HAP + ventilator | Avibactam | 1.53810 | 1.53810 | 0 |
+
+Typical-value covariate effects computed by the models against the
+source values. {.table}
+
+``` r
+
+
+# Same parameters on both sides: pure numerical error, so a tight bound.
+stopifnot(all(abs(checks$`Rel. diff`) < 1e-6))
+```
+
+## Virtual cohort
+
+Franzese 2022 simulated 1,000 patients per indication, age group and
+dose group, bootstrapping weight, age and NCrCL from a Pfizer database
+of 457 children with infections (older than 2 years) and taking weight
+from CDC growth charts (2 years and younger), with between-subject
+variability resampled from the post hoc random effects of the fitted
+subjects. None of that subject-level material is published, so the
+cohort below is a reconstruction (see Assumptions and deviations). Each
+arm has 100 subjects.
+
+``` r
+
+# set.seed() seeds R's RNG, not rxode2's; rxode2 streams are partitioned per
+# solver thread, so a CI runner draws a different cohort than a workstation.
+# Every assertion below is written to hold for any cohort the model produces.
+set.seed(20220301)
+rxode2::rxSetSeed(20220301)
+
+N_ARM <- 100L
+
+# Approximate median weight-for-age (kg), sexes pooled (growth-chart medians).
+wfa <- data.frame(
+  age = c(0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18),
+  wt = c(6.0, 7.6, 8.9, 9.8, 11.0, 12.3, 14.3, 16.3, 18.4, 20.7, 23.0, 25.6, 28.6, 32.0, 36.0, 40.5, 45.5, 50.5, 55.0, 58.5, 61.0, 63.0)
+)
+
+ageGroups <- tribble(
+  ~grp, ~lo, ~hi, ~mgkg,
+  "12 to <18 years", 12, 18, 50,
+  "6 to <12 years", 6, 12, 50,
+  "2 to <6 years", 2, 6, 50,
+  "1 to <2 years", 1, 2, 50,
+  "6 to <12 months", 0.5, 1, 50,
+  "3 to <6 months", 0.25, 0.5, 40,
+  "Adults", 18, 80, NA
+)
+
+# Adult CrCL bands >= 80 mL/min from Li 2019 Table 3 (bottom block).
+adultCrcl <- data.frame(lo = c(80, 150, 180), hi = c(150, 180, 610), n = c(955, 123, 116))
+
+drawCrcl <- function(n, adult, renal) {
+  if (renal == "Mild") {
+    return(runif(n, 51, 80))
+  }
+  if (adult) {
+    b <- sample(seq_len(nrow(adultCrcl)), n, replace = TRUE, prob = adultCrcl$n)
+    return(runif(n, adultCrcl$lo[b], adultCrcl$hi[b]))
+  }
+  x <- rlnorm(n, log(125), 0.25)
+  while (any(x < 80)) {
+    low <- x < 80
+    x[low] <- rlnorm(sum(low), log(125), 0.25)
+  }
+  x
+}
+
+makeArm <- function(grp, ind, renal, idOffset) {
+  g <- ageGroups[ageGroups$grp == grp, ]
+  adult <- grp == "Adults"
+  age <- runif(N_ARM, g$lo, g$hi)
+  wt <- if (adult) {
+    pmin(pmax(rlnorm(N_ARM, log(70), 0.23), 40), 150)
+  } else {
+    approx(wfa$age, wfa$wt, age)$y * exp(rnorm(N_ARM, 0, ifelse(age < 2, 0.12, 0.18)))
+  }
+  race <- if (adult) {
+    sample(c("other", "ASN", "CHN", "JPN"), N_ARM, replace = TRUE, prob = c(1209, 248, 262, 45))
+  } else {
+    sample(c("other", "ASN", "CHN"), N_ARM, replace = TRUE, prob = c(86.9, 1.3, 11.8))
+  }
+  vap <- if (ind == "HAP/VAP") rbinom(N_ARM, 1L, 138 / 413) else rep(0L, N_ARM)
+  apache <- if (adult && ind != "cUTI") rbinom(N_ARM, 1L, 438 / 1115) else rep(0L, N_ARM)
+  amtCaz <- if (adult) rep(2000, N_ARM) else pmin(g$mgkg * wt, 2000)
+  data.frame(
+    id = idOffset + seq_len(N_ARM), grp = grp, ind = ind, renal = renal,
+    AGE = age, PAGE = age * 52.18 + 40, WT = wt, CRCL = drawCrcl(N_ARM, adult, renal),
+    DIS_CIAI = as.integer(ind == "cIAI"), DIS_CUTI = as.integer(ind == "cUTI"),
+    DIS_VABP = vap, DIS_HABP = as.integer(ind == "HAP/VAP") * (1L - vap),
+    MECH_VENT = vap,
+    RACE_ASIAN_OTH = as.integer(race == "ASN"), RACE_CHINESE = as.integer(race == "CHN"),
+    RACE_JAPANESE = as.integer(race == "JPN"),
+    APACHE_II_SEV = apache, RENALIMP_ESRD = 0L, RRT_HEMODIAL_STATUS = 0L,
+    STUDY_CIAI_PH2 = 0L, STUDY_CAZAVI_PHASE2 = 0L,
+    STUDY_CAZAVI_PHASE3 = as.integer(adult), STUDY_CAZAVI_PED_PHASE2 = as.integer(!adult),
+    amtCaz = amtCaz, amtAvi = amtCaz / 4
+  )
+}
+
+arms <- bind_rows(
+  expand.grid(grp = ageGroups$grp, ind = c("cIAI", "cUTI", "HAP/VAP"), renal = "Normal", stringsAsFactors = FALSE),
+  expand.grid(
+    grp = c("12 to <18 years", "6 to <12 years", "2 to <6 years", "Adults"),
+    ind = c("cIAI", "cUTI", "HAP/VAP"), renal = "Mild", stringsAsFactors = FALSE
+  )
+)
+cohort <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  makeArm(arms$grp[i], arms$ind[i], arms$renal[i], (i - 1L) * N_ARM)
+}))
+
+cohort |>
+  group_by(Renal = renal, `Age group` = grp) |>
+  summarise(
+    N = n(), `Median WT (kg)` = round(median(WT), 1),
+    `Median NCrCL` = round(median(CRCL)),
+    `Median ceftazidime dose (mg)` = round(median(amtCaz)), .groups = "drop"
+  ) |>
+  knitr::kable(caption = "Virtual cohort by renal stratum and age group (all three indications pooled).")
+```
+
+| Renal | Age group | N | Median WT (kg) | Median NCrCL | Median ceftazidime dose (mg) |
+|:---|:---|---:|---:|---:|---:|
+| Mild | 12 to \<18 years | 300 | 53.7 | 66 | 2000 |
+| Mild | 2 to \<6 years | 300 | 16.0 | 66 | 802 |
+| Mild | 6 to \<12 years | 300 | 29.2 | 66 | 1461 |
+| Mild | Adults | 300 | 71.4 | 66 | 2000 |
+| Normal | 1 to \<2 years | 300 | 11.2 | 129 | 561 |
+| Normal | 12 to \<18 years | 300 | 53.2 | 128 | 2000 |
+| Normal | 2 to \<6 years | 300 | 16.1 | 125 | 806 |
+| Normal | 3 to \<6 months | 300 | 6.8 | 126 | 271 |
+| Normal | 6 to \<12 months | 300 | 8.7 | 129 | 434 |
+| Normal | 6 to \<12 years | 300 | 29.2 | 128 | 1459 |
+| Normal | Adults | 300 | 68.2 | 124 | 2000 |
+
+Virtual cohort by renal stratum and age group (all three indications
+pooled). {.table}
+
+## Simulation
+
+Steady state is imposed with `ss = 1` on the first 2-hour infusion and
+two further q8h doses are given explicitly, so the 0-24 h window is the
+paper’s `AUCss,0-24`. The first dosing interval is sampled every 0.1 h
+for the time-above-threshold calculation; the rest of the window hourly.
+The paper’s PTA simulations used individual predictions, so residual
+error is switched off (`sigma = NA`).
+
+``` r
+
+TINF <- 2
+obsTimes <- sort(unique(c(seq(0, 8, by = 0.1), 9:24)))
+covCols <- setdiff(names(cohort), c("grp", "ind", "renal", "amtCaz", "amtAvi"))
+
+makeEvents <- function(amtCol) {
+  dose <- cohort[rep(seq_len(nrow(cohort)), each = 3L), covCols]
+  dose$time <- rep(c(0, 8, 16), nrow(cohort))
+  dose$amt <- rep(cohort[[amtCol]], each = 3L)
+  dose$evid <- 1L
+  dose$dur <- TINF
+  dose$ss <- rep(c(1L, 0L, 0L), nrow(cohort))
+  dose$ii <- 8
+  obs <- cohort[rep(seq_len(nrow(cohort)), each = length(obsTimes)), covCols]
+  obs$time <- rep(obsTimes, nrow(cohort))
+  obs$amt <- 0
+  obs$evid <- 0L
+  obs$dur <- 0
+  obs$ss <- 0L
+  obs$ii <- 0
+  ev <- rbind(dose, obs)
+  ev$cmt <- "central"
+  ev[order(ev$id, ev$time, -ev$evid), ]
+}
+
+simOne <- function(ui, amtCol, drug) {
+  s <- rxode2::rxSolve(ui, makeEvents(amtCol),
+    sigma = NA, maxsteps = 500000L, returnType = "data.frame"
+  )
+  s |>
+    transmute(id = as.integer(as.character(id)), time, Cc, drug = drug) |>
+    left_join(cohort |> select(id, grp, ind, renal, WT), by = "id")
+}
+
+sim <- bind_rows(
+  simOne(uiCaz, "amtCaz", "Ceftazidime"),
+  simOne(uiAvi, "amtAvi", "Avibactam")
+)
+
+# The avibactam OMEGA block gives Q a variance of 5.5 (SD 2.3 on the log
+# scale), so a handful of draws are extreme enough (Vc < 0.5 L with Q in the
+# hundreds of L/h) that the steady-state solver gives up. Those subjects are
+# dropped and counted; more than 1% would signal a real problem.
+naIds <- unique(sim$id[sim$drug == "Avibactam" & !is.finite(sim$Cc)])
+cat("Avibactam subjects with a failed steady-state solve:", length(naIds), "of", nrow(cohort), "\n")
+#> Avibactam subjects with a failed steady-state solve: 0 of 3300
+stopifnot(
+  all(is.finite(sim$Cc[sim$drug == "Ceftazidime"])),
+  length(naIds) <= 0.01 * nrow(cohort)
+)
+sim <- sim |> filter(!(drug == "Avibactam" & id %in% naIds))
+```
+
+### Steady-state profiles
+
+``` r
+
+sim |>
+  filter(renal == "Normal", grp %in% c("12 to <18 years", "2 to <6 years", "3 to <6 months", "Adults")) |>
+  group_by(drug, ind, grp, time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med, colour = grp, fill = grp)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.1, colour = NA) +
+  geom_line() +
+  facet_grid(drug ~ ind, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time within the steady-state 24-hour window (h)",
+    y = "Total plasma concentration (mg/L)", colour = "Age group", fill = "Age group"
+  ) +
+  theme_bw()
+```
+
+![](Franzese_2022_ceftazidime_avibactam_files/figure-html/profiles-1.png)
+
+Median and 90% prediction interval at the approved doses, normal renal
+function.
+
+### Exposure by body weight
+
+``` r
+
+expo <- sim |>
+  group_by(drug, id, grp, ind, renal, WT) |>
+  summarise(cmax = max(Cc), .groups = "drop") |>
+  filter(renal == "Normal")
+
+expo |>
+  mutate(population = ifelse(grp == "Adults", "Adults", "Children")) |>
+  ggplot(aes(WT, cmax, colour = population)) +
+  geom_point(alpha = 0.3, size = 0.8) +
+  geom_smooth(method = "loess", formula = y ~ x, se = FALSE) +
+  facet_grid(drug ~ ind, scales = "free_y") +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "Body weight (kg)", y = "Simulated Cmax,ss (mg/L)", colour = NULL) +
+  theme_bw()
+```
+
+![](Franzese_2022_ceftazidime_avibactam_files/figure-html/figure1-1.png)
+
+Replicates the simulated part of Figure 1b of Franzese 2022 (Cmax,ss
+against body weight, children against adults with normal renal
+function): pediatric peak concentrations sit at or above the adult band
+across the weight range, the pattern the paper describes for its Figure
+1 and Table 3.
+
+## PKNCA validation
+
+``` r
+
+ncaConc <- sim |>
+  filter(!is.na(Cc), time %in% c(0:24)) |>
+  select(id, time, Cc, drug)
+ncaDose <- sim |>
+  filter(time == 0) |>
+  distinct(id, drug) |>
+  mutate(time = 0)
+
+concObj <- PKNCA::PKNCAconc(ncaConc, Cc ~ time | drug + id, concu = "mg/L", timeu = "h")
+doseObj <- PKNCA::PKNCAdose(ncaDose, ~ time | drug + id)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, auclast = TRUE)
+ncaRes <- PKNCA::pk.nca(PKNCA::PKNCAdata(concObj, doseObj, intervals = intervals))
+
+ncaInd <- as.data.frame(ncaRes$result) |>
+  select(drug, id, PPTESTCD, PPORRES) |>
+  left_join(cohort |> select(id, grp, ind, renal), by = "id")
+
+stopifnot(all(is.finite(ncaInd$PPORRES)))
+
+# Franzese 2022 tabulates geometric means.
+ncaGm <- ncaInd |>
+  group_by(drug, renal, ind, grp, PPTESTCD) |>
+  summarise(PPORRES = exp(mean(log(PPORRES))), .groups = "drop")
+```
+
+`auclast` over the 0-24 h steady-state window is `AUCss,0-24`; `cmax`
+over the window is `Cmax,ss` (end of infusion).
+
+## Comparison against the published simulations (Table 3)
+
+``` r
+
+grpLev <- c("12 to <18 years", "6 to <12 years", "2 to <6 years", "1 to <2 years", "6 to <12 months", "3 to <6 months", "Adults")
+grpMild <- c("12 to <18 years", "6 to <12 years", "2 to <6 years", "Adults")
+# Franzese 2022 Table 3, read column by column (cIAI, cUTI, HAP/VAP).
+table3 <- bind_rows(
+  tibble(drug = "Ceftazidime", renal = "Normal", grp = rep(grpLev, 3), ind = rep(c("cIAI", "cUTI", "HAP/VAP"), each = 7),
+    cmax = c(64.6, 72.4, 68.2, 68.1, 72.1, 64.2, 58.9, 81.5, 91.5, 86.3, 86.0, 90.8, 80.7, 74.0, 71.8, 80.8, 76.4, 76.2, 80.4, 71.4, 65.1),
+    auclast = c(618, 650, 572, 577, 637, 617, 602, 821, 864, 760, 767, 846, 820, 828, 747, 785, 691, 698, 769, 745, 712)),
+  tibble(drug = "Avibactam", renal = "Normal", grp = rep(grpLev, 3), ind = rep(c("cIAI", "cUTI", "HAP/VAP"), each = 7),
+    cmax = c(12.3, 14.2, 13.0, 13.6, 14.0, 12.1, 10.5, 11.9, 13.7, 12.5, 12.9, 13.3, 11.5, 9.73, 13.0, 15.1, 13.8, 14.4, 14.9, 12.9, 10.2),
+    auclast = c(121, 136, 118, 125, 132, 121, 107, 121, 136, 118, 125, 132, 121, 113, 121, 136, 118, 125, 132, 121, 105)),
+  tibble(drug = "Ceftazidime", renal = "Mild", grp = rep(grpMild, 3), ind = rep(c("cIAI", "cUTI", "HAP/VAP"), each = 4),
+    cmax = c(81.6, 93.4, 88.2, 74.9, 103.0, 118.0, 111.0, 94.3, 90.9, 104.0, 98.0, 83.8),
+    auclast = c(940, 1020, 892, 917, 1250, 1350, 1190, 1240, 1140, 1230, 1080, 1100)),
+  tibble(drug = "Avibactam", renal = "Mild", grp = rep(grpMild, 3), ind = rep(c("cIAI", "cUTI", "HAP/VAP"), each = 4),
+    cmax = c(14.7, 17.4, 15.9, 12.7, 14.2, 16.7, 15.3, 11.8, 15.5, 18.5, 17.0, 12.5),
+    auclast = c(164, 192, 167, 148, 164, 192, 167, 152, 164, 192, 167, 147))
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = ncaGm, reference = table3,
+  by = c("drug", "renal", "ind", "grp"),
+  units = c(cmax = "mg/L", auclast = "mg*h/L, 0-24 h at steady state")
+)
+cmp |>
+  dplyr::rename(Analyte = drug, `Renal function` = renal, Indication = ind, `Age group` = grp) |>
+  knitr::kable(caption = "Geometric-mean steady-state exposures: Franzese 2022 Table 3 (Reference) against this simulation.")
+```
+
+| NCA parameter | Analyte | Renal function | Indication | Age group | Reference | Simulated | % diff |
+|:---|:---|:---|:---|:---|:---|:---|:---|
+| Cmax (mg/L) | Ceftazidime | Normal | cIAI | 12 to \<18 years | 64.6 | 68.9 | +6.7% |
+| Cmax (mg/L) | Ceftazidime | Normal | cIAI | 6 to \<12 years | 72.4 | 78.2 | +7.9% |
+| Cmax (mg/L) | Ceftazidime | Normal | cIAI | 2 to \<6 years | 68.2 | 67.8 | -0.5% |
+| Cmax (mg/L) | Ceftazidime | Normal | cIAI | 1 to \<2 years | 68.1 | 70.1 | +3.0% |
+| Cmax (mg/L) | Ceftazidime | Normal | cIAI | 6 to \<12 months | 72.1 | 74.3 | +3.0% |
+| Cmax (mg/L) | Ceftazidime | Normal | cIAI | 3 to \<6 months | 64.2 | 64.8 | +0.9% |
+| Cmax (mg/L) | Ceftazidime | Normal | cIAI | Adults | 58.9 | 54.9 | -6.8% |
+| Cmax (mg/L) | Ceftazidime | Normal | cUTI | 12 to \<18 years | 81.5 | 86.5 | +6.1% |
+| Cmax (mg/L) | Ceftazidime | Normal | cUTI | 6 to \<12 years | 91.5 | 97.3 | +6.4% |
+| Cmax (mg/L) | Ceftazidime | Normal | cUTI | 2 to \<6 years | 86.3 | 84.8 | -1.8% |
+| Cmax (mg/L) | Ceftazidime | Normal | cUTI | 1 to \<2 years | 86 | 87.6 | +1.9% |
+| Cmax (mg/L) | Ceftazidime | Normal | cUTI | 6 to \<12 months | 90.8 | 93.6 | +3.1% |
+| Cmax (mg/L) | Ceftazidime | Normal | cUTI | 3 to \<6 months | 80.7 | 82.3 | +2.0% |
+| Cmax (mg/L) | Ceftazidime | Normal | cUTI | Adults | 74 | 74 | +0.1% |
+| Cmax (mg/L) | Ceftazidime | Normal | HAP/VAP | 12 to \<18 years | 71.8 | 74.3 | +3.6% |
+| Cmax (mg/L) | Ceftazidime | Normal | HAP/VAP | 6 to \<12 years | 80.8 | 83.4 | +3.2% |
+| Cmax (mg/L) | Ceftazidime | Normal | HAP/VAP | 2 to \<6 years | 76.4 | 78.8 | +3.1% |
+| Cmax (mg/L) | Ceftazidime | Normal | HAP/VAP | 1 to \<2 years | 76.2 | 79.9 | +4.9% |
+| Cmax (mg/L) | Ceftazidime | Normal | HAP/VAP | 6 to \<12 months | 80.4 | 78.7 | -2.1% |
+| Cmax (mg/L) | Ceftazidime | Normal | HAP/VAP | 3 to \<6 months | 71.4 | 72.5 | +1.6% |
+| Cmax (mg/L) | Ceftazidime | Normal | HAP/VAP | Adults | 65.1 | 66.5 | +2.2% |
+| Cmax (mg/L) | Ceftazidime | Mild | cIAI | 12 to \<18 years | 81.6 | 87.1 | +6.7% |
+| Cmax (mg/L) | Ceftazidime | Mild | cIAI | 6 to \<12 years | 93.4 | 97.1 | +4.0% |
+| Cmax (mg/L) | Ceftazidime | Mild | cIAI | 2 to \<6 years | 88.2 | 91.1 | +3.3% |
+| Cmax (mg/L) | Ceftazidime | Mild | cIAI | Adults | 74.9 | 75.4 | +0.7% |
+| Cmax (mg/L) | Ceftazidime | Mild | cUTI | 12 to \<18 years | 103 | 112 | +9.0% |
+| Cmax (mg/L) | Ceftazidime | Mild | cUTI | 6 to \<12 years | 118 | 127 | +7.7% |
+| Cmax (mg/L) | Ceftazidime | Mild | cUTI | 2 to \<6 years | 111 | 111 | +0.4% |
+| Cmax (mg/L) | Ceftazidime | Mild | cUTI | Adults | 94.3 | 93.3 | -1.1% |
+| Cmax (mg/L) | Ceftazidime | Mild | HAP/VAP | 12 to \<18 years | 90.9 | 92.8 | +2.1% |
+| Cmax (mg/L) | Ceftazidime | Mild | HAP/VAP | 6 to \<12 years | 104 | 108 | +3.6% |
+| Cmax (mg/L) | Ceftazidime | Mild | HAP/VAP | 2 to \<6 years | 98 | 96.4 | -1.6% |
+| Cmax (mg/L) | Ceftazidime | Mild | HAP/VAP | Adults | 83.8 | 77.3 | -7.7% |
+| Cmax (mg/L) | Avibactam | Normal | cIAI | 12 to \<18 years | 12.3 | 14.7 | +19.6% |
+| Cmax (mg/L) | Avibactam | Normal | cIAI | 6 to \<12 years | 14.2 | 17.3 | +21.6%\* |
+| Cmax (mg/L) | Avibactam | Normal | cIAI | 2 to \<6 years | 13 | 15 | +15.4% |
+| Cmax (mg/L) | Avibactam | Normal | cIAI | 1 to \<2 years | 13.6 | 15 | +10.7% |
+| Cmax (mg/L) | Avibactam | Normal | cIAI | 6 to \<12 months | 14 | 18.3 | +30.7%\* |
+| Cmax (mg/L) | Avibactam | Normal | cIAI | 3 to \<6 months | 12.1 | 15 | +23.6%\* |
+| Cmax (mg/L) | Avibactam | Normal | cIAI | Adults | 10.5 | 13.2 | +25.9%\* |
+| Cmax (mg/L) | Avibactam | Normal | cUTI | 12 to \<18 years | 11.9 | 16.1 | +35.6%\* |
+| Cmax (mg/L) | Avibactam | Normal | cUTI | 6 to \<12 years | 13.7 | 17.6 | +28.1%\* |
+| Cmax (mg/L) | Avibactam | Normal | cUTI | 2 to \<6 years | 12.5 | 14.3 | +14.8% |
+| Cmax (mg/L) | Avibactam | Normal | cUTI | 1 to \<2 years | 12.9 | 15.3 | +18.7% |
+| Cmax (mg/L) | Avibactam | Normal | cUTI | 6 to \<12 months | 13.3 | 17.3 | +30.0%\* |
+| Cmax (mg/L) | Avibactam | Normal | cUTI | 3 to \<6 months | 11.5 | 14.7 | +28.0%\* |
+| Cmax (mg/L) | Avibactam | Normal | cUTI | Adults | 9.73 | 13 | +33.5%\* |
+| Cmax (mg/L) | Avibactam | Normal | HAP/VAP | 12 to \<18 years | 13 | 16.8 | +29.1%\* |
+| Cmax (mg/L) | Avibactam | Normal | HAP/VAP | 6 to \<12 years | 15.1 | 19.3 | +28.1%\* |
+| Cmax (mg/L) | Avibactam | Normal | HAP/VAP | 2 to \<6 years | 13.8 | 15.8 | +14.5% |
+| Cmax (mg/L) | Avibactam | Normal | HAP/VAP | 1 to \<2 years | 14.4 | 14.5 | +0.9% |
+| Cmax (mg/L) | Avibactam | Normal | HAP/VAP | 6 to \<12 months | 14.9 | 16 | +7.7% |
+| Cmax (mg/L) | Avibactam | Normal | HAP/VAP | 3 to \<6 months | 12.9 | 13.6 | +5.6% |
+| Cmax (mg/L) | Avibactam | Normal | HAP/VAP | Adults | 10.2 | 13 | +27.8%\* |
+| Cmax (mg/L) | Avibactam | Mild | cIAI | 12 to \<18 years | 14.7 | 19.5 | +33.0%\* |
+| Cmax (mg/L) | Avibactam | Mild | cIAI | 6 to \<12 years | 17.4 | 22.6 | +29.7%\* |
+| Cmax (mg/L) | Avibactam | Mild | cIAI | 2 to \<6 years | 15.9 | 19 | +19.7% |
+| Cmax (mg/L) | Avibactam | Mild | cIAI | Adults | 12.7 | 16 | +25.8%\* |
+| Cmax (mg/L) | Avibactam | Mild | cUTI | 12 to \<18 years | 14.2 | 18.7 | +31.9%\* |
+| Cmax (mg/L) | Avibactam | Mild | cUTI | 6 to \<12 years | 16.7 | 22.3 | +33.3%\* |
+| Cmax (mg/L) | Avibactam | Mild | cUTI | 2 to \<6 years | 15.3 | 18.1 | +18.3% |
+| Cmax (mg/L) | Avibactam | Mild | cUTI | Adults | 11.8 | 13.2 | +11.8% |
+| Cmax (mg/L) | Avibactam | Mild | HAP/VAP | 12 to \<18 years | 15.5 | 18.4 | +18.7% |
+| Cmax (mg/L) | Avibactam | Mild | HAP/VAP | 6 to \<12 years | 18.5 | 21.1 | +13.9% |
+| Cmax (mg/L) | Avibactam | Mild | HAP/VAP | 2 to \<6 years | 17 | 19.1 | +12.2% |
+| Cmax (mg/L) | Avibactam | Mild | HAP/VAP | Adults | 12.5 | 15.7 | +25.4%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cIAI | 12 to \<18 years | 618 | 636 | +2.9% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cIAI | 6 to \<12 years | 650 | 677 | +4.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cIAI | 2 to \<6 years | 572 | 528 | -7.8% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cIAI | 1 to \<2 years | 577 | 556 | -3.7% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cIAI | 6 to \<12 months | 637 | 607 | -4.8% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cIAI | 3 to \<6 months | 617 | 588 | -4.7% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cIAI | Adults | 602 | 548 | -9.0% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cUTI | 12 to \<18 years | 821 | 830 | +1.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cUTI | 6 to \<12 years | 864 | 863 | -0.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cUTI | 2 to \<6 years | 760 | 699 | -8.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cUTI | 1 to \<2 years | 767 | 712 | -7.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cUTI | 6 to \<12 months | 846 | 826 | -2.4% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cUTI | 3 to \<6 months | 820 | 777 | -5.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | cUTI | Adults | 828 | 756 | -8.7% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | HAP/VAP | 12 to \<18 years | 747 | 756 | +1.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | HAP/VAP | 6 to \<12 years | 785 | 802 | +2.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | HAP/VAP | 2 to \<6 years | 691 | 701 | +1.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | HAP/VAP | 1 to \<2 years | 698 | 730 | +4.6% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | HAP/VAP | 6 to \<12 months | 769 | 711 | -7.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | HAP/VAP | 3 to \<6 months | 745 | 736 | -1.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Normal | HAP/VAP | Adults | 712 | 740 | +3.9% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | cIAI | 12 to \<18 years | 940 | 979 | +4.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | cIAI | 6 to \<12 years | 1020 | 1010 | -0.8% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | cIAI | 2 to \<6 years | 892 | 846 | -5.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | cIAI | Adults | 917 | 906 | -1.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | cUTI | 12 to \<18 years | 1250 | 1380 | +10.4% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | cUTI | 6 to \<12 years | 1350 | 1390 | +3.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | cUTI | 2 to \<6 years | 1190 | 1080 | -8.9% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | cUTI | Adults | 1240 | 1170 | -5.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | HAP/VAP | 12 to \<18 years | 1140 | 1130 | -1.0% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | HAP/VAP | 6 to \<12 years | 1230 | 1230 | +0.4% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | HAP/VAP | 2 to \<6 years | 1080 | 1020 | -5.6% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Ceftazidime | Mild | HAP/VAP | Adults | 1100 | 1010 | -8.0% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cIAI | 12 to \<18 years | 121 | 137 | +13.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cIAI | 6 to \<12 years | 136 | 150 | +9.9% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cIAI | 2 to \<6 years | 118 | 126 | +6.7% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cIAI | 1 to \<2 years | 125 | 126 | +0.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cIAI | 6 to \<12 months | 132 | 149 | +13.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cIAI | 3 to \<6 months | 121 | 128 | +5.8% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cIAI | Adults | 107 | 129 | +20.9%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cUTI | 12 to \<18 years | 121 | 158 | +30.3%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cUTI | 6 to \<12 years | 136 | 150 | +10.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cUTI | 2 to \<6 years | 118 | 126 | +6.4% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cUTI | 1 to \<2 years | 125 | 124 | -0.6% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cUTI | 6 to \<12 months | 132 | 147 | +11.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cUTI | 3 to \<6 months | 121 | 136 | +12.6% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | cUTI | Adults | 113 | 127 | +12.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | HAP/VAP | 12 to \<18 years | 121 | 157 | +29.8%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | HAP/VAP | 6 to \<12 years | 136 | 168 | +23.4%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | HAP/VAP | 2 to \<6 years | 118 | 126 | +6.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | HAP/VAP | 1 to \<2 years | 125 | 122 | -2.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | HAP/VAP | 6 to \<12 months | 132 | 136 | +3.2% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | HAP/VAP | 3 to \<6 months | 121 | 121 | +0.3% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Normal | HAP/VAP | Adults | 105 | 129 | +23.3%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | cIAI | 12 to \<18 years | 164 | 204 | +24.4%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | cIAI | 6 to \<12 years | 192 | 222 | +15.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | cIAI | 2 to \<6 years | 167 | 172 | +3.1% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | cIAI | Adults | 148 | 187 | +26.4%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | cUTI | 12 to \<18 years | 164 | 208 | +26.8%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | cUTI | 6 to \<12 years | 192 | 229 | +19.0% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | cUTI | 2 to \<6 years | 167 | 175 | +5.0% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | cUTI | Adults | 152 | 153 | +0.9% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | HAP/VAP | 12 to \<18 years | 164 | 204 | +24.2%\* |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | HAP/VAP | 6 to \<12 years | 192 | 210 | +9.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | HAP/VAP | 2 to \<6 years | 167 | 171 | +2.5% |
+| AUClast (mg\*h/L, 0-24 h at steady state) | Avibactam | Mild | HAP/VAP | Adults | 147 | 179 | +21.6%\* |
+
+Geometric-mean steady-state exposures: Franzese 2022 Table 3 (Reference)
+against this simulation. {.table}
+
+``` r
+
+pct <- ncaGm |>
+  inner_join(
+    table3 |> pivot_longer(c(cmax, auclast), names_to = "PPTESTCD", values_to = "ref"),
+    by = c("drug", "renal", "ind", "grp", "PPTESTCD")
+  ) |>
+  mutate(pct_diff = 100 * (PPORRES / ref - 1))
+
+pct |>
+  group_by(Analyte = drug, Parameter = PPTESTCD) |>
+  summarise(
+    `Median % diff` = round(median(pct_diff), 1),
+    `90th pct of |% diff|` = round(quantile(abs(pct_diff), 0.9), 1), .groups = "drop"
+  ) |>
+  knitr::kable(caption = "Agreement with Table 3 across the 33 arms.")
+```
+
+| Analyte     | Parameter | Median % diff | 90th pct of \|% diff\| |
+|:------------|:----------|--------------:|-----------------------:|
+| Avibactam   | auclast   |          11.5 |                   26.0 |
+| Avibactam   | cmax      |          23.6 |                   32.7 |
+| Ceftazidime | auclast   |          -1.2 |                    8.6 |
+| Ceftazidime | cmax      |           3.0 |                    7.5 |
+
+Agreement with Table 3 across the 33 arms. {.table}
+
+``` r
+
+
+# The cohort is a reconstruction from marginal summaries, so the two sides
+# differ by which subjects were drawn; assert on the centre and a robust
+# quantile only. A mis-transcribed clearance, dose or unit moves the whole
+# distribution by tens of percent.
+caz <- pct[pct$drug == "Ceftazidime", ]
+avi <- pct[pct$drug == "Avibactam", ]
+stopifnot(
+  abs(median(caz$pct_diff)) < 10,
+  quantile(abs(caz$pct_diff), 0.9) < 20,
+  # Avibactam runs high by a systematic, explained offset (next section).
+  median(avi$pct_diff) > -10,
+  median(avi$pct_diff) < 35
+)
+```
+
+Ceftazidime reproduces Table 3 closely across all ages, indications and
+both renal strata (median differences of a few percent on both
+`AUCss,0-24` and `Cmax,ss`). Avibactam runs systematically high – by
+roughly a tenth on `AUCss,0-24` and a fifth on `Cmax,ss` – and the
+explanation is in the next section.
+
+## Why the avibactam simulation runs high
+
+Franzese 2022 did not simulate from the OMEGA matrix: it resampled each
+fitted subject’s post hoc random effects, pediatric ones for simulated
+children and adult ones for simulated adults. If the fitted children’s
+avibactam clearance EBEs are centred above zero – a pediatric offset the
+covariates do not capture (the pediatric-study terms `CLPED` and `V1PED`
+were tested in the control stream but held at zero in the final model) –
+then the paper’s simulated children inherit it and a simulation centred
+on the typical value does not.
+
+Table 2 (as corrected by the erratum) makes the offset visible without
+any knowledge of the cohort: in a child, ceftazidime and avibactam are
+dosed in a 4:1 ratio, so `(AUCcaz / AUCavi) / 4` is the subject’s
+avibactam-to-ceftazidime clearance ratio. The models’ typical-value
+ratio for a child aged over 2 years with no infection-type effect on
+ceftazidime clearance can be computed across the weights and NCrCL
+values that cover most of the children (10-45 kg; NCrCL 90-150
+mL/min/1.73 m^2, bracketing the Table 1 cohort medians of 89-130). The
+ratio is somewhat higher right at the avibactam hinge of 80, where the
+ceftazidime spline is lowest relative to its own reference.
+
+``` r
+
+ratioGrid <- expand.grid(WT = c(10, 15, 20, 30, 45), CRCL = c(90, 100, 125, 150))
+ratioGrid$ratio <- mapply(function(wt, crcl) {
+  typicalParams(uiAvi, WT = wt, CRCL = crcl, AGE = 8)["cl"] /
+    typicalParams(uiCaz, WT = wt, CRCL = crcl, AGE = 8)["cl"]
+}, ratioGrid$WT, ratioGrid$CRCL)
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalq'
+#> Warning: No sigma parameters in the model
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp'
+
+# Franzese 2022 Table 2 (erratum), phase I and phase II cUTI cohorts: no
+# ceftazidime infection-type clearance effect applies to either.
+table2 <- tribble(
+  ~cohort, ~aucCaz, ~aucAvi,
+  "Phase I, 3 months to <2 years", 888, 143,
+  "Phase I, 2 to <6 years", 794, 127,
+  "Phase I, 6 to <12 years", 814, 121,
+  "Phase I, 12 to <18 years", 821, 124,
+  "Phase II cUTI, 3 to <6 months", 736, 132,
+  "Phase II cUTI, 6 months to <1 year", 859, 113,
+  "Phase II cUTI, 1 to <2 years", 883, 117,
+  "Phase II cUTI, 2 to <6 years", 789, 123,
+  "Phase II cUTI, 6 to <12 years", 993, 153,
+  "Phase II cUTI, 12 to <18 years", 843, 139
+) |>
+  mutate(ratio = aucCaz / aucAvi / 4)
+
+tibble(
+  Quantity = c(
+    "Model typical CLavi / CLcaz, children > 2 y (range over WT 10-45 kg, NCrCL 90-150)",
+    "Table 2 post hoc CLavi / CLcaz, median of 10 pediatric cohorts (range)"
+  ),
+  Value = c(
+    sprintf("%.2f-%.2f", min(ratioGrid$ratio), max(ratioGrid$ratio)),
+    sprintf("%.2f (%.2f-%.2f)", median(table2$ratio), min(table2$ratio), max(table2$ratio))
+  )
+) |>
+  knitr::kable(caption = "Avibactam-to-ceftazidime clearance ratio: typical values against the fitted children.")
+```
+
+| Quantity | Value |
+|:---|:---|
+| Model typical CLavi / CLcaz, children \> 2 y (range over WT 10-45 kg, NCrCL 90-150) | 1.28-1.53 |
+| Table 2 post hoc CLavi / CLcaz, median of 10 pediatric cohorts (range) | 1.61 (1.39-1.90) |
+
+Avibactam-to-ceftazidime clearance ratio: typical values against the
+fitted children. {.table}
+
+``` r
+
+
+# Both sides are deterministic transcriptions / typical values.
+stopifnot(median(table2$ratio) > max(ratioGrid$ratio))
+```
+
+The fitted children’s median ratio exceeds the largest typical-value
+ratio the two models produce over that covariate range. Because the
+ceftazidime simulation reproduces Table 3 (which used the same
+resampling), the excess is on the avibactam side: the fitted children’s
+avibactam clearance is on average higher than the avibactam typical
+value predicts, by roughly the amount the simulation above overshoots
+Table 3 on `AUCss,0-24`. The larger overshoot on `Cmax,ss` points to the
+same kind of offset in the resampled central-volume random effects. That
+is a property of the published model – its avibactam typical values are
+not centred on the pediatric data – not an extraction error, and a
+parametric simulation of children from this model will over-predict
+avibactam exposure by about this much.
+
+## Joint PK/PD target attainment (Table 4)
+
+The joint target is 50% of the dosing interval with free ceftazidime
+above the MIC (8 mg/L, `fu` = 0.85) and free avibactam above 1 mg/L
+(`fu` = 0.92), achieved simultaneously.
+
+``` r
+
+fT <- sim |>
+  filter(time < 8) |>
+  mutate(free = ifelse(drug == "Ceftazidime", 0.85 * Cc, 0.92 * Cc), thr = ifelse(drug == "Ceftazidime", 8, 1)) |>
+  group_by(drug, id) |>
+  summarise(ft = mean(free > thr), .groups = "drop") |>
+  pivot_wider(names_from = drug, values_from = ft) |>
+  filter(!is.na(Avibactam)) |>
+  left_join(cohort |> select(id, grp, ind, renal), by = "id")
+
+ptaSim <- fT |>
+  group_by(renal, ind, grp) |>
+  summarise(
+    caz = 100 * mean(Ceftazidime >= 0.5), avi = 100 * mean(Avibactam >= 0.5),
+    joint = 100 * mean(Ceftazidime >= 0.5 & Avibactam >= 0.5), .groups = "drop"
+  )
+
+table4 <- bind_rows(
+  tibble(renal = "Normal", grp = rep(grpLev, 3), ind = rep(c("cIAI", "cUTI", "HAP/VAP"), each = 7),
+    published = c(96, 90, 82, 82, 90, 93, 95, 99, 97, 94, 94, 98, 98, 97, 99, 97, 92, 92, 97, 98, 95)),
+  tibble(renal = "Mild", grp = rep(grpMild, 3), ind = rep(c("cIAI", "cUTI", "HAP/VAP"), each = 4),
+    published = c(99, 100, 100, 99, 99, 100, 100, 99, 99, 100, 100, 99))
+)
+
+ptaCmp <- inner_join(table4, ptaSim, by = c("renal", "ind", "grp"))
+ptaCmp |>
+  mutate(across(c(caz, avi, joint), round)) |>
+  dplyr::rename(
+    `Renal function` = renal, Indication = ind, `Age group` = grp,
+    `Published joint PTA (%)` = published, `Ceftazidime PTA (%)` = caz,
+    `Avibactam PTA (%)` = avi, `Joint PTA (%)` = joint
+  ) |>
+  knitr::kable(caption = "Joint PTA at MIC 8 mg/L: Franzese 2022 Table 4 against this simulation.")
+```
+
+| Renal function | Age group | Indication | Published joint PTA (%) | Ceftazidime PTA (%) | Avibactam PTA (%) | Joint PTA (%) |
+|:---|:---|:---|---:|---:|---:|---:|
+| Normal | 12 to \<18 years | cIAI | 96 | 90 | 99 | 89 |
+| Normal | 6 to \<12 years | cIAI | 90 | 85 | 100 | 85 |
+| Normal | 2 to \<6 years | cIAI | 82 | 66 | 97 | 65 |
+| Normal | 1 to \<2 years | cIAI | 82 | 73 | 96 | 69 |
+| Normal | 6 to \<12 months | cIAI | 90 | 81 | 100 | 81 |
+| Normal | 3 to \<6 months | cIAI | 93 | 82 | 98 | 80 |
+| Normal | Adults | cIAI | 95 | 89 | 100 | 89 |
+| Normal | 12 to \<18 years | cUTI | 99 | 91 | 100 | 91 |
+| Normal | 6 to \<12 years | cUTI | 97 | 94 | 100 | 94 |
+| Normal | 2 to \<6 years | cUTI | 94 | 78 | 96 | 74 |
+| Normal | 1 to \<2 years | cUTI | 94 | 84 | 98 | 82 |
+| Normal | 6 to \<12 months | cUTI | 98 | 91 | 97 | 89 |
+| Normal | 3 to \<6 months | cUTI | 98 | 92 | 100 | 92 |
+| Normal | Adults | cUTI | 97 | 94 | 97 | 91 |
+| Normal | 12 to \<18 years | HAP/VAP | 99 | 95 | 100 | 95 |
+| Normal | 6 to \<12 years | HAP/VAP | 97 | 98 | 100 | 98 |
+| Normal | 2 to \<6 years | HAP/VAP | 92 | 88 | 95 | 84 |
+| Normal | 1 to \<2 years | HAP/VAP | 92 | 90 | 93 | 83 |
+| Normal | 6 to \<12 months | HAP/VAP | 97 | 87 | 97 | 84 |
+| Normal | 3 to \<6 months | HAP/VAP | 98 | 96 | 97 | 93 |
+| Normal | Adults | HAP/VAP | 95 | 97 | 100 | 97 |
+| Mild | 12 to \<18 years | cIAI | 99 | 97 | 100 | 97 |
+| Mild | 6 to \<12 years | cIAI | 100 | 98 | 100 | 98 |
+| Mild | 2 to \<6 years | cIAI | 100 | 97 | 100 | 97 |
+| Mild | Adults | cIAI | 99 | 98 | 100 | 98 |
+| Mild | 12 to \<18 years | cUTI | 99 | 100 | 99 | 99 |
+| Mild | 6 to \<12 years | cUTI | 100 | 100 | 100 | 100 |
+| Mild | 2 to \<6 years | cUTI | 100 | 95 | 100 | 95 |
+| Mild | Adults | cUTI | 99 | 100 | 100 | 100 |
+| Mild | 12 to \<18 years | HAP/VAP | 99 | 100 | 100 | 100 |
+| Mild | 6 to \<12 years | HAP/VAP | 100 | 100 | 100 | 100 |
+| Mild | 2 to \<6 years | HAP/VAP | 100 | 97 | 100 | 97 |
+| Mild | Adults | HAP/VAP | 99 | 100 | 99 | 99 |
+
+Joint PTA at MIC 8 mg/L: Franzese 2022 Table 4 against this simulation.
+{.table}
+
+``` r
+
+
+stopifnot(
+  # Centre: the parametric simulation sits below the published values (see
+  # text), but by points, not tens of points.
+  median(ptaCmp$joint - ptaCmp$published) > -15,
+  median(ptaCmp$joint - ptaCmp$published) < 5,
+  # Structural: the 33% higher ceftazidime CL in cIAI lowers attainment
+  # against cUTI at the same ages. Pooled over the six pediatric age groups
+  # (600 subjects per side) so the margin, about 9 points in development
+  # runs, is several standard errors wide.
+  mean(ptaCmp$joint[ptaCmp$renal == "Normal" & ptaCmp$ind == "cIAI" & ptaCmp$grp != "Adults"]) <
+    mean(ptaCmp$joint[ptaCmp$renal == "Normal" & ptaCmp$ind == "cUTI" & ptaCmp$grp != "Adults"]),
+  # Mild renal impairment raises exposure and therefore attainment.
+  mean(ptaCmp$joint[ptaCmp$renal == "Mild"]) > mean(ptaCmp$joint[ptaCmp$renal == "Normal"])
+)
+```
+
+Ceftazidime is the limiting analyte almost everywhere: avibactam
+attainment is close to 100% in every arm. The simulation reproduces the
+paper’s pattern – attainment highest with mild renal impairment, lowest
+for cIAI children aged 1 to \< 6 years, where the 33% higher ceftazidime
+clearance in cIAI bites hardest – but sits several points below Table 4.
+Two documented differences push it that way: the paper resampled post
+hoc random effects in pairs from the same fitted subject, which carries
+the positive correlation between the two drugs’ clearances into the
+joint target, whereas here the two models draw independently; and the
+paper’s resampled, shrinkage-reinflated random effects are not the same
+distribution as the OMEGA matrix used here.
+
+## Assumptions and deviations
+
+1.  **Ceftazidime clearance is the Table S2 value, 7.75 L/h.** The
+    printed control stream’s `$THETA` carries 9.1259 for CL while every
+    other theta agrees with Table S2 to rounding. Table S2 is the final
+    run (its footnote identifies it as run121, and the control stream’s
+    header says run121 re-parameterized the weight function of run120,
+    the likely source of the initial values). The simulated adult and
+    pediatric ceftazidime AUCs above match Table 3 with 7.75; with 9.13
+    every arm would sit about 15% low.
+2.  **The avibactam control stream holds initial values.** Its `$THETA`
+    matches the Li 2019 estimates and its `$OMEGA BLOCK(4)` is a 0.1 /
+    0.001 starting guess; all avibactam values are from Table S3. Its
+    functional forms are used as printed.
+3.  **Covariates held at zero in the final avibactam control stream**
+    (sex, race, age powers, pediatric-study CL and Vc terms, the
+    study-15 terms) are omitted from `model()`; sex, race and augmented
+    renal clearance are listed under `covariatesDataExcluded`. The
+    augmented-renal-clearance multiplier `TH13` is held at 1, so
+    `RENAL_ARC` has no effect.
+4.  **Residual strata.** The avibactam `PH2` flag tests the adult phase
+    2 study numbers (`STDY = 2001/2002`), not `PHASE`, so pediatric
+    phase II records fall in the avibactam phase I stratum. The
+    ceftazidime stream tests `PHASE = 2 or 3`, which includes the
+    pediatric phase II studies (the control streams’ `STDY = 15` branch
+    shows those studies carry `PHASE = 2`). The pediatric phase 2
+    studies therefore have their own indicator,
+    `STUDY_CAZAVI_PED_PHASE2`, used only by the ceftazidime model.
+5.  **Pediatric phase I subjects** (suspected or confirmed infection)
+    are taken to carry no infection-type indicator (`DIS_*` = 0); the
+    paper does not state their `POP` code.
+6.  **The virtual cohort is a reconstruction.** Child weights are drawn
+    around approximate growth-chart medians for age, child NCrCL (normal
+    stratum) lognormally around 125 mL/min/1.73 m^2 truncated at 80 (the
+    Table 1 cohort medians are 89-130), adult weights and NCrCL from the
+    Li 2019 adult summaries, and race from Table 1 (children) and Li
+    2019 (adults). The Pfizer covariate database the paper bootstrapped
+    is not public.
+7.  **Ventilation and APACHE II in the simulation.** As in the Li 2019
+    vignette, a third of HAP/VAP subjects are ventilated (138 of 413
+    adult nosocomial-pneumonia subjects had VAP) and 39% of adult cIAI
+    and HAP/VAP subjects have an elevated APACHE II score (438 of
+    1,115); children have no APACHE score.
+8.  **Between-subject variability** is drawn from the published OMEGA
+    matrices, independently for the two analytes, whereas the paper
+    resampled paired, shrinkage-reinflated post hoc random effects. This
+    explains the avibactam exposure offset and the lower joint PTA
+    discussed above. A few avibactam draws (extreme `Q` and `Vc`) fail
+    the steady-state solve and are dropped.
+9.  **Table 2 headings.** The original Table 2 transposed the
+    ceftazidime and avibactam column headings; the values used here
+    follow the 2024 erratum.

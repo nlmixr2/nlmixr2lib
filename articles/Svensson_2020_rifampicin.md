@@ -11,7 +11,7 @@
   in the same supplement (‘NONMEM code pharmacokinetic model’), which
   also carries the model equations. The saturable-hepatic-extraction
   structure follows Chirehwa et al. (2016) Antimicrob Agents Chemother
-  60(1):487-494 <doi:10.1128/AAC.01084-15>; the transit absorption
+  60(1):487-494 <doi:10.1128/AAC.01830-15>; the transit absorption
   follows Savic et al. (2007) J Pharmacokinet Pharmacodyn 34(5):711-726.
 - Article: <https://doi.org/10.1093/cid/ciz1071> (open access,
   PMC7643733)

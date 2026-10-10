@@ -2,11 +2,13 @@
 
 ## Model and source
 
-- Citation: Plachouras D, Karvanen M, Friberg LE, et al. Population
-  pharmacokinetic analysis of colistin methanesulfonate and colistin
-  after intravenous administration in critically ill patients with
-  infections caused by gram-negative bacteria. Antimicrob Agents
-  Chemother. 2009;53(8):3430-3436.
+- Citation: Plachouras D, Karvanen M, Friberg LE, Papadomichelakis E,
+  Antoniadou A, Tsangaris I, Karaiskos I, Poulakou G, Kontopidou F,
+  Armaganidis A, Cars O, Giamarellou H. Population pharmacokinetic
+  analysis of colistin methanesulfonate and colistin after intravenous
+  administration in critically ill patients with infections caused by
+  gram-negative bacteria. Antimicrob Agents Chemother.
+  2009;53(8):3430-3436. <doi:10.1128/AAC.01361-08>.
 - Article: <https://doi.org/10.1128/AAC.01361-08>
 - Description: Joint parent-metabolite popPK model. Colistin
   methanesulfonate (CMS, the inactive prodrug) is administered

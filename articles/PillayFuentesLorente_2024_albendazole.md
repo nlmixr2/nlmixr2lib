@@ -7,7 +7,7 @@
   Coulibaly J, Pfister M, Keiser J. Understanding Drug Exposure and
   Trichuris trichiura Cure Rates: A Pharmacometric Approach for
   Albendazole-Ivermectin Co-medication in Tanzania and Cote d’Ivoire.
-  Drugs R D. 2024;24(2):205-215. <doi:10.1007/s40268-024-00476-4>.
+  Drugs R D. 2024;24(2):331-340. <doi:10.1007/s40268-024-00476-4>.
 - Description: Joint population PK model for the two main albendazole
   metabolites after a single oral 400 mg albendazole dose (with or
   without co-administered ivermectin) in adolescents infected with
@@ -17,7 +17,7 @@
   one-compartment albendazole sulfone, with a study-population (country)
   effect on both apparent clearances
 - Article: [Drugs R D.
-  2024;24(2):205-215](https://doi.org/10.1007/s40268-024-00476-4)
+  2024;24(2):331-340](https://doi.org/10.1007/s40268-024-00476-4)
 
 Albendazole is rapidly and almost completely pre-systemically
 metabolised, so the parent drug is barely measurable in plasma. The

@@ -62,8 +62,8 @@ table below collects them in one place for review.
 | `lka` (Ka for TBILI = 0 mg/dL reference) | 1.04 1/h (95% CI 0.72, 1.36) | Table 3 row “theta_3 (1/h)” |
 | `e_rif_cl_vc` (rifampin shared fractional effect on CL/F and V/F) | 0.696 (95% CI 0.318, 1.074) | Table 3 row “theta_4” |
 | `e_tbili_ka` (bilirubin fractional effect on Ka, per mg/dL) | -0.119 (95% CI -0.08, -0.158) | Table 3 row “theta_5” |
-| `etalcl` variance | log(1 + 0.35^2) | Table 3 row “CV CL/F (%) = 35” (Results paragraph 1: “constant coefficient of variation”) |
-| `etalka` variance | log(1 + 0.85^2) | Table 3 row “CV Ka (%) = 85” (Results paragraph 1: “constant coefficient of variation”) |
+| `etalcl` variance | 0.35^2 = 0.1225 | Table 3 row “CV CL/F (%) = 35”, read as omega x 100 (see Errata) |
+| `etalka` variance | 0.85^2 = 0.7225 | Table 3 row “CV Ka (%) = 85”, read as omega x 100 (see Errata) |
 | `etalvc` | n/a (no IIV) | Results paragraph 4: V/F IIV decreased to a very small value and was no longer significant after covariate inclusion |
 | `propSd` (FIXED at 0) | 0 | Not reported in paper; FIXED here per maintainer decision; see Errata |
 | `addSd` (FIXED at 0) | 0 | Not reported in paper; FIXED here per maintainer decision; see Errata |
@@ -73,6 +73,67 @@ table below collects them in one place for review.
 | `vc = exp(lvc) * (1 + e_rif_cl_vc * CONMED_RIF)` | n/a | Results paragraph 3 covariate equation: V/F = theta_2 + theta_2 \* theta_4 \* R (same theta_4 enforced; dOFV 1.23, P \> 0.05) |
 | `ka = exp(lka + etalka) * (1 + e_tbili_ka * TBILI)` | n/a | Form assumed by analogy to the explicit rifampin equation (maintainer decision). Numerical check: Ka(TBILI = 0.7 mg/dL) = 1.04 \* (1 - 0.119 \* 0.7) = 0.953; paper Discussion paragraph 7 quotes 0.957 (0.4% discrepancy attributable to rounding theta_3 from a precise estimate near 1.043 down to 1.04 in Table 3 display). |
 | `Cc <- central / vc` | mg/L | Dose mg / volume L; matches paper concentration units |
+
+## Variability scale check
+
+The figures and NCA below use typical-value simulations, so they do not
+exercise the random effects. Gatti 1996 Table 3 prints each IIV term as
+omega x 100 (see the Errata section). The first check confirms that the
+packaged omega matrix holds exactly (P/100)^2 for each printed
+percentage P. It compares the file with the table, so the bound is
+tight.
+
+The second check confirms that the etas reach the parameters on that
+scale. It solves 10000 reference patients (no rifampin, TBILI = 11.97
+umol/L) at a single time point, so the per-subject SD of log(CL/F) and
+log(Ka) estimates omega directly. The SD of a sample of 10000 has about
+0.7% sampling error, so the +/-4% band is about six standard errors wide
+and holds for any random-number stream. The bound is on the sample SD, a
+centre statistic, not on any per-subject extreme. It fails on the
+originally shipped Ka variance, whose SD of 0.737 is 0.868 times the
+printed 0.85.
+
+``` r
+
+mod <- readModelDb("Gatti_1996_dapsone")
+omega <- rxode2::rxode(mod)$omega
+printed_pct <- c(etalcl = 35, etalka = 85)
+stopifnot(
+  isTRUE(all.equal(unname(diag(omega)[names(printed_pct)]),
+                   unname((printed_pct / 100)^2), tolerance = 1e-12))
+)
+
+ev_spread <- tibble(
+  id = seq_len(10000L), time = 0, amt = NA_real_, evid = 0L,
+  cmt = "central", CONMED_RIF = 0L, TBILI = 11.97
+)
+per_subject <- as.data.frame(rxode2::rxSolve(mod, events = ev_spread)) |>
+  dplyr::distinct(id, cl, ka)
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
+spread <- tibble(
+  quantity      = c("log(CL/F)", "log(Ka)"),
+  printed_omega = unname(printed_pct / 100),
+  simulated_sd  = c(stats::sd(log(per_subject$cl)),
+                    stats::sd(log(per_subject$ka)))
+) |>
+  dplyr::mutate(ratio = simulated_sd / printed_omega)
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega (N = ",
+                              nrow(per_subject), ", reference patient)."))
+```
+
+| quantity  | printed_omega | simulated_sd | ratio |
+|:----------|--------------:|-------------:|------:|
+| log(CL/F) |          0.35 |        0.350 | 0.999 |
+| log(Ka)   |          0.85 |        0.844 | 0.993 |
+
+Per-subject spread vs. printed omega (N = 10000, reference patient).
+{.table}
+
+``` r
+
+stopifnot(all(spread$ratio > 0.96 & spread$ratio < 1.04))
+```
 
 ## Virtual cohort
 
@@ -366,6 +427,19 @@ knitr::kable(cmp, digits = 3,
 Simulated vs published typical-patient NCA. Tmax in hours after each
 dose; half-life in hours. {.table}
 
+``` r
+
+
+# Typical-value (deterministic) comparison, so tight bounds are correct. The
+# Cmin bound allows for the paper's two-significant-figure rounding (0.08
+# carries up to +/-6%).
+stopifnot(
+  nrow(cmp) == 4L,
+  all(abs(cmp$Cmax_pct_diff) < 3),
+  all(abs(cmp$Cmin_pct_diff) < 10)
+)
+```
+
 The reported half-life is 26.4 h, matching the paper’s 26.4 h. Tmax is
 3.8 h, matching the paper’s ~3.7 h. Cmax and Cmin values agree with the
 paper to within a few percent across all four treatment x interval
@@ -438,3 +512,39 @@ model parameter difference.
   uses the Table 3 display value (1.04) verbatim; downstream users who
   require numerical reproduction of the paper’s Figure 3 simulation to
   better than ~0.5% should be aware of this 3-sig-fig rounding.
+
+### Correction to the packaged IIV values (2026-10)
+
+The model as first released in nlmixr2lib put the inter-individual
+variances on the wrong scale. It read each Table 3 CV% as a coefficient
+of variation and converted it with omega^2 = log(1 + CV^2). The printed
+percentages are in fact omega x 100, the standard deviation of the eta
+on the log scale, so omega^2 = (P/100)^2.
+
+The paper’s own confidence intervals settle this. The Table 3 theta rows
+have symmetric 95% CIs (for example CL/F 1.83 (1.57, 2.09)), so they are
+Wald intervals from the NONMEM covariance step. The CV rows are not
+symmetric on the % scale: the Wald interval was computed on omega^2 and
+shown as its square root. Squared back, the CI endpoints must then be
+symmetric about the squared point estimate. The two readings agree for
+small percentages because log(1 + x) is close to x; only the wide Ka row
+tells them apart:
+
+| Row | Printed (95% CI) | Midpoint offset, omega x 100 reading | Midpoint offset, log(1 + CV^2) reading |
+|----|----|----|----|
+| CL/F | 35% (20, 46) | +2.7% (inside rounding of 35) | 0.0% (inside rounding of 35) |
+| Ka | 85% (45, 111) | **-0.7%** (inside rounding of 85) | **-9.2%** (outside rounding of 85) |
+
+The midpoint offset is ((f(lo) + f(hi)) / 2 - f(P)) / f(P), where f is
+the reading’s map from the printed percentage to the variance. “Inside
+rounding” means the squared-CI midpoint lies within f(P - 0.5) to f(P +
+0.5). Both variances were corrected:
+
+| eta      | Shipped before 2026-10 | Corrected | Ratio |
+|----------|------------------------|-----------|-------|
+| `etalcl` | 0.1156                 | 0.1225    | 1.060 |
+| `etalka` | 0.5438                 | 0.7225    | 1.329 |
+
+Typical values, covariate effects and the model structure are unchanged,
+so the typical-value figures and NCA comparisons in this article do not
+move.

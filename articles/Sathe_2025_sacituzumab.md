@@ -5,7 +5,8 @@
 - Citation: Sathe AG, Jones AK, Diderichsen PM, Wang X, Chang P, Verret
   W, Girish S. Sacituzumab Govitecan Population Pharmacokinetics:
   Updated Analyses Using HR+/HER2- Metastatic Breast Cancer Data From
-  the Phase 3 TROPiCS-02 Trial. Clin Transl Sci. 2025;18(8):e70291.
+  the Phase 3 TROPiCS-02 Trial. Clin Transl Sci. 2025;18(7):e70291.
+  <doi:10.1111/cts.70291>.
 - Article: <https://doi.org/10.1111/cts.70291>
 - Predecessor 3-analyte model (Sathe 2024, `Sathe_2024_sacituzumab`):
   first-fit PopPK of SG using IMMU-132-01 and ASCENT data only.

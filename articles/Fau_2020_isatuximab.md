@@ -2,11 +2,11 @@
 
 ## Model and source
 
-- Citation: Fau JB, El-Cheikh R, Brillac C, et al. Drug-Disease
-  Interaction and Time-Dependent Population Pharmacokinetics of
-  Isatuximab in Relapsed/Refractory Multiple Myeloma Patients. CPT
-  Pharmacometrics Syst Pharmacol. 2020;9(11):649-658.
-  <doi:10.1002/psp4.12561>
+- Citation: Fau JB, El-Cheikh R, Brillac C, Koiwai K, Mace N, Campana F,
+  Semiond D, Nguyen L. Drug-Disease Interaction and Time-Dependent
+  Population Pharmacokinetics of Isatuximab in Relapsed/Refractory
+  Multiple Myeloma Patients. CPT Pharmacometrics Syst Pharmacol.
+  2020;9(11):649-658. <doi:10.1002/psp4.12561>.
 - Description: Two-compartment population PK model for intravenous
   isatuximab (anti-CD38 IgG1) in adults with relapsed/refractory
   multiple myeloma, with parallel time-varying linear and

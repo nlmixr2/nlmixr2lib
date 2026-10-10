@@ -2,10 +2,12 @@
 
 ## Model and source
 
-- Citation: Koopman SF, Goedhart TMHJ, Bukkems LH, et al. A new
+- Citation: Koopman SF, Goedhart TMHJ, Bukkems LH, Mulders TM, Leebeek
+  FWG, Fijnvandraat K, Coppens M, Mathias M, Collins PW, Tait RC, Bagot
+  CN, Curry N, Payne J, Chowdary P, Cnossen MH, Mathot RAA. A new
   population pharmacokinetic model for recombinant factor IX-Fc fusion
   concentrate including young children with haemophilia B. *Br J Clin
-  Pharmacol.* 2024;90(1):220-231.
+  Pharmacol*. 2024;90(1):220-231.
   <doi:%5B10.1111/bcp.15881>\](<https://doi.org/10.1111/bcp.15881>)
 - Description: Two-compartment population PK model for recombinant
   factor IX-Fc fusion protein (rFIX-Fc, eftrenonacog alfa, Alprolix) in

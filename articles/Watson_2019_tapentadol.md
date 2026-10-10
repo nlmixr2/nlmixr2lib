@@ -348,7 +348,7 @@ cat(sprintf(
   length(cc_neg), sum(!is.na(sim$Cc)),
   if (length(cc_neg)) abs(min(cc_neg)) / cmax_all else 0
 ))
-#> negative Cc points: 2 of 81000; worst |Cc|/Cmax = 2.21e-10
+#> negative Cc points: 6 of 81000; worst |Cc|/Cmax = 2.21e-10
 stopifnot(
   cmax_all > 0,
   length(cc_neg) == 0L || abs(min(cc_neg)) < 1e-6 * cmax_all

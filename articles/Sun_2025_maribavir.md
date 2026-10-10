@@ -6,7 +6,7 @@
   Bhattacharya I. Population Pharmacokinetics and Exposure-Response
   Relationships of Maribavir in Transplant Recipients With First Episode
   or Refractory Cytomegalovirus. CPT Pharmacometrics Syst Pharmacol.
-  2025;14(8):1346-1356. <doi:10.1002/psp4.70054>. Final NONMEM control
+  2025;14(8):1346-1358. <doi:10.1002/psp4.70054>. Final NONMEM control
   stream in Supporting Information (file s001).
 - Description: Updated two-compartment population PK model for oral
   maribavir in healthy volunteers, phase I special populations, and
@@ -151,7 +151,7 @@ mod
 #>         regions = "North America, Europe and Asia Pacific (region proportions reported only for the 238-patient AURORA exposure-response subset: North America 24.8%, Europe 58.0%, Asia Pacific 17.2%, Table S2).", 
 #>         co_medication = "Proton-pump inhibitors 54%, strong CYP3A4 inhibitors 13%, moderate CYP3A4 inhibitors 11%, histamine H2 blockers 10%, antacids 8%, weak CYP3A4 inhibitors 6%, strong CYP3A4 inducers 2% (Table 1 and Table S1).", 
 #>         notes = "Below-limit-of-quantification data were handled by method M1 (all 297 BLQ records, 3.5% of post-dose values, excluded). Parameters were estimated in NONMEM 7.5.1 with IMPMAP; standard errors and 95% non-parametric confidence intervals came from bootstrap stratified by study. Structure was read from the final control stream in Supporting Information file s001; every parameter VALUE comes from the published Table 2, because the control stream's $THETA / $OMEGA / $SIGMA blocks are the run's INITIAL estimates (they are close to but not equal to the final values -- e.g. THETA(16) [KA~dose] is -1.17 initially against a final -1.02, and -1.17 is in fact the lower bound of the published 95% CI).")
-#>     reference <- "Sun K, Jomphe C, Gosselin NH, Pheng L, Durairaj C, Hang Y, Bhattacharya I. Population Pharmacokinetics and Exposure-Response Relationships of Maribavir in Transplant Recipients With First Episode or Refractory Cytomegalovirus. CPT Pharmacometrics Syst Pharmacol. 2025;14(8):1346-1356. doi:10.1002/psp4.70054. Final NONMEM control stream in Supporting Information (file s001)."
+#>     reference <- "Sun K, Jomphe C, Gosselin NH, Pheng L, Durairaj C, Hang Y, Bhattacharya I. Population Pharmacokinetics and Exposure-Response Relationships of Maribavir in Transplant Recipients With First Episode or Refractory Cytomegalovirus. CPT Pharmacometrics Syst Pharmacol. 2025;14(8):1346-1358. doi:10.1002/psp4.70054. Final NONMEM control stream in Supporting Information (file s001)."
 #>     units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 #>     vignette <- "Sun_2025_maribavir"
 #>     ini({

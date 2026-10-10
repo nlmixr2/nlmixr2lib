@@ -70,11 +70,11 @@ reduction for the two commercial regimens at the reference patient.
 
 ## Model and source
 
-- Citation: Kuchimanchi M, Monine M, Kandadi Muralidharan K, Woodhead
-  JL, Horner TJ. *Population pharmacokinetics and exposure–response
-  modeling and simulation for evolocumab in healthy volunteers and
-  patients with hypercholesterolemia.* J Pharmacokinet Pharmacodyn.
-  2019;46(2):133–148.
+- Citation: Kuchimanchi M, Grover A, Emery MG, Somaratne R, Wasserman
+  SM, Gibbs JP, Doshi S. *Population pharmacokinetics and
+  exposure-response modeling and simulation for evolocumab in healthy
+  volunteers and patients with hypercholesterolemia.* J Pharmacokinet
+  Pharmacodyn. 2018;45(3):505-522. <doi:10.1007/s10928-018-9592-y>.
 - Article:
   [doi:10.1007/s10928-018-9592-y](https://doi.org/10.1007/s10928-018-9592-y).
 - No errata were identified (PubMed search

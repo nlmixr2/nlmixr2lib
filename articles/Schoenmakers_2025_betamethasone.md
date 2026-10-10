@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Schoenmakers S, Li L, Kluivers ACM, Broekhuizen M, Harhangi
-  MS, Ronde E, DeKoninck PLJ, Reiss I, Danser AHJ, Allegaert K, van den
-  Berg SAA, van Zelst BD, van Schaik RHN, Simons SHP, Koch BCP, Sassen
-  SDT. (2025). Pharmacokinetics of betamethasone in pre-eclampsia: An in
-  vivo and ex vivo study. Br J Clin Pharmacol 91(11):2327-2339.
+  MS, Danser AHJ, Reiss I, Allegaert K, van den Berg SAA, van Zelst BD,
+  van Schaik RHN, DeKoninck PLJ, Ronde E, Sassen SDT, Simons SHP, Koch
+  BCP. Pharmacokinetics of betamethasone in pre-eclampsia: An in vivo
+  and ex vivo study. Br J Clin Pharmacol. 2025;91(8):2327-2339.
   <doi:10.1002/bcp.70035>.
 - Description: Two-compartment population PK model with first-order
   absorption (no lag time) for intramuscular betamethasone in pregnant

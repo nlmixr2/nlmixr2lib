@@ -85,7 +85,7 @@ collect them.
 | `e_cyp2c9_23_cl` | 0.496 | Lane 2011 Table 3 |
 | `e_cyp2c9_33_cl` | 0.286 | Lane 2011 Table 3 |
 | `e_cyp2c9_missing_cl` | 0.782 | Lane 2011 Table 3 (Missing-genotype subgroup) |
-| `etalcl + etalvc` block | 0.16113 / 0.058822 / 0.12054 | Lane 2011 Table 3 (CV CL 41.8%, CV V 35.8%, correlation 0.422) |
+| `etalcl + etalvc` block | 0.174724 / 0.063150 / 0.128164 | Lane 2011 Table 3 (IIV CL 41.8%, IIV V 35.8% = omega x 100; correlation 0.422) |
 | `propSd` | 0.316 | Lane 2011 Table 3 (proportional residual SD) |
 | `addSd` | 0.001 mg/L | Lane 2011 Table 3 (additive residual fixed at 1 ng/mL = 0.001 mg/L) |
 | CL equation | n/a | Lane 2011 Results paragraph following Tables 2 and 3 |
@@ -105,7 +105,7 @@ collect them.
 | `e_cyp3a4_het_cl` | 1.32 | Lane 2011 Table 3 (CYP3A4 rs2242480 heterozygote multiplier) |
 | `e_cyp3a4_varhom_cl` | 1.06 | Lane 2011 Table 3 |
 | `e_cyp3a4_missing_cl` | 0.937 | Lane 2011 Table 3 |
-| `etalcl + etalvc` block | 0.16975 / 0.053666 / 0.13692 | Lane 2011 Table 3 (CV CL 43.0%, CV V 38.3%, correlation 0.352) |
+| `etalcl + etalvc` block | 0.184900 / 0.057971 / 0.146689 | Lane 2011 Table 3 (IIV CL 43.0%, IIV V 38.3% = omega x 100; correlation 0.352) |
 | `propSd` | 0.319 | Lane 2011 Table 3 |
 | `addSd` | 0.001 mg/L | Lane 2011 Table 3 (additive residual fixed at 1 ng/mL) |
 | CL equation | n/a | Lane 2011 Results paragraph following Tables 2 and 3 |
@@ -135,7 +135,10 @@ Both enantiomer models share the same structural form:
   block covariance between the two random effects. The correlation
   reported in Table 3 (0.422 for S, 0.352 for R) was converted to a
   covariance via `cov = correlation * sqrt(omega2_cl * omega2_v)` where
-  each variance is `omega2 = log(1 + CV^2)`.
+  each variance is `omega2 = (CV/100)^2`. The Table 2 and 3 footnote
+  defines the IIV percentages as “an approximate coefficient of
+  variation (square root of the variance)”, i.e. omega x 100 (see the
+  Errata section).
 - **Inter-occasion variability**: tested in both enantiomer models and
   not retained (Lane 2011 Results ‘S-Warfarin models’ and ‘R-Warfarin
   models’).
@@ -305,6 +308,100 @@ sim_r <- rxode2::rxSolve(
            "SNP_CYP3A4_RS2242480_MISSING")
 ) |> as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+## Variability scale check
+
+Lane 2011 prints each IIV term as omega x 100 (see the Errata section).
+The first check confirms that each packaged omega block holds exactly
+(P/100)^2 on the diagonal and rho x omega_CL x omega_V off the diagonal.
+It compares the files with Table 3, so the bound is tight.
+
+The second check confirms that the etas reach the parameters on that
+scale. It solves 40000 reference patients per enantiomer (70 kg, 69.8
+years, wild-type genotypes; women for S-warfarin) at a single time
+point, so the per-subject SD of log(CL) and log(V) estimates omega
+directly and their correlation estimates rho. The SD of a sample of
+40000 has about 0.35% sampling error, so the +/-2% band is about six
+standard errors wide and holds for any random-number stream; the
+correlation band of +/-0.03 is about eight standard errors. The bounds
+are on centre statistics, not on any per-subject extreme. They fail on
+the originally shipped variances, whose SDs were 3-4% below the printed
+values.
+
+``` r
+
+printed <- tibble::tribble(
+  ~enantiomer, ~omega_cl, ~omega_v, ~rho,
+  "S",         0.418,     0.358,    0.422,
+  "R",         0.430,     0.383,    0.352
+)
+omega_s <- rxode2::rxode(mod_s)$omega
+#> ℹ parameter labels from comments will be replaced by 'label()'
+omega_r <- rxode2::rxode(mod_r)$omega
+#> ℹ parameter labels from comments will be replaced by 'label()'
+expected_block <- function(p) {
+  matrix(c(p$omega_cl^2, p$rho * p$omega_cl * p$omega_v,
+           p$rho * p$omega_cl * p$omega_v, p$omega_v^2), 2, 2)
+}
+stopifnot(
+  isTRUE(all.equal(unname(omega_s[c("etalcl", "etalvc"), c("etalcl", "etalvc")]),
+                   expected_block(printed[1, ]), tolerance = 1e-5)),
+  isTRUE(all.equal(unname(omega_r[c("etalcl", "etalvc"), c("etalcl", "etalvc")]),
+                   expected_block(printed[2, ]), tolerance = 1e-5))
+)
+
+n_spread <- 40000L
+ev_spread_s <- tibble::tibble(
+  id = seq_len(n_spread), time = 0, amt = NA_real_, evid = 0L,
+  cmt = "central", WT = 70, AGE = 69.8, SEXF = 1L,
+  CYP2C9_S1_COUNT = 2L, CYP2C9_S2_COUNT = 0L, CYP2C9_S3_COUNT = 0L,
+  CYP2C9_MISSING = 0L
+)
+ev_spread_r <- tibble::tibble(
+  id = seq_len(n_spread), time = 0, amt = NA_real_, evid = 0L,
+  cmt = "central", WT = 70, AGE = 69.8,
+  SNP_CYP2C19_RS3814637_VAR_COUNT = 0L, SNP_CYP2C19_RS3814637_MISSING = 0L,
+  SNP_CYP3A4_RS2242480_VAR_COUNT = 0L, SNP_CYP3A4_RS2242480_MISSING = 0L
+)
+spread_of <- function(m, ev, label) {
+  ps <- rxode2::rxSolve(m, events = ev) |>
+    as.data.frame() |>
+    dplyr::distinct(id, cl, vc)
+  tibble::tibble(enantiomer = label,
+                 sd_log_cl = stats::sd(log(ps$cl)),
+                 sd_log_v  = stats::sd(log(ps$vc)),
+                 cor_cl_v  = stats::cor(log(ps$cl), log(ps$vc)))
+}
+spread <- dplyr::bind_rows(spread_of(mod_s, ev_spread_s, "S"),
+                           spread_of(mod_r, ev_spread_r, "R")) |>
+  dplyr::left_join(printed, by = "enantiomer") |>
+  dplyr::mutate(ratio_cl = sd_log_cl / omega_cl,
+                ratio_v  = sd_log_v / omega_v,
+                cor_diff = cor_cl_v - rho)
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
+#> 
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega and correlation (N = ",
+                              n_spread, " per enantiomer, reference patient)."))
+```
+
+| enantiomer | sd_log_cl | sd_log_v | cor_cl_v | omega_cl | omega_v | rho | ratio_cl | ratio_v | cor_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| S | 0.418 | 0.359 | 0.417 | 0.418 | 0.358 | 0.422 | 0.999 | 1.002 | -0.005 |
+| R | 0.429 | 0.384 | 0.356 | 0.430 | 0.383 | 0.352 | 0.998 | 1.002 | 0.004 |
+
+Per-subject spread vs. printed omega and correlation (N = 40000 per
+enantiomer, reference patient). {.table}
+
+``` r
+
+stopifnot(
+  all(spread$ratio_cl > 0.98 & spread$ratio_cl < 1.02),
+  all(spread$ratio_v > 0.98 & spread$ratio_v < 1.02),
+  all(abs(spread$cor_diff) < 0.03)
+)
 ```
 
 ``` r
@@ -520,10 +617,10 @@ nca_s_summary |>
 
 | Stratum | AUC0-24 (mg\*h/L) | Cmax (mg/L) | Tmax (h) | CL = Dose/AUC0-24 (L/h) | Typical-value CL (L/h) | Diff (%) |
 |:---|---:|---:|---:|---:|---:|---:|
-| 100kg *1/*1 | 30.7868 | 1.4001 | 2 | 0.1624 | 0.1615 | 0.6 |
-| 70kg *1/*1 | 34.2113 | 1.5190 | 2 | 0.1462 | 0.1440 | 1.5 |
-| 70kg *1/*3 | 54.6709 | 2.4199 | 2 | 0.0915 | 0.0654 | 39.9 |
-| 70kg *3/*3 | 67.3801 | 2.9055 | 3 | 0.0742 | 0.0412 | 80.2 |
+| 100kg *1/*1 | 30.8191 | 1.4014 | 2 | 0.1622 | 0.1615 | 0.5 |
+| 70kg *1/*1 | 34.2582 | 1.5161 | 2 | 0.1460 | 0.1440 | 1.4 |
+| 70kg *1/*3 | 54.6179 | 2.4126 | 2 | 0.0915 | 0.0654 | 40.0 |
+| 70kg *3/*3 | 67.2197 | 2.9015 | 3 | 0.0744 | 0.0412 | 80.6 |
 
 S-warfarin: steady-state NCA from the simulation and back-calculated CL
 vs typical-value CL. {.table style="width:100%;"}
@@ -589,9 +686,9 @@ nca_r_summary |>
 
 | Stratum | AUC0-24 (mg\*h/L) | Cmax (mg/L) | Tmax (h) | CL = Dose/AUC0-24 (L/h) | Typical-value CL (L/h) | Diff (%) |
 |:---|---:|---:|---:|---:|---:|---:|
-| 70kg C19-het/A4-wild | 48.1948 | 2.1530 | 2 | 0.1037 | 0.0951 | 9.1 |
-| 70kg C19-varhom/A4-wild | 62.2293 | 2.7650 | 2 | 0.0803 | 0.0618 | 30.1 |
-| 70kg C19-wild/A4-wild | 34.4934 | 1.6357 | 2 | 0.1450 | 0.1250 | 16.0 |
+| 70kg C19-het/A4-wild | 48.0960 | 2.1482 | 2 | 0.1040 | 0.0951 | 9.3 |
+| 70kg C19-varhom/A4-wild | 61.9709 | 2.7503 | 2 | 0.0807 | 0.0618 | 30.7 |
+| 70kg C19-wild/A4-wild | 34.3028 | 1.6277 | 2 | 0.1458 | 0.1250 | 16.6 |
 
 R-warfarin: steady-state NCA from the simulation and back-calculated CL
 vs typical-value CL. {.table}
@@ -656,3 +753,48 @@ identity `CL_ss = Dose / AUC0-tau`.
   and 6) but does not report NCA-style Cmax / Tmax / AUC summaries. The
   validation strategy above (typical-value CL evaluation + steady-state
   NCA back-calculation of CL) directly verifies the published equations.
+
+## Errata
+
+### Correction to the packaged IIV values (2026-10)
+
+The models as first released in nlmixr2lib put the inter-individual
+variances on the wrong scale. They read each Table 3 IIV percentage as a
+coefficient of variation and converted it with omega^2 = log(1 + CV^2).
+The footnote to Tables 2 and 3 defines the numbers instead:
+“Interindividual variability (IIV) and residual proportional error are
+expressed as an approximate coefficient of variation (square root of the
+variance)”. The printed percentage is omega x 100, the standard
+deviation of the eta on the log scale, so omega^2 = (P/100)^2.
+
+The Wald 95% CIs agree. For a variance term the CI is computed on
+omega^2, so under the correct reading the squared CI endpoints are
+symmetric about the squared point estimate. On the widest rows the
+squared-CI midpoint lies inside the rounding interval of (P/100)^2 and
+outside that of log(1 + (P/100)^2):
+
+| Row | Printed (95% CI) | Midpoint offset, omega x 100 reading | Midpoint offset, log(1 + CV^2) reading |
+|----|----|----|----|
+| S final, IIV V | 35.8% (18.0%, 47.3%) | **-0.1%** | **-3.1%** |
+| R final, IIV V | 38.3% (20.2%, 50.3%) | **+0.2%** | **-3.0%** |
+| S base, IIV V | 38.6% (5.46%, 54.3%) | **-0.1%** | **-5.9%** |
+| S final, IIV CL | 41.8% (37.3%, 45.9%) | +0.1% | -0.2% |
+| R final, IIV CL | 43.0% (38.6%, 47.0%) | +0.0% | -0.3% |
+
+One base-model row does not fit either reading: the R-warfarin base IIV
+V, 56.5% (38.3%, 74.7%), is exactly symmetric on the % scale. It is not
+part of the shipped models and does not change the conclusion.
+
+| Model | Term                    | Shipped before 2026-10 | Corrected | Ratio |
+|-------|-------------------------|------------------------|-----------|-------|
+| S     | `etalcl`                | 0.16113                | 0.174724  | 1.084 |
+| S     | cov(`etalcl`, `etalvc`) | 0.058822               | 0.063150  | 1.074 |
+| S     | `etalvc`                | 0.12054                | 0.128164  | 1.063 |
+| R     | `etalcl`                | 0.16975                | 0.184900  | 1.089 |
+| R     | cov(`etalcl`, `etalvc`) | 0.053666               | 0.057971  | 1.080 |
+| R     | `etalvc`                | 0.13692                | 0.146689  | 1.071 |
+
+The correlations (0.422 and 0.352) are unchanged. The proportional
+residual errors follow the same footnote and were already SDs (0.316 and
+0.319); they are unchanged, as are typical values, covariate effects and
+model structure.

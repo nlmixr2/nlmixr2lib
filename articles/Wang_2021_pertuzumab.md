@@ -7,7 +7,8 @@
   pharmacokinetic and exploratory exposure-response analysis of the
   fixed-dose combination of pertuzumab and trastuzumab for subcutaneous
   injection in patients with HER2-positive early breast cancer in the
-  FeDeriCa study. *Cancer Chemother Pharmacol* 2021;88(3):439-451.
+  FeDeriCa study. *Cancer Chemother Pharmacol*. 2021;88(3):499-512.
+  <doi:10.1007/s00280-021-04296-0>.
 - Article: <https://doi.org/10.1007/s00280-021-04296-0>
 
 Wang et al. 2021 develops a population pharmacokinetic (popPK) model for

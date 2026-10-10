@@ -2,10 +2,11 @@
 
 ## Model and source
 
-- Citation: Cohen-Wolkowiez M, Ouellet D, Smith PB, et al. Population
-  pharmacokinetics of metronidazole evaluated using scavenged samples
-  from preterm infants. Antimicrob Agents Chemother.
-  2012;56(4):1828-1837. <doi:10.1128/AAC.06071-11>
+- Citation: Cohen-Wolkowiez M, Ouellet D, Smith PB, James LP, Ross A,
+  Sullivan JE, Walsh MC, Zadell A, Newman N, White NR, Kashuba AD,
+  Benjamin DK Jr. Population pharmacokinetics of metronidazole evaluated
+  using scavenged samples from preterm infants. Antimicrob Agents
+  Chemother. 2012;56(4):1828-1837. <doi:10.1128/AAC.06071-11>.
 - Description: One-compartment IV population PK model for metronidazole
   in preterm infants (Cohen-Wolkowiez 2012). Clearance scales linearly
   with body weight (reference 1.5 kg) and as a power function of

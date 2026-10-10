@@ -2,11 +2,12 @@
 
 ## Model and source
 
-- Citation: Zhu R, Zheng Y, Dirks NL, et al. Model-based clinical
+- Citation: Zhu R, Zheng Y, Dirks NL, Vadhavkar S, Jin JY, Peng K,
+  Holweg CTJ, Olsson J, Matthews JG, Putnam WS. Model-based clinical
   pharmacology profiling and exposure-response relationships of the
   efficacy and biomarker of lebrikizumab in patients with
-  moderate-to-severe asthma. Pulmonary Pharmacology & Therapeutics.
-  2017;46:88-98. <doi:10.1016/j.pupt.2017.08.010>
+  moderate-to-severe asthma. Pulm Pharmacol Ther. 2017;46:88-98.
+  <doi:10.1016/j.pupt.2017.08.010>.
 - Description: Lebrikizumab population PK model (Zhu 2017):
   two-compartment model with first-order absorption after SC dosing in
   adults with moderate-to-severe asthma.

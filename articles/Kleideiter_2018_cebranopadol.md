@@ -33,7 +33,7 @@ library(ggplot2)
 - DOI: <https://doi.org/10.1007/s40262-017-0545-1>
 - Article: <https://link.springer.com/article/10.1007/s40262-017-0545-1>
 - Erratum: <https://doi.org/10.1007/s40262-018-0686-x> (Clin
-  Pharmacokinet. 2018;57(11):1467-1469)
+  Pharmacokinet. 2018;57(8):1057-1058)
 
 The erratum corrects Table 14 covariate-effect simulation results and
 several paragraphs of the Section 3 discussion. Where erratum-corrected

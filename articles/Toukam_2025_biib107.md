@@ -5,8 +5,8 @@
 - Citation: Toukam M, Karimian N, Bame E, Xu Y. Dose Optimization of
   BIIB107, an Anti-Alpha-4 Integrin Monoclonal Antibody, Through
   Population Pharmacokinetic and Pharmacodynamic Modeling. J Clin
-  Pharmacol. 2026;66(1). <doi:10.1002/jcph.70109> (PMID 41014552). Study
-  NCT04593121.
+  Pharmacol. 2026;66(1):e70109. <doi:10.1002/jcph.70109> (PMID
+  41014552). Study NCT04593121.
 - Article: <https://doi.org/10.1002/jcph.70109>
 - Trial registration: <https://clinicaltrials.gov/study/NCT04593121>
 

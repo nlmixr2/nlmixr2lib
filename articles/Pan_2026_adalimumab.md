@@ -9,7 +9,7 @@
   Smith CH; BADBIR Study Group, BSTOP Study Group, PSORT Consortium.
   Evaluation of a Therapeutic Drug Monitoring Strategy for Adalimumab in
   Psoriasis: A Prospective Pharmacokinetic-Pharmacodynamic Study. Clin
-  Transl Sci. 2026;19(4):e70563. <doi:10.1111/cts.70563>. PK parameter
+  Transl Sci. 2026;19(5):e70563. <doi:10.1111/cts.70563>. PK parameter
   values from Table 2; PD parameter values from Table 3; structural
   equations and the covariate model from the Data S1 supplement (Code S1
   for PK, Code S2 for PK-PD).

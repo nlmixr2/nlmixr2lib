@@ -6,10 +6,10 @@
     #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5
     #> as a work-around try putting the mu-referenced expression on a simple line
 
-- Citation: Gracia M, Ankaoua V, Alonso M, Pasquet M, Chatelut E (2025).
-  A population pharmacokinetic approach to compare 51Cr-EDTA and
-  99mTc-DTPA clearances in measuring renal glomerular filtration rate in
-  oncopediatrics. Pediatric Nephrology 40(10):3163-3168.
+- Citation: Gracia M, Ankaoua V, Alonso M, Pasquet M, Chatelut E. A
+  population pharmacokinetic approach to compare (51)Cr-EDTA and (99
+  m)Tc-DTPA clearances in measuring renal glomerular filtration rate in
+  oncopediatrics. Pediatr Nephrol. 2025;40(10):3163-3168.
   <doi:10.1007/s00467-025-06828-9>.
 
 - Description: One-compartment IV-bolus population PK model fitted

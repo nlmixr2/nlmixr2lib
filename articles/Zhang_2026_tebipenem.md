@@ -8,10 +8,10 @@
   for tebipenem pivoxil treatment of pediatric shigellosis. Clinical and
   Translational Science 19(1): e70453. <doi:10.1111/cts.70453>.
   Structural model and all parameter estimates from Sato N, Kijima K,
-  Koresawa T, Kanazu T, Itoh Y, Ito Y, Yamaguchi Y, Sunakawa K, Totsuka
-  K, Miyazaki S, Nakayama I (2008). Population pharmacokinetics of
-  tebipenem pivoxil (ME1211), a novel oral carbapenem antibiotic, in
-  pediatric patients with otolaryngological infection or pneumonia. Drug
+  Koresawa T, Mitomi N, Morita J, Suzuki H, Hayashi H, Shibasaki S,
+  Kurosawa T, Totsuka K (2008). Population pharmacokinetics of tebipenem
+  pivoxil (ME1211), a novel oral carbapenem antibiotic, in pediatric
+  patients with otolaryngological infection or pneumonia. Drug
   Metabolism and Pharmacokinetics 23(6): 434-446.
   <doi:10.2133/dmpk.23.434>.
 - Description: One-compartment population PK model with first-order

@@ -3,11 +3,11 @@
 ## Model and source
 
 - Citation: Bonifacio L, Dodds M, Prohaska D, Moss A, Giaccia A,
-  Tabibiazar R, McIntyre G. (2020). Target-Mediated Drug Disposition
+  Tabibiazar R, McIntyre G. Target-Mediated Drug Disposition
   Pharmacokinetic/Pharmacodynamic Model-Informed Dose Selection for the
-  First-in-Human Study of AVB-S6-500. Clinical and Translational Science
-  13(1), 204-211. <doi:10.1111/cts.12706>. Model equations and the PD
-  parameter table are in Supplementary Material CTS-13-204-s001.docx.
+  First-in-Human Study of AVB-S6-500. Clin Transl Sci.
+  2020;13(1):204-211. <doi:10.1111/cts.12706>. Model equations and the
+  PD parameter table are in Supplementary Material CTS-13-204-s001.docx.
 - Description: Preclinical (cynomolgus monkey), allometrically scaled to
   human. Two-compartment population PK model for batiraxcept
   (AVB-S6-500, an AXL-ectodomain / IgG1 Fc fusion protein that

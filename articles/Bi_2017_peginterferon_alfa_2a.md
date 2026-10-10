@@ -3,9 +3,9 @@
 ## Model and source
 
 - Citation: Bi J, Li X, Liu J, Chen D, Li S, Hou J, Zhou Y, Zhu S, Zhao
-  Z, Qin E, Wei Z. Population pharmacokinetics of peginterferon alfa-2a
-  in patients with chronic hepatitis B. Sci Rep. 2017;7.
-  <doi:10.1038/s41598-017-08205-5>
+  Z, Qin E, Wei Z. Population pharmacokinetics of peginterferon alpha2a
+  in patients with chronic hepatitis B. Sci Rep. 2017;7(1):7893.
+  <doi:10.1038/s41598-017-08205-5>.
 - Description: One-compartment population PK model with first-order
   absorption for peginterferon alfa-2a in adult patients with chronic
   hepatitis B (Bi 2017). Creatinine clearance (Cockcroft-Gault, mL/min,

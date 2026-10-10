@@ -3,9 +3,9 @@
 ## Model and source
 
 - Citation: Sun L, Zhang C, Mi K, Wang H, Pan Y, Tao Y, Huang L. Dose
-  optimization of tilmicosin against Pasteurella multocida in swine by
-  physiologically based pharmacokinetic-pharmacodynamic model. J Agric
-  Food Chem. 2026;74(8):4754-4766. <doi:10.1021/acs.jafc.5c11368>. Model
+  Optimization of Tilmicosin against Pasteurella multocida in Swine by
+  Physiologically Based Pharmacokinetic-Pharmacodynamic Model. J Agric
+  Food Chem. 2026;74(5):4754-4766. <doi:10.1021/acs.jafc.5c11368>. Model
   equations transcribed from the Supporting Information (Berkeley
   Madonna code) and main-text equations 3-5; parameter values from Table
   2 and Supporting Information Tables S3 and S4.

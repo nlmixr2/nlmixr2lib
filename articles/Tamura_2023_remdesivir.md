@@ -8,11 +8,12 @@ ui <- rxode2::rxode(readModelDb("Tamura_2023_remdesivir"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
-- Citation: Tamura R, Irie K, Nakagawa A, Muroi H, Eto M, Ikesue H, et
-  al. Population pharmacokinetics and exposure-clinical outcome
-  relationship of remdesivir major metabolite GS-441524 in patients with
-  moderate and severe COVID-19. CPT Pharmacometrics Syst Pharmacol.
-  2023;12(4):513-521. <doi:10.1002/psp4.12936>
+- Citation: Tamura R, Irie K, Nakagawa A, Muroi H, Eto M, Ikesue H,
+  Muroi N, Fukushima S, Tomii K, Hashida T. Population pharmacokinetics
+  and exposure-clinical outcome relationship of remdesivir major
+  metabolite GS-441524 in patients with moderate and severe COVID-19.
+  CPT Pharmacometrics Syst Pharmacol. 2023;12(4):513-521.
+  <doi:10.1002/psp4.12936>.
 - Article: <https://doi.org/10.1002/psp4.12936>
 - Supplement (Table S1-S2, Figures S1-S3 and the NONMEM control stream):
   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10088080/#support-information-section>
@@ -94,7 +95,7 @@ ui
 #>         dose_range = "Licensed regimen only: remdesivir 200 mg intravenously on day 1 followed by 100 mg once daily on days 2-5, each infused over 60 min. One patient discontinued on day 4.", 
 #>         regions = "Single centre, Kobe City Medical Center General Hospital, Kobe, Japan; 16 May 2020 to 31 March 2021.", 
 #>         notes = "Retrospective observational study using residual serum from routine arterial blood-gas testing, so sampling was opportunistic rather than protocol-scheduled. Concentrations were measured by LC-MS/MS over a 10-2000 ng/mL calibration range (LOQ 10 ng/mL). Baseline demographics are in Tamura 2023 Table 1. Estimation was FOCE-I in NONMEM 7.4.1 with ADVAN13; the final model was checked by a 1000-resample nonparametric bootstrap (99.2% success) and a 1000-replicate prediction-corrected VPC using PsN 4.9.0. Note that samples were ARTERIAL, which the authors flag as a possible cause of the positive bias in the remdesivir goodness-of-fit plot immediately after dosing (Discussion, limitations).")
-#>     reference <- "Tamura R, Irie K, Nakagawa A, Muroi H, Eto M, Ikesue H, et al. Population pharmacokinetics and exposure-clinical outcome relationship of remdesivir major metabolite GS-441524 in patients with moderate and severe COVID-19. CPT Pharmacometrics Syst Pharmacol. 2023;12(4):513-521. doi:10.1002/psp4.12936"
+#>     reference <- "Tamura R, Irie K, Nakagawa A, Muroi H, Eto M, Ikesue H, Muroi N, Fukushima S, Tomii K, Hashida T. Population pharmacokinetics and exposure-clinical outcome relationship of remdesivir major metabolite GS-441524 in patients with moderate and severe COVID-19. CPT Pharmacometrics Syst Pharmacol. 2023;12(4):513-521. doi:10.1002/psp4.12936."
 #>     units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
 #>     vignette <- "Tamura_2023_remdesivir"
 #>     ini({

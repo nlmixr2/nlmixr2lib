@@ -2,9 +2,9 @@
 
 ## Model and source
 
-- Citation: Kim CO, Jeon S, Han S, Hong T, Park MS, Yoon Y-R, Yim D-S.
+- Citation: Kim CO, Jeon S, Han S, Hong T, Park MS, Yoon YR, Yim DS.
   Decreased potency of fimasartan in liver cirrhosis was quantified
-  using mixed-effects analysis. Transl Clin Pharmacol. 2017;25(1):43-49.
+  using mixed-effects analysis. Transl Clin Pharmacol. 2017;25(1):43-51.
   <doi:10.12793/tcp.2017.25.1.43>. Bioavailability in healthy subjects
   (F = 0.18) inherited from Kim TH et al. (Eur J Drug Metab
   Pharmacokinet 2010). Circadian-rhythm amplitudes and phase shifts

@@ -7,7 +7,7 @@
 - Citation: Beijer G, Wallander K, Soderquist B, Giske CG, Breuer O,
   Eriksen J, Eliasson E. Optimizing cloxacillin prophylaxis in hip and
   knee arthroplasty based on population pharmacokinetics of unbound
-  plasma concentrations. J Antimicrob Chemother. 2026.
+  plasma concentrations. J Antimicrob Chemother. 2026;81(5):dkag116.
   <doi:10.1093/jac/dkag116>. All parameter values are from Table S2 of
   the Supplementary Material; the protein-binding equation is
   Supplementary Material Eq. 1 and the model schematic is Figure S1.

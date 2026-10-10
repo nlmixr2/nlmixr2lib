@@ -53,7 +53,7 @@ tibble::tibble(
 The three models Zhou 2018 fits, and where each one’s estimates live.
 {.table style="width:100%;"}
 
-- Citation: Zhou Y, Hu P, Huang Y, Sang N, Song K, Wang H, Wen J, Jiang
+- Citation: Zhou Y, Hu P, Huang Y, Nuoer S, Song K, Wang H, Wen J, Jiang
   J, Chen X. Population Pharmacokinetic/Pharmacodynamic Model-Guided
   Dosing Optimization of a Novel Sedative HR7056 in Chinese Healthy
   Subjects. Front Pharmacol. 2018;9:1316.

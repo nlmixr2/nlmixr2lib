@@ -4,10 +4,10 @@
 
 - Citation: Athanassa Z, Papakyriakopoulou P, Marquez Megias S, Saitani
   EM, Manioudaki S, Dimoula K, Petsa I, Valsami G, Sakagianni A, Koumaki
-  V, Dokoumetzidis A, Tsakris A (2025). Population pharmacokinetic model
-  of oral minocycline in critically ill adult patients with
-  ventilator-associated pneumonia. J Antimicrob Chemother
-  80(6):1420-1426. <doi:10.1093/jac/dkaf090>
+  V, Dokoumetzidis A, Tsakris A. Population pharmacokinetic model of
+  oral minocycline in critically ill adult patients with
+  ventilator-associated pneumonia. J Antimicrob Chemother.
+  2025;80(5):1420-1426. <doi:10.1093/jac/dkaf090>.
 - Description: One-compartment population PK model with first-order
   absorption and linear elimination for orally administered minocycline
   in critically ill adults with ventilator-associated pneumonia caused
@@ -28,7 +28,7 @@
   retained, so the final model is covariate-free (see
   covariatesDataExcluded).
 - Article: [J Antimicrob Chemother
-  2025;80(6):1420-1426](https://doi.org/10.1093/jac/dkaf090)
+  2025;80(5):1420-1426](https://doi.org/10.1093/jac/dkaf090)
 
 Athanassa and colleagues ran a prospective, open-label study of *orally*
 administered minocycline in critically ill ICU adults with

@@ -5,8 +5,9 @@
 - Citation: Bertin S, Haefliger D, Mercier T, Decosterd LA, Giraud R,
   Assouline B, Schneider A, Buclin T, Guidi M, Livio F. Population
   Pharmacokinetics of Propofol in Critically Ill Patients with and
-  Without Extracorporeal Membrane Oxygenation. Clin Pharmacokinet. 2026.
-  <doi:10.1007/s40262-025-01585-2>. PMCID: PMC12881008
+  Without Extracorporeal Membrane Oxygenation. Clin Pharmacokinet.
+  2026;65(2):229-240. <doi:10.1007/s40262-025-01585-2>. PMCID:
+  PMC12881008.
 - Description: Two-compartment population PK model for propofol in
   critically ill adults receiving a continuous intravenous infusion,
   half with and half without extracorporeal membrane oxygenation (ECMO),

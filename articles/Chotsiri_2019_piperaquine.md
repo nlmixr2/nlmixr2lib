@@ -3,9 +3,10 @@
 ## Model and source
 
 - Citation: Chotsiri P, Zongo I, Milligan P, Compaore YD, Some AF,
-  Chandramohan D, et al. (2019). Optimal dosing of
+  Chandramohan D, Hanpithakpong W, Nosten F, Greenwood B, Rosenthal PJ,
+  White NJ, Ouedraogo JB, Tarning J. Optimal dosing of
   dihydroartemisinin-piperaquine for seasonal malaria chemoprevention in
-  young children. *Nature Communications* **10**(1):480.
+  young children. *Nat Commun*. 2019;10(1):480.
   <doi:10.1038/s41467-019-08297-9>.
 - Article: <https://doi.org/10.1038/s41467-019-08297-9>
 - Trial: ClinicalTrials.gov

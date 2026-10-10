@@ -36,16 +36,16 @@ paralleling `Soto_2014_ampicillin_sulbactam` and its `_sbt` suffix.
   W, Colin PJ, Eloot S. A Population Pharmacokinetic Analysis for
   Piperacillin/Tazobactam in Patients with End-Stage Kidney Disease
   Undergoing Intermittent Haemodialysis: Extension of a General-Purpose
-  Model. Clin Pharmacokinet. 2025. <doi:10.1007/s40262-025-01527-y>.
-  Structural parameters, maturation / decline functions,
-  serum-creatinine effect and inter-individual variances are fixed to
-  the general-purpose parent model: Kong D, et al. A pooled
-  pharmacokinetic analysis for piperacillin/tazobactam across different
-  patient populations: from premature infants to the elderly. Clin
-  Pharmacokinet. 2025;64(1):107-126. The parent-model values used here
-  are transcribed from the final NONMEM control stream reproduced
-  verbatim in the Kong 2025 Electronic Supplementary Material, so
-  nothing is imported from the parent publication itself.
+  Model. Clin Pharmacokinet. 2025;64(8):1165-1178.
+  <doi:10.1007/s40262-025-01527-y>. Structural parameters, maturation /
+  decline functions, serum-creatinine effect and inter-individual
+  variances are fixed to the general-purpose parent model: Kong D, et
+  al. A pooled pharmacokinetic analysis for piperacillin/tazobactam
+  across different patient populations: from premature infants to the
+  elderly. Clin Pharmacokinet. 2025;64(1):107-126. The parent-model
+  values used here are transcribed from the final NONMEM control stream
+  reproduced verbatim in the Kong 2025 Electronic Supplementary
+  Material, so nothing is imported from the parent publication itself.
 - Article: <https://doi.org/10.1007/s40262-025-01527-y>
 
 ``` r

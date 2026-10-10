@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Fu Q, Sun X, Lustberg MB, Sparreboom A, Hu S. Predicting
+- Citation: Fu Q, Sun X, Lustburg MB, Sparreboom A, Hu S. Predicting
   Paclitaxel Disposition in Humans With Whole-Body Physiologically-Based
   Pharmacokinetic Modeling. CPT Pharmacometrics Syst Pharmacol.
-  2019;8(12):931-939.
+  2019;8(12):931-939. <doi:10.1002/psp4.12472>.
 - Article: <https://doi.org/10.1002/psp4.12472> (open access,
   PMC6930855)
 - Supplement: Table S1 (mouse and human physiology) and Code S1 (the

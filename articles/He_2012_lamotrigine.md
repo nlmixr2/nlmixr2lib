@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: He DK, Wang L, Lu W, Qin J, Zhang S, Li L, Zhang JM, Bao WQ,
+- Citation: He DK, Wang L, Qin J, Zhang S, Lu W, Li L, Zhang JM, Bao WQ,
   Song XQ, Liu HT. Population pharmacokinetics of lamotrigine in Chinese
-  children with epilepsy. Acta Pharmacol Sin. 2012 Nov;33(11):1417-1423.
-  <doi:10.1038/aps.2012.118>
+  children with epilepsy. Acta Pharmacol Sin. 2012;33(11):1417-1423.
+  <doi:10.1038/aps.2012.118>.
 - Description: One-compartment population PK model for oral lamotrigine
   in Chinese paediatric patients with epilepsy aged 0.5-17 years (He
   2012). First-order absorption with Ka fixed at 1.0 1/h and

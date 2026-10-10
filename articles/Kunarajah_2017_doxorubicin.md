@@ -6,7 +6,7 @@
   Pinkerton R, Moore AS. Population pharmacokinetic modelling of
   doxorubicin and doxorubicinol in children with cancer: is there a
   relationship with cardiac troponin profiles? Cancer Chemother
-  Pharmacol. 2017;79(6):1209-1217. <doi:10.1007/s00280-017-3309-6>
+  Pharmacol. 2017;80(1):15-25. <doi:10.1007/s00280-017-3309-6>.
 - Article: <https://doi.org/10.1007/s00280-017-3309-6>
 
 ## Population

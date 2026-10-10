@@ -4,7 +4,7 @@
 
 - Citation: Jiao Z, Shi XJ, Li ZD, Zhong MK. Population pharmacokinetics
   of sirolimus in de novo Chinese adult renal transplant patients. Br J
-  Clin Pharmacol. 2009;68(1):47-54.
+  Clin Pharmacol. 2009;68(1):47-60.
   <doi:10.1111/j.1365-2125.2009.03392.x>.
 - Description: One-compartment population PK model for oral sirolimus in
   Chinese adult de novo renal transplant recipients on triple
@@ -680,8 +680,8 @@ goal.
   apparent-CL/F estimate is well-identified by trough density;
   absorption-phase and distribution-phase parameters are not.
 - **Errata.** A search of the Wiley journal landing page for the article
-  (Br J Clin Pharmacol 68:1, <doi:10.1111/j.1365-2125.2009.03392.x>) and
-  a Google Scholar pass on the article title returned no errata or
-  corrigenda at the time of extraction. If a future correction surfaces
-  it should be encoded inline alongside Eq. 9 / Eq. 10 in the model
-  file.
+  (Br J Clin Pharmacol 68(1):47-60,
+  <doi:10.1111/j.1365-2125.2009.03392.x>) and a Google Scholar pass on
+  the article title returned no errata or corrigenda at the time of
+  extraction. If a future correction surfaces it should be encoded
+  inline alongside Eq. 9 / Eq. 10 in the model file.

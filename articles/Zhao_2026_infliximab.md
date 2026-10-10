@@ -8,8 +8,8 @@
   Preijers T, de Ridder L. Population Pharmacokinetics Analysis of
   Infliximab in up to 10-Year-Old Patients with Paediatric Inflammatory
   Bowel Disease: Label-Recommended Dose Fails to Achieve Therapeutic
-  Target Concentration. Clin Pharmacokinet. 2026;65(1):79-94.
-  <doi:10.1007/s40262-025-01565-6>
+  Target Concentration. Clin Pharmacokinet. 2026;65(1):81-95.
+  <doi:10.1007/s40262-025-01565-6>.
 - Description: Two-compartment population PK model of intravenous
   infliximab in young paediatric patients with inflammatory bowel
   disease aged 10 years or younger, with allometric body-weight scaling

@@ -7,7 +7,7 @@
 - Citation: Kim A, Lee J, Shin D, Jung YJ, Bahng MY, Cho JY, Jang IJ.
   Population pharmacokinetic analysis to recommend the optimal dose of
   udenafil in patients with mild and moderate hepatic impairment. Br J
-  Clin Pharmacol. 2016;82(4):1024-1033. <doi:10.1111/bcp.12977>.
+  Clin Pharmacol. 2016;82(2):389-398. <doi:10.1111/bcp.12977>.
 - Description: Parent-metabolite population PK model for oral udenafil
   and its active metabolite DA-8164 in healthy subjects and patients
   with mild (Child-Pugh A) and moderate (Child-Pugh B) hepatic

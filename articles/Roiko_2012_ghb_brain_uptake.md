@@ -27,8 +27,8 @@ hcmec <- rxode2::rxode(readModelDb("Roiko_2012_ghb_hcmecd3"))   # human cell lin
 ```
 
 - Citation: Roiko SA, Felmlee MA, Morris ME. Brain uptake of the drug of
-  abuse gamma-hydroxybutyric acid in rats. Drug Metab Dispos. 2012
-  Jan;40(1):212-218. <doi:10.1124/dmd.111.041749>. PMID: 22031624.
+  abuse gamma-hydroxybutyric acid in rats. Drug Metab Dispos.
+  2012;40(1):212-218. <doi:10.1124/dmd.111.041749>. PMID: 22019629.
   PMCID: PMC3250048. Michaelis-Menten equation and the two rejected
   alternatives: Materials and Methods, ‘Data and Statistical Analysis’,
   equations 2, 3 and 4. Km and Vmax estimates for RBE4 cells: Results,

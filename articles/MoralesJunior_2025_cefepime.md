@@ -4,13 +4,13 @@
 
 - Citation: Morales Junior R, Hambrick HR, Mizuno T, Pavia KE, Paice KM,
   Tang P, Schuler E, Krallman KA, Johnson L, Collins M, Gibson A, Curry
-  C, Kaplan J, Goldstein S, Tang Girdwood S (2025). Population
-  Pharmacokinetics of Cefepime in Critically Ill Children and Young
-  Adults: Model Development and External Validation for Monte Carlo
-  Simulations and Model-Informed Precision Dosing. Clinical
-  Pharmacokinetics 64(4):553-564. <doi:10.1007/s40262-025-01485-5>. PMID
-  39987410; PMC12041147. Final parameter estimates and the printed model
-  equations are from Table 2.
+  C, Kaplan J, Goldstein S, Tang Girdwood S. Population Pharmacokinetics
+  of Cefepime in Critically Ill Children and Young Adults: Model
+  Development and External Validation for Monte Carlo Simulations and
+  Model-Informed Precision Dosing. Clin Pharmacokinet.
+  2025;64(4):553-564. <doi:10.1007/s40262-025-01485-5>. PMID 39988706;
+  PMC12041147. Final parameter estimates and the printed model equations
+  are from Table 2.
 - Description: Two-compartment population PK model with first-order
   elimination for intravenously infused cefepime in critically ill
   children and young adults (1 month to 30 years) admitted to a

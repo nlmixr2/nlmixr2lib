@@ -38,11 +38,11 @@ binding only in the central compartment, linked to fecal calprotectin
 via an indirect-response model in which the unbound target stimulates FC
 production.
 
-- Citation: Aguiar Zdovc J, Hanzel J, Kurent T, Sever N, Smrekar N,
-  Kozelj M, Novak G, Stabuc B, Drobne D, Grabnar I. Ustekinumab Dosing
-  Individualization in Crohn’s Disease Guided by a Population
-  Pharmacokinetic-Pharmacodynamic Model. Pharmaceutics.
-  2021;13(10):1587. <doi:10.3390/pharmaceutics13101587>
+- Citation: Aguiar Zdovc J, Hanzel J, Kurent T, Sever N, Kozelj M,
+  Smrekar N, Novak G, Stabuc B, Dreesen E, Thomas D, Vovk T, Ostanek B,
+  Drobne D, Grabnar I. Ustekinumab Dosing Individualization in Crohn’s
+  Disease Guided by a Population Pharmacokinetic-Pharmacodynamic Model.
+  Pharmaceutics. 2021;13(10):1587. <doi:10.3390/pharmaceutics13101587>.
 - Article: <https://doi.org/10.3390/pharmaceutics13101587>
 
 ## Population

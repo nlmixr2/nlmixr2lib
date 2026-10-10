@@ -2,13 +2,13 @@
 
 ## Model and source
 
-- Citation: Yin O, Kang J, Knebel W, Zahir H, van de Sande M, Tap WD,
-  Gelderblom H, Stacchiotti S, Greenberg J, Shuster D, Wagner AJ.
-  Population Pharmacokinetic Analysis of Pexidartinib in Healthy
-  Subjects and Patients With Tenosynovial Giant Cell Tumor or Other
-  Solid Tumors. J Clin Pharmacol. 2021 Apr;61(4):480-492.
-  <doi:10.1002/jcph.1753>. The model was built from the ACoP 2019 poster
-  of the same analysis (metrum_nd_pexidartinib_healthy.pdf).
+- Citation: Yin O, Wagner AJ, Kang J, Knebel W, Zahir H, van de Sande M,
+  Tap WD, Gelderblom H, Healey JH, Shuster D, Stacchiotti S. Population
+  Pharmacokinetic Analysis of Pexidartinib in Healthy Subjects and
+  Patients With Tenosynovial Giant Cell Tumor or Other Solid Tumors. J
+  Clin Pharmacol. 2021;61(4):480-492. <doi:10.1002/jcph.1753>. The model
+  was built from the ACoP 2019 poster of the same analysis
+  (metrum_nd_pexidartinib_healthy.pdf).
 - Description: Two-compartment population PK model for oral pexidartinib
   (CSF1R/KIT/FLT3 inhibitor) in healthy subjects and adult patients with
   tenosynovial giant cell tumour (TGCT) or other advanced solid tumours

@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Farrell C, Hayes S, Wire M, Zhang J. Population
+- Citation: Farrell C, Hayes SC, Wire M, Zhang J. Population
   pharmacokinetic/pharmacodynamic modelling of eltrombopag in healthy
   volunteers and subjects with chronic liver disease. Br J Clin
-  Pharmacol. 2014 May;77(5):717-728. <doi:10.1111/bcp.12244>.
+  Pharmacol. 2014;77(3):532-544. <doi:10.1111/bcp.12244>.
 - Description: Population PK/PD model for eltrombopag in healthy male
   volunteers (single dose) and adult patients with chronic liver disease
   (CLD; multiple daily doses) (Farrell 2014). Two-compartment apparent

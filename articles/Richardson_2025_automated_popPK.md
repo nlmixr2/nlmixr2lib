@@ -50,13 +50,14 @@ for (nm in richardsonModels) {
 
 - Citation: Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander
   J, Tang W, Dearden R, Gibbs M. A machine learning approach to
-  population pharmacokinetic modelling automation. Commun Med.
-  2025;5:325. <doi:10.1038/s43856-025-01054-8>. Parameter estimates from
-  Supplementary Table 2; omega values and dose effects from the authors’
-  published NONMEM output FinalResultFile.lst in the Code Availability
-  repository <https://github.com/samjrrr/autopk_synthetic_example>. The
-  synthetic data were generated from the expert ribociclib model of Lu
-  Y, Yang S, Ho Y-Y, Ji Y. J Clin Pharmacol. 2021;61:1054-1068.
+  population pharmacokinetic modelling automation. Commun Med (Lond).
+  2025;5(1):327. <doi:10.1038/s43856-025-01054-8>. Parameter estimates
+  from Supplementary Table 2; omega values and dose effects from the
+  authors’ published NONMEM output FinalResultFile.lst in the Code
+  Availability repository
+  <https://github.com/samjrrr/autopk_synthetic_example>. The synthetic
+  data were generated from the expert ribociclib model of Lu Y, Yang S,
+  Ho Y-Y, Ji Y. J Clin Pharmacol. 2021;61:1054-1068.
 - Description: Automated model-search (pyDarwin) two-compartment
   population PK model for oral ribociclib, fitted to a synthetic
   96-subject data set that was simulated from a previously published
@@ -87,11 +88,11 @@ for (nm in richardsonModels) {
 
 - Citation: Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander
   J, Tang W, Dearden R, Gibbs M. A machine learning approach to
-  population pharmacokinetic modelling automation. Commun Med.
-  2025;5:325. <doi:10.1038/s43856-025-01054-8>. Parameter estimates from
-  Supplementary Table 3; model structure from Table 4, Supplementary
-  Data 1 and the pyDarwin model-space files (template.txt, tokens.json)
-  in the Code Availability repository
+  population pharmacokinetic modelling automation. Commun Med (Lond).
+  2025;5(1):327. <doi:10.1038/s43856-025-01054-8>. Parameter estimates
+  from Supplementary Table 3; model structure from Table 4,
+  Supplementary Data 1 and the pyDarwin model-space files (template.txt,
+  tokens.json) in the Code Availability repository
   <https://github.com/samjrrr/autopk_synthetic_example>.
 - Description: Automated model-search (pyDarwin) two-compartment
   population PK model for oral camizestrant in 184 participants pooled
@@ -118,11 +119,11 @@ for (nm in richardsonModels) {
 
 - Citation: Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander
   J, Tang W, Dearden R, Gibbs M. A machine learning approach to
-  population pharmacokinetic modelling automation. Commun Med.
-  2025;5:325. <doi:10.1038/s43856-025-01054-8>. Parameter estimates from
-  Supplementary Table 4; model structure from Table 4, Supplementary
-  Data 1 and the pyDarwin model-space files (template.txt, tokens.json)
-  in the Code Availability repository
+  population pharmacokinetic modelling automation. Commun Med (Lond).
+  2025;5(1):327. <doi:10.1038/s43856-025-01054-8>. Parameter estimates
+  from Supplementary Table 4; model structure from Table 4,
+  Supplementary Data 1 and the pyDarwin model-space files (template.txt,
+  tokens.json) in the Code Availability repository
   <https://github.com/samjrrr/autopk_synthetic_example>.
 - Description: Automated model-search (pyDarwin) one-compartment
   population PK model for oral osimertinib in 270 participants from
@@ -152,11 +153,11 @@ for (nm in richardsonModels) {
 
 - Citation: Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander
   J, Tang W, Dearden R, Gibbs M. A machine learning approach to
-  population pharmacokinetic modelling automation. Commun Med.
-  2025;5:325. <doi:10.1038/s43856-025-01054-8>. Parameter estimates from
-  Supplementary Table 5; model structure from Table 4, Supplementary
-  Data 1 and the pyDarwin model-space files (template.txt, tokens.json)
-  in the Code Availability repository
+  population pharmacokinetic modelling automation. Commun Med (Lond).
+  2025;5(1):327. <doi:10.1038/s43856-025-01054-8>. Parameter estimates
+  from Supplementary Table 5; model structure from Table 4,
+  Supplementary Data 1 and the pyDarwin model-space files (template.txt,
+  tokens.json) in the Code Availability repository
   <https://github.com/samjrrr/autopk_synthetic_example>.
 - Description: Automated model-search (pyDarwin) two-compartment
   population PK model for oral olaparib tablets in 296 participants
@@ -187,11 +188,11 @@ for (nm in richardsonModels) {
 
 - Citation: Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander
   J, Tang W, Dearden R, Gibbs M. A machine learning approach to
-  population pharmacokinetic modelling automation. Commun Med.
-  2025;5:325. <doi:10.1038/s43856-025-01054-8>. Parameter estimates from
-  Supplementary Table 6; model structure from Table 4, Supplementary
-  Data 1 and the pyDarwin model-space files (template.txt, tokens.json)
-  in the Code Availability repository
+  population pharmacokinetic modelling automation. Commun Med (Lond).
+  2025;5(1):327. <doi:10.1038/s43856-025-01054-8>. Parameter estimates
+  from Supplementary Table 6; model structure from Table 4,
+  Supplementary Data 1 and the pyDarwin model-space files (template.txt,
+  tokens.json) in the Code Availability repository
   <https://github.com/samjrrr/autopk_synthetic_example>.
 - Description: Automated model-search (pyDarwin) two-compartment
   population PK model for subcutaneous tezepelumab in 106 participants

@@ -2,7 +2,7 @@
 
 ## Model and source
 
-- Citation: Girard P, Brockhaus B, Massimini G, Asiatiani E, Rejeb N,
+- Citation: Girard P, Brockhaus B, Massimini G, Asatiani E, Rejeb N,
   Rajeswaran RA, Lupfert C, von Richter O, Munafo A. (2012).
   Simultaneous ocular adverse event and treatment discontinuation model
   of pimasertib. *PAGE* 21 Abstr 2458.

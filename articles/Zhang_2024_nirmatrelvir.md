@@ -5,10 +5,10 @@
     #> ℹ parameter labels from comments will be replaced by 'label()'
 
 - Citation: Zhang R, Fan J, Han L, Mao J, Sun L, Yu Y, Fan W, Xie J, Lin
-  B, Lin N (2024). Population Pharmacokinetics and Dosing Regimen
-  Analysis of Nirmatrelvir in Chinese Patients with COVID-19 Infection.
-  Drug Design, Development and Therapy 18:5515-5525.
-  <doi:10.2147/DDDT.S479561>. PMCID PMC11622681.
+  B, Lin N. Population Pharmacokinetics and Dosing Regimen Analysis of
+  Nirmatrelvir in Chinese Patients with COVID-19 Infection. Drug Des
+  Devel Ther. 2024;18:5517-5527. <doi:10.2147/DDDT.S479561>. PMCID
+  PMC11622681.
 - Description: One-compartment population PK model with first-order
   absorption and first-order elimination (NONMEM ADVAN2 TRANS2) for oral
   nirmatrelvir coadministered with ritonavir 100 mg (Paxlovid) in

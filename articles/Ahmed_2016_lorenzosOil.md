@@ -5,8 +5,8 @@
 - Citation: Ahmed MA, Kartha RV, Brundage RC, Cloyd J, Basu C, Carlin
   BP, Jones RO, Moser AB, Fatemi A, Raymond GV. A model-based approach
   to assess the exposure-response relationship of Lorenzo’s oil in
-  adrenoleukodystrophy. Br J Clin Pharmacol. 2016 Jun;81(6):1058-1065.
-  <doi:10.1111/bcp.12897>
+  adrenoleukodystrophy. Br J Clin Pharmacol. 2016;81(6):1058-1066.
+  <doi:10.1111/bcp.12897>.
 - Description: Population pharmacodynamic model of Lorenzo’s oil effect
   on plasma C26:0 in asymptomatic boys with X-linked
   adrenoleukodystrophy: inhibitory fractional Emax model relating

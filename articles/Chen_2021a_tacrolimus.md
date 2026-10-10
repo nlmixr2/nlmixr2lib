@@ -307,7 +307,7 @@ ev5 <- bind_rows(
 
 sim5 <- solve_typical(ev5, keep = c("WT", "CONMED_VORICONAZOLE", "reading"))
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:16
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:32
 stopifnot(
   !anyNA(sim5$Cc),
   nrow(sim5) == 2L * nrow(scenarios) * nrow(eta_grid) * length(trough_times)

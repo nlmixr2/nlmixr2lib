@@ -5,7 +5,8 @@
 - Citation: Nguyen JH, Chehade M, Dellon ES, Radin A, Chittenden J,
   Kamal MA, Louisias M, Xu C, Kosloski MP. Population Pharmacokinetics
   of Dupilumab in Adults, Adolescents, and Children With Eosinophilic
-  Esophagitis. Clin Pharmacol Ther. 2026. <doi:10.1002/cpt.70233>
+  Esophagitis. Clin Pharmacol Ther. 2026;119(6):1555-1564.
+  <doi:10.1002/cpt.70233>.
 - Description: Two-compartment population PK model with a
   three-compartment transit absorption chain and parallel linear plus
   Michaelis-Menten elimination for subcutaneous dupilumab in healthy

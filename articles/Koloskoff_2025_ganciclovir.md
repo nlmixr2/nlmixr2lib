@@ -3,10 +3,11 @@
 ## Model and source
 
 - Citation: Koloskoff K, Franck B, Benito S, Welzel J, Autmizguine J,
-  Theoret Y, Briand A, Ovetchkine P, Woillard J-B.
+  Theoret Y, Briand A, Ovetchkine P, Woillard JB.
   Pharmacokinetic/Pharmacodynamic Modelling and Monte Carlo Simulations
   to Predict Cytomegalovirus Viral Load in Pediatric Transplant
-  Recipients Treated with (val)Ganciclovir. *Clin Pharmacokinet*. 2025.
+  Recipients Treated with (val)Ganciclovir. *Clin Pharmacokinet*.
+  2025;64(7):1061-1069.
   <doi:%5B10.1007/s40262-025-01526-z>\](<https://doi.org/10.1007/s40262-025-01526-z>).
 - Upstream popPK used by the source authors to compute AUC_0-12 (NOT
   included in this nlmixr2lib model): Franck B et al. Thoroughly

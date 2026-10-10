@@ -50,8 +50,8 @@ Reference:
 Huang W, Shen J, Luo X, Wu Y, Zheng Y, Zhou J, Xu B, Yin X, Wu X.
 Population Pharmacokinetics of Tiapride in Children and Adolescents with
 Tic Disorders: Leveraging Plasma and Saliva Concentration to Guide
-Individualized Dosing. Drug Des Devel Ther. 2026;20.
-<doi:10.2147/DDDT.S587387>
+Individualized Dosing. Drug Des Devel Ther. 2026;20:587387.
+<doi:10.2147/DDDT.S587387>.
 
 ## Population
 
@@ -220,7 +220,7 @@ ui
 #>         renal_function = "creatinine clearance median 118.3 mL/min (IQR 106.77-136.79); serum creatinine median 47 umol/L (IQR 41-52)", 
 #>         dose_range = "oral tiapride 2-10 mg/kg/day given two or three times daily; median total daily dose 215 mg/day (IQR 150-300)", 
 #>         regions = "China (single centre, Fujian)", notes = "Single-centre prospective observational outpatient study at Fujian Medical University Union Hospital, April 2024 to October 2025, with 6 months of follow-up per patient. Paired plasma and saliva samples were taken before and after the final dose after at least 7 days of continuous treatment, so all data are at steady state; the post-dose sampling interval had a median of 4.88 h (IQR 2.17-13.81). Sampling was opportunistic and tied to clinic visits: 45 samples (21%) fell in the absorption phase (0-2 h), 18 (8%) around Tmax (2-2.5 h) and 101 (49%) in the late elimination period (> 10 h), leaving the 2.5-10 h window sparse -- which is why a two-compartment model was unstable and a one-compartment model was selected despite the biphasic disposition reported for tiapride in adults. Of 215 plasma samples collected, one was below the 2 ng/mL LLOQ and was discarded (Beal M1), leaving 214 in the analysis. Saliva was collected with Salivette cotton-swab devices; 205 saliva samples were taken (fewer than plasma because of insufficient volume and contamination) and one below the LLOQ was likewise dropped by M1, leaving 204. The LC-MS/MS calibrated range was 2-1000 ng/mL in plasma and 4-2000 ng/mL in saliva, so a substantial part of the observed saliva data in Figure 4B sits above the highest saliva calibrator. Tiapride is supplied as 100 mg tablets divisible into halves, thirds and quarters, so clinical doses are rounded to 50, 66.6 or 75 mg per administration.")
-#>     reference <- "Huang W, Shen J, Luo X, Wu Y, Zheng Y, Zhou J, Xu B, Yin X, Wu X. Population Pharmacokinetics of Tiapride in Children and Adolescents with Tic Disorders: Leveraging Plasma and Saliva Concentration to Guide Individualized Dosing. Drug Des Devel Ther. 2026;20. doi:10.2147/DDDT.S587387"
+#>     reference <- "Huang W, Shen J, Luo X, Wu Y, Zheng Y, Zhou J, Xu B, Yin X, Wu X. Population Pharmacokinetics of Tiapride in Children and Adolescents with Tic Disorders: Leveraging Plasma and Saliva Concentration to Guide Individualized Dosing. Drug Des Devel Ther. 2026;20:587387. doi:10.2147/DDDT.S587387."
 #>     units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 #>     vignette <- "Huang_2026_tiapride"
 #>     ini({
@@ -1168,7 +1168,7 @@ spanning 30-133%, that term carries little information either way.
     #>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
     #>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
     #>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
-    #> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+    #> [10] tibble_3.3.1        symengine_0.2.14    pkgconfig_2.0.3    
     #> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
     #> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
     #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
@@ -1179,7 +1179,7 @@ spanning 30-133%, that term carries little information either way.
     #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
     #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
     #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
-    #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
+    #> [43] cli_3.6.6           dparser_1.3.1-14    magrittr_2.0.5     
     #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
     #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      
     #> [52] ragg_1.5.2          memoise_2.0.1       evaluate_1.0.5     

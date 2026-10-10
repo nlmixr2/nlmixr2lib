@@ -2,10 +2,10 @@
 
 ## Model and source
 
-- Citation: Hu C, Yu G, Tomaszewski EN, et al. Confirmatory population
-  pharmacokinetic analysis for bapineuzumab phase 3 studies in patients
-  with mild to moderate Alzheimer’s disease. J Clin Pharmacol.
-  2015;55(2):221-229. <doi:10.1002/jcph.393>
+- Citation: Hu C, Adedokun O, Ito K, Raje S, Lu M. Confirmatory
+  population pharmacokinetic analysis for bapineuzumab phase 3 studies
+  in patients with mild to moderate Alzheimer’s disease. J Clin
+  Pharmacol. 2015;55(2):221-229. <doi:10.1002/jcph.393>.
 - Description: Two-compartment population PK model for bapineuzumab in
   adults with mild-to-moderate Alzheimer’s disease following IV
   administration (Hu 2014, reduced model)
@@ -389,7 +389,7 @@ below the 20% deviation threshold used to flag discrepancies.
 
 ## Reference
 
-- Hu C, Yu G, Tomaszewski EN, et al. Confirmatory population
+- Hu C, Adedokun O, Ito K, Raje S, Lu M. Confirmatory population
   pharmacokinetic analysis for bapineuzumab phase 3 studies in patients
   with mild to moderate Alzheimer’s disease. J Clin Pharmacol.
-  2015;55(2):221-229. <doi:10.1002/jcph.393>
+  2015;55(2):221-229. <doi:10.1002/jcph.393>.

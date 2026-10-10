@@ -3,9 +3,9 @@
 ## Model and source
 
 - Citation: Huang T, Luo Y, Wu Y, Niu L, Xiao Y, Wu T, Chen X, Liu Y, Lu
-  J, Zhu D, Liu T (2025). Population pharmacokinetics of colistin
-  sulfate in patients on continuous veno-venous hemodiafiltration.
-  Science Progress 108(1):1-20. <doi:10.1177/00368504251325334>.
+  J, Zhu D, Liu T. Population pharmacokinetics of colistin sulfate in
+  patients on continuous veno-venous hemodiafiltration. Sci Prog.
+  2025;108(1):00368504251325334. <doi:10.1177/00368504251325334>.
 - Description: Two-compartment population PK model for intravenous
   colistin sulfate in critically ill adults receiving continuous
   veno-venous hemodiafiltration (CVVHDF) for acute kidney injury (Huang

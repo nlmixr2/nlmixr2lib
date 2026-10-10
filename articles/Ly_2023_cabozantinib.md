@@ -5,9 +5,9 @@
     #> ℹ parameter labels from comments will be replaced by 'label()'
 
 - Citation: Ly NS, Li J, Faggioni R, Roskos LK, Brose MS. Population
-  pharmacokinetics and exposure-response analysis for the Phase 3
-  COSMIC-311 trial of cabozantinib for radioiodine-refractory
-  differentiated thyroid cancer. Clin Pharmacokinet. 2023;62(4):629-639.
+  Pharmacokinetics and Exposure-Response Analysis for the Phase 3
+  COSMIC-311 Trial of Cabozantinib for Radioiodine-Refractory
+  Differentiated Thyroid Cancer. Clin Pharmacokinet. 2023;62(4):587-598.
   <doi:10.1007/s40262-023-01210-0>.
 
 - Description: Two-compartment population PK model for oral cabozantinib
@@ -29,7 +29,7 @@
   for pooled cancer patients.
 
 - Article: [Clin Pharmacokinet.
-  2023;62(4):629-639](https://doi.org/10.1007/s40262-023-01210-0)
+  2023;62(4):587-598](https://doi.org/10.1007/s40262-023-01210-0)
 
 - Supplement: <https://doi.org/10.1007/s40262-023-01210-0>
   (Supplementary Material, “Population Pharmacokinetics Base Model

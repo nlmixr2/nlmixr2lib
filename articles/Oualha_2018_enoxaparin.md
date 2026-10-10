@@ -3,10 +3,9 @@
 ## Model and source
 
 - Citation: Oualha M, Chardot C, Debray D, Lesage F, Harroche A,
-  Renolleau S, Treluyer J-M, Urien S (2018). Population pharmacokinetics
-  of enoxaparin in early stage of paediatric liver transplantation.
-  British Journal of Clinical Pharmacology 84(8):1736-1745.
-  <doi:10.1111/bcp.13543>.
+  Renolleau S, Treluyer JM, Urien S. Population pharmacokinetics of
+  enoxaparin in early stage of paediatric liver transplantation. Br J
+  Clin Pharmacol. 2018;84(6):1206-1214. <doi:10.1111/bcp.13543>.
 - Description: Population PK model for subcutaneous enoxaparin in 22
   children during the first post-operative week after paediatric liver
   transplantation (Oualha 2018). One-compartment open model with

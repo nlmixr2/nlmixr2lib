@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Lodise TP, Bosso J, Kelly C, Williams PJ, Lane JR, Huang DB.
-  Pharmacokinetic and pharmacodynamic analyses to determine the optimal
-  fixed dosing regimen of iclaprim for treatment of patients with
-  serious infections caused by Gram-positive pathogens. Antimicrob
-  Agents Chemother. 2018;62(4):e01184-17. <doi:10.1128/AAC.01184-17>.
+  Pharmacokinetic and Pharmacodynamic Analyses To Determine the Optimal
+  Fixed Dosing Regimen of Iclaprim for Treatment of Patients with
+  Serious Infections Caused by Gram-Positive Pathogens. Antimicrob
+  Agents Chemother. 2018;62(2):e01184-17. <doi:10.1128/AAC.01184-17>.
 - Description: Two-compartment IV-infusion population PK model for
   iclaprim, a bacterial dihydrofolate reductase inhibitor, in adult
   patients with complicated skin and skin-structure infections from the

@@ -2,15 +2,15 @@
 
 ## Model and source
 
-- Citation: Parkinson J, Astrand M, Melin J, Ericsson H. (2025).
-  Population Pharmacokinetic Analysis of Balcinrenone in Healthy
-  Participants and Participants with Heart Failure and Chronic Kidney
-  Disease. Clin Pharmacokinet. <doi:10.1007/s40262-025-01572-7>. PMCID:
-  PMC12618412. Structural encoding follows the final NONMEM control
-  stream reproduced in the Supplementary Materials (‘Final NONMEM
-  Model’); all point estimates are the final estimates of Table 1 (the
-  control stream’s \$THETA / \$OMEGA / \$SIGMA blocks hold initial
-  values only).
+- Citation: Parkinson J, Astrand M, Melin J, Ericsson H. Population
+  Pharmacokinetic Analysis of Balcinrenone in Healthy Participants and
+  Participants with Heart Failure and Chronic Kidney Disease. Clin
+  Pharmacokinet. 2025;64(11):1723-1735.
+  <doi:10.1007/s40262-025-01572-7>. PMCID: PMC12618412. Structural
+  encoding follows the final NONMEM control stream reproduced in the
+  Supplementary Materials (‘Final NONMEM Model’); all point estimates
+  are the final estimates of Table 1 (the control stream’s \$THETA /
+  \$OMEGA / \$SIGMA blocks hold initial values only).
 
 - Description: Two-compartment population pharmacokinetic model for
   balcinrenone (AZD9977), a selective mineralocorticoid receptor

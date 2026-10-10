@@ -6,7 +6,7 @@
   SJF, de Wildt SN, de Hoog M, Koch BCP, Abdulla A, Wildschut ED. Low
   Target Attainment of Intravenous Cefuroxime in Critically Ill Term
   Neonates and Children: A Pooled Population Pharmacokinetics Study.
-  Clin Pharmacokinet. 2026;65(1):95-105.
+  Clin Pharmacokinet. 2026;65(1):97-108.
   <doi:10.1007/s40262-025-01577-2>. Open-access supplement (Online
   Resource 1) retrieved from EuropePMC PMC12783212 and used for the
   model-development narrative, the assay limits, and the Table S1/S2

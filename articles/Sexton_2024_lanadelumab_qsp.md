@@ -5,7 +5,7 @@
 - Citation: Sexton D, Nguyen HQ, Juethner S, Luo H, Zhang Z, Jasper P,
   Zhu AZX. A quantitative systems pharmacology model of plasma
   kallikrein-kinin system dysregulation in hereditary angioedema. J
-  Pharmacokinet Pharmacodyn. 2024;51(6):721-733.
+  Pharmacokinet Pharmacodyn. 2024;51(6):721-734.
   <doi:10.1007/s10928-024-09919-6>. Species from Supplementary Table S4;
   governing equations from Supplementary Table S5 and the published C
   source (Electronic Supplementary Material MOESM2,

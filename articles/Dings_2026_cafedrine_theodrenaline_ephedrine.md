@@ -25,10 +25,10 @@ files together.
   Hemodynamics and Neonatal Acidosis During Cesarean Section.
   Pharmaceutics. 2026;18(3):296. <doi:10.3390/pharmaceutics18030296>
 - Article: <https://doi.org/10.3390/pharmaceutics18030296>
-- Parent study (HYPOTENS design):
-  <https://doi.org/10.1080/03007995.2018.1483227>
-- Parent study (primary results):
-  <https://doi.org/10.1097/EJA.0000000000001590>
+- Parent study (HYPOTENS design): Eberhart L et al., Curr Med Res Opin
+  2018;34(6):953-961, <https://doi.org/10.1080/03007995.2018.1438379>
+- Parent study (primary results): Kranke P et al., Eur J Anaesthesiol
+  2021;38(10):1067-1076, <https://doi.org/10.1097/EJA.0000000000001474>
 
 ``` r
 

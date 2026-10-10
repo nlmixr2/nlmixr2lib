@@ -10,7 +10,7 @@ mod <- rxode2::rxode(readModelDb("Morse_2012_ghb_rbc_invitro"))
 - Citation: Morse BL, Felmlee MA, Morris ME. gamma-Hydroxybutyrate
   blood/plasma partitioning: effect of physiologic pH on transport by
   monocarboxylate transporters. Drug Metab Dispos. 2012;40(1):64-69.
-  <doi:10.1124/dmd.111.041285>. PMID: 21976621. PMCID: PMC3250051.
+  <doi:10.1124/dmd.111.041285>. PMID: 21976619. PMCID: PMC3250051.
   Structural equations: eq. 1 (saturable plus linear uptake) and eq. 2
   (sigmoidal Imax inhibition by L-lactate), Materials and Methods, ‘Data
   and Statistical Analysis’, p. 66. Parameter values for eq. 1 at both
@@ -643,7 +643,7 @@ sessionInfo()
 #> [13] whisker_0.4.1       rxode2ll_2.0.18     backports_1.5.1    
 #> [16] purrr_1.2.2         scales_1.4.0        textshaping_1.0.5  
 #> [19] jquerylib_0.1.4     cli_3.6.6           crayon_1.5.3       
-#> [22] symengine_0.2.13    rlang_1.3.0         withr_3.0.3        
+#> [22] symengine_0.2.14    rlang_1.3.0         withr_3.0.3        
 #> [25] cachem_1.1.0        yaml_2.3.12         otel_0.2.0         
 #> [28] tools_4.6.1         parallel_4.6.1      memoise_2.0.1      
 #> [31] checkmate_2.3.4     rxode2lincmt_0.1.0  vctrs_0.7.3        
@@ -654,7 +654,7 @@ sessionInfo()
 #> [46] gtable_0.3.6        glue_1.8.1          data.table_1.18.6.1
 #> [49] Rcpp_1.1.2          systemfonts_1.3.2   tidyselect_1.2.1   
 #> [52] xfun_0.61           tibble_3.3.1        sys_3.4.3          
-#> [55] knitr_1.52          farver_2.1.2        dparser_1.3.1-13   
+#> [55] knitr_1.52          farver_2.1.2        dparser_1.3.1-14   
 #> [58] htmltools_0.5.9     labeling_0.4.3      rmarkdown_2.32     
 #> [61] compiler_4.6.1      S7_0.2.2            downlit_0.4.5      
 #> [64] askpass_1.2.1       openssl_2.4.2

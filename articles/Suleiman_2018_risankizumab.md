@@ -45,8 +45,8 @@ weight on CL, Q, Vc, and Vp (two shared exponents: 0.93 for CL/Q and
 - Citation: Suleiman AA, Khatri A, Minocha M, Othman AA. Population
   Pharmacokinetics of the Interleukin-23 Inhibitor Risankizumab in
   Subjects with Psoriasis and Crohn’s Disease: Analyses of Phase I and
-  II Trials. Clin Pharmacokinet. 2018;57(10):1259-1270.
-  <doi:10.1007/s40262-018-0704-z>
+  II Trials. Clin Pharmacokinet. 2019;58(3):375-387.
+  <doi:10.1007/s40262-018-0704-z>.
 - Article: <https://doi.org/10.1007/s40262-018-0704-z>
 
 ### Source trace
@@ -414,5 +414,5 @@ which shows heavier subjects (\>100 kg) exposed to ~25% lower AUC.
 - Suleiman AA, Khatri A, Minocha M, Othman AA. Population
   Pharmacokinetics of the Interleukin-23 Inhibitor Risankizumab in
   Subjects with Psoriasis and Crohn’s Disease: Analyses of Phase I and
-  II Trials. Clin Pharmacokinet. 2018;57(10):1259-1270.
-  <doi:10.1007/s40262-018-0704-z>
+  II Trials. Clin Pharmacokinet. 2019;58(3):375-387.
+  <doi:10.1007/s40262-018-0704-z>.

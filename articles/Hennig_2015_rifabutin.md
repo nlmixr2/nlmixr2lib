@@ -8,10 +8,10 @@ mod_obj <- rxode2::rxode2(readModelDb("Hennig_2015_rifabutin"))
 ```
 
 - Citation: Hennig S, Naiker S, Reddy T, Egan D, Kellerman T, Wiesner L,
-  Owen A, McIlleron H, Pym A. The effect of SLCO1B1 polymorphisms on the
-  pharmacokinetics of rifabutin in African HIV-infected patients with
-  tuberculosis. Antimicrob Agents Chemother. 2016 Jan;60(1):617-20.
-  <doi:10.1128/AAC.01195-15>
+  Owen A, McIlleron H, Pym A. Effect of SLCO1B1 polymorphisms on
+  rifabutin pharmacokinetics in African HIV-infected patients with
+  tuberculosis. Antimicrob Agents Chemother. 2016;60(1):617-620.
+  <doi:10.1128/AAC.01195-15>.
 - Description: Two-compartment population pharmacokinetic model for
   rifabutin with simultaneous two-compartment metabolite (25-O-desacetyl
   rifabutin) modelling in 44 African HIV-infected adults with pulmonary

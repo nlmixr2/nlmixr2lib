@@ -31,11 +31,11 @@ library(ggplot2)
     #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
     #> as a work-around try putting the mu-referenced expression on a simple line
 
-- **Citation:** Waterhouse T, Baron K, Eure W, Chen C, Akbari M, Dirks
-  NL, Jansson J, Mehrotra S. Population pharmacokinetic modeling of
+- **Citation:** Waterhouse T, Baron K, Eure W, Chen C, Dirks NL, Jansson
+  J, Akbari M, Mehrotra S. Population pharmacokinetic modeling of
   vedolizumab for graft-versus-host disease prophylaxis in adults with
   allogeneic hematopoietic stem cell transplant. Pharmacol Res Perspect.
-  2024;12(6):e1257. <doi:10.1002/prp2.1257>
+  2024;12(5):e1257. <doi:10.1002/prp2.1257>.
 
 - **Description:** Two-compartment population PK model with first-order
   (linear) elimination for vedolizumab (humanised anti-alpha4-beta7
@@ -715,8 +715,8 @@ structural-parameter-derived expectations. {.table}
 
 ## Reference
 
-- Waterhouse T, Baron K, Eure W, Chen C, Akbari M, Dirks NL, Jansson J,
+- Waterhouse T, Baron K, Eure W, Chen C, Dirks NL, Jansson J, Akbari M,
   Mehrotra S. Population pharmacokinetic modeling of vedolizumab for
   graft-versus-host disease prophylaxis in adults with allogeneic
   hematopoietic stem cell transplant. Pharmacol Res Perspect.
-  2024;12(6):e1257. <doi:10.1002/prp2.1257>
+  2024;12(5):e1257. <doi:10.1002/prp2.1257>.

@@ -3,8 +3,8 @@
 ## Model and source
 
 - Citation: Wang S, Li Y, Hu Z, Du L, Wang Y, Jiang X, Li L,
-  Shangguan W. (2026). Population pharmacokinetics of a single bolus of
-  ciprofol in Chinese pediatric patients. BMC Anesthesiology 26(1).
+  Shangguan W. Population pharmacokinetics of a single bolus of ciprofol
+  in Chinese pediatric patients. BMC Anesthesiol. 2026;26(1):141.
   <doi:10.1186/s12871-026-03647-9>. PMCID: PMC12930602. Chinese Clinical
   Trial Registry ChiCTR2200058405.
 - Description: Three-compartment intravenous population PK model for

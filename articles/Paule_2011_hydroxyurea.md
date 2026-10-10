@@ -44,7 +44,7 @@ a 30-month sparse-sampling observational PK/PD cohort (n=81) and a
 mod <- readModelDb("Paule_2011_hydroxyurea")
 cat(rxode2::rxode(mod)$reference, sep = "\n")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Paule I, Sassi H, Habibi A, Pham KPD, Bachir D, Galacteros F, Girard P, Hulin A, Tod M. Population pharmacokinetics and pharmacodynamics of hydroxyurea in sickle cell anemia patients, a basis for optimizing the dosing regimen. Orphanet J Rare Dis. 2011;6:30. doi:10.1186/1750-1172-6-30 (PMID 21595938).
+#> Paule I, Sassi H, Habibi A, Pham KP, Bachir D, Galacteros F, Girard P, Hulin A, Tod M. Population pharmacokinetics and pharmacodynamics of hydroxyurea in sickle cell anemia patients, a basis for optimizing the dosing regimen. Orphanet J Rare Dis. 2011;6(1):30. doi:10.1186/1750-1172-6-30 (PMID 21619673).
 ```
 
 ## Population

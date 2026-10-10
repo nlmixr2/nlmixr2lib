@@ -42,10 +42,11 @@ binary indicator for the 70 mg dose arm scales relative bioavailability
 (Frel) by −15.3% with Box-Cox transformed IIV per Petersson et
 al. (2009).
 
-- Citation: Kotani N, Dolton M, Svensson RJ, et al. Population
-  Pharmacokinetics and Exposure-Response Relationships of Astegolimab in
-  Patients With Severe Asthma. J Clin Pharmacol. 2022;62(7):905-917.
-  <doi:10.1002/jcph.2021>
+- Citation: Kotani N, Dolton M, Svensson RJ, Ribbing J, Friberg LE,
+  Vadhavkar S, Cheung D, Staton T, Sperinde G, Jin J, Putnam WS,
+  Quartino A. Population Pharmacokinetics and Exposure-Response
+  Relationships of Astegolimab in Patients With Severe Asthma. J Clin
+  Pharmacol. 2022;62(7):905-917. <doi:10.1002/jcph.2021>.
 - Article: <https://doi.org/10.1002/jcph.2021>
 
 ## Population

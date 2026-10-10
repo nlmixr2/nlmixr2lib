@@ -5,7 +5,7 @@
 - Citation: Lin CW, Chen PW, Doshi S, Dutta S. Integration of
   Time-Varying Pharmacometric Modeling With Cox Regression for
   Time-to-Event Analysis in NONMEM. CPT Pharmacometrics Syst Pharmacol.
-  2026;15(6):e70253. <doi:10.1002/psp4.70253>. PMCID PMC13106229. Open
+  2026;15(5):e70253. <doi:10.1002/psp4.70253>. PMCID PMC13106229. Open
   Access under CC BY-NC-ND. Equations 1-8 and the simulation parameter
   values are in Methods section 2.1 (pages 2-3); the data-generating
   model is deposited verbatim as the $`DES/`$THETA blocks of Data S2

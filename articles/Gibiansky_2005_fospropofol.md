@@ -4,7 +4,7 @@
 
 - Citation: Gibiansky E, Gibiansky L, Enriquez J. Population
   pharmacokinetic model of sedative doses of GPI 15715 and propofol
-  liberated from GPI 15715. Clin Pharmacol Ther. 2005;77(2):P32 (PII-87,
+  liberated from GPI 15715. Clin Pharmacol Ther. 2005;77(2):P48 (PII-87,
   ASCPT Annual Meeting poster). <doi:10.1016/j.clpt.2004.12.076>. Poster
   PDF hosted at
   <https://metrumrg.com/wp-content/uploads/2018/08/ascpt_2005_ppkmodelgpi.pdf>

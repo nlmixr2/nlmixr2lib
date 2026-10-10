@@ -4,9 +4,9 @@
 
 - Citation: Colin P, Eleveld DJ, Struys MMRF, T’Jollyn H, Van Bortel LM,
   Ruige J, De Waele J, Van Bocxlaer J, Boussery K. Moxifloxacin dosing
-  in post-bariatric surgery patients. Br J Clin Pharmacol. 2014
-  Jul;78(1):84-90. <doi:10.1111/bcp.12302>. PMID 24330006; PMCID
-  PMC4168384.
+  in post-bariatric surgery patients. Br J Clin Pharmacol.
+  2014;78(1):84-93. <doi:10.1111/bcp.12302>. PMID 24313873; PMCID
+  PMC4168383.
 - Description: Three-compartment population PK model for moxifloxacin in
   post-bariatric (roux-en-y gastric bypass) volunteers (Colin 2014):
   linear first-order absorption (no lag, no transit) into a central

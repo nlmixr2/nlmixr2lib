@@ -6,7 +6,7 @@
   Bejan-Angoulvant T, Thibault G, Gouilleux-Gruart V, Melet J, Paintaud
   G, Ternant D. Antigenic burden and serum IgG concentrations influence
   rituximab pharmacokinetics in rheumatoid arthritis patients. Br J Clin
-  Pharmacol. 2017 Sep;83(9):1773-1781. <doi:10.1111/bcp.13270>.
+  Pharmacol. 2017;83(8):1773-1781. <doi:10.1111/bcp.13270>.
   <PMID:28230269>.
 - Description: Two-compartment population PK model of rituximab in
   rheumatoid arthritis patients, parameterised with first-order

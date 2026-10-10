@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Dvorackova E, Michalickova D, Petrus J, Klapkova E, Dutkova
-  A, Kotowski T, Krekels EHJ, Havlin J, Lischke R, Slanar O (2026).
-  Population pharmacokinetics and dose optimization of valganciclovir
-  and ganciclovir in lung transplant recipients. Med Princ Pract
-  35:169-180. <doi:10.1159/000548942>
+  A, Kotowski T, Zajacova A, Krekels EHJ, Havlin J, Lischke R, Slanar O.
+  Population Pharmacokinetics and Dose Optimization of Valganciclovir
+  and Ganciclovir in Lung Transplant Recipients. Med Princ Pract.
+  2026;35(2):169-180. <doi:10.1159/000548942>.
 - Description: Two-compartment population PK model for ganciclovir in
   adult lung transplant recipients receiving intravenous ganciclovir
   and/or oral valganciclovir for cytomegalovirus prophylaxis or

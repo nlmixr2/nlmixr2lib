@@ -19,7 +19,7 @@ ui <- rxode2::rxode(readModelDb("Hard_2017_aripiprazole_lauroxil"))
   kg weight-centering constant are carried from the earlier aripiprazole
   lauroxil PopPK model of Hard ML, Mills RJ, Sadler BM, Turncliff RZ,
   Citrome L (2017) J Clin Psychopharmacol 37(3):289-295,
-  <doi:10.1097/JCP.0000000000000685> (not currently in nlmixr2lib).
+  <doi:10.1097/JCP.0000000000000691> (not currently in nlmixr2lib).
 - Description: Two-compartment population PK model (2MPopPK) for
   aripiprazole released from the long-acting intramuscular prodrug
   aripiprazole lauroxil, with lagged zero-order IM input and a
@@ -29,7 +29,7 @@ ui <- rxode2::rxode(readModelDb("Hard_2017_aripiprazole_lauroxil"))
   <https://doi.org/10.1007/s40263-017-0447-7> (Supplementary file 1,
   `40263_2017_447_MOESM1_ESM.pdf`)
 - Earlier PopPK model from which Vp/F, Q/F and the weight centering are
-  carried: <https://doi.org/10.1097/JCP.0000000000000685>
+  carried: <https://doi.org/10.1097/JCP.0000000000000691>
 
 Aripiprazole lauroxil (AL) is an intramuscular extended-release prodrug
 of aripiprazole. The prodrug itself is not measurable in plasma; the

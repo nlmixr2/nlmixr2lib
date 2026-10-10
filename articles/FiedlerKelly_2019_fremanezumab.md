@@ -462,8 +462,8 @@ of the dose schedule or sampling grid rather than parameter tuning.
 
 ### Reference
 
-- Fiedler-Kelly JB, Cohen-Barak O, Morris DN, Yoon E, Yeo KR, Ludwig EA,
-  Bauer R, Loupe P. Population pharmacokinetic modelling and simulation
-  of fremanezumab in healthy subjects and patients with migraine. Br J
-  Clin Pharmacol. 2019;85(12):2721-2733. <doi:10.1111/bcp.14096> (PMID
+- Fiedler-Kelly JB, Cohen-Barak O, Morris DN, Ludwig E, Rasamoelisolo M,
+  Shen H, Levi M. Population pharmacokinetic modelling and simulation of
+  fremanezumab in healthy subjects and patients with migraine. Br J Clin
+  Pharmacol. 2019;85(12):2721-2733. <doi:10.1111/bcp.14096> (PMID
   31418911).

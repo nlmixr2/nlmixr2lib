@@ -7,7 +7,7 @@
 mod <- readModelDb("Yuan_2021_busulfan")
 cat(rxode2::rxode(mod)$reference)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Yuan L, Chen S, Zhou Y, Yang Y, Gao J, Zhang X, Guo Y, Xu Z, Zhang G, Yang J, Zhao L. Optimization of Busulfan Dosing Regimen in Pediatric Patients Using a Population Pharmacokinetic Model Incorporating GST Mutations. Pharmacogenomics Pers Med. 2021;14:253-268. doi:10.2147/PGPM.S289834.
+#> Yuan J, Sun N, Feng X, He H, Mei D, Zhu G, Zhao L. Optimization of Busulfan Dosing Regimen in Pediatric Patients Using a Population Pharmacokinetic Model Incorporating GST Mutations. Pharmgenomics Pers Med. 2021;14:253-268. doi:10.2147/PGPM.S289834.
 ```
 
 - Article: <https://doi.org/10.2147/PGPM.S289834>

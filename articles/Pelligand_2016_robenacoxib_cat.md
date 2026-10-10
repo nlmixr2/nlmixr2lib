@@ -9,10 +9,10 @@ mod <- rxode2::rxode2(readModelDb("Pelligand_2016_robenacoxib_cat"))
 ```
 
 - Citation: Pelligand L, Soubret A, King JN, Elliott J, Mochel JP.
-  Modeling of large pharmacokinetic data using nonlinear mixed-effects:
-  a paradigm shift in veterinary pharmacology. A case study with
-  robenacoxib in cats. CPT Pharmacometrics Syst Pharmacol.
-  2016;5(12):625-635. <doi:10.1002/psp4.12141>. Structural model
+  Modeling of Large Pharmacokinetic Data Using Nonlinear Mixed-Effects:
+  A Paradigm Shift in Veterinary Pharmacology. A Case Study With
+  Robenacoxib in Cats. CPT Pharmacometrics Syst Pharmacol.
+  2016;5(11):625-635. <doi:10.1002/psp4.12141>. Structural model
   transcribed from the MLXTRAN source listing deposited as Supplementary
   Data (PSP4-5-625-s008.txt); residual-error magnitudes and the
   anaesthesia effect on V1 digitised from the SAEM convergence traces of

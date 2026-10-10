@@ -15,9 +15,9 @@ files.
 | `Ibrahim_2025_ibrutinib_bp` | systolic and diastolic blood pressure | Data S1 `run6023_bp`; Table 2 |
 | `Ibrahim_2025_ibrutinib_venetoclax` | as `_cll`, plus peripheral-blood MRD | as `_cll`, plus Table S2 |
 
-- Citation: Ibrahim EIK, Friberg LE. Optimizing ibrutinib posology in
-  chronic lymphocytic leukemia using a semi-mechanistic pharmacometric
-  framework. CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2186-2198.
+- Citation: Ibrahim EIK, Friberg LE. Optimizing Ibrutinib Posology in
+  Chronic Lymphocytic Leukemia Using a Semi-Mechanistic Pharmacometric
+  Framework. CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2186-2197.
   <doi:10.1002/psp4.70124>. Open Access under CC BY-NC. Structural
   equations transcribed from the authors’ own RxODE control stream (Data
   S1, PSP-2025-0220-s02.docx, `run8634_eff`); observation equations from

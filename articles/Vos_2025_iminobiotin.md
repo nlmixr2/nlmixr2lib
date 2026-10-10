@@ -3,13 +3,15 @@
 ## Model and source
 
 - Citation: Vos EM, Peeters-Scholte CMPCD, Boiten J, Hund HM, Jellema K,
-  Kloppenborg RP, et al. Safety, Tolerability, and Pharmacokinetics of
-  the Neuroprotectant 2-Iminobiotin in Patients With Large-Vessel
-  Occlusion Ischemic Stroke Treated With Endovascular Thrombectomy.
-  Stroke. 2025;56(8):1991-1999. <doi:10.1161/STROKEAHA.125.050560>.
-  <PMID:40270284>. Structural Vc / Q / Vp inherited from the upstream
-  TIBOHCA out-of-hospital cardiac arrest analysis (van den Heuvel 2024 /
-  earlier Peeters-Scholte work referenced as Vos 2025 reference 11).
+  Kloppenborg RP, Ghariq E, van Es ACGM, Venema E, Lingsma HF, van der
+  Hoeven AES, Vis PW, Dippel DWJ, Roozenbeek B, van den Wijngaard IR.
+  Safety, Tolerability, and Pharmacokinetics of the Neuroprotectant
+  2-Iminobiotin in Patients With Large-Vessel Occlusion Ischemic Stroke
+  Treated With Endovascular Thrombectomy. Stroke. 2025;56(8):1991-1999.
+  <doi:10.1161/STROKEAHA.125.050560>. <PMID:40270284>. Structural Vc / Q
+  / Vp inherited from the upstream TIBOHCA out-of-hospital cardiac
+  arrest analysis (van den Heuvel 2024 / earlier Peeters-Scholte work
+  referenced as Vos 2025 reference 11).
 - Description: Two-compartment intravenous population PK model for the
   selective neuronal and inducible nitric oxide synthase inhibitor
   2-iminobiotin (2-IB) in adults with acute large-vessel-occlusion (LVO)

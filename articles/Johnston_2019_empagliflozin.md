@@ -12,9 +12,11 @@
 - Poster PDF: [Metrum publication
   archive](https://metrumrg.com/wp-content/uploads/Pubs/M-EASE-2-page2019-johnston.pdf)
 - Upstream popPK cited by the source authors (NOT included in this
-  nlmixr2lib model): Mondick J et al. *Population PK of empagliflozin in
-  adults with T1DM and T2DM.* J Clin Pharmacol. 2018;58:640-649.
-  <doi:%5B10.1002/jcph.1064>\](<https://doi.org/10.1002/jcph.1064>). The
+  nlmixr2lib model): Mondick J et al. *Population
+  Pharmacokinetic-Pharmacodynamic Analysis to Characterize the Effect of
+  Empagliflozin on Renal Glucose Threshold in Patients With Type 1
+  Diabetes Mellitus.* J Clin Pharmacol. 2018;58(5):640-649.
+  <doi:%5B10.1002/jcph.1051>\](<https://doi.org/10.1002/jcph.1051>). The
   M-EASE-2 application updated that model with EASE-2 and EASE-3 data on
   file to compute individual AUCss values that the PD model consumes.
 - Description: direct-response Emax exposure-response model for HbA1c in

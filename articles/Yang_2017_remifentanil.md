@@ -5,7 +5,7 @@
 - Citation: Yang S, Noh H, Hahn J, Jin BH, Min KL, Bae SK, Kim J, Park
   MS, Hong T, Wi J, Chang MJ. Population pharmacokinetics of
   remifentanil in critically ill patients receiving extracorporeal
-  membrane oxygenation. Sci Rep 2017;7(1):16275.
+  membrane oxygenation. Sci Rep. 2017;7(1):16276.
   <doi:10.1038/s41598-017-16358-6>.
 - Description: One-compartment population PK model for continuous
   intravenous remifentanil infusion in critically ill adults receiving
@@ -13,7 +13,7 @@
   and centrifugal-pump rotational speed as covariates on clearance (Yang
   2017).
 - Article: <https://doi.org/10.1038/s41598-017-16358-6> (open access in
-  Scientific Reports 2017;7:16275)
+  Scientific Reports 2017;7:16276)
 
 ## Population
 

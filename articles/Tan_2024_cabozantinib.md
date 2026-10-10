@@ -34,9 +34,9 @@ ui <- rxode2::rxode(readModelDb("Tan_2024_cabozantinib"))
 ```
 
 - Citation: Tan Z, Voller S, Yin A, Rieborn A, Gelderblom AJ, van der
-  Hulle T, Knibbe CAJ, Moes DJAR. Population pharmacokinetics of
-  cabozantinib in metastatic renal cell carcinoma patients: towards drug
-  expenses saving regimens. Clin Pharmacokinet. 2024;63(7):1015-1025.
+  Hulle T, Knibbe CAJ, Moes DJAR. Population Pharmacokinetics of
+  Cabozantinib in Metastatic Renal Cell Carcinoma Patients: Towards Drug
+  Expenses Saving Regimens. Clin Pharmacokinet. 2024;63(6):857-869.
   <doi:10.1007/s40262-024-01379-y>. Structural model and all fixed
   parameters reproduced from the FDA cabozantinib registration popPK
   model (Tan 2024 reference 13); the NONMEM control stream is reproduced

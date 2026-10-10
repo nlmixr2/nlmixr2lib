@@ -4,7 +4,7 @@
 
 - Citation: Maringwa J, Diderichsen PM, Valiathan C. Partial Residual
   Plots as an Integrated Model Diagnostic Tool in Model-Based
-  Meta-Analysis. Clin Pharmacol Ther. 2025 Jan;117(1):153-159.
+  Meta-Analysis. Clin Pharmacol Ther. 2025;117(1):153-161.
   <doi:10.1002/cpt.3418>. Model structure is Equations 1 and 2 (Methods,
   Model formulation) and the gnls fitting script in Table S1 of the
   supplement; parameter estimates are in Table 2; the 43-arm study-level
@@ -510,7 +510,7 @@ slopes |>
 
 | Drug        | Fitted slope (per HAMD point) | Closed form |
 |:------------|------------------------------:|------------:|
-| fluoxetine  |                       -0.1725 |     -0.1725 |
+| fluoxetine  |                       -0.1726 |     -0.1725 |
 | venlafaxine |                       -0.3851 |     -0.3851 |
 
 ## Directional check against the paper’s RMSE

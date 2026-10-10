@@ -63,9 +63,9 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_wt_vc` | `fixed(1.0)` | Salem 2014 Methods ‘Development of the covariate model’ paragraph 3 |
 | `ltvf_liq` | `log(0.79)` | Salem 2014 Table 2 final TVF = 0.79 (RSE 12.5%; 90% CI 0.63-0.95); mature liquid bioavailability relative to capsule, log(0.79) = -0.2357 |
 | `tm50_f` | `10.6` | Salem 2014 Table 2 final TM50,F = 10.6 months (RSE 38.7%; 90% CI 3.8-17.4) |
-| `etalcl` | `0.189669` | Salem 2014 Table 2 IIV CL/F = 45.7% CV (RSE 28.4%; 90% CI 35.0-56.4); omega^2 = log(1 + 0.457^2) = 0.189669 |
-| `etalvc` | `0.174034` | Salem 2014 Table 2 IIV V/F = 43.6% CV (RSE 30.5%; 90% CI 32.5-54.7); omega^2 = log(1 + 0.436^2) = 0.174034 |
-| `etaltvf_liq` | `0.147731` | Salem 2014 Table 2 IIV TVF = 39.9% CV (RSE 32.8%; 90% CI 29.1-50.7); omega^2 = log(1 + 0.399^2) = 0.147731 |
+| `etalcl` | `0.208849` | Salem 2014 Table 2 IIV CL/F = 45.7% CV (RSE 28.4%; 90% CI 35.0-56.4); omega x 100, so omega^2 = 0.457^2 = 0.208849 |
+| `etalvc` | `0.190096` | Salem 2014 Table 2 IIV V/F = 43.6% CV (RSE 30.5%; 90% CI 32.5-54.7); omega x 100, so omega^2 = 0.436^2 = 0.190096 |
+| `etaltvf_liq` | `0.159201` | Salem 2014 Table 2 IIV TVF = 39.9% CV (RSE 32.8%; 90% CI 29.1-50.7); omega x 100, so omega^2 = 0.399^2 = 0.159201 (see Errata) |
 | `propSd` | `0.25` | Salem 2014 Table 2 footer: proportional residual error 25% |
 | `addSd` | `0.25` | Salem 2014 Table 2 footer: additive residual SD 0.25 ug/mL = 0.25 mg/L |
 | `cl = exp(lcl + etalcl + e_cyp2b6_tt_cl * is_tt) * (WT/70)^0.75 * maturation_cl` | n/a | Salem 2014 Results paragraph 3 + equation following: “CL/F = 11.2 \* (WT/70)^0.75 \* \[AGE^3.4 / (AGE^3.4 + 4.6^3.4)\] \* 0.49^GTflag” |
@@ -264,6 +264,69 @@ sim <- rxode2::rxSolve(
   as.data.frame()
 ```
 
+## Variability scale check
+
+Salem 2014 Table 2 prints each IIV term as omega x 100 (see the Errata
+section). The first check confirms that the packaged omega matrix holds
+exactly (P/100)^2 for each printed percentage P. It compares the file
+with the table, so the bound is tight.
+
+The second check confirms that the etas reach the parameters on that
+scale. It solves 20000 reference adults (70 kg, 600 months, non-T/T,
+liquid formulation so the bioavailability eta is evaluated) at a single
+time point, so the per-subject SD of log(CL/F), log(V/F) and log(TVF)
+estimates omega directly. The SD of a sample of 20000 has about 0.5%
+sampling error, so the +/-3% band is about six standard errors wide and
+holds for any random-number stream. The bound is on the sample SD, a
+centre statistic, not on any per-subject extreme. It fails on the
+originally shipped CL/F and V/F variances, whose SDs are 0.953 and 0.957
+times the printed values.
+
+``` r
+
+omega <- rxode2::rxode(mod)$omega
+printed_pct <- c(etalcl = 45.7, etalvc = 43.6, etaltvf_liq = 39.9)
+stopifnot(
+  isTRUE(all.equal(unname(diag(omega)[names(printed_pct)]),
+                   unname((printed_pct / 100)^2), tolerance = 1e-12))
+)
+
+ev_spread <- tibble::tibble(
+  id = seq_len(20000L), time = 0, amt = NA_real_, evid = 0L,
+  cmt = "central", WT = 70, PNA = 600, FORM_CAPSULE = 0L,
+  SNP_CYP2B6_RS3745274_T_COUNT = 0L
+)
+per_subject <- rxode2::rxSolve(mod, events = ev_spread) |>
+  as.data.frame() |>
+  dplyr::distinct(id, cl, vc, tvf_liq)
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
+spread <- tibble::tibble(
+  quantity      = c("log(CL/F)", "log(V/F)", "log(TVF)"),
+  printed_omega = unname(printed_pct / 100),
+  simulated_sd  = c(stats::sd(log(per_subject$cl)),
+                    stats::sd(log(per_subject$vc)),
+                    stats::sd(log(per_subject$tvf_liq)))
+) |>
+  dplyr::mutate(ratio = simulated_sd / printed_omega)
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega (N = ",
+                              nrow(per_subject), ", reference adult)."))
+```
+
+| quantity  | printed_omega | simulated_sd | ratio |
+|:----------|--------------:|-------------:|------:|
+| log(CL/F) |         0.457 |        0.458 | 1.003 |
+| log(V/F)  |         0.436 |        0.438 | 1.004 |
+| log(TVF)  |         0.399 |        0.398 | 0.998 |
+
+Per-subject spread vs. printed omega (N = 20000, reference adult).
+{.table}
+
+``` r
+
+stopifnot(all(spread$ratio > 0.97 & spread$ratio < 1.03))
+```
+
 ## Replicate Figure 1 (maturation of oral clearance)
 
 Salem 2014 Figure 1 shows individual predicted EFV oral clearance
@@ -433,14 +496,14 @@ knitr::kable(
 
 | treatment | auclast_median | cmax_median | cmin_median | half.life_median | tmax_median | auclast_p05 | cmax_p05 | cmin_p05 | half.life_p05 | tmax_p05 | auclast_p95 | cmax_p95 | cmin_p95 | half.life_p95 | tmax_p95 |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 10 years \| capsule | 57.86 | 3.17 | 1.73 | 26.97 | 3.0 | 33.14 | 1.95 | 0.60 | 9.34 | 3 | 117.27 | 5.64 | 4.04 | 73.98 | 4 |
-| 12 months \| capsule | 70.10 | 3.72 | 1.98 | 21.32 | 3.0 | 30.00 | 1.98 | 0.48 | 7.00 | 3 | 148.81 | 7.28 | 5.12 | 55.38 | 4 |
-| 12 months \| liquid | 35.11 | 2.04 | 0.94 | 23.16 | 3.0 | 16.83 | 0.88 | 0.31 | 8.00 | 3 | 89.33 | 4.92 | 3.36 | 93.85 | 4 |
-| 15 years \| capsule | 52.51 | 2.75 | 1.57 | 28.85 | 3.0 | 25.59 | 1.54 | 0.52 | 8.83 | 3 | 111.77 | 5.04 | 4.22 | 76.25 | 4 |
-| 3 years \| capsule | 58.54 | 3.47 | 1.48 | 20.02 | 3.0 | 28.96 | 1.90 | 0.40 | 7.82 | 3 | 145.76 | 6.73 | 5.16 | 57.18 | 4 |
-| 4 months \| capsule | 192.13 | 8.64 | 6.79 | 52.90 | 3.5 | 99.84 | 5.13 | 3.09 | 21.10 | 3 | 352.25 | 15.35 | 13.52 | 125.77 | 4 |
-| 4 months \| liquid | 47.01 | 2.21 | 1.66 | 50.38 | 3.0 | 16.57 | 0.85 | 0.50 | 22.35 | 3 | 90.66 | 4.30 | 3.31 | 182.96 | 4 |
-| 5.5 years \| capsule | 66.84 | 3.77 | 1.95 | 22.12 | 3.0 | 33.62 | 2.17 | 0.63 | 10.52 | 3 | 137.62 | 7.16 | 4.94 | 66.91 | 4 |
+| 10 years \| capsule | 58.02 | 3.18 | 1.71 | 27.09 | 3.0 | 32.33 | 1.92 | 0.56 | 8.93 | 3 | 121.57 | 5.83 | 4.20 | 75.67 | 4 |
+| 12 months \| capsule | 69.38 | 3.70 | 1.96 | 21.44 | 3.0 | 29.00 | 1.93 | 0.44 | 6.69 | 3 | 155.36 | 7.37 | 5.37 | 58.30 | 4 |
+| 12 months \| liquid | 34.75 | 2.04 | 0.92 | 23.38 | 3.0 | 16.51 | 0.86 | 0.30 | 7.67 | 3 | 92.75 | 5.18 | 3.51 | 101.15 | 4 |
+| 15 years \| capsule | 52.45 | 2.76 | 1.56 | 28.90 | 3.0 | 24.68 | 1.50 | 0.48 | 8.22 | 3 | 114.67 | 5.07 | 4.34 | 80.04 | 4 |
+| 3 years \| capsule | 58.49 | 3.48 | 1.47 | 20.03 | 3.0 | 27.94 | 1.85 | 0.35 | 7.49 | 3 | 149.13 | 6.87 | 5.33 | 58.77 | 4 |
+| 4 months \| capsule | 192.22 | 8.65 | 6.83 | 53.49 | 3.5 | 97.17 | 5.01 | 2.99 | 20.48 | 3 | 353.38 | 15.80 | 13.56 | 132.41 | 4 |
+| 4 months \| liquid | 47.46 | 2.21 | 1.67 | 49.59 | 3.0 | 16.00 | 0.82 | 0.48 | 21.67 | 3 | 93.64 | 4.32 | 3.35 | 191.92 | 4 |
+| 5.5 years \| capsule | 66.94 | 3.81 | 1.95 | 22.18 | 3.0 | 32.67 | 2.13 | 0.59 | 10.17 | 3 | 143.12 | 7.23 | 4.94 | 70.62 | 4 |
 
 Simulated steady-state NCA (median; 5-95% PI) per age x formulation
 cell. Cmax / Cmin in mg/L, Tmax / half.life in h, AUClast (= AUC0-24) in
@@ -490,14 +553,14 @@ knitr::kable(
 
 | treatment            | AUC0_24_median | AUC0_24_p05 | AUC0_24_p95 | in_target_window |
 |:---------------------|---------------:|------------:|------------:|:-----------------|
-| 10 years \| capsule  |          57.86 |       33.14 |      117.27 | below            |
-| 12 months \| capsule |          70.10 |       30.00 |      148.81 | within           |
-| 12 months \| liquid  |          35.11 |       16.83 |       89.33 | below            |
-| 15 years \| capsule  |          52.51 |       25.59 |      111.77 | below            |
-| 3 years \| capsule   |          58.54 |       28.96 |      145.76 | below            |
-| 4 months \| capsule  |         192.13 |       99.84 |      352.25 | above            |
-| 4 months \| liquid   |          47.01 |       16.57 |       90.66 | below            |
-| 5.5 years \| capsule |          66.84 |       33.62 |      137.62 | within           |
+| 10 years \| capsule  |          58.02 |       32.33 |      121.57 | below            |
+| 12 months \| capsule |          69.38 |       29.00 |      155.36 | within           |
+| 12 months \| liquid  |          34.75 |       16.51 |       92.75 | below            |
+| 15 years \| capsule  |          52.45 |       24.68 |      114.67 | below            |
+| 3 years \| capsule   |          58.49 |       27.94 |      149.13 | below            |
+| 4 months \| capsule  |         192.22 |       97.17 |      353.38 | above            |
+| 4 months \| liquid   |          47.46 |       16.00 |       93.64 | below            |
+| 5.5 years \| capsule |          66.94 |       32.67 |      143.12 | within           |
 
 Per-cell median simulated AUC0-24 (mg/L*h) vs the PACTG382 target window
 60.0-120.0 mg/L*h (= 190-380 uM\*h). {.table}
@@ -659,3 +722,44 @@ to maintain target exposure. {.table}
   the per-cell simulated AUC0-24 against the **PACTG382 target window**
   (190-380 uM*h = 60.0-120.0 mg/L*h) rather than against published NCA
   medians.
+
+## Errata
+
+### Correction to the packaged IIV values (2026-10)
+
+The model as first released in nlmixr2lib put the inter-individual
+variances on the wrong scale. It read each Table 2 “CV \[%\]” as a
+coefficient of variation and converted it with omega^2 = log(1 + CV^2).
+The printed percentages are in fact omega x 100, the standard deviation
+of the eta on the log scale, so omega^2 = (P/100)^2.
+
+The paper’s own “Estimate (RSE \[%\])” and asymptotic 90% CI columns
+settle this. On the final-model theta rows the CI is exactly estimate
++/- 1.645 x estimate x RSE (TVCL 11.2 (6.8%): 9.95-12.45, printed
+9.9-12.5; TVV 468.0 (8.7%): 401-535, printed 400.8-535.2). On the IIV
+rows the CI is symmetric on the % scale, but its half-width is about
+half of 1.645 x CV x RSE. That is the delta method applied to an RSE
+quoted for omega^2, the NONMEM default. The factor depends on the
+reading: it is exactly 1/2 when the printed CV is 100 x omega, and
+omega^2 (1 + c^2) / (2 c^2) (with c = CV/100) when it is 100 x
+sqrt(exp(omega^2) - 1):
+
+| Row | Printed (RSE, 90% CI) | Printed factor | omega x 100 reading | log(1 + CV^2) reading |
+|----|----|----|----|----|
+| IIV CL/F | 45.7 (28.4%, 35.0-56.4) | 0.501 | **0.500** | 0.549 |
+| IIV V/F | 43.6 (30.5%, 32.5-54.7) | 0.507 | **0.500** | 0.545 |
+| IOV CL/F | 30.0 (13.7%, 26.6-33.4) | 0.503 | **0.500** | 0.522 |
+| IIV TVF | 39.9 (32.8%, 29.1-50.7) | 0.502 | **0.500** | 0.538 |
+
+The printed factor is the CI half-width divided by 1.645 x CV x RSE. All
+three IIV variances were corrected:
+
+| eta           | Shipped before 2026-10 | Corrected | Ratio |
+|---------------|------------------------|-----------|-------|
+| `etalcl`      | 0.189669               | 0.208849  | 1.101 |
+| `etalvc`      | 0.174034               | 0.190096  | 1.092 |
+| `etaltvf_liq` | 0.147731               | 0.159201  | 1.078 |
+
+The IOV on CL/F (30.0%, so 0.09 on the omega x 100 reading) is still not
+encoded; see Assumptions and deviations. The residual error terms,
+typical values, covariate effects and model structure are unchanged.

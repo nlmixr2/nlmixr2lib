@@ -5,9 +5,9 @@
     #> ℹ parameter labels from comments will be replaced by 'label()'
 
 - Citation: Lee A, Liu C, Tran MT, Phal S, Peloquin CA, Nieves D,
-  Capparelli E, Arrieta AC. (2026). Population pharmacokinetics and
-  safety of continuous oxacillin in preterm and term neonates and
-  infants. Antimicrobial Agents and Chemotherapy 70(6).
+  Capparelli E, Arrieta AC. Population pharmacokinetics and safety of
+  continuous oxacillin in preterm and term neonates and infants.
+  Antimicrob Agents Chemother. 2026;70(6):e01777-25.
   <doi:10.1128/aac.01777-25>.
 
 - Description: One-compartment intravenous population pharmacokinetic

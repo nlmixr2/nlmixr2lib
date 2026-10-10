@@ -13,11 +13,11 @@
   0.209 per year and MTT = 38.9 days are adapted from Choy S, Kjellsson
   MC, Karlsson MO, de Winter W (2016). Weight-HbA1c-insulin-glucose
   model for describing disease progression of type 2 diabetes. CPT
-  Pharmacometrics Syst Pharmacol 5(1):11-19. <doi:10.1002/psp4.12058>.
+  Pharmacometrics Syst Pharmacol 5(1):11-19. <doi:10.1002/psp4.12051>.
   PMID 26844011; PMCID PMC4728293.
 - Article: <https://doi.org/10.1111/bcp.13144>
 - Upstream WHIG framework (Choy 2016):
-  <https://doi.org/10.1002/psp4.12058>
+  <https://doi.org/10.1002/psp4.12051>
 
 Duong 2016 applies the Choy 2016 semi-mechanistic Weight – HbA1c –
 Insulin – Glucose (WHIG) framework to a pooled placebo cohort spanning

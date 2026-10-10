@@ -3,9 +3,10 @@
 ## Model and source
 
 - Citation: Wang Y, Wang X, Lei L, Sun W, Wu Z, Lan J, Chen J, Wang Y,
-  Yao F, Hu L, Bai Y, Chen C. A multi-center study of population
-  pharmacokinetics of polymyxin B in critically ill patients. Drug Des
-  Devel Ther. 2026;20. <doi:10.2147/DDDT.S521070>. PMCID PMC13012298.
+  Yao F, Hu L, Bai Y, Chen C. A Multi-Center Study of Population
+  Pharmacokinetics of Polymyxin B in Critically Ill Patients. Drug Des
+  Devel Ther. 2026;20:521070. <doi:10.2147/DDDT.S521070>. PMCID
+  PMC13012298.
 - Description: Two-compartment intravenous population PK model for
   polymyxin B in critically ill adults, developed from a two-center
   Chinese ICU cohort sampled after at least the third dose (Wang 2026).

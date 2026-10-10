@@ -6,8 +6,8 @@
   Kirkpatrick CM. Population pharmacokinetics of fluconazole in
   critically ill patients receiving continuous venovenous
   hemodiafiltration: using Monte Carlo simulations to predict doses for
-  specified pharmacodynamic targets. *Antimicrobial Agents and
-  Chemotherapy* 2011; 55(12):5868-5874.
+  specified pharmacodynamic targets. *Antimicrob Agents Chemother*.
+  2011;55(12):5868-5873.
   <doi:%5B10.1128/AAC.00424-11>\](<https://doi.org/10.1128/AAC.00424-11>).
 - Full text (Open Access via PMC):
   <https://pmc.ncbi.nlm.nih.gov/articles/PMC3232798/>.

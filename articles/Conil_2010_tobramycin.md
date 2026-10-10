@@ -12,7 +12,7 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Conil_2010_tobramycin"))$meta
   Fourcade O, Houin G, Saivin S. Tobramycin disposition in ICU patients
   receiving a once daily regimen: population approach and dosage
   simulations. Br J Clin Pharmacol. 2011;71(1):61-71.
-  <doi:10.1111/j.1365-2125.2010.03793.x>
+  <doi:10.1111/j.1365-2125.2010.03793.x>.
 - Description: Two-compartment IV population PK model for tobramycin in
   adult ICU patients receiving once-daily aminoglycoside therapy for
   nosocomial Gram-negative infections (Conil 2010); additive linear

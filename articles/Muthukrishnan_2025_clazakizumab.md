@@ -6,7 +6,7 @@
   M, Chang AM, Acharya M, Nandy P, McCune JS. Population Pharmacokinetic
   and Pharmacokinetic-Pharmacodynamic Analysis for Clazakizumab in
   Patients With End-Stage Kidney Disease Undergoing Dialysis. Clin
-  Transl Sci. 2025. <doi:10.1111/cts.70381>
+  Transl Sci. 2025;18(11):e70381. <doi:10.1111/cts.70381>.
 - Description: Population PK and PK-PD model for the anti-interleukin-6
   monoclonal antibody clazakizumab given as a 3-minute IV bolus to
   adults with end-stage kidney disease undergoing maintenance dialysis

@@ -5,8 +5,8 @@
 - Citation: Jansen AME, Ter Heine R, Donnelly JP, Blijlevens N,
   Bruggemann RJM. Repurposing antifungals: population pharmacokinetics
   of itraconazole and hydroxy-itraconazole following administration of a
-  nanocrystal formulation. J Antimicrob Chemother. 2023;78(5):1172-1178.
-  <doi:10.1093/jac/dkad072>
+  nanocrystal formulation. J Antimicrob Chemother. 2023;78(5):1219-1224.
+  <doi:10.1093/jac/dkad072>.
 - Description: Semi-mechanistic population PK model for intravenous
   itraconazole nanocrystal formulation (NCF) and its active metabolite
   hydroxy-itraconazole in allogeneic haematopoietic cell transplant

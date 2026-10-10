@@ -521,7 +521,7 @@ pta_events <- function(etas, covs) {
 
 cov_pip <- groups |> dplyr::transmute(grp = group, ECMO_STATUS, RRT_CRRT_STATUS)
 unit_pip <- quiet_solve(mod_pip, pta_events(eta_pip, cov_pip), keep = c("shape", "grp", "CRCLlev"))
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:18
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:20
 unit_pip <- split(unit_pip, paste(unit_pip$shape, unit_pip$grp, unit_pip$CRCLlev))
 ```
 

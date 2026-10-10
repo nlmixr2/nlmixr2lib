@@ -5,7 +5,7 @@
 - Citation: Landersdorfer CB, Kinzig M, Hennig FF, Bulitta JB, Holzgrabe
   U, Drusano GL, Sorgel F, Gusinde J. Penetration of moxifloxacin into
   bone evaluated by Monte Carlo simulation. Antimicrob Agents Chemother.
-  2009 May;53(5):2074-81. <doi:10.1128/AAC.01056-08>. PMID 19237653.
+  2009;53(5):2074-2081. <doi:10.1128/AAC.01056-08>. PMID 19223648.
 - Description: Population PK model for oral moxifloxacin bone
   penetration (Landersdorfer 2009): two-compartment plasma disposition
   with first-order absorption from a gut depot, plus two

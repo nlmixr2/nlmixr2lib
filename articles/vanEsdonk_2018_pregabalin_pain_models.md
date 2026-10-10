@@ -19,7 +19,7 @@ separate result, so this paper contributes three model files to
   7(9):573-580. <doi:10.1002/psp4.12318>.
 - Article: <https://doi.org/10.1002/psp4.12318>
 - Study design: Okkerse 2017, Br J Clin Pharmacol 83:976-990,
-  <https://doi.org/10.1111/bcp.13204>
+  <https://doi.org/10.1111/bcp.13183>
 
 ``` r
 

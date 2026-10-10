@@ -5,8 +5,8 @@
 - Citation: Schmid U, Liesenfeld KH, Fleury A, Dallinger C, Freiwald M.
   Population pharmacokinetics of nintedanib, an inhibitor of tyrosine
   kinases, in patients with non-small cell lung cancer or idiopathic
-  pulmonary fibrosis. Cancer Chemotherapy and Pharmacology. 2018
-  Jan;81(1):89-101. <doi:10.1007/s00280-017-3452-0>. PMID 29127500.
+  pulmonary fibrosis. Cancer Chemother Pharmacol. 2018;81(1):89-101.
+  <doi:10.1007/s00280-017-3452-0>. PMID 29119292.
 - Article: <https://doi.org/10.1007/s00280-017-3452-0> (open access,
   CC-BY 4.0)
 - Online Resource (supplement, Tables S1-S7, Figures S1-S6): retrieved

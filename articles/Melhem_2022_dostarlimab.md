@@ -2,11 +2,10 @@
 
 ## Model and source
 
-- Citation: Melhem M, Hanze E, Lu Z, Venkatakrishnan K, Gupta N,
-  Vugmeyster Y. Population pharmacokinetics and exposure-response of
-  anti-programmed cell death protein-1 monoclonal antibody dostarlimab
-  in advanced solid tumours. *Br J Clin Pharmacol.*
-  2022;88(9):4142-4154.
+- Citation: Melhem M, Hanze E, Lu S, Alskar O, Visser S, Gandhi Y.
+  Population pharmacokinetics and exposure-response of anti-programmed
+  cell death protein-1 monoclonal antibody dostarlimab in advanced solid
+  tumours. *Br J Clin Pharmacol*. 2022;88(9):4142-4154.
   <doi:%5B10.1111/bcp.15339>\](<https://doi.org/10.1111/bcp.15339>)
 - Description: Two-compartment population PK model for dostarlimab
   (anti-PD-1 IgG4) with time-dependent (sigmoid I_max) clearance in

@@ -5,7 +5,7 @@
 - Citation: Abrantes JA, Nielsen EI, Korth-Bradley J, Harnisch L,
   Jonsson S. Elucidation of Factor VIII Activity Pharmacokinetics: A
   Pooled Population Analysis in Patients With Hemophilia A Treated With
-  Moroctocog Alfa. *Clin Pharmacol Ther.* 2017 Jul;102(1):113-121.
+  Moroctocog Alfa. *Clin Pharmacol Ther*. 2017;102(6):977-988.
   <doi:%5B10.1002/cpt.716>\](<https://doi.org/10.1002/cpt.716>).
   <PMID:28437834>.
 - Article: <https://doi.org/10.1002/cpt.716>

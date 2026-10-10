@@ -54,7 +54,7 @@ Bruno-style triexponential synthetic exposure curve.
 
 The model was developed on 92 adult cancer patients enrolled in two
 sequential single-centre clinical trials in France: 37 at the Institut
-Claudius-Regaud (Toulouse; Puisset et al 2007 *Cancer Chemother
+Claudius-Regaud (Toulouse; Puisset et al 2004 *Cancer Chemother
 Pharmacol* 54:265-272 – dexamethasone-clearance probe study) and 55 at
 the Hopital Cochin (Paris; Tran et al 2006 *Clin Pharmacol Ther*
 79:570-580 – CYP3A/MDR1/GST polymorphism study). Mean (range) baseline

@@ -20,7 +20,7 @@ mod <- rxode2::rxode(readModelDb("Harada_2025_cyanide_pbpk"))
   Nishihori T, Sakamoto Y, Yang C, Isobe Y, Sugimoto K, Nakama K, Katada
   R, Matsumoto H. Analysis of cyanide exposure status in fire-related
   deaths using a physiologically based pharmacokinetic model. Forensic
-  Toxicol. 2025;43(2):303-312. <doi:10.1007/s11419-025-00713-8>. Model
+  Toxicol. 2025;43(2):247-255. <doi:10.1007/s11419-025-00713-8>. Model
   structure and parameters inherited from Stamyr K, Mork AK, Johanson G.
   Physiologically based pharmacokinetic modeling of hydrogen cyanide
   levels in human breath. Arch Toxicol. 2015;89:1287-1296.

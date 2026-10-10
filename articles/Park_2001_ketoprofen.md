@@ -5,8 +5,8 @@
 - Citation: Park JY, Sohn JH, Yoon YR, Shon JH, Cha IJ, Seo SS, Choi JS,
   Shin JG. Disposition Kinetics of Ketoprofen into Synovial Fluid
   Following Systemic Administration: Population Pharmacokinetic
-  Analysis. Kor J Clin Pharmacol Ther. 2001;9(1):97-107.
-  <doi:10.12793/jkscpt.2001.9.1.97>
+  Analysis. J Korean Soc Clin Pharmacol Ther. 2001;9(1):97.
+  <doi:10.12793/jkscpt.2001.9.1.97>.
 - Description: One-compartment oral PK plus Holford-Sheiner
   effect-compartment for synovial fluid disposition of ketoprofen in
   adults with arthritis at steady state on 100 mg oral twice-daily

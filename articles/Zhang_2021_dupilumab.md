@@ -2,16 +2,16 @@
 
 ## Model and source
 
-- Citation: Zhang L, Gao Y, Li M, et al. Population pharmacokinetic
-  analysis of dupilumab in adult and adolescent patients with asthma.
-  CPT Pharmacometrics Syst Pharmacol. 2021;10(9):941-952.
-  <doi:10.1002/psp4.12667>
+- Citation: Zhang L, Gao Y, Li M, Xu C, Davis JD, Kanamaluru V, Lu Q.
+  Population pharmacokinetic analysis of dupilumab in adult and
+  adolescent patients with asthma. CPT Pharmacometrics Syst Pharmacol.
+  2021;10(8):941-952. <doi:10.1002/psp4.12667>.
 - Description: Two-compartment population PK model for dupilumab in
   adult and adolescent patients with asthma (Zhang 2021), with
   first-order SC absorption and parallel linear plus Michaelis-Menten
   elimination from the central compartment.
 - Article: [CPT Pharmacometrics Syst Pharmacol.
-  2021;10(9):941-952](https://doi.org/10.1002/psp4.12667) (open access)
+  2021;10(8):941-952](https://doi.org/10.1002/psp4.12667) (open access)
 
 ## Population
 

@@ -52,7 +52,9 @@ Phase 1/2a popPK is reported in Abel et al. (2008, Br J Clin Pharmacol
 ### Article and source files
 
 - Citation: Rosario MC, Jacqmin P, Dorr P, James I, Jenkins TM, Abel S,
-  van der Ryst E. *Br J Clin Pharmacol.* 2008;65 Suppl 1:86-94.
+  van der Ryst E. Population pharmacokinetic/pharmacodynamic analysis of
+  CCR5 receptor occupancy by maraviroc in healthy subjects and
+  HIV-positive patients. *Br J Clin Pharmacol*. 2008;65(s1):86-94.
   [doi:10.1111/j.1365-2125.2008.03140.x](https://doi.org/10.1111/j.1365-2125.2008.03140.x)
 - Erratum search: PubMed (search dates 2026-06-13), Wiley Online Library
   landing page, and Google Scholar – no errata or corrigenda located.

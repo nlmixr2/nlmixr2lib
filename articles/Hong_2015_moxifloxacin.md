@@ -5,8 +5,8 @@
 - Citation: Hong T, Han S, Lee J, Jeon S, Park GJ, Park WS, Lim KS,
   Chung JY, Yu KS, Yim DS. Pharmacokinetic-pharmacodynamic analysis to
   evaluate the effect of moxifloxacin on QT interval prolongation in
-  healthy Korean male subjects. Drug Des Devel Ther. 2015 Feb
-  26;9:1233-1245. <doi:10.2147/DDDT.S79772>. PMID 25750523.
+  healthy Korean male subjects. Drug Des Devel Ther. 2015;9:1233-1245.
+  <doi:10.2147/DDDT.S79772>. PMID 25750520.
 - Description: Sequential population PK + PD (QT-interval) model for
   single-dose oral moxifloxacin (400 mg or 800 mg, Avelox tablets) in
   healthy adult Korean male volunteers (Hong 2015): a two-compartment

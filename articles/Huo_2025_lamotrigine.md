@@ -5,7 +5,7 @@
 - Citation: Huo J, Liu Y, Yang J, Chen M, Yang L, Wang L, Zhang D, Liu
   T, Gao W, Dai H, Mei S, Zhao Z. Dosing Optimization of Lamotrigine in
   Peripregnancy Epilepsy Through PopPK Modelling and Simulation. Drug
-  Des Devel Ther. 2025;19:10243-10254. <doi:10.2147/DDDT.S541597>. PMCID
+  Des Devel Ther. 2025;19:10243-10258. <doi:10.2147/DDDT.S541597>. PMCID
   PMC12645405. Structural equations from Eqs 1-5 (p 10246); covariate
   model from Eq 6 (p 10248) and the peripregnancy-stage / inhibitor
   coefficient block (p 10249); V/F from Eq 7 (p 10249); parameter

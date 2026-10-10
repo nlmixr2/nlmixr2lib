@@ -4,11 +4,11 @@
 
 - Citation: Willemin ME, Gong J, Hilder BW, Masterson T, Tolbert J,
   Renaud T, Heuck C, Kane C, De Zwart L, Girgis S, Ma X, Ouellet D.
-  Evaluation of drug-drug interaction potential of talquetamab, a
-  T-cell-redirecting GPRC5D x CD3 bispecific antibody, as a result of
-  cytokine release syndrome in patients with relapsed/refractory
-  multiple myeloma in MonumenTAL-1, using a physiologically based
-  pharmacokinetic model. Target Oncol. 2024;19(6):965-975.
+  Evaluation of Drug-Drug Interaction Potential of Talquetamab, a
+  T-Cell-Redirecting GPRC5D x CD3 Bispecific Antibody, as a Result of
+  Cytokine Release Syndrome in Patients with Relapsed/Refractory
+  Multiple Myeloma in MonumenTAL-1, Using a Physiologically Based
+  Pharmacokinetic Model. Target Oncol. 2024;19(6):965-979.
   <doi:10.1007/s11523-024-01093-6>. IL-6 disposition recovered from the
   simulated profiles of Figs 1 and 2; hepatic CYP turnover rate
   constants recovered from the activity time courses of Figs 3 and 4 and

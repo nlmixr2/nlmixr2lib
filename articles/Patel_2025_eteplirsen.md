@@ -3,9 +3,9 @@
 ## Model and source
 
 - Citation: Patel Y, Orogun L, Yocum N, Rodino-Klapac LR, East L. A
-  population pharmacokinetic model to inform extension of the eteplirsen
-  dosing regimen across the broad DMD population. CPT Pharmacometrics
-  Syst Pharmacol. 2025;14(5):891-901. <doi:10.1002/psp4.70001>
+  Population Pharmacokinetic Model to Inform Extension of the Eteplirsen
+  Dosing Regimen Across the Broad DMD Population. CPT Pharmacometrics
+  Syst Pharmacol. 2025;14(5):891-903. <doi:10.1002/psp4.70001>.
 
 - Description: Three-compartment IV-infusion population PK model for
   eteplirsen, an exon-51-skipping phosphorodiamidate morpholino oligomer

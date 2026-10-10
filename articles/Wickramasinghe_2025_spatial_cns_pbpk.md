@@ -11,7 +11,7 @@ ui <- rxode2::rxode(readModelDb("Wickramasinghe_2025_abemaciclib_cns_pbpk"))
   Web-Based Application for Physiologically Based Pharmacokinetic
   Modeling of Spatial Pharmacokinetics in the Human Central Nervous
   System and Brain Tumors. CPT Pharmacometrics Syst Pharmacol.
-  2025;14(5):864-875. <doi:10.1002/psp4.70026>. The nine differential
+  2025;14(5):864-880. <doi:10.1002/psp4.70026>. The nine differential
   equations are given in Data S1 of the Supporting Information; the
   system-specific parameters in Table 1; the drug-specific parameter
   definitions in Table 2 and their abemaciclib values, the

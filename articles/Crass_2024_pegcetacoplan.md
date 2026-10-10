@@ -41,8 +41,8 @@ The three models Crass 2024 reports. {.table}
 - Citation: Crass RL, Smith B, Adriaens S, Chapel S, Langdon G.
   Population Pharmacokinetic and Pharmacokinetic/Pharmacodynamic
   Analyses of Pegcetacoplan in Patients with Paroxysmal Nocturnal
-  Hemoglobinuria. Drugs R D. 2024;24(4):565-577.
-  <doi:10.1007/s40268-024-00500-7>
+  Hemoglobinuria. Drugs R D. 2024;24(4):563-573.
+  <doi:10.1007/s40268-024-00500-7>.
 - Article: <https://doi.org/10.1007/s40268-024-00500-7>
 - Supplement (Electronic Supplementary Material, open access):
   <https://doi.org/10.1007/s40268-024-00500-7>

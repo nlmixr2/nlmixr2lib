@@ -4,8 +4,8 @@
 
 - Citation: Xie R, Deng C, Wang Q, Kanik KS, Nicholas T, Menon S.
   Population pharmacokinetics of tofacitinib in patients with psoriatic
-  arthritis. Int J Clin Pharmacol Ther. 2019; 57(9): 464-473.
-  <doi:10.5414/CP203516>. PMID: 31319909. PMCID: PMC6704728.
+  arthritis. Int J Clin Pharmacol Ther. 2019;57(09):464-473.
+  <doi:10.5414/CP203516>. PMID: 31319908. PMCID: PMC6704728.
 - Description: One-compartment population PK model with first-order
   absorption and an absorption lag time for oral tofacitinib in 650
   adults with active psoriatic arthritis, pooled from the phase 3 OPAL
@@ -1014,7 +1014,7 @@ sessionInfo()
 #>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
 #>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
 #>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
-#> [10] tibble_3.3.1        symengine_0.2.13    pkgconfig_2.0.3    
+#> [10] tibble_3.3.1        symengine_0.2.14    pkgconfig_2.0.3    
 #> [13] data.table_1.18.6.1 checkmate_2.3.4     RColorBrewer_1.1-3 
 #> [16] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
 #> [19] compiler_4.6.1      farver_2.1.2        textshaping_1.0.5  
@@ -1025,7 +1025,7 @@ sessionInfo()
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.1         
-#> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
+#> [43] cli_3.6.6           dparser_1.3.1-14    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      
 #> [52] ragg_1.5.2          memoise_2.0.1       evaluate_1.0.5     

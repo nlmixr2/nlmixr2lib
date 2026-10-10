@@ -17,10 +17,14 @@ mods <- list(
 )
 ```
 
-- Citation: Truong NH, Benaboud S, Bouazza N, et
-  al. Elexacaftor/Tezacaftor/Ivacaftor Population Pharmacokinetics in
-  Pediatric Patients With Cystic Fibrosis. Clin Transl Sci.
-  2025;18(5):e70245. <doi:10.1111/cts.70245>
+- Citation: Truong NH, Benaboud S, Bouazza N, Barboura M, Bardin E,
+  Miralles M, Lui G, Froelicher-Bournaud L, Rouillon S, Bihouee T, Bui
+  S, Reix P, Dalphin ML, Laurans M, Languepin J, Corvol H, Troussier F,
+  Weiss L, Cinthia R, Tatopoulos A, Deneuville E, Chiron R, Stremler N,
+  Llerena C, Ramel S, Perisson C, Houdoin V, Mittaine M, Treluyer JM,
+  Sermet-Gaudelus I, et al. Elexacaftor/Tezacaftor/Ivacaftor Population
+  Pharmacokinetics in Pediatric Patients With Cystic Fibrosis. Clin
+  Transl Sci. 2025;18(5):e70245. <doi:10.1111/cts.70245>.
 - Article: <https://doi.org/10.1111/cts.70245>
 - Supplement (Figures S1-S5 and Table S1):
   <https://doi.org/10.1111/cts.70245>

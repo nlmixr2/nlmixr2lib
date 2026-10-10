@@ -2,11 +2,11 @@
 
 ## Model and source
 
-- Citation: Said MM, Schippers JR, Bos LDJ, Atmowihardjo L, Mathot RAA,
-  Li Y, van der Plas MS, Aman J, Bogaard HJ, Swart EL, Bartelink IH.
+- Citation: Said MM, Schippers JR, Atmowihardjo L, Li Y, van der Plas
+  MS, Bogaard HJ, Bos LDJ, Mathot RAA, Aman J, Swart EL, Bartelink IH.
   Disease-Drug-Drug Interaction of Imatinib in COVID-19 ARDS: A Pooled
   Population Pharmacokinetic Analysis. CPT Pharmacometrics Syst
-  Pharmacol. 2025;14(3):583-595. <doi:10.1002/psp4.13299>
+  Pharmacol. 2025;14(3):583-595. <doi:10.1002/psp4.13299>.
 
 - Description: Joint parent-metabolite population PK model for total
   imatinib (Cc), unbound imatinib (Cu), and total N-desmethyl imatinib

@@ -2,10 +2,9 @@
 
 ## Model and source
 
-- Citation: Chae JW, Baek IH, Lee BY, Cho SK, Kwon KI. Population
-  pharmacokinetic and pharmacodynamic analysis of metformin using the
-  signal transduction model. Br J Clin Pharmacol. 2012;74(5):815-823.
-  <doi:10.1111/j.1365-2125.2012.04260.x>
+- Citation: Chae JW, Baek IH, Lee BY, Cho SK, Kwon KI. Population PK/PD
+  analysis of metformin using the signal transduction model. Br J Clin
+  Pharmacol. 2012;74(5):815-823. <doi:10.1111/j.1365-2125.2012.04260.x>.
 - Description: One-compartment population PK model with first-order
   absorption for oral metformin in healthy Korean adults, coupled to a
   three-transit Sun-Jusko signal-transduction PD model for the

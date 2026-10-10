@@ -25,10 +25,10 @@ names(uis) <- model_names
 ```
 
 - Citation: Braem DS, Steiert B, Steffens B, Pfister M, Koch G.
-  Automated pharmacometric model development by leveraging
-  low-dimensional neural ODEs and LASSO regression. CPT Pharmacometrics
-  Syst Pharmacol. 2026. <doi:10.1002/psp4.70285>. Parameter estimates
-  are from the article’s Data S2 code deposit (Monolix project
+  Automated Pharmacometric Model Development by Leveraging
+  Low-Dimensional Neural ODEs and LASSO Regression. CPT Pharmacometrics
+  Syst Pharmacol. 2026;15(7):e70285. <doi:10.1002/psp4.70285>. Parameter
+  estimates are from the article’s Data S2 code deposit (Monolix project
   Warf_node_mlx_file_ind, populationParameters.txt); no parameter table
   appears in the article text. Warfarin data from O’Reilly RA, Aggeler
   PM. Circulation. 1968;38(1):169-177. <doi:10.1161/01.cir.38.1.169>.

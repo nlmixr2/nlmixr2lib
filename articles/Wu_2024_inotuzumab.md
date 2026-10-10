@@ -561,8 +561,12 @@ populations approximate the paper’s reported medians and ranges:
 
 ### Reference
 
-- Wu JH, Pennesi E, Bautista F, Garrett M, Fukuhara K, Brivio E, et
-  al. Population Pharmacokinetics of Inotuzumab Ozogamicin in Pediatric
-  Relapsed/Refractory B-Cell Precursor Acute Lymphoblastic Leukemia:
-  Results of Study ITCC-059. Clin Pharmacokinet. 2024;63(7):981-997.
-  <doi:10.1007/s40262-024-01386-z>
+- Wu JH, Pennesi E, Bautista F, Garrett M, Fukuhara K, Brivio E,
+  Ammerlaan ACJ, Locatelli F, van der Sluis IM, Rossig C, Chen-Santel C,
+  Bielorai B, Petit A, Stary J, Diaz-de-Heredia C, Rives S, O’Marcaigh
+  A, Rizzari C, Engstler G, Nysom K, Rubio-San-Simon A, Bruno B,
+  Bertrand Y, Brethon B, Rialland F, Plat G, Dirksen U, Sramkova L,
+  Zwaan CM, Huitema ADR. Population Pharmacokinetics of Inotuzumab
+  Ozogamicin in Pediatric Relapsed/Refractory B-Cell Precursor Acute
+  Lymphoblastic Leukemia: Results of Study ITCC-059. Clin Pharmacokinet.
+  2024;63(7):981-997. <doi:10.1007/s40262-024-01386-z>.

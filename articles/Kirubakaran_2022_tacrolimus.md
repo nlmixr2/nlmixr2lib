@@ -39,7 +39,7 @@ modifies CL/F by a power function.
 - Citation: Kirubakaran R, Uster DW, Hennig S, Carland JE, Day RO, Wicha
   SG, Stocker SL. Adaptation of a population pharmacokinetic model to
   inform tacrolimus therapy in heart transplant recipients. Br J Clin
-  Pharmacol. 2023;89(4):1162-1175. <doi:10.1111/bcp.15566>. PK structure
+  Pharmacol. 2023;89(3):1162-1175. <doi:10.1111/bcp.15566>. PK structure
   adapted via the NONMEM PRIOR (NWPRI) subroutine from Sikma MA, Hunault
   CC, Van Maarseveen EM, et al. High variability of whole-blood
   tacrolimus pharmacokinetics early after thoracic organ

@@ -3,10 +3,10 @@
 ## Model and source
 
 - Citation: Kloprogge F, McGready R, Phyo AP, Rijken MJ, Hanpithakpon W,
-  Than HH, Hlaing N, Zin NT, Day NPJ, White NJ, Nosten F, Tarning J.
+  Than HH, Hlaing N, Zin NT, Day NP, White NJ, Nosten F, Tarning J.
   Opposite malaria and pregnancy effect on oral bioavailability of
-  artesunate - a population pharmacokinetic evaluation. *British Journal
-  of Clinical Pharmacology* 2015; 80(3):642-653.
+  artesunate - a population pharmacokinetic evaluation. *Br J Clin
+  Pharmacol*. 2015;80(4):642-653.
   <doi:%5B10.1111/bcp.12660>\](<https://doi.org/10.1111/bcp.12660>).
 - Open Access full text:
   <https://pmc.ncbi.nlm.nih.gov/articles/PMC4594700/>.

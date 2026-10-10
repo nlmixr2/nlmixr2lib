@@ -6,21 +6,21 @@
   P-444. Population Pharmacokinetics (PPK) Analysis of
   Sulbactam-Durlobactam (SUD) to Support Dose Selection for Evaluation
   in a Clinical Trial in Pediatric Patients with Acinetobacter
-  Baumannii-Calcoaceticus Complex (ABC) Infections. Open Forum Infect
-  Dis. 2026;13(Suppl 1):S405. <doi:10.1093/ofid/ofaf695.659>. PMCID:
-  PMC12792777. The model specification is taken from the corresponding
-  IDWeek 2025 poster, which carries a different author order: Cammarata
-  A, Larson KB, Tanudra A, O’Donnell JP, Bhavnani SM, Rubino CM.
-  ‘Population pharmacokinetics analysis of sulbactam-durlobactam to
-  support the dose selection for evaluation in a clinical trial in
-  pediatric patients with Acinetobacter baumannii-calcoaceticus complex
-  infections.’ Poster P-444, IDWeek 2025, Atlanta, GA. All structural,
-  covariate, IIV and residual-error values are inherited unchanged from
-  the adult parent model: Cammarata AP, Safir MC, Trang M, Larson KB,
-  O’Donnell JP, Bhavnani SM, Rubino CM. Population pharmacokinetic
-  analyses for sulbactam-durlobactam using Phase 1, 2, and 3 data.
-  Antimicrob Agents Chemother. 2025;69(1):e00485-24.
-  <doi:10.1128/aac.00485-24>; see
+  Baumannii-Calcoaceticus Complex (ABC) Infections. Open Forum
+  Infectious Diseases. 2026;13(Supplement_1):ofaf695.659.
+  <doi:10.1093/ofid/ofaf695.659>. PMCID: PMC12792777. The model
+  specification is taken from the corresponding IDWeek 2025 poster,
+  which carries a different author order: Cammarata A, Larson KB,
+  Tanudra A, O’Donnell JP, Bhavnani SM, Rubino CM. ‘Population
+  pharmacokinetics analysis of sulbactam-durlobactam to support the dose
+  selection for evaluation in a clinical trial in pediatric patients
+  with Acinetobacter baumannii-calcoaceticus complex infections.’ Poster
+  P-444, IDWeek 2025, Atlanta, GA. All structural, covariate, IIV and
+  residual-error values are inherited unchanged from the adult parent
+  model: Cammarata AP, Safir MC, Trang M, Larson KB, O’Donnell JP,
+  Bhavnani SM, Rubino CM. Population pharmacokinetic analyses for
+  sulbactam-durlobactam using Phase 1, 2, and 3 data. Antimicrob Agents
+  Chemother. 2025;69(1):e00485-24. <doi:10.1128/aac.00485-24>; see
   modellib(‘Cammarata_2024_sulbactam_durlobactam’).
 
 - Abstract: <https://doi.org/10.1093/ofid/ofaf695.659> (Open Forum

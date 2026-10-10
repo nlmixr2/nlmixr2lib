@@ -18,7 +18,7 @@ ui <- rxode2::rxode(readModelDb("Svensson_2016_rifampicin"))
   <doi:10.1128/AAC.05792-11>. MTP disease model structure (three
   bacterial substates with time-dependent fast-to-slow transfer) from
   Clewe et al. (2016) J Antimicrob Chemother 71(4):964-974
-  <doi:10.1093/jac/dkv478>.
+  <doi:10.1093/jac/dkv416>.
 - Description: Combined population PK/PD model for rifampicin in adults
   with drug-susceptible pulmonary tuberculosis: a one-compartment,
   single-transit, oral PK model with first-order
@@ -37,7 +37,7 @@ ui <- rxode2::rxode(readModelDb("Svensson_2016_rifampicin"))
 - Article: <https://doi.org/10.1002/psp4.12079>
 - Upstream PK paper (Smythe 2012):
   <https://doi.org/10.1128/AAC.05792-11>
-- Upstream MTP paper (Clewe 2016): <https://doi.org/10.1093/jac/dkv478>
+- Upstream MTP paper (Clewe 2016): <https://doi.org/10.1093/jac/dkv416>
 
 ## Population
 

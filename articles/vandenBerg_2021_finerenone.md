@@ -6,7 +6,7 @@
   Heinig R, Joseph A, Garmann D, Lippert J, Eissing T (2022). Finerenone
   Dose-Exposure-Response for the Primary Kidney Outcome in FIDELIO-DKD
   Phase III: Population Pharmacokinetic and Time-to-Event Analysis. Clin
-  Pharmacokinet 61(7):943-955. <doi:10.1007/s40262-021-01082-2>
+  Pharmacokinet 61(3):439-450. <doi:10.1007/s40262-021-01082-2>
 - Article: <https://doi.org/10.1007/s40262-021-01082-2>
 
 ## Population

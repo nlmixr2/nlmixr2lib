@@ -5,7 +5,7 @@
 - Citation: Chen Z, Dong Q, Dokos C, Boland J, Fuhr U, Taubert M. A
   Joint Pharmacometric Model of Iohexol and Creatinine Administered
   through a Meat Meal to Assess GFR and Renal OCT2/MATE Activity. Clin
-  Pharmacol Ther. 2025;118(2):510-520. <doi:10.1002/cpt.3612>. Parameter
+  Pharmacol Ther. 2025;118(2):510-519. <doi:10.1002/cpt.3612>. Parameter
   values are taken from Table 3 and from the deposited NONMEM control
   stream in the Supporting Information (CPT-118-510-s001.docx), which is
   the authoritative source wherever the two disagree; see the validation

@@ -4,9 +4,9 @@
 
 - Citation: Bertin S, Guidi M, Haefliger D, Thoueille P, Bardinet C,
   Decosterd LA, Perez MH, Giraud R, Assouline B, Schneider A, Buclin T,
-  Livio F. Population pharmacokinetics of levosimendan and its
-  metabolites OR-1855 and OR-1896 in critically ill adults, neonates and
-  infants on veno-arterial ECMO. Clin Pharmacokinet. 2026;65:XX.
+  Livio F. Population Pharmacokinetics of Levosimendan and its
+  Metabolites OR-1855 and OR-1896 in Critically Ill Adults, Neonates and
+  Infants on Veno-Arterial ECMO. Clin Pharmacokinet. 2026;65(2):241-255.
   <doi:10.1007/s40262-025-01591-4>. Parameter values are the
   full-precision final estimates taken from the NONMEM control stream
   reproduced in Electronic Supplementary Material ‘Supplementary 10:

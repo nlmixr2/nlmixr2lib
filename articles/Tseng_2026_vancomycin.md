@@ -8,13 +8,12 @@ ui <- rxode2::rxode(readModelDb("Tseng_2026_vancomycin"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
-- Citation: Tseng YJ, Juan L, Wu CC, Lan YX, Chen GY, Huang APH, Chen
-  KW, Wang KC, Luh HT, Lin SW. Population pharmacokinetics and
-  cerebrospinal fluid penetration of intravenous vancomycin in
-  intracranial hemorrhage patients with external ventricular drains:
-  implications for dosing and therapeutic drug monitoring. Drug Des
-  Devel Ther. 2026;20:1-14. <doi:10.2147/DDDT.S574548>. PMCID:
-  PMC12965103.
+- Citation: Tseng YJ, Juan L, Wu CC, Lan YX, Chen GY, Huang AP, Chen KW,
+  Wang KC, Luh HT, Lin SW. Population Pharmacokinetics and Cerebrospinal
+  Fluid Penetration of Intravenous Vancomycin in Intracranial Hemorrhage
+  Patients with External Ventricular Drains: Implications for Dosing and
+  Therapeutic Drug Monitoring. Drug Des Devel Ther. 2026;20:574548.
+  <doi:10.2147/DDDT.S574548>. PMCID: PMC12965103.
 - Description: Two-compartment intravenous population PK model for
   vancomycin in adult neurosurgical patients with intracranial
   hemorrhage managed with an external ventricular drain (Tseng 2026).

@@ -42,7 +42,7 @@ VPA PK process”.
   protein binding non-linearity in population pharmacokinetic model of
   valproic acid in children with epilepsy: a systematic evaluation
   study. Front Pharmacol. 2023;14:1228641.
-  <doi:10.3389/fphar.2023.1228641>. PMID 37860114. Base-model parameter
+  <doi:10.3389/fphar.2023.1228641>. PMID 37869748. Base-model parameter
   estimates from Supplementary Table S3.
 
 **Base model** – `Zhang_2023_valproic_acid_base`

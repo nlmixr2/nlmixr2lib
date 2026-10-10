@@ -9,7 +9,7 @@
 - Article: <https://doi.org/10.1002/psp4.12566> (open access,
   PMC7762809)
 - Healthy-subject model being extended: Scotcher D et al. CPT
-  Pharmacometrics Syst Pharmacol. 2020;9(5):310-321,
+  Pharmacometrics Syst Pharmacol. 2020;9(6):310-321,
   <https://doi.org/10.1002/psp4.12509>
 
 The authors deposited their MATLAB/Simulink implementation with the

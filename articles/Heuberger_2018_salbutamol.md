@@ -14,7 +14,7 @@
   disposition and physiological scaling on the cardiac-output-driven
   urine production rate, synthesised from literature (Auclair 2000 dog
   model, Morgan 1986 renal CL, Holt 1968 cardiac output, Moerkeberg 2009
-  haematocrit) and calibrated to Haase 2009 inhaled-salbutamol data
+  haematocrit) and calibrated to Haase 2016 inhaled-salbutamol data
   (Heuberger 2018).
 - Article: <https://doi.org/10.1111/bcp.13619>
 - Supplementary information (Data S1, final NONMEM code):
@@ -40,7 +40,7 @@ are drawn from four published sources (Holt 1968 cardiac output,
 Moerkeberg 2009 elite-cyclist haematocrit, Auclair 2000 dog salbutamol
 PK allometrically scaled to humans, and Morgan 1986 human IV/oral
 salbutamol). Two parameter values (`KA_GUT`, `Vc`, `Vp`, `Q` from
-Auclair) were re-calibrated against published Haase 2009 single-1600-ug
+Auclair) were re-calibrated against published Haase 2016 single-1600-ug
 inhalation data to better describe the dual-absorption profile.
 
 The simulation cohorts in Heuberger 2018 used N = 1000 virtual subjects
@@ -188,9 +188,9 @@ build_obs <- function(cohort, times, cmt = "Cc") {
 }
 ```
 
-## Replicate Figure 2 (single 1600 ug inhalation; Haase 2009 validation)
+## Replicate Figure 2 (single 1600 ug inhalation; Haase 2016 validation)
 
-Heuberger 2018 Figure 2 reproduces the Haase 2009 single-1600-ug
+Heuberger 2018 Figure 2 reproduces the Haase 2016 single-1600-ug
 inhalation scenario in 13 exercised, dehydrated cyclists. Plasma
 salbutamol concentrations peak around 4-5 ng/mL with a dual-peak
 absorption profile (lung-direct + gut). Urinary salbutamol

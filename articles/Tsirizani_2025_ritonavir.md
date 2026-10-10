@@ -5,12 +5,13 @@
 - Citation: Tsirizani L, Waalewijn H, Szubert A, Mulenga V, Chabala C,
   Bwakura-Dangarembizi M, Chitsamatanga M, Rutebarika DA, Musiime V,
   Kasozi M, Lugemwa A, McIlleron HM, Burger DM, Gibb DM, Colbers A,
-  Denti P, Wasmann RE, the CHAPAS-4 trial team (2025). Population
+  Denti P, Wasmann RE; the CHAPAS-4 trial team. Population
   pharmacokinetics of ritonavir as a booster of lopinavir, atazanavir,
   or darunavir in African children with HIV. Antimicrob Agents
-  Chemother. <doi:10.1128/aac.00771-25>. Parameter values from Table 3;
-  model structure and the fat-free-mass reference value from the NONMEM
-  control stream in supplemental Data S1 (AAC00771-25-s0001.docx).
+  Chemother. 2025;69(11):e00771-25. <doi:10.1128/aac.00771-25>.
+  Parameter values from Table 3; model structure and the fat-free-mass
+  reference value from the NONMEM control stream in supplemental Data S1
+  (AAC00771-25-s0001.docx).
 - Description: Two-compartment population PK model for low-dose oral
   ritonavir used as a pharmacokinetic booster of lopinavir, atazanavir
   or darunavir in African children with HIV failing first-line ART
@@ -96,12 +97,12 @@ mod
 #>   )
 #>   reference <- paste(
 #>     "Tsirizani L, Waalewijn H, Szubert A, Mulenga V, Chabala C,",
-#>     "Bwakura-Dangarembizi M, Chitsamatanga M, Rutebarika DA, Musiime V,",
-#>     "Kasozi M, Lugemwa A, McIlleron HM, Burger DM, Gibb DM, Colbers A,",
-#>     "Denti P, Wasmann RE, the CHAPAS-4 trial team (2025).",
-#>     "Population pharmacokinetics of ritonavir as a booster of lopinavir,",
-#>     "atazanavir, or darunavir in African children with HIV.",
-#>     "Antimicrob Agents Chemother. doi:10.1128/aac.00771-25.",
+#>     "Bwakura-Dangarembizi M, Chitsamatanga M, Rutebarika DA, Musiime V, Kasozi",
+#>     "M, Lugemwa A, McIlleron HM, Burger DM, Gibb DM, Colbers A, Denti P,",
+#>     "Wasmann RE; the CHAPAS-4 trial team. Population pharmacokinetics of",
+#>     "ritonavir as a booster of lopinavir, atazanavir, or darunavir in African",
+#>     "children with HIV. Antimicrob Agents Chemother. 2025;69(11):e00771-25.",
+#>     "doi:10.1128/aac.00771-25.",
 #>     "Parameter values from Table 3; model structure and the fat-free-mass",
 #>     "reference value from the NONMEM control stream in supplemental Data S1",
 #>     "(AAC00771-25-s0001.docx).",
@@ -424,7 +425,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55bd55972bb0>
+#> <environment: 0x5581de7eec40>
 ```
 
 ## Population

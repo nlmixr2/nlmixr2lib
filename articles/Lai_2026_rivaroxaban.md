@@ -5,8 +5,8 @@
 - Citation: Lai NS, Lin CJ, Kuo CH, Peng YF, Tang SC, Huang CF, Lin SY,
   Lin SW. Development and Clinical Application of a Real-World
   Population Pharmacokinetic Model of Rivaroxaban in Asian Patients with
-  Atrial Fibrillation. Clin Pharmacokinet. 2026.
-  <doi:10.1007/s40262-026-01650-4>
+  Atrial Fibrillation. Clin Pharmacokinet. 2026;65(6):929-941.
+  <doi:10.1007/s40262-026-01650-4>.
 - Description: One-compartment population PK model for rivaroxaban in
   Asian (Taiwanese) adults with atrial fibrillation sampled under
   real-world therapeutic drug monitoring, with a creatinine-clearance

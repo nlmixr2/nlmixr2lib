@@ -60,13 +60,17 @@ The table below collects them in one place.
 | `e_wt_cl` | 0.78 | Berges 2007 Table 3, theta6 row; Discussion confirms agreement with allometric 0.75 |
 | `e_crcl_cl` | 0.25 | Berges 2007 Table 3, theta7 row |
 | `e_wt_vc` | 1.25 | Berges 2007 Table 3, theta8 row; Discussion confirms agreement with allometric 1.0 |
-| `etalcl` (omega^2) | 0.0654 | Berges 2007 Table 3, CL IIV 26% CV converted via omega^2 = log(CV^2 + 1) |
-| `etalvc` (omega^2) | 0.0223 | Berges 2007 Table 3, V2 IIV 15% CV converted via omega^2 = log(CV^2 + 1) |
-| `etalvp` (omega^2) | 0.6229 | Berges 2007 Table 3, V3 IIV 93% CV converted via omega^2 = log(CV^2 + 1) |
+| `etalcl` (omega^2) | 0.0676 | Berges 2007 Table 3, CL IIV 26% = omega x 100, so omega^2 = 0.26^2 |
+| `etalvc` (omega^2) | 0.0225 | Berges 2007 Table 3, V2 IIV 15% = omega x 100, so omega^2 = 0.15^2 |
+| `etalvp` (omega^2) | 0.8649 | Berges 2007 Table 3, V3 IIV 93% = omega x 100, so omega^2 = 0.93^2 |
 | KA, Q IIV | 0 (fixed) | Berges 2007 Table 3, “0 FIXED” entries |
 | `propSd` | 0.30 | Berges 2007 Table 3, residual variability sigma row |
 | Structural model | 2-compartment, first-order SC absorption | Berges 2007 Results \> Model building |
 | Covariate selection | weight + simplified-MDRD CrCl on CL, weight on V2 | Berges 2007 Table 2 (forward + backward selection, p \< 0.01 backward); gender was dropped at backward elimination |
+
+The IIV percentages are read as omega x 100, not as a coefficient of
+variation to be converted with log(1 + CV^2). The Errata section gives
+the evidence from the Table 3 confidence intervals.
 
 ## Virtual cohort
 
@@ -171,6 +175,66 @@ sim_typ <- as.data.frame(rxode2::rxSolve(mod_typical, events = ev_typ))
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
 ```
 
+## Variability scale check
+
+Berges 2007 Table 3 prints each IIV term as omega x 100 (see the Errata
+section). The first check confirms that the packaged omega matrix holds
+exactly (P/100)^2 for each printed percentage P. It compares the file
+with the table, so the bound is tight.
+
+The second check confirms that the etas reach the parameters on that
+scale. It solves a separate cohort of 2000 reference patients (WT = 65
+kg, CRCL = 69 mL/min) at a single time point, so the per-subject SD of
+log(CL), log(V2) and log(V3) estimates omega directly. The SD of a
+sample of 2000 has about 1.6% sampling error, so the +/-10% band is
+about six standard errors wide and holds for any random-number stream.
+The bound is on the sample SD, a centre statistic, not on any
+per-subject extreme. It fails on the originally shipped V3 variance,
+whose SD of 0.789 is 0.85 times the printed 0.93.
+
+``` r
+
+omega <- rxode2::rxode(mod)$omega
+#> ℹ parameter labels from comments will be replaced by 'label()'
+printed_pct <- c(etalcl = 26, etalvc = 15, etalvp = 93)
+stopifnot(
+  isTRUE(all.equal(unname(diag(omega)[names(printed_pct)]),
+                   unname((printed_pct / 100)^2), tolerance = 1e-12))
+)
+
+ev_spread <- tibble(
+  id = seq_len(2000L), time = 0, amt = NA_real_, cmt = NA_character_,
+  evid = 0L, WT = 65, CRCL = 69
+)
+per_subject <- as.data.frame(rxode2::rxSolve(mod, events = ev_spread)) |>
+  dplyr::distinct(id, cl, vc, vp)
+spread <- tibble(
+  quantity      = c("log(CL)", "log(V2)", "log(V3)"),
+  printed_omega = unname(printed_pct / 100),
+  simulated_sd  = c(stats::sd(log(per_subject$cl)),
+                    stats::sd(log(per_subject$vc)),
+                    stats::sd(log(per_subject$vp)))
+) |>
+  dplyr::mutate(ratio = simulated_sd / printed_omega)
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega (N = ",
+                              nrow(per_subject), ", reference patient)."))
+```
+
+| quantity | printed_omega | simulated_sd | ratio |
+|:---------|--------------:|-------------:|------:|
+| log(CL)  |          0.26 |        0.258 | 0.991 |
+| log(V2)  |          0.15 |        0.153 | 1.018 |
+| log(V3)  |          0.93 |        0.928 | 0.998 |
+
+Per-subject spread vs. printed omega (N = 2000, reference patient).
+{.table}
+
+``` r
+
+stopifnot(all(spread$ratio > 0.9 & spread$ratio < 1.1))
+```
+
 ## Replicate published figures
 
 ``` r
@@ -218,7 +282,7 @@ print(sim_pct)
 #> # A tibble: 3 × 3
 #>   threshold_IU_mL paper_pct sim_pct
 #>             <dbl>     <dbl>   <dbl>
-#> 1             0.5        29   40.7 
+#> 1             0.5        29   39.7 
 #> 2             0.8        10    1.59
 #> 3             1           4    0
 
@@ -308,7 +372,7 @@ sim_peak_summary
 #> # A tibble: 1 × 7
 #>   treatment       median_peak min_peak max_peak pct_gt_0_5 pct_gt_0_8 pct_gt_1_0
 #>   <chr>                 <dbl>    <dbl>    <dbl>      <dbl>      <dbl>      <dbl>
-#> 1 Enoxaparin 400…       0.478    0.264    0.892       40.7        1.6          0
+#> 1 Enoxaparin 400…       0.476    0.263    0.892       39.7        1.6          0
 
 published_peak <- tibble::tibble(
   treatment    = "Enoxaparin 4000 IU SC QD",
@@ -334,11 +398,21 @@ knitr::kable(
 
 | source | treatment | median_peak | min_peak | max_peak | pct_gt_0_5 | pct_gt_0_8 | pct_gt_1_0 |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| Simulated | Enoxaparin 4000 IU SC QD | 0.48 | 0.26 | 0.89 | 40.7 | 1.6 | 0 |
+| Simulated | Enoxaparin 4000 IU SC QD | 0.48 | 0.26 | 0.89 | 39.7 | 1.6 | 0 |
 | Berges 2007 (Bayesian predictions) | Enoxaparin 4000 IU SC QD | 0.44 | 0.10 | 1.20 | 29.0 | 10.0 | 4 |
 
 Steady-state peak anti-Xa (3-5 h post final dose): simulated virtual
 cohort vs Berges 2007 Bayesian predictions. {.table}
+
+``` r
+
+
+# Centre gate only. A mis-transcribed clearance, volume, dose or unit moves
+# the median peak by tens of percent. The published range and threshold
+# fractions are tail statistics of individual Bayesian predictions and are
+# not gated.
+stopifnot(abs(sim_peak_summary$median_peak / published_peak$median_peak - 1) < 0.2)
+```
 
 PKNCA steady-state per-subject Cmax / Tmax / AUC0-tau summary (no
 published counterpart):
@@ -362,10 +436,10 @@ knitr::kable(
 
 | PPTESTCD | median |    q05 |   q95 |
 |:---------|-------:|-------:|------:|
-| auclast  | 5.8400 | 3.5500 | 8.800 |
-| cav      | 0.2430 | 0.1480 | 0.367 |
-| cmax     | 0.4780 | 0.3210 | 0.699 |
-| cmin     | 0.0915 | 0.0387 | 0.187 |
+| auclast  | 5.8200 | 3.5000 | 8.830 |
+| cav      | 0.2420 | 0.1460 | 0.368 |
+| cmax     | 0.4760 | 0.3210 | 0.701 |
+| cmin     | 0.0912 | 0.0374 | 0.185 |
 | tmax     | 3.0000 | 2.5000 | 3.500 |
 
 Steady-state NCA summary (144-168 h cycle, virtual PROPHRE.75-like
@@ -403,3 +477,43 @@ cohort). {.table}
   activity samples below the assay LOQ (0.05 IU/mL) from estimation. The
   simulation emits continuous concentrations; no BLQ rule is applied at
   simulation time.
+
+## Errata
+
+### Correction to the packaged IIV values (2026-10)
+
+The model as first released in nlmixr2lib put the inter-individual
+variances on the wrong scale. It read each Table 3 “CV” percentage as a
+coefficient of variation and converted it with omega^2 = log(1 + CV^2).
+The printed percentages are in fact omega x 100, the standard deviation
+of the eta on the log scale, so omega^2 = (P/100)^2.
+
+The paper’s own confidence intervals settle this. The Table 3 note says
+each 95% CI is “point estimate +/- 1.96 x SE”, with the SE taken from
+the NONMEM covariance matrix. For a variance term that is a Wald
+interval on omega^2, so under the correct reading the squared CI
+endpoints are symmetric about the squared point estimate. The two
+readings agree for small percentages because log(1 + x) is close to x;
+only the wide V3 row tells them apart:
+
+| Row | Printed (95% CI) | Midpoint offset, omega x 100 reading | Midpoint offset, log(1 + CV^2) reading |
+|----|----|----|----|
+| CL | 26% (20, 31) | +0.7% | +0.1% |
+| V2 | 15% (0, 23) | lower endpoint truncated at 0; not testable | not testable |
+| V3 | 93% (22, 130) | **+0.5%** | **-16.8%** |
+| Residual | 30% (26, 33) | -1.9% | -2.1% |
+
+The midpoint offset is ((f(lo) + f(hi)) / 2 - f(P)) / f(P), where f is
+the reading’s map from the printed percentage to the variance. The same
+convention applies to every row of the table, so all three variances
+were corrected:
+
+| eta      | Shipped before 2026-10 | Corrected | Ratio |
+|----------|------------------------|-----------|-------|
+| `etalcl` | 0.0654                 | 0.0676    | 1.034 |
+| `etalvc` | 0.0223                 | 0.0225    | 1.010 |
+| `etalvp` | 0.6229                 | 0.8649    | 1.388 |
+
+The proportional residual error `propSd = 0.30` already matched the
+omega x 100 reading and is unchanged. Typical values, covariate effects
+and the model structure are unchanged.

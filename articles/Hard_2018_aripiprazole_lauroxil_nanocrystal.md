@@ -592,7 +592,7 @@ Wehr A, von Moltke L, Du Y, Farwick S, Walling D, Sonnenberg J. *Ther
 Adv Psychopharmacol* 2019;9:2045125319859964,
 <https://doi.org/10.1177/2045125319859964>; the 662 mg AL_(NCD) dose is
 confirmed in Hard ML *et al.*, *J Clin Psychopharmacol*
-2018;38(5):435-441, <https://doi.org/10.1097/JCP.0000000000000922>,
+2018;38(5):435-441, <https://doi.org/10.1097/JCP.0000000000000921>,
 which states that the clinical studies used “a 662-mg dose of
 AL_(NCD)”). Its **gluteal** arm is the reference injection site of this
 model, and its numbers played no part in choosing the transform, so it

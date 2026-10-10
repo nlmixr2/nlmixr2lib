@@ -12,9 +12,9 @@
 - **Citation:** Huynh D, Nikanjam M, Cunningham CK, McFarland EJ,
   Muresan P, Perlowski C, Yin DE, Moye J, Spiegel H, Gama L, Gaudinski
   M, Capparelli EV. Model-based assessment of VRC07-523LS dosing in
-  infants through population pharmacokinetic-pharmacodynamic modelling
-  in adults and infants. J Antimicrob Chemother. 2026;
-  <doi:10.1093/jac/dkaf449>
+  infants through population pharmacokinetic -pharmacodynamic modelling
+  in adults and infants. J Antimicrob Chemother. 2026;81(2):dkaf449.
+  <doi:10.1093/jac/dkaf449>.
 - **Article:** <https://doi.org/10.1093/jac/dkaf449>
 
 VRC07-523LS is a CD4-binding-site broadly neutralizing HIV-1 antibody

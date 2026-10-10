@@ -19,19 +19,19 @@ ui_met <- rxode2::rxode(mod_met)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
-- Citation: Kir F, Sahin S, Jusko WJ. (2025). Minimal
-  Physiologically-Based Pharmacokinetic Modeling of Atenolol and
-  Metoprolol Absorption in Malnourished Rats. Eur J Drug Metab
-  Pharmacokinet 50:243-255. <doi:10.1007/s13318-025-00943-6>. PMCID
-  PMC12081501. Population parameter estimates: Table 2 (Monolix).
-  Naive-pooled (ADAPT 5) estimates for the same model: Supplementary
-  Table S3. Rat physiology (tissue volumes and blood flows):
-  Supplementary Table S2. Model equations: Article Equations 1-5 (ATN),
-  9 (tissue-volume closure), 10 (permeability-limited fd constraint) and
-  12 (blood-to-plasma ratio). ODEs, fixed system constants and the
-  absorption-window logic were taken from the author-deposited Monolix
-  (MLXTRAN) and ADAPT-5 source listings in the Supplementary Materials,
-  which agree with each other exactly.
+- Citation: Kir F, Sahin S, Jusko WJ. Minimal Physiologically-Based
+  Pharmacokinetic Modeling of Atenolol and Metoprolol Absorption in
+  Malnourished Rats. Eur J Drug Metab Pharmacokinet. 2025;50(3):251-263.
+  <doi:10.1007/s13318-025-00943-6>. PMCID PMC12081501. Population
+  parameter estimates: Table 2 (Monolix). Naive-pooled (ADAPT 5)
+  estimates for the same model: Supplementary Table S3. Rat physiology
+  (tissue volumes and blood flows): Supplementary Table S2. Model
+  equations: Article Equations 1-5 (ATN), 9 (tissue-volume closure), 10
+  (permeability-limited fd constraint) and 12 (blood-to-plasma ratio).
+  ODEs, fixed system constants and the absorption-window logic were
+  taken from the author-deposited Monolix (MLXTRAN) and ADAPT-5 source
+  listings in the Supplementary Materials, which agree with each other
+  exactly.
 - Article: <https://doi.org/10.1007/s13318-025-00943-6>
 - Supplement (parameter tables S1-S4 and the author-deposited Monolix /
   ADAPT-5 source listings): <https://doi.org/10.1007/s13318-025-00943-6>
