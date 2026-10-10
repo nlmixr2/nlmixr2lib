@@ -2178,6 +2178,8 @@ navbar:
         href: articles/Ezuruike_2018_ethinylestradiol.html
       - text: "Ethinylestradiol (Reif 2013)"
         href: articles/Reif_2013_ethinylestradiol_drospirenone.html
+      - text: "Ethinylestradiol (Stanczyk 2022)"
+        href: articles/Stanczyk_2022_levonorgestrel_ethinylestradiol.html
       - text: "EtirinotecanPegol (Sy 2018)"
         href: articles/Sy_2018_etirinotecanPegol.html
       - text: "Etoposide (Freyer 2000)"
@@ -3298,6 +3300,8 @@ navbar:
         href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Levonorgestrel (Adeojo 2024)"
         href: articles/Adeojo_2024_levonorgestrel.html
+      - text: "Levonorgestrel (Stanczyk 2022)"
+        href: articles/Stanczyk_2022_levonorgestrel_ethinylestradiol.html
       - text: "Levonorgestrel coc (Reinecke 2018)"
         href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
       - text: "Levonorgestrel implant (Reinecke 2018)"
@@ -8950,6 +8954,7 @@ articles:
   - articles/Staatz_2005_gentamicin_vancomycin
   - articles/Stader_2021_bictegravir_ddi_pbpk
   - articles/Stader_2021_bictegravir_pbpk
+  - articles/Stanczyk_2022_levonorgestrel_ethinylestradiol
   - articles/Standing_2008_diclofenac
   - articles/Standing_2012_oseltamivir
   - articles/Steffens_2025_amikacin
