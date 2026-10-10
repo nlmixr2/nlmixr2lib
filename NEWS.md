@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xie 2022 colistin sulfate ([doi:10.3389/fphar.2022.967412](https://doi.org/10.3389/fphar.2022.967412)) -- critically ill Chinese ICU adults.
+- Add Cao 2022 pemetrexed ([doi:10.3389/fphar.2022.954242](https://doi.org/10.3389/fphar.2022.954242)) -- Chinese adults with primary advanced non-small cell lung carcinoma (ratifies the new `SNP_ERCC1_RS3212986_CC` genotype covariate canonical).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

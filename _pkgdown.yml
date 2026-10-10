@@ -4884,6 +4884,8 @@ navbar:
         href: articles/Chatterjee_2017_pembrolizumab_melanoma.html
       - text: "Pembrolizumab qol mbma (Zou 2026)"
         href: articles/Zou_2026_pembrolizumab_qol.html
+      - text: "Pemetrexed (Cao 2022)"
+        href: articles/Cao_2022_pemetrexed.html
       - text: "Pemetrexed osimertinib mouse qsp (Hu 2026)"
         href: articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp.html
       - text: "Pemigatinib (Gong 2023)"
@@ -7616,6 +7618,7 @@ articles:
   - articles/Cao_2013_tefibazumab
   - articles/Cao_2013_visilizumab
   - articles/Cao_2017_dha_artemisinin_stress_model
+  - articles/Cao_2022_pemetrexed
   - articles/Cao_2025_busulfan
   - articles/Cao_2025_ferricCarboxymaltose
   - articles/Cao_2026_lecanemab
