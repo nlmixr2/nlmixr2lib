@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nijstad 2022 vincristine ([doi:10.1007/s11095-022-03364-1](https://doi.org/10.1007/s11095-022-03364-1)) -- children, adolescents and young adults (0.04-33.9 years) with cancer, with saturable beta-tubulin binding.
+- Add Gibiansky 2022 tisotumab vedotin ADC and MMAE ([doi:10.1002/psp4.12850](https://doi.org/10.1002/psp4.12850)) -- adults with locally advanced or metastatic tissue-factor-expressing solid tumors, including cervical cancer.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
