@@ -1,6 +1,13 @@
 Philippe_2015_cyclosporine <- function() {
   description <- "Pediatric PK-PD-time-to-event model for oral cyclosporine in children with severe aplastic anemia (Philippe 2015). PK is a two-compartment model with first-order absorption, lag time, and linear elimination; absorption parameters (F, Tlag, ka) are fixed from the literature, and V1, V2, Cl, Q are allometrically scaled to body weight (reference 34 kg; fixed exponents 0.75 on clearance and 1 on volume). The pharmacodynamic interface model (Eq. 5) describes an effective concentration Ce driven by the predicted trough concentration Ctrough, with production active only when Ctrough lies inside an effective range (lower bound gamma1 = 87 ng/mL, upper bound gamma2 = 120 ng/mL) and first-order elimination at rate alpha. The instantaneous hazard of neutrophil response (Eq. 6) is lambda(t) = lambda0 * (1 + slope * Ce); cumhaz and sur are exposed as derived outputs. In this implementation the predicted Cc (multiplied by 1000 to convert mg/L to ng/mL) is used as the Ctrough input to the interface model; see vignette Assumptions and deviations for the full justification."
-  reference <- "Philippe M, Henin E, Bertrand Y, Plantaz D, Goutelle S, Bleyzac N. Model-based determination of effective blood concentrations of cyclosporine for neutrophil response in the treatment of severe aplastic anemia in children. AAPS J. 2015;17(5):1157-1166. doi:10.1208/s12248-015-9779-8"
+  reference <- paste(
+    "Philippe M, Henin E, Bertrand Y, Plantaz D, Goutelle S, Bleyzac N.",
+    "Model-Based Determination of Effective Blood Concentrations of",
+    "Cyclosporine for Neutrophil Response in the Treatment of Severe Aplastic",
+    "Anemia in Children. AAPS J. 2015;17(5):1157-1167.",
+    "doi:10.1208/s12248-015-9779-8.",
+    sep = " "
+  )
   vignette <- "Philippe_2015_cyclosporine"
   units <- list(
     time = "h",

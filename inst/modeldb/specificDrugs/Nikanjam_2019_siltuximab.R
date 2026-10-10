@@ -1,6 +1,11 @@
 Nikanjam_2019_siltuximab <- function() {
   description <- "Two-compartment population PK model for siltuximab (anti-IL-6) in adults pooled across healthy volunteers and oncology cohorts including Castleman's disease, smoldering multiple myeloma, and other tumor types (Nikanjam 2019)"
-  reference <- "Nikanjam M, Cho HJ, Capparelli EV. Population pharmacokinetics of siltuximab: impact of disease state. Cancer Chemother Pharmacol. 2019;84(5):993-1001. doi:10.1007/s00280-019-03939-7"
+  reference <- paste(
+    "Nikanjam M, Yang J, Capparelli EV. Population pharmacokinetics of",
+    "siltuximab: impact of disease state. Cancer Chemother Pharmacol.",
+    "2019;84(5):993-1001. doi:10.1007/s00280-019-03939-7.",
+    sep = " "
+  )
   vignette <- "Nikanjam_2019_siltuximab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

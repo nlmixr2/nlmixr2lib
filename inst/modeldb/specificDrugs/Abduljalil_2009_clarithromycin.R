@@ -1,11 +1,10 @@
 Abduljalil_2009_clarithromycin <- function() {
   description <- "Semimechanistic population pharmacokinetic model for oral clarithromycin and its 14-(R)-hydroxy metabolite during repeated b.i.d. administration (Abduljalil 2009): a single-phase Weibull absorption (kw, lambda) into a one-compartment parent disposition with linear distribution and a parent clearance that is partly inhibited by the parent's own concentration in a hypothetical effect-style inhibition compartment (Imax form with FCLp = fraction of CLp not subject to inhibition and IC50 = inhibition-compartment concentration giving 50% of maximum inhibition); all parent metabolic clearance feeds a parallel one-compartment metabolite disposition (14-OH-clarithromycin). Body weight enters allometrically with fixed exponents 0.75 on CL and 1.0 on V (parent and metabolite), reference 70 kg."
   reference <- paste(
-    "Abduljalil K, Kinzig M, Bulitta J, Horkovics-Kovats S, Sorgel F,",
-    "Rodamer M, Fuhr U. Modeling the autoinhibition of clarithromycin",
-    "metabolism during repeated oral administration. Antimicrob Agents",
-    "Chemother. 2009 Jul;53(7):2892-2901. doi:10.1128/AAC.01193-08.",
-    "PMID 19414575.",
+    "Abduljalil K, Kinzig M, Bulitta J, Horkovics-Kovats S, Sorgel F, Rodamer",
+    "M, Fuhr U. Modeling the autoinhibition of clarithromycin metabolism",
+    "during repeated oral administration. Antimicrob Agents Chemother.",
+    "2009;53(7):2892-2901. doi:10.1128/AAC.01193-08. PMID 19414584.",
     sep = " "
   )
   vignette <- "Abduljalil_2009_clarithromycin"

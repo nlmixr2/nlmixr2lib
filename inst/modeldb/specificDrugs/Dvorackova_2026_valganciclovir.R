@@ -26,11 +26,11 @@ Dvorackova_2026_valganciclovir <- function() {
     "f(depot), so `depot` and `central` both hold ganciclovir mg."
   )
   reference <- paste(
-    "Dvorackova E, Michalickova D, Petrus J, Klapkova E, Dutkova A,",
-    "Kotowski T, Krekels EHJ, Havlin J, Lischke R, Slanar O (2026).",
-    "Population pharmacokinetics and dose optimization of valganciclovir",
-    "and ganciclovir in lung transplant recipients.",
-    "Med Princ Pract 35:169-180. doi:10.1159/000548942",
+    "Dvorackova E, Michalickova D, Petrus J, Klapkova E, Dutkova A, Kotowski",
+    "T, Zajacova A, Krekels EHJ, Havlin J, Lischke R, Slanar O. Population",
+    "Pharmacokinetics and Dose Optimization of Valganciclovir and Ganciclovir",
+    "in Lung Transplant Recipients. Med Princ Pract. 2026;35(2):169-180.",
+    "doi:10.1159/000548942.",
     sep = " "
   )
   vignette <- "Dvorackova_2026_valganciclovir"

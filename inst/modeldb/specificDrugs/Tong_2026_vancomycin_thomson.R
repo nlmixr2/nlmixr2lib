@@ -12,9 +12,10 @@ Tong_2026_vancomycin_thomson <- function() {
     sep = " "
   )
   reference <- paste(
-    "Tong DMH, Brooks JT, Keizer RJ, Hughes JH. Vancomycin target attainment improved following",
-    "population pharmacokinetic model switch: a large-scale quasi-experimental study of precision",
-    "dosing. JAC Antimicrob Resist. 2026. doi:10.1093/jacamr/dlag016 (Supplementary data, Code",
+    "Tong DMH, Brooks JT, Keizer RJ, Hughes JH. Vancomycin target attainment",
+    "improved following population pharmacokinetic model switch: a large-scale",
+    "quasi-experimental study of precision dosing. JAC Antimicrob Resist.",
+    "2026;8(1):dlag016. doi:10.1093/jacamr/dlag016. (Supplementary data, Code",
     "section, \"Modified Thomson model\" NONMEM control stream; Table S1).",
     "Structural model and parameter estimates originate from Thomson AH, Staatz CE, Tobin CM et al.",
     "J Antimicrob Chemother 2009;63:1050-1057. doi:10.1093/jac/dkp085; the creatinine-clearance cap",

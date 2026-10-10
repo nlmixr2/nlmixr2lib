@@ -1,6 +1,13 @@
 Yu_2022_ofatumumab <- function() {
   description <- "Population PK / B-cell-count model for subcutaneous ofatumumab in adults with relapsing multiple sclerosis (Yu 2022)"
-  reference <- "Yu H, Graham G, David OJ, Kahn JM, Savelieva M, Pigeolet E, Das Gupta A, Pingili R, Willi R, Ramanathan K, Kieseier BC, Hach T, Aslanis V, Bagger Y, Ravenstijn P. Population Pharmacokinetic-B Cell Modeling for Ofatumumab in Patients with Relapsing Multiple Sclerosis. CNS Drugs. 2022;36(3):283-300. doi:10.1007/s40263-021-00895-w"
+  reference <- paste(
+    "Yu H, Graham G, David OJ, Kahn JM, Savelieva M, Pigeolet E, Das Gupta A,",
+    "Pingili R, Willi R, Ramanathan K, Kieseier BC, Haring DA, Bagger M,",
+    "Soelberg Sorensen P. Population Pharmacokinetic-B Cell Modeling for",
+    "Ofatumumab in Patients with Relapsing Multiple Sclerosis. CNS Drugs.",
+    "2022;36(3):283-300. doi:10.1007/s40263-021-00895-w.",
+    sep = " "
+  )
   vignette <- "Yu_2022_ofatumumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

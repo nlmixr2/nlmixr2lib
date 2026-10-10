@@ -18,23 +18,22 @@ Chigutsa_2025_tirzepatide <- function() {
     "and IC50; Asian race acts on both baselines."
   )
   reference <- paste(
-    "Chigutsa E, Her L, Ma X, Urva S, Schneck K. A pharmacometric method",
-    "for quantitative determination of improvement in body composition and",
-    "characterization of the exposure-response relationship during",
-    "treatment of obesity with tirzepatide.",
-    "Clin Pharmacol Ther. 2025;118(6):1489-1497. doi:10.1002/cpt.3750.",
-    "PMCID PMC12641085. Model structure and the fixed random-effect",
-    "component for placebo waning are taken from the NONMEM control stream",
-    "in Supplementary Material S1 (file CPT-118-1489-s001.txt).",
-    "PK layer reproduced from the upstream population PK model:",
-    "Schneck K, Urva S. Population pharmacokinetics of the GIP/GLP receptor",
-    "agonist tirzepatide. CPT Pharmacometrics Syst Pharmacol.",
-    "2024;13:494-503. doi:10.1002/psp4.13099. PMCID PMC10962491.",
-    "The fat-free mass / fat mass dependent variables were calculated from",
-    "total body weight, height and sex using:",
-    "Janmahasatian S, Duffull SB, Ash S, Ward LC, Byrne NM, Green B.",
-    "Quantification of lean bodyweight. Clin Pharmacokinet.",
-    "2005;44(10):1051-1065. doi:10.2165/00003088-200544100-00004."
+    "Chigutsa E, Her L, Ma X, Urva S, Schneck K. A Pharmacometric Method for",
+    "Quantitative Determination of Improvement in Body Composition and",
+    "Characterization of the Exposure-Response Relationship during Treatment",
+    "of Obesity with Tirzepatide. Clin Pharmacol Ther. 2025;118(6):1489-1498.",
+    "doi:10.1002/cpt.3750. PMCID PMC12641085. Model structure and the fixed",
+    "random-effect component for placebo waning are taken from the NONMEM",
+    "control stream in Supplementary Material S1 (file CPT-118-1489-s001.txt).",
+    "PK layer reproduced from the upstream population PK model: Schneck K,",
+    "Urva S. Population pharmacokinetics of the GIP/GLP receptor agonist",
+    "tirzepatide. CPT Pharmacometrics Syst Pharmacol. 2024;13:494-503.",
+    "doi:10.1002/psp4.13099. PMCID PMC10962491. The fat-free mass / fat mass",
+    "dependent variables were calculated from total body weight, height and",
+    "sex using: Janmahasatian S, Duffull SB, Ash S, Ward LC, Byrne NM, Green",
+    "B. Quantification of lean bodyweight. Clin Pharmacokinet.",
+    "2005;44(10):1051-1065. doi:10.2165/00003088-200544100-00004.",
+    sep = " "
   )
   vignette <- "Chigutsa_2025_tirzepatide"
 

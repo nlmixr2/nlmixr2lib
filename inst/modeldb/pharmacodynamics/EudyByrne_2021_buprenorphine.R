@@ -1,8 +1,8 @@
 EudyByrne_2021_buprenorphine <- function() {
   description <- "Indirect-response pharmacodynamic model of sublingual buprenorphine effect on MOTHER NAS severity scores in neonates with neonatal opioid withdrawal syndrome (NOWS). Natural postnatal-age-driven withdrawal decay (NOWSMAX, NOWSM) sets a time-varying baseline NAS score via Kin * (1 + NOWST); buprenorphine central-compartment concentration Cbuprenorphine stimulates NAS-score elimination (Kout) through a Hill Emax term (EMAX * C / (EC50 + C) + 1). The model has NO PK ODE; the buprenorphine concentration Cbuprenorphine (ng/mL) is a required time-varying input covariate carried in the event table. Upstream buprenorphine PK from Moore et al. 2018 (Clin Pharmacol Ther 103:1029-1037; DOI 10.1002/cpt.1064) is not packaged in nlmixr2lib at extraction time; users needing to simulate the PD from a dose regimen must supply concentrations from an external PK source. The initial NAS score is set to its drug-free quasi-steady state, NOWS0 = Kin * (1 + NOWST) / Kout, at the baseline PNA."
   reference <- paste(
-    "Eudy-Byrne R, Zane N, Adeniyi-Jones SC, Kaushal G, Ruiz-Garcia A,",
-    "Gastonguay MR, Kraft WK.",
+    "Eudy-Byrne R, Zane N, Adeniyi-Jones SC, Gastonguay MR, Ruiz-Garcia A,",
+    "Kaushal G, Kraft WK.",
     "Pharmacometric dose optimization of buprenorphine in neonatal opioid",
     "withdrawal syndrome. Clin Transl Sci. 2021;14(6):2171-2183.",
     "doi:10.1111/cts.13074.",

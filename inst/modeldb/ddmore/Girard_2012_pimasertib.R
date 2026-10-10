@@ -1,7 +1,7 @@
 Girard_2012_pimasertib <- function() {
   description <- "Joint K-PD / cumulative-logit Markov / Weibull-TTE-dropout model for ocular adverse events and treatment discontinuation in advanced solid-tumour and hematological-malignancy patients dosed with the MEK inhibitor pimasertib in two phase I dose-escalation studies (Girard 2012; DDMODEL00000215)"
   reference <- paste(
-    "Girard P, Brockhaus B, Massimini G, Asiatiani E, Rejeb N, Rajeswaran RA,",
+    "Girard P, Brockhaus B, Massimini G, Asatiani E, Rejeb N, Rajeswaran RA,",
     "Lupfert C, von Richter O, Munafo A. (2012).",
     "Simultaneous ocular adverse event and treatment discontinuation model of pimasertib.",
     "PAGE 21 (2012) Abstr 2458 [www.page-meeting.org/?abstract=2458].",

@@ -1,6 +1,13 @@
 Bartels_2021_indacaterol <- function() {
   description <- "Two-compartment population PK model with sequential zero-order/first-order absorption for inhaled indacaterol in adults and adolescents with asthma receiving the indacaterol/mometasone furoate (IND/MF) or indacaterol/glycopyrronium/mometasone furoate (IND/GLY/MF) fixed-dose combinations via the Breezhaler device (PALLADIUM and IRIDIUM Phase III studies), with estimated allometric body-weight exponents on CL/F and Vc/F, fixed allometric exponents on Q/F and Vp/F, a Japanese-ethnicity effect on Vc/F and an IRIDIUM study effect on Vc/F (Bartels 2021)"
-  reference <- "Bartels C, Jain M, Yu J, Tillmann HC, Vaidya S. Population Pharmacokinetic Analysis of Indacaterol/Glycopyrronium/Mometasone Furoate After Administration of Combination Therapies Using the Breezhaler Device in Patients with Asthma. Eur J Drug Metab Pharmacokinet. 2021;46(4):489-506. doi:10.1007/s13318-021-00689-x"
+  reference <- paste(
+    "Bartels C, Jain M, Yu J, Tillmann HC, Vaidya S. Population",
+    "Pharmacokinetic Analysis of Indacaterol/Glycopyrronium/Mometasone Furoate",
+    "After Administration of Combination Therapies Using the Breezhaler()",
+    "Device in Patients with Asthma. Eur J Drug Metab Pharmacokinet.",
+    "2021;46(4):487-504. doi:10.1007/s13318-021-00689-x.",
+    sep = " "
+  )
   vignette <- "Bartels_2021_indacaterol_glycopyrronium_mometasone"
   units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
   # Unit note: doses are in ug and volumes in L, so central / vc is in ug/L

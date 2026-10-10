@@ -1,6 +1,13 @@
 Choules_2024_brentuximab <- function() {
   description <- "Compartmental reduction of the Simcyp ADC-module physiologically based pharmacokinetic (PBPK) model for brentuximab vedotin (conjugated antibody) and its released payload monomethyl auristatin E (MMAE) in patients with haematological malignancy (Choules 2024). This is the comparator model that Choules 2024 built alongside enfortumab vedotin, using the same valine-citrulline-MMAE linker and the same MMAE compound file, in order to verify the MMAE drug-drug interaction predictions against an observed clinical interaction study. The conjugated antibody is a linear 2-compartment model with first-order elimination from the central compartment; every milligram of eliminated antibody releases its full MMAE payload (mean drug-antibody ratio 4.026) into a 1-compartment MMAE disposition model whose volume and clearance are the paper's published Simcyp compound-file inputs. Combined P-gp / CYP3A4 perpetrators (ketoconazole, rifampin) act as multiplicative factors on MMAE clearance. The published model itself is a Simcyp platform PBPK model whose whole-body physiology is not tabulated; the antibody parameters here were determined from the paper's published simulated summary statistics, so this file is a compartmental reduction and not a PBPK model. See the vignette for the derivation and the held-out validation gates."
-  reference <- "Choules MP, Zuo P, Otsuka Y, Garg A, Tang M, Bonate P. Physiologically based pharmacokinetic model to predict drug-drug interactions with the antibody-drug conjugate enfortumab vedotin. J Pharmacokinet Pharmacodyn. 2024;51(5):417-428. doi:10.1007/s10928-023-09877-5. PMID 37624557; PMCID PMC11576838."
+  reference <- paste(
+    "Choules MP, Zuo P, Otsuka Y, Garg A, Tang M, Bonate P. Physiologically",
+    "based pharmacokinetic model to predict drug-drug interactions with the",
+    "antibody-drug conjugate enfortumab vedotin. J Pharmacokinet Pharmacodyn.",
+    "2024;51(5):417-428. doi:10.1007/s10928-023-09877-5. PMID 37632598; PMCID",
+    "PMC11576838.",
+    sep = " "
+  )
   vignette <- "Choules_2024_vedotin_ddi"
 
   units <- list(

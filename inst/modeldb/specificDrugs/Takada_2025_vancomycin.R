@@ -1,6 +1,14 @@
 Takada_2025_vancomycin <- function() {
   description <- "Two-compartment IV population PK model for vancomycin in Japanese patients of advanced age (aged 75 years and older, body mass index below 25 kg/m^2) receiving therapeutic drug monitoring (Takada 2025). Clearance scales as a power function of Cockcroft-Gault creatinine clearance (exponent 0.63, reference 3.09 L/h = 51.5 mL/min) and of serum albumin (exponent 0.22, reference 2.3 g/dL); the albumin term is the novelty of this analysis, added because creatinine-based renal-function estimates underestimate clearance in low-muscle-mass patients of advanced age. Intercompartmental clearance and both volumes are covariate-free. Between-subject variability is on clearance only; the residual-error magnitudes were not reported by the source and are encoded as zero."
-  reference <- "Takada K, Samura M, Igarashi Y, Suzuki A, Ishigo T, Fujii S, Ibe Y, Yoshida H, Tanaka H, Ebihara F, Maruyama T, Hamada Y, Komatsu T, Tomizawa A, Takuma A, Chiba H, Yagi Y, Nishi Y, Enoki Y, Taguchi K, Tanikawa K, Kunishima H, Matsumoto K. Development and validation of a population pharmacokinetic model of vancomycin for patients of advanced age. J Pharm Health Care Sci. 2025;11:22. doi:10.1186/s40780-025-00423-8"
+  reference <- paste(
+    "Takada K, Samura M, Igarashi Y, Suzuki A, Ishigo T, Fujii S, Ibe Y,",
+    "Yoshida H, Tanaka H, Ebihara F, Maruyama T, Hamada Y, Komatsu T, Tomizawa",
+    "A, Takuma A, Chiba H, Yagi Y, Nishi Y, Enoki Y, Taguchi K, Tanikawa K,",
+    "Kunishima H, Matsumoto K. Development and validation of a population",
+    "pharmacokinetic model of vancomycin for patients of advanced age. J Pharm",
+    "Health Care Sci. 2025;11(1):18. doi:10.1186/s40780-025-00423-8.",
+    sep = " "
+  )
   vignette <- "Takada_2025_vancomycin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

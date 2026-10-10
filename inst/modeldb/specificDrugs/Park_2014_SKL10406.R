@@ -1,6 +1,13 @@
 Park_2014_SKL10406 <- function() {
   description <- "Two-compartment first-order oral absorption population PK with effect-compartment Emax PK-PD model for striatal serotonin transporter (SERT) occupancy by SKL10406 (a triple monoamine reuptake inhibitor candidate) in healthy adult volunteers (Park 2014; EME variant, Table 3)"
-  reference <- "Park JS, Lee J, Meyer J, Ilankumaran P, Han S, Yim DS. Serotonin transporter occupancy of SKL10406 in humans: comparison of pharmacokinetic-pharmacodynamic modeling methods for estimation of occupancy parameters. Transl Clin Pharmacol. 2014;22(2):83-91. doi:10.12793/tcp.2014.22.2.83"
+  reference <- paste(
+    "Park JS, Lee J, Meyer J, Ilankumaran P, Han S, Yim DS. Serotonin",
+    "transporter occupancy of SKL10406 in humans: comparison of",
+    "pharmacokinetic-pharmacodynamic modeling methods for estimation of",
+    "occupancy parameters. Transl Clin Pharmacol. 2014;22(2):83.",
+    "doi:10.12793/tcp.2014.22.2.83.",
+    sep = " "
+  )
   vignette <- "Park_2014_SKL10406"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

@@ -18,7 +18,11 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). *J Pharmacokinet Pharmacodyn.* 2023;51(1):5-30.
+* Citation: Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J,
+  Subramanian K, Betts A. Towards a platform quantitative systems pharmacology
+  (QSP) model for preclinical to clinical translation of antibody drug
+  conjugates (ADCs). *J Pharmacokinet Pharmacodyn*. 2024;51(5):429-447.
+  doi:10.1007/s10928-023-09884-6.
 * Article: <https://doi.org/10.1007/s10928-023-09884-6>
 * Supplement 1 (parameters + reactions + ODEs): 10928_2023_9884_MOESM1_ESM.docx (open access)
 * Supplement 2 (figure legends): 10928_2023_9884_MOESM2_ESM.docx (open access)

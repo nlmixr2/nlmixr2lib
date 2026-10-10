@@ -1,9 +1,17 @@
 Randell_2024_metronidazole <- function() {
   description <- "One-compartment intravenous population PK model for metronidazole in critically ill preterm and term infants (Randell 2024, 'optimized model'). Clearance scales linearly with body weight and matures with postmenstrual age through a sigmoidal Emax (Hill) function (TM50 25.6 weeks, Hill 15.7); central volume scales with body weight through an estimated power exponent (0.763). The model was developed by externally validating and then optimizing the PTN_METRO model of Cohen-Wolkowiez 2013 using estimated plasma concentrations derived from opportunistically collected dried blood spots."
   reference <- paste(
-    "Randell RL, Balevic SJ, Greenberg RG, et al. Opportunistic dried blood spot sampling validates and optimizes a pediatric population pharmacokinetic model of metronidazole.",
-    "Antimicrob Agents Chemother. 2024;68(4):e01533-23. doi:10.1128/aac.01533-23.",
-    "Erratum: Antimicrob Agents Chemother. 2025;69(9):e00972-25. doi:10.1128/aac.00972-25 (Table 1 Hill parameter: '7' should read '15.7')."
+    "Randell RL, Balevic SJ, Greenberg RG, Cohen-Wolkowiez M, Thompson EJ,",
+    "Venkatachalam S, Smith MJ, Bendel C, Bliss JM, Chaaban H, Chhabra R,",
+    "Dammann CEL, Downey LC, Hornik C, Hussain N, Laughon MM, Lavery A, Moya",
+    "F, Saxonhouse M, Sokol GM, Trembath A, Weitkamp J-H, Hornik CP.",
+    "Opportunistic dried blood spot sampling validates and optimizes a",
+    "pediatric population pharmacokinetic model of metronidazole. Antimicrob",
+    "Agents Chemother. 2024;68(4):e01533-23. doi:10.1128/aac.01533-23.",
+    "Erratum: Antimicrob Agents Chemother. 2025;69(9):e00972-25.",
+    "doi:10.1128/aac.00972-25 (Table 1 Hill parameter: '7' should read",
+    "'15.7').",
+    sep = " "
   )
   vignette <- "Randell_2024_metronidazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

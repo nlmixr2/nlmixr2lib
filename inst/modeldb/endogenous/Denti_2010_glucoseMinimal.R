@@ -167,18 +167,23 @@ Denti_2010_glucoseMinimal <- function() {
     e_insbl_p2   <- -0.0150   ; label("Effect of (INS_BL - 26.98 pmol/L) on lp2")                        # Denti 2010 Table 5 (theta_P2~IBSL = -0.0150; 25% RSE)
 
     # ----- Inter-individual variability (Denti 2010 Table 5 covariate-model omegas) -----
-    # Paper reports omega as approximate CV% on the original scale; the internal
-    # variance scale is var = log(CV^2 + 1) for log-normal IIV.
-    # omega_SG  = 21.0%  -> var_sg  = log(0.210^2 + 1) = 0.04313
-    # omega_VOL = 10.4%  -> var_vd  = log(0.104^2 + 1) = 0.01075
-    # omega_SI  = 47.5%  -> var_si  = log(0.475^2 + 1) = 0.20337
-    # omega_P2  = 37.9%  -> var_p2  = log(0.379^2 + 1) = 0.13399
+    # The paper prints omega x 100. Results, paragraph introducing Table 5: "we reported the values
+    # of the square root of the elements on the diagonal of Omega, which can
+    # be interpreted in first approximation as %CV values, while the
+    # off-diagonal elements were reported as the corresponding correlations".
+    # So var = (omega/100)^2 and cov = rho * omega_1 * omega_2.
+    # omega_SG  = 21.0%  -> var_sg  = 0.210^2 = 0.0441
+    # omega_VOL = 10.4%  -> var_vd  = 0.104^2 = 0.010816
+    # omega_SI  = 47.5%  -> var_si  = 0.475^2 = 0.225625
+    # omega_P2  = 37.9%  -> var_p2  = 0.379^2 = 0.143641
     # Two correlated blocks (Denti 2010 Methods p. E951):
-    #   rho_SG_VOL = -0.779 -> cov = -0.779 * sqrt(0.04313 * 0.01075) = -0.01666
-    #   rho_SI_P2  =  0.876 -> cov =  0.876 * sqrt(0.20337 * 0.13399) =  0.14458
+    #   rho_SG_VOL = -0.779 -> cov = -0.779 * 0.210 * 0.104 = -0.017013
+    #   rho_SI_P2  =  0.876 -> cov =  0.876 * 0.475 * 0.379 =  0.157702
+    # Before 2026-10 this file used log(1 + CV^2) (SG 0.04313, VOL 0.01075,
+    # SI 0.20337, P2 0.13399); see the vignette Errata.
 
-    etalsg + etalvd ~ c(0.04313, -0.01666, 0.01075)   # Denti 2010 Table 5: omega_SG = 21.0% CV, omega_VOL = 10.4% CV, rho_SG_VOL = -0.779
-    etalsi + etalp2 ~ c(0.20337,  0.14458, 0.13399)   # Denti 2010 Table 5: omega_SI = 47.5% CV, omega_P2 = 37.9% CV, rho_SI_P2 = 0.876
+    etalsg + etalvd ~ c(0.0441, -0.017013, 0.010816)       # Denti 2010 Table 5: omega_SG = 21.0%, omega_VOL = 10.4% (omega x 100), rho_SG_VOL = -0.779
+    etalsi + etalp2 ~ c(0.225625, 0.157702, 0.143641)      # Denti 2010 Table 5: omega_SI = 47.5%, omega_P2 = 37.9% (omega x 100), rho_SI_P2 = 0.876
 
     # ----- Residual error (Denti 2010 Table 5 covariate model) -----
     # Combined proportional + additive form per Methods p. E952:

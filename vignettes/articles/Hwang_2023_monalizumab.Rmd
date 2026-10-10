@@ -19,10 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Hwang M, Fan C, Yue MS, Zhou D, Paturel C, Andre P, Cheng L-Y,
-  Mitchell P, Kourtesis P, Ruscica D, Das M, Morsli N, Ren S, Gibbs M,
-  Phipps A, Song X. Population Pharmacokinetics of Monalizumab in Patients
-  With Advanced Solid Tumors. *J Clin Pharmacol.* 2023;63(7):818-829.
+* Citation: Hwang M, Fan C, Yue MS, Zhou D, Paturel C, Andre P, Cheng LY,
+  Mitchell P, Kourtesis P, Ruscica D, Das M, Morsli N, Ren S, Gibbs M, Phipps A,
+  Song X. Population Pharmacokinetics of Monalizumab in Patients With Advanced
+  Solid Tumors. *J Clin Pharmacol*. 2023;63(7):817-829.
   doi:[10.1002/jcph.2220](https://doi.org/10.1002/jcph.2220)
 * Description: Two-compartment population PK model for monalizumab
   (anti-CD94/NKG2A IgG4) with linear (first-order) elimination in patients

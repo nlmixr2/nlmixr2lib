@@ -22,10 +22,10 @@ Athanassa_2025_minocycline <- function() {
   reference <- paste(
     "Athanassa Z, Papakyriakopoulou P, Marquez Megias S, Saitani EM,",
     "Manioudaki S, Dimoula K, Petsa I, Valsami G, Sakagianni A, Koumaki V,",
-    "Dokoumetzidis A, Tsakris A (2025).",
-    "Population pharmacokinetic model of oral minocycline in critically ill",
-    "adult patients with ventilator-associated pneumonia.",
-    "J Antimicrob Chemother 80(6):1420-1426. doi:10.1093/jac/dkaf090",
+    "Dokoumetzidis A, Tsakris A. Population pharmacokinetic model of oral",
+    "minocycline in critically ill adult patients with ventilator-associated",
+    "pneumonia. J Antimicrob Chemother. 2025;80(5):1420-1426.",
+    "doi:10.1093/jac/dkaf090.",
     sep = " "
   )
   vignette <- "Athanassa_2025_minocycline"

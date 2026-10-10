@@ -10,7 +10,7 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
     "from Pilla Reddy 2013 Part II. The driving exposure variable is the",
     "active moiety (parent risperidone + the equipotent metabolite",
     "9-hydroxy-risperidone), following the Part I (PMID 23473810) and",
-    "Vermeulen 2007 (Eur J Clin Pharmacol 63:1063-1077) methodology. The",
+    "Vermeulen 2007 (J Pharmacokinet Pharmacodyn 34(2):183-206) methodology. The",
     "PK sub-model is a simplified one-compartment representation of the",
     "active moiety: the published Part I model for risperidone is a",
     "two-compartment parent-plus-metabolite system with a lag-time and a",
@@ -49,8 +49,8 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
     "PANSS score. Schizophrenia Research 146(1-3):153-161.",
     "doi:10.1016/j.schres.2013.02.010. PK structure inherited from Part I",
     "(PMID 23473810; doi:10.1016/j.schres.2013.02.011), with active-moiety",
-    "scaling rationale per Vermeulen et al. 2007 (Eur J Clin Pharmacol",
-    "63:1063-1077; doi:10.1007/s00228-007-0358-5).",
+    "scaling rationale per Vermeulen et al. 2007 (J Pharmacokinet Pharmacodyn",
+    "34(2):183-206; doi:10.1007/s10928-006-9040-2).",
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"

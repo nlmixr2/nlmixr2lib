@@ -13,7 +13,8 @@ Truong_2025_imipenem <- function() {
     sep = " "
   )
   reference <- paste(
-    "Truong AQ, Smeets TJL, Terrier J, Li L, Dao XC, Strojil J, et al.",
+    "Truong AQ, Smeets TJL, Terrier J, Li L, Dao XC, Strojil J, Preijers T,",
+    "Koch BCP, Huttner A, Sassen SDT.",
     "Inadequate imipenem dosing in patients with decreased kidney function:",
     "a global clinical pharmacokinetic study.",
     "Clin Microbiol Infect. 2025;31(9):1518-1525.",

@@ -4,7 +4,7 @@ Kleideiter_2017_cebranopadol <- function() {
     "Kleideiter E, Piana C, Wang S, Nemeth R, Gautrois M.",
     "Clinical Pharmacokinetic Characteristics of Cebranopadol, a Novel First-in-Class Analgesic.",
     "Clin Pharmacokinet. 2018;57(1):31-50. doi:10.1007/s40262-017-0545-1.",
-    "Correction: Clin Pharmacokinet. 2018;57(11):1471-1472. doi:10.1007/s40262-018-0686-x."
+    "Correction: Clin Pharmacokinet. 2018;57(8):1057-1058. doi:10.1007/s40262-018-0686-x."
   )
   vignette <- "Kleideiter_2017_cebranopadol"
   units <- list(time = "h", dosing = "ug", concentration = "pg/mL")

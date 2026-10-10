@@ -1,11 +1,12 @@
 Plan_2012_pain <- function() {
   description <- "Markov Integer Model for placebo time-course of Likert (0-10) pain scores in adults; pooled placebo arm of three Phase III neuropathic-pain trials (Plan 2012; DDMODEL00000194)"
   reference <- paste(
-    "Plan EL, Elshoff JP, Stockis A, Sargentini-Maier ML, Karlsson MO. (2012).",
-    "Likert pain score modeling: a Markov integer model and an autoregressive",
-    "continuous model. Clin Pharmacol Ther 91(4):820-828.",
-    "doi:10.1038/clpt.2011.301.",
-    "DDMORE Foundation Model Repository: DDMODEL00000194."
+    "Plan EL, Elshoff JP, Stockis A, Sargentini-Maier ML, Karlsson MO. Likert",
+    "pain score modeling: a Markov integer model and an autoregressive",
+    "continuous model. Clin Pharmacol Ther. 2012;91(5):820-828.",
+    "doi:10.1038/clpt.2011.301. DDMORE Foundation Model Repository:",
+    "DDMODEL00000194.",
+    sep = " "
   )
   vignette <- "Plan_2012_pain"
   units <- list(

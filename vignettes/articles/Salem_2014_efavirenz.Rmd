@@ -70,9 +70,9 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_wt_vc`        | `fixed(1.0)` | Salem 2014 Methods 'Development of the covariate model' paragraph 3 |
 | `ltvf_liq`       | `log(0.79)`  | Salem 2014 Table 2 final TVF = 0.79 (RSE 12.5%; 90% CI 0.63-0.95); mature liquid bioavailability relative to capsule, log(0.79) = -0.2357 |
 | `tm50_f`         | `10.6`       | Salem 2014 Table 2 final TM50,F = 10.6 months (RSE 38.7%; 90% CI 3.8-17.4) |
-| `etalcl`         | `0.189669`   | Salem 2014 Table 2 IIV CL/F = 45.7% CV (RSE 28.4%; 90% CI 35.0-56.4); omega^2 = log(1 + 0.457^2) = 0.189669 |
-| `etalvc`         | `0.174034`   | Salem 2014 Table 2 IIV V/F = 43.6% CV (RSE 30.5%; 90% CI 32.5-54.7); omega^2 = log(1 + 0.436^2) = 0.174034 |
-| `etaltvf_liq`    | `0.147731`   | Salem 2014 Table 2 IIV TVF = 39.9% CV (RSE 32.8%; 90% CI 29.1-50.7); omega^2 = log(1 + 0.399^2) = 0.147731 |
+| `etalcl`         | `0.208849`   | Salem 2014 Table 2 IIV CL/F = 45.7% CV (RSE 28.4%; 90% CI 35.0-56.4); omega x 100, so omega^2 = 0.457^2 = 0.208849 |
+| `etalvc`         | `0.190096`   | Salem 2014 Table 2 IIV V/F = 43.6% CV (RSE 30.5%; 90% CI 32.5-54.7); omega x 100, so omega^2 = 0.436^2 = 0.190096 |
+| `etaltvf_liq`    | `0.159201`   | Salem 2014 Table 2 IIV TVF = 39.9% CV (RSE 32.8%; 90% CI 29.1-50.7); omega x 100, so omega^2 = 0.399^2 = 0.159201 (see Errata) |
 | `propSd`         | `0.25`       | Salem 2014 Table 2 footer: proportional residual error 25% |
 | `addSd`          | `0.25`       | Salem 2014 Table 2 footer: additive residual SD 0.25 ug/mL = 0.25 mg/L |
 | `cl = exp(lcl + etalcl + e_cyp2b6_tt_cl * is_tt) * (WT/70)^0.75 * maturation_cl` | n/a | Salem 2014 Results paragraph 3 + equation following: "CL/F = 11.2 * (WT/70)^0.75 * [AGE^3.4 / (AGE^3.4 + 4.6^3.4)] * 0.49^GTflag" |
@@ -239,6 +239,53 @@ sim <- rxode2::rxSolve(
              "band", "treatment")
 ) |>
   as.data.frame()
+```
+
+# Variability scale check
+
+Salem 2014 Table 2 prints each IIV term as omega x 100 (see the Errata
+section). The first check confirms that the packaged omega matrix holds
+exactly (P/100)^2 for each printed percentage P. It compares the file with
+the table, so the bound is tight.
+
+The second check confirms that the etas reach the parameters on that scale.
+It solves 20000 reference adults (70 kg, 600 months, non-T/T, liquid
+formulation so the bioavailability eta is evaluated) at a single time point,
+so the per-subject SD of log(CL/F), log(V/F) and log(TVF) estimates omega
+directly. The SD of a sample of 20000 has about 0.5% sampling error, so the
++/-3% band is about six standard errors wide and holds for any
+random-number stream. The bound is on the sample SD, a centre statistic,
+not on any per-subject extreme. It fails on the originally shipped CL/F
+and V/F variances, whose SDs are 0.953 and 0.957 times the printed values.
+
+```{r iiv-scale-check}
+omega <- rxode2::rxode(mod)$omega
+printed_pct <- c(etalcl = 45.7, etalvc = 43.6, etaltvf_liq = 39.9)
+stopifnot(
+  isTRUE(all.equal(unname(diag(omega)[names(printed_pct)]),
+                   unname((printed_pct / 100)^2), tolerance = 1e-12))
+)
+
+ev_spread <- tibble::tibble(
+  id = seq_len(20000L), time = 0, amt = NA_real_, evid = 0L,
+  cmt = "central", WT = 70, PNA = 600, FORM_CAPSULE = 0L,
+  SNP_CYP2B6_RS3745274_T_COUNT = 0L
+)
+per_subject <- rxode2::rxSolve(mod, events = ev_spread) |>
+  as.data.frame() |>
+  dplyr::distinct(id, cl, vc, tvf_liq)
+spread <- tibble::tibble(
+  quantity      = c("log(CL/F)", "log(V/F)", "log(TVF)"),
+  printed_omega = unname(printed_pct / 100),
+  simulated_sd  = c(stats::sd(log(per_subject$cl)),
+                    stats::sd(log(per_subject$vc)),
+                    stats::sd(log(per_subject$tvf_liq)))
+) |>
+  dplyr::mutate(ratio = simulated_sd / printed_omega)
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega (N = ",
+                              nrow(per_subject), ", reference adult)."))
+stopifnot(all(spread$ratio > 0.97 & spread$ratio < 1.03))
 ```
 
 # Replicate Figure 1 (maturation of oral clearance)
@@ -584,3 +631,44 @@ knitr::kable(
   vignette therefore compares the per-cell simulated AUC0-24
   against the **PACTG382 target window** (190-380 uM*h = 60.0-120.0
   mg/L*h) rather than against published NCA medians.
+
+# Errata
+
+## Correction to the packaged IIV values (2026-10)
+
+The model as first released in nlmixr2lib put the inter-individual
+variances on the wrong scale. It read each Table 2 "CV [%]" as a
+coefficient of variation and converted it with omega^2 = log(1 + CV^2).
+The printed percentages are in fact omega x 100, the standard deviation of
+the eta on the log scale, so omega^2 = (P/100)^2.
+
+The paper's own "Estimate (RSE [%])" and asymptotic 90% CI columns settle
+this. On the final-model theta rows the CI is exactly
+estimate +/- 1.645 x estimate x RSE (TVCL 11.2 (6.8%): 9.95-12.45, printed
+9.9-12.5; TVV 468.0 (8.7%): 401-535, printed 400.8-535.2). On the IIV rows
+the CI is symmetric on the % scale, but its half-width is about half of
+1.645 x CV x RSE. That is the delta method applied to an RSE quoted for
+omega^2, the NONMEM default. The factor depends on the reading: it is
+exactly 1/2 when the printed CV is 100 x omega, and
+omega^2 (1 + c^2) / (2 c^2) (with c = CV/100) when it is
+100 x sqrt(exp(omega^2) - 1):
+
+| Row | Printed (RSE, 90% CI) | Printed factor | omega x 100 reading | log(1 + CV^2) reading |
+| --- | --- | --- | --- | --- |
+| IIV CL/F | 45.7 (28.4%, 35.0-56.4) | 0.501 | **0.500** | 0.549 |
+| IIV V/F | 43.6 (30.5%, 32.5-54.7) | 0.507 | **0.500** | 0.545 |
+| IOV CL/F | 30.0 (13.7%, 26.6-33.4) | 0.503 | **0.500** | 0.522 |
+| IIV TVF | 39.9 (32.8%, 29.1-50.7) | 0.502 | **0.500** | 0.538 |
+
+The printed factor is the CI half-width divided by 1.645 x CV x RSE. All
+three IIV variances were corrected:
+
+| eta | Shipped before 2026-10 | Corrected | Ratio |
+| --- | --- | --- | --- |
+| `etalcl` | 0.189669 | 0.208849 | 1.101 |
+| `etalvc` | 0.174034 | 0.190096 | 1.092 |
+| `etaltvf_liq` | 0.147731 | 0.159201 | 1.078 |
+
+The IOV on CL/F (30.0%, so 0.09 on the omega x 100 reading) is still not
+encoded; see Assumptions and deviations. The residual error terms, typical
+values, covariate effects and model structure are unchanged.

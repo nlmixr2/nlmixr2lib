@@ -1,6 +1,12 @@
 VegaVilla_2013_sodium_nitrite_qsp <- function() {
   description <- "QSP. Mechanistic systems pharmacology model of the NO metabolome (nitrite, nitrate) and methemoglobin (MetHb) in healthy adults receiving a 48-hour intravenous infusion of sodium nitrite. Nine ODEs covering plasma/RBC/tissue nitrite and nitrate, MetHb, NO and methemoglobin reductase activity; nonlinear nitrite/nitrate renal clearance (linear slope), entero-salivary nitrate-to-nitrite recycling, and indirect-response stimulation of MetHb reductase. Time in minutes; amounts in umol; concentrations in umol/L."
-  reference <- "Vega-Villa K, Pluta R, Lonser R, Woo S. Quantitative Systems Pharmacology Model of NO Metabolome and Methemoglobin Following Long-Term Infusion of Sodium Nitrite in Humans. CPT Pharmacometrics Syst Pharmacol. 2013;2(8):e60. doi:10.1038/psp.2013.35"
+  reference <- paste(
+    "Vega-Villa K, Pluta R, Lonser R, Woo S. Quantitative Systems Pharmacology",
+    "Model of NO Metabolome and Methemoglobin Following Long-Term Infusion of",
+    "Sodium Nitrite in Humans. CPT Pharmacometrics Syst Pharmacol.",
+    "2013;2(7):e60. doi:10.1038/psp.2013.35.",
+    sep = " "
+  )
   vignette <- "VegaVilla_2013_sodium_nitrite_qsp"
   paper_specific_compartments <- c(
     "nitrite_p",

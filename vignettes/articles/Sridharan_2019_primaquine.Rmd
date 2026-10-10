@@ -26,7 +26,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode2(readModelDb("Sridharan_2019_primaquine"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Sridharan_2019_primaquine"))$description`
-* Article: [Indian J Pharmacol. 2019;51(1):17-23](https://doi.org/10.4103/ijp.ijp_230_16)
+* Article: [Indian J Pharmacol. 2019;51(1):17-24](https://doi.org/10.4103/ijp.ijp_230_16)
   (open access; PMC6444836)
 
 ```{r model}

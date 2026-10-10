@@ -28,7 +28,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_cm"))$meta$reference`
 * Description: `r rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_cm"))$meta$description`
-* Article: <https://doi.org/10.1111/head.13855>
+* Article: <https://doi.org/10.1111/head.13845>
 
 This vignette covers the chronic-migraine (CM) exposure-response model from Fiedler-Kelly 2020. The companion EM model is `FiedlerKelly_2020_fremanezumab_em`. The fremanezumab population PK is *not* fitted in this paper; per-subject Cav values are taken from the Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab` in this library).
 

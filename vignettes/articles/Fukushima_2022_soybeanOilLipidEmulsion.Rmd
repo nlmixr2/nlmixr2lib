@@ -1,0 +1,646 @@
+---
+title: "Soybean oil-based lipid emulsion (Fukushima 2022)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Soybean oil-based lipid emulsion (Fukushima 2022)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Fukushima_2022_soybeanOilLipidEmulsion"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Fukushima_2022_soybeanOilLipidEmulsion"))$description`
+* Article (open access): <https://doi.org/10.1002/jpen.2111>
+  (PMC9290941); the Supplementary Materials document is distributed with the
+  article on Europe PMC.
+
+Fukushima et al. describe plasma triglyceride (TG) during and after an
+infusion of a 20% soybean oil-based intravenous lipid emulsion (SO-ILE,
+Intralipos 20%) with a single plasma compartment (Eq 1):
+
+$$\frac{dA}{dt} = \mathrm{EndVLDL} - A \cdot K_{el} + \mathrm{InfRate}, \qquad C = A / V$$
+
+where `EndVLDL` is the zero-order endogenous TG (VLDL) production rate,
+`Kel` the first-order elimination rate constant, `InfRate` the emulsion
+infusion rate and `V` the plasma volume, fixed at 0.422 dL/kg. In the model
+file `EndVLDL` is `kin`, `Kel` is `kel` and `V` is `vc`; the infusion is an
+ordinary zero-order infusion (`amt` and `rate`) into `central`, with `amt` in
+mg of TG (1 g of fat = 1000 mg of TG). The paper uses the model to derive an
+individual maximum acceptable infusion rate (Eq 7) and a nomogram (Figure 2).
+
+# Population
+
+Eighty-three adult Japanese inpatients (44 male / 39 female) receiving
+peripheral (n = 75) or central venous (n = 8) parenteral nutrition at two
+hospitals in Japan (October 2016 - March 2018) were analysed (Table 1). The
+median age was 74 years (range 20-95) and median body weight 55.8 kg
+(31.2-86.1). Most had acute inflammatory gastrointestinal disease (colon
+diverticulitis, acute cholecystitis, peptic ulcer, ischemic colitis,
+colorectal cancer, ...) with low serum albumin (median 3.52 g/dL) and raised
+CRP (median 1.56 mg/dL). Baseline TG had a median of 94 mg/dL (30-291);
+patients with baseline TG above 300 mg/dL were excluded. Each patient
+received one SO-ILE infusion of 20-120 g fat (median 50 g) at 0.053-0.363
+g/kg/h (median 0.217) for 0.75-19.8 h (median 5.2 h). Two TG samples were
+drawn during the infusion (the first within 0-1, 1-2 or 2-3 h by randomised
+group, the second at the end of infusion), and 72 next-morning routine
+samples were added, giving 238 concentrations.
+
+The same information is available programmatically via
+`readModelDb("Fukushima_2022_soybeanOilLipidEmulsion")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `d/dt(central) <- kin - kel * central` (+ infusion) | n/a | Eq 1; Supplementary Scheme 2, Model 3 |
+| `Cc <- central / vc` | n/a | Methods, 'C = A / V' |
+| `central(0) <- TRIG * vc` | n/a | Not printed; established from Supplementary Figure S7 (see below) |
+| `vc = 0.422 * WT` (`lvc`, fixed) | 0.422 dL/kg | Table 4 final model structure; Methods (fixed from healthy-subject literature) |
+| `lkin` (EndVLDL, theta1) | 5709 mg/h | Table 4 |
+| `lkel` (Kel, theta2) | 2.51 1/h | Table 4 |
+| `e_trig_kel` (theta3) | -0.833 | Table 4; reference TG 94 mg/dL (Table 4 note) |
+| `e_wt_kel` (theta4) | -1.27 | Table 4; reference WT 55.8 kg (Table 4 note) |
+| `etalkel` | 0.433^2 = 0.1875 | Table 4 'omega Kel 43.3%', Eq 2 (exponential IIV) |
+| `propSd` | 0.318 | Table 4 'delta 31.8%', Eq 3 'CObs = C x (1 + eps)' |
+| No IIV on EndVLDL or V | n/a | Table 3 model 9; Supplementary 'Model Selection' |
+| Eq 6, `Cmax = (EndVLDL + InfRate) / (V x Kel)` | n/a | Methods, Eq 6 |
+| Eq 7, maximum acceptable infusion rate | n/a | Results, Eq 7 (target mean Cmax 211 mg/dL = 400 / 1.894) |
+
+# Typical-patient profile and the initial condition (Supplementary Figure S7)
+
+The paper does not print the initial condition of Eq 1. Two choices are
+natural: start at the measured baseline, `A(0) = TGbase x V`, or start at
+the model's own steady state, `A(0) = EndVLDL / Kel`. For the typical
+patient they coincide to within 3% (94 vs 96.6 mg/dL), but they spread
+differently across patients: the steady-state start inherits the full
+between-patient variability of `Kel`, the baseline start does not.
+
+Supplementary Figure S7 shows the median and 90th percentile of 1,000
+simulated profiles for a typical patient (TGbase 94 mg/dL, 55.8 kg) given
+0.121 g/kg/h for 6 h, with the residual error included. At the first plotted
+time (about 0.1 h), the 90th-percentile curve for V = 0.422 x BW starts at
+about 165 mg/dL (all five plasma-volume variants start between about 155 and
+185 mg/dL). The percentiles below are computed without Monte Carlo noise.
+The typical-value model is solved on a deterministic grid of 200 quantiles of
+`etalkel`, and the proportional residual error is then integrated out
+analytically.
+
+```{r s7-grid}
+mod <- readModelDb("Fukushima_2022_soybeanOilLipidEmulsion")
+mod_ui <- rxode2::rxode2(mod)
+mod_typ <- rxode2::zeroRe(mod_ui)
+
+ini_df <- mod_ui$iniDf
+omega_kel <- sqrt(ini_df$est[ini_df$name == "etalkel"])
+prop_sd <- ini_df$est[ini_df$name == "propSd"]
+lkel_typ <- ini_df$est[ini_df$name == "lkel"]
+
+# Deterministic quadrature grid over the between-patient variability of kel
+eta_grid <- omega_kel * qnorm(ppoints(200))
+
+wt_typ <- 55.8
+tg_typ <- 94
+rate_s7 <- 0.121 * wt_typ * 1000 # mg TG / h
+t_obs <- c(0, 0.1, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 6.25, 6.5, 7, 7.5, 8, 9)
+
+make_grid_events <- function(rate_mg_h, dur_h, times, tg, wt, n) {
+  dose <- data.frame(
+    id = seq_len(n), time = 0, evid = 1L, amt = rate_mg_h * dur_h,
+    rate = rate_mg_h, cmt = "central"
+  )
+  obs <- expand.grid(id = seq_len(n), time = times) |>
+    dplyr::mutate(evid = 0L, amt = 0, rate = 0, cmt = "central")
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::mutate(TRIG = tg, WT = wt) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+ev_grid <- make_grid_events(rate_s7, 6, t_obs, tg_typ, wt_typ, length(eta_grid))
+par_grid <- data.frame(lkel = lkel_typ + eta_grid)
+
+# The grid solves are deliberately multi-subject with zeroed omega (each
+# subject is one quadrature node); muffle only that expected warning.
+solve_quadrature <- function(model, events, params) {
+  withCallingHandlers(
+    rxode2::rxSolve(
+      model,
+      events = events, params = params,
+      rtol = 1e-10, atol = 1e-12, returnType = "data.frame"
+    ),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+solve_grid <- function(model) solve_quadrature(model, ev_grid, par_grid)
+
+# Quantile of C x (1 + eps), eps ~ N(0, propSd^2), mixed over the eta grid
+mix_quantile <- function(conc, p, sd = prop_sd) {
+  stats::uniroot(
+    function(x) mean(stats::pnorm((x / conc - 1) / sd)) - p,
+    interval = c(0, 10 * max(conc))
+  )$root
+}
+
+summarise_grid <- function(sim) {
+  sim |>
+    dplyr::group_by(time) |>
+    dplyr::summarise(
+      median = mix_quantile(Cc, 0.5),
+      p90 = mix_quantile(Cc, 0.9),
+      .groups = "drop"
+    )
+}
+
+# Shipped model: central(0) <- TRIG * vc
+s7_base <- summarise_grid(solve_grid(mod_typ)) |>
+  dplyr::mutate(start = "A(0) = TGbase x V (shipped)")
+
+# Alternative reading: start at the model steady state
+mod_ss <- mod_typ |> rxode2::model(central(0) <- kin / kel)
+s7_ss <- summarise_grid(solve_grid(mod_ss)) |>
+  dplyr::mutate(start = "A(0) = EndVLDL / Kel (alternative)")
+
+s7 <- dplyr::bind_rows(s7_base, s7_ss)
+s7 |>
+  dplyr::filter(time %in% c(0.1, 1, 6, 9)) |>
+  dplyr::arrange(start, time) |>
+  dplyr::rename(
+    "Initial condition" = start,
+    "Time (h)" = time,
+    "Median (mg/dL)" = median,
+    "90th percentile (mg/dL)" = p90
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+```{r s7-figure, fig.width = 7, fig.height = 4.5}
+s7 |>
+  tidyr::pivot_longer(c(median, p90), names_to = "stat", values_to = "Cc") |>
+  ggplot(aes(time, Cc, colour = start, linetype = stat)) +
+  geom_line() +
+  annotate("point", x = 0.1, y = 165, shape = 4, size = 3) +
+  labs(
+    x = "Time after start of infusion (h)", y = "TG concentration (mg/dL)",
+    colour = NULL, linetype = NULL,
+    title = "Typical patient, 0.121 g/kg/h for 6 h",
+    caption = paste(
+      "Replicates Supplementary Figure S7 of Fukushima 2022 (V = 0.422 x BW).",
+      "Cross: 90th percentile at 0.1 h read from the figure."
+    )
+  ) +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+```
+
+```{r s7-checks}
+p90_early <- function(x) x$p90[x$time == 0.1]
+med_at <- function(x, t) x$median[x$time == t]
+stopifnot(
+  # Early 90th percentile: the shipped start matches the figure (~165 mg/dL);
+  # the steady-state start (about 217 mg/dL) cannot.
+  abs(p90_early(s7_base) / 165 - 1) < 0.10,
+  abs(p90_early(s7_ss) / 165 - 1) > 0.20,
+  # Plateau 90th percentile ~400 mg/dL, the design target of the dosing rule.
+  abs(s7_base$p90[s7_base$time == 6] / 400 - 1) < 0.02,
+  # Medians read from Figure S7: ~210 mg/dL plateau, ~97 mg/dL at 9 h. The
+  # exact medians here are 204 and 94 (proportional error on a log-normal
+  # kel pulls the median below the typical value); the figure's 1,000-subject
+  # Monte Carlo median carries an SE of ~2% (~4.6 mg/dL at the plateau).
+  abs(med_at(s7_base, 6) / 210 - 1) < 0.06,
+  abs(med_at(s7_base, 9) / 97 - 1) < 0.06
+)
+```
+
+The baseline start reproduces the early spread in Figure S7, and the
+steady-state start overshoots it by about a third. The model therefore
+starts each patient at the measured baseline TG. After the infusion stops,
+TG returns to the model steady state `EndVLDL / (Kel x V)`, not to `TGbase`.
+For the typical patient that is 96.6 mg/dL, consistent with the ~97 mg/dL
+tail of Figure S7. The plateau of the typical-value profile is Eq 6,
+210.8 mg/dL (checked to 0.2% in the PKNCA section below). The median in the
+table is lower (204 mg/dL) because a proportional residual error applied to
+a log-normal `Kel` pulls the median below the typical value. Figure S7's
+plateau median (~210 mg/dL) comes from 1,000 simulated patients and lies
+within its Monte Carlo noise.
+
+# Variability propagation: the 1.894 ratio and the omega scale
+
+The paper reports that, by 10,000-patient Monte Carlo simulation, the 90th
+percentile of Cmax is 1.894 +/- 0.014 times the population-mean Cmax of
+Eq 6, so the target mean Cmax is 400 / 1.894 = 211 mg/dL. This ratio depends
+only on the between-patient and residual variability. Table 4 gives
+"omega Kel = 43.3%", which could be the SD of `eta` (variance 0.1875) or a
+CV% (variance log(1 + 0.433^2) = 0.172). The ratio is computed on the same
+quadrature grid at the end of a 6-h infusion, when TG is at steady state for
+every patient (the slowest grid patient has a half-life of about 1 h):
+
+```{r ratio}
+ratio_for_omega <- function(omega) {
+  ev <- make_grid_events(rate_s7, 6, 6, tg_typ, wt_typ, 200)
+  sim <- solve_quadrature(
+    mod_typ, ev,
+    data.frame(lkel = lkel_typ + omega * qnorm(ppoints(200)))
+  )
+  typical <- (exp(ini_df$est[ini_df$name == "lkin"]) + rate_s7) /
+    (exp(lkel_typ) * 0.422 * wt_typ) # Eq 6
+  mix_quantile(sim$Cc, 0.9) / typical
+}
+ratio_sd <- ratio_for_omega(omega_kel)
+ratio_cv <- ratio_for_omega(sqrt(log(1 + 0.433^2)))
+data.frame(
+  reading = c("omega = 0.433 is the SD of eta (shipped)", "43.3% is a CV"),
+  ratio = c(ratio_sd, ratio_cv),
+  published = 1.894
+) |>
+  dplyr::rename(
+    "Reading of 'omega Kel 43.3%'" = reading,
+    "p90 / mean Cmax" = ratio,
+    "Published" = published
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  # The SD reading lands within the paper's +/-0.014 Monte Carlo spread;
+  # the CV reading is two spreads away.
+  abs(ratio_sd - 1.894) < 0.014,
+  abs(ratio_cv - 1.894) > 0.025
+)
+```
+
+# Maximum acceptable infusion rate (Eq 7 and Supplementary Table S6)
+
+Eq 7 rearranges Eq 6 for the infusion rate that gives a mean Cmax of
+211 mg/dL. Here it is evaluated with the packaged model's individual `kel`
+and `vc`, read from a typical-value solve:
+
+```{r eq7}
+mod_params <- function(tg, wt) {
+  ev <- data.frame(
+    id = seq_along(tg), time = 0, evid = 0L, amt = 0, cmt = "central",
+    TRIG = tg, WT = wt
+  )
+  solve_quadrature(mod_typ, ev, NULL) |>
+    dplyr::select(kin, kel, vc)
+}
+# Eq 7, expressed per kg (g/kg/h)
+max_rate <- function(tg, wt, target = 211) {
+  p <- mod_params(tg, wt)
+  (target * p$kel * p$vc - p$kin) / 1000 / wt
+}
+rate_typ <- max_rate(tg_typ, wt_typ)
+rate_typ
+```
+
+Supplementary Table S6 refits the model with V fixed at 0.3-0.6 dL/kg and
+reports the typical-patient Eq 7 rate for each fit. The 0.422 dL/kg column is
+the packaged model. The other columns check that Eq 7 has been read
+correctly (same formula, Table S6 estimates):
+
+```{r tableS6}
+s6 <- tibble::tribble(
+  ~v_per_kg, ~theta1, ~theta2, ~theta3, ~theta4, ~published,
+  0.3,       6005,    3.70,    -0.826,  -1.262,  0.127,
+  0.4,       5770,    2.67,    -0.833,  -1.270,  0.122,
+  0.5,       5540,    2.06,    -0.835,  -1.273,  0.118,
+  0.6,       5336,    1.65,    -0.840,  -1.286,  0.113
+) |>
+  dplyr::mutate(
+    eq7 = (211 * theta2 * (tg_typ / 94)^theta3 * (wt_typ / 55.8)^theta4 *
+      v_per_kg * wt_typ - theta1) / 1000 / wt_typ
+  ) |>
+  dplyr::bind_rows(
+    tibble::tibble(v_per_kg = 0.422, published = 0.121, eq7 = rate_typ)
+  ) |>
+  dplyr::arrange(v_per_kg)
+
+s6 |>
+  dplyr::select(v_per_kg, eq7, published) |>
+  dplyr::rename(
+    "V (dL/kg)" = v_per_kg,
+    "Eq 7 rate (g/kg/h)" = eq7,
+    "Table S6 (g/kg/h)" = published
+  ) |>
+  knitr::kable(digits = 4)
+
+# Table S6 prints three decimals, so a correct reading is within 0.0005.
+stopifnot(all(abs(s6$eq7 - s6$published) < 0.0006))
+```
+
+# Nomogram (Figure 2)
+
+Figure 2 draws the Eq 7 rate as contours over baseline TG and body weight.
+The contour heights below were digitised by the maintainers from the
+published figure at three body weights:
+
+```{r figure-2}
+digitised <- tibble::tribble(
+  ~wt,  ~rate, ~tg,
+  30.6, 0.300,  97.4, 30.6, 0.200, 128.5, 30.6, 0.150, 151.8,
+  30.6, 0.125, 166.5, 30.6, 0.100, 184.5, 30.6, 0.075, 205.9,
+  30.6, 0.050, 232.6, 30.6, 0.025, 266.0, 30.6, 0.010, 290.7,
+  40.1, 0.300,  72.1, 40.1, 0.200,  98.1, 40.1, 0.150, 118.8,
+  40.1, 0.125, 132.5, 40.1, 0.100, 149.1, 40.1, 0.075, 169.8,
+  40.1, 0.050, 197.2, 40.1, 0.025, 232.9, 40.1, 0.010, 261.0,
+  89.4, 0.200,  39.0, 89.4, 0.150,  50.4, 89.4, 0.125,  58.7,
+  89.4, 0.100,  69.7, 89.4, 0.075,  85.4, 89.4, 0.050, 108.4,
+  89.4, 0.025, 146.1, 89.4, 0.010, 182.9
+)
+
+# Baseline TG at which the packaged model's Eq 7 rate equals each contour
+tg_on_contour <- function(rate, wt) {
+  stats::uniroot(
+    function(tg) max_rate(tg, wt) - rate,
+    interval = c(1, 3000), tol = 1e-6
+  )$root
+}
+digitised$tg_model <- mapply(tg_on_contour, digitised$rate, digitised$wt)
+digitised$tg_ratio <- digitised$tg / digitised$tg_model
+
+grid <- expand.grid(wt = seq(30, 90, by = 1), tg = seq(30, 300, by = 2))
+grid$rate <- max_rate(grid$tg, grid$wt)
+
+ggplot(grid, aes(wt, tg)) +
+  geom_contour(
+    aes(z = rate),
+    breaks = c(0.01, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.2, 0.3),
+    colour = "black"
+  ) +
+  geom_point(data = digitised, colour = "red", shape = 4) +
+  annotate("point", x = wt_typ, y = tg_typ, shape = 16, size = 2.5, colour = "blue") +
+  coord_cartesian(xlim = c(30, 90), ylim = c(30, 300)) +
+  labs(
+    x = "Body weight (kg)", y = "Baseline TG (mg/dL)",
+    title = "Eq 7 contours, 0.01-0.3 g/kg/h",
+    caption = paste(
+      "Replicates Figure 2 of Fukushima 2022. Lines: packaged model;",
+      "red crosses: digitised contours; blue dot: typical patient."
+    )
+  )
+
+knitr::kable(
+  digitised |>
+    dplyr::group_by(wt) |>
+    dplyr::summarise(
+      min_ratio = min(tg_ratio), median_ratio = median(tg_ratio),
+      max_ratio = max(tg_ratio), .groups = "drop"
+    ) |>
+    dplyr::rename(
+      "Body weight (kg)" = wt,
+      "Min ratio" = min_ratio,
+      "Median ratio" = median_ratio,
+      "Max ratio" = max_ratio
+    ),
+  digits = 3,
+  caption = "Digitised / model baseline TG on each contour, by body weight."
+)
+
+stopifnot(
+  # Shape: one constant ratio across all 26 digitised contour points means
+  # the TG exponent (theta3) and body-weight exponent (theta4) carry through
+  # unchanged.
+  stats::sd(log(digitised$tg_ratio)) < 0.02,
+  # Offset: the published contours sit a uniform ~5% higher in baseline TG
+  # (see Assumptions and deviations).
+  abs(median(digitised$tg_ratio) - 1.055) < 0.02
+)
+```
+
+The digitised contours lie on the model's contours up to one uniform factor
+of about 1.055 in baseline TG. A single constant factor across rates and
+weights is what a slightly different target Cmax or `Kel` in the drawing
+would produce: `(1.055)^0.833` corresponds to about 220 instead of 211 mg/dL.
+A misread exponent or a different `EndVLDL` would distort the contour shape
+instead. The paper's own tabulated typical-patient rate (0.121 g/kg/h,
+Table S6) agrees with Eq 7 and the packaged model, not with the drawn
+contours, and the shift is recorded below as a deviation of the published
+figure. Because of it, the typical patient (blue dot) falls just above the
+0.125 contour here (0.121 g/kg/h). The paper's caption places it in the
+"0.125 g/kg/h" area.
+
+# Virtual cohort: observed profiles (Figure 1) and individual rates (Figure 3)
+
+Individual data are not available. The virtual cohort draws each covariate
+and dosing variable independently from a piecewise-linear interpolation of
+the Table 1 quantiles (minimum, quartiles, maximum).
+
+```{r cohort}
+set.seed(2111)
+n_sub <- 200L
+r_table1 <- function(n, q) {
+  stats::approx(c(0, 0.25, 0.5, 0.75, 1), q, xout = stats::runif(n))$y
+}
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  WT = r_table1(n_sub, c(31.2, 46.2, 55.8, 65, 86.1)),
+  TRIG = r_table1(n_sub, c(30, 68, 94, 119, 291)),
+  rate_gkgh = r_table1(n_sub, c(0.053, 0.105, 0.217, 0.278, 0.363)),
+  dur = r_table1(n_sub, c(0.75, 3.0, 5.2, 7.2, 19.8))
+) |>
+  dplyr::mutate(rate = rate_gkgh * WT * 1000, amt = rate * dur)
+
+ev_cohort <- dplyr::bind_rows(
+  cohort |>
+    dplyr::transmute(id, time = 0, evid = 1L, amt, rate, cmt = "central", TRIG, WT),
+  cohort |>
+    dplyr::select(id, TRIG, WT, dur) |>
+    tidyr::crossing(time = seq(0, 24, by = 0.25)) |>
+    dplyr::bind_rows(cohort |> dplyr::transmute(id, TRIG, WT, dur, time = dur)) |>
+    dplyr::distinct(id, time, .keep_all = TRUE) |>
+    dplyr::transmute(id, time, evid = 0L, amt = 0, rate = 0, cmt = "central", TRIG, WT)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+rxode2::rxSetSeed(2111)
+sim_cohort <- rxode2::rxSolve(mod, events = ev_cohort, returnType = "data.frame") |>
+  dplyr::left_join(cohort |> dplyr::select(id, dur), by = "id") |>
+  dplyr::mutate(phase = ifelse(time <= dur, "during infusion", "after infusion"))
+```
+
+```{r figure-1, fig.width = 7, fig.height = 4.5}
+ggplot(sim_cohort, aes(time, Cc, group = interaction(id, phase))) +
+  geom_line(aes(linetype = phase), alpha = 0.3) +
+  scale_linetype_manual(values = c("during infusion" = "solid", "after infusion" = "dashed")) +
+  labs(
+    x = "Time (h)", y = "Triglyceride concentration (mg/dL)", linetype = NULL,
+    title = "Simulated TG profiles, Table 1-like virtual cohort",
+    caption = "Compare with Figure 1 of Fukushima 2022 (observed data). Individual predictions without residual error."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+As in Figure 1, most simulated profiles stay below about 500 mg/dL and TG
+falls back near baseline within a few hours of the end of the infusion. The
+upper tail is thinner than observed. When the maintainers ran this, the
+simulated peaks had a median of about 250 mg/dL and only about 1-2% of
+patients exceeded 1,000 mg/dL, reaching about 1,500 mg/dL. Figure 1 shows
+roughly six of 83 patients above 1,000 mg/dL, reaching about 2,450 mg/dL.
+This matches the authors' own finding that the first-order model
+underpredicts concentrations above about 1,000 mg/dL, where TG elimination
+appears saturated (Supplementary Model Selection and Figure S2).
+
+Figure 3 histograms the Eq 7 rate for the 83 study patients. The same
+calculation on the virtual cohort is compared below. The virtual cohort draws
+baseline TG and body weight independently, which the real cohort need not
+do, so this comparison is descriptive and has no gate:
+
+```{r figure-3}
+bins <- c(-Inf, 0.01, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.2, 0.3, Inf)
+bin_labels <- c(
+  "<0.01", "0.01-0.025", "0.026-0.05", "0.06-0.075", "0.076-0.1",
+  "0.11-0.125", "0.126-0.15", "0.16-0.2", "0.21-0.3", ">=0.3"
+)
+published_fig3 <- c(3, 2, 3, 10, 11, 7, 10, 7, 15, 15) # Figure 3, n = 83
+cohort$max_rate <- max_rate(cohort$TRIG, cohort$WT)
+virtual_counts <- as.vector(table(cut(cohort$max_rate, bins, right = FALSE)))
+tibble::tibble(
+  bin = bin_labels,
+  published_pct = 100 * published_fig3 / sum(published_fig3),
+  virtual_pct = 100 * virtual_counts / n_sub
+) |>
+  dplyr::rename(
+    "Max acceptable rate (g/kg/h)" = bin,
+    "Figure 3, % of 83" = published_pct,
+    "Virtual cohort, %" = virtual_pct
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+The virtual cohort over-fills the lowest bins. The interpolated Table 1
+quantiles put a quarter of the virtual patients uniformly between 119 and
+291 mg/dL baseline TG, which over-represents very high baselines (where Eq 7
+falls below 0.01 g/kg/h) compared with the right-skewed real distribution.
+Above about 0.05 g/kg/h, the virtual and published distributions are
+broadly similar.
+
+# PKNCA validation
+
+The paper reports no NCA. Its one published concentration is the
+population-mean Cmax of 211 mg/dL at the typical patient's maximum
+acceptable rate. Eq 6 gives the population-mean Cmax at any other infusion
+rate. Typical-value profiles are simulated for five 6-hour infusion rates,
+and PKNCA Cmax is compared with Eq 6 (and with 211 mg/dL for the 0.121
+g/kg/h arm). An infusion of 6 h is about 20 half-lives of the typical `kel`,
+so each Cmax is the Eq 6 plateau.
+
+```{r pknca}
+arms <- tibble::tibble(rate_gkgh = c(0.05, 0.1, 0.121, 0.2, 0.3)) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    treatment = sprintf("%.3f g/kg/h", rate_gkgh),
+    rate = rate_gkgh * wt_typ * 1000,
+    amt = rate * 6
+  )
+ev_nca <- dplyr::bind_rows(
+  arms |> dplyr::transmute(id, treatment, time = 0, evid = 1L, amt, rate, cmt = "central"),
+  arms |>
+    dplyr::select(id, treatment) |>
+    tidyr::crossing(time = seq(0, 24, by = 0.25)) |>
+    dplyr::mutate(evid = 0L, amt = 0, rate = 0, cmt = "central")
+) |>
+  dplyr::mutate(TRIG = tg_typ, WT = wt_typ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_nca <- rxode2::rxSolve(
+  mod_typ,
+  events = ev_nca, keep = "treatment",
+  rtol = 1e-10, atol = 1e-12, returnType = "data.frame"
+) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  arms |> dplyr::mutate(time = 0, dur = 6) |>
+    dplyr::select(id, treatment, time, amt, dur),
+  amt ~ time | treatment + id,
+  route = "intravascular", duration = "dur"
+)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+typ <- mod_params(tg_typ, wt_typ)
+reference <- arms |>
+  dplyr::transmute(
+    treatment,
+    cmax = ifelse(rate_gkgh == 0.121, 211, (typ$kin + rate) / (typ$kel * typ$vc))
+  )
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = reference,
+  by = "treatment",
+  params = "cmax",
+  units = c(cmax = "mg/dL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated vs. reference Cmax for a typical patient (94 mg/dL, 55.8 kg).",
+    "Reference: 211 mg/dL published for 0.121 g/kg/h; Eq 6 otherwise.",
+    "* differs from reference by >20%."
+  )
+)
+
+cmax_sim <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "cmax") |>
+  dplyr::left_join(reference, by = "treatment")
+stopifnot(
+  # Same parameters on both sides (Eq 6 plateau vs the ODE solve), so a tight
+  # bound is correct; 211 is the paper's rounding of 210.8.
+  all(abs(cmax_sim$PPORRES / cmax_sim$cmax - 1) < 0.002)
+)
+```
+
+# Assumptions and deviations
+
+- **Initial condition.** Eq 1 is printed without an initial condition. The
+  maintainers set `central(0) <- TRIG * vc`, the measured baseline TG times
+  the fixed plasma volume. Supplementary Figure S7 selects this choice: its
+  early 90th percentile (~165 mg/dL at 0.1 h) is matched by the baseline
+  start (~169 mg/dL) and not by a steady-state start `EndVLDL / Kel`
+  (~217 mg/dL). After the infusion, TG relaxes to the model's own steady state
+  `EndVLDL / (Kel x V)`, which differs from `TRIG` patient by patient.
+  `TRIG` must therefore be the pre-infusion baseline, held constant.
+- **Omega scale.** Table 4 prints "omega Kel = 43.3%". The maintainers read
+  it as the SD of the exponential random effect (variance 0.433^2 = 0.1875),
+  because it reproduces the paper's variability-propagation ratio
+  (1.900 vs published 1.894 +/- 0.014). The CV reading gives 1.864.
+- **Nomogram offset.** The published Figure 2 contours sit a uniform ~5.5%
+  higher in baseline TG than Eq 7 evaluated with the Table 4 estimates
+  (contour shape agrees to within a 2% log-SD over 26 digitised points). Eq 7
+  with the Table 4 estimates reproduces the paper's own typical-patient rate
+  (0.121 g/kg/h, Supplementary Table S6) and all four Table S6 sensitivity
+  fits, so the packaged model follows Table 4 and Eq 7. The figure offset is
+  recorded here as a deviation of the published drawing.
+- **Units.** `amt` and `rate` are in mg of TG (1 g of emulsion fat = 1000 mg
+  TG), the plasma volume is in dL and concentrations are in mg/dL, matching
+  the paper's EndVLDL (mg/h) and V (dL).
+- **Virtual cohort.** Body weight, baseline TG, infusion rate and infusion
+  duration were drawn independently from piecewise-linear interpolations of
+  the Table 1 quantiles. Correlations among them are not reported.
+- **Covariate screen.** Apolipoprotein C-III, apolipoprotein C-II and serum
+  albumin were significant on `Kel` in the univariate screen (Table 2), but
+  none was retained once baseline TG was in the model (Table 3).
+  Apolipoprotein C-III and albumin are listed in the model's
+  `covariatesDataExcluded` metadata. Apolipoprotein C-II, which has no
+  registered covariate column, is documented here only.
+- **Scope.** The model assumes first-order TG elimination. The authors note
+  that elimination appears saturated above about 1000 mg/dL (Supplementary
+  Model Selection, Figure S2), so predictions in that range are
+  underestimates by design.
+- No erratum or correction notice for this article was found on Europe PMC
+  as of 2026-10-02.

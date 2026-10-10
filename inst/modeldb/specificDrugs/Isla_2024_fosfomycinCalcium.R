@@ -23,10 +23,10 @@ Isla_2024_fosfomycinCalcium <- function() {
     sep = " "
   )
   reference <- paste(
-    "Isla A, Alarcia-Lacalle A, Solinis MA, del Pozo-Rodriguez A, Abajo Z,",
-    "Cabero M, Canut-Blasco A, Rodriguez-Gascon A.",
-    "Population pharmacokinetics of oral fosfomycin calcium in healthy women.",
-    "J Antimicrob Chemother. 2024;79(11):2891-2898.",
+    "Isla A, Alarcia-Lacalle A, Solinis MA, Del Pozo-Rodriguez A, Abajo Z,",
+    "Cabero M, Canut-Blasco A, Rodriguez-Gascon A. Population pharmacokinetics",
+    "of oral fosfomycin calcium in healthy women. J Antimicrob Chemother.",
+    "2024;79(11):2837-2845.",
     "doi:10.1093/jac/dkae295.",
     sep = " "
   )

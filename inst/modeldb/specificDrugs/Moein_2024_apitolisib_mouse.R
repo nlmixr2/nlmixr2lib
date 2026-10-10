@@ -18,14 +18,15 @@ Moein_2024_apitolisib_mouse <- function() {
     "tumor IIV terms were estimated in this integrated fit."
   )
   reference <- paste(
-    "Moein A, Jin JY, Wright MR, Alicke B, Wong H. Retrospective Assessment",
-    "of Translational Pharmacokinetic-Pharmacodynamic Modeling Performance:",
-    "A Case Study with Apitolisib, a Dual PI3K/mTOR Inhibitor.",
-    "Drugs R D. 2024;24(2):157-166. doi:10.1007/s40268-024-00459-5.",
-    "PMCID PMC11315854. Structural equations from Methods Eqs. 2-5;",
-    "parameter values from Tables 1 and 3; NONMEM control stream from",
-    "Supplementary Information Online Resource 2 (part I).",
-    "Companion human model: modellib('Moein_2024_apitolisib_human')."
+    "Moein A, Jin JY, Wright MR, Alicke B, Wong H. Retrospective Assessment of",
+    "Translational Pharmacokinetic-Pharmacodynamic Modeling Performance: A",
+    "Case Study with Apitolisib, a Dual PI3K/mTOR Inhibitor. Drugs R D.",
+    "2024;24(2):155-167. doi:10.1007/s40268-024-00459-5. PMCID PMC11315854.",
+    "Structural equations from Methods Eqs. 2-5; parameter values from Tables",
+    "1 and 3; NONMEM control stream from Supplementary Information Online",
+    "Resource 2 (part I). Companion human model:",
+    "modellib('Moein_2024_apitolisib_human').",
+    sep = " "
   )
   vignette <- "Moein_2024_apitolisib"
   units <- list(time = "h", dosing = "mg/kg", concentration = "ug/L")

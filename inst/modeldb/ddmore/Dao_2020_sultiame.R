@@ -1,11 +1,11 @@
 Dao_2020_sultiame <- function() {
   description <- "Population PK model for sultiame in healthy adult volunteers with non-linear distribution into erythrocytes (saturable binding to a putative red-blood-cell carrier). Four-compartment structure: depot (oral absorption, KA fixed at 1/h), central (plasma), erythrocytes (drug bound to a saturable carrier in red blood cells parameterised by KON, KOFF, BTOT), and urine (cumulative urinary excretion as a fraction QREN of total elimination). Drug binding to erythrocytes is written in mass-action form on amounts (KON in 1/(h*mg)). DDMORE Foundation Model Repository entry DDMODEL00000298, fit on 4 healthy volunteers (433 observations) by NONMEM ADVAN13 FOCEI."
   reference <- paste(
-    "Dao K, Thoueille P, Decosterd LA, Mercier T, Guidi M, Bardinet C,",
-    "Lebon S, Choong E, Castang A, Guittet C, Granier LA, Buclin T (2020).",
-    "Pharmacokinetic profile of sultiame in healthy volunteers with in vitro",
-    "characterization of its uptake by red blood cells.",
-    "Pharmacology Research & Perspectives 8(2):e00558.",
+    "Dao K, Thoueille P, Decosterd LA, Mercier T, Guidi M, Bardinet C, Lebon",
+    "S, Choong E, Castang A, Guittet C, Granier LA, Buclin T. Sultiame",
+    "pharmacokinetic profile in plasma and erythrocytes after single oral",
+    "doses: A pilot study in healthy volunteers. Pharmacol Res Perspect.",
+    "2020;8(1):e00558.",
     "doi:10.1002/prp2.558.",
     "DDMORE Foundation Model Repository: DDMODEL00000298.",
     sep = " "
@@ -39,7 +39,7 @@ Dao_2020_sultiame <- function() {
     weight_range = "Healthy adult volunteers",
     sex_female_pct = NA_real_,
     disease_state = "Healthy adult volunteers receiving single oral doses of sultiame.",
-    dose_range = "Single oral doses of 50, 100, and 200 mg sultiame in the DDMORE bundle's simulated event table; the linked publication (Dao 2020, Pharmacology Research & Perspectives 8(2):e00558) describes a Phase 1 dose-ranging PK study in healthy volunteers.",
+    dose_range = "Single oral doses of 50, 100, and 200 mg sultiame in the DDMORE bundle's simulated event table; the linked publication (Dao 2020, Pharmacology Research & Perspectives 8(1):e00558) describes a Phase 1 dose-ranging PK study in healthy volunteers.",
     regions = "Switzerland (University Hospital of Lausanne, per .lst NONMEM license)",
     notes = "n_subjects = 4 is the count of distinct individuals in the NONMEM run (Output_real_sultiame_nonlinear_PK.lst, 'TOT. NO. OF INDIVIDUALS: 4', 433 observations). The full Dao 2020 publication was not available when this model was built; the population characteristics above summarise what the DDMORE bundle and the publication's title disclose. Individual demographics (age, weight, sex) are not reproduced in the bundle's simulated dataset (Simulated_data_PK_sultiame.csv); the underlying Export_PK_Nonmem_urine.csv referenced by the .mod has WT and AGE columns but they are not used by the structural model."
   )

@@ -1,6 +1,12 @@
 Bouazza_2011_lamivudine <- function() {
   description <- "Two-compartment oral popPK model for lamivudine in HIV-infected children from neonates to adolescents (Bouazza 2011)"
-  reference <- "Bouazza N, Hirt D, Blanche S, Frange P, Rey E, Treluyer JM, Urien S. Developmental pharmacokinetics of lamivudine in 580 pediatric patients ranging from neonates to adolescents. Antimicrobial Agents and Chemotherapy. 2011;55(8):3498-3504. doi:10.1128/AAC.01622-10"
+  reference <- paste(
+    "Bouazza N, Hirt D, Blanche S, Frange P, Rey E, Treluyer JM, Urien S.",
+    "Developmental pharmacokinetics of lamivudine in 580 pediatric patients",
+    "ranging from neonates to adolescents. Antimicrob Agents Chemother.",
+    "2011;55(7):3498-3504. doi:10.1128/AAC.01622-10.",
+    sep = " "
+  )
   vignette <- "Bouazza_2011_lamivudine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

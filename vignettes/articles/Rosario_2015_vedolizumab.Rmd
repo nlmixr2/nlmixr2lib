@@ -32,7 +32,7 @@ cat("* **Description:** ", mod$description, "\n", sep = "")
 ```
 
 * **Article:** <https://doi.org/10.1111/apt.13243>
-* **Corrigendum:** <https://doi.org/10.1111/apt.15571> — a text-only
+* **Corrigendum:** <https://doi.org/10.1111/apt.13365> — a text-only
   unit-typo fix (ng/mL → µg/mL) with no parameter-value changes.
 
 # Population

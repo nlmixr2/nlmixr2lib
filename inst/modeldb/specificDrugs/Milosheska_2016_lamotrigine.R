@@ -4,7 +4,7 @@ Milosheska_2016_lamotrigine <- function() {
     "Milosheska D, Lorber B, Vovk T, Kastelic M, Dolzan V, Grabnar I.",
     "Pharmacokinetics of lamotrigine and its metabolite N-2-glucuronide:",
     "Influence of polymorphism of UDP-glucuronosyltransferases and drug",
-    "transporters. Br J Clin Pharmacol. 2016 Sep;82(3):399-411.",
+    "transporters. Br J Clin Pharmacol. 2016;82(2):399-411.",
     "doi:10.1111/bcp.12984.",
     sep = " "
   )

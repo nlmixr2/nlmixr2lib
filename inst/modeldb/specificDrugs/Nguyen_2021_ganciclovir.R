@@ -11,9 +11,11 @@ Nguyen_2021_ganciclovir <- function() {
   )
   reference <- paste(
     "Nguyen T, Oualha M, Briand C, Bendavid M, Beranger A, Benaboud S,",
-    "Treluyer JM, Zheng Y, Foissac F, Winter S, et al. Population pharmacokinetics",
-    "of intravenous ganciclovir and oral valganciclovir in a pediatric population",
-    "to optimize dosing regimens. Antimicrob Agents Chemother. 2021;65(3):e02254-20.",
+    "Treluyer JM, Zheng Y, Foissac F, Winter S, Gana I, Boujaafar S, Lopez V,",
+    "Berthaud R, Demir Z, Bouazza N, Hirt D. Population Pharmacokinetics of",
+    "Intravenous Ganciclovir and Oral Valganciclovir in a Pediatric Population",
+    "To Optimize Dosing Regimens. Antimicrob Agents Chemother.",
+    "2021;65(3):e02254-20.",
     "doi:10.1128/AAC.02254-20.",
     "Parameters transcribed from Yang W, Mak W, Gwee A, Gu M, Wu Y, Shi Y, He Q,",
     "Xiang X, Han B, Zhu X. Establishment and Evaluation of a Parametric Population",

@@ -1,11 +1,10 @@
 Schmitt_2018_vinflunine <- function() {
   description <- "Combined population PK / PD model for IV vinflunine in adult cancer patients (Schmitt 2018, 18 phase I/II trials, n=372). Four-compartment IV-infusion popPK with creatinine clearance, body surface area, body weight, and PEGylated liposomal doxorubicin co-administration covariates, plus a five-compartment Friberg-style semi-mechanistic myelosuppression PD model for absolute neutrophil count (proliferation + 3 transit + circulation; linear drug effect 1 - slope*Cc on proliferation; (circ0/circ)^gamma feedback)."
   reference <- paste(
-    "Schmitt A, Nguyen L, Zorza G, Ferre P, Petain A (2018).",
-    "Better characterization of vinflunine pharmacokinetics variability",
-    "and exposure/toxicity relationship to improve its use:",
-    "Analyses from 18 trials.",
-    "Br J Clin Pharmacol 84(7):1506-1517.",
+    "Schmitt A, Nguyen L, Zorza G, Ferre P, Petain A. Better characterization",
+    "of vinflunine pharmacokinetics variability and exposure/toxicity",
+    "relationship to improve its use: Analyses from 18 trials. Br J Clin",
+    "Pharmacol. 2018;84(5):900-910.",
     "doi:10.1111/bcp.13518.",
     sep = " "
   )

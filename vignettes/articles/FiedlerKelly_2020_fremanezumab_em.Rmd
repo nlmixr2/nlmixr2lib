@@ -28,7 +28,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_em"))$meta$reference`
 * Description: `r rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_em"))$meta$description`
-* Article: <https://doi.org/10.1111/head.13855>
+* Article: <https://doi.org/10.1111/head.13845>
 
 Fiedler-Kelly 2020 develops two exposure-response (E-R) models for fremanezumab, one in episodic migraine (EM, this vignette) and one in chronic migraine (CM, separate vignette `FiedlerKelly_2020_fremanezumab_cm`). The fremanezumab population PK is *not* fitted in this paper; the per-subject Cav values that drive the E-R were taken from individual empirical-Bayes estimates of the Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab` in this library).
 

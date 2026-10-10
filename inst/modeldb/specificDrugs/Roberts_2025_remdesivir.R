@@ -26,7 +26,15 @@ Roberts_2025_remdesivir <- function() {
     "combined proportional-plus-additive for remdesivir and proportional",
     "for GS-441524."
   )
-  reference <- "Roberts DM, Liu X, Parker SL, Burke A, Peek J, Carland JE, et al. Population Pharmacokinetic Modelling of Remdesivir and Its Metabolite GS-441524 in Hospitalised Patients with COVID-19. Clin Pharmacokinet. 2025;64(5):723-735. doi:10.1007/s40262-025-01496-2"
+  reference <- paste(
+    "Roberts DM, Liu X, Parker SL, Burke A, Peek J, Carland JE, Murnion B,",
+    "Seah V, Wallis SC, Sumi CD, Pandey S, Buscher H, Byrne A, Sandaradura I,",
+    "Bowen D, Holz S, Stewart AG, Hajkowicz KM, Roberts JA. Population",
+    "Pharmacokinetic Modelling of Remdesivir and Its Metabolite GS-441524 in",
+    "Hospitalised Patients with COVID-19. Clin Pharmacokinet.",
+    "2025;64(5):743-756. doi:10.1007/s40262-025-01496-2.",
+    sep = " "
+  )
   vignette <- "Roberts_2025_remdesivir"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 

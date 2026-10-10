@@ -225,7 +225,8 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Role:** Secreted salivary fluid as a kinetically distinct state -- the sampling matrix a Salivette or equivalent collects. Used by saliva-based therapeutic-drug-monitoring models that retain saliva as its own compartment with its own transfer and loss rate constants, rather than as an algebraic rescaling of plasma. Pairs with the `kin_saliva` / `kout_saliva` members of the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family for the central-to-saliva and saliva-to-central legs, and with `kel_saliva` for irreversible loss of drug out of saliva (swallowing plus salivary flow); the observed concentration output name is `Csaliva` with a `propSd_Csaliva` residual.
 - **Source aliases:**
   - `SALIVA` -- Nguyen 2026 supplementary Table S7 `$MODEL COMP = (SALIVA)`; the same paper's Figure 1 calls it "the saliva bio-compartment".
-- **Example models:** `Nguyen_2026_linezolid.R` (founding example; oral linezolid in MDR-TB, saliva carried as a driven hypothetical effect compartment sharing the central volume).
+  - `Contamination` -- Kruizinga 2022 Equations 1 and 3 ("saliva contamination compartment").
+- **Example models:** `Nguyen_2026_linezolid.R` (founding example; oral linezolid in MDR-TB, saliva carried as a driven hypothetical effect compartment sharing the central volume), `Kruizinga_2022_clonazepam.R` (oral-solution residue left in the mouth: dosed directly with the fraction `fcontam_saliva` of the dose, emptied by `kel_saliva`, 1 mL fixed volume, not connected to `central`; the plasma-driven part of the saliva concentration is algebraic, `Cc * fsaliva`).
 - **Notes:** Distinct from two neighbours that are deliberately different things. `salivary_gland` is the lumped salivary-gland *tissue* state of PSMA radioligand dosimetry models (`Siebinga_2023_lu177psma617.R`) -- gland parenchyma, not the secreted fluid. `fsaliva` / `lfsaliva` in `parameter-names.md` is the saliva:plasma *scale factor* for the no-kinetics case (`Xu_2023_busulfan.R`), and that entry rules itself out whenever a paper retains a separate compartment with its own rate constants, which is exactly the `saliva` case. The two structures are genuinely competing model forms and papers split both ways on the same question: Xu 2023 selected the scale factor over a distinct saliva compartment for busulfan (dOFV = -82.52), while Nguyen 2026 selected the distinct compartment over the scale factor for linezolid (d-2LL = -43.084, 2 df, p < 0.001). The canonical name carries no commitment as to whether the saliva state is mass-balance-coupled to central or driven (non-depleting) -- Nguyen 2026 is the latter -- nor to whether it has its own volume; when it shares the central volume, write `Csaliva <- saliva / vc`. Registered alongside the bare fluid-matrix compartments `csf`, `isf`, `ecf`, `elf`, `milk` and `urine`; `saliva` was already in the `specimenVocabulary` of `R/conventions.R` as a matrix before it became a compartment. Ratified 2026-09-02 with the Nguyen 2026 extraction.
 
 ---
@@ -465,9 +466,9 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 
 ### plasma (**canonical mPBPK plasma compartment**)
 - **Type:** compartment
-- **Role:** Plasma compartment in the Cao 2013 mAb mPBPK family.
-- **Source aliases:** none.
-- **Example models:** `Cao_2013_MEDI528.R` (and 11 sibling Cao 2013 mAb mPBPK models) (and Cao_2013_* variants), `Yuan_2019_concizumab.R`.
+- **Role:** Plasma compartment in the Cao 2013 mAb mPBPK family; also the single plasma pool of whole-body flow-limited PBPK models that carry no separate arterial and venous blood.
+- **Source aliases:** `APlas_free` (Chou 2022 deposited mrgsolve code).
+- **Example models:** `Cao_2013_MEDI528.R` (and 11 sibling Cao 2013 mAb mPBPK models) (and Cao_2013_* variants), `Yuan_2019_concizumab.R`, `Chou_2022_flunixin_cattle_pbpk.R` (and the five sibling Chou 2022 igPBPK drug-species models; `plasma_<metab>` is the metabolite plasma pool).
 
 ### tight (**canonical mPBPK tight-tissue compartment**)
 - **Type:** compartment
@@ -1006,6 +1007,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:** `IPSS` -- D'Agate 2020 Equation 1 and the `$MODEL COMP=(IPSS)` state of its Supporting Information control stream.
 - **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; `d/dt(ipss) <- DISP * (1 - ipss/35) - (PLACEBO + TREATMENT) * ipss`, a saturating zero-order worsening term opposed by a decaying placebo effect and constant first-order treatment effects).
 - **Notes:** Follows the lowercase run-together convention of `pasi` / `das28` / `cows`. The score is discrete but, as in the founding example, is modelled as continuous; the authors' simulation step truncated simulated observations to [0, 35].
+
+---
+
+## WOMAC osteoarthritis subscale scores
+
+### womacpain, womacstiffness, womacfunction (**canonical WOMAC subscale score output compartments**)
+- **Type:** compartment
+- **Role:** Western Ontario and McMaster Universities Osteoarthritis Index (WOMAC) subscale outputs: `womacpain` (5 items), `womacstiffness` (2 items) and `womacfunction` (17 items, physical function). Each holds the ABSOLUTE subscale score, not a change from baseline. A model that fits the change from baseline directly should register a `cfb` companion (`womacpaincfb`), as `das28` and `das28cfb` are separated. WOMAC is published in Likert (0-4 per item), VAS (0-100 mm per item) and NRS (0-10 per item) versions, so the item scale is not fixed by the name: every consuming model must state in its `units` which scale the output is on. The founding models use the 0-10-per-item standardization (pain 0-50, stiffness 0-20, function 0-170).
+- **Source aliases:** `EFT` / `IPRED` -- Wen 2022 eMethods 5 NONMEM `$PRED` (one control stream per subscale); `WOMAC pain`, `WOMAC stiffness`, `WOMAC function` -- paper notation.
+- **Example models:** `Wen_2022_osteoarthritis_womacpain_placebo_mbma.R`, `Wen_2022_osteoarthritis_womacstiffness_placebo_mbma.R`, `Wen_2022_osteoarthritis_womacfunction_placebo_mbma.R` (founding examples; study-arm-mean placebo response `womac<sub> = BASE - Emax * (1 - exp(-k * t))` with the arm baseline in the `SCORE_WOMAC_<SUBSCALE>` covariate).
+- **Notes:** Follows the lowercase run-together instrument convention of `pasi` / `ipss` / `das28`. Distinct from the generic pain-score canonical `score` (`Plan_2012_pain.R`): the WOMAC outputs name a specific instrument and subscale, and two of the three are not pain measures. The earlier WOMAC pain MBMAs `Boucher_2016_naproxen_mbma.R` and `Boucher_2018_naproxen_mbma.R` predate this entry and observe `Cc`, on a 0-10 average-per-item scale.
 
 ---
 
@@ -2019,6 +2031,20 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Patel_2020_sapanisertib_RR.R` (founding example; linear mixed-effects concentration-DeltaRR model for the mTORC1/2 inhibitor sapanisertib in patients with advanced solid tumors, intercept -25.504 msec and slope +0.147 msec per ng/mL).
 - **Notes:** Registered as a canonical sibling of `d_hr` and for the same stated reason: an absolute RR interval is roughly 850 msec whereas a DeltaRR is on the order of -25 to +18 msec, so the two are on incomparable scales and a residual-error magnitude or intercept fitted against one must not be read against the other. Adopting the `d` prefix here (rather than the bare interval name) was a ruling by the maintainers (PMC7586797, 2026-09-02): the competing bare-name precedent set by `QTc` / `QTcF` / `QTcI` is for *absolute* interval names, and a delta is exactly what `d_hr` already encodes, so the heart-rate-domain pair `(d_hr, d_rr)` is kept mutually consistent. Note that this leaves the deliberate `QTc`-family asymmetry documented in the `d_hr` entry untouched -- `Darpo_2014_racSotalol_QTcF.R`, `Mukker_2026_tuvusertib_QTcF.R`, `Zhou_2025_fruquintinib_*` and the two companion `Patel_2020_sapanisertib_QTcI.R` / `_QTcF.R` files continue to name change-from-baseline QTc endpoints by the bare corrected-interval name. Unlike `d_hr`, there is no covariate-shadowing pressure in the founding example (Patel 2020's fits are intercept + slope only, with no baseline-RR covariate column), so the scale-incomparability argument stands alone. `d_rr` is the interval-scale partner of `d_hr`, not a substitute for it: converting between them requires the individual's absolute baseline (`HR = 60000 / RR` with RR in msec), which is a data-normalisation constant rather than a fitted parameter. Residual error follows the standard per-output rule (`addSd` for a single-output model, `addSd_d_rr` when multi-output). Distinct from the population-based QT correction exponent fitted against RR (`QTcP`), which consumes RR as a regressor rather than observing it.
 
+### nadir_hr_change (**canonical nadir of time-matched placebo-corrected heart-rate change**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: the most negative value, over a fixed observation window, of the time-matched change in heart rate from a placebo lead-in day, in beats per minute (`nadir_hr_change = min_t [HR_day1(t) - HR_day-1(t)]`), a signed quantity. Used as the observation variable of exposure-response models that relate one exposure metric per subject (for example an average concentration on the first day of dosing) to the first-dose bradycardia typical of sphingosine-1-phosphate receptor modulators. There is one observation per subject and no time course, so the model has no ODE state.
+- **Source aliases:** `nDDHR` (Bihorel 2021, where DD denotes the double difference: time-matched against day -1, and placebo-corrected because day -1 was a placebo dose for every subject) -- translate to `nadir_hr_change`.
+- **Example models:** `Bihorel_2021_BMS986166_nddhr.R` (founding example; inhibitory sigmoid Emax of the day-1 average BMS-986166-P concentration, from -9.08 bpm in placebo recipients to -19.7 bpm at maximal effect).
+- **Notes:** Distinct from `d_hr`, which is the change-from-baseline heart rate as a TIME-VARYING observation: `nadir_hr_change` is a single summary per subject, so a model fitted to it cannot be observed at arbitrary times and its residual error is on the between-subject scale of nadirs. The `nadir_` prefix names the summary statistic; the rest of the name is spelled out (`hr_change`) rather than composed from the `d_hr` change-output abbreviation, which is the form the maintainers ratified for this per-subject summary (2026-10-02).
+
+### nadir_lymphocyte_count (**canonical nadir absolute lymphocyte count**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: the lowest absolute lymphocyte count (ALC) observed at any time after the first dose, in 10^3 cells/uL. Used as the observation variable of exposure-response models that relate one exposure metric per subject (an average concentration on day 1 after a single dose, or on the last day of a repeated-dose regimen) to the lymphocyte sequestration produced by sphingosine-1-phosphate receptor modulators. One observation per subject and no ODE state.
+- **Source aliases:** `nALC` (Bihorel 2021) -- translate to `nadir_lymphocyte_count`.
+- **Example models:** `Bihorel_2021_BMS986166_nalc_sd.R`, `Bihorel_2021_BMS986166_nalc_md.R` (founding examples; ALC0 x (1 - Delta_placebo) x (1 - Imax x Cavg^h / (IC50^h + Cavg^h)) after a single dose and after 28 days of once-daily dosing).
+- **Notes:** A nadir summary, not a lymphocyte-count time course: a longitudinal circulating-lymphocyte state belongs in `circ` (or `circ_<celltype>`) or `lymph`-type turnover models. The maintainers ratified the spelled-out `lymphocyte_count` (2026-10-02) over the laboratory abbreviation `alc`, so the name reads without a lookup; it is still the ABSOLUTE count (10^3 cells/uL), not a percentage of white cells.
+
 ### herg_inh (**canonical fractional hERG potassium-channel block**)
 - **Type:** compartment
 - **Role:** Fraction of the hERG (human ether-a-go-go related gene) potassium-channel tail current blocked by a drug, a unitless quantity bounded in `[0, 1]`. Used as the observation variable in in-vitro concentration-response models fitted to whole-cell patch-clamp data, the standard nonclinical assay for proarrhythmic (QT-prolongation) liability under ICH S7B. Typically observed from a sigmoidal Imax / Hill expression `imax * C^hill / (ic50^hill + C^hill)` driven by the nominal bath concentration.
@@ -2462,7 +2488,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an overall response (complete response, including uncertified CR, or partial response) as adjudicated by **independent central review**, in a static landmark exposure-response logistic model. The central-vs-investigator distinction is load-bearing and is why this is a separate canonical from `prob_orr_investigator`: the two adjudications are separate endpoints fit as separate models on different analysis sets, and central review is the regulatory-grade assessment.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual), `Liu_2024_saf189s_orr.R` (binomial logistic exposure-efficacy model for INDEPENDENT-REVIEW-COMMITTEE-assessed ORR in ALK+/ROS1+ non-small cell lung cancer; an IRC is an independent central review, so the central-assessment canonical is the right one even though that paper fits no investigator-assessed counterpart), `Babel_2026_telisotuzumab_orr.R` (binomial logistic exposure-efficacy model for telisotuzumab vedotin, ORR per INDEPENDENT CENTRAL REVIEW -- the same adjudication route as an IRC -- in c-Met overexpressing EGFR wild-type non-squamous NSCLC; the conjugate average serum concentration enters on the natural-log scale with a log-odds of 2.45 per e-fold).
+- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual), `Liu_2024_saf189s_orr.R` (binomial logistic exposure-efficacy model for INDEPENDENT-REVIEW-COMMITTEE-assessed ORR in ALK+/ROS1+ non-small cell lung cancer; an IRC is an independent central review, so the central-assessment canonical is the right one even though that paper fits no investigator-assessed counterpart), `Babel_2026_telisotuzumab_orr.R` (binomial logistic exposure-efficacy model for telisotuzumab vedotin, ORR per INDEPENDENT CENTRAL REVIEW -- the same adjudication route as an IRC -- in c-Met overexpressing EGFR wild-type non-squamous NSCLC; the conjugate average serum concentration enters on the natural-log scale with a log-odds of 2.45 per e-fold), `Gupta_2022_brigatinib_orr.R` (binomial logistic exposure-efficacy model for BLINDED-INDEPENDENT-REVIEW-COMMITTEE-confirmed ORR in first-line ALK-positive NSCLC; brigatinib scan-interval daily AUC enters linearly with odds ratio 0.97, p = 0.108).
 - **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc`. Static (no time dimension): unlike `prob_scc`, which is a state-occupancy probability evolving under a multistate ODE, this is a landmark probability evaluated once per subject from baseline covariates and a scalar exposure metric. Founding models expose it with a small placeholder residual so the nlmixr2 observation machinery accepts the model; the source analysis uses an exact Bernoulli likelihood and estimates no residual error.
 
 ### prob_orr_investigator (**canonical investigator-assessment overall-response probability output**)
@@ -2532,7 +2558,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences febrile neutropenia (neutropenia with fever, an investigator-reported adverse event) during treatment, in a static landmark exposure-safety logistic model.
 - **Source aliases:** `FN`.
-- **Example models:** `Suri_2019_brentuximab_fn_adc.R` and `Suri_2019_brentuximab_fn_mmae.R` (two separately fitted binomial logistic models for the SAME endpoint in brentuximab vedotin + AVD, one driven by time-averaged antibody-drug-conjugate AUC and one by time-averaged MMAE payload AUC, each with a primary-G-CSF-prophylaxis logit shift; coefficients digitised from the source figure).
+- **Example models:** `Suri_2019_brentuximab_fn_adc.R` and `Suri_2019_brentuximab_fn_mmae.R` (two separately fitted binomial logistic models for the SAME endpoint in brentuximab vedotin + AVD, one driven by time-averaged antibody-drug-conjugate AUC and one by time-averaged MMAE payload AUC, each with a primary-G-CSF-prophylaxis logit shift; coefficients digitised from the source figure); `Zhou_2022_alisertib_febrile_neutropenia.R` (alisertib in children and adolescents, linear in the average steady-state concentration `CSS_ALIS`, `logit(p) = -2.194 + 0.1364 * CSS_ALIS`, recovered from the Figure 6B vector curve).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from `prob_neutropenia` (any investigator-reported neutropenia), `prob_neutropenia_grade4` and `prob_anc_decrease` (count-threshold endpoints): febrile neutropenia requires fever and is the clinically consequential complication that G-CSF primary prophylaxis targets. A source can model it against more than one exposure metric; expose each fit as its own file rather than combining the two drivers.
 
 ### prob_neutropenia_grade4 (**canonical life-threatening-neutropenia probability output**)
@@ -2560,7 +2586,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a hyperglycemia adverse event of CTCAE grade 2 or worse, in a static landmark exposure-safety logistic model. The severity-qualified sibling of `prob_hyperglycemia`.
 - **Source aliases:** none.
-- **Example models:** `Liu_2024_saf189s_hyperglycemia_grade2.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 7.662 per e-fold; observed incidence 82 of 296 patients, 27.70%).
+- **Example models:** `Liu_2024_saf189s_hyperglycemia_grade2.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 7.662 per e-fold; observed incidence 82 of 296 patients, 27.70%), `Gupta_2022_brigatinib_hyperglycemia_grade2.R` (brigatinib; time-averaged daily AUC to the event enters linearly; 2 events in 123 patients, P = 0.192).
 - **Notes:** A probability output in `[0, 1]`. Kept as its own canonical rather than folded into `prob_hyperglycemia` for the same reason `prob_teae_grade3` is distinct from an any-grade TEAE endpoint: the grade threshold is a different endpoint fit as a separate model, and in the founding paper the exposure slope on the logit is roughly twice as steep for the graded endpoint (2.036 versus 1.259 per natural-log unit of AUC). The `_grade2` suffix means "grade 2 or worse", matching the source convention "grade >= 2"; use `_grade3` for a grade-3-or-worse threshold, as `prob_teae_grade3` does.
 
 ### prob_proteinuria (**canonical proteinuria adverse-event probability output**)
@@ -2631,7 +2657,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an intracranial objective response -- a complete or partial response of central-nervous-system lesions, scored by independent central review -- in a static landmark exposure-efficacy logistic model.
 - **Source aliases:** none.
-- **Example models:** `Chen_2021_lorlatinib_icorr.R` (binomial logistic efficacy model in the CNS-metastatic subset; no exposure term was retained, so the endpoint is driven by baseline alkaline phosphatase on the natural-log scale and baseline amylase -- founding example).
+- **Example models:** `Chen_2021_lorlatinib_icorr.R` (binomial logistic efficacy model in the CNS-metastatic subset; no exposure term was retained, so the endpoint is driven by baseline alkaline phosphatase on the natural-log scale and baseline amylase -- founding example), `Gupta_2022_brigatinib_iorr.R` (binomial logistic exposure-efficacy model for BIRC-confirmed intracranial ORR in the 42 first-line ALK-positive NSCLC patients with baseline CNS metastases; brigatinib scan-interval daily AUC enters linearly with odds ratio 1.13, p = 0.049).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Distinct from `prob_orr_central` and `prob_orr_investigator`**, which score whole-body RECIST response: intracranial response is assessed on CNS lesions only, in the subset of patients with baseline brain metastasis, and can dissociate from the systemic response for a drug selected for blood-brain-barrier penetration -- which is exactly why the founding paper models it separately. The canonical carries no commitment to which assessor scored the response; the founding model uses independent central review, and a paper reporting both central and investigator intracranial assessments should follow the `prob_orr_central` / `prob_orr_investigator` precedent and suffix accordingly.
 
 ### prob_hivrna_lt50 (**canonical HIV-1 virologic-suppression probability output**)
@@ -2920,7 +2946,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Probability (0..1) that a patient experiences stomatitis of CTCAE grade 2 or worse, in a static landmark exposure-safety logistic model. Stomatitis -- oral mucosal inflammation and ulceration -- is a characteristic antiproliferative toxicity of agents that damage the rapidly dividing basal epithelium of the oral mucosa, and is the endpoint the Zhou 2018 abstract refers to more loosely as "mucositis".
 - **Source aliases:**
   - `mucositis` -- Zhou 2018 abstract; the Results and Figure 7 consistently use "stomatitis", which is the narrower and more accurate term and is the one this canonical takes.
-- **Example models:** `Zhou_2018_alisertib_stomatitis.R` (binomial logistic exposure-safety model on the natural log of the treatment-course-averaged daily alisertib AUC, `logit(p) = -6.485 + 1.434 * log(AUC_ALIS)`, n = 593; predicted incidence 7% for Western and 13% for East Asian patients at 50 mg twice daily -- founding example).
+- **Example models:** `Zhou_2018_alisertib_stomatitis.R` (binomial logistic exposure-safety model on the natural log of the treatment-course-averaged daily alisertib AUC, `logit(p) = -6.485 + 1.434 * log(AUC_ALIS)`, n = 593; predicted incidence 7% for Western and 13% for East Asian patients at 50 mg twice daily -- founding example); `Zhou_2022_alisertib_stomatitis.R` (paediatric alisertib, linear in the average steady-state concentration `CSS_ALIS`, `logit(p) = -2.162 + 0.2238 * CSS_ALIS`, n = 146).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. In the founding paper this is the STEEPEST of three parallel exposure-safety relationships -- its log-AUC slope is roughly twice that of the neutropenia and diarrhoea endpoints -- so a rise in exposure moves the stomatitis risk proportionally much further than the other two, which is what makes it load-bearing in a regional dose-selection argument even though its absolute event rate is the lowest of the three. No ungraded `prob_stomatitis` sibling is registered yet; if a future paper fits an any-grade stomatitis endpoint it must take that name rather than overload this one. Distinct from a modelled oral-mucosal-cell ODE state in a mechanistic mucositis model: this is the probability of crossing a categorical toxicity-grade threshold, not a cell count or a lesion area.
 
 ### prob_diarrhea_grade2 (**canonical moderate-or-worse diarrhea probability output**)
@@ -3105,6 +3131,97 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none. Source papers describe it as "TEAE leading to study drug withdrawal or dose reduction" or "dose reduction or discontinuation".
 - **Example models:** `Tamai_2017_lenvatinib_teae_dosemod.R` (founding example; frequentist logistic regression in 45 subjects with advanced hepatocellular carcinoma Child-Pugh class A, window = cycle 1 of 4 weeks, `logit = -4.71 + 1.82 * AUC_LEN / 1000` with lenvatinib steady-state 24 h AUC entering linearly and uncentred, and no covariate retained).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Record the window and the action set per model** -- they are the whole definition. The action-defined endpoint is a different construct from the severity-defined `prob_teae_grade3`: it is driven by what the treating physician did, so it is sensitive to the trial's dose-modification guidance and to how much headroom the starting dose leaves, and a drug studied at its maximum tolerated dose will show a high rate of it regardless of grade distribution. That sensitivity is the point rather than a defect -- in the founding paper the endpoint exists precisely to choose a STARTING DOSE, 74% of the phase 2 cohort having required reduction from 12 mg to 8 mg. Exposure for this endpoint must be frozen at the starting dose: because the modelled event IS the first dose change, an exposure column that tracks the current dose would be contaminated by the outcome. Do not treat it as a competing risk against grade-based or preferred-term endpoints, which it overlaps.
+
+### prob_cpk_increase_grade3 (**canonical grade >= 3 creatine-phosphokinase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased blood creatine phosphokinase (CPK) under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_cpk_grade3.R` (`logit = -1.485 + 0.02106 * AUC_BRIG_EVT`, observed 32/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Increased CPK is among the most common adverse events of brigatinib; in Gupta 2022 it was not exposure-related (P = 0.255).
+
+### prob_ast_increase_grade3 (**canonical grade >= 3 aspartate-aminotransferase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased ASPARTATE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_ast_grade3.R` (`logit = -3.178 + 0.004452 * AUC_BRIG_EVT`, observed 5/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_ast_increase` (treatment-related, any grade) and of `prob_ast_increase_grade2`; the thresholds are cumulative on one ordinal scale, so the grade 3 endpoint is a subset of the grade 2 endpoint and the two must not be treated as competing risks.
+
+### prob_alt_increase_grade3 (**canonical grade >= 3 alanine-aminotransferase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased ALANINE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_alt_grade3.R` (`logit = -3.234 + 0.01397 * AUC_BRIG_EVT`, observed 6/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_alt_increase` (treatment-related, any grade) and of `prob_alt_increase_grade2`; cumulative thresholds on one ordinal scale, not competing risks.
+
+### prob_amylase_increase_grade3 (**canonical grade >= 3 amylase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased serum AMYLASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_amylase_grade3.R` (`logit = -3.029 + 0.0282 * AUC_BRIG_EVT`, observed 10/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Severity-qualified sibling of `prob_amylase_increase_grade2`; cumulative thresholds on one ordinal scale, not competing risks.
+
+### prob_lipase_increase_grade3 (**canonical grade >= 3 lipase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased serum LIPASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_lipase_grade3.R` (`logit = -2.151 + 0.02956 * AUC_BRIG_EVT`, observed 22/123), `Gupta_2022_brigatinib_lipase_grade3_d8_14.R` (`logit = -2.552 + 0.04879 * AUC_BRIG_D8_14`, observed 22/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The same endpoint is fit twice in Gupta 2022 against two different exposure metrics (time-averaged to the event, and days 8-14 of cycle 1); only the early-exposure fit is significant, so check which exposure column a model consumes before comparing slopes.
+
+### prob_aesi_grade3 (**canonical grade >= 3 adverse-event-of-interest composite probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences ANY of a sponsor-defined list of adverse events of interest at CTCAE grade >= 3, in a static landmark exposure-safety logistic model. In the founding model the list is grade >= 3 CPK, AST, ALT, amylase or lipase elevation, hyperglycemia, hypertension, bradycardia, rash and pulmonary events.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_aesi_grade3.R` (`logit = -0.175 + 0.01248 * AUC_BRIG_EVT`, observed 64/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_aesi` (any grade). Distinct from `prob_teae_grade3`, which pools ALL preferred terms: this composite is restricted to the listed events of interest. It overlaps every listed single-event endpoint, so it must not be combined with them as competing risks.
+
+### prob_hypertension_grade2 (**canonical grade >= 2 hypertension probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 hypertension adverse event under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_hypertension_grade2.R` (`logit = -0.881 + 0.003742 * AUC_BRIG_EVT`, observed 38/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. A probability of crossing a categorical toxicity threshold, not a blood-pressure value; distinct from a modelled systolic or diastolic pressure state.
+
+### prob_bradycardia_grade2 (**canonical grade >= 2 bradycardia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 bradycardia adverse event under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_bradycardia_grade2.R` (`logit = -2.807 + -0.05964 * AUC_BRIG_EVT`, observed 2/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. A probability of crossing a categorical toxicity threshold, not a heart-rate value. The founding model rests on 2 events in 123 patients, so its coefficients are poorly determined.
+
+### prob_rash_grade2 (**canonical grade >= 2 rash probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 rash adverse event under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_rash_grade2.R` (`logit = -1.987 + 0.000845 * AUC_BRIG_EVT`, observed 15/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Any rash preferred term reported at grade >= 2; not restricted to acneiform rash.
+
+### prob_ast_increase_grade2 (**canonical grade >= 2 aspartate-aminotransferase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 adverse event of increased ASPARTATE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_ast_grade2.R` (`logit = -2.568 + 0.008864 * AUC_BRIG_EVT`, observed 10/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Severity-qualified sibling of `prob_ast_increase` (treatment-related, any grade). Cumulative with `prob_ast_increase_grade3`.
+
+### prob_alt_increase_grade2 (**canonical grade >= 2 alanine-aminotransferase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 adverse event of increased ALANINE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_alt_grade2.R` (`logit = -1.559 + -0.0111 * AUC_BRIG_EVT`, observed 18/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Severity-qualified sibling of `prob_alt_increase` (treatment-related, any grade). Cumulative with `prob_alt_increase_grade3`.
+
+### prob_amylase_increase_grade2 (**canonical grade >= 2 amylase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 adverse event of increased serum AMYLASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_amylase_grade2.R` (`logit = -2.225 + 0.03922 * AUC_BRIG_EVT`, observed 24/123), `Gupta_2022_brigatinib_amylase_grade2_d8_14.R` (`logit = -2.660 + 0.05827 * AUC_BRIG_D8_14`, observed 24/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. Fit twice in Gupta 2022 against two exposure metrics (time-averaged to the event, and days 8-14 of cycle 1); only the early-exposure fit is significant. Cumulative with `prob_amylase_increase_grade3`.
+
+### prob_pulmonary_ae_grade2 (**canonical grade >= 2 pulmonary-adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a grade >= 2 pulmonary adverse event -- pneumonitis or interstitial lung disease -- under CTCAE v4.03, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Gupta_2022_brigatinib_pulmonary_grade2.R` (`logit = -4.257 + 0.01355 * AUC_BRIG_EVT`, observed 2/123).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The founding definition pools pneumonitis and interstitial lung disease (Gupta 2022 Table 3 footnote b); record the pooled terms per model. Brigatinib early-onset pulmonary events (within days of starting) are a distinct clinical syndrome that this landmark endpoint does not separate. The founding model rests on 2 events in 123 patients.
 
 ### venous (**canonical bare venous-blood compartment**)
 - **Type:** compartment
@@ -3910,6 +4027,14 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:** none.
 - **Example models:** `Ahn_2014_parathyroidHormone.R`.
 
+### serum_phosphorus (**canonical serum phosphorus PD output**)
+- **Type:** compartment
+- **Role:** Absolute serum inorganic phosphate concentration, reported clinically as elemental phosphorus (mg/dL in US-convention papers), used as a PD output. The output-name sibling of the `PHOS` covariate column in `covariate-columns.md`, and the serum-electrolyte sibling of `ca`. A change-from-baseline phosphorus endpoint is a different quantity and takes the `d_<name>` form (`d_serum_phosphorus`), not this name. Spelled out rather than the short `phos` per the 2026-10-08 maintainer ruling.
+- **Source aliases:**
+  - `E` / `EObs` -- the Phoenix NLME effect variable in Lee 2022 Supplemental Information 3 (`E = E0 + Emax * C^Gam / (EC50^Gam + C^Gam)`).
+  - `phos`, `PHOS`, `PO4`, `Pi`, `serum phosphorus` -- common clinical-laboratory and figure-axis names.
+- **Example models:** `Lee_2022_burosumab.R` (direct Emax model of absolute serum phosphorus driven by the burosumab concentration, mg/dL; founding example).
+
 ### ca_unobs (**canonical unobserved calcium pool**)
 - **Type:** compartment
 - **Role:** Unobserved calcium pool used in calcium homeostasis models.
@@ -4401,7 +4526,7 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient with plaque psoriasis achieves at least a 75% reduction from their own baseline Psoriasis Area and Severity Index (PASI75). In the founding models it is a STUDY-ARM responder proportion from a longitudinal model-based meta-analysis, `prob_pasi75 <- expit(<placebo logit> + <drug logit>)`, evaluated over time since first dose.
 - **Source aliases:** `PASI75`, `P(PASI75)`, `Pr(PASI75)`, `P_response` for the PASI75 end point.
-- **Example models:** `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R`, `He_2021_psoriasis_pasi75_mbma.R`.
+- **Example models:** `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R`, `He_2021_psoriasis_pasi75_mbma.R`, `Okubo_2021_apremilast_pasi75.R` (a PER-SUBJECT longitudinal logistic exposure-response model rather than an arm-level MBMA: the probability is evaluated from the subject's own steady-state apremilast AUC and weeks on treatment, with a placeholder residual because the source likelihood is Bernoulli).
 - **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. The threshold is part of the endpoint: PASI75, PASI90 and PASI100 are CUMULATIVE thresholds on one scale (`prob_pasi75 >= prob_pasi90`), and a source that fits them separately (He 2021) or links them through shared terms (Checchio 2017) must still expose each under its own name. It is a time-varying arm-level trajectory, not a landmark per-subject probability, and the residual of the founding models is the binomial standard error of an arm proportion scaled by `N_ARM`.
 
 ### prob_pasi90 (**canonical PASI90 responder-rate output**)
@@ -4410,6 +4535,20 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Source aliases:** `PASI90`, `P(PASI90)`, `Pr(PASI90)`.
 - **Example models:** `He_2021_psoriasis_pasi90_mbma.R` (fitted directly to PASI90 arm data), `Checchio_2017_psoriasis_pasi75_longitudinal_mbma.R` (a secondary, unfitted output that maps the PASI75 model to PASI90 with two scaling factors imported from the companion landmark model).
 - **Notes:** See `prob_pasi75`. A directly fitted PASI90 model and a PASI75 model rescaled to PASI90 are different evidence and should be distinguished in any comparison.
+
+### prob_pasi50 (**canonical PASI50 responder-rate output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with plaque psoriasis achieves at least a 50% reduction from their own baseline Psoriasis Area and Severity Index (PASI50). Laxer sibling of `prob_pasi75` on the same cumulative scale (`prob_pasi50 >= prob_pasi75`).
+- **Source aliases:** `PASI-50`, `PASI50`, `P(PASI50)`.
+- **Example models:** `Okubo_2021_apremilast_pasi50.R` (per-subject longitudinal logistic exposure-response model for apremilast: baseline intercept, placebo effect with first-order onset in weeks, Emax on the individual steady-state AUC; fitted separately from the PASI-75 model).
+- **Notes:** See `prob_pasi75`. A probability output in `[0, 1]`, not a PASI score; carries a placeholder additive residual because the source likelihood is Bernoulli.
+
+### prob_spga01 (**canonical static Physician Global Assessment 0/1 responder-probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with plaque psoriasis achieves a static Physician Global Assessment score of 0 ('clear') or 1 ('almost clear'), the usual sPGA responder definition in psoriasis trials.
+- **Source aliases:** `sPGA response`, `sPGA (0 or 1)`, `sPGA 0/1`.
+- **Example models:** `Okubo_2021_apremilast_spga.R` (per-subject longitudinal logistic exposure-response model for apremilast: placebo and drug effects each with a first-order onset in weeks, and Japanese-race multipliers on the intercept, the placebo effect and Emax).
+- **Notes:** The `01` suffix records the responder threshold (score 0 or 1); a source that defines response as sPGA 0 only, or that additionally requires a 2-point improvement from baseline, is a different endpoint and should take its own name. Distinct from the Investigator Global Assessment (IGA) outputs used in atopic dermatitis. A probability output in `[0, 1]`, not a score; carries a placeholder additive residual because the source likelihood is Bernoulli.
 
 ### prob_cdai150 (**canonical CDAI150 clinical-remission rate output**)
 - **Type:** compartment
@@ -4455,6 +4594,29 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Shulgin_2020_ici_hepatic_imae34_mbma.R` (founding example).
 - **Notes:** Subset of `prob_trae_grade34`; see that entry for the cohort-proportion reading.
 
+### prob_irae (**canonical cohort any-grade immune-related adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing an immune-related adverse event of any CTCAE grade, output by a study-level logit meta-regression. Algebraic; no ODE state.
+- **Source aliases:** `any grade irAE`, `Pr_Any grade irAE` -- Zhang 2022 (Equation 4, Table 3); `NirAE / N` in the authors' supplementary dataset.
+- **Example models:** `Zhang_2022_ici_irae_mbma.R` (founding example; immune checkpoint inhibitor MBMA in non-small cell lung cancer driven by potency-normalized anti-CTLA-4 exposure, anti-PD-L1 class, line of therapy and chemotherapy / targeted-therapy combination).
+- **Notes:** A cohort-level PROPORTION, not an individual-patient probability; see `prob_trae_grade34` for that reading. "Immune-related" is the source's attribution: a cohort contributed the rate of events reported as 'irAE', 'selected treatment-related AE' or 'AE of special interest', and the highest single potential irAE incidence when no overall rate was given, so the endpoint is narrower than all treatment-related AEs and is likely an underestimate. `prob_irae_grade3` is its grade >= 3 subset.
+
+### prob_irae_grade3 (**canonical cohort grade >= 3 immune-related adverse-event proportion output**)
+- **Type:** compartment
+- **Role:** Expected proportion (0..1) of a trial cohort experiencing an immune-related adverse event of CTCAE grade 3 or higher, output by a study-level logit meta-regression. Algebraic; no ODE state.
+- **Source aliases:** `grade >= 3 irAE`, `Pr_Grade>=3 irAE` -- Zhang 2022 (Equation 5, Table 3); `NSirAE / N` in the authors' supplementary dataset.
+- **Example models:** `Zhang_2022_ici_irae_grade3_mbma.R` (founding example).
+- **Notes:** Subset of `prob_irae`. Grade >= 3 includes grade 5, unlike the grade 3/4 `prob_trae_grade34`, and counts immune-related rather than all treatment-related events, so the two are not interchangeable even for the same regimen.
+
+---
+
+### prob_pasi75_pbo_adj, prob_pasi90_pbo_adj (**canonical placebo-adjusted PASI75 / PASI90 responder-fraction outputs**)
+- **Type:** compartment
+- **Role:** Study-arm PASI75 (or PASI90) responder fraction MINUS the placebo-arm fraction of the same trial, on a 0-1 scale, at a single landmark read-out. In the founding models it is a sigmoid Emax trend line of a dose-based or a target-engagement-based MBMA.
+- **Source aliases:** `Placebo-adjusted response (%)` -- Ayyar 2022 Figures 2 and 6 (in percent; the models divide by 100).
+- **Example models:** `Ayyar_2022_secukinumab_mbma.R`, `Ayyar_2022_ixekizumab_mbma.R` (functions of the average weekly dose `DOSE_<drug>_MGWK`), `Ayyar_2022_secukinumab_mpbpk.R`, `Ayyar_2022_ixekizumab_mpbpk.R` (functions of the running-average free skin IL-17A, meaningful at the week-12 read-out).
+- **Notes:** Not a probability: it is a DIFFERENCE of two arm proportions, so it can be slightly negative where the source's trend line extrapolates (near zero dose, or beyond the plotted exposure range), and it is not comparable with the absolute `prob_pasi75` / `prob_pasi90` outputs without adding a placebo rate. The `_pbo_adj` suffix keeps it from being read as one. Follows the `prob_<endpoint>` shape.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
@@ -4488,6 +4650,13 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Source aliases:** none.
 - **Example models:** `Chen_2021_luspatercept_bone_pain.R` (founding example; luspatercept in beta-thalassemia, window = treatment cycles 1-2; both logistic coefficients digitized from the fitted line in Figure 4B, slope -0.00219 per ug*day/mL of starting-dose AUCss -- a flat, non-significant relationship).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex`; this entry documents what the endpoint means. Any grade, so it sits at a much higher event rate than a grade >= 3 endpoint and is not a subset of `prob_teae_grade3`. The founding source also reports a separate "bone pain-like events" grouping (a broader cluster of preferred terms); that grouping is a different endpoint and must not be packaged under this name.
+
+### prob_acute_rejection (**canonical probability of acute allograft rejection before the next visit**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a kidney transplant recipient is diagnosed with acute rejection between the current study visit and the next one, in a per-visit landmark logistic model. The founding paper counted biopsy-proven (Banff 2011) cellular rejection, and attributed each event to the visit BEFORE it occurred so that the predictor is measured ahead of the event.
+- **Source aliases:** none.
+- **Example models:** `Quintairos_2021_kidneyTransplantRejection.R` (founding example; logit = -5.89 + 3.51 * `MIR155_URINE`, urinary-pellet miR155-5p relative expression; adult de novo kidney recipients, visits at week 1 and months 1, 2, 3 and 6; 8 events in 183 visit records from 58 patients).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex`; this entry documents what the endpoint means. The window is the interval to the next scheduled visit, so it is not a fixed duration: in the founding study it runs from about 3 weeks (week 1 to month 1) to 3 months (month 3 to month 6). A probability over a fixed landmark (for example "rejection by month 12") or a time-to-rejection hazard is a different quantity and needs its own name. The founding model has no drug-exposure term: tacrolimus and mycophenolic acid exposures were tested and not retained, which the authors attribute to concentration-guided dosing. Antibody-mediated rejection, or a rejection diagnosed clinically without biopsy, is a different endpoint (append a qualifier such as `_abmr` or `_clinical`).
 
 ### fpg_placebo (**canonical fasting plasma glucose placebo arm**)
 - **Type:** compartment
@@ -5184,6 +5353,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Vaddady_2024_quizartinib.R` (doi:10.1111/cts.70074); compartments `central_ac886` / `peripheral1_ac886`, observation `Cc_ac886`, parameters `lcl_ac886` / `lvc_ac886` / `lvp_ac886` / `lq_ac886` / `etalvc_ac886` / `propSd_ac886`. `Kang_2020_quizartinib.R` (doi:10.1002/jcph.1680); same compartments and observation, residual SD `expSd_ac886` (log-scale additive error).
 - **Notes:** Suffix starts with a letter but contains digits; the convention check matches on `endsWith(name, "_<metab>")` so the mixed alphanumeric form is fine.
 
+### acinh (**canonical acetylisoniazid suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Acetylisoniazid (AcINH, N-acetylisoniazid), the NAT2-catalysed acetylation product of isoniazid and its principal circulating metabolite. NAT2 acetylator status changes the fraction of isoniazid clearance that forms AcINH, so joint isoniazid + AcINH popPK models follow it as a second plasma analyte. AcINH is hydrolysed further to isonicotinic acid (`ina`-suffixed states where a model carries it) and acetylhydrazine.
+- **Source aliases:** `AcINH`, `acetyl-INH`.
+- **Example models:** `Seng_2015_isoniazid.R` (compartments `central_acinh` / `peripheral1_acinh`, observation `Cc_acinh`, residual `expSd_acinh`); `Chen_2022_isoniazid.R` and `Chen_2022_isoniazid_nat2class.R` (compartment `central_acinh` holding AcINH in umol, observation `Cc_acinh` in umol/L, parameters `lkel_acinh` / `lvc_acinh` / `etalkel_acinh` / `propSd_acinh`).
+- **Notes:** Distinct from the `inh` suffix, which names isoniazid itself as one drug of a multi-drug tuberculosis model; in a single-drug isoniazid model the parent keeps the bare canonical names (`central`, `Cc`).
+
 ### sa (**canonical salicylic-acid metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Salicylic acid (SA), the deacetylation (hydrolysis) metabolite of acetylsalicylic acid. Formed both pre-systemically in the gut wall and systemically from circulating aspirin, and it is the dominant circulating salicylate species after an oral aspirin dose. Gives `central_sa` / `peripheral1_sa` compartments, `lcl_sa` / `lvc_sa` / `lvp_sa` / `lq_sa` parameters, the `Cc_sa` observation and the `propSd_sa` residual SD.
@@ -5208,7 +5384,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** Generic M1 metabolite suffix used by parent + metabolite popPK extractions in which the source paper names the major active metabolite simply "M1" without supplying a chemical name. Each model file's `description` / `reference` text identifies the specific compound; the `m1` suffix is the shared notational token. Disambiguation by drug context: in `Lehr_2010_tesofensine.R`, M1 is the major CYP3A4-formed metabolite of tesofensine.
 - **Source aliases:** none.
-- **Example models:** `Lehr_2010_tesofensine.R` (tesofensine M1, CYP3A4-formed, in vivo five-fold lower dopamine-reuptake potency than parent per Lehr 2010 Methods reference 17), `Michalickova_2020_riociguat.R` (riociguat M1 = desmethylriociguat, the pharmacologically active N-demethylated metabolite; `central_m1`, `lcl_m1`, `propSd_m1`).
+- **Example models:** `Lehr_2010_tesofensine.R` (tesofensine M1, CYP3A4-formed, in vivo five-fold lower dopamine-reuptake potency than parent per Lehr 2010 Methods reference 17), `Michalickova_2020_riociguat.R` (riociguat M1 = desmethylriociguat, the pharmacologically active N-demethylated metabolite; `central_m1`, `lcl_m1`, `propSd_m1`), `Chauzy_2022_ceftaroline.R` (ceftaroline M-1, the microbiologically inactive open-beta-lactam-ring hydrolysis product of ceftaroline, which the paper names 'ceftaroline M-1'; `central_m1` / `peripheral1_m1` hold amount/fm with apparent /fm disposition parameters `lcl_m1`, `lvc_m1`, `lq_m1`, `lvp_m1`; here the parent is the prodrug ceftaroline fosamil in `central` and the active moiety carries the `ceftaroline` suffix).
 
 ### m2 (**canonical paper-named M2 metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -5226,9 +5402,9 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 
 ### m3 (**canonical paper-named M3 metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Generic M3 metabolite suffix used by parent + metabolite popPK extractions in which the source paper names the metabolite simply "M3". Each model file's `description` / `reference` text identifies the specific compound; the `m3` suffix is the shared notational token, disambiguated by drug context in the same way as `m1` and `m2`. Drug contexts registered so far: in `Svensson_2013_bedaquiline.R`, M3 is N,N-bis-desmethyl-bedaquiline, the downstream demethylation product of M2 (responsible enzyme(s) not identified in vitro but suspected CYP3A4-mediated demethylation by analogy with the BDQ -> M2 step); in `Kong_2025_sudapyridine.R`, M3 is WX-081-M3, the major CYP3A4-formed metabolite of the bedaquiline analogue sudapyridine (WX-081), which carries the compound's QT-prolongation liability (hERG IC50 1.89 uM) and has weaker in vitro anti-tuberculosis activity than the parent.
+- **Role:** Generic M3 metabolite suffix used by parent + metabolite popPK extractions in which the source paper names the metabolite simply "M3". Each model file's `description` / `reference` text identifies the specific compound; the `m3` suffix is the shared notational token, disambiguated by drug context in the same way as `m1` and `m2`. Drug contexts registered so far: in `Svensson_2013_bedaquiline.R`, M3 is N,N-bis-desmethyl-bedaquiline, the downstream demethylation product of M2 (responsible enzyme(s) not identified in vitro but suspected CYP3A4-mediated demethylation by analogy with the BDQ -> M2 step); in `Kong_2025_sudapyridine.R`, M3 is WX-081-M3, the major CYP3A4-formed metabolite of the bedaquiline analogue sudapyridine (WX-081), which carries the compound's QT-prolongation liability (hERG IC50 1.89 uM) and has weaker in vitro anti-tuberculosis activity than the parent. In `Leven_2020_roscovitine.R`, M3 is the carboxylic-acid metabolite of roscovitine (seliciclib), formed both pre-systemically (a saturable first-pass effect) and systemically from the parent.
 - **Source aliases:** `WX-081-M3` -- the development-code form used throughout Kong 2025.
-- **Example models:** `Svensson_2013_bedaquiline.R`, `Kong_2025_sudapyridine.R`.
+- **Example models:** `Svensson_2013_bedaquiline.R`, `Kong_2025_sudapyridine.R`, `Leven_2020_roscovitine.R`.
 - **Notes:** Distinct from `m3g` (morphine-3-glucuronide) -- the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Note that a bedaquiline `m3` and a sudapyridine `m3` never co-occur in one model file, so the shared token carries no ambiguity within a model.
 
 ### m4 (**canonical paper-named M4 metabolite suffix**)
@@ -5314,6 +5490,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Mitra_2026_ziftomenib.R` (sequential two-stage popPK; KO-516 central + one peripheral compartment; 1:1 in-vitro-anchored KO-739:KO-516 metabolic split; Table 1).
 - **Notes:** Follows the paper-named metabolite suffix convention established by `m1` / `m2` / `m3` / `m8`. Kura development-code compound designation retained instead of a chemical-name shorthand because the paper does not disclose the chemical identity of the metabolite.
+
+### msc2571109a (**canonical MSC2571109A tepotinib metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** MSC2571109A, the major circulating metabolite of the MET kinase inhibitor tepotinib (Merck KGaA development-code compound designation), discovered in the human mass balance study. Pharmacologically considered to contribute negligibly to efficacy. Carries `central_msc2571109a`, `peripheral1_msc2571109a`, the `Cc_msc2571109a` observation, `lcl_msc2571109a` / `lvc_msc2571109a` / `lq_msc2571109a` / `lvp_msc2571109a` and `propSd_msc2571109a`.
+- **Source aliases:**
+  - `met` -- Xiong 2022 subscript notation (`CLmet`, `Vc,met`, `Qmet`, `Vp,met`) in Table 3 and Figure 1.
+- **Example models:** `Xiong_2022_tepotinib.R` (doi:10.1007/s00280-022-04423-5; founding example -- sequential parent-then-metabolite popPK, two-compartment metabolite formed from tepotinib clearance with fraction metabolised fixed to 1).
+- **Notes:** Follows the paper-named development-code convention of `ko516` / `or1855`: the code is lowercased and kept whole because the paper does not disclose a chemical-name shorthand. Not a member of the generic `m<n>` family.
 
 ### endox (**canonical endoxifen suffix**)
 - **Type:** metabolite-suffix
@@ -5521,6 +5705,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** `25-DRFP` / `25DRFP` / `metabolite_M` (paper narrative in Zvada 2010 Methods and Figure 1 caption).
 - **Example models:** `Zvada_2010_rifapentine.R` (doi:10.1128/AAC.00345-10).
 
+### desethylenecip (**canonical desethylene ciprofloxacin metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desethylene ciprofloxacin (M1), an antibacterially active metabolite of ciprofloxacin formed by oxidative cleavage of the piperazine ring, which loses an ethylene (C2H2) unit and opens to a 2-aminoethylamino side chain (MW 305.30 vs 331.34 g/mol for ciprofloxacin). It is one of four main ciprofloxacin metabolites (with sulfociprofloxacin, oxociprofloxacin and formyl ciprofloxacin) and accounts for a few per cent of parent exposure. Used as the metabolite suffix on `central_desethylenecip`, `lkel_desethylenecip`, `lkmet_desethylenecip`, `Cc_desethylenecip` and `propSd_desethylenecip`.
+- **Source aliases:** `desethylene ciprofloxacin`, `M1` -- publication spellings; same species, no transformation.
+- **Example models:** `Sima_2022_ciprofloxacin.R` (doi:10.3390/pharmaceutics14081627).
+- **Notes:** Spelled out as `desethylene` rather than abbreviated to `deset` / `desethyl`: the metabolite has lost a whole ethylene bridge from the piperazine ring, which is a different transformation from the N-deethylation that `deaq` (desethylamodiaquine) names, and a `desethylcip` spelling would invite that misreading. Distinct from oxociprofloxacin and formyl ciprofloxacin, which a future extraction should register as their own suffixes rather than reuse this one.
+
 ### az5104 (**canonical AZ5104 osimertinib metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** AZ5104 (N-desmethyl osimertinib), active EGFR-inhibitor metabolite of osimertinib formed predominantly via CYP3A4/5.
@@ -5539,6 +5730,20 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** `m` prefix (`mka`, `mCL/F`, `mV1/F`, `mQ1`, `mV2/F`) and `MET*` compartment names -- Krishnatry 2021 Table 3 and Supplementary Text S2 notation.
 - **Example models:** `Krishnatry_2021_molibresib.R` (doi:10.1002/psp4.12639; formed on a 1:1 molar basis from molibresib extracted by a physiologic liver compartment whose enzyme is auto-induced; two-compartment disposition).
 - **Notes:** Development-code suffix, following the `az5104` / `ast5902` / `thrx195518` pattern. Kept as the full code rather than a chemical abbreviation such as `desethyl`, because the measured quantity is a two-species composite and a chemical name would describe only one of them.
+
+### ap32960 (**canonical AP32960 mobocertinib active-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** AP32960, the major active metabolite of mobocertinib (an irreversible EGFR exon 20 insertion tyrosine kinase inhibitor), formed by CYP3A-mediated dealkylation and roughly equipotent to the parent for EGFR inhibition. Used on the `central_ap32960` / `peripheral1_ap32960` compartments, the `fm_ap32960` formation fraction, the `lcl_ap32960` / `lvc_ap32960` / `lq_ap32960` / `lvp_ap32960` parameters, the `e_healthy_cl_ap32960` covariate effect, the `Cc_ap32960` output and the `expSd_ap32960` residual SD.
+- **Source aliases:** `M60` / `M1` in the final NONMEM control stream (`CLM60`, `VM60`, `FM60`, `QM1`, `VMP1`) -- Gupta 2022 Supporting Information.
+- **Example models:** `Gupta_2022_mobocertinib.R` (doi:10.1002/psp4.12785; formed from a fixed 62% molar fraction of mobocertinib clearance; two-compartment disposition; clearance scaled by an auto-induced enzyme pool).
+- **Notes:** Development-code suffix, following the `az5104` / `gsk3529246` pattern. The source names the metabolite only by its development code.
+
+### ap32914 (**canonical AP32914 mobocertinib active-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** AP32914, the minor active metabolite of mobocertinib, formed by CYP3A-mediated dealkylation and roughly equipotent to the parent for EGFR inhibition. Used on the `central_ap32914` compartment, the `fm_ap32914` formation fraction, the `lcl_ap32914` / `lvc_ap32914` parameters, the `e_healthy_cl_ap32914` covariate effect, the `Cc_ap32914` output and the `expSd_ap32914` residual SD.
+- **Source aliases:** `M14` / `M2` in the final NONMEM control stream (`CLM14`, `VM14`, `FM14`) -- Gupta 2022 Supporting Information.
+- **Example models:** `Gupta_2022_mobocertinib.R` (doi:10.1002/psp4.12785; formed from a fixed 8% molar fraction of mobocertinib clearance; one-compartment disposition; clearance scaled by an auto-induced enzyme pool).
+- **Notes:** Development-code suffix, following the `az5104` / `gsk3529246` pattern. The source names the metabolite only by its development code.
 
 ### ndmsel (**canonical N-desmethyl-selumetinib suffix**)
 - **Type:** metabolite-suffix
@@ -5573,6 +5778,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `M2` -- the metabolite code used in some enzalutamide regulatory documents. Do NOT map this onto the registered `m2` suffix, which is N-desmethyl-bedaquiline.
 - **Example models:** `Hadigol_2026_talazoparib_enzalutamide.R` (two-compartment metabolite formed directly into plasma with no depot; `central_ndmenz`, `peripheral1_ndmenz`, `lcl_ndmenz` / `lvc_ndmenz` / `lq_ndmenz` / `lvp_ndmenz`, `e_wt_cl_ndmenz` / `e_wt_vc_ndmenz`, `expSd_ndmenz`; doi:10.1002/jcph.70125).
 - **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib), `ndmima` (N-desmethyl-imatinib) and `ndmclb` (N-desmethylclobazam), so the suffix reads as `n-desmethyl-enz`, and pairs with the `enz` sibling-drug suffix for the parent. Unlike `ndmima` and `ndmclb`, the founding model's metabolite clearance and volume are NOT scaled by an unidentifiable fraction metabolised: Hadigol 2026 resolves the same Fmet-versus-Vcn unidentifiability the other way round, by FIXING `fm` to 0.634 from a published enzalutamide PBPK model and estimating `Vcn` freely, so `central_ndmenz` holds a true amount. Whichever way a source resolves it, only one of the pair can be estimated -- see the `fm` entry in `parameter-names.md`. Note also that in the founding model the parent itself carries a suffix (`enz`) rather than the bare canonical names, because the substrate of interest in that paper is a third drug (talazoparib); a metabolite suffix does not imply that its parent is unsuffixed.
+
+### ndmsil (**canonical N-desmethyl-sildenafil suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desmethyl sildenafil (UK-103,320), the principal circulating metabolite of the PDE5 inhibitor sildenafil, formed by CYP3A4 (about 79%) and CYP2C9 (about 20%) N-demethylation. It retains roughly 50% of the parent's in-vitro PDE5 potency, so exposure targets for sildenafil in infants are often stated as sildenafil AUC plus half the metabolite AUC.
+- **Source aliases:**
+  - `DMS` -- the abbreviation used throughout Rhee 2022 (`V_DMS/F'`, `CL_DMS/F'`).
+- **Example models:** `Rhee_2022_sildenafil.R` (one-compartment metabolite formed by complete conversion of the parent's apparent clearance; `central_ndmsil`, `lcl_ndmsil` / `lvc_ndmsil`, `e_wt_cl_ndmsil`, `etalcl_ndmsil`, `Cc_ndmsil`, `expSd_ndmsil`; doi:10.1038/s41598-022-11038-6).
+- **Notes:** Follows the `ndm<drug>` contraction of `ndmsel`, `ndmima`, `ndmclb` and `ndmenz`, so the suffix reads as `n-desmethyl-sil`. The founding model assumes every sildenafil molecule eliminated forms the metabolite, on a molar basis; the metabolite volume and clearance are apparent with respect to that assumption (the paper's `F'`), so the predicted concentration is the measured one even if the true fraction metabolised is lower.
 
 ### dfcr (**canonical 5'-DFCR capecitabine metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -5693,6 +5906,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `N-acetylsulfamethoxazole`, `NAcSMX`, `AcSMX` -- unspaced / abbreviated spellings appearing in the cotrimoxazole TDM literature and in the paper's own supplementary assay-validation section.
 - **Example models:** `Leegwater_2025_sulfamethoxazole.R` (founding example; doi:10.1002/cpt.3421 -- integrated one-compartment sulfamethoxazole plus one-compartment metabolite model in hospitalized adults, with the formation clearance fixed at 0.4 times the parent elimination clearance and opposite-signed CRRT effects on the two clearances).
 - **Notes:** The `na` + parent-stem construction follows `napa` (N-acetylprocainamide), and the `smx` stem is the sulfamethoxazole sibling-drug suffix already registered for `Boulanger_2025_trimethoprim_sulfonamides_pig.R`; a bare `smx` cannot serve the metabolite because that model already uses it for the parent drug itself. Distinct from the sulfonamide sibling-drug suffixes `sdz` (sulfadiazine) and `sdmx` (sulfadimethoxine), which are separately administered drugs rather than metabolites.
+
+### sulfolane (**canonical sulfolane (busulfan metabolite) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulfolane (tetramethylene sulfone), a downstream metabolite of busulfan formed after glutathione-S-transferase conjugation via tetrahydrothiophene and tetrahydrothiophene-1-oxide. Drives `central_sulfolane`, the `lcl_sulfolane` / `lvc_sulfolane` parameters (the metabolite's own elimination clearance and volume), the `e_<cov>_cl_sulfolane` covariate effects, the `etalcl_sulfolane` / `etalvc_sulfolane` random effects, the `propSd_sulfolane` residual SD and the `Cc_sulfolane` observable.
+- **Source aliases:**
+  - `Su` -- the subscript in Dadkhah 2022 (`CLSu`, `VSu`, `Prop. sigma Su`; Figure 1, Table 2).
+- **Example models:** `Dadkhah_2022_busulfan.R` (founding example; doi:10.3390/pharmaceutics14061145 -- one-compartment busulfan plus one-compartment sulfolane, formation as a fixed metabolic fraction 0.0704 of total busulfan clearance, in adults with myelofibrosis).
+- **Notes:** Spelled out in full because the short forms are taken: `sulf` is the registered phase-II sulphate-conjugate suffix (`Allegaert_2015_paracetamol.R`), and `su` / `sul` would read as sulfonamide or sulfate stems. Distinct from the sulfonamide sibling-drug suffixes `sdz` and `sdmx`.
 
 ### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
 - **Type:** metabolite-suffix
@@ -5940,6 +6161,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Li_2021_voriconazole.R` (founding example; doi:10.3389/fphar.2021.730826).
 - **Notes:** Parent-qualified on the `noxpeflox` precedent because the bare `noxide` is registered to roflumilast N-oxide. The parent stem `vori` is the shortest unambiguous voriconazole stem; a later hydroxy-voriconazole metabolite should follow the same shape (`ohvori`).
 
+### crizotinib (**canonical crizotinib suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Crizotinib, the ALK/ROS1/MET kinase inhibitor, when it enters a model as the active metabolite of a prodrug rather than as the dosed drug. Founding case: unecritinib (TQ-B3101), the N-acetyl amide of crizotinib, is converted to crizotinib by amide hydrolysis. Used in parent + metabolite joint popPK extractions of unecritinib.
+- **Source aliases:** `TQ-B3101M` (Yang 2021 throughout, which names the analytes only by development code; subscript `m` on the metabolite parameters, e.g. `CLm/Fm`, `Vcm/Fm`). The identity is from PubChem (unecritinib CID 71506874, synonym TQ-B3101) and from later bioanalytical work naming crizotinib as the active metabolite of unecritinib (doi:10.1016/j.jpba.2024.116199).
+- **Example models:** `Yang_2021_unecritinib.R` (founding example; `central_crizotinib` + `peripheral1_crizotinib`, `Cc_crizotinib` in crizotinib mass units via the PubChem molecular-weight ratio applied to the formation flux; Table 3).
+- **Notes:** Spelled out, following the drug-name suffixes `sunitinib` / `osimertinib` / `rosuvastatin`, because the metabolite is itself a marketed drug with an INN; the development code `TQ-B3101M` is recorded as the source alias instead. A model in which crizotinib is the DOSED drug uses the bare canonical names (`central`, `Cc`) and needs no suffix. Every clearance and volume carrying this suffix in the founding model is apparent in the compound sense `X/Fm`.
+
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
 
@@ -6185,7 +6413,15 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** S-norketamine metabolite of S-ketamine.
 - **Source aliases:** none.
-- **Example models:** `Flint_2017_s_ketamine.R`.
+- **Example models:** `Flint_2017_s_ketamine.R`, `Simons_2022_s_ketamine.R` (`central_snk` / `peripheral1_snk`, fed by the two-compartment S-ketamine metabolism delay chain `transit1_snk` / `transit2_snk`).
+
+### shnk (**canonical S-hydroxynorketamine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** S-hydroxynorketamine, the hydroxylated metabolite of S-norketamine (and so a secondary metabolite of S-ketamine). The `s` prefix follows `snk`: the enantiomer is part of the analyte's identity because the S- and R-enantiomers of ketamine and its metabolites have different kinetics.
+- **Source aliases:**
+  - `HNK`, `H` -- Simons 2022 (Figure 2 compartments `H1` / `H2`, Table 4 `VH1`, `CLH1`, 'MTT NK -> HNK').
+- **Example models:** `Simons_2022_s_ketamine.R` (`central_shnk` / `peripheral1_shnk`, fed by the two-compartment S-norketamine metabolism delay chain `transit1_shnk` / `transit2_shnk`; `Cc_shnk`, `lcl_shnk`, `lvc_shnk`, `fm_shnk`).
+- **Notes:** Simons 2022 measured total S-hydroxynorketamine without resolving the 4-, 5- and 6-hydroxy positional isomers (the assay standard is cis-6-hydroxynorketamine). A model that resolves a positional isomer should register its own suffix rather than reuse this one.
 
 ### acid (**canonical simvastatin acid suffix**)
 - **Type:** metabolite-suffix
@@ -6248,11 +6484,11 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Pei_2016_iloperidone.R`.
 
-### 5oh (**canonical 5-hydroxyomeprazole suffix**)
+### 5oh (**canonical 5-hydroxy metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** 5-hydroxyomeprazole metabolite of omeprazole.
-- **Source aliases:** none.
-- **Example models:** `Zhao_2018_omeprazole.R`.
+- **Role:** 5-hydroxy metabolite of the parent drug: 5-hydroxyomeprazole for omeprazole, 5-hydroxyflunixin for flunixin. Member of the positional-hydroxy family (`3oh` / `5oh` / `7oh` / ...); the parent drug of the model disambiguates.
+- **Source aliases:** `5OH-FLU` (Chou 2022 Table 1).
+- **Example models:** `Zhao_2018_omeprazole.R`, `Chou_2022_flunixin_cattle_pbpk.R`, `Chou_2022_flunixin_swine_pbpk.R` (5-hydroxyflunixin, the flunixin metabolite measured in plasma and edible tissues, formed mole-for-mole in the liver of a whole-body PBPK model).
 
 ### sfn (**canonical omeprazole sulfone suffix**)
 - **Type:** metabolite-suffix
@@ -6265,6 +6501,20 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Role:** Dapagliflozin 3-O-glucuronide metabolite suffix.
 - **Source aliases:** none.
 - **Example models:** `vanderWalt_2013_dapagliflozin.R`.
+
+### dxor (**canonical dextrorphan metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dextrorphan (DXO) metabolite suffix. Dextrorphan is the CYP2D6 O-demethylation product of dextromethorphan (CHEBI:29133). Used for whole-body states of the metabolite (`liver_dxor`, `venous_dxor`, `urine_dxor`, ...) and for its central-compartment concentration in compartmental models (`central_dxor`).
+- **Source aliases:**
+  - `DXO`, `dor` -- Grzegorzewski 2022 and its model archive (the archive renamed `dor` to `dxo`).
+- **Example models:** `Grzegorzewski_2022_dextromethorphan_pbpk.R` (founding example; whole-body PBPK), `TerHeine_2014_dextromethorphan.R` (`central_dxor`).
+
+### dxorgluc (**canonical dextrorphan O-glucuronide metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dextrorphan O-glucuronide (DXO-Glu) metabolite suffix, the UGT glucuronidation product of dextrorphan (CHEBI:32645). Composes `dxor` (dextrorphan) with the `gluc` glucuronide-conjugate pattern. Used for whole-body states of the glucuronide (`liver_dxorgluc`, `venous_dxorgluc`, `urine_dxorgluc`, ...).
+- **Source aliases:**
+  - `DXO-Glu`, `dor_glu` -- Grzegorzewski 2022 and its model archive (the archive renamed `dor_glu` to `dxo_glu`).
+- **Example models:** `Grzegorzewski_2022_dextromethorphan_pbpk.R` (founding example).
 
 ### su12662 (**canonical SU12662 sunitinib metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -6479,6 +6729,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** `Foster_2023_enrofloxacin_ciprofloxacin_cat.R` (founding example; enrofloxacin -> ciprofloxacin formation clearance in cats with reduced kidney function).
 - **Notes:** Spelled `cipro` rather than `cip` to stay unambiguous against the covariate register's `CONMED_CIP` and against the `ccip` bath-concentration compartment of the Rees 2018 hollow-fiber meropenem + ciprofloxacin model, which is a distinct state (a dosed medium concentration in a time-kill experiment), not a metabolite species suffix.
 
+### floa (**canonical florfenicol amine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Florfenicol amine, the major metabolite of florfenicol and its regulatory marker residue in cattle and swine edible tissues (tolerances are set on florfenicol amine). Formed mole-for-mole from florfenicol in the liver in parent + metabolite PBPK models.
+- **Source aliases:** `FLOA` (Chou 2022 Table 1), `FFA`.
+- **Example models:** `Chou_2022_florfenicol_cattle_pbpk.R`, `Chou_2022_florfenicol_swine_pbpk.R`.
+- **Notes:** Spelled `floa` after the founding paper's own abbreviation rather than the also-common `ffa`, which reads as free fatty acids.
+
 ---
 
 ## Miscellaneous metabolite suffixes
@@ -6524,8 +6781,8 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Type:** metabolite-suffix
 - **Role:** Generic metabolite suffix used by template / placeholder models that track an unnamed metabolite.
 - **Source aliases:** none.
-- **Example models:** `NA_NA_sunitinib.R`.
-- **Notes:** Documented as "the active metabolite of the parent drug" without naming a specific INN.
+- **Example models:** `NA_NA_sunitinib.R`, `Chou_2022_penicillinG_cattle_pbpk.R`, `Chou_2022_penicillinG_swine_pbpk.R` (the pooled, unnamed penicillin G metabolites of a whole-body PBPK model whose metabolite submodel only matters because its biliary excretion re-enters the gut as parent).
+- **Notes:** Documented as "the active metabolite of the parent drug" without naming a specific INN. Use it only when the source does not name the metabolite; a named metabolite takes its own suffix.
 
 ### udca (**canonical ursodeoxycholic acid suffix**)
 - **Type:** metabolite-suffix
@@ -6844,6 +7101,15 @@ L- and D-enantiomer suffixes for stereoselective popPK models that simultaneousl
 - **Example models:** `Nguyen_2025_valbenazine.R` (joint parent-metabolite popPK with the apparent central volume VC/F shared between valbenazine and the metabolite, which is the constraint that makes the fraction metabolised FM = 0.207 identifiable; CYP2D6 poor- and intermediate-metabolizer effects act on the metabolite clearance `cl_htbz`).
 - **Notes:** Direct structural analogue of `bibf` above -- both are the hydrolytic ester-cleavage metabolite of an ester prodrug, carried as the second analyte of a simultaneously fitted parent + metabolite popPK model. `htbz` names the dihydrotetrabenazine scaffold rather than the stereoisomer, because Nguyen 2025 states that `[+]-alpha-HTBZ` is the ONLY HTBZ metabolite formed from valbenazine (unlike tetrabenazine, which forms several alpha and beta dihydro isomers). A future tetrabenazine or deutetrabenazine model that must distinguish several HTBZ stereoisomers should register per-isomer siblings (e.g. `htbz_a`, `htbz_b`) rather than overload this name, following the `l` / `d` / `rac` enantiomer-suffix precedent above. Not a member of the `9oh` / `endox` / `m1` numbered- or position-named metabolite groups: those name a hydroxylation position or an ordinal, whereas `htbz` names the metabolite's own scaffold.
 
+### bms986166p (**canonical BMS-986166-P phosphorylated-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** BMS-986166-P (development code BMT-121795), the active phosphate ester formed by phosphorylation of the prodrug BMS-986166, a selective sphingosine-1-phosphate-1 receptor modulator. Used as the metabolite suffix in the joint parent + metabolite popPK model (compartments `depot_bms986166p`, `central_bms986166p`; parameters `lvmax_bms986166p`, `lkm_bms986166p`, `lvc_bms986166p`, `lka_bms986166p`, `ld1_bms986166p`, `lfdepot_bms986166p_<study>`; residual `propSd_bms986166p`; output `Cc_bms986166p`). Founding example: `Bihorel_2021_BMS986166.R`.
+- **Source aliases:**
+  - `BMS-986166-P` -- the notation used throughout Bihorel 2021.
+  - `BMT-121795` -- the analyte code used in the Bihorel 2021 bioanalytical methods.
+- **Example models:** `Bihorel_2021_BMS986166.R` (one-compartment metabolite with Michaelis-Menten elimination, fed by complete molar conversion of the parent clearance plus a zero-order virtual pre-systemic dose into `depot_bms986166p`).
+- **Notes:** The suffix keeps the parent's code with a trailing `p`, as the source paper does, so it reads as "the phosphate of BMS-986166"; the parent itself keeps the unsuffixed canonical names. The `depot_bms986166p` state is a modelling device, not a physical administration: the paper represents pre-systemic phosphorylation by a virtual BMS-986166-P dose equal to the molar BMS-986166 dose times an estimated fraction.
+
 ---
 
 ## PBPK permeability-limited tissue subcompartment suffixes (Gaohua 2023)
@@ -6942,8 +7208,8 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 - **Type:** compartment
 - **Role:** Change from baseline in seated trough systolic blood pressure (mmHg), used as the observation variable of a direct (algebraic, non-ODE) steady-state exposure-response model; the systolic sibling of `ddbp`. Negative values are blood-pressure lowering; add the subject's baseline `SBP` to recover an absolute pressure.
 - **Source aliases:** `dSeSBP`, `dSBP`, `change from baseline in SeSBP`.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (founding example).
-- **Notes:** Not an ODE state, so no `compartmentData` entry is required. As with the `dbp` / `sbp` turnover pair, systolic and diastolic responses are fitted as separate models with different retained covariate sets, so keep them as two outputs in two files rather than collapsing them into one multi-output model. Diastolic sibling: `ddbp`.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (founding example), `Liu_2022_nifedipine.R` (direct ordinary Emax on the nifedipine plasma concentration supplied as `CEFFECT`; a time course of the drug-induced change in SBP from pre-dose rather than a seated trough).
+- **Notes:** Not an ODE state, so no `compartmentData` entry is required. Used for any directly modelled drug-induced change in SBP in mmHg, whether a steady-state trough delta or a concentration-driven time course; the sign convention (negative = lowering) is the same. As with the `dbp` / `sbp` turnover pair, systolic and diastolic responses are fitted as separate models with different retained covariate sets, so keep them as two outputs in two files rather than collapsing them into one multi-output model. Diastolic sibling: `ddbp`.
 
 ## Implant-adjacent local tissue
 

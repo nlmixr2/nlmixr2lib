@@ -1,11 +1,10 @@
 Yang_2017_remifentanil <- function() {
   description <- "One-compartment population PK model for continuous intravenous remifentanil infusion in critically ill adults receiving venoarterial extracorporeal membrane oxygenation (VA-ECMO), with sex and centrifugal-pump rotational speed as covariates on clearance (Yang 2017)."
   reference <- paste(
-    "Yang S, Noh H, Hahn J, Jin BH, Min KL, Bae SK, Kim J,",
-    "Park MS, Hong T, Wi J, Chang MJ.",
-    "Population pharmacokinetics of remifentanil in critically ill patients",
-    "receiving extracorporeal membrane oxygenation.",
-    "Sci Rep 2017;7(1):16275. doi:10.1038/s41598-017-16358-6.",
+    "Yang S, Noh H, Hahn J, Jin BH, Min KL, Bae SK, Kim J, Park MS, Hong T, Wi",
+    "J, Chang MJ. Population pharmacokinetics of remifentanil in critically",
+    "ill patients receiving extracorporeal membrane oxygenation. Sci Rep.",
+    "2017;7(1):16276. doi:10.1038/s41598-017-16358-6.",
     sep = " "
   )
   vignette <- "Yang_2017_remifentanil"

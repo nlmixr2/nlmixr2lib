@@ -1,6 +1,13 @@
 Papathanasiou_2025_belantamab <- function() {
   description <- "Two-compartment population PK model for the antibody-drug conjugate (ADC) belantamab mafodotin in patients with relapsed/refractory multiple myeloma, with sigmoidal time-varying clearance and covariate effects of baseline body weight, BMI, albumin, soluble BCMA, serum IgG, race, and combination therapy (Papathanasiou 2025; ADC moiety only -- the cys-mcMMAF payload sub-model is not included; see vignette for rationale)"
-  reference <- "Papathanasiou T, Strougo A, Roy A, Vakkalagadda B, Stein A, Jewell RC, Boer J, Dahmane E. Population pharmacokinetics for belantamab mafodotin monotherapy and combination therapies in patients with relapsed/refractory multiple myeloma. Clin Pharmacokinet. 2025;64(6):925-942. doi:10.1007/s40262-025-01508-1"
+  reference <- paste(
+    "Papathanasiou T, Kaullen J, Polireddy K, Chen X, Ho YL, Taylor A,",
+    "Struemper H, Carreno F, Ferron-Brady G. Population Pharmacokinetics for",
+    "Belantamab Mafodotin Monotherapy and Combination Therapies in Patients",
+    "with Relapsed/Refractory Multiple Myeloma. Clin Pharmacokinet.",
+    "2025;64(6):925-942. doi:10.1007/s40262-025-01508-1.",
+    sep = " "
+  )
   vignette <- "Papathanasiou_2025_belantamab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

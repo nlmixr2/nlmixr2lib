@@ -1,6 +1,13 @@
 LeTilly_2021_trastuzumab <- function() {
   description <- "Two-compartment serum/CSF population PK model for trastuzumab after intrathecal and intravenous administration in adults with HER2+ breast cancer leptomeningeal metastases (Le Tilly 2021); zero-order serum-to-CSF transfer plus first-order CSF-to-serum return, with a Friberg-style chain of latent target (HER2) transit compartments and irreversible binding-driven elimination of trastuzumab in the CSF compartment."
-  reference <- "Le Tilly O, Azzopardi N, Bonneau C, Ohresser M, Ternant D, Thomas K, Olivier F, Trouillas I, Etcheverry M, Demarquay C, Garcia M, Paintaud G, Goupille O. Antigen Mass May Influence Trastuzumab Concentrations in Cerebrospinal Fluid After Intrathecal Administration. Clin Pharmacol Ther. 2021;110(1):210-219. doi:10.1002/cpt.2188"
+  reference <- paste(
+    "Le Tilly O, Azzopardi N, Bonneau C, Desvignes C, Oberkampf F, Ezzalfani",
+    "M, Ternant D, Turbiez I, Gutierrez M, Paintaud G. Antigen Mass May",
+    "Influence Trastuzumab Concentrations in Cerebrospinal Fluid After",
+    "Intrathecal Administration. Clin Pharmacol Ther. 2021;110(1):210-219.",
+    "doi:10.1002/cpt.2188.",
+    sep = " "
+  )
   vignette <- "LeTilly_2021_trastuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

@@ -15,12 +15,12 @@ Fu_2019_paclitaxel_mouse_pbpk <- function() {
     "Typical-value model; no IIV was reported."
   )
   reference <- paste(
-    "Fu Q, Sun X, Lustberg MB, Sparreboom A, Hu S. Predicting Paclitaxel",
+    "Fu Q, Sun X, Lustburg MB, Sparreboom A, Hu S. Predicting Paclitaxel",
     "Disposition in Humans With Whole-Body Physiologically-Based",
     "Pharmacokinetic Modeling. CPT Pharmacometrics Syst Pharmacol.",
-    "2019;8(12):931-939. doi:10.1002/psp4.12472.",
-    "Supplementary Table S1 (physiology) and Code S1 (Phoenix PML code for",
-    "the final PBPK model)."
+    "2019;8(12):931-939. doi:10.1002/psp4.12472. Supplementary Table S1",
+    "(physiology) and Code S1 (Phoenix PML code for the final PBPK model).",
+    sep = " "
   )
   vignette <- "Fu_2019_paclitaxel_pbpk"
   units <- list(time = "h", dosing = "ug", concentration = "ug/mL")

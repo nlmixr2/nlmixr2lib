@@ -1,6 +1,13 @@
 Said_2025_imatinib <- function() {
   description <- "Joint parent-metabolite population PK model for total imatinib (Cc), unbound imatinib (Cu), and total N-desmethyl imatinib (Cc_ndmima) in 335 pooled adults: COVID-19 ARDS patients from the InventCOVID (IV) and CounterCOVID (oral) trials plus a historical CML/GIST oncology cohort (Said 2025). Two-compartment parent disposition with first-order oral absorption and a one-compartment metabolite; saturable 1:1 molar binding of both analytes to alpha-1-acid glycoprotein solved in closed form, with the unbound fraction driving elimination, metabolite formation, and central-to-peripheral distribution. Retained covariates: COVID-19 on central volume, and IL-6R-inhibitor cotreatment on the AAG dissociation constant and on apparent metabolite clearance."
-  reference <- "Said MM, Schippers JR, Bos LDJ, Atmowihardjo L, Mathot RAA, Li Y, van der Plas MS, Aman J, Bogaard HJ, Swart EL, Bartelink IH. Disease-Drug-Drug Interaction of Imatinib in COVID-19 ARDS: A Pooled Population Pharmacokinetic Analysis. CPT Pharmacometrics Syst Pharmacol. 2025;14(3):583-595. doi:10.1002/psp4.13299"
+  reference <- paste(
+    "Said MM, Schippers JR, Atmowihardjo L, Li Y, van der Plas MS, Bogaard HJ,",
+    "Bos LDJ, Mathot RAA, Aman J, Swart EL, Bartelink IH. Disease-Drug-Drug",
+    "Interaction of Imatinib in COVID-19 ARDS: A Pooled Population",
+    "Pharmacokinetic Analysis. CPT Pharmacometrics Syst Pharmacol.",
+    "2025;14(3):583-595. doi:10.1002/psp4.13299.",
+    sep = " "
+  )
   vignette <- "Said_2025_imatinib"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 

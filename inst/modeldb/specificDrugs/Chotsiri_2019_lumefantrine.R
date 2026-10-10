@@ -36,10 +36,11 @@ Chotsiri_2019_lumefantrine <- function() {
   )
   reference <- paste(
     "Chotsiri P, Denoeud-Ndam L, Baudin E, Guindo O, Diawara H, Attaher O,",
-    "et al. (2019). Severe acute malnutrition results in lower",
-    "lumefantrine exposure in children treated with artemether-lumefantrine",
-    "for uncomplicated malaria. Clinical Pharmacology and Therapeutics",
-    "106(6):1299-1309. doi:10.1002/cpt.1531. The packaged vignette also",
+    "Smit M, Guerin PJ, Doumbo OK, Wiesner L, Barnes KI, Hoglund RM, Dicko A,",
+    "Etard JF, Tarning J. Severe Acute Malnutrition Results in Lower",
+    "Lumefantrine Exposure in Children Treated With Artemether-Lumefantrine",
+    "for Uncomplicated Malaria. Clin Pharmacol Ther. 2019;106(6):1299-1309.",
+    "doi:10.1002/cpt.1531. The packaged vignette also",
     "reproduces the dosing-regimen simulations of Simeon S, Hughes E,",
     "Wallender E, Solans BP, Savic R (2024). Optimizing lumefantrine",
     "dosing for young children in high-malaria-burden countries using",

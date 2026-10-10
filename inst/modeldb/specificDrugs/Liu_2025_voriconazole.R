@@ -1,6 +1,13 @@
 Liu_2025_voriconazole <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order absorption for intravenous and oral voriconazole in elderly Chinese inpatients aged 60 years and over (Liu 2025); apparent clearance carries median-normalized power effects of procalcitonin and total bile acids together with an exponential age effect centred at 72 years, so inflammation, cholestasis and advancing age each predict slower clearance. This is the population pharmacokinetic layer of a paper whose headline product is a machine-learning ensemble that consumes the empirical-Bayes CL/F as its most important feature."
-  reference <- "Liu R, Ma P, Chen D, Yu M, Xie L, Zhao L, Huang Y, Shang S, Chen Y. A real-time plasma concentration prediction model for voriconazole in elderly patients via machine learning combined with population pharmacokinetics. Drug Des Devel Ther. 2025;19:4021-4034. doi:10.2147/DDDT.S495050"
+  reference <- paste(
+    "Liu R, Ma P, Chen D, Yu M, Xie L, Zhao L, Huang Y, Shang S, Chen Y. A",
+    "Real-Time Plasma Concentration Prediction Model for Voriconazole in",
+    "Elderly Patients via Machine Learning Combined with Population",
+    "Pharmacokinetics. Drug Des Devel Ther. 2025;19:4021-4037.",
+    "doi:10.2147/DDDT.S495050.",
+    sep = " "
+  )
   vignette <- "Liu_2025_voriconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

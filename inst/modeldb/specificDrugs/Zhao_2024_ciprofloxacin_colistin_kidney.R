@@ -1,6 +1,24 @@
 Zhao_2024_ciprofloxacin_colistin_kidney <- function() {
   description <- "Semi-mechanistic PK/PD (QSP) model predicting Escherichia coli killing in the kidney interstitium (pyelonephritis) by intravenous ciprofloxacin and colistimethate sodium, alone and in combination. The in vitro time-kill PD model of Zhao 2024 (five pre-existing subpopulations on the 2x2 ciprofloxacin/colistin susceptible-resistant grid plus a pre-existing resting subpopulation, additive killing with EC50-shifting interaction factors) is driven by UNBOUND KIDNEY INTERSTITIAL concentrations, predicted by appending a lumped kidney tissue-plus-tubule compartment per species to two published critically-ill population PK models: a two-compartment model for ciprofloxacin (Khachman 2011) and the CMS1/CMS2 prodrug plus formed-colistin model of Kristoffersson 2020. Kidney concentrations are predicted about 10-fold (ciprofloxacin) and 150-fold (colistin) higher than plasma, so effective killing is reached at much lower doses and much higher MICs than for a bloodstream infection. Colistin EC50 is rescaled to the simulated strain MIC. Sibling models: Zhao_2024_ciprofloxacin_colistin_invitro (the underlying time-kill fit) and Zhao_2024_ciprofloxacin_colistin_plasma (the same model driven by unbound plasma concentrations)."
-  reference <- "Zhao C, Kristoffersson AN, Khan DD, Lagerback P, Lustig U, Cao S, Annerstedt C, Cars O, Andersson DI, Hughes D, Nielsen EI, Friberg LE. Quantifying combined effects of colistin and ciprofloxacin against Escherichia coli in an in silico pharmacokinetic-pharmacodynamic model. Sci Rep. 2024 May 22;14(1):11603. doi:10.1038/s41598-024-61518-0. Pharmacodynamic structure and estimates: main text Eqs 1-18 and Table 1. Population PK parameters and the plasma-driven implementation: the authors' deposited mrgsolve model, Supplementary zip, Supplementary/PKPD_CIPCST_run422b.cpp, with the strain-specific parameter sets and dosing regimens in Supplementary/MrgSolve_CIPCST_PKPD_clean_0326.Rmd. Upstream population PK sources cited by that file: Khachman D et al, J Antimicrob Chemother 2011;66:1798-1809 (ciprofloxacin) and Kristoffersson AN et al, Clin Microbiol Infect 2020;26:1644-1650 (colistimethate/colistin). Kidney interstitial concentrations follow Supplementary Methods Eqs. S1-S7. Reproduces main text Fig. 3 (kidney panels) and Fig. 5."
+  reference <- paste(
+    "Zhao C, Kristoffersson AN, Khan DD, Lagerback P, Lustig U, Cao S,",
+    "Annerstedt C, Cars O, Andersson DI, Hughes D, Nielsen EI, Friberg LE.",
+    "Quantifying combined effects of colistin and ciprofloxacin against",
+    "Escherichia coli in an in silico pharmacokinetic-pharmacodynamic model.",
+    "Sci Rep. 2024;14(1):11706. doi:10.1038/s41598-024-61518-0.",
+    "Pharmacodynamic structure and estimates: main text Eqs 1-18 and Table 1.",
+    "Population PK parameters and the plasma-driven implementation: the",
+    "authors' deposited mrgsolve model, Supplementary zip,",
+    "Supplementary/PKPD_CIPCST_run422b.cpp, with the strain-specific parameter",
+    "sets and dosing regimens in",
+    "Supplementary/MrgSolve_CIPCST_PKPD_clean_0326.Rmd. Upstream population PK",
+    "sources cited by that file: Khachman D et al, J Antimicrob Chemother",
+    "2011;66:1798-1809 (ciprofloxacin) and Kristoffersson AN et al, Clin",
+    "Microbiol Infect 2020;26:1644-1650 (colistimethate/colistin). Kidney",
+    "interstitial concentrations follow Supplementary Methods Eqs. S1-S7.",
+    "Reproduces main text Fig. 3 (kidney panels) and Fig. 5.",
+    sep = " "
+  )
   vignette <- "Zhao_2024_ciprofloxacin_colistin"
   units <- list(time = "h", dosing = "mg (ciprofloxacin) or mol (colistimethate)", concentration = "mg/L")
 

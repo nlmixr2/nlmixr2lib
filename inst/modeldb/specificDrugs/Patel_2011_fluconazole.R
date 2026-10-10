@@ -23,8 +23,9 @@ Patel_2011_fluconazole <- function() {
     "Population pharmacokinetics of fluconazole in critically ill patients",
     "receiving continuous venovenous hemodiafiltration: using Monte Carlo",
     "simulations to predict doses for specified pharmacodynamic targets.",
-    "Antimicrob Agents Chemother. 2011;55(12):5868-5874.",
-    "doi:10.1128/AAC.00424-11"
+    "Antimicrob Agents Chemother. 2011;55(12):5868-5873.",
+    "doi:10.1128/AAC.00424-11.",
+    sep = " "
   )
   vignette <- "Patel_2011_fluconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

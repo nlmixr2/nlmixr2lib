@@ -1,6 +1,13 @@
 phenylalanine_charbonneau_2021 <- function() {
   description <- "Phenylalanine model for absorption and metabolism in healthy subjects and patients with PKU"
-  reference <- "Charbonneau, M.R., Denney, W.S., Horvath, N.G. et al. Development of a mechanistic model to predict synthetic biotic activity in healthy volunteers and patients with phenylketonuria. Commun Biol 4, 898 (2021). https://doi.org/10.1038/s42003-021-02183-1"
+  reference <- paste(
+    "Charbonneau MR, Denney WS, Horvath NG, Cantarella P, Castillo MJ,",
+    "Puurunen MK, Brennan AM. Development of a mechanistic model to predict",
+    "synthetic biotic activity in healthy volunteers and patients with",
+    "phenylketonuria. Commun Biol. 2021;4(1):898.",
+    "doi:10.1038/s42003-021-02183-1.",
+    sep = " "
+  )
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE

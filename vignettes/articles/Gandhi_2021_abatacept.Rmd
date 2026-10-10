@@ -21,8 +21,8 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode2(readModelDb("Gandhi_2021_abatacept"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Gandhi_2021_abatacept"))$description`
-* Article: [J Clin Pharmacol. 2021;61(5):651-661](https://doi.org/10.1002/jcph.1781)
-  (open access via [PMC8359474](https://pmc.ncbi.nlm.nih.gov/articles/PMC8359474/))
+* Article: [J Clin Pharmacol. 2021;61(5):688-699](https://doi.org/10.1002/jcph.1797)
+  (open access via [PMC8048692](https://pmc.ncbi.nlm.nih.gov/articles/PMC8048692/))
 
 # Population
 

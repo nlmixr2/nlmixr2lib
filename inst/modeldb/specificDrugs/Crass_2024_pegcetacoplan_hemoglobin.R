@@ -1,6 +1,12 @@
 Crass_2024_pegcetacoplan_hemoglobin <- function() {
   description <- "Direct sigmoidal Emax PK/PD model relating pegcetacoplan serum concentration to hemoglobin in adults with paroxysmal nocturnal hemoglobinuria (Crass 2024). Hemoglobin is a direct (no-delay) function of the concurrent pegcetacoplan concentration, hb = rbase * (1 + emax * Cc^hill / (ec50^hill + Cc^hill)), with the pegcetacoplan concentration supplied by the companion one-compartment-plus-single-transit population PK model of the same paper, whose parameters are carried here as fixed values because the PK/PD model was fitted sequentially on individual empirical Bayes estimates of the PK parameters. The maximal proportional increase in hemoglobin carries a power effect of baseline creatinine clearance and a fractional effect of female sex; the baseline-eculizumab effect on the maximal response was fixed to zero in the source control stream. Inter-individual variability is log-normal on the hemoglobin baseline and the maximal effect (correlated block) and on EC50 (diagonal); residual error on hemoglobin is additive."
-  reference <- "Crass RL, Smith B, Adriaens S, Chapel S, Langdon G. Population Pharmacokinetic and Pharmacokinetic/Pharmacodynamic Analyses of Pegcetacoplan in Patients with Paroxysmal Nocturnal Hemoglobinuria. Drugs R D. 2024;24(4):565-577. doi:10.1007/s40268-024-00500-7"
+  reference <- paste(
+    "Crass RL, Smith B, Adriaens S, Chapel S, Langdon G. Population",
+    "Pharmacokinetic and Pharmacokinetic/Pharmacodynamic Analyses of",
+    "Pegcetacoplan in Patients with Paroxysmal Nocturnal Hemoglobinuria. Drugs",
+    "R D. 2024;24(4):563-573. doi:10.1007/s40268-024-00500-7.",
+    sep = " "
+  )
   vignette <- "Crass_2024_pegcetacoplan"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

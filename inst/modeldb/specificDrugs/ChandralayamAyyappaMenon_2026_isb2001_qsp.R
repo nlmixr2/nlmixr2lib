@@ -2,9 +2,9 @@ ChandralayamAyyappaMenon_2026_isb2001_qsp <- function() {
   description <- "QSP. Human quantitative systems pharmacology model of ISB 2001, a CD38 x BCMA x CD3 trispecific T cell engager, used to select the first-in-human dose and predict the clinical efficacy dose range in relapsed/refractory multiple myeloma (TRIgnite-1, NCT05862012). A minimal PBPK disposition model (plasma, tight tissue, lymph, leaky tissue split into bone marrow and non-marrow leaky tissue) is coupled to a full sequential target-engagement network in plasma and bone marrow: mass-action binding to CD3 on CD4+ and CD8+ T cells, membrane BCMA and CD38 on plasma cells, CD38 on monocytes/NK cells/neutrophils, and soluble BCMA and CD38, forming dimers, trimers and CD38-BCMA tetramers. The trimers and tetramers that crosslink a T cell to a tumour cell are summed as active species (ACT) and normalised per tumour cell (nACT), the exposure metric the paper used for dose prediction and clinical validation."
   reference <- paste(
     "Chandralayam Ayyappa Menon V, Matsuura T, Holkova B, Gudi GS, Drake A,",
-    "Pihlgren M, van der Graaf PH, Sunitha GN, Garton A, Perro M, Konto C, Pacaud L.",
-    "Clinical validation of a QSP model for ISB 2001, a trispecific T cell engager",
-    "to support optimal FIH study design in RRMM patients.",
+    "Pihlgren M, van der Graaf PH, Gn S, Garton A, Perro M, Konto C, Pacaud L.",
+    "Clinical Validation of a QSP Model for ISB 2001, a Trispecific T Cell",
+    "Engager to Support Optimal FIH Study Design in RRMM Patients.",
     "Clin Pharmacol Ther. 2026;120(2):452-464. doi:10.1002/cpt.70319.",
     "The minimal-PBPK backbone follows Cao & Jusko (2014) / Shah & Betts (2012)",
     "(references 15-17 of the source); the CD3-bispecific target-engagement and",

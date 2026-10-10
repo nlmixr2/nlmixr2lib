@@ -60,7 +60,7 @@ metadata (`readModelDb("Groenendaal_2007_morphine_rat_eeg")()$population`).
 Per-parameter origin is recorded as an in-file comment next to each `ini()`
 entry in `inst/modeldb/specificDrugs/Groenendaal_2007_morphine_rat_eeg.R`. The
 table below collects them in one place. "Lead" is Groenendaal 2007
-Br J Pharmacol 151(6):713-720 (doi:10.1038/sj.bjp.0707258); "Companion" is
+Br J Pharmacol 151(5):713-720 (doi:10.1038/sj.bjp.0707258); "Companion" is
 Groenendaal 2007 Br J Pharmacol 151(5):701-712 (doi:10.1038/sj.bjp.0707257).
 
 | Equation / parameter | Value | Source location |

@@ -40,13 +40,14 @@ Rietveld_2025_docetaxel <- function() {
     "carries. See the vignette Assumptions and deviations section."
   )
   reference <- paste(
-    "Rietveld PCS, Koolen SLW, Zeiser S, Rijcken CJF, van Noort M,",
-    "van Eerden RAG, Atrafi F, Miedema IHC, Menke-van der Houven van",
-    "Oordt CW, Koch BCP, Mathijssen RHJ, Snelder N, Sassen SDT.",
-    "Drug release from docetaxel-entrapped core-crosslinked polymeric",
-    "micelles: A population pharmacokinetic modelling approach based on",
-    "clinical data. Biomed Pharmacother. 2025;185:118028.",
-    "doi:10.1016/j.biopha.2025.118028."
+    "Rietveld PCS, Koolen SLW, Zeiser S, Rijcken CJF, van Noort M, van Eerden",
+    "RAG, Atrafi F, Miedema IHC, Menke-van der Houven van Oordt CW, Koch BCP,",
+    "Mathijssen RHJ,",
+    "Snelder N, Sassen SDT. Drug release from docetaxel-entrapped",
+    "core-crosslinked polymeric micelles: A population pharmacokinetic",
+    "modelling approach based on clinical data. Biomed Pharmacother.",
+    "2025;186:118028. doi:10.1016/j.biopha.2025.118028.",
+    sep = " "
   )
   vignette <- "Rietveld_2025_docetaxel"
 

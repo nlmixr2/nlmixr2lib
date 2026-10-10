@@ -9,15 +9,16 @@ Kirubakaran_2022_tacrolimus <- function() {
     "Structural PK was estimated with NONMEM PRIOR (NWPRI) support from the ",
     "published Sikma 2017 thoracic-transplant tacrolimus popPK model."
   )
-  reference <- paste0(
-    "Kirubakaran R, Uster DW, Hennig S, Carland JE, Day RO, Wicha SG, Stocker SL. ",
-    "Adaptation of a population pharmacokinetic model to inform tacrolimus therapy ",
-    "in heart transplant recipients. Br J Clin Pharmacol. 2023;89(4):1162-1175. ",
-    "doi:10.1111/bcp.15566. PK structure adapted via the NONMEM PRIOR (NWPRI) ",
-    "subroutine from Sikma MA, Hunault CC, Van Maarseveen EM, et al. High ",
-    "variability of whole-blood tacrolimus pharmacokinetics early after thoracic ",
-    "organ transplantation. Eur J Drug Metab Pharmacokinet. 2020;45(1):123-134. ",
-    "doi:10.1007/s13318-019-00591-7."
+  reference <- paste(
+    "Kirubakaran R, Uster DW, Hennig S, Carland JE, Day RO, Wicha SG, Stocker",
+    "SL. Adaptation of a population pharmacokinetic model to inform tacrolimus",
+    "therapy in heart transplant recipients. Br J Clin Pharmacol.",
+    "2023;89(3):1162-1175. doi:10.1111/bcp.15566. PK structure adapted via the",
+    "NONMEM PRIOR (NWPRI) subroutine from Sikma MA, Hunault CC, Van Maarseveen",
+    "EM, et al. High variability of whole-blood tacrolimus pharmacokinetics",
+    "early after thoracic organ transplantation. Eur J Drug Metab",
+    "Pharmacokinet. 2020;45(1):123-134. doi:10.1007/s13318-019-00591-7.",
+    sep = " "
   )
   vignette <- "Kirubakaran_2022_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")

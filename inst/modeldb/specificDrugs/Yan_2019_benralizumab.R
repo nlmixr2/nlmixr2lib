@@ -8,7 +8,7 @@ Yan_2019_benralizumab <- function() {
     "Parameter values are the 'Final updated model (Model 9)' column of Table 5,",
     "the model refitted to all nine studies after ZONDA was appended to the",
     "analysis dataset. Superseded for the Asian and paediatric populations by",
-    "Jin Y, Guiastrennec B, Stuke M, et al. Clin Pharmacokinet. 2025;64:1233-1245;",
+    "Jin Y, Guiastrennec B, Stuke M, et al. Clin Pharmacokinet. 2025;64(8):1231-1243;",
     "doi:10.1007/s40262-025-01538-9 -- see modellib('Jin_2025_benralizumab').",
     sep = " "
   )

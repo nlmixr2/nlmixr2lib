@@ -1,6 +1,13 @@
 Hwang_2023_monalizumab <- function() {
   description <- "Two-compartment population PK model for monalizumab (anti-CD94/NKG2A IgG4) in patients with advanced solid tumors or squamous cell carcinoma of the head and neck (Hwang 2023)"
-  reference <- "Hwang M, Fan C, Yue MS, Zhou D, Paturel C, Andre P, Cheng L-Y, Mitchell P, Kourtesis P, Ruscica D, Das M, Morsli N, Ren S, Gibbs M, Phipps A, Song X. Population Pharmacokinetics of Monalizumab in Patients With Advanced Solid Tumors. J Clin Pharmacol. 2023;63(7):818-829. doi:10.1002/jcph.2220"
+  reference <- paste(
+    "Hwang M, Fan C, Yue MS, Zhou D, Paturel C, Andre P, Cheng LY, Mitchell P,",
+    "Kourtesis P, Ruscica D, Das M, Morsli N, Ren S, Gibbs M, Phipps A, Song",
+    "X. Population Pharmacokinetics of Monalizumab in Patients With Advanced",
+    "Solid Tumors. J Clin Pharmacol. 2023;63(7):817-829.",
+    "doi:10.1002/jcph.2220.",
+    sep = " "
+  )
   vignette <- "Hwang_2023_monalizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

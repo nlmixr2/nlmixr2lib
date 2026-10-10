@@ -1,6 +1,12 @@
 Ahmed_2016_lorenzosOil <- function() {
   description <- "Population pharmacodynamic model of Lorenzo's oil effect on plasma C26:0 in asymptomatic boys with X-linked adrenoleukodystrophy: inhibitory fractional Emax model relating observed plasma erucic acid concentration to plasma C26:0. The paper does not develop a PK model for erucic acid; observed erucic acid plasma concentration is supplied as a time-varying covariate."
-  reference <- "Ahmed MA, Kartha RV, Brundage RC, Cloyd J, Basu C, Carlin BP, Jones RO, Moser AB, Fatemi A, Raymond GV. A model-based approach to assess the exposure-response relationship of Lorenzo's oil in adrenoleukodystrophy. Br J Clin Pharmacol. 2016 Jun;81(6):1058-1065. doi:10.1111/bcp.12897"
+  reference <- paste(
+    "Ahmed MA, Kartha RV, Brundage RC, Cloyd J, Basu C, Carlin BP, Jones RO,",
+    "Moser AB, Fatemi A, Raymond GV. A model-based approach to assess the",
+    "exposure-response relationship of Lorenzo's oil in adrenoleukodystrophy.",
+    "Br J Clin Pharmacol. 2016;81(6):1058-1066. doi:10.1111/bcp.12897.",
+    sep = " "
+  )
   vignette <- "Ahmed_2016_lorenzosOil"
   units <- list(
     time = "year",

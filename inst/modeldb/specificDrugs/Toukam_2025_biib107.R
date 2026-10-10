@@ -1,6 +1,13 @@
 Toukam_2025_biib107 <- function() {
   description <- "Two-compartment population PK model with parallel linear and Michaelis-Menten elimination, plus direct sigmoidal Emax PK/PD model of alpha-4 integrin receptor saturation, for BIIB107 (humanized aglycosyl anti-alpha-4 integrin IgG4 monoclonal antibody) in healthy adult volunteers (Toukam 2025)."
-  reference <- "Toukam M, Karimian N, Bame E, Xu Y. Dose Optimization of BIIB107, an Anti-Alpha-4 Integrin Monoclonal Antibody, Through Population Pharmacokinetic and Pharmacodynamic Modeling. J Clin Pharmacol. 2026;66(1). doi:10.1002/jcph.70109 (PMID 41014552). Study NCT04593121."
+  reference <- paste(
+    "Toukam M, Karimian N, Bame E, Xu Y. Dose Optimization of BIIB107, an",
+    "Anti-Alpha-4 Integrin Monoclonal Antibody, Through Population",
+    "Pharmacokinetic and Pharmacodynamic Modeling. J Clin Pharmacol.",
+    "2026;66(1):e70109. doi:10.1002/jcph.70109 (PMID 41014552). Study",
+    "NCT04593121.",
+    sep = " "
+  )
   vignette <- "Toukam_2025_biib107"
   units <- list(
     time = "day",

@@ -4,9 +4,10 @@ Bista_2015_fentanyl <- function() {
     "Bista SR, Haywood A, Hardy J, Norris R, Hennig S.",
     "Exposure to fentanyl after transdermal patch administration",
     "for cancer pain management.",
-    "Manuscript dated 2015 provided by the senior author (S. Hennig);",
-    "published-journal citation / DOI not on the manuscript copy used",
-    "for extraction."
+    "J Clin Pharmacol. 2016;56(6):705-713. doi:10.1002/jcph.641. Parameter",
+    "values were taken from the 2015 manuscript provided by the senior author",
+    "(S. Hennig).",
+    sep = " "
   )
   vignette <- "Bista_2015_fentanyl"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L") # Methods + Tables 1 and 3: dose in ug/h, plasma concentration in ug/L

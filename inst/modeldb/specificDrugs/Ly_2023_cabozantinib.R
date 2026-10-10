@@ -1,11 +1,10 @@
 Ly_2023_cabozantinib <- function() {
   description <- "Two-compartment population PK model for oral cabozantinib tablet (tyrosine kinase inhibitor) in healthy volunteers and patients with differentiated thyroid cancer, renal cell carcinoma, castration-resistant prostate cancer, or hepatocellular carcinoma (Ly 2023, n=1745 across the Phase 3 COSMIC-311 trial and 6 other studies). Absorption is described by two parallel processes sharing a single first-order rate constant Ka: a fraction F1 of the dose enters a depot feeding a chain of 4 transit compartments (the primary process, producing the observed peak near 3 h), and the remaining (1-F1) enters a second depot with a 19.1 h absorption lag (the delayed process, producing the second absorption phase near 24 h). Two-compartment disposition (central + peripheral1) with first-order elimination from central. Covariates are baseline body weight (power on 70 kg) on CL/F and Vc/F and female sex (fractional change) on CL/F; body weight has minimal impact on exposure but a marked impact on Vc/F. Residual error is proportional with separate magnitudes for healthy volunteers and for pooled cancer patients."
   reference <- paste(
-    "Ly NS, Li J, Faggioni R, Roskos LK, Brose MS.",
-    "Population pharmacokinetics and exposure-response analysis for the",
-    "Phase 3 COSMIC-311 trial of cabozantinib for radioiodine-refractory",
-    "differentiated thyroid cancer.",
-    "Clin Pharmacokinet. 2023;62(4):629-639.",
+    "Ly NS, Li J, Faggioni R, Roskos LK, Brose MS. Population Pharmacokinetics",
+    "and Exposure-Response Analysis for the Phase 3 COSMIC-311 Trial of",
+    "Cabozantinib for Radioiodine-Refractory Differentiated Thyroid Cancer.",
+    "Clin Pharmacokinet. 2023;62(4):587-598.",
     "doi:10.1007/s40262-023-01210-0.",
     sep = " "
   )

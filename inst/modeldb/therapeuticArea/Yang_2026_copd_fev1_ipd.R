@@ -2,10 +2,10 @@ Yang_2026_copd_fev1_ipd <- function() {
   description <- "Longitudinal individual-patient-data (IPD) disease-progression and drug-effect model of morning trough forced expiratory volume in 1 second (FEV1) in chronic obstructive pulmonary disease (COPD), fit to 2,241 patients in two 24-week randomized fluticasone furoate / vilanterol trials (NCT01053988 and NCT01054885) pooled by Yang 2026. FEV1 = baseline - linear disease progression + Emax dose-response for vilanterol and for fluticasone furoate; no placebo effect was supported. Baseline carries exponential IIV and effects of age, GOLD stage (hockey-stick with a knee at stage 3), current-smoking status and sex; the disease-progression slope and the vilanterol reference efficacy carry additive IIV and GOLD-stage effects. Residual error is a power function of the prediction with its own log-normal IIV. This is the individual-level half of the paper's combined aggregated-data + IPD (ADIPD) model -- see Yang_2026_copd_fev1_adipd_mbma for the 23-compound combined model. There is no PK layer: the drug effect is driven by the per-arm total daily dose supplied as covariate columns."
 
   reference <- paste(
-    "Yang L, Llanos-Paez C, Yang S, Ambery C, Berges A, Kjellsson MC,",
-    "Karlsson MO. A Combined Model-Based Meta-Analysis of Aggregated and",
-    "Individual FEV1 Data From Randomized COPD Trials.",
-    "CPT Pharmacometrics Syst Pharmacol. 2026;15(1):e70059.",
+    "Yang L, Llanos-Paez C, Yang S, Ambery C, Berges A, Kjellsson MC, Karlsson",
+    "MO. A Combined Model-Based Meta-Analysis of Aggregated and Individual",
+    "FEV1 Data From Randomized COPD Trials. CPT Pharmacometrics Syst",
+    "Pharmacol. 2026;15(2):e70059.",
     "doi:10.1002/psp4.70059.",
     "Final parameter estimates are in Supporting Information Table S2;",
     "the model equations are in the Supporting Information section",

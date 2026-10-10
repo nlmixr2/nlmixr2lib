@@ -34,7 +34,8 @@ Takita_2020_creatinine_bidirectionalOCT2 <- function() {
     "Run_simulation.m, Drug_info_S.mat, CKDdata.xlsx) and the Supplementary",
     "Material (PSP4-9-695-s001.docx: Eqs S1-S16, Tables S6-S8, Text S1). The",
     "healthy-subject creatinine model it extends is Scotcher D et al.",
-    "CPT Pharmacometrics Syst Pharmacol. 2020;9(5):310-321 (doi:10.1002/psp4.12509).",
+    "CPT Pharmacometrics Syst Pharmacol. 2020;9(6):310-321",
+    "(doi:10.1002/psp4.12509).",
     sep = " "
   )
   vignette <- "Takita_2020_creatinine"

@@ -1,6 +1,12 @@
 Schutte_2018_desmopressin <- function() {
   description <- "Two-compartment apparent population PK model describing the time profile of endogenous factor VIII coagulant activity (FVIII:C) following a desmopressin (DDAVP) administration in nonsevere haemophilia A patients (Schutte 2018; final covariate model with FVIII-recent on baseline FVIII, V1 and CL). Desmopressin is the administered intervention; the apparent PK parameters describe the resulting endogenous FVIII:C release as if it were a unit-dose drug input (the source paper fixed the dose to unity because no FVIII concentrate was infused)."
-  reference <- "Schutte LM, van Hest RM, Stoof SCM, Leebeek FWG, Cnossen MH, Kruip MJHA, Mathot RAA. Pharmacokinetic Modelling to Predict FVIII:C Response to Desmopressin and Its Reproducibility in Nonsevere Haemophilia A Patients. Thromb Haemost 2018;118(3):621-629. doi:10.1160/TH17-06-0390"
+  reference <- paste(
+    "Schutte LM, van Hest RM, Stoof SCM, Leebeek FWG, Cnossen MH, Kruip MJHA,",
+    "Mathot RAA. Pharmacokinetic Modelling to Predict FVIII:C Response to",
+    "Desmopressin and Its Reproducibility in Nonsevere Haemophilia A Patients.",
+    "Thromb Haemost. 2018;47(04):621-629. doi:10.1160/TH17-06-0390.",
+    sep = " "
+  )
   vignette <- "Schutte_2018_desmopressin"
   units <- list(time = "h", dosing = "unit (DDAVP-triggered FVIII release; arbitrary)", concentration = "IU/mL")
 

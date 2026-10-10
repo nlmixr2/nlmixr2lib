@@ -1,6 +1,13 @@
 Kuchimanchi_2018_evolocumab_ldlc <- function() {
   description <- "Joint population PK + static Emax-on-AUC exposure-response model for evolocumab LDL-C lowering in adults with hypercholesterolemia (Kuchimanchi 2018). The PK layer (Table 3) is the one-compartment model with parallel linear and Michaelis-Menten elimination and SC bioavailability from the companion Kuchimanchi_2018_evolocumab.R file. The PD layer (Table 4) is an algebraic Emax model linking AUC over weeks 8-12 of dosing to the mean week-10-and-12 LDL-C reduction, with statin / ezetimibe / HeFH covariate effects on baseline LDL-C, a statin covariate effect on Emax, and a regimen-effect multiplier on EC50 distinguishing once-monthly (QM) from once-every-2-weeks (Q2W) dosing. AUC of evolocumab is integrated inside an extra rxode2 state over the 56-84-day window; the LDLC observable is meaningful only at t >= 84 (vignette documents the time-window discipline)."
-  reference <- "Kuchimanchi M, Monine M, Kandadi Muralidharan K, Woodhead JL, Horner TJ. Population pharmacokinetics and exposure-response modeling and simulation for evolocumab in healthy volunteers and patients with hypercholesterolemia. J Pharmacokinet Pharmacodyn. 2019;46(2):133-148. doi:10.1007/s10928-018-9592-y"
+  reference <- paste(
+    "Kuchimanchi M, Grover A, Emery MG, Somaratne R, Wasserman SM, Gibbs JP,",
+    "Doshi S. Population pharmacokinetics and exposure-response modeling and",
+    "simulation for evolocumab in healthy volunteers and patients with",
+    "hypercholesterolemia. J Pharmacokinet Pharmacodyn. 2018;45(3):505-522.",
+    "doi:10.1007/s10928-018-9592-y.",
+    sep = " "
+  )
   vignette <- "Kuchimanchi_2018_evolocumab"
   paper_specific_compartments <- c("auc_wk8_12")
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", ldlc = "mg/dL")

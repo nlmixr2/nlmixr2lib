@@ -13,11 +13,10 @@ Niloy_2026_MTMSATrp_mouse <- function() {
     "Parameter values from Niloy 2026 Table 1 (final model)."
   )
   reference <- paste(
-    "Niloy KK, Horn J, Bhuiyan NH, Shaaban KA, Bhosale SS,",
-    "Prisinzano T, Thorson JS, Rohr J, Leggas M. (2026).",
-    "Nonlinear Mixed-Effects Modeling to Characterize the",
-    "Pharmacokinetics of a Novel Mithramycin Analogue for Ewing",
-    "Sarcoma in Mice. Research Square preprint.",
+    "Niloy KK, Horn J, Bhuiyan NH, Shaaban KA, Bhosale SS, Prisinzano T,",
+    "Thorson JS, Rohr J, Leggas M. Nonlinear Mixed-Effects Modeling to",
+    "Characterize the Pharmacokinetics of a Novel Mithramycin Analogue for",
+    "Ewing Sarcoma in Mice. Res Sq. 2026.",
     "doi:10.21203/rs.3.rs-9035594/v1.",
     sep = " "
   )

@@ -1,6 +1,13 @@
 Tiraboschi_2025_amlitelimab <- function() {
   description <- "Two-compartment population PK model for amlitelimab (anti-OX40L mAb) in adults, with parallel first-order and Michaelis-Menten (TMDD) elimination, SC absorption with lag time, allometric body-weight scaling, and SCORE_EASI / albumin covariate effects (Tiraboschi 2025)"
-  reference <- "Tiraboschi JM, Zohar S, Quartino AL, Monnier R, Coulette V, Bizot JL, Jamois C. Population Pharmacokinetic and Pharmacodynamic Modeling for the Prediction of the Extended Amlitelimab Phase 3 Dosing Regimen in Atopic Dermatitis. CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2161-2173. doi:10.1002/psp4.70121"
+  reference <- paste(
+    "Tiraboschi G, Papp K, Bieber T, Weidinger S, Beck L, Lee CH, O'Malley JT,",
+    "Yen K, Bernigaud C, Fabre D, Hurbin F. Population Pharmacokinetic and",
+    "Pharmacodynamic Modeling for the Prediction of the Extended Amlitelimab",
+    "Phase 3 Dosing Regimen in Atopic Dermatitis. CPT Pharmacometrics Syst",
+    "Pharmacol. 2025;14(12):2161-2172. doi:10.1002/psp4.70121.",
+    sep = " "
+  )
   vignette <- "Tiraboschi_2025_amlitelimab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

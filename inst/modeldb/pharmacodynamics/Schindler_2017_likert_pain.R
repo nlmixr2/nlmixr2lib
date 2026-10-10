@@ -9,7 +9,7 @@ Schindler_2017_likert_pain <- function() {
     "Plan EL, Elshoff JP, Stockis A, Sargentini-Maier ML, Karlsson MO.",
     "Likert pain score modeling: a Markov integer model and an",
     "autoregressive continuous model.",
-    "Clin Pharmacol Ther. 2012;91(4):820-828.",
+    "Clin Pharmacol Ther. 2012;91(5):820-828.",
     "doi:10.1038/clpt.2011.301. DDMODEL00000194.",
     "See modellib('Plan_2012_pain') for the count-model comparator.",
     "Sister mCTMM model files from the same paper:",

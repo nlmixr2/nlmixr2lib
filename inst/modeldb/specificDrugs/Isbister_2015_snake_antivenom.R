@@ -1,6 +1,14 @@
 Isbister_2015_snake_antivenom <- function() {
   description <- "Two-compartment population PK model for Indian polyvalent F(ab')2 snake antivenom (VINS Bioproducts Ltd) in adults with Russell's viper (Daboia russelii) envenoming (Isbister 2015): zero-order intravenous input, linear elimination from the central compartment, and a power effect of body weight on central volume. Relative bioavailability is fixed to 1 with between-subject variability estimated; that random effect absorbs the per-patient uncertainty in the delivered antivenom dose caused by variable losses during reconstitution of the freeze-dried vials. Fit in MONOLIX 4.2 (SAEM, M3 handling of below-limit-of-quantification data) to 411 quantifiable antivenom concentrations from 75 patients. The authors selected a combined (additive plus proportional) residual-error model but publish no residual-error magnitudes, so both are encoded as zero."
-  reference <- "Isbister GK, Maduwage K, Saiao A, Buckley NA, Jayamanne SF, Seyed S, et al. Population pharmacokinetics of an Indian F(ab')2 snake antivenom in patients with Russell's viper (Daboia russelii) bites. PLoS Negl Trop Dis. 2015;9(7):e0003873. doi:10.1371/journal.pntd.0003873"
+  reference <- paste(
+    "Isbister GK, Maduwage K, Saiao A, Buckley NA, Jayamanne SF, Seyed S,",
+    "Mohamed F, Chathuranga U, Mendes A, Abeysinghe C, Karunathilake H,",
+    "Gawarammana I, Lalloo DG, de Silva HJ. Population Pharmacokinetics of an",
+    "Indian F(ab')2 Snake Antivenom in Patients with Russell's Viper (Daboia",
+    "russelii) Bites. PLoS Negl Trop Dis. 2015;9(7):e0003873.",
+    "doi:10.1371/journal.pntd.0003873.",
+    sep = " "
+  )
   vignette <- "Isbister_2015_snake_antivenom"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

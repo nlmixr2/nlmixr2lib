@@ -1,6 +1,13 @@
 Tikiso_2021_abacavir <- function() {
   description <- "Two-compartment population PK model for oral abacavir in HIV-infected African children (Tikiso 2021), with a Savic 2007-style analytical transit-compartment chain feeding a first-order absorption depot, allometric body-weight scaling on disposition (0.75 on CL/Q, 1 on Vc/Vp at 70 kg), sigmoidal Hill-type maturation of CL on postmenstrual age, and multiplicative covariate effects of efavirenz co-medication on CL, rifampicin + super-boosted lopinavir/ritonavir co-medication on F, fixed-dose-combination tablet formulation on MTT, and a time-decaying malnutrition effect on F and CL."
-  reference <- "Tikiso T, McIlleron H, Burger D, Gibb D, Rabie H, Lee J, Lallemant M, Cotton MF, Archary M, Hennig S, Denti P. Abacavir pharmacokinetics in African children living with HIV: A pooled analysis describing the effects of age, malnutrition and common concomitant medications. Br J Clin Pharmacol. 2021;1-13. doi:10.1111/bcp.14984"
+  reference <- paste(
+    "Tikiso T, McIlleron H, Burger D, Gibb D, Rabie H, Lee J, Lallemant M,",
+    "Cotton MF, Archary M, Hennig S, Denti P. Abacavir pharmacokinetics in",
+    "African children living with HIV: A pooled analysis describing the",
+    "effects of age, malnutrition and common concomitant medications. Br J",
+    "Clin Pharmacol. 2022;88(2):403-415. doi:10.1111/bcp.14984.",
+    sep = " "
+  )
   vignette <- "Tikiso_2021_abacavir"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

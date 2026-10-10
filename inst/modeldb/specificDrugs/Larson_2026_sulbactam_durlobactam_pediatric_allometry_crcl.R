@@ -23,11 +23,12 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry_crcl <- function() {
   )
   reference <- paste(
     "Larson KB, O'Donnell J, Tanudra A, Cammarata AP, Rubino CM. P-444.",
-    "Population Pharmacokinetics (PPK) Analysis of Sulbactam-Durlobactam",
-    "(SUD) to Support Dose Selection for Evaluation in a Clinical Trial in",
-    "Pediatric Patients with Acinetobacter Baumannii-Calcoaceticus Complex",
-    "(ABC) Infections. Open Forum Infect Dis. 2026;13(Suppl 1):S405.",
-    "doi:10.1093/ofid/ofaf695.659. PMCID: PMC12792777.",
+    "Population Pharmacokinetics (PPK) Analysis of Sulbactam-Durlobactam (SUD)",
+    "to Support Dose Selection for Evaluation in a Clinical Trial in Pediatric",
+    "Patients with Acinetobacter Baumannii-Calcoaceticus Complex (ABC)",
+    "Infections. Open Forum Infectious Diseases.",
+    "2026;13(Supplement_1):ofaf695.659. doi:10.1093/ofid/ofaf695.659. PMCID:",
+    "PMC12792777.",
     "The model specification is taken from the corresponding IDWeek 2025",
     "poster, which carries a different author order: Cammarata A, Larson KB,",
     "Tanudra A, O'Donnell JP, Bhavnani SM, Rubino CM. 'Population",
