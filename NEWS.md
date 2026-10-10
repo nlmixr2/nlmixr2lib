@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Srimani 2022 ixazomib M-protein/PFS, platelet, diarrhea and rash models ([doi:10.1002/psp4.12815](https://doi.org/10.1002/psp4.12815)) -- adults with relapsed/refractory multiple myeloma in TOURMALINE-MM1 (ratifies the `PRIOR_IMMUNOMODULATORY_DRUG`, `TUM_CYTOGENETIC_HIGH_RISK`, `PLT_BASE` and `T_MPROTEIN_NADIR` covariate canonicals).
+- Add Liao 2022 lucitanib ([doi:10.1007/s13318-022-00773-w](https://doi.org/10.1007/s13318-022-00773-w)) -- adults with advanced cancers, mostly metastatic breast cancer.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

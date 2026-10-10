@@ -3656,6 +3656,8 @@ navbar:
         href: articles/Siebinga_2024_lu177psmaIT.html
       - text: "Lu177psmaIT pbpk (Golzaryan 2025)"
         href: articles/Golzaryan_2025_lu177psmaIT_pbpk.html
+      - text: "Lucitanib (Liao 2022)"
+        href: articles/Liao_2022_lucitanib.html
       - text: "Lumefantrine (Chotsiri 2019)"
         href: articles/Chotsiri_2019_lumefantrine.html
       - text: "Lumefantrine (Ding 2026)"
@@ -8637,6 +8639,7 @@ articles:
   - articles/Liang_2024_osimertinib
   - articles/Liang_2024_rituximab
   - articles/Liang_2026_remimazolam
+  - articles/Liao_2022_lucitanib
   - articles/LiemMoolenaar_2011_scopolamine
   - articles/Liesenfeld_2006_dabigatran
   - articles/Liesenfeld_2013_dabigatran
