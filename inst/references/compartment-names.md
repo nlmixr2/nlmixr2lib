@@ -5328,6 +5328,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Vaddady_2024_quizartinib.R` (doi:10.1111/cts.70074); compartments `central_ac886` / `peripheral1_ac886`, observation `Cc_ac886`, parameters `lcl_ac886` / `lvc_ac886` / `lvp_ac886` / `lq_ac886` / `etalvc_ac886` / `propSd_ac886`. `Kang_2020_quizartinib.R` (doi:10.1002/jcph.1680); same compartments and observation, residual SD `expSd_ac886` (log-scale additive error).
 - **Notes:** Suffix starts with a letter but contains digits; the convention check matches on `endsWith(name, "_<metab>")` so the mixed alphanumeric form is fine.
 
+### acinh (**canonical acetylisoniazid suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Acetylisoniazid (AcINH, N-acetylisoniazid), the NAT2-catalysed acetylation product of isoniazid and its principal circulating metabolite. NAT2 acetylator status changes the fraction of isoniazid clearance that forms AcINH, so joint isoniazid + AcINH popPK models follow it as a second plasma analyte. AcINH is hydrolysed further to isonicotinic acid (`ina`-suffixed states where a model carries it) and acetylhydrazine.
+- **Source aliases:** `AcINH`, `acetyl-INH`.
+- **Example models:** `Seng_2015_isoniazid.R` (compartments `central_acinh` / `peripheral1_acinh`, observation `Cc_acinh`, residual `expSd_acinh`); `Chen_2022_isoniazid.R` and `Chen_2022_isoniazid_nat2class.R` (compartment `central_acinh` holding AcINH in umol, observation `Cc_acinh` in umol/L, parameters `lkel_acinh` / `lvc_acinh` / `etalkel_acinh` / `propSd_acinh`).
+- **Notes:** Distinct from the `inh` suffix, which names isoniazid itself as one drug of a multi-drug tuberculosis model; in a single-drug isoniazid model the parent keeps the bare canonical names (`central`, `Cc`).
+
 ### sa (**canonical salicylic-acid metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Salicylic acid (SA), the deacetylation (hydrolysis) metabolite of acetylsalicylic acid. Formed both pre-systemically in the gut wall and systemically from circulating aspirin, and it is the dominant circulating salicylate species after an oral aspirin dose. Gives `central_sa` / `peripheral1_sa` compartments, `lcl_sa` / `lvc_sa` / `lvp_sa` / `lq_sa` parameters, the `Cc_sa` observation and the `propSd_sa` residual SD.
