@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Grzegorzewski 2022 dextromethorphan whole-body PBPK ([doi:10.3389/fphar.2022.1029073](https://doi.org/10.3389/fphar.2022.1029073)) -- healthy adults; CYP2D6 metabolic phenotyping via the urinary dextromethorphan/dextrorphan ratio (registers the `dxor` and `dxorgluc` metabolite suffixes).
+- Add Chen 2022 creatinine ([doi:10.1007/s00228-022-03398-9](https://doi.org/10.1007/s00228-022-03398-9)) -- healthy volunteers with and without a cooked-beef meal.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
