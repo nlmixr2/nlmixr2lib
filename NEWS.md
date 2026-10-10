@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Verscheijden 2021 morphine and morphine-6-glucuronide brain PBPK/PD ([doi:10.1371/journal.pcbi.1008786](https://doi.org/10.1371/journal.pcbi.1008786)) -- neonates, children and adults.
+- Add Mathis 2022 berotralstat ([doi:10.1111/cts.13233](https://doi.org/10.1111/cts.13233)) -- healthy adults and adults and adolescents with hereditary angioedema (ratifies the new `DOSE_BEROTRALSTAT_MG` dose-on-bioavailability covariate).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
