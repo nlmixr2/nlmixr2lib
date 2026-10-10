@@ -1053,6 +1053,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Psychedelic subjective-effect scores
+
+### psychedelicintensity (**canonical subjective psychedelic-intensity rating output compartment**)
+- **Type:** compartment
+- **Role:** Subjective intensity of the psychedelic experience, self-rated by the participant on a 0-10 numeric scale where 0 is no effect and 10 is the most intense experience imaginable, collected repeatedly (e.g. every minute) after dosing. The reading is ABSOLUTE and bounded on 0-10, so models of it are naturally written with a `logitNorm(addSd, 0, 10)` residual so that predictions stay inside the scale.
+- **Source aliases:** `subjective intensity rating`, `psychedelic intensity`, `intensity ratings` -- Eckernas 2022 paper notation.
+- **Example models:** `Eckernas_2022_dimethyltryptamine.R` (effect-compartment sigmoidal Emax model of intravenous N,N-dimethyltryptamine, zero baseline, Emax fixed to 10, residual error additive on the 0-10 logit scale).
+- **Notes:** Family-conforming member of the clinical-score PD output family (`pasi`, `cows`, `smokingurges`, `desiretousevas`), lowercase run-together. Named for the psychedelic experience rather than the bare `intensityrating`, so it is not confused with the 0-10 pain-intensity numeric rating scales used in analgesic PD models, which need their own canonical. Questionnaire-based psychedelic endpoints (e.g. the 5D-ASC or Mystical Experience Questionnaire dimensions) are multi-item instruments and are NOT covered by this name.
+
+---
+
 ## Depression-severity clinical scores
 
 ### madrsenh (**canonical MADRS enhancement-rate output compartment**)
@@ -5656,6 +5667,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `CL Sm /F` -- the Akil 2016 Table 3 parameter-symbol stem for its apparent clearance.
 - **Example models:** `Akil_2016_citalopram.R` (founding example; doi:10.1007/s10928-015-9457-6).
 - **Notes:** Companion to `dcit_r_enant`; see that entry for why the enantiomer label is folded into a single composite token.
+
+### iaa (**canonical indole-3-acetic acid suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Indole-3-acetic acid (IAA), the major MAO-A-formed metabolite of N,N-dimethyltryptamine (DMT). IAA is also present endogenously at high levels, so it is typically assayed and modelled as the increment over baseline.
+- **Source aliases:** `IAA`, `CL(m)`, `V(m)` -- Eckernas 2022 paper notation.
+- **Example models:** `Eckernas_2022_dimethyltryptamine.R` (one-compartment IAA formed at the DMT elimination rate with metabolic fraction fixed to 1; `central_iaa`, `lcl_iaa`, `lvc_iaa`, `Cc_iaa`, `propSd_iaa`).
+- **Notes:** Token is the paper's own abbreviation, following the `sn38` / `m6g` precedent of abbreviated metabolite suffixes.
 
 ### noxide (**canonical roflumilast N-oxide suffix**)
 - **Type:** metabolite-suffix

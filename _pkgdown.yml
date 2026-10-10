@@ -1692,6 +1692,8 @@ navbar:
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Dilmapimod (Yang 2016)"
         href: articles/Yang_2016_dilmapimod.html
+      - text: "Dimethyltryptamine (Eckernas 2022)"
+        href: articles/Eckernas_2022_dimethyltryptamine.html
       - text: "Dimethyltryptamine LZc (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine alphaPower (Eckernas 2023)"
@@ -7545,6 +7547,7 @@ articles:
   - articles/Eaton_2025_dabigatran_sheep
   - articles/Ebihara_2025_tebipenem
   - articles/Echterhof_2026_phage_pbpk
+  - articles/Eckernas_2022_dimethyltryptamine
   - articles/Eckernas_2023_dimethyltryptamine_EEG
   - articles/Edrich_2015_heparin
   - articles/Edstein_2001_tafenoquine
