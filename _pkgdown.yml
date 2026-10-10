@@ -4068,6 +4068,8 @@ navbar:
         href: articles/Suzuki_2024_mycophenolic_acid.html
       - text: "Mycophenolic acid (Wang 2021)"
         href: articles/Wang_2021_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Wei 2022)"
+        href: articles/Wei_2022_mycophenolic_acid.html
       - text: "Mycophenolic acid (Ye 2025)"
         href: articles/Ye_2025_mycophenolic_acid.html
       - text: "Mycophenolic acid (Yu 2017)"
@@ -9257,6 +9259,7 @@ articles:
   - articles/Weatherley_2018_fosdagrocorat
   - articles/Weber_1993_remikiren
   - articles/Weber_2015_fluticasone_inhaled
+  - articles/Wei_2022_mycophenolic_acid
   - articles/Wei_2025_methotrexate
   - articles/Wei_2026_enrofloxacin_cefquinome
   - articles/Wen_2016_enrofloxacin_Pmultocida
