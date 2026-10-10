@@ -4548,6 +4548,8 @@ navbar:
         href: articles/Bajaj_2017_nivolumab.html
       - text: "Nivolumab (Hu 2024)"
         href: articles/Hu_2024_nivolumab_ipilimumab_pediatric.html
+      - text: "Nivolumab (Tohi 2023)"
+        href: articles/Tohi_2023_nivolumab.html
       - text: "Nivolumab (Zhang 2019)"
         href: articles/Zhang_2019_nivolumab.html
       - text: "Nivolumab (Zhang 2019b)"
@@ -9624,6 +9626,7 @@ articles:
   - articles/Tod_1998_amikacin
   - articles/Toffoli_2001_etoposide
   - articles/Togawa_2016_bilastine
+  - articles/Tohi_2023_nivolumab
   - articles/Tomita_2022_imeglimin
   - articles/Tong_2026_vancomycin
   - articles/Tornoe_2006_HPG_axis
