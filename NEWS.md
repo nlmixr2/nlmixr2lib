@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ji 2022 pemigatinib ([doi:10.1002/cpdd.1038](https://doi.org/10.1002/cpdd.1038)) -- adults with advanced malignancies including cholangiocarcinoma.
+- Add Ohk 2022 sumatriptan ([doi:10.1002/bdd.2307](https://doi.org/10.1002/bdd.2307)) -- healthy Korean adult males and females.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
