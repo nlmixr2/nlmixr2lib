@@ -6078,6 +6078,8 @@ navbar:
         href: articles/Nie_2025_sufentanil.html
       - text: "Sufentanil pbpk (Han 2025)"
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
+      - text: "Sugammadex rocuronium (Grzeskowiak 2023)"
+        href: articles/Grzeskowiak_2023_sugammadex_rocuronium.html
       - text: "Sugammadex rocuronium (Kleijn 2011)"
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
@@ -8196,6 +8198,7 @@ articles:
   - articles/Grover_2011_tacrolimus
   - articles/Grzegorzewski_2022_dextromethorphan_pbpk
   - articles/Grzesk_2016_m3M3FBS
+  - articles/Grzeskowiak_2023_sugammadex_rocuronium
   - articles/Gu_2025_heart_failure_pbpk
   - articles/Gu_2025_rivaroxaban
   - articles/Guan_2021_yimitasvir
