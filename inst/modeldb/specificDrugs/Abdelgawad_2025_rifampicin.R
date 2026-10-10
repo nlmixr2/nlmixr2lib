@@ -32,17 +32,16 @@ Abdelgawad_2025_rifampicin <- function() {
     "plasma (25.2%, 0.0234 mg/L) and CSF (98.4%, 0.0231 mg/L)."
   )
   reference <- paste(
-    "Abdelgawad N, Wasserman S, Gausi K, Davis A, Stek C, Wiesner L,",
-    "Meintjes G, Wilkinson RJ, Denti P (2025).",
-    "Population Pharmacokinetics of Rifampicin in Plasma and Cerebrospinal",
-    "Fluid in Adults With Tuberculosis Meningitis.",
-    "J Infect Dis 232(4):e234-e241. doi:10.1093/infdis/jiaf178.",
+    "Abdelgawad N, Wasserman S, Gausi K, Davis A, Stek C, Wiesner L, Meintjes",
+    "G, Wilkinson RJ, Denti P. Population Pharmacokinetics of Rifampicin in",
+    "Plasma and Cerebrospinal Fluid in Adults With Tuberculosis Meningitis. J",
+    "Infect Dis. 2025;232(2):jiaf178. doi:10.1093/infdis/jiaf178.",
     "Parameter estimates from Table 2; model equations from the Figure 1",
     "caption and from the NONMEM control stream reproduced verbatim in the",
     "supplementary material.",
     "The saturable-hepatic-extraction structure was adapted from",
     "Chirehwa et al. (2016) Antimicrob Agents Chemother 60(1):487-494",
-    "doi:10.1128/AAC.01084-15, which also supplied the informative prior on",
+    "doi:10.1128/AAC.01830-15, which also supplied the informative prior on",
     "the Michaelis-Menten constant.",
     "The CSF effect compartment follows Sheiner et al. (1979)",
     "Clin Pharmacol Ther 25(3):358-371 and Savic et al. (2015)",

@@ -27,7 +27,11 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Goel V, Hurh E, Stein A, et al. Population pharmacokinetics of sonidegib (LDE225), an oral inhibitor of hedgehog pathway signaling, in healthy subjects and in patients with advanced solid tumors. Cancer Chemother Pharmacol. 2016;77(4):745-755.
+* Citation: Goel V, Hurh E, Stein A, Nedelman J, Zhou J, Chiparus O, Huang PH,
+  Gogov S, Sellami D. Population pharmacokinetics of sonidegib (LDE225), an oral
+  inhibitor of hedgehog pathway signaling, in healthy subjects and in patients
+  with advanced solid tumors. Cancer Chemother Pharmacol. 2016;77(4):745-755.
+  doi:10.1007/s00280-016-2982-1.
 * DOI: <https://doi.org/10.1007/s00280-016-2982-1>
 * Article: <https://link.springer.com/article/10.1007/s00280-016-2982-1>
 

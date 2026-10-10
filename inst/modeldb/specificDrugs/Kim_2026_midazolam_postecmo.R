@@ -14,11 +14,10 @@ Kim_2026_midazolam_postecmo <- function() {
     "modellib('Kim_2026_midazolam_ecmo'); the two were fit independently."
   )
   reference <- paste(
-    "Kim H, Jin BH, Yang S, Hahn J, Kang S, Kim D, Lee H, Kwack H,",
-    "Chae SU, Bae SK, Wi J, Chang MJ.",
-    "Effect of extracorporeal membrane oxygenation flow rate on",
-    "midazolam clearance: a population pharmacokinetic study.",
-    "Anesthesiology. 2026;144(3):485-488.",
+    "Kim H, Jin BH, Yang S, Hahn J, Kang S, Kim D, Lee H, Kwack H, Chae SU,",
+    "Bae SK, Wi J, Chang MJ. Effect of Extracorporeal Membrane Oxygenation",
+    "Flow Rate on Midazolam Clearance: A Population Pharmacokinetic Study.",
+    "Anesthesiology. 2026;144(2):485-488.",
     "doi:10.1097/ALN.0000000000005811.",
     sep = " "
   )

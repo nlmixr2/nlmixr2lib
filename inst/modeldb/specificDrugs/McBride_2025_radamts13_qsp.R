@@ -1,6 +1,13 @@
 McBride_2025_radamts13_qsp <- function() {
   description <- "QSP. Mechanistic ADAMTS13-VWF-platelet model for congenital thrombotic thrombocytopenic purpura (cTTP), driven by a two-compartment PK model of recombinant ADAMTS13 (rADAMTS13, TAK-755). Mass-action binding of elongated (active) and globular VWF to ADAMTS13, rADAMTS13, extracellular hemoglobin and thrombospondin-1; VWF-platelet binding, platelet aggregate formation and ADAMTS13-mediated aggregate lysis; constant platelet synthesis with first-order loss. 26 ODEs. Predicts platelet count, ADAMTS13 activity and active-VWF fraction, and was used for the virtual clinical trial simulations submitted to FDA supporting the cTTP approval (McBride 2025 CPT Pharmacometrics Syst Pharmacol)."
-  reference <- "McBride C, Jiang J, Zhang Z, Tolsma J, Patwari P, Mellgard B, Vakilynejad M, Bhattacharya I, Zhu AZX. Quantitative Systems Pharmacology Modeling of Platelet Responses to Recombinant ADAMTS13 in Patients With Congenital Thrombotic Thrombocytopenic Purpura. CPT Pharmacometrics Syst Pharmacol. 2025;14(9):1575-1585. doi:10.1002/psp4.70063"
+  reference <- paste(
+    "McBride C, Jiang J, Zhang Z, Tolsma J, Patwari P, Mellgard B, Vakilynejad",
+    "M, Bhattacharya I, Zhu AZX. Quantitative Systems Pharmacology Modeling of",
+    "Platelet Responses to Recombinant ADAMTS13 in Patients With Congenital",
+    "Thrombotic Thrombocytopenic Purpura. CPT Pharmacometrics Syst Pharmacol.",
+    "2025;14(10):1575-1586. doi:10.1002/psp4.70063.",
+    sep = " "
+  )
   vignette <- "McBride_2025_radamts13_qsp"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

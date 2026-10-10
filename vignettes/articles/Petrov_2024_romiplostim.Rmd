@@ -41,7 +41,7 @@ of the romiplostim-ref pivotal trial (Kuter 2008, reference 13).
   [Clin Pharmacol Drug Dev 14(2):116–126](https://doi.org/10.1002/cpdd.1494)
   (PMID 39702972).
 * PK/PD backbone (healthy volunteers): Makarenko 2024,
-  [Clin Pharmacol Drug Dev](https://doi.org/10.1002/cpdd.1367)
+  [Clin Pharmacol Drug Dev 13(4):419-431](https://doi.org/10.1002/cpdd.1367)
   (PMID 38168134).
 
 ```{r citation}

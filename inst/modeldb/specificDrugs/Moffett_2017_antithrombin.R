@@ -10,10 +10,9 @@ Moffett_2017_antithrombin <- function() {
     "baseline (Dansirikul B3 handling of endogenous baseline)."
   )
   reference <- paste(
-    "Moffett BS, Diaz R, Galati M, Mahoney D, Teruya J, Yee DL.",
-    "Population pharmacokinetics of human antithrombin concentrate in",
-    "paediatric patients.",
-    "Br J Clin Pharmacol. 2017 Nov;83(11):2450-2456.",
+    "Moffett BS, Diaz R, Galati M, Mahoney D, Teruya J, Yee DL. Population",
+    "pharmacokinetics of human antithrombin concentrate in paediatric",
+    "patients. Br J Clin Pharmacol. 2017;83(11):2450-2457.",
     "doi:10.1111/bcp.13359.",
     sep = " "
   )

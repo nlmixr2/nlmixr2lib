@@ -19,7 +19,12 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Bellon A, Fuseau E, Roumanie O, Stevens W, Henriet C, Dahmane A, Lamazure J, Barthez-Toullec M, Golly D, Bridey F (2020). Population pharmacokinetics of a triple-secured fibrinogen concentrate administered to afibrinogenaemic patients: Observed age- and body weight-related differences and consequences for dose adjustment in children. British Journal of Clinical Pharmacology 86(2):329-337. doi:10.1111/bcp.14147.
+* Citation: Bellon A, Fuseau E, Roumanie O, Lamazure J, Stevens W, Dahmane A,
+  Barthez-Toullec M, Golly D, Henriet C, Bridey F. Population pharmacokinetics
+  of a triple-secured fibrinogen concentrate administered to afibrinogenaemic
+  patients: Observed age- and body weight-related differences and consequences
+  for dose adjustment in children. Br J Clin Pharmacol. 2020;86(2):329-337.
+  doi:10.1111/bcp.14147.
 * Article: <https://doi.org/10.1111/bcp.14147>
 
 The model describes plasma fibrinogen activity (Clauss assay) after a single intravenous infusion of a triple-secured human plasma fibrinogen concentrate (CLOTTAFACT, also marketed as FibCLOT; LFB, France). It is a one-compartment model with first-order elimination and estimated allometric body-weight exponents on clearance (0.556) and volume (0.808). Body weight enters **without centring**, so the typical values in `ini()` are those of a 1 kg patient: CL (L/h) = 0.00288 * WT^0.556 and V (L) = 0.0960 * WT^0.808. Log-normal inter-individual variability is estimated on CL and V (no covariance) with a single proportional residual error. Age and sex were screened and not retained.

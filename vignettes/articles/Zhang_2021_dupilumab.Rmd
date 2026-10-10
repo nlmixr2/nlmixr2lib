@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode2(readModelDb("Zhang_2021_dupilumab"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Zhang_2021_dupilumab"))$description`
-* Article: [CPT Pharmacometrics Syst Pharmacol. 2021;10(9):941-952](https://doi.org/10.1002/psp4.12667) (open access)
+* Article: [CPT Pharmacometrics Syst Pharmacol. 2021;10(8):941-952](https://doi.org/10.1002/psp4.12667) (open access)
 
 # Population
 

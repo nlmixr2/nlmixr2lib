@@ -29,12 +29,10 @@ Hong_2013_glucose_insulin_MTT <- function() {
     "homeostasis model in DIS_DIAB under MTT conditions."
   )
   reference <- paste(
-    "Hong Y, Dingemanse J, Sidharta P, Mager DE (2013).",
-    "Population Pharmacodynamic Modeling of Hyperglycemic Clamp and Meal",
-    "Tolerance Tests in Patients with Type 2 Diabetes Mellitus.",
-    "The AAPS Journal 15(4):1051-1063.",
-    "doi:10.1208/s12248-013-9512-4.",
-    "PMID 23913136; PMCID PMC3787234.",
+    "Hong Y, Dingemanse J, Sidharta P, Mager DE. Population pharmacodynamic",
+    "modeling of hyperglycemic clamp and meal tolerance tests in patients with",
+    "type 2 diabetes mellitus. AAPS J. 2013;15(4):1051-1063.",
+    "doi:10.1208/s12248-013-9512-4. PMID 23904152; PMCID PMC3787242.",
     sep = " "
   )
   vignette <- "Hong_2013_glucose_insulin"

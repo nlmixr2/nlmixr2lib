@@ -1,17 +1,17 @@
 Lane_2011_warfarin_r <- function() {
   description <- "R-warfarin population PK (1-compartment, first-order absorption) in adults on long-term warfarin therapy (Lane 2011). Bodyweight, age, CYP2C19 rs3814637 genotype, and CYP3A4 rs2242480 (CYP3A4*1G) genotype influence apparent clearance; volume of distribution carries no covariates. Block correlation between random effects on CL and V. S-warfarin is reported separately in the same paper (modellib('Lane_2011_warfarin_s'))."
   reference <- paste(
-    "Lane S, Al-Zubiedi S, Hatch E, Matthews I, Jorgensen AL, Deloukas P, Daly AK,",
-    "Park BK, Aarons L, Ogungbenro K, Kamali F, Hughes D, Pirmohamed M.",
-    "The population pharmacokinetics of R- and S-warfarin: effect of genetic and",
-    "clinical factors.",
-    "Br J Clin Pharmacol. 2012;73(1):66-76.",
-    "doi:10.1111/j.1365-2125.2011.04051.x.",
-    "PMID: 21692829.",
-    "PK parameters and weight / age / CYP2C19 (rs3814637) / CYP3A4 (rs2242480)",
-    "effects from Table 3 (final covariate model); structural-equation form",
-    "(CL_i = theta_CL * (WT/70)^theta_wgt * (1 + theta_age*(AGE-69.8)) * theta_CYP2C19",
-    "* theta_CYP3A4 * exp(eta_CL)) from the Results paragraph following Tables 2 and 3."
+    "Lane S, Al-Zubiedi S, Hatch E, Matthews I, Jorgensen AL, Deloukas P, Daly",
+    "AK, Park BK, Aarons L, Ogungbenro K, Kamali F, Hughes D, Pirmohamed M.",
+    "The population pharmacokinetics of R- and S-warfarin: effect of genetic",
+    "and clinical factors. Br J Clin Pharmacol. 2012;73(1):66-76.",
+    "doi:10.1111/j.1365-2125.2011.04051.x. PMID: 21692828. PK parameters and",
+    "weight / age / CYP2C19 (rs3814637) / CYP3A4 (rs2242480) effects from",
+    "Table 3 (final covariate model); structural-equation form (CL_i =",
+    "theta_CL * (WT/70)^theta_wgt * (1 + theta_age*(AGE-69.8)) * theta_CYP2C19",
+    "* theta_CYP3A4 * exp(eta_CL)) from the Results paragraph following Tables",
+    "2 and 3.",
+    sep = " "
   )
   vignette <- "Lane_2011_warfarin"
 
@@ -155,14 +155,21 @@ Lane_2011_warfarin_r <- function() {
 
     # ============================================================
     # IIV: block correlation between random effects on log(CL) and log(V)
-    #   omega^2 on log scale: omega2 = log(1 + CV^2)
-    #     CV(CL) = 43.0% -> omega2_cl = log(1 + 0.430^2) = 0.16975
-    #     CV(V)  = 38.3% -> omega2_v  = log(1 + 0.383^2) = 0.13692
+    #   Table 2/3 footnote: IIV is "expressed as an approximate coefficient
+    #   of variation (square root of the variance)", so the printed % is
+    #   omega x 100 and omega2 = (CV/100)^2. The Wald 95% CIs agree: on the
+    #   widest rows the squared CI midpoint lies inside the rounding interval
+    #   of (CV/100)^2 and outside that of log(1 + CV^2) (S final V 35.8%
+    #   (18.0, 47.3%): -0.1% vs -3.1%; R final V 38.3% (20.2, 50.3%): +0.2%
+    #   vs -3.0%; S base V 38.6% (5.46, 54.3%): -0.1% vs -5.9%).
+    #   Before 2026-10 this file used log(1 + CV^2); see the vignette Errata.
+    #     CV(CL) = 43.0% -> omega2_cl = 0.430^2 = 0.184900
+    #     CV(V)  = 38.3% -> omega2_v  = 0.383^2 = 0.146689
     #   Correlation(CL,V) = 0.352 (Lane 2011 Table 3 footnote: "Covariance is expressed as a correlation coefficient")
-    #     cov_cl_v = 0.352 * sqrt(0.16975 * 0.13692) = 0.053666
+    #     cov_cl_v = 0.352 * 0.430 * 0.383 = 0.057971
     # ============================================================
-    etalcl + etalvc ~ c(0.16975,
-                        0.053666, 0.13692)                                                                # Lane 2011 Table 3 (IIV CL 43.0%, IIV V 38.3%, correlation 0.352)
+    etalcl + etalvc ~ c(0.184900,
+                        0.057971, 0.146689)                                                                # Lane 2011 Table 3 (IIV CL 43.0%, IIV V 38.3%, correlation 0.352)
 
     # ============================================================
     # Residual error

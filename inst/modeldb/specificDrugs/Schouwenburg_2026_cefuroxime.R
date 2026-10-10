@@ -15,15 +15,16 @@ Schouwenburg_2026_cefuroxime <- function() {
     "(Schouwenburg 2026)."
   )
   reference <- paste(
-    "Schouwenburg S, Preijers T, Wosten-van Asperen RM, Hartman SJF,",
-    "de Wildt SN, de Hoog M, Koch BCP, Abdulla A, Wildschut ED. Low Target",
-    "Attainment of Intravenous Cefuroxime in Critically Ill Term Neonates",
-    "and Children: A Pooled Population Pharmacokinetics Study.",
-    "Clin Pharmacokinet. 2026;65(1):95-105. doi:10.1007/s40262-025-01577-2.",
-    "Open-access supplement (Online Resource 1) retrieved from EuropePMC",
-    "PMC12783212 and used for the model-development narrative, the assay",
-    "limits, and the Table S1/S2 target-attainment values reproduced in",
-    "the validation vignette."
+    "Schouwenburg S, Preijers T, Wosten-van Asperen RM, Hartman SJF, de Wildt",
+    "SN, de",
+    "Hoog M, Koch BCP, Abdulla A, Wildschut ED. Low Target Attainment of",
+    "Intravenous Cefuroxime in Critically Ill Term Neonates and Children: A",
+    "Pooled Population Pharmacokinetics Study. Clin Pharmacokinet.",
+    "2026;65(1):97-108. doi:10.1007/s40262-025-01577-2. Open-access supplement",
+    "(Online Resource 1) retrieved from EuropePMC PMC12783212 and used for the",
+    "model-development narrative, the assay limits, and the Table S1/S2",
+    "target-attainment values reproduced in the validation vignette.",
+    sep = " "
   )
   vignette <- "Schouwenburg_2026_cefuroxime"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

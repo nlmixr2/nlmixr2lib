@@ -1,10 +1,10 @@
 Sexton_2024_lanadelumab_qsp <- function() {
   description <- "QSP. Sexton 2024 plasma kallikrein-kinin system (KKS) model of hereditary angioedema (HAE) due to C1-inhibitor deficiency: 61 ODE states spanning a vascular (plasma) space, an endothelial-cell proximal space and a gC1q-R / bradykinin-B2 receptor surface, coupled to a one-compartment subcutaneous popPK for lanadelumab. HAE attacks are driven by a transient fold-increase in the FXII autoactivation rate delivered as a dose into the 'trigger' compartment; an attack is scored when plasma bradykinin exceeds 20 pM. Exogenous C1-INH may be given as a dose into the 'c1inh' compartment (nM increment), reproducing the published flux_C1Inh_inj term."
   reference <- paste(
-    "Sexton D, Nguyen HQ, Juethner S, Luo H, Zhang Z, Jasper P, Zhu AZX.",
-    "A quantitative systems pharmacology model of plasma kallikrein-kinin system",
-    "dysregulation in hereditary angioedema.",
-    "J Pharmacokinet Pharmacodyn. 2024;51(6):721-733.",
+    "Sexton D, Nguyen HQ, Juethner S, Luo H, Zhang Z, Jasper P, Zhu AZX. A",
+    "quantitative systems pharmacology model of plasma kallikrein-kinin system",
+    "dysregulation in hereditary angioedema. J Pharmacokinet Pharmacodyn.",
+    "2024;51(6):721-734.",
     "doi:10.1007/s10928-024-09919-6.",
     "Species from Supplementary Table S4; governing equations from Supplementary Table S5",
     "and the published C source (Electronic Supplementary Material MOESM2,",

@@ -1,13 +1,12 @@
 Lau_2026_paracetamol <- function() {
   description <- "Semi-physiological popPK. Joint parent-and-metabolites population PK model for oral and intravenous paracetamol (acetaminophen, PCM) and its glucuronide (PCM-GLU), sulphate (PCM-SUL), and combined cysteine + mercapturate (PCM-CYS & PCM-MER) metabolites in adults with and without obesity (Lau 2026). Extends the intravenous-only model of van Rongen 2016 by resolving first-pass loss into its anatomical sites: a well-stirred liver whose three parallel intrinsic clearances (glucuronidation, sulphation, CYP2E1 oxidation) set pathway-specific hepatic extraction ratios against a weight-driven hepatic blood flow, and a gut wall whose intrinsic CYP2E1 clearance (a fixed fraction of the hepatic oxidative intrinsic clearance) sets the gut extraction ratio against Q_gut. Gut wall, portal vein, and liver are quasi-steady-state algebraic pools rather than ODE states, so absorbed and recirculated drug is presented to the liver on every pass while systemic drug is presented at hepatic blood flow. Enterohepatic recirculation routes 10 percent of newly formed PCM-GLU into a gallbladder compartment that empties over two fixed 6-minute windows per study, releasing drug to a reuptake depot that is deglucuronidated and reabsorbed as parent PCM. Lean body mass scales parent volume, glucuronidation and oxidation intrinsic clearances, and glucuronide elimination clearance; total body weight scales glucuronide volume and drives cardiac output. Study-specific multipliers on the oxidative intrinsic clearance and on all three metabolite elimination clearances separate the Chen oral cohort from the other two studies."
   reference <- paste(
-    "Lau C, van Kesteren C, Smeenk RM, Beex-Oosterhuis MM, Koch BCP,",
-    "Chan LN, Lin YS, van Rongen A, Knibbe CAJ, Huitema ADR,",
-    "Huisman-Siebinga H (2026).",
-    "Semi-physiological population pharmacokinetic modeling of oral and",
-    "intravenous paracetamol to quantify presystemic metabolism and",
-    "enterohepatic recirculation.",
-    "CPT Pharmacometrics Syst Pharmacol 15(1):e70168.",
+    "Lau C, van Kesteren C, Smeenk RM, Beex-Oosterhuis MM, Koch BCP, Chan LN,",
+    "Lin YS, van Rongen A, Knibbe CAJ, Huitema ADR, Huisman-Siebinga H.",
+    "Semi-Physiological Population Pharmacokinetic Modeling of Oral and",
+    "Intravenous Paracetamol to Quantify Presystemic Metabolism and",
+    "Enterohepatic Recirculation. CPT Pharmacometrics Syst Pharmacol.",
+    "2026;15(3):e70168.",
     "doi:10.1002/psp4.70168.",
     sep = " "
   )

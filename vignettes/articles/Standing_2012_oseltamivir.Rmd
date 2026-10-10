@@ -65,7 +65,7 @@ collects the parameter values in one place for review.
 | `(WT/70)^1.0` on volumes         | exponent 1.0 fixed     | Standing 2012 Methods: linear weight on volumes                                                |
 | HCE1 maturation `pma50_hce1`     | 86.1 weeks             | Standing 2012 Fig 2 caption (fitted to Yang 2009 HCE1 expression data)                         |
 | HCE1 maturation `hill_hce1`      | 3.17                   | Standing 2012 Fig 2 caption                                                                    |
-| Renal maturation `pma50_renal`   | 47.7 weeks             | Rhodin 2009 doi:10.1007/s00228-008-0577-4 Table 1 (cited by Standing 2012 ref 23; not in text) |
+| Renal maturation `pma50_renal`   | 47.7 weeks             | Rhodin 2009 doi:10.1007/s00467-008-0997-5 Table 1 (cited by Standing 2012 ref 23; not in text) |
 | Renal maturation `hill_renal`    | 3.4                    | Rhodin 2009 Table 1 (same)                                                                     |
 | BSV(Ka)                          | 57.5% CV               | Standing 2012 Table 2                                                                          |
 | BSV(CLU = CLM)                   | 59.4% CV (shared eta)  | Standing 2012 Table 2                                                                          |
@@ -380,7 +380,7 @@ knitr::kable(compare,
   2009 (Standing ref 23) for the renal maturation function but does not
   reproduce the TM50 / Hill values in its text. The values used here (TM50 =
   47.7 weeks, Hill = 3.4) are the canonical published Rhodin 2009 estimates
-  for renal function (Rhodin et al., Eur J Clin Pharmacol 2009 doi:10.1007/s00228-008-0577-4).
+  for renal function (Rhodin et al., Pediatr Nephrol 2009 doi:10.1007/s00467-008-0997-5).
   Because these values come from outside the paper, the in-file comments
   in `ini()` and the source-trace table above point readers to the Rhodin
   paper.

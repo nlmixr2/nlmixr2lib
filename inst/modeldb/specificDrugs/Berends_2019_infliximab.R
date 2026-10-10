@@ -1,6 +1,12 @@
 Berends_2019_infliximab <- function() {
   description <- "Two-compartment TMDD-QSS population PK/target-dynamics model of infliximab and free TNF in adults with moderate-to-severe ulcerative colitis (Berends 2019)"
-  reference <- "Berends SE, Strik AS, Van Selm S, Lowenberg M, Ponsioen CY, D'Haens GR, Mathot RAA. Tumor necrosis factor-mediated disposition of infliximab in ulcerative colitis patients. J Pharmacokinet Pharmacodyn. 2019;46(6):543-551. doi:10.1007/s10928-019-09652-5"
+  reference <- paste(
+    "Berends SE, van Steeg TJ, Ahsman MJ, Singh S, Brandse JF, D'Haens GRAM,",
+    "Mathot RAA. Tumor necrosis factor-mediated disposition of infliximab in",
+    "ulcerative colitis patients. J Pharmacokinet Pharmacodyn.",
+    "2019;46(6):543-551. doi:10.1007/s10928-019-09652-5.",
+    sep = " "
+  )
   vignette <- "Berends_2019_infliximab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

@@ -1,6 +1,14 @@
 Scheuher_2023_ADC_human_qsp <- function() {
   description <- "QSP. Human platform model for HER2-targeting antibody-drug conjugates in HER2+ metastatic breast cancer (T-DM1 default; T-DXd variant via parameter overrides). Extends the mouse model with: (i) HER2 receptor sinks on normal cells in the central and peripheral compartments (with binding, endocytosis, recycling, degradation); (ii) soluble HER2 (sHER2) shed from cell-surface HER2 into central + peripheral + tumor compartments, with reversible binding to ADC and Ab and its own turnover; and (iii) larger physiologic volumes (3 L central, 13 L peripheral for a 70 kg adult). Mouse-derived TGI parameters (kkill_max, kc50, tau, n_Hill) are carried over from N87 xenograft fits. Amounts in nmol; concentrations amount/volume."
-  reference <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. Human model = Tables S1c, S2d-e, S3e-f."
+  reference <- paste(
+    "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J,",
+    "Subramanian K, Betts A. Towards a platform quantitative systems",
+    "pharmacology (QSP) model for preclinical to clinical translation of",
+    "antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn.",
+    "2024;51(5):429-447. doi:10.1007/s10928-023-09884-6. Human model = Tables",
+    "S1c, S2d-e, S3e-f.",
+    sep = " "
+  )
   vignette <- "Scheuher_2023_ADC_platform_qsp"
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
 

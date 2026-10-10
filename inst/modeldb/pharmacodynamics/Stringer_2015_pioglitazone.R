@@ -16,12 +16,12 @@ Stringer_2015_pioglitazone <- function() {
     "(Stringer 2015 Diabetes Technology and Therapeutics)."
   )
   reference <- paste(
-    "Stringer F, DeJongh J, Enya K, Koumura E, Danhof M, Kaku K.",
-    "Evaluation of the Long-Term Durability and Glycemic Control of",
-    "Fasting Plasma Glucose and Glycosylated Hemoglobin for Pioglitazone",
-    "in Japanese Patients with Type 2 Diabetes.",
-    "Diabetes Technol Ther. 2015;17(3):215-222.",
-    "doi:10.1089/dia.2014.0222"
+    "Stringer F, DeJongh J, Enya K, Koumura E, Danhof M, Kaku K. Evaluation of",
+    "the long-term durability and glycemic control of fasting plasma glucose",
+    "and glycosylated hemoglobin for pioglitazone in Japanese patients with",
+    "type 2 diabetes. Diabetes Technol Ther. 2015;17(3):215-223.",
+    "doi:10.1089/dia.2014.0222.",
+    sep = " "
   )
   vignette <- "Stringer_2015_pioglitazone"
   units <- list(

@@ -2,9 +2,9 @@ ChandralayamAyyappaMenon_2026_teclistamab_qsp <- function() {
   description <- "QSP. Human quantitative systems pharmacology model of teclistamab, a BCMA x CD3 bispecific T cell engager, as the clinical benchmark used to translate the ISB 2001 trispecific model into a first-in-human dose and efficacy dose range for relapsed/refractory multiple myeloma. Structurally identical to modellib('ChandralayamAyyappaMenon_2026_isb2001_qsp'): a minimal PBPK disposition model (plasma, tight tissue, lymph, leaky tissue split into bone marrow and non-marrow leaky tissue) coupled to a sequential target-engagement network in plasma and bone marrow, with the trimers that crosslink a T cell to a tumour cell summed as active species (ACT) and normalised per tumour cell (nACT). Because teclistamab has no CD38-binding arm, its CD38 association rate constant is zero and every CD38-containing complex is identically zero for all time - the 'complexes that are not relevant for teclistamab' of Figure 2c. Teclistamab clearance was calibrated to digitised intravenous PK and its SC absorption rate constant and bioavailability to digitised subcutaneous PK from the MajesTEC-1 phase 1 report."
   reference <- paste(
     "Chandralayam Ayyappa Menon V, Matsuura T, Holkova B, Gudi GS, Drake A,",
-    "Pihlgren M, van der Graaf PH, Sunitha GN, Garton A, Perro M, Konto C, Pacaud L.",
-    "Clinical validation of a QSP model for ISB 2001, a trispecific T cell engager",
-    "to support optimal FIH study design in RRMM patients.",
+    "Pihlgren M, van der Graaf PH, Gn S, Garton A, Perro M, Konto C, Pacaud L.",
+    "Clinical Validation of a QSP Model for ISB 2001, a Trispecific T Cell",
+    "Engager to Support Optimal FIH Study Design in RRMM Patients.",
     "Clin Pharmacol Ther. 2026;120(2):452-464. doi:10.1002/cpt.70319.",
     "Teclistamab clinical PK and dose-escalation data are digitised from",
     "Usmani et al. (2021) Lancet 398:665-674 (reference 20 and 37 of the source).",

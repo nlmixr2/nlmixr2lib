@@ -5,11 +5,11 @@
 TerHeine_2014_tamoxifen <- function() {
   description <- "Joint parent-metabolite population PK model for tamoxifen and endoxifen at steady state in adult breast-cancer patients, with CYP2D6 and CYP3A4/5 individual-activity covariates on the endoxifen-formation clearance"
   reference <- paste(
-    "Ter Heine R, Binkhorst L, de Graan AJM, et al. (2014).",
-    "Population pharmacokinetic modelling to assess the impact of CYP2D6",
-    "and CYP3A metabolic phenotypes on the pharmacokinetics of tamoxifen",
-    "and endoxifen.",
-    "Br J Clin Pharmacol 78(3):572-586.",
+    "Ter Heine R, Binkhorst L, de Graan AJM, de Bruijn P, Beijnen JH,",
+    "Mathijssen RH, Huitema AD. Population pharmacokinetic modelling to assess",
+    "the impact of CYP2D6 and CYP3A metabolic phenotypes on the",
+    "pharmacokinetics of tamoxifen and endoxifen. Br J Clin Pharmacol.",
+    "2014;78(3):572-586.",
     "doi:10.1111/bcp.12388.",
     "DDMORE Foundation Model Repository: DDMODEL00000212.",
     sep = " "
@@ -132,7 +132,7 @@ TerHeine_2014_tamoxifen <- function() {
                           e_cyp3a4_cl_endox * log_pheno_cyp3a4)
 
     # Fixed literature constants for endoxifen disposition. Source: Ahmad et
-    # al. (2010) Clin Pharmacol Ther 88(6):814-817, doi:10.1038/clpt.2010.222
+    # al. (2010) Clin Pharmacol Ther 88(6):814-817, doi:10.1038/clpt.2010.196
     # — cited in the .mdl GROUP_VARIABLES block as `Ahmad et al, CPT Vol 88,
     # 2010`.
     cl_endx_elim <- 5.1

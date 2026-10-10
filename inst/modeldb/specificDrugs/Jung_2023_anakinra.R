@@ -20,7 +20,7 @@ Jung_2023_anakinra <- function() {
     "Ngo L, Oh J, Kim A, Back H-m, Kang W-h, Chae J-w, Yun H-y, Lee H. Development of a",
     "Pharmacokinetic Model Describing Neonatal Fc Receptor-Mediated Recycling of HL2351,",
     "a Novel Hybrid Fc-Fused Interleukin-1 Receptor Antagonist, to Optimize Dosage Regimen.",
-    "CPT Pharmacometrics Syst Pharmacol. 2020;9(10):584-595. doi:10.1002/psp4.12552;",
+    "CPT Pharmacometrics Syst Pharmacol. 2020;9(10):584-595. doi:10.1002/psp4.12555;",
     "see modellib('Ngo_2020_HL2351') for the companion HL2351 model."
   )
   vignette <- "Jung_2023_fractal_kinetics"

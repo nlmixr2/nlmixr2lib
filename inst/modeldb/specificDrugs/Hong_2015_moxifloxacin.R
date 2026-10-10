@@ -1,12 +1,11 @@
 Hong_2015_moxifloxacin <- function() {
   description <- "Sequential population PK + PD (QT-interval) model for single-dose oral moxifloxacin (400 mg or 800 mg, Avelox tablets) in healthy adult Korean male volunteers (Hong 2015): a two-compartment first-order absorption PK model with a lag time and a dose-dependent absorption rate constant (different Ka for 400 mg vs 800 mg), followed by an individually corrected QT-interval PD model that adds two mixed-effect cosine circadian components (24 h and 6 h), a first-order-decaying placebo (water-intake) effect, and an Emax drug effect on QT prolongation."
   reference <- paste(
-    "Hong T, Han S, Lee J, Jeon S, Park GJ, Park WS,",
-    "Lim KS, Chung JY, Yu KS, Yim DS.",
-    "Pharmacokinetic-pharmacodynamic analysis to evaluate the effect",
+    "Hong T, Han S, Lee J, Jeon S, Park GJ, Park WS, Lim KS, Chung JY, Yu KS,",
+    "Yim DS. Pharmacokinetic-pharmacodynamic analysis to evaluate the effect",
     "of moxifloxacin on QT interval prolongation in healthy Korean male",
-    "subjects. Drug Des Devel Ther. 2015 Feb 26;9:1233-1245.",
-    "doi:10.2147/DDDT.S79772. PMID 25750523.",
+    "subjects. Drug Des Devel Ther. 2015;9:1233-1245. doi:10.2147/DDDT.S79772.",
+    "PMID 25750520.",
     sep = " "
   )
   vignette <- "Hong_2015_moxifloxacin"

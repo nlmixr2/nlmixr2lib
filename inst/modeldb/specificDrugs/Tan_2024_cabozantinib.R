@@ -1,11 +1,10 @@
 Tan_2024_cabozantinib <- function() {
   description <- "Two-compartment population PK model for oral cabozantinib in adults with metastatic renal cell carcinoma (Tan 2024, n=27 real-world therapeutic-drug-monitoring patients, Leiden University Medical Center). The structure is the FDA cabozantinib registration popPK model reproduced from the registration file: parallel dual lagged first-order absorption, where a fraction F1 of the dose enters a fast depot (rate ka1, lag ALAG1 = 0.459 h) and the remaining (1 - F1) enters a slow depot (rate ka2, lag ALAG2 = 16.8 h), feeding a two-compartment (central + peripheral1) disposition with linear elimination. Absorption rate ka1 scales with the administered dose via a power function (DOSE/60 mg)^-0.5. Covariates on CL/F carried over from the registration model are female sex (21% lower) and Asian race (27% lower). Tan 2024 re-estimated only apparent clearance CL/F (3.11 L/h vs 2.23 L/h in the registration file) and the proportional residual error, holding every other parameter fixed, and reduced the IIV variance on F1 from 0.385 to 0.05 to stop the absorption fraction leaking above 1. A fixed 50% increase in bioavailability for a high-fat meal (FED_HIGHFAT) reproduces the paper's drug-expense-saving simulations."
   reference <- paste(
-    "Tan Z, Voller S, Yin A, Rieborn A, Gelderblom AJ, van der Hulle T,",
-    "Knibbe CAJ, Moes DJAR.",
-    "Population pharmacokinetics of cabozantinib in metastatic renal cell",
-    "carcinoma patients: towards drug expenses saving regimens.",
-    "Clin Pharmacokinet. 2024;63(7):1015-1025.",
+    "Tan Z, Voller S, Yin A, Rieborn A, Gelderblom AJ, van der Hulle T, Knibbe",
+    "CAJ, Moes DJAR. Population Pharmacokinetics of Cabozantinib in Metastatic",
+    "Renal Cell Carcinoma Patients: Towards Drug Expenses Saving Regimens.",
+    "Clin Pharmacokinet. 2024;63(6):857-869.",
     "doi:10.1007/s40262-024-01379-y.",
     "Structural model and all fixed parameters reproduced from the FDA",
     "cabozantinib registration popPK model (Tan 2024 reference 13);",

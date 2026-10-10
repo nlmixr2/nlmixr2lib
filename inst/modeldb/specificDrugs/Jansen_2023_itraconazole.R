@@ -1,6 +1,13 @@
 Jansen_2023_itraconazole <- function() {
   description <- "Semi-mechanistic population PK model for intravenous itraconazole nanocrystal formulation (NCF) and its active metabolite hydroxy-itraconazole in allogeneic haematopoietic cell transplant recipients (Jansen 2023). A nanocrystal-bound itraconazole compartment receives the infusion and dissolves by a fixed first-order rate constant into a two-compartment dissolved-itraconazole disposition model; all eliminated itraconazole (fraction metabolised fixed to 1) enters a one-compartment hydroxy-itraconazole model. Observed itraconazole is the sum of nanocrystal-bound and dissolved concentrations. Allometric weight scaling with fixed exponents 0.75 on clearances and 1 on volumes. All amounts and concentrations are molar, as the source data were converted to molar equivalents before fitting."
-  reference <- "Jansen AME, Ter Heine R, Donnelly JP, Blijlevens N, Bruggemann RJM. Repurposing antifungals: population pharmacokinetics of itraconazole and hydroxy-itraconazole following administration of a nanocrystal formulation. J Antimicrob Chemother. 2023;78(5):1172-1178. doi:10.1093/jac/dkad072"
+  reference <- paste(
+    "Jansen AME, Ter Heine R, Donnelly JP, Blijlevens N, Bruggemann RJM.",
+    "Repurposing antifungals: population pharmacokinetics of itraconazole and",
+    "hydroxy-itraconazole following administration of a nanocrystal",
+    "formulation. J Antimicrob Chemother. 2023;78(5):1219-1224.",
+    "doi:10.1093/jac/dkad072.",
+    sep = " "
+  )
   vignette <- "Jansen_2023_itraconazole"
   units <- list(time = "h", dosing = "mmol", concentration = "mmol/L")
 

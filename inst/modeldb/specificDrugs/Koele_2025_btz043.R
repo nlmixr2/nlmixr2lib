@@ -1,13 +1,11 @@
 Koele_2025_btz043 <- function() {
   description <- "Joint parent-plus-two-metabolite population PK model for the first-in-class benzothiazinone antituberculosis drug BTZ-043 and its metabolites M1 and M2 in adults with drug-susceptible pulmonary tuberculosis: two-compartment BTZ-043 and M2 disposition with one-compartment M1, dual parallel oral absorption (a two-transit-compartment chain feeding an absorption compartment, plus a lag-time secondary route that carries 36% of the bioavailable dose only when the dose is taken with food), allometric scaling on 70 kg with fixed exponents, prandial-state and high-dose effects on relative bioavailability, a prandial-state effect on mean transit time and on the relative fraction metabolised to M1, slower BTZ-043 clearance in Cape-coloured participants, and a step decrease in M2 clearance after 10 days on treatment. Amounts are carried in nmol (the mg dose is converted with the 431.39 g/mol BTZ-043 molecular weight inside the bioavailability term) so that parent and metabolite mass balance is preserved; fractions metabolised and absolute bioavailability were fixed to 1, so every clearance and volume is an apparent value."
   reference <- paste(
-    "Koele S. E., Heinrich N., De Jager V. R., Dreisbach J., Phillips P. P. J.,",
-    "Gross-Demel P., Dawson R., Narunsky K., Wildner L. M., Mchugh T. D.,",
-    "Te Brake L. H. M., Diacon A. H., Aarnoutse R. E., Hoelscher M.,",
-    "Svensson E. M. (2025).",
-    "Population pharmacokinetics and exposure-response relationship of the",
-    "antituberculosis drug BTZ-043.",
-    "Journal of Antimicrobial Chemotherapy 80(5):1319-1327.",
+    "Koele SE, Heinrich N, De Jager VR, Dreisbach J, Phillips PPJ, Gross-Demel",
+    "P, Dawson R, Narunsky K, Wildner LM, Mchugh TD, Te Brake LHM, Diacon AH,",
+    "Aarnoutse RE, Hoelscher M, Svensson EM. Population pharmacokinetics and",
+    "exposure-response relationship of the antituberculosis drug BTZ-043. J",
+    "Antimicrob Chemother. 2025;80(5):1315-1323.",
     "doi:10.1093/jac/dkaf076.",
     "Structural equations and random-effect variances transcribed from the",
     "final NONMEM control stream in the Supplementary data",

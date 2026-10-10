@@ -1,6 +1,13 @@
 Gilkey_2015_DiRnanoparticle <- function() {
   description <- "Preclinical (mouse, BALB/c, 4-6 weeks). PBPK model for fluorescently labeled (DiR) block-copolymer nanoparticles in mice, developed as a surrogate model for dexamethasone-encapsulated nanoparticles in pediatric acute lymphoblastic leukemia therapy. Five compartments: plasma, liver, spleen, kidneys, and a virtual 'other' compartment introduced to close the mass balance for ~50% of injected dose that experimental imaging could not account for in the four sampled organs. Single 100 uL IV bolus of 5 ug/mL DiR-NPs; the model treats plasma initial concentration as 5 ug/mL per paper convention (rather than 0.5 ug dose distributed into 1.7 mL plasma volume) -- see vignette Assumptions section."
-  reference <- "Gilkey MJ, Krishnan V, Scheetz L, Jia X, Rajasekaran AK, Dhurjati PS. Physiologically based pharmacokinetic modeling of fluorescently labeled block copolymer nanoparticles for controlled drug delivery in leukemia therapy. CPT Pharmacometrics Syst Pharmacol. 2015;4(3):e13. doi:10.1002/psp4.13"
+  reference <- paste(
+    "Gilkey MJ, Krishnan V, Scheetz L, Jia X, Rajasekaran AK, Dhurjati PS.",
+    "Physiologically Based Pharmacokinetic Modeling of Fluorescently Labeled",
+    "Block Copolymer Nanoparticles for Controlled Drug Delivery in Leukemia",
+    "Therapy. CPT Pharmacometrics Syst Pharmacol. 2015;4(3):167-174.",
+    "doi:10.1002/psp4.13.",
+    sep = " "
+  )
   vignette <- "Gilkey_2015_DiRnanoparticle"
   units <- list(
     time = "min",

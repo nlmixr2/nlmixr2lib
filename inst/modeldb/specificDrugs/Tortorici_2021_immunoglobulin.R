@@ -1,6 +1,19 @@
 Tortorici_2021_immunoglobulin <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption for polyclonal immunoglobulin G in chronic inflammatory demyelinating polyneuropathy (Tortorici 2021)"
-  reference <- "Tortorici MA, Yuraszeck T, Cornblath D, Bril V, Hartung HP, Sobue G, et al. Pharmacometric analysis linking immunoglobulin exposure to clinical efficacy outcomes in chronic inflammatory demyelinating polyneuropathy. CPT Pharmacometrics Syst Pharmacol. 2021;10(8):839-50. doi:10.1002/psp4.12657 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):813-30. doi:10.1007/s40262-026-01641-5, Table 4 (reference 43)"
+  reference <- paste(
+    "Tortorici MA, Yuraszeck T, Cornblath D, Bril V, Hartung HP, Sobue G,",
+    "Lewis RA, Merkies ISJ, Lawo JP, Praus M, Durn BL, Mielke O, Ma X, Jauslin",
+    "P, Pfister M, van Schaik IN. Pharmacometric analysis linking",
+    "immunoglobulin exposure to clinical efficacy outcomes in chronic",
+    "inflammatory demyelinating polyneuropathy. CPT Pharmacometrics Syst",
+    "Pharmacol. 2021;10(8):839-850. doi:10.1002/psp4.12647. -- parameter",
+    "values transcribed from the secondary source: van der Zeeuw SL, van",
+    "Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T.",
+    "Population pharmacokinetics and pharmacodynamics of immunoglobulins: a",
+    "systematic review. Clin Pharmacokinet. 2026;65(6):811-36.",
+    "doi:10.1007/s40262-026-01641-5, Table 4 (reference 43)",
+    sep = " "
+  )
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
 

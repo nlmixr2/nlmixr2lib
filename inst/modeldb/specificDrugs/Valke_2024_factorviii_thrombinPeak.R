@@ -16,13 +16,13 @@ Valke_2024_factorviii_thrombinPeak <- function() {
     sep = " "
   )
   reference <- paste(
-    "Valke LLFG, Cloesmeijer ME, Mansouritorghabeh H, Barteling W,",
-    "Blijlevens NMA, Cnossen MH, Mathot RAA, Schols SEM, van Heerde WL.",
+    "Valke LLFG, Cloesmeijer ME, Mansouritorghabeh H, Barteling W, Blijlevens",
+    "NMA, Cnossen MH, Mathot RAA, Schols SEM, van Heerde WL.",
     "Pharmacokinetic-Pharmacodynamic Modelling in Hemophilia A: Relating",
     "Thrombin and Plasmin Generation to Factor VIII Activity After",
-    "Administration of a VWF/FVIII Concentrate.",
-    "Eur J Drug Metab Pharmacokinet. 2024 Mar;49(2):191-205.",
-    "doi:10.1007/s13318-024-00876-6. PMID:38367174. PMCID:PMC10904421.",
+    "Administration of a VWF/FVIII Concentrate. Eur J Drug Metab",
+    "Pharmacokinet. 2024;49(2):191-205. doi:10.1007/s13318-024-00876-6.",
+    "PMID:38367175. PMCID:PMC10904421.",
     sep = " "
   )
   vignette <- "Valke_2024_factorviii_thrombin_plasmin"

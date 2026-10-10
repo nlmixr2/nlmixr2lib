@@ -15,13 +15,13 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
     "sibling-drug suffix _taz throughout."
   )
   reference <- paste(
-    "Sulaiman H, Wolky SA, Rozali MA, Adiraju SKS, Hasan MS,",
-    "Hernandez-Mitre MP, Liu X, Mat-Nor MB, Mazlan MZ, Salmuna ZN,",
-    "Wallis SC, Xie J, Roberts JA, Abdul-Aziz MH. A multicentre",
-    "evaluation of pharmacokinetic/pharmacodynamic target attainment of",
-    "piperacillin and tazobactam and the association with clinical",
-    "outcomes in critically ill patients with sepsis and septic shock.",
-    "J Antimicrob Chemother. 2026. doi:10.1093/jac/dkag199.",
+    "Sulaiman H, Wolky SA, Rozali MA, Adiraju SKS, Hasan MS, Hernandez-Mitre",
+    "MP, Liu X, Mat-Nor MB, Mazlan MZ, Salmuna ZN, Wallis SC, Xie J, Roberts",
+    "JA, Abdul-Aziz MH. A multicentre evaluation of",
+    "pharmacokinetic/pharmacodynamic target attainment of piperacillin and",
+    "tazobactam and the association with clinical outcomes in critically ill",
+    "patients with sepsis and septic shock. J Antimicrob Chemother.",
+    "2026;81(7):dkag199. doi:10.1093/jac/dkag199.",
     sep = " "
   )
   vignette <- "Sulaiman_2026_piperacillin_tazobactam"

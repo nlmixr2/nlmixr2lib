@@ -1,6 +1,25 @@
 Willemin_2024_interleukin6_cyp_talquetamab <- function() {
   description <- "Reduced from a Simcyp Simulator V21 minimal-PBPK analysis. Interleukin-6 (IL-6) disposition driving concentration- and time-dependent modulation of five hepatic cytochrome P450 activities (CYP1A2, 2C9, 2C19, 3A4, 3A5), developed to assess the drug-interaction risk created by the transient IL-6 elevation of cytokine release syndrome after talquetamab (GPRC5D x CD3 bispecific antibody) step-up and first treatment dosing in MonumenTAL-1, at both recommended phase 2 doses (0.4 mg/kg weekly and 0.8 mg/kg every other week). Talquetamab itself is never modelled: because IL-6 is endogenous, its appearance is represented by a series of zero-order IV IL-6 infusions whose rates the authors adjusted to recover the observed MonumenTAL-1 IL-6 profile, so the model is an IL-6 exposure driver rather than a talquetamab PK model. IL-6 is described here as a two-compartment IV model recovered from the paper's own simulated IL-6 profiles (Figs 1 and 2); a one-compartment reduction cannot reproduce them. Each CYP activity follows the enzyme-turnover equation d(E)/dt = kdeg * (1 + emax * C / (ec50 + C) - E) with activity relative to an untreated baseline of 1, suppressing activity for CYP2C9, 2C19, 3A4 and 3A5 and inducing it for CYP1A2. The downstream victim-drug exposure ratios (caffeine, S-warfarin, omeprazole, midazolam, cyclosporine, simvastatin) are NOT part of this model: those used proprietary Simcyp V21 compound files whose in vivo dispositions cannot be reconstructed from the published inputs."
-  reference <- "Willemin ME, Gong J, Hilder BW, Masterson T, Tolbert J, Renaud T, Heuck C, Kane C, De Zwart L, Girgis S, Ma X, Ouellet D. Evaluation of drug-drug interaction potential of talquetamab, a T-cell-redirecting GPRC5D x CD3 bispecific antibody, as a result of cytokine release syndrome in patients with relapsed/refractory multiple myeloma in MonumenTAL-1, using a physiologically based pharmacokinetic model. Target Oncol. 2024;19(6):965-975. doi:10.1007/s11523-024-01093-6. IL-6 disposition recovered from the simulated profiles of Figs 1 and 2; hepatic CYP turnover rate constants recovered from the activity time courses of Figs 3 and 4 and gated against Table 3. The IL-6 model itself is stated by this paper to be the previously published one of Willemin ME et al. CPT Pharmacometrics Syst Pharmacol. 2024;13(7):1117-1129 (doi:10.1002/psp4.13144), from which the interaction potencies (Indmax, IndC50) are carried; those in turn are attributed to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422 and Jiang X et al. AAPS J. 2016;18:767-776, and the turnover equation form to Machavaram KK et al. Clin Pharmacol Ther. 2013;94:260-268."
+  reference <- paste(
+    "Willemin ME, Gong J, Hilder BW, Masterson T, Tolbert J, Renaud T, Heuck",
+    "C, Kane C, De Zwart L, Girgis S, Ma X, Ouellet D. Evaluation of Drug-Drug",
+    "Interaction Potential of Talquetamab, a T-Cell-Redirecting GPRC5D x CD3",
+    "Bispecific Antibody, as a Result of Cytokine Release Syndrome in Patients",
+    "with Relapsed/Refractory Multiple Myeloma in MonumenTAL-1, Using a",
+    "Physiologically Based Pharmacokinetic Model. Target Oncol.",
+    "2024;19(6):965-979. doi:10.1007/s11523-024-01093-6. IL-6 disposition",
+    "recovered from the simulated profiles of Figs 1 and 2; hepatic CYP",
+    "turnover rate constants recovered from the activity time courses of Figs",
+    "3 and 4 and gated against Table 3. The IL-6 model itself is stated by",
+    "this paper to be the previously published one of Willemin ME et al. CPT",
+    "Pharmacometrics Syst Pharmacol. 2024;13(7):1117-1129",
+    "(doi:10.1002/psp4.13144), from which the interaction potencies (Indmax,",
+    "IndC50) are carried; those in turn are attributed to Dickmann LJ et al.",
+    "Drug Metab Dispos. 2011;39:1415-1422 and Jiang X et al. AAPS J.",
+    "2016;18:767-776, and the turnover equation form to Machavaram KK et al.",
+    "Clin Pharmacol Ther. 2013;94:260-268.",
+    sep = " "
+  )
   vignette <- "Willemin_2024_interleukin6_cyp_talquetamab"
   units <- list(time = "h", dosing = "mg", concentration = "pg/mL")
 

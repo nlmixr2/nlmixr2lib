@@ -20,11 +20,10 @@ Langdon_2010_PF00821385_human <- function() {
     sep = " "
   )
   reference <- paste(
-    "Langdon G, Davis JD, McFadyen LM, Dewhurst M, Brunton NS, Rawal JK,",
-    "Van der Graaf PH, Benson N.",
-    "Translational pharmacokinetic-pharmacodynamic modelling; application",
-    "to cardiovascular safety data for PF-00821385, a novel HIV agent.",
-    "Br J Clin Pharmacol. 2010 Apr;69(4):335-345.",
+    "Langdon G, Davis JD, McFadyen LM, Dewhurst M, Brunton NS, Rawal JK, Van",
+    "der Graaf PH, Benson N. Translational pharmacokinetic-pharmacodynamic",
+    "modelling; application to cardiovascular safety data for PF-00821385, a",
+    "novel HIV agent. Br J Clin Pharmacol. 2010;69(4):336-345.",
     "doi:10.1111/j.1365-2125.2009.03594.x.",
     sep = " "
   )

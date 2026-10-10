@@ -1,6 +1,13 @@
 Lai_2026_rivaroxaban <- function() {
   description <- "One-compartment population PK model for rivaroxaban in Asian (Taiwanese) adults with atrial fibrillation sampled under real-world therapeutic drug monitoring, with a creatinine-clearance power effect and a CYP3A4/P-gp-inhibitor comedication effect on CL/F and a lean-body-weight effect on V/F (Lai 2026)"
-  reference <- "Lai NS, Lin CJ, Kuo CH, Peng YF, Tang SC, Huang CF, Lin SY, Lin SW. Development and Clinical Application of a Real-World Population Pharmacokinetic Model of Rivaroxaban in Asian Patients with Atrial Fibrillation. Clin Pharmacokinet. 2026. doi:10.1007/s40262-026-01650-4"
+  reference <- paste(
+    "Lai NS, Lin CJ, Kuo CH, Peng YF, Tang SC, Huang CF, Lin SY, Lin SW.",
+    "Development and Clinical Application of a Real-World Population",
+    "Pharmacokinetic Model of Rivaroxaban in Asian Patients with Atrial",
+    "Fibrillation. Clin Pharmacokinet. 2026;65(6):929-941.",
+    "doi:10.1007/s40262-026-01650-4.",
+    sep = " "
+  )
   vignette <- "Lai_2026_rivaroxaban"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

@@ -12,7 +12,14 @@ Kunarajah_2017_doxorubicin <- function() {
     "cumulative anthracyclines dose received by the patient before the",
     "first dose analysed."
   )
-  reference <- "Kunarajah K, Hennig S, Norris RLG, Lobb M, Charles BG, Pinkerton R, Moore AS. Population pharmacokinetic modelling of doxorubicin and doxorubicinol in children with cancer: is there a relationship with cardiac troponin profiles? Cancer Chemother Pharmacol. 2017;79(6):1209-1217. doi:10.1007/s00280-017-3309-6"
+  reference <- paste(
+    "Kunarajah K, Hennig S, Norris RLG, Lobb M, Charles BG, Pinkerton R, Moore",
+    "AS. Population pharmacokinetic modelling of doxorubicin and doxorubicinol",
+    "in children with cancer: is there a relationship with cardiac troponin",
+    "profiles? Cancer Chemother Pharmacol. 2017;80(1):15-25.",
+    "doi:10.1007/s00280-017-3309-6.",
+    sep = " "
+  )
   vignette <- "Kunarajah_2017_doxorubicin"
   units <- list(
     time = "h",

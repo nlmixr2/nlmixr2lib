@@ -1,6 +1,14 @@
 Parhiz_2024_mRNALNP <- function() {
   description <- "Preclinical (mouse, C57BL/6, ~25 g). Whole-body PBPK / luciferase-expression model for systemically administered firefly-luciferase mRNA delivered in lipid nanoparticles (bare, untargeted parameterization). Six anatomical regions (blood, lung, heart, kidney, spleen, liver) plus portal-organ and carcass remainder vasculature; each of the five major tissues additionally tracks an intracellular LNP pool, a translatable mRNA pool, and a luciferase signal. The luciferase observation uses the bare-LNP homogenate-assay parameter set (LU/mg protein); the vignette documents how to switch to the bare-LNP BLI, IgG-coated, and PECAM-targeted parameterizations from paper Tables 1-3."
-  reference <- "Parhiz H, Shuvaev VV, Li Q, et al. Physiologically based modeling of LNP-mediated delivery of mRNA in the vascular system. Mol Ther Nucleic Acids. 2024;35(2):102175. doi:10.1016/j.omtn.2024.102175. ADAPT 5 control stream archived with the article (Data S1, mmc2.zip)."
+  reference <- paste(
+    "Parhiz H, Shuvaev VV, Li Q, Papp TE, Akyianu AA, Shi R, Yadegari A,",
+    "Shahnawaz H, Semple SC, Mui BL, Weissman D, Muzykantov VR, Glassman PM.",
+    "Physiologically based modeling of LNP-mediated delivery of mRNA in the",
+    "vascular system. Mol Ther Nucleic Acids. 2024;35(2):102175.",
+    "doi:10.1016/j.omtn.2024.102175. ADAPT 5 control stream archived with the",
+    "article (Data S1, mmc2.zip).",
+    sep = " "
+  )
   vignette <- "Parhiz_2024_mRNALNP"
   units <- list(
     time = "h",

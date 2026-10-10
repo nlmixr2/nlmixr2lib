@@ -1,10 +1,11 @@
 Wang_2026_ciprofol <- function() {
   description <- "Three-compartment intravenous population PK model for ciprofol (HSK3486) after a single 0.6 mg/kg bolus given over 30 s in Chinese pediatric surgical patients (Wang 2026; 25 children aged 1-9 years, ASA physical status I-II, scheduled for elective urologic surgery; 317 arterial plasma samples). A three-compartment model was significantly better than a two-compartment model (dOFV = 65.8, p < 0.001). All disposition parameters are reported per kilogram of body weight (CL 31.2 mL/min/kg, V1 506 mL/kg, Q2 28.2 mL/min/kg, V2 231 mL/kg, Q3 19.8 mL/min/kg, V3 1360 mL/kg), i.e. body weight enters every parameter with a linear (exponent 1) scaling; standard allometric scaling and age-dependent maturation functions on clearance were tested and did not improve the fit, and no further effect of weight, age, sex or BMI was detectable after per-kilogram normalisation. Blood urea nitrogen was the single retained covariate, acting on the central volume as a power of the ratio to the cohort median with an estimated exponent of -0.821, so that V1 falls from 0.770 L/kg at BUN 3 mmol/L to 0.384 L/kg at BUN 7 mmol/L; the authors judged the resulting exposure change clinically insignificant. Log-normal inter-individual variability was retained on CL, V1 (correlated, r = -0.821) and Q3 only, because the IIV estimates for V2, V3 and Q2 were close to zero. Residual error is combined proportional plus additive."
   reference <- paste(
-    "Wang S, Li Y, Hu Z, Du L, Wang Y, Jiang X, Li L, Shangguan W. (2026).",
-    "Population pharmacokinetics of a single bolus of ciprofol in Chinese",
-    "pediatric patients. BMC Anesthesiology 26(1).",
-    "doi:10.1186/s12871-026-03647-9. PMCID: PMC12930602.",
+    "Wang S, Li Y, Hu Z, Du L, Wang Y, Jiang X, Li L, Shangguan W. Population",
+    "pharmacokinetics of a single bolus of ciprofol in Chinese pediatric",
+    "patients. BMC Anesthesiol. 2026;26(1):141.",
+    "doi:10.1186/s12871-026-03647-9.",
+    "PMCID: PMC12930602.",
     "Chinese Clinical Trial Registry ChiCTR2200058405.",
     sep = " "
   )

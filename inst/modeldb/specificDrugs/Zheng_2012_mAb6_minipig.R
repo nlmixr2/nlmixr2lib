@@ -6,11 +6,16 @@ Zheng_2012_mAb6_minipig <- function() {
     "in Gottingen minipigs (Table 1 population mean parameter estimates)."
   )
   reference <- paste(
-    "Zheng Y, Tesar DB, Benincosa L, et al. Minipig as a potential",
-    "translatable model for monoclonal antibody pharmacokinetics after",
-    "intravenous and subcutaneous administration. mAbs. 2012;4(2):243-255.",
+    "Zheng Y, Tesar DB, Benincosa L, Birnbock H, Boswell CA, Bumbaca D, Cowan",
+    "KJ, Danilenko DM, Daugherty AL, Fielder PJ, Grimm HP, Joshi A, Justies N,",
+    "Kolaitis G, Lewin-Koh N, Li J, McVay S, O'Mahony J, Otteneder M, Pantze",
+    "M, Putnam WS, Qiu ZJ, Ruppel J, Singer T, Stauch O, Theil FP, Visich J,",
+    "Yang J, Ying Y, Khawli LA, et al. Minipig as a potential translatable",
+    "model for monoclonal antibody pharmacokinetics after intravenous and",
+    "subcutaneous administration. MAbs. 2012;4(2):243-255.",
     "doi:10.4161/mabs.4.2.19387. Parameter values from Table 1 (mAb6 row);",
-    "minipig study details from Table 5; pI from Table 4."
+    "minipig study details from Table 5; pI from Table 4.",
+    sep = " "
   )
   vignette <- "Zheng_2012_minipig_mab"
   units <- list(time = "day", dosing = "mg/kg", concentration = "ug/mL")

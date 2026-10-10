@@ -1,6 +1,13 @@
 Muthukrishnan_2025_clazakizumab <- function() {
   description <- "Population PK and PK-PD model for the anti-interleukin-6 monoclonal antibody clazakizumab given as a 3-minute IV bolus to adults with end-stage kidney disease undergoing maintenance dialysis (POSIBIL 6 ESKD phase 2b, NCT05485961; Muthukrishnan 2025). Two-compartment linear PK with allometric weight scaling on CL and V1 and a baseline free IL-6 covariate on CL; sequential-fit indirect-response inhibition of hs-CRP zero-order production (kin) with Imax fixed to 1, an estimated Hill coefficient, and a Manly-transformed IIV on IC50. Baseline hs-CRP enters kin as a power covariate so the pre-dose steady state E0 = kin/kout tracks the observed baseline distribution."
-  reference <- "Muthukrishnan VY, Kerbusch T, Strong LE, Kleijn HJ, Pfister M, Chang AM, Acharya M, Nandy P, McCune JS. Population Pharmacokinetic and Pharmacokinetic-Pharmacodynamic Analysis for Clazakizumab in Patients With End-Stage Kidney Disease Undergoing Dialysis. Clin Transl Sci. 2025. doi:10.1111/cts.70381"
+  reference <- paste(
+    "Muthukrishnan VY, Kerbusch T, Strong LE, Kleijn HJ, Pfister M, Chang AM,",
+    "Acharya M, Nandy P, McCune JS. Population Pharmacokinetic and",
+    "Pharmacokinetic-Pharmacodynamic Analysis for Clazakizumab in Patients",
+    "With End-Stage Kidney Disease Undergoing Dialysis. Clin Transl Sci.",
+    "2025;18(11):e70381. doi:10.1111/cts.70381.",
+    sep = " "
+  )
   vignette <- "Muthukrishnan_2025_clazakizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL", hs_CRP = "mg/L")
 

@@ -13,7 +13,7 @@ Centanni_2025_sunitinib_thrombocytopenia <- function() {
     "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE,",
     "Karlsson MO. PKPD modeling of predictors for adverse effects and",
     "overall survival in sunitinib-treated patients with GIST.",
-    "CPT Pharmacometrics Syst Pharmacol. 2013;2(11):e85.",
+    "CPT Pharmacometrics Syst Pharmacol. 2013;2(12):e85.",
     "doi:10.1038/psp.2013.62; see",
     "modellib('Hansson_2013_sunitinib_myelosuppression') [ANC],",
     "modellib('Hansson_2013_sunitinib_dbp'),",

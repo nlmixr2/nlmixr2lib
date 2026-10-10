@@ -1,6 +1,17 @@
 Huo_2025_lamotrigine <- function() {
   description <- "One-compartment population PK model with first-order absorption and elimination for lamotrigine (LTG) in 128 Chinese peripregnancy women with epilepsy on lamotrigine monotherapy (Huo 2025 Eqs 1-7, Table 4 'Final Model' column). Ka (1.93 1/h) and apparent volume V/F (68.8 L) were both FIXED from the literature because the therapeutic-drug-monitoring data were almost all steady-state troughs and carried no absorption or distribution information; apparent clearance CL/F was the only structural parameter estimated. CL/F = 2.42 L/h at 59.8 kg and carries an estimated body-weight power exponent of 0.95, an exponential five-level peripregnancy-stage effect using the paper's own Classification C staging (gestational-week nodes at 5, 14 and 28 weeks plus a postpartum level), and an exponential valproate-comedication effect that lowers CL/F by 45% (exp(-0.60)). Residual error is combined proportional plus additive. Fit in Phoenix NLME 8.3 by FOCE-ELS."
-  reference <- "Huo J, Liu Y, Yang J, Chen M, Yang L, Wang L, Zhang D, Liu T, Gao W, Dai H, Mei S, Zhao Z. Dosing Optimization of Lamotrigine in Peripregnancy Epilepsy Through PopPK Modelling and Simulation. Drug Des Devel Ther. 2025;19:10243-10254. doi:10.2147/DDDT.S541597. PMCID PMC12645405. Structural equations from Eqs 1-5 (p 10246); covariate model from Eq 6 (p 10248) and the peripregnancy-stage / inhibitor coefficient block (p 10249); V/F from Eq 7 (p 10249); parameter estimates from Table 4 'Final Model'; peripregnancy staging from Table 1 row C; cohort demographics from Table 2."
+  reference <- paste(
+    "Huo J, Liu Y, Yang J, Chen M, Yang L, Wang L, Zhang D, Liu T, Gao W, Dai",
+    "H, Mei S, Zhao Z. Dosing Optimization of Lamotrigine in Peripregnancy",
+    "Epilepsy Through PopPK Modelling and Simulation. Drug Des Devel Ther.",
+    "2025;19:10243-10258. doi:10.2147/DDDT.S541597. PMCID PMC12645405.",
+    "Structural equations from Eqs 1-5 (p 10246); covariate model from Eq 6 (p",
+    "10248) and the peripregnancy-stage / inhibitor coefficient block (p",
+    "10249); V/F from Eq 7 (p 10249); parameter estimates from Table 4 'Final",
+    "Model'; peripregnancy staging from Table 1 row C; cohort demographics",
+    "from Table 2.",
+    sep = " "
+  )
   vignette <- "Huo_2025_lamotrigine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

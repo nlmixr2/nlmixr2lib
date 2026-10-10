@@ -1,13 +1,11 @@
 Lu_2017_polatuzumab_neuropathy <- function() {
   description <- "Time-to-event hazard model for the onset of grade >= 2 peripheral neuropathy (PN) during polatuzumab vedotin treatment in adults with relapsed/refractory B-cell non-Hodgkin lymphoma (Lu 2017). The PN hazard is driven by a hypothetical effect compartment receiving plasma antibody-conjugated MMAE (acMMAE) with first-order distribution k1e in and ke0 = k1e out, modulated by a Weibull time function on the drug-effect potency (alpha drug-effect, beta shape) and by twelve baseline-covariate proportional-hazard terms (age, body weight, sex, active grade 1 PN at baseline, prior radiotherapy, prior vinca alkaloid, prior platinum-based chemotherapy, rituximab combination, tumor histology DLBCL vs other-non-FL, baseline tumor sum of products of perpendicular diameters, baseline serum albumin). The acMMAE plasma driver is inlined from the published Lu 2019 integrated two-analyte popPK (acMMAE side only; see Lu_2019_polatuzumab.R) per the standing policy of reusing a published same-drug PK when the originally-used PK source (Lu 2015 ASCPT poster, unpublished) is not available. Both the instantaneous hazard and the cumulative hazard / survival outputs are exposed for direct VPC simulation of the Kaplan-Meier curve."
   reference <- paste(
-    "Lu D, Gillespie WR, Girish S, Agarwal P, Li C, Hirata J,",
-    "Chu Y-W, Kagedal M, Leon L, Maiya V, Jin JY.",
-    "Time-to-event analysis of polatuzumab vedotin-induced",
-    "peripheral neuropathy to assist in the comparison of",
-    "clinical dosing regimens.",
-    "CPT Pharmacometrics Syst Pharmacol. 2017;6(6):401-408.",
-    "doi:10.1002/psp4.12192. PMID 28294568.",
+    "Lu D, Gillespie WR, Girish S, Agarwal P, Li C, Hirata J, Chu YW, Kagedal",
+    "M, Leon L, Maiya V, Jin JY. Time-to-Event Analysis of Polatuzumab",
+    "Vedotin-Induced Peripheral Neuropathy to Assist in the Comparison of",
+    "Clinical Dosing Regimens. CPT Pharmacometrics Syst Pharmacol.",
+    "2017;6(6):401-408. doi:10.1002/psp4.12192. PMID 28544534.",
     "Upstream PK driver (acMMAE side only) from:",
     "Lu D, Lu T, Gibiansky L, Li X, Li C, Agarwal P, Shemesh CS,",
     "Shi R, Dere RC, Hirata J, Miles D, Chanu P, Girish S, Jin JY.",

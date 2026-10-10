@@ -1,6 +1,12 @@
 Almquist_2022_anifrolumab <- function() {
   description <- "Two-compartment QSS-TMDD population PK model for anifrolumab (anti-IFNAR1 IgG1-kappa) in healthy volunteers and adults with systemic lupus erythematosus (Almquist 2022): linear plus quasi-steady-state target-mediated elimination via a dynamic IFNAR1 receptor pool, time-varying linear clearance (Emax-on-time), and IFNGS-high/low and body-weight covariate effects."
-  reference <- "Almquist J, Kuruvilla D, Mai T, et al. Nonlinear Population Pharmacokinetics of Anifrolumab in Healthy Volunteers and Patients With Systemic Lupus Erythematosus. J Clin Pharmacol. 2022;62(9):1106-1120. doi:10.1002/jcph.2055"
+  reference <- paste(
+    "Almquist J, Kuruvilla D, Mai T, Tummala R, White WI, Tang W, Roskos L,",
+    "Chia YL. Nonlinear Population Pharmacokinetics of Anifrolumab in Healthy",
+    "Volunteers and Patients With Systemic Lupus Erythematosus. J Clin",
+    "Pharmacol. 2022;62(9):1106-1120. doi:10.1002/jcph.2055.",
+    sep = " "
+  )
   vignette <- "Almquist_2022_anifrolumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

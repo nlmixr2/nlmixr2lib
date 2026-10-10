@@ -22,10 +22,11 @@ Parkinson_2025_balcinrenone <- function() {
     "proportional (43.7% CV) plus additive (5.05 nmol/L)."
   )
   reference <- paste(
-    "Parkinson J, Astrand M, Melin J, Ericsson H. (2025). Population",
-    "Pharmacokinetic Analysis of Balcinrenone in Healthy Participants and",
-    "Participants with Heart Failure and Chronic Kidney Disease.",
-    "Clin Pharmacokinet. doi:10.1007/s40262-025-01572-7. PMCID: PMC12618412.",
+    "Parkinson J, Astrand M, Melin J, Ericsson H. Population Pharmacokinetic",
+    "Analysis of Balcinrenone in Healthy Participants and Participants with",
+    "Heart Failure and Chronic Kidney Disease. Clin Pharmacokinet.",
+    "2025;64(11):1723-1735. doi:10.1007/s40262-025-01572-7. PMCID:",
+    "PMC12618412.",
     "Structural encoding follows the final NONMEM control stream reproduced",
     "in the Supplementary Materials ('Final NONMEM Model'); all point",
     "estimates are the final estimates of Table 1 (the control stream's",

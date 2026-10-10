@@ -1,8 +1,9 @@
 deCacqueray_2022_cefepime <- function() {
   description <- "One-compartment IV population PK model for cefepime in 59 critically ill infants and children aged 1.1 months to 17.6 years (de Cacqueray 2022); body-weight allometric scaling referenced to 9 kg (fixed exponents 0.75 on CL, 1 on Vc), a power effect of Schwartz-estimated glomerular filtration rate on CL referenced to 153 mL/min/1.73 m2, and correlated log-normal between-subject variability on CL and Vc. Parameters transcribed from the secondary source Gotta 2025, which reprints the final-model equations and deposits the literal Monolix/Simulx source used to simulate this model; the de Cacqueray 2022 primary is not open access."
   reference <- paste(
-    "de Cacqueray N, Hirt D, Zheng Y, Bille E, Leger PL, Rambaud J,",
-    "Toubiana J, Chosidow A, Vimont S, Callot D, et al. Cefepime",
+    "de Cacqueray N, Hirt D, Zheng Y, Bille E, Leger PL, Rambaud J, Toubiana",
+    "J, Chosidow A, Vimont S, Callot D, Chouchana L, Beranger A, Treluyer JM,",
+    "Benaboud S, Oualha M. Cefepime",
     "population pharmacokinetics and dosing regimen optimization in",
     "critically ill children with different renal function.",
     "Clin Microbiol Infect. 2022;28(10):1389.e1-1389.e7.",

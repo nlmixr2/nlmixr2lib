@@ -37,7 +37,7 @@ Minucci_2024_CART_qsp <- function() {
     "Frontiers in Systems Biology 4:1380018.",
     "doi:10.3389/fsysb.2024.1380018.",
     "Calibrated to CAR T CK / B-cell aplasia data from",
-    "Ying et al. 2021 (Nat Med 27, 1181-1189; doi:10.1038/s41591-021-01327-4)",
+    "Ying et al. 2021 (BMC Cancer 21:198; doi:10.1186/s12885-021-07934-1)",
     "for the IM19 CD19-targeted CAR T-cell product",
     "in 13 relapsed/refractory B-cell non-Hodgkin lymphoma patients.",
     sep = " "

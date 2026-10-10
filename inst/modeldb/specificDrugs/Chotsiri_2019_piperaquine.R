@@ -36,9 +36,10 @@ Chotsiri_2019_piperaquine <- function() {
   )
   reference <- paste(
     "Chotsiri P, Zongo I, Milligan P, Compaore YD, Some AF, Chandramohan D,",
-    "et al. (2019). Optimal dosing of dihydroartemisinin-piperaquine for",
-    "seasonal malaria chemoprevention in young children. Nature",
-    "Communications 10(1):480. doi:10.1038/s41467-019-08297-9.",
+    "Hanpithakpong W, Nosten F, Greenwood B, Rosenthal PJ, White NJ, Ouedraogo",
+    "JB, Tarning J. Optimal dosing of dihydroartemisinin-piperaquine for",
+    "seasonal malaria chemoprevention in young children. Nat Commun.",
+    "2019;10(1):480. doi:10.1038/s41467-019-08297-9.",
     "The frequentist prior for the pharmacokinetic structure is Tarning J,",
     "Zongo I, Some FA, Rouamba N, Parikh S, Rosenthal PJ, et al. (2012).",
     "Population pharmacokinetics and pharmacodynamics of piperaquine in",

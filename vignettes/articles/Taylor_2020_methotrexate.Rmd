@@ -24,7 +24,7 @@ suppressPackageStartupMessages({
 * Citation: `r rxode2::rxode2(readModelDb("Taylor_2020_methotrexate"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Taylor_2020_methotrexate"))$description`
 * Article: <https://doi.org/10.1002/cpt.1957>
-* Supplement (Wiley): <https://doi.org/10.1002/cpt.1957-sup-0001-supinfo>
+* Supplement (Wiley): Supporting Information of the article above (no DOI of its own)
 * Companion clinical decision support tool: <https://mtxpk.org/>
 
 Taylor 2020 develops a three-compartment population PK model for

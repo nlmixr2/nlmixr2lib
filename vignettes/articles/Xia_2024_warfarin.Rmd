@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: Xia X, Cai X, Chen J, Jiang S, Zhang J. Construction of warfarin
   population pharmacokinetics and pharmacodynamics model in Han population based
-  on Bayesian method. *Sci Rep* 2024;14:14894.
+  on Bayesian method. *Sci Rep*. 2024;14(1):14846. doi:10.1038/s41598-024-65048-7.
 * Article: <https://doi.org/10.1038/s41598-024-65048-7>
 * Supplementary information (open-access): linked from the article landing page;
   Section 1 of the supplement contains the K-PD structural equations, the

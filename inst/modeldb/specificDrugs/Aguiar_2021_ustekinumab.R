@@ -1,6 +1,13 @@
 Aguiar_2021_ustekinumab <- function() {
   description <- "Population pharmacokinetic-pharmacodynamic model for ustekinumab in adults with Crohn's disease (Aguiar 2021): two-compartment quasi-equilibrium TMDD model for ustekinumab and the unbound IL-12/IL-23 p40 target, linked to fecal calprotectin via an indirect-response model with target-driven stimulation of FC production."
-  reference <- "Aguiar Zdovc J, Hanzel J, Kurent T, Sever N, Smrekar N, Kozelj M, Novak G, Stabuc B, Drobne D, Grabnar I. Ustekinumab Dosing Individualization in Crohn's Disease Guided by a Population Pharmacokinetic-Pharmacodynamic Model. Pharmaceutics. 2021;13(10):1587. doi:10.3390/pharmaceutics13101587"
+  reference <- paste(
+    "Aguiar Zdovc J, Hanzel J, Kurent T, Sever N, Kozelj M, Smrekar N, Novak",
+    "G, Stabuc B, Dreesen E, Thomas D, Vovk T, Ostanek B, Drobne D, Grabnar I.",
+    "Ustekinumab Dosing Individualization in Crohn's Disease Guided by a",
+    "Population Pharmacokinetic-Pharmacodynamic Model. Pharmaceutics.",
+    "2021;13(10):1587. doi:10.3390/pharmaceutics13101587.",
+    sep = " "
+  )
   vignette <- "Aguiar_2021_ustekinumab"
   units <- list(time = "day", dosing = "nmol", concentration = "nmol/L")
 

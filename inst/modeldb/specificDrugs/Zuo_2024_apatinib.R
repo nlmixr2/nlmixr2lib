@@ -10,9 +10,10 @@ Zuo_2024_apatinib <- function() {
     "is combined additive plus proportional."
   )
   reference <- paste(
-    "Zuo L, Ling J, Hu N, Chen R. (2024).",
-    "Establishment and validation of a population pharmacokinetic model for apatinib in patients with tumors.",
-    "BMC Cancer 24:1338. doi:10.1186/s12885-024-13118-4"
+    "Zuo L, Ling J, Hu N, Chen R. Establishment and validation of a population",
+    "pharmacokinetic model for apatinib in patients with tumors. BMC Cancer.",
+    "2024;24(1):1346. doi:10.1186/s12885-024-13118-4.",
+    sep = " "
   )
   vignette <- "Zuo_2024_apatinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")

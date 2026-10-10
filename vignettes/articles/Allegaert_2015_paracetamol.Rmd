@@ -340,7 +340,7 @@ structural model and covariate-effect implementation are coherent.
 # Assumptions and deviations
 
 - **Publication PDF not available.** The Allegaert 2015 paper
-  (BMC Anesthesiol 15:151;
+  (BMC Anesthesiol 15:163;
   [doi:10.1186/s12871-015-0144-3](https://doi.org/10.1186/s12871-015-0144-3))
   was not available when this model was built. Parameter
   point values are taken verbatim from

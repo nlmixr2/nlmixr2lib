@@ -19,7 +19,13 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Hoglund RM, Workman L, Edstein MD, Thanh NX, Quang NN, Zongo I, et al. (2017). Population Pharmacokinetic Properties of Piperaquine in Falciparum Malaria: An Individual Participant Data Meta-Analysis. *PLoS Medicine* **14**(1):e1002212. doi:10.1371/journal.pmed.1002212.
+* Citation: Hoglund RM, Workman L, Edstein MD, Thanh NX, Quang NN, Zongo I,
+  Ouedraogo JB, Borrmann S, Mwai L, Nsanzabana C, Price RN, Dahal P, Sambol NC,
+  Parikh S, Nosten F, Ashley EA, Phyo AP, Lwin KM, McGready R, Day NP, Guerin
+  PJ, White NJ, Barnes KI, Tarning J. Population Pharmacokinetic Properties of
+  Piperaquine in Falciparum Malaria: An Individual Participant Data
+  Meta-Analysis. *PLoS Med*. 2017;14(1):e1002212.
+  doi:10.1371/journal.pmed.1002212.
 * Article: <https://doi.org/10.1371/journal.pmed.1002212>
 
 The package model can be loaded with:

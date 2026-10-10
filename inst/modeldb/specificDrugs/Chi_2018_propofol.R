@@ -23,7 +23,7 @@ Chi_2018_propofol <- function() {
     "Modeling methodology follows Ye HB, Li JH, Rui JZ et al,",
     "Propofol pharmacokinetics in China: A multicentric study,",
     "Indian J Pharmacol 2012; 44(3):393-7;",
-    "pmid:22701253; this Chi 2018 paper re-estimates structural",
+    "pmid:22701254; this Chi 2018 paper re-estimates structural",
     "parameters in a 32-patient hepatic-insufficiency sub-cohort with",
     "Child-Turcotte-Pugh stratification.",
     sep = " "

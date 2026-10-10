@@ -21,10 +21,12 @@ Chae_2026_teicoplanin <- function() {
     "mass and low serum creatinine typical of HSCT recipients."
   )
   reference <- paste(
-    "Chae H, Cha HJ, Kang M, Han S, Lee DG. Pharmacokinetic model based on",
-    "stochastic simulation and estimation for therapeutic drug monitoring of",
-    "teicoplanin in Korean neutropenic hematopoietic stem cell transplant",
-    "recipients. Drug Des Devel Ther. 2026. doi:10.2147/DDDT.S550736"
+    "Chae H, Cha HJ, Kang M, Han S, Lee DG. Pharmacokinetic Model Based on",
+    "Stochastic Simulation and Estimation for Therapeutic Drug Monitoring of",
+    "Teicoplanin in Korean Neutropenic Hematopoietic Stem Cell Transplant",
+    "Recipients. Drug Des Devel Ther. 2026;20:550736.",
+    "doi:10.2147/DDDT.S550736.",
+    sep = " "
   )
   vignette <- "Chae_2026_teicoplanin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

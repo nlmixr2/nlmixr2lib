@@ -1,6 +1,15 @@
 Wang_2024_valproic_acid <- function() {
   description <- "One-compartment population PK model with first-order absorption for total plasma valproic acid in Chinese children with epilepsy (Wang 2024 final model), built to tailor the dose when switching between oral syrup and sustained-release tablets. Apparent clearance carries a power body-weight effect and a proportional female-sex effect; apparent volume carries a power body-weight effect. Formulation-specific absorption rate constants are FIXED from the literature (oral syrup 2.64 1/h reference, sustained-release tablet 0.46 1/h), because the therapeutic-drug-monitoring dataset is steady-state troughs only and contains no absorption-phase data."
-  reference <- "Wang WJ, Li Y, Hu YH, Wang J, Zhang YY, Fan L, Dai HR, Guo HL, Ding XS, Chen F. Population pharmacokinetics of valproic acid in children with epilepsy: Implications for dose tailoring when switching from oral syrup to sustained-release tablets. CPT Pharmacometrics Syst Pharmacol. 2024;13(9):1555-1568. doi:10.1002/psp4.13191. PMCID PMC11533106. Final-model parameter estimates from Table 3; covariate equations from Equations 34 and 35."
+  reference <- paste(
+    "Wang WJ, Li Y, Hu YH, Wang J, Zhang YY, Fan L, Dai HR, Guo HL, Ding XS,",
+    "Chen F. Population pharmacokinetics of valproic acid in children with",
+    "epilepsy: Implications for dose tailoring when switching from oral syrup",
+    "to sustained-release tablets. CPT Pharmacometrics Syst Pharmacol.",
+    "2024;13(9):1554-1569. doi:10.1002/psp4.13191. PMCID PMC11533106.",
+    "Final-model parameter estimates from Table 3; covariate equations from",
+    "Equations 34 and 35.",
+    sep = " "
+  )
   vignette <- "Wang_2024_valproic_acid"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

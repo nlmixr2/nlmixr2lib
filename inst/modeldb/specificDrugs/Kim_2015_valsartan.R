@@ -1,6 +1,11 @@
 Kim_2015_valsartan <- function() {
   description <- "Two-compartment population PK model for valsartan with zero-order absorption in healthy adult Korean male volunteers (Kim 2015)"
-  reference <- "Kim Y, Son H, Son M, Lee D, Heo YA, Park K. Assessment of statistical power for covariate effects in data from phase I clinical trials. Transl Clin Pharmacol. 2015;23(1):31-34. doi:10.12793/tcp.2015.23.1.31"
+  reference <- paste(
+    "Kim Y, Son H, Son M, Lee D, Heo YA, Park K. Assessment of statistical",
+    "power for covariate effects in data from phase I clinical trials. Transl",
+    "Clin Pharmacol. 2015;23(1):31. doi:10.12793/tcp.2015.23.1.31.",
+    sep = " "
+  )
   vignette <- "Kim_2015_valsartan"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

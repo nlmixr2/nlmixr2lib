@@ -21,11 +21,14 @@ Klein_2026_alprazolam <- function() {
     "correlated) and normal on the logit dose fraction; residual error is proportional."
   )
   reference <- paste(
-    "Klein P, Aungaroon G, Biton V, Liow KK, Phillips S, Wychowski T, et al.",
-    "Pharmacokinetics and tolerability of single-dose Staccato(R) alprazolam in adolescents",
-    "with epilepsy, and population pharmacokinetic analysis to support dose selection in",
-    "adolescents. Epilepsia. 2026;67(1):109-119. doi:10.1111/epi.18643.",
-    "Population PK parameters are from Supporting Information Table S3."
+    "Klein P, Aungaroon G, Biton V, Liow KK, Phillips S, Wychowski T, Sadek A,",
+    "Elshoff JP, Roebling R, King A, Rospo CC, Schoemaker R, Chanteux H.",
+    "Pharmacokinetics and tolerability of single-dose Staccato alprazolam in",
+    "adolescents with epilepsy, and population pharmacokinetic analysis to",
+    "support dose selection in adolescents. Epilepsia. 2026;67(1):109-119.",
+    "doi:10.1111/epi.18643. Population PK parameters are from Supporting",
+    "Information Table S3.",
+    sep = " "
   )
   vignette <- "Klein_2026_alprazolam"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
