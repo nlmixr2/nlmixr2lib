@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kruizinga 2022 clonazepam in plasma and saliva ([doi:10.1111/bcp.15152](https://doi.org/10.1111/bcp.15152)) -- healthy adults aged 18-30 years (ratifies the `MIX_FAST_ABS` covariate and the `lka_fastabs`, `lfcontam_saliva`, `lfsaliva_max` and `lkm_fsaliva` parameters).
+- Add van Eijk 2022 oral paclitaxel with ritonavir and thrombospondin-1 ([doi:10.1007/s00280-022-04445-z](https://doi.org/10.1007/s00280-022-04445-z)) -- adult cancer patients taking oral paclitaxel drinking solution, ModraPac capsule or tablet boosted with ritonavir (adds the `FORM_RTV_TABLET` covariate canonical).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
