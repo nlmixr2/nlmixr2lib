@@ -34,6 +34,8 @@
 
 - Add Wojciechowski 2022 abrocitinib ([doi:10.1007/s40262-021-01104-z](https://doi.org/10.1007/s40262-021-01104-z)) -- healthy adults, adults with psoriasis, adolescents and adults with atopic dermatitis, and adults with hepatic impairment.
 
+- Add Mizaki 2023 mycophenolic acid ([doi:10.1186/s40780-022-00271-w](https://doi.org/10.1186/s40780-022-00271-w)) -- Japanese adults with lupus nephritis taking mycophenolate mofetil.
+
 - Add Wang 2022 mycophenolic acid ([doi:10.3389/fphar.2022.859351](https://doi.org/10.3389/fphar.2022.859351)) -- Chinese adult renal transplant recipients in the early (first week) and stable (5.5-10 years) post-transplant stages (ratifies the new `POSTTX_STABLE` covariate canonical).
 
 - Add Savic 2022 voxelotor ([doi:10.1002/psp4.12731](https://doi.org/10.1002/psp4.12731)) -- adults and adolescents with sickle cell disease, joint plasma and whole-blood model.

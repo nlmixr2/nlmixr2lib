@@ -4338,6 +4338,8 @@ navbar:
         href: articles/Heida_2024_mycophenolic_acid.html
       - text: "Mycophenolic acid (Jiao 2008)"
         href: articles/Jiao_2008_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Mizaki 2023)"
+        href: articles/Mizaki_2023_mycophenolic_acid.html
       - text: "Mycophenolic acid (Park 2023)"
         href: articles/Park_2023_mycophenolic_acid.html
       - text: "Mycophenolic acid (Quintairos 2021)"
@@ -8934,6 +8936,7 @@ articles:
   - articles/Mitra_2026_ziftomenib
   - articles/Miyagi_2011_ugt1a1_ugt1a6_hepatic_ontogeny
   - articles/Miyano_2022_atopicDermatitis_qsp
+  - articles/Mizaki_2023_mycophenolic_acid
   - articles/Mo_2018_olaratumab
   - articles/Mo_2024_shikimicAcid
   - articles/Mo_2025_everolimus
