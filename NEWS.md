@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cao 2022 pemetrexed ([doi:10.3389/fphar.2022.954242](https://doi.org/10.3389/fphar.2022.954242)) -- Chinese adults with primary advanced non-small cell lung carcinoma (ratifies the new `SNP_ERCC1_RS3212986_CC` genotype covariate canonical).
+- Add Lin 2022 PF-05251749 ([doi:10.1111/cts.13352](https://doi.org/10.1111/cts.13352)) -- healthy adults given 400 or 750 mg once daily (two-compartment reductions of the dose-specific Simcyp minimal-PBPK base models).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
