@@ -5106,6 +5106,8 @@ navbar:
         href: articles/ArabAlameddine_2012_raltegravir.html
       - text: "Raltegravir (Bukkems 2021)"
         href: articles/Bukkems_2021_raltegravir.html
+      - text: "Raltegravir (Gurjar 2023)"
+        href: articles/Gurjar_2023_raltegravir.html
       - text: "Raltegravir (Lee 2016)"
         href: articles/Lee_2016_raltegravir.html
       - text: "Raltegravir (Lommerse 2019)"
@@ -7742,6 +7744,7 @@ articles:
   - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
   - articles/Gupta_2021_brigatinib
+  - articles/Gurjar_2023_raltegravir
   - articles/Gwee_2020_ivermectin
   - articles/Hadigol_2026_talazoparib_enzalutamide
   - articles/Hahn_2019_sufentanil
