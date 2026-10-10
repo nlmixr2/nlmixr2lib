@@ -5694,6 +5694,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** `25-DRFP` / `25DRFP` / `metabolite_M` (paper narrative in Zvada 2010 Methods and Figure 1 caption).
 - **Example models:** `Zvada_2010_rifapentine.R` (doi:10.1128/AAC.00345-10).
 
+### desethylenecip (**canonical desethylene ciprofloxacin metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Desethylene ciprofloxacin (M1), an antibacterially active metabolite of ciprofloxacin formed by oxidative cleavage of the piperazine ring, which loses an ethylene (C2H2) unit and opens to a 2-aminoethylamino side chain (MW 305.30 vs 331.34 g/mol for ciprofloxacin). It is one of four main ciprofloxacin metabolites (with sulfociprofloxacin, oxociprofloxacin and formyl ciprofloxacin) and accounts for a few per cent of parent exposure. Used as the metabolite suffix on `central_desethylenecip`, `lkel_desethylenecip`, `lkmet_desethylenecip`, `Cc_desethylenecip` and `propSd_desethylenecip`.
+- **Source aliases:** `desethylene ciprofloxacin`, `M1` -- publication spellings; same species, no transformation.
+- **Example models:** `Sima_2022_ciprofloxacin.R` (doi:10.3390/pharmaceutics14081627).
+- **Notes:** Spelled out as `desethylene` rather than abbreviated to `deset` / `desethyl`: the metabolite has lost a whole ethylene bridge from the piperazine ring, which is a different transformation from the N-deethylation that `deaq` (desethylamodiaquine) names, and a `desethylcip` spelling would invite that misreading. Distinct from oxociprofloxacin and formyl ciprofloxacin, which a future extraction should register as their own suffixes rather than reuse this one.
+
 ### az5104 (**canonical AZ5104 osimertinib metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** AZ5104 (N-desmethyl osimertinib), active EGFR-inhibitor metabolite of osimertinib formed predominantly via CYP3A4/5.
