@@ -3734,6 +3734,8 @@ navbar:
         href: articles/Ulldemolins_2015_meropenem.html
       - text: "Meropenem (Wittau 2015)"
         href: articles/Wittau_2015_meropenem.html
+      - text: "Meropenem (Wu 2022)"
+        href: articles/Wu_2022_meropenem.html
       - text: "Meropenem (Zou 2026)"
         href: articles/Zou_2026_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
@@ -9313,6 +9315,7 @@ articles:
   - articles/Wu_2020_fedratinib
   - articles/Wu_2021_SPI_62
   - articles/Wu_2022_fentanyl
+  - articles/Wu_2022_meropenem
   - articles/Wu_2023_SPI_62
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
