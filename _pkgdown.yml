@@ -2766,12 +2766,20 @@ navbar:
         href: articles/Veinstein_2013_gentamicin.html
       - text: "Gentamicin (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Gentamicin bos (Duong 2022)"
+        href: articles/Duong_2022_gentamicin.html
       - text: "Gentamicin glasgow (Kelman 1984)"
         href: articles/Kelman_1984_gentamicin.html
+      - text: "Gentamicin hodiamont2017ijaa (Duong 2022)"
+        href: articles/Duong_2022_gentamicin.html
+      - text: "Gentamicin hodiamont2017tdm (Duong 2022)"
+        href: articles/Duong_2022_gentamicin.html
       - text: "Gentamicin manchester1 (Kelman 1984)"
         href: articles/Kelman_1984_gentamicin.html
       - text: "Gentamicin manchester2 (Kelman 1984)"
         href: articles/Kelman_1984_gentamicin.html
+      - text: "Gentamicin rea (Duong 2022)"
+        href: articles/Duong_2022_gentamicin.html
       - text: "Gentamicin teigen (Lee 2024)"
         href: articles/Lee_2024_gentamicin.html
       - text: "Gepotidacin (Nguyen 2022)"
@@ -7815,6 +7823,7 @@ articles:
   - articles/Dunn_2025_tranexamicAcid
   - articles/Duong_2016_WHIG_T2DM
   - articles/Duong_2017_AT9283
+  - articles/Duong_2022_gentamicin
   - articles/Dvorackova_2023_posaconazole
   - articles/Dvorackova_2026_valganciclovir
   - articles/Easterling_2018_magnesium_sulfate
