@@ -4842,6 +4842,8 @@ navbar:
         href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
       - text: "Polymyxin FADDIAB030 (Cheah 2016)"
         href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
+      - text: "PolymyxinB (Cai 2022)"
+        href: articles/Cai_2022_polymyxinB.html
       - text: "PolymyxinB (Li 2021)"
         href: articles/Li_2021_polymyxinB.html
       - text: "PolymyxinB (Liang 2023)"
@@ -7252,6 +7254,7 @@ articles:
   - articles/ButraguenoLaiseca_2025_teicoplanin
   - articles/Byrne_2022_imr687
   - articles/Cagnardi_2018_cefazolin_dog
+  - articles/Cai_2022_polymyxinB
   - articles/Cai_2025_diamorphine
   - articles/Calderin_2025_pyrazinamide_isoniazid_tbm
   - articles/Caldes_2009_ganciclovir
