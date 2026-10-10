@@ -5990,6 +5990,8 @@ navbar:
         href: articles/Chae_2026_teicoplanin.html
       - text: "Teicoplanin (Chen 2023)"
         href: articles/Chen_2023_teicoplanin.html
+      - text: "Teicoplanin (Fu 2022)"
+        href: articles/Fu_2022_teicoplanin.html
       - text: "Teicoplanin (Gao 2020)"
         href: articles/Gao_2020_teicoplanin.html
       - text: "Teicoplanin (GarciaHervalejo 2026)"
@@ -7644,6 +7646,7 @@ articles:
   - articles/Frymoyer_2017_infliximab
   - articles/Fu_2019_paclitaxel_pbpk
   - articles/Fu_2022_atenolol_qsp
+  - articles/Fu_2022_teicoplanin
   - articles/Fu_2023_cardiovascular
   - articles/Fuchs_2014_gentamicin
   - articles/Fuhr_2020_dabigatran
