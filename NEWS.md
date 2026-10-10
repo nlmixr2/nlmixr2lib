@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Garcia-Martinez 2022 daptomycin ([doi:10.3390/pharmaceutics14102226](https://doi.org/10.3390/pharmaceutics14102226)) -- hospitalised adults with normal renal function or renal impairment.
+- Add Cai 2022 polymyxin B ([doi:10.3389/fphar.2022.1019411](https://doi.org/10.3389/fphar.2022.1019411)) -- Chinese adult lung transplant recipients with carbapenem-resistant Gram-negative pneumonia.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
