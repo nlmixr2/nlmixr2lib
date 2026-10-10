@@ -1894,6 +1894,10 @@ navbar:
         href: articles/Singh_2025_donidalorsen.html
       - text: "Doravirine (Vaddady 2020)"
         href: articles/Vaddady_2020_doravirine.html
+      - text: "Doravirine placentaperfusion (Bukkems 2022)"
+        href: articles/Bukkems_2022_doravirine_placentaperfusion.html
+      - text: "Doravirine placentaperfusion closedopen (Bukkems 2022)"
+        href: articles/Bukkems_2022_doravirine_placentaperfusion.html
       - text: "Dordaviprone (Jaiswal 2025)"
         href: articles/Jaiswal_2025_dordaviprone.html
       - text: "Doripenem (AbdulAziz 2016)"
@@ -7542,6 +7546,7 @@ articles:
   - articles/Buelga_2005_vancomycin
   - articles/BuilBruna_2015_lanreotide
   - articles/Bukkems_2021_raltegravir
+  - articles/Bukkems_2022_doravirine_placentaperfusion
   - articles/Bulitta_2007_piperacillin
   - articles/Bulitta_2009_ceftazidime
   - articles/Bulitta_2009_cefuroxime_axetil

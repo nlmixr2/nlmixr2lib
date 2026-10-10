@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ruiz-Martinez 2022 nivolumab triple-negative breast cancer QSP ([doi:10.1371/journal.pcbi.1010254](https://doi.org/10.1371/journal.pcbi.1010254)) -- in silico virtual TNBC patients; the whole-patient QSP layer of a spatial QSP-agent-based model, recalibrated from Wang 2020.
+- Add Bukkems 2022 doravirine ([doi:10.1007/s40262-022-01127-0](https://doi.org/10.1007/s40262-022-01127-0)) -- ex vivo human term placenta cotyledon perfusion (closed-closed and closed-open configurations; ratifies the new `WT_COTYLEDON` and `PERFUSION_FETAL_TO_MATERNAL` covariate canonicals).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
